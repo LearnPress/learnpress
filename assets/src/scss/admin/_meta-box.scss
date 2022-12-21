@@ -535,8 +535,8 @@
 			margin: 0;
 			padding: 15px 0;
 			flex-wrap: wrap;
-			align-items: flex-start;
-			justify-content: flex-start;
+			//align-items: center;
+			//justify-content: flex-start;
 
 			label {
 				width: 180px;
@@ -660,9 +660,7 @@
 	}
 
 	input[type="checkbox"] {
-		margin-top: 0;
-
-
+		margin-top: 2px;
 	}
 
 	.short {
@@ -670,7 +668,7 @@
 	}
 
 	textarea:not(.lp-meta-box__wp-editor__textarea) {
-		height: 3.5em;
+		height: 4.6rem;
 		line-height: 1.5em;
 		vertical-align: top;
 	}

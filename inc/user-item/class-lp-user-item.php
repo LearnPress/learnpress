@@ -5,7 +5,7 @@
  *
  * @since 3.0.0
  */
-class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
+class LP_User_Item extends LP_Abstract_Object_Data {
 	/**
 	 * Auto increment
 	 *
@@ -144,11 +144,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 			$this->set_data( 'access_level', $item['access_level'] );
 		}
 
-		$this->set_data( 'graduation', $item['graduation'] ?? LP_COURSE_GRADUATION_IN_PROGRESS );
-
-		//      $new_data = $this->get_mysql_data();
-		//      ksort( $new_data );
-		//      $this->_data_key = md5( serialize( $new_data ) );
+		$this->set_data( 'graduation', $item['graduation'] ?? '' );
 	}
 
 	public function set_user_id( $user_id ) {
@@ -198,15 +194,18 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 *
 	 * @return $this
 	 */
-	public function set_start_time( $time ): LP_User_Item {
-		$lp_time = new LP_Datetime( $time );
-		$this->set_data( 'start_time', $lp_time );
+	public function set_start_time( $time = '' ): LP_User_Item {
+		$this->set_data_date( 'start_time', $time );
 
 		return $this;
 	}
 
+	/**
+	 * @deprecated 4.1.7.3
+	 */
 	public function get_time( $field, $format = '', $human_diff_time = false ) {
-		if ( ! $format ) {
+		_deprecated_function( __METHOD__, '.4.1.7.3' );
+		/*if ( ! $format ) {
 			$format = get_option( 'date_format' );
 		}
 
@@ -220,7 +219,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 			$h_time = mysql2date( $format, $m_time );
 		}
 
-		return $h_time;
+		return $h_time;*/
 	}
 
 	/**
@@ -330,24 +329,27 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	/**
 	 * Get expiration time.
 	 *
-	 * @param string $format
-	 *
 	 * @return string|LP_Datetime $time
 	 * @since 3.3.0
-	 * @version 3.3.1
+	 * @version 3.3.2
 	 */
-	public function get_expiration_time( string $format = '' ) {
+	public function get_expiration_time() {
 		$duration   = get_post_meta( $this->get_item_id(), '_lp_duration', true );
-		$start_time = $this->get_start_time( '', false );
+		$start_time = $this->get_start_time()->getTimestamp();
 
 		if ( ! absint( $duration ) || ! $start_time ) {
 			$expire = null;
 		} else {
-			$date   = new LP_Datetime( $start_time->getPeriod( $duration, true ) );
-			$expire = $this->format_time( $date, $format );
+			// Convert duration from string to seconds.
+			if ( ! is_numeric( $duration ) ) {
+				$duration = strtotime( $duration ) - time();
+			}
+
+			$expire_time = $start_time + $duration;
+			$expire      = new LP_Datetime( $expire_time );
 		}
 
-		return apply_filters( 'learn-press/user-item/expiration-time', $expire, $format, $this );
+		return apply_filters( 'learn-press/user-item/expiration-time', $expire, $duration, $this );
 	}
 
 	/**
@@ -774,7 +776,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 *
 	 * @param string $context
 	 *
-	 * @return bool|float|int
+	 * @return bool|int
 	 */
 	public function get_time_interval( $context = '' ) {
 		$start = $this->get_start_time();
@@ -787,9 +789,8 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		if ( $start->is_null() || $end->is_null() ) {
 			return false;
 		}
-		$interval = $end->getTimestamp() - $start->getTimestamp();
 
-		return $interval;
+		return $end->getTimestamp() - $start->getTimestamp();
 	}
 
 	/**
@@ -799,13 +800,15 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 *
 	 * @return float|int
 	 * @since 3.3.0
+	 * @deprecated 4.1.7.3
 	 */
 	public function get_exceeded() {
-		$time     = new LP_Datetime();
+		_deprecated_function( __METHOD__, '4.1.7.3' );
+		/*$time     = new LP_Datetime();
 		$current  = $time->getTimestamp( false );
 		$exceeded = $this->get_expiration_time();
 
-		return false !== $exceeded ? $exceeded->getTimestamp() - $current : false;
+		return false !== $exceeded ? $exceeded->getTimestamp() - $current : false;*/
 	}
 
 	/**
@@ -815,9 +818,11 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 * @return bool|float|int
 	 * @since 3.3.0
 	 * Todo: check remove function
+	 * @deprecated 4.1.7.3
 	 */
 	public function is_exceeded() {
-		$expiration = $this->get_expiration_time();
+		_deprecated_function( __METHOD__, '4.1.7.3' );
+		/*$expiration = $this->get_expiration_time();
 		$end        = $this->get_end_time();
 
 		if ( ! $expiration ) {
@@ -827,12 +832,12 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 		// If course is not finished then consider end time is current time
 		if ( ! $end || 0 >= $end->getTimestamp() ) {
 			$end = new LP_Datetime();
-			$end = $end->getTimestamp( false );
+			$end = $end->getTimestamp();
 		} else {
 			$end = $end->getTimestamp();
 		}
 
-		return $expiration->getTimestamp() - $end;
+		return $expiration->getTimestamp() - $end;*/
 	}
 
 	/**
@@ -842,9 +847,11 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 	 *
 	 * @return LP_Duration
 	 * @since 3.3.0
+	 * @deprecated 4.1.7.3
 	 */
 	public function get_time_remaining( $return = 'object' ) {
-		$is_exceeded = $this->is_exceeded();
+		_deprecated_function( __METHOD__, '4.1.7.3' );
+		/*$is_exceeded = $this->is_exceeded();
 		$time        = false;
 
 		if ( false !== $is_exceeded ) {
@@ -858,7 +865,7 @@ class LP_User_Item extends LP_Abstract_Object_Data implements ArrayAccess {
 			$this->get_item_id(),
 			$this->get_parent_id(),
 			$this->get_user_id()
-		);
+		);*/
 	}
 
 	/**

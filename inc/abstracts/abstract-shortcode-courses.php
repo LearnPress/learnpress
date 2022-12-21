@@ -93,7 +93,7 @@ if ( ! class_exists( 'LP_Abstract_Shortcode_Courses' ) ) {
 			$order      = strtoupper( $order );
 
 			if ( ! in_array( $order, $arr_orders ) ) {
-				$atts['order_by'] = 'DESC';
+				$atts['order'] = 'DESC';
 			}
 
 			return $atts;

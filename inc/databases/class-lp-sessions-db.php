@@ -10,18 +10,58 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 4.1.1
  */
 class LP_Sessions_DB extends LP_Database {
-	private static $_instance;
+	/**
+	 * @var LP_Sessions_DB
+	 */
+	private static $instance;
 
 	protected function __construct() {
 		parent::__construct();
 	}
 
-	public static function getInstance() {
-		if ( is_null( self::$_instance ) ) {
-			self::$_instance = new self();
+	/**
+	 * Instance
+	 *
+	 * @return LP_Sessions_DB
+	 */
+	public static function getInstance(): self {
+		if ( is_null( self::$instance ) ) {
+			self::$instance = new self();
 		}
 
-		return self::$_instance;
+		return self::$instance;
+	}
+
+	/**
+	 * Get sessions.
+	 *
+	 * @param LP_Session_Filter $filter
+	 *
+	 * @return array|int|string|null
+	 * @throws Exception
+	 */
+	public function get_sessions( LP_Session_Filter $filter ) {
+		$default_fields = $this->get_cols_of_table( $this->tb_lp_sessions );
+		$filter->fields = array_merge( $default_fields, $filter->fields );
+
+		if ( empty( $filter->collection ) ) {
+			$filter->collection = $this->tb_lp_sessions;
+		}
+
+		if ( empty( $filter->collection_alias ) ) {
+			$filter->collection_alias = 'ss';
+		}
+
+		if ( empty( $filter->field_count ) ) {
+			$filter->field_count = 'session_id';
+		}
+
+		// Filter by session_key.
+		if ( ! empty( $filter->session_key ) ) {
+			$filter->where[] = $this->wpdb->prepare( 'AND session_key = %s', $filter->session_key );
+		}
+
+		return $this->execute( $filter );
 	}
 
 	/**
@@ -65,6 +105,4 @@ class LP_Sessions_DB extends LP_Database {
 		return $result;
 	}
 }
-
-LP_Sessions_DB::getInstance();
 

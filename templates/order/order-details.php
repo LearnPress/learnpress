@@ -22,7 +22,7 @@ if ( ! isset( $order ) ) {
 <table class="lp-list-table order-table-details">
 	<thead>
 		<tr>
-			<th class="course-name"><?php esc_html_e( 'Course', 'learnpress' ); ?></th>
+			<th class="course-name"><?php esc_html_e( 'Item', 'learnpress' ); ?></th>
 			<th class="course-total"><?php esc_html_e( 'Total', 'learnpress' ); ?></th>
 		</tr>
 	</thead>
@@ -64,7 +64,6 @@ if ( ! isset( $order ) ) {
 					continue;
 				}
 				?>
-
 					<tr class="<?php echo esc_attr( apply_filters( 'learn-press/order/item-class', 'order-item', $item, $order ) ); ?>">
 						<td class="course-name">
 							<?php
@@ -91,7 +90,6 @@ if ( ! isset( $order ) ) {
 							?>
 						</td>
 					</tr>
-
 					<?php
 			}
 		}

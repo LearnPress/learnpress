@@ -81,6 +81,7 @@ class LP_Meta_Box_Field {
 	}
 
 	public function output( $thepostid ) {
+		return '';
 	}
 
 	public function save( $post_id ) {

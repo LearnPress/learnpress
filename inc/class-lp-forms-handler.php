@@ -112,11 +112,20 @@ class LP_Forms_Handler {
 						$redirect = LP_Request::get_redirect( learn_press_get_page_link( 'profile' ) );
 					}
 
+					$message_data = [
+						'status'  => 'success',
+						'content' => __( 'Login successfully!', 'learnpress' ),
+					];
+					learn_press_set_message( $message_data );
 					wp_redirect( wp_validate_redirect( $redirect, learn_press_get_current_url() ) );
 					exit();
 				}
 			} catch ( Exception $e ) {
-				learn_press_add_message( $e->getMessage(), 'error' );
+				$message_data = [
+					'status'  => 'error',
+					'content' => $e->getMessage(),
+				];
+				learn_press_set_message( $message_data );
 			}
 		}
 	}
@@ -189,7 +198,11 @@ class LP_Forms_Handler {
 				$message_success .= '<br/>' . __( 'Your request to become an instructor has been sent. We will get back to you soon!', 'learnpress' );
 			}
 
-			learn_press_add_message( $message_success, 'success' );
+			$message_data = [
+				'status'  => 'success',
+				'content' => $message_success,
+			];
+			learn_press_set_message( $message_data );
 
 			if ( ! empty( $_POST['redirect'] ) ) {
 				$redirect = wp_sanitize_redirect( wp_unslash( $_POST['redirect'] ) );
@@ -202,10 +215,12 @@ class LP_Forms_Handler {
 			wp_redirect( wp_validate_redirect( $redirect, learn_press_get_current_url() ) );
 			exit();
 
-		} catch ( Exception $e ) {
-			if ( $e->getMessage() ) {
-				learn_press_add_message( $e->getMessage(), 'error' );
-			}
+		} catch ( Throwable $e ) {
+			$message_data = [
+				'status'  => 'error',
+				'content' => $e->getMessage(),
+			];
+			learn_press_set_message( $message_data );
 		}
 	}
 
@@ -247,8 +262,8 @@ class LP_Forms_Handler {
 				throw new Exception( __( 'Please enter an account password.', 'learnpress' ), 105 );
 			}
 
-			if ( strlen( $password ) < 6 ) {
-				throw new Exception( __( 'Password is too short!', 'learnpress' ), 106 );
+			if ( strlen( $password ) <= 5 ) {
+				throw new Exception( __( 'Password must contain at least six characters.', 'learnpress' ), 106 );
 			}
 
 			if ( preg_match( '#\s+#', $password ) ) {

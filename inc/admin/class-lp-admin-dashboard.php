@@ -44,65 +44,58 @@ if ( ! class_exists( 'LP_Admin_Dashboard' ) ) {
 			<ul class="lp-order-statuses lp_append_data">
 				<?php lp_skeleton_animation_html( 4, 100, 'height: 30px;border-radius:4px;' ); ?>
 			</ul>
-			<ul class="lp-order-statuses">
-				<?php
-				$eduma_data = $this->_get_theme_info( 14058034 );
-
-				if ( function_exists( 'learn_press_get_item_referral' ) ) {
-					$eduma_data['url'] = learn_press_get_item_referral( 14058034 );
-				}
-
-				if ( ! empty( $eduma_data ) ) {
-					?>
-
-					<li class="clear"></li>
-					<li class="featured-theme">
-						<?php if ( isset( $eduma_data['name'] ) && isset( $eduma_data['price_cents'] ) ) : ?>
-							<p>
-								<a href="<?php echo esc_url_raw( $eduma_data['url'] ); ?>">
-									<?php echo esc_html( $eduma_data['name'] ); ?>
-								</a> - <?php printf( '%s%s', '$', $eduma_data['price_cents'] / 100 ); ?>
-							</p>
-						<?php endif; ?>
-
-						<?php if ( isset( $eduma_data['rating']['count'] ) && isset( $eduma_data['rating']['rating'] ) ) : ?>
-							<div>
-								<?php
-								wp_star_rating(
-									array(
-										'rating' => $eduma_data['rating']['rating'],
-										'type'   => 'rating',
-										'number' => $eduma_data['rating']['count'],
-									)
-								);
-								?>
-
-								<span class="count-rating">(<?php echo esc_html( $eduma_data['rating']['count'] ); ?>)</span>
-								<span>
-									- <?php echo sprintf( '%d %s', esc_html( $eduma_data['number_of_sales'] ), esc_html__( ' sales', 'learnpress' ) ); ?>
-								</span>
-							</div>
-						<?php endif; ?>
-
-						<?php if ( isset( $eduma_data['author_username'] ) ) : ?>
-							<p>
-								<?php esc_html_e( 'Created by: ', 'learnpress' ); ?>
-								<a href="https://thimpress.com/" class="author"><?php echo esc_html( $eduma_data['author_username'] ); ?></a>
-							</p>
-						<?php endif; ?>
-					</li>
-				<?php } ?>
-			</ul>
 			<?php
+			$eduma_data = $this->_get_theme_info( 14058034 );
+			if ( ! empty( $eduma_data ) ) {
+				$eduma_data['url'] = learn_press_get_item_referral( 14058034 );
+				?>
+				<div class="featured-theme">
+					<?php if ( isset( $eduma_data['name'] ) && isset( $eduma_data['price_cents'] ) ) : ?>
+						<p>
+							<a href="<?php echo esc_url_raw( $eduma_data['url'] ); ?>">
+								<?php echo esc_html( $eduma_data['name'] ); ?>
+							</a> - <?php printf( '%s%s', '$', $eduma_data['price_cents'] / 100 ); ?>
+						</p>
+					<?php endif; ?>
+
+					<?php if ( isset( $eduma_data['rating']['count'] ) && isset( $eduma_data['rating']['rating'] ) ) : ?>
+						<div>
+							<?php
+							wp_star_rating(
+								array(
+									'rating' => $eduma_data['rating']['rating'],
+									'type'   => 'rating',
+									'number' => $eduma_data['rating']['count'],
+								)
+							);
+							?>
+							<span class="count-rating">(<?php echo esc_html( $eduma_data['rating']['count'] ); ?>)</span>
+							<span>
+								- <?php echo sprintf( '%d %s', esc_html( $eduma_data['number_of_sales'] ), esc_html__( ' sales', 'learnpress' ) ); ?>
+							</span>
+						</div>
+					<?php endif; ?>
+
+					<?php if ( isset( $eduma_data['author_username'] ) ) : ?>
+						<p>
+							<?php esc_html_e( 'Created by: ', 'learnpress' ); ?>
+							<a href="https://thimpress.com/" class="author"><?php echo esc_html( $eduma_data['author_username'] ); ?></a>
+						</p>
+					<?php endif; ?>
+				</div>
+				<?php
+			}
 		}
 
 		/**
 		 * Get total value of LP orders has completed.
 		 *
 		 * @return int|string
+		 * @deprecated 4.2.0
 		 */
 		private function _get_order_total_raised() {
-			$orders = learn_press_get_orders( array( 'post_status' => 'lp-completed' ) );
+			_deprecated_function( __METHOD__, '4.2.0' );
+			/*$orders = learn_press_get_orders( array( 'post_status' => 'lp-completed' ) );
 			$total  = 0;
 
 			if ( $orders ) {
@@ -112,7 +105,7 @@ if ( ! class_exists( 'LP_Admin_Dashboard' ) ) {
 				}
 			}
 
-			return learn_press_format_price( $total, true );
+			return learn_press_format_price( $total, true );*/
 		}
 
 		/**
@@ -123,7 +116,7 @@ if ( ! class_exists( 'LP_Admin_Dashboard' ) ) {
 		private function _get_theme_info( $item_id ) {
 			$alls = LP_Plugins_Helper::get_related_themes();
 
-			if ( ! $alls ) {
+			if ( empty( $alls ) ) {
 				return false;
 			}
 

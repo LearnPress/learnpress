@@ -3,7 +3,7 @@
 /**
  * Class LP_Datetime
  */
-class LP_Datetime extends DateTime {
+class LP_Datetime {
 	/**
 	 * @var string $format.
 	 */
@@ -36,7 +36,7 @@ class LP_Datetime extends DateTime {
 	/**
 	 * Constructor.
 	 *
-	 * @param string $date
+	 * @param string|int $date
 	 * @param mixed  $tz
 	 *
 	 * @throws
@@ -53,7 +53,8 @@ class LP_Datetime extends DateTime {
 		}
 
 		//date_default_timezone_set( 'UTC' );
-		parent::__construct( $this->raw_date );
+		//parent::__construct( $this->raw_date );
+		//$m = $this->format( 'm' );
 	}
 
 	/**
@@ -82,12 +83,20 @@ class LP_Datetime extends DateTime {
 	 * Check if time is exceeded with current time
 	 *
 	 * using by Addon Content Drip.
+	 *
+	 * @since 3.0.1
+	 * @version 4.0.1
 	 */
-	public function is_exceeded( $interval = 0 ) {
-		return $this->getTimestamp() >= current_time( 'timestamp' ) + $interval; // phpcs:ignore
+	public function is_exceeded(): bool {
+		return $this->getTimestamp() >= time();
 	}
 
-	public function is_null() {
+	/**
+	 * Check date is null
+	 *
+	 * @return bool
+	 */
+	public function is_null(): bool {
 		return ! $this->raw_date || $this->raw_date === '0000-00-00 00:00:00';
 	}
 
@@ -164,69 +173,67 @@ class LP_Datetime extends DateTime {
 	 * @return  string  The date as a formatted string.
 	 */
 	public function __toString() {
-		return (string) $this->format( self::$format, true );
+		return $this->format( self::$format );
 	}
 
 	/**
 	 * Gets the date as a formatted string.
 	 *
-	 * @param string  $format The date format specification string (see {@link PHP_MANUAL#date})
-	 * @param boolean $local True to return the date string in the local time zone, false to return it in GMT.
+	 * @param string  $format Set i18n to return date in local time.
+	 * @param boolean $local.
 	 *
-	 * @return string The date string in the specified format format.
+	 * @since 3.0.0
+	 * @version 4.0.1
+	 * @return string.
 	 */
-	public function format( $format = '', $local = true ) {
-		if ( '0000-00-00 00:00:00' === $this->raw_date ) {
-			return '';
+	public function format( string $format = '', bool $local = true ): string {
+		$date_str = '';
+
+		if ( '0000-00-00 00:00:00' === $this->get_raw_date() ) {
+			return $date_str;
 		}
 
 		if ( empty( $format ) ) {
-			$format = 'mysql';
+			$format = get_option( 'date_format', 'Y-m-d' );
 		}
-
-		$return = false;
 
 		switch ( $format ) {
 			case 'i18n':
-				$return = learn_press_date_i18n( $this->getTimestamp( $local ) );
+				$date_str = learn_press_date_i18n( $this->getTimestamp() );
 				break;
-			case 'timestamp':
-				$return = $this->getTimestamp( $local );
-				break;
+			/*case 'timestamp':
+				$date_str = $this->getTimestamp();
+				break;*/
 			case 'human':
-				$time1     = $this->getTimestamp( false );// mysql2date( 'G', $date->format('Y-m-d H:i:s') );
-				$time_diff = ( time() ) - $time1;
+				$time      = $this->getTimestamp();
+				$time_diff = time() - $time;
 
 				if ( $time_diff > 0 ) {
-					$return = sprintf( __( '%s ago', 'learnpress' ), human_time_diff( $time1, time() ) );
+					$date_str = sprintf( __( '%s ago', 'learnpress' ), human_time_diff( $time, time() ) );
 				}
 				break;
 			case 'mysql':
-				$return = $this->format( 'Y-m-d H:i:s', $local );
+				$date_str = gmdate( 'Y-m-d H:i:s', $this->getTimestamp() );
 				break;
 			default:
-				$return = parent::format( $format );
+				$date_str = gmdate( $format, $this->getTimestamp() );
 		}
 
-		return $return;
-	}
+		if ( ! is_string( $date_str ) ) {
+			$date_str = '';
+		}
 
-	/**
-	 * Get format date time by settings of WP
-	 *
-	 * @since 4.1.7.3
-	 * @return void
-	 */
-	public function get_local_date_time() {
-
+		return $date_str;
 	}
 
 	/**
 	 * @param boolean $hours True to return the value in hours.
 	 *
 	 * @return float
+	 * @deprecated 4.1.7.3
 	 */
 	public function getOffset( $hours = false ) {
+		_deprecated_function( __METHOD__, '4.1.7.3' );
 		return $this->tz ? (float) $hours ? ( $this->tz->getOffset( $this ) / 3600 ) : $this->tz->getOffset( $this ) : 0;
 	}
 
@@ -259,10 +266,12 @@ class LP_Datetime extends DateTime {
 	 *
 	 * @param boolean $local True to return the date string in the local time zone, false to return it in GMT.
 	 *
+	 * @since 3.0.0
+	 * @version 4.0.1
 	 * @return  string
 	 */
-	public function toSql( $local = true ) {
-		return $this->format( 'Y-m-d H:i:s', $local );
+	public function toSql( $local = true ): string {
+		return $this->format( 'mysql' );
 	}
 
 	/**
@@ -293,8 +302,10 @@ class LP_Datetime extends DateTime {
 	 * @param boolean $local True to return the date string in the local time zone, false to return it in GMT.
 	 *
 	 * @return  string
+	 * @deprecated 4.1.7.3
 	 */
 	public function toRFC822( $local = true ) {
+		_deprecated_function( __METHOD__, '4.1.7.3' );
 		return $this->format( DateTime::RFC2822, $local );
 	}
 
@@ -306,17 +317,23 @@ class LP_Datetime extends DateTime {
 	 */
 	public function toUnix() {
 		_deprecated_function( __METHOD__, '4.1.7.3' );
-		return (int) parent::format( 'U' );
+		//return (int) parent::format( 'U' );
 	}
 
-	public function getTimestamp( $local = true ) {
-		$timestamp = parent::getTimestamp();
-
-		if ( $local ) {
-			$timestamp += $this->getOffset();
+	/**
+	 * Get timestamp of Date.
+	 *
+	 * @return int
+	 */
+	public function getTimestamp( $local = true ): int {
+		try {
+			$date = new DateTime( $this->get_raw_date() );
+		} catch ( Throwable $e ) {
+			error_log( $e->getMessage() );
+			$date = new DateTime();
 		}
 
-		return $timestamp;
+		return $date->getTimestamp();
 	}
 
 	/**
@@ -356,16 +373,20 @@ class LP_Datetime extends DateTime {
 	public function addDuration( $seconds ) {
 		_deprecated_function( __METHOD__, '4.1.7.3' );
 		$timestamp = $this->getTimestamp();
-		parent::__construct( date( 'Y-m-d H:i:s', $timestamp + $seconds ), $this->tz ); // phpcs:ignore
+		//parent::__construct( date( 'Y-m-d H:i:s', $timestamp + $seconds ), $this->tz ); // phpcs:ignore
 	}
 
+	/**
+	 * @deprecated 4.1.7.3
+	 */
 	public function getPeriod( $seconds, $local = true ) {
-		$timestamp = $this->getTimestamp( $local );
+		_deprecated_function( __METHOD__, '4.1.7.3' );
+		/*$timestamp = $this->getTimestamp( $local );
 
 		if ( ! is_numeric( $seconds ) ) {
 			$seconds = strtotime( $seconds ) - time();
 		}
 
-		return date( 'Y-m-d H:i:s', $timestamp + $seconds ); // phpcs:ignore
+		return date( 'Y-m-d H:i:s', $timestamp + $seconds );*/
 	}
 }

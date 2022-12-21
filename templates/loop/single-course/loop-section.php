@@ -4,7 +4,7 @@
  *
  * @author  ThimPress
  * @package  Learnpress/Templates
- * @version  4.0.2
+ * @version  4.0.3
  */
 
 defined( 'ABSPATH' ) || exit();
@@ -23,13 +23,14 @@ if ( isset( $args['section'] ) ) {
 <li id="section-<?php echo esc_attr( $section['section_id'] ); ?>" class="section" data-section-id="<?php echo esc_attr( $section['section_id'] ); ?>">
 	<div class="section-header">
 		<div class="section-left">
-			<h3 class="section-title">
-				<?php echo ! empty( $section['section_name'] ) ? esc_html( $section['section_name'] ) : _x( 'Untitled', 'template title empty', 'learnpress' ); ?>
-
+			<div class="wrapper-section-title">
+				<h3 class="section-title">
+				 <?php echo ! empty( $section['section_name'] ) ? esc_html( $section['section_name'] ) : _x( 'Untitled', 'template title empty', 'learnpress' ); ?>
+				</h3>
 				<?php if ( ! empty( $section['section_description'] ) ) : ?>
 					<p class="section-desc"><?php echo wp_kses_post( $section['section_description'] ); ?></p>
 				<?php endif; ?>
-			</h3>
+			</div>
 
 			<span class="section-toggle">
 				<i class="fas fa-caret-down"></i>
@@ -39,18 +40,12 @@ if ( isset( $args['section'] ) ) {
 	</div>
 
 	<?php
-	try {
 		$controller = new LP_REST_Lazy_Load_Controller();
 		$request    = new WP_REST_Request();
 		$request->set_param( 'sectionId', $section['section_id'] );
 		$response    = $controller->course_curriculum_items( $request );
 		$object_data = $response->get_data();
-	} catch ( Throwable $e ) {
-		error_log( $e );
-		return;
-	}
 	?>
-
 	<div class="section-item" data-section-id="<?php echo esc_attr( $section['section_id'] ); ?>">
 		<ul class="section-content">
 			<?php echo wp_kses_post( $object_data->data->content ?? $object_data->data ?? $object_data ? $object_data->data->content : '' ); ?>

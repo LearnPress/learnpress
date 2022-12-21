@@ -3,6 +3,9 @@
 /**
  * Class LP_REST_Courses_Controller
  */
+
+use LearnPress\Helpers\Template;
+
 class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 	/**
 	 * LP_REST_Courses_Controller constructor.
@@ -121,17 +124,20 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				$fields         = explode( ',', $fields_str );
 				$filter->fields = $fields;
 			}
+
 			if ( ! empty( $fields_exclude_str ) ) {
 				$fields_exclude         = explode( ',', $fields_exclude_str );
 				$filter->exclude_fields = $fields_exclude;
 			}
+
 			$filter->post_author = LP_Helper::sanitize_params_submitted( $request['c_author'] ?? 0 );
 			$author_ids_str      = LP_Helper::sanitize_params_submitted( $request['c_authors'] ?? 0 );
 			if ( ! empty( $author_ids_str ) ) {
 				$author_ids           = explode( ',', $author_ids_str );
 				$filter->post_authors = $author_ids;
 			}
-			$term_ids_str = LP_Helper::sanitize_params_submitted( urldecode( $request['term_id'] ) ?? '' );
+
+			$term_ids_str = LP_Helper::sanitize_params_submitted( urldecode( $request['term_id'] ?? '' ) );
 			if ( ! empty( $term_ids_str ) ) {
 				$term_ids         = explode( ',', $term_ids_str );
 				$filter->term_ids = $term_ids;
@@ -160,73 +166,29 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				$response->data->total_pages = $total_pages;
 			} else {
 				// For return data has html
+				ob_start();
 				if ( $courses ) {
 					global $wp, $post;
 
-					// Pagination
-					$archive_link = get_post_type_archive_link( LP_COURSE_CPT );
-
-					if ( isset( $term_link ) && ! is_wp_error( $term_link ) ) {
-						$archive_link = $term_link;
-					}
-
-					$template_pagination_path = $request['template_pagination_path'] ?? '';
-					if ( ! isset( $request['no_pagination'] ) ) {
-						if ( ! empty( $template_pagination_path ) ) {
-							$response->data->pagination = include $template_pagination_path;
-						} else {
-							$response->data->pagination = learn_press_get_template_content(
-								'loop/course/pagination.php',
-								array(
-									'total' => $total_pages,
-									'paged' => $filter->page,
-								)
-							);
-						}
-					}
+					// Template Pagination.
+					$response->data->pagination = learn_press_get_template_content(
+						'loop/course/pagination.php',
+						array(
+							'total' => $total_pages,
+							'paged' => $filter->page,
+						)
+					);
 					// End Pagination
 
-					// Content items
-					ob_start();
-					$template_path_item = urldecode( $request['template_path_item'] ?? '' );
-					$template_path      = urldecode( $request['template_path'] ?? '' ); // For wrapper all items, no foreach
-					$args_custom        = json_decode( wp_unslash( $request['args_custom'] ?? '' ), true );
-
-					// For custom template return all list courses no foreach
+					// For custom template
+					$template_path = apply_filters( 'lp/api/courses/template', '' );
 					if ( ! empty( $template_path ) ) {
-						if ( is_array( $args_custom ) && ! empty( $args_custom ) ) {
-							extract( $args_custom );
-						}
-
-						if ( file_exists( $template_path ) ) {
-							include $template_path;
-						}
+						Template::instance()->get_template( $template_path, compact( 'courses', 'total_pages' ) );
 					} else {
-						// For custom template return all list courses foreach
-						if ( ! empty( $template_path_item ) ) {
-							if ( isset( $request['args_custom'] ) ) {
-								$args_custom = json_decode( $request['args_custom'], true );
-							}
-
-							$template_path_item = urldecode( $template_path_item );
-						}
-
-						// Todo: tungnx - should rewrite call template
 						foreach ( $courses as $course ) {
 							$post = get_post( $course->ID );
 							setup_postdata( $post );
-
-							if ( ! empty( $template_path_item ) ) {
-								if ( $args_custom ) {
-									extract( $args_custom );
-								}
-
-								if ( file_exists( $template_path_item ) ) {
-									include $template_path_item;
-								}
-							} else {
-								learn_press_get_template_part( 'content', 'course' );
-							}
+							Template::instance()->get_frontend_template( 'content-course.php' );
 						}
 
 						wp_reset_postdata();
@@ -258,7 +220,9 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 
 			$response->status = 'success';
 		} catch ( Throwable $e ) {
-			$response->message = $e->getMessage();
+			ob_end_clean();
+			$response->data->content = $e->getMessage();
+			$response->message       = $e->getMessage();
 		}
 
 		return apply_filters( 'lp/rest-api/frontend/course/archive_course/response', $response );
@@ -269,14 +233,13 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 	 *
 	 * @param WP_REST_Request $request
 	 *
-	 * @throws Exception .
+	 * @return LP_REST_Response
 	 * @author Nhamdv
 	 * @editor tungnx
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 * @since 4.0.0
-	 * @modify 4.1.2
 	 */
-	public function enroll_courses( WP_REST_Request $request ) {
+	public function enroll_courses( WP_REST_Request $request ): LP_REST_Response {
 		$response         = new LP_REST_Response();
 		$response->data   = new stdClass();
 		$lp_user_items_db = LP_User_Items_DB::getInstance();
@@ -318,15 +281,15 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 
 				do_action( 'learnpress/user/course-enrolled', $course_item->ref_id, $course_id, $user->get_id() );
 			} else { // Case enroll course free
-				LearnPress::instance()->session->set( 'order_awaiting_payment', '' );
+				//LearnPress::instance()->session->set( 'order_awaiting_payment', '' );
 
 				$cart     = LearnPress::instance()->cart;
 				$checkout = LP_Checkout::instance();
 
 				if ( ! learn_press_enable_cart() ) {
-					$order_awaiting_payment = LearnPress::instance()->session->order_awaiting_payment;
+					//$order_awaiting_payment = LearnPress::instance()->session->order_awaiting_payment;
 					$cart->empty_cart();
-					LearnPress::instance()->session->order_awaiting_payment = $order_awaiting_payment;
+					//LearnPress::instance()->session->order_awaiting_payment = $order_awaiting_payment;
 				}
 
 				$cart_id = $cart->add_to_cart( $course_id, 1, array() );
@@ -383,7 +346,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			$response->message = $e->getMessage();
 		}
 
-		wp_send_json( $response );
+		return $response;
 	}
 
 	/**
@@ -410,13 +373,11 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			}
 
 			$course = learn_press_get_course( $course_id );
-
 			if ( ! $course ) {
 				throw new Exception( __( 'Error: No Course available.', 'learnpress' ) );
 			}
 
 			$user = learn_press_get_current_user();
-
 			if ( ! $user->can_purchase_course( $course_id ) ) {
 				throw new Exception( esc_html__( 'Error: Cannot purchase the course!', 'learnpress' ) );
 			}
@@ -464,22 +425,21 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				}
 			}
 
-			LearnPress::instance()->session->set( 'order_awaiting_payment', '' );
+			//LearnPress::instance()->session->set( 'order_awaiting_payment', '' );
 
-			$cart     = LearnPress::instance()->cart;
-			$checkout = LP_Checkout::instance();
+			$cart = LearnPress::instance()->cart;
+			//$checkout = LP_Checkout::instance();
 
 			if ( ! learn_press_enable_cart() ) {
-				$order_awaiting_payment = LearnPress::instance()->session->order_awaiting_payment;
+				//$order_awaiting_payment = LearnPress::instance()->session->order_awaiting_payment;
 				$cart->empty_cart();
-				LearnPress::instance()->session->order_awaiting_payment = $order_awaiting_payment;
+				//LearnPress::instance()->session->order_awaiting_payment = $order_awaiting_payment;
 			}
 
 			do_action( 'learnpress/rest-api/courses/purchase/before-add-to-cart' );
 
 			$cart_id = $cart->add_to_cart( $course_id, 1, array() );
-
-			if ( ! $cart_id ) {
+			if ( empty( $cart_id ) ) {
 				throw new Exception( __( 'Error: The course cannot be added to the cart.', 'learnpress' ) );
 			}
 
@@ -643,15 +603,17 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 	}
 
 	/**
-	 * Rest API for Continue in single course.
+	 * Rest API for get item continue in single course.
 	 *
 	 * @param WP_REST_Request $request
+	 *
 	 * @author minhpd
 	 * @editor tungnx
 	 * @since 4.1.4
 	 * @version 1.0.2
+	 * @return LP_REST_Response
 	 */
-	public function continue_course( WP_REST_Request $request ) {
+	public function continue_course( WP_REST_Request $request ): LP_REST_Response {
 		$params         = $request->get_params();
 		$response       = new LP_REST_Response();
 		$response->data = '';
@@ -679,7 +641,14 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 					}
 
 					foreach ( $section_items->items as $item ) {
-						if ( ! $user->has_completed_item( $item->id, $course_id ) ) {
+						$item_now_condition = apply_filters(
+							'lp/course/item-continue/condition',
+							! $user->has_completed_item( $item->id, $course_id ),
+							$item,
+							$course,
+							$user
+						);
+						if ( $item_now_condition ) {
 							$item_link  = $course->get_item_link( $item->id );
 							$flag_found = true;
 							break;
@@ -699,7 +668,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			$response->message = $e->getMessage();
 		}
 
-		wp_send_json( $response );
+		return $response;
 	}
 
 }

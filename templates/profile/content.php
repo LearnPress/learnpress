@@ -6,11 +6,14 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  4.0.0
+ * @version  4.0.1
  */
 
 defined( 'ABSPATH' ) || exit();
 
+/**
+ * @var LP_Profile_Tab $profile_tab
+ */
 if ( ! isset( $user ) || ! isset( $tab_key ) || ! isset( $profile ) || ! isset( $profile_tab ) ) {
 	return;
 }
@@ -22,14 +25,14 @@ if ( ! isset( $user ) || ! isset( $tab_key ) || ! isset( $profile ) || ! isset( 
 		<?php do_action( 'learn-press/before-profile-content', $tab_key, $profile_tab, $user ); ?>
 
 		<?php
-		if ( empty( $profile_tab['sections'] ) ) {
-			if ( isset( $profile_tab['callback'] ) && is_callable( $profile_tab['callback'] ) ) {
-				echo call_user_func_array( $profile_tab['callback'], array( $tab_key, $profile_tab, $user ) );
+		if ( empty( $profile_tab->get( 'sections' ) ) ) {
+			if ( $profile_tab->get( 'callback' ) && is_callable( $profile_tab->get( 'callback' ) ) ) {
+				echo call_user_func_array( $profile_tab->get( 'callback' ), array( $tab_key, $profile_tab, $user ) );
 			} else {
 				do_action( 'learn-press/profile-content', $tab_key, $profile_tab, $user );
 			}
 		} else {
-			foreach ( $profile_tab['sections'] as $key => $section ) {
+			foreach ( $profile_tab->get( 'sections' ) as $key => $section ) {
 				if ( $profile->get_current_section( '', false, false ) === $section['slug'] ) {
 					if ( isset( $section['callback'] ) && is_callable( $section['callback'] ) ) {
 						echo call_user_func_array( $section['callback'], array( $key, $section, $user ) );

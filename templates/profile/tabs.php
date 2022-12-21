@@ -6,7 +6,7 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  4.0.1
+ * @version  4.0.2
  */
 
 defined( 'ABSPATH' ) || exit();
@@ -57,11 +57,11 @@ if ( ! isset( $user ) || ! isset( $profile ) ) {
 			<li class="<?php echo implode( ' ', $tab_classes ); ?>">
 				<a href="<?php echo esc_url_raw( $link ); ?>" data-slug="<?php echo esc_attr( $link ); ?>">
 					<?php
-					if ( ! empty( $profile_tab['icon'] ) ) {
-						echo wp_kses_post( $profile_tab['icon'] );
+					if ( ! empty( $profile_tab->get( 'icon' ) ) ) {
+						echo wp_kses_post( $profile_tab->get( 'icon' ) );
 					}
 					?>
-					<?php echo apply_filters( 'learn_press_profile_' . $tab_key . '_tab_title', $profile_tab['title'], $tab_key ); ?>
+					<?php echo apply_filters( 'learn_press_profile_' . $tab_key . '_tab_title', $profile_tab->get( 'title' ), $tab_key ); ?>
 				</a>
 
 				<?php if ( $sections && sizeof( $sections ) > 1 ) { ?>

@@ -239,7 +239,6 @@ if ( ! class_exists( 'LP_Abstract_Object_Data' ) ) {
 		 * @param bool  $extra
 		 */
 		protected function _set_data( $key_or_data, $value = '', $extra = false ) {
-
 			if ( is_array( $key_or_data ) ) {
 				foreach ( $key_or_data as $key => $value ) {
 					$this->_set_data( $key, $value, $extra );

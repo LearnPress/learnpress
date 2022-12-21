@@ -341,10 +341,10 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		}
 
 		/**
-		 * @return mixed
-		 * @deprecated
+		 * @deprecated 4.2.0
 		 */
 		public function is_require_enrollment() {
+			_deprecated_function( __METHOD__, '4.2.0' );
 			return ! $this->is_no_required_enroll();
 		}
 
@@ -1003,8 +1003,8 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			$slug_prefixes = apply_filters(
 				'learn-press/course/custom-item-prefixes',
 				array(
-					LP_QUIZ_CPT   => sanitize_title_with_dashes( LP_Settings::instance()->get( 'quiz_slug', 'quizzes' ) ),
-					LP_LESSON_CPT => sanitize_title_with_dashes( LP_Settings::instance()->get( 'lesson_slug', 'lessons' ) ),
+					LP_QUIZ_CPT   => sanitize_title_with_dashes( LP_Settings::get_option( 'quiz_slug', 'quizzes' ) ),
+					LP_LESSON_CPT => sanitize_title_with_dashes( LP_Settings::get_option( 'lesson_slug', 'lessons' ) ),
 				),
 				$this->get_id()
 			);

@@ -3,6 +3,7 @@
 __*.php
 node_modules/
 cache/
+languages/strings
 /assets/fonts/iconfont.ttf
 /assets/fonts/iconfont.woff
 /assets/fonts/icons.eot

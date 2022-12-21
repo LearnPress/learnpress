@@ -7,7 +7,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 	/**
 	 * Class LP_Profile
 	 *
-	 * Main class to controls the profile of a user
+	 * Main class to control the profile of a user
 	 */
 	class LP_Profile {
 		/**
@@ -230,7 +230,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		}
 
 		public function get_login_url( $redirect = false ) {
-			return learn_press_get_login_url( $redirect !== false ? $redirect : $this->get_current_url() );
+			return learn_press_get_login_url( $redirect !== false ? $redirect : LP_Helper::getUrlCurrent() );
 		}
 
 		/**
@@ -835,8 +835,10 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @param string $current_filter
 		 *
 		 * @return array
+		 * @deprecated 4.2.0
 		 */
 		public function get_own_courses_filters( $current_filter = '' ) {
+			_deprecated_function( __METHOD__, '4.2.0' );
 			$url = $this->get_current_url();
 
 			$defaults = array(
@@ -868,8 +870,10 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @param string $current_filter
 		 *
 		 * @return array
+		 * @deprecated 4.2.0
 		 */
 		public function get_purchased_courses_filters( $current_filter = '' ) {
+			_deprecated_function( __METHOD__, '4.2.0' );
 			$url      = $this->get_current_url( false );
 			$defaults = array(
 				'all'          => sprintf( '<a href="%s">%s</a>', esc_url_raw( $url ), __( 'All', 'learnpress' ) ),
@@ -904,7 +908,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @return array
 		 */
 		public function get_quizzes_filters( $current_filter = '' ) {
-			$url      = $this->get_current_url( false );
+			$url      = $this->get_tab_link( 'quizzes' );
 			$defaults = array(
 				'all'       => sprintf( '<a href="%s">%s</a>', esc_url_raw( $url ), __( 'All', 'learnpress' ) ),
 				'completed' => sprintf( '<a href="%s">%s</a>', esc_url_raw( add_query_arg( 'filter-status', 'completed', $url ) ), __( 'Finished', 'learnpress' ) ),
@@ -933,9 +937,11 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @param bool $redirect
 		 *
 		 * @return string
+		 * @deprecated 4.1.7.3
 		 */
 		public function logout_url( $redirect = false ) {
-			if ( $this->enable_login() ) {
+			_deprecated_function( __FUNCTION__, '4.1.7.3' );
+			/*if ( $this->enable_login() ) {
 				$profile_url = learn_press_get_page_link( 'profile' );
 				$url         = esc_url_raw(
 					add_query_arg(
@@ -954,7 +960,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				$url = wp_logout_url( $redirect !== false ? $redirect : $this->get_current_url() );
 			}
 
-			return apply_filters( 'learn-press/logout-url', $url );
+			return apply_filters( 'learn-press/logout-url', $url );*/
 		}
 
 		/**

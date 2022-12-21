@@ -2231,7 +2231,11 @@ if ( ! function_exists( 'learn_press_back_to_class_button' ) ) {
 	}
 }
 
+/**
+ * @deprecated 4.0.0
+ */
 function learn_press_get_become_a_teacher_form_fields() {
+	_deprecated_function( __FUNCTION__, '4.0.0', '' );
 	$user   = learn_press_get_current_user();
 	$fields = array(
 		'bat_name'    => array(
@@ -2266,4 +2270,11 @@ function learn_press_get_become_a_teacher_form_fields() {
 	$fields = apply_filters( 'learn_press_become_teacher_form_fields', $fields );
 
 	return $fields;
+}
+
+/**
+ * Use in addon Authorize.net 4.0.0
+ */
+function learn_press_enqueue_script( $scripts ) {
+	_deprecated_function( __FUNCTION__, '4.2.0 call from ' . debug_backtrace()[0]['function'] );
 }

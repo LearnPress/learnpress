@@ -67,17 +67,21 @@ if ( ! class_exists( 'LP_Question_True_Or_False' ) ) {
 		 * @return array
 		 */
 		public function check( $user_answer = null ) {
-			$return  = parent::check();
-			$answers = $this->get_answers();
-
-			if ( $answers ) {
-				foreach ( $answers as $key => $option ) {
-					if ( ( $option['is_true'] == 'yes' ) && ( $option['value'] == $user_answer ) ) {
-						$return['correct'] = true;
-						$return['mark']    = floatval( $this->get_mark() );
-						break;
+			$return = parent::check();
+			try {
+				$answers = $this->get_answers();
+				if ( $answers ) {
+					foreach ( $answers as $key => $option ) {
+						$data = $option->get_data();
+						if ( $data['is_true'] == 'yes' && $data['value'] == $user_answer ) {
+							$return['correct'] = true;
+							$return['mark']    = floatval( $this->get_mark() );
+							break;
+						}
 					}
 				}
+			} catch ( Throwable $e ) {
+				error_log( __METHOD__ . ': ' . $e->getMessage() );
 			}
 
 			return $return;

@@ -78,17 +78,17 @@ class LP_Polylang {
 	 * @return LP_Course_Filter
 	 */
 	public function filter_query_courses( LP_Course_Filter $filter ): LP_Course_Filter {
-		$pll_current_lang = LP_Helper::sanitize_params_submitted( $_REQUEST['pll-current-lang'] ?? '' );
-
+		$pll_current_lang = LP_Request::get_param( 'pll-current-lang' );
 		if ( empty( $pll_current_lang ) ) {
 			return $filter;
 		}
 
-		$lp_db = LP_Database::getInstance();
-
-		$filter->join[]  = "INNER JOIN $lp_db->tb_term_relationships AS r_term ON p.ID = r_term.object_id";
-		$filter->join[]  = "INNER JOIN $lp_db->tb_terms AS term ON r_term.term_taxonomy_id = term.term_id";
-		$filter->where[] = $lp_db->wpdb->prepare( 'AND term.slug = %s', $pll_current_lang );
+		$lp_db          = LP_Database::getInstance();
+		$filter->join[] = "INNER JOIN $lp_db->tb_term_relationships AS r_term ON p.ID = r_term.object_id";
+		$filter->join[] = "INNER JOIN $lp_db->tb_terms AS term ON r_term.term_taxonomy_id = term.term_id";
+		if ( empty( LP_Request::get_param( 'term_id' ) ) ) {
+			$filter->where[] = $lp_db->wpdb->prepare( 'AND term.slug = %s', $pll_current_lang );
+		}
 
 		return $filter;
 	}

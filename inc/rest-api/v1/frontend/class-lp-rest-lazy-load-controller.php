@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Class LP_REST_Lazy_Load_Controller
+ */
 class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 	public function __construct() {
 		$this->namespace = 'lp/v1';
@@ -112,24 +115,24 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 		$response       = new LP_REST_Response();
 		$response->data = '';
 
-		if ( $course_id && $user_id ) {
+		try {
+			if ( ! $course_id || ! $user_id ) {
+				throw new Exception( __( 'Params is invalid!', 'learnpress' ) );
+			}
+
 			$course = learn_press_get_course( $course_id );
 			if ( ! $course ) {
-				$response->message = __( 'The course is invalid!', 'learnpress' );
-
-				return $response;
+				throw new Exception( __( 'The course is invalid!', 'learnpress' ) );
 			}
 
 			$user = learn_press_get_user( $user_id );
-			if ( $user->is_guest() ) {
-				$response->message = __( 'You are a Guest', 'learnpress' );
-
-				return $response;
+			if ( ! $user || $user->is_guest() ) {
+				throw new Exception( __( 'You are a Guest', 'learnpress' ) );
 			}
 
 			$course_data = $user->get_course_data( $course->get_id() );
 			if ( ! $course_data ) {
-				return $response;
+				throw new Exception( __( 'You are a not enroll course', 'learnpress' ) );
 			}
 
 			$course_results = $course_data->calculate_course_results();
@@ -139,6 +142,9 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 				'single-course/sidebar/user-progress',
 				compact( 'user', 'course', 'course_data', 'course_results' )
 			);
+		} catch ( Throwable $e ) {
+			ob_end_clean();
+			$response->message = $e->getMessage();
 		}
 
 		return $response;
@@ -193,15 +199,17 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 				throw new Exception( $sections->get_error_message() );
 			}
 
+			ob_start();
+
 			if ( ! empty( $params['loadMore'] ) ) {
 				foreach ( $sections['results'] as $section ) {
-					$content .= learn_press_get_template_content(
+					learn_press_get_template(
 						'loop/single-course/loop-section',
 						compact( 'sections', 'section', 'course_id', 'filters' )
 					);
 				}
 			} else {
-				$content = learn_press_get_template_content(
+				learn_press_get_template(
 					'single-course/tabs/curriculum-v2',
 					compact( 'sections', 'course_id', 'filters' )
 				);
@@ -214,16 +222,18 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 			$response->status        = 'success';
 			$response->data->pages   = $sections['pages'];
 			$response->data->page    = $filters->page;
-			$response->data->content = $content;
+			$response->data->content = ob_get_clean();
 
 			// For old value use on theme Eduma <= v4.6.0 - deprecated 4.1.6.1
-			if ( defined( 'THIM_THEME_VERSION' ) && version_compare( THIM_THEME_VERSION, '4.6.3', '<=' ) ) {
+			// Comment from v4.2.0 - Theme must update
+			/*if ( defined( 'THIM_THEME_VERSION' ) && version_compare( THIM_THEME_VERSION, '4.6.3', '<=' ) ) {
 				$response->pages       = $sections['pages'];
 				$response->data        = $content;
 				$response->section_ids = wp_list_pluck( $sections['results'], 'section_id' );
-			}
-		} catch ( \Throwable $th ) {
-			$response->message = $th->getMessage();
+			}*/
+		} catch ( Throwable $e ) {
+			ob_end_clean();
+			$response->message = $e->getMessage();
 		}
 
 		return $response;
@@ -272,6 +282,8 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 				throw new Exception( $section_items->get_error_message() );
 			}
 
+			ob_start();
+
 			$content = '';
 
 			foreach ( $section_items['results'] as $key => $section_item ) {
@@ -298,7 +310,7 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 					// Ordinal numbers
 					$key = absint( ( ( $page - 1 ) * $per_page ) + $key + 1 );
 
-					$content .= learn_press_get_template_content(
+					learn_press_get_template(
 						'loop/single-course/loop-section-item',
 						compact( 'section_item', 'course_item', 'can_view_item', 'course_id', 'user', 'key' )
 					);
@@ -307,19 +319,21 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 
 			$response->data->pages    = $section_items['pages'];
 			$response->data->page     = $filters->page;
-			$response->data->content  = $content;
+			$response->data->content  = ob_get_clean();
 			$response->data->item_ids = wp_list_pluck( $section_items['results'], 'ID' );
 
 			$response->status = 'success';
 			// For old value use on theme Eduma <= v4.6.0 - deprecated 4.1.6.1
-			if ( defined( 'THIM_THEME_VERSION' ) && version_compare( THIM_THEME_VERSION, '4.6.3', '<=' ) ) {
+			// Comment from v4.2.0 - Theme must update
+			/*if ( defined( 'THIM_THEME_VERSION' ) && version_compare( THIM_THEME_VERSION, '4.6.3', '<=' ) ) {
 				$response->pages    = $section_items['pages'];
 				$response->page     = $filters->page;
 				$response->data     = $content;
 				$response->item_ids = wp_list_pluck( $section_items['results'], 'ID' );
-			}
-		} catch ( \Throwable $th ) {
-			$response->message = $th->getMessage();
+			}*/
+		} catch ( \Throwable $e ) {
+			ob_end_clean();
+			$response->message = $e->getMessage();
 		}
 
 		return rest_ensure_response( $response );

@@ -115,7 +115,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 			}
 
 			$this->_options = $args;
-			$this->_init();
+			//$this->_init();
 			// self::$_loaded ++;
 		}
 
@@ -393,7 +393,8 @@ if ( ! class_exists( 'LP_Question' ) ) {
 			}*/
 
 			$this->empty_answers();
-			if ( $answer_options = $this->get_data( 'answer_options' ) ) {
+			$answer_options = $this->get_data( 'answer_options' );
+			if ( $answer_options ) {
 				$question_order = 1;
 				$query          = "INSERT INTO {$wpdb->prefix}learnpress_question_answers(`question_id`, `order`) VALUES";
 				foreach ( $answer_options as $answer_option ) {
@@ -453,14 +454,16 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		 * @param $is_saved
 		 *
 		 * @return string
+		 * @deprecated 4.1.7.3
 		 */
 		public function _filter_meta_box_meta( $meta, $field, $is_saved ) {
-			if ( preg_match( '~\[question-content\]~', $field['id'] ) && $field['context'] == 'quiz-list-questions' ) {
+			_deprecated_function( __METHOD__, '4.1.7.3' );
+			/*if ( preg_match( '~\[question-content\]~', $field['id'] ) && $field['context'] == 'quiz-list-questions' ) {
 				$post = get_post( $this->get_id() );
 				$meta = $post->post_content;
 			}
 
-			return $meta;
+			return $meta;*/
 		}
 
 		/**
@@ -492,17 +495,19 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		 * Update ordering of question answers
 		 *
 		 * @param array $orders List of answers
+		 * @deprecated 4.1.7.3
 		 */
 		public function update_answer_orders( $orders ) {
-			global $wpdb;
+			_deprecated_function( __METHOD__, '4.1.7.3' );
+			/*global $wpdb;
 			$query = $wpdb->prepare(
 				"
-			    SELECT qa.question_answer_id, qam2.meta_value as `name`, qam.meta_value as `value`
-	            FROM {$wpdb->learnpress_question_answers} qa
-	            INNER JOIN {$wpdb->learnpress_question_answermeta} qam ON qa.question_answer_id = qam.learnpress_question_answer_id AND qam.meta_key = %s
-	            INNER JOIN {$wpdb->learnpress_question_answermeta} qam2 ON qa.question_answer_id = qam2.learnpress_question_answer_id AND qam2.meta_key = %s
-	            WHERE qa.question_id = %d
-	            ORDER BY `order`
+				SELECT qa.question_answer_id, qam2.meta_value as `name`, qam.meta_value as `value`
+				FROM {$wpdb->learnpress_question_answers} qa
+				INNER JOIN {$wpdb->learnpress_question_answermeta} qam ON qa.question_answer_id = qam.learnpress_question_answer_id AND qam.meta_key = %s
+				INNER JOIN {$wpdb->learnpress_question_answermeta} qam2 ON qa.question_answer_id = qam2.learnpress_question_answer_id AND qam2.meta_key = %s
+				WHERE qa.question_id = %d
+				ORDER BY `order`
 			",
 				'value',
 				'text',
@@ -510,9 +515,9 @@ if ( ! class_exists( 'LP_Question' ) ) {
 			);
 			if ( $answers = $wpdb->get_results( $query ) ) {
 				$query = "
-                UPDATE {$wpdb->learnpress_question_answers}
-                SET `order` = CASE
-            ";
+				UPDATE {$wpdb->learnpress_question_answers}
+				SET `order` = CASE
+			";
 				for ( $order = 0, $n = sizeof( $orders ); $order < $n; $order ++ ) {
 					$found_answer = false;
 					foreach ( $answers as $answer ) {
@@ -528,7 +533,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 				}
 				$query .= sprintf( 'ELSE `order` END WHERE question_id = %d', $this->get_id() );
 				$wpdb->query( $query );
-			}
+			}*/
 		}
 
 		/**
@@ -550,7 +555,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		}
 
 		protected function _init() {
-			add_filter( 'learn_press_question_answers', array( $this, '_get_default_answers' ), 10, 2 );
+			//add_filter( 'learn_press_question_answers', array( $this, '_get_default_answers' ), 10, 2 );
 		}
 
 
@@ -560,14 +565,15 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		 * @param LP_Question $q
 		 *
 		 * @return array|bool
+		 * @deprecated 4.1.7.3
 		 */
-		public function _get_default_answers( $answers = false, $q = null ) {
+		/*public function _get_default_answers( $answers = false, $q = null ) {
 			if ( ! $answers && ( $q && $q->get_id() == $this->get_id() ) ) {
 				$answers = $this->get_default_answers();
 			}
 
 			return $answers;
-		}
+		}*/
 
 		/**
 		 * Get default question answer.
@@ -617,32 +623,38 @@ if ( ! class_exists( 'LP_Question' ) ) {
 
 
 		/**
-		 * @param string $field
-		 * @param string $exclude
+		 * Get question answers option.
 		 *
-		 * @return LP_Question_Answers
+		 * @since 3.0.0
+		 * @version 4.0.1
+		 * @modify 4.1.7.3 by tungnx
+		 * @return LP_Question_Answer_Option[]
 		 */
-		public function get_answers( $field = null, $exclude = null ) {
-			$answers = LP_Object_Cache::get( 'answer-options-' . $this->get_id(), 'learn-press/questions' );
+		public function get_answers(): array {
+			$lp_question_cache = LP_Question_Cache::instance();
+			$key_cache         = "{$this->get_id()}/option_answers";
+			//$answers = LP_Object_Cache::get( 'answer-options-' . $this->get_id(), 'learn-press/questions' );
+			$answers_option = $lp_question_cache->get_cache( $key_cache );
 
-			if ( false === $answers ) {
-				$answers = $this->_curd->load_answer_options( $this->get_id() );
+			if ( false === $answers_option ) {
+				$answers_option = $this->_curd->load_answer_options( $this->get_id() );
 
-				if ( ! $answers ) {
-					$answers = $this->get_default_answers();
+				if ( ! $answers_option ) {
+					$answers_option = $this->get_default_answers();
 				}
 
-				LP_Object_Cache::set( 'answer-options-' . $this->get_id(), $answers, 'learn-press/questions' );
-			};
-
-			if ( $answers ) {
-				$answers = new LP_Question_Answers( $this, $answers );
+				$lp_question_cache->set_cache( $key_cache, $answers_option );
 			}
 
-			// @deprecated
-			$answers = apply_filters( 'learn_press_question_answers', $answers, $this );
+			require_once 'class-lp-question-answers.php';
 
-			return apply_filters( 'learn-press/questions/answers', $answers, $this->get_id() );
+			$answers_option_tmp = [];
+			foreach ( $answers_option as $k => $answer ) {
+				$answer_option        = new LP_Question_Answer_Option( $this, $answer );
+				$answers_option_tmp[] = $answer_option;
+			}
+
+			return $answers_option_tmp;
 		}
 
 		/**
@@ -659,7 +671,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 				$answer = array(
 					'question_id' => $this->get_id(),
 					'title'       => $answer['title'],
-					'value'       => isset( $answer['value'] ) ? $answer['value'] : '',
+					'value'       => $answer['value'] ?? '',
 					'is_true'     => ( $answer['is_true'] == 'yes' ) ? $answer['is_true'] : '',
 					'order'       => $index + 1,
 				);
@@ -712,9 +724,11 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		 * Get question name.
 		 *
 		 * @return string
+		 * @deprecated 4.1.7.3
 		 */
 		public function get_name() {
-			return isset( $this->_options['name'] ) ? $this->_options['name'] : ucfirst(
+			_deprecated_function( __METHOD__, '4.1.7.3' );
+			/*return $this->_options['name'] ?? ucfirst(
 				preg_replace_callback(
 					'!_([a-z])!',
 					array(
@@ -723,7 +737,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 					),
 					$this->get_type()
 				)
-			);
+			);*/
 		}
 
 		/**
@@ -819,12 +833,11 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		 *
 		 * @return bool
 		 */
-		public function is_selected_option( $answer, $answered = false ) {
-
+		public function is_selected_option( $answer, $answered = false ): bool {
 			if ( is_array( $answered ) ) {
 				$is_selected = in_array( $answer['value'], $answered );
 			} else {
-				$is_selected = ( $answer['value'] . '' === $answered . '' );
+				$is_selected = $answer['value'] === $answered;
 			}
 
 			return apply_filters( 'learn-press/question/is-selected-option', $is_selected, $answer, $answered, $this->get_id() );

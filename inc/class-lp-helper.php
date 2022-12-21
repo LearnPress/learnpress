@@ -407,7 +407,7 @@ class LP_Helper {
 		$http_host   = LP_Helper::sanitize_params_submitted( filter_input( INPUT_SERVER, 'HTTP_HOST' ) ?? '' );
 		$request_uri = LP_Helper::sanitize_params_submitted( filter_input( INPUT_SERVER, 'REQUEST_URI' ) ?? '' );
 
-		return $schema . untrailingslashit( esc_url_raw( $http_host . $request_uri ) );
+		return $schema . untrailingslashit( $http_host . $request_uri );
 	}
 
 	/**

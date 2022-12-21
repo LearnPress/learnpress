@@ -90,10 +90,14 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 		protected function save_price() {
 			$has_sale_price = false;
 			$regular_price  = $this->data['_lp_regular_price'] ?? '';
-			$sale_price     = $this->data['_lp_sale_price'] ?? '';
-			$start_date     = $this->data['_lp_sale_start'] ?? '';
-			$end_date       = $this->data['_lp_sale_end'] ?? '';
-			$price          = 0;
+			if ( empty( $regular_price ) ) {
+				return;
+			}
+
+			$sale_price = $this->data['_lp_sale_price'] ?? '';
+			$start_date = $this->data['_lp_sale_start'] ?? '';
+			$end_date   = $this->data['_lp_sale_end'] ?? '';
+			$price      = 0;
 
 			if ( '' != $regular_price ) {
 				$price = $regular_price;

@@ -353,7 +353,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			global $wpdb;
 
 			$orders                = array();
-			$post_status_in        = learn_press_get_order_statuses( true, true );
+			$post_status_in        = array_keys( LP_Order::get_order_statuses() );
 			$post_status_in_format = array_fill( 0, sizeof( $post_status_in ), '%s' );
 			$user_id_str           = $wpdb->prepare( '%"%d"%', $user_id );
 

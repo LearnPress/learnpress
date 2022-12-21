@@ -1,5 +1,5 @@
 <?php
-class LP_Quiz_Results implements ArrayAccess {
+class LP_Quiz_Results {
 
 	/**
 	 * @var array

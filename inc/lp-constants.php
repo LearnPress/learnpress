@@ -25,9 +25,6 @@ define( 'LP_LOG_PATH', $upload_dir['basedir'] . '/learn-press-logs/' );
 // Turn on/off cart.
 const LP_ENABLE_CART = false;
 
-// Cache group id.
-const LP_SESSION_CACHE_GROUP = 'learn_press_session_id';
-
 // Table prefix.
 const LP_TABLE_PREFIX = 'learnpress_';
 
@@ -74,6 +71,20 @@ const LP_COURSE_FINISHED  = 'finished';
 const LP_COURSE_PURCHASED = 'purchased';
 const LP_ITEM_COMPLETED   = 'completed';
 const LP_ITEM_STARTED     = 'started';
+
+// Status LP Order to compare.
+const LP_ORDER_COMPLETED  = 'completed';
+const LP_ORDER_PENDING    = 'pending';
+const LP_ORDER_PROCESSING = 'processing';
+const LP_ORDER_CANCELLED  = 'cancelled';
+const LP_ORDER_FAILED     = 'failed';
+
+// Status LP Order to set DB.
+const LP_ORDER_COMPLETED_DB  = 'lp-completed';
+const LP_ORDER_PENDING_DB    = 'lp-pending';
+const LP_ORDER_PROCESSING_DB = 'lp-processing';
+const LP_ORDER_CANCELLED_DB  = 'lp-cancelled';
+const LP_ORDER_FAILED_DB     = 'lp-failed';
 
 // Graduation user item course
 const LP_COURSE_GRADUATION_IN_PROGRESS = 'in-progress';

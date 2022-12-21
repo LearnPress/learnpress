@@ -185,9 +185,9 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			);
 
 			try {
-				$nonce     = LP_Helper::sanitize_params_submitted( $_POST['complete-lesson-nonce'] ?? '' );
-				$lesson_id = LP_Helper::sanitize_params_submitted( $_POST['id'] ?? 0 );
-				$course_id = LP_Helper::sanitize_params_submitted( $_POST['course_id'] ?? 0 );
+				$nonce     = LP_Request::get_param( 'complete-lesson-nonce' );
+				$lesson_id = LP_Request::get_param( 'id', 0, 'int' );
+				$course_id = LP_Request::get_param( 'course_id', 0, 'int' );
 
 				if ( ! wp_verify_nonce( $nonce, 'lesson-complete' ) ) {
 					throw new Exception( __( 'Error! Invalid lesson or failed security check.', 'learnpress' ) );
@@ -222,15 +222,23 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 						$response['redirect'] = $course->get_item_link( $next );
 					}
 
-					learn_press_add_message( sprintf( __( 'Congrats! You have completed "%s".', 'learnpress' ), $item->get_title() ) );
+					$message_data = [
+						'status'  => 'success',
+						'content' => sprintf( __( 'Congrats! You have completed "%s".', 'learnpress' ), $item->get_title() ),
+					];
+					learn_press_set_message( $message_data );
 					$response['result'] = 'success';
 				} else {
-					learn_press_add_message( $result->get_error_message(), 'error' );
+					throw new Exception( $result->get_error_message() );
 				}
 
 				$response = apply_filters( 'learn-press/user-completed-lesson-result', $response, $lesson_id, $course_id, $user->get_id() );
-			} catch ( Exception $ex ) {
-				learn_press_add_message( $ex->getMessage(), 'error' );
+			} catch ( Throwable $e ) {
+				$message_data = [
+					'status'  => 'error',
+					'content' => $e->getMessage(),
+				];
+				learn_press_set_message( $message_data );
 			}
 
 			//learn_press_maybe_send_json( $response );

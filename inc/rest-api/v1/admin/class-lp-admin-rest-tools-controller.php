@@ -203,24 +203,25 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 
 		try {
 			$params               = $request->get_params();
-			$admin_notices        = $_SESSION['lp_admin_notices_dismiss'] ?? [];
+			$admin_notices        = ! empty( $_COOKIE['lp_admin_notices_dismiss'] ) ? json_decode( wp_unslash( $_COOKIE['lp_admin_notices_dismiss'] ) ) : [];
 			$lp_beta_version_info = LP_Admin_Notice::check_lp_beta_version();
 
 			if ( isset( $params['dismiss'] ) ) {
 				if ( $lp_beta_version_info ) {
 					// Store version of LP beta to session.
-					$_SESSION['lp_beta_version'] = $lp_beta_version_info['version'] ?? 0;
+					learn_press_setcookie( 'lp_beta_version', $lp_beta_version_info['version'] ?? 0 );
 				}
-				$admin_notices[ $params['dismiss'] ]  = $params['dismiss'];
-				$_SESSION['lp_admin_notices_dismiss'] = $admin_notices;
-				$response->message                    = __( 'Dismissed!', 'learnpress' );
+
+				$admin_notices[ $params['dismiss'] ] = $params['dismiss'];
+				learn_press_setcookie( 'lp_admin_notices_dismiss', json_encode( $admin_notices ) );
+				$response->message = __( 'Dismissed!', 'learnpress' );
 			} else {
 				$show_notice_lp_beta_version = false;
 				/**
-				 * Check if LP beta version is not dismissed or dismissed version lower than current version, will bet to so
+				 * Check if LP beta version is not dismissed or dismissed version lower than current version, will bet to show notice.
 				 */
 				if ( $lp_beta_version_info && ! isset( $_GET['tab'] ) &&
-					( ! isset( $_SESSION['lp_beta_version'] ) || version_compare( $_SESSION['lp_beta_version'], $lp_beta_version_info['version'], '<' ) ) ) {
+					( ! isset( $_COOKIE['lp_beta_version'] ) || version_compare( $_COOKIE['lp_beta_version'], $lp_beta_version_info['version'], '<' ) ) ) {
 					$show_notice_lp_beta_version = true;
 				}
 
@@ -230,7 +231,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 						// Check wp_remote call success.
 						'check_wp_remote'   => [
 							'template' => 'admin-notices/wp-remote.php',
-							'check'    => LP_Admin_Ajax::check_wp_remote(),
+							'check'    => LP_Admin_Notice::check_wp_remote(),
 						],
 						// Check name plugin base.
 						'check_plugin_base' => [

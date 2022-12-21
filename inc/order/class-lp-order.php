@@ -202,9 +202,11 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @param string $prop
 		 *
 		 * @return int|mixed|null
-		 * @deprecated
+		 * @deprecated 4.2.0
+		 * @note Tungnx when change all direct access from $this->{key} to $this->get_data({key}), can remove this method
 		 */
 		public function __get( $prop ) {
+			_deprecated_function( __METHOD__, '4.2.0', 'get_data({key})' );
 			if ( $prop == 'post' ) {
 				// print_r( debug_backtrace() );
 				// die( '$post is deprecated' );
@@ -237,9 +239,12 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * Check if order has a status as wp default.
 		 *
 		 * @return bool
+		 * @deprecated 4.2.0
 		 */
 		public function has_invalid_status() {
-			return ! $this->has_status( learn_press_get_order_statuses( false, true ) );
+			_deprecated_function( __METHOD__, '4.2.0' );
+			return true;
+			//return ! $this->has_status( learn_press_get_order_statuses( false, true ) );
 		}
 
 		/**
@@ -249,17 +254,22 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @param bool  $manual Is this a manual order status change?.
 		 *
 		 * @return bool
-		 * @throws Exception
 		 */
-		public function update_status( $new_status = 'pending', $manual = false ) {
-			$old_status = $this->get_status();
+		public function update_status( $new_status = 'pending', $manual = false ): bool {
+			$result = false;
 
-			do_action( 'learn-press/before-update-status-lp-order', $new_status, $old_status, $this, $manual );
+			try {
+				$old_status = $this->get_status();
 
-			$this->set_status( $new_status );
-			$result = $this->save();
+				//do_action( 'learn-press/before-update-status-lp-order', $new_status, $old_status, $this, $manual );
 
-			do_action( 'learn-press/after-update-status-lp-order', $new_status, $old_status, $this, $manual );
+				$this->set_status( $new_status );
+				$result = $this->save();
+
+				//do_action( 'learn-press/after-update-status-lp-order', $new_status, $old_status, $this, $manual );
+			} catch ( Throwable $e ) {
+				error_log( $e->getMessage() );
+			}
 
 			return $result;
 		}
@@ -270,14 +280,16 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * update it to database.
 		 *
 		 * @param LP_Gateway_Abstract|string $payment_method
+		 * @deprecated 4.2.0
 		 */
 		public function set_payment_method( $payment_method ) {
-			if ( $payment_method instanceof LP_Gateway_Abstract ) {
+			_deprecated_function( __METHOD__, '4.2.0' );
+			/*if ( $payment_method instanceof LP_Gateway_Abstract ) {
 				update_post_meta( $this->get_id(), '_payment_method', $payment_method->get_id() );
 				update_post_meta( $this->get_id(), '_payment_method_title', $payment_method->get_title() );
 			}
 
-			$this->payment_method = $payment_method;
+			$this->payment_method = $payment_method;*/
 		}
 
 		/**
@@ -308,12 +320,70 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @return mixed
 		 */
 		public function get_status() {
-			$status = $this->get_data( 'status', '' );
-			$status = apply_filters( 'learn_press_order_status', $status, $this );
+			return $this->get_data( 'status', '' );
+		}
 
-			apply_filters( 'learn-press/order/status', $status, $this->get_id() );
+		/**
+		 * Get label of lp order status
+		 *
+		 * @param string $status
+		 *
+		 * @return string
+		 * @since 4.2.0
+		 * @version 1.0.0
+		 */
+		public static function get_status_label( string $status ): string {
+			switch ( $status ) {
+				case LP_ORDER_COMPLETED:
+					$status = __( 'Completed', 'learnpress' );
+					break;
+				case LP_ORDER_PENDING:
+					$status = __( 'Pending', 'learnpress' );
+					break;
+				case LP_ORDER_PROCESSING:
+					$status = __( 'Processing', 'learnpress' );
+					break;
+				case LP_ORDER_CANCELLED:
+					$status = __( 'Cancelled', 'learnpress' );
+					break;
+				case LP_ORDER_FAILED:
+					$status = __( 'Failed', 'learnpress' );
+					break;
+				case 'on-hold':
+					$status = __( 'On hold', 'learnpress' );
+					break;
+				case 'refunded':
+					$status = __( 'Refunded', 'learnpress' );
+					break;
+				default:
+					$status = '';
+					break;
+			}
+
+			if ( ! is_string( $status ) ) {
+				$status = '';
+			}
 
 			return $status;
+		}
+
+		/**
+		 * Get icons of lp order status
+		 *
+		 * @return array
+		 * @since 4.2.0
+		 * @version 1.0.0
+		 */
+		public static function get_icons_status(): array {
+			$icons = [
+				LP_ORDER_COMPLETED  => "<i class='dashicons dashicons-yes-alt'></i>",
+				LP_ORDER_PENDING    => "<i class='dashicons dashicons-flag'></i>",
+				LP_ORDER_PROCESSING => "<i class='dashicons dashicons-clock'></i>",
+				LP_ORDER_CANCELLED  => "<i class='dashicons dashicons-dismiss'></i>",
+				LP_ORDER_FAILED     => "<i class='dashicons dashicons-warning'></i>",
+			];
+
+			return apply_filters( 'lp/order/status/icons', $icons );
 		}
 
 		/**
@@ -321,34 +391,25 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 *
 		 * @param string $new_status
 		 * @param string $note - Optional. Note for changing status.
+		 * @sicne 3.0.0
+		 * @version 1.0.1
 		 */
 		public function set_status( string $new_status = '', string $note = '' ) {
-			$new_status     = 'lp-' === substr( $new_status, 0, 3 ) ? substr( $new_status, 3 ) : $new_status;
-			$valid_statuses = learn_press_get_order_statuses( false, true );
-
+			// Ensure status not has prefix 'lp-'.
+			$new_status     = str_replace( 'lp-', '', $new_status );
+			$valid_statuses = array_values( LP_Order::get_order_statuses() );
 			if ( ! in_array( $new_status, $valid_statuses ) && 'trash' !== $new_status ) {
-				$new_status = 'pending';
+				$new_status = LP_ORDER_PENDING;
 			}
 
 			$this->_set_data( 'status', $new_status );
 		}
 
 		public function get_order_status_html() {
-			$statuses     = learn_press_get_order_statuses();
 			$order_status = $this->get_status();
-
-			if ( ! empty( $statuses[ $order_status ] ) ) {
-				$status = $statuses[ $order_status ];
-			} elseif ( ! empty( $statuses[ 'lp-' . $order_status ] ) ) {
-				$status = $statuses[ 'lp-' . $order_status ];
-			} elseif ( $order_status == 'trash' ) {
-				$status = __( 'Removed', 'learnpress' );
-			} else {
-				$status = ucfirst( $order_status );
-			}
-
-			$class = 'order-status order-status-' . sanitize_title( $status );
-			$html  = sprintf( '<span class="%s">%s</span>', apply_filters( 'learn_press_order_status_class', $class, $status, $this ), $status );
+			$status       = ucfirst( $order_status );
+			$class        = 'order-status order-status-' . sanitize_title( $status );
+			$html         = sprintf( '<span class="%s">%s</span>', apply_filters( 'learn_press_order_status_class', $class, $status, $this ), $status );
 
 			return apply_filters( 'learn_press_order_status_html', $html, $this );
 		}
@@ -356,16 +417,13 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		/**
 		 * Mark order as complete
 		 *
-		 * @param string - transaction ID provided payment gateway
+		 * @param string $transaction_id
 		 *
 		 * @return bool
 		 * @throws Exception
 		 */
 		public function payment_complete( $transaction_id = '' ): bool {
 			do_action( 'learn-press/payment-pre-complete', $this->get_id() );
-
-			//TODO: tungnx - check to change code below - use LearnPress::instance()->session->set()
-			LearnPress::instance()->session->order_awaiting_payment = null;
 
 			$valid_order_statuses = apply_filters(
 				'learn-press/valid-order-statuses-for-payment-complete',
@@ -517,7 +575,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 				$course_ids = array();
 				foreach ( $items as $item ) {
 					if ( isset( $item['course_id'] ) ) {
-						$course_ids[] = $item['course_id'];
+						$course_ids[] = (int) $item['course_id'];
 					}
 				}
 
@@ -695,7 +753,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @return int|float
 		 */
 		public function get_total() {
-			return $this->get_data( 'total' );
+			return $this->get_data( 'total', 0 );
 		}
 
 		/**
@@ -816,6 +874,14 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			$users = $this->get_user_id();
 			if ( $users !== -1 ) {
 				settype( $users, 'array' );
+
+				$users = array_map(
+					function ( $user ) {
+						return absint( $user );
+					},
+					$users
+				);
+
 				$users = array_unique( $users );
 			} else {
 				$users = array();
@@ -866,10 +932,10 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		}
 
 		public function get_payment_method_title() {
-			if ( $this->order_total == 0 ) {
+			if ( $this->get_data( 'order_total' ) == 0 ) {
 				$title = '';
 			} else {
-				$title = $this->payment_method_title;
+				$title = $this->get_data( 'payment_method_title' );
 			}
 
 			return $title;
@@ -1265,14 +1331,12 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			}
 
 			$new_status = str_replace( 'lp-', '', get_post_status( $this->get_id() ) );
-
-			$order_id = $this->get_id();
+			$order_id   = $this->get_id();
 
 			if ( $new_status !== $old_status ) {
 				do_action( 'learn-press/order/status-' . $new_status, $order_id, $old_status );
 				do_action( 'learn-press/order/status-' . $old_status . '-to-' . $new_status, $order_id );
 				do_action( 'learn-press/order/status-changed', $order_id, $old_status, $new_status );
-				//do_action( 'learn_press_update_order_status', $new_status, $order_id );
 			}
 
 			//$this->_save_status();
@@ -1339,7 +1403,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @return bool
 		 */
 		public function is_completed(): bool {
-			return $this->get_order_status() === 'completed';
+			return $this->get_status() === 'completed';
 		}
 
 		/**
@@ -1400,6 +1464,23 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			}
 
 			return apply_filters( 'learnpress/order/can_delete_old_item', $can_delete, $course );
+		}
+
+		/**
+		 * Get list status of LP Order
+		 *
+		 * @return array
+		 */
+		public static function get_order_statuses(): array {
+			$order_statuses = [
+				LP_ORDER_COMPLETED_DB  => LP_ORDER_COMPLETED,
+				LP_ORDER_PROCESSING_DB => LP_ORDER_PROCESSING,
+				LP_ORDER_PENDING_DB    => LP_ORDER_PENDING,
+				LP_ORDER_CANCELLED_DB  => LP_ORDER_CANCELLED,
+				LP_ORDER_FAILED_DB     => LP_ORDER_FAILED,
+			];
+
+			return apply_filters( 'lp/order/statuses', $order_statuses );
 		}
 	}
 }

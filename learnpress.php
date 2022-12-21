@@ -4,7 +4,7 @@
  * Plugin URI: http://thimpress.com/learnpress
  * Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
  * Author: ThimPress
- * Version: 4.1.7.3.2
+ * Version: 4.2.0
  * Author URI: http://thimpress.com
  * Requires at least: 5.8
  * Tested up to: 6.1.1
@@ -44,10 +44,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * @var int
 		 */
 		public $db_version = 4;
-		/**
-		 * @var int Version of mu file on folder mu-plugins
-		 */
-		public $mu_file_version = 2;
 
 		/**
 		 * The single instance of the class
@@ -222,6 +218,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * @return void
 		 */
 		private function include_files_global() {
+			require_once 'inc/Helper/Singleton.php';
 			require_once 'inc/class-lp-multi-language.php';
 
 			// Filter query .
@@ -229,6 +226,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/filters/class-lp-post-type-filter.php';
 			require_once 'inc/filters/class-lp-course-filter.php';
 			require_once 'inc/filters/class-lp-order-filter.php';
+			require_once 'inc/filters/class-lp-session-filter.php';
 			require_once 'inc/filters/class-lp-section-filter.php';
 			require_once 'inc/filters/class-lp-section-items-filter.php';
 			require_once 'inc/filters/class-lp-question-filter.php';
@@ -260,6 +258,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			// File helper
 			require_once 'inc/class-lp-helper.php';
+			require_once 'inc/Helper/Template.php';
 
 			// Models
 			require_once 'inc/models/class-lp-rest-response.php';
@@ -276,6 +275,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/cache/class-lp-courses-cache.php';
 			require_once 'inc/cache/class-lp-course-cache.php';
 			require_once 'inc/cache/class-lp-quiz-cache.php';
+			require_once 'inc/cache/class-lp-question-cache.php';
+			require_once 'inc/cache/class-lp-session-cache.php';
 
 			// Background processes.
 			require_once 'inc/libraries/wp-background-process/wp-background-processing.php';
@@ -548,6 +549,12 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 */
 		public function plugin_loaded() {
 			do_action( 'learnpress/hook/before-addons-call-hook-learnpress-ready' );
+
+			// For check wp_remote call normally of WP
+			if ( ! empty( LP_Request::get_param( 'lp_test_wp_remote' ) ) ) {
+				echo '[TEST_REMOTE]';
+				die;
+			}
 
 			// Polylang
 			if ( defined( 'POLYLANG_VERSION' ) ) {

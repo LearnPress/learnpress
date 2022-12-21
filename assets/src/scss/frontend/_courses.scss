@@ -94,6 +94,7 @@ a {
 			margin-bottom: 20px;
 		}
 	}
+
 	.course-item {
 		flex-direction: column;
 		display: flex;
@@ -130,7 +131,7 @@ a {
 
 		.course-instructor {
 			float: left;
-			margin-bottom: 16px;
+			margin-bottom: 10px;
 			font-size: 14px;
 			font-weight: 300;
 			line-height: 25px;
@@ -138,6 +139,7 @@ a {
 
 			a {
 				color: #059de9;
+
 				&:hover {
 					color: var(--lp-primary-color);
 				}
@@ -180,7 +182,7 @@ a {
 			float: left;
 			position: relative;
 			margin-right: 10px;
-			margin-bottom: 16px;
+			margin-bottom: 10px;
 
 			a {
 				display: inline-block;
@@ -201,17 +203,17 @@ a {
 				}
 			}
 
-			&::after {
-				position: absolute;
-				top: 50%;
-				right: -2px;
-				width: 1px;
-				height: 12px;
-				opacity: 0.5;
-				background: #999;
-				content: "";
-				transform: translate(0, -50%);
-			}
+			//&::after {
+			//	position: absolute;
+			//	top: 50%;
+			//	right: -2px;
+			//	width: 1px;
+			//	height: 12px;
+			//	opacity: 0.5;
+			//	background: #999;
+			//	content: "";
+			//	transform: translate(0, -50%);
+			//}
 		}
 
 		.course-info {
@@ -255,7 +257,7 @@ a {
 		.course-excerpt {
 			display: -webkit-box;
 			overflow: hidden;
-			margin-bottom: 28px;
+			margin-bottom: 20px;
 			color: #666;
 			font-size: 16px;
 			font-weight: 300;
@@ -339,7 +341,7 @@ a {
 			border-radius: unset;
 			line-height: unset;
 
-			&::before {
+			/*&::before {
 				position: absolute;
 				z-index: 1;
 				top: 0;
@@ -347,10 +349,10 @@ a {
 				bottom: 0;
 				left: 0;
 				opacity: 0;
-				background: rgba(0, 0, 0, 0.5);
+				background: rgba(0, 0, 0, 0.2);
 				content: "";
 				transition: all 0.3s;
-			}
+			}*/
 		}
 
 		img {
@@ -359,6 +361,7 @@ a {
 			height: auto;
 			transition: all 0.5s ease;
 			transform: scale(1);
+			max-width: unset !important;
 		}
 	}
 
@@ -384,17 +387,28 @@ a {
 		}
 
 		.course-title {
-			margin-bottom: 42px;
+			margin-bottom: 20px;
+			border-bottom: 1px solid rgb(255 255 255 / 10%);
 			color: #fff;
 			font-size: 1.5rem;
 			font-weight: 500;
 			line-height: 1;
+			padding-bottom: 20px;
 		}
 
 		.course-meta {
 
 			&.course-meta-secondary {
 				margin-bottom: 0;
+
+				.course-meta__pull-left .meta-item {
+					height: auto;
+					margin-right: 35px;
+
+					&:last-child {
+						margin-right: 0;
+					}
+				}
 			}
 
 		}
@@ -405,7 +419,7 @@ a {
 	}
 
 	.course-detail-info {
-		padding: 40px 0 10px 0;
+		padding: 30px 0 20px 0;
 		color: #fff;
 		background: var(--lp-secondary-color);
 		position: relative;
@@ -423,6 +437,7 @@ a {
 			right: 100%;
 			left: auto;
 		}
+
 		&::after {
 			left: 100%;
 			right: auto;
@@ -570,7 +585,8 @@ a {
 	}
 
 	.course-meta-primary {
-		margin-bottom: 36px;
+		margin-bottom: 30px;
+
 		.meta-item-categories::before {
 			font-weight: 400;
 		}
@@ -602,7 +618,7 @@ a {
 	.course-summary-sidebar {
 		width: 300px;
 		max-width: 100%;
-		margin-top: -272px;
+		margin-top: -190px;
 
 		@media (max-width: 768px) {
 			width: 100%;
@@ -687,7 +703,7 @@ a {
 
 	.course {
 		width: 25%;
-		margin: 0 0 60px 0;
+		margin: 0 0 40px 0;
 		box-shadow: none;
 		list-style: none;
 	}
@@ -698,52 +714,53 @@ a {
 		.course {
 			display: flex;
 			width: 100%;
-			padding: 24px;
+			//padding: 24px;
 			border: 1px solid rgba(204, 204, 204, 0.3);
-			border-radius: 4px;
+			//border-radius: 4px;
 			flex-wrap: wrap;
 			justify-content: flex-end;
-
-			@media (max-width: 767px) {
-				padding: 15px;
-			}
+			//@media (max-width: 767px) {
+			//	padding: 15px;
+			//}
 
 		}
+
 		.course-item {
 			flex-direction: row;
 			width: 100%;
 			border: unset;
-			justify-content: space-between;
-
+			//justify-content: center;
+			align-items: center;
 			@media (max-width: 767px) {
 				flex-direction: column;
 			}
 		}
+
 		.course-content {
-			float: right;
-			width: calc(100% - 35.8% - 76px);
-			padding-top: 5px;
+			//float: right;
+			//width: calc(100% - 35.8% - 76px);
+			padding: 10px 25px;
 
-			@media (max-width: 1200px) {
-				width: calc(100% - 35.8% - 40px);
-			}
-
-			@media (max-width: 1200px) {
-				width: calc(100% - 35.8% - 25px);
-			}
-
-			@media (max-width: 767px) {
-				width: 100%;
-				padding-top: 20px;
-			}
+			//@media (max-width: 1200px) {
+			//	width: calc(100% - 35.8% - 40px);
+			//}
+			//
+			//@media (max-width: 1200px) {
+			//	width: calc(100% - 35.8% - 25px);
+			//}
+			//
+			//@media (max-width: 767px) {
+			//	width: 100%;
+			//	padding-top: 20px;
+			//}
 
 			.course-categories {
-
 				a {
 					position: relative;
 					padding: 2px 20px 2px 15px;
 					-webkit-clip-path: polygon(0% 0%, 100% 0, 88% 50%, 100% 100%, 0% 100%);
 					clip-path: polygon(0% 0%, 100% 0, 88% 50%, 100% 100%, 0% 100%);
+					line-height: 1.3em;
 				}
 			}
 
@@ -810,8 +827,8 @@ a {
 
 		.course-wrap-meta {
 			display: flex;
-			padding-top: 12px;
-			padding-bottom: 18px;
+			padding-top: 10px;
+			padding-bottom: 15px;
 			color: #333;
 			font-size: 14px;
 			font-weight: 400;
@@ -871,13 +888,16 @@ a {
 		}
 
 		.course-wrap-thumbnail {
-			float: left;
-			width: 35.8%;
-
-			@media (max-width: 767px) {
-				width: 100%;
-			}
+ 			width: 35%;
+ 		}
+		.course-content{
+			width: 65%;
 		}
+		@media (max-width: 767px) {
+			.course-wrap-thumbnail ,.course-content{
+ 				width: 100%;
+ 			}
+ 		}
 		.course-title {
 			font-size: 18px;
 		}
@@ -901,6 +921,7 @@ a {
 			&:hover {
 				box-shadow: 0 15px 20px 0 rgba(0, 0, 0, 0.2);
 			}
+
 			.course-instructor {
 				margin-bottom: 7px;
 			}
@@ -916,7 +937,7 @@ a {
 				float: right;
 				position: absolute;
 				z-index: 1;
-				top: -34px;
+				top: -50px;
 				right: -1px;
 				margin-right: 0;
 
@@ -949,10 +970,16 @@ a {
 				display: none;
 			}
 
+			.separator {
+				display: block;
+				border-top: 1px solid rgba(153, 153, 153, 0.2);
+				margin-left: -20px;
+				margin-right: -20px;
+			}
+
 			.course-footer {
 				padding-top: 18px;
-				border-top: 1px solid rgba(153, 153, 153, 0.2);
-
+				//border-top: 1px solid rgba(153, 153, 153, 0.2);
 				.course-students {
 					float: left;
 					text-transform: capitalize;
@@ -969,6 +996,7 @@ a {
 				}
 			}
 		}
+
 		.learn-press-message {
 			margin-left: 15px;
 			margin-right: 15px;
@@ -1003,7 +1031,7 @@ a {
 .lp-courses-bar {
 	display: flex;
 	float: right;
-	margin-bottom: 48px;
+	margin-bottom: 40px;
 
 	@media (max-width: 767px) {
 		flex-direction: row;
@@ -1021,13 +1049,14 @@ a {
 
 		input[type="text"] {
 			width: 100%;
-			height: 44px;
-			padding: 6px 32px 6px 18px;
-			border: 1px solid #ccc;
-			border-radius: 5px;
+			//height: 44px;
+			padding: 0px 30px 10px 0;
+			border: none;
+			border-bottom: 1px solid #ccc;
+			border-radius: 0;
 			background: #fff;
 			font-size: 14px;
-			font-style: italic;
+			//font-style: italic;
 			line-height: 1;
 
 			&:focus {
@@ -1039,13 +1068,13 @@ a {
 		button {
 			position: absolute;
 			top: 50%;
-			right: 12px;
+			right: 0;
 			width: 30px;
 			height: 30px;
 			padding: 0;
 			border: none;
-			color: #333;
-			background: transparent;
+			color: #333 !important;
+			background: transparent !important;;
 			font-size: 16px;
 			line-height: 1;
 			transform: translate(0, -50%);
@@ -1087,10 +1116,10 @@ a {
 
 	.switch-layout {
 		display: flex;
-		height: 44px;
+		//height: 44px;
 		line-height: 1;
 		text-align: right;
-		flex: 0 0 40px;
+		flex: 0 0 32px;
 		align-items: center;
 		justify-content: center;
 
@@ -1100,13 +1129,13 @@ a {
 
 		.switch-btn {
 			display: block;
-			width: 40px;
-			height: 40px;
+			width: 32px;
+			height: 32px;
 			margin: 0;
 			padding: 0;
-			border-radius: 5px;
+			//border-radius: 5px;
 			font-size: 16px;
-			line-height: 40px;
+			line-height: 32px;
 			text-align: center;
 			cursor: pointer;
 
@@ -1140,7 +1169,7 @@ a {
 
 @for $i from 0 through 9 {
 	input[type="radio"]:nth-child(#{$i*2+1}):checked ~ .switch-btn:nth-child(#{$i*2+2}) {
-		background: #f5f5f5;
+		//background: #f5f5f5;
 
 		&::before {
 			color: var(--lp-primary-color);
@@ -1180,6 +1209,7 @@ a {
 
 	.comment-form {
 		margin: 0 -15px;
+
 		> p {
 			label {
 				display: block;
@@ -1197,6 +1227,7 @@ a {
 				a {
 					color: #666;
 					text-decoration: underline;
+
 					&:hover, &:focus {
 						color: var(--lp-primary-color);
 					}
@@ -1205,10 +1236,12 @@ a {
 
 			&.comment-form-cookies-consent {
 				clear: both;
+
 				input {
 					padding: 0;
 					margin-right: 8px;
 				}
+
 				label {
 					display: inline;
 				}

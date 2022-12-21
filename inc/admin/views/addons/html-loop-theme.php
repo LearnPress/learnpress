@@ -10,7 +10,7 @@
 defined( 'ABSPATH' ) || exit();
 ?>
 
-<li class="plugin-card plugin-card-learnpress" id="learn-press-theme-<?php echo esc_attr( $theme['id'] ); ?>">
+<li class="plugin-card-learnpress" id="learn-press-theme-<?php echo esc_attr( $theme['id'] ); ?>">
 	<div class="plugin-card-top">
 		<div class="image-thumbnail">
 			<a href="<?php echo esc_url_raw( $theme['url'] ); ?>">

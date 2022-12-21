@@ -1,14 +1,24 @@
+/**
+ * Script handle admin notices.
+ *
+ * @since 4.1.7.3.2
+ * @version 1.0.1
+ */
+import adminAPI from './api';
 let elLPAdminNotices = null;
 let elBtnDismiss;
 let dataHtml = null;
 const queryString = window.location.search;
 const urlParams = new URLSearchParams( queryString );
 const tab = urlParams.get( 'tab' );
-const urlApiAdminNotices = lpGlobalSettings.rest + 'lp/v1/admin/tools/admin-notices';
 
 const callAdminNotices = ( set = '' ) => {
+	if ( ! lpGlobalSettings.is_admin ) {
+		return;
+	}
+
 	const params = tab ? `?tab=${ tab }` : `?${ set }`;
-	fetch( urlApiAdminNotices + params, {
+	fetch( adminAPI.apiAdminNotice + params, {
 		method: 'GET',
 	} ).then( ( res ) =>
 		res.json()

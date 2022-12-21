@@ -80,8 +80,8 @@ if ( ! class_exists( 'LP_Background_Query_Items' ) ) {
 		public function get_related_themes() {
 			$themes = get_transient( 'lp_related_themes' );
 
-			if ( ! $themes ) {
-				$this->query_related_themes();
+			if ( ! is_array( $themes ) || empty( $themes ) ) {
+				$themes = $this->query_related_themes();
 			}
 
 			return is_array( $themes ) ? $themes : false;
@@ -232,7 +232,7 @@ if ( ! class_exists( 'LP_Background_Query_Items' ) ) {
 			set_transient( 'lp_related_themes', __( 'No item found!', 'learnpress' ), $this->transient_time );
 
 			$themes   = array();
-			$url      = 'https://api.envato.com/v1/discovery/search/search/item?site=themeforest.net&username=thimpress';
+			$url      = 'https://api.envato.com/v1/discovery/search/search/item?site=themeforest.net&username=thimpress&sort_by=sales';
 			$args     = array(
 				'headers' => array(
 					'Authorization' => 'Bearer BmYcBsYXlSoVe0FekueDxqNGz2o3JRaP',

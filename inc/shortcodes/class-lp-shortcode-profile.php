@@ -9,6 +9,8 @@
  * @extends  LP_Abstract_Shortcode
  */
 
+use LearnPress\Helpers\Template;
+
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Shortcode_Profile' ) ) {
@@ -77,8 +79,10 @@ if ( ! class_exists( 'LP_Shortcode_Profile' ) ) {
 				learn_press_get_template( 'global/message.php', array( 'messages' => $messages ) );
 				echo '</div>';
 			} else {
-				learn_press_print_messages();
-				learn_press_get_template( 'pages/profile.php', array( 'profile' => $profile ) );
+				//learn_press_print_messages();
+				learn_press_show_message();
+				//learn_press_get_template( 'pages/profile.php', array( 'profile' => $profile ) );
+				Template::instance()->get_frontend_template( 'pages/profile.php', array( 'profile' => $profile ) );
 			}
 
 			$output = ob_get_clean();

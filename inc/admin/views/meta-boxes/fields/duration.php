@@ -24,7 +24,7 @@ class LP_Meta_Box_Duration_Field extends LP_Meta_Box_Field {
 
 	public function output( $thepostid ) {
 		if ( empty( $this->id ) ) {
-			return;
+			return '';
 		}
 
 		$field                = $this->extra;

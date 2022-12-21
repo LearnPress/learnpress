@@ -6,7 +6,7 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  4.0.0
+ * @version  4.0.1
  */
 
 defined( 'ABSPATH' ) || exit();
@@ -14,8 +14,7 @@ defined( 'ABSPATH' ) || exit();
 $profile = LP_Profile::instance();
 
 $query_orders = $profile->query_orders( array( 'fields' => 'ids' ) );
-
-if ( ! $query_orders['items'] ) {
+if ( ! $query_orders->get_items() ) {
 	learn_press_display_message( __( 'No orders!', 'learnpress' ) );
 	return;
 }
@@ -36,7 +35,7 @@ if ( ! $query_orders['items'] ) {
 
 	<tbody>
 		<?php
-		foreach ( $query_orders['items'] as $order_id ) {
+		foreach ( $query_orders->get_items() as $order_id ) {
 			$order = learn_press_get_order( $order_id );
 			?>
 

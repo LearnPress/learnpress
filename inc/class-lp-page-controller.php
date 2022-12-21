@@ -221,30 +221,27 @@ class LP_Page_Controller {
 	 * @return string
 	 * @author tungnx
 	 * @since  3.2.7.7
+	 * @version 1.0.1
 	 */
 	public function set_title_pages( $title = '' ): string {
 		global $wp_query;
 		$flag_title_course = false;
 
-		$course_archive_page_id = LP_Settings::instance()->get( 'courses_page_id', 0 );
+		$course_archive_page_id = LP_Settings::get_option( 'courses_page_id', 0 );
 
-		// Set title course archive page
-		if ( ! empty( $course_archive_page_id ) && $wp_query->post &&
-			$course_archive_page_id == $wp_query->post->ID ) {
-			$title             = get_the_title( $course_archive_page_id );
-			$flag_title_course = true;
-		} elseif ( learn_press_is_course() ) {
+		// Set title single course.
+		if ( learn_press_is_course() ) {
 			$item = LP_Global::course_item();
 			if ( $item ) {
 				$title = apply_filters( 'learn-press/document-course-title-parts', get_the_title() . ' &rarr; ' . $item->get_title(), $item );
 
 				$flag_title_course = true;
 			}
-		} elseif ( learn_press_is_courses() ) {
+		} elseif ( learn_press_is_courses() ) { // Set title course archive page.
 			if ( learn_press_is_search() ) {
 				$title = __( 'Course Search Results', 'learnpress' );
 			} else {
-				$title = __( 'Courses', 'learnpress' );
+				$title = $course_archive_page_id ? get_the_title( $course_archive_page_id ) : __( 'Courses', 'learnpress' );
 			}
 
 			$flag_title_course = true;
@@ -259,7 +256,7 @@ class LP_Page_Controller {
 			} else {
 				$page_title = '';
 			}
-			if ( $tab ) {
+			if ( $tab instanceof LP_Profile_Tab ) {
 				$title = join(
 					' ',
 					apply_filters(
@@ -267,7 +264,7 @@ class LP_Page_Controller {
 						array(
 							$page_title,
 							'&rarr;',
-							$tab['title'],
+							$tab->get( 'title' ),
 						)
 					)
 				);
@@ -278,6 +275,10 @@ class LP_Page_Controller {
 
 		if ( $flag_title_course ) {
 			$title .= ' - ' . get_bloginfo( 'name', 'display' );
+		}
+
+		if ( empty( $title ) ) {
+			$title = get_bloginfo( 'name', 'display' );
 		}
 
 		return apply_filters( 'learn-press/title-page', $title );
@@ -602,13 +603,13 @@ class LP_Page_Controller {
 		if ( learn_press_is_course_taxonomy() ) {
 			$object      = get_queried_object();
 			$templates[] = 'taxonomy-' . $object->taxonomy . '-' . $object->slug . '.php';
-			$templates[] = learn_press_template_path( true ) . 'taxonomy-' . $object->taxonomy . '-' . $object->slug . '.php';
+			$templates[] = learn_press_template_path() . '/taxonomy-' . $object->taxonomy . '-' . $object->slug . '.php';
 			$templates[] = 'taxonomy-' . $object->taxonomy . '.php';
-			$templates[] = learn_press_template_path( true ) . 'taxonomy-' . $object->taxonomy . '.php';
+			$templates[] = learn_press_template_path() . '/taxonomy-' . $object->taxonomy . '.php';
 		}
 
 		$templates[] = $default_template;
-		$templates[] = learn_press_template_path( true ) . $default_template;
+		$templates[] = learn_press_template_path() . '/' . $default_template;
 
 		return array_unique( $templates );
 	}
@@ -1002,12 +1003,6 @@ class LP_Page_Controller {
 	 * Set in param notify_url on @see LP_Gateway_Paypal::get_paypal_args()
 	 */
 	public function check_webhook_paypal_ipn() {
-		// Start session, code temporary, will rewrite on hook init.
-		if ( ! session_id() ) {
-			session_start();
-		}
-		// End - tungnx
-
 		//error_log( 'xxx:' . json_encode( $_POST, JSON_UNESCAPED_UNICODE ) );
 
 		// Paypal payment done
@@ -1029,10 +1024,8 @@ class LP_Page_Controller {
 
 					if ( json_last_error() === JSON_ERROR_NONE ) {
 						$order_id = $data_order->order_id;
-
 						$lp_order = learn_press_get_order( $order_id );
-						$lp_order->set_status( 'completed' );
-						$lp_order->save();
+						$lp_order->update_status( LP_ORDER_COMPLETED );
 					}
 				}
 			}

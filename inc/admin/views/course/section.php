@@ -78,7 +78,7 @@ learn_press_admin_view( 'course/new-section-item' );
 
 					$( this.$el ).find( '.section-list-items ul' ).sortable({
 						axis: 'y',
-						connectWith: '.section-list-items ul',
+						//connectWith: '.section-list-items ul',
 						handle: '.drag',
 						start: function( e, ui ) {
 							var id = parseInt( ui.item.attr( 'data-item-id' ) );

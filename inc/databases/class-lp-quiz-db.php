@@ -66,5 +66,3 @@ class LP_Quiz_DB extends LP_Database {
 	}
 }
 
-LP_Quiz_DB::getInstance();
-

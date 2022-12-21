@@ -774,8 +774,8 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 				$query              = $user_profile->get_user_quizzes( $filter );
 
 				$ids = array();
-				if ( ! empty( $query['items'] ) ) {
-					foreach ( $query['items'] as $item ) {
+				if ( ! empty( $query->get_items() ) ) {
+					foreach ( $query->get_items() as $item ) {
 						$ids[] = array(
 							'id'         => $item->get_id(),
 							'result'     => $item->get_percent_result() ?? '',
@@ -810,9 +810,8 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 
 		if ( method_exists( $profile, 'query_orders' ) ) {
 			$query_orders = $profile->query_orders( array( 'fields' => 'ids' ) );
-
-			if ( ! empty( $query_orders['items'] ) ) {
-				foreach ( $query_orders['items'] as $order_id ) {
+			if ( ! empty( $query_orders->get_items() ) ) {
+				foreach ( $query_orders->get_items() as $order_id ) {
 					$order = learn_press_get_order( $order_id );
 
 					$output[ $order_id ] = array(
@@ -1130,7 +1129,15 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 		return $output;
 	}*/
 
-	public function get_lp_data_tabs( $user, $request ) {
+	/**
+	 * Get data tabs.
+	 *
+	 * @param $user
+	 * @param $request
+	 *
+	 * @return array
+	 */
+	public function get_lp_data_tabs( $user, $request ): array {
 		$output = array();
 
 		if ( get_current_user_id() === $user->ID || current_user_can( 'list_users' ) ) {

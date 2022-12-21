@@ -3,13 +3,16 @@
  * Admin View: Content tab preview export invoice
  * @author hungkv
  * @since 3.2.7.8
- * @version 1.0.0
+ * @version 1.0.1
  */
 
 /**
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit();
+/**
+ * @var $order LP_Order
+ */
 if ( ! isset( $order ) || ! isset( $currency_symbol ) ) {
 	return;
 }
@@ -62,10 +65,10 @@ wp_enqueue_script( 'learnpress-jspdf' );
 	<div class="order-items">
 		<table id="tab_customers" class="table table-striped list-order-items">
 			<colgroup>
-				<col width="40%">
-				<col width="20%">
-				<col width="20%">
-				<col width="20%">
+				<col>
+				<col>
+				<col>
+				<col>
 			</colgroup>
 			<thead>
 			<tr class='warning'>
@@ -81,14 +84,16 @@ wp_enqueue_script( 'learnpress-jspdf' );
 				'p'     => 0,
 				'limit' => '9999',
 			);
-			if ( $items = $order->get_items_filter( $filter ) ) :
+
+			$items = $order->get_items_filter( $filter );
+			if ( $items ) :
 				?>
 				<?php foreach ( $items as $item ) : ?>
 					<tr>
 						<td><?php echo esc_html( $item['name'] ); ?></td>
-						<td><?php echo learn_press_format_price( isset( $item['total'] ) ? $item['total'] : 0, isset( $currency_symbol ) ? $currency_symbol : '$' ); ?></td>
-						<td>x <?php echo isset( $item['quantity'] ) ? $item['quantity'] : 0; ?></td>
-						<td><?php echo learn_press_format_price( isset( $item['total'] ) ? $item['total'] : 0, isset( $currency_symbol ) ? $currency_symbol : '$' ); ?></td>
+						<td><?php echo learn_press_format_price( $item['total'] ?? 0, $currency_symbol ?? '$' ); ?></td>
+						<td>x <?php echo $item['quantity'] ?? 0; ?></td>
+						<td><?php echo learn_press_format_price( $item['total'] ?? 0, $currency_symbol ?? '$' ); ?></td>
 					</tr>
 				<?php endforeach; ?>
 			<?php endif; ?>
@@ -98,13 +103,13 @@ wp_enqueue_script( 'learnpress-jspdf' );
 				<td></td>
 				<td></td>
 				<td><?php echo esc_html__( 'Sub Total', 'learnpress' ); ?></td>
-				<td><?php echo learn_press_format_price( $order->order_subtotal, $currency_symbol ); ?></td>
+				<td><?php echo learn_press_format_price( $order->get_data( 'order_subtotal' ), $currency_symbol ); ?></td>
 			</tr>
 			<tr>
 				<td></td>
 				<td></td>
 				<td><?php _e( 'Total', 'learnpress' ); ?></td>
-				<td><?php echo learn_press_format_price( $order->order_total, $currency_symbol ); ?></td>
+				<td><?php echo learn_press_format_price( $order->get_data( 'order_total' ), $currency_symbol ); ?></td>
 			</tr>
 			</tfoot>
 		</table>

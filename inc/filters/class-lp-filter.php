@@ -96,6 +96,10 @@ class LP_Filter {
 	/**
 	 * @var bool set true to return total_rows only
 	 */
+	public $query_count_only = false;
+	/**
+	 * @var bool set true to return total_rows
+	 */
 	public $query_count = false;
 	/**
 	 * @var string Ex: ID, for query: COUNT(ID)

@@ -31,18 +31,16 @@
 			}
 
 			&.button-enroll-course {
-				border-color: var(--lp-primary-color);
+				//border-color: var(--lp-primary-color);
 				color: #fff;
-				background: var(--lp-primary-color);
-
-				&:hover {
-					opacity: 0.5;
+				//background: var(--lp-primary-color);
+ 				&:hover {
+					//opacity: 0.5;
 					background: var(--lp-primary-color);
 				}
 
 				&.loading {
-
-					&::before {
+ 					&::before {
 						display: inline-block;
 						font-family: "Font Awesome 5 Free";
 						font-weight: 900;
@@ -96,6 +94,7 @@
 				width: 100%;
 			}
 		}
+
 		.number {
 			display: block;
 			margin: 0;
@@ -113,15 +112,15 @@
 		text-align: center;
 
 		.origin-price {
-			color: #666;
-			font-size: 18px;
+			color: var(--lp-primary-color);
+			font-size: 1.3em;
 			font-weight: 300;
 			font-style: unset;
 		}
 
 		.price {
-			color: #333;
-			font-size: 1.8rem;
+			color: var(--lp-primary-color);
+			font-size: 1.3em;
 			font-weight: 500;
 		}
 	}
@@ -129,7 +128,7 @@
 	.media-preview {
 		overflow: hidden;
 		position: relative;
-		margin: -20px -20px 20px;
+		margin: -20px -20px 10px;
 
 		img {
 			max-width: 100%;

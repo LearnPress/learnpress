@@ -5,7 +5,7 @@ Tags: elearning, education, course, lms, learning management system
 Requires at least: 5.8
 Tested up to: 6.1.1
 Requires PHP: 7.0
-Stable tag: 4.1.7.3.2
+Stable tag: 4.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -203,6 +203,60 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.
 
 == Changelog ==
+
+= 4.2.0 (2022-12-20) =
+~ Fixed: compatibility with WordPress PHP 8.1.
+~ Not implements ArrayAccess, Iterator, Countable of PHP on classes: LP_Datetime, LP_Session_Handler, LP_User_Item_Course, LP_User_Item, LP_Quiz_Results, LP_Course_Item, LP_Quiz, LP_Array_Access, LP_Profile_Tabs.
+~ Except class LP_Query_List_Table we still keep implements ArrayAccess (will notice the warning, but don't worry, you only need to disable WP_DEBUG mode), because addons: learnpress-h5p(version 4.0.1 and lower), learnpress-assignment(version 4.0.7 and lower) require it. So you need to update to the higher version of these plugins to make sure.
+~ Modified: LP_Datetime, deprecated method: toLocal, toRFC822, toUnix, setGMT, getSqlNullDate, addDuration, getPeriod.
+~ Deprecated: get_time_remaining, get_time of the class LP_User_Item, get_finishing_type of the class LP_User_Item_Course.
+~ Deprecated: get_course_remaining_time on the class LP_Abstract_User.
+~ Modified: get_expiration_time, deprecated param $format (<a href='https://github.com/LearnPress/learnpress/commit/17502a02d5328c399f33ea1219f0c9e71f1a257d'>17502a0</a>).
+~ Modified: class LP_Question_True_Or_False, LP_Question_Single_Choice, LP_Question_Multi_Choice, LP_Question_Fill_In_Blanks (<a href='https://github.com/LearnPress/learnpress/commit/3af1d1c78d3097f3d3b053ceecaf4264840eb1dc'>3af1d1c</a>).
+~ Modified: class LP_Question, deprecated method: _get_default_answers, _filter_meta_box_meta, update_answer_orders (<a href='https://github.com/LearnPress/learnpress/commit/3af1d1c78d3097f3d3b053ceecaf4264840eb1dc'>3af1d1c</a>)
+~ Modified: method 'get_answers' of class LP_Question (<a href='https://github.com/LearnPress/learnpress/commit/3af1d1c78d3097f3d3b053ceecaf4264840eb1dc#diff-24bccff44021f19220835ca960719a15beb4bbc8d3ffea086cccd6d42054ec7cR633'>3af1d1c</a>)
+~ Deprecated: 'learn_press_course_question_permalink_friendly' function.
+~ Added: 'LP_Question_Cache', LP_Session_Filter class.
+~ Commented: 'learn_press_mark_user_just_logged_in' function.
+~ Not store key 'order_awaiting_payment' in session, you need update 'learnpress-certificate' addon to version 4.0.4 or higher.
+~ Not call: 'learn_press_clear_cart_after_payment' on hook 'get_header'.
+~ Not call: 'learn_press_custom_checkout_cart' on hook 'learn_press_checkout_cart'.
+~ Deprecated: 'learn_press_add_order' function.
+~ Deprecated: learn_press_generate_transaction_object function.
+~ Modified: LP_Shortcode_Checkout class.
+~ Fixed: shortcode [learn_press_checkout] working right.
+~ Deprecated: 'LP_Request_Handler' class, your need to update addons 'Course Review' (version 4.0.4 or higher), 'Wishlist' (version 4.0.4 or higher).
+~ Not call 'learn_press_set_user_cookie_for_guest' function on hook 'wp'.
+~ Commented: 'set_cookie' method on class LP_Request. <a href=''>c12c4b54</a>
+~ Modified: 'LP_Session_Handler' class (<a href='https://github.com/LearnPress/learnpress/commit/c12c4b546548b750c3d05cb108162b3bee458d9b'>c12c4b54</a>).
+~ Optimized: handle session.
+~ Only set the cookie when the user does not log in.
+~ When a user login is successful, the previous session of the guest user is deleted.
+~ When a user logs out, expired sessions are deleted.
+~ Modified: 'save_data' method of class LP_Session_Handler (<a href='https://github.com/LearnPress/learnpress/commit/c12c4b546548b750c3d05cb108162b3bee458d9b'>c12c4b5</a>).
+~ Modified: 'get_cart_from_session', 'get_session_data', 'save_data' methods on class LP_Session_Handler.
+~ Change name 'get_session' method to 'get_session_by_customer_id'.
+~ Modified: 'update_session_timestamp', 'delete_session' methods on class LP_Session_Handler.
+~ Modified: 'LP_Cart', optimize how to set session for cart, get cart items when called, instance of set on hook 'wp_loaded' always call, not call 'set_cart_cookies' when 'add_to_cart' method called.
+~ Modified: 'calculate_totals' on class LP_Cart.
+~ Deprecated: method 'get_cart_for_session' on class LP_Cart.
+~ Modified: 'LP_Profile_Tabs' class.
+~ Replace all access via array to fields and methods of classes LP_Query_List_Table, LP_Profile, LP_Profile_Tab.
+~ Deprecated: 'offsetExists', 'offsetGet', 'get_current_question', 'get_question_position', 'check_question', 'get_question_link' methods LP_Quiz class.
+~ Modified: 'create_order' method on class 'LP_Checkout'.
+~ Deprecated: 'instructions' method on 'LP_Gateway_Offline_Payment' class.
+~ Moved: settings permalink Profile to tab Permalinks.
+~ Fixed security: inject SQL (CVE-2022-45820).
+~ Fixed security: XSS.
+~ Fixed: styles Backend, Frontend.
+~ Remove save lesson preview on list lessons on the Backend.
+~ Remove sortable between multiple section.
+~ Modified: method "list_courses", change how call the template.
+~ Checked: price is valid.
+~ Fixed: search course in term with Polylang.
+~ Modified: statistic of LP Order.
+~ Checked: MathJax.Hub undefined.
+~ Fixed: error json syntax API search courses, curriculum.
 
 = 4.1.7.3.2 (2022-11-18) - <a href='https://thimpress.com/learnpress-v4-1-7-3-2-update/' target='_blank' rel='noopener'>View detail</a> =
 ~ Added: tab permalink option.

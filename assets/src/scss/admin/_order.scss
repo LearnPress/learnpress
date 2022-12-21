@@ -424,5 +424,11 @@
 			width: 100%;
 		}
 	}
-
+	.lp-order-status {
+		.dashicons {
+			display: inline-flex !important;
+			align-items: center;
+			font-size: 16px;
+		}
+	}
 }

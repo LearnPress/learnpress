@@ -13,8 +13,10 @@ if ( ! class_exists( 'LP_Question_Answers' ) ) {
 
 	/**
 	 * Class LP_Question_Answers
+	 *
+	 * @deprecated 4.1.7.3
 	 */
-	class LP_Question_Answers implements ArrayAccess, Iterator {
+	class LP_Question_Answers {
 		/**
 		 * Answers
 		 *
@@ -100,6 +102,13 @@ if ( ! class_exists( 'LP_Question_Answers' ) ) {
 			if ( $this->_randomize_options ) {
 				$this->_shuffle();
 			}
+		}
+
+		/**
+		 * @return array
+		 */
+		public function get_answers(): array {
+			return $this->_answers;
 		}
 
 		/**
@@ -290,6 +299,7 @@ if ( ! class_exists( 'LP_Question_Answers' ) ) {
 
 		/**
 		 * @param string $more
+		 * @deprecated 4.1.7.3
 		 */
 		public function answers_class( $more = '' ) {
 			$classes = $this->get_class( $more );
@@ -304,7 +314,7 @@ if ( ! class_exists( 'LP_Question_Answer_Option' ) ) {
 	 *
 	 * @since 3.0.0
 	 */
-	class LP_Question_Answer_Option implements ArrayAccess {
+	class LP_Question_Answer_Option {
 		/**
 		 * Option data
 		 *
@@ -360,12 +370,12 @@ if ( ! class_exists( 'LP_Question_Answer_Option' ) ) {
 		 *
 		 * @return bool
 		 */
-		public function is_true() {
+		public function is_true(): bool {
 			return apply_filters( 'learn-press/question/option-is-true', array_key_exists( 'is_true', $this->_data ) && $this->_data['is_true'] === 'yes', $this );
 		}
 
 		public function get_id() {
-			return isset( $this->_data['question_answer_id'] ) ? $this->_data['question_answer_id'] : 0;
+			return $this->_data['question_answer_id'] ?? 0;
 		}
 
 		/**

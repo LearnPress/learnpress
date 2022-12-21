@@ -6,6 +6,9 @@
  * @package LearnPress/Functions
  * @version 1.0
  */
+
+use LearnPress\Helpers\Template;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -256,13 +259,13 @@ if ( ! function_exists( 'learn_press_single_quiz_args' ) ) {
 		if ( $quiz && $course ) {
 			$user      = learn_press_get_current_user();
 			$course_id = $course->get_id();
-			$user_quiz = $user->get_item_data( $quiz->get_id(), $course_id );
+			//$user_quiz = $user->get_item_data( $quiz->get_id(), $course_id );
 
-			if ( $user_quiz ) {
+			/*if ( $user_quiz ) {
 				$remaining_time = $user_quiz->get_time_remaining();
 			} else {
 				$remaining_time = false;
-			}
+			}*/
 
 			$args = array(
 				'id'                  => $quiz->get_id(),
@@ -287,6 +290,7 @@ if ( ! function_exists( 'learn_press_single_document_title_parts' ) ) {
 	 *
 	 * @return array
 	 * @since 3.0.0
+	 * @version 3.0.1
 	 */
 	function learn_press_single_document_title_parts( $title ) {
 		if ( learn_press_is_course() ) {
@@ -323,7 +327,7 @@ if ( ! function_exists( 'learn_press_single_document_title_parts' ) ) {
 				$page_title = '';
 			}
 
-			if ( $tab ) {
+			if ( $tab instanceof LP_Profile_Tab ) {
 				$title['title'] = join(
 					' ',
 					apply_filters(
@@ -331,7 +335,7 @@ if ( ! function_exists( 'learn_press_single_document_title_parts' ) ) {
 						array(
 							$page_title,
 							'&rarr;',
-							$tab['title'],
+							$tab->get( 'title' ),
 						)
 					)
 				);
@@ -602,6 +606,44 @@ function learn_press_get_message( $message, $type = 'success' ) {
 }
 
 /**
+ * Set LP message to COOKIE.
+ *
+ * @param array $message_data
+ * @since 4.2.0
+ * @version 1.0.0
+ * @return void
+ */
+function learn_press_set_message( array $message_data = [] ) {
+	if ( ! isset( $message_data ['status'] ) ) {
+		error_log( 'Message data must have status' );
+		return;
+	}
+	if ( ! isset( $message_data ['content'] ) ) {
+		error_log( 'Message data must have content' );
+		return;
+	}
+
+	// Set cookie for lp-message, allow get,set cookie on js.
+	add_option( 'lp-message', $message_data );
+}
+
+/**
+ * Show message only one time.
+ * @since 4.2.0
+ * @version 1.0.0
+ * @return void
+ */
+function learn_press_show_message() {
+	try {
+		$message_data = get_option( 'lp-message' );
+		delete_option( 'lp-message' );
+		Template::instance()->get_frontend_template( 'global/lp-message.php', compact( 'message_data' ) );
+	} catch ( Throwable $e ) {
+		error_log( $e->getMessage() );
+	}
+}
+
+/**
  * Remove message added into queue by id and/or type.
  *
  * @param string       $id
@@ -657,7 +699,11 @@ function learn_press_print_messages( $clear = true ) {
 	}
 }
 
+/**
+ * @deprecated 4.2.0
+ */
 function learn_press_message_count( $type = '' ) {
+	_deprecated_function( __FUNCTION__, '4.2.0' );
 	$count    = 0;
 	$messages = learn_press_session_get( learn_press_session_message_id(), array() );
 
@@ -678,8 +724,11 @@ function learn_press_session_message_id() {
 
 /**
  * Displays messages before main content
+ *
+ * @deprecated 4.2.0
  */
 function _learn_press_print_messages() {
+	//_deprecated_function( __FUNCTION__, '4.2.0' );
 	$item = LP_Global::course_item();
 	if ( ( 'learn_press_before_main_content' == current_action() ) && $item ) {
 		return;
@@ -687,8 +736,8 @@ function _learn_press_print_messages() {
 	learn_press_print_messages( true );
 }
 
-add_action( 'learn_press_before_main_content', '_learn_press_print_messages', 50 );
-add_action( 'learn-press/before-course-item-content', '_learn_press_print_messages', 50 );
+//add_action( 'learn_press_before_main_content', '_learn_press_print_messages', 50 );
+add_action( 'learn-press/before-course-item-content', 'learn_press_show_message', 50 );
 
 if ( ! function_exists( 'learn_press_page_title' ) ) {
 
@@ -904,14 +953,19 @@ function learn_press_locate_template( $template_name, $template_path = '', $defa
 }
 
 /**
- * Returns the name of folder contains template files in theme
- *
- * @param bool
+ * Returns the name of folder contains override template files in theme
  *
  * @return string
+ * @since 3.0.0
+ * @version 1.0.1
  */
-function learn_press_template_path( $slash = false ) {
-	return apply_filters( 'learn_press_template_path', 'learnpress', $slash ) . ( $slash ? '/' : '' );
+function learn_press_template_path(): string {
+	$lp_folder_name_override = apply_filters( 'learn_press_template_path', LP_PLUGIN_FOLDER_NAME );
+	if ( ! is_string( $lp_folder_name_override ) ) {
+		$lp_folder_name_override = LP_PLUGIN_FOLDER_NAME;
+	}
+
+	return $lp_folder_name_override;
 }
 
 /**
@@ -995,9 +1049,6 @@ if ( ! function_exists( 'learn_press_is_404' ) ) {
 	 */
 	function learn_press_is_404() {
 		global $wp_query;
-		if ( ! empty( $_REQUEST['debug-404'] ) ) {
-			learn_press_debug( debug_backtrace( DEBUG_BACKTRACE_PROVIDE_OBJECT, $_REQUEST['debug-404'] ) );
-		}
 		$wp_query->set_404();
 		status_header( 404 );
 	}

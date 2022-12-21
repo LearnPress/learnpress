@@ -53,7 +53,8 @@ if ( ! class_exists( 'LP_Question_Single_Choice' ) ) {
 
 			if ( $answers ) {
 				foreach ( $answers as $key => $option ) {
-					if ( ( $option['is_true'] == 'yes' ) && ( $this->is_selected_option( $option, $user_answer ) ) ) {
+					$data = $option->get_data();
+					if ( ( $data['is_true'] == 'yes' ) && ( $this->is_selected_option( $data, $user_answer ) ) ) {
 						$return['correct'] = true;
 						$return['mark']    = floatval( $this->get_mark() );
 						break;

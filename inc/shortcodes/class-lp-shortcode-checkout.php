@@ -33,18 +33,24 @@ if ( ! class_exists( 'LP_Shortcode_Checkout' ) ) {
 		 * @return string
 		 */
 		public function output() {
+			/**
+			 * @var WP $wp
+			 */
 			global $wp;
+			wp_enqueue_style( 'learnpress' );
 
 			ob_start();
 			if ( isset( $wp->query_vars['lp-order-received'] ) ) {
-				$this->_order_received( $wp->query_vars['lp-order-received'] );
+				$this->order_received( $wp->query_vars['lp-order-received'] );
 			} else {
-				$checkout_cart = learn_press_get_checkout_cart();
+				$checkout_cart = LearnPress::instance()->cart;
 
 				// Check cart has contents
-				if ( $checkout_cart && $checkout_cart->is_empty() ) {
+				if ( $checkout_cart->is_empty() ) {
 					learn_press_get_template( 'checkout/empty-cart.php' );
 				} else {
+					wp_enqueue_script( 'lp-checkout' );
+					$checkout_cart->calculate_totals();
 					learn_press_get_template( 'checkout/form.php' );
 				}
 			}
@@ -59,11 +65,10 @@ if ( ! class_exists( 'LP_Shortcode_Checkout' ) ) {
 		 *
 		 * @return void
 		 */
-		private function _order_received( $order_id = 0 ) {
+		private function order_received( int $order_id = 0 ) {
 			$order_id       = absint( $order_id );
-			$order_key      = LP_Helper::sanitize_params_submitted( $_GET['key'] ?? '' );
+			$order_key      = LP_Request::get_param( 'key' );
 			$order_received = learn_press_get_order( $order_id );
-
 			if ( ! $order_received ) {
 				return;
 			}
@@ -72,10 +77,9 @@ if ( ! class_exists( 'LP_Shortcode_Checkout' ) ) {
 				return;
 			}
 
-			LearnPress::instance()->session->remove( 'order_awaiting_payment' );
-			LearnPress::instance()->cart->empty_cart();
-
-			learn_press_print_messages();
+			//LearnPress::instance()->session->remove( 'order_awaiting_payment' );
+			//LearnPress::instance()->cart->empty_cart();
+			//learn_press_print_messages();
 
 			learn_press_get_template( 'checkout/order-received.php', array( 'order_received' => $order_received ) );
 		}

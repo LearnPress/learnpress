@@ -251,15 +251,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				),
 				'lp-dashboard'                      => new LP_Asset_Key(
 					self::url( 'js/dist/admin/pages/dashboard' . self::$_min_assets . '.js' ),
-					array(
-						'jquery',
-						'wp-element',
-						'wp-compose',
-						'wp-data',
-						'wp-hooks',
-						'wp-api-fetch',
-						'lodash',
-					),
+					[],
 					array( 'dashboard' ),
 					0,
 					1
@@ -277,7 +269,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				),
 				'lp-admin-notices'                  => new LP_Asset_Key(
 					self::url( 'js/dist/admin/admin-notices' . self::$_min_assets . '.js' ),
-					['wp-api-fetch']
+					[ 'wp-api-fetch' ]
 				),
 			)
 		);
@@ -336,10 +328,9 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 		if ( empty( $screen_id ) ) {
 			return;
 		}
-		wp_enqueue_media();
 
+		wp_enqueue_media(); //Todo: tungnx need check why call for that using.
 		$this->handle_js( $screen_id );
-
 		$this->handle_style( $screen_id );
 
 		do_action( 'learn-press/admin/after-enqueue-scripts' );

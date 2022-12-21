@@ -4,7 +4,7 @@
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 4.0.1
+ * @version 4.0.2
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -14,6 +14,11 @@ if ( ! isset( $data ) || ! isset( $data['start_time'] ) || ! isset( $data['end_t
 	return;
 }
 
+/**
+ * @var LP_Datetime $start_time
+ * @var LP_Datetime $end_time
+ * @var LP_Datetime $expiration_time
+ */
 $start_time      = $data['start_time'];
 $end_time        = $data['end_time'];
 $status          = $data['status'];

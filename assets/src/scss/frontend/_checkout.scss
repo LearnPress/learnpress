@@ -99,7 +99,7 @@
 			margin-bottom: 10px;
 			font-size: 16px;
 		}
-		input {
+		input:not([type="checkbox"]) {
 			height: 44px;
 			line-height: normal;
 			width: 100%;

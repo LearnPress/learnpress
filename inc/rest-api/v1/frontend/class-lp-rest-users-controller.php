@@ -166,30 +166,27 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 				throw new Exception( __( 'The quiz is invalid!', 'learnpress' ) );
 			}
 
+			$quiz->set_course( $course );
+
 			do_action( 'learn-press/user/before/start-quiz', $item_id, $course_id, $user_id );
 
 			// For no required enroll course
 			if ( $user->is_guest() && $course->is_no_required_enroll() ) {
-				if ( $quiz->get_retake_count() >= 0 ) {
-					//learn_press_remove_cookie( 'quiz_submit_status_' . $course_id . '_' . $item_id . '' );
-				}
 				$no_required_enroll = new LP_Course_No_Required_Enroll( $course );
 				$response           = $no_required_enroll->guest_start_quiz( $quiz );
 
 				return rest_ensure_response( $response );
 			}
 
-			// Require enroll course
+			/**
+			 * Require enroll course
+			 *
+			 * @var LP_User_Item_Quiz|WP_Error $user_quiz
+			 */
 			if ( $user->has_started_quiz( $item_id, $course_id ) ) {
-				/**
-				 * @var LP_User_Item_Quiz $user_quiz
-				 */
 				$user_quiz           = $user->retake_quiz( $item_id, $course_id, true );
-				$results['answered'] = []; // Reset answered before on js
+				$results['answered'] = []; // Reset answered for js
 			} else {
-				/**
-				 * @var LP_User_Item_Quiz $user_quiz
-				 */
 				$user_quiz = $user->start_quiz( $item_id, $course_id, true );
 			}
 
@@ -205,8 +202,6 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			$key_cache     = sprintf( '%d/user/%d/course/%d', $item_id, $user_id, $course_id );
 			$lp_quiz_cache->clear( $key_cache );
 			// End
-
-			$quiz->set_course( $course );
 
 			$show_check          = $quiz->get_instant_check();
 			$duration            = $quiz->get_duration();

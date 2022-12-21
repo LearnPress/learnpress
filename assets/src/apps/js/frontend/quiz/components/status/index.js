@@ -83,7 +83,7 @@ const Status = () => {
 
 	const currentPage = getData( 'currentPage' );
 	const questionsPerPage = getData( 'questionsPerPage' );
-	const questionsCount = getData( 'questionIds' ).length;
+	const questionsCount = getData( 'numberQuestionsToDo' );
 	const submitting = getData( 'submitting' );
 	const duration = getData( 'duration' );
 	const userMark = getUserMark();
@@ -125,7 +125,7 @@ const Status = () => {
 							className="lp-button" id="button-submit-quiz"
 							onClick={ submit }
 						>
-							{ ! submitting ? __( 'Finish Quiz', 'learnpress' ) : __( 'Submitting...', 'learnpress' ) }
+							{ ! submitting ? __( 'Finish Quiz', 'learnpress' ) : __( 'Submitting…', 'learnpress' ) }
 						</button>
 					</div>
 

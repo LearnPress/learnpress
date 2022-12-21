@@ -107,6 +107,9 @@
 						}
 					},
 					remove: function() {
+						if ( ! confirm( $store.getters['i18n/all'].confirm_remove_item.replace( '{{ITEM_NAME}}', this.item.title ) ) ) {
+							return;
+						}
 						this.item.temp_id = LP.uniqueId();
 						this.$emit( 'remove', this.item );
 					},

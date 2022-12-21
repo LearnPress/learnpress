@@ -2,9 +2,9 @@
 /**
  * Return LP_Cart object instance
  *
- * @return mixed
+ * @return LP_Cart
  */
-function learn_press_get_cart() {
+function learn_press_get_cart(): LP_Cart {
 	return LearnPress::instance()->cart;
 }
 
@@ -48,11 +48,16 @@ function learn_press_get_cart_course_url() {
  * Return total of cart
  *
  * @return mixed
+ * @deprecated 4.2.0
  */
 function learn_press_get_cart_total() {
+	_deprecated_function( __FUNCTION__, '4.2.0' );
 	return LearnPress::instance()->cart->total;
 }
 
+/**
+ * @deprecated 4.2.0
+ */
 function learn_press_clear_cart_after_payment() {
 	global $wp;
 
@@ -68,23 +73,24 @@ function learn_press_clear_cart_after_payment() {
 		}
 	}
 
-	if ( ! is_null( LearnPress::instance()->session ) && LearnPress::instance()->session->order_awaiting_payment > 0 ) {
-		$order = learn_press_get_order( LearnPress::instance()->session->order_awaiting_payment );
+	if ( ! is_null( LearnPress::instance()->session ) && LearnPress::instance()->session->get( 'order_awaiting_payment' ) > 0 ) {
+		$order = learn_press_get_order( LearnPress::instance()->session->get( 'order_awaiting_payment' ) );
 
 		if ( $order && $order->id > 0 ) {
 			if ( ! $order->has_status( array( 'failed', 'pending', 'cancelled' ) ) ) {
 				LearnPress::instance()->cart->empty_cart();
-				LearnPress::instance()->session->order_awaiting_payment = null;
+				LearnPress::instance()->session->remove( 'order_awaiting_payment' );
 			}
 		}
 	}
 }
-add_action( 'get_header', 'learn_press_clear_cart_after_payment' );
+//add_action( 'get_header', 'learn_press_clear_cart_after_payment' );
 
 /**
  * @param LP_Cart $cart
  *
  * @return mixed
+ * @deprecated 4.2.0
  */
 function learn_press_custom_checkout_cart( $cart ) {
 	if ( empty( $_REQUEST['single-item'] ) ) {
@@ -101,4 +107,4 @@ function learn_press_custom_checkout_cart( $cart ) {
 
 	return $cart;
 }
-add_filter( 'learn_press_checkout_cart', 'learn_press_custom_checkout_cart' );
+//add_filter( 'learn_press_checkout_cart', 'learn_press_custom_checkout_cart' );
