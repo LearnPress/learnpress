@@ -1,6 +1,7 @@
 {
   "learnpress-assignments": {
     "name": "LearnPress - Assignments",
+    "basename": "learnpress-assignments/learnpress-assignments.php",
     "version": "4.0.8",
     "require_lp": "4.0.0",
     "description": "Assignment Add-on for LearnPress is a great way to assign tasks, essays for your students so they can do at home and submit. Instructors can check students’ work after that and grade the assignment.",
@@ -13,6 +14,7 @@
   },
   "learnpress-h5p": {
     "name": "LearnPress - H5P",
+    "basename": "learnpress-h5p/learnpress-h5p.php",
     "version": "4.0.2",
     "require_lp": "4.0.0",
     "description": "H5P add-on for LearnPress is to integrate the questions from plugin H5P to the LearnPress system.\n\n",
@@ -25,6 +27,7 @@
   },
   "learnpress-prerequisites-courses": {
     "name": "LearnPress – Prerequisites Courses",
+    "basename": "learnpress-prerequisites-courses/learnpress-prerequisites-courses.php",
     "version": "4.0.6",
     "require_lp": "4.1.7.3.2",
     "description": "LearnPress Prerequisites is an add-on for LearnPress allow you to set prerequisite courses for a certain course in a LearnPress site.",
@@ -37,6 +40,7 @@
   },
   "learnpress-certificate": {
     "name": "LearnPress - Certificates",
+    "basename": "learnpress-certificate/learnpress-certificate.php",
     "version": "4.0.6",
     "require_lp": "4.1.7.3.2",
     "description": "LearnPress Prerequisites is an add-on for LearnPress allow you to set prerequisite courses for a certain course in a LearnPress site.",
@@ -49,6 +53,7 @@
   },
   "learnpress-content-drip": {
     "name": "LearnPress - Content Drip",
+    "basename": "learnpress-content-drip/learnpress-content-drip.php",
     "version": "4.0.6",
     "require_lp": "4.1.7.3.2",
     "description": "LearnPress Prerequisites is an add-on for LearnPress allow you to set prerequisite courses for a certain course in a LearnPress site.",
@@ -61,6 +66,7 @@
   },
   "learnpress-co-instructors": {
     "name": "LearnPress - Co-Instructors",
+    "basename": "learnpress-co-instructors/learnpress-co-instructors.php",
     "version": "4.0.6",
     "require_lp": "4.1.7.3.2",
     "description": "LearnPress Prerequisites is an add-on for LearnPress allow you to set prerequisite courses for a certain course in a LearnPress site.",
