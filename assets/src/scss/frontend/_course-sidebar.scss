@@ -32,10 +32,11 @@
 
 			&.button-enroll-course {
 				//border-color: var(--lp-primary-color);
+				border: none;
 				color: #fff;
-				//background: var(--lp-primary-color);
+				background: var(--lp-primary-color);
  				&:hover {
-					//opacity: 0.5;
+					opacity: 0.8;
 					background: var(--lp-primary-color);
 				}
 
