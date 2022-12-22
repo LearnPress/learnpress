@@ -338,9 +338,6 @@ abstract class LP_Abstract_Submenu {
 							<a class="nav-tab" href="?page=<?php echo esc_attr( $this->id ); ?>&tab=<?php echo esc_attr( $tab ); ?>"><?php echo esc_html( $tab_title ); ?></a>
 						<?php } ?>
 					<?php } ?>
-					<div class="">
-						<input type="text" placeholder="Search name addon">
-					</div>
 				</h2>
 			<?php } ?>
 

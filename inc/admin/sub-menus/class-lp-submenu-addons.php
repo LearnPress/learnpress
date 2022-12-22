@@ -30,7 +30,7 @@ class LP_Submenu_Addons extends LP_Abstract_Submenu {
 			return;
 		}
 
-		$tabs = array(
+		/*$tabs = array(
 			'all'       => sprintf( __( 'All (%d)', 'learnpress' ), '<span class="count-addons-all"></span>' ),
 			'installed' => sprintf( __( 'Installed (%d)', 'learnpress' ), '<span class="count-addons-installed"></span>' ),
 			'paid'      => sprintf( __( 'Paid (%d)', 'learnpress' ), '<span class="count-addons-paid"></span>' ),
@@ -43,7 +43,7 @@ class LP_Submenu_Addons extends LP_Abstract_Submenu {
 		$this->tabs = apply_filters(
 			'learn-press/admin/page-addons-tabs',
 			$tabs
-		);
+		);*/
 	}
 
 	public function page_content_installed() {

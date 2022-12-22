@@ -225,6 +225,9 @@
 		padding: 20px;
 		border: 1px solid rgba(151, 71, 255, 1);
 		border-radius: 3px;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
 
 		&__content {
 			text-align: center;
@@ -253,6 +256,7 @@
 			padding: 20px 20px 0;
 			margin: 0 -20px;
 			display: flex;
+			align-items: center;
 
 			&__left {
 				flex: 3;
@@ -276,7 +280,7 @@
 	}
 
 	/***** Toggle *****/
-	.thim-toggle-switch-label{
+	.lp-toggle-switch-label{
 		height: 20px;
 		align-items: center;
 		margin-bottom: 0;
@@ -303,40 +307,32 @@
 		&::before {
 			left: 0;
 		}
+
+		.toggle-on,
+		.toggle-off {
+			opacity: 1;
+			padding-left: 6px;
+			padding-right: 6px;
+			font-size: 14px;
+			line-height: 18px;
+		}
+
+		.toggle-on {
+			color: #fff;
+			opacity: 0;
+			padding-right: 0;
+			width: 12px;
+		}
+
+		.toggle-off {
+			width: 12px;
+			color: #777;
+			padding-left: 0;
+		}
 	}
 
-	.toggle-on,
-	.toggle-off {
-		opacity: 1;
-		padding-left: 6px;
-		padding-right: 6px;
-		font-size: 14px;
-		line-height: 18px;
-	}
-
-	.toggle-on {
-		color: #fff;
-		opacity: 0;
-		padding-right: 0;
-		width: 12px;
-	}
-
-	.toggle-off {
-		width: 12px;
-		color: #777;
-		padding-left: 0;
-	}
-
-	.thim-switch{
-		border: none;
-		margin-bottom: 0;
-		outline: 0;
-		padding: 0;
-		user-select: none;
-		border-radius: 3rem;
-	}
-
-	input{
+	input.lp-toggle-switch-input{
+		display: none;
 
 		&:checked{
 			+ label{
@@ -363,9 +359,37 @@
 		-webkit-clip-path: inset(50%);
 	}
 
-	.thim-toggle {
+	/*.thim-toggle {
 		align-items: flex-start;
 		display: flex;
 		justify-content: space-between;
+	}*/
+}
+
+.lp-nav-tab-wrapper {
+	display: flex;
+	margin-bottom: 20px;
+	justify-content: start;
+	gap: 5px;
+	border-bottom: 1px solid #c3c4c7;
+
+	.nav-tab {
+		border: 1px solid #c3c4c7;
+		border-bottom: none;
+		margin-left: 0;
+		padding: 5px 10px;
+		font-size: 14px;
+		line-height: 1.71428571;
+		font-weight: 600;
+		background: #dcdcde;
+		color: #50575e;
+		text-decoration: none;
+		white-space: nowrap;
+		border-radius: 3px 3px 0 0;
+	}
+
+	span.nav-tab-active {
+		background: #f0f0f1;
+		border-bottom: 1px solid #f0f0f1;
 	}
 }

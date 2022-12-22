@@ -1,6 +1,7 @@
 
 .course-summary-sidebar {
-	--lp-button-background-color: #222;
+	--lp-button-background-color: #28303d;
+	--lp-button-color: #d1e4dd;
 	.course-sidebar-preview {
 		margin-bottom: 35px;
 		background: #fff;
@@ -26,7 +27,7 @@
 		button {
  			font-weight: 500;
 			background-color: var(--lp-button-background-color);
-			color: #fff;
+			color: var(--lp-button-color);
 			border: none;
 			&:hover {
 				border-color: var(--lp-primary-color);
