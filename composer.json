@@ -15,12 +15,12 @@
     "issues": "https://github.com/LearnPress/learnpress/issues"
   },
   "require-dev": {
-    "dealerdirect/phpcodesniffer-composer-installer": "^0.7.1",
-    "squizlabs/php_codesniffer": "^3.6.1",
-    "wp-coding-standards/wpcs": "^2.3.0",
-	"phpunit/phpunit": "9.5.10",
+    "dealerdirect/phpcodesniffer-composer-installer": "^v0.7.2",
+    "squizlabs/php_codesniffer": "3.7.1",
+    "wp-coding-standards/wpcs": "2.3.0",
+	"phpunit/phpunit": "9.5.27",
 	"phpcompatibility/php-compatibility": "9.3.5",
-	"wp-cli/wp-cli-bundle": "^2.5.0"
+	"wp-cli/wp-cli-bundle": "v2.7.1"
   },
   "scripts": {
     "format": "phpcbf --standard=phpcs.xml --report-summary --report-source",
