@@ -53,7 +53,8 @@ class LP_REST_Addon_Controller extends LP_Abstract_REST_Controller {
 		$response       = new LP_REST_Response();
 		$response->data = '';
 
-		$url = 'https://learnpress.github.io/learnpress/version-addons.json';
+		//$url = 'https://learnpress.github.io/learnpress/version-addons.json';
+		$url = LP_PLUGIN_URL . '/version-addons.json';
 
 		try {
 			$res = wp_remote_get( $url );
@@ -107,9 +108,24 @@ class LP_REST_Addon_Controller extends LP_Abstract_REST_Controller {
 
 			switch ( $action ) {
 				case 'install':
-					$addon = json_decode( $addon, true );
-					$addon = LP_Addon::instance( $addon['slug'] );
-					$addon->install();
+					if ($addon['is_org']) {
+						include_once( ABSPATH . 'wp-admin/includes/class-wp-upgrader.php' );
+						include_once( ABSPATH . 'wp-admin/includes/plugin-install.php' );
+
+						$skin            = new WP_Ajax_Upgrader_Skin();
+						$plugin_upgrader = new Plugin_Upgrader( $skin );
+						$link_download   = "https://downloads.wordpress.org/plugin/learnpress-import-export.zip";
+						$result          = $plugin_upgrader->install( $link_download );
+						if ( is_wp_error( $result ) ) {
+							throw new Exception( $result->get_error_message() );
+						}
+					} else {
+						if ( $addon['is_free'] ) {
+
+						} else {
+
+						}
+					}
 					break;
 				case 'activate':
 					activate_plugin( $addon['basename'] );
@@ -117,10 +133,8 @@ class LP_REST_Addon_Controller extends LP_Abstract_REST_Controller {
 				case 'deactivate':
 					deactivate_plugins( $addon['basename'] );
 					break;
-				case 'uninstall':
-					$addon = json_decode( $addon, true );
-					$addon = LP_Addon::instance( $addon['slug'] );
-					$addon->uninstall();
+				case 'updated':
+
 					break;
 				default:
 					throw new Exception( __( 'Action is invalid!', 'learnpress' ) );
@@ -128,7 +142,7 @@ class LP_REST_Addon_Controller extends LP_Abstract_REST_Controller {
 			}
 
 			$response->status  = 'success';
-			$response->message = __( 'Get addons successfully', 'learnpress' );
+			$response->message = sprintf( '%s %s %s', $addon['name'], $action, __( 'successfully', 'learnpress' ) );
 		} catch ( Throwable $e ) {
 			$response->message = $e->getMessage();
 		}

@@ -122,4 +122,13 @@ document.addEventListener( 'click', ( e ) => {
 		const data = { action, addon };
 		addonsAction( data );
 	}
+
+	if ( el.classList.contains( 'btn-addon-action' ) ) {
+		e.preventDefault();
+
+		const addon = JSON.parse( el.getAttribute( 'data-addon' ) );
+		const action = el.getAttribute( 'data-action' );
+		const data = { action, addon };
+		addonsAction( data );
+	}
 } );

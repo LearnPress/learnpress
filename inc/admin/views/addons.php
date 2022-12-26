@@ -37,6 +37,12 @@ $active_tab            = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : 'all';
 			$addon_base      = "$slug/$slug.php";
 			$version_latest  = $addon->version;
 			$version_current = 0;
+			$data = array(
+				'name'  => $addon->slug,
+				'id'    => $addon->slug,
+				'value' => 0,
+				'extra' => 'data-addon="' . htmlentities( json_encode( $addon ) ) . '"',
+			);
 
 			if ( 1 == $addon->is_free ) {
 				$total_addon_free ++;
@@ -115,20 +121,13 @@ $active_tab            = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : 'all';
 								echo '<button>Update</button>';
 							}
 						} else {
-							echo '<button>Install</button>';
+							echo '<button class="btn-addon-action" data-action="install" '.$data['extra'].'>Install</button>';
 						}
 						?>
 					</div>
 					<div class="lp-addon-item__actions__right">
 						<?php
 						if ( $is_installed ) {
-							$data = array(
-								'name'  => $addon->slug,
-								'id'    => $addon->slug,
-								'value' => 0,
-								'extra' => 'data-addon="' . htmlentities( json_encode( $addon ) ) . '"',
-							);
-
 							if ( $is_activated ) {
 								$data['value']  = 1;
 								$data['extra'] .= ' data-action="deactivate"';
@@ -178,7 +177,7 @@ $active_tab            = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : 'all';
 					class="nav-tab<?php echo esc_attr( $active_class ); ?>"><?php echo esc_html( $tab_title ); ?></span>
 			<?php } else { ?>
 				<a class="nav-tab"
-				   href="?page=learn-press-addons&tab=<?php echo esc_attr( $tab ); ?>"><?php echo esc_html( $tab_title ); ?></a>
+					href="?page=learn-press-addons&tab=<?php echo esc_attr( $tab ); ?>"><?php echo esc_html( $tab_title ); ?></a>
 			<?php } ?>
 		<?php } ?>
 		<div class="">
