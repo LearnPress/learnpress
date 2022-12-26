@@ -37,7 +37,7 @@ $active_tab            = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : 'all';
 			$addon_base      = "$slug/$slug.php";
 			$version_latest  = $addon->version;
 			$version_current = 0;
-			$data = array(
+			$data            = array(
 				'name'  => $addon->slug,
 				'id'    => $addon->slug,
 				'value' => 0,
@@ -118,10 +118,10 @@ $active_tab            = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : 'all';
 								echo '<button>Settings</button>';
 							}
 							if ( $is_updated ) {
-								echo '<button>Update</button>';
+								echo '<button class="btn-addon-action" data-action="update" ' . $data['extra'] . '>Update</button>';
 							}
 						} else {
-							echo '<button class="btn-addon-action" data-action="install" '.$data['extra'].'>Install</button>';
+							echo '<button class="btn-addon-action" data-action="install" ' . $data['extra'] . '>Install</button>';
 						}
 						?>
 					</div>

@@ -1814,9 +1814,7 @@ function learn_press_add_notice( $message, $type = 'updated' ) {
  * @version 1.0.3
  */
 function learn_press_setcookie( string $name = '', string $value = '', int $expire = 0, bool $httponly = true ) {
-	$secure = ( 'https' === parse_url( wp_login_url(), PHP_URL_SCHEME ) );
-
-	@setcookie( $name, $value, $expire, COOKIEPATH ?: '/', COOKIE_DOMAIN, $secure, $httponly );
+	@setcookie( $name, $value, $expire, COOKIEPATH ?: '/', COOKIE_DOMAIN, is_ssl(), $httponly );
 }
 
 /**

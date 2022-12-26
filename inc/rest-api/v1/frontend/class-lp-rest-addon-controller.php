@@ -92,6 +92,9 @@ class LP_REST_Addon_Controller extends LP_Abstract_REST_Controller {
 	 * @since 4.2.1
 	 */
 	public function action( WP_REST_Request $request ): LP_REST_Response {
+		include_once( ABSPATH . 'wp-admin/includes/class-wp-upgrader.php' );
+		include_once( ABSPATH . 'wp-admin/includes/plugin-install.php' );
+
 		$response       = new LP_REST_Response();
 		$response->data = '';
 
@@ -106,19 +109,22 @@ class LP_REST_Addon_Controller extends LP_Abstract_REST_Controller {
 				throw new Exception( __( 'Params is invalid!', 'learnpress' ) );
 			}
 
+			$link_org = 'https://downloads.wordpress.org/plugin/';
+
 			switch ( $action ) {
 				case 'install':
-					if ($addon['is_org']) {
-						include_once( ABSPATH . 'wp-admin/includes/class-wp-upgrader.php' );
-						include_once( ABSPATH . 'wp-admin/includes/plugin-install.php' );
-
+					if ( $addon['is_org'] ) {
 						$skin            = new WP_Ajax_Upgrader_Skin();
 						$plugin_upgrader = new Plugin_Upgrader( $skin );
-						$link_download   = "https://downloads.wordpress.org/plugin/learnpress-import-export.zip";
+						$link_download   = "$link_org{$addon['slug']}.{$addon['version']}.zip";
 						$result          = $plugin_upgrader->install( $link_download );
 						if ( is_wp_error( $result ) ) {
 							throw new Exception( $result->get_error_message() );
+						} elseif ( ! $result ) {
+							throw new Exception( __( 'Install failed!', 'learnpress' ) );
 						}
+
+						activate_plugin( $addon['basename'] );
 					} else {
 						if ( $addon['is_free'] ) {
 
@@ -133,11 +139,33 @@ class LP_REST_Addon_Controller extends LP_Abstract_REST_Controller {
 				case 'deactivate':
 					deactivate_plugins( $addon['basename'] );
 					break;
-				case 'updated':
+				case 'update':
+					if ( $addon['is_org'] ) {
+						$is_activate = is_plugin_active( $addon['basename'] );
+						// Must call this function to upgrade success.
+						wp_update_plugins();
+						$skin     = new WP_Ajax_Upgrader_Skin();
+						$upgrader = new Plugin_Upgrader( $skin );
+						$result   = $upgrader->bulk_upgrade( [ $addon['basename'] ] );
 
+						if ( is_wp_error( $result ) ) {
+							throw new Exception( $result->get_error_message() );
+						} elseif ( ! $result ) {
+							throw new Exception( __( 'Update failed!', 'learnpress' ) );
+						}
+
+						if ( $is_activate ) {
+							activate_plugin( $addon['basename'] );
+						}
+					} else {
+						if ( $addon['is_free'] ) {
+
+						} else {
+
+						}
+					}
 					break;
 				default:
-					throw new Exception( __( 'Action is invalid!', 'learnpress' ) );
 					break;
 			}
 
