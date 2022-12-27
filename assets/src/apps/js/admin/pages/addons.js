@@ -128,7 +128,13 @@ document.addEventListener( 'click', ( e ) => {
 
 		const addon = JSON.parse( el.getAttribute( 'data-addon' ) );
 		const action = el.getAttribute( 'data-action' );
-		const data = { action, addon };
+		const purchase = el.closest( '.lp-addon-item__purchase' );
+		let purchaseCode = '';
+		if ( purchase ) {
+			purchaseCode = purchase.querySelector( 'input' ).value;
+		}
+
+		const data = { purchase_code: purchaseCode, action, addon };
 		addonsAction( data );
 	}
 } );

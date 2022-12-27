@@ -142,6 +142,14 @@ $active_tab            = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : 'all';
 						?>
 					</div>
 				</div>
+				<div class="lp-addon-item__purchase">
+					<div class="">
+						<input type="text" placeholder="Enter Purchase Code">
+						<button class="btn-addon-action" data-action="install" <?php echo $data['extra']; ?>>Submit</button>
+					</div>
+					OR
+					<button>Buy now</button>
+				</div>
 			</div>
 			<?php
 		}
