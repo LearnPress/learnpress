@@ -43,6 +43,7 @@ $active_tab            = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : 'all';
 				'value' => 0,
 				'extra' => 'data-addon="' . htmlentities( json_encode( $addon ) ) . '"',
 			);
+			$classes_status  = [];
 
 			if ( 1 == $addon->is_free ) {
 				$total_addon_free ++;
@@ -51,19 +52,22 @@ $active_tab            = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : 'all';
 			}
 
 			if ( isset( $plugins_installed[ $addon_base ] ) ) {
-				$is_installed    = true;
-				$version_current = $plugins_installed[ $addon_base ]['Version'];
+				$is_installed     = true;
+				$classes_status[] = 'installed';
+				$version_current  = $plugins_installed[ $addon_base ]['Version'];
 				$total_addon_installed ++;
 			}
 
 			if ( in_array( $addon_base, $plugins_activated ) ) {
-				$is_activated = true;
+				$is_activated     = true;
+				$classes_status[] = 'activated';
 				$total_addon_activated ++;
 			}
 
 			if ( $is_installed && version_compare( $version_current, $version_latest, '<' ) ) {
 				$total_addon_update ++;
-				$is_updated = true;
+				$classes_status[] = 'update';
+				$is_updated       = true;
 			}
 
 			switch ( $active_tab ) {
@@ -111,44 +115,40 @@ $active_tab            = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : 'all';
 					<p title="<?php echo $addon->description; ?>"><?php echo $addon->description; ?></p>
 				</div>
 				<div class="lp-addon-item__actions">
-					<div class="lp-addon-item__actions__left">
+					<div class="lp-addon-item__actions__left <?php echo implode( $classes_status, ' ' ); ?>">
 						<?php
-						if ( $is_installed ) {
-							if ( $is_activated ) {
-								echo '<button>Settings</button>';
-							}
-							if ( $is_updated ) {
-								echo '<button class="btn-addon-action" data-action="update" ' . $data['extra'] . '>Update</button>';
-							}
-						} else {
+							echo '<button>Settings</button>';
+							echo '<button class="btn-addon-action" data-action="update" ' . $data['extra'] . '>Update</button>';
 							echo '<button class="btn-addon-action" data-action="install" ' . $data['extra'] . '>Install</button>';
-						}
+							echo '<button class="btn-addon-action" data-action="purchase">Install</button>';
 						?>
 					</div>
 					<div class="lp-addon-item__actions__right">
 						<?php
-						if ( $is_installed ) {
-							if ( $is_activated ) {
-								$data['value']  = 1;
-								$data['extra'] .= ' data-action="deactivate"';
-							} else {
-								$data['extra'] .= ' data-action="activate"';
-							}
-
-							Template::instance()->get_template( LP_PLUGIN_PATH . '/inc/admin/meta-box/fields/toggle-switch.php', compact( 'data' ) );
+						if ( $is_activated ) {
+							$data['value']  = 1;
+							$data['extra'] .= ' data-action="deactivate"';
 						} else {
-
+							$data['extra'] .= ' data-action="activate"';
 						}
+
+						Template::instance()->get_template( LP_PLUGIN_PATH . '/inc/admin/meta-box/fields/toggle-switch.php', compact( 'data' ) );
+
 						?>
 					</div>
 				</div>
 				<div class="lp-addon-item__purchase">
-					<div class="">
+					<div class="lp-addon-item__purchase__wrapper">
 						<input type="text" placeholder="Enter Purchase Code">
-						<button class="btn-addon-action" data-action="install" <?php echo $data['extra']; ?>>Submit</button>
+						<button class="btn-addon-action" data-action="install" <?php echo $data['extra']; ?>>
+							<span class="dashicons dashicons-update"></span><span class="text">Submit</span>
+						</button>
+						OR
+						<button class="btn-addon-action" data-action="buy" data-link="<?php echo $addon->link; ?>">Buy
+							Now
+						</button>
+						<button class="btn-addon-action" data-action="cancel">Cancel</button>
 					</div>
-					OR
-					<button>Buy now</button>
 				</div>
 			</div>
 			<?php
@@ -185,7 +185,7 @@ $active_tab            = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : 'all';
 					class="nav-tab<?php echo esc_attr( $active_class ); ?>"><?php echo esc_html( $tab_title ); ?></span>
 			<?php } else { ?>
 				<a class="nav-tab"
-					href="?page=learn-press-addons&tab=<?php echo esc_attr( $tab ); ?>"><?php echo esc_html( $tab_title ); ?></a>
+				   href="?page=learn-press-addons&tab=<?php echo esc_attr( $tab ); ?>"><?php echo esc_html( $tab_title ); ?></a>
 			<?php } ?>
 		<?php } ?>
 		<div class="">

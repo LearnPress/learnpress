@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the LearnPress plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: LearnPress 4.2.0\n"
+"Project-Id-Version: LearnPress 4.2.1-beta-1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/learnpress\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2022-12-21T06:08:52+03:00\n"
+"POT-Creation-Date: 2022-12-29T04:35:01+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.7.1\n"
 "X-Domain: learnpress\n"
@@ -338,7 +338,7 @@ msgstr ""
 #: config/settings/permalink.php:123
 #: inc/admin/sub-menus/class-lp-submenu-settings.php:18
 #: inc/user/class-lp-profile.php:276
-#: learnpress.php:480
+#: learnpress.php:483
 msgid "Settings"
 msgstr ""
 
@@ -601,7 +601,7 @@ msgstr ""
 #: inc/admin/class-lp-admin.php:244
 #: inc/admin/views/meta-boxes/fields/date.php:39
 #: inc/class-lp-assets.php:73
-#: inc/lp-core-functions.php:2795
+#: inc/lp-core-functions.php:2793
 #: inc/order/class-lp-order.php:1018
 #: assets/js/dist/frontend/quiz.min.js:44
 msgid "Cancel"
@@ -1498,7 +1498,7 @@ msgid "Reset Password"
 msgstr ""
 
 #: inc/admin/sub-menus/class-lp-submenu-addons.php:14
-#: learnpress.php:482
+#: learnpress.php:485
 msgid "Add-ons"
 msgstr ""
 
@@ -1506,19 +1506,7 @@ msgstr ""
 msgid "LearnPress Add-ons"
 msgstr ""
 
-#: inc/admin/sub-menus/class-lp-submenu-addons.php:34
-msgid "Get more (%d)"
-msgstr ""
-
-#: inc/admin/sub-menus/class-lp-submenu-addons.php:35
-msgid "Installed (%d)"
-msgstr ""
-
-#: inc/admin/sub-menus/class-lp-submenu-addons.php:36
-msgid "Themes (%d)"
-msgstr ""
-
-#: inc/admin/sub-menus/class-lp-submenu-addons.php:64
+#: inc/admin/sub-menus/class-lp-submenu-addons.php:68
 msgid "Search..."
 msgstr ""
 
@@ -1564,6 +1552,30 @@ msgstr ""
 
 #: inc/admin/sub-menus/class-lp-submenu-tools.php:23
 msgid "LearnPress Beta Version"
+msgstr ""
+
+#: inc/admin/views/addons.php:161
+msgid "All (%d)"
+msgstr ""
+
+#: inc/admin/views/addons.php:162
+msgid "Installed (%d)"
+msgstr ""
+
+#: inc/admin/views/addons.php:163
+msgid "Paid (%d)"
+msgstr ""
+
+#: inc/admin/views/addons.php:164
+msgid "Free (%d)"
+msgstr ""
+
+#: inc/admin/views/addons.php:165
+msgid "Update (%d)"
+msgstr ""
+
+#: inc/admin/views/addons.php:166
+msgid "Get more"
 msgstr ""
 
 #: inc/admin/views/addons/html-loop-plugin.php:47
@@ -2751,11 +2763,11 @@ msgstr ""
 msgid "No theme is defined for this template."
 msgstr ""
 
-#: inc/cart/class-lp-cart.php:165
+#: inc/cart/class-lp-cart.php:169
 msgid "Sorry! This course is not purchasable."
 msgstr ""
 
-#: inc/cart/class-lp-cart.php:169
+#: inc/cart/class-lp-cart.php:173
 msgid "Sorry! The number of enrolled students has reached its limit"
 msgstr ""
 
@@ -2804,19 +2816,19 @@ msgid "Congrats! You have completed \"%s\"."
 msgstr ""
 
 #: inc/class-lp-assets.php:72
-#: inc/lp-core-functions.php:2794
+#: inc/lp-core-functions.php:2792
 #: assets/js/dist/frontend/quiz.min.js:41
 msgid "OK"
 msgstr ""
 
 #: inc/class-lp-assets.php:74
-#: inc/lp-core-functions.php:2796
+#: inc/lp-core-functions.php:2794
 #: templates/global/lp-modal-overlay.php:24
 msgid "Yes"
 msgstr ""
 
 #: inc/class-lp-assets.php:75
-#: inc/lp-core-functions.php:2797
+#: inc/lp-core-functions.php:2795
 #: templates/global/lp-modal-overlay.php:23
 msgid "No"
 msgstr ""
@@ -3194,7 +3206,7 @@ msgid "Edit this item"
 msgstr ""
 
 #: inc/course/lp-course-functions.php:943
-#: inc/lp-core-functions.php:2426
+#: inc/lp-core-functions.php:2424
 #: inc/templates/class-lp-template-profile.php:103
 #: inc/user-item/class-lp-user-item-quiz.php:147
 #: inc/user/class-lp-profile.php:881
@@ -3204,7 +3216,7 @@ msgid "Passed"
 msgstr ""
 
 #: inc/course/lp-course-functions.php:946
-#: inc/lp-core-functions.php:2429
+#: inc/lp-core-functions.php:2427
 #: inc/order/class-lp-order.php:350
 #: inc/templates/class-lp-template-profile.php:104
 #: inc/user-item/class-lp-user-item-quiz.php:148
@@ -3215,7 +3227,7 @@ msgid "Failed"
 msgstr ""
 
 #: inc/course/lp-course-functions.php:949
-#: inc/lp-core-functions.php:2432
+#: inc/lp-core-functions.php:2430
 #: inc/lp-deprecated.php:385
 #: inc/templates/class-lp-template-profile.php:101
 #: inc/user-item/class-lp-user-item-quiz.php:144
@@ -5831,123 +5843,123 @@ msgid_plural "%s minutes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/lp-core-functions.php:2226
+#: inc/lp-core-functions.php:2224
 msgid "Cart"
 msgstr ""
 
-#: inc/lp-core-functions.php:2230
+#: inc/lp-core-functions.php:2228
 msgid "Enable cart"
 msgstr ""
 
-#: inc/lp-core-functions.php:2231
+#: inc/lp-core-functions.php:2229
 msgid "Check this option to enable users to purchase multiple courses at one time."
 msgstr ""
 
-#: inc/lp-core-functions.php:2240
+#: inc/lp-core-functions.php:2238
 msgid "Add to cart redirect"
 msgstr ""
 
-#: inc/lp-core-functions.php:2241
+#: inc/lp-core-functions.php:2239
 msgid "Redirect to checkout immediately after adding the course to the cart."
 msgstr ""
 
-#: inc/lp-core-functions.php:2247
+#: inc/lp-core-functions.php:2245
 msgid "AJAX add to cart"
 msgstr ""
 
-#: inc/lp-core-functions.php:2248
+#: inc/lp-core-functions.php:2246
 msgid "Using AJAX to add the course to the cart."
 msgstr ""
 
-#: inc/lp-core-functions.php:2254
+#: inc/lp-core-functions.php:2252
 msgid "Cart page"
 msgstr ""
 
-#: inc/lp-core-functions.php:2604
+#: inc/lp-core-functions.php:2602
 msgctxt "static-page-name"
 msgid "Checkout"
 msgstr ""
 
-#: inc/lp-core-functions.php:2605
+#: inc/lp-core-functions.php:2603
 msgctxt "static-page-name"
 msgid "Courses"
 msgstr ""
 
-#: inc/lp-core-functions.php:2606
+#: inc/lp-core-functions.php:2604
 msgctxt "static-page-name"
 msgid "Profile"
 msgstr ""
 
-#: inc/lp-core-functions.php:2607
+#: inc/lp-core-functions.php:2605
 msgctxt "static-page-name"
 msgid "Become a Teacher"
 msgstr ""
 
-#: inc/lp-core-functions.php:3001
+#: inc/lp-core-functions.php:2999
 msgid "Loading..."
 msgstr ""
 
-#: inc/lp-core-functions.php:3004
+#: inc/lp-core-functions.php:3002
 msgid "Get A Passing Grade"
 msgstr ""
 
-#: inc/lp-core-functions.php:3009
+#: inc/lp-core-functions.php:3007
 msgid "Evaluate by the number of completed lessons per the total number of lessons."
 msgstr ""
 
-#: inc/lp-core-functions.php:3010
+#: inc/lp-core-functions.php:3008
 msgid "E.g: If a course has 10 lessons and a user completes 5 lessons, then the result is 5/10 (50%)."
 msgstr ""
 
-#: inc/lp-core-functions.php:3012
+#: inc/lp-core-functions.php:3010
 msgid "Evaluate by the result of the final quiz in the course. You have to add a quiz at the end of the course."
 msgstr ""
 
-#: inc/lp-core-functions.php:3018
+#: inc/lp-core-functions.php:3016
 msgid "Evaluate by the number of passed quizzes per the total number of quizzes."
 msgstr ""
 
-#: inc/lp-core-functions.php:3019
+#: inc/lp-core-functions.php:3017
 msgid "E.g: If the course has 10 quizzes and the user passes 5 quizzes, then the result is 5/10 (50%)."
 msgstr ""
 
-#: inc/lp-core-functions.php:3026
+#: inc/lp-core-functions.php:3024
 msgid "Evaluate by the number of correct answers per the total number of questions."
 msgstr ""
 
-#: inc/lp-core-functions.php:3027
+#: inc/lp-core-functions.php:3025
 msgid "E.g: If the course has 10 questions and the user corrects 5 questions, then the result is 5/10 (50%)."
 msgstr ""
 
-#: inc/lp-core-functions.php:3032
+#: inc/lp-core-functions.php:3030
 msgid "Evaluate by the number of achieved scores per the total score of the questions."
 msgstr ""
 
-#: inc/lp-core-functions.php:3038
+#: inc/lp-core-functions.php:3036
 msgid "Evaluate via lessons"
 msgstr ""
 
-#: inc/lp-core-functions.php:3042
+#: inc/lp-core-functions.php:3040
 msgid "Evaluate via results of the final quiz"
 msgstr ""
 
-#: inc/lp-core-functions.php:3046
+#: inc/lp-core-functions.php:3044
 msgid "Evaluate via passed quizzes"
 msgstr ""
 
-#: inc/lp-core-functions.php:3050
+#: inc/lp-core-functions.php:3048
 msgid "Evaluate via questions"
 msgstr ""
 
-#: inc/lp-core-functions.php:3054
+#: inc/lp-core-functions.php:3052
 msgid "Evaluate via mark"
 msgstr ""
 
-#: inc/lp-core-functions.php:3200
+#: inc/lp-core-functions.php:3198
 msgid "Heads up! Please backup before upgrading!"
 msgstr ""
 
-#: inc/lp-core-functions.php:3203
+#: inc/lp-core-functions.php:3201
 msgid "The latest update includes some substantial changes across different areas of the plugin. We highly recommend you backup your site before upgrading, and make sure you first update in a staging environment"
 msgstr ""
 
@@ -6281,6 +6293,32 @@ msgstr ""
 msgid "Dismissed!"
 msgstr ""
 
+#: inc/rest-api/v1/frontend/class-lp-rest-addon-controller.php:77
+msgid "Get addons successfully"
+msgstr ""
+
+#: inc/rest-api/v1/frontend/class-lp-rest-addon-controller.php:112
+msgid "Action is invalid!"
+msgstr ""
+
+#: inc/rest-api/v1/frontend/class-lp-rest-addon-controller.php:117
+#: inc/rest-api/v1/frontend/class-lp-rest-lazy-load-controller.php:120
+msgid "Params is invalid!"
+msgstr ""
+
+#: inc/rest-api/v1/frontend/class-lp-rest-addon-controller.php:134
+#: inc/rest-api/v1/frontend/class-lp-rest-addon-controller.php:176
+msgid "Install failed!"
+msgstr ""
+
+#: inc/rest-api/v1/frontend/class-lp-rest-addon-controller.php:198
+msgid "Update failed!"
+msgstr ""
+
+#: inc/rest-api/v1/frontend/class-lp-rest-addon-controller.php:217
+msgid "successfully"
+msgstr ""
+
 #: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:210
 msgid "Showing only one result"
 msgstr ""
@@ -6379,10 +6417,6 @@ msgstr ""
 
 #: inc/rest-api/v1/frontend/class-lp-rest-lazy-load-controller.php:74
 msgid "The course is not required to enroll!"
-msgstr ""
-
-#: inc/rest-api/v1/frontend/class-lp-rest-lazy-load-controller.php:120
-msgid "Params is invalid!"
 msgstr ""
 
 #: inc/rest-api/v1/frontend/class-lp-rest-lazy-load-controller.php:130
@@ -6942,7 +6976,7 @@ msgstr ""
 msgid "Recent Courses"
 msgstr ""
 
-#: learnpress.php:481
+#: learnpress.php:484
 msgid "Documentation"
 msgstr ""
 

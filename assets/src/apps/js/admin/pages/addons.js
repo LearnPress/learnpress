@@ -10,6 +10,7 @@ let dataHtml = null;
 const queryString = window.location.search;
 const urlParams = new URLSearchParams( queryString );
 const tab = urlParams.get( 'tab' );
+let elNotifyAction;
 
 const getAddons = ( set = '' ) => {
 	const params = tab ? `?tab=${ tab }` : `?${ set }`;
@@ -32,7 +33,7 @@ const getAddons = ( set = '' ) => {
 };
 
 const isHandling = [];
-const addonsAction = ( data ) => {
+const addonsAction = ( data, callBack ) => {
 	const addonSlug = data.addon.slug;
 	const action = data.action;
 
@@ -56,26 +57,52 @@ const addonsAction = ( data ) => {
 		}
 
 		const elAddon = document.querySelector( `#${ addonSlug }` );
-		const parent = elAddon.closest( '.lp-toggle-switch' );
-		const dashicons = parent.querySelector( '.dashicons-update' );
-		dashicons.style.display = 'none';
-		if ( action === 'deactivate' ) {
-			elAddon.setAttribute( 'data-action', 'activate' );
-		} else if ( action === 'activate' ) {
-			elAddon.setAttribute( 'data-action', 'deactivate' );
+		if ( elAddon ) {
+			const parent = elAddon.closest( '.lp-toggle-switch' );
+			if ( parent ) {
+				const dashicons = parent.querySelector( '.dashicons-update' );
+				dashicons.style.display = 'none';
+				if ( action === 'deactivate' ) {
+					elAddon.setAttribute( 'data-action', 'activate' );
+				} else if ( action === 'activate' ) {
+					elAddon.setAttribute( 'data-action', 'deactivate' );
+				}
+				const label = parent.querySelector( `label[for=${ addonSlug }]` );
+				label.style.display = 'inline-flex';
+			}
 		}
-		const label = parent.querySelector( `label[for=${ addonSlug }]` );
-		label.style.display = 'inline-flex';
 
 		const { status, message, data } = res;
-		if ( status === 'success' ) {
-			dataHtml = data;
-		} else {
-			dataHtml = message;
+
+		if ( callBack ) {
+			callBack( status, message, data );
 		}
+
+		handleNotify( status, message );
 	} ).catch( ( err ) => {
+		handleNotify( 'error', err );
 		console.log( err );
 	} );
+};
+
+const handleNotify = ( status, message ) => {
+	const elSuccess = elNotifyAction.querySelector( `.${ elNotifyAction.classList.value }__success` );
+	const elFailed = elNotifyAction.querySelector( `.${ elNotifyAction.classList.value }__error` );
+
+	if ( status === 'success' ) {
+		elFailed.style.display = 'none';
+		elSuccess.style.display = 'block';
+		elSuccess.querySelector( '.message' ).innerHTML = message;
+	} else {
+		elSuccess.style.display = 'none';
+		elFailed.style.display = 'block';
+		elFailed.querySelector( '.message' ).innerHTML = message;
+	}
+
+	elNotifyAction.classList.add( 'show' );
+	setTimeout( () => {
+		elNotifyAction.classList.remove( 'show' );
+	}, 3000 );
 };
 
 // Get addons when js loaded.
@@ -84,6 +111,7 @@ getAddons();
 /*** DOMContentLoaded ***/
 document.addEventListener( 'DOMContentLoaded', () => {
 	elAdminTabContent = document.querySelector( '.lp-admin-tab-content' );
+	elNotifyAction = document.querySelector( '.lp-notify-action' );
 
 	const interval = setInterval( () => {
 		if ( dataHtml !== null ) {
@@ -106,7 +134,16 @@ document.addEventListener( 'DOMContentLoaded', () => {
 /*** Events ***/
 document.addEventListener( 'click', ( e ) => {
 	const el = e.target;
+	const tagName = el.tagName.toLowerCase();
+	if ( tagName === 'span' ) {
+		e.preventDefault();
+		const elBtnAction = el.closest( '.btn-addon-action' );
+		if ( elBtnAction ) {
+			elBtnAction.click();
+		}
+	}
 
+	// Events actions: activate, deactivate.
 	if ( el.classList.contains( 'lp-toggle-switch-label' ) ) {
 		//e.preventDefault();
 
@@ -123,11 +160,28 @@ document.addEventListener( 'click', ( e ) => {
 		addonsAction( data );
 	}
 
+	// Events actions: install, update, delete.
 	if ( el.classList.contains( 'btn-addon-action' ) ) {
 		e.preventDefault();
-
+		el.classList.add( 'handling' );
 		const addon = JSON.parse( el.getAttribute( 'data-addon' ) );
 		const action = el.getAttribute( 'data-action' );
+		const elAddonItem = el.closest( '.lp-addon-item' );
+		const elItemPurchase = elAddonItem.querySelector( '.lp-addon-item__purchase' );
+
+		if ( action === 'purchase' ) {
+			elItemPurchase.style.display = 'block';
+			return;
+		} else if ( action === 'buy' ) {
+			const link = el.dataset.link;
+			window.open( link, '_blank' );
+			return;
+		} else if ( action === 'cancel' ) {
+			elItemPurchase.style.display = 'none';
+			return;
+		}
+
+		// Send request to server.
 		const purchase = el.closest( '.lp-addon-item__purchase' );
 		let purchaseCode = '';
 		if ( purchase ) {
@@ -135,6 +189,12 @@ document.addEventListener( 'click', ( e ) => {
 		}
 
 		const data = { purchase_code: purchaseCode, action, addon };
-		addonsAction( data );
+		addonsAction( data, function( status, message, data ) {
+			if ( status === 'success' ) {
+
+			}
+
+			el.classList.remove( 'handling' );
+		} );
 	}
 } );

@@ -1,3 +1,7 @@
+:root {
+	--lp-addon-item-padding: 10px;
+}
+
 .learn-press-addons {
 	.lp-search-addon {
 		width: 280px;
@@ -108,6 +112,36 @@
 
 		&::after {
 			@include clear-fix();
+		}
+	}
+
+	button {
+		padding: 5px 15px;
+		background: rgba(151, 71, 255, 1);
+		color: white;
+		border-radius: 3px;
+		border: none;
+		cursor: pointer;
+
+		&.btn-addon-action {
+			&.handling {
+				span {
+					display: none;
+
+					&.dashicons {
+						display: inline-flex;
+					}
+				}
+			}
+
+			span.dashicons {
+				align-items: center;
+				display: none;
+				font-size: 18px;
+				width: auto;
+				height: auto;
+				animation: rotation 2s infinite linear;
+			}
 		}
 	}
 }
@@ -222,12 +256,13 @@
 
 	.lp-addon-item {
 		background: white;
-		padding: 20px;
+		padding: var(--lp-addon-item-padding);
 		border: 1px solid rgba(151, 71, 255, 1);
 		border-radius: 3px;
 		display: flex;
 		flex-direction: column;
 		justify-content: space-between;
+		position: relative;
 
 		&__content {
 			text-align: center;
@@ -253,8 +288,8 @@
 
 		&__actions {
 			border-top: 1px solid rgba(151, 71, 255, 1);
-			padding: 20px 20px 0;
-			margin: 0 -20px;
+			padding: 10px var(--lp-addon-item-padding) 0;
+			margin: 0 calc(var(--lp-addon-item-padding) * -1);
 			display: flex;
 			align-items: center;
 
@@ -267,92 +302,116 @@
 			&__right {
 
 			}
+		}
 
-			button {
-				padding: 5px 15px;
-				background: rgba(151, 71, 255, 1);
-				color: white;
+		&__purchase {
+			display: none;
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			background: rgba(255, 255, 255, 0.6);
+			text-transform: uppercase;
+
+			&__wrapper {
+				position: absolute;
+				bottom: 20%;
+				left: var(--lp-addon-item-padding);
+				right: var(--lp-addon-item-padding);
+				background: white;
+				border: 1px solid rgba(151, 71, 255, 1);
+				padding: var(--lp-addon-item-padding);
 				border-radius: 3px;
-				border: none;
-				cursor: pointer;
+				flex-direction: column;
+				display: flex;
+				gap: 5px;
+				box-shadow: 0 4px 25px 1px rgba(0, 0, 0, 0.25);
 			}
 		}
 	}
 
 	/***** Toggle *****/
-	.lp-toggle-switch-label{
-		height: 20px;
-		align-items: center;
-		margin-bottom: 0;
-		background: #b4b9be;
-		cursor: pointer;
-		display: inline-flex;
-		justify-content: space-between;
-		position: relative;
-		transition: left 0.15s ease-out;
-		border-radius: 100px;
+	.lp-toggle-switch {
+		.lp-toggle-switch-label{
+			height: 20px;
+			align-items: center;
+			margin-bottom: 0;
+			background: #b4b9be;
+			cursor: pointer;
+			display: inline-flex;
+			justify-content: space-between;
+			position: relative;
+			transition: left 0.15s ease-out;
+			border-radius: 100px;
 
-		&:after {
-			background: #FFFFFF;
-			content: "";
-			display: block;
-			position: absolute;
-			left: 4px;
-			width: 12px;
-			height: 12px;
-			transition: all 0.25s ease-in-out;
-			border-radius: 50%;
+			&:after {
+				background: #FFFFFF;
+				content: "";
+				display: block;
+				position: absolute;
+				left: 4px;
+				width: 12px;
+				height: 12px;
+				transition: all 0.25s ease-in-out;
+				border-radius: 50%;
+			}
+
+			&::before {
+				left: 0;
+			}
+
+			.toggle-on,
+			.toggle-off {
+				opacity: 1;
+				padding-left: 6px;
+				padding-right: 6px;
+				font-size: 14px;
+				line-height: 18px;
+			}
+
+			.toggle-on {
+				color: #fff;
+				opacity: 0;
+				padding-right: 0;
+				width: 12px;
+			}
+
+			.toggle-off {
+				width: 12px;
+				color: #777;
+				padding-left: 0;
+			}
 		}
 
-		&::before {
-			left: 0;
-		}
+		input.lp-toggle-switch-input{
+			display: none;
 
-		.toggle-on,
-		.toggle-off {
-			opacity: 1;
-			padding-left: 6px;
-			padding-right: 6px;
-			font-size: 14px;
-			line-height: 18px;
-		}
+			&:checked{
+				+ label{
+					background: #0073aa;
 
-		.toggle-on {
-			color: #fff;
-			opacity: 0;
-			padding-right: 0;
-			width: 12px;
-		}
+					&:after {
+						left: auto;
+						right: 5px;
+						background: #ffffff;
+					}
+					.toggle-on {
+						opacity: 1;
+					}
 
-		.toggle-off {
-			width: 12px;
-			color: #777;
-			padding-left: 0;
-		}
-	}
-
-	input.lp-toggle-switch-input{
-		display: none;
-
-		&:checked{
-			+ label{
-				background: #0073aa;
-
-				&:after {
-					left: auto;
-					right: 5px;
-					background: #ffffff;
-				}
-				.toggle-on {
-					opacity: 1;
-				}
-
-				.toggle-off {
-					opacity: 0;
+					.toggle-off {
+						opacity: 0;
+					}
 				}
 			}
 		}
+
+		.dashicons {
+			animation: rotation 2s infinite linear;
+		}
 	}
+
 
 	.screen-reader-text:focus {
 		clip-path: inset(50%);

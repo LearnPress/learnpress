@@ -615,3 +615,33 @@ body {
 		}
 	}
 }
+
+.lp-notify-action {
+	position: fixed;
+	bottom: 5%;
+	z-index: 10000;
+	left: 50%;
+	background: #202937;
+	border-radius: 3px;
+	padding: 10px;
+	transition: all 0.5s;
+	transform: translateY(500%);
+	box-shadow: 0 4px 25px 1px rgba(0, 0, 0, 0.25);
+	color: white;
+
+	&.show {
+		display: block;
+		transform: translateY(0);
+	}
+
+	&__success {
+		display: none;
+		color: #01a401;
+	}
+
+	&__error {
+		display: none;
+		color: #f44336;
+		font-weight: bold;
+	}
+}
