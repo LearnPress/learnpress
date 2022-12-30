@@ -170,17 +170,27 @@ class LP_REST_Addon_Controller extends LP_Abstract_REST_Controller {
 						$skin            = new WP_Ajax_Upgrader_Skin();
 						$plugin_upgrader = new Plugin_Upgrader( $skin );
 						$result          = $plugin_upgrader->install( $path_file );
+						// Remove file addon temp zip
+						$wp_filesystem->delete( $path_file );
+
 						if ( is_wp_error( $result ) ) {
 							throw new Exception( $result->get_error_message() );
 						} elseif ( ! $result ) {
 							throw new Exception( __( 'Install failed!', 'learnpress' ) );
 						}
-						// Remove file temp zip
-						$wp_filesystem->delete( $path_file );
+
+						// Activate addon.
+						$result_active = activate_plugin( $addon['basename'] );
+						if ( is_wp_error( $result_active ) ) {
+							throw new Exception( $result_active->get_error_message() );
+						}
 					}
 					break;
 				case 'activate':
-					activate_plugin( $addon['basename'] );
+					$result_active = activate_plugin( $addon['basename'] );
+					if ( is_wp_error( $result_active ) ) {
+						throw new Exception( $result_active->get_error_message() );
+					}
 					break;
 				case 'deactivate':
 					deactivate_plugins( $addon['basename'] );

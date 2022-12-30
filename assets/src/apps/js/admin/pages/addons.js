@@ -56,22 +56,6 @@ const addonsAction = ( data, callBack ) => {
 			isHandling.splice( indexAddonHanding, 1 );
 		}
 
-		const elAddon = document.querySelector( `#${ addonSlug }` );
-		if ( elAddon ) {
-			const parent = elAddon.closest( '.lp-toggle-switch' );
-			if ( parent ) {
-				const dashicons = parent.querySelector( '.dashicons-update' );
-				dashicons.style.display = 'none';
-				if ( action === 'deactivate' ) {
-					elAddon.setAttribute( 'data-action', 'activate' );
-				} else if ( action === 'activate' ) {
-					elAddon.setAttribute( 'data-action', 'deactivate' );
-				}
-				const label = parent.querySelector( `label[for=${ addonSlug }]` );
-				label.style.display = 'inline-flex';
-			}
-		}
-
 		const { status, message, data } = res;
 
 		if ( callBack ) {
@@ -147,17 +131,48 @@ document.addEventListener( 'click', ( e ) => {
 	if ( el.classList.contains( 'lp-toggle-switch-label' ) ) {
 		//e.preventDefault();
 
+		const elAddonItem = el.closest( '.lp-addon-item' );
+		const elActionLeft = elAddonItem.querySelector( '.lp-addon-item__actions__left' );
+		const elActionRight = elAddonItem.querySelector( '.lp-addon-item__actions__right' );
 		const idLabel = el.getAttribute( 'for' );
 		const elInput = document.querySelector( `#${ idLabel }` );
 		const action = elInput.getAttribute( 'data-action' );
 		const addon = JSON.parse( elInput.getAttribute( 'data-addon' ) );
+		const addonSlug = addon.slug;
 		const parent = el.closest( '.lp-toggle-switch' );
 		const label = parent.querySelector( `label[for=${ idLabel }]` );
 		const dashicons = parent.querySelector( '.dashicons-update' );
 		dashicons.style.display = 'inline-block';
 		label.style.display = 'none';
 		const data = { action, addon };
-		addonsAction( data );
+		addonsAction( data, function( status, message, data ) {
+			const elAddon = document.querySelector( `#${ addonSlug }` );
+			if ( elAddon ) {
+				const parent = elAddon.closest( '.lp-toggle-switch' );
+				if ( parent ) {
+					const dashicons = parent.querySelector( '.dashicons-update' );
+					dashicons.style.display = 'none';
+					if ( action === 'deactivate' ) {
+						elAddon.setAttribute( 'data-action', 'activate' );
+					} else if ( action === 'activate' ) {
+						elAddon.setAttribute( 'data-action', 'deactivate' );
+					}
+					const label = parent.querySelector( `label[for=${ addonSlug }]` );
+					label.style.display = 'inline-flex';
+				}
+			}
+
+			if ( status === 'success' ) {
+				if ( action === 'deactivate' ) {
+					elActionLeft.classList.remove( 'activated' );
+					elActionRight.classList.remove( 'activated' );
+				}
+				if ( action === 'activate' ) {
+					elActionLeft.classList.add( 'activated' );
+					elActionRight.classList.add( 'activated' );
+				}
+			}
+		} );
 	}
 
 	// Events actions: install, update, delete.
@@ -168,6 +183,8 @@ document.addEventListener( 'click', ( e ) => {
 		const action = el.getAttribute( 'data-action' );
 		const elAddonItem = el.closest( '.lp-addon-item' );
 		const elItemPurchase = elAddonItem.querySelector( '.lp-addon-item__purchase' );
+		const elActionLeft = elAddonItem.querySelector( '.lp-addon-item__actions__left' );
+		const elActionRight = elAddonItem.querySelector( '.lp-addon-item__actions__right' );
 
 		if ( action === 'purchase' ) {
 			elItemPurchase.style.display = 'block';
@@ -191,7 +208,14 @@ document.addEventListener( 'click', ( e ) => {
 		const data = { purchase_code: purchaseCode, action, addon };
 		addonsAction( data, function( status, message, data ) {
 			if ( status === 'success' ) {
-
+				if ( action === 'install' ) {
+					elActionLeft.classList.add( 'installed', 'activated' );
+					elActionRight.classList.add( 'installed', 'activated' );
+				}
+				if ( action === 'activate' ) {
+					elActionLeft.classList.add( 'installed' );
+					elActionRight.classList.add( 'installed' );
+				}
 			}
 
 			el.classList.remove( 'handling' );

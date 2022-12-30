@@ -122,12 +122,14 @@ $active_tab            = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : 'all';
 				</div>
 				<div class="lp-addon-item__actions">
 					<div class="lp-addon-item__actions__left <?php echo implode( $classes_status, ' ' ); ?>">
-						<?php
-							echo '<button class="btn-addon-action" data-action="setting">Settings</button>';
-							echo '<button class="btn-addon-action" data-action="update" ' . $data['extra'] . '>Update</button>';
-							echo '<button class="btn-addon-action" data-action="install" ' . $data['extra'] . '>Install</button>';
-							echo '<button class="btn-addon-action" data-action="purchase">Install</button>';
-						?>
+							<button class="btn-addon-action" data-action="setting">Settings</button>
+							<button class="btn-addon-action" data-action="update" <?php echo $data['extra']; ?>>
+								<span class="dashicons dashicons-update"></span><span class="text">Update</span>
+							</button>
+							<button class="btn-addon-action" data-action="install" <?php echo $data['extra']; ?>>
+								<span class="dashicons dashicons-update"></span><span class="text">Install</span>
+							</button>
+							<button class="btn-addon-action" data-action="purchase">Install</button>
 					</div>
 					<div class="lp-addon-item__actions__right <?php echo implode( $classes_status, ' ' ); ?>"">
 						<?php
