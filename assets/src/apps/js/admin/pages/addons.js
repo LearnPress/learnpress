@@ -216,6 +216,9 @@ document.addEventListener( 'click', ( e ) => {
 					elActionLeft.classList.add( 'installed' );
 					elActionRight.classList.add( 'installed' );
 				}
+				if ( action === 'update' ) {
+					elActionLeft.classList.remove( 'update' );
+				}
 			}
 
 			el.classList.remove( 'handling' );
