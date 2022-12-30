@@ -297,10 +297,54 @@
 				flex: 3;
 				display: flex;
 				gap: 5px;
+
+				button {
+					display: none;
+				}
+
+				&.installed {
+					&.activated {
+						button {
+							&[data-action="setting"] {
+								display: block;
+							}
+						}
+
+						&.update {
+							button {
+								&[data-action="update"] {
+									display: block;
+								}
+							}
+						}
+					}
+				}
+
+				&:not(.installed) {
+					&.purchase {
+						button {
+							&[data-action="purchase"] {
+								display: block;
+							}
+						}
+					}
+
+					&.free {
+						button {
+							&[data-action="install"] {
+								display: block;
+							}
+						}
+					}
+				}
 			}
 
 			&__right {
-
+				&:not(.installed) {
+					.lp-toggle-switch {
+						display: none;
+					}
+				}
 			}
 		}
 

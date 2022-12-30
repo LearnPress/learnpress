@@ -38,17 +38,17 @@
     "is_org": 1,
     "order": 3
   },
-  "learnpress-certificate": {
+  "learnpress-certificates": {
     "name": "LearnPress - Certificates",
-    "basename": "learnpress-certificate/learnpress-certificate.php",
+    "basename": "learnpress-certificates/learnpress-certificates.php",
     "version": "4.0.6",
     "require_lp": "4.1.7.3.2",
     "description": "LearnPress Prerequisites is an add-on for LearnPress allow you to set prerequisite courses for a certain course in a LearnPress site.",
     "image": "https://ps.w.org/learnpress-prerequisites-courses/assets/icon-256x256.png?rev=2394950",
     "link": "https://thimpress.com/learnpress/prerequisites-courses/",
-    "is_free": 1,
+    "is_free": 0,
     "author": "",
-    "is_org": 1,
+    "is_org": 0,
     "order": 4
   },
   "learnpress-content-drip": {

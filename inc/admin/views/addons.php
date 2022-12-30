@@ -22,13 +22,13 @@ $total_addon_installed = 0;
 $total_addon_activated = 0;
 $total_addon_update    = 0;
 $plugins_installed     = get_plugins();
-$plugins_activated     = get_option( 'active_plugins' );
+$plugins_activated     = get_option( 'active_plugins', '' );
 $active_tab            = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : 'all';
 ?>
 <div class="lp-addons-wrapper">
 	<div id="lp-addons">
 		<?php
-		foreach ( $addons as $slug => $addon ) {
+		foreach ( $addons as $slug => $addon ) :
 			$addon->slug     = $slug;
 			$is_installed    = false;
 			$is_activated    = false;
@@ -50,24 +50,30 @@ $active_tab            = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : 'all';
 			} else {
 				$total_addon_paid ++;
 			}
-
+			// Addon is installed
 			if ( isset( $plugins_installed[ $addon_base ] ) ) {
 				$is_installed     = true;
 				$classes_status[] = 'installed';
 				$version_current  = $plugins_installed[ $addon_base ]['Version'];
 				$total_addon_installed ++;
 			}
-
+			// Addon is activated
 			if ( in_array( $addon_base, $plugins_activated ) ) {
 				$is_activated     = true;
 				$classes_status[] = 'activated';
 				$total_addon_activated ++;
 			}
-
+			// Addon is has update
 			if ( $is_installed && version_compare( $version_current, $version_latest, '<' ) ) {
 				$total_addon_update ++;
 				$classes_status[] = 'update';
 				$is_updated       = true;
+			}
+			// Addon is paid on Thimpress
+			if ( 0 == $is_free ) {
+				$classes_status[] = 'purchase';
+			} else { // Addon is free
+				$classes_status[] = 'free';
 			}
 
 			switch ( $active_tab ) {
@@ -117,13 +123,13 @@ $active_tab            = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : 'all';
 				<div class="lp-addon-item__actions">
 					<div class="lp-addon-item__actions__left <?php echo implode( $classes_status, ' ' ); ?>">
 						<?php
-							echo '<button>Settings</button>';
+							echo '<button class="btn-addon-action" data-action="setting">Settings</button>';
 							echo '<button class="btn-addon-action" data-action="update" ' . $data['extra'] . '>Update</button>';
 							echo '<button class="btn-addon-action" data-action="install" ' . $data['extra'] . '>Install</button>';
 							echo '<button class="btn-addon-action" data-action="purchase">Install</button>';
 						?>
 					</div>
-					<div class="lp-addon-item__actions__right">
+					<div class="lp-addon-item__actions__right <?php echo implode( $classes_status, ' ' ); ?>"">
 						<?php
 						if ( $is_activated ) {
 							$data['value']  = 1;
@@ -133,7 +139,6 @@ $active_tab            = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : 'all';
 						}
 
 						Template::instance()->get_template( LP_PLUGIN_PATH . '/inc/admin/meta-box/fields/toggle-switch.php', compact( 'data' ) );
-
 						?>
 					</div>
 				</div>
@@ -152,10 +157,10 @@ $active_tab            = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : 'all';
 				</div>
 			</div>
 			<?php
-		}
+		endforeach;
 		?>
 	</div>
-	<h2 class="lp-nav-tab-wrapper" style="display: none">
+	<div class="lp-nav-tab-wrapper" style="display: none">
 		<?php
 		$tabs = array(
 			'all'       => sprintf( __( 'All (%d)', 'learnpress' ), count( (array) $addons ) ),
@@ -185,11 +190,15 @@ $active_tab            = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : 'all';
 					class="nav-tab<?php echo esc_attr( $active_class ); ?>"><?php echo esc_html( $tab_title ); ?></span>
 			<?php } else { ?>
 				<a class="nav-tab"
-				   href="?page=learn-press-addons&tab=<?php echo esc_attr( $tab ); ?>"><?php echo esc_html( $tab_title ); ?></a>
+					href="?page=learn-press-addons&tab=<?php echo esc_attr( $tab ); ?>">
+					<?php echo esc_html( $tab_title ); ?>
+				</a>
 			<?php } ?>
 		<?php } ?>
 		<div class="">
-			<input type="text" placeholder="Search name addon">
+			<label>
+				<input type="text" placeholder="Search name addon" />
+			</label>
 		</div>
-	</h2>
+	</div>
 </div>
