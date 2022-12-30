@@ -115,8 +115,12 @@ $active_tab            = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : 'all';
 					} else {
 						echo "<h4>Version $version_latest</h4>";
 					}
-					echo "<h4>Require LP $addon->require_lp</h4>";
-					echo "<h4>Free $addon->is_free</h4>";
+					echo "<h4>Require LP v$addon->require_lp</h4>";
+					echo sprintf(
+						'<p>%s On %s</p>',
+						$addon->is_free ? __( 'Free', 'learnpress' ) : __( 'Paid', 'learnpress' ),
+						$addon->is_org ? __( 'WP.org', 'learnpress' ) : __( 'Thimpress', 'learnpress' )
+					);
 					?>
 					<p title="<?php echo $addon->description; ?>"><?php echo $addon->description; ?></p>
 				</div>

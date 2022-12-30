@@ -185,6 +185,7 @@ document.addEventListener( 'click', ( e ) => {
 		const elItemPurchase = elAddonItem.querySelector( '.lp-addon-item__purchase' );
 		const elActionLeft = elAddonItem.querySelector( '.lp-addon-item__actions__left' );
 		const elActionRight = elAddonItem.querySelector( '.lp-addon-item__actions__right' );
+		const elToggleSwitchInput = elAddonItem.querySelector( '.lp-toggle-switch-input' );
 
 		if ( action === 'purchase' ) {
 			elItemPurchase.style.display = 'block';
@@ -211,6 +212,8 @@ document.addEventListener( 'click', ( e ) => {
 				if ( action === 'install' ) {
 					elActionLeft.classList.add( 'installed', 'activated' );
 					elActionRight.classList.add( 'installed', 'activated' );
+					elToggleSwitchInput.setAttribute( 'checked', 'checked' );
+					elToggleSwitchInput.setAttribute( 'data-action', 'deactivate' );
 				}
 				if ( action === 'activate' ) {
 					elActionLeft.classList.add( 'installed' );
