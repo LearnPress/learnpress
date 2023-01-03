@@ -115,7 +115,6 @@ $active_tab            = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : 'all';
 					} else {
 						echo "<h4>Version $version_latest</h4>";
 					}
-					echo "<h4>Require LP v$addon->require_lp</h4>";
 					echo sprintf(
 						'<p>%s On %s</p>',
 						$addon->is_free ? __( 'Free', 'learnpress' ) : __( 'Paid', 'learnpress' ),
@@ -127,7 +126,8 @@ $active_tab            = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : 'all';
 				<div class="lp-addon-item__actions">
 					<div class="lp-addon-item__actions__left <?php echo implode( $classes_status, ' ' ); ?>">
 							<button class="btn-addon-action" data-action="setting">Settings</button>
-							<button class="btn-addon-action" data-action="update" <?php echo $data['extra']; ?>>
+							<button class="btn-addon-action" data-action="update" <?php echo $data['extra']; ?>
+							title="<?php echo sprintf( '%s %s require LP version %s', $addon->name, $version_latest, $addon->require_lp ); ?>">
 								<span class="dashicons dashicons-update"></span><span class="text">Update</span>
 							</button>
 							<button class="btn-addon-action" data-action="install" <?php echo $data['extra']; ?>>

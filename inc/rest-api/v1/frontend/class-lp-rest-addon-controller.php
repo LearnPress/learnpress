@@ -8,11 +8,20 @@ use LearnPress\Helpers\Template;
  * @author Nhamdv <daonham95@gmail.com>
  */
 class LP_REST_Addon_Controller extends LP_Abstract_REST_Controller {
-	private $link_addon_action = 'http://updates/thim-addon-market/download-addon';
+	/**
+	 * @var LP_Manager_Addons $lp_addons
+	 */
+	private $lp_addons;
 
+	/**
+	 * LP_REST_Addon_Controller constructor.
+	 */
 	public function __construct() {
 		$this->namespace = 'lp/v1';
 		$this->rest_base = 'addon';
+
+		require_once LP_PLUGIN_PATH . 'inc/class-lp-manager-addons.php';
+		$this->lp_addons = LP_Manager_Addons::instance();
 
 		parent::__construct();
 	}
@@ -55,11 +64,9 @@ class LP_REST_Addon_Controller extends LP_Abstract_REST_Controller {
 		$response       = new LP_REST_Response();
 		$response->data = '';
 
-		//$url = 'https://learnpress.github.io/learnpress/version-addons.json';
-		$url = LP_PLUGIN_URL . '/version-addons.json';
-
 		try {
-			$res = wp_remote_get( $url );
+			$lp_addon = LP_Manager_Addons::instance();
+			$res      = wp_remote_get( $lp_addon->url_list_addons );
 			if ( is_wp_error( $res ) ) {
 				throw new Exception( $res->get_error_message() );
 			}
@@ -94,17 +101,9 @@ class LP_REST_Addon_Controller extends LP_Abstract_REST_Controller {
 	 * @since 4.2.1
 	 */
 	public function action( WP_REST_Request $request ): LP_REST_Response {
-		include_once( ABSPATH . 'wp-admin/includes/class-wp-upgrader.php' );
-		include_once( ABSPATH . 'wp-admin/includes/plugin-install.php' );
-		require_once ABSPATH . '/wp-admin/includes/file.php';
-		WP_Filesystem();
-		/**
-		 * @var WP_Filesystem_Base $wp_filesystem
-		 */
-		global $wp_filesystem;
-
 		$response       = new LP_REST_Response();
 		$response->data = '';
+		$lp_file_system = LP_WP_Filesystem::instance();
 
 		try {
 			$action = $request->get_param( 'action' );
@@ -119,150 +118,39 @@ class LP_REST_Addon_Controller extends LP_Abstract_REST_Controller {
 
 			$purchase_code = $request->get_param( 'purchase_code' );
 
-			$link_org = 'https://downloads.wordpress.org/plugin/';
-
 			switch ( $action ) {
 				case 'install':
+				case 'update':
+					$link_download = $path_file = $value = '';
+
 					if ( $addon['is_org'] ) {
-						$skin            = new WP_Ajax_Upgrader_Skin();
-						$plugin_upgrader = new Plugin_Upgrader( $skin );
-						$link_download   = "$link_org{$addon['slug']}.{$addon['version']}.zip";
-						$result          = $plugin_upgrader->install( $link_download );
-						if ( is_wp_error( $result ) ) {
-							throw new Exception( $result->get_error_message() );
-						} elseif ( ! $result ) {
-							throw new Exception( __( 'Install failed!', 'learnpress' ) );
-						}
-
-						activate_plugin( $addon['basename'] );
+						$link_download = "{$this->lp_addons->link_org}{$addon['slug']}.{$addon['version']}.zip";
 					} else {
-						$link_download = $this->link_addon_action;
-						$args          = [
-							'method'     => 'POST',
-							'body'       => [
-								'addon'   => $addon['slug'],
-								'version' => 'lastest',
-							],
-							'user-agent' => home_url( '/' ),
-						];
-
-						if ( 0 == $addon['is_free'] ) {
-							$args['body']['purchase_code'] = $purchase_code;
-						}
-
-						$result = wp_remote_post( $link_download, $args );
-						if ( is_wp_error( $result ) ) {
-							throw new Exception( $result->get_error_message() );
-						}
-
-						$data = wp_remote_retrieve_body( $result );
-						if ( preg_match( '/^Error.*/', $data ) ) {
-							throw new Exception( $data );
-						}
-
-						// Create file temp zip addon to install with
-						$wp_upload_dir = wp_upload_dir( null, false );
-						$name          = 'addon.zip';
-						$path_file     = $wp_upload_dir['basedir'] . DIRECTORY_SEPARATOR . $name;
-						$wp_filesystem->put_contents( $path_file, $data );
-						// End
-
-						$skin            = new WP_Ajax_Upgrader_Skin();
-						$plugin_upgrader = new Plugin_Upgrader( $skin );
-						$result          = $plugin_upgrader->install( $path_file );
-						// Remove file addon temp zip
-						$wp_filesystem->delete( $path_file );
-
-						if ( is_wp_error( $result ) ) {
-							throw new Exception( $result->get_error_message() );
-						} elseif ( ! $result ) {
-							throw new Exception( __( 'Install failed!', 'learnpress' ) );
-						}
-
-						// Activate addon.
-						$result_active = activate_plugin( $addon['basename'] );
-						if ( is_wp_error( $result_active ) ) {
-							throw new Exception( $result_active->get_error_message() );
-						}
+						$path_file = $this->lp_addons->download_from_thimpress( $addon, $purchase_code );
 					}
+
+					if ( ! empty( $link_download ) ) {
+						$value = $link_download;
+					} elseif ( ! empty( $path_file ) ) {
+						$value = $path_file;
+					}
+
+					if ( 'update' === $action ) {
+						$this->lp_addons->update( $addon, $value );
+					} else {
+						$this->lp_addons->install( $addon, $value );
+					}
+
+					if ( ! empty( $path_file ) ) {
+						$lp_file_system->lp_filesystem->delete( $path_file );
+					}
+
 					break;
 				case 'activate':
-					$result_active = activate_plugin( $addon['basename'] );
-					if ( is_wp_error( $result_active ) ) {
-						throw new Exception( $result_active->get_error_message() );
-					}
+					$this->lp_addons->activate( $addon );
 					break;
 				case 'deactivate':
-					deactivate_plugins( $addon['basename'] );
-					break;
-				case 'update':
-					if ( $addon['is_org'] ) {
-						$is_activate = is_plugin_active( $addon['basename'] );
-						// Must call this function to upgrade success.
-						wp_update_plugins();
-						$skin     = new WP_Ajax_Upgrader_Skin();
-						$upgrader = new Plugin_Upgrader( $skin );
-						$result   = $upgrader->bulk_upgrade( [ $addon['basename'] ] );
-						if ( ! $result ) {
-							throw new Exception( __( 'Update failed!', 'learnpress' ) );
-						}
-
-						if ( $is_activate ) {
-							activate_plugin( $addon['basename'] );
-						}
-					} else {
-						$link_download = $this->link_addon_action;
-						$args          = [
-							'method'     => 'POST',
-							'body'       => [
-								'addon'   => $addon['slug'],
-								'version' => 'lastest',
-							],
-							'user-agent' => home_url( '/' ),
-						];
-
-						if ( 0 == $addon['is_free'] ) {
-							$args['body']['purchase_code'] = $purchase_code;
-						}
-
-						$result = wp_remote_post( $link_download, $args );
-						if ( is_wp_error( $result ) ) {
-							throw new Exception( $result->get_error_message() );
-						}
-
-						$data = wp_remote_retrieve_body( $result );
-						if ( preg_match( '/^Error.*/', $data ) ) {
-							throw new Exception( $data );
-						}
-
-						// Create file temp zip addon to install with
-						$wp_upload_dir = wp_upload_dir( null, false );
-						$name          = 'addon.zip';
-						$path_file     = $wp_upload_dir['basedir'] . DIRECTORY_SEPARATOR . $name;
-						$wp_filesystem->put_contents( $path_file, $data );
-						// End
-
-						$skin            = new WP_Ajax_Upgrader_Skin();
-						$plugin_upgrader = new Plugin_Upgrader( $skin );
-						//$result          = $plugin_upgrader->bulk_upgrade( [ $path_file ] );
-						$args_upgrade = [
-							'package'                     => $path_file,
-							'destination'                 => WP_PLUGIN_DIR,
-							'clear_destination'           => false,
-							'clear_working'               => true,
-							'hook_extra'                  => [],
-							'abort_if_destination_exists' => false,
-						];
-						$result       = $plugin_upgrader->run( $args_upgrade );
-						// Remove file addon temp zip
-						$wp_filesystem->delete( $path_file );
-
-						if ( is_wp_error( $result ) ) {
-							throw new Exception( $result->get_error_message() );
-						} elseif ( ! $result ) {
-							throw new Exception( __( 'Install failed!', 'learnpress' ) );
-						}
-					}
+					$this->lp_addons->deactivate( $addon );
 					break;
 				default:
 					break;

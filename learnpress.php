@@ -381,9 +381,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/block-template/class-block-until.php';
 			require_once 'inc/block-template/class-block-controller.php';
 
-			// Manager Addons.
-			require_once 'inc/class-lp-manager-addons.php';
-
 			// API
 			require_once 'inc/abstracts/abstract-rest-api.php';
 			require_once 'inc/abstracts/abstract-rest-controller.php';

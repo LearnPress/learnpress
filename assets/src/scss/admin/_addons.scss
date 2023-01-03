@@ -337,6 +337,14 @@
 						}
 					}
 				}
+
+				&.update {
+					button {
+						&[data-action="update"] {
+							display: block;
+						}
+					}
+				}
 			}
 
 			&__right {
