@@ -10,7 +10,7 @@ let dataHtml = null;
 const queryString = window.location.search;
 const urlParams = new URLSearchParams( queryString );
 const tab = urlParams.get( 'tab' );
-let elNotifyAction;
+let elNotifyActionWrapper;
 
 // API get list addons.
 const getAddons = ( set = '' ) => {
@@ -72,34 +72,43 @@ const addonsAction = ( data, callBack ) => {
 };
 // Show notify.
 const handleNotify = ( status, message ) => {
-	const elSuccess = elNotifyAction.querySelector( `.${ elNotifyAction.classList.value }__success` );
-	const elFailed = elNotifyAction.querySelector( `.${ elNotifyAction.classList.value }__error` );
+	const elNotifyAction = elNotifyActionWrapper.querySelector( '.lp-notify-action' );
+	const elNotifyActionNew = elNotifyAction.cloneNode( true );
+	elNotifyActionNew.classList.remove( 'clone' );
+	elNotifyActionWrapper.insertBefore( elNotifyActionNew, elNotifyActionWrapper[ 0 ] );
+	const elSuccess = elNotifyActionNew.querySelector( `.${ elNotifyActionNew.classList.value }__success` );
+	const elFailed = elNotifyActionNew.querySelector( `.${ elNotifyActionNew.classList.value }__error` );
 
 	if ( status === 'success' ) {
-		elFailed.style.display = 'none';
-		elSuccess.style.display = 'block';
 		elSuccess.querySelector( '.message' ).innerHTML = message;
 	} else {
-		elSuccess.style.display = 'none';
-		elFailed.style.display = 'block';
 		elFailed.querySelector( '.message' ).innerHTML = message;
 	}
 
-	elNotifyAction.classList.add( 'show' );
+	elNotifyActionWrapper.classList.add( 'show' );
 	setTimeout( () => {
-		elNotifyAction.classList.remove( 'show' );
+		elNotifyActionNew.remove();
+
+		const elNotifyAction = elNotifyActionWrapper.querySelectorAll( '.lp-notify-action' );
+		if ( elNotifyAction.length === 1 ) {
+			elNotifyActionWrapper.classList.remove( 'show' );
+		}
 	}, 3000 );
 };
 
 // Get addons when js loaded.
 getAddons();
 
-// Search addons.
+/**
+ * Search addons.
+ *
+ * @param  name
+ */
 const searchAddons = ( name ) => {
 	const elAddonItem = elAdminTabContent.querySelectorAll( '.lp-addon-item' );
 	elAddonItem.forEach( ( el ) => {
 		const addonName = el.querySelector( 'a' ).textContent;
-		if ( addonName.toLowerCase().includes( name ) ) {
+		if ( addonName.toLowerCase().includes( name.toLowerCase() ) ) {
 			el.style.display = 'flex';
 		} else {
 			el.style.display = 'none';
@@ -110,7 +119,7 @@ const searchAddons = ( name ) => {
 /*** DOMContentLoaded ***/
 document.addEventListener( 'DOMContentLoaded', () => {
 	elAdminTabContent = document.querySelector( '.lp-admin-tab-content' );
-	elNotifyAction = document.querySelector( '.lp-notify-action' );
+	elNotifyActionWrapper = document.querySelector( '.lp-notify-action-wrapper' );
 
 	const interval = setInterval( () => {
 		if ( dataHtml !== null ) {
@@ -243,7 +252,7 @@ document.addEventListener( 'click', ( e ) => {
 	}
 } );
 
-// Event search addons.
+/*** Event search addons. ***/
 document.addEventListener( 'input', ( e ) => {
 	const el = e.target;
 

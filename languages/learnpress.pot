@@ -1,15 +1,15 @@
-# Copyright (C) 2022 ThimPress
+# Copyright (C) 2023 ThimPress
 # This file is distributed under the same license as the LearnPress plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: LearnPress 4.2.1-beta-1\n"
+"Project-Id-Version: LearnPress 4.2.1-beta-2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/learnpress\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2022-12-29T04:35:01+03:00\n"
+"POT-Creation-Date: 2023-01-03T12:49:00+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.7.1\n"
 "X-Domain: learnpress\n"
@@ -338,7 +338,7 @@ msgstr ""
 #: config/settings/permalink.php:123
 #: inc/admin/sub-menus/class-lp-submenu-settings.php:18
 #: inc/user/class-lp-profile.php:276
-#: learnpress.php:483
+#: learnpress.php:480
 msgid "Settings"
 msgstr ""
 
@@ -520,11 +520,11 @@ msgstr ""
 msgid "Empty page name!"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:32
+#: inc/admin/class-lp-admin-assets.php:35
 msgid "Oops! Error."
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:33
+#: inc/admin/class-lp-admin-assets.php:36
 #: inc/emails/guest/class-lp-email-cancelled-order-guest.php:25
 #: inc/emails/guest/class-lp-email-completed-order-guest.php:29
 #: inc/emails/guest/class-lp-email-new-order-guest.php:25
@@ -533,7 +533,7 @@ msgstr ""
 msgid "Guest"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:39
+#: inc/admin/class-lp-admin-assets.php:42
 msgid "Before taking this action, we strongly recommend you backup your site first before proceeding. If you encounter any problems, please do not hesitate to contact our support team. Are you sure to proceed with the update protocol?"
 msgstr ""
 
@@ -1172,11 +1172,13 @@ msgstr ""
 
 #: inc/admin/lp-admin-functions.php:1152
 #: inc/admin/lp-admin-functions.php:2234
+#: inc/admin/views/addons.php:120
 msgid "Paid"
 msgstr ""
 
 #: inc/admin/lp-admin-functions.php:1157
 #: inc/admin/lp-admin-functions.php:2239
+#: inc/admin/views/addons.php:120
 #: inc/course/abstract-course.php:660
 #: inc/course/abstract-course.php:689
 #: templates/order/order-details.php:43
@@ -1498,7 +1500,7 @@ msgid "Reset Password"
 msgstr ""
 
 #: inc/admin/sub-menus/class-lp-submenu-addons.php:14
-#: learnpress.php:485
+#: learnpress.php:482
 msgid "Add-ons"
 msgstr ""
 
@@ -1554,27 +1556,35 @@ msgstr ""
 msgid "LearnPress Beta Version"
 msgstr ""
 
-#: inc/admin/views/addons.php:161
+#: inc/admin/views/addons.php:121
+msgid "WP.org"
+msgstr ""
+
+#: inc/admin/views/addons.php:121
+msgid "Thimpress"
+msgstr ""
+
+#: inc/admin/views/addons.php:172
 msgid "All (%d)"
 msgstr ""
 
-#: inc/admin/views/addons.php:162
+#: inc/admin/views/addons.php:173
 msgid "Installed (%d)"
 msgstr ""
 
-#: inc/admin/views/addons.php:163
+#: inc/admin/views/addons.php:174
 msgid "Paid (%d)"
 msgstr ""
 
-#: inc/admin/views/addons.php:164
+#: inc/admin/views/addons.php:175
 msgid "Free (%d)"
 msgstr ""
 
-#: inc/admin/views/addons.php:165
+#: inc/admin/views/addons.php:176
 msgid "Update (%d)"
 msgstr ""
 
-#: inc/admin/views/addons.php:166
+#: inc/admin/views/addons.php:177
 msgid "Get more"
 msgstr ""
 
@@ -3086,6 +3096,14 @@ msgstr ""
 
 #: inc/class-lp-forms-handler.php:443
 msgid "Password reset is not allowed for this user."
+msgstr ""
+
+#: inc/class-lp-manager-addons.php:108
+msgid "Install failed!"
+msgstr ""
+
+#: inc/class-lp-manager-addons.php:140
+msgid "Update failed!"
 msgstr ""
 
 #: inc/class-lp-page-controller.php:136
@@ -6293,29 +6311,20 @@ msgstr ""
 msgid "Dismissed!"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-addon-controller.php:77
+#: inc/rest-api/v1/frontend/class-lp-rest-addon-controller.php:84
 msgid "Get addons successfully"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-addon-controller.php:112
+#: inc/rest-api/v1/frontend/class-lp-rest-addon-controller.php:111
 msgid "Action is invalid!"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-addon-controller.php:117
+#: inc/rest-api/v1/frontend/class-lp-rest-addon-controller.php:116
 #: inc/rest-api/v1/frontend/class-lp-rest-lazy-load-controller.php:120
 msgid "Params is invalid!"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-addon-controller.php:134
-#: inc/rest-api/v1/frontend/class-lp-rest-addon-controller.php:176
-msgid "Install failed!"
-msgstr ""
-
-#: inc/rest-api/v1/frontend/class-lp-rest-addon-controller.php:198
-msgid "Update failed!"
-msgstr ""
-
-#: inc/rest-api/v1/frontend/class-lp-rest-addon-controller.php:217
+#: inc/rest-api/v1/frontend/class-lp-rest-addon-controller.php:160
 msgid "successfully"
 msgstr ""
 
@@ -6976,7 +6985,7 @@ msgstr ""
 msgid "Recent Courses"
 msgstr ""
 
-#: learnpress.php:484
+#: learnpress.php:481
 msgid "Documentation"
 msgstr ""
 
