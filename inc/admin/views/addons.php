@@ -201,9 +201,9 @@ $active_tab            = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : 'all';
 				</a>
 			<?php } ?>
 		<?php } ?>
-		<div class="">
+		<div class="lp-search-addons">
 			<label>
-				<input type="text" placeholder="Search name addon" />
+				<input id="lp-search-addons__input" type="text" placeholder="Search name addon" />
 			</label>
 		</div>
 	</div>

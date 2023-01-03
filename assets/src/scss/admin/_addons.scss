@@ -2,150 +2,6 @@
 	--lp-addon-item-padding: 10px;
 }
 
-.learn-press-addons {
-	.lp-search-addon {
-		width: 280px;
-		height: 32px;
-		margin: 0;
-		padding: 3px 5px;
-		font-size: 16px;
-		font-weight: 300;
-		line-height: 1.5;
-	}
-
-	.addons-browse {
-		margin: 20px 0 0;
-
-		.lp-addon-hidden {
-			display: none !important;
-		}
-
-		.lp-active:nth-of-type(2n+1) {
-			clear: none;
-			margin-right: 0;
-			margin-left: 8px;
-		}
-
-		.lp-active:nth-of-type(2n) {
-			clear: both;
-			margin-right: 8px;
-			margin-left: 0;
-		}
-
-		.plugin-icon {
-
-			img {
-				max-width: 100%;
-			}
-		}
-
-		.plugin-card {
-
-			.column-description {
-
-				p:not(.authors) {
-
-					@include text-overflow(1.6, 3);
-					color: #777;
-				}
-			}
-
-			.search-highlight {
-				text-decoration: underline;
-			}
-		}
-
-		.plugin-card-top {
-
-			h3 {
-
-				@include text-overflow(1.3em, 2);
-			}
-
-			.desc {
-				min-height: 90px;
-				margin-right: 0;
-			}
-
-			.button {
-
-				&.activate-plugin,
-				&.install-now,
-				&.enable-now {
-					border-color: #0073aa #006799 #006799;
-					color: #fff;
-					background: #0085ba;
-					-webkit-box-shadow: 0 1px 0 #006799;
-					box-shadow: 0 1px 0 #006799;
-					text-shadow: 0 -1px 1px #006799, 1px 0 1px #006799, 0 1px 1px #006799, -1px 0 1px #006799;
-					text-decoration: none;
-				}
-
-				&.button-working {
-					padding-right: 4px;
-
-					span {
-						display: none;
-					}
-				}
-			}
-		}
-
-		.plugin-card-bottom {
-
-			.plugin-version {
-				display: inline-block;
-			}
-
-		}
-
-		&.premium {
-
-			.column-description {
-
-				p:not(.authors) {
-					margin: 0;
-					line-height: inherit;
-				}
-			}
-		}
-
-		&::after {
-			@include clear-fix();
-		}
-	}
-
-	button {
-		padding: 5px 15px;
-		background: rgba(151, 71, 255, 1);
-		color: white;
-		border-radius: 3px;
-		border: none;
-		cursor: pointer;
-
-		&.btn-addon-action {
-			&.handling {
-				span {
-					display: none;
-
-					&.dashicons {
-						display: inline-flex;
-					}
-				}
-			}
-
-			span.dashicons {
-				align-items: center;
-				display: none;
-				font-size: 18px;
-				width: auto;
-				height: auto;
-				animation: rotation 2s infinite linear;
-			}
-		}
-	}
-}
-
 .related-themes {
 	display: grid;
 	grid-template-columns: repeat( auto-fit, minmax( 400px, 1fr ) );
@@ -253,6 +109,36 @@
 	display: grid;
 	grid-template-columns: repeat( auto-fit, minmax( 280px, 1fr ) );
 	grid-gap: 20px;
+
+	button {
+		padding: 5px 15px;
+		background: rgba(151, 71, 255, 1);
+		color: white;
+		border-radius: 3px;
+		border: none;
+		cursor: pointer;
+
+		&.btn-addon-action {
+			&.handling {
+				span {
+					display: none;
+
+					&.dashicons {
+						display: inline-flex;
+					}
+				}
+			}
+
+			span.dashicons {
+				align-items: center;
+				display: none;
+				font-size: 18px;
+				width: auto;
+				height: auto;
+				animation: rotation 2s infinite linear;
+			}
+		}
+	}
 
 	.lp-addon-item {
 		background: white;
@@ -463,7 +349,6 @@
 			animation: rotation 2s infinite linear;
 		}
 	}
-
 
 	.screen-reader-text:focus {
 		clip-path: inset(50%);

@@ -12,6 +12,7 @@ const urlParams = new URLSearchParams( queryString );
 const tab = urlParams.get( 'tab' );
 let elNotifyAction;
 
+// API get list addons.
 const getAddons = ( set = '' ) => {
 	const params = tab ? `?tab=${ tab }` : `?${ set }`;
 	fetch( adminAPI.apiAddons + params, {
@@ -33,6 +34,7 @@ const getAddons = ( set = '' ) => {
 };
 
 const isHandling = [];
+// API send action install, update, activate, deactivate.
 const addonsAction = ( data, callBack ) => {
 	const addonSlug = data.addon.slug;
 	const action = data.action;
@@ -68,7 +70,7 @@ const addonsAction = ( data, callBack ) => {
 		console.log( err );
 	} );
 };
-
+// Show notify.
 const handleNotify = ( status, message ) => {
 	const elSuccess = elNotifyAction.querySelector( `.${ elNotifyAction.classList.value }__success` );
 	const elFailed = elNotifyAction.querySelector( `.${ elNotifyAction.classList.value }__error` );
@@ -92,6 +94,19 @@ const handleNotify = ( status, message ) => {
 // Get addons when js loaded.
 getAddons();
 
+// Search addons.
+const searchAddons = ( name ) => {
+	const elAddonItem = elAdminTabContent.querySelectorAll( '.lp-addon-item' );
+	elAddonItem.forEach( ( el ) => {
+		const addonName = el.querySelector( 'a' ).textContent;
+		if ( addonName.toLowerCase().includes( name ) ) {
+			el.style.display = 'flex';
+		} else {
+			el.style.display = 'none';
+		}
+	} );
+};
+
 /*** DOMContentLoaded ***/
 document.addEventListener( 'DOMContentLoaded', () => {
 	elAdminTabContent = document.querySelector( '.lp-admin-tab-content' );
@@ -105,8 +120,7 @@ document.addEventListener( 'DOMContentLoaded', () => {
 
 			const elNavTabWrapper = document.querySelector( '.lp-nav-tab-wrapper' );
 			const elNavTabWrapperClone = elNavTabWrapper.cloneNode( true );
-			const elxx = document.querySelector( '.lp-admin-tab-content' );
-			elxx.insertBefore( elNavTabWrapperClone, elxx.children[ 0 ] );
+			elAdminTabContent.insertBefore( elNavTabWrapperClone, elAdminTabContent.children[ 0 ] );
 			elNavTabWrapperClone.style.display = 'flex';
 			elNavTabWrapper.remove();
 
@@ -226,5 +240,15 @@ document.addEventListener( 'click', ( e ) => {
 
 			el.classList.remove( 'handling' );
 		} );
+	}
+} );
+
+// Event search addons.
+document.addEventListener( 'input', ( e ) => {
+	const el = e.target;
+
+	if ( 'lp-search-addons__input' === el.id ) {
+		const keyword = el.value;
+		searchAddons( keyword );
 	}
 } );
