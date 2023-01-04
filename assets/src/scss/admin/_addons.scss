@@ -108,7 +108,9 @@
 #lp-addons {
 	display: grid;
 	grid-template-columns: repeat( auto-fit, minmax( 280px, 1fr ) );
+	//grid-template-columns: repeat( 5,1fr );
 	grid-gap: 20px;
+	padding-right: 20px;
 
 	button {
 		padding: 5px 15px;
@@ -143,12 +145,16 @@
 	.lp-addon-item {
 		background: white;
 		padding: var(--lp-addon-item-padding);
-		border: 1px solid rgba(151, 71, 255, 1);
+		border: 1px solid #c3c4c7;
 		border-radius: 3px;
 		display: flex;
 		flex-direction: column;
 		justify-content: space-between;
 		position: relative;
+
+		&.hide, &.search-not-found {
+			display: none;
+		}
 
 		&__content {
 			text-align: center;
@@ -169,6 +175,9 @@
 				-webkit-line-clamp: 5;
 				-webkit-box-orient: vertical;
 				overflow: hidden;
+				&::before {
+					content: none;
+				}
 			}
 		}
 
@@ -384,7 +393,7 @@
 		border-radius: 3px 3px 0 0;
 	}
 
-	span.nav-tab-active {
+	.nav-tab-active {
 		background: #f0f0f1;
 		border-bottom: 1px solid #f0f0f1;
 	}

@@ -16,14 +16,15 @@ if ( ! isset( $addons ) ) {
 
 include_once ABSPATH . 'wp-admin/includes/plugin.php';
 
-$total_addon_free      = 0;
-$total_addon_paid      = 0;
-$total_addon_installed = 0;
-$total_addon_activated = 0;
-$total_addon_update    = 0;
-$plugins_installed     = get_plugins();
-$plugins_activated     = get_option( 'active_plugins', '' );
-$active_tab            = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : 'all';
+$total_addon_free          = 0;
+$total_addon_paid          = 0;
+$total_addon_installed     = 0;
+$total_addon_not_installed = 0;
+$total_addon_activated     = 0;
+$total_addon_update        = 0;
+$plugins_installed         = get_plugins();
+$plugins_activated         = get_option( 'active_plugins', '' );
+$active_tab                = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : 'all';
 ?>
 <div class="lp-addons-wrapper">
 	<div id="lp-addons">
@@ -56,6 +57,9 @@ $active_tab            = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : 'all';
 				$classes_status[] = 'installed';
 				$version_current  = $plugins_installed[ $addon_base ]['Version'];
 				$total_addon_installed ++;
+			} else {
+				$classes_status[] = 'not_installed';
+				$total_addon_not_installed ++;
 			}
 			// Addon is activated
 			if ( in_array( $addon_base, $plugins_activated ) ) {
@@ -76,7 +80,11 @@ $active_tab            = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : 'all';
 				$classes_status[] = 'free';
 			}
 
-			switch ( $active_tab ) {
+			if ( ! in_array( $active_tab, $classes_status ) && $active_tab != 'all' ) {
+				$classes_status[] = 'hide';
+			}
+
+			/*switch ( $active_tab ) {
 				case 'installed':
 					if ( ! $is_installed ) {
 						continue 2;
@@ -99,9 +107,9 @@ $active_tab            = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : 'all';
 					break;
 				default:
 					break;
-			}
+			}*/
 			?>
-			<div class="lp-addon-item">
+			<div class="lp-addon-item <?php echo implode( ' ', $classes_status ); ?>">
 				<div class="lp-addon-item__content">
 					<img src="<?php echo $addon->image; ?>" alt="<?php echo $addon->name; ?>"/>
 					<h3>
@@ -111,7 +119,7 @@ $active_tab            = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : 'all';
 					</h3>
 					<?php
 					if ( $version_current ) {
-						echo "<h4>Version $version_current</h4>";
+						echo "<h4>Version <span class='addon-version-current'>$version_current</span></h4>";
 					} else {
 						echo "<h4>Version $version_latest</h4>";
 					}
@@ -169,12 +177,12 @@ $active_tab            = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : 'all';
 	<div class="lp-nav-tab-wrapper" style="display: none">
 		<?php
 		$tabs = array(
-			'all'       => sprintf( __( 'All (%d)', 'learnpress' ), count( (array) $addons ) ),
-			'installed' => sprintf( __( 'Installed (%d)', 'learnpress' ), $total_addon_installed ),
-			'paid'      => sprintf( __( 'Paid (%d)', 'learnpress' ), $total_addon_paid ),
-			'free'      => sprintf( __( 'Free (%d)', 'learnpress' ), $total_addon_free ),
-			'update'    => sprintf( __( 'Update (%d)', 'learnpress' ), $total_addon_update ),
-			'more'      => __( 'Get more', 'learnpress' ),
+			'all'           => sprintf( __( 'All (%d)', 'learnpress' ), count( (array) $addons ) ),
+			'installed'     => sprintf( __( 'Installed (%d)', 'learnpress' ), $total_addon_installed ),
+			'purchase'      => sprintf( __( 'Paid (%d)', 'learnpress' ), $total_addon_paid ),
+			'free'          => sprintf( __( 'Free (%d)', 'learnpress' ), $total_addon_free ),
+			'update'        => sprintf( __( 'Update (%d)', 'learnpress' ), $total_addon_update ),
+			'not_installed' => sprintf( __( 'Not Installed (%d)', 'learnpress' ), $total_addon_not_installed ),
 		);
 		foreach ( $tabs as $tab => $name ) {
 			?>
@@ -192,10 +200,13 @@ $active_tab            = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : 'all';
 			?>
 
 			<?php if ( $active_class ) { ?>
-				<span
-					class="nav-tab<?php echo esc_attr( $active_class ); ?>"><?php echo esc_html( $tab_title ); ?></span>
+				<a class="nav-tab<?php echo esc_attr( $active_class ); ?>"
+					data-tab="<?php echo esc_attr( $tab ); ?>" href="#">
+					<?php echo esc_html( $tab_title ); ?>
+				</a>
 			<?php } else { ?>
 				<a class="nav-tab"
+					data-tab="<?php echo esc_attr( $tab ); ?>"
 					href="?page=learn-press-addons&tab=<?php echo esc_attr( $tab ); ?>">
 					<?php echo esc_html( $tab_title ); ?>
 				</a>

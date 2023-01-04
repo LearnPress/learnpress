@@ -16,9 +16,16 @@ class LP_Submenu_Addons extends LP_Abstract_Submenu {
 		$this->priority   = 20;
 		$this->callback   = [ $this, 'display' ];
 
-		$this->add_ons_tabs();
+		//$this->add_ons_tabs();
 
 		parent::__construct();
+	}
+
+	public function display() {
+		echo '<h1>' . __( 'LearPress Addons' ) . '</h1>';
+		echo '<div class="lp-addons-page">';
+		lp_skeleton_animation_html( 20 );
+		echo '</div>';
 	}
 
 	public function add_ons_tabs() {

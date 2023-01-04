@@ -621,7 +621,6 @@ body {
 	bottom: 5%;
 	z-index: 10000;
 	left: 50%;
-	border-radius: 3px;
 	padding: 10px;
 	transition: all 0.5s;
 	transform: translateY(500%);
@@ -639,21 +638,30 @@ body {
 			display: none;
 		}
 
-
 		box-shadow: 0 4px 25px 1px rgba(0, 0, 0, 0.25);
 		background: #202937;
 		padding: 0 20px;
 		border-radius: 3px;
 		min-width: 200px;
-		transition: all 0.5s;
+		transition: all 0.8s;
 
 		&__success {
+			display: none;
 			color: #01a401;
+
+			&.show {
+				display: block;
+			}
 		}
 
 		&__error {
+			display: none;
 			color: #f44336;
 			font-weight: bold;
+
+			&.show {
+				display: block;
+			}
 		}
 	}
 }

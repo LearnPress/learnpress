@@ -157,7 +157,7 @@ class LP_REST_Addon_Controller extends LP_Abstract_REST_Controller {
 			}
 
 			$response->status  = 'success';
-			$response->message = sprintf( '%s %s %s', $addon['name'], $action, __( 'successfully', 'learnpress' ) );
+			$response->message = sprintf( '"%s" %s <strong>%s</strong>', $addon['name'], $action, __( 'successfully', 'learnpress' ) );
 		} catch ( Throwable $e ) {
 			$response->message = $e->getMessage();
 		}
