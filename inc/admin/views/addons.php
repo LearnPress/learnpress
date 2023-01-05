@@ -25,6 +25,7 @@ $total_addon_update        = 0;
 $plugins_installed         = get_plugins();
 $plugins_activated         = get_option( 'active_plugins', '' );
 $active_tab                = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : 'all';
+$key_purchase              = LP_Settings::get_option( LP_Manager_Addons::instance()->key_purchase_addons, [] );
 ?>
 <div class="lp-addons-wrapper">
 	<div id="lp-addons">
@@ -95,7 +96,7 @@ $active_tab                = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : 'a
 						echo "Version $version_latest";
 					}
 
-					if ( $addon->link_doc ) {
+					if ( isset( $addon->link_doc ) && ! empty( $addon->link_doc ) ) {
 						echo " | <a href='{$addon->link_doc}' target='_blank' rel='noopener'>Documentation</a>";
 					}
 					?>
@@ -141,7 +142,8 @@ $active_tab                = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : 'a
 				<div class="lp-addon-item__purchase">
 					<div class="lp-addon-item__purchase__wrapper">
 						<label>
-							<input type="text" placeholder="Enter Purchase Code">
+							<input type="text" placeholder="Enter Purchase Code"
+							value="<?php echo ( isset( $key_purchase[ $addon->slug ] ) ) ? $key_purchase[ $addon->slug ] : ''; ?>">
 						</label>
 						<button class="btn-addon-action" data-action="install">
 							<span class="dashicons dashicons-update"></span><span class="text">Submit</span>

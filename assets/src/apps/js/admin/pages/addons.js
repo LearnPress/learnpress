@@ -5,7 +5,6 @@
  * @version 1.0.1
  */
 import adminAPI from '../api';
-import time from '@wordpress/components/build/date-time/time';
 let elAddonsPage;
 let dataHtml;
 let dataAddons;
@@ -103,6 +102,8 @@ getAddons();
 // Search Addons.
 const searchAddons = ( name ) => {
 	const elAddonItems = elAddonsPage.querySelectorAll( '.lp-addon-item' );
+	let totalItems = 0;
+
 	elAddonItems.forEach( ( elAddonItem ) => {
 		const addonName = elAddonItem.querySelector( 'a' ).textContent;
 		if ( elAddonItem.classList.contains( 'hide' ) ) {
@@ -111,10 +112,13 @@ const searchAddons = ( name ) => {
 
 		if ( addonName.toLowerCase().includes( name.toLowerCase() ) ) {
 			elAddonItem.classList.remove( 'search-not-found' );
+			totalItems++;
 		} else {
 			elAddonItem.classList.add( 'search-not-found' );
 		}
 	} );
+
+	setGridItems( totalItems );
 };
 // Set grid style items.
 const setGridItems = ( totalItems ) => {
@@ -226,10 +230,9 @@ document.addEventListener( 'click', ( e ) => {
 		}
 
 		// Send request to server.
-		const purchase = el.closest( '.lp-addon-item__purchase' );
 		let purchaseCode = '';
-		if ( purchase ) {
-			purchaseCode = purchase.querySelector( 'input' ).value;
+		if ( elItemPurchase ) {
+			purchaseCode = elItemPurchase.querySelector( 'input' ).value;
 		}
 
 		const data = { purchase_code: purchaseCode, action, addon };
@@ -238,6 +241,7 @@ document.addEventListener( 'click', ( e ) => {
 				if ( action === 'install' ) {
 					elAddonItem.classList.add( 'installed', 'activated' );
 					elAddonItem.classList.remove( 'not_installed' );
+					elItemPurchase.style.display = 'none';
 					/*elToggleSwitchInput.setAttribute( 'checked', 'checked' );
 					elToggleSwitchInput.setAttribute( 'data-action', 'deactivate' );*/
 					const elNavInstalled = document.querySelector( '.nav-tab[data-tab=installed] span' );

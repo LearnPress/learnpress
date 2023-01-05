@@ -61,8 +61,7 @@ class LP_REST_Addon_Controller extends LP_Abstract_REST_Controller {
 	 * @since 4.2.1
 	 */
 	public function list_addons( WP_REST_Request $request ): LP_REST_Response {
-		$response       = new LP_REST_Response();
-		$response->data = '';
+		$response = new LP_REST_Response();
 
 		try {
 			$lp_addon = LP_Manager_Addons::instance();

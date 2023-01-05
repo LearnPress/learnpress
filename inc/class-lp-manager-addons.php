@@ -11,12 +11,20 @@ defined( 'ABSPATH' ) || exit;
 
 class LP_Manager_Addons {
 	protected static $_instance;
-	//private $url_list_addons = 'https://learnpress.github.io/learnpress/version-addons.json';
-	//private $link_addon_action = 'https://updates.thimpress.com/thim-addon-market/download-addon';
-	public $url_list_addons   = LP_PLUGIN_URL . '/version-addons.json';
+	/**
+	 * @var string Link get list addons.
+	 */
+	public $url_list_addons = 'https://learnpress.github.io/learnpress/version-addons.json';
+	//public $url_list_addons   = LP_PLUGIN_URL . '/version-addons.json';
+	/**
+	 * @var string Link download plugin from Thimpress.
+	 */
 	public $link_addon_action = 'http://updates/thim-addon-market/download-addon';
-	public $link_org          = 'https://downloads.wordpress.org/plugin/';
-
+	//private $link_addon_action = 'https://updates.thimpress.com/thim-addon-market/download-addon';
+	/**
+	 * @var string link download plugin from org.
+	 */
+	public $link_org = 'https://downloads.wordpress.org/plugin/';
 	/**
 	 * @var WP_Ajax_Upgrader_Skin $upgrader_skin
 	 */
@@ -25,6 +33,10 @@ class LP_Manager_Addons {
 	 * @var Plugin_Upgrader $plugin_upgrader
 	 */
 	public $plugin_upgrader;
+	/**
+	 *
+	 */
+	public $key_purchase_addons = 'purchase_addons';
 
 	/**
 	 * Constructor
@@ -65,10 +77,14 @@ class LP_Manager_Addons {
 				'addon'   => $addon['slug'],
 				'version' => 'lastest',
 			],
-			'user-agent' => home_url( '/' ),
+			'user-agent' => site_url(),
 		];
 
 		if ( 0 == $addon['is_free'] ) {
+			$key_purchase                   = LP_Settings::get_option( $this->key_purchase_addons, [] );
+			$key_purchase[ $addon['slug'] ] = $purchase_code;
+			LP_Settings::update_option( $this->key_purchase_addons, $key_purchase );
+
 			$args['body']['purchase_code'] = $purchase_code;
 		}
 
