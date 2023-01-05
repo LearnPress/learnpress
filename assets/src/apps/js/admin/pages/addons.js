@@ -148,7 +148,7 @@ document.addEventListener( 'click', ( e ) => {
 	}
 
 	// Events actions: activate, deactivate.
-	if ( el.classList.contains( 'lp-toggle-switch-label' ) ) {
+	/*if ( el.classList.contains( 'lp-toggle-switch-label' ) ) {
 		//e.preventDefault();
 
 		const elAddonItem = el.closest( '.lp-addon-item' );
@@ -189,7 +189,7 @@ document.addEventListener( 'click', ( e ) => {
 				}
 			}
 		} );
-	}
+	}*/
 
 	// Events actions: install, update, delete.
 	if ( el.classList.contains( 'btn-addon-action' ) ) {
@@ -232,6 +232,10 @@ document.addEventListener( 'click', ( e ) => {
 					const elAddonVersionCurrent = elAddonItem.querySelector( '.addon-version-current' );
 					elAddonVersionCurrent.innerHTML = addon.version;
 					elAddonItem.classList.remove( 'update' );
+				} else if ( action === 'activate' ) {
+					elAddonItem.classList.add( 'activated' );
+				} else if ( action === 'deactivate' ) {
+					elAddonItem.classList.remove( 'activated' );
 				}
 			}
 

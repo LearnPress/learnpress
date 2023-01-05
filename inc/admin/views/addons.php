@@ -114,21 +114,12 @@ $active_tab                = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : 'a
 							<button class="btn-addon-action" data-action="purchase">Install</button>
 					</div>
 					<div class="lp-addon-item__actions__right">
-						<?php
-						$data = array(
-							'name'  => $addon->slug,
-							'id'    => $addon->slug,
-							'value' => 0,
-						);
-						if ( $is_activated ) {
-							$data['value']  = 1;
-							$data['extra'] .= ' data-action="deactivate"';
-						} else {
-							$data['extra'] .= ' data-action="activate"';
-						}
-
-						Template::instance()->get_template( LP_PLUGIN_PATH . '/inc/admin/meta-box/fields/toggle-switch.php', compact( 'data' ) );
-						?>
+						<button class="btn-addon-action" data-action="deactivate">
+							<span class="dashicons dashicons-update"></span><span class="text">Deactivate</span>
+						</button>
+						<button class="btn-addon-action" data-action="activate">
+							<span class="dashicons dashicons-update"></span><span class="text">Activate</span>
+						</button>
 					</div>
 				</div>
 				<div class="lp-addon-item__purchase">
