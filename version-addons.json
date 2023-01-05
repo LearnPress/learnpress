@@ -70,7 +70,7 @@
   "learnpress-co-instructor": {
     "name": "Co-Instructors Add-On for LearnPress",
     "basename": "learnpress-co-instructor/learnpress-co-instructor.php",
-    "version": "4.0.2",
+    "version": "4.0.1",
     "require_lp": "4.1.7.3.2",
     "description": "LearnPress Prerequisites is an add-on for LearnPress allow you to set prerequisite courses for a certain course in a LearnPress site.",
     "image": "https://thimpress.com/wp-content/uploads/2015/06/Co-instructors-690x460px.png",
