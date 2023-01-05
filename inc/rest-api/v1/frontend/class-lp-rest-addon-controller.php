@@ -78,7 +78,8 @@ class LP_REST_Addon_Controller extends LP_Abstract_REST_Controller {
 
 			ob_start();
 			Template::instance()->get_admin_template( 'addons.php', compact( 'addons' ) );
-			$response->data = ob_get_clean();
+			$response->data->html   = ob_get_clean();
+			$response->data->addons = $addons;
 
 			$response->status  = 'success';
 			$response->message = __( 'Get addons successfully', 'learnpress' );

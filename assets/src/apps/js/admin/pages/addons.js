@@ -5,8 +5,10 @@
  * @version 1.0.1
  */
 import adminAPI from '../api';
-let elAdminTabContent = null;
-let dataHtml = null;
+import time from '@wordpress/components/build/date-time/time';
+let elAddonsPage;
+let dataHtml;
+let dataAddons;
 const queryString = window.location.search;
 const urlParams = new URLSearchParams( queryString );
 const tab = urlParams.get( 'tab' );
@@ -24,7 +26,8 @@ const getAddons = ( set = '' ) => {
 		// console.log(data);
 		const { status, message, data } = res;
 		if ( status === 'success' ) {
-			dataHtml = data;
+			dataHtml = data.html;
+			dataAddons = data.addons;
 		} else {
 			dataHtml = message;
 		}
@@ -35,7 +38,6 @@ const getAddons = ( set = '' ) => {
 // API send action install, update, activate, deactivate.
 const addonsAction = ( data, callBack ) => {
 	const addonSlug = data.addon.slug;
-	const action = data.action;
 
 	if ( isHandling.indexOf( addonSlug ) !== -1 ) {
 		return;
@@ -99,7 +101,7 @@ const handleNotify = ( status, message ) => {
 getAddons();
 // Search Addons.
 const searchAddons = ( name ) => {
-	const elAddonItems = elAdminTabContent.querySelectorAll( '.lp-addon-item' );
+	const elAddonItems = elAddonsPage.querySelectorAll( '.lp-addon-item' );
 	elAddonItems.forEach( ( elAddonItem ) => {
 		const addonName = elAddonItem.querySelector( 'a' ).textContent;
 		if ( elAddonItem.classList.contains( 'hide' ) ) {
@@ -113,27 +115,24 @@ const searchAddons = ( name ) => {
 		}
 	} );
 };
+// Check element loaded and data API returned.
+const loadElData = setInterval( () => {
+	if ( ! elAddonsPage && ! elNotifyActionWrapper ) {
+		elAddonsPage = document.querySelector( '.lp-addons-page' );
+		elNotifyActionWrapper = document.querySelector( '.lp-notify-action-wrapper' );
+	} else if ( dataHtml && elAddonsPage && elNotifyActionWrapper ) {
+		elAddonsPage.innerHTML = dataHtml;
+		const elNavTabWrapper = document.querySelector( '.lp-nav-tab-wrapper' );
+		const elNavTabWrapperClone = elNavTabWrapper.cloneNode( true );
+		elAddonsPage.insertBefore( elNavTabWrapperClone, elAddonsPage.children[ 0 ] );
+		elNavTabWrapperClone.style.display = 'flex';
+		elNavTabWrapper.remove();
 
-/*** DOMContentLoaded ***/
-document.addEventListener( 'DOMContentLoaded', () => {
-	elAdminTabContent = document.querySelector( '.lp-addons-page' );
-	elNotifyActionWrapper = document.querySelector( '.lp-notify-action-wrapper' );
+		clearInterval( loadElData );
+	}
+}, 1 );
+document.addEventListener( 'DOMContentLoaded', ( e ) => {
 
-	const interval = setInterval( () => {
-		if ( dataHtml !== null ) {
-			if ( dataHtml.length > 0 ) {
-				elAdminTabContent.innerHTML = dataHtml;
-			}
-
-			const elNavTabWrapper = document.querySelector( '.lp-nav-tab-wrapper' );
-			const elNavTabWrapperClone = elNavTabWrapper.cloneNode( true );
-			elAdminTabContent.insertBefore( elNavTabWrapperClone, elAdminTabContent.children[ 0 ] );
-			elNavTabWrapperClone.style.display = 'flex';
-			elNavTabWrapper.remove();
-
-			clearInterval( interval );
-		}
-	}, 1 );
 } );
 
 /*** Events ***/
@@ -156,7 +155,7 @@ document.addEventListener( 'click', ( e ) => {
 		const idLabel = el.getAttribute( 'for' );
 		const elInput = document.querySelector( `#${ idLabel }` );
 		const action = elInput.getAttribute( 'data-action' );
-		const addon = JSON.parse( elInput.getAttribute( 'data-addon' ) );
+		const addon = dataAddons[ elAddonItem.dataset.slug ];
 		const addonSlug = addon.slug;
 		const parent = el.closest( '.lp-toggle-switch' );
 		const label = parent.querySelector( `label[for=${ idLabel }]` );
@@ -196,9 +195,9 @@ document.addEventListener( 'click', ( e ) => {
 	if ( el.classList.contains( 'btn-addon-action' ) ) {
 		e.preventDefault();
 		el.classList.add( 'handling' );
-		const addon = JSON.parse( el.getAttribute( 'data-addon' ) );
-		const action = el.getAttribute( 'data-action' );
 		const elAddonItem = el.closest( '.lp-addon-item' );
+		const addon = dataAddons[ elAddonItem.dataset.slug ];
+		const action = el.dataset.action;
 		const elItemPurchase = elAddonItem.querySelector( '.lp-addon-item__purchase' );
 		const elToggleSwitchInput = elAddonItem.querySelector( '.lp-toggle-switch-input' );
 
@@ -248,8 +247,8 @@ document.addEventListener( 'click', ( e ) => {
 		} );
 		el.classList.add( 'nav-tab-active' );
 		const tabName = el.dataset.tab;
-		const elAddonItems = elAdminTabContent.querySelectorAll( '.lp-addon-item' );
-		const elSearch = elAdminTabContent.querySelector( '#lp-search-addons__input' );
+		const elAddonItems = elAddonsPage.querySelectorAll( '.lp-addon-item' );
+		const elSearch = elAddonsPage.querySelector( '#lp-search-addons__input' );
 		elSearch.value = '';
 
 		urlParams.set( 'tab', tabName );
