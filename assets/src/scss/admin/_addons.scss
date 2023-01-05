@@ -19,9 +19,16 @@
 #lp-addons {
 	display: grid;
 	grid-template-columns: repeat( auto-fit, minmax( 280px, 1fr ) );
-	//grid-template-columns: repeat( 5,1fr );
 	grid-gap: 20px;
 	padding-right: 20px;
+
+	&.max-3-items {
+		grid-template-columns: repeat( auto-fit, minmax( 280px, 320px ) );
+	}
+
+	a {
+		text-decoration: none;
+	}
 
 	button {
 		padding: 6.5px 17px;
@@ -84,7 +91,7 @@
 
 			p {
 				display: -webkit-box;
-				-webkit-line-clamp: 5;
+				//-webkit-line-clamp: 5;
 				-webkit-box-orient: vertical;
 				overflow: hidden;
 				&::before {
@@ -135,7 +142,7 @@
 				left: var(--lp-addon-item-padding);
 				right: var(--lp-addon-item-padding);
 				background: white;
-				border: 1px solid rgba(151, 71, 255, 1);
+				border: 1px solid var(--lp-addon-item-border-color);
 				padding: var(--lp-addon-item-padding);
 				border-radius: 3px;
 				flex-direction: column;

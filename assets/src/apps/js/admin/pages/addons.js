@@ -9,6 +9,7 @@ import time from '@wordpress/components/build/date-time/time';
 let elAddonsPage;
 let dataHtml;
 let dataAddons;
+let elLPAddons;
 const queryString = window.location.search;
 const urlParams = new URLSearchParams( queryString );
 const tab = urlParams.get( 'tab' );
@@ -115,6 +116,14 @@ const searchAddons = ( name ) => {
 		}
 	} );
 };
+// Set grid style items.
+const setGridItems = ( totalItems ) => {
+	if ( totalItems < 3 ) {
+		elLPAddons.classList.add( 'max-3-items' );
+	} else {
+		elLPAddons.classList.remove( 'max-3-items' );
+	}
+};
 // Check element loaded and data API returned.
 const loadElData = setInterval( () => {
 	if ( ! elAddonsPage && ! elNotifyActionWrapper ) {
@@ -122,11 +131,14 @@ const loadElData = setInterval( () => {
 		elNotifyActionWrapper = document.querySelector( '.lp-notify-action-wrapper' );
 	} else if ( dataHtml && elAddonsPage && elNotifyActionWrapper ) {
 		elAddonsPage.innerHTML = dataHtml;
+		elLPAddons = elAddonsPage.querySelector( '#lp-addons' );
 		const elNavTabWrapper = document.querySelector( '.lp-nav-tab-wrapper' );
 		const elNavTabWrapperClone = elNavTabWrapper.cloneNode( true );
 		elAddonsPage.insertBefore( elNavTabWrapperClone, elAddonsPage.children[ 0 ] );
 		elNavTabWrapperClone.style.display = 'flex';
 		elNavTabWrapper.remove();
+		const elNavActive = elNavTabWrapperClone.querySelector( '.nav-tab.nav-tab-active span' );
+		setGridItems( parseInt( elNavActive.textContent ) );
 
 		clearInterval( loadElData );
 	}
@@ -199,7 +211,7 @@ document.addEventListener( 'click', ( e ) => {
 		const addon = dataAddons[ elAddonItem.dataset.slug ];
 		const action = el.dataset.action;
 		const elItemPurchase = elAddonItem.querySelector( '.lp-addon-item__purchase' );
-		const elToggleSwitchInput = elAddonItem.querySelector( '.lp-toggle-switch-input' );
+		//const elToggleSwitchInput = elAddonItem.querySelector( '.lp-toggle-switch-input' );
 
 		if ( action === 'purchase' ) {
 			elItemPurchase.style.display = 'block';
@@ -226,8 +238,12 @@ document.addEventListener( 'click', ( e ) => {
 				if ( action === 'install' ) {
 					elAddonItem.classList.add( 'installed', 'activated' );
 					elAddonItem.classList.remove( 'not_installed' );
-					elToggleSwitchInput.setAttribute( 'checked', 'checked' );
-					elToggleSwitchInput.setAttribute( 'data-action', 'deactivate' );
+					/*elToggleSwitchInput.setAttribute( 'checked', 'checked' );
+					elToggleSwitchInput.setAttribute( 'data-action', 'deactivate' );*/
+					const elNavInstalled = document.querySelector( '.nav-tab[data-tab=installed] span' );
+					elNavInstalled.textContent = parseInt( elNavInstalled.textContent ) + 1;
+					const elNavNoInstalled = document.querySelector( '.nav-tab[data-tab=not_installed] span' );
+					elNavNoInstalled.textContent = parseInt( elNavNoInstalled.textContent ) - 1;
 				} else if ( action === 'update' ) {
 					const elAddonVersionCurrent = elAddonItem.querySelector( '.addon-version-current' );
 					elAddonVersionCurrent.innerHTML = addon.version;
@@ -257,14 +273,18 @@ document.addEventListener( 'click', ( e ) => {
 
 		urlParams.set( 'tab', tabName );
 		window.history.pushState( {}, '', `${ window.location.pathname }?${ urlParams.toString() }` );
+		let totalItems = 0;
 		elAddonItems.forEach( ( elAddonItem ) => {
 			elAddonItem.classList.remove( 'search-not-found' );
 			if ( 'all' === tabName || elAddonItem.classList.contains( tabName ) ) {
 				elAddonItem.classList.remove( 'hide' );
+				totalItems++;
 			} else {
 				elAddonItem.classList.add( 'hide' );
 			}
 		} );
+
+		setGridItems( totalItems );
 	}
 } );
 

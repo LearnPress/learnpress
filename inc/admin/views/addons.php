@@ -87,23 +87,39 @@ $active_tab                = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : 'a
 							<?php echo $addon->name; ?>
 						</a>
 					</h3>
+					<h4>
 					<?php
 					if ( $version_current ) {
-						echo "<h4>Version <span class='addon-version-current'>$version_current</span></h4>";
+						echo "Version <span class='addon-version-current'>$version_current</span>";
 					} else {
-						echo "<h4>Version $version_latest</h4>";
+						echo "Version $version_latest";
 					}
-					echo sprintf(
-						'<p>%s On %s</p>',
-						$addon->is_free ? __( 'Free', 'learnpress' ) : __( 'Paid', 'learnpress' ),
-						$addon->is_org ? __( 'WP.org', 'learnpress' ) : __( 'Thimpress', 'learnpress' )
-					);
+
+					if ( $addon->link_doc ) {
+						echo " | <a href='{$addon->link_doc}' target='_blank' rel='noopener'>Documentation</a>";
+					}
 					?>
+					</h4>
+						<?php
+						echo sprintf(
+							'<p>%s on %s</p>',
+							$addon->is_free ? __( 'Free', 'learnpress' ) : __( 'Paid', 'learnpress' ),
+							$addon->is_org ? __( 'WP.org', 'learnpress' ) : __( 'Thimpress', 'learnpress' )
+						);
+						?>
 					<p title="<?php echo $addon->description; ?>"><?php echo $addon->description; ?></p>
 				</div>
 				<div class="lp-addon-item__actions">
 					<div class="lp-addon-item__actions__left">
-							<button class="btn-addon-action" data-action="setting">Settings</button>
+						<?php
+						if ( isset( $addon->setting ) && ! empty( $addon->setting ) ) {
+							?>
+							<a href="<?php echo admin_url( $addon->setting ); ?>" target="_blank" rel="noopener">
+								<button data-action="setting">Settings</button>
+							</a>
+							<?php
+						}
+						?>
 							<button class="btn-addon-action" data-action="update"
 							title="<?php echo sprintf( '%s %s require LP version %s', $addon->name, $version_latest, $addon->require_lp ); ?>">
 								<span class="dashicons dashicons-update"></span><span class="text">Update</span>
@@ -145,23 +161,16 @@ $active_tab                = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : 'a
 	<div class="lp-nav-tab-wrapper" style="display: none">
 		<?php
 		$tabs = array(
-			'all'           => sprintf( __( 'All (%d)', 'learnpress' ), count( (array) $addons ) ),
-			'installed'     => sprintf( __( 'Installed (%d)', 'learnpress' ), $total_addon_installed ),
-			'purchase'      => sprintf( __( 'Paid (%d)', 'learnpress' ), $total_addon_paid ),
-			'free'          => sprintf( __( 'Free (%d)', 'learnpress' ), $total_addon_free ),
-			'update'        => sprintf( __( 'Update (%d)', 'learnpress' ), $total_addon_update ),
-			'not_installed' => sprintf( __( 'Not Installed (%d)', 'learnpress' ), $total_addon_not_installed ),
+			'all'           => sprintf( '%s (<span>%d</span>)', __( 'All', 'learnpress' ), count( (array) $addons ) ),
+			'installed'     => sprintf( '%s (<span>%d</span>)', __( 'Installed', 'learnpress' ), $total_addon_installed ),
+			'purchase'      => sprintf( '%s (<span>%d</span>)', __( 'Paid', 'learnpress' ), $total_addon_paid ),
+			'free'          => sprintf( '%s (<span>%d</span>)', __( 'Free', 'learnpress' ), $total_addon_free ),
+			'update'        => sprintf( '%s (<span>%d</span>)', __( 'Update', 'learnpress' ), $total_addon_update ),
+			'not_installed' => sprintf( '%s (<span>%d</span>)', __( 'Not Installed', 'learnpress' ), $total_addon_not_installed ),
 		);
 		foreach ( $tabs as $tab => $name ) {
 			?>
 			<?php
-			$obj_tab = false;
-
-			if ( is_object( $name ) ) {
-				$obj_tab = $name;
-				$name    = $obj_tab->text;
-				$tab     = $obj_tab->id;
-			}
 
 			$active_class = ( $tab == $active_tab ) ? ' nav-tab-active' : '';
 			$tab_title    = apply_filters( 'learn-press/admin/submenu-heading-tab-title', $name, $tab );
@@ -170,13 +179,13 @@ $active_tab                = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : 'a
 			<?php if ( $active_class ) { ?>
 				<a class="nav-tab<?php echo esc_attr( $active_class ); ?>"
 					data-tab="<?php echo esc_attr( $tab ); ?>" href="#">
-					<?php echo esc_html( $tab_title ); ?>
+					<?php echo wp_kses_post( $tab_title ); ?>
 				</a>
 			<?php } else { ?>
 				<a class="nav-tab"
 					data-tab="<?php echo esc_attr( $tab ); ?>"
 					href="?page=learn-press-addons&tab=<?php echo esc_attr( $tab ); ?>">
-					<?php echo esc_html( $tab_title ); ?>
+					<?php echo wp_kses_post( $tab_title ); ?>
 				</a>
 			<?php } ?>
 		<?php } ?>
