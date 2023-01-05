@@ -64,7 +64,7 @@ const addonsAction = ( data, callBack ) => {
 
 		handleNotify( status, message );
 	} ).catch( ( err ) => {
-		handleNotify( 'error', err );
+		handleNotify( 'error', `error js: ${ err }` );
 		console.log( err );
 	} );
 };
@@ -153,8 +153,6 @@ document.addEventListener( 'click', ( e ) => {
 		//e.preventDefault();
 
 		const elAddonItem = el.closest( '.lp-addon-item' );
-		const elActionLeft = elAddonItem.querySelector( '.lp-addon-item__actions__left' );
-		const elActionRight = elAddonItem.querySelector( '.lp-addon-item__actions__right' );
 		const idLabel = el.getAttribute( 'for' );
 		const elInput = document.querySelector( `#${ idLabel }` );
 		const action = elInput.getAttribute( 'data-action' );
@@ -185,12 +183,10 @@ document.addEventListener( 'click', ( e ) => {
 
 			if ( status === 'success' ) {
 				if ( action === 'deactivate' ) {
-					elActionLeft.classList.remove( 'activated' );
-					elActionRight.classList.remove( 'activated' );
+					elAddonItem.classList.remove( 'activated' );
 				}
 				if ( action === 'activate' ) {
-					elActionLeft.classList.add( 'activated' );
-					elActionRight.classList.add( 'activated' );
+					elAddonItem.classList.add( 'activated' );
 				}
 			}
 		} );
@@ -204,8 +200,6 @@ document.addEventListener( 'click', ( e ) => {
 		const action = el.getAttribute( 'data-action' );
 		const elAddonItem = el.closest( '.lp-addon-item' );
 		const elItemPurchase = elAddonItem.querySelector( '.lp-addon-item__purchase' );
-		const elActionLeft = elAddonItem.querySelector( '.lp-addon-item__actions__left' );
-		const elActionRight = elAddonItem.querySelector( '.lp-addon-item__actions__right' );
 		const elToggleSwitchInput = elAddonItem.querySelector( '.lp-toggle-switch-input' );
 
 		if ( action === 'purchase' ) {
@@ -231,19 +225,14 @@ document.addEventListener( 'click', ( e ) => {
 		addonsAction( data, function( status, message, data ) {
 			if ( status === 'success' ) {
 				if ( action === 'install' ) {
-					elActionLeft.classList.add( 'installed', 'activated' );
-					elActionRight.classList.add( 'installed', 'activated' );
+					elAddonItem.classList.add( 'installed', 'activated' );
+					elAddonItem.classList.remove( 'not_installed' );
 					elToggleSwitchInput.setAttribute( 'checked', 'checked' );
 					elToggleSwitchInput.setAttribute( 'data-action', 'deactivate' );
-				}
-				if ( action === 'activate' ) {
-					elActionLeft.classList.add( 'installed' );
-					elActionRight.classList.add( 'installed' );
-				}
-				if ( action === 'update' ) {
+				} else if ( action === 'update' ) {
 					const elAddonVersionCurrent = elAddonItem.querySelector( '.addon-version-current' );
 					elAddonVersionCurrent.innerHTML = addon.version;
-					elActionLeft.classList.remove( 'update' );
+					elAddonItem.classList.remove( 'update' );
 				}
 			}
 

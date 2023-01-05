@@ -1,0 +1,91 @@
+/*** Theme Manager ***/
+.related-themes {
+	display: grid;
+	grid-template-columns: repeat( auto-fit, minmax( 400px, 1fr ) );
+	grid-gap: 20px;
+
+	li {
+		margin: 0;
+	}
+
+	.plugin-card-top {
+		padding-bottom: 0;
+		background: #fff;
+	}
+
+	.theme-content {
+		position: relative;
+	}
+
+	.image-thumbnail img {
+		width: 100%;
+		height: auto;
+		vertical-align: middle;
+	}
+
+	.theme-description {
+		margin: 0 0 25px 0;
+
+		@include text-overflow(1.6em, 5);
+		color: #777;
+	}
+
+	.theme-title {
+		min-height: 3.2em;
+		margin-right: 100px;
+		margin-bottom: 0;
+		font-size: 1.2em;
+		line-height: 1.3em;
+	}
+
+	.theme-title a {
+		color: #545454;
+	}
+
+	.theme-rating {
+		display: inline-block;
+		float: right;
+	}
+
+	.star-rating {
+		display: inline-block;
+	}
+
+	.count-rating {
+		position: relative;
+		top: 2px;
+		font-size: 15px;
+	}
+
+	.theme-detail {
+		position: absolute;
+		top: -3px;
+		right: 3px;
+		line-height: 1.6em;
+		text-align: right;
+
+		&::after {
+			display: block;
+			clear: both;
+			content: "";
+		}
+
+		.theme-price {
+			display: inline-block;
+			color: #545454;
+			font-size: 24px;
+			font-weight: 700;
+			line-height: 1.3em;
+		}
+	}
+
+	.theme-footer {
+		clear: both;
+		overflow: hidden;
+		margin-right: -20px;
+		margin-left: -20px;
+		padding: 20px;
+		border-top: 1px solid #ddd;
+		background-color: #fafafa;
+	}
+}

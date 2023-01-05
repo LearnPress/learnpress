@@ -35,7 +35,7 @@ $active_tab                = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : 'a
 			$is_activated    = false;
 			$is_updated      = false;
 			$is_free         = $addon->is_free;
-			$addon_base      = "$slug/$slug.php";
+			$addon_base      = $addon->basename;
 			$version_latest  = $addon->version;
 			$version_current = 0;
 			$data            = array(
@@ -79,35 +79,10 @@ $active_tab                = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : 'a
 			} else { // Addon is free
 				$classes_status[] = 'free';
 			}
-
+			// Show addons of tab.
 			if ( ! in_array( $active_tab, $classes_status ) && $active_tab != 'all' ) {
 				$classes_status[] = 'hide';
 			}
-
-			/*switch ( $active_tab ) {
-				case 'installed':
-					if ( ! $is_installed ) {
-						continue 2;
-					}
-					break;
-				case 'paid':
-					if ( $is_free ) {
-						continue 2;
-					}
-					break;
-				case 'free':
-					if ( ! $is_free ) {
-						continue 2;
-					}
-					break;
-				case 'update':
-					if ( ! $is_updated ) {
-						continue 2;
-					}
-					break;
-				default:
-					break;
-			}*/
 			?>
 			<div class="lp-addon-item <?php echo implode( ' ', $classes_status ); ?>">
 				<div class="lp-addon-item__content">
@@ -132,7 +107,7 @@ $active_tab                = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : 'a
 					<p title="<?php echo $addon->description; ?>"><?php echo $addon->description; ?></p>
 				</div>
 				<div class="lp-addon-item__actions">
-					<div class="lp-addon-item__actions__left <?php echo implode( $classes_status, ' ' ); ?>">
+					<div class="lp-addon-item__actions__left">
 							<button class="btn-addon-action" data-action="setting">Settings</button>
 							<button class="btn-addon-action" data-action="update" <?php echo $data['extra']; ?>
 							title="<?php echo sprintf( '%s %s require LP version %s', $addon->name, $version_latest, $addon->require_lp ); ?>">
@@ -143,7 +118,7 @@ $active_tab                = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : 'a
 							</button>
 							<button class="btn-addon-action" data-action="purchase">Install</button>
 					</div>
-					<div class="lp-addon-item__actions__right <?php echo implode( $classes_status, ' ' ); ?>"">
+					<div class="lp-addon-item__actions__right">
 						<?php
 						if ( $is_activated ) {
 							$data['value']  = 1;
@@ -158,7 +133,9 @@ $active_tab                = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : 'a
 				</div>
 				<div class="lp-addon-item__purchase">
 					<div class="lp-addon-item__purchase__wrapper">
-						<input type="text" placeholder="Enter Purchase Code">
+						<label>
+							<input type="text" placeholder="Enter Purchase Code">
+						</label>
 						<button class="btn-addon-action" data-action="install" <?php echo $data['extra']; ?>>
 							<span class="dashicons dashicons-update"></span><span class="text">Submit</span>
 						</button>
