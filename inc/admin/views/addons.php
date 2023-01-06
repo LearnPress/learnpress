@@ -25,7 +25,7 @@ $total_addon_update        = 0;
 $plugins_installed         = get_plugins();
 $plugins_activated         = get_option( 'active_plugins', '' );
 $active_tab                = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : 'all';
-$key_purchase              = LP_Settings::get_option( LP_Manager_Addons::instance()->key_purchase_addons, [] );
+$keys_purchase             = LP_Settings::get_option( LP_Manager_Addons::instance()->key_purchase_addons, [] );
 ?>
 <div class="lp-addons-wrapper">
 	<div id="lp-addons">
@@ -69,8 +69,9 @@ $key_purchase              = LP_Settings::get_option( LP_Manager_Addons::instanc
 				$is_updated       = true;
 			}
 			// Addon is paid on Thimpress
-			if ( 0 == $is_free ) {
+			if ( ! $is_free ) {
 				$classes_status[] = 'purchase';
+				$purchase_code    = $keys_purchase[ $addon->slug ] ?? '';
 			} else { // Addon is free
 				$classes_status[] = 'free';
 			}
@@ -108,6 +109,11 @@ $key_purchase              = LP_Settings::get_option( LP_Manager_Addons::instanc
 							$addon->is_org ? __( 'WP.org', 'learnpress' ) : __( 'Thimpress', 'learnpress' )
 						);
 						?>
+					<?php
+					if ( ! $is_free && $is_installed && empty( $purchase_code ) ) {
+						echo '<p style="color: red; display: none">Empty key purchase</p>';
+					}
+					?>
 					<p title="<?php echo $addon->description; ?>"><?php echo $addon->description; ?></p>
 				</div>
 				<div class="lp-addon-item__actions">
@@ -143,7 +149,7 @@ $key_purchase              = LP_Settings::get_option( LP_Manager_Addons::instanc
 					<div class="lp-addon-item__purchase__wrapper">
 						<label>
 							<input type="text" placeholder="Enter Purchase Code"
-							value="<?php echo ( isset( $key_purchase[ $addon->slug ] ) ) ? $key_purchase[ $addon->slug ] : ''; ?>">
+							value="<?php echo $purchase_code ?? ''; ?>">
 						</label>
 						<button class="btn-addon-action" data-action="install">
 							<span class="dashicons dashicons-update"></span><span class="text">Submit</span>

@@ -4,7 +4,7 @@
  * Plugin URI: http://thimpress.com/learnpress
  * Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
  * Author: ThimPress
- * Version: 4.2.1-beta-2
+ * Version: 4.2.1-beta-4
  * Author URI: http://thimpress.com
  * Requires at least: 5.8
  * Tested up to: 6.1.1
@@ -465,6 +465,37 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			// Check require version thim-core.
 			add_action( 'before_thim_core_init', array( $this, 'check_thim_core_version_require' ) );
+
+			//
+			add_action(
+				'upgrader_process_complete',
+				function ( $plugin_upgrader ) {
+					if ( ! empty( $plugin_upgrader->result ) ) {
+						$res         = $plugin_upgrader->result;
+						$path_source = $res['destination'] ?? '';
+						if ( empty( $path_source ) ) {
+							return;
+						}
+
+						$key_purchase_path = realpath( $path_source . '/purchase-code.txt' );
+						if ( file_exists( $key_purchase_path ) ) {
+							$purchase_code_content = file_get_contents( $key_purchase_path );
+							if ( empty( $purchase_code_content ) ) {
+								return;
+							}
+
+							$addon_slug = $res['destination_name'] ?? '';
+							if ( empty( $addon_slug ) ) {
+								return;
+							}
+
+							$key_purchase                = LP_Settings::get_option( LP_Manager_Addons::instance()->key_purchase_addons, [] );
+							$key_purchase[ $addon_slug ] = $purchase_code_content;
+							LP_Settings::update_option( LP_Manager_Addons::instance()->key_purchase_addons, $key_purchase );
+						}
+					}
+				}
+			);
 		}
 
 		/**

@@ -95,7 +95,7 @@ const handleNotify = ( status, message ) => {
 		if ( elNotifyAction.length === 1 ) {
 			elNotifyActionWrapper.classList.remove( 'show' );
 		}
-	}, 3000 );
+	}, status === 'success' ? 3000 : 4000 );
 };
 // Get addons when js loaded.
 getAddons();

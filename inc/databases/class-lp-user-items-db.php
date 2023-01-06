@@ -158,7 +158,7 @@ class LP_User_Items_DB extends LP_Database {
 			'meta_key'                => $meta_key,
 			'extra_value'             => $value,
 		);
-		$format = array( '%s', '%s' );
+		$format = array( '%d', '%s', '%s' );
 
 		$check_exist_data = $this->wpdb->get_var(
 			$this->wpdb->prepare(
