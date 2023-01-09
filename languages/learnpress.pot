@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the LearnPress plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: LearnPress 4.2.1-beta-2\n"
+"Project-Id-Version: LearnPress 4.2.1-beta-4\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/learnpress\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2023-01-03T12:49:00+03:00\n"
+"POT-Creation-Date: 2023-01-06T12:33:52+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.7.1\n"
 "X-Domain: learnpress\n"
@@ -338,7 +338,7 @@ msgstr ""
 #: config/settings/permalink.php:123
 #: inc/admin/sub-menus/class-lp-submenu-settings.php:18
 #: inc/user/class-lp-profile.php:276
-#: learnpress.php:480
+#: learnpress.php:511
 msgid "Settings"
 msgstr ""
 
@@ -1119,6 +1119,7 @@ msgstr ""
 #: inc/admin/lp-admin-functions.php:1137
 #: inc/admin/lp-admin-functions.php:1354
 #: inc/admin/lp-admin-functions.php:2219
+#: inc/admin/views/addons.php:172
 #: inc/admin/views/statistics/courses.php:27
 #: inc/admin/views/statistics/general.php:43
 #: inc/admin/views/statistics/orders.php:29
@@ -1172,13 +1173,15 @@ msgstr ""
 
 #: inc/admin/lp-admin-functions.php:1152
 #: inc/admin/lp-admin-functions.php:2234
-#: inc/admin/views/addons.php:120
+#: inc/admin/views/addons.php:108
+#: inc/admin/views/addons.php:174
 msgid "Paid"
 msgstr ""
 
 #: inc/admin/lp-admin-functions.php:1157
 #: inc/admin/lp-admin-functions.php:2239
-#: inc/admin/views/addons.php:120
+#: inc/admin/views/addons.php:108
+#: inc/admin/views/addons.php:175
 #: inc/course/abstract-course.php:660
 #: inc/course/abstract-course.php:689
 #: templates/order/order-details.php:43
@@ -1500,7 +1503,7 @@ msgid "Reset Password"
 msgstr ""
 
 #: inc/admin/sub-menus/class-lp-submenu-addons.php:14
-#: learnpress.php:482
+#: learnpress.php:513
 msgid "Add-ons"
 msgstr ""
 
@@ -1508,7 +1511,7 @@ msgstr ""
 msgid "LearnPress Add-ons"
 msgstr ""
 
-#: inc/admin/sub-menus/class-lp-submenu-addons.php:68
+#: inc/admin/sub-menus/class-lp-submenu-addons.php:75
 msgid "Search..."
 msgstr ""
 
@@ -1556,36 +1559,25 @@ msgstr ""
 msgid "LearnPress Beta Version"
 msgstr ""
 
-#: inc/admin/views/addons.php:121
+#: inc/admin/views/addons.php:109
 msgid "WP.org"
 msgstr ""
 
-#: inc/admin/views/addons.php:121
+#: inc/admin/views/addons.php:109
 msgid "Thimpress"
 msgstr ""
 
-#: inc/admin/views/addons.php:172
-msgid "All (%d)"
-msgstr ""
-
 #: inc/admin/views/addons.php:173
-msgid "Installed (%d)"
-msgstr ""
-
-#: inc/admin/views/addons.php:174
-msgid "Paid (%d)"
-msgstr ""
-
-#: inc/admin/views/addons.php:175
-msgid "Free (%d)"
+msgid "Installed"
 msgstr ""
 
 #: inc/admin/views/addons.php:176
-msgid "Update (%d)"
+#: inc/admin/views/meta-boxes/order/exports-invoice.php:90
+msgid "Update"
 msgstr ""
 
 #: inc/admin/views/addons.php:177
-msgid "Get more"
+msgid "Not Installed"
 msgstr ""
 
 #: inc/admin/views/addons/html-loop-plugin.php:47
@@ -2242,10 +2234,6 @@ msgstr ""
 
 #: inc/admin/views/meta-boxes/order/exports-invoice.php:82
 msgid "Payment Medthod"
-msgstr ""
-
-#: inc/admin/views/meta-boxes/order/exports-invoice.php:90
-msgid "Update"
 msgstr ""
 
 #: inc/admin/views/meta-boxes/order/order-item.php:18
@@ -3098,11 +3086,11 @@ msgstr ""
 msgid "Password reset is not allowed for this user."
 msgstr ""
 
-#: inc/class-lp-manager-addons.php:108
+#: inc/class-lp-manager-addons.php:124
 msgid "Install failed!"
 msgstr ""
 
-#: inc/class-lp-manager-addons.php:140
+#: inc/class-lp-manager-addons.php:156
 msgid "Update failed!"
 msgstr ""
 
@@ -6985,7 +6973,7 @@ msgstr ""
 msgid "Recent Courses"
 msgstr ""
 
-#: learnpress.php:481
+#: learnpress.php:512
 msgid "Documentation"
 msgstr ""
 

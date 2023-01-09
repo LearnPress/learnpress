@@ -17,10 +17,10 @@ class LP_Manager_Addons {
 	public $url_list_addons = 'https://learnpress.github.io/learnpress/version-addons.json';
 	//public $url_list_addons   = LP_PLUGIN_URL . '/version-addons.json';
 	/**
-	 * @var string Link download plugin from Thimpress.
+	 * @var string $link_addon_action Link download plugin from Thimpress.
 	 */
-	public $link_addon_action = 'http://updates/thim-addon-market/download-addon';
-	//private $link_addon_action = 'https://updates.thimpress.com/thim-addon-market/download-addon';
+	private $link_addon_action = 'https://updates.thimpress.com/thim-addon-market/download-addon';
+	//public $link_addon_action = 'http://updates/thim-addon-market/download-addon';
 	/**
 	 * @var string link download plugin from org.
 	 */
