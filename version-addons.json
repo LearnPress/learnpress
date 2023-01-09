@@ -67,6 +67,45 @@
     "is_org": 0,
     "order": 0
   },
+  "learnpress-bbpress": {
+    "name": "LearnPress – bbPress Integration",
+    "basename": "learnpress-bbpress/learnpress-bbpress.php",
+    "version": "4.0.3",
+    "require_lp": "4.1.7.3.2",
+    "description": "LearnPress bbPress is an add-on for WordPress LMS – LearnPress, which brings forum to your course. Now, teacher can interact with students and students in a course can discuss with each other about the course. LearnPress bbPress simply empower course with feartures of forum.",
+    "image": "https://ps.w.org/learnpress-bbpress/assets/icon-128x128.png?rev=2394951",
+    "link": "https://wordpress.org/plugins/learnpress-bbpress/",
+    "is_free": 1,
+    "author": "",
+    "is_org": 0,
+    "order": 0
+  },
+  "learnpress-buddypress": {
+    "name": "LearnPress – bbPress Integration",
+    "basename": "learnpress-buddypress/learnpress-buddypress.php",
+    "version": "4.0.0",
+    "require_lp": "4.1.7.3.2",
+    "description": "You can view the courses you have taken, finished or wanted to learn inside of wonderful profile page of BuddyPress with LearnPress buddyPress plugin.",
+    "image": "https://ps.w.org/learnpress-bbpress/assets/icon-128x128.png?rev=2394951",
+    "link": "https://wordpress.org/plugins/learnpress-buddypress/",
+    "is_free": 1,
+    "author": "",
+    "is_org": 0,
+    "order": 0
+  },
+  "learnpress-import-export": {
+    "name": "LearnPress – bbPress Integration",
+    "basename": "learnpress-import-export/learnpress-import-export.php",
+    "version": "4.0.1",
+    "require_lp": "4.1.7.3.2",
+    "description": "LearnPress Export/Import bring you feature to export course, lesson, quiz, question from a LearnPress site to back up or bring to another LearnPress site.",
+    "image": "https://ps.w.org/learnpress-import-export/assets/icon-128x128.png?rev=2394948",
+    "link": "https://wordpress.org/plugins/learnpress-import-export/",
+    "is_free": 1,
+    "author": "",
+    "is_org": 0,
+    "order": 0
+  },
   "learnpress-co-instructor": {
     "name": "Co-Instructors Add-On for LearnPress",
     "basename": "learnpress-co-instructor/learnpress-co-instructor.php",
