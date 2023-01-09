@@ -86,7 +86,7 @@
     "version": "4.0.0",
     "require_lp": "4.1.7.3.2",
     "description": "You can view the courses you have taken, finished or wanted to learn inside of wonderful profile page of BuddyPress with LearnPress buddyPress plugin.",
-    "image": "https://ps.w.org/learnpress-bbpress/assets/icon-128x128.png?rev=2394951",
+    "image": "https://ps.w.org/learnpress-buddypress/assets/icon-128x128.png?rev=2394946",
     "link": "https://wordpress.org/plugins/learnpress-buddypress/",
     "is_free": 1,
     "author": "",
@@ -94,7 +94,7 @@
     "order": 0
   },
   "learnpress-import-export": {
-    "name": "LearnPress – bbPress Integration",
+    "name": "LearnPress Export Import",
     "basename": "learnpress-import-export/learnpress-import-export.php",
     "version": "4.0.1",
     "require_lp": "4.1.7.3.2",
