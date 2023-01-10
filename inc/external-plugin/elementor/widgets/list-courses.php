@@ -1,6 +1,8 @@
 <?php
 namespace Elementor;
 
+use LearnPress;
+
 class LP_Elementor_Widget_List_Courses extends LP_Elementor_Widget_Base {
 
 	public function get_name() {

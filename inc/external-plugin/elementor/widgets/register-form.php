@@ -1,6 +1,7 @@
 <?php
 namespace Elementor;
 
+use LearnPress;
 use LP_Settings;
 
 class LP_Elementor_Widget_Register_Form extends LP_Elementor_Widget_Base {

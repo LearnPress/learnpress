@@ -1,6 +1,8 @@
 <?php
 namespace Elementor;
 
+use LearnPress;
+
 class LP_Elementor_Widget_Login_Form extends LP_Elementor_Widget_Base {
 
 	public function get_name() {
