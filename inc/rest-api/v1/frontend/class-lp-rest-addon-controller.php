@@ -121,7 +121,7 @@ class LP_REST_Addon_Controller extends LP_Abstract_REST_Controller {
 			switch ( $action ) {
 				case 'install':
 				case 'update':
-					$link_download = $path_file = $value = '';
+					$link_download = $path_file = $package = '';
 
 					if ( $addon['is_org'] ) {
 						$link_download = "{$this->lp_addons->link_org}{$addon['slug']}.{$addon['version']}.zip";
@@ -130,15 +130,15 @@ class LP_REST_Addon_Controller extends LP_Abstract_REST_Controller {
 					}
 
 					if ( ! empty( $link_download ) ) {
-						$value = $link_download;
+						$package = $link_download;
 					} elseif ( ! empty( $path_file ) ) {
-						$value = $path_file;
+						$package = $path_file;
 					}
 
 					if ( 'update' === $action ) {
-						$this->lp_addons->update( $addon, $value );
+						$this->lp_addons->update( $addon, $package );
 					} else {
-						$this->lp_addons->install( $addon, $value );
+						$this->lp_addons->install( $addon, $package );
 					}
 
 					if ( ! empty( $path_file ) ) {

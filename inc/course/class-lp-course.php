@@ -707,8 +707,8 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		/**
 		 * Get sections of course.
 		 *
-		 * @param string $return - Optional.
-		 * @param int    $section_id - Optional.
+		 * @param string $return.
+		 * @param int    $section_id.
 		 *
 		 * @return array|bool|LP_Course_Section[]|LP_Course_Section
 		 * @version 4.0.0
@@ -871,6 +871,22 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		 */
 		public function get_curriculum_items( $type = '' ) {
 			return $this->get_items( $type );
+		}
+
+		/**
+		 * Get evaluation type
+		 *
+		 * @since 4.2.1
+		 * @version 1.0.0
+		 * @return string
+		 */
+		public function get_evaluation_type(): string {
+			$evaluation_type = get_post_meta( $this->get_id(), '_lp_course_result', true );
+			if ( ! $evaluation_type ) {
+				$evaluation_type = 'evaluate_lesson';
+			}
+
+			return $evaluation_type;
 		}
 	}
 }

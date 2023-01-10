@@ -968,14 +968,14 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 *
 		 * @return array|mixed|string
 		 */
-		public function get_passing_condition( $format = false, $context = '' ) {
+		public function get_passing_condition( $format = false ) {
 			$value = absint( $this->get_data( 'passing_condition' ) );
 
 			if ( $format ) {
 				$value = "{$value}%";
 			}
 
-			return 'edit' === $context ? $value : apply_filters(
+			return apply_filters(
 				'learn-press/course-passing-condition',
 				$value,
 				$format,
