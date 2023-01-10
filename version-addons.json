@@ -101,9 +101,11 @@
     "description": "LearnPress Export/Import bring you feature to export course, lesson, quiz, question from a LearnPress site to back up or bring to another LearnPress site.",
     "image": "https://ps.w.org/learnpress-import-export/assets/icon-128x128.png?rev=2394948",
     "link": "https://wordpress.org/plugins/learnpress-import-export/",
+    "link_doc": "",
     "is_free": 1,
     "author": "",
     "is_org": 1,
+    "setting": "admin.php?page=learnpress-import-export",
     "order": 0
   },
   "learnpress-co-instructor": {
