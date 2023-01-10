@@ -148,11 +148,25 @@
     "order": 0
   },
   "learnpress-announcements": {
-    "name": "2Checkout Add-On for LearnPress",
+    "name": "Announcement add-on for LearnPress",
     "basename": "learnpress-announcements/learnpress-announcements.php",
     "version": "4.0.3",
     "require_lp": "4.2.0",
     "description": "Announcement is a great way to promote your courses and update new features + contents to your courses, including email notification.",
+    "image": "https://thimpress.com/wp-content/uploads/2015/06/Co-instructors-690x460px.png",
+    "link": "https://dev.thimpress.com/product/announcement-add-on-for-learnpress/",
+    "is_free": 0,
+    "author": "",
+    "is_org": 0,
+    "setting": "",
+    "order": 0
+  },
+  "learnpress-mobile-app": {
+    "name": "LearnPress - Mobile App",
+    "basename": "learnpress-mobile-app/learnpress-mobile-app.php",
+    "version": "4.0.0",
+    "require_lp": "4.2.0",
+    "description": "Support for App.",
     "image": "https://thimpress.com/wp-content/uploads/2015/06/Co-instructors-690x460px.png",
     "link": "https://dev.thimpress.com/product/announcement-add-on-for-learnpress/",
     "is_free": 0,
