@@ -431,9 +431,17 @@ class LP_Addon {
 	 * @version 1.0.1
 	 */
 	public function get_template( string $template_name = '', $args = [] ) {
-		$default_path        = $this->plugin_folder_path . "/templates/$template_name";
-		$folder_name_rewrite = learn_press_template_path();
-		$from_theme_path     = sprintf(
+		$default_path          = $this->plugin_folder_path . "/templates/$template_name";
+		$folder_name_rewrite   = learn_press_template_path();
+		$from_child_theme_path = sprintf(
+			'%s/%s/%s/%s/%s',
+			get_stylesheet_directory(),
+			$folder_name_rewrite,
+			'addons',
+			str_replace( 'learnpress-', '', $this->plugin_folder_name ),
+			$template_name
+		);
+		$from_theme_path       = sprintf(
 			'%s/%s/%s/%s/%s',
 			get_template_directory(),
 			$folder_name_rewrite,
@@ -441,7 +449,13 @@ class LP_Addon {
 			str_replace( 'learnpress-', '', $this->plugin_folder_name ),
 			$template_name
 		);
-		$path_load           = file_exists( $from_theme_path ) ? $from_theme_path : $default_path;
+
+		$path_load = $default_path;
+		if ( file_exists( $from_child_theme_path ) ) {
+			$path_load = $from_child_theme_path;
+		} elseif ( file_exists( $from_theme_path ) ) {
+			$path_load = $from_theme_path;
+		}
 		Template::instance()->get_template( $path_load, $args );
 	}
 
