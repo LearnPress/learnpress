@@ -431,6 +431,10 @@ class LP_Addon {
 	 * @version 1.0.1
 	 */
 	public function get_template( string $template_name = '', $args = [] ) {
+		// Check path file not extension php, will add extension .php
+		if ( ! preg_match( '/\.php$/', $template_name ) ) {
+			$template_name .= '.php';
+		}
 		$default_path          = $this->plugin_folder_path . "/templates/$template_name";
 		$folder_name_rewrite   = learn_press_template_path();
 		$from_child_theme_path = sprintf(
