@@ -116,6 +116,7 @@ class LP_Forms_Handler {
 						'status'  => 'success',
 						'content' => __( 'Login successfully!', 'learnpress' ),
 					];
+					$redirect = apply_filters( 'learnpress_login_redirect_url', $redirect, $user );
 					learn_press_set_message( $message_data );
 					wp_redirect( wp_validate_redirect( $redirect, learn_press_get_current_url() ) );
 					exit();
@@ -212,6 +213,7 @@ class LP_Forms_Handler {
 				$redirect = LP_Request::get_redirect( learn_press_get_page_link( 'profile' ) );
 			}
 
+			$redirect = apply_filters( 'learnpress_registration_redirect_url', $redirect, $new_customer );
 			wp_redirect( wp_validate_redirect( $redirect, learn_press_get_current_url() ) );
 			exit();
 
