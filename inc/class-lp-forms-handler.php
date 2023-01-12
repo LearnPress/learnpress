@@ -105,19 +105,20 @@ class LP_Forms_Handler {
 					throw new Exception( $user->get_error_message() );
 				} else {
 					if ( ! empty( $_POST['redirect'] ) ) {
-						$redirect = LP_Helper::sanitize_params_submitted( $_POST['redirect'] );
+						$url_redirect = LP_Helper::sanitize_params_submitted( $_POST['redirect'] );
 					} elseif ( ! empty( $_REQUEST['_wp_http_referer'] ) ) {
-						$redirect = LP_Helper::sanitize_params_submitted( $_REQUEST['_wp_http_referer'] );
+						$url_redirect = LP_Request::get_param( '_wp_http_referer' );
 					} else {
-						$redirect = LP_Request::get_redirect( learn_press_get_page_link( 'profile' ) );
+						$url_redirect = LP_Request::get_redirect( learn_press_get_page_link( 'profile' ) );
 					}
+					$url_redirect = apply_filters( 'learn-press/login-redirect', $url_redirect, $user );
 
 					$message_data = [
 						'status'  => 'success',
 						'content' => __( 'Login successfully!', 'learnpress' ),
 					];
 					learn_press_set_message( $message_data );
-					wp_redirect( wp_validate_redirect( $redirect, learn_press_get_current_url() ) );
+					wp_redirect( wp_validate_redirect( $url_redirect, LP_Helper::getUrlCurrent() ) );
 					exit();
 				}
 			} catch ( Exception $e ) {
