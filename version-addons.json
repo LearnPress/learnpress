@@ -10,7 +10,7 @@
     "is_free": 0,
     "author": "",
     "is_org": 0,
-    "setting": "admin.php?page=learn-press-settings&tab=payments&section=2checkout",
+    "setting": "wp-admin/admin.php?page=learn-press-settings&tab=payments&section=2checkout",
     "order": 0
   },
   "learnpress-announcements": {
@@ -54,7 +54,7 @@
     "is_free": 0,
     "author": "",
     "is_org": 0,
-    "setting": "admin.php?page=learn-press-settings&tab=payments&section=authorizenet",
+    "setting": "wp-admin/admin.php?page=learn-press-settings&tab=payments&section=authorizenet",
     "order": 0
   },
   "learnpress-bbpress": {
@@ -95,7 +95,7 @@
     "is_free": 0,
     "author": "",
     "is_org": 0,
-    "setting": "admin.php?page=learn-press-settings&tab=payments&section=authorizenet",
+    "setting": "wp-admin/admin.php?page=learn-press-settings&tab=payments&section=authorizenet",
     "order": 0
   },
   "learnpress-co-instructor": {
@@ -195,10 +195,100 @@
     "image": "https://ps.w.org/learnpress-course-review/assets/icon-128x128.png",
     "link": "https://thimpress.com/product/frontend-editor-add-on-for-learnpress/",
     "link_doc": "https://docspress.thimpress.com/frontend-editor-add-on-for-learnpress/",
+    "setting": "frontend-editor",
+    "is_free": 0,
+    "author": "",
+    "is_org": 0,
+    "order": 0
+  },
+  "learnpress-gradebook": {
+    "name": "Gradebook Add-On for LearnPress",
+    "basename": "learnpress-gradebook/learnpress-gradebook.php",
+    "version": "4.0.4",
+    "require_lp": "4.2.0",
+    "description": "Track process and result of students in each LMS course. Allow to export the gradebook to CSV.",
+    "image": "https://plugins.thimpress.com/downloads/images/lp-gradebook.png",
+    "link": "https://thimpress.com/product/gradebook-add-on-for-learnpress/",
+    "link_doc": "https://docspress.thimpress.com/gradebook-add-on-for-learnpress",
     "setting": "",
     "is_free": 0,
     "author": "",
+    "is_org": 0,
+    "order": 0
+  },
+  "learnpress-h5p": {
+    "name": "H5P Add-On for LearnPress",
+    "basename": "learnpress-h5p/learnpress-h5p.php",
+    "version": "4.0.2",
+    "require_lp": "4.2.0",
+    "description": "H5P add-on for LearnPress is to integrate the questions from plugin H5P to the LearnPress system.\n\n",
+    "image": "https://plugins.thimpress.com/downloads/images/lp-h5p.png",
+    "link": "https://thimpress.com/product/h5p/",
+    "link_doc": "https://docspress.thimpress.com/h5p-add-on-for-learnpress",
+    "setting": "",
+    "is_free": 0,
+    "author": "",
+    "is_org": 0,
+    "order": 0
+  },
+  "learnpress-import-export": {
+    "name": "LearnPress Export Import",
+    "basename": "learnpress-import-export/learnpress-import-export.php",
+    "version": "4.0.2",
+    "require_lp": "4.1.7.3.2",
+    "description": "LearnPress Export/Import bring you feature to export course, lesson, quiz, question from a LearnPress site to back up or bring to another LearnPress site.",
+    "image": "https://ps.w.org/learnpress-import-export/assets/icon-128x128.png?rev=2394948",
+    "link": "https://wordpress.org/plugins/learnpress-import-export/",
+    "setting": "wp-admin/admin.php?page=learnpress-import-export",
+    "link_doc": "",
+    "is_free": 1,
+    "author": "",
     "is_org": 1,
+    "order": 0
+  },
+  "learnpress-live": {
+    "name": "Live Course Add-On for LearnPress",
+    "basename": "learnpress-live/learnpress-live.php",
+    "version": "4.0.1",
+    "require_lp": "4.2.0",
+    "description": "Create courses and live video meetings using Zoom or Google Meet Use shortcode to show the meeting content.",
+    "image": "https://plugins.thimpress.com/downloads/images/lp-live.png",
+    "link": "https://thimpress.com/product/live-course-add-on-for-learnpress/",
+    "setting": "live-setting",
+    "link_doc": "https://docspress.thimpress.com/learnpress-live-course-add-on/",
+    "is_free": 0,
+    "author": "",
+    "is_org": 0,
+    "order": 0
+  },
+  "learnpress-mycred": {
+    "name": "myCRED Add-On for LearnPress",
+    "basename": "learnpress-mycred/learnpress-mycred",
+    "version": "4.0.1",
+    "require_lp": "4.2.0",
+    "description": "Create loyalty, build store reward programs, offer community games or use as analytics, it's all up to you.",
+    "image": "https://plugins.thimpress.com/downloads/images/lp-mycred.png",
+    "link": "https://thimpress.com/product/mycred-add-on-for-learnpress/",
+    "setting": "",
+    "link_doc": "https://docspress.thimpress.com/mycred-add-ons-for-learnpress",
+    "is_free": 0,
+    "author": "",
+    "is_org": 0,
+    "order": 0
+  },
+  "learnpress-paid-membership-pro": {
+    "name": "Paid Memberships Pro Add-On for LearnPress",
+    "basename": "learnpress-paid-membership-pro/learnpress-paid-memberships-pro",
+    "version": "4.0.2",
+    "require_lp": "4.2.0",
+    "description": "Creates subscriptions and manage subscription levels. Allow to buy courses via subscriptions.",
+    "image": "https://plugins.thimpress.com/downloads/images/lp-paid-membership.png",
+    "link": "https://thimpress.com/product/paid-memberships-pro-add-learnpress/",
+    "setting": "",
+    "link_doc": "https://docspress.thimpress.com/paid-membership-pro-add-on-for-learnpress",
+    "is_free": 0,
+    "author": "",
+    "is_org": 0,
     "order": 0
   },
   "learnpress-prerequisites-courses": {
@@ -243,21 +333,7 @@
     "is_org": 0,
     "order": 0
   },
-  "learnpress-import-export": {
-    "name": "LearnPress Export Import",
-    "basename": "learnpress-import-export/learnpress-import-export.php",
-    "version": "4.0.2",
-    "require_lp": "4.1.7.3.2",
-    "description": "LearnPress Export/Import bring you feature to export course, lesson, quiz, question from a LearnPress site to back up or bring to another LearnPress site.",
-    "image": "https://ps.w.org/learnpress-import-export/assets/icon-128x128.png?rev=2394948",
-    "link": "https://wordpress.org/plugins/learnpress-import-export/",
-    "link_doc": "",
-    "is_free": 1,
-    "author": "",
-    "is_org": 1,
-    "setting": "admin.php?page=learnpress-import-export",
-    "order": 0
-  },
+
   "learnpress-mobile-app": {
     "name": "LearnPress - Mobile App",
     "basename": "learnpress-mobile-app/learnpress-mobile-app.php",
