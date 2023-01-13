@@ -57,21 +57,6 @@
     "setting": "admin.php?page=learn-press-settings&tab=payments&section=authorizenet",
     "order": 0
   },
-  "learnpress-certificates": {
-    "name": "LearnPress - Certificates",
-    "basename": "learnpress-certificates/learnpress-certificates.php",
-    "version": "4.0.3",
-    "require_lp": "4.2.0",
-    "description": "Add Drag & Drop certificates builder as well as select designed certificates templates for each LMS course.",
-    "image": "https://thimpress.com/wp-content/uploads/2015/06/Co-instructors-690x460px.png",
-    "link": "https://thimpress.com/product/certificates-add-on-for-learnpress/",
-    "link_doc": "https://docspress.thimpress.com/certificate-addons-for-learnpress",
-    "is_free": 0,
-    "author": "",
-    "is_org": 0,
-    "setting": "admin.php?page=learn-press-settings&tab=payments&section=authorizenet",
-    "order": 0
-  },
   "learnpress-bbpress": {
     "name": "LearnPress – bbPress Integration",
     "basename": "learnpress-bbpress/learnpress-bbpress.php",
@@ -98,6 +83,63 @@
     "is_org": 1,
     "order": 0
   },
+  "learnpress-certificates": {
+    "name": "LearnPress - Certificates",
+    "basename": "learnpress-certificates/learnpress-certificates.php",
+    "version": "4.0.3",
+    "require_lp": "4.2.0",
+    "description": "Add Drag & Drop certificates builder as well as select designed certificates templates for each LMS course.",
+    "image": "https://thimpress.com/wp-content/uploads/2015/06/Co-instructors-690x460px.png",
+    "link": "https://thimpress.com/product/certificates-add-on-for-learnpress/",
+    "link_doc": "https://docspress.thimpress.com/certificate-addons-for-learnpress",
+    "is_free": 0,
+    "author": "",
+    "is_org": 0,
+    "setting": "admin.php?page=learn-press-settings&tab=payments&section=authorizenet",
+    "order": 0
+  },
+  "learnpress-co-instructor": {
+    "name": "Co-Instructors Add-On for LearnPress",
+    "basename": "learnpress-co-instructor/learnpress-co-instructor.php",
+    "version": "4.0.1",
+    "require_lp": "4.1.7.3.2",
+    "description": "LearnPress Prerequisites is an add-on for LearnPress allow you to set prerequisite courses for a certain course in a LearnPress site.",
+    "image": "https://thimpress.com/wp-content/uploads/2015/06/Co-instructors-690x460px.png",
+    "link": "https://thimpress.com/product/co-instructors-add-on-for-learnpress/",
+    "is_free": 0,
+    "author": "",
+    "is_org": 0,
+    "order": 0
+  },
+  "learnpress-collections": {
+    "name": "Collections Add-On for LearnPress",
+    "basename": "learnpress-collections/learnpress-collections.php",
+    "version": "4.0.1",
+    "require_lp": "4.1.7.3.2",
+    "description": "Collections add-on for LearnPress provides courses suggestion to make the learning process becomes more efficient.",
+    "image": "https://thimpress.com/wp-content/uploads/2015/06/Co-instructors-690x460px.png",
+    "link": "https://thimpress.com/product/collections-add-on-for-learnpress/",
+    "link_doc": "https://docspress.thimpress.com/collection-add-ons-for-learnpress",
+    "setting": "",
+    "is_free": 0,
+    "author": "",
+    "is_org": 0,
+    "order": 0
+  },
+  "learnpress-coming-soon-courses": {
+    "name": "Coming Soon Add-On for LearnPress",
+    "basename": "learnpress-coming-soon-courses/learnpress-coming-soon-courses.php",
+    "version": "4.0.3",
+    "require_lp": "4.1.7.3.2",
+    "description": "Coming Soon is a great way to promote your courses and make it desirable for people. You can add a lot of cool features such as text, images, countdown and description of the course that will make a lot easier for people to know all they are wishing about your brand new course!",
+    "image": "https://plugins.thimpress.com/downloads/images/lp-collections.png",
+    "link": "https://thimpress.com/product/coming-soon-add-on-learnpress/",
+    "link_doc": "https://docspress.thimpress.com/comming-soon-add-ons-for-learnpress",
+    "is_free": 1,
+    "author": "",
+    "is_org": 0,
+    "order": 0
+  },
   "learnpress-prerequisites-courses": {
     "name": "LearnPress – Prerequisites Courses",
     "basename": "learnpress-prerequisites-courses/learnpress-prerequisites-courses.php",
@@ -110,6 +152,7 @@
     "is_free": 1,
     "author": "",
     "is_org": 1,
+    "setting": "",
     "order": 0
   },
   "learnpress-course-review": {
@@ -153,19 +196,6 @@
     "is_org": 0,
     "order": 0
   },
-  "learnpress-coming-soon-courses": {
-    "name": "Coming Soon Add-On for LearnPress",
-    "basename": "learnpress-coming-soon-courses/learnpress-coming-soon-courses.php",
-    "version": "4.0.3",
-    "require_lp": "4.1.7.3.2",
-    "description": "LearnPress Prerequisites is an add-on for LearnPress allow you to set prerequisite courses for a certain course in a LearnPress site.",
-    "image": "https://thimpress.com/wp-content/uploads/2018/03/Coming-Soon-690x460px.png",
-    "link": "https://thimpress.com/product/coming-soon-add-on-learnpress/",
-    "is_free": 1,
-    "author": "",
-    "is_org": 0,
-    "order": 0
-  },
   "learnpress-import-export": {
     "name": "LearnPress Export Import",
     "basename": "learnpress-import-export/learnpress-import-export.php",
@@ -179,19 +209,6 @@
     "author": "",
     "is_org": 1,
     "setting": "admin.php?page=learnpress-import-export",
-    "order": 0
-  },
-  "learnpress-co-instructor": {
-    "name": "Co-Instructors Add-On for LearnPress",
-    "basename": "learnpress-co-instructor/learnpress-co-instructor.php",
-    "version": "4.0.1",
-    "require_lp": "4.1.7.3.2",
-    "description": "LearnPress Prerequisites is an add-on for LearnPress allow you to set prerequisite courses for a certain course in a LearnPress site.",
-    "image": "https://thimpress.com/wp-content/uploads/2015/06/Co-instructors-690x460px.png",
-    "link": "https://thimpress.com/product/co-instructors-add-on-for-learnpress/",
-    "is_free": 0,
-    "author": "",
-    "is_org": 0,
     "order": 0
   },
   "learnpress-mobile-app": {
