@@ -121,7 +121,7 @@ $keys_purchase             = LP_Settings::get_option( LP_Manager_Addons::instanc
 						<?php
 						if ( isset( $addon->setting ) && ! empty( $addon->setting ) ) {
 							?>
-							<a href="<?php echo admin_url( $addon->setting ); ?>" target="_blank" rel="noopener">
+							<a href="<?php echo site_url( $addon->setting ); ?>" target="_blank" rel="noopener">
 								<button data-action="setting">Settings</button>
 							</a>
 							<?php

@@ -122,7 +122,7 @@ const searchAddons = ( name ) => {
 };
 // Set grid style items.
 const setGridItems = ( totalItems ) => {
-	if ( totalItems < 3 ) {
+	if ( totalItems < 4 ) {
 		elLPAddons.classList.add( 'max-3-items' );
 	} else {
 		elLPAddons.classList.remove( 'max-3-items' );
