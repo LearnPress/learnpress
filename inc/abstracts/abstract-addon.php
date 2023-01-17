@@ -464,6 +464,22 @@ class LP_Addon {
 	}
 
 	/**
+	 * Get content template of addon.
+	 *
+	 * @param string $template_name
+	 * @param mixed  $args
+	 * @since 4.2.1
+	 * @version 1.0.1
+	 */
+	public function get_admin_template( string $template_name = '', $args = [] ) {
+		if ( ! preg_match( '/\.php$/', $template_name ) ) {
+			$template_name .= '.php';
+		}
+		$template_path = "{$this->plugin_folder_path}/inc/admin/views/$template_name";
+		Template::instance()->get_template( $template_path, $args );
+	}
+
+	/**
 	 * Locate template of addon in theme or inside itself.
 	 *
 	 * @param string $template_name
@@ -501,8 +517,10 @@ class LP_Addon {
 	 *
 	 * @return string
 	 * @since x.x.x
+	 * @deprecated 4.2.1
 	 */
 	public function admin_view_content( $view, $args = array() ) {
+		_deprecated_function( __FUNCTION__, '4.2.1', 'LP_Addon::get_admin_template' );
 		ob_start();
 		$this->admin_view( $view, $args );
 
