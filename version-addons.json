@@ -263,7 +263,7 @@
   },
   "learnpress-mycred": {
     "name": "myCRED Add-On for LearnPress",
-    "basename": "learnpress-mycred/learnpress-mycred",
+    "basename": "learnpress-mycred/learnpress-mycred.php",
     "version": "4.0.1",
     "require_lp": "4.2.0",
     "description": "Create loyalty, build store reward programs, offer community games or use as analytics, it's all up to you.",
@@ -278,7 +278,7 @@
   },
   "learnpress-paid-membership-pro": {
     "name": "Paid Memberships Pro Add-On for LearnPress",
-    "basename": "learnpress-paid-membership-pro/learnpress-paid-memberships-pro",
+    "basename": "learnpress-paid-membership-pro/learnpress-paid-memberships-pro.php",
     "version": "4.0.2",
     "require_lp": "4.2.0",
     "description": "Creates subscriptions and manage subscription levels. Allow to buy courses via subscriptions.",
