@@ -68,7 +68,10 @@
     "is_free": 1,
     "author": "",
     "is_org": 1,
-    "order": 0
+    "order": 0,
+    "dependency": {
+      "bbpress/bbpress.php": "BBPress"
+    }
   },
   "learnpress-buddypress": {
     "name": "LearnPress – BuddyPress Integration",
@@ -81,7 +84,10 @@
     "is_free": 1,
     "author": "",
     "is_org": 1,
-    "order": 0
+    "order": 0,
+    "dependency": {
+      "buddypress/bp-loader.php": "Buddypress"
+    }
   },
   "learnpress-certificates": {
     "name": "LearnPress - Certificates",
@@ -229,7 +235,10 @@
     "is_free": 0,
     "author": "",
     "is_org": 0,
-    "order": 0
+    "order": 0,
+    "dependency": {
+      "h5p/h5p.php": "H5P"
+    }
   },
   "learnpress-import-export": {
     "name": "LearnPress Export Import",
@@ -289,7 +298,10 @@
     "is_free": 0,
     "author": "",
     "is_org": 0,
-    "order": 0
+    "order": 0,
+    "dependency": {
+      "paid-memberships-pro/paid-memberships-pro.php": "Paid Memberships Pro"
+    }
   },
   "learnpress-prerequisites-courses": {
     "name": "LearnPress – Prerequisites Courses",
@@ -378,7 +390,10 @@
     "is_free": 0,
     "author": "",
     "is_org": 0,
-    "order": 0
+    "order": 0,
+    "dependency": {
+      "woocommerce/woocommerce.php": "WooCommerce"
+    }
   },
   "learnpress-wpml": {
     "name": "WPML Add-On for LearnPress",
@@ -393,7 +408,10 @@
     "is_free": 0,
     "author": "",
     "is_org": 0,
-    "order": 0
+    "order": 0,
+    "dependency": {
+      "sitepress-multilingual-cms/sitepress.php": "WPML"
+    }
   },
   "learnpress-instamojo-payment": {
     "name": "Instamojo Add-On for LearnPress",
