@@ -174,6 +174,14 @@ class LP_Manager_Addons {
 	 * @throws Exception
 	 */
 	public function activate( array $addon = [] ) {
+		if ( isset( $addon['dependency'] ) ) {
+			foreach ( $addon['dependency'] as $addon_slug => $addon_label ) {
+				if ( ! is_plugin_active( $addon_slug ) ) {
+					throw new Exception( sprintf( 'Please activate "%s" before activate this plugin', $addon_label ) );
+				}
+			}
+		}
+
 		$result_active = activate_plugin( $addon['basename'] ?? '' );
 		if ( is_wp_error( $result_active ) ) {
 			throw new Exception( $result_active->get_error_message() );
