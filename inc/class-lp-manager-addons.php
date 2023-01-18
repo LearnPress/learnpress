@@ -1,10 +1,10 @@
 <?php
 /**
- * Class LP_Assets
+ * Class LP_Manager_Addons
  *
  * @author  ThimPress
- * @package LearnPress/Classes
- * @version 4.0.1
+ * @version 1.0.0
+ * @since 4.2.1
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -21,6 +21,10 @@ class LP_Manager_Addons {
 	 */
 	private $link_addon_action = 'https://updates.thimpress.com/thim-addon-market/download-addon';
 	//public $link_addon_action = 'http://updates/thim-addon-market/download-addon';
+	/**
+	 * @var string $link_addon_action Link download plugin from Thimpress.
+	 */
+	private $link_active_site = 'https://updates.thimpress.com/thim-addon-market/active-site';
 	/**
 	 * @var string link download plugin from org.
 	 */
@@ -187,6 +191,44 @@ class LP_Manager_Addons {
 	 */
 	public function deactivate( array $addon = [] ) {
 		deactivate_plugins( $addon['basename'] ?? '' );
+	}
+
+	/**
+	 * Active site if install plugin via upload zip has "purchase code".
+	 *
+	 * @param $addon_slug
+	 * @param $purchase_code
+	 *
+	 * @return void
+	 */
+	public function active_site( $addon_slug, $purchase_code ) {
+		try {
+			$args = [
+				'method'     => 'POST',
+				'body'       => [
+					'addon'         => $addon_slug,
+					'purchase_code' => $purchase_code,
+				],
+				'user-agent' => site_url(),
+			];
+
+			$result = wp_remote_post( $this->link_active_site, $args );
+			if ( is_wp_error( $result ) ) {
+				throw new Exception( $result->get_error_message() );
+			}
+
+			$data = wp_remote_retrieve_body( $result );
+			if ( preg_match( '/^Error.*/', $data ) ) {
+				throw new Exception( $data );
+			}
+
+			// Save keys purchase code of addons to table WP Options.
+			$key_purchases                = LP_Settings::get_option( LP_Manager_Addons::instance()->key_purchase_addons, [] );
+			$key_purchases[ $addon_slug ] = $purchase_code;
+			LP_Settings::update_option( LP_Manager_Addons::instance()->key_purchase_addons, $key_purchases );
+		} catch ( Throwable $e ) {
+			error_log( $e->getMessage() );
+		}
 	}
 }
 
