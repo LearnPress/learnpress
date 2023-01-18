@@ -395,6 +395,21 @@
     "is_org": 0,
     "order": 0
   },
+  "learnpress-instamojo-payment": {
+    "name": "Instamojo Add-On for LearnPress",
+    "basename": "learnpress-instamojo-payment/learnpress-instamojo-payment.php",
+    "version": "4.0.0",
+    "require_lp": "4.2.0",
+    "description": "The transaction can be done by Instamojo account if other payment gateways are not available.",
+    "image": "https://plugins.thimpress.com/downloads/images/lp-wpml.png",
+    "link": "https://thimpress.com/product/instamojo-add-on-for-learnpress/",
+    "link_doc": "",
+    "setting": "wp-admin/admin.php?page=learn-press-settings&tab=payments&section=instamojo",
+    "is_free": 0,
+    "author": "",
+    "is_org": 0,
+    "order": 0
+  },
   "learnpress-mobile-app": {
     "name": "LearnPress - Mobile App",
     "basename": "learnpress-mobile-app/learnpress-mobile-app.php",
