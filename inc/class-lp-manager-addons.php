@@ -177,7 +177,7 @@ class LP_Manager_Addons {
 		if ( isset( $addon['dependency'] ) ) {
 			foreach ( $addon['dependency'] as $addon_slug => $addon_label ) {
 				if ( ! is_plugin_active( $addon_slug ) ) {
-					throw new Exception( sprintf( 'Please activate "%s" before activate this plugin', $addon_label ) );
+					throw new Exception( sprintf( 'Please activate "%s" plugin before activate this add-on', $addon_label ) );
 				}
 			}
 		}
