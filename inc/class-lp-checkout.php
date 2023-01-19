@@ -671,6 +671,8 @@ class LP_Checkout {
 				@set_time_limit( 0 ); // @codingStandardsIgnoreLine
 			}
 
+			$lp_session = LearnPress::instance()->session;
+
 			do_action( 'learn-press/before-checkout' );
 
 			$cart = LearnPress::instance()->cart;
@@ -700,25 +702,36 @@ class LP_Checkout {
 				// maybe throw new exception
 				$this->validate_payment();
 
-				// Create order.
-				$order_id = $this->create_order();
-				if ( is_wp_error( $order_id ) ) {
-					throw new Exception( $order_id->get_error_message() );
+				// Create order if not handle done.
+				$order_id = $lp_session->get( 'order_awaiting_payment', 0 );
+				if ( ! $order_id ) {
+					$order_id = $this->create_order();
+					if ( is_wp_error( $order_id ) ) {
+						throw new Exception( $order_id->get_error_message() );
+					}
+
+					// Update title oder when order is have just create.
+					wp_update_post(
+						array(
+							'ID'         => $order_id,
+							'post_title' => learn_press_transaction_order_number( $order_id ),
+						)
+					);
+					$lp_session->set( 'order_awaiting_payment', $order_id, true );
 				}
 
 				// allow Third-party hook: send email and more...
 				do_action( 'learn-press/checkout-order-processed', $order_id, $this );
 
 				if ( $this->payment_method instanceof LP_Gateway_Abstract ) {
-					//LearnPress::instance()->session->set( 'order_awaiting_payment', $order_id );
 					// Process Payment
 					$result = $this->payment_method->process_payment( $order_id );
-
 					if ( isset( $result['result'] ) ) {
-						// Clear cart.
-						LearnPress::instance()->get_cart()->empty_cart();
-
 						if ( 'success' === $result['result'] ) {
+							// Clear cart.
+							LearnPress::instance()->get_cart()->empty_cart();
+							// Clear order_awaiting_payment.
+							$lp_session->remove( 'order_awaiting_payment', true );
 							$result = apply_filters( 'learn-press/payment-successful-result', $result, $order_id );
 						}
 
@@ -753,6 +766,8 @@ class LP_Checkout {
 
 						// Clear cart.
 						LearnPress::instance()->get_cart()->empty_cart();
+						// Clear order_awaiting_payment.
+						$lp_session->remove( 'order_awaiting_payment', true );
 
 						$result = array(
 							'result'   => 'success',

@@ -72,8 +72,9 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 		$status    = $this->format_status_save_db( $order );
 		$post_data = array(
-			'post_date'     => $order->get_order_date( 'edit' )->toSql(),
-			'post_date_gmt' => $order->get_order_date( 'edit' )->toSql( false ),
+			//'post_title'    => $order->get_order_number(),
+			//'post_date'     => $order->get_order_date( 'edit' )->toSql(),
+			//'post_date_gmt' => $order->get_order_date( 'edit' )->toSql( false ),
 			'post_status'   => $status,
 			'post_parent'   => $order->get_parent_id(),
 		);
@@ -386,7 +387,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			FROM {$wpdb->learnpress_order_items} oi
 			INNER JOIN {$wpdb->learnpress_order_itemmeta} oim ON oi.order_item_id = oim.learnpress_order_item_id
 			WHERE order_id = %d
-		",
+			",
 			$from
 		);
 

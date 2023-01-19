@@ -930,14 +930,13 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			$this->_set_data( 'currency', $value );
 		}
 
+		/**
+		 * Get payment method title.
+		 *
+		 * @return array|mixed
+		 */
 		public function get_payment_method_title() {
-			if ( $this->get_data( 'order_total' ) == 0 ) {
-				$title = '';
-			} else {
-				$title = $this->get_data( 'payment_method_title' );
-			}
-
-			return $title;
+			return $this->get_data( 'payment_method_title', '' );
 		}
 
 		public function get_view_order_url() {

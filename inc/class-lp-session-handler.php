@@ -556,6 +556,10 @@ class LP_Session_Handler {
 	public function get( $key, $default = null ) {
 		$key = sanitize_key( $key );
 
+		if ( empty( $this->_data ) ) {
+			$this->_data = $this->get_session_data();
+		}
+
 		return isset( $this->_data[ $key ] ) ? LP_Helper::maybe_unserialize( $this->_data[ $key ] ) : $default;
 	}
 
