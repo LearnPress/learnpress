@@ -129,6 +129,7 @@ echo wp_sprintf(
 			</td>
 		</tr>
 	<?php endif; ?>
+	<?php do_action( 'learn-press/order/received/items-table', $order_received ); ?>
 </table>
 
 <?php //do_action( 'learn-press/order/received/' . $order_received->get_data( 'payment_method' ), $order_received->get_id() ); ?>
