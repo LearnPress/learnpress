@@ -466,7 +466,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			// Check require version thim-core.
 			add_action( 'before_thim_core_init', array( $this, 'check_thim_core_version_require' ) );
 
-			//
+			// Save key purchase addon when install via file download from Thimpress.
 			add_action(
 				'upgrader_process_complete',
 				function ( $plugin_upgrader ) {
@@ -489,9 +489,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 								return;
 							}
 
-							$key_purchase                = LP_Settings::get_option( LP_Manager_Addons::instance()->key_purchase_addons, [] );
-							$key_purchase[ $addon_slug ] = $purchase_code_content;
-							LP_Settings::update_option( LP_Manager_Addons::instance()->key_purchase_addons, $key_purchase );
+							// Call active purchase code for site.
+							LP_Manager_Addons::instance()->active_site( $addon_slug, $purchase_code_content );
 						}
 					}
 				}

@@ -22,7 +22,7 @@ class LP_Manager_Addons {
 	private $link_addon_action = 'https://updates.thimpress.com/thim-addon-market/download-addon';
 	//public $link_addon_action = 'http://updates/thim-addon-market/download-addon';
 	/**
-	 * @var string $link_addon_action Link download plugin from Thimpress.
+	 * @var string $link_addon_action Link active site.
 	 */
 	private $link_active_site = 'https://updates.thimpress.com/thim-addon-market/active-site';
 	/**
