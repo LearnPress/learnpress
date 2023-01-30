@@ -701,9 +701,9 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 							'title'      => $post->post_title,
 							'graduation' => ! empty( $course_data->get_graduation() ) ? $course_data->get_graduation() : '',
 							'status'     => ! empty( $course_data->get_status() ) ? $course_data->get_status() : '',
-							'start_time' => lp_jwt_prepare_date_response( $course_data->get_start_time() ? $course_data->get_start_time()->toSql( false ) : '' ),
-							'end_time'   => lp_jwt_prepare_date_response( $course_data->get_end_time() ? $course_data->get_end_time()->toSql( false ) : '' ),
-							'expiration' => lp_jwt_prepare_date_response( $course_data->get_expiration_time() ? $course_data->get_expiration_time()->toSql( false ) : '' ),
+							'start_time' => lp_jwt_prepare_date_response( $course_data->get_start_time() ? $course_data->get_start_time()->toSql() : '' ),
+							'end_time'   => lp_jwt_prepare_date_response( $course_data->get_end_time() ? $course_data->get_end_time()->toSql() : '' ),
+							'expiration' => lp_jwt_prepare_date_response( $course_data->get_expiration_time() ? $course_data->get_expiration_time()->toSql() : '' ),
 							'results'    => $course_data->calculate_course_results(),
 						);
 					}

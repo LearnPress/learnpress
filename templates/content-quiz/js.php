@@ -58,7 +58,7 @@ if ( $user_quiz ) {
 		'status'            => $status,
 		'attempts'          => $user_quiz->get_attempts(),
 		'checked_questions' => $checked_questions,
-		'start_time'        => $user_quiz->get_start_time()->toSql( false ),
+		'start_time'        => $user_quiz->get_start_time()->toSql(),
 		'retaken'           => absint( $user_quiz->get_retaken_count() ),
 	);
 

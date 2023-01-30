@@ -306,7 +306,6 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 					}
 
 					$order = new LP_Order( $order_id );
-
 					$order->payment_complete();
 
 					$cart->empty_cart();
