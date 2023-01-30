@@ -710,13 +710,6 @@ class LP_Checkout {
 						throw new Exception( $order_id->get_error_message() );
 					}
 
-					// Update title oder when order is have just create.
-					wp_update_post(
-						array(
-							'ID'         => $order_id,
-							'post_title' => learn_press_transaction_order_number( $order_id ),
-						)
-					);
 					$lp_session->set( 'order_awaiting_payment', $order_id, true );
 				}
 
@@ -731,7 +724,7 @@ class LP_Checkout {
 							// Clear cart.
 							LearnPress::instance()->get_cart()->empty_cart();
 							// Clear order_awaiting_payment.
-							$lp_session->remove( 'order_awaiting_payment', true );
+							//$lp_session->remove( 'order_awaiting_payment', true );
 							$result = apply_filters( 'learn-press/payment-successful-result', $result, $order_id );
 						}
 
@@ -767,7 +760,7 @@ class LP_Checkout {
 						// Clear cart.
 						LearnPress::instance()->get_cart()->empty_cart();
 						// Clear order_awaiting_payment.
-						$lp_session->remove( 'order_awaiting_payment', true );
+						//$lp_session->remove( 'order_awaiting_payment', true );
 
 						$result = array(
 							'result'   => 'success',
