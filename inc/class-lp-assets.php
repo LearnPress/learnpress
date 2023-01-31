@@ -66,7 +66,7 @@ class LP_Assets extends LP_Abstract_Assets {
 				'ajax'                               => admin_url( 'admin-ajax.php' ),
 				'courses_url'                        => learn_press_get_page_link( 'courses' ),
 				'post_id'                            => get_the_ID(),
-				'user_id'                            => get_current_user_id(), // use: course-progress.
+				'user_id'                            => get_current_user_id(),
 				'theme'                              => get_stylesheet(),
 				'localize'                           => array(
 					'button_ok'     => esc_html__( 'OK', 'learnpress' ),

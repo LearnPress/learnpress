@@ -1,4 +1,9 @@
-const urlCourses = lpGlobalSettings.courses_url || '';
+import API from './api';
+
+if ( undefined === lpGlobalSettings ) {
+	throw new Error( 'lpGlobalSettings is undefined' );
+}
+
 const urlCurrent = document.location.href;
 let filterCourses = JSON.parse( window.localStorage.getItem( 'lp_filter_courses' ) ) || {};
 let skeleton;
@@ -43,16 +48,6 @@ const lpArchiveCourse = () => {
 };
 
 window.lpArchiveRequestCourse = ( args, callBackSuccess ) => {
-	const wpRestUrl = lpGlobalSettings.lp_rest_url;
-
-	if ( ! wpRestUrl ) {
-		return;
-	}
-
-	if ( ! skeleton ) {
-		return;
-	}
-
 	const archiveCourse = elArchive && elArchive.querySelector( 'div.lp-archive-courses .lp-content-area' );
 	const listCourse = archiveCourse && archiveCourse.querySelector( 'ul.learn-press-courses' );
 
@@ -73,12 +68,22 @@ window.lpArchiveRequestCourse = ( args, callBackSuccess ) => {
 		// return;
 	}
 
-	const urlCourseArchive = lpArchiveAddQueryArgs( wpRestUrl + 'lp/v1/courses/archive-course', { ...lpGlobalSettings.lpArchiveSkeleton, ...args } );
-	const url = lpGlobalSettings.lp_rest_url + 'lp/v1/courses/archive-course' + urlCourseArchive.search;
-
-	fetch( url, {
+	const urlCourseArchive = lpArchiveAddQueryArgs( API.apiCourses, { ...lpGlobalSettings.lpArchiveSkeleton, ...args } );
+	const url = API.apiCourses + urlCourseArchive.search;
+	let paramsFetch = {
 		method: 'GET',
-	} )
+	};
+
+	if ( 0 !== lpGlobalSettings.user_id ) {
+		paramsFetch = {
+			...paramsFetch,
+			headers: {
+				'X-WP-Nonce': lpGlobalSettings.nonce,
+			},
+		};
+	}
+
+	fetch( url, paramsFetch )
 		.then( ( response ) => response.json() )
 		.then( ( response ) => {
 			if ( typeof response.data.content !== 'undefined' && listCourse ) {
