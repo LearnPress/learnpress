@@ -484,7 +484,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 			update_post_meta( $post_id, '_lp_regular_price', '' );
 		}
 
-		if ( $price_sale >= $price_regular || $price_sale <= 0 ) {
+		if ( $price_sale >= $price_regular || $price_sale < 0 ) {
 			update_post_meta( $post_id, '_lp_sale_price', '' );
 		}
 		// End check price.
