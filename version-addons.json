@@ -378,6 +378,21 @@
     "is_org": 0,
     "order": 0
   },
+  "learnpress-wishlist": {
+    "name": "LearnPress – Course Wishlist",
+    "basename": "learnpress-wishlist/learnpress-wishlist.php",
+    "version": "4.0.4",
+    "require_lp": "4.2.0",
+    "description": "LearnPress Wishlist bring wishlist feature for LearnPress. It allows you to add your favorite course to a list to take later.",
+    "image": "https://ps.w.org/learnpress-wishlist/assets/icon-128x128.png?rev=2394366",
+    "link": "https://wordpress.org/plugins/learnpress-wishlist/",
+    "link_dock": "https://docspress.thimpress.com/course-wishlist-add-ons-for-learnpress/",
+    "setting": "",
+    "is_free": 1,
+    "author": "",
+    "is_org": 1,
+    "order": 0
+  },
   "learnpress-woo-payment": {
     "name": "WooCommerce Add-On for LearnPress",
     "basename": "learnpress-woo-payment/learnpress-woo-payment.php",
