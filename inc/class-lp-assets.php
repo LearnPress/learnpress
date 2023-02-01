@@ -79,6 +79,8 @@ class LP_Assets extends LP_Abstract_Assets {
 				'option_enable_popup_confirm_finish' => LP_Settings::get_option( 'enable_popup_confirm_finish', 'yes' ),
 				'is_course_archive'                  => learn_press_is_courses(),
 				'lpArchiveSkeleton'                  => lp_archive_skeleton_get_args(),
+				'lpArchiveLoadAjax'                  => LP_Settings_Courses::is_ajax_load_courses() ? 1 : 0,
+				'lpArchiveNoLoadAjaxFirst'           => LP_Settings_Courses::is_ajax_load_courses() && LP_Settings_Courses::is_no_load_ajax_first_courses() ? 1 : 0,
 			),
 			'lp-checkout'     => array(
 				'ajaxurl'            => home_url( '/' ),
