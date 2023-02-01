@@ -204,6 +204,21 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.2.1 (2023-01-02) =
+~ Added: feature manager addons of LearnPress, download, update, activate, deactivate.
+~ Fixed: style button.
+~ Fixed: deprecated register widget elementor.
+~ Added: 'get_evaluation_type' function.
+~ Modified: 'get_passing_condition' function.
+~ Added: hook 'lp/course/extra-info/before-save'.
+~ Added: hook 'learn-press/login-redirect'.
+~ Added: hook 'learn-press/register-redirect'.
+~ Added: "status" row on LP Order Receiver.
+~ Fixed: error not set pagination page numbers questions when retake quiz.
+~ Modified: "set_title_pages" function.
+~ Modified: "get_order_status_html" function, now can translate status LP Order.
+~ Fixed: error "load more" on Profile page.
+
 = 4.2.0 (2022-12-20) =
 ~ Fixed: compatibility with WordPress PHP 8.1.
 ~ Not implements ArrayAccess, Iterator, Countable of PHP on classes: LP_Datetime, LP_Session_Handler, LP_User_Item_Course, LP_User_Item, LP_Quiz_Results, LP_Course_Item, LP_Quiz, LP_Array_Access, LP_Profile_Tabs.
