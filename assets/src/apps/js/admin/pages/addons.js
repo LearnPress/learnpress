@@ -233,6 +233,13 @@ document.addEventListener( 'click', ( e ) => {
 		} else if ( action === 'cancel' ) {
 			elItemPurchase.style.display = 'none';
 			return;
+		} else if ( action === 'install' ) {
+			if ( el.dataset.link ) {
+				el.classList.remove( 'handling' );
+				const link = el.dataset.link;
+				window.open( link, '_blank' );
+				return;
+			}
 		}
 
 		// Send request to server.

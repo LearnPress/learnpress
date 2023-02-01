@@ -135,7 +135,9 @@ $keys_purchase             = LP_Settings::get_option( LP_Manager_Addons::instanc
 								title="<?php _e( 'Change Purchase Code', 'learnpress' ); ?>">
 								<span class="dashicons dashicons-ellipsis"></span>
 							</button>
-							<button class="btn-addon-action" data-action="install">
+							<button class="btn-addon-action" data-action="install"
+							<?php echo $is_free && ! $addon->is_org ? 'data-link="' . $addon->link . '"' : ''; ?>
+							>
 								<span class="dashicons dashicons-update"></span><span class="text"><?php _e( 'Install', 'learnpress' ); ?></span>
 							</button>
 							<button class="btn-addon-action" data-action="purchase"><?php _e( 'Install', 'learnpress' ); ?></button>
