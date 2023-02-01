@@ -122,7 +122,7 @@ $keys_purchase             = LP_Settings::get_option( LP_Manager_Addons::instanc
 						if ( isset( $addon->setting ) && ! empty( $addon->setting ) ) {
 							?>
 							<a href="<?php echo site_url( $addon->setting ); ?>" target="_blank" rel="noopener">
-								<button data-action="setting">Settings</button>
+								<button data-action="setting"><?php _e( 'Settings', 'learnpress' ); ?></button>
 							</a>
 							<?php
 						}
@@ -131,34 +131,52 @@ $keys_purchase             = LP_Settings::get_option( LP_Manager_Addons::instanc
 							title="<?php echo sprintf( '%s %s require LP version %s', $addon->name, $version_latest, $addon->require_lp ); ?>">
 								<span class="dashicons dashicons-update"></span><span class="text">Update</span>
 							</button>
-							<button class="btn-addon-action" data-action="install">
-								<span class="dashicons dashicons-update"></span><span class="text">Install</span>
+							<button class="btn-addon-action" data-action="update-purchase-code"
+								title="<?php _e( 'Change Purchase Code', 'learnpress' ); ?>">
+								<span class="dashicons dashicons-ellipsis"></span>
 							</button>
-							<button class="btn-addon-action" data-action="purchase">Install</button>
+							<button class="btn-addon-action" data-action="install">
+								<span class="dashicons dashicons-update"></span><span class="text"><?php _e( 'Install', 'learnpress' ); ?></span>
+							</button>
+							<button class="btn-addon-action" data-action="purchase"><?php _e( 'Install', 'learnpress' ); ?></button>
 					</div>
 					<div class="lp-addon-item__actions__right">
 						<button class="btn-addon-action" data-action="deactivate">
-							<span class="dashicons dashicons-update"></span><span class="text">Deactivate</span>
+							<span class="dashicons dashicons-update"></span><span class="text"><?php _e( 'Deactivate', 'learnpress' ); ?></span>
 						</button>
 						<button class="btn-addon-action" data-action="activate">
-							<span class="dashicons dashicons-update"></span><span class="text">Activate</span>
+							<span class="dashicons dashicons-update"></span><span class="text"><?php _e( 'Activate', 'learnpress' ); ?></span>
 						</button>
 					</div>
 				</div>
 				<div class="lp-addon-item__purchase">
 					<div class="lp-addon-item__purchase__wrapper">
-						<label>
-							<input type="text" placeholder="Enter Purchase Code"
+						<div class="purchase-install">
+							<label>
+								<input type="text" class="enter-purchase-code" placeholder="Enter Purchase Code"
+									value="<?php echo $purchase_code ?? ''; ?>">
+							</label>
+							<button class="btn-addon-action" data-action="install">
+								<span class="dashicons dashicons-update"></span><span class="text"><?php _e( 'Submit', 'learnpress' ); ?></span>
+							</button>
+							OR
+							<button class="btn-addon-action" data-action="buy" data-link="<?php echo $addon->link; ?>">Buy
+								Now
+							</button>
+							<button class="btn-addon-action" data-action="cancel"><?php _e( 'Cancel', 'learnpress' ); ?></button>
+						</div>
+						<div class="purchase-update">
+							<label>
+								<input type="text" class="enter-purchase-code" placeholder="Enter Purchase Code"
+									value="<?php echo $purchase_code ?? ''; ?>">
+							</label>
+							<button class="btn-addon-action" data-action="update-purchase">
+								<span class="dashicons dashicons-update"></span><span class="text"><?php _e( 'Update', 'learnpress' ); ?></span>
+							</button>
+							<button class="btn-addon-action" data-action="cancel"><?php _e( 'Cancel', 'learnpress' ); ?></button>
+						</div>
+						<input type="hidden" name="purchase-code"
 							value="<?php echo $purchase_code ?? ''; ?>">
-						</label>
-						<button class="btn-addon-action" data-action="install">
-							<span class="dashicons dashicons-update"></span><span class="text">Submit</span>
-						</button>
-						OR
-						<button class="btn-addon-action" data-action="buy" data-link="<?php echo $addon->link; ?>">Buy
-							Now
-						</button>
-						<button class="btn-addon-action" data-action="cancel">Cancel</button>
 					</div>
 				</div>
 			</div>

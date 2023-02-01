@@ -152,6 +152,11 @@ class LP_REST_Addon_Controller extends LP_Abstract_REST_Controller {
 				case 'deactivate':
 					$this->lp_addons->deactivate( $addon );
 					break;
+				case 'update-purchase':
+					$key_purchase                   = LP_Settings::get_option( $this->lp_addons->key_purchase_addons, [] );
+					$key_purchase[ $addon['slug'] ] = $purchase_code;
+					LP_Settings::update_option( $this->lp_addons->key_purchase_addons, $key_purchase );
+					break;
 				default:
 					break;
 			}

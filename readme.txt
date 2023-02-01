@@ -210,6 +210,7 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Fixed: deprecated register widget elementor.
 ~ Added: 'get_evaluation_type' function.
 ~ Modified: 'get_passing_condition' function.
+~ Added: 'get_evaluation_type' function.
 ~ Added: hook 'lp/course/extra-info/before-save'.
 ~ Added: hook 'learn-press/login-redirect'.
 ~ Added: hook 'learn-press/register-redirect'.
@@ -218,6 +219,8 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Modified: "set_title_pages" function.
 ~ Modified: "get_order_status_html" function, now can translate status LP Order.
 ~ Fixed: error "load more" on Profile page.
+~ Fixed: error can't set Sale price to 0.
+~ Modified: step of input Passing Grade from 1 to 0.01.
 
 = 4.2.0 (2022-12-20) =
 ~ Fixed: compatibility with WordPress PHP 8.1.

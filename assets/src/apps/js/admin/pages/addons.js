@@ -211,6 +211,7 @@ document.addEventListener( 'click', ( e ) => {
 	if ( el.classList.contains( 'btn-addon-action' ) ) {
 		e.preventDefault();
 		el.classList.add( 'handling' );
+		let purchaseCode = '';
 		const elAddonItem = el.closest( '.lp-addon-item' );
 		const addon = dataAddons[ elAddonItem.dataset.slug ];
 		const action = el.dataset.action;
@@ -218,6 +219,11 @@ document.addEventListener( 'click', ( e ) => {
 		//const elToggleSwitchInput = elAddonItem.querySelector( '.lp-toggle-switch-input' );
 
 		if ( action === 'purchase' ) {
+			elItemPurchase.style.display = 'block';
+			elItemPurchase.querySelector( '.purchase-install' ).style.display = 'flex';
+			return;
+		} else if ( action === 'update-purchase-code' ) {
+			elItemPurchase.querySelector( '.purchase-update' ).style.display = 'flex';
 			elItemPurchase.style.display = 'block';
 			return;
 		} else if ( action === 'buy' ) {
@@ -230,9 +236,8 @@ document.addEventListener( 'click', ( e ) => {
 		}
 
 		// Send request to server.
-		let purchaseCode = '';
 		if ( elItemPurchase ) {
-			purchaseCode = elItemPurchase.querySelector( 'input' ).value;
+			purchaseCode = elItemPurchase.querySelector( 'input[name=purchase-code]' ).value;
 		}
 
 		const data = { purchase_code: purchaseCode, action, addon };
@@ -299,5 +304,17 @@ document.addEventListener( 'input', ( e ) => {
 	if ( 'lp-search-addons__input' === el.id ) {
 		const keyword = el.value;
 		searchAddons( keyword );
+	}
+
+	// Events change input purchase code.
+	if ( el.classList.contains( 'enter-purchase-code' ) ) {
+		e.preventDefault();
+		const purchaseCode = el.value;
+		const elItemPurchase = el.closest( '.lp-addon-item__purchase' );
+
+		if ( elItemPurchase ) {
+			const input = elItemPurchase.querySelector( 'input[name=purchase-code]' );
+			input.value = purchaseCode;
+		}
 	}
 } );
