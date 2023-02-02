@@ -59,11 +59,11 @@ const jsHandlePageCourses = () => {
 
 				if ( paginationNewNode ) {
 					elListCourse.after( paginationNewNode );
-					lpArchivePaginationCourse();
 				}
 			}
 		}
 
+		lpArchivePaginationCourse();
 		lpArchiveSearchCourse();
 	};
 
