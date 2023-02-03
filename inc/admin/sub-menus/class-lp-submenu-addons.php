@@ -20,7 +20,7 @@ class LP_Submenu_Addons extends LP_Abstract_Submenu {
 	}
 
 	public function display() {
-		echo '<h1>' . __( 'LearPress Addons' ) . '</h1>';
+		echo '<h1>' . __( 'LearnPress Addons' ) . '</h1>';
 		echo '<div class="lp-addons-page">';
 		lp_skeleton_animation_html( 20 );
 		echo '</div>';
