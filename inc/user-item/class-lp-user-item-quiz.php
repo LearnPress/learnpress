@@ -252,17 +252,16 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 */
 	public function get_timestamp_remaining(): int {
 		$timestamp_remaining = - 1;
+		$quiz                = false;
 
 		try {
 			$quiz = learn_press_get_quiz( $this->get_item_id() );
-
 			if ( ! $quiz || LP_ITEM_STARTED != $this->get_status() ) {
 				return $timestamp_remaining;
 			}
 
 			$parent_id = $this->get_parent_id();
-
-			$duration = $quiz->get_duration()->get() . ' second';
+			$duration  = $quiz->get_duration()->get() . ' second';
 
 			$filter              = new LP_User_Items_Filter();
 			$filter->parent_id   = $parent_id;
@@ -281,7 +280,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 
 		}
 
-		return apply_filters( 'learnpress/course/block_duration_expire/timestamp_remaining', $timestamp_remaining );
+		return apply_filters( 'learn-press/user-course-quiz/timestamp_remaining', $timestamp_remaining, $this, $quiz );
 	}
 
 	/**
