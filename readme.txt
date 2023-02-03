@@ -204,7 +204,7 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
-= 4.2.1 (2023-01-02) =
+= 4.2.1 (2023-02-03) =
 ~ Added: feature manager addons of LearnPress, download, update, activate, deactivate.
 ~ Fixed: style button.
 ~ Fixed: deprecated register widget elementor.
