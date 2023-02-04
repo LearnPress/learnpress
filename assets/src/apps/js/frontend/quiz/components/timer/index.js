@@ -20,6 +20,8 @@ const Timer = () => {
 				let remainSeconds = seconds;
 				remainSeconds -= 1;
 
+				remainSeconds = wp.hooks.applyFilters( 'js-lp-quiz-remaining_time', remainSeconds, durationTime );
+
 				if ( remainSeconds > 0 ) {
 					setSeconds( remainSeconds );
 					timeSpend++;

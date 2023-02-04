@@ -255,9 +255,8 @@ if ( ! function_exists( 'learn_press_single_quiz_args' ) ) {
 
 		$quiz   = LP_Global::course_item_quiz();
 		$course = learn_press_get_course();
-
+		$user   = learn_press_get_current_user();
 		if ( $quiz && $course ) {
-			$user      = learn_press_get_current_user();
 			$course_id = $course->get_id();
 			//$user_quiz = $user->get_item_data( $quiz->get_id(), $course_id );
 
@@ -277,7 +276,7 @@ if ( ! function_exists( 'learn_press_single_quiz_args' ) ) {
 			);
 		}
 
-		return $args;
+		return apply_filters( 'learn-press/localize_script/quiz', $args, $user, $course, $quiz );
 	}
 }
 
