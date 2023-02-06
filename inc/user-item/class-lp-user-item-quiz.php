@@ -246,13 +246,14 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 * Get Timestamp remaining when user doing quiz
 	 *
 	 * @author tungnx
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 * @sicne 4.1.4.1
 	 * @return int
 	 */
 	public function get_timestamp_remaining(): int {
 		$timestamp_remaining = - 1;
 		$quiz                = false;
+		$user_quiz           = false;
 
 		try {
 			$quiz = learn_press_get_quiz( $this->get_item_id() );
@@ -280,7 +281,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 
 		}
 
-		return apply_filters( 'learn-press/user-course-quiz/timestamp_remaining', $timestamp_remaining, $this, $quiz );
+		return apply_filters( 'learn-press/user-course-quiz/timestamp_remaining', $timestamp_remaining, $user_quiz, $quiz );
 	}
 
 	/**

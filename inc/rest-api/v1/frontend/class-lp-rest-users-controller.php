@@ -341,7 +341,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 
 			$user_quiz->complete();
 
-			do_action( 'learn-press/user/quiz-finished', $item_id, $course_id, $user_id );
+			do_action( 'learn-press/user/quiz-finished', $item_id, $course_id, $user_id, $user_quiz );
 
 			$result['status']    = $user_quiz->get_status(); // Must be completed
 			$result['attempts']  = $user_quiz->get_attempts();
