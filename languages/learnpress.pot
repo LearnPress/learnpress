@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the LearnPress plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: LearnPress 4.2.1-beta-6\n"
+"Project-Id-Version: LearnPress 4.2.1.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/learnpress\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2023-02-01T11:31:41+03:00\n"
+"POT-Creation-Date: 2023-02-04T07:37:48+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.7.1\n"
 "X-Domain: learnpress\n"
@@ -267,7 +267,7 @@ msgstr ""
 #: inc/admin/settings/class-lp-settings-advanced.php:72
 #: inc/course/lp-course-functions.php:450
 #: inc/custom-post-types/lesson.php:158
-#: inc/lp-template-functions.php:1103
+#: inc/lp-template-functions.php:1102
 msgid "Lesson"
 msgstr ""
 
@@ -276,7 +276,7 @@ msgstr ""
 #: inc/course/lp-course-functions.php:451
 #: inc/custom-post-types/question.php:320
 #: inc/custom-post-types/quiz.php:87
-#: inc/lp-template-functions.php:1093
+#: inc/lp-template-functions.php:1092
 #: templates/profile/tabs/quizzes.php:53
 msgid "Quiz"
 msgstr ""
@@ -301,7 +301,7 @@ msgstr ""
 #: inc/class-lp-page-controller.php:243
 #: inc/custom-post-types/course.php:106
 #: inc/custom-post-types/course.php:108
-#: inc/lp-template-functions.php:316
+#: inc/lp-template-functions.php:315
 #: inc/settings/class-lp-settings-courses.php:16
 #: inc/user/class-lp-profile.php:248
 #: inc/user/class-lp-profile.php:600
@@ -600,8 +600,8 @@ msgid "Billing"
 msgstr ""
 
 #: inc/admin/class-lp-admin.php:244
-#: inc/admin/views/addons.php:166
-#: inc/admin/views/addons.php:176
+#: inc/admin/views/addons.php:168
+#: inc/admin/views/addons.php:178
 #: inc/admin/views/meta-boxes/fields/date.php:39
 #: inc/class-lp-assets.php:73
 #: inc/lp-core-functions.php:2793
@@ -642,7 +642,7 @@ msgid "Register"
 msgstr ""
 
 #: inc/admin/class-lp-admin.php:279
-#: inc/admin/views/addons.php:148
+#: inc/admin/views/addons.php:150
 msgid "Activate"
 msgstr ""
 
@@ -1120,7 +1120,7 @@ msgstr ""
 #: inc/admin/lp-admin-functions.php:1137
 #: inc/admin/lp-admin-functions.php:1354
 #: inc/admin/lp-admin-functions.php:2219
-#: inc/admin/views/addons.php:190
+#: inc/admin/views/addons.php:192
 #: inc/admin/views/statistics/courses.php:27
 #: inc/admin/views/statistics/general.php:43
 #: inc/admin/views/statistics/orders.php:29
@@ -1175,14 +1175,14 @@ msgstr ""
 #: inc/admin/lp-admin-functions.php:1152
 #: inc/admin/lp-admin-functions.php:2234
 #: inc/admin/views/addons.php:108
-#: inc/admin/views/addons.php:192
+#: inc/admin/views/addons.php:194
 msgid "Paid"
 msgstr ""
 
 #: inc/admin/lp-admin-functions.php:1157
 #: inc/admin/lp-admin-functions.php:2239
 #: inc/admin/views/addons.php:108
-#: inc/admin/views/addons.php:193
+#: inc/admin/views/addons.php:195
 #: inc/course/abstract-course.php:660
 #: inc/course/abstract-course.php:689
 #: templates/order/order-details.php:43
@@ -1215,17 +1215,6 @@ msgstr ""
 
 #: inc/admin/lp-admin-functions.php:1889
 msgid "Quiz id %s does not exist."
-msgstr ""
-
-#: inc/admin/meta-box/fields/course-permalink.php:16
-#: inc/settings/class-lp-settings-courses.php:46
-msgctxt "default-slug"
-msgid "courses"
-msgstr ""
-
-#: inc/admin/meta-box/fields/course-permalink.php:17
-msgctxt "default-slug"
-msgid "course"
 msgstr ""
 
 #: inc/admin/meta-box/fields/course-permalink.php:22
@@ -1576,33 +1565,33 @@ msgstr ""
 msgid "Change Purchase Code"
 msgstr ""
 
-#: inc/admin/views/addons.php:139
 #: inc/admin/views/addons.php:141
+#: inc/admin/views/addons.php:143
 msgid "Install"
 msgstr ""
 
-#: inc/admin/views/addons.php:145
+#: inc/admin/views/addons.php:147
 msgid "Deactivate"
 msgstr ""
 
-#: inc/admin/views/addons.php:160
+#: inc/admin/views/addons.php:162
 #: inc/external-plugin/elementor/widgets/become-a-teacher.php:53
 #: inc/shortcodes/class-lp-shortcode-become-a-teacher.php:88
 #: templates/global/become-teacher-form.php:58
 msgid "Submit"
 msgstr ""
 
-#: inc/admin/views/addons.php:174
-#: inc/admin/views/addons.php:194
+#: inc/admin/views/addons.php:176
+#: inc/admin/views/addons.php:196
 #: inc/admin/views/meta-boxes/order/exports-invoice.php:90
 msgid "Update"
 msgstr ""
 
-#: inc/admin/views/addons.php:191
+#: inc/admin/views/addons.php:193
 msgid "Installed"
 msgstr ""
 
-#: inc/admin/views/addons.php:195
+#: inc/admin/views/addons.php:197
 msgid "Not Installed"
 msgstr ""
 
@@ -2049,7 +2038,7 @@ msgstr ""
 #: inc/custom-post-types/abstract.php:960
 #: inc/custom-post-types/lesson.php:130
 #: inc/custom-post-types/lesson.php:230
-#: inc/lp-template-functions.php:1106
+#: inc/lp-template-functions.php:1105
 #: templates/loop/single-course/loop-section-item.php:32
 #: templates/single-course/section/item-meta.php:32
 msgid "Preview"
@@ -3103,7 +3092,7 @@ msgid "uncategorized"
 msgstr ""
 
 #: inc/class-lp-page-controller.php:241
-#: inc/lp-template-functions.php:314
+#: inc/lp-template-functions.php:313
 msgid "Course Search Results"
 msgstr ""
 
@@ -5819,28 +5808,28 @@ msgid "Jersey pound"
 msgstr ""
 
 #: inc/lp-core-functions.php:1405
-#: inc/lp-template-functions.php:1645
+#: inc/lp-template-functions.php:1644
 msgid "%s week"
 msgid_plural "%s weeks"
 msgstr[0] ""
 msgstr[1] ""
 
 #: inc/lp-core-functions.php:1409
-#: inc/lp-template-functions.php:1641
+#: inc/lp-template-functions.php:1640
 msgid "%s day"
 msgid_plural "%s days"
 msgstr[0] ""
 msgstr[1] ""
 
 #: inc/lp-core-functions.php:1414
-#: inc/lp-template-functions.php:1636
+#: inc/lp-template-functions.php:1635
 msgid "%s hour"
 msgid_plural "%s hours"
 msgstr[0] ""
 msgstr[1] ""
 
 #: inc/lp-core-functions.php:1418
-#: inc/lp-template-functions.php:1630
+#: inc/lp-template-functions.php:1629
 msgid "%s minute"
 msgid_plural "%s minutes"
 msgstr[0] ""
@@ -6026,42 +6015,42 @@ msgstr ""
 msgid "Overview"
 msgstr ""
 
-#: inc/lp-template-functions.php:1097
-#: inc/lp-template-functions.php:1283
+#: inc/lp-template-functions.php:1096
+#: inc/lp-template-functions.php:1282
 #: inc/templates/class-lp-template-course.php:132
 msgid "Final"
 msgstr ""
 
-#: inc/lp-template-functions.php:1519
+#: inc/lp-template-functions.php:1518
 msgid "Course Sidebar"
 msgstr ""
 
-#: inc/lp-template-functions.php:1521
+#: inc/lp-template-functions.php:1520
 msgid "Widgets in this area will be shown in a single course"
 msgstr ""
 
-#: inc/lp-template-functions.php:1530
+#: inc/lp-template-functions.php:1529
 msgid "All Courses"
 msgstr ""
 
-#: inc/lp-template-functions.php:1532
+#: inc/lp-template-functions.php:1531
 msgid "Widgets in this area will be shown on all course pages"
 msgstr ""
 
-#: inc/lp-template-functions.php:1669
-#: inc/lp-template-functions.php:1678
+#: inc/lp-template-functions.php:1668
+#: inc/lp-template-functions.php:1677
 msgid "All levels"
 msgstr ""
 
-#: inc/lp-template-functions.php:1679
+#: inc/lp-template-functions.php:1678
 msgid "Beginner"
 msgstr ""
 
-#: inc/lp-template-functions.php:1680
+#: inc/lp-template-functions.php:1679
 msgid "Intermediate"
 msgstr ""
 
-#: inc/lp-template-functions.php:1681
+#: inc/lp-template-functions.php:1680
 msgid "Expert"
 msgstr ""
 
@@ -6489,6 +6478,11 @@ msgstr ""
 msgid "The quiz is invalid!"
 msgstr ""
 
+#: inc/settings/class-lp-settings-courses.php:46
+msgctxt "default-slug"
+msgid "courses"
+msgstr ""
+
 #: inc/shortcodes/class-lp-shortcode-become-a-teacher.php:74
 msgid "Please %s to send your request!"
 msgstr ""
@@ -6559,11 +6553,11 @@ msgstr ""
 msgid "Not Started"
 msgstr ""
 
-#: inc/user-item/class-lp-user-item-quiz.php:747
+#: inc/user-item/class-lp-user-item-quiz.php:746
 msgid "The question is invalid!"
 msgstr ""
 
-#: inc/user-item/class-lp-user-item-quiz.php:752
+#: inc/user-item/class-lp-user-item-quiz.php:751
 msgid "Cannot check the answer to the question."
 msgstr ""
 

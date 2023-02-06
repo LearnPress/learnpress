@@ -204,6 +204,10 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.2.1.1 (2023-02-04) =
+~ Fixed: error js when add user on LP Order manual.
+~ Modified: Not translate course slug base (permalink).
+
 = 4.2.1 (2023-02-03) =
 ~ Added: feature manager addons of LearnPress, download, update, activate, deactivate.
 ~ Fixed: style button.
