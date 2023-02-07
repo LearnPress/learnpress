@@ -1010,8 +1010,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			);
 
 			$slug_prefix = trailingslashit( $slug_prefixes[ $item_type ] ?? '' );
-
-			$item_link = $course_permalink . $slug_prefix . $item_slug;
+			$item_link   = trailingslashit( $course_permalink . $slug_prefix . $item_slug );
 
 			return apply_filters( 'learn-press/course/item-link', $item_link, $item_id, $this );
 		}
