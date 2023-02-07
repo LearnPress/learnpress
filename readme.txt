@@ -204,6 +204,9 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.2.2 (2023-03-01) =
+~ Added: a slash to the end of the course item link.
+
 = 4.2.1.1 (2023-02-04) =
 ~ Fixed: error js when add user on LP Order manual.
 ~ Modified: Not translate course slug base (permalink).
