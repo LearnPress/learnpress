@@ -119,7 +119,7 @@ if ( ! class_exists( 'LP_Abstract_Shortcode_Courses' ) ) {
 			$attrs = $this->get_atts();
 
 			wp_enqueue_style( 'learnpress' );
-			wp_enqueue_script( 'lp-courses' );
+			//wp_enqueue_script( 'lp-courses' );
 
 			$post_ids = $this->_query;
 
