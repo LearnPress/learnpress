@@ -31,6 +31,11 @@ class LP_Page_Controller {
 	protected function __construct() {
 		add_filter( 'post_type_archive_link', [ $this, 'link_archive_course' ], 10, 2 );
 		add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ), -1 );
+		add_action( 'posts_pre_query', function ($posts, $wp_query) {
+			if ( LP_PAGE_COURSES === self::page_current())
+			$posts = [1];
+			return $posts;
+		}, 10, 2);
 		add_filter( 'template_include', array( $this, 'template_loader' ), 10 );
 		add_filter( 'template_include', array( $this, 'check_pages' ), 30 );
 		add_filter( 'template_include', array( $this, 'auto_shortcode' ), 50 );
@@ -683,8 +688,8 @@ class LP_Page_Controller {
 					 * Current, apply only for LP, not apply for theme Thimpress, because theme override
 					 */
 					$q->set( 'posts_per_page', 1 );
-					$q->set( 'posts_per_archive_page', 1 );
-					$q->set( 'nopaging', true );
+					//$q->set( 'posts_per_archive_page', 1 );
+					//$q->set( 'nopaging', true );
 				} else {
 					$filter               = new LP_Course_Filter();
 					$filter->only_fields  = [ 'ID' ];

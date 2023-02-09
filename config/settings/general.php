@@ -18,30 +18,35 @@ return apply_filters(
 			'id'      => 'courses_page_id',
 			'default' => '',
 			'type'    => 'pages-dropdown',
+			'value'   => LP_Settings::get_option( 'courses_page_id', '' ),
 		),
 		array(
 			'title'   => esc_html__( 'Profile page', 'learnpress' ),
 			'id'      => 'profile_page_id',
 			'default' => '',
 			'type'    => 'pages-dropdown',
+			'value'   => LP_Settings::get_option( 'profile_page_id', '' ),
 		),
 		array(
 			'title'   => esc_html__( 'Checkout page', 'learnpress' ),
 			'id'      => 'checkout_page_id',
 			'default' => '',
 			'type'    => 'pages-dropdown',
+			'value'   => LP_Settings::get_option( 'checkout_page_id', '' ),
 		),
 		array(
 			'title'   => esc_html__( 'Become instructors page', 'learnpress' ),
 			'id'      => 'become_a_teacher_page_id',
 			'default' => '',
 			'type'    => 'pages-dropdown',
+			'value'   => LP_Settings::get_option( 'become_a_teacher_page_id', '' ),
 		),
 		array(
 			'title'   => esc_html__( 'Terms and conditions', 'learnpress' ),
 			'id'      => 'term_conditions_page_id',
 			'default' => '',
 			'type'    => 'pages-dropdown',
+			'value'   => LP_Settings::get_option( 'term_conditions_page_id', '' ),
 		),
 		array(
 			'title'   => esc_html__( 'Logout Redirect', 'learnpress' ),
@@ -49,6 +54,7 @@ return apply_filters(
 			'default' => '',
 			'type'    => 'pages-dropdown',
 			'desc'    => __( 'The page where the user will be redirected to after logging out.', 'learnpress' ),
+			'value'   => LP_Settings::get_option( 'logout_redirect_page_id', '' ),
 		),
 		array(
 			'type' => 'sectionend',
