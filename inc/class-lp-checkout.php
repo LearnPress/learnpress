@@ -89,7 +89,7 @@ class LP_Checkout {
 	/**
 	 * Constructor
 	 */
-	public function __construct() {
+	protected function __construct() {
 		add_filter( 'learn-press/validate-checkout-field', array( $this, 'validate_fields' ), 10, 3 );
 		add_filter( 'learn-press/validate-checkout-fields', array( $this, 'check_validate_fields' ), 10, 3 );
 		//add_filter( 'learn-press/payment-successful-result', array( $this, 'process_customer' ), 10, 2 );
@@ -795,13 +795,13 @@ class LP_Checkout {
 	}
 
 	/**
-	 * Get unique instance for this object
+	 * Singleton
 	 *
 	 * @return LP_Checkout
 	 */
 	public static function instance() {
 		if ( empty( self::$_instance ) ) {
-			self::$_instance = new LP_Checkout();
+			self::$_instance = new self();
 		}
 
 		return self::$_instance;
