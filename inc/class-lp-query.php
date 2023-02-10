@@ -16,6 +16,10 @@ class LP_Query {
 	 * LP_Query constructor.
 	 */
 	public function __construct() {
+		if ( LP_Helper::isRestApiLP() ) {
+			return;
+		}
+
 		add_action( 'init', array( $this, 'add_rewrite_tags' ), 1000, 0 );
 		add_action( 'init', array( $this, 'add_rewrite_rules' ), 1000, 0 );
 		//add_action( 'parse_query', array( $this, 'parse_request' ), 1000, 1 );
@@ -163,7 +167,7 @@ class LP_Query {
 
 		// Profile
 		$profile_id = learn_press_get_page_id( 'profile' );
-		if ( $profile_id ) {
+		if ( $profile_id && LP_Page_Controller::is_page_profile() ) {
 			$rules[] = array(
 				'^' . get_post_field( 'post_name', $profile_id ) . '/([^/]*)/?$',
 				'index.php?page_id=' . $profile_id . '&user=$matches[1]',

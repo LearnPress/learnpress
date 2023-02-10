@@ -2054,10 +2054,7 @@ function learn_press_get_current_profile_tab( $default = true ) {
 	$current = '';
 
 	// Only load on profile page.
-	$page_profile_option = untrailingslashit( get_the_permalink( learn_press_get_page_id( 'profile' ) ) );
-	$page_profile_option = str_replace( '/', '\/', $page_profile_option );
-	$pattern             = '/' . $page_profile_option . '/';
-	if ( ! preg_match( $pattern, LP_Helper::getUrlCurrent() ) ) {
+	if ( ! LP_Page_Controller::is_page_profile() ) {
 		return false;
 	}
 
@@ -3212,9 +3209,8 @@ function lp_add_shortcode_profile() {
 	if ( learn_press_is_profile() && is_object( $post ) ) {
 		if ( ! has_shortcode( $post->post_content, 'learn_press_profile' ) ) {
 			$post->post_content .= '<!-- wp:shortcode -->[' . apply_filters( 'learn-press/shortcode/profile/tag', 'learn_press_profile' ) . ']<!-- /wp:shortcode -->';
+			wp_update_post( $post );
 		}
-
-		wp_update_post( $post );
 	}
 }
 

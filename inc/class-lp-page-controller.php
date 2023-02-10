@@ -31,11 +31,17 @@ class LP_Page_Controller {
 	protected function __construct() {
 		add_filter( 'post_type_archive_link', [ $this, 'link_archive_course' ], 10, 2 );
 		add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ), -1 );
-		add_action( 'posts_pre_query', function ($posts, $wp_query) {
-			if ( LP_PAGE_COURSES === self::page_current())
-			$posts = [1];
-			return $posts;
-		}, 10, 2);
+		/*add_action(
+			'posts_pre_query',
+			function ( $posts, $wp_query ) {
+				if ( LP_PAGE_COURSES === self::page_current() ) {
+					$posts = [ 1 ];
+				}
+				return $posts;
+			},
+			10,
+			2
+		);*/
 		add_filter( 'template_include', array( $this, 'template_loader' ), 10 );
 		add_filter( 'template_include', array( $this, 'check_pages' ), 30 );
 		add_filter( 'template_include', array( $this, 'auto_shortcode' ), 50 );
@@ -241,7 +247,7 @@ class LP_Page_Controller {
 
 				$flag_title_course = true;
 			}
-		} elseif ( learn_press_is_courses() ) { // Set title course archive page.
+		} elseif ( LP_Page_Controller::is_page_courses() ) { // Set title course archive page.
 			if ( learn_press_is_search() ) {
 				$title = __( 'Course Search Results', 'learnpress' );
 			} else {
@@ -905,23 +911,6 @@ class LP_Page_Controller {
 	}*/
 
 	/**
-	 * Check is page Become a teacher
-	 *
-	 * @return bool|mixed|void
-	 * @since 3.2.8
-	 * @author tungnx
-	 */
-	public static function is_page_become_a_teacher() {
-		$page_id = learn_press_get_page_id( 'become_a_teacher' );
-
-		if ( $page_id && is_page( $page_id ) ) {
-			return true;
-		}
-
-		return apply_filters( 'learnpress/is-page/become-a-teacher', false );
-	}
-
-	/**
 	 * Get page current on frontend
 	 *
 	 * @return string
@@ -938,13 +927,13 @@ class LP_Page_Controller {
 			return '';
 		}
 
-		if ( learn_press_is_checkout() ) {
+		if ( self::is_page_checkout() ) {
 			return LP_PAGE_CHECKOUT;
 		} elseif ( LP_Global::course_item_quiz() ) {
 			return LP_PAGE_QUIZ;
 		} elseif ( learn_press_is_course() && LP_Global::course_item() ) {
 			return LP_PAGE_SINGLE_COURSE_CURRICULUM;
-		} elseif ( learn_press_is_courses() ) {
+		} elseif ( self::is_page_courses() ) {
 			return LP_PAGE_COURSES;
 		} elseif ( learn_press_is_course() ) {
 			return LP_PAGE_SINGLE_COURSE;
@@ -955,6 +944,70 @@ class LP_Page_Controller {
 		} else {
 			return apply_filters( 'learnpress/page/current', '' );
 		}
+	}
+
+	/**
+	 * Check is page viewing
+	 *
+	 * @param string $name
+	 *
+	 * @return bool
+	 */
+	public static function page_is( string $name = '' ): bool {
+		$profile_id          = learn_press_get_page_id( $name );
+		$page_profile_option = untrailingslashit( get_the_permalink( $profile_id ) );
+		$page_profile_option = str_replace( '/', '\/', $page_profile_option );
+		$pattern             = '/' . $page_profile_option . '/';
+		if ( preg_match( $pattern, LP_Helper::getUrlCurrent() ) ) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Check is page courses
+	 *
+	 * @return bool
+	 */
+	public static function is_page_courses(): bool {
+		static $flag;
+		if ( ! is_null( $flag ) ) {
+			return $flag;
+		}
+
+		$flag = self::page_is( 'courses' );
+
+		return $flag;
+	}
+
+	/**
+	 * Check is page profile
+	 *
+	 * @return bool
+	 */
+	public static function is_page_profile(): bool {
+		return self::page_is( 'profile' );
+	}
+
+	/**
+	 * Check is page profile
+	 *
+	 * @return bool
+	 */
+	public static function is_page_checkout(): bool {
+		return self::page_is( 'checkout' );
+	}
+
+	/**
+	 * Check is page Become a teacher
+	 *
+	 * @return bool
+	 * @since 3.2.8
+	 * @author tungnx
+	 */
+	public static function is_page_become_a_teacher(): bool {
+		return self::page_is( 'become_a_teacher' );
 	}
 
 	public static function instance() {

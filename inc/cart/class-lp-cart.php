@@ -73,10 +73,7 @@ class LP_Cart {
 	 */
 	function init() {
 		// Only load on checkout page
-		$page_checkout_option = untrailingslashit( get_the_permalink( learn_press_get_page_id( 'checkout' ) ) );
-		$page_checkout_option = str_replace( '/', '\/', $page_checkout_option );
-		$pattern              = '/' . $page_checkout_option . '/';
-		if ( ! preg_match( $pattern, LP_Helper::getUrlCurrent() ) ) {
+		if ( ! LP_Page_Controller::is_page_checkout() ) {
 			return;
 		}
 
