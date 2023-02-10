@@ -577,7 +577,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 
 			// Check in days sale
 			if ( $has_sale_price && '' !== $start_date && '' !== $end_date ) {
-				$now   = strtotime( get_date_from_gmt( gmdate( 'Y-m-d H:i:s', time() ), 'Y-m-d H:i:s' ) );
+				$now   = time();
 				$end   = strtotime( $end_date );
 				$start = strtotime( $start_date );
 
@@ -632,8 +632,10 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 					$price = $this->get_regular_price();
 				}
 
-				// For case set sale by days range
-				update_post_meta( $this->get_id(), '_lp_price', $price );
+				// Save price only on page Single Course
+				if ( LP_PAGE_SINGLE_COURSE === LP_Page_Controller::page_current() ) {
+					update_post_meta( $this->get_id(), '_lp_price', $price );
+				}
 
 				LP_Course_Cache::cache_load_first( 'set', $key_cache, $price );
 			}
