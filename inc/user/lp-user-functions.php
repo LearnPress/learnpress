@@ -1235,7 +1235,7 @@ function learn_press_user_profile_link( $user_id = 0, $tab = null ) {
 
 	if ( isset( $args['user'] ) ) {
 		if ( '' === $tab ) {
-			$tab = learn_press_get_current_profile_tab();
+			//$tab = learn_press_get_current_profile_tab();
 		}
 		if ( $tab ) {
 			$args['tab'] = $tab;

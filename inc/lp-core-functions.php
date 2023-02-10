@@ -2047,6 +2047,7 @@ function learn_press_get_current_version() {
  * @param bool $default
  *
  * @return mixed|string
+ * @deprecated 4.2.2
  */
 function learn_press_get_current_profile_tab( $default = true ) {
 	global $wp_query, $wp;
@@ -2082,7 +2083,7 @@ function learn_press_get_current_profile_tab( $default = true ) {
 	return $current;
 }
 
-add_action( 'init', 'learn_press_get_current_profile_tab' );
+//add_action( 'init', 'learn_press_get_current_profile_tab' );
 
 function learn_press_profile_tab_exists( $tab ) {
 	$tabs = learn_press_get_user_profile_tabs();
