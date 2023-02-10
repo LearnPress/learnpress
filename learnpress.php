@@ -459,7 +459,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				return;
 			}
 
-			add_action( 'wp_loaded', array( $this, 'wp_loaded' ), 20 );
+			//add_action( 'wp_loaded', array( $this, 'wp_loaded' ), 20 );
 			//add_action( 'after_setup_theme', array( $this, 'setup_theme' ) );
 			add_action( 'plugins_loaded', array( $this, 'plugin_loaded' ), - 10 );
 
@@ -541,8 +541,10 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * Trigger WP loaded actions.
 		 *
 		 * @since 3.0.0
+		 * @deprecated 4.2.2
 		 */
 		public function wp_loaded() {
+			_deprecated_function( __METHOD__, '4.2.2' );
 			if ( $this->is_request( 'frontend' ) ) {
 				$this->gateways = LP_Gateways::instance()->get_available_payment_gateways();
 			}
