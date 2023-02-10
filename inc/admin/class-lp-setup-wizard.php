@@ -78,7 +78,7 @@ class LP_Setup_Wizard {
 		);
 
 		if ( $page === 'profile_page_id' ) {
-			$page_content = '<!-- wp:shortcode -->[' . apply_filters( 'learn-press/shortcode/profile/tag', 'learn_press_profile' ) . ']<!-- /wp:shortcode -->';
+			$page_content = '<!-- wp:shortcode -->[learn_press_profile]<!-- /wp:shortcode -->';
 		} else {
 			$page_content = '';
 		}

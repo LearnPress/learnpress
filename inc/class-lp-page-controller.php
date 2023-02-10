@@ -255,7 +255,7 @@ class LP_Page_Controller {
 			}
 
 			$flag_title_course = true;
-		} elseif ( learn_press_is_profile() ) {
+		} elseif ( LP_Page_Controller::is_page_profile() ) {
 			$profile  = LP_Profile::instance();
 			$tab_slug = $profile->get_current_tab();
 			$tab      = $profile->get_tab_at( $tab_slug );
@@ -939,7 +939,7 @@ class LP_Page_Controller {
 			return LP_PAGE_SINGLE_COURSE;
 		} elseif ( self::is_page_become_a_teacher() ) {
 			return LP_PAGE_BECOME_A_TEACHER;
-		} elseif ( learn_press_is_profile() ) {
+		} elseif ( self::is_page_profile() ) {
 			return LP_PAGE_PROFILE;
 		} else {
 			return apply_filters( 'learnpress/page/current', '' );
@@ -987,7 +987,14 @@ class LP_Page_Controller {
 	 * @return bool
 	 */
 	public static function is_page_profile(): bool {
-		return self::page_is( 'profile' );
+		static $flag;
+		if ( ! is_null( $flag ) ) {
+			return $flag;
+		}
+
+		$flag = self::page_is( 'profile' );
+
+		return $flag;
 	}
 
 	/**

@@ -116,7 +116,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 					}
 
 					if ( $page === 'profile' ) {
-						$page_content = '<!-- wp:shortcode -->[' . apply_filters( 'learn-press/shortcode/profile/tag', 'learn_press_profile' ) . ']<!-- /wp:shortcode -->';
+						$page_content = '<!-- wp:shortcode -->[learn_press_profile]<!-- /wp:shortcode -->';
 					} else {
 						$page_content = '';
 					}

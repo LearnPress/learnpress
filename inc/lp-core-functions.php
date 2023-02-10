@@ -69,7 +69,7 @@ if ( ! function_exists( 'lp_add_body_class' ) ) {
 	function lp_add_body_class( $classes ) {
 		$classes = (array) $classes;
 
-		if ( learn_press_is_profile() ) {
+		if ( LP_Page_Controller::is_page_profile() ) {
 			$classes[] = 'learnpress-profile';
 		} elseif ( learn_press_is_checkout() ) {
 			$classes[] = 'learnpress-checkout';
@@ -3206,9 +3206,9 @@ add_action(
 function lp_add_shortcode_profile() {
 	global $post;
 
-	if ( learn_press_is_profile() && is_object( $post ) ) {
+	if ( LP_Page_Controller::is_page_profile() && is_object( $post ) ) {
 		if ( ! has_shortcode( $post->post_content, 'learn_press_profile' ) ) {
-			$post->post_content .= '<!-- wp:shortcode -->[' . apply_filters( 'learn-press/shortcode/profile/tag', 'learn_press_profile' ) . ']<!-- /wp:shortcode -->';
+			$post->post_content .= '<!-- wp:shortcode -->[learn_press_profile]<!-- /wp:shortcode -->';
 			wp_update_post( $post );
 		}
 	}

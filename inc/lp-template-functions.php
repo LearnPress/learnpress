@@ -314,7 +314,7 @@ if ( ! function_exists( 'learn_press_single_document_title_parts' ) ) {
 			} else {
 				$title['title'] = esc_html__( 'Courses', 'learnpress' );
 			}
-		} elseif ( learn_press_is_profile() ) {
+		} elseif ( LP_Page_Controller::is_page_profile() ) {
 			$profile  = LP_Profile::instance();
 			$tab_slug = $profile->get_current_tab();
 			$tab      = $profile->get_tab_at( $tab_slug );
