@@ -463,8 +463,10 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			//add_action( 'after_setup_theme', array( $this, 'setup_theme' ) );
 			add_action( 'plugins_loaded', array( $this, 'plugin_loaded' ), - 10 );
 
-			// Check require version thim-core.
-			add_action( 'before_thim_core_init', array( $this, 'check_thim_core_version_require' ) );
+			// Check require version thim-core on Backend.
+			if ( is_admin() ) {
+				add_action( 'before_thim_core_init', array( $this, 'check_thim_core_version_require' ) );
+			}
 
 			// Save key purchase addon when install via file download from Thimpress.
 			add_action(
