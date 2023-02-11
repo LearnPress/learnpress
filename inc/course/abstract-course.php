@@ -633,9 +633,9 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 				}
 
 				// Save price only on page Single Course
-				if ( LP_PAGE_SINGLE_COURSE === LP_Page_Controller::page_current() ) {
+				/*if ( LP_PAGE_SINGLE_COURSE === LP_Page_Controller::page_current() ) {
 					update_post_meta( $this->get_id(), '_lp_price', $price );
-				}
+				}*/
 
 				LP_Course_Cache::cache_load_first( 'set', $key_cache, $price );
 			}
