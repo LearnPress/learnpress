@@ -684,7 +684,7 @@ class LP_Page_Controller {
 		}
 
 		try {
-			if ( LP_Page_Controller::page_current() === LP_PAGE_COURSES ) {
+			if ( LP_Page_Controller::is_page_courses() ) {
 				if ( LP_Settings_Courses::is_ajax_load_courses() && ! LP_Settings_Courses::is_no_load_ajax_first_courses() ) {
 					LearnPress::instance()->template( 'course' )->remove_callback( 'learn-press/after-courses-loop', 'loop/course/pagination.php', 10 );
 					/**
@@ -933,7 +933,7 @@ class LP_Page_Controller {
 			return LP_PAGE_QUIZ;
 		} elseif ( learn_press_is_course() && LP_Global::course_item() ) {
 			return LP_PAGE_SINGLE_COURSE_CURRICULUM;
-		} elseif ( self::is_page_courses() ) {
+		} elseif ( self::is_page_courses() || learn_press_is_courses() ) {
 			return LP_PAGE_COURSES;
 		} elseif ( learn_press_is_course() ) {
 			return LP_PAGE_SINGLE_COURSE;
@@ -976,7 +976,14 @@ class LP_Page_Controller {
 			return $flag;
 		}
 
-		$flag = self::page_is( 'courses' );
+		$is_tag      = is_tax( 'course_tag' );
+		$is_category = is_tax( 'course_category' );
+
+		if ( $is_category || $is_tag || is_post_type_archive( 'lp_course' ) ) {
+			$flag = true;
+		} else {
+			$flag = self::page_is( 'courses' );
+		}
 
 		return $flag;
 	}
