@@ -112,7 +112,8 @@ class LP_Query {
 	 * Add more custom rewrite rules
 	 */
 	function add_rewrite_rules() {
-		$course_type  = LP_COURSE_CPT;
+		$rules = array();
+		/*$course_type  = LP_COURSE_CPT;
 		$post_types   = get_post_types( '', 'objects' );
 		$slug         = preg_replace( '!^/!', '', $post_types[ $course_type ]->rewrite['slug'] );
 		$has_category = false;
@@ -120,27 +121,39 @@ class LP_Query {
 		if ( preg_match( '!(%?course_category%?)!', $slug ) ) {
 			$slug         = preg_replace( '!(%?course_category%?)!', '(.+?)/([^/]+)', $slug );
 			$has_category = true;
-		}
-
-		$custom_slug_lesson = sanitize_title_with_dashes( LP_Settings::get_option( 'lesson_slug', 'lessons' ) );
-		$custom_slug_quiz   = sanitize_title_with_dashes( LP_Settings::get_option( 'quiz_slug', 'quizzes' ) );
+		}*/
 
 		/**
+		 * Set rule item course.
+		 *
 		 * Use urldecode to convert an encoded string to normal.
 		 * This fixed the issue with custom slug of lesson/quiz in some languages
 		 * Eg: урока
 		 */
-		if ( ! empty( $custom_slug_lesson ) ) {
-			$post_types['lp_lesson']->rewrite['slug'] = urldecode( $custom_slug_lesson );
-		}
+		$lesson_slug = urldecode( sanitize_title_with_dashes( LP_Settings::get_option( 'lesson_slug', 'lessons' ) ) );
+		$quiz_slug   = urldecode( sanitize_title_with_dashes( LP_Settings::get_option( 'quiz_slug', 'quizzes' ) ) );
+		$course_slug = LP_Settings::get_option( 'course_base', 'quizzes' );
+		$course_slug = preg_replace( '!^/!', '', $course_slug );
+		$rules[]     = array(
+			'^' . $course_slug . '/([^/]+)(?:/' . $lesson_slug . '/([^/]+))/?$',
+			'index.php?' . LP_COURSE_CPT . '=$matches[1]&course-item=$matches[2]&item-type=lp_lesson',
+			'top',
+		);
+		$rules[]     = array(
+			'^' . $course_slug . '/([^/]+)(?:/' . $quiz_slug . '/([^/]+)/?([^/]+)?)/?$',
+			'index.php?' . LP_COURSE_CPT . '=$matches[1]&course-item=$matches[2]&question=$matches[3]&item-type=lp_quiz',
+			'top',
+		);
 
-		if ( ! empty( $custom_slug_quiz ) ) {
+		/*if ( ! empty( $custom_slug_quiz ) ) {
 			$post_types['lp_quiz']->rewrite['slug'] = urldecode( $custom_slug_quiz );
-		}
+		}*/
 
-		$rules = array();
-
-		if ( $has_category ) {
+		/**
+		 * Comment that, because it handled when register taxonomy
+		 * @see LP_Course_Post_Type::register_taxonomy()
+		 */
+		/*if ( $has_category ) {
 			$rules[] = array(
 				'^' . $slug . '(?:/' . $post_types['lp_lesson']->rewrite['slug'] . '/([^/]+))/?$',
 				'index.php?' . $course_type . '=$matches[2]&course_category=$matches[1]&course-item=$matches[3]&item-type=lp_lesson',
@@ -165,25 +178,27 @@ class LP_Query {
 				'index.php?' . $course_type . '=$matches[1]&course-item=$matches[2]&question=$matches[3]&item-type=lp_quiz',
 				'top',
 			);
-		}
+		}*/
 
 		// Profile
 		$profile_id = learn_press_get_page_id( 'profile' );
 		if ( $profile_id && LP_Page_Controller::is_page_profile() ) {
-			$rules[] = array(
-				'^' . get_post_field( 'post_name', $profile_id ) . '/([^/]*)/?$',
-				'index.php?page_id=' . $profile_id . '&user=$matches[1]',
+			// Rule view profile of user (self or another)
+			$page_profile_slug = get_post_field( 'post_name', $profile_id );
+			$rules[]           = array(
+				"^{$page_profile_slug}/([^/]*)/?$",
+				"index.php?page_id={$profile_id}&user=" . '$matches[1]',
 				'top',
 			);
 
+			// Rule view profile of user (self or another) with tab
 			$profile = learn_press_get_profile();
 			$tabs    = $profile->get_tabs()->get();
-
 			if ( $tabs ) {
 				foreach ( $tabs as $slug => $args ) {
 					$tab_slug = $args['slug'] ?? $slug;
 					$rules[]  = array(
-						'^' . get_post_field( 'post_name', $profile_id ) . '/([^/]*)/?(' . $tab_slug . ')/?([0-9]*)/?$',
+						"^{$page_profile_slug}/([^/]*)/({$tab_slug})/?([0-9]*)/?$",
 						'index.php?page_id=' . $profile_id . '&user=$matches[1]&view=$matches[2]&view_id=$matches[3]',
 						'top',
 					);
@@ -192,7 +207,7 @@ class LP_Query {
 						foreach ( $args['sections'] as $section_slug => $section ) {
 							$section_slug = $section['slug'] ?? $section_slug;
 							$rules[]      = array(
-								'^' . get_post_field( 'post_name', $profile_id ) . '/([^/]*)/?(' . $tab_slug . ')/(' . $section_slug . ')/?([0-9]*)?$',
+								"^{$page_profile_slug}/([^/]*)/({$tab_slug})/({$section_slug})/?([0-9]*)?$",
 								'index.php?page_id=' . $profile_id . '&user=$matches[1]&view=$matches[2]&section=$matches[3]&view_id=$matches[4]',
 								'top',
 							);
@@ -212,12 +227,12 @@ class LP_Query {
 			);
 		}*/
 
-		global $wp_rewrite;
+		//global $wp_rewrite;
 
 		/**
 		 * Polylang compatibility
 		 */
-		if ( function_exists( 'PLL' ) ) {
+		/*if ( function_exists( 'PLL' ) ) {
 			$pll           = PLL();
 			$pll_languages = $pll->model->get_languages_list( array( 'fields' => 'slug' ) );
 
@@ -232,17 +247,16 @@ class LP_Query {
 			} else {
 				$pll_languages = '';
 			}
-		}
+		}*/
 
-		$new_rules = array();
+		// Register rules
 		foreach ( $rules as $k => $rule ) {
-			$new_rules[] = $rule;
 			call_user_func_array( 'add_rewrite_rule', $rule );
 
 			/**
 			 * Modify rewrite rule
 			 */
-			if ( isset( $pll_languages ) ) {
+			/*if ( isset( $pll_languages ) ) {
 
 				$rule[0]     = $pll_languages . str_replace( $wp_rewrite->root, '', ltrim( $rule[0], '^' ) );
 				$rule[1]     = str_replace(
@@ -252,18 +266,18 @@ class LP_Query {
 				);
 				$new_rules[] = $rule;
 				call_user_func_array( 'add_rewrite_rule', $rule );
-			}
+			}*/
 		}
 
-		$new_rules = md5( serialize( $new_rules ) );
+		/*$new_rules = md5( serialize( $new_rules ) );
 		$old_rules = get_transient( 'lp_rewrite_rules_hash' );
 
 		if ( $old_rules !== $new_rules ) {
 			set_transient( 'lp_rewrite_rules_hash', $new_rules, DAY_IN_SECONDS );
 			flush_rewrite_rules();
-		}
+		}*/
 
-		do_action( 'learn_press_add_rewrite_rules' );
+		do_action( 'learn_press/rewrite/rules', $rules );
 
 	}
 
