@@ -16,7 +16,8 @@ class LP_Query {
 	 * LP_Query constructor.
 	 */
 	public function __construct() {
-		if ( LP_Helper::isRestApiLP() ) {
+		// Not run in REST API LP, or heartbeat of WP
+		if ( LP_Helper::isRestApiLP() || isset( $_POST['action'] ) && 'heartbeat' === $_POST['action'] ) {
 			return;
 		}
 
@@ -52,8 +53,9 @@ class LP_Query {
 	 * @see WP()->parse_request()
 	 *
 	 * @return string
+	 * @deprecated 4.2.2
 	 */
-	public function get_request() {
+	/*public function get_request() {
 		global $wp_rewrite;
 
 		$pathinfo         = isset( $_SERVER['PATH_INFO'] ) ? $_SERVER['PATH_INFO'] : '';
@@ -86,7 +88,7 @@ class LP_Query {
 		}
 
 		return $request;
-	}
+	}*/
 
 	/**
 	 * Add custom rewrite tags
@@ -231,6 +233,7 @@ class LP_Query {
 				$pll_languages = '';
 			}
 		}
+
 		$new_rules = array();
 		foreach ( $rules as $k => $rule ) {
 			$new_rules[] = $rule;
@@ -271,9 +274,11 @@ class LP_Query {
 	 * @param string $return
 	 *
 	 * @return bool|false|int|LP_Course|mixed
+	 * @deprecated 4.2.2
 	 */
 	public function get_course( $return = 'id' ) {
-		$course = false;
+		_deprecated_function( __FUNCTION__, '4.2.2' );
+		/*$course = false;
 		if ( learn_press_is_course() ) {
 			$course = get_the_ID();
 		}
@@ -281,18 +286,22 @@ class LP_Query {
 			$course = learn_press_get_course( $course );
 		}
 
-		return $course;
+		return $course;*/
 	}
 
+	/**
+	 * @deprecated 4.2.2
+	 */
 	public function get_course_item( $return = 'id' ) {
-		$course = $this->get_course( 'object' );
+		_deprecated_function( __FUNCTION__, '4.2.2' );
+		/*$course = $this->get_course( 'object' );
 		$user   = learn_press_get_current_user();
 		$item   = isset( $item ) ? $item : LearnPress::instance()->global['course-item'];
 		if ( $item && $return == 'object' ) {
 			$item = LP_Course::get_item( $item );
 		}
 
-		return $item;
+		return $item;*/
 	}
 
 	/**
