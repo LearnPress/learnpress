@@ -954,8 +954,12 @@ class LP_Page_Controller {
 	 * @return bool
 	 */
 	public static function page_is( string $name = '' ): bool {
-		$profile_id          = learn_press_get_page_id( $name );
-		$page_profile_option = untrailingslashit( get_the_permalink( $profile_id ) );
+		$page_id = learn_press_get_page_id( $name );
+		if ( ! $page_id ) {
+			return false;
+		}
+
+		$page_profile_option = untrailingslashit( get_the_permalink( $page_id ) );
 		$page_profile_option = str_replace( '/', '\/', $page_profile_option );
 		$pattern             = '/' . $page_profile_option . '/';
 		if ( preg_match( $pattern, LP_Helper::getUrlCurrent() ) ) {
