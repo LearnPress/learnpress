@@ -43,14 +43,14 @@ class LP_Thumbnail_Helper {
 
 		$thumbnail = learn_press_get_course_thumbnail_dimensions();
 		$size      = array( $thumbnail['width'], $thumbnail['height'] );
-
-		$parent_id = wp_get_post_parent_id( $course_id );
+		//$parent_id = wp_get_post_parent_id( $course_id );
 
 		if ( has_post_thumbnail( $course_id ) ) {
 			$image = get_the_post_thumbnail( $course_id, $size, $attr );
-		} elseif ( $parent_id && has_post_thumbnail( $parent_id ) ) {
-			$image = get_the_post_thumbnail( $parent_id, $size, $attr );
 		}
+		/*elseif ( $parent_id && has_post_thumbnail( $parent_id ) ) {
+			$image = get_the_post_thumbnail( $parent_id, $size, $attr );
+		}*/
 
 		if ( ! $image ) {
 			$image = LearnPress::instance()->image( 'no-image.png' );
