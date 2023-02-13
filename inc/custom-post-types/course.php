@@ -118,9 +118,9 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			$course_base      = $settings->get( 'course_base' );
 			$course_permalink = empty( $course_base ) ? _x( 'courses', 'slug', 'learnpress' ) : $course_base;
 
+			// Set to $has_archive return link to courses page, is_archive will check is true
 			$courses_page_id = learn_press_get_page_id( 'courses' );
-
-			$has_archive = $courses_page_id && get_post( $courses_page_id ) ? urldecode( get_page_uri( $courses_page_id ) ) : 'courses';
+			$has_archive     = $courses_page_id ? urldecode( get_page_uri( $courses_page_id ) ) : 'courses';
 
 			$args = array(
 				'labels'             => $labels,
@@ -308,6 +308,10 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			global $wpdb;
 
 			if ( ! $this->is_page_list_posts_on_backend() ) {
+				return $join;
+			}
+
+			if ( ! isset( $_GET['orderby'] ) || $_GET['orderby'] !== 'price' ) {
 				return $join;
 			}
 
