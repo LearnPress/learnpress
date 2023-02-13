@@ -982,7 +982,19 @@ class LP_Page_Controller {
 		if ( $is_category || $is_tag || is_post_type_archive( 'lp_course' ) ) {
 			$flag = true;
 		} else {
-			$flag = self::page_is( 'courses' );
+			$page_courses_id  = learn_press_get_page_id( 'courses' );
+			$page_courses_url = untrailingslashit( get_the_permalink( $page_courses_id ) );
+			if ( empty( $page_courses_url ) ) {
+				$page_courses_url = home_url( 'courses' );
+			}
+
+			$page_courses_regex = str_replace( '/', '\/', $page_courses_url );
+			$pattern            = '/' . $page_courses_regex . '\/?(page\/[0-9]*)?$/';
+			if ( preg_match( $pattern, LP_Helper::getUrlCurrent() ) ) {
+				$flag = true;
+			} else {
+				$flag = false;
+			}
 		}
 
 		return $flag;
