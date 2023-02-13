@@ -155,6 +155,7 @@ abstract class LP_Abstract_Post_Type {
 		if ( $args ) {
 			register_post_type( $this->_post_type, $args );
 
+			// Todo: tungnx review this code.
 			flush_rewrite_rules();
 		}
 	}

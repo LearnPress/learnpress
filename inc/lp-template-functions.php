@@ -526,6 +526,7 @@ add_action( 'init', 'learn_press_setup_user', 1000 );
  *
  * @param        $message
  * @param string  $type
+ * @Todo tungnx review code.
  */
 
 function learn_press_display_message( $message, $type = 'success' ) {
