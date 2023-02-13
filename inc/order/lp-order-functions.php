@@ -489,7 +489,7 @@ function learn_press_get_orders( $args = array() ) {
  * Count orders by it's status
  *
  * @param array $args
- *
+ * @Todo tungnx review to rewrite query
  * @return array
  */
 function learn_press_count_orders( $args = array() ) {

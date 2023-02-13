@@ -51,7 +51,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				$post_id                  = LP_Helper::sanitize_params_submitted( $_GET['post'] ?? '' );
 				if ( ! empty( $post_id ) ) {
 					$post = get_post( $post_id );
-					if ( $post->post_type == LP_ORDER_CPT ) {
+					if ( $post && $post->post_type == LP_ORDER_CPT ) {
 						$can_override_title_order = true;
 					}
 				} elseif ( strpos( $current_url, 'post_type=lp_order' ) !== false ) {
