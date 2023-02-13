@@ -407,6 +407,15 @@ class LP_Settings {
 	public static function is_auto_start_course(): bool {
 		return 'yes' === self::get_option( 'auto_enroll', 'yes' );
 	}
+
+	/**
+	 * Check table thim_cache is created
+	 *
+	 * @return bool
+	 */
+	public static function is_created_tb_thim_cache(): bool {
+		return get_option( 'thim_cache_tb_created' ) == 'yes';
+	}
 }
 
 LP_Settings::instance();

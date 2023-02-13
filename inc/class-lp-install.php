@@ -84,7 +84,39 @@ if ( ! function_exists( 'LP_Install' ) ) {
 					LP_Database::getInstance()->wpdb->query( $table );
 				}
 
+				if ( ! LP_Settings::is_created_tb_thim_cache() ) {
+					$this->create_table_thim_cache();
+				}
+
 				update_option( 'learn_press_check_tables', 'yes' );
+			} catch ( Throwable $e ) {
+				error_log( $e->getMessage() );
+			}
+		}
+
+		/**
+		 * Create table thim_cache
+		 *
+		 * @since 4.2.2
+		 */
+		private function create_table_thim_cache() {
+			global $wpdb;
+
+			try {
+				$collation = $wpdb->has_cap( 'collation' ) ? $wpdb->get_charset_collate() : 'ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci';
+
+				$sql = "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}thim_cache (
+					key_cache VARCHAR (191) NOT NULL UNIQUE,
+					value LONGTEXT NOT NULL,
+					expiration VARCHAR (191),
+					PRIMARY KEY (key_cache)
+				) $collation";
+
+				$rs = $wpdb->query( $sql );
+
+				if ( $rs ) {
+					update_option( 'thim_cache_tb_created', 'yes' );
+				}
 			} catch ( Throwable $e ) {
 				error_log( $e->getMessage() );
 			}
