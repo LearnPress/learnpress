@@ -415,10 +415,10 @@ class LP_Helper {
 	 *
 	 * @since 4.1.6.6
 	 * @author tungnx
-	 * @return bool|int
+	 * @return bool
 	 */
-	public static function isRestApiLP() {
-		return strpos( self::getUrlCurrent(), '/wp-json/lp/' );
+	public static function isRestApiLP(): bool {
+		return strpos( self::getUrlCurrent(), '/wp-json/lp/' ) || strpos( self::getUrlCurrent(), '/wp-json/learnpress/' );
 	}
 
 	/**

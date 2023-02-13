@@ -40,6 +40,10 @@ abstract class LP_Abstract_API {
 			return;
 		}
 
+		if ( ! LP_Helper::isRestApiLP() ) {
+			return;
+		}
+
 		$this->rest_api_includes();
 
 		add_action( 'rest_api_init', array( $this, 'rest_api_register_routes' ), 10 );
