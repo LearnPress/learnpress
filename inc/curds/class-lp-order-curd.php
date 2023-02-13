@@ -211,6 +211,13 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @author tungnx
 	 */
 	public function read_items( $order ) {
+		$key   = "order/{$order->get_id()}/items";
+		$items = LP_Cache::cache_load_first( 'get', $key );
+
+		if ( false !== $items ) {
+			return $items;
+		}
+
 		global $wpdb;
 
 		$table_order_items     = $wpdb->learnpress_order_items;
@@ -256,6 +263,8 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					$items[ $order_item_meta->order_item_id ][ $order_item_meta->meta_key ] = $order_item_meta->meta_value;
 			}
 		}
+
+		LP_Cache::cache_load_first( 'set', $key, $items );
 
 		return $items; // apply_filters( 'learn_press_order_get_items', $items, $this );
 	}
