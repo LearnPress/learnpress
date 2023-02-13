@@ -1,5 +1,5 @@
 <?php
-flush_rewrite_rules();
+//flush_rewrite_rules();
 
 $settings = LP_Settings::instance();
 global $wp_post_types;

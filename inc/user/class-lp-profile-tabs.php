@@ -86,7 +86,7 @@ class LP_Profile_Tabs {
 
 		$key = md5( serialize( array_keys( $tabs ) ) );
 		if ( $key !== get_option( '_lp_tabs_data' ) ) {
-			flush_rewrite_rules();
+			//flush_rewrite_rules();
 			update_option( '_lp_tabs_data', $key, false );
 		}
 

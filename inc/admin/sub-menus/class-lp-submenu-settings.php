@@ -88,7 +88,8 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 
 		$this->tabs[ $active_tab ]->save_settings( $this->get_active_section(), $this->get_sections() );
 
-		// flush_rewrite_rules();
+		// Flush rewrite rules after save settings.
+		flush_rewrite_rules();
 
 		do_action( 'learn-press/update-settings/updated', $this );
 
