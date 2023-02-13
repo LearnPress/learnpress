@@ -44,7 +44,7 @@ class LP_Settings {
 
 		if ( false === $data ) {
 			$this->_load_data = true;
-//			$this->_load_options();
+			$this->_load_options();
 		} else {
 			settype( $data, 'array' );
 			$this->_options = $data;
