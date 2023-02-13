@@ -137,7 +137,10 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			}
 			self::$_instance = $this;
 
-			update_option( 'learnpress_version', $this->version );
+			// Update for case compare version of LP if LEARNPRESS_VERSION undefined
+			if ( is_admin() ) {
+				update_option( 'learnpress_version', $this->version );
+			}
 
 			// Define constant .
 			$this->plugin_defines();
