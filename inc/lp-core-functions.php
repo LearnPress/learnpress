@@ -1316,12 +1316,17 @@ function learn_press_get_currency_symbol( $currency = '' ) {
  * @modify 4.1.4
  */
 function learn_press_get_page_link( string $key ): string {
-	$page_id = learn_press_get_page_id( $key );
-	$link    = '';
+	$page_id   = learn_press_get_page_id( $key );
+	$key_cache = "lp/page-link/{$key}";
+	$link      = LP_Cache::cache_load_first( 'get', $key_cache );
+	if ( false !== $link ) {
+		return $link;
+	}
 
 	if ( $page_id && get_post_status( $page_id ) == 'publish' ) {
 		$permalink = get_permalink( $page_id );
 		$link      = apply_filters( 'learn-press/get-page-link', trailingslashit( $permalink ), $page_id, $key );
+		LP_Cache::cache_load_first( 'set', $key_cache, $link );
 	}
 
 	return $link;
