@@ -252,6 +252,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/databases/class-lp-question-db.php';
 			require_once 'inc/databases/class-lp-user-items-db.php';
 			require_once 'inc/databases/class-lp-user-item-results-db.php';
+			require_once 'inc/databases/class-thim-cace-db.php';
 
 			// Read files config on folder config .
 			require_once 'inc/Helper/Config.php';
@@ -280,12 +281,14 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/cache/class-lp-quiz-cache.php';
 			require_once 'inc/cache/class-lp-question-cache.php';
 			require_once 'inc/cache/class-lp-session-cache.php';
+			require_once 'inc/cache/class-lp-settings-cache.php';
 
 			// Background processes.
 			require_once 'inc/libraries/wp-background-process/wp-background-processing.php';
 			require_once 'inc/background-process/abstract-lp-async-request.php';
 			require_once 'inc/background-process/class-lp-background-single-course.php';
 			require_once 'inc/background-process/class-lp-background-single-email.php';
+			require_once 'inc/background-process/class-lp-background-thim-cache.php';
 
 			// Assets object
 			require_once 'inc/class-lp-asset-key.php';

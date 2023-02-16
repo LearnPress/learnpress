@@ -13,7 +13,7 @@ class LP_Cache {
 	/**
 	 * @var string Key group parent
 	 */
-	protected $key_group_parent = 'learn_press/';
+	protected $key_group_parent = 'learn_press';
 	/**
 	 * @var string Key group child(external)
 	 */
@@ -22,9 +22,19 @@ class LP_Cache {
 	 * @var string Add key group parent with key group child
 	 */
 	protected $key_group = '';
+	/**
+	 * @var string Add key group parent with key group child
+	 */
+	protected $has_thim_cache = false;
 
-	protected function __construct() {
-		$this->key_group = $this->key_group_parent . $this->key_group_child;
+	/**
+	 * If set $has_thim_cache = true, will use thim cache
+	 * Set/Update will check key from table thim_cache
+	 * else only WP Cache
+	 */
+	protected function __construct( $has_thim_cache = false ) {
+		$this->key_group      = $this->key_group_parent . '/' . $this->key_group_child;
+		$this->has_thim_cache = $has_thim_cache;
 	}
 
 	/**
@@ -35,7 +45,12 @@ class LP_Cache {
 	 * @param int    $expire
 	 */
 	public function set_cache( string $key, $data, int $expire = 0 ) {
+		// Cache WP
 		wp_cache_set( $key, $data, $this->key_group, $expire );
+		// Cache thim_cache
+		if ( $this->has_thim_cache && LP_Settings::is_created_tb_thim_cache() ) {
+			Thim_Cache_DB::instance()->set_value( $key, $data );
+		}
 	}
 
 	/**
@@ -45,7 +60,14 @@ class LP_Cache {
 	 * @return false|mixed
 	 */
 	public function get_cache( string $key ) {
-		return wp_cache_get( $key, $this->key_group );
+		// Get WP Cache
+		$cache = wp_cache_get( $key, $this->key_group );
+		// Get thim_cache
+		if ( false === $cache && $this->has_thim_cache && LP_Settings::is_created_tb_thim_cache() ) {
+			$cache = wp_unslash( Thim_Cache_DB::instance()->get_value( $key ) );
+		}
+
+		return $cache;
 	}
 
 	/**
@@ -84,6 +106,9 @@ class LP_Cache {
 	 */
 	public function clear( $key ) {
 		wp_cache_delete( $key, $this->key_group );
+		if ( $this->has_thim_cache && LP_Settings::is_created_tb_thim_cache() ) {
+			Thim_Cache_DB::instance()->remove_cache( $key );
+		}
 	}
 
 	public function clear_all() {

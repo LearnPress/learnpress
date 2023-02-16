@@ -624,7 +624,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			if ( false === $price ) {
 				if ( $this->has_sale_price() ) {
 					$price = $this->get_sale_price();
-					// Add key _lp_course_is_sale for query
+					// Add key _lp_course_is_sale for query - Todo: Check performance, need write function get all courses, and set on Admin, on background
 					update_post_meta( $this->get_id(), '_lp_course_is_sale', 1 );
 				} else {
 					// Delete key _lp_course_is_sale

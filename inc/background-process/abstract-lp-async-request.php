@@ -75,6 +75,7 @@ abstract class LP_Async_Request {
 	 * @return array
 	 */
 	protected function get_query_args() {
+		require_once( ABSPATH . 'wp-includes/pluggable.php' );
 		if ( property_exists( $this, 'query_args' ) ) {
 			return $this->query_args;
 		}

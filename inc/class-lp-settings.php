@@ -64,26 +64,37 @@ class LP_Settings {
 	}
 
 	/**
-	 * Load options from database.
+	 * Load all options.
 	 *
-	 * @param bool $force
+	 * @since 3.0.0
+	 * @version 1.0.1
 	 */
-	protected function _load_options( $force = false ) {
+	protected function _load_options() {
+		// Check cache exists
+		$lp_settings_cache = new LP_Settings_Cache( true );
+		$cache_key         = 'learn-press-settings';
+		$lp_options        = $lp_settings_cache->get_cache( $cache_key );
+		if ( false !== $lp_options ) {
+			$this->_options = json_decode( $lp_options, true );
+			return;
+		}
+
 		global $wpdb;
 		$query = $wpdb->prepare(
-			"
-			SELECT option_name, option_value
+			"SELECT option_name, option_value
 			FROM {$wpdb->options}
 			WHERE option_name LIKE %s",
 			$wpdb->esc_like( $this->_prefix ) . '%'
 		);
 
 		$options = $wpdb->get_results( $query );
-
 		if ( $options ) {
 			foreach ( $options as $option ) {
 				$this->_options[ $option->option_name ] = LP_Helper::maybe_unserialize( $option->option_value );
 			}
+
+			// Set cache
+			$lp_settings_cache->set_cache( $cache_key, json_encode( $this->_options ) );
 		}
 	}
 
