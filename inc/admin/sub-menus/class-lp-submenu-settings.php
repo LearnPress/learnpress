@@ -88,14 +88,17 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 
 		$this->tabs[ $active_tab ]->save_settings( $this->get_active_section(), $this->get_sections() );
 
+		do_action( 'learn-press/update-settings/updated', $this );
+
+		// Clear cache
+		$lp_settings_cache = new LP_Settings_Cache( true );
+		$lp_settings_cache->clear( $lp_settings_cache->key_cache );
+
 		// Flush rewrite rules after save settings.
 		flush_rewrite_rules();
 
-		do_action( 'learn-press/update-settings/updated', $this );
-
 		// Filter redirect
 		$redirect = apply_filters( 'learn-press/update-settings/redirect', esc_url_raw( add_query_arg( 'settings-updated', 'yes' ) ), $this );
-
 		if ( $redirect ) {
 			wp_redirect( $redirect );
 			exit();

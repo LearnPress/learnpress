@@ -4,6 +4,7 @@
  *
  * @author tungnx
  * @version 1.0.0
+ * @since 4.2.2
  */
 defined( 'ABSPATH' ) || exit();
 
@@ -44,12 +45,12 @@ class Thim_Cache_DB {
 	 * @return bool|string
 	 */
 	public function get_value( string $key_cache ) {
-		$sql    = $this->wpdb->prepare(
-			"SELECT value FROM {$this->table_name} WHERE key_cache = %s",
+		$sql = $this->wpdb->prepare(
+			"SELECT `value` FROM {$this->table_name} WHERE `key_cache` = %s LIMIT 1",
 			$key_cache
 		);
-		$result = $this->wpdb->get_var( $sql );
 
+		$result = $this->wpdb->get_var( $sql );
 		if ( ! $result ) {
 			return false;
 		}
@@ -87,19 +88,22 @@ class Thim_Cache_DB {
 	}
 
 	/**
-	 * Get value by key_cache
+	 * Delete value by key_cache
 	 *
 	 * @param string $key_cache
-	 * @param string $value
 	 *
 	 * @return bool|int|mysqli_result|resource|null
+	 * @throws Exception
 	 */
 	public function remove_cache( string $key_cache ) {
-		// Delete
 		$sql = $this->wpdb->prepare(
 			"DELETE FROM {$this->table_name} WHERE key_cache = %s",
 			$key_cache
 		);
+
+		if ( $this->wpdb->last_error ) {
+			throw new Exception( $this->wpdb->last_error );
+		}
 
 		return $this->wpdb->query( $sql );
 	}

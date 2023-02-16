@@ -97,6 +97,8 @@ class LP_Cache {
 
 			return $first_set_value[ $key ];
 		}
+
+		return $first_set_value;
 	}
 
 	/**
@@ -105,9 +107,13 @@ class LP_Cache {
 	 * @param $key
 	 */
 	public function clear( $key ) {
-		wp_cache_delete( $key, $this->key_group );
-		if ( $this->has_thim_cache && LP_Settings::is_created_tb_thim_cache() ) {
-			Thim_Cache_DB::instance()->remove_cache( $key );
+		try {
+			wp_cache_delete( $key, $this->key_group );
+			if ( $this->has_thim_cache && LP_Settings::is_created_tb_thim_cache() ) {
+				Thim_Cache_DB::instance()->remove_cache( $key );
+			}
+		} catch ( Throwable $e ) {
+			error_log( $e->getMessage() );
 		}
 	}
 
