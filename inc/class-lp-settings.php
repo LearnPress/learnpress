@@ -208,6 +208,9 @@ class LP_Settings {
 		// $this->refresh();
 	}
 
+	/**
+	 * @deprecated 4.2.2
+	 */
 	public function refresh() {
 		if ( $this->_load_data ) {
 			// $this->_load_options( true );
@@ -238,7 +241,13 @@ class LP_Settings {
 	 * @editor tungnx
 	 */
 	public static function get_option( string $name = '', $default = false ) {
-		return get_option( "learn_press_{$name}", $default );
+		$key     = "learn_press_{$name}";
+		$options = self::instance()->_options;
+		if ( isset( $options[ $key ] ) ) {
+			return $options[ $key ];
+		}
+
+		return get_option( $key, $default );
 	}
 
 	public function get_int( $key ) {

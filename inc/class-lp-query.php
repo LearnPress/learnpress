@@ -22,7 +22,7 @@ class LP_Query {
 		}
 
 		add_action( 'init', array( $this, 'add_rewrite_tags' ), 1000, 0 );
-		add_action( 'init', array( $this, 'add_rewrite_rules' ), 1000, 0 );
+		add_action( 'admin_init', array( $this, 'add_rewrite_rules' ), 1000, 0 );
 		//add_action( 'parse_query', array( $this, 'parse_request' ), 1000, 1 );
 		/**
 		 * Add searching post by taxonomies
@@ -109,9 +109,22 @@ class LP_Query {
 	}
 
 	/**
-	 * Add more custom rewrite rules
+	 * Add lp rewrite rules
+	 *
+	 * link item course
+	 * link profile
+	 * @since 3.0.0
+	 * @version 1.0.1
+	 * @modify 4.2.2
 	 */
-	function add_rewrite_rules() {
+	public function add_rewrite_rules() {
+		$lp_cache     = new LP_Cache( true );
+		$key_cache    = 'lp_rewrite_rules';
+		$cached_rules = $lp_cache->get_cache( $key_cache );
+		if ( false !== $cached_rules ) {
+			return;
+		}
+
 		$rules = array();
 		/*$course_type  = LP_COURSE_CPT;
 		$post_types   = get_post_types( '', 'objects' );
@@ -132,7 +145,7 @@ class LP_Query {
 		 */
 		$lesson_slug = urldecode( sanitize_title_with_dashes( LP_Settings::get_option( 'lesson_slug', 'lessons' ) ) );
 		$quiz_slug   = urldecode( sanitize_title_with_dashes( LP_Settings::get_option( 'quiz_slug', 'quizzes' ) ) );
-		$course_slug = LP_Settings::get_option( 'course_base', 'quizzes' );
+		$course_slug = LP_Settings::get_option( 'course_base', 'courses' );
 		$course_slug = preg_replace( '!^/!', '', $course_slug );
 		$rules[]     = array(
 			'^' . $course_slug . '/([^/]+)(?:/' . $lesson_slug . '/([^/]+))/?$',
@@ -182,36 +195,34 @@ class LP_Query {
 
 		// Profile
 		$profile_id = learn_press_get_page_id( 'profile' );
-		if ( $profile_id && LP_Page_Controller::is_page_profile() ) {
-			// Rule view profile of user (self or another)
-			$page_profile_slug = get_post_field( 'post_name', $profile_id );
-			$rules[]           = array(
-				"^{$page_profile_slug}/([^/]*)/?$",
-				"index.php?page_id={$profile_id}&user=" . '$matches[1]',
-				'top',
-			);
+		// Rule view profile of user (self or another)
+		$page_profile_slug = get_post_field( 'post_name', $profile_id );
+		$rules[]           = array(
+			"^{$page_profile_slug}/([^/]*)/?$",
+			"index.php?page_id={$profile_id}&user=" . '$matches[1]',
+			'top',
+		);
 
-			// Rule view profile of user (self or another) with tab
-			$profile = learn_press_get_profile();
-			$tabs    = $profile->get_tabs()->get();
-			if ( $tabs ) {
-				foreach ( $tabs as $slug => $args ) {
-					$tab_slug = $args['slug'] ?? $slug;
-					$rules[]  = array(
-						"^{$page_profile_slug}/([^/]*)/({$tab_slug})/?([0-9]*)/?$",
-						'index.php?page_id=' . $profile_id . '&user=$matches[1]&view=$matches[2]&view_id=$matches[3]',
-						'top',
-					);
+		// Rule view profile of user (self or another) with tab
+		$profile = learn_press_get_profile();
+		$tabs    = $profile->get_tabs()->get();
+		if ( $tabs ) {
+			foreach ( $tabs as $slug => $args ) {
+				$tab_slug = $args['slug'] ?? $slug;
+				$rules[]  = array(
+					"^{$page_profile_slug}/([^/]*)/({$tab_slug})/?([0-9]*)/?$",
+					'index.php?page_id=' . $profile_id . '&user=$matches[1]&view=$matches[2]&view_id=$matches[3]',
+					'top',
+				);
 
-					if ( ! empty( $args['sections'] ) ) {
-						foreach ( $args['sections'] as $section_slug => $section ) {
-							$section_slug = $section['slug'] ?? $section_slug;
-							$rules[]      = array(
-								"^{$page_profile_slug}/([^/]*)/({$tab_slug})/({$section_slug})/?([0-9]*)?$",
-								'index.php?page_id=' . $profile_id . '&user=$matches[1]&view=$matches[2]&section=$matches[3]&view_id=$matches[4]',
-								'top',
-							);
-						}
+				if ( ! empty( $args['sections'] ) ) {
+					foreach ( $args['sections'] as $section_slug => $section ) {
+						$section_slug = $section['slug'] ?? $section_slug;
+						$rules[]      = array(
+							"^{$page_profile_slug}/([^/]*)/({$tab_slug})/({$section_slug})/?([0-9]*)?$",
+							'index.php?page_id=' . $profile_id . '&user=$matches[1]&view=$matches[2]&section=$matches[3]&view_id=$matches[4]',
+							'top',
+						);
 					}
 				}
 			}
@@ -220,11 +231,11 @@ class LP_Query {
 		// Archive course
 		/*$course_page_id = learn_press_get_page_id( 'courses' );
 		if ( $course_page_id ) {
-			$rules[] = array(
-				'^' . get_post_field( 'post_name', $course_page_id ) . '/page/([0-9]{1,})/?$',
-				'index.php?pagename=' . get_post_field( 'post_name', $course_page_id ) . '&page=$matches[1]',
-				'top',
-			);
+		$rules[] = array(
+			'^' . get_post_field( 'post_name', $course_page_id ) . '/page/([0-9]{1,})/?$',
+			'index.php?pagename=' . get_post_field( 'post_name', $course_page_id ) . '&page=$matches[1]',
+			'top',
+		);
 		}*/
 
 		//global $wp_rewrite;
@@ -233,20 +244,20 @@ class LP_Query {
 		 * Polylang compatibility
 		 */
 		/*if ( function_exists( 'PLL' ) ) {
-			$pll           = PLL();
-			$pll_languages = $pll->model->get_languages_list( array( 'fields' => 'slug' ) );
+		$pll           = PLL();
+		$pll_languages = $pll->model->get_languages_list( array( 'fields' => 'slug' ) );
 
-			if ( $pll->options['hide_default'] ) {
-				if ( isset( $pll->options['default_lang'] ) ) {
-					$pll_languages = array_diff( $pll_languages, array( $pll->options['default_lang'] ) );
-				}
+		if ( $pll->options['hide_default'] ) {
+			if ( isset( $pll->options['default_lang'] ) ) {
+				$pll_languages = array_diff( $pll_languages, array( $pll->options['default_lang'] ) );
 			}
+		}
 
-			if ( ! empty( $pll_languages ) ) {
-				$pll_languages = $wp_rewrite->root . ( $pll->options['rewrite'] ? '' : 'language/' ) . '(' . implode( '|', $pll_languages ) . ')/';
-			} else {
-				$pll_languages = '';
-			}
+		if ( ! empty( $pll_languages ) ) {
+			$pll_languages = $wp_rewrite->root . ( $pll->options['rewrite'] ? '' : 'language/' ) . '(' . implode( '|', $pll_languages ) . ')/';
+		} else {
+			$pll_languages = '';
+		}
 		}*/
 
 		// Register rules
@@ -258,14 +269,14 @@ class LP_Query {
 			 */
 			/*if ( isset( $pll_languages ) ) {
 
-				$rule[0]     = $pll_languages . str_replace( $wp_rewrite->root, '', ltrim( $rule[0], '^' ) );
-				$rule[1]     = str_replace(
-					array( '[8]', '[7]', '[6]', '[5]', '[4]', '[3]', '[2]', '[1]', '?' ),
-					array( '[9]', '[8]', '[7]', '[6]', '[5]', '[4]', '[3]', '[2]', '?lang=$matches[1]&' ),
-					$rule[1]
-				);
-				$new_rules[] = $rule;
-				call_user_func_array( 'add_rewrite_rule', $rule );
+			$rule[0]     = $pll_languages . str_replace( $wp_rewrite->root, '', ltrim( $rule[0], '^' ) );
+			$rule[1]     = str_replace(
+				array( '[8]', '[7]', '[6]', '[5]', '[4]', '[3]', '[2]', '[1]', '?' ),
+				array( '[9]', '[8]', '[7]', '[6]', '[5]', '[4]', '[3]', '[2]', '?lang=$matches[1]&' ),
+				$rule[1]
+			);
+			$new_rules[] = $rule;
+			call_user_func_array( 'add_rewrite_rule', $rule );
 			}*/
 		}
 
@@ -273,14 +284,15 @@ class LP_Query {
 		$old_rules = get_transient( 'lp_rewrite_rules_hash' );
 
 		if ( $old_rules !== $new_rules ) {
-			set_transient( 'lp_rewrite_rules_hash', $new_rules, DAY_IN_SECONDS );
-			flush_rewrite_rules();
+		set_transient( 'lp_rewrite_rules_hash', $new_rules, DAY_IN_SECONDS );
+		flush_rewrite_rules();
 		}*/
 
+		flush_rewrite_rules();
+		$lp_cache->set_cache( $key_cache, 1 );
+
 		do_action( 'learn_press/rewrite/rules', $rules );
-
 	}
-
 
 	/**
 	 * Get current course user accessing

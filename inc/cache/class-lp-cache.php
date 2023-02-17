@@ -32,7 +32,7 @@ class LP_Cache {
 	 * Set/Update will check key from table thim_cache
 	 * else only WP Cache
 	 */
-	protected function __construct( $has_thim_cache = false ) {
+	public function __construct( $has_thim_cache = false ) {
 		$this->key_group      = $this->key_group_parent . '/' . $this->key_group_child;
 		$this->has_thim_cache = $has_thim_cache;
 	}
