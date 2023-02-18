@@ -154,17 +154,35 @@ class LP_Query {
 		$lesson_slug = urldecode( sanitize_title_with_dashes( LP_Settings::get_option( 'lesson_slug', 'lessons' ) ) );
 		$quiz_slug   = urldecode( sanitize_title_with_dashes( LP_Settings::get_option( 'quiz_slug', 'quizzes' ) ) );
 		$course_slug = LP_Settings::get_option( 'course_base', 'courses' );
+		if ( empty( $course_slug ) ) {
+			$course_slug = 'courses';
+		}
 		$course_slug = preg_replace( '!^/!', '', $course_slug );
-		$rules[]     = array(
-			'^' . $course_slug . '/([^/]+)(?:/' . $lesson_slug . '/([^/]+))/?$',
-			'index.php?' . LP_COURSE_CPT . '=$matches[1]&course-item=$matches[2]&item-type=lp_lesson',
-			'top',
-		);
-		$rules[]     = array(
-			'^' . $course_slug . '/([^/]+)(?:/' . $quiz_slug . '/([^/]+)/?([^/]+)?)/?$',
-			'index.php?' . LP_COURSE_CPT . '=$matches[1]&course-item=$matches[2]&question=$matches[3]&item-type=lp_quiz',
-			'top',
-		);
+
+		if ( preg_match( '!%course_category%!', $course_slug ) ) {
+			$course_slug = preg_replace( '!(%course_category%)!', '(.+)/([^/]+)', $course_slug );
+			$rules[]     = array(
+				"^{$course_slug}(?:/{$lesson_slug}/([^/]+))/?$",
+				'index.php?' . LP_COURSE_CPT . '=$matches[2]&course_category=$matches[1]&course-item=$matches[3]&item-type=lp_lesson',
+				'top',
+			);
+			$rules[]     = array(
+				"^{$course_slug}(?:/{$quiz_slug}/([^/]+)/?([^/]+)?)/?$",
+				'index.php?' . LP_COURSE_CPT . '=$matches[2]&course_category=$matches[1]&course-item=$matches[3]&question=$matches[4]&item-type=lp_quiz',
+				'top',
+			);
+		} else {
+			$rules[] = array(
+				"^{$course_slug}/([^/]+)(?:/{$lesson_slug}/([^/]+))/?$",
+				'index.php?' . LP_COURSE_CPT . '=$matches[1]&course-item=$matches[2]&item-type=lp_lesson',
+				'top',
+			);
+			$rules[] = array(
+				"^{$course_slug}/([^/]+)(?:/{$quiz_slug}/([^/]+)/?([^/]+)?)/?$",
+				'index.php?' . LP_COURSE_CPT . '=$matches[1]&course-item=$matches[2]&question=$matches[3]&item-type=lp_quiz',
+				'top',
+			);
+		}
 
 		/*if ( ! empty( $custom_slug_quiz ) ) {
 			$post_types['lp_quiz']->rewrite['slug'] = urldecode( $custom_slug_quiz );
