@@ -72,7 +72,7 @@ class LP_Settings {
 	protected function _load_options() {
 		// Check cache exists
 		$lp_settings_cache = new LP_Settings_Cache( true );
-		$cache_key         = $lp_settings_cache->key_cache;
+		$cache_key         = $lp_settings_cache->key_settings;
 		$lp_options        = $lp_settings_cache->get_cache( $cache_key );
 		if ( false !== $lp_options ) {
 			$this->_options = json_decode( $lp_options, true );

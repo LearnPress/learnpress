@@ -28,6 +28,15 @@ class LP_Query {
 		 * Add searching post by taxonomies
 		 */
 		add_action( 'pre_get_posts', array( $this, 'query_taxonomy' ) );
+		// Clear cache rewrite rules when switch theme.
+		add_action(
+			'after_switch_theme',
+			function () {
+				// Clear cache lp rewrite rules
+				$lp_settings_cache = new LP_Settings_Cache( true );
+				$lp_settings_cache->clear( $lp_settings_cache->key_rewrite_rules );
+			}
+		);
 	}
 
 	/**
@@ -118,9 +127,8 @@ class LP_Query {
 	 * @modify 4.2.2
 	 */
 	public function add_rewrite_rules() {
-		$lp_cache     = new LP_Cache( true );
-		$key_cache    = 'lp_rewrite_rules';
-		$cached_rules = $lp_cache->get_cache( $key_cache );
+		$lp_settings_cache = new LP_Settings_Cache( true );
+		$cached_rules      = $lp_settings_cache->get_cache( $lp_settings_cache->key_rewrite_rules );
 		if ( false !== $cached_rules ) {
 			return;
 		}
@@ -289,7 +297,7 @@ class LP_Query {
 		}*/
 
 		flush_rewrite_rules();
-		$lp_cache->set_cache( $key_cache, 1 );
+		$lp_settings_cache->set_cache( $lp_settings_cache->key_rewrite_rules, 1 );
 
 		do_action( 'learn_press/rewrite/rules', $rules );
 	}
