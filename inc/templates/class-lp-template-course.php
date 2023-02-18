@@ -19,7 +19,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 	public function __construct() {
 		parent::__construct();
 
-		add_action( 'the_post', array( $this, 'get_course' ), 1000 );
+		add_action( 'the_post', array( $this, 'get_course' ) );
 	}
 
 	public function get_course() {

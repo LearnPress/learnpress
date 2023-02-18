@@ -461,7 +461,7 @@ class LP_Course_DB extends LP_Database {
 	 * @since 4.1.5
 	 */
 	public function get_courses( LP_Course_Filter $filter, int &$total_rows = 0 ) {
-		$default_fields = $this->get_cols_of_table( $this->tb_posts );
+		$default_fields = $filter->all_fields;
 		$filter->fields = array_merge( $default_fields, $filter->fields );
 
 		if ( empty( $filter->collection ) ) {

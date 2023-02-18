@@ -31,17 +31,8 @@ class LP_Page_Controller {
 	protected function __construct() {
 		add_filter( 'post_type_archive_link', [ $this, 'link_archive_course' ], 10, 2 );
 		add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ), -1 );
-		/*add_action(
-			'posts_pre_query',
-			function ( $posts, $wp_query ) {
-				if ( LP_PAGE_COURSES === self::page_current() ) {
-					$posts = [ 1 ];
-				}
-				return $posts;
-			},
-			10,
-			2
-		);*/
+		// For return result query course to cache.
+		//add_action( 'posts_pre_query', [ $this, 'posts_pre_query' ], 10, 2 );
 		add_filter( 'template_include', array( $this, 'template_loader' ), 10 );
 		add_filter( 'template_include', array( $this, 'check_pages' ), 30 );
 		add_filter( 'template_include', array( $this, 'auto_shortcode' ), 50 );
@@ -388,6 +379,10 @@ class LP_Page_Controller {
 		 * @var LP_Course_Item|LP_Quiz|LP_Lesson $lp_course_item
 		 */
 		global $wp, $wp_query, $lp_course_item;
+		$vars = $wp->query_vars;
+		if ( empty( $vars['course-item'] ) ) {
+			return $post;
+		}
 
 		if ( LP_COURSE_CPT !== $post->post_type ) {
 			return $post;
@@ -405,14 +400,8 @@ class LP_Page_Controller {
 		//LearnPress::instance()->global['course'] = $GLOBALS['course'] = $GLOBALS['lp_course'] = $course;
 		LearnPress::instance()->global['course'] = $GLOBALS['course'] = $course;
 
-		if ( wp_verify_nonce( LP_Request::get( 'preview' ), 'preview-' . $post->ID ) ) {
+		if ( wp_verify_nonce( LP_Request::get_param( 'preview' ), 'preview-' . $post->ID ) ) {
 			$GLOBALS['preview_course'] = $post->ID;
-		}
-
-		$vars = $wp->query_vars;
-
-		if ( empty( $vars['course-item'] ) ) {
-			return $post;
 		}
 
 		if ( ! $wp_query->is_main_query() ) {
@@ -694,6 +683,7 @@ class LP_Page_Controller {
 					 * Current, apply only for LP, not apply for theme Thimpress, because theme override
 					 */
 					$q->set( 'posts_per_page', 1 );
+					$q->set( 'suppress_filters', true );
 					//$q->set( 'posts_per_archive_page', 1 );
 					//$q->set( 'nopaging', true );
 				} else {
@@ -840,6 +830,28 @@ class LP_Page_Controller {
 
 		return $q;
 	}
+
+	/**
+	 * Write temporary for optimize.
+	 *
+	 * @param $posts
+	 * @param $wp_query
+	 *
+	 * @return array|mixed
+	 */
+	/*public function posts_pre_query( $posts, $wp_query ) {
+		if ( self::is_page_courses() ) {
+			$filter                  = new LP_Course_Filter();
+			$filter->only_fields     = array( 'ID' );
+			$filter->run_query_count = false;
+			$filter->where[]         = "AND post_status = 'publish'";
+			$filter->limit           = 1;
+			$courses                 = LP_Course::get_courses( $filter );
+
+			$posts = [ get_post( $courses[0]->ID ) ];
+		}
+		return $posts;
+	}*/
 
 	/**
 	 * Handle 404 if user are viewing course item directly.

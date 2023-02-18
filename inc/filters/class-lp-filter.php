@@ -94,9 +94,9 @@ class LP_Filter {
 	 */
 	public $union = array();
 	/**
-	 * @var bool set true to return total_rows only
+	 * @var bool set true to run query count
 	 */
-	public $query_count_only = false;
+	public $run_query_count = true;
 	/**
 	 * @var bool set true to return total_rows
 	 */
