@@ -28,15 +28,12 @@ class LP_Query {
 		 * Add searching post by taxonomies
 		 */
 		add_action( 'pre_get_posts', array( $this, 'query_taxonomy' ) );
-		// Clear cache rewrite rules when switch theme.
-		add_action(
-			'after_switch_theme',
-			function () {
-				// Clear cache lp rewrite rules
-				$lp_settings_cache = new LP_Settings_Cache( true );
-				$lp_settings_cache->clear( $lp_settings_cache->key_rewrite_rules );
-			}
-		);
+		// Clear cache rewrite rules when switch theme, activate, deactivate any plugins.
+		add_action( 'after_switch_theme', [ $this, 'clear_cache_rewrite_rules' ] );
+		add_action( 'activate_plugin', [ $this, 'clear_cache_rewrite_rules' ] );
+		add_action( 'activated_plugin', [ $this, 'clear_cache_rewrite_rules' ] );
+		add_action( 'deactivate_plugin', [ $this, 'clear_cache_rewrite_rules' ] );
+		add_action( 'deactivated_plugin', [ $this, 'clear_cache_rewrite_rules' ] );
 	}
 
 	/**
@@ -429,5 +426,15 @@ class LP_Query {
 		remove_filter( 'posts_where', 'learn_press_add_tax_search' );
 		remove_filter( 'posts_join', 'learn_press_join_term' );
 		remove_filter( 'posts_groupby', 'learn_press_tax_groupby' );
+	}
+
+	/**
+	 * Clear cache lp rewrite rules
+	 *
+	 * @return void
+	 */
+	public function clear_cache_rewrite_rules() {
+		$lp_settings_cache = new LP_Settings_Cache( true );
+		$lp_settings_cache->clear( $lp_settings_cache->key_rewrite_rules );
 	}
 }
