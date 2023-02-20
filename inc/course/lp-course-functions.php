@@ -206,7 +206,7 @@ function learn_press_course_post_type_link( $permalink, $post ) {
 	return $permalink;
 }
 
-add_filter( 'post_type_link', 'learn_press_course_post_type_link', 10, 2 );
+//add_filter( 'post_type_link', 'learn_press_course_post_type_link', 10, 2 );
 
 function learn_press_item_meta_format( $item, $nonce = '' ) {
 	if ( current_theme_supports( 'post-formats' ) ) {

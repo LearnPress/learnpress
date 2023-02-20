@@ -11,7 +11,7 @@ if ( ! empty( $wp_post_types[ LP_COURSE_CPT ] ) ) {
 	$default_courses_slug = '';
 }
 
-$course_permalink = $settings->get( 'course_base', '' );
+$course_permalink = LP_Settings::get_option( 'course_base', '' );
 $courses_page_id  = learn_press_get_page_id( 'courses' );
 $base_slug        = urldecode( ( $courses_page_id > 0 && get_post( $courses_page_id ) ) ? get_page_uri( $courses_page_id ) : 'courses' );
 $course_base      = 'course';
