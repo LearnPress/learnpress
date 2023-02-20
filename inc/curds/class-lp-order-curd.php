@@ -209,9 +209,10 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 *
 	 * @return mixed
 	 * @author tungnx
+	 * Todo: review to rewrite.
 	 */
 	public function read_items( $order ) {
-		$key   = "order/{$order->get_id()}/items";
+		$key   = "order/{$order->get_id()}/{$order->get_status()}/items";
 		$items = LP_Cache::cache_load_first( 'get', $key );
 
 		if ( false !== $items ) {
