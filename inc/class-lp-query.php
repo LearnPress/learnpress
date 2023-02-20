@@ -111,7 +111,7 @@ class LP_Query {
 		add_rewrite_tag( '%section%', '(.*)' );
 
 		add_rewrite_tag( '%content-item-only%', '(.*)' );
-		do_action( 'learn_press_add_rewrite_tags' );
+		do_action( 'learn_press/rewrite/tag' );
 	}
 
 	/**
@@ -283,6 +283,8 @@ class LP_Query {
 		}
 		}*/
 
+		$rules = apply_filters( 'learn_press/rewrite/rules', $rules );
+
 		// Register rules
 		foreach ( $rules as $k => $rule ) {
 			call_user_func_array( 'add_rewrite_rule', $rule );
@@ -313,8 +315,6 @@ class LP_Query {
 
 		flush_rewrite_rules();
 		$lp_settings_cache->set_cache( $lp_settings_cache->key_rewrite_rules, 1 );
-
-		do_action( 'learn_press/rewrite/rules', $rules );
 	}
 
 	/**

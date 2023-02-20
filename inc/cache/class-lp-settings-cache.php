@@ -17,11 +17,11 @@ class LP_Settings_Cache extends LP_Cache {
 	/**
 	 * @var string key cache
 	 */
-	public $key_settings = 'settings';
+	public $key_settings = 'thim_settings';
 	/**
 	 * @var string key cache
 	 */
-	public $key_rewrite_rules = 'rewrite_rules';
+	public $key_rewrite_rules = 'thim_rewrite_rules';
 
 	public function __construct( $has_thim_cache = false ) {
 		parent::__construct( $has_thim_cache );
