@@ -156,7 +156,7 @@ class LP_Session_Handler {
 			if ( empty( $cookie ) ) {
 				// Create new cookie and session for user Guest.
 				$this->set_session_expiration( $expire_time_for_guest );
-				$this->_customer_id = md5( $_SERVER['REMOTE_ADDR'] );
+				$this->_customer_id = md5( $_SERVER['REMOTE_ADDR'] ?? COOKIEHASH );
 				$this->set_customer_session_cookie();
 			} else {
 				$this->_customer_id = $cookie;
@@ -259,6 +259,7 @@ class LP_Session_Handler {
 	 * Generate string customer id for guest
 	 *
 	 * @return string
+	 * @deprecated 4.2.2
 	 */
 	public function generate_guest_id(): string {
 		require_once ABSPATH . 'wp-includes/class-phpass.php';

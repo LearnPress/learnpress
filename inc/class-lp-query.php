@@ -100,7 +100,22 @@ class LP_Query {
 	 * Add custom rewrite tags
 	 */
 	function add_rewrite_tags() {
-		add_rewrite_tag( '%course-item%', '([^&]+)' );
+		$tags = [
+			'%course-item%'       => '([^&]+)',
+			'%item-type%'         => '([^&]+)',
+			'%question%'          => '([^&]+)',
+			'%user%'              => '([^/]*)',
+			'%view%'              => '([^/]*)',
+			'%view_id%'           => '(.*)',
+			'%section%'           => '(.*)',
+			'%content-item-only%' => '(.*)',
+		];
+
+		$tags = apply_filters( 'learn-press/rewrite/tags', $tags );
+		foreach ( $tags as $tag => $regex ) {
+			add_rewrite_tag( $tag, $regex );
+		}
+		/*add_rewrite_tag( '%course-item%', '([^&]+)' );
 		add_rewrite_tag( '%item-type%', '([^&]+)' );
 		// add_rewrite_tag( '%quiz%', '([^&]+)' );
 		add_rewrite_tag( '%question%', '([^&]+)' );
@@ -110,8 +125,7 @@ class LP_Query {
 		add_rewrite_tag( '%view_id%', '(.*)' );
 		add_rewrite_tag( '%section%', '(.*)' );
 
-		add_rewrite_tag( '%content-item-only%', '(.*)' );
-		do_action( 'learn_press/rewrite/tag' );
+		add_rewrite_tag( '%content-item-only%', '(.*)' );*/
 	}
 
 	/**
@@ -283,7 +297,7 @@ class LP_Query {
 		}
 		}*/
 
-		$rules = apply_filters( 'learn_press/rewrite/rules', $rules );
+		$rules = apply_filters( 'learn-press/rewrite/rules', $rules );
 
 		// Register rules
 		foreach ( $rules as $k => $rule ) {
