@@ -23,6 +23,8 @@ class LP_Query {
 
 		add_action( 'init', array( $this, 'add_rewrite_tags' ), 1000, 0 );
 		add_action( 'admin_init', array( $this, 'add_rewrite_rules' ), 1000, 0 );
+		// Clear cache rewrite rules when update option rewrite_rules
+		add_filter( 'pre_update_option', [ $this, 'update_option_rewrite_rules' ], 10, 2 );
 		//add_action( 'parse_query', array( $this, 'parse_request' ), 1000, 1 );
 		/**
 		 * Add searching post by taxonomies
@@ -443,9 +445,34 @@ class LP_Query {
 	}
 
 	/**
+	 * Clear cache rewrite rules when update option rewrite_rules
+	 * Fixed for case: addons Certificates (v4.0.5), FE(4.0.5), Live(4.0.2), Collections(4.0.2) not installed on site client.
+	 * Run only one time when reload page Frontend.
+	 *
+	 * @param $value
+	 * @param $option
+	 * @since 4.2.2
+	 * @return mixed
+	 */
+	public function update_option_rewrite_rules( $value, $option ) {
+		if ( 'rewrite_rules' === $option ) {
+			static $flushed;
+			if ( $flushed ) {
+				return $value;
+			}
+
+			$flushed = 1;
+			$this->clear_cache_rewrite_rules();
+			$this->add_rewrite_rules();
+		}
+
+		return $value;
+	}
+
+	/**
 	 * Clear cache lp rewrite rules
 	 *
-	 * @return void
+	 * @since 4.2.2
 	 */
 	public function clear_cache_rewrite_rules() {
 		$lp_settings_cache = new LP_Settings_Cache( true );
