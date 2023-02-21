@@ -51,7 +51,7 @@ class Thim_Cache_DB {
 		);
 
 		$result = $this->wpdb->get_var( $sql );
-		if ( ! $result ) {
+		if ( is_null( $result ) ) {
 			return false;
 		}
 

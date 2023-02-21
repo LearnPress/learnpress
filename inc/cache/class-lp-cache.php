@@ -49,6 +49,7 @@ class LP_Cache {
 		wp_cache_set( $key, $data, $this->key_group, $expire );
 		// Cache thim_cache
 		if ( $this->has_thim_cache && LP_Settings::is_created_tb_thim_cache() ) {
+			$key = "{$this->key_group}/{$key}";
 			Thim_Cache_DB::instance()->set_value( $key, $data );
 		}
 	}
@@ -64,6 +65,7 @@ class LP_Cache {
 		$cache = wp_cache_get( $key, $this->key_group );
 		// Get thim_cache
 		if ( false === $cache && $this->has_thim_cache && LP_Settings::is_created_tb_thim_cache() ) {
+			$key   = "{$this->key_group}/{$key}";
 			$cache = wp_unslash( Thim_Cache_DB::instance()->get_value( $key ) );
 		}
 

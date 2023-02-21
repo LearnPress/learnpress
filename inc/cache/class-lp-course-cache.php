@@ -26,7 +26,7 @@ class LP_Course_Cache extends LP_Cache {
 		return self::$instance;
 	}
 
-	protected function __construct() {
-		parent::__construct();
+	public function __construct( $has_thim_cache = false ) {
+		parent::__construct( $has_thim_cache );
 	}
 }
