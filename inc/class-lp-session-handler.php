@@ -24,7 +24,7 @@ class LP_Session_Handler {
 	/**
 	 * @var string cookie name
 	 */
-	private $_cookie = '';
+	private $_cookie = 'lp_session_guest';
 
 	/**
 	 * @var int session expiration timestamp
@@ -151,21 +151,15 @@ class LP_Session_Handler {
 
 		// Set data for user Guest.
 		if ( ! is_user_logged_in() ) { // Generate data and set cookie for guest
-			$this->_cookie = 'lp_session';
-			$cookie        = $this->get_cookie_data();
-			$this->_customer_id = COOKIEHASH;
+			$cookie = $this->get_cookie_data();
 			// If cookie exists, set data from cookie for guest
-			if ( ! empty( $cookie ) ) {
-				$this->_session_expiration = (int) $cookie[1];
-				//$this->_has_cookie         = true;
-				if ( time() > $this->_session_expiration - HOUR_IN_SECONDS ) {
-					$this->set_session_expiration( $expire_time_for_guest );
-					//$this->update_session_timestamp( $this->_customer_id, $this->_session_expiration );
-				}
-			} else { // Create new cookie and session for user Guest.
+			if ( empty( $cookie ) ) {
+				// Create new cookie and session for user Guest.
 				$this->set_session_expiration( $expire_time_for_guest );
-				$this->_customer_id = COOKIEHASH;
+				$this->_customer_id = md5( $_SERVER['REMOTE_ADDR'] );
 				$this->set_customer_session_cookie();
+			} else {
+				$this->_customer_id = $cookie;
 			}
 		} else { // Set data for user logged.
 			$this->set_session_expiration( $expire_time_for_user );
@@ -186,6 +180,9 @@ class LP_Session_Handler {
 	 * @return void
 	 */
 	public function handle_when_user_login_success( $user_name, $user ) {
+		// Remove COOKIE for user guest.
+		learn_press_remove_cookie( $this->_cookie );
+
 		/**
 		 * Must set wp_set_current_user to get_current_user_id and is_user_logged_in work correctly.
 		 * Don't know why WP 6.3 and lower run wrong.
@@ -281,8 +278,6 @@ class LP_Session_Handler {
 		}
 
 		return $_COOKIE[ $this->_cookie ];
-
-		return array( $customer_id, $session_expiration, $cookie_hash );
 	}
 
 	/**
@@ -295,7 +290,6 @@ class LP_Session_Handler {
 			$customer_id = get_current_user_id();
 		} else {
 			$customer_id = $this->get_customer_id();
-			error_log('mmmm' . $customer_id);
 		}
 
 		return (array) $this->get_session_by_customer_id( (string) $customer_id );
