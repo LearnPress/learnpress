@@ -94,7 +94,7 @@ class LP_Assets extends LP_Abstract_Assets {
 			'lp-profile-user' => array(
 				'processing'  => esc_html__( 'Processing', 'learnpress' ),
 				'redirecting' => esc_html__( 'Redirecting', 'learnpress' ),
-				'avatar_size' => learn_press_get_avatar_thumb_size(),
+				//'avatar_size' => learn_press_get_avatar_thumb_size(),
 			),
 			//'lp-course'       => learn_press_single_course_args(),
 			'lp-quiz'         => learn_press_single_quiz_args(),
