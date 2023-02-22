@@ -77,7 +77,7 @@ class LP_Cache {
 
 	/**
 	 * Set value for first load page on one process
-	 * Apply for query call same
+	 * Apply for query call same many times.
 	 *
 	 * @param string $type
 	 * @param string $key
