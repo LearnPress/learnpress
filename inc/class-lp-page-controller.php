@@ -82,6 +82,10 @@ class LP_Page_Controller {
 	 * @param object $post
 	 */
 	public function post_type_link( $post_link, $post ) {
+		if ( ! is_search() ) {
+			return $post_link;
+		}
+
 		// Set item's course permalink
 		$course_item_types = learn_press_get_course_item_types();
 		$item_id           = $post->ID;
