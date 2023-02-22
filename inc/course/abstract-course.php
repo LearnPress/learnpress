@@ -864,17 +864,16 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		public function get_total_user_enrolled(): int {
 			$total           = 0;
 			$lp_course_cache = new LP_Course_Cache( true );
-			$key_cache       = "{$this->get_id()}/total-students-enrolled";
 
 			try {
-				$total = $lp_course_cache->get_cache( $key_cache );
+				$total = $lp_course_cache->get_total_students_enrolled( $this->get_id() );
 				if ( false !== $total ) {
 					return $total;
 				}
 
 				$lp_course_db = LP_Course_DB::getInstance();
 				$total        = $lp_course_db->get_total_user_enrolled( $this->get_id() );
-				$lp_course_cache->set_cache( $key_cache, $total );
+				$lp_course_cache->set_total_students_enrolled( $this->get_id(), $total );
 			} catch ( Throwable $e ) {
 				error_log( $e->getMessage() );
 			}

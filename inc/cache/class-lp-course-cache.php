@@ -11,7 +11,8 @@ defined( 'ABSPATH' ) || exit();
 
 class LP_Course_Cache extends LP_Cache {
 	protected static $instance;
-	protected $key_group_child = 'course';
+	protected $key_group_child                    = 'course';
+	protected $key_total_students_enrolled = 'total-students-enrolled';
 
 	/**
 	 * Get instance
@@ -28,5 +29,20 @@ class LP_Course_Cache extends LP_Cache {
 
 	public function __construct( $has_thim_cache = false ) {
 		parent::__construct( $has_thim_cache );
+	}
+
+	public function set_total_students_enrolled( $course_id, $total ) {
+		$key = "{$course_id}/{$this->key_total_students_enrolled}";
+		$this->set_cache( $key, $total );
+	}
+
+	public function get_total_students_enrolled( $course_id ) {
+		$key = "{$course_id}/{$this->key_total_students_enrolled}";
+		return $this->get_cache( $key );
+	}
+
+	public function clean_total_students_enrolled( $course_id ) {
+		$key = "{$course_id}/{$this->key_total_students_enrolled}";
+		$this->clear( $key );
 	}
 }

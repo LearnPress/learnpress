@@ -431,6 +431,10 @@ if ( ! class_exists( 'LP_Course' ) ) {
 				$user_course_ids            = $lp_user_items_db->get_user_items_by_course( $filter_user_items );
 
 				$this->delete_user_item_and_result( $user_course_ids );
+
+				// Clear cache total students enrolled.
+				$lp_course_cache = new LP_Course_Cache( true );
+				$lp_course_cache->clean_total_students_enrolled( $this->get_id() );
 			} catch ( Throwable $e ) {
 				error_log( __FUNCTION__ . ':' . $e->getMessage() );
 			}
@@ -468,15 +472,6 @@ if ( ! class_exists( 'LP_Course' ) ) {
 
 				// Delete user_item_results
 				$lp_user_item_results->remove_user_item_results( $filter_delete );
-
-				// Clear caches.
-				if ( isset( $updated_item['item_type'] )
-					 && LP_COURSE_CPT === $updated_item['item_type']
-					 && isset( $updated_item['item_id'] ) ) {
-					$lp_course_cache = new LP_Course_Cache( true );
-					$key_cache       = "{$this->get_id()}/total-students-enrolled";
-					$lp_course_cache->clear( $key_cache );
-				}
 			} catch ( Throwable $e ) {
 				error_log( __FUNCTION__ . ':' . $e->getMessage() );
 			}

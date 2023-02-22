@@ -66,7 +66,10 @@ class LP_Cache {
 		// Get thim_cache
 		if ( false === $cache && $this->has_thim_cache && LP_Settings::is_created_tb_thim_cache() ) {
 			$key   = "{$this->key_group}/{$key}";
-			$cache = wp_unslash( Thim_Cache_DB::instance()->get_value( $key ) );
+			$cache = Thim_Cache_DB::instance()->get_value( $key );
+			if ( is_string( $cache ) ) {
+				$cache = wp_unslash( $cache );
+			}
 		}
 
 		return $cache;

@@ -495,8 +495,7 @@ function learn_press_update_user_item_field( array $fields = [], $where = false,
 			&& LP_COURSE_CPT === $updated_item->item_type
 			&& isset( $updated_item->item_id ) ) {
 			$lp_course_cache = new LP_Course_Cache( true );
-			$key_cache       = "{$updated_item->item_id}/total-students-enrolled";
-			$lp_course_cache->clear( $key_cache );
+			$lp_course_cache->clean_total_students_enrolled( $updated_item->item_id );
 		}
 	}
 
