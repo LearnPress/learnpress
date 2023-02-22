@@ -516,20 +516,12 @@ function learn_press_get_course_item_permalink( int $course_id = 0, int $item_id
 	return '';
 }
 
-
+/**
+ * @deprecated 4.2.2
+ */
 function learn_press_get_the_course() {
-	static $course;
-	if ( ! $course ) {
-		$course_id = get_the_ID();
-		if ( learn_press_get_post_type( $course ) == LP_COURSE_CPT ) {
-			$course = learn_press_get_course( $course_id );
-		}
-	}
-	if ( ! $course ) {
-		return new LP_Course( 0 );
-	}
-
-	return $course;
+	_deprecated_function( __FUNCTION__, '4.2.2', 'learn_press_get_course' );
+	return learn_press_get_course();
 }
 
 function learn_press_get_user_question_answer( $args = '' ) {
