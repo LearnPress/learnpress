@@ -298,34 +298,31 @@ function learn_press_is_endpoint_url( $endpoint = false ) {
  * @return string
  */
 function learn_press_get_current_url() {
-	static $current_url;
-	if ( is_null( $current_url ) ) {
-		$url = untrailingslashit( esc_url_raw( $_SERVER['REQUEST_URI'] ) );
+	$url = untrailingslashit( esc_url_raw( $_SERVER['REQUEST_URI'] ) );
 
-		if ( ! preg_match( '!^https?!', $url ) ) {
-			$siteurl    = trailingslashit( get_home_url() );
-			$home_query = '';
+	if ( ! preg_match( '!^https?!', $url ) ) {
+		$siteurl    = trailingslashit( get_home_url() );
+		$home_query = '';
 
-			if ( strpos( $siteurl, '?' ) !== false ) {
-				$parts      = explode( '?', $siteurl );
-				$home_query = $parts[1];
-				$siteurl    = $parts[0];
-			}
+		if ( strpos( $siteurl, '?' ) !== false ) {
+			$parts      = explode( '?', $siteurl );
+			$home_query = $parts[1];
+			$siteurl    = $parts[0];
+		}
 
-			if ( $home_query ) {
-				parse_str( untrailingslashit( $home_query ), $home_query );
-				$url = esc_url_raw( add_query_arg( $home_query, $url ) );
-			}
+		if ( $home_query ) {
+			parse_str( untrailingslashit( $home_query ), $home_query );
+			$url = esc_url_raw( add_query_arg( $home_query, $url ) );
+		}
 
-			$segs1 = explode( '/', $siteurl );
-			$segs2 = explode( '/', $url );
+		$segs1 = explode( '/', $siteurl );
+		$segs2 = explode( '/', $url );
 
-			if ( $removed = array_intersect( $segs1, $segs2 ) ) {
-				if ( $segs2 = array_diff( $segs2, $removed ) ) {
-					$current_url = $siteurl . join( '/', $segs2 );
-					if ( strpos( $current_url, '?' ) === false ) {
-						$current_url = trailingslashit( $current_url );
-					}
+		if ( $removed = array_intersect( $segs1, $segs2 ) ) {
+			if ( $segs2 = array_diff( $segs2, $removed ) ) {
+				$current_url = $siteurl . join( '/', $segs2 );
+				if ( strpos( $current_url, '?' ) === false ) {
+					$current_url = trailingslashit( $current_url );
 				}
 			}
 		}
