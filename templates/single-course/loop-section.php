@@ -19,7 +19,7 @@ if ( ! isset( $section ) || ! isset( $can_view_content_course )
 	return;
 }
 
-$course = learn_press_get_the_course();
+$course = learn_press_get_course();
 
 if ( ! apply_filters( 'learn-press/section-visible', true, $section, $course ) ) {
 	return;
