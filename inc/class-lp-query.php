@@ -457,7 +457,7 @@ class LP_Query {
 	public function update_option_rewrite_rules( $value, $option ) {
 		if ( 'rewrite_rules' === $option ) {
 			static $flushed;
-			if ( $flushed ) {
+			if ( $flushed || is_admin() ) {
 				return $value;
 			}
 

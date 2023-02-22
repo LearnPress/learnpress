@@ -405,9 +405,8 @@ class LP_Setup_Wizard {
 	 * @return bool|LP_Setup_Wizard
 	 */
 	public static function instance() {
-		static $instance = false;
-
-		if ( ! $instance ) {
+		static $instance;
+		if ( is_null( $instance ) ) {
 			$instance = new self();
 		}
 
