@@ -350,8 +350,8 @@ if ( ! class_exists( 'LP_Modal_Search_Items' ) ) {
 		 * @return bool|LP_Modal_Search_Items
 		 */
 		public static function instance() {
-			static $instance = false;
-			if ( ! $instance ) {
+			static $instance;
+			if ( is_null( $instance ) ) {
 				$instance = new self();
 			}
 

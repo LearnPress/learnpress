@@ -205,8 +205,8 @@ class LP_Setup_Wizard {
 	 * @return array
 	 */
 	public function get_steps() {
-		static $steps = false;
-		if ( ! $steps ) {
+		static $steps;
+		if ( is_null( $steps ) ) {
 			$steps = apply_filters(
 				'learn-press/setup-wizard/steps',
 				array(

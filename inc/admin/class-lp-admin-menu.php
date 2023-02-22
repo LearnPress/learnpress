@@ -181,9 +181,8 @@ class LP_Admin_Menu {
 	}
 
 	public static function instance() {
-		static $instance = false;
-
-		if ( ! $instance ) {
+		static $instance;
+		if ( is_null( $instance ) ) {
 			$instance = new self();
 		}
 

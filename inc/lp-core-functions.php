@@ -299,8 +299,7 @@ function learn_press_is_endpoint_url( $endpoint = false ) {
  */
 function learn_press_get_current_url() {
 	static $current_url;
-
-	if ( ! $current_url ) {
+	if ( is_null( $current_url ) ) {
 		$url = untrailingslashit( esc_url_raw( $_SERVER['REQUEST_URI'] ) );
 
 		if ( ! preg_match( '!^https?!', $url ) ) {

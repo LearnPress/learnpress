@@ -46,8 +46,7 @@ class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 	 */
 	public function get_sections() {
 		static $sections;
-
-		if ( ! $sections ) {
+		if ( is_null( $sections ) ) {
 			$gateways = LP_Gateways::instance()->get_gateways();
 			$sections = array(
 				'general' => esc_html__( 'General', 'learnpress' ),
