@@ -489,6 +489,18 @@ function learn_press_update_user_item_field( array $fields = [], $where = false,
 	}
 
 	// Clear caches.
+	if ( $updated_item ) {
+		// Clear cache total students enrolled.
+		if ( isset( $updated_item->item_type )
+			&& LP_COURSE_CPT === $updated_item->item_type
+			&& isset( $updated_item->item_id ) ) {
+			$lp_course_cache = new LP_Course_Cache( true );
+			$key_cache       = "{$updated_item->item_id}/total-students-enrolled";
+			$lp_course_cache->clear( $key_cache );
+		}
+	}
+
+	do_action( 'learn-press/updated-user-item-field', $updated_item );
 
 	/**
 	 * If there is some fields does not contain in the main table
@@ -516,7 +528,7 @@ function learn_press_update_user_item_field( array $fields = [], $where = false,
 		}
 	}*/
 
-	do_action( 'learn-press/updated-user-item-meta', $updated_item );
+	//do_action( 'learn-press/updated-user-item-meta', $updated_item );
 
 	return $updated_item;
 }

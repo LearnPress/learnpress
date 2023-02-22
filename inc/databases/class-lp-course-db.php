@@ -300,9 +300,10 @@ class LP_Course_DB extends LP_Database {
 	 * @param int $course_id
 	 *
 	 * @return int
-	 * @version 1.0.0
+	 * @throws Exception
 	 * @author tungnx
 	 * @since 4.1.4
+	 * @version 1.0.0
 	 */
 	public function get_total_user_enrolled( int $course_id ): int {
 		$query = $this->wpdb->prepare(
@@ -317,6 +318,8 @@ class LP_Course_DB extends LP_Database {
 			LP_COURSE_ENROLLED,
 			LP_COURSE_FINISHED
 		);
+
+		$this->check_execute_has_error();
 
 		return (int) $this->wpdb->get_var( $query );
 	}

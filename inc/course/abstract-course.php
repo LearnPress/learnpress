@@ -625,10 +625,10 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 				if ( $this->has_sale_price() ) {
 					$price = $this->get_sale_price();
 					// Add key _lp_course_is_sale for query - Todo: Check performance, need write function get all courses, and set on Admin, on background
-					update_post_meta( $this->get_id(), '_lp_course_is_sale', 1 );
+					//update_post_meta( $this->get_id(), '_lp_course_is_sale', 1 );
 				} else {
 					// Delete key _lp_course_is_sale
-					delete_post_meta( $this->get_id(), '_lp_course_is_sale' );
+					//delete_post_meta( $this->get_id(), '_lp_course_is_sale' );
 					$price = $this->get_regular_price();
 				}
 
@@ -843,21 +843,13 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 *
 		 * @return int
 		 * @editor tungnx
+		 * @version 1.0.1
+		 * @since 3.0.0
 		 * @Todo: view and rewrite this function
 		 */
 		public function count_students(): int {
-			$key_cache = "{$this->get_id()}/total-students";
-			$total     = LP_Course_Cache::instance()->get_cache( $key_cache );
-
-			if ( $total ) {
-				return $total;
-			}
-
-			$lp_course_db = LP_Course_DB::getInstance();
-			$total        = $lp_course_db->get_total_user_enrolled( $this->get_id() );
-			$total       += $this->get_fake_students();
-
-			LP_Course_Cache::instance()->set_cache( $key_cache, $total, 6 * HOUR_IN_SECONDS );
+			$total  = $this->get_total_user_enrolled();
+			$total += $this->get_fake_students();
 
 			return $total;
 		}
@@ -865,12 +857,56 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		/**
 		 * Get total user enrolled
 		 *
+		 * @since 4.1.4
+		 * @version 1.0.1
 		 * @return int
 		 */
 		public function get_total_user_enrolled(): int {
-			$lp_course_db = LP_Course_DB::getInstance();
-			return $lp_course_db->get_total_user_enrolled( $this->get_id() );
+			$total           = 0;
+			$lp_course_cache = new LP_Course_Cache( true );
+			$key_cache       = "{$this->get_id()}/total-students-enrolled";
+
+			try {
+				$total = $lp_course_cache->get_cache( $key_cache );
+				if ( false !== $total ) {
+					return $total;
+				}
+
+				$lp_course_db = LP_Course_DB::getInstance();
+				$total        = $lp_course_db->get_total_user_enrolled( $this->get_id() );
+				$lp_course_cache->set_cache( $key_cache, $total );
+			} catch ( Throwable $e ) {
+				error_log( $e->getMessage() );
+			}
+
+			return $total;
 		}
+
+		/**
+		 * Get total user enrolled include fake
+		 * @since 4.2.2
+		 * @return int
+		 */
+		/*public function get_total_user_enrolled_include_fake() {
+			$total_user_enrolled = 0;
+			$key_cache           = "{$this->get_id()}/total-students-include-fake";
+
+			try {
+				$total_user_enrolled = LP_Course_Cache::cache_load_first( 'get', $key_cache );
+
+				if ( false === $total_user_enrolled ) {
+					$lp_course_db         = LP_Course_DB::getInstance();
+					$total_user_enrolled  = $lp_course_db->get_total_user_enrolled( $this->get_id() );
+					$total_user_enrolled += $this->get_fake_students();
+
+					LP_Course_Cache::cache_load_first( 'set', $key_cache, $total_user_enrolled );
+				}
+			} catch ( Throwable $e ) {
+				error_log( $e->getMessage() );
+			}
+
+			return $total_user_enrolled;
+		}*/
 
 		/**
 		 * Get total user enrolled or finished
