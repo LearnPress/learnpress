@@ -29,7 +29,7 @@ class LP_Page_Controller {
 	 * LP_Page_Controller constructor.
 	 */
 	protected function __construct() {
-		add_filter( 'post_type_archive_link', [ $this, 'link_archive_course' ], 10, 2 );
+		//add_filter( 'post_type_archive_link', [ $this, 'link_archive_course' ], 10, 2 );
 		add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ), -1 );
 		// For return result query course to cache.
 		//add_action( 'posts_pre_query', [ $this, 'posts_pre_query' ], 10, 2 );
@@ -47,7 +47,7 @@ class LP_Page_Controller {
 		add_filter( 'wpseo_opengraph_desc', array( $this, 'lp_desc_item_yoast_seo' ), 11, 1 );
 		add_filter( 'wpseo_metadesc', array( $this, 'lp_desc_item_yoast_seo' ), 11, 1 );
 
-		// edit link item course when form search default wp
+		// Set link item course.
 		add_filter( 'post_type_link', array( $this, 'post_type_link' ), 10, 2 );
 
 		// Set link profile to admin menu
@@ -76,16 +76,12 @@ class LP_Page_Controller {
 	}
 
 	/**
-	 * Set link item course when form search default wp
+	 * Set link item course
 	 *
 	 * @param string $post_link
 	 * @param object $post
 	 */
 	public function post_type_link( $post_link, $post ) {
-		if ( ! is_search() ) {
-			return $post_link;
-		}
-
 		// Set item's course permalink
 		$course_item_types = learn_press_get_course_item_types();
 		$item_id           = $post->ID;
@@ -113,6 +109,12 @@ class LP_Page_Controller {
 			// Abort early if the placeholder rewrite tag isn't in the generated URL
 			if ( false === strpos( $post_link, '%' ) ) {
 				return $post_link;
+			}
+
+			$key_cache       = "learn-press/course/item-link/{$post->post_type}/{$post->ID}";
+			$post_link_cache = LP_Cache::cache_load_first( 'get', $key_cache );
+			if ( false !== $post_link_cache ) {
+				return $post_link_cache;
 			}
 
 			// Get the custom taxonomy terms in use by this post
@@ -167,6 +169,7 @@ class LP_Page_Controller {
 			);
 
 			$post_link = str_replace( $find, $replace, $post_link );
+			LP_Cache::cache_load_first( 'set', $key_cache, $post_link );
 		}
 
 		return $post_link;
