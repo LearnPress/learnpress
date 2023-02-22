@@ -909,21 +909,28 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 
 		/**
 		 * Get total user enrolled or finished
-		 *
+		 * @since 4.1.4
+		 * @version 1.0.1
 		 * @return int
 		 */
 		public function get_total_user_enrolled_or_purchased(): int {
-			$key_cache           = "{$this->get_id()}/total-students-attended";
-			$total_user_enrolled = LP_Course_Cache::cache_load_first( 'get', $key_cache );
+			$total           = 0;
+			$lp_course_cache = new LP_Course_Cache( true );
 
-			if ( false === $total_user_enrolled ) {
-				$lp_course_db        = LP_Course_DB::getInstance();
-				$total_user_enrolled = $lp_course_db->get_total_user_enrolled_or_purchased( $this->get_id() );
+			try {
+				$total = $lp_course_cache->get_total_students_enrolled_or_purchased( $this->get_id() );
+				if ( false !== $total ) {
+					return $total;
+				}
 
-				LP_Course_Cache::cache_load_first( 'set', $key_cache, $total_user_enrolled );
+				$lp_course_db = LP_Course_DB::getInstance();
+				$total        = $lp_course_db->get_total_user_enrolled_or_purchased( $this->get_id() );
+				$lp_course_cache->set_total_students_enrolled_or_purchased( $this->get_id(), $total );
+			} catch ( Throwable $e ) {
+				error_log( $e->getMessage() );
 			}
 
-			return $total_user_enrolled;
+			return $total;
 		}
 
 		/**

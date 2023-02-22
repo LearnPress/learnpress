@@ -638,6 +638,7 @@ class LP_User_Items_DB extends LP_Database {
 			// Clear cache total students enrolled.
 			$lp_course_cache = new LP_Course_Cache( true );
 			$lp_course_cache->clean_total_students_enrolled( $course_id );
+			$lp_course_cache->clean_total_students_enrolled_or_purchased( $course_id );
 
 			do_action( 'learn-press/user-item-old/delete', $user_id, $course_id );
 		} catch ( Throwable $e ) {

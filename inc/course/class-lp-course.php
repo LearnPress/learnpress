@@ -435,6 +435,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 				// Clear cache total students enrolled.
 				$lp_course_cache = new LP_Course_Cache( true );
 				$lp_course_cache->clean_total_students_enrolled( $this->get_id() );
+				$lp_course_cache->clean_total_students_enrolled_or_purchased( $this->get_id() );
 			} catch ( Throwable $e ) {
 				error_log( __FUNCTION__ . ':' . $e->getMessage() );
 			}

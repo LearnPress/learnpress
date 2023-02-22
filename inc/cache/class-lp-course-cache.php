@@ -11,8 +11,9 @@ defined( 'ABSPATH' ) || exit();
 
 class LP_Course_Cache extends LP_Cache {
 	protected static $instance;
-	protected $key_group_child                    = 'course';
+	protected $key_group_child             = 'course';
 	protected $key_total_students_enrolled = 'total-students-enrolled';
+	protected $key_total_students_enrolled_or_purchased = 'total-students-enrolled-or-purchased';
 
 	/**
 	 * Get instance
@@ -43,6 +44,21 @@ class LP_Course_Cache extends LP_Cache {
 
 	public function clean_total_students_enrolled( $course_id ) {
 		$key = "{$course_id}/{$this->key_total_students_enrolled}";
+		$this->clear( $key );
+	}
+
+	public function set_total_students_enrolled_or_purchased( $course_id, $total ) {
+		$key = "{$course_id}/{$this->key_total_students_enrolled_or_purchased}";
+		$this->set_cache( $key, $total );
+	}
+
+	public function get_total_students_enrolled_or_purchased( $course_id ) {
+		$key = "{$course_id}/{$this->key_total_students_enrolled_or_purchased}";
+		return $this->get_cache( $key );
+	}
+
+	public function clean_total_students_enrolled_or_purchased( $course_id ) {
+		$key = "{$course_id}/{$this->key_total_students_enrolled_or_purchased}";
 		$this->clear( $key );
 	}
 }

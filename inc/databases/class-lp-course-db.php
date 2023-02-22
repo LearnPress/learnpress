@@ -349,6 +349,8 @@ class LP_Course_DB extends LP_Database {
 			LP_COURSE_PURCHASED
 		);
 
+		$this->check_execute_has_error();
+
 		return (int) $this->wpdb->get_var( $query );
 	}
 
