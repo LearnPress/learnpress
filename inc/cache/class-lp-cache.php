@@ -112,6 +112,7 @@ class LP_Cache {
 		try {
 			wp_cache_delete( $key, $this->key_group );
 			if ( $this->has_thim_cache && LP_Settings::is_created_tb_thim_cache() ) {
+				$key = "{$this->key_group}/{$key}";
 				Thim_Cache_DB::instance()->remove_cache( $key );
 			}
 		} catch ( Throwable $e ) {
