@@ -45,7 +45,7 @@ if ( ! class_exists( 'LP_Admin_Dashboard' ) ) {
 				<?php lp_skeleton_animation_html( 4, 100, 'height: 30px;border-radius:4px;' ); ?>
 			</ul>
 			<?php
-			$eduma_data = $this->_get_theme_info( 14058034 );
+			// $eduma_data = $this->_get_theme_info( 14058034 );
 			if ( ! empty( $eduma_data ) ) {
 				$eduma_data['url'] = learn_press_get_item_referral( 14058034 );
 				?>
