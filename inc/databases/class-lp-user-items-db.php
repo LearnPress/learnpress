@@ -358,7 +358,9 @@ class LP_User_Items_DB extends LP_Database {
 
 		$this->check_execute_has_error();
 
-		$lp_user_items_cache->set_user_item( $key_cache, json_encode( $result ) );
+		if ( $result ) {
+			$lp_user_items_cache->set_user_item( $key_cache, json_encode( $result ) );
+		}
 
 		return $result;
 	}
