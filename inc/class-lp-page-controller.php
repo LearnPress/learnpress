@@ -86,49 +86,26 @@ class LP_Page_Controller {
 		$course_item_types = learn_press_get_course_item_types();
 		$item_id           = $post->ID;
 
-		// Link item course.
-		if ( in_array( $post->post_type, $course_item_types ) ) {
-			global $wp;
-			// Link item course on single course.
-			if ( ! empty( $wp->query_vars[ LP_COURSE_CPT ] ) ) {
-				$lp_course_filter = new LP_Course_Filter();
-				$lp_course_filter->post_name = $wp->query_vars[ LP_COURSE_CPT ];
-				$lp_course_filter->post_type = LP_COURSE_CPT;
-				$lp_course_filter->limit = 1;
-				$lp_course_filter->only_fields = ['ID'];
-				$lp_course_filter->run_query_count = false;
-				$courses = LP_Course::get_courses( $lp_course_filter );
-				if ( ! empty( $courses ) ) {
-					$course_id = $courses[0]->ID;
-					$course = learn_press_get_course( $course_id );
-					if ( ! $course ) {
-						return $post_link;
-					}
-
-					$post_link = $course->get_item_link( $item_id );
-				}
+		// Link item course on search page of WP.
+		if ( in_array( $post->post_type, $course_item_types ) && is_search() ) {
+			$section_id = LP_Section_DB::getInstance()->get_section_id_by_item_id( $item_id );
+			if ( ! $section_id ) {
+				return $post_link;
 			}
-			// Link item course on search page of WP.
-			elseif ( is_search() ) {
-				$section_id = LP_Section_DB::getInstance()->get_section_id_by_item_id( $item_id );
-				if ( ! $section_id ) {
-					return $post_link;
-				}
 
-				$course_id = LP_Section_DB::getInstance()->get_course_id_by_section( $section_id );
-				if ( ! $course_id ) {
-					return $post_link;
-				}
-
-				$course = learn_press_get_course( $course_id );
-				if ( ! $course ) {
-					return $post_link;
-				}
-
-				$post_link = $course->get_item_link( $item_id );
+			$course_id = LP_Section_DB::getInstance()->get_course_id_by_section( $section_id );
+			if ( ! $course_id ) {
+				return $post_link;
 			}
+
+			$course = learn_press_get_course( $course_id );
+			if ( ! $course ) {
+				return $post_link;
+			}
+
+			$post_link = $course->get_item_link( $item_id );
 		}
-		// Link course on list courses.
+		// Link item course on single course (with %course_category%).
 		elseif ( LP_COURSE_CPT === $post->post_type ) {
 			// Abort early if the placeholder rewrite tag isn't in the generated URL
 			if ( false === strpos( $post_link, '%' ) ) {
