@@ -61,7 +61,7 @@ class LP_Assets extends LP_Abstract_Assets {
 	public function _get_script_data(): array {
 		$localize_script = [
 			'lp-global'       => array(
-				'url'                                => learn_press_get_current_url(),
+				//'url'                                => learn_press_get_current_url(),
 				'siteurl'                            => site_url(),
 				'ajax'                               => admin_url( 'admin-ajax.php' ),
 				'courses_url'                        => learn_press_get_page_link( 'courses' ),

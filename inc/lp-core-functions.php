@@ -296,8 +296,12 @@ function learn_press_is_endpoint_url( $endpoint = false ) {
  * Get current URL user is viewing.
  *
  * @return string
+ * @deprecated 4.2.2
  */
 function learn_press_get_current_url() {
+	_deprecated_function( __FUNCTION__, '4.2.2', 'LP_Helper::getUrlCurrent' );
+	return LP_Helper::getUrlCurrent();
+
 	$url = untrailingslashit( esc_url_raw( $_SERVER['REQUEST_URI'] ) );
 
 	if ( ! preg_match( '!^https?!', $url ) ) {
@@ -446,9 +450,9 @@ function learn_press_get_course_terms( $course_id, $taxonomy, $args = array() ) 
 			unset( $args['orderby'] );
 
 			// Set args for get_terms
-			$args['menu_order'] = isset( $args['order'] ) ? $args['order'] : 'ASC';
-			$args['hide_empty'] = isset( $args['hide_empty'] ) ? $args['hide_empty'] : 0;
-			$args['fields']     = isset( $args['fields'] ) ? $args['fields'] : 'names';
+			$args['menu_order'] = $args['order'] ?? 'ASC';
+			$args['hide_empty'] = $args['hide_empty'] ?? 0;
+			$args['fields']     = $args['fields'] ?? 'names';
 
 			// Ensure slugs is valid for get_terms - slugs isn't supported
 			$args['fields'] = $args['fields'] === 'slugs' ? 'id=>slug' : $args['fields'];
@@ -2785,7 +2789,7 @@ function learn_press_global_script_params(): array {
 		'ajax'        => admin_url( 'admin-ajax.php' ),
 		'plugin_url'  => LearnPress::instance()->plugin_url(),
 		'siteurl'     => home_url(),
-		'current_url' => learn_press_get_current_url(),
+		//'current_url' => learn_press_get_current_url(),
 		'theme'       => get_stylesheet(),
 		'localize'    => array(
 			'button_ok'     => __( 'OK', 'learnpress' ),
