@@ -385,6 +385,14 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 				return $got_status;
 			}
 
+			if ( LP_COURSE_CPT === $this->get_type()) {
+				return $this->get_data( $field );
+			}
+
+			/*error_log('status user item id: ' . $this->get_id());
+			error_log('status user item type: ' . $this->get_type());
+			error_log('status user course status: ' . $this->get_data( $field ));*/
+
 			$lp_user_item = LP_User_Items_DB::getInstance();
 			$filter       = new LP_User_Items_Filter();
 
