@@ -167,13 +167,13 @@ if ( ! class_exists( 'LP_Admin_Dashboard' ) ) {
 		 * Plugin status widget
 		 */
 		public function plugin_status() {
-			$plugin_data = $this->_get_data();
+			/*$plugin_data = $this->_get_data();
 
 			if ( ! $plugin_data || is_wp_error( $plugin_data ) ) {
 				learn_press_admin_view( 'dashboard/plugin-status/html-no-data' );
 			} else {
 				learn_press_admin_view( 'dashboard/plugin-status/html-results', array( 'plugin_data' => $plugin_data ) );
-			}
+			}*/
 		}
 	}
 }
