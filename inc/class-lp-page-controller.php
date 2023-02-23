@@ -47,7 +47,7 @@ class LP_Page_Controller {
 		add_filter( 'wpseo_opengraph_desc', array( $this, 'lp_desc_item_yoast_seo' ), 11, 1 );
 		add_filter( 'wpseo_metadesc', array( $this, 'lp_desc_item_yoast_seo' ), 11, 1 );
 
-		// Set link item course.
+		// Set link course, item course.
 		add_filter( 'post_type_link', array( $this, 'post_type_link' ), 10, 2 );
 
 		// Set link profile to admin menu
@@ -76,7 +76,7 @@ class LP_Page_Controller {
 	}
 
 	/**
-	 * Set link item course
+	 * Set link course, item course
 	 *
 	 * @param string $post_link
 	 * @param object $post
@@ -86,26 +86,50 @@ class LP_Page_Controller {
 		$course_item_types = learn_press_get_course_item_types();
 		$item_id           = $post->ID;
 
+		// Link item course.
 		if ( in_array( $post->post_type, $course_item_types ) ) {
-			$section_id = LP_Section_DB::getInstance()->get_section_id_by_item_id( $item_id );
+			global $wp;
+			// Link item course on single course.
+			if ( ! empty( $wp->query_vars[ LP_COURSE_CPT ] ) ) {
+				$lp_course_filter = new LP_Course_Filter();
+				$lp_course_filter->post_name = $wp->query_vars[ LP_COURSE_CPT ];
+				$lp_course_filter->post_type = LP_COURSE_CPT;
+				$lp_course_filter->limit = 1;
+				$lp_course_filter->only_fields = ['ID'];
+				$lp_course_filter->run_query_count = false;
+				$courses = LP_Course::get_courses( $lp_course_filter );
+				if ( ! empty( $courses ) ) {
+					$course_id = $courses[0]->ID;
+					$course = learn_press_get_course( $course_id );
+					if ( ! $course ) {
+						return $post_link;
+					}
 
-			if ( ! $section_id ) {
-				return $post_link;
+					$post_link = $course->get_item_link( $item_id );
+				}
 			}
+			// Link item course on search page of WP.
+			elseif ( is_search() ) {
+				$section_id = LP_Section_DB::getInstance()->get_section_id_by_item_id( $item_id );
+				if ( ! $section_id ) {
+					return $post_link;
+				}
 
-			$course_id = LP_Section_DB::getInstance()->get_course_id_by_section( $section_id );
+				$course_id = LP_Section_DB::getInstance()->get_course_id_by_section( $section_id );
+				if ( ! $course_id ) {
+					return $post_link;
+				}
 
-			if ( ! $course_id ) {
-				return $post_link;
+				$course = learn_press_get_course( $course_id );
+				if ( ! $course ) {
+					return $post_link;
+				}
+
+				$post_link = $course->get_item_link( $item_id );
 			}
-
-			$course = learn_press_get_course( $course_id );
-			if ( ! $course ) {
-				return $post_link;
-			}
-
-			$post_link = $course->get_item_link( $item_id );
-		} elseif ( LP_COURSE_CPT === $post->post_type ) {
+		}
+		// Link course on list courses.
+		elseif ( LP_COURSE_CPT === $post->post_type ) {
 			// Abort early if the placeholder rewrite tag isn't in the generated URL
 			if ( false === strpos( $post_link, '%' ) ) {
 				return $post_link;

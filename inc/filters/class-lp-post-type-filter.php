@@ -53,6 +53,10 @@ if ( ! class_exists( 'LP_Post_Type_Filter' ) ) {
 		 */
 		public $post_title = '';
 		/**
+		 * @var string
+		 */
+		public $post_name = '';
+		/**
 		 * @var array
 		 */
 		public $post_status = array( 'publish' );

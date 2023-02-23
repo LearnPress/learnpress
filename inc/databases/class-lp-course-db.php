@@ -506,6 +506,11 @@ class LP_Course_DB extends LP_Database {
 			$filter->where[] = $this->wpdb->prepare( 'AND p.post_title LIKE %s', '%' . $filter->post_title . '%' );
 		}
 
+		// Slug
+		if ( $filter->post_name ) {
+			$filter->where[] = $this->wpdb->prepare( 'AND p.post_name = %s', $filter->post_name );
+		}
+
 		// Author
 		if ( $filter->post_author ) {
 			$filter->where[] = $this->wpdb->prepare( 'AND p.post_author = %d', $filter->post_author );

@@ -141,7 +141,7 @@ function _learn_press_usort_terms_by_ID( $terms ) {
 	return $terms;
 }
 
-function learn_press_course_post_type_link( $permalink, $post ) {
+/*function learn_press_course_post_type_link( $permalink, $post ) {
 	if ( $post->post_type !== 'lp_course' ) {
 		return $permalink;
 	}
@@ -204,7 +204,7 @@ function learn_press_course_post_type_link( $permalink, $post ) {
 	$permalink = str_replace( $find, $replace, $permalink );
 
 	return $permalink;
-}
+}*/
 
 //add_filter( 'post_type_link', 'learn_press_course_post_type_link', 10, 2 );
 
