@@ -357,10 +357,8 @@ class LP_User_Items_DB extends LP_Database {
 		$result = $this->wpdb->get_row( $query );
 
 		$this->check_execute_has_error();
-
-		if ( $result ) {
-			$lp_user_items_cache->set_user_item( $key_cache, json_encode( $result ) );
-		}
+		// Set cache
+		$lp_user_items_cache->set_user_item( $key_cache, json_encode( $result ) );
 
 		return $result;
 	}
