@@ -299,7 +299,7 @@ function learn_press_is_endpoint_url( $endpoint = false ) {
  * @deprecated 4.2.2
  */
 function learn_press_get_current_url() {
-	_deprecated_function( __FUNCTION__, '4.2.2', 'LP_Helper::getUrlCurrent' );
+	//_deprecated_function( __FUNCTION__, '4.2.2', 'LP_Helper::getUrlCurrent' );
 	return LP_Helper::getUrlCurrent();
 
 	$url = untrailingslashit( esc_url_raw( $_SERVER['REQUEST_URI'] ) );
