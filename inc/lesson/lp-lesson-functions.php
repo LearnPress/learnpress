@@ -19,7 +19,7 @@ function learn_press_lesson_comment_form_fields( $post_id ) {
 
 	<?php
 }
-add_action( 'comment_form', 'learn_press_lesson_comment_form_fields' );
+//add_action( 'comment_form', 'learn_press_lesson_comment_form_fields' );
 
 if ( ! function_exists( 'learn_press_get_only_content_permalink' ) ) {
 	function learn_press_get_only_content_permalink( $redirect, $comment ) {
@@ -38,7 +38,7 @@ if ( ! function_exists( 'learn_press_get_only_content_permalink' ) ) {
 		return esc_url_raw( add_query_arg( 'content-item-only', 'yes', LP_Helper::sanitize_params_submitted( $_REQUEST['content-item-only-redirect'] ) ) );
 	}
 }
-add_filter( 'comment_post_redirect', 'learn_press_get_only_content_permalink', 10, 2 );
+//add_filter( 'comment_post_redirect', 'learn_press_get_only_content_permalink', 10, 2 );
 
 /*function learn_press_lesson_comment_form() {
 	global $post;
@@ -78,4 +78,4 @@ function learn_press_lesson_before_delete_post( $post_id, $force = false ) {
 		$wpdb->query( $sql );
 	}
 }
-add_action( 'delete_post', 'learn_press_lesson_before_delete_post', 10, 2 );
+//add_action( 'delete_post', 'learn_press_lesson_before_delete_post', 10, 2 );
