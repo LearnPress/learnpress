@@ -282,6 +282,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/cache/class-lp-question-cache.php';
 			require_once 'inc/cache/class-lp-session-cache.php';
 			require_once 'inc/cache/class-lp-settings-cache.php';
+			require_once 'inc/cache/class-lp-user-items-cache.php';
 
 			// Background processes.
 			require_once 'inc/libraries/wp-background-process/wp-background-processing.php';
@@ -370,8 +371,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/user-item/class-lp-user-item-course.php';
 			require_once 'inc/user-item/class-lp-user-item-quiz.php';
 			require_once 'inc/user-item/class-lp-quiz-results.php';
-			require_once 'inc/class-lp-session-handler.php';
-
 			require_once 'inc/class-lp-shortcodes.php';
 
 			// include template functions .
@@ -448,6 +447,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/course/class-model-user-can-view-course-item.php';
 
 			require_once 'inc/class-lp-ajax.php';
+
+			require_once 'inc/class-lp-session-handler.php';
 		}
 
 		/**

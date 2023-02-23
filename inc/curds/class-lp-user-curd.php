@@ -223,7 +223,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @return void
 	 * @deprecated 4.1.6.1
 	 */
-	public function init() {
+	/*public function init() {
 		if ( $this->_user_id || $this->_course_id ) {
 			if ( ! $this->_course_id ) {
 				$this->_course_id = get_the_ID();
@@ -240,7 +240,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			$this->load( $user );
 			$this->read_course( $user->get_id(), $this->_course_id );
 		}
-	}
+	}*/
 
 	/**
 	 * @param LP_User $user
@@ -661,8 +661,10 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @editor tungnx
 	 * @modify 4.1.2
 	 * @Todo should rewrite
+	 * @deprecated 4.2.2
 	 */
 	public function read_course( int $user_id = 0, int $course_id = null, bool $force = false ) {
+		_deprecated_function( __METHOD__, '4.2.2' );
 		$lp_user_items_db = LP_User_Items_DB::getInstance();
 
 		if ( is_null( $user_id ) ) {

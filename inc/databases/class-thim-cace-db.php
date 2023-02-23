@@ -29,8 +29,8 @@ class Thim_Cache_DB {
 	/**
 	 * @var wpdb $wpdb
 	 */
-	private $wpdb;
-	private $table_name;
+	public $wpdb;
+	public $table_name;
 
 	protected function __construct() {
 		$this->wpdb       = $GLOBALS['wpdb'];

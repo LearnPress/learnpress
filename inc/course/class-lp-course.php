@@ -436,6 +436,9 @@ if ( ! class_exists( 'LP_Course' ) ) {
 				$lp_course_cache = new LP_Course_Cache( true );
 				$lp_course_cache->clean_total_students_enrolled( $this->get_id() );
 				$lp_course_cache->clean_total_students_enrolled_or_purchased( $this->get_id() );
+				// Clear cache user course.
+				$lp_user_items_cache = new LP_User_Items_Cache( true );
+				$lp_user_items_cache->clean_user_items_by_course( $this->get_id() );
 			} catch ( Throwable $e ) {
 				error_log( __FUNCTION__ . ':' . $e->getMessage() );
 			}

@@ -498,6 +498,15 @@ function learn_press_update_user_item_field( array $fields = [], $where = false,
 			$lp_course_cache->clean_total_students_enrolled( $updated_item->item_id );
 			$lp_course_cache->clean_total_students_enrolled_or_purchased( $updated_item->item_id );
 		}
+		// Clear cache user item.
+		$lp_user_items_cache = new LP_User_Items_Cache( true );
+		$lp_user_items_cache->clean_user_item(
+			[
+				$updated_item->user_id,
+				$updated_item->item_id,
+				$updated_item->item_type,
+			]
+		);
 	}
 
 	do_action( 'learn-press/updated-user-item-field', $updated_item );

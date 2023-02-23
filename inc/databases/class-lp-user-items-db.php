@@ -329,10 +329,15 @@ class LP_User_Items_DB extends LP_Database {
 	 * @throws Exception
 	 */
 	public function get_last_user_course( LP_User_Items_Filter $filter, bool $force_cache = false ) {
-		$key_load_first = 'user_course/' . $filter->user_id . '/' . $filter->item_id;
-		$user_course    = LP_Cache::cache_load_first( 'get', $key_load_first );
-		if ( false !== $user_course && ! $force_cache ) {
-			return $user_course;
+		$lp_user_items_cache = new LP_User_Items_Cache( true );
+		$key_cache           = array(
+			$filter->user_id,
+			$filter->item_id,
+			LP_COURSE_CPT,
+		);
+		$result              = $lp_user_items_cache->get_user_item( $key_cache );
+		if ( false !== $result ) {
+			return json_decode( $result );
 		}
 
 		$query = $this->wpdb->prepare(
@@ -353,7 +358,7 @@ class LP_User_Items_DB extends LP_Database {
 
 		$this->check_execute_has_error();
 
-		LP_Cache::cache_load_first( 'set', $key_load_first, $result );
+		$lp_user_items_cache->set_user_item( $key_cache, json_encode( $result ) );
 
 		return $result;
 	}
@@ -639,6 +644,15 @@ class LP_User_Items_DB extends LP_Database {
 			$lp_course_cache = new LP_Course_Cache( true );
 			$lp_course_cache->clean_total_students_enrolled( $course_id );
 			$lp_course_cache->clean_total_students_enrolled_or_purchased( $course_id );
+			// Clear cache user course.
+			$lp_user_items_cache = new LP_User_Items_Cache( true );
+			$lp_user_items_cache->clean_user_item(
+				[
+					$user_id,
+					$course_id,
+					LP_COURSE_CPT,
+				]
+			);
 
 			do_action( 'learn-press/user-item-old/delete', $user_id, $course_id );
 		} catch ( Throwable $e ) {
