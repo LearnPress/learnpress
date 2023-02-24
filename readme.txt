@@ -205,7 +205,23 @@ https://www.transifex.com/projects/p/learnpress/
 == Changelog ==
 
 = 4.2.2 (2023-03-01) =
+~ Optimized performance.
+~ Optimize: rewrite "add_rewrite_rules" method, only call on "admin_init" hook.
+~ Optimize: flush_rewrite_rules only when save settings.
+~ Optimize: not call get_available_payment_gateways on hook 'wp_loaded'.
+~ Optimize: not call learn_press_get_current_profile_tab on hook 'init'.
+~ Optimize: add thim_cache table for cache (apply for site not install plugin Object Cache - or cache not working).
+~ Optimize: set/get/clear cache for count total students enrolled.
+~ Optimize: set/get/clear cache user_course (user_items) data.
+~ Optimize: only load class REST when call on url of API.
+~ Optimize: modified set cookie session for user Guest(user not login).
 ~ Added: a slash to the end of the course item link.
+~ Fixed: some functions make out of memory.
+~ Fixed: some functions use static not correct make out of memory.
+~ Deprecated "learn_press_get_the_course" function, replace with "learn_press_get_course" function.
+~ Deprecated: "learn_press_get_current_url" function, replace with "LP_Helper::getUrlCurrent" method.
+~ Temporary comment _get_theme_info, plugin info, because very low.
+~ Comment: hook learn_press_lesson_comment_form_fields, learn_press_get_only_content_permalink, learn_press_lesson_before_delete_post
 
 = 4.2.1.1 (2023-02-04) =
 ~ Fixed: error js when add user on LP Order manual.
