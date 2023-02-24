@@ -26,6 +26,11 @@ if ( ! function_exists( 'LP_Install' ) ) {
 		private static $_pages = array( 'checkout', 'profile', 'courses', 'become_a_teacher', 'term_conditions' );
 
 		protected function __construct() {
+			// From LP v4.2.2 temporary run create table thim_cache.
+			// After a long time, will remove this code. Only run create table when activate plugin LP.
+			if ( ! LP_Settings::is_created_tb_thim_cache() ) {
+				$this->create_table_thim_cache();
+			}
 		}
 
 		/**
