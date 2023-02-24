@@ -31,11 +31,11 @@ class LP_Query {
 		 */
 		add_action( 'pre_get_posts', array( $this, 'query_taxonomy' ) );
 		// Clear cache rewrite rules when switch theme, activate, deactivate any plugins.
-		//add_action( 'after_switch_theme', [ $this, 'clear_cache_rewrite_rules' ] );
-		//add_action( 'activate_plugin', [ $this, 'clear_cache_rewrite_rules' ] );
-		//add_action( 'activated_plugin', [ $this, 'clear_cache_rewrite_rules' ] );
-		//add_action( 'deactivate_plugin', [ $this, 'clear_cache_rewrite_rules' ] );
-		//add_action( 'deactivated_plugin', [ $this, 'clear_cache_rewrite_rules' ] );
+		add_action( 'after_switch_theme', [ $this, 'clear_cache_rewrite_rules' ] );
+		add_action( 'activate_plugin', [ $this, 'clear_cache_rewrite_rules' ] );
+		add_action( 'activated_plugin', [ $this, 'clear_cache_rewrite_rules' ] );
+		add_action( 'deactivate_plugin', [ $this, 'clear_cache_rewrite_rules' ] );
+		add_action( 'deactivated_plugin', [ $this, 'clear_cache_rewrite_rules' ] );
 	}
 
 	/**
