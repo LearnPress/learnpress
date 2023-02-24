@@ -19,13 +19,14 @@ if ( ! class_exists( 'LP_Background_Thim_Cache' ) ) {
 		 * Get params via $_POST and handle
 		 */
 		protected function handle() {
-			$key   = LP_Helper::sanitize_params_submitted( $_POST['key'] ?? '' );
-			$value = LP_Helper::sanitize_params_submitted( $_POST['value'] ?? '' );
-			if ( empty( $key ) || empty( $value ) ) {
+			$key  = LP_Helper::sanitize_params_submitted( $_POST['key'] ?? '' );
+			$data = LP_Helper::sanitize_params_submitted( $_POST['data'] ?? '' );
+			if ( empty( $key ) ) {
 				return;
 			}
 
-			Thim_Cache_DB::instance()->set_value( $key, wp_unslash( $value ) );
+			Thim_Cache_DB::instance()->set_value( $key, wp_unslash( $data ) );
+			die();
 		}
 
 		/**

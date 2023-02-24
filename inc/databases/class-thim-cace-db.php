@@ -76,7 +76,7 @@ class Thim_Cache_DB {
 				$key_cache
 			);
 		} else {
-			//Insert
+			// Insert
 			$sql = $this->wpdb->prepare(
 				"INSERT INTO {$this->table_name} (key_cache, value) VALUES (%s, %s)",
 				$key_cache,
