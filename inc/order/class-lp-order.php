@@ -520,22 +520,13 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			return false !== get_userdata( $this->get_data( 'user_id' ) );
 		}*/
 
-		public $order_items_loaded = false;
-
 		/**
 		 * Get items of the order
 		 *
 		 * @return mixed
 		 */
 		public function get_items() {
-			if ( $this->order_items_loaded ) {
-				return $this->order_items_loaded;
-			}
-
 			$items = $this->_curd->read_items( $this );
-
-			$this->order_items_loaded = $items;
-
 			return apply_filters( 'learn-press/order-items', $items );
 		}
 
@@ -648,6 +639,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		public function add_item( $item ): int {
 			global $wpdb;
 			$lp_user_items_db = LP_User_Items_DB::getInstance();
+			$order_item_id    = 0;
 
 			try {
 				if ( is_numeric( $item ) ) {
@@ -716,6 +708,9 @@ if ( ! class_exists( 'LP_Order' ) ) {
 					)
 				);
 				$order_item_id = absint( $wpdb->insert_id );
+				// Clear cache
+				$key = "order/{$this->get_id()}/{$this->get_status()}/items";
+				LP_Cache::cache_load_first( 'clear', $key );
 				// End insert new order item
 
 				// Add learnpress_order_itemmeta
@@ -825,11 +820,15 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		public function add_items( $items ) {
 			settype( $items, 'array' );
 			$item_ids = array();
-			foreach ( $items as $item ) {
-				$item_id = $this->add_item( $item );
-				if ( $item_id ) {
-					$item_ids[] = $item_id;
+			try {
+				foreach ( $items as $item ) {
+					$item_id = $this->add_item( $item );
+					if ( $item_id ) {
+						$item_ids[] = $item_id;
+					}
 				}
+			} catch ( Throwable $e ) {
+				error_log( $e->getMessage() );
 			}
 
 			return $item_ids;

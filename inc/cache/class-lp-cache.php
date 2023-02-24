@@ -103,6 +103,8 @@ class LP_Cache {
 			$first_set_value[ $key ] = $val;
 
 			return $first_set_value[ $key ];
+		} elseif ( 'clear' === $type ) {
+			unset( $first_set_value[ $key ] );
 		}
 
 		return $first_set_value;
