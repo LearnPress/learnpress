@@ -120,6 +120,7 @@ const startQuiz = function*() {
 		}
 
 		// Reload when start/retake quiz
+		window.localStorage.removeItem( 'LP' );
 		window.location.reload();
 
 		//yield _dispatch( 'learnpress/quiz', '__requestStartQuizSuccess', camelCaseDashObjectKeys( response ), itemId, courseId );
