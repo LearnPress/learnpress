@@ -373,6 +373,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			$response->status  = 'success';
 			$response->message = esc_html__( 'Verify Receipt Data successfully.', 'learnpress' );
 		} catch ( \Throwable $th ) {
+			error_log( $th->getMessage() );
 			$response->status  = 'error';
 			$response->message = $th->getMessage();
 		}
