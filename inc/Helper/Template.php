@@ -115,7 +115,7 @@ class Template {
 					return $path_file;
 				}
 			} else {
-				printf( esc_html__( 'Path file %s not exists', 'realpress' ), $path_file );
+				printf( esc_html__( 'Path file %s not exists', 'learnpress' ), $path_file );
 				echo '<br>';
 			}
 		} catch ( \Throwable $e ) {
