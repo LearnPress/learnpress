@@ -20,7 +20,7 @@ A WordPress LMS Plugin to create WordPress Learning Management System. Turn your
 <a href="https://thimpress.com/eduma-mobile-app/?utm_source=WPORG&utm_medium=LP&utm_campaign=Content" target="_blank">LearnPress Mobile App</a>
 <a href="https://thimpress.com/product/learnpress-pro/?utm_source=WPORG&utm_medium=LP&utm_campaign=Content" target="_blank">LearnPress PRO Bundle</a>
 
-LearnPress is free and always will be, but it is still a premium high-quality WordPress Plugin that definitely helps you with making money from your **WordPress based LMS**. Also, LearnPress is highly recommended by WPML as the **[Learning Management System plugin for multilingual sites](https://wpml.org/plugin-functionality/lms/" target="_blank")**. Just try and see how amazing it is. LearnPress WordPress Online Course plugin is lightweight and super powerful with lots of Add-Ons to empower its core system.
+LearnPress is free and always will be, but it is still a premium high-quality WordPress Plugin that definitely helps you with making money from your **WordPress based LMS**. Also, LearnPress is highly recommended by WPML as the <strong><a href="https://wpml.org/plugin-functionality/lms/" target="_blank">Learning Management System plugin for multilingual sites</a></strong>. Just try and see how amazing it is. LearnPress WordPress Online Course plugin is lightweight and super powerful with lots of Add-Ons to empower its core system.
 
 Highly recommended by LearnPress users, we are pleased to introduce you to our best Education WordPress Themes which have Premium LearnPress Add-Ons included already.
 > [Eduma | Education WordPress Theme](https://1.envato.market/G5Ook) (#1 Selling Education WordPress Theme).
@@ -31,7 +31,7 @@ Highly recommended by LearnPress users, we are pleased to introduce you to our b
 
 Take a look at **[Premium Online LMS & Education WordPress Themes](https://1.envato.market/AoKx3D)** that are developed to work perfectly with LearnPress LMS WordPress Plugin. These incredible WordPress Themes are the best for your Online LMS & Education websites using LearnPress with the clean and modern design. From more than 50 demos, you can easily chose the most suitable one which fits your purpose and customize it as your style.
 
-- **[Create a WordPress Udemy with Eduma]](https://eduma.thimpress.com/demo-udemy/?utm_source=WPORG&utm_medium=LP&utm_campaign=Content)**
+- **[Create a WordPress Udemy with Eduma](https://eduma.thimpress.com/demo-udemy/?utm_source=WPORG&utm_medium=LP&utm_campaign=Content)**
 - **[Create a WordPress Coursera with Eduma](https://eduma.thimpress.com/demo-coursera/?utm_source=WPORG&utm_medium=LP&utm_campaign=Content)**
 
 ###LEARNPRESS MOBILE APP###
