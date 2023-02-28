@@ -76,6 +76,10 @@ class LP_Settings {
 		$lp_options        = $lp_settings_cache->get_cache( $cache_key );
 		if ( false !== $lp_options ) {
 			$this->_options = json_decode( $lp_options, true );
+			if ( json_last_error() !== JSON_ERROR_NONE ) {
+				error_log( 'Load options: ' . json_last_error_msg() );
+			}
+
 			return;
 		}
 
