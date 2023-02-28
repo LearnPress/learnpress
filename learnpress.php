@@ -468,7 +468,17 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			//add_action( 'wp_loaded', array( $this, 'wp_loaded' ), 20 );
 			//add_action( 'after_setup_theme', array( $this, 'setup_theme' ) );
-			add_action( 'plugins_loaded', array( $this, 'plugin_loaded' ), - 10 );
+			add_action( 'plugins_loaded', array( $this, 'plugins_loaded' ), - 10 );
+			add_action(
+				'plugin_loaded',
+				function ( $plugin ) {
+					// For check wp_remote call normally of WP
+					if ( ! empty( LP_Request::get_param( 'lp_test_wp_remote' ) ) ) {
+						echo '[TEST_REMOTE]';
+						die;
+					}
+				}
+			);
 
 			// Check require version thim-core on Backend.
 			if ( is_admin() ) {
@@ -588,14 +598,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * @version 1.0.2
 		 * @editor tungnx
 		 */
-		public function plugin_loaded() {
+		public function plugins_loaded() {
 			do_action( 'learnpress/hook/before-addons-call-hook-learnpress-ready' );
-
-			// For check wp_remote call normally of WP
-			if ( ! empty( LP_Request::get_param( 'lp_test_wp_remote' ) ) ) {
-				echo '[TEST_REMOTE]';
-				die;
-			}
 
 			// Polylang
 			if ( defined( 'POLYLANG_VERSION' ) ) {
