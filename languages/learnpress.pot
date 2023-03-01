@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the LearnPress plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: LearnPress 4.2.2-beta-3\n"
+"Project-Id-Version: LearnPress 4.2.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/learnpress\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2023-02-27T13:42:10+03:00\n"
+"POT-Creation-Date: 2023-03-01T09:42:31+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.7.1\n"
 "X-Domain: learnpress\n"
@@ -298,7 +298,7 @@ msgstr ""
 #: inc/admin/lp-admin-actions.php:217
 #: inc/admin/sub-menus/class-lp-submenu-statistics.php:21
 #: inc/admin/sub-menus/class-lp-submenu-statistics.php:28
-#: inc/class-lp-page-controller.php:253
+#: inc/class-lp-page-controller.php:190
 #: inc/custom-post-types/course.php:106
 #: inc/custom-post-types/course.php:108
 #: inc/lp-template-functions.php:315
@@ -339,7 +339,7 @@ msgstr ""
 #: inc/admin/sub-menus/class-lp-submenu-settings.php:18
 #: inc/admin/views/addons.php:125
 #: inc/user/class-lp-profile.php:276
-#: learnpress.php:519
+#: learnpress.php:529
 msgid "Settings"
 msgstr ""
 
@@ -485,39 +485,39 @@ msgstr ""
 msgid "Duplicate post failed. Please try again"
 msgstr ""
 
-#: inc/admin/class-lp-admin-ajax.php:409
+#: inc/admin/class-lp-admin-ajax.php:416
 msgid "Access denied"
 msgstr ""
 
-#: inc/admin/class-lp-admin-ajax.php:415
+#: inc/admin/class-lp-admin-ajax.php:422
 msgid "Nonce check failed"
 msgstr ""
 
-#: inc/admin/class-lp-admin-ajax.php:421
-#: inc/admin/class-lp-admin-ajax.php:476
+#: inc/admin/class-lp-admin-ajax.php:428
+#: inc/admin/class-lp-admin-ajax.php:483
 #: templates/order/order-details.php:15
 msgid "Invalid order"
 msgstr ""
 
-#: inc/admin/class-lp-admin-ajax.php:470
+#: inc/admin/class-lp-admin-ajax.php:477
 msgid "Permission denied"
 msgstr ""
 
-#: inc/admin/class-lp-admin-ajax.php:623
-#: inc/admin/class-lp-admin-ajax.php:642
+#: inc/admin/class-lp-admin-ajax.php:630
+#: inc/admin/class-lp-admin-ajax.php:649
 msgid "Edit Page"
 msgstr ""
 
-#: inc/admin/class-lp-admin-ajax.php:624
-#: inc/admin/class-lp-admin-ajax.php:644
+#: inc/admin/class-lp-admin-ajax.php:631
+#: inc/admin/class-lp-admin-ajax.php:651
 msgid "View Page"
 msgstr ""
 
-#: inc/admin/class-lp-admin-ajax.php:626
+#: inc/admin/class-lp-admin-ajax.php:633
 msgid "Error! Page creation failed. Please try again."
 msgstr ""
 
-#: inc/admin/class-lp-admin-ajax.php:629
+#: inc/admin/class-lp-admin-ajax.php:636
 msgid "Empty page name!"
 msgstr ""
 
@@ -703,7 +703,7 @@ msgstr ""
 msgid "Thank you for subscribing! Please check and click the confirmation link from the email that we've just sent to your inbox."
 msgstr ""
 
-#: inc/admin/class-lp-admin.php:847
+#: inc/admin/class-lp-admin.php:846
 msgid "Permalink is only available if the item is already assigned to a course."
 msgstr ""
 
@@ -1493,7 +1493,7 @@ msgid "Reset Password"
 msgstr ""
 
 #: inc/admin/sub-menus/class-lp-submenu-addons.php:14
-#: learnpress.php:521
+#: learnpress.php:531
 msgid "Add-ons"
 msgstr ""
 
@@ -3077,6 +3077,11 @@ msgstr ""
 msgid "Password reset is not allowed for this user."
 msgstr ""
 
+#: inc/class-lp-helper.php:619
+msgctxt "slug"
+msgid "uncategorized"
+msgstr ""
+
 #: inc/class-lp-manager-addons.php:128
 msgid "Install failed!"
 msgstr ""
@@ -3085,17 +3090,12 @@ msgstr ""
 msgid "Update failed!"
 msgstr ""
 
-#: inc/class-lp-page-controller.php:145
-msgctxt "slug"
-msgid "uncategorized"
-msgstr ""
-
-#: inc/class-lp-page-controller.php:251
+#: inc/class-lp-page-controller.php:188
 #: inc/lp-template-functions.php:313
 msgid "Course Search Results"
 msgstr ""
 
-#: inc/class-lp-page-controller.php:325
+#: inc/class-lp-page-controller.php:262
 msgid "No payment method is available."
 msgstr ""
 
@@ -6956,7 +6956,7 @@ msgstr ""
 msgid "Recent Courses"
 msgstr ""
 
-#: learnpress.php:520
+#: learnpress.php:530
 msgid "Documentation"
 msgstr ""
 
