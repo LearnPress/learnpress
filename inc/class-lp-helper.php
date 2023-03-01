@@ -592,8 +592,6 @@ class LP_Helper {
 			// Get the custom taxonomy terms in use by this post
 			$terms = get_the_terms( $post->ID, 'course_category' );
 
-			error_log(print_r($terms, true));
-
 			if ( ! empty( $terms ) ) {
 				$terms = wp_list_sort( $terms, 'term_id' );
 				// order by ID
