@@ -617,9 +617,12 @@ class LP_Page_Controller {
 			return $q;
 		}
 
+		$theme_is_load_ajax_courses = apply_filters( 'lp/page/courses/query/lazy_load', false );
+
 		try {
 			if ( LP_Page_Controller::is_page_courses() ) {
-				if ( LP_Settings_Courses::is_ajax_load_courses() && ! LP_Settings_Courses::is_no_load_ajax_first_courses() ) {
+				if ( LP_Settings_Courses::is_ajax_load_courses() && ! LP_Settings_Courses::is_no_load_ajax_first_courses()
+				&& $theme_is_load_ajax_courses ) {
 					LearnPress::instance()->template( 'course' )->remove_callback( 'learn-press/after-courses-loop', 'loop/course/pagination.php', 10 );
 					/**
 					 * If page is archive course - query set posts_per_page = 1
