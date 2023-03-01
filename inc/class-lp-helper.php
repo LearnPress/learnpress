@@ -466,22 +466,6 @@ class LP_Helper {
 	}
 
 	/**
-	 * Get wp file system
-	 *
-	 * @return mixed
-	 */
-	public static function get_wp_filesystem() {
-		global $wp_filesystem;
-
-		if ( empty( $wp_filesystem ) ) {
-			require_once( ABSPATH . '/wp-admin/includes/file.php' );
-			WP_Filesystem();
-		}
-
-		return $wp_filesystem;
-	}
-
-	/**
 	 * Wrap function $wpdb->prepare(...) to support arguments as
 	 * array.
 	 *
@@ -534,7 +518,7 @@ class LP_Helper {
 
 		$percent = ( $offset + $limit ) * 100 / $total_row;
 
-		$percent = $percent > 100 ? 100 : $percent;
+		$percent = min( $percent, 100 );
 
 		return floatval( number_format( $percent, 2 ) );
 	}
@@ -571,5 +555,74 @@ class LP_Helper {
 	public static function is_json( string $str ): bool {
 		json_decode( $str );
 		return json_last_error() === JSON_ERROR_NONE;
+	}
+
+	/**
+	 * Handle permalink structure for LP
+	 *
+	 * @return string
+	 * @since 4.2.2
+	 */
+	public static function handle_lp_permalink_structure( $post_link, $post ) {
+		if ( false === strpos( $post_link, '%' ) ) {
+			return $post_link;
+		}
+
+		$find = array(
+			'%year%',
+			'%monthnum%',
+			'%day%',
+			'%hour%',
+			'%minute%',
+			'%second%',
+			'%post_id%',
+		);
+
+		$replace = array(
+			date_i18n( 'Y', strtotime( $post->post_date ) ),
+			date_i18n( 'm', strtotime( $post->post_date ) ),
+			date_i18n( 'd', strtotime( $post->post_date ) ),
+			date_i18n( 'H', strtotime( $post->post_date ) ),
+			date_i18n( 'i', strtotime( $post->post_date ) ),
+			date_i18n( 's', strtotime( $post->post_date ) ),
+			$post->ID,
+		);
+
+		if ( strpos( $post_link, '%course_category%' ) && get_post_type( $post ) === LP_COURSE_CPT ) {
+			// Get the custom taxonomy terms in use by this post
+			$terms = get_the_terms( $post->ID, 'course_category' );
+
+			error_log(print_r($terms, true));
+
+			if ( ! empty( $terms ) ) {
+				$terms = wp_list_sort( $terms, 'term_id' );
+				// order by ID
+				$category_object = apply_filters(
+					'learn_press_course_post_type_link_course_category',
+					$terms[0],
+					$terms,
+					$post
+				);
+				$category_object = get_term( $category_object, 'course_category' );
+				$course_category = $category_object->slug;
+
+				$parent = $category_object->parent;
+				if ( $parent ) {
+					$ancestors = get_ancestors( $category_object->term_id, 'course_category' );
+					foreach ( $ancestors as $ancestor ) {
+						$ancestor_object = get_term( $ancestor, 'course_category' );
+						$course_category = $ancestor_object->slug . '/' . $course_category;
+					}
+				}
+			} else {
+				// If no terms are assigned to this post, use a string instead (can't leave the placeholder there)
+				$course_category = _x( 'uncategorized', 'slug', 'learnpress' );
+			}
+
+			$find[]    = '%course_category%';
+			$replace[] = $course_category;
+		}
+
+		return str_replace( $find, $replace, $post_link );
 	}
 }

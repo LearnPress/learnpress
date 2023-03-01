@@ -107,70 +107,7 @@ class LP_Page_Controller {
 		}
 		// Link item course on single course (with %course_category%).
 		elseif ( LP_COURSE_CPT === $post->post_type ) {
-			// Abort early if the placeholder rewrite tag isn't in the generated URL
-			if ( false === strpos( $post_link, '%' ) ) {
-				return $post_link;
-			}
-
-			$key_cache       = "learn-press/course/item-link/{$post->post_type}/{$post->ID}";
-			$post_link_cache = LP_Cache::cache_load_first( 'get', $key_cache );
-			if ( false !== $post_link_cache ) {
-				return $post_link_cache;
-			}
-
-			// Get the custom taxonomy terms in use by this post
-			$terms = get_the_terms( $post->ID, 'course_category' );
-
-			if ( ! empty( $terms ) ) {
-				$terms           = _learn_press_usort_terms_by_ID( $terms ); // order by ID
-				$category_object = apply_filters(
-					'learn_press_course_post_type_link_course_category',
-					$terms[0],
-					$terms,
-					$post
-				);
-				$category_object = get_term( $category_object, 'course_category' );
-				$course_category = $category_object->slug;
-
-				$parent = $category_object->parent;
-				if ( $parent ) {
-					$ancestors = get_ancestors( $category_object->term_id, 'course_category' );
-					foreach ( $ancestors as $ancestor ) {
-						$ancestor_object = get_term( $ancestor, 'course_category' );
-						$course_category = $ancestor_object->slug . '/' . $course_category;
-					}
-				}
-			} else {
-				// If no terms are assigned to this post, use a string instead (can't leave the placeholder there)
-				$course_category = _x( 'uncategorized', 'slug', 'learnpress' );
-			}
-
-			$find = array(
-				'%year%',
-				'%monthnum%',
-				'%day%',
-				'%hour%',
-				'%minute%',
-				'%second%',
-				'%post_id%',
-				'%category%',
-				'%course_category%',
-			);
-
-			$replace = array(
-				date_i18n( 'Y', strtotime( $post->post_date ) ),
-				date_i18n( 'm', strtotime( $post->post_date ) ),
-				date_i18n( 'd', strtotime( $post->post_date ) ),
-				date_i18n( 'H', strtotime( $post->post_date ) ),
-				date_i18n( 'i', strtotime( $post->post_date ) ),
-				date_i18n( 's', strtotime( $post->post_date ) ),
-				$post->ID,
-				$course_category,
-				$course_category,
-			);
-
-			$post_link = str_replace( $find, $replace, $post_link );
-			LP_Cache::cache_load_first( 'set', $key_cache, $post_link );
+			$post_link = LP_Helper::handle_lp_permalink_structure( $post_link, $post );
 		}
 
 		return $post_link;
