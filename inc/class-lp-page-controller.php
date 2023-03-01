@@ -617,12 +617,16 @@ class LP_Page_Controller {
 			return $q;
 		}
 
-		$theme_is_load_ajax_courses = apply_filters( 'lp/page/courses/query/lazy_load', false );
+		$theme_no_load_ajax = apply_filters(
+			'lp/page/courses/themes/no_load_ajax',
+			[ 'Coaching', 'Course Builder', 'eLearningWP', 'Ivy School', 'StarKid', 'Academy LMS' ]
+		);
+		$theme_current      = wp_get_theme()->get( 'Name' );
 
 		try {
 			if ( LP_Page_Controller::is_page_courses() ) {
 				if ( LP_Settings_Courses::is_ajax_load_courses() && ! LP_Settings_Courses::is_no_load_ajax_first_courses()
-				&& $theme_is_load_ajax_courses ) {
+				&& ! in_array( $theme_current, $theme_no_load_ajax ) ) {
 					LearnPress::instance()->template( 'course' )->remove_callback( 'learn-press/after-courses-loop', 'loop/course/pagination.php', 10 );
 					/**
 					 * If page is archive course - query set posts_per_page = 1
