@@ -301,7 +301,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			$response[ $payment->id ] = $payment->enable( $status == 'yes' );
 
 			$lp_settings_cache = new LP_Settings_Cache( true );
-			$lp_settings_cache->clear( $lp_settings_cache->key_settings );
+			$lp_settings_cache->clean_lp_settings();
 
 			learn_press_send_json( $response );
 		}
@@ -334,7 +334,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			}
 
 			$lp_settings_cache = new LP_Settings_Cache( true );
-			$lp_settings_cache->clear( $lp_settings_cache->key_settings );
+			$lp_settings_cache->clean_lp_settings();
 
 			learn_press_send_json( $response );
 		}

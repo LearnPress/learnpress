@@ -1429,7 +1429,7 @@ function learn_press_seconds_to_weeks( int $secs = 0 ) {
 	return $result;
 }
 
-add_filter( 'learn_press_course_lesson_permalink', 'learn_press_course_lesson_permalink_friendly', 10, 3 );
+//add_filter( 'learn_press_course_lesson_permalink', 'learn_press_course_lesson_permalink_friendly', 10, 3 );
 function learn_press_course_lesson_permalink_friendly( $permalink, $lesson_id, $course_id ) {
 	if ( '' != get_option( 'permalink_structure' ) ) {
 		if ( preg_match( '!\?lesson=([^\?\&]*)!', $permalink, $matches ) ) {

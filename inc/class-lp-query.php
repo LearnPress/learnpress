@@ -141,7 +141,7 @@ class LP_Query {
 	 */
 	public function add_rewrite_rules() {
 		$lp_settings_cache = new LP_Settings_Cache( true );
-		$cached_rules      = $lp_settings_cache->get_cache( $lp_settings_cache->key_rewrite_rules );
+		$cached_rules      = $lp_settings_cache->get_rewrite_rules();
 		if ( false !== $cached_rules ) {
 			return;
 		}
@@ -330,7 +330,7 @@ class LP_Query {
 		}*/
 
 		flush_rewrite_rules();
-		$lp_settings_cache->set_cache( $lp_settings_cache->key_rewrite_rules, 1 );
+		$lp_settings_cache->set_rewrite_rules( 1 );
 	}
 
 	/**
@@ -476,6 +476,6 @@ class LP_Query {
 	 */
 	public function clear_cache_rewrite_rules() {
 		$lp_settings_cache = new LP_Settings_Cache( true );
-		$lp_settings_cache->clear( $lp_settings_cache->key_rewrite_rules );
+		$lp_settings_cache->clean_lp_rewrite_rules();
 	}
 }
