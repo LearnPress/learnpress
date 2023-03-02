@@ -1893,6 +1893,8 @@ function learn_press_get_endpoint_url( $name, $value, $url ) {
  * Add all endpoints from settings to the pages.
  */
 function learn_press_add_endpoints() {
+	// Must LP_Profile::instance call on init, because it will add action hook to save data on Profile page
+	// If rewrite save data on Profile page, can remove it.
 	LP_Profile::instance( get_current_user_id() );
 
 	$settings = LP_Settings::instance();

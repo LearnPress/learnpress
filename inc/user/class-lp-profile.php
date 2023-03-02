@@ -527,9 +527,13 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				return new WP_Error( 2, 'The user is invalid' );
 			}
 
-			$message = '';
+			$message        = [
+				'status'  => 'error',
+				'content' => '',
+			];
+			$message_action = '';
 
-			foreach ( $this->_default_actions as $_action => $message ) {
+			foreach ( $this->_default_actions as $_action => $message_action ) {
 				if ( wp_verify_nonce( $nonce, 'learn-press-save-profile-' . $_action ) ) {
 					$action = $_action;
 					break;
@@ -546,11 +550,6 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				case 'basic-information':
 					$return = learn_press_update_user_profile_basic_information( true );
 					break;
-				case 'avatar':
-					if ( $this->is_enable_avatar() ) {
-						$return = learn_press_update_user_profile_avatar( true );
-					}
-					break;
 				case 'password':
 					$return = learn_press_update_user_profile_change_password( true );
 					break;
@@ -565,17 +564,18 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			}
 
 			if ( is_wp_error( $return ) ) {
-				learn_press_add_message( $return->get_error_message(), 'error' );
+				$message['content'] = $return->get_error_message();
 			} else {
-				if ( $return ) {
-					learn_press_add_message( $message );
-				}
+				$message['status']  = 'success';
+				$message['content'] = $message_action;
 			}
+
+			learn_press_set_message( $message );
 
 			if ( ! empty( $_REQUEST['redirect'] ) ) {
 				$redirect = esc_url_raw( $_REQUEST['redirect'] );
 			} else {
-				$redirect = learn_press_get_current_url();
+				$redirect = LP_Helper::getUrlCurrent();
 			}
 
 			$redirect = apply_filters( 'learn-press/profile-updated-redirect', $redirect, $action );
