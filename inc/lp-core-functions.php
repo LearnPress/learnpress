@@ -1893,6 +1893,8 @@ function learn_press_get_endpoint_url( $name, $value, $url ) {
  * Add all endpoints from settings to the pages.
  */
 function learn_press_add_endpoints() {
+	LP_Profile::instance( get_current_user_id() );
+
 	$settings = LP_Settings::instance();
 
 	$endpoints = $settings->get_checkout_endpoints();
@@ -2786,20 +2788,20 @@ add_action( 'learn-press/schedule-enable-shuffle-themes', '_learn_press_schedule
  */
 function learn_press_global_script_params(): array {
 	$localize = [
-		'ajax'        => admin_url( 'admin-ajax.php' ),
-		'plugin_url'  => LearnPress::instance()->plugin_url(),
-		'siteurl'     => home_url(),
+		'ajax'       => admin_url( 'admin-ajax.php' ),
+		'plugin_url' => LearnPress::instance()->plugin_url(),
+		'siteurl'    => home_url(),
 		//'current_url' => learn_press_get_current_url(),
-		'theme'       => get_stylesheet(),
-		'localize'    => array(
+		'theme'      => get_stylesheet(),
+		'localize'   => array(
 			'button_ok'     => __( 'OK', 'learnpress' ),
 			'button_cancel' => __( 'Cancel', 'learnpress' ),
 			'button_yes'    => __( 'Yes', 'learnpress' ),
 			'button_no'     => __( 'No', 'learnpress' ),
 		),
-		'rest'        => esc_url_raw( rest_url() ),
-		'nonce'       => wp_create_nonce( 'wp_rest' ),
-		'is_admin'    => current_user_can( ADMIN_ROLE ),
+		'rest'       => esc_url_raw( rest_url() ),
+		'nonce'      => wp_create_nonce( 'wp_rest' ),
+		'is_admin'   => current_user_can( ADMIN_ROLE ),
 	];
 
 	return apply_filters( 'lp/admin/localize/scripts', $localize );
