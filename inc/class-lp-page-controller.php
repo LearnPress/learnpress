@@ -29,34 +29,38 @@ class LP_Page_Controller {
 	 * LP_Page_Controller constructor.
 	 */
 	protected function __construct() {
-		//add_filter( 'post_type_archive_link', [ $this, 'link_archive_course' ], 10, 2 );
-		add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ), -1 );
-		// For return result query course to cache.
-		//add_action( 'posts_pre_query', [ $this, 'posts_pre_query' ], 10, 2 );
-		add_filter( 'template_include', array( $this, 'template_loader' ), 10 );
-		add_filter( 'template_include', array( $this, 'check_pages' ), 30 );
-		add_filter( 'template_include', array( $this, 'auto_shortcode' ), 50 );
-
-		add_filter( 'the_post', array( $this, 'setup_data_for_item_course' ) );
-		add_filter( 'request', array( $this, 'remove_course_post_format' ), 1 );
-
-		add_shortcode( 'learn_press_archive_course', array( $this, 'archive_content' ) );
-		add_filter( 'pre_get_document_title', array( $this, 'set_title_pages' ), 20, 1 );
-
-		// Yoast seo
-		add_filter( 'wpseo_opengraph_desc', array( $this, 'lp_desc_item_yoast_seo' ), 11, 1 );
-		add_filter( 'wpseo_metadesc', array( $this, 'lp_desc_item_yoast_seo' ), 11, 1 );
-
 		// Set link course, item course.
 		add_filter( 'post_type_link', array( $this, 'post_type_link' ), 10, 2 );
 
-		// Set link profile to admin menu
-		//add_action( 'admin_bar_menu', array( $this, 'learn_press_edit_admin_bar' ) );
+		if ( is_admin() ) {
 
-		// Web hook detected PayPal request.
-		add_action( 'init', [ $this, 'check_webhook_paypal_ipn' ] );
-		// Set again x-wp-nonce on header when has cache with not login.
-		add_filter( 'rest_send_nocache_headers', array( $this, 'check_x_wp_nonce_cache' ) );
+		} else {
+			//add_filter( 'post_type_archive_link', [ $this, 'link_archive_course' ], 10, 2 );
+			add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ), -1 );
+			// For return result query course to cache.
+			//add_action( 'posts_pre_query', [ $this, 'posts_pre_query' ], 10, 2 );
+			add_filter( 'template_include', array( $this, 'template_loader' ), 10 );
+			add_filter( 'template_include', array( $this, 'check_pages' ), 30 );
+			add_filter( 'template_include', array( $this, 'auto_shortcode' ), 50 );
+
+			add_filter( 'the_post', array( $this, 'setup_data_for_item_course' ) );
+			add_filter( 'request', array( $this, 'remove_course_post_format' ), 1 );
+
+			add_shortcode( 'learn_press_archive_course', array( $this, 'archive_content' ) );
+			add_filter( 'pre_get_document_title', array( $this, 'set_title_pages' ), 20, 1 );
+
+			// Yoast seo
+			add_filter( 'wpseo_opengraph_desc', array( $this, 'lp_desc_item_yoast_seo' ), 11, 1 );
+			add_filter( 'wpseo_metadesc', array( $this, 'lp_desc_item_yoast_seo' ), 11, 1 );
+
+			// Set link profile to admin menu
+			//add_action( 'admin_bar_menu', array( $this, 'learn_press_edit_admin_bar' ) );
+
+			// Web hook detected PayPal request.
+			add_action( 'init', [ $this, 'check_webhook_paypal_ipn' ] );
+			// Set again x-wp-nonce on header when has cache with not login.
+			add_filter( 'rest_send_nocache_headers', array( $this, 'check_x_wp_nonce_cache' ) );
+		}
 	}
 
 	/**
@@ -376,8 +380,8 @@ class LP_Page_Controller {
 
 			// Set item viewing
 			$user->set_viewing_item( $lp_course_item );
-		} catch ( Exception $ex ) {
-			learn_press_add_message( $ex->getMessage(), 'error' );
+		} catch ( Throwable $e ) {
+			error_log( $e->getMessage() );
 		}
 
 		return $post;
@@ -1005,10 +1009,6 @@ class LP_Page_Controller {
 	}
 
 	public static function instance() {
-		if ( is_admin() ) {
-			return null;
-		}
-
 		if ( ! self::$_instance ) {
 			self::$_instance = new self();
 		}
