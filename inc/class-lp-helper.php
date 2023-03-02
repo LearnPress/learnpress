@@ -404,8 +404,8 @@ class LP_Helper {
 	 */
 	public static function getUrlCurrent(): string {
 		$schema      = is_ssl() ? 'https://' : 'http://';
-		$http_host   = LP_Helper::sanitize_params_submitted( $_SERVER['HTTP_HOST'] ?? '' );
-		$request_uri = LP_Helper::sanitize_params_submitted( $_SERVER['REQUEST_URI'] ?? '' );
+		$http_host   = LP_Helper::sanitize_params_submitted( urldecode( $_SERVER['HTTP_HOST'] ?? '' ) );
+		$request_uri = LP_Helper::sanitize_params_submitted( urldecode( $_SERVER['REQUEST_URI'] ?? '' ) );
 		//$http_host   = LP_Helper::sanitize_params_submitted( filter_input( INPUT_SERVER, 'HTTP_HOST' ) ?? '' );
 		//$request_uri = LP_Helper::sanitize_params_submitted( filter_input( INPUT_SERVER, 'REQUEST_URI' ) ?? '' );
 

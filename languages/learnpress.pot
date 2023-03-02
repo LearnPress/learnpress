@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the LearnPress plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: LearnPress 4.2.2\n"
+"Project-Id-Version: LearnPress 4.2.2.1-beta-1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/learnpress\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2023-03-01T09:42:31+03:00\n"
+"POT-Creation-Date: 2023-03-02T10:56:02+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.7.1\n"
 "X-Domain: learnpress\n"
@@ -604,7 +604,7 @@ msgstr ""
 #: inc/admin/views/addons.php:178
 #: inc/admin/views/meta-boxes/fields/date.php:39
 #: inc/class-lp-assets.php:73
-#: inc/lp-core-functions.php:2796
+#: inc/lp-core-functions.php:2800
 #: inc/order/class-lp-order.php:1015
 #: assets/js/dist/frontend/quiz.min.js:44
 msgid "Cancel"
@@ -2805,19 +2805,19 @@ msgid "Congrats! You have completed \"%s\"."
 msgstr ""
 
 #: inc/class-lp-assets.php:72
-#: inc/lp-core-functions.php:2795
+#: inc/lp-core-functions.php:2799
 #: assets/js/dist/frontend/quiz.min.js:41
 msgid "OK"
 msgstr ""
 
 #: inc/class-lp-assets.php:74
-#: inc/lp-core-functions.php:2797
+#: inc/lp-core-functions.php:2801
 #: templates/global/lp-modal-overlay.php:24
 msgid "Yes"
 msgstr ""
 
 #: inc/class-lp-assets.php:75
-#: inc/lp-core-functions.php:2798
+#: inc/lp-core-functions.php:2802
 #: templates/global/lp-modal-overlay.php:23
 msgid "No"
 msgstr ""
@@ -3077,7 +3077,7 @@ msgstr ""
 msgid "Password reset is not allowed for this user."
 msgstr ""
 
-#: inc/class-lp-helper.php:619
+#: inc/class-lp-helper.php:617
 msgctxt "slug"
 msgid "uncategorized"
 msgstr ""
@@ -3202,7 +3202,7 @@ msgid "Edit this item"
 msgstr ""
 
 #: inc/course/lp-course-functions.php:935
-#: inc/lp-core-functions.php:2427
+#: inc/lp-core-functions.php:2431
 #: inc/templates/class-lp-template-profile.php:103
 #: inc/user-item/class-lp-user-item-quiz.php:147
 #: inc/user/class-lp-profile.php:881
@@ -3212,7 +3212,7 @@ msgid "Passed"
 msgstr ""
 
 #: inc/course/lp-course-functions.php:938
-#: inc/lp-core-functions.php:2430
+#: inc/lp-core-functions.php:2434
 #: inc/order/class-lp-order.php:350
 #: inc/templates/class-lp-template-profile.php:104
 #: inc/user-item/class-lp-user-item-quiz.php:148
@@ -3223,7 +3223,7 @@ msgid "Failed"
 msgstr ""
 
 #: inc/course/lp-course-functions.php:941
-#: inc/lp-core-functions.php:2433
+#: inc/lp-core-functions.php:2437
 #: inc/lp-deprecated.php:385
 #: inc/templates/class-lp-template-profile.php:101
 #: inc/user-item/class-lp-user-item-quiz.php:144
@@ -5822,123 +5822,123 @@ msgid_plural "%s minutes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/lp-core-functions.php:2227
+#: inc/lp-core-functions.php:2231
 msgid "Cart"
 msgstr ""
 
-#: inc/lp-core-functions.php:2231
+#: inc/lp-core-functions.php:2235
 msgid "Enable cart"
 msgstr ""
 
-#: inc/lp-core-functions.php:2232
+#: inc/lp-core-functions.php:2236
 msgid "Check this option to enable users to purchase multiple courses at one time."
 msgstr ""
 
-#: inc/lp-core-functions.php:2241
+#: inc/lp-core-functions.php:2245
 msgid "Add to cart redirect"
 msgstr ""
 
-#: inc/lp-core-functions.php:2242
+#: inc/lp-core-functions.php:2246
 msgid "Redirect to checkout immediately after adding the course to the cart."
 msgstr ""
 
-#: inc/lp-core-functions.php:2248
+#: inc/lp-core-functions.php:2252
 msgid "AJAX add to cart"
 msgstr ""
 
-#: inc/lp-core-functions.php:2249
+#: inc/lp-core-functions.php:2253
 msgid "Using AJAX to add the course to the cart."
 msgstr ""
 
-#: inc/lp-core-functions.php:2255
+#: inc/lp-core-functions.php:2259
 msgid "Cart page"
 msgstr ""
 
-#: inc/lp-core-functions.php:2605
+#: inc/lp-core-functions.php:2609
 msgctxt "static-page-name"
 msgid "Checkout"
 msgstr ""
 
-#: inc/lp-core-functions.php:2606
+#: inc/lp-core-functions.php:2610
 msgctxt "static-page-name"
 msgid "Courses"
 msgstr ""
 
-#: inc/lp-core-functions.php:2607
+#: inc/lp-core-functions.php:2611
 msgctxt "static-page-name"
 msgid "Profile"
 msgstr ""
 
-#: inc/lp-core-functions.php:2608
+#: inc/lp-core-functions.php:2612
 msgctxt "static-page-name"
 msgid "Become a Teacher"
 msgstr ""
 
-#: inc/lp-core-functions.php:3002
+#: inc/lp-core-functions.php:3006
 msgid "Loading..."
 msgstr ""
 
-#: inc/lp-core-functions.php:3005
+#: inc/lp-core-functions.php:3009
 msgid "Get A Passing Grade"
 msgstr ""
 
-#: inc/lp-core-functions.php:3010
+#: inc/lp-core-functions.php:3014
 msgid "Evaluate by the number of completed lessons per the total number of lessons."
 msgstr ""
 
-#: inc/lp-core-functions.php:3011
+#: inc/lp-core-functions.php:3015
 msgid "E.g: If a course has 10 lessons and a user completes 5 lessons, then the result is 5/10 (50%)."
 msgstr ""
 
-#: inc/lp-core-functions.php:3013
+#: inc/lp-core-functions.php:3017
 msgid "Evaluate by the result of the final quiz in the course. You have to add a quiz at the end of the course."
 msgstr ""
 
-#: inc/lp-core-functions.php:3019
+#: inc/lp-core-functions.php:3023
 msgid "Evaluate by the number of passed quizzes per the total number of quizzes."
 msgstr ""
 
-#: inc/lp-core-functions.php:3020
+#: inc/lp-core-functions.php:3024
 msgid "E.g: If the course has 10 quizzes and the user passes 5 quizzes, then the result is 5/10 (50%)."
 msgstr ""
 
-#: inc/lp-core-functions.php:3027
+#: inc/lp-core-functions.php:3031
 msgid "Evaluate by the number of correct answers per the total number of questions."
 msgstr ""
 
-#: inc/lp-core-functions.php:3028
+#: inc/lp-core-functions.php:3032
 msgid "E.g: If the course has 10 questions and the user corrects 5 questions, then the result is 5/10 (50%)."
 msgstr ""
 
-#: inc/lp-core-functions.php:3033
+#: inc/lp-core-functions.php:3037
 msgid "Evaluate by the number of achieved scores per the total score of the questions."
 msgstr ""
 
-#: inc/lp-core-functions.php:3039
+#: inc/lp-core-functions.php:3043
 msgid "Evaluate via lessons"
 msgstr ""
 
-#: inc/lp-core-functions.php:3043
+#: inc/lp-core-functions.php:3047
 msgid "Evaluate via results of the final quiz"
 msgstr ""
 
-#: inc/lp-core-functions.php:3047
+#: inc/lp-core-functions.php:3051
 msgid "Evaluate via passed quizzes"
 msgstr ""
 
-#: inc/lp-core-functions.php:3051
+#: inc/lp-core-functions.php:3055
 msgid "Evaluate via questions"
 msgstr ""
 
-#: inc/lp-core-functions.php:3055
+#: inc/lp-core-functions.php:3059
 msgid "Evaluate via mark"
 msgstr ""
 
-#: inc/lp-core-functions.php:3201
+#: inc/lp-core-functions.php:3205
 msgid "Heads up! Please backup before upgrading!"
 msgstr ""
 
-#: inc/lp-core-functions.php:3204
+#: inc/lp-core-functions.php:3208
 msgid "The latest update includes some substantial changes across different areas of the plugin. We highly recommend you backup your site before upgrading, and make sure you first update in a staging environment"
 msgstr ""
 

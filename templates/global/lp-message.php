@@ -16,7 +16,7 @@ if ( ! isset( $message_data ) || ! isset( $message_data['content'] ) || ! isset(
 	return;
 }
 
-$classes = array( 'learn-press-message', $message_data['status'] );
+$classes = array( 'learn-press-message', $message_data['status'], 'lp-content-area' );
 ?>
 <div
 	class="<?php echo esc_attr( join( ' ', $classes ) ); ?>">
