@@ -209,6 +209,13 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.2.2.1 (2023-03-03) =
+~ Fixed: error link course with '%course_category%', on screen list courses Backend.
+~ Fixed: some theme load only course on Archive Course Page.
+~ Fixed: error not save basic info on Profile page.
+~ Fixed: url current has symbol like الاعدادات.
+~ Fixed: error not show message when save info Profile.
+
 = 4.2.2 (2023-03-01) =
 ~ Optimized performance.
 ~ Optimize: rewrite "add_rewrite_rules" method, only call on "admin_init" hook.
