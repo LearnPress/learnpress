@@ -6,8 +6,9 @@ const jsHandlePageCourses = () => {
 		return;
 	}
 
-	const urlCurrent = document.location.href;
-	let filterCourses = JSON.parse( window.localStorage.getItem( 'lp_filter_courses' ) ) || {};
+	const urlQueryString = window.location.search;
+	const urlSearchParams = new URLSearchParams( urlQueryString );
+	let filterCourses = {};
 	let skeleton;
 	let skeletonClone;
 	let isLoading = false;
@@ -18,17 +19,15 @@ const jsHandlePageCourses = () => {
 	let dataHtml;
 	let paginationHtml;
 
+	let urlParams = {};
+	for ( let [key, val] of urlSearchParams.entries() ) {
+		urlParams[key] = val;
+	}
+	window.localStorage.setItem( 'lp_filter_courses', JSON.stringify( urlParams ) );
+
 	if ( ! lpGlobalSettings.lpArchiveLoadAjax ) {
 		console.log( 'Option load courses ajax is disabled' );
 		return;
-	}
-
-	if ( lpGlobalSettings.is_course_archive ) {
-		const queryString = window.location.search;
-
-		if ( ! queryString.length && urlCurrent.search( 'page' ) === -1 ) {
-			filterCourses = {};
-		}
 	}
 
 	const lpArchiveAddQueryArgs = ( endpoint, args ) => {
