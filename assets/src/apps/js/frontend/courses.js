@@ -99,7 +99,7 @@ const jsHandlePageCourses = () => {
 				dataHtml = response.data.content || '';
 				paginationHtml = response.data.pagination || '';
 
-				if ( ! skeletonClone ) {
+				if ( ! skeletonClone && skeleton ) {
 					skeletonClone = skeleton.cloneNode( true );
 				}
 
