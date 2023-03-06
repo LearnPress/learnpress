@@ -768,9 +768,9 @@ if ( ! function_exists( 'learn_press_pre_get_avatar_callback' ) ) {
 
 		$profile = LP_Profile::instance();
 
-		if ( ! $profile->is_enable_avatar() ) {
+		/*if ( ! $profile->is_enable_avatar() ) {
 			return $avatar;
-		}
+		}*/
 
 		if ( ( isset( $size['gravatar'] ) && $size['gravatar'] ) || ( $size['default'] && $size['force_default'] ) ) {
 			return $avatar;

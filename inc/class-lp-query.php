@@ -22,7 +22,7 @@ class LP_Query {
 		}
 
 		add_action( 'init', array( $this, 'add_rewrite_tags' ), 1000, 0 );
-		add_action( 'admin_init', array( $this, 'add_rewrite_rules' ), 1000, 0 );
+		add_action( 'admin_init', array( $this, 'add_rewrite_rules' ), -1 );
 		// Clear cache rewrite rules when update option rewrite_rules
 		add_filter( 'pre_update_option', [ $this, 'update_option_rewrite_rules' ], 10, 2 );
 		//add_action( 'parse_query', array( $this, 'parse_request' ), 1000, 1 );
