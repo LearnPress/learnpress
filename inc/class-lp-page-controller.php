@@ -623,7 +623,11 @@ class LP_Page_Controller {
 
 		$theme_no_load_ajax = apply_filters(
 			'lp/page/courses/themes/no_load_ajax',
-			[ 'Coaching', 'Course Builder', 'eLearningWP', 'Ivy School', 'StarKid', 'Academy LMS' ]
+			[
+				'Coaching', 'Course Builder', 'eLearningWP', 'Ivy School', 'StarKid', 'Academy LMS',
+				'Coaching Child', 'Course Builder Child', 'eLearningWP Child', 'Ivy School Child',
+				'StarKid Child', 'Academy LMS Child',
+			]
 		);
 		$theme_current      = wp_get_theme()->get( 'Name' );
 
