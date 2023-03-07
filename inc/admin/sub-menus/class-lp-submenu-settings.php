@@ -95,7 +95,7 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 		$lp_settings_cache->clean_lp_settings();
 
 		// Clear cache lp rewrite rules
-		$lp_settings_cache->clean_lp_rewrite_rules();
+		//$lp_settings_cache->clean_lp_rewrite_rules();
 
 		// Flush rewrite rules after save settings.
 		flush_rewrite_rules();

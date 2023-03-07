@@ -2,16 +2,13 @@
 
 /**
  * Class LP_Query
+ *
+ * @version 4.2.2.2
  */
 
 defined( 'ABSPATH' ) || exit;
 
 class LP_Query {
-	/**
-	 * @var array
-	 */
-	public $query_vars = array();
-
 	/**
 	 * LP_Query constructor.
 	 */
@@ -21,21 +18,22 @@ class LP_Query {
 			return;
 		}
 
-		add_action( 'init', array( $this, 'add_rewrite_tags' ), 1000, 0 );
-		add_action( 'admin_init', array( $this, 'add_rewrite_rules' ), -1 );
+		add_action( 'init', array( $this, 'add_rewrite_tags' ), 1000 );
+		//add_action( 'admin_init', array( $this, 'add_rewrite_rules' ), -1 );
 		// Clear cache rewrite rules when update option rewrite_rules
-		add_filter( 'pre_update_option', [ $this, 'update_option_rewrite_rules' ], 10, 2 );
+		//add_filter( 'pre_update_option', [ $this, 'update_option_rewrite_rules' ], 1, 3 );
+		add_filter( 'option_rewrite_rules', [ $this, 'update_option_rewrite_rules' ], 1 );
 		//add_action( 'parse_query', array( $this, 'parse_request' ), 1000, 1 );
 		/**
 		 * Add searching post by taxonomies
 		 */
 		add_action( 'pre_get_posts', array( $this, 'query_taxonomy' ) );
 		// Clear cache rewrite rules when switch theme, activate, deactivate any plugins.
-		add_action( 'after_switch_theme', [ $this, 'clear_cache_rewrite_rules' ] );
-		add_action( 'activate_plugin', [ $this, 'clear_cache_rewrite_rules' ] );
-		add_action( 'activated_plugin', [ $this, 'clear_cache_rewrite_rules' ] );
-		add_action( 'deactivate_plugin', [ $this, 'clear_cache_rewrite_rules' ] );
-		add_action( 'deactivated_plugin', [ $this, 'clear_cache_rewrite_rules' ] );
+		//add_action( 'after_switch_theme', [ $this, 'clear_cache_rewrite_rules' ] );
+		//add_action( 'activate_plugin', [ $this, 'clear_cache_rewrite_rules' ] );
+		//add_action( 'activated_plugin', [ $this, 'clear_cache_rewrite_rules' ] );
+		//add_action( 'deactivate_plugin', [ $this, 'clear_cache_rewrite_rules' ] );
+		//add_action( 'deactivated_plugin', [ $this, 'clear_cache_rewrite_rules' ] );
 	}
 
 	/**
@@ -140,22 +138,7 @@ class LP_Query {
 	 * @modify 4.2.2
 	 */
 	public function add_rewrite_rules() {
-		$lp_settings_cache = new LP_Settings_Cache( true );
-		$cached_rules      = $lp_settings_cache->get_rewrite_rules();
-		if ( false !== $cached_rules ) {
-			return;
-		}
-
 		$rules = array();
-		/*$course_type  = LP_COURSE_CPT;
-		$post_types   = get_post_types( '', 'objects' );
-		$slug         = preg_replace( '!^/!', '', $post_types[ $course_type ]->rewrite['slug'] );
-		$has_category = false;
-
-		if ( preg_match( '!(%?course_category%?)!', $slug ) ) {
-			$slug         = preg_replace( '!(%?course_category%?)!', '(.+?)/([^/]+)', $slug );
-			$has_category = true;
-		}*/
 
 		/**
 		 * Set rule item course.
@@ -173,64 +156,29 @@ class LP_Query {
 		$course_slug = preg_replace( '!^/!', '', $course_slug );
 
 		if ( preg_match( '!%course_category%!', $course_slug ) ) {
-			$course_slug = preg_replace( '!(%course_category%)!', '(.+)/([^/]+)', $course_slug );
+			$course_slug = preg_replace( '!(%course_category%)!', '([^/]+)/([^/]+)', $course_slug );
 			$rules[]     = array(
-				"^{$course_slug}(?:/{$lesson_slug}/([^/]+))/?$",
+				"^{$course_slug}(?:/{$lesson_slug}/([^/]+))?/?$",
 				'index.php?' . LP_COURSE_CPT . '=$matches[2]&course_category=$matches[1]&course-item=$matches[3]&item-type=lp_lesson',
 				'top',
 			);
 			$rules[]     = array(
-				"^{$course_slug}(?:/{$quiz_slug}/([^/]+)/?([^/]+)?)/?$",
-				'index.php?' . LP_COURSE_CPT . '=$matches[2]&course_category=$matches[1]&course-item=$matches[3]&question=$matches[4]&item-type=lp_quiz',
+				"^{$course_slug}(?:/{$quiz_slug}/([^/]+))?/?$",
+				'index.php?' . LP_COURSE_CPT . '=$matches[2]&course_category=$matches[1]&course-item=$matches[3]&item-type=lp_quiz',
 				'top',
 			);
 		} else {
 			$rules[] = array(
-				"^{$course_slug}/([^/]+)(?:/{$lesson_slug}/([^/]+))/?$",
+				"^{$course_slug}/([^/]+)(?:/{$lesson_slug}/([^/]+))?/?$",
 				'index.php?' . LP_COURSE_CPT . '=$matches[1]&course-item=$matches[2]&item-type=lp_lesson',
 				'top',
 			);
 			$rules[] = array(
-				"^{$course_slug}/([^/]+)(?:/{$quiz_slug}/([^/]+)/?([^/]+)?)/?$",
-				'index.php?' . LP_COURSE_CPT . '=$matches[1]&course-item=$matches[2]&question=$matches[3]&item-type=lp_quiz',
+				"^{$course_slug}/([^/]+)(?:/{$quiz_slug}/([^/]+))?/?$",
+				'index.php?' . LP_COURSE_CPT . '=$matches[1]&course-item=$matches[2]&item-type=lp_quiz',
 				'top',
 			);
 		}
-
-		/*if ( ! empty( $custom_slug_quiz ) ) {
-			$post_types['lp_quiz']->rewrite['slug'] = urldecode( $custom_slug_quiz );
-		}*/
-
-		/**
-		 * Comment that, because it handled when register taxonomy
-		 * @see LP_Course_Post_Type::register_taxonomy()
-		 */
-		/*if ( $has_category ) {
-			$rules[] = array(
-				'^' . $slug . '(?:/' . $post_types['lp_lesson']->rewrite['slug'] . '/([^/]+))/?$',
-				'index.php?' . $course_type . '=$matches[2]&course_category=$matches[1]&course-item=$matches[3]&item-type=lp_lesson',
-				'top',
-			);
-
-			$rules[] = array(
-				'^' . $slug . '(?:/' . $post_types['lp_quiz']->rewrite['slug'] . '/([^/]+)/?([^/]+)?)/?$',
-				'index.php?' . $course_type . '=$matches[2]&course_category=$matches[1]&course-item=$matches[3]&question=$matches[4]&item-type=lp_quiz',
-				'top',
-			);
-
-		} else {
-
-			$rules[] = array(
-				'^' . $slug . '/([^/]+)(?:/' . $post_types['lp_lesson']->rewrite['slug'] . '/([^/]+))/?$',
-				'index.php?' . $course_type . '=$matches[1]&course-item=$matches[2]&item-type=lp_lesson',
-				'top',
-			);
-			$rules[] = array(
-				'^' . $slug . '/([^/]+)(?:/' . $post_types['lp_quiz']->rewrite['slug'] . '/([^/]+)/?([^/]+)?)/?$',
-				'index.php?' . $course_type . '=$matches[1]&course-item=$matches[2]&question=$matches[3]&item-type=lp_quiz',
-				'top',
-			);
-		}*/
 
 		// Profile
 		$profile_id = learn_press_get_page_id( 'profile' );
@@ -267,70 +215,7 @@ class LP_Query {
 			}
 		}
 
-		// Archive course
-		/*$course_page_id = learn_press_get_page_id( 'courses' );
-		if ( $course_page_id ) {
-		$rules[] = array(
-			'^' . get_post_field( 'post_name', $course_page_id ) . '/page/([0-9]{1,})/?$',
-			'index.php?pagename=' . get_post_field( 'post_name', $course_page_id ) . '&page=$matches[1]',
-			'top',
-		);
-		}*/
-
-		//global $wp_rewrite;
-
-		/**
-		 * Polylang compatibility
-		 */
-		/*if ( function_exists( 'PLL' ) ) {
-		$pll           = PLL();
-		$pll_languages = $pll->model->get_languages_list( array( 'fields' => 'slug' ) );
-
-		if ( $pll->options['hide_default'] ) {
-			if ( isset( $pll->options['default_lang'] ) ) {
-				$pll_languages = array_diff( $pll_languages, array( $pll->options['default_lang'] ) );
-			}
-		}
-
-		if ( ! empty( $pll_languages ) ) {
-			$pll_languages = $wp_rewrite->root . ( $pll->options['rewrite'] ? '' : 'language/' ) . '(' . implode( '|', $pll_languages ) . ')/';
-		} else {
-			$pll_languages = '';
-		}
-		}*/
-
-		$rules = apply_filters( 'learn-press/rewrite/rules', $rules );
-
-		// Register rules
-		foreach ( $rules as $k => $rule ) {
-			call_user_func_array( 'add_rewrite_rule', $rule );
-
-			/**
-			 * Modify rewrite rule
-			 */
-			/*if ( isset( $pll_languages ) ) {
-
-			$rule[0]     = $pll_languages . str_replace( $wp_rewrite->root, '', ltrim( $rule[0], '^' ) );
-			$rule[1]     = str_replace(
-				array( '[8]', '[7]', '[6]', '[5]', '[4]', '[3]', '[2]', '[1]', '?' ),
-				array( '[9]', '[8]', '[7]', '[6]', '[5]', '[4]', '[3]', '[2]', '?lang=$matches[1]&' ),
-				$rule[1]
-			);
-			$new_rules[] = $rule;
-			call_user_func_array( 'add_rewrite_rule', $rule );
-			}*/
-		}
-
-		/*$new_rules = md5( serialize( $new_rules ) );
-		$old_rules = get_transient( 'lp_rewrite_rules_hash' );
-
-		if ( $old_rules !== $new_rules ) {
-		set_transient( 'lp_rewrite_rules_hash', $new_rules, DAY_IN_SECONDS );
-		flush_rewrite_rules();
-		}*/
-
-		flush_rewrite_rules();
-		$lp_settings_cache->set_rewrite_rules( 1 );
+		return apply_filters( 'learn-press/rewrite/rules', $rules );
 	}
 
 	/**
@@ -449,24 +334,30 @@ class LP_Query {
 	 * Fixed for case: addons Certificates (v4.0.5), FE(4.0.5), Live(4.0.2), Collections(4.0.2) not installed on site client.
 	 * Run only one time when reload page Frontend.
 	 *
-	 * @param $value
-	 * @param $option
+	 * @see get_option() hook in this function.
 	 * @since 4.2.2
-	 * @return mixed
+	 * @version 1.0.1
+	 * @return mixed|array
 	 */
-	public function update_option_rewrite_rules( $value, $option ) {
-		if ( 'rewrite_rules' === $option ) {
-			static $flushed;
-			if ( $flushed || is_admin() ) {
-				return $value;
-			}
-
-			$flushed = 1;
-			$this->clear_cache_rewrite_rules();
-			$this->add_rewrite_rules();
+	public function update_option_rewrite_rules( $wp_rules ) {
+		if ( ! is_array( $wp_rules ) ) {
+			return $wp_rules;
 		}
 
-		return $value;
+		// Check has rewrite rules of LearnPress
+		$profile_id        = learn_press_get_page_id( 'profile' );
+		$page_profile_slug = get_post_field( 'post_name', $profile_id );
+		$pattern           = "!\^{$page_profile_slug}!";
+		$matches           = preg_grep( $pattern, array_keys( $wp_rules ) );
+		if ( empty( $matches ) ) {
+			$lp_rules = $this->add_rewrite_rules();
+
+			foreach ( $lp_rules as $rule ) {
+				$wp_rules = array_merge( [ $rule[0] => $rule[1] ], $wp_rules );
+			}
+		}
+
+		return $wp_rules;
 	}
 
 	/**
