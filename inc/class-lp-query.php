@@ -147,8 +147,16 @@ class LP_Query {
 		 * This fixed the issue with custom slug of lesson/quiz in some languages
 		 * Eg: урока
 		 */
-		$lesson_slug = urldecode( sanitize_title_with_dashes( LP_Settings::get_option( 'lesson_slug', 'lessons' ) ) );
-		$quiz_slug   = urldecode( sanitize_title_with_dashes( LP_Settings::get_option( 'quiz_slug', 'quizzes' ) ) );
+		$lesson_slug       = urldecode( sanitize_title_with_dashes( LP_Settings::get_option( 'lesson_slug', 'lessons' ) ) );
+		$quiz_slug         = urldecode( sanitize_title_with_dashes( LP_Settings::get_option( 'quiz_slug', 'quizzes' ) ) );
+		$course_item_slugs = apply_filters(
+			'learn-press/course-item-slugs/for-rewrite-rules',
+			array(
+				LP_LESSON_CPT => $lesson_slug,
+				LP_QUIZ_CPT   => $quiz_slug,
+			)
+		);
+
 		$course_slug = LP_Settings::get_option( 'course_base', 'courses' );
 		if ( empty( $course_slug ) ) {
 			$course_slug = 'courses';
@@ -156,17 +164,15 @@ class LP_Query {
 		$course_slug = preg_replace( '!^/!', '', $course_slug );
 
 		if ( preg_match( '!%course_category%!', $course_slug ) ) {
-			$course_slug = preg_replace( '!(%course_category%)!', '([^/]+)/([^/]+)', $course_slug );
-			$rules[]     = array(
-				"^{$course_slug}(?:/{$lesson_slug}/([^/]+))?/?$",
-				'index.php?' . LP_COURSE_CPT . '=$matches[2]&course_category=$matches[1]&course-item=$matches[3]&item-type=lp_lesson',
-				'top',
-			);
-			$rules[]     = array(
-				"^{$course_slug}(?:/{$quiz_slug}/([^/]+))?/?$",
-				'index.php?' . LP_COURSE_CPT . '=$matches[2]&course_category=$matches[1]&course-item=$matches[3]&item-type=lp_quiz',
-				'top',
-			);
+			$course_slug = preg_replace( '!%course_category%!', '([^/]+)/([^/]+)', $course_slug );
+
+			foreach ( $course_item_slugs as $post_type => $course_item_slug ) {
+				$rules[] = array(
+					"^{$course_slug}(?:/{$course_item_slug}/([^/]+))?/?$",
+					'index.php?' . LP_COURSE_CPT . '=$matches[2]&course_category=$matches[1]&course-item=$matches[3]&item-type=' . $post_type,
+					'top',
+				);
+			}
 
 			// Todo fix: temporary addons before addons updated, when all addons updated, this code will be removed
 			if ( class_exists( 'LP_Addon_Assignment_Preload' ) ) {
@@ -195,16 +201,13 @@ class LP_Query {
 			}
 			// End Fixed
 		} else {
-			$rules[] = array(
-				"^{$course_slug}/([^/]+)(?:/{$lesson_slug}/([^/]+))?/?$",
-				'index.php?' . LP_COURSE_CPT . '=$matches[1]&course-item=$matches[2]&item-type=lp_lesson',
-				'top',
-			);
-			$rules[] = array(
-				"^{$course_slug}/([^/]+)(?:/{$quiz_slug}/([^/]+))?/?$",
-				'index.php?' . LP_COURSE_CPT . '=$matches[1]&course-item=$matches[2]&item-type=lp_quiz',
-				'top',
-			);
+			foreach ( $course_item_slugs as $post_type => $course_item_slug ) {
+				$rules[] = array(
+					"^{$course_slug}/([^/]+)(?:/{$course_item_slug}/([^/]+))?/?$",
+					'index.php?' . LP_COURSE_CPT . '=$matches[1]&course-item=$matches[2]&item-type=' . $post_type,
+					'top',
+				);
+			}
 
 			// Todo Fix: temporary addons before addons updated, when all addons updated, this code will be removed
 			if ( class_exists( 'LP_Addon_Assignment_Preload' ) ) {
@@ -399,6 +402,7 @@ class LP_Query {
 		}
 
 		$lp_rules = $this->add_rewrite_rules();
+		//error_log( print_r( $lp_rules, true ) );
 		foreach ( $lp_rules as $rule ) {
 			$wp_rules = array_merge( [ $rule[0] => $rule[1] ], $wp_rules );
 		}
