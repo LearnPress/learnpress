@@ -167,6 +167,33 @@ class LP_Query {
 				'index.php?' . LP_COURSE_CPT . '=$matches[2]&course_category=$matches[1]&course-item=$matches[3]&item-type=lp_quiz',
 				'top',
 			);
+
+			// Todo fix: temporary addons before addons updated, when all addons updated, this code will be removed
+			if ( class_exists( 'LP_Addon_Assignment_Preload' ) ) {
+				$assignment_slug = urldecode( sanitize_title_with_dashes( LP_Settings::get_option( 'assignment_slug', 'assignments' ) ) );
+				$rules[]         = array(
+					"^{$course_slug}(?:/{$assignment_slug}/([^/]+))?/?$",
+					'index.php?' . LP_COURSE_CPT . '=$matches[2]&course_category=$matches[1]&course-item=$matches[3]&item-type=' . LP_ASSIGNMENT_CPT,
+					'top',
+				);
+			}
+			if ( class_exists( 'LP_Addon_H5p_Preload' ) ) {
+				$h5p_slug = urldecode( sanitize_title_with_dashes( LP_Settings::get_option( 'h5p_slug', 'h5p' ) ) );
+				$rules[]  = array(
+					"^{$course_slug}(?:/{$h5p_slug}/([^/]+))?/?$",
+					'index.php?' . LP_COURSE_CPT . '=$matches[2]&course_category=$matches[1]&course-item=$matches[3]&item-type=' . LP_H5P_CPT,
+					'top',
+				);
+			}
+			if ( class_exists( 'LP_Addon_Certificates_Preload' ) ) {
+				$cer_slug = urldecode( sanitize_title_with_dashes( LP_Settings::get_option( 'lp_cert_slug', 'certificates' ) ) );
+				$rules[]  = array(
+					"^{$course_slug}(?:/{$cer_slug}/([^/]+))?/?$",
+					'index.php?' . LP_COURSE_CPT . '=$matches[2]&course_category=$matches[1]&course-item=$matches[3]&item-type=' . LP_ADDON_CERTIFICATES_CERT_CPT,
+					'top',
+				);
+			}
+			// End Fixed
 		} else {
 			$rules[] = array(
 				"^{$course_slug}/([^/]+)(?:/{$lesson_slug}/([^/]+))?/?$",
@@ -178,6 +205,33 @@ class LP_Query {
 				'index.php?' . LP_COURSE_CPT . '=$matches[1]&course-item=$matches[2]&item-type=lp_quiz',
 				'top',
 			);
+
+			// Todo Fix: temporary addons before addons updated, when all addons updated, this code will be removed
+			if ( class_exists( 'LP_Addon_Assignment_Preload' ) ) {
+				$assignment_slug = urldecode( sanitize_title_with_dashes( LP_Settings::get_option( 'assignment_slug', 'assignments' ) ) );
+				$rules[]         = array(
+					"^{$course_slug}/([^/]+)(?:/{$assignment_slug}/([^/]+))?/?$",
+					'index.php?' . LP_COURSE_CPT . '=$matches[1]&course-item=$matches[2]&item-type=' . LP_ASSIGNMENT_CPT,
+					'top',
+				);
+			}
+			if ( class_exists( 'LP_Addon_H5p_Preload' ) ) {
+				$h5p_slug = urldecode( sanitize_title_with_dashes( LP_Settings::get_option( 'h5p_slug', 'h5p' ) ) );
+				$rules[]  = array(
+					"^{$course_slug}/([^/]+)(?:/{$h5p_slug}/([^/]+))?/?$",
+					'index.php?' . LP_COURSE_CPT . '=$matches[1]&course-item=$matches[2]&item-type=' . LP_H5P_CPT,
+					'top',
+				);
+			}
+			if ( class_exists( 'LP_Addon_Certificates_Preload' ) ) {
+				$cer_slug = urldecode( sanitize_title_with_dashes( LP_Settings::get_option( 'lp_cert_slug', 'certificates' ) ) );
+				$rules[]  = array(
+					"^{$course_slug}/([^/]+)(?:/{$cer_slug}/([^/]+))?/?$",
+					'index.php?' . LP_COURSE_CPT . '=$matches[1]&course-item=$matches[2]&item-type=' . LP_ADDON_CERTIFICATES_CERT_CPT,
+					'top',
+				);
+			}
+			// End Fixed
 		}
 
 		// Profile
@@ -344,17 +398,9 @@ class LP_Query {
 			return $wp_rules;
 		}
 
-		// Check has rewrite rules of LearnPress
-		$profile_id        = learn_press_get_page_id( 'profile' );
-		$page_profile_slug = get_post_field( 'post_name', $profile_id );
-		$pattern           = "!\^{$page_profile_slug}!";
-		$matches           = preg_grep( $pattern, array_keys( $wp_rules ) );
-		if ( empty( $matches ) ) {
-			$lp_rules = $this->add_rewrite_rules();
-
-			foreach ( $lp_rules as $rule ) {
-				$wp_rules = array_merge( [ $rule[0] => $rule[1] ], $wp_rules );
-			}
+		$lp_rules = $this->add_rewrite_rules();
+		foreach ( $lp_rules as $rule ) {
+			$wp_rules = array_merge( [ $rule[0] => $rule[1] ], $wp_rules );
 		}
 
 		return $wp_rules;
