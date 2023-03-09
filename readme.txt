@@ -212,6 +212,7 @@ https://www.transifex.com/projects/p/learnpress/
 = 4.2.2.2 (2023-03-09) =
 ~ Fixed: permalink item 404 when install "YoastSeo" plugin.
 ~ Fixed: error not show tab Avatar on Profile Page.
+~ Modified: rewrite rules.
 
 = 4.2.2.1 (2023-03-03) =
 ~ Fixed: error link course with '%course_category%', on screen list courses Backend.
