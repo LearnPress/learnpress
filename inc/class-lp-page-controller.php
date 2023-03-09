@@ -109,7 +109,7 @@ class LP_Page_Controller {
 
 			$post_link = $course->get_item_link( $item_id );
 		}
-		// Link item course on single course (with %course_category%).
+		// Link single course (with %course_category%).
 		elseif ( LP_COURSE_CPT === $post->post_type ) {
 			$post_link = LP_Helper::handle_lp_permalink_structure( $post_link, $post );
 		}

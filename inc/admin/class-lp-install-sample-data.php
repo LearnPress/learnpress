@@ -152,11 +152,14 @@ class LP_Install_Sample_Data {
 					'data'        => [ 'data_sample' => 1 ],
 				)
 			)->dispatch();
+
+			$link_course = get_the_permalink( $course_id );
+			$link_course = LP_Helper::handle_lp_permalink_structure( $link_course, get_post( $course_id ) );
 			?>
 
 			<div class="lp-install-sample__response success">
 				<?php printf( __( 'The Course "%s" has been created', 'learnpress' ), get_the_title( $course_id ) ); ?>
-				<a href="<?php echo esc_url_raw( get_the_permalink( $course_id ) ); ?>" target="_blank"><?php esc_html_e( 'View', 'learnpress' ); ?></a>
+				<a href="<?php echo esc_url_raw( $link_course ); ?>" target="_blank"><?php esc_html_e( 'View', 'learnpress' ); ?></a>
 				|
 				<a href="<?php echo esc_url_raw( admin_url( 'post.php?post=' . $course_id . '&action=edit' ) ); ?>" target="_blank"><?php esc_html_e( 'Edit', 'learnpress' ); ?></a>
 			</div>
