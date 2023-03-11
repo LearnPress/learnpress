@@ -73,10 +73,7 @@ class LP_Cart {
 	 */
 	function init() {
 		// Only load on checkout page
-		$page_checkout_option = untrailingslashit( get_the_permalink( learn_press_get_page_id( 'checkout' ) ) );
-		$page_checkout_option = str_replace( '/', '\/', $page_checkout_option );
-		$pattern              = '/' . $page_checkout_option . '/';
-		if ( ! preg_match( $pattern, LP_Helper::getUrlCurrent() ) ) {
+		if ( ! LP_Page_Controller::is_page_checkout() ) {
 			return;
 		}
 
@@ -93,14 +90,18 @@ class LP_Cart {
 		}
 	}
 
+	/**
+	 * @deprecated 4.2.1
+	 */
 	private function set_cart_cookies( $set = true ) {
-		if ( $set ) {
+		_deprecated_function( __METHOD__, '4.2.1' );
+		/*if ( $set ) {
 			learn_press_setcookie( 'wordpress_lp_cart', 1 );
 		} elseif ( isset( $_COOKIE['wordpress_lp_cart'] ) ) {
 			learn_press_setcookie( 'wordpress_lp_cart', 0, time() - HOUR_IN_SECONDS );
 		}
 
-		do_action( 'learn_press_set_cart_cookies', $set );
+		do_action( 'learn_press_set_cart_cookies', $set );*/
 	}
 
 	/**
@@ -419,7 +420,8 @@ class LP_Cart {
 
 		$this->_cart_content = array();
 		$lp_session          = LearnPress::instance()->session;
-		$lp_session->set( 'cart', '', true );
+		$lp_session->remove( 'order_awaiting_payment' );
+		$lp_session->remove( 'cart', true );
 		//unset( LearnPress::instance()->session->order_awaiting_payment );
 		//unset( LearnPress::instance()->session->cart );
 

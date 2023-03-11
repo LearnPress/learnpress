@@ -35,6 +35,12 @@ class LP_Order_DB extends LP_Database {
 	 * @version 1.0.0
 	 */
 	public function get_last_lp_order_id_of_user_course( int $user_id, int $course_id ) {
+		$key_cache = "lp/order/id/last/$user_id/$course_id";
+		$order_id  = LP_Cache::cache_load_first( 'get', $key_cache );
+		if ( false !== $order_id ) {
+			return $order_id;
+		}
+
 		$user_id_str = $this->wpdb->prepare( '%"%d"%', $user_id );
 
 		$query = $this->wpdb->prepare(
@@ -58,7 +64,10 @@ class LP_Order_DB extends LP_Database {
 			$course_id
 		);
 
-		return $this->wpdb->get_var( $query );
+		$order_id = $this->wpdb->get_var( $query );
+		LP_Cache::cache_load_first( 'set', $key_cache, $order_id );
+
+		return $order_id;
 	}
 
 	/**

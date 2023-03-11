@@ -26,7 +26,7 @@ class LP_Quiz_Cache extends LP_Cache {
 		return self::$instance;
 	}
 
-	protected function __construct() {
+	public function __construct() {
 		parent::__construct();
 	}
 }

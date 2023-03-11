@@ -300,9 +300,10 @@ class LP_Course_DB extends LP_Database {
 	 * @param int $course_id
 	 *
 	 * @return int
-	 * @version 1.0.0
+	 * @throws Exception
 	 * @author tungnx
 	 * @since 4.1.4
+	 * @version 1.0.0
 	 */
 	public function get_total_user_enrolled( int $course_id ): int {
 		$query = $this->wpdb->prepare(
@@ -317,6 +318,8 @@ class LP_Course_DB extends LP_Database {
 			LP_COURSE_ENROLLED,
 			LP_COURSE_FINISHED
 		);
+
+		$this->check_execute_has_error();
 
 		return (int) $this->wpdb->get_var( $query );
 	}
@@ -345,6 +348,8 @@ class LP_Course_DB extends LP_Database {
 			LP_COURSE_FINISHED,
 			LP_COURSE_PURCHASED
 		);
+
+		$this->check_execute_has_error();
 
 		return (int) $this->wpdb->get_var( $query );
 	}
@@ -461,7 +466,7 @@ class LP_Course_DB extends LP_Database {
 	 * @since 4.1.5
 	 */
 	public function get_courses( LP_Course_Filter $filter, int &$total_rows = 0 ) {
-		$default_fields = $this->get_cols_of_table( $this->tb_posts );
+		$default_fields = $filter->all_fields;
 		$filter->fields = array_merge( $default_fields, $filter->fields );
 
 		if ( empty( $filter->collection ) ) {
@@ -499,6 +504,11 @@ class LP_Course_DB extends LP_Database {
 		// Title
 		if ( $filter->post_title ) {
 			$filter->where[] = $this->wpdb->prepare( 'AND p.post_title LIKE %s', '%' . $filter->post_title . '%' );
+		}
+
+		// Slug
+		if ( $filter->post_name ) {
+			$filter->where[] = $this->wpdb->prepare( 'AND p.post_name = %s', $filter->post_name );
 		}
 
 		// Author

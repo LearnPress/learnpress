@@ -45,7 +45,7 @@ if ( ! class_exists( 'LP_Admin_Dashboard' ) ) {
 				<?php lp_skeleton_animation_html( 4, 100, 'height: 30px;border-radius:4px;' ); ?>
 			</ul>
 			<?php
-			$eduma_data = $this->_get_theme_info( 14058034 );
+			// $eduma_data = $this->_get_theme_info( 14058034 );
 			if ( ! empty( $eduma_data ) ) {
 				$eduma_data['url'] = learn_press_get_item_referral( 14058034 );
 				?>
@@ -167,13 +167,13 @@ if ( ! class_exists( 'LP_Admin_Dashboard' ) ) {
 		 * Plugin status widget
 		 */
 		public function plugin_status() {
-			$plugin_data = $this->_get_data();
+			/*$plugin_data = $this->_get_data();
 
 			if ( ! $plugin_data || is_wp_error( $plugin_data ) ) {
 				learn_press_admin_view( 'dashboard/plugin-status/html-no-data' );
 			} else {
 				learn_press_admin_view( 'dashboard/plugin-status/html-results', array( 'plugin_data' => $plugin_data ) );
-			}
+			}*/
 		}
 	}
 }

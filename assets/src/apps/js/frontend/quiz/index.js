@@ -51,7 +51,9 @@ class Quiz extends Component {
 	};
 
 	render() {
-		const { status, isReviewing } = this.props;
+		const { status, isReviewing, answered } = this.props;
+
+		wp.hooks.doAction( 'lp-js-quiz-answer', answered, status );
 
 		const isA =
 			-1 !== [ '', 'completed', 'viewed' ].indexOf( status ) || ! status;

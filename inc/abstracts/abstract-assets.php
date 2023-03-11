@@ -56,6 +56,8 @@ abstract class LP_Abstract_Assets {
 
 		if ( is_admin() ) {
 			add_action( 'admin_enqueue_scripts', array( $this, 'load_scripts' ) );
+			add_action( 'admin_print_scripts', array( $this, 'localize_printed_admin_scripts' ) );
+			// Use for modal search items, modal search users when edit manual LP Order ue Vue js.
 			add_action( 'admin_print_footer_scripts', array( $this, 'localize_printed_admin_scripts' ) );
 		} else {
 			add_action( 'wp_enqueue_scripts', array( $this, 'load_scripts' ), $priority );

@@ -21,7 +21,7 @@ class LP_Core_API extends LP_Abstract_API {
 	public function rest_api_includes() {
 		parent::rest_api_includes();
 
-		$list_rest_fontend = array(
+		$list_rest_frontend = array(
 			'class-lp-rest-settings-controller.php',
 			'class-lp-rest-users-controller.php',
 			'class-lp-rest-courses-controller.php',
@@ -29,12 +29,13 @@ class LP_Core_API extends LP_Abstract_API {
 			'class-lp-rest-profile-controller.php',
 			'class-lp-rest-orders-controller.php',
 			'class-lp-rest-widgets-controller.php',
+			'class-lp-rest-addon-controller.php',
 		);
 
 		$path_version  = $this->version . '/frontend/';
 		$path_rest_api = LP_PLUGIN_PATH . 'inc/rest-api/' . $path_version;
 
-		foreach ( $list_rest_fontend as $rest_frontend ) {
+		foreach ( $list_rest_frontend as $rest_frontend ) {
 			include_once realpath( $path_rest_api . $rest_frontend );
 		}
 
@@ -50,6 +51,7 @@ class LP_Core_API extends LP_Abstract_API {
 			'LP_REST_Profile_Controller',
 			'LP_REST_Orders_Controller',
 			'LP_REST_Widgets_Controller',
+			'LP_REST_Addon_Controller',
 		);
 
 		$this->controllers = apply_filters( 'learn-press/core-api/controllers', $controllers );

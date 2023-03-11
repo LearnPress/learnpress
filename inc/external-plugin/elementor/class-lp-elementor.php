@@ -23,7 +23,7 @@ class LP_Elementor_Widgets {
 	public function __construct() {
 		self::$widgets = include_once 'lp-elementor-widgets-config.php';
 		add_action( 'elementor/elements/categories_registered', array( $this, 'register_category' ) );
-		add_action( 'elementor/widgets/widgets_registered', array( $this, 'register_widgets' ), 10, 1 );
+		add_action( 'elementor/widgets/register', array( $this, 'register_widgets' ), 10, 1 );
 		add_action( 'elementor/frontend/before_enqueue_scripts', array( $this, 'enqueue_frontend_scripts' ) );
 	}
 
@@ -60,7 +60,7 @@ class LP_Elementor_Widgets {
 				}
 
 				if ( class_exists( $class ) ) {
-					$widgets_manager->register_widget_type( new $class() );
+					$widgets_manager->register( new $class() );
 				}
 			}
 		}

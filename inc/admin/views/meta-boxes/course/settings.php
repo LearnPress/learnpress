@@ -352,7 +352,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 						'type_input'        => 'number',
 						'custom_attributes' => array(
 							'min'  => '0',
-							'step' => '1',
+							'step' => '0.01',
 							'max'  => '100',
 						),
 						'style'             => 'width: 60px;',
@@ -484,16 +484,16 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 			update_post_meta( $post_id, '_lp_regular_price', '' );
 		}
 
-		if ( $price_sale >= $price_regular || $price_sale <= 0 ) {
+		if ( $price_sale >= $price_regular || $price_sale < 0 ) {
 			update_post_meta( $post_id, '_lp_sale_price', '' );
 		}
 		// End check price.
 
-		$evalution         = isset( $_POST['_lp_course_result'] ) ? LP_Helper::sanitize_params_submitted( $_POST['_lp_course_result'] ) : '';
-		$passing_condition = isset( $_POST['_lp_passing_condition'] ) ? absint( wp_unslash( $_POST['_lp_passing_condition'] ) ) : 0;
+		$evaluation = LP_Request::get_param( '_lp_course_result', '', 'text', 'post' );
+		//$passing_condition = isset( $_POST['_lp_passing_condition'] ) ? absint( wp_unslash( $_POST['_lp_passing_condition'] ) ) : 0;
 
 		// Update Final Quiz. - Nhamdv
-		if ( $evalution == 'evaluate_final_quiz' ) {
+		if ( $evaluation == 'evaluate_final_quiz' ) {
 			$items = $course->get_item_ids();
 
 			if ( $items ) {

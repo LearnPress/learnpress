@@ -69,7 +69,7 @@ if ( ! function_exists( 'lp_add_body_class' ) ) {
 	function lp_add_body_class( $classes ) {
 		$classes = (array) $classes;
 
-		if ( learn_press_is_profile() ) {
+		if ( LP_Page_Controller::is_page_profile() ) {
 			$classes[] = 'learnpress-profile';
 		} elseif ( learn_press_is_checkout() ) {
 			$classes[] = 'learnpress-checkout';
@@ -296,37 +296,37 @@ function learn_press_is_endpoint_url( $endpoint = false ) {
  * Get current URL user is viewing.
  *
  * @return string
+ * @deprecated 4.2.2
  */
 function learn_press_get_current_url() {
-	static $current_url;
+	//_deprecated_function( __FUNCTION__, '4.2.2', 'LP_Helper::getUrlCurrent' );
+	return LP_Helper::getUrlCurrent();
 
-	if ( ! $current_url ) {
-		$url = untrailingslashit( esc_url_raw( $_SERVER['REQUEST_URI'] ) );
+	$url = untrailingslashit( esc_url_raw( $_SERVER['REQUEST_URI'] ) );
 
-		if ( ! preg_match( '!^https?!', $url ) ) {
-			$siteurl    = trailingslashit( get_home_url() );
-			$home_query = '';
+	if ( ! preg_match( '!^https?!', $url ) ) {
+		$siteurl    = trailingslashit( get_home_url() );
+		$home_query = '';
 
-			if ( strpos( $siteurl, '?' ) !== false ) {
-				$parts      = explode( '?', $siteurl );
-				$home_query = $parts[1];
-				$siteurl    = $parts[0];
-			}
+		if ( strpos( $siteurl, '?' ) !== false ) {
+			$parts      = explode( '?', $siteurl );
+			$home_query = $parts[1];
+			$siteurl    = $parts[0];
+		}
 
-			if ( $home_query ) {
-				parse_str( untrailingslashit( $home_query ), $home_query );
-				$url = esc_url_raw( add_query_arg( $home_query, $url ) );
-			}
+		if ( $home_query ) {
+			parse_str( untrailingslashit( $home_query ), $home_query );
+			$url = esc_url_raw( add_query_arg( $home_query, $url ) );
+		}
 
-			$segs1 = explode( '/', $siteurl );
-			$segs2 = explode( '/', $url );
+		$segs1 = explode( '/', $siteurl );
+		$segs2 = explode( '/', $url );
 
-			if ( $removed = array_intersect( $segs1, $segs2 ) ) {
-				if ( $segs2 = array_diff( $segs2, $removed ) ) {
-					$current_url = $siteurl . join( '/', $segs2 );
-					if ( strpos( $current_url, '?' ) === false ) {
-						$current_url = trailingslashit( $current_url );
-					}
+		if ( $removed = array_intersect( $segs1, $segs2 ) ) {
+			if ( $segs2 = array_diff( $segs2, $removed ) ) {
+				$current_url = $siteurl . join( '/', $segs2 );
+				if ( strpos( $current_url, '?' ) === false ) {
+					$current_url = trailingslashit( $current_url );
 				}
 			}
 		}
@@ -450,9 +450,9 @@ function learn_press_get_course_terms( $course_id, $taxonomy, $args = array() ) 
 			unset( $args['orderby'] );
 
 			// Set args for get_terms
-			$args['menu_order'] = isset( $args['order'] ) ? $args['order'] : 'ASC';
-			$args['hide_empty'] = isset( $args['hide_empty'] ) ? $args['hide_empty'] : 0;
-			$args['fields']     = isset( $args['fields'] ) ? $args['fields'] : 'names';
+			$args['menu_order'] = $args['order'] ?? 'ASC';
+			$args['hide_empty'] = $args['hide_empty'] ?? 0;
+			$args['fields']     = $args['fields'] ?? 'names';
 
 			// Ensure slugs is valid for get_terms - slugs isn't supported
 			$args['fields'] = $args['fields'] === 'slugs' ? 'id=>slug' : $args['fields'];
@@ -1316,12 +1316,17 @@ function learn_press_get_currency_symbol( $currency = '' ) {
  * @modify 4.1.4
  */
 function learn_press_get_page_link( string $key ): string {
-	$page_id = learn_press_get_page_id( $key );
-	$link    = '';
+	$page_id   = learn_press_get_page_id( $key );
+	$key_cache = "lp/page-link/{$key}";
+	$link      = LP_Cache::cache_load_first( 'get', $key_cache );
+	if ( false !== $link ) {
+		return $link;
+	}
 
 	if ( $page_id && get_post_status( $page_id ) == 'publish' ) {
 		$permalink = get_permalink( $page_id );
 		$link      = apply_filters( 'learn-press/get-page-link', trailingslashit( $permalink ), $page_id, $key );
+		LP_Cache::cache_load_first( 'set', $key_cache, $link );
 	}
 
 	return $link;
@@ -1424,7 +1429,7 @@ function learn_press_seconds_to_weeks( int $secs = 0 ) {
 	return $result;
 }
 
-add_filter( 'learn_press_course_lesson_permalink', 'learn_press_course_lesson_permalink_friendly', 10, 3 );
+//add_filter( 'learn_press_course_lesson_permalink', 'learn_press_course_lesson_permalink_friendly', 10, 3 );
 function learn_press_course_lesson_permalink_friendly( $permalink, $lesson_id, $course_id ) {
 	if ( '' != get_option( 'permalink_structure' ) ) {
 		if ( preg_match( '!\?lesson=([^\?\&]*)!', $permalink, $matches ) ) {
@@ -1814,9 +1819,7 @@ function learn_press_add_notice( $message, $type = 'updated' ) {
  * @version 1.0.3
  */
 function learn_press_setcookie( string $name = '', string $value = '', int $expire = 0, bool $httponly = true ) {
-	$secure = ( 'https' === parse_url( wp_login_url(), PHP_URL_SCHEME ) );
-
-	@setcookie( $name, $value, $expire, COOKIEPATH ?: '/', COOKIE_DOMAIN, $secure, $httponly );
+	@setcookie( $name, $value, $expire, COOKIEPATH ?: '/', COOKIE_DOMAIN, is_ssl(), $httponly );
 }
 
 /**
@@ -1890,6 +1893,10 @@ function learn_press_get_endpoint_url( $name, $value, $url ) {
  * Add all endpoints from settings to the pages.
  */
 function learn_press_add_endpoints() {
+	// Must LP_Profile::instance call on init, because it will add action hook to save data on Profile page
+	// If rewrite save data on Profile page, can remove it.
+	LP_Profile::instance( get_current_user_id() );
+
 	$settings = LP_Settings::instance();
 
 	$endpoints = $settings->get_checkout_endpoints();
@@ -2049,16 +2056,14 @@ function learn_press_get_current_version() {
  * @param bool $default
  *
  * @return mixed|string
+ * @deprecated 4.2.2
  */
 function learn_press_get_current_profile_tab( $default = true ) {
 	global $wp_query, $wp;
 	$current = '';
 
 	// Only load on profile page.
-	$page_profile_option = untrailingslashit( get_the_permalink( learn_press_get_page_id( 'profile' ) ) );
-	$page_profile_option = str_replace( '/', '\/', $page_profile_option );
-	$pattern             = '/' . $page_profile_option . '/';
-	if ( ! preg_match( $pattern, LP_Helper::getUrlCurrent() ) ) {
+	if ( ! LP_Page_Controller::is_page_profile() ) {
 		return false;
 	}
 
@@ -2084,7 +2089,7 @@ function learn_press_get_current_profile_tab( $default = true ) {
 	return $current;
 }
 
-add_action( 'init', 'learn_press_get_current_profile_tab' );
+//add_action( 'init', 'learn_press_get_current_profile_tab' );
 
 function learn_press_profile_tab_exists( $tab ) {
 	$tabs = learn_press_get_user_profile_tabs();
@@ -2785,20 +2790,20 @@ add_action( 'learn-press/schedule-enable-shuffle-themes', '_learn_press_schedule
  */
 function learn_press_global_script_params(): array {
 	$localize = [
-		'ajax'        => admin_url( 'admin-ajax.php' ),
-		'plugin_url'  => LearnPress::instance()->plugin_url(),
-		'siteurl'     => home_url(),
-		'current_url' => learn_press_get_current_url(),
-		'theme'       => get_stylesheet(),
-		'localize'    => array(
+		'ajax'       => admin_url( 'admin-ajax.php' ),
+		'plugin_url' => LearnPress::instance()->plugin_url(),
+		'siteurl'    => home_url(),
+		//'current_url' => learn_press_get_current_url(),
+		'theme'      => get_stylesheet(),
+		'localize'   => array(
 			'button_ok'     => __( 'OK', 'learnpress' ),
 			'button_cancel' => __( 'Cancel', 'learnpress' ),
 			'button_yes'    => __( 'Yes', 'learnpress' ),
 			'button_no'     => __( 'No', 'learnpress' ),
 		),
-		'rest'        => esc_url_raw( rest_url() ),
-		'nonce'       => wp_create_nonce( 'wp_rest' ),
-		'is_admin'    => current_user_can( ADMIN_ROLE ),
+		'rest'       => esc_url_raw( rest_url() ),
+		'nonce'      => wp_create_nonce( 'wp_rest' ),
+		'is_admin'   => current_user_can( ADMIN_ROLE ),
 	];
 
 	return apply_filters( 'lp/admin/localize/scripts', $localize );
@@ -3210,12 +3215,11 @@ add_action(
 function lp_add_shortcode_profile() {
 	global $post;
 
-	if ( learn_press_is_profile() && is_object( $post ) ) {
+	if ( LP_Page_Controller::is_page_profile() && is_object( $post ) ) {
 		if ( ! has_shortcode( $post->post_content, 'learn_press_profile' ) ) {
-			$post->post_content .= '<!-- wp:shortcode -->[' . apply_filters( 'learn-press/shortcode/profile/tag', 'learn_press_profile' ) . ']<!-- /wp:shortcode -->';
+			$post->post_content .= '<!-- wp:shortcode -->[learn_press_profile]<!-- /wp:shortcode -->';
+			wp_update_post( $post );
 		}
-
-		wp_update_post( $post );
 	}
 }
 

@@ -31,7 +31,8 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 		$order->set_order_date( time() );
 		$order->set_order_key( learn_press_generate_order_key() );
-		$status = $this->format_status_save_db( $order );
+		$status  = $this->format_status_save_db( $order );
+		$lp_time = new LP_Datetime( time() );
 
 		$order_data = array(
 			'post_author'   => get_current_user_id(),
@@ -40,17 +41,23 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			'post_status'   => $status,
 			'ping_status'   => 'closed',
 			'post_title'    => $order->get_title(),
-			'post_date'     => $order->get_order_date( 'edit' )->toSql( true ),
-			'post_date_gmt' => $order->get_order_date( 'edit' )->toSql( false ),
+			'post_date'     => $lp_time->toSql( true ),
+			'post_date_gmt' => $lp_time->toSql(),
 			'post_excerpt'  => $order->get_customer_note(),
 		);
 
 		$order_data = apply_filters( 'learn-press/order/new-data', $order_data );
 
 		$id = wp_insert_post( $order_data, true );
-
 		if ( $id && ! is_wp_error( $id ) ) {
 			$order->set_id( $id );
+			// Update title oder when order is have just create.
+			wp_update_post(
+				array(
+					'ID'         => $id,
+					'post_title' => learn_press_transaction_order_number( $id ),
+				)
+			);
 			$this->_updates( $order );
 		}
 
@@ -72,10 +79,11 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 		$status    = $this->format_status_save_db( $order );
 		$post_data = array(
-			'post_date'     => $order->get_order_date( 'edit' )->toSql(),
-			'post_date_gmt' => $order->get_order_date( 'edit' )->toSql( false ),
-			'post_status'   => $status,
-			'post_parent'   => $order->get_parent_id(),
+			//'post_title'    => $order->get_order_number(),
+			//'post_date'     => $order->get_order_date( 'edit' )->toSql(),
+			//'post_date_gmt' => $order->get_order_date( 'edit' )->toSql( false ),
+			'post_status' => $status,
+			//'post_parent'   => $order->get_parent_id(),
 		);
 		$post_data = apply_filters( 'learn-press/order/update-data', $post_data, $order->get_id() );
 
@@ -201,8 +209,15 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 *
 	 * @return mixed
 	 * @author tungnx
+	 * Todo: review to rewrite.
 	 */
 	public function read_items( $order ) {
+		$key   = "order/{$order->get_id()}/{$order->get_status()}/items";
+		$items = LP_Cache::cache_load_first( 'get', $key );
+		if ( false !== $items ) {
+			return $items;
+		}
+
 		global $wpdb;
 
 		$table_order_items     = $wpdb->learnpress_order_items;
@@ -248,6 +263,8 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					$items[ $order_item_meta->order_item_id ][ $order_item_meta->meta_key ] = $order_item_meta->meta_value;
 			}
 		}
+
+		LP_Cache::cache_load_first( 'set', $key, $items );
 
 		return $items; // apply_filters( 'learn_press_order_get_items', $items, $this );
 	}
@@ -386,7 +403,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			FROM {$wpdb->learnpress_order_items} oi
 			INNER JOIN {$wpdb->learnpress_order_itemmeta} oim ON oi.order_item_id = oim.learnpress_order_item_id
 			WHERE order_id = %d
-		",
+			",
 			$from
 		);
 

@@ -176,7 +176,7 @@ class LP_Admin_Notice {
 		$args     = [
 			'timeout' => 30,
 		];
-		$result   = wp_safe_remote_get( $test_url, $args );
+		$result   = wp_remote_get( $test_url, $args );
 		$body     = ! is_wp_error( $result ) ? wp_remote_retrieve_body( $result ) : $result;
 
 		return $body === '[TEST_REMOTE]' ? true : $result;

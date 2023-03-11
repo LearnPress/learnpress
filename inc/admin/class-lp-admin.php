@@ -812,43 +812,45 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		 * @version 4.0.1
 		 */
 		public function lp_course_set_link_item_backend( $post_link = '', $post_id = 0, $new_title = '', $new_slug = '', $post = null ) {
-			if ( ! in_array( $post->post_type, learn_press_get_course_item_types() ) ) {
-				return $post_link;
-			}
-
 			try {
-				$course_id_of_item = LP_Course_DB::getInstance()->get_course_by_item_id( $post->ID );
+				if ( in_array( $post->post_type, learn_press_get_course_item_types() ) ) {
+					$course_id_of_item = LP_Course_DB::getInstance()->get_course_by_item_id( $post->ID );
+					if ( $course_id_of_item ) {
+						$course = learn_press_get_course( $course_id_of_item );
+						if ( $course ) {
+							$link_item           = $course->get_item_link( $post->ID );
+							$link_item           = LP_Helper::handle_lp_permalink_structure( $link_item, get_post( $course_id_of_item ) );
+							$post_slug           = $post->post_name;
+							$link_item_edit_slug = preg_replace( '/' . $post_slug . '$/', '', $link_item );
 
-				if ( $course_id_of_item ) {
-					$course = learn_press_get_course( $course_id_of_item );
+							// For update new slug
+							if ( $new_slug ) {
+								$post_slug = $new_slug;
+							}
 
-					if ( $course ) {
-						$link_item = $course->get_item_link( $post->ID );
+							$slug_arr   = explode( '/', $link_item_edit_slug );
+							$count_slug = count( $slug_arr );
+							unset( $slug_arr[ $count_slug - 2 ] );
+							$link_item_edit_slug = implode( '/', $slug_arr );
 
-						$post_slug           = $post->post_name;
-						$link_item_edit_slug = preg_replace( '/' . $post_slug . '$/', '', $link_item );
-
-						// For update new slug
-						if ( $new_slug ) {
-							$post_slug = $new_slug;
+							$post_link  = '<strong>Permalink: </strong>';
+							$post_link .= '<span id="sample-permalink">';
+							$post_link .= '<a href="' . $link_item . '">' . $link_item_edit_slug . '<span id="editable-post-name">' . $post_slug . '</span>/</a>';
+							$post_link .= '</span>';
+							$post_link .= '&lrm;<span id="edit-slug-buttons">';
+							$post_link .= '<button type="button" class="edit-slug button button-small hide-if-no-js" aria-label="Edit permalink">Edit</button>';
+							$post_link .= '</span>';
+							$post_link .= '<span id="editable-post-name-full">' . $post_slug . '</span>';
 						}
-
-						$post_link  = '<strong>Permalink: </strong>';
-						$post_link .= '<span id="sample-permalink">';
-						$post_link .= '<a href="' . $link_item . '">' . $link_item_edit_slug . '<span id="editable-post-name">' . $post_slug . '</span>/</a>';
-						$post_link .= '</span>';
-						$post_link .= '&lrm;<span id="edit-slug-buttons">';
-						$post_link .= '<button type="button" class="edit-slug button button-small hide-if-no-js" aria-label="Edit permalink">Edit</button>';
-						$post_link .= '</span>';
-						$post_link .= '<span id="editable-post-name-full">' . $post_slug . '</span>';
+					} else {
+						$post_link_message = '<span>' . __(
+							'Permalink is only available if the item is already assigned to a course.',
+							'learnpress'
+						) . '</span>';
+						$post_link         = sprintf( '<div id="learn-press-box-edit-slug">%s</div>', $post_link_message );
 					}
-				} else {
-					// $post_link_preview = sprintf( '<a class="button" href="%s" target="_blank">%s</a>', learn_press_get_preview_url( $post_id ), __( 'Preview', 'learnpress' ) );
-					$post_link_message = '<span>' . __(
-						'Permalink is only available if the item is already assigned to a course.',
-						'learnpress'
-					) . '</span>';
-					$post_link         = sprintf( '<div id="learn-press-box-edit-slug">%s</div>', $post_link_message );
+				} elseif ( LP_COURSE_CPT === get_post_type( $post ) ) {
+					$post_link = LP_Helper::handle_lp_permalink_structure( $post_link, $post );
 				}
 			} catch ( Throwable $e ) {
 				error_log( $e->getMessage() );

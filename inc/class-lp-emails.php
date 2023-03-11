@@ -139,7 +139,7 @@ if ( ! class_exists( 'LP_Emails' ) ) {
 		public static function get_email( $id ) {
 			static $emails = array();
 
-			if ( ! $emails || empty( $emails[ $id ] ) ) {
+			if ( empty( $emails[ $id ] ) ) {
 				foreach ( self::instance()->emails as $class => $email ) {
 					$emails[ $email->id ] = $class;
 				}

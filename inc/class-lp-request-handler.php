@@ -235,6 +235,7 @@ class LP_Request {
 	 * @param string $env
 	 *
 	 * @return mixed
+	 * @deprecated 4.2.1
 	 */
 	public static function get( $var, $default = false, $type = '', $env = 'request' ) {
 		switch ( strtolower( $env ) ) {

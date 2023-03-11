@@ -18,30 +18,35 @@ return apply_filters(
 			'id'      => 'courses_page_id',
 			'default' => '',
 			'type'    => 'pages-dropdown',
+			'value'   => learn_press_get_page_id( 'courses' ),
 		),
 		array(
 			'title'   => esc_html__( 'Profile page', 'learnpress' ),
 			'id'      => 'profile_page_id',
 			'default' => '',
 			'type'    => 'pages-dropdown',
+			'value'   => learn_press_get_page_id( 'profile' ),
 		),
 		array(
 			'title'   => esc_html__( 'Checkout page', 'learnpress' ),
 			'id'      => 'checkout_page_id',
 			'default' => '',
 			'type'    => 'pages-dropdown',
+			'value'   => learn_press_get_page_id( 'checkout' ),
 		),
 		array(
 			'title'   => esc_html__( 'Become instructors page', 'learnpress' ),
 			'id'      => 'become_a_teacher_page_id',
 			'default' => '',
 			'type'    => 'pages-dropdown',
+			'value'   => learn_press_get_page_id( 'become_a_teacher' ),
 		),
 		array(
 			'title'   => esc_html__( 'Terms and conditions', 'learnpress' ),
 			'id'      => 'term_conditions_page_id',
 			'default' => '',
 			'type'    => 'pages-dropdown',
+			'value'   => learn_press_get_page_id( 'term_conditions' ),
 		),
 		array(
 			'title'   => esc_html__( 'Logout Redirect', 'learnpress' ),
@@ -49,6 +54,7 @@ return apply_filters(
 			'default' => '',
 			'type'    => 'pages-dropdown',
 			'desc'    => __( 'The page where the user will be redirected to after logging out.', 'learnpress' ),
+			'value'   => learn_press_get_page_id( 'logout_redirect' ),
 		),
 		array(
 			'type' => 'sectionend',

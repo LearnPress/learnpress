@@ -11,6 +11,9 @@
 /**
  * Prevent loading this file directly
  */
+
+use LearnPress\Helpers\Template;
+
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
@@ -297,6 +300,9 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 			$response[ $payment->id ] = $payment->enable( $status == 'yes' );
 
+			$lp_settings_cache = new LP_Settings_Cache( true );
+			$lp_settings_cache->clean_lp_settings();
+
 			learn_press_send_json( $response );
 		}
 
@@ -326,6 +332,10 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					$response[ $email->id ] = $email->enable( $status == 'yes' );
 				}
 			}
+
+			$lp_settings_cache = new LP_Settings_Cache( true );
+			$lp_settings_cache->clean_lp_settings();
+
 			learn_press_send_json( $response );
 		}
 
@@ -458,6 +468,10 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 * @note tungnx checked has use
 		 */
 		public static function add_items_to_order() {
+			$response = array(
+				'result' => 'error',
+			);
+
 			// ensure that user has permission
 			if ( ! current_user_can( 'edit_lp_orders' ) ) {
 				die( __( 'Permission denied', 'learnpress' ) );
@@ -470,19 +484,12 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			}
 
 			// validate item
-			$item_ids = learn_press_get_request( 'items' );
-			$order    = learn_press_get_order( $order_id );
-
-			$response = array(
-				'result' => 'error',
-			);
-
-			$order_item_ids = $order->add_items( $item_ids );
-
-			if ( $order_item_ids ) {
-				$html        = '';
-				$order_items = $order->get_items();
-
+			$item_ids   = LP_Request::get_param( 'items', [] );
+			$order      = learn_press_get_order( $order_id );
+			$order_item = $order->add_items( $item_ids );
+			if ( $order_item ) {
+				$html                        = '';
+				$order_items                 = $order->get_items();
 				$order_data                  = learn_press_update_order_items( $order_id );
 				$currency_symbol             = learn_press_get_currency_symbol( $order_data['currency'] );
 				$order_data['subtotal_html'] = learn_press_format_price( $order_data['subtotal'], $currency_symbol );
@@ -490,13 +497,12 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 				if ( $order_items ) {
 					foreach ( $order_items as $item ) {
-
-						if ( ! in_array( $item['id'], $order_item_ids ) ) {
+						if ( ! in_array( $item['id'], $order_item ) ) {
 							continue;
 						}
 
 						ob_start();
-						include learn_press_get_admin_view( 'meta-boxes/order/order-item.php' );
+						Template::instance()->get_admin_template( 'meta-boxes/order/order-item.php', compact( 'item', 'order' ) );
 						$html .= ob_get_clean();
 					}
 				}

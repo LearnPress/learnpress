@@ -151,14 +151,18 @@ class LP_User_Items_DB extends LP_Database {
 	 * @since 4.0.0
 	 * @version 1.0.0
 	 * @author tungnx
+	 *
+	 * @return int|false The number of rows inserted|updated, or false on error.
 	 */
 	public function update_extra_value( $user_item_id = 0, $meta_key = '', $value = '' ) {
+		$result = false;
+
 		$data   = array(
 			'learnpress_user_item_id' => $user_item_id,
 			'meta_key'                => $meta_key,
 			'extra_value'             => $value,
 		);
-		$format = array( '%s', '%s' );
+		$format = array( '%d', '%s', '%s' );
 
 		$check_exist_data = $this->wpdb->get_var(
 			$this->wpdb->prepare(
@@ -173,7 +177,7 @@ class LP_User_Items_DB extends LP_Database {
 		);
 
 		if ( $check_exist_data ) {
-			$this->wpdb->update(
+			$result = $this->wpdb->update(
 				$this->tb_lp_user_itemmeta,
 				$data,
 				array(
@@ -183,8 +187,10 @@ class LP_User_Items_DB extends LP_Database {
 				$format
 			);
 		} else {
-			$this->wpdb->insert( $this->tb_lp_user_itemmeta, $data, $format );
+			$result = $this->wpdb->insert( $this->tb_lp_user_itemmeta, $data, $format );
 		}
+
+		return $result;
 	}
 
 	/**
@@ -323,10 +329,15 @@ class LP_User_Items_DB extends LP_Database {
 	 * @throws Exception
 	 */
 	public function get_last_user_course( LP_User_Items_Filter $filter, bool $force_cache = false ) {
-		$key_load_first = 'user_course/' . $filter->user_id . '/' . $filter->item_id;
-		$user_course    = LP_Cache::cache_load_first( 'get', $key_load_first );
-		if ( false !== $user_course && ! $force_cache ) {
-			return $user_course;
+		$lp_user_items_cache = new LP_User_Items_Cache( true );
+		$key_cache           = array(
+			$filter->user_id,
+			$filter->item_id,
+			LP_COURSE_CPT,
+		);
+		$result              = $lp_user_items_cache->get_user_item( $key_cache );
+		if ( false !== $result ) {
+			return json_decode( $result );
 		}
 
 		$query = $this->wpdb->prepare(
@@ -346,8 +357,8 @@ class LP_User_Items_DB extends LP_Database {
 		$result = $this->wpdb->get_row( $query );
 
 		$this->check_execute_has_error();
-
-		LP_Cache::cache_load_first( 'set', $key_load_first, $result );
+		// Set cache
+		$lp_user_items_cache->set_user_item( $key_cache, json_encode( $result ) );
 
 		return $result;
 	}
@@ -628,6 +639,22 @@ class LP_User_Items_DB extends LP_Database {
 			}
 
 			$course->delete_user_item_and_result( $user_course_ids );
+
+			// Clear cache total students enrolled.
+			$lp_course_cache = new LP_Course_Cache( true );
+			$lp_course_cache->clean_total_students_enrolled( $course_id );
+			$lp_course_cache->clean_total_students_enrolled_or_purchased( $course_id );
+			// Clear cache user course.
+			$lp_user_items_cache = new LP_User_Items_Cache( true );
+			$lp_user_items_cache->clean_user_item(
+				[
+					$user_id,
+					$course_id,
+					LP_COURSE_CPT,
+				]
+			);
+
+			do_action( 'learn-press/user-item-old/delete', $user_id, $course_id );
 		} catch ( Throwable $e ) {
 			error_log( __FUNCTION__ . ': ' . $e->getMessage() );
 		}

@@ -284,6 +284,13 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 								'priority' => 10,
 								'icon'     => '<i class="fas fa-home"></i>',
 							),
+							'avatar'            => array(
+								'title'    => esc_html__( 'Avatar', 'learnpress' ),
+								'callback' => array( $this, 'tab_order_details' ),
+								'slug'     => $settings->get( 'profile_endpoints.settings-avatar', 'avatar' ),
+								'priority' => 20,
+								'icon'     => '<i class="fas fa-user-circle"></i>',
+							),
 							'change-password'   => array(
 								'title'    => esc_html__( 'Password', 'learnpress' ),
 								'slug'     => $settings->get( 'profile_endpoints.settings-change-password', 'change-password' ),
@@ -302,16 +309,6 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 						'priority' => 40,
 					),
 				);
-
-				if ( $this->is_enable_avatar() ) {
-					$this->_default_settings['settings']['sections']['avatar'] = array(
-						'title'    => esc_html__( 'Avatar', 'learnpress' ),
-						'callback' => array( $this, 'tab_order_details' ),
-						'slug'     => $settings->get( 'profile_endpoints.settings-avatar', 'avatar' ),
-						'priority' => 20,
-						'icon'     => '<i class="fas fa-user-circle"></i>',
-					);
-				}
 
 				if ( 'yes' === self::get_option_publish_profile() ) {
 					$this->_default_settings['settings']['sections']['privacy'] = array(
@@ -338,8 +335,9 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * Enable custom avatar?
 		 *
 		 * @return bool
+		 * @deprecated 4.2.2.2
 		 */
-		public function is_enable_avatar() {
+		/*public function is_enable_avatar() {
 			$profile_avatar = get_option( 'learn_press_profile_avatar' );
 
 			if ( ! $profile_avatar ) {
@@ -358,7 +356,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			}
 
 			return LP_Settings::instance()->get( 'profile_avatar' ) === 'yes';
-		}
+		}*/
 
 		/**
 		 * Get current tab slug in query string.
@@ -527,9 +525,13 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				return new WP_Error( 2, 'The user is invalid' );
 			}
 
-			$message = '';
+			$message        = [
+				'status'  => 'error',
+				'content' => '',
+			];
+			$message_action = '';
 
-			foreach ( $this->_default_actions as $_action => $message ) {
+			foreach ( $this->_default_actions as $_action => $message_action ) {
 				if ( wp_verify_nonce( $nonce, 'learn-press-save-profile-' . $_action ) ) {
 					$action = $_action;
 					break;
@@ -546,11 +548,6 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				case 'basic-information':
 					$return = learn_press_update_user_profile_basic_information( true );
 					break;
-				case 'avatar':
-					if ( $this->is_enable_avatar() ) {
-						$return = learn_press_update_user_profile_avatar( true );
-					}
-					break;
 				case 'password':
 					$return = learn_press_update_user_profile_change_password( true );
 					break;
@@ -565,17 +562,18 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			}
 
 			if ( is_wp_error( $return ) ) {
-				learn_press_add_message( $return->get_error_message(), 'error' );
+				$message['content'] = $return->get_error_message();
 			} else {
-				if ( $return ) {
-					learn_press_add_message( $message );
-				}
+				$message['status']  = 'success';
+				$message['content'] = $message_action;
 			}
+
+			learn_press_set_message( $message );
 
 			if ( ! empty( $_REQUEST['redirect'] ) ) {
 				$redirect = esc_url_raw( $_REQUEST['redirect'] );
 			} else {
-				$redirect = learn_press_get_current_url();
+				$redirect = LP_Helper::getUrlCurrent();
 			}
 
 			$redirect = apply_filters( 'learn-press/profile-updated-redirect', $redirect, $action );

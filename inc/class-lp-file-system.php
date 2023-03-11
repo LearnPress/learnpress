@@ -41,14 +41,14 @@ if ( ! class_exists( 'LP_WP_Filesystem' ) ) {
 			return self::$instance;
 		}
 
-		public static function wp_file_system() {
+		/*public static function wp_file_system() {
 			global $wp_filesystem;
 
 			if ( empty( $wp_filesystem ) ) {
 				require_once ABSPATH . '/wp-admin/includes/file.php';
 				WP_Filesystem();
 			}
-		}
+		}*/
 
 		public static function chmod_dir(): int {
 			if ( defined( 'FS_CHMOD_DIR' ) ) {

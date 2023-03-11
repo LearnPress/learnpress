@@ -216,7 +216,6 @@ class LP_User extends LP_Abstract_User {
 			}*/
 
 			$user_course = $this->get_course_data( $course_id );
-
 			if ( ! $user_course || ! $user_course->is_enrolled() ) {
 				throw new Exception( esc_html__( 'The course is not enrolled.', 'learnpress' ) );
 			}

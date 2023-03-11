@@ -40,7 +40,6 @@ class LP_Profile_Tabs {
 
 		$current      = $wp->query_vars['view'] ?? 'overview';
 		$current_page = LP_Page_Controller::page_current();
-
 		if ( LP_PAGE_PROFILE !== $current_page ) {
 			return;
 		}
@@ -87,7 +86,7 @@ class LP_Profile_Tabs {
 
 		$key = md5( serialize( array_keys( $tabs ) ) );
 		if ( $key !== get_option( '_lp_tabs_data' ) ) {
-			flush_rewrite_rules();
+			//flush_rewrite_rules();
 			update_option( '_lp_tabs_data', $key, false );
 		}
 

@@ -41,7 +41,7 @@ class LP_Sessions_DB extends LP_Database {
 	 * @throws Exception
 	 */
 	public function get_sessions( LP_Session_Filter $filter ) {
-		$default_fields = $this->get_cols_of_table( $this->tb_lp_sessions );
+		$default_fields = $filter->all_fields;
 		$filter->fields = array_merge( $default_fields, $filter->fields );
 
 		if ( empty( $filter->collection ) ) {

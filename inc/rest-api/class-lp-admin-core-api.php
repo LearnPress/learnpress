@@ -9,7 +9,7 @@
  */
 class LP_Admin_Core_API extends LP_Abstract_API {
 	public function __construct() {
-		if ( ! current_user_can( 'administrator' ) ) {
+		if ( ! LP_Helper::isRestApiLP() || ! current_user_can( 'administrator' ) ) {
 			return;
 		}
 

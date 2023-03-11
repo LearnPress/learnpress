@@ -23,7 +23,7 @@ if ( ! is_user_logged_in() ) {
 			'This content is protected, please <a class=\"lp-link-login\" href=\"%s\">login</a> and enroll in the course to view this content!',
 			'learnpress'
 		),
-		learn_press_get_login_url( learn_press_get_current_url() )
+		learn_press_get_login_url( LP_Helper::getUrlCurrent() )
 	);
 } else {
 	$message = $can_view_item->message;

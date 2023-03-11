@@ -134,7 +134,7 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 		 *
 		 * @author tungnx
 		 * @since 4.1.4.1
-		 * @version 1.0.0
+		 * @version 1.0.1
 		 */
 		protected function save_extra_info() {
 			$lp_course_db    = LP_Course_DB::getInstance();
@@ -168,6 +168,9 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 
 				// Check items removed course, will delete on 'learnpress_user_items', 'learnpress_user_item_results' table
 				$this->delete_user_items_data( $sections_items );
+
+				// @since 4.2.1
+				do_action( 'lp/course/extra-info/before-save', $lp_course, $extra_info );
 
 				// Save post meta
 				$lp_course->set_info_extra_for_fast_query( $extra_info );

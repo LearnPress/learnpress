@@ -155,7 +155,8 @@ abstract class LP_Abstract_Post_Type {
 		if ( $args ) {
 			register_post_type( $this->_post_type, $args );
 
-			flush_rewrite_rules();
+			// Todo: tungnx review this code.
+			//flush_rewrite_rules();
 		}
 	}
 
@@ -663,9 +664,11 @@ abstract class LP_Abstract_Post_Type {
 
 			if ( ! current_user_can( ADMIN_ROLE ) ) {
 				if ( get_current_user_id() !== $post->post_author ) {
-					$can_save = apply_filters( 'lp/custom-post-type/can-save', false, $post );
+					$can_save = false;
 				}
 			}
+
+			$can_save = apply_filters( 'lp/custom-post-type/can-save', $can_save, $post );
 		} catch ( Throwable $e ) {
 			$can_save = false;
 		}

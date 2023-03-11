@@ -489,7 +489,7 @@ function learn_press_get_orders( $args = array() ) {
  * Count orders by it's status
  *
  * @param array $args
- *
+ * @Todo tungnx review to rewrite query
  * @return array
  */
 function learn_press_count_orders( $args = array() ) {
@@ -748,7 +748,6 @@ function learn_press_get_register_order_statuses() {
 }
 
 function _learn_press_get_order_status_description( $status ) {
-	static $descriptions = null;
 	$descriptions        = array(
 		'pending'    => __( 'Order received in case a user purchases a course but doesn\'t finalize the order.', 'learnpress' ),
 		'processing' => __( 'Payment received and the order is awaiting fulfillment.', 'learnpress' ),

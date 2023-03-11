@@ -18,6 +18,10 @@ if ( class_exists( 'LP_Section_Filter' ) ) {
 
 class LP_Session_Filter extends LP_Filter {
 	/**
+	 * @var string[]
+	 */
+	public $all_fields = [ 'session_id', 'session_key', 'session_value', 'session_expiry' ];
+	/**
 	 * @var string
 	 */
 	public $field_count = 'session_id';

@@ -19,7 +19,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 	public function __construct() {
 		parent::__construct();
 
-		add_action( 'the_post', array( $this, 'get_course' ), 1000 );
+		add_action( 'the_post', array( $this, 'get_course' ) );
 	}
 
 	public function get_course() {
@@ -534,6 +534,9 @@ class LP_Template_Course extends LP_Abstract_Template {
 		);
 	}
 
+	/**
+	 * Display course curriculum.
+	 */
 	public function course_curriculum() {
 		if ( ! learn_press_override_templates() || ( learn_press_override_templates() && has_filter( 'lp/template-course/course_curriculum/skeleton' ) ) ) {
 			$course_item = LP_Global::course_item();
@@ -544,7 +547,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 			}
 			?>
 			<div class="learnpress-course-curriculum" data-section="<?php echo esc_attr( $section_id ?? '' ); ?>"
-				 data-id="<?php echo esc_attr( $item_id ?? '' ); ?>">
+				data-id="<?php echo esc_attr( $item_id ?? '' ); ?>">
 				<ul class="lp-skeleton-animation">
 					<li style="width: 100%; height: 50px"></li>
 					<li style="width: 100%; height: 20px"></li>

@@ -56,6 +56,15 @@ echo wp_sprintf(
 			<?php echo esc_html( $order_received->get_order_number() ); ?>
 		</td>
 	</tr>
+	<tr class="status">
+		<th><?php esc_html_e( 'Status', 'learnpress' ); ?></th>
+		<td>
+			<?php
+			$status = $order_received->get_status();
+			echo ucfirst( wp_kses_post( $status ) );
+			?>
+		</td>
+	</tr>
 	<tr class="item">
 		<th><?php esc_html_e( 'Item', 'learnpress' ); ?></th>
 		<td>
@@ -120,6 +129,7 @@ echo wp_sprintf(
 			</td>
 		</tr>
 	<?php endif; ?>
+	<?php do_action( 'learn-press/order/received/items-table', $order_received ); ?>
 </table>
 
 <?php //do_action( 'learn-press/order/received/' . $order_received->get_data( 'payment_method' ), $order_received->get_id() ); ?>

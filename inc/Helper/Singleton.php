@@ -17,6 +17,8 @@ trait Singleton {
 	}
 
 	final private function __construct() {
-		parent::__construct();
+		$this->init();
 	}
+
+	abstract function init();
 }

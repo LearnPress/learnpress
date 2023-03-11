@@ -27,14 +27,14 @@ const courseTab = () => {
 			if ( viewMoreEle ) {
 				viewMoreEle.classList.remove( 'loading' );
 
-				const paged = viewMoreEle.dataset.paged;
-				const numberPage = viewMoreEle.dataset.number;
+				const paged = parseInt( viewMoreEle.dataset.paged );
+				const numberPage = parseInt( viewMoreEle.dataset.number );
 
 				if ( numberPage <= paged ) {
 					viewMoreEle.remove();
 				}
 
-				viewMoreEle.dataset.paged = parseInt( paged ) + 1;
+				viewMoreEle.dataset.paged = paged + 1;
 			}
 
 			viewMore( ele, dataset );
@@ -43,19 +43,6 @@ const courseTab = () => {
 				ele.innerHTML += `<div class="lp-ajax-message error" style="display:block">${ error.message && error.message }</div>`;
 			} else {
 				ele.innerHTML = `<div class="lp-ajax-message error" style="display:block">${ error.message && error.message }</div>`;
-			}
-
-			if ( viewMoreEle ) {
-				viewMoreEle.classList.remove( 'loading' );
-
-				const paged = viewMoreEle.dataset.paged;
-				const numberPage = viewMoreEle.dataset.number;
-
-				if ( numberPage <= paged ) {
-					viewMoreEle.remove();
-				}
-
-				viewMoreEle.dataset.paged = parseInt( paged ) + 1;
 			}
 		} );
 	};

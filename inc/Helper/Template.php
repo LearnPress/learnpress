@@ -66,16 +66,29 @@ class Template {
 	 * @version 1.0.0
 	 */
 	public function get_frontend_template( string $file_name = '', array $args = array() ) {
-		$default_path        = LP_PLUGIN_PATH . "templates/{$file_name}";
-		$folder_name_rewrite = learn_press_template_path();
-		$from_theme_path     = sprintf(
+		$default_path          = LP_PLUGIN_PATH . "templates/{$file_name}";
+		$folder_name_rewrite   = learn_press_template_path();
+		$from_child_theme_path = sprintf(
+			'%s/%s/%s',
+			get_stylesheet_directory(),
+			$folder_name_rewrite,
+			$file_name
+		);
+		$from_theme_path       = sprintf(
 			'%s/%s/%s',
 			get_template_directory(),
 			$folder_name_rewrite,
 			$file_name
 		);
-		$path_load           = file_exists( $from_theme_path ) ? $from_theme_path : $default_path;
-		$template            = $this->get_template( $path_load, $args );
+
+		$path_load = $default_path;
+		if ( file_exists( $from_child_theme_path ) ) {
+			$path_load = $from_child_theme_path;
+		} elseif ( file_exists( $from_theme_path ) ) {
+			$path_load = $from_theme_path;
+		}
+		$template = $this->get_template( $path_load, $args );
+
 		if ( ! $this->include ) {
 			return $template;
 		}
@@ -95,19 +108,14 @@ class Template {
 		try {
 			extract( $args );
 
-			// Check path file not extension, will add extension .php
-			if ( ! preg_match( '/\.php$/', $path_file ) ) {
-				$path_file .= '.php';
-			}
-
-			if ( realpath( $path_file ) ) {
+			if ( file_exists( $path_file ) ) {
 				if ( $this->include ) {
 					include $path_file;
 				} else {
 					return $path_file;
 				}
 			} else {
-				printf( esc_html__( 'Path file %s not exists', 'realpress' ), $path_file );
+				printf( esc_html__( 'Path file %s not exists', 'learnpress' ), $path_file );
 				echo '<br>';
 			}
 		} catch ( \Throwable $e ) {

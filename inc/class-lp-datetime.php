@@ -262,7 +262,7 @@ class LP_Datetime {
 	}
 
 	/**
-	 * Gets the date as an SQL datetime string.
+	 * Get the date as an SQL datetime string.
 	 *
 	 * @param boolean $local True to return the date string in the local time zone, false to return it in GMT.
 	 *
@@ -270,7 +270,11 @@ class LP_Datetime {
 	 * @version 4.0.1
 	 * @return  string
 	 */
-	public function toSql( $local = true ): string {
+	public function toSql( bool $local = false ): string {
+		if ( $local ) {
+			return $this->toSqlLocal();
+		}
+
 		return $this->format( 'mysql' );
 	}
 
@@ -293,6 +297,18 @@ class LP_Datetime {
 		}
 
 		return $time;
+	}
+
+	/**
+	 * Convert to format sql local time.
+	 *
+	 * @return string
+	 * @since 4.2.1
+	 */
+	private function toSqlLocal(): string {
+		$time = $this->getTimestamp() + get_option( 'gmt_offset' ) * HOUR_IN_SECONDS;
+
+		return gmdate( LP_Datetime::$format, $time );
 	}
 
 	/**

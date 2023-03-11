@@ -61,12 +61,12 @@ class LP_Assets extends LP_Abstract_Assets {
 	public function _get_script_data(): array {
 		$localize_script = [
 			'lp-global'       => array(
-				'url'                                => learn_press_get_current_url(),
+				//'url'                                => learn_press_get_current_url(),
 				'siteurl'                            => site_url(),
 				'ajax'                               => admin_url( 'admin-ajax.php' ),
 				'courses_url'                        => learn_press_get_page_link( 'courses' ),
 				'post_id'                            => get_the_ID(),
-				'user_id'                            => get_current_user_id(), // use: course-progress.
+				'user_id'                            => get_current_user_id(),
 				'theme'                              => get_stylesheet(),
 				'localize'                           => array(
 					'button_ok'     => esc_html__( 'OK', 'learnpress' ),
@@ -77,12 +77,14 @@ class LP_Assets extends LP_Abstract_Assets {
 				'lp_rest_url'                        => get_rest_url(),
 				'nonce'                              => wp_create_nonce( 'wp_rest' ),
 				'option_enable_popup_confirm_finish' => LP_Settings::get_option( 'enable_popup_confirm_finish', 'yes' ),
-				'is_course_archive'                  => learn_press_is_courses(),
+				'is_course_archive'                  => LP_Page_Controller::is_page_courses(),
 				'lpArchiveSkeleton'                  => lp_archive_skeleton_get_args(),
+				'lpArchiveLoadAjax'                  => LP_Settings_Courses::is_ajax_load_courses() ? 1 : 0,
+				'lpArchiveNoLoadAjaxFirst'           => LP_Settings_Courses::is_ajax_load_courses() && LP_Settings_Courses::is_no_load_ajax_first_courses() ? 1 : 0,
 			),
 			'lp-checkout'     => array(
 				'ajaxurl'            => home_url( '/' ),
-				'user_checkout'      => LearnPress::instance()->checkout()->get_checkout_email(),
+				//'user_checkout'      => LP_Checkout::instance()->get_checkout_email(),
 				'i18n_processing'    => esc_html__( 'Processing', 'learnpress' ),
 				'i18n_redirecting'   => esc_html__( 'Redirecting', 'learnpress' ),
 				'i18n_invalid_field' => esc_html__( 'Invalid field', 'learnpress' ),
@@ -92,7 +94,7 @@ class LP_Assets extends LP_Abstract_Assets {
 			'lp-profile-user' => array(
 				'processing'  => esc_html__( 'Processing', 'learnpress' ),
 				'redirecting' => esc_html__( 'Redirecting', 'learnpress' ),
-				'avatar_size' => learn_press_get_avatar_thumb_size(),
+				//'avatar_size' => learn_press_get_avatar_thumb_size(),
 			),
 			//'lp-course'       => learn_press_single_course_args(),
 			'lp-quiz'         => learn_press_single_quiz_args(),

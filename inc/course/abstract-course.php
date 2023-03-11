@@ -577,7 +577,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 
 			// Check in days sale
 			if ( $has_sale_price && '' !== $start_date && '' !== $end_date ) {
-				$now   = strtotime( get_date_from_gmt( gmdate( 'Y-m-d H:i:s', time() ), 'Y-m-d H:i:s' ) );
+				$now   = time();
 				$end   = strtotime( $end_date );
 				$start = strtotime( $start_date );
 
@@ -624,16 +624,18 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			if ( false === $price ) {
 				if ( $this->has_sale_price() ) {
 					$price = $this->get_sale_price();
-					// Add key _lp_course_is_sale for query
-					update_post_meta( $this->get_id(), '_lp_course_is_sale', 1 );
+					// Add key _lp_course_is_sale for query - Todo: Check performance, need write function get all courses, and set on Admin, on background
+					//update_post_meta( $this->get_id(), '_lp_course_is_sale', 1 );
 				} else {
 					// Delete key _lp_course_is_sale
-					delete_post_meta( $this->get_id(), '_lp_course_is_sale' );
+					//delete_post_meta( $this->get_id(), '_lp_course_is_sale' );
 					$price = $this->get_regular_price();
 				}
 
-				// For case set sale by days range
-				update_post_meta( $this->get_id(), '_lp_price', $price );
+				// Save price only on page Single Course
+				/*if ( LP_PAGE_SINGLE_COURSE === LP_Page_Controller::page_current() ) {
+					update_post_meta( $this->get_id(), '_lp_price', $price );
+				}*/
 
 				LP_Course_Cache::cache_load_first( 'set', $key_cache, $price );
 			}
@@ -841,21 +843,13 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 *
 		 * @return int
 		 * @editor tungnx
+		 * @version 1.0.1
+		 * @since 3.0.0
 		 * @Todo: view and rewrite this function
 		 */
 		public function count_students(): int {
-			$key_cache = "{$this->get_id()}/total-students";
-			$total     = LP_Course_Cache::instance()->get_cache( $key_cache );
-
-			if ( $total ) {
-				return $total;
-			}
-
-			$lp_course_db = LP_Course_DB::getInstance();
-			$total        = $lp_course_db->get_total_user_enrolled( $this->get_id() );
-			$total       += $this->get_fake_students();
-
-			LP_Course_Cache::instance()->set_cache( $key_cache, $total, 6 * HOUR_IN_SECONDS );
+			$total  = $this->get_total_user_enrolled();
+			$total += $this->get_fake_students();
 
 			return $total;
 		}
@@ -863,30 +857,80 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		/**
 		 * Get total user enrolled
 		 *
+		 * @since 4.1.4
+		 * @version 1.0.1
 		 * @return int
 		 */
 		public function get_total_user_enrolled(): int {
-			$lp_course_db = LP_Course_DB::getInstance();
-			return $lp_course_db->get_total_user_enrolled( $this->get_id() );
+			$total           = 0;
+			$lp_course_cache = new LP_Course_Cache( true );
+
+			try {
+				$total = $lp_course_cache->get_total_students_enrolled( $this->get_id() );
+				if ( false !== $total ) {
+					return $total;
+				}
+
+				$lp_course_db = LP_Course_DB::getInstance();
+				$total        = $lp_course_db->get_total_user_enrolled( $this->get_id() );
+				$lp_course_cache->set_total_students_enrolled( $this->get_id(), $total );
+			} catch ( Throwable $e ) {
+				error_log( $e->getMessage() );
+			}
+
+			return $total;
 		}
 
 		/**
-		 * Get total user enrolled or finished
-		 *
+		 * Get total user enrolled include fake
+		 * @since 4.2.2
 		 * @return int
 		 */
-		public function get_total_user_enrolled_or_purchased(): int {
-			$key_cache           = "{$this->get_id()}/total-students-attended";
-			$total_user_enrolled = LP_Course_Cache::cache_load_first( 'get', $key_cache );
+		/*public function get_total_user_enrolled_include_fake() {
+			$total_user_enrolled = 0;
+			$key_cache           = "{$this->get_id()}/total-students-include-fake";
 
-			if ( false === $total_user_enrolled ) {
-				$lp_course_db        = LP_Course_DB::getInstance();
-				$total_user_enrolled = $lp_course_db->get_total_user_enrolled_or_purchased( $this->get_id() );
+			try {
+				$total_user_enrolled = LP_Course_Cache::cache_load_first( 'get', $key_cache );
 
-				LP_Course_Cache::cache_load_first( 'set', $key_cache, $total_user_enrolled );
+				if ( false === $total_user_enrolled ) {
+					$lp_course_db         = LP_Course_DB::getInstance();
+					$total_user_enrolled  = $lp_course_db->get_total_user_enrolled( $this->get_id() );
+					$total_user_enrolled += $this->get_fake_students();
+
+					LP_Course_Cache::cache_load_first( 'set', $key_cache, $total_user_enrolled );
+				}
+			} catch ( Throwable $e ) {
+				error_log( $e->getMessage() );
 			}
 
 			return $total_user_enrolled;
+		}*/
+
+		/**
+		 * Get total user enrolled or finished
+		 * @since 4.1.4
+		 * @version 1.0.1
+		 * @return int
+		 */
+		public function get_total_user_enrolled_or_purchased(): int {
+			$total           = 0;
+			$lp_course_cache = new LP_Course_Cache( true );
+
+			try {
+				$total = $lp_course_cache->get_total_students_enrolled_or_purchased( $this->get_id() );
+				if ( false !== $total ) {
+					return $total;
+				}
+
+				$lp_course_db = LP_Course_DB::getInstance();
+				$total        = $lp_course_db->get_total_user_enrolled_or_purchased( $this->get_id() );
+				$lp_course_cache->set_total_students_enrolled_or_purchased( $this->get_id(), $total );
+			} catch ( Throwable $e ) {
+				error_log( $e->getMessage() );
+			}
+
+			return $total;
 		}
 
 		/**
@@ -968,14 +1012,14 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 *
 		 * @return array|mixed|string
 		 */
-		public function get_passing_condition( $format = false, $context = '' ) {
+		public function get_passing_condition( $format = false ) {
 			$value = absint( $this->get_data( 'passing_condition' ) );
 
 			if ( $format ) {
 				$value = "{$value}%";
 			}
 
-			return 'edit' === $context ? $value : apply_filters(
+			return apply_filters(
 				'learn-press/course-passing-condition',
 				$value,
 				$format,
@@ -1010,8 +1054,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			);
 
 			$slug_prefix = trailingslashit( $slug_prefixes[ $item_type ] ?? '' );
-
-			$item_link = $course_permalink . $slug_prefix . $item_slug;
+			$item_link   = trailingslashit( $course_permalink . $slug_prefix . $item_slug );
 
 			return apply_filters( 'learn-press/course/item-link', $item_link, $item_id, $this );
 		}

@@ -24,7 +24,7 @@ class LP_Session_Handler {
 	/**
 	 * @var string cookie name
 	 */
-	private $_cookie = '';
+	private $_cookie = 'lp_session_guest';
 
 	/**
 	 * @var int session expiration timestamp
@@ -151,21 +151,15 @@ class LP_Session_Handler {
 
 		// Set data for user Guest.
 		if ( ! is_user_logged_in() ) { // Generate data and set cookie for guest
-			$this->_cookie = '_learn_press_session_' . COOKIEHASH;
-			$cookie        = $this->get_cookie_data();
+			$cookie = $this->get_cookie_data();
 			// If cookie exists, set data from cookie for guest
-			if ( ! empty( $cookie ) ) {
-				$this->_customer_id        = (string) $cookie[0];
-				$this->_session_expiration = (int) $cookie[1];
-				//$this->_has_cookie         = true;
-				if ( time() > $this->_session_expiration - HOUR_IN_SECONDS ) {
-					$this->set_session_expiration( $expire_time_for_guest );
-					$this->update_session_timestamp( $this->_customer_id, $this->_session_expiration );
-				}
-			} else { // Create new cookie and session for user Guest.
+			if ( empty( $cookie ) ) {
+				// Create new cookie and session for user Guest.
 				$this->set_session_expiration( $expire_time_for_guest );
-				$this->_customer_id = $this->generate_guest_id();
+				$this->_customer_id = md5( $_SERVER['REMOTE_ADDR'] ?? COOKIEHASH );
 				$this->set_customer_session_cookie();
+			} else {
+				$this->_customer_id = $cookie;
 			}
 		} else { // Set data for user logged.
 			$this->set_session_expiration( $expire_time_for_user );
@@ -186,6 +180,9 @@ class LP_Session_Handler {
 	 * @return void
 	 */
 	public function handle_when_user_login_success( $user_name, $user ) {
+		// Remove COOKIE for user guest.
+		learn_press_remove_cookie( $this->_cookie );
+
 		/**
 		 * Must set wp_set_current_user to get_current_user_id and is_user_logged_in work correctly.
 		 * Don't know why WP 6.3 and lower run wrong.
@@ -220,14 +217,9 @@ class LP_Session_Handler {
 	 * @return LP_Session_Handler
 	 */
 	public function set_customer_session_cookie(): LP_Session_Handler {
-		$to_hash      = $this->_customer_id . '|' . $this->_session_expiration;
-		$cookie_hash  = hash_hmac( 'md5', $to_hash, wp_hash( $to_hash ) );
-		$cookie_value = $this->_customer_id . '||' . $this->_session_expiration . '||' . $cookie_hash;
-		//$this->_has_cookie = true;
-
 		// Set the cookie
-		if ( ! isset( $_COOKIE[ $this->_cookie ] ) || $_COOKIE[ $this->_cookie ] !== $cookie_value ) {
-			learn_press_setcookie( $this->_cookie, $cookie_value, $this->_session_expiration );
+		if ( ! isset( $_COOKIE[ $this->_cookie ] ) ) {
+			learn_press_setcookie( $this->_cookie, $this->_customer_id, $this->_session_expiration );
 		}
 
 		return $this;
@@ -267,6 +259,7 @@ class LP_Session_Handler {
 	 * Generate string customer id for guest
 	 *
 	 * @return string
+	 * @deprecated 4.2.2
 	 */
 	public function generate_guest_id(): string {
 		require_once ABSPATH . 'wp-includes/class-phpass.php';
@@ -278,22 +271,14 @@ class LP_Session_Handler {
 	/**
 	 * Get cookie of guest.
 	 *
-	 * @return array
+	 * @return string
 	 */
-	public function get_cookie_data(): array {
+	public function get_cookie_data(): string {
 		if ( empty( $_COOKIE[ $this->_cookie ] ) || ! is_string( $_COOKIE[ $this->_cookie ] ) ) {
-			return [];
+			return '';
 		}
 
-		list( $customer_id, $session_expiration, $cookie_hash ) = explode( '||', $_COOKIE[ $this->_cookie ] );
-
-		$to_hash = $customer_id . '|' . $session_expiration;
-		$hash    = hash_hmac( 'md5', $to_hash, wp_hash( $to_hash ) );
-		if ( empty( $cookie_hash ) || ! hash_equals( $hash, $cookie_hash ) ) {
-			return [];
-		}
-
-		return array( $customer_id, $session_expiration, $cookie_hash );
+		return $_COOKIE[ $this->_cookie ];
 	}
 
 	/**
@@ -456,6 +441,8 @@ class LP_Session_Handler {
 
 			$filter              = new LP_Session_Filter();
 			$filter->session_key = $customer_id;
+			$filter->only_fields = [ 'session_key', 'session_value' ];
+			$filter->field_count = 'session_key';
 			$filter->limit       = 1;
 			$res                 = $lp_session_db->get_sessions( $filter );
 			if ( ! empty( $res ) ) {
@@ -555,6 +542,10 @@ class LP_Session_Handler {
 	 */
 	public function get( $key, $default = null ) {
 		$key = sanitize_key( $key );
+
+		if ( empty( $this->_data ) ) {
+			$this->_data = $this->get_session_data();
+		}
 
 		return isset( $this->_data[ $key ] ) ? LP_Helper::maybe_unserialize( $this->_data[ $key ] ) : $default;
 	}

@@ -566,12 +566,12 @@ function learn_press_footer_advertisement() {
 		unset( $theme_ids[ $key ] );
 	}
 
-	$list_themes = (array) LP_Plugins_Helper::get_related_themes(
+	/*$list_themes = (array) LP_Plugins_Helper::get_related_themes(
 		'education',
 		array(
 			'include' => $include,
 		)
-	);
+	);*/
 
 	if ( empty( $list_themes ) ) {
 		return;

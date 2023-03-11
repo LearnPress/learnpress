@@ -488,6 +488,29 @@ function learn_press_update_user_item_field( array $fields = [], $where = false,
 		$updated_item = learn_press_get_user_item( $where );
 	}
 
+	// Clear caches.
+	if ( $updated_item ) {
+		// Clear cache total students enrolled.
+		if ( isset( $updated_item->item_type )
+			&& LP_COURSE_CPT === $updated_item->item_type
+			&& isset( $updated_item->item_id ) ) {
+			$lp_course_cache = new LP_Course_Cache( true );
+			$lp_course_cache->clean_total_students_enrolled( $updated_item->item_id );
+			$lp_course_cache->clean_total_students_enrolled_or_purchased( $updated_item->item_id );
+		}
+		// Clear cache user item.
+		$lp_user_items_cache = new LP_User_Items_Cache( true );
+		$lp_user_items_cache->clean_user_item(
+			[
+				$updated_item->user_id,
+				$updated_item->item_id,
+				$updated_item->item_type,
+			]
+		);
+	}
+
+	do_action( 'learn-press/updated-user-item-field', $updated_item );
+
 	/**
 	 * If there is some fields does not contain in the main table
 	 * then consider update them as metadata.
@@ -514,7 +537,7 @@ function learn_press_update_user_item_field( array $fields = [], $where = false,
 		}
 	}*/
 
-	do_action( 'learn-press/updated-user-item-meta', $updated_item );
+	//do_action( 'learn-press/updated-user-item-meta', $updated_item );
 
 	return $updated_item;
 }
@@ -745,9 +768,9 @@ if ( ! function_exists( 'learn_press_pre_get_avatar_callback' ) ) {
 
 		$profile = LP_Profile::instance();
 
-		if ( ! $profile->is_enable_avatar() ) {
+		/*if ( ! $profile->is_enable_avatar() ) {
 			return $avatar;
-		}
+		}*/
 
 		if ( ( isset( $size['gravatar'] ) && $size['gravatar'] ) || ( $size['default'] && $size['force_default'] ) ) {
 			return $avatar;
@@ -811,33 +834,30 @@ add_filter( 'pre_get_avatar', 'learn_press_pre_get_avatar_callback', 1, 5 );
 
 
 function learn_press_user_profile_picture_upload_dir( $width_user = true ) {
-	static $upload_dir;
-	if ( ! $upload_dir ) {
-		$upload_dir = wp_upload_dir();
-		$subdir     = apply_filters( 'learn_press_user_profile_folder', 'learn-press-profile', $width_user );
-		if ( $width_user ) {
-			$subdir .= '/' . get_current_user_id();
-		}
-		$subdir = '/' . $subdir;
+	$upload_dir = wp_upload_dir();
+	$subdir     = apply_filters( 'learn_press_user_profile_folder', 'learn-press-profile', $width_user );
+	if ( $width_user ) {
+		$subdir .= '/' . get_current_user_id();
+	}
+	$subdir = '/' . $subdir;
 
-		if ( ! empty( $upload_dir['subdir'] ) ) {
-			$u_subdir = str_replace( '\\', '/', $upload_dir['subdir'] );
-			$u_path   = str_replace( '\\', '/', $upload_dir['path'] );
+	if ( ! empty( $upload_dir['subdir'] ) ) {
+		$u_subdir = str_replace( '\\', '/', $upload_dir['subdir'] );
+		$u_path   = str_replace( '\\', '/', $upload_dir['path'] );
 
-			$upload_dir['path'] = str_replace( $u_subdir, $subdir, $u_path );
-			$upload_dir['url']  = str_replace( $u_subdir, $subdir, $upload_dir['url'] );
-		} else {
-			$upload_dir['path'] = $upload_dir['path'] . $subdir;
-			$upload_dir['url']  = $upload_dir['url'] . $subdir;
-		}
+		$upload_dir['path'] = str_replace( $u_subdir, $subdir, $u_path );
+		$upload_dir['url']  = str_replace( $u_subdir, $subdir, $upload_dir['url'] );
+	} else {
+		$upload_dir['path'] = $upload_dir['path'] . $subdir;
+		$upload_dir['url']  = $upload_dir['url'] . $subdir;
+	}
 
-		$upload_dir['subdir'] = $subdir;
+	$upload_dir['subdir'] = $subdir;
 
-		// Point path/url to main site if we are in multisite
-		if ( is_multisite() && ! ( is_main_network() && is_main_site() && defined( 'MULTISITE' ) ) ) {
-			foreach ( array( 'path', 'url', 'basedir', 'baseurl' ) as $v ) {
-				$upload_dir[ $v ] = str_replace( '/sites/' . get_current_blog_id(), '', $upload_dir[ $v ] );
-			}
+	// Point path/url to main site if we are in multisite
+	if ( is_multisite() && ! ( is_main_network() && is_main_site() && defined( 'MULTISITE' ) ) ) {
+		foreach ( array( 'path', 'url', 'basedir', 'baseurl' ) as $v ) {
+			$upload_dir[ $v ] = str_replace( '/sites/' . get_current_blog_id(), '', $upload_dir[ $v ] );
 		}
 	}
 
@@ -1235,7 +1255,7 @@ function learn_press_user_profile_link( $user_id = 0, $tab = null ) {
 
 	if ( isset( $args['user'] ) ) {
 		if ( '' === $tab ) {
-			$tab = learn_press_get_current_profile_tab();
+			//$tab = learn_press_get_current_profile_tab();
 		}
 		if ( $tab ) {
 			$args['tab'] = $tab;

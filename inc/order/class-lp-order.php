@@ -406,7 +406,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		}
 
 		public function get_order_status_html() {
-			$order_status = $this->get_status();
+			$order_status = self::get_status_label( $this->get_status() );
 			$status       = ucfirst( $order_status );
 			$class        = 'order-status order-status-' . sanitize_title( $status );
 			$html         = sprintf( '<span class="%s">%s</span>', apply_filters( 'learn_press_order_status_class', $class, $status, $this ), $status );
@@ -420,7 +420,6 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @param string $transaction_id
 		 *
 		 * @return bool
-		 * @throws Exception
 		 */
 		public function payment_complete( $transaction_id = '' ): bool {
 			do_action( 'learn-press/payment-pre-complete', $this->get_id() );
@@ -521,22 +520,13 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			return false !== get_userdata( $this->get_data( 'user_id' ) );
 		}*/
 
-		public $order_items_loaded = false;
-
 		/**
 		 * Get items of the order
 		 *
 		 * @return mixed
 		 */
 		public function get_items() {
-			if ( $this->order_items_loaded ) {
-				return $this->order_items_loaded;
-			}
-
 			$items = $this->_curd->read_items( $this );
-
-			$this->order_items_loaded = $items;
-
 			return apply_filters( 'learn-press/order-items', $items );
 		}
 
@@ -649,6 +639,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		public function add_item( $item ): int {
 			global $wpdb;
 			$lp_user_items_db = LP_User_Items_DB::getInstance();
+			$order_item_id    = 0;
 
 			try {
 				if ( is_numeric( $item ) ) {
@@ -717,6 +708,9 @@ if ( ! class_exists( 'LP_Order' ) ) {
 					)
 				);
 				$order_item_id = absint( $wpdb->insert_id );
+				// Clear cache
+				$key = "order/{$this->get_id()}/{$this->get_status()}/items";
+				LP_Cache::cache_load_first( 'clear', $key );
 				// End insert new order item
 
 				// Add learnpress_order_itemmeta
@@ -826,11 +820,15 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		public function add_items( $items ) {
 			settype( $items, 'array' );
 			$item_ids = array();
-			foreach ( $items as $item ) {
-				$item_id = $this->add_item( $item );
-				if ( $item_id ) {
-					$item_ids[] = $item_id;
+			try {
+				foreach ( $items as $item ) {
+					$item_id = $this->add_item( $item );
+					if ( $item_id ) {
+						$item_ids[] = $item_id;
+					}
 				}
+			} catch ( Throwable $e ) {
+				error_log( $e->getMessage() );
 			}
 
 			return $item_ids;
@@ -931,14 +929,13 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			$this->_set_data( 'currency', $value );
 		}
 
+		/**
+		 * Get payment method title.
+		 *
+		 * @return array|mixed
+		 */
 		public function get_payment_method_title() {
-			if ( $this->get_data( 'order_total' ) == 0 ) {
-				$title = '';
-			} else {
-				$title = $this->get_data( 'payment_method_title' );
-			}
-
-			return $title;
+			return $this->get_data( 'payment_method_title', '' );
 		}
 
 		public function get_view_order_url() {

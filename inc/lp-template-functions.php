@@ -255,9 +255,8 @@ if ( ! function_exists( 'learn_press_single_quiz_args' ) ) {
 
 		$quiz   = LP_Global::course_item_quiz();
 		$course = learn_press_get_course();
-
+		$user   = learn_press_get_current_user();
 		if ( $quiz && $course ) {
-			$user      = learn_press_get_current_user();
 			$course_id = $course->get_id();
 			//$user_quiz = $user->get_item_data( $quiz->get_id(), $course_id );
 
@@ -277,7 +276,7 @@ if ( ! function_exists( 'learn_press_single_quiz_args' ) ) {
 			);
 		}
 
-		return $args;
+		return apply_filters( 'learn-press/localize_script/quiz', $args, $user, $course, $quiz );
 	}
 }
 
@@ -315,7 +314,7 @@ if ( ! function_exists( 'learn_press_single_document_title_parts' ) ) {
 			} else {
 				$title['title'] = esc_html__( 'Courses', 'learnpress' );
 			}
-		} elseif ( learn_press_is_profile() ) {
+		} elseif ( LP_Page_Controller::is_page_profile() ) {
 			$profile  = LP_Profile::instance();
 			$tab_slug = $profile->get_current_tab();
 			$tab      = $profile->get_tab_at( $tab_slug );
@@ -527,6 +526,7 @@ add_action( 'init', 'learn_press_setup_user', 1000 );
  *
  * @param        $message
  * @param string  $type
+ * @Todo tungnx review code.
  */
 
 function learn_press_display_message( $message, $type = 'success' ) {
@@ -562,6 +562,7 @@ function learn_press_get_messages( $clear = false ) {
  * @param string   $type
  * @param array    $options
  * @param int|bool $current_user . @since 3.0.9 - add for current user only
+ * @deprecated 4.2.2.1
  */
 function learn_press_add_message( $message, $type = 'success', $options = array(), $current_user = true ) {
 	if ( is_string( $options ) ) {

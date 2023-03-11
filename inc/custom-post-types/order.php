@@ -43,7 +43,25 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			add_filter( 'views_edit-lp_order', array( $this, 'filter_views' ) );
 			// add_filter( 'posts_where_paged', array( $this, 'filter_orders' ) );
 			// LP Order title
-			add_filter( 'the_title', array( $this, 'order_title' ), 5, 2 );
+
+			// Override title of LP Order on Admin
+			if ( is_admin() ) {
+				$can_override_title_order = false;
+				$current_url              = LP_Helper::getUrlCurrent();
+				$post_id                  = LP_Helper::sanitize_params_submitted( $_GET['post'] ?? '' );
+				if ( ! empty( $post_id ) ) {
+					$post = get_post( $post_id );
+					if ( $post && $post->post_type == LP_ORDER_CPT ) {
+						$can_override_title_order = true;
+					}
+				} elseif ( strpos( $current_url, 'post_type=lp_order' ) !== false ) {
+					$can_override_title_order = true;
+				}
+
+				if ( $can_override_title_order ) {
+					add_filter( 'the_title', array( $this, 'order_title' ), 5, 2 );
+				}
+			}
 
 			parent::__construct();
 		}

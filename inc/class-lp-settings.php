@@ -64,26 +64,40 @@ class LP_Settings {
 	}
 
 	/**
-	 * Load options from database.
+	 * Load all options.
 	 *
-	 * @param bool $force
+	 * @since 3.0.0
+	 * @version 1.0.1
 	 */
-	protected function _load_options( $force = false ) {
+	protected function _load_options() {
+		// Check cache exists
+		$lp_settings_cache = new LP_Settings_Cache( true );
+		$lp_options        = $lp_settings_cache->get_lp_settings();
+		if ( false !== $lp_options ) {
+			$this->_options = json_decode( $lp_options, true );
+			if ( json_last_error() !== JSON_ERROR_NONE ) {
+				error_log( 'Load options: ' . json_last_error_msg() );
+			}
+
+			return;
+		}
+
 		global $wpdb;
 		$query = $wpdb->prepare(
-			"
-			SELECT option_name, option_value
+			"SELECT option_name, option_value
 			FROM {$wpdb->options}
 			WHERE option_name LIKE %s",
 			$wpdb->esc_like( $this->_prefix ) . '%'
 		);
 
 		$options = $wpdb->get_results( $query );
-
 		if ( $options ) {
 			foreach ( $options as $option ) {
 				$this->_options[ $option->option_name ] = LP_Helper::maybe_unserialize( $option->option_value );
 			}
+
+			// Set cache
+			$lp_settings_cache->set_lp_settings( json_encode( $this->_options ) );
 		}
 	}
 
@@ -197,6 +211,9 @@ class LP_Settings {
 		// $this->refresh();
 	}
 
+	/**
+	 * @deprecated 4.2.2
+	 */
 	public function refresh() {
 		if ( $this->_load_data ) {
 			// $this->_load_options( true );
@@ -227,7 +244,13 @@ class LP_Settings {
 	 * @editor tungnx
 	 */
 	public static function get_option( string $name = '', $default = false ) {
-		return get_option( "learn_press_{$name}", $default );
+		$key     = "learn_press_{$name}";
+		$options = self::instance()->_options;
+		if ( isset( $options[ $key ] ) ) {
+			return $options[ $key ];
+		}
+
+		return get_option( $key, $default );
 	}
 
 	public function get_int( $key ) {
@@ -406,6 +429,15 @@ class LP_Settings {
 	 */
 	public static function is_auto_start_course(): bool {
 		return 'yes' === self::get_option( 'auto_enroll', 'yes' );
+	}
+
+	/**
+	 * Check table thim_cache is created
+	 *
+	 * @return bool
+	 */
+	public static function is_created_tb_thim_cache(): bool {
+		return get_option( 'thim_cache_tb_created' ) == 'yes';
 	}
 }
 

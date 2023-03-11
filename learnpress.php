@@ -4,7 +4,7 @@
  * Plugin URI: http://thimpress.com/learnpress
  * Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
  * Author: ThimPress
- * Version: 4.2.0
+ * Version: 4.2.2.2
  * Author URI: http://thimpress.com
  * Requires at least: 5.8
  * Tested up to: 6.1.1
@@ -137,7 +137,10 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			}
 			self::$_instance = $this;
 
-			update_option( 'learnpress_version', $this->version );
+			// Update for case compare version of LP if LEARNPRESS_VERSION undefined
+			if ( is_admin() ) {
+				update_option( 'learnpress_version', $this->version );
+			}
 
 			// Define constant .
 			$this->plugin_defines();
@@ -249,6 +252,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/databases/class-lp-question-db.php';
 			require_once 'inc/databases/class-lp-user-items-db.php';
 			require_once 'inc/databases/class-lp-user-item-results-db.php';
+			require_once 'inc/databases/class-thim-cace-db.php';
 
 			// Read files config on folder config .
 			require_once 'inc/Helper/Config.php';
@@ -277,12 +281,15 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/cache/class-lp-quiz-cache.php';
 			require_once 'inc/cache/class-lp-question-cache.php';
 			require_once 'inc/cache/class-lp-session-cache.php';
+			require_once 'inc/cache/class-lp-settings-cache.php';
+			require_once 'inc/cache/class-lp-user-items-cache.php';
 
 			// Background processes.
 			require_once 'inc/libraries/wp-background-process/wp-background-processing.php';
 			require_once 'inc/background-process/abstract-lp-async-request.php';
 			require_once 'inc/background-process/class-lp-background-single-course.php';
 			require_once 'inc/background-process/class-lp-background-single-email.php';
+			require_once 'inc/background-process/class-lp-background-thim-cache.php';
 
 			// Assets object
 			require_once 'inc/class-lp-asset-key.php';
@@ -364,8 +371,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/user-item/class-lp-user-item-course.php';
 			require_once 'inc/user-item/class-lp-user-item-quiz.php';
 			require_once 'inc/user-item/class-lp-quiz-results.php';
-			require_once 'inc/class-lp-session-handler.php';
-
 			require_once 'inc/class-lp-shortcodes.php';
 
 			// include template functions .
@@ -442,6 +447,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/course/class-model-user-can-view-course-item.php';
 
 			require_once 'inc/class-lp-ajax.php';
+
+			require_once 'inc/class-lp-session-handler.php';
 		}
 
 		/**
@@ -459,12 +466,54 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				return;
 			}
 
-			add_action( 'wp_loaded', array( $this, 'wp_loaded' ), 20 );
+			//add_action( 'wp_loaded', array( $this, 'wp_loaded' ), 20 );
 			//add_action( 'after_setup_theme', array( $this, 'setup_theme' ) );
-			add_action( 'plugins_loaded', array( $this, 'plugin_loaded' ), - 10 );
+			add_action( 'plugins_loaded', array( $this, 'plugins_loaded' ), - 10 );
+			add_action(
+				'plugin_loaded',
+				function ( $plugin ) {
+					// For check wp_remote call normally of WP
+					if ( ! empty( LP_Request::get_param( 'lp_test_wp_remote' ) ) ) {
+						echo '[TEST_REMOTE]';
+						die;
+					}
+				}
+			);
 
-			// Check require version thim-core.
-			add_action( 'before_thim_core_init', array( $this, 'check_thim_core_version_require' ) );
+			// Check require version thim-core on Backend.
+			if ( is_admin() ) {
+				add_action( 'before_thim_core_init', array( $this, 'check_thim_core_version_require' ) );
+			}
+
+			// Save key purchase addon when install via file download from Thimpress.
+			add_action(
+				'upgrader_process_complete',
+				function ( $plugin_upgrader ) {
+					if ( ! empty( $plugin_upgrader->result ) ) {
+						$res         = $plugin_upgrader->result;
+						$path_source = $res['destination'] ?? '';
+						if ( empty( $path_source ) ) {
+							return;
+						}
+
+						$key_purchase_path = realpath( $path_source . '/purchase-code.txt' );
+						if ( file_exists( $key_purchase_path ) ) {
+							$purchase_code_content = file_get_contents( $key_purchase_path );
+							if ( empty( $purchase_code_content ) ) {
+								return;
+							}
+
+							$addon_slug = $res['destination_name'] ?? '';
+							if ( empty( $addon_slug ) ) {
+								return;
+							}
+
+							// Call active purchase code for site.
+							LP_Manager_Addons::instance()->active_site( $addon_slug, $purchase_code_content );
+						}
+					}
+				}
+			);
 		}
 
 		/**
@@ -509,8 +558,10 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * Trigger WP loaded actions.
 		 *
 		 * @since 3.0.0
+		 * @deprecated 4.2.2
 		 */
 		public function wp_loaded() {
+			_deprecated_function( __METHOD__, '4.2.2' );
 			if ( $this->is_request( 'frontend' ) ) {
 				$this->gateways = LP_Gateways::instance()->get_available_payment_gateways();
 			}
@@ -547,14 +598,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * @version 1.0.2
 		 * @editor tungnx
 		 */
-		public function plugin_loaded() {
+		public function plugins_loaded() {
 			do_action( 'learnpress/hook/before-addons-call-hook-learnpress-ready' );
-
-			// For check wp_remote call normally of WP
-			if ( ! empty( LP_Request::get_param( 'lp_test_wp_remote' ) ) ) {
-				echo '[TEST_REMOTE]';
-				die;
-			}
 
 			// Polylang
 			if ( defined( 'POLYLANG_VERSION' ) ) {

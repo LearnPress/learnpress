@@ -55,9 +55,8 @@ class LP_Settings_Emails extends LP_Abstract_Settings_Page {
 	 * @return mixed
 	 */
 	public function get_sections() {
-		static $sections = false;
-
-		if ( ! $sections ) {
+		static $sections;
+		if ( is_null( $sections ) ) {
 			$emails = LP_Emails::instance()->emails;
 
 			$sections = array(

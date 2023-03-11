@@ -152,6 +152,9 @@ const startQuizz = ( state, action ) => {
 	const successResponse = ( action.results.success ) !== undefined ? action.results.success : false;
 	const messageResponse = action.results.message || false;
 
+	const chunks = chunk( action.results.results.questionIds, state.questionsPerPage );
+	state.numPages = chunks.length;
+
 	return resetCurrentPage( state, {
 		checkedQuestions: [],
 		hintedQuestions: [],

@@ -106,6 +106,7 @@ class LP_Admin_Menu {
 		$menu_items               = array();
 		$menu_items['statistic']  = include_once 'sub-menus/class-lp-submenu-statistics.php';
 		$menu_items['addons']     = include_once 'sub-menus/class-lp-submenu-addons.php';
+		$menu_items['themes']     = include_once 'sub-menus/class-lp-submenu-themes.php';
 		$menu_items['settings']   = include_once 'sub-menus/class-lp-submenu-settings.php';
 		$menu_items['tools']      = include_once 'sub-menus/class-lp-submenu-tools.php';
 		$menu_items['categories'] = include_once 'sub-menus/class-lp-submenu-categories.php';
@@ -113,7 +114,7 @@ class LP_Admin_Menu {
 
 		$menu_items = apply_filters( 'learn-press/admin/menu-items', $menu_items );
 
-		// Sort menu items by it's priority
+		// Sort menu items by its priority
 		uasort( $menu_items, 'learn_press_sort_list_by_priority_callback' );
 
 		add_action(
@@ -180,9 +181,8 @@ class LP_Admin_Menu {
 	}
 
 	public static function instance() {
-		static $instance = false;
-
-		if ( ! $instance ) {
+		static $instance;
+		if ( is_null( $instance ) ) {
 			$instance = new self();
 		}
 

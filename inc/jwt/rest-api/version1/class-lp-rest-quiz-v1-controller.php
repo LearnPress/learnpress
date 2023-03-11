@@ -454,7 +454,7 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 				'status'            => $status,
 				'attempts'          => $user_quiz->get_attempts(),
 				'checked_questions' => $checked_questions,
-				'start_time'        => lp_jwt_prepare_date_response( $user_quiz->get_start_time()->toSql( false ) ),
+				'start_time'        => lp_jwt_prepare_date_response( $user_quiz->get_start_time()->toSql() ),
 				'retaken'           => absint( $user_quiz->get_retaken_count() ),
 			);
 
@@ -476,7 +476,7 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			'passing_grade'      => $quiz->get_passing_grade(),
 			'negative_marking'   => $quiz->get_negative_marking(),
 			'instant_check'      => $quiz->get_instant_check(),
-			'retake_count'       => absint( $quiz->get_retake_count() ),
+			'retake_count'       => (float) $quiz->get_retake_count(),
 			'questions_per_page' => $quiz->get_pagination(),
 			'page_numbers'       => get_post_meta( $quiz->get_id(), '_lp_pagination_numbers', true ) === 'yes',
 			'review_questions'   => $quiz->get_review_questions(),

@@ -79,6 +79,6 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 	 * @return bool
 	 */
 	public static function is_no_load_ajax_first_courses(): bool {
-		return self::is_ajax_load_courses() && LP_Settings::get_option( 'courses_first_no_ajax', 'no' ) === 'yes';
+		return LP_Settings::get_option( 'courses_first_no_ajax', 'no' ) === 'yes';
 	}
 }

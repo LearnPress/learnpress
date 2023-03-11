@@ -203,7 +203,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 
 		try {
 			$params               = $request->get_params();
-			$admin_notices        = ! empty( $_COOKIE['lp_admin_notices_dismiss'] ) ? json_decode( wp_unslash( $_COOKIE['lp_admin_notices_dismiss'] ) ) : [];
+			$admin_notices        = ! empty( $_COOKIE['lp_admin_notices_dismiss'] ) ? json_decode( wp_unslash( $_COOKIE['lp_admin_notices_dismiss'] ), true ) : [];
 			$lp_beta_version_info = LP_Admin_Notice::check_lp_beta_version();
 
 			if ( isset( $params['dismiss'] ) ) {

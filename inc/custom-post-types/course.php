@@ -112,15 +112,15 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				'edit_item'          => __( 'Edit Course', 'learnpress' ),
 				'update_item'        => __( 'Update Course', 'learnpress' ),
 				'search_items'       => __( 'Search Courses', 'learnpress' ),
-				'not_found'          => sprintf( __( 'You haven\'t had any courses yet. Click <a href="%s">Add new</a> to start', 'learnpress' ), admin_url( 'post-new.php?post_type=lp_course' ) ),
+				'not_found'          => sprintf( __( 'You have not had any courses yet. Click <a href="%s">Add new</a> to start', 'learnpress' ), admin_url( 'post-new.php?post_type=lp_course' ) ),
 				'not_found_in_trash' => __( 'There was no course found in the trash', 'learnpress' ),
 			);
-			$course_base      = $settings->get( 'course_base' );
-			$course_permalink = empty( $course_base ) ? _x( 'courses', 'slug', 'learnpress' ) : $course_base;
+			$course_base      = LP_Settings::get_option( 'course_base' );
+			$course_permalink = empty( $course_base ) ? 'courses' : $course_base;
 
+			// Set to $has_archive return link to courses page, is_archive will check is true
 			$courses_page_id = learn_press_get_page_id( 'courses' );
-
-			$has_archive = $courses_page_id && get_post( $courses_page_id ) ? urldecode( get_page_uri( $courses_page_id ) ) : 'courses';
+			$has_archive     = $courses_page_id ? urldecode( get_page_uri( $courses_page_id ) ) : 'courses';
 
 			$args = array(
 				'labels'             => $labels,
@@ -138,7 +138,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				'taxonomies'         => array( 'course_category', 'course_tag' ),
 				'supports'           => array( 'title', 'editor', 'thumbnail', 'revisions', 'comments', 'excerpt' ),
 				'hierarchical'       => false,
-				'rewrite'            => $course_permalink ? array(
+				'rewrite'            => ! empty( $course_permalink ) ? array(
 					'slug'       => untrailingslashit( $course_permalink ),
 					'with_front' => false,
 				) : false,
@@ -151,10 +151,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 * Register course taxonomy.
 		 */
 		public function register_taxonomy() {
-			$settings = LP_Settings::instance();
-
-			$category_base = $settings->get( 'course_category_base' );
-
+			$category_base = LP_Settings::get_option( 'course_category_base' );
 			register_taxonomy(
 				'course_category',
 				array( LP_COURSE_CPT ),
@@ -177,15 +174,14 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					'show_in_nav_menus' => true,
 					'show_in_rest'      => true,
 					'rewrite'           => array(
-						'slug'         => empty( $category_base ) ? _x( 'course-category', 'slug', 'learnpress' ) : $category_base,
+						'slug'         => empty( $category_base ) ? 'course-category' : $category_base,
 						'hierarchical' => true,
 						'with_front'   => false,
 					),
 				)
 			);
 
-			$tag_base = $settings->get( 'course_tag_base' );
-
+			$tag_base = LP_Settings::get_option( 'course_tag_base' );
 			register_taxonomy(
 				'course_tag',
 				array( LP_COURSE_CPT ),
@@ -215,7 +211,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					'query_var'             => true,
 					'show_in_rest'          => true,
 					'rewrite'               => array(
-						'slug'       => empty( $tag_base ) ? _x( 'course-tag', 'slug', 'learnpress' ) : $tag_base,
+						'slug'       => empty( $tag_base ) ? 'course-tag' : $tag_base,
 						'with_front' => false,
 					),
 				)
@@ -308,6 +304,10 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			global $wpdb;
 
 			if ( ! $this->is_page_list_posts_on_backend() ) {
+				return $join;
+			}
+
+			if ( ! isset( $_GET['orderby'] ) || $_GET['orderby'] !== 'price' ) {
 				return $join;
 			}
 

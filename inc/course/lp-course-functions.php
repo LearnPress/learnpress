@@ -141,7 +141,7 @@ function _learn_press_usort_terms_by_ID( $terms ) {
 	return $terms;
 }
 
-function learn_press_course_post_type_link( $permalink, $post ) {
+/*function learn_press_course_post_type_link( $permalink, $post ) {
 	if ( $post->post_type !== 'lp_course' ) {
 		return $permalink;
 	}
@@ -204,9 +204,9 @@ function learn_press_course_post_type_link( $permalink, $post ) {
 	$permalink = str_replace( $find, $replace, $permalink );
 
 	return $permalink;
-}
+}*/
 
-add_filter( 'post_type_link', 'learn_press_course_post_type_link', 10, 2 );
+//add_filter( 'post_type_link', 'learn_press_course_post_type_link', 10, 2 );
 
 function learn_press_item_meta_format( $item, $nonce = '' ) {
 	if ( current_theme_supports( 'post-formats' ) ) {
@@ -516,20 +516,12 @@ function learn_press_get_course_item_permalink( int $course_id = 0, int $item_id
 	return '';
 }
 
-
+/**
+ * @deprecated 4.2.2
+ */
 function learn_press_get_the_course() {
-	static $course;
-	if ( ! $course ) {
-		$course_id = get_the_ID();
-		if ( learn_press_get_post_type( $course ) == LP_COURSE_CPT ) {
-			$course = learn_press_get_course( $course_id );
-		}
-	}
-	if ( ! $course ) {
-		return new LP_Course( 0 );
-	}
-
-	return $course;
+	_deprecated_function( __FUNCTION__, '4.2.2', 'learn_press_get_course' );
+	return learn_press_get_course();
 }
 
 function learn_press_get_user_question_answer( $args = '' ) {

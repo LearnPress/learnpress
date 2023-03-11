@@ -8,6 +8,7 @@
 @import "admin-tabs";
 @import "widget";
 @import "addons";
+@import "themes";
 @import "custom-post-types";
 @import "../modal";
 @import "modal-search";
@@ -612,6 +613,56 @@ body {
 			height: 100%;
 			background: #ccc;
 			content: "";
+		}
+	}
+}
+
+.lp-notify-action-wrapper {
+	position: fixed;
+	bottom: 5%;
+	z-index: 10000;
+	left: 50%;
+	padding: 10px;
+	transition: all 0.5s;
+	transform: translateY(500%);
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+
+	&.show {
+		display: flex;
+		transform: translateY(0);
+	}
+
+	.lp-notify-action {
+		&.clone {
+			display: none;
+		}
+
+		box-shadow: 0 4px 25px 1px rgba(0, 0, 0, 0.25);
+		background: #202937;
+		padding: 0 20px;
+		border-radius: 3px;
+		min-width: 200px;
+		transition: all 0.8s;
+
+		&__success {
+			display: none;
+			color: #01a401;
+
+			&.show {
+				display: block;
+			}
+		}
+
+		&__error {
+			display: none;
+			color: #f44336;
+			font-weight: bold;
+
+			&.show {
+				display: block;
+			}
 		}
 	}
 }

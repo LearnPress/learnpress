@@ -1,206 +1,7 @@
-.learn-press-addons {
-	.lp-search-addon {
-		width: 280px;
-		height: 32px;
-		margin: 0;
-		padding: 3px 5px;
-		font-size: 16px;
-		font-weight: 300;
-		line-height: 1.5;
-	}
-
-	.addons-browse {
-		margin: 20px 0 0;
-
-		.lp-addon-hidden {
-			display: none !important;
-		}
-
-		.lp-active:nth-of-type(2n+1) {
-			clear: none;
-			margin-right: 0;
-			margin-left: 8px;
-		}
-
-		.lp-active:nth-of-type(2n) {
-			clear: both;
-			margin-right: 8px;
-			margin-left: 0;
-		}
-
-		.plugin-icon {
-
-			img {
-				max-width: 100%;
-			}
-		}
-
-		.plugin-card {
-
-			.column-description {
-
-				p:not(.authors) {
-
-					@include text-overflow(1.6, 3);
-					color: #777;
-				}
-			}
-
-			.search-highlight {
-				text-decoration: underline;
-			}
-		}
-
-		.plugin-card-top {
-
-			h3 {
-
-				@include text-overflow(1.3em, 2);
-			}
-
-			.desc {
-				min-height: 90px;
-				margin-right: 0;
-			}
-
-			.button {
-
-				&.activate-plugin,
-				&.install-now,
-				&.enable-now {
-					border-color: #0073aa #006799 #006799;
-					color: #fff;
-					background: #0085ba;
-					-webkit-box-shadow: 0 1px 0 #006799;
-					box-shadow: 0 1px 0 #006799;
-					text-shadow: 0 -1px 1px #006799, 1px 0 1px #006799, 0 1px 1px #006799, -1px 0 1px #006799;
-					text-decoration: none;
-				}
-
-				&.button-working {
-					padding-right: 4px;
-
-					span {
-						display: none;
-					}
-				}
-			}
-		}
-
-		.plugin-card-bottom {
-
-			.plugin-version {
-				display: inline-block;
-			}
-
-		}
-
-		&.premium {
-
-			.column-description {
-
-				p:not(.authors) {
-					margin: 0;
-					line-height: inherit;
-				}
-			}
-		}
-
-		&::after {
-			@include clear-fix();
-		}
-	}
-}
-
-.related-themes {
-	display: grid;
-	grid-template-columns: repeat( auto-fit, minmax( 400px, 1fr ) );
-	grid-gap: 20px;
-
-	li {
-		margin: 0;
-	}
-
-	.plugin-card-top {
-		padding-bottom: 0;
-		background: #fff;
-	}
-
-	.theme-content {
-		position: relative;
-	}
-
-	.image-thumbnail img {
-		width: 100%;
-		height: auto;
-		vertical-align: middle;
-	}
-
-	.theme-description {
-		margin: 0 0 25px 0;
-
-		@include text-overflow(1.6em, 5);
-		color: #777;
-	}
-
-	.theme-title {
-		min-height: 3.2em;
-		margin-right: 100px;
-		margin-bottom: 0;
-		font-size: 1.2em;
-		line-height: 1.3em;
-	}
-
-	.theme-title a {
-		color: #545454;
-	}
-
-	.theme-rating {
-		display: inline-block;
-		float: right;
-	}
-
-	.star-rating {
-		display: inline-block;
-	}
-
-	.count-rating {
-		position: relative;
-		top: 2px;
-		font-size: 15px;
-	}
-
-	.theme-detail {
-		position: absolute;
-		top: -3px;
-		right: 3px;
-		line-height: 1.6em;
-		text-align: right;
-
-		&::after {
-			display: block;
-			clear: both;
-			content: "";
-		}
-
-		.theme-price {
-			display: inline-block;
-			color: #545454;
-			font-size: 24px;
-			font-weight: 700;
-			line-height: 1.3em;
-		}
-	}
-
-	.theme-footer {
-		clear: both;
-		overflow: hidden;
-		margin-right: -20px;
-		margin-left: -20px;
-		padding: 20px;
-		border-top: 1px solid #ddd;
-		background-color: #fafafa;
-	}
+:root {
+	--lp-addon-item-padding: 10px;
+	--lp-border-radius: 3px;
+	--lp-addon-item-border-color: #c3c4c7;
 }
 
 @media screen and (min-width: 1600px) {
@@ -213,3 +14,371 @@
 		margin-right: 0;
 	}
 }
+
+/*** Style Addons Manager ***/
+#lp-addons {
+	display: grid;
+	grid-template-columns: repeat( auto-fit, minmax( 280px, 1fr ) );
+	grid-gap: 20px;
+	padding-right: 20px;
+
+	&.max-3-items {
+		grid-template-columns: repeat( auto-fit, minmax( 280px, 320px ) );
+	}
+
+	a {
+		text-decoration: none;
+	}
+
+	button {
+		padding: 6.5px 17px;
+		background: rgba(151, 71, 255, 1);
+		color: white;
+		border-radius: 3px;
+		border: none;
+		cursor: pointer;
+		font-size: 1em;
+
+		&.btn-addon-action {
+			&.handling {
+				span {
+					display: none;
+
+					&.dashicons {
+						display: inline-flex;
+					}
+				}
+			}
+
+			span.dashicons {
+				align-items: center;
+				display: none;
+				font-size: 18px;
+				width: auto;
+				height: auto;
+				animation: rotation 2s infinite linear;
+			}
+		}
+
+		&[data-action="update"] {
+			background: #27BF49;
+		}
+
+		&[data-action="setting"] {
+			background: #2D72DA;
+		}
+	}
+
+	.lp-addon-item {
+		background: white;
+		padding: var(--lp-addon-item-padding);
+		border: 1px solid var(--lp-addon-item-border-color);
+		border-radius: 3px;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		position: relative;
+
+		&.hide, &.search-not-found {
+			display: none;
+		}
+
+		&__content {
+			text-align: center;
+			min-height: 290px;
+
+			img {
+				width: 50px;
+				height: 50px;
+				border-radius: 10px;
+				margin-top: 20px;
+			}
+
+			a {
+				text-decoration: none;
+			}
+
+			p {
+				display: -webkit-box;
+				//-webkit-line-clamp: 5;
+				-webkit-box-orient: vertical;
+				overflow: hidden;
+				&::before {
+					content: none;
+				}
+			}
+		}
+
+		&__actions {
+			border-top: 1px solid var(--lp-addon-item-border-color);
+			padding: 10px var(--lp-addon-item-padding) 0;
+			margin: 0 calc(var(--lp-addon-item-padding) * -1);
+			display: flex;
+			align-items: center;
+
+			&__left {
+				flex: 3;
+				display: flex;
+				gap: 5px;
+				align-items: center;
+
+				button {
+					display: none;
+				}
+			}
+
+			&__right {
+				button {
+					display: none;
+					background: transparent;
+					color: #2271b1;
+				}
+			}
+		}
+
+		&__purchase {
+			display: none;
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			background: rgba(255, 255, 255, 0.6);
+			text-transform: uppercase;
+
+			&__wrapper {
+				div {
+					position: absolute;
+					bottom: 20%;
+					left: var(--lp-addon-item-padding);
+					right: var(--lp-addon-item-padding);
+					background: white;
+					border: 1px solid var(--lp-addon-item-border-color);
+					padding: var(--lp-addon-item-padding);
+					border-radius: 3px;
+					flex-direction: column;
+					display: none;
+					gap: 5px;
+					box-shadow: 0 4px 25px 1px rgba(0, 0, 0, 0.25);
+
+					input {
+						width: 100%;
+					}
+				}
+			}
+		}
+
+		&.installed {
+			&.activated {
+				button {
+					&[data-action="setting"] {
+						display: block;
+					}
+					&[data-action="deactivate"] {
+						display: block;
+					}
+				}
+
+				&.update {
+					button {
+						&[data-action="update"] {
+							display: block;
+						}
+					}
+				}
+			}
+
+			&:not(.activated) {
+				button {
+					&[data-action="activate"] {
+						display: block;
+					}
+				}
+			}
+
+			&.purchase {
+				button {
+					&[data-action="update-purchase-code"] {
+						display: inline-flex;
+						align-items: center;
+						padding: 0 5px;
+						height: 12px;
+
+						span {
+							animation: none;
+							display: inline;
+						}
+					}
+				}
+			}
+		}
+
+		&.not_installed {
+			&.purchase {
+				button {
+					&[data-action="purchase"] {
+						display: block;
+					}
+				}
+			}
+
+			&.free {
+				button {
+					&[data-action="install"] {
+						display: block;
+					}
+				}
+			}
+
+			.lp-addon-item {
+				&__actions {
+					&__right {
+						display: none;
+					}
+				}
+			}
+		}
+
+		&.update {
+			button {
+				&[data-action="update"] {
+					display: block;
+				}
+			}
+		}
+	}
+
+	/***** Toggle *****/
+	.lp-toggle-switch {
+		.lp-toggle-switch-label{
+			height: 20px;
+			align-items: center;
+			margin-bottom: 0;
+			background: #b4b9be;
+			cursor: pointer;
+			display: inline-flex;
+			justify-content: space-between;
+			position: relative;
+			transition: left 0.15s ease-out;
+			border-radius: 100px;
+
+			&:after {
+				background: #FFFFFF;
+				content: "";
+				display: block;
+				position: absolute;
+				left: 4px;
+				width: 12px;
+				height: 12px;
+				transition: all 0.25s ease-in-out;
+				border-radius: 50%;
+			}
+
+			&::before {
+				left: 0;
+			}
+
+			.toggle-on,
+			.toggle-off {
+				opacity: 1;
+				padding-left: 6px;
+				padding-right: 6px;
+				font-size: 14px;
+				line-height: 18px;
+			}
+
+			.toggle-on {
+				color: #fff;
+				opacity: 0;
+				padding-right: 0;
+				width: 12px;
+			}
+
+			.toggle-off {
+				width: 12px;
+				color: #777;
+				padding-left: 0;
+			}
+		}
+
+		input.lp-toggle-switch-input{
+			display: none;
+
+			&:checked{
+				+ label{
+					background: #0073aa;
+
+					&:after {
+						left: auto;
+						right: 5px;
+						background: #ffffff;
+					}
+					.toggle-on {
+						opacity: 1;
+					}
+
+					.toggle-off {
+						opacity: 0;
+					}
+				}
+			}
+		}
+
+		.dashicons {
+			animation: rotation 2s infinite linear;
+		}
+	}
+
+	.screen-reader-text:focus {
+		clip-path: inset(50%);
+		-webkit-clip-path: inset(50%);
+	}
+}
+
+/*** Tab of Addons Manager ***/
+.lp-nav-tab-wrapper {
+	display: flex;
+	margin-bottom: 20px;
+	justify-content: start;
+	gap: 5px;
+	border-bottom: 1px solid #c3c4c7;
+
+	.nav-tab {
+		border: 1px solid #c3c4c7;
+		border-bottom: none;
+		margin-left: 0;
+		padding: 5px 10px;
+		font-size: 14px;
+		line-height: 1.71428571;
+		font-weight: 600;
+		background: #dcdcde;
+		color: #50575e;
+		text-decoration: none;
+		white-space: nowrap;
+		border-radius: 3px 3px 0 0;
+	}
+
+	.nav-tab-active {
+		background: #f0f0f1;
+		border-bottom: 1px solid #f0f0f1;
+	}
+}
+
+.wp-submenu {
+	.lp-notify {
+		display: none;
+		vertical-align: top;
+		box-sizing: border-box;
+		margin: 1px 0 -1px 5px;
+		padding: 0 5px;
+		min-width: 18px;
+		height: 18px;
+		border-radius: 9px;
+		background-color: #d63638;
+		color: #fff;
+		font-size: 11px;
+		line-height: 1.6;
+		text-align: center;
+	}
+}
+

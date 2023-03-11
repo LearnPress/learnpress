@@ -78,7 +78,7 @@ class LP_Setup_Wizard {
 		);
 
 		if ( $page === 'profile_page_id' ) {
-			$page_content = '<!-- wp:shortcode -->[' . apply_filters( 'learn-press/shortcode/profile/tag', 'learn_press_profile' ) . ']<!-- /wp:shortcode -->';
+			$page_content = '<!-- wp:shortcode -->[learn_press_profile]<!-- /wp:shortcode -->';
 		} else {
 			$page_content = '';
 		}
@@ -205,8 +205,8 @@ class LP_Setup_Wizard {
 	 * @return array
 	 */
 	public function get_steps() {
-		static $steps = false;
-		if ( ! $steps ) {
+		static $steps;
+		if ( is_null( $steps ) ) {
 			$steps = apply_filters(
 				'learn-press/setup-wizard/steps',
 				array(
@@ -405,9 +405,8 @@ class LP_Setup_Wizard {
 	 * @return bool|LP_Setup_Wizard
 	 */
 	public static function instance() {
-		static $instance = false;
-
-		if ( ! $instance ) {
+		static $instance;
+		if ( is_null( $instance ) ) {
 			$instance = new self();
 		}
 

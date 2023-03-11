@@ -1,6 +1,7 @@
 
 .course-summary-sidebar {
-
+	--lp-button-background-color: #28303d;
+	--lp-button-color: #d1e4dd;
 	.course-sidebar-preview {
 		margin-bottom: 35px;
 		background: #fff;
@@ -25,22 +26,24 @@
 
 		button {
 			font-weight: 500;
-
+			background-color: var(--lp-button-background-color);
+			color: var(--lp-button-color);
+			border: none;
 			&:hover {
 				border-color: var(--lp-primary-color);
 			}
-
 			&.button-enroll-course {
-				//border-color: var(--lp-primary-color);
-				color: #fff;
+				//border: none;
+				//color: #fff;
 				//background: var(--lp-primary-color);
- 				&:hover {
-					//opacity: 0.5;
-					background: var(--lp-primary-color);
-				}
+				//
+				//&:hover {
+				//	opacity: 0.8;
+				//	background: var(--lp-primary-color);
+				//}
 
 				&.loading {
- 					&::before {
+					&::before {
 						display: inline-block;
 						font-family: "Font Awesome 5 Free";
 						font-weight: 900;
