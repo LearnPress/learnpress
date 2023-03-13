@@ -46,7 +46,7 @@ class Thim_Cache_DB {
 	 */
 	public function get_value( string $key_cache ) {
 		$sql = $this->wpdb->prepare(
-			"SELECT `value` FROM {$this->table_name} WHERE `key_cache` = %s LIMIT 1",
+			"SELECT `value` FROM {$this->table_name} WHERE `key_cache` = %s",
 			$key_cache
 		);
 
