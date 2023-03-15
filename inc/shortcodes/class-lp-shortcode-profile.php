@@ -65,6 +65,7 @@ if ( ! class_exists( 'LP_Shortcode_Profile' ) ) {
 			$profile = LP_Global::profile();
 
 			wp_enqueue_style( 'learnpress' );
+			wp_enqueue_script( 'lp-profile' );
 
 			ob_start();
 

@@ -321,10 +321,11 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				}
 				//}
 
-				$tabs = $this->_default_settings;
-				$tabs = apply_filters( 'learn-press/profile-tabs', $tabs );
+				$tabs        = $this->_default_settings;
+				$tabs        = apply_filters( 'learn-press/profile-tabs', $tabs );
+				$this->_tabs = new LP_Profile_Tabs( $tabs, $this );
 
-				return $this->_tabs = new LP_Profile_Tabs( $tabs, $this );
+				return $this->_tabs;
 		}
 
 		public function get_slug( $data, $default = '' ) {

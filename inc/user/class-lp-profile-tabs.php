@@ -25,31 +25,20 @@ class LP_Profile_Tabs {
 	 * @param LP_Profile $profile
 	 */
 	public function __construct( $tabs, $profile ) {
-		$this->_data   = $tabs;
-		$this->profile = $profile;
+		foreach ( $tabs as $k => $v ) {
+			$this->_data[ $k ] = new LP_Profile_Tab( $k, $v, $profile );
+		}
 
-		$this->_sanitize();
-		$this->init();
+		$this->profile = $profile;
+		//$this->_sanitize();
+		//$this->init();
 	}
 
 	/**
 	 *
 	 */
 	protected function init() {
-		global $wp;
 
-		$current      = $wp->query_vars['view'] ?? 'overview';
-		$current_page = LP_Page_Controller::page_current();
-		if ( LP_PAGE_PROFILE !== $current_page ) {
-			return;
-		}
-
-		foreach ( $this->_data as $k => $v ) {
-			if ( $current === $v['slug'] ) {
-				$v['is_current'] = true;
-			}
-			$this->_data[ $k ] = new LP_Profile_Tab( $k, $v, $this->get_profile() );
-		}
 	}
 
 	/**
@@ -277,22 +266,12 @@ class LP_Profile_Tabs {
 	public function get_current_url( $args = '', $with_permalink = false ) {
 		$current_tab = $this->get_current_tab();
 		$tab         = $this->get_tab_at( $current_tab );
-		$sections    = $tab->get( 'sections' ) ? $tab->get( 'sections' ) : array();
+		if ( ! $tab instanceof LP_Profile_Tab ) {
+			return '';
+		}
 
 		$current_section_slug = $this->get_current_section();
-		$section              = array();
-
-		if ( isset( $sections[ $current_section_slug ] ) ) {
-
-		} elseif ( $sections && ! empty( $sections ) ) {
-			reset( $sections );
-		}
-
-		if ( array_key_exists( 'slug', $section ) ) {
-			$current_section_slug = $section['slug'];
-		}
-		$url = $this->get_tab_link( $this->get_current_tab(), $current_section_slug, $this->get_profile()->get_user()->get_username() );
-
+		$url                  = $this->get_tab_link( $this->get_current_tab(), $current_section_slug, $this->get_profile()->get_user()->get_username() );
 		if ( is_array( $args ) && $args ) {
 			if ( ! $with_permalink ) {
 				$url = esc_url_raw( add_query_arg( $args, $url ) );
@@ -360,8 +339,10 @@ class LP_Profile_Tabs {
 	 * Remove tab.
 	 *
 	 * @param $key
+	 * @deprecated 4.2.2.3
 	 */
 	public function remove_tab( $key ) {
+		_deprecated_function( __FUNCTION__, '4.2.2.3' );
 		$tabs = $this->_data;
 
 		foreach ( $tabs as $slug => $data ) {
@@ -373,7 +354,11 @@ class LP_Profile_Tabs {
 		$this->_data = $tabs;
 	}
 
+	/**
+	 * @deprecated 4.2.2.3
+	 */
 	public function current_user_can_view( $key = '' ) {
+		_deprecated_function( __FUNCTION__, '4.2.2.3' );
 		global $wp;
 
 		if ( ! $key ) {

@@ -140,136 +140,145 @@ class LP_Query {
 	public function add_rewrite_rules() {
 		$rules = array();
 
-		/**
-		 * Set rule item course.
-		 *
-		 * Use urldecode to convert an encoded string to normal.
-		 * This fixed the issue with custom slug of lesson/quiz in some languages
-		 * Eg: урока
-		 */
-		$lesson_slug       = urldecode( sanitize_title_with_dashes( LP_Settings::get_option( 'lesson_slug', 'lessons' ) ) );
-		$quiz_slug         = urldecode( sanitize_title_with_dashes( LP_Settings::get_option( 'quiz_slug', 'quizzes' ) ) );
-		$course_item_slugs = apply_filters(
-			'learn-press/course-item-slugs/for-rewrite-rules',
-			array(
-				LP_LESSON_CPT => $lesson_slug,
-				LP_QUIZ_CPT   => $quiz_slug,
-			)
-		);
+		try {
 
-		$course_slug = LP_Settings::get_option( 'course_base', 'courses' );
-		if ( empty( $course_slug ) ) {
-			$course_slug = 'courses';
-		}
-		$course_slug = preg_replace( '!^/!', '', $course_slug );
+			/**
+			 * Set rule item course.
+			 *
+			 * Use urldecode to convert an encoded string to normal.
+			 * This fixed the issue with custom slug of lesson/quiz in some languages
+			 * Eg: урока
+			 */
+			$lesson_slug       = urldecode( sanitize_title_with_dashes( LP_Settings::get_option( 'lesson_slug', 'lessons' ) ) );
+			$quiz_slug         = urldecode( sanitize_title_with_dashes( LP_Settings::get_option( 'quiz_slug', 'quizzes' ) ) );
+			$course_item_slugs = apply_filters(
+				'learn-press/course-item-slugs/for-rewrite-rules',
+				array(
+					LP_LESSON_CPT => $lesson_slug,
+					LP_QUIZ_CPT   => $quiz_slug,
+				)
+			);
 
-		if ( preg_match( '!%course_category%!', $course_slug ) ) {
-			$course_slug = preg_replace( '!%course_category%!', '([^/]+)/([^/]+)', $course_slug );
+			$course_slug = LP_Settings::get_option( 'course_base', 'courses' );
+			if ( empty( $course_slug ) ) {
+				$course_slug = 'courses';
+			}
+			$course_slug = preg_replace( '!^/!', '', $course_slug );
 
-			foreach ( $course_item_slugs as $post_type => $course_item_slug ) {
-				$rules[] = array(
-					"^{$course_slug}(?:/{$course_item_slug}/([^/]+))?/?$",
-					'index.php?' . LP_COURSE_CPT . '=$matches[2]&course_category=$matches[1]&course-item=$matches[3]&item-type=' . $post_type,
-					'top',
-				);
+			if ( preg_match( '!%course_category%!', $course_slug ) ) {
+				$course_slug = preg_replace( '!%course_category%!', '([^/]+)/([^/]+)', $course_slug );
+
+				foreach ( $course_item_slugs as $post_type => $course_item_slug ) {
+					$rules[] = array(
+						"^{$course_slug}(?:/{$course_item_slug}/([^/]+))?/?$",
+						'index.php?' . LP_COURSE_CPT . '=$matches[2]&course_category=$matches[1]&course-item=$matches[3]&item-type=' . $post_type,
+						'top',
+					);
+				}
+
+				// Todo fix: temporary addons before addons updated, when all addons updated, this code will be removed
+				if ( class_exists( 'LP_Addon_Assignment_Preload' ) ) {
+					$assignment_slug = urldecode( sanitize_title_with_dashes( LP_Settings::get_option( 'assignment_slug', 'assignments' ) ) );
+					$rules[]         = array(
+						"^{$course_slug}(?:/{$assignment_slug}/([^/]+))?/?$",
+						'index.php?' . LP_COURSE_CPT . '=$matches[2]&course_category=$matches[1]&course-item=$matches[3]&item-type=' . LP_ASSIGNMENT_CPT,
+						'top',
+					);
+				}
+				if ( class_exists( 'LP_Addon_H5p_Preload' ) ) {
+					$h5p_slug = urldecode( sanitize_title_with_dashes( LP_Settings::get_option( 'h5p_slug', 'h5p' ) ) );
+					$rules[]  = array(
+						"^{$course_slug}(?:/{$h5p_slug}/([^/]+))?/?$",
+						'index.php?' . LP_COURSE_CPT . '=$matches[2]&course_category=$matches[1]&course-item=$matches[3]&item-type=' . LP_H5P_CPT,
+						'top',
+					);
+				}
+				if ( class_exists( 'LP_Addon_Certificates_Preload' ) ) {
+					$cer_slug = urldecode( sanitize_title_with_dashes( LP_Settings::get_option( 'lp_cert_slug', 'certificates' ) ) );
+					$rules[]  = array(
+						"^{$course_slug}(?:/{$cer_slug}/([^/]+))?/?$",
+						'index.php?' . LP_COURSE_CPT . '=$matches[2]&course_category=$matches[1]&course-item=$matches[3]&item-type=' . LP_ADDON_CERTIFICATES_CERT_CPT,
+						'top',
+					);
+				}
+				// End Fixed
+			} else {
+				foreach ( $course_item_slugs as $post_type => $course_item_slug ) {
+					$rules[] = array(
+						"^{$course_slug}/([^/]+)(?:/{$course_item_slug}/([^/]+))?/?$",
+						'index.php?' . LP_COURSE_CPT . '=$matches[1]&course-item=$matches[2]&item-type=' . $post_type,
+						'top',
+					);
+				}
+
+				// Todo Fix: temporary addons before addons updated, when all addons updated, this code will be removed
+				if ( class_exists( 'LP_Addon_Assignment_Preload' ) ) {
+					$assignment_slug = urldecode( sanitize_title_with_dashes( LP_Settings::get_option( 'assignment_slug', 'assignments' ) ) );
+					$rules[]         = array(
+						"^{$course_slug}/([^/]+)(?:/{$assignment_slug}/([^/]+))?/?$",
+						'index.php?' . LP_COURSE_CPT . '=$matches[1]&course-item=$matches[2]&item-type=' . LP_ASSIGNMENT_CPT,
+						'top',
+					);
+				}
+				if ( class_exists( 'LP_Addon_H5p_Preload' ) ) {
+					$h5p_slug = urldecode( sanitize_title_with_dashes( LP_Settings::get_option( 'h5p_slug', 'h5p' ) ) );
+					$rules[]  = array(
+						"^{$course_slug}/([^/]+)(?:/{$h5p_slug}/([^/]+))?/?$",
+						'index.php?' . LP_COURSE_CPT . '=$matches[1]&course-item=$matches[2]&item-type=' . LP_H5P_CPT,
+						'top',
+					);
+				}
+				if ( class_exists( 'LP_Addon_Certificates_Preload' ) ) {
+					$cer_slug = urldecode( sanitize_title_with_dashes( LP_Settings::get_option( 'lp_cert_slug', 'certificates' ) ) );
+					$rules[]  = array(
+						"^{$course_slug}/([^/]+)(?:/{$cer_slug}/([^/]+))?/?$",
+						'index.php?' . LP_COURSE_CPT . '=$matches[1]&course-item=$matches[2]&item-type=' . LP_ADDON_CERTIFICATES_CERT_CPT,
+						'top',
+					);
+				}
+				// End Fixed
 			}
 
-			// Todo fix: temporary addons before addons updated, when all addons updated, this code will be removed
-			if ( class_exists( 'LP_Addon_Assignment_Preload' ) ) {
-				$assignment_slug = urldecode( sanitize_title_with_dashes( LP_Settings::get_option( 'assignment_slug', 'assignments' ) ) );
-				$rules[]         = array(
-					"^{$course_slug}(?:/{$assignment_slug}/([^/]+))?/?$",
-					'index.php?' . LP_COURSE_CPT . '=$matches[2]&course_category=$matches[1]&course-item=$matches[3]&item-type=' . LP_ASSIGNMENT_CPT,
-					'top',
-				);
-			}
-			if ( class_exists( 'LP_Addon_H5p_Preload' ) ) {
-				$h5p_slug = urldecode( sanitize_title_with_dashes( LP_Settings::get_option( 'h5p_slug', 'h5p' ) ) );
-				$rules[]  = array(
-					"^{$course_slug}(?:/{$h5p_slug}/([^/]+))?/?$",
-					'index.php?' . LP_COURSE_CPT . '=$matches[2]&course_category=$matches[1]&course-item=$matches[3]&item-type=' . LP_H5P_CPT,
-					'top',
-				);
-			}
-			if ( class_exists( 'LP_Addon_Certificates_Preload' ) ) {
-				$cer_slug = urldecode( sanitize_title_with_dashes( LP_Settings::get_option( 'lp_cert_slug', 'certificates' ) ) );
-				$rules[]  = array(
-					"^{$course_slug}(?:/{$cer_slug}/([^/]+))?/?$",
-					'index.php?' . LP_COURSE_CPT . '=$matches[2]&course_category=$matches[1]&course-item=$matches[3]&item-type=' . LP_ADDON_CERTIFICATES_CERT_CPT,
-					'top',
-				);
-			}
-			// End Fixed
-		} else {
-			foreach ( $course_item_slugs as $post_type => $course_item_slug ) {
-				$rules[] = array(
-					"^{$course_slug}/([^/]+)(?:/{$course_item_slug}/([^/]+))?/?$",
-					'index.php?' . LP_COURSE_CPT . '=$matches[1]&course-item=$matches[2]&item-type=' . $post_type,
-					'top',
-				);
-			}
+			// Profile
+			$profile_id = learn_press_get_page_id( 'profile' );
+			// Rule view profile of user (self or another)
+			$page_profile_slug = get_post_field( 'post_name', $profile_id );
+			$rules[]           = array(
+				"^{$page_profile_slug}/([^/]*)/?$",
+				"index.php?page_id={$profile_id}&user=" . '$matches[1]',
+				'top',
+			);
 
-			// Todo Fix: temporary addons before addons updated, when all addons updated, this code will be removed
-			if ( class_exists( 'LP_Addon_Assignment_Preload' ) ) {
-				$assignment_slug = urldecode( sanitize_title_with_dashes( LP_Settings::get_option( 'assignment_slug', 'assignments' ) ) );
-				$rules[]         = array(
-					"^{$course_slug}/([^/]+)(?:/{$assignment_slug}/([^/]+))?/?$",
-					'index.php?' . LP_COURSE_CPT . '=$matches[1]&course-item=$matches[2]&item-type=' . LP_ASSIGNMENT_CPT,
-					'top',
-				);
-			}
-			if ( class_exists( 'LP_Addon_H5p_Preload' ) ) {
-				$h5p_slug = urldecode( sanitize_title_with_dashes( LP_Settings::get_option( 'h5p_slug', 'h5p' ) ) );
-				$rules[]  = array(
-					"^{$course_slug}/([^/]+)(?:/{$h5p_slug}/([^/]+))?/?$",
-					'index.php?' . LP_COURSE_CPT . '=$matches[1]&course-item=$matches[2]&item-type=' . LP_H5P_CPT,
-					'top',
-				);
-			}
-			if ( class_exists( 'LP_Addon_Certificates_Preload' ) ) {
-				$cer_slug = urldecode( sanitize_title_with_dashes( LP_Settings::get_option( 'lp_cert_slug', 'certificates' ) ) );
-				$rules[]  = array(
-					"^{$course_slug}/([^/]+)(?:/{$cer_slug}/([^/]+))?/?$",
-					'index.php?' . LP_COURSE_CPT . '=$matches[1]&course-item=$matches[2]&item-type=' . LP_ADDON_CERTIFICATES_CERT_CPT,
-					'top',
-				);
-			}
-			// End Fixed
-		}
+			// Rule view profile of user (self or another) with tab
+			$profile = learn_press_get_profile();
+			$tabs    = $profile->get_tabs()->get();
 
-		// Profile
-		$profile_id = learn_press_get_page_id( 'profile' );
-		// Rule view profile of user (self or another)
-		$page_profile_slug = get_post_field( 'post_name', $profile_id );
-		$rules[]           = array(
-			"^{$page_profile_slug}/([^/]*)/?$",
-			"index.php?page_id={$profile_id}&user=" . '$matches[1]',
-			'top',
-		);
+			if ( $tabs ) {
+				/**
+				 * @var LP_Profile_Tab $args
+				 */
+				foreach ( $tabs as $slug => $args ) {
+					$tab_slug = $args->get( 'slug' ) ?? $slug;
+					$rules[]  = array(
+						"^{$page_profile_slug}/([^/]*)/({$tab_slug})/?([0-9]*)/?$",
+						'index.php?page_id=' . $profile_id . '&user=$matches[1]&view=$matches[2]&view_id=$matches[3]',
+						'top',
+					);
 
-		// Rule view profile of user (self or another) with tab
-		$profile = learn_press_get_profile();
-		$tabs    = $profile->get_tabs()->get();
-		if ( $tabs ) {
-			foreach ( $tabs as $slug => $args ) {
-				$tab_slug = $args['slug'] ?? $slug;
-				$rules[]  = array(
-					"^{$page_profile_slug}/([^/]*)/({$tab_slug})/?([0-9]*)/?$",
-					'index.php?page_id=' . $profile_id . '&user=$matches[1]&view=$matches[2]&view_id=$matches[3]',
-					'top',
-				);
-
-				if ( ! empty( $args['sections'] ) ) {
-					foreach ( $args['sections'] as $section_slug => $section ) {
-						$section_slug = $section['slug'] ?? $section_slug;
-						$rules[]      = array(
-							"^{$page_profile_slug}/([^/]*)/({$tab_slug})/({$section_slug})/?([0-9]*)?$",
-							'index.php?page_id=' . $profile_id . '&user=$matches[1]&view=$matches[2]&section=$matches[3]&view_id=$matches[4]',
-							'top',
-						);
+					if ( ! empty( $args->get( 'sections' ) ) ) {
+						foreach ( $args->get( 'sections' ) as $section_slug => $section ) {
+							$section_slug = $section['slug'] ?? $section_slug;
+							$rules[]      = array(
+								"^{$page_profile_slug}/([^/]*)/({$tab_slug})/({$section_slug})/?([0-9]*)?$",
+								'index.php?page_id=' . $profile_id . '&user=$matches[1]&view=$matches[2]&section=$matches[3]&view_id=$matches[4]',
+								'top',
+							);
+						}
 					}
 				}
 			}
+		} catch ( Throwable $e ) {
+			error_log( sprintf( '%s:%s:%s', __FILE__, __LINE__, $e->getMessage() ) );
 		}
 
 		return apply_filters( 'learn-press/rewrite/rules', $rules );
