@@ -905,7 +905,7 @@ class LP_Page_Controller {
 			return LP_PAGE_QUIZ;
 		} elseif ( learn_press_is_course() && LP_Global::course_item() ) {
 			return LP_PAGE_SINGLE_COURSE_CURRICULUM;
-		} elseif ( self::is_page_courses() || learn_press_is_courses() ) {
+		} elseif ( self::is_page_courses() ) {
 			return LP_PAGE_COURSES;
 		} elseif ( learn_press_is_course() ) {
 			return LP_PAGE_SINGLE_COURSE;
@@ -927,7 +927,7 @@ class LP_Page_Controller {
 	 */
 	public static function page_is( string $name = '' ): bool {
 		$page_id = learn_press_get_page_id( $name );
-		if ( ! $page_id ) {
+		if ( ! $page_id || 'page' !== get_post_type( $page_id ) ) {
 			return false;
 		}
 
