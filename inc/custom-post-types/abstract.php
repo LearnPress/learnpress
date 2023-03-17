@@ -211,6 +211,13 @@ abstract class LP_Abstract_Post_Type {
 	 * @since modify 4.0.9
 	 */
 	final function _before_delete_post( int $post_id ) {
+		// Todo: check is pages of LP
+		if ( 'page' === get_post_type( $post_id ) ) {
+			// Clear cache LP settings
+			$lp_settings_cache = new LP_Settings_Cache( true );
+			$lp_settings_cache->clean_lp_settings();
+		}
+
 		if ( ! $this->check_post( $post_id ) ) {
 			return;
 		}
@@ -235,10 +242,6 @@ abstract class LP_Abstract_Post_Type {
 	 * @param int $post_id
 	 */
 	final function _deleted_post( int $post_id ) {
-		if ( ! $this->check_post() ) {
-			return;
-		}
-
 		$this->deleted_post( $post_id );
 	}
 
@@ -653,7 +656,6 @@ abstract class LP_Abstract_Post_Type {
 
 		try {
 			$post = get_post( $post_id );
-
 			if ( ! $post ) {
 				throw new Exception( 'Post is invalid' );
 			}
