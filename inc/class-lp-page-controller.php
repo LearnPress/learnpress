@@ -624,9 +624,18 @@ class LP_Page_Controller {
 		$theme_no_load_ajax = apply_filters(
 			'lp/page/courses/themes/no_load_ajax',
 			[
-				'Coaching', 'Course Builder', 'eLearningWP', 'Ivy School', 'StarKid', 'Academy LMS',
-				'Coaching Child', 'Course Builder Child', 'eLearningWP Child', 'Ivy School Child',
-				'StarKid Child', 'Academy LMS Child',
+				'Coaching',
+				'Course Builder',
+				'eLearningWP',
+				'Ivy School',
+				'StarKid',
+				'Academy LMS',
+				'Coaching Child',
+				'Course Builder Child',
+				'eLearningWP Child',
+				'Ivy School Child',
+				'StarKid Child',
+				'Academy LMS Child',
 			]
 		);
 		$theme_current      = wp_get_theme()->get( 'Name' );
@@ -931,7 +940,14 @@ class LP_Page_Controller {
 			return false;
 		}
 
-		$page_profile_option = untrailingslashit( get_the_permalink( $page_id ) );
+		// If pages of LP set to homepage will return false
+		$link_page = get_the_permalink( $page_id );
+		$home_url  = home_url( '/' );
+		if ( $home_url === $link_page ) {
+			return false;
+		}
+
+		$page_profile_option = untrailingslashit( $link_page );
 		$page_profile_option = str_replace( '/', '\/', $page_profile_option );
 		$pattern             = '/' . $page_profile_option . '/';
 		if ( preg_match( $pattern, LP_Helper::getUrlCurrent() ) ) {

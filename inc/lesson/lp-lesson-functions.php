@@ -4,6 +4,7 @@
  *
  * @author ThimPress
  * @version 4.0.0
+ * @deprecated 4.2.2
  */
 
 defined( 'ABSPATH' ) || exit();
