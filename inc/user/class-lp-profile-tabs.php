@@ -25,7 +25,34 @@ class LP_Profile_Tabs {
 	 * @param LP_Profile $profile
 	 */
 	public function __construct( $tabs, $profile ) {
+		$tabs_tmp = [];
 		foreach ( $tabs as $k => $v ) {
+			$tabs_tmp[ $k ]              = $v;
+			$tabs_tmp[ $k ]['key_index'] = $k;
+			if ( ! array_key_exists( 'priority', $v ) ) {
+				$tabs_tmp[ $k ]['priority'] = 10;
+			}
+			if ( ! array_key_exists( 'slug', $v ) ) {
+				$tabs_tmp[ $k ]['slug'] = $k;
+			}
+		}
+
+		// Sort tab by priority.
+		usort(
+			$tabs_tmp,
+			function ( $tab1, $tab2 ) {
+				if ( $tab1['priority'] < $tab2['priority'] ) {
+					return -1;
+				} elseif ( $tab1['priority'] > $tab2['priority'] ) {
+					return 1;
+				} else {
+					return 0;
+				}
+			}
+		);
+
+		foreach ( $tabs_tmp as $v ) {
+			$k                 = $v['key_index'];
 			$this->_data[ $k ] = new LP_Profile_Tab( $k, $v, $profile );
 		}
 

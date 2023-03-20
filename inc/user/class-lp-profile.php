@@ -299,14 +299,14 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 								'icon'     => '<i class="fas fa-key"></i>',
 							),
 						),
-						'priority' => 35,
+						'priority' => 90,
 						'icon'     => '<i class="fas fa-cog"></i>',
 					),
 					'logout'        => array(
 						'title'    => esc_html__( 'Logout', 'learnpress' ),
 						'slug'     => learn_press_profile_logout_slug(),
 						'icon'     => '<i class="fas fa-sign-out-alt"></i>',
-						'priority' => 40,
+						'priority' => 100,
 					),
 				);
 
