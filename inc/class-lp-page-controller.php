@@ -446,6 +446,9 @@ class LP_Page_Controller {
 	 * @return bool|string
 	 */
 	public function template_loader( $template ) {
+		if (wp_is_block_theme()) {
+			return $template;
+		}
 
 		if ( is_embed() ) {
 			return $template;
