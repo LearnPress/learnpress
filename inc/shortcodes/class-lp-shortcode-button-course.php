@@ -67,9 +67,9 @@ if ( ! class_exists( 'LP_Shortcode_Button_Course' ) ) {
 				wp_enqueue_script( 'lp-single-course' );
 
 				if ( $course->is_free() ) {
-					add_filter( 'learn-press/purchase-course-button-text', array( $this, 'button_text_enroll' ) );
+					add_filter( 'learn-press/enroll-course-button-text', array( $this, 'button_text_enroll' ) );
 				} elseif ( $course->get_external_link() ) {
-					add_filter( 'learn-press/purchase-course-button-text', array( $this, 'button_text_external_link' ) );
+					add_filter( 'learn-press/course-external-link-text', array( $this, 'button_text_external_link' ) );
 				} elseif ( $course->is_no_required_enroll() ) {
 
 				} else {
