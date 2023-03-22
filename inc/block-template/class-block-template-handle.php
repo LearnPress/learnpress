@@ -1,4 +1,5 @@
 <?php
+
 use LP\Helpers\Config;
 
 /**
@@ -23,9 +24,9 @@ class Block_Template_Handle {
 	protected function __construct() {
 		add_filter( 'get_block_templates', array( $this, 'add_block_templates' ), 10, 3 );
 		add_filter( 'pre_get_block_file_template', array( $this, 'edit_block_file_template' ), 10, 3 );
-		add_action( 'init', [ $this, 'register_tag_block' ] );
+		add_action( 'init', array( $this, 'register_tag_block' ) );
 		// Register block category
-		add_filter( 'block_categories_all', [ $this, 'add_block_category' ], 10, 2 );
+		add_filter( 'block_categories_all', array( $this, 'add_block_category' ), 10, 2 );
 		// add_action( 'init', [ $this, 'register_block_learnpress_title_course' ] );
 	}
 
@@ -94,9 +95,9 @@ class Block_Template_Handle {
 			return $query_result;
 		}
 
-		$learnpress_block_templates = Config::instance()->get( 'block-templates' );
+		$lp_block_templates = Config::instance()->get( 'block-templates' );
 
-		foreach ( $learnpress_block_templates as $block_template ) {
+		foreach ( $lp_block_templates as $block_template ) {
 			$new = new $block_template();
 
 			// Get block template if custom - save on table posts.
@@ -131,9 +132,9 @@ class Block_Template_Handle {
 	 * @return WP_Block_Template|null
 	 */
 	public function edit_block_file_template( WP_Block_Template $template = null, string $id, $template_type ) {
-		$learnpress_block_templates = Config::instance()->get( 'block-templates' );
+		$lp_block_templates = Config::instance()->get( 'block-templates' );
 
-		foreach ( $learnpress_block_templates as $block_template ) {
+		foreach ( $lp_block_templates as $block_template ) {
 			if ( $id === $block_template->id ) {
 				$template = $block_template;
 				break;
@@ -179,13 +180,13 @@ class Block_Template_Handle {
 	 * @return array
 	 */
 	public function add_block_category( array $block_categories, $editor_context ) {
-		$learnpress_category_block = array(
+		$lp_category_block = array(
 			'slug'  => 'learnpress-category',
 			'title' => __( 'LearnPress Category', 'learnpress' ),
 			'icon'  => null,
 		);
 
-		array_unshift( $block_categories, $learnpress_category_block );
+		array_unshift( $block_categories, $lp_category_block );
 
 		return $block_categories;
 	}
