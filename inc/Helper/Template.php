@@ -122,5 +122,23 @@ class Template {
 			error_log( $e->getMessage() );
 		}
 	}
+
+	//
+	/**
+	 * Get frontend template block file
+	 *
+	 * @param string $file_name
+	 * @param array $args
+	 *
+	 * @return string|void
+	 */
+	public function get_frontend_template_type_block( string $file_name = '', array $args = array() ) {
+		$file_name = "block/{$file_name}";
+		$template  = $this->get_frontend_template( $file_name, $args );
+
+		if ( ! $this->include ) {
+			return $template;
+		}
+	}
 }
 
