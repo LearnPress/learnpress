@@ -1,5 +1,7 @@
 <?php
 
+use LearnPress\Helpers\Template;
+
 /**
  * Class LP_REST_Admin_Tools_Controller
  *
@@ -264,14 +266,19 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 					]
 				);
 
+				ob_start();
 				foreach ( $rules as $template_data ) {
-					$content .= learn_press_admin_view( $template_data['template'] ?? '', [ 'data' => $template_data ], true, true );
+					Template::instance()->get_admin_template(
+						$template_data['template'] ?? '',
+						[ 'data' => $template_data ]
+					);
 				}
 			}
 
 			$response->status        = 'success';
-			$response->data->content = $content;
+			$response->data->content = ob_get_clean();
 		} catch ( Exception $e ) {
+			ob_end_clean();
 			$response->message = $e->getMessage();
 		}
 
