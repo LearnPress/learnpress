@@ -1119,7 +1119,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			if ( ! empty( $user_ids ) ) {
 				foreach ( $user_ids as $user_id ) {
 					$user = learn_press_get_user( $user_id );
-					if ( $user->is_exists() ) {
+					if ( $user && $user->is_exists() ) {
 						$data[ $user_id ] = $user->get_data(
 							array(
 								'id',
