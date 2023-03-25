@@ -52,12 +52,21 @@ abstract class Abstract_Block_Template extends \WP_Block_Template {
 	 * @return false|string
 	 */
 	public function render_content_block_template( array $attributes ) {
-		ob_start();
+		$content = '';
 
-		if ( isset( $attributes['template'] ) ) {
-			Template::instance()->get_frontend_template( $attributes['template'] );
+		try {
+			ob_start();
+			if ( isset( $attributes['template'] ) ) {
+				Template::instance()->get_frontend_template( $attributes['template'] );
+			} else {
+				Template::instance()->get_frontend_template( 'archive-course.php' );
+			}
+
+			$content = ob_get_clean();
+		} catch ( Throwable $e ) {
+			ob_end_clean();
 		}
 
-		return ob_get_clean();
+		return $content;
 	}
 }

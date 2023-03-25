@@ -7,6 +7,6 @@ return apply_filters(
 	'learn-press/config/block-templates',
 	array(
 		new Block_Template_Archive_Course(),
-		new Block_Template_Single_Course(),
+		//new Block_Template_Single_Course(),
 	)
 );

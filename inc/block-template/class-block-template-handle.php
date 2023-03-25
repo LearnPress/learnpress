@@ -51,12 +51,20 @@ class Block_Template_Handle {
 	 * @return void
 	 */
 	public function register_tag_block() {
-		$learnpress_block_templates = Config::instance()->get( 'block-templates' );
+		$block_templates = Config::instance()->get( 'block-templates' );
 
 		/**
 		 * @var Abstract_Block_Template $block_template
 		 */
-		foreach ( $learnpress_block_templates as $block_template ) {
+		foreach ( $block_templates as $block_template ) {
+			// Register script.
+			wp_register_script(
+				$block_template->name, // Block name
+				LP_PLUGIN_URL . 'assets/js/dist/blocks/archive-course.js', // Block script
+				array( 'wp-blocks', 'wp-editor' ), // Dependencies
+				uniqid() // Version
+			);
+
 			// Render content block template child of parent block
 			if ( $block_template->inner_block ) {
 				/**
@@ -76,6 +84,7 @@ class Block_Template_Handle {
 				$block_template->name,
 				[
 					'render_callback' => [ $block_template, 'render_content_block_template' ],
+					'editor_script'   => $block_template->name,
 				]
 			);
 		}
