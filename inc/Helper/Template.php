@@ -95,6 +95,22 @@ class Template {
 	}
 
 	/**
+	 * @param array $file_names
+	 * @param array $args
+	 *
+	 * @return void
+	 */
+	public function get_frontend_templates( array $file_names = array(), array $args = array() ) {
+		foreach ( $file_names as $file_name ) {
+			$search_extension = strrpos( $file_name, '.php' );
+			if ( ! $search_extension ) {
+				$file_name .= '.php';
+			}
+
+			$this->get_frontend_template( $file_name, $args );
+		}
+	}
+	/**
 	 * Include path file
 	 *
 	 * @param string $path_file
