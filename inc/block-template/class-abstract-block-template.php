@@ -58,8 +58,6 @@ abstract class Abstract_Block_Template extends \WP_Block_Template {
 			ob_start();
 			if ( isset( $attributes['template'] ) ) {
 				Template::instance()->get_frontend_template( $attributes['template'] );
-			} else {
-				Template::instance()->get_frontend_template( 'archive-course.php' );
 			}
 
 			$content = ob_get_clean();

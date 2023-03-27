@@ -24,7 +24,9 @@ class Block_Template_Archive_Course extends Abstract_Block_Template {
 	 * @return false|string
 	 */
 	public function render_content_block_template( array $attributes ) {
-		//      Debug::var_dump($attributes);
+		if ( ! isset( $attributes['template'] ) ) {
+			$attributes['template'] = 'archive-course.php';
+		}
 		return parent::render_content_block_template( $attributes );
 	}
 }

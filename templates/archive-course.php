@@ -14,9 +14,9 @@ defined( 'ABSPATH' ) || exit;
  *
  * @see LP_Template_General::template_header()
  */
-//if ( empty( $is_block_theme ) ) {
-//	do_action( 'learn-press/template-header' );
-//}
+if ( ! wp_is_block_theme() ) {
+	do_action( 'learn-press/template-header' );
+}
 
 /**
  * LP Hook
@@ -89,6 +89,6 @@ $page_title = learn_press_page_title( false );
  *
  * @see   LP_Template_General::template_footer()
  */
-if ( empty( $is_block_theme ) ) {
-	//do_action( 'learn-press/template-footer' );
+if ( ! wp_is_block_theme() ) {
+	do_action( 'learn-press/template-footer' );
 }
