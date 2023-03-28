@@ -240,92 +240,99 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 */
 		public function get_tabs() {
 			//if ( $this->_tabs === null ) {
-				$settings        = LP_Settings::instance();
-				$course_sections = array();
+			$settings        = LP_Settings::instance();
+			$course_sections = array();
 
-				$this->_default_settings = array(
-					'courses'       => array(
-						'title'    => esc_html__( 'Courses', 'learnpress' ),
-						'slug'     => $settings->get( 'profile_endpoints.courses', 'courses' ),
-						'callback' => array( LP_Template_Profile::class, 'tab_courses' ),
-						'priority' => 1,
-						'icon'     => '<i class="fas fa-book-open"></i>',
-					),
-					'quizzes'       => array(
-						'title'    => esc_html__( 'Quizzes', 'learnpress' ),
-						'slug'     => $settings->get( 'profile_endpoints.quizzes', 'quizzes' ),
-						'callback' => array( $this, 'tab_quizzes' ),
-						'priority' => 20,
-						'icon'     => '<i class="fas fa-puzzle-piece"></i>',
-					),
-					'orders'        => array(
-						'title'    => esc_html__( 'Orders', 'learnpress' ),
-						'slug'     => $settings->get( 'profile_endpoints.orders', 'orders' ),
-						'callback' => array( $this, 'tab_orders' ),
-						'priority' => 25,
-						'icon'     => '<i class="fas fa-shopping-cart"></i>',
-					),
-					'order-details' => array(
-						'title'    => esc_html__( 'Order details', 'learnpress' ),
-						'slug'     => $settings->get( 'profile_endpoints.order-details', 'order-details' ),
-						'hidden'   => true,
-						'callback' => array( $this, 'tab_order_details' ),
-						'priority' => 30,
-					),
-					'settings'      => array(
-						'title'    => esc_html__( 'Settings', 'learnpress' ),
-						'slug'     => $settings->get( 'profile_endpoints.settings', 'settings' ),
-						'callback' => array( $this, 'tab_settings' ),
-						'sections' => array(
-							'basic-information' => array(
-								'title'    => esc_html__( 'General', 'learnpress' ),
-								'slug'     => $settings->get( 'profile_endpoints.settings-basic-information', 'basic-information' ),
-								'callback' => array( $this, 'tab_order_details' ),
-								'priority' => 10,
-								'icon'     => '<i class="fas fa-home"></i>',
-							),
-							'avatar'            => array(
-								'title'    => esc_html__( 'Avatar', 'learnpress' ),
-								'callback' => array( $this, 'tab_order_details' ),
-								'slug'     => $settings->get( 'profile_endpoints.settings-avatar', 'avatar' ),
-								'priority' => 20,
-								'icon'     => '<i class="fas fa-user-circle"></i>',
-							),
-							'change-password'   => array(
-								'title'    => esc_html__( 'Password', 'learnpress' ),
-								'slug'     => $settings->get( 'profile_endpoints.settings-change-password', 'change-password' ),
-								'callback' => array( $this, 'tab_order_details' ),
-								'priority' => 30,
-								'icon'     => '<i class="fas fa-key"></i>',
-							),
+			$this->_default_settings = array(
+				'courses'       => array(
+					'title'    => esc_html__( 'Courses', 'learnpress' ),
+					'slug'     => $settings->get( 'profile_endpoints.courses', 'courses' ),
+					'callback' => array( LP_Template_Profile::class, 'tab_courses' ),
+					'priority' => 1,
+					'icon'     => '<i class="fas fa-book-open"></i>',
+				),
+				'my-courses'    => array(
+					'title'    => esc_html__( 'My Courses', 'learnpress' ),
+					'slug'     => $settings->get( 'profile_endpoints.my-courses', 'my-courses' ),
+					'callback' => array( LP_Template_Profile::class, 'tab_my_courses' ),
+					'priority' => 1,
+					'icon'     => '<i class="fas fa-bars"></i>',
+				),
+				'quizzes'       => array(
+					'title'    => esc_html__( 'Quizzes', 'learnpress' ),
+					'slug'     => $settings->get( 'profile_endpoints.quizzes', 'quizzes' ),
+					'callback' => array( $this, 'tab_quizzes' ),
+					'priority' => 20,
+					'icon'     => '<i class="fas fa-puzzle-piece"></i>',
+				),
+				'orders'        => array(
+					'title'    => esc_html__( 'Orders', 'learnpress' ),
+					'slug'     => $settings->get( 'profile_endpoints.orders', 'orders' ),
+					'callback' => array( $this, 'tab_orders' ),
+					'priority' => 25,
+					'icon'     => '<i class="fas fa-shopping-cart"></i>',
+				),
+				'order-details' => array(
+					'title'    => esc_html__( 'Order details', 'learnpress' ),
+					'slug'     => $settings->get( 'profile_endpoints.order-details', 'order-details' ),
+					'hidden'   => true,
+					'callback' => array( $this, 'tab_order_details' ),
+					'priority' => 30,
+				),
+				'settings'      => array(
+					'title'    => esc_html__( 'Settings', 'learnpress' ),
+					'slug'     => $settings->get( 'profile_endpoints.settings', 'settings' ),
+					'callback' => array( $this, 'tab_settings' ),
+					'sections' => array(
+						'basic-information' => array(
+							'title'    => esc_html__( 'General', 'learnpress' ),
+							'slug'     => $settings->get( 'profile_endpoints.settings-basic-information', 'basic-information' ),
+							'callback' => array( $this, 'tab_order_details' ),
+							'priority' => 10,
+							'icon'     => '<i class="fas fa-home"></i>',
 						),
-						'priority' => 90,
-						'icon'     => '<i class="fas fa-cog"></i>',
+						'avatar'            => array(
+							'title'    => esc_html__( 'Avatar', 'learnpress' ),
+							'callback' => array( $this, 'tab_order_details' ),
+							'slug'     => $settings->get( 'profile_endpoints.settings-avatar', 'avatar' ),
+							'priority' => 20,
+							'icon'     => '<i class="fas fa-user-circle"></i>',
+						),
+						'change-password'   => array(
+							'title'    => esc_html__( 'Password', 'learnpress' ),
+							'slug'     => $settings->get( 'profile_endpoints.settings-change-password', 'change-password' ),
+							'callback' => array( $this, 'tab_order_details' ),
+							'priority' => 30,
+							'icon'     => '<i class="fas fa-key"></i>',
+						),
 					),
-					'logout'        => array(
-						'title'    => esc_html__( 'Logout', 'learnpress' ),
-						'slug'     => learn_press_profile_logout_slug(),
-						'icon'     => '<i class="fas fa-sign-out-alt"></i>',
-						'priority' => 100,
-					),
+					'priority' => 90,
+					'icon'     => '<i class="fas fa-cog"></i>',
+				),
+				'logout'        => array(
+					'title'    => esc_html__( 'Logout', 'learnpress' ),
+					'slug'     => learn_press_profile_logout_slug(),
+					'icon'     => '<i class="fas fa-sign-out-alt"></i>',
+					'priority' => 100,
+				),
+			);
+
+			if ( 'yes' === self::get_option_publish_profile() ) {
+				$this->_default_settings['settings']['sections']['privacy'] = array(
+					'title'    => esc_html__( 'Privacy', 'learnpress' ),
+					'slug'     => $settings->get( 'profile_endpoints.settings-privacy', 'privacy' ),
+					'priority' => 40,
+					'callback' => array( $this, 'tab_order_details' ),
+					'icon'     => '<i class="fas fa-user-secret"></i>',
 				);
+			}
+			//}
 
-				if ( 'yes' === self::get_option_publish_profile() ) {
-					$this->_default_settings['settings']['sections']['privacy'] = array(
-						'title'    => esc_html__( 'Privacy', 'learnpress' ),
-						'slug'     => $settings->get( 'profile_endpoints.settings-privacy', 'privacy' ),
-						'priority' => 40,
-						'callback' => array( $this, 'tab_order_details' ),
-						'icon'     => '<i class="fas fa-user-secret"></i>',
-					);
-				}
-				//}
+			$tabs        = $this->_default_settings;
+			$tabs        = apply_filters( 'learn-press/profile-tabs', $tabs );
+			$this->_tabs = new LP_Profile_Tabs( $tabs, $this );
 
-				$tabs        = $this->_default_settings;
-				$tabs        = apply_filters( 'learn-press/profile-tabs', $tabs );
-				$this->_tabs = new LP_Profile_Tabs( $tabs, $this );
-
-				return $this->_tabs;
+			return $this->_tabs;
 		}
 
 		public function get_slug( $data, $default = '' ) {
@@ -363,7 +370,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * Get current tab slug in query string.
 		 *
 		 * @param string $default Optional.
-		 * @param bool   $key Optional. True if return the key instead of value.
+		 * @param bool $key Optional. True if return the key instead of value.
 		 *
 		 * @return string
 		 */
@@ -375,7 +382,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * Get current section in query string.
 		 *
 		 * @param string $default
-		 * @param bool   $key
+		 * @param bool $key
 		 * @param string $tab
 		 *
 		 * @return bool|int|mixed|string
@@ -424,7 +431,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * Get current link of profile
 		 *
 		 * @param string $args - Optional. Add more query args to url.
-		 * @param bool   $with_permalink - Optional. TRUE to build url as friendly url.
+		 * @param bool $with_permalink - Optional. TRUE to build url as friendly url.
 		 *
 		 * @return mixed|string
 		 */
@@ -743,7 +750,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * Query user's courses
 		 *
 		 * @param string $type - Optional. [own, purchased, enrolled, etc]
-		 * @param array  $args - Optional.
+		 * @param array $args - Optional.
 		 *
 		 * @return LP_Query_List_Table
 		 */
@@ -784,7 +791,10 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 					$filter              = new LP_Course_Filter();
 					$filter->fields      = array( 'ID' );
 					$filter->post_author = $this->get_user_data( 'id' );
-					$filter->post_status = isset( $args['status'] ) && ! empty( $args['status'] ) ? $args['status'] : array( 'publish', 'pending' );
+					$filter->post_status = isset( $args['status'] ) && ! empty( $args['status'] ) ? $args['status'] : array(
+						'publish',
+						'pending'
+					);
 					$filter->page        = $args['paged'] ?? 1;
 					$filter->limit       = $args['limit'] ?? $filter->limit;
 					$total_rows          = 0;
@@ -965,7 +975,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		/**
 		 * Echo class for main div.
 		 *
-		 * @param bool   $echo
+		 * @param bool $echo
 		 * @param string $more
 		 *
 		 * @return string
@@ -1000,7 +1010,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * Return true if the tab is visible for current user.
 		 *
 		 * @param string $tab_key
-		 * @param array  $tab_data
+		 * @param array $tab_data
 		 *
 		 * @return bool
 		 */
@@ -1012,7 +1022,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * Return true if the section is visible for current user.
 		 *
 		 * @param string $section_key
-		 * @param array  $section_data
+		 * @param array $section_data
 		 *
 		 * @return bool
 		 */
