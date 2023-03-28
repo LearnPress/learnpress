@@ -23,7 +23,7 @@ if ( ! is_user_logged_in() ) {
 	<?php
 }
 ?>
-	<div class="lp-content-area wp-block-group">
+	<div class="lp-content-area">
 		<form method="post" id="learn-press-checkout-form" name="learn-press-checkout-form" class="lp-checkout-form"
 			tabindex="0" action="<?php echo esc_url_raw( learn_press_get_checkout_url() ); ?>"
 			enctype="multipart/form-data">

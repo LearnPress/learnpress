@@ -26,19 +26,23 @@ class LP_Order_DB extends LP_Database {
 	/**
 	 * Get the latest LP Order id by user_id and course_id
 	 *
-	 * @param int $user_id
+	 * @param int|string $user_id LP_User is int, LP_User_Guest is string
 	 * @param int $course_id
 	 *
 	 * @return null|string
 	 * @since 4.1.4
 	 * @author tungnx
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
-	public function get_last_lp_order_id_of_user_course( int $user_id, int $course_id ) {
+	public function get_last_lp_order_id_of_user_course( $user_id, int $course_id ) {
 		$key_cache = "lp/order/id/last/$user_id/$course_id";
 		$order_id  = LP_Cache::cache_load_first( 'get', $key_cache );
 		if ( false !== $order_id ) {
 			return $order_id;
+		}
+
+		if ( ! $user_id || ! $course_id ) {
+			return null;
 		}
 
 		$user_id_str = $this->wpdb->prepare( '%"%d"%', $user_id );
@@ -50,7 +54,7 @@ class LP_Order_DB extends LP_Database {
 			INNER join {$this->tb_lp_order_itemmeta} as oim on oim.learnpress_order_item_id = oi.order_item_id
 			WHERE post_type = %s
 			AND pm.meta_key = %s
-			AND (pm.meta_value = %d OR pm.meta_value LIKE '%s')
+			AND (pm.meta_value = %s OR pm.meta_value LIKE '%s')
 			AND oim.meta_key = %s
 			AND oim.meta_value = %d
 			ORDER BY p.ID DESC
@@ -65,6 +69,7 @@ class LP_Order_DB extends LP_Database {
 		);
 
 		$order_id = $this->wpdb->get_var( $query );
+
 		LP_Cache::cache_load_first( 'set', $key_cache, $order_id );
 
 		return $order_id;

@@ -9,6 +9,8 @@
  * @extends  LP_Abstract_Shortcode
  */
 
+use LearnPress\Helpers\Template;
+
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Shortcode_Checkout' ) ) {
@@ -81,7 +83,7 @@ if ( ! class_exists( 'LP_Shortcode_Checkout' ) ) {
 			//LearnPress::instance()->cart->empty_cart();
 			//learn_press_print_messages();
 
-			learn_press_get_template( 'checkout/order-received.php', array( 'order_received' => $order_received ) );
+			Template::instance()->get_frontend_template( 'checkout/order-received.php', compact( 'order_received' ) );
 		}
 	}
 }
