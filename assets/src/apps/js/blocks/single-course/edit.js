@@ -10,13 +10,13 @@ export const edit = ( props ) => {
 		<div { ...blockProps }>
 			<Placeholder
 				icon={ page }
-				label={ __( 'Archive Course', 'learnpress' ) }
+				label={ __( 'Single Course', 'learnpress' ) }
 			>
 				<div>
 					{
 						__(
-							'This is an editor placeholder for the Archive Course page. Content will render content of list courses. Should be not remove it',
-							'realpress'
+							'This is an editor placeholder for the Single Course page. Content will render content of single course. Should be not remove it',
+							'learnpress'
 						)
 					}
 				</div>

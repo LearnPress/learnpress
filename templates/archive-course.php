@@ -8,6 +8,8 @@
  */
 
 defined( 'ABSPATH' ) || exit;
+wp_enqueue_script( 'lp-courses' );
+wp_enqueue_style( 'learnpress' );
 
 /**
  * @since 4.0.0

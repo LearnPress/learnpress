@@ -60,7 +60,7 @@ class Block_Template_Handle {
 			// Register script.
 			wp_register_script(
 				$block_template->name, // Block name
-				LP_PLUGIN_URL . 'assets/js/dist/blocks/archive-course.js', // Block script
+				$block_template->source_js, // Block script
 				array( 'wp-blocks', 'wp-editor' ), // Dependencies
 				uniqid() // Version
 			);
