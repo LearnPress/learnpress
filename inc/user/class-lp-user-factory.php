@@ -22,9 +22,9 @@ class LP_User_Factory {
 	 * Init hooks
 	 */
 	public static function init() {
-		self::$_guest_transient = WEEK_IN_SECONDS;
-		add_action( 'learn-press/user/quiz-started', array( __CLASS__, 'start_quiz' ), 10, 3 );
-		add_action( 'learn_press_activate', array( __CLASS__, 'register_event' ), 15 );
+		//self::$_guest_transient = WEEK_IN_SECONDS;
+		//add_action( 'learn-press/user/quiz-started', array( __CLASS__, 'start_quiz' ), 10, 3 );
+		//add_action( 'learn_press_activate', array( __CLASS__, 'register_event' ), 15 );
 
 		/**
 		 * Filters into wp users manager
@@ -394,6 +394,7 @@ class LP_User_Factory {
 	 * @param int $quiz_id
 	 * @param int $course_id
 	 * @param int $user_id
+	 * @deprecated 4.2.2.4
 	 */
 	public static function start_quiz( $quiz_id, $course_id, $user_id ) {
 		if ( learn_press_get_user( $user_id ) ) {
@@ -409,6 +410,7 @@ class LP_User_Factory {
 	 * @param int          $quiz_id
 	 * @param int          $course_id
 	 * @param int          $user_id
+	 * @deprecated 4.2.2.4
 	 */
 	private static function _update_user_item_meta( $item, $quiz_id, $course_id, $user_id ) {
 		if ( get_user_by( 'id', $user_id ) ) {
