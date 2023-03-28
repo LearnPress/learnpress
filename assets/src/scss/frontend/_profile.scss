@@ -1141,4 +1141,13 @@ body.learnpress {
 		margin-left: -20px;
 		margin-right: -20px;
 	}
+
+	.lp-course-loading {
+		height: 100%;
+		min-height: 500px;
+		background: linear-gradient(90deg, hsla(0deg, 0%, 74.5%, 0.2) 25%, hsla(0deg, 0%, 50.6%, 0.24) 37%, hsla(0deg, 0%, 74.5%, 0.2) 63%);
+		animation: waveLoading 1.4s ease infinite;
+		background-size: 400% 100%;
+		width: 100%;
+	}
 }

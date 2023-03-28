@@ -13,7 +13,7 @@ export default function CourseList() {
 	}
 	const data = JSON.parse( containerNode.querySelector( '.lp_profile_data' ).value );
 
-	query = { ...data, c_author: data?.userID };
+	query = { ...data, c_author: data?.userID, template: 'user_not_publish' };
 	getCourses( query );
 	pagination();
 }
