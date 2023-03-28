@@ -20,9 +20,9 @@ class LP_User_Guest extends LP_User {
 	}
 
 	/**
-	 * @return string
+	 * @return string, Certificate must user_id is int, so temporary comment.
 	 */
-	public function get_id(): string {
+	/*public function get_id(): string {
 		return LP_Session_Handler::instance()->get_cookie_data();
-	}
+	}*/
 }
