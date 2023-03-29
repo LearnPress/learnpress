@@ -601,14 +601,13 @@ body {
 	.dashboard-general-statistic__row {
 		display: flex;
 		margin: 0 -15px;
-		justify-content: center;
+		justify-content: space-between;
 		flex-wrap: wrap;
 
 		.statistic-box {
-			min-width: 200px;
 			max-width: 270px;
-			margin: 0 15px 40px 15px;
-			padding: 15px 20px;
+			margin: 0 15px;
+			padding: 15px 10px;
 			border: 1px solid #ccc;
 			border-radius: 4px;
 			background: #f9fafc;
