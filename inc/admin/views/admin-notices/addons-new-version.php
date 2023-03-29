@@ -20,7 +20,7 @@ if ( ! isset( $data ) || empty( $data['addons'] ) ) {
 	<?php
 	Template::instance()->get_admin_template( 'admin-notices/button-dismiss.php', array( 'key' => 'lp-addons-new-version' ) );
 	?>
-	<p><?php echo sprintf( '<strong>%s</strong>', __( 'LearnPress has new version Addons.', 'learnpress' ) ); ?></p>
+	<p><?php echo sprintf( '<strong>%s</strong>', __( 'New version Addons.', 'learnpress' ) ); ?></p>
 	<p style="display: flex;gap: 5px">
 		<?php
 		foreach ( $data['addons'] as $addon ) {
@@ -32,4 +32,5 @@ if ( ! isset( $data ) || empty( $data['addons'] ) ) {
 		}
 		?>
 	</p>
+	<input type="hidden" name="lp-addons-new-version-totals" value="<?php echo count( $data['addons'] ); ?>" />
 </div>
