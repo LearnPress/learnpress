@@ -7,7 +7,7 @@
  * Addons: Assignments, H5P is using.
  * Update all before not implements ArrayAccess
  */
-class LP_Query_List_Table implements ArrayAccess {
+class LP_Query_List_Table {
 	/**
 	 * @var array|null
 	 */

@@ -3212,6 +3212,9 @@ add_action(
 );
 
 // If profile content don't have shortcode profile.
+/**
+ * @deprecated 4.2.2.4
+ */
 function lp_add_shortcode_profile() {
 	global $post;
 
@@ -3223,7 +3226,7 @@ function lp_add_shortcode_profile() {
 	}
 }
 
-add_action( 'template_redirect', 'lp_add_shortcode_profile' );
+//add_action( 'template_redirect', 'lp_add_shortcode_profile' );
 
 /**
  * If Elementor Pro set Theme builder type "Archive", will not show content on page "Archive course"

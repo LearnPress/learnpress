@@ -8,13 +8,15 @@
  */
 
 defined( 'ABSPATH' ) || exit;
+wp_enqueue_script( 'lp-courses' );
+wp_enqueue_style( 'learnpress' );
 
 /**
  * @since 4.0.0
  *
  * @see LP_Template_General::template_header()
  */
-if ( empty( $is_block_theme ) ) {
+if ( ! wp_is_block_theme() ) {
 	do_action( 'learn-press/template-header' );
 }
 
@@ -89,6 +91,6 @@ $page_title = learn_press_page_title( false );
  *
  * @see   LP_Template_General::template_footer()
  */
-if ( empty( $is_block_theme ) ) {
+if ( ! wp_is_block_theme() ) {
 	do_action( 'learn-press/template-footer' );
 }

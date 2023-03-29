@@ -28,25 +28,27 @@ if ( ! class_exists( 'LP_Shortcode_Profile' ) ) {
 			parent::__construct( $atts );
 		}
 
-
+		/**
+		 * @return bool|LP_User|LP_User_Guest|WP_Error
+		 */
 		public function can_view_profile() {
 			global $wp;
 
 			$current_user = learn_press_get_current_user();
 			$viewing_user = true;
 
-			if ( current_user_can( ADMIN_ROLE ) ) {
-				$viewing_user = true;
-			} elseif ( empty( $wp->query_vars['user'] ) ) {
-				$viewing_user = $current_user;
-			} else {
-				$wp_user = get_user_by( 'login', urldecode( $wp->query_vars['user'] ) );
+			if ( ! current_user_can( ADMIN_ROLE ) ) {
+				if ( empty( $wp->query_vars['user'] ) ) {
+					$viewing_user = $current_user;
+				} else {
+					$wp_user = get_user_by( 'login', urldecode( $wp->query_vars['user'] ) );
 
-				if ( $wp_user ) {
-					$viewing_user = learn_press_get_user( $wp_user->ID );
+					if ( $wp_user ) {
+						$viewing_user = learn_press_get_user( $wp_user->ID );
 
-					if ( $viewing_user->is_guest() ) {
-						$viewing_user = false;
+						if ( $viewing_user->is_guest() ) {
+							$viewing_user = false;
+						}
 					}
 				}
 			}
@@ -54,6 +56,8 @@ if ( ! class_exists( 'LP_Shortcode_Profile' ) ) {
 			if ( ! $viewing_user ) {
 				return new WP_Error( 'cannot-view-profile', esc_html__( 'You can\'t view the user profile', 'learnpress' ) );
 			}
+
+			return $viewing_user;
 		}
 
 		/**
@@ -63,29 +67,32 @@ if ( ! class_exists( 'LP_Shortcode_Profile' ) ) {
 		 */
 		public function output() {
 			$profile = LP_Global::profile();
-
+			$output  = '';
 			wp_enqueue_style( 'learnpress' );
+			wp_enqueue_script( 'lp-profile' );
 
-			ob_start();
+			try {
+				ob_start();
+				if ( is_wp_error( $this->can_view_profile() ) ) {
+					$messages = [
+						'status'  => 'error',
+						'content' => $this->can_view_profile()->get_error_message(),
+					];
 
-			if ( is_wp_error( $this->can_view_profile() ) ) {
-				$messages = array(
-					'error' => array(
-						'content' => ! empty( $this->can_view_profile()->get_error_message() ) ? $this->can_view_profile()->get_error_message() : 'LearnPress Profile: Error',
-					),
-				);
+					learn_press_set_message( $messages );
+					learn_press_show_message();
+				} else {
+					//learn_press_print_messages();
+					learn_press_show_message();
+					//learn_press_get_template( 'pages/profile.php', array( 'profile' => $profile ) );
+					Template::instance()->get_frontend_template( 'pages/profile.php', compact( 'profile' ) );
+				}
 
-				echo '<div class="lp-content-area">';
-				learn_press_get_template( 'global/message.php', array( 'messages' => $messages ) );
-				echo '</div>';
-			} else {
-				//learn_press_print_messages();
-				learn_press_show_message();
-				//learn_press_get_template( 'pages/profile.php', array( 'profile' => $profile ) );
-				Template::instance()->get_frontend_template( 'pages/profile.php', array( 'profile' => $profile ) );
+				$output = ob_get_clean();
+			} catch ( Throwable $e ) {
+				ob_end_clean();
+				error_log( $e->getMessage() );
 			}
-
-			$output = ob_get_clean();
 
 			return $output;
 		}

@@ -3,6 +3,8 @@
  * Template for display beta version of LP.
  */
 
+use LearnPress\Helpers\Template;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
@@ -24,10 +26,8 @@ $data_info = LP_Admin_Notice::get_data_lp_beta( $info );
 	<h3><?php echo wp_kses_post( $data_info['title'] ?? '' ); ?></h3>
 	<?php echo wp_kses_post( $data_info['description'] ?? '' ); ?>
 	<?php
-	if ( isset( $data['dismiss'] ) ) :
-		?>
-		<button type="button" class="notice-dismiss btn-lp-notice-dismiss" data-dismiss="lp-beta-version" title="Dismiss notice">
-			<span class="screen-reader-text">Dismiss this notice.</span>
-		</button>
-	<?php endif; ?>
+	if ( isset( $data['allow_dismiss'] ) ) {
+		Template::instance()->get_admin_template( 'admin-notices/button-dismiss.php', array( 'key' => 'lp-beta-version' ) );
+	}
+	?>
 </div>

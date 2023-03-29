@@ -108,57 +108,59 @@ class LP_Page_Controller {
 			}
 
 			$post_link = $course->get_item_link( $item_id );
-		}
-		// Link single course (with %course_category%).
-		elseif ( LP_COURSE_CPT === $post->post_type ) {
+		} elseif ( LP_COURSE_CPT === $post->post_type ) {
+			// Link single course (with %course_category%).
 			$post_link = LP_Helper::handle_lp_permalink_structure( $post_link, $post );
 		}
 
 		return $post_link;
 	}
 
-	private function has_block_template( $template_name ) {
-		if ( ! $template_name ) {
-			return false;
-		}
-
-		$has_template      = false;
-		$template_name     = str_replace( 'course', LP_COURSE_CPT, $template_name );
-		$template_filename = $template_name . '.html';
-		// Since Gutenberg 12.1.0, the conventions for block templates directories have changed,
-		// we should check both these possible directories for backwards-compatibility.
-		$possible_templates_dirs = array( 'templates', 'block-templates' );
-
-		// Combine the possible root directory names with either the template directory
-		// or the stylesheet directory for child themes, getting all possible block templates
-		// locations combinations.
-		$filepath        = DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $template_filename;
-		$legacy_filepath = DIRECTORY_SEPARATOR . 'block-templates' . DIRECTORY_SEPARATOR . $template_filename;
-		$possible_paths  = array(
-			get_stylesheet_directory() . $filepath,
-			get_stylesheet_directory() . $legacy_filepath,
-			get_template_directory() . $filepath,
-			get_template_directory() . $legacy_filepath,
-		);
-
-		// Check the first matching one.
-		foreach ( $possible_paths as $path ) {
-			if ( is_readable( $path ) ) {
-				$has_template = true;
-				break;
-			}
-		}
-
-		/**
-		 * Filters the value of the result of the block template check.
-		 *
-		 * @since x.x.x
-		 *
-		 * @param boolean $has_template value to be filtered.
-		 * @param string $template_name The name of the template.
-		 */
-		return (bool) apply_filters( 'learnpress_has_block_template', $has_template, $template_name );
-	}
+	/**
+	 * @deprecated 4.2.2.4
+	 */
+//	private function has_block_template( $template_name ) {
+//		if ( ! $template_name ) {
+//			return false;
+//		}
+//
+//		$has_template      = false;
+//		$template_name     = str_replace( 'course', LP_COURSE_CPT, $template_name );
+//		$template_filename = $template_name . '.html';
+//		// Since Gutenberg 12.1.0, the conventions for block templates directories have changed,
+//		// we should check both these possible directories for backwards-compatibility.
+//		$possible_templates_dirs = array( 'templates', 'block-templates' );
+//
+//		// Combine the possible root directory names with either the template directory
+//		// or the stylesheet directory for child themes, getting all possible block templates
+//		// locations combinations.
+//		$filepath        = DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $template_filename;
+//		$legacy_filepath = DIRECTORY_SEPARATOR . 'block-templates' . DIRECTORY_SEPARATOR . $template_filename;
+//		$possible_paths  = array(
+//			get_stylesheet_directory() . $filepath,
+//			get_stylesheet_directory() . $legacy_filepath,
+//			get_template_directory() . $filepath,
+//			get_template_directory() . $legacy_filepath,
+//		);
+//
+//		// Check the first matching one.
+//		foreach ( $possible_paths as $path ) {
+//			if ( is_readable( $path ) ) {
+//				$has_template = true;
+//				break;
+//			}
+//		}
+//
+//		/**
+//		 * Filters the value of the result of the block template check.
+//		 *
+//		 * @since x.x.x
+//		 *
+//		 * @param boolean $has_template value to be filtered.
+//		 * @param string $template_name The name of the template.
+//		 */
+//		return (bool) apply_filters( 'learnpress_has_block_template', $has_template, $template_name );
+//	}
 
 	/**
 	 * Set title of pages
@@ -446,6 +448,9 @@ class LP_Page_Controller {
 	 * @return bool|string
 	 */
 	public function template_loader( $template ) {
+		if ( wp_is_block_theme() ) {
+			return $template;
+		}
 
 		if ( is_embed() ) {
 			return $template;
@@ -485,16 +490,14 @@ class LP_Page_Controller {
 		$page_template = '';
 
 		if ( is_singular( LP_COURSE_CPT ) ) {
-			if ( ! self::has_block_template( 'single-course' ) ) {
-				$page_template = 'single-course.php';
-			}
+			$page_template = 'single-course.php';
 
 			if ( $this->_is_single() ) {
 				global $post;
 				setup_postdata( $post );
 
 				$course_item = LP_Global::course_item();
-				if ( $course_item && ! self::has_block_template( 'content-single-course-item' ) ) {
+				if ( $course_item ) {
 					$page_template = 'content-single-item.php';
 				}
 			}
@@ -504,17 +507,15 @@ class LP_Page_Controller {
 			if ( is_tax( 'course_category' ) || is_tax( 'course_tag' ) ) {
 				$page_template = 'taxonomy-' . $object->taxonomy . '.php';
 
-				if ( self::has_block_template( 'taxonomy-' . $object->taxonomy ) ) {
-					$page_template = '';
-				} elseif ( ! file_exists( learn_press_locate_template( $page_template ) ) && ! self::has_block_template( 'archive-course' ) ) {
+				if ( ! file_exists( learn_press_locate_template( $page_template ) ) ) {
 					$page_template = 'archive-course.php';
 				}
-			} elseif ( ! self::has_block_template( 'archive-course' ) ) {
+			} else {
 				$page_template = 'archive-course.php';
 			}
-		} elseif ( ( is_post_type_archive( LP_COURSE_CPT ) || ( ! empty( learn_press_get_page_id( 'courses' ) ) && is_page( learn_press_get_page_id( 'courses' ) ) ) ) && ! self::has_block_template( 'archive-course' ) ) {
+		} elseif ( self::is_page_courses() ) {
 			$page_template = 'archive-course.php';
-		} elseif ( learn_press_is_checkout() && ! self::has_block_template( 'page-lp_checkout' ) ) {
+		} elseif ( learn_press_is_checkout() ) {
 			$page_template = 'pages/checkout.php';
 		}
 
@@ -624,9 +625,18 @@ class LP_Page_Controller {
 		$theme_no_load_ajax = apply_filters(
 			'lp/page/courses/themes/no_load_ajax',
 			[
-				'Coaching', 'Course Builder', 'eLearningWP', 'Ivy School', 'StarKid', 'Academy LMS',
-				'Coaching Child', 'Course Builder Child', 'eLearningWP Child', 'Ivy School Child',
-				'StarKid Child', 'Academy LMS Child',
+				'Coaching',
+				'Course Builder',
+				'eLearningWP',
+				'Ivy School',
+				'StarKid',
+				'Academy LMS',
+				'Coaching Child',
+				'Course Builder Child',
+				'eLearningWP Child',
+				'Ivy School Child',
+				'StarKid Child',
+				'Academy LMS Child',
 			]
 		);
 		$theme_current      = wp_get_theme()->get( 'Name' );
@@ -905,7 +915,7 @@ class LP_Page_Controller {
 			return LP_PAGE_QUIZ;
 		} elseif ( learn_press_is_course() && LP_Global::course_item() ) {
 			return LP_PAGE_SINGLE_COURSE_CURRICULUM;
-		} elseif ( self::is_page_courses() || learn_press_is_courses() ) {
+		} elseif ( self::is_page_courses() ) {
 			return LP_PAGE_COURSES;
 		} elseif ( learn_press_is_course() ) {
 			return LP_PAGE_SINGLE_COURSE;
@@ -927,11 +937,18 @@ class LP_Page_Controller {
 	 */
 	public static function page_is( string $name = '' ): bool {
 		$page_id = learn_press_get_page_id( $name );
-		if ( ! $page_id ) {
+		if ( ! $page_id || 'page' !== get_post_type( $page_id ) ) {
 			return false;
 		}
 
-		$page_profile_option = untrailingslashit( get_the_permalink( $page_id ) );
+		// If pages of LP set to homepage will return false
+		$link_page = get_the_permalink( $page_id );
+		$home_url  = home_url( '/' );
+		if ( $home_url === $link_page ) {
+			return false;
+		}
+
+		$page_profile_option = untrailingslashit( $link_page );
 		$page_profile_option = str_replace( '/', '\/', $page_profile_option );
 		$pattern             = '/' . $page_profile_option . '/';
 		if ( preg_match( $pattern, LP_Helper::getUrlCurrent() ) ) {

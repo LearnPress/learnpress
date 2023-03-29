@@ -423,7 +423,11 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		 * @return mixed
 		 */
 		public function get_pages_of_lp( $q ) {
-			if ( 'page' == LP_Request::get( 'post_type' ) && 'yes' == LP_Request::get( 'lp-page' ) ) {
+			if ( ! is_admin() ) {
+				return $q;
+			}
+
+			if ( 'page' == LP_Request::get_param( 'post_type' ) && 'yes' == LP_Request::get_param( 'lp-page' ) ) {
 				$ids = $this->_get_static_pages( 'learnpress' );
 
 				if ( ! empty( $ids ) ) {

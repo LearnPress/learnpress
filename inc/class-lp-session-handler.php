@@ -156,7 +156,7 @@ class LP_Session_Handler {
 			if ( empty( $cookie ) ) {
 				// Create new cookie and session for user Guest.
 				$this->set_session_expiration( $expire_time_for_guest );
-				$this->_customer_id = md5( $_SERVER['REMOTE_ADDR'] ?? COOKIEHASH );
+				$this->_customer_id = 'g-' . uniqid();
 				$this->set_customer_session_cookie();
 			} else {
 				$this->_customer_id = $cookie;

@@ -65,6 +65,7 @@ class LP_Settings_Cache extends LP_Cache {
 	 */
 	public function clean_lp_settings() {
 		$key = $this->key_settings;
+		LP_Cache::cache_load_first( 'clear', $key );
 		$this->clear( $key );
 	}
 

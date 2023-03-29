@@ -15,7 +15,7 @@ defined( 'ABSPATH' ) || exit();
  *
  * @see LP_Template_General::template_header()
  */
-if ( empty( $is_block_theme ) ) {
+if ( ! wp_is_block_theme() ) {
 	do_action( 'learn-press/template-header' );
 }
 
@@ -70,6 +70,6 @@ do_action( 'learn-press/after-single-course' );
  *
  * @see LP_Template_General::template_footer()
  */
-if ( empty( $is_block_theme ) ) {
+if ( ! wp_is_block_theme() ) {
 	do_action( 'learn-press/template-footer' );
 }

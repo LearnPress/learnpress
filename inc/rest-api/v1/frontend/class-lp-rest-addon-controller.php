@@ -64,6 +64,7 @@ class LP_REST_Addon_Controller extends LP_Abstract_REST_Controller {
 		$response = new LP_REST_Response();
 
 		try {
+			$params   = $request->get_params();
 			$lp_addon = LP_Manager_Addons::instance();
 			$res      = wp_remote_get( $lp_addon->url_list_addons );
 			if ( is_wp_error( $res ) ) {
@@ -73,6 +74,12 @@ class LP_REST_Addon_Controller extends LP_Abstract_REST_Controller {
 			$addons = json_decode( wp_remote_retrieve_body( $res ) );
 			if ( json_last_error() ) {
 				throw new Exception( json_last_error_msg() );
+			}
+
+			if ( isset( $params['return_obj'] ) ) {
+				$response->status = 'success';
+				$response->data   = $addons;
+				return $response;
 			}
 
 			ob_start();

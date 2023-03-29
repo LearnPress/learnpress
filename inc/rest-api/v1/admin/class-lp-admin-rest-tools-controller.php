@@ -1,5 +1,7 @@
 <?php
 
+use LearnPress\Helpers\Template;
+
 /**
  * Class LP_REST_Admin_Tools_Controller
  *
@@ -202,9 +204,9 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 		$content  = '';
 
 		try {
-			$params               = $request->get_params();
-			$admin_notices        = ! empty( $_COOKIE['lp_admin_notices_dismiss'] ) ? json_decode( wp_unslash( $_COOKIE['lp_admin_notices_dismiss'] ), true ) : [];
-			$lp_beta_version_info = LP_Admin_Notice::check_lp_beta_version();
+			$params                = $request->get_params();
+			$admin_notices_dismiss = get_option( 'lp_admin_notices_dismiss', [] );
+			$lp_beta_version_info  = LP_Admin_Notice::check_lp_beta_version();
 
 			if ( isset( $params['dismiss'] ) ) {
 				if ( $lp_beta_version_info ) {
@@ -212,8 +214,8 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 					learn_press_setcookie( 'lp_beta_version', $lp_beta_version_info['version'] ?? 0 );
 				}
 
-				$admin_notices[ $params['dismiss'] ] = $params['dismiss'];
-				learn_press_setcookie( 'lp_admin_notices_dismiss', json_encode( $admin_notices ) );
+				$admin_notices_dismiss[ $params['dismiss'] ] = $params['dismiss'];
+				update_option( 'lp_admin_notices_dismiss', $admin_notices_dismiss );
 				$response->message = __( 'Dismissed!', 'learnpress' );
 			} else {
 				$show_notice_lp_beta_version = false;
@@ -229,49 +231,63 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 					'learn-press/admin-notices',
 					[
 						// Check wp_remote call success.
-						'check_wp_remote'   => [
+						'check_wp_remote'       => [
 							'template' => 'admin-notices/wp-remote.php',
 							'check'    => LP_Admin_Notice::check_wp_remote(),
 						],
 						// Check name plugin base.
-						'check_plugin_base' => [
+						'check_plugin_base'     => [
 							'template' => 'admin-notices/plugin-base.php',
 							'check'    => LP_Admin_Notice::check_plugin_base(),
 						],
 						// Show beta version of LP.
-						'lp-beta-version'   => [
-							'template' => 'admin-notices/beta-version.php',
-							'check'    => $show_notice_lp_beta_version,
-							'info'     => $lp_beta_version_info,
-							'dismiss'  => 1,
+						'lp-beta-version'       => [
+							'template'      => 'admin-notices/beta-version.php',
+							'check'         => $show_notice_lp_beta_version,
+							'info'          => $lp_beta_version_info,
+							'allow_dismiss' => 1,
 						],
 						// Show message needs upgrades database compatible with LP version current.
-						'lp-upgrade-db'     => [
+						'lp-upgrade-db'         => [
 							'template' => 'admin-notices/upgrade-db.php',
 							'check'    => LP_Updater::instance()->check_lp_db_need_upgrade(),
 						],
 						// Show message wrong permalink structure.
-						'lp-permalink'      => [
+						'lp-permalink'          => [
 							'template' => 'admin-notices/permalink-wrong.php',
 							'check'    => ! get_option( 'permalink_structure' ),
 						],
 						// Show notice setup wizard.
-						'lp-setup-wizard'   => [
-							'template' => 'admin-notices/setup-wizard.php',
-							'check'    => ! get_option( 'learn_press_setup_wizard_completed', false ) && ! isset( $admin_notices['lp-setup-wizard'] ),
-							'dismiss'  => 1,
+						'lp-setup-wizard'       => [
+							'template'      => 'admin-notices/setup-wizard.php',
+							'check'         => ! get_option( 'learn_press_setup_wizard_completed', false )
+							&& ! isset( $admin_notices['lp-setup-wizard'] )
+							&& ! isset( $admin_notices_dismiss['lp-setup-wizard'] ),
+							'allow_dismiss' => 1,
+						],
+						// Show notification addons new version.
+						'lp-addons-new-version' => [
+							'template'      => 'admin-notices/addons-new-version.php',
+							'addons'        => LP_Manager_Addons::instance()->list_addon_new_version(),
+							'allow_dismiss' => 1,
+							'dismiss'       => isset( $admin_notices_dismiss['lp-addons-new-version'] ),
 						],
 					]
 				);
 
+				ob_start();
 				foreach ( $rules as $template_data ) {
-					$content .= learn_press_admin_view( $template_data['template'] ?? '', [ 'data' => $template_data ], true, true );
+					Template::instance()->get_admin_template(
+						$template_data['template'] ?? '',
+						[ 'data' => $template_data ]
+					);
 				}
 			}
 
 			$response->status        = 'success';
-			$response->data->content = $content;
+			$response->data->content = ob_get_clean();
 		} catch ( Exception $e ) {
+			ob_end_clean();
 			$response->message = $e->getMessage();
 		}
 

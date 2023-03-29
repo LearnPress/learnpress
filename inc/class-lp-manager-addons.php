@@ -238,5 +238,33 @@ class LP_Manager_Addons {
 			error_log( $e->getMessage() );
 		}
 	}
+
+	/**
+	 * Get list addon have new version.
+	 *
+	 * @return array
+	 */
+	public function list_addon_new_version(): array {
+		$addon_contr = new LP_REST_Addon_Controller();
+		$request     = new WP_REST_Request();
+		$request->set_param( 'return_obj', true );
+		$addons_rs          = $addon_contr->list_addons( $request );
+		$addons_new_version = [];
+		if ( 'success' === $addons_rs->status ) {
+			$addons  = $addons_rs->data;
+			$plugins = get_plugins();
+
+			foreach ( $addons as $addon ) {
+				if ( isset( $plugins[ $addon->basename ] ) ) {
+					$version = $plugins[ $addon->basename ]['Version'];
+					if ( version_compare( $version, $addon->version, '<' ) ) {
+						$addons_new_version[] = $addon;
+					}
+				}
+			}
+		}
+
+		return $addons_new_version;
+	}
 }
 

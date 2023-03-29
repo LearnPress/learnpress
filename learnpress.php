@@ -4,7 +4,7 @@
  * Plugin URI: http://thimpress.com/learnpress
  * Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
  * Author: ThimPress
- * Version: 4.2.2.2
+ * Version: 4.2.2.4-beta-1
  * Author URI: http://thimpress.com
  * Requires at least: 5.8
  * Tested up to: 6.1.1
@@ -383,8 +383,11 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/cart/lp-cart-functions.php';
 
 			// Block Templates
-			require_once 'inc/block-template/class-block-until.php';
-			require_once 'inc/block-template/class-block-controller.php';
+//			require_once 'inc/block-template/class-block-until.php';
+//			require_once 'inc/block-template/class-block-controller.php';
+
+			require_once 'inc/block-template/class-abstract-block-template.php';
+			require_once 'inc/block-template/class-block-template-handle.php';
 
 			// API
 			require_once 'inc/abstracts/abstract-rest-api.php';
@@ -519,11 +522,11 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		/**
 		 * Add links to Documentation and Extensions in plugin's list of action links
 		 *
-		 * @since 4.3.11
-		 *
 		 * @param array $links Array of action links
 		 *
 		 * @return array
+		 * @since 4.3.11
+		 *
 		 */
 		public function plugin_links( array $links ): array {
 			$links[] = sprintf( '<a href="%s">%s</a>', admin_url( 'admin.php?page=learn-press-settings' ), __( 'Settings', 'learnpress' ) );
@@ -736,7 +739,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 *
 		 * @return LP_Cart
 		 */
-		public function get_cart() : LP_Cart {
+		public function get_cart(): LP_Cart {
 			if ( ! $this->cart ) {
 				$this->cart = LP_Cart::instance();
 			}

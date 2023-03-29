@@ -72,9 +72,9 @@ function learn_press_get_user_item_id( $user_id, $item_id, $course_id = 0 /* add
 /**
  * Get current user ID
  *
- * @return int
+ * @return int|string LP_User is int, LP_User_Guest is string
  */
-function learn_press_get_current_user_id(): int {
+function learn_press_get_current_user_id() {
 	$user = learn_press_get_current_user();
 
 	if ( ! $user ) {

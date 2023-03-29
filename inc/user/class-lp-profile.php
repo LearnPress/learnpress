@@ -299,14 +299,14 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 								'icon'     => '<i class="fas fa-key"></i>',
 							),
 						),
-						'priority' => 35,
+						'priority' => 90,
 						'icon'     => '<i class="fas fa-cog"></i>',
 					),
 					'logout'        => array(
 						'title'    => esc_html__( 'Logout', 'learnpress' ),
 						'slug'     => learn_press_profile_logout_slug(),
 						'icon'     => '<i class="fas fa-sign-out-alt"></i>',
-						'priority' => 40,
+						'priority' => 100,
 					),
 				);
 
@@ -321,10 +321,11 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				}
 				//}
 
-				$tabs = $this->_default_settings;
-				$tabs = apply_filters( 'learn-press/profile-tabs', $tabs );
+				$tabs        = $this->_default_settings;
+				$tabs        = apply_filters( 'learn-press/profile-tabs', $tabs );
+				$this->_tabs = new LP_Profile_Tabs( $tabs, $this );
 
-				return $this->_tabs = new LP_Profile_Tabs( $tabs, $this );
+				return $this->_tabs;
 		}
 
 		public function get_slug( $data, $default = '' ) {

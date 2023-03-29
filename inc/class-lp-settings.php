@@ -231,6 +231,8 @@ class LP_Settings {
 	 */
 	public static function update_option( $name, $value, $prefix = 'learn_press_' ) {
 		update_option( "{$prefix}{$name}", $value );
+		$lp_settings_cache = new LP_Settings_Cache( true );
+		$lp_settings_cache->clean_lp_settings();
 	}
 
 	/**

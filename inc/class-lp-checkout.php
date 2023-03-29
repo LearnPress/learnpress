@@ -407,6 +407,15 @@ class LP_Checkout {
 						throw new Exception( __( 'Create account failed', 'learnpress' ), 0 );
 					}
 				}
+
+				// Get user_id Guest
+				if ( ! $user_id ) {
+					/**
+					 * @var LP_User_Guest $user_guest
+					 */
+					$user_guest = learn_press_get_user();
+					$user_id    = $user_guest->get_id();
+				}
 			}
 
 			$order->set_customer_note( $this->order_comment );

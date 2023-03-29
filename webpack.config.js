@@ -69,7 +69,9 @@ module.exports = {
 		'./assets/js/dist/frontend/custom': './assets/src/apps/js/frontend/custom.js',
 		'./assets/js/dist/frontend/profile': './assets/src/apps/js/frontend/profile.js',
 		'./assets/js/dist/frontend/widgets': './assets/src/apps/js/frontend/widgets.js',
-		'./assets/js/dist/blocks/index': './assets/src/apps/js/blocks/index.js',
+		'./assets/js/dist/blocks/archive-course': './assets/src/apps/js/blocks/archive-course/index.js',
+		'./assets/js/dist/blocks/single-course': './assets/src/apps/js/blocks/single-course/index.js',
+		'./assets/js/dist/blocks/item-curriculum-course': './assets/src/apps/js/blocks/item-curriculum-course/index.js',
 	},
 	output: {
 		path: path.resolve( __dirname ),

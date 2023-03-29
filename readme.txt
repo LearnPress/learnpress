@@ -209,6 +209,11 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.2.2.3 (2023-03-21) =
+~ Fixed: some error with Profile, LP_Profile_Tabs class.
+~ Fixed: make some page builder like: elementor, visual composer work incorrect.
+~ Remove implements ArrayAccess of LP_Query_List_Table class (to compatible with PHP8.1).
+
 = 4.2.2.2 (2023-03-09) =
 ~ Fixed: permalink item 404 when install "YoastSeo" plugin.
 ~ Fixed: error not show tab Avatar on Profile Page.
