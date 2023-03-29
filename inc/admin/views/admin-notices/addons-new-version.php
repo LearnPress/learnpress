@@ -15,22 +15,29 @@ if ( ! defined( 'ABSPATH' ) ) {
 if ( ! isset( $data ) || empty( $data['addons'] ) ) {
 	return;
 }
-?>
-<div id="notice-install" class="lp-notice notice notice-info">
-	<?php
-	Template::instance()->get_admin_template( 'admin-notices/button-dismiss.php', array( 'key' => 'lp-addons-new-version' ) );
+
+if ( empty( $data['dismiss'] ) ) {
 	?>
-	<p><?php echo sprintf( '<strong>%s</strong>', __( 'New version Addons.', 'learnpress' ) ); ?></p>
-	<p style="display: flex;gap: 5px">
+	<div id="notice-install" class="lp-notice notice notice-info">
 		<?php
-		foreach ( $data['addons'] as $addon ) {
-			echo sprintf(
-				'<a href="%s" class="button button-primary">%s</a>',
-				admin_url( 'admin.php?page=learn-press-addons&tab=update' ),
-				$addon->name
-			);
+		if ( isset( $data['allow_dismiss'] ) ) {
+			Template::instance()->get_admin_template( 'admin-notices/button-dismiss.php', array( 'key' => 'lp-addons-new-version' ) );
 		}
 		?>
-	</p>
-	<input type="hidden" name="lp-addons-new-version-totals" value="<?php echo count( $data['addons'] ); ?>" />
-</div>
+		<p><?php echo sprintf( '<strong>%s</strong>', __( 'New version Addons.', 'learnpress' ) ); ?></p>
+		<p style="display: flex;gap: 5px">
+			<?php
+			foreach ( $data['addons'] as $addon ) {
+				echo sprintf(
+					'<a href="%s" class="button button-primary">%s</a>',
+					admin_url( 'admin.php?page=learn-press-addons&tab=update' ),
+					$addon->name
+				);
+			}
+			?>
+		</p>
+	</div>
+	<?php
+}
+?>
+<input type="hidden" name="lp-addons-new-version-totals" value="<?php echo count( $data['addons'] ); ?>"/>

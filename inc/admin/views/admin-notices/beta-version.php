@@ -26,7 +26,7 @@ $data_info = LP_Admin_Notice::get_data_lp_beta( $info );
 	<h3><?php echo wp_kses_post( $data_info['title'] ?? '' ); ?></h3>
 	<?php echo wp_kses_post( $data_info['description'] ?? '' ); ?>
 	<?php
-	if ( isset( $data['dismiss'] ) ) {
+	if ( isset( $data['allow_dismiss'] ) ) {
 		Template::instance()->get_admin_template( 'admin-notices/button-dismiss.php', array( 'key' => 'lp-beta-version' ) );
 	}
 	?>

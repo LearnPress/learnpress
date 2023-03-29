@@ -49,7 +49,9 @@ const callAdminNotices = ( set = '' ) => {
 		return;
 	}
 
-	const params = tab ? `?tab=${ tab }` : `?${ set }`;
+	let params = tab ? `?tab=${ tab }` : '';
+	params += set ? ( tab ? '&' : '?' ) + `${ set }` : '';
+
 	fetch( adminAPI.apiAdminNotice + params, {
 		method: 'GET',
 		headers: {
@@ -62,10 +64,12 @@ const callAdminNotices = ( set = '' ) => {
 
 		const { status, message, data } = res;
 		if ( status === 'success' ) {
-			dataHtml = data.content;
+			if ( 'Dismissed!' !== message ) {
+				dataHtml = data.content;
 
-			if ( dataHtml.length === 0 && elLPAdminNotices ) {
-				elLPAdminNotices.style.display = 'none';
+				if ( dataHtml.length === 0 && elLPAdminNotices ) {
+					elLPAdminNotices.style.display = 'none';
+				}
 			}
 		} else {
 			dataHtml = message;

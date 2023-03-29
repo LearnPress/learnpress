@@ -204,9 +204,9 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 		$content  = '';
 
 		try {
-			$params               = $request->get_params();
-			$admin_notices        = ! empty( $_COOKIE['lp_admin_notices_dismiss'] ) ? json_decode( wp_unslash( $_COOKIE['lp_admin_notices_dismiss'] ), true ) : [];
-			$lp_beta_version_info = LP_Admin_Notice::check_lp_beta_version();
+			$params                = $request->get_params();
+			$admin_notices_dismiss = get_option( 'lp_admin_notices_dismiss', [] );
+			$lp_beta_version_info  = LP_Admin_Notice::check_lp_beta_version();
 
 			if ( isset( $params['dismiss'] ) ) {
 				if ( $lp_beta_version_info ) {
@@ -214,8 +214,8 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 					learn_press_setcookie( 'lp_beta_version', $lp_beta_version_info['version'] ?? 0 );
 				}
 
-				$admin_notices[ $params['dismiss'] ] = $params['dismiss'];
-				learn_press_setcookie( 'lp_admin_notices_dismiss', json_encode( $admin_notices ) );
+				$admin_notices_dismiss[ $params['dismiss'] ] = $params['dismiss'];
+				update_option( 'lp_admin_notices_dismiss', $admin_notices_dismiss );
 				$response->message = __( 'Dismissed!', 'learnpress' );
 			} else {
 				$show_notice_lp_beta_version = false;
@@ -242,10 +242,10 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 						],
 						// Show beta version of LP.
 						'lp-beta-version'       => [
-							'template' => 'admin-notices/beta-version.php',
-							'check'    => $show_notice_lp_beta_version,
-							'info'     => $lp_beta_version_info,
-							'dismiss'  => 1,
+							'template'      => 'admin-notices/beta-version.php',
+							'check'         => $show_notice_lp_beta_version,
+							'info'          => $lp_beta_version_info,
+							'allow_dismiss' => 1,
 						],
 						// Show message needs upgrades database compatible with LP version current.
 						'lp-upgrade-db'         => [
@@ -259,15 +259,18 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 						],
 						// Show notice setup wizard.
 						'lp-setup-wizard'       => [
-							'template' => 'admin-notices/setup-wizard.php',
-							'check'    => ! get_option( 'learn_press_setup_wizard_completed', false ) && ! isset( $admin_notices['lp-setup-wizard'] ),
-							'dismiss'  => 1,
+							'template'      => 'admin-notices/setup-wizard.php',
+							'check'         => ! get_option( 'learn_press_setup_wizard_completed', false )
+							&& ! isset( $admin_notices['lp-setup-wizard'] )
+							&& ! isset( $admin_notices_dismiss['lp-setup-wizard'] ),
+							'allow_dismiss' => 1,
 						],
 						// Show notification addons new version.
 						'lp-addons-new-version' => [
-							'template' => 'admin-notices/addons-new-version.php',
-							'addons'   => LP_Manager_Addons::instance()->list_addon_new_version(),
-							'dismiss'  => 1,
+							'template'      => 'admin-notices/addons-new-version.php',
+							'addons'        => LP_Manager_Addons::instance()->list_addon_new_version(),
+							'allow_dismiss' => 1,
+							'dismiss'       => isset( $admin_notices_dismiss['lp-addons-new-version'] ),
 						],
 					]
 				);
