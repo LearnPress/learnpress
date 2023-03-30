@@ -1786,6 +1786,17 @@ function learn_press_is_checkout() {
 	return apply_filters( 'learn-press/is-checkout', false );
 }
 
+function learn_press_is_instructor() {
+	$page_id = learn_press_get_page_id( 'instructors' );
+
+	if ( $page_id && is_page( $page_id ) ) {
+		return true;
+	}
+
+	return apply_filters( 'learn-press/is-instructor', false );
+}
+
+
 /**
  * Return register permalink
  *

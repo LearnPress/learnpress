@@ -519,6 +519,8 @@ class LP_Page_Controller {
 			$page_template = 'archive-course.php';
 		} elseif ( learn_press_is_checkout() && ! self::has_block_template( 'page-lp_checkout' ) ) {
 			$page_template = 'pages/checkout.php';
+		} elseif ( learn_press_is_instructor() ) {
+			$page_template = 'pages/instructor.php';
 		}
 
 		return apply_filters( 'learn-press/page-template', $page_template );
