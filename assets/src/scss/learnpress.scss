@@ -23,6 +23,7 @@ $bg-course-featured: #FF2828;
 @import "frontend/preview-course";
 @import "frontend/alerts";
 @import "frontend/courses";
+@import "frontend/instructors";
 @import "frontend/course-sidebar";
 @import "frontend/popup";
 @import "modal";
@@ -696,4 +697,13 @@ ul.list-table-nav {
 	@media (max-width: 575px) {
 		overflow-x: auto;
 	}
+}
+
+.lp-loading {
+	height: 100%;
+	min-height: 500px;
+	background: linear-gradient(90deg, hsla(0deg, 0%, 74.5%, 0.2) 25%, hsla(0deg, 0%, 50.6%, 0.24) 37%, hsla(0deg, 0%, 74.5%, 0.2) 63%);
+	animation: waveLoading 1.4s ease infinite;
+	background-size: 400% 100%;
+	width: 100%;
 }

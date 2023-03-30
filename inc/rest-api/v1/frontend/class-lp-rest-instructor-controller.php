@@ -1,5 +1,4 @@
 <?php
-
 use LearnPress\Helpers\Template;
 
 /**
@@ -88,7 +87,6 @@ class LP_REST_Instructor_Controller extends LP_Abstract_REST_Controller
 
             //Paginate
             $total = $query->get_total();
-
             $response->data->pagination = learn_press_get_template_content(
                 'loop/course/pagination.php',
                 array(
@@ -101,7 +99,6 @@ class LP_REST_Instructor_Controller extends LP_Abstract_REST_Controller
         } catch (Throwable $e) {
             ob_end_clean();
             $response->status        = 'error';
-            $response->data->content = $e->getMessage();
             $response->message       = $e->getMessage();
         }
 

@@ -1,0 +1,81 @@
+/**
+ * Instructors page.
+ */
+a {
+	text-decoration: none;
+}
+
+.lp-content-area {
+	width: 100%;
+	max-width: 1170px;
+	margin: 0 auto;
+
+	@media (max-width: 1024px) {
+		padding-right: 15px;
+		padding-left: 15px;
+	}
+}
+
+.lp-content-area::after,
+.lp-content-area::before {
+	display: table;
+	clear: both;
+	content: "";
+}
+
+.lp-instructors {
+	width: 100%;
+	scroll-margin: 30px;
+
+	.learn-press-instructor-header {
+		float: left;
+		padding-top: 4px;
+		margin-bottom: 40px;
+
+		h1 {
+			margin: 0;
+			font-size: 30px;
+			font-weight: 600;
+		}
+
+		@media (max-width: 767px) {
+			margin-bottom: 20px;
+		}
+	}
+
+	ul.lp-instructor-list{
+		clear: both;
+		margin: 0 -15px;
+		display: flex;
+		flex-wrap: wrap;
+		list-style: none;
+		padding: 0;
+
+		>li{
+			padding: 0 15px;
+		}
+	}
+
+	.lp-entry-content {
+		display: flex;
+		flex-direction: row;
+
+		.entry-content-left {
+			width: calc(100% - 300px);
+			max-width: 100%;
+			margin: 0;
+			padding-right: 40px;
+			padding-top: 60px;
+
+			@media (max-width: 768px) {
+				width: 100%;
+				padding-right: 0;
+				margin-bottom: 50px;
+			}
+		}
+
+		@media (max-width: 768px) {
+			flex-direction: column;
+		}
+	}
+}

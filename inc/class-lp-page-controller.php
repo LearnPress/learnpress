@@ -927,6 +927,8 @@ class LP_Page_Controller {
 			return LP_PAGE_BECOME_A_TEACHER;
 		} elseif ( self::is_page_profile() ) {
 			return LP_PAGE_PROFILE;
+		} elseif ( self::is_page_instructor() ) {
+			return LP_PAGE_INSTRUCTORS;
 		} else {
 			return apply_filters( 'learnpress/page/current', '' );
 		}
@@ -1009,6 +1011,22 @@ class LP_Page_Controller {
 		}
 
 		$flag = self::page_is( 'profile' );
+
+		return $flag;
+	}
+
+	/**
+	 * Check is page instructor
+	 *
+	 * @return bool
+	 */
+	public static function is_page_instructor(): bool {
+		static $flag;
+		if ( ! is_null( $flag ) ) {
+			return $flag;
+		}
+
+		$flag = self::page_is( 'instructors' );
 
 		return $flag;
 	}

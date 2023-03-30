@@ -21,10 +21,15 @@ if ( ! wp_is_block_theme() ) {
 /**
  * LP Hook
  */
-do_action( 'learn-press/before-main-content' );
+do_action( 'learn-press/instructor/before-main-content' );
 
 $instructor_page_id = learn_press_get_page_id( 'instructors' );
 $page_title         = get_the_title( $instructor_page_id );
+
+?>
+<div class="lp-instructors">
+<?php
+call_user_func( LearnPress::instance()->template( 'general' )->func( 'breadcrumb' ) );
 ?>
 	<div class="lp-content-area">
 		<?php if ( $page_title ) : ?>
@@ -38,14 +43,13 @@ $page_title         = get_the_title( $instructor_page_id );
 		 * LP Hook
 		 */
 		do_action( 'learn-press/before-instructor-loop' );
-
+		?>
+		<ul class="lp-instructor-list">
+			<li class="lp-loading">
+			</li>
+		</ul>
+		<?php
 		do_action( 'learn-press/after-instructor-loop' );
-		/**
-		 * LP Hook
-		 *
-		 * @since 4.0.0
-		 */
-		do_action( 'learn-press/sidebar' );
 		?>
 	</div>
 <?php
@@ -53,7 +57,7 @@ $page_title         = get_the_title( $instructor_page_id );
 /**
  * LP Hook
  */
-do_action( 'learn-press/after-main-content' );
+do_action( 'learn-press/instructor/after-main-content' );
 
 /**
  * @since 4.0.0
