@@ -17,6 +17,7 @@ const notifyAddonsNewVersion = () => {
 		if ( ! elAdminMenu ) {
 			return;
 		}
+
 		const elTabLP = elAdminMenu.querySelector( '#toplevel_page_learn_press' );
 		if ( ! elTabLP ) {
 			return;
@@ -25,16 +26,17 @@ const notifyAddonsNewVersion = () => {
 		if ( ! elTabLPName ) {
 			return;
 		}
+		const elAddonsNewVerTotal = document.querySelector( 'input[name=lp-addons-new-version-totals]' );
+		if ( ! elAddonsNewVerTotal ) {
+			return;
+		}
 		const htmlNotifyLP = `<span class="tab-lp-admin-notice"></span>`;
 		elTabLPName.insertAdjacentHTML( 'beforeend', htmlNotifyLP );
 		const elTabLPAddons = elTabLP.querySelector( 'a[href="admin.php?page=learn-press-addons"]' );
 		if ( ! elTabLPAddons ) {
 			return;
 		}
-		const elAddonsNewVerTotal = document.querySelector( 'input[name=lp-addons-new-version-totals]' );
-		if ( ! elAddonsNewVerTotal ) {
-			return;
-		}
+
 		const total = elAddonsNewVerTotal.value;
 		const html = `<span style="margin-left: 5px" class="update-plugins">${ total }</span>`;
 		elTabLPAddons.setAttribute( 'href', 'admin.php?page=learn-press-addons&tab=update' );
