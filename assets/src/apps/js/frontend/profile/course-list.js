@@ -59,13 +59,28 @@ const pagination = () => {
 			return;
 		}
 
-		if ( target.tagName.toLowerCase() !== 'a' ) {
+		let pageLinkNode;
+		if ( target.tagName.toLowerCase() === 'a' ) {
+			pageLinkNode = target;
+		}else if(target.closest('a.page-numbers')){
+			pageLinkNode = target.closest('a.page-numbers');
+		}else{
 			return;
 		}
 
 		event.preventDefault();
 
-		const paged = target.innerHTML;
+		const currentPage = parseInt(pagination.querySelector('.current').innerHTML);
+		let paged;
+
+		if(pageLinkNode.classList.contains('next')){
+			paged = currentPage + 1;
+		}else if(pageLinkNode.classList.contains('prev')){
+			paged = currentPage - 1;
+		}else{
+			paged = pageLinkNode.innerHTML;
+		}
+
 		query = { ...query, paged };
 		getCourses( query );
 	} );
