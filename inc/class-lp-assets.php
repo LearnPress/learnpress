@@ -225,6 +225,16 @@ class LP_Assets extends LP_Abstract_Assets {
 					0,
 					0
 				),
+				'lp-instructors'       => new LP_Asset_Key(
+					self::url( 'js/dist/frontend/instructors' . self::$_min_assets . '.js' ),
+					array_merge(
+						$wp_js,
+						array( 'wp-i18n' )
+					),
+					array( LP_PAGE_INSTRUCTORS ),
+					0,
+					1
+				),
 				'lp-profile'           => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/profile' . self::$_min_assets . '.js' ),
 					array_merge(
@@ -257,8 +267,8 @@ class LP_Assets extends LP_Abstract_Assets {
 
 		// Dequeue script 'smoothPageScroll' on item details, it makes can't scroll, when rewrite page item detail, can check to remove.
 		if ( LP_PAGE_SINGLE_COURSE_CURRICULUM === LP_Page_Controller::page_current() ||
-		     LP_PAGE_QUIZ === LP_Page_Controller::page_current() ||
-		     LP_PAGE_QUESTION === LP_Page_Controller::page_current() ) {
+			 LP_PAGE_QUIZ === LP_Page_Controller::page_current() ||
+			 LP_PAGE_QUESTION === LP_Page_Controller::page_current() ) {
 			wp_dequeue_script( 'smoothPageScroll' );
 		}
 

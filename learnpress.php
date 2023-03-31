@@ -263,6 +263,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			// File helper
 			require_once 'inc/class-lp-helper.php';
 			require_once 'inc/Helper/Template.php';
+			require_once 'inc/Helper/TemplateHooks/InstructorList.php';
 
 			// Models
 			require_once 'inc/models/class-lp-rest-response.php';

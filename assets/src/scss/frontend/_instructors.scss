@@ -51,31 +51,77 @@ a {
 		list-style: none;
 		padding: 0;
 
+		.lp-loading{
+			width: 100%;
+		}
+
 		>li{
 			padding: 0 15px;
-		}
-	}
+			width: 25%;
+			margin: 0 0 40px 0;
 
-	.lp-entry-content {
-		display: flex;
-		flex-direction: row;
+			.instructor-item > *{
+				margin-bottom: 10px;
+			}
 
-		.entry-content-left {
-			width: calc(100% - 300px);
-			max-width: 100%;
-			margin: 0;
-			padding-right: 40px;
-			padding-top: 60px;
+			.instructor-content{
+				.instructor-name{
+					font-weight: 500;
+					font-size: 1.2rem;
+					text-align: center;
+				}
 
-			@media (max-width: 768px) {
+				.instructor-info{
+					display: flex;
+					justify-content: space-between;
+					color: #bfbfbf;
+				}
+			}
+
+
+			.instructor-avatar img{
 				width: 100%;
-				padding-right: 0;
-				margin-bottom: 50px;
+			}
+
+			.view-profile{
+				text-align: center;
+
+				a{
+					display: inline-block;
+					width: 100%;
+					border-radius: 4px;
+					color: #6c6c6c;
+					background: #d9d9d9;
+
+					&:hover{
+						color: white;
+						background: var(--lp-primary-color);
+					}
+				}
 			}
 		}
-
-		@media (max-width: 768px) {
-			flex-direction: column;
-		}
 	}
+
+	//.lp-entry-content {
+	//	display: flex;
+	//	flex-direction: row;
+	//
+	//	.entry-content-left {
+	//		width: calc(100% - 300px);
+	//		max-width: 100%;
+	//		margin: 0;
+	//		padding-right: 40px;
+	//		padding-top: 60px;
+	//
+	//		@media (max-width: 768px) {
+	//			width: 100%;
+	//			padding-right: 0;
+	//			margin-bottom: 50px;
+	//		}
+	//	}
+	//
+	//	@media (max-width: 768px) {
+	//		flex-direction: column;
+	//	}
+	//}
 }
