@@ -49,6 +49,13 @@ call_user_func( LearnPress::instance()->template( 'general' )->func( 'breadcrumb
 			</li>
 		</ul>
 		<?php
+		$init_data = array();
+		if ( ! empty( get_query_var( 'paged' ) ) ) {
+			$init_data['paged'] = get_query_var( 'paged' );
+		}
+		?>
+		<input type="hidden" name="init-data" value="<?php echo esc_attr( json_encode( $init_data ) ); ?>">
+		<?php
 		do_action( 'learn-press/after-instructor-loop' );
 		?>
 	</div>

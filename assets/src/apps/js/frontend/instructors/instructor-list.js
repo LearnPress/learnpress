@@ -10,8 +10,10 @@ export default function InstructorList() {
 	}
 	contentAreaNode = document.querySelector('.lp-content-area');
 	containerNode = document.querySelector('.lp-instructor-list');
-
+	const initDataNode = contentAreaNode.querySelector('input[name="init-data"]');
 	query = {paged: 1};
+	query = {...query,...JSON.parse(initDataNode.value)}
+
 	getInstructors(query, true);
 	pagination();
 }

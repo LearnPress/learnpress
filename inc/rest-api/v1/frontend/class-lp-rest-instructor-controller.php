@@ -117,7 +117,7 @@ class LP_REST_Instructor_Controller extends LP_Abstract_REST_Controller {
 			$instructor_total = $query->get_total();
 
 			$response->data->pagination = learn_press_get_template_content(
-				'loop/course/pagination.php',
+				'shared/pagination.php',
 				array(
 					'total' => intval( ceil( $instructor_total / $args['number'] ) ),
 					'paged' => $args['paged'],
