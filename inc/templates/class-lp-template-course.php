@@ -1,5 +1,7 @@
 <?php
 
+use LearnPress\Helpers\Template;
+
 /**
  * Class LP_Course_Template
  *
@@ -668,7 +670,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 		}
 		do_action( 'learn-press/lesson-start', $item );
 
-		learn_press_get_template( 'content-lesson/content.php', array( 'lesson' => $item ) );
+		Template::instance()->get_frontend_template( 'content-lesson/content.php', array( 'lesson' => $item ) );
 	}
 
 	/**

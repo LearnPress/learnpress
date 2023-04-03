@@ -332,7 +332,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 			return;
 		}
 
-		wp_enqueue_media(); //Todo: tungnx need check why call for that using.
+		//wp_enqueue_media(); //Todo: tungnx need check why call for that using.
 		$this->handle_js( $screen_id );
 		$this->handle_style( $screen_id );
 

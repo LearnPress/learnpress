@@ -17,12 +17,7 @@ if ( empty( $tabs ) ) {
 	return;
 }
 
-$active_tab = learn_press_cookie_get( 'course-tab' );
-
-if ( ! $active_tab ) {
-	$tab_keys   = array_keys( $tabs );
-	$active_tab = reset( $tab_keys );
-}
+$active_tab = 'overview';
 
 // Show status course
 $lp_user = learn_press_get_current_user();
