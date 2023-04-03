@@ -181,7 +181,6 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 				'supports'           => array(
 					'title',
 					'editor',
-					'post-formats',
 					'revisions',
 					'comments',
 				),
