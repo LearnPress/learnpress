@@ -180,8 +180,8 @@
   "learnpress-course-review": {
     "name": "LearnPress – Course Review",
     "basename": "learnpress-course-review/learnpress-course-review.php",
-    "version": "4.0.5",
-    "require_lp": "4.2.0",
+    "version": "4.0.7",
+    "require_lp": "4.2.2",
     "description": "LearnPress Course Review bring review feature to your course. Now, student can rate and give review for the course they take on a LearnPress site.",
     "image": "https://ps.w.org/learnpress-course-review/assets/icon-128x128.png",
     "link": "https://wordpress.org/plugins/learnpress-course-review",
