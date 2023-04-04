@@ -24,7 +24,6 @@ class LP_User extends LP_Abstract_User {
 		);
 
 		$course = learn_press_get_course( $course_id );
-
 		if ( ! $course ) {
 			return $view;
 		}
