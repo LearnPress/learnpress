@@ -1,4 +1,7 @@
-<?php $option_value = $value['value']; ?>
+<?php
+wp_enqueue_media();
+$option_value = $value['value'];
+?>
 
 <tr valign="top">
 	<th scope="row" class="titledesc">

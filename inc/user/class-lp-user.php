@@ -122,7 +122,7 @@ class LP_User extends LP_Abstract_User {
 			$view = $view_new;
 		}
 
-		return apply_filters( 'learnpress/course/item/can-view', $view, $item );
+		return apply_filters( 'learnpress/course/item/can-view', $view, $item, $this );
 	}
 
 	/**
