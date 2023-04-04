@@ -209,6 +209,14 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.2.2.4 (2023-04-04) =
+~ Compatible theme Gutenberg.
+~ Fixed: auto add shortcode Profile.
+~ Show notification: Addons has new version.
+~ Fixed: error buy with Guest display pending Order.
+~ Tweak: shortcode learn_press_button_course.
+~ Fixed: error display title on mobile app.
+
 = 4.2.2.3 (2023-03-21) =
 ~ Fixed: some error with Profile, LP_Profile_Tabs class.
 ~ Fixed: make some page builder like: elementor, visual composer work incorrect.
