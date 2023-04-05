@@ -30,8 +30,8 @@
   "learnpress-assignments": {
     "name": "Assignments Add-On for LearnPress",
     "basename": "learnpress-assignments/learnpress-assignments.php",
-    "version": "4.0.9",
-    "require_lp": "4.2.0",
+    "version": "4.1.0",
+    "require_lp": "4.2.2.2",
     "description": "Assignment Add-on for LearnPress is a great way to assign tasks, essays for your students so they can do at home and submit. Instructors can check students’ work after that and grade the assignment.",
     "image": "https://plugins.thimpress.com/downloads/images/lp-assigment.png",
     "link": "https://thimpress.com/product/assignments-add-on-for-learnpress/",
@@ -258,8 +258,8 @@
   "learnpress-live": {
     "name": "Live Course Add-On for LearnPress",
     "basename": "learnpress-live/learnpress-live.php",
-    "version": "4.0.1",
-    "require_lp": "4.2.0",
+    "version": "4.0.2",
+    "require_lp": "4.2.2.3",
     "description": "Create courses and live video meetings using Zoom or Google Meet Use shortcode to show the meeting content.",
     "image": "https://plugins.thimpress.com/downloads/images/lp-live.png",
     "link": "https://thimpress.com/product/live-course-add-on-for-learnpress/",
