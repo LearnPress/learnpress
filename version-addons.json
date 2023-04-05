@@ -321,7 +321,7 @@
   "learnpress-random-quiz": {
     "name": "Random Quiz Add-On for LearnPress",
     "basename": "learnpress-random-quiz/learnpress-random-quiz.php",
-    "version": "4.0.2",
+    "version": "4.0.3",
     "require_lp": "4.2.0",
     "description": "Shuffle the quiz questions, students get different quiz from each other and each retake.",
     "image": "https://plugins.thimpress.com/downloads/images/lp-random-quiz.png",
@@ -381,8 +381,8 @@
   "learnpress-wishlist": {
     "name": "LearnPress – Course Wishlist",
     "basename": "learnpress-wishlist/learnpress-wishlist.php",
-    "version": "4.0.4",
-    "require_lp": "4.2.0",
+    "version": "4.0.5",
+    "require_lp": "4.2.2.1",
     "description": "LearnPress Wishlist bring wishlist feature for LearnPress. It allows you to add your favorite course to a list to take later.",
     "image": "https://ps.w.org/learnpress-wishlist/assets/icon-128x128.png?rev=2394366",
     "link": "https://wordpress.org/plugins/learnpress-wishlist/",
