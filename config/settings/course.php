@@ -104,14 +104,14 @@ return apply_filters(
 				array(
 					'title'   => esc_html__( 'Section Per Page', 'learnpress' ),
 					'id'      => 'section_per_page',
-					'default' => 1,
+					'default' => -1,
 					'type'    => 'number',
 					'desc'    => esc_html__( 'The number of displayed sections per page (Enter -1 to display all sections).', 'learnpress' ),
 				),
 				array(
 					'title'   => esc_html__( 'Course Item Per Page', 'learnpress' ),
 					'id'      => 'course_item_per_page',
-					'default' => 10,
+					'default' => -1,
 					'type'    => 'number',
 					'desc'    => esc_html__( 'The number of displayed course items per page in a section (Enter -1 to display all course items).', 'learnpress' ),
 				),
