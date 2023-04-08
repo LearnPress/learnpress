@@ -227,6 +227,44 @@ class LP_Datetime {
 	}
 
 	/**
+	 * Display date human time diff.
+	 * 1. Show number days, hours if >= 1 days
+	 * 2. Show number hours, seconds if >= 1 hours
+	 * 3. Show number seconds if < 1 hours
+	 *
+	 * @param DateTime $date_start
+	 * @param DateTime $date_end
+	 *
+	 * @version 1.0.0
+	 * @since 4.0.3
+	 * @return string
+	 */
+	public static function format_human_time_diff( DateTime $date_start, DateTime $date_end ): string {
+		$diff = $date_end->diff( $date_start );
+
+		$format_date = '';
+		if ( $diff->d > 0 ) {
+			$format_date .= '%d days, ';
+
+			if ( $diff->h > 0 ) {
+				$format_date .= '%h hours';
+			}
+		} elseif ( $diff->h > 0 ) {
+			$format_date .= '%h hours, ';
+
+			if ( $diff->i > 0 ) {
+				$format_date .= '%i minutes';
+			}
+		} elseif ( $diff->i > 0 ) {
+			$format_date .= '<span class="minute">%i</span> minutes';
+		} else {
+			$format_date .= '<span class="second">%s</span> seconds';
+		}
+
+		return $diff->format( $format_date );
+	}
+
+	/**
 	 * @param boolean $hours True to return the value in hours.
 	 *
 	 * @return float

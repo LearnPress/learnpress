@@ -217,6 +217,7 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Fixed: error buy with Guest display pending Order.
 ~ Tweak: shortcode learn_press_button_course.
 ~ Fixed: error display title on mobile app.
+~ Lesson: stop support post-formats.
 
 = 4.2.2.3 (2023-03-21) =
 ~ Fixed: some error with Profile, LP_Profile_Tabs class.
