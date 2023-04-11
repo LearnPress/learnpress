@@ -92,7 +92,7 @@
   "learnpress-certificates": {
     "name": "LearnPress - Certificates",
     "basename": "learnpress-certificates/learnpress-certificates.php",
-    "version": "4.0.5",
+    "version": "4.0.6",
     "require_lp": "4.2.2.3",
     "description": "Add Drag & Drop certificates builder as well as select designed certificates templates for each LMS course.",
     "image": "https://plugins.thimpress.com/downloads/images/lp-certificates.png",
