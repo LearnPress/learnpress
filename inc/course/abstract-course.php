@@ -650,10 +650,10 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 *
 		 * @author tungnx
 		 * @since 4.1.5
-		 * @version 1.0.0
-		 * @return mixed|void
+		 * @version 1.0.1
+		 * @return string
 		 */
-		public function get_course_price_html() {
+		public function get_course_price_html(): string {
 			$price_html = '';
 
 			if ( $this->is_free() ) {
