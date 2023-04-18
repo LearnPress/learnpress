@@ -527,6 +527,7 @@ class LP_Session_Handler {
 	 * @param bool   $force_change
 	 */
 	public function remove( $key, $force_change = false ) {
+		$this->_data = $this->get_session_data();
 		if ( ! array_key_exists( $key, $this->_data ) ) {
 			return;
 		}
