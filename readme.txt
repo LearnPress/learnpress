@@ -16,6 +16,7 @@ A WordPress LMS Plugin to create WordPress Learning Management System. Turn your
 **<a href="https://thimpress.com/learnpress/" target="_blank">WordPress LMS Plugin</a>** - LearnPress is a comprehensive *WordPress LMS Plugin* for WordPress. This is one of the best WordPress LMS Plugins which can be used to easily create & sell courses online. You can create a course curriculum with lessons & quizzes included which is managed with an easy-to-use interface for users. Having this WordPress LMS Plugin, now you have a chance to quickly and easily create education, online school, online-course websites with no coding knowledge required.
 
 <a href="https://edupress.thimpress.com" target="_blank">Live Demo</a> | <a href="https://docspress.thimpress.com/learnpress-4-0/?utm_source=WPORG&utm_medium=LP&utm_campaign=Content" target="_blank">Documentation</a> | <a href="https://thimpress.com/forums/forum/plugins/learnpress-plugin/?utm_source=WPORG&utm_medium=LP&utm_campaign=Content" target="_blank">Support</a>
+<a href="https://thimpress.com/product/education-wordpress-starter-theme-for-learnpress/?utm_source=WPORG&utm_medium=LP&utm_campaign=Content">Free LearnPress Theme</a>
 <a href="https://1.envato.market/G5Ook" target="_blank">LearnPress Themes</a>
 <a href="https://thimpress.com/eduma-mobile-app/?utm_source=WPORG&utm_medium=LP&utm_campaign=Content" target="_blank">LearnPress Mobile App</a>
 <a href="https://thimpress.com/product/learnpress-pro/?utm_source=WPORG&utm_medium=LP&utm_campaign=Content" target="_blank">LearnPress PRO Bundle</a>
