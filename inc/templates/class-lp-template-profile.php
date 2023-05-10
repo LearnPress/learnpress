@@ -46,7 +46,13 @@ class LP_Template_Profile extends LP_Abstract_Template {
 
 		$privacy = get_user_meta( $user->get_user()->get_id(), '_lp_profile_privacy', true );
 
-		if ( ! current_user_can( ADMIN_ROLE ) && ( $user->get_user()->get_id() != $user_id && empty( $privacy ) ) ) {
+		$permission_restrict = apply_filters(
+			'lp/profile/content/permission-restrict',
+			! current_user_can( ADMIN_ROLE ) &&
+			( $user->get_user()->get_id() != $user_id && empty( $privacy ) ),
+		);
+
+		if ($permission_restrict) {
 			return;
 		}
 
