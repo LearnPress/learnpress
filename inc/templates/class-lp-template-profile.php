@@ -49,10 +49,10 @@ class LP_Template_Profile extends LP_Abstract_Template {
 		$permission_restrict = apply_filters(
 			'lp/profile/content/permission-restrict',
 			! current_user_can( ADMIN_ROLE ) &&
-			( $user->get_user()->get_id() != $user_id && empty( $privacy ) ),
+			( $user->get_user()->get_id() != $user_id && empty( $privacy ) )
 		);
 
-		if ($permission_restrict) {
+		if ( $permission_restrict ) {
 			return;
 		}
 
