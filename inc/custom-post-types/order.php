@@ -768,7 +768,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 
 					foreach ( $items as $item ) {
 						if ( empty( $item['course_id'] ) || get_post_type( $item['course_id'] ) !== LP_COURSE_CPT ) {
-							$links[] = apply_filters( 'learn-press/order-item-not-course-id', esc_html__( 'The course does not exist', 'learnpress' ), $item );
+							$links[] = apply_filters( 'learn-press/order-item-not-course-id', esc_html__( 'The course does not exist', 'learnpress' ), $item, $lp_order );
 						} elseif ( get_post_status( $item['course_id'] ) !== 'publish' ) {
 							$links[] = get_the_title( $item['course_id'] ) . sprintf( ' (#%d - %s)', $item['course_id'], esc_html__( 'Deleted', 'learnpress' ) );
 						} else {
