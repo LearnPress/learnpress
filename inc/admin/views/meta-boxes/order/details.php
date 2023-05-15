@@ -194,6 +194,7 @@ $user_ip      = $order->get_user_ip_address();
 						</span>
 					</td>
 				</tr>
+				<?php do_action( 'learn-press/admin/order/detail/before-total', $order ); ?>
 				<tr class="row-total">
 					<td class="align-right" colspan="3">
 						<?php esc_html_e( 'Total:', 'learnpress' ); ?>
