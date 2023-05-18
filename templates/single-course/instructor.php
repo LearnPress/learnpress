@@ -7,7 +7,7 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  3.0.0
+ * @version  3.0.1
  */
 
 /**
@@ -19,6 +19,13 @@ $course = learn_press_get_course();
 if ( ! $course ) {
 	return;
 }
+
+$instructor = $course->get_instructor();
+if ( ! $instructor instanceof LP_User ) {
+	return;
+}
+
+$img_profile = $instructor->get_profile_picture();
 ?>
 
 <div class="course-author">
@@ -26,7 +33,7 @@ if ( ! $course ) {
 	<h3><?php _e( 'About the Instructor', 'learnpress' ); ?></h3>
 
 	<p class="author-name">
-		<?php echo wp_kses_post( $course->get_instructor()->get_profile_picture() ); ?>
+		<?php echo wp_kses_post( $img_profile ); ?>
 		<?php echo wp_kses_post( $course->get_instructor_html() ); ?>
 	</p>
 	<div class="author-bio">
