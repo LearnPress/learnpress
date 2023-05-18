@@ -348,7 +348,7 @@ class LP_Cart {
 	 * @return mixed
 	 */
 	public function get_subtotal() {
-		$subtotal = apply_filters( 'learn_press_get_cart_subtotal', learn_press_format_price( $this->subtotal, true ) );
+		$subtotal = learn_press_format_price( $this->subtotal, true );
 
 		return apply_filters( 'learn-press/cart-subtotal', $subtotal );
 	}
@@ -359,7 +359,7 @@ class LP_Cart {
 	 * @return mixed
 	 */
 	public function get_total() {
-		$total = apply_filters( 'learn_press_get_cart_total', learn_press_format_price( $this->total, true ) );
+		$total = learn_press_format_price( $this->total, true );
 
 		return apply_filters( 'learn-press/cart-total', $total );
 	}
