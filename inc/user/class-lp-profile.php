@@ -66,8 +66,8 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		protected function __construct( $user, $role = '' ) {
 			$this->_curd = new LP_User_CURD();
 
-			$this->_user = $user;
-			$this->get_user();
+			$this->_user = learn_press_get_user( $user );
+			//$this->get_user();
 
 			if ( ! $role ) {
 				$this->_role = $this->get_role();
@@ -179,7 +179,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @return bool|LP_User|mixed
 		 */
 		public function get_user() {
-			if ( ! $this->_user instanceof LP_Abstract_User ) {
+			if ( ! $this->_user instanceof LP_User ) {
 				if ( is_numeric( $this->_user ) ) {
 					$this->_user = learn_press_get_user( $this->_user );
 				} elseif ( is_string( $this->_user ) ) {
@@ -222,7 +222,14 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @return mixed
 		 */
 		public function get_user_data( $field ) {
-			return 'id' === strtolower( $field ) ? $this->_user->get_id() : $this->_user->get_data( $field );
+			$user_id   = 0;
+			$user_data = [];
+			if ( $this->_user instanceof LP_User ) {
+				$user_id   = $this->_user->get_id();
+				$user_data = $this->_user->get_data( $field );
+			}
+
+			return 'id' === strtolower( $field ) ? $user_id : $user_data;
 		}
 
 		public function tab_dashboard() {
@@ -1026,18 +1033,22 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * TRUE if enable show login form in user profile if user is not logged in.
 		 *
 		 * @return bool
+		 * @deprecated 4.2.3
 		 */
 		public function enable_login() {
-			return 'yes' === LP_Settings::instance()->get( 'enable_login_profile' );
+			_deprecated_function( __FUNCTION__, '4.2.3' );
+			//return 'yes' === LP_Settings::instance()->get( 'enable_login_profile' );
 		}
 
 		/**
 		 * TRUE if enable show register form in user profile if user is not logged in.
 		 *
 		 * @return bool
+		 * @deprecated 4.2.3
 		 */
 		public function enable_register() {
-			return 'yes' === LP_Settings::instance()->get( 'enable_register_profile' );
+			_deprecated_function( __FUNCTION__, '4.2.3' );
+			//return 'yes' === LP_Settings::instance()->get( 'enable_register_profile' );
 		}
 
 		/**
@@ -1064,15 +1075,21 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * Return true if there is a name of user in profile link.
 		 *
 		 * @return bool
+		 * @deprecated 4.2.3
 		 */
 		public static function is_queried_user() {
-			global $wp_query;
+			_deprecated_function( __FUNCTION__, '4.2.3' );
+			/*global $wp_query;
 
-			return isset( $wp_query->query['user'] ) ? $wp_query->query['user'] : false;
+			return isset( $wp_query->query['user'] ) ? $wp_query->query['user'] : false;*/
 		}
 
 		public function get_upload_profile_src( $size = '' ) {
-			$user                 = $this->get_user();
+			$user = $this->get_user();
+			if ( ! $user ) {
+				return '';
+			}
+
 			$uploaded_profile_src = $user->get_data( 'uploaded_profile_src' );
 
 			if ( empty( $uploaded_profile_src ) ) {
@@ -1084,15 +1101,6 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 
 					if ( file_exists( $file_path ) ) {
 						$uploaded_profile_src = $upload['baseurl'] . '/' . $profile_picture;
-
-						// if ( $user->get_data( 'profile_picture_changed' ) == 'yes' ) {
-						// 	$uploaded_profile_src = add_query_arg(
-						// 		'r',
-						// 		md5( rand( 0, 10 ) / rand( 1, 1000000 ) ),
-						// 		$user->get_data( 'uploaded_profile_src' )
-						// 	);
-						// 	delete_user_meta( $user->get_id(), '_lp_profile_picture_changed' );
-						// }
 					} else {
 						$uploaded_profile_src = false;
 					}
