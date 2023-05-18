@@ -44,20 +44,19 @@ class LP_User_Factory {
 	 */
 	public static function update_user_items( $the_id, $old_status, $new_status ) {
 		$order = learn_press_get_order( $the_id );
-
 		if ( ! $order ) {
 			return;
 		}
 
 		try {
 			switch ( $new_status ) {
-				case 'pending':
-				case 'processing':
-				case 'cancelled':
-				case 'failed':
+				case LP_ORDER_PENDING:
+				case LP_ORDER_PROCESSING:
+				case LP_ORDER_CANCELLED:
+				case LP_ORDER_FAILED:
 					self::_update_user_item_order_pending( $order, $old_status, $new_status );
 					break;
-				case 'completed':
+				case LP_ORDER_COMPLETED:
 					self::_update_user_item_order_completed( $order, $old_status, $new_status );
 					break;
 			}
@@ -92,6 +91,8 @@ class LP_User_Factory {
 			foreach ( $items as $item ) {
 				if ( ! isset( $item['course_id'] ) ) {
 					continue;
+				} else {
+					do_action( 'lp/order-pending/update/user-item', $item, $order );
 				}
 
 				$course_id = $item['course_id'];
@@ -134,6 +135,8 @@ class LP_User_Factory {
 			foreach ( $items as $item ) {
 				if ( ! isset( $item['course_id'] ) || get_post_type( $item['course_id'] ) !== LP_COURSE_CPT ) {
 					continue;
+				} else {
+					do_action( 'lp/order-completed/update/user-item', $item, $order );
 				}
 
 				$course_id = $item['course_id'];
