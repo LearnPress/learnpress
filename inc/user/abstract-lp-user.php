@@ -113,10 +113,11 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					throw new Exception( 'User is Guest' );
 				}*/
 
-				$filter           = new LP_User_Items_Filter();
-				$filter->item_id  = $course_id;
-				$filter->user_id  = $this->get_id();
-				$last_user_course = $lp_user_items_db->get_last_user_course( $filter );
+				$filter            = new LP_User_Items_Filter();
+				$filter->item_id   = $course_id;
+				$filter->item_type = LP_COURSE_CPT;
+				$filter->user_id   = $this->get_id();
+				$last_user_course  = $lp_user_items_db->get_last_user_course( $filter );
 
 				if ( $last_user_course ) {
 					$object_course_data = new LP_User_Item_Course( $last_user_course );

@@ -99,7 +99,7 @@ class LP_Query {
 	/**
 	 * Add custom rewrite tags
 	 */
-	function add_rewrite_tags() {
+	public function add_rewrite_tags() {
 		$tags = [
 			'%course-item%'       => '([^&]+)',
 			'%item-type%'         => '([^&]+)',

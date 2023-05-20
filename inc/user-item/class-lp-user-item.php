@@ -920,7 +920,7 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 	 * @return bool
 	 */
 	public function is_passed() {
-		return 'passed' === $this->get_graduation();
+		return LP_COURSE_GRADUATION_PASSED === $this->get_graduation();
 	}
 
 	/**
