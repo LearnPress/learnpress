@@ -1895,7 +1895,7 @@ function learn_press_get_endpoint_url( $name, $value, $url ) {
 function learn_press_add_endpoints() {
 	// Must LP_Profile::instance call on init, because it will add action hook to save data on Profile page
 	// If rewrite save data on Profile page, can remove it.
-	LP_Profile::instance( get_current_user_id() );
+	//LP_Profile::instance( get_current_user_id() );
 
 	$settings = LP_Settings::instance();
 
@@ -1930,7 +1930,11 @@ function learn_press_add_endpoints() {
 
 add_action( 'init', 'learn_press_add_endpoints' );
 
+/**
+ * @deprecated 4.2.3
+ */
 function learn_press_is_yes( $value ) {
+	_deprecated_function( __FUNCTION__, '4.2.3' );
 	return ( $value === 1 ) || ( $value === '1' ) || ( $value == 'yes' ) || ( $value == true ) || ( $value == 'on' );
 }
 
@@ -1938,8 +1942,10 @@ function learn_press_is_yes( $value ) {
  * @param mixed $value
  *
  * @return bool
+ * @deprecated 4.2.3
  */
 function _is_false_value( $value ) {
+	_deprecated_function( __FUNCTION__, '4.2.3' );
 	if ( is_numeric( $value ) ) {
 		return $value == 0;
 	} elseif ( is_string( $value ) ) {
