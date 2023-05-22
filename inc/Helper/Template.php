@@ -156,5 +156,58 @@ class Template {
 			return $template;
 		}
 	}
+
+	/**
+	 * Nest elements by tags
+	 *
+	 * @param array $els [ 'html_tag_open' => 'html_tag_close' ]
+	 * @param string $main_content
+	 *
+	 * @return string
+	 */
+	public function nest_elements( array $els = [], string $main_content = '' ): string {
+		$html = '';
+		foreach ( $els as $tag_open => $tag_close ) {
+			$html .= $tag_open;
+		}
+
+		$html .= $main_content;
+
+		foreach ( $els as $tag_close ) {
+			$html .= $tag_close;
+		}
+
+		return $html;
+	}
+
+	/**
+	 * Display sections
+	 *
+	 * @param array $sections ['name_section' => 'text html', 'link_template' => '']
+	 *
+	 * @return void
+	 */
+	public function print_sections( array $sections = [], array $args = [] ) {
+		foreach ( $sections as $section ) {
+			if ( ! is_array( $section ) ) {
+				continue;
+			}
+
+			foreach ( $section as $type => $val ) {
+				switch ( $type ) {
+					case 'link_templates':
+						$this->get_frontend_template( $val, $args );
+						break;
+					default:
+						if ( is_string( $val ) ) {
+							//$allow_tag = wp_kses_allowed_html( 'post' );
+							//echo wp_kses( $section, $allow_tag );
+							echo $val;
+						}
+						break;
+				}
+			}
+		}
+	}
 }
 
