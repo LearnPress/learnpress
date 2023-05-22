@@ -4,68 +4,63 @@ namespace LearnPress\Helpers\TemplateHooks;
 
 use LearnPress\Helpers\Template;
 
-class InstructorList
-{
-    public $template;
+class InstructorList {
 
-    public static function instance()
-    {
-        static $instance = null;
+	public $template;
 
-        if (is_null($instance)) {
-            $instance = new self();
-        }
+	public static function instance() {
+		static $instance = null;
 
-        return $instance;
-    }
+		if ( is_null( $instance ) ) {
+			$instance = new self();
+		}
 
-    protected function __construct()
-    {
-        $this->template = Template::instance();
-        add_action('learnpress/layout/instructor-item/items', array( $this, 'instructor_items' ));
-        add_action('learnpress/layout/instructor-item/content', array( $this, 'instructor_item_content' ));
-        add_action('learnpress/layout/instructor-item/info', array( $this, 'instructor_item_info' ));
-    }
+		return $instance;
+	}
 
-    public function instructor_items($data)
-    {
-        $sections = apply_filters(
-            'learnpress/instructor-item/items',
-            array(
-                'instructor-list/instructor-item/avatar.php',
-                'instructor-list/instructor-item/content.php',
-                'instructor-list/instructor-item/view-profile.php',
-            )
-        );
+	protected function __construct() {
+		$this->template = Template::instance();
+		add_action( 'learnpress/layout/instructor-item/items', array( $this, 'instructor_items' ) );
+		add_action( 'learnpress/layout/instructor-item/content', array( $this, 'instructor_item_content' ) );
+		add_action( 'learnpress/layout/instructor-item/info', array( $this, 'instructor_item_info' ) );
+	}
 
-        $this->template->get_frontend_templates($sections, compact('data'));
-    }
+	public function instructor_items( $data ) {
+		$sections = apply_filters(
+			'learnpress/instructor-item/items',
+			array(
+				'instructor-list/instructor-item/avatar.php',
+				'instructor-list/instructor-item/content.php',
+				'instructor-list/instructor-item/view-profile.php',
+			)
+		);
 
-    public function instructor_item_content($data)
-    {
-        $sections = apply_filters(
-            'learnpress/instructor-item/content',
-            array(
-                'instructor-list/instructor-item/content/name.php',
-                'instructor-list/instructor-item/content/info.php',
-            )
-        );
+		$this->template->get_frontend_templates( $sections, compact( 'data' ) );
+	}
 
-        $this->template->get_frontend_templates($sections, compact('data'));
-    }
+	public function instructor_item_content( $data ) {
+		$sections = apply_filters(
+			'learnpress/instructor-item/content',
+			array(
+				'instructor-list/instructor-item/content/name.php',
+				'instructor-list/instructor-item/content/info.php',
+			)
+		);
 
-    public function instructor_item_info($data)
-    {
-        $sections = apply_filters(
-            'learnpress/instructor-item/info',
-            array(
-                'instructor-list/instructor-item/content/course-total.php',
-                'instructor-list/instructor-item/content/student-total.php',
-            )
-        );
+		$this->template->get_frontend_templates( $sections, compact( 'data' ) );
+	}
 
-        $this->template->get_frontend_templates($sections, compact('data'));
-    }
+	public function instructor_item_info( $data ) {
+		$sections = apply_filters(
+			'learnpress/instructor-item/info',
+			array(
+				'instructor-list/instructor-item/content/course-total.php',
+				'instructor-list/instructor-item/content/student-total.php',
+			)
+		);
+
+		$this->template->get_frontend_templates( $sections, compact( 'data' ) );
+	}
 }
 
 InstructorList::instance();

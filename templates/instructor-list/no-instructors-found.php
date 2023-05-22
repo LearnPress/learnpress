@@ -7,9 +7,9 @@
  * @package  Learnpress/Templates
  */
 
-defined('ABSPATH') || exit;
+defined( 'ABSPATH' ) || exit;
 ?>
 
 <p class="learn-press-message error">
-    <?php esc_html_e('No instructors were found to match your selection.', 'learnpress'); ?>
+	<?php esc_html_e( 'No instructors were found to match your selection.', 'learnpress' ); ?>
 </p>
