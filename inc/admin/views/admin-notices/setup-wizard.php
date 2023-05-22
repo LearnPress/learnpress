@@ -19,7 +19,7 @@ if ( ! isset( $data ) || ! isset( $data['check'] ) || ! $data['check'] ) {
 	<p>
 		<a class="button button-primary" href="<?php echo admin_url( 'index.php?page=lp-setup' ); ?>"><?php _e( 'Quick Setup', 'learnpress' ); ?></a>
 		<?php
-		if ( isset( $data['dismiss'] ) ) :
+		if ( isset( $data['allow_dismiss'] ) ) :
 			?>
 			<button type="button" class="notice-dismiss btn-lp-notice-dismiss" data-dismiss="lp-setup-wizard">
 				<span class="screen-reader-text">Dismiss this notice.</span>

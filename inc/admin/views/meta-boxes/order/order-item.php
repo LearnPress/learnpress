@@ -43,6 +43,6 @@ if ( ! isset( $item ) || ! isset( $order ) ) {
 
 	<?php
 } else {
-	do_action( 'learn-press/order-item-not-course', $item );
+	do_action( 'learn-press/order-item-not-course', $item, $order );
 }
 ?>

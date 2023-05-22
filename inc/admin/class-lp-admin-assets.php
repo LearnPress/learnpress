@@ -213,20 +213,20 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					1,
 					1
 				),
-				'lp-admin-tabs'                     => new LP_Asset_Key(
+				/*'lp-admin-tabs'                     => new LP_Asset_Key(
 					$this->url( self::$_folder_source . 'js/admin/share/admin-tabs' . self::$_min_assets . '.js' ),
 					array( 'jquery' ),
 					array( LP_COURSE_CPT ),
 					0,
 					1
-				),
-				'lp-admin-notice'                   => new LP_Asset_Key(
+				),*/
+				/*'lp-admin-notice'                   => new LP_Asset_Key(
 					$this->url( self::$_folder_source . 'js/admin/share/admin-notice' . self::$_min_assets . '.js' ),
 					array( 'jquery' ),
 					array(),
 					0,
 					1
-				),
+				),*/
 				'lp-modal-search-users'             => new LP_Asset_Key(
 					$this->url( self::$_folder_source . 'js/admin/share/modal-search-users' . self::$_min_assets . '.js' ),
 					array( 'jquery' ),
@@ -332,7 +332,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 			return;
 		}
 
-		wp_enqueue_media(); //Todo: tungnx need check why call for that using.
+		//wp_enqueue_media(); //Todo: tungnx need check why call for that using.
 		$this->handle_js( $screen_id );
 		$this->handle_style( $screen_id );
 

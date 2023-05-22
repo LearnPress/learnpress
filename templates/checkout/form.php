@@ -6,7 +6,7 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  4.0.1
+ * @version  4.0.2
  */
 
 defined( 'ABSPATH' ) || exit();
@@ -23,27 +23,29 @@ if ( ! is_user_logged_in() ) {
 	<?php
 }
 ?>
-
-	<form method="post" id="learn-press-checkout-form" name="learn-press-checkout-form" class="lp-checkout-form" tabindex="0" action="<?php echo esc_url_raw( learn_press_get_checkout_url() ); ?>" enctype="multipart/form-data">
-		<?php
-		if ( has_action( 'learn-press/before-checkout-form' ) ) {
-			?>
-			<div class="lp-checkout-form__before">
-				<?php do_action( 'learn-press/before-checkout-form' ); ?>
-			</div>
+	<div class="lp-content-area">
+		<form method="post" id="learn-press-checkout-form" name="learn-press-checkout-form" class="lp-checkout-form"
+			tabindex="0" action="<?php echo esc_url_raw( learn_press_get_checkout_url() ); ?>"
+			enctype="multipart/form-data">
 			<?php
-		}
+			if ( has_action( 'learn-press/before-checkout-form' ) ) {
+				?>
+				<div class="lp-checkout-form__before">
+					<?php do_action( 'learn-press/before-checkout-form' ); ?>
+				</div>
+				<?php
+			}
 
-		do_action( 'learn-press/checkout-form' );
+			do_action( 'learn-press/checkout-form' );
 
-		if ( has_action( 'learn-press/after-checkout-form' ) ) {
+			if ( has_action( 'learn-press/after-checkout-form' ) ) {
+				?>
+				<div class="lp-checkout-form__after">
+					<?php do_action( 'learn-press/after-checkout-form' ); ?>
+				</div>
+				<?php
+			}
 			?>
-			<div class="lp-checkout-form__after">
-				<?php do_action( 'learn-press/after-checkout-form' ); ?>
-			</div>
-			<?php
-		}
-		?>
-	</form>
-
+		</form>
+	</div>
 <?php

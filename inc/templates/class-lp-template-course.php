@@ -1,5 +1,7 @@
 <?php
 
+use LearnPress\Helpers\Template;
+
 /**
  * Class LP_Course_Template
  *
@@ -270,6 +272,9 @@ class LP_Template_Course extends LP_Abstract_Template {
 
 	public function course_extra_requirements( $course_id ) {
 		$course = LP_Course::get_course( $course_id );
+		if ( ! $course ) {
+			return;
+		}
 
 		$requirements = apply_filters(
 			'learn-press/course-extra-requirements',
@@ -293,6 +298,9 @@ class LP_Template_Course extends LP_Abstract_Template {
 
 	public function course_extra_key_features( $course_id ) {
 		$course = LP_Course::get_course( $course_id );
+		if ( ! $course ) {
+			return;
+		}
 
 		$key_features = apply_filters(
 			'learn-press/course-extra-key-features',
@@ -316,6 +324,9 @@ class LP_Template_Course extends LP_Abstract_Template {
 
 	public function course_extra_target_audiences( $course_id ) {
 		$course = LP_Course::get_course( $course_id );
+		if ( ! $course ) {
+			return;
+		}
 
 		$target_audiences = apply_filters(
 			'learn-press/course-extra-target-audiences',
@@ -668,7 +679,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 		}
 		do_action( 'learn-press/lesson-start', $item );
 
-		learn_press_get_template( 'content-lesson/content.php', array( 'lesson' => $item ) );
+		Template::instance()->get_frontend_template( 'content-lesson/content.php', array( 'lesson' => $item ) );
 	}
 
 	/**
@@ -798,7 +809,11 @@ class LP_Template_Course extends LP_Abstract_Template {
 
 	public function course_extra_boxes() {
 		$course = LP_Course::get_course( get_the_ID() );
-		$boxes  = apply_filters(
+		if ( ! $course ) {
+			return;
+		}
+
+		$boxes = apply_filters(
 			'learn-press/course-extra-boxes-data',
 			array(
 				array(

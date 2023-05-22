@@ -18,4 +18,11 @@ class LP_User_Guest extends LP_User {
 	public function __construct( $the_user = 0 ) {
 		parent::__construct( $the_user );
 	}
+
+	/**
+	 * @return string, Certificate must user_id is int, so temporary comment.
+	 */
+	/*public function get_id(): string {
+		return LP_Session_Handler::instance()->get_cookie_data();
+	}*/
 }

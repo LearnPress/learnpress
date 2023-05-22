@@ -19,6 +19,11 @@ abstract class Abstract_Block_Template extends \WP_Block_Template {
 	public $has_theme_file                = true;
 	public $is_custom                     = false;
 	public $path_html_block_template_file = '';
+	public $path_template_render_default  = '';
+	/**
+	 * @var string path of the file run js.
+	 */
+	public $source_js = '';
 	/**
 	 * @var bool|string path of the file block.json metadata.
 	 */
@@ -56,9 +61,8 @@ abstract class Abstract_Block_Template extends \WP_Block_Template {
 
 		try {
 			ob_start();
-			if ( isset( $attributes['template'] ) ) {
-				Template::instance()->get_frontend_template( $attributes['template'] );
-			}
+			$template = $attributes['template'] ?? $this->path_template_render_default;
+			Template::instance()->get_frontend_template( $template, compact( 'attributes' ) );
 
 			$content = ob_get_clean();
 		} catch ( Throwable $e ) {

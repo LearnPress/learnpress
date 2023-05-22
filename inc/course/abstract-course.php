@@ -162,6 +162,12 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 				$regular_price = get_post_meta( $id, '_lp_regular_price', true );
 			}
 
+			$block_course_finished = get_post_meta(
+				$id,
+				'_lp_block_finished',
+				true
+			);
+
 			$this->_set_data(
 				array(
 					'status'                         => $post_object->post_status,
@@ -186,11 +192,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 						'_lp_block_expire_duration',
 						true
 					),
-					'block_course_finished'          => get_post_meta(
-						$id,
-						'_lp_block_finished',
-						true
-					),
+					'block_course_finished'          => $block_course_finished ? $block_course_finished : 'yes',
 					'allow_repurchase'               => get_post_meta( $id, '_lp_allow_course_repurchase', true ),
 					'allow_repurchase_course_option' => get_post_meta( $id, '_lp_course_repurchase_option', true ),
 				)
@@ -648,10 +650,10 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 *
 		 * @author tungnx
 		 * @since 4.1.5
-		 * @version 1.0.0
-		 * @return mixed|void
+		 * @version 1.0.1
+		 * @return string
 		 */
-		public function get_course_price_html() {
+		public function get_course_price_html(): string {
 			$price_html = '';
 
 			if ( $this->is_free() ) {

@@ -3,9 +3,9 @@ Contributors: thimpress, tungnx89, nhamdv, hungkv, nguyenlammanh, tunnhn, phongl
 Donate link:
 Tags: elearning, education, course, lms, learning management system
 Requires at least: 5.8
-Tested up to: 6.1.1
+Tested up to: 6.2
 Requires PHP: 7.0
-Stable tag: 4.2.2.1
+Stable tag: 4.2.2.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -16,6 +16,7 @@ A WordPress LMS Plugin to create WordPress Learning Management System. Turn your
 **<a href="https://thimpress.com/learnpress/" target="_blank">WordPress LMS Plugin</a>** - LearnPress is a comprehensive *WordPress LMS Plugin* for WordPress. This is one of the best WordPress LMS Plugins which can be used to easily create & sell courses online. You can create a course curriculum with lessons & quizzes included which is managed with an easy-to-use interface for users. Having this WordPress LMS Plugin, now you have a chance to quickly and easily create education, online school, online-course websites with no coding knowledge required.
 
 <a href="https://edupress.thimpress.com" target="_blank">Live Demo</a> | <a href="https://docspress.thimpress.com/learnpress-4-0/?utm_source=WPORG&utm_medium=LP&utm_campaign=Content" target="_blank">Documentation</a> | <a href="https://thimpress.com/forums/forum/plugins/learnpress-plugin/?utm_source=WPORG&utm_medium=LP&utm_campaign=Content" target="_blank">Support</a>
+<a href="https://thimpress.com/product/education-wordpress-starter-theme-for-learnpress/?utm_source=WPORG&utm_medium=LP&utm_campaign=Content">Free LearnPress Theme</a>
 <a href="https://1.envato.market/G5Ook" target="_blank">LearnPress Themes</a>
 <a href="https://thimpress.com/eduma-mobile-app/?utm_source=WPORG&utm_medium=LP&utm_campaign=Content" target="_blank">LearnPress Mobile App</a>
 <a href="https://thimpress.com/product/learnpress-pro/?utm_source=WPORG&utm_medium=LP&utm_campaign=Content" target="_blank">LearnPress PRO Bundle</a>
@@ -208,6 +209,16 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.
 
 == Changelog ==
+
+= 4.2.2.4 (2023-04-04) =
+~ Compatible theme Gutenberg.
+~ Compatible WP 6.2.
+~ Fixed: auto add shortcode Profile.
+~ Show notification: Addons has new version.
+~ Fixed: error buy with Guest display pending Order.
+~ Tweak: shortcode learn_press_button_course.
+~ Fixed: error display title on mobile app.
+~ Lesson: stop support post-formats.
 
 = 4.2.2.3 (2023-03-21) =
 ~ Fixed: some error with Profile, LP_Profile_Tabs class.

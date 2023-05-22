@@ -11,13 +11,49 @@ let dataHtml = null;
 const queryString = window.location.search;
 const urlParams = new URLSearchParams( queryString );
 const tab = urlParams.get( 'tab' );
+const notifyAddonsNewVersion = () => {
+	try {
+		const elAdminMenu = document.querySelector( '#adminmenu' );
+		if ( ! elAdminMenu ) {
+			return;
+		}
+
+		const elTabLP = elAdminMenu.querySelector( '#toplevel_page_learn_press' );
+		if ( ! elTabLP ) {
+			return;
+		}
+		const elTabLPName = elTabLP.querySelector( '.wp-menu-name' );
+		if ( ! elTabLPName ) {
+			return;
+		}
+		const elAddonsNewVerTotal = document.querySelector( 'input[name=lp-addons-new-version-totals]' );
+		if ( ! elAddonsNewVerTotal ) {
+			return;
+		}
+		const htmlNotifyLP = `<span class="tab-lp-admin-notice"></span>`;
+		elTabLPName.insertAdjacentHTML( 'beforeend', htmlNotifyLP );
+		const elTabLPAddons = elTabLP.querySelector( 'a[href="admin.php?page=learn-press-addons"]' );
+		if ( ! elTabLPAddons ) {
+			return;
+		}
+
+		const total = elAddonsNewVerTotal.value;
+		const html = `<span style="margin-left: 5px" class="update-plugins">${ total }</span>`;
+		elTabLPAddons.setAttribute( 'href', 'admin.php?page=learn-press-addons&tab=update' );
+		elTabLPAddons.insertAdjacentHTML( 'beforeend', html );
+	} catch ( e ) {
+		console.log( e );
+	}
+};
 
 const callAdminNotices = ( set = '' ) => {
 	if ( ! lpGlobalSettings.is_admin ) {
 		return;
 	}
 
-	const params = tab ? `?tab=${ tab }` : `?${ set }`;
+	let params = tab ? `?tab=${ tab }` : '';
+	params += set ? ( tab ? '&' : '?' ) + `${ set }` : '';
+
 	fetch( adminAPI.apiAdminNotice + params, {
 		method: 'GET',
 		headers: {
@@ -30,10 +66,12 @@ const callAdminNotices = ( set = '' ) => {
 
 		const { status, message, data } = res;
 		if ( status === 'success' ) {
-			dataHtml = data.content;
+			if ( 'Dismissed!' !== message ) {
+				dataHtml = data.content;
 
-			if ( dataHtml.length === 0 && elLPAdminNotices ) {
-				elLPAdminNotices.style.display = 'none';
+				if ( dataHtml.length === 0 && elLPAdminNotices ) {
+					elLPAdminNotices.style.display = 'none';
+				}
 			}
 		} else {
 			dataHtml = message;
@@ -54,6 +92,8 @@ document.addEventListener( 'DOMContentLoaded', () => {
 			if ( dataHtml.length > 0 ) {
 				elLPAdminNotices.innerHTML = dataHtml;
 				elLPAdminNotices.style.display = 'block';
+				// Handle notify addons new version.
+				notifyAddonsNewVersion();
 			}
 
 			clearInterval( interval );
@@ -70,10 +110,10 @@ document.addEventListener( 'click', ( e ) => {
 
 		// eslint-disable-next-line no-alert
 		if ( confirm( 'Are you sure you want to dismiss this notice?' ) ) {
-			const parent = el.closest( '.lp-admin-notice' );
+			const parent = el.closest( '.lp-notice' );
 			callAdminNotices( `dismiss=${ el.getAttribute( 'data-dismiss' ) }` );
 			parent.remove();
-			if ( elLPAdminNotices.querySelectorAll( '.lp-admin-notice' ).length === 0 ) {
+			if ( elLPAdminNotices.querySelectorAll( '.lp-notice' ).length === 0 ) {
 				elLPAdminNotices.style.display = 'none';
 			}
 		}

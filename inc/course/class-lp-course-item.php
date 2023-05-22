@@ -154,6 +154,7 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		 * @param int    $user_id
 		 *
 		 * @return array
+		 * @deprecated 4.2.3
 		 */
 		public function get_class( $more = '', $user_id = 0 ) {
 			$course_id = get_the_ID();
@@ -188,6 +189,16 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 			);
 		}
 
+		/**
+		 * Get class of item.
+		 *
+		 * @param $course_id
+		 * @param $item_id
+		 * @param $can_view_item
+		 * @param $more
+		 *
+		 * @return array|mixed|null
+		 */
 		public function get_class_v2( $course_id, $item_id, $can_view_item, $more = array() ) {
 			$course = learn_press_get_course( $course_id );
 
@@ -204,8 +215,7 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 				(array) $more
 			);
 
-			$user = learn_press_get_user( get_current_user_id() );
-
+			$user = learn_press_get_current_user();
 			if ( ! $user ) {
 				return $defaults;
 			}

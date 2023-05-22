@@ -156,7 +156,7 @@ class LP_Elementor_Widget_List_Courses extends LP_Elementor_Widget_Base {
 		$settings      = $this->get_settings_for_display();
 		$filter        = new \LP_Course_Filter();
 		$filter->limit = $settings['number_posts'];
-		$course_type   = $settings['course_type'];
+		$course_type   = $settings['course_type'] ?? '';
 		$courses       = array();
 
 		if ( $settings['cat_id'] ) {
@@ -173,7 +173,7 @@ class LP_Elementor_Widget_List_Courses extends LP_Elementor_Widget_Base {
 
 		switch ( $course_type ) {
 			case 'recent':
-				$filter->order_by .= 'p.post_date';
+				$filter->order_by .= 'post_date';
 				$courses           = \LP_Course::get_courses( $filter );
 				break;
 			case 'popular':
@@ -185,7 +185,9 @@ class LP_Elementor_Widget_List_Courses extends LP_Elementor_Widget_Base {
 				$courses         = \LP_Course::get_courses( $filter );
 				break;
 			default:
-				$courses = \LP_Course::get_courses( $filter );
+				$filter->order_by = 'post_title';
+				$courses          = \LP_Course::get_courses( $filter );
+				break;
 		}
 
 		if ( empty( $courses ) ) {

@@ -21,6 +21,11 @@ class LP_Submenu_Addons extends LP_Abstract_Submenu {
 
 	public function display() {
 		echo '<h1>' . __( 'LearnPress Addons' ) . '</h1>';
+		echo '<p><strong><i>* If you use premium theme and theme include addons, you can go to tab Plugins to download/update</strong></i></p>';
+		echo sprintf(
+			'<p>* If you buy premium addon separately, you can enter purchase code( %s ) and download/update addons on here</p>',
+			'<a href="https://thimpress.com/my-account/" target="_blank">get from your account</a>'
+		);
 		echo '<div class="lp-addons-page">';
 		lp_skeleton_animation_html( 20 );
 		echo '</div>';

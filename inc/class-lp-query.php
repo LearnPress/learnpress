@@ -19,6 +19,7 @@ class LP_Query {
 		}
 
 		add_action( 'init', array( $this, 'add_rewrite_tags' ), 1000 );
+		add_action( 'init', array( $this, 'add_rewrite_endpoints' ) );
 		//add_action( 'admin_init', array( $this, 'add_rewrite_rules' ), -1 );
 		// Clear cache rewrite rules when update option rewrite_rules
 		//add_filter( 'pre_update_option', [ $this, 'update_option_rewrite_rules' ], 1, 3 );
@@ -99,7 +100,7 @@ class LP_Query {
 	/**
 	 * Add custom rewrite tags
 	 */
-	function add_rewrite_tags() {
+	public function add_rewrite_tags() {
 		$tags = [
 			'%course-item%'       => '([^&]+)',
 			'%item-type%'         => '([^&]+)',
@@ -126,6 +127,45 @@ class LP_Query {
 		add_rewrite_tag( '%section%', '(.*)' );
 
 		add_rewrite_tag( '%content-item-only%', '(.*)' );*/
+	}
+
+	/**
+	 * Add custom rewrite endpoints
+	 */
+	public function add_rewrite_endpoints() {
+		// Must LP_Profile::instance call on init, because it will add action hook to save data on Profile page
+		// If rewrite save data on Profile page, can remove it.
+		//LP_Profile::instance( get_current_user_id() );
+
+		$settings = LP_Settings::instance();
+
+		$endpoints = $settings->get_checkout_endpoints();
+		if ( $endpoints ) {
+			foreach ( $endpoints as $endpoint => $value ) {
+				LearnPress::instance()->query_vars[ $endpoint ] = $value;
+				add_rewrite_endpoint( $value, EP_PAGES );
+			}
+		}
+
+		$endpoints = $settings->get_profile_endpoints();
+		if ( $endpoints ) {
+			foreach ( $endpoints as $endpoint => $value ) {
+				LearnPress::instance()->query_vars[ $endpoint ] = $value;
+				add_rewrite_endpoint( $value, EP_PAGES );
+			}
+		}
+
+		$endpoints = $settings->get( 'quiz_endpoints' );
+		if ( $endpoints ) {
+			foreach ( $endpoints as $endpoint => $value ) {
+				$endpoint                                       = preg_replace( '!_!', '-', $endpoint );
+				LearnPress::instance()->query_vars[ $endpoint ] = $value;
+				add_rewrite_endpoint(
+					$value, /*EP_ROOT | */
+					EP_PAGES
+				);
+			}
+		}
 	}
 
 	/**

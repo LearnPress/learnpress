@@ -22,9 +22,9 @@ class LP_User_Factory {
 	 * Init hooks
 	 */
 	public static function init() {
-		self::$_guest_transient = WEEK_IN_SECONDS;
-		add_action( 'learn-press/user/quiz-started', array( __CLASS__, 'start_quiz' ), 10, 3 );
-		add_action( 'learn_press_activate', array( __CLASS__, 'register_event' ), 15 );
+		//self::$_guest_transient = WEEK_IN_SECONDS;
+		//add_action( 'learn-press/user/quiz-started', array( __CLASS__, 'start_quiz' ), 10, 3 );
+		//add_action( 'learn_press_activate', array( __CLASS__, 'register_event' ), 15 );
 
 		/**
 		 * Filters into wp users manager
@@ -44,20 +44,19 @@ class LP_User_Factory {
 	 */
 	public static function update_user_items( $the_id, $old_status, $new_status ) {
 		$order = learn_press_get_order( $the_id );
-
 		if ( ! $order ) {
 			return;
 		}
 
 		try {
 			switch ( $new_status ) {
-				case 'pending':
-				case 'processing':
-				case 'cancelled':
-				case 'failed':
+				case LP_ORDER_PENDING:
+				case LP_ORDER_PROCESSING:
+				case LP_ORDER_CANCELLED:
+				case LP_ORDER_FAILED:
 					self::_update_user_item_order_pending( $order, $old_status, $new_status );
 					break;
-				case 'completed':
+				case LP_ORDER_COMPLETED:
 					self::_update_user_item_order_completed( $order, $old_status, $new_status );
 					break;
 			}
@@ -92,6 +91,8 @@ class LP_User_Factory {
 			foreach ( $items as $item ) {
 				if ( ! isset( $item['course_id'] ) ) {
 					continue;
+				} else {
+					do_action( 'lp/order-pending/update/user-item', $item, $order );
 				}
 
 				$course_id = $item['course_id'];
@@ -134,6 +135,8 @@ class LP_User_Factory {
 			foreach ( $items as $item ) {
 				if ( ! isset( $item['course_id'] ) || get_post_type( $item['course_id'] ) !== LP_COURSE_CPT ) {
 					continue;
+				} else {
+					do_action( 'lp/order-completed/update/user-item', $item, $order );
 				}
 
 				$course_id = $item['course_id'];
@@ -394,6 +397,7 @@ class LP_User_Factory {
 	 * @param int $quiz_id
 	 * @param int $course_id
 	 * @param int $user_id
+	 * @deprecated 4.2.2.4
 	 */
 	public static function start_quiz( $quiz_id, $course_id, $user_id ) {
 		if ( learn_press_get_user( $user_id ) ) {
@@ -409,6 +413,7 @@ class LP_User_Factory {
 	 * @param int          $quiz_id
 	 * @param int          $course_id
 	 * @param int          $user_id
+	 * @deprecated 4.2.2.4
 	 */
 	private static function _update_user_item_meta( $item, $quiz_id, $course_id, $user_id ) {
 		if ( get_user_by( 'id', $user_id ) ) {

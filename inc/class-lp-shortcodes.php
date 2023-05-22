@@ -57,13 +57,17 @@ if ( ! class_exists( 'LP_Shortcodes' ) ) {
 				return $template;
 			}
 
-			if ( $post->ID == learn_press_get_page_id( 'checkout' ) ) {
+			if ( LP_Page_Controller::is_page_checkout() ) {
 				if ( ! preg_match( '/\[learn_press_checkout\s?(.*)\]/', $post->post_content ) ) {
 					$post->post_content .= '[learn_press_checkout]';
 				}
 			} elseif ( $post->ID == learn_press_get_page_id( 'become_a_teacher' ) ) {
 				if ( ! preg_match( '/\[learn_press_become_teacher_form\s?(.*)\]/', $post->post_content ) ) {
 					$post->post_content .= '[learn_press_become_teacher_form]';
+				}
+			} elseif ( LP_Page_Controller::is_page_profile() ) {
+				if ( ! preg_match( '/\[learn_press_profile\s?(.*)\]/', $post->post_content ) ) {
+					$post->post_content .= '[learn_press_profile]';
 				}
 			}
 
