@@ -18,7 +18,12 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		protected static $_instances = array();
 
 		/**
-		 * @var LP_User
+		 * @var LP_User Current user viewing profile
+		 */
+		protected $user_current = false;
+
+		/**
+		 * @var LP_User User of Profile
 		 */
 		protected $_user = false;
 
@@ -242,13 +247,13 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 
 		/**
 		 * Get default tabs for profile.
+		 * Hide tabs if user is not Administrator/Instructor.
 		 *
 		 * @return LP_Profile_Tabs
 		 */
 		public function get_tabs() {
-			//if ( $this->_tabs === null ) {
+			$user_of_profile = $this->_user;
 			$settings        = LP_Settings::instance();
-			$course_sections = array();
 
 			$this->_default_settings = array(
 				'courses'       => array(
@@ -324,6 +329,12 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				),
 			);
 
+			// Check if user not Admin/Instructor, will be hide tab Courses
+			if ( $user_of_profile instanceof LP_User
+				&& ! in_array( $user_of_profile->get_data( 'role' ), [ ADMIN_ROLE, LP_TEACHER_ROLE ] ) ) {
+				unset( $this->_default_settings['courses'] );
+			}
+
 			if ( 'yes' === self::get_option_publish_profile() ) {
 				$this->_default_settings['settings']['sections']['privacy'] = array(
 					'title'    => esc_html__( 'Privacy', 'learnpress' ),
@@ -333,7 +344,6 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 					'icon'     => '<i class="fas fa-user-secret"></i>',
 				);
 			}
-			//}
 
 			$tabs        = $this->_default_settings;
 			$tabs        = apply_filters( 'learn-press/profile-tabs', $tabs );
@@ -800,7 +810,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 					$filter->post_author = $this->get_user_data( 'id' );
 					$filter->post_status = isset( $args['status'] ) && ! empty( $args['status'] ) ? $args['status'] : array(
 						'publish',
-						'pending'
+						'pending',
 					);
 					$filter->page        = $args['paged'] ?? 1;
 					$filter->limit       = $args['limit'] ?? $filter->limit;
