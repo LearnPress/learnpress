@@ -685,12 +685,13 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 					)
 				);
 
-				if ( empty( $query_enrolled['items'] ) ) {
+				if ( empty( $query_enrolled->get_items() ) ) {
 					continue;
 				}
 
+				$items        = $query_enrolled->get_items();
 				$enrolled_ids = array();
-				foreach ( $query_enrolled['items'] as $enrolled_item ) {
+				foreach ( $items as $enrolled_item ) {
 					$course_data = $user->get_course_data( $enrolled_item );
 
 					if ( $course_data ) {
@@ -731,8 +732,8 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 				);
 
 				$created_ids = array();
-				if ( ! empty( $query_created['items'] ) ) {
-					foreach ( $query_created['items'] as $created_item ) {
+				if ( ! empty( $query_created->get_items() ) ) {
+					foreach ( $query_created->get_items() as $created_item ) {
 						$created_ids[] = $created_item;
 					}
 				}
@@ -1151,17 +1152,20 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 					'orders'   => $this->get_order_content_tab( $request ),
 				);
 
+				/**
+				 * @var LP_Profile_Tab $tab
+				 */
 				foreach ( $tabs->get() as $key => $tab ) {
 					$output[ $key ] = array(
-						'title'    => $tab['title'] ?? '',
-						'slug'     => $tab['slug'] ?? '',
-						'priority' => $tab['priority'] ?? '',
-						'icon'     => $tab['icon'] ?? '',
+						'title'    => $tab->get( 'title' ) ?? '',
+						'slug'     => $tab->get( 'slug' ) ?? '',
+						'priority' => $tab->get( 'priority' ) ?? '',
+						'icon'     => $tab->get( 'icon' ) ?? '',
 						'content'  => $content[ $key ] ?? '',
 					);
 
-					if ( ! empty( $tab['sections'] ) ) {
-						foreach ( $tab['sections'] as $section_key => $section ) {
+					if ( ! empty( $tab->get( 'sections' ) ) ) {
+						foreach ( $tab->get( 'sections' ) as $section_key => $section ) {
 							$output[ $key ]['section'][ $section_key ] = array(
 								'title'    => $section['title'] ?? '',
 								'slug'     => $section['slug'] ?? '',

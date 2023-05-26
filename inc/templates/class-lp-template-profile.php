@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Class LP_Profile_Template
  *
@@ -46,7 +47,13 @@ class LP_Template_Profile extends LP_Abstract_Template {
 
 		$privacy = get_user_meta( $user->get_user()->get_id(), '_lp_profile_privacy', true );
 
-		if ( ! current_user_can( ADMIN_ROLE ) && ( $user->get_user()->get_id() != $user_id && empty( $privacy ) ) ) {
+		$permission_restrict = apply_filters(
+			'lp/profile/content/permission-restrict',
+			! current_user_can( ADMIN_ROLE ) &&
+			( $user->get_user()->get_id() != $user_id && empty( $privacy ) )
+		);
+
+		if ( $permission_restrict ) {
 			return;
 		}
 
@@ -82,10 +89,10 @@ class LP_Template_Profile extends LP_Abstract_Template {
 	/**
 	 * Get template tab course
 	 *
-	 * @author tungnx
+	 * @return void
 	 * @since 4.1.5
 	 * @version 1.0.0
-	 * @return void
+	 * @author tungnx
 	 */
 	public static function tab_courses() {
 		if ( ! LP_Profile::instance()->current_user_can( 'view-tab-courses' ) ) {
@@ -114,10 +121,13 @@ class LP_Template_Profile extends LP_Abstract_Template {
 			)
 		);
 
-		$courses_enrolled_tab_active = apply_filters( 'learnpress/profile/tab/enrolled/subtab-active', ! learn_press_user_maybe_is_a_teacher() ? 'in-progress' : '' );
+		$courses_enrolled_tab_active = apply_filters(
+			'learnpress/profile/tab/enrolled/subtab-active',
+			! learn_press_user_maybe_is_a_teacher( $user->get_id() ) ? 'in-progress' : ''
+		);
 		$tab_active                  = LP_Helper::sanitize_params_submitted( $_GET['tab'] ?? '' );
 		if ( ! $tab_active ) {
-			$tab_active = ! learn_press_user_maybe_is_a_teacher() ? 'enrolled' : 'created';
+			$tab_active = ! learn_press_user_maybe_is_a_teacher( $user->get_id() ) ? 'enrolled' : 'created';
 		}
 		$tab_active = apply_filters( 'learnpress/profile/tab-active', $tab_active );
 

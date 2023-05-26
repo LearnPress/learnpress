@@ -53,6 +53,8 @@ if ( ! class_exists( 'LP_Shortcode_Profile' ) ) {
 				}
 			}
 
+			$viewing_user = apply_filters( 'learn-press/profile/can-view-user', $viewing_user );
+
 			if ( ! $viewing_user ) {
 				return new WP_Error( 'cannot-view-profile', esc_html__( 'You can\'t view the user profile', 'learnpress' ) );
 			}

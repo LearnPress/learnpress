@@ -84,8 +84,9 @@ $items = $section->get_items();
 			<?php
 			foreach ( $items as $item ) :
 				$can_view_item = $user->can_view_item( $item->get_id(), $can_view_content_course );
+				$class_item    = implode( ' ', $item->get_class_v2( $course->get_id(), $item->get_id(), $can_view_item ) );
 				?>
-				<li class="<?php echo esc_attr( implode( ' ', $item->get_class() ) ); ?>"
+				<li class="<?php echo esc_attr( $class_item ); ?>"
 					data-id="<?php echo esc_attr( $item->get_id() ); ?>">
 
 					<?php

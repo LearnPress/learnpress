@@ -426,11 +426,13 @@ class LP_Addon {
 	 * Get content template of addon.
 	 *
 	 * @param string $template_name
-	 * @param mixed  $args
+	 * @param array $args
+	 * @param bool $include
+	 *
 	 * @since 3.0.0
 	 * @version 1.0.1
 	 */
-	public function get_template( string $template_name = '', $args = [] ) {
+	public function get_template( string $template_name = '', array $args = [], bool $include = true ) {
 		// Check path file not extension php, will add extension .php
 		if ( ! preg_match( '/\.php$/', $template_name ) ) {
 			$template_name .= '.php';
@@ -460,7 +462,22 @@ class LP_Addon {
 		} elseif ( file_exists( $from_theme_path ) ) {
 			$path_load = $from_theme_path;
 		}
-		Template::instance()->get_template( $path_load, $args );
+		Template::instance( $include )->get_template( $path_load, $args );
+	}
+
+	/**
+	 * Get multiple templates.
+	 *
+	 * @param array $templates
+	 * @param array $args
+	 * @param bool $include
+	 *
+	 * @return void
+	 */
+	public function get_templates( array $templates = [], array $args = [], bool $include = true ) {
+		foreach ( $templates as $template ) {
+			$this->get_template( $template, $args, $include );
+		}
 	}
 
 	/**

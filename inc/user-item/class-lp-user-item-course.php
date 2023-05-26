@@ -882,7 +882,6 @@ class LP_User_Item_Course extends LP_User_Item {
 	 * Check course is completed or not.
 	 *
 	 * @return bool
-	 * @throws Exception
 	 * @editor tungnx
 	 * @modify 4.1.3
 	 */

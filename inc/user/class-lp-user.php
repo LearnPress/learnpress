@@ -24,7 +24,6 @@ class LP_User extends LP_Abstract_User {
 		);
 
 		$course = learn_press_get_course( $course_id );
-
 		if ( ! $course ) {
 			return $view;
 		}
@@ -122,7 +121,7 @@ class LP_User extends LP_Abstract_User {
 			$view = $view_new;
 		}
 
-		return apply_filters( 'learnpress/course/item/can-view', $view, $item );
+		return apply_filters( 'learnpress/course/item/can-view', $view, $item, $this );
 	}
 
 	/**

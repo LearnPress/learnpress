@@ -1885,8 +1885,11 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @param string $args
 	 *
 	 * @return LP_Query_List_Table
+	 * @deprecated 4.2.2.4
 	 */
 	public function query_quizzes( $user_id = 0, $args = '' ) {
+		_deprecated_function( __FUNCTION__, '4.2.2.4' );
+
 		global $wpdb, $wp;
 
 		$paged = 1;

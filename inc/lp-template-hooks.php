@@ -376,7 +376,7 @@ add_action(
  */
 add_action(
 	'learn-press/single-button-toggle-sidebar',
-	LearnPress::instance()->template( 'course' )->text( '<input type="checkbox" id="sidebar-toggle" />', 'single-button-toggle-sidebar' ),
+	LearnPress::instance()->template( 'course' )->text( '<input type="checkbox" id="sidebar-toggle" title="Show/Hide curriculum" />', 'single-button-toggle-sidebar' ),
 	5
 );
 

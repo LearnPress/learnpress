@@ -122,8 +122,13 @@ class LP_Session_Handler {
 	 * @version 3.2.2
 	 */
 	protected function __construct() {
-		$this->init();
 		$this->init_hooks();
+
+		if ( is_admin() ) {
+			return;
+		}
+
+		$this->init();
 	}
 
 	protected function init_hooks() {
@@ -156,7 +161,7 @@ class LP_Session_Handler {
 			if ( empty( $cookie ) ) {
 				// Create new cookie and session for user Guest.
 				$this->set_session_expiration( $expire_time_for_guest );
-				$this->_customer_id = 'g-' . uniqid();
+				$this->_customer_id = apply_filters( 'lp/cookie/guest-id', 'g-' . uniqid() );
 				$this->set_customer_session_cookie();
 			} else {
 				$this->_customer_id = $cookie;
@@ -522,6 +527,7 @@ class LP_Session_Handler {
 	 * @param bool   $force_change
 	 */
 	public function remove( $key, $force_change = false ) {
+		$this->_data = $this->get_session_data();
 		if ( ! array_key_exists( $key, $this->_data ) ) {
 			return;
 		}
