@@ -1203,7 +1203,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 					$count_users_attend_courses_of_author = $lp_user_items_db->get_user_courses( $filter_count_users );
 
 					// Get total courses publish of author
-					$filter_count_courses = $lp_course_db->count_courses_publish_of_author( $user_id );
+					$filter_count_courses = $lp_course_db->count_courses_of_author( $user_id, [ 'publish' ] );
 					$courses_of_author    = $lp_course_db->get_courses( $filter_count_courses );
 				}
 

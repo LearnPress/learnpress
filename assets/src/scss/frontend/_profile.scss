@@ -593,20 +593,16 @@ body {
 	}
 
 	#dashboard-general-statistic {
-		margin-bottom: 55px;
-		padding-bottom: 20px;
-		border-bottom: 1px solid #ddd;
+		//margin-bottom: 30px;
 	}
 
 	.dashboard-general-statistic__row {
 		display: flex;
-		margin: 0 -15px;
-		justify-content: space-between;
-		flex-wrap: wrap;
+		gap: 10px;
+		//justify-content: center;
 
 		.statistic-box {
 			max-width: 270px;
-			margin: 0 15px;
 			padding: 15px 10px;
 			border: 1px solid #ccc;
 			border-radius: 4px;
@@ -1015,8 +1011,7 @@ div.order-recover {
 .learn-press-course-tab-filters {
 
 	.learn-press-filters {
-		margin-top: 20px;
-		margin-left: 0;
+		margin: 30px 0 20px 0;
 		padding: 0;
 		list-style: none;
 

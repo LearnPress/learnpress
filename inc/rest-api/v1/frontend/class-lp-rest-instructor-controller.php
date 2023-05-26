@@ -56,11 +56,11 @@ class LP_REST_Instructor_Controller extends LP_Abstract_REST_Controller {
 			$args   = apply_filters(
 				'learnpress/instructor-list/args',
 				array(
-					'number'  => $params['number'] ?? 4,
-					'paged'   => $params['paged'] ?? 1,
-					'orderby' => $params['orderby'] ?? 'display_name',
-					'order'   => $params['order'] ?? 'asc',
-					'role'    => 'lp_teacher',
+					'number'   => $params['number'] ?? 4,
+					'paged'    => $params['paged'] ?? 1,
+					'orderby'  => $params['orderby'] ?? 'display_name',
+					'order'    => $params['order'] ?? 'asc',
+					'role__in' => [ 'lp_teacher', 'administrator' ],
 				)
 			);
 
@@ -83,11 +83,12 @@ class LP_REST_Instructor_Controller extends LP_Abstract_REST_Controller {
 					if ( empty( $avatar_url ) ) {
 						$avatar_url = LearnPress::instance()->image( 'no-image.png' );
 					}
-					//Total course
+					// Total course
 					$lp_course_db  = LP_Course_DB::getInstance();
-					$filter_course = $lp_course_db->count_courses_publish_of_author( $instructor_id );
+					$filter_course = $lp_course_db->count_courses_of_author( $instructor_id, [ 'publish' ] );
 					$course_total  = $lp_course_db->get_courses( $filter_course );
-					//Total student
+
+					// Total student
 					$lp_user_items_db = LP_User_Items_DB::getInstance();
 					$filter_users     = $lp_user_items_db->count_user_attend_courses_of_author( $instructor_id );
 					$student_total    = $lp_user_items_db->get_user_courses( $filter_users );
