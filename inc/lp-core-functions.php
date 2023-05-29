@@ -1786,7 +1786,7 @@ function learn_press_is_checkout() {
 	return apply_filters( 'learn-press/is-checkout', false );
 }
 
-function learn_press_is_instructor() {
+function learn_press_is_instructors() {
 	$page_id = learn_press_get_page_id( 'instructors' );
 
 	if ( $page_id && is_page( $page_id ) ) {
