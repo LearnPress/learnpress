@@ -281,7 +281,7 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 	}
 
 	/**
-	 * Statistics of a instructor.
+	 * Statistics of an instructor.
 	 *
 	 * @param WP_REST_Request $request
 	 *

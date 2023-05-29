@@ -60,6 +60,7 @@ const LP_PAGE_PROFILE                  = 'lp_page_profile';
 const LP_PAGE_BECOME_A_TEACHER         = 'lp_page_become_a_teacher';
 const LP_PAGE_SINGLE_COURSE_CURRICULUM = 'lp_page_single_course_curriculum';
 const LP_PAGE_INSTRUCTORS              = 'lp_page_instructors';
+const LP_PAGE_INSTRUCTOR               = 'lp_page_instructor';
 
 // Key block course's item.
 const LP_BLOCK_COURSE_FINISHED        = 'block_course_finished';

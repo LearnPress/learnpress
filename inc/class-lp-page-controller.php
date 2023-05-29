@@ -519,6 +519,8 @@ class LP_Page_Controller {
 			$page_template = 'pages/checkout.php';
 		} elseif ( learn_press_is_instructors() ) {
 			$page_template = 'pages/instructors.php';
+		} elseif ( self::is_page_instructor() ) {
+			$page_template = 'pages/instructor.php';
 		}
 
 		return apply_filters( 'learn-press/page-template', $page_template );
@@ -925,8 +927,10 @@ class LP_Page_Controller {
 			return LP_PAGE_BECOME_A_TEACHER;
 		} elseif ( self::is_page_profile() ) {
 			return LP_PAGE_PROFILE;
-		} elseif ( self::is_page_instructor() ) {
+		} elseif ( learn_press_is_instructors() ) {
 			return LP_PAGE_INSTRUCTORS;
+		} elseif ( self::is_page_instructor() ) {
+			return LP_PAGE_INSTRUCTOR;
 		} else {
 			return apply_filters( 'learnpress/page/current', '' );
 		}
@@ -1018,13 +1022,33 @@ class LP_Page_Controller {
 	 *
 	 * @return bool
 	 */
-	public static function is_page_instructor(): bool {
+	public static function is_page_instructors(): bool {
 		static $flag;
 		if ( ! is_null( $flag ) ) {
 			return $flag;
 		}
 
 		$flag = self::page_is( 'instructors' );
+
+		return $flag;
+	}
+
+	/**
+	 * Check is page instructor
+	 *
+	 * @return bool
+	 */
+	public static function is_page_instructor(): bool {
+		global $wp_query;
+		static $flag;
+		if ( ! is_null( $flag ) ) {
+			return $flag;
+		}
+
+		$flag = false;
+		if ( $wp_query->get( 'is_single_instructor' ) ) {
+			$flag = true;
+		}
 
 		return $flag;
 	}
@@ -1142,6 +1166,27 @@ class LP_Page_Controller {
 		}
 
 		return $send_no_cache_headers;
+	}
+
+	/**
+	 * Get link instructor detail
+	 *
+	 * @param string $user_nice
+	 *
+	 * @return string
+	 */
+	public static function get_link_instructor_detail( string $user_nice = '' ): string {
+		$url = '';
+
+		try {
+			$base_slug = LP()->settings->get( 'profile_endpoints.instructor_base', 'instructor' );
+
+			$url = site_url( $base_slug . '/' . $user_nice );
+		} catch ( Throwable $e ) {
+			error_log( __METHOD__, $e->getMessage() );
+		}
+
+		return $url;
 	}
 }
 

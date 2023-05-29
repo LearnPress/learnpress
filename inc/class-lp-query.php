@@ -102,14 +102,16 @@ class LP_Query {
 	 */
 	public function add_rewrite_tags() {
 		$tags = [
-			'%course-item%'       => '([^&]+)',
-			'%item-type%'         => '([^&]+)',
-			'%question%'          => '([^&]+)',
-			'%user%'              => '([^/]*)',
-			'%view%'              => '([^/]*)',
-			'%view_id%'           => '(.*)',
-			'%section%'           => '(.*)',
-			'%content-item-only%' => '(.*)',
+			'%course-item%'          => '([^&]+)',
+			'%item-type%'            => '([^&]+)',
+			'%question%'             => '([^&]+)',
+			'%user%'                 => '([^/]*)',
+			'%view%'                 => '([^/]*)',
+			'%view_id%'              => '(.*)',
+			'%section%'              => '(.*)',
+			'%content-item-only%'    => '(.*)',
+			'%is_single_instructor%' => '(.*)',
+			'%instructor_name%'      => '(.*)',
 		];
 
 		$tags = apply_filters( 'learn-press/rewrite/tags', $tags );
@@ -299,6 +301,11 @@ class LP_Query {
 				}
 			}
 		}
+
+		// Instructor detail
+		$rules['instructor'][] = [
+			'^instructor/([^/]+)?/?$' => 'index.php?is_single_instructor=1&instructor_name=$matches[1]',
+		];
 
 		return apply_filters( 'learn-press/rewrite/rules', $rules );
 	}

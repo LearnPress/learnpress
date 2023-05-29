@@ -75,9 +75,12 @@ class LP_REST_Instructor_Controller extends LP_Abstract_REST_Controller {
 					'instructor-list/no-instructors-found.php'
 				);
 			} else {
+				/**
+				 * @var WP_User $instructor
+				 */
 				foreach ( $instructors as $instructor ) {
 					$instructor_id = $instructor->ID;
-					$display_name  = $instructor->data->display_name;
+					$display_name  = $instructor->get( 'display_name' );
 					$profile       = learn_press_get_profile( $instructor_id );
 					$avatar_url    = $profile->get_upload_profile_src();
 					if ( empty( $avatar_url ) ) {
@@ -95,12 +98,15 @@ class LP_REST_Instructor_Controller extends LP_Abstract_REST_Controller {
 					$data             = apply_filters(
 						'learnpress/instructor-list/data',
 						array(
-							'instructor_id' => $instructor_id,
-							'display_name'  => $display_name,
-							'avatar_url'    => $avatar_url,
-							'course_total'  => $course_total,
-							'student_total' => $student_total,
-							'profile_url'   => learn_press_user_profile_link( $instructor_id ),
+							'instructor_id'   => $instructor_id,
+							'display_name'    => $display_name,
+							'avatar_url'      => $avatar_url,
+							'course_total'    => $course_total,
+							'student_total'   => $student_total,
+							//'profile_url'     => learn_press_user_profile_link( $instructor_id ),
+							'view_instructor' => LP_Page_Controller::get_link_instructor_detail(
+								$instructor->get( 'user_nicename' )
+							),
 						)
 					);
 
