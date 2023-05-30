@@ -14,7 +14,12 @@ if ( ! wp_is_block_theme() ) {
 	do_action( 'learn-press/template-header' );
 }
 
-echo 123123;
+// For case pass data from method.
+if ( ! isset( $data ) ) {
+	$data = [];
+}
+
+do_action( 'learn-press/single-instructor/layout', $data );
 
 /**
  * @since 4.0.0
