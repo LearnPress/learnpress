@@ -141,13 +141,34 @@ class SingleInstructor {
 	}
 
 	public function list_courses( \LP_User $instructor ): string {
+		$content      = '';
 		$html_wrapper = apply_filters(
 			'learn-press/single-instructor/courses/wrapper',
 			[
-				'<div class="instructor-courses">' => '</div>',
+				'<div class="instructor-courses">'   => '</div>',
+				'<ul class="ul-instructor-courses">' => '</ul>',
 			]
 		);
-		return Template::instance()->nest_elements( $html_wrapper, $instructor->get_display_name() );
+
+		try {
+			$load_ajax = false;
+
+			// Query courses of instructor
+			if ( ! $load_ajax ) {
+				$filter              = new \LP_Course_Filter();
+				$filter->post_author = $instructor->get_id();
+				$filter->limit       = 20;
+
+				$courses = \LP_Course::get_courses( $filter );
+				ob_start();
+				Template::instance()->get_frontend_template( 'single-instructor/item-course.php', compact( 'courses' ) );
+				$content = ob_get_clean();
+			}
+		} catch ( \Throwable $e ) {
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
+		}
+
+		return Template::instance()->nest_elements( $html_wrapper, $content );
 	}
 
 	/**
