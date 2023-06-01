@@ -1128,19 +1128,21 @@ class LP_Page_Controller {
 	}
 
 	/**
-	 * Filters the returned single comment permalink.
+	 * Override lesson comment permalink.
 	 *
 	 * @return string $link The comment permalink with '#comment-$id' appended.
 	 * @param string     $link    The comment permalink with '#comment-$id' appended.
 	 * @param WP_Comment $comment The current comment object.
 	 */
 	public function edit_lesson_comment_links( $link, $comment ) {
-		$comment = get_comment( $comment );
-		if ( get_post_type( $comment->comment_post_ID ) == 'lp_lesson' ) {
-			$link = wp_get_referer() . '#comment-' . $comment->comment_ID;
+		try {
+			$comment = get_comment( $comment );
+			if ( get_post_type( $comment->comment_post_ID ) == LP_LESSON_CPT ) {
+				$link = wp_get_referer() . '#comment-' . $comment->comment_ID;
+			}
 			return $link;
-		}else{
-			return $link;
+		} catch ( Throwable $e ) {
+			error_log( $e->getMessage() );
 		}
 	}
 }
