@@ -896,5 +896,22 @@ if ( ! class_exists( 'LP_Course' ) ) {
 
 			return $evaluation_type;
 		}
+
+		/**
+		 * Get categories of course.
+		 *
+		 * @since 4.2.3
+		 * @version 1.0.0
+		 * @return array|WP_Term[]
+		 */
+		public function get_categories(): array {
+			// Todo: set cache.
+			$categories = get_the_terms( $this->get_id(), 'course_category' );
+			if ( ! $categories ) {
+				$categories = array();
+			}
+
+			return $categories;
+		}
 	}
 }

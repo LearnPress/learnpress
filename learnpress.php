@@ -267,6 +267,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/TemplateHooks/Profile/ProfileStudentStatistics.php';
 			require_once 'inc/TemplateHooks/Profile/ProfileInstructorStatistics.php';
 			require_once 'inc/TemplateHooks/Instructor/SingleInstructor.php';
+			require_once 'inc/TemplateHooks/Course/SingleCourse.php';
 
 			// Models
 			require_once 'inc/models/class-lp-rest-response.php';

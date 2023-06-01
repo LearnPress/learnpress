@@ -24,6 +24,109 @@ class SingleInstructor {
 		add_action( 'learn-press/single-instructor/layout', [ $this, 'sections' ] );
 	}
 
+	/**
+	 * Get display name html of instructor.
+	 *
+	 * @param \LP_User $instructor
+	 *
+	 * @return string
+	 */
+	public function html_display_name( \LP_User $instructor ): string {
+		$html_wrapper = apply_filters(
+			'learn-press/single-instructor/display-name/wrapper',
+			[
+				'<span class="instructor-display-name">' => '</span>',
+			]
+		);
+		return Template::instance()->nest_elements( $html_wrapper, $instructor->get_display_name() );
+	}
+
+	/**
+	 * Get html social of instructor.
+	 *
+	 * @param \LP_User $instructor
+	 *
+	 * @return string
+	 */
+	public function html_social( \LP_User $instructor ): string {
+		$content = '';
+
+		try {
+			$html_wrapper = apply_filters(
+				'learn-press/single-instructor/social/wrapper',
+				[
+					'<div class="instructor-social">' => '</div>',
+				]
+			);
+
+			wp_enqueue_style( 'font-awesome-5-all' );
+			$content = '';
+			$socials = $instructor->get_profile_socials( $instructor->get_id() );
+			ob_start();
+			foreach ( $socials as $k => $social ) {
+				echo $social;
+			}
+			$content = ob_get_clean();
+			$content = Template::instance()->nest_elements( $html_wrapper, $content );
+		} catch ( \Throwable $e ) {
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
+		}
+
+		return $content;
+	}
+
+	/**
+	 * Get html description of instructor.
+	 *
+	 * @param \LP_User $instructor
+	 *
+	 * @return string
+	 */
+	public function html_description( \LP_User $instructor ): string {
+		$content = '';
+
+		try {
+			$html_wrapper = apply_filters(
+				'learn-press/single-instructor/description/wrapper',
+				[
+					'<p class="instructor-description">' => '</p>',
+				]
+			);
+
+			$content = Template::instance()->nest_elements( $html_wrapper, $instructor->get_description() );
+		} catch ( \Throwable $e ) {
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
+		}
+
+		return $content;
+	}
+
+	/**
+	 * Get html avatar of instructor.
+	 *
+	 * @param \LP_User $instructor
+	 *
+	 * @return string
+	 */
+	public function html_avatar( \LP_User $instructor ): string {
+		$content = '';
+
+		try {
+			$html_wrapper = apply_filters(
+				'learn-press/single-instructor/avatar/wrapper',
+				[
+					'<div class="instructor-avatar">' => '</div>',
+				]
+			);
+
+			$content = Template::instance()->nest_elements( $html_wrapper, $instructor->get_profile_picture() );
+		} catch ( \Throwable $e ) {
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
+		}
+
+		return $content;
+	}
+
 	public function sections( $data = [] ) {
 		wp_enqueue_style( 'learnpress' );
 		/**
@@ -151,6 +254,7 @@ class SingleInstructor {
 		);
 
 		try {
+			// Get option load courses of Instructor via ajax
 			$load_ajax = false;
 
 			// Query courses of instructor
@@ -161,7 +265,11 @@ class SingleInstructor {
 
 				$courses = \LP_Course::get_courses( $filter );
 				ob_start();
-				Template::instance()->get_frontend_template( 'single-instructor/item-course.php', compact( 'courses' ) );
+				foreach ( $courses as $course_obj ) {
+					$course = \LP_Course::get_course( $course_obj->ID );
+					echo $this->course_items( $course );
+				}
+				//Template::instance()->get_frontend_template( 'single-instructor/item-course.php', compact( 'courses' ) );
 				$content = ob_get_clean();
 			}
 		} catch ( \Throwable $e ) {
@@ -172,102 +280,65 @@ class SingleInstructor {
 	}
 
 	/**
-	 * Get display name html of instructor.
+	 * Display list courses.
 	 *
-	 * @param \LP_User $instructor
+	 * @param \LP_Course $course
 	 *
-	 * @return string
+	 * @return void
 	 */
-	public function html_display_name( \LP_User $instructor ): string {
+	public function course_items( \LP_Course $course ): string {
+		$content      = '';
 		$html_wrapper = apply_filters(
-			'learn-press/single-instructor/display-name/wrapper',
+			'learn-press/single-instructor/course_items/wrapper',
 			[
-				'<div class="instructor-display-name">' => '</div>',
-			]
+				'<li class="item-course">' => '</li>',
+			],
+			$course
 		);
-		return Template::instance()->nest_elements( $html_wrapper, $instructor->get_display_name() );
-	}
-
-	/**
-	 * Get html social of instructor.
-	 *
-	 * @param \LP_User $instructor
-	 *
-	 * @return string
-	 */
-	public function html_social( \LP_User $instructor ): string {
-		$content = '';
 
 		try {
-			$html_wrapper = apply_filters(
-				'learn-press/single-instructor/social/wrapper',
-				[
-					'<div class="instructor-social">' => '</div>',
-				]
+			$singleCourseTemplate = SingleCourse::instance();
+			ob_start();
+			$html_img              = sprintf(
+				'<a href="%s">%s</a>',
+				$course->get_permalink(),
+				$singleCourseTemplate->html_image( $course )
+			);
+			$html_title            = sprintf(
+				'<h3><a href="%s">%s</a></h3>',
+				$course->get_permalink(),
+				$singleCourseTemplate->html_title( $course )
+			);
+			$html_price_categories = sprintf(
+				'<div class="price-categories">%s %s</div>',
+				$course->get_course_price_html(),
+				$singleCourseTemplate->html_categories( $course )
 			);
 
-			wp_enqueue_style( 'font-awesome-5-all' );
-			$content = '';
-			$socials = $instructor->get_profile_socials( $instructor->get_id() );
-			ob_start();
-			foreach ( $socials as $k => $social ) {
-				echo $social;
-			}
+			$count_lesson  = $course->count_items( LP_LESSON_CPT );
+			$count_student = $course->get_total_user_enrolled_or_purchased();
+			$html_count    = sprintf(
+				'<div class="count">%s | %s</div>',
+				sprintf( 'icon %d %s', $count_lesson, _n( 'Lesson', 'Lessons', $count_lesson ) ),
+				sprintf( 'icon %d %s', $count_student, _n( 'Student', 'Students', $count_student ) )
+			);
+
+			$sections = apply_filters(
+				'learn-press/single-instructor/course_items/sections',
+				[
+					'img'              => [ 'text_html' => $html_img ],
+					'title'            => [ 'text_html' => $html_title ],
+					'price-categories' => [ 'text_html' => $html_price_categories ],
+					'count'            => [ 'text_html' => $html_count ],
+				],
+				$course,
+				$singleCourseTemplate
+			);
+			Template::instance()->print_sections( $sections, compact( 'course' ) );
 			$content = ob_get_clean();
 			$content = Template::instance()->nest_elements( $html_wrapper, $content );
 		} catch ( \Throwable $e ) {
-			error_log( __METHOD__ . ': ' . $e->getMessage() );
-		}
-
-		return $content;
-	}
-
-	/**
-	 * Get html description of instructor.
-	 *
-	 * @param \LP_User $instructor
-	 *
-	 * @return string
-	 */
-	public function html_description( \LP_User $instructor ): string {
-		$content = '';
-
-		try {
-			$html_wrapper = apply_filters(
-				'learn-press/single-instructor/description/wrapper',
-				[
-					'<div class="instructor-description">' => '</div>',
-				]
-			);
-
-			$content = Template::instance()->nest_elements( $html_wrapper, $instructor->get_description() );
-		} catch ( \Throwable $e ) {
-			error_log( __METHOD__ . ': ' . $e->getMessage() );
-		}
-
-		return $content;
-	}
-
-	/**
-	 * Get html avatar of instructor.
-	 *
-	 * @param \LP_User $instructor
-	 *
-	 * @return string
-	 */
-	public function html_avatar( \LP_User $instructor ): string {
-		$content = '';
-
-		try {
-			$html_wrapper = apply_filters(
-				'learn-press/single-instructor/avatar/wrapper',
-				[
-					'<div class="instructor-avatar">' => '</div>',
-				]
-			);
-
-			$content = Template::instance()->nest_elements( $html_wrapper, $instructor->get_profile_picture() );
-		} catch ( \Throwable $e ) {
+			ob_end_clean();
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 

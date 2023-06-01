@@ -3,11 +3,15 @@
  * Template for displaying item course content of single Instructor.
  */
 
+use LearnPress\TemplateHooks\SingleCourse;
+
 defined( 'ABSPATH' ) || exit;
 
 if ( ! isset( $courses ) ) {
 	return;
 }
+
+$singleCourseTemplate = SingleCourse::instance();
 
 foreach ( $courses as $course_obj ) {
 	$course = LP_Course::get_course( $course_obj->ID );
@@ -19,13 +23,11 @@ foreach ( $courses as $course_obj ) {
 			</a>
 		</div>
 		<div>
-			<?php echo $course->get_course_price_html(); ?>
+			<?php echo $course->get_course_price_html(); ?> |
+			<?php echo $singleCourseTemplate->html_categories( $course ); ?>
 		</div>
 		<div>
-			<?php echo get_the_term_list( $course->get_id(), 'course_category', '', '<span>|</span>' ); ?>
-		</div>
-		<div>
-			<?php echo "<h3>{$course->get_title()}</h3>"; ?>
+			<?php echo sprintf( '<h3><a href="%s">%s</a></h3>', $course->get_permalink(), $singleCourseTemplate->html_title( $course ) ); ?>
 		</div>
 		<div>
 			<?php
