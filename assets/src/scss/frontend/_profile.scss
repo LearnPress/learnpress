@@ -22,10 +22,6 @@ body {
 			border-radius: unset;
 			display: block;
 		}
-		+ .lp-user-profile-socials {
-			margin-top: 10px;
-			margin-bottom: 5px;
-		}
 	}
 
 	.lp-user-profile-socials {
@@ -36,26 +32,26 @@ body {
 		-webkit-flex-wrap: wrap;
 		-ms-flex-wrap: wrap;
 		flex-wrap: wrap;
+		background: white;
+		gap: 10px;
+		padding: 20px 0;
+		border-top: 1px solid #eaeaea;
 
 		a {
 			display: inline-flex;
 			align-items: center;
 			justify-content: center;
-			width: 35px;
-			height: 35px;
-			margin: 0 7px;
-			border: 1px solid #cfcfcf;
 			color: #666;
-			background: #fff;
-			font-size: 14px;
-			line-height: 35px;
+			font-size: 1em;
+			line-height: 0;
 			text-align: center;
-			@include border-radius(50%);
 
 			&:hover {
-				border-color: var(--lp-primary-color);
-				color: #fff;
-				background: var(--lp-primary-color);
+				color: var(--lp-primary-color);
+
+				svg {
+					fill: var(--lp-primary-color);
+				}
 			}
 		}
 	}
@@ -133,8 +129,7 @@ body {
 
 	.lp-profile-content-area {
 		position: relative;
-		padding-top: 50px;
-		padding-bottom: 50px;
+		padding: 40px 15px;
 		display: flex;
 		align-items: center;
 		@media (max-width: 650px) {

@@ -53,6 +53,12 @@ class LP_Assets extends LP_Abstract_Assets {
 					),
 					0
 				),
+				'lp-instructor'      => new LP_Asset_Key(
+					self::url( 'css/instructor' . $is_rtl . self::$_min_assets . '.css' ),
+					array(),
+					array(),
+					1
+				),
 				'learnpress-widgets' => new LP_Asset_Key(
 					self::url( 'css/widgets' . $is_rtl . self::$_min_assets . '.css' ),
 					array(),

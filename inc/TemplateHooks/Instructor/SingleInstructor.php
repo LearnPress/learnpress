@@ -22,7 +22,12 @@ class SingleInstructor {
 
 	protected function __construct() {
 		add_action( 'learn-press/single-instructor/layout', [ $this, 'sections' ] );
+		//add_action( 'wp_head', [ $this, 'add_internal_style_to_head' ] );
 	}
+
+	/*public function add_internal_style_to_head() {
+		echo '<style id="123123" type="text/css">body{background: red !important;}</style>';
+	}*/
 
 	/**
 	 * Get display name html of instructor.
@@ -35,7 +40,7 @@ class SingleInstructor {
 		$html_wrapper = apply_filters(
 			'learn-press/single-instructor/display-name/wrapper',
 			[
-				'<span class="instructor-display-name">' => '</span>',
+				'<h2><span class="instructor-display-name">' => '</span></h2>',
 			]
 		);
 		return Template::instance()->nest_elements( $html_wrapper, $instructor->get_display_name() );
@@ -59,9 +64,8 @@ class SingleInstructor {
 				]
 			);
 
-			wp_enqueue_style( 'font-awesome-5-all' );
 			$content = '';
-			$socials = $instructor->get_profile_socials( $instructor->get_id() );
+			$socials = $instructor->get_profile_social( $instructor->get_id() );
 			ob_start();
 			foreach ( $socials as $k => $social ) {
 				echo $social;
@@ -129,6 +133,7 @@ class SingleInstructor {
 
 	public function sections( $data = [] ) {
 		wp_enqueue_style( 'learnpress' );
+		wp_enqueue_style( 'lp-instructor' );
 		/**
 		 * @var \WP_Query $wp_query
 		 */
@@ -317,18 +322,20 @@ class SingleInstructor {
 
 			$count_lesson  = $course->count_items( LP_LESSON_CPT );
 			$count_student = $course->get_total_user_enrolled_or_purchased();
+			$ico_lesson    = sprintf( '<span class="course-ico lesson">%s</span>', wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-file.svg' ) );
+			$ico_student   = sprintf( '<span class="course-ico student">%s</span>', wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-students.svg' ) );
 			$html_count    = sprintf(
-				'<div class="count">%s | %s</div>',
-				sprintf( 'icon %d %s', $count_lesson, _n( 'Lesson', 'Lessons', $count_lesson ) ),
-				sprintf( 'icon %d %s', $count_student, _n( 'Student', 'Students', $count_student ) )
+				'<div class="course-count">%s %s</div>',
+				sprintf( '<div class="course-count-lesson">%s %d %s</div>', $ico_lesson, $count_lesson, _n( 'Lesson', 'Lessons', $count_lesson ) ),
+				sprintf( '<div class="course-count-student">%s %d %s</div>', $ico_student, $count_student, _n( 'Student', 'Students', $count_student ) )
 			);
 
 			$sections = apply_filters(
 				'learn-press/single-instructor/course_items/sections',
 				[
 					'img'              => [ 'text_html' => $html_img ],
-					'title'            => [ 'text_html' => $html_title ],
 					'price-categories' => [ 'text_html' => $html_price_categories ],
+					'title'            => [ 'text_html' => $html_title ],
 					'count'            => [ 'text_html' => $html_count ],
 				],
 				$course,

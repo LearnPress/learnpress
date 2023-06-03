@@ -672,7 +672,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 				$price_html  = apply_filters( 'learn_press_course_price_html', $price_html, $this->has_sale_price(), $this->get_id() );
 			}
 
-			return $price_html;
+			return sprintf( '<span class="course-price">%s</span>', $price_html );
 		}
 
 		/**
