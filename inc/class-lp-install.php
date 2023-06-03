@@ -7,7 +7,7 @@
  * @version 3.0.1
  */
 
-use LP\Helpers\Config;
+use LearnPress\Helpers\Config;
 
 defined( 'ABSPATH' ) || exit();
 

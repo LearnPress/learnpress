@@ -229,7 +229,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * @return void
 		 */
 		private function include_files_global() {
-			require_once 'inc/Helper/Singleton.php';
 			require_once 'inc/class-lp-multi-language.php';
 
 			// Filter query .
@@ -263,14 +262,14 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/databases/class-thim-cace-db.php';
 
 			// Read files config on folder config .
-			require_once 'inc/Helper/Config.php';
+			//require_once 'inc/Helper/Config.php';
 
 			// File system .
 			require_once 'inc/class-lp-file-system.php';
 
 			// File helper
 			require_once 'inc/class-lp-helper.php';
-			require_once 'inc/Helper/Template.php';
+			//require_once 'inc/Helper/Template.php';
 
 			// Template Hooks.
 			InstructorList::instance();

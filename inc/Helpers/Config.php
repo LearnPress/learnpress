@@ -1,6 +1,6 @@
 <?php
 
-namespace LP\Helpers;
+namespace LearnPress\Helpers;
 
 /**
  * Class Config

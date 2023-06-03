@@ -4,7 +4,7 @@
  * Class Singleton
  */
 
-namespace LearnPress;
+namespace LearnPress\Helpers;
 
 trait Singleton {
 	private static $instance = null;
