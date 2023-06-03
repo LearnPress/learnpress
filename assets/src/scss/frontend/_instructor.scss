@@ -104,6 +104,18 @@
 
 			.course-categories {
 				display: inline-block;
+
+				a {
+					text-decoration: none;
+				}
+
+				&:not(:empty) {
+					&::before {
+						content: "|";
+						display: inline-block;
+						padding: 0 10px;
+					}
+				}
 			}
 		}
 
