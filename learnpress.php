@@ -19,8 +19,9 @@
  * Prevent loading this file directly
  */
 
+use LearnPress\Shortcodes\SingleInstructorShortcode;
 use LearnPress\TemplateHooks\Instructor\InstructorList;
-use LearnPress\TemplateHooks\Instructor\SingleInstructor;
+use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileInstructorStatistics;
 use LearnPress\TemplateHooks\Profile\ProfileStudentStatistics;
 
@@ -273,7 +274,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			// Template Hooks.
 			InstructorList::instance();
-			SingleInstructor::instance();
+			SingleInstructorTemplate::instance();
 			ProfileInstructorStatistics::instance();
 			ProfileStudentStatistics::instance();
 
@@ -384,6 +385,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/user-item/class-lp-user-item-course.php';
 			require_once 'inc/user-item/class-lp-user-item-quiz.php';
 			require_once 'inc/user-item/class-lp-quiz-results.php';
+
+			// Shortcodes.
+			SingleInstructorShortcode::instance();
 			require_once 'inc/class-lp-shortcodes.php';
 
 			// include template functions .
