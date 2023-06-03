@@ -21,7 +21,7 @@ if ( $total <= 1 ) {
 	<?php
 	echo paginate_links(
 		apply_filters(
-			'learnpress-packages/pagination_args',
+			'learn-press/pagination_args',
 			array(
 				'base'      => $base,
 				'format'    => $format,

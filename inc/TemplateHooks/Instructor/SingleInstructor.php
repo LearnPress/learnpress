@@ -2,7 +2,7 @@
 /**
  * Template hooks Archive Package.
  *
- * @since 1.0.0
+ * @since 4.2.3
  * @version 1.0.0
  */
 namespace LearnPress\TemplateHooks;
@@ -73,6 +73,7 @@ class SingleInstructor {
 			$content = ob_get_clean();
 			$content = Template::instance()->nest_elements( $html_wrapper, $content );
 		} catch ( \Throwable $e ) {
+			ob_end_clean();
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 
@@ -187,6 +188,7 @@ class SingleInstructor {
 			$content = ob_get_clean();
 			echo Template::instance()->nest_elements( $html_wrapper, $content );
 		} catch ( \Throwable $e ) {
+			ob_end_clean();
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 	}
@@ -204,7 +206,8 @@ class SingleInstructor {
 				'learn-press/single-instructor/info/wrapper',
 				[
 					'<div class="lp-single-instructor__info">' => '</div>',
-				]
+				],
+				$instructor
 			);
 
 			$sections = apply_filters(
@@ -212,7 +215,8 @@ class SingleInstructor {
 				[
 					'image'      => [ 'text_html' => $this->html_avatar( $instructor ) ],
 					'info_right' => [ 'text_html' => $this->info_right( $instructor ) ],
-				]
+				],
+				$instructor
 			);
 
 			ob_start();
@@ -220,6 +224,7 @@ class SingleInstructor {
 			$content = ob_get_clean();
 			$content = Template::instance()->nest_elements( $html_wrapper, $content );
 		} catch ( \Throwable $e ) {
+			ob_end_clean();
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 
@@ -234,7 +239,8 @@ class SingleInstructor {
 				'learn-press/single-instructor/info-right/wrapper',
 				[
 					'<div class="lp-single-instructor__info__right">' => '</div>',
-				]
+				],
+				$instructor
 			);
 
 			$sections = apply_filters(
@@ -243,7 +249,8 @@ class SingleInstructor {
 					'title'       => [ 'text_html' => $this->html_display_name( $instructor ) ],
 					'social'      => [ 'text_html' => $this->html_social( $instructor ) ],
 					'description' => [ 'text_html' => $this->html_description( $instructor ) ],
-				]
+				],
+				$instructor
 			);
 
 			ob_start();
@@ -251,6 +258,7 @@ class SingleInstructor {
 			$content = ob_get_clean();
 			$content = Template::instance()->nest_elements( $html_wrapper, $content );
 		} catch ( \Throwable $e ) {
+			ob_end_clean();
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 
@@ -292,6 +300,7 @@ class SingleInstructor {
 				Template::instance()->print_sections( $sections, compact( 'instructor', 'courses' ) );
 				$content = ob_get_clean();
 			} else {
+				ob_end_clean();
 				$html_wrapper['<ul class="ul-instructor-courses">'] = '</ul>';
 			}
 		} catch ( \Throwable $e ) {
@@ -436,6 +445,7 @@ class SingleInstructor {
 			Template::instance()->get_frontend_template( 'shared/pagination.php', $data_pagination );
 			$content = ob_get_clean();
 		} catch ( \Throwable $e ) {
+			ob_end_clean();
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 
