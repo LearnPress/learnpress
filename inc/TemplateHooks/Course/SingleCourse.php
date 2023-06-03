@@ -5,7 +5,7 @@
  * @since 1.0.0
  * @version 1.0.0
  */
-namespace LearnPress\TemplateHooks;
+namespace LearnPress\TemplateHooks\Course;
 
 use LearnPress\Helpers\Template;
 
@@ -103,5 +103,3 @@ class SingleCourse {
 		return $content;
 	}
 }
-
-SingleCourse::instance();

@@ -5,7 +5,7 @@
  * @since 1.0.0
  * @version 1.0.0
  */
-namespace LearnPress\TemplateHooks;
+namespace LearnPress\TemplateHooks\Profile;
 
 use LearnPress\Helpers\Template;
 
@@ -35,5 +35,3 @@ class ProfileInstructorStatistics {
 		);
 	}
 }
-
-ProfileinstructorStatistics::instance();

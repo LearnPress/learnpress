@@ -1,6 +1,6 @@
 <?php
 
-namespace LearnPress\Helpers\TemplateHooks;
+namespace LearnPress\TemplateHooks\Instructor;
 
 use LearnPress\Helpers\Template;
 
@@ -62,5 +62,3 @@ class InstructorList {
 		$this->template->get_frontend_templates( $sections, compact( 'data' ) );
 	}
 }
-
-InstructorList::instance();

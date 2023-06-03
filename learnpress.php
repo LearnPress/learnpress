@@ -18,6 +18,12 @@
 /**
  * Prevent loading this file directly
  */
+
+use LearnPress\TemplateHooks\Instructor\InstructorList;
+use LearnPress\TemplateHooks\Instructor\SingleInstructor;
+use LearnPress\TemplateHooks\Profile\ProfileInstructorStatistics;
+use LearnPress\TemplateHooks\Profile\ProfileStudentStatistics;
+
 defined( 'ABSPATH' ) || exit();
 
 if ( ! defined( 'LP_PLUGIN_FILE' ) ) {
@@ -198,6 +204,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * Includes needed files.
 		 */
 		public function includes() {
+			require_once LP_PLUGIN_PATH . 'vendor/autoload.php';
+
 			// Include required files load anywhere, both frontend and backend.
 			$this->include_files_global();
 
@@ -263,11 +271,12 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			// File helper
 			require_once 'inc/class-lp-helper.php';
 			require_once 'inc/Helper/Template.php';
-			require_once 'inc/Helper/TemplateHooks/InstructorList.php';
-			require_once 'inc/TemplateHooks/Profile/ProfileStudentStatistics.php';
-			require_once 'inc/TemplateHooks/Profile/ProfileInstructorStatistics.php';
-			require_once 'inc/TemplateHooks/Instructor/SingleInstructor.php';
-			require_once 'inc/TemplateHooks/Course/SingleCourse.php';
+
+			// Template Hooks.
+			InstructorList::instance();
+			SingleInstructor::instance();
+			ProfileInstructorStatistics::instance();
+			ProfileStudentStatistics::instance();
 
 			// Models
 			require_once 'inc/models/class-lp-rest-response.php';

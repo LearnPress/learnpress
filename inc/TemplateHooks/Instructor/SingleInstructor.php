@@ -5,9 +5,10 @@
  * @since 4.2.3
  * @version 1.0.0
  */
-namespace LearnPress\TemplateHooks;
+namespace LearnPress\TemplateHooks\Instructor;
 
 use LearnPress\Helpers\Template;
+use LearnPress\TemplateHooks\Course\SingleCourse;
 
 class SingleInstructor {
 	public static function instance() {
@@ -280,7 +281,7 @@ class SingleInstructor {
 			if ( ! $load_ajax ) {
 				$filter              = new \LP_Course_Filter();
 				$filter->post_author = $instructor->get_id();
-				$filter->limit       = 1;
+				$filter->limit       = \LP_Settings::get_option( 'archive_course_limit', 20 );
 				$filter->page        = $GLOBALS['wp_query']->get( 'paged', 1 ) ? $GLOBALS['wp_query']->get( 'paged', 1 ) : 1;
 
 				$total_courses = 0;
@@ -452,5 +453,3 @@ class SingleInstructor {
 		return $content;
 	}
 }
-
-SingleInstructor::instance();
