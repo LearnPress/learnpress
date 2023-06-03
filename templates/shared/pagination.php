@@ -1,39 +1,35 @@
 <?php
 /**
- * Template for displaying general pagination.
+ * The template for displaying archive pagination.
  *
- * This template can be overridden by copying it to shared/pagination.php.
- *
- * @author   ThimPress
- * @package  Learnpress/Templates
- * @version  4.1.1
+ * @version 1.0.0
+ * @since 4.2.3
  */
 
-defined( 'ABSPATH' ) || exit();
+defined( 'ABSPATH' ) || exit;
 
-if ( ! isset( $total ) || ! isset( $paged ) ) {
+if ( ! isset( $total ) || ! isset( $base )
+	|| ! isset( $format ) || ! isset( $current ) ) {
 	return;
 }
 
-$base = $base ?? esc_url_raw( str_replace( 999999999, '%#%', get_pagenum_link( 999999999, false ) ) );
 if ( $total <= 1 ) {
 	return;
 }
 ?>
-
-<nav class="learn-press-pagination navigation pagination">
+<nav class="learn-press-pagination">
 	<?php
 	echo paginate_links(
 		apply_filters(
-			'learn_press_pagination_args',
+			'learnpress-packages/pagination_args',
 			array(
 				'base'      => $base,
-				'format'    => '',
-				'add_args'  => '',
-				'current'   => max( 1, $paged ),
+				'format'    => $format,
+				'add_args'  => false,
+				'current'   => max( 1, $current ),
 				'total'     => $total,
-				'prev_text' => '<i class="fas fa-angle-left"></i>',
-				'next_text' => '<i class="fas fa-angle-right"></i>',
+				'prev_text' => is_rtl() ? '&rarr;' : '&larr;',
+				'next_text' => is_rtl() ? '&larr;' : '&rarr;',
 				'type'      => 'list',
 				'end_size'  => 3,
 				'mid_size'  => 3,

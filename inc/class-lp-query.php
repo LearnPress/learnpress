@@ -304,7 +304,7 @@ class LP_Query {
 
 		// Instructor detail
 		$rules['instructor'][] = [
-			'^instructor/([^/]+)?/?$' => 'index.php?is_single_instructor=1&instructor_name=$matches[1]',
+			'^instructor/([^/]+)/?(?:page/)?([^/][0-9]*)?/?$' => 'index.php?is_single_instructor=1&instructor_name=$matches[1]&paged=$matches[2]',
 		];
 
 		return apply_filters( 'learn-press/rewrite/rules', $rules );

@@ -1,5 +1,8 @@
 /**
 * Style for single instructor page
+*
+* @since 4.2.3
+* @version 1.0.0
 */
 
 .lp-single-instructor {
@@ -74,6 +77,10 @@
 			padding-bottom: 10px;
 			border-bottom: 1px solid #eee;
 			margin-bottom: 10px;
+
+			a {
+				text-decoration: none;
+			}
 		}
 
 		.course-img img {

@@ -1,0 +1,19 @@
+/**
+* Styles for all page of LP
+*
+* @since 4.2.3
+* @version 1.0.0
+*/
+
+.lp-content-area {
+	width: 100%;
+	max-width: 1170px;
+	margin: 0 auto;
+
+	@media (max-width: 1170px) {
+		padding-right: 15px;
+		padding-left: 15px;
+	}
+}
+
+
