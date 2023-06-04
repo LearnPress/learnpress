@@ -9,7 +9,7 @@ namespace LearnPress\TemplateHooks\Course;
 
 use LearnPress\Helpers\Template;
 
-class SingleCourse {
+class SingleCourseTemplate {
 	public static function instance() {
 		static $instance = null;
 

@@ -8,7 +8,7 @@
 namespace LearnPress\TemplateHooks\Instructor;
 
 use LearnPress\Helpers\Template;
-use LearnPress\TemplateHooks\Course\SingleCourse;
+use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
 
 class SingleInstructorTemplate {
 	public static function instance() {
@@ -370,7 +370,7 @@ class SingleInstructorTemplate {
 		);
 
 		try {
-			$singleCourseTemplate = SingleCourse::instance();
+			$singleCourseTemplate = SingleCourseTemplate::instance();
 			ob_start();
 			$html_img              = sprintf(
 				'<a href="%s">%s</a>',
@@ -413,7 +413,6 @@ class SingleInstructorTemplate {
 			$content = ob_get_clean();
 			$content = Template::instance()->nest_elements( $html_wrapper, $content );
 		} catch ( \Throwable $e ) {
-			ob_end_clean();
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 

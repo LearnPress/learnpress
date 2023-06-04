@@ -20,10 +20,10 @@
  */
 
 use LearnPress\Shortcodes\SingleInstructorShortcode;
-use LearnPress\TemplateHooks\Instructor\InstructorList;
+use LearnPress\TemplateHooks\Instructor\InstructorListTemplate;
 use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
-use LearnPress\TemplateHooks\Profile\ProfileInstructorStatistics;
-use LearnPress\TemplateHooks\Profile\ProfileStudentStatistics;
+use LearnPress\TemplateHooks\Profile\ProfileInstructorStatisticsTemplate;
+use LearnPress\TemplateHooks\Profile\ProfileStudentStatisticsTemplate;
 
 defined( 'ABSPATH' ) || exit();
 
@@ -273,10 +273,10 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			//require_once 'inc/Helper/Template.php';
 
 			// Template Hooks.
-			InstructorList::instance();
+			InstructorListTemplate::instance();
 			SingleInstructorTemplate::instance();
-			ProfileInstructorStatistics::instance();
-			ProfileStudentStatistics::instance();
+			ProfileInstructorStatisticsTemplate::instance();
+			ProfileStudentStatisticsTemplate::instance();
 
 			// Models
 			require_once 'inc/models/class-lp-rest-response.php';

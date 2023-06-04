@@ -796,6 +796,11 @@ class LP_Page_Controller {
 				return $q;
 			}
 
+			// Page Single Instructor
+			if ( $q->get('is_single_instructor')) {
+				$q->set( 'post_type', LP_COURSE_CPT );
+			}
+
 			// Handle 404 if user are viewing course item directly.
 			$this->set_link_item_course_default_wp_to_page_404( $q );
 		} catch ( Throwable $e ) {

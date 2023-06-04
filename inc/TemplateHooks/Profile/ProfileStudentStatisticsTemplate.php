@@ -9,7 +9,7 @@ namespace LearnPress\TemplateHooks\Profile;
 
 use LearnPress\Helpers\Template;
 
-class ProfileStudentStatistics {
+class ProfileStudentStatisticsTemplate {
 	public static function instance() {
 		static $instance = null;
 

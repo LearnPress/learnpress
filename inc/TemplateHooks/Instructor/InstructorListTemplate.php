@@ -4,7 +4,7 @@ namespace LearnPress\TemplateHooks\Instructor;
 
 use LearnPress\Helpers\Template;
 
-class InstructorList {
+class InstructorListTemplate {
 
 	public $template;
 
