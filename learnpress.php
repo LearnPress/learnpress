@@ -19,6 +19,7 @@
  * Prevent loading this file directly
  */
 
+use LearnPress\ExternalPlugin\Elementor\LPElementor;
 use LearnPress\Shortcodes\SingleInstructorShortcode;
 use LearnPress\TemplateHooks\Instructor\InstructorListTemplate;
 use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
@@ -417,7 +418,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			// For plugin Elementor
 			if ( defined( 'ELEMENTOR_VERSION' ) ) {
-				require_once 'inc/external-plugin/elementor/class-lp-elementor.php';
+				LPElementor::instance();
 			}
 
 			// TODO: update frontend editor before move to function include_files_admin.
@@ -620,7 +621,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			// Polylang
 			if ( defined( 'POLYLANG_VERSION' ) ) {
-				require_once 'inc/external-plugin/polylang/class-lp-polylang.php';
+				require_once 'inc/ExternalPlugin/polylang/class-lp-polylang.php';
 				LP_Polylang::instance();
 			}
 
