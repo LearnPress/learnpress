@@ -120,6 +120,42 @@ return apply_filters(
 					'id'   => 'lp_metabox_curriculum_setting',
 				),
 			)
+		),
+		apply_filters(
+			'learn-press/course-settings-fields/material',
+			array(
+				array(
+					'type'	=> 'title',
+					'title'	=> esc_html__('Material Settings', 'learnpress' ),
+					'id'	=> 'lp_course_material_setting',
+				),
+				array(
+					'title'   => esc_html__( 'File Per Page', 'learnpress' ),
+					'id'      => 'material_file_per_page',
+					'default' => -1,
+					'type'    => 'number',
+					'desc'    => esc_html__( 'The number of displayed files per page (Enter -1 to display all files, set to 0 to disable).', 'learnpress' ),
+				),
+				array(
+					'title'   		=> esc_html__( 'File Extensions', 'learnpress' ),
+					'id'      		=> 'material_allow_file_extension',
+					'default' 		=> '',
+					'type'    		=> 'text',
+					'desc'    		=> esc_html__( 'Which types of file will be allowed uploading?', 'learnpress' ),
+					'placeholder'	=> 'jpg,txt,zip,pdf,doc,docx,ppt',
+				),
+				array(
+					'title'   		=> esc_html__( 'File Size Limit', 'learnpress' ),
+					'id'      		=> 'material_max_file_size',
+					'default' 		=> 2,
+					'type'    		=> 'number',
+					'desc'    		=> esc_html__( 'Set Maximum Attachment size for upload', 'learnpress' ),
+				),
+				array(
+					'type' => 'sectionend',
+					'id'   => 'lp_course_material_setting',
+				),
+			)
 		)
 	)
 );
