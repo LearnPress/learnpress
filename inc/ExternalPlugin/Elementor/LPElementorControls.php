@@ -93,7 +93,35 @@ class LPElementorControls {
 	}
 
 	/**
-	 * Declare control type.
+	 * Responsive control type.
+	 *
+	 *
+	 * @param string $id
+	 * @param string $label
+	 * @param string|array $default
+	 * @param string $control_type
+	 * @param array $args
+	 *
+	 * @return array
+	 */
+	public static function add_responsive_control_type( string $id, string $label, $default = '',
+		string $control_type = Controls_Manager::CHOOSE, array $args = [] ): array {
+		return [
+			'method' => 'add_responsive_control',
+			'id'     => $id,
+			array_merge(
+				[
+					'label'   => $label,
+					'type'    => $control_type,
+					'default' => $default,
+				],
+				$args
+			),
+		];
+	}
+
+	/**
+	 * control type color.
 	 *
 	 * @param string $id
 	 * @param string $label
@@ -261,51 +289,69 @@ class LPElementorControls {
 	 */
 	public static function add_controls_style_button( string $prefix_name, string $selector ): array {
 		return [
-			"{$prefix_name}_btn_align"          => [
-				'method' => 'add_responsive_control',
-				'id'     => "{$prefix_name}_align",
+			"{$prefix_name}_btn_margin"           => self::add_responsive_control_type(
+				"{$prefix_name}_btn_margin",
+				esc_html__( 'Margin', 'learnpress' ),
+				[],
+				Controls_Manager::DIMENSIONS,
 				[
-					'label'     => esc_html__( 'Alignment', 'learnpress' ),
-					'type'      => Controls_Manager::CHOOSE,
-					'options'   => array(
-						'auto auto auto 0' => array(
-							'title' => esc_html__( 'Left', 'learnpress' ),
-							'icon'  => 'eicon-text-align-left',
-						),
-						'0 auto'           => array(
-							'title' => esc_html__( 'Center', 'learnpress' ),
-							'icon'  => 'eicon-text-align-center',
-						),
-						'auto 0 auto auto' => array(
-							'title' => esc_html__( 'Right', 'learnpress' ),
-							'icon'  => 'eicon-text-align-right',
-						),
-					),
-					'selectors' => array(
-						"{{WRAPPER}} $selector" => 'display: block; margin: {{VALUE}}',
-					),
-				],
-			],
-			"{$prefix_name}_btn_spacing_top"    => self::add_control_type_slider(
-				"{$prefix_name}_btn_spacing_top",
-				esc_html__( 'Spacing Top', 'learnpress' ),
-				0,
-				'px',
-				[
-					'selectors' => array(
-						"{{WRAPPER}} $selector" => 'margin-top: {{SIZE}}{{UNIT}};',
+					'size_units' => [ 'px', '%', 'custom' ],
+					'selectors'  => array(
+						"{{WRAPPER}} $selector" => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 					),
 				]
 			),
-			"{$prefix_name}_btn_spacing_bottom" => self::add_control_type_slider(
-				"{$prefix_name}_btn_spacing_bottom",
-				esc_html__( 'Spacing bottom', 'learnpress' ),
-				0,
-				'px',
+			"{$prefix_name}_btn_padding"          => self::add_responsive_control_type(
+				"{$prefix_name}_btn_padding",
+				esc_html__( 'Padding', 'learnpress' ),
+				[],
+				Controls_Manager::DIMENSIONS,
 				[
-					'selectors' => array(
-						"{{WRAPPER}} $selector" => 'margin-bottom: {{SIZE}}{{UNIT}};',
+					'size_units' => [ 'px', '%', 'custom' ],
+					'selectors'  => array(
+						"{{WRAPPER}} $selector" => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 					),
+				]
+			),
+			"{$prefix_name}_btn_typography"       => self::add_group_control_type(
+				"{$prefix_name}_btn_typography",
+				Group_Control_Typography::get_type(),
+				"{{WRAPPER}} $selector"
+			),
+			"{$prefix_name}_btn_color"            => self::add_control_type_color(
+				"{$prefix_name}_btn_color",
+				esc_html__( 'Text Color', 'learnpress' ),
+				[ "{{WRAPPER}} $selector" => 'color: {{VALUE}}' ]
+			),
+			"{$prefix_name}_btn_color_hover"      => self::add_control_type_color(
+				"{$prefix_name}_btn_color_hover",
+				esc_html__( 'Text Color Hover', 'learnpress' ),
+				[ "{{WRAPPER}} $selector:hover" => 'color: {{VALUE}}' ]
+			),
+			"{$prefix_name}_btn_background"       => self::add_control_type_color(
+				"{$prefix_name}_btn_background",
+				esc_html__( 'Background Color', 'learnpress' ),
+				[ "{{WRAPPER}} $selector" => 'background: {{VALUE}}' ]
+			),
+			"{$prefix_name}_btn_background_hover" => self::add_control_type_color(
+				"{$prefix_name}_btn_background_hover",
+				esc_html__( 'Background Color Hover', 'learnpress' ),
+				[ "{{WRAPPER}} $selector:hover" => 'background: {{VALUE}}' ]
+			),
+			"{$prefix_name}_btn_border"           => self::add_group_control_type(
+				"{$prefix_name}_btn_border",
+				Group_Control_Border::get_type(),
+				"{{WRAPPER}} $selector"
+			),
+			"{$prefix_name}_btn_border_radius"    => self::add_control_type(
+				"{$prefix_name}_btn_border_radius",
+				esc_html__( 'Border Radius', 'learnpress' ),
+				[],
+				Controls_Manager::DIMENSIONS,
+				[
+					'selectors' => [
+						"{{WRAPPER}} $selector" => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+					],
 				]
 			),
 		];
