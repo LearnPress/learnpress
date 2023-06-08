@@ -34,8 +34,8 @@ class CourseListElementor extends LPElementorWidgetBase {
 
 			$layout = $settings['layout'] ?? 'grid';
 
-			if ( ! empty( $settings['cat_id'] ) ) {
-				$filter->term_ids = array( $settings['cat_id'] );
+			if ( ! empty( $settings['category_ids'] ) ) {
+				$filter->term_ids = $settings['category_ids'];
 			}
 
 			if ( ! empty( $settings['order_by'] ) ) {
@@ -49,21 +49,19 @@ class CourseListElementor extends LPElementorWidgetBase {
 			switch ( $sort_int ) {
 				case 'recent':
 					$filter->order_by .= 'post_date';
-					$courses           = \LP_Course::get_courses( $filter );
 					break;
 				case 'popular':
 					$filter->order_by = 'popular';
-					$courses          = \LP_Course::get_courses( $filter );
 					break;
 				case 'featured':
 					$filter->sort_by = 'on_feature';
-					$courses         = \LP_Course::get_courses( $filter );
 					break;
 				default:
 					$filter->order_by = 'post_title';
-					$courses          = \LP_Course::get_courses( $filter );
 					break;
 			}
+
+			$courses = \LP_Course::get_courses( $filter );
 
 			if ( empty( $courses ) ) {
 				\LearnPress::instance()->template( 'course' )->no_courses_found();
