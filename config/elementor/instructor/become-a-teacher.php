@@ -38,23 +38,44 @@ $content_fields = LPElementorControls::add_fields_in_section(
 		),
 	]
 );
+
 // Fields tab style
 $style_fields = array_merge(
-	LPElementorControls::add_control_style_for_el(
-		'title',
-		__( 'Title', 'learnpress' ),
-		'#learn-press-become-teacher-form h3'
+	LPElementorControls::add_fields_in_section(
+		'style_title',
+		esc_html__( 'Title', 'learnpress' ),
+		Controls_Manager::TAB_STYLE,
+		LPElementorControls::add_controls_style_text(
+			'title',
+			'#learn-press-become-teacher-form h3'
+		)
 	),
-	LPElementorControls::add_control_style_for_el(
-		'description',
-		__( 'Description', 'learnpress' ),
-		'.become-teacher-form__description'
+	LPElementorControls::add_fields_in_section(
+		'style_description',
+		esc_html__( 'Description', 'learnpress' ),
+		Controls_Manager::TAB_STYLE,
+		LPElementorControls::add_controls_style_text(
+			'description',
+			'.become-teacher-form__description'
+		)
 	),
-	LPElementorControls::add_control_style_for_form(
-		'form',
-		__( 'Form', 'learnpress' ),
-		'.become-teacher-form',
-		'.form-field'
+	LPElementorControls::add_fields_in_section(
+		'form_label',
+		esc_html__( 'Form Label', 'learnpress' ),
+		Controls_Manager::TAB_STYLE,
+		LPElementorControls::add_controls_style_text(
+			'form_label',
+			'.become-teacher-form label'
+		)
+	),
+	LPElementorControls::add_fields_in_section(
+		'form_input_text',
+		esc_html__( 'Form Input', 'learnpress' ),
+		Controls_Manager::TAB_STYLE,
+		LPElementorControls::add_controls_style_button(
+			'form_input_text',
+			'.become-teacher-form input[type=text], .become-teacher-form textarea'
+		)
 	),
 	LPElementorControls::add_fields_in_section(
 		'btn_submit',

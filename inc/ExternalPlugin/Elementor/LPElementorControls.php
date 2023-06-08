@@ -280,15 +280,46 @@ class LPElementorControls {
 	}
 
 	/**
-	 * Group control style for text.
+	 * Include or exclude more fields.
 	 *
-	 * @param string $prefix_name
-	 * @param string $selector
+	 * @param array $fields
+	 * @param string $prefix_name - prefix name of field for exclude. Format: 'prefix_name'_'field_name_want_exclude'
+	 * @param array $include - no need prefix_name, must add by standard format: 'prefix_name'_'btn'_'attribute'
+	 * @param array $exclude
 	 *
 	 * @return array
 	 */
-	public static function add_controls_style_button( string $prefix_name, string $selector ): array {
-		return [
+	private static function add_group_style_controls( array $fields, string $prefix_name,
+		array $include = [], array $exclude = [] ): array {
+
+		if ( ! empty( $include ) ) {
+			$fields = array_merge( $fields, $include );
+		}
+
+		if ( ! empty( $exclude ) ) {
+			foreach ( $exclude as $field ) {
+				$field = "{$prefix_name}_{$field}";
+				unset( $fields[ $field ] );
+			}
+		}
+
+		return $fields;
+	}
+
+	/**
+	 * Group control style for button.
+	 *
+	 * @param string $prefix_name
+	 * @param string $selector
+	 * @param array $include
+	 * @param array $exclude
+	 *
+	 * @return array
+	 */
+	public static function add_controls_style_button( string $prefix_name, string $selector,
+		array $include = [], array $exclude = [] ): array {
+
+		$fields = [
 			"{$prefix_name}_btn_margin"           => self::add_responsive_control_type(
 				"{$prefix_name}_btn_margin",
 				esc_html__( 'Margin', 'learnpress' ),
@@ -355,107 +386,79 @@ class LPElementorControls {
 				]
 			),
 		];
+
+		return self::add_group_style_controls( $fields, $prefix_name, $include, $exclude );
 	}
 
 	/**
-	 * Group control style for form.
+	 * Group control style for text.
 	 *
-	 * @param string $name_field
-	 * @param string $title
+	 * @param string $prefix_name
 	 * @param string $selector
-	 * @param string $field
-	 * @param array $groups
+	 * @param array $include
+	 * @param array $exclude
 	 *
 	 * @return array
 	 */
-	public static function add_control_style_for_form( string $name_field, string $title, string $selector, string $field, array $groups = [] ): array {
-		$fields = array_merge(
-			[
-				"{$name_field}_row_gap"             => self::add_control_type_slider(
-					"{$name_field}_row_gap",
-					esc_html__( 'Rows Gap', 'learnpress' ),
-					0,
-					'px',
-					[
-						'selectors' => array(
-							"{{WRAPPER}} $selector $field" => 'margin-bottom: {{SIZE}}{{UNIT}};',
-							"{{WRAPPER}} $selector"        => 'margin-bottom: -{{SIZE}}{{UNIT}};',
-						),
-					]
-				),
-				"{$name_field}_label_spacing"       => self::add_control_type_slider(
-					"{$name_field}_label_spacing",
-					esc_html__( 'Label Spacing', 'learnpress' ),
-					0,
-					'px',
-					[
-						'range'     => array(
-							'px' => array(
-								'min'  => 0,
-								'max'  => 60,
-								'step' => 1,
-							),
-						),
-						'selectors' => array(
-							'{{WRAPPER}} ' . $selector . ' label' => 'margin-bottom: {{SIZE}}{{UNIT}};',
-						),
-					]
-				),
-				"{$name_field}_label_color"         => self::add_control_type_color(
-					"{$name_field}_label_color",
-					esc_html__( 'Label Color', 'learnpress' ),
-					[ '{{WRAPPER}} ' . $selector . ' label' => 'color: {{VALUE}};' ]
-				),
-				"{$name_field}_label_typography"    => self::add_group_control_type(
-					"{$name_field}_label_typography",
-					Group_Control_Typography::get_type(),
-					"{{WRAPPER}} $selector label",
-					[
-						'label' => esc_html__( 'Label Typography', 'learnpress' ),
-					]
-				),
-				"{$name_field}_field_color"         => self::add_control_type_color(
-					"{$name_field}_field_color",
-					esc_html__( 'Field Color', 'learnpress' ),
-					[ '{{WRAPPER}} ' . $selector . ' ' . $field . ' input, {{WRAPPER}} ' . $selector . ' ' . $field . ' textarea' => 'color: {{VALUE}};' ]
-				),
-				"{$name_field}_field_background"    => self::add_control_type_color(
-					"{$name_field}_field_background",
-					esc_html__( 'Field Background', 'learnpress' ),
-					[ '{{WRAPPER}} ' . $selector . ' ' . $field . ' input, {{WRAPPER}} ' . $selector . ' ' . $field . ' textarea' => 'background-color: {{VALUE}};' ]
-				),
-				"{$name_field}_field_border"        => self::add_group_control_type(
-					"{$name_field}_field_border",
-					Group_Control_Border::get_type(),
-					"{{WRAPPER}} $selector $field input, {{WRAPPER}} $selector $field textarea",
-					[
-						'label'       => esc_html__( 'Field Border', 'learnpress' ),
-						'placeholder' => '1px',
-						'default'     => '1px',
-					]
-				),
-				"{$name_field}_field_border_radius" => self::add_control_type(
-					"{$name_field}_field_border_radius",
-					esc_html__( 'Field Border Radius', 'learnpress' ),
-					'',
-					Controls_Manager::DIMENSIONS,
-					[
-						'default'    => [],
-						'size_units' => array( 'px', '%' ),
-						'selectors'  => [
-							"{{WRAPPER}} $selector $field input, {{WRAPPER}} $selector $field textarea" => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-						],
-					]
-				),
-			],
-			$groups
-		);
+	public static function add_controls_style_text( string $prefix_name, string $selector,
+		array $include = [], array $exclude = [] ): array {
+		$fields = [
+			"{$prefix_name}_text_margin"               => self::add_responsive_control_type(
+				"{$prefix_name}_text_margin",
+				esc_html__( 'Margin', 'learnpress' ),
+				[],
+				Controls_Manager::DIMENSIONS,
+				[
+					'size_units' => [ 'px', '%', 'custom' ],
+					'selectors'  => array(
+						"{{WRAPPER}} $selector" => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+					),
+				]
+			),
+			"{$prefix_name}_text_padding"              => self::add_responsive_control_type(
+				"{$prefix_name}_text_padding",
+				esc_html__( 'Padding', 'learnpress' ),
+				[],
+				Controls_Manager::DIMENSIONS,
+				[
+					'size_units' => [ 'px', '%', 'custom' ],
+					'selectors'  => array(
+						"{{WRAPPER}} $selector" => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+					),
+				]
+			),
+			"{$prefix_name}_text_typography"           => self::add_group_control_type(
+				"{$prefix_name}_typography",
+				Group_Control_Typography::get_type(),
+				"{{WRAPPER}} $selector"
+			),
+			"{$prefix_name}_text_shadow"               => self::add_group_control_type(
+				"{$prefix_name}_shadow",
+				Group_Control_Text_Shadow::get_type(),
+				"{{WRAPPER}} $selector"
+			),
+			"{$prefix_name}_text_btn_color"            => self::add_control_type_color(
+				"{$prefix_name}_btn_color",
+				esc_html__( 'Text Color', 'learnpress' ),
+				[ "{{WRAPPER}} $selector" => 'color: {{VALUE}}' ]
+			),
+			"{$prefix_name}_text_btn_color_hover"      => self::add_control_type_color(
+				"{$prefix_name}_btn_color_hover",
+				esc_html__( 'Text Color Hover', 'learnpress' ),
+				[ "{{WRAPPER}} $selector:hover" => 'color: {{VALUE}}' ]
+			),
+			"{$prefix_name}_text_btn_background"       => self::add_control_type_color(
+				"{$prefix_name}_btn_background",
+				esc_html__( 'Background Color', 'learnpress' ),
+				[ "{{WRAPPER}} $selector" => 'background: {{VALUE}}' ]
+			),
+			"{$prefix_name}_text_btn_background_hover" => self::add_control_type_color(
+				"{$prefix_name}_btn_background_hover",
+				esc_html__( 'Background Color Hover', 'learnpress' ),
+				[ "{{WRAPPER}} $selector:hover" => 'background: {{VALUE}}' ]
+			),
+		];
 
-		return self::add_fields_in_section(
-			"form_section_$name_field",
-			$title,
-			Controls_Manager::TAB_STYLE,
-			$fields
-		);
+		return self::add_group_style_controls( $fields, $prefix_name, $include, $exclude );
 	}
 }
