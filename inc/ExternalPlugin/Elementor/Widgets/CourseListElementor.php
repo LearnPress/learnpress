@@ -65,6 +65,7 @@ class CourseListElementor extends LPElementorWidgetBase {
 
 			if ( empty( $courses ) ) {
 				\LearnPress::instance()->template( 'course' )->no_courses_found();
+				return;
 			}
 			?>
 			<div class="lp-archive-courses">

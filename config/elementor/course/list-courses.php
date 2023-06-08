@@ -137,14 +137,14 @@ $style_fields = array_merge(
 );
 
 return apply_filters(
-	'learn-press/elementor/instructor/become-a-teacher/tab-content',
+	'learn-press/elementor/course/list-courses',
 	array_merge(
 		apply_filters(
-			'learn-press/elementor/instructor/become-a-teacher/tab-content/tab-content/fields',
+			'learn-press/elementor/course/list-courses/tab-content',
 			$content_fields
 		),
 		apply_filters(
-			'learn-press/elementor/instructor/become-a-teacher/tab-styles/fields',
+			'learn-press/elementor/course/list-courses/tab-styles',
 			$style_fields
 		)
 	)

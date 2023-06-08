@@ -89,14 +89,14 @@ $style_fields = array_merge(
 );
 
 return apply_filters(
-	'learn-press/elementor/instructor/become-a-teacher/tab-content',
+	'learn-press/elementor/instructor/become-a-teacher',
 	array_merge(
 		apply_filters(
-			'learn-press/elementor/instructor/become-a-teacher/tab-content/tab-content/fields',
+			'learn-press/elementor/instructor/become-a-teacher/tab-content',
 			$content_fields
 		),
 		apply_filters(
-			'learn-press/elementor/instructor/become-a-teacher/tab-styles/fields',
+			'learn-press/elementor/instructor/become-a-teacher/tab-styles',
 			$style_fields
 		)
 	)

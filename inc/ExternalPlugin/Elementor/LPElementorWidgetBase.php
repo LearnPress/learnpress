@@ -55,9 +55,7 @@ class LPElementorWidgetBase extends Widget_Base {
 	}
 
 	public function get_keywords() {
-		$keywords = $this->keywords;
-
-		return array_push( $keywords, 'learnpress' );
+		return array_push( $this->keywords, 'learnpress' );
 	}
 
 	public function get_categories() {
