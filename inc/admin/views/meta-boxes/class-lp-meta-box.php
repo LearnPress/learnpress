@@ -23,6 +23,8 @@ abstract class LP_Meta_Box {
 		add_action( 'learnpress_save_' . $this->post_type . '_metabox', array( $this, 'save' ) );
 
 		add_action( 'learnpress_save_lp_course_metabox', 'LP_Meta_Box_Course::save_eduma_child_metabox_v3', 10 );
+
+		add_action( 'wp_ajax__lp_save_materials', array( $this, 'lp_save_materials' ) );
 	}
 
 	// Include fields.
@@ -92,5 +94,23 @@ abstract class LP_Meta_Box {
 		self::$saved_meta_boxes = true;
 
 		do_action( 'learnpress_save_' . $post->post_type . '_metabox', $post_id, $post );
+	}
+	public function lp_save_materials() {
+
+
+		$max_file_size = LP_Settings::get_option( 'material_max_file_size' );
+		print_r( $_POST['data'][0] );
+		print_r( $_FILES['file'] );
+		echo count($_FILES['file']['name']);
+		$data =  $_POST['data'];
+		update_post_meta( $_POST['post_id'], '__save_lp_material_test', $data );
+		wp_send_json_success(
+			array(
+				'call' => 'From some API/trigger', 
+			    'post_id' => $_POST['post_id'],
+			    'data'	=> $_POST['data']
+			),
+			200
+		);
 	}
 }

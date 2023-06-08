@@ -145,11 +145,14 @@ return apply_filters(
 					'placeholder'	=> 'jpg,txt,zip,pdf,doc,docx,ppt',
 				),
 				array(
-					'title'   		=> esc_html__( 'File Size Limit', 'learnpress' ),
-					'id'      		=> 'material_max_file_size',
-					'default' 		=> 2,
-					'type'    		=> 'number',
-					'desc'    		=> esc_html__( 'Set Maximum Attachment size for upload', 'learnpress' ),
+					'title'   			=> esc_html__( 'File Size Limit', 'learnpress' ),
+					'id'      			=> 'material_max_file_size',
+					'default' 			=> 2,
+					'type'    			=> 'number',
+					'desc'    			=> esc_html__( 'Set Maximum Attachment size for upload', 'learnpress' ),
+					'custom_attributes' => array(
+												'min' => '1',
+											),
 				),
 				array(
 					'type' => 'sectionend',
