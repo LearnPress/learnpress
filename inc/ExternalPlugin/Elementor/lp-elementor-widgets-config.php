@@ -5,6 +5,7 @@
  */
 
 use LearnPress\ExternalPlugin\Elementor\Widgets\BecomeATeacherElementor;
+use LearnPress\ExternalPlugin\Elementor\Widgets\CourseListElementor;
 use LearnPress\ExternalPlugin\Elementor\Widgets\SingleInstructorElementor;
 
 return apply_filters(
@@ -13,7 +14,7 @@ return apply_filters(
 		'become-a-teacher'  => BecomeATeacherElementor::class,
 		'login-form'        => \Elementor\LP_Elementor_Widget_Login_Form::class,
 		'register-form'     => \Elementor\LP_Elementor_Widget_Register_Form::class,
-		'list-courses'      => \Elementor\LP_Elementor_Widget_List_Courses::class,
+		'list-courses'      => CourseListElementor::class,
 		'single-instructor' => SingleInstructorElementor::class,
 	]
 );

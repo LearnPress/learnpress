@@ -906,7 +906,22 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		 */
 		public function get_categories(): array {
 			// Todo: set cache.
-			$categories = get_the_terms( $this->get_id(), 'course_category' );
+			$categories = get_the_terms( $this->get_id(), LP_COURSE_CATEGORY_TAX );
+			if ( ! $categories ) {
+				$categories = array();
+			}
+
+			return $categories;
+		}
+
+		/**
+		 * Get all categories.
+		 *
+		 * @return array
+		 */
+		public static function get_all_categories(): array {
+			// Todo: set cache.
+			$categories = get_terms( LP_COURSE_CATEGORY_TAX );
 			if ( ! $categories ) {
 				$categories = array();
 			}

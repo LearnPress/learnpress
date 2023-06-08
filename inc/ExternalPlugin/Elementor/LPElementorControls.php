@@ -12,7 +12,6 @@ use Elementor\Controls_Manager;
 use Elementor\Group_Control_Border;
 use Elementor\Group_Control_Text_Shadow;
 use Elementor\Group_Control_Typography;
-use phpDocumentor\Reflection\DocBlock\Tags\Param;
 
 class LPElementorControls {
 	/**
@@ -43,10 +42,10 @@ class LPElementorControls {
 	/**
 	 * Start section.
 	 *
-	 * @param string $id
-	 * @param string $label
+	 * @param string $id_section
+	 * @param string $label_section
 	 * @param string $tab
-	 * @param array $args
+	 * @param array $fields_inner
 	 *
 	 * @return string[]
 	 */
@@ -121,6 +120,60 @@ class LPElementorControls {
 	}
 
 	/**
+	 * control type select.
+	 *
+	 * @param string $id
+	 * @param string $label
+	 * @param array $options
+	 * @param $default
+	 * @param array $args
+	 *
+	 * @return string[]
+	 */
+	public static function add_control_type_select( string $id, string $label, array $options,
+		$default, array $args = [] ): array {
+		return self::add_control_type(
+			$id,
+			$label,
+			$default,
+			Controls_Manager::SELECT,
+			array_merge(
+				[
+					'options' => $options,
+				],
+				$args
+			)
+		);
+	}
+
+	/**
+	 * control type select.
+	 *
+	 * @param string $id
+	 * @param string $label
+	 * @param array $selectors
+	 * @param string $default
+	 * @param array $args
+	 *
+	 * @return string[]
+	 */
+	public static function add_control_type_switcher( string $id, string $label, array $selectors = [],
+		string $default = 'no', array $args = [] ): array {
+		return self::add_control_type(
+			$id,
+			$label,
+			$default,
+			Controls_Manager::SWITCHER,
+			array_merge(
+				[
+					'selectors' => $selectors,
+				],
+				$args
+			)
+		);
+	}
+
+	/**
 	 * control type color.
 	 *
 	 * @param string $id
@@ -182,7 +235,7 @@ class LPElementorControls {
 	 *
 	 * @param string $id
 	 * @param string $group_type
-	 * @param string $el_selector
+	 * @param string $selector
 	 * @param array $args
 	 *
 	 * @return string[]
@@ -241,6 +294,15 @@ class LPElementorControls {
 	public static function add_controls_style_text( string $prefix_name, string $selector,
 		array $include = [], array $exclude = [] ): array {
 		$fields = [
+			"{$prefix_name}_text_show"                 => self::add_control_type_switcher(
+				"{$prefix_name}_text_show",
+				esc_html__( 'Hide Element', 'learnpress' ),
+				[ "{{WRAPPER}} $selector" => 'display: {{VALUE}}' ],
+				'no',
+				[
+					'return_value' => 'none',
+				]
+			),
 			"{$prefix_name}_text_margin"               => self::add_responsive_control_type(
 				"{$prefix_name}_text_margin",
 				esc_html__( 'Margin', 'learnpress' ),
@@ -335,6 +397,75 @@ class LPElementorControls {
 				),
 			]
 		);
+
+		return self::add_group_style_controls( $fields, $prefix_name, $include, $exclude );
+	}
+
+	/**
+	 * Group control style for button.
+	 *
+	 * @param string $prefix_name
+	 * @param string $selector
+	 * @param array $include
+	 * @param array $exclude
+	 *
+	 * @return array
+	 */
+	public static function add_controls_style_image( string $prefix_name, string $selector,
+		array $include = [], array $exclude = [] ): array {
+
+		$fields = [
+			"{$prefix_name}_img_show"          => self::add_responsive_control_type(
+				"{$prefix_name}_img_show",
+				esc_html__( 'Hide Image', 'learnpress' ),
+				'no',
+				Controls_Manager::SWITCHER,
+				[
+					'selectors'    => [ "{{WRAPPER}} $selector" => 'display: {{VALUE}}' ],
+					'return_value' => 'none',
+				]
+			),
+			"{$prefix_name}_img_margin"        => self::add_responsive_control_type(
+				"{$prefix_name}_text_margin",
+				esc_html__( 'Margin', 'learnpress' ),
+				[],
+				Controls_Manager::DIMENSIONS,
+				[
+					'size_units' => [ 'px', '%', 'custom' ],
+					'selectors'  => array(
+						"{{WRAPPER}} $selector" => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+					),
+				]
+			),
+			"{$prefix_name}_img_padding"       => self::add_responsive_control_type(
+				"{$prefix_name}_text_padding",
+				esc_html__( 'Padding', 'learnpress' ),
+				[],
+				Controls_Manager::DIMENSIONS,
+				[
+					'size_units' => [ 'px', '%', 'custom' ],
+					'selectors'  => array(
+						"{{WRAPPER}} $selector" => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+					),
+				]
+			),
+			"{$prefix_name}_img_border"        => self::add_group_control_type(
+				"{$prefix_name}_btn_border",
+				Group_Control_Border::get_type(),
+				"{{WRAPPER}} $selector"
+			),
+			"{$prefix_name}_img_border_radius" => self::add_control_type(
+				"{$prefix_name}_btn_border_radius",
+				esc_html__( 'Border Radius', 'learnpress' ),
+				[],
+				Controls_Manager::DIMENSIONS,
+				[
+					'selectors' => [
+						"{{WRAPPER}} $selector" => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+					],
+				]
+			),
+		];
 
 		return self::add_group_style_controls( $fields, $prefix_name, $include, $exclude );
 	}

@@ -35,6 +35,9 @@ const LP_QUESTION_CPT = 'lp_question';
 const LP_QUIZ_CPT     = 'lp_quiz';
 const LP_ORDER_CPT    = 'lp_order';
 
+// Define constants for custom taxonomies.
+const LP_COURSE_CATEGORY_TAX = 'course_category';
+
 // Role of user .
 const LP_TEACHER_ROLE = 'lp_teacher';
 const ADMIN_ROLE      = 'administrator';
