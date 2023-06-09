@@ -41,7 +41,7 @@ class SingleInstructorTemplate {
 		$html_wrapper = apply_filters(
 			'learn-press/single-instructor/display-name/wrapper',
 			[
-				'<h2><span class="instructor-display-name">' => '</span></h2>',
+				'<span class="instructor-display-name">' => '</span>',
 			],
 			$instructor
 		);
@@ -247,7 +247,7 @@ class SingleInstructorTemplate {
 			$sections = apply_filters(
 				'learn-press/single-instructor/info-right/sections',
 				[
-					'title'       => [ 'text_html' => $this->html_display_name( $instructor ) ],
+					'title'       => [ 'text_html' => "<h2>{$this->html_display_name( $instructor )}</h2>" ],
 					'social'      => [ 'text_html' => $this->html_social( $instructor ) ],
 					'description' => [ 'text_html' => $this->html_description( $instructor ) ],
 				],

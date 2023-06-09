@@ -6,6 +6,8 @@
 
 use LearnPress\ExternalPlugin\Elementor\Widgets\BecomeATeacherElementor;
 use LearnPress\ExternalPlugin\Elementor\Widgets\CourseListElementor;
+use LearnPress\ExternalPlugin\Elementor\Widgets\Instructor\InstructorDescriptionElementor;
+use LearnPress\ExternalPlugin\Elementor\Widgets\Instructor\InstructorTitleElementor;
 use LearnPress\ExternalPlugin\Elementor\Widgets\LoginUserFormElementor;
 use LearnPress\ExternalPlugin\Elementor\Widgets\RegisterUserFormElementor;
 use LearnPress\ExternalPlugin\Elementor\Widgets\SingleInstructorElementor;
@@ -13,6 +15,8 @@ use LearnPress\ExternalPlugin\Elementor\Widgets\SingleInstructorElementor;
 return apply_filters(
 	'lp/elementor/widgets',
 	[
+		'instructor-title'  => InstructorTitleElementor::class,
+		'instructor-description'  => InstructorDescriptionElementor::class,
 		'become-a-teacher'  => BecomeATeacherElementor::class,
 		'login-form'        => LoginUserFormElementor::class,
 		'register-form'     => RegisterUserFormElementor::class,

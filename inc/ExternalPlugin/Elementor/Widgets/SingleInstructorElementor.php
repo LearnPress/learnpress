@@ -20,10 +20,6 @@ class SingleInstructorElementor extends LPElementorWidgetBase {
 	}
 
 	protected function register_controls() {
-		if ( ! is_admin() ) {
-			return;
-		}
-
 		$this->controls = Config::instance()->get( 'single-instructor', 'elementor/instructor' );
 		parent::register_controls();
 	}

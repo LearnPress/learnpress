@@ -27,8 +27,12 @@ class LPElementor {
 	 */
 	public function register_category( Elements_Manager $elements_manager ) {
 		$categories = [
-			'learnpress' => [
+			'learnpress'            => [
 				'title' => esc_html__( 'LearnPress', 'learnpress' ),
+				'icon'  => 'eicon-navigator',
+			],
+			'learnpress_instructor' => [
+				'title' => esc_html__( 'LearnPress Instructor', 'learnpress' ),
 				'icon'  => 'eicon-navigator',
 			],
 		];

@@ -2,9 +2,7 @@
 namespace LearnPress\ExternalPlugin\Elementor;
 
 use Elementor\Controls_Manager;
-use Elementor\Group_Control_Border;
-use Elementor\Group_Control_Text_Shadow;
-use Elementor\Group_Control_Typography;
+use Elementor\Repeater;
 use Elementor\Widget_Base;
 use function PHPUnit\Framework\callback;
 
@@ -78,16 +76,35 @@ class LPElementorWidgetBase extends Widget_Base {
 	/**
 	 * Register controls.
 	 *
-	 * @param $fields
+	 * @param array $fields
 	 *
+	 * @since 4.2.3
+	 * @version 1.0.0
 	 * @return void
 	 */
-	protected function print_fields( $fields ) {
+	protected function print_fields( array $fields ) {
 		foreach ( $fields as $id => $field ) {
 			if ( isset( $field['method'] ) && is_callable( [ $this, $field['method'] ] ) && is_array( $field ) ) {
 				$params = $field;
 				unset( $params['method'] );
-				call_user_func_array( [ $this, $field['method'] ], $params );
+
+				// Register control type Repeater
+				if ( isset( $params[0]['type'] ) && Controls_Manager::REPEATER === $params[0]['type'] ) {
+					$repeater = new Repeater();
+
+					foreach ( $params[0]['fields'] as $key => $value ) {
+						$repeater->add_control( $value['name'], $value );
+					}
+
+					$params[0]['fields']      = $repeater->get_controls();
+					$params[0]['title_field'] = $params[0]['title_field'] ?? '';
+					$this->add_control(
+						$params['id'],
+						$params[0]
+					);
+				} else {
+					call_user_func_array( [ $this, $field['method'] ], $params );
+				}
 			}
 		}
 	}
