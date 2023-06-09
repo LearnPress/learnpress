@@ -26,13 +26,20 @@ class LPElementor {
 	 * @return void
 	 */
 	public function register_category( Elements_Manager $elements_manager ) {
-		$elements_manager->add_category(
-			'learnpress',
-			array(
+		$categories = [
+			'learnpress' => [
 				'title' => esc_html__( 'LearnPress', 'learnpress' ),
 				'icon'  => 'eicon-navigator',
-			)
-		);
+			],
+		];
+
+		$old_categories = $elements_manager->get_categories();
+		$categories     = array_merge( $categories, $old_categories );
+
+		$set_categories = function ( $categories ) {
+			$this->categories = $categories;
+		};
+		$set_categories->call( $elements_manager, $categories );
 	}
 
 	/**
