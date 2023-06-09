@@ -253,7 +253,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/databases/class-lp-user-items-db.php';
 			require_once 'inc/databases/class-lp-user-item-results-db.php';
 			require_once 'inc/databases/class-thim-cace-db.php';
-
+			require_once 'inc/databases/class-lp-material-db.php';
 			// Read files config on folder config .
 			require_once 'inc/Helper/Config.php';
 

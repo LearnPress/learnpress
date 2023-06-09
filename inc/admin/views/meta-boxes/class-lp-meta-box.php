@@ -96,21 +96,69 @@ abstract class LP_Meta_Box {
 		do_action( 'learnpress_save_' . $post->post_type . '_metabox', $post_id, $post );
 	}
 	public function lp_save_materials() {
+		try {
+			$material_data = $_POST['data'] ?? '';
+			$material_data = json_decode( stripslashes( $material_data ), true );
+			$post_id = $_POST['post_id'] ?? 0;
+			if ( ! $post_id ) {
+				throw new Exception( esc_html__( 'Invalid post_id', 'learnpress' ) );
+			}
+			if ( ! $material_data ) {
+				throw new Exception( esc_html__( 'Invalid materials', 'learnpress' ) );
+			}
+			if ( ! function_exists( 'wp_handle_upload' ) || ! function_exists( 'download_url' ) ) {
+			    require_once( ABSPATH . 'wp-admin/includes/file.php' );
+			}
+			$file = array();
+			if ( $_FILES['file'] ) {
+				$file = $_FILES['file'];
+			}
+			$file_method = array( 'upload', 'external' );
+			foreach ( $material_data as $key => $material ) {
+				if ( ! $material['label'] ) {
+					throw new Exception( esc_html__( 'Invalid material file title!', 'learnpress' ) );
+				}
+				if ( ! in_array( $material['method'], $file_method ) ) {
+					throw new Exception( esc_html__( 'Invalid file method', 'learnpress' ) );
+				}
+				if ( $material['method'] == 'upload' && ! $material['file'] ) {
+					throw new Exception( esc_html__( 'Invalid upload file', 'learnpress' ) );
+				}
+				$check_file = $this->check_external_file( $material['link'] );
+				if ( $material['method'] == 'external' && ! $check_file ) {
+					throw new Exception( esc_html__( 'Invalid external link', 'learnpress' ) );
+				}
+			}
+		} catch (Exception $e) {
+			throw new Exception( $e->getMessage() );
+		}
+	}
+	public function check_external_file( $file_url ) {
 
+		// it allows us to use download_url() and wp_handle_sideload() functions
+		require_once( ABSPATH . 'wp-admin/includes/file.php' );
 
-		$max_file_size = LP_Settings::get_option( 'material_max_file_size' );
-		print_r( $_POST['data'][0] );
-		print_r( $_FILES['file'] );
-		echo count($_FILES['file']['name']);
-		$data =  $_POST['data'];
-		update_post_meta( $_POST['post_id'], '__save_lp_material_test', $data );
-		wp_send_json_success(
-			array(
-				'call' => 'From some API/trigger', 
-			    'post_id' => $_POST['post_id'],
-			    'data'	=> $_POST['data']
-			),
-			200
+		// download to temp dir
+		$temp_file = download_url( $file_url );
+
+		if( is_wp_error( $temp_file ) ) {
+			return false;
+		}
+
+		//get file properties
+		$file = array(
+			'name'     => basename( $file_url ),
+			'type'     => mime_content_type( $temp_file ),
+			'tmp_name' => $temp_file,
+			'size'     => filesize( $temp_file ),
 		);
+
+		return $file;
+	}
+	public function material_upload_file( $file_name, $file_tmp ){
+		require_once( ABSPATH . 'wp-admin/includes/file.php' );
+		
+		$file = wp_upload_bits( $file_name, null, file_get_contents( $file_tmp ) );
+		return $file;
 	}
 }

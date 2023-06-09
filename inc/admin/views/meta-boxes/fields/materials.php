@@ -107,39 +107,52 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 					let material_data = [];
 						
 					if ( materials.length > 0 ) {
-						let formData = new FormData();
+						let formData = new FormData(), send_request = true;
 						formData.append( 'action', '_lp_save_materials' );
 						materials.forEach( function ( ele, index ) {
 							let label = ele.querySelector( '.lp-material--field-title' ).value,
 								method = ele.querySelector( '.lp-material--field-method' ).value,
 								external_field = ele.querySelector( '.lp-material--field-external-link' ),
 								upload_field = ele.querySelector( '.lp-material--field-upload' ), file, link;
+							if ( ! label ){
+								send_request = false;
+							}
 							switch ( method ) {
 								case 'upload' :
-									file = upload_field.files[0].name;
-									link = '';
-									formData.append( 'file[]', upload_field.files[0] );
+									if ( upload_field.value ) {
+										file = upload_field.files[0].name;
+										link = '';
+										formData.append( 'file[]', upload_field.files[0] );
+									} else {
+										send_request = false;
+									}
 									break;
 								case 'external' :
 									link = external_field.value;
 									file = '';
+									if( ! link )
+										send_request = false;
 									break;
 							}
 							material_data.push( { 'label': label, 'method': method, 'file':file, 'link':link } );
 						} );
-
-						material_data = JSON.stringify( material_data );
-						let url = `<?php echo esc_url(admin_url('admin-ajax.php')) ?>`;
-						
-						formData.append( 'data', material_data );
-						formData.append( 'post_id', <?php esc_attr_e( $thepostid ) ?> );
-						fetch( url, {
-						    method: 'POST',
-						    body: formData,
-						} ) // wrapped
-						    .then( res => res.text() )
-						    .then( data => console.log( data ) )
-						    .catch( err => console.log( err ) );
+						if ( !send_request ) {
+							alert( 'Enter file title, choose file or enter file link!' )
+						} else {
+							console.log(material_data);
+							material_data = JSON.stringify( material_data );
+							let url = `<?php echo esc_url(admin_url('admin-ajax.php')) ?>`;
+							
+							formData.append( 'data', material_data );
+							formData.append( 'post_id', <?php esc_attr_e( $thepostid ) ?> );
+							fetch( url, {
+							    method: 'POST',
+							    body: formData,
+							} ) // wrapped
+							    .then( res => res.text() )
+							    .then( data => console.log( data ) )
+							    .catch( err => console.log( err ) );	
+						}
 					}
 					// console.log( data );
 				} );
