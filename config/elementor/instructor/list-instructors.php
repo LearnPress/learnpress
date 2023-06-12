@@ -17,7 +17,7 @@ $content_fields = array_merge(
 		Controls_Manager::TAB_CONTENT,
 		[
 			LPElementorControls::add_control_type(
-				'layouts',
+				'item_layouts',
 				esc_html__( 'Add layout and drag to top to set Active', 'learnpress' ),
 				[
 					[
@@ -47,6 +47,68 @@ $content_fields = array_merge(
 			),
 		]
 	),
+	LPElementorControls::add_fields_in_section(
+		'content',
+		esc_html__( 'Content', 'learnpress' ),
+		Controls_Manager::TAB_CONTENT,
+		[
+			/*'instructor_ids' => LPElementorControls::add_control_type(
+				'instructor_ids',
+				esc_html__( 'Select Instructor ID', 'learnpress' ),
+				[],
+				Controls_Manager::TEXT,
+				[
+					'description' => 'ID of Instructor separated by comma. Ex: 1,2,3',
+				]
+			),
+			'item_per_page' => LPElementorControls::add_control_type(
+				'item_per_page',
+				esc_html__( 'Item per page', 'learnpress' ),
+				5,
+				Controls_Manager::NUMBER,
+				[
+					'min' => -1,
+					'max' => 100,
+				]
+			),*/
+			'layout'   => LPElementorControls::add_control_type_select(
+				'layout',
+				esc_html__( 'Layout', 'learnpress' ),
+				[
+					'grid'  => esc_html__( 'Grid', 'learnpress' ),
+					'block' => esc_html__( 'list', 'learnpress' ),
+				],
+				'grid',
+				[
+					'selectors'    => [
+						'{{WRAPPER}} .list-instructors' => 'display: {{VALUE}}; list-style: none; padding: 0; margin: 0;',
+						'{{WRAPPER}} .lp-list-instructors-grid .list-instructors' => 'display: none',
+					],
+					'prefix_class' => 'lp-list-instructors-',
+				]
+			),
+			'order_by' => LPElementorControls::add_control_type_select(
+				'order_by',
+				esc_html__( 'Order By', 'learnpress' ),
+				[
+					'name'      => esc_html__( 'Name a-z', 'learnpress' ),
+					'desc_name' => esc_html__( 'Name z-a', 'learnpress' ),
+				],
+				'name'
+			),
+			'limit'    => LPElementorControls::add_control_type(
+				'limit',
+				esc_html__( 'Limit', 'learnpress' ),
+				5,
+				Controls_Manager::NUMBER,
+				[
+					'min'         => -1,
+					'max'         => 100,
+					'description' => 'Number of items to show. Enter -1 to show all instructors.',
+				]
+			),
+		]
+	),
 	[]
 );
 
@@ -54,7 +116,7 @@ $content_fields = array_merge(
 $style_fields = array_merge(
 	LPElementorControls::add_fields_in_section(
 		'title',
-		esc_html__( 'Title Course', 'learnpress' ),
+		esc_html__( 'Title Instructor', 'learnpress' ),
 		Controls_Manager::TAB_STYLE,
 		LPElementorControls::add_controls_style_text(
 			'title',

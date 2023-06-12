@@ -31,51 +31,44 @@ class ListInstructorsElementor extends LPElementorWidgetBase {
 		try {
 			$settings = $this->get_settings_for_display();
 
-			/**
-			 * Get instructor id
-			 *
-			 * If is page single instructor, will be get instructor id from query var
-			 * If is set instructor id in setting widget, will be get instructor id from widget
-			 */
-			//$instructor_id = get_query_var( 'instructor' );
-			$instructor_id = 1;
-			$instructor    = learn_press_get_user( $instructor_id );
-			if ( ! $instructor ) {
-				throw new Exception( __( 'Instructor not found', 'learnpress' ) );
-			}
-
 			if ( empty( $settings['layouts'] ) ) {
 				return;
 			}
 
 			// Query
-			$args = apply_filters(
-				'learnpress/instructor-list/argsx',
-				array(
-					'number'   => $params['number'] ?? 4,
-					'paged'    => $params['paged'] ?? 1,
-					'orderby'  => $params['orderby'] ?? 'display_name',
-					'order'    => $params['order'] ?? 'asc',
-					'role__in' => [ 'lp_teacher', 'administrator' ],
-					'fields'   => 'ID',
-				)
-			);
+			$args = [
+				'number'   => $settings['limit'] ?? 5,
+				'role__in' => [ 'lp_teacher', 'administrator' ],
+				'fields'   => 'ID',
+			];
+
+			switch ( $settings['order_by'] ) {
+				case 'desc_name':
+					$args['orderby'] = 'display_name';
+					$args['order']   = 'desc';
+					break;
+				case 'name':
+				default:
+					$args['orderby'] = 'display_name';
+					$args['order']   = 'asc';
+					break;
+			}
 
 			$query = new WP_User_Query( $args );
 
 			$instructors = $query->get_results();
 			// End Query
 
-			$layout = $settings['layouts'][0];
+			$item_layout = $settings['item_layouts'][0];
 
 			// Show list instructors
 			$singleInstructorTemplate = SingleInstructorTemplate::instance();
-			echo '<ul>';
+			echo '<ul class="list-instructors">';
 			foreach ( $instructors as $instructor_id ) {
 				$instructor = learn_press_get_user( $instructor_id );
 				?>
-				<li>
-					<?php echo $singleInstructorTemplate->render_data( $instructor, html_entity_decode( $layout['layout_html'] ) ); ?>
+				<li class="item-instructor">
+					<?php echo $singleInstructorTemplate->render_data( $instructor, html_entity_decode( $item_layout['layout_html'] ) ); ?>
 				</li>
 				<?php
 			}
