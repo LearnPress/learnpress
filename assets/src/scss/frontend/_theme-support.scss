@@ -4,12 +4,18 @@
 
  // Theme Divi
  .lp-archive-courses {
-    ul {
+	 ul, ol {
+		 list-style-type:decimal;
+		 list-style-position:inside;
+		 padding:0 0 23px;
+	 }
+
+	 ul {
         list-style-type: revert;
         padding:0 0 23px 1em;
 
         &.learn-press-breadcrumb, &.course-nav-tabs{
-            list-style: none; 
+            list-style: none;
             padding: 0;
             @media (max-width: 768px) {
                 padding-left: 15px;
@@ -17,11 +23,7 @@
             }
         }
     }
-    ul, ol {
-        list-style-type:decimal;
-        list-style-position:inside;
-        padding:0 0 23px;
-    } 
+
     ol ul {
         padding:2px 0 2px 35px
     }
@@ -77,7 +79,7 @@
         > p, > div {
             padding: 0;
         }
-    } 
+    }
     &.learnpress-profile {
         .content {
             z-index: 100;
