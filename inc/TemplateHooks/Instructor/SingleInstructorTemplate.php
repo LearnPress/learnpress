@@ -9,6 +9,7 @@ namespace LearnPress\TemplateHooks\Instructor;
 
 use LearnPress\Helpers\Template;
 use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
+use LP_User;
 
 class SingleInstructorTemplate {
 	public static function instance() {
@@ -37,14 +38,10 @@ class SingleInstructorTemplate {
 	 *
 	 * @return string
 	 */
-	public function html_display_name( \LP_User $instructor ): string {
-		$html_wrapper = apply_filters(
-			'learn-press/single-instructor/display-name/wrapper',
-			[
-				'<span class="instructor-display-name">' => '</span>',
-			],
-			$instructor
-		);
+	public function html_display_name( LP_User $instructor ): string {
+		$html_wrapper = [
+			'<span class="instructor-display-name">' => '</span>',
+		];
 		return Template::instance()->nest_elements( $html_wrapper, $instructor->get_display_name() );
 	}
 
@@ -55,17 +52,13 @@ class SingleInstructorTemplate {
 	 *
 	 * @return string
 	 */
-	public function html_social( \LP_User $instructor ): string {
+	public function html_social( LP_User $instructor ): string {
 		$content = '';
 
 		try {
-			$html_wrapper = apply_filters(
-				'learn-press/single-instructor/social/wrapper',
-				[
-					'<div class="instructor-social">' => '</div>',
-				],
-				$instructor
-			);
+			$html_wrapper = [
+				'<div class="instructor-social">' => '</div>',
+			];
 			$socials      = $instructor->get_profile_social( $instructor->get_id() );
 			ob_start();
 			foreach ( $socials as $k => $social ) {
@@ -88,17 +81,13 @@ class SingleInstructorTemplate {
 	 *
 	 * @return string
 	 */
-	public function html_description( \LP_User $instructor ): string {
+	public function html_description( LP_User $instructor ): string {
 		$content = '';
 
 		try {
-			$html_wrapper = apply_filters(
-				'learn-press/single-instructor/description/wrapper',
-				[
-					'<p class="instructor-description">' => '</p>',
-				],
-				$instructor
-			);
+			$html_wrapper = [
+				'<p class="instructor-description">' => '</p>',
+			];
 
 			$content = Template::instance()->nest_elements( $html_wrapper, $instructor->get_description() );
 		} catch ( \Throwable $e ) {
@@ -115,17 +104,13 @@ class SingleInstructorTemplate {
 	 *
 	 * @return string
 	 */
-	public function html_avatar( \LP_User $instructor ): string {
+	public function html_avatar( LP_User $instructor ): string {
 		$content = '';
 
 		try {
-			$html_wrapper = apply_filters(
-				'learn-press/single-instructor/avatar/wrapper',
-				[
-					'<div class="instructor-avatar">' => '</div>',
-				],
-				$instructor
-			);
+			$html_wrapper = [
+				'<div class="instructor-avatar">' => '</div>',
+			];
 
 			$content = Template::instance()->nest_elements( $html_wrapper, $instructor->get_profile_picture() );
 		} catch ( \Throwable $e ) {
@@ -133,6 +118,105 @@ class SingleInstructorTemplate {
 		}
 
 		return $content;
+	}
+
+	/**
+	 * Get html total courses of instructor.
+	 *
+	 * @param LP_User $instructor
+	 *
+	 * @since 4.2.3
+	 * @version 1.0.0
+	 * @return string
+	 */
+	public function html_count_courses( LP_User $instructor ): string {
+		$content = '';
+
+		try {
+			$html_wrapper = [
+				'<div class="instructor-total-courses">' => '</div>',
+			];
+
+			$instructor_statistic = $instructor->get_instructor_statistic();
+
+			$content = Template::instance()->nest_elements( $html_wrapper, $instructor_statistic['published_course'] );
+		} catch ( \Throwable $e ) {
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
+		}
+
+		return $content;
+	}
+
+	/**
+	 * Get html total students learn instructor.
+	 *
+	 * @param LP_User $instructor
+	 *
+	 * @since 4.2.3
+	 * @version 1.0.0
+	 * @return string
+	 */
+	public function html_count_students( LP_User $instructor ): string {
+		$content = '';
+
+		try {
+			$html_wrapper = [
+				'<div class="instructor-total-students">' => '</div>',
+			];
+
+			$instructor_statistic = $instructor->get_instructor_statistic();
+
+			$content = Template::instance()->nest_elements( $html_wrapper, $instructor_statistic['total_student'] );
+		} catch ( \Throwable $e ) {
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
+		}
+
+		return $content;
+	}
+
+	/**
+	 * @param LP_User $instructor
+	 *
+	 * @return string
+	 */
+	public function url_instructor( LP_User $instructor ): string {
+		return '#url_instructor';
+	}
+
+	/**
+	 * Render string to data content
+	 *
+	 * @param LP_User $instructor
+	 * @param string $data_content
+	 *
+	 * @return string
+	 */
+	public function render_data( LP_User $instructor, string $data_content = '' ): string {
+		$singleInstructorTemplate = SingleInstructorTemplate::instance();
+
+		return str_replace(
+			[
+				'{{instructor_id}}',
+				'{{instructor_avatar}}',
+				'{{instructor_display_name}}',
+				'{{instructor_description}}',
+				'{{instructor_count_courses}}',
+				'{{instructor_count_students}}',
+				'{{instructor_social}}',
+				'{{instructor_url}}',
+			],
+			[
+				$instructor->get_id(),
+				$singleInstructorTemplate->html_avatar( $instructor ),
+				$singleInstructorTemplate->html_display_name( $instructor ),
+				$singleInstructorTemplate->html_description( $instructor ),
+				$singleInstructorTemplate->html_count_courses( $instructor ),
+				$singleInstructorTemplate->html_count_students( $instructor ),
+				$singleInstructorTemplate->html_social( $instructor ),
+				$singleInstructorTemplate->url_instructor( $instructor ),
+			],
+			$data_content
+		);
 	}
 
 	/**
