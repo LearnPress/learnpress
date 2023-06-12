@@ -274,6 +274,16 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					self::url( 'js/dist/admin/admin-notices' . self::$_min_assets . '.js' ),
 					[ 'wp-api-fetch' ]
 				),
+				'lp-material-downloadable'                  => new LP_Asset_Key(
+					$this->url( self::$_folder_source . 'js/admin/lp-material' . self::$_min_assets . '.js' ),
+					array(),
+					array(
+						LP_COURSE_CPT,
+						LP_LESSON_CPT,
+					),
+					0,
+					1
+				),
 			)
 		);
 
