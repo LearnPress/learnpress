@@ -39,6 +39,7 @@ $content_fields = array_merge(
 							'name'        => 'layout_html',
 							'label'       => esc_html__( 'Layout HTML', 'learnpress' ),
 							'type'        => Controls_Manager::WYSIWYG,
+							'description' => 'Sections: {{instructor_avatar}}, {{instructor_url}}, {{instructor_display_name}}, {{instructor_total_courses}}, {{instructor_total_students}}',
 							'label_block' => true,
 						],
 					],
