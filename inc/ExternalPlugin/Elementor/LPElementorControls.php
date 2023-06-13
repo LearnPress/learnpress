@@ -294,13 +294,24 @@ class LPElementorControls {
 	public static function add_controls_style_text( string $prefix_name, string $selector,
 		array $include = [], array $exclude = [] ): array {
 		$fields = [
-			"{$prefix_name}_text_show"                 => self::add_control_type_switcher(
-				"{$prefix_name}_text_show",
-				esc_html__( 'Hide Element', 'learnpress' ),
-				[ "{{WRAPPER}} $selector" => 'display: {{VALUE}}' ],
-				'no',
+			"{$prefix_name}_text_display"              => self::add_control_type_select(
+				"{$prefix_name}_text_display",
+				esc_html__( 'Display', 'learnpress' ),
 				[
-					'return_value' => 'none',
+					'block'        => esc_html__( 'Block', 'learnpress' ),
+					'inline-block' => esc_html__( 'Inline Block', 'learnpress' ),
+					'inline'       => esc_html__( 'Inline', 'learnpress' ),
+					'flex'         => esc_html__( 'Flex', 'learnpress' ),
+					'inline-flex'  => esc_html__( 'Inline Flex', 'learnpress' ),
+					'grid'         => esc_html__( 'Grid', 'learnpress' ),
+					'inline-grid'  => esc_html__( 'Inline Grid', 'learnpress' ),
+					'none'         => esc_html__( 'None', 'learnpress' ),
+				],
+				'inline',
+				[
+					'selectors' => [
+						"{{WRAPPER}} $selector" => 'display: {{VALUE}}',
+					],
 				]
 			),
 			"{$prefix_name}_text_margin"               => self::add_responsive_control_type(

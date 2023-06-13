@@ -134,12 +134,19 @@ class SingleInstructorTemplate {
 
 		try {
 			$html_wrapper = [
-				'<div class="instructor-total-courses">' => '</div>',
+				'<span class="instructor-total-courses">' => '</span>',
 			];
 
 			$instructor_statistic = $instructor->get_instructor_statistic();
 
-			$content = Template::instance()->nest_elements( $html_wrapper, $instructor_statistic['published_course'] );
+			$content = Template::instance()->nest_elements(
+				$html_wrapper,
+				sprintf(
+					'%d %s',
+					$instructor_statistic['published_course'],
+					_n( 'Course', 'Courses', $instructor_statistic['published_course'], 'learnpress' )
+				)
+			);
 		} catch ( \Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
@@ -161,12 +168,20 @@ class SingleInstructorTemplate {
 
 		try {
 			$html_wrapper = [
-				'<div class="instructor-total-students">' => '</div>',
+				'<span class="instructor-total-students">' => '</span>',
 			];
 
 			$instructor_statistic = $instructor->get_instructor_statistic();
 
 			$content = Template::instance()->nest_elements( $html_wrapper, $instructor_statistic['total_student'] );
+			$content = Template::instance()->nest_elements(
+				$html_wrapper,
+				sprintf(
+					'%d %s',
+					$instructor_statistic['total_student'],
+					_n( 'Student', 'Students', $instructor_statistic['total_student'], 'learnpress' )
+				)
+			);
 		} catch ( \Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
@@ -200,8 +215,8 @@ class SingleInstructorTemplate {
 				'{{instructor_avatar}}',
 				'{{instructor_display_name}}',
 				'{{instructor_description}}',
-				'{{instructor_count_courses}}',
-				'{{instructor_count_students}}',
+				'{{instructor_total_courses}}',
+				'{{instructor_total_students}}',
 				'{{instructor_social}}',
 				'{{instructor_url}}',
 			],
@@ -213,7 +228,7 @@ class SingleInstructorTemplate {
 				$singleInstructorTemplate->html_count_courses( $instructor ),
 				$singleInstructorTemplate->html_count_students( $instructor ),
 				$singleInstructorTemplate->html_social( $instructor ),
-				$singleInstructorTemplate->url_instructor( $instructor ),
+				$instructor->get_url_instructor(),
 			],
 			$data_content
 		);

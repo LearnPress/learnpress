@@ -788,18 +788,6 @@ class LP_User extends LP_Abstract_User {
 		return $flag;
 	}
 
-	public function html_total_courses_attend() {
-
-	}
-
-	public function html_total_courses_finished() {
-
-	}
-
-	public function html_total_courses_passed() {
-
-	}
-
 	/**
 	 * Get statistic info of student user
 	 *
@@ -912,5 +900,24 @@ class LP_User extends LP_Abstract_User {
 		}
 
 		return apply_filters( 'lp/profile/instructor/statistic', $statistic, $this );
+	}
+
+	/**
+	 * Get url instructor.
+	 *
+	 * @since 4.2.3
+	 * @version 1.0.0
+	 * @return string
+	 */
+	public function get_url_instructor(): string {
+		$author_id = $this->get_id();
+		$author    = get_userdata( $author_id );
+		if ( ! $author ) {
+			return '';
+		}
+
+		$author_url = get_author_posts_url( $author_id, $author->user_nicename );
+
+		return $author_url;
 	}
 }

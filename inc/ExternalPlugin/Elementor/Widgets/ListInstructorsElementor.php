@@ -31,7 +31,7 @@ class ListInstructorsElementor extends LPElementorWidgetBase {
 		try {
 			$settings = $this->get_settings_for_display();
 
-			if ( empty( $settings['layouts'] ) ) {
+			if ( empty( $settings['item_layouts'] ) ) {
 				return;
 			}
 
