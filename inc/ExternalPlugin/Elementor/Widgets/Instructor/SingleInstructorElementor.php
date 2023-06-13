@@ -6,7 +6,7 @@
  * @version 1.0.0
  */
 
-namespace LearnPress\ExternalPlugin\Elementor\Widgets;
+namespace LearnPress\ExternalPlugin\Elementor\Widgets\Instructor;
 
 use LearnPress\ExternalPlugin\Elementor\LPElementorWidgetBase;
 use LearnPress\Helpers\Config;

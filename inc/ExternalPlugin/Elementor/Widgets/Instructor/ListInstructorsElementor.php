@@ -6,7 +6,7 @@
  * @version 1.0.0
  */
 
-namespace LearnPress\ExternalPlugin\Elementor\Widgets;
+namespace LearnPress\ExternalPlugin\Elementor\Widgets\Instructor;
 
 use Exception;
 use LearnPress\ExternalPlugin\Elementor\LPElementorWidgetBase;

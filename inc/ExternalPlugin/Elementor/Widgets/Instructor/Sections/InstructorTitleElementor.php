@@ -6,21 +6,24 @@
  * @version 1.0.0
  */
 
-namespace LearnPress\ExternalPlugin\Elementor\Widgets\Instructor;
+namespace LearnPress\ExternalPlugin\Elementor\Widgets\Instructor\Sections;
 
 use Elementor\Controls_Manager;
+use Elementor\Frontend;
+use Elementor\Plugin;
 use Elementor\Repeater;
+use Elementor\Utils;
 use Exception;
 use LearnPress\ExternalPlugin\Elementor\LPElementorWidgetBase;
 use LearnPress\Helpers\Config;
 use LearnPress\Helpers\Template;
 use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
 
-class InstructorDescriptionElementor extends LPElementorWidgetBase {
+class InstructorTitleElementor extends LPElementorWidgetBase {
 	public function __construct( $data = [], $args = null ) {
-		$this->title    = esc_html__( 'Instructor Description', 'learnpress' );
-		$this->name     = 'instructor_description';
-		$this->keywords = [ 'description' ];
+		$this->title    = esc_html__( 'Instructor Title', 'learnpress' );
+		$this->name     = 'instructor_title';
+		$this->keywords = [ 'instructor', 'title', 'instructor title' ];
 		parent::__construct( $data, $args );
 	}
 
@@ -29,7 +32,7 @@ class InstructorDescriptionElementor extends LPElementorWidgetBase {
 	}
 
 	protected function register_controls() {
-		$this->controls = Config::instance()->get( 'description', 'elementor/instructor' );
+		$this->controls = Config::instance()->get( 'title', 'elementor/instructor/sections' );
 		parent::register_controls();
 	}
 
@@ -64,7 +67,7 @@ class InstructorDescriptionElementor extends LPElementorWidgetBase {
 
 			echo Template::instance()->nest_elements(
 				$wrapper,
-				SingleInstructorTemplate::instance()->html_description( $instructor )
+				SingleInstructorTemplate::instance()->html_display_name( $instructor )
 			);
 
 		} catch ( \Throwable $e ) {

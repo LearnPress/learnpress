@@ -32,7 +32,7 @@ class LPElementor {
 				'icon'  => 'eicon-navigator',
 			],
 			'learnpress_instructor' => [
-				'title' => esc_html__( 'LearnPress Instructor', 'learnpress' ),
+				'title' => esc_html__( 'LearnPress Instructor Sections', 'learnpress' ),
 				'icon'  => 'eicon-navigator',
 			],
 		];
