@@ -429,7 +429,7 @@ class LPElementorControls {
 			"{$prefix_name}_img_show"          => self::add_responsive_control_type(
 				"{$prefix_name}_img_show",
 				esc_html__( 'Hide Image', 'learnpress' ),
-				'no',
+				'',
 				Controls_Manager::SWITCHER,
 				[
 					'selectors'    => [ "{{WRAPPER}} $selector" => 'display: {{VALUE}}' ],

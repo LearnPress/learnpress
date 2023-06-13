@@ -200,7 +200,45 @@ $style_fields = array_merge(
 		Controls_Manager::TAB_STYLE,
 		LPElementorControls::add_controls_style_image(
 			'avatar',
-			'.instructor-avatar img'
+			'.instructor-avatar img',
+			[
+				'avatar_align' => LPElementorControls::add_control_type(
+					'avatar_align',
+					esc_html__( 'Align', 'learnpress' ),
+					'left',
+					Controls_Manager::CHOOSE,
+					[
+						'options'   => [
+							'left'   => [
+								'title' => esc_html__( 'Left', 'elementor' ),
+								'icon'  => 'eicon-text-align-left',
+							],
+							'center' => [
+								'title' => esc_html__( 'Center', 'elementor' ),
+								'icon'  => 'eicon-text-align-center',
+							],
+							'right'  => [
+								'title' => esc_html__( 'Right', 'elementor' ),
+								'icon'  => 'eicon-text-align-right',
+							],
+						],
+						'selectors' => [
+							'{{WRAPPER}} .instructor-avatar' => 'text-align: {{VALUE}};',
+						],
+					]
+				),
+				'avatar_with'  => LPElementorControls::add_control_type(
+					'avatar_with_height',
+					esc_html__( 'Width(%)', 'learnpress' ),
+					'',
+					Controls_Manager::NUMBER,
+					[
+						'selectors' => [
+							'{{WRAPPER}} .instructor-avatar img' => 'width:{{VALUE}}%;',
+						],
+					]
+				),
+			]
 		)
 	),
 	LPElementorControls::add_fields_in_section(
