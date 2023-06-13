@@ -28,6 +28,13 @@ return apply_filters(
 			'value'   => learn_press_get_page_id( 'instructors' ),
 		),
 		array(
+			'title'   => esc_html__( 'Single instructor page', 'learnpress' ),
+			'id'      => 'single_instructor_page_id',
+			'default' => '',
+			'type'    => 'pages-dropdown',
+			'value'   => learn_press_get_page_id( 'single_instructor' ),
+		),
+		array(
 			'title'   => esc_html__( 'Profile page', 'learnpress' ),
 			'id'      => 'profile_page_id',
 			'default' => '',
