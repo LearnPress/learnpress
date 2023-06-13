@@ -33,9 +33,6 @@ class LPElementorWidgetBase extends Widget_Base {
 	public $controls = array();
 
 	public function __construct( $data = [], $args = null ) {
-		wp_enqueue_style( 'learnpress', LP_PLUGIN_URL . 'assets/css/learnpress.css', array(), uniqid() );
-		wp_enqueue_style( 'learnpress-widgets', LP_PLUGIN_URL . 'assets/css/widgets.css' );
-
 		parent::__construct( $data, $args );
 	}
 

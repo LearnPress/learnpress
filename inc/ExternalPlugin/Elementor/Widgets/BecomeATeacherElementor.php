@@ -30,4 +30,10 @@ class BecomeATeacherElementor extends LPElementorWidgetBase {
 
 		echo do_shortcode( '[learn_press_become_teacher_form title="' . $settings['title'] . '" description="' . $settings['description'] . '" submit_button_text="' . esc_html( $settings['submit_button_text'] ) . '" submit_button_process_text="' . $settings['submit_button_process_text'] . '"]' );
 	}
+
+	public function get_style_depends() {
+		wp_register_style( 'learnpress', LP_PLUGIN_URL . 'assets/css/learnpress.css', array(), uniqid() );
+
+		return array( 'learnpress' );
+	}
 }
