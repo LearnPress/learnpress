@@ -257,11 +257,14 @@ class SingleInstructorTemplate {
 			if ( isset( $data['instructor_id'] ) ) {
 				$instructor_id = $data['instructor_id'];
 				$instructor    = learn_press_get_user( $instructor_id );
-			} elseif ( $wp_query->get( 'is_single_instructor' )
-					&& $wp_query->get( 'instructor_name' ) ) {
-				$user = get_user_by( 'slug', $wp_query->get( 'instructor_name' ) );
-				if ( $user ) {
-					$instructor = learn_press_get_user( $user->ID );
+			} elseif ( $wp_query->get( 'is_single_instructor' ) ) {
+				if ( $wp_query->get( 'instructor_name' ) ) {
+					$user = get_user_by( 'slug', $wp_query->get( 'instructor_name' ) );
+					if ( $user ) {
+						$instructor = learn_press_get_user( $user->ID );
+					}
+				} else {
+					$instructor = learn_press_get_user( get_current_user_id() );
 				}
 			}
 
