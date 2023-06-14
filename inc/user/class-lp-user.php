@@ -910,14 +910,21 @@ class LP_User extends LP_Abstract_User {
 	 * @return string
 	 */
 	public function get_url_instructor(): string {
-		$author_id = $this->get_id();
-		$author    = get_userdata( $author_id );
-		if ( ! $author ) {
-			return '';
+		$single_instructor_link = '';
+
+		try {
+			$author_id = $this->get_id();
+			$author    = get_userdata( $author_id );
+			if ( ! $author ) {
+				return '';
+			}
+
+			$single_instructor_page_id = learn_press_get_page_id( 'single_instructor' );
+			$single_instructor_link    = trailingslashit( trailingslashit( get_page_link( $single_instructor_page_id ) ) . $author->user_nicename );
+		} catch ( Throwable $e ) {
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 
-		$author_url = get_author_posts_url( $author_id, $author->user_nicename );
-
-		return $author_url;
+		return $single_instructor_link;
 	}
 }

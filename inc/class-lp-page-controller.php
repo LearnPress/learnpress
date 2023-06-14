@@ -1165,27 +1165,6 @@ class LP_Page_Controller {
 
 		return $send_no_cache_headers;
 	}
-
-	/**
-	 * Get link instructor detail
-	 *
-	 * @param string $user_nice
-	 *
-	 * @return string
-	 */
-	public static function get_link_instructor_detail( string $user_nice = '' ): string {
-		$url = '';
-
-		try {
-			$base_slug = LP()->settings->get( 'profile_endpoints.instructor_base', 'instructor' );
-
-			$url = site_url( $base_slug . '/' . $user_nice );
-		} catch ( Throwable $e ) {
-			error_log( __METHOD__, $e->getMessage() );
-		}
-
-		return $url;
-	}
 }
 
 return LP_Page_Controller::instance();
