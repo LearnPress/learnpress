@@ -9,7 +9,11 @@ namespace LearnPress\TemplateHooks\Instructor;
 
 use LearnPress\Helpers\Template;
 use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
+use LP_Course;
+use LP_Course_Filter;
 use LP_User;
+use Throwable;
+use WP_Query;
 
 class SingleInstructorTemplate {
 	public static function instance() {
@@ -48,7 +52,7 @@ class SingleInstructorTemplate {
 	/**
 	 * Get html social of instructor.
 	 *
-	 * @param \LP_User $instructor
+	 * @param LP_User $instructor
 	 *
 	 * @return string
 	 */
@@ -66,7 +70,7 @@ class SingleInstructorTemplate {
 			}
 			$content = ob_get_clean();
 			$content = Template::instance()->nest_elements( $html_wrapper, $content );
-		} catch ( \Throwable $e ) {
+		} catch ( Throwable $e ) {
 			ob_end_clean();
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
@@ -77,7 +81,7 @@ class SingleInstructorTemplate {
 	/**
 	 * Get html description of instructor.
 	 *
-	 * @param \LP_User $instructor
+	 * @param LP_User $instructor
 	 *
 	 * @return string
 	 */
@@ -90,7 +94,7 @@ class SingleInstructorTemplate {
 			];
 
 			$content = Template::instance()->nest_elements( $html_wrapper, $instructor->get_description() );
-		} catch ( \Throwable $e ) {
+		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 
@@ -100,7 +104,7 @@ class SingleInstructorTemplate {
 	/**
 	 * Get html avatar of instructor.
 	 *
-	 * @param \LP_User $instructor
+	 * @param LP_User $instructor
 	 *
 	 * @return string
 	 */
@@ -113,7 +117,7 @@ class SingleInstructorTemplate {
 			];
 
 			$content = Template::instance()->nest_elements( $html_wrapper, $instructor->get_profile_picture() );
-		} catch ( \Throwable $e ) {
+		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 
@@ -147,7 +151,7 @@ class SingleInstructorTemplate {
 					_n( 'Course', 'Courses', $instructor_statistic['published_course'], 'learnpress' )
 				)
 			);
-		} catch ( \Throwable $e ) {
+		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 
@@ -182,7 +186,7 @@ class SingleInstructorTemplate {
 					_n( 'Student', 'Students', $instructor_statistic['total_student'], 'learnpress' )
 				)
 			);
-		} catch ( \Throwable $e ) {
+		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 
@@ -244,7 +248,7 @@ class SingleInstructorTemplate {
 	public function sections( array $data = [] ) {
 		wp_enqueue_style( 'lp-instructor' );
 		/**
-		 * @var \WP_Query $wp_query
+		 * @var WP_Query $wp_query
 		 */
 		global $wp_query;
 		$instructor = false;
@@ -286,18 +290,18 @@ class SingleInstructorTemplate {
 			Template::instance()->print_sections( $sections, compact( 'instructor' ) );
 			$content = ob_get_clean();
 			echo Template::instance()->nest_elements( $html_wrapper, $content );
-		} catch ( \Throwable $e ) {
+		} catch ( Throwable $e ) {
 			ob_end_clean();
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 	}
 
 	/**
-	 * @param \LP_User $instructor
+	 * @param LP_User $instructor
 	 *
 	 * @return false|string
 	 */
-	public function info( \LP_User $instructor ): string {
+	public function info( LP_User $instructor ): string {
 		$content = '';
 
 		try {
@@ -322,7 +326,7 @@ class SingleInstructorTemplate {
 			Template::instance()->print_sections( $sections, compact( 'instructor' ) );
 			$content = ob_get_clean();
 			$content = Template::instance()->nest_elements( $html_wrapper, $content );
-		} catch ( \Throwable $e ) {
+		} catch ( Throwable $e ) {
 			ob_end_clean();
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
@@ -330,7 +334,7 @@ class SingleInstructorTemplate {
 		return $content;
 	}
 
-	public function info_right( \LP_User $instructor ): string {
+	public function info_right( LP_User $instructor ): string {
 		$content = '';
 
 		try {
@@ -356,7 +360,7 @@ class SingleInstructorTemplate {
 			Template::instance()->print_sections( $sections, compact( 'instructor' ) );
 			$content = ob_get_clean();
 			$content = Template::instance()->nest_elements( $html_wrapper, $content );
-		} catch ( \Throwable $e ) {
+		} catch ( Throwable $e ) {
 			ob_end_clean();
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
@@ -364,12 +368,11 @@ class SingleInstructorTemplate {
 		return $content;
 	}
 
-	public function section_list_courses( \LP_User $instructor ): string {
+	public function section_list_courses( LP_User $instructor ): string {
 		$content      = '';
-		$html_wrapper =
-			[
-				'<div class="instructor-courses">' => '</div>',
-			];
+		$html_wrapper = [
+			'<div class="instructor-courses">' => '</div>',
+		];
 
 		try {
 			// Get option load courses of Instructor via ajax
@@ -377,13 +380,13 @@ class SingleInstructorTemplate {
 
 			// Query courses of instructor
 			if ( ! $load_ajax ) {
-				$filter              = new \LP_Course_Filter();
+				$filter              = new LP_Course_Filter();
 				$filter->post_author = $instructor->get_id();
 				$filter->limit       = \LP_Settings::get_option( 'archive_course_limit', 20 );
 				$filter->page        = $GLOBALS['wp_query']->get( 'paged', 1 ) ? $GLOBALS['wp_query']->get( 'paged', 1 ) : 1;
 
 				$total_courses = 0;
-				$courses       = \LP_Course::get_courses( $filter, $total_courses );
+				$courses       = LP_Course::get_courses( $filter, $total_courses );
 
 				$sections = apply_filters(
 					'learn-press/single-instructor/courses/sections',
@@ -402,7 +405,7 @@ class SingleInstructorTemplate {
 				ob_end_clean();
 				$html_wrapper['<ul class="ul-instructor-courses">'] = '</ul>';
 			}
-		} catch ( \Throwable $e ) {
+		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 
@@ -439,11 +442,11 @@ class SingleInstructorTemplate {
 			// List courses
 			$ul_courses = '';
 			foreach ( $courses as $course_obj ) {
-				$course      = \LP_Course::get_course( $course_obj->ID );
+				$course      = LP_Course::get_course( $course_obj->ID );
 				$ul_courses .= $this->course_item( $course );
 			}
 			$content = Template::instance()->nest_elements( $html_ul_wrapper, $ul_courses );
-		} catch ( \Throwable $e ) {
+		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 
@@ -453,11 +456,11 @@ class SingleInstructorTemplate {
 	/**
 	 * Display item course.
 	 *
-	 * @param \LP_Course $course
+	 * @param LP_Course $course
 	 *
 	 * @return void
 	 */
-	public function course_item( \LP_Course $course ): string {
+	public function course_item( LP_Course $course ): string {
 		$content      = '';
 		$html_wrapper = apply_filters(
 			'learn-press/single-instructor/course_items/wrapper',
@@ -510,7 +513,7 @@ class SingleInstructorTemplate {
 			Template::instance()->print_sections( $sections, compact( 'course' ) );
 			$content = ob_get_clean();
 			$content = Template::instance()->nest_elements( $html_wrapper, $content );
-		} catch ( \Throwable $e ) {
+		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 
@@ -542,7 +545,7 @@ class SingleInstructorTemplate {
 			ob_start();
 			Template::instance()->get_frontend_template( 'shared/pagination.php', $data_pagination );
 			$content = ob_get_clean();
-		} catch ( \Throwable $e ) {
+		} catch ( Throwable $e ) {
 			ob_end_clean();
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}

@@ -69,6 +69,10 @@ if ( ! class_exists( 'LP_Shortcodes' ) ) {
 				if ( ! preg_match( '/\[learn_press_profile\s?(.*)\]/', $post->post_content ) ) {
 					$post->post_content .= '[learn_press_profile]';
 				}
+			} elseif ( LP_Page_Controller::is_page_instructor() ) {
+				if ( ! preg_match( '/\[learn_press_single_instructor\s?(.*)\]/', $post->post_content ) ) {
+					$post->post_content .= '[learn_press_single_instructor]';
+				}
 			}
 
 			return $template;
