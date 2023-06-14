@@ -2,8 +2,6 @@
 
 namespace LearnPress\Shortcodes;
 
-use LearnPress\Helpers\Singleton;
-
 /**
  * Class AbstractShortcode
  *
@@ -12,7 +10,6 @@ use LearnPress\Helpers\Singleton;
  * @version 1.0.0
  */
 abstract class AbstractShortcode {
-	use Singleton;
 	protected $prefix = 'learn_press_';
 	protected $shortcode_name;
 

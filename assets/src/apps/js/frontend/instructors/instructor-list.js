@@ -1,6 +1,6 @@
 import { addQueryArgs } from '@wordpress/url';
 
-const instructorNode = document.querySelector( '.lp-instructors' );
+const instructorNode = document.querySelector( '.lp-instructor-list' );
 let contentAreaNode, containerNode;
 let query = {};
 

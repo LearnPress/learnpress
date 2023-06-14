@@ -20,8 +20,10 @@
  */
 
 use LearnPress\ExternalPlugin\Elementor\LPElementor;
+use LearnPress\Shortcodes\ListInstructorsShortcode;
 use LearnPress\Shortcodes\SingleInstructorShortcode;
 use LearnPress\TemplateHooks\Instructor\InstructorListTemplate;
+use LearnPress\TemplateHooks\Instructor\ListInstructorsTemplate;
 use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileInstructorStatisticsTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileStudentStatisticsTemplate;
@@ -275,6 +277,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			// Template Hooks.
 			InstructorListTemplate::instance();
+			ListInstructorsTemplate::instance();
 			SingleInstructorTemplate::instance();
 			ProfileInstructorStatisticsTemplate::instance();
 			ProfileStudentStatisticsTemplate::instance();
@@ -389,6 +392,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			// Shortcodes.
 			SingleInstructorShortcode::instance();
+			ListInstructorsShortcode::instance();
 			require_once 'inc/class-lp-shortcodes.php';
 
 			// include template functions .

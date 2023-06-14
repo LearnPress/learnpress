@@ -1,6 +1,6 @@
 <?php
 /**
- * Template hooks Archive Package.
+ * Template hooks Single Instructor.
  *
  * @since 4.2.3
  * @version 1.0.0

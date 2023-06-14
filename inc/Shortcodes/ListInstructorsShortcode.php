@@ -1,14 +1,14 @@
 <?php
 /**
- * Shortcode display single instructor.
+ * Shortcode display list instructors.
  */
 namespace LearnPress\Shortcodes;
 
 use LearnPress\Helpers\Singleton;
 
-class SingleInstructorShortcode extends AbstractShortcode {
+class ListInstructorsShortcode extends AbstractShortcode {
 	use singleton;
-	protected $shortcode_name = 'single_instructor';
+	protected $shortcode_name = 'instructors';
 
 	/**
 	 * Show single instructor
@@ -20,12 +20,12 @@ class SingleInstructorShortcode extends AbstractShortcode {
 	public function render( $attrs ): string {
 		$content = '';
 
+		ob_start();
 		try {
 			if ( empty( $attrs ) ) {
 				$attrs = [];
 			}
-			ob_start();
-			do_action( 'learn-press/single-instructor/layout', $attrs );
+			do_action( 'learn-press/list-instructors/layout', $attrs );
 			$content = ob_get_clean();
 		} catch ( \Throwable $e ) {
 			ob_end_clean();

@@ -235,8 +235,8 @@ class LP_Assets extends LP_Abstract_Assets {
 						$wp_js,
 						array( 'wp-i18n' )
 					),
-					array( LP_PAGE_INSTRUCTORS ),
-					0,
+					[],
+					1,
 					1
 				),
 				'lp-profile'           => new LP_Asset_Key(
