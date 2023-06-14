@@ -519,8 +519,6 @@ class LP_Page_Controller {
 			$page_template = 'pages/checkout.php';
 		} elseif ( learn_press_is_instructors() ) {
 			$page_template = 'pages/instructors.php';
-		} elseif ( self::is_page_instructor() ) {
-			$page_template = 'pages/instructor.php';
 		}
 
 		return apply_filters( 'learn-press/page-template', $page_template );
@@ -794,11 +792,6 @@ class LP_Page_Controller {
 				}
 
 				return $q;
-			}
-
-			// Page Single Instructor
-			if ( $q->get('is_single_instructor')) {
-				$q->set( 'post_type', LP_COURSE_CPT );
 			}
 
 			// Handle 404 if user are viewing course item directly.

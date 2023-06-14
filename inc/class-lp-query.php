@@ -307,7 +307,7 @@ class LP_Query {
 		$instructor_slug           = get_post_field( 'post_name', $single_instructor_page_id );
 		$rules['instructor'][]     = [
 			"^{$instructor_slug}/([^/]+)/?(?:page/)?([^/][0-9]*)?/?$" =>
-			'index.php?is_single_instructor=1&instructor_name=$matches[1]&paged=$matches[2]',
+			'index.php?page_id=' . $single_instructor_page_id . '&is_single_instructor=1&instructor_name=$matches[1]&paged=$matches[2]',
 		];
 
 		return apply_filters( 'learn-press/rewrite/rules', $rules );

@@ -276,7 +276,6 @@ class SingleInstructorTemplate {
 			$sections     = apply_filters(
 				'learn-press/single-instructor/sections/wrapper',
 				[
-					'header'  => [ 'text_html' => '<header><h1>' . __( 'Instructor', 'learnpress' ) . '</h1></header>' ],
 					'info'    => [ 'text_html' => $this->info( $instructor ) ],
 					'courses' => [ 'text_html' => $this->section_list_courses( $instructor ) ],
 				],

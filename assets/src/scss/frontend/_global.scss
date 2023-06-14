@@ -7,12 +7,12 @@
 
 .lp-content-area {
 	width: 100%;
-	max-width: 1170px !important;
+	max-width: 80rem !important;
 	margin: 0 auto;
 
-	@media (max-width: 1170px) {
-		padding-right: 15px;
-		padding-left: 15px;
+	@media (max-width: 80rem) {
+		padding-right: 2rem;
+		padding-left: 2rem;
 	}
 }
 
