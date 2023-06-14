@@ -615,10 +615,15 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				learn_press_send_json( $response );
 			}
 
-			$page_name = LP_Helper::sanitize_params_submitted( $_POST['page_name'] );
+			$page_name  = LP_Helper::sanitize_params_submitted( $_POST['page_name'] );
+			$field_name = LP_Request::get_param( 'field_name' );
 
 			if ( $page_name ) {
-				$page_id = LP_Helper::create_page( $page_name );
+				$data_create_page = array(
+					'post_title' => $page_name,
+				);
+
+				$page_id = LP_Helper::create_page( $data_create_page, $field_name );
 
 				if ( $page_id ) {
 					$response['code']    = 1;

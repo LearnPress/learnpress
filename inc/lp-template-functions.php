@@ -1335,6 +1335,8 @@ if ( ! function_exists( 'learn_press_filter_get_comments_number' ) ) {
  * @return array
  *
  * @since 3.0.0
+ * @Todo tungnx review to remove
+ * @deprecated 4.2.3
  */
 function learn_press_body_classes( $classes ) {
 	$pages = learn_press_static_page_ids();
@@ -1360,7 +1362,7 @@ function learn_press_body_classes( $classes ) {
 	return $classes;
 }
 
-add_filter( 'body_class', 'learn_press_body_classes', 10 );
+//add_filter( 'body_class', 'learn_press_body_classes', 10 );
 
 /**
  * Return true if user is learning a course

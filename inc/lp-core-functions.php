@@ -2588,6 +2588,7 @@ function learn_press_tooltip( $tooltip, $html = false ) {
  * @return array
  *
  * @since 3.0.0
+ * @deprecated 4.2.3
  */
 function learn_press_static_page_ids() {
 	$pages = LP_Object_Cache::get( 'static-page-ids', 'learn-press' );

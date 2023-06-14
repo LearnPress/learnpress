@@ -224,6 +224,8 @@ function learn_press_pages_dropdown( $name, $selected = false, $args = array() )
 			<a class="view-page" href="<?php echo get_permalink( $selected ); ?>"
 				target="_blank"><?php esc_html_e( 'View page', 'learnpress' ); ?></a>
 		</p>
+		<!-- Not use input on here, will be not save value -->
+		<div class="field_name" name="<?php echo esc_attr( $id ); ?>"></div>
 
 		<?php
 		$output .= ob_get_clean();
@@ -246,6 +248,12 @@ function learn_press_pages_dropdown( $name, $selected = false, $args = array() )
 		$allowed_html['input']  = [
 			'type'        => [],
 			'placeholder' => [],
+			'name'        => [],
+			'class'       => [],
+		];
+		$allowed_html['div']    = [
+			'name'  => [],
+			'class' => [],
 		];
 
 		echo wp_kses( $output, $allowed_html );

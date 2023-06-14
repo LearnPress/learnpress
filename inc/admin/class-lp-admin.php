@@ -304,10 +304,12 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 				);
 
 				$all_pages = array(
-					'courses'          => __( 'Courses', 'learnpress' ),
-					'profile'          => __( 'Profile', 'learnpress' ),
-					'checkout'         => __( 'Checkout', 'learnpress' ),
-					'become_a_teacher' => __( 'Become a Teacher', 'learnpress' ),
+					'courses'           => __( 'Courses', 'learnpress' ),
+					'instructors'       => __( 'Instructors', 'learnpress' ),
+					'single_instructor' => __( 'Single Instructors', 'learnpress' ),
+					'profile'           => __( 'Profile', 'learnpress' ),
+					'checkout'          => __( 'Checkout', 'learnpress' ),
+					'become_a_teacher'  => __( 'Become a Teacher', 'learnpress' ),
 				);
 
 				foreach ( $all_pages as $name => $title ) {
