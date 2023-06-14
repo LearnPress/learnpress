@@ -329,5 +329,11 @@ if ( ! class_exists( 'LP_WP_Filesystem' ) ) {
 
 			return $output;
 		}
+		public function download_url( $url, $timeout = 300, $signature_verification = false ) {
+			return download_url( $url, $timeout, $signature_verification );
+		}
+		public function lp_handle_upload( &$file, $overrides = false, $time = null ) {
+			return wp_handle_upload( $file, $overrides, $time );
+		}
 	}
 }

@@ -448,6 +448,39 @@ class LP_Settings {
 	public static function is_created_tb_material_files(): bool {
 		return get_option( 'learnpress_material_files_created' ) == 'yes';
 	}
+	public static function lp_material_file_types(): array {
+		return array(
+			'doc'		=> array( 
+				'type' 	=> 'application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+				'ext'	=> 'doc,docx',
+			),
+			'excel'		=> array( 
+				'type' 	=> 'application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+				'ext'	=> 'xls,xlsx',
+			), 
+			'mp3'		=> array( 
+				'type' 	=> 'audio/mpeg',
+				'ext'	=> 'mp3',
+			),
+			 
+			'mp4'		=> array( 
+				'type' 	=> 'video/mp4',
+				'ext'	=> 'mp4',
+			), 
+			'ppt'		=> array( 
+				'type' 	=> 'application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation', 
+				'ext'	=> 'ppt,pptx',
+			), 
+			'pdf'		=> array( 
+				'type' 	=> 'application/pdf',
+				'ext'	=> 'pdf',
+			), 
+			'txt'		=> array( 
+				'type' 	=> 'text/plain',
+				'ext'	=> 'txt',
+			), 
+		);
+	}
 }
 
 LP_Settings::instance();

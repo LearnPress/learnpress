@@ -34,10 +34,10 @@ class LP_Material_Files_DB extends LP_Database {
 	 * @return [int]  new record id(file_id)
 	 */
 	public function create_material( $data ) {
-		if( ! is_array( $data ) ){
+		if ( ! is_array( $data ) ){
 			return;
 		}
-		if( ! is_int( $data['item_id'] ) ){
+		if ( ! is_int( $data['item_id'] ) ){
 			return;
 		}
 		$file_id = $this->wpdb->insert(
@@ -62,8 +62,8 @@ class LP_Material_Files_DB extends LP_Database {
 	 * @param  [int] $file_id [file_id]
 	 * @return [object||null] [A material or null]
 	 */
-	public function get_material( $file_id ) {
-		if( ! is_int( $file_id ) ) {
+	public function get_material( $file_id = 0 ) {
+		if ( ! is_int( $file_id ) ) {
 			return;
 		}
 		$row = $this->wpdb->get_row(
@@ -75,8 +75,8 @@ class LP_Material_Files_DB extends LP_Database {
 		$this->check_execute_has_error();
 		return $row;
 	}
-	public function get_material_by_item_id( $item_id ) {
-		if( ! is_int( $item_id ) ) {
+	public function get_material_by_item_id( $item_id = 0 ) {
+		if ( ! is_int( $item_id ) ) {
 			return;
 		}
 		$result = $this->wpdb->get_results(
@@ -93,8 +93,12 @@ class LP_Material_Files_DB extends LP_Database {
 	 * @param  [int] $file_id [file id]
 	 * @return [boolean]          [description]
 	 */
-	public function delete_material( $file_id ){
-		if( ! is_int( $file_id ) ) {
+	public function delete_material( $file_id = 0 ){
+		if ( ! is_int( $file_id ) ) {
+			return;
+		}
+		$material = $this->get_material( $file_id );
+		if ( ! $material ) {
 			return;
 		}
 		$delete = $this->wpdb->delete(
@@ -103,6 +107,11 @@ class LP_Material_Files_DB extends LP_Database {
 			array( '%d' )
 		);
 		$this->check_execute_has_error();
+
+		if ( $material->method == 'upload' && $delete ) {
+			$file_path = wp_upload_dir()['basedir'].$material->file_path;
+			$this->delete_local_file( $file_path );
+		}
 		return $delete;
 	}
 	/**
@@ -110,8 +119,12 @@ class LP_Material_Files_DB extends LP_Database {
 	 * @param  [int] $item_id [the post id]
 	 * @return [boolean]          [description]
 	 */
-	public function delete_material_by_item_id( $item_id ) {
-		if( ! is_int( $item_id ) ) {
+	public function delete_material_by_item_id( $item_id = 0 ) {
+		if ( ! is_int( $item_id ) ) {
+			return;
+		}
+		$materials = $this->get_material_by_item_id( $item_id );
+		if ( ! $materials ) {
 			return;
 		}
 		$delete = $this->wpdb->delete(
@@ -120,22 +133,25 @@ class LP_Material_Files_DB extends LP_Database {
 			array( '%d' )
 		);
 		$this->check_execute_has_error();
+		if ( $delete ) {
+			foreach ( $materials as $m ) {
+				if ( $m->method == 'upload' ) {
+					$file_path = wp_upload_dir()['basedir'].$m->file_path;
+					$this->delete_local_file( $file_path );
+				}
+			}
+		}
 		return $delete;
 	}
-	public function delete_local_file( $file_id ) {
-		if( ! is_int( $file_id ) ) {
-			return;
+	/**
+	 * [delete_local_file delete file when record is deleted]
+	 * @param  string $file_path [description]
+	 */
+	public function delete_local_file( $file_path = '' ) {
+		$file_init = LP_WP_Filesystem::instance();
+		if ( $file_init->file_exists( $file_path ) ) {
+			$file_init->unlink( $file_path );
 		}
-		$file = $this->get_material( $file_id );
-		if( ! $file || $file['method'] == 'external' ) {
-			return;
-		}
-		$file_path = $file['file_path'];
-		$upload_dir = wp_upload_dir();
-		if( ! file_exists( $upload_dir['basedir'] . $file_path ) ){
-			return;
-		}
-		unlink( $upload_dir['basedir'] . $file_path );
 	}
 }
 

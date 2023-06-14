@@ -1,9 +1,22 @@
 document.addEventListener("DOMContentLoaded", function() {
-    let postID = document.getElementById( 'current-material-post-id' ).value;
+    function baseName(string) {
+        return string.substring(string.lastIndexOf('/')+1).split('?')[0];
+    }
+    let postID          = document.getElementById( 'current-material-post-id' ).value,
+        max_file_size   = document.getElementById( 'material-max-file-size' ).value,
+        accept_file     = document.querySelector('.lp-material--field-upload').getAttribute('accept').split( ',' );
+
     //add material group field
     document.getElementById( 'btn-lp--add-material' ).addEventListener( 'click', function( e ) {
-        let group_template = document.getElementById( 'lp-material--add-material-template' ).innerHTML;
-        document.getElementById( 'lp-material--group-container' ).insertAdjacentHTML( 'beforeend', group_template );
+        let group_template = document.getElementById( 'lp-material--add-material-template' ).innerHTML,
+            can_upload     = this.getAttribute( 'can-upload' );
+        let groups = document.getElementById( 'lp-material--group-container' ).querySelectorAll( '.lp-material--group' ).length;
+        if ( groups < can_upload ) {
+            document.getElementById( 'lp-material--group-container' ).insertAdjacentHTML( 'beforeend', group_template );    
+        } else {
+            this.setAttribute( 'disabled', true );
+        }
+        
     } );
     //switch input when change method between "upload" and "external"
     document.getElementById( 'downloadable_material_data' ).addEventListener( 'change', function( event ) {
@@ -23,6 +36,20 @@ document.addEventListener("DOMContentLoaded", function() {
                     break;
             }
             // console.log(target.parentNode)
+        }
+        if ( target.classList.contains( 'lp-material--field-upload' ) ) {
+            if ( target.value && target.files.length > 0 ) {
+                
+                if ( ! accept_file.includes( target.files[0].type ) ) {
+                    alert( "This file is not allowed! Please choose another file!" );
+                    target.value = '';
+                }
+                if ( target.files[0].size > max_file_size*1024*1024 ) {
+                    alert( `This file size is greater than ${max_file_size}MB! Please choose another file!` );
+                    target.value = '';
+                }
+
+            }
         }
     } );
     document.getElementById( 'downloadable_material_data' ).addEventListener( 'click', function( event ) {
@@ -45,7 +72,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     method = ele.querySelector( '.lp-material--field-method' ).value,
                     external_field = ele.querySelector( '.lp-material--field-external-link' ),
                     upload_field = ele.querySelector( '.lp-material--field-upload' ), file, link;
-                if ( ! label ){
+                if ( ! label ) {
                     send_request = false;
                 }
                 switch ( method ) {
@@ -72,13 +99,14 @@ document.addEventListener("DOMContentLoaded", function() {
             } else {
                 console.log(material_data);
                 material_data = JSON.stringify( material_data );
-                let url = lpGlobalSettings.ajax;
-                
+                let url = `${lpGlobalSettings.rest}lp/v1/course/material/save-post-materials`;
                 formData.append( 'data', material_data );
                 formData.append( 'post_id', postID );
-                formData.append( 'nonce', lpGlobalSettings.nonce );
                 fetch( url, {
                     method: 'POST',
+                    headers: {
+                                'X-WP-Nonce': lpGlobalSettings.nonce,
+                            },
                     body: formData,
                 } ) // wrapped
                     .then( res => res.text() )
@@ -95,17 +123,17 @@ document.addEventListener("DOMContentLoaded", function() {
             let rowID = target.getAttribute( 'data-id' ),//material file ID
                 message = document.getElementById( 'delete-material-message' ).value;//Delete message content
             if ( confirm( message ) ) {
-                let formData = new FormData();
-                formData.append( 'action', '_lp_delete_material' );
-                formData.append( 'nonce', lpGlobalSettings.nonce );
-                formData.append( 'row_id', rowID );
-                fetch( lpGlobalSettings.ajax, {
-                    method: 'POST',
-                    body: formData,
+                let url = `${lpGlobalSettings.rest}lp/v1/course/material/${rowID}`;
+                fetch( url, {
+                    method: 'DELETE',
+                    headers: {
+                                'X-WP-Nonce': lpGlobalSettings.nonce,
+                            },
                 } )
                     .then( res => res.text() )
                     .then( data => {
                         data = JSON.parse( data );
+                        // console.log(data);
                         if ( data.data.delete ) {
                             target.closest( 'tr' ).remove();
                         }
