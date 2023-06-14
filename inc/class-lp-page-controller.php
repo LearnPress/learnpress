@@ -41,7 +41,7 @@ class LP_Page_Controller {
 			//add_action( 'posts_pre_query', [ $this, 'posts_pre_query' ], 10, 2 );
 			add_filter( 'template_include', array( $this, 'template_loader' ), 10 );
 			add_filter( 'template_include', array( $this, 'check_pages' ), 30 );
-			add_filter( 'template_include', array( $this, 'auto_shortcode' ), 50 );
+			//add_filter( 'template_include', array( $this, 'auto_shortcode' ), 50 );
 
 			add_filter( 'the_post', array( $this, 'setup_data_for_item_course' ) );
 			add_filter( 'request', array( $this, 'remove_course_post_format' ), 1 );
@@ -289,8 +289,10 @@ class LP_Page_Controller {
 	 *
 	 * @return string;
 	 * @since 3.3.0
+	 * @deprecated 4.2.3
 	 */
 	public function auto_shortcode( $template ) {
+		_deprecated_function( __METHOD__, '4.2.3' );
 		global $post;
 		$the_post = $post;
 		if ( $the_post && is_page( $the_post->ID ) ) {
