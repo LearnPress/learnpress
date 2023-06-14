@@ -97,7 +97,7 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 			$uploaded_files = count( $material_init->get_material_by_item_id( $item_id ) );
 			// check file amount which can upload
 			$can_upload = $allow_upload_amount - $uploaded_files;
-
+			$allow_file_type = LP_Settings::get_option( 'material_allow_file_type' );
 			//Check file amount validation
 			if ( $allow_upload_amount == 0 ) {
 				throw new Exception( esc_html__( 'Material feature is not allowed to upload', 'learnpress' ) );
@@ -138,7 +138,7 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 						$response['items'][ $key ]['message'] = sprintf( esc_html__( 'Upload File %d is error!', 'learnpress' ), $key );
 						continue;
 					}
-					$file_type = wp_check_filetype( basename( $movefile['type'] ) )['ext'];
+					$file_type = wp_check_filetype( basename( $movefile['file'] ) )['ext'];
 					$file_path = str_replace( wp_upload_dir()['baseurl'], '', $movefile['url'] );
 				}
 				
