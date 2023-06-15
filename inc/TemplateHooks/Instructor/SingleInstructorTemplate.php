@@ -274,7 +274,7 @@ class SingleInstructorTemplate {
 				$instructor_id = $data['instructor_id'];
 				$instructor    = learn_press_get_user( $instructor_id );
 			} elseif ( $wp_query->get( 'is_single_instructor' ) ) {
-				if ( $wp_query->get( 'instructor_name' ) ) {
+				if ( $wp_query->get( 'instructor_name' ) && 'page' !== $wp_query->get( 'instructor_name' ) ) {
 					$user = get_user_by( 'slug', $wp_query->get( 'instructor_name' ) );
 					if ( $user ) {
 						$instructor = learn_press_get_user( $user->ID );
