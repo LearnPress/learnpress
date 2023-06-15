@@ -9,8 +9,6 @@ namespace LearnPress\TemplateHooks\Instructor;
 
 use LearnPress\Helpers\Template;
 use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
-use LP_Course;
-use LP_Course_Filter;
 use LP_User;
 use Throwable;
 use WP_Query;
@@ -55,7 +53,7 @@ class ListInstructorsTemplate {
 			$html_wrapper = apply_filters(
 				'learn-press/single-instructor/sections/wrapper',
 				[
-					'<article class="lp-content-area">'  => '</article>',
+					'<article class="lp-content-area">' => '</article>',
 					'<div class="lp-list-instructors">' => '</div>',
 				]
 			);
@@ -78,5 +76,54 @@ class ListInstructorsTemplate {
 			ob_end_clean();
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
+	}
+
+	/**
+	 * Get instructor item.
+	 *
+	 * @param LP_User $instructor
+	 *
+	 * @return false|string
+	 */
+	public function instructor_item( LP_User $instructor ) {
+		$content      = '';
+		$html_wrapper = apply_filters(
+			'learn-press/single-instructor/course_items/wrapper',
+			[
+				'<li class="item-instructor">' => '</li>',
+			],
+			$instructor
+		);
+
+		ob_start();
+		try {
+			$singleInstructorTemplate = SingleInstructorTemplate::instance();
+			$btn_view             = sprintf(
+				'<a href="%s" class="btn-view">%s</a>',
+				$instructor->get_url_instructor(),
+				__( 'View Profile', 'learnpress' )
+			);
+
+			$sections = apply_filters(
+				'learn-press/list-instructors/instructor_items/sections',
+				[
+					'img'            => [ 'text_html' => $singleInstructorTemplate->html_avatar( $instructor ) ],
+					'name'           => [ 'text_html' => $singleInstructorTemplate->html_display_name( $instructor ) ],
+					'total_courses'  => [ 'text_html' => $singleInstructorTemplate->html_count_courses( $instructor ) ],
+					'total_students' => [ 'text_html' => $singleInstructorTemplate->html_count_students( $instructor ) ],
+					'btn_view'       => [ 'text_html' => $btn_view ],
+				],
+				$instructor,
+				$singleInstructorTemplate
+			);
+			Template::instance()->print_sections( $sections, compact( 'instructor' ) );
+			$content = ob_get_clean();
+			$content = Template::instance()->nest_elements( $html_wrapper, $content );
+		} catch ( Throwable $e ) {
+			ob_end_clean();
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
+		}
+
+		return $content;
 	}
 }

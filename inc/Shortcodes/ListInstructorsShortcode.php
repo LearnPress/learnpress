@@ -13,7 +13,7 @@ class ListInstructorsShortcode extends AbstractShortcode {
 	/**
 	 * Show single instructor
 	 *
-	 * @param $attrs [instructor_id: int]
+	 * @param $attrs []
 	 *
 	 * @return string
 	 */

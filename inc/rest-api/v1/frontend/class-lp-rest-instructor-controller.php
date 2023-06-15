@@ -1,6 +1,7 @@
 <?php
 
 use LearnPress\Helpers\Template;
+use LearnPress\TemplateHooks\Instructor\ListInstructorsTemplate;
 
 /**
  * REST API LP Instructor.
@@ -78,44 +79,10 @@ class LP_REST_Instructor_Controller extends LP_Abstract_REST_Controller {
 				/**
 				 * @var LP_User $instructor
 				 */
+				$instructors_template = ListInstructorsTemplate::instance();
 				foreach ( $instructors as $instructor_obj ) {
-					$instructor    = learn_press_get_user( $instructor_obj->ID );
-					$instructor_id = $instructor->get_id();
-					$display_name  = $instructor->get_display_name();
-					$profile       = learn_press_get_profile( $instructor_id );
-					$avatar_url    = $profile->get_upload_profile_src();
-					if ( empty( $avatar_url ) ) {
-						$avatar_url = LearnPress::instance()->image( 'no-image.png' );
-					}
-					// Total course
-					$lp_course_db  = LP_Course_DB::getInstance();
-					$filter_course = $lp_course_db->count_courses_of_author( $instructor_id, [ 'publish' ] );
-					$course_total  = $lp_course_db->get_courses( $filter_course );
-
-					// Total student
-					$lp_user_items_db = LP_User_Items_DB::getInstance();
-					$filter_users     = $lp_user_items_db->count_user_attend_courses_of_author( $instructor_id );
-					$student_total    = $lp_user_items_db->get_user_courses( $filter_users );
-					$data             = apply_filters(
-						'learnpress/instructor-list/data',
-						array(
-							'instructor_id'   => $instructor_id,
-							'display_name'    => $display_name,
-							'avatar_url'      => $avatar_url,
-							'course_total'    => $course_total,
-							'student_total'   => $student_total,
-							//'profile_url'     => learn_press_user_profile_link( $instructor_id ),
-							'view_instructor' => $instructor->get_url_instructor(),
-						)
-					);
-
-					$template->get_frontend_template(
-						apply_filters(
-							'learnpress/instructor-list/instructor-item',
-							'instructor-list/instructor-item.php'
-						),
-						compact( 'data' )
-					);
+					$instructor = learn_press_get_user( $instructor_obj->ID );
+					echo $instructors_template->instructor_item( $instructor );
 				}
 			}
 			$response->data->content = ob_get_clean();
