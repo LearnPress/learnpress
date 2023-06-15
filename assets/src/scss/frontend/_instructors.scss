@@ -11,13 +11,17 @@
 		grid-template-columns: repeat(4, 1fr);
 		gap: 20px;
 		padding: 0;
+		list-style: none;
 
 		>ul.lp-skeleton-animation {
 			grid-column: span 4;
 		}
 
+		li.no-instructor {
+			grid-column: span 4;
+		}
+
 		li.item-instructor {
-			list-style: none;
 			border: 1px solid rgba(0, 0, 0, 0.5);
 			border-radius: 5px;
 			padding: 20px;
@@ -37,7 +41,7 @@
 
 			.instructor-info {
 				display: flex;
-				color: rgba(0, 0, 0, 0.5);
+				//color: rgba(0, 0, 0, 0.5);
 
 				.instructor-count-courses {
 					flex: 1;
@@ -86,7 +90,7 @@
 				font-weight: 700;
 
 				&:hover {
-					background: rgba(255, 182, 6, 1);
+					background: var(--lp-primary-color);
 					color: whitesmoke;
 				}
 			}

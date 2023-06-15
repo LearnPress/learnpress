@@ -176,4 +176,40 @@ class ListInstructorsTemplate {
 
 		return $content;
 	}
+
+	/**
+	 * Pagination of list instructor.
+	 *
+	 * @param int $page
+	 * @param int $limit
+	 * @param int $total_courses
+	 *
+	 * @return string
+	 */
+	public function instructors_pagination( int $page, int $limit, int $total_courses ): string {
+		$content = '';
+
+		$instructors_page_id  = learn_press_get_page_id( 'instructors' );
+		$instructors_page_url = trailingslashit( get_permalink( $instructors_page_id ) );
+
+		try {
+			$total_pages     = \LP_Database::get_total_pages( $limit, $total_courses );
+			$data_pagination = array(
+				'total'    => $total_pages,
+				'current'  => max( 1, $page ),
+				'base'     => esc_url_raw( trailingslashit( $instructors_page_url . "page/{$page}" ) ),
+				'format'   => '',
+				'per_page' => $limit,
+			);
+
+			ob_start();
+			Template::instance()->get_frontend_template( 'shared/pagination.php', $data_pagination );
+			$content = ob_get_clean();
+		} catch ( Throwable $e ) {
+			ob_end_clean();
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
+		}
+
+		return $content;
+	}
 }

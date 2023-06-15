@@ -57,7 +57,8 @@ class LP_REST_Instructor_Controller extends LP_Abstract_REST_Controller {
 			$args   = apply_filters(
 				'learnpress/instructor-list/args',
 				array(
-					'number'   => $params['number'] ?? 4,
+					'fields'   => [ 'ID' ],
+					'number'   => $params['number'] ?? 12,
 					'paged'    => $params['paged'] ?? 1,
 					'orderby'  => $params['orderby'] ?? 'display_name',
 					'order'    => $params['order'] ?? 'asc',
@@ -68,13 +69,10 @@ class LP_REST_Instructor_Controller extends LP_Abstract_REST_Controller {
 			$query = new WP_User_Query( $args );
 
 			$instructors = $query->get_results();
-			$template    = Template::instance();
 			//Content
 			ob_start();
 			if ( empty( $instructors ) ) {
-				$template->get_frontend_template(
-					'instructor-list/no-instructors-found.php'
-				);
+				echo '<li class="no-instructor">' . __( 'No instructor found!', 'learnpress' ) . '</li>';
 			} else {
 				/**
 				 * @var LP_User $instructor
@@ -84,18 +82,17 @@ class LP_REST_Instructor_Controller extends LP_Abstract_REST_Controller {
 					$instructor = learn_press_get_user( $instructor_obj->ID );
 					echo $instructors_template->instructor_item( $instructor );
 				}
+
+				$instructor_total = $query->get_total();
+
+				// Paginate
+				$response->data->pagination = $instructors_template->instructors_pagination(
+					$args['paged'],
+					$args['number'],
+					$instructor_total
+				);
 			}
 			$response->data->content = ob_get_clean();
-			//Paginate
-			$instructor_total = $query->get_total();
-
-			$response->data->pagination = learn_press_get_template_content(
-				'shared/pagination.php',
-				array(
-					'total' => intval( ceil( $instructor_total / $args['number'] ) ),
-					'paged' => $args['paged'],
-				)
-			);
 
 			$response->status = 'success';
 		} catch ( Throwable $e ) {

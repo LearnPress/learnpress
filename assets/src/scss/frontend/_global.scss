@@ -7,13 +7,10 @@
 
 .lp-content-area {
 	width: 100%;
-	max-width: 80rem !important;
+	max-width: var(--lp-cotainer-max-with) !important;
 	margin: 0 auto;
-
-	@media (max-width: 80rem) {
-		padding-right: 2rem;
-		padding-left: 2rem;
-	}
+	padding-right: var(--lp-cotainer-padding);
+	padding-left: var(--lp-cotainer-padding);
 }
 
 .lp-ico {
