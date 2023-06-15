@@ -37,15 +37,39 @@
 
 			.instructor-info {
 				display: flex;
+				color: rgba(0, 0, 0, 0.5);
 
-				.instructor-total-students {
+				.instructor-count-courses {
 					flex: 1;
 					text-align: right;
 					font-size: 0.8em;
+					display: flex;
+					align-items: center;
+
+					span {
+						display: inline-flex;
+
+						&.instructor-total-courses {
+							margin-left: 10px;
+						}
+					}
 				}
 
-				.instructor-total-courses {
+				.instructor-count-students {
+					flex: 1;
+					text-align: right;
 					font-size: 0.8em;
+					display: flex;
+					justify-content: right;
+					align-items: center;
+
+					span {
+						display: inline-flex;
+
+						&.instructor-total-students {
+							margin-left: 10px;
+						}
+					}
 				}
 			}
 
