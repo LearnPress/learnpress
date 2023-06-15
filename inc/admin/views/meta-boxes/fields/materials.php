@@ -20,6 +20,8 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 		private static $instance = null;
 		public function __construct( $label = '', $description = '', $default = '', $extra = array() ) {
 			parent::__construct( $label, $description, $default, $extra );
+			// delete materials in post when post is deleted
+			add_action( 'delete_post', array( $this, 'clear_material_in_post' ) );
 		}
 		/**
 		 * [output Downloadable Material Tab content in Course Setting Meta Box]
@@ -67,7 +69,11 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 				}
 				.lp-material--field-wrap label { min-width:80px }
 			</style>
-			<h3 class="notice notice-info"><?php esc_html_e( 'Can upload ' .$can_upload . ' files ( < ' . $max_file_size . 'MB )', 'learnpress' ) ?></h3>
+			<h3 class="notice notice-info">
+				<?php esc_html_e( 'Can upload ', 'learnpress' ) ?>
+				<span id="available-to-upload"><?php esc_attr_e( $can_upload ) ?></span>
+				<?php esc_html_e( ' files ( < ' . $max_file_size . 'MB )', 'learnpress' ) ?>
+			</h3>
 			<hr>
 			<button class="button button-primary" id="btn-lp--add-material" type="button" can-upload="<?php esc_attr_e( $can_upload )?>" ><?php esc_html_e( 'Add Course Materials', 'learnpress' ) ?></button>
 			<hr>
@@ -109,30 +115,33 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 			</div>
 			<input type="hidden" id="current-material-post-id" value="<?php echo esc_attr( $thepostid ) ?>">
 			<input type="hidden" id="delete-material-message" value="<?php esc_attr_e( 'Do you want to delete this file?', 'learnpress' ) ?>">
+			<input type="hidden" id="delete-material-row-text" value="<?php esc_attr_e( 'Delete', 'learnpress' ) ?>">
+			<table class="lp-material--table">
+				<tr>
+				  <th><?php esc_html_e( 'File Title', 'learnpress' ) ?></th>
+				  <th><?php esc_html_e( 'Method', 'learnpress' ) ?></th>
+				  <th><?php esc_html_e( 'Action', 'learnpress' ) ?></th>
+				</tr>
 			<?php if ($course_materials): ?>
-				<table class="lp-material--table">
-				  <tr>
-				    <th><?php esc_html_e( 'File Title', 'learnpress' ) ?></th>
-				    <th><?php esc_html_e( 'Method', 'learnpress' ) ?></th>
-				    <th><?php esc_html_e( 'Action', 'learnpress' ) ?></th>
-				  </tr>
-				  
-				  <?php foreach ($course_materials as $row): ?>
-				  	<tr>
-				  	  <td><?php echo esc_attr( $row->file_name )?></td>
-				  	  <td><?php echo esc_attr( ucfirst( $row->method ) )?></td>
-				  	  <td><a href="javascript:void(0)" class="delete-material-row" data-id="<?php echo esc_attr( $row->file_id )?>"><?php esc_html_e( 'Delete', 'learnpress' ) ?></a></td>
-				  	</tr>
-				  <?php endforeach;?>
-				</table>
-
+			  <?php foreach ($course_materials as $row): ?>
+			  	<tr>
+			  	  <td><?php echo esc_attr( $row->file_name )?></td>
+			  	  <td><?php echo esc_attr( ucfirst( $row->method ) )?></td>
+			  	  <td><a href="javascript:void(0)" class="delete-material-row" data-id="<?php echo esc_attr( $row->file_id )?>"><?php esc_html_e( 'Delete', 'learnpress' ) ?></a></td>
+			  	</tr>
+			  <?php endforeach;?>
 			<?php endif;?>
+			</table>
 			<div id="lp-material--group-container">
 				
 			</div>
 			<button class="button button-primary" id="btn-lp--save-material" type="button"><?php esc_html_e( 'Save', 'learnpress' ) ?></button>
 
 			<?php
+		}
+		public function clear_material_in_post( $post_id ) {
+			$material_init = LP_Material_Files_DB::getInstance();
+			$material_init->delete_material_by_item_id( $post_id );
 		}
 		/**
 		 * Get instance

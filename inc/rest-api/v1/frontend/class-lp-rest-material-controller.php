@@ -85,8 +85,8 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 			}
 			// $material0 = $material_data;
 			$material_data =  json_decode( wp_unslash( $material_data ), true );
-			$file = $upload_file ?? false;
-			$file = $file['file'];
+			$file = $upload_file['file'] ?? false;
+			// $file = $file['file'] ;
 			$file_method = array( 'upload', 'external' );
 			// DB Init
 			$material_init = LP_Material_Files_DB::getInstance();
@@ -114,47 +114,52 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 					$response['items'][ $key ]['message'] = sprintf( esc_html__( 'File %d title is not empty!', 'learnpress' ), $key );
 					continue;
 				}
-				$response['label'][$key] = $material['label'];
+				// $response['label'][$key] = $material['label'];
 				// check file upload method
 				if ( ! in_array( $material['method'], $file_method ) ) {
 					// throw new Exception( esc_html__( 'Invalid file method', 'learnpress' ) );
-					$response['items'][ $key ]['message'] = sprintf( esc_html__( 'File %d method is invalid!', 'learnpress' ), $key );
+					$response['items'][ $key ]['message'] = sprintf( esc_html__( 'File %s method is invalid!', 'learnpress' ), $material['label'] );
 					continue;
 				}
 				
 				if ( $material['method'] == 'upload' ) {
 					if ( ! $material['file'] ) {
 						// throw new Exception( esc_html__( 'Invalid upload file', 'learnpress' ) );
-						$response['items'][ $key ]['message'] = sprintf( esc_html__( 'File %d is empty!', 'learnpress' ), $key );
+						$response['items'][ $key ]['message'] = sprintf( esc_html__( 'File %s is empty!', 'learnpress' ), $material['label'] );
 						continue;
 					}
 					$file_key = array_search( $material['file'], $file);
 					if ( $file['size'][ $key ] > $max_file_size*1024*1024 ) {
-						$response['items'][ $key ]['message'] = sprintf( esc_html__( 'File %d size is too large!', 'learnpress' ), $key );
+						$response['items'][ $key ]['message'] = sprintf( esc_html__( 'File %s size is too large!', 'learnpress' ), $material['label'] );
 						continue;
 					}
 					$movefile = $this->material_upload_file( $file['name'][ $file_key ], $file['tmp_name'][ $file_key ] );
 					if ( ! $movefile ) {
-						$response['items'][ $key ]['message'] = sprintf( esc_html__( 'Upload File %d is error!', 'learnpress' ), $key );
+						$response['items'][ $key ]['message'] = sprintf( esc_html__( 'Upload File %s is error!', 'learnpress' ), $material['label'] );
 						continue;
 					}
 					$file_type = wp_check_filetype( basename( $movefile['file'] ) )['ext'];
+					$file_type = $this->material_check_file_extention( $file_type );
 					$file_path = str_replace( wp_upload_dir()['baseurl'], '', $movefile['url'] );
 				}
 				
 				if ( $material['method'] == 'external' ) {
 					$check_file = $this->check_external_file( $material['link'] );
 					if ( ! $check_file ){
-						$response['items'][ $key ]['message'] = sprintf( esc_html__( 'File embed %d is invalid!', 'learnpress' ), $key );
+						$response['items'][ $key ]['message'] = sprintf( esc_html__( 'File %s is invalid!', 'learnpress' ), $material['label'] );
 						continue;
 					}
 					if ( $check_file['size'] > $max_file_size*1024*1024 ) {
-						$response['items'][ $key ]['message'] = sprintf( esc_html__( 'File %d size is too large!', 'learnpress' ), $key );
+						$response['items'][ $key ]['message'] = sprintf( esc_html__( 'File %s size is too large!', 'learnpress' ), $material['label'] );
 						continue;
 					}
 					$file_type = wp_check_filetype( $check_file['name'] )['ext'];
+					$file_type = $this->material_check_file_extention( $file_type );
 					$file_path = $material['link'];
-
+				}
+				if ( ! $file_type ) {
+					$response['items'][ $key ]['message'] = sprintf( esc_html__( 'File %s - file type is invalid!', 'learnpress' ), $material['label'] );
+					continue;
 				}
 				$insert_arr = array( 
 						'file_name' 	=> $material['label'],
@@ -170,14 +175,14 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 					$response['items'][ $key ]['message'] = sprintf( esc_html__( 'cannot save file %d', 'learnpress' ), $key );
 					continue;
 				}
+				$response['material'][ $key ]['data'] = array(
+					'label'		=> $material['label'],
+					'method'	=> $material['method'],
+					'id'		=> $insert,
+				);
 			}
-			$response = array(
-				'data'    => array(
-					'status' => 200,
-				),
-				'message' => esc_html__( 'The progress was saved! Your file(s) were uploaded successfully!', 'learnpress' ),
-			);
-
+			$response['data']['status'] = 200;
+			$response['message'] = esc_html__( 'The progress was saved! Your file(s) were uploaded successfully!', 'learnpress' );
 		} catch (Exception $e) {
 			$response['data']['status'] = 400;
 			$response['message']        = $e->getMessage();
@@ -223,6 +228,39 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 		$file = wp_upload_bits( $file_name, null, file_get_contents( $file_tmp ) );
 
 		return $file['error'] ? false : $file;
+	}
+	public function material_check_file_extention( $ext ) {
+		$allow_file_type = LP_Settings::get_option( 'material_allow_file_type' );
+		switch ( $ext ) {
+			case 'doc':
+			case 'docx':
+				$ext = 'doc';
+				break;
+			case 'xls':
+			case 'xlsx':
+				$ext = 'excel';
+				break;
+			case 'mp3':
+				$ext = 'mp3';
+				break;
+			case 'mp4':
+				$ext = 'mp4';
+				break;
+			case 'ppt':
+			case 'pptx':
+				$ext = 'ppt';
+				break;
+			case 'pdf':
+				$ext = 'pdf';
+				break;
+			case 'txt':
+				$ext = 'txt';
+				break;
+			default:
+				$ext = false;
+				break;
+		}
+		return in_array( $ext, $allow_file_type ) ? $ext : false;
 	}
 	public function get_material( $request ) {
 		$response = array(

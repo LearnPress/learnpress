@@ -2,24 +2,29 @@ document.addEventListener("DOMContentLoaded", function() {
     function baseName(string) {
         return string.substring(string.lastIndexOf('/')+1).split('?')[0];
     }
-    let postID          = document.getElementById( 'current-material-post-id' ).value,
-        max_file_size   = document.getElementById( 'material-max-file-size' ).value,
-        accept_file     = document.querySelector('.lp-material--field-upload').getAttribute('accept').split( ',' );
+    let postID                      = document.getElementById( 'current-material-post-id' ).value,
+        max_file_size               = document.getElementById( 'material-max-file-size' ).value,
+        accept_file                 = document.querySelector( '.lp-material--field-upload' ).getAttribute( 'accept' ).split( ',' ),
+        can_upload                  = document.getElementById( 'available-to-upload' ),
+        add_btn                     = document.getElementById( 'btn-lp--add-material' ),
+        group_template              = document.getElementById( 'lp-material--add-material-template' ),
+        material__group_container   = document.getElementById( 'lp-material--group-container' ),
+        material_tab                = document.getElementById( 'downloadable_material_data' ),
+        material_save_btn           = document.getElementById( 'btn-lp--save-material' );
 
     //add material group field
-    document.getElementById( 'btn-lp--add-material' ).addEventListener( 'click', function( e ) {
-        let group_template = document.getElementById( 'lp-material--add-material-template' ).innerHTML,
-            can_upload     = this.getAttribute( 'can-upload' );
-        let groups = document.getElementById( 'lp-material--group-container' ).querySelectorAll( '.lp-material--group' ).length;
-        if ( groups < can_upload ) {
-            document.getElementById( 'lp-material--group-container' ).insertAdjacentHTML( 'beforeend', group_template );    
+    add_btn.addEventListener( 'click', function( e ) {
+        let can_upload_data     = ~~this.getAttribute( 'can-upload' );
+        let groups = material__group_container.querySelectorAll( '.lp-material--group' ).length;
+        if ( groups >= can_upload_data ) {
+            return false;
         } else {
-            this.setAttribute( 'disabled', true );
+            material__group_container.insertAdjacentHTML( 'beforeend', group_template.innerHTML );
         }
         
     } );
     //switch input when change method between "upload" and "external"
-    document.getElementById( 'downloadable_material_data' ).addEventListener( 'change', function( event ) {
+    material_tab.addEventListener( 'change', function( event ) {
         let target = event.target;
         if ( target.classList.contains( 'lp-material--field-method' ) ) {
             let method = target.value;
@@ -43,16 +48,15 @@ document.addEventListener("DOMContentLoaded", function() {
                 if ( ! accept_file.includes( target.files[0].type ) ) {
                     alert( "This file is not allowed! Please choose another file!" );
                     target.value = '';
-                }
-                if ( target.files[0].size > max_file_size*1024*1024 ) {
+                } else if ( target.files[0].size > max_file_size*1024*1024 ) {
                     alert( `This file size is greater than ${max_file_size}MB! Please choose another file!` );
                     target.value = '';
                 }
-
+                return;
             }
         }
     } );
-    document.getElementById( 'downloadable_material_data' ).addEventListener( 'click', function( event ) {
+    material_tab.addEventListener( 'click', function( event ) {
         let target = event.target;
         if ( target.classList.contains( 'lp-material--delete' ) && target.nodeName == 'BUTTON' ) {
             target.closest( '.lp-material--group' ).remove();
@@ -60,8 +64,8 @@ document.addEventListener("DOMContentLoaded", function() {
         return false;
     } );
     //save material
-    document.getElementById( 'btn-lp--save-material' ).addEventListener( 'click', function(event) {
-        let materials = document.getElementById( 'lp-material--group-container' ).querySelectorAll( '.lp-material--group' );
+    material_save_btn.addEventListener( 'click', function(event) {
+        let materials = material__group_container.querySelectorAll( '.lp-material--group' );
         let material_data = [];
             
         if ( materials.length > 0 ) {
@@ -97,7 +101,7 @@ document.addEventListener("DOMContentLoaded", function() {
             if ( !send_request ) {
                 alert( 'Enter file title, choose file or enter file link!' )
             } else {
-                console.log(material_data);
+                // console.log(material_data);
                 material_data = JSON.stringify( material_data );
                 let url = `${lpGlobalSettings.rest}lp/v1/course/material/save-post-materials`;
                 formData.append( 'data', material_data );
@@ -110,7 +114,37 @@ document.addEventListener("DOMContentLoaded", function() {
                     body: formData,
                 } ) // wrapped
                     .then( res => res.text() )
-                    .then( data => console.log( data ) )
+                    .then( data => {
+                        console.log( data );
+                        material__group_container.innerHTML = '';
+                        data = JSON.parse( data );
+                        if ( data.material && data.material.length > 0 ) {
+                            let delete_btn_text = document.getElementById( 'delete-material-row-text' ).value,
+                                material_table = document.querySelector( '.lp-material--table' );
+                            for ( let i = 0; i < data.material.length; i++ ) {
+                                let row = data.material[i];
+                                material_table.insertAdjacentHTML( 
+                                    'beforeend',
+                                    `<tr>
+                                      <td>${row.data.label}</td>
+                                      <td>${row.data.method}</td>
+                                      <td><a href="javascript:void(0)" class="delete-material-row" data-id="${row.data.id}">${delete_btn_text}</a></td>
+                                    </tr>`
+                                );
+                            }
+                            can_upload.innerText = ~~can_upload.innerText - data.material.length;
+                            add_btn.setAttribute( 'can-upload', can_upload.innerText );
+                        }
+                        if ( data.items && data.items.length > 0 ) {
+                            for ( let i = 0; i < data.items.length; i++ ) {
+                                add_btn.insertAdjacentHTML(
+                                    'beforebegin',
+                                    `<h3 class="notice notice-error">${data.items[i].message}</h3>`
+                                );
+                            }
+                        }
+
+                    } )
                     .catch( err => console.log( err ) );    
             }
         }
@@ -136,6 +170,8 @@ document.addEventListener("DOMContentLoaded", function() {
                         // console.log(data);
                         if ( data.data.delete ) {
                             target.closest( 'tr' ).remove();
+                            can_upload.innerText = ~~can_upload.innerText + 1;
+                            add_btn.setAttribute( 'can-upload', ~~can_upload.innerText );
                         }
                     } )
                     .catch( err => console.log( err ) );

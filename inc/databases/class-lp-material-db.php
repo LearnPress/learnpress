@@ -40,7 +40,7 @@ class LP_Material_Files_DB extends LP_Database {
 		if ( ! is_int( $data['item_id'] ) ){
 			return;
 		}
-		$file_id = $this->wpdb->insert(
+		$insert_file = $this->wpdb->insert(
 			$this->table_name,
 			$data,
 			array(
@@ -54,7 +54,7 @@ class LP_Material_Files_DB extends LP_Database {
 			)
 		);
 		$this->check_execute_has_error();
-		return $file_id;
+		return $insert_file ? $this->wpdb->insert_id : false;
 	}
 
 	/**
