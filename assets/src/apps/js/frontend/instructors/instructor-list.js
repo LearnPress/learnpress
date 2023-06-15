@@ -1,6 +1,6 @@
 import { addQueryArgs } from '@wordpress/url';
 
-const instructorNode = document.querySelector( '.lp-instructor-list' );
+const instructorNode = document.querySelector( '.lp-list-instructors' );
 let contentAreaNode, containerNode;
 let query = {};
 
@@ -9,7 +9,7 @@ export default function InstructorList() {
 		return;
 	}
 	contentAreaNode = document.querySelector( '.lp-content-area' );
-	containerNode = document.querySelector( '.lp-instructor-list' );
+	containerNode = instructorNode.querySelector( '.ul-list-instructors' );
 	const initDataNode = contentAreaNode.querySelector( 'input[name="init-data"]' );
 	query = { paged: 1 };
 	query = { ...query, ...JSON.parse( initDataNode.value ) };
@@ -43,8 +43,8 @@ const getInstructors = ( queryParam, firstLoad = false ) => {
 		console.log( err );
 	} ).finally( () => {
 		if ( queryParam.paged ) {
-			const optionScroll = { behavior: 'smooth' };
-			instructorNode.scrollIntoView( optionScroll );
+			/*const optionScroll = { behavior: 'smooth' };
+			instructorNode.scrollIntoView( optionScroll );*/
 		}
 
 		if ( firstLoad === false ) {

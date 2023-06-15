@@ -194,12 +194,28 @@ class SingleInstructorTemplate {
 	}
 
 	/**
+	 * Get button view instructor.
+	 *
 	 * @param LP_User $instructor
 	 *
+	 * @since 4.2.3
+	 * @version 1.0.0
 	 * @return string
 	 */
-	public function url_instructor( LP_User $instructor ): string {
-		return '#url_instructor';
+	public function html_button_view( LP_User $instructor ): string {
+		$btn_view = '';
+
+		try {
+			$btn_view = sprintf(
+				'<a href="%s" class="instructor-btn-view">%s</a>',
+				$instructor->get_url_instructor(),
+				__( 'View Profile', 'learnpress' )
+			);
+		} catch ( Throwable $e ) {
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
+		}
+
+		return $btn_view;
 	}
 
 	/**

@@ -1,127 +1,77 @@
 /**
  * Instructors page.
+ *
+ * @since 4.2.3
+ * @version 1.0.0
  */
-a {
-	text-decoration: none;
-}
 
-.lp-content-area {
-	width: 100%;
-	max-width: 1170px;
-	margin: 0 auto;
-
-	@media (max-width: 1024px) {
-		padding-right: 15px;
-		padding-left: 15px;
-	}
-}
-
-.lp-content-area::after,
-.lp-content-area::before {
-	display: table;
-	clear: both;
-	content: "";
-}
-
-.lp-instructors {
-	width: 100%;
-	scroll-margin: 30px;
-
-	.learn-press-instructor-header {
-		float: left;
-		padding-top: 4px;
-		margin-bottom: 40px;
-
-		h1 {
-			margin: 0;
-			font-size: 30px;
-			font-weight: 600;
-		}
-
-		@media (max-width: 767px) {
-			margin-bottom: 20px;
-		}
-	}
-
-	ul.lp-instructor-list{
-		clear: both;
-		margin: 0 -15px;
-		display: flex;
-		flex-wrap: wrap;
-		list-style: none;
+.lp-list-instructors {
+	.ul-list-instructors {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: 20px;
 		padding: 0;
 
-		.lp-loading{
-			width: 100%;
+		>ul.lp-skeleton-animation {
+			grid-column: span 4;
 		}
 
-		>li{
-			padding: 0 15px;
-			width: 25%;
-			margin: 0 0 40px 0;
+		li.item-instructor {
+			list-style: none;
+			border: 1px solid rgba(0, 0, 0, 0.5);
+			border-radius: 5px;
+			padding: 20px;
 
-			.instructor-item > *{
-				margin-bottom: 10px;
+			.instructor-display-name {
+				display: block;
+				text-align: center;
+				margin: 20px 0;
+				font-size: 1em;
+				font-weight: bold;
 			}
 
-			.instructor-content{
-				.instructor-name{
-					font-weight: 500;
-					font-size: 1.2rem;
-					text-align: center;
-				}
-
-				.instructor-info{
-					display: flex;
-					justify-content: space-between;
-					color: #bfbfbf;
-				}
-			}
-
-
-			.instructor-avatar img{
+			.instructor-avatar img {
+				border-radius: 5px;
 				width: 100%;
 			}
 
-			.view-profile{
+			.instructor-info {
+				display: flex;
+
+				.instructor-total-students {
+					flex: 1;
+					text-align: right;
+					font-size: 0.8em;
+				}
+
+				.instructor-total-courses {
+					font-size: 0.8em;
+				}
+			}
+
+			.instructor-btn-view {
+				display: block;
+				margin: 20px auto 0;
 				text-align: center;
+				background: #D9D9D9;
+				text-decoration: none;
+				border-radius: 5px;
+				font-size: 0.8em;
+				padding: 10px 0;
+				color: rgba(0, 0, 0, 0.5);
+				font-weight: 700;
 
-				a{
-					display: inline-block;
-					width: 100%;
-					border-radius: 4px;
-					color: #6c6c6c;
-					background: #d9d9d9;
-
-					&:hover{
-						color: white;
-						background: var(--lp-primary-color);
-					}
+				&:hover {
+					background: rgba(255, 182, 6, 1);
+					color: whitesmoke;
 				}
 			}
 		}
-	}
 
-	//.lp-entry-content {
-	//	display: flex;
-	//	flex-direction: row;
-	//
-	//	.entry-content-left {
-	//		width: calc(100% - 300px);
-	//		max-width: 100%;
-	//		margin: 0;
-	//		padding-right: 40px;
-	//		padding-top: 60px;
-	//
-	//		@media (max-width: 768px) {
-	//			width: 100%;
-	//			padding-right: 0;
-	//			margin-bottom: 50px;
-	//		}
-	//	}
-	//
-	//	@media (max-width: 768px) {
-	//		flex-direction: column;
-	//	}
-	//}
+
+		@media (max-width: 900px) {
+			grid-template-columns: repeat( auto-fit, minmax( 280px, 1fr ) );
+		}
+	}
 }
+

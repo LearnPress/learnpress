@@ -49,7 +49,6 @@ class LP_Assets extends LP_Abstract_Assets {
 						LP_PAGE_CHECKOUT,
 						LP_PAGE_BECOME_A_TEACHER,
 						LP_PAGE_PROFILE,
-						LP_PAGE_INSTRUCTORS,
 					),
 					0
 				),
@@ -57,6 +56,12 @@ class LP_Assets extends LP_Abstract_Assets {
 					self::url( 'css/instructor' . $is_rtl . self::$_min_assets . '.css' ),
 					array(),
 					array(),
+					1
+				),
+				'lp-instructors'     => new LP_Asset_Key(
+					self::url( 'css/instructors' . $is_rtl . self::$_min_assets . '.css' ),
+					[],
+					[],
 					1
 				),
 				'learnpress-widgets' => new LP_Asset_Key(
