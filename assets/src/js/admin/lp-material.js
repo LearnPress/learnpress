@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function() {
         add_btn                     = document.getElementById( 'btn-lp--add-material' ),
         group_template              = document.getElementById( 'lp-material--add-material-template' ),
         material__group_container   = document.getElementById( 'lp-material--group-container' ),
-        material_tab                = document.getElementById( 'downloadable_material_data' ),
+        material_tab                = document.getElementById( 'lp-material-container' ),
         material_save_btn           = document.getElementById( 'btn-lp--save-material' );
 
     //add material group field

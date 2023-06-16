@@ -335,5 +335,9 @@ if ( ! class_exists( 'LP_WP_Filesystem' ) ) {
 		public function lp_handle_upload( &$file, $overrides = false, $time = null ) {
 			return wp_handle_upload( $file, $overrides, $time );
 		}
+		public function get_file_size_from_url( $url ) {
+			$tmp_file = $this->download_url( $url );
+			return $tmp_file ? number_format( filesize( $tmp_file )/1024/1024, 2) : 0;
+		}
 	}
 }

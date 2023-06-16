@@ -69,6 +69,7 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 				}
 				.lp-material--field-wrap label { min-width:80px }
 			</style>
+		<div id="lp-material-container">
 			<h3 class="notice notice-info">
 				<?php esc_html_e( 'Can upload ', 'learnpress' ) ?>
 				<span id="available-to-upload"><?php esc_attr_e( $can_upload ) ?></span>
@@ -136,7 +137,7 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 				
 			</div>
 			<button class="button button-primary" id="btn-lp--save-material" type="button"><?php esc_html_e( 'Save', 'learnpress' ) ?></button>
-
+		</div>
 			<?php
 		}
 		public function clear_material_in_post( $post_id ) {
