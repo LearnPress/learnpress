@@ -205,7 +205,7 @@ class LP_Checkout {
 					);
 
 					if ( is_wp_error( $user ) ) {
-						$errors['login_error'] = $user->get_error_message();
+						throw new Exception( $user->get_error_message() );
 					} else {
 						wp_set_current_user( $user->ID );
 					}
@@ -239,8 +239,20 @@ class LP_Checkout {
 					if ( is_wp_error( $user_id ) ) {
 						$errors['create_user_error'] = $user_id->get_error_message();
 					} else {
-						wp_set_current_user( $user_id );
-						wp_set_auth_cookie( $user_id, true );
+						$user = wp_signon(
+							array(
+								'user_login'    => $this->checkout_form_data['reg_email'],
+								'user_password' => $this->checkout_form_data['reg_password'],
+								'remember'      => 1,
+							),
+							is_ssl()
+						);
+
+						if ( is_wp_error( $user ) ) {
+							throw new Exception( $user->get_error_message() );
+						} else {
+							wp_set_current_user( $user->ID );
+						}
 					}
 					break;
 				case 'guest-checkout':
