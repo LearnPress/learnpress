@@ -17,6 +17,15 @@ $content_fields = array_merge(
 		Controls_Manager::TAB_CONTENT,
 		[
 			LPElementorControls::add_control_type(
+				'instructor_id',
+				esc_html__( 'Set Instructor ID', 'learnpress' ),
+				'',
+				Controls_Manager::TEXT,
+				[
+					'description' => 'If widget include on page is Single Instructor, will be get instructor id automatic, from query var.',
+				]
+			),
+			LPElementorControls::add_control_type(
 				'wrapper_tags',
 				esc_html__( 'Add html tag wrapper Instructor Description', 'learnpress' ),
 				[

@@ -8,27 +8,19 @@
 
 namespace LearnPress\ExternalPlugin\Elementor\Widgets\Instructor\Sections;
 
-use Elementor\Controls_Manager;
-use Elementor\Frontend;
 use Elementor\Plugin;
-use Elementor\Repeater;
-use Elementor\Utils;
 use Exception;
-use LearnPress\ExternalPlugin\Elementor\LPElementorWidgetBase;
+use LearnPress\ExternalPlugin\Elementor\Widgets\Instructor\SingleInstructorBaseElementor;
 use LearnPress\Helpers\Config;
 use LearnPress\Helpers\Template;
 use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
 
-class InstructorTitleElementor extends LPElementorWidgetBase {
+class InstructorTitleElementor extends SingleInstructorBaseElementor {
 	public function __construct( $data = [], $args = null ) {
 		$this->title    = esc_html__( 'Instructor Title', 'learnpress' );
 		$this->name     = 'instructor_title';
 		$this->keywords = [ 'instructor', 'title', 'instructor title' ];
 		parent::__construct( $data, $args );
-	}
-
-	public function get_categories() {
-		return array( 'learnpress_instructor' );
 	}
 
 	protected function register_controls() {
@@ -43,20 +35,13 @@ class InstructorTitleElementor extends LPElementorWidgetBase {
 	 */
 	protected function render() {
 		try {
-			$settings = $this->get_settings_for_display();
-
-			/**
-			 * Get instructor id
-			 *
-			 * If is page single instructor, will be get instructor id from query var
-			 * If is set instructor id in setting widget, will be get instructor id from widget
-			 */
-			//$instructor_id = get_query_var( 'instructor' );
-			$instructor_id = 1;
-			$instructor    = learn_press_get_user( $instructor_id );
-			if ( ! $instructor ) {
-				throw new Exception( __( 'Instructor not found', 'learnpress' ) );
+			$instructor = null;
+			$settings   = $this->get_settings_for_display();
+			if ( ! is_array( $settings ) ) {
+				$settings = [];
 			}
+
+			$this->detect_instructor_id( $settings, $instructor );
 
 			$wrapper = [];
 			if ( ! empty( $settings['wrapper_tags'] ) ) {

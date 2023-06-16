@@ -117,6 +117,10 @@ class LP_Cache {
 	 */
 	public function clear( $key ) {
 		try {
+			if ( empty( $key ) ) {
+				return;
+			}
+
 			wp_cache_delete( $key, $this->key_group );
 			if ( $this->has_thim_cache && LP_Settings::is_created_tb_thim_cache() ) {
 				$key = "{$this->key_group}/{$key}";
