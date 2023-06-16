@@ -180,10 +180,18 @@ class LP_Checkout {
 	 * @return array
 	 */
 	public function check_validate_fields( $errors, $fields, $checkout ) {
-		if ( empty( $errors ) ) {
+		if ( ! empty( $errors ) ) {
+			return $errors;
+		}
+
+		try {
+			$session    = LearnPress::instance()->session;
+			$cart       = LearnPress::instance()->cart;
+			$cart_items = $cart->get_items();
+
 			switch ( $this->checkout_action ) {
 				case 'checkout-login':
-					$this->checkout_form_data['remember'] = isset( $_POST['rememberme'] ) ? true : false;
+					$this->checkout_form_data['remember'] = isset( $_POST['rememberme'] );
 
 					$login_info = $this->checkout_form_data;
 
@@ -237,6 +245,14 @@ class LP_Checkout {
 					break;
 				case 'guest-checkout':
 			}
+
+				// Set session, cart for user have just login/register success.
+			if ( in_array( $this->checkout_action, [ 'checkout-login', 'checkout-register' ] ) ) {
+				$cart->empty_cart();
+				$session->set( 'cart', $cart_items, true );
+			}
+		} catch ( Throwable $e ) {
+			$errors = new WP_Error( 'checkout-error', $e->getMessage() );
 		}
 
 		return $errors;
