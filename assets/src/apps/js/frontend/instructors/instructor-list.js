@@ -19,8 +19,6 @@ export default function InstructorList() {
 }
 
 const getInstructors = ( queryParam, firstLoad = false ) => {
-	containerNode.style.opacity = 0.4;
-
 	wp.apiFetch( {
 		path: addQueryArgs( 'lp/v1/instructors', queryParam ),
 		method: 'GET',
@@ -51,8 +49,6 @@ const getInstructors = ( queryParam, firstLoad = false ) => {
 			const urlPush = addQueryArgs( document.location.origin + '/' + document.location.pathname.split( '/' )?.[ 1 ], queryParam );
 			window.history.pushState( '', '', urlPush );
 		}
-
-		containerNode.style.opacity = 1;
 	} );
 };
 
