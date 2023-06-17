@@ -46,36 +46,45 @@ class LP_Admin_Menu {
 	}
 
 	/**
-	 * Admin bar menu.
+	 * Added url Pages of LP.
 	 *
 	 * @param WP_Admin_Bar $wp_admin_bar
 	 *
 	 * @return void
 	 */
 	public function admin_bar_menus( $wp_admin_bar ) {
-		if ( ! is_admin() || ! is_user_logged_in() ) {
+		if ( ! current_user_can( 'administrator' ) ) {
 			return;
 		}
 
-		// Add link view archive courses.
-		$wp_admin_bar->add_node(
-			array(
-				'parent' => 'site-name',
-				'id'     => 'courses-page',
-				'title'  => esc_html__( 'View Courses', 'learnpress' ),
+		$url_pages = [
+			'lp-courses'     => [
+				'title'  => esc_html__( 'View Page Courses', 'learnpress' ),
 				'href'   => learn_press_get_page_link( 'courses' ),
-			)
-		);
-
-		// Ad link view profile.
-		$wp_admin_bar->add_node(
-			array(
-				'id'     => 'course_profile',
-				'parent' => 'user-actions',
-				'title'  => esc_html__( 'View Profile', 'learnpress' ),
+				'parent' => 'site-name',
+			],
+			'lp-profile'     => [
+				'title'  => esc_html__( 'View Page Profile', 'learnpress' ),
 				'href'   => learn_press_get_page_link( 'profile' ),
-			)
-		);
+				'parent' => 'site-name',
+			],
+			'lp-instructors' => [
+				'title'  => esc_html__( 'View Page Instructors', 'learnpress' ),
+				'href'   => learn_press_get_page_link( 'instructors' ),
+				'parent' => 'site-name',
+			],
+		];
+
+		foreach ( $url_pages as $id => $url_page ) {
+			$wp_admin_bar->add_node(
+				array(
+					'id'     => $id,
+					'parent' => $url_page['parent'] ?? 'appearance',
+					'title'  => sprintf( '<span class="ab-label">%s</span>', $url_page['title'] ),
+					'href'   => $url_page['href'],
+				)
+			);
+		}
 	}
 
 	/**
