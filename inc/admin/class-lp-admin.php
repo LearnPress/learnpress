@@ -61,6 +61,17 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 
 			// Set link item course when edit on Backend | tungnx
 			add_filter( 'get_sample_permalink_html', array( $this, 'lp_course_set_link_item_backend' ), 10, 5 );
+
+			add_action(
+				'admin_init',
+				function () {
+					// From LP v4.2.3 temporary run create pages to add page instructors, single instructor for client upgrade LP.
+					// After a long time, will remove this code.
+					if ( is_admin() && ! defined( 'DOING_AJAX' ) ) {
+						LP_Install::create_pages();
+					}
+				}
+			);
 		}
 
 		/**
@@ -304,10 +315,12 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 				);
 
 				$all_pages = array(
-					'courses'          => __( 'Courses', 'learnpress' ),
-					'profile'          => __( 'Profile', 'learnpress' ),
-					'checkout'         => __( 'Checkout', 'learnpress' ),
-					'become_a_teacher' => __( 'Become a Teacher', 'learnpress' ),
+					'courses'           => __( 'Courses', 'learnpress' ),
+					'instructors'       => __( 'Instructors', 'learnpress' ),
+					'single_instructor' => __( 'Single Instructors', 'learnpress' ),
+					'profile'           => __( 'Profile', 'learnpress' ),
+					'checkout'          => __( 'Checkout', 'learnpress' ),
+					'become_a_teacher'  => __( 'Become a Teacher', 'learnpress' ),
 				);
 
 				foreach ( $all_pages as $name => $title ) {

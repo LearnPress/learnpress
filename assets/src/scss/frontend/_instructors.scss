@@ -1,0 +1,105 @@
+/**
+ * Instructors page.
+ *
+ * @since 4.2.3
+ * @version 1.0.0
+ */
+
+.lp-list-instructors {
+	.ul-list-instructors {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: 20px;
+		padding: 0;
+		list-style: none;
+
+		>ul.lp-skeleton-animation {
+			grid-column: span 4;
+		}
+
+		li.no-instructor {
+			grid-column: span 4;
+		}
+
+		li.item-instructor {
+			border: 1px solid rgba(0, 0, 0, 0.5);
+			border-radius: 5px;
+			padding: 20px;
+
+			.instructor-display-name {
+				display: block;
+				text-align: center;
+				margin: 20px 0;
+				font-size: 1em;
+				font-weight: bold;
+			}
+
+			.instructor-avatar img {
+				border-radius: 5px;
+				width: 100%;
+			}
+
+			.instructor-info {
+				display: flex;
+				//color: rgba(0, 0, 0, 0.5);
+
+				.instructor-count-courses {
+					flex: 1;
+					text-align: right;
+					font-size: 0.8em;
+					display: flex;
+					align-items: center;
+
+					span {
+						display: inline-flex;
+
+						&.instructor-total-courses {
+							margin-left: 10px;
+						}
+					}
+				}
+
+				.instructor-count-students {
+					flex: 1;
+					text-align: right;
+					font-size: 0.8em;
+					display: flex;
+					justify-content: right;
+					align-items: center;
+
+					span {
+						display: inline-flex;
+
+						&.instructor-total-students {
+							margin-left: 10px;
+						}
+					}
+				}
+			}
+
+			.instructor-btn-view {
+				display: block;
+				margin: 20px auto 0;
+				text-align: center;
+				background: #D9D9D9;
+				text-decoration: none;
+				border-radius: 5px;
+				font-size: 0.8em;
+				padding: 10px 0;
+				color: rgba(0, 0, 0, 0.5);
+				font-weight: 700;
+
+				&:hover {
+					background: var(--lp-primary-color);
+					color: whitesmoke;
+				}
+			}
+		}
+
+
+		@media (max-width: 900px) {
+			grid-template-columns: repeat( auto-fit, minmax( 280px, 1fr ) );
+		}
+	}
+}
+

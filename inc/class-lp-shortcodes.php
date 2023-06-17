@@ -57,17 +57,31 @@ if ( ! class_exists( 'LP_Shortcodes' ) ) {
 				return $template;
 			}
 
+			// Option enable auto add shortcode. @since 4.2.3
+			$enable = apply_filters( 'learn-press/auto-shortcode', true, $post );
+			if ( ! $enable ) {
+				return $template;
+			}
+
 			if ( LP_Page_Controller::is_page_checkout() ) {
-				if ( ! preg_match( '/\[learn_press_checkout\s?(.*)\]/', $post->post_content ) ) {
+				if ( ! preg_match( '/\[learn_press_checkout\s?(.*)/', $post->post_content ) ) {
 					$post->post_content .= '[learn_press_checkout]';
 				}
 			} elseif ( $post->ID == learn_press_get_page_id( 'become_a_teacher' ) ) {
-				if ( ! preg_match( '/\[learn_press_become_teacher_form\s?(.*)\]/', $post->post_content ) ) {
+				if ( ! preg_match( '/\[learn_press_become_teacher_form\s?(.*)/', $post->post_content ) ) {
 					$post->post_content .= '[learn_press_become_teacher_form]';
 				}
 			} elseif ( LP_Page_Controller::is_page_profile() ) {
-				if ( ! preg_match( '/\[learn_press_profile\s?(.*)\]/', $post->post_content ) ) {
+				if ( ! preg_match( '/\[learn_press_profile\s?(.*)/', $post->post_content ) ) {
 					$post->post_content .= '[learn_press_profile]';
+				}
+			} elseif ( LP_Page_Controller::is_page_instructor() ) {
+				if ( ! preg_match( '/\[learn_press_single_instructor\s?(.*)/', $post->post_content ) ) {
+					$post->post_content .= '[learn_press_single_instructor]';
+				}
+			} elseif ( LP_Page_Controller::is_page_instructors() ) {
+				if ( ! preg_match( '/\[learn_press_instructors\s?(.*)/', $post->post_content ) ) {
+					$post->post_content .= '[learn_press_instructors]';
 				}
 			}
 

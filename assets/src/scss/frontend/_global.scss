@@ -1,0 +1,23 @@
+/**
+* Styles for all page of LP
+*
+* @since 4.2.3
+* @version 1.0.0
+*/
+
+.lp-content-area {
+	width: 100%;
+	max-width: var(--lp-cotainer-max-with) !important;
+	margin: 0 auto;
+	padding-right: var(--lp-cotainer-padding);
+	padding-left: var(--lp-cotainer-padding);
+}
+
+.lp-ico {
+	svg {
+		width: 20px;
+		height: 20px;
+	}
+}
+
+
