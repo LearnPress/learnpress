@@ -58,7 +58,7 @@ class LP_REST_Instructor_Controller extends LP_Abstract_REST_Controller {
 				'learnpress/instructor-list/args',
 				array(
 					'fields'   => [ 'ID' ],
-					'number'   => $params['number'] ?? 12,
+					'number'   => LP_Settings::get_option( 'instructor_per_page', 12 ),
 					'paged'    => $params['paged'] ?? 1,
 					'orderby'  => $params['orderby'] ?? 'display_name',
 					'order'    => $params['order'] ?? 'asc',

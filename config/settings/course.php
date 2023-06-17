@@ -120,6 +120,27 @@ return apply_filters(
 					'id'   => 'lp_metabox_curriculum_setting',
 				),
 			)
+		),
+		apply_filters(
+			'learn-press/course-settings-fields/instructor',
+			array(
+				array(
+					'type'  => 'title',
+					'title' => esc_html__( 'Instructor Settings', 'learnpress' ),
+					'id'    => 'lp_metabox_instructor_setting',
+				),
+				array(
+					'title'   => esc_html__( 'Instructor Per Page', 'learnpress' ),
+					'id'      => 'instructor_per_page',
+					'default' => 12,
+					'type'    => 'number',
+					'desc'    => esc_html__( 'The number of displayed instructors per page (Enter -1 to display all sections).', 'learnpress' ),
+				),
+				array(
+					'type' => 'sectionend',
+					'id'   => 'lp_metabox_instructor_setting',
+				),
+			)
 		)
 	)
 );
