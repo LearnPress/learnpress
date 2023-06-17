@@ -420,6 +420,13 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			// For plugin Elementor
 			if ( defined( 'ELEMENTOR_VERSION' ) ) {
+				// Disable auto shortcode of LP when activated Elementor.
+				add_action(
+					'learn-press/auto-shortcode',
+					function () {
+						return false;
+					}
+				);
 				LPElementor::instance();
 			}
 

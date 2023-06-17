@@ -57,6 +57,12 @@ if ( ! class_exists( 'LP_Shortcodes' ) ) {
 				return $template;
 			}
 
+			// Option enable auto add shortcode. @since 4.2.3
+			$enable = apply_filters( 'learn-press/auto-shortcode', true, $post );
+			if ( ! $enable ) {
+				return $template;
+			}
+
 			if ( LP_Page_Controller::is_page_checkout() ) {
 				if ( ! preg_match( '/\[learn_press_checkout\s?(.*)/', $post->post_content ) ) {
 					$post->post_content .= '[learn_press_checkout]';
