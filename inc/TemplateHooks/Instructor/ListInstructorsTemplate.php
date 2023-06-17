@@ -8,7 +8,10 @@
 namespace LearnPress\TemplateHooks\Instructor;
 
 use LearnPress\Helpers\Template;
+use LP_Assets;
+use LP_Page_Controller;
 use LP_User;
+use LP_WP_Filesystem;
 use Throwable;
 use WP_Query;
 
@@ -25,12 +28,27 @@ class ListInstructorsTemplate {
 
 	protected function __construct() {
 		add_action( 'learn-press/list-instructors/layout', [ $this, 'sections' ] );
-		//add_action( 'wp_head', [ $this, 'add_internal_style_to_head' ] );
+		add_action( 'wp_head', [ $this, 'add_internal_scripts_to_head' ] );
 	}
 
-	/*public function add_internal_style_to_head() {
-		echo '<style id="123123" type="text/css">body{background: red !important;}</style>';
-	}*/
+	public function add_internal_scripts_to_head() {
+		if ( ! LP_Page_Controller::is_page_instructors() ) {
+			return;
+		}
+
+		$is_rtl = is_rtl() ? '-rtl' : '';
+		$min    = LP_Assets::$_min_assets;
+		?>
+		<style id="lp-list-instructors">
+			<?php echo wp_remote_fopen( LP_Assets::instance()->url( 'css/instructors' . $is_rtl . $min . '.css' ) ); ?>
+		</style>
+		<script id="lp-list-instructors">
+			const lpInstructorsUrl = '<?php echo learn_press_get_page_link( 'instructors' ); ?>';
+			<?php //echo wp_remote_fopen( LP_Assets::instance()->url( 'js/dist/frontend/instructors' . $min . '.js' ) ); ?>
+			<?php echo LP_WP_Filesystem::instance()->file_get_contents( LP_PLUGIN_PATH . 'assets/js/dist/frontend/instructors' . $min . '.js' ); ?>
+		</script>
+		<?php
+	}
 
 	/**
 	 * List section of layout.
@@ -42,8 +60,8 @@ class ListInstructorsTemplate {
 	 * @return void
 	 */
 	public function sections( array $data = [] ) {
-		wp_enqueue_style( 'lp-instructors' );
-		wp_enqueue_script( 'lp-instructors' );
+		//wp_enqueue_style( 'lp-instructors' );
+		//wp_enqueue_script( 'lp-instructors' );
 		/**
 		 * @var WP_Query $wp_query
 		 */
@@ -63,13 +81,6 @@ class ListInstructorsTemplate {
 			<ul class="ul-list-instructors">
 				<?php lp_skeleton_animation_html( 10 ); ?>
 			</ul>
-			<?php
-			$init_data = array();
-			if ( ! empty( get_query_var( 'paged' ) ) ) {
-				$init_data['paged'] = get_query_var( 'paged' );
-			}
-			?>
-			<input type="hidden" name="init-data" value="<?php echo esc_attr( json_encode( $init_data ) ); ?>">
 			<?php
 			$content = ob_get_clean();
 			echo Template::instance()->nest_elements( $html_wrapper, $content );
@@ -197,7 +208,7 @@ class ListInstructorsTemplate {
 			$data_pagination = array(
 				'total'    => $total_pages,
 				'current'  => max( 1, $page ),
-				'base'     => esc_url_raw( trailingslashit( $instructors_page_url . "page/{$page}" ) ),
+				'base'     => esc_url_raw( trailingslashit( $instructors_page_url . 'page/%#%' ) ),
 				'format'   => '',
 				'per_page' => $limit,
 			);

@@ -1,63 +1,88 @@
-import { addQueryArgs } from '@wordpress/url';
-
-const instructorNode = document.querySelector( '.lp-list-instructors' );
-let contentAreaNode, containerNode;
 let query = {};
 
 export default function InstructorList() {
-	if ( ! instructorNode ) {
-		return;
-	}
-	contentAreaNode = document.querySelector( '.lp-content-area' );
-	containerNode = instructorNode.querySelector( '.ul-list-instructors' );
-	const initDataNode = contentAreaNode.querySelector( 'input[name="init-data"]' );
-	query = { paged: 1 };
-	query = { ...query, ...JSON.parse( initDataNode.value ) };
+	// Call API get instructors without wait element ready
+	let htmlListItemInstructor = '';
+	let htmlPagination = '';
+	getInstructors( { paged: 1 }, true, function( res ) {
+		htmlListItemInstructor = res.data.content;
+		if ( res.data.pagination !== undefined ) {
+			htmlPagination = res.data.pagination;
+		}
+	} );
 
-	getInstructors( query, true );
+	let totalTimeDetect = 0;
+	const detectedElArchive = setInterval( function() {
+		totalTimeDetect++;
+
+		// Stop if detected more than 10 seconds
+		if ( totalTimeDetect > 10000 ) {
+			clearInterval( detectedElArchive );
+		}
+
+		const elListInstructors = document.querySelector( '.lp-list-instructors' );
+		if ( elListInstructors && htmlListItemInstructor !== '' ) {
+			clearInterval( detectedElArchive );
+			const elUlListInstructors = document.querySelector( '.ul-list-instructors' );
+			elListInstructors.classList.add( 'detected' );
+			elUlListInstructors.innerHTML = htmlListItemInstructor;
+			elListInstructors.insertAdjacentHTML( 'beforeend', htmlPagination );
+		}
+	}, 1 );
+
+	// For case multiple ul list instructors on a page.
+	document.addEventListener( 'DOMContentLoaded', function( event ) {
+		const elListInstructors = document.querySelectorAll( '.lp-list-instructors:not(.detected)' );
+		if ( elListInstructors.length > 0 ) {
+			elListInstructors.forEach( function( el ) {
+				const elUlListInstructors = el.querySelector( '.ul-list-instructors' );
+				query = { paged: 1 };
+				getInstructors( query, true, function( res ) {
+					elUlListInstructors.innerHTML = res.data.content;
+
+					if ( res.data.pagination !== undefined ) {
+						el.insertAdjacentHTML( 'beforeend', res.data.pagination );
+					}
+				} );
+			} );
+		}
+	} );
+
 	pagination();
 }
 
-const getInstructors = ( queryParam, firstLoad = false ) => {
-	wp.apiFetch( {
-		path: addQueryArgs( 'lp/v1/instructors', queryParam ),
+const getInstructors = ( queryParam, firstLoad = false, callBack ) => {
+	const url = 'http://lp/wp-json/lp/v1/instructors' + '?paged=' + queryParam.paged;
+	const paramsFetch = {
 		method: 'GET',
-	} ).then( ( res ) => {
-		if ( res.data.content !== undefined ) {
-			containerNode.innerHTML = res.data.content;
-		}
+	};
 
-		//pagination
-		if ( contentAreaNode ) {
-			const paginationNode = document.querySelector( '.learn-press-pagination' );
-			if ( paginationNode ) {
-				paginationNode.remove();
+	fetch( url, paramsFetch )
+		.then( ( response ) => response.json() )
+		.then( ( res ) => {
+			if ( res.data.content !== undefined ) {
+				if ( callBack ) {
+					callBack( res );
+				}
 			}
-			if ( res.data.pagination !== undefined ) {
-				contentAreaNode.insertAdjacentHTML( 'beforeend', res.data.pagination );
+		} ).catch( ( error ) => {
+			console.log( error );
+		} ).finally( () => {
+			if ( firstLoad === false ) {
+				const urlPush = lpInstructorsUrl + '?paged=' + queryParam.paged;
+				window.history.pushState( '', '', urlPush );
 			}
-		}
-	} ).catch( ( err ) => {
-		console.log( err );
-	} ).finally( () => {
-		if ( queryParam.paged ) {
-			/*const optionScroll = { behavior: 'smooth' };
-			instructorNode.scrollIntoView( optionScroll );*/
-		}
-
-		if ( firstLoad === false ) {
-			const urlPush = addQueryArgs( document.location.origin + '/' + document.location.pathname.split( '/' )?.[ 1 ], queryParam );
-			window.history.pushState( '', '', urlPush );
-		}
-	} );
+		} );
 };
 
 const pagination = () => {
 	document.addEventListener( 'click', function( event ) {
 		const target = event.target;
+		const elListInstructors = target.closest( '.lp-list-instructors' );
+		const elUlListInstructors = elListInstructors.querySelector( '.ul-list-instructors' );
 		const pagination = target.closest( '.learn-press-pagination' );
 
-		if ( ! pagination ) {
+		if ( ! pagination || ! elListInstructors || ! elUlListInstructors ) {
 			return;
 		}
 
@@ -84,6 +109,12 @@ const pagination = () => {
 		}
 
 		query = { ...query, paged };
-		getInstructors( query );
+		getInstructors( query, false, function( res ) {
+			elUlListInstructors.innerHTML = res.data.content;
+			pagination.remove();
+			if ( res.data.pagination !== undefined ) {
+				elListInstructors.insertAdjacentHTML( 'beforeend', res.data.pagination );
+			}
+		} );
 	} );
 };

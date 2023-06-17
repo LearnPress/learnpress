@@ -23,7 +23,7 @@ $content_fields = array_merge(
 				[
 					[
 						'layout_name' => 'Layout Default',
-						'layout_html' => '{{instructor_avatar}}<a href="{{instructor_url}}" style="display: block">{{instructor_display_name}}</a>{{instructor_total_courses}}{{instructor_total_students}}',
+						'layout_html' => '{{instructor_avatar}}<a href="{{instructor_url}}" style="display: block">{{instructor_display_name}}</a><p>{{instructor_total_courses}}</p>{{instructor_total_students}}',
 					],
 				],
 				Controls_Manager::REPEATER,
