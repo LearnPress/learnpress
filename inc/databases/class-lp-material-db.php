@@ -75,6 +75,11 @@ class LP_Material_Files_DB extends LP_Database {
 		$this->check_execute_has_error();
 		return $row;
 	}
+	/**
+	 * [get_material_by_item_id get all material files of a post( course or lesson )]
+	 * @param  integer $item_id [post_id]
+	 * @return [array]           [post's material files]
+	 */
 	public function get_material_by_item_id( $item_id = 0 ) {
 		if ( ! is_int( $item_id ) ) {
 			return;
@@ -85,6 +90,25 @@ class LP_Material_Files_DB extends LP_Database {
 				$item_id
 			)
 		);
+		$this->check_execute_has_error();
+		return $result;
+	}
+	/**
+	 * [get_course_materials get all material files of course( include material files of lessons )]
+	 * @param  [integer] $course_id [description]
+	 * @return [array]            [description]
+	 */
+	public function get_course_materials( $course_id ) {
+		if ( ! is_int( $course_id ) ) {
+			return;
+		}
+
+		$sql = "SELECT * FROM $this->table_name WHERE item_id 
+			IN ( SELECT si.item_id FROM $this->tb_lp_section_items AS si
+			INNER JOIN $this->tb_lp_sections AS s ON s.section_id = si.section_id 
+			WHERE s.section_course_id=%d ) 
+			OR item_id=%d";
+		$result = $this->wpdb->get_results( $this->wpdb->prepare( $sql, $course_id, $course_id ) );
 		$this->check_execute_has_error();
 		return $result;
 	}

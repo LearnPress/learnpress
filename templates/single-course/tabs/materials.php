@@ -45,9 +45,13 @@ $lp_file = LP_WP_Filesystem::instance();
         <td colspan="4"><?php esc_html_e( $m->file_name ) ?></td>
         <td><?php esc_html_e( strtoupper( wp_check_filetype( basename( $m->file_path ) )['ext'] ) ) ?></td>
         <td><?php 
-        $m->method == 'upload' ? 
-        esc_html_e( number_format( filesize( wp_upload_dir()['basedir'] . $m->file_path )/1024/1024 ,2 ) . 'MB' )  :
-        esc_html_e( $lp_file->get_file_size_from_url( $m->file_path ) . 'MB' ) ?></td>
+            if ( $m->method == 'upload' ) {
+                $file_size = filesize( wp_upload_dir()['basedir'] . $m->file_path );
+                esc_html_e( ( $file_size/1024<1024 ) ? round( $file_size/1024, 2 ).'KB' : round( $file_size/1024/1024, 2 ).'MB' );
+            } else {
+                esc_html_e( $lp_file->get_file_size_from_url( $m->file_path ));
+            }
+        ?></td>
         <td><?php esc_html_e( 'Download', 'learnpress' ) ?></td>
     </tr>
     <?php endforeach; ?>

@@ -2,7 +2,7 @@
 
 /**
  * Class LP_Rest_Material_Controller
- * in LearnPres > Tool
+ * in LearnPres > Downloadable Materials
  *
  * @since 4.2.2
  * @author khanhbd <email@email.com>
@@ -10,7 +10,7 @@
 class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 
 	public function __construct() {
-		$this->namespace = 'lp/v1/course/';
+		$this->namespace = 'lp/v1/';
 		$this->rest_base = 'material';
 
 		parent::__construct();
@@ -18,18 +18,18 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 
 	public function register_routes() {
 		$this->routes = array(
-			'save-post-materials' => array(
+			'item-materials/(?P<item_id>[\d]+)' => array(
+				'args'   => array(
+					'item_id' => array(
+						'description' => __( 'A unique identifier for the resource.', 'learnpress' ),
+						'type'        => 'integer',
+					),
+				),
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
-					'callback'            => array( $this, 'save_material' ),
+					'callback'            => array( $this, 'save_post_materials' ),
 					'permission_callback' => array( $this, 'check_user_permissons' ),
 					'args'                => array(
-						'post_id'     => array(
-							'description'       => esc_html__( 'The course id or lesson id.', 'learnpress' ),
-							'type'              => 'integer',
-							'required'          => true,
-							'sanitize_callback' => 'absint',
-						),
 						'data'	=> array(
 							'description'		=> esc_html__( 'Data of material', 'learnpress' ),
 							'type'				=> 'string',
@@ -41,6 +41,24 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 							'type'        => 'array',
 						),
 					),
+				),
+				array(
+					'methods'				=> WP_REST_Server::READABLE,
+					'callback'				=> array( $this, 'get_materials_by_item' ),
+					'permission_callback' 	=> '__return_true',
+				),
+			),
+			'course-materials/(?P<item_id>[\d]+)' => array(
+				'args'   => array(
+					'item_id' => array(
+						'description' => __( 'A unique identifier for the resource.', 'learnpress' ),
+						'type'        => 'integer',
+					),
+				),
+				array(
+					'methods'				=> WP_REST_Server::READABLE,
+					'callback'				=> array( $this, 'get_course_materials' ),
+					'permission_callback' 	=> '__return_true',
 				),
 			),
 			'(?P<file_id>[\d]+)' => array(
@@ -66,7 +84,7 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 		parent::register_routes();
 	}
 
-	public function save_material( $request ) {
+	public function save_post_materials( $request ) {
 		$response = array(
 			'data'    => array(
 				'status' => 400,
@@ -74,7 +92,7 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 			'message' => esc_html__( 'There was an error when save the file.', 'learnpress' ),
 		);
 		try {
-			$item_id 		= $request->get_param( 'post_id' );
+			$item_id 		= $request['item_id'];
 			$material_data 	= $request->get_param( 'data' );
 			$upload_file 	= $request->get_file_params( 'file' );
 			if ( ! $item_id ) {
@@ -189,7 +207,65 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 		}
 		return rest_ensure_response( $response );
 	}
-
+	/**
+	 * [get_materials_by_item get materials file of a course or a lesson]
+	 * @param  [wp_request] $request [description]
+	 * @return [type]          [description]
+	 */
+	public function get_materials_by_item( $request ) {
+		$response = array(
+			'data'    => array(
+				'status' => 400,
+			),
+			'message' => esc_html__( 'There was an error when call api.', 'learnpress' ),
+		);
+		try {
+			$item_id = $request['item_id'];
+			if ( ! $item_id ) {
+				throw new Exception( esc_html__( 'Invalid course or lesson identifier', 'learnpress' ) );
+			}
+			$material_init  = LP_Material_Files_DB::getInstance();
+			$item_materials = $material_init->get_material_by_item_id( (int)$item_id );
+			$response['data']['materials']  = array();
+			$response['data']['status']		= 200;
+			if ( $item_materials ) {
+				$response['data']['materials'] 	= $item_materials;
+				$response['message'] 			= esc_html__( 'Successfully','learnpress' );
+			} else {
+				$response['message'] = esc_html__( 'Empty material!', 'learnpress' );
+			}
+		} catch (Throwable $th) {
+			$response['message'] = $th->getMessage();
+		}
+		return rest_ensure_response( $response );
+	}
+	public function get_course_materials( $request ) {
+		$response = array(
+			'data'    => array(
+				'status' => 400,
+			),
+			'message' => esc_html__( 'There was an error when call api.', 'learnpress' ),
+		);
+		try {
+			$course_id = $request['course_id'];
+			if ( ! $course_id ) {
+				throw new Exception( esc_html__( 'Invalid course or lesson identifier', 'learnpress' ) );
+			}
+			$material_init  = LP_Material_Files_DB::getInstance();
+			$course_materials = $material_init->get_course_materials( (int)$course_id );
+			$response['data']['materials']  = array();
+			$response['data']['status']		= 200;
+			if ( $course_materials ) {
+				$response['data']['materials'] 	= $course_materials;
+				$response['message'] 			= esc_html__( 'Successfully','learnpress' );
+			} else {
+				$response['message'] = esc_html__( 'Empty material!', 'learnpress' );
+			}
+		} catch (Throwable $th) {
+			$response['message'] = $th->getMessage();
+		}
+		return rest_ensure_response( $response );
+	}
 	/**
 	 * [check_external_file check the file from external url]
 	 * @param  [string] $file_url [url]
@@ -277,24 +353,19 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 			$material_init = LP_Material_Files_DB::getInstance();
 			$file = $material_init->get_material( $id );
 			if ( $file ){
-				$response_data = array(
-					'title' => $file->file_name,
-					'type'	=> $file->file_type,
-					'method'=> $file->method,
-					'path'	=> $file->file_path
-				);
+				$response_data = $file;
 				$message = esc_html__( 'Get file successfully.', 'learnpress' );
 			} else {
 				$response_data = [];
 				$message = esc_html__( 'The file is not exist', 'learnpress' );
 			}
 			$response = array(
-						'data'    => array(
-							'status' 	=> 200,
-							'data' 		=> $response_data
-						),
-						'message' => $message,
-					);
+				'data'    => array(
+					'status' 	=> 200,
+					'material'  => $response_data
+				),
+				'message' => $message,
+			);
 
 		} catch (Throwable $th) {
 			$response['message'] = $th->getMessage();

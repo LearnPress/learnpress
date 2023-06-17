@@ -103,9 +103,9 @@ document.addEventListener("DOMContentLoaded", function() {
             } else {
                 // console.log(material_data);
                 material_data = JSON.stringify( material_data );
-                let url = `${lpGlobalSettings.rest}lp/v1/course/material/save-post-materials`;
+                let url = `${lpGlobalSettings.rest}lp/v1/material/item-materials/${postID}`;
                 formData.append( 'data', material_data );
-                formData.append( 'post_id', postID );
+                // formData.append( 'post_id', postID );
                 fetch( url, {
                     method: 'POST',
                     headers: {
@@ -157,7 +157,7 @@ document.addEventListener("DOMContentLoaded", function() {
             let rowID = target.getAttribute( 'data-id' ),//material file ID
                 message = document.getElementById( 'delete-material-message' ).value;//Delete message content
             if ( confirm( message ) ) {
-                let url = `${lpGlobalSettings.rest}lp/v1/course/material/${rowID}`;
+                let url = `${lpGlobalSettings.rest}lp/v1/material/${rowID}`;
                 fetch( url, {
                     method: 'DELETE',
                     headers: {
