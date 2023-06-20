@@ -101,7 +101,7 @@ class LPElementorWidgetBase extends Widget_Base {
 						}
 
 						$params[1]['fields']      = $repeater->get_controls();
-						$params[1]['title_field'] = $params[0]['title_field'] ?? '';
+						$params[1]['title_field'] = $params[1]['title_field'] ?? '';
 						$this->add_control(
 							$params[0], // string id of control
 							$params[1] // array args of control
