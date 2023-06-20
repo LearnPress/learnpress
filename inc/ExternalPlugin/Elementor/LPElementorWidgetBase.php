@@ -4,6 +4,7 @@ namespace LearnPress\ExternalPlugin\Elementor;
 use Elementor\Controls_Manager;
 use Elementor\Repeater;
 use Elementor\Widget_Base;
+use Throwable;
 use function PHPUnit\Framework\callback;
 
 class LPElementorWidgetBase extends Widget_Base {
@@ -80,29 +81,38 @@ class LPElementorWidgetBase extends Widget_Base {
 	 * @return void
 	 */
 	protected function print_fields( array $fields ) {
-		foreach ( $fields as $id => $field ) {
-			if ( isset( $field['method'] ) && is_callable( [ $this, $field['method'] ] ) && is_array( $field ) ) {
-				$params = $field;
-				unset( $params['method'] );
-
-				// Register control type Repeater
-				if ( isset( $params[0]['type'] ) && Controls_Manager::REPEATER === $params[0]['type'] ) {
-					$repeater = new Repeater();
-
-					foreach ( $params[0]['fields'] as $key => $value ) {
-						$repeater->add_control( $value['name'], $value );
+		try {
+			foreach ( $fields as $id => $field ) {
+				if ( isset( $field['method'] ) && is_callable( [ $this, $field['method'] ] ) && is_array( $field ) ) {
+					$params = [];
+					foreach ( $field as $key => $value ) {
+						if ( 'method' === $key ) {
+							continue;
+						}
+						$params[] = $value;
 					}
 
-					$params[0]['fields']      = $repeater->get_controls();
-					$params[0]['title_field'] = $params[0]['title_field'] ?? '';
-					$this->add_control(
-						$params['id'],
-						$params[0]
-					);
-				} else {
-					call_user_func_array( [ $this, $field['method'] ], $params );
+					// Register control type Repeater
+					if ( isset( $params[0]['type'] ) && Controls_Manager::REPEATER === $params[0]['type'] ) {
+						$repeater = new Repeater();
+
+						foreach ( $params[0]['fields'] as $key => $value ) {
+							$repeater->add_control( $value['name'], $value );
+						}
+
+						$params[0]['fields']      = $repeater->get_controls();
+						$params[0]['title_field'] = $params[0]['title_field'] ?? '';
+						$this->add_control(
+							$params[0], // string id of control
+							$params[1] // array args of control
+						);
+					} else {
+						call_user_func_array( [ $this, $field['method'] ], $params );
+					}
 				}
 			}
+		} catch ( Throwable $e ) {
+			error_log( $e->getMessage() );
 		}
 	}
 }
