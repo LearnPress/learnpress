@@ -93,15 +93,15 @@ class LPElementorWidgetBase extends Widget_Base {
 					}
 
 					// Register control type Repeater
-					if ( isset( $params[0]['type'] ) && Controls_Manager::REPEATER === $params[0]['type'] ) {
+					if ( isset( $params[1]['type'] ) && Controls_Manager::REPEATER === $params[1]['type'] ) {
 						$repeater = new Repeater();
 
-						foreach ( $params[0]['fields'] as $key => $value ) {
+						foreach ( $params[1]['fields'] as $key => $value ) {
 							$repeater->add_control( $value['name'], $value );
 						}
 
-						$params[0]['fields']      = $repeater->get_controls();
-						$params[0]['title_field'] = $params[0]['title_field'] ?? '';
+						$params[1]['fields']      = $repeater->get_controls();
+						$params[1]['title_field'] = $params[0]['title_field'] ?? '';
 						$this->add_control(
 							$params[0], // string id of control
 							$params[1] // array args of control
