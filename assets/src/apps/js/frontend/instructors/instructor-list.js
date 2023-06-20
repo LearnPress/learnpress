@@ -52,7 +52,7 @@ export default function InstructorList() {
 }
 
 const getInstructors = ( queryParam, firstLoad = false, callBack ) => {
-	const url = 'http://lp/wp-json/lp/v1/instructors' + '?paged=' + queryParam.paged;
+	const url = urlListInstructorsAPI + '?paged=' + queryParam.paged;
 	const paramsFetch = {
 		method: 'GET',
 	};

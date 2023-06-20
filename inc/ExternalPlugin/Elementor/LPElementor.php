@@ -1,6 +1,8 @@
 <?php
 /**
- * Class LP_Elementor_Widgets
+ * Class LPElementor
+ * Register categories
+ * Register widgets
  *
  * @since 4.2.3
  * @version 1.0.0

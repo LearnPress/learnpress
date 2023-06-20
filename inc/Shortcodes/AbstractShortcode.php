@@ -13,7 +13,7 @@ abstract class AbstractShortcode {
 	protected $prefix = 'learn_press_';
 	protected $shortcode_name;
 
-	public function init() {
+	protected function init() {
 		// Register shortcode.
 		add_shortcode( $this->prefix . $this->shortcode_name, array( $this, 'render' ) );
 	}

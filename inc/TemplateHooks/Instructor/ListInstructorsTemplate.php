@@ -5,6 +5,7 @@
  * @since 4.2.3
  * @version 1.0.0
  */
+
 namespace LearnPress\TemplateHooks\Instructor;
 
 use LearnPress\Helpers\Template;
@@ -32,6 +33,12 @@ class ListInstructorsTemplate {
 	}
 
 	public function add_internal_scripts_to_head() {
+		?>
+		<script id="lp-list-instructors-data">
+			const lpInstructorsUrl = '<?php echo learn_press_get_page_link( 'instructors' ); ?>';
+			const urlListInstructorsAPI = '<?php echo site_url( 'wp-json/lp/v1/instructors' ); ?>';
+		</script>
+		<?php
 		if ( ! LP_Page_Controller::is_page_instructors() ) {
 			return;
 		}
@@ -43,7 +50,6 @@ class ListInstructorsTemplate {
 			<?php echo wp_remote_fopen( LP_Assets::instance()->url( 'css/instructors' . $is_rtl . $min . '.css' ) ); ?>
 		</style>
 		<script id="lp-list-instructors">
-			const lpInstructorsUrl = '<?php echo learn_press_get_page_link( 'instructors' ); ?>';
 			<?php //echo wp_remote_fopen( LP_Assets::instance()->url( 'js/dist/frontend/instructors' . $min . '.js' ) ); ?>
 			<?php echo LP_WP_Filesystem::instance()->file_get_contents( LP_PLUGIN_PATH . 'assets/js/dist/frontend/instructors' . $min . '.js' ); ?>
 		</script>
@@ -55,13 +61,15 @@ class ListInstructorsTemplate {
 	 *
 	 * @param array $data
 	 *
-	 * @since 4.2.3
-	 * @version 1.0.0
 	 * @return void
+	 * @version 1.0.0
+	 * @since 4.2.3
 	 */
 	public function sections( array $data = [] ) {
-		//wp_enqueue_style( 'lp-instructors' );
-		//wp_enqueue_script( 'lp-instructors' );
+		if ( ! LP_Page_Controller::is_page_instructors() ) {
+			wp_enqueue_style( 'lp-instructors' );
+			wp_enqueue_script( 'lp-instructors' );
+		}
 		/**
 		 * @var WP_Query $wp_query
 		 */
@@ -138,9 +146,9 @@ class ListInstructorsTemplate {
 	 *
 	 * @param LP_User $instructor
 	 *
-	 * @since 4.2.3
-	 * @version 1.0.0
 	 * @return false|string
+	 * @version 1.0.0
+	 * @since 4.2.3
 	 */
 	public function instructor_item_info( LP_User $instructor ) {
 		$content      = '';
