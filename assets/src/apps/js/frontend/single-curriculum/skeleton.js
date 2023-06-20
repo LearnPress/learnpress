@@ -286,5 +286,27 @@ export default function courseCurriculumSkeleton( courseID = '' ) {
 				}
 			} );
 		}
+		console.log(e.target);
+		if ( e.target.classList.contains( 'btn-download-material' ) ) {
+			// console.log('clicked');
+			let id = e.target.getAttribute( 'file' );
+			let url = `${lpGlobalSettings.lp_rest_url}lp/v1/material/${id}`;
+			fetch( url, {
+			    method: 'GET',
+			    headers: {
+			                'X-WP-Nonce': lpGlobalSettings.nonce,
+			            },
+			} )
+			    .then( res => res.text() )
+			    .then( data => {
+			        data = JSON.parse( data );
+			        // console.log(data);
+			        console.log( data );
+			        if ( data.material ) {
+			        	
+			        }
+			    } )
+			    .catch( err => console.log( err ) );
+		}
 	} );
 }

@@ -429,6 +429,11 @@ add_action(
 );
 add_action(
 	'learn-press/after-content-item-summary/lp_lesson',
+	LearnPress::instance()->template( 'course' )->func( 'item_lesson_material' ),
+	12
+);
+add_action(
+	'learn-press/after-content-item-summary/lp_lesson',
 	LearnPress::instance()->template( 'course' )->func( 'course_finish_button' ),
 	15
 );

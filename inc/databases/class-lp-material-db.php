@@ -107,7 +107,7 @@ class LP_Material_Files_DB extends LP_Database {
 			IN ( SELECT si.item_id FROM $this->tb_lp_section_items AS si
 			INNER JOIN $this->tb_lp_sections AS s ON s.section_id = si.section_id 
 			WHERE s.section_course_id=%d ) 
-			OR item_id=%d";
+			OR item_id=%d ORDER BY item_id";
 		$result = $this->wpdb->get_results( $this->wpdb->prepare( $sql, $course_id, $course_id ) );
 		$this->check_execute_has_error();
 		return $result;

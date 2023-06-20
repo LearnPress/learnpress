@@ -1414,6 +1414,10 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 				$this
 			);
 		}
+		/**
+		 * [get_downloadable_material get all material files of this course and lesson of this course]
+		 * @return [array] [array of material files or empty array]
+		 */
 		public function get_downloadable_material(): array {
 			$material = LP_Material_Files_DB::getInstance();
 			$materials = $material->get_course_materials( $this->get_id() );
