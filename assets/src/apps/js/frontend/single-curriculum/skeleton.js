@@ -286,11 +286,10 @@ export default function courseCurriculumSkeleton( courseID = '' ) {
 				}
 			} );
 		}
-		console.log(e.target);
 		if ( e.target.classList.contains( 'btn-download-material' ) ) {
 			// console.log('clicked');
-			let id = e.target.getAttribute( 'file' );
-			let url = `${lpGlobalSettings.lp_rest_url}lp/v1/material/${id}`;
+			const id = e.target.getAttribute( 'file' );
+			const url = `${lpGlobalSettings.lp_rest_url}lp/v1/material/${id}`;
 			fetch( url, {
 			    method: 'GET',
 			    headers: {
@@ -300,10 +299,13 @@ export default function courseCurriculumSkeleton( courseID = '' ) {
 			    .then( res => res.text() )
 			    .then( data => {
 			        data = JSON.parse( data );
-			        // console.log(data);
-			        console.log( data );
-			        if ( data.material ) {
-			        	
+			        if ( data.data.material ) {
+			        	const link 	= document.createElement("a");
+						link.href 	= data.data.material.file_path;
+						link.target = '_blank';
+						document.body.appendChild(link);
+						link.click();
+						document.body.removeChild(link);
 			        }
 			    } )
 			    .catch( err => console.log( err ) );

@@ -353,6 +353,9 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 			$material_init = LP_Material_Files_DB::getInstance();
 			$file = $material_init->get_material( $id );
 			if ( $file ){
+				if ( $file->method == 'upload' ) {
+					$file->file_path = wp_upload_dir()['baseurl'].$file->file_path;
+				}
 				$response_data = $file;
 				$message = esc_html__( 'Get file successfully.', 'learnpress' );
 			} else {
