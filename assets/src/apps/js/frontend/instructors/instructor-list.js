@@ -31,7 +31,7 @@ export default function InstructorList() {
 	}, 1 );
 
 	// For case multiple ul list instructors on a page.
-	document.addEventListener( 'DOMContentLoaded', function( event ) {
+	/*document.addEventListener( 'DOMContentLoaded', function( event ) {
 		const elListInstructors = document.querySelectorAll( '.lp-list-instructors:not(.detected)' );
 		if ( elListInstructors.length > 0 ) {
 			elListInstructors.forEach( function( el ) {
@@ -46,7 +46,7 @@ export default function InstructorList() {
 				} );
 			} );
 		}
-	} );
+	} );*/
 
 	pagination();
 }

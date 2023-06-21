@@ -37,6 +37,11 @@ class ListInstructorsTemplate {
 		<script id="lp-list-instructors-data">
 			const lpInstructorsUrl = '<?php echo learn_press_get_page_link( 'instructors' ); ?>';
 			const urlListInstructorsAPI = '<?php echo site_url( 'wp-json/lp/v1/instructors' ); ?>';
+			<?php
+			if ( LP_Page_Controller::is_page_instructors() ) {
+				echo 'const isPageInstructors = true;';
+			}
+			?>
 		</script>
 		<?php
 		if ( ! LP_Page_Controller::is_page_instructors() ) {

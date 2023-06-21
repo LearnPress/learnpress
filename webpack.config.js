@@ -85,7 +85,7 @@ module.exports = {
 		// generated, and the default externals set.
 		! process.env.WP_NO_EXTERNALS && new DependencyExtractionWebpackPlugin(),
 
-		new MergeIntoSingleFilePlugin( {
+		/*new MergeIntoSingleFilePlugin( {
 			files: {
 				'assets/js/vendor/plugins.all.js': [
 					'./assets/src/js/vendor/watch.js',
@@ -99,7 +99,7 @@ module.exports = {
 					'./assets/src/js/vendor/vue/vue-resource.js',
 				],
 			},
-		} ),
+		} ),*/
 		new LearnPressDependencyExtractionWebpackPlugin( {
 			namespace: '@learnpress',
 			library: 'LP',
