@@ -156,6 +156,8 @@ gulp.task( 'cleanReleases', () => {
 
 // Copy folder to releases.
 gulp.task( 'copyReleases', () => {
+	gulp.src( [ 'vendor/autoload.php' ] ).pipe( gulp.dest( './releases/learnpress/vendor' ) );
+	gulp.src( [ 'vendor/composer/**' ] ).pipe( gulp.dest( './releases/learnpress/vendor/composer' ) );
 	return gulp.src( releasesFiles ).pipe( gulp.dest( './releases/learnpress/' ) );
 } );
 

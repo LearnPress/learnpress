@@ -6,7 +6,7 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  4.0.0
+ * @version  4.0.1
  */
 
 defined( 'ABSPATH' ) || exit();
@@ -15,8 +15,14 @@ $course = learn_press_get_course();
 if ( ! $course ) {
 	return;
 }
+
+$author_id  = $course->get_author( 'id' );
+$instructor = learn_press_get_user( $author_id );
+if ( ! $instructor ) {
+	return;
+}
 ?>
 
 <span class="course-instructor">
-	<?php echo wp_kses_post( $course->get_instructor_html() ); ?>
+	<?php echo wp_kses_post( sprintf( '<a href="%s">%s</a>', $instructor->get_url_instructor(), $instructor->get_display_name() ) ); ?>
 </span>

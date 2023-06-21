@@ -748,7 +748,7 @@ function learn_press_get_register_order_statuses() {
 }
 
 function _learn_press_get_order_status_description( $status ) {
-	$descriptions        = array(
+	$descriptions = array(
 		'pending'    => __( 'Order received in case a user purchases a course but doesn\'t finalize the order.', 'learnpress' ),
 		'processing' => __( 'Payment received and the order is awaiting fulfillment.', 'learnpress' ),
 		'completed'  => __( 'The order is fulfilled and completed.', 'learnpress' ),
