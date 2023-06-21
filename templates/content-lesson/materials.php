@@ -44,7 +44,7 @@ $lp_file = LP_WP_Filesystem::instance();
     <?php foreach ( $materials as $m ): ?>
     <tr>
         <td colspan="4"><?php esc_html_e( $m->file_name ) ?></td>
-        <td><?php esc_html_e( strtoupper( wp_check_filetype( basename( $m->file_path ) )['ext'] ) ) ?></td>
+        <td><?php esc_html_e( strtoupper( $m->file_type ) ) ?></td>
         <td><?php 
             if ( $m->method == 'upload' ) {
                 $file_size = filesize( wp_upload_dir()['basedir'] . $m->file_path );

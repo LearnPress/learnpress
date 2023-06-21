@@ -17,7 +17,7 @@ class LP_Material_Files_DB extends LP_Database {
 	public $table_name;
 	protected function __construct() {
 		parent::__construct();
-		$this->table_name = $this->tb_lp_material_files;
+		$this->table_name = $this->tb_lp_files;
 	}
 
 	public static function getInstance() {
@@ -89,13 +89,20 @@ class LP_Material_Files_DB extends LP_Database {
 	 * @param  integer $item_id [post_id]
 	 * @return [array]           [post's material files]
 	 */
-	public function get_material_by_item_id( $item_id = 0 ) {
+	public function get_material_by_item_id( $item_id = 0, $perpage = 0, $offset = 0 ) {
 		if ( ! is_int( $item_id ) ) {
 			return;
 		}
+		$sql = "SELECT * FROM $this->table_name WHERE item_id = %d";
+		if ( $perpage ) {
+			$sql .= ' LIMIT ' . intval( $perpage );
+		}
+		if ( $offset ) {
+			$sql .= ' OFFSET ' . intval( $offset );
+		}
 		$result = $this->wpdb->get_results(
 			$this->wpdb->prepare(
-				"SELECT * FROM $this->table_name WHERE item_id = %d",
+				$sql,
 				$item_id
 			)
 		);
@@ -110,16 +117,22 @@ class LP_Material_Files_DB extends LP_Database {
 	 * @param  [integer] $course_id [description]
 	 * @return [array]            [description]
 	 */
-	public function get_course_materials( $course_id ) {
+	public function get_course_materials( $course_id, $perpage = 0, $offset = 0 ) {
 		if ( ! is_int( $course_id ) ) {
 			return;
 		}
-
+		
 		$sql = "SELECT * FROM $this->table_name WHERE item_id 
 			IN ( SELECT si.item_id FROM $this->tb_lp_section_items AS si
 			INNER JOIN $this->tb_lp_sections AS s ON s.section_id = si.section_id 
 			WHERE s.section_course_id=%d ) 
 			OR item_id=%d ORDER BY item_id";
+		if ( $perpage ) {
+			$sql .= ' LIMIT ' . intval( $perpage );
+		}
+		if ( $offset ) {
+			$sql .= ' OFFSET ' . intval( $offset );
+		}
 		$result = $this->wpdb->get_results( $this->wpdb->prepare( $sql, $course_id, $course_id ) );
 		$this->check_execute_has_error();
 		return $result;

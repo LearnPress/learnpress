@@ -170,7 +170,7 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 				}
 				
 				if ( $material['method'] == 'external' ) {
-					$check_file = $this->check_external_file( $material['link'] );
+					$check_file = $this->check_external_file( sanitize_url( $material['link'] ) );
 					if ( ! $check_file ){
 						$response['items'][ $key ]['message'] = sprintf( esc_html__( 'File %s is invalid!', 'learnpress' ), $material['label'] );
 						continue;
@@ -181,14 +181,14 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 					}
 					$file_type = wp_check_filetype( $check_file['name'] )['ext'];
 					$file_type = $this->material_check_file_extention( $file_type );
-					$file_path = $material['link'];
+					$file_path = sanitize_url( $material['link'] );
 				}
 				if ( ! $file_type ) {
 					$response['items'][ $key ]['message'] = sprintf( esc_html__( 'File %s - file type is invalid!', 'learnpress' ), $material['label'] );
 					continue;
 				}
 				$insert_arr = array( 
-						'file_name' 	=> $material['label'],
+						'file_name' 	=> sanitize_text_field( $material['label'] ),
 						'file_type' 	=> $file_type,
 						'item_id'		=> (int)$item_id,
 						'item_type'		=> get_post_type( $item_id ),

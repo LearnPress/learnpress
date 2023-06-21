@@ -152,8 +152,8 @@ return array(
 			KEY user_item_id (user_item_id)
 		) $collate;
 	",
-	$lp_db->tb_lp_material_files	=> "
-		CREATE TABLE IF NOT EXISTS {$lp_db->tb_lp_material_files} (
+	$lp_db->tb_lp_files	=> "
+		CREATE TABLE IF NOT EXISTS {$lp_db->tb_lp_files} (
 			file_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 			file_name varchar(191) NOT NULL DEFAULT '',
 			file_type varchar(10) NOT NULL DEFAULT '',

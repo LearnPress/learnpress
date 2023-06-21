@@ -40,7 +40,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 				$this->create_table_thim_cache();
 			}
 			if ( ! LP_Settings::is_created_tb_material_files() ){
-				$this->create_table_material_files();
+				$this->create_table_learnpress_files();
 			}
 		}
 
@@ -105,7 +105,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 				}
 
 				if ( ! LP_Settings::is_created_tb_material_files() ){
-					$this->create_table_material_files();
+					$this->create_table_learnpress_files();
 				}
 
 				update_option( 'learn_press_check_tables', 'yes' );
@@ -146,13 +146,13 @@ if ( ! function_exists( 'LP_Install' ) ) {
 		 * 
 		 * @since 4.2.2
 		 */
-		private function create_table_material_files() {
+		private function create_table_learnpress_files() {
 			global $wpdb;
 
 			try {
 				$collation = $wpdb->has_cap( 'collation' ) ? $wpdb->get_charset_collate() : 'ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci';
 
-				$sql = "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}learnpress_material_files (
+				$sql = "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}learnpress_files (
 					file_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 					file_name varchar(191) NOT NULL DEFAULT '',
 					file_type varchar(10) NOT NULL DEFAULT '',
@@ -170,7 +170,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 				$rs = $wpdb->query( $sql );
 
 				if ( $rs ) {
-					update_option( 'learnpress_material_files_created', 'yes' );
+					update_option( 'table_learnpress_files_created', 'yes' );
 				}
 			} catch ( Throwable $e ) {
 				error_log( $e->getMessage() );

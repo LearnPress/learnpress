@@ -442,11 +442,11 @@ class LP_Settings {
 		return get_option( 'thim_cache_tb_created' ) == 'yes';
 	}
 	/**
-	 * Check table learnpress_material_files is created
+	 * Check table learnpress_files is created
 	 * @return boolean
 	 */
 	public static function is_created_tb_material_files(): bool {
-		return get_option( 'learnpress_material_files_created' ) == 'yes';
+		return get_option( 'table_learnpress_files_created' ) == 'yes';
 	}
 	public static function lp_material_file_types(): array {
 		return array(
