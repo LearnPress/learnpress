@@ -1015,11 +1015,11 @@ function learn_press_update_user_profile_basic_information( $wp_error = false ) 
 
 	$update_data = array(
 		'ID'           => $user_id,
-		'first_name'   => filter_input( INPUT_POST, 'first_name', FILTER_SANITIZE_STRING ),
-		'last_name'    => filter_input( INPUT_POST, 'last_name', FILTER_SANITIZE_STRING ),
-		'description'  => filter_input( INPUT_POST, 'description', FILTER_SANITIZE_STRING ),
-		'display_name' => filter_input( INPUT_POST, 'account_display_name', FILTER_SANITIZE_STRING ),
-		'user_email'   => filter_input( INPUT_POST, 'account_email', FILTER_SANITIZE_EMAIL ),
+		'first_name'   => LP_Request::get_param('first_name' ),
+		'last_name'    => LP_Request::get_param('last_name' ),
+		'description'  => LP_Request::get_param('description', '', 'html' ),
+		'display_name' => LP_Request::get_param('account_display_name' ),
+		'user_email'   => LP_Request::get_param('account_email' ),
 	);
 
 	$update_data = apply_filters( 'learn-press/update-profile-basic-information-data', $update_data );

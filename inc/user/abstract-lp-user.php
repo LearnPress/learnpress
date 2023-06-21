@@ -1454,7 +1454,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return string
 		 */
 		public function get_description(): string {
-			return $this->get_data( 'description', '' );
+			return wpautop( $this->get_data( 'description', '' ) );
 		}
 
 		/**
