@@ -18,6 +18,7 @@ languages/strings
 /assets/fonts/iconfont.svg
 /assets/js/dist/
 /assets/css/
+/asset/js/vendor/
 /inc/test.php
 /local-debug.php
 /languages/learnpress-vi.mo
