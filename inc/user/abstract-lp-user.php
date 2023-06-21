@@ -1216,9 +1216,11 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 		/**
 		 * Get links socials of use on Profile page
+		 * Icon is font awesome
 		 *
 		 * @param int $user_id
 		 * @return array
+		 * @deprecated 4.2.3
 		 */
 		public function get_profile_socials( int $user_id = 0 ): array {
 			$socials    = array();
@@ -1242,6 +1244,68 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 							break;
 						case 'youtube':
 							$i = '<i class="fab fa-youtube"></i>';
+							break;
+						default:
+							$i = sprintf( '<i class="fab fa-%s"></i>', $k );
+					}
+
+					$icon          = apply_filters(
+						'learn-press/user-profile-social-icon',
+						$i,
+						$k,
+						$this->get_id(),
+						$this
+					);
+					$socials[ $k ] = sprintf( '<a href="%s">%s</a>', esc_url_raw( $v ), $icon );
+				}
+			}
+
+			return apply_filters( 'learn-press/user-profile-socials', $socials, $this->get_id(), $this );
+		}
+
+		/**
+		 * Get links socials of use on Profile page
+		 * Icon is svg
+		 *
+		 * @param int $user_id
+		 * @return array
+		 * @since 4.2.3
+		 * @version 1.0.0
+		 */
+		public function get_profile_social( int $user_id = 0 ): array {
+			$socials    = array();
+			$extra_info = learn_press_get_user_extra_profile_info( $user_id );
+
+			if ( $extra_info ) {
+				foreach ( $extra_info as $k => $v ) {
+					if ( empty( $v ) ) {
+						continue;
+					}
+
+					switch ( $k ) {
+						case 'facebook':
+							$i = sprintf(
+								'<i class="lp-user-ico">%s</i>',
+								wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-facebook.svg' )
+							);
+							break;
+						case 'twitter':
+							$i = sprintf(
+								'<i class="lp-user-ico">%s</i>',
+								wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-twitter.svg' )
+							);
+							break;
+						case 'linkedin':
+							$i = sprintf(
+								'<i class="lp-user-ico">%s</i>',
+								wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-linkedin.svg' )
+							);
+							break;
+						case 'youtube':
+							$i = sprintf(
+								'<i class="lp-user-ico">%s</i>',
+								wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-youtube.svg' )
+							);
 							break;
 						default:
 							$i = sprintf( '<i class="fab fa-%s"></i>', $k );

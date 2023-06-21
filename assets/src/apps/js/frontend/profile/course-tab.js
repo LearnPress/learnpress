@@ -107,37 +107,6 @@ const courseTab = () => {
 
 	changeFilter();
 
-	const changeTab = () => {
-		const tabUls = document.querySelectorAll( '.learn-press-profile-course__tab__inner' );
-
-		tabUls.forEach( ( tabUl ) => {
-			const tabs = tabUl.querySelectorAll( 'li> a' );
-
-			tabs.forEach( ( tab ) => {
-				tab.addEventListener( 'click', ( e ) => {
-					e.preventDefault();
-
-					const tabName = tab.dataset.tab;
-
-					[ ...tabs ].map( ( ele ) => {
-						ele.classList.remove( 'active' );
-					} );
-
-					tab.classList.add( 'active' );
-
-					[ ...document.querySelectorAll( '.learn-press-course-tab-filters' ) ].map( ( ele ) => {
-						ele.style.display = 'none';
-
-						if ( ele.dataset.tab === tabName ) {
-							ele.style.display = '';
-						}
-					} );
-				} );
-			} );
-		} );
-	};
-	changeTab();
-
 	const viewMore = ( ele, dataset ) => {
 		const viewMoreEle = ele.querySelector( 'button[data-paged]' );
 

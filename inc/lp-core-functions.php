@@ -1786,6 +1786,17 @@ function learn_press_is_checkout() {
 	return apply_filters( 'learn-press/is-checkout', false );
 }
 
+function learn_press_is_instructors() {
+	$page_id = learn_press_get_page_id( 'instructors' );
+
+	if ( $page_id && is_page( $page_id ) ) {
+		return true;
+	}
+
+	return apply_filters( 'learn-press/is-instructor', false );
+}
+
+
 /**
  * Return register permalink
  *
@@ -2577,6 +2588,7 @@ function learn_press_tooltip( $tooltip, $html = false ) {
  * @return array
  *
  * @since 3.0.0
+ * @deprecated 4.2.3
  */
 function learn_press_static_page_ids() {
 	$pages = LP_Object_Cache::get( 'static-page-ids', 'learn-press' );

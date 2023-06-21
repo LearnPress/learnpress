@@ -456,6 +456,8 @@ add_action( 'learn-press/course-item-content', LearnPress::instance()->template(
 add_action( 'learn-press/user-profile', LearnPress::instance()->template( 'profile' )->func( 'sidebar' ), 10 );
 add_action( 'learn-press/user-profile', LearnPress::instance()->template( 'profile' )->func( 'content' ), 20 );
 
+add_action( 'learn-press/user-profile/private', LearnPress::instance()->template( 'profile' )->func( 'sidebar' ), 10 );
+
 add_action( 'learn-press/user-profile-account', LearnPress::instance()->template( 'profile' )->text( ' <div class="lp-profile-left">', 'user-profile-account-left-open' ), 5 );
 add_action( 'learn-press/user-profile-account', LearnPress::instance()->template( 'profile' )->func( 'avatar' ), 10 );
 add_action( 'learn-press/user-profile-account', LearnPress::instance()->template( 'profile' )->func( 'socials' ), 10 );

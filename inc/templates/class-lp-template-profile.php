@@ -101,6 +101,48 @@ class LP_Template_Profile extends LP_Abstract_Template {
 
 		$user = LP_Profile::instance()->get_user();
 
+		$courses_created_tab = apply_filters(
+			'lp/profile/user_courses_created/subtask',
+			array(
+				''        => esc_html__( 'All', 'learnpress' ),
+				'publish' => esc_html__( 'Publish', 'learnpress' ),
+				'pending' => esc_html__( 'Pending', 'learnpress' ),
+			)
+		);
+
+		$args_query_user_courses_created = apply_filters(
+			'lp/profile/args/user_courses_created',
+			array(
+				'userID' => $user->get_id(),
+				'query'  => 'own',
+			)
+		);
+
+		$args_query_user_courses_statistic = apply_filters(
+			'lp/profile/args/user_courses_statistic',
+			array(
+				'userID' => $user->get_id(),
+			)
+		);
+
+		learn_press_get_template(
+			'profile/tabs/courses',
+			compact(
+				'user',
+				'courses_created_tab',
+				'args_query_user_courses_created',
+				'args_query_user_courses_statistic'
+			)
+		);
+	}
+
+	public static function tab_my_courses() {
+		if ( ! LP_Profile::instance()->current_user_can( 'view-tab-courses' ) ) {
+			return;
+		}
+
+		$user = LP_Profile::instance()->get_user();
+
 		$courses_enrolled_tab = apply_filters(
 			'lp/profile/user_courses_attend/subtask',
 			array(
@@ -112,32 +154,8 @@ class LP_Template_Profile extends LP_Abstract_Template {
 			)
 		);
 
-		$courses_created_tab = apply_filters(
-			'lp/profile/user_courses_created/subtask',
-			array(
-				''        => esc_html__( 'All', 'learnpress' ),
-				'publish' => esc_html__( 'Publish', 'learnpress' ),
-				'pending' => esc_html__( 'Pending', 'learnpress' ),
-			)
-		);
+		$courses_enrolled_tab_active = apply_filters( 'learnpress/profile/tab/enrolled/subtab-active', ! learn_press_user_maybe_is_a_teacher() ? 'in-progress' : '' );
 
-		$courses_enrolled_tab_active = apply_filters(
-			'learnpress/profile/tab/enrolled/subtab-active',
-			! learn_press_user_maybe_is_a_teacher( $user->get_id() ) ? 'in-progress' : ''
-		);
-		$tab_active                  = LP_Helper::sanitize_params_submitted( $_GET['tab'] ?? '' );
-		if ( ! $tab_active ) {
-			$tab_active = ! learn_press_user_maybe_is_a_teacher( $user->get_id() ) ? 'enrolled' : 'created';
-		}
-		$tab_active = apply_filters( 'learnpress/profile/tab-active', $tab_active );
-
-		$args_query_user_courses_created   = apply_filters(
-			'lp/profile/args/user_courses_created',
-			array(
-				'userID' => $user->get_id(),
-				'query'  => 'own',
-			)
-		);
 		$args_query_user_courses_attend    = apply_filters(
 			'lp/profile/args/user_courses_attend',
 			array(
@@ -154,15 +172,12 @@ class LP_Template_Profile extends LP_Abstract_Template {
 		);
 
 		learn_press_get_template(
-			'profile/tabs/courses',
+			'profile/tabs/my_courses',
 			compact(
 				'user',
-				'courses_created_tab',
 				'courses_enrolled_tab',
-				'tab_active',
 				'courses_enrolled_tab_active',
 				'args_query_user_courses_attend',
-				'args_query_user_courses_created',
 				'args_query_user_courses_statistic'
 			)
 		);

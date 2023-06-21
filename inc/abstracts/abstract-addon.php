@@ -466,21 +466,6 @@ class LP_Addon {
 	}
 
 	/**
-	 * Get multiple templates.
-	 *
-	 * @param array $templates
-	 * @param array $args
-	 * @param bool $include
-	 *
-	 * @return void
-	 */
-	public function get_templates( array $templates = [], array $args = [], bool $include = true ) {
-		foreach ( $templates as $template ) {
-			$this->get_template( $template, $args, $include );
-		}
-	}
-
-	/**
 	 * Get content template of addon.
 	 *
 	 * @param string $template_name

@@ -125,9 +125,9 @@ return apply_filters(
 			'learn-press/course-settings-fields/material',
 			array(
 				array(
-					'type'	=> 'title',
-					'title'	=> esc_html__('Material Settings', 'learnpress' ),
-					'id'	=> 'lp_course_material_setting',
+					'type'  => 'title',
+					'title' => esc_html__( 'Material Settings', 'learnpress' ),
+					'id'    => 'lp_course_material_setting',
 				),
 				array(
 					'title'   => esc_html__( 'File Per Page', 'learnpress' ),
@@ -137,31 +137,31 @@ return apply_filters(
 					'desc'    => esc_html__( 'The number of displayed files per page (Enter -1 to display all files, set to 0 to disable).', 'learnpress' ),
 				),
 				array(
-					'title'   		=> esc_html__( 'File Type', 'learnpress' ),
-					'id'      		=> 'material_allow_file_type',
-					'default' 		=> '',
-					'type'    		=> 'multiselect', 
-					'class'   		=> 'lp-select-2',
-					'desc'    		=> esc_html__( 'Which types of file will be allowed uploading?', 'learnpress' ),
-					'options' 		=> array(
-						'doc'		=> 'doc',
-						'excel'		=> 'excel',
-						'mp3'		=> 'mp3',
-						'mp4'		=> 'mp4',
-						'ppt'		=> 'ppt',
-						'pdf'		=> 'pdf',
-						'txt'		=> 'txt',
+					'title'             => esc_html__( 'File Type', 'learnpress' ),
+					'id'                => 'material_allow_file_type',
+					'default'           => '',
+					'type'              => 'multiselect',
+					'class'             => 'lp-select-2',
+					'desc'              => esc_html__( 'Which types of file will be allowed uploading?', 'learnpress' ),
+					'options'           => array(
+						'doc'   => 'doc',
+						'excel' => 'excel',
+						'mp3'   => 'mp3',
+						'mp4'   => 'mp4',
+						'ppt'   => 'ppt',
+						'pdf'   => 'pdf',
+						'txt'   => 'txt',
 					),
 					'custom_attributes' => array(
 						'required' => '1',
 					),
 				),
 				array(
-					'title'   			=> esc_html__( 'File Size Limit', 'learnpress' ),
-					'id'      			=> 'material_max_file_size',
-					'default' 			=> 2,
-					'type'    			=> 'number',
-					'desc'    			=> esc_html__( 'Set Maximum Attachment size for upload (MB)', 'learnpress' ),
+					'title'             => esc_html__( 'File Size Limit', 'learnpress' ),
+					'id'                => 'material_max_file_size',
+					'default'           => 2,
+					'type'              => 'number',
+					'desc'              => esc_html__( 'Set Maximum Attachment size for upload (MB)', 'learnpress' ),
 					'custom_attributes' => array(
 						'min' => '1',
 					),
@@ -169,6 +169,27 @@ return apply_filters(
 				array(
 					'type' => 'sectionend',
 					'id'   => 'lp_course_material_setting',
+				),
+			)
+		),
+		apply_filters(
+			'learn-press/course-settings-fields/instructor',
+			array(
+				array(
+					'type'  => 'title',
+					'title' => esc_html__( 'Instructor Settings', 'learnpress' ),
+					'id'    => 'lp_metabox_instructor_setting',
+				),
+				array(
+					'title'   => esc_html__( 'Instructor Per Page', 'learnpress' ),
+					'id'      => 'instructor_per_page',
+					'default' => 12,
+					'type'    => 'number',
+					'desc'    => esc_html__( 'The number of displayed instructors per page (Enter -1 to display all sections).', 'learnpress' ),
+				),
+				array(
+					'type' => 'sectionend',
+					'id'   => 'lp_metabox_instructor_setting',
 				),
 			)
 		)

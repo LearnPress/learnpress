@@ -35,6 +35,9 @@ const LP_QUESTION_CPT = 'lp_question';
 const LP_QUIZ_CPT     = 'lp_quiz';
 const LP_ORDER_CPT    = 'lp_order';
 
+// Define constants for custom taxonomies.
+const LP_COURSE_CATEGORY_TAX = 'course_category';
+
 // Role of user .
 const LP_TEACHER_ROLE = 'lp_teacher';
 const ADMIN_ROLE      = 'administrator';
@@ -59,6 +62,8 @@ const LP_PAGE_QUESTION                 = 'lp_page_question';
 const LP_PAGE_PROFILE                  = 'lp_page_profile';
 const LP_PAGE_BECOME_A_TEACHER         = 'lp_page_become_a_teacher';
 const LP_PAGE_SINGLE_COURSE_CURRICULUM = 'lp_page_single_course_curriculum';
+const LP_PAGE_INSTRUCTORS              = 'lp_page_instructors';
+const LP_PAGE_INSTRUCTOR               = 'lp_page_instructor';
 
 // Key block course's item.
 const LP_BLOCK_COURSE_FINISHED        = 'block_course_finished';

@@ -554,9 +554,9 @@ class LP_Database {
 	 * @param int $limit
 	 * @param int $total_rows
 	 *
-	 * @return false|float
+	 * @return int
 	 */
-	public static function get_total_pages( int $limit = 0, int $total_rows = 0 ) {
+	public static function get_total_pages( int $limit = 0, int $total_rows = 0 ): int {
 		if ( $limit == 0 ) {
 			return 0;
 		}
@@ -566,7 +566,7 @@ class LP_Database {
 			$total_pages++;
 		}
 
-		return $total_pages;
+		return (int) $total_pages;
 	}
 
 	/**

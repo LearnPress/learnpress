@@ -1,0 +1,149 @@
+/**
+* Style for single instructor page
+*
+* @since 4.2.3
+* @version 1.0.0
+*/
+
+.lp-single-instructor {
+	h1 {
+		font-size: 1.8em;
+		font-weight: bold;
+		margin-bottom: 10px;
+	}
+
+	h2 {
+		font-size: 1.2em;
+		font-weight: bold;
+	}
+
+	&__info {
+		border: 1px solid grey;
+		margin-bottom: 50px;
+		padding: 24px 40px;
+		display: flex;
+
+		.instructor-avatar {
+			margin-right: 45px;
+
+			img {
+				border: 1px solid grey;
+				width: 100%;
+			}
+		}
+
+		&__right {
+			flex: 1;
+
+			.instructor-social {
+				margin: 25px 0 15px;
+				display: flex;
+				gap: 25px;
+
+				svg {
+					width: 30px;
+					height: 30px;
+				}
+			}
+		}
+
+		@media (max-width: 600px) {
+			display: block;
+
+			.instructor-avatar {
+				margin-right: 0;
+				margin-bottom: 20px;
+			}
+
+			.instructor-social {
+				gap: 3%;
+			}
+		}
+	}
+
+	.ul-instructor-courses {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: 20px;
+		padding: 0;
+
+		li {
+			list-style: none;
+		}
+
+		h3 {
+			font-size: 1em;
+			font-weight: bold;
+			padding-bottom: 10px;
+			border-bottom: 1px solid #eee;
+			margin-bottom: 10px;
+
+			a {
+				text-decoration: none;
+			}
+		}
+
+		.course-img img {
+			border-radius: 5px;
+			width: 100%;
+		}
+
+		.price-categories {
+			margin: 10px 0;
+			font-size: 0.8em;
+
+			.course-price {
+				.free {
+					color: green;
+				}
+
+				.price {
+					color: #FFB606;
+				}
+			}
+
+			.course-categories {
+				display: inline-block;
+
+				a {
+					text-decoration: none;
+				}
+
+				&:not(:empty) {
+					&::before {
+						content: "|";
+						display: inline-block;
+						padding: 0 10px;
+					}
+				}
+			}
+		}
+
+		.course-count {
+			display: flex;
+			gap: 20px;
+			font-size: 0.8em;
+
+			div {
+				display: flex;
+				align-items: center;
+
+				.course-ico {
+					display: flex;
+					margin-right: 3px;
+
+					svg {
+						width: 20px;
+						height: 20px;
+					}
+
+				}
+			}
+
+		}
+
+		@media (max-width: 900px) {
+			grid-template-columns: repeat( auto-fit, minmax( 280px, 1fr ) );
+		}
+	}
+}

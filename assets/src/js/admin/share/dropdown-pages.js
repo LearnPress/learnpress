@@ -72,11 +72,19 @@
 				return;
 			}
 			$button.prop( 'disabled', true );
+
+			const tr = $button.closest( 'tr' );
+			let field_name = '';
+			if ( tr.length ) {
+				field_name = tr.find( '.field_name' ).attr( 'name' );
+			}
+
 			$.ajax( {
 				url: lpGlobalSettings.ajax,
 				data: {
 					action: 'learnpress_create_page',
 					page_name,
+					field_name,
 				},
 				type: 'post',
 				dataType: 'html',
