@@ -29,6 +29,9 @@ class LP_Material_Files_DB extends LP_Database {
 	}
 
 	/**
+	 * @author khanhbd
+	 * @version 1.0.0
+	 * @since 4.2.2
 	 * [create_material create new material]
 	 * @param  [array] $data [data to create a material: file name, file type, the post id, post type, save method, file path or file url, created date ]
 	 * @return [int]  new record id(file_id)
@@ -58,6 +61,9 @@ class LP_Material_Files_DB extends LP_Database {
 	}
 
 	/**
+	 * @author khanhbd
+	 * @version 1.0.0
+	 * @since 4.2.2
 	 * [get_single_material get a material]
 	 * @param  [int] $file_id [file_id]
 	 * @return [object||null] [A material or null]
@@ -76,6 +82,9 @@ class LP_Material_Files_DB extends LP_Database {
 		return $row;
 	}
 	/**
+	 * @author khanhbd
+	 * @version 1.0.0
+	 * @since 4.2.2
 	 * [get_material_by_item_id get all material files of a post( course or lesson )]
 	 * @param  integer $item_id [post_id]
 	 * @return [array]           [post's material files]
@@ -94,6 +103,9 @@ class LP_Material_Files_DB extends LP_Database {
 		return $result;
 	}
 	/**
+	 * @author khanhbd
+	 * @version 1.0.0
+	 * @since 4.2.2
 	 * [get_course_materials get all material files of course( include material files of lessons )]
 	 * @param  [integer] $course_id [description]
 	 * @return [array]            [description]
@@ -113,6 +125,9 @@ class LP_Material_Files_DB extends LP_Database {
 		return $result;
 	}
 	/**
+	 * @author khanhbd
+	 * @version 1.0.0
+	 * @since 4.2.2
 	 * [delete_material delete a material]
 	 * @param  [int] $file_id [file id]
 	 * @return [boolean]          [description]
@@ -139,6 +154,9 @@ class LP_Material_Files_DB extends LP_Database {
 		return $delete;
 	}
 	/**
+	 * @author khanhbd
+	 * @version 1.0.0
+	 * @since 4.2.2
 	 * [delete_material_by_item_id delete all material file of an item]
 	 * @param  [int] $item_id [the post id]
 	 * @return [boolean]          [description]
@@ -168,6 +186,9 @@ class LP_Material_Files_DB extends LP_Database {
 		return $delete;
 	}
 	/**
+	 * @author khanhbd
+	 * @version 1.0.0
+	 * @since 4.2.2
 	 * [delete_local_file delete file when record is deleted]
 	 * @param  string $file_path [description]
 	 */

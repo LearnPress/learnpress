@@ -84,6 +84,14 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 		parent::register_routes();
 	}
 
+	/**
+	 * @author khanhbd
+	 * @version 1.0.0
+	 * @since 4.2.2
+	 * [save_post_materials create material files of a course or lesson and save them to DB]
+	 * @param  [type] $request [description]
+	 * @return [type]          [description]
+	 */
 	public function save_post_materials( $request ) {
 		$response = array(
 			'data'    => array(
@@ -110,7 +118,7 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 			$material_init = LP_Material_Files_DB::getInstance();
 			// LP Material Settings
 			$max_file_size = (int)LP_Settings::get_option('material_max_file_size');
-			$allow_upload_amount = (int) LP_Settings::get_option('material_file_per_page');
+			$allow_upload_amount = (int) LP_Settings::get_option('material_upload_files');
 			// check file was uploaded
 			$uploaded_files = count( $material_init->get_material_by_item_id( $item_id ) );
 			// check file amount which can upload
@@ -207,7 +215,11 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 		}
 		return rest_ensure_response( $response );
 	}
+
 	/**
+	 * @author khanhbd
+	 * @version 1.0.0
+	 * @since 4.2.2
 	 * [get_materials_by_item get materials file of a course or a lesson]
 	 * @param  [wp_request] $request [description]
 	 * @return [type]          [description]
@@ -239,6 +251,15 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 		}
 		return rest_ensure_response( $response );
 	}
+
+	/**
+	 * @author khanhbd
+	 * @version 1.0.0
+	 * @since 4.2.2
+	 * [get_course_materials get all course's material files and lesson's material files of this course]
+	 * @param  [type] $request [description]
+	 * @return [type]          [description]
+	 */
 	public function get_course_materials( $request ) {
 		$response = array(
 			'data'    => array(
@@ -266,7 +287,11 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 		}
 		return rest_ensure_response( $response );
 	}
+
 	/**
+	 * @author khanhbd
+	 * @version 1.0.0
+	 * @since 4.2.2
 	 * [check_external_file check the file from external url]
 	 * @param  [string] $file_url [url]
 	 * @return [array||fasle]     [array of file infomations]
@@ -293,7 +318,11 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 
 		return $file;
 	}
+
 	/**
+	 * @author khanhbd
+	 * @version 1.0.0
+	 * @since 4.2.2
 	 * [material_upload_file upload file when user choose upload method]
 	 * @param  [string] $file_name [upload file name]
 	 * @param  [] $file_tmp  [file content]
@@ -305,6 +334,15 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 
 		return $file['error'] ? false : $file;
 	}
+
+	/**
+	 * @author khanhbd
+	 * @version 1.0.0
+	 * @since 4.2.2
+	 * [material_check_file_extention return file type of file]
+	 * @param  [string] $ext [file extendsion]
+	 * @return [string]      [file extendsion]
+	 */
 	public function material_check_file_extention( $ext ) {
 		$allow_file_type = LP_Settings::get_option( 'material_allow_file_type' );
 		switch ( $ext ) {
@@ -338,6 +376,15 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 		}
 		return in_array( $ext, $allow_file_type ) ? $ext : false;
 	}
+
+	/**
+	 * @author khanhbd
+	 * @version 1.0.0
+	 * @since 4.2.2
+	 * [get_material description]
+	 * @param  [type] $request [description]
+	 * @return [type]          [description]
+	 */
 	public function get_material( $request ) {
 		$response = array(
 			'data'    => array(
@@ -376,6 +423,14 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 		return rest_ensure_response( $response );
 	}
 
+	/**
+	 * @author khanhbd
+	 * @version 1.0.0
+	 * @since 4.2.2
+	 * [delete_material delete a material when a delete request is send]
+	 * @param  [type] $request [description]
+	 * @return [json]          [return message]
+	 */
 	public function delete_material( $request ) {
 		$response = array(
 			'data'    => array(
@@ -411,7 +466,13 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 		}
 		return rest_ensure_response( $response );
 	}
-
+	/**
+	 * @author khanhbd
+	 * @version 1.0.0
+	 * @since 4.2.2
+	 * [check_user_permissons check permisson, true when user is admin or instructor]
+	 * @return [boolean] [description]
+	 */
 	public function check_user_permissons() : bool {
 		$permission = false;
 		if ( current_user_can( ADMIN_ROLE ) || current_user_can( LP_TEACHER_ROLE ) ) {

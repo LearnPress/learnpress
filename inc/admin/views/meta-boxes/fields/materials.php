@@ -4,7 +4,7 @@
  *
  * @author khanhbd
  * @version 1.0.0
- * @since 4.0.0
+ * @since 4.2.2
  */
 if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 	class LP_Meta_Box_Material_Fields extends LP_Meta_Box_Field {
@@ -24,6 +24,9 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 			add_action( 'delete_post', array( $this, 'clear_material_in_post' ) );
 		}
 		/**
+		 * @author khanhbd
+		 * @version 1.0.0
+		 * @since 4.2.2
 		 * [output Downloadable Material Tab content in Course Setting Meta Box]
 		 * @param  [int] $thepostid [course's post_id]
 		 * @return [html]            [content of Download material tab]
@@ -32,7 +35,7 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 			$material_init = LP_Material_Files_DB::getInstance();
 			$course_materials = $material_init->get_material_by_item_id( $thepostid );
 			$max_file_size = (int)LP_Settings::get_option('material_max_file_size');
-			$allow_upload_amount = (int) LP_Settings::get_option('material_file_per_page');
+			$allow_upload_amount = (int) LP_Settings::get_option('material_upload_files');
 			// check file was uploaded
 			$uploaded_files = count( $course_materials );
 			// check file amount which can upload
@@ -68,6 +71,12 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 					margin-bottom: 5px;
 				}
 				.lp-material--field-wrap label { min-width:80px }
+				.lp-material--group{
+					margin-top: 10px;
+				}
+				#btn-lp--save-material{
+					margin-top: 15px;
+				}
 			</style>
 		<div id="lp-material-container">
 			<h3 class="notice notice-info">
@@ -140,6 +149,13 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 		</div>
 			<?php
 		}
+		/**
+		 * @author khanhbd
+		 * @version 1.0.0
+		 * @since 4.2.2
+		 * [clear_material_in_post description]
+		 * @param  [int] $post_id [course_id or lesson_id]
+		 */
 		public function clear_material_in_post( $post_id ) {
 			$material_init = LP_Material_Files_DB::getInstance();
 			$material_init->delete_material_by_item_id( $post_id );

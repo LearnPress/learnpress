@@ -4,7 +4,7 @@
  *
  * This template can be overridden by copying it to yourtheme/learnpress/single-course/tabs/materials.php.
  *
- * @author   ThimPress
+ * @author   khanhbd@physcode.com
  * @package  Learnpress/Templates
  * @version  4.2.2
  */

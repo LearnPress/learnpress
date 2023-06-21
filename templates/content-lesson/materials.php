@@ -4,9 +4,9 @@
  *
  * This template can be overridden by copying it to yourtheme/learnpress/content-lesson/materials.php.
  *
- * @author   ThimPress
+ * @author   khanhbd@phýcode.com
  * @package  Learnpress/Templates
- * @version  4.2.3
+ * @version  4.2.2
  */
 
 defined( 'ABSPATH' ) || exit();

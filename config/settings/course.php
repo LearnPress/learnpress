@@ -130,18 +130,12 @@ return apply_filters(
 					'id'    => 'lp_course_material_setting',
 				),
 				array(
-					'title'   => esc_html__( 'File Per Page', 'learnpress' ),
-					'id'      => 'material_file_per_page',
-					'default' => -1,
-					'type'    => 'number',
-					'desc'    => esc_html__( 'The number of displayed files per page (Enter -1 to display all files, set to 0 to disable).', 'learnpress' ),
-				),
-				array(
 					'title'             => esc_html__( 'File Type', 'learnpress' ),
 					'id'                => 'material_allow_file_type',
 					'default'           => '',
 					'type'              => 'multiselect',
 					'class'             => 'lp-select-2',
+					'default'			=> array( 'pdf', 'text' ),
 					'desc'              => esc_html__( 'Which types of file will be allowed uploading?', 'learnpress' ),
 					'options'           => array(
 						'doc'   => 'doc',
@@ -157,6 +151,16 @@ return apply_filters(
 					),
 				),
 				array(
+					'title'             => esc_html__( 'Upload Files', 'learnpress' ),
+					'id'                => 'material_upload_files',
+					'default'           => 2,
+					'type'              => 'number',
+					'desc'              => esc_html__( 'Number files the user can upload. Set to 0 to disable', 'learnpress' ),
+					'custom_attributes' => array(
+						'min' => '1',
+					),
+				),
+				array(
 					'title'             => esc_html__( 'File Size Limit', 'learnpress' ),
 					'id'                => 'material_max_file_size',
 					'default'           => 2,
@@ -165,6 +169,13 @@ return apply_filters(
 					'custom_attributes' => array(
 						'min' => '1',
 					),
+				),
+				array(
+					'title'   => esc_html__( 'File Per Page', 'learnpress' ),
+					'id'      => 'material_file_per_page',
+					'default' => -1,
+					'type'    => 'number',
+					'desc'    => esc_html__( 'The number of displayed files per page (Enter -1 to display all files, set to 0 to disable).', 'learnpress' ),
 				),
 				array(
 					'type' => 'sectionend',
