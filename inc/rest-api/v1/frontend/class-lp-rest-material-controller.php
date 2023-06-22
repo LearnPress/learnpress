@@ -140,7 +140,6 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 					$response['items'][ $key ]['message'] = sprintf( esc_html__( 'File %d title is not empty!', 'learnpress' ), $key );
 					continue;
 				}
-				// $response['label'][$key] = $material['label'];
 				// check file upload method
 				if ( ! in_array( $material['method'], $file_method ) ) {
 					// throw new Exception( esc_html__( 'Invalid file method', 'learnpress' ) );
@@ -203,7 +202,7 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 				}
 				$response['material'][ $key ]['data'] = array(
 					'label'		=> $material['label'],
-					'method'	=> $material['method'],
+					'method'	=> ucfirst( $material['method'] ),
 					'id'		=> $insert,
 				);
 			}
@@ -345,35 +344,8 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 	 */
 	public function material_check_file_extention( $ext ) {
 		$allow_file_type = LP_Settings::get_option( 'material_allow_file_type' );
-		switch ( $ext ) {
-			case 'doc':
-			case 'docx':
-				$ext = 'doc';
-				break;
-			case 'xls':
-			case 'xlsx':
-				$ext = 'excel';
-				break;
-			case 'mp3':
-				$ext = 'mp3';
-				break;
-			case 'mp4':
-				$ext = 'mp4';
-				break;
-			case 'ppt':
-			case 'pptx':
-				$ext = 'ppt';
-				break;
-			case 'pdf':
-				$ext = 'pdf';
-				break;
-			case 'txt':
-				$ext = 'txt';
-				break;
-			default:
-				$ext = false;
-				break;
-		}
+		$allow_file_type = implode( ',', $allow_file_type );
+		$allow_file_type = explode( ',', $allow_file_type );
 		return in_array( $ext, $allow_file_type ) ? $ext : false;
 	}
 

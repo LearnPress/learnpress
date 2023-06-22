@@ -1,5 +1,4 @@
 <?php $option_value = $value['value']; ?>
-
 <tr valign="top">
 	<th scope="row" class="titledesc">
 		<label for="<?php echo esc_attr( $value['id'] ); ?>"><?php echo esc_html( $value['title'] ); ?> <?php echo wp_kses_post( $tooltip_html ); ?></label>
@@ -13,21 +12,39 @@
 			<?php echo implode( ' ', $custom_attributes ); ?>
 			<?php echo 'multiselect' === $value['type'] ? 'multiple="multiple"' : ''; ?>
 			>
-			<?php foreach ( $value['options'] as $key => $val ) { ?>
-			<option value="<?php echo esc_attr( $key ); ?>"
-				<?php
+			<?php if ( isset( $value['is_optgroup'] ) && ! empty( $value['is_optgroup'] ) ): ?>
+				<?php foreach ( $value['options'] as $optgroup_label => $optgroup ): ?>
+					<optgroup label="<?php echo esc_html( ucfirst( $optgroup_label ) ) ?>">
+						<?php foreach ( $optgroup as $key => $val ): ?>
+							<option value="<?php echo esc_attr( $key ); ?>"
+								<?php
+								if ( is_array( $option_value ) ) {
+									selected( in_array( (string) $key, $option_value, true ), true );
+								} else {
+									selected( $option_value, (string) $key );
+								}
+								?>
+								><?php echo esc_html( $val ); ?></option>
+						<?php endforeach; ?>
+					</optgroup>
+				<?php endforeach; ?>
+			<?php else: ?>
+				<?php foreach ( $value['options'] as $key => $val ) { ?>
+				<option value="<?php echo esc_attr( $key ); ?>"
+					<?php
 
-				if ( is_array( $option_value ) ) {
-					selected( in_array( (string) $key, $option_value, true ), true );
-				} else {
-					selected( $option_value, (string) $key );
+					if ( is_array( $option_value ) ) {
+						selected( in_array( (string) $key, $option_value, true ), true );
+					} else {
+						selected( $option_value, (string) $key );
+					}
+
+					?>
+					><?php echo esc_html( $val ); ?></option>
+					<?php
 				}
-
 				?>
-				><?php echo esc_html( $val ); ?></option>
-				<?php
-			}
-			?>
+			<?php endif; ?>
 		</select><?php echo wp_kses_post( $description ); ?>
 	</td>
 </tr>

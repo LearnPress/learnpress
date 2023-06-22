@@ -450,35 +450,33 @@ class LP_Settings {
 	}
 	public static function lp_material_file_types(): array {
 		return array(
-			'doc'		=> array( 
-				'type' 	=> 'application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-				'ext'	=> 'doc,docx',
-			),
-			'excel'		=> array( 
-				'type' 	=> 'application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-				'ext'	=> 'xls,xlsx',
-			), 
-			'mp3'		=> array( 
-				'type' 	=> 'audio/mpeg',
-				'ext'	=> 'mp3',
-			),
-			 
-			'mp4'		=> array( 
-				'type' 	=> 'video/mp4',
-				'ext'	=> 'mp4',
-			), 
-			'ppt'		=> array( 
-				'type' 	=> 'application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation', 
-				'ext'	=> 'ppt,pptx',
-			), 
-			'pdf'		=> array( 
-				'type' 	=> 'application/pdf',
-				'ext'	=> 'pdf',
-			), 
-			'txt'		=> array( 
-				'type' 	=> 'text/plain',
-				'ext'	=> 'txt',
-			), 
+		    'txt'       =>  'text/plain',
+		    'doc,docx'  =>  'application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+		    'odt'       =>  'application/vnd.oasis.opendocument.text',
+		    'rtf'       =>  'application/rtf',
+		    'pdf'       =>  'application/pdf',
+		    'jpg,jpeg'  =>  'image/jpeg',
+		    'png'       =>  'image/png', 
+		    'gif'       =>  'image/gif', 
+		    'bmp'       =>  'image/bmp', 
+		    // 'svg'       =>  'image/svg+xml',
+		    'mp3'       =>  'audio/mpeg',
+		    'wav'       =>  'audio/wav',
+		    'flac'      =>  'audio/flac',
+		    'aac'       =>  'audio/aac',
+		    'wma'       =>  'audio/x-ms-wma',
+		    'mp4'       =>  'video/mp4',
+		    'avi'       =>  'video/avi',
+		    'mkv'       =>  'video/x-matroska',
+		    'mov'       =>  'video/quicktime',
+		    'wmv'       =>  'video/x-ms-wmv',
+		    'xls,xlsx'  =>  'application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+		    'ods'       =>  'application/vnd.oasis.opendocument.spreadsheet',
+		    'csv'       =>  'text/csv',
+		    'numbers'   =>  'application/vnd.apple.numbers',
+		    'tsv'       =>  'text/tab-separated-values',
+		    'zip'       =>  'application/zip',
+		    'rar'       =>  'application/rar',
 		);
 	}
 }
