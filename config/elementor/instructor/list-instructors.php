@@ -228,7 +228,7 @@ $style_fields = array_merge(
 						],
 					]
 				),
-				'avatar_with'  => LPElementorControls::add_control_type(
+				'avatar_with'  => LPElementorControls::add_responsive_control_type(
 					'avatar_with_height',
 					esc_html__( 'Width(%)', 'learnpress' ),
 					'',
