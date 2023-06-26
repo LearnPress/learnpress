@@ -281,7 +281,7 @@ function learn_press_current_user_can_view_profile_section( $section, $user ) {
 	$current_user = wp_get_current_user();
 	$view         = true;
 	if ( $user->get_data( 'user_login' ) != $current_user->user_login && $section == LP_Settings::instance()->get(
-		'profile_endpoints.profile-orders',
+		'profile_endpoints.orders',
 		'profile-orders'
 	) ) {
 		$view = false;
