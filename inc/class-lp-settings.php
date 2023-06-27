@@ -475,8 +475,7 @@ class LP_Settings {
 		    'csv'       =>  'text/csv',
 		    'numbers'   =>  'application/vnd.apple.numbers',
 		    'tsv'       =>  'text/tab-separated-values',
-		    'zip'       =>  'application/zip',
-		    'rar'       =>  'application/rar',
+		    'zip'       =>  'application/zip,application/octet-stream,application/x-zip-compressed,multipart/x-zip',
 		);
 	}
 }

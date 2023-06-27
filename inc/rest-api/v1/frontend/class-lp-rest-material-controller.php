@@ -46,6 +46,18 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 					'methods'				=> WP_REST_Server::READABLE,
 					'callback'				=> array( $this, 'get_materials_by_item' ),
 					'permission_callback' 	=> '__return_true',
+					'args'                => array(
+						'perpage'	=> array(
+							'description'		=> esc_html__( 'File amount per page', 'learnpress' ),
+							'type'				=> 'int',
+							'sanitize_callback'	=> 'absint',
+						),
+						'page'	=> array(
+							'description'		=> esc_html__( 'Page', 'learnpress' ),
+							'type'				=> 'int',
+							'sanitize_callback'	=> 'absint',
+						),
+					),
 				),
 			),
 			'course-materials/(?P<item_id>[\d]+)' => array(
@@ -236,7 +248,12 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 				throw new Exception( esc_html__( 'Invalid course or lesson identifier', 'learnpress' ) );
 			}
 			$material_init  = LP_Material_Files_DB::getInstance();
-			$item_materials = $material_init->get_material_by_item_id( (int)$item_id );
+			if ( get_post_type( $thepostid ) == LP_COURSE_CPT ) {
+				$material_init->get_course_materials( (int)$course_id );
+			} else {
+				$item_materials = $material_init->get_material_by_item_id( (int)$item_id );
+			}
+			
 			$response['data']['materials']  = array();
 			$response['data']['status']		= 200;
 			if ( $item_materials ) {

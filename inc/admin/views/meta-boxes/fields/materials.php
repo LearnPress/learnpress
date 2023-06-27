@@ -34,8 +34,8 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 		public function output( $thepostid ) {
 			$material_init = LP_Material_Files_DB::getInstance();
 			$course_materials = $material_init->get_material_by_item_id( $thepostid );
-			$max_file_size = (int)LP_Settings::get_option('material_max_file_size');
-			$allow_upload_amount = (int) LP_Settings::get_option('material_upload_files');
+			$max_file_size = (int)LP_Settings::get_option('material_max_file_size', 2 );
+			$allow_upload_amount = (int) LP_Settings::get_option('material_upload_files', 2 );
 			// check file was uploaded
 			$uploaded_files = count( $course_materials );
 			// check file amount which can upload
@@ -85,6 +85,11 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 				}
 			</style>
 		<div id="lp-material-container">
+			<?php if ( $allow_upload_amount == 0 ): ?>
+				<?php if ( get_post_type( $thepostid ) == LP_COURSE_CPT ): ?>
+					<div > <?php esc_html_e( 'Downloadable Materials is not allowed!', 'learnpress' ) ?> </div>	
+				<?php endif ?>
+			<?php else: ?>
 			<hr>
 			<div>
 				<?php esc_html_e( 'Maximum amount of files you can upload more: ', 'learnpress' ) ?>
@@ -153,6 +158,7 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 				
 			</div>
 			<button class="button button-primary" id="btn-lp--save-material" type="button"><?php esc_html_e( 'Save', 'learnpress' ) ?></button>
+			<?php endif; ?>
 		</div>
 			<?php
 		}

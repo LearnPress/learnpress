@@ -175,7 +175,6 @@ return apply_filters(
 						),
 						'compressed archive' => array(
 							'zip' 		=>	'ZIP archive',
-							'rar'		=>	'RAR archive',
 						),
 					),
 					'custom_attributes' => array(
@@ -189,7 +188,7 @@ return apply_filters(
 					'type'              => 'number',
 					'desc'              => esc_html__( 'Number files the user can upload. Set to 0 to disable', 'learnpress' ),
 					'custom_attributes' => array(
-						'min' => '1',
+						'min' => '0',
 					),
 				),
 				array(
@@ -208,6 +207,9 @@ return apply_filters(
 					'default' => -1,
 					'type'    => 'number',
 					'desc'    => esc_html__( 'The number of displayed files per page (Enter -1 to display all files, set to 0 to disable).', 'learnpress' ),
+					'custom_attributes' => array(
+						'min' => '-1',
+					),
 				),
 				array(
 					'type' => 'sectionend',

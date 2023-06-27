@@ -27,6 +27,7 @@ $lp_file = LP_WP_Filesystem::instance();
 <?php do_action( 'learn-press/before-single-course-material' ); ?>
 <style type="text/css">
     .course-material-table{ width:100%; }
+    .course-material-table th{ text-align:center; }
     .course-material-table th:first-child{ text-align:left; }
     .course-material-table tr td:not(:first-child){ text-align:center; }
     .course-material-table tfoot td { text-align:left; font-weight:bold; }
@@ -40,7 +41,7 @@ $lp_file = LP_WP_Filesystem::instance();
             <th><?php esc_html_e( 'Download', 'learnpress' ) ?></th>
         </tr>
     </thead>
-    <tbody>
+    <tbody id="material-file-list">
     <?php foreach ( $materials as $m ): ?>
     <tr>
         <td colspan="4"><?php esc_html_e( $m->file_name ) ?><?php if ( $m->item_type == LP_LESSON_CPT ) esc_html_e( ' ( ' . get_the_title( $m->item_id ) . ' )' ) ?></td>
@@ -54,20 +55,15 @@ $lp_file = LP_WP_Filesystem::instance();
             }
         ?></td>
         <td>
-            <a href="#">
-                <i class="fas fa-file-download btn-download-material" file="<?php echo esc_attr( $m->file_id ) ?>"></i>
+            <a href="<?php 
+            $link = $m->method == 'upload' ? wp_upload_dir()['baseurl'] . $m->file_path : $m->file_path;
+            esc_attr_e( $link );
+             ?>" target="_blank">
+                <i class="fas fa-file-download btn-download-material"></i>
             </a>
         </td>
     </tr>
     <?php endforeach; ?>
     </tbody>
-    <tfoot>
-        <tr>
-            <td colspan="4"><?php esc_html_e( 'Name', 'learnpress' ) ?></td>
-            <td><?php esc_html_e( 'Type', 'learnpress' ) ?></td>
-            <td><?php esc_html_e( 'Size', 'learnpress' ) ?></td>
-            <td><?php esc_html_e( 'Download', 'learnpress' ) ?></td>
-        </tr>
-    </tfoot>
 </table>
 <?php do_action( 'learn-press/after-single-course-material' ); ?>

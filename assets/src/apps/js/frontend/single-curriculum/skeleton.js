@@ -286,29 +286,5 @@ export default function courseCurriculumSkeleton( courseID = '' ) {
 				}
 			} );
 		}
-		if ( e.target.classList.contains( 'btn-download-material' ) ) {
-			// console.log('clicked');
-			const id = e.target.getAttribute( 'file' );
-			const url = `${lpGlobalSettings.lp_rest_url}lp/v1/material/${id}`;
-			fetch( url, {
-			    method: 'GET',
-			    headers: {
-			                'X-WP-Nonce': lpGlobalSettings.nonce,
-			            },
-			} )
-			    .then( res => res.text() )
-			    .then( data => {
-			        data = JSON.parse( data );
-			        if ( data.data.material ) {
-			        	const link 	= document.createElement("a");
-						link.href 	= data.data.material.file_path;
-						link.target = '_blank';
-						document.body.appendChild(link);
-						link.click();
-						document.body.removeChild(link);
-			        }
-			    } )
-			    .catch( err => console.log( err ) );
-		}
 	} );
 }
