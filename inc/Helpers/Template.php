@@ -173,7 +173,7 @@ class Template {
 
 		$html .= $main_content;
 
-		foreach ( $els as $tag_close ) {
+		foreach ( array_reverse( $els, true ) as $tag_close ) {
 			$html .= $tag_close;
 		}
 

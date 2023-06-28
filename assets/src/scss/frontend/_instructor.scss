@@ -16,7 +16,7 @@
 	}
 
 	h2 {
-		font-size: 1.2em;
+		font-size: 1.4em;
 		font-weight: bold;
 	}
 
@@ -79,7 +79,7 @@
 			color: var(--lp-primary-color);
 		}
 		h3 {
-			font-size: 1em;
+			font-size: 1.2em;
 			font-weight: bold;
 			margin-top: 0;
 			padding-bottom:var(--lp-instructor-item-padding);
@@ -142,6 +142,8 @@
 				display: flex;
 				align-items: center;
 				column-gap: 5px;
+				white-space: nowrap;
+
 				.course-ico {
 					display: flex;
 					svg {
