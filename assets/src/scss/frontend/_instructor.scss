@@ -73,7 +73,7 @@
 		margin: 0 0 30px 0;
 		list-style: none;
 		font-size: 1rem;
-		grid-template-columns: repeat( auto-fit, minmax(var(--lp-instructor-minmax-column), 1fr) );
+		grid-template-columns: repeat( auto-fill, minmax(var(--lp-instructor-minmax-column), 1fr) );
 
 		li {
 			list-style: none;
