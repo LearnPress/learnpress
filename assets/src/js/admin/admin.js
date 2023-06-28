@@ -460,6 +460,7 @@
 						order_id,
 						order_payment,
 						action: 'learnpress_update_order_exports',
+						nonce: lpGlobalSettings.nonce,
 					},
 					beforeSend() {
 						$( '.export-options__loading' ).addClass( 'active' );

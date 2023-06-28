@@ -29,6 +29,7 @@ const makePaymentsSortable = function makePaymentsSortable() {
 				data: {
 					'lp-ajax': 'update-payment-order',
 					order,
+					nonce: $( 'input[name=lp-settings-nonce]' ).val(),
 				},
 				success( response ) {
 				},
@@ -642,6 +643,7 @@ const togglePaymentStatus = function togglePaymentStatus( e ) {
 			'lp-ajax': 'update-payment-status',
 			status,
 			id: $row.data( 'payment' ),
+			nonce: $( 'input[name=lp-settings-nonce]' ).val(),
 		},
 		success( response ) {
 			response = LP.parseJSON( response );
@@ -660,6 +662,7 @@ const updateEmailStatus = function updateEmailStatus() {
 				'lp-ajax': 'update_email_status',
 				status: $( this ).parent().hasClass( 'enabled' ) ? 'no' : 'yes',
 				id: $( this ).data( 'id' ),
+				nonce: $( 'input[name=lp-settings-nonce]' ).val(),
 			},
 			dataType: 'text',
 			success: $.proxy( function( res ) {

@@ -41,6 +41,7 @@
 							text_format: this.textFormat,
 							exclude: this.exclude,
 							'lp-ajax': 'modal_search_users',
+							nonce: lpGlobalSettings.nonce,
 						}, {
 							emulateJSON: true,
 							params: {},
