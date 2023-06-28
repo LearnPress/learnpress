@@ -32,14 +32,14 @@ class LP_REST_Addon_Controller extends LP_Abstract_REST_Controller {
 				array(
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'list_addons' ),
-					'permission_callback' => '__return_true',
+					'permission_callback' => [ $this, 'permission_callback' ],
 				),
 			),
 			'action' => array(
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'action' ),
-					'permission_callback' => '__return_true',
+					'permission_callback' => [ $this, 'permission_callback' ],
 				),
 			),
 		);
@@ -48,7 +48,7 @@ class LP_REST_Addon_Controller extends LP_Abstract_REST_Controller {
 	}
 
 	public function permission_callback() {
-		return current_user_can( 'manage_options' );
+		return current_user_can( ADMIN_ROLE );
 	}
 
 	/**
