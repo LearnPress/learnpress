@@ -4,7 +4,7 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  4.0.0
+ * @version  4.0.1
  */
 
 use LearnPress\Helpers\Template;
@@ -34,21 +34,22 @@ if ( ! isset( $profile ) ) {
 			</div>
 		<?php else : ?>
 			<div class="lp-content-area">
-				<!--				--><?php //esc_html_e( 'This user does not make their profile public.', 'learnpress' ); ?>
 				<?php
 				if ( ! is_user_logged_in() ) {
 					learn_press_print_messages( true );
 				}
 
-				$sections = apply_filters(
-					'learn-press/user-profile/not-public/sections',
-					array(
-						'profile/sidebar/header.php',
-						'profile/course-list/course-container.php',
-					)
-				);
+				if ( $profile->get_user() instanceof LP_User && $profile->get_user()->can_create_course() ) {
+					$sections = apply_filters(
+						'learn-press/user-profile/not-public/sections',
+						array(
+							'profile/sidebar/header.php',
+							'profile/course-list/course-container.php',
+						)
+					);
 
-				Template::instance()->get_frontend_templates( $sections );
+					Template::instance()->get_frontend_templates( $sections );
+				}
 				?>
 			</div>
 		<?php endif; ?>
