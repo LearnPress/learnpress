@@ -32,7 +32,7 @@
 				display: block;
 				text-align: center;
 				margin: var(--lp-instructor-item-padding) 0;
-				font-size: 1.1em;
+				font-size: 1.2em;
 				font-weight: bold;
 			}
 
@@ -41,39 +41,51 @@
 			}
 
 			.instructor-info {
-				display: flex;
-				//font-size: 0.8em;
-				.instructor-count-courses {
-					flex: 1;
-					text-align: right;
- 					display: flex;
-					align-items: center;
+					 display: flex;
+					 column-gap: 10px;
+					 //font-size: 0.8em;
+					 >div {
+						 flex: 1;
+						 text-align: right;
+						 display: flex;
+						 align-items: center;
+						 column-gap: 10px;
+						 span {
+							 display: inline-flex;
+							 white-space: nowrap;
+						 }
+					 }
+					 //.instructor-count-courses {
+					 //	flex: 1;
+					 //	text-align: right;
+					 //	display: flex;
+					 //	align-items: center;
+					 //
+					 //	span {
+					 //		display: inline-flex;
+					 //
+					 //		&.instructor-total-courses {
+					 //			margin-left: 10px;
+					 //		}
+					 //	}
+					 //}
 
-					span {
-						display: inline-flex;
-
-						&.instructor-total-courses {
-							margin-left: 10px;
-						}
-					}
-				}
-
-				.instructor-count-students {
-					flex: 1;
-					text-align: right;
- 					display: flex;
-					justify-content: right;
-					align-items: center;
-
-					span {
-						display: inline-flex;
-
-						&.instructor-total-students {
-							margin-left: 10px;
-						}
-					}
-				}
-			}
+					 .instructor-count-students {
+						 //flex: 1;
+						 //text-align: right;
+						 //display: flex;
+						 justify-content: right;
+						 //align-items: center;
+						 //
+						 //span {
+						 //	display: inline-flex;
+						 //
+						 //	&.instructor-total-students {
+						 //		margin-left: 10px;
+						 //	}
+						 //}
+					 }
+				 }
 
 			.instructor-btn-view {
 				display: block;
