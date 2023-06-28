@@ -8,15 +8,19 @@
 .lp-list-instructors {
 	--lp-instructor-item-padding: 20px;
 	--lp-instructor-border-color: #c3c4c7;
+	--lp-instructor-minmax-column: 250px;
+
 	.ul-list-instructors {
 		display: grid;
-		grid-template-columns: repeat(4, 1fr);
+		//grid-template-columns: repeat(4, 1fr);
+		grid-template-columns: repeat( auto-fit, minmax(var(--lp-instructor-minmax-column), 1fr) );
 		gap: 30px;
 		padding: 0;
- 		margin: 0 0 30px 0;
+		margin: 0 0 30px 0;
 		list-style: none;
 		font-size: 1rem;
- 		>ul.lp-skeleton-animation {
+
+		> ul.lp-skeleton-animation {
 			grid-column: span 4;
 		}
 
@@ -26,7 +30,7 @@
 
 		li.item-instructor {
 			border: 1px solid var(--lp-instructor-border-color);
- 			padding: var(--lp-instructor-item-padding);
+			padding: var(--lp-instructor-item-padding);
 
 			.instructor-display-name {
 				display: block;
@@ -37,55 +41,57 @@
 			}
 
 			.instructor-avatar img {
- 				width: 100%;
+				width: 100%;
 			}
 
 			.instructor-info {
-					 display: flex;
-					 column-gap: 10px;
-					 //font-size: 0.8em;
-					 >div {
-						 flex: 1;
-						 text-align: right;
-						 display: flex;
-						 align-items: center;
-						 column-gap: 10px;
-						 span {
-							 display: inline-flex;
-							 white-space: nowrap;
-						 }
-					 }
-					 //.instructor-count-courses {
-					 //	flex: 1;
-					 //	text-align: right;
-					 //	display: flex;
-					 //	align-items: center;
-					 //
-					 //	span {
-					 //		display: inline-flex;
-					 //
-					 //		&.instructor-total-courses {
-					 //			margin-left: 10px;
-					 //		}
-					 //	}
-					 //}
+				display: flex;
+				column-gap: 10px;
+				//font-size: 0.8em;
+				> div {
+					flex: 1;
+					text-align: right;
+					display: flex;
+					align-items: center;
+					column-gap: 10px;
 
-					 .instructor-count-students {
-						 //flex: 1;
-						 //text-align: right;
-						 //display: flex;
-						 justify-content: right;
-						 //align-items: center;
-						 //
-						 //span {
-						 //	display: inline-flex;
-						 //
-						 //	&.instructor-total-students {
-						 //		margin-left: 10px;
-						 //	}
-						 //}
-					 }
-				 }
+					span {
+						display: inline-flex;
+						white-space: nowrap;
+					}
+				}
+
+				//.instructor-count-courses {
+				//	flex: 1;
+				//	text-align: right;
+				//	display: flex;
+				//	align-items: center;
+				//
+				//	span {
+				//		display: inline-flex;
+				//
+				//		&.instructor-total-courses {
+				//			margin-left: 10px;
+				//		}
+				//	}
+				//}
+
+				.instructor-count-students {
+					//flex: 1;
+					//text-align: right;
+					//display: flex;
+					justify-content: right;
+					//align-items: center;
+					//
+					//span {
+					//	display: inline-flex;
+					//
+					//	&.instructor-total-students {
+					//		margin-left: 10px;
+					//	}
+					//}
+				}
+			}
 
 			.instructor-btn-view {
 				display: block;
@@ -98,7 +104,8 @@
 				padding: 10px 0;
 				color: rgba(0, 0, 0, 0.5);
 				font-weight: 700;
- 				&:hover {
+
+				&:hover {
 					background: var(--lp-primary-color);
 					color: whitesmoke;
 				}
@@ -106,9 +113,9 @@
 		}
 
 
-		@media (max-width: 900px) {
-			grid-template-columns: repeat( auto-fit, minmax( 280px, 1fr ) );
-		}
+		//@media (max-width: 900px) {
+		//	grid-template-columns: repeat( auto-fit, minmax( 280px, 1fr ) );
+		//}
 	}
 }
 
