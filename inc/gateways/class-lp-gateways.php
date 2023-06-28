@@ -65,28 +65,38 @@ class LP_Gateways {
 	 * @param boolean $with_order If true sort payments with the order saved in admin
 	 *
 	 * @return array
+	 * @version 4.0.1
 	 */
 	public function get_gateways( $with_order = false ) {
-		$gateways = array();
+		$gateways               = array();
+		$order_payment_gateways = get_option( 'learn_press_payment_order' );
 
 		if ( count( $this->payment_gateways ) ) {
-			foreach ( $this->payment_gateways as $gateway ) {
-				if ( is_string( $gateway ) && class_exists( $gateway ) ) {
-					$gateway = new $gateway();
+			if ( $order_payment_gateways ) {
+				foreach ( $order_payment_gateways as $id ) {
+					if ( isset( $this->payment_gateways[ $id ] ) ) {
+						$gateways[ $id ] = $this->payment_gateways[ $id ];
+					}
 				}
+			} else {
+				foreach ( $this->payment_gateways as $gateway ) {
+					if ( is_string( $gateway ) && class_exists( $gateway ) ) {
+						$gateway = new $gateway();
+					}
 
-				if ( ! is_object( $gateway ) ) {
-					continue;
+					if ( ! is_object( $gateway ) ) {
+						continue;
+					}
+
+					$gateways[ $gateway->id ] = $gateway;
 				}
-
-				$gateways[ $gateway->id ] = $gateway;
 			}
 		}
 
-		if ( $with_order && get_option( 'learn_press_payment_order' ) ) {
+		/*if ( $with_order && get_option( 'learn_press_payment_order' ) ) {
 			// Sort gateways by the keys stored.
 			usort( $gateways, array( $this, '_sort_gateways_callback' ) );
-		}
+		}*/
 
 		return $gateways;
 	}
@@ -99,8 +109,11 @@ class LP_Gateways {
 	 * @param LP_Gateway_Abstract $b
 	 *
 	 * @return bool|int
+	 * @deprecated 4.2.3
 	 */
 	public function _sort_gateways_callback( $a, $b ) {
+		_deprecated_function( __METHOD__, '4.2.3' );
+		return 0;
 		$ordered = get_option( 'learn_press_payment_order' );
 
 		if ( $ordered ) {
