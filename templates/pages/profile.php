@@ -40,15 +40,10 @@ if ( ! isset( $profile ) ) {
 				}
 
 				if ( $profile->get_user() instanceof LP_User && $profile->get_user()->can_create_course() ) {
-					$sections = apply_filters(
-						'learn-press/user-profile/not-public/sections',
-						array(
-							'profile/sidebar/header.php',
-							'profile/course-list/course-container.php',
-						)
-					);
-
-					Template::instance()->get_frontend_templates( $sections );
+					$data = [
+						'instructor_id' => $profile->get_user()->get_id(),
+					];
+					do_action( 'learn-press/single-instructor/layout', $data );
 				}
 				?>
 			</div>
