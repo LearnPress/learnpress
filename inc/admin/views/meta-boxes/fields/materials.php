@@ -40,7 +40,7 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 			$uploaded_files = count( $course_materials );
 			// check file amount which can upload
 			$can_upload = $allow_upload_amount - $uploaded_files;
-			$allow_file_type = LP_Settings::get_option( 'material_allow_file_type' );
+			$allow_file_type = LP_Settings::get_option( 'material_allow_file_type', array( 'pdf', 'txt' ) );
 			$accept = '';
 			$accept_file_type = '';
 			$material_mime_types = LP_Settings::lp_material_file_types();

@@ -129,15 +129,15 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 			// DB Init
 			$material_init = LP_Material_Files_DB::getInstance();
 			// LP Material Settings
-			$max_file_size = (int)LP_Settings::get_option('material_max_file_size');
-			$allow_upload_amount = (int) LP_Settings::get_option('material_upload_files');
+			$max_file_size = (int)LP_Settings::get_option('material_max_file_size' , 2);
+			$allow_upload_amount = (int) LP_Settings::get_option('material_upload_files', 2);
 			// check file was uploaded
 			$uploaded_files = count( $material_init->get_material_by_item_id( $item_id ) );
 			// check file amount which can upload
 			$can_upload = $allow_upload_amount - $uploaded_files;
-			$allow_file_type = LP_Settings::get_option( 'material_allow_file_type' );
+			$allow_file_type = LP_Settings::get_option( 'material_allow_file_type', array( 'pdf', 'txt' ) );
 			//Check file amount validation
-			if ( $allow_upload_amount == 0 ) {
+			if ( $can_upload <= 0 ) {
 				throw new Exception( esc_html__( 'Material feature is not allowed to upload', 'learnpress' ) );
 			} elseif ( $allow_upload_amount > 0 ) {
 				if ( count( $material_data ) > $can_upload ) {
@@ -360,7 +360,7 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 	 * @return [string]      [file extendsion]
 	 */
 	public function material_check_file_extention( $ext ) {
-		$allow_file_type = LP_Settings::get_option( 'material_allow_file_type' );
+		$allow_file_type = LP_Settings::get_option( 'material_allow_file_type', array( 'pdf', 'txt' ) );
 		$allow_file_type = implode( ',', $allow_file_type );
 		$allow_file_type = explode( ',', $allow_file_type );
 		return in_array( $ext, $allow_file_type ) ? $ext : false;

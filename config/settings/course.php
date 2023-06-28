@@ -135,7 +135,7 @@ return apply_filters(
 					'type'              => 'multiselect',
 					'is_optgroup'			=> '1',
 					'class'             => 'lp-select-2',
-					'default'			=> array( 'pdf', 'text' ),
+					'default'			=> array( 'pdf', 'txt' ),
 					'desc'              => esc_html__( 'Which types of file will be allowed uploading?', 'learnpress' ),
 					'options'           => array(
 						'document' 		=> array(
