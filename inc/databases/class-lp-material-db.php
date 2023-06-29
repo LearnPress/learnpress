@@ -93,47 +93,41 @@ class LP_Material_Files_DB extends LP_Database {
 		if ( ! is_int( $item_id ) ) {
 			return;
 		}
-		$sql = "SELECT * FROM $this->table_name WHERE item_id = %d";
-		if ( $perpage ) {
-			$sql .= ' LIMIT ' . intval( $perpage );
+		$result = array();
+		if ( get_post_type( $item_id ) == LP_COURSE_CPT ) {
+			$sql = "SELECT * FROM $this->table_name WHERE item_id 
+				IN ( SELECT si.item_id FROM $this->tb_lp_section_items AS si
+				INNER JOIN $this->tb_lp_sections AS s ON s.section_id = si.section_id 
+				WHERE s.section_course_id=%d ) 
+				OR item_id=%d ORDER BY item_id";
+			if ( $perpage > 0 ) {
+				$sql .= ' LIMIT ' . intval( $perpage );
+			}
+			if ( $offset > 0 && $perpage > 0 ) {
+				$sql .= ' OFFSET ' . intval( $offset );
+			}
+			$result = $this->wpdb->get_results( 
+				$this->wpdb->prepare( 
+					$sql, 
+					$item_id, 
+					$item_id 
+				) 
+			);
+		} else {
+			$sql = "SELECT * FROM $this->table_name WHERE item_id = %d";
+			if ( $perpage > 0 ) {
+				$sql .= ' LIMIT ' . intval( $perpage );
+			}
+			if ( $offset > 0 && $perpage > 0 ) {
+				$sql .= ' OFFSET ' . intval( $offset );
+			}
+			$result = $this->wpdb->get_results(
+				$this->wpdb->prepare(
+					$sql,
+					$item_id
+				)
+			);
 		}
-		if ( $offset ) {
-			$sql .= ' OFFSET ' . intval( $offset );
-		}
-		$result = $this->wpdb->get_results(
-			$this->wpdb->prepare(
-				$sql,
-				$item_id
-			)
-		);
-		$this->check_execute_has_error();
-		return $result;
-	}
-	/**
-	 * @author khanhbd
-	 * @version 1.0.0
-	 * @since 4.2.2
-	 * [get_course_materials get all material files of course( include material files of lessons )]
-	 * @param  [integer] $course_id [description]
-	 * @return [array]            [description]
-	 */
-	public function get_course_materials( $course_id, $perpage = 0, $offset = 0 ) {
-		if ( ! is_int( $course_id ) ) {
-			return;
-		}
-		
-		$sql = "SELECT * FROM $this->table_name WHERE item_id 
-			IN ( SELECT si.item_id FROM $this->tb_lp_section_items AS si
-			INNER JOIN $this->tb_lp_sections AS s ON s.section_id = si.section_id 
-			WHERE s.section_course_id=%d ) 
-			OR item_id=%d ORDER BY item_id";
-		if ( $perpage ) {
-			$sql .= ' LIMIT ' . intval( $perpage );
-		}
-		if ( $offset ) {
-			$sql .= ' OFFSET ' . intval( $offset );
-		}
-		$result = $this->wpdb->get_results( $this->wpdb->prepare( $sql, $course_id, $course_id ) );
 		$this->check_execute_has_error();
 		return $result;
 	}
