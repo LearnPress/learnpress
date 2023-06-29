@@ -294,7 +294,7 @@ class LPElementorControls {
 	public static function add_controls_style_text( string $prefix_name, string $selector,
 		array $include = [], array $exclude = [] ): array {
 		$fields = [
-			"{$prefix_name}_text_display"              => self::add_control_type(
+			"{$prefix_name}_text_display"          => self::add_control_type(
 				"{$prefix_name}_text_display",
 				esc_html__( 'Display', 'learnpress' ),
 				'inline-block',
@@ -309,13 +309,13 @@ class LPElementorControls {
 							'title' => esc_html__( 'Inline', 'thim-elementor-kit' ),
 							'icon'  => 'eicon-ellipsis-h',
 						),
- 					],
+					],
 					'selectors' => [
 						"{{WRAPPER}} $selector" => 'display: {{VALUE}}',
 					],
 				]
- 			),
-			"{$prefix_name}_text_margin"               => self::add_responsive_control_type(
+			),
+			"{$prefix_name}_text_margin"           => self::add_responsive_control_type(
 				"{$prefix_name}_text_margin",
 				esc_html__( 'Margin', 'learnpress' ),
 				[],
@@ -327,7 +327,7 @@ class LPElementorControls {
 					),
 				]
 			),
-			"{$prefix_name}_text_padding"              => self::add_responsive_control_type(
+			"{$prefix_name}_text_padding"          => self::add_responsive_control_type(
 				"{$prefix_name}_text_padding",
 				esc_html__( 'Padding', 'learnpress' ),
 				[],
@@ -339,12 +339,12 @@ class LPElementorControls {
 					),
 				]
 			),
-			"{$prefix_name}_text_typography"           => self::add_group_control_type(
+			"{$prefix_name}_text_typography"       => self::add_group_control_type(
 				"{$prefix_name}_typography",
 				Group_Control_Typography::get_type(),
 				"{{WRAPPER}} $selector"
 			),
-			"{$prefix_name}_text_shadow"               => self::add_group_control_type(
+			"{$prefix_name}_text_shadow"           => self::add_group_control_type(
 				"{$prefix_name}_shadow",
 				Group_Control_Text_Shadow::get_type(),
 				"{{WRAPPER}} $selector"
@@ -436,8 +436,8 @@ class LPElementorControls {
 				[
 					'selectors'    => [ "{{WRAPPER}} $selector" => 'display: {{VALUE}}' ],
 					'return_value' => 'none',
-					'label_on'=> esc_html__( 'Hide', 'learnpress' ),
-					'label_off'=> esc_html__( 'Show', 'learnpress' ),
+					'label_on'     => esc_html__( 'Hide', 'learnpress' ),
+					'label_off'    => esc_html__( 'Show', 'learnpress' ),
 				]
 			),
 			"{$prefix_name}_img_margin"        => self::add_responsive_control_type(

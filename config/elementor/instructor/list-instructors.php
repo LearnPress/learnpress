@@ -42,6 +42,13 @@ $content_fields = array_merge(
 							'description' => 'Sections: {{instructor_avatar}}, {{instructor_url}}, {{instructor_display_name}}, {{instructor_total_courses}}, {{instructor_total_students}}',
 							'label_block' => true,
 						],
+						[
+							'name'        => 'layout_css',
+							'label'       => esc_html__( 'Style', 'learnpress' ),
+							'type'        => Controls_Manager::CODE,
+							'label_block' => true,
+							'language'    => 'css',
+						],
 					],
 					'prevent_empty' => false,
 					'title_field'   => '{{{ layout_name }}}',

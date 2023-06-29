@@ -60,6 +60,10 @@ class ListInstructorsElementor extends LPElementorWidgetBase {
 			// End Query
 
 			$item_layout = $settings['item_layouts'][0];
+			if ( ! empty( $item_layout['layout_css'] ) ) {
+				$item_layout['layout_css'] = preg_replace( '/selector/i', "div[data-id={$this->get_id()}]", $item_layout['layout_css'] );
+				echo '<style id="' . $this->get_id() . '">' . $item_layout['layout_css'] . '</style>';
+			}
 
 			// Show list instructors
 			$singleInstructorTemplate = SingleInstructorTemplate::instance();
