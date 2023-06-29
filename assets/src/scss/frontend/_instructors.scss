@@ -4,7 +4,13 @@
  * @since 4.2.3
  * @version 1.0.0
  */
-
+// fix container for theme premium
+.learnpress-v4 {
+	.lp-content-area {
+		--lp-cotainer-max-with: inherit;
+		--lp-cotainer-padding: 0;
+	}
+}
 .lp-list-instructors {
 	--lp-instructor-item-padding: 20px;
 	--lp-instructor-border-color: #c3c4c7;
