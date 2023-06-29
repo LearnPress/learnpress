@@ -303,6 +303,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			// Background processes.
 			require_once 'inc/libraries/wp-background-process/wp-background-processing.php';
 			require_once 'inc/background-process/abstract-lp-async-request.php';
+			//require_once 'inc/background-process/abstract-lp-async-task.php';
 			require_once 'inc/background-process/class-lp-background-single-course.php';
 			require_once 'inc/background-process/class-lp-background-single-email.php';
 			require_once 'inc/background-process/class-lp-background-thim-cache.php';
