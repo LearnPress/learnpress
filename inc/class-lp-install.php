@@ -39,7 +39,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			if ( ! LP_Settings::is_created_tb_thim_cache() ) {
 				$this->create_table_thim_cache();
 			}
-			if ( ! LP_Settings::is_created_tb_material_files() ){
+			if ( ! LP_Settings::is_created_tb_material_files() ) {
 				$this->create_table_learnpress_files();
 			}
 		}
@@ -104,7 +104,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 					$this->create_table_thim_cache();
 				}
 
-				if ( ! LP_Settings::is_created_tb_material_files() ){
+				if ( ! LP_Settings::is_created_tb_material_files() ) {
 					$this->create_table_learnpress_files();
 				}
 
@@ -143,7 +143,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 		}
 		/**
 		 * Create table learnpress_material_files
-		 * 
+		 *
 		 * @since 4.2.2
 		 */
 		private function create_table_learnpress_files() {

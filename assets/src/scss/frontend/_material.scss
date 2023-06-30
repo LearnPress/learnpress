@@ -1,0 +1,49 @@
+.lp-material-skeleton {
+	.course-material-table {
+		width: 100%;
+		display: none;
+		th {
+			text-align: center;
+			&:first-child {
+				text-align: left;
+			}
+		}
+		tr {
+			td {
+				&:not(:first-child) {
+					text-align: center;
+				}
+			}
+		}
+		tfoot {
+			td {
+				text-align: left;
+				font-weight: bold;
+			}
+		}
+	}
+	.lp-loadmore-material.lp-button {
+		display: none;
+		margin: 20px 0 0 0;
+		padding: 12px 29px;
+		border-color: #442e66;
+		background-color: #442e66;
+		font-size: 14px;
+		color: #fff;
+		&:hover {
+			background: #ffb606;
+		}
+	}
+	.lp-loadmore-material.loading {
+		&::before {
+			display: inline-block;
+			margin-right: 5px;
+			font-family: "Font Awesome 5 Free";
+			font-weight: 900;
+			content: "\f110";
+			-webkit-animation: lp-rotating 1s linear infinite;
+			-moz-animation: lp-rotating 1s linear infinite;
+			animation: lp-rotating 1s linear infinite;
+		}
+	}
+}

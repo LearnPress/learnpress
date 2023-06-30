@@ -19,10 +19,11 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 	public function register_routes() {
 		$this->routes = array(
 			'item-materials/(?P<item_id>[\d]+)' => array(
-				'args'   => array(
+				'args' => array(
 					'item_id' => array(
-						'description' => __( 'A unique identifier for the resource.', 'learnpress' ),
-						'type'        => 'integer',
+						'description'       => __( 'A unique identifier for the resource.', 'learnpress' ),
+						'type'              => 'integer',
+						'sanitize_callback' => 'absint',
 					),
 				),
 				array(
@@ -30,41 +31,41 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 					'callback'            => array( $this, 'save_post_materials' ),
 					'permission_callback' => array( $this, 'check_user_permissons' ),
 					'args'                => array(
-						'data'	=> array(
-							'description'		=> esc_html__( 'Data of material', 'learnpress' ),
-							'type'				=> 'string',
-							'required'			=> true,
-							'sanitize_callback'	=> 'sanitize_text_field',
+						'data' => array(
+							'description'       => esc_html__( 'Data of material', 'learnpress' ),
+							'type'              => 'string',
+							'required'          => true,
+							'sanitize_callback' => 'sanitize_text_field',
 						),
-						'file'   => array(
+						'file' => array(
 							'description' => esc_html__( 'File.', 'learnpress' ),
 							'type'        => 'array',
 						),
 					),
 				),
 				array(
-					'methods'				=> WP_REST_Server::READABLE,
-					'callback'				=> array( $this, 'get_materials_by_item' ),
-					'permission_callback' 	=> '__return_true',
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'get_materials_by_item' ),
+					'permission_callback' => '__return_true',
 				),
 			),
-			'(?P<file_id>[\d]+)' => array(
-				'args'   => array(
+			'(?P<file_id>[\d]+)'                => array(
+				'args' => array(
 					'file_id' => array(
 						'description' => __( 'A unique identifier for the resource.', 'learnpress' ),
 						'type'        => 'integer',
 					),
 				),
 				array(
-					'methods'				=> WP_REST_Server::DELETABLE,
-					'callback'				=> array( $this, 'delete_material' ),
-					'permission_callback' 	=> array( $this, 'check_user_permissons' ),
+					'methods'             => WP_REST_Server::DELETABLE,
+					'callback'            => array( $this, 'delete_material' ),
+					'permission_callback' => array( $this, 'check_user_permissons' ),
 				),
 				array(
-					'methods'				=> WP_REST_Server::READABLE,
-					'callback'				=> array( $this, 'get_material' ),
-					'permission_callback'	=> '__return_true',
-				)
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'get_material' ),
+					'permission_callback' => '__return_true',
+				),
 			),
 		);
 
@@ -87,9 +88,9 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 			'message' => esc_html__( 'There was an error when save the file.', 'learnpress' ),
 		);
 		try {
-			$item_id 		= $request['item_id'];
-			$material_data 	= $request->get_param( 'data' );
-			$upload_file 	= $request->get_file_params( 'file' );
+			$item_id       = $request['item_id'];
+			$material_data = $request->get_param( 'data' );
+			$upload_file   = $request->get_file_params( 'file' );
 			if ( ! $item_id ) {
 				throw new Exception( esc_html__( 'Invalid course or lesson', 'learnpress' ) );
 			}
@@ -97,19 +98,19 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 				throw new Exception( esc_html__( 'Invalid materials', 'learnpress' ) );
 			}
 			// $material0 = $material_data;
-			$material_data =  json_decode( wp_unslash( $material_data ), true );
-			$file = $upload_file['file'] ?? false;
+			$material_data = json_decode( wp_unslash( $material_data ), true );
+			$file          = $upload_file['file'] ?? false;
 			// $file = $file['file'] ;
 			$file_method = array( 'upload', 'external' );
 			// DB Init
 			$material_init = LP_Material_Files_DB::getInstance();
 			// LP Material Settings
-			$max_file_size = (int)LP_Settings::get_option('material_max_file_size' , 2);
-			$allow_upload_amount = (int) LP_Settings::get_option('material_upload_files', 2);
+			$max_file_size       = (int) LP_Settings::get_option( 'material_max_file_size', 2 );
+			$allow_upload_amount = (int) LP_Settings::get_option( 'material_upload_files', 2 );
 			// check file was uploaded
 			$uploaded_files = count( $material_init->get_material_by_item_id( $item_id ) );
 			// check file amount which can upload
-			$can_upload = $allow_upload_amount - $uploaded_files;
+			$can_upload      = $allow_upload_amount - $uploaded_files;
 			$allow_file_type = LP_Settings::get_option( 'material_allow_file_type', array( 'pdf', 'txt' ) );
 			//Check file amount validation
 			if ( $can_upload <= 0 ) {
@@ -119,7 +120,7 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 					throw new Exception( esc_html__( 'Your uploaded files reach the maximum amount!', 'learnpress' ) );
 				}
 			}
-			
+
 			foreach ( $material_data as $key => $material ) {
 				// check file title
 				if ( ! $material['label'] ) {
@@ -133,15 +134,15 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 					$response['items'][ $key ]['message'] = sprintf( esc_html__( 'File %s method is invalid!', 'learnpress' ), $material['label'] );
 					continue;
 				}
-				
+
 				if ( $material['method'] == 'upload' ) {
 					if ( ! $material['file'] ) {
 						// throw new Exception( esc_html__( 'Invalid upload file', 'learnpress' ) );
 						$response['items'][ $key ]['message'] = sprintf( esc_html__( 'File %s is empty!', 'learnpress' ), $material['label'] );
 						continue;
 					}
-					$file_key = array_search( $material['file'], $file);
-					if ( $file['size'][ $key ] > $max_file_size*1024*1024 ) {
+					$file_key = array_search( $material['file'], $file );
+					if ( $file['size'][ $key ] > $max_file_size * 1024 * 1024 ) {
 						$response['items'][ $key ]['message'] = sprintf( esc_html__( 'File %s size is too large!', 'learnpress' ), $material['label'] );
 						continue;
 					}
@@ -154,14 +155,14 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 					$file_type = $this->material_check_file_extention( $file_type );
 					$file_path = str_replace( wp_upload_dir()['baseurl'], '', $movefile['url'] );
 				}
-				
+
 				if ( $material['method'] == 'external' ) {
 					$check_file = $this->check_external_file( sanitize_url( $material['link'] ) );
 					if ( $check_file['error'] ) {
-						$response['items'][ $key ]['message'] = sprintf( esc_html__( 'An error occurred while checking %s or %s is invalid', 'learnpress' ), $material['label'], $material['label'] );
+						$response['items'][ $key ]['message'] = sprintf( esc_html__( 'An error occurred while checking %1$s or %2$s is invalid', 'learnpress' ), $material['label'], $material['label'] );
 						continue;
 					}
-					if ( $check_file['size'] > $max_file_size*1024*1024 ) {
+					if ( $check_file['size'] > $max_file_size * 1024 * 1024 ) {
 						$response['items'][ $key ]['message'] = sprintf( esc_html__( 'File %s size is too large!', 'learnpress' ), $material['label'] );
 						continue;
 					}
@@ -173,29 +174,29 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 					$response['items'][ $key ]['message'] = sprintf( esc_html__( 'File %s - file type is invalid!', 'learnpress' ), $material['label'] );
 					continue;
 				}
-				$insert_arr = array( 
-						'file_name' 	=> sanitize_text_field( $material['label'] ),
-						'file_type' 	=> $file_type,
-						'item_id'		=> (int)$item_id,
-						'item_type'		=> get_post_type( $item_id ),
-						'method'		=> $material['method'],
-						'file_path'		=> $file_path,
-						'created_at'	=> current_time('Y-m-d H:i:s')
-					 );
-				$insert = $material_init->create_material( $insert_arr );
+				$insert_arr = array(
+					'file_name'  => sanitize_text_field( $material['label'] ),
+					'file_type'  => $file_type,
+					'item_id'    => (int) $item_id,
+					'item_type'  => get_post_type( $item_id ),
+					'method'     => $material['method'],
+					'file_path'  => $file_path,
+					'created_at' => current_time( 'Y-m-d H:i:s' ),
+				);
+				$insert     = $material_init->create_material( $insert_arr );
 				if ( ! $insert ) {
 					$response['items'][ $key ]['message'] = sprintf( esc_html__( 'cannot save file %d', 'learnpress' ), $key );
 					continue;
 				}
 				$response['material'][ $key ]['data'] = array(
-					'label'		=> $material['label'],
-					'method'	=> ucfirst( $material['method'] ),
-					'id'		=> $insert,
+					'label'  => $material['label'],
+					'method' => ucfirst( $material['method'] ),
+					'id'     => $insert,
 				);
 			}
 			$response['data']['status'] = 200;
-			$response['message'] = esc_html__( 'The progress was saved! Your file(s) were uploaded successfully!', 'learnpress' );
-		} catch (Exception $e) {
+			$response['message']        = esc_html__( 'The progress was saved! Your file(s) were uploaded successfully!', 'learnpress' );
+		} catch ( Exception $e ) {
 			$response['data']['status'] = 400;
 			$response['message']        = $e->getMessage();
 		}
@@ -212,31 +213,49 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 	 */
 	public function get_materials_by_item( WP_REST_Request $request ) {
 		$response = array(
-			'data'		=> array(),
-			'status' 	=> 400,
-			'message' 	=> esc_html__( 'There was an error when save the file.', 'learnpress' ),
+			'data'    => array(),
+			'status'  => 400,
+			'message' => esc_html__( 'There was an error when save the file.', 'learnpress' ),
 		);
 		try {
-			$params   	= $request->get_params();
-			$item_id 	= $request['item_id'];
-			$page       = absint( $params['page'] ?? 1 );
-			$per_page 	= (int) LP_Settings::get_option( 'material_file_per_page', -1);
-			$offset 	= ( $per_page > 0 && $page > 1 ) ? $per_page * $page : 0;
+			$params  = $request->get_params();
+			$item_id = $request['item_id'];
 			if ( ! $item_id ) {
 				throw new Exception( esc_html__( 'Invalid course or lesson identifier', 'learnpress' ) );
 			}
-			$material_init  = LP_Material_Files_DB::getInstance();
-
-			$item_materials = $material_init->get_material_by_item_id( (int)$item_id, $per_page, $offset );
-			
-			$response['status']		= 200;
+			$material_init = LP_Material_Files_DB::getInstance();
+			$page          = absint( $params['page'] ?? 1 );
+			$per_page      = (int) LP_Settings::get_option( 'material_file_per_page', -1 );
+			$offset        = ( $per_page > 0 && $page > 1 ) ? $per_page * ( $page - 1 ) : 0;
+			$total         = $material_init->get_total( $item_id );
+			$pages         = $per_page > 0 ? ceil( $total / $per_page ) : 0;
+			// $response['total'] = $total;
+			// $response['pages'] = $pages;
+			$item_materials = $material_init->get_material_by_item_id( $item_id, $per_page, $offset );
+			// $found_row = $material_init->wpdb->get_var( "SELECT FOUND_ROWS()" );
+			// $response['load_more'] = $found_row == $per_page ? true : false;
+			$response['load_more'] = ( $page < $pages && $per_page > 0 ) ? true : false;
+			$response['status']    = 200;
 			if ( $item_materials ) {
-				$response['data'] 		= $item_materials;
-				$response['message'] 	= esc_html__( 'Successfully','learnpress' );
+				$lp_file = LP_WP_Filesystem::instance();
+				foreach ( $item_materials as $m ) {
+					if ( get_post_type( $item_id ) == LP_COURSE_CPT && $m->item_type == LP_LESSON_CPT ) {
+						$m->file_name = sprintf( esc_html__( '%1$s ( %2$s )' ), $m->file_name, get_the_title( $m->item_id ) );
+					}
+					if ( $m->method == 'upload' ) {
+						$file_size    = filesize( wp_upload_dir()['basedir'] . $m->file_path );
+						$m->file_path = wp_upload_dir()['baseurl'] . $m->file_path;
+						$m->file_size = ( $file_size / 1024 < 1024 ) ? round( $file_size / 1024, 2 ) . 'KB' : round( $file_size / 1024 / 1024, 2 ) . 'MB';
+					} else {
+						$m->file_size = $lp_file->get_file_size_from_url( $m->file_path );
+					}
+				}
+				$response['data']    = $item_materials;
+				$response['message'] = esc_html__( 'Successfully', 'learnpress' );
 			} else {
 				$response['message'] = esc_html__( 'Empty material!', 'learnpress' );
 			}
-		} catch (Throwable $th) {
+		} catch ( Throwable $th ) {
 			$response['message'] = $th->getMessage();
 		}
 		return rest_ensure_response( $response );
@@ -257,17 +276,17 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 
 		// download to temp dir
 		$temp_file = $lp_file->download_url( $file_url );
-		$error = false;
-		$file = array();
+		$error     = false;
+		$file      = array();
 		if ( is_wp_error( $temp_file ) ) {
 			$file['error'] = true;
 		} else {
 			$file = array(
-				'name'     	=> basename( $file_url ),
-				'type'     	=> mime_content_type( $temp_file ),
-				'tmp_name' 	=> $temp_file,
-				'size'     	=> filesize( $temp_file ),
-				'error'		=> false,
+				'name'     => basename( $file_url ),
+				'type'     => mime_content_type( $temp_file ),
+				'tmp_name' => $temp_file,
+				'size'     => filesize( $temp_file ),
+				'error'    => false,
 			);
 		}
 		//get file properties
@@ -283,7 +302,7 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 	 * @param  [] $file_tmp  [file content]
 	 * @return [array]            [file infomations]
 	 */
-	public function material_upload_file( $file_name, $file_tmp ){
+	public function material_upload_file( $file_name, $file_tmp ) {
 
 		$file = wp_upload_bits( $file_name, null, file_get_contents( $file_tmp ) );
 
@@ -326,26 +345,26 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 				throw new Exception( esc_html__( 'Invalid identifier', 'learnpress' ) );
 			}
 			$material_init = LP_Material_Files_DB::getInstance();
-			$file = $material_init->get_material( $id );
-			if ( $file ){
+			$file          = $material_init->get_material( $id );
+			if ( $file ) {
 				if ( $file->method == 'upload' ) {
-					$file->file_path = wp_upload_dir()['baseurl'].$file->file_path;
+					$file->file_path = wp_upload_dir()['baseurl'] . $file->file_path;
 				}
 				$response_data = $file;
-				$message = esc_html__( 'Get file successfully.', 'learnpress' );
+				$message       = esc_html__( 'Get file successfully.', 'learnpress' );
 			} else {
 				$response_data = [];
-				$message = esc_html__( 'The file is not exist', 'learnpress' );
+				$message       = esc_html__( 'The file is not exist', 'learnpress' );
 			}
 			$response = array(
 				'data'    => array(
-					'status' 	=> 200,
-					'material'  => $response_data
+					'status'   => 200,
+					'material' => $response_data,
 				),
 				'message' => $message,
 			);
 
-		} catch (Throwable $th) {
+		} catch ( Throwable $th ) {
 			$response['message'] = $th->getMessage();
 		}
 		return rest_ensure_response( $response );
@@ -383,12 +402,12 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 				$deleted = false;
 			}
 			$response = array(
-						'data'    => array(
-							'status' => 200,
-							'delete' => $deleted
-						),
-						'message' => $message,
-					);
+				'data'    => array(
+					'status' => 200,
+					'delete' => $deleted,
+				),
+				'message' => $message,
+			);
 		} catch ( Throwable $th ) {
 			$response['message'] = $th->getMessage();
 		}

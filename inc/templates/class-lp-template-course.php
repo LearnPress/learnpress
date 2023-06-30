@@ -749,8 +749,8 @@ class LP_Template_Course extends LP_Abstract_Template {
 			if ( $user->can_view_content_course( $course->get_id() )->key === LP_BLOCK_COURSE_DURATION_EXPIRE ) {
 				return;
 			}
-			$item_id = $item->get_id();
-			$material = LP_Material_Files_DB::getInstance();
+			$item_id   = $item->get_id();
+			$material  = LP_Material_Files_DB::getInstance();
 			$materials = $material->get_material_by_item_id( $item_id );
 			if ( ! $materials ) {
 				return;
@@ -758,13 +758,13 @@ class LP_Template_Course extends LP_Abstract_Template {
 			learn_press_get_template(
 				'content-lesson/materials.php',
 				array(
-					'user'   	=> $user,
-					'course' 	=> $course,
-					'item'   	=> $item,
+					'user'      => $user,
+					'course'    => $course,
+					'item'      => $item,
 					'materials' => $materials,
 				)
 			);
-		} catch (Throwable $e) {
+		} catch ( Throwable $e ) {
 			error_log( $e->getMessage() );
 		}
 	}

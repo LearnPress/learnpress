@@ -85,7 +85,7 @@ if ( ! function_exists( 'learn_press_get_course_tabs' ) ) {
 				'callback' => LearnPress::instance()->template( 'course' )->func( 'faqs' ),
 			);
 		}
-		
+
 		$is_enrolled_course = false;
 		if ( $user->has_course_status( $course->get_id(), array( LP_COURSE_ENROLLED ) )
 			|| $user->is_instructor() || $user->is_admin() ) {
@@ -93,9 +93,9 @@ if ( ! function_exists( 'learn_press_get_course_tabs' ) ) {
 		}
 		if ( $course->get_downloadable_material() && $is_enrolled_course ) {
 			$defaults['materials'] = array(
-				'title'		=> 'Materials',
-				'priority'	=> 45,
-				'callback'	=> LearnPress::instance()->template( 'course' )->callback( 'single-course/tabs/materials.php' ),
+				'title'    => 'Materials',
+				'priority' => 45,
+				'callback' => LearnPress::instance()->template( 'course' )->callback( 'single-course/tabs/materials.php' ),
 			);
 		}
 

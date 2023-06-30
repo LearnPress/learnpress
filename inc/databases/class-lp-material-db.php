@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * Class LP_Material_Files_DB
  *
@@ -37,10 +37,10 @@ class LP_Material_Files_DB extends LP_Database {
 	 * @return [int]  new record id(file_id)
 	 */
 	public function create_material( $data ) {
-		if ( ! is_array( $data ) ){
+		if ( ! is_array( $data ) ) {
 			return;
 		}
-		if ( ! is_int( $data['item_id'] ) ){
+		if ( ! is_int( $data['item_id'] ) ) {
 			return;
 		}
 		$insert_file = $this->wpdb->insert(
@@ -53,7 +53,7 @@ class LP_Material_Files_DB extends LP_Database {
 				'%s',
 				'%s',
 				'%s',
-				'%s'
+				'%s',
 			)
 		);
 		$this->check_execute_has_error();
@@ -106,12 +106,12 @@ class LP_Material_Files_DB extends LP_Database {
 			if ( $offset > 0 && $perpage > 0 ) {
 				$sql .= ' OFFSET ' . intval( $offset );
 			}
-			$result = $this->wpdb->get_results( 
-				$this->wpdb->prepare( 
-					$sql, 
-					$item_id, 
-					$item_id 
-				) 
+			$result = $this->wpdb->get_results(
+				$this->wpdb->prepare(
+					$sql,
+					$item_id,
+					$item_id
+				)
 			);
 		} else {
 			$sql = "SELECT * FROM $this->table_name WHERE item_id = %d";
@@ -131,6 +131,42 @@ class LP_Material_Files_DB extends LP_Database {
 		$this->check_execute_has_error();
 		return $result;
 	}
+
+	/**
+	 * [get_total get total file amount of an item]
+	 * @param  [type] $item_id [description]
+	 * @return [type]          [description]
+	 */
+	public function get_total( $item_id ) {
+		if ( ! $item_id ) {
+			return;
+		}
+		$item_id = (int) $item_id;
+		if ( get_post_type( $item_id ) == LP_COURSE_CPT ) {
+			$sql    = "SELECT COUNT(file_id) FROM $this->table_name WHERE item_id 
+				IN ( SELECT si.item_id FROM $this->tb_lp_section_items AS si
+				INNER JOIN $this->tb_lp_sections AS s ON s.section_id = si.section_id 
+				WHERE s.section_course_id=%d ) 
+				OR item_id=%d ORDER BY item_id";
+			$result = $this->wpdb->get_var(
+				$this->wpdb->prepare(
+					$sql,
+					$item_id,
+					$item_id
+				)
+			);
+		} else {
+			$sql    = "SELECT COUNT(file_id) FROM $this->table_name WHERE item_id = %d";
+			$result = $this->wpdb->get_var(
+				$this->wpdb->prepare(
+					$sql,
+					$item_id
+				)
+			);
+		}
+		$this->check_execute_has_error();
+		return (int) $result;
+	}
 	/**
 	 * @author khanhbd
 	 * @version 1.0.0
@@ -139,7 +175,7 @@ class LP_Material_Files_DB extends LP_Database {
 	 * @param  [int] $file_id [file id]
 	 * @return [boolean]          [description]
 	 */
-	public function delete_material( $file_id = 0 ){
+	public function delete_material( $file_id = 0 ) {
 		if ( ! is_int( $file_id ) ) {
 			return;
 		}
@@ -155,7 +191,7 @@ class LP_Material_Files_DB extends LP_Database {
 		$this->check_execute_has_error();
 
 		if ( $material->method == 'upload' && $delete ) {
-			$file_path = wp_upload_dir()['basedir'].$material->file_path;
+			$file_path = wp_upload_dir()['basedir'] . $material->file_path;
 			$this->delete_local_file( $file_path );
 		}
 		return $delete;
@@ -185,7 +221,7 @@ class LP_Material_Files_DB extends LP_Database {
 		if ( $delete ) {
 			foreach ( $materials as $m ) {
 				if ( $m->method == 'upload' ) {
-					$file_path = wp_upload_dir()['basedir'].$m->file_path;
+					$file_path = wp_upload_dir()['basedir'] . $m->file_path;
 					$this->delete_local_file( $file_path );
 				}
 			}
@@ -208,4 +244,4 @@ class LP_Material_Files_DB extends LP_Database {
 }
 
 LP_Material_Files_DB::getInstance();
- ?>
+

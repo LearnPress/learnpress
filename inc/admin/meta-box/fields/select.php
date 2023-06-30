@@ -12,10 +12,10 @@
 			<?php echo implode( ' ', $custom_attributes ); ?>
 			<?php echo 'multiselect' === $value['type'] ? 'multiple="multiple"' : ''; ?>
 			>
-			<?php if ( isset( $value['is_optgroup'] ) && ! empty( $value['is_optgroup'] ) ): ?>
-				<?php foreach ( $value['options'] as $optgroup_label => $optgroup ): ?>
-					<optgroup label="<?php echo esc_html( ucfirst( $optgroup_label ) ) ?>">
-						<?php foreach ( $optgroup as $key => $val ): ?>
+			<?php if ( isset( $value['is_optgroup'] ) && ! empty( $value['is_optgroup'] ) ) : ?>
+				<?php foreach ( $value['options'] as $optgroup_label => $optgroup ) : ?>
+					<optgroup label="<?php echo esc_html( ucfirst( $optgroup_label ) ); ?>">
+						<?php foreach ( $optgroup as $key => $val ) : ?>
 							<option value="<?php echo esc_attr( $key ); ?>"
 								<?php
 								if ( is_array( $option_value ) ) {
@@ -28,7 +28,7 @@
 						<?php endforeach; ?>
 					</optgroup>
 				<?php endforeach; ?>
-			<?php else: ?>
+			<?php else : ?>
 				<?php foreach ( $value['options'] as $key => $val ) { ?>
 				<option value="<?php echo esc_attr( $key ); ?>"
 					<?php

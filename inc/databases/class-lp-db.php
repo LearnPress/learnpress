@@ -54,7 +54,7 @@ class LP_Database {
 		$this->tb_lp_question_answermeta = $prefix . 'learnpress_question_answermeta';
 		$this->tb_lp_upgrade_db          = $prefix . 'learnpress_upgrade_db';
 		$this->tb_lp_sessions            = $prefix . 'learnpress_sessions';
-		$this->tb_lp_files		 		 = $prefix . 'learnpress_files';
+		$this->tb_lp_files               = $prefix . 'learnpress_files';
 		$this->wpdb->hide_errors();
 		$this->set_collate();
 	}
