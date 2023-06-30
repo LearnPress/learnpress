@@ -120,7 +120,6 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 					throw new Exception( esc_html__( 'Your uploaded files reach the maximum amount!', 'learnpress' ) );
 				}
 			}
-
 			foreach ( $material_data as $key => $material ) {
 				// check file title
 				if ( ! $material['label'] ) {
@@ -141,8 +140,8 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 						$response['items'][ $key ]['message'] = sprintf( esc_html__( 'File %s is empty!', 'learnpress' ), $material['label'] );
 						continue;
 					}
-					$file_key = array_search( $material['file'], $file );
-					if ( $file['size'][ $key ] > $max_file_size * 1024 * 1024 ) {
+					$file_key = array_search( $material['file'], $file['name'] );
+					if ( $file['size'][ $file_key ] > $max_file_size * 1024 * 1024 ) {
 						$response['items'][ $key ]['message'] = sprintf( esc_html__( 'File %s size is too large!', 'learnpress' ), $material['label'] );
 						continue;
 					}
