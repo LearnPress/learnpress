@@ -44,7 +44,7 @@ class LP_Email_Type_Order_Admin extends LP_Email_Type_Order {
 			$user_author     = get_user_by( 'ID', $order_post->post_author );
 			$order_user_name = $user_author->display_name;
 		} elseif ( $order->is_guest() ) {
-			$order_user_name = __( 'Guest', 'learnpress' );
+			$order_user_name = sprintf( '%s: %s', __( 'Guest', 'learnpress' ), $order->get_checkout_email() );
 		} else {
 			$order_user_name = $order->get_user()->get_display_name();
 		}
