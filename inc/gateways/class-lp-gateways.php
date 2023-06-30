@@ -78,18 +78,22 @@ class LP_Gateways {
 						$gateways[ $id ] = $this->payment_gateways[ $id ];
 					}
 				}
-			} else {
-				foreach ( $this->payment_gateways as $gateway ) {
-					if ( is_string( $gateway ) && class_exists( $gateway ) ) {
-						$gateway = new $gateway();
-					}
+			}
 
-					if ( ! is_object( $gateway ) ) {
-						continue;
-					}
-
-					$gateways[ $gateway->id ] = $gateway;
+			foreach ( $this->payment_gateways as $gateway ) {
+				if ( isset( $gateways[ $gateway->id ] ) ) {
+					continue;
 				}
+
+				if ( is_string( $gateway ) && class_exists( $gateway ) ) {
+					$gateway = new $gateway();
+				}
+
+				if ( ! is_object( $gateway ) ) {
+					continue;
+				}
+
+				$gateways[ $gateway->id ] = $gateway;
 			}
 		}
 
@@ -129,33 +133,28 @@ class LP_Gateways {
 	 * @return mixed
 	 */
 	public function get_available_payment_gateways() {
-		$this->init();
+		$gateways            = $this->get_gateways();
 		$_available_gateways = array();
 		$is_selected         = false;
 
-		foreach ( $this->payment_gateways as $slug => $gateway ) {
+		foreach ( $gateways as $slug => $gateway ) {
 			if ( ! is_object( $gateway ) ) {
 				continue;
 			}
-			if ( $slug == 'woocommerce' ) {
+
+			// Not show woo payment gateway, because when enable will be buy course on checkout of Woocommerce
+			if ( $slug == 'woocommerce' || $slug == 'woo-payment' ) {
 				continue;
 			}
-			/**
-			 * @deprecated
-			 */
-			$gateway_available = apply_filters( 'learn_press_payment_gateway_available_' . $slug, true, $gateway );
 
-			if ( $gateway_available ) {
-				// Let custom addon can define how is enable/disable
-				if ( apply_filters( 'learn-press/payment-gateway/' . $slug . '/available', true, $gateway ) ) {
-
-					// If gateway has already selected before
-					if ( LearnPress::instance()->session->get( 'chosen_payment_method' ) == $gateway->id ) {
-						$gateway->is_selected = true;
-						$is_selected          = $gateway;
-					}
-					$_available_gateways[ $slug ] = $gateway;
+			// Let custom addon can define how is enable/disable
+			if ( apply_filters( 'learn-press/payment-gateway/' . $slug . '/available', true, $gateway ) ) {
+				// If gateway has already selected before
+				if ( LearnPress::instance()->session->get( 'chosen_payment_method' ) == $gateway->id ) {
+					$gateway->is_selected = true;
+					$is_selected          = $gateway;
 				}
+				$_available_gateways[ $slug ] = $gateway;
 			}
 		}
 
@@ -175,6 +174,9 @@ class LP_Gateways {
 
 	/**
 	 * @return array
+	 *
+	 * @deprecated 4.2.3
+	 * @uses LP_Request_Withdrawal::get_gateways() on Addon Commission <= 4.0.1
 	 */
 	public function get_availabe_gateways() {
 		return $this->payment_gateways;

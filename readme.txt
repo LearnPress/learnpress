@@ -237,6 +237,8 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Profile: added text "upload" translate on localize script.
 ~ Apply: add internal scripts to head on page List Instructors.
 ~ Fixed: error buy item with Guest, order is no item.
+~ Fixed: Security <a href='https://patchstack.com/database/report-preview/1c36dd85-2eb2-4947-b842-ad606bccbc83?pin=4u0jV2YLpqiCR7HP'>Broken Access Control 1</a>
+~ Fixed: Security <a href='https://patchstack.com/database/report-preview/3abf2e9b-00c9-4c75-8641-63b8d143de80?pin=bgOqmObIYIpXBusJ'>Broken Access Control 2</a>
 
 = 4.2.2.4 (2023-04-04) =
 ~ Compatible theme Gutenberg.
