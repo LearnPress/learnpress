@@ -30,6 +30,7 @@ class LP_Polylang {
 		add_filter( 'lp/course/query/filter', [ $this, 'filter_query_courses' ], 10 );
 		add_filter( 'lp/user/course/query/filter', [ $this, 'filter_query_user_courses' ], 10 );
 		add_filter( 'pll_the_language_link', [ $this, 'get_link_switcher' ], 10, 3 );
+		add_filter( 'learn-press/rewrite/rules', [ $this, 'pll_rewrite_url_for_lp' ] );
 	}
 
 	/**
@@ -197,6 +198,34 @@ class LP_Polylang {
 		}
 
 		return $url;
+	}
+
+	public function pll_rewrite_url_for_lp( $rules ) {
+		if ( ! is_callable( 'pll_default_language' ) || ! is_callable( 'pll_current_language' ) ) {
+			return;
+		}
+		$lang_default = pll_default_language();
+		$lang_current = pll_current_language();
+		if ( $lang_current != $lang_default ) {
+			$pll_option = $this->get_pll_options();
+			// if ( $rules )
+		}
+		return $rules;
+	}
+
+	public function get_pll_options() {
+		global $wpdb;
+		$result = $wpdb->get_var( 
+			$wpdb->prepare( 
+				"SELECT option_value FROM $wpdb->options WHERE option_name = %s",
+				'polylang'
+			 )
+		 );
+		if ( $wpdb->last_error ) {
+			throw new Exception( $wpdb->last_error );
+		}
+		$result = unserialize( $result );
+		return $result ? $result : false;
 	}
 
 	/**
