@@ -1,14 +1,16 @@
 import { addQueryArgs } from '@wordpress/url';
 import apiFetch from '@wordpress/api-fetch';
 
-const elementSkeleton = document.querySelector( '.lp-material-skeleton' ),
-	  loadMoreBtn     = elementSkeleton.querySelector( '.lp-loadmore-material' );
+
 export default function lpMaterialsLoad ( postID = '' ) {
 	// console.log('loaded');
 	const Sekeleton = () => {
+		const elementSkeleton = document.querySelector( '.lp-material-skeleton' );
+			  
 		if ( ! elementSkeleton ) {
 			return;
 		}
+		const loadMoreBtn = elementSkeleton.querySelector( '.lp-loadmore-material' );
 		elementSkeleton.querySelector( '.course-material-table' ).style.display = 'none';
 		loadMoreBtn.style.display = 'none';
 		getResponse( elementSkeleton );
@@ -16,7 +18,7 @@ export default function lpMaterialsLoad ( postID = '' ) {
 	const getResponse = async ( ele, page = 1 ) => {
 		const itemID = postID || lpGlobalSettings.post_id || '';
 		const elementMaterial = ele.querySelector( '.course-material-table' );
-		
+		const loadMoreBtn     = document.querySelector( '.lp-loadmore-material' )
 		try {
 			const response = await apiFetch( {
 				path: addQueryArgs( `lp/v1/material/item-materials/${itemID}`, {
@@ -75,6 +77,8 @@ export default function lpMaterialsLoad ( postID = '' ) {
 	document.addEventListener( 'click', function( e ) {
 		let target = e.target;
 		if ( target.classList.contains( 'lp-loadmore-material' ) ) {
+			const elementSkeleton = document.querySelector( '.lp-material-skeleton' ),
+				  loadMoreBtn     = elementSkeleton.querySelector( '.lp-loadmore-material' );
 			let page = ~~ target.getAttribute( 'page' );
 			target.classList.add( 'loading' );
 			getResponse( elementSkeleton, page );
