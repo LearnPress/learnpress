@@ -8,10 +8,14 @@
 
 namespace LearnPress\ExternalPlugin\Elementor\Widgets\Instructor;
 
+use Elementor\Controls_Manager;
+use Elementor\Controls_Stack;
 use Exception;
 use LearnPress\ExternalPlugin\Elementor\LPElementorWidgetBase;
 use LearnPress\Helpers\Config;
+use LearnPress\Helpers\Template;
 use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
+use ReflectionProperty;
 use WP_User_Query;
 
 class ListInstructorsElementor extends LPElementorWidgetBase {
@@ -23,7 +27,14 @@ class ListInstructorsElementor extends LPElementorWidgetBase {
 	}
 
 	protected function register_controls() {
-		$this->controls = Config::instance()->get( 'list-instructors', 'elementor/instructor' );
+		$property = new ReflectionProperty( Controls_Stack::class, 'data' );
+		$property->setAccessible( true );
+		$options        = $property->getValue( $this );
+		$this->controls = Config::instance()->get(
+			'list-instructors',
+			'elementor/instructor',
+			compact( 'options' )
+		);
 		parent::register_controls();
 	}
 
@@ -42,7 +53,7 @@ class ListInstructorsElementor extends LPElementorWidgetBase {
 				'fields'   => 'ID',
 			];
 
-			switch ( $settings['order_by'] ) {
+			switch ( $settings['order_by'] ?? '' ) {
 				case 'desc_name':
 					$args['orderby'] = 'display_name';
 					$args['order']   = 'desc';
@@ -70,6 +81,7 @@ class ListInstructorsElementor extends LPElementorWidgetBase {
 			}
 
 			// Show list instructors
+			ob_start();
 			$singleInstructorTemplate = SingleInstructorTemplate::instance();
 			echo '<ul class="list-instructors">';
 			foreach ( $instructors as $instructor_id ) {
@@ -81,6 +93,12 @@ class ListInstructorsElementor extends LPElementorWidgetBase {
 				<?php
 			}
 			echo '</ul>';
+			$content = ob_get_clean();
+
+			$html_wrap = [
+				'<div class="' . ( 'elementor-repeater-item-' . $item_layout['_id'] ?? '' ) . '">' => '</div>',
+			];
+			echo Template::instance()->nest_elements( $html_wrap, $content );
 			// End show list instructors
 		} catch ( \Throwable $e ) {
 			echo $e->getMessage();

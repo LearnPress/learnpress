@@ -10,6 +10,17 @@ use Elementor\Controls_Manager;
 use Elementor\Group_Control_Border;
 use LearnPress\ExternalPlugin\Elementor\LPElementorControls;
 
+$option_data = [];
+if ( isset( $options ) ) {
+	$option_data = $options;
+}
+
+
+$layout_id_active = '';
+if ( isset( $option_data['settings'] ) ) {
+	$layout_id_active = '.' . $option_data['settings']['item_layouts'][0]['_id'];
+}
+
 // Fields tab content
 $content_fields = array_merge(
 	LPElementorControls::add_fields_in_section(
@@ -43,11 +54,56 @@ $content_fields = array_merge(
 							'label_block' => true,
 						],
 						[
-							'name'        => 'layout_css',
-							'label'       => esc_html__( 'Style', 'learnpress' ),
+							'name'         => 'popover-toggle',
+							'label'        => esc_html__( 'Group Styles', 'textdomain' ),
+							'type'         => Controls_Manager::POPOVER_TOGGLE,
+							'label_off'    => esc_html__( 'Default', 'textdomain' ),
+							'label_on'     => esc_html__( 'Custom', 'textdomain' ),
+							'return_value' => 'yes',
+						],
+						[
+							'method' => 'start_popover',
+						],
+						[
+							'name'        => 'grid_columns',
+							'label'       => esc_html__( 'Column number', 'learnpress' ),
+							'method'      => 'add_responsive_control',
+							'type'        => Controls_Manager::NUMBER,
+							'min'         => 1,
+							'max'         => 6,
+							'default'     => 2,
+							'description' => 'Number of columns to show.',
+							'selectors'   => [
+								'{{WRAPPER}} {{CURRENT_ITEM}} .list-instructors' => 'display: grid;list-style: none;grid-template-columns: repeat({{VALUE}}, 1fr);padding: 0;margin: 0;',
+							],
+						],
+						[
+							'name'        => 'gap_column',
+							'label'       => esc_html__( 'Gap', 'learnpress' ),
+							'method'      => 'add_responsive_control',
+							'type'        => Controls_Manager::SLIDER,
+							'default' => [
+								'unit' => 'px',
+								'size' => 10,
+							],
+							'unit'        => 'px',
+							'min'         => 0,
+							'max'         => 100,
+							'description' => 'Space between items. (px)',
+							'selectors'   => [
+								'{{WRAPPER}} {{CURRENT_ITEM}} .list-instructors' => 'grid-gap: {{SIZE}}{{UNIT}};',
+							],
+						],
+						[
+							'method' => 'end_popover',
+						],
+						[
+							'name'        => 'layout_custom_css',
+							'label'       => esc_html__( 'Custom CSS', 'learnpress' ),
 							'type'        => Controls_Manager::CODE,
 							'label_block' => true,
 							'language'    => 'css',
+							'description' => 'Should start with selector before style. Ex: selector .[className] {color: red;}',
 						],
 					],
 					'prevent_empty' => false,
@@ -278,6 +334,7 @@ $style_fields = array_merge(
 	),
 	[]
 );
+$style_fields = [];
 
 return apply_filters(
 	'learn-press/elementor/list-instructors',

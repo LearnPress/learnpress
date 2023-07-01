@@ -49,7 +49,8 @@ class Config {
 	 * @version 1.0.0
 	 * @since 4.1.6.4
 	 */
-	public function get( string $key = '', string $path = '' ) {
+	public function get( string $key = '', string $path = '', array $args = [] ) {
+		extract( $args );
 		$data_config        = array();
 		$data_config_by_key = array();
 

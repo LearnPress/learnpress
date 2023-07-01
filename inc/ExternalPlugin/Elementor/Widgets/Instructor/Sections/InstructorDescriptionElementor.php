@@ -39,7 +39,7 @@ class InstructorDescriptionElementor extends SingleInstructorBaseElementor {
 				$settings = [];
 			}
 
-			$this->detect_instructor_id( $settings, $instructor );
+			$this->detect_instructor_id( $settings, $instructor, __( 'Instructor Description', 'learnpress' ) );
 
 			$wrapper = [];
 			if ( ! empty( $settings['wrapper_tags'] ) ) {

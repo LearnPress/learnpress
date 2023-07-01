@@ -1,6 +1,6 @@
 <?php
 /**
- * Elementor Controls for widget Instructor Display Name settings.
+ * Elementor Controls for widget Become a teacher settings.
  *
  * @since 4.2.3
  * @version 1.0.0
@@ -27,7 +27,7 @@ $content_fields = array_merge(
 			),
 			LPElementorControls::add_control_type(
 				'wrapper_tags',
-				esc_html__( 'Add html tag wrapper Instructor Name', 'learnpress' ),
+				esc_html__( 'Add html tag wrapper Instructor Button View', 'learnpress' ),
 				[
 					[
 						'open_tag'  => '<div class="">',

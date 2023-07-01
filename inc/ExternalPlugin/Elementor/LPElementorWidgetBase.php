@@ -97,7 +97,16 @@ class LPElementorWidgetBase extends Widget_Base {
 						$repeater = new Repeater();
 
 						foreach ( $params[1]['fields'] as $key => $value ) {
-							$repeater->add_control( $value['name'], $value );
+							// For call method add_responsive_control, and another method
+							if ( isset( $value['method'] ) ) {
+								$prms = $value;
+								unset( $prms['method'] );
+								unset( $prms['name'] );
+								$args = [ $value['name'] ?? '', $prms ];
+								call_user_func_array( [ $repeater, $value['method'] ], $args );
+							} else {
+								$repeater->add_control( $value['name'], $value );
+							}
 						}
 
 						$params[1]['fields']      = $repeater->get_controls();
