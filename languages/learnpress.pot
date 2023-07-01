@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2023-06-28T04:15:49+00:00\n"
+"POT-Creation-Date: 2023-07-01T01:56:55+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.8.1\n"
 "X-Domain: learnpress\n"
@@ -40,7 +40,7 @@ msgstr ""
 #: config/settings/profile.php:83
 #: inc/admin/views/quiz/editor.php:47
 #: inc/lp-deprecated.php:2245
-#: templates/content-lesson/materials.php:38
+#: templates/content-lesson/materials.php:37
 #: templates/global/become-teacher-form.php:35
 #: templates/profile/tabs/courses/course-list.php:22
 #: templates/single-course/tabs/materials.php:38
@@ -1102,7 +1102,7 @@ msgstr ""
 #: inc/admin/views/quiz/editor.php:48
 #: inc/custom-post-types/question.php:321
 #: inc/widgets/course-extra.php:30
-#: templates/content-lesson/materials.php:39
+#: templates/content-lesson/materials.php:38
 #: templates/single-course/tabs/materials.php:39
 msgid "Type"
 msgstr ""
@@ -4991,8 +4991,7 @@ msgstr ""
 #: inc/jwt/rest-api/version1/class-lp-rest-users-v1-controller.php:42
 #: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:61
 #: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:24
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:66
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:79
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:55
 #: inc/rest-api/v1/frontend/class-lp-rest-settings-controller.php:23
 msgid "A unique identifier for the resource."
 msgstr ""
@@ -6940,122 +6939,110 @@ msgstr ""
 msgid "The section is invalid!"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:34
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:35
 msgid "Data of material"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:40
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:41
 msgid "File."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:51
-msgid "File amount per page"
-msgstr ""
-
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:56
-msgid "Page"
-msgstr ""
-
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:112
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:88
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:217
 msgid "There was an error when save the file."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:119
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:95
 msgid "Invalid course or lesson"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:122
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:98
 msgid "Invalid materials"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:141
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:117
 msgid "Material feature is not allowed to upload"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:144
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:120
 msgid "Your uploaded files reach the maximum amount!"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:152
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:127
 msgid "File %d title is not empty!"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:158
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:133
 msgid "File %s method is invalid!"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:165
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:140
 msgid "File %s is empty!"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:170
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:190
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:145
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:165
 msgid "File %s size is too large!"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:175
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:150
 msgid "Upload File %s is error!"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:186
-msgid "File %s is invalid!"
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:161
+msgid "An error occurred while checking %1$s. %2$s"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:198
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:173
 msgid "File %s - file type is invalid!"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:212
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:187
 msgid "cannot save file %d"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:222
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:197
 msgid "The progress was saved! Your file(s) were uploaded successfully!"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:243
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:284
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:382
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:428
-msgid "There was an error when call api."
-msgstr ""
-
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:248
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:289
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:223
 msgid "Invalid course or lesson identifier"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:261
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:297
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:253
 msgid "Successfully"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:263
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:299
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:255
 msgid "Empty material!"
 msgstr ""
 
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:341
 #: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:387
+msgid "There was an error when call api."
+msgstr ""
+
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:346
 msgid "Invalid identifier"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:396
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:355
 msgid "Get file successfully."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:399
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:358
 msgid "The file is not exist"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:433
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:392
 msgid "Invalid file identifier"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:440
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:399
 msgid "File is deleted."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:443
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:402
 msgid "There is an error when delete this file."
 msgstr ""
 
@@ -7846,18 +7833,23 @@ msgstr ""
 msgid "The lesson content is empty."
 msgstr ""
 
-#: templates/content-lesson/materials.php:34
+#: templates/content-lesson/materials.php:32
 msgid "Downloadable materials"
 msgstr ""
 
-#: templates/content-lesson/materials.php:40
+#: templates/content-lesson/materials.php:39
 #: templates/single-course/tabs/materials.php:40
 msgid "Size"
 msgstr ""
 
-#: templates/content-lesson/materials.php:41
+#: templates/content-lesson/materials.php:40
 #: templates/single-course/tabs/materials.php:41
 msgid "Download"
+msgstr ""
+
+#: templates/content-lesson/materials.php:47
+#: templates/single-course/tabs/materials.php:47
+msgid "Load more."
 msgstr ""
 
 #: templates/content-quiz/js.php:147

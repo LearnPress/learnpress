@@ -158,7 +158,7 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 				if ( $material['method'] == 'external' ) {
 					$check_file = $this->check_external_file( sanitize_url( $material['link'] ) );
 					if ( $check_file['error'] ) {
-						$response['items'][ $key ]['message'] = sprintf( esc_html__( 'An error occurred while checking %1$s or %2$s is invalid', 'learnpress' ), $material['label'], $material['label'] );
+						$response['items'][ $key ]['message'] = sprintf( esc_html__( 'An error occurred while checking %1$s. %2$s', 'learnpress' ), $material['label'], $check_file['error_message'] );
 						continue;
 					}
 					if ( $check_file['size'] > $max_file_size * 1024 * 1024 ) {
@@ -278,14 +278,16 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 		$error     = false;
 		$file      = array();
 		if ( is_wp_error( $temp_file ) ) {
-			$file['error'] = true;
+			$file['error']         = true;
+			$file['error_message'] = $temp_file->get_error_message();
 		} else {
 			$file = array(
-				'name'     => basename( $file_url ),
-				'type'     => mime_content_type( $temp_file ),
-				'tmp_name' => $temp_file,
-				'size'     => filesize( $temp_file ),
-				'error'    => false,
+				'name'          => basename( $file_url ),
+				'type'          => mime_content_type( $temp_file ),
+				'tmp_name'      => $temp_file,
+				'size'          => filesize( $temp_file ),
+				'error'         => false,
+				'error_message' => '',
 			);
 		}
 		//get file properties

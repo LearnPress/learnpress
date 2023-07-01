@@ -25,7 +25,7 @@ export default function lpMaterialsLoad ( postID = '' ) {
 				method: 'GET',
 			} );
 			const { data, status, message, load_more } = response;
-			console.log(response);
+			// console.log(response);
 			// let section_ids = data.section_ids;
 			if ( status !== 200 ) {
 				throw new Error( message || 'Error' );
