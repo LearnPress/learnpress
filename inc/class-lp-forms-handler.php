@@ -302,10 +302,11 @@ class LP_Forms_Handler {
 				)
 			);
 
+			// Add hook registration_errors of WordPress
 			$errors = null;
 			$errors = apply_filters( 'registration_errors', $errors, $username, $email );
-			if ( is_wp_error($errors) ) {
-				throw new Exception($errors->get_error_message());
+			if ( is_wp_error( $errors ) ) {
+				throw new Exception( $errors->get_error_message() );
 			}
 
 			$customer_id = wp_insert_user( $new_customer_data );

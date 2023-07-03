@@ -46,7 +46,10 @@ if ( is_user_logged_in() ) {
 		</a>
 	</p>
 
-	<?php do_action( 'login_form' ); ?>
+	<?php
+	// Add hook of WordPress
+	do_action( 'login_form' );
+	?>
 
 	<p class="lp-checkout-sign-up-link">
 		<?php if ( LearnPress::instance()->checkout()->is_enable_register() ) : ?>

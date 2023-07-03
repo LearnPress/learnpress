@@ -701,8 +701,6 @@ class LP_Checkout {
 	 * @throws Exception
 	 */
 	public function process_checkout() {
-		$has_error = false;
-
 		try {
 			if ( function_exists( 'set_time_limit' ) ) {
 				@set_time_limit( 0 ); // @codingStandardsIgnoreLine
@@ -716,8 +714,6 @@ class LP_Checkout {
 			if ( $cart->is_empty() ) {
 				throw new Exception( __( 'Your cart is currently empty.', 'learnpress' ) );
 			}
-
-			$messages = array();
 
 			foreach ( $cart->get_items() as $item ) {
 				$item_type = get_post_type( $item['item_id'] );
@@ -733,7 +729,7 @@ class LP_Checkout {
 						$error = $error->get_error_message();
 						throw new Exception( $error );
 					}
-					$messages[ $key ] = array( $error, 'error' );
+					//$messages[ $key ] = array( $error, 'error' );
 				}
 			} else {
 				//LearnPress::instance()->cart->calculate_totals();
@@ -815,21 +811,12 @@ class LP_Checkout {
 				}
 			}
 		} catch ( Exception $e ) {
-			$has_error  = $e->getMessage();
-			$messages[] = array( $has_error, 'error' );
+			$result = array(
+				'result'   => 'fail',
+				'messages' => $e->getMessage(),
+			);
+			learn_press_send_json( $result );
 		}
-
-		$is_error = sizeof( $messages );
-
-		$result = apply_filters(
-			'learn-press/checkout-error',
-			array(
-				'result'   => ! $is_error ? 'success' : 'fail',
-				'messages' => $messages,
-			)
-		);
-
-		wp_send_json( $result );
 	}
 
 	/**

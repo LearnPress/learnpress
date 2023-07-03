@@ -40,7 +40,10 @@ defined( 'ABSPATH' ) || exit();
 		<?php do_action( 'learn-press/after-form-register-fields' ); ?>
 	</ul>
 
-	<?php do_action( 'register_form' ); ?>
+	<?php
+	// Add hook of WordPress
+	do_action( 'register_form' );
+	?>
 
 	<?php wp_nonce_field( 'learn-press-checkout-register', 'learn-press-checkout-nonce' ); ?>
 
