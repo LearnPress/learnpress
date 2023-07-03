@@ -302,6 +302,12 @@ class LP_Forms_Handler {
 				)
 			);
 
+			$errors = null;
+			$errors = apply_filters( 'registration_errors', $errors, $username, $email );
+			if ( is_wp_error($errors) ) {
+				throw new Exception($errors->get_error_message());
+			}
+
 			$customer_id = wp_insert_user( $new_customer_data );
 
 			do_action( 'lp/after_create_new_customer', $email, $username, $password, $confirm_password, $args, $update_meta );
@@ -347,6 +353,7 @@ class LP_Forms_Handler {
 					$code_str = 'registration-custom-required-field';
 					break;
 				default:
+					$code_str = $e->getMessage();
 					break;
 			}
 			return new WP_Error( $code_str, $e->getMessage() );

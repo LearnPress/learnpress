@@ -731,6 +731,7 @@ class LP_Checkout {
 				foreach ( $this->errors as $key => $error ) {
 					if ( is_wp_error( $error ) ) {
 						$error = $error->get_error_message();
+						throw new Exception( $error );
 					}
 					$messages[ $key ] = array( $error, 'error' );
 				}
