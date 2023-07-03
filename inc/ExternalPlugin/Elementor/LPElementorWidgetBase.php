@@ -101,8 +101,14 @@ class LPElementorWidgetBase extends Widget_Base {
 							if ( isset( $value['method'] ) ) {
 								$prms = $value;
 								unset( $prms['method'] );
-								unset( $prms['name'] );
-								$args = [ $value['name'] ?? '', $prms ];
+
+								if ( 'add_group_control' === $value['method'] ) {
+									$args = [ $value['type'] ?? '', $prms ];
+								} else {
+									unset( $prms['name'] );
+									$args = [ $value['name'] ?? '', $prms ];
+								}
+
 								call_user_func_array( [ $repeater, $value['method'] ], $args );
 							} else {
 								$repeater->add_control( $value['name'], $value );

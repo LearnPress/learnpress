@@ -8,14 +8,10 @@
 
 namespace LearnPress\ExternalPlugin\Elementor\Widgets\Instructor;
 
-use Elementor\Controls_Manager;
-use Elementor\Controls_Stack;
-use Exception;
 use LearnPress\ExternalPlugin\Elementor\LPElementorWidgetBase;
 use LearnPress\Helpers\Config;
 use LearnPress\Helpers\Template;
 use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
-use ReflectionProperty;
 use WP_User_Query;
 
 class ListInstructorsElementor extends LPElementorWidgetBase {
@@ -26,18 +22,24 @@ class ListInstructorsElementor extends LPElementorWidgetBase {
 		parent::__construct( $data, $args );
 	}
 
+	/**
+	 * Register controls.
+	 *
+	 * @return void
+	 */
 	protected function register_controls() {
-		$property = new ReflectionProperty( Controls_Stack::class, 'data' );
-		$property->setAccessible( true );
-		$options        = $property->getValue( $this );
 		$this->controls = Config::instance()->get(
 			'list-instructors',
-			'elementor/instructor',
-			compact( 'options' )
+			'elementor/instructor'
 		);
 		parent::register_controls();
 	}
 
+	/**
+	 * Render Template
+	 *
+	 * @return void
+	 */
 	protected function render() {
 		try {
 			$settings = $this->get_settings_for_display();
@@ -71,13 +73,13 @@ class ListInstructorsElementor extends LPElementorWidgetBase {
 			// End Query
 
 			$item_layout = $settings['item_layouts'][0];
-			if ( ! empty( $item_layout['layout_css'] ) ) {
-				$item_layout['layout_css'] = preg_replace(
+			if ( ! empty( $item_layout['layout_custom_css'] ) ) {
+				$item_layout['layout_custom_css'] = preg_replace(
 					'/selector/i',
-					"div[data-id={$this->get_id()}]",
-					$item_layout['layout_css']
+					".elementor-repeater-item-{$item_layout['_id']}",
+					$item_layout['layout_custom_css']
 				);
-				echo '<style id="' . $this->get_id() . '">' . $item_layout['layout_css'] . '</style>';
+				echo '<style id="' . $this->get_id() . '">' . $item_layout['layout_custom_css'] . '</style>';
 			}
 
 			// Show list instructors
@@ -86,6 +88,9 @@ class ListInstructorsElementor extends LPElementorWidgetBase {
 			echo '<ul class="list-instructors">';
 			foreach ( $instructors as $instructor_id ) {
 				$instructor = learn_press_get_user( $instructor_id );
+				if ( ! $instructor ) {
+					continue;
+				}
 				?>
 				<li class="item-instructor">
 					<?php echo $singleInstructorTemplate->render_data( $instructor, html_entity_decode( $item_layout['layout_html'] ) ); ?>
