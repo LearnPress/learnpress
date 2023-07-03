@@ -157,3 +157,7 @@ https://www.transifex.com/projects/p/learnpress/
 4. <code>npm run build</code> *Build and compress js files.*
 
 5. <code>npm run dev-build</code> *Build for all js, css files.*
+
+6. <code>composer install</code> *Install autoload and required library.*
+
+7. <code>gulp watch</code> *For listener change file scss.*

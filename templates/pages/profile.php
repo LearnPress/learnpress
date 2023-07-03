@@ -4,8 +4,10 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  4.0.0
+ * @version  4.0.1
  */
+
+use LearnPress\Helpers\Template;
 
 defined( 'ABSPATH' ) || exit();
 
@@ -32,9 +34,19 @@ if ( ! isset( $profile ) ) {
 			</div>
 		<?php else : ?>
 			<div class="lp-content-area">
-				<?php esc_html_e( 'This user does not make their profile public.', 'learnpress' ); ?>
+				<?php
+				if ( ! is_user_logged_in() ) {
+					learn_press_print_messages( true );
+				}
+
+				if ( $profile->get_user() instanceof LP_User && $profile->get_user()->can_create_course() ) {
+					$data = [
+						'instructor_id' => $profile->get_user()->get_id(),
+					];
+					do_action( 'learn-press/single-instructor/layout', $data );
+				}
+				?>
 			</div>
 		<?php endif; ?>
-
 	</div>
 <?php

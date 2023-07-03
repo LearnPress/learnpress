@@ -1,6 +1,6 @@
 <?php
 
-use LP\Helpers\Config;
+use LearnPress\Helpers\Config;
 
 /**
  * Class Block_Template_Handle

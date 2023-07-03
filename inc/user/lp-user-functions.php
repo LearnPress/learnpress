@@ -281,7 +281,7 @@ function learn_press_current_user_can_view_profile_section( $section, $user ) {
 	$current_user = wp_get_current_user();
 	$view         = true;
 	if ( $user->get_data( 'user_login' ) != $current_user->user_login && $section == LP_Settings::instance()->get(
-		'profile_endpoints.profile-orders',
+		'profile_endpoints.orders',
 		'profile-orders'
 	) ) {
 		$view = false;
@@ -766,7 +766,7 @@ if ( ! function_exists( 'learn_press_pre_get_avatar_callback' ) ) {
 	 */
 	function learn_press_pre_get_avatar_callback( $avatar, $id_or_email = '', $size = array() ) {
 
-		$profile = LP_Profile::instance();
+		//$profile = LP_Profile::instance();
 
 		/*if ( ! $profile->is_enable_avatar() ) {
 			return $avatar;
@@ -1015,11 +1015,11 @@ function learn_press_update_user_profile_basic_information( $wp_error = false ) 
 
 	$update_data = array(
 		'ID'           => $user_id,
-		'first_name'   => filter_input( INPUT_POST, 'first_name', FILTER_SANITIZE_STRING ),
-		'last_name'    => filter_input( INPUT_POST, 'last_name', FILTER_SANITIZE_STRING ),
-		'description'  => filter_input( INPUT_POST, 'description', FILTER_SANITIZE_STRING ),
-		'display_name' => filter_input( INPUT_POST, 'account_display_name', FILTER_SANITIZE_STRING ),
-		'user_email'   => filter_input( INPUT_POST, 'account_email', FILTER_SANITIZE_EMAIL ),
+		'first_name'   => LP_Request::get_param('first_name' ),
+		'last_name'    => LP_Request::get_param('last_name' ),
+		'description'  => LP_Request::get_param('description', '', 'html' ),
+		'display_name' => LP_Request::get_param('account_display_name' ),
+		'user_email'   => LP_Request::get_param('account_email' ),
 	);
 
 	$update_data = apply_filters( 'learn-press/update-profile-basic-information-data', $update_data );

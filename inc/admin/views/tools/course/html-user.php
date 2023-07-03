@@ -117,7 +117,8 @@ $localize = array(
 							url: '',
 							data: {
 								'lp-ajax': 'rs-search-users',
-								s: this.s
+								s: this.s,
+								nonce: lpGlobalSettings.nonce
 							},
 							success: function (response) {
 								var users = LP.parseJSON(response);
@@ -156,7 +157,8 @@ $localize = array(
 								'lp-ajax': 'rs-reset-user-courses',
 								user_id: user.id,
 								course_id: course_id,
-								object_reset: object_reset
+								object_reset: object_reset,
+								nonce: lpGlobalSettings.nonce
 							},
 							success: function (response) {
 								response = LP.parseJSON(response);

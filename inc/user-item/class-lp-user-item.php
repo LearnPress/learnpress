@@ -385,7 +385,7 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 				return $got_status;
 			}
 
-			if ( LP_COURSE_CPT === $this->get_type()) {
+			if ( LP_COURSE_CPT === $this->get_type() ) {
 				return $this->get_data( $field );
 			}
 

@@ -210,6 +210,37 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.2.3 (2023-07-03) =
+~ Added: page list instructors.
+~ Added: page single instructor.
+~ Added: option set number instructor per page.
+~ Added: shortcode show list instructors [learn_press_instructors].
+~ Added: shortcode show single instructor [learn_press_single_instructor].
+~ Auto add shortcode if page is list instructors or single instructor, if enable Elementor will not auto add.
+~ Added: Widgets For Elementor: list instructors, instructor title, instructor description.
+~ Added: Template default for list instructors on path "config/elementor/template-default", can import via Elementor.
+~ Tweak: Widgets For Elementor: list courses, become a teacher, login form, register form.
+~ Profile: added tab My Courses, display course attend of User.
+~ Profile: tab My Courses, display statistic: total course enrolled, course in-progress, course finish, course passed, course failed.
+~ Profile: tweak tab Courses, display course created by User (Admin, Instructor).
+~ Profile: tab Courses, display statistic: total course created, course publish, course pending, total student, student in-progress.
+~ Tweak: set default section_per_page, course_item_per_page = -1 to load full.
+~ Added: format_human_time_diff method.
+~ Tweak: get cart from session.
+~ Check: $course->get_instructor() is null.
+~ Added: hook do_action( 'lp/order-completed/update/user-item', $item, $order ), for case buy item not course.
+~ Added: hook do_action( 'lp/order-pending/update/user-item', $item, $order ), for case buy item not course.
+~ Added: nest_elements, print_sections methods on class Template, for easy override template without override file.
+~ Tweak: statistic student/instructor on profile page.
+~ Added: method "count_courses_of_author" instead "count_courses_publish_of_author"
+~ Tweak: method "count_status_by_items"
+~ Profile: added text "upload" translate on localize script.
+~ Apply: add internal scripts to head on page List Instructors.
+~ Fixed: error buy item with Guest, order is no item.
+~ Fixed: Security <a href='https://patchstack.com/database/report-preview/1c36dd85-2eb2-4947-b842-ad606bccbc83?pin=4u0jV2YLpqiCR7HP'>Broken Access Control 1</a>
+~ Fixed: Security <a href='https://patchstack.com/database/report-preview/3abf2e9b-00c9-4c75-8641-63b8d143de80?pin=bgOqmObIYIpXBusJ'>Broken Access Control 2</a>
+~ Added: hook login/register of WP on page LP Checkout for plugin captcha display.
+
 = 4.2.2.4 (2023-04-04) =
 ~ Compatible theme Gutenberg.
 ~ Compatible WP 6.2.

@@ -61,6 +61,7 @@ module.exports = {
 			},
 		},
 		'./assets/js/dist/frontend/courses': './assets/src/apps/js/frontend/courses.js',
+		'./assets/js/dist/frontend/instructors': './assets/src/apps/js/frontend/instructors.js',
 		'./assets/js/dist/frontend/become-teacher': './assets/src/apps/js/frontend/become-teacher.js',
 		'./assets/js/dist/frontend/checkout': './assets/src/apps/js/frontend/checkout.js',
 		'./assets/js/dist/frontend/single-course': './assets/src/apps/js/frontend/single-course.js',
@@ -84,7 +85,7 @@ module.exports = {
 		// generated, and the default externals set.
 		! process.env.WP_NO_EXTERNALS && new DependencyExtractionWebpackPlugin(),
 
-		new MergeIntoSingleFilePlugin( {
+		/*new MergeIntoSingleFilePlugin( {
 			files: {
 				'assets/js/vendor/plugins.all.js': [
 					'./assets/src/js/vendor/watch.js',
@@ -98,7 +99,7 @@ module.exports = {
 					'./assets/src/js/vendor/vue/vue-resource.js',
 				],
 			},
-		} ),
+		} ),*/
 		new LearnPressDependencyExtractionWebpackPlugin( {
 			namespace: '@learnpress',
 			library: 'LP',

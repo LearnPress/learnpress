@@ -75,7 +75,8 @@ $localize = array(
 							data: {
 								'lp-ajax': 'rs-reset-user-item',
 								user_id: this.user_id,
-								item_id: this.item_id
+								item_id: this.item_id,
+								nonce: lpGlobalSettings.nonce
 							},
 							success: function (response) {
 								that.resetting = false;

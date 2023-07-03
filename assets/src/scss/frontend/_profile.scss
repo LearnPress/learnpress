@@ -22,10 +22,6 @@ body {
 			border-radius: unset;
 			display: block;
 		}
-		+ .lp-user-profile-socials {
-			margin-top: 10px;
-			margin-bottom: 5px;
-		}
 	}
 
 	.lp-user-profile-socials {
@@ -36,26 +32,26 @@ body {
 		-webkit-flex-wrap: wrap;
 		-ms-flex-wrap: wrap;
 		flex-wrap: wrap;
+		background: white;
+		gap: 10px;
+		padding: 20px 0;
+		border-top: 1px solid #eaeaea;
 
 		a {
 			display: inline-flex;
 			align-items: center;
 			justify-content: center;
-			width: 35px;
-			height: 35px;
-			margin: 0 7px;
-			border: 1px solid #cfcfcf;
 			color: #666;
-			background: #fff;
-			font-size: 14px;
-			line-height: 35px;
+			font-size: 1em;
+			line-height: 0;
 			text-align: center;
-			@include border-radius(50%);
 
 			&:hover {
-				border-color: var(--lp-primary-color);
-				color: #fff;
-				background: var(--lp-primary-color);
+				color: var(--lp-primary-color);
+
+				svg {
+					fill: var(--lp-primary-color);
+				}
 			}
 		}
 	}
@@ -133,8 +129,7 @@ body {
 
 	.lp-profile-content-area {
 		position: relative;
-		padding-top: 50px;
-		padding-bottom: 50px;
+		padding: 40px 15px;
 		display: flex;
 		align-items: center;
 		@media (max-width: 650px) {
@@ -593,22 +588,17 @@ body {
 	}
 
 	#dashboard-general-statistic {
-		margin-bottom: 55px;
-		padding-bottom: 20px;
-		border-bottom: 1px solid #ddd;
+		//margin-bottom: 30px;
 	}
 
 	.dashboard-general-statistic__row {
 		display: flex;
-		margin: 0 -15px;
-		justify-content: center;
-		flex-wrap: wrap;
+		gap: 10px;
+		//justify-content: center;
 
 		.statistic-box {
-			min-width: 200px;
 			max-width: 270px;
-			margin: 0 15px 40px 15px;
-			padding: 15px 20px;
+			padding: 15px 10px;
 			border: 1px solid #ccc;
 			border-radius: 4px;
 			background: #f9fafc;
@@ -963,11 +953,7 @@ div.order-recover {
 		}
 	}
 }
-.entry-content {
-	ul.learn-press-profile-course__tab__inner {
-		padding: 0;
-	}
-}
+
 .content ul.learn-press-courses {
 	margin-left: -15px;
 	margin-right: -15px;
@@ -1020,8 +1006,7 @@ div.order-recover {
 .learn-press-course-tab-filters {
 
 	.learn-press-filters {
-		margin-top: 20px;
-		margin-left: 0;
+		margin: 30px 0 20px 0;
 		padding: 0;
 		list-style: none;
 
@@ -1115,5 +1100,30 @@ button.learnpress_avatar__button {
 body.learnpress {
     .learn-press-tabs .learn-press-tabs__tab, .attachment-recent-works-thumbnail {
 		border-radius: 0;
+	}
+}
+
+.lp-content-area .learnpress-course-container{
+	margin: 80px -15px 0;
+	scroll-margin: 30px;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+
+	>li{
+		padding: 0 15px;
+	}
+
+	.course-wrap-meta{
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;
+	}
+
+	.separator {
+		display: block;
+		border-top: 1px solid rgba(153, 153, 153, 0.2);
+		margin-left: -20px;
+		margin-right: -20px;
 	}
 }

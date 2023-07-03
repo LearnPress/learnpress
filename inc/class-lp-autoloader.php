@@ -81,7 +81,7 @@ class LP_Autoloader {
 			$file = 'abstract-shortcode' . str_replace( '_', '-', $m[1] ) . '.php';
 			$path = $this->include_path . 'abstracts/';
 		} elseif ( preg_match( '~^lp_shortcode_(.*)$~', $class, $m ) ) {
-			$path = $this->include_path . 'shortcodes/';
+			$path = $this->include_path . 'Shortcodes/';
 		} else {
 
 			// payment gateways

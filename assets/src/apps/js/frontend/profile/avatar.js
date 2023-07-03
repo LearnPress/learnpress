@@ -189,7 +189,7 @@ export default function Avatar() {
 									</div>
 
 									<div>
-										<button className={ `learnpress_avatar__button learnpress_avatar__button--save ${ loading?.save ? 'learnpress_avatar__button--loading' : '' }` } onClick={ updateAvatar }>{ __( 'Save', 'learnpress' ) }</button>
+										<button className={ `learnpress_avatar__button learnpress_avatar__button--save ${ loading?.save ? 'learnpress_avatar__button--loading' : '' }` } onClick={ updateAvatar }>{ lpProfileSettings.text_save }</button>
 									</div>
 								</div>
 							) : (
@@ -197,8 +197,8 @@ export default function Avatar() {
 									<img src={ file } alt="" />
 
 									<div>
-										<button className={ `learnpress_avatar__button learnpress_avatar__button--replace` } onClick={ () => fileInput.current && fileInput.current.click() }>{ __( 'Replace', 'learnpress' ) }</button>
-										<button className={ `learnpress_avatar__button learnpress_avatar__button--remove ${ loading?.remove ? 'learnpress_avatar__button--loading' : '' }` } onClick={ removeAvatar }>{ __( 'Remove', 'learnpress' ) }</button>
+										<button className={ `learnpress_avatar__button learnpress_avatar__button--replace` } onClick={ () => fileInput.current && fileInput.current.click() }>{ lpProfileSettings.text_replace }</button>
+										<button className={ `learnpress_avatar__button learnpress_avatar__button--remove ${ loading?.remove ? 'learnpress_avatar__button--loading' : '' }` } onClick={ removeAvatar }>{ lpProfileSettings.text_remove }</button>
 									</div>
 								</div>
 							) }
@@ -212,7 +212,7 @@ export default function Avatar() {
 									<div className="learnpress_avatar__form__upload">
 										<div>
 											<span><svg viewBox="64 64 896 896" focusable="false" data-icon="plus" width="1em" height="1em" fill="currentColor" aria-hidden="true"><defs><style></style></defs><path d="M482 152h60q8 0 8 8v704q0 8-8 8h-60q-8 0-8-8V160q0-8 8-8z"></path><path d="M176 474h672q8 0 8 8v60q0 8-8 8H176q-8 0-8-8v-60q0-8 8-8z"></path></svg></span>
-											<div>{ __( 'Upload', 'learnpress' ) }</div>
+											<div>{ lpProfileSettings.text_upload }</div>
 										</div>
 									</div>
 									<input ref={ fileInput } type="file" id="avatar-file" accept="image/*" onChange={ ( e ) => setFileInput( e.target.files && e.target.files.length > 0 ? e.target.files[ 0 ] : '' ) } />
@@ -257,9 +257,9 @@ function getRadianAngle( degreeValue ) {
 /**
  * Returns the new bounding area of a rotated rectangle.
  *
- * @param  width
- * @param  height
- * @param  rotation
+ * @param width
+ * @param height
+ * @param rotation
  */
 function rotateSize( width, height, rotation ) {
 	const rotRad = getRadianAngle( rotation );
@@ -275,10 +275,10 @@ Math.abs( Math.sin( rotRad ) * width ) + Math.abs( Math.cos( rotRad ) * height )
 /**
  * This function was adapted from the one in the ReadMe of https://github.com/DominicTobias/react-image-crop
  *
- * @param  imageSrc
- * @param  pixelCrop
- * @param  rotation
- * @param  flip
+ * @param imageSrc
+ * @param pixelCrop
+ * @param rotation
+ * @param flip
  */
 async function getCroppedImg(
 	imageSrc,
