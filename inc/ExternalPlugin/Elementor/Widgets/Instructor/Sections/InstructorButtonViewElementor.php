@@ -41,7 +41,8 @@ class InstructorButtonViewElementor extends SingleInstructorBaseElementor {
 				$settings = [];
 			}
 
-			$this->detect_instructor_id( $settings, $instructor, __( 'Instructor Button View', 'learnpress' ) );
+			$text_default = sprintf( '<p class="instructor-btn-view">%s</p>', __( 'Instructor Button View', 'learnpress' ) );
+			$this->detect_instructor_id( $settings, $instructor, $text_default );
 
 			$wrapper = [];
 			if ( ! empty( $settings['wrapper_tags'] ) ) {

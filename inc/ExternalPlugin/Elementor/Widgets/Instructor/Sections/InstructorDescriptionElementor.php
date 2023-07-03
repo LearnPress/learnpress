@@ -39,7 +39,8 @@ class InstructorDescriptionElementor extends SingleInstructorBaseElementor {
 				$settings = [];
 			}
 
-			$this->detect_instructor_id( $settings, $instructor, __( 'Instructor Description', 'learnpress' ) );
+			$text_default = sprintf( '<p class="instructor-description">%s</p>', __( 'Instructor Description', 'learnpress' ) );
+			$this->detect_instructor_id( $settings, $instructor, $text_default );
 
 			$wrapper = [];
 			if ( ! empty( $settings['wrapper_tags'] ) ) {

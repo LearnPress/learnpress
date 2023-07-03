@@ -41,7 +41,8 @@ class InstructorTitleElementor extends SingleInstructorBaseElementor {
 				$settings = [];
 			}
 
-			$this->detect_instructor_id( $settings, $instructor, __( 'Instructor Name', 'learnpress' ) );
+			$text_default = sprintf( '<span class="instructor-display-name">%s</span>', __( 'Instructor Name', 'learnpress' ) );
+			$this->detect_instructor_id( $settings, $instructor, $text_default );
 
 			$wrapper = [];
 			if ( ! empty( $settings['wrapper_tags'] ) ) {
