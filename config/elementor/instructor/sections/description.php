@@ -63,7 +63,7 @@ $content_fields = array_merge(
 $style_fields = array_merge(
 	LPElementorControls::add_fields_in_section(
 		'description',
-		esc_html__( 'Description Instructor', 'learnpress' ),
+		esc_html__( 'Instructor Description', 'learnpress' ),
 		Controls_Manager::TAB_STYLE,
 		LPElementorControls::add_controls_style_text(
 			'description',

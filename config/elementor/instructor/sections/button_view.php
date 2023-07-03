@@ -62,12 +62,12 @@ $content_fields = array_merge(
 // Fields tab style
 $style_fields = array_merge(
 	LPElementorControls::add_fields_in_section(
-		'title',
-		esc_html__( 'Title Course', 'learnpress' ),
+		'instructor_btn_view',
+		esc_html__( 'Instructor Button View', 'learnpress' ),
 		Controls_Manager::TAB_STYLE,
-		LPElementorControls::add_controls_style_text(
-			'title',
-			'.instructor-display-name'
+		LPElementorControls::add_controls_style_button(
+			'instructor_btn_view',
+			'.instructor-btn-view'
 		)
 	),
 	[]
