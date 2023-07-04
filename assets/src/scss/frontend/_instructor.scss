@@ -102,10 +102,13 @@
 			}
 		}
 
-		.course-img img {
-			//width: 100%;
-			max-width: 100%;
-			height: auto;
+		.course-img {
+			img {
+				max-width: 100%;
+				height: auto;
+				aspect-ratio: 4/3;
+				object-fit: cover;
+			}
 		}
 
 		.price-categories {

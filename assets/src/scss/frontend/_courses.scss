@@ -9,12 +9,10 @@ a {
 	width: 100%;
 	max-width: 1170px;
 	margin: 0 auto;
-
 	@media (max-width: 1024px) {
 		padding-right: 15px;
 		padding-left: 15px;
 	}
-
 }
 
 .lp-content-area::after,
@@ -382,7 +380,7 @@ a {
 
 		@media (min-width: 769px) {
 			.course-info-left {
-				width: calc(100% - 330px);
+				width: calc(100% - 340px);
 			}
 		}
 

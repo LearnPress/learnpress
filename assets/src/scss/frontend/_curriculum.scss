@@ -506,9 +506,10 @@ ul.learn-press-nav-tabs {
 	.section-header {
 		display: table;
 		width: 100%;
-		padding: 0 0 26px 0;
+		padding: 20px 0;
 		border-bottom: 0;
 		border-bottom: 1px solid #d9e0f1;
+		cursor: pointer;
 
 		@include box-sizing(border-box);
 
@@ -566,7 +567,7 @@ ul.learn-press-nav-tabs {
 	}
 
 	.section-content {
-		margin: 0 0 15px 0;
+		margin: 0;
 		padding: 0;
 		list-style: none;
 		.course-item-meta {
@@ -649,7 +650,7 @@ ul.learn-press-nav-tabs {
 		transition: padding-left linear 0.15s;
 
 		@media (max-width: 767px) {
-			padding: 0 0 0 15px;
+			padding: 0 0 0 16px;
 		}
 
 		& > span {
@@ -663,7 +664,7 @@ ul.learn-press-nav-tabs {
 
 		.section-item-link {
 			display: table;
-			padding-right: 15px;
+			padding-right: 16px;
 			padding-left: 0;
 			border-bottom: none;
 			outline: none;
@@ -1199,13 +1200,13 @@ body {
 		position: relative;
 		height: var(--extra-height);
 		margin: 0 !important;
-		padding: 0 45px 0 38px;
+		padding: 0 45px 0 30px;
 		background: rgba(181, 187, 211, 0.15);
 		font-size: 1.1rem;
 		font-weight: 600;
 		cursor: pointer;
 		@media (max-width: 767px) {
-			padding-left: 15px;
+			padding-left: 16px;
 		}
 
 		&::after {
@@ -1234,6 +1235,10 @@ body {
 			animation-iteration-count: 1;
 			-webkit-animation-direction: normal;
 			animation-direction: normal;
+			>ul{
+				padding-left: 0!important;
+				padding-bottom: 0!important;
+			}
 		}
 
 		ul,
@@ -1248,15 +1253,15 @@ body {
 
 		li {
 			margin: 0;
-			padding: 10px 38px;
+			padding: 10px 20px 10px 30px;
 			border-bottom: 1px solid rgba(204, 204, 204, 0.3);
 			color: #666;
 			font-size: 16px;
 			font-weight: 300;
 
 			@media (max-width: 767px) {
-				padding-left: 30px;
-				padding-right: 30px;
+				padding-left: 16px;
+				padding-right: 16px;
 			}
 
 			&::before {

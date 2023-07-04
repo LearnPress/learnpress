@@ -10,6 +10,12 @@
 		--lp-cotainer-max-with: inherit;
 		--lp-cotainer-padding: 0;
 	}
+	.lp-single-course{
+		.lp-content-area {
+			padding-right: 0;
+			padding-left: 0;
+		}
+	} 
 }
 .lp-list-instructors {
 	--lp-instructor-item-padding: 20px;

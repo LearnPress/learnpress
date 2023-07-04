@@ -157,7 +157,6 @@ footer {
 	font-size: 14px;
 	font-weight: 400;
 	list-style: none;
-
 	li {
 		display: inline-block;
 		margin: 0;
@@ -522,7 +521,7 @@ ul.list-table-nav {
 	&.slide-top {
 		@media (min-width: 1200px) {
 			.course-summary-sidebar__inner {
-				position: absolute;
+				// position: absolute;
 			}
 		}
 	}
