@@ -1175,6 +1175,8 @@ class LP_Page_Controller {
 	 * @return string $link The comment permalink with '#comment-$id' appended.
 	 * @param string     $link    The comment permalink with '#comment-$id' appended.
 	 * @param WP_Comment $comment The current comment object.
+	 * @since 4.2.3
+	 * @version 1.0.0
 	 */
 	public function edit_lesson_comment_links( $link, $comment ): string {
 		try {
