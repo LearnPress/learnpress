@@ -69,7 +69,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'remove_items_from_order', // Used to remove items from LP Order
 				'update_email_status', // Use for enable email on LP Settings
 				'search-authors', // Used to search username on input some page (list courses, lp orders, quizzes, questions... on the Backend
-				'skip-notice-install',
+				//'skip-notice-install',
 			);
 
 			foreach ( $ajax_events as $action => $callback ) {
@@ -122,14 +122,15 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 		/**
 		 * Hide notice install
+		 * @deprecated 4.2.3.1
 		 */
-		public static function skip_notice_install() {
+		/*public static function skip_notice_install() {
 			if ( ! current_user_can( ADMIN_ROLE ) ) { // Fix security.
 				return;
 			}
 
 			delete_option( 'learn_press_install' );
-		}
+		}*/
 
 		/**
 		 * Handle ajax admin course editor.
