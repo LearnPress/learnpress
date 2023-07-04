@@ -44,7 +44,6 @@ msgid "Tip"
 msgstr ""
 
 #: assets/src/apps/js/admin/react/question/index.js:313
-#: assets/src/apps/js/frontend/profile/avatar.js:201
 msgid "Remove"
 msgstr ""
 

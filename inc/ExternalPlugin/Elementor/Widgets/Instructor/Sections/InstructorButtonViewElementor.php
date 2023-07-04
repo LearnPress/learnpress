@@ -15,16 +15,16 @@ use LearnPress\Helpers\Config;
 use LearnPress\Helpers\Template;
 use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
 
-class InstructorTitleElementor extends SingleInstructorBaseElementor {
+class InstructorButtonViewElementor extends SingleInstructorBaseElementor {
 	public function __construct( $data = [], $args = null ) {
-		$this->title    = esc_html__( 'Instructor Name', 'learnpress' );
-		$this->name     = 'instructor_name';
-		$this->keywords = [ 'instructor', 'name' ];
+		$this->title    = esc_html__( 'Instructor button view', 'learnpress' );
+		$this->name     = 'instructor_button_view';
+		$this->keywords = [ 'instructor', 'button' ];
 		parent::__construct( $data, $args );
 	}
 
 	protected function register_controls() {
-		$this->controls = Config::instance()->get( 'title', 'elementor/instructor/sections' );
+		$this->controls = Config::instance()->get( 'button_view', 'elementor/instructor/sections' );
 		parent::register_controls();
 	}
 
@@ -41,7 +41,7 @@ class InstructorTitleElementor extends SingleInstructorBaseElementor {
 				$settings = [];
 			}
 
-			$text_default = sprintf( '<span class="instructor-display-name">%s</span>', __( 'Instructor Name', 'learnpress' ) );
+			$text_default = sprintf( '<p class="instructor-btn-view">%s</p>', __( 'Instructor Button View', 'learnpress' ) );
 			$this->detect_instructor_id( $settings, $instructor, $text_default );
 
 			$wrapper = [];
@@ -53,7 +53,7 @@ class InstructorTitleElementor extends SingleInstructorBaseElementor {
 
 			echo Template::instance()->nest_elements(
 				$wrapper,
-				SingleInstructorTemplate::instance()->html_display_name( $instructor )
+				SingleInstructorTemplate::instance()->html_button_view( $instructor )
 			);
 
 		} catch ( \Throwable $e ) {

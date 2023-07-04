@@ -10,6 +10,11 @@ use Elementor\Controls_Manager;
 use Elementor\Group_Control_Border;
 use LearnPress\ExternalPlugin\Elementor\LPElementorControls;
 
+$option_data = [];
+if ( isset( $options ) ) {
+	$option_data = $options;
+}
+
 // Fields tab content
 $content_fields = array_merge(
 	LPElementorControls::add_fields_in_section(
@@ -42,13 +47,125 @@ $content_fields = array_merge(
 							'description' => 'Sections: {{instructor_avatar}}, {{instructor_url}}, {{instructor_display_name}}, {{instructor_total_courses}}, {{instructor_total_students}}',
 							'label_block' => true,
 						],
+						// Toggle Style Ul
 						[
-							'name'        => 'layout_css',
-							'label'       => esc_html__( 'Style', 'learnpress' ),
+							'name'         => 'toggle-ul-style',
+							'label'        => esc_html__( 'Ul Style', 'learnpress' ),
+							'type'         => Controls_Manager::POPOVER_TOGGLE,
+							'label_off'    => esc_html__( 'Default', 'learnpress' ),
+							'label_on'     => esc_html__( 'Custom', 'learnpress' ),
+							'return_value' => 'yes',
+						],
+						[
+							'method' => 'start_popover',
+						],
+						[
+							'name'        => 'grid_columns',
+							'label'       => esc_html__( 'Column number', 'learnpress' ),
+							'method'      => 'add_responsive_control',
+							'type'        => Controls_Manager::NUMBER,
+							'min'         => 1,
+							'max'         => 6,
+							'default'     => 2,
+							'description' => 'Number of columns to show.',
+							'selectors'   => [
+								'{{WRAPPER}} {{CURRENT_ITEM}} .list-instructors' => 'display: grid;list-style: none;grid-template-columns: repeat({{VALUE}}, 1fr);padding: 0;margin: 0;',
+							],
+						],
+						[
+							'name'        => 'gap_column',
+							'label'       => esc_html__( 'Gap', 'learnpress' ),
+							'method'      => 'add_responsive_control',
+							'type'        => Controls_Manager::SLIDER,
+							'default'     => [
+								'unit' => 'px',
+								'size' => 10,
+							],
+							'unit'        => 'px',
+							'min'         => 0,
+							'max'         => 100,
+							'description' => 'Space between items. (px)',
+							'selectors'   => [
+								'{{WRAPPER}} {{CURRENT_ITEM}} .list-instructors' => 'grid-gap: {{SIZE}}{{UNIT}};',
+							],
+						],
+						[
+							'name'      => 'item_padding',
+							'label'     => esc_html__( 'Item Padding', 'learnpress' ),
+							'method'    => 'add_responsive_control',
+							'type'      => Controls_Manager::DIMENSIONS,
+							'default'   => [
+								'top'    => '10',
+								'right'  => '10',
+								'bottom' => '10',
+								'left'   => '10',
+							],
+							'selectors' => [
+								'{{WRAPPER}} {{CURRENT_ITEM}} .list-instructors .item-instructor' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+							],
+						],
+						[ 'method' => 'end_popover' ],
+						// Toggle Item Border
+						[
+							'name'  => 'toggle-item-border',
+							'label' => esc_html__( 'Item border', 'learnpress' ),
+							'type'  => Controls_Manager::POPOVER_TOGGLE,
+						],
+						[
+							'method' => 'start_popover',
+						],
+						[
+							'name'           => 'item_border',
+							'label'          => esc_html__( 'Item Border', 'learnpress' ),
+							'method'         => 'add_group_control',
+							'type'           => Group_Control_Border::get_type(),
+							'description'    => 'Number of columns to show.',
+							'selector'       => '{{WRAPPER}} {{CURRENT_ITEM}} .list-instructors .item-instructor',
+							'fields_options' => [
+								'border' => [
+									'default' => 'none',
+								],
+								'width'  => [
+									'default' => [
+										'top'      => '1',
+										'right'    => '1',
+										'bottom'   => '1',
+										'left'     => '1',
+										'isLinked' => true,
+									],
+								],
+								'color'  => [
+									'default' => '#D4D4D4',
+								],
+							],
+						],
+						[
+							'name'      => 'item_border_radius',
+							'label'     => esc_html__( 'Border Radius', 'learnpress' ),
+							'type'      => Controls_Manager::DIMENSIONS,
+							'selectors' => [
+								'{{WRAPPER}} {{CURRENT_ITEM}} .list-instructors .item-instructor' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+							],
+						],
+						[ 'method' => 'end_popover' ],
+						// Toggle Custom Css
+						[
+							'name'  => 'toggle-custom-css',
+							'label' => esc_html__( 'Advanced Css', 'learnpress' ),
+							'type'  => Controls_Manager::POPOVER_TOGGLE,
+						],
+						[
+							'method' => 'start_popover',
+						],
+						[
+							'name'        => 'layout_custom_css',
+							'label'       => esc_html__( 'Custom CSS', 'learnpress' ),
 							'type'        => Controls_Manager::CODE,
 							'label_block' => true,
 							'language'    => 'css',
+							'description' => 'Should start with selector before style. Ex: selector .[className] {color: red;}',
 						],
+						[ 'method' => 'end_popover' ],
 					],
 					'prevent_empty' => false,
 					'title_field'   => '{{{ layout_name }}}',
@@ -95,7 +212,7 @@ $content_fields = array_merge(
 				5,
 				Controls_Manager::NUMBER,
 				[
-					'min'         => -1,
+					'min'         => - 1,
 					'max'         => 100,
 					'description' => 'Number of items to show. Enter -1 to show all instructors.',
 				]
@@ -106,178 +223,7 @@ $content_fields = array_merge(
 );
 
 // Fields tab style
-$style_fields = array_merge(
-	LPElementorControls::add_fields_in_section(
-		'wrapper',
-		esc_html__( 'Ul style', 'learnpress' ),
-		Controls_Manager::TAB_STYLE,
-		[
-			'grid_column'        => LPElementorControls::add_responsive_control_type(
-				'grid_column',
-				esc_html__( 'Number Column', 'learnpress' ),
-				2,
-				Controls_Manager::NUMBER,
-				[
-					[
-						'min'         => 1,
-						'max'         => 6,
-						'description' => 'Number of columns to show.',
-					],
-					'selectors' => [
-						'{{WRAPPER}} .list-instructors' => 'display: grid;list-style: none;grid-template-columns: repeat({{VALUE}}, 1fr);padding: 0;margin: 0;',
-					],
-				]
-			),
-			'gap_column'         => LPElementorControls::add_control_type_slider(
-				'gap_column',
-				esc_html__( 'Gap', 'learnpress' ),
-				10,
-				'px',
-				[
-					[
-						'min' => 0,
-						'max' => 100,
-					],
-					'description' => 'Space between items. (px)',
-					'selectors'   => [
-						'{{WRAPPER}} .list-instructors' => 'grid-gap: {{SIZE}}{{UNIT}};',
-					],
-				]
-			),
-			'item_padding'       => LPElementorControls::add_control_type(
-				'item_padding',
-				esc_html__( 'Item Padding', 'learnpress' ),
-				[
-					'top'    => '10',
-					'right'  => '10',
-					'bottom' => '10',
-					'left'   => '10',
-				],
-				Controls_Manager::DIMENSIONS,
-				[
-					'selectors' => [
-						'{{WRAPPER}} .list-instructors .item-instructor' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-					],
-				]
-			),
-			'item_border'        => LPElementorControls::add_group_control_type(
-				'item_border',
-				Group_Control_Border::get_type(),
-				'{{WRAPPER}} .list-instructors .item-instructor',
-				[
-					'fields_options' => [
-						'border' => [
-							'default' => 'solid',
-						],
-						'width'  => [
-							'default' => [
-								'top'      => '1',
-								'right'    => '1',
-								'bottom'   => '1',
-								'left'     => '1',
-								'isLinked' => true,
-							],
-						],
-						'color'  => [
-							'default' => '#D4D4D4',
-						],
-					],
-				]
-			),
-			'item_border_radius' => LPElementorControls::add_control_type(
-				'item_border_radius',
-				esc_html__( 'Item Border Radius', 'learnpress' ),
-				[
-					'top'    => '5',
-					'right'  => '5',
-					'bottom' => '5',
-					'left'   => '5',
-				],
-				Controls_Manager::DIMENSIONS,
-				[
-					'selectors' => [
-						'{{WRAPPER}} .list-instructors .item-instructor' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-					],
-				]
-			),
-		]
-	),
-	LPElementorControls::add_fields_in_section(
-		'avatar',
-		esc_html__( 'Avatar Instructor', 'learnpress' ),
-		Controls_Manager::TAB_STYLE,
-		LPElementorControls::add_controls_style_image(
-			'avatar',
-			'.instructor-avatar img',
-			[
-				'avatar_align' => LPElementorControls::add_control_type(
-					'avatar_align',
-					esc_html__( 'Align', 'learnpress' ),
-					'left',
-					Controls_Manager::CHOOSE,
-					[
-						'options'   => [
-							'left'   => [
-								'title' => esc_html__( 'Left', 'elementor' ),
-								'icon'  => 'eicon-text-align-left',
-							],
-							'center' => [
-								'title' => esc_html__( 'Center', 'elementor' ),
-								'icon'  => 'eicon-text-align-center',
-							],
-							'right'  => [
-								'title' => esc_html__( 'Right', 'elementor' ),
-								'icon'  => 'eicon-text-align-right',
-							],
-						],
-						'selectors' => [
-							'{{WRAPPER}} .instructor-avatar' => 'text-align: {{VALUE}};',
-						],
-					]
-				),
-				'avatar_with'  => LPElementorControls::add_responsive_control_type(
-					'avatar_with_height',
-					esc_html__( 'Width(%)', 'learnpress' ),
-					'',
-					Controls_Manager::NUMBER,
-					[
-						'selectors' => [
-							'{{WRAPPER}} .instructor-avatar img' => 'width:{{VALUE}}%;',
-						],
-					]
-				),
-			]
-		)
-	),
-	LPElementorControls::add_fields_in_section(
-		'title',
-		esc_html__( 'Title Instructor', 'learnpress' ),
-		Controls_Manager::TAB_STYLE,
-		LPElementorControls::add_controls_style_text(
-			'title',
-			'.instructor-display-name'
-		)
-	),
-	LPElementorControls::add_fields_in_section(
-		'total_courses',
-		esc_html__( 'Total Courses', 'learnpress' ),
-		Controls_Manager::TAB_STYLE,
-		LPElementorControls::add_controls_style_text(
-			'total_courses',
-			'.instructor-total-courses'
-		)
-	),
-	LPElementorControls::add_fields_in_section(
-		'total_students',
-		esc_html__( 'Total Students', 'learnpress' ),
-		Controls_Manager::TAB_STYLE,
-		LPElementorControls::add_controls_style_text(
-			'total_students',
-			'.instructor-total-students'
-		)
-	),
-	[]
-);
+$style_fields = [];
 
 return apply_filters(
 	'learn-press/elementor/list-instructors',

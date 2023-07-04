@@ -60,6 +60,9 @@ class LP_Page_Controller {
 			add_action( 'init', [ $this, 'check_webhook_paypal_ipn' ] );
 			// Set again x-wp-nonce on header when has cache with not login.
 			add_filter( 'rest_send_nocache_headers', array( $this, 'check_x_wp_nonce_cache' ) );
+
+			// Rewrite lesson comment links
+			add_filter( 'get_comment_link', array( $this, 'edit_lesson_comment_links' ), 10, 2 );
 		}
 	}
 
@@ -1164,6 +1167,30 @@ class LP_Page_Controller {
 		}
 
 		return $send_no_cache_headers;
+	}
+
+	/**
+	 * Override lesson comment permalink.
+	 *
+	 * @return string $link The comment permalink with '#comment-$id' appended.
+	 * @param string     $link    The comment permalink with '#comment-$id' appended.
+	 * @param WP_Comment $comment The current comment object.
+	 * @since 4.2.3
+	 * @version 1.0.0
+	 */
+	public function edit_lesson_comment_links( $link, $comment ): string {
+		try {
+			$comment = get_comment( $comment );
+			if ( get_post_type( $comment->comment_post_ID ) == LP_LESSON_CPT ) {
+				$link = wp_get_referer() . '#comment-' . $comment->comment_ID;
+			}
+
+			return $link;
+		} catch ( Throwable $e ) {
+			error_log( $e->getMessage() );
+		}
+
+		return $link;
 	}
 }
 

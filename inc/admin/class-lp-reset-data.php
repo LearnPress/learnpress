@@ -125,6 +125,10 @@ class LP_Reset_Data {
 			die( 'Nonce is invalid!' );
 		}
 
+		if ( ! current_user_can( 'administrator' ) ) {
+			return;
+		}
+
 		$s     = LP_Request::get_string( 's' );
 		$query = $wpdb->prepare(
 			"

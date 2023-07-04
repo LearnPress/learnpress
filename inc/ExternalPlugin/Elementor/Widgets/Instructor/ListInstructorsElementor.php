@@ -8,9 +8,9 @@
 
 namespace LearnPress\ExternalPlugin\Elementor\Widgets\Instructor;
 
-use Exception;
 use LearnPress\ExternalPlugin\Elementor\LPElementorWidgetBase;
 use LearnPress\Helpers\Config;
+use LearnPress\Helpers\Template;
 use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
 use WP_User_Query;
 
@@ -22,11 +22,24 @@ class ListInstructorsElementor extends LPElementorWidgetBase {
 		parent::__construct( $data, $args );
 	}
 
+	/**
+	 * Register controls.
+	 *
+	 * @return void
+	 */
 	protected function register_controls() {
-		$this->controls = Config::instance()->get( 'list-instructors', 'elementor/instructor' );
+		$this->controls = Config::instance()->get(
+			'list-instructors',
+			'elementor/instructor'
+		);
 		parent::register_controls();
 	}
 
+	/**
+	 * Render Template
+	 *
+	 * @return void
+	 */
 	protected function render() {
 		try {
 			$settings = $this->get_settings_for_display();
@@ -42,7 +55,7 @@ class ListInstructorsElementor extends LPElementorWidgetBase {
 				'fields'   => 'ID',
 			];
 
-			switch ( $settings['order_by'] ) {
+			switch ( $settings['order_by'] ?? '' ) {
 				case 'desc_name':
 					$args['orderby'] = 'display_name';
 					$args['order']   = 'desc';
@@ -60,20 +73,24 @@ class ListInstructorsElementor extends LPElementorWidgetBase {
 			// End Query
 
 			$item_layout = $settings['item_layouts'][0];
-			if ( ! empty( $item_layout['layout_css'] ) ) {
-				$item_layout['layout_css'] = preg_replace(
+			if ( ! empty( $item_layout['layout_custom_css'] ) ) {
+				$item_layout['layout_custom_css'] = preg_replace(
 					'/selector/i',
-					"div[data-id={$this->get_id()}]",
-					$item_layout['layout_css']
+					".elementor-repeater-item-{$item_layout['_id']}",
+					$item_layout['layout_custom_css']
 				);
-				echo '<style id="' . $this->get_id() . '">' . $item_layout['layout_css'] . '</style>';
+				echo '<style id="' . $this->get_id() . '">' . $item_layout['layout_custom_css'] . '</style>';
 			}
 
 			// Show list instructors
+			ob_start();
 			$singleInstructorTemplate = SingleInstructorTemplate::instance();
 			echo '<ul class="list-instructors">';
 			foreach ( $instructors as $instructor_id ) {
 				$instructor = learn_press_get_user( $instructor_id );
+				if ( ! $instructor ) {
+					continue;
+				}
 				?>
 				<li class="item-instructor">
 					<?php echo $singleInstructorTemplate->render_data( $instructor, html_entity_decode( $item_layout['layout_html'] ) ); ?>
@@ -81,6 +98,12 @@ class ListInstructorsElementor extends LPElementorWidgetBase {
 				<?php
 			}
 			echo '</ul>';
+			$content = ob_get_clean();
+
+			$html_wrap = [
+				'<div class="' . ( 'elementor-repeater-item-' . $item_layout['_id'] ?? '' ) . '">' => '</div>',
+			];
+			echo Template::instance()->nest_elements( $html_wrap, $content );
 			// End show list instructors
 		} catch ( \Throwable $e ) {
 			echo $e->getMessage();

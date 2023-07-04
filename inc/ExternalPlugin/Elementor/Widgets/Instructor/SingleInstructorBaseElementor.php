@@ -1,6 +1,8 @@
 <?php
 /**
- * Class SingleInstructorElementor
+ * Class SingleInstructorBaseElementor
+ *
+ * Has general methods for sections single instructor widgets use
  *
  * @sicne 4.2.3
  * @version 1.0.0
@@ -15,7 +17,11 @@ use LearnPress\Helpers\Config;
 use LP_User;
 
 class SingleInstructorBaseElementor extends LPElementorWidgetBase {
-
+	/**
+	 * Set category for widget
+	 *
+	 * @return string[]
+	 */
 	public function get_categories() {
 		return array( 'learnpress_instructor' );
 	}
@@ -25,11 +31,12 @@ class SingleInstructorBaseElementor extends LPElementorWidgetBase {
 	 *
 	 * @param array $settings
 	 * @param LP_User|null $instructor
+	 * @param string $label_default
 	 *
 	 * @return void
 	 * @throws Exception
 	 */
-	protected function detect_instructor_id( array $settings, LP_User &$instructor = null ) {
+	protected function detect_instructor_id( array $settings, LP_User &$instructor = null, string $label_default = '' ) {
 		/**
 		 * Get instructor id
 		 *
@@ -51,16 +58,16 @@ class SingleInstructorBaseElementor extends LPElementorWidgetBase {
 		}
 
 		if ( ! $instructor_id && Plugin::$instance->editor->is_edit_mode() ) {
-			throw new Exception( __( 'Instructor name', 'learnpress' ) );
+			throw new Exception( $label_default );
 		}
 
 		$instructor = learn_press_get_user( $instructor_id );
 		if ( ! $instructor ) {
-			throw new Exception( __( 'Instructor not found', 'learnpress' ) );
+			throw new Exception( __( 'Instructor not found!', 'learnpress' ) );
 		}
 
 		if ( ! $instructor->can_create_course() ) {
-			throw new Exception( __( 'User is not Instructor', 'learnpress' ) );
+			throw new Exception( __( 'User is not Instructor!', 'learnpress' ) );
 		}
 	}
 }
