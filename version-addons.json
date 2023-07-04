@@ -165,8 +165,8 @@
   "learnpress-content-drip": {
     "name": "Content Drip add-on for LearnPress",
     "basename": "learnpress-content-drip/learnpress-content-drip.php",
-    "version": "4.0.3",
-    "require_lp": "4.2.2.4",
+    "version": "4.0.4",
+    "require_lp": "4.2.3",
     "description": "Restrict the access of students to each lesson by progress, or time. Allows you to manage course's opening time.",
     "image": "https://plugins.thimpress.com/downloads/images/lp-content-drip.png",
     "link": "https://thimpress.com/product/content-drip-add-on-for-learnpress/",
@@ -360,6 +360,21 @@
     "setting": "",
     "is_free": 0,
     "author": "",
+    "is_org": 0,
+    "order": 0
+  },
+  "learnpress-upsell": {
+    "name": "Upsell Add-on for LearnPress",
+    "basename": "learnpress-upsell/learnpress-upsell.php",
+    "version": "4.0.1",
+    "require_lp": "4.2.3",
+    "description": "Increase revenue by offering premium packages, bonus coupons, and exclusive features to elevate the learning experience for your students.",
+    "image": "https://thimpress.com/wp-content/uploads/2023/03/Upsell-addon.jpg",
+    "link": "https://thimpress.com/product/upsell-add-on-for-learnpress/",
+    "link_doc": "https://docspress.thimpress.com/learnpress-upsell-add-on/",
+    "setting": "",
+    "is_free": 0,
+    "author": "Thimpress",
     "is_org": 0,
     "order": 0
   },
