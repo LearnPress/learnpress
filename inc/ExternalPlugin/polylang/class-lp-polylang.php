@@ -169,7 +169,7 @@ class LP_Polylang {
 		$default_lang = pll_default_language();
 		$current_lang = pll_current_language();
 
-		$field_arr = [ 'courses_page_id', 'profile_page_id', 'checkout_page_id', 'become_a_teacher_page_id', 'term_conditions_page_id' ];
+		$field_arr = [ 'courses_page_id', 'profile_page_id', 'checkout_page_id', 'become_a_teacher_page_id', 'term_conditions_page_id', 'instructors_page_id', 'single_instructor_page_id' ];
 		$field_arr = apply_filters( 'lp_pll/settings/name-fields', $field_arr );
 
 		if ( $default_lang != $current_lang ) {
@@ -285,6 +285,58 @@ class LP_Polylang {
 					];
 				}
 			}
+			//Profile
+			if ( isset( $rules['profile'] ) && !empty( $rules['profile'] ) ){
+
+				// $profile_id = $profile_translations[ $lang_current ];
+				$profile_id = learn_press_get_page_id( 'profile' );
+				if ( $profile_id ) {
+					// Rule view profile of user (self or another)
+					$page_profile_slug        = get_post_field( 'post_name', $profile_id );
+					$rules['profile']['user'] = [
+						"^{$lang_slug}/{$page_profile_slug}/([^/]*)/?$" =>
+							"index.php?page_id={$profile_id}&user=" . '$matches[1]&lang=' . $lang_current,
+					];
+
+					// Rule view profile of user (self or another) with tab
+					$profile = learn_press_get_profile();
+					$tabs    = $profile->get_tabs()->get();
+					if ( $tabs ) {
+						/**
+						 * @var LP_Profile_Tab $args
+						 */
+						foreach ( $tabs as $tab_key => $args ) {
+							$tab_slug                     = $args->get( 'slug' ) ?? $tab_key;
+							$rules['profile'][ $tab_key ] = [
+								"^{$lang_slug}/{$page_profile_slug}/([^/]*)/({$tab_slug})/?([0-9]*)/?$" =>
+									'index.php?page_id=' . $profile_id . '&user=$matches[1]&view=$matches[2]&view_id=$matches[3]&lang=' . $lang_current,
+							];
+
+							if ( ! empty( $args->get( 'sections' ) ) ) {
+								foreach ( $args->get( 'sections' ) as $section_key => $section ) {
+									$section_slug                     = $section['slug'] ?? $section_key;
+									$rules['profile'][ $section_key ] = [
+										"^{$lang_slug}/{$page_profile_slug}/([^/]*)/({$tab_slug})/({$section_slug})/?([0-9]*)?$" =>
+											'index.php?page_id=' . $profile_id . '&user=$matches[1]&view=$matches[2]&section=$matches[3]&view_id=$matches[4]&lang=' . $lang_current,
+									];
+								}
+							}
+						}
+					}
+				}
+			}
+			if ( isset( $rules['instructor'] ) ) {
+				$single_instructor_page_id       = learn_press_get_page_id( 'single_instructor' );
+				$instructor_slug                 = get_post_field( 'post_name', $single_instructor_page_id );
+				$rules['instructor']['has_name'] = [
+					"^{$lang_slug}/{$instructor_slug}/([^/]+)/?(?:page/)?([^/][0-9]*)?/?$" =>
+					'index.php?page_id=' . $single_instructor_page_id . '&is_single_instructor=1&instructor_name=$matches[1]&paged=$matches[2]&lang=' . $lang_current,
+				];
+				$rules['instructor']['no_name']  = [
+					"^{$lang_slug}/{$instructor_slug}/?$" =>
+						'index.php?page_id=' . $single_instructor_page_id . '&is_single_instructor=1&paged=$matches[2]&lang=' . $lang_current,
+				];
+			}
 		}
 		return $rules;
 	}
@@ -295,18 +347,10 @@ class LP_Polylang {
 	 * @return [array]
 	 */
 	public function get_pll_options() {
-		global $wpdb;
-		$result = $wpdb->get_var(
-			$wpdb->prepare(
-				"SELECT option_value FROM $wpdb->options WHERE option_name = %s",
-				'polylang'
-			)
-		);
-		if ( $wpdb->last_error ) {
-			throw new Exception( $wpdb->last_error );
+		if ( ! function_exists( 'PLL' ) ) {
+			return false;
 		}
-		$result = unserialize( $result );
-		return $result ? $result : false;
+		return PLL()->options;
 	}
 
 	/**
