@@ -261,7 +261,6 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 						'lp-setup-wizard'       => [
 							'template'      => 'admin-notices/setup-wizard.php',
 							'check'         => ! get_option( 'learn_press_setup_wizard_completed', false )
-							&& ! isset( $admin_notices['lp-setup-wizard'] )
 							&& ! isset( $admin_notices_dismiss['lp-setup-wizard'] ),
 							'allow_dismiss' => 1,
 						],
