@@ -210,10 +210,11 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
-= 4.2.3 (2023-07-05) =
+= 4.2.3.1 (2023-07-05) =
 ~ Fixed: Security.
 ~ Item Course: completed, display Date Time by format WP.
 ~ Tweak: message of LearnPress.
+~ Fixed: function “Add course to Order manual”
 
 = 4.2.3 (2023-07-03) =
 ~ Added: page list instructors.
@@ -242,8 +243,7 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Profile: added text "upload" translate on localize script.
 ~ Apply: add internal scripts to head on page List Instructors.
 ~ Fixed: error buy item with Guest, order is no item.
-~ Fixed: Security <a href='https://patchstack.com/database/report-preview/1c36dd85-2eb2-4947-b842-ad606bccbc83?pin=4u0jV2YLpqiCR7HP'>Broken Access Control 1</a>
-~ Fixed: Security <a href='https://patchstack.com/database/report-preview/3abf2e9b-00c9-4c75-8641-63b8d143de80?pin=bgOqmObIYIpXBusJ'>Broken Access Control 2</a>
+~ Fixed: Security Broken Access Control.
 ~ Added: hook login/register of WP on page LP Checkout for plugin captcha display.
 ~ Fixed: error 404 function comment on the lesson.
 
