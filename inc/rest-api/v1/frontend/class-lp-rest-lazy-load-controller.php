@@ -130,6 +130,10 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 				throw new Exception( __( 'You are a Guest', 'learnpress' ) );
 			}
 
+			if ( ! $user->can_create_course() && get_current_user_id() !== $user_id ) {
+				throw new Exception( __( 'You are a not permission!', 'learnpress' ) );
+			}
+
 			$course_data = $user->get_course_data( $course->get_id() );
 			if ( ! $course_data ) {
 				throw new Exception( __( 'You are a not enroll course', 'learnpress' ) );

@@ -9,12 +9,12 @@
 
 defined( 'ABSPATH' ) || exit;
 
-require_once dirname( __FILE__ ) . '/widgets/course-extra.php';
-require_once dirname( __FILE__ ) . '/widgets/course-info.php';
-require_once dirname( __FILE__ ) . '/widgets/course-progress.php';
-require_once dirname( __FILE__ ) . '/widgets/featured-courses.php';
-require_once dirname( __FILE__ ) . '/widgets/popular-courses.php';
-require_once dirname( __FILE__ ) . '/widgets/recent-courses.php';
+require_once dirname( __FILE__ ) . '/Widgets/course-extra.php';
+require_once dirname( __FILE__ ) . '/Widgets/course-info.php';
+require_once dirname( __FILE__ ) . '/Widgets/course-progress.php';
+require_once dirname( __FILE__ ) . '/Widgets/featured-courses.php';
+require_once dirname( __FILE__ ) . '/Widgets/popular-courses.php';
+require_once dirname( __FILE__ ) . '/Widgets/recent-courses.php';
 
 add_action(
 	'widgets_init',

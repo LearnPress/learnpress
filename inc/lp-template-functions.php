@@ -624,8 +624,9 @@ function learn_press_set_message( array $message_data = [] ) {
 		return;
 	}
 
-	// Set cookie for lp-message, allow get,set cookie on js.
-	add_option( 'lp-message', $message_data );
+	$customer_id      = LP_Session_Handler::instance()->get_customer_id();
+	$customer_message = [ $customer_id => $message_data ];
+	update_option( 'lp-customer-message', $customer_message );
 }
 
 /**
@@ -636,9 +637,17 @@ function learn_press_set_message( array $message_data = [] ) {
  */
 function learn_press_show_message() {
 	try {
-		$message_data = get_option( 'lp-message' );
-		delete_option( 'lp-message' );
-		Template::instance()->get_frontend_template( 'global/lp-message.php', compact( 'message_data' ) );
+		$customer_id      = LP_Session_Handler::instance()->get_customer_id();
+		$message_data     = get_option( 'lp-customer-message' ) ?? [];
+		$customer_message = $message_data[ $customer_id ] ?? '';
+		if ( ! $customer_message ) {
+			return;
+		}
+
+		unset( $message_data[ $customer_id ] );
+		update_option( 'lp-customer-message', $message_data );
+		//delete_option( 'lp-message' );
+		Template::instance()->get_frontend_template( 'global/lp-message.php', compact( 'customer_message' ) );
 	} catch ( Throwable $e ) {
 		error_log( $e->getMessage() );
 	}
@@ -1462,7 +1471,11 @@ function learn_press_content_item_summary_class( $more = '', $echo = true ) {
 	return $output;
 }
 
+/**
+ * @deprecated 4.2.3.1
+ */
 function learn_press_content_item_summary_classes( $classes ) {
+	_deprecated_function( __FUNCTION__, '4.2.3.1' );
 	$item = LP_Global::course_item();
 
 	if ( ! $item ) {

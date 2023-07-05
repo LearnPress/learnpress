@@ -6,7 +6,7 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  4.0.1
+ * @version  4.0.2
  */
 
 defined( 'ABSPATH' ) || exit();
@@ -23,13 +23,17 @@ $message_confirm_complete_item = sprintf( '%s "%s" ?', __( 'Do you want to compl
 $completed                     = $user->has_completed_item( $item->get_id(), $course->get_id() );
 
 if ( $completed ) :
+	$user_item_data = $user->get_item_data( $item->get_id(), $course->get_id() );
+	if ( empty( $user_item_data ) ) {
+		return;
+	}
 	?>
 	<div>
 		<?php
 		echo sprintf(
 			'%s %s',
 			esc_html__( 'You have completed this lesson at ', 'learnpress' ),
-			$user->get_item_data( $item->get_id(), $course->get_id(), 'end_time' )
+			$user_item_data->get_end_time()->format( 'i18n_has_time' )
 		)
 		?>
 	</div>
