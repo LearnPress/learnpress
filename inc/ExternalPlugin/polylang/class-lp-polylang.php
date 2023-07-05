@@ -200,6 +200,7 @@ class LP_Polylang {
 
 		return $url;
 	}
+
 	/**
 	 * [pll_rewrite_url_for_lp rewrite url when  The language is set from the directory name in pretty permalinks Polylang]
 	 * @param  [array] $rules [rewrite url rule]
@@ -219,129 +220,21 @@ class LP_Polylang {
 			return $rules;
 		}
 		if ( $pll_options['force_lang'] == 1 ) {
-			$course_slug = LP_Settings::get_option( 'course_base', 'courses' );
-			if ( empty( $course_slug ) ) {
-				$course_slug = 'courses';
-			}
-			$course_slug       = preg_replace( '!^/!', '', $course_slug );
-			$lesson_slug       = urldecode( sanitize_title_with_dashes( LP_Settings::get_option( 'lesson_slug', 'lessons' ) ) );
-			$quiz_slug         = urldecode( sanitize_title_with_dashes( LP_Settings::get_option( 'quiz_slug', 'quizzes' ) ) );
-			$course_item_slugs = array(
-				LP_LESSON_CPT => $lesson_slug,
-				LP_QUIZ_CPT   => $quiz_slug,
-			);
-			$lang_slug         = $pll_options['rewrite'] == 1 ? $lang_current : 'language/' . $lang_current;
-			if ( isset( $rules['course-items'] ) && ! empty( $rules['course-items'] )
-				&& isset( $pll_options['post_types'] ) && ! empty( $pll_options['post_types'] ) ) {
-				foreach ( $rules['course-items'] as $post_type => $rule ) {
-					if ( in_array( $post_type, $pll_options['post_types'] ) ) {
-						$rules['course-items'][ $post_type ] = array(
-							"^{$lang_slug}/{$course_slug}/([^/]+)(?:/{$course_item_slugs[ $post_type ]}/([^/]+))?/?$" =>
-							'index.php?' . LP_COURSE_CPT . '=$matches[1]&course-item=$matches[2]&item-type=' . $post_type . '&lang=' . $lang_current,
-						);
+			$lang_slug = $pll_options['rewrite'] == 1 ? $lang_current . '/' : 'language/' . $lang_current . '/';
+			if ( ! empty( $rules ) ) {
+				foreach ( $rules as $key => $rule ) {
+					foreach ( $rule as $key2 => $sub_rule ) {
+						$new_key                = array_key_first( $sub_rule );
+						$new_val                = array_values( $sub_rule )[0] . '&lang=' . $lang_current;
+						$new_key                = substr_replace( $new_key, '^' . $lang_slug, strpos( $new_key, '^' ), strlen( '^' ) );
+						$rules[ $key ][ $key2 ] = array( $new_key => $new_val );
 					}
 				}
-				if ( class_exists( 'LP_Addon_Assignment_Preload' ) ) {
-					$assignment_slug                            = urldecode( sanitize_title_with_dashes( LP_Settings::get_option( 'assignment_slug', 'assignments' ) ) );
-					$rules['course-items'][ LP_ASSIGNMENT_CPT ] = [
-						"^{$lang_slug}/{$course_slug}/([^/]+)(?:/{$assignment_slug}/([^/]+))?/?$" =>
-						'index.php?' . LP_COURSE_CPT . '=$matches[1]&course-item=$matches[2]&item-type=' . LP_ASSIGNMENT_CPT . '&lang=' . $lang_current,
-					];
-				}
-				if ( class_exists( 'LP_Addon_H5p_Preload' ) ) {
-					$h5p_slug                            = urldecode( sanitize_title_with_dashes( LP_Settings::get_option( 'h5p_slug', 'h5p' ) ) );
-					$rules['course-items'][ LP_H5P_CPT ] = [
-						"^{$lang_slug}/{$course_slug}/([^/]+)(?:/{$h5p_slug}/([^/]+))?/?$" =>
-						'index.php?' . LP_COURSE_CPT . '=$matches[1]&course-item=$matches[2]&item-type=' . LP_H5P_CPT . '&lang=' . $lang_current,
-					];
-				}
-			}
-			if ( isset( $rules['course-with-cat-items'] ) && ! empty( $rules['course-with-cat-items'] )
-				&& isset( $pll_options['post_types'] ) && ! empty( $pll_options['post_types'] ) ) {
-				foreach ( $rules['course-with-cat-items'] as $post_type => $rule ) {
-					if ( in_array( $post_type, $pll_options['post_types'] ) ) {
-						$rules['course-with-cat-items'][ $post_type ] = [
-							"^{$lang_slug}/{$course_slug}(?:/{$course_item_slug}/([^/]+))?/?$" =>
-								'index.php?' . LP_COURSE_CPT . '=$matches[2]&course_category=$matches[1]&course-item=$matches[3]&item-type=' . $post_type . '&lang=' . $lang_current,
-						];
-					}
-				}
-				if ( class_exists( 'LP_Addon_Assignment_Preload' ) ) {
-					$assignment_slug                                     = urldecode(
-						sanitize_title_with_dashes(
-							LP_Settings::get_option( 'assignment_slug', 'assignments' )
-						)
-					);
-					$rules['course-with-cat-items'][ LP_ASSIGNMENT_CPT ] = [
-						"^{$lang_slug}/{$course_slug}(?:/{$assignment_slug}/([^/]+))?/?$" =>
-							'index.php?' . LP_COURSE_CPT . '=$matches[2]&course_category=$matches[1]&course-item=$matches[3]&item-type=' . LP_ASSIGNMENT_CPT . '&lang=' . $lang_current,
-					];
-				}
-				if ( class_exists( 'LP_Addon_H5p_Preload' ) ) {
-					$h5p_slug                                     = urldecode( sanitize_title_with_dashes( LP_Settings::get_option( 'h5p_slug', 'h5p' ) ) );
-					$rules['course-with-cat-items'][ LP_H5P_CPT ] = [
-						"^{$lang_slug}/{$course_slug}(?:/{$h5p_slug}/([^/]+))?/?$" =>
-							'index.php?' . LP_COURSE_CPT . '=$matches[2]&course_category=$matches[1]&course-item=$matches[3]&item-type=' . LP_H5P_CPT . '&lang=' . $lang_current,
-					];
-				}
-			}
-			//Profile
-			if ( isset( $rules['profile'] ) && !empty( $rules['profile'] ) ){
-
-				// $profile_id = $profile_translations[ $lang_current ];
-				$profile_id = learn_press_get_page_id( 'profile' );
-				if ( $profile_id ) {
-					// Rule view profile of user (self or another)
-					$page_profile_slug        = get_post_field( 'post_name', $profile_id );
-					$rules['profile']['user'] = [
-						"^{$lang_slug}/{$page_profile_slug}/([^/]*)/?$" =>
-							"index.php?page_id={$profile_id}&user=" . '$matches[1]&lang=' . $lang_current,
-					];
-
-					// Rule view profile of user (self or another) with tab
-					$profile = learn_press_get_profile();
-					$tabs    = $profile->get_tabs()->get();
-					if ( $tabs ) {
-						/**
-						 * @var LP_Profile_Tab $args
-						 */
-						foreach ( $tabs as $tab_key => $args ) {
-							$tab_slug                     = $args->get( 'slug' ) ?? $tab_key;
-							$rules['profile'][ $tab_key ] = [
-								"^{$lang_slug}/{$page_profile_slug}/([^/]*)/({$tab_slug})/?([0-9]*)/?$" =>
-									'index.php?page_id=' . $profile_id . '&user=$matches[1]&view=$matches[2]&view_id=$matches[3]&lang=' . $lang_current,
-							];
-
-							if ( ! empty( $args->get( 'sections' ) ) ) {
-								foreach ( $args->get( 'sections' ) as $section_key => $section ) {
-									$section_slug                     = $section['slug'] ?? $section_key;
-									$rules['profile'][ $section_key ] = [
-										"^{$lang_slug}/{$page_profile_slug}/([^/]*)/({$tab_slug})/({$section_slug})/?([0-9]*)?$" =>
-											'index.php?page_id=' . $profile_id . '&user=$matches[1]&view=$matches[2]&section=$matches[3]&view_id=$matches[4]&lang=' . $lang_current,
-									];
-								}
-							}
-						}
-					}
-				}
-			}
-			if ( isset( $rules['instructor'] ) ) {
-				$single_instructor_page_id       = learn_press_get_page_id( 'single_instructor' );
-				$instructor_slug                 = get_post_field( 'post_name', $single_instructor_page_id );
-				$rules['instructor']['has_name'] = [
-					"^{$lang_slug}/{$instructor_slug}/([^/]+)/?(?:page/)?([^/][0-9]*)?/?$" =>
-					'index.php?page_id=' . $single_instructor_page_id . '&is_single_instructor=1&instructor_name=$matches[1]&paged=$matches[2]&lang=' . $lang_current,
-				];
-				$rules['instructor']['no_name']  = [
-					"^{$lang_slug}/{$instructor_slug}/?$" =>
-						'index.php?page_id=' . $single_instructor_page_id . '&is_single_instructor=1&paged=$matches[2]&lang=' . $lang_current,
-				];
 			}
 		}
 		return $rules;
 	}
-
-
+	
 	/**
 	 * [get_pll_options get polylang settings]
 	 * @return [array]
