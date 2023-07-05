@@ -4,10 +4,10 @@
  * Plugin URI: http://thimpress.com/learnpress
  * Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
  * Author: ThimPress
- * Version: 4.2.3-beta-1
+ * Version: 4.2.3.1
  * Author URI: http://thimpress.com
  * Requires at least: 5.8
- * Tested up to: 6.2
+ * Tested up to: 6.2.2
  * Requires PHP: 7.0
  * Text Domain: learnpress
  * Domain Path: /languages/
@@ -18,6 +18,15 @@
 /**
  * Prevent loading this file directly
  */
+
+use LearnPress\ExternalPlugin\Elementor\LPElementor;
+use LearnPress\Shortcodes\ListInstructorsShortcode;
+use LearnPress\Shortcodes\SingleInstructorShortcode;
+use LearnPress\TemplateHooks\Instructor\ListInstructorsTemplate;
+use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
+use LearnPress\TemplateHooks\Profile\ProfileInstructorStatisticsTemplate;
+use LearnPress\TemplateHooks\Profile\ProfileStudentStatisticsTemplate;
+
 defined( 'ABSPATH' ) || exit();
 
 if ( ! defined( 'LP_PLUGIN_FILE' ) ) {
@@ -198,6 +207,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * Includes needed files.
 		 */
 		public function includes() {
+			require_once LP_PLUGIN_PATH . 'vendor/autoload.php';
+
 			// Include required files load anywhere, both frontend and backend.
 			$this->include_files_global();
 
@@ -221,7 +232,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * @return void
 		 */
 		private function include_files_global() {
-			require_once 'inc/Helper/Singleton.php';
 			require_once 'inc/class-lp-multi-language.php';
 
 			// Filter query .
@@ -255,14 +265,20 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/databases/class-thim-cace-db.php';
 
 			// Read files config on folder config .
-			require_once 'inc/Helper/Config.php';
+			//require_once 'inc/Helper/Config.php';
 
 			// File system .
 			require_once 'inc/class-lp-file-system.php';
 
 			// File helper
 			require_once 'inc/class-lp-helper.php';
-			require_once 'inc/Helper/Template.php';
+			//require_once 'inc/Helper/Template.php';
+
+			// Template Hooks.
+			ListInstructorsTemplate::instance();
+			SingleInstructorTemplate::instance();
+			ProfileInstructorStatisticsTemplate::instance();
+			ProfileStudentStatisticsTemplate::instance();
 
 			// Models
 			require_once 'inc/models/class-lp-rest-response.php';
@@ -287,6 +303,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			// Background processes.
 			require_once 'inc/libraries/wp-background-process/wp-background-processing.php';
 			require_once 'inc/background-process/abstract-lp-async-request.php';
+			//require_once 'inc/background-process/abstract-lp-async-task.php';
 			require_once 'inc/background-process/class-lp-background-single-course.php';
 			require_once 'inc/background-process/class-lp-background-single-email.php';
 			require_once 'inc/background-process/class-lp-background-thim-cache.php';
@@ -371,6 +388,10 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/user-item/class-lp-user-item-course.php';
 			require_once 'inc/user-item/class-lp-user-item-quiz.php';
 			require_once 'inc/user-item/class-lp-quiz-results.php';
+
+			// Shortcodes.
+			SingleInstructorShortcode::instance();
+			ListInstructorsShortcode::instance();
 			require_once 'inc/class-lp-shortcodes.php';
 
 			// include template functions .
@@ -400,7 +421,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			// For plugin Elementor
 			if ( defined( 'ELEMENTOR_VERSION' ) ) {
-				require_once 'inc/external-plugin/elementor/class-lp-elementor.php';
+				LPElementor::instance();
 			}
 
 			// TODO: update frontend editor before move to function include_files_admin.
@@ -603,7 +624,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			// Polylang
 			if ( defined( 'POLYLANG_VERSION' ) ) {
-				require_once 'inc/external-plugin/polylang/class-lp-polylang.php';
+				require_once 'inc/ExternalPlugin/polylang/class-lp-polylang.php';
 				LP_Polylang::instance();
 			}
 

@@ -1,4 +1,7 @@
 <?php
+
+use LearnPress\Helpers\Template;
+
 class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 	public function __construct() {
 		$this->namespace = 'lp/v1';
@@ -9,28 +12,35 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 
 	public function register_routes() {
 		$this->routes = array(
-			'statistic'     => array(
+			'student/statistic'    => array(
 				array(
 					'methods'             => WP_REST_Server::READABLE,
-					'callback'            => array( $this, 'statistic' ),
+					'callback'            => array( $this, 'student_statistics' ),
 					'permission_callback' => array( $this, 'check_permission' ),
 				),
 			),
-			'course-tab'    => array(
+			'instructor/statistic' => array(
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'instructor_statistics' ),
+					'permission_callback' => '__return_true',
+				),
+			),
+			'course-tab'           => array(
 				array(
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'course_tab' ),
 					'permission_callback' => array( $this, 'check_permission' ),
 				),
 			),
-			'course-attend' => array(
+			'course-attend'        => array(
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'course_attend' ),
 					'permission_callback' => array( $this, 'check_permission' ),
 				),
 			),
-			'get-avatar'    => array(
+			'get-avatar'           => array(
 				array(
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'get_avatar' ),
@@ -39,7 +49,7 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 					},
 				),
 			),
-			'upload-avatar' => array(
+			'upload-avatar'        => array(
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'upload_avatar' ),
@@ -48,7 +58,7 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 					},
 				),
 			),
-			'remove-avatar' => array(
+			'remove-avatar'        => array(
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'remove_avatar' ),
@@ -76,11 +86,11 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 			return false;
 		}
 
-		$profile = learn_press_get_profile( $user_id );
+		/*$profile = learn_press_get_profile( $user_id );
 
-		if ( ! $profile->current_user_can( 'view-tab-courses' ) ) {
+		if ( ! $profile->current_user_can( 'view-tab-my-courses' ) ) {
 			return false;
-		}
+		}*/
 
 		return true;
 	}
@@ -201,7 +211,14 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 		return rest_ensure_response( $response );
 	}
 
-	public function statistic( WP_REST_Request $request ) {
+	/**
+	 * Statistics of a student.
+	 *
+	 * @param WP_REST_Request $request
+	 *
+	 * @return WP_Error|WP_HTTP_Response|WP_REST_Response
+	 */
+	public function student_statistics( WP_REST_Request $request ) {
 		$user_id        = $request->get_param( 'userID' );
 		$response       = new LP_REST_Response();
 		$response->data = '';
@@ -212,24 +229,131 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 			}
 
 			$user = learn_press_get_user( $user_id );
+			if ( ! $user ) {
+				throw new Exception( esc_html__( 'The user does not exist!', 'learnpress' ) );
+			}
 
+			$statistic = $user->get_student_statistic();
+			$data      = apply_filters(
+				'learn-press/profile/student-statistics/info',
+				[
+					'enrolled_courses'   => [
+						'title' => __( 'Total enrolled courses', 'learnpress' ),
+						'label' => __( 'Enrolled Course', 'learnpress' ),
+						'count' => $statistic['enrolled_courses'] ?? 0,
+					],
+					'in_progress_course' => [
+						'title' => __( 'Total course is in progress', 'learnpress' ),
+						'label' => __( 'Inprogress Course', 'learnpress' ),
+						'count' => $statistic['in_progress_course'] ?? 0,
+					],
+					'finished_courses'   => [
+						'title' => __( 'Total courses finished', 'learnpress' ),
+						'label' => __( 'Finished Course', 'learnpress' ),
+						'count' => $statistic['finished_courses'] ?? 0,
+					],
+					'passed_courses'     => [
+						'title' => __( 'Total courses passed', 'learnpress' ),
+						'label' => __( 'Passed Course', 'learnpress' ),
+						'count' => $statistic['passed_courses'] ?? 0,
+					],
+					'failed_courses'     => [
+						'title' => __( 'Total courses failed', 'learnpress' ),
+						'label' => __( 'Failed Course', 'learnpress' ),
+						'count' => $statistic['failed_courses'] ?? 0,
+					],
+				]
+			);
+
+			ob_start();
+			Template::instance()->get_frontend_template(
+				'profile/tabs/statistics/student-statistics.php',
+				compact( 'data' )
+			);
+			$response->data   = ob_get_clean();
+			$response->status = 'success';
+		} catch ( Exception $e ) {
+			ob_end_clean();
+			$response->message = $e->getMessage();
+		}
+
+		return rest_ensure_response( $response );
+	}
+
+	/**
+	 * Statistics of an instructor.
+	 *
+	 * @param WP_REST_Request $request
+	 *
+	 * @return WP_Error|WP_HTTP_Response|WP_REST_Response
+	 */
+	public function instructor_statistics( WP_REST_Request $request ) {
+		$user_id        = $request->get_param( 'userID' );
+		$response       = new LP_REST_Response();
+		$response->data = '';
+
+		try {
+			if ( empty( $user_id ) ) {
+				throw new Exception( esc_html__( 'No user ID found!', 'learnpress' ) );
+			}
+
+			$user = learn_press_get_user( $user_id );
 			if ( ! $user ) {
 				throw new Exception( esc_html__( 'The user does not exist!', 'learnpress' ) );
 			}
 
 			$profile = learn_press_get_profile( $user_id );
-
 			if ( $profile instanceof WP_Error ) {
 				throw new Exception( $profile->get_error_message() );
 			}
 
-			$statistic = $profile->get_statistic_info();
+			$statistic = $user->get_instructor_statistic();
 
-			do_action( 'learnpress/rest/frontend/profile/statistic', $request );
+			$data = apply_filters(
+				'learn-press/profile/instructor-statistics/info',
+				[
+					'total_course'        => [
+						'title' => __( 'Total Course', 'learnpress' ),
+						'label' => __( 'Total Course', 'learnpress' ),
+						'count' => $statistic['total_course'] ?? 0,
+					],
+					'published_course'    => [
+						'title' => __( 'Published Course', 'learnpress' ),
+						'label' => __( 'Published Course', 'learnpress' ),
+						'count' => $statistic['published_course'] ?? 0,
+					],
+					'pending_course'      => [
+						'title' => __( 'Pending Course', 'learnpress' ),
+						'label' => __( 'Pending Course', 'learnpress' ),
+						'count' => $statistic['pending_course'] ?? 0,
+					],
+					'total_student'       => [
+						'title' => __( 'Total Student', 'learnpress' ),
+						'label' => __( 'Total Student', 'learnpress' ),
+						'count' => $statistic['total_student'] ?? 0,
+					],
+					'student_completed'   => [
+						'title' => __( 'Student Completed', 'learnpress' ),
+						'label' => __( 'Student Completed', 'learnpress' ),
+						'count' => $statistic['student_completed'] ?? 0,
+					],
+					'student_in_progress' => [
+						'title' => __( 'Student In-progress', 'learnpress' ),
+						'label' => __( 'Student In-progress', 'learnpress' ),
+						'count' => $statistic['student_in_progress'] ?? 0,
+					],
+				]
+			);
 
-			$response->data   = learn_press_get_template_content( 'profile/tabs/courses/general-statistic', compact( 'statistic', 'user' ) );
+			ob_start();
+			Template::instance()->get_frontend_template(
+				'profile/tabs/statistics/instructor-statistics.php',
+				compact( 'data' )
+			);
+			$response->data   = ob_get_clean();
 			$response->status = 'success';
 		} catch ( Exception $e ) {
+			ob_end_clean();
 			$response->message = $e->getMessage();
 		}
 

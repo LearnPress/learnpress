@@ -201,6 +201,20 @@ class LP_Datetime {
 			case 'i18n':
 				$date_str = learn_press_date_i18n( $this->getTimestamp() );
 				break;
+			case 'i18n_has_time':
+				$date_time_format_wp = apply_filters(
+					'learn-press/datetime/format/i18n_has_time',
+					get_option( 'date_format' ) . ' ' . get_option( 'time_format' )
+				);
+				$date_str            = apply_filters(
+					'learn-press/datetime/date/i18n_has_time',
+					sprintf(
+						'%s',
+						gmdate( $date_time_format_wp, $this->getTimestamp() )
+					),
+					$this->getTimestamp()
+				);
+				break;
 			/*case 'timestamp':
 				$date_str = $this->getTimestamp();
 				break;*/

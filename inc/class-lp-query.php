@@ -102,14 +102,16 @@ class LP_Query {
 	 */
 	public function add_rewrite_tags() {
 		$tags = [
-			'%course-item%'       => '([^&]+)',
-			'%item-type%'         => '([^&]+)',
-			'%question%'          => '([^&]+)',
-			'%user%'              => '([^/]*)',
-			'%view%'              => '([^/]*)',
-			'%view_id%'           => '(.*)',
-			'%section%'           => '(.*)',
-			'%content-item-only%' => '(.*)',
+			'%course-item%'          => '([^&]+)',
+			'%item-type%'            => '([^&]+)',
+			'%question%'             => '([^&]+)',
+			'%user%'                 => '([^/]*)',
+			'%view%'                 => '([^/]*)',
+			'%view_id%'              => '(.*)',
+			'%section%'              => '(.*)',
+			'%content-item-only%'    => '(.*)',
+			'%is_single_instructor%' => '(.*)',
+			'%instructor_name%'      => '(.*)',
 		];
 
 		$tags = apply_filters( 'learn-press/rewrite/tags', $tags );
@@ -299,6 +301,18 @@ class LP_Query {
 				}
 			}
 		}
+
+		// Instructor detail
+		$single_instructor_page_id       = learn_press_get_page_id( 'single_instructor' );
+		$instructor_slug                 = get_post_field( 'post_name', $single_instructor_page_id );
+		$rules['instructor']['has_name'] = [
+			"^{$instructor_slug}/([^/]+)/?(?:page/)?([^/][0-9]*)?/?$" =>
+			'index.php?page_id=' . $single_instructor_page_id . '&is_single_instructor=1&instructor_name=$matches[1]&paged=$matches[2]',
+		];
+		$rules['instructor']['no_name']  = [
+			"^{$instructor_slug}/?$" =>
+				'index.php?page_id=' . $single_instructor_page_id . '&is_single_instructor=1&paged=$matches[2]',
+		];
 
 		return apply_filters( 'learn-press/rewrite/rules', $rules );
 	}

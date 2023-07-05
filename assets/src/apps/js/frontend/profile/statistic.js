@@ -3,14 +3,22 @@ import { addQueryArgs } from '@wordpress/url';
 // Rest API load content course progress - Nhamdv.
 const courseStatistics = () => {
 	const elements = document.querySelector( '.learn-press-profile-course__statistic' );
-
 	if ( ! elements ) {
 		return;
 	}
 
+	const tabActive = document.querySelector( '.lp-profile-nav-tabs li.active' );
+	if ( ! tabActive ) {
+		return;
+	}
+
+	let apiUrl = 'lp/v1/profile/student/statistic';
+	if ( tabActive.classList.contains( 'courses' ) ) {
+		apiUrl = 'lp/v1/profile/instructor/statistic';
+	}
 	const getResponse = ( ele, dataset ) => {
 		wp.apiFetch( {
-			path: addQueryArgs( 'lp/v1/profile/statistic', dataset ),
+			path: addQueryArgs( apiUrl, dataset ),
 			method: 'GET',
 		} ).then( ( response ) => {
 			if ( response.status === 'success' && response.data ) {

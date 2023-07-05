@@ -109,6 +109,7 @@
 								order_id: this.contextId,
 								items: this.selected,
 								'lp-ajax': 'add_items_to_order',
+								nonce: lpGlobalSettings.nonce,
 							}, {
 								emulateJSON: true,
 								params: {},

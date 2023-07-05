@@ -982,7 +982,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			$url = false;
 			if ( $this->has_status( 'pending' ) ) {
 				$user = learn_press_get_current_user();
-				$url  = learn_press_user_profile_link( $user->get_id(), LP_Settings::instance()->get( 'profile_endpoints.profile-orders' ) );
+				$url  = learn_press_user_profile_link( $user->get_id(), LP_Settings::instance()->get( 'profile_endpoints.orders' ) );
 				if ( ! $force ) {
 					$url = esc_url_raw( add_query_arg( 'cancel-order', $this->get_id(), $url ) );
 				} else {

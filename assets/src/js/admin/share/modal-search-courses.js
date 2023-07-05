@@ -48,6 +48,7 @@ jQuery( document ).ready( function( $ ) {
 							paged: this.paged,
 							exclude: this.exclude,
 							'lp-ajax': 'modal_search_items',
+							nonce: lpGlobalSettings.nonce,
 						}, {
 							emulateJSON: true,
 							params: {},

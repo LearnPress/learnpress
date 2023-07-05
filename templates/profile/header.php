@@ -1,4 +1,6 @@
 <?php
+use LearnPress\Helpers\Template;
+
 /**
  * Template for displaying profile header.
  *
@@ -19,14 +21,16 @@ if ( ! isset( $user ) ) {
 $bio = $user->get_description();
 ?>
 <div class="lp-profile-right">
+	<?php
+	$sections = apply_filters(
+		'learn-press/profile/header/sections',
+		array(
+			'profile/header/user-name.php',
+			'profile/header/user-bio.php',
+		),
+		$user
+	);
 
-	<div class="lp-profile-username">
-		<?php echo wp_kses_post( $user->get_display_name() ); ?>
-	</div>
-	<?php if ( $bio ) : ?>
-		<div class="lp-profile-user-bio">
-			<?php echo wpautop( $bio ); ?>
-		</div>
-
-	<?php endif; ?>
+	Template::instance()->get_frontend_templates( $sections );
+	?>
 </div>

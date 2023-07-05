@@ -130,6 +130,10 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 				throw new Exception( __( 'You are a Guest', 'learnpress' ) );
 			}
 
+			if ( ! $user->can_create_course() && get_current_user_id() !== $user_id ) {
+				throw new Exception( __( 'You are a not permission!', 'learnpress' ) );
+			}
+
 			$course_data = $user->get_course_data( $course->get_id() );
 			if ( ! $course_data ) {
 				throw new Exception( __( 'You are a not enroll course', 'learnpress' ) );
@@ -166,7 +170,7 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 		$content  = '';
 
 		$course_id  = absint( $params['courseId'] ?? 0 );
-		$per_page   = LP_Settings::instance()->get( 'section_per_page', 1 );
+		$per_page   = LP_Settings::get_option( 'section_per_page', -1 );
 		$page       = absint( $params['page'] ?? 1 );
 		$order      = wp_unslash( $params['order'] ?? 'ASC' );
 		$search     = wp_unslash( $params['search'] ?? '' );
@@ -253,7 +257,7 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 		$params = $request->get_params();
 
 		$section_id = absint( $params['sectionId'] ?? 0 );
-		$per_page   = LP_Settings::instance()->get( 'course_item_per_page', 10 );
+		$per_page   = LP_Settings::get_option( 'course_item_per_page', -1 );
 		$page       = absint( $params['page'] ?? 1 );
 		$order      = LP_Helper::sanitize_params_submitted( $params['order'] ?? 'ASC' );
 		$search     = LP_Helper::sanitize_params_submitted( $params['search'] ?? '' );

@@ -300,14 +300,16 @@ class LP_User_Items_DB extends LP_Database {
 		$filter->only_fields[] = $this->wpdb->prepare( 'SUM(ui.status = %s) AS %s', LP_COURSE_PURCHASED, LP_COURSE_PURCHASED );
 		$filter->only_fields[] = $this->wpdb->prepare( 'SUM(ui.status = %s) AS %s', LP_COURSE_FINISHED, LP_COURSE_FINISHED );
 
-		$filter_user_attend_courses                      = new LP_User_Items_Filter();
-		$filter_user_attend_courses->only_fields         = array( 'MAX(ui.user_item_id) AS user_item_id' );
-		$filter_user_attend_courses->where[]             = $this->wpdb->prepare( 'AND ui.user_id = %s', $filter->user_id );
-		$filter_user_attend_courses->group_by            = 'ui.item_id';
-		$filter_user_attend_courses->return_string_query = true;
-		$query_get_course_attend                         = $this->get_user_courses( $filter_user_attend_courses );
+		if ( $filter->user_id ) {
+			$filter_user_attend_courses                      = new LP_User_Items_Filter();
+			$filter_user_attend_courses->only_fields         = array( 'MAX(ui.user_item_id) AS user_item_id' );
+			$filter_user_attend_courses->where[]             = $this->wpdb->prepare( 'AND ui.user_id = %s', $filter->user_id );
+			$filter_user_attend_courses->group_by            = 'ui.item_id';
+			$filter_user_attend_courses->return_string_query = true;
+			$query_get_course_attend                         = $this->get_user_courses( $filter_user_attend_courses );
+			$filter->where[]                                 = 'AND ui.user_item_id IN (' . $query_get_course_attend . ')';
+		}
 
-		$filter->where[]             = 'AND ui.user_item_id IN (' . $query_get_course_attend . ')';
 		$filter->return_string_query = true;
 
 		$filter = apply_filters( 'lp/user/course/query/count-status', $filter );
@@ -848,8 +850,8 @@ class LP_User_Items_DB extends LP_Database {
 
 		$filter              = new LP_User_Items_Filter();
 		$filter->item_type   = LP_COURSE_CPT;
-		$filter->only_fields = array( 'DISTINCT (ui.user_id)' );
-		$filter->field_count = 'DISTINCT (ui.user_id)';
+		$filter->only_fields = array( 'ui.user_id' );
+		$filter->field_count = 'ui.user_id';
 		$filter->where[]     = "AND item_id IN ({$query_courses_str})";
 		$filter->query_count = true;
 

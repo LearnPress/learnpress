@@ -27,6 +27,22 @@ $settings = LP_Settings::instance();
 	</tr>
 	<tr>
 		<th>
+			<?php _e( 'Page: Show a list of instructors', 'learnpress' ); ?>
+		</th>
+		<td>
+			<?php learn_press_pages_dropdown( 'settings[pages][instructors_page_id]', $settings->get( 'instructors_page_id' ) ); ?>
+		</td>
+	</tr>
+	<tr>
+		<th>
+			<?php _e( 'Page: single instructor', 'learnpress' ); ?>
+		</th>
+		<td>
+			<?php learn_press_pages_dropdown( 'settings[pages][single_instructor_page_id]', $settings->get( 'single_instructor_page_id' ) ); ?>
+		</td>
+	</tr>
+	<tr>
+		<th>
 			<?php _e( 'Page: Profile', 'learnpress' ); ?>
 		</th>
 		<td>

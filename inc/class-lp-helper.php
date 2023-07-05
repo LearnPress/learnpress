@@ -262,37 +262,50 @@ class LP_Helper {
 	/**
 	 * Create LP static page.
 	 *
-	 * @param string $name
-	 * @param string $assign_to - Optional. Assign to LP page after creating successful.
+	 * @param array $args
+	 * @param string $key_option
 	 *
 	 * @return bool|int|WP_Error
 	 */
-	public static function create_page( $name, $assign_to = '' ) {
-		$args = array(
-			'post_type'   => 'page',
-			'post_title'  => $name,
-			'post_status' => 'publish',
-		);
+	public static function create_page( array $args, string $key_option ) {
+		$page_id = 0;
 
-		$page_id = wp_insert_post( $args );
-
-		if ( ! $page_id ) {
-			return false;
-		}
-
-		update_post_meta( $page_id, '_lp_page', 'yes' );
-
-		if ( $assign_to ) {
-			$pages = learn_press_static_pages();
-
-			if ( ! empty( $pages[ $assign_to ] ) ) {
-				update_option( "learn_press_{$assign_to}_page_id", $page_id );
-
-				// Update cache
-				$page_ids               = learn_press_static_page_ids();
-				$page_ids[ $assign_to ] = $page_id;
-				LP_Object_Cache::set( 'static-page-ids', $page_ids, 'learnpress' );
+		try {
+			if ( ! isset( $args['post_title'] ) ) {
+				throw new Exception( __( 'Missing post title', 'learnpress' ) );
 			}
+
+			if ( preg_match( '#^learn_press_single_instructor_page_id.*#', $key_option ) ) {
+				$args['post_content'] = '<!-- wp:shortcode -->[learn_press_single_instructor]<!-- /wp:shortcode -->';
+			} elseif ( preg_match( '#^learn_press_instructors_page_id.*#', $key_option ) ) {
+				$args['post_content'] = '<!-- wp:shortcode -->[learn_press_instructors]<!-- /wp:shortcode -->';
+			} elseif ( preg_match( '#^learn_press_profile_page_id.*#', $key_option ) ) {
+				$args['post_content'] = '<!-- wp:shortcode -->[learn_press_profile]<!-- /wp:shortcode -->';
+			}
+
+			$args = array_merge(
+				[
+					'post_title'     => '',
+					'post_name'      => '',
+					'post_status'    => 'publish',
+					'post_type'      => 'page',
+					'comment_status' => 'closed',
+					'post_content'   => '',
+					'post_author'    => get_current_user_id(),
+				],
+				$args
+			);
+
+			$page_id = wp_insert_post( $args );
+			if ( ! $page_id ) {
+				return false;
+			}
+
+			update_option( $key_option, $page_id );
+			$lp_settings_cache = new LP_Settings_Cache( true );
+			$lp_settings_cache->clean_lp_settings();
+		} catch ( Throwable $e ) {
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 
 		return $page_id;

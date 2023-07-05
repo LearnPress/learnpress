@@ -451,6 +451,8 @@ add_action( 'learn-press/course-item-content', LearnPress::instance()->template(
 add_action( 'learn-press/user-profile', LearnPress::instance()->template( 'profile' )->func( 'sidebar' ), 10 );
 add_action( 'learn-press/user-profile', LearnPress::instance()->template( 'profile' )->func( 'content' ), 20 );
 
+add_action( 'learn-press/user-profile/private', LearnPress::instance()->template( 'profile' )->func( 'sidebar' ), 10 );
+
 add_action( 'learn-press/user-profile-account', LearnPress::instance()->template( 'profile' )->text( ' <div class="lp-profile-left">', 'user-profile-account-left-open' ), 5 );
 add_action( 'learn-press/user-profile-account', LearnPress::instance()->template( 'profile' )->func( 'avatar' ), 10 );
 add_action( 'learn-press/user-profile-account', LearnPress::instance()->template( 'profile' )->func( 'socials' ), 10 );
@@ -516,7 +518,7 @@ add_action( 'learn-press/after-checkout-form', LearnPress::instance()->template(
 
 // ******************************************************************************************************************* //
 
-add_action( 'learn-press/content-item-summary-class', 'learn_press_content_item_summary_classes', 15 );
+//add_action( 'learn-press/content-item-summary-class', 'learn_press_content_item_summary_classes', 15 );
 add_action(
 	'learn-press/before-content-item-summary/lp_quiz',
 	LearnPress::instance()->template( 'course' )->callback( 'content-quiz/title.php' ),

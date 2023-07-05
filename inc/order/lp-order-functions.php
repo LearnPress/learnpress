@@ -748,7 +748,7 @@ function learn_press_get_register_order_statuses() {
 }
 
 function _learn_press_get_order_status_description( $status ) {
-	$descriptions        = array(
+	$descriptions = array(
 		'pending'    => __( 'Order received in case a user purchases a course but doesn\'t finalize the order.', 'learnpress' ),
 		'processing' => __( 'Payment received and the order is awaiting fulfillment.', 'learnpress' ),
 		'completed'  => __( 'The order is fulfilled and completed.', 'learnpress' ),
@@ -805,7 +805,7 @@ if ( ! function_exists( 'learn_press_cancel_order_process' ) ) {
 		}
 
 		if ( ! $url ) {
-			$url = learn_press_user_profile_link( $user->get_id(), LP_Settings::instance()->get( 'profile_endpoints.profile-orders', 'orders' ) );
+			$url = learn_press_user_profile_link( $user->get_id(), LP_Settings::instance()->get( 'profile_endpoints.orders', 'orders' ) );
 		}
 		wp_safe_redirect( $url );
 		exit();

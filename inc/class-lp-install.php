@@ -7,7 +7,7 @@
  * @version 3.0.1
  */
 
-use LP\Helpers\Config;
+use LearnPress\Helpers\Config;
 
 defined( 'ABSPATH' ) || exit();
 
@@ -23,7 +23,15 @@ if ( ! function_exists( 'LP_Install' ) ) {
 		 *
 		 * @var array
 		 */
-		private static $_pages = array( 'checkout', 'profile', 'courses', 'become_a_teacher', 'term_conditions' );
+		private static $_pages = array(
+			'checkout',
+			'profile',
+			'courses',
+			'instructors',
+			'single_instructor',
+			'become_a_teacher',
+			'term_conditions',
+		);
 
 		protected function __construct() {
 			// From LP v4.2.2 temporary run create table thim_cache.
@@ -138,41 +146,29 @@ if ( ! function_exists( 'LP_Install' ) ) {
 					// Check if page has already existed
 					$page_id = get_option( "learn_press_{$page}_page_id", false );
 
-					if ( $page_id && get_post_type( $page_id ) == 'page' && get_post_status( $page_id ) == 'publish' ) {
+					if ( $page_id && get_post_type( $page_id ) === 'page' && get_post_status( $page_id ) == 'publish' ) {
 						continue;
 					}
 
-					//$page_id = self::_search_page( $page, $pages );
-
 					if ( $page === 'courses' ) {
 						$page_title = 'All Courses';
+						$page_slug  = $page;
+					} elseif ( 'single_instructor' === $page ) {
+						$page_title = 'Instructor';
+						$page_slug  = 'instructor';
+					} elseif ( 'instructors' === $page ) {
+						$page_title = 'Instructors';
 						$page_slug  = $page;
 					} else {
 						$page_title = ucwords( str_replace( '_', ' ', $page ) );
 						$page_slug  = 'lp-' . str_replace( '_', '-', $page );
 					}
 
-					if ( $page === 'profile' ) {
-						$page_content = '<!-- wp:shortcode -->[learn_press_profile]<!-- /wp:shortcode -->';
-					} else {
-						$page_content = '';
-					}
-
-					$page_id = wp_insert_post(
-						array(
-							'post_title'     => $page_title,
-							'post_name'      => $page_slug,
-							'post_status'    => 'publish',
-							'post_type'      => 'page',
-							'comment_status' => 'closed',
-							'post_content'   => $page_content ?? '',
-							'post_author'    => get_current_user_id(),
-						)
+					$data_create_page = array(
+						'post_title' => $page_title,
+						'post_name'  => $page_slug,
 					);
-
-					if ( ! $page_id instanceof WP_Error ) {
-						update_option( "learn_press_{$page}_page_id", $page_id );
-					}
+					LP_Helper::create_page( $data_create_page, "learn_press_{$page}_page_id" );
 				}
 
 				flush_rewrite_rules();

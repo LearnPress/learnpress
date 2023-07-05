@@ -45,7 +45,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 
 			add_filter( 'learn-press/modal-search-items-args', array( $this, 'filter_modal_search' ) );
 
-			add_filter(
+			/*add_filter(
 				'learn-press/dismissed-notice-response',
 				array(
 					$this,
@@ -53,7 +53,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 				),
 				10,
 				2
-			);
+			);*/
 
 			// get list items course of user | tungnx
 			add_action( 'pre_get_posts', array( $this, 'get_course_items_of_user_backend' ), 10 );
@@ -61,6 +61,17 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 
 			// Set link item course when edit on Backend | tungnx
 			add_filter( 'get_sample_permalink_html', array( $this, 'lp_course_set_link_item_backend' ), 10, 5 );
+
+			add_action(
+				'admin_init',
+				function () {
+					// From LP v4.2.3 temporary run create pages to add page instructors, single instructor for client upgrade LP.
+					// After a long time, will remove this code.
+					if ( is_admin() && ! defined( 'DOING_AJAX' ) ) {
+						LP_Install::create_pages();
+					}
+				}
+			);
 		}
 
 		/**
@@ -304,10 +315,12 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 				);
 
 				$all_pages = array(
-					'courses'          => __( 'Courses', 'learnpress' ),
-					'profile'          => __( 'Profile', 'learnpress' ),
-					'checkout'         => __( 'Checkout', 'learnpress' ),
-					'become_a_teacher' => __( 'Become a Teacher', 'learnpress' ),
+					'courses'           => __( 'Courses', 'learnpress' ),
+					'instructors'       => __( 'Instructors', 'learnpress' ),
+					'single_instructor' => __( 'Single Instructors', 'learnpress' ),
+					'profile'           => __( 'Profile', 'learnpress' ),
+					'checkout'          => __( 'Checkout', 'learnpress' ),
+					'become_a_teacher'  => __( 'Become a Teacher', 'learnpress' ),
 				);
 
 				foreach ( $all_pages as $name => $title ) {
@@ -684,8 +697,9 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		 *
 		 * @return array
 		 * @since 3.0.10
+		 * @deprecated 4.2.3.1
 		 */
-		public function on_dismissed_notice_response( $data, $notice ) {
+		/*public function on_dismissed_notice_response( $data, $notice ) {
 			switch ( $notice ) {
 				case 'skip-setup-wizard':
 					delete_option( 'learn_press_install' );
@@ -734,7 +748,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			}
 
 			return $data;
-		}
+		}*/
 
 		/**
 		 * Include all classes and functions used for admin

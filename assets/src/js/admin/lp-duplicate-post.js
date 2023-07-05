@@ -10,6 +10,7 @@
 			data: {
 				'lp-ajax': 'duplicator',
 				id: _id,
+				nonce: lpGlobalSettings.nonce,
 			},
 			success( response ) {
 				response = LP.parseJSON( response );

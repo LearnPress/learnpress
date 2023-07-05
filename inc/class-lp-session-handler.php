@@ -133,6 +133,7 @@ class LP_Session_Handler {
 
 	protected function init_hooks() {
 		add_action( 'wp_login', [ $this, 'handle_when_user_login_success' ], 10, 2 );
+		//add_action( 'set_current_user', [ $this, 'handle_user_logged_change' ], 10, 2 );
 		add_action( 'wp_logout', array( $this, 'destroy_session' ) );
 		//add_action( 'learn_press_set_cart_cookies', array( $this, 'set_customer_session_cookie' ), 10 );
 		//add_action( 'learn_press_cleanup_sessions', array( $this, 'cleanup_sessions' ), 10 );
@@ -190,7 +191,8 @@ class LP_Session_Handler {
 
 		/**
 		 * Must set wp_set_current_user to get_current_user_id and is_user_logged_in work correctly.
-		 * Don't know why WP 6.3 and lower run wrong.
+		 * Because WP note must do that.
+		 * Read more @see wp_signon
 		 * If version WP after run correctly, remove wp_set_current_user.
 		 */
 		wp_set_current_user( $user->ID );

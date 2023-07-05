@@ -41,7 +41,7 @@ class LP_Page_Controller {
 			//add_action( 'posts_pre_query', [ $this, 'posts_pre_query' ], 10, 2 );
 			add_filter( 'template_include', array( $this, 'template_loader' ), 10 );
 			add_filter( 'template_include', array( $this, 'check_pages' ), 30 );
-			add_filter( 'template_include', array( $this, 'auto_shortcode' ), 50 );
+			//add_filter( 'template_include', array( $this, 'auto_shortcode' ), 50 );
 
 			add_filter( 'the_post', array( $this, 'setup_data_for_item_course' ) );
 			add_filter( 'request', array( $this, 'remove_course_post_format' ), 1 );
@@ -60,6 +60,9 @@ class LP_Page_Controller {
 			add_action( 'init', [ $this, 'check_webhook_paypal_ipn' ] );
 			// Set again x-wp-nonce on header when has cache with not login.
 			add_filter( 'rest_send_nocache_headers', array( $this, 'check_x_wp_nonce_cache' ) );
+
+			// Rewrite lesson comment links
+			add_filter( 'get_comment_link', array( $this, 'edit_lesson_comment_links' ), 10, 2 );
 		}
 	}
 
@@ -119,48 +122,48 @@ class LP_Page_Controller {
 	/**
 	 * @deprecated 4.2.2.4
 	 */
-//	private function has_block_template( $template_name ) {
-//		if ( ! $template_name ) {
-//			return false;
-//		}
-//
-//		$has_template      = false;
-//		$template_name     = str_replace( 'course', LP_COURSE_CPT, $template_name );
-//		$template_filename = $template_name . '.html';
-//		// Since Gutenberg 12.1.0, the conventions for block templates directories have changed,
-//		// we should check both these possible directories for backwards-compatibility.
-//		$possible_templates_dirs = array( 'templates', 'block-templates' );
-//
-//		// Combine the possible root directory names with either the template directory
-//		// or the stylesheet directory for child themes, getting all possible block templates
-//		// locations combinations.
-//		$filepath        = DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $template_filename;
-//		$legacy_filepath = DIRECTORY_SEPARATOR . 'block-templates' . DIRECTORY_SEPARATOR . $template_filename;
-//		$possible_paths  = array(
-//			get_stylesheet_directory() . $filepath,
-//			get_stylesheet_directory() . $legacy_filepath,
-//			get_template_directory() . $filepath,
-//			get_template_directory() . $legacy_filepath,
-//		);
-//
-//		// Check the first matching one.
-//		foreach ( $possible_paths as $path ) {
-//			if ( is_readable( $path ) ) {
-//				$has_template = true;
-//				break;
-//			}
-//		}
-//
-//		/**
-//		 * Filters the value of the result of the block template check.
-//		 *
-//		 * @since x.x.x
-//		 *
-//		 * @param boolean $has_template value to be filtered.
-//		 * @param string $template_name The name of the template.
-//		 */
-//		return (bool) apply_filters( 'learnpress_has_block_template', $has_template, $template_name );
-//	}
+	//  private function has_block_template( $template_name ) {
+	//      if ( ! $template_name ) {
+	//          return false;
+	//      }
+	//
+	//      $has_template      = false;
+	//      $template_name     = str_replace( 'course', LP_COURSE_CPT, $template_name );
+	//      $template_filename = $template_name . '.html';
+	//      // Since Gutenberg 12.1.0, the conventions for block templates directories have changed,
+	//      // we should check both these possible directories for backwards-compatibility.
+	//      $possible_templates_dirs = array( 'templates', 'block-templates' );
+	//
+	//      // Combine the possible root directory names with either the template directory
+	//      // or the stylesheet directory for child themes, getting all possible block templates
+	//      // locations combinations.
+	//      $filepath        = DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $template_filename;
+	//      $legacy_filepath = DIRECTORY_SEPARATOR . 'block-templates' . DIRECTORY_SEPARATOR . $template_filename;
+	//      $possible_paths  = array(
+	//          get_stylesheet_directory() . $filepath,
+	//          get_stylesheet_directory() . $legacy_filepath,
+	//          get_template_directory() . $filepath,
+	//          get_template_directory() . $legacy_filepath,
+	//      );
+	//
+	//      // Check the first matching one.
+	//      foreach ( $possible_paths as $path ) {
+	//          if ( is_readable( $path ) ) {
+	//              $has_template = true;
+	//              break;
+	//          }
+	//      }
+	//
+	//      /**
+	//       * Filters the value of the result of the block template check.
+	//       *
+	//       * @since x.x.x
+	//       *
+	//       * @param boolean $has_template value to be filtered.
+	//       * @param string $template_name The name of the template.
+	//       */
+	//      return (bool) apply_filters( 'learnpress_has_block_template', $has_template, $template_name );
+	//  }
 
 	/**
 	 * Set title of pages
@@ -289,8 +292,10 @@ class LP_Page_Controller {
 	 *
 	 * @return string;
 	 * @since 3.3.0
+	 * @deprecated 4.2.3
 	 */
 	public function auto_shortcode( $template ) {
+		_deprecated_function( __METHOD__, '4.2.3' );
 		global $post;
 		$the_post = $post;
 		if ( $the_post && is_page( $the_post->ID ) ) {
@@ -923,6 +928,10 @@ class LP_Page_Controller {
 			return LP_PAGE_BECOME_A_TEACHER;
 		} elseif ( self::is_page_profile() ) {
 			return LP_PAGE_PROFILE;
+		} elseif ( learn_press_is_instructors() ) {
+			return LP_PAGE_INSTRUCTORS;
+		} elseif ( self::is_page_instructor() ) {
+			return LP_PAGE_INSTRUCTOR;
 		} else {
 			return apply_filters( 'learnpress/page/current', '' );
 		}
@@ -1005,6 +1014,42 @@ class LP_Page_Controller {
 		}
 
 		$flag = self::page_is( 'profile' );
+
+		return $flag;
+	}
+
+	/**
+	 * Check is page instructor
+	 *
+	 * @return bool
+	 */
+	public static function is_page_instructors(): bool {
+		static $flag;
+		if ( ! is_null( $flag ) ) {
+			return $flag;
+		}
+
+		$flag = self::page_is( 'instructors' );
+
+		return $flag;
+	}
+
+	/**
+	 * Check is page instructor
+	 *
+	 * @return bool
+	 */
+	public static function is_page_instructor(): bool {
+		global $wp_query;
+		static $flag;
+		if ( ! is_null( $flag ) ) {
+			return $flag;
+		}
+
+		$flag = false;
+		if ( $wp_query->get( 'is_single_instructor' ) ) {
+			$flag = true;
+		}
 
 		return $flag;
 	}
@@ -1122,6 +1167,30 @@ class LP_Page_Controller {
 		}
 
 		return $send_no_cache_headers;
+	}
+
+	/**
+	 * Override lesson comment permalink.
+	 *
+	 * @return string $link The comment permalink with '#comment-$id' appended.
+	 * @param string     $link    The comment permalink with '#comment-$id' appended.
+	 * @param WP_Comment $comment The current comment object.
+	 * @since 4.2.3
+	 * @version 1.0.0
+	 */
+	public function edit_lesson_comment_links( $link, $comment ): string {
+		try {
+			$comment = get_comment( $comment );
+			if ( get_post_type( $comment->comment_post_ID ) == LP_LESSON_CPT ) {
+				$link = wp_get_referer() . '#comment-' . $comment->comment_ID;
+			}
+
+			return $link;
+		} catch ( Throwable $e ) {
+			error_log( $e->getMessage() );
+		}
+
+		return $link;
 	}
 }
 

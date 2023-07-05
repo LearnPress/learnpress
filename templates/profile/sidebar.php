@@ -7,17 +7,17 @@
  * @version 4.0.0
  */
 
+use LearnPress\Helpers\Template;
+
 defined( 'ABSPATH' ) || exit;
-?>
 
-<div class="wrapper-profile-header wrap-fullwidth">
-	<div class="lp-content-area lp-profile-content-area">
-			<?php do_action( 'learn-press/user-profile-account' ); ?>
-	</div>
-</div>
 
-<aside id="profile-sidebar">
+$sections = apply_filters(
+	'learn-press/profile/sidebar/sections',
+	array(
+		'profile/sidebar/header.php',
+		'profile/sidebar/sidebar.php',
+	)
+);
 
-	<?php do_action( 'learn-press/user-profile-tabs' ); ?>
-
-</aside>
+Template::instance()->get_frontend_templates( $sections );

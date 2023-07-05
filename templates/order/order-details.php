@@ -104,6 +104,9 @@ if ( ! isset( $order ) ) {
 			<th scope="row"><?php esc_html_e( 'Subtotal', 'learnpress' ); ?></th>
 			<td><?php echo esc_html( $order->get_formatted_order_subtotal() ); ?></td>
 		</tr>
+
+		<?php do_action( 'learn-press/order/items-table-foot', $order ); ?>
+
 		<tr>
 			<th scope="row"><?php esc_html_e( 'Total', 'learnpress' ); ?></th>
 			<td><?php echo esc_html( $order->get_formatted_order_total() ); ?></td>
