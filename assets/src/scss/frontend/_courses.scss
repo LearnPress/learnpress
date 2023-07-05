@@ -339,18 +339,6 @@ a {
 			border-radius: unset;
 			line-height: unset;
 
-			/*&::before {
-				position: absolute;
-				z-index: 1;
-				top: 0;
-				right: 0;
-				bottom: 0;
-				left: 0;
-				opacity: 0;
-				background: rgba(0, 0, 0, 0.2);
-				content: "";
-				transition: all 0.3s;
-			}*/
 		}
 
 		img {
@@ -564,9 +552,9 @@ a {
 
 			.meta-item__value {
 				display: flex;
-				flex-direction: column-reverse;
-				justify-content: flex-end;
-				align-items: flex-end;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
 
 				.review-stars-rated {
 					margin-bottom: 0;
@@ -691,7 +679,7 @@ a {
 
 .learn-press-courses {
 	clear: both;
-	margin: 0 -15px;
+	margin: 0 -8px;
 	padding: 0 !important;
 	min-height: 300px;
 	list-style: none;
@@ -904,7 +892,7 @@ a {
 	&[data-layout="grid"] {
 
 		.course {
-			padding: 0 15px;
+			padding: 0 8px;
 
 			@media (max-width: 992px) {
 				width: 50%;

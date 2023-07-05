@@ -12,6 +12,10 @@ body {
 .lp-user-profile {
 	position: relative;
 	background: #fff;
+	.lp-content-area{
+		padding-left: 0;
+		padding-right: 0;
+	}
 
 	.lp-user-profile-avatar {
 
@@ -590,29 +594,66 @@ body {
 	#dashboard-general-statistic {
 		//margin-bottom: 30px;
 	}
+	#profile-content-courses{
+		.dashboard-general-statistic__row {	
+			.statistic-box {
+				width: calc((100% - 40px) / 6);
+				@media (max-width: 1440px) {
+					width: calc((100% - 16px) / 3);
+				}
+				@media (max-width: 990px) {
+					width: calc((100% - 40px) / 6);
+				}
+	
+				@media (max-width: 767px) {
+					width: calc((100% - 16px) / 3);
+				}
+			}
+		}
+	}
+
+	#profile-content-my-courses{
+		.dashboard-general-statistic__row {	
+			.statistic-box {
+				width: calc((100% - 32px) / 5);
+				@media (max-width: 767px) {
+					width: calc((100% - 16px) / 3);
+				}
+			}
+		}
+	}
 
 	.dashboard-general-statistic__row {
 		display: flex;
-		gap: 10px;
-		//justify-content: center;
-
+		gap: 8px;
+		flex-wrap: wrap;
+		@media (max-width: 520px) {
+			display: inherit;
+			background: #f9fafc;
+			padding: 10px 16px;
+		}
 		.statistic-box {
-			max-width: 270px;
 			padding: 15px 10px;
 			border: 1px solid #ccc;
-			border-radius: 4px;
 			background: #f9fafc;
 			text-align: center;
-			@media (max-width: 990px) {
-				width: 45%;
-			}
-
-			@media (max-width: 767px) {
-				width: 100%;
-				margin: 0 15px 15px;
-			}
+			display: flex;
+			flex-direction: column;
+			justify-content: space-between;
+			align-items: center;
 			&:hover {
 				background: #eaeaea;
+			}
+			@media (max-width: 520px) {
+				width: 100%!important;
+				border:none;
+				background: transparent;
+				flex-direction: row;
+				padding: 5px 0px;
+				border-bottom: 1px solid #f1f1f1;
+				&:last-child{
+					border-bottom: none;
+				}
 			}
 		}
 
@@ -641,12 +682,15 @@ body {
 	.statistic-box {
 
 		.statistic-box__text {
-			margin: 0 0 7px 0;
+			margin: 0 0 8px 0;
 			padding: 0;
 			color: #666;
 			font-size: 18px;
 			font-weight: 400;
 			line-height: 1;
+			@media (max-width: 767px) {
+				font-size: 16px;
+			}
 		}
 
 		.statistic-box__number {
@@ -654,6 +698,9 @@ body {
 			font-size: 18px;
 			font-weight: 500;
 			line-height: 1;
+			@media (max-width: 767px) {
+				font-size: 16px;
+			}
 		}
 
 	}
@@ -900,36 +947,52 @@ div.order-recover {
 .learn-press-profile-course__progress {
 
 	.lp_profile_course_progress {
-		border: 1px solid #eee;
-		border-top: 0;
-		overflow-x: auto;
-
+		width: 100%;
+		border-spacing: 0;
+		border: 0.5px solid #ccc;
 		&__item {
-			display: grid;
-			align-items: center;
-			padding: 15px;
-			border-top: 1px solid #eee;
-			grid-template-columns: 90px 1fr 80px 190px 140px;
-			column-gap: 20px;
-			div img {
-				max-width: 60px;
+			
+			img {
+				width: 100%;
+				aspect-ratio: 16/9;
+				object-fit: cover;
 				height: auto;
-				@media (max-width: 575px) {
-					max-width: 100%;
-				}
-			}
-			@media (max-width: 575px) {
 				display: block;
+			}
+			td{
+				text-align: center;
+				font-size: 14px;
+				line-height: 1.2;
+				border: 0.5px solid #ccc;
+				padding: 8px;
+				&:first-child{
+					width: 15%;
+					padding: 0px;
+				}
+				&:nth-child(2){
+					width: 25%;
+				}
+				&:nth-child(3){
+					width: 10%;
+				}
+				&:nth-child(4){
+					width: 25%;
+				}
+				&:nth-child(5){
+					width: 25%;
+				}
 			}
 		}
 
 		&__header {
-			background-color: #eee;
-			@media (max-width: 575px) {
-				display: flex;
-				overflow-x: auto;
-				white-space: nowrap;
-				justify-content: flex-end;
+			background: var(--lp-primary-color);
+			th{
+				font-size: 16px;
+				line-height: 1.2;
+				border: 0.5px solid #ccc;
+				padding: 16px 8px;
+				font-weight: 600;
+				text-align: center;
 			}
 		}
 	}

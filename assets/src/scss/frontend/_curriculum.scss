@@ -572,7 +572,6 @@ ul.learn-press-nav-tabs {
 		list-style: none;
 		.course-item-meta {
 			display: table-cell;
-			padding: 10px 0;
 			text-align: right;
 			vertical-align: middle;
 			white-space: nowrap;
@@ -650,7 +649,7 @@ ul.learn-press-nav-tabs {
 		transition: padding-left linear 0.15s;
 
 		@media (max-width: 767px) {
-			padding: 0 0 0 16px;
+			padding: 0 16px;
 		}
 
 		& > span {
@@ -663,9 +662,11 @@ ul.learn-press-nav-tabs {
 		}
 
 		.section-item-link {
-			display: table;
-			padding-right: 16px;
-			padding-left: 0;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			width: 100%;
+			padding: 16px 0;
 			border-bottom: none;
 			outline: none;
 			box-shadow: none;
@@ -682,10 +683,8 @@ ul.learn-press-nav-tabs {
 
 			&::before {
 				display: table-cell;
-				display: table-cell;
 				left: 0;
 				width: 20px;
-				padding: 15px 0;
 				color: var(--lp-primary-color);
 				font-family: "Font Awesome 5 Free";
 				font-size: 18px;
@@ -693,12 +692,30 @@ ul.learn-press-nav-tabs {
 				vertical-align: middle;
 				transition: left linear 0.15s;
 			}
+			.course-item-info{
+				width: 95%;
+				padding: 0 24px 0 8px;
+				.course-item-info-pre{
+					display: flex;
+					flex-flow: row-reverse;
+					justify-content: flex-end;
+					gap: 16px;
+					align-items: center;
+					.item-meta{
+						font-size: 12px;
+						line-height: 1.5;
+						&.duration{
+							background: transparent;
+						}
+					}
+				}
+			}
+			
 		}
 
 		.item-icon,
 		.item-name {
 			display: table-cell;
-			padding: 17px 16px;
 			color: #333;
 			font-size: 16px;
 			font-weight: 600;
