@@ -210,6 +210,11 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.2.3 (2023-07-05) =
+~ Fixed: Security.
+~ Item Course: completed, display Date Time by format WP.
+~ Tweak: message of LearnPress.
+
 = 4.2.3 (2023-07-03) =
 ~ Added: page list instructors.
 ~ Added: page single instructor.
