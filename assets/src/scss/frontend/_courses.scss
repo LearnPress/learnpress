@@ -9,12 +9,13 @@ a {
 	width: 100%;
 	max-width: 1170px;
 	margin: 0 auto;
-	@media (max-width: 1024px) {
-		padding-right: 15px;
-		padding-left: 15px;
-	}
 }
-
+.lp-archive-courses{
+	.lp-content-area {
+		padding-left: 15px;
+		padding-right: 15px;
+	}
+} 
 .lp-content-area::after,
 .lp-content-area::before {
 	display: table;
@@ -348,6 +349,8 @@ a {
 			transition: all 0.5s ease;
 			transform: scale(1);
 			max-width: unset !important;
+			aspect-ratio: 4/3;
+    		object-fit: cover;
 		}
 	}
 
@@ -552,9 +555,8 @@ a {
 
 			.meta-item__value {
 				display: flex;
-				display: flex;
 				flex-direction: column;
-				justify-content: center;
+				justify-content: space-between;
 
 				.review-stars-rated {
 					margin-bottom: 0;

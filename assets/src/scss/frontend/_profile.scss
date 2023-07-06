@@ -151,7 +151,11 @@ body {
 		max-width: 270px;
 		padding: 5px;
 		border: 2px solid #eaeaea;
-		border-radius: 3px;
+		border-radius: 8px;
+		.lp-user-profile-avatar{
+			border-radius: 8px;
+			overflow: hidden;
+		}
 	}
 
 	.lp-profile-right {
@@ -224,6 +228,7 @@ body {
 					font-size: 16px;
 					font-weight: 500;
 					line-height: 50px;
+					text-decoration: none;
 				}
 
 				> a {
@@ -258,7 +263,14 @@ body {
 
 						a {
 							border-bottom: 1px solid #f9f9f9;
-
+							font-size: 14px;
+							padding-left: 40px!important;
+							i{
+								margin-right: 8px;
+								&::before{
+									font-size: 12px;
+								}
+							}
 							&:hover {
 								color: var(--lp-primary-color);
 								background: #fff;
@@ -394,7 +406,7 @@ body {
 
 			.lp-profile-nav-tabs {
 				width: max-content;
-
+				overflow-y: auto;
 				&::after {
 					display: table;
 					clear: both;
@@ -411,6 +423,7 @@ body {
 						padding: 0 20px 0 45px;
 
 						&::after {
+							display: none;
 							margin-left: 10px;
 						}
 					}
@@ -507,7 +520,7 @@ body {
 		@media (max-width: 990px) {
 			width: 100%;
 		}
-
+		
 		@media (max-width: 767px) {
 			.learn-press-tabs__nav {
 				display: block;
@@ -567,6 +580,45 @@ body {
 		}
 	}
 
+	#profile-content-wishlist{
+		.learn-press-wishlist-courses {
+			display: grid;
+			grid-template-columns: repeat(auto-fit,minmax(210px,1fr));
+			grid-gap: 16px;
+			li{
+				margin-bottom: 32px;
+				.course-title{
+					display: block;
+					overflow: hidden;
+					text-decoration: none;
+					img{
+						width: 100%;
+						height: auto;
+						aspect-ratio: 4/3;
+						object-fit: cover;
+						display: block;
+					}
+					h3{
+						font-size: 16px;
+						font-weight: 600;
+						line-height: 24px;
+						color: #333;
+						padding: 16px 0;
+					}
+					&:hover{
+						h3{
+							color: var(--lp-primary-color);
+						}
+
+					}
+				}
+				.lp-btn-wishlist{
+					margin: 0 auto;
+				}
+			}
+		}
+	}
+
 	.profile-orders {
 
 		.profile-heading {
@@ -589,6 +641,48 @@ body {
 				}
 			}
 		}
+	}
+
+	#profile-content-settings{
+		.learn-press-tabs__nav{
+			border: 1px solid #e5e7f2;
+			.learn-press-tabs__tab{
+				&::after{
+					display: none;
+				}
+				label{
+					&::before{
+						display: none;
+					}
+				}
+				@media (max-width: 767px){
+					border-right: 1px solid #e5e7f2;
+				}
+			}
+		}
+		.learn-press-form{
+			.form-fields{
+				.form-field{
+					label {
+						display: block;
+						margin: 0 0 10px 0;
+						color: #333;
+						font-size: 16px;
+						font-weight: 500;
+						font-style: italic;
+					}
+					.form-field-input{
+						input {
+							border: 1px solid #ccc;
+							color: #333;
+							font-size: 14px;
+							padding: 8px 20px;
+							height: 43px;
+						}
+					} 
+				} 
+			} 
+		} 
 	}
 
 	#dashboard-general-statistic {

@@ -21,7 +21,75 @@
 		text-decoration: none;
 	}
 }
+body.lp-sidebar-toggle{
+	&__close {
+		#popup-course {
+			@media (min-width: 1025px) {
+				.back-course{
+					position: absolute;
+					right: 0;
+				}
+				.popup-header__inner{
+					padding: 22px 0;
+				}
+			}
+			.popup-header__inner{
+				.course-title{
+					width: 90%;
+					@media (min-width: 768px) {
+						width: 70%;
+					}
+				}
+			}
+			
+		}
+	
+	}
+	&__open {
+		#popup-course {
 
+			.back-course{
+				@media (min-width: 1120px){
+					position: absolute;
+					right: 0;
+				}		
+			}
+			.popup-header__inner{
+				@media (min-width: 1120px){
+					padding: 22px 0;
+				}
+				.course-title{
+					width: 90%;
+					@media (min-width: 768px){
+						width: 50%;
+					}
+					@media (min-width: 1000px){
+						width: 60%;
+					}
+				}
+				.items-progress{
+					margin-right: 20px;
+					@media (min-width: 1100px){
+						margin-right: 80px;
+					}
+					@media (min-width: 1360px){
+						margin-right: 40px;
+					}
+					@media (min-width: 1440px){
+						margin-right: 0px;
+					}
+					.learn-press-progress{
+						@media (max-width:520px) {
+							display: none;
+						}
+					}
+				}
+			}
+		}
+	
+	}
+
+}
 #popup-course {
 	display: flex;
 	position: fixed;
@@ -57,15 +125,16 @@
 		margin: 0 auto;
 		justify-content: space-between;
 		align-items: center;
-		padding-left: 15px;
-		padding-right: 15px;
+		padding: 22px 15px;
 
 		@media (max-width: 1024px) {
 			width: 100%;
 		}
 
 		@media (max-width: 767px) {
+			padding: 16px 15px;
 			flex-direction: column;
+			align-items: flex-start;
 		}
 	}
 
@@ -196,6 +265,7 @@
 }
 #popup-header {
 	display: flex;
+	align-items: center;
 	position: fixed;
 	z-index: 100;
 	right: 0;
@@ -209,10 +279,9 @@
 	.course-title {
 		margin: 0;
 		padding: 0;
-		line-height: 70px;
 		letter-spacing: unset;
-
 		a {
+			text-decoration: none;
 			display: -webkit-box;
 			overflow: hidden;
 			color: #fff;
@@ -242,7 +311,6 @@
 		}
 
 		@media (max-width: 767px) {
-			padding-bottom: 20px;
 			justify-content: end;
 		}
 
@@ -491,6 +559,7 @@
 		top: 70px;
 		bottom: 0;
 		width: 475px;
+		padding-bottom: 45px;
 		&::-webkit-scrollbar-thumb {
 			background: #ccc;
 		}
@@ -662,7 +731,6 @@
 
 	.course-item-meta {
 		padding: 0;
-		// padding-right: 16px;
 
 		.item-meta {
 			padding: 0;
@@ -674,22 +742,13 @@
 
 			&:first-child {
 				margin-left: 0;
-				// padding-left: 17px;
+
 			}
 
 			&::before {
 				font-size: 12px;
 				line-height: 21px;
 			}
-
-			// &.course-item-status {
-			// 	position: absolute;
-			// 	top: 50%;
-			// 	right: 18px;
-			// 	left: auto;
-			// 	margin-top: -10px;
-			// 	padding: 0;
-			// }
 		}
 	}
 }
