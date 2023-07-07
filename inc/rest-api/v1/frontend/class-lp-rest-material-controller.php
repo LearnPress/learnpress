@@ -1,5 +1,6 @@
 <?php
-
+use LearnPress\Helpers\Template;
+use LearnPress\TemplateHooks\Course\CourseMaterialTemplate;
 /**
  * Class LP_Rest_Material_Controller
  * in LearnPres > Downloadable Materials
@@ -108,7 +109,7 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 			$max_file_size       = (int) LP_Settings::get_option( 'material_max_file_size', 2 );
 			$allow_upload_amount = (int) LP_Settings::get_option( 'material_upload_files', 2 );
 			// check file was uploaded
-			$uploaded_files = count( $material_init->get_material_by_item_id( $item_id ) );
+			$uploaded_files = count( $material_init->get_material_by_item_id( $item_id, 0, 0, 1 ) );
 			// check file amount which can upload
 			$can_upload      = $allow_upload_amount - $uploaded_files;
 			$allow_file_type = LP_Settings::get_option( 'material_allow_file_type', array( 'pdf', 'txt' ) );
@@ -123,20 +124,17 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 			foreach ( $material_data as $key => $material ) {
 				// check file title
 				if ( ! $material['label'] ) {
-					// throw new Exception( esc_html__( 'Invalid material file title!', 'learnpress' ) );
 					$response['items'][ $key ]['message'] = sprintf( esc_html__( 'File %d title is not empty!', 'learnpress' ), $key );
 					continue;
 				}
 				// check file upload method
 				if ( ! in_array( $material['method'], $file_method ) ) {
-					// throw new Exception( esc_html__( 'Invalid file method', 'learnpress' ) );
 					$response['items'][ $key ]['message'] = sprintf( esc_html__( 'File %s method is invalid!', 'learnpress' ), $material['label'] );
 					continue;
 				}
 
 				if ( $material['method'] == 'upload' ) {
 					if ( ! $material['file'] ) {
-						// throw new Exception( esc_html__( 'Invalid upload file', 'learnpress' ) );
 						$response['items'][ $key ]['message'] = sprintf( esc_html__( 'File %s is empty!', 'learnpress' ), $material['label'] );
 						continue;
 					}
@@ -230,26 +228,18 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 			$pages         = $per_page > 0 ? ceil( $total / $per_page ) : 0;
 			// $response['total'] = $total;
 			// $response['pages'] = $pages;
-			$item_materials = $material_init->get_material_by_item_id( $item_id, $per_page, $offset );
-			// $found_row = $material_init->wpdb->get_var( "SELECT FOUND_ROWS()" );
-			// $response['load_more'] = $found_row == $per_page ? true : false;
+			$item_materials        = $material_init->get_material_by_item_id( $item_id, $per_page, $offset );
 			$response['load_more'] = ( $page < $pages && $per_page > 0 ) ? true : false;
 			$response['status']    = 200;
 			if ( $item_materials ) {
-				$lp_file = LP_WP_Filesystem::instance();
+				// $lp_file = LP_WP_Filesystem::instance();
+				ob_start();
+				$material_template = CourseMaterialTemplate::instance();
 				foreach ( $item_materials as $m ) {
-					if ( get_post_type( $item_id ) == LP_COURSE_CPT && $m->item_type == LP_LESSON_CPT ) {
-						$m->file_name = sprintf( esc_html__( '%1$s ( %2$s )' ), $m->file_name, get_the_title( $m->item_id ) );
-					}
-					if ( $m->method == 'upload' ) {
-						$file_size    = filesize( wp_upload_dir()['basedir'] . $m->file_path );
-						$m->file_path = wp_upload_dir()['baseurl'] . $m->file_path;
-						$m->file_size = ( $file_size / 1024 < 1024 ) ? round( $file_size / 1024, 2 ) . 'KB' : round( $file_size / 1024 / 1024, 2 ) . 'MB';
-					} else {
-						$m->file_size = $lp_file->get_file_size_from_url( $m->file_path );
-					}
+					echo $material_template->material_item( $m, $item_id );
 				}
-				$response['data']    = $item_materials;
+				$response['data']    = ob_get_clean();
+				$response['query']   = $item_materials;
 				$response['message'] = esc_html__( 'Successfully', 'learnpress' );
 			} else {
 				$response['message'] = esc_html__( 'Empty material!', 'learnpress' );

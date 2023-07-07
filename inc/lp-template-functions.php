@@ -8,6 +8,7 @@
  */
 
 use LearnPress\Helpers\Template;
+use LearnPress\TemplateHooks\Course\CourseMaterialTemplate;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -95,7 +96,7 @@ if ( ! function_exists( 'learn_press_get_course_tabs' ) ) {
 			$defaults['materials'] = array(
 				'title'    => 'Materials',
 				'priority' => 45,
-				'callback' => LearnPress::instance()->template( 'course' )->callback( 'single-course/tabs/materials.php' ),
+				'callback' => LearnPress::instance()->template( 'course' )->func( 'metarials' ),
 			);
 		}
 

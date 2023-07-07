@@ -883,6 +883,10 @@ class LP_Template_Course extends LP_Abstract_Template {
 
 	}
 
+	public function metarials() {
+		echo do_shortcode( '[learn_press_course_materials]' );
+	}
+
 	public function faqs() {
 		$course = LP_Course::get_course( get_the_ID() );
 		$faqs   = $course->get_faqs();

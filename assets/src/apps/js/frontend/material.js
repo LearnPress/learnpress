@@ -36,11 +36,12 @@ export default function lpMaterialsLoad ( postID = '' ) {
 				if ( ele.querySelector( '.lp-skeleton-animation' ) ) {
 					ele.querySelector( '.lp-skeleton-animation' ).remove();	
 				}
-				
+				// console.log( data );
 				elementMaterial.style.display = 'table';
-				for (var i = 0; i < data.length; i++) {
-					insertRow( elementMaterial.querySelector( 'tbody' ), data[i].file_name, data[i].file_type, data[i].file_size, data[i].file_path );
-				}
+				elementMaterial.querySelector( 'tbody' ).insertAdjacentHTML( 'beforeend', data );
+				// for (var i = 0; i < data.length; i++) {
+				// 	insertRow( elementMaterial.querySelector( 'tbody' ), data[i].file_name, data[i].file_type, data[i].file_size, data[i].file_path );
+				// }
 			}
 			if ( load_more ) {
 				loadMoreBtn.style.display = 'inline-block';
@@ -55,6 +56,7 @@ export default function lpMaterialsLoad ( postID = '' ) {
 			console.log( error.message );
 		}
 	};
+	/*
 	const insertRow = ( tbody, file_name, file_type, file_size, file_url ) => {
 		if ( !tbody ) {
 			return;
@@ -73,6 +75,7 @@ export default function lpMaterialsLoad ( postID = '' ) {
             </tr>`
 			 );
 	}
+	*/
 	Sekeleton();
 	document.addEventListener( 'click', function( e ) {
 		let target = e.target;

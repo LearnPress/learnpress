@@ -87,14 +87,17 @@ class LP_Material_Files_DB extends LP_Database {
 	 * @since 4.2.2
 	 * [get_material_by_item_id get all material files of a post( course or lesson )]
 	 * @param  integer $item_id [post_id]
+	 * @param  integer $per_page [file amount for each get files]
+	 * @param  integer $offset  [query offset]
+	 * @param  boolean $is_admin [check if is admin page, use for course to get only course's files ( don't include lesson's files )]
 	 * @return [array]           [post's material files]
 	 */
-	public function get_material_by_item_id( $item_id = 0, $perpage = 0, $offset = 0 ) {
+	public function get_material_by_item_id( $item_id = 0, $perpage = 0, $offset = 0, $is_admin = false ) {
 		if ( ! is_int( $item_id ) ) {
 			return;
 		}
 		$result = array();
-		if ( get_post_type( $item_id ) == LP_COURSE_CPT ) {
+		if ( get_post_type( $item_id ) == LP_COURSE_CPT && ! $is_admin ) {
 			$sql = "SELECT * FROM $this->table_name WHERE item_id 
 				IN ( SELECT si.item_id FROM $this->tb_lp_section_items AS si
 				INNER JOIN $this->tb_lp_sections AS s ON s.section_id = si.section_id 

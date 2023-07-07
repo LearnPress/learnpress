@@ -22,10 +22,12 @@
 use LearnPress\ExternalPlugin\Elementor\LPElementor;
 use LearnPress\Shortcodes\ListInstructorsShortcode;
 use LearnPress\Shortcodes\SingleInstructorShortcode;
+use LearnPress\Shortcodes\CourseMaterialShortcode;
 use LearnPress\TemplateHooks\Instructor\ListInstructorsTemplate;
 use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileInstructorStatisticsTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileStudentStatisticsTemplate;
+use LearnPress\TemplateHooks\Course\CourseMaterialTemplate;
 
 defined( 'ABSPATH' ) || exit();
 
@@ -280,6 +282,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			ProfileInstructorStatisticsTemplate::instance();
 			ProfileStudentStatisticsTemplate::instance();
 
+			CourseMaterialTemplate::instance();
+
 			// Models
 			require_once 'inc/models/class-lp-rest-response.php';
 			include_once 'inc/models/steps/class-lp-group-step.php';
@@ -391,6 +395,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			// Shortcodes.
 			SingleInstructorShortcode::instance();
 			ListInstructorsShortcode::instance();
+			CourseMaterialShortcode::instance();
 			require_once 'inc/class-lp-shortcodes.php';
 
 			// include template functions .

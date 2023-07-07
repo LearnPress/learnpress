@@ -33,7 +33,7 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 		 */
 		public function output( $thepostid ) {
 			$material_init       = LP_Material_Files_DB::getInstance();
-			$course_materials    = $material_init->get_material_by_item_id( $thepostid );
+			$course_materials    = $material_init->get_material_by_item_id( $thepostid, 0, 0, 1 );
 			$max_file_size       = (int) LP_Settings::get_option( 'material_max_file_size', 2 );
 			$allow_upload_amount = (int) LP_Settings::get_option( 'material_upload_files', 2 );
 			// check file was uploaded
@@ -66,16 +66,19 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 				table.lp-material--table tr:nth-child(even) {
 				  background-color: #dddddd;
 				}
-/*				#btn-lp--add-material { margin-bottom:15px }*/
 				.lp-material--field-wrap {
 					display: flex;
 					flex-direction: row;
 					align-items: center;
-					margin-bottom: 5px;
+					padding-block: 5px;
 				}
 				.lp-material--field-wrap label { min-width:70px }
 				.lp-material--group{
 					margin-top: 10px;
+					padding: 10px;
+					border: 1px solid #dedede;
+					border-radius: 10px;
+					box-shadow: 2px 2px rgba(180, 180, 180, 0.2);
 				}
 				#btn-lp--save-material{
 					margin-top: 15px;
