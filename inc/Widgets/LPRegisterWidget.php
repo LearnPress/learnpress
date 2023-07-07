@@ -3,7 +3,6 @@
 namespace LearnPress\Widgets;
 
 use LearnPress\Helpers\Singleton;
-use LearnPress\Widgets\Course\FilterCourseWidget;
 
 /**
  * Class AbstractWidget
@@ -28,7 +27,7 @@ class LPRegisterWidget {
 		$widgets = apply_filters(
 			'learn-press/widgets/register',
 			[
-				FilterCourseWidget::class,
+				//FilterCourseWidget::class,
 			]
 		);
 

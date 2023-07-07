@@ -44,6 +44,18 @@
 	}
 }
 
+.sortable-wrapper{
+	margin: 1em 0;
+
+	.sortable{
+		margin: 0.5em 0;
+
+		.dashicons-move{
+			cursor: move;
+		}
+	}
+}
+
 @keyframes spin {
 
 	from {
@@ -54,3 +66,4 @@
 		transform: rotate(360deg);
 	}
 }
+
