@@ -59,3 +59,56 @@ document.addEventListener( 'DOMContentLoaded', function( event ) {
 		autocompleteWidget();
 	}
 } );
+
+//Sortable checkbox
+document.addEventListener( 'DOMContentLoaded', function( event ) {
+	sortItem();
+	showItems();
+} );
+
+$( document ).on( 'widget-added widget-updated', function( event ) {
+	sortItem();
+	showItems();
+} );
+
+function sortItem() {
+	$( '.widget-content .sortable' ).sortable( {
+		handle: '.dashicons-move',
+
+		start( event, ui ) {
+
+		},
+		update( event, ui ) {
+			let value = '';
+			$( this ).children().map( function() {
+				value += $( this ).find( 'input' ).val() + ',';
+			} );
+
+			$( this ).parent().find( 'input[type=hidden]' ).val( value );
+			//Enable save btn
+			$( this ).closest( 'form' ).find( 'input[ type = submit ]' ).attr( 'disabled', false );
+		},
+		stop( event, ui ) {
+
+		},
+	} );
+}
+
+function showItems() {
+	const enableInputs = $( '.widget-content input.enable_widget' );
+
+	enableInputs.each( function() {
+		if ( ! this.checked ) {
+			$( this ).closest( 'form' ).find( '.widget-content > div,p:not(:has(.enable_widget))' ).hide();
+		}
+
+		$( this ).change( function() {
+			const element = $( this ).closest( 'form' ).find( '.widget-content > div,p:not(:has(.enable_widget))' );
+			if ( this.checked ) {
+				element.show();
+			} else {
+				element.hide();
+			}
+		} );
+	} );
+}
