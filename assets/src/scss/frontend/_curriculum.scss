@@ -1052,7 +1052,11 @@ body {
 	margin-bottom: 3px;
 	border: 1px solid rgba(204, 204, 204, 0.3);
 	border-radius: 5px;
-
+	&.active {
+		.course-extra-box__content {
+			height: auto;
+		  }
+	}
 	&__title {
 		--extra-height: 50px;
 		display: flex;
@@ -1081,8 +1085,9 @@ body {
 	}
 
 	&__content {
-		display: none;
-
+		// display: none;
+		overflow: hidden;
+		transition: height 0.3s ease;
 		&-inner {
 
 			-webkit-animation-name: course-extra-box__content-inner-transform;
