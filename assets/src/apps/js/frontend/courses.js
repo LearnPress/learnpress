@@ -139,7 +139,7 @@ const jsHandlePageCourses = () => {
 				}
 
 				if ( ! firstLoad ) {
-				// Scroll to archive element
+					// Scroll to archive element
 					const optionScroll = { behavior: 'smooth' };
 					elArchive.scrollIntoView( optionScroll );
 				} else {
