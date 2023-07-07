@@ -697,9 +697,21 @@ class LP_Page_Controller {
 
 						if ( 'on_free' === $sort_by ) {
 							$meta_query[] = array(
-								'key'     => '_lp_price',
-								'value'   => 0,
-								'compare' => '=',
+								'relation' => 'OR',
+								[
+									'key'     => '_lp_price',
+									'value'   => 0,
+									'compare' => '=',
+								],
+								[
+									'key'     => '_lp_price',
+									'value'   => '',
+									'compare' => '=',
+								],
+								[
+									'key'     => '_lp_price',
+									'compare' => 'NOT EXISTS',
+								],
 							);
 						}
 					}

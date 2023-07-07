@@ -62,7 +62,7 @@ window.lpCourseFilterRequestParams = ( filterForm, filterCourses ) => {
 			priceValue = [ ...priceValue, el.value ];
 		}
 
-		filterCourses.c_price = priceValue;
+		filterCourses.sort_by = 'on_free';
 	} else {
 		delete filterCourses.c_price;
 	}

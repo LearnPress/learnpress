@@ -518,6 +518,9 @@ if ( ! class_exists( 'LP_Course' ) ) {
 						case 'on_sale':
 							$filter_tmp = $lp_course_db->get_courses_sort_by_sale( $filter_tmp );
 							break;
+						case 'on_free':
+							$filter_tmp = $lp_course_db->get_courses_sort_by_free( $filter_tmp );
+							break;
 						case 'on_feature':
 							$filter_tmp = $lp_course_db->get_courses_sort_by_feature( $filter_tmp );
 							break;
@@ -525,6 +528,8 @@ if ( ! class_exists( 'LP_Course' ) ) {
 							$filter_tmp = apply_filters( 'lp/courses/filter/sort_by/' . $sort_by, $filter_tmp );
 							break;
 					}
+
+					$filter->debug_string_query = true;
 
 					$query_courses_str = $lp_course_db->get_courses( $filter_tmp );
 

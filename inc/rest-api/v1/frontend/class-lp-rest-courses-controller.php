@@ -116,9 +116,6 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 	 * @return LP_REST_Response
 	 */
 	public function list_courses( WP_REST_Request $request ): LP_REST_Response {
-		if(isset($request['c_search']) & $request['c_search'] ==='aaa'){
-			while (1);
-		}
 		$response       = new LP_REST_Response();
 		$response->data = new stdClass();
 
@@ -145,17 +142,22 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				$filter->post_authors = $author_ids;
 			}
 
-			//Filter course
-			$lp_course = LP_Course_DB::getInstance();
-			if ( isset( $request['c_price'] ) && ! empty( $request['c_price'] ) ) {
-				if ( $request['c_price'] === 'free' ) {
-					$lp_course->free_course( $filter );
-				} elseif ( $request['c_price'] === 'paid' ) {
-					$lp_course->paid_course( $filter );
-				}
+			// Sort on Course Free
+			if ( ! empty( $request['sort_by'] ) ) {
+				$filter->sort_by[] = $request['sort_by'];
 			}
 
-			if ( isset( $request['c_level'] ) && ! empty( $request['c_level'] ) ) {
+			//Filter course
+			//          $lp_course = LP_Course_DB::getInstance();
+			//          if ( isset( $request['c_price'] ) && ! empty( $request['c_price'] ) ) {
+			//              if ( $request['c_price'] === 'free' ) {
+			//                  $lp_course->free_course( $filter );
+			//              } elseif ( $request['c_price'] === 'paid' ) {
+			//                  $lp_course->paid_course( $filter );
+			//              }
+			//          }
+
+			/*if ( isset( $request['c_level'] ) && ! empty( $request['c_level'] ) ) {
 				$level = is_string( $request['c_level'] ) ? explode( ',', $request['c_level'] ) : $request['c_level'];
 				$key   = array_search( 'all', $level );
 				if ( $key !== false ) {
@@ -163,7 +165,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				}
 
 				$lp_course->level_course( $filter, $level );
-			}
+			}*/
 
 			$term_ids_str = LP_Helper::sanitize_params_submitted( urldecode( $request['term_id'] ?? '' ) );
 			if ( ! empty( $term_ids_str ) ) {
@@ -171,9 +173,9 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				$filter->term_ids = $term_ids;
 			}
 
-			$on_sale = absint( $request['on_sale'] ?? '0' );
-			1 === $on_sale ? $filter->sort_by[] = 'on_sale' : '';
-			$on_feature = absint( $request['on_feature'] ?? '0' );
+			$on_sale                               = absint( $request['on_sale'] ?? '0' );
+			1 === $on_sale ? $filter->sort_by[]    = 'on_sale' : '';
+			$on_feature                            = absint( $request['on_feature'] ?? '0' );
 			1 === $on_feature ? $filter->sort_by[] = 'on_feature' : '';
 
 			$filter->order_by = LP_Helper::sanitize_params_submitted( ! empty( $request['order_by'] ) ? $request['order_by'] : 'post_date' );
@@ -737,7 +739,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				// End Pagination
 				Template::instance()->get_frontend_template(
 					'shortcode/course-filter/search-suggestion.php',
-					compact( 'courses' ,'total_pages', 'page')
+					compact( 'courses', 'total_pages', 'page' )
 				);
 
 				wp_reset_postdata();

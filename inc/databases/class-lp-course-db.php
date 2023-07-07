@@ -562,6 +562,23 @@ class LP_Course_DB extends LP_Database {
 	}
 
 	/**
+	 * Get list courses is on sale
+	 *
+	 * @param LP_Course_Filter $filter
+	 *
+	 * @return  LP_Course_Filter
+	 * @since 4.1.5
+	 * @author tungnx
+	 * @version 1.0.0
+	 */
+	public function get_courses_sort_by_free( LP_Course_Filter $filter ): LP_Course_Filter {
+		$filter->join[]  = "INNER JOIN $this->tb_postmeta AS pm ON p.ID = pm.post_id";
+		$filter->where[] = $this->wpdb->prepare( 'AND ID NOT IN()' );
+
+		return $filter;
+	}
+
+	/**
 	 * Get list courses is on feature
 	 *
 	 * @param LP_Course_Filter $filter
