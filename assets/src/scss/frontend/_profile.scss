@@ -133,7 +133,7 @@ body {
 
 	.lp-profile-content-area {
 		position: relative;
-		padding: 40px 15px;
+		padding: 16px;
 		display: flex;
 		align-items: center;
 		@media (max-width: 650px) {
@@ -141,7 +141,7 @@ body {
 			.lp-profile-right {
 				text-align: center;
 				width: 100%;
-				padding: 50px 15px 0;
+				padding: 24px 0 0;
 			}
 		}
 	}
@@ -149,9 +149,12 @@ body {
 	.lp-profile-left {
 		min-width: 270px;
 		max-width: 270px;
-		padding: 5px;
 		border: 2px solid #eaeaea;
 		border-radius: 8px;
+		overflow: hidden;
+		@media (max-width: 520px) {
+			min-width: 100%;
+		}
 		.lp-user-profile-avatar{
 			border-radius: 8px;
 			overflow: hidden;
@@ -647,6 +650,7 @@ body {
 		.learn-press-tabs__nav{
 			border: 1px solid #e5e7f2;
 			.learn-press-tabs__tab{
+				width: calc(100% / 3);
 				&::after{
 					display: none;
 				}
