@@ -562,18 +562,40 @@ class LP_Course_DB extends LP_Database {
 	}
 
 	/**
-	 * Get list courses is on sale
+	 * Get list courses is Free
 	 *
 	 * @param LP_Course_Filter $filter
 	 *
 	 * @return  LP_Course_Filter
-	 * @since 4.1.5
-	 * @author tungnx
+	 * @throws Exception
 	 * @version 1.0.0
+	 * @since 4.2.3.2
 	 */
 	public function get_courses_sort_by_free( LP_Course_Filter $filter ): LP_Course_Filter {
+		$filter_course_price                      = new LP_Course_Filter();
+		$filter_course_price->only_fields         = [ 'DISTINCT(ID)' ];
+		$filter_course_price                      = $this->get_courses_sort_by_paid( $filter_course_price );
+		$filter_course_price->return_string_query = true;
+		$courses_price                            = $this->get_courses( $filter_course_price );
+
 		$filter->join[]  = "INNER JOIN $this->tb_postmeta AS pm ON p.ID = pm.post_id";
-		$filter->where[] = $this->wpdb->prepare( 'AND ID NOT IN()' );
+		$filter->where[] = 'AND ID NOT IN( ' . $courses_price . ' )';
+
+		return $filter;
+	}
+
+	/**
+	 * Get list courses has price
+	 *
+	 * @param LP_Course_Filter $filter
+	 *
+	 * @return LP_Course_Filter
+	 * @version 1.0.0
+	 * @since 4.2.3.2
+	 */
+	public function get_courses_sort_by_paid( LP_Course_Filter $filter ): LP_Course_Filter {
+		$filter->join[]  = "INNER JOIN $this->tb_postmeta AS pm ON p.ID = pm.post_id";
+		$filter->where[] = $this->wpdb->prepare( 'AND pm.meta_key = %s AND pm.meta_value > %d', '_lp_price', 0 );
 
 		return $filter;
 	}
@@ -673,34 +695,7 @@ class LP_Course_DB extends LP_Database {
 
 	/**
 	 * @param LP_Course_Filter $filter
-	 *
-	 * @return LP_Course_Filter
-	 */
-	public function free_course( LP_Course_Filter &$filter ): LP_Course_Filter {
-		$filter = new LP_Course_Filter();
-
-		$filter->join[] = "INNER JOIN $this->tb_postmeta AS pm ON p.ID = pm.post_id";
-
-		$filter->where[] = $this->wpdb->prepare( 'AND pm.meta_key = %s AND pm.meta_value = %d', '_lp_price', 0 );
-
-		return $filter;
-	}
-
-	/**
-	 * @param LP_Course_Filter $filter
-	 *
-	 * @return LP_Course_Filter
-	 */
-	public function paid_course( LP_Course_Filter &$filter ): LP_Course_Filter {
-		$filter->join[] = "INNER JOIN $this->tb_postmeta AS pm ON p.ID = pm.post_id";
-
-		$filter->where[] = $this->wpdb->prepare( 'AND pm.meta_key = %s AND pm.meta_value <> %d', '_lp_price', 0 );
-
-		return $filter;
-	}
-
-	/**
-	 * @param LP_Course_Filter $filter
+	 * @param array $level
 	 *
 	 * @return LP_Course_Filter
 	 */
@@ -731,37 +726,6 @@ class LP_Course_DB extends LP_Database {
 
 		return $filter;
 	}
-
-	/**
-	 * @return LP_Course_Filter
-	 */
-	public function free_courser_number(): LP_Course_Filter {
-		$filter                  = new LP_Course_Filter();
-		$filter->run_query_count = true;
-		$filter->query_count     = true;
-
-		$filter->join[] = "INNER JOIN $this->tb_postmeta AS pm ON p.ID = pm.post_id";
-
-		$filter->where[] = $this->wpdb->prepare( 'AND pm.meta_key = %s AND pm.meta_value = %d', '_lp_price', 0 );
-
-		return $filter;
-	}
-
-	/**
-	 * @return LP_Course_Filter
-	 */
-	public function paid_course_number(): LP_Course_Filter {
-		$filter                  = new LP_Course_Filter();
-		$filter->run_query_count = true;
-		$filter->query_count     = true;
-
-		$filter->join[] = "INNER JOIN $this->tb_postmeta AS pm ON p.ID = pm.post_id";
-
-		$filter->where[] = $this->wpdb->prepare( 'AND pm.meta_key = %s AND pm.meta_value <> %d', '_lp_price', 0 );
-
-		return $filter;
-	}
-
 
 	public function course_number(): LP_Course_Filter {
 		$filter                  = new LP_Course_Filter();
