@@ -755,15 +755,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 			if ( ! $materials ) {
 				return;
 			}
-			learn_press_get_template(
-				'content-lesson/materials.php',
-				array(
-					'user'      => $user,
-					'course'    => $course,
-					'item'      => $item,
-					'materials' => $materials,
-				)
-			);
+			echo wp_kses_post( do_shortcode( '[learn_press_course_materials]' ) );
 		} catch ( Throwable $e ) {
 			error_log( $e->getMessage() );
 		}
@@ -884,7 +876,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 	}
 
 	public function metarials() {
-		echo do_shortcode( '[learn_press_course_materials]' );
+		echo wp_kses_post( do_shortcode( '[learn_press_course_materials]' ) );
 	}
 
 	public function faqs() {

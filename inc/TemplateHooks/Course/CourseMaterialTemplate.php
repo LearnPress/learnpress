@@ -182,7 +182,7 @@ class CourseMaterialTemplate {
 				$file_url
 			);
 			$content        = Template::instance()->nest_elements( $html_wrapper, $html_file_link );
-		} catch ( Exception $e ) {
+		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 		return $content;
