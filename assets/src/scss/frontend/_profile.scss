@@ -7,14 +7,19 @@ body {
 			max-width: var(--lp-content-width, 100%);
 		}
 	}
+	.entry-content{
+		&.has-global-padding{
+			padding: 0!important;
+		}
+	}
 }
 
 .lp-user-profile {
 	position: relative;
 	background: #fff;
 	.lp-content-area{
-		padding-left: 0;
-		padding-right: 0;
+		padding-left: 15px;
+		padding-right: 15px;
 	}
 
 	.lp-user-profile-avatar {
