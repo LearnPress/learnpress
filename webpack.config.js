@@ -24,6 +24,7 @@ module.exports = {
 		'./assets/js/dist/admin/pages/dashboard': './assets/src/apps/js/admin/pages/dashboard.js',
 		'./assets/js/dist/admin/pages/widgets': './assets/src/apps/js/admin/pages/widgets.js',
 		'./assets/js/dist/utils': './assets/src/js/utils/index.js',
+		'./assets/js/dist/frontend/course-filter': './assets/src/apps/js/frontend/course-filter.js',
 
 		'./assets/js/dist/js/data-controls': {
 			import: './assets/src/apps/js/data-controls.js',

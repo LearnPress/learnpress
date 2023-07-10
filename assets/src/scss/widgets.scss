@@ -144,7 +144,7 @@
 			}
 		}
 	}
-	 
+
 	.lp-course-progress {
 		width: 100%;
 
@@ -399,3 +399,49 @@
 	}
 }
 
+.lp-course-filter {
+	.price__item, .instructor__item, .level__item, .term-list__item {
+		display: flex;
+		justify-content: space-between;
+
+		label {
+			cursor: pointer;
+		}
+	}
+
+	.lp-search-keyword {
+		position: relative;
+
+		input {
+			width: 100%;
+		}
+
+		i.loading {
+			font-style: normal;
+			position: absolute;
+			right: 15px;
+			top: 50%;
+			transform: translateY(-50%);
+
+			&::before {
+				display: inline-block;
+				font-family: "Font Awesome 5 Free";
+				font-weight: 900;
+				content: "\f110";
+				-webkit-animation: lp-rotating 1s linear infinite;
+				-moz-animation: lp-rotating 1s linear infinite;
+				animation: lp-rotating 1s linear infinite;
+			}
+		}
+	}
+
+	ul.lp-suggest-result {
+		li {
+			padding: 8px 15px;
+		}
+	}
+
+	ul > li {
+		list-style: none;
+	}
+}

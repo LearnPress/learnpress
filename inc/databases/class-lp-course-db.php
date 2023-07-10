@@ -495,6 +495,14 @@ class LP_Course_DB extends LP_Database {
 			$filter->where[] = $this->wpdb->prepare( 'AND r_term.term_taxonomy_id IN (' . $term_ids_format . ')', $filter->term_ids );
 		}
 
+		// Level
+		if ( ! empty( $filter->levels ) ) {
+			$filter->join[]  = "INNER JOIN $this->tb_postmeta AS pm ON p.ID = pm.post_id";
+			$filter->where[] = $this->wpdb->prepare( 'AND pm.meta_key = %s', '_lp_level' );
+			$levels_format   = LP_Helper::db_format_array( $filter->levels, '%s' );
+			$filter->where[] = $this->wpdb->prepare( 'AND pm.meta_value IN (' . $levels_format . ')', $filter->levels );
+		}
+
 		// course ids
 		if ( ! empty( $filter->post_ids ) ) {
 			$list_ids_format = LP_Helper::db_format_array( $filter->post_ids, '%d' );
@@ -557,6 +565,45 @@ class LP_Course_DB extends LP_Database {
 	public function get_courses_sort_by_sale( LP_Course_Filter $filter ): LP_Course_Filter {
 		$filter->join[]  = "INNER JOIN $this->tb_postmeta AS pm ON p.ID = pm.post_id";
 		$filter->where[] = $this->wpdb->prepare( 'AND pm.meta_key = %s', '_lp_course_is_sale' );
+
+		return $filter;
+	}
+
+	/**
+	 * Get list courses is Free
+	 *
+	 * @param LP_Course_Filter $filter
+	 *
+	 * @return  LP_Course_Filter
+	 * @throws Exception
+	 * @version 1.0.0
+	 * @since 4.2.3.2
+	 */
+	public function get_courses_sort_by_free( LP_Course_Filter $filter ): LP_Course_Filter {
+		$filter_course_price                      = new LP_Course_Filter();
+		$filter_course_price->only_fields         = [ 'DISTINCT(ID)' ];
+		$filter_course_price                      = $this->get_courses_sort_by_paid( $filter_course_price );
+		$filter_course_price->return_string_query = true;
+		$courses_price                            = $this->get_courses( $filter_course_price );
+
+		$filter->join[]  = "INNER JOIN $this->tb_postmeta AS pm ON p.ID = pm.post_id";
+		$filter->where[] = 'AND ID NOT IN( ' . $courses_price . ' )';
+
+		return $filter;
+	}
+
+	/**
+	 * Get list courses has price
+	 *
+	 * @param LP_Course_Filter $filter
+	 *
+	 * @return LP_Course_Filter
+	 * @version 1.0.0
+	 * @since 4.2.3.2
+	 */
+	public function get_courses_sort_by_paid( LP_Course_Filter $filter ): LP_Course_Filter {
+		$filter->join[]  = "INNER JOIN $this->tb_postmeta AS pm ON p.ID = pm.post_id";
+		$filter->where[] = $this->wpdb->prepare( 'AND pm.meta_key = %s AND pm.meta_value > %d', '_lp_price', 0 );
 
 		return $filter;
 	}
@@ -639,9 +686,9 @@ class LP_Course_DB extends LP_Database {
 	 * @param int $author_id
 	 *
 	 * @return LP_Course_Filter
-	 * @since 4.1.6
-	 * @version 1.0.0
 	 * @throws Exception
+	 * @version 1.0.0
+	 * @since 4.1.6
 	 */
 	public function count_courses_publish_of_author( int $author_id ): LP_Course_Filter {
 		$filter_course              = new LP_Course_Filter();
@@ -651,33 +698,50 @@ class LP_Course_DB extends LP_Database {
 		$filter_course->field_count = 'ID';
 		$filter_course->query_count = true;
 
-		return apply_filters( 'lp/user/course/query/filter/count-courses-publish-of-author', $filter_course );
+		return apply_filters( 'lp/user/course/query/filter/count-users-attend-courses-of-author', $filter_course );
 	}
 
 	/**
-	 * Get total courses of Author
-	 *
-	 * @param int $author_id
-	 * @param array $status
+	 * @param LP_Course_Filter $filter
+	 * @param array $level
 	 *
 	 * @return LP_Course_Filter
-	 * @since 4.2.3
-	 * @version 1.0.0
 	 */
-	public function count_courses_of_author( int $author_id, array $status = [] ): LP_Course_Filter {
-		$filter_course              = new LP_Course_Filter();
-		$filter_course->only_fields = array( 'ID' );
-		$filter_course->post_author = $author_id;
-		$filter_course->post_status = $status;
-		if ( empty( $status ) ) {
-			$filter_course->post_status = [];
-		}
-		$filter_course->field_count = 'ID';
-		$filter_course->query_count = true;
+	public function level_course( LP_Course_Filter &$filter, array $level ): LP_Course_Filter {
+		$level          = join( '","', $level );
+		$filter->join[] = "INNER JOIN $this->tb_postmeta AS pm ON p.ID = pm.post_id";
 
-		return apply_filters( 'lp/user/course/query/filter/count-courses-of-author', $filter_course );
+		$filter->where[] = $this->wpdb->prepare(
+			'AND pm.meta_key = %s AND pm.meta_value IN ("' . $level . '")',
+			'_lp_level'
+		);
+
+		return $filter;
+	}
+
+	public function level_course_number( string $level ): LP_Course_Filter {
+		$filter                  = new LP_Course_Filter();
+		$filter->run_query_count = true;
+		$filter->query_count     = true;
+
+		$filter->join[] = "INNER JOIN $this->tb_postmeta AS pm ON p.ID = pm.post_id";
+
+		$filter->where[] = $this->wpdb->prepare(
+			'AND pm.meta_key = %s AND pm.meta_value = %s',
+			'_lp_level',
+			$level
+		);
+
+		return $filter;
+	}
+
+	public function course_number(): LP_Course_Filter {
+		$filter                  = new LP_Course_Filter();
+		$filter->run_query_count = true;
+		$filter->query_count     = true;
+
+		return $filter;
 	}
 }
 
 LP_Course_DB::getInstance();
-

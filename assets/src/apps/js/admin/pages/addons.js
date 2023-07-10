@@ -51,6 +51,7 @@ const addonsAction = ( data, callBack ) => {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
+			'X-WP-Nonce': lpGlobalSettings.nonce,
 		},
 		body: JSON.stringify( { ...data } ),
 	} ).then( ( res ) =>

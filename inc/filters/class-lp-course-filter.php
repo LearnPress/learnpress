@@ -21,4 +21,8 @@ class LP_Course_Filter extends LP_Post_Type_Filter {
 	 * @var string
 	 */
 	public $post_type = LP_COURSE_CPT;
+	/**
+	 * @var string Level of Course
+	 */
+	public $levels = [];
 }

@@ -81,7 +81,7 @@ class LP_Assets extends LP_Abstract_Assets {
 	 */
 	public function _get_script_data(): array {
 		$localize_script = [
-			'lp-global'   => array(
+			'lp-global'        => array(
 				//'url'                                => learn_press_get_current_url(),
 				'siteurl'                            => site_url(),
 				'ajax'                               => admin_url( 'admin-ajax.php' ),
@@ -103,7 +103,7 @@ class LP_Assets extends LP_Abstract_Assets {
 				'lpArchiveLoadAjax'                  => LP_Settings_Courses::is_ajax_load_courses() ? 1 : 0,
 				'lpArchiveNoLoadAjaxFirst'           => LP_Settings_Courses::is_ajax_load_courses() && LP_Settings_Courses::is_no_load_ajax_first_courses() ? 1 : 0,
 			),
-			'lp-checkout' => array(
+			'lp-checkout'      => array(
 				'ajaxurl'            => home_url( '/' ),
 				//'user_checkout'      => LP_Checkout::instance()->get_checkout_email(),
 				'i18n_processing'    => esc_html__( 'Processing', 'learnpress' ),
@@ -112,14 +112,18 @@ class LP_Assets extends LP_Abstract_Assets {
 				'i18n_unknown_error' => esc_html__( 'Unknown error', 'learnpress' ),
 				'i18n_place_order'   => esc_html__( 'Place order', 'learnpress' ),
 			),
-			'lp-profile'  => array(
+			'lp-profile'       => array(
 				'text_upload'  => __( 'Upload', 'learnpress' ),
 				'text_replace' => __( 'Replace', 'learnpress' ),
 				'text_remove'  => __( 'Remove', 'learnpress' ),
 				'text_save'    => __( 'Save', 'learnpress' ),
 			),
 			//'lp-course'       => learn_press_single_course_args(),
-			'lp-quiz'     => learn_press_single_quiz_args(),
+			'lp-quiz'          => learn_press_single_quiz_args(),
+			'lp-course-filter' => array(
+				'courses_url'       => learn_press_get_page_link( 'courses' ),
+				'is_course_archive' => LP_Page_Controller::is_page_courses(),
+			),
 		];
 
 		return apply_filters( 'learnpress/frontend/localize_script', $localize_script );
@@ -273,6 +277,13 @@ class LP_Assets extends LP_Abstract_Assets {
 					array( LP_PAGE_BECOME_A_TEACHER ),
 					0,
 					1
+				),
+				'lp-course-filter'     => new LP_Asset_Key(
+					self::url( 'js/dist/frontend/course-filter' . self::$_min_assets . '.js' ),
+					array( 'lp-courses' ),
+					array(),
+					0,
+					0
 				),
 			)
 		);
