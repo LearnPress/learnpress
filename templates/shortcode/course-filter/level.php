@@ -25,7 +25,7 @@ if ( ! empty( $levels ) ) {
 			<li class="level__item">
 				<div class="level-name">
 					<input id="<?php echo esc_attr( $id ); ?>" name="level" type="checkbox"
-						   value="<?php echo esc_attr( $name ); ?>"
+						value="<?php echo esc_attr( $name ); ?>"
 						<?php checked( true, in_array( $name, $value ) ); ?>
 					>
 					<label for="<?php echo esc_attr( $id ); ?>"><?php echo esc_html( $label ); ?></label>

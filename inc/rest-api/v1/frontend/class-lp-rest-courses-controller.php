@@ -142,30 +142,18 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				$filter->post_authors = $author_ids;
 			}
 
-			// Sort on Course Free
+			// Filter on Courses
 			if ( ! empty( $request['sort_by'] ) ) {
 				$filter->sort_by[] = $request['sort_by'];
 			}
 
-			//Filter course
-			//          $lp_course = LP_Course_DB::getInstance();
-			//          if ( isset( $request['c_price'] ) && ! empty( $request['c_price'] ) ) {
-			//              if ( $request['c_price'] === 'free' ) {
-			//                  $lp_course->free_course( $filter );
-			//              } elseif ( $request['c_price'] === 'paid' ) {
-			//                  $lp_course->paid_course( $filter );
-			//              }
-			//          }
-
-			/*if ( isset( $request['c_level'] ) && ! empty( $request['c_level'] ) ) {
-				$level = is_string( $request['c_level'] ) ? explode( ',', $request['c_level'] ) : $request['c_level'];
-				$key   = array_search( 'all', $level );
-				if ( $key !== false ) {
-					$level[ $key ] = '';
-				}
-
-				$lp_course->level_course( $filter, $level );
-			}*/
+			// Sort by level
+			$levels_str = LP_Helper::sanitize_params_submitted( urldecode( $request['c_level'] ?? '' ) );
+			if ( ! empty( $levels_str ) ) {
+				$levels_str     = str_replace( 'all', '', $levels_str );
+				$levels         = explode( ',', $levels_str );
+				$filter->levels = $levels;
+			}
 
 			$term_ids_str = LP_Helper::sanitize_params_submitted( urldecode( $request['term_id'] ?? '' ) );
 			if ( ! empty( $term_ids_str ) ) {

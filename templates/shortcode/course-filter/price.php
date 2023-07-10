@@ -13,18 +13,8 @@ do_action( 'learn-press/shortcode/course-filter/price/before', $data );
 	<ul class="price">
 		<li class="price__item">
 			<div class="price-name">
-				<input id="lp-price-all" name="price" type="checkbox"
-					   value="all" <?php checked( true, in_array( 'all', $value ) ); ?>>
-				<label for="lp-price-all"><?php esc_html_e( 'All', 'learnpress' ); ?></label>
-			</div>
-			<div class="price-course-num">
-				<?php echo esc_html( $data['course_number'] ); ?>
-			</div>
-		</li>
-		<li class="price__item">
-			<div class="price-name">
 				<input id="lp-price-free" name="price" type="checkbox"
-					   value="free" <?php checked( true, in_array( 'free', $value ) ); ?>>
+					value="on_free" <?php checked( true, in_array( 'free', $value ) ); ?>>
 				<label for="lp-price-free"><?php esc_html_e( 'Free', 'learnpress' ); ?></label>
 			</div>
 			<div class="price-course-num">
@@ -34,7 +24,7 @@ do_action( 'learn-press/shortcode/course-filter/price/before', $data );
 		<li class="price__item">
 			<div class="price-name">
 				<input id="lp-price-paid" name="price" type="checkbox"
-					   value="paid" <?php checked( true, in_array( 'paid', $value ) ); ?>>
+					value="on_paid" <?php checked( true, in_array( 'paid', $value ) ); ?>>
 				<label for="lp-price-paid"><?php esc_html_e( 'Paid', 'learnpress' ); ?></label>
 			</div>
 			<div class="price-course-num">

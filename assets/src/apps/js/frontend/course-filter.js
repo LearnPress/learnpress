@@ -62,9 +62,9 @@ window.lpCourseFilterRequestParams = ( filterForm, filterCourses ) => {
 			priceValue = [ ...priceValue, el.value ];
 		}
 
-		filterCourses.sort_by = 'on_free';
+		filterCourses.sort_by = priceValue;
 	} else {
-		delete filterCourses.c_price;
+		delete filterCourses.sort_by;
 	}
 
 	const instructor = filterForm.querySelectorAll( 'input[ name = "instructor" ]:checked' );

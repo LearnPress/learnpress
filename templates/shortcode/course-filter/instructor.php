@@ -13,8 +13,8 @@ do_action( 'learn-press/shortcode/course-filter/instructor/before', $data );
 <?php
 $instructors = get_users(
 	array(
-		'number' => - 1,
-		'role'   => LP_TEACHER_ROLE,
+		'number'   => - 1,
+		'role__in' => [ 'lp_teacher', 'administrator' ],
 	)
 );
 
@@ -30,7 +30,7 @@ if ( ! empty( $instructors ) ) {
 			<li class="instructor__item">
 				<div class="instructor-name">
 					<input id="<?php echo esc_attr( $id ); ?>" name="instructor" type="checkbox"
-						   value="<?php echo esc_attr( $data->ID ); ?>"
+						value="<?php echo esc_attr( $data->ID ); ?>"
 						<?php checked( true, in_array( $data->ID, $value ) ); ?>
 					>
 					<label for="<?php echo esc_attr( $id ); ?>"><?php echo esc_html( $data->display_name ); ?></label>
