@@ -495,6 +495,14 @@ class LP_Course_DB extends LP_Database {
 			$filter->where[] = $this->wpdb->prepare( 'AND r_term.term_taxonomy_id IN (' . $term_ids_format . ')', $filter->term_ids );
 		}
 
+		// Tag ids
+		if ( ! empty( $filter->tag_ids ) ) {
+			$filter->join[] = "INNER JOIN $this->tb_term_relationships AS r_term ON p.ID = r_term.object_id";
+
+			$tag_ids_format = LP_Helper::db_format_array( $filter->tag_ids, '%d' );
+			$filter->where[] = $this->wpdb->prepare( 'AND r_term.term_taxonomy_id IN (' . $tag_ids_format . ')', $filter->tag_ids );
+		}
+
 		// Level
 		if ( ! empty( $filter->levels ) ) {
 			$filter->join[]  = "INNER JOIN $this->tb_postmeta AS pm ON p.ID = pm.post_id";

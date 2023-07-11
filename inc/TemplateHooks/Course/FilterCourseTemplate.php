@@ -247,7 +247,7 @@ class FilterCourseTemplate {
 				$sections = apply_filters(
 					'learn-press/filter-courses/course-category/sections',
 					[
-						'input' => [ 'text_html' => '<input name="category" type="checkbox" value="' . $term->term_id . '">' ],
+						'input' => [ 'text_html' => '<input name="term_ids" type="checkbox" value="' . $term->term_id . '">' ],
 						'label' => [ 'text_html' => '<label for="">' . $term->name . '</label>' ],
 						'count' => [ 'text_html' => '<span class="count">(' . $term->count . ')</span>' ],
 					]
@@ -295,7 +295,7 @@ class FilterCourseTemplate {
 				$sections = apply_filters(
 					'learn-press/filter-courses/course-tag/sections',
 					[
-						'input' => [ 'text_html' => '<input name="category" type="checkbox" value="' . $term->term_id . '">' ],
+						'input' => [ 'text_html' => '<input name="tag_ids" type="checkbox" value="' . $term->term_id . '">' ],
 						'label' => [ 'text_html' => '<label for="">' . $term->name . '</label>' ],
 						'count' => [ 'text_html' => '<span class="count">(' . $term->count . ')</span>' ],
 					]
@@ -346,7 +346,7 @@ class FilterCourseTemplate {
 				$sections = apply_filters(
 					'learn-press/filter-courses/levels/sections',
 					[
-						'input' => [ 'text_html' => '<input name="price" type="checkbox" value="on_' . $key . '">' ],
+						'input' => [ 'text_html' => '<input name="c_level" type="checkbox" value="' . $key . '">' ],
 						'label' => [ 'text_html' => '<label for="">' . $field . '</label>' ],
 						'count' => [ 'text_html' => '<span class="count">(' . $count . ')</span>' ],
 					]

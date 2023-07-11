@@ -155,10 +155,18 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				$filter->levels = $levels;
 			}
 
+			// Find by category
 			$term_ids_str = LP_Helper::sanitize_params_submitted( urldecode( $request['term_id'] ?? '' ) );
 			if ( ! empty( $term_ids_str ) ) {
 				$term_ids         = explode( ',', $term_ids_str );
 				$filter->term_ids = $term_ids;
+			}
+
+			// Find by tag
+			$tag_ids_str = LP_Helper::sanitize_params_submitted( urldecode( $request['tag_id'] ?? '' ) );
+			if ( ! empty( $tag_ids_str ) ) {
+				$tag_ids         = explode( ',', $tag_ids_str );
+				$filter->tag_ids = $tag_ids;
 			}
 
 			$on_sale                               = absint( $request['on_sale'] ?? '0' );

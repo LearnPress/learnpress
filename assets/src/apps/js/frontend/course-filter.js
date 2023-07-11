@@ -84,7 +84,7 @@ window.lpCourseFilterRequestParams = ( filterForm, filterCourses ) => {
 		delete filterCourses.c_authors;
 	}
 
-	const level = filterForm.querySelectorAll( 'input[ name = "level" ]:checked' );
+	const level = filterForm.querySelectorAll( 'input[ name = "c_level" ]:checked' );
 	if ( level.length ) {
 		let levelValue = [];
 		for ( let i = 0; i < level.length; i++ ) {
@@ -101,26 +101,24 @@ window.lpCourseFilterRequestParams = ( filterForm, filterCourses ) => {
 	}
 
 	let termIds = [];
-	const courseCat = filterForm.querySelectorAll( 'input[ name = "course-cat" ]:checked' );
+	const courseCat = filterForm.querySelectorAll( 'input[ name = "term_ids" ]:checked' );
 	if ( courseCat.length ) {
 		for ( let i = 0; i < courseCat.length; i++ ) {
 			const el = courseCat[ i ];
 			termIds = [ ...termIds, el.value ];
 		}
+
+		filterCourses.term_id = termIds;
 	}
 
-	const courseTag = filterForm.querySelectorAll( 'input[ name = "course-tag" ]:checked' );
+	const courseTag = filterForm.querySelectorAll( 'input[ name = "tag_ids" ]:checked' );
 	if ( courseTag.length ) {
 		for ( let i = 0; i < courseTag.length; i++ ) {
 			const el = courseTag[ i ];
 			termIds = [ ...termIds, el.value ];
 		}
-	}
 
-	if ( termIds.length ) {
-		filterCourses.term_id = termIds;
-	} else {
-		delete filterCourses.term_id;
+		filterCourses.tag_id = termIds;
 	}
 
 	return filterCourses;
