@@ -5,6 +5,20 @@
  * @version 1.0.0
  */
 // fix container for theme premium
+
+
+body {
+	.entry-content{
+		&.has-global-padding{
+			padding-left: 0;
+			padding-right: 0;
+		}
+	}
+	.wp-site-blocks{
+		padding-left: 0;
+		padding-right: 0;
+	}
+}
 .learnpress-v4 {
 	.lp-content-area {
 		--lp-cotainer-max-with: inherit;
@@ -59,7 +73,6 @@
 			.instructor-info {
 				display: flex;
 				column-gap: 10px;
-				//font-size: 0.8em;
 				> div {
 					flex: 1;
 					text-align: right;
@@ -73,35 +86,8 @@
 					}
 				}
 
-				//.instructor-count-courses {
-				//	flex: 1;
-				//	text-align: right;
-				//	display: flex;
-				//	align-items: center;
-				//
-				//	span {
-				//		display: inline-flex;
-				//
-				//		&.instructor-total-courses {
-				//			margin-left: 10px;
-				//		}
-				//	}
-				//}
-
 				.instructor-count-students {
-					//flex: 1;
-					//text-align: right;
-					//display: flex;
 					justify-content: right;
-					//align-items: center;
-					//
-					//span {
-					//	display: inline-flex;
-					//
-					//	&.instructor-total-students {
-					//		margin-left: 10px;
-					//	}
-					//}
 				}
 			}
 
@@ -112,7 +98,6 @@
 				background: #D9D9D9;
 				text-decoration: none;
 				border-radius: 5px;
-				//font-size: 0.8em;
 				padding: 10px 0;
 				color: rgba(0, 0, 0, 0.5);
 				font-weight: 700;
@@ -124,10 +109,6 @@
 			}
 		}
 
-
-		//@media (max-width: 900px) {
-		//	grid-template-columns: repeat( auto-fit, minmax( 280px, 1fr ) );
-		//}
 	}
 }
 

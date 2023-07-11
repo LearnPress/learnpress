@@ -5,6 +5,18 @@
 * @version 1.0.0
 */
 // fix container for theme premium
+body {
+	.entry-content{
+		&.has-global-padding{
+			padding-left: 0;
+			padding-right:0;
+		}
+	}
+	.wp-site-blocks{
+		padding-left: 0;
+		padding-right: 0;
+	}
+}
 .learnpress-v4 {
 	.lp-content-area {
 		--lp-cotainer-max-with: inherit;
@@ -106,6 +118,7 @@
 
 		.course-img {
 			img {
+				width: 100%;
 				max-width: 100%;
 				height: auto;
 				aspect-ratio: 4/3;
