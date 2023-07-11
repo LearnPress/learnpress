@@ -700,30 +700,6 @@ class LP_Course_DB extends LP_Database {
 
 		return apply_filters( 'lp/user/course/query/filter/count-users-attend-courses-of-author', $filter_course );
 	}
-
-	public function level_course_number( string $level ): LP_Course_Filter {
-		$filter                  = new LP_Course_Filter();
-		$filter->run_query_count = true;
-		$filter->query_count     = true;
-
-		$filter->join[] = "INNER JOIN $this->tb_postmeta AS pm ON p.ID = pm.post_id";
-
-		$filter->where[] = $this->wpdb->prepare(
-			'AND pm.meta_key = %s AND pm.meta_value = %s',
-			'_lp_level',
-			$level
-		);
-
-		return $filter;
-	}
-
-	public function course_number(): LP_Course_Filter {
-		$filter                  = new LP_Course_Filter();
-		$filter->run_query_count = true;
-		$filter->query_count     = true;
-
-		return $filter;
-	}
 }
 
 LP_Course_DB::getInstance();

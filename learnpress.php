@@ -22,6 +22,7 @@
 use LearnPress\ExternalPlugin\Elementor\LPElementor;
 use LearnPress\Shortcodes\ListInstructorsShortcode;
 use LearnPress\Shortcodes\SingleInstructorShortcode;
+use LearnPress\TemplateHooks\Course\FilterCourseTemplate;
 use LearnPress\TemplateHooks\Instructor\ListInstructorsTemplate;
 use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileInstructorStatisticsTemplate;
@@ -280,6 +281,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			SingleInstructorTemplate::instance();
 			ProfileInstructorStatisticsTemplate::instance();
 			ProfileStudentStatisticsTemplate::instance();
+			FilterCourseTemplate::instance();
 
 			// Models
 			require_once 'inc/models/class-lp-rest-response.php';
