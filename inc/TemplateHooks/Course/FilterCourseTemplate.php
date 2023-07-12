@@ -38,6 +38,7 @@ class FilterCourseTemplate {
 	 * @return void
 	 */
 	public function sections( array $data = [] ) {
+		wp_enqueue_script( 'lp-course-filter' );
 		ob_start();
 		try {
 			/*Template::instance()->get_frontend_template(
