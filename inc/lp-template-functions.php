@@ -1826,6 +1826,11 @@ function lp_archive_skeleton_get_args(): array {
 		$args = apply_filters( 'lp/template/archive-course/skeleton/args', $_GET );
 	}
 
+	global $wp_query;
+	if ( ! empty( $wp_query->get( 'paged' ) ) ) {
+		$args['paged'] = $wp_query->get( 'paged' );
+	}
+
 	if ( learn_press_is_course_category() || learn_press_is_course_tag() ) {
 		$cat = get_queried_object();
 

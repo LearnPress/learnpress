@@ -133,16 +133,14 @@ class FilterCourseTemplate {
 	 *
 	 * @return string
 	 */
-	public function html_search( $data = [] ) {
+	public function html_search( array $data = [] ) {
 		$content = '';
-		$data    = [];
-		ob_start();
 		try {
-			?>
-			<input type="text" placeholder="Search Course">
-			<?php
-
-			$content = ob_get_clean();
+			$content = sprintf(
+				'<input type="text" name="c_search" placeholder="%s" value="%s">',
+				__( 'Search Course', 'learnpress' ),
+				isset( $data['params_url'] ) ? ( $data['params_url']['c_search'] ?? '' ) : ''
+			);
 			$content = $this->html_item( esc_html__( 'Search', 'learnpress' ), $content );
 		} catch ( Throwable $e ) {
 			ob_end_clean();

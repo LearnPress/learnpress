@@ -93,6 +93,9 @@ const jsHandlePageCourses = () => {
 			elListCourse.append( skeletonClone );
 		}
 
+		filterCourses = args;
+		// Save filter courses to Storage
+		window.localStorage.setItem( 'lp_filter_courses', JSON.stringify( args ) );
 		const urlCourseArchive = lpArchiveAddQueryArgs( API.apiCourses, args );
 		const url = API.apiCourses + urlCourseArchive.search;
 		let paramsFetch = {
@@ -160,9 +163,6 @@ const jsHandlePageCourses = () => {
 				} else {
 					firstLoad = 0;
 				}
-
-				// Save filter courses to Storage
-				window.localStorage.setItem( 'lp_filter_courses', JSON.stringify( args ) );
 			} );
 	};
 
@@ -175,7 +175,7 @@ const jsHandlePageCourses = () => {
 
 	const lpArchiveSearchCourse = () => {
 		const searchForm = document.querySelectorAll( 'form.search-courses' );
-		filterCourses = JSON.parse( window.localStorage.getItem( 'lp_filter_courses' ) ) || {};
+		//filterCourses = JSON.parse( window.localStorage.getItem( 'lp_filter_courses' ) ) || {};
 
 		searchForm.forEach( ( s ) => {
 			const search = s.querySelector( 'input[name="c_search"]' );
@@ -201,7 +201,7 @@ const jsHandlePageCourses = () => {
 						filterCourses.c_search = s;
 						filterCourses.paged = 1;
 
-						lpArchiveRequestCourse( { ...filterCourses } );
+						lpArchiveRequestCourse( filterCourses );
 					}, 800 );
 				}
 			} );
@@ -233,7 +233,7 @@ const jsHandlePageCourses = () => {
 			// Scroll to archive element
 			elArchive.scrollIntoView( { behavior: 'smooth' } );
 
-			filterCourses = JSON.parse( window.localStorage.getItem( 'lp_filter_courses' ) ) || {};
+			//filterCourses = JSON.parse( window.localStorage.getItem( 'lp_filter_courses' ) ) || {};
 
 			const urlString = event.currentTarget.getAttribute( 'href' );
 
@@ -242,7 +242,7 @@ const jsHandlePageCourses = () => {
 				const paged = event.currentTarget.textContent || ( ele.classList.contains( 'next' ) && parseInt( current[ 0 ].textContent ) + 1 ) || ( ele.classList.contains( 'prev' ) && parseInt( current[ 0 ].textContent ) - 1 );
 				filterCourses.paged = paged;
 
-				lpArchiveRequestCourse( { ...filterCourses } );
+				lpArchiveRequestCourse( filterCourses );
 			}
 		} ) );
 	};
