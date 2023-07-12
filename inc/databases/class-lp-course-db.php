@@ -708,6 +708,30 @@ class LP_Course_DB extends LP_Database {
 
 		return apply_filters( 'lp/user/course/query/filter/count-users-attend-courses-of-author', $filter_course );
 	}
+
+	/**
+	 * Get total courses of Author
+	 *
+	 * @param int $author_id
+	 * @param array $status
+	 *
+	 * @return LP_Course_Filter
+	 * @since 4.2.3
+	 * @version 1.0.0
+	 */
+	public function count_courses_of_author( int $author_id, array $status = [] ): LP_Course_Filter {
+		$filter_course              = new LP_Course_Filter();
+		$filter_course->only_fields = array( 'ID' );
+		$filter_course->post_author = $author_id;
+		$filter_course->post_status = $status;
+		if ( empty( $status ) ) {
+			$filter_course->post_status = [];
+		}
+		$filter_course->field_count = 'ID';
+		$filter_course->query_count = true;
+
+		return apply_filters( 'lp/user/course/query/filter/count-courses-of-author', $filter_course );
+	}
 }
 
 LP_Course_DB::getInstance();

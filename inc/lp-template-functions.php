@@ -1820,23 +1820,11 @@ if ( ! function_exists( 'lp_taxonomy_archive_course_description' ) ) {
  * @return array
  */
 function lp_archive_skeleton_get_args(): array {
-	global $post, $wp;
-
-	$args = array();
+	$args = [];
 
 	if ( ! empty( $_GET ) ) {
-		$args = (array) $_GET;
+		$args = apply_filters( 'lp/template/archive-course/skeleton/args', $_GET );
 	}
-
-	$params = apply_filters(
-		'lp/template/archive-course/skeleton/args',
-		array(
-			'paged'    => 1,
-			'c_search' => '',
-			'orderby'  => '',
-			'order'    => '',
-		)
-	);
 
 	if ( learn_press_is_course_category() || learn_press_is_course_tag() ) {
 		$cat = get_queried_object();
@@ -1845,15 +1833,13 @@ function lp_archive_skeleton_get_args(): array {
 		$args['taxonomy'] = $cat->taxonomy;
 	}
 
-	if ( learn_press_is_course_archive() ) {
+	/*if ( learn_press_is_course_archive() ) {
 		foreach ( $params as $key => $param ) {
 			if ( isset( $_REQUEST[ $key ] ) ) {
 				$args[ $key ] = LP_Helper::sanitize_params_submitted( $_REQUEST[ $key ] );
-			} else {
-				$args[ $key ] = $param;
 			}
 		}
-	}
+	}*/
 
 	return $args;
 }

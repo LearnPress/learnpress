@@ -78,7 +78,7 @@ class FilterCourseTemplate {
 			$html_wrapper = apply_filters(
 				'learn-press/filter-courses/sections/wrapper',
 				[
-					'<div class="lp-course-filter">' => '</div>',
+					'<form class="lp-form-course-filter">' => '</form>',
 				],
 				$data
 			);
@@ -163,6 +163,9 @@ class FilterCourseTemplate {
 		$content = '';
 		ob_start();
 		try {
+			$data_selected = isset( $data['params_url'] ) ? ( $data['params_url']['sort_by'] ?? '' ) : '';
+			$data_selected = explode( ',', $data_selected );
+
 			// Get number courses free
 			$filter_courses_free              = new LP_Course_Filter();
 			$filter_courses_free->query_count = true;
@@ -196,13 +199,21 @@ class FilterCourseTemplate {
 					'<div class="lp-course-filter__field">' => '</div>',
 				];
 
+				$value   = "on_{$key}";
+				$checked = in_array( $value, $data_selected ) ? 'checked' : '';
+				$input   = sprintf( '<input name="sort_by" type="checkbox" value="%s" %s>', esc_attr( $value ), esc_attr( $checked ) );
+				$label   = sprintf( '<label for="">%s</label>', wp_kses_post( $field['label'] ) );
+				$count   = sprintf( '<span class="count">(%s)</span>', esc_html( $field['count'] ) );
+
 				$sections = apply_filters(
 					'learn-press/filter-courses/price/sections',
 					[
-						'input' => [ 'text_html' => '<input name="price" type="checkbox" value="on_' . $key . '">' ],
-						'label' => [ 'text_html' => '<label for="">' . $field['label'] . '</label>' ],
-						'count' => [ 'text_html' => '<span class="count">(' . $field['count'] . ')</span>' ],
-					]
+						'input' => [ 'text_html' => $input ],
+						'label' => [ 'text_html' => $label ],
+						'count' => [ 'text_html' => $count ],
+					],
+					$field,
+					$data
 				);
 
 				ob_start();
@@ -247,7 +258,7 @@ class FilterCourseTemplate {
 				$sections = apply_filters(
 					'learn-press/filter-courses/course-category/sections',
 					[
-						'input' => [ 'text_html' => '<input name="term_ids" type="checkbox" value="' . $term->term_id . '">' ],
+						'input' => [ 'text_html' => '<input name="term_id" type="checkbox" value="' . $term->term_id . '">' ],
 						'label' => [ 'text_html' => '<label for="">' . $term->name . '</label>' ],
 						'count' => [ 'text_html' => '<span class="count">(' . $term->count . ')</span>' ],
 					]
@@ -295,7 +306,7 @@ class FilterCourseTemplate {
 				$sections = apply_filters(
 					'learn-press/filter-courses/course-tag/sections',
 					[
-						'input' => [ 'text_html' => '<input name="tag_ids" type="checkbox" value="' . $term->term_id . '">' ],
+						'input' => [ 'text_html' => '<input name="tag_id" type="checkbox" value="' . $term->term_id . '">' ],
 						'label' => [ 'text_html' => '<label for="">' . $term->name . '</label>' ],
 						'count' => [ 'text_html' => '<span class="count">(' . $term->count . ')</span>' ],
 					]
@@ -324,6 +335,58 @@ class FilterCourseTemplate {
 	 *
 	 * @return string
 	 */
+	public function html_author( array $data = [] ): string {
+		$content = '';
+		ob_start();
+		try {
+			$instructors = get_users(
+				array(
+					'role__in' => [ LP_TEACHER_ROLE, ADMIN_ROLE ],
+					'fields'   => array( 'ID', 'display_name' ),
+				)
+			);
+
+			foreach ( $instructors as $instructor ) {
+				$html_wrapper = [
+					'<div class="lp-course-filter__field">' => '</div>',
+				];
+				$count        = 0;
+
+				$filter = LP_Course_DB::getInstance()->count_courses_of_author( $instructor->ID, [ 'publish' ] );
+				LP_Course::get_courses( $filter, $count );
+
+				$sections = apply_filters(
+					'learn-press/filter-courses/course-tag/sections',
+					[
+						'input' => [ 'text_html' => '<input name="c_authors" type="checkbox" value="' . $instructor->ID . '">' ],
+						'label' => [ 'text_html' => '<label for="">' . $instructor->display_name . '</label>' ],
+						'count' => [ 'text_html' => '<span class="count">(' . $count . ')</span>' ],
+					]
+				);
+
+				ob_start();
+				Template::instance()->print_sections( $sections );
+				$content_item = ob_get_clean();
+				echo Template::instance()->nest_elements( $html_wrapper, $content_item );
+			}
+
+			$content = ob_get_clean();
+			$content = $this->html_item( esc_html__( 'Author', 'learnpress' ), $content );
+		} catch ( Throwable $e ) {
+			ob_end_clean();
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
+		}
+
+		return $content;
+	}
+
+	/**
+	 * Get html course tag.
+	 *
+	 * @param array $data
+	 *
+	 * @return string
+	 */
 	public function html_level( array $data = [] ): string {
 		$content = '';
 		ob_start();
@@ -336,6 +399,11 @@ class FilterCourseTemplate {
 					'<div class="lp-course-filter__field">' => '</div>',
 				];
 
+				$value = $key;
+				if ( empty( $key ) ) {
+					$value = 'all';
+				}
+
 				$filter              = new LP_Course_Filter();
 				$filter->only_fields = [ 'ID' ];
 				$filter->query_count = true;
@@ -346,7 +414,7 @@ class FilterCourseTemplate {
 				$sections = apply_filters(
 					'learn-press/filter-courses/levels/sections',
 					[
-						'input' => [ 'text_html' => '<input name="c_level" type="checkbox" value="' . $key . '">' ],
+						'input' => [ 'text_html' => '<input name="c_level" type="checkbox" value="' . $value . '">' ],
 						'label' => [ 'text_html' => '<label for="">' . $field . '</label>' ],
 						'count' => [ 'text_html' => '<span class="count">(' . $count . ')</span>' ],
 					]
@@ -413,7 +481,7 @@ class FilterCourseTemplate {
 			$html_wrapper = apply_filters(
 				'learn-press/filter-courses/btn-reset/wrapper',
 				[
-					'<button class="course-filter-reset">' => '</button>',
+					'<button type="submit" class="course-filter-reset">' => '</button>',
 				],
 				$data
 			);

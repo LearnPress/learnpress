@@ -6,6 +6,11 @@ const jsHandlePageCourses = () => {
 		return;
 	}
 
+	let currentUrl = window.location.href;
+	const hasParams = currentUrl.includes( '?' );
+	if ( hasParams ) {
+		currentUrl = currentUrl.split( '?' )[ 0 ];
+	}
 	const urlQueryString = window.location.search;
 	const urlSearchParams = new URLSearchParams( urlQueryString );
 	let filterCourses = {};
@@ -23,6 +28,9 @@ const jsHandlePageCourses = () => {
 	for ( const [ key, val ] of urlSearchParams.entries() ) {
 		urlParams[ key ] = val;
 	}
+
+	console.log( 'URL params: ', urlParams );
+
 	window.localStorage.setItem( 'lp_filter_courses', JSON.stringify( urlParams ) );
 
 	if ( ! lpGlobalSettings.lpArchiveLoadAjax ) {
@@ -73,12 +81,19 @@ const jsHandlePageCourses = () => {
 		}
 		isLoading = true;
 
+		console.log( 'Args: ', args );
+		console.log( 'Document location: ', document.location );
+
+		// Change url by params filter courses
+		const urlPush = lpArchiveAddQueryArgs( currentUrl, args );
+		window.history.pushState( '', '', urlPush );
+
 		// Append skeleton to list.
 		if ( skeletonClone ) {
 			elListCourse.append( skeletonClone );
 		}
 
-		const urlCourseArchive = lpArchiveAddQueryArgs( API.apiCourses, { ...lpGlobalSettings.lpArchiveSkeleton, ...args } );
+		const urlCourseArchive = lpArchiveAddQueryArgs( API.apiCourses, args );
 		const url = API.apiCourses + urlCourseArchive.search;
 		let paramsFetch = {
 			method: 'GET',
@@ -148,15 +163,12 @@ const jsHandlePageCourses = () => {
 
 				// Save filter courses to Storage
 				window.localStorage.setItem( 'lp_filter_courses', JSON.stringify( args ) );
-				// Change url by params filter courses
-				const urlPush = lpArchiveAddQueryArgs( document.location, args );
-				window.history.pushState( '', '', urlPush );
 			} );
 	};
 
 	// Call API load courses when js loaded.
 	if ( ! lpGlobalSettings.lpArchiveNoLoadAjaxFirst ) {
-		lpArchiveRequestCourse( filterCourses );
+		lpArchiveRequestCourse( { ...lpGlobalSettings.lpArchiveSkeleton, ...urlParams } );
 	} else {
 		firstLoad = 0;
 	}
