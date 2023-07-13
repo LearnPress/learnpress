@@ -833,20 +833,18 @@ a {
 			.meta-item-student::before {
 				content: "\f501";
 			}
-
-			// responsive
-			@media (max-width: 815px) {
+			@media (max-width: 1024px) {
 				display: grid;
+				grid-template-columns: repeat(3, 1fr);
+				grid-gap: 16px;
+			}
+			// responsive
+			@media (max-width: 567px) {
 				grid-template-columns: repeat(2, 1fr);
-				grid-gap: 15px;
-
+				
 				.meta-item {
 					padding-right: 0px;
 				}
-			}
-
-			@media (max-width: 767px) {
-				grid-template-columns: repeat(3, 1fr);
 			}
 		}
 

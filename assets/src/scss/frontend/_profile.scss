@@ -415,7 +415,8 @@ body {
 
 			.lp-profile-nav-tabs {
 				width: max-content;
-				overflow-y: auto;
+				overflow-x: auto;
+    			overflow-y: hidden;
 				&::after {
 					display: table;
 					clear: both;
@@ -1075,6 +1076,12 @@ div.order-recover {
 				}
 				&:nth-child(2){
 					width: 25%;
+					a{
+						display: -webkit-box;
+						-webkit-line-clamp: 2;
+						-webkit-box-orient: vertical;
+						overflow: hidden;
+					}
 				}
 				&:nth-child(3){
 					width: 10%;
