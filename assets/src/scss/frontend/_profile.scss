@@ -683,12 +683,17 @@ body {
 						font-style: italic;
 					}
 					.form-field-input{
+						display: flex;
+						align-items: center;
 						input {
 							border: 1px solid #ccc;
 							color: #333;
 							font-size: 14px;
 							padding: 8px 20px;
 							height: 43px;
+						}
+						.description{
+							margin-top: 0;
 						}
 					} 
 				} 

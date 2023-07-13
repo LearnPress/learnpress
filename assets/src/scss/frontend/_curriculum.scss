@@ -1015,14 +1015,48 @@ body {
 	.course-meta__pull-right {
 		display: flex;
 		flex-wrap: wrap;
+		
 	}
+	&.course-meta-primary{
+		.course-meta__pull-left {
+			gap: 16px;
+			@media (max-width:1024px) {
 
+			}
+			@media (max-width:560px) {
+				grid-template-columns: 1fr;
+			}
+	
+			.meta-item {
+				margin-right: 0!important;
 
+				@media (max-width:560px) {
+					width: 100%;
+				}
+			}
+		}
+	}
+	&.course-meta-secondary{
+		.course-meta__pull-left {
+			@media (max-width:1024px) {
+				gap: 16px;
+			}	
+			.meta-item {
+				@media (max-width:1024px) {
+					margin-right: 0!important;
+					width: calc((100% - 32px) /3 );
+				}
+				@media (max-width:768px) {
+					width: 100%;
+				}
+			}
+		}
+	}
 	.course-meta__pull-left {
 		flex: 1;
-
 		.meta-item {
 			margin-right: 10px;
+			
 		}
 	}
 
