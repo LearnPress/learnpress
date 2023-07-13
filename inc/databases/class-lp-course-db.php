@@ -495,6 +495,14 @@ class LP_Course_DB extends LP_Database {
 			$filter->where[] = $this->wpdb->prepare( 'AND r_term.term_taxonomy_id IN (' . $term_ids_format . ')', $filter->term_ids );
 		}
 
+		// Tag ids
+		if ( ! empty( $filter->tag_ids ) ) {
+			$filter->join[] = "INNER JOIN $this->tb_term_relationships AS r_term ON p.ID = r_term.object_id";
+
+			$tag_ids_format = LP_Helper::db_format_array( $filter->tag_ids, '%d' );
+			$filter->where[] = $this->wpdb->prepare( 'AND r_term.term_taxonomy_id IN (' . $tag_ids_format . ')', $filter->tag_ids );
+		}
+
 		// Level
 		if ( ! empty( $filter->levels ) ) {
 			$filter->join[]  = "INNER JOIN $this->tb_postmeta AS pm ON p.ID = pm.post_id";
@@ -702,45 +710,27 @@ class LP_Course_DB extends LP_Database {
 	}
 
 	/**
-	 * @param LP_Course_Filter $filter
-	 * @param array $level
+	 * Get total courses of Author
+	 *
+	 * @param int $author_id
+	 * @param array $status
 	 *
 	 * @return LP_Course_Filter
+	 * @since 4.2.3
+	 * @version 1.0.0
 	 */
-	public function level_course( LP_Course_Filter &$filter, array $level ): LP_Course_Filter {
-		$level          = join( '","', $level );
-		$filter->join[] = "INNER JOIN $this->tb_postmeta AS pm ON p.ID = pm.post_id";
+	public function count_courses_of_author( int $author_id, array $status = [] ): LP_Course_Filter {
+		$filter_course              = new LP_Course_Filter();
+		$filter_course->only_fields = array( 'ID' );
+		$filter_course->post_author = $author_id;
+		$filter_course->post_status = $status;
+		if ( empty( $status ) ) {
+			$filter_course->post_status = [];
+		}
+		$filter_course->field_count = 'ID';
+		$filter_course->query_count = true;
 
-		$filter->where[] = $this->wpdb->prepare(
-			'AND pm.meta_key = %s AND pm.meta_value IN ("' . $level . '")',
-			'_lp_level'
-		);
-
-		return $filter;
-	}
-
-	public function level_course_number( string $level ): LP_Course_Filter {
-		$filter                  = new LP_Course_Filter();
-		$filter->run_query_count = true;
-		$filter->query_count     = true;
-
-		$filter->join[] = "INNER JOIN $this->tb_postmeta AS pm ON p.ID = pm.post_id";
-
-		$filter->where[] = $this->wpdb->prepare(
-			'AND pm.meta_key = %s AND pm.meta_value = %s',
-			'_lp_level',
-			$level
-		);
-
-		return $filter;
-	}
-
-	public function course_number(): LP_Course_Filter {
-		$filter                  = new LP_Course_Filter();
-		$filter->run_query_count = true;
-		$filter->query_count     = true;
-
-		return $filter;
+		return apply_filters( 'lp/user/course/query/filter/count-courses-of-author', $filter_course );
 	}
 }
 

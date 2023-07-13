@@ -282,8 +282,8 @@ class LP_Assets extends LP_Abstract_Assets {
 					self::url( 'js/dist/frontend/course-filter' . self::$_min_assets . '.js' ),
 					array( 'lp-courses' ),
 					array(),
-					0,
-					0
+					1,
+					1
 				),
 			)
 		);

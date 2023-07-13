@@ -128,6 +128,7 @@ class LP_Widget extends WP_Widget {
 	 */
 	public function widget( $args, $instance ) {
 		wp_enqueue_script( 'lp-widgets' );
+		wp_enqueue_script( 'lp-course-filter' );
 
 		do_action( 'before_show_lp_widget_content' );
 
@@ -143,7 +144,7 @@ class LP_Widget extends WP_Widget {
 			)
 		);
 
-		echo wp_kses_post( $this->lp_widget_content( $data, $args, $instance ) );
+		echo $this->lp_widget_content( $data, $args, $instance );
 	}
 
 	/**
@@ -174,9 +175,9 @@ class LP_Widget extends WP_Widget {
 			echo '<div class="learnpress-widget-wrapper">';
 
 			if ( is_wp_error( $content ) ) {
-				echo wp_kses_post( $content->get_error_message() );
+				echo $content->get_error_message();
 			} else {
-				echo wp_kses_post( $content );
+				echo $content;
 			}
 
 			echo '</div>';

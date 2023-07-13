@@ -6,6 +6,11 @@ const jsHandlePageCourses = () => {
 		return;
 	}
 
+	let currentUrl = window.location.href;
+	const hasParams = currentUrl.includes( '?' );
+	if ( hasParams ) {
+		currentUrl = currentUrl.split( '?' )[ 0 ];
+	}
 	const urlQueryString = window.location.search;
 	const urlSearchParams = new URLSearchParams( urlQueryString );
 	let filterCourses = {};
@@ -23,6 +28,9 @@ const jsHandlePageCourses = () => {
 	for ( const [ key, val ] of urlSearchParams.entries() ) {
 		urlParams[ key ] = val;
 	}
+
+	console.log( 'URL params: ', urlParams );
+
 	window.localStorage.setItem( 'lp_filter_courses', JSON.stringify( urlParams ) );
 
 	if ( ! lpGlobalSettings.lpArchiveLoadAjax ) {
@@ -73,12 +81,22 @@ const jsHandlePageCourses = () => {
 		}
 		isLoading = true;
 
+		console.log( 'Args: ', args );
+		console.log( 'Document location: ', document.location );
+
+		// Change url by params filter courses
+		const urlPush = lpArchiveAddQueryArgs( currentUrl, args );
+		window.history.pushState( '', '', urlPush );
+
 		// Append skeleton to list.
 		if ( skeletonClone ) {
 			elListCourse.append( skeletonClone );
 		}
 
-		const urlCourseArchive = lpArchiveAddQueryArgs( API.apiCourses, { ...lpGlobalSettings.lpArchiveSkeleton, ...args } );
+		filterCourses = args;
+		// Save filter courses to Storage
+		window.localStorage.setItem( 'lp_filter_courses', JSON.stringify( args ) );
+		const urlCourseArchive = lpArchiveAddQueryArgs( API.apiCourses, args );
 		const url = API.apiCourses + urlCourseArchive.search;
 		let paramsFetch = {
 			method: 'GET',
@@ -145,25 +163,19 @@ const jsHandlePageCourses = () => {
 				} else {
 					firstLoad = 0;
 				}
-
-				// Save filter courses to Storage
-				window.localStorage.setItem( 'lp_filter_courses', JSON.stringify( args ) );
-				// Change url by params filter courses
-				const urlPush = lpArchiveAddQueryArgs( document.location, args );
-				window.history.pushState( '', '', urlPush );
 			} );
 	};
 
 	// Call API load courses when js loaded.
 	if ( ! lpGlobalSettings.lpArchiveNoLoadAjaxFirst ) {
-		lpArchiveRequestCourse( filterCourses );
+		lpArchiveRequestCourse( { ...lpGlobalSettings.lpArchiveSkeleton, ...urlParams } );
 	} else {
 		firstLoad = 0;
 	}
 
 	const lpArchiveSearchCourse = () => {
 		const searchForm = document.querySelectorAll( 'form.search-courses' );
-		filterCourses = JSON.parse( window.localStorage.getItem( 'lp_filter_courses' ) ) || {};
+		//filterCourses = JSON.parse( window.localStorage.getItem( 'lp_filter_courses' ) ) || {};
 
 		searchForm.forEach( ( s ) => {
 			const search = s.querySelector( 'input[name="c_search"]' );
@@ -189,7 +201,7 @@ const jsHandlePageCourses = () => {
 						filterCourses.c_search = s;
 						filterCourses.paged = 1;
 
-						lpArchiveRequestCourse( { ...filterCourses } );
+						lpArchiveRequestCourse( filterCourses );
 					}, 800 );
 				}
 			} );
@@ -221,7 +233,7 @@ const jsHandlePageCourses = () => {
 			// Scroll to archive element
 			elArchive.scrollIntoView( { behavior: 'smooth' } );
 
-			filterCourses = JSON.parse( window.localStorage.getItem( 'lp_filter_courses' ) ) || {};
+			//filterCourses = JSON.parse( window.localStorage.getItem( 'lp_filter_courses' ) ) || {};
 
 			const urlString = event.currentTarget.getAttribute( 'href' );
 
@@ -230,7 +242,7 @@ const jsHandlePageCourses = () => {
 				const paged = event.currentTarget.textContent || ( ele.classList.contains( 'next' ) && parseInt( current[ 0 ].textContent ) + 1 ) || ( ele.classList.contains( 'prev' ) && parseInt( current[ 0 ].textContent ) - 1 );
 				filterCourses.paged = paged;
 
-				lpArchiveRequestCourse( { ...filterCourses } );
+				lpArchiveRequestCourse( filterCourses );
 			}
 		} ) );
 	};

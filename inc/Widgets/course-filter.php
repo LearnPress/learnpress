@@ -40,15 +40,20 @@ if ( ! class_exists( 'LP_Widget_Course_Filter' ) ) {
 			$data = array(
 				'field'             => $field,
 				'search_suggestion' => $instance['search_suggestion'],
+				'params_url'        => $params['params_url'] ?? '',
 			);
 
-			return learn_press_get_template_content(
-				apply_filters(
-					'learn-press/shortcode/course-filter/template',
-					'shortcode/course-filter/content.php'
-				),
-				compact( 'data' )
-			);
+			ob_start();
+			do_action( 'learn-press/filter-courses/layout', $data );
+			return ob_get_clean();
+
+			//          return learn_press_get_template_content(
+			//              apply_filters(
+			//                  'learn-press/shortcode/course-filter/template',
+			//                  'shortcode/course-filter/content.php'
+			//              ),
+			//              compact( 'data' )
+			//          );
 		}
 	}
 }

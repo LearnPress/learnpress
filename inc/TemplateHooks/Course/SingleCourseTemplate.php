@@ -1,8 +1,8 @@
 <?php
 /**
- * Template hooks Archive Package.
+ * Template hooks Single Course.
  *
- * @since 1.0.0
+ * @since 4.2.3
  * @version 1.0.0
  */
 namespace LearnPress\TemplateHooks\Course;

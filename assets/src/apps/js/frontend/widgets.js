@@ -13,7 +13,7 @@ function widgetRestAPI() {
 		const response = await wp.apiFetch( {
 			path: 'lp/v1/widgets/api',
 			method: 'POST',
-			data: { ...widget },
+			data: { ...widget, ...{ params_url: lpGlobalSettings.lpArchiveSkeleton } },
 		} );
 
 		const { data, status, message } = response;
