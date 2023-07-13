@@ -323,7 +323,7 @@ body.lp-sidebar-toggle{
 			display: -webkit-box;
 			overflow: hidden;
 			color: #fff;
-			font-size: 16px;
+			font-size: 18px;
 			font-weight: 400;
 			text-overflow: ellipsis;
 			-webkit-line-clamp: 1;
@@ -331,6 +331,9 @@ body.lp-sidebar-toggle{
 
 			&:hover {
 				color: var(--lp-primary-color);
+			}
+			@media (max-width: 1024px) {
+				font-size: 16px;
 			}
 		}
 

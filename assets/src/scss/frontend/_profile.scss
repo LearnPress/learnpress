@@ -754,7 +754,7 @@ body {
 				border:none;
 				background: transparent;
 				flex-direction: row;
-				padding: 5px 0px;
+				padding: 12px 0px;
 				border-bottom: 1px solid #f1f1f1;
 				&:last-child{
 					border-bottom: none;
@@ -787,25 +787,18 @@ body {
 	.statistic-box {
 
 		.statistic-box__text {
-			margin: 0 0 8px 0;
 			padding: 0;
 			color: #666;
 			font-size: 18px;
-			font-weight: 400;
+			font-weight: 600;
 			line-height: 1;
-			@media (max-width: 767px) {
-				font-size: 16px;
-			}
 		}
 
 		.statistic-box__number {
 			color: #333;
 			font-size: 18px;
-			font-weight: 500;
+			font-weight: 600;
 			line-height: 1;
-			@media (max-width: 767px) {
-				font-size: 16px;
-			}
 		}
 
 	}

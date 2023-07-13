@@ -879,6 +879,8 @@ a {
 		}
 
 		.course-item {
+			border: 1px solid #f0f0f0;
+			
 			&:hover {
 				box-shadow: 0 15px 20px 0 rgba(0, 0, 0, 0.2);
 			}
@@ -890,8 +892,6 @@ a {
 
 		.course-content {
 			padding: 15px 20px 12px 20px;
-			border: 1px solid #f0f0f0;
-			border-top: 0;
 			flex-grow: 1;
 
 			.course-categories {
