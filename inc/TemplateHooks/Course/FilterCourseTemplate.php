@@ -110,11 +110,11 @@ class FilterCourseTemplate {
 		ob_start();
 		try {
 			?>
-			<div class="lp-course-filter__item">
-				<div class="lp-course-filter__title">
+			<div class="lp-form-course-filter__item">
+				<div class="lp-form-course-filter__title">
 					<h4><?php echo $title; ?></h4>
 				</div>
-				<div class="lp-course-filter__content">
+				<div class="lp-form-course-filter__content">
 					<?php echo $content; ?>
 				</div>
 			</div>
@@ -132,17 +132,30 @@ class FilterCourseTemplate {
 	/**
 	 * Get html search.
 	 *
+	 * @param array $data
+	 *
 	 * @return string
 	 */
-	public function html_search( array $data = [] ) {
+	public function html_search( array $data = [] ): string {
 		$content = '';
 		try {
-			$content = sprintf(
-				'<input type="text" name="c_search" placeholder="%s" value="%s">',
-				__( 'Search Course', 'learnpress' ),
-				isset( $data['params_url'] ) ? ( $data['params_url']['c_search'] ?? '' ) : ''
+			$html_wrapper = apply_filters(
+				'learn-press/filter-courses/sections/search/wrapper',
+				[
+					'<div class="lp-course-filter-search-field">' => '</div>',
+				],
+				$data
 			);
-			$content = $this->html_item( esc_html__( 'Search', 'learnpress' ), $content );
+			$content      = sprintf(
+				'<input type="text" name="c_search" placeholder="%s" value="%s" class="%s">',
+				__( 'Search Course', 'learnpress' ),
+				isset( $data['params_url'] ) ? ( $data['params_url']['c_search'] ?? '' ) : '',
+				'lp-course-filter-search'
+			);
+			$content     .= '<span class="lp-loading-circle hide"></span>';
+			$content      = Template::instance()->nest_elements( $html_wrapper, $content );
+			$content     .= '<div class="lp-course-filter-search-result"></div>';
+			$content      = $this->html_item( esc_html__( 'Search', 'learnpress' ), $content );
 		} catch ( Throwable $e ) {
 			ob_end_clean();
 			error_log( __METHOD__ . ': ' . $e->getMessage() );

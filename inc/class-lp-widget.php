@@ -128,11 +128,11 @@ class LP_Widget extends WP_Widget {
 	 */
 	public function widget( $args, $instance ) {
 		wp_enqueue_script( 'lp-widgets' );
-		wp_enqueue_script( 'lp-course-filter' );
+		if ( $this->id_base === 'learnpress_widget_course_filter' ) {
+			wp_enqueue_script( 'lp-course-filter' );
+		}
 
-		do_action( 'before_show_lp_widget_content' );
-
-		if ( isset( $instance['show_in_rest'] ) && empty( $instance['show_in_rest'] ) ) {
+		if ( empty( $instance['show_in_rest'] ) ) {
 			$this->widget_in_rest = false;
 		}
 

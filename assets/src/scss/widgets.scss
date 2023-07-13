@@ -1,5 +1,7 @@
 @import "mixin";
 @import "frontend/skeleton-animation";
+@import "loading-circle-animation";
+@import "frontend/course-filter";
 
 .learnpress.widget {
 	max-width: 400px;

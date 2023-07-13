@@ -87,13 +87,6 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 					'permission_callback' => '__return_true',
 				),
 			),
-			'suggest-course'  => array(
-				array(
-					'methods'             => WP_REST_Server::READABLE,
-					'callback'            => array( $this, 'course_suggestion' ),
-					'permission_callback' => '__return_true',
-				),
-			),
 		);
 
 		parent::register_routes();
@@ -122,7 +115,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 		try {
 			$filter             = new LP_Course_Filter();
 			$filter->page       = absint( $request['paged'] ?? 1 );
-			$filter->post_title = LP_Helper::sanitize_params_submitted( $request['c_search'] ?? '' );
+			$filter->post_title = LP_Helper::sanitize_params_submitted( trim( $request['c_search'] ?? '' ) );
 			$fields_str         = LP_Helper::sanitize_params_submitted( urldecode( $request['c_fields'] ?? '' ) );
 			$fields_exclude_str = LP_Helper::sanitize_params_submitted( urldecode( $request['c_exclude_fields'] ?? '' ) );
 			if ( ! empty( $fields_str ) ) {
@@ -177,7 +170,15 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			$filter->order_by = LP_Helper::sanitize_params_submitted( ! empty( $request['order_by'] ) ? $request['order_by'] : 'post_date' );
 			$filter->order    = LP_Helper::sanitize_params_submitted( ! empty( $request['order'] ) ? $request['order'] : 'DESC' );
 			$filter->limit    = $request['limit'] ?? LP_Settings::get_option( 'archive_course_limit', 10 );
-			$return_type      = $request['return_type'] ?? 'html';
+
+			// For search suggest courses
+			if ( ! empty( $request['c_suggest'] ) ) {
+				$filter->only_fields = [ 'ID', 'post_title' ];
+				$filter->limit       = apply_filters( 'learn-press/rest-api/courses/suggest-limit', 10 );
+				$filter->max_limit   = apply_filters( 'learn-press/rest-api/courses/suggest-max-limit', 10 );
+			}
+
+			$return_type = $request['return_type'] ?? 'html';
 			if ( 'json' !== $return_type ) {
 				$filter->only_fields = array( 'DISTINCT(ID) AS ID' );
 			}
@@ -195,32 +196,41 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				// For return data has html
 				ob_start();
 				if ( $courses ) {
-					global $wp, $post;
-
-					// Template Pagination.
-					$response->data->pagination = learn_press_get_template_content(
-						'loop/course/pagination.php',
-						array(
-							'total' => $total_pages,
-							'paged' => $filter->page,
-						)
-					);
-					// End Pagination
-
-					// For custom template
-					$template_path = apply_filters( 'lp/api/courses/template', '', $request );
-					if ( ! empty( $template_path ) ) {
-						Template::instance()->get_template( $template_path, compact( 'courses', 'total_pages', 'request' ) );
+					if ( ! empty( $request['c_suggest'] ) ) {
+						$data = array(
+							'courses'      => $courses,
+							'keyword'      => $request['c_search'],
+							'total_course' => $total_rows,
+						);
+						do_action( 'learn-press/rest-api/courses/suggest/layout', $data );
 					} else {
-						foreach ( $courses as $course ) {
-							$post = get_post( $course->ID );
-							setup_postdata( $post );
-							Template::instance()->get_frontend_template( 'content-course.php' );
-						}
+						global $wp, $post;
 
-						wp_reset_postdata();
+						// Template Pagination.
+						$response->data->pagination = learn_press_get_template_content(
+							'loop/course/pagination.php',
+							array(
+								'total' => $total_pages,
+								'paged' => $filter->page,
+							)
+						);
+						// End Pagination
+
+						// For custom template
+						$template_path = apply_filters( 'lp/api/courses/template', '', $request );
+						if ( ! empty( $template_path ) ) {
+							Template::instance()->get_template( $template_path, compact( 'courses', 'total_pages', 'request' ) );
+						} else {
+							foreach ( $courses as $course ) {
+								$post = get_post( $course->ID );
+								setup_postdata( $post );
+								Template::instance()->get_frontend_template( 'content-course.php' );
+							}
+
+							wp_reset_postdata();
+						}
+						// End content items
 					}
-					// End content items
 				} else {
 					LearnPress::instance()->template( 'course' )->no_courses_found();
 				}
@@ -696,64 +706,5 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 		}
 
 		return $response;
-	}
-
-	/**
-	 * @param WP_REST_Request $request
-	 *
-	 * @return LP_REST_Response
-	 */
-	public function course_suggestion( WP_REST_Request $request ): LP_REST_Response {
-		$response       = new LP_REST_Response();
-		$response->data = new stdClass();
-
-		try {
-			$filter              = new LP_Course_Filter();
-			$filter->page        = absint( $request['paged'] ?? 1 );
-			$filter->post_title  = LP_Helper::sanitize_params_submitted( $request['c_search'] ?? '' );
-			$filter->limit       = $request['limit'] ?? LP_Settings::get_option( 'archive_course_limit', 10 );
-			$filter->only_fields = array( 'DISTINCT(ID) AS ID' );
-
-			$total_rows  = 0;
-			$filter      = apply_filters( 'lp/api/suggest-course/filter', $filter, $request );
-			$courses     = LP_Course::get_courses( $filter, $total_rows );
-			$total_pages = LP_Database::get_total_pages( $filter->limit, $total_rows );
-
-			// For return data has html
-			ob_start();
-			if ( $courses ) {
-				global $wp, $post;
-				$page = $filter->page;
-				// Template Pagination.
-				$response->data->pagination = learn_press_get_template_content(
-					'loop/course/pagination.php',
-					array(
-						'total' => $total_pages,
-						'paged' => $filter->page,
-					)
-				);
-				// End Pagination
-				Template::instance()->get_frontend_template(
-					'shortcode/course-filter/search-suggestion.php',
-					compact( 'courses', 'total_pages', 'page' )
-				);
-
-				wp_reset_postdata();
-				// End content items
-			} else {
-				LearnPress::instance()->template( 'course' )->no_courses_found();
-			}
-
-			$response->data->content = ob_get_clean();
-			$response->data->totals  = $total_rows;
-
-			$response->status = 'success';
-		} catch ( Throwable $e ) {
-			ob_end_clean();
-			$response->data->content = $e->getMessage();
-			$response->message       = $e->getMessage();
-		}
-
-		return apply_filters( 'lp/rest-api/frontend/course/course_suggestion/response', $response );
 	}
 }
