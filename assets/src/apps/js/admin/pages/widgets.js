@@ -54,6 +54,8 @@ document.addEventListener( 'DOMContentLoaded', function( event ) {
 	} else {
 		$( document ).on( 'learnpress/widgets/select', function() {
 			autocompleteWidget();
+			sortItem();
+			showItems();
 		} );
 
 		autocompleteWidget();
@@ -79,14 +81,16 @@ function sortItem() {
 
 		},
 		update( event, ui ) {
-			let value = '';
+			const value = [];
 			$( this ).children().map( function() {
-				value += $( this ).find( 'input' ).val() + ',';
+				value.push( $( this ).find( 'input' ).val() );
 			} );
 
-			$( this ).parent().find( 'input[type=hidden]' ).val( value );
+			value.join( ',' );
+
+			$( this ).closest( '.widget-content' ).find( 'input.fields-sort' ).val( value );
 			//Enable save btn
-			$( this ).closest( 'form' ).find( 'input[ type = submit ]' ).attr( 'disabled', false );
+			$( this ).closest( 'form' ).find( 'input[type=submit]' ).attr( 'disabled', false );
 		},
 		stop( event, ui ) {
 
