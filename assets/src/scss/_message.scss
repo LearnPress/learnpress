@@ -5,7 +5,7 @@ $msg-waring: #ffc107;
 
 .learn-press-message {
 	position: relative;
-	margin: 24px 0 0px 0!important;
+	margin: 24px 0 24px 0!important;
 	padding: 10px 50px 10px 15px;
 	border-top: 5px solid $msg-color;
 	border-radius: 0 0 5px 5px;
@@ -102,7 +102,7 @@ $msg-waring: #ffc107;
 
 	&.success {
 		border-color: $msg-success;
-
+		margin: 24px auto!important;
 		&::before {
 			background: $msg-success;
 		}

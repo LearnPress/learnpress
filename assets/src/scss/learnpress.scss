@@ -315,7 +315,7 @@ footer {
 }
 
 .lp-entry-content .course-tabs {
-	margin-bottom: 60px;
+	margin-bottom: 40px;
 }
 
 /* Archive */
@@ -395,11 +395,10 @@ footer {
 		> li {
 			display: inline-block;
 			margin: 0;
-			padding: 0 14px;
 
 			.page-numbers {
 				float: unset;
-				padding: 0;
+				padding: 0 14px;
 				color: #666;
 				background: transparent;
 				font-size: 16px;
@@ -707,5 +706,8 @@ ul.list-table-nav {
 		text-align: left;
 		padding: 10px 25px;
 		border: 1px solid;
+		a{
+			color: var(--lp-primary-color);
+		}
 	}
 }
