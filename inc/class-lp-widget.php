@@ -345,7 +345,8 @@ class LP_Widget extends WP_Widget {
 					break;
 
 				case 'sortable-checkbox':
-					$order = $value['order'] ?? '';
+					$values_default = $setting['std'] ?? array();
+					$order          = $value['order'] ?? '';
 					if ( isset( $value['order'] ) ) {
 						unset( $value['order'] );
 					}
@@ -373,7 +374,7 @@ class LP_Widget extends WP_Widget {
 							<div class="sortable <?php echo esc_attr( $class ); ?>">
 								<?php
 								foreach ( $options as $option_name => $option ) {
-									$checked_value = $instance[ $key ] ?? array();
+									$checked_value = ! empty( $instance ) ? ( $instance[ $key ] ?? array() ) : $values_default;
 									?>
 									<div class="sortable__item">
 										<i class="dashicons dashicons-move"></i>

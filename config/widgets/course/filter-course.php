@@ -21,36 +21,53 @@ return apply_filters(
 			'type'  => 'checkbox',
 			'std'   => 1,
 		),
-		'field'             => array(
+		'fields'            => array(
 			'label'   => __( 'Fields', 'learnpress' ),
 			'type'    => 'sortable-checkbox',
 			'options' => array(
-				'keyword'    => array(
-					'id'    => 'keyword',
+				'search'     => array(
+					'id'    => 'search',
 					'label' => esc_html__( 'Keyword', 'learnpress' ),
 				),
 				'price'      => array(
 					'id'    => 'price',
 					'label' => esc_html__( 'Price', 'learnpress' ),
 				),
-				'course-cat' => array(
-					'id'    => 'course-cat',
+				'category'   => array(
+					'id'    => 'category',
 					'label' => esc_html__( 'Course Category', 'learnpress' ),
 				),
-				'course-tag' => array(
-					'id'    => 'course-tag',
+				'tag'        => array(
+					'id'    => 'tag',
 					'label' => esc_html__( 'Course Tag', 'learnpress' ),
 				),
-				'instructor' => array(
-					'id'    => 'instructor',
-					'label' => esc_html__( 'Instructor', 'learnpress' ),
+				'author'     => array(
+					'id'    => 'author',
+					'label' => esc_html__( 'Author', 'learnpress' ),
 				),
 				'level'      => array(
 					'id'    => 'level',
 					'label' => esc_html__( 'Level', 'learnpress' ),
 				),
+				'btn_submit' => array(
+					'id'    => 'btn_submit',
+					'label' => esc_html__( 'Button Submit', 'learnpress' ),
+				),
+				'btn_reset'  => array(
+					'id'    => 'level',
+					'label' => esc_html__( 'Button Reset', 'learnpress' ),
+				),
 			),
-			'std'     => [],
+			'std'     => [
+				'search',
+				'price',
+				'category',
+				'tag',
+				'author',
+				'level',
+				'btn_submit',
+				'btn_reset',
+			],
 		),
 		'search_suggestion' => array(
 			'label' => __( 'Enable Keyword Search Suggestion', 'learnpress' ),

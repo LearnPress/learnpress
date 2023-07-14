@@ -68,5 +68,16 @@
 			}
 		}
 	}
+
+	.lp-course-filter__field {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+
+		label {
+			padding: 0;
+			margin: 0;
+		}
+	}
 }
 

@@ -41,16 +41,6 @@ class FilterCourseTemplate {
 		wp_enqueue_script( 'lp-course-filter' );
 		ob_start();
 		try {
-			/*Template::instance()->get_frontend_template(
-				apply_filters(
-					'learn-press/shortcode/course-filter/template',
-					'shortcode/course-filter/content.php'
-				),
-				compact( 'data' )
-			);
-
-			return;*/
-
 			if ( ! isset( $data['fields'] ) ) {
 				$data['fields'] = [
 					'search',
