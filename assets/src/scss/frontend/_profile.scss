@@ -685,6 +685,8 @@ body {
 					.form-field-input{
 						display: flex;
 						align-items: center;
+						flex-wrap: wrap;
+						gap: 16px;
 						input {
 							border: 1px solid #ccc;
 							color: #333;
@@ -699,6 +701,23 @@ body {
 				} 
 			} 
 		} 
+		form{
+			&[name=profile-privacy]{
+				button{
+					padding: 16px 24px;
+					border: 0;
+					border-radius: 3px;
+					color: #fff;
+					background: var(--lp-primary-color);
+					font-size: 16px;
+					font-weight: 400;
+					line-height: 1;
+					&:hover{
+						opacity: 0.5;
+					}
+				}
+			}
+		}
 	}
 
 	#dashboard-general-statistic {

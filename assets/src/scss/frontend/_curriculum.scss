@@ -28,7 +28,7 @@
 }
 .course-tab-panels{
 	.course-tab-panel{
-		padding-top: 30px;
+		margin-top: 30px;
 	}
 }
 .course-tab-panel {
@@ -865,7 +865,7 @@ ul.learn-press-nav-tabs {
 			border: none;
 			outline: none;
 			color: #fff;
-			background: #333;
+			background: var(--lp-primary-color);
 			box-shadow: none;
 			justify-content: center;
 			align-items: center;
@@ -1021,19 +1021,20 @@ body {
 	}
 	&.course-meta-primary{
 		.course-meta__pull-left {
-			gap: 16px;
-			@media (max-width:1024px) {
-
-			}
-			@media (max-width:560px) {
-				grid-template-columns: 1fr;
-			}
-	
+			gap: 16px;	
 			.meta-item {
 				margin-right: 0!important;
-
+				a{
+					text-decoration: none;
+				}
 				@media (max-width:560px) {
 					width: 100%;
+					span{
+						display: -webkit-box;
+						-webkit-line-clamp: 1;
+						-webkit-box-orient: vertical;
+						overflow: hidden;
+					}
 				}
 			}
 		}
