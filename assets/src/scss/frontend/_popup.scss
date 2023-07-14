@@ -22,81 +22,7 @@
 		text-decoration: none;
 	}
 }
-body.lp-sidebar-toggle{
-	&__close {
-		#popup-course {
-			@media (min-width: 1025px) {
-				.back-course{
-					position: absolute;
-					right: 0;
-				}
-				.popup-header__inner{
-					padding: 22px 0;
-				}
-			}
-			.popup-header__inner{
-				.course-header-progress{
-					display: flex;
-					align-items: center;
-					justify-content: space-between;
-					width: 50%;
-					@media (min-width:768px) {
-						width: 100%;
-					}
-					.learn-press-progress{
-						display: none;
-						@media (min-width:520px) {
-							display: block;
-						}
-					}
-				}
-			}
-			
-		}
-	
-	}
-	&__open {
-		#popup-course {
 
-			.back-course{
-				@media (min-width: 1120px){
-					position: absolute;
-					right: 0;
-				}		
-			}
-			.popup-header__inner{
-				@media (min-width: 1120px){
-					padding: 22px 0;
-				}	
-				.course-header-progress{
-					.learn-press-progress{
-						display: none;
-						@media (min-width:768px) {
-							display: block;
-						}
-					}
-				}	
-				.form-button-finish-course{
-					display: none;
-					@media (min-width: 385px) {
-						display: block;
-					}
-					@media (min-width: 1120px) {
-						margin-right: 40px;
-						justify-content: center;
-					}
-					@media (min-width: 1440px) {
-						margin-right: 0px;
-						justify-content: flex-end;
-					}
-				}
-					
-			}
-		}
-	
-	}
-
-}
 #popup-course {
 	display: flex;
 	position: fixed;
@@ -109,7 +35,7 @@ body.lp-sidebar-toggle{
 	.back-course{
 		padding-left: 30px;
 		padding-right: 30px;
-		line-height: 84px;
+		line-height: 70px;
 		background: rgba(255,255,255, 0.1);
 		color: #fff;
 		&:hover{
@@ -132,47 +58,15 @@ body.lp-sidebar-toggle{
 		margin: 0 auto;
 		justify-content: space-between;
 		align-items: center;
-		padding: 22px 15px;
+		padding-left: 15px;
+		padding-right: 15px;
 
 		@media (max-width: 1024px) {
 			width: 100%;
 		}
 
 		@media (max-width: 767px) {
-			padding: 16px 15px;
-			flex-direction: row;
-		}
-		.course-header-progress{
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
 			flex-direction: column;
-			min-height: 40px;
-			@media (min-width: 1024px) {
-				flex-direction: row;
-				width: 100%;
-			}
-			.course-title{
-				width: 100%;
-			}
-			.items-progress {
-				justify-content: start;
-				width: 100%;
-				@media (min-width: 1024px) {
-					justify-content: end;
-				}
-			}
-		}
-		.form-button-finish-course{
-			display: flex;
-			width: 30%;
-			justify-content: end;
-			padding-left: 16px;
-			.lp-btn-finish-course{
-				padding: 8px 16px;
-				margin: 0;
-				white-space: nowrap;
-			}
 		}
 	}
 
@@ -303,7 +197,6 @@ body.lp-sidebar-toggle{
 }
 #popup-header {
 	display: flex;
-	align-items: center;
 	position: fixed;
 	z-index: 100;
 	right: 0;
@@ -317,13 +210,14 @@ body.lp-sidebar-toggle{
 	.course-title {
 		margin: 0;
 		padding: 0;
+		line-height: 70px;
 		letter-spacing: unset;
+
 		a {
-			text-decoration: none;
 			display: -webkit-box;
 			overflow: hidden;
 			color: #fff;
-			font-size: 18px;
+			font-size: 16px;
 			font-weight: 400;
 			text-overflow: ellipsis;
 			-webkit-line-clamp: 1;
@@ -331,9 +225,6 @@ body.lp-sidebar-toggle{
 
 			&:hover {
 				color: var(--lp-primary-color);
-			}
-			@media (max-width: 1024px) {
-				font-size: 16px;
 			}
 		}
 
@@ -352,6 +243,7 @@ body.lp-sidebar-toggle{
 		}
 
 		@media (max-width: 767px) {
+			padding-bottom: 20px;
 			justify-content: end;
 		}
 
@@ -415,7 +307,7 @@ body.lp-sidebar-toggle{
 	.search-course {
 		display: flex;
 		position: relative;
-		height: 84px;
+		height: 70px;
 		background: #f9fafc;
 
 		input[name="s"] {
@@ -445,7 +337,7 @@ body.lp-sidebar-toggle{
 			top: 0;
 			right: 10px;
 			width: 16px;
-			height: 84px;
+			height: 70px;
 			margin: 0 10px;
 			padding: 0;
 			border: 0;
@@ -597,10 +489,9 @@ body.lp-sidebar-toggle{
 	.course-curriculum {
 		overflow: auto;
 		position: absolute;
-		top: 84px;
+		top: 70px;
 		bottom: 0;
 		width: 475px;
-		padding-bottom: 45px;
 		&::-webkit-scrollbar-thumb {
 			background: #ccc;
 		}
@@ -674,7 +565,8 @@ body.lp-sidebar-toggle{
 		position: sticky;
 		z-index: 1000;
 		top: 0;
-		padding: 20px 20px 20px 20px;
+		height: 94px;
+		padding: 38px 20px 20px 20px;
 		cursor: pointer;
 		background-color: white;
 
@@ -764,6 +656,7 @@ body.lp-sidebar-toggle{
 		.item-name {
 			width: 100%;
 			font-size: 14px;
+			padding: 0 10px 0 17px;
 			line-height: 21px;
 			font-weight: 500;
 		}
@@ -772,6 +665,7 @@ body.lp-sidebar-toggle{
 
 	.course-item-meta {
 		padding: 0;
+		// padding-right: 16px;
 
 		.item-meta {
 			padding: 0;
@@ -783,38 +677,38 @@ body.lp-sidebar-toggle{
 
 			&:first-child {
 				margin-left: 0;
-
+				// padding-left: 17px;
 			}
 
 			&::before {
 				font-size: 12px;
 				line-height: 21px;
 			}
+
+			// &.course-item-status {
+			// 	position: absolute;
+			// 	top: 50%;
+			// 	right: 18px;
+			// 	left: auto;
+			// 	margin-top: -10px;
+			// 	padding: 0;
+			// }
 		}
 	}
 }
 
 #popup-content {
-	overflow-x: hidden;
+	overflow: auto;
 	position: relative;
-	margin: 84px 0 50px 0;
+	margin: 70px 0 50px 0;
 	flex: 1;
 	padding-left: 15px;
 	padding-right: 15px;
-	.quiz-questions {
-		.lp-button {
-			&.instant-check{
-				&::before{
-					display: none;
-				}
-			}
-		}
-	}
 
 	.lp-button {
 		position: relative;
 		margin: 0 10px 0 0;
-		padding: 12px 28px;
+		padding: 12px 29px;
 		border-color: var(--lp-secondary-color);
 		font-size: 14px;
 
@@ -867,7 +761,7 @@ body.lp-sidebar-toggle{
 				.instant-check__icon {
 					display: inline-block;
 					animation: lp-rotating 1s linear infinite;
-					margin-right: 4px;
+
 					&::before {
 						font-weight: 800;
 						content: "\f110";
@@ -951,7 +845,6 @@ body.lp-sidebar-toggle{
 				display: block;
 				color: #666;
 				font-size: 16px;
-				text-decoration: none;
 			}
 
 			&::before {
@@ -1221,10 +1114,11 @@ body {
 	}
 
 	.content-item-summary {
-		padding-top: 32px;
+		padding-top: 50px;
 	}
 
 	.content-item-description {
+		margin-bottom: 30px;
 
 		h2, h3, h4, h5, h6 {
 			margin-top: 0;

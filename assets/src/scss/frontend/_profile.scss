@@ -656,6 +656,11 @@ body {
 	#profile-content-settings{
 		.learn-press-tabs__nav{
 			border: 1px solid #e5e7f2;
+			flex-wrap: wrap;
+			margin: 0;
+			@media (min-width:1024px) {
+				flex-wrap: nowrap;
+			}
 			.learn-press-tabs__tab{
 				width: calc(100% / 3);
 				&::after{
@@ -767,6 +772,7 @@ body {
 			background: #f9fafc;
 			text-align: center;
 			display: flex;
+			gap: 12px;
 			flex-direction: column;
 			justify-content: space-between;
 			align-items: center;
