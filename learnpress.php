@@ -20,6 +20,7 @@
  */
 
 use LearnPress\ExternalPlugin\Elementor\LPElementor;
+use LearnPress\Shortcodes\Course\FilterCourseShortcode;
 use LearnPress\Shortcodes\ListInstructorsShortcode;
 use LearnPress\Shortcodes\SingleInstructorShortcode;
 use LearnPress\TemplateHooks\Course\FilterCourseTemplate;
@@ -397,6 +398,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			// Shortcodes.
 			SingleInstructorShortcode::instance();
 			ListInstructorsShortcode::instance();
+			FilterCourseShortcode::instance();
 			require_once 'inc/class-lp-shortcodes.php';
 
 			// include template functions .
