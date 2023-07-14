@@ -23,6 +23,7 @@ use LearnPress\ExternalPlugin\Elementor\LPElementor;
 use LearnPress\Shortcodes\ListInstructorsShortcode;
 use LearnPress\Shortcodes\SingleInstructorShortcode;
 use LearnPress\TemplateHooks\Course\FilterCourseTemplate;
+use LearnPress\TemplateHooks\Course\ListCoursesTemplate;
 use LearnPress\TemplateHooks\Instructor\ListInstructorsTemplate;
 use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileInstructorStatisticsTemplate;
@@ -277,6 +278,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			//require_once 'inc/Helper/Template.php';
 
 			// Template Hooks.
+			ListCoursesTemplate::instance();
 			ListInstructorsTemplate::instance();
 			SingleInstructorTemplate::instance();
 			ProfileInstructorStatisticsTemplate::instance();
