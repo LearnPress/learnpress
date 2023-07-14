@@ -39,6 +39,11 @@ let controller;
 let signal;
 window.lpCourseFilter = {
 	searchSuggestion: ( inputSearch ) => {
+		const enable = parseInt( inputSearch.dataset.searchSuggest || 1 );
+		if ( 1 !== enable ) {
+			return;
+		}
+
 		const keyword = inputSearch.value.trim();
 		const form = inputSearch.closest( `.${ classCourseFilter }` );
 		const elLoading = form.querySelector( '.lp-loading-circle' );

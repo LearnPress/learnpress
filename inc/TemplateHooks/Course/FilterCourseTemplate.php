@@ -137,10 +137,11 @@ class FilterCourseTemplate {
 				$data
 			);
 			$content      = sprintf(
-				'<input type="text" name="c_search" placeholder="%s" value="%s" class="%s">',
+				'<input type="text" name="c_search" placeholder="%s" value="%s" class="%s" data-search-suggest="%d">',
 				__( 'Search Course', 'learnpress' ),
 				isset( $data['params_url'] ) ? ( $data['params_url']['c_search'] ?? '' ) : '',
-				'lp-course-filter-search'
+				'lp-course-filter-search',
+				$data['search_suggestion'] ?? 1
 			);
 			$content     .= '<span class="lp-loading-circle hide"></span>';
 			$content      = Template::instance()->nest_elements( $html_wrapper, $content );

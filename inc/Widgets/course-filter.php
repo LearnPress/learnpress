@@ -37,10 +37,9 @@ if ( ! class_exists( 'LP_Widget_Course_Filter' ) ) {
 			$field = $instance['fields'] ?? [];
 			unset( $field['order'] );
 
-			$data = array(
-				'fields'            => $field,
-				'search_suggestion' => $instance['search_suggestion'],
-				'params_url'        => $params['params_url'] ?? '',
+			$data = array_merge(
+				[ 'params_url' => $params['params_url'] ?? '' ],
+				$instance
 			);
 
 			ob_start();
