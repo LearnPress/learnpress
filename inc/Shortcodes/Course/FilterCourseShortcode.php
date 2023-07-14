@@ -2,9 +2,10 @@
 /**
  * Shortcode display single instructor.
  */
-namespace LearnPress\Shortcodes;
+namespace LearnPress\Shortcodes\Course;
 
 use LearnPress\Helpers\Singleton;
+use LearnPress\Shortcodes\AbstractShortcode;
 
 class FilterCourseShortcode extends AbstractShortcode {
 	use singleton;
@@ -25,7 +26,7 @@ class FilterCourseShortcode extends AbstractShortcode {
 				$attrs = [];
 			}
 			ob_start();
-			do_action( 'learn-press/filter-course/layout', $attrs );
+			do_action( 'learn-press/filter-courses/layout', $attrs );
 			$content = ob_get_clean();
 		} catch ( \Throwable $e ) {
 			ob_end_clean();

@@ -17,7 +17,12 @@ return apply_filters(
 			'std'   => esc_html__( 'Course Filter', 'learnpress' ),
 		),
 		'show_in_rest'      => array(
-			'label' => __( 'Show in rest', 'learnpress' ),
+			'label' => __( 'Load widget via REST', 'learnpress' ),
+			'type'  => 'checkbox',
+			'std'   => 1,
+		),
+		'search_suggestion' => array(
+			'label' => __( 'Enable Keyword Search Suggestion', 'learnpress' ),
 			'type'  => 'checkbox',
 			'std'   => 1,
 		),
@@ -68,11 +73,6 @@ return apply_filters(
 				'btn_submit',
 				'btn_reset',
 			],
-		),
-		'search_suggestion' => array(
-			'label' => __( 'Enable Keyword Search Suggestion', 'learnpress' ),
-			'type'  => 'checkbox',
-			'std'   => 1,
 		),
 	)
 );
