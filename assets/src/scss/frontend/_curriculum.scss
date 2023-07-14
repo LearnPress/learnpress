@@ -28,7 +28,7 @@
 }
 .course-tab-panels{
 	.course-tab-panel{
-		margin-top: 30px;
+		padding-top: 30px;
 	}
 }
 .course-tab-panel {
@@ -510,7 +510,7 @@ ul.learn-press-nav-tabs {
 	.section-header {
 		display: table;
 		width: 100%;
-		padding: 0 0 26px 0;
+		padding: 20px 0;
 		border-bottom: 0;
 		border-bottom: 1px solid #d9e0f1;
 		cursor: pointer;
@@ -571,12 +571,11 @@ ul.learn-press-nav-tabs {
 	}
 
 	.section-content {
-		margin: 0 0 15px 0;
+		margin: 0;
 		padding: 0;
 		list-style: none;
 		.course-item-meta {
 			display: table-cell;
-			padding: 10px 0;
 			text-align: right;
 			vertical-align: middle;
 			white-space: nowrap;
@@ -654,7 +653,7 @@ ul.learn-press-nav-tabs {
 		transition: padding-left linear 0.15s;
 
 		@media (max-width: 767px) {
-			padding: 0 0 0 15px;
+			padding: 0 16px;
 		}
 
 		& > span {
@@ -667,16 +666,17 @@ ul.learn-press-nav-tabs {
 		}
 
 		.section-item-link {
-			display: table;
-			padding-right: 15px;
-			padding-left: 0;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			width: 100%;
+			padding: 16px 0;
 			border-bottom: none;
 			outline: none;
 			box-shadow: none;
 			line-height: 1.5;
 			color: #777;
 			text-decoration: none;
-
 
 			&:hover {
 
@@ -689,7 +689,6 @@ ul.learn-press-nav-tabs {
 				display: table-cell;
 				left: 0;
 				width: 20px;
-				padding: 15px 0;
 				color: var(--lp-primary-color);
 				font-family: "Font Awesome 5 Free";
 				font-size: 18px;
@@ -722,7 +721,6 @@ ul.learn-press-nav-tabs {
 		.item-name {
 			display: table-cell;
 			color: #333;
-			padding: 17px 16px;
 			font-size: 16px;
 			font-weight: 600;
 			vertical-align: middle;
@@ -1021,20 +1019,19 @@ body {
 	}
 	&.course-meta-primary{
 		.course-meta__pull-left {
-			gap: 16px;	
+			gap: 16px;
+			@media (max-width:1024px) {
+
+			}
+			@media (max-width:560px) {
+				grid-template-columns: 1fr;
+			}
+	
 			.meta-item {
 				margin-right: 0!important;
-				a{
-					text-decoration: none;
-				}
+
 				@media (max-width:560px) {
 					width: 100%;
-					span{
-						display: -webkit-box;
-						-webkit-line-clamp: 1;
-						-webkit-box-orient: vertical;
-						overflow: hidden;
-					}
 				}
 			}
 		}
