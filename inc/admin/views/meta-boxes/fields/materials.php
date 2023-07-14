@@ -80,8 +80,22 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 					border-radius: 10px;
 					box-shadow: 2px 2px rgba(180, 180, 180, 0.2);
 				}
+				.lp-material-btn-wrap{
+					display: flex;
+					justify-content: space-between;
+				}
 				#btn-lp--save-material{
-					margin-top: 15px;
+/*					margin-top: 15px;*/
+				}
+				.button.lp-material--delete{
+					color: white;
+					border-color: red;
+					background: red;
+					vertical-align: top;
+				}
+				.lp-material--field-wrap.field-action-wrap{
+					display: flex;
+					justify-content: space-between;
 				}
 				#available-to-upload{
 					font-weight: bold;
@@ -93,14 +107,16 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 					<div > <?php esc_html_e( 'Downloadable Materials is not allowed!', 'learnpress' ); ?> </div>	
 				<?php endif ?>
 			<?php else : ?>
-			<hr>
 			<div>
 				<?php esc_html_e( 'Maximum amount of files you can upload more: ', 'learnpress' ); ?>
 				<span id="available-to-upload"><?php esc_html_e( $can_upload ); ?></span>
 				<?php esc_html_e( ' files ( maximum file size is ' . $max_file_size . 'MB ). And allow upload only these types: ' . $accept_file_type . '.', 'learnpress' ); ?>
 			</div>
 			<hr>
-			<button class="button button-primary" id="btn-lp--add-material" type="button" can-upload="<?php esc_attr_e( $can_upload ); ?>" ><?php esc_html_e( 'Add Course Materials', 'learnpress' ); ?></button>
+			<div class="lp-material-btn-wrap">
+				<button class="button button-primary" id="btn-lp--add-material" type="button" can-upload="<?php esc_attr_e( $can_upload ); ?>" ><?php esc_html_e( 'Add Course Materials', 'learnpress' ); ?></button>
+				<button class="button button-primary" id="btn-lp--save-material" type="button"><?php esc_html_e( 'Save', 'learnpress' ); ?></button>
+			</div>
 			<hr>
 			<input type="hidden" id="material-max-file-size" value="<?php esc_attr_e( $max_file_size ); ?>"/>
 			<div id="lp-material--add-material-template" hidden>
@@ -119,7 +135,8 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 					<div class="lp-material--field-wrap lp-material--upload-wrap">
 						<label ><?php esc_html_e( 'Choose File  ', 'learnpress' ); ?><input type="file" class="lp-material--field-upload" value="" accept="<?php esc_attr_e( $accept ); ?>"/></label>
 					</div>
-					<div class="lp-material--field-wrap">
+					<div class="lp-material--field-wrap field-action-wrap">
+						<button type="button" class="button lp-material-save-field"><?php esc_html_e( 'Save field', 'learnpress' ) ?></button>
 						<button class="button lp-material--delete" type="button"><?php esc_html_e( 'Remove', 'learnpress' ); ?></button>
 					</div>
 				</div>
@@ -142,25 +159,29 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 			<input type="hidden" id="delete-material-message" value="<?php esc_attr_e( 'Do you want to delete this file?', 'learnpress' ); ?>">
 			<input type="hidden" id="delete-material-row-text" value="<?php esc_attr_e( 'Delete', 'learnpress' ); ?>">
 			<table class="lp-material--table">
-				<tr>
-				  <th><?php esc_html_e( 'File Title', 'learnpress' ); ?></th>
-				  <th><?php esc_html_e( 'Method', 'learnpress' ); ?></th>
-				  <th><?php esc_html_e( 'Action', 'learnpress' ); ?></th>
-				</tr>
+				<thead>
+					<tr>
+					  <th><?php esc_html_e( 'File Title', 'learnpress' ); ?></th>
+					  <th><?php esc_html_e( 'Method', 'learnpress' ); ?></th>
+					  <th><?php esc_html_e( 'Action', 'learnpress' ); ?></th>
+					</tr>	
+				</thead>
+				<tbody>
 				<?php if ( $course_materials ) : ?>
 					<?php foreach ( $course_materials as $row ) : ?>
-				  <tr>
-					<td><?php echo esc_attr( $row->file_name ); ?></td>
-					<td><?php echo esc_attr( ucfirst( $row->method ) ); ?></td>
-					<td><a href="javascript:void(0)" class="delete-material-row" data-id="<?php echo esc_attr( $row->file_id ); ?>"><?php esc_html_e( 'Delete', 'learnpress' ); ?></a></td>
-				  </tr>
-			  <?php endforeach; ?>
-			<?php endif; ?>
+					  <tr>
+						<td class="sort"><?php echo esc_attr( $row->file_name ); ?></td>
+						<td><?php echo esc_attr( ucfirst( $row->method ) ); ?></td>
+						<td><a href="javascript:void(0)" class="delete-material-row" data-id="<?php echo esc_attr( $row->file_id ); ?>"><?php esc_html_e( 'Delete', 'learnpress' ); ?></a></td>
+					  </tr>
+					<?php endforeach; ?>
+				<?php endif; ?>
+				</tbody>
+				
 			</table>
 			<div id="lp-material--group-container">
 				
 			</div>
-			<button class="button button-primary" id="btn-lp--save-material" type="button"><?php esc_html_e( 'Save', 'learnpress' ); ?></button>
 			<?php endif; ?>
 		</div>
 			<?php

@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", function() {
         if ( groups >= can_upload_data ) {
             return false;
         } else {
-            material__group_container.insertAdjacentHTML( 'beforeend', group_template.innerHTML );
+            material__group_container.insertAdjacentHTML( 'afterbegin', group_template.innerHTML );
         }
         
     } );
@@ -60,15 +60,21 @@ document.addEventListener("DOMContentLoaded", function() {
         let target = event.target;
         if ( target.classList.contains( 'lp-material--delete' ) && target.nodeName == 'BUTTON' ) {
             target.closest( '.lp-material--group' ).remove();
+        } else if ( target.classList.contains( 'lp-material-save-field' ) ) {
+            let material = target.closest( '.lp-material--group' );
+            material = singleNode( material );
+            lpSaveMaterial( material, true );
         }
         return false;
     } );
     //save material
     material_save_btn.addEventListener( 'click', function(event) {
         let materials = material__group_container.querySelectorAll( '.lp-material--group' );
-        let material_data = [];
-            
+        lpSaveMaterial( materials );
+    } );
+    function lpSaveMaterial ( materials, is_single = false ) {
         if ( materials.length > 0 ) {
+            let material_data = [];
             let formData = new FormData(), send_request = true;
             formData.append( 'action', '_lp_save_materials' );
             materials.forEach( function ( ele, index ) {
@@ -115,18 +121,22 @@ document.addEventListener("DOMContentLoaded", function() {
                 } ) // wrapped
                     .then( res => res.text() )
                     .then( data => {
-                        console.log( data );
-                        material__group_container.innerHTML = '';
+                        // console.log( data );
+                        if ( !is_single ) {
+                            material__group_container.innerHTML = '';    
+                        } else {
+                            materials[0].remove();
+                        }
                         data = JSON.parse( data );
                         if ( data.material && data.material.length > 0 ) {
                             let delete_btn_text = document.getElementById( 'delete-material-row-text' ).value,
-                                material_table = document.querySelector( '.lp-material--table' );
+                                material_table  = document.querySelector( '.lp-material--table tbody' );
                             for ( let i = 0; i < data.material.length; i++ ) {
                                 let row = data.material[i];
                                 material_table.insertAdjacentHTML( 
                                     'beforeend',
                                     `<tr>
-                                      <td>${row.data.label}</td>
+                                      <td class="sort">${row.data.label}</td>
                                       <td>${row.data.method}</td>
                                       <td><a href="javascript:void(0)" class="delete-material-row" data-id="${row.data.id}">${delete_btn_text}</a></td>
                                     </tr>`
@@ -148,8 +158,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     .catch( err => console.log( err ) );    
             }
         }
-        // console.log( data );
-    } );
+    }
     //delete material
     document.addEventListener( 'click', function (e) {
         let target = e.target;
@@ -178,4 +187,40 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         }
     } );
+    const singleNode = ((nodeList) => (node) => {
+      const layer = { // define our specific case
+        0: { value: node, enumerable: true },
+        length: { value: 1 },
+        item: {
+          value(i) {
+            return this[+i || 0];
+          }, 
+          enumerable: true,
+        },
+      };
+      return Object.create(nodeList, layer); // put our case on top of true NodeList
+    })(document.createDocumentFragment().childNodes); // scope a true NodeList
+    $( '.lp-material--table tbody' ).sortable( {
+        items: 'tr',
+        cursor: 'move',
+        axis: 'y',
+        handle: 'td.sort',
+        scrollSensitivity: 40,
+        forcePlaceholderSize: true,
+        helper: 'clone',
+        opacity: 0.65,
+        activate( event, ui ) {
+            updateSort();
+        },
+        update( event, ui ) {
+            updateSort();
+            // console.log( ui.item );
+        },
+    } );
+    function updateSort() {
+        let items = $( '.lp-material--table tbody tr' );
+        items.each( function( i, item ) {
+            $( this ).attr( 'order', i );
+        } );
+    }
 });

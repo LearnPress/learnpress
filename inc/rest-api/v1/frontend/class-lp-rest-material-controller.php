@@ -236,7 +236,8 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 				ob_start();
 				$material_template = CourseMaterialTemplate::instance();
 				foreach ( $item_materials as $m ) {
-					echo $material_template->material_item( $m, $item_id );
+					$m->current_item_id = $item_id;
+					echo $material_template->material_item( $m );
 				}
 				$response['data']    = ob_get_clean();
 				$response['query']   = $item_materials;
