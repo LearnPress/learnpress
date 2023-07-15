@@ -11,6 +11,7 @@ $bg-course-featured: #FF2828;
 @import "mixin.scss";
 @import "message.scss";
 @import "ajaxload";
+@import "frontend/global";
 @import "frontend/tabs";
 @import "frontend/checkout";
 @import "frontend/form";
@@ -134,25 +135,12 @@ footer {
 	}
 }
 
-.lp-content-wrap {
-	width: 1170px;
-	max-width: 90%;
-	margin: 0 auto;
-
-	& > h2 {
-		margin-top: 0;
-		margin-bottom: 26px;
-		color: #333;
-		font-size: 30px;
-		font-weight: 600;
-	}
-}
-
-.learn-press-breadcrumb {
-	max-width: 1170px;
+ul.learn-press-breadcrumb {
+	max-width: var(--lp-cotainer-max-with);
 	width: 100%;
 	margin: 0 auto 45px auto;
-	padding: 0;
+	padding-right: var(--lp-cotainer-padding);
+	padding-left: var(--lp-cotainer-padding);
 	color: #333;
 	font-size: 14px;
 	font-weight: 400;

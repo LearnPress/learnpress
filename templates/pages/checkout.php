@@ -17,7 +17,7 @@ do_action( 'learn-press/before-main-content' );
 do_action( 'learnpress/template/pages/checkout/before-content' );
 ?>
 
-	<div id="learn-press-checkout" class="lp-content-wrap">
+	<div id="learn-press-checkout" class="lp-content-area">
 
 		<h2><?php the_title(); ?></h2>
 

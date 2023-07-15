@@ -1402,34 +1402,6 @@ function learn_press_is_learning_course( int $course_id = 0 ): bool {
 }
 
 /**
- * Output custom css from settings
- *
- * @since 4.0.0
- */
-if ( ! function_exists( 'learn_press_print_custom_styles' ) ) {
-	function learn_press_print_custom_styles() {
-		$max_with          = apply_filters( 'learn-press/container-max-width', '80rem' );
-		$padding_container = apply_filters( 'learn-press/container-padding-width', '2rem' );
-		$primary_color     = LP_Settings::instance()->get( 'primary_color' );
-		$secondary_color   = LP_Settings::instance()->get( 'secondary_color' );
-		?>
-
-		<style id="learn-press-custom-css">
-			:root {
-				--lp-cotainer-max-with: <?php echo $max_with; ?>;
-				--lp-cotainer-padding: <?php echo $padding_container; ?>;
-				--lp-primary-color: <?php echo ! empty( $primary_color ) ? $primary_color : '#ffb606'; ?>;
-				--lp-secondary-color: <?php echo ! empty( $secondary_color ) ? $secondary_color : '#442e66'; ?>;
-			}
-		</style>
-
-		<?php
-	}
-
-	add_action( 'wp_head', 'learn_press_print_custom_styles' );
-}
-
-/**
  * Return TRUE if current user has already enroll course in single view.
  *
  * @return bool
