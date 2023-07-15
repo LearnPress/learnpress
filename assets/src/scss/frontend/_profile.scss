@@ -155,15 +155,8 @@ body {
 	.lp-profile-left {
 		min-width: 270px;
 		max-width: 270px;
-		border: 2px solid #eaeaea;
-		border-radius: 8px;
-		overflow: hidden;
 		@media (max-width: 520px) {
 			min-width: 100%;
-		}
-		.lp-user-profile-avatar{
-			border-radius: 8px;
-			overflow: hidden;
 		}
 	}
 
@@ -697,7 +690,10 @@ body {
 							color: #333;
 							font-size: 14px;
 							padding: 8px 20px;
-							height: 43px;
+							line-height: 28px;
+							&[type='checkbox']{
+								line-height: auto;
+							}
 						}
 						.description{
 							margin-top: 0;
