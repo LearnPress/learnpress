@@ -5,6 +5,18 @@
 * @version 1.0.0
 */
 // fix container for theme premium
+body {
+	.entry-content{
+		&.has-global-padding{
+			padding-left: 0;
+			padding-right:0;
+		}
+	}
+	.wp-site-blocks{
+		padding-left: 0;
+		padding-right: 0;
+	}
+}
 .learnpress-v4 {
 	.lp-content-area {
 		--lp-cotainer-max-with: inherit;
@@ -30,7 +42,7 @@
 	&__info {
 		border: 1px solid var(--lp-instructor-border-color);
 		margin-bottom: 50px;
-		padding: 30px;
+		padding: 16px;
 		display: flex;
 
 		.instructor-avatar {
@@ -39,6 +51,8 @@
 			img {
 				border: 1px solid var(--lp-instructor-border-color);
 				width: 100%;
+				display: block;
+				object-fit: cover;
 			}
 		}
 
@@ -74,9 +88,9 @@
 	.ul-instructor-courses {
 		display: grid;
 		//grid-template-columns: repeat(4, 1fr);
-		gap: 30px;
+		gap: 16px;
 		padding: 0;
-		margin: 0 0 30px 0;
+		margin: 0 0 32px 0;
 		list-style: none;
 		font-size: 1rem;
 		grid-template-columns: repeat( auto-fill, minmax(var(--lp-instructor-minmax-column), 1fr) );
@@ -102,10 +116,14 @@
 			}
 		}
 
-		.course-img img {
-			//width: 100%;
-			max-width: 100%;
-			height: auto;
+		.course-img {
+			img {
+				width: 100%;
+				max-width: 100%;
+				height: auto;
+				aspect-ratio: 4/3;
+				object-fit: cover;
+			}
 		}
 
 		.price-categories {

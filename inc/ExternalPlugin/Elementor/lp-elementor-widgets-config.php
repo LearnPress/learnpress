@@ -10,6 +10,7 @@ use LearnPress\ExternalPlugin\Elementor\Widgets\Instructor\Sections\InstructorBu
 use LearnPress\ExternalPlugin\Elementor\Widgets\Instructor\Sections\InstructorDescriptionElementor;
 use LearnPress\ExternalPlugin\Elementor\Widgets\Instructor\Sections\InstructorTitleElementor;
 use LearnPress\ExternalPlugin\Elementor\Widgets\Instructor\ListInstructorsElementor;
+use LearnPress\ExternalPlugin\Elementor\Widgets\Instructor\InfoCourseElementor;
 use LearnPress\ExternalPlugin\Elementor\Widgets\LoginUserFormElementor;
 use LearnPress\ExternalPlugin\Elementor\Widgets\RegisterUserFormElementor;
 use LearnPress\ExternalPlugin\Elementor\Widgets\Instructor\SingleInstructorElementor;
@@ -26,5 +27,6 @@ return apply_filters(
 		'login-form'             => LoginUserFormElementor::class,
 		'register-form'          => RegisterUserFormElementor::class,
 		'list-courses'           => CourseListElementor::class,
+		'info-course'			=> InfoCourseElementor::class,
 	]
 );

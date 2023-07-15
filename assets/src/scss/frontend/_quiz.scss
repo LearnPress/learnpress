@@ -395,6 +395,117 @@ button[data-counter] {
 		}
 	}
 }
+.lp-sidebar-toggle{
+	&__close{
+		#content-item-quiz{
+			.quiz-status{
+				> div{
+					max-width: 100%;
+					flex-direction: column;
+					@media (min-width: 426px) {
+						flex-direction: row;
+						justify-content: space-between;
+					}
+					@media (min-width: 1025px) {
+						max-width: 792px;
+					}
+					.questions-index{
+						@media (min-width: 450px) {
+							width: 35%;
+							text-align: inherit;
+						}				
+						@media (min-width: 1120px) {
+							width: 50%;
+						}
+					}
+					> div {
+						@media (min-width: 450px) {
+							width: 65%;
+							justify-content: end;
+							flex: auto;
+						}
+						@media (min-width: 768px) {
+							width: 50%;
+						}
+						@media (min-width: 1120px) {
+							width: 50%;
+						}
+						.submit-quiz{
+							#button-submit-quiz{
+								@media (max-width:768px){
+									white-space: inherit;
+									padding: 8px 16px;
+								}
+							}
+						}
+						.countdown{
+
+						}
+					}
+				}
+			}
+		}
+	}
+	&__open{
+		#content-item-quiz{
+			.quiz-status{
+				> div{
+					max-width: 100%;
+					flex-direction: column;
+					@media (min-width: 650px) {
+						flex-direction: row;
+					}
+					@media (min-width: 1120px) {
+						max-width: 792px;
+					}
+					.questions-index{
+						width: 100%;
+						text-align: center;
+						@media (min-width: 650px) {
+							width: 35%;
+							text-align: inherit;
+						}				
+						@media (min-width: 1120px) {
+							width: 50%;
+						}
+					}
+					> div {
+						width: 100%;
+						justify-content: center;
+						flex-direction: column-reverse;
+						gap: 0;
+						@media (min-width: 490px) {
+							flex-direction: row-reverse;
+						}
+						@media (min-width: 650px) {
+							width: 65%;
+							gap: 12px;
+							justify-content: end;
+							flex: auto;
+						}
+						@media (min-width: 768px) {
+							width: 50%;
+						}
+						@media (min-width: 1120px) {
+							width: 50%;
+						}
+						.submit-quiz{
+							#button-submit-quiz{
+								@media (max-width:768px){
+									white-space: inherit;
+									padding: 8px 16px;
+								}
+							}
+						}
+						.countdown{
+
+						}
+					}
+				}
+			}
+		}
+	}
+}
 
 .quiz-status {
 	position: sticky;
@@ -409,23 +520,12 @@ button[data-counter] {
 		box-sizing: border-box;
 		width: 100%;
 		max-width: 792px;
-		height: 60px;
 		margin: 0 auto;
-		padding: 5px 10px 5px 30px;
+		padding: 8px 16px;
 		border-radius: 4px;
 		background: var(--lp-primary-color);
 		justify-content: center;
 		align-items: center;
-
-		@media (max-width: 480px) {
-			display: block;
-			height: auto;
-			text-align: center;
-			padding: 15px;
-			.questions-index {
-				margin-bottom: 10px;
-			}
-		}
 
 		> div {
 			display: flex;
@@ -434,6 +534,20 @@ button[data-counter] {
 			align-items: center;
 			@media (max-width: 480px) {
 				justify-content: center;
+			}
+			.submit-quiz{
+				#button-submit-quiz{
+					margin: 0;
+					border-radius: 4px;
+					overflow: hidden;
+					white-space: nowrap;
+				}
+			}
+			.countdown{
+				margin: 0;
+				border-radius: 4px;
+				overflow: hidden;
+				padding: 12px;
 			}
 		}
 
@@ -456,24 +570,20 @@ button[data-counter] {
 	}
 
 	.countdown {
-		position: relative;
-		min-width: 120px;
-		margin-right: 5px;
-		padding: 12px 29px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 8px;
+		min-height: 38px;
 		color: #333;
-		background: #fff;
-		font-size: 14px;
-		font-weight: 400;
-		line-height: 1;
+		font-size: 16px;
+		font-weight: 700;
+		line-height: 20px;
 		text-align: center;
 
 		.fas {
-			position: absolute;
-			top: 50%;
-			left: 10px;
 			color: #333;
-			font-size: 14px;
-			transform: translateY(-50%);
+			font-size: 16px;
 		}
 
 		.clock {
@@ -657,7 +767,6 @@ button[data-counter] {
 
 		&::before {
 			position: relative;
-			top: -2px;
 			margin-right: 10px;
 			color: var(--lp-primary-color);
 			font-family: "Font Awesome 5 Free";
@@ -1027,7 +1136,7 @@ button[data-counter] {
 		background: transparent;
 		font-size: 0;
 		text-decoration: none;
-
+		border:none;
 		&::before {
 			font-family: "Font Awesome 5 Free";
 			font-size: 18px;
@@ -1039,7 +1148,7 @@ button[data-counter] {
 			span {
 				position: absolute;
 				bottom: 100%;
-				left: 0;
+    			left: 100%;		
 				width: auto;
 				padding: 6px 9px;
 				border-radius: 2px;

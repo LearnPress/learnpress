@@ -14,6 +14,7 @@
 		&[disabled] {
 			background: #ddd;
 			pointer-events: none;
+			color: var(--lp-button-background-color);
 		}
 	}
 
@@ -221,6 +222,7 @@
 			text-overflow: ellipsis;
 			-webkit-line-clamp: 1;
 			-webkit-box-orient: vertical;
+			text-decoration: none;
 
 			&:hover {
 				color: var(--lp-primary-color);
@@ -495,7 +497,7 @@
 			background: #ccc;
 		}
 		&::-webkit-scrollbar {
-			width: 6px;
+			width: 8px;
 		}
 		&::-webkit-scrollbar-track {
 			background: #f5f5f5;
@@ -564,13 +566,11 @@
 		position: sticky;
 		z-index: 1000;
 		top: 0;
-		height: 94px;
-		padding: 38px 20px 20px 20px;
+		padding: 24px 20px;
 		cursor: pointer;
 		background-color: white;
 
 		.section-title {
-			padding: 0 0 4px 0;
 			color: #000;
 			font-size: 20px;
 			font-weight: 500;
@@ -608,7 +608,7 @@
 	.course-item {
 		min-height: 50px;
 		margin-bottom: 4px;
-		padding: 5px 20px;
+		padding: 0px 20px;
 		background: #f9fafc;
 		align-items: center;
 
@@ -648,13 +648,11 @@
 		line-height: 1;
 		padding-right: 0;
 		&::before {
-			padding: 12px 0;
 			vertical-align: unset;
 		}
 
 		.item-name {
 			width: 100%;
-			padding: 0 10px 0 17px;
 			font-size: 14px;
 			line-height: 21px;
 			font-weight: 500;
@@ -664,7 +662,6 @@
 
 	.course-item-meta {
 		padding: 0;
-		// padding-right: 16px;
 
 		.item-meta {
 			padding: 0;
@@ -756,7 +753,9 @@
 			}
 
 			&.loading {
-
+				&::before {
+					display: none;
+				}
 				.instant-check__icon {
 					display: inline-block;
 					animation: lp-rotating 1s linear infinite;
@@ -802,9 +801,15 @@
 			}
 		}
 	}
-	//@media (max-width: 767px) {
-	//	margin-top: 113px;
-	//}
+	&::-webkit-scrollbar{
+		width: 8px;
+	}
+	&::-webkit-scrollbar-thumb{
+		background: #ccc;
+	}
+	&::-webkit-scrollbar-track{
+		background: #f5f5f5;
+	}
 }
 
 #popup-footer {

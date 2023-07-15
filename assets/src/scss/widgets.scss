@@ -4,8 +4,10 @@
 @import "frontend/course-filter";
 
 .learnpress.widget {
-	max-width: 400px;
 	margin-bottom: 30px;
+	@media (max-width:420px) {
+		max-width: 400px;
+	}
 
 	.widgettitle {
 		margin-top: 0;
@@ -15,7 +17,7 @@
 	}
 
 	.learnpress-widget-wrapper {
-		margin-top: 15px;
+		margin-top: 16px;
 	}
 
 	h3 {
@@ -29,7 +31,6 @@
 }
 
 .elementor-widget-wrap {
-
 	.learnpress-widget-wrapper {
 		max-width: 400px;
 	}
@@ -39,12 +40,13 @@
 	// use in featured, popular, recent course widget.
 	.lp-widget-course {
 		margin: 0 0 30px 0;
-
+		border: 1px solid #eee;
 		&__image {
 
 			img {
-				max-width: 100%;
 				height: auto;
+				width: 100%;
+				display: block;
 			}
 		}
 
@@ -56,22 +58,29 @@
 
 		&__content {
 			margin: 0;
-			padding: 15px;
-			border: 1px solid #eee;
-			border-top: none;
+			padding: 16px;
+			border-top: 1px solid #eee;
 		}
 
 		&__title {
-			margin: 5px 0 15px 0;
+			margin: 4px 0 16px 0;
 		}
 
 		&__meta {
 			display: grid;
-			margin: 15px 0 0 0;
+			margin: 16px 0 0 0;
 			font-size: 15px;
 			grid-template-columns: repeat(2, 1fr);
 			justify-content: space-between;
 			align-items: center;
+			gap: 24px;
+			.course-price{
+				margin-bottom: 0;
+				.course-item-price{
+					display: flex;
+					flex-direction: column;
+				}
+			}
 		}
 
 		&__description {
@@ -96,6 +105,7 @@
 					width: 20px;
 					border-radius: 20px;
 					height: 20px;
+					display: block;
 				}
 			}
 
@@ -104,7 +114,9 @@
 				font-size: 15px;
 			}
 		}
+		
 	}
+
 }
 
 .learnpress.widget_course_progress,
@@ -418,6 +430,7 @@
 				-webkit-animation: lp-rotating 1s linear infinite;
 				-moz-animation: lp-rotating 1s linear infinite;
 				animation: lp-rotating 1s linear infinite;
+				
 			}
 		}
 	}

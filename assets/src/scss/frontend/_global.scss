@@ -6,11 +6,10 @@
 */
 
 .lp-content-area {
-	width: 100%;
 	max-width: var(--lp-cotainer-max-with) !important;
 	margin: 0 auto;
-	padding-right: var(--lp-cotainer-padding);
-	padding-left: var(--lp-cotainer-padding);
+	padding-right: 15px;
+	padding-left: 15px;
 }
 
 .lp-ico {
@@ -19,5 +18,4 @@
 		height: 20px;
 	}
 }
-
 
