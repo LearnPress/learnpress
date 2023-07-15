@@ -63,16 +63,22 @@ document.addEventListener("DOMContentLoaded", function() {
         } else if ( target.classList.contains( 'lp-material-save-field' ) ) {
             let material = target.closest( '.lp-material--group' );
             material = singleNode( material );
-            lpSaveMaterial( material, true );
+            // target.classList.add( 'loading' );
+            lpSaveMaterial( material, true, target );
+            // target.classList.remove( 'loading' );
         }
         return false;
     } );
     //save material
     material_save_btn.addEventListener( 'click', function(event) {
         let materials = material__group_container.querySelectorAll( '.lp-material--group' );
-        lpSaveMaterial( materials );
+        if ( materials.length > 0 ) {
+            // material_save_btn.classList.add( 'loading' );
+            lpSaveMaterial( materials, false, material_save_btn );
+            // material_save_btn.classList.remove( 'loading' );
+        }
     } );
-    function lpSaveMaterial ( materials, is_single = false ) {
+    function lpSaveMaterial ( materials, is_single = false, target ) {
         if ( materials.length > 0 ) {
             let material_data = [];
             let formData = new FormData(), send_request = true;
@@ -111,6 +117,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 material_data = JSON.stringify( material_data );
                 let url = `${lpGlobalSettings.rest}lp/v1/material/item-materials/${postID}`;
                 formData.append( 'data', material_data );
+                target.classList.add( 'loading' );
                 // formData.append( 'post_id', postID );
                 fetch( url, {
                     method: 'POST',
@@ -135,7 +142,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                 let row = data.material[i];
                                 material_table.insertAdjacentHTML( 
                                     'beforeend',
-                                    `<tr>
+                                    `<tr data-id="${row.data.id}" data-sort="${row.data.orders}" >
                                       <td class="sort">${row.data.label}</td>
                                       <td>${row.data.method}</td>
                                       <td><a href="javascript:void(0)" class="delete-material-row" data-id="${row.data.id}">${delete_btn_text}</a></td>
@@ -153,9 +160,9 @@ document.addEventListener("DOMContentLoaded", function() {
                                 );
                             }
                         }
-
+                        target.classList.remove( 'loading' );
                     } )
-                    .catch( err => console.log( err ) );    
+                    .catch( err => console.log( err ) );
             }
         }
     }
@@ -166,24 +173,26 @@ document.addEventListener("DOMContentLoaded", function() {
             let rowID = target.getAttribute( 'data-id' ),//material file ID
                 message = document.getElementById( 'delete-material-message' ).value;//Delete message content
             if ( confirm( message ) ) {
-                let url = `${lpGlobalSettings.rest}lp/v1/material/${rowID}`;
-                fetch( url, {
+                wp.apiFetch({
+                    path: `lp/v1/material/${rowID}`,
                     method: 'DELETE',
-                    headers: {
-                                'X-WP-Nonce': lpGlobalSettings.nonce,
-                            },
-                } )
-                    .then( res => res.text() )
-                    .then( data => {
-                        data = JSON.parse( data );
-                        // console.log(data);
-                        if ( data.data.delete ) {
-                            target.closest( 'tr' ).remove();
-                            can_upload.innerText = ~~can_upload.innerText + 1;
-                            add_btn.setAttribute( 'can-upload', ~~can_upload.innerText );
-                        }
-                    } )
-                    .catch( err => console.log( err ) );
+                    data: {
+                        item_id: postID
+                    },
+                }).then((res) => {
+                    // console.log( res );
+                    if ( res.status !== 200 || !res.delete ) {
+                        alert( res.message );
+                    } else {
+                        target.closest( 'tr' ).remove();
+                        can_upload.innerText = ~~can_upload.innerText + 1;
+                        add_btn.setAttribute( 'can-upload', ~~can_upload.innerText );    
+                    }
+                }).catch((err) => {
+                    console.log(err);
+                }).finally(() => {
+
+                });
             }
         }
     } );
@@ -209,18 +218,38 @@ document.addEventListener("DOMContentLoaded", function() {
         forcePlaceholderSize: true,
         helper: 'clone',
         opacity: 0.65,
-        activate( event, ui ) {
-            updateSort();
-        },
         update( event, ui ) {
+            $( this ).sortable( "option", "disabled", true );
             updateSort();
-            // console.log( ui.item );
+            $( this ).sortable( "option", "disabled", false );
         },
     } );
     function updateSort() {
-        let items = $( '.lp-material--table tbody tr' );
+        let items = $( '.lp-material--table tbody tr' ),
+            data  = [];
+        // $( ".lp-material--table tbody tr" ).sortable( "option", "disabled", true );
         items.each( function( i, item ) {
-            $( this ).attr( 'order', i );
+            $( this ).attr( 'data-sort', i + 1 );
+            data.push( { 'file_id': ~~$( this ).attr( 'data-id' ), 'orders': i + 1 } );
         } );
+        wp.apiFetch({
+            path: `lp/v1/material/item-materials/${postID}`,
+            method: 'PUT',
+            data: {
+                sort_arr: JSON.stringify( data )
+            },
+        }).then((res) => {
+            if ( res.status == 200 ) {
+                //
+            } else {
+                alert( 'Sort table fail.' );
+            }
+        }).catch((err) => {
+            console.log(err);
+        }).finally(() => {
+
+        });
+        // $( ".lp-material--table tbody tr" ).sortable( "option", "disabled", false );
+        // console.log( data );
     }
 });

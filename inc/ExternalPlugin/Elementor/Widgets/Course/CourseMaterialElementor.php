@@ -1,4 +1,4 @@
-<?php 
+<?php
 namespace LearnPress\ExternalPlugin\Elementor\Widgets\Course;
 
 use LearnPress\ExternalPlugin\Elementor\LPElementorWidgetBase;
@@ -20,12 +20,12 @@ class CourseMaterialElementor extends LPElementorWidgetBase {
 	public function render() {
 		try {
 			$settings = $this->get_settings_for_display();
-			echo "<pre>";
+			echo '<pre>';
 			print_r( $settings );
-			echo "</pre>";
-		} catch (Throwable $e) {
+			echo '</pre>';
+		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 	}
 }
- ?>
+

@@ -53,6 +53,7 @@ class LP_Material_Files_DB extends LP_Database {
 				'%s',
 				'%s',
 				'%s',
+				'%d',
 				'%s',
 			)
 		);
@@ -102,7 +103,7 @@ class LP_Material_Files_DB extends LP_Database {
 				IN ( SELECT si.item_id FROM $this->tb_lp_section_items AS si
 				INNER JOIN $this->tb_lp_sections AS s ON s.section_id = si.section_id 
 				WHERE s.section_course_id=%d ) 
-				OR item_id=%d ORDER BY item_id";
+				OR item_id=%d ORDER BY item_id, orders";
 			if ( $perpage > 0 ) {
 				$sql .= ' LIMIT ' . intval( $perpage );
 			}
@@ -117,7 +118,7 @@ class LP_Material_Files_DB extends LP_Database {
 				)
 			);
 		} else {
-			$sql = "SELECT * FROM $this->table_name WHERE item_id = %d";
+			$sql = "SELECT * FROM $this->table_name WHERE item_id = %d ORDER BY orders";
 			if ( $perpage > 0 ) {
 				$sql .= ' LIMIT ' . intval( $perpage );
 			}
@@ -169,6 +170,34 @@ class LP_Material_Files_DB extends LP_Database {
 		}
 		$this->check_execute_has_error();
 		return (int) $result;
+	}
+
+	/**
+	 * [update_material_orders update order of material]
+	 * @param  array   $orders  [array or materials]
+	 * @param  integer $item_id [item (course/lesson ID)]
+	 * @return [type]           [update or false]
+	 */
+	public function update_material_orders( $orders = [], $item_id = 0 ) {
+		if ( empty( $orders ) ) {
+			return;
+		}
+		if ( ! $item_id ) {
+			return;
+		}
+		$prepare_arr = [];
+		$sql         = "UPDATE $this->table_name SET orders = (CASE ";
+		foreach ( $orders as $id => $val ) {
+			$sql          .= 'when file_id = %d then %d ';
+			$prepare_arr[] = (int) $val['file_id'];
+			$prepare_arr[] = (int) $val['orders'];
+		}
+		$prepare_arr[] = $item_id;
+		$sql          .= 'END) ';
+		$sql          .= 'WHERE item_id = %d';
+		$update        = $this->wpdb->query( $this->wpdb->prepare( $sql, $prepare_arr ) );
+		$this->check_execute_has_error();
+		return $update ? $update : 0;
 	}
 	/**
 	 * @author khanhbd

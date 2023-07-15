@@ -87,6 +87,16 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 				#btn-lp--save-material{
 /*					margin-top: 15px;*/
 				}
+				.lp-material-btn-wrap.loading::before, #btn-lp--save-material.loading::before{
+					display: inline-block;
+					margin-right: 5px;
+					font-family: "Font Awesome 5 Free";
+					font-weight: 900;
+					content: "\f110";
+					-webkit-animation: lp-rotating 1s linear infinite;
+					-moz-animation: lp-rotating 1s linear infinite;
+					animation: lp-rotating 1s linear infinite;
+				}
 				.button.lp-material--delete{
 					color: white;
 					border-color: red;
@@ -136,7 +146,7 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 						<label ><?php esc_html_e( 'Choose File  ', 'learnpress' ); ?><input type="file" class="lp-material--field-upload" value="" accept="<?php esc_attr_e( $accept ); ?>"/></label>
 					</div>
 					<div class="lp-material--field-wrap field-action-wrap">
-						<button type="button" class="button lp-material-save-field"><?php esc_html_e( 'Save field', 'learnpress' ) ?></button>
+						<button type="button" class="button lp-material-save-field"><?php esc_html_e( 'Save field', 'learnpress' ); ?></button>
 						<button class="button lp-material--delete" type="button"><?php esc_html_e( 'Remove', 'learnpress' ); ?></button>
 					</div>
 				</div>
@@ -169,10 +179,10 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 				<tbody>
 				<?php if ( $course_materials ) : ?>
 					<?php foreach ( $course_materials as $row ) : ?>
-					  <tr>
-						<td class="sort"><?php echo esc_attr( $row->file_name ); ?></td>
-						<td><?php echo esc_attr( ucfirst( $row->method ) ); ?></td>
-						<td><a href="javascript:void(0)" class="delete-material-row" data-id="<?php echo esc_attr( $row->file_id ); ?>"><?php esc_html_e( 'Delete', 'learnpress' ); ?></a></td>
+					  <tr data-id="<?php esc_attr_e( $row->file_id ); ?>" data-sort="<?php esc_attr_e( $row->orders ); ?>">
+						<td class="sort"><?php esc_attr_e( $row->file_name ); ?></td>
+						<td><?php esc_attr_e( ucfirst( $row->method ) ); ?></td>
+						<td><a href="javascript:void(0)" class="delete-material-row" data-id="<?php esc_attr_e( $row->file_id ); ?>"><?php esc_html_e( 'Delete', 'learnpress' ); ?></a></td>
 					  </tr>
 					<?php endforeach; ?>
 				<?php endif; ?>

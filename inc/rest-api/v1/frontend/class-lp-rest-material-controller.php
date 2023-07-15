@@ -6,7 +6,7 @@ use LearnPress\TemplateHooks\Course\CourseMaterialTemplate;
  * in LearnPres > Downloadable Materials
  *
  * @since 4.2.2
- * @author khanhbd <email@email.com>
+ * khanhbd <email@email.com>
  */
 class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 
@@ -49,6 +49,19 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 					'callback'            => array( $this, 'get_materials_by_item' ),
 					'permission_callback' => '__return_true',
 				),
+				array(
+					'methods'             => WP_REST_Server::EDITABLE,
+					'callback'            => array( $this, 'update_material_orders' ),
+					'permission_callback' => array( $this, 'check_user_permissons' ),
+					'args'                => array(
+						'sort_arr' => array(
+							'description'       => esc_html__( 'Material orders', 'learnpress' ),
+							'type'              => 'string',
+							'required'          => true,
+							'sanitize_callback' => 'sanitize_text_field',
+						),
+					),
+				),
 			),
 			'(?P<file_id>[\d]+)'                => array(
 				'args' => array(
@@ -74,7 +87,6 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 	}
 
 	/**
-	 * @author khanhbd
 	 * @version 1.0.0
 	 * @since 4.2.2
 	 * [save_post_materials create material files of a course or lesson and save them to DB]
@@ -171,6 +183,7 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 					$response['items'][ $key ]['message'] = sprintf( esc_html__( 'File %s - file type is invalid!', 'learnpress' ), $material['label'] );
 					continue;
 				}
+				$orders     = $uploaded_files + $key + 1;
 				$insert_arr = array(
 					'file_name'  => sanitize_text_field( $material['label'] ),
 					'file_type'  => $file_type,
@@ -178,6 +191,7 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 					'item_type'  => get_post_type( $item_id ),
 					'method'     => $material['method'],
 					'file_path'  => $file_path,
+					'orders'     => $orders,
 					'created_at' => current_time( 'Y-m-d H:i:s' ),
 				);
 				$insert     = $material_init->create_material( $insert_arr );
@@ -189,6 +203,7 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 					'label'  => $material['label'],
 					'method' => ucfirst( $material['method'] ),
 					'id'     => $insert,
+					'orders' => $orders,
 				);
 			}
 			$response['data']['status'] = 200;
@@ -201,7 +216,6 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 	}
 
 	/**
-	 * @author khanhbd
 	 * @version 1.0.0
 	 * @since 4.2.2
 	 * [get_materials_by_item get materials file of a course or a lesson]
@@ -252,7 +266,6 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 	}
 
 	/**
-	 * @author khanhbd
 	 * @version 1.0.0
 	 * @since 4.2.2
 	 * [check_external_file check the file from external url]
@@ -286,7 +299,6 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 	}
 
 	/**
-	 * @author khanhbd
 	 * @version 1.0.0
 	 * @since 4.2.2
 	 * [material_upload_file upload file when user choose upload method]
@@ -302,7 +314,6 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 	}
 
 	/**
-	 * @author khanhbd
 	 * @version 1.0.0
 	 * @since 4.2.2
 	 * [material_check_file_extention return file type of file]
@@ -317,7 +328,6 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 	}
 
 	/**
-	 * @author khanhbd
 	 * @version 1.0.0
 	 * @since 4.2.2
 	 * [get_material description]
@@ -361,9 +371,28 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 		}
 		return rest_ensure_response( $response );
 	}
-
+	public function update_material_orders( $request ) {
+		$response = new LP_REST_Response();
+		try {
+			$item_id       = $request['item_id'];
+			$sort_arr      = $request->get_param( 'sort_arr' );
+			$sort_arr      = json_decode( wp_unslash( $sort_arr ), true );
+			$material_init = LP_Material_Files_DB::getInstance();
+			$update_sort   = $material_init->update_material_orders( $sort_arr, $item_id );
+			if ( $update_sort ) {
+				$response->status  = 200;
+				$response->message = esc_html__( 'Updated.', 'learnpress' );
+				// $response->data = $sort_arr;
+			} else {
+				throw new Exception( esc_html__( 'Update failed!', 'learnpress' ) );
+			}
+		} catch ( Throwable $e ) {
+			$response->status  = 400;
+			$response->message = $e->getMessage();
+		}
+		return rest_ensure_response( $response );
+	}
 	/**
-	 * @author khanhbd
 	 * @version 1.0.0
 	 * @since 4.2.2
 	 * [delete_material delete a material when a delete request is send]
@@ -371,12 +400,7 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 	 * @return [json]          [return message]
 	 */
 	public function delete_material( $request ) {
-		$response = array(
-			'data'    => array(
-				'status' => 400,
-			),
-			'message' => esc_html__( 'There was an error when call api.', 'learnpress' ),
-		);
+		$response = new LP_REST_Response();
 		try {
 			$id = $request['file_id'];
 			if ( ! $id ) {
@@ -393,28 +417,27 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 				$message = esc_html__( 'There is an error when delete this file.', 'learnpress' );
 				$deleted = false;
 			}
-			$response = array(
-				'data'    => array(
-					'status' => 200,
-					'delete' => $deleted,
-				),
-				'message' => $message,
-			);
+			$response->status  = 200;
+			$response->delete  = $deleted;
+			$response->message = $message;
 		} catch ( Throwable $th ) {
-			$response['message'] = $th->getMessage();
+			$response->status  = 400;
+			$response->message = $th->getMessage();
 		}
 		return rest_ensure_response( $response );
 	}
 	/**
-	 * @author khanhbd
 	 * @version 1.0.0
 	 * @since 4.2.2
 	 * [check_user_permissons check permisson, true when user is admin or instructor]
 	 * @return [boolean] [description]
 	 */
-	public function check_user_permissons() : bool {
-		$permission = false;
-		if ( current_user_can( ADMIN_ROLE ) || current_user_can( LP_TEACHER_ROLE ) ) {
+	public function check_user_permissons( $request ) : bool {
+		$permission      = false;
+		$item_id         = $request['item_id'] ?? $request->get_param( 'item_id' );
+		$author          = get_post_field( 'post_author', $item_id );
+		$current_user_id = get_current_user_id();
+		if ( $author == $current_user_id || current_user_can( ADMIN_ROLE ) ) {
 			$permission = true;
 		}
 		return $permission;
