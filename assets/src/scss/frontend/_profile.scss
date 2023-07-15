@@ -235,16 +235,14 @@ body {
 
 				> a {
 					padding: 0 20px 0 52px;
-
+					position: relative;
 					> i {
-						display: inline-block;
 						position: absolute;
 						left: 24px;
-						width: 28px;
+						top: 50%;
+    					transform: translateY(-50%);
 						color: var(--lp-primary-color);
 						font-size: 12px;
-						line-height: 53px;
-						text-align: left;
 					}
 
 					&::after {
@@ -266,7 +264,7 @@ body {
 						a {
 							border-bottom: 1px solid #f9f9f9;
 							font-size: 14px;
-							padding-left: 40px!important;
+							padding-left: 32px;
 							i{
 								margin-right: 8px;
 								&::before{
@@ -278,6 +276,7 @@ body {
 								background: #fff;
 							}
 						}
+
 
 						&:hover {
 
@@ -307,6 +306,11 @@ body {
 
 					a {
 						padding-left: 52px;
+						.profile-tab-sections{
+							a{
+								padding-left: 40px;
+							}
+						}
 					}
 				}
 
@@ -344,7 +348,6 @@ body {
 
 				> a {
 					box-sizing: border-box;
-					height: 50px;
 				}
 
 				> ul {
@@ -584,6 +587,24 @@ body {
 	}
 
 	#profile-content-wishlist{
+		.tab-course-wishlist-wraper{
+			.learn-press-wishlist-courses {
+				display: flex;
+				grid-gap: 16px;
+				flex-wrap: wrap;
+				margin-left: 0;
+				li{
+					margin-bottom: 32px;
+					width: calc((100% - 32px )/3);
+					@media (max-width:768px) {
+						width: calc((100% - 16px )/2);
+					}
+					@media (max-width:425px) {
+						width: 100%;
+					}
+				}
+			}
+		}
 		.learn-press-wishlist-courses {
 			display: grid;
 			grid-template-columns: repeat(auto-fit,minmax(210px,1fr));
@@ -692,7 +713,7 @@ body {
 							padding: 8px 20px;
 							line-height: 28px;
 							&[type='checkbox']{
-								line-height: auto;
+								line-height: 15px;
 							}
 						}
 						.description{
@@ -726,28 +747,73 @@ body {
 	}
 	#profile-content-courses{
 		.dashboard-general-statistic__row {	
-			.statistic-box {
-				width: calc((100% - 40px) / 6);
-				@media (max-width: 1440px) {
-					width: calc((100% - 16px) / 3);
-				}
-				@media (max-width: 990px) {
+			&.general-statistic-warpper{
+				.statistic-box {
 					width: calc((100% - 40px) / 6);
-				}
-	
-				@media (max-width: 767px) {
-					width: calc((100% - 16px) / 3);
+					@media (max-width: 1440px) {
+						width: calc((100% - 16px) / 3);
+					}
+					@media (max-width: 990px) {
+						width: calc((100% - 40px) / 6);
+					}
+		
+					@media (max-width: 767px) {
+						width: calc((100% - 16px) / 3);
+					}
 				}
 			}
+			
 		}
 	}
 
 	#profile-content-my-courses{
 		.dashboard-general-statistic__row {	
+			&.general-statistic-warpper{
+				.statistic-box {
+					width: calc((100% - 32px) / 5);
+					@media (max-width: 767px) {
+						width: calc((100% - 16px) / 3);
+					}
+				}
+			}
+		}
+	}
+	.dashboard-general-statistic__row{
+		&.general-statistic-warpper{
+			display: flex;
+			gap: 8px;
+			flex-wrap: wrap;
+			@media (max-width: 520px) {
+				display: inherit;
+				background: #f9fafc;
+				padding: 10px 16px;
+			}
 			.statistic-box {
-				width: calc((100% - 32px) / 5);
-				@media (max-width: 767px) {
-					width: calc((100% - 16px) / 3);
+				padding: 15px 10px;
+				border: 1px solid #ccc;
+				background: #f9fafc;
+				text-align: center;
+				display: flex;
+				gap: 12px;
+				border-radius: 0;
+				flex-direction: column;
+				justify-content: space-between;
+				align-items: center;
+				max-width: 100%;
+					margin: 0;
+				&:hover {
+					background: #eaeaea;
+				}
+				@media (max-width: 520px) {
+					width: 100%!important;
+					border:none;
+					background: transparent;
+					flex-direction: row;
+					padding: 12px 0px;
+					border-bottom: 1px solid #f1f1f1;
+					&:last-child{
+						border-bottom: none;
+					}
 				}
 			}
 		}
@@ -755,36 +821,28 @@ body {
 
 	.dashboard-general-statistic__row {
 		display: flex;
-		gap: 8px;
-		flex-wrap: wrap;
+		gap: 10px;
 		@media (max-width: 520px) {
 			display: inherit;
 			background: #f9fafc;
 			padding: 10px 16px;
 		}
 		.statistic-box {
+			max-width: 270px;
 			padding: 15px 10px;
 			border: 1px solid #ccc;
+			border-radius: 4px;
 			background: #f9fafc;
 			text-align: center;
-			display: flex;
-			gap: 12px;
-			flex-direction: column;
-			justify-content: space-between;
-			align-items: center;
 			&:hover {
 				background: #eaeaea;
 			}
-			@media (max-width: 520px) {
-				width: 100%!important;
-				border:none;
-				background: transparent;
-				flex-direction: row;
-				padding: 12px 0px;
-				border-bottom: 1px solid #f1f1f1;
-				&:last-child{
-					border-bottom: none;
-				}
+			@media (max-width: 990px){
+				width: 45%
+			}
+			@media (max-width: 767px){
+				width: 100%;
+				margin: 0 15px 15px;
 			}
 		}
 

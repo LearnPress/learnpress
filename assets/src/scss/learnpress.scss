@@ -203,25 +203,6 @@ ul.learn-press-breadcrumb {
 
 		@include transition(all 0.25s);
 
-		/*&.gray {
-			position: absolute;
-			z-index: 1;
-			top: 8px;
-			right: 5px;
-			padding: 0;
-			border: 0;
-
-			&:hover {
-				background: transparent;
-				text-decoration: none;
-			}
-
-			&:focus {
-				border: 0;
-				outline: 0;
-			}
-		}*/
-
 		&:hover {
 			border-color: var(--lp-primary-color);
 			color: #fff;
