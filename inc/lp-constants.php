@@ -37,6 +37,7 @@ const LP_ORDER_CPT    = 'lp_order';
 
 // Define constants for custom taxonomies.
 const LP_COURSE_CATEGORY_TAX = 'course_category';
+const LP_COURSE_TAXONOMY_TAG = 'course_tag';
 
 // Role of user .
 const LP_TEACHER_ROLE = 'lp_teacher';

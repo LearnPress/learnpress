@@ -30,15 +30,12 @@ if ( ! class_exists( 'LP_Widget_Course_Filter' ) ) {
 		 * Show widget in frontend.
 		 */
 		public function lp_rest_api_content( $instance, $params ) {
-			if ( empty( $instance['enable'] ) ) {
+			if ( isset( $instance['enable'] ) && $instance['enable'] === 0 ) {
 				return '';
 			}
 
-			$field = $instance['fields'] ?? [];
-			unset( $field['order'] );
-
 			$data = array_merge(
-				[ 'params_url' => $params['params_url'] ?? '' ],
+				[ 'params_url' => LP_Helper::sanitize_params_submitted( $params['params_url'] ?? '' ) ],
 				$instance
 			);
 

@@ -26,6 +26,10 @@ return apply_filters(
 			'type'  => 'checkbox',
 			'std'   => 1,
 		),
+		'fields_order'      => array(
+			'label' => '',
+			'type'  => 'hidden',
+		),
 		'fields'            => array(
 			'label'   => __( 'Fields', 'learnpress' ),
 			'type'    => 'sortable-checkbox',
