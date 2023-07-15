@@ -30,7 +30,7 @@ if ( ! class_exists( 'LP_Widget_Course_Filter' ) ) {
 		 * Show widget in frontend.
 		 */
 		public function lp_rest_api_content( $instance, $params ) {
-			if ( empty( $instance['enable'] ) ) {
+			if ( isset( $instance['enable'] ) && $instance['enable'] === 0 ) {
 				return '';
 			}
 

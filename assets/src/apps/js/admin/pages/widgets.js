@@ -88,9 +88,9 @@ function sortItem() {
 
 			value.join( ',' );
 
-			$( this ).closest( '.widget-content' ).find( 'input.fields-sort' ).val( value );
-			//Enable save btn
-			$( this ).closest( 'form' ).find( 'input[type=submit]' ).attr( 'disabled', false );
+			const fieldSort = $( this ).closest( '.widget-content' ).find( 'input.fields-sort' );
+			fieldSort.val( value );
+			fieldSort.trigger( 'change' );
 		},
 		stop( event, ui ) {
 
