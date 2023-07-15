@@ -35,7 +35,7 @@ if ( ! class_exists( 'LP_Widget_Course_Filter' ) ) {
 			}
 
 			$data = array_merge(
-				[ 'params_url' => $params['params_url'] ?? '' ],
+				[ 'params_url' => LP_Helper::sanitize_params_submitted( $params['params_url'] ?? '' ) ],
 				$instance
 			);
 

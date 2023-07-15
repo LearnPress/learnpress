@@ -12,6 +12,7 @@ use LearnPress\Helpers\Template;
 use LP_Course;
 use LP_Course_DB;
 use LP_Course_Filter;
+use LP_Request;
 use Throwable;
 
 class FilterCourseTemplate {
@@ -99,18 +100,30 @@ class FilterCourseTemplate {
 	public function html_item( string $title = '', string $content = '' ): string {
 		ob_start();
 		try {
-			?>
-			<div class="lp-form-course-filter__item">
-				<div class="lp-form-course-filter__title">
-					<h4><?php echo $title; ?></h4>
-				</div>
-				<div class="lp-form-course-filter__content">
-					<?php echo $content; ?>
-				</div>
-			</div>
-			<?php
+			$html_wrapper = apply_filters(
+				'learn-press/filter-courses/item/wrapper',
+				[
+					'<div class="lp-form-course-filter__item">' => '</div>',
 
-			$content = ob_get_clean();
+				]
+			);
+			$title_html   = sprintf(
+				'<div class="lp-form-course-filter__title"><h4>%s</h4></div>',
+				$title
+			);
+			$content_html = sprintf(
+				'<div class="lp-form-course-filter__content">%s</div>',
+				$content
+			);
+			$sections     = apply_filters(
+				'learn-press/filter-courses/item/sections',
+				[
+					'title'   => [ 'text_html' => $title_html ],
+					'content' => [ 'text_html' => $content_html ],
+				]
+			);
+			Template::instance()->print_sections( $sections );
+			$content = Template::instance()->nest_elements( $html_wrapper, ob_get_clean() );
 		} catch ( Throwable $e ) {
 			ob_end_clean();
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
@@ -136,17 +149,20 @@ class FilterCourseTemplate {
 				],
 				$data
 			);
-			$content      = sprintf(
+
+			$value    = LP_Request::get_param( 'c_search' );
+			$value    = isset( $data['params_url'] ) ? ( $data['params_url']['c_search'] ?? $value ) : $value;
+			$content  = sprintf(
 				'<input type="text" name="c_search" placeholder="%s" value="%s" class="%s" data-search-suggest="%d">',
 				__( 'Search Course', 'learnpress' ),
-				isset( $data['params_url'] ) ? ( $data['params_url']['c_search'] ?? '' ) : '',
+				$value,
 				'lp-course-filter-search',
 				$data['search_suggestion'] ?? 1
 			);
-			$content     .= '<span class="lp-loading-circle hide"></span>';
-			$content      = Template::instance()->nest_elements( $html_wrapper, $content );
-			$content     .= '<div class="lp-course-filter-search-result"></div>';
-			$content      = $this->html_item( esc_html__( 'Search', 'learnpress' ), $content );
+			$content .= '<span class="lp-loading-circle hide"></span>';
+			$content  = Template::instance()->nest_elements( $html_wrapper, $content );
+			$content .= '<div class="lp-course-filter-search-result"></div>';
+			$content  = $this->html_item( esc_html__( 'Search', 'learnpress' ), $content );
 		} catch ( Throwable $e ) {
 			ob_end_clean();
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
@@ -166,7 +182,8 @@ class FilterCourseTemplate {
 		$content = '';
 		ob_start();
 		try {
-			$data_selected = isset( $data['params_url'] ) ? ( $data['params_url']['sort_by'] ?? '' ) : '';
+			$data_selected = LP_Request::get_param( 'sort_by' );
+			$data_selected = isset( $data['params_url'] ) ? ( $data['params_url']['sort_by'] ?? $data_selected ) : $data_selected;
 			$data_selected = explode( ',', $data_selected );
 
 			// Get number courses free
@@ -246,7 +263,8 @@ class FilterCourseTemplate {
 		$content = '';
 		ob_start();
 		try {
-			$data_selected = isset( $data['params_url'] ) ? ( $data['params_url']['term_id'] ?? '' ) : '';
+			$data_selected = LP_Request::get_param( 'term_id' );
+			$data_selected = isset( $data['params_url'] ) ? ( $data['params_url']['term_id'] ?? $data_selected ) : $data_selected;
 			$data_selected = explode( ',', $data_selected );
 			$terms         = get_terms(
 				'course_category',
@@ -304,7 +322,8 @@ class FilterCourseTemplate {
 		$content = '';
 		ob_start();
 		try {
-			$data_selected = isset( $data['params_url'] ) ? ( $data['params_url']['tag_id'] ?? '' ) : '';
+			$data_selected = LP_Request::get_param( 'tag_id' );
+			$data_selected = isset( $data['params_url'] ) ? ( $data['params_url']['tag_id'] ?? $data_selected ) : $data_selected;
 			$data_selected = explode( ',', $data_selected );
 			$terms         = get_terms(
 				'course_tag',
@@ -362,7 +381,8 @@ class FilterCourseTemplate {
 		$content = '';
 		ob_start();
 		try {
-			$data_selected = isset( $data['params_url'] ) ? ( $data['params_url']['c_authors'] ?? '' ) : '';
+			$data_selected = LP_Request::get_param( 'c_authors' );
+			$data_selected = isset( $data['params_url'] ) ? ( $data['params_url']['c_authors'] ?? $data_selected ) : $data_selected;
 			$data_selected = explode( ',', $data_selected );
 			$instructors   = get_users(
 				array(
@@ -425,7 +445,8 @@ class FilterCourseTemplate {
 		$content = '';
 		ob_start();
 		try {
-			$data_selected = isset( $data['params_url'] ) ? ( $data['params_url']['c_level'] ?? '' ) : '';
+			$data_selected = LP_Request::get_param( 'c_level' );
+			$data_selected = isset( $data['params_url'] ) ? ( $data['params_url']['c_level'] ?? $data_selected ) : $data_selected;
 			$data_selected = explode( ',', $data_selected );
 			$fields        = lp_course_level();
 
