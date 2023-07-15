@@ -29,8 +29,6 @@ const jsHandlePageCourses = () => {
 		urlParams[ key ] = val;
 	}
 
-	console.log( 'URL params: ', urlParams );
-
 	window.localStorage.setItem( 'lp_filter_courses', JSON.stringify( urlParams ) );
 
 	if ( ! lpGlobalSettings.lpArchiveLoadAjax ) {
@@ -80,9 +78,6 @@ const jsHandlePageCourses = () => {
 			return;
 		}
 		isLoading = true;
-
-		console.log( 'Args: ', args );
-		console.log( 'Document location: ', document.location );
 
 		// Change url by params filter courses
 		const urlPush = lpArchiveAddQueryArgs( currentUrl, args );
