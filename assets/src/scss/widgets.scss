@@ -447,5 +447,49 @@
 }
 
 .learnpress.widget_course_filter, .elementor-widget-wp-widget-learnpress_widget_course_filter{
-	
+	.lp-form-course-filter{
+
+		.lp-form-course-filter__item{
+			margin-bottom: 12px;
+			border-bottom: 1px solid #eee;
+    		padding-bottom: 12px;
+			.lp-form-course-filter{
+				&__title{
+
+				}
+				&__content{
+					.lp-course-filter__field{
+						position: relative;
+						padding-right: 10%;
+						line-height: 2rem;
+						input{
+							width: 0.875rem;
+							height: 0.875rem;
+						}
+						label{
+							color: #333;
+							font-size: 1rem;
+							font-weight: 500;
+							line-height: 2rem;
+							text-transform: capitalize;
+						}
+						.count{
+							position: absolute;
+							right: 0;
+							top: 0;
+							font-size: 0.875rem;
+							color: #999;
+						}
+					}
+					
+				}
+			}
+		}
+		.course-filter{
+			&-submit, &-reset{
+				padding: 16px 24px;
+				
+			}
+		}
+	}
 }

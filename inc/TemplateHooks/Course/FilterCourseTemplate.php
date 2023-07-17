@@ -223,7 +223,7 @@ class FilterCourseTemplate {
 				$checked = in_array( $value, $data_selected ) ? 'checked' : '';
 				$input   = sprintf( '<input name="sort_by" type="checkbox" value="%s" %s>', esc_attr( $value ), esc_attr( $checked ) );
 				$label   = sprintf( '<label for="">%s</label>', wp_kses_post( $field['label'] ) );
-				$count   = sprintf( '<span class="count">(%s)</span>', esc_html( $field['count'] ) );
+				$count   = sprintf( '<span class="count">%s</span>', esc_html( $field['count'] ) );
 
 				$sections = apply_filters(
 					'learn-press/filter-courses/price/sections',
@@ -282,7 +282,7 @@ class FilterCourseTemplate {
 				$checked = in_array( $value, $data_selected ) ? 'checked' : '';
 				$input   = sprintf( '<input name="term_id" type="checkbox" value="%s" %s>', esc_attr( $value ), esc_attr( $checked ) );
 				$label   = sprintf( '<label for="">%s</label>', wp_kses_post( $term->name ) );
-				$count   = sprintf( '<span class="count">(%s)</span>', esc_html( $term->count ) );
+				$count   = sprintf( '<span class="count">%s</span>', esc_html( $term->count ) );
 
 				$sections = apply_filters(
 					'learn-press/filter-courses/course-tag/sections',
@@ -341,7 +341,7 @@ class FilterCourseTemplate {
 				$checked = in_array( $value, $data_selected ) ? 'checked' : '';
 				$input   = sprintf( '<input name="tag_id" type="checkbox" value="%s" %s>', esc_attr( $value ), esc_attr( $checked ) );
 				$label   = sprintf( '<label for="">%s</label>', wp_kses_post( $term->name ) );
-				$count   = sprintf( '<span class="count">(%s)</span>', esc_html( $term->count ) );
+				$count   = sprintf( '<span class="count">%s</span>', esc_html( $term->count ) );
 
 				$sections = apply_filters(
 					'learn-press/filter-courses/course-tag/sections',
@@ -404,7 +404,7 @@ class FilterCourseTemplate {
 				$checked = in_array( $value, $data_selected ) ? 'checked' : '';
 				$input   = sprintf( '<input name="c_authors" type="checkbox" value="%s" %s>', esc_attr( $value ), esc_attr( $checked ) );
 				$label   = sprintf( '<label for="">%s</label>', esc_html( $instructor->display_name ) );
-				$count   = sprintf( '<span class="count">(%s)</span>', esc_html( $total_course_of_instructor ) );
+				$count   = sprintf( '<span class="count">%s</span>', esc_html( $total_course_of_instructor ) );
 
 				$sections = apply_filters(
 					'learn-press/filter-courses/author/sections',
@@ -470,7 +470,7 @@ class FilterCourseTemplate {
 				$checked = in_array( $value, $data_selected ) ? 'checked' : '';
 				$input   = sprintf( '<input name="c_level" type="checkbox" value="%s" %s>', esc_attr( $value ), esc_attr( $checked ) );
 				$label   = sprintf( '<label for="">%s</label>', esc_html( $field ) );
-				$count   = sprintf( '<span class="count">(%s)</span>', esc_html( $total_courses ) );
+				$count   = sprintf( '<span class="count">%s</span>', esc_html( $total_courses ) );
 
 				$sections = apply_filters(
 					'learn-press/filter-courses/levels/sections',
