@@ -28,7 +28,7 @@
 			margin: 0;
 			padding: 0;
 			color: #adadad;
-			font-size: 12px;
+			font-size: 0.75rem;
 		}
 
 		&.counter-number {
@@ -94,13 +94,13 @@
 
 			.star-rating {
 				display: inline-block;
-				line-height: 14px;
+				line-height: 0.875rem;
 				vertical-align: middle;
 
 				.star {
 					width: 14px;
 					height: 14px;
-					font-size: 14px;
+					font-size: 0.875rem;
 				}
 			}
 
@@ -109,7 +109,7 @@
 
 				span {
 					color: #999;
-					font-size: 12px;
+					font-size: 0.75rem;
 					vertical-align: middle;
 				}
 			}
@@ -140,10 +140,10 @@
 
 			span {
 				margin-bottom: 10px;
-				font-size: 26px;
+				font-size: 1.625rem;
 
 				i {
-					font-size: 25px;
+					font-size: 1.5625rem;
 				}
 			}
 		}
@@ -167,16 +167,16 @@
 
 	.star-rating {
 		display: inline-block;
-		line-height: 12px;
+		line-height: 0.75rem;
 
 		.star {
-			font-size: 13px;
+			font-size: 0.8125rem;
 			width: 13px;
 			height: 13px;
 		}
 	}
 
 	span {
-		font-size: 11px;
+		font-size: 0.6875rem;
 	}
 }

@@ -34,7 +34,7 @@ $remove-icon-color: #e74c3c;
 			height: 30px;
 			margin-top: -15px;
 			margin-left: -15px;
-			line-height: 30px;
+			line-height: 1.875rem;
 			text-align: center;
 		}
 
@@ -103,7 +103,7 @@ $remove-icon-color: #e74c3c;
 						margin: 0;
 						padding: 3px 8px;
 						color: #757575;
-						font-size: 12px;
+						font-size: 0.75rem;
 						text-align: right;
 						white-space: nowrap;
 						text-decoration: none;
@@ -170,7 +170,7 @@ $remove-icon-color: #e74c3c;
 		h3 {
 			margin: 0;
 			padding: 15px;
-			font-size: 16px;
+			font-size: 1rem;
 		}
 
 		.lp-box-data-actions {
@@ -182,7 +182,7 @@ $remove-icon-color: #e74c3c;
 				display: inline-block;
 				width: 30px;
 				height: 50px;
-				line-height: 46px;
+				line-height: 2.875rem;
 				text-align: center;
 				vertical-align: middle;
 			}
@@ -515,7 +515,7 @@ $remove-icon-color: #e74c3c;
 	color: #fff;
 	background: #2196f3;
 	font-weight: bold;
-	line-height: 20px;
+	line-height: 1.25rem;
 
 	&.disabled {
 		background: #ddd;
@@ -566,7 +566,7 @@ ul .clearfix {
 	border: 1px solid #e5e7eb;
 	border-radius: 6px;
 	color: #374151;
-	font-size: 13px;
+	font-size: 0.8125rem;
 	font-weight: 500;
 	text-decoration: none;
 	cursor: pointer;

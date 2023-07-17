@@ -142,7 +142,7 @@
 				margin: 0;
 				margin-top: 10px;
 				color: #999;
-				font-size: 14px;
+				font-size: 0.875rem;
 				font-weight: 400;
 			}
 		}
@@ -160,7 +160,7 @@
 				border: 1px solid #e5e7eb;
 				border-radius: 6px;
 				color: rgba(55, 65, 81, 1);
-				font-size: 13px;
+				font-size: 0.8125rem;
 				font-weight: 500;
 				text-decoration: none;
 
@@ -239,7 +239,7 @@
 		flex-direction: row;
 		align-items: center;
 		flex: 0 0 auto;
-		font-size: 14px;
+		font-size: 0.875rem;
 		line-height: 1.4em;
 		font-weight: normal;
 		padding: 10px;
@@ -251,7 +251,7 @@
 }
 .progressbar__content{
 	width: 100%;
-	font-size: 14px;
+	font-size: 0.875rem;
 	font-weight: normal;
 	line-height: 1.4em;
 	background: #eee;

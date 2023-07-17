@@ -27,22 +27,6 @@ class Block_Template_Handle {
 		add_action( 'init', array( $this, 'register_tag_block' ) );
 		// Register block category
 		add_filter( 'block_categories_all', array( $this, 'add_block_category' ), 10, 2 );
-		// add_action( 'init', [ $this, 'register_block_learnpress_title_course' ] );
-	}
-
-	public function register_block_learnpress_title_course() {
-		register_block_type_from_metadata(
-			LP_PLUGIN_PATH . 'assets\src\js\admin\block\course\title\block.json',
-			array(
-				'render_callback' => [ $this, 'render_block_learnpress_title_course' ],
-			)
-		);
-	}
-
-	public function render_block_learnpress_title_course( $attributes, $content, $block ) {
-		// Debug::var_dump( $attributes );
-		// Debug::var_dump( $content );
-		var_dump( $block->context );
 	}
 
 	/**
@@ -61,7 +45,7 @@ class Block_Template_Handle {
 			wp_register_script(
 				$block_template->name, // Block name
 				$block_template->source_js, // Block script
-				array( 'wp-blocks', 'wp-editor' ), // Dependencies
+				array( 'wp-blocks' ), // Dependencies
 				uniqid() // Version
 			);
 

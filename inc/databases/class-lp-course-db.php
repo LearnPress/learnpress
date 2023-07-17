@@ -487,20 +487,40 @@ class LP_Course_DB extends LP_Database {
 			$filter->where[]    = $this->wpdb->prepare( 'AND p.post_status IN (' . $post_status_format . ')', $filter->post_status );
 		}
 
-		// Term ids
-		if ( ! empty( $filter->term_ids ) ) {
-			$filter->join[] = "INNER JOIN $this->tb_term_relationships AS r_term ON p.ID = r_term.object_id";
-
+		// Has term ids and tag ids
+		if ( ! empty( $filter->term_ids ) && ! empty( $filter->tag_ids ) ) {
 			$term_ids_format = LP_Helper::db_format_array( $filter->term_ids, '%d' );
-			$filter->where[] = $this->wpdb->prepare( 'AND r_term.term_taxonomy_id IN (' . $term_ids_format . ')', $filter->term_ids );
-		}
+			$tag_ids_format  = LP_Helper::db_format_array( $filter->tag_ids, '%d' );
 
-		// Tag ids
-		if ( ! empty( $filter->tag_ids ) ) {
 			$filter->join[] = "INNER JOIN $this->tb_term_relationships AS r_term ON p.ID = r_term.object_id";
 
-			$tag_ids_format = LP_Helper::db_format_array( $filter->tag_ids, '%d' );
+			// Get all course ids by term ids
+			$filter_course_ids_by_term                      = new LP_Course_Filter();
+			$filter_course_ids_by_term->only_fields         = array( 'ID' );
+			$filter_course_ids_by_term->join[]              = "INNER JOIN $this->tb_term_relationships AS r_term ON p.ID = r_term.object_id";
+			$filter_course_ids_by_term->where[]             = $this->wpdb->prepare( 'AND r_term.term_taxonomy_id IN (' . $term_ids_format . ')', $filter->term_ids );
+			$filter_course_ids_by_term->return_string_query = true;
+			$course_ids_by_term                             = LP_Course_DB::getInstance()->get_courses( $filter_course_ids_by_term );
+
+			// Get all course ids by tag ids
 			$filter->where[] = $this->wpdb->prepare( 'AND r_term.term_taxonomy_id IN (' . $tag_ids_format . ')', $filter->tag_ids );
+			$filter->where[] = 'AND p.ID IN(' . $course_ids_by_term . ')';
+		} else {
+			// Term ids
+			if ( ! empty( $filter->term_ids ) ) {
+				$filter->join[] = "INNER JOIN $this->tb_term_relationships AS r_term ON p.ID = r_term.object_id";
+
+				$term_ids_format = LP_Helper::db_format_array( $filter->term_ids, '%d' );
+				$filter->where[] = $this->wpdb->prepare( 'AND r_term.term_taxonomy_id IN (' . $term_ids_format . ')', $filter->term_ids );
+			}
+
+			// Tag ids
+			if ( ! empty( $filter->tag_ids ) ) {
+				$filter->join[] = "INNER JOIN $this->tb_term_relationships AS r_term ON p.ID = r_term.object_id";
+
+				$tag_ids_format  = LP_Helper::db_format_array( $filter->tag_ids, '%d' );
+				$filter->where[] = $this->wpdb->prepare( 'AND r_term.term_taxonomy_id IN (' . $tag_ids_format . ')', $filter->tag_ids );
+			}
 		}
 
 		// Level

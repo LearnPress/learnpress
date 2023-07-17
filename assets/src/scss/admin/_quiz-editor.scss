@@ -52,7 +52,7 @@
 			top: 5px;
 			margin-left: 10px;
 			font-family: Dashicons;
-			font-size: 20px;
+			font-size: 1.25rem;
 
 			&::before {
 				content: "\f463";
@@ -71,7 +71,7 @@
 			height: 30px;
 			color: #999;
 			font-family: Dashicons;
-			font-size: 30px;
+			font-size: 1.875rem;
 			cursor: pointer;
 			justify-content: center;
 			align-items: center;
@@ -152,7 +152,7 @@
 					border-radius: 2px;
 					background-color: #eee;
 					box-shadow: 0 0 2px rgba($color: #000, $alpha: 0.22);
-					line-height: 32px;
+					line-height: 2rem;
 					cursor: pointer;
 					flex: 0 0 auto;
 					align-items: center;
@@ -170,8 +170,8 @@
 						&::after {
 							margin-left: 5px;
 							font-family: Dashicons;
-							font-size: 14px;
-							line-height: 30px;
+							font-size: 0.875rem;
+							line-height: 1.875rem;
 							content: "\f347";
 						}
 					}
@@ -199,7 +199,7 @@
 								min-width: 110px;
 								padding: 10px 20px;
 								color: #757575;
-								line-height: 20px;
+								line-height: 1.25rem;
 								text-align: right;
 								white-space: nowrap;
 								text-decoration: none;
@@ -287,7 +287,7 @@
 							color: #777;
 							background: transparent;
 							box-shadow: none;
-							font-size: 14px;
+							font-size: 0.875rem;
 							font-weight: normal;
 						}
 					}
@@ -432,7 +432,7 @@
 												top: 12px;
 												left: 4px;
 												font-family: Dashicons;
-												font-size: 18px;
+												font-size: 1.125rem;
 												content: "\f463";
 
 												@include rotating4();
@@ -465,7 +465,7 @@
 										color: #777;
 										background: transparent;
 										box-shadow: none;
-										font-size: 14px;
+										font-size: 0.875rem;
 										font-weight: normal;
 									}
 								}
@@ -480,7 +480,7 @@
 				.question-item {
 					border-bottom: 1px solid #ddd;
 					background: #f4fcff;
-					line-height: 18px;
+					line-height: 1.125rem;
 
 					/*&:nth-child(2n+1) {
                         background: #f4fcff;
@@ -514,7 +514,7 @@
 									position: absolute;
 									left: 5px;
 									font-family: Dashicons;
-									font-size: 20px;
+									font-size: 1.25rem;
 									content: "\f463";
 
 									@include rotating4();
@@ -558,7 +558,7 @@
 								box-shadow: none;
 								font-size: 1.2em;
 								font-weight: normal;
-								line-height: 18px;
+								line-height: 1.125rem;
 							}
 						}
 
@@ -594,7 +594,7 @@
 										height: 30px;
 										margin-top: -15px;
 										margin-left: -15px;
-										line-height: 30px;
+										line-height: 1.875rem;
 										text-align: center;
 									}
 
@@ -603,7 +603,7 @@
 
 										a {
 											padding: 8px 24px;
-											line-height: 24px;
+											line-height: 1.5rem;
 
 											&.remove {
 												border-bottom: 1px solid #eee;
@@ -618,8 +618,8 @@
 									height: 42px;
 									padding-right: 0;
 									font-family: Dashicons;
-									font-size: 20px;
-									line-height: 42px;
+									font-size: 1.25rem;
+									line-height: 2.625rem;
 
 									&.open {
 
@@ -702,13 +702,13 @@
 									right: 0;
 									width: 36px;
 									height: 36px;
-									line-height: 36px;
+									line-height: 2.25rem;
 									text-align: center;
 									cursor: pointer;
 
 									&::after {
 										font-family: Dashicons;
-										font-size: 18px;
+										font-size: 1.125rem;
 										content: "\f460";
 									}
 								}
@@ -724,7 +724,7 @@
 							.postbox {
 								min-width: 34px;
 								height: 34px;
-								line-height: 42px;
+								line-height: 2.625rem;
 								text-align: center;
 
 								.hndle {
@@ -768,7 +768,7 @@
 						padding: 8px 6px 8px 10px;
 						color: #999;
 						font-family: Dashicons;
-						font-size: 20px;
+						font-size: 1.25rem;
 						vertical-align: middle;
 						align-items: center;
 						justify-content: center;
@@ -780,7 +780,7 @@
 
 					.order {
 						padding: 8px 0;
-						line-height: 28px;
+						line-height: 1.75rem;
 						text-align: left;
 					}
 
@@ -801,7 +801,7 @@
 									border: 0;
 									background: transparent;
 									font-size: 1.2em;
-									line-height: 18px;
+									line-height: 1.125rem;
 
 									@include box-shadow(none);
 

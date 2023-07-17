@@ -14,7 +14,7 @@
 		.progress-item {
 			position: relative;
 			color: #777;
-			font-size: 15px;
+			font-size: 0.9375rem;
 			flex: 1;
 
 			.progress-number,
@@ -26,12 +26,12 @@
 
 			.progress-number {
 				margin: 15px 0 10px 0;
-				font-size: 20px;
+				font-size: 1.25rem;
 			}
 
 			.progress-label {
 				margin-bottom: 15px;
-				font-size: 14px;
+				font-size: 0.875rem;
 			}
 
 			i {
@@ -41,7 +41,7 @@
 				height: 60px;
 				color: #fff;
 				background: #00adff;
-				font-size: 30px;
+				font-size: 1.875rem;
 				line-height: 60px;
 				text-align: center;
 			}
@@ -67,7 +67,7 @@
 		padding: 10px;
 		color: #777;
 		background: #f5f5f5;
-		font-size: 20px;
+		font-size: 1.25rem;
 		cursor: pointer;
 		@include border-radius(4px);
 		@include transition(background linear 0.25s);
@@ -123,7 +123,7 @@
 				color: #3db748;
 				font-family: "Font Awesome 5 Free";
 				font-weight: 900;
-				font-size: 16px;
+				font-size: 1rem;
 				content: "\f00c";
 			}
 
@@ -258,8 +258,8 @@ button[data-counter] {
 		padding: 10px 0 !important;
 		color: #fff;
 		background: #f02425;
-		font-size: 16px;
-		line-height: 22px;
+		font-size: 1rem;
+		line-height: 1.375rem;
 		font-weight: 400;
 		display: flex;
 		align-items: center;
@@ -295,13 +295,13 @@ button[data-counter] {
 			display: block;
 			padding-top: 5px;
 			color: #666;
-			font-size: 16px;
+			font-size: 1rem;
 			font-weight: 400;
 			line-height: 1;
 		}
 
 		.result-message {
-			font-size: 14px;
+			font-size: 0.875rem;
 		}
 	}
 
@@ -339,9 +339,9 @@ button[data-counter] {
 
 			span {
 				color: #666;
-				font-size: 16px;
+				font-size: 1rem;
 				font-weight: 400;
-				line-height: 35px;
+				line-height: 2.1875rem;
 
 				&::before {
 					display: inline-block;
@@ -349,16 +349,16 @@ button[data-counter] {
 					margin-right: 10px;
 					color: var(--lp-primary-color);
 					font-family: "Font Awesome 5 Free";
-					font-size: 16px;
+					font-size: 1rem;
 					font-weight: 900;
 				}
 			}
 
 			p {
 				color: #333;
-				font-size: 16px;
+				font-size: 1rem;
 				font-weight: 500;
-				line-height: 35px;
+				line-height: 2.1875rem;
 				text-align: right;
 			}
 
@@ -559,9 +559,9 @@ button[data-counter] {
 	.questions-index {
 		display: inline-block;
 		color: #666;
-		font-size: 16px;
+		font-size: 1rem;
 		font-weight: 400;
-		line-height: 26px;
+		line-height: 1.625rem;
 
 		span {
 			color: #333;
@@ -576,14 +576,14 @@ button[data-counter] {
 		gap: 8px;
 		min-height: 38px;
 		color: #333;
-		font-size: 16px;
+		font-size: 1rem;
 		font-weight: 700;
-		line-height: 20px;
+		line-height: 1.25rem;
 		text-align: center;
 
 		.fas {
 			color: #333;
-			font-size: 16px;
+			font-size: 1rem;
 		}
 
 		.clock {
@@ -662,7 +662,7 @@ button[data-counter] {
 			color: #999;
 			background: #f5f5f5;
 			box-shadow: none;
-			font-size: 12px;
+			font-size: 0.75rem;
 			line-height: 1;
 
 			span {
@@ -699,7 +699,7 @@ button[data-counter] {
 				&::after {
 					margin-left: 3px;
 					font-family: "Font Awesome 5 Free";
-					font-size: 8px;
+					font-size: 0.5rem;
 					vertical-align: middle;
 				}
 			}
@@ -770,7 +770,7 @@ button[data-counter] {
 			margin-right: 10px;
 			color: var(--lp-primary-color);
 			font-family: "Font Awesome 5 Free";
-			font-size: 16px;
+			font-size: 1rem;
 			font-weight: 900;
 		}
 
@@ -803,14 +803,14 @@ button[data-counter] {
 			margin: 0;
 			padding: 0 8px 0 0;
 			color: #333;
-			font-size: 16px;
+			font-size: 1rem;
 			font-weight: 300;
 			line-height: 1.7;
 		}
 
 		&__content {
 			color: #222;
-			font-size: 16px;
+			font-size: 1rem;
 			font-weight: 400;
 		}
 	}
@@ -1023,9 +1023,9 @@ button[data-counter] {
 			border: 1px solid #ccc;
 			color: #666;
 			background: #fff;
-			font-size: 16px;
+			font-size: 1rem;
 			font-weight: 300;
-			line-height: 26px;
+			line-height: 1.625rem;
 
 			@include border-radius(4px);
 
@@ -1067,12 +1067,12 @@ button[data-counter] {
 		margin-top: 0;
 		margin-bottom: 18px;
 		color: #333;
-		font-size: 18px;
+		font-size: 1.125rem;
 		font-weight: 500;
 
 		.edit-link {
 			float: right;
-			font-size: 14px;
+			font-size: 0.875rem;
 			font-weight: normal;
 		}
 	}
@@ -1080,9 +1080,9 @@ button[data-counter] {
 	.question-content {
 		margin-bottom: 30px;
 		color: #666;
-		font-size: 16px;
+		font-size: 1rem;
 		font-weight: 300;
-		line-height: 26px;
+		line-height: 1.625rem;
 
 		img {
 			width: 100%;
@@ -1092,7 +1092,7 @@ button[data-counter] {
 
 	.question-response {
 		margin-bottom: 10px;
-		font-size: 14px;
+		font-size: 0.875rem;
 
 		.label {
 			display: inline-block;
@@ -1139,7 +1139,7 @@ button[data-counter] {
 		border:none;
 		&::before {
 			font-family: "Font Awesome 5 Free";
-			font-size: 18px;
+			font-size: 1.125rem;
 			content: "\f059";
 		}
 
@@ -1154,7 +1154,7 @@ button[data-counter] {
 				border-radius: 2px;
 				color: #333;
 				background: #eee;
-				font-size: 14px;
+				font-size: 0.875rem;
 				font-weight: 400;
 				line-height: 1;
 				white-space: nowrap;

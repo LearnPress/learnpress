@@ -35,7 +35,7 @@
 		}
 
         header {
-            font-size: 18px;
+            font-size: 1.125rem;
             padding: 20px;
 			border-bottom: 1px solid #DDD;
 			font-weight: 600;
@@ -47,7 +47,7 @@
 
             input[name="search"] {
                 width: 100%;
-                font-size: 16px;
+                font-size: 1rem;
                 box-sizing: border-box;
                 margin: 0;
                 box-shadow: none;
@@ -77,7 +77,7 @@
                 float: left;
                 a, span {
                     display: inline-block;
-                    line-height: 26px;
+                    line-height: 1.625rem;
                     height: 28px;
                     margin: 0;
                     padding: 0 10px 1px;
@@ -172,9 +172,9 @@
 
         }
         .button {
-            font-size: 12px;
+            font-size: 0.75rem;
             height: 20px;
-            line-height: 20px;
+            line-height: 1.25rem;
         }
         .disabled {
             color: #777;

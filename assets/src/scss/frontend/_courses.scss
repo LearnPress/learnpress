@@ -75,7 +75,7 @@ a {
 
 		h1 {
 			margin: 0;
-			font-size: 30px;
+			font-size: 1.875rem;
 			font-weight: 600;
 		}
 
@@ -121,9 +121,9 @@ a {
 		.course-instructor {
 			float: left;
 			margin-bottom: 10px;
-			font-size: 14px;
+			font-size: 0.875rem;
 			font-weight: 300;
-			line-height: 25px;
+			line-height: 1.5625rem;
 			text-transform: capitalize;
 
 			a {
@@ -164,7 +164,7 @@ a {
 		.course-categories,
 		.course-tags {
 			display: block;
-			font-size: 14px;
+			font-size: 0.875rem;
 			font-weight: 300;
 		}
 
@@ -197,7 +197,7 @@ a {
 
 		.course-info {
 			color: #666;
-			font-size: 14px;
+			font-size: 0.875rem;
 			font-weight: 300;
 
 			> span {
@@ -210,14 +210,14 @@ a {
 				.origin-price,
 				.price {
 					color: #333;
-					font-size: 16px;
+					font-size: 1rem;
 					font-weight: 600;
 				}
 
 				.origin-price {
 					margin-right: 10px;
 					color: #666;
-					font-size: 14px;
+					font-size: 0.875rem;
 					font-weight: 300;
 					text-decoration: line-through;
 				}
@@ -238,9 +238,9 @@ a {
 			overflow: hidden;
 			margin-bottom: 20px;
 			color: #666;
-			font-size: 16px;
+			font-size: 1rem;
 			font-weight: 300;
-			line-height: 26px;
+			line-height: 1.625rem;
 			-webkit-line-clamp: 2;
 			-webkit-box-orient: vertical;
 		}
@@ -336,9 +336,9 @@ a {
 		margin: 0;
 		padding: 0;
 		color: #333;
-		font-size: 16px;
+		font-size: 1rem;
 		font-weight: 600;
-		line-height: 24px;
+		line-height: 1.5rem;
 
 		&:hover {
 			color: var(--lp-primary-color);
@@ -443,7 +443,7 @@ a {
 			display: flex;
 			height: 46px;
 			margin-right: 48px;
-			font-size: 16px;
+			font-size: 1rem;
 			font-weight: 300;
 			text-transform: capitalize;
 
@@ -507,7 +507,7 @@ a {
 			label {
 				margin: 0;
 				color: #999;
-				font-size: 14px;
+				font-size: 0.875rem;
 				font-weight: 300;
 				line-height: 1.5;
 			}
@@ -517,7 +517,7 @@ a {
 
 				a {
 					color: #fff;
-					font-size: 16px;
+					font-size: 1rem;
 					font-weight: 400;
 					text-transform: capitalize;
 
@@ -533,7 +533,7 @@ a {
 
 			&::before {
 				margin-right: 10px;
-				font-size: 36px;
+				font-size: 2.25rem;
 				content: "\f02e";
 			}
 
@@ -648,7 +648,7 @@ a {
 
 			&::before {
 				font-family: "Font Awesome 5 Free";
-				font-size: 16px;
+				font-size: 1rem;
 				font-weight: 900;
 				content: "\f004";
 			}
@@ -664,9 +664,9 @@ a {
 
 				li a {
 					color: #666;
-					font-size: 16px;
+					font-size: 1rem;
 					font-weight: 300;
-					line-height: 24px;
+					line-height: 1.5rem;
 
 					&:hover {
 						color: var(--lp-primary-color);
@@ -807,7 +807,7 @@ a {
 			padding-top: 10px;
 			padding-bottom: 15px;
 			color: #333;
-			font-size: 14px;
+			font-size: 0.875rem;
 			font-weight: 400;
 
 			.meta-item {
@@ -874,7 +874,7 @@ a {
  			}
  		}
 		.course-title {
-			font-size: 18px;
+			font-size: 1.125rem;
 		}
 	}
 
@@ -1030,7 +1030,7 @@ a {
 			border-bottom: 1px solid #ccc;
 			border-radius: 0;
 			background: #fff;
-			font-size: 14px;
+			font-size: 0.875rem;
 			//font-style: italic;
 			line-height: 1;
 
@@ -1050,7 +1050,7 @@ a {
 			border: none;
 			color: #333 !important;
 			background: transparent !important;;
-			font-size: 16px;
+			font-size: 1rem;
 			line-height: 1;
 			transform: translate(0, -50%);
 
@@ -1109,8 +1109,8 @@ a {
 			margin: 0;
 			padding: 0;
 			//border-radius: 5px;
-			font-size: 16px;
-			line-height: 32px;
+			font-size: 1rem;
+			line-height: 2rem;
 			text-align: center;
 			cursor: pointer;
 
@@ -1176,7 +1176,7 @@ a {
 .comment-respond {
 
 	.comment-reply-title {
-		font-size: 30px;
+		font-size: 1.875rem;
 		font-weight: 500;
 		line-height: 1.2;
 		margin-bottom: 15px;
@@ -1189,13 +1189,13 @@ a {
 			label {
 				display: block;
 				margin-bottom: 10px;
-				font-size: 16px;
+				font-size: 1rem;
 				font-weight: 500;
 			}
 
 			&.comment-notes, &.logged-in-as {
 				color: #666;
-				font-size: 16px;
+				font-size: 1rem;
 			}
 
 			&.logged-in-as {
@@ -1242,9 +1242,9 @@ a {
 			background-color: var(--lp-primary-color);
 			border: 0;
 			min-height: 40px;
-			line-height: 40px;
+			line-height: 2.5rem;
 			padding: 0 15px;
-			font-size: 16px;
+			font-size: 1rem;
 			text-transform: capitalize;
 			font-weight: 500;
 			margin-top: 15px;

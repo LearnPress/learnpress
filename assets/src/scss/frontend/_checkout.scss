@@ -12,7 +12,7 @@
 			margin-top: 0;
 			margin-bottom: 18px;
 			color: #333;
-			font-size: 24px;
+			font-size: 1.5rem;
 			font-weight: 600;
 			line-height: 1;
 			font-family: var(--wp--preset--font-family--system-font);
@@ -46,9 +46,9 @@
 		label {
 			width: auto;
 			color: #666;
-			font-size: 16px;
+			font-size: 1rem;
 			font-weight: 300;
-			line-height: 26px;
+			line-height: 1.625rem;
 
 			input[type="checkbox"] {
 				position: relative;
@@ -71,7 +71,7 @@
 				left: 2px;
 				color: #41abec;
 				font-family: "Font Awesome 5 Free";
-				font-size: 14px;
+				font-size: 0.875rem;
 				font-weight: 900;
 				line-height: 1;
 				content: "\f00c";
@@ -80,9 +80,9 @@
 
 		a {
 			color: #666;
-			font-size: 16px;
+			font-size: 1rem;
 			font-weight: 300;
-			line-height: 26px;
+			line-height: 1.625rem;
 			text-decoration: underline;
 			text-decoration-color: #ccc;
 
@@ -97,7 +97,7 @@
 		label {
 			display: block;
 			margin-bottom: 10px;
-			font-size: 16px;
+			font-size: 1rem;
 		}
 		input:not([type="checkbox"]) {
 			height: 44px;
@@ -117,10 +117,10 @@
 			border: 1px solid #ccc;
 			border-radius: 3px;
 			background-color: #fff;
-			font-size: 14px;
+			font-size: 0.875rem;
 			font-weight: 300;
 			font-style: italic;
-			line-height: 43px;
+			line-height: 2.6875rem;
 
 			&:focus {
 				border-color: var(--lp-primary-color);
@@ -202,7 +202,7 @@
 		padding: 8px 20px;
 		border: 2px solid #41abec;
 		border-radius: 4px;
-		font-size: 16px;
+		font-size: 1rem;
 		transition: all 0.2s ease;
 	}
 
@@ -219,7 +219,7 @@
 	.lp-guest-switch-login {
 		margin-top: 1em;
 		color: #666;
-		font-size: 16px;
+		font-size: 1rem;
 		font-weight: 400;
 
 		a {
@@ -315,9 +315,9 @@
 	}
 
 	.course-name {
-		font-size: 16px;
+		font-size: 1rem;
 		font-weight: 600;
-		line-height: 26px;
+		line-height: 1.625rem;
 
 		a {
 			display: -webkit-box;
@@ -335,9 +335,9 @@
 	.col-number {
 		min-width: 50px;
 		color: #666;
-		font-size: 16px;
+		font-size: 1rem;
 		font-weight: 600;
-		line-height: 26px;
+		line-height: 1.625rem;
 		text-align: right;
 	}
 
@@ -349,7 +349,7 @@
 
 		.col-number {
 			color: #333;
-			font-size: 26px;
+			font-size: 1.625rem;
 		}
 	}
 
@@ -357,9 +357,9 @@
 
 		.cart-subtotal {
 			color: #666;
-			font-size: 16px;
+			font-size: 1rem;
 			font-weight: 600;
-			line-height: 26px;
+			line-height: 1.625rem;
 
 			& > th {
 				padding: 20px 20px 17px 0;
@@ -370,9 +370,9 @@
 
 			th {
 				color: #333;
-				font-size: 16px;
+				font-size: 1rem;
 				font-weight: 600;
-				line-height: 26px;
+				line-height: 1.625rem;
 			}
 		}
 
@@ -432,7 +432,7 @@
 		display: flex;
 		margin: 0;
 		color: #666;
-		font-size: 16px;
+		font-size: 1rem;
 		font-weight: 400;
 
 		a {
@@ -467,13 +467,13 @@
 		float: right;
 		margin-top: 5px;
 		color: #999;
-		font-size: 12px;
+		font-size: 0.75rem;
 		font-weight: normal;
 
 		i {
 			margin-right: 5px;
 			color: #ccc;
-			font-size: 18px;
+			font-size: 1.125rem;
 		}
 
 		@media (max-width: 767px) {
@@ -572,9 +572,9 @@
 
 .lp-terms-and-conditions {
 	color: #666;
-	font-size: 16px;
+	font-size: 1rem;
 	font-weight: 300;
-	line-height: 26px;
+	line-height: 1.625rem;
 
 	a {
 		color: #41abec;
@@ -612,7 +612,7 @@
 				flex-flow: row nowrap;
 				padding: 10px 20px;
 				background: #f5f5f5;
-				line-height: 40px;
+				line-height: 2.5rem;
 				cursor: pointer;
 
 				img {
