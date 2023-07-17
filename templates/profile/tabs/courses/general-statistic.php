@@ -15,11 +15,11 @@ if ( empty( $statistic ) || empty( $user ) ) {
 
 ?>
 
-<div id="dashboard-general-statistic">
+<div id="dashboard-statistic">
 
     <?php do_action( 'learn-press/before-profile-dashboard-general-statistic-row' ); ?>
 
-    <div class="dashboard-general-statistic__row-warpper">
+    <div class="dashboard-statistic__row">
 
         <?php do_action( 'learn-press/before-profile-dashboard-user-general-statistic' ); ?>
 

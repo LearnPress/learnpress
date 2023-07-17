@@ -14,14 +14,16 @@ document.addEventListener( 'submit', function( e ) {
 	window.lpCourseFilter.submit( target );
 } );
 
-// Reset form filter
+// Click element
 document.addEventListener( 'click', function( e ) {
 	const target = e.target;
-	if ( ! target.classList.contains( 'course-filter-reset' ) ) {
-		return;
+	if ( target.classList.contains( 'course-filter-reset' ) ) {
+		e.preventDefault();
+		window.lpCourseFilter.reset( target );
 	}
-	e.preventDefault();
-	window.lpCourseFilter.reset( target );
+
+	// Show/hide search suggest result
+	window.lpCourseFilter.showHideSearchResult( target );
 } );
 
 // Search course suggest
@@ -130,8 +132,12 @@ window.lpCourseFilter = {
 	reset: ( btnReset ) => {
 		const form = btnReset.closest( `.${ classCourseFilter }` );
 		const btnSubmit = form.querySelector( '.course-filter-submit' );
+		const elResult = form.querySelector( '.lp-course-filter-search-result' );
 
 		form.reset();
+		if ( elResult ) {
+			elResult.innerHTML = '';
+		}
 		// Empty the values in the form.
 		for ( let i = 0; i < form.elements.length; i++ ) {
 			form.elements[ i ].value = '';
@@ -140,6 +146,19 @@ window.lpCourseFilter = {
 		// If on the page archive course will call btnSubmit click.
 		if ( lpGlobalSettings.is_course_archive ) {
 			btnSubmit.click();
+		}
+	},
+	showHideSearchResult: ( target ) => {
+		const elResult = document.querySelector( '.lp-course-filter-search-result' );
+		if ( ! elResult ) {
+			return;
+		}
+
+		const parent = target.closest( '.lp-course-filter-search-result' );
+		if ( ! parent && ! target.classList.contains( 'lp-course-filter-search-result' ) && ! target.classList.contains( 'lp-course-filter-search' ) ) {
+			elResult.style.visibility = 'hidden';
+		} else {
+			elResult.style.visibility = 'visible';
 		}
 	},
 };
