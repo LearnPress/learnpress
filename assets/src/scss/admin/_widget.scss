@@ -67,3 +67,25 @@
 	}
 }
 
+// Course filter style admin
+.sortable-wrapper{
+	>label{	
+		font-weight: 600;
+		font-size: 14px;	
+	}
+}
+.sortable__item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+	&:last-child{
+		margin-bottom: 0;
+	}
+}
+.widget-content p {
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
