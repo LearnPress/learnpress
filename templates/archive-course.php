@@ -4,7 +4,7 @@
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 4.0.0
+ * @version 4.0.1
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -29,6 +29,7 @@ $page_title = learn_press_page_title( false );
 ?>
 
 <div class="lp-content-area">
+	<div class="lp-main-content">
 	<?php if ( $page_title ) : ?>
 		<header class="learn-press-courses-header">
 			<h1><?php echo wp_kses_post( $page_title ); ?></h1>
@@ -69,23 +70,24 @@ $page_title = learn_press_page_title( false );
 
 	LearnPress::instance()->template( 'course' )->end_courses_loop();
 	do_action( 'learn-press/after-courses-loop' );
-
-
-	/**
-	 * LP Hook
-	 */
-	do_action( 'learn-press/after-main-content' );
-
+	?>
+	</div>
+	<?php
 	/**
 	 * LP Hook
 	 *
 	 * @since 4.0.0
 	 */
-	do_action( 'learn-press/sidebar' );
+	do_action( 'learn-press/archive-course/sidebar' );
 	?>
 </div>
 
 <?php
+/**
+ * LP Hook
+ */
+do_action( 'learn-press/after-main-content' );
+
 /**
  * @since 4.0.0
  *
