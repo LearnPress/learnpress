@@ -17,8 +17,10 @@ a {
 	scroll-margin: 30px;
 
 	.lp-content-area {
-		display: flex;
-		gap: 10px;
+		&:has(.lp-main-content) {
+			display: flex;
+			gap: 10px;
+		}
 
 		.lp-main-content {
 			flex: 1;
