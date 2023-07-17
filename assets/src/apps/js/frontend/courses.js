@@ -281,7 +281,7 @@ const jsHandlePageCourses = () => {
 		skeleton = document.querySelector( '.lp-archive-course-skeleton' );
 		elArchive = document.querySelector( '.lp-archive-courses' );
 		if ( elArchive ) {
-			elListCourse = elArchive.querySelector( 'ul.learn-press-courses' );
+			elListCourse = elArchive.querySelector( '.learn-press-courses' );
 		}
 		let canLoad = false;
 
