@@ -273,7 +273,7 @@ body {
 								margin-right: 8px;
 
 								&::before {
-									font-size: 12px;
+									font-size: 0.75rem;
 								}
 							}
 
@@ -772,17 +772,21 @@ body {
 		}
 	}
 
-	#dashboard-statistic {
-		//margin-bottom: 30px;
-	}
-
 	#profile-content-courses {
 		.dashboard-statistic__row {
 			.statistic-box {
+				width: calc((100% - 40px) / 6);
+				@media (max-width: 1440px) {
+					width: calc((100% - 16px) / 3);
+				}
+				@media (max-width: 990px) {
+					width: calc((100% - 40px) / 6);
+				}
 
-
+				@media (max-width: 767px) {
+					width: calc((100% - 16px) / 3);
+				}
 			}
-
 		}
 	}
 
@@ -794,8 +798,9 @@ body {
 					width: calc((100% - 16px) / 3);
 				}
 			}
+		}
 	}
-
+}
 	.dashboard-statistic__row {
 		display: flex;
 		gap: 8px;
@@ -805,6 +810,7 @@ body {
 			background: #f9fafc;
 			padding: 10px 16px;
 		}
+
 
 		.statistic-box {
 			padding: 15px 10px;
@@ -822,17 +828,6 @@ body {
 			&:hover {
 				background: #eaeaea;
 			}
-			@media (max-width: 1440px) {
-				width: calc((100% - 16px) / 3);
-			}
-			@media (max-width: 990px) {
-				width: calc((100% - 40px) / 6);
-			}
-
-			@media (max-width: 767px) {
-				width: calc((100% - 16px) / 3);
-			}
-
 			@media (max-width: 520px) {
 				width: 100% !important;
 				background: transparent;
@@ -900,44 +895,45 @@ body {
 			text-transform: capitalize;
 		}
 	}
-}
+	
 
-.lp-profile-content {
-	table.lp-list-table {
-		border-spacing: 0;
-		border-top: 1px solid #ccc;
-		border-left: 1px solid #ccc;
-		margin-bottom: 40px;
 
-		tr {
-			th, td {
-				border-right: 1px solid #ccc;
-				border-bottom: 1px solid #ccc;
-				text-align: center;
-			}
+	.lp-profile-content {
+		table.lp-list-table {
+			border-spacing: 0;
+			border-top: 1px solid #ccc;
+			border-left: 1px solid #ccc;
+			margin-bottom: 40px;
 
-			td a {
-				color: var(--wp--preset--color--foreground);
-				font-weight: 400;
+			tr {
+				th, td {
+					border-right: 1px solid #ccc;
+					border-bottom: 1px solid #ccc;
+					text-align: center;
+				}
 
-				&:hover {
-					color: var(--lp-primary-color);
+				td a {
+					color: var(--wp--preset--color--foreground);
+					font-weight: 400;
+
+					&:hover {
+						color: var(--lp-primary-color);
+					}
 				}
 			}
 		}
-	}
 
-	#profile-content-order-details {
-		h3 {
-			margin-top: 0;
-			font-size: 1.875rem;
-			line-height: 1.5;
-			font-weight: 500;
-			margin-bottom: 15px;
-			font-family: var(--wp--preset--font-family--system-font);
+		#profile-content-order-details {
+			h3 {
+				margin-top: 0;
+				font-size: 1.875rem;
+				line-height: 1.5;
+				font-weight: 500;
+				margin-bottom: 15px;
+				font-family: var(--wp--preset--font-family--system-font);
+			}
 		}
 	}
-}
 
 .profile-basic-information,
 form[name="profile-change-password"] {
@@ -1195,7 +1191,7 @@ div.order-recover {
 			background: var(--lp-primary-color);
 
 			th {
-				font-size: 16px;
+				font-size: 1rem;
 				line-height: 1.2;
 				border: 0.5px solid #ccc;
 				padding: 16px 8px;
