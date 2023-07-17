@@ -40,13 +40,13 @@
 
 		.order-data-number {
 			margin: 0 0 10px;
-			font-size: 20px;
+			font-size: 1.25rem;
 			font-weight: 600;
 		}
 
 		.payment-method-title {
 			color: #777;
-			font-size: 16px;
+			font-size: 1rem;
 
 			strong {
 				color: #23282d;
@@ -55,7 +55,7 @@
 
 		.order-data-heading {
 			margin-top: 40px;
-			font-size: 16px;
+			font-size: 1rem;
 		}
 
 		.order-users {
@@ -87,7 +87,7 @@
 				padding: 10px;
 				color: #fff;
 				background-color: #c1a3b6;
-				font-size: 14px;
+				font-size: 0.875rem;
 			}
 		}
 
@@ -175,7 +175,7 @@
 						padding: 10px 15px;
 						padding-bottom: 0;
 						border: none;
-						font-size: 14px;
+						font-size: 0.875rem;
 						text-align: right;
 
 						&:first-child {
@@ -213,7 +213,7 @@
 					text-decoration: none;
 
 					.dashicons {
-						font-size: 20px;
+						font-size: 1.25rem;
 					}
 
 					&:hover {
@@ -428,7 +428,7 @@
 		.dashicons {
 			display: inline-flex !important;
 			align-items: center;
-			font-size: 16px;
+			font-size: 1rem;
 		}
 	}
 }

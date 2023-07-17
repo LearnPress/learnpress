@@ -101,14 +101,12 @@ body {
 			}
 
 			.lp-user-profile-socials {
-				margin-right: -5px;
-				margin-left: -5px;
 
 				a {
 					width: 36px;
 					height: 36px;
 					margin: 0 5px;
-					line-height: 36px;
+					line-height: 2.25rem;
 				}
 			}
 		}
@@ -167,7 +165,7 @@ body {
 
 	.lp-profile-username {
 		padding-bottom: 10px;
-		font-size: 18px;
+		font-size: 1.125rem;
 		font-weight: 500;
 		text-transform: capitalize;
 		&::before, &::after {
@@ -188,9 +186,9 @@ body {
 	}
 
 	.lp-profile-user-bio {
-		font-size: 16px;
+		font-size: 1rem;
 		font-weight: 300;
-		line-height: 26px;
+		line-height: 1.625rem;
 	}
 
 	#profile-sidebar {
@@ -227,9 +225,9 @@ body {
 					display: block;
 					padding: 0 20px;
 					color: #333;
-					font-size: 16px;
+					font-size: 1rem;
 					font-weight: 500;
-					line-height: 50px;
+					line-height: 3rem;
 					text-decoration: none;
 				}
 
@@ -242,7 +240,12 @@ body {
 						top: 50%;
     					transform: translateY(-50%);
 						color: var(--lp-primary-color);
-						font-size: 12px;
+						font-size: 0.75rem;
+						@media (max-width:560px) {
+							left: 50%;
+							top: 50%;
+							transform: translate(-50%, -50%);
+						}
 					}
 
 					&::after {
@@ -250,7 +253,7 @@ body {
 						margin-right: 4px;
 						color: #999;
 						font-family: "Font Awesome 5 Free";
-						font-size: 10px;
+						font-size: 0.625rem;
 						font-weight: 900;
 						content: "\f054";
 					}
@@ -263,12 +266,12 @@ body {
 
 						a {
 							border-bottom: 1px solid #f9f9f9;
-							font-size: 14px;
+							font-size: 0.875rem;
 							padding-left: 32px;
 							i{
 								margin-right: 8px;
 								&::before{
-									font-size: 12px;
+									font-size: 0.75rem;
 								}
 							}
 							&:hover {
@@ -326,7 +329,7 @@ body {
 						left: 25px;
 						color: var(--lp-primary-color);
 						font-family: "Font Awesome 5 Free";
-						font-size: 12px;
+						font-size: 0.75rem;
 						font-weight: 900;
 						content: "\f004";
 					}
@@ -567,7 +570,7 @@ body {
 			margin: 0 auto 52px auto;
 			padding: 13px 34px;
 			border-color: var(--lp-secondary-color);
-			font-size: 14px;
+			font-size: 0.875rem;
 			font-weight: 500;
 
 			@include border-radius(9px);
@@ -623,9 +626,9 @@ body {
 						display: block;
 					}
 					h3{
-						font-size: 16px;
+						font-size: 1rem;
 						font-weight: 600;
-						line-height: 24px;
+						line-height: 1.5rem;
 						color: #333;
 						padding: 16px 0;
 					}
@@ -697,7 +700,7 @@ body {
 						display: block;
 						margin: 0 0 10px 0;
 						color: #333;
-						font-size: 16px;
+						font-size: 1rem;
 						font-weight: 500;
 						font-style: italic;
 					}
@@ -709,9 +712,9 @@ body {
 						input {
 							border: 1px solid #ccc;
 							color: #333;
-							font-size: 14px;
+							font-size: 0.875rem;
 							padding: 8px 20px;
-							line-height: 28px;
+							line-height: 1.75rem;
 							&[type='checkbox']{
 								line-height: 15px;
 							}
@@ -731,7 +734,7 @@ body {
 					border-radius: 3px;
 					color: #fff;
 					background: var(--lp-primary-color);
-					font-size: 16px;
+					font-size: 1rem;
 					font-weight: 400;
 					line-height: 1;
 					&:hover{
@@ -746,40 +749,34 @@ body {
 		//margin-bottom: 30px;
 	}
 	#profile-content-courses{
-		.dashboard-general-statistic__row {	
-			&.general-statistic-warpper{
-				.statistic-box {
-					width: calc((100% - 40px) / 6);
-					@media (max-width: 1440px) {
-						width: calc((100% - 16px) / 3);
-					}
-					@media (max-width: 990px) {
-						width: calc((100% - 40px) / 6);
-					}
-		
-					@media (max-width: 767px) {
-						width: calc((100% - 16px) / 3);
-					}
+		.dashboard-general-statistic__row-warpper {	
+			.statistic-box {
+				width: calc((100% - 40px) / 6);
+				@media (max-width: 1440px) {
+					width: calc((100% - 16px) / 3);
 				}
-			}
-			
+				@media (max-width: 990px) {
+					width: calc((100% - 40px) / 6);
+				}
+	
+				@media (max-width: 767px) {
+					width: calc((100% - 16px) / 3);
+				}
+			}			
 		}
 	}
 
 	#profile-content-my-courses{
-		.dashboard-general-statistic__row {	
-			&.general-statistic-warpper{
-				.statistic-box {
-					width: calc((100% - 32px) / 5);
-					@media (max-width: 767px) {
-						width: calc((100% - 16px) / 3);
-					}
+		.dashboard-general-statistic__row-warpper {	
+			.statistic-box {
+				width: calc((100% - 32px) / 5);
+				@media (max-width: 767px) {
+					width: calc((100% - 16px) / 3);
 				}
 			}
 		}
 	}
-	.dashboard-general-statistic__row{
-		&.general-statistic-warpper{
+	.dashboard-general-statistic__row-warpper {
 			display: flex;
 			gap: 8px;
 			flex-wrap: wrap;
@@ -816,9 +813,8 @@ body {
 					}
 				}
 			}
-		}
 	}
-
+//section style maybe delete because class of div changed "dashboard-general-statistic__row"
 	.dashboard-general-statistic__row {
 		display: flex;
 		gap: 10px;
@@ -873,16 +869,19 @@ body {
 		.statistic-box__text {
 			padding: 0;
 			color: #666;
-			font-size: 18px;
+			font-size: 1rem;
 			font-weight: 600;
 			line-height: 1;
 		}
 
 		.statistic-box__number {
-			color: #333;
-			font-size: 18px;
+			color: var(--lp-primary-color);
+			font-size: 1.5rem;
 			font-weight: 600;
 			line-height: 1;
+			@media (max-width:520px) {
+				font-size: 1rem;
+			}
 		}
 
 	}
@@ -893,7 +892,7 @@ body {
 			margin-top: 0;
 			margin-bottom: 36px;
 			color: #333;
-			font-size: 30px;
+			font-size: 1.875rem;
 			font-weight: 600;
 			line-height: 1;
 			text-transform: capitalize;
@@ -924,7 +923,7 @@ body {
 	#profile-content-order-details {
 		h3 {
 			margin-top: 0;
-			font-size: 30px;
+			font-size: 1.875rem;
 			line-height: 1.5;
 			font-weight: 500;
 			margin-bottom: 15px;
@@ -942,7 +941,7 @@ form[name="profile-change-password"] {
 		& > label {
 			margin: 0 0 12px 0;
 			color: #333;
-			font-size: 16px;
+			font-size: 1rem;
 			font-weight: 500;
 			font-style: italic;
 		}
@@ -963,14 +962,14 @@ form[name="profile-change-password"] {
 			textarea {
 				padding: 9px 20px 16px 20px;
 				font-weight: 300;
-				line-height: 24px;
+				line-height: 1.5rem;
 			}
 
 			input,
 			textarea {
 				border: 1px solid #ccc;
 				color: #999;
-				font-size: 14px;
+				font-size: 0.875rem;
 				font-style: italic;
 
 				&:focus {
@@ -1025,7 +1024,7 @@ form[name="profile-change-password"] {
 		border-radius: 3px;
 		color: #fff;
 		background: var(--lp-primary-color);
-		font-size: 16px;
+		font-size: 1rem;
 		font-weight: 400;
 		line-height: 1;
 
@@ -1057,14 +1056,14 @@ form[name="profile-change-password"] {
 	button[type="submit"] {
 		padding: 0 15px;
 		height: 40px;
-		line-height: 40px;
+		line-height: 2.5rem;
 		border: 0;
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
 		background-color: var(--lp-primary-color);
 		color: white;
-		font-size: 16px;
+		font-size: 1rem;
 		font-weight: 400;
 		@include transition(.3s);
 		@include border-radius(3px);
@@ -1118,10 +1117,10 @@ div.order-recover {
 		border: 1px solid #ccc;
 		border-radius: 3px;
 		background-color: #fff;
-		font-size: 14px;
+		font-size: 0.875rem;
 		font-weight: 300;
 		font-style: italic;
-		line-height: 43px;
+		line-height: 2.6875rem;
 		flex: 1 1 auto;
 	}
 }
@@ -1143,13 +1142,19 @@ div.order-recover {
 			}
 			td{
 				text-align: center;
-				font-size: 14px;
+				font-size: 0.875rem;
 				line-height: 1.2;
 				border: 0.5px solid #ccc;
 				padding: 8px;
+				@media (max-width:768px) {
+					font-size: 0.75rem;
+				}
 				&:first-child{
 					width: 15%;
 					padding: 0px;
+					@media (max-width:768px ) {
+						display: none;
+					}
 				}
 				&:nth-child(2){
 					width: 25%;
@@ -1175,12 +1180,17 @@ div.order-recover {
 		&__header {
 			background: var(--lp-primary-color);
 			th{
-				font-size: 16px;
+				font-size: 1rem;
 				line-height: 1.2;
 				border: 0.5px solid #ccc;
 				padding: 16px 8px;
 				font-weight: 600;
 				text-align: center;
+				&:first-child{
+					@media (max-width:768px ) {
+						display: none;
+					}
+				}
 			}
 		}
 	}
@@ -1296,10 +1306,10 @@ div.order-recover {
 			border: 1px dashed #ccc;
 			border-radius: 3px;
 			background-color: #fafafa;
-			font-size: 14px;
+			font-size: 0.875rem;
 			font-weight: 300;
 			font-style: italic;
-			line-height: 43px;
+			line-height: 2.6875rem;
 			text-align: center;
 			cursor: pointer;
 			align-items: center;

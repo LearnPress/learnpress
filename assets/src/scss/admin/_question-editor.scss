@@ -65,7 +65,7 @@
 					border: 1px solid #999;
 					border-radius: 2px;
 					color: #666;
-					line-height: 32px;
+					line-height: 2rem;
 					text-decoration: none;
 					align-items: center;
 					cursor: pointer;
@@ -74,8 +74,8 @@
 					&::after {
 						margin-left: 5px;
 						font-family: Dashicons;
-						font-size: 14px;
-						line-height: 30px;
+						font-size: 0.875rem;
+						line-height: 1.875rem;
 						content: "\f347";
 					}
 				}
@@ -106,7 +106,7 @@
 							min-width: 110px;
 							padding: 10px;
 							color: #757575;
-							font-size: 12px;
+							font-size: 0.75rem;
 							text-align: right;
 							white-space: nowrap;
 							text-decoration: none;
@@ -219,7 +219,7 @@
 						&.sort {
 							width: 15px;
 							padding: 0;
-							font-size: 18px;
+							font-size: 1.125rem;
 							text-align: center;
 							cursor: url("../../images/openhand.cur") 7 5, default;
 
@@ -239,7 +239,7 @@
 						}
 
 						&.order {
-							font-size: 14px;
+							font-size: 0.875rem;
 						}
 
 						&.answer-text {
@@ -251,7 +251,7 @@
 								color: #444;
 								background: transparent;
 								box-shadow: none;
-								font-size: 14px;
+								font-size: 0.875rem;
 								font-weight: 600;
 								transition: box-shadow 0.2s ease;
 							}
@@ -467,7 +467,7 @@
 			.blank-content {
 				width: 100%;
 				min-height: 74px;
-				font-size: 16px;
+				font-size: 1rem;
 			}
 
 			.blank-words {
@@ -504,8 +504,8 @@
 		margin-left: 20px;
 		padding: 15px 20px;
 		border: 1px solid #ddd;
-		font-size: 16px;
-		line-height: 24px;
+		font-size: 1rem;
+		line-height: 1.5rem;
 		text-align: justify;
 		flex: 1;
 
@@ -522,7 +522,7 @@
 			border-bottom: 1px dashed #ddd;
 			background: transparent;
 			box-shadow: none;
-			font-size: 16px;
+			font-size: 1rem;
 			vertical-align: middle;
 		}
 	}
@@ -537,8 +537,8 @@
 			outline: none;
 			background: #f9f9f9;
 			box-shadow: none;
-			font-size: 18px;
-			line-height: 30px;
+			font-size: 1.125rem;
+			line-height: 1.875rem;
 		}
 
 		code {

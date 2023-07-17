@@ -19,7 +19,7 @@ $html_wrapper = apply_filters(
 	'learn-press/profile/layout/instructor-statistics/wrapper',
 	[
 		'<div id="dashboard-general-statistic">'         => '</div>',
-		'<div class="dashboard-general-statistic__row general-statistic-warpper">' => '</div>',
+		'<div class="dashboard-general-statistic__row-warpper">' => '</div>',
 	]
 );
 

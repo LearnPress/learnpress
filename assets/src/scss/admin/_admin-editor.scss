@@ -43,7 +43,7 @@
 
 			h4 {
 				margin: 0;
-				font-size: 16px;
+				font-size: 1rem;
 			}
 
 			.collapse-sections {
@@ -51,7 +51,7 @@
 				width: 40px;
 				color: #999;
 				font-family: Dashicons;
-				font-size: 30px;
+				font-size: 1.875rem;
 				cursor: pointer;
 				justify-content: center;
 				align-items: center;
@@ -71,7 +71,7 @@
 				top: 5px;
 				margin-left: 10px;
 				font-family: Dashicons;
-				font-size: 20px;
+				font-size: 1.25rem;
 
 				&::before {
 					content: "\f463";
@@ -179,7 +179,7 @@
 				margin: 0;
 				padding: 0;
 				background-color: #f4fcff;
-				line-height: 40px;
+				line-height: 2.5rem;
 				transition: background 500ms ease-out;
 				align-items: center;
 
@@ -190,7 +190,7 @@
 					margin: 0;
 					color: #999;
 					font-family: Dashicons;
-					font-size: 20px;
+					font-size: 1.25rem;
 					text-align: center;
 					vertical-align: middle;
 				}
@@ -209,7 +209,7 @@
 				}
 
 				.section-item-counts {
-					line-height: 40px;
+					line-height: 2.5rem;
 				}
 
 				.actions {
@@ -234,8 +234,8 @@
 							width: 40px;
 							color: #999;
 							font-family: Dashicons;
-							font-size: 16px;
-							line-height: 40px;
+							font-size: 1rem;
+							line-height: 2.5rem;
 						}
 
 						&.open {
@@ -259,9 +259,9 @@
 				width: 100%;
 				border: none;
 				color: #777;
-				font-size: 24px;
+				font-size: 1.5rem;
 				font-weight: 600;
-				line-height: 50px;
+				line-height: 3.125rem;
 
 				&:focus {
 					color: #444;
@@ -285,7 +285,7 @@
 				padding-left: 0;
 				border: none;
 				font-size: 1.2em;
-				line-height: 30px;
+				line-height: 1.875rem;
 				flex: 1;
 			}
 
@@ -438,7 +438,7 @@
 					width: 30px;
 					color: #999;
 					font-family: Dashicons;
-					font-size: 16px;
+					font-size: 1rem;
 					vertical-align: middle;
 					cursor: default;
 					align-items: center;
@@ -484,7 +484,7 @@
 							position: relative;
 							top: 2px;
 							font-family: Dashicons;
-							font-size: 20px;
+							font-size: 1.25rem;
 						}
 
 						&.lp_quiz {
@@ -534,7 +534,7 @@
 								width: 30px;
 								height: 30px;
 								color: #999;
-								line-height: 30px;
+								line-height: 1.875rem;
 
 								&:hover {
 									color: #0073aa;
@@ -571,7 +571,7 @@
 											display: block;
 											padding: 10px 25px;
 											color: #757575;
-											font-size: 12px;
+											font-size: 0.75rem;
 											text-decoration: none;
 
 											&.delete-permanently {
@@ -650,7 +650,7 @@
 
 				.icon {
 					color: #0085ba;
-					font-size: 20px;
+					font-size: 1.25rem;
 					text-align: center;
 					flex: 0 0 29px;
 
@@ -664,7 +664,7 @@
 					padding: 8px 10px 8px 0;
 					border: none;
 					color: inherit;
-					font-size: 14px;
+					font-size: 0.875rem;
 					font-weight: 600;
 				}
 			}
@@ -680,7 +680,7 @@
 				border: 1px solid #eee;
 				border-radius: 3px;
 				color: $remove-icon-color;
-				line-height: 30px;
+				line-height: 1.875rem;
 				cursor: pointer;
 
 				.icon {
@@ -737,7 +737,7 @@
 .section-item-counts {
 	margin: 0;
 	margin-left: auto;
-	font-size: 12px;
+	font-size: 0.75rem;
 	white-space: nowrap;
 
 	span {
@@ -880,7 +880,7 @@
 						padding: 0 20px;
 						color: #333;
 						font-weight: 600;
-						line-height: 44px;
+						line-height: 2.75rem;
 						text-decoration: none;
 
 						&:focus {
@@ -932,8 +932,8 @@
 					width: 100%;
 					height: 36px;
 					padding: 0 14px;
-					font-size: 16px;
-					line-height: 36px;
+					font-size: 1rem;
+					line-height: 2.25rem;
 				}
 			}
 
@@ -954,7 +954,7 @@
 
 				.index {
 					margin-left: 20px;
-					line-height: 28px;
+					line-height: 1.75rem;
 				}
 			}
 		}

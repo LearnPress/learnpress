@@ -41,9 +41,9 @@
 
 	.course-description {
 		//color: #666;
-		//font-size: 16px;
+		//font-size: 1rem;
 		//font-weight: 300;
-		//line-height: 26px;
+		//line-height: 1.625rem;
 		h4 {
 			margin-top: 0;
 			margin-bottom: 1.125rem;
@@ -112,7 +112,7 @@
 				text-decoration: none;
 				color: #333;
 				box-shadow: none;
-				font-size: 18px;
+				font-size: 1.125rem;
 				font-weight: 500;
 				text-transform: capitalize;
 
@@ -124,8 +124,8 @@
 
 		.author-description {
 			color: #666;
-			font-size: 16px;
-			line-height: 26px;
+			font-size: 1rem;
+			line-height: 1.625rem;
 			font-style: italic;
 		}
 
@@ -145,8 +145,8 @@
 				border-radius: 50%;
 				color: #878787;
 				box-shadow: none;
-				font-size: 14px;
-				line-height: 33px;
+				font-size: 0.875rem;
+				line-height: 2.0625rem;
 				text-align: center;
 				vertical-align: middle;
 				transition: all 0.3s;
@@ -203,7 +203,7 @@
 			&__top {
 
 				> a {
-					font-size: 18px;
+					font-size: 1.125rem;
 					font-weight: 600;
 				}
 			}
@@ -224,13 +224,13 @@
 
 		.origin-price {
 			margin-right: 10px;
-			font-size: 18px;
+			font-size: 1.125rem;
 			font-style: italic;
 			text-decoration: line-through;
 		}
 
 		.price {
-			font-size: 24px;
+			font-size: 1.5rem;
 		}
 	}
 
@@ -251,7 +251,7 @@
 		.featured-review__stars {
 			padding-bottom: 12px;
 			color: var(--lp-primary-color);
-			font-size: 16px;
+			font-size: 1rem;
 		}
 
 		.featured-review__content {
@@ -259,7 +259,7 @@
 			color: #666;
 			font-size: 1rem;
 			font-style: italic;
-			line-height: 24px;
+			line-height: 1.5rem;
 
 			&::after {
 				position: absolute;
@@ -282,7 +282,7 @@
 		border-radius: 4px;
 		color: #fff;
 		background: #9aa5ab;
-		font-size: 12px;
+		font-size: 0.75rem;
 		line-height: 1;
 	}
 
@@ -533,7 +533,7 @@ ul.learn-press-nav-tabs {
 
 			&::before {
 				font-family: "Font Awesome 5 Free";
-				font-size: 18px;
+				font-size: 1.125rem;
 				font-weight: 900;
 				content: "\f107";
 			}
@@ -549,8 +549,8 @@ ul.learn-press-nav-tabs {
 		.section-desc {
 			margin: 0;
 			margin-top: 10px;
-			font-size: 14px;
-			line-height: 21px;
+			font-size: 0.875rem;
+			line-height: 1.3125rem;
 			color: #999;
 			font-style: italic;
 		}
@@ -559,7 +559,7 @@ ul.learn-press-nav-tabs {
 			display: block;
 			padding-top: 17px;
 			padding-bottom: 15px;
-			font-size: 14px;
+			font-size: 0.875rem;
 			text-align: right;
 			vertical-align: middle;
 			white-space: nowrap;
@@ -585,8 +585,8 @@ ul.learn-press-nav-tabs {
 				margin-left: 14px;
 				border-radius: 3px;
 				color: #fff;
-				font-size: 14px;
-				line-height: 23px;
+				font-size: 0.875rem;
+				line-height: 1.4375rem;
 				text-align: center;
 				vertical-align: middle;
 				padding: 0 8px;
@@ -617,7 +617,7 @@ ul.learn-press-nav-tabs {
 
 				&::before {
 					font-family: "Font Awesome 5 Free";
-					font-size: 14px;
+					font-size: 0.875rem;
 					font-weight: 900;
 					vertical-align: middle;
 					text-transform: lowercase;
@@ -649,7 +649,7 @@ ul.learn-press-nav-tabs {
 		margin: 0 0 2px 0;
 		padding: 0 15px 0 30px;
 		background: rgba(241, 242, 248, 0.4);
-		font-size: 14px;
+		font-size: 0.875rem;
 		transition: padding-left linear 0.15s;
 
 		@media (max-width: 767px) {
@@ -660,7 +660,7 @@ ul.learn-press-nav-tabs {
 			display: flex;
 			width: 28px;
 			color: #666;
-			font-size: 16px;
+			font-size: 1rem;
 			font-weight: 300;
 			align-items: center;
 		}
@@ -691,7 +691,7 @@ ul.learn-press-nav-tabs {
 				width: 20px;
 				color: var(--lp-primary-color);
 				font-family: "Font Awesome 5 Free";
-				font-size: 18px;
+				font-size: 1.125rem;
 				font-weight: 400;
 				vertical-align: middle;
 				transition: left linear 0.15s;
@@ -707,7 +707,7 @@ ul.learn-press-nav-tabs {
 					margin-top: 4px;
 					align-items: center;
 					.item-meta{
-						font-size: 12px;
+						font-size: 0.75rem;
 						line-height: 1.5;
 						&.duration{
 							background: transparent;
@@ -722,7 +722,7 @@ ul.learn-press-nav-tabs {
 		.item-name {
 			display: table-cell;
 			color: #333;
-			font-size: 16px;
+			font-size: 1rem;
 			font-weight: 600;
 			vertical-align: middle;
 		}
@@ -730,7 +730,7 @@ ul.learn-press-nav-tabs {
 		.item-icon {
 
 			&::before {
-				font-size: 18px;
+				font-size: 1.125rem;
 			}
 
 			&.icon-lock {
@@ -980,7 +980,7 @@ body {
 			&::before {
 				margin-right: 10px;
 				font-family: "Font Awesome 5 Free";
-				font-size: 18px;
+				font-size: 1.125rem;
 				content: "\f00c";
 			}
 		}
@@ -1159,7 +1159,7 @@ body {
 			padding: 10px 20px 10px 30px;
 			border-bottom: 1px solid rgba(204, 204, 204, 0.3);
 			color: #666;
-			font-size: 16px;
+			font-size: 1rem;
 			font-weight: 300;
 
 			@media (max-width: 767px) {
@@ -1271,7 +1271,7 @@ input[name="course-extra-box-ratio"] {
 				right: 28px;
 				color: #6c6c6c;
 				font-family: "Font Awesome 5 Free";
-				font-size: 12px;
+				font-size: 0.75rem;
 				font-weight: 900;
 				content: "\f078";
 				transform: translateY(-50%);
@@ -1301,7 +1301,7 @@ input[name="course-extra-box-ratio"] {
 		color: #666;
 		font-size: 1rem;
 		font-weight: 300;
-		line-height: 26px;
+		line-height: 1.625rem;
 		-webkit-animation-name: course-faqs-box__content-inner-transform;
 		animation-name: course-faqs-box__content-inner-transform;
 		-webkit-animation-duration: 0.3s;

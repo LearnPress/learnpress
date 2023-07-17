@@ -142,7 +142,7 @@ ul.learn-press-breadcrumb {
 	padding-right: var(--lp-cotainer-padding);
 	padding-left: var(--lp-cotainer-padding);
 	color: #333;
-	font-size: 14px;
+	font-size: 0.875rem;
 	font-weight: 400;
 	list-style: none;
 	li {
@@ -160,7 +160,7 @@ ul.learn-press-breadcrumb {
 	i {
 		margin: 0 5px;
 		color: #666;
-		font-size: 12px;
+		font-size: 0.75rem;
 	}
 
 	@media (max-width: 1024px) {
@@ -184,7 +184,7 @@ ul.learn-press-breadcrumb {
 		background: transparent;
 		box-shadow: unset;
 		font-family: inherit;
-		font-size: 16px;
+		font-size: 1rem;
 		font-weight: 400;
 		line-height: 1;
 		text-align: center;
@@ -198,7 +198,7 @@ ul.learn-press-breadcrumb {
 		&.large {
 			height: 52px;
 			padding: 18px 30px;
-			font-size: 18px;
+			font-size: 1.125rem;
 		}
 
 		@include transition(all 0.25s);
@@ -263,7 +263,7 @@ ul.learn-press-breadcrumb {
 	padding: 20px;
 	border: 2px solid $msg-success;
 	border-radius: 9px;
-	font-size: 15px;
+	font-size: 0.9375rem;
 	line-height: 1.4;
 
 	&.error {
@@ -336,7 +336,7 @@ ul.learn-press-breadcrumb {
 
 /* */
 .table-orders {
-	font-size: 16px;
+	font-size: 1rem;
 
 	th,
 	td {
@@ -370,7 +370,7 @@ ul.learn-press-breadcrumb {
 				padding: 0 14px;
 				color: #666;
 				background: transparent;
-				font-size: 16px;
+				font-size: 1rem;
 				font-weight: 300;
 
 				&.current {
@@ -504,7 +504,7 @@ ul.list-table-nav {
 
 	.icon {
 		margin-right: 5px;
-		font-size: 20px;
+		font-size: 1.25rem;
 	}
 
 	&.passed {
@@ -568,7 +568,7 @@ ul.list-table-nav {
 		padding: 5px 0;
 
 		&::before {
-			font-size: 12px;
+			font-size: 0.75rem;
 			text-transform: uppercase;
 			content: attr(data-text);
 		}
@@ -596,7 +596,7 @@ ul.list-table-nav {
 			justify-content: center;
 			margin: 0;
 			padding: 17px 10px;
-			font-size: 16px;
+			font-size: 1rem;
 			line-height: 1;
 			font-weight: 600;
 			text-transform: capitalize;
