@@ -510,7 +510,7 @@ class FilterCourseTemplate {
 	public function html_btn_submit( array $data = [] ): string {
 		return sprintf(
 			'<button type="submit" class="course-filter-submit">%s</button>',
-			esc_html__( 'Course filter', 'learnpress' )
+			esc_html__( 'Filter', 'learnpress' )
 		);
 	}
 
