@@ -75,7 +75,7 @@ $( document ).on( 'widget-added widget-updated', function( event ) {
 
 function sortItem() {
 	$( '.widget-content .sortable' ).sortable( {
-		handle: '.dashicons-move',
+		handle: '.drag',
 
 		start( event, ui ) {
 

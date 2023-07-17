@@ -108,7 +108,7 @@ class FilterCourseTemplate {
 				]
 			);
 			$title_html   = sprintf(
-				'<div class="lp-form-course-filter__title"><h4>%s</h4></div>',
+				'<div class="lp-form-course-filter__title">%s</div>',
 				$title
 			);
 			$content_html = sprintf(
