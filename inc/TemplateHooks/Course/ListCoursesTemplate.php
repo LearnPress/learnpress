@@ -114,7 +114,10 @@ class ListCoursesTemplate {
 
 	public function sidebar() {
 		if ( is_active_sidebar( 'archive-courses-sidebar' ) ) {
-			dynamic_sidebar( 'archive-courses-sidebar' );
+			$html_wrapper = [
+				'<div class="lp-archive-courses-sidebar">' => '</div>',
+			];
+			echo Template::instance()->nest_elements( $html_wrapper, dynamic_sidebar( 'archive-courses-sidebar' ) );
 		}
 	}
 }
