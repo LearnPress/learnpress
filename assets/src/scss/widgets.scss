@@ -114,7 +114,6 @@
 				font-size: 15px;
 			}
 		}
-		
 	}
 
 }
@@ -398,6 +397,12 @@
 	}
 }
 
+.learnpress-widget-wrapper__restapi {
+	.lp-skeleton-animation {
+		min-width: 250px;
+	}
+}
+
 .lp-course-filter {
 	.price__item, .instructor__item, .level__item, .term-list__item {
 		display: flex;
@@ -430,7 +435,6 @@
 				-webkit-animation: lp-rotating 1s linear infinite;
 				-moz-animation: lp-rotating 1s linear infinite;
 				animation: lp-rotating 1s linear infinite;
-				
 			}
 		}
 	}
