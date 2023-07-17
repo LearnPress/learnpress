@@ -376,7 +376,7 @@ class LP_Widget extends WP_Widget {
 									$checked_value = ! empty( $instance ) ? ( $instance[ $key ] ?? array() ) : $values_default;
 									?>
 									<div class="sortable__item">
-										<i class="dashicons dashicons-move"></i>
+										<i class="dashicons dashicons-menu drag"></i>
 										<input class="checkbox"
 											id="<?php echo esc_attr( $this->get_field_id( $option['id'] ) ); ?>"
 											name="<?php echo esc_attr( $this->get_field_name( $key ) ); ?>[]"

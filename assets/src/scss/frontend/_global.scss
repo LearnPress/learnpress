@@ -8,8 +8,8 @@
 .lp-content-area {
 	max-width: var(--lp-cotainer-max-with) !important;
 	margin: 0 auto;
-	padding-right: 15px;
-	padding-left: 15px;
+	padding-right: var(--lp-cotainer-padding);
+	padding-left: var(--lp-cotainer-padding);
 }
 
 .lp-ico {
