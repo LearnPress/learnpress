@@ -5,12 +5,6 @@
 return apply_filters(
 	'learn-press/widget/course-filter/settings',
 	array(
-		'enable'            => array(
-			'label' => esc_html__( 'Enable Widget', 'learnpress' ),
-			'type'  => 'checkbox',
-			'class' => 'enable_widget',
-			'std'   => 1,
-		),
 		'title'             => array(
 			'label' => esc_html__( 'Title', 'learnpress' ),
 			'type'  => 'text',

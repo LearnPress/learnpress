@@ -22,6 +22,7 @@ class ListCoursesTemplate {
 
 	public function init() {
 		add_action( 'learn-press/rest-api/courses/suggest/layout', [ $this, 'sections_course_suggest' ] );
+		add_action( 'learn-press/archive-course/sidebar', [ $this, 'sidebar' ] );
 	}
 
 	/**
@@ -108,6 +109,18 @@ class ListCoursesTemplate {
 		} catch ( Throwable $e ) {
 			ob_end_clean();
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
+		}
+	}
+
+	public function sidebar() {
+		if ( is_active_sidebar( 'archive-courses-sidebar' ) ) {
+			$html_wrapper = [
+				'<div class="lp-archive-courses-sidebar">' => '</div>',
+			];
+
+			ob_start();
+			dynamic_sidebar( 'archive-courses-sidebar' );
+			echo Template::instance()->nest_elements( $html_wrapper, ob_get_clean() );
 		}
 	}
 }

@@ -55,7 +55,6 @@ document.addEventListener( 'DOMContentLoaded', function( event ) {
 		$( document ).on( 'learnpress/widgets/select', function() {
 			autocompleteWidget();
 			sortItem();
-			showItems();
 		} );
 
 		autocompleteWidget();
@@ -65,12 +64,10 @@ document.addEventListener( 'DOMContentLoaded', function( event ) {
 //Sortable checkbox
 document.addEventListener( 'DOMContentLoaded', function( event ) {
 	sortItem();
-	showItems();
 } );
 
 $( document ).on( 'widget-added widget-updated', function( event ) {
 	sortItem();
-	showItems();
 } );
 
 function sortItem() {
@@ -95,24 +92,5 @@ function sortItem() {
 		stop( event, ui ) {
 
 		},
-	} );
-}
-
-function showItems() {
-	const enableInputs = $( '.widget-content input.enable_widget' );
-
-	enableInputs.each( function() {
-		if ( ! this.checked ) {
-			$( this ).closest( 'form' ).find( '.widget-content > div,p:not(:has(.enable_widget))' ).hide();
-		}
-
-		$( this ).change( function() {
-			const element = $( this ).closest( 'form' ).find( '.widget-content > div,p:not(:has(.enable_widget))' );
-			if ( this.checked ) {
-				element.show();
-			} else {
-				element.hide();
-			}
-		} );
 	} );
 }
