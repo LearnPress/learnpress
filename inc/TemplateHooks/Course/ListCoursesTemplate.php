@@ -117,7 +117,10 @@ class ListCoursesTemplate {
 			$html_wrapper = [
 				'<div class="lp-archive-courses-sidebar">' => '</div>',
 			];
-			echo Template::instance()->nest_elements( $html_wrapper, dynamic_sidebar( 'archive-courses-sidebar' ) );
+
+			ob_start();
+			dynamic_sidebar( 'archive-courses-sidebar' );
+			echo Template::instance()->nest_elements( $html_wrapper, ob_get_clean() );
 		}
 	}
 }
