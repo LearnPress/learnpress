@@ -840,26 +840,7 @@ body {
 			}
 		}
 
-		&[data-col="2"] {
-
-			.statistic-box {
-				width: 50%;
-			}
-		}
-
-		&[data-col="4"] {
-
-			.statistic-box {
-				width: 25%;
-			}
-		}
-
-		&[data-col="5"] {
-
-			.statistic-box {
-				width: 20%;
-			}
-		}
+		
 	}
 
 	.statistic-box {
@@ -1364,12 +1345,6 @@ button.learnpress_avatar__button {
 	+ button {
 		margin-left: 15px;
 		margin-right: 0;
-	}
-}
-
-#primary {
-	.learn-press-courses[data-size="3"] .course {
-		width: 50%;
 	}
 }
 
