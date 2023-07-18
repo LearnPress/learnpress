@@ -47,7 +47,7 @@ $page_title = learn_press_page_title( false );
 
 	if ( LP_Settings_Courses::is_ajax_load_courses() && ! LP_Settings_Courses::is_no_load_ajax_first_courses() ) {
 		echo '<div class="lp-archive-course-skeleton" style="width:100%">';
-		lp_skeleton_animation_html( 10, 'random', 'height:20px', 'width:100%' );
+		//lp_skeleton_animation_html( 10, 'random', 'height:20px', 'width:100%' );
 		echo '</div>';
 	} else {
 		if ( have_posts() ) {
@@ -63,7 +63,7 @@ $page_title = learn_press_page_title( false );
 
 		if ( LP_Settings_Courses::is_ajax_load_courses() ) {
 			echo '<div class="lp-archive-course-skeleton no-first-load-ajax" style="width:100%; display: none">';
-			lp_skeleton_animation_html( 10, 'random', 'height:20px', 'width:100%' );
+			//lp_skeleton_animation_html( 10, 'random', 'height:20px', 'width:100%' );
 			echo '</div>';
 		}
 	}
