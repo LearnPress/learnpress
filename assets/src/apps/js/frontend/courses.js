@@ -15,7 +15,7 @@ const jsHandlePageCourses = () => {
 	const urlSearchParams = new URLSearchParams( urlQueryString );
 	let filterCourses = {};
 	let skeleton;
-	let skeletonClone;
+	//let skeletonClone;
 	let isLoading = false;
 	let firstLoad = 1;
 	let elNoLoadAjaxFirst;
@@ -50,7 +50,8 @@ const jsHandlePageCourses = () => {
 	const lpArchiveCourse = () => {
 		// Case load ajax when reload enable.
 		if ( ! lpGlobalSettings.lpArchiveNoLoadAjaxFirst ) {
-			elListCourse.innerHTML = dataHtml;
+			skeleton.insertAdjacentHTML( 'beforebegin', dataHtml );
+			skeleton.style.display = 'none';
 
 			const pagination = paginationHtml;
 			const paginationEle = document.querySelector( '.learn-press-pagination' );
@@ -84,8 +85,11 @@ const jsHandlePageCourses = () => {
 		window.history.pushState( '', '', urlPush );
 
 		// Append skeleton to list.
-		if ( skeletonClone ) {
+		/*if ( skeletonClone ) {
 			elListCourse.append( skeletonClone );
+		}*/
+		if ( skeleton ) {
+			skeleton.style.display = 'block';
 		}
 
 		filterCourses = args;
@@ -112,12 +116,22 @@ const jsHandlePageCourses = () => {
 				dataHtml = response.data.content || '';
 				paginationHtml = response.data.pagination || '';
 
-				if ( ! skeletonClone && skeleton ) {
+				/*if ( ! skeletonClone && skeleton ) {
 					skeletonClone = skeleton.cloneNode( true );
-				}
+				}*/
 
 				if ( ! firstLoad ) {
-					elListCourse.innerHTML = dataHtml;
+					const elLis = elListCourse.querySelectorAll( ':not(.lp-archive-course-skeleton)' );
+					elLis.forEach( ( elLi ) => {
+						const parent = elLi.closest( '.lp-archive-course-skeleton' );
+						if ( parent ) {
+							return;
+						}
+						elLi.remove();
+					} );
+					skeleton.insertAdjacentHTML( 'beforebegin', dataHtml );
+					skeleton.style.display = 'none';
+					//elListCourse.innerHTML = dataHtml;
 
 					const pagination = paginationHtml;
 					const paginationEle = document.querySelector( '.learn-press-pagination' );
@@ -178,9 +192,9 @@ const jsHandlePageCourses = () => {
 			let timeOutSearch;
 
 			search.addEventListener( 'keyup', ( event ) => {
-				if ( skeleton ) {
+				/*if ( skeleton ) {
 					skeleton.style.display = 'block';
-				}
+				}*/
 				event.preventDefault();
 
 				const s = event.target.value.trim();
@@ -221,9 +235,9 @@ const jsHandlePageCourses = () => {
 				return;
 			}
 
-			if ( skeleton ) {
+			/*if ( skeleton ) {
 				skeleton.style.display = 'block';
-			}
+			}*/
 
 			// Scroll to archive element
 			elArchive.scrollIntoView( { behavior: 'smooth' } );
