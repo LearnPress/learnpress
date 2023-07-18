@@ -1,7 +1,4 @@
 document.addEventListener("DOMContentLoaded", function() {
-    function baseName(string) {
-        return string.substring(string.lastIndexOf('/')+1).split('?')[0];
-    }
     let postID                      = document.getElementById( 'current-material-post-id' ).value,
         max_file_size               = document.getElementById( 'material-max-file-size' ).value,
         accept_file                 = document.querySelector( '.lp-material--field-upload' ).getAttribute( 'accept' ).split( ',' ),
@@ -11,6 +8,55 @@ document.addEventListener("DOMContentLoaded", function() {
         material__group_container   = document.getElementById( 'lp-material--group-container' ),
         material_tab                = document.getElementById( 'lp-material-container' ),
         material_save_btn           = document.getElementById( 'btn-lp--save-material' );
+    const getResponse = async ( ele, postID ) => {
+        const elementMaterial = document.querySelector( '.lp-material--table tbody' );
+        try {
+            let formData = new FormData(),
+                url = `${lpGlobalSettings.rest}lp/v1/material/item-materials/${postID}?is_admin=1&per_page=-1`;
+            fetch( url, {
+                method: 'GET',
+                headers: {
+                            'X-WP-Nonce': lpGlobalSettings.nonce,
+                        },
+            } ) // wrapped
+                .then( res => res.text() )
+                .then( data => {
+                    data = JSON.parse( data );
+                    if ( data.status !== 200 ) {
+                        return;
+                    }
+                    if ( data.data && data.data.length > 0  ) {
+                        let materials = data.data;
+                        if ( ele.querySelector( '.lp-skeleton-animation' ) ) {
+                            ele.querySelector( '.lp-skeleton-animation' ).remove(); 
+                        }
+                        for (var i = 0; i < materials.length; i++) {
+                            insertRow( elementMaterial, materials[ i ] );
+                        }
+                    }
+                } )
+                .catch( err => console.log( err ) );
+        } catch ( error ) {
+            console.log( error.message );
+        }
+    };
+    const insertRow = ( parent, data ) => {
+        if ( !parent ){
+            return;
+        }
+        let delete_btn_text = document.getElementById( 'delete-material-row-text' ).value;
+        parent.insertAdjacentHTML( 
+            'beforeend',
+            `<tr data-id="${data.file_id}" data-sort="${data.orders}" >
+              <td class="sort">${data.file_name}</td>
+              <td>${capitalizeFirstChar( data.method )}</td>
+              <td><a href="javascript:void(0)" class="delete-material-row" data-id="${data.file_id}">${delete_btn_text}</a></td>
+            </tr>`
+        );
+    };
+    const capitalizeFirstChar = str => str.charAt(0).toUpperCase() + str.substring(1);
+    //load material data from API
+    getResponse( material_tab, postID );
 
     //add material group field
     add_btn.addEventListener( 'click', function( e ) {
@@ -21,7 +67,6 @@ document.addEventListener("DOMContentLoaded", function() {
         } else {
             material__group_container.insertAdjacentHTML( 'afterbegin', group_template.innerHTML );
         }
-        
     } );
     //switch input when change method between "upload" and "external"
     material_tab.addEventListener( 'change', function( event ) {
@@ -40,7 +85,6 @@ document.addEventListener("DOMContentLoaded", function() {
                     target.closest( '.lp-material--group' ).querySelector( '.lp-material--upload-wrap' ).remove();
                     break;
             }
-            // console.log(target.parentNode)
         }
         if ( target.classList.contains( 'lp-material--field-upload' ) ) {
             if ( target.value && target.files.length > 0 ) {
@@ -56,11 +100,13 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         }
     } );
+    // Dynamic click action ...
     material_tab.addEventListener( 'click', function( event ) {
         let target = event.target;
         if ( target.classList.contains( 'lp-material--delete' ) && target.nodeName == 'BUTTON' ) {
             target.closest( '.lp-material--group' ).remove();
         } else if ( target.classList.contains( 'lp-material-save-field' ) ) {
+            // save a file
             let material = target.closest( '.lp-material--group' );
             material = singleNode( material );
             // target.classList.add( 'loading' );
@@ -69,7 +115,8 @@ document.addEventListener("DOMContentLoaded", function() {
         }
         return false;
     } );
-    //save material
+
+    //save all material files
     material_save_btn.addEventListener( 'click', function(event) {
         let materials = material__group_container.querySelectorAll( '.lp-material--group' );
         if ( materials.length > 0 ) {
@@ -136,18 +183,10 @@ document.addEventListener("DOMContentLoaded", function() {
                         }
                         data = JSON.parse( data );
                         if ( data.material && data.material.length > 0 ) {
-                            let delete_btn_text = document.getElementById( 'delete-material-row-text' ).value,
-                                material_table  = document.querySelector( '.lp-material--table tbody' );
+                            let material_table  = document.querySelector( '.lp-material--table tbody' );
                             for ( let i = 0; i < data.material.length; i++ ) {
-                                let row = data.material[i];
-                                material_table.insertAdjacentHTML( 
-                                    'beforeend',
-                                    `<tr data-id="${row.data.id}" data-sort="${row.data.orders}" >
-                                      <td class="sort">${row.data.label}</td>
-                                      <td>${row.data.method}</td>
-                                      <td><a href="javascript:void(0)" class="delete-material-row" data-id="${row.data.id}">${delete_btn_text}</a></td>
-                                    </tr>`
-                                );
+                                let row = data.material[i].data;
+                                insertRow( material_table, row );
                             }
                             can_upload.innerText = ~~can_upload.innerText - data.material.length;
                             add_btn.setAttribute( 'can-upload', can_upload.innerText );

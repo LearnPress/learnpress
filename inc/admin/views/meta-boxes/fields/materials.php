@@ -84,9 +84,6 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 					display: flex;
 					justify-content: space-between;
 				}
-				#btn-lp--save-material{
-/*					margin-top: 15px;*/
-				}
 				.lp-material-btn-wrap.loading::before, #btn-lp--save-material.loading::before{
 					display: inline-block;
 					margin-right: 5px;
@@ -177,7 +174,8 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 					</tr>	
 				</thead>
 				<tbody>
-				<?php if ( $course_materials ) : ?>
+
+				<!-- <?php if ( $course_materials ) : ?>
 					<?php foreach ( $course_materials as $row ) : ?>
 					  <tr data-id="<?php esc_attr_e( $row->file_id ); ?>" data-sort="<?php esc_attr_e( $row->orders ); ?>">
 						<td class="sort"><?php esc_attr_e( $row->file_name ); ?></td>
@@ -185,10 +183,11 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 						<td><a href="javascript:void(0)" class="delete-material-row" data-id="<?php esc_attr_e( $row->file_id ); ?>"><?php esc_html_e( 'Delete', 'learnpress' ); ?></a></td>
 					  </tr>
 					<?php endforeach; ?>
-				<?php endif; ?>
+				<?php endif; ?> -->
 				</tbody>
 				
 			</table>
+				<?php lp_skeleton_animation_html( 3, 100 ); ?>
 			<div id="lp-material--group-container">
 				
 			</div>

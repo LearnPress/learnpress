@@ -200,10 +200,10 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 					continue;
 				}
 				$response['material'][ $key ]['data'] = array(
-					'label'  => $material['label'],
-					'method' => ucfirst( $material['method'] ),
-					'id'     => $insert,
-					'orders' => $orders,
+					'file_name' => $material['label'],
+					'method'    => ucfirst( $material['method'] ),
+					'file_id'   => $insert,
+					'orders'    => $orders,
 				);
 			}
 			$response['data']['status'] = 200;
@@ -235,26 +235,29 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 			if ( ! $item_id ) {
 				throw new Exception( esc_html__( 'Invalid course or lesson identifier', 'learnpress' ) );
 			}
-			$material_init = LP_Material_Files_DB::getInstance();
-			$page          = absint( $params['page'] ?? 1 );
-			$per_page      = $request['per_page'] ?? (int) LP_Settings::get_option( 'material_file_per_page', -1 );
-			$offset        = ( $per_page > 0 && $page > 1 ) ? $per_page * ( $page - 1 ) : 0;
-			$total         = $material_init->get_total( $item_id );
-			$pages         = $per_page > 0 ? ceil( $total / $per_page ) : 0;
-			// $response['total'] = $total;
-			// $response['pages'] = $pages;
-			$item_materials        = $material_init->get_material_by_item_id( $item_id, $per_page, $offset );
-			$response->load_more = ( $page < $pages && $per_page > 0 ) ? true : false;
-			$response->status    = 200;
+			$is_admin         = $params['is_admin'] ?? false;
+			$material_init    = LP_Material_Files_DB::getInstance();
+			$page             = absint( $params['page'] ?? 1 );
+			$per_page         = $params['per_page'] ?? (int) LP_Settings::get_option( 'material_file_per_page', -1 );
+			$offset           = ( $per_page > 0 && $page > 1 ) ? $per_page * ( $page - 1 ) : 0;
+			$total            = $material_init->get_total( $item_id );
+			$pages            = $per_page > 0 ? ceil( $total / $per_page ) : 0;
+			$item_materials   = $material_init->get_material_by_item_id( $item_id, $per_page, $offset, $is_admin );
+			$response->status = 200;
 			if ( $item_materials ) {
 				// $lp_file = LP_WP_Filesystem::instance();
-				ob_start();
-				$material_template = CourseMaterialTemplate::instance();
-				foreach ( $item_materials as $m ) {
-					$m->current_item_id = $item_id;
-					echo $material_template->material_item( $m );
+				if ( $is_admin ) {
+					$response->data = $item_materials;
+				} else {
+					$response->load_more = ( $page < $pages && $per_page > 0 ) ? true : false;
+					ob_start();
+					$material_template = CourseMaterialTemplate::instance();
+					foreach ( $item_materials as $m ) {
+						$m->current_item_id = $item_id;
+						echo $material_template->material_item( $m );
+					}
+					$response->data = ob_get_clean();
 				}
-				$response->data    = ob_get_clean();
 				$response->message = esc_html__( 'Successfully', 'learnpress' );
 			} else {
 				$response->message = esc_html__( 'Empty material!', 'learnpress' );
@@ -296,7 +299,7 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 			}
 			//get file properties
 			return $file;
-		} catch (Throwable $e) {
+		} catch ( Throwable $e ) {
 			error_log( $e->getMessage() );
 		}
 	}
@@ -313,8 +316,8 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 		try {
 			$file = wp_upload_bits( $file_name, null, file_get_contents( $file_tmp ) );
 
-			return $file['error'] ? false : $file;	
-		} catch (Throwable $e) {
+			return $file['error'] ? false : $file;
+		} catch ( Throwable $e ) {
 			error_log( $e->getMessage() );
 		}
 	}
@@ -331,8 +334,8 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 			$allow_file_type = LP_Settings::get_option( 'material_allow_file_type', array( 'pdf', 'txt' ) );
 			$allow_file_type = implode( ',', $allow_file_type );
 			$allow_file_type = explode( ',', $allow_file_type );
-			return in_array( $ext, $allow_file_type ) ? $ext : false;	
-		} catch (Throwable $e) {
+			return in_array( $ext, $allow_file_type ) ? $ext : false;
+		} catch ( Throwable $e ) {
 			error_log( $e->getMessage() );
 		}
 	}

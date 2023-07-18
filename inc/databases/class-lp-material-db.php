@@ -2,7 +2,6 @@
 /**
  * Class LP_Material_Files_DB
  *
- * @author khanhbd
  * @version 1.0.0
  * @since 4.2.2
  */
@@ -29,7 +28,6 @@ class LP_Material_Files_DB extends LP_Database {
 	}
 
 	/**
-	 * @author khanhbd
 	 * @version 1.0.0
 	 * @since 4.2.2
 	 * [create_material create new material]
@@ -62,7 +60,6 @@ class LP_Material_Files_DB extends LP_Database {
 	}
 
 	/**
-	 * @author khanhbd
 	 * @version 1.0.0
 	 * @since 4.2.2
 	 * [get_single_material get a material]
@@ -83,7 +80,6 @@ class LP_Material_Files_DB extends LP_Database {
 		return $row;
 	}
 	/**
-	 * @author khanhbd
 	 * @version 1.0.0
 	 * @since 4.2.2
 	 * [get_material_by_item_id get all material files of a post( course or lesson )]
@@ -200,7 +196,6 @@ class LP_Material_Files_DB extends LP_Database {
 		return $update ? $update : 0;
 	}
 	/**
-	 * @author khanhbd
 	 * @version 1.0.0
 	 * @since 4.2.2
 	 * [delete_material delete a material]
@@ -229,7 +224,6 @@ class LP_Material_Files_DB extends LP_Database {
 		return $delete;
 	}
 	/**
-	 * @author khanhbd
 	 * @version 1.0.0
 	 * @since 4.2.2
 	 * [delete_material_by_item_id delete all material file of an item]
@@ -261,7 +255,6 @@ class LP_Material_Files_DB extends LP_Database {
 		return $delete;
 	}
 	/**
-	 * @author khanhbd
 	 * @version 1.0.0
 	 * @since 4.2.2
 	 * [delete_local_file delete file when record is deleted]
