@@ -5,26 +5,6 @@
 * @version 1.0.0
 */
 
-.learnpress.widget_course_filter, .elementor-widget-wp-widget-learnpress_widget_course_filter{
-	.learnpress-widget-wrapper{
-		@media (max-width: 768px) {
-			width: 100%;
-			max-width: 100%;
-		}
-		.lp-course-filter-search-result{
-			&::-webkit-scrollbar{
-				width: 8px;
-			}
-			&::-webkit-scrollbar-thumb{
-				background: #ccc;
-			}
-			&::-webkit-scrollbar-track{
-				background: #f5f5f5;
-			}
-		}
-	}
-}
-
 .lp-form-course-filter__item{
 	margin-bottom: 12px;
 	border-bottom: 1px solid #eee;
@@ -46,11 +26,6 @@
 				align-items: center;
 				gap: 10px;
 				input{
-					width: 0.875rem;
-					height: 0.875rem;
-					cursor: pointer;
-					-webkit-appearance: auto;
-					-moz-appearance: auto;
 					&:after{
 						display: none;
 					}
