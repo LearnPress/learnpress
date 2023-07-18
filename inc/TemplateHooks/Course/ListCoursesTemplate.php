@@ -84,7 +84,11 @@ class ListCoursesTemplate {
 			$html_info_wrapper = [
 				'<div class="lp-courses-suggest-info">' => '</div>',
 			];
-			$count_courses     = sprintf( '%s %s', $total_courses, __( 'Courses Found', 'learnpress' ) );
+			$count_courses     = sprintf(
+				'%s %s',
+				$total_courses,
+				_n( 'Course Found', 'Courses Found', $total_courses, 'learnpress' )
+			);
 			$view_all          = sprintf(
 				'<a href="%s">%s</a>',
 				add_query_arg( 'c_search', $key_search, learn_press_get_page_link( 'courses' ) ),

@@ -156,9 +156,9 @@ window.lpCourseFilter = {
 
 		const parent = target.closest( '.lp-course-filter-search-result' );
 		if ( ! parent && ! target.classList.contains( 'lp-course-filter-search-result' ) && ! target.classList.contains( 'lp-course-filter-search' ) ) {
-			elResult.style.visibility = 'hidden';
+			elResult.style.display = 'none';
 		} else {
-			elResult.style.visibility = 'visible';
+			elResult.style.display = 'block';
 		}
 	},
 };
