@@ -14,7 +14,7 @@ a {
 			display: flex;
 			gap: 16px;
 			@media (max-width: 768px) {
-				display: inherit;	
+				display: inherit;
 			}
 		}
 
@@ -23,22 +23,19 @@ a {
 		}
 		.lp-archive-courses-sidebar{
 			width: 25%;
-			@media (max-width: 1440px) {
-				width: 33.33%;	
-			}
 			@media (max-width: 768px) {
-				width: 100%;	
+				width: 100%;
 			}
 		}
 		&:has(.lp-archive-courses-sidebar){
 			.learn-press-courses[data-layout=grid]{
 				li{
-					width: 33.33%;	
+					width: 33.33%;
 					@media (max-width: 1440px){
 						width: 50%;
 					}
 					@media (max-width: 768px) {
-						width: 100%;	
+						width: 100%;
 					}
 				}
 			}
