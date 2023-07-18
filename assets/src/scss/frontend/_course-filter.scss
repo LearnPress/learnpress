@@ -106,7 +106,7 @@
 					padding: 0 10px;
 					.item-course-suggest{
 						display: flex;
-						gap: 12px;
+						gap: 8px;
 						padding: 10px 0;
 						align-items: center;
 						border-bottom: 1px solid #f5f5f5;
@@ -116,6 +116,23 @@
 					}
 					.course-img{
 						width: 50px;
+						img{
+							width: 50px;
+							height: auto;
+							display: block;
+						}
+					}
+					a{
+						font-size: 0.875rem;
+						line-height: 1rem;
+						display: -webkit-box;
+						-webkit-line-clamp: 3;
+						-webkit-box-orient: vertical;  
+						overflow: hidden;
+						span{
+							font-size: 0.875rem;
+							line-height: 1rem;
+						}
 					}
 				}
 				.lp-courses-suggest-info{
