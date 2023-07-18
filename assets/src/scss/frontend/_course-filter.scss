@@ -26,9 +26,6 @@
 				align-items: center;
 				gap: 10px;
 				input{
-					&:after{
-						display: none;
-					}
 					&:focus{
 						outline: none;
 					}
@@ -102,7 +99,7 @@
 						line-height: 1rem;
 						display: -webkit-box;
 						-webkit-line-clamp: 3;
-						-webkit-box-orient: vertical;  
+						-webkit-box-orient: vertical;
 						overflow: hidden;
 						span{
 							font-size: 0.875rem;
