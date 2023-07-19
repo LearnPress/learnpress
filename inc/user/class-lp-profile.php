@@ -1156,24 +1156,51 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			return $uploaded_profile_src;
 		}
 
-		public function get_profile_picture( $type = '', $size = 96 ) {
-			$user = $this->get_user();
-			$args = learn_press_get_avatar_thumb_size();
+		/**
+		 * Get profile image of user.
+		 *
+		 * @param $type
+		 * @param $size
+		 *
+		 * @return string
+		 */
+		public function get_profile_picture( $type = '', $size = 96 ): string {
+			$avatar = '';
 
-			if ( $type == 'gravatar' ) {
-				remove_filter( 'pre_get_avatar', 'learn_press_pre_get_avatar_callback', 1 );
-			}
+			try {
+				$user = $this->get_user();
+				$args = [
+					'width'  => $size,
+					'height' => $size,
+				];
+				if ( 96 === $size ) {
+					$args = learn_press_get_avatar_thumb_size();
+				}
 
-			$profile_picture_src = $this->get_upload_profile_src();
+				$avatar_url = $this->get_upload_profile_src();
+				if ( ! empty( $avatar_url ) ) {
+					$user->set_data( 'profile_picture_src', $avatar_url );
+				} else {
+					$avatar_url = get_avatar_url( $user->get_id(), $args );
+					if ( empty( $avatar_url ) ) {
+						$avatar_url = LP_PLUGIN_URL . 'assets/images/avatar-default.png';
+					}
+				}
 
-			if ( $profile_picture_src ) {
-				$user->set_data( 'profile_picture_src', $profile_picture_src );
-			}
-
-			$avatar = get_avatar( $user->get_id(), $args['width'], '', esc_attr__( 'User Avatar', 'learnpress' ), $args );
-
-			if ( $type == 'gravatar' ) {
-				add_filter( 'pre_get_avatar', 'learn_press_pre_get_avatar_callback', 1, 5 );
+				$avatar = apply_filters(
+					'learn-press/user-profile/avatar',
+					sprintf(
+						'<img alt="%s" src="%s" height="%d" width="%d">',
+						esc_attr__( 'User Avatar', 'learnpress' ),
+						$avatar_url,
+						$args['width'] ?? 96,
+						$args['height'] ?? 96
+					),
+					$avatar_url,
+					$args
+				);
+			} catch ( Throwable $e ) {
+				error_log( $e->getMessage() );
 			}
 
 			return $avatar;
