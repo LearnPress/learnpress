@@ -16,32 +16,32 @@ if ( ! $course ) {
 	return;
 }
 /**
- * @var LP_User
+ * @var LP_User $instructor
  */
 $instructor = $course->get_instructor();
 ?>
 
 <div class="course-author">
 
-    <?php do_action( 'learn-press/before-single-course-instructor' ); ?>
+	<?php do_action( 'learn-press/before-single-course-instructor' ); ?>
 
-    <div class="lp-course-author">
-        <div class="course-author__pull-left">
-            <?php echo wp_kses_post( $instructor->get_profile_picture() ); ?>
+	<div class="lp-course-author">
+		<div class="course-author__pull-left">
+			<?php echo wp_kses_post( $instructor->get_profile_picture() ); ?>
 
-            <?php $socials = $instructor->get_profile_socials( $instructor->get_id() ); ?>
-            <?php if ( $socials ) : ?>
-            <div class="author-socials">
-                <?php echo wp_kses_post( implode( '', $socials ) ); ?>
-            </div>
-            <?php endif; ?>
-        </div>
+			<?php $socials = $instructor->get_profile_socials( $instructor->get_id() ); ?>
+			<?php if ( $socials ) : ?>
+			<div class="author-socials">
+				<?php echo wp_kses_post( implode( '', $socials ) ); ?>
+			</div>
+			<?php endif; ?>
+		</div>
 
-        <div class="course-author__pull-right">
-            <div class="author-title"><?php echo wp_kses_post( $course->get_instructor_html() ); ?></div>
-            <div class="author-description ">
+		<div class="course-author__pull-right">
+			<div class="author-title"><?php echo wp_kses_post( $course->get_instructor_html() ); ?></div>
+			<div class="author-description ">
 
-                <?php
+				<?php
 				/**
 				 * LP Hook
 				 *
@@ -59,9 +59,9 @@ $instructor = $course->get_instructor();
 				do_action( 'learn-press/end-course-instructor-description', $instructor );
 
 				?>
-            </div>
+			</div>
 
-            <?php
+			<?php
 			/**
 			 * LP Hook
 			 *
@@ -70,7 +70,7 @@ $instructor = $course->get_instructor();
 			do_action( 'learn-press/after-course-instructor-description', $instructor );
 			?>
 
-            <?php
+			<?php
 
 			/**
 			 * LP Hook
@@ -80,8 +80,8 @@ $instructor = $course->get_instructor();
 			do_action( 'learn-press/after-course-instructor-socials', $instructor );
 
 			?>
-        </div>
-    </div>
-    <?php do_action( 'learn-press/after-single-course-instructor' ); ?>
+		</div>
+	</div>
+	<?php do_action( 'learn-press/after-single-course-instructor' ); ?>
 
 </div>

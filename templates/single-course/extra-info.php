@@ -15,17 +15,17 @@ if ( ! isset( $title ) || ! isset( $items ) ) {
 ?>
 
 <div class="course-extra-box">
-    <h3 class="course-extra-box__title">
-        <?php echo esc_html( $title ); ?>
-    </h3>
+	<h3 class="course-extra-box__title">
+		<?php echo esc_html( $title ); ?>
+	</h3>
 
-    <div class="course-extra-box__content">
-        <div class="course-extra-box__content-inner">
-            <ul>
-                <?php foreach ( $items as $item ) : ?>
-                <li><?php echo wp_kses_post( $item ); ?></li>
-                <?php endforeach; ?>
-            </ul>
-        </div>
-    </div>
+	<div class="course-extra-box__content">
+		<div class="course-extra-box__content-inner">
+			<ul>
+				<?php foreach ( $items as $item ) : ?>
+				<li><?php echo wp_kses_post( $item ); ?></li>
+				<?php endforeach; ?>
+			</ul>
+		</div>
+	</div>
 </div>
