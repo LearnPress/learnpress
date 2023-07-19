@@ -108,6 +108,7 @@ window.lpCourseFilter = {
 	submit: ( form ) => {
 		const formData = new FormData( form ); // Create a FormData object from the form
 		const elListCourse = document.querySelector( '.learn-press-courses' );
+		const skeleton = document.querySelector( '.lp-archive-course-skeleton' );
 		const filterCourses = { paged: 1 };
 		for ( const pair of formData.entries() ) {
 			const key = pair[ 0 ];
@@ -117,7 +118,7 @@ window.lpCourseFilter = {
 			}
 		}
 
-		if ( lpGlobalSettings.is_course_archive && lpGlobalSettings.lpArchiveLoadAjax && elListCourse ) {
+		if ( lpGlobalSettings.is_course_archive && lpGlobalSettings.lpArchiveLoadAjax && elListCourse && skeleton ) {
 			lpArchiveRequestCourse( filterCourses );
 		} else {
 			const courseUrl = lpGlobalSettings.courses_url || '';

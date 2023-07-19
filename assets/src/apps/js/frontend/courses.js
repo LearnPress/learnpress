@@ -50,8 +50,10 @@ const jsHandlePageCourses = () => {
 	const lpArchiveCourse = () => {
 		// Case load ajax when reload enable.
 		if ( ! lpGlobalSettings.lpArchiveNoLoadAjaxFirst ) {
-			skeleton.insertAdjacentHTML( 'beforebegin', dataHtml );
-			skeleton.style.display = 'none';
+			if ( skeleton ) {
+				skeleton.insertAdjacentHTML('beforebegin', dataHtml);
+				skeleton.style.display = 'none';
+			}
 
 			const pagination = paginationHtml;
 			const paginationEle = document.querySelector( '.learn-press-pagination' );
@@ -129,8 +131,12 @@ const jsHandlePageCourses = () => {
 						}
 						elLi.remove();
 					} );
-					skeleton.insertAdjacentHTML( 'beforebegin', dataHtml );
-					skeleton.style.display = 'none';
+
+					if ( skeleton ) {
+						skeleton.insertAdjacentHTML( 'beforebegin', dataHtml );
+						skeleton.style.display = 'none';
+					}
+
 					//elListCourse.innerHTML = dataHtml;
 
 					const pagination = paginationHtml;
