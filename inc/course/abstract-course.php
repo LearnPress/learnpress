@@ -7,6 +7,8 @@
  * @version 4.0.0
  */
 
+use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
+
 defined( 'ABSPATH' ) || exit();
 
 if ( ! function_exists( 'LP_Abstract_Course' ) ) {
@@ -509,31 +511,41 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		}
 
 		/**
+		 * Get instructor html of course.
+		 *
 		 * @param int|bool $with_avatar
 		 * @param string   $link_class
 		 *
 		 * @return string
 		 */
-		public function get_instructor_html( $with_avatar = false, $link_class = '' ) {
-			$instructor = $this->get_instructor_name();
+		public function get_instructor_html( $with_avatar = false, $link_class = '' ): string {
+			$html = '';
 
-			$html = sprintf(
-				'<a href="%s"%s>%s<span>%s</span></a>',
-				learn_press_user_profile_link( get_post_field( 'post_author', $this->get_id() ) ),
-				$link_class ? sprintf( 'class="%s"', $link_class ) : '',
-				$with_avatar ? get_avatar(
-					$this->get_instructor( 'id' ),
-					$with_avatar === true ? 48 : $with_avatar
-				) : '',
-				$instructor
-			);
+			try {
+				$instructor = $this->get_author();
+				if ( ! $instructor ) {
+					return '';
+				}
 
-			return apply_filters(
-				'learn_press_course_instructor_html',
-				$html,
-				get_post_field( 'post_author', $this->get_id() ),
-				$this->get_id()
-			);
+				$singleInstructorTemplate = SingleInstructorTemplate::instance();
+
+				$html = apply_filters(
+					'learn-press/course/instructor-html',
+					sprintf(
+						'<a href="%s"%s>%s<span>%s</span></a>',
+						$instructor->get_url_instructor(),
+						$link_class ? sprintf( 'class="%s"', $link_class ) : '',
+						$with_avatar ? $instructor->get_profile_picture() : '',
+						$singleInstructorTemplate->html_display_name( $instructor )
+					),
+					$instructor,
+					$singleInstructorTemplate
+				);
+			} catch ( Throwable $e ) {
+				error_log( $e->getMessage() );
+			}
+
+			return $html;
 		}
 
 		/**
