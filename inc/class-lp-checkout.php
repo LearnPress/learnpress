@@ -90,6 +90,7 @@ class LP_Checkout {
 	/**
 	 * @var array
 	 * @since 4.0.0
+	 * @deprecated 4.2.3.3
 	 */
 	protected $checkout_form_data = array();
 
@@ -249,8 +250,8 @@ class LP_Checkout {
 					} else {
 						$user = wp_signon(
 							array(
-								'user_login'    => $this->checkout_form_data['reg_email'],
-								'user_password' => $this->checkout_form_data['reg_password'],
+								'user_login'    => $default_fields['reg_email'],
+								'user_password' => $default_fields['reg_password'],
 								'remember'      => 1,
 							),
 							is_ssl()
