@@ -7,7 +7,7 @@
         "dev": "wp-scripts start",
         "build": "wp-scripts build",
         "dev-build": "npm run build && gulp styles && npm run dev",
-		"release": "npm run build && npm run makepot && gulp styles && gulp release",
+        "release": "npm run build && npm run makepot && gulp styles && gulp release",
         "makepot:js": "wp-babel-makepot \"./assets/src/**/*.{js,jsx,ts,tsx}\" --ignore \"**/node_modules/**,**/test/**,**/*.d.ts\" --base \"./\" --dir \"./languages/strings\" --output \"./languages/learnpress-js.pot\"",
         "makepot:cli": "wp i18n make-pot . languages/learnpress.pot --skip-audit --merge=languages/learnpress-js.pot --exclude=\"test,releases,build,tools,dist,node_modules,vendor,wordpress,\" --headers='{\"last-translator\":\"admin@email.com\",\"Report-Msgid-Bugs-To\":\"https://github.com/LearnPress/learnpress/issues\"}'",
         "makepot": "npm rum makepot:js && npm run makepot:cli && gulp updatePot"
