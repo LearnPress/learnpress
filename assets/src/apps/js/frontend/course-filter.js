@@ -24,6 +24,9 @@ document.addEventListener( 'click', function( e ) {
 
 	// Show/hide search suggest result
 	window.lpCourseFilter.showHideSearchResult( target );
+
+	// Click field
+	window.lpCourseFilter.triggerInputChoice( target );
 } );
 
 // Search course suggest
@@ -161,5 +164,28 @@ window.lpCourseFilter = {
 		} else {
 			elResult.style.display = 'block';
 		}
+	},
+	triggerInputChoice: ( target ) => {
+		if ( target.tagName === 'INPUT' ) {
+			return;
+		}
+
+		// Choice field
+		let elChoice;
+
+		if ( target.classList.contains( 'lp-course-filter__field' ) ) {
+			elChoice = target;
+		}
+
+		const parent = target.closest( '.lp-course-filter__field' );
+		if ( parent ) {
+			elChoice = parent;
+		}
+
+		if ( ! elChoice ) {
+			return;
+		}
+
+		elChoice.querySelector( 'input' ).click();
 	},
 };
