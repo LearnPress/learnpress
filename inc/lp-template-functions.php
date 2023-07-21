@@ -1795,7 +1795,7 @@ function lp_archive_skeleton_get_args(): array {
 	$args = [];
 
 	if ( ! empty( $_GET ) ) {
-		$args = apply_filters( 'lp/template/archive-course/skeleton/args', $_GET );
+		$args = $_GET;
 	}
 
 	global $wp_query;
@@ -1818,5 +1818,5 @@ function lp_archive_skeleton_get_args(): array {
 		}
 	}*/
 
-	return $args;
+	return apply_filters( 'lp/template/archive-course/skeleton/args', $args );
 }
