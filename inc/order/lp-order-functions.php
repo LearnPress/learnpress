@@ -805,7 +805,7 @@ if ( ! function_exists( 'learn_press_cancel_order_process' ) ) {
 		}
 
 		if ( ! $url ) {
-			$url = learn_press_user_profile_link( $user->get_id(), LP_Settings::instance()->get( 'profile_endpoints.profile-orders', 'orders' ) );
+			$url = learn_press_user_profile_link( $user->get_id(), LP_Settings::instance()->get( 'profile_endpoints.orders', 'orders' ) );
 		}
 		wp_safe_redirect( $url );
 		exit();

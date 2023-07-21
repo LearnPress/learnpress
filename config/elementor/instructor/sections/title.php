@@ -1,6 +1,6 @@
 <?php
 /**
- * Elementor Controls for widget Become a teacher settings.
+ * Elementor Controls for widget Instructor Display Name settings.
  *
  * @since 4.2.3
  * @version 1.0.0
@@ -62,8 +62,8 @@ $content_fields = array_merge(
 // Fields tab style
 $style_fields = array_merge(
 	LPElementorControls::add_fields_in_section(
-		'title',
-		esc_html__( 'Title Course', 'learnpress' ),
+		'instructor_name',
+		esc_html__( 'Instructor name', 'learnpress' ),
 		Controls_Manager::TAB_STYLE,
 		LPElementorControls::add_controls_style_text(
 			'title',

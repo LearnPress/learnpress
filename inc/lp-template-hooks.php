@@ -523,7 +523,7 @@ add_action( 'learn-press/after-checkout-form', LearnPress::instance()->template(
 
 // ******************************************************************************************************************* //
 
-add_action( 'learn-press/content-item-summary-class', 'learn_press_content_item_summary_classes', 15 );
+//add_action( 'learn-press/content-item-summary-class', 'learn_press_content_item_summary_classes', 15 );
 add_action(
 	'learn-press/before-content-item-summary/lp_quiz',
 	LearnPress::instance()->template( 'course' )->callback( 'content-quiz/title.php' ),

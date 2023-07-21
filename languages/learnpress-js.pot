@@ -44,7 +44,6 @@ msgid "Tip"
 msgstr ""
 
 #: assets/src/apps/js/admin/react/question/index.js:313
-#: assets/src/apps/js/frontend/profile/avatar.js:201
 msgid "Remove"
 msgstr ""
 
@@ -67,10 +66,15 @@ msgid "Item Curriculum Course"
 msgstr ""
 
 #: assets/src/apps/js/blocks/item-curriculum-course/edit.js:17
+#: assets/src/apps/js/blocks/item-example/edit.js:17
 msgid ""
 "This is an editor placeholder for the Item Curriculum Course page. Content "
 "will render content of single item curriculum course. Should be not remove "
 "it"
+msgstr ""
+
+#: assets/src/apps/js/blocks/item-example/edit.js:13
+msgid "Item Example"
 msgstr ""
 
 #: assets/src/apps/js/blocks/single-course/edit.js:13

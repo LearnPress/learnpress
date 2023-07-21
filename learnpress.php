@@ -4,10 +4,10 @@
  * Plugin URI: http://thimpress.com/learnpress
  * Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
  * Author: ThimPress
- * Version: 4.2.3-beta-4
+ * Version: 4.2.3.3-beta-1
  * Author URI: http://thimpress.com
  * Requires at least: 5.8
- * Tested up to: 6.2
+ * Tested up to: 6.2.2
  * Requires PHP: 7.0
  * Text Domain: learnpress
  * Domain Path: /languages/
@@ -20,14 +20,18 @@
  */
 
 use LearnPress\ExternalPlugin\Elementor\LPElementor;
+use LearnPress\Shortcodes\Course\FilterCourseShortcode;
 use LearnPress\Shortcodes\ListInstructorsShortcode;
 use LearnPress\Shortcodes\SingleInstructorShortcode;
 use LearnPress\Shortcodes\CourseMaterialShortcode;
+use LearnPress\TemplateHooks\Course\FilterCourseTemplate;
+use LearnPress\TemplateHooks\Course\ListCoursesTemplate;
 use LearnPress\TemplateHooks\Instructor\ListInstructorsTemplate;
 use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileInstructorStatisticsTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileStudentStatisticsTemplate;
 use LearnPress\TemplateHooks\Course\CourseMaterialTemplate;
+use LearnPress\Widgets\LPRegisterWidget;
 
 defined( 'ABSPATH' ) || exit();
 
@@ -277,10 +281,12 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			//require_once 'inc/Helper/Template.php';
 
 			// Template Hooks.
+			ListCoursesTemplate::instance();
 			ListInstructorsTemplate::instance();
 			SingleInstructorTemplate::instance();
 			ProfileInstructorStatisticsTemplate::instance();
 			ProfileStudentStatisticsTemplate::instance();
+			FilterCourseTemplate::instance();
 
 			CourseMaterialTemplate::instance();
 
@@ -307,6 +313,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			// Background processes.
 			require_once 'inc/libraries/wp-background-process/wp-background-processing.php';
 			require_once 'inc/background-process/abstract-lp-async-request.php';
+			//require_once 'inc/background-process/abstract-lp-async-task.php';
 			require_once 'inc/background-process/class-lp-background-single-course.php';
 			require_once 'inc/background-process/class-lp-background-single-email.php';
 			require_once 'inc/background-process/class-lp-background-thim-cache.php';
@@ -396,6 +403,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			SingleInstructorShortcode::instance();
 			ListInstructorsShortcode::instance();
 			CourseMaterialShortcode::instance();
+			FilterCourseShortcode::instance();
 			require_once 'inc/class-lp-shortcodes.php';
 
 			// include template functions .
@@ -420,18 +428,12 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			/** Jwt */
 			include_once 'inc/jwt/class-jwt-auth.php';
 
+			LPRegisterWidget::instance();
 			require_once 'inc/class-lp-widget.php';
 			require_once 'inc/lp-widget-functions.php';
 
 			// For plugin Elementor
 			if ( defined( 'ELEMENTOR_VERSION' ) ) {
-				// Disable auto shortcode of LP when activated Elementor.
-				add_action(
-					'learn-press/auto-shortcode',
-					function () {
-						return false;
-					}
-				);
 				LPElementor::instance();
 			}
 

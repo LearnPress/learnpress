@@ -96,8 +96,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				'advanced-list'                     => new LP_Asset_Key( $this->url( self::$_folder_source . 'js/admin/share/advanced-list' . self::$_min_assets . '.js' ) ),
 				'learn-press-global'                => new LP_Asset_Key(
 					$this->url( self::$_folder_source . 'js/global' . self::$_min_assets . '.js' ),
-					array( 'jquery', 'underscore', 'utils', 'jquery-ui-sortable', 'select2' ),
-					array( 'learnpress' )
+					array( 'jquery', 'underscore', 'utils', 'jquery-ui-sortable', 'select2' )
 				),
 				'lp-utils'                          => new LP_Asset_Key(
 					$this->url( 'js/dist/utils' . self::$_min_assets . '.js' ),

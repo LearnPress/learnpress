@@ -16,14 +16,14 @@ if ( ! isset( $user ) || ! isset( $course_ids ) || ! isset( $current_page ) || !
 ?>
 
 <?php if ( $current_page === 1 ) : ?>
-<div class="lp_profile_course_progress">
-	<div class="lp_profile_course_progress__item lp_profile_course_progress__header">
-		<div></div>
-		<div><?php esc_html_e( 'Name', 'learnpress' ); ?></div>
-		<div><?php esc_html_e( 'Result', 'learnpress' ); ?></div>
-		<div><?php esc_html_e( 'Expiration time', 'learnpress' ); ?></div>
-		<div><?php esc_html_e( 'End time', 'learnpress' ); ?></div>
-	</div>
+<table class="lp_profile_course_progress">
+	<tr class="lp_profile_course_progress__item lp_profile_course_progress__header">
+		<th></th>
+		<th><?php esc_html_e( 'Name', 'learnpress' ); ?></th>
+		<th><?php esc_html_e( 'Result', 'learnpress' ); ?></th>
+		<th><?php esc_html_e( 'Expiration time', 'learnpress' ); ?></th>
+		<th><?php esc_html_e( 'End time', 'learnpress' ); ?></th>
+	</tr>
 	<?php endif; ?>
 
 	<?php
@@ -44,17 +44,19 @@ if ( ! isset( $user ) || ! isset( $course_ids ) || ! isset( $current_page ) || !
 		}
 		$course_result = $course_data->get_result();
 		?>
-		<div class="lp_profile_course_progress__item">
-			<div>
-				<a href="<?php the_permalink(); ?>" title="<?php the_title(); ?>">
-					<?php echo wp_kses_post( $course->get_image( 'course_thumbnail' ) ); ?>
-				</a>
-			</div>
-			<div><a href="<?php the_permalink(); ?>" title="<?php the_title(); ?>"><?php the_title(); ?></a></div>
-			<div><?php echo esc_html( $course_result['result'] ); ?>%</div>
-			<div><?php echo ! empty( $course_data->get_expiration_time() ) ? $course_data->get_expiration_time() : '-'; ?></div>
-			<div><?php echo ! empty( $course_data->get_end_time() ) ? $course_data->get_end_time() : '-'; ?></div>
-		</div>
+	<tr class="lp_profile_course_progress__item">
+		<td>
+			<a href="<?php the_permalink(); ?>" title="<?php the_title(); ?>">
+				<?php echo wp_kses_post( $course->get_image( 'course_thumbnail' ) ); ?>
+			</a>
+		</td>
+		<td><a href="<?php the_permalink(); ?>" title="<?php the_title(); ?>"><?php the_title(); ?></a></td>
+		<td><?php echo esc_html( $course_result['result'] ); ?>%</td>
+		<td>
+			<?php echo ! empty( $course_data->get_expiration_time() ) ? $course_data->get_expiration_time() : '-'; ?>
+		</td>
+		<td><?php echo ! empty( $course_data->get_end_time() ) ? $course_data->get_end_time() : '-'; ?></td>
+	</tr>
 		<?php
 	}
 
@@ -62,12 +64,12 @@ if ( ! isset( $user ) || ! isset( $course_ids ) || ! isset( $current_page ) || !
 	?>
 
 	<?php if ( $current_page === 1 ) : ?>
-</div>
+</table>
 <?php endif; ?>
 
 <?php if ( $num_pages > 1 && $current_page < $num_pages && $current_page === 1 ) : ?>
-	<div class="lp_profile_course_progress__nav">
-		<button data-paged="<?php echo absint( $current_page + 1 ); ?>"
-				data-number="<?php echo absint( $num_pages ); ?>"><?php esc_html_e( 'View more', 'learnpress' ); ?></button>
-	</div>
+<div class="lp_profile_course_progress__nav">
+	<button data-paged="<?php echo absint( $current_page + 1 ); ?>"
+		data-number="<?php echo absint( $num_pages ); ?>"><?php esc_html_e( 'View more', 'learnpress' ); ?></button>
+</div>
 <?php endif; ?>

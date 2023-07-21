@@ -54,7 +54,7 @@ class LP_Request {
 	 * @return array|float|int|string
 	 */
 	public static function get_param( string $key, $default = '', string $sanitize_type = 'text', string $method = '' ) {
-		switch ( $method ) {
+		switch ( strtolower( $method ) ) {
 			case 'post':
 				$values = $_POST ?? [];
 				break;

@@ -62,7 +62,7 @@ class LP_REST_Instructor_Controller extends LP_Abstract_REST_Controller {
 					'paged'    => $params['paged'] ?? 1,
 					'orderby'  => $params['orderby'] ?? 'display_name',
 					'order'    => $params['order'] ?? 'asc',
-					'role__in' => [ 'lp_teacher', 'administrator' ],
+					'role__in' => [ LP_TEACHER_ROLE, ADMIN_ROLE ],
 				)
 			);
 

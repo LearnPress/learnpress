@@ -4,16 +4,49 @@
  * @since 4.2.3
  * @version 1.0.0
  */
+// fix container for theme premium
 
+
+body {
+	.entry-content{
+		&.has-global-padding{
+			padding-left: 0;
+			padding-right: 0;
+		}
+	}
+	.wp-site-blocks{
+		padding-left: 0;
+		padding-right: 0;
+	}
+}
+.learnpress-v4 {
+	.lp-content-area {
+		--lp-cotainer-max-with: inherit;
+		--lp-cotainer-padding: 0;
+	}
+	.lp-single-course{
+		.lp-content-area {
+			padding-right: 15px;
+			padding-left: 15px;
+		}
+	}
+}
 .lp-list-instructors {
+	--lp-instructor-item-padding: 20px;
+	--lp-instructor-border-color: #c3c4c7;
+	--lp-instructor-minmax-column: 250px;
+
 	.ul-list-instructors {
 		display: grid;
-		grid-template-columns: repeat(4, 1fr);
-		gap: 20px;
+		//grid-template-columns: repeat(4, 1fr);
+		grid-template-columns: repeat( auto-fill, minmax(var(--lp-instructor-minmax-column), 1fr) );
+		gap: 30px;
 		padding: 0;
+		margin: 0 0 30px 0;
 		list-style: none;
+		font-size: 1rem;
 
-		>ul.lp-skeleton-animation {
+		> ul.lp-skeleton-animation {
 			grid-column: span 4;
 		}
 
@@ -22,69 +55,49 @@
 		}
 
 		li.item-instructor {
-			border: 1px solid rgba(0, 0, 0, 0.5);
-			border-radius: 5px;
-			padding: 20px;
+			border: 1px solid var(--lp-instructor-border-color);
+			padding: var(--lp-instructor-item-padding);
 
 			.instructor-display-name {
 				display: block;
 				text-align: center;
-				margin: 20px 0;
-				font-size: 1em;
+				margin: var(--lp-instructor-item-padding) 0;
+				font-size: 1.2em;
 				font-weight: bold;
 			}
 
 			.instructor-avatar img {
-				border-radius: 5px;
 				width: 100%;
 			}
 
 			.instructor-info {
 				display: flex;
-				//color: rgba(0, 0, 0, 0.5);
-
-				.instructor-count-courses {
+				column-gap: 10px;
+				> div {
 					flex: 1;
 					text-align: right;
-					font-size: 0.8em;
 					display: flex;
 					align-items: center;
+					column-gap: 10px;
 
 					span {
 						display: inline-flex;
-
-						&.instructor-total-courses {
-							margin-left: 10px;
-						}
+						white-space: nowrap;
 					}
 				}
 
 				.instructor-count-students {
-					flex: 1;
-					text-align: right;
-					font-size: 0.8em;
-					display: flex;
 					justify-content: right;
-					align-items: center;
-
-					span {
-						display: inline-flex;
-
-						&.instructor-total-students {
-							margin-left: 10px;
-						}
-					}
 				}
 			}
 
 			.instructor-btn-view {
 				display: block;
-				margin: 20px auto 0;
+				margin: var(--lp-instructor-item-padding) auto 0;
 				text-align: center;
 				background: #D9D9D9;
 				text-decoration: none;
 				border-radius: 5px;
-				font-size: 0.8em;
 				padding: 10px 0;
 				color: rgba(0, 0, 0, 0.5);
 				font-weight: 700;
@@ -96,10 +109,6 @@
 			}
 		}
 
-
-		@media (max-width: 900px) {
-			grid-template-columns: repeat( auto-fit, minmax( 280px, 1fr ) );
-		}
 	}
 }
 

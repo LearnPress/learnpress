@@ -15,7 +15,7 @@
 				display: inline-block;
 				padding: 3px 6px;
 				color: #fff;
-				font-size: 12px;
+				font-size: 0.75rem;
 
 				@include border-radius(4px);
 
@@ -69,7 +69,7 @@
 		.origin-price {
 			margin-right: 10px;
 			color: #f00;
-			font-size: 12px;
+			font-size: 0.75rem;
 			text-decoration: line-through;
 		}
 	}
@@ -131,14 +131,14 @@
 	.for-plugin-page {
 		margin: 0;
 		color: #f00;
-		font-size: 11px;
+		font-size: 0.6875rem;
 	}
 }
 
 .post-state {
 
 	.post-author {
-		font-size: 14px;
+		font-size: 0.875rem;
 		font-weight: normal;
 		font-style: italic;
 	}
@@ -155,6 +155,6 @@
 	.button {
 		float: right;
 		height: 24px;
-		line-height: 22px;
+		line-height: 1.375rem;
 	}
 }

@@ -1412,7 +1412,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return bool
 		 */
 		public function is_guest(): bool {
-			return ! $this->get_id() || ! get_user_by( 'id', $this->get_id() );
+			return $this instanceof LP_User_Guest;
 		}
 
 		/**
@@ -1454,7 +1454,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return string
 		 */
 		public function get_description(): string {
-			return $this->get_data( 'description', '' );
+			return wpautop( $this->get_data( 'description', '' ) );
 		}
 
 		/**

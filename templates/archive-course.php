@@ -4,7 +4,7 @@
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 4.0.0
+ * @version 4.0.1
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -29,6 +29,7 @@ $page_title = learn_press_page_title( false );
 ?>
 
 <div class="lp-content-area">
+	<div class="lp-main-content">
 	<?php if ( $page_title ) : ?>
 		<header class="learn-press-courses-header">
 			<h1><?php echo wp_kses_post( $page_title ); ?></h1>
@@ -46,7 +47,7 @@ $page_title = learn_press_page_title( false );
 
 	if ( LP_Settings_Courses::is_ajax_load_courses() && ! LP_Settings_Courses::is_no_load_ajax_first_courses() ) {
 		echo '<div class="lp-archive-course-skeleton" style="width:100%">';
-		echo lp_skeleton_animation_html( 10, 'random', 'height:20px', 'width:100%' );
+		//lp_skeleton_animation_html( 10, 'random', 'height:20px', 'width:100%' );
 		echo '</div>';
 	} else {
 		if ( have_posts() ) {
@@ -62,30 +63,31 @@ $page_title = learn_press_page_title( false );
 
 		if ( LP_Settings_Courses::is_ajax_load_courses() ) {
 			echo '<div class="lp-archive-course-skeleton no-first-load-ajax" style="width:100%; display: none">';
-			echo lp_skeleton_animation_html( 10, 'random', 'height:20px', 'width:100%' );
+			//lp_skeleton_animation_html( 10, 'random', 'height:20px', 'width:100%' );
 			echo '</div>';
 		}
 	}
 
 	LearnPress::instance()->template( 'course' )->end_courses_loop();
 	do_action( 'learn-press/after-courses-loop' );
-
-
-	/**
-	 * LP Hook
-	 */
-	do_action( 'learn-press/after-main-content' );
-
+	?>
+	</div>
+	<?php
 	/**
 	 * LP Hook
 	 *
 	 * @since 4.0.0
 	 */
-	do_action( 'learn-press/sidebar' );
+	do_action( 'learn-press/archive-course/sidebar' );
 	?>
 </div>
 
 <?php
+/**
+ * LP Hook
+ */
+do_action( 'learn-press/after-main-content' );
+
 /**
  * @since 4.0.0
  *

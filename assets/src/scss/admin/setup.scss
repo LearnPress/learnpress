@@ -32,20 +32,20 @@
     }
 
     h2 {
-        font-size: 24px;
+        font-size: 1.5rem;
         border-bottom: 1px solid #EEE;
         padding-bottom: 20px;
     }
 
     p {
         &.large-text {
-            font-size: 16px;
+            font-size: 1rem;
             margin: 0 0 20px 0;
         }
     }
 
     a {
-        font-size: 13px;
+        font-size: 0.8125rem;
     }
 
     .logo {
@@ -66,7 +66,7 @@
         position: relative;
 
         .description {
-            font-size: 13px;
+            font-size: 0.8125rem;
             font-style: italic;
         }
 
@@ -233,7 +233,7 @@
 
     table {
         width: 100%;
-        font-size: 14px;
+        font-size: 0.875rem;
 
         th, td {
             padding: 8px 8px 8px 0;
@@ -287,9 +287,9 @@
             width: 300px;
             display: inline-block;
             margin-bottom: 20px;
-            font-size: 18px;
+            font-size: 1.125rem;
             height: 40px;
-            line-height: 40px;
+            line-height: 2.5rem;
             color: #777;
             text-align: center;
 
@@ -308,7 +308,7 @@
         padding: 15px;
         border-left: 3px solid #05B3FF;
         margin: 0 0 20px 0;
-        font-size: 14px;
+        font-size: 0.875rem;
         border-radius: 4px;
 
         &.error {
@@ -318,7 +318,7 @@
     }
 
     #preview-price {
-        font-size: 18px;
+        font-size: 1.125rem;
         color: #FF0000;
     }
 

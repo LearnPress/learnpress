@@ -42,10 +42,11 @@ class LP_Meta_Box_WP_Editor_Field extends LP_Meta_Box_Field {
 
 		echo wp_editor(
 			$value,
-			$this->id,
+			sanitize_key( $this->id ),
 			array(
 				'textarea_rows' => 10,
 				'editor_class'  => 'lp-meta-box__wp-editor__textarea',
+				'textarea_name' => $this->id,
 			)
 		);
 

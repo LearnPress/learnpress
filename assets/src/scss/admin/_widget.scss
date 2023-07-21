@@ -16,7 +16,7 @@
 		max-height: 148px;
 		margin-top: -1px;
 		background: #eee;
-		font-size: 13px;
+		font-size: 0.8125rem;
 	}
 
 	&__item {
@@ -40,7 +40,19 @@
 .widget {
 
 	.select2-selection__rendered {
-		font-size: 13px;
+		font-size: 0.8125rem;
+	}
+}
+
+.sortable-wrapper{
+	margin: 1em 0;
+
+	.sortable{
+		margin: 0.5em 0;
+
+		.dashicons-move{
+			cursor: move;
+		}
 	}
 }
 
@@ -53,4 +65,27 @@
 	to {
 		transform: rotate(360deg);
 	}
+}
+
+// Course filter style admin
+.sortable-wrapper{
+	>label{	
+		font-weight: 600;
+		font-size: 14px;	
+	}
+}
+.sortable__item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+	&:last-child{
+		margin-bottom: 0;
+	}
+}
+.widget-content p {
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
 }

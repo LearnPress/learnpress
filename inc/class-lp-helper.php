@@ -277,7 +277,7 @@ class LP_Helper {
 
 			if ( preg_match( '#^learn_press_single_instructor_page_id.*#', $key_option ) ) {
 				$args['post_content'] = '<!-- wp:shortcode -->[learn_press_single_instructor]<!-- /wp:shortcode -->';
-			} elseif ( preg_match( '#^learn_press_instructors_id.*#', $key_option ) ) {
+			} elseif ( preg_match( '#^learn_press_instructors_page_id.*#', $key_option ) ) {
 				$args['post_content'] = '<!-- wp:shortcode -->[learn_press_instructors]<!-- /wp:shortcode -->';
 			} elseif ( preg_match( '#^learn_press_profile_page_id.*#', $key_option ) ) {
 				$args['post_content'] = '<!-- wp:shortcode -->[learn_press_profile]<!-- /wp:shortcode -->';

@@ -294,27 +294,28 @@ class LPElementorControls {
 	public static function add_controls_style_text( string $prefix_name, string $selector,
 		array $include = [], array $exclude = [] ): array {
 		$fields = [
-			"{$prefix_name}_text_display"              => self::add_control_type_select(
+			"{$prefix_name}_text_display"          => self::add_control_type(
 				"{$prefix_name}_text_display",
 				esc_html__( 'Display', 'learnpress' ),
+				'inline-block',
+				Controls_Manager::CHOOSE,
 				[
-					'block'        => esc_html__( 'Block', 'learnpress' ),
-					'inline-block' => esc_html__( 'Inline Block', 'learnpress' ),
-					'inline'       => esc_html__( 'Inline', 'learnpress' ),
-					'flex'         => esc_html__( 'Flex', 'learnpress' ),
-					'inline-flex'  => esc_html__( 'Inline Flex', 'learnpress' ),
-					'grid'         => esc_html__( 'Grid', 'learnpress' ),
-					'inline-grid'  => esc_html__( 'Inline Grid', 'learnpress' ),
-					'none'         => esc_html__( 'None', 'learnpress' ),
-				],
-				'inline',
-				[
+					'options'   => [
+						'block'        => array(
+							'title' => esc_html__( 'Block', 'thim-elementor-kit' ),
+							'icon'  => 'eicon-editor-list-ul',
+						),
+						'inline-block' => array(
+							'title' => esc_html__( 'Inline', 'thim-elementor-kit' ),
+							'icon'  => 'eicon-ellipsis-h',
+						),
+					],
 					'selectors' => [
 						"{{WRAPPER}} $selector" => 'display: {{VALUE}}',
 					],
 				]
 			),
-			"{$prefix_name}_text_margin"               => self::add_responsive_control_type(
+			"{$prefix_name}_text_margin"           => self::add_responsive_control_type(
 				"{$prefix_name}_text_margin",
 				esc_html__( 'Margin', 'learnpress' ),
 				[],
@@ -326,7 +327,7 @@ class LPElementorControls {
 					),
 				]
 			),
-			"{$prefix_name}_text_padding"              => self::add_responsive_control_type(
+			"{$prefix_name}_text_padding"          => self::add_responsive_control_type(
 				"{$prefix_name}_text_padding",
 				esc_html__( 'Padding', 'learnpress' ),
 				[],
@@ -338,33 +339,34 @@ class LPElementorControls {
 					),
 				]
 			),
-			"{$prefix_name}_text_typography"           => self::add_group_control_type(
+			"{$prefix_name}_text_typography"       => self::add_group_control_type(
 				"{$prefix_name}_typography",
 				Group_Control_Typography::get_type(),
 				"{{WRAPPER}} $selector"
 			),
-			"{$prefix_name}_text_shadow"               => self::add_group_control_type(
+			"{$prefix_name}_text_shadow"           => self::add_group_control_type(
 				"{$prefix_name}_shadow",
 				Group_Control_Text_Shadow::get_type(),
 				"{{WRAPPER}} $selector"
 			),
-			"{$prefix_name}_text_btn_color"            => self::add_control_type_color(
-				"{$prefix_name}_btn_color",
+
+			"{$prefix_name}_text_color"            => self::add_control_type_color(
+				"{$prefix_name}_text_color",
 				esc_html__( 'Text Color', 'learnpress' ),
 				[ "{{WRAPPER}} $selector" => 'color: {{VALUE}}' ]
 			),
-			"{$prefix_name}_text_btn_color_hover"      => self::add_control_type_color(
-				"{$prefix_name}_btn_color_hover",
+			"{$prefix_name}_text_color_hover"      => self::add_control_type_color(
+				"{$prefix_name}_text_color_hover",
 				esc_html__( 'Text Color Hover', 'learnpress' ),
 				[ "{{WRAPPER}} $selector:hover" => 'color: {{VALUE}}' ]
 			),
-			"{$prefix_name}_text_btn_background"       => self::add_control_type_color(
-				"{$prefix_name}_btn_background",
+			"{$prefix_name}_text_background"       => self::add_control_type_color(
+				"{$prefix_name}_text_background",
 				esc_html__( 'Background Color', 'learnpress' ),
 				[ "{{WRAPPER}} $selector" => 'background: {{VALUE}}' ]
 			),
-			"{$prefix_name}_text_btn_background_hover" => self::add_control_type_color(
-				"{$prefix_name}_btn_background_hover",
+			"{$prefix_name}_text_background_hover" => self::add_control_type_color(
+				"{$prefix_name}_text_background_hover",
 				esc_html__( 'Background Color Hover', 'learnpress' ),
 				[ "{{WRAPPER}} $selector:hover" => 'background: {{VALUE}}' ]
 			),
@@ -426,18 +428,20 @@ class LPElementorControls {
 		array $include = [], array $exclude = [] ): array {
 
 		$fields = [
-			"{$prefix_name}_img_show"          => self::add_responsive_control_type(
+			"{$prefix_name}_img_show"          => self::add_control_type(
 				"{$prefix_name}_img_show",
-				esc_html__( 'Hide Image', 'learnpress' ),
+				esc_html__( 'Image', 'learnpress' ),
 				'',
 				Controls_Manager::SWITCHER,
 				[
 					'selectors'    => [ "{{WRAPPER}} $selector" => 'display: {{VALUE}}' ],
 					'return_value' => 'none',
+					'label_on'     => esc_html__( 'Hide', 'learnpress' ),
+					'label_off'    => esc_html__( 'Show', 'learnpress' ),
 				]
 			),
 			"{$prefix_name}_img_margin"        => self::add_responsive_control_type(
-				"{$prefix_name}_text_margin",
+				"{$prefix_name}_img_margin",
 				esc_html__( 'Margin', 'learnpress' ),
 				[],
 				Controls_Manager::DIMENSIONS,
@@ -449,7 +453,7 @@ class LPElementorControls {
 				]
 			),
 			"{$prefix_name}_img_padding"       => self::add_responsive_control_type(
-				"{$prefix_name}_text_padding",
+				"{$prefix_name}_img_padding",
 				esc_html__( 'Padding', 'learnpress' ),
 				[],
 				Controls_Manager::DIMENSIONS,
@@ -461,12 +465,12 @@ class LPElementorControls {
 				]
 			),
 			"{$prefix_name}_img_border"        => self::add_group_control_type(
-				"{$prefix_name}_btn_border",
+				"{$prefix_name}_img_border",
 				Group_Control_Border::get_type(),
 				"{{WRAPPER}} $selector"
 			),
 			"{$prefix_name}_img_border_radius" => self::add_control_type(
-				"{$prefix_name}_btn_border_radius",
+				"{$prefix_name}_img_border_radius",
 				esc_html__( 'Border Radius', 'learnpress' ),
 				[],
 				Controls_Manager::DIMENSIONS,

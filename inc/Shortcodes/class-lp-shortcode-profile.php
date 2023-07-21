@@ -84,9 +84,7 @@ if ( ! class_exists( 'LP_Shortcode_Profile' ) ) {
 					learn_press_set_message( $messages );
 					learn_press_show_message();
 				} else {
-					//learn_press_print_messages();
 					learn_press_show_message();
-					//learn_press_get_template( 'pages/profile.php', array( 'profile' => $profile ) );
 					Template::instance()->get_frontend_template( 'pages/profile.php', compact( 'profile' ) );
 				}
 

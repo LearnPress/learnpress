@@ -300,5 +300,5 @@ if ( ! function_exists( 'lp_remove_admin_warning' ) ) {
 		wp_die();
 	}
 }
-add_action( 'wp_ajax_lp_remove_admin_warning', 'lp_remove_admin_warning' );
+//add_action( 'wp_ajax_lp_remove_admin_warning', 'lp_remove_admin_warning' );
 

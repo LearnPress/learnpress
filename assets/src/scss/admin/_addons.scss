@@ -53,7 +53,7 @@
 			span.dashicons {
 				align-items: center;
 				display: none;
-				font-size: 18px;
+				font-size: 1.125rem;
 				width: auto;
 				height: auto;
 				animation: rotation 2s infinite linear;
@@ -283,8 +283,8 @@
 				opacity: 1;
 				padding-left: 6px;
 				padding-right: 6px;
-				font-size: 14px;
-				line-height: 18px;
+				font-size: 0.875rem;
+				line-height: 1.125rem;
 			}
 
 			.toggle-on {
@@ -348,7 +348,7 @@
 		border-bottom: none;
 		margin-left: 0;
 		padding: 5px 10px;
-		font-size: 14px;
+		font-size: 0.875rem;
 		line-height: 1.71428571;
 		font-weight: 600;
 		background: #dcdcde;
@@ -376,7 +376,7 @@
 		border-radius: 9px;
 		background-color: #d63638;
 		color: #fff;
-		font-size: 11px;
+		font-size: 0.6875rem;
 		line-height: 1.6;
 		text-align: center;
 	}

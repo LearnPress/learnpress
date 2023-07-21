@@ -28,6 +28,15 @@ class LP_Reset_Data {
 	}
 
 	public static function ajax_reset_user_item() {
+		if ( ! current_user_can( ADMIN_ROLE ) ) {
+			return;
+		}
+
+		$nonce = LP_Request::get_param( 'nonce' );
+		if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
+			die( 'Nonce is invalid!' );
+		}
+
 		$user_id = LP_Request::get_string( 'user_id' );
 		$item_id = LP_Request::get_int( 'item_id' );
 
@@ -108,12 +117,17 @@ class LP_Reset_Data {
 		die();
 	}
 
-	public static function remove_item_data() {
-
-	}
-
 	public static function search_users() {
 		global $wpdb;
+
+		$nonce = LP_Request::get_param( 'nonce' );
+		if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
+			die( 'Nonce is invalid!' );
+		}
+
+		if ( ! current_user_can( 'administrator' ) ) {
+			return;
+		}
 
 		$s     = LP_Request::get_string( 's' );
 		$query = $wpdb->prepare(
@@ -185,6 +199,12 @@ class LP_Reset_Data {
 		if ( ! current_user_can( 'administrator' ) ) {
 			return;
 		}
+
+		$nonce = LP_Request::get_param( 'nonce' );
+		if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
+			die( 'Nonce is invalid!' );
+		}
+
 		if ( $course_id && $object_reset == 'single' ) {
 			$user_course_data = $user->get_course_data( $course_id );
 			if ( ! $user_course_data ) {

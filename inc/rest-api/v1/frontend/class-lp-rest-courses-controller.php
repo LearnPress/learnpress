@@ -84,9 +84,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'continue_course' ),
-					'permission_callback' => function () {
-						return is_user_logged_in();
-					},
+					'permission_callback' => '__return_true',
 				),
 			),
 		);
@@ -117,7 +115,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 		try {
 			$filter             = new LP_Course_Filter();
 			$filter->page       = absint( $request['paged'] ?? 1 );
-			$filter->post_title = LP_Helper::sanitize_params_submitted( $request['c_search'] ?? '' );
+			$filter->post_title = LP_Helper::sanitize_params_submitted( trim( $request['c_search'] ?? '' ) );
 			$fields_str         = LP_Helper::sanitize_params_submitted( urldecode( $request['c_fields'] ?? '' ) );
 			$fields_exclude_str = LP_Helper::sanitize_params_submitted( urldecode( $request['c_exclude_fields'] ?? '' ) );
 			if ( ! empty( $fields_str ) ) {
@@ -137,10 +135,31 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				$filter->post_authors = $author_ids;
 			}
 
+			// Filter on Courses
+			if ( ! empty( $request['sort_by'] ) ) {
+				$filter->sort_by[] = $request['sort_by'];
+			}
+
+			// Sort by level
+			$levels_str = LP_Helper::sanitize_params_submitted( urldecode( $request['c_level'] ?? '' ) );
+			if ( ! empty( $levels_str ) ) {
+				$levels_str     = str_replace( 'all', '', $levels_str );
+				$levels         = explode( ',', $levels_str );
+				$filter->levels = $levels;
+			}
+
+			// Find by category
 			$term_ids_str = LP_Helper::sanitize_params_submitted( urldecode( $request['term_id'] ?? '' ) );
 			if ( ! empty( $term_ids_str ) ) {
 				$term_ids         = explode( ',', $term_ids_str );
 				$filter->term_ids = $term_ids;
+			}
+
+			// Find by tag
+			$tag_ids_str = LP_Helper::sanitize_params_submitted( urldecode( $request['tag_id'] ?? '' ) );
+			if ( ! empty( $tag_ids_str ) ) {
+				$tag_ids         = explode( ',', $tag_ids_str );
+				$filter->tag_ids = $tag_ids;
 			}
 
 			$on_sale                               = absint( $request['on_sale'] ?? '0' );
@@ -151,13 +170,22 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			$filter->order_by = LP_Helper::sanitize_params_submitted( ! empty( $request['order_by'] ) ? $request['order_by'] : 'post_date' );
 			$filter->order    = LP_Helper::sanitize_params_submitted( ! empty( $request['order'] ) ? $request['order'] : 'DESC' );
 			$filter->limit    = $request['limit'] ?? LP_Settings::get_option( 'archive_course_limit', 10 );
-			$return_type      = $request['return_type'] ?? 'html';
+
+			// For search suggest courses
+			if ( ! empty( $request['c_suggest'] ) ) {
+				$filter->only_fields = [ 'ID', 'post_title' ];
+				$filter->limit       = apply_filters( 'learn-press/rest-api/courses/suggest-limit', 10 );
+				$filter->max_limit   = apply_filters( 'learn-press/rest-api/courses/suggest-max-limit', 10 );
+			}
+
+			$return_type = $request['return_type'] ?? 'html';
 			if ( 'json' !== $return_type ) {
 				$filter->only_fields = array( 'DISTINCT(ID) AS ID' );
 			}
 
-			$total_rows  = 0;
-			$filter      = apply_filters( 'lp/api/courses/filter', $filter, $request );
+			$total_rows = 0;
+			$filter     = apply_filters( 'lp/api/courses/filter', $filter, $request );
+
 			$courses     = LP_Course::get_courses( $filter, $total_rows );
 			$total_pages = LP_Database::get_total_pages( $filter->limit, $total_rows );
 
@@ -168,32 +196,41 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				// For return data has html
 				ob_start();
 				if ( $courses ) {
-					global $wp, $post;
-
-					// Template Pagination.
-					$response->data->pagination = learn_press_get_template_content(
-						'loop/course/pagination.php',
-						array(
-							'total' => $total_pages,
-							'paged' => $filter->page,
-						)
-					);
-					// End Pagination
-
-					// For custom template
-					$template_path = apply_filters( 'lp/api/courses/template', '', $request );
-					if ( ! empty( $template_path ) ) {
-						Template::instance()->get_template( $template_path, compact( 'courses', 'total_pages', 'request' ) );
+					if ( ! empty( $request['c_suggest'] ) ) {
+						$data = array(
+							'courses'      => $courses,
+							'keyword'      => $request['c_search'],
+							'total_course' => $total_rows,
+						);
+						do_action( 'learn-press/rest-api/courses/suggest/layout', $data );
 					} else {
-						foreach ( $courses as $course ) {
-							$post = get_post( $course->ID );
-							setup_postdata( $post );
-							Template::instance()->get_frontend_template( 'content-course.php' );
-						}
+						global $wp, $post;
 
-						wp_reset_postdata();
+						// Template Pagination.
+						$response->data->pagination = learn_press_get_template_content(
+							'loop/course/pagination.php',
+							array(
+								'total' => $total_pages,
+								'paged' => $filter->page,
+							)
+						);
+						// End Pagination
+
+						// For custom template
+						$template_path = apply_filters( 'lp/api/courses/template', '', $request );
+						if ( ! empty( $template_path ) ) {
+							Template::instance()->get_template( $template_path, compact( 'courses', 'total_pages', 'request' ) );
+						} else {
+							foreach ( $courses as $course ) {
+								$post = get_post( $course->ID );
+								setup_postdata( $post );
+								Template::instance()->get_frontend_template( 'content-course.php' );
+							}
+
+							wp_reset_postdata();
+						}
+						// End content items
 					}
-					// End content items
 				} else {
 					LearnPress::instance()->template( 'course' )->no_courses_found();
 				}
@@ -400,13 +437,14 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 						<ul>
 							<li>
 								<label>
-									<input name="_lp_allow_repurchase_type" value="reset" type="radio" checked="checked" />
+									<input name="_lp_allow_repurchase_type" value="reset" type="radio"
+										   checked="checked"/>
 									<?php esc_html_e( 'Reset Course progress', 'learnpress' ); ?>
 								</label>
 							</li>
 							<li>
 								<label>
-									<input name="_lp_allow_repurchase_type" value="keep" type="radio" />
+									<input name="_lp_allow_repurchase_type" value="keep" type="radio"/>
 									<?php esc_html_e( 'Continue Course progress', 'learnpress' ); ?>
 								</label>
 							</li>
@@ -517,10 +555,10 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 
 			// Set status, start_time, end_time of course to enrol.
 			$user_course_data->set_status( LP_COURSE_ENROLLED )
-				->set_start_time( time() )
-				->set_end_time()
-				->set_graduation( LP_COURSE_GRADUATION_IN_PROGRESS )
-				->update();
+							 ->set_start_time( time() )
+							 ->set_end_time()
+							 ->set_graduation( LP_COURSE_GRADUATION_IN_PROGRESS )
+							 ->update();
 
 			// Remove items' course user learned.
 			$filter_remove            = new LP_User_Items_Filter();
@@ -606,11 +644,11 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 	 *
 	 * @param WP_REST_Request $request
 	 *
-	 * @author minhpd
-	 * @editor tungnx
+	 * @return LP_REST_Response
 	 * @since 4.1.4
 	 * @version 1.0.2
-	 * @return LP_REST_Response
+	 * @author minhpd
+	 * @editor tungnx
 	 */
 	public function continue_course( WP_REST_Request $request ): LP_REST_Response {
 		$params         = $request->get_params();
@@ -669,5 +707,4 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 
 		return $response;
 	}
-
 }

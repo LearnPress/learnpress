@@ -1,5 +1,7 @@
 <?php
 
+use LearnPress\Helpers\Template;
+
 /**
  * Class LP_Profile_Template
  *
@@ -125,8 +127,8 @@ class LP_Template_Profile extends LP_Abstract_Template {
 			)
 		);
 
-		learn_press_get_template(
-			'profile/tabs/courses',
+		Template::instance()->get_frontend_template(
+			'profile/tabs/courses.php',
 			compact(
 				'user',
 				'courses_created_tab',
@@ -137,7 +139,7 @@ class LP_Template_Profile extends LP_Abstract_Template {
 	}
 
 	public static function tab_my_courses() {
-		if ( ! LP_Profile::instance()->current_user_can( 'view-tab-courses' ) ) {
+		if ( ! LP_Profile::instance()->current_user_can( 'view-tab-my-courses' ) ) {
 			return;
 		}
 

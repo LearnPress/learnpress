@@ -20,6 +20,9 @@ const getAddons = ( set = '' ) => {
 	const params = tab ? `?tab=${ tab }` : `?${ set }`;
 	fetch( adminAPI.apiAddons + params, {
 		method: 'GET',
+		headers: {
+			'X-WP-Nonce': lpGlobalSettings.nonce,
+		},
 	} ).then( ( res ) =>
 		res.json()
 	).then( ( res ) => {
@@ -48,6 +51,7 @@ const addonsAction = ( data, callBack ) => {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
+			'X-WP-Nonce': lpGlobalSettings.nonce,
 		},
 		body: JSON.stringify( { ...data } ),
 	} ).then( ( res ) =>

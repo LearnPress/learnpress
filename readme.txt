@@ -210,7 +210,19 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
-= 4.2.3 (2023-06-26) =
+= 4.2.3.2 (2023-07-19) =
+~ Added: widget filter courses, option enable fields want to filter, sort fields, option load widget on REST.
+~ Added: Search course suggest (AJAX).
+~ Added: shortcode filter courses [learn_press_filter_course].
+~ Fixed: error install/update Addon.
+
+= 4.2.3.1 (2023-07-05) =
+~ Fixed: Security.
+~ Item Course: completed, display Date Time by format WP.
+~ Tweak: message of LearnPress.
+~ Fixed: function “Add course to Order manual”
+
+= 4.2.3 (2023-07-03) =
 ~ Added: page list instructors.
 ~ Added: page single instructor.
 ~ Added: option set number instructor per page.
@@ -237,6 +249,9 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Profile: added text "upload" translate on localize script.
 ~ Apply: add internal scripts to head on page List Instructors.
 ~ Fixed: error buy item with Guest, order is no item.
+~ Fixed: Security Broken Access Control.
+~ Added: hook login/register of WP on page LP Checkout for plugin captcha display.
+~ Fixed: error 404 function comment on the lesson.
 
 = 4.2.2.4 (2023-04-04) =
 ~ Compatible theme Gutenberg.

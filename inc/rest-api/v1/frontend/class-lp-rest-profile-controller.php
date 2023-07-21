@@ -86,11 +86,11 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 			return false;
 		}
 
-		$profile = learn_press_get_profile( $user_id );
+		/*$profile = learn_press_get_profile( $user_id );
 
-		if ( ! $profile->current_user_can( 'view-tab-courses' ) ) {
+		if ( ! $profile->current_user_can( 'view-tab-my-courses' ) ) {
 			return false;
-		}
+		}*/
 
 		return true;
 	}

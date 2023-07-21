@@ -17,9 +17,9 @@ use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
 
 class InstructorTitleElementor extends SingleInstructorBaseElementor {
 	public function __construct( $data = [], $args = null ) {
-		$this->title    = esc_html__( 'Instructor Title', 'learnpress' );
-		$this->name     = 'instructor_title';
-		$this->keywords = [ 'instructor', 'title', 'instructor title' ];
+		$this->title    = esc_html__( 'Instructor Name', 'learnpress' );
+		$this->name     = 'instructor_name';
+		$this->keywords = [ 'instructor', 'name' ];
 		parent::__construct( $data, $args );
 	}
 
@@ -41,7 +41,8 @@ class InstructorTitleElementor extends SingleInstructorBaseElementor {
 				$settings = [];
 			}
 
-			$this->detect_instructor_id( $settings, $instructor );
+			$text_default = sprintf( '<span class="instructor-display-name">%s</span>', __( 'Instructor Name', 'learnpress' ) );
+			$this->detect_instructor_id( $settings, $instructor, $text_default );
 
 			$wrapper = [];
 			if ( ! empty( $settings['wrapper_tags'] ) ) {

@@ -95,7 +95,7 @@ class LP_Meta_Box_Repeater_Field extends LP_Meta_Box_Field {
 				if ( isset( $this->extra['fields'] ) ) {
 					foreach ( $this->extra['fields'] as $field_key => $field ) {
 						$field->id             = $this->id . '[' . $key . '][' . $field_key . ']';
-						$field->extra['value'] = $is_attr ? '' : $repeater[ $field_key ];
+						$field->extra['value'] = $is_attr ? '' : ( $repeater[ $field_key ] ?? '' );
 						learn_press_echo_vuejs_write_on_php( $field->output( $thepostid ) );
 					}
 				}
