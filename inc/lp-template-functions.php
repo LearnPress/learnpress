@@ -1402,34 +1402,6 @@ function learn_press_is_learning_course( int $course_id = 0 ): bool {
 }
 
 /**
- * Output custom css from settings
- *
- * @since 4.0.0
- */
-if ( ! function_exists( 'learn_press_print_custom_styles' ) ) {
-	function learn_press_print_custom_styles() {
-		$max_with          = apply_filters( 'learn-press/container-max-width', '80rem' );
-		$padding_container = apply_filters( 'learn-press/container-padding-width', '2rem' );
-		$primary_color     = LP_Settings::instance()->get( 'primary_color' );
-		$secondary_color   = LP_Settings::instance()->get( 'secondary_color' );
-		?>
-
-		<style id="learn-press-custom-css">
-			:root {
-				--lp-cotainer-max-with: <?php echo $max_with; ?>;
-				--lp-cotainer-padding: <?php echo $padding_container; ?>;
-				--lp-primary-color: <?php echo ! empty( $primary_color ) ? $primary_color : '#ffb606'; ?>;
-				--lp-secondary-color: <?php echo ! empty( $secondary_color ) ? $secondary_color : '#442e66'; ?>;
-			}
-		</style>
-
-		<?php
-	}
-
-	add_action( 'wp_head', 'learn_press_print_custom_styles' );
-}
-
-/**
  * Return TRUE if current user has already enroll course in single view.
  *
  * @return bool
@@ -1820,23 +1792,16 @@ if ( ! function_exists( 'lp_taxonomy_archive_course_description' ) ) {
  * @return array
  */
 function lp_archive_skeleton_get_args(): array {
-	global $post, $wp;
-
-	$args = array();
+	$args = [];
 
 	if ( ! empty( $_GET ) ) {
-		$args = (array) $_GET;
+		$args = apply_filters( 'lp/template/archive-course/skeleton/args', $_GET );
 	}
 
-	$params = apply_filters(
-		'lp/template/archive-course/skeleton/args',
-		array(
-			'paged'    => 1,
-			'c_search' => '',
-			'orderby'  => '',
-			'order'    => '',
-		)
-	);
+	global $wp_query;
+	if ( ! empty( $wp_query->get( 'paged' ) ) ) {
+		$args['paged'] = $wp_query->get( 'paged' );
+	}
 
 	if ( learn_press_is_course_category() || learn_press_is_course_tag() ) {
 		$cat = get_queried_object();
@@ -1845,15 +1810,13 @@ function lp_archive_skeleton_get_args(): array {
 		$args['taxonomy'] = $cat->taxonomy;
 	}
 
-	if ( learn_press_is_course_archive() ) {
+	/*if ( learn_press_is_course_archive() ) {
 		foreach ( $params as $key => $param ) {
 			if ( isset( $_REQUEST[ $key ] ) ) {
 				$args[ $key ] = LP_Helper::sanitize_params_submitted( $_REQUEST[ $key ] );
-			} else {
-				$args[ $key ] = $param;
 			}
 		}
-	}
+	}*/
 
 	return $args;
 }

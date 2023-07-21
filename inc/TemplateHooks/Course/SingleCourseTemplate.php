@@ -1,27 +1,21 @@
 <?php
 /**
- * Template hooks Archive Package.
+ * Template hooks Single Course.
  *
- * @since 1.0.0
+ * @since 4.2.3
  * @version 1.0.0
  */
 namespace LearnPress\TemplateHooks\Course;
 
+use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
+use LP_Course;
 
 class SingleCourseTemplate {
-	public static function instance() {
-		static $instance = null;
+	use Singleton;
 
-		if ( is_null( $instance ) ) {
-			$instance = new self();
-		}
-
-		return $instance;
-	}
-
-	protected function __construct() {
-
+	public function init() {
+		// TODO: Implement init() method.
 	}
 
 	public function sections( $data = [] ) {
@@ -31,11 +25,11 @@ class SingleCourseTemplate {
 	/**
 	 * Get display title course.
 	 *
-	 * @param \LP_Course $course
+	 * @param LP_Course $course
 	 *
 	 * @return string
 	 */
-	public function html_title( \LP_Course $course ): string {
+	public function html_title( LP_Course $course ): string {
 		$html_wrapper = apply_filters(
 			'learn-press/single-course/title/wrapper',
 			[
@@ -52,7 +46,7 @@ class SingleCourseTemplate {
 	 *
 	 * @return string
 	 */
-	public function html_categories( \LP_Course $course ): string {
+	public function html_categories( LP_Course $course ): string {
 		$html_wrapper = apply_filters(
 			'learn-press/single-course/categories/wrapper',
 			[
@@ -78,11 +72,11 @@ class SingleCourseTemplate {
 	/**
 	 * Get display title course.
 	 *
-	 * @param \LP_Course $course
+	 * @param LP_Course $course
 	 *
 	 * @return string
 	 */
-	public function html_image( \LP_Course $course ): string {
+	public function html_image( LP_Course $course ): string {
 		$content = '';
 
 		try {

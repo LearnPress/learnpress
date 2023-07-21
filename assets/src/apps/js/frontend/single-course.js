@@ -240,7 +240,7 @@ const retakeCourse = () => {
 			} ).catch( ( err ) => {
 				elAjaxMessage.classList.add( 'error' );
 				elAjaxMessage.innerHTML = 'error: ' + err.message;
-			} ).then( ( ) => {
+			} ).then( () => {
 				elButtonRetakeCourse.classList.remove( 'loading' );
 				elButtonRetakeCourse.disabled = false;
 				elAjaxMessage.style.display = 'block';
@@ -307,25 +307,28 @@ const courseProgress = () => {
 
 const accordionExtraTab = () => {
 	const elements = document.querySelectorAll( '.course-extra-box' );
-
 	[ ...elements ].map( ( ele ) => {
 		const title = ele.querySelector( '.course-extra-box__title' );
+		ele.classList.remove( 'active' );
+		const content = ele.querySelector( '.course-extra-box__content' );
+		content.style.height = '0';
 
 		title.addEventListener( 'click', () => {
-			const panel = title.nextElementSibling;
-			const eleActive = document.querySelector( '.course-extra-box.active' );
+			const isActive = ele.classList.contains( 'active' );
 
-			if ( eleActive && ! ele.classList.contains( 'active' ) ) {
-				eleActive.classList.remove( 'active' );
-				eleActive.querySelector( '.course-extra-box__content' ).style.display = 'none';
-			}
+			[ ...elements ].forEach( ( otherEle ) => {
+				if ( otherEle !== ele ) {
+					otherEle.classList.remove( 'active' );
+					otherEle.querySelector( '.course-extra-box__content' ).style.height = '0';
+				}
+			} );
 
-			if ( ! ele.classList.contains( 'active' ) ) {
-				ele.classList.add( 'active' );
-				panel.style.display = 'block';
-			} else {
+			if ( isActive ) {
 				ele.classList.remove( 'active' );
-				panel.style.display = 'none';
+				content.style.height = '0';
+			} else {
+				ele.classList.add( 'active' );
+				content.style.height = content.scrollHeight + 'px';
 			}
 		} );
 	} );

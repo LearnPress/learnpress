@@ -3,7 +3,7 @@
 	display: none;
 	margin: 0 5px;
 	color: #444;
-	font-size: 13px;
+	font-size: 0.8125rem;
 	font-style: normal;
 	line-height: 1;
 	vertical-align: baseline;
@@ -31,11 +31,11 @@
 	padding: 0.618em 1em;
 	color: #fff;
 	background: #383838;
-	font-size: 12px;
+	font-size: 0.75rem;
 	line-height: 1.2em;
 
 	> * {
-		font-size: 12px;
+		font-size: 0.75rem;
 	}
 
 	@include border-radius(3px);
@@ -50,7 +50,7 @@
 		border: 1px solid #fff;
 		color: #fff;
 		background: #468fbc;
-		line-height: 16px;
+		line-height: 1rem;
 		text-align: center;
 		cursor: pointer;
 

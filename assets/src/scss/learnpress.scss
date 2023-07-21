@@ -11,6 +11,7 @@ $bg-course-featured: #FF2828;
 @import "mixin.scss";
 @import "message.scss";
 @import "ajaxload";
+@import "frontend/global";
 @import "frontend/tabs";
 @import "frontend/checkout";
 @import "frontend/form";
@@ -134,30 +135,16 @@ footer {
 	}
 }
 
-.lp-content-wrap {
-	width: 1170px;
-	max-width: 90%;
-	margin: 0 auto;
-
-	& > h2 {
-		margin-top: 0;
-		margin-bottom: 26px;
-		color: #333;
-		font-size: 30px;
-		font-weight: 600;
-	}
-}
-
-.learn-press-breadcrumb {
-	max-width: 1170px;
+ul.learn-press-breadcrumb {
+	max-width: var(--lp-cotainer-max-with);
 	width: 100%;
 	margin: 0 auto 45px auto;
-	padding: 0;
+	padding-right: var(--lp-cotainer-padding);
+	padding-left: var(--lp-cotainer-padding);
 	color: #333;
-	font-size: 14px;
+	font-size: 0.875rem;
 	font-weight: 400;
 	list-style: none;
-
 	li {
 		display: inline-block;
 		margin: 0;
@@ -173,7 +160,7 @@ footer {
 	i {
 		margin: 0 5px;
 		color: #666;
-		font-size: 12px;
+		font-size: 0.75rem;
 	}
 
 	@media (max-width: 1024px) {
@@ -197,7 +184,7 @@ footer {
 		background: transparent;
 		box-shadow: unset;
 		font-family: inherit;
-		font-size: 16px;
+		font-size: 1rem;
 		font-weight: 400;
 		line-height: 1;
 		text-align: center;
@@ -211,29 +198,10 @@ footer {
 		&.large {
 			height: 52px;
 			padding: 18px 30px;
-			font-size: 18px;
+			font-size: 1.125rem;
 		}
 
 		@include transition(all 0.25s);
-
-		/*&.gray {
-			position: absolute;
-			z-index: 1;
-			top: 8px;
-			right: 5px;
-			padding: 0;
-			border: 0;
-
-			&:hover {
-				background: transparent;
-				text-decoration: none;
-			}
-
-			&:focus {
-				border: 0;
-				outline: 0;
-			}
-		}*/
 
 		&:hover {
 			border-color: var(--lp-primary-color);
@@ -270,6 +238,7 @@ footer {
 				font-weight: 900;
 				content: "\f110";
 				animation: lp-rotating 1s linear infinite;
+				margin-right: 4px;
 			}
 		}
 	}
@@ -294,7 +263,7 @@ footer {
 	padding: 20px;
 	border: 2px solid $msg-success;
 	border-radius: 9px;
-	font-size: 15px;
+	font-size: 0.9375rem;
 	line-height: 1.4;
 
 	&.error {
@@ -315,7 +284,7 @@ footer {
 }
 
 .lp-entry-content .course-tabs {
-	margin-bottom: 60px;
+	margin-bottom: 40px;
 }
 
 /* Archive */
@@ -367,7 +336,7 @@ footer {
 
 /* */
 .table-orders {
-	font-size: 16px;
+	font-size: 1rem;
 
 	th,
 	td {
@@ -395,14 +364,13 @@ footer {
 		> li {
 			display: inline-block;
 			margin: 0;
-			padding: 0 14px;
 
 			.page-numbers {
 				float: unset;
-				padding: 0;
+				padding: 0 14px;
 				color: #666;
 				background: transparent;
-				font-size: 16px;
+				font-size: 1rem;
 				font-weight: 300;
 
 				&.current {
@@ -522,7 +490,7 @@ ul.list-table-nav {
 	&.slide-top {
 		@media (min-width: 1200px) {
 			.course-summary-sidebar__inner {
-				position: absolute;
+				// position: absolute;
 			}
 		}
 	}
@@ -536,7 +504,7 @@ ul.list-table-nav {
 
 	.icon {
 		margin-right: 5px;
-		font-size: 20px;
+		font-size: 1.25rem;
 	}
 
 	&.passed {
@@ -600,7 +568,7 @@ ul.list-table-nav {
 		padding: 5px 0;
 
 		&::before {
-			font-size: 12px;
+			font-size: 0.75rem;
 			text-transform: uppercase;
 			content: attr(data-text);
 		}
@@ -628,7 +596,7 @@ ul.list-table-nav {
 			justify-content: center;
 			margin: 0;
 			padding: 17px 10px;
-			font-size: 16px;
+			font-size: 1rem;
 			line-height: 1;
 			font-weight: 600;
 			text-transform: capitalize;
@@ -707,5 +675,8 @@ ul.list-table-nav {
 		text-align: left;
 		padding: 10px 25px;
 		border: 1px solid;
+		a{
+			color: var(--lp-primary-color);
+		}
 	}
 }

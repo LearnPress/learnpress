@@ -79,7 +79,7 @@
 				@include transition(right 0.25s);
 
 				i {
-					font-size: 20px;
+					font-size: 1.25rem;
 				}
 
 				&:hover {
@@ -96,7 +96,7 @@
 				margin-top: -9px;
 				color: #999;
 				font-family: Dashicons;
-				font-size: 20px;
+				font-size: 1.25rem;
 				content: "\f333";
 			}
 		}
@@ -234,7 +234,7 @@
 			margin: 9px 5px 0 -5px;
 			color: #2773aa;
 			font-family: dashicons;
-			font-size: 20px;
+			font-size: 1.25rem;
 			content: "\f463";
 
 			@include rotating4();
@@ -312,8 +312,8 @@
 			width: 24px;
 			height: 24px;
 			font-family: dashicons;
-			font-size: 19px;
-			line-height: 24px;
+			font-size: 1.1875rem;
+			line-height: 1.5rem;
 			text-align: center;
 		}
 	}
@@ -345,7 +345,7 @@
 					border-radius: 3px;
 					color: #fff;
 					background: #ddd;
-					font-size: 12px;
+					font-size: 0.75rem;
 					content: attr(data-version);
 				}
 
@@ -391,7 +391,7 @@
 				border-radius: 3px;
 				color: #fff;
 				background: #5bc4f9;
-				font-size: 12px;
+				font-size: 0.75rem;
 				_content: attr(data-value) "%";
 			}
 
@@ -531,7 +531,7 @@ body {
 	display: inline-block;
 	padding: 3px 6px;
 	color: #fff;
-	font-size: 12px;
+	font-size: 0.75rem;
 
 	@include border-radius(4px);
 
@@ -666,3 +666,4 @@ body {
 		}
 	}
 }
+

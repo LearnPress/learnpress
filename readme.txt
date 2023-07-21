@@ -210,6 +210,12 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.2.3.2 (2023-07-19) =
+~ Added: widget filter courses, option enable fields want to filter, sort fields, option load widget on REST.
+~ Added: Search course suggest (AJAX).
+~ Added: shortcode filter courses [learn_press_filter_course].
+~ Fixed: error install/update Addon.
+
 = 4.2.3.1 (2023-07-05) =
 ~ Fixed: Security.
 ~ Item Course: completed, display Date Time by format WP.

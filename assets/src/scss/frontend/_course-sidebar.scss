@@ -7,6 +7,11 @@
 		background: #fff;
 	}
 
+	.has-global-padding{
+		padding-right:0;
+		padding-left:0;
+	}
+
 	.lp-course-buttons {
 		margin-bottom: 34px;
 
@@ -33,14 +38,6 @@
 				border-color: var(--lp-primary-color);
 			}
 			&.button-enroll-course {
-				//border: none;
-				//color: #fff;
-				//background: var(--lp-primary-color);
-				//
-				//&:hover {
-				//	opacity: 0.8;
-				//	background: var(--lp-primary-color);
-				//}
 
 				&.loading {
 					&::before {
@@ -58,7 +55,7 @@
 				padding: 20px;
 				border: 2px solid $msg-success;
 				border-radius: 9px;
-				font-size: 15px;
+				font-size: 0.9375rem;
 				line-height: 1.4;
 
 				&.error {
@@ -102,9 +99,9 @@
 			display: block;
 			margin: 0;
 			color: #666;
-			font-size: 16px;
+			font-size: 1rem;
 			font-weight: 300;
-			line-height: 16px;
+			line-height: 1rem;
 			text-align: right;
 		}
 	}
@@ -137,6 +134,7 @@
 			max-width: 100%;
 			height: auto;
 			vertical-align: top;
+			width: 100%;
 		}
 	}
 
@@ -149,7 +147,7 @@
 	.course-time-row {
 		display: flex;
 		color: #666;
-		font-size: 16px;
+		font-size: 1rem;
 		font-weight: 300;
 		justify-content: space-between;
 
@@ -162,7 +160,7 @@
 			color: #666;
 			font-size: 1rem;
 			font-weight: 300;
-			line-height: 24px;
+			line-height: 1.5rem;
 		}
 	}
 

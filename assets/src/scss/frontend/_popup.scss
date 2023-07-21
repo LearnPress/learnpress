@@ -14,6 +14,7 @@
 		&[disabled] {
 			background: #ddd;
 			pointer-events: none;
+			color: var(--lp-button-background-color);
 		}
 	}
 
@@ -105,7 +106,7 @@
 				height: 36px;
 				padding: 6px 16px;
 				border: 1px solid #222;
-				line-height: 36px;
+				line-height: 2.25rem;
 			}
 		}
 
@@ -130,7 +131,7 @@
 		.lp-fib-note {
 			display: flex;
 			margin-left: 10px;
-			font-size: 14px;
+			font-size: 0.875rem;
 			font-weight: 400;
 			align-items: center;
 
@@ -209,18 +210,19 @@
 	.course-title {
 		margin: 0;
 		padding: 0;
-		line-height: 70px;
+		line-height: 4.375rem;
 		letter-spacing: unset;
 
 		a {
 			display: -webkit-box;
 			overflow: hidden;
 			color: #fff;
-			font-size: 16px;
+			font-size: 1rem;
 			font-weight: 400;
 			text-overflow: ellipsis;
 			-webkit-line-clamp: 1;
 			-webkit-box-orient: vertical;
+			text-decoration: none;
 
 			&:hover {
 				color: var(--lp-primary-color);
@@ -251,7 +253,7 @@
 	.number {
 		padding-right: 10px;
 		color: #fff;
-		font-size: 14px;
+		font-size: 0.875rem;
 		font-weight: 300;
 	}
 
@@ -263,10 +265,10 @@
 		border: none;
 		color: #fff;
 		background: var(--lp-primary-color);
-		font-size: 14px;
+		font-size: 0.875rem;
 		font-weight: 400;
 		justify-content: center;
-		line-height: 40px;
+		line-height: 2.5rem;
 		align-items: center;
 
 		&:hover {
@@ -318,7 +320,7 @@
 			color: #999;
 			background: transparent;
 			box-shadow: none;
-			font-size: 14px;
+			font-size: 0.875rem;
 			line-height: 1;
 
 			@include box-sizing(border-box);
@@ -346,7 +348,7 @@
 			&::before {
 				color: #666;
 				font-family: "Font Awesome 5 Free";
-				font-size: 16px;
+				font-size: 1rem;
 				font-weight: 900;
 				content: "\f002";
 			}
@@ -407,19 +409,19 @@
 				overflow: hidden;
 				margin: 0 0 -2px 0;
 				padding: 0;
-				font-size: 16px;
+				font-size: 1rem;
 				font-weight: normal;
 			}
 
 			.search-results__item-author {
-				font-size: 12px;
+				font-size: 0.75rem;
 			}
 
 			.course-price {
 				position: absolute;
 				right: 10px;
 				bottom: 10px;
-				font-size: 12px;
+				font-size: 0.75rem;
 
 				.origin-price {
 					font-size: smaller;
@@ -444,7 +446,7 @@
 					border: 1px solid #d9e0f1;
 					border-radius: 4px;
 					color: #777;
-					font-size: 14px;
+					font-size: 0.875rem;
 					line-height: 1;
 					cursor: pointer;
 				}
@@ -495,7 +497,7 @@
 			background: #ccc;
 		}
 		&::-webkit-scrollbar {
-			width: 6px;
+			width: 8px;
 		}
 		&::-webkit-scrollbar-track {
 			background: #f5f5f5;
@@ -531,7 +533,7 @@
 				border-radius: 0;
 				color: #999;
 				background: #f5f5f5;
-				font-size: 14px;
+				font-size: 0.875rem;
 
 				&::before,
 				&::after {
@@ -564,22 +566,20 @@
 		position: sticky;
 		z-index: 1000;
 		top: 0;
-		height: 94px;
-		padding: 38px 20px 20px 20px;
+		padding: 24px 20px;
 		cursor: pointer;
 		background-color: white;
 
 		.section-title {
-			padding: 0 0 4px 0;
 			color: #000;
-			font-size: 20px;
+			font-size: 1.25rem;
 			font-weight: 500;
 
 			.show-desc {
 
 				&::before {
 					font-family: "Font Awesome 5 Free";
-					font-size: 18px;
+					font-size: 1.125rem;
 					font-weight: 900;
 					content: "\f0d7";
 				}
@@ -608,7 +608,7 @@
 	.course-item {
 		min-height: 50px;
 		margin-bottom: 4px;
-		padding: 5px 20px;
+		padding: 0px 20px;
 		background: #f9fafc;
 		align-items: center;
 
@@ -648,15 +648,13 @@
 		line-height: 1;
 		padding-right: 0;
 		&::before {
-			padding: 12px 0;
 			vertical-align: unset;
 		}
 
 		.item-name {
 			width: 100%;
-			padding: 0 10px 0 17px;
-			font-size: 14px;
-			line-height: 21px;
+			font-size: 0.875rem;
+			line-height: 1.3125rem;
 			font-weight: 500;
 		}
 
@@ -664,34 +662,24 @@
 
 	.course-item-meta {
 		padding: 0;
-		// padding-right: 16px;
 
 		.item-meta {
 			padding: 0;
 			color: #999;
 			background: transparent;
-			font-size: 12px;
+			font-size: 0.75rem;
 			line-height: 1.5;
 			height: auto;
 
 			&:first-child {
 				margin-left: 0;
-				// padding-left: 17px;
+
 			}
 
 			&::before {
-				font-size: 12px;
-				line-height: 21px;
+				font-size: 0.75rem;
+				line-height: 1.3125rem;
 			}
-
-			// &.course-item-status {
-			// 	position: absolute;
-			// 	top: 50%;
-			// 	right: 18px;
-			// 	left: auto;
-			// 	margin-top: -10px;
-			// 	padding: 0;
-			// }
 		}
 	}
 }
@@ -709,7 +697,7 @@
 		margin: 0 10px 0 0;
 		padding: 12px 29px;
 		border-color: var(--lp-secondary-color);
-		font-size: 14px;
+		font-size: 0.875rem;
 
 		&.instant-check {
 
@@ -756,7 +744,9 @@
 			}
 
 			&.loading {
-
+				&::before {
+					display: none;
+				}
 				.instant-check__icon {
 					display: inline-block;
 					animation: lp-rotating 1s linear infinite;
@@ -781,13 +771,13 @@
 			border-color: transparent;
 			color: #fff;
 			background: #3db748;
-			font-size: 16px;
+			font-size: 1rem;
 			align-items: center;
 			justify-content: center;
 
 			i {
 				margin-left: 9px;
-				font-size: 14px;
+				font-size: 0.875rem;
 			}
 		}
 	}
@@ -802,9 +792,15 @@
 			}
 		}
 	}
-	//@media (max-width: 767px) {
-	//	margin-top: 113px;
-	//}
+	&::-webkit-scrollbar{
+		width: 8px;
+	}
+	&::-webkit-scrollbar-thumb{
+		background: #ccc;
+	}
+	&::-webkit-scrollbar-track{
+		background: #f5f5f5;
+	}
 }
 
 #popup-footer {
@@ -832,18 +828,18 @@
 		.prev,
 		.next {
 			display: flex;
-			line-height: 50px;
+			line-height: 3.125rem;
 
 			a {
 				display: block;
 				color: #666;
-				font-size: 16px;
+				font-size: 1rem;
 			}
 
 			&::before {
 				color: #999;
 				font-family: "Font Awesome 5 Free";
-				font-size: 12px;
+				font-size: 0.75rem;
 				font-weight: 900;
 			}
 
@@ -906,7 +902,7 @@
 		padding: 10px 15px;
 		color: #666;
 		background: #ccc;
-		font-size: 14px;
+		font-size: 0.875rem;
 		font-weight: 300;
 		line-height: 1;
 		@media (max-width: 1024px) {
@@ -943,7 +939,7 @@
 		left: 50%;
 		color: var(--lp-primary-color);
 		font-family: "Font Awesome 5 Free";
-		font-size: 18px;
+		font-size: 1.125rem;
 		font-weight: 900;
 		content: "\f0d9";
 		transition: 0.25s;
@@ -1092,7 +1088,7 @@ body {
 		margin-top: 0;
 		margin-bottom: 24px;
 		color: #333;
-		font-size: 30px;
+		font-size: 1.875rem;
 		font-weight: 600;
 
 		@media (max-width: 767px) {
@@ -1116,16 +1112,16 @@ body {
 		h2, h3, h4, h5, h6 {
 			margin-top: 0;
 			margin-bottom: 18px;
-			font-size: 18px;
+			font-size: 1.125rem;
 			letter-spacing: unset;
 		}
 
 		p {
 			margin: 0 0 18px 0;
 			color: #666;
-			font-size: 16px;
+			font-size: 1rem;
 			font-weight: 300;
-			line-height: 26px;
+			line-height: 1.625rem;
 		}
 
 		img {
@@ -1142,9 +1138,9 @@ body {
 	.quiz-content {
 		margin-bottom: 40px;
 		color: #666;
-		font-size: 16px;
+		font-size: 1rem;
 		font-weight: 300;
-		line-height: 26px;
+		line-height: 1.625rem;
 
 		img {
 			max-width: 100%;
@@ -1280,7 +1276,7 @@ body {
 				padding: 10px 16px;
 				color: #666;
 				background-color: transparent;
-				font-size: 16px;
+				font-size: 1rem;
 				font-weight: 300;
 				line-height: 1;
 				border: 1px solid;
@@ -1291,7 +1287,7 @@ body {
 					display: inline-block;
 					padding: 10px;
 					background: transparent;
-					font-size: 16px;
+					font-size: 1rem;
 					text-align: center;
 					text-decoration: none;
 					text-transform: none;
@@ -1312,7 +1308,7 @@ body {
 		margin-bottom: 0;
 		padding: 8px 0;
 		color: #5383f7;
-		font-size: 16px;
+		font-size: 1rem;
 		font-weight: normal;
 		line-height: 1;
 
@@ -1327,7 +1323,7 @@ body {
 
 			&::before {
 				font-family: "Font Awesome 5 Free";
-				font-size: 18px;
+				font-size: 1.125rem;
 				font-weight: 900;
 				content: "\f107";
 			}

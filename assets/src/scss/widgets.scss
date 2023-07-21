@@ -1,24 +1,28 @@
 @import "mixin";
 @import "frontend/skeleton-animation";
+@import "loading-circle-animation";
+@import "frontend/course-filter";
 
 .learnpress.widget {
-	max-width: 400px;
 	margin-bottom: 30px;
+	@media (max-width:420px) {
+		max-width: 400px;
+	}
 
 	.widgettitle {
 		margin-top: 0;
 		margin-bottom: 2px;
-		font-size: 18px;
+		font-size: 1.25rem;
 		font-weight: 600;
 	}
 
 	.learnpress-widget-wrapper {
-		margin-top: 15px;
+		margin-top: 16px;
 	}
 
 	h3 {
 		margin-bottom: 20px;
-		font-size: 16px;
+		font-size: 1rem;
 	}
 
 	a {
@@ -26,60 +30,62 @@
 	}
 }
 
-.elementor-widget-wrap {
-
-	.learnpress-widget-wrapper {
-		max-width: 400px;
-	}
-}
 
 .learnpress-widget-wrapper {
 	// use in featured, popular, recent course widget.
 	.lp-widget-course {
 		margin: 0 0 30px 0;
-
+		border: 1px solid #eee;
 		&__image {
 
 			img {
-				max-width: 100%;
 				height: auto;
+				width: 100%;
+				display: block;
 			}
 		}
 
 		&__title {
 			margin-bottom: 20px;
-			font-size: 16px;
+			font-size: 1rem;
 			font-weight: 600;
 		}
 
 		&__content {
 			margin: 0;
-			padding: 15px;
-			border: 1px solid #eee;
-			border-top: none;
+			padding: 16px;
+			border-top: 1px solid #eee;
 		}
 
 		&__title {
-			margin: 5px 0 15px 0;
+			margin: 4px 0 16px 0;
 		}
 
 		&__meta {
 			display: grid;
-			margin: 15px 0 0 0;
-			font-size: 15px;
+			margin: 16px 0 0 0;
+			font-size: 0.9375rem;
 			grid-template-columns: repeat(2, 1fr);
 			justify-content: space-between;
 			align-items: center;
+			gap: 24px;
+			.course-price{
+				margin-bottom: 0;
+				.course-item-price{
+					display: flex;
+					flex-direction: column;
+				}
+			}
 		}
 
 		&__description {
 			color: #666;
-			font-size: 15px;
+			font-size: 0.9375rem;
 		}
 
 		&__price {
 			color: #444;
-			font-size: 15px;
+			font-size: 0.9375rem;
 			font-weight: 600;
 		}
 
@@ -94,15 +100,17 @@
 					width: 20px;
 					border-radius: 20px;
 					height: 20px;
+					display: block;
 				}
 			}
 
 			> a {
 				color: #777;
-				font-size: 15px;
+				font-size: 0.9375rem;
 			}
 		}
 	}
+
 }
 
 .learnpress.widget_course_progress,
@@ -116,7 +124,7 @@
 
 	.course-results-progress {
 		margin-top: 10px;
-		font-size: 14px;
+		font-size: 0.875rem;
 
 		.items-progress {
 			display: flex;
@@ -129,7 +137,7 @@
 			}
 		}
 	}
-	 
+
 	.lp-course-progress {
 		width: 100%;
 
@@ -184,7 +192,7 @@
 		ul {
 			margin: 0;
 			padding: 0;
-			font-size: 14px;
+			font-size: 0.875rem;
 
 			li {
 				display: flex;
@@ -194,13 +202,13 @@
 				line-height: 1;
 
 				span {
-					font-size: 14px;
+					font-size: 0.875rem;
 				}
 			}
 
 
 			label {
-				font-size: 14px;
+				font-size: 0.875rem;
 			}
 		}
 	}
@@ -217,7 +225,7 @@
 
 		h3 {
 			margin-bottom: 20px;
-			font-size: 16px;
+			font-size: 1rem;
 		}
 
 		&__content {
@@ -225,14 +233,14 @@
 			h4.course-extras__title {
 				margin: 0;
 				margin-bottom: 15px;
-				font-size: 14px;
+				font-size: 0.875rem;
 				font-weight: 600;
 			}
 
 			ul {
 				margin: 0;
 				padding: 0;
-				font-size: 14px;
+				font-size: 0.875rem;
 
 				li {
 					margin-bottom: 10px;
@@ -244,7 +252,7 @@
 
 				.course-extras__content {
 					color: #777;
-					font-size: 14px;
+					font-size: 0.875rem;
 
 					ul {
 						list-style: none;
@@ -329,7 +337,7 @@
 			border-top: 1px solid #eee;
 
 			&__link {
-				font-size: 16px;
+				font-size: 1rem;
 				line-height: 1;
 
 				&::before {
@@ -351,7 +359,7 @@
 			border-top: 1px solid #eee;
 
 			&__link {
-				font-size: 16px;
+				font-size: 1rem;
 				line-height: 1;
 
 				&::before {
@@ -373,7 +381,7 @@
 			border-top: 1px solid #eee;
 
 			&__link {
-				font-size: 16px;
+				font-size: 1rem;
 				line-height: 1;
 
 				&::before {
@@ -381,6 +389,63 @@
 				}
 			}
 		}
+	}
+}
+
+.learnpress-widget-wrapper__restapi {
+	.lp-skeleton-animation {
+		min-width: 250px;
+	}
+
+	ul {
+		padding: 0;
+	}
+}
+
+.lp-course-filter {
+	.price__item, .instructor__item, .level__item, .term-list__item {
+		display: flex;
+		justify-content: space-between;
+
+		label {
+			cursor: pointer;
+		}
+	}
+
+	.lp-search-keyword {
+		position: relative;
+
+		input {
+			width: 100%;
+		}
+
+		i.loading {
+			font-style: normal;
+			position: absolute;
+			right: 15px;
+			top: 50%;
+			transform: translateY(-50%);
+
+			&::before {
+				display: inline-block;
+				font-family: "Font Awesome 5 Free";
+				font-weight: 900;
+				content: "\f110";
+				-webkit-animation: lp-rotating 1s linear infinite;
+				-moz-animation: lp-rotating 1s linear infinite;
+				animation: lp-rotating 1s linear infinite;
+			}
+		}
+	}
+
+	ul.lp-suggest-result {
+		li {
+			padding: 8px 15px;
+		}
+	}
+
+	ul > li {
+		list-style: none;
 	}
 }
 

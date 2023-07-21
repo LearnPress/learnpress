@@ -18,8 +18,8 @@ if ( empty( $data ) ) {
 $html_wrapper = apply_filters(
 	'learn-press/profile/layout/student-statistics/wrapper',
 	[
-		'<div id="dashboard-general-statistic">'         => '</div>',
-		'<div class="dashboard-general-statistic__row">' => '</div>',
+		'<div id="dashboard-statistic">'         => '</div>',
+		'<div class="dashboard-statistic__row">' => '</div>',
 	]
 );
 
@@ -27,4 +27,3 @@ ob_start();
 do_action( 'learn-press/profile/layout/student-statistics', $data );
 $inner_html = ob_get_clean();
 echo Template::instance()->nest_elements( $html_wrapper, $inner_html );
-

@@ -672,7 +672,6 @@ class LP_Page_Controller {
 					// $q->set( 'cache_results', true ); // it default true
 
 					// Search courses by keyword
-					// $q->set( 's', $_REQUEST['c_search'] ?? '' );
 					if ( ! empty( $_REQUEST['c_search'] ) ) {
 						$filter->post_title   = LP_Helper::sanitize_params_submitted( $_REQUEST['c_search'] );
 						$is_need_check_in_arr = true;
@@ -683,7 +682,7 @@ class LP_Page_Controller {
 						$q->set( 'author', $author_ids_str );
 					}
 
-					// Meta query
+					// Search course has price/free
 					$meta_query = [];
 					if ( isset( $_REQUEST['sort_by'] ) ) {
 						$sort_by = LP_Helper::sanitize_params_submitted( $_REQUEST['sort_by'] );
@@ -697,16 +696,41 @@ class LP_Page_Controller {
 
 						if ( 'on_free' === $sort_by ) {
 							$meta_query[] = array(
-								'key'     => '_lp_price',
-								'value'   => 0,
-								'compare' => '=',
+								'relation' => 'OR',
+								[
+									'key'     => '_lp_price',
+									'value'   => 0,
+									'compare' => '=',
+								],
+								[
+									'key'     => '_lp_price',
+									'value'   => '',
+									'compare' => '=',
+								],
+								[
+									'key'     => '_lp_price',
+									'compare' => 'NOT EXISTS',
+								],
 							);
 						}
 					}
+
+					// Search by level
+					$c_level = LP_Helper::sanitize_params_submitted( urldecode( $_REQUEST['c_level'] ?? '' ) );
+					if ( ! empty( $c_level ) ) {
+						$c_level      = str_replace( 'all', '', $c_level );
+						$c_level      = explode( ',', $c_level );
+						$meta_query[] = array(
+							'key'     => '_lp_level',
+							'value'   => $c_level,
+							'compare' => 'IN',
+						);
+					}
+
 					$q->set( 'meta_query', $meta_query );
 					// End Meta query
 
-					// Tax query
+					// Search on Category
 					$tax_query    = [];
 					$term_ids_str = LP_Helper::sanitize_params_submitted( urldecode( $_REQUEST['term_id'] ?? '' ) );
 					if ( ! empty( $term_ids_str ) ) {
@@ -714,6 +738,19 @@ class LP_Page_Controller {
 
 						$tax_query[] = array(
 							'taxonomy' => 'course_category',
+							'field'    => 'term_id',
+							'terms'    => $term_ids,
+							'operator' => 'IN',
+						);
+					}
+
+					// Tag query
+					$tag_ids_str = LP_Helper::sanitize_params_submitted( urldecode( $_REQUEST['tag_id'] ?? '' ) );
+					if ( ! empty( $tag_ids_str ) ) {
+						$term_ids = explode( ',', $tag_ids_str );
+
+						$tax_query[] = array(
+							'taxonomy' => 'course_tag',
 							'field'    => 'term_id',
 							'terms'    => $term_ids,
 							'operator' => 'IN',

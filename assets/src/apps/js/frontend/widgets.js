@@ -13,7 +13,7 @@ function widgetRestAPI() {
 		const response = await wp.apiFetch( {
 			path: 'lp/v1/widgets/api',
 			method: 'POST',
-			data: { ...widget },
+			data: { ...widget, ...{ params_url: lpGlobalSettings.lpArchiveSkeleton } },
 		} );
 
 		const { data, status, message } = response;
@@ -29,21 +29,11 @@ function widgetRestAPI() {
 		ele.querySelector( '.lp-skeleton-animation' ).remove();
 	};
 
-	if ( 'IntersectionObserver' in window ) {
-		const eleObserver = new IntersectionObserver( ( entries, observer ) => {
-			entries.forEach( ( entry ) => {
-				if ( entry.isIntersecting ) {
-					const ele = entry.target;
-
-					getResponse( ele );
-
-					eleObserver.unobserve( ele );
-				}
-			} );
-		} );
-
-		[ ...widgets ].map( ( ele ) => ele.classList.contains( 'learnpress-widget-wrapper__restapi' ) && eleObserver.observe( ele ) );
-	}
+	widgets.forEach( ( ele ) => {
+		if ( ele.classList.contains( 'learnpress-widget-wrapper__restapi' ) ) {
+			getResponse( ele );
+		}
+	} );
 }
 
 document.addEventListener( 'DOMContentLoaded', function( event ) {

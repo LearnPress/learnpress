@@ -765,69 +765,46 @@ if ( ! function_exists( 'learn_press_pre_get_avatar_callback' ) ) {
 	 * @return string
 	 */
 	function learn_press_pre_get_avatar_callback( $avatar, $id_or_email = '', $size = array() ) {
-
-		//$profile = LP_Profile::instance();
-
-		/*if ( ! $profile->is_enable_avatar() ) {
-			return $avatar;
-		}*/
-
-		if ( ( isset( $size['gravatar'] ) && $size['gravatar'] ) || ( $size['default'] && $size['force_default'] ) ) {
-			return $avatar;
-		}
-
-		$user_id = 0;
-
-		/**
-		 * Get the ID of user from $id_or_email
-		 */
-		if ( ! is_numeric( $id_or_email ) && is_string( $id_or_email ) ) {
-			$user = get_user_by( 'email', $id_or_email );
-			if ( $user ) {
-				$user_id = $user->ID;
+		try {
+			if ( ( isset( $size['gravatar'] ) && $size['gravatar'] ) || ( $size['default'] && $size['force_default'] ) ) {
+				return $avatar;
 			}
-		} elseif ( is_numeric( $id_or_email ) ) {
-			$user_id = $id_or_email;
-		} elseif ( is_object( $id_or_email ) && isset( $id_or_email->user_id ) && $id_or_email->user_id ) {
-			$user_id = $id_or_email->user_id;
-		} elseif ( $id_or_email instanceof WP_Comment ) {
-			$user = get_user_by( 'email', $id_or_email->comment_author_email );
-			if ( $user ) {
-				$user_id = $user->ID;
-			}
-		}
 
-		if ( ! $user_id ) {
-			return $avatar;
-		}
+			$user_id = 0;
 
-		$user = LP_User_Factory::get_user( $user_id );
-
-		$profile_picture_src = $user->get_upload_profile_src();
-		if ( $profile_picture_src ) {
-			$setting_size = learn_press_get_avatar_thumb_size();
-			$img_size     = '';
-
-			// Get avatar size
-			if ( ! is_array( $size ) ) {
-				if ( $size === 'thumbnail' ) {
-					$img_size = '';
-					$height   = $setting_size['height'];
-					$width    = $setting_size['width'];
-				} else {
-					$height = 250;
-					$width  = 250;
+			/**
+			 * Get the ID of user from $id_or_email
+			 */
+			if ( ! is_numeric( $id_or_email ) && is_string( $id_or_email ) ) {
+				$user = get_user_by( 'email', $id_or_email );
+				if ( $user ) {
+					$user_id = $user->ID;
 				}
-			} else {
-				$img_size = $size['size'];
-				$height   = $size['height'];
-				$width    = $size['width'];
+			} elseif ( is_numeric( $id_or_email ) ) {
+				$user_id = $id_or_email;
+			} elseif ( is_object( $id_or_email ) && isset( $id_or_email->user_id ) && $id_or_email->user_id ) {
+				$user_id = $id_or_email->user_id;
+			} elseif ( $id_or_email instanceof WP_Comment ) {
+				$user = get_user_by( 'email', $id_or_email->comment_author_email );
+				if ( $user ) {
+					$user_id = $user->ID;
+				}
 			}
 
-			$avatar = '<img alt="' . esc_attr( $user->get_data( 'display_name' ) ) . '" src="' . esc_url_raw( $profile_picture_src ) . '" class="avatar avatar-' . $img_size . ' photo" height="' . $height . '" width="' . $width . '" />';
-		}
+			if ( ! $user_id ) {
+				return $avatar;
+			}
 
-		return $avatar;
+			$user = learn_press_get_user( $user_id );
+			if ( ! $user ) {
+				return $avatar;
+			}
+
+			return $user->get_profile_picture( '', $size['height'] ?? 32 );
+		} catch ( Throwable $e ) {
+			error_log( $e->getMessage() );
+			return $avatar;
+		}
 	}
 }
 add_filter( 'pre_get_avatar', 'learn_press_pre_get_avatar_callback', 1, 5 );
@@ -1015,11 +992,11 @@ function learn_press_update_user_profile_basic_information( $wp_error = false ) 
 
 	$update_data = array(
 		'ID'           => $user_id,
-		'first_name'   => LP_Request::get_param('first_name' ),
-		'last_name'    => LP_Request::get_param('last_name' ),
-		'description'  => LP_Request::get_param('description', '', 'html' ),
-		'display_name' => LP_Request::get_param('account_display_name' ),
-		'user_email'   => LP_Request::get_param('account_email' ),
+		'first_name'   => LP_Request::get_param( 'first_name' ),
+		'last_name'    => LP_Request::get_param( 'last_name' ),
+		'description'  => LP_Request::get_param( 'description', '', 'html' ),
+		'display_name' => LP_Request::get_param( 'account_display_name' ),
+		'user_email'   => LP_Request::get_param( 'account_email' ),
 	);
 
 	$update_data = apply_filters( 'learn-press/update-profile-basic-information-data', $update_data );

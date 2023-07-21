@@ -16,7 +16,7 @@ if ( ! $course ) {
 	return;
 }
 /**
- * @var LP_User
+ * @var LP_User $instructor
  */
 $instructor = $course->get_instructor();
 ?>
@@ -31,15 +31,15 @@ $instructor = $course->get_instructor();
 
 			<?php $socials = $instructor->get_profile_socials( $instructor->get_id() ); ?>
 			<?php if ( $socials ) : ?>
-				<div class="author-socials">
-					<?php echo wp_kses_post( implode( '', $socials ) ); ?>
-				</div>
+			<div class="author-socials">
+				<?php echo wp_kses_post( implode( '', $socials ) ); ?>
+			</div>
 			<?php endif; ?>
 		</div>
 
 		<div class="course-author__pull-right">
 			<div class="author-title"><?php echo wp_kses_post( $course->get_instructor_html() ); ?></div>
-			<div class="author-description margin-bottom">
+			<div class="author-description ">
 
 				<?php
 				/**

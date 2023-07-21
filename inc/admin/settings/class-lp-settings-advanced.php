@@ -28,6 +28,14 @@ class LP_Settings_Advanced extends LP_Abstract_Settings_Page {
 					'id'    => 'lp_metabox_setting_advanced',
 				),
 				array(
+					'title'    => esc_html__( 'Width container', 'learnpress' ),
+					'desc'     => sprintf( '%s', __( 'With of container, Ex: 1140px, 80rem', 'learnpress' ) ),
+					'id'       => 'width_container',
+					'type'     => 'text',
+					'default'  => '1290px',
+					'desc_tip' => true,
+				),
+				array(
 					'title'    => esc_html__( 'Primary color', 'learnpress' ),
 					'desc'     => sprintf( __( 'Default: %s', 'learnpress' ), '<code>#ffb606</code>' ),
 					'id'       => 'primary_color',

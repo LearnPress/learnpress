@@ -8,7 +8,7 @@
 		border: 0 solid rgba(204, 204, 204, 0.3);
 		border-bottom-width: 1px;
 		background: #fff;
-		font-size: 16px;
+		font-size: 1rem;
 		line-height: 1;
 		text-align: left;
 
@@ -28,7 +28,7 @@
 				border-bottom: none;
 				color: #333;
 				background: #f1f2f8;
-				font-size: 18px;
+				font-size: 1.125rem;
 			}
 		}
 	}
@@ -46,7 +46,7 @@
 				height: 62px;
 				color: #666;
 				background: #fff;
-				font-size: 16px;
+				font-size: 1rem;
 				font-weight: 300;
 
 				a {
@@ -80,7 +80,7 @@
 	.list-table-nav {
 
 		td {
-			font-size: 14px;
+			font-size: 0.875rem;
 
 			&.nav-text {
 				text-align: left;
@@ -105,7 +105,7 @@
 .lp-label {
 	display: inline-block;
 	color: #666;
-	font-size: 16px;
+	font-size: 1rem;
 	font-weight: 300;
 	line-height: 1;
 }
@@ -138,7 +138,7 @@
 
 			.description {
 				margin-top: 10px;
-				font-size: 14px;
+				font-size: 0.875rem;
 				font-style: italic;
 				line-height: 1.4;
 			}
@@ -173,7 +173,7 @@
 		.form-field {
 
 			label {
-				font-size: 16px;
+				font-size: 1rem;
 				font-weight: 400;
 				user-select: none;
 			}
@@ -186,7 +186,7 @@
 				height: 42px;
 				border: 1px solid #bbb;
 				border-radius: 4px;
-				line-height: 42px;
+				line-height: 2.625rem;
 
 				&:focus {
 					border: none;
@@ -212,14 +212,14 @@
 		>p {
 			>label {
 				color: #666;
-				font-size: 16px;
+				font-size: 1rem;
 				cursor: pointer;
 				user-select: none;
 			}
 
 			>a {
 				color: #666;
-				font-size: 16px;
+				font-size: 1rem;
 				line-height: 1;
 			}
 
@@ -238,7 +238,7 @@
 		color: #fff;
 		background: var(--lp-primary-color);
 		box-shadow: none;
-		font-size: 16px;
+		font-size: 1rem;
 		line-height: 1;
 		vertical-align: middle;
 		text-decoration: none;
@@ -260,6 +260,7 @@
 	flex-direction: column;
 	justify-content: center;
 	position: relative;
+	width: 100%;
 
 	input[type="password"] {
 		padding-right: 2.5rem;
