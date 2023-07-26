@@ -574,7 +574,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		 * @param LP_Course_Filter $filter
 		 * @param int $total_rows
 		 *
-		 * @return array|null|string|int
+		 * @return object|null|string|int
 		 * @author tungnx
 		 * @version 1.0.0
 		 * @sicne 4.1.5
@@ -636,6 +636,13 @@ if ( ! class_exists( 'LP_Course' ) ) {
 						break;
 					case 'popular':
 						$filter = $lp_course_db->get_courses_order_by_popular( $filter );
+						break;
+					case 'post_title':
+						$filter->order = 'ASC';
+						break;
+					case 'menu_order':
+						$filter->order_by = 'menu_order';
+						$filter->order    = 'ASC';
 						break;
 					default:
 						$filter = apply_filters( 'lp/courses/filter/order_by/' . $filter->order_by, $filter );

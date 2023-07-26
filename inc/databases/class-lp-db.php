@@ -573,7 +573,7 @@ class LP_Database {
 	/**
 	 * Get result query
 	 *
-	 * @return array|null|int|string
+	 * @return array|object|null|int|string
 	 * @throws Exception
 	 * @author tungnx
 	 * @version 1.0.0

@@ -459,7 +459,7 @@ class LP_Course_DB extends LP_Database {
 	 * @param LP_Course_Filter $filter
 	 * @param int $total_rows return total_rows
 	 *
-	 * @return array|null|int|string
+	 * @return array|object|null|int|string
 	 * @throws Exception
 	 * @author tungnx
 	 * @version 1.0.1
