@@ -113,82 +113,15 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 		$response->data = new stdClass();
 
 		try {
-			$filter             = new LP_Course_Filter();
-			$filter->page       = absint( $request['paged'] ?? 1 );
-			$filter->post_title = LP_Helper::sanitize_params_submitted( trim( $request['c_search'] ?? '' ) );
-			$fields_str         = LP_Helper::sanitize_params_submitted( urldecode( $request['c_fields'] ?? '' ) );
-			$fields_exclude_str = LP_Helper::sanitize_params_submitted( urldecode( $request['c_exclude_fields'] ?? '' ) );
-			if ( ! empty( $fields_str ) ) {
-				$fields         = explode( ',', $fields_str );
-				$filter->fields = $fields;
-			}
-
-			if ( ! empty( $fields_exclude_str ) ) {
-				$fields_exclude         = explode( ',', $fields_exclude_str );
-				$filter->exclude_fields = $fields_exclude;
-			}
-
-			$filter->post_author = LP_Helper::sanitize_params_submitted( $request['c_author'] ?? 0 );
-			$author_ids_str      = LP_Helper::sanitize_params_submitted( $request['c_authors'] ?? 0 );
-			if ( ! empty( $author_ids_str ) ) {
-				$author_ids           = explode( ',', $author_ids_str );
-				$filter->post_authors = $author_ids;
-			}
-
-			// Filter on Courses
-			if ( ! empty( $request['sort_by'] ) ) {
-				$filter->sort_by[] = $request['sort_by'];
-			}
-
-			// Sort by level
-			$levels_str = LP_Helper::sanitize_params_submitted( urldecode( $request['c_level'] ?? '' ) );
-			if ( ! empty( $levels_str ) ) {
-				$levels_str     = str_replace( 'all', '', $levels_str );
-				$levels         = explode( ',', $levels_str );
-				$filter->levels = $levels;
-			}
-
-			// Find by category
-			$term_ids_str = LP_Helper::sanitize_params_submitted( urldecode( $request['term_id'] ?? '' ) );
-			if ( ! empty( $term_ids_str ) ) {
-				$term_ids         = explode( ',', $term_ids_str );
-				$filter->term_ids = $term_ids;
-			}
-
-			// Find by tag
-			$tag_ids_str = LP_Helper::sanitize_params_submitted( urldecode( $request['tag_id'] ?? '' ) );
-			if ( ! empty( $tag_ids_str ) ) {
-				$tag_ids         = explode( ',', $tag_ids_str );
-				$filter->tag_ids = $tag_ids;
-			}
-
-			$on_sale                               = absint( $request['on_sale'] ?? '0' );
-			1 === $on_sale ? $filter->sort_by[]    = 'on_sale' : '';
-			$on_feature                            = absint( $request['on_feature'] ?? '0' );
-			1 === $on_feature ? $filter->sort_by[] = 'on_feature' : '';
-
-			$filter->order_by = LP_Helper::sanitize_params_submitted( ! empty( $request['order_by'] ) ? $request['order_by'] : 'post_date' );
-			$filter->order    = LP_Helper::sanitize_params_submitted( ! empty( $request['order'] ) ? $request['order'] : 'DESC' );
-			$filter->limit    = $request['limit'] ?? LP_Settings::get_option( 'archive_course_limit', 10 );
-
-			// For search suggest courses
-			if ( ! empty( $request['c_suggest'] ) ) {
-				$filter->only_fields = [ 'ID', 'post_title' ];
-				$filter->limit       = apply_filters( 'learn-press/rest-api/courses/suggest-limit', 10 );
-				$filter->max_limit   = apply_filters( 'learn-press/rest-api/courses/suggest-max-limit', 10 );
-			}
-
-			$return_type = $request['return_type'] ?? 'html';
-			if ( 'json' !== $return_type ) {
-				$filter->only_fields = array( 'DISTINCT(ID) AS ID' );
-			}
+			$filter = new LP_Course_Filter();
+			LP_course::handle_params_for_query_courses( $filter, $request->get_params() );
 
 			$total_rows = 0;
 			$filter     = apply_filters( 'lp/api/courses/filter', $filter, $request );
 
 			$courses     = LP_Course::get_courses( $filter, $total_rows );
 			$total_pages = LP_Database::get_total_pages( $filter->limit, $total_rows );
-
+			$return_type = $request['return_type'] ?? 'html';
 			if ( 'json' === $return_type ) {
 				$response->data->courses     = $courses;
 				$response->data->total_pages = $total_pages;
