@@ -716,7 +716,7 @@ class LP_Checkout {
 				} else {
 					$this->payment_method = $available_gateways[ $this->payment_method_str ];
 				}
-			} else {
+
 				$this->payment_method->validate_fields();
 			}
 
