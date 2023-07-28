@@ -3,7 +3,7 @@
 	display: none;
 	margin: 0 5px;
 	color: #444;
-	font-size: 0.8125rem;
+	font-size: 0.8em;
 	font-style: normal;
 	line-height: 1;
 	vertical-align: baseline;
@@ -31,11 +31,11 @@
 	padding: 0.618em 1em;
 	color: #fff;
 	background: #383838;
-	font-size: 0.75rem;
+	font-size: 0.8em;
 	line-height: 1.2em;
 
 	> * {
-		font-size: 0.75rem;
+		font-size: 0.8em;
 	}
 
 	@include border-radius(3px);

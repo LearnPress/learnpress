@@ -106,7 +106,7 @@
 				height: 36px;
 				padding: 6px 16px;
 				border: 1px solid #222;
-				line-height: 2.25rem;
+				line-height: 2.25em;
 			}
 		}
 
@@ -131,7 +131,7 @@
 		.lp-fib-note {
 			display: flex;
 			margin-left: 10px;
-			font-size: 0.875rem;
+			font-size: 0.8em;
 			font-weight: 400;
 			align-items: center;
 
@@ -149,7 +149,6 @@
 				padding: 5px 20px;
 				border: 2px solid $msg-success;
 				border-radius: 5px;
-				font-size: 1rem;
 			}
 		}
 	}
@@ -210,14 +209,14 @@
 	.course-title {
 		margin: 0;
 		padding: 0;
-		line-height: 4.375rem;
+		font-size: 1em;
+		line-height: 4.375em;
 		letter-spacing: unset;
 
 		a {
 			display: -webkit-box;
 			overflow: hidden;
 			color: #fff;
-			font-size: 1rem;
 			font-weight: 400;
 			text-overflow: ellipsis;
 			-webkit-line-clamp: 1;
@@ -253,7 +252,7 @@
 	.number {
 		padding-right: 10px;
 		color: #fff;
-		font-size: 0.875rem;
+		font-size: 0.8em;
 		font-weight: 300;
 	}
 
@@ -265,10 +264,10 @@
 		border: none;
 		color: #fff;
 		background: var(--lp-primary-color);
-		font-size: 0.875rem;
+		font-size: 0.8em;
 		font-weight: 400;
 		justify-content: center;
-		line-height: 2.5rem;
+		line-height: 2.5em;
 		align-items: center;
 
 		&:hover {
@@ -320,7 +319,7 @@
 			color: #999;
 			background: transparent;
 			box-shadow: none;
-			font-size: 0.875rem;
+			font-size: 0.8em;
 			line-height: 1;
 
 			@include box-sizing(border-box);
@@ -348,7 +347,7 @@
 			&::before {
 				color: #666;
 				font-family: "Font Awesome 5 Free";
-				font-size: 1rem;
+				font-size: 1em;
 				font-weight: 900;
 				content: "\f002";
 			}
@@ -409,19 +408,19 @@
 				overflow: hidden;
 				margin: 0 0 -2px 0;
 				padding: 0;
-				font-size: 1rem;
+				font-size: 1em;
 				font-weight: normal;
 			}
 
 			.search-results__item-author {
-				font-size: 0.75rem;
+				font-size: 0.75em;
 			}
 
 			.course-price {
 				position: absolute;
 				right: 10px;
 				bottom: 10px;
-				font-size: 0.75rem;
+				font-size: 0.75em;
 
 				.origin-price {
 					font-size: smaller;
@@ -446,7 +445,7 @@
 					border: 1px solid #d9e0f1;
 					border-radius: 4px;
 					color: #777;
-					font-size: 0.875rem;
+					font-size: 0.8em;
 					line-height: 1;
 					cursor: pointer;
 				}
@@ -533,7 +532,7 @@
 				border-radius: 0;
 				color: #999;
 				background: #f5f5f5;
-				font-size: 0.875rem;
+				font-size: 0.8em;
 
 				&::before,
 				&::after {
@@ -572,14 +571,14 @@
 
 		.section-title {
 			color: #000;
-			font-size: 1.25rem;
+			font-size: 1.25em;
 			font-weight: 500;
 
 			.show-desc {
 
 				&::before {
 					font-family: "Font Awesome 5 Free";
-					font-size: 1.125rem;
+					font-size: 1.125em;
 					font-weight: 900;
 					content: "\f0d7";
 				}
@@ -645,7 +644,6 @@
 
 	}
 	.section-item-link {
-		line-height: 1;
 		padding-right: 0;
 		&::before {
 			vertical-align: unset;
@@ -653,8 +651,6 @@
 
 		.item-name {
 			width: 100%;
-			font-size: 0.875rem;
-			line-height: 1.3125rem;
 			font-weight: 500;
 		}
 
@@ -667,7 +663,7 @@
 			padding: 0;
 			color: #999;
 			background: transparent;
-			font-size: 0.75rem;
+			font-size: 0.75em;
 			line-height: 1.5;
 			height: auto;
 
@@ -677,8 +673,8 @@
 			}
 
 			&::before {
-				font-size: 0.75rem;
-				line-height: 1.3125rem;
+				font-size: 0.75em;
+				line-height: 1.3125em;
 			}
 		}
 	}
@@ -697,7 +693,7 @@
 		margin: 0 10px 0 0;
 		padding: 12px 29px;
 		border-color: var(--lp-secondary-color);
-		font-size: 0.875rem;
+		font-size: 0.8em;
 
 		&.instant-check {
 
@@ -771,13 +767,12 @@
 			border-color: transparent;
 			color: #fff;
 			background: #3db748;
-			font-size: 1rem;
 			align-items: center;
 			justify-content: center;
 
 			i {
 				margin-left: 9px;
-				font-size: 0.875rem;
+				font-size: 0.8em;
 			}
 		}
 	}
@@ -828,18 +823,17 @@
 		.prev,
 		.next {
 			display: flex;
-			line-height: 3.125rem;
+			line-height: 3.125em;
 
 			a {
 				display: block;
 				color: #666;
-				font-size: 1rem;
 			}
 
 			&::before {
 				color: #999;
 				font-family: "Font Awesome 5 Free";
-				font-size: 0.75rem;
+				font-size: 0.75em;
 				font-weight: 900;
 			}
 
@@ -902,7 +896,7 @@
 		padding: 10px 15px;
 		color: #666;
 		background: #ccc;
-		font-size: 0.875rem;
+		font-size: 0.8em;
 		font-weight: 300;
 		line-height: 1;
 		@media (max-width: 1024px) {
@@ -939,7 +933,7 @@
 		left: 50%;
 		color: var(--lp-primary-color);
 		font-family: "Font Awesome 5 Free";
-		font-size: 1.125rem;
+		font-size: 1.125em;
 		font-weight: 900;
 		content: "\f0d9";
 		transition: 0.25s;
@@ -1088,18 +1082,12 @@ body {
 		margin-top: 0;
 		margin-bottom: 24px;
 		color: #333;
-		font-size: 1.875rem;
+		font-size: 1.875em;
 		font-weight: 600;
 
 		@media (max-width: 767px) {
 			text-align: center;
 		}
-	}
-
-	h4 {
-		font-size: 1.5rem;
-		font-weight: 500;
-		line-height: 1.5;
 	}
 
 	.content-item-summary {
@@ -1112,16 +1100,13 @@ body {
 		h2, h3, h4, h5, h6 {
 			margin-top: 0;
 			margin-bottom: 18px;
-			font-size: 1.125rem;
 			letter-spacing: unset;
 		}
 
 		p {
 			margin: 0 0 18px 0;
 			color: #666;
-			font-size: 1rem;
 			font-weight: 300;
-			line-height: 1.625rem;
 		}
 
 		img {
@@ -1138,9 +1123,7 @@ body {
 	.quiz-content {
 		margin-bottom: 40px;
 		color: #666;
-		font-size: 1rem;
 		font-weight: 300;
-		line-height: 1.625rem;
 
 		img {
 			max-width: 100%;
@@ -1276,9 +1259,7 @@ body {
 				padding: 10px 16px;
 				color: #666;
 				background-color: transparent;
-				font-size: 1rem;
 				font-weight: 300;
-				line-height: 1;
 				border: 1px solid;
 				cursor: pointer;
 
@@ -1287,7 +1268,6 @@ body {
 					display: inline-block;
 					padding: 10px;
 					background: transparent;
-					font-size: 1rem;
 					text-align: center;
 					text-decoration: none;
 					text-transform: none;
@@ -1308,9 +1288,7 @@ body {
 		margin-bottom: 0;
 		padding: 8px 0;
 		color: #5383f7;
-		font-size: 1rem;
 		font-weight: normal;
-		line-height: 1;
 
 		span.show-desc {
 			display: inline-block;
@@ -1323,7 +1301,7 @@ body {
 
 			&::before {
 				font-family: "Font Awesome 5 Free";
-				font-size: 1.125rem;
+				font-size: 1.125em;
 				font-weight: 900;
 				content: "\f107";
 			}

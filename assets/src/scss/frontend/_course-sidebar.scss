@@ -55,7 +55,7 @@
 				padding: 20px;
 				border: 2px solid $msg-success;
 				border-radius: 9px;
-				font-size: 0.9375rem;
+				font-size: 0.93em;
 				line-height: 1.4;
 
 				&.error {
@@ -83,7 +83,7 @@
 				margin-bottom: 7px;
 				padding: 0;
 				color: #333;
-				font-size: 1rem;
+				font-size: 1em;
 				font-weight: 500;
 				flex: 1 1 auto;
 				width: auto;
@@ -99,9 +99,9 @@
 			display: block;
 			margin: 0;
 			color: #666;
-			font-size: 1rem;
+			font-size: 1em;
 			font-weight: 300;
-			line-height: 1rem;
+			line-height: 1em;
 			text-align: right;
 		}
 	}
@@ -147,9 +147,10 @@
 	.course-time-row {
 		display: flex;
 		color: #666;
-		font-size: 1rem;
+		font-size: 1em;
 		font-weight: 300;
 		justify-content: space-between;
+		margin-bottom: 0;
 
 		strong {
 			color: #333;
@@ -158,9 +159,7 @@
 
 		time {
 			color: #666;
-			font-size: 1rem;
 			font-weight: 300;
-			line-height: 1.5rem;
 		}
 	}
 

@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2023-07-25T10:39:03+02:00\n"
+"POT-Creation-Date: 2023-07-28T11:24:45+02:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.8.1\n"
 "X-Domain: learnpress\n"
@@ -3670,12 +3670,12 @@ msgstr ""
 msgid "No payment method is selected"
 msgstr ""
 
-#: inc/class-lp-checkout.php:746
+#: inc/class-lp-checkout.php:748
 #: templates/checkout/empty-cart.php:16
 msgid "Your cart is currently empty."
 msgstr ""
 
-#: inc/class-lp-checkout.php:753
+#: inc/class-lp-checkout.php:755
 msgid "Type item buy invalid!"
 msgstr ""
 
@@ -5091,8 +5091,8 @@ msgid "The course ID is invalid."
 msgstr ""
 
 #: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:356
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:335
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:480
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:268
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:413
 msgid "Error: The course cannot be added to the cart."
 msgstr ""
 
@@ -6894,90 +6894,90 @@ msgstr ""
 msgid "successfully"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:247
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:180
 msgid "Showing only one result"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:250
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:183
 msgid "Showing last course of %s results"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:253
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:186
 msgid "Showing %1$s of %2$s results"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:288
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:221
 msgid "Invalid course!"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:295
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:228
 msgid "Error: Cannot enroll in the course."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:316
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:249
 msgid "Error: Cannot Enroll in the course."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:355
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:288
 msgid "Congrats! You have enrolled in the course successfully. Redirecting..."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:373
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:495
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:306
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:428
 msgid "Error: Please set up a page for checkout."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:378
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:311
 msgid "Redirecting..."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:408
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:341
 msgid "Error: Invalid Course ID."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:413
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:346
 msgid "Error: No Course available."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:418
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:351
 msgid "Error: Cannot purchase the course!"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:442
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:375
 msgid "Reset Course progress"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:448
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:381
 msgid "Continue Course progress"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:456
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:389
 msgid "Repurchase Options"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:502
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:435
 msgid "\"%s\" has been added to your cart."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:527
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:460
 msgid "Invalid params"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:533
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:668
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:466
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:601
 #: inc/user/abstract-lp-user.php:855
 msgid "Invalid course"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:545
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:478
 msgid "You can't retry the course"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:550
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:483
 msgid "Invalid course data of user"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:574
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:507
 msgid "Now you can begin this course"
 msgstr ""
 

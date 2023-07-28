@@ -66,11 +66,11 @@
 .message-box-title {
 	margin: 0 0 40px 0;
 	color: #fff;
-	font-size: 2.125rem;
+	font-size: 2.125em;
 }
 
 .message-box-content {
-	font-size: 1rem;
+	font-size: 1em;
 	line-height: 1.5;
 }
 
@@ -107,7 +107,7 @@
 		border: 1px solid #ddd;
 
 		legend {
-			font-size: 1rem;
+			font-size: 1em;
 		}
 	}
 }
@@ -148,7 +148,7 @@
 			}
 
 			&__rendered {
-				line-height: 1.75rem !important;
+				line-height: 1.75em !important;
 			}
 
 			&__arrow {
@@ -168,7 +168,7 @@
 
 	.quick-add-page-actions {
 		a {
-			font-size: 0.8125rem;
+			font-size: 0.8125em;
 			text-decoration: none;
 		}
 	}
@@ -185,7 +185,7 @@
 			border-color: #7e8993;
 
 			.select2-selection__rendered {
-				line-height: 1.75rem !important;
+				line-height: 1.75em !important;
 			}
 
 			.select2-selection__arrow {
@@ -209,7 +209,7 @@
 	display: inline-block;
 	margin: 0 5px;
 	color: #999;
-	font-size: 1.0625rem;
+	font-size: 1.0625em;
 	vertical-align: middle;
 
 	&.icon::after {
@@ -239,7 +239,7 @@
 	width: 100%;
 	border: 1px solid #ddd;
 	border-collapse: collapse;
-	font-size: 0.875rem;
+	font-size: 0.875em;
 
 	th,
 	td {
@@ -278,7 +278,7 @@
 		a {
 			display: block;
 			margin-top: 5px;
-			font-size: 0.75rem;
+			font-size: 0.75em;
 			text-decoration: none;
 		}
 

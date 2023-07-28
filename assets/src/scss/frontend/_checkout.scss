@@ -12,7 +12,7 @@
 			margin-top: 0;
 			margin-bottom: 18px;
 			color: #333;
-			font-size: 1.5rem;
+			font-size: 1.5em;
 			font-weight: 600;
 			line-height: 1;
 			font-family: var(--wp--preset--font-family--system-font);
@@ -48,7 +48,7 @@
 			color: #666;
 			font-size: 1rem;
 			font-weight: 300;
-			line-height: 1.625rem;
+			line-height: 1.625em;
 
 			input[type="checkbox"] {
 				position: relative;
@@ -71,7 +71,7 @@
 				left: 2px;
 				color: #41abec;
 				font-family: "Font Awesome 5 Free";
-				font-size: 0.875rem;
+				font-size: 0.875em;
 				font-weight: 900;
 				line-height: 1;
 				content: "\f00c";
@@ -80,9 +80,7 @@
 
 		a {
 			color: #666;
-			font-size: 1rem;
 			font-weight: 300;
-			line-height: 1.625rem;
 			text-decoration: underline;
 			text-decoration-color: #ccc;
 
@@ -117,10 +115,10 @@
 			border: 1px solid #ccc;
 			border-radius: 3px;
 			background-color: #fff;
-			font-size: 0.875rem;
+			font-size: 0.875em;
 			font-weight: 300;
 			font-style: italic;
-			line-height: 2.6875rem;
+			line-height: 2.6875em;
 
 			&:focus {
 				border-color: var(--lp-primary-color);
@@ -202,7 +200,6 @@
 		padding: 8px 20px;
 		border: 2px solid #41abec;
 		border-radius: 4px;
-		font-size: 1rem;
 		transition: all 0.2s ease;
 	}
 
@@ -219,7 +216,6 @@
 	.lp-guest-switch-login {
 		margin-top: 1em;
 		color: #666;
-		font-size: 1rem;
 		font-weight: 400;
 
 		a {
@@ -315,9 +311,9 @@
 	}
 
 	.course-name {
-		font-size: 1rem;
+		font-size: 1em;
 		font-weight: 600;
-		line-height: 1.625rem;
+		line-height: 1.625em;
 
 		a {
 			display: -webkit-box;
@@ -335,9 +331,9 @@
 	.col-number {
 		min-width: 50px;
 		color: #666;
-		font-size: 1rem;
+		font-size: 1em;
 		font-weight: 600;
-		line-height: 1.625rem;
+		line-height: 1.625em;
 		text-align: right;
 	}
 
@@ -357,9 +353,9 @@
 
 		.cart-subtotal {
 			color: #666;
-			font-size: 1rem;
+			font-size: 1em;
 			font-weight: 600;
-			line-height: 1.625rem;
+			line-height: 1.625em;
 
 			& > th {
 				padding: 20px 20px 17px 0;
@@ -370,9 +366,9 @@
 
 			th {
 				color: #333;
-				font-size: 1rem;
+				font-size: 1em;
 				font-weight: 600;
-				line-height: 1.625rem;
+				line-height: 1.625em;
 			}
 		}
 
@@ -432,7 +428,6 @@
 		display: flex;
 		margin: 0;
 		color: #666;
-		font-size: 1rem;
 		font-weight: 400;
 
 		a {
@@ -467,13 +462,13 @@
 		float: right;
 		margin-top: 5px;
 		color: #999;
-		font-size: 0.75rem;
+		font-size: 0.75em;
 		font-weight: normal;
 
 		i {
 			margin-right: 5px;
 			color: #ccc;
-			font-size: 1.125rem;
+			font-size: 1.125em;
 		}
 
 		@media (max-width: 767px) {
@@ -572,9 +567,9 @@
 
 .lp-terms-and-conditions {
 	color: #666;
-	font-size: 1rem;
+	font-size: 1em;
 	font-weight: 300;
-	line-height: 1.625rem;
+	line-height: 1.625em;
 
 	a {
 		color: #41abec;
