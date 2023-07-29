@@ -112,7 +112,8 @@ window.lpCourseFilter = {
 		const formData = new FormData( form ); // Create a FormData object from the form
 		const elListCourse = document.querySelector( '.learn-press-courses' );
 		const skeleton = document.querySelector( '.lp-archive-course-skeleton' );
-		const filterCourses = { paged: 1, eventFilter: 1 };
+		const filterCourses = { paged: 1 };
+		window.lpCourseList.updateEventTypeBeforeFetch( 'filter' );
 		for ( const pair of formData.entries() ) {
 			const key = pair[ 0 ];
 			const value = formData.getAll( key );

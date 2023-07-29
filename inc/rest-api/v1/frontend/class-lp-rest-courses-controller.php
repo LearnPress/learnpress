@@ -144,12 +144,12 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 						switch ( $pagination_type ) {
 							case 'load-more':
 								if ( $filter->page < $total_pages ) {
-									$response->data->pagination = '<button class="courses-btn-load-more">Load more <span class="lp-loading-circle hide"></span></button>';
+									$response->data->pagination = '<button class="courses-btn-load-more learn-press-pagination">Load more <span class="lp-loading-circle hide"></span></button>';
 								}
 								break;
 							case 'infinite':
 								if ( $filter->page < $total_pages ) {
-									$response->data->pagination = '<div class="courses-load-infinite"><span class="lp-loading-circle hide"></span></div>';
+									$response->data->pagination = '<div class="courses-load-infinite learn-press-pagination"><span class="lp-loading-circle hide"></span></div>';
 								}
 								break;
 							default:

@@ -324,15 +324,15 @@ document.addEventListener( 'scroll', function( e ) {
 } );
 
 let isLoadingInfinite = false;
-let isPaged = 1;
+const isPaged = 1;
 
 window.lpCourseList = ( () => {
 	const classArchiveCourse = 'lp-archive-courses';
 	const classPaginationCourse = 'learn-press-pagination';
 	const currentUrl = lpGetCurrentURLNoParam();
-	const urlParams = {};
 	let filterCourses = {};
 	const typePagination = lpGlobalSettings.lpArchivePaginationType || 'number';
+	let typeEventBeforeFetch;
 	const fetchAPI = ( args, callBack = {} ) => {
 		console.log( 'Fetch API Courses' );
 		const url = lpAddQueryArgs( API.apiCourses, args );
@@ -350,6 +350,7 @@ window.lpCourseList = ( () => {
 	};
 	return {
 		init: () => {
+			const urlParams = {};
 			for ( const [ key, val ] of urlSearchParams.entries() ) {
 				urlParams[ key ] = val;
 			}
@@ -357,6 +358,9 @@ window.lpCourseList = ( () => {
 			filterCourses = { ...lpGlobalSettings.lpArchiveSkeleton, ...urlParams };
 			filterCourses.paged = parseInt( filterCourses.paged || 1 );
 			window.localStorage.setItem( 'lp_filter_courses', JSON.stringify( filterCourses ) );
+		},
+		updateEventTypeBeforeFetch: ( type ) => {
+			typeEventBeforeFetch = type;
 		},
 		onChangeSortBy: ( e, target ) => {
 			if ( ! target.classList.contains( 'course-order-by' ) ) {
@@ -374,16 +378,19 @@ window.lpCourseList = ( () => {
 			if ( target.classList.contains( 'page-numbers' ) ) {
 				e.preventDefault();
 				filterCourses.paged = target.textContent;
+				typeEventBeforeFetch = 'number';
 				window.lpCourseList.triggerFetchAPI( filterCourses );
 			} else if ( parent ) {
 				e.preventDefault();
 
 				const pageCurrent = parseInt( filterCourses.paged || 1 );
+
 				if ( parent.classList.contains( 'prev' ) ) {
 					filterCourses.paged = pageCurrent - 1;
 				} else {
 					filterCourses.paged = pageCurrent + 1;
 				}
+				typeEventBeforeFetch = 'number';
 				window.lpCourseList.triggerFetchAPI( filterCourses );
 			}
 		},
@@ -412,16 +419,13 @@ window.lpCourseList = ( () => {
 				for ( const entry of entries ) {
 					// If the entry is intersecting, load the image.
 					if ( entry.isIntersecting ) {
-						const param = { ...lpGlobalSettings.lpArchiveSkeleton, ...urlParams };
-						if ( ! param.paged ) {
-							param.paged = 1;
-						}
+						++filterCourses.paged;
 
 						if ( isLoadingInfinite ) {
 							return;
 						}
 
-						window.lpCourseList.triggerFetchAPI( { ...param, paged: ++isPaged } );
+						window.lpCourseList.triggerFetchAPI( filterCourses );
 
 						//observer.unobserve( entry.target );
 					}
@@ -443,19 +447,24 @@ window.lpCourseList = ( () => {
 			filterCourses = args;
 
 			let callBack;
-			switch ( typePagination ) {
+			switch ( typeEventBeforeFetch ) {
 			case 'infinite':
 				callBack = window.lpCourseList.callBackPaginationTypeInfinite( elArchive, elListCourse );
 				break;
 			case 'load-more':
 				callBack = window.lpCourseList.callBackPaginationTypeLoadMore( args, elArchive, elListCourse );
 				break;
-			default:
+			case 'filter':
+				callBack = window.lpCourseList.callBackFilter( args, elArchive, elListCourse );
+				break;
+			case 'custom':
+				callBack = args.customCallBack || false;
+				break;
+			default: // number
 				// Change url by params filter courses
 				const urlPush = lpAddQueryArgs( currentUrl, args );
 				window.history.pushState( '', '', urlPush );
 
-				filterCourses = args;
 				// Save filter courses to Storage
 				window.localStorage.setItem( 'lp_filter_courses', JSON.stringify( args ) );
 
@@ -467,16 +476,71 @@ window.lpCourseList = ( () => {
 				return;
 			}
 
+			console.log( 'Args', args );
+
 			fetchAPI( args, callBack );
+		},
+		callBackFilter: ( args, elArchive, elListCourse ) => {
+			if ( ! elListCourse ) {
+				return;
+			}
+
+			const skeleton = elListCourse.querySelector( '.lp-archive-course-skeleton' );
+			if ( ! skeleton ) {
+				return;
+			}
+
+			return {
+				before: () => {
+					args.paged = 1;
+					window.history.pushState( '', '', lpAddQueryArgs( currentUrl, args ) );
+					window.localStorage.setItem( 'lp_filter_courses', JSON.stringify( args ) );
+					if ( skeleton ) {
+						skeleton.style.display = 'block';
+					}
+				},
+				success: ( res ) => {
+					// Remove all items before insert new items.
+					const elLis = elListCourse.querySelectorAll( ':not(.lp-archive-course-skeleton)' );
+					elLis.forEach( ( elLi ) => {
+						const parent = elLi.closest( '.lp-archive-course-skeleton' );
+						if ( parent ) {
+							return;
+						}
+						elLi.remove();
+					} );
+
+					// Insert new items.
+					elListCourse.insertAdjacentHTML( 'afterbegin', res.data.content || '' );
+
+					// Check if Pagination exists will remove.
+					const elPagination = document.querySelector( `.${ classPaginationCourse }` );
+					if ( elPagination ) {
+						elPagination.remove();
+					}
+
+					// Insert Pagination.
+					const pagination = res.data.pagination || '';
+					elListCourse.insertAdjacentHTML( 'afterend', pagination );
+				},
+				error: ( error ) => {
+					elListCourse.innerHTML += `<div class="lp-ajax-message error" style="display:block">${ error.message || 'Error' }</div>`;
+				},
+				completed: () => {
+					if ( skeleton ) {
+						skeleton.style.display = 'none';
+					}
+					// Scroll to archive element
+					const optionScroll = { behavior: 'smooth' };
+					elListCourse.closest( '.lp-archive-courses' ).scrollIntoView( optionScroll );
+				},
+			};
 		},
 		callBackPaginationTypeNumber: ( elListCourse ) => {
 			if ( ! elListCourse ) {
 				return;
 			}
 			const skeleton = elListCourse.querySelector( '.lp-archive-course-skeleton' );
-			if ( ! skeleton ) {
-				return;
-			}
 
 			return {
 				before: () => {
@@ -631,7 +695,7 @@ window.lpCourseList = ( () => {
 
 							if ( elListCourse && skeleton ) {
 								clearInterval( detectedElArchivex );
-								skeleton.insertAdjacentHTML( 'beforebegin', res.data.content || '' );
+								elListCourse.insertAdjacentHTML( 'afterbegin', res.data.content || '' );
 								skeleton.style.display = 'none';
 
 								const pagination = res.data.pagination || '';
@@ -643,7 +707,6 @@ window.lpCourseList = ( () => {
 
 				if ( 'number' !== typePagination ) {
 					filterCourses.paged = 1;
-					//window.localStorage.setItem( 'lp_filter_courses', JSON.stringify( filterCourses ) );
 				}
 				fetchAPI( filterCourses, callBack );
 			}
