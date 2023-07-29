@@ -8,8 +8,6 @@
 		border: 0 solid rgba(204, 204, 204, 0.3);
 		border-bottom-width: 1px;
 		background: #fff;
-		font-size: 1em;
-		line-height: 1;
 		text-align: left;
 
 		@media (max-width: 767px) {
@@ -46,7 +44,6 @@
 				height: 62px;
 				color: #666;
 				background: #fff;
-				font-size: 1em;
 				font-weight: 300;
 
 				a {
@@ -105,9 +102,7 @@
 .lp-label {
 	display: inline-block;
 	color: #666;
-	font-size: 1em;
 	font-weight: 300;
-	line-height: 1;
 }
 
 .learn-press-form {
@@ -164,8 +159,6 @@
 
 	h3 {
 		margin-bottom: 20px;
-		font-size: 28px;
-		line-height: 1.4;
 	}
 
 	.form-fields {
@@ -173,7 +166,6 @@
 		.form-field {
 
 			label {
-				font-size: 1em;
 				font-weight: 400;
 				user-select: none;
 			}
@@ -212,15 +204,12 @@
 		>p {
 			>label {
 				color: #666;
-				font-size: 1em;
 				cursor: pointer;
 				user-select: none;
 			}
 
 			>a {
 				color: #666;
-				font-size: 1em;
-				line-height: 1;
 			}
 
 			&:last-child {
@@ -238,8 +227,6 @@
 		color: #fff;
 		background: var(--lp-primary-color);
 		box-shadow: none;
-		font-size: 1em;
-		line-height: 1;
 		vertical-align: middle;
 		text-decoration: none;
 	}
