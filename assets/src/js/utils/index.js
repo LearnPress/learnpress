@@ -507,7 +507,7 @@ $( document ).ready( function() {
 		$( '.learn-press-nav-tabs li.active:not(.default) a' ).trigger( 'click' );
 	}, 300 );
 
-	$( 'body.course-item-popup' ).parent().css( 'overflow', 'hidden' );
+	//$( 'body.course-item-popup' ).parent().css( 'overflow', 'hidden' );
 
 	( function() {
 		let timer = null,
