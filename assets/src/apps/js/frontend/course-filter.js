@@ -112,7 +112,7 @@ window.lpCourseFilter = {
 		const formData = new FormData( form ); // Create a FormData object from the form
 		const elListCourse = document.querySelector( '.learn-press-courses' );
 		const skeleton = document.querySelector( '.lp-archive-course-skeleton' );
-		const filterCourses = { paged: 1 };
+		const filterCourses = { paged: 1, eventFilter: 1 };
 		for ( const pair of formData.entries() ) {
 			const key = pair[ 0 ];
 			const value = formData.getAll( key );
@@ -122,7 +122,7 @@ window.lpCourseFilter = {
 		}
 
 		if ( lpGlobalSettings.is_course_archive && lpGlobalSettings.lpArchiveLoadAjax && elListCourse && skeleton ) {
-			lpArchiveRequestCourse( filterCourses );
+			window.lpCourseList.triggerFetchAPI( filterCourses );
 		} else {
 			const courseUrl = lpGlobalSettings.courses_url || '';
 			const url = new URL( courseUrl );
@@ -143,10 +143,10 @@ window.lpCourseFilter = {
 			elResult.innerHTML = '';
 		}
 		// Empty the values in the form.
-		for ( let i = 0; i < form.elements.length; i++ ) {
+		/*for ( let i = 0; i < form.elements.length; i++ ) {
 			form.elements[ i ].value = '';
 			form.elements[ i ].removeAttribute( 'checked' );
-		}
+		}*/
 		// If on the page archive course will call btnSubmit click.
 		if ( lpGlobalSettings.is_course_archive ) {
 			btnSubmit.click();

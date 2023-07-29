@@ -103,6 +103,7 @@ class LP_Assets extends LP_Abstract_Assets {
 				'lpArchiveSkeleton'                  => lp_archive_skeleton_get_args(),
 				'lpArchiveLoadAjax'                  => LP_Settings_Courses::is_ajax_load_courses() ? 1 : 0,
 				'lpArchiveNoLoadAjaxFirst'           => LP_Settings_Courses::is_ajax_load_courses() && LP_Settings_Courses::is_no_load_ajax_first_courses() ? 1 : 0,
+				'lpArchivePaginationType'            => LP_Settings::get_option( 'course_pagination_type' ),
 			),
 			'lp-checkout' => array(
 				'ajaxurl'            => home_url( '/' ),
@@ -277,7 +278,7 @@ class LP_Assets extends LP_Abstract_Assets {
 				),
 				'lp-course-filter'     => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/course-filter' . self::$_min_assets . '.js' ),
-					array( 'lp-courses' ),
+					array( 'lp-global' ),
 					array(),
 					1,
 					1

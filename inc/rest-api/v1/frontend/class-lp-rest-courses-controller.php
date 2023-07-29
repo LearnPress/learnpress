@@ -140,13 +140,29 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 						global $wp, $post;
 
 						// Template Pagination.
-						$response->data->pagination = learn_press_get_template_content(
-							'loop/course/pagination.php',
-							array(
-								'total' => $total_pages,
-								'paged' => $filter->page,
-							)
-						);
+						$pagination_type = LP_Settings::get_option( 'course_pagination_type' );
+						switch ( $pagination_type ) {
+							case 'load-more':
+								if ( $filter->page < $total_pages ) {
+									$response->data->pagination = '<button class="courses-btn-load-more">Load more <span class="lp-loading-circle hide"></span></button>';
+								}
+								break;
+							case 'infinite':
+								if ( $filter->page < $total_pages ) {
+									$response->data->pagination = '<div class="courses-load-infinite"><span class="lp-loading-circle hide"></span></div>';
+								}
+								break;
+							default:
+								$response->data->pagination = learn_press_get_template_content(
+									'loop/course/pagination.php',
+									array(
+										'total' => $total_pages,
+										'paged' => $filter->page,
+									)
+								);
+								break;
+						}
+						$response->data->pagination_type = $pagination_type;
 						// End Pagination
 
 						// For custom template

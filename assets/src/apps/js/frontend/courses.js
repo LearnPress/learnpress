@@ -1,5 +1,5 @@
 import API from './api';
-import { lpFetchAPI, lpAddQueryArgs, lpGetCurrentURLNoParam } from '../utils/utils';
+import { lpAddQueryArgs, lpFetchAPI, lpGetCurrentURLNoParam } from '../utils/utils';
 
 if ( undefined === lpGlobalSettings ) {
 	console.log( 'lpGlobalSettings is undefined' );
@@ -167,7 +167,7 @@ window.lpArchiveRequestCourse = ( args, callBackSuccess ) => {
 
 // Call API load courses when js loaded.
 if ( ! lpGlobalSettings.lpArchiveNoLoadAjaxFirst ) {
-	lpArchiveRequestCourse( { ...lpGlobalSettings.lpArchiveSkeleton, ...urlParams } );
+	//lpArchiveRequestCourse( { ...lpGlobalSettings.lpArchiveSkeleton, ...urlParams } );
 } else {
 	firstLoad = 0;
 }
@@ -281,7 +281,7 @@ const LPArchiveCourseInit = () => {
 // 	LPArchiveCourseInit();
 // } );
 
-const detectedElArchive = setInterval( function() {
+/*const detectedElArchive = setInterval( function() {
 	skeleton = document.querySelector( '.lp-archive-course-skeleton' );
 	elArchive = document.querySelector( '.lp-archive-courses' );
 	if ( elArchive ) {
@@ -301,7 +301,7 @@ const detectedElArchive = setInterval( function() {
 			clearInterval( detectedElArchive );
 		}
 	}
-}, 1 );
+}, 1 );*/
 
 // Events on change sort by.
 document.addEventListener( 'change', function( e ) {
@@ -310,26 +310,31 @@ document.addEventListener( 'change', function( e ) {
 	window.lpCourseList.onChangeSortBy( e, target );
 } );
 
-window.lpCourseList = {
-	onChangeSortBy: ( e, target ) => {
-		if ( ! target.classList.contains( 'course-order-by' ) ) {
-			return;
-		}
+document.addEventListener( 'click', function( e ) {
+	const target = e.target;
 
-		e.preventDefault();
-		let filterCoursesParams = window.localStorage.getItem( 'lp_filter_courses' );
-		filterCoursesParams = JSON.parse( filterCoursesParams ) || {};
-		filterCoursesParams.order_by = target.value;
-		window.location.href = lpAddQueryArgs( currentUrl, filterCoursesParams );
-	},
-	fetchAPI: ( args, callBack = {} ) => {
-		// Change url by params filter courses
-		const urlPush = lpAddQueryArgs( currentUrl, args );
-		window.history.pushState( '', '', urlPush );
+	window.lpCourseList.clickLoadMore( e, target );
+	window.lpCourseList.clickNumberPage( e, target );
+} );
 
-		filterCourses = args;
-		// Save filter courses to Storage
-		window.localStorage.setItem( 'lp_filter_courses', JSON.stringify( args ) );
+document.addEventListener( 'scroll', function( e ) {
+	const target = e.target;
+
+	window.lpCourseList.scrollInfinite( e, target );
+} );
+
+let isLoadingInfinite = false;
+let isPaged = 1;
+
+window.lpCourseList = ( () => {
+	const classArchiveCourse = 'lp-archive-courses';
+	const classPaginationCourse = 'learn-press-pagination';
+	const currentUrl = lpGetCurrentURLNoParam();
+	const urlParams = {};
+	let filterCourses = {};
+	const typePagination = lpGlobalSettings.lpArchivePaginationType || 'number';
+	const fetchAPI = ( args, callBack = {} ) => {
+		console.log( 'Fetch API Courses' );
 		const url = lpAddQueryArgs( API.apiCourses, args );
 		let paramsFetch = {};
 
@@ -341,29 +346,310 @@ window.lpCourseList = {
 			};
 		}
 
-		const callBackDefault = {
-			before: () => {
-				// Show skeleton loading if exists
+		lpFetchAPI( url, paramsFetch, callBack );
+	};
+	return {
+		init: () => {
+			for ( const [ key, val ] of urlSearchParams.entries() ) {
+				urlParams[ key ] = val;
+			}
+
+			filterCourses = { ...lpGlobalSettings.lpArchiveSkeleton, ...urlParams };
+			filterCourses.paged = parseInt( filterCourses.paged || 1 );
+			window.localStorage.setItem( 'lp_filter_courses', JSON.stringify( filterCourses ) );
+		},
+		onChangeSortBy: ( e, target ) => {
+			if ( ! target.classList.contains( 'course-order-by' ) ) {
+				return;
+			}
+
+			e.preventDefault();
+			let filterCoursesParams = window.localStorage.getItem( 'lp_filter_courses' );
+			filterCoursesParams = JSON.parse( filterCoursesParams ) || {};
+			filterCoursesParams.order_by = target.value;
+			window.location.href = lpAddQueryArgs( currentUrl, filterCoursesParams );
+		},
+		clickNumberPage: ( e, target ) => {
+			const parent = target.closest( '.page-numbers' );
+			if ( target.classList.contains( 'page-numbers' ) ) {
+				e.preventDefault();
+				filterCourses.paged = target.textContent;
+				window.lpCourseList.triggerFetchAPI( filterCourses );
+			} else if ( parent ) {
+				e.preventDefault();
+
+				const pageCurrent = parseInt( filterCourses.paged || 1 );
+				if ( parent.classList.contains( 'prev' ) ) {
+					filterCourses.paged = pageCurrent - 1;
+				} else {
+					filterCourses.paged = pageCurrent + 1;
+				}
+				window.lpCourseList.triggerFetchAPI( filterCourses );
+			}
+		},
+		clickLoadMore: ( e, target ) => {
+			if ( ! target.classList.contains( 'courses-btn-load-more' ) ) {
+				return;
+			}
+
+			e.preventDefault();
+			++filterCourses.paged;
+			window.lpCourseList.triggerFetchAPI( filterCourses );
+		},
+		scrollInfinite: ( e, target ) => {
+			const elArchive = document.querySelector( '.lp-archive-courses' );
+			if ( ! elArchive ) {
+				return;
+			}
+
+			const elInfinite = elArchive.querySelector( '.courses-load-infinite' );
+			if ( ! elInfinite ) {
+				return;
+			}
+
+			// Create an IntersectionObserver object.
+			const observer = new IntersectionObserver( function( entries ) {
+				for ( const entry of entries ) {
+					// If the entry is intersecting, load the image.
+					if ( entry.isIntersecting ) {
+						const param = { ...lpGlobalSettings.lpArchiveSkeleton, ...urlParams };
+						if ( ! param.paged ) {
+							param.paged = 1;
+						}
+
+						if ( isLoadingInfinite ) {
+							return;
+						}
+
+						window.lpCourseList.triggerFetchAPI( { ...param, paged: ++isPaged } );
+
+						//observer.unobserve( entry.target );
+					}
+				}
+			} );
+
+			observer.observe( elInfinite );
+		},
+		triggerFetchAPI: ( args ) => { // For case, click on pagination, filter.
+			const elArchive = document.querySelector( '.lp-archive-courses' );
+			if ( ! elArchive ) {
+				return;
+			}
+			elListCourse = elArchive.querySelector( '.learn-press-courses' );
+			if ( ! elListCourse ) {
+				return;
+			}
+
+			filterCourses = args;
+
+			let callBack;
+			switch ( typePagination ) {
+			case 'infinite':
+				callBack = window.lpCourseList.callBackPaginationTypeInfinite( elArchive, elListCourse );
+				break;
+			case 'load-more':
+				callBack = window.lpCourseList.callBackPaginationTypeLoadMore( args, elArchive, elListCourse );
+				break;
+			default:
+				// Change url by params filter courses
+				const urlPush = lpAddQueryArgs( currentUrl, args );
+				window.history.pushState( '', '', urlPush );
+
+				filterCourses = args;
+				// Save filter courses to Storage
+				window.localStorage.setItem( 'lp_filter_courses', JSON.stringify( args ) );
+
+				callBack = window.lpCourseList.callBackPaginationTypeNumber( elListCourse );
+				break;
+			}
+
+			if ( ! callBack ) {
+				return;
+			}
+
+			fetchAPI( args, callBack );
+		},
+		callBackPaginationTypeNumber: ( elListCourse ) => {
+			if ( ! elListCourse ) {
+				return;
+			}
+			const skeleton = elListCourse.querySelector( '.lp-archive-course-skeleton' );
+			if ( ! skeleton ) {
+				return;
+			}
+
+			return {
+				before: () => {
+					skeleton.style.display = 'block';
+				},
+				success: ( res ) => {
+					// Remove all items before insert new items.
+					const elLis = elListCourse.querySelectorAll( ':not(.lp-archive-course-skeleton)' );
+					elLis.forEach( ( elLi ) => {
+						const parent = elLi.closest( '.lp-archive-course-skeleton' );
+						if ( parent ) {
+							return;
+						}
+						elLi.remove();
+					} );
+
+					// Insert new items.
+					skeleton.insertAdjacentHTML( 'beforebegin', res.data.content || '' );
+
+					// Delete Pagination if exists.
+					skeleton.style.display = 'block';
+					const paginationEle = document.querySelector( `.${ classPaginationCourse }` );
+					if ( paginationEle ) {
+						paginationEle.remove();
+					}
+					// Insert Pagination.
+					const pagination = res.data.pagination || '';
+					elListCourse.insertAdjacentHTML( 'afterend', pagination );
+				},
+				error: ( error ) => {
+					elListCourse.innerHTML += `<div class="lp-ajax-message error" style="display:block">${ error.message || 'Error' }</div>`;
+				},
+				completed: () => {
+					skeleton.style.display = 'none';
+					// Scroll to archive element
+					const optionScroll = { behavior: 'smooth' };
+					elListCourse.closest( '.lp-archive-courses' ).scrollIntoView( optionScroll );
+				},
+			};
+		},
+		callBackPaginationTypeLoadMore: ( args, elArchive, elListCourse ) => {
+			console.log( 'callBackPaginationTypeLoadMore' );
+			if ( ! elListCourse ) {
+				return false;
+			}
+			const btnLoadMore = elArchive.querySelector( '.courses-btn-load-more' );
+			let elLoading;
+			if ( btnLoadMore ) {
+				elLoading = btnLoadMore.querySelector( '.lp-loading-circle' );
+			}
+			const skeleton = document.querySelector( '.lp-archive-course-skeleton' );
+
+			if ( args.eventFilter === 1 ) {
+				window.history.pushState( '', '', lpAddQueryArgs( currentUrl, args ) );
+			}
+
+			if ( args.paged === 1 ) {
+				if ( btnLoadMore ) {
+					btnLoadMore.remove();
+				}
+
 				if ( skeleton ) {
 					skeleton.style.display = 'block';
 				}
-			},
-			success: ( res ) => {
-				if ( 'function' === typeof callBack.success ) {
-					callBack.success( response );
-				}
-			},
-			error: ( err ) => {
+			}
 
-			},
-			completed: () => {
-				isLoading = false;
-				if ( 'function' === typeof callBack.completed ) {
-					callBack.completed();
-				}
-			},
-		};
+			return {
+				before: () => {
+					if ( btnLoadMore ) {
+						elLoading.classList.remove( 'hide' );
+					}
+				},
+				success: ( res ) => {
+					skeleton.style.display = 'none';
+					if ( args.paged === 1 ) {
+						elListCourse.innerHTML = skeleton.outerHTML;
+					}
 
-		lpFetchAPI( url, paramsFetch, callBackDefault );
-	},
-};
+					elListCourse.insertAdjacentHTML( 'beforeend', res.data.content || '' );
+					elListCourse.insertAdjacentHTML( 'afterend', res.data.pagination || '' );
+				},
+				error: ( error ) => {
+					elListCourse.innerHTML += `<div class="lp-ajax-message error" style="display:block">${ error.message || 'Error' }</div>`;
+				},
+				completed: () => {
+					if ( btnLoadMore ) {
+						elLoading.classList.add( 'hide' );
+						btnLoadMore.remove();
+					}
+
+					if ( args.eventFilter === 1 ) {
+						// Scroll to archive element
+						const optionScroll = { behavior: 'smooth' };
+						elListCourse.closest( '.lp-archive-courses' ).scrollIntoView( optionScroll );
+					}
+				},
+			};
+		},
+		callBackPaginationTypeInfinite: ( elArchive, elListCourse ) => {
+			if ( ! elListCourse ) {
+				return;
+			}
+
+			const elInfinite = elArchive.querySelector( '.courses-load-infinite' );
+
+			if ( ! elInfinite ) {
+				return;
+			}
+			const loading = elInfinite.querySelector( '.lp-loading-circle' );
+
+			isLoadingInfinite = true;
+
+			elInfinite.classList.remove( 'courses-load-infinite' );
+
+			return {
+				before: () => {
+					loading.classList.remove( 'hide' );
+				},
+				success: ( res ) => {
+					elListCourse.insertAdjacentHTML( 'beforeend', res.data.content || '' );
+
+					if ( res.data.pagination ) {
+						elListCourse.insertAdjacentHTML( 'afterend', res.data.pagination || '' );
+					}
+				},
+				error: ( error ) => {
+					elListCourse.innerHTML += `<div class="lp-ajax-message error" style="display:block">${ error.message || 'Error' }</div>`;
+				},
+				completed: () => {
+					elInfinite.remove();
+					isLoadingInfinite = false;
+				},
+			};
+		},
+		ajaxEnableLoadPage: () => { // For case enable AJAX when load page.
+			const countTime = 0;
+
+			if ( ! lpGlobalSettings.lpArchiveNoLoadAjaxFirst ) {
+				let detectedElArchivex;
+				const callBack = {
+					success: ( res ) => {
+						detectedElArchivex = setInterval( function() {
+							const skeleton = document.querySelector( '.lp-archive-course-skeleton' );
+							const elArchive = document.querySelector( `.${ classArchiveCourse }` );
+							if ( elArchive ) {
+								elListCourse = elArchive.querySelector( '.learn-press-courses' );
+							}
+
+							if ( countTime > 5000 ) {
+								clearInterval( detectedElArchivex );
+							}
+
+							if ( elListCourse && skeleton ) {
+								clearInterval( detectedElArchivex );
+								skeleton.insertAdjacentHTML( 'beforebegin', res.data.content || '' );
+								skeleton.style.display = 'none';
+
+								const pagination = res.data.pagination || '';
+								elListCourse.insertAdjacentHTML( 'afterend', pagination );
+							}
+						}, 1 );
+					},
+				};
+
+				if ( 'number' !== typePagination ) {
+					filterCourses.paged = 1;
+					//window.localStorage.setItem( 'lp_filter_courses', JSON.stringify( filterCourses ) );
+				}
+				fetchAPI( filterCourses, callBack );
+			}
+		},
+	};
+} )();
+
+window.lpCourseList.init();
+window.lpCourseList.ajaxEnableLoadPage();
