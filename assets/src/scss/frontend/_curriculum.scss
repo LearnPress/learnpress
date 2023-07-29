@@ -195,7 +195,7 @@
 			}
 
 			&__description {
-				
+
 			}
 		}
 	}
@@ -531,7 +531,7 @@ ul.learn-press-nav-tabs {
 		.section-desc {
 			margin: 0;
 			margin-top: 10px;
-			font-size: 0.8em;
+			font-size: 0.925em;
 			line-height: 1.3125em;
 			color: #999;
 			font-style: italic;
@@ -629,9 +629,9 @@ ul.learn-press-nav-tabs {
 		display: flex;
 		position: relative;
 		margin: 0 0 2px 0;
-		padding: 0 15px 0 30px;
+		padding: 0 15px ;
 		background: rgba(241, 242, 248, 0.4);
-		font-size: 0.8em;
+		//font-size: 0.8em;
 		transition: padding-left linear 0.15s;
 
 		@media (max-width: 767px) {
@@ -696,7 +696,7 @@ ul.learn-press-nav-tabs {
 					}
 				}
 			}
-			
+
 		}
 
 		.item-icon,
@@ -995,7 +995,7 @@ body {
 	.course-meta__pull-right {
 		display: flex;
 		flex-wrap: wrap;
-		
+
 	}
 	&.course-meta-primary{
 		.course-meta__pull-left {
@@ -1006,7 +1006,7 @@ body {
 			@media (max-width:560px) {
 				grid-template-columns: 1fr;
 			}
-	
+
 			.meta-item {
 				margin-right: 0!important;
 
@@ -1020,7 +1020,7 @@ body {
 		.course-meta__pull-left {
 			@media (max-width:1024px) {
 				gap: 16px;
-			}	
+			}
 			.meta-item {
 				@media (max-width:1024px) {
 					margin-right: 0!important;
@@ -1036,7 +1036,7 @@ body {
 		flex: 1;
 		.meta-item {
 			margin-right: 10px;
-			
+
 		}
 	}
 
@@ -1066,7 +1066,7 @@ body {
 // Extra info boxes
 
 .course-extra-box {
-	margin-bottom: 3px;
+	margin-bottom: 10px;
 	border: 1px solid rgba(204, 204, 204, 0.3);
 	border-radius: 5px;
 	&.active {
@@ -1356,7 +1356,7 @@ body.course-item-popup {
 				width: 200px;
 			}
 		}
-		
+
 		.progress-bg {
 			@media (max-width: 1300px) {
 				width: 40px;
@@ -1386,7 +1386,7 @@ body.course-item-popup {
 		@media (max-width: 1300px) {
 			display: none;
 		}
-		
+
 	}
 	&.wpadminbar {
 
