@@ -1,5 +1,6 @@
 import API from './api';
 import { lpAddQueryArgs, lpFetchAPI, lpGetCurrentURLNoParam } from '../utils/utils';
+import Cookies from '../utils/cookies';
 
 if ( undefined === lpGlobalSettings ) {
 	console.log( 'lpGlobalSettings is undefined' );
@@ -308,6 +309,7 @@ document.addEventListener( 'change', function( e ) {
 	const target = e.target;
 
 	window.lpCourseList.onChangeSortBy( e, target );
+	window.lpCourseList.onChangeTypeLayout( e, target );
 } );
 
 document.addEventListener( 'click', function( e ) {
@@ -328,6 +330,7 @@ const isPaged = 1;
 
 window.lpCourseList = ( () => {
 	const classArchiveCourse = 'lp-archive-courses';
+	const classListCourse = 'learn-press-courses';
 	const classPaginationCourse = 'learn-press-pagination';
 	const currentUrl = lpGetCurrentURLNoParam();
 	let filterCourses = {};
@@ -372,6 +375,25 @@ window.lpCourseList = ( () => {
 			filterCoursesParams = JSON.parse( filterCoursesParams ) || {};
 			filterCoursesParams.order_by = target.value;
 			window.location.href = lpAddQueryArgs( currentUrl, filterCoursesParams );
+		},
+		onChangeTypeLayout: ( e, target ) => {
+			if ( 'lp-switch-layout-btn' !== target.getAttribute( 'name' ) ) {
+				return;
+			}
+			const elArchive = target.closest( `.${ classArchiveCourse }` );
+			if ( ! elArchive ) {
+				return;
+			}
+			const elListCourse = elArchive.querySelector( `.${ classListCourse }` );
+			if ( ! elListCourse ) {
+				return;
+			}
+			e.preventDefault();
+			const layout = e.target.value;
+			if ( layout ) {
+				elListCourse && ( elListCourse.dataset.layout = layout );
+				Cookies.set( 'courses-layout', layout );
+			}
 		},
 		clickNumberPage: ( e, target ) => {
 			const parent = target.closest( '.page-numbers' );
