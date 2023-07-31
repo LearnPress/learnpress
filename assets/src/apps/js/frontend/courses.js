@@ -7,6 +7,8 @@ if ( undefined === lpGlobalSettings ) {
 }
 
 // Call API load courses.
+// When LP v4.2.3.3 release a long time, we will remove this function on theme Eduma.
+// assets/js/thim-course-filter-v2.js
 window.lpArchiveRequestCourse = ( args ) => {
 	window.lpCourseList.updateEventTypeBeforeFetch( 'filter' );
 	window.lpCourseList.triggerFetchAPI( args );
@@ -114,6 +116,10 @@ window.lpCourseList = ( () => {
 			}
 		},
 		clickNumberPage: ( e, target ) => {
+			const enableLoadAjax = parseInt( lpGlobalSettings.lpArchiveLoadAjax || 0 );
+			if ( 0 === enableLoadAjax ) {
+				return;
+			}
 			const parent = target.closest( '.page-numbers' );
 			if ( target.classList.contains( 'page-numbers' ) ) {
 				const parentArchive = target.closest( `.${ classArchiveCourse }` );

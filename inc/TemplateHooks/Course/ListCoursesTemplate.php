@@ -26,6 +26,41 @@ class ListCoursesTemplate {
 	}
 
 	/**
+	 * Button Load more
+	 *
+	 * @return string
+	 * @since 4.2.3.3
+	 * @version 1.0.0
+	 */
+	public function html_pagination_load_more(): string {
+		$html_wrapper = [
+			'<button class="courses-btn-load-more learn-press-pagination">' => '</button>',
+		];
+		$content      = sprintf(
+			'<span class="lp-loading-circle hide"></span>%s',
+			__( 'Load more', 'learnpress' )
+		);
+
+		return Template::instance()->nest_elements( $html_wrapper, $content );
+	}
+
+	/**
+	 * Button infinite
+	 *
+	 * @return string
+	 * @since 4.2.3.3
+	 * @version 1.0.0
+	 */
+	public function html_pagination_infinite(): string {
+		$html_wrapper = [
+			'<div class="courses-load-infinite learn-press-pagination">' => '</div>',
+		];
+		$content      = '<span class="lp-loading-circle hide"></span>';
+
+		return Template::instance()->nest_elements( $html_wrapper, $content );
+	}
+
+	/**
 	 * Layout course search suggest result.
 	 *
 	 * @param array $data

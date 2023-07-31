@@ -18,6 +18,9 @@
  */
 
 
+use LearnPress\Helpers\Template;
+use LearnPress\TemplateHooks\Course\ListCoursesTemplate;
+
 defined( 'ABSPATH' ) || exit();
 
 /**
@@ -191,7 +194,22 @@ add_action(
 /** Archive course pagination */
 add_action(
 	'learn-press/after-courses-loop',
-	LearnPress::instance()->template( 'course' )->callback( 'loop/course/pagination.php' ),
+	function() {
+		$listCourseTemplate    = ListCoursesTemplate::instance();
+		$pagination_type       = LP_Settings::get_option( 'course_pagination_type', 'number' );
+		$enableAjaxLoadCourses = LP_Settings_Courses::is_ajax_load_courses();
+		if ( ! $enableAjaxLoadCourses ) {
+			$pagination_type = 'number';
+		}
+
+		if ( 'load-more' === $pagination_type ) {
+			echo $listCourseTemplate->html_pagination_load_more();
+		} elseif ( 'infinite' === $pagination_type ) {
+			echo $listCourseTemplate->html_pagination_infinite();
+		} else {
+			Template::instance()->get_frontend_template( 'loop/course/pagination.php' );
+		}
+	},
 	10
 );
 /** END: Archive course */
