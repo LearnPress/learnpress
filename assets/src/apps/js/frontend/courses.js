@@ -116,6 +116,11 @@ window.lpCourseList = ( () => {
 		clickNumberPage: ( e, target ) => {
 			const parent = target.closest( '.page-numbers' );
 			if ( target.classList.contains( 'page-numbers' ) ) {
+				const parentArchive = target.closest( `.${ classArchiveCourse }` );
+				if ( ! parentArchive ) {
+					return;
+				}
+
 				e.preventDefault();
 
 				const pageCurrent = parseInt( filterCourses.paged || 1 );
