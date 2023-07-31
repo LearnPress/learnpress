@@ -70,6 +70,8 @@ window.lpCourseList = ( () => {
 	return {
 		init: () => {
 			const urlParams = {};
+			const urlQueryString = window.location.search;
+			const urlSearchParams = new URLSearchParams( urlQueryString );
 			for ( const [ key, val ] of urlSearchParams.entries() ) {
 				urlParams[ key ] = val;
 			}
