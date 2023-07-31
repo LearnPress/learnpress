@@ -668,6 +668,11 @@ class LP_Page_Controller {
 					$is_need_check_in_arr = false;
 					$limit                = LP_Settings::get_option( 'archive_course_limit', 6 );
 
+					if ( LP_Settings_Courses::is_ajax_load_courses() &&
+						LP_Settings_Courses::get_type_pagination() != 'number' ) {
+						$q->set('paged', 1);
+					}
+
 					$q->set( 'posts_per_page', $limit );
 					// $q->set( 'cache_results', true ); // it default true
 

@@ -50,6 +50,9 @@ window.lpCourseList = ( () => {
 	const classArchiveCourse = 'lp-archive-courses';
 	const classListCourse = 'learn-press-courses';
 	const classPaginationCourse = 'learn-press-pagination';
+	const lpArchiveLoadAjax = lpGlobalSettings.lpArchiveLoadAjax || 0;
+	const lpArchiveNoLoadAjaxFirst = lpGlobalSettings.lpArchiveNoLoadAjaxFirst || 0;
+	const lpArchiveSkeletonParam = lpGlobalSettings.lpArchiveSkeleton || 0;
 	const currentUrl = lpGetCurrentURLNoParam();
 	let filterCourses = {};
 	const typePagination = lpGlobalSettings.lpArchivePaginationType || 'number';
@@ -78,8 +81,11 @@ window.lpCourseList = ( () => {
 				urlParams[ key ] = val;
 			}
 
-			filterCourses = { ...lpGlobalSettings.lpArchiveSkeleton, ...urlParams };
+			filterCourses = { ...lpArchiveSkeletonParam, ...urlParams };
 			filterCourses.paged = parseInt( filterCourses.paged || 1 );
+			if ( lpArchiveNoLoadAjaxFirst && typePagination !== 'number' ) {
+				filterCourses.paged = 1;
+			}
 			window.localStorage.setItem( 'lp_filter_courses', JSON.stringify( filterCourses ) );
 		},
 		updateEventTypeBeforeFetch: ( type ) => {
@@ -116,8 +122,7 @@ window.lpCourseList = ( () => {
 			}
 		},
 		clickNumberPage: ( e, target ) => {
-			const enableLoadAjax = parseInt( lpGlobalSettings.lpArchiveLoadAjax || 0 );
-			if ( 0 === enableLoadAjax ) {
+			if ( lpArchiveLoadAjax ) {
 				return;
 			}
 			const parent = target.closest( '.page-numbers' );
@@ -476,7 +481,7 @@ window.lpCourseList = ( () => {
 		ajaxEnableLoadPage: () => { // For case enable AJAX when load page.
 			const countTime = 0;
 
-			if ( ! lpGlobalSettings.lpArchiveNoLoadAjaxFirst ) {
+			if ( ! lpArchiveNoLoadAjaxFirst ) {
 				let detectedElArchivex;
 				const callBack = {
 					success: ( res ) => {

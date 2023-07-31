@@ -81,4 +81,13 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 	public static function is_no_load_ajax_first_courses(): bool {
 		return LP_Settings::get_option( 'courses_first_no_ajax', 'no' ) === 'yes';
 	}
+
+	/**
+	 * Get option type Pagination.
+	 *
+	 * @return string
+	 */
+	public static function get_type_pagination(): string {
+		return LP_Settings::get_option( 'course_pagination_type', 'number' );
+	}
 }
