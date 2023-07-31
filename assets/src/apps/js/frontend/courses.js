@@ -377,21 +377,22 @@ window.lpCourseList = ( () => {
 			const parent = target.closest( '.page-numbers' );
 			if ( target.classList.contains( 'page-numbers' ) ) {
 				e.preventDefault();
-				filterCourses.paged = target.textContent;
-				typeEventBeforeFetch = 'number';
-				window.lpCourseList.triggerFetchAPI( filterCourses );
-			} else if ( parent ) {
-				e.preventDefault();
 
 				const pageCurrent = parseInt( filterCourses.paged || 1 );
 
 				if ( parent.classList.contains( 'prev' ) ) {
 					filterCourses.paged = pageCurrent - 1;
-				} else {
+				} else if ( parent.classList.contains( 'next' ) ) {
 					filterCourses.paged = pageCurrent + 1;
+				} else {
+					filterCourses.paged = parseInt( target.textContent );
 				}
+
 				typeEventBeforeFetch = 'number';
 				window.lpCourseList.triggerFetchAPI( filterCourses );
+			} else if ( parent ) {
+				e.preventDefault();
+				parent.click();
 			}
 		},
 		clickLoadMore: ( e, target ) => {
@@ -401,6 +402,7 @@ window.lpCourseList = ( () => {
 
 			e.preventDefault();
 			++filterCourses.paged;
+			typeEventBeforeFetch = 'load-more';
 			window.lpCourseList.triggerFetchAPI( filterCourses );
 		},
 		scrollInfinite: ( e, target ) => {
@@ -419,12 +421,12 @@ window.lpCourseList = ( () => {
 				for ( const entry of entries ) {
 					// If the entry is intersecting, load the image.
 					if ( entry.isIntersecting ) {
-						++filterCourses.paged;
-
 						if ( isLoadingInfinite ) {
 							return;
 						}
 
+						++filterCourses.paged;
+						typeEventBeforeFetch = 'infinite';
 						window.lpCourseList.triggerFetchAPI( filterCourses );
 
 						//observer.unobserve( entry.target );
@@ -448,11 +450,11 @@ window.lpCourseList = ( () => {
 
 			let callBack;
 			switch ( typeEventBeforeFetch ) {
-			case 'infinite':
-				callBack = window.lpCourseList.callBackPaginationTypeInfinite( elArchive, elListCourse );
-				break;
 			case 'load-more':
 				callBack = window.lpCourseList.callBackPaginationTypeLoadMore( args, elArchive, elListCourse );
+				break;
+			case 'infinite':
+				callBack = window.lpCourseList.callBackPaginationTypeInfinite( elArchive, elListCourse );
 				break;
 			case 'filter':
 				callBack = window.lpCourseList.callBackFilter( args, elArchive, elListCourse );
@@ -640,12 +642,12 @@ window.lpCourseList = ( () => {
 			};
 		},
 		callBackPaginationTypeInfinite: ( elArchive, elListCourse ) => {
+			console.log( 'callBackPaginationTypeInfinite' );
 			if ( ! elListCourse ) {
 				return;
 			}
 
 			const elInfinite = elArchive.querySelector( '.courses-load-infinite' );
-
 			if ( ! elInfinite ) {
 				return;
 			}
