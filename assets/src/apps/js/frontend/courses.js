@@ -132,12 +132,11 @@ window.lpCourseList = ( () => {
 				}
 
 				e.preventDefault();
-
 				const pageCurrent = parseInt( filterCourses.paged || 1 );
 
-				if ( parent.classList.contains( 'prev' ) ) {
+				if ( parentArchive.classList.contains( 'prev' ) ) {
 					filterCourses.paged = pageCurrent - 1;
-				} else if ( parent.classList.contains( 'next' ) ) {
+				} else if ( parentArchive.classList.contains( 'next' ) ) {
 					filterCourses.paged = pageCurrent + 1;
 				} else {
 					filterCourses.paged = parseInt( target.textContent );

@@ -138,16 +138,19 @@ window.lpCourseFilter = {
 		const form = btnReset.closest( `.${ classCourseFilter }` );
 		const btnSubmit = form.querySelector( '.course-filter-submit' );
 		const elResult = form.querySelector( '.lp-course-filter-search-result' );
+		const elSearch = form.querySelector( '.lp-course-filter-search' );
 
 		form.reset();
 		if ( elResult ) {
 			elResult.innerHTML = '';
 		}
-		// Empty the values in the form.
-		/*for ( let i = 0; i < form.elements.length; i++ ) {
-			form.elements[ i ].value = '';
+		if ( elSearch ) {
+			elSearch.value = '';
+		}
+		// Uncheck value with case set default from params url.
+		for ( let i = 0; i < form.elements.length; i++ ) {
 			form.elements[ i ].removeAttribute( 'checked' );
-		}*/
+		}
 		// If on the page archive course will call btnSubmit click.
 		if ( lpGlobalSettings.is_course_archive ) {
 			btnSubmit.click();
