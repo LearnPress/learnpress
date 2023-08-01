@@ -122,10 +122,9 @@ window.lpCourseList = ( () => {
 			}
 		},
 		clickNumberPage: ( e, target ) => {
-			if ( lpArchiveLoadAjax ) {
+			if ( ! lpArchiveLoadAjax ) {
 				return;
 			}
-			const parent = target.closest( '.page-numbers' );
 			if ( target.classList.contains( 'page-numbers' ) ) {
 				const parentArchive = target.closest( `.${ classArchiveCourse }` );
 				if ( ! parentArchive ) {
@@ -146,7 +145,11 @@ window.lpCourseList = ( () => {
 
 				typeEventBeforeFetch = 'number';
 				window.lpCourseList.triggerFetchAPI( filterCourses );
-			} else if ( parent ) {
+				return;
+			}
+
+			const parent = target.closest( '.page-numbers' );
+			if ( parent ) {
 				e.preventDefault();
 				parent.click();
 			}

@@ -198,8 +198,9 @@ add_action(
 		$listCourseTemplate    = ListCoursesTemplate::instance();
 		$pagination_type       = LP_Settings::get_option( 'course_pagination_type', 'number' );
 		$enableAjaxLoadCourses = LP_Settings_Courses::is_ajax_load_courses();
+		$enableNoLoadAjaxFirst = LP_Settings_Courses::is_no_load_ajax_first_courses();
 		if ( $enableAjaxLoadCourses && $pagination_type !== 'number' ) {
-			if ( LP_Settings_Courses::is_no_load_ajax_first_courses() ) {
+			if ( $enableNoLoadAjaxFirst ) {
 				if ( 'load-more' === $pagination_type ) {
 					echo $listCourseTemplate->html_pagination_load_more();
 				} elseif ( 'infinite' === $pagination_type ) {
@@ -210,7 +211,9 @@ add_action(
 			return;
 		}
 
-		Template::instance()->get_frontend_template( 'loop/course/pagination.php' );
+		if ( ! $enableAjaxLoadCourses || ( $enableAjaxLoadCourses && $enableNoLoadAjaxFirst ) ) {
+			Template::instance()->get_frontend_template( 'loop/course/pagination.php' );
+		}
 	},
 	10
 );

@@ -110,8 +110,8 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 	 * @return LP_REST_Response
 	 */
 	public function list_courses( WP_REST_Request $request ): LP_REST_Response {
-		$response       = new LP_REST_Response();
-		$response->data = new stdClass();
+		$response            = new LP_REST_Response();
+		$response->data      = new stdClass();
 		$listCoursesTemplate = ListCoursesTemplate::instance();
 
 		try {
@@ -155,13 +155,12 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 								}
 								break;
 							default:
-								$response->data->pagination = learn_press_get_template_content(
-									'loop/course/pagination.php',
-									array(
-										'total' => $total_pages,
-										'paged' => $filter->page,
-									)
-								);
+								$pagination_args            = [
+									'total_pages' => $total_pages,
+									'paged'       => $filter->page,
+									'base'        => add_query_arg( 'paged', '%#%', learn_press_get_page_link( 'courses' ) ),
+								];
+								$response->data->pagination = $listCoursesTemplate->html_pagination_number( $pagination_args );
 								break;
 						}
 						$response->data->pagination_type = $pagination_type;

@@ -650,7 +650,6 @@ class LP_Page_Controller {
 			if ( LP_Page_Controller::is_page_courses() ) {
 				if ( LP_Settings_Courses::is_ajax_load_courses() && ! LP_Settings_Courses::is_no_load_ajax_first_courses()
 				&& ! in_array( $theme_current, $theme_no_load_ajax ) ) {
-					LearnPress::instance()->template( 'course' )->remove_callback( 'learn-press/after-courses-loop', 'loop/course/pagination.php', 10 );
 					/**
 					 * If page is archive course - query set posts_per_page = 1
 					 * For fastest - because when page loaded - call API to load list courses
@@ -670,7 +669,7 @@ class LP_Page_Controller {
 
 					if ( LP_Settings_Courses::is_ajax_load_courses() &&
 						LP_Settings_Courses::get_type_pagination() != 'number' ) {
-						$q->set('paged', 1);
+						$q->set( 'paged', 1 );
 					}
 
 					$q->set( 'posts_per_page', $limit );
