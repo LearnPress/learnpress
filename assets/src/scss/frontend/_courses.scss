@@ -10,24 +10,13 @@ a {
 	scroll-margin: 30px;
 
 	.lp-content-area {
-		&:has(.lp-main-content) {
+		&.has-sidebar {
 			display: flex;
 			gap: 24px;
 			@media (max-width: 768px) {
 				display: inherit;
 			}
-		}
 
-		.lp-main-content {
-			flex: 1;
-		}
-		.lp-archive-courses-sidebar{
-			width: 25%;
-			@media (max-width: 768px) {
-				width: 100%;
-			}
-		}
-		&:has(.lp-archive-courses-sidebar){
 			.learn-press-courses[data-layout=grid]{
 				li{
 					width: 33.33%;
@@ -38,6 +27,17 @@ a {
 						width: 100%;
 					}
 				}
+			}
+
+		}
+
+		.lp-main-content {
+			flex: 1;
+		}
+		.lp-archive-courses-sidebar{
+			width: 25%;
+			@media (max-width: 768px) {
+				width: 100%;
 			}
 		}
 	}
