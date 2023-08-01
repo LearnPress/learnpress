@@ -75,6 +75,19 @@ return apply_filters(
 					'show_if_checked' => 'courses_load_ajax',
 				),
 				array(
+					'title'           => esc_html__( 'Pagination Type', 'learnpress' ),
+					'desc'            => esc_html__( 'Display the pagination type on the Course Archive page.', 'learnpress' ),
+					'id'              => 'course_pagination_type',
+					'default'         => 'standard',
+					'type'            => 'select',
+					'options'         => array(
+						'number'    => esc_html__( 'Number', 'learnpress' ),
+						'load-more' => esc_html__( 'Load More', 'learnpress' ),
+						'infinite'  => esc_html__( 'Infinite Scroll', 'learnpress' ),
+					),
+					'show_if_checked' => 'courses_load_ajax',
+				),
+				array(
 					'title'   => esc_html__( 'Thumbnail dimensions', 'learnpress' ),
 					'id'      => 'course_thumbnail_dimensions',
 					'default' => array( 500, 300, 'yes' ),
@@ -147,9 +160,9 @@ return apply_filters(
 						),
 						'image' 		=> array(
 							'jpg,jpeg' 	=>	'.jpg, .jpeg (Joint Photographic Experts Group)',
-							'png' 		=>	'.png (Portable Network Graphics)', 
-							'gif' 		=>	'.gif (Graphics Interchange Format)', 
-							'bmp' 		=>	'.bmp (Bitmap)', 
+							'png' 		=>	'.png (Portable Network Graphics)',
+							'gif' 		=>	'.gif (Graphics Interchange Format)',
+							'bmp' 		=>	'.bmp (Bitmap)',
 							// 'svg' 		=>	'.svg (Scalable Vector Graphics)',
 						),
 						'audio' 		=> array(
@@ -202,11 +215,11 @@ return apply_filters(
 					),
 				),
 				array(
-					'title'   => esc_html__( 'File Per Page', 'learnpress' ),
-					'id'      => 'material_file_per_page',
-					'default' => -1,
-					'type'    => 'number',
-					'desc'    => esc_html__( 'The number of displayed files per page (Enter -1 to display all files, set to 0 to disable).', 'learnpress' ),
+					'title'             => esc_html__( 'File Per Page', 'learnpress' ),
+					'id'                => 'material_file_per_page',
+					'default'           => -1,
+					'type'              => 'number',
+					'desc'              => esc_html__( 'The number of displayed files per page (Enter -1 to display all files, set to 0 to disable).', 'learnpress' ),
 					'custom_attributes' => array(
 						'min' => '-1',
 					),

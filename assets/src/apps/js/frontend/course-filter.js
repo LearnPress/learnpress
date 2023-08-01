@@ -113,6 +113,7 @@ window.lpCourseFilter = {
 		const elListCourse = document.querySelector( '.learn-press-courses' );
 		const skeleton = document.querySelector( '.lp-archive-course-skeleton' );
 		const filterCourses = { paged: 1 };
+		window.lpCourseList.updateEventTypeBeforeFetch( 'filter' );
 		for ( const pair of formData.entries() ) {
 			const key = pair[ 0 ];
 			const value = formData.getAll( key );
@@ -122,7 +123,7 @@ window.lpCourseFilter = {
 		}
 
 		if ( lpGlobalSettings.is_course_archive && lpGlobalSettings.lpArchiveLoadAjax && elListCourse && skeleton ) {
-			lpArchiveRequestCourse( filterCourses );
+			window.lpCourseList.triggerFetchAPI( filterCourses );
 		} else {
 			const courseUrl = lpGlobalSettings.courses_url || '';
 			const url = new URL( courseUrl );
@@ -137,14 +138,17 @@ window.lpCourseFilter = {
 		const form = btnReset.closest( `.${ classCourseFilter }` );
 		const btnSubmit = form.querySelector( '.course-filter-submit' );
 		const elResult = form.querySelector( '.lp-course-filter-search-result' );
+		const elSearch = form.querySelector( '.lp-course-filter-search' );
 
 		form.reset();
 		if ( elResult ) {
 			elResult.innerHTML = '';
 		}
-		// Empty the values in the form.
+		if ( elSearch ) {
+			elSearch.value = '';
+		}
+		// Uncheck value with case set default from params url.
 		for ( let i = 0; i < form.elements.length; i++ ) {
-			form.elements[ i ].value = '';
 			form.elements[ i ].removeAttribute( 'checked' );
 		}
 		// If on the page archive course will call btnSubmit click.

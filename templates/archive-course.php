@@ -26,9 +26,14 @@ if ( ! wp_is_block_theme() ) {
 do_action( 'learn-press/before-main-content' );
 
 $page_title = learn_press_page_title( false );
+$classes    = [];
+
+if ( is_active_sidebar( 'archive-courses-sidebar' ) ) {
+	$classes[] = 'has-sidebar';
+}
 ?>
 
-<div class="lp-content-area">
+<div class="lp-content-area <?php echo esc_attr( implode( $classes ) ); ?>">
 	<div class="lp-main-content">
 	<?php if ( $page_title ) : ?>
 		<header class="learn-press-courses-header">

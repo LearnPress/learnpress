@@ -11,7 +11,7 @@ defined( 'ABSPATH' ) || exit;
 
 $layouts = learn_press_courses_layouts();
 $active  = learn_press_get_courses_layout();
-$s       = LP_Request::get( 'c_search' );
+$s       = LP_Request::get_param( 'c_search' );
 ?>
 
 <div class="lp-courses-bar <?php echo esc_attr( $active ); ?>">

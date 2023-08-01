@@ -5,6 +5,7 @@
  */
 
 use LearnPress\Helpers\Template;
+use LearnPress\TemplateHooks\Course\ListCoursesTemplate;
 
 class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 	/**
@@ -109,8 +110,9 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 	 * @return LP_REST_Response
 	 */
 	public function list_courses( WP_REST_Request $request ): LP_REST_Response {
-		$response       = new LP_REST_Response();
-		$response->data = new stdClass();
+		$response            = new LP_REST_Response();
+		$response->data      = new stdClass();
+		$listCoursesTemplate = ListCoursesTemplate::instance();
 
 		try {
 			$filter = new LP_Course_Filter();
@@ -140,13 +142,28 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 						global $wp, $post;
 
 						// Template Pagination.
-						$response->data->pagination = learn_press_get_template_content(
-							'loop/course/pagination.php',
-							array(
-								'total' => $total_pages,
-								'paged' => $filter->page,
-							)
-						);
+						$pagination_type = LP_Settings::get_option( 'course_pagination_type' );
+						switch ( $pagination_type ) {
+							case 'load-more':
+								if ( $filter->page < $total_pages ) {
+									$response->data->pagination = $listCoursesTemplate->html_pagination_load_more();
+								}
+								break;
+							case 'infinite':
+								if ( $filter->page < $total_pages ) {
+									$response->data->pagination = $listCoursesTemplate->html_pagination_infinite();
+								}
+								break;
+							default:
+								$pagination_args            = [
+									'total_pages' => $total_pages,
+									'paged'       => $filter->page,
+									'base'        => add_query_arg( 'paged', '%#%', learn_press_get_page_link( 'courses' ) ),
+								];
+								$response->data->pagination = $listCoursesTemplate->html_pagination_number( $pagination_args );
+								break;
+						}
+						$response->data->pagination_type = $pagination_type;
 						// End Pagination
 
 						// For custom template
