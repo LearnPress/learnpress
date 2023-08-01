@@ -195,6 +195,14 @@ class LP_Page_Controller {
 		} elseif ( LP_Page_Controller::is_page_courses() ) { // Set title course archive page.
 			if ( learn_press_is_search() ) {
 				$title = __( 'Course Search Results', 'learnpress' );
+			} elseif ( is_tax( LP_COURSE_CATEGORY_TAX ) || is_tax( LP_COURSE_TAXONOMY_TAG ) ) {
+				/**
+				 * @var WP_Query $wp_query
+				 */
+				global $wp_query;
+				if ( $wp_query->queried_object ) {
+					$title = $wp_query->queried_object->name;
+				}
 			} else {
 				$title = $course_archive_page_id ? get_the_title( $course_archive_page_id ) : __( 'Courses', 'learnpress' );
 			}
@@ -1019,8 +1027,8 @@ class LP_Page_Controller {
 			return $flag;
 		}
 
-		$is_tag      = is_tax( 'course_tag' );
-		$is_category = is_tax( 'course_category' );
+		$is_tag      = is_tax( LP_COURSE_TAXONOMY_TAG );
+		$is_category = is_tax( LP_COURSE_CATEGORY_TAX );
 
 		if ( $is_category || $is_tag || is_post_type_archive( 'lp_course' ) ) {
 			$flag = true;
