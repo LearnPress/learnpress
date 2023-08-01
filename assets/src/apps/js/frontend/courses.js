@@ -14,7 +14,7 @@ window.lpArchiveRequestCourse = ( args ) => {
 	window.lpCourseList.triggerFetchAPI( args );
 };
 
-// Events on change sort by.
+// Events
 document.addEventListener( 'change', function( e ) {
 	const target = e.target;
 
@@ -43,11 +43,11 @@ document.addEventListener( 'submit', function( e ) {
 	window.lpCourseList.searchCourse( e, target );
 } );
 
-let isLoadingInfinite = false;
 window.lpCourseList = ( () => {
 	const classArchiveCourse = 'lp-archive-courses';
 	const classListCourse = 'learn-press-courses';
 	const classPaginationCourse = 'learn-press-pagination';
+	const classSkeletonArchiveCourse = 'lp-archive-course-skeleton';
 	const lpArchiveLoadAjax = lpGlobalSettings.lpArchiveLoadAjax || 0;
 	const lpArchiveNoLoadAjaxFirst = lpGlobalSettings.lpArchiveNoLoadAjaxFirst || 0;
 	const lpArchiveSkeletonParam = lpGlobalSettings.lpArchiveSkeleton || 0;
@@ -56,6 +56,7 @@ window.lpCourseList = ( () => {
 	const typePagination = lpGlobalSettings.lpArchivePaginationType || 'number';
 	let typeEventBeforeFetch;
 	let timeOutSearch;
+	let isLoadingInfinite = false;
 	const fetchAPI = ( args, callBack = {} ) => {
 		console.log( 'Fetch API Courses' );
 		const url = lpAddQueryArgs( API.apiCourses, args );
@@ -82,6 +83,9 @@ window.lpCourseList = ( () => {
 
 			filterCourses = { ...lpArchiveSkeletonParam, ...urlParams };
 			filterCourses.paged = parseInt( filterCourses.paged || 1 );
+			if ( isNaN( filterCourses.paged ) ) {
+				filterCourses.paged = 1;
+			}
 			if ( lpArchiveNoLoadAjaxFirst && typePagination !== 'number' ) {
 				filterCourses.paged = 1;
 			}
@@ -91,15 +95,13 @@ window.lpCourseList = ( () => {
 			typeEventBeforeFetch = type;
 		},
 		onChangeSortBy: ( e, target ) => {
-			if ( ! target.classList.contains( 'course-order-by' ) ) {
+			if ( ! target.classList.contains( 'courses-order-by' ) ) {
 				return;
 			}
 
 			e.preventDefault();
-			let filterCoursesParams = window.localStorage.getItem( 'lp_filter_courses' );
-			filterCoursesParams = JSON.parse( filterCoursesParams ) || {};
-			filterCoursesParams.order_by = target.value;
-			window.location.href = lpAddQueryArgs( currentUrl, filterCoursesParams );
+			filterCourses.order_by = target.value;
+			window.location.href = lpAddQueryArgs( currentUrl, filterCourses );
 		},
 		onChangeTypeLayout: ( e, target ) => {
 			if ( 'lp-switch-layout-btn' !== target.getAttribute( 'name' ) ) {
@@ -114,9 +116,9 @@ window.lpCourseList = ( () => {
 				return;
 			}
 			e.preventDefault();
-			const layout = e.target.value;
+			const layout = target.value;
 			if ( layout ) {
-				elListCourse && ( elListCourse.dataset.layout = layout );
+				elListCourse.dataset.layout = layout;
 				Cookies.set( 'courses-layout', layout );
 			}
 		},
@@ -131,11 +133,10 @@ window.lpCourseList = ( () => {
 				}
 
 				e.preventDefault();
-				const pageCurrent = parseInt( filterCourses.paged || 1 );
-
-				if ( parentArchive.classList.contains( 'prev' ) ) {
+				const pageCurrent = filterCourses.paged;
+				if ( target.classList.contains( 'prev' ) ) {
 					filterCourses.paged = pageCurrent - 1;
-				} else if ( parentArchive.classList.contains( 'next' ) ) {
+				} else if ( target.classList.contains( 'next' ) ) {
 					filterCourses.paged = pageCurrent + 1;
 				} else {
 					filterCourses.paged = parseInt( target.textContent );
@@ -156,6 +157,14 @@ window.lpCourseList = ( () => {
 			if ( ! target.classList.contains( 'courses-btn-load-more' ) ) {
 				return;
 			}
+			const elArchive = target.closest( `.${ classArchiveCourse }` );
+			if ( ! elArchive ) {
+				return;
+			}
+			const elListCourse = elArchive.querySelector( `.${ classListCourse }` );
+			if ( ! elListCourse ) {
+				return;
+			}
 
 			e.preventDefault();
 			++filterCourses.paged;
@@ -163,11 +172,10 @@ window.lpCourseList = ( () => {
 			window.lpCourseList.triggerFetchAPI( filterCourses );
 		},
 		scrollInfinite: ( e, target ) => {
-			const elArchive = document.querySelector( '.lp-archive-courses' );
+			const elArchive = document.querySelector( `.${ classArchiveCourse }` );
 			if ( ! elArchive ) {
 				return;
 			}
-
 			const elInfinite = elArchive.querySelector( '.courses-load-infinite' );
 			if ( ! elInfinite ) {
 				return;
@@ -194,40 +202,32 @@ window.lpCourseList = ( () => {
 			observer.observe( elInfinite );
 		},
 		triggerFetchAPI: ( args ) => { // For case, click on pagination, filter.
-			const elArchive = document.querySelector( '.lp-archive-courses' );
+			const elArchive = document.querySelector( `.${ classArchiveCourse }` );
 			if ( ! elArchive ) {
 				return;
 			}
-			const elListCourse = elArchive.querySelector( '.learn-press-courses' );
+			const elListCourse = elArchive.querySelector( `.${ classListCourse }` );
 			if ( ! elListCourse ) {
 				return;
 			}
 
 			filterCourses = args;
-
 			let callBack;
 			switch ( typeEventBeforeFetch ) {
 			case 'load-more':
-				callBack = window.lpCourseList.callBackPaginationTypeLoadMore( args, elArchive, elListCourse );
+				callBack = window.lpCourseList.callBackPaginationTypeLoadMore( elArchive, elListCourse );
 				break;
 			case 'infinite':
 				callBack = window.lpCourseList.callBackPaginationTypeInfinite( elArchive, elListCourse );
 				break;
-			case 'filter':
-				callBack = window.lpCourseList.callBackFilter( args, elArchive, elListCourse );
-				break;
 			case 'custom':
 				callBack = args.customCallBack || false;
 				break;
+			case 'filter':
 			default: // number
 				// Change url by params filter courses
-				const urlPush = lpAddQueryArgs( currentUrl, args );
-				window.history.pushState( '', '', urlPush );
-
-				// Save filter courses to Storage
-				window.localStorage.setItem( 'lp_filter_courses', JSON.stringify( args ) );
-
-				callBack = window.lpCourseList.callBackPaginationTypeNumber( elListCourse );
+				//callBack = window.lpCourseList.callBackPaginationTypeNumber( elListCourse );
+				callBack = window.lpCourseList.callBackFilter( args, elArchive, elListCourse );
 				break;
 			}
 
@@ -243,15 +243,10 @@ window.lpCourseList = ( () => {
 			if ( ! elListCourse ) {
 				return;
 			}
-
-			const skeleton = elListCourse.querySelector( '.lp-archive-course-skeleton' );
-			if ( ! skeleton ) {
-				return;
-			}
+			const skeleton = elListCourse.querySelector( `.${ classSkeletonArchiveCourse }` );
 
 			return {
 				before: () => {
-					args.paged = 1;
 					window.history.pushState( '', '', lpAddQueryArgs( currentUrl, args ) );
 					window.localStorage.setItem( 'lp_filter_courses', JSON.stringify( args ) );
 					if ( skeleton ) {
@@ -260,9 +255,9 @@ window.lpCourseList = ( () => {
 				},
 				success: ( res ) => {
 					// Remove all items before insert new items.
-					const elLis = elListCourse.querySelectorAll( ':not(.lp-archive-course-skeleton)' );
+					const elLis = elListCourse.querySelectorAll( `:not(.${ classSkeletonArchiveCourse })` );
 					elLis.forEach( ( elLi ) => {
-						const parent = elLi.closest( '.lp-archive-course-skeleton' );
+						const parent = elLi.closest( `.${ classSkeletonArchiveCourse }` );
 						if ( parent ) {
 							return;
 						}
@@ -291,25 +286,31 @@ window.lpCourseList = ( () => {
 					}
 					// Scroll to archive element
 					const optionScroll = { behavior: 'smooth' };
-					elListCourse.closest( '.lp-archive-courses' ).scrollIntoView( optionScroll );
+					elListCourse.closest( `.${ classListCourse }` ).scrollIntoView( optionScroll );
 				},
 			};
 		},
-		callBackPaginationTypeNumber: ( elListCourse ) => {
+		/*callBackPaginationTypeNumber: ( elListCourse ) => {
 			if ( ! elListCourse ) {
 				return;
 			}
-			const skeleton = elListCourse.querySelector( '.lp-archive-course-skeleton' );
+			const skeleton = elListCourse.querySelector( `.${ classSkeletonArchiveCourse }` );
 
 			return {
 				before: () => {
-					skeleton.style.display = 'block';
+					const urlPush = lpAddQueryArgs( currentUrl, args );
+					window.history.pushState( '', '', urlPush );
+					// Save filter courses to Storage
+					window.localStorage.setItem( 'lp_filter_courses', JSON.stringify( args ) );
+					if ( skeleton ) {
+						skeleton.style.display = 'block';
+					}
 				},
 				success: ( res ) => {
 					// Remove all items before insert new items.
-					const elLis = elListCourse.querySelectorAll( ':not(.lp-archive-course-skeleton)' );
+					const elLis = elListCourse.querySelectorAll( `:not(.${ classSkeletonArchiveCourse })` );
 					elLis.forEach( ( elLi ) => {
-						const parent = elLi.closest( '.lp-archive-course-skeleton' );
+						const parent = elLi.closest( `.${ classSkeletonArchiveCourse }` );
 						if ( parent ) {
 							return;
 						}
@@ -317,14 +318,14 @@ window.lpCourseList = ( () => {
 					} );
 
 					// Insert new items.
-					skeleton.insertAdjacentHTML( 'beforebegin', res.data.content || '' );
+					elListCourse.insertAdjacentHTML( 'afterbegin', res.data.content || '' );
 
-					// Delete Pagination if exists.
-					skeleton.style.display = 'block';
-					const paginationEle = document.querySelector( `.${ classPaginationCourse }` );
-					if ( paginationEle ) {
-						paginationEle.remove();
+					// Check if Pagination exists will remove.
+					const elPagination = document.querySelector( `.${ classPaginationCourse }` );
+					if ( elPagination ) {
+						elPagination.remove();
 					}
+
 					// Insert Pagination.
 					const pagination = res.data.pagination || '';
 					elListCourse.insertAdjacentHTML( 'afterend', pagination );
@@ -333,16 +334,19 @@ window.lpCourseList = ( () => {
 					elListCourse.innerHTML += `<div class="lp-ajax-message error" style="display:block">${ error.message || 'Error' }</div>`;
 				},
 				completed: () => {
-					skeleton.style.display = 'none';
+					if ( skeleton ) {
+						skeleton.style.display = 'none';
+					}
+
 					// Scroll to archive element
 					const optionScroll = { behavior: 'smooth' };
 					elListCourse.closest( '.lp-archive-courses' ).scrollIntoView( optionScroll );
 				},
 			};
-		},
-		callBackPaginationTypeLoadMore: ( args, elArchive, elListCourse ) => {
+		},*/
+		callBackPaginationTypeLoadMore: ( elArchive, elListCourse ) => {
 			console.log( 'callBackPaginationTypeLoadMore' );
-			if ( ! elListCourse ) {
+			if ( ! elListCourse || ! elArchive ) {
 				return false;
 			}
 			const btnLoadMore = elArchive.querySelector( '.courses-btn-load-more' );
@@ -350,34 +354,20 @@ window.lpCourseList = ( () => {
 			if ( btnLoadMore ) {
 				elLoading = btnLoadMore.querySelector( '.lp-loading-circle' );
 			}
-			const skeleton = document.querySelector( '.lp-archive-course-skeleton' );
-
-			if ( args.eventFilter === 1 ) {
-				window.history.pushState( '', '', lpAddQueryArgs( currentUrl, args ) );
-			}
-
-			if ( args.paged === 1 ) {
-				if ( btnLoadMore ) {
-					btnLoadMore.remove();
-				}
-
-				if ( skeleton ) {
-					skeleton.style.display = 'block';
-				}
-			}
+			//const skeleton = document.querySelector( `.${ classSkeletonArchiveCourse }` );
 
 			return {
 				before: () => {
 					if ( btnLoadMore ) {
 						elLoading.classList.remove( 'hide' );
-					}
-				},
-				success: ( res ) => {
-					skeleton.style.display = 'none';
-					if ( args.paged === 1 ) {
-						elListCourse.innerHTML = skeleton.outerHTML;
+						btnLoadMore.setAttribute( 'disabled', 'disabled' );
 					}
 
+					/*if ( skeleton ) {
+						skeleton.style.display = 'block';
+					}*/
+				},
+				success: ( res ) => {
 					elListCourse.insertAdjacentHTML( 'beforeend', res.data.content || '' );
 					elListCourse.insertAdjacentHTML( 'afterend', res.data.pagination || '' );
 				},
@@ -390,11 +380,9 @@ window.lpCourseList = ( () => {
 						btnLoadMore.remove();
 					}
 
-					if ( args.eventFilter === 1 ) {
-						// Scroll to archive element
-						const optionScroll = { behavior: 'smooth' };
-						elListCourse.closest( '.lp-archive-courses' ).scrollIntoView( optionScroll );
-					}
+					/*if ( skeleton ) {
+						skeleton.style.display = 'none';
+					}*/
 				},
 			};
 		},
@@ -491,7 +479,7 @@ window.lpCourseList = ( () => {
 							const elArchive = document.querySelector( `.${ classArchiveCourse }` );
 							let elListCourse;
 							if ( elArchive ) {
-								elListCourse = elArchive.querySelector( '.learn-press-courses' );
+								elListCourse = elArchive.querySelector( `.${ classListCourse }` );
 							}
 
 							if ( countTime > 5000 ) {
