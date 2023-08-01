@@ -58,7 +58,7 @@ window.lpCourseList = ( () => {
 	let timeOutSearch;
 	let isLoadingInfinite = false;
 	const fetchAPI = ( args, callBack = {} ) => {
-		console.log( 'Fetch API Courses' );
+		//console.log( 'Fetch API Courses' );
 		const url = lpAddQueryArgs( API.apiCourses, args );
 		let paramsFetch = {};
 
@@ -235,7 +235,7 @@ window.lpCourseList = ( () => {
 				return;
 			}
 
-			console.log( 'Args', args );
+			//console.log( 'Args', args );
 
 			fetchAPI( args, callBack );
 		},
@@ -345,7 +345,7 @@ window.lpCourseList = ( () => {
 			};
 		},*/
 		callBackPaginationTypeLoadMore: ( elArchive, elListCourse ) => {
-			console.log( 'callBackPaginationTypeLoadMore' );
+			//console.log( 'callBackPaginationTypeLoadMore' );
 			if ( ! elListCourse || ! elArchive ) {
 				return false;
 			}
@@ -387,8 +387,8 @@ window.lpCourseList = ( () => {
 			};
 		},
 		callBackPaginationTypeInfinite: ( elArchive, elListCourse ) => {
-			console.log( 'callBackPaginationTypeInfinite' );
-			if ( ! elListCourse ) {
+			//console.log( 'callBackPaginationTypeInfinite' );
+			if ( ! elListCourse || ! elListCourse ) {
 				return;
 			}
 
@@ -468,26 +468,27 @@ window.lpCourseList = ( () => {
 			}
 		},
 		ajaxEnableLoadPage: () => { // For case enable AJAX when load page.
-			const countTime = 0;
+			let countTime = 0;
 
 			if ( ! lpArchiveNoLoadAjaxFirst ) {
-				let detectedElArchivex;
+				let detectedElArchive;
 				const callBack = {
 					success: ( res ) => {
-						detectedElArchivex = setInterval( function() {
-							const skeleton = document.querySelector( '.lp-archive-course-skeleton' );
+						detectedElArchive = setInterval( function() {
+							const skeleton = document.querySelector( `.${ classSkeletonArchiveCourse }` );
 							const elArchive = document.querySelector( `.${ classArchiveCourse }` );
 							let elListCourse;
 							if ( elArchive ) {
 								elListCourse = elArchive.querySelector( `.${ classListCourse }` );
 							}
 
+							++countTime;
 							if ( countTime > 5000 ) {
-								clearInterval( detectedElArchivex );
+								clearInterval( detectedElArchive );
 							}
 
 							if ( elListCourse && skeleton ) {
-								clearInterval( detectedElArchivex );
+								clearInterval( detectedElArchive );
 								elListCourse.insertAdjacentHTML( 'afterbegin', res.data.content || '' );
 								skeleton.style.display = 'none';
 
