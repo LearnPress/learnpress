@@ -34,10 +34,10 @@ class ListCoursesTemplate {
 	 */
 	public function html_pagination_load_more(): string {
 		$html_wrapper = [
-			'<button class="courses-btn-load-more learn-press-pagination">' => '</button>',
+			'<button class="courses-btn-load-more learn-press-pagination lp-button">' => '</button>',
 		];
 		$content      = sprintf(
-			'<span class="lp-loading-circle hide"></span>%s',
+			'%s<span class="lp-loading-circle hide"></span>',
 			__( 'Load more', 'learnpress' )
 		);
 

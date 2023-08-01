@@ -5,6 +5,7 @@
  */
 
 use LearnPress\Helpers\Template;
+use LearnPress\TemplateHooks\Course\ListCoursesTemplate;
 
 class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 	/**
@@ -111,6 +112,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 	public function list_courses( WP_REST_Request $request ): LP_REST_Response {
 		$response       = new LP_REST_Response();
 		$response->data = new stdClass();
+		$listCoursesTemplate = ListCoursesTemplate::instance();
 
 		try {
 			$filter = new LP_Course_Filter();
@@ -144,12 +146,12 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 						switch ( $pagination_type ) {
 							case 'load-more':
 								if ( $filter->page < $total_pages ) {
-									$response->data->pagination = '<button class="courses-btn-load-more learn-press-pagination">Load more <span class="lp-loading-circle hide"></span></button>';
+									$response->data->pagination = $listCoursesTemplate->html_pagination_load_more();
 								}
 								break;
 							case 'infinite':
 								if ( $filter->page < $total_pages ) {
-									$response->data->pagination = '<div class="courses-load-infinite learn-press-pagination"><span class="lp-loading-circle hide"></span></div>';
+									$response->data->pagination = $listCoursesTemplate->html_pagination_infinite();
 								}
 								break;
 							default:
