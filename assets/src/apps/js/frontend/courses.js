@@ -44,8 +44,6 @@ document.addEventListener( 'submit', function( e ) {
 } );
 
 let isLoadingInfinite = false;
-const isPaged = 1;
-let timeOutSearch;
 window.lpCourseList = ( () => {
 	const classArchiveCourse = 'lp-archive-courses';
 	const classListCourse = 'learn-press-courses';
@@ -57,6 +55,7 @@ window.lpCourseList = ( () => {
 	let filterCourses = {};
 	const typePagination = lpGlobalSettings.lpArchivePaginationType || 'number';
 	let typeEventBeforeFetch;
+	let timeOutSearch;
 	const fetchAPI = ( args, callBack = {} ) => {
 		console.log( 'Fetch API Courses' );
 		const url = lpAddQueryArgs( API.apiCourses, args );
@@ -516,6 +515,9 @@ window.lpCourseList = ( () => {
 				}
 				fetchAPI( filterCourses, callBack );
 			}
+		},
+		getFilterParams: () => {
+			return filterCourses;
 		},
 	};
 } )();
