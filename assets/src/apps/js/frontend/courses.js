@@ -123,7 +123,7 @@ window.lpCourseList = ( () => {
 			}
 		},
 		clickNumberPage: ( e, target ) => {
-			if ( ! lpArchiveLoadAjax ) {
+			if ( ! lpArchiveLoadAjax || lpGlobalSettings.noLoadCoursesJs ) {
 				return;
 			}
 			if ( target.classList.contains( 'page-numbers' ) ) {
