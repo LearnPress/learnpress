@@ -478,6 +478,36 @@ class LP_Settings {
 			'zip'      => 'application/zip,application/octet-stream,application/x-zip-compressed,multipart/x-zip',
 		);
 	}
+
+	/**
+	 * Check theme support load courses ajax
+	 *
+	 * @return bool
+	 * @since 4.2.3.3
+	 * @version 1.0.0
+	 */
+	public static function theme_no_support_load_courses_ajax(): bool {
+		$theme_no_load_ajax = apply_filters(
+			'lp/page/courses/themes/no_load_ajax',
+			[
+				'Coaching',
+				'Course Builder',
+				'eLearningWP',
+				'Ivy School',
+				'StarKid',
+				'Academy LMS',
+				'Coaching Child',
+				'Course Builder Child',
+				'eLearningWP Child',
+				'Ivy School Child',
+				'StarKid Child',
+				'Academy LMS Child',
+			]
+		);
+		$theme_current      = wp_get_theme()->get( 'Name' );
+
+		return in_array( $theme_current, $theme_no_load_ajax );
+	}
 }
 
 LP_Settings::instance();

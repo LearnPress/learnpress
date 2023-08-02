@@ -210,6 +210,12 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.2.3.3 (2023-08-03) =
+~ Added: feature choose type Pagination when load courses on page Archive: navigation Number, Load more, Infinite scroll.
+~ Fixed: error with WPML, show wrong list courses with lang.
+~ Fixed: sidebar Course Filter show wrong with Firefox.
+~ Fixed: error fonts tiny with theme OceanWP.
+
 = 4.2.3.2 (2023-07-19) =
 ~ Added: widget filter courses, option enable fields want to filter, sort fields, option load widget on REST.
 ~ Added: Search course suggest (AJAX).
