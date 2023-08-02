@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2023-08-01T11:20:29+02:00\n"
+"POT-Creation-Date: 2023-08-02T06:39:28+02:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.8.1\n"
 "X-Domain: learnpress\n"
@@ -71,7 +71,7 @@ msgstr ""
 
 #: assets/js/dist/frontend/quiz.min.js:313
 #: inc/admin/views/meta-boxes/fields/materials.php:147
-#: inc/class-lp-assets.php:119
+#: inc/class-lp-assets.php:120
 msgid "Remove"
 msgstr ""
 
@@ -572,7 +572,7 @@ msgid "Button Processing text"
 msgstr ""
 
 #: config/elementor/instructor/become-a-teacher.php:37
-#: inc/class-lp-assets.php:110
+#: inc/class-lp-assets.php:111
 #: inc/order/class-lp-order.php:344
 #: inc/Shortcodes/class-lp-shortcode-become-a-teacher.php:89
 msgid "Processing"
@@ -790,78 +790,99 @@ msgid "Ajax is only applied when selecting pagination, filtering, searching, and
 msgstr ""
 
 #: config/settings/course.php:78
-msgid "Thumbnail dimensions"
+msgid "Pagination Type"
+msgstr ""
+
+#: config/settings/course.php:79
+msgid "Display the pagination type on the Course Archive page."
 msgstr ""
 
 #: config/settings/course.php:84
+#: config/settings/profile.php:96
+msgid "Number"
+msgstr ""
+
+#: config/settings/course.php:85
+msgid "Load More"
+msgstr ""
+
+#: config/settings/course.php:86
+msgid "Infinite Scroll"
+msgstr ""
+
+#: config/settings/course.php:91
+msgid "Thumbnail dimensions"
+msgstr ""
+
+#: config/settings/course.php:97
 msgid "Redirect when finishing the course"
 msgstr ""
 
-#: config/settings/course.php:101
+#: config/settings/course.php:114
 msgid "Curriculum Settings"
 msgstr ""
 
-#: config/settings/course.php:105
+#: config/settings/course.php:118
 msgid "Section Per Page"
 msgstr ""
 
-#: config/settings/course.php:109
+#: config/settings/course.php:122
 msgid "The number of displayed sections per page (Enter -1 to display all sections)."
 msgstr ""
 
-#: config/settings/course.php:112
+#: config/settings/course.php:125
 msgid "Course Item Per Page"
 msgstr ""
 
-#: config/settings/course.php:116
+#: config/settings/course.php:129
 msgid "The number of displayed course items per page in a section (Enter -1 to display all course items)."
 msgstr ""
 
-#: config/settings/course.php:129
+#: config/settings/course.php:142
 msgid "Material Settings"
 msgstr ""
 
-#: config/settings/course.php:133
+#: config/settings/course.php:146
 msgid "File Type"
 msgstr ""
 
-#: config/settings/course.php:139
+#: config/settings/course.php:152
 msgid "Which types of file will be allowed uploading?"
 msgstr ""
 
-#: config/settings/course.php:185
+#: config/settings/course.php:198
 msgid "Upload Files"
 msgstr ""
 
-#: config/settings/course.php:189
+#: config/settings/course.php:202
 msgid "Number files the user can upload. Set to 0 to disable"
 msgstr ""
 
-#: config/settings/course.php:195
+#: config/settings/course.php:208
 msgid "File Size Limit"
 msgstr ""
 
-#: config/settings/course.php:199
+#: config/settings/course.php:212
 msgid "Set Maximum Attachment size for upload (MB)"
 msgstr ""
 
-#: config/settings/course.php:205
+#: config/settings/course.php:218
 msgid "File Per Page"
 msgstr ""
 
-#: config/settings/course.php:209
+#: config/settings/course.php:222
 msgid "The number of displayed files per page (Enter -1 to display all files, set to 0 to disable)."
 msgstr ""
 
-#: config/settings/course.php:225
+#: config/settings/course.php:238
 msgid "Instructor Settings"
 msgstr ""
 
-#: config/settings/course.php:229
+#: config/settings/course.php:242
 msgid "Instructor Per Page"
 msgstr ""
 
-#: config/settings/course.php:233
+#: config/settings/course.php:246
 msgid "The number of displayed instructors per page (Enter -1 to display all sections)."
 msgstr ""
 
@@ -1173,10 +1194,6 @@ msgstr ""
 
 #: config/settings/profile.php:95
 msgid "URL"
-msgstr ""
-
-#: config/settings/profile.php:96
-msgid "Number"
 msgstr ""
 
 #: config/settings/profile.php:100
@@ -2036,7 +2053,7 @@ msgstr ""
 
 #: inc/admin/meta-box/fields/image.php:27
 #: inc/admin/views/meta-boxes/fields/materials.php:138
-#: inc/class-lp-assets.php:117
+#: inc/class-lp-assets.php:118
 msgid "Upload"
 msgstr ""
 
@@ -2750,7 +2767,7 @@ msgid "Add Course Materials"
 msgstr ""
 
 #: inc/admin/views/meta-boxes/fields/materials.php:125
-#: inc/class-lp-assets.php:120
+#: inc/class-lp-assets.php:121
 msgid "Save"
 msgstr ""
 
@@ -3534,24 +3551,24 @@ msgstr ""
 msgid "No"
 msgstr ""
 
-#: inc/class-lp-assets.php:111
+#: inc/class-lp-assets.php:112
 msgid "Redirecting"
 msgstr ""
 
-#: inc/class-lp-assets.php:112
+#: inc/class-lp-assets.php:113
 msgid "Invalid field"
 msgstr ""
 
-#: inc/class-lp-assets.php:113
+#: inc/class-lp-assets.php:114
 msgid "Unknown error"
 msgstr ""
 
-#: inc/class-lp-assets.php:114
+#: inc/class-lp-assets.php:115
 #: templates/checkout/payment.php:70
 msgid "Place order"
 msgstr ""
 
-#: inc/class-lp-assets.php:118
+#: inc/class-lp-assets.php:119
 msgid "Replace"
 msgstr ""
 
@@ -5060,7 +5077,7 @@ msgstr ""
 #: inc/jwt/rest-api/version1/class-lp-rest-section-items-v1-controller.php:213
 #: inc/jwt/rest-api/version1/class-lp-rest-sections-v1-controller.php:116
 #: inc/jwt/rest-api/version1/class-lp-rest-users-v1-controller.php:42
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:61
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:62
 #: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:25
 #: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:69
 #: inc/rest-api/v1/frontend/class-lp-rest-settings-controller.php:23
@@ -5091,8 +5108,8 @@ msgid "The course ID is invalid."
 msgstr ""
 
 #: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:356
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:268
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:413
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:285
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:430
 msgid "Error: The course cannot be added to the cart."
 msgstr ""
 
@@ -6894,90 +6911,90 @@ msgstr ""
 msgid "successfully"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:180
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:197
 msgid "Showing only one result"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:183
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:200
 msgid "Showing last course of %s results"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:186
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:203
 msgid "Showing %1$s of %2$s results"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:221
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:238
 msgid "Invalid course!"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:228
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:245
 msgid "Error: Cannot enroll in the course."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:249
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:266
 msgid "Error: Cannot Enroll in the course."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:288
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:305
 msgid "Congrats! You have enrolled in the course successfully. Redirecting..."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:306
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:428
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:323
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:445
 msgid "Error: Please set up a page for checkout."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:311
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:328
 msgid "Redirecting..."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:341
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:358
 msgid "Error: Invalid Course ID."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:346
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:363
 msgid "Error: No Course available."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:351
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:368
 msgid "Error: Cannot purchase the course!"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:375
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:392
 msgid "Reset Course progress"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:381
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:398
 msgid "Continue Course progress"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:389
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:406
 msgid "Repurchase Options"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:435
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:452
 msgid "\"%s\" has been added to your cart."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:460
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:477
 msgid "Invalid params"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:466
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:601
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:483
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:618
 #: inc/user/abstract-lp-user.php:855
 msgid "Invalid course"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:478
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:495
 msgid "You can't retry the course"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:483
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:500
 msgid "Invalid course data of user"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:507
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:524
 msgid "Now you can begin this course"
 msgstr ""
 
@@ -7312,13 +7329,17 @@ msgstr ""
 msgid "Reset"
 msgstr ""
 
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:90
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:41
+msgid "Load more"
+msgstr ""
+
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:164
 msgid "Course Found"
 msgid_plural "Courses Found"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:95
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:169
 msgid "View All"
 msgstr ""
 

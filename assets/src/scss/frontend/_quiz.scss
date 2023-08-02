@@ -114,17 +114,20 @@
 			}
 
 			&::after {
-				margin-top: -10px;
 				position: absolute;
-				top:18px;
-    			left: 9px;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+				width: auto;
 				box-sizing: content-box;
-				opacity: 0;
+				height: auto;
 				color: #3db748;
 				font-family: "Font Awesome 5 Free";
 				font-weight: 900;
 				font-size: 1em;
+				opacity: 0;
 				content: "\f00c";
+				background: none;
 			}
 
 			&:checked {
@@ -142,6 +145,7 @@
 
 				&::after {
 					opacity: 1;
+					
 				}
 			}
 
@@ -152,6 +156,16 @@
  				top: 50%;
 				left: 50%;
 				@include transform(translate(-50%, -50%));
+			}
+			&:checked {
+				&::after {
+					width: auto;
+					height: auto;
+					left: 50%;
+					top: 50%;
+					transform: translate(-50%, -50%);
+					border: none;					
+				}
 			}
 		}
 		input[type="radio"] {
