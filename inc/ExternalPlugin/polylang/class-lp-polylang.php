@@ -30,6 +30,8 @@ class LP_Polylang {
 		add_filter( 'lp/course/query/filter', [ $this, 'filter_query_courses' ], 10 );
 		add_filter( 'lp/user/course/query/filter', [ $this, 'filter_query_user_courses' ], 10 );
 		add_filter( 'pll_the_language_link', [ $this, 'get_link_switcher' ], 10, 3 );
+		//Rewrite URL when force lang = The language is set from the directory name in pretty permalinks
+		add_filter( 'learn-press/rewrite/rules', [ $this, 'pll_rewrite_url_for_lp' ] );
 	}
 
 	/**
@@ -167,7 +169,7 @@ class LP_Polylang {
 		$default_lang = pll_default_language();
 		$current_lang = pll_current_language();
 
-		$field_arr = [ 'courses_page_id', 'profile_page_id', 'checkout_page_id', 'become_a_teacher_page_id', 'term_conditions_page_id' ];
+		$field_arr = [ 'courses_page_id', 'profile_page_id', 'checkout_page_id', 'become_a_teacher_page_id', 'term_conditions_page_id', 'instructors_page_id', 'single_instructor_page_id' ];
 		$field_arr = apply_filters( 'lp_pll/settings/name-fields', $field_arr );
 
 		if ( $default_lang != $current_lang ) {
@@ -197,6 +199,51 @@ class LP_Polylang {
 		}
 
 		return $url;
+	}
+
+	/**
+	 * [pll_rewrite_url_for_lp rewrite url when  The language is set from the directory name in pretty permalinks Polylang]
+	 * @param  [array] $rules [rewrite url rule]
+	 * @return [array]        [rewrite url rule]
+	 */
+	public function pll_rewrite_url_for_lp( $rules ) {
+		if ( ! is_callable( 'pll_default_language' ) || ! is_callable( 'pll_current_language' ) ) {
+			return $rules;
+		}
+		$lang_default = pll_default_language();
+		$lang_current = pll_current_language();
+		if ( $lang_current == $lang_default ) {
+			return $rules;
+		}
+		$pll_options = $this->get_pll_options();
+		if ( ! $pll_options ) {
+			return $rules;
+		}
+		if ( $pll_options['force_lang'] == 1 ) {
+			$lang_slug = $pll_options['rewrite'] == 1 ? $lang_current . '/' : 'language/' . $lang_current . '/';
+			if ( ! empty( $rules ) ) {
+				foreach ( $rules as $key => $rule ) {
+					foreach ( $rule as $key2 => $sub_rule ) {
+						$new_key                = array_key_first( $sub_rule );
+						$new_val                = array_values( $sub_rule )[0] . '&lang=' . $lang_current;
+						$new_key                = substr_replace( $new_key, '^' . $lang_slug, strpos( $new_key, '^' ), strlen( '^' ) );
+						$rules[ $key ][ $key2 ] = array( $new_key => $new_val );
+					}
+				}
+			}
+		}
+		return $rules;
+	}
+	
+	/**
+	 * [get_pll_options get polylang settings]
+	 * @return [array]
+	 */
+	public function get_pll_options() {
+		if ( ! function_exists( 'PLL' ) ) {
+			return false;
+		}
+		return PLL()->options;
 	}
 
 	/**
