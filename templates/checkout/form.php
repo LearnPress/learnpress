@@ -17,35 +17,37 @@ learn_press_print_messages();
 
 if ( ! is_user_logged_in() ) {
 	?>
-	<div class="learn-press-message error">
-		<?php _e( 'Please log in to enroll in the course!', 'learnpress' ); ?>
-	</div>
-	<?php
+<div class="lp-content-area">
+    <div class="learn-press-message error">
+        <?php _e( 'Please log in to enroll in the course!', 'learnpress' ); ?>
+    </div>
+</div>
+<?php
 }
 ?>
-	<div class="lp-content-area">
-		<form method="post" id="learn-press-checkout-form" name="learn-press-checkout-form" class="lp-checkout-form"
-			tabindex="0" action="<?php echo esc_url_raw( learn_press_get_checkout_url() ); ?>"
-			enctype="multipart/form-data">
-			<?php
+<div class="lp-content-area">
+    <form method="post" id="learn-press-checkout-form" name="learn-press-checkout-form" class="lp-checkout-form"
+        tabindex="0" action="<?php echo esc_url_raw( learn_press_get_checkout_url() ); ?>"
+        enctype="multipart/form-data">
+        <?php
 			if ( has_action( 'learn-press/before-checkout-form' ) ) {
 				?>
-				<div class="lp-checkout-form__before">
-					<?php do_action( 'learn-press/before-checkout-form' ); ?>
-				</div>
-				<?php
+        <div class="lp-checkout-form__before">
+            <?php do_action( 'learn-press/before-checkout-form' ); ?>
+        </div>
+        <?php
 			}
 
 			do_action( 'learn-press/checkout-form' );
 
 			if ( has_action( 'learn-press/after-checkout-form' ) ) {
 				?>
-				<div class="lp-checkout-form__after">
-					<?php do_action( 'learn-press/after-checkout-form' ); ?>
-				</div>
-				<?php
+        <div class="lp-checkout-form__after">
+            <?php do_action( 'learn-press/after-checkout-form' ); ?>
+        </div>
+        <?php
 			}
 			?>
-		</form>
-	</div>
+    </form>
+</div>
 <?php
