@@ -5,13 +5,12 @@ $msg-waring: #ffc107;
 
 .learn-press-message {
 	position: relative;
-	margin: 24px 0 24px 0!important;
+	margin: 24px auto!important;
 	padding: 10px 50px 10px 15px;
 	border-top: 5px solid $msg-color;
 	border-radius: 0 0 5px 5px;
 	background: #f5f5f5;
 	width: 100%;
-
 	&.icon {
 		padding-left: 45px;
 

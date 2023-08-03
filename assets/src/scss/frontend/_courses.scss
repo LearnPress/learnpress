@@ -817,16 +817,10 @@ a {
 			display: flex;
 			padding-top: 8px;
 			padding-bottom: 16px;
-
-			//color: #333;
 			font-size: 0.925em;
-			//font-weight: 400;
-			gap: 20px;
+			gap: 16px;
 			flex-wrap: wrap;
 			row-gap: 8px;
-			@media (max-width:1200px) {
-				gap: 16px;
-			}
 			.meta-item {
 				text-transform: capitalize;
 				@media (max-width:1200px) {
