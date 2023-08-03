@@ -46,7 +46,7 @@ class LP_Page_Controller {
 			add_filter( 'the_post', array( $this, 'setup_data_for_item_course' ) );
 			add_filter( 'request', array( $this, 'remove_course_post_format' ), 1 );
 
-			add_shortcode( 'learn_press_archive_course', array( $this, 'archive_content' ) );
+			//add_shortcode( 'learn_press_archive_course', array( $this, 'archive_content' ) );
 			add_filter( 'pre_get_document_title', array( $this, 'set_title_pages' ), 20, 1 );
 
 			// Yoast seo
@@ -596,8 +596,10 @@ class LP_Page_Controller {
 	 * Archive course content.
 	 *
 	 * @return false|string
+	 * @deprecated 4.2.3.3.
 	 */
 	public function archive_content() {
+		_deprecated_function( __METHOD__, '4.2.3.3' );
 		ob_start();
 		learn_press_get_template( 'content-archive-course.php' );
 
