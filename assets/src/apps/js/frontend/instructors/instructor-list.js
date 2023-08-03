@@ -1,10 +1,13 @@
+import { lpAddQueryArgs } from '../../utils/utils';
 let query = {};
-
+if ( lpSkeletonParam ) {
+	lpSkeletonParam = JSON.parse( lpSkeletonParam );
+}
 export default function InstructorList() {
 	// Call API get instructors without wait element ready
 	let htmlListItemInstructor = '';
 	let htmlPagination = '';
-	getInstructors( { paged: 1 }, true, function( res ) {
+	getInstructors( { ...lpSkeletonParam, paged: 1 }, true, function( res ) {
 		htmlListItemInstructor = res.data.content;
 		if ( res.data.pagination !== undefined ) {
 			htmlPagination = res.data.pagination;
@@ -52,7 +55,7 @@ export default function InstructorList() {
 }
 
 const getInstructors = ( queryParam, firstLoad = false, callBack ) => {
-	const url = urlListInstructorsAPI + '?paged=' + queryParam.paged;
+	const url = lpAddQueryArgs( urlListInstructorsAPI, queryParam );
 	const paramsFetch = {
 		method: 'GET',
 	};
@@ -108,7 +111,7 @@ const pagination = () => {
 			paged = pageLinkNode.innerHTML;
 		}
 
-		query = { ...query, paged };
+		query = { ...query, paged, ...lpSkeletonParam };
 		getInstructors( query, false, function( res ) {
 			elUlListInstructors.innerHTML = res.data.content;
 			pagination.remove();

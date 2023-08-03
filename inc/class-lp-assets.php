@@ -242,10 +242,7 @@ class LP_Assets extends LP_Abstract_Assets {
 				),
 				'lp-instructors'       => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/instructors' . self::$_min_assets . '.js' ),
-					array_merge(
-						$wp_js,
-						array( 'wp-i18n' )
-					),
+					[ 'lp-global' ],
 					[],
 					1,
 					1

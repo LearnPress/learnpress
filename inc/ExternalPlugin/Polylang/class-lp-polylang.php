@@ -113,7 +113,10 @@ class LP_Polylang {
 	 * @return LP_User_Items_Filter
 	 */
 	public function filter_query_user_courses( LP_User_Items_Filter $filter ): LP_User_Items_Filter {
-		$pll_current_lang = LP_Helper::sanitize_params_submitted( $_REQUEST['pll-current-lang'] ?? '' );
+		$pll_current_lang = pll_current_language(); // For query load page
+		if ( ! $pll_current_lang ) { // For query call API
+			$pll_current_lang = LP_Request::get_param( 'pll-current-lang' );
+		}
 
 		if ( empty( $pll_current_lang ) ) {
 			return $filter;
@@ -236,11 +239,70 @@ class LP_Polylang {
 
 		$lang_default = pll_default_language();
 		$lang_current = pll_current_language();
+		$pll_options  = $this->get_pll_options();
+		$all_lang     = pll_languages_list();
+		if ( $pll_options['force_lang'] == 0 ) {
+			foreach ( $all_lang as $lang ) {
+				if ( $lang == $lang_default ) {
+					continue;
+				}
+
+				// Rewrite url for courses
+				$page_id_lang = LP_Settings::get_option( 'courses_page_id_' . $lang, false );
+				if ( $page_id_lang ) {
+					$page = get_post( $page_id_lang );
+					$slug = $page->post_name;
+
+					$rules['courses']['pll-archive-option-0'] = [
+						"^{$slug}/?(?:page/)?([^/][0-9]*)?/?$" =>
+							'index.php?paged=$matches[1]&post_type=' . LP_COURSE_CPT . '&lang=' . $lang,
+					];
+				}
+
+				// Rewrite url for instructors
+				$instructors_page_id_lang = LP_Settings::get_option( 'instructors_page_id_' . $lang, false );
+				if ( $page_id_lang ) {
+					$page = get_post( $page_id_lang );
+					$slug = $page->post_name;
+
+					$rules['instructors']['pll-archive-option-0'] = [
+						"^{$slug}/?(?:page/)?([^/][0-9]*)?/?$" =>
+							'index.php?page_id=' . $page_id_lang . '&lang=' . $lang,
+					];
+				}
+
+				// Rewrite url for instructor
+				$single_instructor_page_id = LP_Settings::get_option( 'single_instructor_page_id_' . $lang, false );
+				if ( $page_id_lang ) {
+					$page            = get_post( $single_instructor_page_id );
+					$instructor_slug = $page->post_name;
+
+					$rules['instructor']['has_name_lang'] = [
+						"^{$instructor_slug}/([^/]+)/?(?:page/)?([^/][0-9]*)?/?$" =>
+							'index.php?page_id=' . $single_instructor_page_id . '&is_single_instructor=1&instructor_name=$matches[1]&paged=$matches[2]&lang=' . $lang,
+					];
+					$rules['instructor']['no_name_lang']  = [
+						"^{$instructor_slug}/?$" =>
+							'index.php?page_id=' . $single_instructor_page_id . '&is_single_instructor=1&paged=$matches[2]&lang=' . $lang,
+					];
+				}
+			}
+		}
+
+		// Fixed for theme Gutenberg
+		$page_courses_id             = learn_press_get_page_id( 'courses' );
+		$page                        = get_post( $page_courses_id );
+		$slug                        = $page->post_name;
+		$rules['courses']['archive'] = [
+			"^{$slug}/?(?:page/)?([^/][0-9]*)?/?$" =>
+				'index.php?paged=$matches[1]&post_type=' . LP_COURSE_CPT,
+		];
+		// End
+
 		if ( $lang_current == $lang_default ) {
 			return $rules;
 		}
 
-		$pll_options = $this->get_pll_options();
 		if ( ! $pll_options ) {
 			return $rules;
 		}
