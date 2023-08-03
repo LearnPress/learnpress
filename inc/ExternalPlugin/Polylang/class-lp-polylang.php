@@ -8,14 +8,16 @@
  * @author tungnx
  */
 
+use LearnPress\Helpers\Singleton;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
 class LP_Polylang {
-	protected static $instance;
+	use Singleton;
 
-	protected function __construct() {
+	public function init() {
 		$this->hooks();
 	}
 
@@ -30,7 +32,6 @@ class LP_Polylang {
 		add_filter( 'lp/course/query/filter', [ $this, 'filter_query_courses' ], 10 );
 		add_filter( 'lp/user/course/query/filter', [ $this, 'filter_query_user_courses' ], 10 );
 		add_filter( 'pll_the_language_link', [ $this, 'get_link_switcher' ], 10, 3 );
-		//Rewrite URL when force lang = The language is set from the directory name in pretty permalinks
 		add_filter( 'learn-press/rewrite/rules', [ $this, 'pll_rewrite_url_for_lp' ] );
 	}
 
@@ -49,8 +50,11 @@ class LP_Polylang {
 
 		$lang_default = pll_default_language();
 		$lang_current = pll_current_language();
+		if ( ! $lang_current ) {
+			$lang_current = LP_Request::get_param( 'pll-current-lang' ); // Param this send via lp_archive_skeleton_get_args
+		}
 
-		if ( $lang_current != $lang_default ) {
+		if ( $lang_current && $lang_current != $lang_default ) {
 			$page_id = absint( LP_Settings::get_option( "{$name}_page_id_{$lang_current}" ) );
 		}
 
@@ -77,10 +81,16 @@ class LP_Polylang {
 	 *
 	 * @param LP_Course_Filter $filter
 	 *
+	 * @since 4.1.4
+	 * @version 1.0.1
 	 * @return LP_Course_Filter
 	 */
 	public function filter_query_courses( LP_Course_Filter $filter ): LP_Course_Filter {
-		$pll_current_lang = LP_Request::get_param( 'pll-current-lang' );
+		$pll_current_lang = pll_current_language(); // For query load page
+		if ( ! $pll_current_lang ) { // For query call API
+			$pll_current_lang = LP_Request::get_param( 'pll-current-lang' );
+		}
+
 		if ( empty( $pll_current_lang ) ) {
 			return $filter;
 		}
@@ -184,15 +194,24 @@ class LP_Polylang {
 		return $fields;
 	}
 
+	/**
+	 * Handle link swither
+	 *
+	 * @param $url
+	 * @param $slug
+	 * @param $locale
+	 *
+	 * @since 4.1.5
+	 * @version 1.0.0
+	 * @return false|mixed|string
+	 */
 	public function get_link_switcher( $url, $slug, $locale ) {
 		$slug_lang = '';
-
 		if ( $slug !== pll_default_language() ) {
 			$slug_lang = '_' . $slug;
 		}
 
 		$arr_page = array( LP_PAGE_COURSES, LP_PAGE_PROFILE );
-
 		if ( in_array( LP_Page_Controller::page_current(), $arr_page ) ) {
 			$name_page = str_replace( 'lp_page_', '', LP_Page_Controller::page_current() );
 			$url       = get_permalink( LP_Settings::get_option( $name_page . '_page_id' . $slug_lang ) );
@@ -202,19 +221,25 @@ class LP_Polylang {
 	}
 
 	/**
-	 * [pll_rewrite_url_for_lp rewrite url when  The language is set from the directory name in pretty permalinks Polylang]
-	 * @param  [array] $rules [rewrite url rule]
-	 * @return [array]        [rewrite url rule]
+	 * Rewrite url with polylang
+	 *
+	 * @param array $rules
+	 *
+	 * @since 4.2.3.3
+	 * @version 1.0.0
+	 * @return array
 	 */
-	public function pll_rewrite_url_for_lp( $rules ) {
+	public function pll_rewrite_url_for_lp( array $rules ) {
 		if ( ! is_callable( 'pll_default_language' ) || ! is_callable( 'pll_current_language' ) ) {
 			return $rules;
 		}
+
 		$lang_default = pll_default_language();
 		$lang_current = pll_current_language();
 		if ( $lang_current == $lang_default ) {
 			return $rules;
 		}
+
 		$pll_options = $this->get_pll_options();
 		if ( ! $pll_options ) {
 			return $rules;
@@ -232,28 +257,18 @@ class LP_Polylang {
 				}
 			}
 		}
+
 		return $rules;
 	}
-	
+
 	/**
-	 * [get_pll_options get polylang settings]
-	 * @return [array]
+	 * Get polylang settings
+	 *
+	 * @since 4.2.3.3
+	 * @version 1.0.0
+	 * @return array
 	 */
 	public function get_pll_options() {
-		if ( ! function_exists( 'PLL' ) ) {
-			return false;
-		}
 		return PLL()->options;
-	}
-
-	/**
-	 * @return LP_Polylang
-	 */
-	public static function instance(): LP_Polylang {
-		if ( is_null( self::$instance ) ) {
-			self::$instance = new self();
-		}
-
-		return self::$instance;
 	}
 }

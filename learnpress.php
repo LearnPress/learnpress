@@ -637,7 +637,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			// Polylang
 			if ( defined( 'POLYLANG_VERSION' ) ) {
-				require_once 'inc/ExternalPlugin/polylang/class-lp-polylang.php';
+				require_once 'inc/ExternalPlugin/Polylang/class-lp-polylang.php';
 				LP_Polylang::instance();
 			}
 

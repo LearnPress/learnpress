@@ -215,6 +215,7 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Fixed: error with WPML, show wrong list courses with lang.
 ~ Fixed: sidebar Course Filter show wrong with Firefox.
 ~ Fixed: error fonts tiny with theme OceanWP.
+~ Fixed: error 404 when view item's course with Polylang.
 
 = 4.2.3.2 (2023-07-19) =
 ~ Added: widget filter courses, option enable fields want to filter, sort fields, option load widget on REST.
