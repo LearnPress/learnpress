@@ -231,7 +231,7 @@ body {
 						top: 50%;
     					transform: translateY(-50%);
 						color: var(--lp-primary-color);
-						font-size: 0.75em;
+						font-size: 0.75rem;
 						@media (max-width:560px) {
 							left: 50%;
 							top: 50%;
@@ -507,7 +507,7 @@ body {
 
 					> a {
 						font-size: 0;
-
+						height: 56px;
 						&::after {
 							margin-left: 0;
 						}
