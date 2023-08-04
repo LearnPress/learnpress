@@ -508,6 +508,54 @@ class LP_Settings {
 
 		return in_array( $theme_current, $theme_no_load_ajax );
 	}
+
+	/**
+	 * Check theme support load courses ajax
+	 *
+	 * @since 4.2.3.3
+	 * @version 1.0.0
+	 * @return string
+	 */
+	public static function get_permalink_single_course(): string {
+		$course_slug_default = 'courses';
+		try {
+			$course_slug = self::get_option( 'course_base', 'courses' );
+			if ( empty( $course_slug ) ) {
+				$course_slug = $course_slug_default;
+			}
+			$course_slug = preg_replace( '!^/!', '', $course_slug );
+		} catch ( Throwable $e ) {
+			$course_slug = $course_slug_default;
+		}
+
+		return $course_slug;
+	}
+
+	/**
+	 * Check theme support load courses ajax
+	 *
+	 * @since 4.2.3.3
+	 * @version 1.0.0
+	 * @return array
+	 */
+	public static function get_course_items_slug(): array {
+		/**
+		 * Set rule item course.
+		 *
+		 * Use urldecode to convert an encoded string to normal.
+		 * This fixed the issue with custom slug of lesson/quiz in some languages
+		 * Eg: урока
+		 */
+		$lesson_slug = urldecode( sanitize_title_with_dashes( self::get_option( 'lesson_slug', 'lessons' ) ) );
+		$quiz_slug   = urldecode( sanitize_title_with_dashes( self::get_option( 'quiz_slug', 'quizzes' ) ) );
+		return apply_filters(
+			'learn-press/course-item-slugs/for-rewrite-rules',
+			array(
+				LP_LESSON_CPT => $lesson_slug,
+				LP_QUIZ_CPT   => $quiz_slug,
+			)
+		);
+	}
 }
 
 LP_Settings::instance();

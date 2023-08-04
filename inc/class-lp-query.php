@@ -179,34 +179,14 @@ class LP_Query {
 	 * @since 3.0.0
 	 * @version 1.0.2
 	 * @modify 4.2.2
+	 * @return array
 	 */
-	public function add_rewrite_rules() {
+	public function add_rewrite_rules(): array {
 		$rules = array();
 
 		try {
-			/**
-			 * Set rule item course.
-			 *
-			 * Use urldecode to convert an encoded string to normal.
-			 * This fixed the issue with custom slug of lesson/quiz in some languages
-			 * Eg: урока
-			 */
-			$lesson_slug       = urldecode( sanitize_title_with_dashes( LP_Settings::get_option( 'lesson_slug', 'lessons' ) ) );
-			$quiz_slug         = urldecode( sanitize_title_with_dashes( LP_Settings::get_option( 'quiz_slug', 'quizzes' ) ) );
-			$course_item_slugs = apply_filters(
-				'learn-press/course-item-slugs/for-rewrite-rules',
-				array(
-					LP_LESSON_CPT => $lesson_slug,
-					LP_QUIZ_CPT   => $quiz_slug,
-				)
-			);
-
-			$course_slug = LP_Settings::get_option( 'course_base', 'courses' );
-			if ( empty( $course_slug ) ) {
-				$course_slug = 'courses';
-			}
-			$course_slug = preg_replace( '!^/!', '', $course_slug );
-
+			$course_item_slugs = LP_Settings::get_course_items_slug();
+			$course_slug       = LP_Settings::get_permalink_single_course();
 			// For permalink has %course_category%
 			if ( preg_match( '!%course_category%!', $course_slug ) ) {
 				if ( ! preg_match( '!page!', LP_Helper::getUrlCurrent() ) ) {
