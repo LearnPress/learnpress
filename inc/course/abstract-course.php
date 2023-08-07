@@ -1132,7 +1132,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		public function get_next_item( $args = null ) {
 			$item_nav = $this->get_item_nav();
 
-			return apply_filters( 'learn-press/course/next-item', $item_nav[2], $this->get_id(), $args );
+			return apply_filters( 'learn-press/course/next-item', $item_nav ? $item_nav[2] : 0, $this->get_id(), $args );
 		}
 
 		/**

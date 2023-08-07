@@ -6,7 +6,7 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  4.0.2
+ * @version  4.0.3
  */
 
 defined( 'ABSPATH' ) || exit();
@@ -40,8 +40,10 @@ if ( $completed ) :
 	<button class="lp-button completed" disabled>
 		<i class="fa fa-check"></i><?php esc_html_e( 'Completed', 'learnpress' ); ?>
 	</button>
-<?php else : ?>
-
+	<?php
+else :
+	$item_id_next = $course->get_next_item();
+	?>
 	<form method="post" name="learn-press-form-complete-lesson"
 		class="learn-press-form form-button <?php echo esc_attr( $completed ) ? 'completed' : ''; ?>"
 		data-title="<?php echo esc_attr( __( 'Complete lesson', 'learnpress' ) ); ?>"
@@ -54,6 +56,7 @@ if ( $completed ) :
 		<input type="hidden" name="complete-lesson-nonce"
 			value="<?php echo esc_attr( wp_create_nonce( 'lesson-complete' ) ); ?>"/>
 		<input type="hidden" name="type" value="lp_lesson"/>
+		<input type="hidden" name="item_id_next" value="<?php echo esc_attr( $item_id_next ); ?>"/>
 		<input type="hidden" name="lp-ajax" value="complete-lesson"/>
 		<input type="hidden" name="noajax" value="yes"/>
 		<button class="lp-button button button-complete-item button-complete-lesson lp-btn-complete-item">
