@@ -187,8 +187,8 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 				</tbody>
 				
 			</table>
-			<?php if ( $course_materials ): ?>
-				<?php lp_skeleton_animation_html( 3, 100 ); ?>
+				<?php if ( $course_materials ) : ?>
+					<?php lp_skeleton_animation_html( 3, 100 ); ?>
 			<?php endif ?>
 			<div id="lp-material--group-container">
 				
