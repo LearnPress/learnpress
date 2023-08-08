@@ -1,0 +1,39 @@
+.lp-material-skeleton {
+	.course-material-table {
+		width: 100%;
+		display: none;
+		th {
+			text-align: center;
+			&:first-child {
+				text-align: left;
+			}
+		}
+		tr {
+			td {
+				&:not(:first-child) {
+					text-align: center;
+				}
+			}
+		}
+		tfoot {
+			td {
+				text-align: left;
+				font-weight: bold;
+			}
+		}
+	}
+	.lp-loadmore-material.lp-button {
+		display: none;
+		margin-top: 20px;
+		padding: 12px 29px;
+	}
+}
+#popup-content{
+	.lp-material-skeleton{
+		.lp-loadmore-material.lp-button {
+			display: none;
+			margin-top: 20px;
+			padding: 12px 29px;
+		}
+	}
+}

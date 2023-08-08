@@ -57,7 +57,7 @@
 			display: block;
 			margin: 0;
 			padding: 18px 0px;
-			font-size: 1.125rem;
+			font-size: 1.125em;
 			line-height: 1;
 			font-weight: 600;
 			text-align: center;
@@ -139,11 +139,11 @@
 
 	> li {
 		margin: 0;
-		font-size: 1rem;
+		font-size: 1em;
 		line-height: 1.5rem;
 
 		@media (max-width: 767px) {
-			margin-right: 16px;
+			margin-right: 24px;
 			margin-left: 0;
 			&:last-child {
 				margin-right: 0;

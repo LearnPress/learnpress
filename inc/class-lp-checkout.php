@@ -693,9 +693,9 @@ class LP_Checkout {
 
 		return $status;
 
-		$this->errors = apply_filters( 'learn-press/validate-checkout-fields', $this->errors, $fields, $this );
+		//$this->errors = apply_filters( 'learn-press/validate-checkout-fields', $this->errors, $fields, $this );
 
-		return ! sizeof( $this->errors );
+		//return ! sizeof( $this->errors );
 	}
 
 	/**
@@ -716,6 +716,8 @@ class LP_Checkout {
 				} else {
 					$this->payment_method = $available_gateways[ $this->payment_method_str ];
 				}
+
+				$this->payment_method->validate_fields();
 			}
 
 			/*if ( $this->payment_method ) {

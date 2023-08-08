@@ -548,7 +548,7 @@ class LP_User extends LP_Abstract_User {
 			 * @see learn_press_hk_before_start_quiz
 			 */
 			$can_start_quiz = apply_filters(
-				'learn-press/before-start-quiz',
+				'learn-press/can-start-quiz',
 				true,
 				$quiz_id,
 				$course_id,

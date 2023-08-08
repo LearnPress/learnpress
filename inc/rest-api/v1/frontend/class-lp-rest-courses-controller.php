@@ -5,6 +5,7 @@
  */
 
 use LearnPress\Helpers\Template;
+use LearnPress\TemplateHooks\Course\ListCoursesTemplate;
 
 class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 	/**
@@ -109,86 +110,20 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 	 * @return LP_REST_Response
 	 */
 	public function list_courses( WP_REST_Request $request ): LP_REST_Response {
-		$response       = new LP_REST_Response();
-		$response->data = new stdClass();
+		$response            = new LP_REST_Response();
+		$response->data      = new stdClass();
+		$listCoursesTemplate = ListCoursesTemplate::instance();
 
 		try {
-			$filter             = new LP_Course_Filter();
-			$filter->page       = absint( $request['paged'] ?? 1 );
-			$filter->post_title = LP_Helper::sanitize_params_submitted( trim( $request['c_search'] ?? '' ) );
-			$fields_str         = LP_Helper::sanitize_params_submitted( urldecode( $request['c_fields'] ?? '' ) );
-			$fields_exclude_str = LP_Helper::sanitize_params_submitted( urldecode( $request['c_exclude_fields'] ?? '' ) );
-			if ( ! empty( $fields_str ) ) {
-				$fields         = explode( ',', $fields_str );
-				$filter->fields = $fields;
-			}
-
-			if ( ! empty( $fields_exclude_str ) ) {
-				$fields_exclude         = explode( ',', $fields_exclude_str );
-				$filter->exclude_fields = $fields_exclude;
-			}
-
-			$filter->post_author = LP_Helper::sanitize_params_submitted( $request['c_author'] ?? 0 );
-			$author_ids_str      = LP_Helper::sanitize_params_submitted( $request['c_authors'] ?? 0 );
-			if ( ! empty( $author_ids_str ) ) {
-				$author_ids           = explode( ',', $author_ids_str );
-				$filter->post_authors = $author_ids;
-			}
-
-			// Filter on Courses
-			if ( ! empty( $request['sort_by'] ) ) {
-				$filter->sort_by[] = $request['sort_by'];
-			}
-
-			// Sort by level
-			$levels_str = LP_Helper::sanitize_params_submitted( urldecode( $request['c_level'] ?? '' ) );
-			if ( ! empty( $levels_str ) ) {
-				$levels_str     = str_replace( 'all', '', $levels_str );
-				$levels         = explode( ',', $levels_str );
-				$filter->levels = $levels;
-			}
-
-			// Find by category
-			$term_ids_str = LP_Helper::sanitize_params_submitted( urldecode( $request['term_id'] ?? '' ) );
-			if ( ! empty( $term_ids_str ) ) {
-				$term_ids         = explode( ',', $term_ids_str );
-				$filter->term_ids = $term_ids;
-			}
-
-			// Find by tag
-			$tag_ids_str = LP_Helper::sanitize_params_submitted( urldecode( $request['tag_id'] ?? '' ) );
-			if ( ! empty( $tag_ids_str ) ) {
-				$tag_ids         = explode( ',', $tag_ids_str );
-				$filter->tag_ids = $tag_ids;
-			}
-
-			$on_sale                               = absint( $request['on_sale'] ?? '0' );
-			1 === $on_sale ? $filter->sort_by[]    = 'on_sale' : '';
-			$on_feature                            = absint( $request['on_feature'] ?? '0' );
-			1 === $on_feature ? $filter->sort_by[] = 'on_feature' : '';
-
-			$filter->order_by = LP_Helper::sanitize_params_submitted( ! empty( $request['order_by'] ) ? $request['order_by'] : 'post_date' );
-			$filter->order    = LP_Helper::sanitize_params_submitted( ! empty( $request['order'] ) ? $request['order'] : 'DESC' );
-			$filter->limit    = $request['limit'] ?? LP_Settings::get_option( 'archive_course_limit', 10 );
-
-			// For search suggest courses
-			if ( ! empty( $request['c_suggest'] ) ) {
-				$filter->only_fields = [ 'ID', 'post_title' ];
-				$filter->limit       = apply_filters( 'learn-press/rest-api/courses/suggest-limit', 10 );
-				$filter->max_limit   = apply_filters( 'learn-press/rest-api/courses/suggest-max-limit', 10 );
-			}
-
-			$return_type = $request['return_type'] ?? 'html';
-			if ( 'json' !== $return_type ) {
-				$filter->only_fields = array( 'DISTINCT(ID) AS ID' );
-			}
+			$filter = new LP_Course_Filter();
+			LP_course::handle_params_for_query_courses( $filter, $request->get_params() );
 
 			$total_rows = 0;
 			$filter     = apply_filters( 'lp/api/courses/filter', $filter, $request );
 
 			$courses     = LP_Course::get_courses( $filter, $total_rows );
 			$total_pages = LP_Database::get_total_pages( $filter->limit, $total_rows );
-
+			$return_type = $request['return_type'] ?? 'html';
 			if ( 'json' === $return_type ) {
 				$response->data->courses     = $courses;
 				$response->data->total_pages = $total_pages;
@@ -207,13 +142,28 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 						global $wp, $post;
 
 						// Template Pagination.
-						$response->data->pagination = learn_press_get_template_content(
-							'loop/course/pagination.php',
-							array(
-								'total' => $total_pages,
-								'paged' => $filter->page,
-							)
-						);
+						$pagination_type = LP_Settings::get_option( 'course_pagination_type' );
+						switch ( $pagination_type ) {
+							case 'load-more':
+								if ( $filter->page < $total_pages ) {
+									$response->data->pagination = $listCoursesTemplate->html_pagination_load_more();
+								}
+								break;
+							case 'infinite':
+								if ( $filter->page < $total_pages ) {
+									$response->data->pagination = $listCoursesTemplate->html_pagination_infinite();
+								}
+								break;
+							default:
+								$pagination_args            = [
+									'total_pages' => $total_pages,
+									'paged'       => $filter->page,
+									'base'        => add_query_arg( 'paged', '%#%', learn_press_get_page_link( 'courses' ) ),
+								];
+								$response->data->pagination = $listCoursesTemplate->html_pagination_number( $pagination_args );
+								break;
+						}
+						$response->data->pagination_type = $pagination_type;
 						// End Pagination
 
 						// For custom template

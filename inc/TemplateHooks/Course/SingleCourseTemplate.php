@@ -30,29 +30,23 @@ class SingleCourseTemplate {
 	 * @return string
 	 */
 	public function html_title( LP_Course $course ): string {
-		$html_wrapper = apply_filters(
-			'learn-press/single-course/title/wrapper',
-			[
-				'<span class="course-title">' => '</span>',
-			]
-		);
+		$html_wrapper = [
+			'<span class="course-title">' => '</span>',
+		];
 		return Template::instance()->nest_elements( $html_wrapper, $course->get_title() );
 	}
 
 	/**
 	 * Get display title course.
 	 *
-	 * @param \LP_Course $course
+	 * @param LP_Course $course
 	 *
 	 * @return string
 	 */
 	public function html_categories( LP_Course $course ): string {
-		$html_wrapper = apply_filters(
-			'learn-press/single-course/categories/wrapper',
-			[
-				'<div class="course-categories">' => '</div>',
-			]
-		);
+		$html_wrapper = [
+			'<div class="course-categories">' => '</div>',
+		];
 
 		$cats      = $course->get_categories();
 		$cat_names = [];
@@ -80,13 +74,9 @@ class SingleCourseTemplate {
 		$content = '';
 
 		try {
-			$html_wrapper = apply_filters(
-				'learn-press/single-course/img/wrapper',
-				[
-					'<div class="course-img">' => '</div>',
-				],
-				$course
-			);
+			$html_wrapper = [
+				'<div class="course-img">' => '</div>',
+			];
 
 			$content = $course->get_image();
 			$content = Template::instance()->nest_elements( $html_wrapper, $content );
@@ -95,5 +85,16 @@ class SingleCourseTemplate {
 		}
 
 		return $content;
+	}
+
+	/**
+	 * Get display price course.
+	 *
+	 * @param LP_Course $course
+	 *
+	 * @return string
+	 */
+	public function html_price( LP_Course $course ): string {
+		return $course->get_course_price_html();
 	}
 }

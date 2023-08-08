@@ -329,5 +329,19 @@ if ( ! class_exists( 'LP_WP_Filesystem' ) ) {
 
 			return $output;
 		}
+		public function download_url( $url, $timeout = 300, $signature_verification = false ) {
+			return download_url( $url, $timeout, $signature_verification );
+		}
+		public function lp_handle_upload( &$file, $overrides = false, $time = null ) {
+			return wp_handle_upload( $file, $overrides, $time );
+		}
+		public function get_file_size_from_url( $url ) {
+			$tmp_file = $this->download_url( $url );
+			$size     = '0KB';
+			if ( $tmp_file ) {
+				$size = ( filesize( $tmp_file ) / 1024 < 1024 ) ? round( filesize( $tmp_file ) / 1024, 2 ) . 'KB' : round( filesize( $tmp_file ) / 1024 / 1024, 2 ) . 'MB';
+			}
+			return $size;
+		}
 	}
 }

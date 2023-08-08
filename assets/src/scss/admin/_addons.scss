@@ -37,7 +37,6 @@
 		border-radius: 3px;
 		border: none;
 		cursor: pointer;
-		font-size: 1em;
 
 		&.btn-addon-action {
 			&.handling {
@@ -53,7 +52,7 @@
 			span.dashicons {
 				align-items: center;
 				display: none;
-				font-size: 1.125rem;
+				font-size: 1.125em;
 				width: auto;
 				height: auto;
 				animation: rotation 2s infinite linear;
@@ -283,8 +282,8 @@
 				opacity: 1;
 				padding-left: 6px;
 				padding-right: 6px;
-				font-size: 0.875rem;
-				line-height: 1.125rem;
+				font-size: 0.8em;
+				line-height: 1.125em;
 			}
 
 			.toggle-on {
@@ -348,8 +347,8 @@
 		border-bottom: none;
 		margin-left: 0;
 		padding: 5px 10px;
-		font-size: 0.875rem;
-		line-height: 1.71428571;
+		font-size: 0.8em;
+		line-height: 1.6em;
 		font-weight: 600;
 		background: #dcdcde;
 		color: #50575e;
@@ -376,7 +375,7 @@
 		border-radius: 9px;
 		background-color: #d63638;
 		color: #fff;
-		font-size: 0.6875rem;
+		font-size: 0.75em;
 		line-height: 1.6;
 		text-align: center;
 	}

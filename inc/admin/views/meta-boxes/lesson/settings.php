@@ -56,7 +56,8 @@ class LP_Meta_Box_Lesson extends LP_Meta_Box {
 						$is_old = true;
 					}
 				}
-
+				$material = new LP_Meta_Box_Material_Fields();
+				$material->output( $post->ID );
 				if ( $is_old ) {
 					lp_meta_box_output( $this->metabox( $post->ID ) );
 				}

@@ -18,6 +18,10 @@ languages/strings
 /assets/fonts/iconfont.svg
 /assets/js/dist/
 /assets/css/
+/languages/learnpress.pot
+/languages/learnpress-js.pot
+/assets/js/vendor/
+/assets/js/admin/lp-material.min.js
 /inc/test.php
 /local-debug.php
 /languages/learnpress-vi.mo

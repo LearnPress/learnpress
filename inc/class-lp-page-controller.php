@@ -46,7 +46,7 @@ class LP_Page_Controller {
 			add_filter( 'the_post', array( $this, 'setup_data_for_item_course' ) );
 			add_filter( 'request', array( $this, 'remove_course_post_format' ), 1 );
 
-			add_shortcode( 'learn_press_archive_course', array( $this, 'archive_content' ) );
+			//add_shortcode( 'learn_press_archive_course', array( $this, 'archive_content' ) );
 			add_filter( 'pre_get_document_title', array( $this, 'set_title_pages' ), 20, 1 );
 
 			// Yoast seo
@@ -195,6 +195,14 @@ class LP_Page_Controller {
 		} elseif ( LP_Page_Controller::is_page_courses() ) { // Set title course archive page.
 			if ( learn_press_is_search() ) {
 				$title = __( 'Course Search Results', 'learnpress' );
+			} elseif ( is_tax( LP_COURSE_CATEGORY_TAX ) || is_tax( LP_COURSE_TAXONOMY_TAG ) ) {
+				/**
+				 * @var WP_Query $wp_query
+				 */
+				global $wp_query;
+				if ( $wp_query->queried_object ) {
+					$title = $wp_query->queried_object->name;
+				}
 			} else {
 				$title = $course_archive_page_id ? get_the_title( $course_archive_page_id ) : __( 'Courses', 'learnpress' );
 			}
@@ -588,8 +596,10 @@ class LP_Page_Controller {
 	 * Archive course content.
 	 *
 	 * @return false|string
+	 * @deprecated 4.2.3.3.
 	 */
 	public function archive_content() {
+		_deprecated_function( __METHOD__, '4.2.3.3' );
 		ob_start();
 		learn_press_get_template( 'content-archive-course.php' );
 
@@ -627,30 +637,10 @@ class LP_Page_Controller {
 			return $q;
 		}
 
-		$theme_no_load_ajax = apply_filters(
-			'lp/page/courses/themes/no_load_ajax',
-			[
-				'Coaching',
-				'Course Builder',
-				'eLearningWP',
-				'Ivy School',
-				'StarKid',
-				'Academy LMS',
-				'Coaching Child',
-				'Course Builder Child',
-				'eLearningWP Child',
-				'Ivy School Child',
-				'StarKid Child',
-				'Academy LMS Child',
-			]
-		);
-		$theme_current      = wp_get_theme()->get( 'Name' );
-
 		try {
 			if ( LP_Page_Controller::is_page_courses() ) {
 				if ( LP_Settings_Courses::is_ajax_load_courses() && ! LP_Settings_Courses::is_no_load_ajax_first_courses()
-				&& ! in_array( $theme_current, $theme_no_load_ajax ) ) {
-					LearnPress::instance()->template( 'course' )->remove_callback( 'learn-press/after-courses-loop', 'loop/course/pagination.php', 10 );
+				&& ! LP_Settings::theme_no_support_load_courses_ajax() ) {
 					/**
 					 * If page is archive course - query set posts_per_page = 1
 					 * For fastest - because when page loaded - call API to load list courses
@@ -667,6 +657,12 @@ class LP_Page_Controller {
 					$filter->limit        = -1;
 					$is_need_check_in_arr = false;
 					$limit                = LP_Settings::get_option( 'archive_course_limit', 6 );
+
+					if ( LP_Settings_Courses::is_ajax_load_courses() &&
+						LP_Settings_Courses::get_type_pagination() != 'number' &&
+						! LP_Settings::theme_no_support_load_courses_ajax() ) {
+						$q->set( 'paged', 1 );
+					}
 
 					$q->set( 'posts_per_page', $limit );
 					// $q->set( 'cache_results', true ); // it default true
@@ -1015,8 +1011,8 @@ class LP_Page_Controller {
 			return $flag;
 		}
 
-		$is_tag      = is_tax( 'course_tag' );
-		$is_category = is_tax( 'course_category' );
+		$is_tag      = is_tax( LP_COURSE_TAXONOMY_TAG );
+		$is_category = is_tax( LP_COURSE_CATEGORY_TAX );
 
 		if ( $is_category || $is_tag || is_post_type_archive( 'lp_course' ) ) {
 			$flag = true;

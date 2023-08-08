@@ -13,7 +13,7 @@ use LearnPress\ExternalPlugin\Elementor\Widgets\Instructor\ListInstructorsElemen
 use LearnPress\ExternalPlugin\Elementor\Widgets\LoginUserFormElementor;
 use LearnPress\ExternalPlugin\Elementor\Widgets\RegisterUserFormElementor;
 use LearnPress\ExternalPlugin\Elementor\Widgets\Instructor\SingleInstructorElementor;
-
+use LearnPress\ExternalPlugin\Elementor\Widgets\Course\CourseMaterialElementor;
 return apply_filters(
 	'lp/elementor/widgets',
 	[
@@ -26,5 +26,6 @@ return apply_filters(
 		'login-form'             => LoginUserFormElementor::class,
 		'register-form'          => RegisterUserFormElementor::class,
 		'list-courses'           => CourseListElementor::class,
+		// 'course-material'        => CourseMaterialElementor::class,
 	]
 );

@@ -23,8 +23,8 @@ module.exports = {
 		'./assets/js/dist/admin/pages/addons': './assets/src/apps/js/admin/pages/addons.js',
 		'./assets/js/dist/admin/pages/dashboard': './assets/src/apps/js/admin/pages/dashboard.js',
 		'./assets/js/dist/admin/pages/widgets': './assets/src/apps/js/admin/pages/widgets.js',
+		'./assets/js/dist/admin/course-material': './assets/src/apps/js/admin/course-material.js',
 		'./assets/js/dist/utils': './assets/src/js/utils/index.js',
-		'./assets/js/dist/frontend/course-filter': './assets/src/apps/js/frontend/course-filter.js',
 
 		'./assets/js/dist/js/data-controls': {
 			import: './assets/src/apps/js/data-controls.js',
@@ -71,6 +71,7 @@ module.exports = {
 		'./assets/js/dist/frontend/custom': './assets/src/apps/js/frontend/custom.js',
 		'./assets/js/dist/frontend/profile': './assets/src/apps/js/frontend/profile.js',
 		'./assets/js/dist/frontend/widgets': './assets/src/apps/js/frontend/widgets.js',
+		'./assets/js/dist/frontend/course-filter': './assets/src/apps/js/frontend/course-filter.js',
 		'./assets/js/dist/blocks/archive-course': './assets/src/apps/js/blocks/archive-course/index.js',
 		'./assets/js/dist/blocks/single-course': './assets/src/apps/js/blocks/single-course/index.js',
 		'./assets/js/dist/blocks/item-curriculum-course': './assets/src/apps/js/blocks/item-curriculum-course/index.js',

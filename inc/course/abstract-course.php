@@ -1132,7 +1132,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		public function get_next_item( $args = null ) {
 			$item_nav = $this->get_item_nav();
 
-			return apply_filters( 'learn-press/course/next-item', $item_nav[2], $this->get_id(), $args );
+			return apply_filters( 'learn-press/course/next-item', $item_nav ? $item_nav[2] : 0, $this->get_id(), $args );
 		}
 
 		/**
@@ -1425,6 +1425,15 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 				$this->get_id(),
 				$this
 			);
+		}
+		/**
+		 * [get_downloadable_material get all material files of this course and lesson of this course]
+		 * @return [array] [array of material files or empty array]
+		 */
+		public function get_downloadable_material(): array {
+			$material  = LP_Material_Files_DB::getInstance();
+			$materials = $material->get_material_by_item_id( $this->get_id(), 1 );
+			return apply_filters( 'learn-press/course-materials', $materials, $this->get_id() );
 		}
 	}
 }

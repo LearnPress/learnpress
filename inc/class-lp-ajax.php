@@ -187,9 +187,10 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			);
 
 			try {
-				$nonce     = LP_Request::get_param( 'complete-lesson-nonce' );
-				$lesson_id = LP_Request::get_param( 'id', 0, 'int' );
-				$course_id = LP_Request::get_param( 'course_id', 0, 'int' );
+				$nonce        = LP_Request::get_param( 'complete-lesson-nonce' );
+				$lesson_id    = LP_Request::get_param( 'id', 0, 'int' );
+				$course_id    = LP_Request::get_param( 'course_id', 0, 'int' );
+				$item_id_next = LP_Request::get_param( 'item_id_next', 0, 'int' );
 
 				if ( ! wp_verify_nonce( $nonce, 'lesson-complete' ) ) {
 					throw new Exception( __( 'Error! Invalid lesson or failed security check.', 'learnpress' ) );
@@ -215,8 +216,12 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 					throw new Exception( 'Item is invalid!', 'learnpress' );
 				}
 
-				$result               = $user->complete_lesson( $lesson_id, $course_id );
-				$response['redirect'] = $course->get_item_link( $lesson_id );
+				$result = $user->complete_lesson( $lesson_id, $course_id );
+				if ( $item_id_next ) {
+					$response['redirect'] = $course->get_item_link( $item_id_next );
+				} else {
+					$response['redirect'] = $item->get_permalink();
+				}
 
 				if ( ! is_wp_error( $result ) ) {
 					if ( $course->get_next_item() ) {

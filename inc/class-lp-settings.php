@@ -441,6 +441,121 @@ class LP_Settings {
 	public static function is_created_tb_thim_cache(): bool {
 		return get_option( 'thim_cache_tb_created' ) == 'yes';
 	}
+	/**
+	 * Check table learnpress_files is created
+	 * @return boolean
+	 */
+	public static function is_created_tb_material_files(): bool {
+		return get_option( 'table_learnpress_files_created' ) == 'yes';
+	}
+	public static function lp_material_file_types(): array {
+		return array(
+			'txt'      => 'text/plain',
+			'doc,docx' => 'application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+			'odt'      => 'application/vnd.oasis.opendocument.text',
+			'rtf'      => 'application/rtf',
+			'pdf'      => 'application/pdf',
+			'jpg,jpeg' => 'image/jpeg',
+			'png'      => 'image/png',
+			'gif'      => 'image/gif',
+			'bmp'      => 'image/bmp',
+			// 'svg'       =>  'image/svg+xml',
+			'mp3'      => 'audio/mpeg',
+			'wav'      => 'audio/wav',
+			'flac'     => 'audio/flac',
+			'aac'      => 'audio/aac',
+			'wma'      => 'audio/x-ms-wma',
+			'mp4'      => 'video/mp4',
+			'avi'      => 'video/avi',
+			'mkv'      => 'video/x-matroska',
+			'mov'      => 'video/quicktime',
+			'wmv'      => 'video/x-ms-wmv',
+			'xls,xlsx' => 'application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+			'ods'      => 'application/vnd.oasis.opendocument.spreadsheet',
+			'csv'      => 'text/csv',
+			'numbers'  => 'application/vnd.apple.numbers',
+			'tsv'      => 'text/tab-separated-values',
+			'zip'      => 'application/zip,application/octet-stream,application/x-zip-compressed,multipart/x-zip',
+		);
+	}
+
+	/**
+	 * Check theme support load courses ajax
+	 *
+	 * @return bool
+	 * @since 4.2.3.3
+	 * @version 1.0.0
+	 */
+	public static function theme_no_support_load_courses_ajax(): bool {
+		$theme_no_load_ajax = apply_filters(
+			'lp/page/courses/themes/no_load_ajax',
+			[
+				'Coaching',
+				'Course Builder',
+				'eLearningWP',
+				'Ivy School',
+				'StarKid',
+				'Academy LMS',
+				'Coaching Child',
+				'Course Builder Child',
+				'eLearningWP Child',
+				'Ivy School Child',
+				'StarKid Child',
+				'Academy LMS Child',
+			]
+		);
+		$theme_current      = wp_get_theme()->get( 'Name' );
+
+		return in_array( $theme_current, $theme_no_load_ajax );
+	}
+
+	/**
+	 * Check theme support load courses ajax
+	 *
+	 * @since 4.2.3.3
+	 * @version 1.0.0
+	 * @return string
+	 */
+	public static function get_permalink_single_course(): string {
+		$course_slug_default = 'courses';
+		try {
+			$course_slug = self::get_option( 'course_base', 'courses' );
+			if ( empty( $course_slug ) ) {
+				$course_slug = $course_slug_default;
+			}
+			$course_slug = preg_replace( '!^/!', '', $course_slug );
+		} catch ( Throwable $e ) {
+			$course_slug = $course_slug_default;
+		}
+
+		return $course_slug;
+	}
+
+	/**
+	 * Check theme support load courses ajax
+	 *
+	 * @since 4.2.3.3
+	 * @version 1.0.0
+	 * @return array
+	 */
+	public static function get_course_items_slug(): array {
+		/**
+		 * Set rule item course.
+		 *
+		 * Use urldecode to convert an encoded string to normal.
+		 * This fixed the issue with custom slug of lesson/quiz in some languages
+		 * Eg: урока
+		 */
+		$lesson_slug = urldecode( sanitize_title_with_dashes( self::get_option( 'lesson_slug', 'lessons' ) ) );
+		$quiz_slug   = urldecode( sanitize_title_with_dashes( self::get_option( 'quiz_slug', 'quizzes' ) ) );
+		return apply_filters(
+			'learn-press/course-item-slugs/for-rewrite-rules',
+			array(
+				LP_LESSON_CPT => $lesson_slug,
+				LP_QUIZ_CPT   => $quiz_slug,
+			)
+		);
+	}
 }
 
 LP_Settings::instance();

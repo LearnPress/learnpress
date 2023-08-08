@@ -18,10 +18,6 @@ body {
 .lp-user-profile {
 	position: relative;
 	background: #fff;
-	.lp-content-area{
-		padding-left: 15px;
-		padding-right: 15px;
-	}
 
 	.lp-user-profile-avatar {
 
@@ -52,8 +48,6 @@ body {
 			align-items: center;
 			justify-content: center;
 			color: #666;
-			font-size: 1em;
-			line-height: 0;
 			text-align: center;
 
 			&:hover {
@@ -165,7 +159,7 @@ body {
 
 	.lp-profile-username {
 		padding-bottom: 10px;
-		font-size: 1.125rem;
+		font-size: 1.125em;
 		font-weight: 500;
 		text-transform: capitalize;
 		&::before, &::after {
@@ -186,9 +180,7 @@ body {
 	}
 
 	.lp-profile-user-bio {
-		font-size: 1rem;
 		font-weight: 300;
-		line-height: 1.625rem;
 	}
 
 	#profile-sidebar {
@@ -225,9 +217,8 @@ body {
 					display: block;
 					padding: 0 20px;
 					color: #333;
-					font-size: 1rem;
 					font-weight: 500;
-					line-height: 3rem;
+					line-height: 3em;
 					text-decoration: none;
 				}
 
@@ -253,7 +244,7 @@ body {
 						margin-right: 4px;
 						color: #999;
 						font-family: "Font Awesome 5 Free";
-						font-size: 0.625rem;
+						font-size: 0.625em;
 						font-weight: 900;
 						content: "\f054";
 					}
@@ -266,14 +257,14 @@ body {
 
 						a {
 							border-bottom: 1px solid #f9f9f9;
-							font-size: 0.875rem;
+							font-size: 0.875em;
 							padding-left: 32px;
 
 							i {
 								margin-right: 8px;
 
 								&::before {
-									font-size: 0.75rem;
+									font-size: 0.75em;
 								}
 							}
 
@@ -334,7 +325,7 @@ body {
 						left: 25px;
 						color: var(--lp-primary-color);
 						font-family: "Font Awesome 5 Free";
-						font-size: 0.75rem;
+						font-size: 0.75em;
 						font-weight: 900;
 						content: "\f004";
 					}
@@ -516,7 +507,7 @@ body {
 
 					> a {
 						font-size: 0;
-
+						height: 56px;
 						&::after {
 							margin-left: 0;
 						}
@@ -577,7 +568,7 @@ body {
 			margin: 0 auto 52px auto;
 			padding: 13px 34px;
 			border-color: var(--lp-secondary-color);
-			font-size: 0.875rem;
+			font-size: 0.875em;
 			font-weight: 500;
 
 			@include border-radius(9px);
@@ -639,11 +630,13 @@ body {
 					}
 
 					h3 {
-						font-size: 16px;
 						font-weight: 600;
-						line-height: 1.5rem;
 						color: #333;
 						padding: 16px 0;
+						display: -webkit-box;
+						-webkit-line-clamp: 2;
+						-webkit-box-orient: vertical;  
+						overflow: hidden;
 					}
 
 					&:hover {
@@ -721,7 +714,6 @@ body {
 						display: block;
 						margin: 0 0 10px 0;
 						color: #333;
-						font-size: 1rem;
 						font-weight: 500;
 						font-style: italic;
 					}
@@ -735,9 +727,9 @@ body {
 						input {
 							border: 1px solid #ccc;
 							color: #333;
-							font-size: 0.875rem;
+							font-size: 0.875em;
 							padding: 8px 20px;
-							line-height: 28px;
+							line-height: 1.75em;
 
 							&[type='checkbox'] {
 								line-height: 15px;
@@ -759,10 +751,8 @@ body {
 					border: 0;
 					border-radius: 3px;
 					color: #fff;
-					background: var(--lp-primary-color);
-					font-size: 1rem;
+					background: var(--lp-primary-color);					
 					font-weight: 400;
-					line-height: 1;
 
 					&:hover {
 						opacity: 0.5;
@@ -847,19 +837,16 @@ body {
 		.statistic-box__text {
 			padding: 0;
 			color: #666;
-			font-size: 1rem;
 			font-weight: 600;
-			line-height: 1;
 			margin-bottom: 0;
 		}
 
 		.statistic-box__number {
 			color: var(--lp-primary-color);
-			font-size: 1.2rem;
+			font-size: 1.2em;
 			font-weight: 600;
-			line-height: 1;
 			@media (max-width:520px) {
-				font-size: 1rem;
+				font-size: 1em;
 			}
 		}
 	}
@@ -870,7 +857,7 @@ body {
 			margin-top: 0;
 			margin-bottom: 36px;
 			color: #333;
-			font-size: 1.875rem;
+			font-size: 1.875em;
 			font-weight: 600;
 			line-height: 1;
 			text-transform: capitalize;
@@ -907,7 +894,7 @@ body {
 		#profile-content-order-details {
 			h3 {
 				margin-top: 0;
-				font-size: 1.875rem;
+				font-size: 1.875em;
 				line-height: 1.5;
 				font-weight: 500;
 				margin-bottom: 15px;
@@ -925,7 +912,6 @@ form[name="profile-change-password"] {
 		& > label {
 			margin: 0 0 12px 0;
 			color: #333;
-			font-size: 1rem;
 			font-weight: 500;
 			font-style: italic;
 		}
@@ -953,7 +939,7 @@ form[name="profile-change-password"] {
 			textarea {
 				border: 1px solid #ccc;
 				color: #999;
-				font-size: 0.875rem;
+				font-size: 0.875em;
 				font-style: italic;
 
 				&:focus {
@@ -1008,9 +994,7 @@ form[name="profile-change-password"] {
 		border-radius: 3px;
 		color: #fff;
 		background: var(--lp-primary-color);
-		font-size: 1rem;
 		font-weight: 400;
-		line-height: 1;
 
 		&:hover {
 			opacity: 0.5;
@@ -1103,10 +1087,10 @@ div.order-recover {
 		border: 1px solid #ccc;
 		border-radius: 3px;
 		background-color: #fff;
-		font-size: 0.875rem;
+		font-size: 0.875em;
 		font-weight: 300;
 		font-style: italic;
-		line-height: 2.6875rem;
+		line-height: 2.6875em;
 		flex: 1 1 auto;
 	}
 }
@@ -1130,7 +1114,7 @@ div.order-recover {
 
 			td {
 				text-align: center;
-				font-size: 0.875rem;
+				font-size: 0.875em;
 				line-height: 1.2;
 				border: 0.5px solid #ccc;
 				padding: 8px;
@@ -1172,7 +1156,7 @@ div.order-recover {
 			background: var(--lp-primary-color);
 
 			th {
-				font-size: 1rem;
+				font-size: 1em;
 				line-height: 1.2;
 				border: 0.5px solid #ccc;
 				padding: 16px 8px;
@@ -1301,10 +1285,10 @@ div.order-recover {
 			border: 1px dashed #ccc;
 			border-radius: 3px;
 			background-color: #fafafa;
-			font-size: 0.875rem;
+			font-size: 0.875em;
 			font-weight: 300;
 			font-style: italic;
-			line-height: 2.6875rem;
+			line-height: 2.6875em;
 			text-align: center;
 			cursor: pointer;
 			align-items: center;

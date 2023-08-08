@@ -8,6 +8,7 @@
  */
 
 use LearnPress\Helpers\Template;
+use LearnPress\TemplateHooks\Course\CourseMaterialTemplate;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -83,6 +84,19 @@ if ( ! function_exists( 'learn_press_get_course_tabs' ) ) {
 				'title'    => esc_html__( 'FAQs', 'learnpress' ),
 				'priority' => 50,
 				'callback' => LearnPress::instance()->template( 'course' )->func( 'faqs' ),
+			);
+		}
+
+		$is_enrolled_course = false;
+		if ( $user->has_course_status( $course->get_id(), array( LP_COURSE_ENROLLED ) )
+			|| $user->is_instructor() || $user->is_admin() ) {
+			$is_enrolled_course = true;
+		}
+		if ( $course->get_downloadable_material() && $is_enrolled_course ) {
+			$defaults['materials'] = array(
+				'title'    => 'Materials',
+				'priority' => 45,
+				'callback' => LearnPress::instance()->template( 'course' )->func( 'metarials' ),
 			);
 		}
 
@@ -1795,7 +1809,7 @@ function lp_archive_skeleton_get_args(): array {
 	$args = [];
 
 	if ( ! empty( $_GET ) ) {
-		$args = apply_filters( 'lp/template/archive-course/skeleton/args', $_GET );
+		$args = $_GET;
 	}
 
 	global $wp_query;
@@ -1818,5 +1832,5 @@ function lp_archive_skeleton_get_args(): array {
 		}
 	}*/
 
-	return $args;
+	return apply_filters( 'lp/template/archive-course/skeleton/args', $args );
 }

@@ -3003,6 +3003,14 @@ function learn_press_get_question_support_feature( $feature ) {
 	return date( $format, $start + $duration );
 }*/
 
+/**
+ * LP Cookie
+ *
+ * @param $name
+ * @param $namespace
+ *
+ * @return mixed|null
+ */
 function learn_press_cookie_get( $name, $namespace = 'LP' ) {
 	if ( $namespace ) {
 		$cookie = ! empty( $_COOKIE[ $namespace ] ) ? (array) json_decode( LP_Helper::sanitize_params_submitted( stripslashes( $_COOKIE[ $namespace ] ), 'html' ) ) : array();

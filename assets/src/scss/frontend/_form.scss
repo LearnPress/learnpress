@@ -8,8 +8,6 @@
 		border: 0 solid rgba(204, 204, 204, 0.3);
 		border-bottom-width: 1px;
 		background: #fff;
-		font-size: 1rem;
-		line-height: 1;
 		text-align: left;
 
 		@media (max-width: 767px) {
@@ -28,7 +26,7 @@
 				border-bottom: none;
 				color: #333;
 				background: #f1f2f8;
-				font-size: 1.125rem;
+				font-size: 1.125em;
 			}
 		}
 	}
@@ -46,7 +44,6 @@
 				height: 62px;
 				color: #666;
 				background: #fff;
-				font-size: 1rem;
 				font-weight: 300;
 
 				a {
@@ -80,7 +77,7 @@
 	.list-table-nav {
 
 		td {
-			font-size: 0.875rem;
+			font-size: 0.875em;
 
 			&.nav-text {
 				text-align: left;
@@ -105,9 +102,7 @@
 .lp-label {
 	display: inline-block;
 	color: #666;
-	font-size: 1rem;
 	font-weight: 300;
-	line-height: 1;
 }
 
 .learn-press-form {
@@ -138,7 +133,7 @@
 
 			.description {
 				margin-top: 10px;
-				font-size: 0.875rem;
+				font-size: 0.875em;
 				font-style: italic;
 				line-height: 1.4;
 			}
@@ -164,8 +159,6 @@
 
 	h3 {
 		margin-bottom: 20px;
-		font-size: 28px;
-		line-height: 1.4;
 	}
 
 	.form-fields {
@@ -173,7 +166,6 @@
 		.form-field {
 
 			label {
-				font-size: 1rem;
 				font-weight: 400;
 				user-select: none;
 			}
@@ -186,7 +178,7 @@
 				height: 42px;
 				border: 1px solid #bbb;
 				border-radius: 4px;
-				line-height: 2.625rem;
+				line-height: 2.625em;
 
 				&:focus {
 					border: none;
@@ -212,15 +204,12 @@
 		>p {
 			>label {
 				color: #666;
-				font-size: 1rem;
 				cursor: pointer;
 				user-select: none;
 			}
 
 			>a {
 				color: #666;
-				font-size: 1rem;
-				line-height: 1;
 			}
 
 			&:last-child {
@@ -238,8 +227,6 @@
 		color: #fff;
 		background: var(--lp-primary-color);
 		box-shadow: none;
-		font-size: 1rem;
-		line-height: 1;
 		vertical-align: middle;
 		text-decoration: none;
 	}
@@ -263,7 +250,7 @@
 	width: 100%;
 
 	input[type="password"] {
-		padding-right: 2.5rem;
+		padding-right: 2.5em;
 	}
 
 	input::-ms-reveal {
@@ -307,5 +294,11 @@
 		input[type="password"] {
 			width: 100%;
 		}
+	}
+	.become-teacher-form__description{
+		margin-top: 12px;
+	}
+	button{
+		padding: 12px 24px;
 	}
 }

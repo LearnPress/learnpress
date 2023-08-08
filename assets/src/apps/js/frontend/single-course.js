@@ -3,6 +3,7 @@ import { addQueryArgs } from '@wordpress/url';
 import lpModalOverlayCompleteItem from './show-lp-overlay-complete-item';
 import lpModalOverlay from '../utils/lp-modal-overlay';
 import courseCurriculumSkeleton from './single-curriculum/skeleton';
+import lpMaterialsLoad from './material';
 
 export default SingleCourse;
 
@@ -388,6 +389,7 @@ const detectedElCurriculum = setInterval( function() {
 	const elementCurriculum = document.querySelector( '.learnpress-course-curriculum' );
 	if ( elementCurriculum ) {
 		courseCurriculumSkeleton();
+		lpMaterialsLoad();
 		clearInterval( detectedElCurriculum );
 	}
 }, 1 );

@@ -53,6 +53,13 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 					'priority' => 50,
 					'content'  => $this->author( $post_id ),
 				),
+				'material'   => array(
+					'label'    => esc_html__( 'Downloadable Materials', 'learnpress' ),
+					'target'   => 'downloadable_material_data',
+					'icon'     => 'dashicons-download',
+					'priority' => 60,
+					'content'  => $this->lp_material( $post_id ),
+				),
 			)
 		);
 
@@ -291,6 +298,15 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 						'style'   => 'min-width:200px;',
 					)
 				),
+			)
+		);
+	}
+
+	public function lp_material( $thepostid ) {
+		return apply_filters(
+			'lp/course/meta-box/fields/material',
+			array(
+				'_lp_course_material' => new LP_Meta_Box_Material_Fields(),
 			)
 		);
 	}

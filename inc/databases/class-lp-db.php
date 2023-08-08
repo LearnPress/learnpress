@@ -24,6 +24,7 @@ class LP_Database {
 	public $tb_lp_question_answermeta;
 	public $tb_lp_upgrade_db;
 	public $tb_lp_sessions;
+	public $tb_lp_files;
 	private $collate         = '';
 	public $max_index_length = '191';
 
@@ -54,6 +55,7 @@ class LP_Database {
 		$this->tb_lp_question_answermeta = $prefix . 'learnpress_question_answermeta';
 		$this->tb_lp_upgrade_db          = $prefix . 'learnpress_upgrade_db';
 		$this->tb_lp_sessions            = $prefix . 'learnpress_sessions';
+		$this->tb_lp_files               = $prefix . 'learnpress_files';
 		$this->wpdb->hide_errors();
 		$this->set_collate();
 	}
@@ -571,7 +573,7 @@ class LP_Database {
 	/**
 	 * Get result query
 	 *
-	 * @return array|null|int|string
+	 * @return array|object|null|int|string
 	 * @throws Exception
 	 * @author tungnx
 	 * @version 1.0.0

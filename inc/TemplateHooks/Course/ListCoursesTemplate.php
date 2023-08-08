@@ -26,6 +26,80 @@ class ListCoursesTemplate {
 	}
 
 	/**
+	 * Button Load more
+	 *
+	 * @return string
+	 * @since 4.2.3.3
+	 * @version 1.0.0
+	 */
+	public function html_pagination_load_more(): string {
+		$html_wrapper = [
+			'<button class="courses-btn-load-more learn-press-pagination lp-button">' => '</button>',
+		];
+		$content      = sprintf(
+			'%s<span class="lp-loading-circle hide"></span>',
+			__( 'Load more', 'learnpress' )
+		);
+
+		return Template::instance()->nest_elements( $html_wrapper, $content );
+	}
+
+	/**
+	 * Button infinite
+	 *
+	 * @return string
+	 * @since 4.2.3.3
+	 * @version 1.0.0
+	 */
+	public function html_pagination_infinite(): string {
+		$html_wrapper = [
+			'<div class="courses-load-infinite learn-press-pagination">' => '</div>',
+		];
+		$content      = '<span class="lp-loading-circle hide"></span>';
+
+		return Template::instance()->nest_elements( $html_wrapper, $content );
+	}
+
+	/**
+	 * Pagination number
+	 *
+	 * @param array $data
+	 *
+	 * @return string
+	 * @since 4.2.3.3
+	 * @version 1.0.0
+	 */
+	public function html_pagination_number( array $data = [] ): string {
+		if ( empty( $data['total_pages'] ) || $data['total_pages'] <= 1 ) {
+			return '';
+		}
+
+		$html_wrapper = [
+			'<nav class="learn-press-pagination navigation pagination">' => '</nav>',
+		];
+
+		$pagination = paginate_links(
+			apply_filters(
+				'learn_press_pagination_args',
+				array(
+					'base'      => $data['base'] ?? '',
+					'format'    => '',
+					'add_args'  => '',
+					'current'   => max( 1, $data['paged'] ?? 1 ),
+					'total'     => $data[ 'total_pages' ?? 1 ],
+					'prev_text' => '<i class="fas fa-angle-left"></i>',
+					'next_text' => '<i class="fas fa-angle-right"></i>',
+					'type'      => 'list',
+					'end_size'  => 3,
+					'mid_size'  => 3,
+				)
+			)
+		);
+
+		return Template::instance()->nest_elements( $html_wrapper, $pagination );
+	}
+
+	/**
 	 * Layout course search suggest result.
 	 *
 	 * @param array $data
@@ -116,15 +190,26 @@ class ListCoursesTemplate {
 		}
 	}
 
+	/**
+	 * Sidebar
+	 *
+	 * @since 4.2.3.2
+	 * @version 1.0.0
+	 * @return void
+	 */
 	public function sidebar() {
-		if ( is_active_sidebar( 'archive-courses-sidebar' ) ) {
-			$html_wrapper = [
-				'<div class="lp-archive-courses-sidebar">' => '</div>',
-			];
+		try {
+			if ( is_active_sidebar( 'archive-courses-sidebar' ) ) {
+				$html_wrapper = [
+					'<div class="lp-archive-courses-sidebar">' => '</div>',
+				];
 
-			ob_start();
-			dynamic_sidebar( 'archive-courses-sidebar' );
-			echo Template::instance()->nest_elements( $html_wrapper, ob_get_clean() );
+				ob_start();
+				dynamic_sidebar( 'archive-courses-sidebar' );
+				echo Template::instance()->nest_elements( $html_wrapper, ob_get_clean() );
+			}
+		} catch ( Throwable $e ) {
+			error_log( $e->getMessage() );
 		}
 	}
 }

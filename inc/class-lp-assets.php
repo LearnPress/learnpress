@@ -103,6 +103,8 @@ class LP_Assets extends LP_Abstract_Assets {
 				'lpArchiveSkeleton'                  => lp_archive_skeleton_get_args(),
 				'lpArchiveLoadAjax'                  => LP_Settings_Courses::is_ajax_load_courses() ? 1 : 0,
 				'lpArchiveNoLoadAjaxFirst'           => LP_Settings_Courses::is_ajax_load_courses() && LP_Settings_Courses::is_no_load_ajax_first_courses() ? 1 : 0,
+				'lpArchivePaginationType'            => LP_Settings::get_option( 'course_pagination_type' ),
+				'noLoadCoursesJs'                    => LP_Settings::theme_no_support_load_courses_ajax() ? 1 : 0,
 			),
 			'lp-checkout' => array(
 				'ajaxurl'            => home_url( '/' ),
@@ -233,17 +235,14 @@ class LP_Assets extends LP_Abstract_Assets {
 				),
 				'lp-courses'           => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/courses' . self::$_min_assets . '.js' ),
-					array( 'lp-global', 'lp-utils', 'wp-hooks' ),
+					array( 'lp-global', 'wp-hooks' ),
 					array( LP_PAGE_COURSES ),
 					0,
 					0
 				),
 				'lp-instructors'       => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/instructors' . self::$_min_assets . '.js' ),
-					array_merge(
-						$wp_js,
-						array( 'wp-i18n' )
-					),
+					[ 'lp-global' ],
 					[],
 					1,
 					1
@@ -277,7 +276,7 @@ class LP_Assets extends LP_Abstract_Assets {
 				),
 				'lp-course-filter'     => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/course-filter' . self::$_min_assets . '.js' ),
-					array( 'lp-courses' ),
+					array( 'lp-global' ),
 					array(),
 					1,
 					1
@@ -287,8 +286,8 @@ class LP_Assets extends LP_Abstract_Assets {
 
 		// Dequeue script 'smoothPageScroll' on item details, it makes can't scroll, when rewrite page item detail, can check to remove.
 		if ( LP_PAGE_SINGLE_COURSE_CURRICULUM === LP_Page_Controller::page_current() ||
-			 LP_PAGE_QUIZ === LP_Page_Controller::page_current() ||
-			 LP_PAGE_QUESTION === LP_Page_Controller::page_current() ) {
+			LP_PAGE_QUIZ === LP_Page_Controller::page_current() ||
+			LP_PAGE_QUESTION === LP_Page_Controller::page_current() ) {
 			wp_dequeue_script( 'smoothPageScroll' );
 		}
 
