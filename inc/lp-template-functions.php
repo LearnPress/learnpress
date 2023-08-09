@@ -94,7 +94,7 @@ if ( ! function_exists( 'learn_press_get_course_tabs' ) ) {
 		}
 		if ( $course->get_downloadable_material() && $is_enrolled_course ) {
 			$defaults['materials'] = array(
-				'title'    => 'Materials',
+				'title'    => esc_html__( 'Materials', 'learnpress' ),
 				'priority' => 45,
 				'callback' => LearnPress::instance()->template( 'course' )->func( 'metarials' ),
 			);
