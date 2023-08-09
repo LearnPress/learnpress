@@ -3,14 +3,13 @@
 	text-align: center;
 
 	.page-numbers {
-		display: flex;
+		display: inline-block;
 		margin: 0;
 		padding: 0;
 		border: 0;
 		outline: 0;
 		background: transparent;
 		list-style: none;
-		justify-content: center;
 
 		> li {
 			display: inline-block;
@@ -20,9 +19,9 @@
 				float: unset;
 				padding: 0 14px;
 				color: #666;
-				background: transparent;
-				font-size: 1rem;
-				font-weight: 300;
+				//background: transparent;
+				//font-size: 1rem;
+				//font-weight: 300;
 				text-decoration: none;
 
 				&.current {

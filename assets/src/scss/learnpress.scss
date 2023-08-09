@@ -32,6 +32,7 @@ $bg-course-featured: #FF2828;
 @import "frontend/skeleton-animation";
 @import "frontend/material";
 @import "frontend/twentytwentytwo";
+@import "frontend/pagination";
 
 input[type="text"],
 input[type="email"],
@@ -346,42 +347,42 @@ ul.learn-press-breadcrumb {
 	display: inline-block;
 }
 
-.learn-press-pagination {
-	padding-bottom: 20px;
-	text-align: center;
-
-	.page-numbers {
-		display: inline-block;
-		margin: 0;
-		padding: 0;
-		border: 0;
-		outline: 0;
-		background: transparent;
-		list-style: none;
-
-		> li {
-			display: inline-block;
-			margin: 0;
-
-			.page-numbers {
-				float: unset;
-				padding: 0 14px;
-				color: #666;
-				background: transparent;
-				font-weight: 300;
-
-				&.current {
-					color: var(--lp-primary-color);
-					font-weight: 400;
-				}
-
-				&:hover {
-					color: var(--lp-primary-color);
-				}
-			}
-		}
-	}
-}
+//.learn-press-pagination {
+//	padding-bottom: 20px;
+//	text-align: center;
+//
+//	.page-numbers {
+//		display: inline-block;
+//		margin: 0;
+//		padding: 0;
+//		border: 0;
+//		outline: 0;
+//		background: transparent;
+//		list-style: none;
+//
+//		> li {
+//			display: inline-block;
+//			margin: 0;
+//
+//			.page-numbers {
+//				float: unset;
+//				padding: 0 14px;
+//				color: #666;
+//				background: transparent;
+//				font-weight: 300;
+//
+//				&.current {
+//					color: var(--lp-primary-color);
+//					font-weight: 400;
+//				}
+//
+//				&:hover {
+//					color: var(--lp-primary-color);
+//				}
+//			}
+//		}
+//	}
+//}
 
 ul.list-table-nav {
 	display: flex;

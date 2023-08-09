@@ -15,7 +15,7 @@
 			font-size: 1.5em;
 			font-weight: 600;
 			line-height: 1;
-			font-family: var(--wp--preset--font-family--system-font);
+			//font-family: var(--wp--preset--font-family--system-font);
 		}
 	}
 
@@ -46,9 +46,9 @@
 		label {
 			width: auto;
 			color: #666;
-			font-size: 1rem;
-			font-weight: 300;
-			line-height: 1.625em;
+			//font-size: 1rem;
+			//font-weight: 300;
+			//line-height: 1.625em;
 
 			input[type="checkbox"] {
 				position: relative;
@@ -71,10 +71,12 @@
 				left: 2px;
 				color: #41abec;
 				font-family: "Font Awesome 5 Free";
-				font-size: 0.875em;
+				font-size: 14px;
 				font-weight: 900;
 				line-height: 1;
 				content: "\f00c";
+				border: none;
+				transform: none;
 			}
 		}
 
@@ -95,58 +97,63 @@
 		label {
 			display: block;
 			margin-bottom: 10px;
-			font-size: 1rem;
+			//font-size: 1rem;
 		}
 		input:not([type="checkbox"]) {
-			height: 44px;
+			//height: 44px;
 			line-height: normal;
 			width: 100%;
-			padding: 0 15px;
+			padding: 10px 15px;
 			border: 1px solid #ccc;
-		}
-	}
-
-	.rwmb-input {
-
-		input:not([type="checkbox"]) {
-			width: 100%;
-			height: 43px;
-			padding: 0 22px;
-			border: 1px solid #ccc;
-			border-radius: 3px;
-			background-color: #fff;
-			font-size: 0.875em;
-			font-weight: 300;
-			font-style: italic;
-			line-height: 2.6875em;
-
 			&:focus {
 				border-color: var(--lp-primary-color);
 				outline: 0;
-				color: #222;
+				//color: #222;
 			}
 		}
-
-		::placeholder {
-			opacity: 1;
-			color: #999;
-		}
-
-		:-ms-input-placeholder {
-			color: #999;
-		}
-
-		::-ms-input-placeholder {
-			color: #999;
-		}
-
-		input:-webkit-autofill,
-		input:-webkit-autofill:hover,
-		input:-webkit-autofill:focus {
-			-webkit-box-shadow: 0 0 0 1000px #fff inset;
-			-webkit-text-fill-color: #999 !important;
-		}
 	}
+
+	//.rwmb-input {
+	//
+	//	input:not([type="checkbox"]) {
+	//		width: 100%;
+	//		//height: 43px;
+	//		padding: 0 22px;
+	//		border: 1px solid #ccc;
+	//		border-radius: 3px;
+	//		//background-color: #fff;
+	//		//font-size: 0.875em;
+	//		//font-weight: 300;
+	//		//font-style: italic;
+	//		//line-height: 2.6875em;
+	//
+	//		&:focus {
+	//			border-color: var(--lp-primary-color);
+	//			outline: 0;
+	//			color: #222;
+	//		}
+	//	}
+	//
+	//	::placeholder {
+	//		opacity: 1;
+	//		color: #999;
+	//	}
+	//
+	//	:-ms-input-placeholder {
+	//		color: #999;
+	//	}
+	//
+	//	::-ms-input-placeholder {
+	//		color: #999;
+	//	}
+	//
+	//	input:-webkit-autofill,
+	//	input:-webkit-autofill:hover,
+	//	input:-webkit-autofill:focus {
+	//		-webkit-box-shadow: 0 0 0 1000px #fff inset;
+	//		-webkit-text-fill-color: #999 !important;
+	//	}
+	//}
 }
 
 .lp-checkout-form {
@@ -311,10 +318,9 @@
 	}
 
 	.course-name {
-		font-size: 1em;
+		//font-size: 1em;
 		font-weight: 600;
-		line-height: 1.625em;
-
+		//line-height: 1.625em;
 		a {
 			display: -webkit-box;
 			overflow: hidden;
@@ -331,9 +337,9 @@
 	.col-number {
 		min-width: 50px;
 		color: #666;
-		font-size: 1em;
+		//font-size: 1em;
 		font-weight: 600;
-		line-height: 1.625em;
+		//line-height: 1.625em;
 		text-align: right;
 	}
 
@@ -345,7 +351,7 @@
 
 		.col-number {
 			color: #333;
-			font-size: 1.625rem;
+			font-size: 1.625em;
 		}
 	}
 
@@ -353,9 +359,9 @@
 
 		.cart-subtotal {
 			color: #666;
-			font-size: 1em;
+			//font-size: 1em;
 			font-weight: 600;
-			line-height: 1.625em;
+			//line-height: 1.625em;
 
 			& > th {
 				padding: 20px 20px 17px 0;
@@ -366,9 +372,9 @@
 
 			th {
 				color: #333;
-				font-size: 1em;
+				//font-size: 1em;
 				font-weight: 600;
-				line-height: 1.625em;
+				//line-height: 1.625em;
 			}
 		}
 
@@ -567,10 +573,9 @@
 
 .lp-terms-and-conditions {
 	color: #666;
-	font-size: 1em;
-	font-weight: 300;
-	line-height: 1.625em;
-
+	//font-size: 1em;
+	//font-weight: 300;
+	//line-height: 1.625em;
 	a {
 		color: #41abec;
 
