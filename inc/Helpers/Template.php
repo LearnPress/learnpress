@@ -62,7 +62,7 @@ class Template {
 	 * @param array $args
 	 *
 	 * @return void|string
-	 * @since 1.0.0
+	 * @since 4.2.0
 	 * @version 1.0.0
 	 */
 	public function get_frontend_template( string $file_name = '', array $args = array() ) {
