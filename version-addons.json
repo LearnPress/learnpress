@@ -101,7 +101,7 @@
     "is_free": 0,
     "author": "",
     "is_org": 0,
-    "setting": "wp-admin/admin.php?page=learn-press-settings&tab=payments&section=authorizenet",
+    "setting": "wp-admin/admin.php?page=learn-press-settings&tab=certificates",
     "order": 0
   },
   "learnpress-co-instructor": {
