@@ -5,6 +5,7 @@
  */
 
 use LearnPress\ExternalPlugin\Elementor\Widgets\BecomeATeacherElementor;
+use LearnPress\ExternalPlugin\Elementor\Widgets\Course\ListCoursesByPageElementor;
 use LearnPress\ExternalPlugin\Elementor\Widgets\CourseListElementor;
 use LearnPress\ExternalPlugin\Elementor\Widgets\Instructor\Sections\InstructorButtonViewElementor;
 use LearnPress\ExternalPlugin\Elementor\Widgets\Instructor\Sections\InstructorDescriptionElementor;
@@ -26,6 +27,7 @@ return apply_filters(
 		'login-form'             => LoginUserFormElementor::class,
 		'register-form'          => RegisterUserFormElementor::class,
 		'list-courses'           => CourseListElementor::class,
+		'list-courses-by-page'   => ListCoursesByPageElementor::class,
 		// 'course-material'        => CourseMaterialElementor::class,
 	]
 );

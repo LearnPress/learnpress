@@ -183,7 +183,9 @@ class Template {
 	/**
 	 * Display sections
 	 *
-	 * @param array $sections ['name_section' => 'text html', 'link_template' => '']
+	 * @param array $sections
+	 * ['name_section' => [ 'text_html' => '<span>example</span>' ]]
+	 * ['name_section' => [ 'link_templates' => 'path_template' ]]
 	 *
 	 * @return void
 	 */

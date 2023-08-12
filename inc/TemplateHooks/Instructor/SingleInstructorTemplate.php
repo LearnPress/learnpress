@@ -227,8 +227,6 @@ class SingleInstructorTemplate {
 	 * @return string
 	 */
 	public function render_data( LP_User $instructor, string $data_content = '' ): string {
-		$singleInstructorTemplate = SingleInstructorTemplate::instance();
-
 		return str_replace(
 			[
 				'{{instructor_id}}',
@@ -242,12 +240,12 @@ class SingleInstructorTemplate {
 			],
 			[
 				$instructor->get_id(),
-				$singleInstructorTemplate->html_avatar( $instructor ),
-				$singleInstructorTemplate->html_display_name( $instructor ),
-				$singleInstructorTemplate->html_description( $instructor ),
-				$singleInstructorTemplate->html_count_courses( $instructor ),
-				$singleInstructorTemplate->html_count_students( $instructor ),
-				$singleInstructorTemplate->html_social( $instructor ),
+				$this->html_avatar( $instructor ),
+				$this->html_display_name( $instructor ),
+				$this->html_description( $instructor ),
+				$this->html_count_courses( $instructor ),
+				$this->html_count_students( $instructor ),
+				$this->html_social( $instructor ),
 				$instructor->get_url_instructor(),
 			],
 			$data_content

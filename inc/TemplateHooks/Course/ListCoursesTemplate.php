@@ -100,6 +100,26 @@ class ListCoursesTemplate {
 	}
 
 	/**
+	 * Order by
+	 *
+	 * @return string
+	 */
+	public function html_order_by(): string {
+		$html_wrapper = [
+			'<div class="courses-order-by">' => '</div>',
+		];
+		$content      = '<select name="order_by">';
+		$content     .= '<option value="post_date">' . __( 'Newly published', 'learnpress' ) . '</option>';
+		$content     .= '<option value="post_title">' . __( 'Sort by Title', 'learnpress' ) . '</option>';
+		$content     .= '<option value="price_low">' . __( 'Price low to high', 'learnpress' ) . '</option>';
+		$content     .= '<option value="price">' . __( 'Price high to low', 'learnpress' ) . '</option>';
+		$content     .= '<option value="popular">' . __( 'Popular', 'learnpress' ) . '</option>';
+		$content     .= '</select>';
+
+		return Template::instance()->nest_elements( $html_wrapper, $content );
+	}
+
+	/**
 	 * Layout course search suggest result.
 	 *
 	 * @param array $data
@@ -211,5 +231,26 @@ class ListCoursesTemplate {
 		} catch ( Throwable $e ) {
 			error_log( $e->getMessage() );
 		}
+	}
+
+	/**
+	 * Render string to data content
+	 *
+	 * @param string $data_content
+	 *
+	 * @return string
+	 */
+	public function render_data( string $data_content ): string {
+		return str_replace(
+			[
+				'{{courses_order_by}}',
+				'{{courses_pagination_number}}',
+			],
+			[
+				$this->html_order_by(),
+				$this->html_pagination_number(),
+			],
+			$data_content
+		);
 	}
 }
