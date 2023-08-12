@@ -133,10 +133,8 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 		 * Request finish course
 		 *
 		 * TODO: should move this function to api - tungnx
-		 * @deprecated 4.2.3.1
 		 */
 		public static function finish_course() {
-			_deprecated_function( __METHOD__, '4.2.3.1' );
 			$nonce     = LP_Request::get_string( 'finish-course-nonce' );
 			$course_id = LP_Request::get_int( 'course-id' );
 			$course    = learn_press_get_course( $course_id );

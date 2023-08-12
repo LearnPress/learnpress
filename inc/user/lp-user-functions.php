@@ -1481,12 +1481,13 @@ function learn_press_isset_user_item_for_quiz( $quiz_id, $course_id ) {
  * Create new user item prepare for user starts a quiz
  * Update error retry course not work - Nhamdv.
  *
- * @param int  $quiz_id
- * @param int  $user_id
- * @param int  $course_id
+ * @param int $quiz_id
+ * @param int $user_id
+ * @param int $course_id
  * @param bool $wp_error
  *
  * @return array|bool|LP_User_Item|WP_Error
+ * @throws Exception
  * @since 4.0.0
  */
 function learn_press_user_start_quiz( $quiz_id, $user_id = 0, $course_id = 0, $wp_error = false ) {
@@ -1503,12 +1504,15 @@ function learn_press_user_start_quiz( $quiz_id, $user_id = 0, $course_id = 0, $w
 	    WHERE user_item_id = (SELECT max(user_item_id)
 	    FROM {$wpdb->learnpress_user_items}
 	    WHERE user_id = %d AND item_id = %d AND status IN ('enrolled', 'in-progress'))
-	",
+		",
 		$user_id,
 		$course_id
 	);
 
 	$parent = $wpdb->get_row( $query );
+	if ( is_null( $parent ) ) {
+		throw new Exception( __( 'Course of Quiz not enroll', 'learnpress' ) );
+	}
 
 	do_action( 'learn-press/before-user-start-quiz', $quiz_id, $user_id, $course_id );
 

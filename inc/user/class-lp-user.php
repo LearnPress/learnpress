@@ -490,12 +490,9 @@ class LP_User extends LP_Abstract_User {
 	 */
 	public function start_quiz( int $quiz_id, int $course_id = 0, bool $wp_error = false ) {
 		try {
-			$item_id = learn_press_get_request( 'lp-preview' );
-
-			if ( $item_id ) {
-				learn_press_add_message( __( 'You cannot start a quiz in preview mode.', 'learnpress' ), 'error' );
-				wp_safe_redirect( learn_press_get_preview_url( $item_id ) );
-				exit();
+			$item_is_preview = learn_press_get_request( 'lp-preview' );
+			if ( $item_is_preview ) {
+				throw new Exception( __( 'You cannot start a quiz in preview mode.', 'learnpress' ) );
 			}
 
 			// Validate course and quiz
@@ -508,7 +505,6 @@ class LP_User extends LP_Abstract_User {
 			}
 
 			$course = learn_press_get_course( $course_id );
-
 			// If user has already finished the course
 			if ( $this->has_finished_course( $course_id ) ) {
 				throw new Exception(
@@ -533,9 +529,9 @@ class LP_User extends LP_Abstract_User {
 					LP_QUIZ_HAS_STARTED_OR_COMPLETED
 				);
 			}
-			$user = learn_press_get_current_user();
 
-			if ( $user->is_guest() ) {
+			$user_current = learn_press_get_current_user();
+			if ( $user_current->is_guest() ) {
 				// if course required enroll => print message "You have to login for starting quiz"
 				if ( ! $course->is_no_required_enroll() ) {
 					throw new Exception( __( 'You have to log in to start the quiz.', 'learnpress' ), LP_REQUIRE_LOGIN );
@@ -570,7 +566,7 @@ class LP_User extends LP_Abstract_User {
 
 			// $return = $user_quiz->get_mysql_data();
 			$return = $user_quiz;
-		} catch ( Exception $ex ) {
+		} catch ( Throwable $ex ) {
 			$return = $wp_error ? new WP_Error( $ex->getCode(), $ex->getMessage() ) : false;
 		}
 
