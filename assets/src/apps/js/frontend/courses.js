@@ -286,7 +286,7 @@ window.lpCourseList = ( () => {
 					}
 					// Scroll to archive element
 					const optionScroll = { behavior: 'smooth' };
-					elListCourse.closest( `.${ classListCourse }` ).scrollIntoView( optionScroll );
+					elListCourse.closest( `.${ classArchiveCourse }` ).scrollIntoView( optionScroll );
 				},
 			};
 		},

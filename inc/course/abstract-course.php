@@ -923,7 +923,8 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		}*/
 
 		/**
-		 * Get total user enrolled or finished
+		 * Get total user enrolled, purchased or finished
+		 *
 		 * @since 4.1.4
 		 * @version 1.0.1
 		 * @return int

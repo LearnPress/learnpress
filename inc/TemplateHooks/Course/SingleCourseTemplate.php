@@ -114,6 +114,50 @@ class SingleCourseTemplate {
 	}
 
 	/**
+	 * Get display price course.
+	 *
+	 * @param LP_Course $course
+	 *
+	 * @return string
+	 */
+	public function html_count_student( LP_Course $course ): string {
+		$count_student = $course->get_total_user_enrolled_or_purchased();
+		$ico_student   = sprintf(
+			'<span class="course-ico student">%s</span>',
+			wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-students.svg' )
+		);
+		$ico_student   = '';
+		$content       = sprintf( '%s %d %s', $ico_student, $count_student, _n( 'Student', 'Students', $count_student ) );
+		$html_wrapper  = [
+			'<div class="course-count-student">' => '</div>',
+		];
+
+		return Template::instance()->nest_elements( $html_wrapper, $content );
+	}
+
+	/**
+	 * Get display price course.
+	 *
+	 * @param LP_Course $course
+	 *
+	 * @return string
+	 */
+	public function html_count_lesson( LP_Course $course ): string {
+		$count_lesson  = $course->count_items( LP_LESSON_CPT );
+		$ico_lesson    = sprintf(
+			'<span class="course-ico lesson">%s</span>',
+			wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-file.svg' )
+		);
+		$ico_lesson   = '';
+		$content       = sprintf( '%s %d %s', $ico_lesson, $count_lesson, _n( 'Lesson', 'Lessons', $count_lesson ) );
+		$html_wrapper  = [
+			'<div class="course-count-lesson">' => '</div>',
+		];
+
+		return Template::instance()->nest_elements( $html_wrapper, $content );
+	}
+
+	/**
 	 * Render string to data content
 	 *
 	 * @param LP_Course $course
@@ -133,10 +177,12 @@ class SingleCourseTemplate {
 				'{{course_url}}',
 				'{{course_short_description}}',
 				'{{course_price}}',
+				'{{course_categories}}',
+				'{{course_count_student}}',
+				'{{course_count_lesson}}',
 				'{{course_author_string}}',
 				'{{course_author_link}}',
 				'{{course_author_avatar}}',
-				'{{course_categories}}',
 			],
 			[
 				$course->get_id(),
@@ -145,6 +191,9 @@ class SingleCourseTemplate {
 				$course->get_permalink(),
 				$this->html_short_description( $course ),
 				$this->html_price( $course ),
+				$this->html_categories( $course ),
+				$this->html_count_student( $course ),
+				$this->html_count_lesson( $course ),
 				$singleInstructorTemplate->html_display_name( $author_of_course ),
 				$author_of_course->get_url_instructor(),
 				$singleInstructorTemplate->html_avatar( $author_of_course ),
