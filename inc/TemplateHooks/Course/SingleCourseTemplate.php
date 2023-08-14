@@ -114,7 +114,7 @@ class SingleCourseTemplate {
 	}
 
 	/**
-	 * Get display price course.
+	 * Get display total student's course.
 	 *
 	 * @param LP_Course $course
 	 *
@@ -136,21 +136,21 @@ class SingleCourseTemplate {
 	}
 
 	/**
-	 * Get display price course.
+	 * Get display total lesson's course.
 	 *
 	 * @param LP_Course $course
 	 *
 	 * @return string
 	 */
 	public function html_count_lesson( LP_Course $course ): string {
-		$count_lesson  = $course->count_items( LP_LESSON_CPT );
-		$ico_lesson    = sprintf(
+		$count_lesson = $course->count_items( LP_LESSON_CPT );
+		$ico_lesson   = sprintf(
 			'<span class="course-ico lesson">%s</span>',
 			wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-file.svg' )
 		);
 		$ico_lesson   = '';
-		$content       = sprintf( '%s %d %s', $ico_lesson, $count_lesson, _n( 'Lesson', 'Lessons', $count_lesson ) );
-		$html_wrapper  = [
+		$content      = sprintf( '%s %d %s', $ico_lesson, $count_lesson, _n( 'Lesson', 'Lessons', $count_lesson ) );
+		$html_wrapper = [
 			'<div class="course-count-lesson">' => '</div>',
 		];
 

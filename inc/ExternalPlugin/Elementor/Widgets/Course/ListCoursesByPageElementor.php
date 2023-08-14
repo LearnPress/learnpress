@@ -24,6 +24,14 @@ class ListCoursesByPageElementor extends LPElementorWidgetBase {
 		$this->name     = 'list_courses_by_page';
 		$this->keywords = [ 'list courses', 'by page' ];
 		$this->icon     = 'eicon-post-list';
+
+		wp_register_style(
+			'lp-courses-by-page',
+			LP_PLUGIN_URL . 'assets/css/elementor/course/list-courses-by-page.css',
+			array(),
+			uniqid()
+		);
+		$this->add_style_depends( 'lp-courses-by-page' );
 		parent::__construct( $data, $args );
 	}
 

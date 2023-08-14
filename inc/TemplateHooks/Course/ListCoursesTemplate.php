@@ -100,6 +100,28 @@ class ListCoursesTemplate {
 	}
 
 	/**
+	 * Layouts type
+	 *
+	 * @param array $data
+	 *
+	 * @return string
+	 * @since 4.2.3.3
+	 * @version 1.0.0
+	 */
+	public function html_layout_type( array $data = [] ): string {
+		$html_wrapper = [
+			'<div class="courses-layouts-display">' => '</div>',
+		];
+
+		$content  = '<ul class="courses-layouts-display-list">';
+		$content .= '<li>Grid</li>';
+		$content .= '<li>List</li>';
+		$content .= '</ul>';
+
+		return Template::instance()->nest_elements( $html_wrapper, $content );
+	}
+
+	/**
 	 * Order by
 	 *
 	 * @return string
@@ -249,6 +271,7 @@ class ListCoursesTemplate {
 			[
 				$this->html_order_by(),
 				$this->html_pagination_number(),
+				$this->html_layout_type(),
 			],
 			$data_content
 		);

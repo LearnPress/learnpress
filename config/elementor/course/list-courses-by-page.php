@@ -22,6 +22,26 @@ $content_fields = array_merge(
 		esc_html__( 'Content', 'learnpress' ),
 		Controls_Manager::TAB_CONTENT,
 		[
+			'layout_default'   => LPElementorControls::add_control_type(
+				'courses_item_layout_default',
+				'Layout Default',
+				'grid',
+				Controls_Manager::CHOOSE,
+				[
+					'options'   => [
+						'grid' => [
+							'title' => esc_html__( 'Grid', 'learnpress' ),
+							'icon'  => 'eicon-apps',
+						],
+						'list' => [
+							'title' => esc_html__( 'List', 'learnpress' ),
+							'icon'  => 'eicon-menu-bar',
+						],
+					],
+					'toggle'    => false,
+
+				]
+			),
 			'order_by_default' => LPElementorControls::add_control_type_select(
 				'order_by',
 				esc_html__( 'Order By Default', 'learnpress' ),
@@ -75,17 +95,52 @@ $content_fields = array_merge(
 );
 
 // Fields tab style
-$style_fields = [];
+$style_fields = array_merge(
+	LPElementorControls::add_fields_in_section(
+		'style_layout',
+		esc_html__( 'Layout', 'learnpress' ),
+		Controls_Manager::TAB_STYLE,
+		[
+			LPElementorControls::add_control_type(
+				'style_courses_item_layout',
+				'Layout Type',
+				'grid',
+				Controls_Manager::CHOOSE,
+				[
+					'options' => [
+						'grid' => [
+							'title' => esc_html__( 'Grid', 'learnpress' ),
+							'icon'  => 'eicon-apps',
+						],
+						'list' => [
+							'title' => esc_html__( 'List', 'learnpress' ),
+							'icon'  => 'eicon-menu-bar',
+						],
+					],
+				]
+			),
+		]
+	),
+	LPElementorControls::add_fields_in_section(
+		'style_title',
+		esc_html__( 'Course Title', 'learnpress' ),
+		Controls_Manager::TAB_STYLE,
+		LPElementorControls::add_controls_style_text(
+			'title',
+			'.list-courses-elm .course-title'
+		)
+	)
+);
 
 return apply_filters(
-	'learn-press/elementor/list-instructors',
+	'learn-press/elementor/list-courses-by-page',
 	array_merge(
 		apply_filters(
-			'learn-press/elementor/list-instructors/tab-content',
+			'learn-press/elementor/list-courses-by-page/tab-content',
 			$content_fields
 		),
 		apply_filters(
-			'learn-press/elementor/list-instructors/tab-styles',
+			'learn-press/elementor/list-courses-by-page/tab-styles',
 			$style_fields
 		)
 	)
