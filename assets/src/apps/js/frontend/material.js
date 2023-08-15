@@ -2,7 +2,7 @@ import { addQueryArgs } from '@wordpress/url';
 import apiFetch from '@wordpress/api-fetch';
 
 
-export default function lpMaterialsLoad ( postID = '' ) {
+export default function lpMaterialsLoad ( is_curriculum = false ) {
 	// console.log('loaded');
 	const Sekeleton = () => {
 		const elementSkeleton = document.querySelector( '.lp-material-skeleton' );
@@ -16,7 +16,13 @@ export default function lpMaterialsLoad ( postID = '' ) {
 		getResponse( elementSkeleton );
 	};
 	const getResponse = async ( ele, page = 1 ) => {
-		const itemID = postID || lpGlobalSettings.post_id || '';
+		let itemID = 0;
+		if ( is_curriculum ) {
+			const curriculum = document.querySelector( 'form[name="learn-press-form-complete-lesson"] input[name="id"]' );
+			itemID = curriculum ? curriculum.value : 0;
+		} else {
+			itemID = lpGlobalSettings.post_id;
+		}
 		const elementMaterial = ele.querySelector( '.course-material-table' );
 		const loadMoreBtn     = document.querySelector( '.lp-loadmore-material' )
 		try {

@@ -382,6 +382,7 @@ $( window ).on( 'load', () => {
 	courseProgress();
 	courseContinue();
 	lpModalOverlayCompleteItem.init();
+	lpMaterialsLoad();
 	//courseCurriculumSkeleton();
 } );
 
@@ -389,7 +390,7 @@ const detectedElCurriculum = setInterval( function() {
 	const elementCurriculum = document.querySelector( '.learnpress-course-curriculum' );
 	if ( elementCurriculum ) {
 		courseCurriculumSkeleton();
-		lpMaterialsLoad();
+		
 		clearInterval( detectedElCurriculum );
 	}
 }, 1 );
