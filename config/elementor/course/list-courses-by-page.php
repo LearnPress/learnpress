@@ -22,7 +22,7 @@ $content_fields = array_merge(
 		esc_html__( 'Content', 'learnpress' ),
 		Controls_Manager::TAB_CONTENT,
 		[
-			'layout_default'   => LPElementorControls::add_control_type(
+			'layout_default'               => LPElementorControls::add_control_type(
 				'layout_default',
 				'Layout Default',
 				'grid',
@@ -42,20 +42,77 @@ $content_fields = array_merge(
 
 				]
 			),
-			'order_by_default' => LPElementorControls::add_control_type_select(
-				'order_by',
-				esc_html__( 'Order By Default', 'learnpress' ),
+			'courses_rest'                 => LPElementorControls::add_control_type(
+				'courses_rest',
+				'Courses REST API enable',
+				'no',
+				Controls_Manager::SWITCHER,
 				[
-					'name'      => esc_html__( 'Name a-z', 'learnpress' ),
-					'desc_name' => esc_html__( 'Name z-a', 'learnpress' ),
-				],
-				'post_date'
+					'label_on'     => esc_html__( 'Yes', 'learnpress' ),
+					'label_off'    => esc_html__( 'No', 'learnpress' ),
+					'return_value' => 'yes',
+					'default'      => 'no',
+				]
 			),
-			'courses_per_page' => LPElementorControls::add_control_type(
+			'courses_rest_no_load_page'    => LPElementorControls::add_control_type(
+				'courses_rest_no_load_page',
+				'Courses REST no load page',
+				'no',
+				Controls_Manager::SWITCHER,
+				[
+					'label_on'     => esc_html__( 'Yes', 'learnpress' ),
+					'label_off'    => esc_html__( 'No', 'learnpress' ),
+					'return_value' => 'yes',
+					'default'      => 'no',
+					'condition'    => [
+						'courses_rest' => 'yes',
+					],
+				]
+			),
+			'courses_per_page'             => LPElementorControls::add_control_type(
 				'courses_per_page',
 				esc_html__( 'Courses Per Page', 'learnpress' ),
 				8,
 				Controls_Manager::NUMBER
+			),
+			'order_by_default'             => LPElementorControls::add_control_type_select(
+				'order_by',
+				esc_html__( 'Order By Default', 'learnpress' ),
+				[
+					'post_date'       => esc_html__( 'Newest', 'learnpress' ),
+					'post_title'      => esc_html__( 'Title a-z', 'learnpress' ),
+					'post_title_desc' => esc_html__( 'Title z-a', 'learnpress' ),
+					'price'           => esc_html__( 'Price High to Low', 'learnpress' ),
+					'price_low'       => esc_html__( 'Price Low to High', 'learnpress' ),
+				],
+				'post_date'
+			),
+			'courses_pagination_show'      => LPElementorControls::add_control_type(
+				'courses_pagination_show',
+				'Show Pagination',
+				'no',
+				Controls_Manager::SWITCHER,
+				[
+					'label_on'     => esc_html__( 'Yes', 'learnpress' ),
+					'label_off'    => esc_html__( 'No', 'learnpress' ),
+					'return_value' => 'yes',
+					'default'      => 'yes',
+				]
+			),
+			'courses_rest_pagination_type' => LPElementorControls::add_control_type_select(
+				'courses_rest_pagination_type',
+				esc_html__( 'Pagination type', 'learnpress' ),
+				[
+					'number'     => esc_html__( 'Number', 'learnpress' ),
+					'load_more'  => esc_html__( 'Button load more', 'learnpress' ),
+					'infinitive' => esc_html__( 'Infinitive scroll', 'learnpress' ),
+				],
+				'number',
+				[
+					'condition' => [
+						'courses_rest' => 'yes',
+					],
+				]
 			),
 		]
 	),

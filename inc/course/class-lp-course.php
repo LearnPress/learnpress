@@ -640,6 +640,10 @@ if ( ! class_exists( 'LP_Course' ) ) {
 					case 'post_title':
 						$filter->order = 'ASC';
 						break;
+					case 'post_title_desc':
+						$filter->order_by = 'post_title';
+						$filter->order    = 'DESC';
+						break;
 					case 'menu_order':
 						$filter->order_by = 'menu_order';
 						$filter->order    = 'ASC';
