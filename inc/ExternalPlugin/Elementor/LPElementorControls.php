@@ -65,6 +65,56 @@ class LPElementorControls {
 	}
 
 	/**
+	 * Controls Tabs.
+	 *
+	 * @param string $id
+	 * @param array $control_tab_inner
+	 *
+	 * @return string[]
+	 * @since 4.2.3.4
+	 * @version 1.0.0
+	 */
+	public static function add_start_control_tabs( string $id, array $control_tab_inner = [] ): array {
+		return array_merge(
+			[
+				'start_controls_tabs_' . $id => [
+					'method' => 'start_controls_tabs',
+					'id'     => $id,
+				],
+			],
+			$control_tab_inner,
+			[ 'end_control_tabs_' . $id => [ 'method' => 'end_controls_tabs' ] ]
+		);
+	}
+
+	/**
+	 * Controls Tab.
+	 *
+	 * @param string $id
+	 * @param string $label
+	 * @param array $controls_inner
+	 *
+	 * @return string[]
+	 * @since 4.2.3.4
+	 * @version 1.0.0
+	 */
+	public static function add_start_control_tab( string $id, string $label = '', array $controls_inner = [] ): array {
+		return array_merge(
+			[
+				'start_controls_tab_' . $id => [
+					'method' => 'start_controls_tab',
+					'id'     => $id,
+					[
+						'label' => $label,
+					],
+				],
+			],
+			$controls_inner,
+			[ 'end_controls_tab_' . $id => [ 'method' => 'end_controls_tab' ] ]
+		);
+	}
+
+	/**
 	 * Declare control type.
 	 *
 	 * @param string $id

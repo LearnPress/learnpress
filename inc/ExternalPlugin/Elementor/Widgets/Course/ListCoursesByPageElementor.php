@@ -86,6 +86,7 @@ class ListCoursesByPageElementor extends LPElementorWidgetBase {
 		$is_load_restapi     = $settings['load_restapi'] ?? 0;
 		$courses_per_page    = $settings['courses_per_page'] ?? 20;
 		$courses_item_layout = $settings['courses_item_layout'] ?? '';
+		$layout_default      = $settings['layout_default'] ?? 'grid';
 
 		// Start show list courses
 		// For load course via REST API
@@ -101,7 +102,7 @@ class ListCoursesByPageElementor extends LPElementorWidgetBase {
 			$courses       = LP_Course::get_courses( $filter, $total_rows );
 			ob_start();
 			$singleCourseTemplate = SingleCourseTemplate::instance();
-			echo '<ul class="list-courses-elm">';
+			echo '<ul class="list-courses-elm ' . $layout_default . '">';
 			foreach ( $courses as $courseObj ) {
 				$course_id = $courseObj->ID;
 				$course    = learn_press_get_course( $course_id );
