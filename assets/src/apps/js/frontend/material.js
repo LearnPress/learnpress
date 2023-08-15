@@ -18,8 +18,7 @@ export default function lpMaterialsLoad ( is_curriculum = false ) {
 	const getResponse = async ( ele, page = 1 ) => {
 		let itemID = 0;
 		if ( is_curriculum ) {
-			const curriculum = document.querySelector( 'form[name="learn-press-form-complete-lesson"] input[name="id"]' );
-			itemID = curriculum ? curriculum.value : 0;
+			itemID = lpCourseItem ? lpCourseItem.id : 0;
 		} else {
 			itemID = lpGlobalSettings.post_id;
 		}
