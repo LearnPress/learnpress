@@ -68,19 +68,21 @@ class ListCoursesByPageElementor extends LPElementorWidgetBase {
 				$_GET['paged'] = $GLOBALS['wp_query']->get( 'paged', 1 ) ? $GLOBALS['wp_query']->get( 'paged', 1 ) : 1;
 				LP_course::handle_params_for_query_courses( $filter, $_GET );
 
-				$total_rows         = 0;
-				$filter->limit      = $courses_per_page;
-				$courses_list       = LP_Course::get_courses( $filter, $total_rows );
-				$total_pages        = LP_Database::get_total_pages( $filter->limit, $total_rows );
-				$base               = add_query_arg( 'paged', '%#%', LP_Helper::getUrlCurrent() );
-				$paged              = $filter->page;
-				$pagination         = compact( 'total_pages', 'base', 'paged' );
-				$courses_ul_classes = [ 'list-courses-elm' ];
-				$data_courses       = compact(
+				$total_rows             = 0;
+				$filter->limit          = $courses_per_page;
+				$courses_list           = LP_Course::get_courses( $filter, $total_rows );
+				$total_pages            = LP_Database::get_total_pages( $filter->limit, $total_rows );
+				$base                   = add_query_arg( 'paged', '%#%', LP_Helper::getUrlCurrent() );
+				$paged                  = $filter->page;
+				$pagination             = compact( 'total_pages', 'base', 'paged' );
+				$courses_layout_default = $settings['courses_layout_default'] ?? 'grid';
+				$courses_ul_classes     = [ 'list-courses-elm' ];
+				$data_courses           = compact(
 					'courses_list',
 					'pagination',
 					'courses_item_layout',
-					'courses_ul_classes'
+					'courses_ul_classes',
+					'courses_layout_default'
 				);
 
 				echo $listCoursesTemplate->render_data( $data_courses, $courses_layout );

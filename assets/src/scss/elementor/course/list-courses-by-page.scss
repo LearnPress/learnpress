@@ -5,9 +5,19 @@
 @import "../../frontend/_pagination.scss";
 
 .list-courses-elm {
-	display: grid;
 	padding: 0;
 	margin: 0;
+
+	&.grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+	}
+
+	&.list {
+		li {
+			display: flex;
+		}
+	}
 
 	li {
 		list-style: none;

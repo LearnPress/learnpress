@@ -128,10 +128,24 @@ $content_fields = array_merge(
 			'courses_item_layout' => LPElementorControls::add_control_type(
 				'courses_item_layout',
 				'',
-				'{{course_title}}{{course_image}}{{course_url}}',
+				'<a href="{{course_url}}">{{course_image}}</a>
+					<div>
+					<a href="{{course_url}}">{{course_title}}</a>
+					{{course_count_lesson}}
+
+					<a href="{{course_author_url}}">{{course_author_display_name}}</a>
+
+					<p>{{course_price}}</p>
+					<p><a href="{{course_url}}">Start Learning</a></p>
+					</div>',
 				Controls_Manager::WYSIWYG,
 				[
-					'description' => esc_html__( 'Enter the layout for each item course. You can use the following variables: {{course_title}}, {{course_image}}, {{course_url}}', 'learnpress' ),
+					'description' => esc_html__(
+						'Enter the layout for each item course. You can use the following variables: {{course_title}},
+						{{course_image}}, {{course_url}}, {{course_author_display_name}}, {{course_author_url}}, {{course_author_avatar}},
+						{{course_price}}, {{course_categories}}, {{course_count_student}}, {{course_count_lesson}}, {{course_short_description}}',
+						'learnpress'
+					),
 				]
 			),
 		]

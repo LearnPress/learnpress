@@ -180,8 +180,8 @@ class SingleCourseTemplate {
 				'{{course_categories}}',
 				'{{course_count_student}}',
 				'{{course_count_lesson}}',
-				'{{course_author_string}}',
-				'{{course_author_link}}',
+				'{{course_author_display_name}}',
+				'{{course_author_url}}',
 				'{{course_author_avatar}}',
 			],
 			[
