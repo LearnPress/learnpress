@@ -627,7 +627,7 @@ class LP_Database {
 				$filter->order = 'DESC';
 			}
 
-			$ORDER_BY .= 'ORDER BY ' . sanitize_sql_orderby( $filter->order_by ) . ' ' . $filter->order . ' ';
+			$ORDER_BY .= 'ORDER BY ' . $filter->order_by . ' ' . $filter->order . ' ';
 			$ORDER_BY  = apply_filters( 'lp/query/order_by', $ORDER_BY, $filter );
 		}
 

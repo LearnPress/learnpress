@@ -75,8 +75,8 @@ $content_fields = array_merge(
 				8,
 				Controls_Manager::NUMBER
 			),
-			'order_by_default'             => LPElementorControls::add_control_type_select(
-				'order_by',
+			'courses_order_by_default'     => LPElementorControls::add_control_type_select(
+				'courses_order_by_default',
 				esc_html__( 'Order By Default', 'learnpress' ),
 				[
 					'post_date'       => esc_html__( 'Newest', 'learnpress' ),

@@ -61,11 +61,15 @@ class ListCoursesByPageElementor extends LPElementorWidgetBase {
 			$courses_per_page    = $settings['courses_per_page'] ?? 20;
 			$courses_layout      = $settings['courses_layout'] ?? '';
 			$courses_item_layout = $settings['courses_item_layout'] ?? '';
+			$order_by_default    = $settings['courses_order_by_default'] ?? '';
 			$listCoursesTemplate = ListCoursesTemplate::instance();
 
 			if ( ! $is_load_restapi ) {
 				$filter        = new LP_Course_Filter();
 				$_GET['paged'] = $GLOBALS['wp_query']->get( 'paged', 1 ) ? $GLOBALS['wp_query']->get( 'paged', 1 ) : 1;
+				if ( ! isset( $_GET['order_by'] ) ) {
+					$_GET['order_by'] = $order_by_default;
+				}
 				LP_course::handle_params_for_query_courses( $filter, $_GET );
 
 				$total_rows             = 0;
