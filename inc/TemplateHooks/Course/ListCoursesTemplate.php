@@ -100,6 +100,31 @@ class ListCoursesTemplate {
 	}
 
 	/**
+	 * Pagination
+	 *
+	 * @param array $data
+	 *
+	 * @return string
+	 * @since 4.2.3.3
+	 * @version 1.0.0
+	 */
+	public function html_pagination( array $data = [] ): string {
+		if ( empty( $data['total_pages'] ) || $data['total_pages'] <= 1 ) {
+			return '';
+		}
+
+		$pagination_type = $data['type'] ?? 'number';
+		switch ( $pagination_type ) {
+			case 'load_more':
+				return $this->html_pagination_load_more();
+			case 'infinite':
+				return $this->html_pagination_infinite();
+			default:
+				return $this->html_pagination_number( $data );
+		}
+	}
+
+	/**
 	 * Layouts type
 	 *
 	 * @param array $data
@@ -258,22 +283,61 @@ class ListCoursesTemplate {
 	/**
 	 * Render string to data content
 	 *
+	 * @param array $data
 	 * @param string $data_content
 	 *
 	 * @return string
 	 */
-	public function render_data( string $data_content ): string {
+	public function render_data( array $data, string $data_content ): string {
 		return str_replace(
 			[
 				'{{courses_order_by}}',
-				'{{courses_pagination_number}}',
+				'{{courses_layout_type}}',
+				'{{courses_pagination}}',
+				'{{courses_items}}',
 			],
 			[
 				$this->html_order_by(),
-				$this->html_pagination_number(),
 				$this->html_layout_type(),
+				$this->html_pagination( $data['pagination'] ?? [] ),
+				$this->html_courses_items( $data ),
 			],
 			$data_content
 		);
+	}
+
+	/**
+	 * Render html list courses
+	 *
+	 * @param array $data
+	 *
+	 * @return false|string
+	 */
+	private function html_courses_items( array $data ) {
+		$courses_item_layout = $data['courses_item_layout'] ?? '';
+		$layout_default      = $data['courses_layout_default'] ?? 'grid';
+		$courses             = $data['courses_list'] ?? [];
+		$ul_classes          = $data['courses_ul_classes'] ?? [];
+		$ul_classes[]        = $layout_default;
+		$ul_classes_str      = implode( ' ', $ul_classes );
+
+		// Start show list courses
+		ob_start();
+		$singleCourseTemplate = SingleCourseTemplate::instance();
+		echo '<ul class="' . esc_attr( $ul_classes_str ) . '">';
+		foreach ( $courses as $courseObj ) {
+			$course_id = $courseObj->ID;
+			$course    = learn_press_get_course( $course_id );
+			if ( ! $course ) {
+				continue;
+			}
+			?>
+			<li class="item-course">
+				<?php echo $singleCourseTemplate->render_data( $course, html_entity_decode( $courses_item_layout ) ); ?>
+			</li>
+			<?php
+		}
+		echo '</ul>';
+		return ob_get_clean();
 	}
 }

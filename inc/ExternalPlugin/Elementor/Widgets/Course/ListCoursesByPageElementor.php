@@ -16,7 +16,8 @@ use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
 use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
 use LP_Course;
 use LP_Course_Filter;
-use WP_User_Query;
+use LP_Database;
+use LP_Helper;
 
 class ListCoursesByPageElementor extends LPElementorWidgetBase {
 	public function __construct( $data = [], $args = null ) {
@@ -61,71 +62,31 @@ class ListCoursesByPageElementor extends LPElementorWidgetBase {
 			$courses_layout      = $settings['courses_layout'] ?? '';
 			$courses_item_layout = $settings['courses_item_layout'] ?? '';
 			$listCoursesTemplate = ListCoursesTemplate::instance();
-			$courses_layout      = $this->render_course_items( $courses_layout, $settings );
-			echo $listCoursesTemplate->render_data( $courses_layout );
 
-			// End show list courses
+			if ( ! $is_load_restapi ) {
+				$filter        = new LP_Course_Filter();
+				$_GET['paged'] = $GLOBALS['wp_query']->get( 'paged', 1 ) ? $GLOBALS['wp_query']->get( 'paged', 1 ) : 1;
+				LP_course::handle_params_for_query_courses( $filter, $_GET );
+
+				$total_rows         = 0;
+				$filter->limit      = $courses_per_page;
+				$courses_list       = LP_Course::get_courses( $filter, $total_rows );
+				$total_pages        = LP_Database::get_total_pages( $filter->limit, $total_rows );
+				$base               = add_query_arg( 'paged', '%#%', LP_Helper::getUrlCurrent() );
+				$paged              = $filter->page;
+				$pagination         = compact( 'total_pages', 'base', 'paged' );
+				$courses_ul_classes = [ 'list-courses-elm' ];
+				$data_courses       = compact(
+					'courses_list',
+					'pagination',
+					'courses_item_layout',
+					'courses_ul_classes'
+				);
+
+				echo $listCoursesTemplate->render_data( $data_courses, $courses_layout );
+			}
 		} catch ( \Throwable $e ) {
 			echo $e->getMessage();
-		}
-	}
-
-	private function render_course_items( $data_content, $settings ) {
-		return str_replace(
-			[
-				'{{course_items}}',
-			],
-			[
-				$this->html_course_items( $settings ),
-			],
-			$data_content
-		);
-	}
-
-	private function html_course_items( $settings ) {
-		$is_load_restapi     = $settings['load_restapi'] ?? 0;
-		$courses_per_page    = $settings['courses_per_page'] ?? 20;
-		$courses_item_layout = $settings['courses_item_layout'] ?? '';
-		$layout_default      = $settings['layout_default'] ?? 'grid';
-
-		// Start show list courses
-		// For load course via REST API
-		if ( $is_load_restapi ) {
-			// Get courses via REST API
-		} else {
-			$filter = new LP_Course_Filter();
-			LP_course::handle_params_for_query_courses( $filter, $_GET );
-
-			$total_rows    = 0;
-			$filter->limit = $courses_per_page;
-			$filter        = apply_filters( 'lp/api/courses/filter', $filter, $_GET );
-			$courses       = LP_Course::get_courses( $filter, $total_rows );
-			ob_start();
-			$singleCourseTemplate = SingleCourseTemplate::instance();
-			echo '<ul class="list-courses-elm ' . $layout_default . '">';
-			foreach ( $courses as $courseObj ) {
-				$course_id = $courseObj->ID;
-				$course    = learn_press_get_course( $course_id );
-				if ( ! $course ) {
-					continue;
-				}
-				?>
-				<li class="item-course">
-					<?php echo $singleCourseTemplate->render_data( $course, html_entity_decode( $courses_item_layout ) ); ?>
-				</li>
-				<?php
-			}
-			echo '</ul>';
-			$content = ob_get_clean();
-
-			return $content;
-
-			//Template::instance()->print_sections( [ 'content' => [ 'text_html' => $content ] ] );
-
-			/*$html_wrap = [
-				'<div class="' . ( 'elementor-repeater-item-' ) . '">' => '</div>',
-			];
-			echo Template::instance()->nest_elements( $html_wrap, $content );*/
 		}
 	}
 }

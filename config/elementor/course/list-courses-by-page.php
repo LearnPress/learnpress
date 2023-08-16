@@ -22,8 +22,8 @@ $content_fields = array_merge(
 		esc_html__( 'Content', 'learnpress' ),
 		Controls_Manager::TAB_CONTENT,
 		[
-			'layout_default'               => LPElementorControls::add_control_type(
-				'layout_default',
+			'courses_layout_default'       => LPElementorControls::add_control_type(
+				'courses_layout_default',
 				'Layout Default',
 				'grid',
 				Controls_Manager::CHOOSE,
@@ -87,18 +87,6 @@ $content_fields = array_merge(
 				],
 				'post_date'
 			),
-			'courses_pagination_show'      => LPElementorControls::add_control_type(
-				'courses_pagination_show',
-				'Show Pagination',
-				'no',
-				Controls_Manager::SWITCHER,
-				[
-					'label_on'     => esc_html__( 'Yes', 'learnpress' ),
-					'label_off'    => esc_html__( 'No', 'learnpress' ),
-					'return_value' => 'yes',
-					'default'      => 'yes',
-				]
-			),
 			'courses_rest_pagination_type' => LPElementorControls::add_control_type_select(
 				'courses_rest_pagination_type',
 				esc_html__( 'Pagination type', 'learnpress' ),
@@ -124,10 +112,10 @@ $content_fields = array_merge(
 			'courses_layout' => LPElementorControls::add_control_type(
 				'courses_layout',
 				'',
-				'{{courses_order_by}}{{course_items}}{{courses_pagination_number}}',
+				'{{courses_order_by}}{{courses_layout_type}}{{courses_items}}{{courses_pagination}}',
 				Controls_Manager::WYSIWYG,
 				[
-					'description' => esc_html__( 'Enter the layout for each item course. You can use the following variables: {{courses_order_by}}{{course_items}}{{courses_pagination_number}}', 'learnpress' ),
+					'description' => esc_html__( 'Enter the layout for each item course. You can use the following variables: {{courses_order_by}}{{courses_items}}{{courses_pagination_number}}', 'learnpress' ),
 				]
 			),
 		]
