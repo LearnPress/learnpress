@@ -8,6 +8,7 @@
 
 namespace LearnPress\ExternalPlugin\Elementor\Widgets\Course;
 
+use Elementor\Plugin;
 use LearnPress\ExternalPlugin\Elementor\LPElementorWidgetBase;
 use LearnPress\Helpers\Config;
 use LearnPress\Helpers\Template;
@@ -32,7 +33,16 @@ class ListCoursesByPageElementor extends LPElementorWidgetBase {
 			array(),
 			uniqid()
 		);
+
+		wp_register_script(
+			'lp-courses-by-page',
+			LP_PLUGIN_URL . 'assets/js/dist/elementor/courses.js',
+			array(),
+			uniqid(),
+			true
+		);
 		$this->add_style_depends( 'lp-courses-by-page' );
+		$this->add_script_depends( 'lp-courses-by-page' );
 		parent::__construct( $data, $args );
 	}
 
@@ -56,15 +66,21 @@ class ListCoursesByPageElementor extends LPElementorWidgetBase {
 	 */
 	protected function render() {
 		try {
-			$settings            = $this->get_settings_for_display();
-			$is_load_restapi     = $settings['load_restapi'] ?? 0;
-			$courses_per_page    = $settings['courses_per_page'] ?? 20;
-			$courses_layout      = $settings['courses_layout'] ?? '';
-			$courses_item_layout = $settings['courses_item_layout'] ?? '';
-			$order_by_default    = $settings['courses_order_by_default'] ?? '';
-			$listCoursesTemplate = ListCoursesTemplate::instance();
+			$settings                = $this->get_settings_for_display();
+			$is_load_restapi         = $settings['courses_rest'] ?? 0;
+			$courses_per_page        = $settings['courses_per_page'] ?? 20;
+			$courses_layout          = $settings['courses_layout'] ?? '';
+			$courses_item_layout     = $settings['courses_item_layout'] ?? '';
+			$order_by_default        = $settings['courses_order_by_default'] ?? '';
+			$listCoursesTemplate     = ListCoursesTemplate::instance();
+			$settings['lp_rest_url'] = esc_url_raw( get_rest_url() );
+			if ( get_current_user_id() ) {
+				$settings['nonce'] = wp_create_nonce( 'wp_rest' );
+			}
+			wp_localize_script( 'lp-courses-by-page', 'lpWidget_' . $this->get_id(), $settings );
 
-			if ( ! $is_load_restapi ) {
+			echo '<div class="list-courses-elm-wrapper" data-widget-id="' . $this->get_id() . '">';
+			if ( 'yes' !== $is_load_restapi || Plugin::$instance->editor->is_edit_mode() ) {
 				$filter        = new LP_Course_Filter();
 				$_GET['paged'] = $GLOBALS['wp_query']->get( 'paged', 1 ) ? $GLOBALS['wp_query']->get( 'paged', 1 ) : 1;
 				if ( ! isset( $_GET['order_by'] ) ) {
@@ -88,9 +104,11 @@ class ListCoursesByPageElementor extends LPElementorWidgetBase {
 					'courses_ul_classes',
 					'courses_layout_default'
 				);
-
 				echo $listCoursesTemplate->render_data( $data_courses, $courses_layout );
+			} else {
+				lp_skeleton_animation_html( 10 );
 			}
+			echo '</div>';
 		} catch ( \Throwable $e ) {
 			echo $e->getMessage();
 		}

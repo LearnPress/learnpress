@@ -153,9 +153,9 @@ class ListCoursesTemplate {
 	 */
 	public function html_order_by(): string {
 		$html_wrapper = [
-			'<div class="courses-order-by">' => '</div>',
+			'<div class="courses-order-by-wrapper">' => '</div>',
 		];
-		$content      = '<select name="order_by">';
+		$content      = '<select name="order_by" class="courses-order-by">';
 		$content     .= '<option value="post_date">' . __( 'Newly published', 'learnpress' ) . '</option>';
 		$content     .= '<option value="post_title">' . __( 'Sort by Title', 'learnpress' ) . '</option>';
 		$content     .= '<option value="price_low">' . __( 'Price low to high', 'learnpress' ) . '</option>';
@@ -313,7 +313,7 @@ class ListCoursesTemplate {
 	 *
 	 * @return false|string
 	 */
-	private function html_courses_items( array $data ) {
+	public function html_courses_items( array $data ) {
 		$courses_item_layout = $data['courses_item_layout'] ?? '';
 		$layout_default      = $data['courses_layout_default'] ?? 'grid';
 		$courses             = $data['courses_list'] ?? [];

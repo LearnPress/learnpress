@@ -22,21 +22,21 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 	 */
 	public function register_routes() {
 		$this->routes = array(
-			'purchase-course' => array(
+			'purchase-course'        => array(
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'purchase_course' ),
 					'permission_callback' => '__return_true',
 				),
 			),
-			'enroll-course'   => array(
+			'enroll-course'          => array(
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'enroll_courses' ),
 					'permission_callback' => '__return_true',
 				),
 			),
-			'retake-course'   => array(
+			'retake-course'          => array(
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'retake_course' ),
@@ -48,7 +48,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 					),
 				),
 			),
-			'archive-course'  => array(
+			'archive-course'         => array(
 				array(
 					'methods'             => WP_REST_Server::ALLMETHODS,
 					'callback'            => array( $this, 'list_courses' ),
@@ -56,7 +56,15 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 					'args'                => [],
 				),
 			),
-			'(?P<key>[\w]+)'  => array(
+			'courses-widget-by-page' => array(
+				array(
+					'methods'             => WP_REST_Server::ALLMETHODS,
+					'callback'            => array( $this, 'courses_widget_by_page' ),
+					'permission_callback' => '__return_true',
+					'args'                => [],
+				),
+			),
+			'(?P<key>[\w]+)'         => array(
 				'args'   => array(
 					'id' => array(
 						'description' => __( 'A unique identifier for the resource.', 'learnpress' ),
@@ -81,7 +89,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				),
 				'schema' => array( $this, 'get_public_item_schema' ),
 			),
-			'continue-course' => array(
+			'continue-course'        => array(
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'continue_course' ),
@@ -204,6 +212,53 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 					}
 				}
 			}
+
+			$response->status = 'success';
+		} catch ( Throwable $e ) {
+			ob_end_clean();
+			$response->data->content = $e->getMessage();
+			$response->message       = $e->getMessage();
+		}
+
+		return apply_filters( 'lp/rest-api/frontend/course/archive_course/response', $response );
+	}
+
+	/**
+	 * Get list courses - Widget Elementor
+	 *
+	 * @param WP_REST_Request $request
+	 *
+	 * @return LP_REST_Response
+	 */
+	public function courses_widget_by_page( WP_REST_Request $request ): LP_REST_Response {
+		$response            = new LP_REST_Response();
+		$response->data      = new stdClass();
+		$listCoursesTemplate = ListCoursesTemplate::instance();
+
+		try {
+			$courses_per_page = $request['courses_per_page'] ?? 20;
+			$filter           = new LP_Course_Filter();
+			LP_course::handle_params_for_query_courses( $filter, $request->get_params() );
+			$total_rows             = 0;
+			$filter->limit          = $courses_per_page;
+			$courses_list           = LP_Course::get_courses( $filter, $total_rows );
+			$total_pages            = LP_Database::get_total_pages( $filter->limit, $total_rows );
+			$base                   = add_query_arg( 'paged', '%#%', LP_Helper::getUrlCurrent() );
+			$paged                  = $filter->page;
+			$pagination             = compact( 'total_pages', 'base', 'paged' );
+			$courses_layout_default = $settings['courses_layout_default'] ?? 'grid';
+			$courses_ul_classes     = [ 'list-courses-elm' ];
+			$data_courses           = array_merge(
+				$request->get_params(),
+				compact(
+					'courses_list',
+					'pagination',
+					'courses_ul_classes',
+					'courses_layout_default'
+				)
+			);
+
+			$response->data->content = $listCoursesTemplate->render_data( $data_courses, $data_courses['courses_layout'] );
 
 			$response->status = 'success';
 		} catch ( Throwable $e ) {

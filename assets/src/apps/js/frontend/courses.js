@@ -2,7 +2,7 @@ import API from './api';
 import { lpAddQueryArgs, lpFetchAPI, lpGetCurrentURLNoParam } from '../utils/utils';
 import Cookies from '../utils/cookies';
 
-if ( undefined === lpGlobalSettings ) {
+if ( 'undefined' === typeof lpGlobalSettings ) {
 	console.log( 'lpGlobalSettings is undefined' );
 }
 

@@ -75,6 +75,9 @@ module.exports = {
 		'./assets/js/dist/blocks/archive-course': './assets/src/apps/js/blocks/archive-course/index.js',
 		'./assets/js/dist/blocks/single-course': './assets/src/apps/js/blocks/single-course/index.js',
 		'./assets/js/dist/blocks/item-curriculum-course': './assets/src/apps/js/blocks/item-curriculum-course/index.js',
+
+		// Elementor
+		'./assets/js/dist/elementor/courses': './assets/src/js/elementor/courses.js',
 	},
 	output: {
 		path: path.resolve( __dirname ),

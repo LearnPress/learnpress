@@ -218,16 +218,16 @@ function lp_el_style_list_course_by_page( $type_tab = 'grid', $style_for = 'layo
 			".list-courses-elm.{$type_tab} .course-item-price"
 		),
 		[
-			"price_free_{$type_tab}" => LPElementorControls::add_control_type_color(
+			"price_free_{$type_tab}"      => LPElementorControls::add_control_type_color(
 				"price_free_{$type_tab}",
-				__( 'Free Color', 'learnpress' ),
+				__( 'Course Free Color', 'learnpress' ),
 				[
 					"{{WRAPPER}} .list-courses-elm.{$type_tab} .course-item-price .free" => 'color: {{VALUE}};',
 				]
 			),
-			"price_sale_{$type_tab}" => LPElementorControls::add_control_type_color(
+			"price_sale_{$type_tab}"      => LPElementorControls::add_control_type_color(
 				"price_sale_{$type_tab}",
-				__( 'Sale Color', 'learnpress' ),
+				__( 'Course Sale Color', 'learnpress' ),
 				[
 					"{{WRAPPER}} .list-courses-elm.{$type_tab} .course-item-price .origin-price" => 'color: {{VALUE}};',
 				]
@@ -235,8 +235,11 @@ function lp_el_style_list_course_by_page( $type_tab = 'grid', $style_for = 'layo
 			"price_sale_typo_{$type_tab}" => LPElementorControls::add_group_control_type(
 				"price_sale_typo_{$type_tab}",
 				Group_Control_Typography::get_type(),
-				"{{WRAPPER}} .list-courses-elm.{$type_tab} .course-item-price .origin-price"
-			)
+				"{{WRAPPER}} .list-courses-elm.{$type_tab} .course-item-price .origin-price",
+				[
+					'label' => esc_html__( 'Course Sale Typography', 'learnpress' ),
+				]
+			),
 		]
 	);
 	$style_meta_data_general   = LPElementorControls::add_controls_style_text(
