@@ -156,8 +156,8 @@ $content_fields = array_merge(
 // Fields tab style
 // Controls tab Grid
 function lp_el_style_list_course_by_page( $type_tab = 'grid', $style_for = 'layout' ) {
-	$style_layout_general = [
-		"gap_{$type_tab}"    => LPElementorControls::add_control_type(
+	$style_layout_general      = [
+		"gap_{$type_tab}"              => LPElementorControls::add_control_type(
 			"gap_{$type_tab}",
 			__( 'Gap', 'learnpress' ),
 			[
@@ -178,48 +178,48 @@ function lp_el_style_list_course_by_page( $type_tab = 'grid', $style_for = 'layo
 				],
 			]
 		),
-		"border_{$type_tab}"        => LPElementorControls::add_group_control_type(
+		"border_{$type_tab}"           => LPElementorControls::add_group_control_type(
 			"border_{$type_tab}",
 			Group_Control_Border::get_type(),
 			"{{WRAPPER}} .list-courses-elm.{$type_tab} li"
 		),
 		"background_color_{$type_tab}" => LPElementorControls::add_control_type_color(
-			"background_color_{$type_tab}", 
+			"background_color_{$type_tab}",
 			__( 'Background Color', 'learnpress' ),
 			[
 				".list-courses-elm.{$type_tab} li" => 'background-color: {{VALUE}};',
-			],
+			]
 		),
-		"border_radius_{$type_tab}" => LPElementorControls::add_responsive_control_type(
+		"border_radius_{$type_tab}"    => LPElementorControls::add_responsive_control_type(
 			"border_radius_{$type_tab}",
 			__( 'Border Radius', 'learnpress' ),
 			[],
 			Controls_Manager::DIMENSIONS,
 			[
 				'size_units' => [ 'px', '%', 'custom' ],
-				'selectors' => [
+				'selectors'  => [
 					"{{WRAPPER}} .list-courses-elm.{$type_tab} li" => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}}; overflow: hidden;',
 				],
-			],
+			]
 		),
 	];
-	$style_title_general  = LPElementorControls::add_controls_style_text(
+	$style_title_general       = LPElementorControls::add_controls_style_text(
 		"title_{$type_tab}",
 		".list-courses-elm.{$type_tab} .course-title"
 	);
-	$style_description_general  = LPElementorControls::add_controls_style_text(
+	$style_description_general = LPElementorControls::add_controls_style_text(
 		"description_{$type_tab}",
 		".list-courses-elm.{$type_tab} .course-short-description"
 	);
-	$style_price_general  = LPElementorControls::add_controls_style_text(
+	$style_price_general       = LPElementorControls::add_controls_style_text(
 		"price_{$type_tab}",
 		".list-courses-elm.{$type_tab} .course-item-price"
 	);
-	$style_meta_data_general  = LPElementorControls::add_controls_style_text(
+	$style_meta_data_general   = LPElementorControls::add_controls_style_text(
 		"meta_data_{$type_tab}",
 		".list-courses-elm.{$type_tab} .course-count-lesson, .list-courses-elm.{$type_tab} .instructor-display-name, .list-courses-elm.{$type_tab} .course-count-student"
 	);
-	$style_image_general  = LPElementorControls::add_controls_style_image(
+	$style_image_general       = LPElementorControls::add_controls_style_image(
 		"img_{$type_tab}",
 		".list-courses-elm.{$type_tab} .course-img"
 	);
@@ -365,15 +365,15 @@ $style_fields = array_merge(
 		'style_pagination',
 		esc_html__( 'Pagination', 'learnpress' ),
 		Controls_Manager::TAB_STYLE,
-			array_merge(
+		array_merge(
 			[
-				'pagination_align'       => LPElementorControls::add_responsive_control_type(
+				'pagination_align'         => LPElementorControls::add_responsive_control_type(
 					'pagination_align',
 					__( 'Alignment', 'learnpress' ),
 					'center',
 					Controls_Manager::CHOOSE,
 					[
-						'options' => [
+						'options'   => [
 							'left'   => [
 								'title' => esc_html__( 'Left', 'thim-elementor-kit' ),
 								'icon'  => 'eicon-text-align-left',
@@ -387,50 +387,50 @@ $style_fields = array_merge(
 								'icon'  => 'eicon-text-align-right',
 							],
 						],
-						'toggle'  => false,
+						'toggle'    => false,
 						'selectors' => [
-							"{{WRAPPER}} .learn-press-pagination" => 'text-align: {{VALUE}};',
+							'{{WRAPPER}} .learn-press-pagination' => 'text-align: {{VALUE}};',
 						],
 					]
 				),
-				"pagination_margin"        => LPElementorControls::add_responsive_control_type(
-					"pagination_margin",
+				'pagination_margin'        => LPElementorControls::add_responsive_control_type(
+					'pagination_margin',
 					esc_html__( 'Margin', 'learnpress' ),
 					[],
 					Controls_Manager::DIMENSIONS,
 					[
 						'size_units' => [ 'px', '%', 'custom' ],
 						'selectors'  => array(
-							"{{WRAPPER}} .learn-press-pagination li .page-numbers" => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+							'{{WRAPPER}} .learn-press-pagination li .page-numbers' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 						),
 					]
 				),
-				"pagination_padding"       => LPElementorControls::add_responsive_control_type(
-					"pagination_padding",
+				'pagination_padding'       => LPElementorControls::add_responsive_control_type(
+					'pagination_padding',
 					esc_html__( 'Padding', 'learnpress' ),
 					[],
 					Controls_Manager::DIMENSIONS,
 					[
 						'size_units' => [ 'px', '%', 'custom' ],
 						'selectors'  => array(
-							"{{WRAPPER}} .learn-press-pagination li .page-numbers" => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+							'{{WRAPPER}} .learn-press-pagination li .page-numbers' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 						),
 					]
 				),
-				"pagination_border"        => LPElementorControls::add_group_control_type(
-					"pagination_border",
+				'pagination_border'        => LPElementorControls::add_group_control_type(
+					'pagination_border',
 					Group_Control_Border::get_type(),
-					"{{WRAPPER}} .learn-press-pagination li .page-numbers"
+					'{{WRAPPER}} .learn-press-pagination li .page-numbers'
 				),
-				"pagination_border_radius" => LPElementorControls::add_control_type(
-					"pagination_border_radius",
+				'pagination_border_radius' => LPElementorControls::add_control_type(
+					'pagination_border_radius',
 					esc_html__( 'Border Radius', 'learnpress' ),
 					[],
 					Controls_Manager::DIMENSIONS,
 					[
 						'size_units' => [ 'px', '%', 'custom' ],
-						'selectors' => [
-							"{{WRAPPER}} .learn-press-pagination li .page-numbers" => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+						'selectors'  => [
+							'{{WRAPPER}} .learn-press-pagination li .page-numbers' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 						],
 					]
 				),
@@ -442,19 +442,19 @@ $style_fields = array_merge(
 						'tab_pagination_normal',
 						__( 'Normal', 'learnpress' ),
 						[
-							"color_pagination_normal" => LPElementorControls::add_control_type_color(
-								"color_pagination_normal", 
+							'color_pagination_normal'      => LPElementorControls::add_control_type_color(
+								'color_pagination_normal',
 								__( 'Color', 'learnpress' ),
 								[
-									"{{WRAPPER}} .learn-press-pagination li .page-numbers" => 'color: {{VALUE}};',
-								],
+									'{{WRAPPER}} .learn-press-pagination li .page-numbers' => 'color: {{VALUE}};',
+								]
 							),
-							"background_pagination_normal" => LPElementorControls::add_control_type_color(
-								"background_pagination_normal", 
+							'background_pagination_normal' => LPElementorControls::add_control_type_color(
+								'background_pagination_normal',
 								__( 'Background Color', 'learnpress' ),
 								[
-									"{{WRAPPER}} .learn-press-pagination li .page-numbers" => 'background-color: {{VALUE}};',
-								],
+									'{{WRAPPER}} .learn-press-pagination li .page-numbers' => 'background-color: {{VALUE}};',
+								]
 							),
 						]
 					),
@@ -462,33 +462,33 @@ $style_fields = array_merge(
 						'tab_pagination_hover',
 						__( 'Hover', 'learnpress' ),
 						[
-							"color_pagination_hover" => LPElementorControls::add_control_type_color(
-								"color_pagination_hover", 
+							'color_pagination_hover'      => LPElementorControls::add_control_type_color(
+								'color_pagination_hover',
 								__( 'Color', 'learnpress' ),
 								[
-									"{{WRAPPER}} .learn-press-pagination li .page-numbers:hover, {{WRAPPER}} .learn-press-pagination li .page-numbers.current" => 'color: {{VALUE}};',
-								],
+									'{{WRAPPER}} .learn-press-pagination li .page-numbers:hover, {{WRAPPER}} .learn-press-pagination li .page-numbers.current' => 'color: {{VALUE}};',
+								]
 							),
-							"background_pagination_hover" => LPElementorControls::add_control_type_color(
-								"background_pagination_hover", 
+							'background_pagination_hover' => LPElementorControls::add_control_type_color(
+								'background_pagination_hover',
 								__( 'Background Color', 'learnpress' ),
 								[
-									"{{WRAPPER}} .learn-press-pagination li .page-numbers:hover, {{WRAPPER}} .learn-press-pagination li .page-numbers.current" => 'background-color: {{VALUE}};',
-								],
+									'{{WRAPPER}} .learn-press-pagination li .page-numbers:hover, {{WRAPPER}} .learn-press-pagination li .page-numbers.current' => 'background-color: {{VALUE}};',
+								]
 							),
-							"border_pagination_hover" => LPElementorControls::add_control_type_color(
-								"border_pagination_hover", 
+							'border_pagination_hover'     => LPElementorControls::add_control_type_color(
+								'border_pagination_hover',
 								__( 'Border Color', 'learnpress' ),
 								[
-									"{{WRAPPER}} .learn-press-pagination li .page-numbers:hover, {{WRAPPER}} .learn-press-pagination li .page-numbers.current" => 'border-color: {{VALUE}};',
-								],
+									'{{WRAPPER}} .learn-press-pagination li .page-numbers:hover, {{WRAPPER}} .learn-press-pagination li .page-numbers.current' => 'border-color: {{VALUE}};',
+								]
 							),
 						]
-					),
+					)
 				)
-			),
-		),
-	),
+			)
+		)
+	)
 );
 return apply_filters(
 	'learn-press/elementor/list-courses-by-page',
