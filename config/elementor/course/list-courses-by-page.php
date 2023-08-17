@@ -8,6 +8,7 @@
 
 use Elementor\Controls_Manager;
 use Elementor\Group_Control_Border;
+use Elementor\Group_Control_Typography;
 use LearnPress\ExternalPlugin\Elementor\LPElementorControls;
 
 $option_data = [];
@@ -211,9 +212,32 @@ function lp_el_style_list_course_by_page( $type_tab = 'grid', $style_for = 'layo
 		"description_{$type_tab}",
 		".list-courses-elm.{$type_tab} .course-short-description"
 	);
-	$style_price_general       = LPElementorControls::add_controls_style_text(
-		"price_{$type_tab}",
-		".list-courses-elm.{$type_tab} .course-item-price"
+	$style_price_general       = array_merge(
+		LPElementorControls::add_controls_style_text(
+			"price_{$type_tab}",
+			".list-courses-elm.{$type_tab} .course-item-price"
+		),
+		[
+			"price_free_{$type_tab}" => LPElementorControls::add_control_type_color(
+				"price_free_{$type_tab}",
+				__( 'Free Color', 'learnpress' ),
+				[
+					"{{WRAPPER}} .list-courses-elm.{$type_tab} .course-item-price .free" => 'color: {{VALUE}};',
+				]
+			),
+			"price_sale_{$type_tab}" => LPElementorControls::add_control_type_color(
+				"price_sale_{$type_tab}",
+				__( 'Sale Color', 'learnpress' ),
+				[
+					"{{WRAPPER}} .list-courses-elm.{$type_tab} .course-item-price .origin-price" => 'color: {{VALUE}};',
+				]
+			),
+			"price_sale_typo_{$type_tab}" => LPElementorControls::add_group_control_type(
+				"price_sale_typo_{$type_tab}",
+				Group_Control_Typography::get_type(),
+				"{{WRAPPER}} .list-courses-elm.{$type_tab} .course-item-price .origin-price"
+			)
+		]
 	);
 	$style_meta_data_general   = LPElementorControls::add_controls_style_text(
 		"meta_data_{$type_tab}",
