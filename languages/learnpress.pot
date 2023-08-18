@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the LearnPress plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: LearnPress 4.2.3.3-beta-1\n"
+"Project-Id-Version: LearnPress 4.2.3.3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/learnpress\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2023-08-03T11:10:10+02:00\n"
+"POT-Creation-Date: 2023-08-08T04:50:43+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.8.1\n"
 "X-Domain: learnpress\n"
@@ -87,6 +87,16 @@ msgstr ""
 msgid "This is an editor placeholder for the Archive Course page. Content will render content of list courses. Should be not remove it"
 msgstr ""
 
+#. Plugin Name of the plugin
+#: assets/js/dist/frontend/quiz.min.js:8
+#: inc/admin/class-lp-admin.php:141
+#: inc/admin/class-lp-admin.php:149
+#: inc/admin/lp-admin-functions.php:1642
+#: inc/admin/settings/class-lp-settings-emails.php:153
+#: inc/ExternalPlugin/Elementor/LPElementor.php:33
+msgid "LearnPress"
+msgstr ""
+
 #: assets/js/dist/frontend/quiz.min.js:13
 msgid "Item Curriculum Course"
 msgstr ""
@@ -101,6 +111,23 @@ msgstr ""
 
 #: assets/js/dist/frontend/quiz.min.js:17
 msgid "This is an editor placeholder for the Single Course page. Content will render content of single course. Should be not remove it"
+msgstr ""
+
+#: assets/js/dist/frontend/quiz.min.js:9
+msgid "LearnPress Single Course Template"
+msgstr ""
+
+#: assets/js/dist/frontend/quiz.min.js:13
+msgid "LearnPress Course Archive Template"
+msgstr ""
+
+#. %s is the template title
+#: assets/js/dist/frontend/quiz.min.js:32
+msgid "This is an editor placeholder for the %s. This will be replaced by the template in your store and displayed with your course image(s), title, price, and so on. You can move this placeholder around and add further blocks around it to extend the template."
+msgstr ""
+
+#: assets/js/dist/frontend/quiz.min.js:13
+msgid "Renders LearnPress PHP templates."
 msgstr ""
 
 #: assets/js/dist/frontend/quiz.min.js:41
@@ -342,15 +369,6 @@ msgstr ""
 msgid "Search by user"
 msgstr ""
 
-#. Plugin Name of the plugin
-#: inc/admin/class-lp-admin.php:141
-#: inc/admin/class-lp-admin.php:149
-#: inc/admin/lp-admin-functions.php:1642
-#: inc/admin/settings/class-lp-settings-emails.php:153
-#: inc/ExternalPlugin/Elementor/LPElementor.php:33
-msgid "LearnPress"
-msgstr ""
-
 #. Plugin URI of the plugin
 msgid "http://thimpress.com/learnpress"
 msgstr ""
@@ -406,7 +424,6 @@ msgstr ""
 
 #: config/elementor/course/list-courses.php:70
 #: config/elementor/instructor/list-instructors.php:55
-#: inc/admin/meta-box/fields/course-permalink.php:22
 msgid "Default"
 msgstr ""
 
@@ -1005,7 +1022,7 @@ msgstr ""
 
 #: config/settings/permalink.php:36
 #: inc/admin/lp-admin-functions.php:57
-#: inc/admin/meta-box/fields/course-permalink.php:27
+#: inc/admin/meta-box/fields/course-permalink.php:22
 #: inc/admin/settings/class-lp-settings-advanced.php:73
 #: inc/admin/views/statistics/orders.php:48
 #: inc/custom-post-types/abstract.php:797
@@ -1987,19 +2004,19 @@ msgstr ""
 msgid "Quiz id %s does not exist."
 msgstr ""
 
-#: inc/admin/meta-box/fields/course-permalink.php:32
+#: inc/admin/meta-box/fields/course-permalink.php:27
 msgid "Courses base"
 msgstr ""
 
-#: inc/admin/meta-box/fields/course-permalink.php:37
+#: inc/admin/meta-box/fields/course-permalink.php:32
 msgid "Courses base with category"
 msgstr ""
 
-#: inc/admin/meta-box/fields/course-permalink.php:85
+#: inc/admin/meta-box/fields/course-permalink.php:80
 msgid "Custom Base"
 msgstr ""
 
-#: inc/admin/meta-box/fields/course-permalink.php:89
+#: inc/admin/meta-box/fields/course-permalink.php:84
 msgid "Enter a custom base to use. A base must be set or WordPress will use default values instead."
 msgstr ""
 
@@ -3519,23 +3536,23 @@ msgstr ""
 msgid "Error! You cannot finish this course. Please contact your administrator for more information."
 msgstr ""
 
-#: inc/class-lp-ajax.php:195
+#: inc/class-lp-ajax.php:196
 msgid "Error! Invalid lesson or failed security check."
 msgstr ""
 
-#: inc/class-lp-ajax.php:200
+#: inc/class-lp-ajax.php:201
 msgid "Error! Invalid lesson."
 msgstr ""
 
-#: inc/class-lp-ajax.php:205
+#: inc/class-lp-ajax.php:206
 msgid "Please login."
 msgstr ""
 
-#: inc/class-lp-ajax.php:210
+#: inc/class-lp-ajax.php:211
 msgid "Course is invalid!."
 msgstr ""
 
-#: inc/class-lp-ajax.php:229
+#: inc/class-lp-ajax.php:234
 msgid "Congrats! You have completed \"%s\"."
 msgstr ""
 
@@ -6491,71 +6508,71 @@ msgctxt "static-page-name"
 msgid "Become a Teacher"
 msgstr ""
 
-#: inc/lp-core-functions.php:3026
+#: inc/lp-core-functions.php:3034
 msgid "Loading..."
 msgstr ""
 
-#: inc/lp-core-functions.php:3029
+#: inc/lp-core-functions.php:3037
 msgid "Get A Passing Grade"
 msgstr ""
 
-#: inc/lp-core-functions.php:3034
+#: inc/lp-core-functions.php:3042
 msgid "Evaluate by the number of completed lessons per the total number of lessons."
 msgstr ""
 
-#: inc/lp-core-functions.php:3035
+#: inc/lp-core-functions.php:3043
 msgid "E.g: If a course has 10 lessons and a user completes 5 lessons, then the result is 5/10 (50%)."
 msgstr ""
 
-#: inc/lp-core-functions.php:3037
+#: inc/lp-core-functions.php:3045
 msgid "Evaluate by the result of the final quiz in the course. You have to add a quiz at the end of the course."
 msgstr ""
 
-#: inc/lp-core-functions.php:3043
+#: inc/lp-core-functions.php:3051
 msgid "Evaluate by the number of passed quizzes per the total number of quizzes."
 msgstr ""
 
-#: inc/lp-core-functions.php:3044
+#: inc/lp-core-functions.php:3052
 msgid "E.g: If the course has 10 quizzes and the user passes 5 quizzes, then the result is 5/10 (50%)."
 msgstr ""
 
-#: inc/lp-core-functions.php:3051
+#: inc/lp-core-functions.php:3059
 msgid "Evaluate by the number of correct answers per the total number of questions."
 msgstr ""
 
-#: inc/lp-core-functions.php:3052
+#: inc/lp-core-functions.php:3060
 msgid "E.g: If the course has 10 questions and the user corrects 5 questions, then the result is 5/10 (50%)."
 msgstr ""
 
-#: inc/lp-core-functions.php:3057
+#: inc/lp-core-functions.php:3065
 msgid "Evaluate by the number of achieved scores per the total score of the questions."
 msgstr ""
 
-#: inc/lp-core-functions.php:3063
+#: inc/lp-core-functions.php:3071
 msgid "Evaluate via lessons"
 msgstr ""
 
-#: inc/lp-core-functions.php:3067
+#: inc/lp-core-functions.php:3075
 msgid "Evaluate via results of the final quiz"
 msgstr ""
 
-#: inc/lp-core-functions.php:3071
+#: inc/lp-core-functions.php:3079
 msgid "Evaluate via passed quizzes"
 msgstr ""
 
-#: inc/lp-core-functions.php:3075
+#: inc/lp-core-functions.php:3083
 msgid "Evaluate via questions"
 msgstr ""
 
-#: inc/lp-core-functions.php:3079
+#: inc/lp-core-functions.php:3087
 msgid "Evaluate via mark"
 msgstr ""
 
-#: inc/lp-core-functions.php:3225
+#: inc/lp-core-functions.php:3233
 msgid "Heads up! Please backup before upgrading!"
 msgstr ""
 
-#: inc/lp-core-functions.php:3228
+#: inc/lp-core-functions.php:3236
 msgid "The latest update includes some substantial changes across different areas of the plugin. We highly recommend you backup your site before upgrading, and make sure you first update in a staging environment"
 msgstr ""
 
@@ -7962,11 +7979,11 @@ msgstr ""
 msgid "You have completed this lesson at "
 msgstr ""
 
-#: templates/content-lesson/button-complete.php:47
+#: templates/content-lesson/button-complete.php:49
 msgid "Complete lesson"
 msgstr ""
 
-#: templates/content-lesson/button-complete.php:60
+#: templates/content-lesson/button-complete.php:63
 msgid "Complete"
 msgstr ""
 
