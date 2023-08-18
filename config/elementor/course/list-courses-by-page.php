@@ -220,14 +220,14 @@ function lp_el_style_list_course_by_page( $type_tab = 'grid', $style_for = 'layo
 		[
 			"price_free_{$type_tab}" => LPElementorControls::add_control_type_color(
 				"price_free_{$type_tab}",
-				__( 'Free Color', 'learnpress' ),
+				__( 'Courses Free Color', 'learnpress' ),
 				[
 					"{{WRAPPER}} .list-courses-elm.{$type_tab} .course-item-price .free" => 'color: {{VALUE}};',
 				]
 			),
 			"price_sale_{$type_tab}" => LPElementorControls::add_control_type_color(
 				"price_sale_{$type_tab}",
-				__( 'Sale Color', 'learnpress' ),
+				__( 'Courses Sale Color', 'learnpress' ),
 				[
 					"{{WRAPPER}} .list-courses-elm.{$type_tab} .course-item-price .origin-price" => 'color: {{VALUE}};',
 				]
