@@ -103,6 +103,32 @@ $content_fields = array_merge(
 					],
 				]
 			),
+			'courses_grid_icon' 		   => LPElementorControls::add_control_type(
+				'courses_grid_icon',
+				__( 'Grid Icon', 'learnpress' ),
+				array(
+					'value'   => 'fas fa-th',
+					'library' => 'fa-solid',
+				),
+				Controls_Manager::ICONS,
+				[
+					'skin'        => 'inline',
+					'label_block' => false,
+				]
+			),
+			'courses_list_icon' 		   => LPElementorControls::add_control_type(
+				'courses_list_icon',
+				__( 'List Icon', 'learnpress' ),
+				array(
+					'value'   => 'fas fa-list',
+					'library' => 'fa-solid',
+				),
+				Controls_Manager::ICONS,
+				[
+					'skin'        => 'inline',
+					'label_block' => false,
+				]
+			)
 		]
 	),
 	LPElementorControls::add_fields_in_section(
@@ -310,9 +336,58 @@ $style_fields = array_merge(
 		'style_list_grid',
 		esc_html__( 'List Grid', 'learnpress' ),
 		Controls_Manager::TAB_STYLE,
-		LPElementorControls::add_controls_style_text(
-			"style_list_grid_item",
-			".courses-layouts-display-list li"
+		array_merge(
+			LPElementorControls::add_controls_style_text(
+				"style_list_grid_item",
+				".courses-layouts-display-list li",
+				[],
+				[
+					"text_typography",
+					"text_shadow",
+					"text_color",
+					"text_color_hover"
+				]
+			),
+			[
+				"list_grid_icon_size"             => LPElementorControls::add_control_type(
+					"list_grid_icon_size",
+					__( 'Icon size', 'learnpress' ),
+					[
+						'size' => 16,
+						'unit' => 'px',
+					],
+					Controls_Manager::SLIDER,
+					[
+						'range'     => [
+							'px' => [
+								'min'  => 0,
+								'max'  => 100,
+								'step' => 1,
+							],
+						],
+						'selectors' => [
+							"{{WRAPPER}} .courses-layouts-display-list li i" 	=> 'font-size: {{SIZE}}{{UNIT}};',
+							"{{WRAPPER}} .courses-layouts-display-list li svg"  => 'width: {{SIZE}}{{UNIT}}; height: {{SIZE}}{{UNIT}};',
+						],
+					]
+				),
+				"list_grid_icon_color"            => LPElementorControls::add_control_type_color(
+					"list_grid_icon_color",
+					esc_html__( 'Icon Color', 'learnpress' ),
+					[ 
+						"{{WRAPPER}} .courses-layouts-display-list li i" => 'color: {{VALUE}};',
+						"{{WRAPPER}} .courses-layouts-display-list li svg path" => 'fill: {{VALUE}};'
+					]
+				),
+				"list_grid_icon_color_hover"      => LPElementorControls::add_control_type_color(
+					"list_grid_icon_color_hover",
+					esc_html__( 'Icon Color Hover', 'learnpress' ),
+					[ 
+						"{{WRAPPER}} .courses-layouts-display-list li:hover i" => 'color: {{VALUE}};' ,
+						"{{WRAPPER}} .courses-layouts-display-list li:hover svg path" => 'fill: {{VALUE}};'
+					]
+				)
+			]
 		)
 	),
 	LPElementorControls::add_fields_in_section(

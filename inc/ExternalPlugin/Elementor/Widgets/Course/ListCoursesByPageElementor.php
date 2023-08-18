@@ -97,12 +97,16 @@ class ListCoursesByPageElementor extends LPElementorWidgetBase {
 				$pagination             = compact( 'total_pages', 'base', 'paged' );
 				$courses_layout_default = $settings['courses_layout_default'] ?? 'grid';
 				$courses_ul_classes     = [ 'list-courses-elm' ];
+				$courses_list_icon		= $settings['courses_list_icon'] ?? 'list';
+				$courses_grid_icon		= $settings['courses_grid_icon'] ?? 'grid';
 				$data_courses           = compact(
 					'courses_list',
 					'pagination',
 					'courses_item_layout',
 					'courses_ul_classes',
-					'courses_layout_default'
+					'courses_layout_default',
+					'courses_list_icon',
+					'courses_grid_icon'
 				);
 				echo $listCoursesTemplate->render_data( $data_courses, $courses_layout );
 			} else {

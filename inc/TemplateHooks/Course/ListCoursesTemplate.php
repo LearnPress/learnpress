@@ -10,6 +10,7 @@ namespace LearnPress\TemplateHooks\Course;
 
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
+use Elementor\Icons_Manager;
 use LP_Assets;
 use LP_Page_Controller;
 use LP_User;
@@ -139,8 +140,8 @@ class ListCoursesTemplate {
 		];
 
 		$content  = '<ul class="courses-layouts-display-list">';
-		$content .= '<li>Grid</li>';
-		$content .= '<li>List</li>';
+		$content .= '<li>'. Icons_Manager::render_icon( $data['courses_list_icon'] ) .'</li>';
+		$content .= '<li>'. Icons_Manager::render_icon( $data['courses_grid_icon'] ) .'</li>';
 		$content .= '</ul>';
 
 		return Template::instance()->nest_elements( $html_wrapper, $content );
@@ -298,7 +299,7 @@ class ListCoursesTemplate {
 			],
 			[
 				$this->html_order_by(),
-				$this->html_layout_type(),
+				$this->html_layout_type( $data ),
 				$this->html_pagination( $data['pagination'] ?? [] ),
 				$this->html_courses_items( $data ),
 			],
