@@ -139,9 +139,15 @@ class ListCoursesTemplate {
 			'<div class="courses-layouts-display">' => '</div>',
 		];
 
+		ob_start();
+		Icons_Manager::render_icon( $data['courses_list_icon'] );
+		$list_ico = ob_get_clean();
+		ob_start();
+		Icons_Manager::render_icon( $data['courses_grid_icon'] );
+		$grid_ico = ob_get_clean();
 		$content  = '<ul class="courses-layouts-display-list">';
-		$content .= '<li>'. Icons_Manager::render_icon( $data['courses_list_icon'] ) .'</li>';
-		$content .= '<li>'. Icons_Manager::render_icon( $data['courses_grid_icon'] ) .'</li>';
+		$content .= '<li>' . $list_ico . '</li>';
+		$content .= '<li>' . $grid_ico . '</li>';
 		$content .= '</ul>';
 
 		return Template::instance()->nest_elements( $html_wrapper, $content );

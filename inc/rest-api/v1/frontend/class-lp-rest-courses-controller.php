@@ -237,6 +237,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 
 		try {
 			$courses_per_page = $request['courses_per_page'] ?? 20;
+			$courses_layout   = $request['courses_layout'] ?? '';
 			$filter           = new LP_Course_Filter();
 			LP_course::handle_params_for_query_courses( $filter, $request->get_params() );
 			$total_rows             = 0;
@@ -251,6 +252,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			$data_courses           = array_merge(
 				$request->get_params(),
 				compact(
+					'courses_layout',
 					'courses_list',
 					'pagination',
 					'courses_ul_classes',

@@ -9,7 +9,7 @@ window.lpElWidgetCoursesByPage = ( () => {
 	const filterCourses = {};
 	const currentUrl = lpGetCurrentURLNoParam();
 	let urlAPI;
-	let typeEventBeforeFetch;
+	let typePagination = 'number';
 	let timeOutSearch;
 	const isLoadingInfinite = false;
 	const fetchAPI = ( args, callBack = {} ) => {
@@ -28,86 +28,63 @@ window.lpElWidgetCoursesByPage = ( () => {
 
 		lpFetchAPI( urlAPI + 'lp/v1/courses/courses-widget-by-page', paramsFetch, callBack );
 	};
-	const triggerFetchAPI = ( args ) => { // For case, click on pagination, filter.
-		let callBack;
-		switch ( typeEventBeforeFetch ) {
-		case 'load-more':
-			callBack = window.lpCourseList.callBackPaginationTypeLoadMore( elArchive, elListCourse );
-			break;
-		case 'infinite':
-			callBack = window.lpCourseList.callBackPaginationTypeInfinite( elArchive, elListCourse );
-			break;
-		case 'custom':
-			callBack = args.customCallBack || false;
-			break;
-		case 'filter':
-		default: // number
-			callBack = callBackFilter( args, elArchive, elListCourse );
-			break;
-		}
-
-		if ( ! callBack ) {
+	const callBackFilter = ( elCoursesWrapper ) => {
+		if ( ! elCoursesWrapper ) {
 			return;
 		}
-
-		fetchAPI( args, callBack );
-	};
-	const callBackFilter = ( args, elCoursesWrapper, elListCourse ) => {
-		if ( ! elListCourse ) {
-			return;
-		}
-		const skeleton = elListCourse.querySelector( `.${ classSkeletonArchiveCourse }` );
+		const skeleton = elCoursesWrapper.querySelector( `.${ classSkeleton }` );
 
 		return {
 			before: () => {
-				window.history.pushState( '', '', lpAddQueryArgs( currentUrl, args ) );
-				window.localStorage.setItem( 'lp_filter_courses', JSON.stringify( args ) );
-				if ( skeleton ) {
-					skeleton.style.display = 'block';
-				}
+
 			},
 			success: ( res ) => {
-				// Remove all items before insert new items.
-				const elLis = elListCourse.querySelectorAll( `:not(.${ classSkeletonArchiveCourse })` );
-				elLis.forEach( ( elLi ) => {
-					const parent = elLi.closest( `.${ classSkeletonArchiveCourse }` );
-					if ( parent ) {
-						return;
-					}
-					elLi.remove();
-				} );
-
-				// Insert new items.
-				elListCourse.insertAdjacentHTML( 'afterbegin', res.data.content || '' );
-
-				// Check if Pagination exists will remove.
-				const elPagination = document.querySelector( `.${ classPaginationCourse }` );
-				if ( elPagination ) {
-					elPagination.remove();
-				}
-
-				// Insert Pagination.
-				const pagination = res.data.pagination || '';
-				elListCourse.insertAdjacentHTML( 'afterend', pagination );
+				elCoursesWrapper.innerHTML = res.data.content;
 			},
 			error: ( error ) => {
-				elListCourse.innerHTML += `<div class="lp-ajax-message error" style="display:block">${ error.message || 'Error' }</div>`;
+
 			},
 			completed: () => {
 				if ( skeleton ) {
 					skeleton.style.display = 'none';
 				}
-				// Scroll to archive element
-				const optionScroll = { behavior: 'smooth' };
-				elListCourse.closest( `.${ classArchiveCourse }` ).scrollIntoView( optionScroll );
 			},
 		};
 	};
-	const loadApiCoursesOfWidget = ( elCoursesWrapper ) => {
-		console.log( 'loadApiCoursesOfWidget' );
+	const callBackPaginationTypeLoadMore = () => {
+		return {
+			before: () => {
+
+			},
+			success: ( res ) => {
+
+			},
+			error: ( error ) => {
+
+			},
+			completed: () => {
+			},
+		};
+	};
+	const callBackPaginationTypeInfinite = () => {
+		return {
+			before: () => {
+
+			},
+			success: ( res ) => {
+
+			},
+			error: ( error ) => {
+
+			},
+			completed: () => {
+			},
+		};
+	};
+	const callApiCoursesOfWidget = ( elCoursesWrapper, args = {} ) => {
+		console.log( '/*** loadApiCoursesOfWidget ***/' );
 		const idWidget = elCoursesWrapper.dataset.widgetId;
-		const settingsWidget = window[ `lpWidget_${ idWidget }` ];
-		const skeleton = elCoursesWrapper.querySelector( `.${ classSkeleton }` );
+		let settingsWidget = window[ `lpWidget_${ idWidget }` ];
 
 		if ( ! settingsWidget ) {
 			return;
@@ -116,24 +93,28 @@ window.lpElWidgetCoursesByPage = ( () => {
 			return;
 		}
 
+		settingsWidget = { ...settingsWidget, ...args };
+
 		urlAPI = settingsWidget.lp_rest_url ?? '';
+		typePagination = settingsWidget.courses_rest_pagination_type ?? 'number';
 
-		const callBack = {
-			before: () => {
+		let callBack;
+		switch ( typePagination ) {
+		case 'load-more':
+			callBack = callBackPaginationTypeLoadMore();
+			break;
+		case 'infinite':
+			callBack = callBackPaginationTypeInfinite();
+			break;
+		default: // number
+			callBack = callBackFilter( elCoursesWrapper );
+			break;
+		}
 
-			},
-			success: ( res ) => {
-				elCoursesWrapper.insertAdjacentHTML( 'beforeend', res.data.content );
-			},
-			error: ( error ) => {
+		if ( ! callBack ) {
+			return;
+		}
 
-			},
-			completed: () => {
-				if ( skeleton ) {
-					skeleton.style.display = 'none';
-				}
-			},
-		};
 		fetchAPI( settingsWidget, callBack );
 	};
 	const findAllWidgetCoursesByPage = () => {
@@ -143,7 +124,7 @@ window.lpElWidgetCoursesByPage = ( () => {
 		}
 
 		elCoursesWrappers.forEach( ( el ) => {
-			loadApiCoursesOfWidget( el );
+			callApiCoursesOfWidget( el );
 		} );
 	};
 	const onChangeSortBy = ( e, target ) => {
@@ -179,7 +160,7 @@ window.lpElWidgetCoursesByPage = ( () => {
 			const target = e.target;
 
 			//window.lpCourseList.clickLoadMore( e, target );
-			//window.lpCourseList.clickNumberPage( e, target );
+			clickNumberPage( e, target );
 		} );
 		document.addEventListener( 'scroll', function( e ) {
 			const target = e.target;
@@ -196,6 +177,30 @@ window.lpElWidgetCoursesByPage = ( () => {
 
 			//window.lpCourseList.searchCourse( e, target );
 		} );
+	};
+	const clickNumberPage = ( e, target ) => {
+		if ( ! target.classList.contains( 'page-numbers' ) ) {
+			if ( ! target.closest( '.page-numbers' ) ) {
+				return;
+			}
+			target = target.closest( '.page-numbers' );
+		}
+		const elCoursesWrapper = target.closest( `.${ classCoursesWrapper }` );
+		if ( ! elCoursesWrapper ) {
+			return;
+		}
+
+		e.preventDefault();
+		const pageCurrent = filterCourses.paged;
+		if ( target.classList.contains( 'prev' ) ) {
+			filterCourses.paged = pageCurrent - 1;
+		} else if ( target.classList.contains( 'next' ) ) {
+			filterCourses.paged = pageCurrent + 1;
+		} else {
+			filterCourses.paged = parseInt( target.textContent );
+		}
+
+		callApiCoursesOfWidget( elCoursesWrapper, filterCourses );
 	};
 	return {
 		init: () => {
