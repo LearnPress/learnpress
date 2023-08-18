@@ -289,6 +289,33 @@ $style_fields = array_merge(
 		)
 	),
 	LPElementorControls::add_fields_in_section(
+		'style_sort',
+		esc_html__( 'Sort By', 'learnpress' ),
+		Controls_Manager::TAB_STYLE,
+		array_merge(
+			LPElementorControls::add_controls_style_text(
+				"style_sort_item",
+				".courses-order-by"
+			),
+			[
+				"style_sort_border" => LPElementorControls::add_group_control_type(
+					"style_sort_border",
+					Group_Control_Border::get_type(),
+					"{{WRAPPER}} .courses-order-by"
+				)
+			]
+		)
+	),
+	LPElementorControls::add_fields_in_section(
+		'style_list_grid',
+		esc_html__( 'List Grid', 'learnpress' ),
+		Controls_Manager::TAB_STYLE,
+		LPElementorControls::add_controls_style_text(
+			"style_list_grid_item",
+			".courses-layouts-display-list li"
+		)
+	),
+	LPElementorControls::add_fields_in_section(
 		'style_title',
 		esc_html__( 'Course Title', 'learnpress' ),
 		Controls_Manager::TAB_STYLE,
