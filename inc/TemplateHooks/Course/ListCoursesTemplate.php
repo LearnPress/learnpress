@@ -140,14 +140,14 @@ class ListCoursesTemplate {
 		];
 
 		ob_start();
-		Icons_Manager::render_icon( $data['courses_list_icon'] );
+		Icons_Manager::render_icon( $data['courses_list_icon'] ?? '' );
 		$list_ico = ob_get_clean();
 		ob_start();
-		Icons_Manager::render_icon( $data['courses_grid_icon'] );
+		Icons_Manager::render_icon( $data['courses_grid_icon'] ?? '' );
 		$grid_ico = ob_get_clean();
 		$content  = '<ul class="courses-layouts-display-list">';
-		$content .= '<li>' . $list_ico . '</li>';
-		$content .= '<li>' . $grid_ico . '</li>';
+		$content .= '<li class="courses-layout" data-layout="list">' . $list_ico . '</li>';
+		$content .= '<li class="courses-layout" data-layout="grid">' . $grid_ico . '</li>';
 		$content .= '</ul>';
 
 		return Template::instance()->nest_elements( $html_wrapper, $content );
@@ -156,19 +156,28 @@ class ListCoursesTemplate {
 	/**
 	 * Order by
 	 *
+	 * @param string $default
+	 *
 	 * @return string
 	 */
-	public function html_order_by(): string {
+	public function html_order_by( string $default = 'post_date' ): string {
 		$html_wrapper = [
 			'<div class="courses-order-by-wrapper">' => '</div>',
 		];
-		$content      = '<select name="order_by" class="courses-order-by">';
-		$content     .= '<option value="post_date">' . __( 'Newly published', 'learnpress' ) . '</option>';
-		$content     .= '<option value="post_title">' . __( 'Sort by Title', 'learnpress' ) . '</option>';
-		$content     .= '<option value="price_low">' . __( 'Price low to high', 'learnpress' ) . '</option>';
-		$content     .= '<option value="price">' . __( 'Price high to low', 'learnpress' ) . '</option>';
-		$content     .= '<option value="popular">' . __( 'Popular', 'learnpress' ) . '</option>';
-		$content     .= '</select>';
+
+		$values = [
+			'post_date'  => __( 'Newly published', 'learnpress' ),
+			'post_title' => __( 'Sort by Title', 'learnpress' ),
+			'price_low'  => __( 'Price low to high', 'learnpress' ),
+			'price'      => __( 'Price high to low', 'learnpress' ),
+			'popular'    => __( 'Popular', 'learnpress' ),
+		];
+
+		$content = '<select name="order_by" class="courses-order-by">';
+		foreach ( $values as $k => $v ) {
+			$content .= '<option value="' . $k . '" ' . selected( $default, $k, false ) . '>' . $v . '</option>';
+		}
+		$content .= '</select>';
 
 		return Template::instance()->nest_elements( $html_wrapper, $content );
 	}
@@ -304,7 +313,7 @@ class ListCoursesTemplate {
 				'{{courses_items}}',
 			],
 			[
-				$this->html_order_by(),
+				$this->html_order_by( $data['order_by'] ?? '' ),
 				$this->html_layout_type( $data ),
 				$this->html_pagination( $data['pagination'] ?? [] ),
 				$this->html_courses_items( $data ),

@@ -10,6 +10,7 @@ window.lpElWidgetCoursesByPage = ( () => {
 	const currentUrl = lpGetCurrentURLNoParam();
 	let urlAPI;
 	let typePagination = 'number';
+	let firstLoad = true;
 	let timeOutSearch;
 	const isLoadingInfinite = false;
 	const fetchAPI = ( args, callBack = {} ) => {
@@ -92,6 +93,10 @@ window.lpElWidgetCoursesByPage = ( () => {
 		if ( 'yes' !== settingsWidget.courses_rest ) {
 			return;
 		}
+		if ( 'yes' === settingsWidget.courses_rest_no_load_page && firstLoad ) {
+			firstLoad = false;
+			return;
+		}
 
 		settingsWidget = { ...settingsWidget, ...args };
 
@@ -139,11 +144,12 @@ window.lpElWidgetCoursesByPage = ( () => {
 		e.preventDefault();
 		const idWidget = elCoursesWrapper.dataset.widgetId;
 		const settingsWidget = window[ `lpWidget_${ idWidget }` ];
+		filterCourses.order_by = target.value;
+
 		if ( 'yes' !== settingsWidget.courses_rest ) {
-			filterCourses.order_by = target.value;
 			window.location.href = lpAddQueryArgs( currentUrl, filterCourses );
 		} else {
-			loadApiCoursesOfWidget( elCoursesWrapper );
+			callApiCoursesOfWidget( elCoursesWrapper, filterCourses );
 		}
 	};
 	const onChangeTypeLayout = ( e, target ) => {
@@ -161,6 +167,7 @@ window.lpElWidgetCoursesByPage = ( () => {
 
 			//window.lpCourseList.clickLoadMore( e, target );
 			clickNumberPage( e, target );
+			clickLayout( e, target );
 		} );
 		document.addEventListener( 'scroll', function( e ) {
 			const target = e.target;
@@ -201,6 +208,31 @@ window.lpElWidgetCoursesByPage = ( () => {
 		}
 
 		callApiCoursesOfWidget( elCoursesWrapper, filterCourses );
+	};
+	const clickLayout = ( e, target ) => {
+		if ( ! target.classList.contains( 'courses-layout' ) ) {
+			if ( ! target.closest( '.courses-layout' ) ) {
+				return;
+			}
+			target = target.closest( '.courses-layout' );
+		}
+		const elCoursesWrapper = target.closest( `.${ classCoursesWrapper }` );
+		if ( ! elCoursesWrapper ) {
+			return;
+		}
+		e.preventDefault();
+		const elListCourse = elCoursesWrapper.querySelector( `.${ classListCourse }` );
+		const elUlLayouts = target.closest( '.courses-layouts-display-list' );
+		const widgetId = elCoursesWrapper.dataset.widgetId;
+
+		elUlLayouts.querySelector( 'li' ).classList.remove( 'active' );
+		const layout = target.dataset.layout;
+		target.classList.add( 'active' );
+		elListCourse.classList.remove( 'grid', 'list' );
+		elListCourse.classList.add( layout );
+		const widgetLayouts = {};
+		widgetLayouts[ widgetId ] = layout;
+		//Todo: set cookie here
 	};
 	return {
 		init: () => {
