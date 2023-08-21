@@ -23,7 +23,7 @@ window.lpElWidgetCoursesByPage = ( () => {
 			},
 		};
 
-		if ( 0 !== args.current_user_id ) {
+		if ( 'undefined' !== typeof args.nonce ) {
 			paramsFetch.headers[ 'X-WP-Nonce' ] = args.nonce;
 		}
 
@@ -119,6 +119,8 @@ window.lpElWidgetCoursesByPage = ( () => {
 		if ( ! callBack ) {
 			return;
 		}
+
+		console.log(settingsWidget.nonce);
 
 		fetchAPI( settingsWidget, callBack );
 	};
