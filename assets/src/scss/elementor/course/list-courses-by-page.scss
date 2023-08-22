@@ -23,8 +23,13 @@
 				display: flex;
 				gap: 20px;
 
-				> * {
+				>* {
 					flex-basis: 50%;
+				}
+
+				.course-img,
+				img {
+					height: 100%;
 				}
 			}
 		}
@@ -35,7 +40,7 @@
 			border-radius: 10px;
 			overflow: hidden;
 
-			> div {
+			>div {
 				padding: 10px;
 			}
 		}
@@ -52,7 +57,8 @@
 			padding-bottom: 10px;
 		}
 
-		.course-count-lesson, .course-item-price {
+		.course-count-lesson,
+		.course-item-price {
 			padding-bottom: 10px;
 		}
 
@@ -81,6 +87,10 @@
 
 			li {
 				cursor: pointer;
+
+				&.active {
+					color: #356DF1;
+				}
 			}
 		}
 	}
