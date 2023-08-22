@@ -1,5 +1,5 @@
 import { lpAddQueryArgs, lpFetchAPI, lpGetCurrentURLNoParam } from '../../apps/js/utils/utils';
-import Cookies from '../utils/cookies';
+import Cookie from '../utils/cookie';
 
 window.lpElWidgetCoursesByPage = ( () => {
 	const classCoursesWrapper = 'list-courses-elm-wrapper';
@@ -241,22 +241,45 @@ window.lpElWidgetCoursesByPage = ( () => {
 			callApiCoursesOfWidget( elCoursesWrapper, filterCourses );
 		}
 	};
-	const onChangeTypeLayout = ( e, target ) => {
+	const onChangeLayout = ( e, target ) => {
+		if ( ! target.classList.contains( 'courses-layout' ) ) {
+			if ( ! target.closest( '.courses-layout' ) ) {
+				return;
+			}
+			target = target.closest( '.courses-layout' );
+		}
+		const elCoursesWrapper = target.closest( `.${ classCoursesWrapper }` );
+		if ( ! elCoursesWrapper ) {
+			return;
+		}
+		e.preventDefault();
+		const elListCourse = elCoursesWrapper.querySelector( `.${ classListCourse }` );
+		const elUlLayouts = target.closest( '.courses-layouts-display-list' );
+		const widgetId = elCoursesWrapper.dataset.widgetId;
 
+		elUlLayouts.querySelector( 'li' ).classList.remove( 'active' );
+		const layout = target.dataset.layout;
+		target.classList.add( 'active' );
+		elListCourse.classList.remove( 'grid', 'list' );
+		elListCourse.classList.add( layout );
+		const widgetLayouts = {};
+		widgetLayouts[ widgetId ] = layout;
+		//Todo: set cookie here
+
+		Cookie.set( 'layout_widget_' + widgetId, layout, 7 );
 	};
 	const events = () => {
 		document.addEventListener( 'change', function( e ) {
 			const target = e.target;
 
 			onChangeSortBy( e, target );
-			onChangeTypeLayout( e, target );
 		} );
 		document.addEventListener( 'click', function( e ) {
 			const target = e.target;
 
 			clickLoadMore( e, target );
 			clickNumberPage( e, target );
-			clickLayout( e, target );
+			onChangeLayout( e, target );
 		} );
 		document.addEventListener( 'scroll', function( e ) {
 			const target = e.target;
@@ -357,31 +380,6 @@ window.lpElWidgetCoursesByPage = ( () => {
 		} );
 
 		observer.observe( elInfinite );
-	};
-	const clickLayout = ( e, target ) => {
-		if ( ! target.classList.contains( 'courses-layout' ) ) {
-			if ( ! target.closest( '.courses-layout' ) ) {
-				return;
-			}
-			target = target.closest( '.courses-layout' );
-		}
-		const elCoursesWrapper = target.closest( `.${ classCoursesWrapper }` );
-		if ( ! elCoursesWrapper ) {
-			return;
-		}
-		e.preventDefault();
-		const elListCourse = elCoursesWrapper.querySelector( `.${ classListCourse }` );
-		const elUlLayouts = target.closest( '.courses-layouts-display-list' );
-		const widgetId = elCoursesWrapper.dataset.widgetId;
-
-		elUlLayouts.querySelector( 'li' ).classList.remove( 'active' );
-		const layout = target.dataset.layout;
-		target.classList.add( 'active' );
-		elListCourse.classList.remove( 'grid', 'list' );
-		elListCourse.classList.add( layout );
-		const widgetLayouts = {};
-		widgetLayouts[ widgetId ] = layout;
-		//Todo: set cookie here
 	};
 	return {
 		init: () => {

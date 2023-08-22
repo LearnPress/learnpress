@@ -75,6 +75,10 @@ class ListCoursesByPageElementor extends LPElementorWidgetBase {
 			$order_by_default          = $settings['courses_order_by_default'] ?? '';
 			$listCoursesTemplate       = ListCoursesTemplate::instance();
 			$settings['lp_rest_url']   = esc_url_raw( get_rest_url() );
+			$courses_layout_default = $settings['courses_layout_default'] ?? 'grid';
+			if ( ! Plugin::$instance->editor->is_edit_mode() && isset( $_COOKIE[ 'layout_widget_' . $this->get_id() ] ) ) {
+				$courses_layout_default = $_COOKIE[ 'layout_widget_' . $this->get_id() ];
+			}
 			if ( get_current_user_id() ) {
 				$settings['nonce'] = wp_create_nonce( 'wp_rest' );
 			}
@@ -89,19 +93,18 @@ class ListCoursesByPageElementor extends LPElementorWidgetBase {
 				}
 				LP_course::handle_params_for_query_courses( $filter, $_GET );
 
-				$total_rows             = 0;
-				$filter->limit          = $courses_per_page;
-				$courses_list           = LP_Course::get_courses( $filter, $total_rows );
-				$total_pages            = LP_Database::get_total_pages( $filter->limit, $total_rows );
-				$base                   = add_query_arg( 'paged', '%#%', LP_Helper::getUrlCurrent() );
-				$paged                  = $filter->page;
-				$type                   = $settings['courses_rest_pagination_type'] ?? 'number';
-				$pagination             = compact( 'total_pages', 'base', 'paged', 'type' );
-				$courses_layout_default = $settings['courses_layout_default'] ?? 'grid';
-				$courses_ul_classes     = [ 'list-courses-elm' ];
-				$courses_list_icon      = $settings['courses_list_icon'] ?? 'list';
-				$courses_grid_icon      = $settings['courses_grid_icon'] ?? 'grid';
-				$data_courses           = compact(
+				$total_rows         = 0;
+				$filter->limit      = $courses_per_page;
+				$courses_list       = LP_Course::get_courses( $filter, $total_rows );
+				$total_pages        = LP_Database::get_total_pages( $filter->limit, $total_rows );
+				$base               = add_query_arg( 'paged', '%#%', LP_Helper::getUrlCurrent() );
+				$paged              = $filter->page;
+				$type               = $settings['courses_rest_pagination_type'] ?? 'number';
+				$pagination         = compact( 'total_pages', 'base', 'paged', 'type' );
+				$courses_ul_classes = [ 'list-courses-elm' ];
+				$courses_list_icon  = $settings['courses_list_icon'] ?? 'list';
+				$courses_grid_icon  = $settings['courses_grid_icon'] ?? 'grid';
+				$data_courses       = compact(
 					'courses_list',
 					'pagination',
 					'courses_item_layout',
