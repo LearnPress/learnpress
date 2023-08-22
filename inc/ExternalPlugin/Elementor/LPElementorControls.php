@@ -347,7 +347,7 @@ class LPElementorControls {
 			"{$prefix_name}_text_display"          => self::add_control_type(
 				"{$prefix_name}_text_display",
 				esc_html__( 'Display', 'learnpress' ),
-				'inline-block',
+				'block',
 				Controls_Manager::CHOOSE,
 				[
 					'options'   => [

@@ -188,7 +188,7 @@ function lp_el_style_list_course_by_page( $type_tab = 'grid', $style_for = 'layo
 			"gap_{$type_tab}",
 			__( 'Gap', 'learnpress' ),
 			[
-				'size' => 5,
+				'size' => 30,
 				'unit' => 'px',
 			],
 			Controls_Manager::SLIDER,

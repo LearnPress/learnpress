@@ -6,8 +6,9 @@
 
 .list-courses-elm-wrapper {
 	.list-courses-elm {
-		padding: 0;
+		padding: 30px 0 0 0;
 		margin: 0;
+		width: 100%;
 
 		&.grid {
 			display: grid;
@@ -20,7 +21,7 @@
 
 			li {
 				display: flex;
-				gap: 10px;
+				gap: 20px;
 
 				> * {
 					flex-basis: 50%;
@@ -30,13 +31,57 @@
 
 		li {
 			list-style: none;
+			background-color: #F5F7F8;
+			border-radius: 10px;
+			overflow: hidden;
+
+			> div {
+				padding: 10px;
+			}
 		}
+
+		.course-title {
+			font-size: 20px;
+			font-weight: 600;
+			padding: 10px 0;
+		}
+
+		.instructor-display-name {
+			font-weight: 600;
+			text-transform: capitalize;
+			padding-bottom: 10px;
+		}
+
+		.course-count-lesson, .course-item-price {
+			padding-bottom: 10px;
+		}
+
+		.course-item-price {
+			color: #356DF1;
+			font-weight: 600;
+			font-size: 18px;
+		}
+
+		.origin-price {
+			text-decoration: line-through;
+			font-size: 14px;
+			color: #8392A2;
+			margin-right: 5px;
+		}
+
 	}
 
 	.courses-layouts-display {
 		.courses-layouts-display-list {
-			margin: 0;
+			margin: -30px 0 0 0;
 			padding: 0;
+			display: flex;
+			gap: 10px;
+			float: right;
+
+			li {
+				cursor: pointer;
+			}
 		}
 	}
 
@@ -45,5 +90,6 @@
 		display: flex;
 		align-items: center;
 		gap: 10px;
+		padding: 7px 30px;
 	}
 }
