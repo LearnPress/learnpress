@@ -116,7 +116,7 @@ class ListCoursesTemplate {
 
 		$pagination_type = $data['type'] ?? 'number';
 		switch ( $pagination_type ) {
-			case 'load_more':
+			case 'load-more':
 				return $this->html_pagination_load_more();
 			case 'infinite':
 				return $this->html_pagination_infinite();

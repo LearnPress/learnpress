@@ -92,9 +92,9 @@ $content_fields = array_merge(
 				'courses_rest_pagination_type',
 				esc_html__( 'Pagination type', 'learnpress' ),
 				[
-					'number'     => esc_html__( 'Number', 'learnpress' ),
-					'load_more'  => esc_html__( 'Button load more', 'learnpress' ),
-					'infinitive' => esc_html__( 'Infinitive scroll', 'learnpress' ),
+					'number'    => esc_html__( 'Number', 'learnpress' ),
+					'load-more' => esc_html__( 'Button load more', 'learnpress' ),
+					'infinite'  => esc_html__( 'Infinite scroll', 'learnpress' ),
 				],
 				'number',
 				[

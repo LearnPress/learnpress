@@ -246,7 +246,8 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			$total_pages            = LP_Database::get_total_pages( $filter->limit, $total_rows );
 			$base                   = add_query_arg( 'paged', '%#%', LP_Helper::getUrlCurrent() );
 			$paged                  = $filter->page;
-			$pagination             = compact( 'total_pages', 'base', 'paged' );
+			$type                   = $request->get_param( 'courses_rest_pagination_type' );
+			$pagination             = compact( 'total_pages', 'base', 'paged', 'type' );
 			$courses_layout_default = $settings['courses_layout_default'] ?? 'grid';
 			$courses_ul_classes     = [ 'list-courses-elm' ];
 			$data_courses           = array_merge(
@@ -260,7 +261,10 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				)
 			);
 
-			$response->data->content = $listCoursesTemplate->render_data( $data_courses, $data_courses['courses_layout'] );
+			$response->data->content = $listCoursesTemplate->render_data( $data_courses, '{{courses_items}}' );
+			if ( $filter->page < $total_pages ) {
+				$response->data->pagination = $listCoursesTemplate->render_data( $data_courses, '{{courses_pagination}}' );
+			}
 
 			$response->status = 'success';
 		} catch ( Throwable $e ) {

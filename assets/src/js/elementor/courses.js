@@ -6,13 +6,14 @@ window.lpElWidgetCoursesByPage = ( () => {
 	const classListCourse = 'list-courses-elm';
 	const classPaginationCourse = 'learn-press-pagination';
 	const classSkeleton = 'lp-skeleton-animation';
-	const filterCourses = {};
+	let filterCourses = {};
 	const currentUrl = lpGetCurrentURLNoParam();
 	let urlAPI;
 	let typePagination = 'number';
 	let firstLoad = true;
 	let timeOutSearch;
-	const isLoadingInfinite = false;
+	let isLoadingInfinite = false;
+	const isLoadRest = false;
 	const fetchAPI = ( args, callBack = {} ) => {
 		//console.log( 'Fetch API Courses' );
 		const paramsFetch = {
@@ -52,33 +53,72 @@ window.lpElWidgetCoursesByPage = ( () => {
 			},
 		};
 	};
-	const callBackPaginationTypeLoadMore = () => {
+	const callBackPaginationTypeLoadMore = ( elCoursesWrapper ) => {
+		const btnLoadMore = elCoursesWrapper.querySelector( '.courses-btn-load-more' );
+		let elLoading;
+		if ( btnLoadMore ) {
+			elLoading = btnLoadMore.querySelector( '.lp-loading-circle' );
+		}
+		const skeleton = elCoursesWrapper.querySelector( `.${ classSkeleton }` );
+
 		return {
 			before: () => {
-
+				if ( btnLoadMore ) {
+					elLoading.classList.remove( 'hide' );
+					btnLoadMore.setAttribute( 'disabled', 'disabled' );
+				}
 			},
 			success: ( res ) => {
-
+				elCoursesWrapper.insertAdjacentHTML( 'beforeend', res.data.content || '' );
+				elCoursesWrapper.insertAdjacentHTML( 'beforeend', res.data.pagination || '' );
 			},
 			error: ( error ) => {
 
 			},
 			completed: () => {
+				if ( skeleton ) {
+					skeleton.style.display = 'none';
+				}
+				if ( btnLoadMore ) {
+					elLoading.classList.add( 'hide' );
+					btnLoadMore.remove();
+				}
 			},
 		};
 	};
-	const callBackPaginationTypeInfinite = () => {
+	const callBackPaginationTypeInfinite = ( elCoursesWrapper ) => {
+		const skeleton = elCoursesWrapper.querySelector( `.${ classSkeleton }` );
+		const elInfinite = elCoursesWrapper.querySelector( '.courses-load-infinite' );
+		let loading;
+		if ( elInfinite ) {
+			loading = elInfinite.querySelector( '.lp-loading-circle' );
+		}
+
 		return {
 			before: () => {
-
+				isLoadingInfinite = true;
+				if ( loading ) {
+					loading.classList.remove( 'hide' );
+				}
 			},
 			success: ( res ) => {
+				elCoursesWrapper.insertAdjacentHTML( 'beforeend', res.data.content || '' );
 
+				if ( res.data.pagination ) {
+					elCoursesWrapper.insertAdjacentHTML( 'beforeend', res.data.pagination || '' );
+				}
 			},
 			error: ( error ) => {
 
 			},
 			completed: () => {
+				isLoadingInfinite = false;
+				if ( skeleton ) {
+					skeleton.style.display = 'none';
+				}
+				if ( elInfinite ) {
+					elInfinite.remove();
+				}
 			},
 		};
 	};
@@ -106,10 +146,10 @@ window.lpElWidgetCoursesByPage = ( () => {
 		let callBack;
 		switch ( typePagination ) {
 		case 'load-more':
-			callBack = callBackPaginationTypeLoadMore();
+			callBack = callBackPaginationTypeLoadMore( elCoursesWrapper );
 			break;
 		case 'infinite':
-			callBack = callBackPaginationTypeInfinite();
+			callBack = callBackPaginationTypeInfinite( elCoursesWrapper );
 			break;
 		default: // number
 			callBack = callBackFilter( elCoursesWrapper );
@@ -119,8 +159,6 @@ window.lpElWidgetCoursesByPage = ( () => {
 		if ( ! callBack ) {
 			return;
 		}
-
-		console.log(settingsWidget.nonce);
 
 		fetchAPI( settingsWidget, callBack );
 	};
@@ -147,6 +185,7 @@ window.lpElWidgetCoursesByPage = ( () => {
 		const idWidget = elCoursesWrapper.dataset.widgetId;
 		const settingsWidget = window[ `lpWidget_${ idWidget }` ];
 		filterCourses.order_by = target.value;
+		filterCourses.paged = 1;
 
 		if ( 'yes' !== settingsWidget.courses_rest ) {
 			window.location.href = lpAddQueryArgs( currentUrl, filterCourses );
@@ -167,14 +206,14 @@ window.lpElWidgetCoursesByPage = ( () => {
 		document.addEventListener( 'click', function( e ) {
 			const target = e.target;
 
-			//window.lpCourseList.clickLoadMore( e, target );
+			clickLoadMore( e, target );
 			clickNumberPage( e, target );
 			clickLayout( e, target );
 		} );
 		document.addEventListener( 'scroll', function( e ) {
 			const target = e.target;
 
-			//window.lpCourseList.scrollInfinite( e, target );
+			scrollInfinite( e, target );
 		} );
 		document.addEventListener( 'keyup', function( e ) {
 			const target = e.target;
@@ -198,6 +237,11 @@ window.lpElWidgetCoursesByPage = ( () => {
 		if ( ! elCoursesWrapper ) {
 			return;
 		}
+		const idWidget = elCoursesWrapper.dataset.widgetId;
+		const settingsWidget = window[ `lpWidget_${ idWidget }` ];
+		if ( ! settingsWidget || 'yes' !== settingsWidget.courses_rest ) {
+			return;
+		}
 
 		e.preventDefault();
 		const pageCurrent = filterCourses.paged;
@@ -210,6 +254,61 @@ window.lpElWidgetCoursesByPage = ( () => {
 		}
 
 		callApiCoursesOfWidget( elCoursesWrapper, filterCourses );
+	};
+	const clickLoadMore = ( e, target ) => {
+		if ( ! target.classList.contains( 'courses-btn-load-more' ) ) {
+			if ( ! target.closest( '.courses-btn-load-more' ) ) {
+				return;
+			}
+			target = target.closest( '.courses-btn-load-more' );
+		}
+		const elCoursesWrapper = target.closest( `.${ classCoursesWrapper }` );
+		if ( ! elCoursesWrapper ) {
+			return;
+		}
+		const idWidget = elCoursesWrapper.dataset.widgetId;
+		const settingsWidget = window[ `lpWidget_${ idWidget }` ];
+		if ( ! settingsWidget || 'yes' !== settingsWidget.courses_rest ) {
+			return;
+		}
+
+		e.preventDefault();
+		++filterCourses.paged;
+
+		callApiCoursesOfWidget( elCoursesWrapper, filterCourses );
+	};
+	const scrollInfinite = ( e, target ) => {
+		const elCoursesWrapper = document.querySelector( `.${ classCoursesWrapper }` );
+		if ( ! elCoursesWrapper ) {
+			return;
+		}
+		const elInfinite = elCoursesWrapper.querySelector( '.courses-load-infinite' );
+		if ( ! elInfinite ) {
+			return;
+		}
+		const idWidget = elCoursesWrapper.dataset.widgetId;
+		const settingsWidget = window[ `lpWidget_${ idWidget }` ];
+		if ( ! settingsWidget || 'yes' !== settingsWidget.courses_rest ) {
+			return;
+		}
+
+		// Create an IntersectionObserver object.
+		const observer = new IntersectionObserver( function( entries ) {
+			for ( const entry of entries ) {
+				// If the entry is intersecting, load the image.
+				if ( entry.isIntersecting ) {
+					if ( isLoadingInfinite ) {
+						return;
+					}
+
+					++filterCourses.paged;
+					callApiCoursesOfWidget( elCoursesWrapper, filterCourses );
+					observer.unobserve( entry.target );
+				}
+			}
+		} );
+
+		observer.observe( elInfinite );
 	};
 	const clickLayout = ( e, target ) => {
 		if ( ! target.classList.contains( 'courses-layout' ) ) {
@@ -238,6 +337,16 @@ window.lpElWidgetCoursesByPage = ( () => {
 	};
 	return {
 		init: () => {
+			const urlParams = {};
+			const urlQueryString = window.location.search;
+			const urlSearchParams = new URLSearchParams( urlQueryString );
+			for ( const [ key, val ] of urlSearchParams.entries() ) {
+				urlParams[ key ] = val;
+			}
+
+			//filterCourses = { ...lpArchiveSkeletonParam, ...urlParams };
+			filterCourses = { ...urlParams };
+			filterCourses.paged = parseInt( filterCourses.paged || 1 );
 			findAllWidgetCoursesByPage();
 			events();
 		},
