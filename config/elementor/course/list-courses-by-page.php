@@ -522,6 +522,11 @@ $style_fields = array_merge(
 						],
 					]
 				),
+				"pagination_typography"    => LPElementorControls::add_group_control_type(
+					"pagination_typography",
+					Group_Control_Typography::get_type(),
+					"{{WRAPPER}} .learn-press-pagination li .page-numbers, {{WRAPPER}} .courses-btn-load-more",
+				),
 				'pagination_margin'        => LPElementorControls::add_responsive_control_type(
 					'pagination_margin',
 					esc_html__( 'Margin', 'learnpress' ),
@@ -530,7 +535,7 @@ $style_fields = array_merge(
 					[
 						'size_units' => [ 'px', '%', 'custom' ],
 						'selectors'  => array(
-							'{{WRAPPER}} .learn-press-pagination li .page-numbers' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+							'{{WRAPPER}} .learn-press-pagination li .page-numbers, {{WRAPPER}} .courses-btn-load-more' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 						),
 					]
 				),
@@ -542,14 +547,14 @@ $style_fields = array_merge(
 					[
 						'size_units' => [ 'px', '%', 'custom' ],
 						'selectors'  => array(
-							'{{WRAPPER}} .learn-press-pagination li .page-numbers' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+							'{{WRAPPER}} .learn-press-pagination li .page-numbers, {{WRAPPER}} .courses-btn-load-more' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 						),
 					]
 				),
 				'pagination_border'        => LPElementorControls::add_group_control_type(
 					'pagination_border',
 					Group_Control_Border::get_type(),
-					'{{WRAPPER}} .learn-press-pagination li .page-numbers'
+					'{{WRAPPER}} .learn-press-pagination li .page-numbers, {{WRAPPER}} .courses-btn-load-more'
 				),
 				'pagination_border_radius' => LPElementorControls::add_control_type(
 					'pagination_border_radius',
@@ -559,7 +564,7 @@ $style_fields = array_merge(
 					[
 						'size_units' => [ 'px', '%', 'custom' ],
 						'selectors'  => [
-							'{{WRAPPER}} .learn-press-pagination li .page-numbers' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+							'{{WRAPPER}} .learn-press-pagination li .page-numbers, {{WRAPPER}} .courses-btn-load-more' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 						],
 					]
 				),
@@ -575,14 +580,14 @@ $style_fields = array_merge(
 								'color_pagination_normal',
 								__( 'Color', 'learnpress' ),
 								[
-									'{{WRAPPER}} .learn-press-pagination li .page-numbers' => 'color: {{VALUE}};',
+									'{{WRAPPER}} .learn-press-pagination li .page-numbers, {{WRAPPER}} .courses-btn-load-more' => 'color: {{VALUE}};',
 								]
 							),
 							'background_pagination_normal' => LPElementorControls::add_control_type_color(
 								'background_pagination_normal',
 								__( 'Background Color', 'learnpress' ),
 								[
-									'{{WRAPPER}} .learn-press-pagination li .page-numbers' => 'background-color: {{VALUE}};',
+									'{{WRAPPER}} .learn-press-pagination li .page-numbers, {{WRAPPER}} .courses-btn-load-more' => 'background-color: {{VALUE}};',
 								]
 							),
 						]
@@ -595,14 +600,14 @@ $style_fields = array_merge(
 								'color_pagination_hover',
 								__( 'Color', 'learnpress' ),
 								[
-									'{{WRAPPER}} .learn-press-pagination li .page-numbers:hover, {{WRAPPER}} .learn-press-pagination li .page-numbers.current' => 'color: {{VALUE}};',
+									'{{WRAPPER}} .learn-press-pagination li .page-numbers:hover, {{WRAPPER}} .learn-press-pagination li .page-numbers.current, {{WRAPPER}} .courses-btn-load-more:hover' => 'color: {{VALUE}};',
 								]
 							),
 							'background_pagination_hover' => LPElementorControls::add_control_type_color(
 								'background_pagination_hover',
 								__( 'Background Color', 'learnpress' ),
 								[
-									'{{WRAPPER}} .learn-press-pagination li .page-numbers:hover, {{WRAPPER}} .learn-press-pagination li .page-numbers.current' => 'background-color: {{VALUE}};',
+									'{{WRAPPER}} .learn-press-pagination li .page-numbers:hover, {{WRAPPER}} .learn-press-pagination li .page-numbers.current, {{WRAPPER}} .courses-btn-load-more:hover' => 'background-color: {{VALUE}};',
 								]
 							),
 							'border_pagination_hover'     => LPElementorControls::add_control_type_color(
