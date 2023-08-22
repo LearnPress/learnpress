@@ -151,9 +151,17 @@ class ListCoursesTemplate {
 		ob_start();
 		Icons_Manager::render_icon( $data['courses_grid_icon'] ?? '' );
 		$grid_ico = ob_get_clean();
-		$content  = '<ul class="courses-layouts-display-list">';
-		$content .= '<li class="courses-layout" data-layout="list">' . $list_ico . '</li>';
-		$content .= '<li class="courses-layout" data-layout="grid">' . $grid_ico . '</li>';
+
+		$layouts = [
+			'list' => $list_ico,
+			'grid' => $grid_ico,
+		];
+
+		$content = '<ul class="courses-layouts-display-list">';
+		foreach ( $layouts as $k => $v ) {
+			$active   = $data['courses_layout_default'] === $k ? 'active' : '';
+			$content .= '<li class="courses-layout ' . $active . '" data-layout="' . $k . '">' . $v . '</li>';
+		}
 		$content .= '</ul>';
 
 		return Template::instance()->nest_elements( $html_wrapper, $content );

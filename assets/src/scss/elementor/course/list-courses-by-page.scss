@@ -4,42 +4,46 @@
 
 @import "../../frontend/_pagination.scss";
 
-.list-courses-elm {
-	padding: 0;
-	margin: 0;
+.list-courses-elm-wrapper {
+	.list-courses-elm {
+		padding: 0;
+		margin: 0;
 
-	&.grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-	}
+		&.grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+		}
 
-	&.list {
-		display: flex;
-		flex-direction: column;
+		&.list {
+			display: flex;
+			flex-direction: column;
+
+			li {
+				display: flex;
+				gap: 10px;
+
+				> * {
+					flex-basis: 50%;
+				}
+			}
+		}
 
 		li {
-			display: flex;
-			gap: 10px;
-
-			> * {
-				flex-basis: 50%;
-			}
+			list-style: none;
 		}
 	}
 
-	li {
-		list-style: none;
+	.courses-layouts-display {
+		.courses-layouts-display-list {
+			margin: 0;
+			padding: 0;
+		}
 	}
-}
-.courses-layouts-display {
-	.courses-layouts-display-list {
-		margin: 0;
-	}
-}
 
-.courses-btn-load-more {
-	width: fit-content;
-	display: flex;
-    align-items: center;
-    gap: 10px;
+	.courses-btn-load-more {
+		width: fit-content;
+		display: flex;
+		align-items: center;
+		gap: 10px;
+	}
 }

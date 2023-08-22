@@ -256,17 +256,15 @@ window.lpElWidgetCoursesByPage = ( () => {
 		const elListCourse = elCoursesWrapper.querySelector( `.${ classListCourse }` );
 		const elUlLayouts = target.closest( '.courses-layouts-display-list' );
 		const widgetId = elCoursesWrapper.dataset.widgetId;
-
-		elUlLayouts.querySelector( 'li' ).classList.remove( 'active' );
+		const elLayouts = elUlLayouts.querySelectorAll( 'li' );
+		elLayouts.forEach( ( el ) => {
+			el.classList.remove( 'active' );
+		} );
 		const layout = target.dataset.layout;
 		target.classList.add( 'active' );
 		elListCourse.classList.remove( 'grid', 'list' );
 		elListCourse.classList.add( layout );
-		const widgetLayouts = {};
-		widgetLayouts[ widgetId ] = layout;
-		//Todo: set cookie here
-
-		Cookie.set( 'layout_widget_' + widgetId, layout, 7 );
+		Cookie.set( `layout_widget_${ widgetId }`, layout, 7 );
 	};
 	const events = () => {
 		document.addEventListener( 'change', function( e ) {

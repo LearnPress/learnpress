@@ -522,10 +522,10 @@ $style_fields = array_merge(
 						],
 					]
 				),
-				"pagination_typography"    => LPElementorControls::add_group_control_type(
-					"pagination_typography",
+				'pagination_typography'    => LPElementorControls::add_group_control_type(
+					'pagination_typography',
 					Group_Control_Typography::get_type(),
-					"{{WRAPPER}} .learn-press-pagination li .page-numbers, {{WRAPPER}} .courses-btn-load-more",
+					'{{WRAPPER}} .learn-press-pagination li .page-numbers, {{WRAPPER}} .courses-btn-load-more'
 				),
 				'pagination_margin'        => LPElementorControls::add_responsive_control_type(
 					'pagination_margin',

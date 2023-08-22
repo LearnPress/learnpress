@@ -4,6 +4,7 @@
  * Class LP_REST_Courses_Controller
  */
 
+use LearnPress\ExternalPlugin\Elementor\Widgets\Course\ListCoursesByPageElementor;
 use LearnPress\Helpers\Template;
 use LearnPress\TemplateHooks\Course\ListCoursesTemplate;
 
@@ -231,37 +232,17 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 	 * @return LP_REST_Response
 	 */
 	public function courses_widget_by_page( WP_REST_Request $request ): LP_REST_Response {
-		$response            = new LP_REST_Response();
-		$response->data      = new stdClass();
-		$listCoursesTemplate = ListCoursesTemplate::instance();
+		$response       = new LP_REST_Response();
+		$response->data = new stdClass();
 
 		try {
-			$courses_per_page = $request['courses_per_page'] ?? 20;
-			$courses_layout   = $request['courses_layout'] ?? '';
-			$filter           = new LP_Course_Filter();
-			LP_course::handle_params_for_query_courses( $filter, $request->get_params() );
-			$total_rows             = 0;
-			$filter->limit          = $courses_per_page;
-			$courses_list           = LP_Course::get_courses( $filter, $total_rows );
-			$total_pages            = LP_Database::get_total_pages( $filter->limit, $total_rows );
-			$base                   = add_query_arg( 'paged', '%#%', LP_Helper::getUrlCurrent() );
-			$paged                  = $filter->page;
-			$type                   = $request->get_param( 'courses_rest_pagination_type' );
-			$pagination             = compact( 'total_pages', 'base', 'paged', 'type' );
-			$courses_layout_default = $settings['courses_layout_default'] ?? 'grid';
-			$courses_ul_classes     = [ 'list-courses-elm' ];
-			$data_courses           = array_merge(
+			$settings                = array_merge(
 				$request->get_params(),
-				compact(
-					'courses_layout',
-					'courses_list',
-					'pagination',
-					'courses_ul_classes',
-					'courses_layout_default'
-				)
+				[
+					'courses_ul_classes' => [ 'list-courses-elm' ],
+				]
 			);
-
-			$response->data->content = $listCoursesTemplate->render_data( $data_courses, $courses_layout );
+			$response->data->content = ListCoursesByPageElementor::render_data_from_setting( $settings );
 
 			$response->status = 'success';
 		} catch ( Throwable $e ) {

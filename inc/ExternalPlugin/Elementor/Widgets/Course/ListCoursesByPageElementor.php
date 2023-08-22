@@ -69,51 +69,25 @@ class ListCoursesByPageElementor extends LPElementorWidgetBase {
 			$settings                  = $this->get_settings_for_display();
 			$is_load_restapi           = $settings['courses_rest'] ?? 0;
 			$courses_rest_no_load_page = $settings['courses_rest_no_load_page'] ?? 0;
-			$courses_per_page          = $settings['courses_per_page'] ?? 20;
-			$courses_layout            = $settings['courses_layout'] ?? '';
-			$courses_item_layout       = $settings['courses_item_layout'] ?? '';
-			$order_by_default          = $settings['courses_order_by_default'] ?? '';
-			$listCoursesTemplate       = ListCoursesTemplate::instance();
 			$settings['lp_rest_url']   = esc_url_raw( get_rest_url() );
-			$courses_layout_default = $settings['courses_layout_default'] ?? 'grid';
+			$courses_layout_default    = $settings['courses_layout_default'] ?? 'grid';
 			if ( ! Plugin::$instance->editor->is_edit_mode() && isset( $_COOKIE[ 'layout_widget_' . $this->get_id() ] ) ) {
 				$courses_layout_default = $_COOKIE[ 'layout_widget_' . $this->get_id() ];
 			}
+			$settings['courses_layout_default'] = $courses_layout_default;
 			if ( get_current_user_id() ) {
 				$settings['nonce'] = wp_create_nonce( 'wp_rest' );
 			}
-			wp_localize_script( 'lp-courses-by-page', 'lpWidget_' . $this->get_id(), $settings );
+			if ( 'yes' === $is_load_restapi ) {
+				wp_localize_script( 'lp-courses-by-page', 'lpWidget_' . $this->get_id(), $settings );
+			}
 
 			echo '<div class="list-courses-elm-wrapper" data-widget-id="' . $this->get_id() . '">';
 			if ( 'yes' !== $is_load_restapi || Plugin::$instance->editor->is_edit_mode() || 'yes' === $courses_rest_no_load_page ) {
-				$filter        = new LP_Course_Filter();
-				$_GET['paged'] = $GLOBALS['wp_query']->get( 'paged', 1 ) ? $GLOBALS['wp_query']->get( 'paged', 1 ) : 1;
-				if ( ! isset( $_GET['order_by'] ) ) {
-					$_GET['order_by'] = $order_by_default;
-				}
-				LP_course::handle_params_for_query_courses( $filter, $_GET );
-
-				$total_rows         = 0;
-				$filter->limit      = $courses_per_page;
-				$courses_list       = LP_Course::get_courses( $filter, $total_rows );
-				$total_pages        = LP_Database::get_total_pages( $filter->limit, $total_rows );
-				$base               = add_query_arg( 'paged', '%#%', LP_Helper::getUrlCurrent() );
-				$paged              = $filter->page;
-				$type               = $settings['courses_rest_pagination_type'] ?? 'number';
-				$pagination         = compact( 'total_pages', 'base', 'paged', 'type' );
-				$courses_ul_classes = [ 'list-courses-elm' ];
-				$courses_list_icon  = $settings['courses_list_icon'] ?? 'list';
-				$courses_grid_icon  = $settings['courses_grid_icon'] ?? 'grid';
-				$data_courses       = compact(
-					'courses_list',
-					'pagination',
-					'courses_item_layout',
-					'courses_ul_classes',
-					'courses_layout_default',
-					'courses_list_icon',
-					'courses_grid_icon'
-				);
-				echo $listCoursesTemplate->render_data( $data_courses, $courses_layout );
+				$settings                       = array_merge( $settings, $_GET );
+				$settings['paged']              = $GLOBALS['wp_query']->get( 'paged', 1 ) ? $GLOBALS['wp_query']->get( 'paged', 1 ) : 1;
+				$settings['courses_ul_classes'] = [ 'list-courses-elm' ];
+				echo self::render_data_from_setting( $settings );
 			} else {
 				lp_skeleton_animation_html( 10 );
 			}
@@ -121,5 +95,30 @@ class ListCoursesByPageElementor extends LPElementorWidgetBase {
 		} catch ( \Throwable $e ) {
 			echo $e->getMessage();
 		}
+	}
+
+	/**
+	 * Render template by setting argument.
+	 *
+	 * @param array $settings
+	 *
+	 * @return string
+	 */
+	public static function render_data_from_setting( array $settings = [] ): string {
+		$listCoursesTemplate = ListCoursesTemplate::instance();
+		$filter              = new LP_Course_Filter();
+		LP_course::handle_params_for_query_courses( $filter, $settings );
+
+		$total_rows               = 0;
+		$filter->limit            = $settings['courses_per_page'] ?? 8;
+		$settings['courses_list'] = LP_Course::get_courses( $filter, $total_rows );
+		$settings['pagination']   = [
+			'total_pages' => LP_Database::get_total_pages( $filter->limit, $total_rows ),
+			'base'        => add_query_arg( 'paged', '%#%', $settings['courses_pagination_url'] ?? '' ),
+			'paged'       => $filter->page,
+			'type'        => $settings['courses_rest_pagination_type'] ?? 'number',
+		];
+
+		return $listCoursesTemplate->render_data( $settings, $settings['courses_layout'] );
 	}
 }
