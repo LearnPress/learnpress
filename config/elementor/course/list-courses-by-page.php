@@ -381,10 +381,10 @@ $style_fields = array_merge(
 				),
 				'list_grid_icon_color_hover' => LPElementorControls::add_control_type_color(
 					'list_grid_icon_color_hover',
-					esc_html__( 'Icon Color Hover', 'learnpress' ),
+					esc_html__( 'Icon Color Hover ( Active )', 'learnpress' ),
 					[
-						'{{WRAPPER}} .courses-layouts-display-list li:hover i' => 'color: {{VALUE}};',
-						'{{WRAPPER}} .courses-layouts-display-list li:hover svg path' => 'fill: {{VALUE}};',
+						'{{WRAPPER}} .courses-layouts-display-list li:hover i, {{WRAPPER}} .courses-layouts-display-list li.active i' => 'color: {{VALUE}};',
+						'{{WRAPPER}} .courses-layouts-display-list li:hover svg path, {{WRAPPER}} .courses-layouts-display-list li.active svg path' => 'fill: {{VALUE}};',
 					]
 				),
 			]
