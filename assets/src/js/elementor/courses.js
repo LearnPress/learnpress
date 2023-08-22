@@ -35,13 +35,32 @@ window.lpElWidgetCoursesByPage = ( () => {
 			return;
 		}
 		const skeleton = elCoursesWrapper.querySelector( `.${ classSkeleton }` );
+		const elListCourse = elCoursesWrapper.querySelector( `.${ classListCourse }` );
+		const elPagination = elCoursesWrapper.querySelector( `.${ classPaginationCourse }` );
 
 		return {
 			before: () => {
 
 			},
 			success: ( res ) => {
-				elCoursesWrapper.innerHTML = res.data.content;
+				const divTmp = document.createElement( 'div' );
+				divTmp.innerHTML = res.data.content || '';
+				const elListCourseTmp = divTmp.querySelector( `.${ classListCourse }` );
+				const elPaginationTmp = divTmp.querySelector( `.${ classPaginationCourse }` );
+
+				if ( elListCourse ) {
+					elListCourse.innerHTML = elListCourseTmp.innerHTML;
+
+					if ( elPagination ) {
+						elPagination.innerHTML = elPaginationTmp.innerHTML;
+					}
+				} else {
+					elCoursesWrapper.insertAdjacentHTML( 'beforeend', res.data.content || '' );
+				}
+
+				if ( res.data.pagination ) {
+					elCoursesWrapper.insertAdjacentHTML( 'beforeend', res.data.pagination || '' );
+				}
 			},
 			error: ( error ) => {
 
@@ -60,6 +79,7 @@ window.lpElWidgetCoursesByPage = ( () => {
 			elLoading = btnLoadMore.querySelector( '.lp-loading-circle' );
 		}
 		const skeleton = elCoursesWrapper.querySelector( `.${ classSkeleton }` );
+		const elListCourse = elCoursesWrapper.querySelector( `.${ classListCourse }` );
 
 		return {
 			before: () => {
@@ -69,8 +89,23 @@ window.lpElWidgetCoursesByPage = ( () => {
 				}
 			},
 			success: ( res ) => {
-				elCoursesWrapper.insertAdjacentHTML( 'beforeend', res.data.content || '' );
-				elCoursesWrapper.insertAdjacentHTML( 'beforeend', res.data.pagination || '' );
+				const divTmp = document.createElement( 'div' );
+				divTmp.innerHTML = res.data.content || '';
+				const elListCourseTmp = divTmp.querySelector( `.${ classListCourse }` );
+				const elPaginationTmp = divTmp.querySelector( `.${ classPaginationCourse }` );
+
+				if ( elListCourse ) {
+					elListCourse.insertAdjacentHTML( 'beforeend', elListCourseTmp.innerHTML );
+					if ( ! elPaginationTmp ) {
+						btnLoadMore.remove();
+					}
+				} else {
+					elCoursesWrapper.insertAdjacentHTML( 'beforeend', res.data.content || '' );
+				}
+
+				if ( res.data.pagination ) {
+					elCoursesWrapper.insertAdjacentHTML( 'beforeend', res.data.pagination || '' );
+				}
 			},
 			error: ( error ) => {
 
@@ -81,7 +116,7 @@ window.lpElWidgetCoursesByPage = ( () => {
 				}
 				if ( btnLoadMore ) {
 					elLoading.classList.add( 'hide' );
-					btnLoadMore.remove();
+					btnLoadMore.removeAttribute( 'disabled' );
 				}
 			},
 		};
@@ -93,6 +128,7 @@ window.lpElWidgetCoursesByPage = ( () => {
 		if ( elInfinite ) {
 			loading = elInfinite.querySelector( '.lp-loading-circle' );
 		}
+		const elListCourse = elCoursesWrapper.querySelector( `.${ classListCourse }` );
 
 		return {
 			before: () => {
@@ -102,7 +138,19 @@ window.lpElWidgetCoursesByPage = ( () => {
 				}
 			},
 			success: ( res ) => {
-				elCoursesWrapper.insertAdjacentHTML( 'beforeend', res.data.content || '' );
+				const divTmp = document.createElement( 'div' );
+				divTmp.innerHTML = res.data.content || '';
+				const elListCourseTmp = divTmp.querySelector( `.${ classListCourse }` );
+				const elPaginationTmp = divTmp.querySelector( `.${ classPaginationCourse }` );
+
+				if ( elListCourse ) {
+					elListCourse.insertAdjacentHTML( 'beforeend', elListCourseTmp.innerHTML );
+					if ( ! elPaginationTmp ) {
+						elInfinite.remove();
+					}
+				} else {
+					elCoursesWrapper.insertAdjacentHTML( 'beforeend', res.data.content || '' );
+				}
 
 				if ( res.data.pagination ) {
 					elCoursesWrapper.insertAdjacentHTML( 'beforeend', res.data.pagination || '' );
@@ -117,7 +165,7 @@ window.lpElWidgetCoursesByPage = ( () => {
 					skeleton.style.display = 'none';
 				}
 				if ( elInfinite ) {
-					elInfinite.remove();
+					loading.classList.add( 'hide' );
 				}
 			},
 		};

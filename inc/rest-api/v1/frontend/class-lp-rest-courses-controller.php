@@ -261,10 +261,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				)
 			);
 
-			$response->data->content = $listCoursesTemplate->render_data( $data_courses, '{{courses_items}}' );
-			if ( $filter->page < $total_pages ) {
-				$response->data->pagination = $listCoursesTemplate->render_data( $data_courses, '{{courses_pagination}}' );
-			}
+			$response->data->content = $listCoursesTemplate->render_data( $data_courses, $courses_layout );
 
 			$response->status = 'success';
 		} catch ( Throwable $e ) {
