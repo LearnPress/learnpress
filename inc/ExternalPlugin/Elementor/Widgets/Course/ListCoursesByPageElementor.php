@@ -81,7 +81,7 @@ class ListCoursesByPageElementor extends LPElementorWidgetBase {
 			wp_localize_script( 'lp-courses-by-page', 'lpWidget_' . $this->get_id(), $settings );
 
 			echo '<div class="list-courses-elm-wrapper" data-widget-id="' . $this->get_id() . '">';
-			if ( 'yes' !== $is_load_restapi || Plugin::$instance->editor->is_edit_mode() || $courses_rest_no_load_page ) {
+			if ( 'yes' !== $is_load_restapi || Plugin::$instance->editor->is_edit_mode() || 'yes' === $courses_rest_no_load_page ) {
 				$filter        = new LP_Course_Filter();
 				$_GET['paged'] = $GLOBALS['wp_query']->get( 'paged', 1 ) ? $GLOBALS['wp_query']->get( 'paged', 1 ) : 1;
 				if ( ! isset( $_GET['order_by'] ) ) {
@@ -95,7 +95,8 @@ class ListCoursesByPageElementor extends LPElementorWidgetBase {
 				$total_pages            = LP_Database::get_total_pages( $filter->limit, $total_rows );
 				$base                   = add_query_arg( 'paged', '%#%', LP_Helper::getUrlCurrent() );
 				$paged                  = $filter->page;
-				$pagination             = compact( 'total_pages', 'base', 'paged' );
+				$type                   = $settings['courses_rest_pagination_type'] ?? 'number';
+				$pagination             = compact( 'total_pages', 'base', 'paged', 'type' );
 				$courses_layout_default = $settings['courses_layout_default'] ?? 'grid';
 				$courses_ul_classes     = [ 'list-courses-elm' ];
 				$courses_list_icon      = $settings['courses_list_icon'] ?? 'list';
