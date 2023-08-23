@@ -84,6 +84,14 @@ class ListCoursesByPageElementor extends LPElementorWidgetBase {
 				if ( $instructor ) {
 					$settings['c_author'] = $instructor->get_id();
 				}
+
+				// Detect category, tag of course by page.
+				if ( learn_press_is_course_category() || learn_press_is_course_tag() ) {
+					$cat = get_queried_object();
+
+					$settings['term_id']  = $cat->term_id;
+					$settings['taxonomy'] = $cat->taxonomy;
+				}
 			}
 			wp_localize_script( 'lp-courses-by-page', 'lpWidget_' . $this->get_id(), $settings );
 
