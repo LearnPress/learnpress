@@ -29,7 +29,7 @@ class LP_Jwt_Auth {
 
 	private function includes() {
 		// JWT Classes.
-		if ( ! class_exists( '\Firebase\JWT\JWT' ) ) {
+		if ( ! class_exists( '\LP\Firebase\JWT\JWT' ) ) {
 			foreach ( glob( LP_PLUGIN_PATH . 'inc/jwt/includes/php-jwt/*.php' ) as $filename ) {
 				require_once $filename;
 			}
