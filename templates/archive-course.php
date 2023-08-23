@@ -31,11 +31,16 @@ $classes    = [];
 if ( is_active_sidebar( 'archive-courses-sidebar' ) ) {
 	$classes[] = 'has-sidebar';
 }
+/**
+ * @since 4.2.3.4
+ *
+ *  filter lp/show-archive-course/title
+ */
 ?>
 
 <div class="lp-content-area <?php echo esc_attr( implode( $classes ) ); ?>">
 	<div class="lp-main-content">
-	<?php if ( $page_title ) : ?>
+	<?php if ( $page_title && apply_filters( 'lp/show-archive-course/title', true ) ) : ?>
 		<header class="learn-press-courses-header">
 			<h1><?php echo wp_kses_post( $page_title ); ?></h1>
 
