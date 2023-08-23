@@ -476,9 +476,9 @@
   "learnpress-mobile-app": {
     "name": "LearnPress - Mobile App",
     "basename": "learnpress-mobile-app/learnpress-mobile-app.php",
-    "version": "4.0.0",
-    "require_lp": "4.2.0",
-    "description": "Support for App.",
+    "version": "4.0.2",
+    "require_lp": "4.2.3.3",
+    "description": "Support for Mobile App.",
     "image": "https://thimpress.com/wp-content/uploads/2015/06/Co-instructors-690x460px.png",
     "link": "https://thimpress.com/product/learnpress-in-app-purchase/",
     "is_free": 1,
