@@ -271,15 +271,8 @@ class SingleInstructorTemplate {
 			if ( isset( $data['instructor_id'] ) ) {
 				$instructor_id = $data['instructor_id'];
 				$instructor    = learn_press_get_user( $instructor_id );
-			} elseif ( $wp_query->get( 'is_single_instructor' ) ) {
-				if ( $wp_query->get( 'instructor_name' ) && 'page' !== $wp_query->get( 'instructor_name' ) ) {
-					$user = get_user_by( 'slug', $wp_query->get( 'instructor_name' ) );
-					if ( $user ) {
-						$instructor = learn_press_get_user( $user->ID );
-					}
-				} else {
-					$instructor = learn_press_get_user( get_current_user_id() );
-				}
+			} else {
+				$instructor = $this->detect_instructor_by_page();
 			}
 
 			if ( ! $instructor || ! $instructor->can_create_course() ) {
@@ -311,6 +304,33 @@ class SingleInstructorTemplate {
 			ob_end_clean();
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
+	}
+
+	/**
+	 * Detected single instructor Page.
+	 *
+	 * @return false|LP_User
+	 */
+	public function detect_instructor_by_page() {
+		$instructor = false;
+
+		try {
+			if ( get_query_var( 'is_single_instructor' ) ) {
+				$instructor_name = get_query_var( 'instructor_name' );
+				if ( $instructor_name && 'page' !== $instructor_name ) {
+					$user = get_user_by( 'slug', $instructor_name );
+					if ( $user ) {
+						$instructor = learn_press_get_user( $user->ID );
+					}
+				} else {
+					$instructor = learn_press_get_user( get_current_user_id() );
+				}
+			}
+		} catch ( Throwable $e ) {
+
+		}
+
+		return $instructor;
 	}
 
 	/**

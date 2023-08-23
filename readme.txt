@@ -210,6 +210,9 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.2.3.4 (2023-08-24) =
+~ Fixed: error when use same namespace class JWT library, with some plugin like Google Listings and Ads.
+
 = 4.2.3.3 (2023-08-08) =
 ~ Added: feature choose type Pagination when load courses on page Archive: navigation Number, Load more, Infinite scroll.
 ~ Added: feature "Downloadable Materials", manager can upload files document for each course, lesson, so student can download it.

@@ -18,7 +18,7 @@ use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
 use LP_Course;
 use LP_Course_Filter;
 use LP_Database;
-use LP_Helper;
+use Throwable;
 
 class ListCoursesByPageElementor extends LPElementorWidgetBase {
 	public function __construct( $data = [], $args = null ) {
@@ -78,9 +78,14 @@ class ListCoursesByPageElementor extends LPElementorWidgetBase {
 			if ( get_current_user_id() ) {
 				$settings['nonce'] = wp_create_nonce( 'wp_rest' );
 			}
-			if ( 'yes' === $is_load_restapi ) {
-				wp_localize_script( 'lp-courses-by-page', 'lpWidget_' . $this->get_id(), $settings );
+			$courses_detect_page = $settings['courses_detect_page'] ?? 'yes';
+			if ( 'yes' === $courses_detect_page ) {
+				$instructor = SingleInstructorTemplate::instance()->detect_instructor_by_page();
+				if ( $instructor ) {
+					$settings['c_author'] = $instructor->get_id();
+				}
 			}
+			wp_localize_script( 'lp-courses-by-page', 'lpWidget_' . $this->get_id(), $settings );
 
 			echo '<div class="list-courses-elm-wrapper" data-widget-id="' . $this->get_id() . '">';
 			if ( 'yes' !== $is_load_restapi || Plugin::$instance->editor->is_edit_mode() || 'yes' === $courses_rest_no_load_page ) {
@@ -92,7 +97,7 @@ class ListCoursesByPageElementor extends LPElementorWidgetBase {
 				lp_skeleton_animation_html( 10 );
 			}
 			echo '</div>';
-		} catch ( \Throwable $e ) {
+		} catch ( Throwable $e ) {
 			echo $e->getMessage();
 		}
 	}

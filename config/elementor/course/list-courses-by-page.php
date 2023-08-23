@@ -43,6 +43,18 @@ $content_fields = array_merge(
 
 				]
 			),
+			'courses_detect_page'          => LPElementorControls::add_control_type(
+				'courses_detect_page',
+				'Auto detect page',
+				'no',
+				Controls_Manager::SWITCHER,
+				[
+					'label_on'     => esc_html__( 'Yes', 'learnpress' ),
+					'label_off'    => esc_html__( 'No', 'learnpress' ),
+					'return_value' => 'yes',
+					'default'      => 'yes',
+				]
+			),
 			'courses_rest'                 => LPElementorControls::add_control_type(
 				'courses_rest',
 				'Courses REST API enable',
