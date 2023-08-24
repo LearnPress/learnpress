@@ -10,13 +10,7 @@ namespace LearnPress\TemplateHooks\Course;
 
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
-use Elementor\Icons_Manager;
-use LP_Assets;
-use LP_Page_Controller;
-use LP_User;
-use LP_WP_Filesystem;
 use Throwable;
-use WP_Query;
 
 class ListCoursesTemplate {
 	use Singleton;
@@ -187,16 +181,11 @@ class ListCoursesTemplate {
 			'<div class="courses-layouts-display">' => '</div>',
 		];
 
-		ob_start();
-		Icons_Manager::render_icon( $data['courses_list_icon'] ?? '' );
-		$list_ico = ob_get_clean();
-		ob_start();
-		Icons_Manager::render_icon( $data['courses_grid_icon'] ?? '' );
-		$grid_ico = ob_get_clean();
-
-		$layouts = [
-			'list' => $list_ico,
-			'grid' => $grid_ico,
+		$ico_grid_default = wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-grid.svg' );
+		$ico_list_default = wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-list.svg' );
+		$layouts          = [
+			'list' => $data['courses_ico_list'] ?? $ico_list_default,
+			'grid' => $data['courses_ico_grid'] ?? $ico_grid_default,
 		];
 
 		$content = '<ul class="courses-layouts-display-list">';

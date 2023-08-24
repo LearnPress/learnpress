@@ -158,6 +158,44 @@ class SingleCourseTemplate {
 	}
 
 	/**
+	 * Get display total lesson's course.
+	 *
+	 * @param LP_Course $course
+	 * @param string $string_type not has prefix 'lp_'
+	 * @param array $data
+	 *
+	 * @return string
+	 */
+	public function html_count_item( LP_Course $course, string $string_type, array $data = [] ): string {
+		$post_type_item = 'lp_' . $string_type;
+		$count_item     = $course->count_items( $post_type_item );
+
+		switch ( $post_type_item ) {
+			case LP_LESSON_CPT:
+				$content = sprintf( '%d %s', $count_item, _n( 'Lesson', 'Lessons', $count_item ) );
+				break;
+			case LP_QUIZ_CPT:
+				$content = sprintf( '%d %s', $count_item, _n( 'Quiz', 'Quizzes', $count_item ) );
+				break;
+			case 'lp_assignment':
+				$content = sprintf( '%d %s', $count_item, _n( 'Assignment', 'Assignments', $count_item ) );
+				break;
+			case 'lp_h5p':
+				$content = sprintf( '%d %s', $count_item, _n( 'H5P', 'H5Ps', $count_item ) );
+				break;
+			default:
+				$content = '';
+				break;
+		}
+
+		$html_wrapper = [
+			'<div class="course-count-' . $string_type . '">' => '</div>',
+		];
+
+		return Template::instance()->nest_elements( $html_wrapper, $content );
+	}
+
+	/**
 	 * Render string to data content
 	 *
 	 * @param LP_Course $course
@@ -169,6 +207,18 @@ class SingleCourseTemplate {
 		$author_of_course         = $course->get_author();
 		$singleInstructorTemplate = SingleInstructorTemplate::instance();
 
+		// render count items
+		$pattern_count_items = '/{{course_count_.*?}}/';
+		preg_match_all( $pattern_count_items, $data_content, $matches_count_items );
+		if ( ! empty( $matches_count_items ) ) {
+			$items = $matches_count_items[0];
+			foreach ( $items as $item ) {
+				$method         = str_replace( [ '{{', '}}' ], '', $item );
+				$post_type_item = str_replace( 'course_count_', '', $method );
+				$data_content   = str_replace( $item, $this->html_count_item( $course, $post_type_item ), $data_content );
+			}
+		}
+
 		return str_replace(
 			[
 				'{{course_id}}',
@@ -179,7 +229,6 @@ class SingleCourseTemplate {
 				'{{course_price}}',
 				'{{course_categories}}',
 				'{{course_count_student}}',
-				'{{course_count_lesson}}',
 				'{{course_author_display_name}}',
 				'{{course_author_url}}',
 				'{{course_author_avatar}}',
@@ -193,7 +242,6 @@ class SingleCourseTemplate {
 				$this->html_price( $course ),
 				$this->html_categories( $course ),
 				$this->html_count_student( $course ),
-				$this->html_count_lesson( $course ),
 				$singleInstructorTemplate->html_display_name( $author_of_course ),
 				$author_of_course->get_url_instructor(),
 				$singleInstructorTemplate->html_avatar( $author_of_course ),

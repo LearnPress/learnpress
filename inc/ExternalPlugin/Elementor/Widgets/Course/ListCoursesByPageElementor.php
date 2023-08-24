@@ -8,6 +8,7 @@
 
 namespace LearnPress\ExternalPlugin\Elementor\Widgets\Course;
 
+use Elementor\Icons_Manager;
 use Elementor\Plugin;
 use LearnPress\ExternalPlugin\Elementor\LPElementorWidgetBase;
 use LearnPress\Helpers\Config;
@@ -99,6 +100,14 @@ class ListCoursesByPageElementor extends LPElementorWidgetBase {
 				$settings,
 				lp_archive_skeleton_get_args()
 			);
+
+			// Icons grid/list
+			ob_start();
+			Icons_Manager::render_icon( $settings['courses_list_icon'] ?? '' );
+			$settings['courses_ico_list'] = ob_get_clean();
+			ob_start();
+			Icons_Manager::render_icon( $settings['courses_grid_icon'] ?? '' );
+			$settings['courses_ico_grid'] = ob_get_clean();
 
 			wp_localize_script( 'lp-courses-by-page', 'lpWidget_' . $this->get_id(), $settings );
 
