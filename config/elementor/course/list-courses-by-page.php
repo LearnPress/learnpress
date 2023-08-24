@@ -154,7 +154,11 @@ $content_fields = array_merge(
 				'<div class="list-courses-elm-topbar">{{courses_order_by}}{{courses_layout_type}}</div>{{courses_items}}{{courses_pagination}}',
 				Controls_Manager::WYSIWYG,
 				[
-					'description' => esc_html__( 'Enter the layout for each item course. You can use the following variables: {{courses_order_by}}{{courses_items}}{{courses_pagination_number}}', 'learnpress' ),
+					'description' => esc_html__(
+						'Enter the layout for each item course. You can use the following variables:
+					{{courses_order_by}}, {{courses_items}}, {{courses_pagination_number}}, {{courses_page_result}}',
+						'learnpress'
+					),
 				]
 			),
 		]
@@ -644,10 +648,10 @@ $style_fields = array_merge(
 				'text_display',
 				'text_shadow',
 				'text_color_hover',
-				'text_background_hover'
+				'text_background_hover',
 			]
-		),
-	)					
+		)
+	)
 );
 return apply_filters(
 	'learn-press/elementor/list-courses-by-page',
