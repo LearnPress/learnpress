@@ -151,7 +151,7 @@ $content_fields = array_merge(
 			'courses_layout' => LPElementorControls::add_control_type(
 				'courses_layout',
 				'',
-				'{{courses_order_by}}{{courses_layout_type}}{{courses_items}}{{courses_pagination}}',
+				'<div class="list-courses-elm-topbar">{{courses_order_by}}{{courses_layout_type}}</div>{{courses_items}}{{courses_pagination}}',
 				Controls_Manager::WYSIWYG,
 				[
 					'description' => esc_html__( 'Enter the layout for each item course. You can use the following variables: {{courses_order_by}}{{courses_items}}{{courses_pagination_number}}', 'learnpress' ),
@@ -170,12 +170,9 @@ $content_fields = array_merge(
 				'<a href="{{course_url}}">{{course_image}}</a>
 					<div>
 					<a href="{{course_url}}">{{course_title}}</a>
-					{{course_count_lesson}}
-
 					<a href="{{course_author_url}}">{{course_author_display_name}}</a>
-
-					<p>{{course_price}}</p>
-					<p><a href="{{course_url}}">Start Learning</a></p>
+					{{course_count_lesson}}
+					{{course_price}}
 					</div>',
 				Controls_Manager::WYSIWYG,
 				[

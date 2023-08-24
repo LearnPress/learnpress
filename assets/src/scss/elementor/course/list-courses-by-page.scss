@@ -36,13 +36,7 @@
 
 		li {
 			list-style: none;
-			background-color: #F5F7F8;
-			border-radius: 10px;
 			overflow: hidden;
-
-			>div {
-				padding: 10px;
-			}
 		}
 
 		.course-title {
@@ -63,7 +57,7 @@
 		}
 
 		.course-item-price {
-			color: #356DF1;
+			color: var(--lp-primary-color);
 			font-weight: 600;
 			font-size: 18px;
 		}
@@ -71,25 +65,28 @@
 		.origin-price {
 			text-decoration: line-through;
 			font-size: 14px;
-			color: #8392A2;
+			color: var(--lp-secondary-color);
 			margin-right: 5px;
 		}
 
 	}
+	
+	.list-courses-elm-topbar {
+		display: flex;
+		justify-content: space-between;
+	}
 
 	.courses-layouts-display {
 		.courses-layouts-display-list {
-			margin: -30px 0 0 0;
-			padding: 0;
+			margin: 0;
 			display: flex;
 			gap: 10px;
-			float: right;
 
 			li {
 				cursor: pointer;
 
 				&.active {
-					color: #356DF1;
+					color: var(--lp-primary-color);
 				}
 			}
 		}
