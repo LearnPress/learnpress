@@ -631,7 +631,23 @@ $style_fields = array_merge(
 				)
 			)
 		)
-	)
+	),
+	LPElementorControls::add_fields_in_section(
+		'style_not_found',
+		esc_html__( 'Courses Not Found', 'learnpress' ),
+		Controls_Manager::TAB_STYLE,
+		LPElementorControls::add_controls_style_text(
+			'style_courses_not_found',
+			'.courses-not-found',
+			[],
+			[
+				'text_display',
+				'text_shadow',
+				'text_color_hover',
+				'text_background_hover'
+			]
+		),
+	)					
 );
 return apply_filters(
 	'learn-press/elementor/list-courses-by-page',
