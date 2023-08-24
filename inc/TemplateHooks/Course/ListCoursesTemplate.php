@@ -395,6 +395,11 @@ class ListCoursesTemplate {
 		$ul_classes[]        = $layout_default;
 		$ul_classes_str      = implode( ' ', $ul_classes );
 
+		// No courses found
+		if ( empty( $courses ) ) {
+			return '<div class="courses-not-found"><span>' . esc_html__( 'No courses found', 'learnpress' ) . '</span></div>';
+		}
+
 		// Start show list courses
 		ob_start();
 		$singleCourseTemplate = SingleCourseTemplate::instance();
