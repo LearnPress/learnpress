@@ -219,6 +219,13 @@ return apply_filters(
 					),
 				),
 				array(
+					'title'   => esc_html__( 'Url nofollow', 'learnpress' ),
+					'desc'    => esc_html__( 'Add rel="nofollow" to material external link.', 'learnpress' ),
+					'id'      => 'material_url_nofollow',
+					'default' => 'yes',
+					'type'    => 'checkbox',
+				),
+				array(
 					'type' => 'sectionend',
 					'id'   => 'lp_course_material_setting',
 				),
