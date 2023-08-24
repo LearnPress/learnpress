@@ -132,6 +132,48 @@ class ListCoursesTemplate {
 	}
 
 	/**
+	 * Pagination
+	 *
+	 * @param array $data
+	 *
+	 * @return string
+	 * @since 4.2.3.3
+	 * @version 1.0.0
+	 */
+	public function html_courses_page_result( array $data = [] ): string {
+		$html = '';
+
+		try {
+			$total_rows      = $data['total_rows'] ?? 0;
+			$paged           = $data['paged'] ?? 1;
+			$course_per_page = $data['courses_per_page'] ?? 8;
+
+			$from = 1 + ( $paged - 1 ) * $course_per_page;
+			$to   = ( $paged * $course_per_page > $total_rows ) ? $total_rows : $paged * $course_per_page;
+
+			$content = '';
+			if ( 0 === $total_rows ) {
+
+			} elseif ( 1 === $total_rows ) {
+				$content = esc_html__( 'Showing only one result', 'learnpress' );
+			} else {
+				if ( $from == $to ) {
+					$content = sprintf( esc_html__( 'Showing last course of %s results', 'learnpress' ), $total_rows );
+				} else {
+					$from_to = $from . '-' . $to;
+					$content = sprintf( esc_html__( 'Showing %1$s of %2$s results', 'learnpress' ), $from_to, $total_rows );
+				}
+			}
+
+			$html = '<span class="courses-page-result">' . $content . '</span>';
+		} catch ( Throwable $e ) {
+			error_log( $e->getMessage() );
+		}
+
+		return $html;
+	}
+
+	/**
 	 * Layouts type
 	 *
 	 * @param array $data
@@ -325,12 +367,14 @@ class ListCoursesTemplate {
 				'{{courses_layout_type}}',
 				'{{courses_pagination}}',
 				'{{courses_items}}',
+				'{{courses_page_result}}',
 			],
 			[
 				$this->html_order_by( $data['order_by'] ?? '' ),
 				$this->html_layout_type( $data ),
 				$this->html_pagination( $data['pagination'] ?? [] ),
 				$this->html_courses_items( $data ),
+				$this->html_courses_page_result( $data ),
 			],
 			$data_content
 		);

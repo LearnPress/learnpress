@@ -93,6 +93,13 @@ class ListCoursesByPageElementor extends LPElementorWidgetBase {
 					$settings['taxonomy'] = $cat->taxonomy;
 				}
 			}
+
+			// Merge params filter form url
+			$settings = array_merge(
+				$settings,
+				lp_archive_skeleton_get_args()
+			);
+
 			wp_localize_script( 'lp-courses-by-page', 'lpWidget_' . $this->get_id(), $settings );
 
 			echo '<div class="list-courses-elm-wrapper" data-widget-id="' . $this->get_id() . '">';
@@ -125,6 +132,7 @@ class ListCoursesByPageElementor extends LPElementorWidgetBase {
 		$total_rows               = 0;
 		$filter->limit            = $settings['courses_per_page'] ?? 8;
 		$settings['courses_list'] = LP_Course::get_courses( $filter, $total_rows );
+		$settings['total_rows']   = $total_rows;
 		$settings['pagination']   = [
 			'total_pages' => LP_Database::get_total_pages( $filter->limit, $total_rows ),
 			'base'        => add_query_arg( 'paged', '%#%', $settings['courses_pagination_url'] ?? '' ),

@@ -5,6 +5,7 @@ window.lpElWidgetCoursesByPage = ( () => {
 	const classCoursesWrapper = 'list-courses-elm-wrapper';
 	const classListCourse = 'list-courses-elm';
 	const classPaginationCourse = 'learn-press-pagination';
+	const classCoursesPageResult = 'courses-page-result';
 	const classSkeleton = 'lp-skeleton-animation';
 	let filterCourses = {};
 	const currentUrl = lpGetCurrentURLNoParam();
@@ -37,6 +38,7 @@ window.lpElWidgetCoursesByPage = ( () => {
 		const skeleton = elCoursesWrapper.querySelector( `.${ classSkeleton }` );
 		const elListCourse = elCoursesWrapper.querySelector( `.${ classListCourse }` );
 		const elPagination = elCoursesWrapper.querySelector( `.${ classPaginationCourse }` );
+		const elCoursesPageResult = elCoursesWrapper.querySelector( `.${ classCoursesPageResult }` );
 
 		return {
 			before: () => {
@@ -47,12 +49,17 @@ window.lpElWidgetCoursesByPage = ( () => {
 				divTmp.innerHTML = res.data.content || '';
 				const elListCourseTmp = divTmp.querySelector( `.${ classListCourse }` );
 				const elPaginationTmp = divTmp.querySelector( `.${ classPaginationCourse }` );
+				const elCoursesPageResultTmp = divTmp.querySelector( `.${ classCoursesPageResult }` );
 
 				if ( elListCourse ) {
 					elListCourse.innerHTML = elListCourseTmp.innerHTML;
 
 					if ( elPagination ) {
 						elPagination.innerHTML = elPaginationTmp.innerHTML;
+					}
+
+					if ( elCoursesPageResult ) {
+						elCoursesPageResult.innerHTML = elCoursesPageResultTmp.innerHTML;
 					}
 				} else {
 					elCoursesWrapper.insertAdjacentHTML( 'beforeend', res.data.content || '' );
