@@ -384,7 +384,9 @@ if ( ! class_exists( 'LP_Question_Fill_In_Blanks' ) ) {
 				}
 			}
 
-			return $return;
+			$data = compact( 'user_answer', 'answers' );
+
+			return apply_filters( 'learn-press/question/fill-in-blank/check', $return, $data );
 		}
 
 		/**
@@ -437,7 +439,9 @@ if ( ! class_exists( 'LP_Question_Fill_In_Blanks' ) ) {
 					}
 			}
 
-			return $blank_correct;
+			$data = compact( 'blank', 'user_fill' );
+
+			return apply_filters( 'learn-press/question/fill-in-blank/check_answer', $blank_correct, $data );
 		}
 	}
 }
