@@ -495,6 +495,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 					$result['question_answered']++;
 
 					$check = $question->check( $answered[ $question_id ] );
+					$point = apply_filters( 'learn-press/user/calculate-quiz-result/point', $point, $question, $check );
 					if ( $check['correct'] ) {
 						$result['question_correct']++;
 						$result['user_mark'] += $point;
