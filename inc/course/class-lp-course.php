@@ -1030,5 +1030,29 @@ if ( ! class_exists( 'LP_Course' ) ) {
 
 			return $categories;
 		}
+
+		/**
+		 * Get all curriculum of this course.
+		 *
+		 * @return bool|LP_Course_Section
+		 * @since 4.2.3.5
+		 */
+		public function get_level(): string {
+			$level = get_post_meta( $this->get_id(), '_lp_level', true );
+
+			return $level;
+		}
+
+		/**
+		 * Get duration of this course.
+		 *
+		 * @return bool|LP_Course_Section
+		 * @since 4.2.3.5
+		 */
+		public function get_duration(): string {
+			$duration = get_post_meta( $this->get_id(), '_lp_duration', true );
+
+			return $duration;
+		}
 	}
 }

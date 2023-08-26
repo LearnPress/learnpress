@@ -11,6 +11,8 @@ use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
 use LP_Course;
+use LP_Datetime;
+use Throwable;
 
 class SingleCourseTemplate {
 	use Singleton;
@@ -49,6 +51,20 @@ class SingleCourseTemplate {
 			'<p class="course-short-description">' => '</p>',
 		];
 		return Template::instance()->nest_elements( $html_wrapper, $course->get_data( 'excerpt' ) );
+	}
+
+	/**
+	 * Get description course.
+	 *
+	 * @param LP_Course $course
+	 *
+	 * @return string
+	 */
+	public function html_description( LP_Course $course ): string {
+		$html_wrapper = [
+			'<p class="course-description">' => '</p>',
+		];
+		return Template::instance()->nest_elements( $html_wrapper, $course->get_data( 'description' ) );
 	}
 
 	/**
@@ -139,28 +155,6 @@ class SingleCourseTemplate {
 	 * Get display total lesson's course.
 	 *
 	 * @param LP_Course $course
-	 *
-	 * @return string
-	 */
-	public function html_count_lesson( LP_Course $course ): string {
-		$count_lesson = $course->count_items( LP_LESSON_CPT );
-		$ico_lesson   = sprintf(
-			'<span class="course-ico lesson">%s</span>',
-			wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-file.svg' )
-		);
-		$ico_lesson   = '';
-		$content      = sprintf( '%s %d %s', $ico_lesson, $count_lesson, _n( 'Lesson', 'Lessons', $count_lesson ) );
-		$html_wrapper = [
-			'<div class="course-count-lesson">' => '</div>',
-		];
-
-		return Template::instance()->nest_elements( $html_wrapper, $content );
-	}
-
-	/**
-	 * Get display total lesson's course.
-	 *
-	 * @param LP_Course $course
 	 * @param string $string_type not has prefix 'lp_'
 	 * @param array $data
 	 *
@@ -193,6 +187,64 @@ class SingleCourseTemplate {
 		];
 
 		return Template::instance()->nest_elements( $html_wrapper, $content );
+	}
+
+	/**
+	 * Get html level course.
+	 *
+	 * @param LP_Course $course
+	 *
+	 * @version 1.0.0
+	 * @since 4.2.3.5
+	 * @return string
+	 */
+	public function html_level( LP_Course $course ): string {
+		$content = '';
+
+		try {
+			$level  = $course->get_level();
+			$levels = lp_course_level();
+			$level  = $levels[ $level ] ?? $levels[''];
+
+			$html_wrapper = [
+				'<span class="course-level">' => '</span>',
+			];
+			$content      = Template::instance()->nest_elements( $html_wrapper, $level );
+		} catch ( Throwable $e ) {
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
+		}
+
+		return $content;
+	}
+
+	/**
+	 * Get html duration course.
+	 *
+	 * @param LP_Course $course
+	 *
+	 * @version 1.0.0
+	 * @since 4.2.3.5
+	 * @return string
+	 */
+	public function html_duration( LP_Course $course ): string {
+		$content = '';
+
+		try {
+			$duration        = $course->get_duration();
+			$duration_arr    = explode( ' ', $duration );
+			$duration_number = $duration_arr[0] ?? 0;
+			$duration_type   = $duration_arr[1] ?? '';
+			$duration_str    = LP_Datetime::get_string_plural_duration( $duration_number, $duration_type );
+
+			$html_wrapper = [
+				'<span class="course-duration">' => '</span>',
+			];
+			$content      = Template::instance()->nest_elements( $html_wrapper, $duration_str );
+		} catch ( Throwable $e ) {
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
+		}
+
+		return $content;
 	}
 
 	/**
