@@ -61,6 +61,10 @@ window.lpElWidgetCoursesByPage = ( () => {
 					if ( elCoursesPageResult ) {
 						elCoursesPageResult.innerHTML = elCoursesPageResultTmp.innerHTML;
 					}
+
+					// Scroll to el
+					const optionScroll = { behavior: 'smooth' };
+					elListCourse.scrollIntoView( optionScroll );
 				} else {
 					elCoursesWrapper.insertAdjacentHTML( 'beforeend', res.data.content || '' );
 				}
