@@ -383,8 +383,8 @@ if ( ! class_exists( 'LP_Question_Fill_In_Blanks' ) ) {
 					}
 				}
 			}
-
-			$data = compact( 'user_answer', 'answers' );
+			$maximum_mark = $this->get_mark();
+			$data         = compact( 'user_answer', 'answers', 'maximum_mark' );
 
 			return apply_filters( 'learn-press/question/fill-in-blank/check', $return, $data );
 		}
