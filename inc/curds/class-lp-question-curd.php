@@ -433,8 +433,8 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 					'learn-press/question/update-answer-data',
 					array(
 						'title'   => $answer['title'],
-						'value'   => isset( $answer['value'] ) ? $answer['value'] : '',
-						'is_true' => isset( $answer['is_true'] ) ? $answer['is_true'] : '',
+						'value'   => $answer['value'] ?? '',
+						'is_true' => $answer['is_true'] ?? '',
 					)
 				),
 				'where' => array(
@@ -455,13 +455,13 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 			if ( ! empty( $answer['blanks'] ) ) {
 				$blanks = $answer['blanks'];
 
-				if ( is_array( $blanks ) ) {
+				/*if ( is_array( $blanks ) ) {
 					$question = LP_Question::get_question( $question_id );
 
 					foreach ( $blanks as $id => $blank ) {
 						$question->_blanks[ $blank['id'] ] = $blank;
 					}
-				}
+				}*/
 
 				learn_press_update_question_answer_meta( $answer['question_answer_id'], '_blanks', $blanks );
 			}
