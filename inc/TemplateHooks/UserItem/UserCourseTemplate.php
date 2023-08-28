@@ -11,17 +11,5 @@ use LearnPress\Helpers\Template;
 use LP_User_Item_Course;
 
 class UserCourseTemplate extends UserItemBaseTemplate {
-	public static function instance() {
-		static $instance = null;
 
-		if ( is_null( $instance ) ) {
-			$instance = new self();
-		}
-
-		return $instance;
-	}
-
-	protected function __construct() {
-
-	}
 }
