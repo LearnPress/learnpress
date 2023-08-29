@@ -9,15 +9,21 @@
  */
 
 namespace LearnPress\ExternalPlugin\Elementor;
+use Elementor\Core\DynamicTags\Manager;
 use Elementor\Elements_Manager;
+use LearnPress\ExternalPlugin\Elementor\Widgets\Course\Dynamic\CourseCategoryDynamicElementor;
+use LearnPress\ExternalPlugin\Elementor\Widgets\Course\Dynamic\CoursePriceDynamicElementor;
 use LearnPress\Helpers\Singleton;
 
 class LPElementor {
 	use Singleton;
+	public static $group_dynamic = 'learn-press-dynamic';
+	public static $cate_course   = 'learnpress_course';
 
 	protected function init() {
 		add_action( 'elementor/elements/categories_registered', array( $this, 'register_category' ) );
 		add_action( 'elementor/widgets/register', array( $this, 'register_widgets' ), 10, 1 );
+		add_action( 'elementor/dynamic_tags/register', array( $this, 'register_tags' ) );
 	}
 
 	/**
@@ -35,6 +41,10 @@ class LPElementor {
 			],
 			'learnpress_instructor' => [
 				'title' => esc_html__( 'LearnPress Instructor Sections', 'learnpress' ),
+				'icon'  => 'eicon-navigator',
+			],
+			self::$cate_course      => [
+				'title' => esc_html__( 'LearnPress Course Sections', 'learnpress' ),
 				'icon'  => 'eicon-navigator',
 			],
 		];
@@ -60,6 +70,34 @@ class LPElementor {
 			if ( class_exists( $class ) ) {
 				$widgets_manager->register( new $class() );
 			}
+		}
+	}
+
+	/**
+	 *
+	 * @param Manager $dynamic_tags
+	 *
+	 * @return void
+	 */
+	public function register_tags( Manager $dynamic_tags ) {
+		// Register group learn-press-dynamic
+		$dynamic_tags->register_group(
+			self::$group_dynamic,
+			array(
+				'title' => esc_html__(
+					'LearnPress',
+					'learnpress'
+				),
+			)
+		);
+
+		$tag_classes_names = [
+			CoursePriceDynamicElementor::class,
+			CourseCategoryDynamicElementor::class,
+		];
+
+		foreach ( $tag_classes_names as $tag_class_name ) {
+			$dynamic_tags->register( new $tag_class_name );
 		}
 	}
 }
