@@ -11,8 +11,6 @@
 namespace LearnPress\ExternalPlugin\Elementor;
 use Elementor\Core\DynamicTags\Manager;
 use Elementor\Elements_Manager;
-use LearnPress\ExternalPlugin\Elementor\Widgets\Course\Dynamic\CourseCategoryDynamicElementor;
-use LearnPress\ExternalPlugin\Elementor\Widgets\Course\Dynamic\CoursePriceDynamicElementor;
 use LearnPress\Helpers\Singleton;
 
 class LPElementor {
@@ -21,8 +19,10 @@ class LPElementor {
 	const CATE_LP         = 'learnpress';
 	const CATE_COURSE     = 'learnpress_course';
 	const CATE_INSTRUCTOR = 'learnpress_instructor';
+	public $config        = [];
 
 	protected function init() {
+		$this->config = require_once 'lp-elementor-widgets-config.php';
 		add_action( 'elementor/elements/categories_registered', array( $this, 'register_category' ) );
 		add_action( 'elementor/widgets/register', array( $this, 'register_widgets' ), 10, 1 );
 		add_action( 'elementor/dynamic_tags/register', array( $this, 'register_tags' ) );
@@ -67,8 +67,7 @@ class LPElementor {
 	 * @return void
 	 */
 	public function register_widgets( $widgets_manager ) {
-		$widgets = require_once 'lp-elementor-widgets-config.php';
-		foreach ( $widgets as $widget => $class ) {
+		foreach ( $this->config['widgets'] as $widget => $class ) {
 			if ( class_exists( $class ) ) {
 				$widgets_manager->register( new $class() );
 			}
@@ -93,13 +92,8 @@ class LPElementor {
 			)
 		);
 
-		$tag_classes_names = [
-			CoursePriceDynamicElementor::class,
-			CourseCategoryDynamicElementor::class,
-		];
-
-		foreach ( $tag_classes_names as $tag_class_name ) {
-			$dynamic_tags->register( new $tag_class_name );
+		foreach ( $this->config['dynamic'] as $key => $tag_class_name ) {
+			$dynamic_tags->register( new $tag_class_name() );
 		}
 	}
 }
