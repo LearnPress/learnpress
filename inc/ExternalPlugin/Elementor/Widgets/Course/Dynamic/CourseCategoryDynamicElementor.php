@@ -2,14 +2,13 @@
 namespace LearnPress\ExternalPlugin\Elementor\Widgets\Course\Dynamic;
 
 use Elementor\Core\DynamicTags\Tag;
-use Elementor\Modules\DynamicTags\Module as TagsModule;
-use LearnPress\ExternalPlugin\Elementor\LPElementor;
+use LearnPress\ExternalPlugin\Elementor\LPDynamicElementor;
 use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
 
 defined( 'ABSPATH' ) || exit;
 
 class CourseCategoryDynamicElementor extends Tag {
-	use CourseDynamicBaseElementor;
+	use LPDynamicElementor;
 	public function __construct( array $data = [] ) {
 		$this->lp_dynamic_title = 'Course Category';
 		$this->lp_dynamic_name  = 'course-category';

@@ -40,7 +40,7 @@ trait SingleCourseBaseElementor {
 	/**
 	 * @var array Controls
 	 */
-	public $categories = array();
+	public $categories = array( LPElementor::CATE_COURSE );
 
 	public function get_title() {
 		return $this->title;
@@ -59,7 +59,7 @@ trait SingleCourseBaseElementor {
 	}
 
 	public function get_categories() {
-		return ! empty( $this->categories ) ? $this->categories : array( LPElementor::$cate_course );
+		return $this->categories;
 	}
 
 	public function get_help_url() {

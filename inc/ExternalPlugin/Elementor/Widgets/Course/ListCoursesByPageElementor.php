@@ -75,7 +75,7 @@ class ListCoursesByPageElementor extends LPElementorWidgetBase {
 			if ( ! Plugin::$instance->editor->is_edit_mode() && isset( $_COOKIE[ 'layout_widget_' . $this->get_id() ] ) ) {
 				$courses_layout_default = $_COOKIE[ 'layout_widget_' . $this->get_id() ];
 			}
-			$settings['courses_layout_default'] = $courses_layout_default;
+			$settings['courses_item_layout'] = \Elementor\Plugin::instance()->frontend->get_builder_content_for_display( $settings['courses_layout_id'] ?? '' );
 			if ( get_current_user_id() ) {
 				$settings['nonce'] = wp_create_nonce( 'wp_rest' );
 			}

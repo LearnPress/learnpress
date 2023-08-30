@@ -1,18 +1,23 @@
 <?php
-namespace LearnPress\ExternalPlugin\Elementor\Widgets\Course\Dynamic;
+/**
+ * Class LPDynamicElementor
+ * Declare base properties for dynamic course elementor
+ *
+ * @since 4.2.3.5
+ * @version 1.0.0
+ */
+namespace LearnPress\ExternalPlugin\Elementor;
 
 use Elementor\Modules\DynamicTags\Module as TagsModule;
-use LearnPress\ExternalPlugin\Elementor\LPElementor;
-use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
 use LP_Course;
 
 defined( 'ABSPATH' ) || exit;
 
-trait CourseDynamicBaseElementor {
+trait LPDynamicElementor {
 	public $lp_dynamic_name       = '';
 	public $lp_dynamic_categories = [ TagsModule::TEXT_CATEGORY ];
 	public $lp_dynamic_title      = '';
-	public $lp_dynamic_group      = '';
+	public $lp_dynamic_group      = LPElementor::GROUP_DYNAMIC;
 
 	public function get_name() {
 		return $this->lp_dynamic_name;
@@ -23,7 +28,7 @@ trait CourseDynamicBaseElementor {
 	}
 
 	public function get_group() {
-		return ! empty( $this->lp_dynamic_group ) ? $this->lp_dynamic_group : LPElementor::$group_dynamic;
+		return $this->lp_dynamic_group;
 	}
 
 	public function get_title() {

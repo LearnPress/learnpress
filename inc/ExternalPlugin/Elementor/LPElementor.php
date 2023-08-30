@@ -17,8 +17,10 @@ use LearnPress\Helpers\Singleton;
 
 class LPElementor {
 	use Singleton;
-	public static $group_dynamic = 'learn-press-dynamic';
-	public static $cate_course   = 'learnpress_course';
+	const GROUP_DYNAMIC   = 'learnpress_dynamic';
+	const CATE_LP         = 'learnpress';
+	const CATE_COURSE     = 'learnpress_course';
+	const CATE_INSTRUCTOR = 'learnpress_instructor';
 
 	protected function init() {
 		add_action( 'elementor/elements/categories_registered', array( $this, 'register_category' ) );
@@ -35,15 +37,15 @@ class LPElementor {
 	 */
 	public function register_category( Elements_Manager $elements_manager ) {
 		$categories = [
-			'learnpress'            => [
+			self::CATE_LP         => [
 				'title' => esc_html__( 'LearnPress', 'learnpress' ),
 				'icon'  => 'eicon-navigator',
 			],
-			'learnpress_instructor' => [
+			self::CATE_INSTRUCTOR => [
 				'title' => esc_html__( 'LearnPress Instructor Sections', 'learnpress' ),
 				'icon'  => 'eicon-navigator',
 			],
-			self::$cate_course      => [
+			self::CATE_COURSE     => [
 				'title' => esc_html__( 'LearnPress Course Sections', 'learnpress' ),
 				'icon'  => 'eicon-navigator',
 			],
@@ -82,7 +84,7 @@ class LPElementor {
 	public function register_tags( Manager $dynamic_tags ) {
 		// Register group learn-press-dynamic
 		$dynamic_tags->register_group(
-			self::$group_dynamic,
+			self::GROUP_DYNAMIC,
 			array(
 				'title' => esc_html__(
 					'LearnPress',
