@@ -193,7 +193,7 @@ class LP_Page_Controller {
 				$flag_title_course = true;
 			}
 		} elseif ( LP_Page_Controller::is_page_courses() ) { // Set title course archive page.
-			if ( learn_press_is_search() ) {
+			if ( isset( $_GET['c_search'] ) ) {
 				$title = __( 'Course Search Results', 'learnpress' );
 			} elseif ( is_tax( LP_COURSE_CATEGORY_TAX ) || is_tax( LP_COURSE_TAXONOMY_TAG ) ) {
 				/**

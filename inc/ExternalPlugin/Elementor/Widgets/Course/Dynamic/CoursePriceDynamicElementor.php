@@ -23,6 +23,9 @@ class CoursePriceDynamicElementor extends Tag {
 
 		try {
 			$course = $this->get_course();
+			if ( ! $course ) {
+				return;
+			}
 			echo $singleCourseTemplate->html_price( $course );
 		} catch ( \Throwable $e ) {
 			error_log( $e->getMessage() );

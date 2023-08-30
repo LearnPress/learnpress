@@ -22,11 +22,6 @@ class CoursePriceElementor extends Widget_Heading {
 		parent::__construct( $data, $args );
 	}
 
-	public function get_categories() {
-		return array( 'learnpress_course' );
-	}
-
-
 	protected function register_controls() {
 		parent::register_controls();
 
