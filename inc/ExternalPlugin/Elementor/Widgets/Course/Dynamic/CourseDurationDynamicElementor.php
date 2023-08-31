@@ -1,38 +1,29 @@
 <?php
 /**
- * Class CourseCountLessonDynamicElementor
+ * Class CourseDurationDynamicElementor
  *
- * Dynamic course count lesson elementor.
+ * Dynamic course duration elementor.
  *
  * @since 4.2.3.5
  * @version 1.0.0
  */
+
 namespace LearnPress\ExternalPlugin\Elementor\Widgets\Course\Dynamic;
 use Elementor\Core\DynamicTags\Tag;
 use LearnPress\ExternalPlugin\Elementor\LPDynamicElementor;
 use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
+use Throwable;
 
 defined( 'ABSPATH' ) || exit;
 
-class CourseCountLessonDynamicElementor extends Tag {
+class CourseDurationDynamicElementor extends Tag {
 	use LPDynamicElementor;
-
-	/**
-	 * Declare base properties for dynamic course elementor
-	 *
-	 * @param array $data
-	 */
 	public function __construct( array $data = [] ) {
-		$this->lp_dynamic_title = 'Course Count Lesson';
-		$this->lp_dynamic_name  = 'course-count-lesson';
+		$this->lp_dynamic_title = 'Course Duration';
+		$this->lp_dynamic_name  = 'course-duration';
 		parent::__construct( $data );
 	}
 
-	/**
-	 * Render dynamic course count lesson elementor.
-	 *
-	 * @return void
-	 */
 	public function render() {
 		$singleCourseTemplate = SingleCourseTemplate::instance();
 
@@ -41,8 +32,8 @@ class CourseCountLessonDynamicElementor extends Tag {
 			if ( ! $course ) {
 				return;
 			}
-			echo $singleCourseTemplate->html_count_item( $course, 'lesson' );
-		} catch ( \Throwable $e ) {
+			echo $singleCourseTemplate->html_duration( $course );
+		} catch ( Throwable $e ) {
 			error_log( $e->getMessage() );
 		}
 
