@@ -39,4 +39,10 @@ class RegisterUserFormElementor extends LPElementorWidgetBase {
 			error_log( __METHOD__ . ' ' . $e->getMessage() );
 		}
 	}
+
+	public function get_style_depends() {
+		wp_register_style( 'learnpress', LP_PLUGIN_URL . 'assets/css/learnpress.css', array(), uniqid() );
+
+		return array( 'learnpress' );
+	}
 }

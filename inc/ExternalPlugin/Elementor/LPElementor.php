@@ -61,7 +61,7 @@ class LPElementor {
 	}
 
 	/**
-	 * Register widgets
+	 * Register widgets for elementor
 	 *
 	 * @param $widgets_manager
 	 * @return void
@@ -75,6 +75,7 @@ class LPElementor {
 	}
 
 	/**
+	 * Register dynamic tags for elementor
 	 *
 	 * @param Manager $dynamic_tags
 	 *
