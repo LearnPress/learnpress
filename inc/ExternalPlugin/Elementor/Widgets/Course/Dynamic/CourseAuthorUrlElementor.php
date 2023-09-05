@@ -1,8 +1,8 @@
 <?php
 /**
- * Class CourseAuthorAvatarElementor
+ * Class CourseAuthorUrlElementor
  *
- * Dynamic course author avatar elementor.
+ * Dynamic course author url elementor.
  *
  * @since 4.2.3.5
  * @version 1.0.0
@@ -15,23 +15,21 @@ use Elementor\Modules\DynamicTags\Module;
 
 defined( 'ABSPATH' ) || exit;
 
-class CourseAuthorAvatarElementor extends Tag {
+class CourseAuthorUrlElementor extends Tag {
 	use LPDynamicElementor;
 	public function __construct( array $data = [] ) {
-		$this->lp_dynamic_title = 'Course Author Avatar';
-		$this->lp_dynamic_name  = 'course-author-avatar';
-		$this->lp_dynamic_categories = [ Module::IMAGE_CATEGORY, Module::TEXT_CATEGORY ];
+		$this->lp_dynamic_title = 'Course Author Url';
+		$this->lp_dynamic_name  = 'course-author-url';
+		$this->lp_dynamic_categories = [ Module::URL_CATEGORY ];
 		parent::__construct( $data );
 	}
 
 	/**
-	 * Render dynamic course author avatar elementor.
+	 * Render dynamic course author url elementor.
 	 *
 	 * @return void
 	 */
 	public function render() {
-		$singleInstructorTemplate = SingleInstructorTemplate::instance();
-		
 		try {
 			$course = $this->get_course();
 			if ( ! $course ) {
@@ -42,7 +40,7 @@ class CourseAuthorAvatarElementor extends Tag {
 			if ( ! $author ) {
 				return;
 			}
-			echo $singleInstructorTemplate->html_avatar( $author );
+			echo $author->get_url_instructor();
 		} catch ( \Throwable $e ) {
 			error_log( $e->getMessage() );
 		}
