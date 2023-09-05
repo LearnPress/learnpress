@@ -22,7 +22,7 @@ abstract class LP_Abstract_Settings {
 	}
 
 	/**
-	 * @return bool
+	 * @return bool|mixed|array
 	 */
 	public function get_settings() {
 		return false;
