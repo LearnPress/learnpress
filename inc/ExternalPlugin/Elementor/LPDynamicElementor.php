@@ -8,14 +8,14 @@
  */
 namespace LearnPress\ExternalPlugin\Elementor;
 
-use Elementor\Modules\DynamicTags\Module as TagsModule;
+use Elementor\Modules\DynamicTags\Module;
 use LP_Course;
 
 defined( 'ABSPATH' ) || exit;
 
 trait LPDynamicElementor {
 	public $lp_dynamic_name       = '';
-	public $lp_dynamic_categories = [ TagsModule::TEXT_CATEGORY ];
+	public $lp_dynamic_categories = [ Module::TEXT_CATEGORY ];
 	public $lp_dynamic_title      = '';
 	public $lp_dynamic_group      = LPElementor::GROUP_DYNAMIC;
 
