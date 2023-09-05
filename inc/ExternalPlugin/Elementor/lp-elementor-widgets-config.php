@@ -5,6 +5,7 @@
  */
 
 use LearnPress\ExternalPlugin\Elementor\Widgets\BecomeATeacherElementor;
+use LearnPress\ExternalPlugin\Elementor\Widgets\Course\Dynamic\CourseAuthorNameElementor;
 use LearnPress\ExternalPlugin\Elementor\Widgets\Course\Dynamic\CourseCategoryDynamicElementor;
 use LearnPress\ExternalPlugin\Elementor\Widgets\Course\Dynamic\CourseCountLessonDynamicElementor;
 use LearnPress\ExternalPlugin\Elementor\Widgets\Course\Dynamic\CourseCountQuizDynamicElementor;
@@ -55,6 +56,7 @@ return [
 			'course-count-quiz'     => CourseCountQuizDynamicElementor::class,
 			'course-count-level'    => CourseLevelDynamicElementor::class,
 			'course-count-duration' => CourseDurationDynamicElementor::class,
+			'course-author-name'    => CourseAuthorNameElementor::class,
 		]
 	),
 ];
