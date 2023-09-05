@@ -19,7 +19,7 @@ if ( ! function_exists( 'LP_Gateway_Offline_Payment' ) ) {
 		/**
 		 * @var LP_Settings
 		 */
-		public $settings;
+		protected $settings;
 
 		/**
 		 * Instructions for making a payment.
