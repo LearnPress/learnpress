@@ -8,7 +8,6 @@ use LearnPress\ExternalPlugin\Elementor\Widgets\BecomeATeacherElementor;
 use LearnPress\ExternalPlugin\Elementor\Widgets\Course\Dynamic\CourseAuthorNameElementor;
 use LearnPress\ExternalPlugin\Elementor\Widgets\Course\Dynamic\CourseAuthorAvatarElementor;
 use LearnPress\ExternalPlugin\Elementor\Widgets\Course\Dynamic\CourseAuthorUrlElementor;
-use LearnPress\ExternalPlugin\Elementor\Widgets\Course\Dynamic\CourseCategoryDynamicElementor;
 use LearnPress\ExternalPlugin\Elementor\Widgets\Course\Dynamic\CourseCountLessonDynamicElementor;
 use LearnPress\ExternalPlugin\Elementor\Widgets\Course\Dynamic\CourseCountQuizDynamicElementor;
 use LearnPress\ExternalPlugin\Elementor\Widgets\Course\Dynamic\CourseCountStudentDynamicElementor;
@@ -52,7 +51,6 @@ return [
 		'lp/elementor/dynamic',
 		[
 			'course-price'          => CoursePriceDynamicElementor::class,
-			'course-category'       => CourseCategoryDynamicElementor::class,
 			'course-count-student'  => CourseCountStudentDynamicElementor::class,
 			'course-count-lesson'   => CourseCountLessonDynamicElementor::class,
 			'course-count-quiz'     => CourseCountQuizDynamicElementor::class,

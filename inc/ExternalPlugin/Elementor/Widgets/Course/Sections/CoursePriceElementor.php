@@ -11,6 +11,8 @@ namespace LearnPress\ExternalPlugin\Elementor\Widgets\Course\Sections;
 use Elementor\Plugin;
 use Elementor\Widget_Heading;
 use LearnPress\ExternalPlugin\Elementor\LPElementorWidgetBase;
+use Elementor\Controls_Manager;
+use Elementor\Group_Control_Typography;
 use LearnPress\ExternalPlugin\Elementor\Widgets\Course\SingleCourseBaseElementor;
 
 class CoursePriceElementor extends Widget_Heading {
@@ -36,6 +38,48 @@ class CoursePriceElementor extends Widget_Heading {
 				'recursive' => true,
 			)
 		);
+
+		$this->start_controls_section(
+			'section_price_style',
+			array(
+				'label' => esc_html__( 'Price Origin', 'learnpress' ),
+				'tab'   => Controls_Manager::TAB_STYLE,
+			)
+		);
+
+		$this->add_control(
+			'origin_price_color',
+			array(
+				'label'     => esc_html__( 'Color', 'learnpress' ),
+				'type'      => Controls_Manager::COLOR,
+				'selectors' => array(
+					'{{WRAPPER}} .course-item-price .origin-price' => 'color: {{VALUE}};',
+				),
+			)
+		);
+
+		$this->add_group_control(
+			Group_Control_Typography::get_type(),
+			array(
+				'name'     => 'origin_price_typography',
+				'selector' => '{{WRAPPER}} .course-item-price .origin-price',
+			)
+		);
+
+		$this->add_responsive_control(
+			"origin_padding",
+			array(
+				'label'      => esc_html__( 'Padding', 'thim-elementor-kit' ),
+				'type'       => Controls_Manager::DIMENSIONS,
+				'size_units' => array( 'px', 'em', '%' ),
+				'selectors'  => array(
+					"{{WRAPPER}} .course-item-price .origin-price" => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				),
+			)
+		);
+
+		$this->end_controls_section();
+
 	}
 
 	/**
