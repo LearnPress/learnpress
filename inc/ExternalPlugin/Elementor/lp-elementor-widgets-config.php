@@ -13,7 +13,6 @@ use LearnPress\ExternalPlugin\Elementor\Widgets\Course\Dynamic\CourseCountQuizDy
 use LearnPress\ExternalPlugin\Elementor\Widgets\Course\Dynamic\CourseCountStudentDynamicElementor;
 use LearnPress\ExternalPlugin\Elementor\Widgets\Course\Dynamic\CourseDurationDynamicElementor;
 use LearnPress\ExternalPlugin\Elementor\Widgets\Course\Dynamic\CourseLevelDynamicElementor;
-use LearnPress\ExternalPlugin\Elementor\Widgets\Course\Dynamic\CoursePriceDynamicElementor;
 use LearnPress\ExternalPlugin\Elementor\Widgets\Course\ListCoursesByPageElementor;
 use LearnPress\ExternalPlugin\Elementor\Widgets\Course\Sections\CoursePriceElementor;
 use LearnPress\ExternalPlugin\Elementor\Widgets\CourseListElementor;
@@ -50,7 +49,6 @@ return [
 	'dynamic' => apply_filters(
 		'lp/elementor/dynamic',
 		[
-			'course-price'          => CoursePriceDynamicElementor::class,
 			'course-count-student'  => CourseCountStudentDynamicElementor::class,
 			'course-count-lesson'   => CourseCountLessonDynamicElementor::class,
 			'course-count-quiz'     => CourseCountQuizDynamicElementor::class,

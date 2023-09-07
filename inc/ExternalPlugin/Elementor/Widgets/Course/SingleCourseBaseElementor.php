@@ -65,4 +65,18 @@ trait SingleCourseBaseElementor {
 	public function get_help_url() {
 		return '';
 	}
+
+	/**
+	 * Get course
+	 *
+	 * @return bool|LP_Course|mixed
+	 */
+	public function get_course() {
+		$id = get_the_ID();
+		if ( ! $id ) {
+			return false;
+		}
+
+		return learn_press_get_course( $id );
+	}
 }
