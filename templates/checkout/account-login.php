@@ -34,7 +34,7 @@ if ( is_user_logged_in() ) {
 
 	<?php do_action( 'learn-press/after-checkout-account-login-fields' ); ?>
 
-	<input type="hidden" name="learn-press-checkout-nonce" value="<?php echo wp_create_nonce( 'learn-press-checkout-login' ); ?>">
+<!--	<input type="hidden" name="learn-press-checkout-nonce" value="--><?php //echo wp_create_nonce( 'learn-press-checkout-login' ); ?><!--">-->
 	<p class="lp-checkout-remember">
 		<label>
 			<input type="checkbox" name="rememberme"/>

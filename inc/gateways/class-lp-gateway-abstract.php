@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	/**
-	 * @var null
+	 * @var null|string
 	 */
 	public $id = null;
 	/**

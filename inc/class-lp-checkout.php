@@ -99,7 +99,7 @@ class LP_Checkout {
 	 */
 	protected function __construct() {
 		//add_filter( 'learn-press/validate-checkout-field', array( $this, 'validate_fields' ), 10, 3 );
-		add_filter( 'learn-press/validate-checkout-fields', array( $this, 'check_validate_fields' ), 10, 3 );
+		add_filter( 'learn-press/validate-checkout-fields', array( $this, 'check_validate_fields' ), 10 );
 		//add_filter( 'learn-press/payment-successful-result', array( $this, 'process_customer' ), 10, 2 );
 
 		if ( ! is_null( LearnPress::instance()->session ) ) {
@@ -187,7 +187,7 @@ class LP_Checkout {
 	 *
 	 * @return array
 	 */
-	public function check_validate_fields( $errors, $fields, $checkout ) {
+	public function check_validate_fields( $errors ) {
 		if ( ! empty( $errors ) ) {
 			return $errors;
 		}
@@ -197,8 +197,11 @@ class LP_Checkout {
 			$cart       = LearnPress::instance()->cart;
 			$cart_items = $cart->get_items();
 
+			$checkout_account_type = LP_Request::get_param( 'checkout-account-switch-form' );
+			$this->checkout_action = $checkout_account_type;
+
 			switch ( $this->checkout_action ) {
-				case 'checkout-login':
+				case 'login':
 					$user = wp_signon(
 						array(
 							'user_login'    => LP_Request::get_param( 'username' ),
@@ -214,7 +217,7 @@ class LP_Checkout {
 						wp_set_current_user( $user->ID );
 					}
 					break;
-				case 'checkout-register':
+				case 'register':
 					$default_fields = array(
 						'reg_email'     => LP_Request::get_param( 'reg_email' ),
 						'reg_username'  => LP_Request::get_param( 'reg_username' ),
@@ -264,8 +267,8 @@ class LP_Checkout {
 						}
 					}
 					break;
-				case 'guest-checkout':
-					$email_guest = LP_Request::get_string( 'guest_email' );
+				case 'guest':
+					$email_guest = LP_Request::get_param( 'guest_email' );
 					if ( ! is_email( $email_guest ) ) {
 						throw new Exception( __( 'Your email is not valid!', 'learnpress' ) );
 					}
@@ -275,7 +278,7 @@ class LP_Checkout {
 					break;
 			}
 
-				// Set session, cart for user have just login/register success.
+			// Set session, cart for user have just login/register success.
 			if ( in_array( $this->checkout_action, [ 'checkout-login', 'checkout-register' ] ) ) {
 				$cart->empty_cart();
 				$session->set( 'cart', $cart_items, true );
@@ -353,8 +356,10 @@ class LP_Checkout {
 	 * Checkout fields.
 	 *
 	 * @return array
+	 * @deprecated 4.2.3.5
 	 */
 	public function get_checkout_fields() {
+		_deprecated_function( __METHOD__, '4.2.3.5' );
 		if ( ! $this->verify_nonce() ) {
 			$this->checkout_fields['invalid_request'] = new WP_Error( 'invalid_request', __( 'Your session has expired.', 'learnpress' ) );
 		} else {
@@ -563,6 +568,7 @@ class LP_Checkout {
 	 * @deprecated 4.2.3.3
 	 */
 	public function validate_fields( $validate, $field, $name ) {
+		_deprecated_function( __METHOD__, '4.2.3.3' );
 		switch ( $this->checkout_action ) {
 			case 'checkout-register':
 				if ( $name === 'reg_username' ) {
@@ -662,10 +668,12 @@ class LP_Checkout {
 	 * Validate fields.
 	 *
 	 * @return bool
+	 * @throws Exception
 	 */
 	public function validate_checkout_fields() {
 		$this->errors = array();
-		$fields       = $this->get_checkout_fields();
+		//$fields       = $this->get_checkout_fields();
+		$fields = [];
 
 		/*if ( $fields ) {
 			foreach ( $fields as $name => $field ) {
@@ -682,6 +690,12 @@ class LP_Checkout {
 				}
 			}
 		}*/
+
+		// Check nonce
+		$nonce = LP_Request::get_param( 'learn-press-checkout-nonce' );
+		if ( ! wp_verify_nonce( $nonce, 'learn-press-checkout' ) ) {
+			throw new Exception( __( 'Your session has expired.', 'learnpress' ) );
+		}
 
 		$status = true;
 

@@ -43,7 +43,7 @@ class LP_Gateways {
 				'paypal'          => 'LP_Gateway_Paypal',
 				'offline-payment' => 'LP_Gateway_Offline_Payment',
 			);
-			// Filter
+			// @deprecated 4.2.3.5
 			$gateways = apply_filters( 'learn_press_payment_method', $gateways );
 
 			// 3.0.0

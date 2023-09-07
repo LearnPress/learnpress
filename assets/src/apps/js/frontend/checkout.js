@@ -8,7 +8,7 @@
 	/**
 	 * Checkout
 	 *
-	 * @param  options
+	 * @param options
 	 */
 	const Checkout = LP.Checkout = function( options ) {
 		const $formCheckout = $( '#learn-press-checkout-form' ),
@@ -88,6 +88,12 @@
 			const urlHandle = new URL( options.ajaxurl );
 			urlHandle.searchParams.set( 'lp-ajax', 'checkout' );
 
+			const elCheckoutForm = document.querySelector( '#learn-press-checkout-form' );
+			const elInputNonce = document.querySelector( 'input[name="learn-press-checkout-nonce"]' );
+			const elElCheckoutAccountType = elCheckoutForm.querySelector( 'input[name="checkout-account-switch-form"]:checked' );
+			formData[ 'learn-press-checkout-nonce' ] = elInputNonce.value;
+			formData[ 'checkout-account-switch-form' ] = elElCheckoutAccountType.value;
+
 			$.ajax( {
 				url: urlHandle,
 				dataType: 'html',
@@ -161,8 +167,8 @@
 		/**
 		 * Append messages into document.
 		 *
-		 * @param  message
-		 * @param  wrap
+		 * @param message
+		 * @param wrap
 		 */
 		const showMessage = function( message, wrap = false ) {
 			removeMessage();
@@ -184,7 +190,7 @@
 			}
 
 			if ( Array.isArray( message ) ) {
-				message.map( ( msg ) => $formCheckout.prepend( '<div class="learn-press-message error">' + msg + '</div>') );
+				message.map( ( msg ) => $formCheckout.prepend( '<div class="learn-press-message error">' + msg + '</div>' ) );
 			} else {
 				$formCheckout.prepend( '<div class="learn-press-message error">' + message + '</div>' );
 			}
@@ -242,8 +248,8 @@
 		/**
 		 * Callback function for showing/hiding register form.
 		 *
-		 * @param  e
-		 * @param  toggle
+		 * @param e
+		 * @param toggle
 		 */
 		const _toggleRegisterForm = function( e, toggle ) {
 			toggle = $formRegister.find( '.learn-press-form-register' ).toggle( toggle ).is( ':visible' );
@@ -255,8 +261,8 @@
 		/**
 		 * Callback function for showing/hiding login form.
 		 *
-		 * @param  e      {Event}
-		 * @param  toggle {boolean}
+		 * @param e      {Event}
+		 * @param toggle {boolean}
 		 * @private
 		 */
 		const _toggleLoginForm = function( e, toggle ) {
