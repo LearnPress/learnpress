@@ -86,19 +86,27 @@ $style_fields = array_merge(
 				]
 			)
 		]
-    )
+	),
+	LPElementorControls::add_fields_in_section(
+		'style_free_price',
+        esc_html__( 'Free Price', 'learnpress' ),
+		Controls_Manager::TAB_STYLE,
+		[
+			'free_price_color'       => LPElementorControls::add_control_type_color(
+				'free_price_color',
+				esc_html__( 'Color', 'learnpress' ),
+				[
+					'{{WRAPPER}} .course-item-price .free' => 'color: {{VALUE}};',
+				]
+			)
+		]
+	)
 );
 
 return apply_filters(
 	'learn-press/elementor/course-price',
-	// array_merge(
-	// 	apply_filters(
-	// 		'learn-press/elementor/course-price/tab-content',
-	// 		$content_fields
-	// 	),
-		apply_filters(
-			'learn-press/elementor/course-price/tab-styles',
-			$style_fields
-		)
-	// )
+	apply_filters(
+		'learn-press/elementor/course-price/tab-styles',
+		$style_fields
+	)
 );
