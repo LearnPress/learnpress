@@ -834,6 +834,13 @@ class LP_Page_Controller {
 
 			// Handle 404 if user are viewing course item directly.
 			$this->set_link_item_course_default_wp_to_page_404( $q );
+
+			// set 404 if viewing single instructor but not logged
+			if ( get_query_var( 'is_single_instructor' ) ) {
+				if ( ! is_user_logged_in() ) {
+					self::set_page_404();
+				}
+			}
 		} catch ( Throwable $e ) {
 			error_log( $e->getMessage() );
 		}
@@ -907,7 +914,7 @@ class LP_Page_Controller {
 			$flag_load_404 = apply_filters( 'learnpress/page/set-link-item-course-404', $flag_load_404, $post_author, $user );
 
 			if ( $flag_load_404 ) {
-				learn_press_404_page();
+				self::set_page_404();
 			}
 		} catch ( Throwable $e ) {
 			error_log( $e->getMessage() );
@@ -1226,6 +1233,17 @@ class LP_Page_Controller {
 		}
 
 		return $link;
+	}
+
+	/**
+	 * Set Page viewing to 404
+	 *
+	 * @return void
+	 */
+	public static function set_page_404() {
+		global $wp_query;
+		$wp_query->set_404();
+		status_header( 404 );
 	}
 }
 
