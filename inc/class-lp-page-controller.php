@@ -836,8 +836,9 @@ class LP_Page_Controller {
 			$this->set_link_item_course_default_wp_to_page_404( $q );
 
 			// set 404 if viewing single instructor but not logged
+			$slug_instructor = get_query_var( 'instructor_name' );
 			if ( get_query_var( 'is_single_instructor' ) ) {
-				if ( ! is_user_logged_in() ) {
+				if ( empty( $slug_instructor ) && ! is_user_logged_in() ) {
 					self::set_page_404();
 				}
 			}
