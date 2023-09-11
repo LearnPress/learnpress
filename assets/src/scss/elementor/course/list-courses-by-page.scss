@@ -15,20 +15,6 @@
 			grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
 		}
 
-		&.list {
-			display: flex;
-			flex-direction: column;
-
-			li {
-				display: flex;
-				gap: 20px;
-
-				>* {
-					flex-basis: 50%;
-				}
-			}
-		}
-
 		li {
 			list-style: none;
 			overflow: hidden;
