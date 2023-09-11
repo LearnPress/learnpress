@@ -22,10 +22,21 @@ class LPElementor {
 	public $config        = [];
 
 	protected function init() {
-		$this->config = require_once 'lp-elementor-widgets-config.php';
+		add_action( 'elementor/init', array( $this, 'load_widgets_config' ) );
 		add_action( 'elementor/elements/categories_registered', array( $this, 'register_category' ) );
 		add_action( 'elementor/widgets/register', array( $this, 'register_widgets' ), 10, 1 );
 		add_action( 'elementor/dynamic_tags/register', array( $this, 'register_tags' ) );
+	}
+
+	/**
+	 * Load widgets config of LP
+	 *
+	 * @return void
+	 * @since 4.2.3.5
+	 * @version 1.0.0
+	 */
+	public function load_widgets_config() {
+		$this->config = require_once 'lp-elementor-widgets-config.php';
 	}
 
 	/**
