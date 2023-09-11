@@ -91,8 +91,10 @@
 			const elCheckoutForm = document.querySelector( '#learn-press-checkout-form' );
 			const elInputNonce = document.querySelector( 'input[name="learn-press-checkout-nonce"]' );
 			const elElCheckoutAccountType = elCheckoutForm.querySelector( 'input[name="checkout-account-switch-form"]:checked' );
+			if ( elElCheckoutAccountType ) {
+				formData[ 'checkout-account-switch-form' ] = elElCheckoutAccountType.value;
+			}
 			formData[ 'learn-press-checkout-nonce' ] = elInputNonce.value;
-			formData[ 'checkout-account-switch-form' ] = elElCheckoutAccountType.value;
 
 			$.ajax( {
 				url: urlHandle,

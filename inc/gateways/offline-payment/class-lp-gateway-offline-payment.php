@@ -7,6 +7,8 @@
  * @version  4.0.0
  */
 
+use LearnPress\Helpers\Config;
+use LearnPress\Helpers\Singleton;
 // Prevent loading this file directly
 defined( 'ABSPATH' ) || exit;
 
@@ -15,23 +17,19 @@ if ( ! function_exists( 'LP_Gateway_Offline_Payment' ) ) {
 	 * Class LP_Gateway_Offline_Payment.
 	 */
 	class LP_Gateway_Offline_Payment extends LP_Gateway_Abstract {
-
+		use Singleton;
 		/**
 		 * @var LP_Settings
 		 */
 		protected $settings;
-
-		/**
-		 * Instructions for making a payment.
-		 *
-		 * @var mixed|string
-		 */
-		public $instructions = '';
-
 		/**
 		 * @var string
 		 */
 		public $id = 'offline-payment';
+
+		public function init() {
+			// TODO: Implement init() method.
+		}
 
 		/**
 		 * Constructor for the gateway.
@@ -44,22 +42,20 @@ if ( ! function_exists( 'LP_Gateway_Offline_Payment' ) ) {
 			$this->method_description = __( 'Make a payment with cash.', 'learnpress' );
 
 			// Get settings
-			$this->title        = $this->settings->get( 'title', $this->method_title );
-			$this->description  = $this->settings->get( 'description', $this->method_description );
-			$this->instructions = $this->settings->get( 'instructions' );
+			$this->title       = $this->settings->get( 'title', $this->method_title );
+			$this->description = $this->settings->get( 'description', $this->method_description );
 
 			if ( did_action( 'learn_press/offline-payment-add-on/loaded' ) ) {
 				return;
 			}
 
-			//add_action( 'learn-press/order/received', array( $this, 'instructions' ), 99 );
-			add_filter(
+			/*add_filter(
 				'learn-press/payment-gateway/' . $this->id . '/available',
 				array(
 					$this,
 					'offline_payment_available',
 				)
-			);
+			);*/
 
 			do_action( 'learn_press/offline-payment-add-on/loaded' );
 		}
@@ -70,22 +66,12 @@ if ( ! function_exists( 'LP_Gateway_Offline_Payment' ) ) {
 		 * @return bool
 		 */
 		public function offline_payment_available(): bool {
+			_deprecated_function( __FUNCTION__, '4.2.3.5' );
 			return LP_Settings::instance()->get( "{$this->id}.enable", 'no' ) === 'yes';
 		}
 
-		/**
-		 * Output for the order received page.
-		 *
-		 * @param $order
-		 */
-		public function instructions( $order ) {
-			_deprecated_function( __METHOD__, '4.2.0' );
-			/*if ( $order && ( $this->id == $order->payment_method ) && $this->instructions ) {
-				echo stripcslashes( wpautop( wptexturize( $this->instructions ) ) );
-			}*/
-		}
-
 		protected function _get( $name ) {
+			_deprecated_function( __FUNCTION__, '4.2.3.5' );
 			return LP_Settings::instance()->get( $this->id . '.' . $name );
 		}
 
@@ -94,49 +80,14 @@ if ( ! function_exists( 'LP_Gateway_Offline_Payment' ) ) {
 		 *
 		 * @return array
 		 */
-		public function get_settings() {
-			return apply_filters(
-				'learn-press/gateway-payment/offline-payment/settings',
-				array(
-					array(
-						'type' => 'title',
-					),
-					array(
-						'title'   => __( 'Enable', 'learnpress' ),
-						'id'      => '[enable]',
-						'default' => 'no',
-						'type'    => 'checkbox',
-					),
-					array(
-						'title'   => __( 'Testing Mode', 'learnpress' ),
-						'id'      => '[sandbox]',
-						'default' => 'no',
-						'type'    => 'checkbox',
-						'desc'    => __( 'Auto complete the order for testing purpose.' ),
-					),
-					array(
-						'title'   => __( 'Title', 'learnpress' ),
-						'id'      => '[title]',
-						'default' => $this->title,
-						'type'    => 'text',
-					),
-					array(
-						'title'   => __( 'Instruction', 'learnpress' ),
-						'id'      => '[description]',
-						'default' => $this->description,
-						'type'    => 'textarea',
-					),
-					array(
-						'type' => 'sectionend',
-					),
-				)
-			);
+		public function get_settings(): array {
+			return Config::instance()->get( $this->id, 'settings/gateway', [ 'lp_gateway_offline_payment' => $this ] );
 		}
 		/**
 		 * Payment form.
 		 */
 		public function get_payment_form() {
-			return LP_Settings::instance()->get( $this->id . '.description' );
+			return LP_Settings::instance()->get( $this->id . '.description', $this->description );
 		}
 
 		/**

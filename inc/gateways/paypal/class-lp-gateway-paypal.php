@@ -8,6 +8,9 @@
  * @version 3.0.1
  */
 
+use LearnPress\Helpers\Config;
+use LearnPress\Helpers\Singleton;
+
 /**
  * Prevent loading this file directly
  */
@@ -18,6 +21,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 	 * Class LP_Gateway_Paypal.
 	 */
 	class LP_Gateway_Paypal extends LP_Gateway_Abstract {
+		use Singleton;
 		/**
 		 * @var string
 		 */
@@ -136,10 +140,6 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 * @return bool
 		 */
 		public function paypal_available( bool $default, $payment ): bool {
-			if ( ! $this->is_enabled() ) {
-				return false;
-			}
-
 			// Empty live email and Sandbox mode also disabled
 			if ( $this->settings->get( 'paypal_sandbox' ) != 'yes' && ! $this->settings->get( 'paypal_email' ) ) {
 				return false;
@@ -298,42 +298,8 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 *
 		 * @return array
 		 */
-		public function get_settings() {
-			return apply_filters(
-				'learn-press/gateway-payment/paypal/settings',
-				array(
-					array(
-						'type' => 'title',
-					),
-					array(
-						'title'   => esc_html__( 'Enable/Disable', 'learnpress' ),
-						'id'      => '[enable]',
-						'default' => 'no',
-						'type'    => 'checkbox',
-						'desc'    => esc_html__( 'Enable PayPal Standard', 'learnpress' ),
-					),
-					array(
-						'title' => esc_html__( 'PayPal email', 'learnpress' ),
-						'id'    => '[paypal_email]',
-						'type'  => 'text',
-					),
-					array(
-						'title'   => esc_html__( 'Sandbox mode', 'learnpress' ),
-						'id'      => '[paypal_sandbox]',
-						'default' => 'no',
-						'type'    => 'checkbox',
-						'desc'    => esc_html__( 'Enable PayPal sandbox', 'learnpress' ),
-					),
-					array(
-						'title' => esc_html__( 'Sandbox email address', 'learnpress' ),
-						'id'    => '[paypal_sandbox_email]',
-						'type'  => 'text',
-					),
-					array(
-						'type' => 'sectionend',
-					),
-				)
-			);
+		public function get_settings(): array {
+			return Config::instance()->get( $this->id, 'settings/gateway' );
 		}
 
 		/**

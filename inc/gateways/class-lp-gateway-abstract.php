@@ -61,6 +61,10 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	 * @var string
 	 */
 	protected $icon = '';
+	/**
+	 * @var bool set default select when checkout
+	 */
+	public $is_selected = false;
 
 	/**
 	 * Constructor
