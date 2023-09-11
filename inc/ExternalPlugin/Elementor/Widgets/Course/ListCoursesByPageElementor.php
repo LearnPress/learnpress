@@ -71,11 +71,7 @@ class ListCoursesByPageElementor extends LPElementorWidgetBase {
 			$is_load_restapi           = $settings['courses_rest'] ?? 0;
 			$courses_rest_no_load_page = $settings['courses_rest_no_load_page'] ?? 0;
 			$settings['lp_rest_url']   = esc_url_raw( get_rest_url() );
-			$courses_layout_default    = $settings['courses_layout_default'] ?? 'grid';
-			if ( ! Plugin::$instance->editor->is_edit_mode() && isset( $_COOKIE[ 'layout_widget_' . $this->get_id() ] ) ) {
-				$courses_layout_default = $_COOKIE[ 'layout_widget_' . $this->get_id() ];
-			}
-			$settings['courses_item_layout'] = \Elementor\Plugin::instance()->frontend->get_builder_content_for_display( $settings['courses_layout_id'] ?? '' );
+
 			if ( get_current_user_id() ) {
 				$settings['nonce'] = wp_create_nonce( 'wp_rest' );
 			}
@@ -100,14 +96,6 @@ class ListCoursesByPageElementor extends LPElementorWidgetBase {
 				$settings,
 				lp_archive_skeleton_get_args()
 			);
-
-			// Icons grid/list
-			ob_start();
-			Icons_Manager::render_icon( $settings['courses_list_icon'] ?? '' );
-			$settings['courses_ico_list'] = ob_get_clean();
-			ob_start();
-			Icons_Manager::render_icon( $settings['courses_grid_icon'] ?? '' );
-			$settings['courses_ico_grid'] = ob_get_clean();
 
 			wp_localize_script( 'lp-courses-by-page', 'lpWidget_' . $this->get_id(), $settings );
 

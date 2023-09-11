@@ -28,26 +28,6 @@ $content_fields = array_merge(
 				'Layout want to use',
 				'685'
 			),
-			'courses_layout_default'       => LPElementorControls::add_control_type(
-				'courses_layout_default',
-				'Layout Default',
-				'grid',
-				Controls_Manager::CHOOSE,
-				[
-					'options' => [
-						'grid' => [
-							'title' => esc_html__( 'Grid', 'learnpress' ),
-							'icon'  => 'eicon-apps',
-						],
-						'list' => [
-							'title' => esc_html__( 'List', 'learnpress' ),
-							'icon'  => 'eicon-menu-bar',
-						],
-					],
-					'toggle'  => false,
-
-				]
-			),
 			'courses_detect_page'          => LPElementorControls::add_control_type(
 				'courses_detect_page',
 				'Auto detect page',
@@ -119,33 +99,7 @@ $content_fields = array_merge(
 						'courses_rest' => 'yes',
 					],
 				]
-			),
-			'courses_grid_icon'            => LPElementorControls::add_control_type(
-				'courses_grid_icon',
-				__( 'Grid Icon', 'learnpress' ),
-				array(
-					'value'   => 'fas fa-th',
-					'library' => 'fa-solid',
-				),
-				Controls_Manager::ICONS,
-				[
-					'skin'        => 'inline',
-					'label_block' => false,
-				]
-			),
-			'courses_list_icon'            => LPElementorControls::add_control_type(
-				'courses_list_icon',
-				__( 'List Icon', 'learnpress' ),
-				array(
-					'value'   => 'fas fa-list',
-					'library' => 'fa-solid',
-				),
-				Controls_Manager::ICONS,
-				[
-					'skin'        => 'inline',
-					'label_block' => false,
-				]
-			),
+			)
 		]
 	),
 	LPElementorControls::add_fields_in_section(
@@ -200,10 +154,10 @@ $content_fields = array_merge(
 
 // Fields tab style
 // Controls tab Grid
-function lp_el_style_list_course_by_page( $type_tab = 'grid', $style_for = 'layout' ) {
+function lp_el_style_list_course_by_page( $style_for = 'layout' ) {
 	$style_layout_general      = [
-		"gap_{$type_tab}"              => LPElementorControls::add_control_type(
-			"gap_{$type_tab}",
+		"gap"              => LPElementorControls::add_control_type(
+			"gap",
 			__( 'Gap', 'learnpress' ),
 			[
 				'size' => 30,
@@ -219,67 +173,67 @@ function lp_el_style_list_course_by_page( $type_tab = 'grid', $style_for = 'layo
 					],
 				],
 				'selectors' => [
-					"{{WRAPPER}} .list-courses-elm.{$type_tab}" => 'gap: {{SIZE}}{{UNIT}};',
+					"{{WRAPPER}} .list-courses-elm" => 'gap: {{SIZE}}{{UNIT}};',
 				],
 			]
 		),
-		"border_{$type_tab}"           => LPElementorControls::add_group_control_type(
-			"border_{$type_tab}",
+		"border"           => LPElementorControls::add_group_control_type(
+			"border",
 			Group_Control_Border::get_type(),
-			"{{WRAPPER}} .list-courses-elm.{$type_tab} li"
+			"{{WRAPPER}} .list-courses-elm li"
 		),
-		"background_color_{$type_tab}" => LPElementorControls::add_control_type_color(
-			"background_color_{$type_tab}",
+		"background_color" => LPElementorControls::add_control_type_color(
+			"background_color",
 			__( 'Background Color', 'learnpress' ),
 			[
-				".list-courses-elm.{$type_tab} li" => 'background-color: {{VALUE}};',
+				".list-courses-elm li" => 'background-color: {{VALUE}};',
 			]
 		),
-		"border_radius_{$type_tab}"    => LPElementorControls::add_responsive_control_type(
-			"border_radius_{$type_tab}",
+		"border_radius"    => LPElementorControls::add_responsive_control_type(
+			"border_radius",
 			__( 'Border Radius', 'learnpress' ),
 			[],
 			Controls_Manager::DIMENSIONS,
 			[
 				'size_units' => [ 'px', '%', 'custom' ],
 				'selectors'  => [
-					"{{WRAPPER}} .list-courses-elm.{$type_tab} li" => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}}; overflow: hidden;',
+					"{{WRAPPER}} .list-courses-elm li" => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}}; overflow: hidden;',
 				],
 			]
 		),
 	];
 	$style_title_general       = LPElementorControls::add_controls_style_text(
-		"title_{$type_tab}",
-		".list-courses-elm.{$type_tab} .course-title"
+		"title",
+		".list-courses-elm .course-title"
 	);
 	$style_description_general = LPElementorControls::add_controls_style_text(
-		"description_{$type_tab}",
-		".list-courses-elm.{$type_tab} .course-short-description"
+		"description",
+		".list-courses-elm .course-short-description"
 	);
 	$style_price_general       = array_merge(
 		LPElementorControls::add_controls_style_text(
-			"price_{$type_tab}",
-			".list-courses-elm.{$type_tab} .course-item-price"
+			"price",
+			".list-courses-elm .course-item-price"
 		),
 		[
-			"price_free_{$type_tab}"      => LPElementorControls::add_control_type_color(
-				"price_free_{$type_tab}",
+			"price_free"      => LPElementorControls::add_control_type_color(
+				"price_free",
 				__( 'Course Free Color', 'learnpress' ),
 				[
-					"{{WRAPPER}} .list-courses-elm.{$type_tab} .course-item-price .free" => 'color: {{VALUE}};',
+					"{{WRAPPER}} .list-courses-elm .course-item-price .free" => 'color: {{VALUE}};',
 				]
 			),
-			"price_sale_{$type_tab}"      => LPElementorControls::add_control_type_color(
-				"price_sale_{$type_tab}",
+			"price_sale"      => LPElementorControls::add_control_type_color(
+				"price_sale",
 				__( 'Course Sale Color', 'learnpress' ),
 				[
-					"{{WRAPPER}} .list-courses-elm.{$type_tab} .course-item-price .origin-price" => 'color: {{VALUE}};',
+					"{{WRAPPER}} .list-courses-elm .course-item-price .origin-price" => 'color: {{VALUE}};',
 				]
 			),
-			"price_sale_typo_{$type_tab}" => LPElementorControls::add_group_control_type(
-				"price_sale_typo_{$type_tab}",
+			"price_sale_typo" => LPElementorControls::add_group_control_type(
+				"price_sale_typo",
 				Group_Control_Typography::get_type(),
-				"{{WRAPPER}} .list-courses-elm.{$type_tab} .course-item-price .origin-price",
+				"{{WRAPPER}} .list-courses-elm .course-item-price .origin-price",
 				[
 					'label' => esc_html__( 'Course Sale Typography', 'learnpress' ),
 				]
@@ -287,12 +241,12 @@ function lp_el_style_list_course_by_page( $type_tab = 'grid', $style_for = 'layo
 		]
 	);
 	$style_meta_data_general   = LPElementorControls::add_controls_style_text(
-		"meta_data_{$type_tab}",
-		".list-courses-elm.{$type_tab} .course-count-lesson, .list-courses-elm.{$type_tab} .instructor-display-name, .list-courses-elm.{$type_tab} .course-count-student"
+		"meta_data",
+		".list-courses-elm .course-count-lesson, .list-courses-elm .instructor-display-name, .list-courses-elm .course-count-student"
 	);
 	$style_image_general       = LPElementorControls::add_controls_style_image(
-		"img_{$type_tab}",
-		".list-courses-elm.{$type_tab} .course-img"
+		"img",
+		".list-courses-elm .course-img"
 	);
 
 	switch ( $style_for ) {
@@ -316,21 +270,7 @@ $style_fields = array_merge(
 		'style_layout',
 		esc_html__( 'Layout', 'learnpress' ),
 		Controls_Manager::TAB_STYLE,
-		LPElementorControls::add_start_control_tabs(
-			'tabs_of_layout',
-			array_merge(
-				LPElementorControls::add_start_control_tab(
-					'tab_layout_grid',
-					__( 'Grid', 'learnpress' ),
-					lp_el_style_list_course_by_page( 'grid' )
-				),
-				LPElementorControls::add_start_control_tab(
-					'tab_layout_list',
-					__( 'List', 'learnpress' ),
-					lp_el_style_list_course_by_page( 'list' )
-				)
-			)
-		)
+		lp_el_style_list_course_by_page()
 	),
 	LPElementorControls::add_fields_in_section(
 		'style_sort',
@@ -351,162 +291,34 @@ $style_fields = array_merge(
 		)
 	),
 	LPElementorControls::add_fields_in_section(
-		'style_list_grid',
-		esc_html__( 'List Grid', 'learnpress' ),
-		Controls_Manager::TAB_STYLE,
-		array_merge(
-			LPElementorControls::add_controls_style_text(
-				'style_list_grid_item',
-				'.courses-layouts-display-list li',
-				[],
-				[
-					'text_typography',
-					'text_shadow',
-					'text_color',
-					'text_color_hover',
-				]
-			),
-			[
-				'list_grid_icon_size'        => LPElementorControls::add_control_type(
-					'list_grid_icon_size',
-					__( 'Icon size', 'learnpress' ),
-					[
-						'size' => 16,
-						'unit' => 'px',
-					],
-					Controls_Manager::SLIDER,
-					[
-						'range'     => [
-							'px' => [
-								'min'  => 0,
-								'max'  => 100,
-								'step' => 1,
-							],
-						],
-						'selectors' => [
-							'{{WRAPPER}} .courses-layouts-display-list li i'    => 'font-size: {{SIZE}}{{UNIT}};',
-							'{{WRAPPER}} .courses-layouts-display-list li svg'  => 'width: {{SIZE}}{{UNIT}}; height: {{SIZE}}{{UNIT}};',
-						],
-					]
-				),
-				'list_grid_icon_color'       => LPElementorControls::add_control_type_color(
-					'list_grid_icon_color',
-					esc_html__( 'Icon Color', 'learnpress' ),
-					[
-						'{{WRAPPER}} .courses-layouts-display-list li i' => 'color: {{VALUE}};',
-						'{{WRAPPER}} .courses-layouts-display-list li svg path' => 'fill: {{VALUE}};',
-					]
-				),
-				'list_grid_icon_color_hover' => LPElementorControls::add_control_type_color(
-					'list_grid_icon_color_hover',
-					esc_html__( 'Icon Color Hover ( Active )', 'learnpress' ),
-					[
-						'{{WRAPPER}} .courses-layouts-display-list li:hover i, {{WRAPPER}} .courses-layouts-display-list li.active i' => 'color: {{VALUE}};',
-						'{{WRAPPER}} .courses-layouts-display-list li:hover svg path, {{WRAPPER}} .courses-layouts-display-list li.active svg path' => 'fill: {{VALUE}};',
-					]
-				),
-			]
-		)
-	),
-	LPElementorControls::add_fields_in_section(
 		'style_title',
 		esc_html__( 'Course Title', 'learnpress' ),
 		Controls_Manager::TAB_STYLE,
-		LPElementorControls::add_start_control_tabs(
-			'tabs_of_title',
-			array_merge(
-				LPElementorControls::add_start_control_tab(
-					'tab_title_grid',
-					__( 'Grid', 'learnpress' ),
-					lp_el_style_list_course_by_page( 'grid', 'title' )
-				),
-				LPElementorControls::add_start_control_tab(
-					'tab_title_list',
-					__( 'List', 'learnpress' ),
-					lp_el_style_list_course_by_page( 'list', 'title' )
-				)
-			)
-		)
+		lp_el_style_list_course_by_page( 'title' )
 	),
 	LPElementorControls::add_fields_in_section(
 		'style_description',
 		esc_html__( 'Course Description', 'learnpress' ),
 		Controls_Manager::TAB_STYLE,
-		LPElementorControls::add_start_control_tabs(
-			'tabs_of_description',
-			array_merge(
-				LPElementorControls::add_start_control_tab(
-					'tab_description_grid',
-					__( 'Grid', 'learnpress' ),
-					lp_el_style_list_course_by_page( 'grid', 'description' )
-				),
-				LPElementorControls::add_start_control_tab(
-					'tab_description_list',
-					__( 'List', 'learnpress' ),
-					lp_el_style_list_course_by_page( 'list', 'description' )
-				)
-			)
-		)
+		lp_el_style_list_course_by_page( 'description' )
 	),
 	LPElementorControls::add_fields_in_section(
 		'style_price',
 		esc_html__( 'Course Price', 'learnpress' ),
 		Controls_Manager::TAB_STYLE,
-		LPElementorControls::add_start_control_tabs(
-			'tabs_of_price',
-			array_merge(
-				LPElementorControls::add_start_control_tab(
-					'tab_price_grid',
-					__( 'Grid', 'learnpress' ),
-					lp_el_style_list_course_by_page( 'grid', 'price' )
-				),
-				LPElementorControls::add_start_control_tab(
-					'tab_price_list',
-					__( 'List', 'learnpress' ),
-					lp_el_style_list_course_by_page( 'list', 'price' )
-				)
-			)
-		)
+		lp_el_style_list_course_by_page( 'price' )
 	),
 	LPElementorControls::add_fields_in_section(
 		'style_meta_data',
 		esc_html__( 'Meta Data', 'learnpress' ),
 		Controls_Manager::TAB_STYLE,
-		LPElementorControls::add_start_control_tabs(
-			'tabs_of_meta_data',
-			array_merge(
-				LPElementorControls::add_start_control_tab(
-					'tab_meta_data_grid',
-					__( 'Grid', 'learnpress' ),
-					lp_el_style_list_course_by_page( 'grid', 'meta_data' )
-				),
-				LPElementorControls::add_start_control_tab(
-					'tab_meta_data_list',
-					__( 'List', 'learnpress' ),
-					lp_el_style_list_course_by_page( 'list', 'meta_data' )
-				)
-			)
-		)
+		lp_el_style_list_course_by_page( 'meta_data' )
 	),
 	LPElementorControls::add_fields_in_section(
 		'style_image',
 		esc_html__( 'Course Image', 'learnpress' ),
 		Controls_Manager::TAB_STYLE,
-		LPElementorControls::add_start_control_tabs(
-			'tabs_of_image',
-			array_merge(
-				LPElementorControls::add_start_control_tab(
-					'tab_image_grid',
-					__( 'Grid', 'learnpress' ),
-					lp_el_style_list_course_by_page( 'grid', 'image' )
-				),
-				LPElementorControls::add_start_control_tab(
-					'tab_image_list',
-					__( 'List', 'learnpress' ),
-					lp_el_style_list_course_by_page( 'list', 'image' )
-				)
-			)
-		)
+		lp_el_style_list_course_by_page( 'image' )
 	),
 	LPElementorControls::add_fields_in_section(
 		'style_pagination',
