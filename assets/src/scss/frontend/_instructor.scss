@@ -58,12 +58,16 @@ body {
 
 		&__right {
 			flex: 1;
-
+			.instructor-description:empty{
+				margin: 0;
+			}
 			.instructor-social {
 				margin: 25px 0 15px;
 				display: flex;
 				gap: 25px;
-
+				&:empty{
+					margin: 0;
+				}
 				svg {
 					width: 30px;
 					height: 30px;
