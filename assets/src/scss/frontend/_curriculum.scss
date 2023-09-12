@@ -114,7 +114,11 @@
 			color: #666;
 			font-style: italic;
 		}
-
+		.instructor-social{
+			display: flex;
+			gap: 16px;
+			margin-bottom: 12px;
+		}
 		.author-socials {
 			display: grid;
 			grid-template-columns: repeat(4, 33px);
