@@ -190,7 +190,7 @@ class ListCoursesTemplate {
 
 		$content = '<ul class="courses-layouts-display-list">';
 		foreach ( $layouts as $k => $v ) {
-			$active   = $data['courses_layout_default'] === $k ? 'active' : '';
+			$active   = ( $data['courses_layout_default'] ?? '' ) === $k ? 'active' : '';
 			$content .= '<li class="courses-layout ' . $active . '" data-layout="' . $k . '">' . $v . '</li>';
 		}
 		$content .= '</ul>';

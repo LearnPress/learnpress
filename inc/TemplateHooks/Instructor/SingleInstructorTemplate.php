@@ -383,12 +383,26 @@ class SingleInstructorTemplate {
 				$instructor
 			);
 
+			$count_course = sprintf(
+				'<div><span>%s</span>%s</div>',
+				wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-courses.svg' ),
+				$this->html_count_courses( $instructor )
+			);
+
+			$count_student = sprintf(
+				'<div><span>%s</span>%s</div>',
+				wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-students.svg' ),
+				$this->html_count_students( $instructor )
+			);
+
 			$sections = apply_filters(
 				'learn-press/single-instructor/info-right/sections',
 				[
-					'title'       => [ 'text_html' => "<h2>{$this->html_display_name( $instructor )}</h2>" ],
-					'social'      => [ 'text_html' => $this->html_social( $instructor ) ],
-					'description' => [ 'text_html' => $this->html_description( $instructor ) ],
+					'title'         => [ 'text_html' => "<h2>{$this->html_display_name( $instructor )}</h2>" ],
+					'social'        => [ 'text_html' => $this->html_social( $instructor ) ],
+					'description'   => [ 'text_html' => $this->html_description( $instructor ) ],
+					'count_course'  => [ 'text_html' => $count_course ],
+					'count_student' => [ 'text_html' => $count_student ],
 				],
 				$instructor
 			);
