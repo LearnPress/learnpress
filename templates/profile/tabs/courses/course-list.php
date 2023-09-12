@@ -5,14 +5,18 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  4.0.10
+ * @version  4.0.11
  */
+
+use LearnPress\TemplateHooks\UserItem\UserCourseTemplate;
 
 defined( 'ABSPATH' ) || exit();
 
 if ( ! isset( $user ) || ! isset( $course_ids ) || ! isset( $current_page ) || ! isset( $num_pages ) ) {
 	return;
 }
+
+$userCourseTemplate = UserCourseTemplate::instance();
 ?>
 
 <?php if ( $current_page === 1 ) : ?>
@@ -53,9 +57,9 @@ if ( ! isset( $user ) || ! isset( $course_ids ) || ! isset( $current_page ) || !
 		<td><a href="<?php the_permalink(); ?>" title="<?php the_title(); ?>"><?php the_title(); ?></a></td>
 		<td><?php echo esc_html( $course_result['result'] ); ?>%</td>
 		<td>
-			<?php echo ! empty( $course_data->get_expiration_time() ) ? $course_data->get_expiration_time() : '-'; ?>
+			<?php echo $userCourseTemplate->html_expire_date( $course_data ); ?>
 		</td>
-		<td><?php echo ! empty( $course_data->get_end_time() ) ? $course_data->get_end_time() : '-'; ?></td>
+		<td><?php echo $userCourseTemplate->html_start_date( $course_data ); ?></td>
 	</tr>
 		<?php
 	}
