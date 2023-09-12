@@ -467,7 +467,11 @@ class LP_Helper {
 					$value = (float) $value;
 					break;
 				default:
-					$value = sanitize_text_field( $value );
+					if ( is_callable( $type_content ) ) {
+						$value = call_user_func( $type_content, $value );
+					} else {
+						$value = sanitize_text_field( $value );
+					}
 			}
 		} elseif ( is_array( $value ) ) {
 			foreach ( $value as $k => $v ) {

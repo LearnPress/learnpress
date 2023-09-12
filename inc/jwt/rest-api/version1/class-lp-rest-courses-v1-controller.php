@@ -358,15 +358,8 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 
 			if ( is_user_logged_in() ) {
 				$order_id = $checkout->create_order();
-
-				if ( is_wp_error( $order_id ) ) {
-					throw new Exception( $order_id->get_error_message() );
-				}
-
-				$order = new LP_Order( $order_id );
-
+				$order    = new LP_Order( $order_id );
 				$order->payment_complete();
-
 				$cart->empty_cart();
 			}
 
