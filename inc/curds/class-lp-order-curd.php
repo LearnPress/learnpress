@@ -354,8 +354,10 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @param LP_Order $order
 	 *
 	 * @return LP_Order
+	 * @deprecated 4.2.3.5
 	 */
 	public function cln( $order ) {
+		_deprecated_function( __METHOD__, '4.2.3.5' );
 
 		$cloned = clone $order;
 
@@ -392,8 +394,10 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @param int $to
 	 *
 	 * @return mixed
+	 * @deprecated 4.2.3.5
 	 */
 	public function cln_items( $from, $to ) {
+		_deprecated_function( __METHOD__, '4.2.3.5' );
 		$order = learn_press_get_order( $from );
 		global $wpdb;
 
@@ -594,43 +598,6 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		}
 
 		return $order;
-	}
-
-	/**
-	 * Get all child orders of an order by id
-	 *
-	 * @param int $order_id
-	 *
-	 * @return array|bool|mixed
-	 */
-	public function get_child_orders( $order_id ) {
-		global $wpdb;
-
-		$orders = LP_Object_Cache::get( 'order-' . $order_id, 'lp-child-orders' );
-
-		if ( false === $orders ) {
-			$query = $wpdb->prepare(
-				"
-				SELECT *
-				FROM {$wpdb->posts}
-				WHERE post_parent = %d
-			",
-				$order_id
-			);
-
-			$posts = $wpdb->get_results( $query );
-			if ( $posts ) {
-				foreach ( $posts as $order ) {
-					new WP_Post( $order );
-					$orders[] = $order->ID;
-				}
-			} else {
-				$orders = array();
-			}
-			LP_Object_Cache::set( 'order-' . $order_id, $orders, 'lp-child-orders' );
-		}
-
-		return $orders;
 	}
 
 	public function duplicate( &$order, $args = array() ) {

@@ -6,7 +6,7 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  3.0.0
+ * @version  3.0.1
  */
 
 defined( 'ABSPATH' ) || exit();
@@ -25,7 +25,16 @@ foreach ( $breadcrumb as $key => $crumb ) {
 	if ( ! empty( $crumb[1] ) && sizeof( $breadcrumb ) !== $key + 1 ) {
 		echo '<a href="' . esc_url_raw( $crumb[1] ) . '"><span>' . esc_html( $crumb[0] ) . '</span></a>';
 	} else {
-		echo '<span>' . esc_html( $crumb[0] ) . '</span>';
+		if ( isset( $_GET['c_search'] ) ) {
+			$text = sprintf(
+				'%s %s',
+				__( 'Search results for: ', 'learnpress' ),
+				esc_html( $_GET['c_search'] )
+			);
+			echo '<span>' . esc_html( $text ) . '</span>';
+		} else {
+			echo '<span>' . esc_html( $crumb[0] ) . '</span>';
+		}
 	}
 
 	echo '</li>';

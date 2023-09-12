@@ -18,11 +18,11 @@ abstract class LP_Abstract_Settings {
 	}
 
 	public function save() {
-		// This function should be overwritten from it's child
+		// This function should be overwritten from its child
 	}
 
 	/**
-	 * @return bool
+	 * @return bool|mixed|array
 	 */
 	public function get_settings() {
 		return false;

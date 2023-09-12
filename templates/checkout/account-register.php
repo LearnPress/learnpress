@@ -13,7 +13,7 @@ defined( 'ABSPATH' ) || exit();
 ?>
 
 <input type="radio" id="checkout-account-switch-to-register" name="checkout-account-switch-form" checked="checked" value="register"/>
-<div id="checkout-account-register" class="checkout-account-switch-form lp-checkout-block left">
+<div id="checkout-account-register" class="lp-checkout-block left">
 
 	<h4><?php esc_html_e( 'Sign up', 'learnpress' ); ?></h4>
 
@@ -45,7 +45,7 @@ defined( 'ABSPATH' ) || exit();
 	do_action( 'register_form' );
 	?>
 
-	<?php wp_nonce_field( 'learn-press-checkout-register', 'learn-press-checkout-nonce' ); ?>
+	<?php //wp_nonce_field( 'learn-press-checkout-register', 'learn-press-checkout-nonce' ); ?>
 
 	<p class="lp-checkout-sign-in-link">
 		<?php if ( LearnPress::instance()->checkout()->is_enable_login() ) : ?>

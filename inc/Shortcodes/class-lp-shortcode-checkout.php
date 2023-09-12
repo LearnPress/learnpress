@@ -47,14 +47,18 @@ if ( ! class_exists( 'LP_Shortcode_Checkout' ) ) {
 			} else {
 				$checkout_cart = LearnPress::instance()->cart;
 
+				echo '<div id="learn-press-checkout" class="lp-content-area">';
+
 				// Check cart has contents
 				if ( $checkout_cart->is_empty() ) {
-					learn_press_get_template( 'checkout/empty-cart.php' );
+					Template::instance()->get_frontend_template( 'checkout/empty-cart.php' );
 				} else {
 					wp_enqueue_script( 'lp-checkout' );
 					$checkout_cart->calculate_totals();
-					learn_press_get_template( 'checkout/form.php' );
+					Template::instance()->get_frontend_template( 'checkout/form.php' );
 				}
+
+				echo '</div>';
 			}
 
 			return ob_get_clean();

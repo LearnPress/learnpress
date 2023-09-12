@@ -12,6 +12,7 @@ namespace LearnPress\ExternalPlugin\Elementor\Widgets\Instructor;
 
 use Elementor\Plugin;
 use Exception;
+use LearnPress\ExternalPlugin\Elementor\LPElementor;
 use LearnPress\ExternalPlugin\Elementor\LPElementorWidgetBase;
 use LearnPress\Helpers\Config;
 use LP_User;
@@ -23,7 +24,7 @@ class SingleInstructorBaseElementor extends LPElementorWidgetBase {
 	 * @return string[]
 	 */
 	public function get_categories() {
-		return array( 'learnpress_instructor' );
+		return array( LPElementor::CATE_INSTRUCTOR );
 	}
 
 	/**

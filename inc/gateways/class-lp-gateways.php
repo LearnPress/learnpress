@@ -43,7 +43,7 @@ class LP_Gateways {
 				'paypal'          => 'LP_Gateway_Paypal',
 				'offline-payment' => 'LP_Gateway_Offline_Payment',
 			);
-			// Filter
+			// @deprecated 4.2.3.5
 			$gateways = apply_filters( 'learn_press_payment_method', $gateways );
 
 			// 3.0.0
@@ -97,45 +97,24 @@ class LP_Gateways {
 			}
 		}
 
-		/*if ( $with_order && get_option( 'learn_press_payment_order' ) ) {
-			// Sort gateways by the keys stored.
-			usort( $gateways, array( $this, '_sort_gateways_callback' ) );
-		}*/
-
 		return $gateways;
-	}
-
-
-	/**
-	 * Callback function for sorting payment gateways.
-	 *
-	 * @param LP_Gateway_Abstract $a
-	 * @param LP_Gateway_Abstract $b
-	 *
-	 * @return bool|int
-	 * @deprecated 4.2.3
-	 */
-	public function _sort_gateways_callback( $a, $b ) {
-		_deprecated_function( __METHOD__, '4.2.3' );
-		return 0;
-		$ordered = get_option( 'learn_press_payment_order' );
-
-		if ( $ordered ) {
-			return array_search( $a->id, $ordered ) > array_search( $b->id, $ordered );
-		}
-
-		return 0;
 	}
 
 	/**
 	 * Get payment gateways are available for use.
 	 *
 	 * @return mixed
+	 * @since 3.0.0
+	 * @version 1.0.1
 	 */
 	public function get_available_payment_gateways() {
+		/**
+		 * @var LP_Gateway_Abstract[] $gateways
+		 */
 		$gateways            = $this->get_gateways();
 		$_available_gateways = array();
 		$is_selected         = false;
+		$gateway_first       = null;
 
 		foreach ( $gateways as $slug => $gateway ) {
 			if ( ! is_object( $gateway ) ) {
@@ -148,20 +127,23 @@ class LP_Gateways {
 			}
 
 			// Let custom addon can define how is enable/disable
-			if ( apply_filters( 'learn-press/payment-gateway/' . $slug . '/available', true, $gateway ) ) {
-				// If gateway has already selected before
-				if ( LearnPress::instance()->session->get( 'chosen_payment_method' ) == $gateway->id ) {
-					$gateway->is_selected = true;
-					$is_selected          = $gateway;
-				}
+			$gateway_is_available = apply_filters(
+				'learn-press/payment-gateway/' . $slug . '/available',
+				$gateway->is_enabled(),
+				$gateway
+			);
+			if ( $gateway_is_available ) {
 				$_available_gateways[ $slug ] = $gateway;
+
+				if ( is_null( $gateway_first ) ) {
+					$gateway_first = $gateway;
+				}
 			}
 		}
 
 		// Set default payment if there is no payment is selected
 		if ( $_available_gateways && ! $is_selected ) {
-			$gateway              = reset( $_available_gateways );
-			$gateway->is_selected = true;
+			$gateway_first->is_selected = true;
 		}
 
 		/**

@@ -13,12 +13,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class LP_Gateway_Abstract extends LP_Abstract_Settings {
-
 	/**
-	 * @var null
+	 * @var null|string
 	 */
 	public $id = null;
-
+	/**
+	 * @var LP_Settings
+	 */
+	protected $settings;
 	/**
 	 * Name of gateway will be displayed in admin settings.
 	 *
@@ -59,16 +61,18 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	 * @var string
 	 */
 	protected $icon = '';
-
-	protected $stored = false;
+	/**
+	 * @var bool set default select when checkout
+	 */
+	public $is_selected = false;
 
 	/**
 	 * Constructor
 	 */
 	public function __construct() {
-		if ( ! $this->admin_name ) {
+		/*if ( ! $this->admin_name ) {
 			$this->admin_name = preg_replace( '!LP_Gateway_!', '', get_class( $this ) );
-		}
+		}*/
 
 		if ( ! $this->id ) {
 			$this->id = sanitize_title( $this->title );
@@ -125,8 +129,13 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 		return apply_filters( 'learn_press_gateway_description', $this->description, $this->id );
 	}
 
+	/**
+	 * Payment is turn on or off?
+	 *
+	 * @return bool
+	 */
 	public function is_enabled() {
-		return $this->enabled == 'yes';
+		return $this->enabled === 'yes';
 	}
 
 	public function enable( $status ) {
@@ -227,8 +236,10 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	 * @since 3.0.0
 	 *
 	 * return bool
+	 * @deprecated 4.2.3.5
 	 */
 	public function is_display() {
+		_deprecated_function( __METHOD__, '4.2.3.5' );
 		$display = apply_filters( 'learn-press/payment-method/display', true, $this->id );
 		$display = apply_filters( 'learn-press/payment-method-' . $this->id . '/display', $display );
 
