@@ -210,6 +210,14 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.2.3.5 (2023-09-13) =
+~ Tweak: checkout.
+~ Fixed: case start quiz but user_item_id = 0.
+~ Added: dynamic tag Course for Elementor.
+~ Tweak: breadcrumb.
+~ Set 404 if user not login, view page single instructor/no-slug-instructor.
+~ Fixed: expire date, end date format i18n on Profile Page.
+
 = 4.2.3.4 (2023-08-24) =
 ~ Fixed: error when use same namespace class JWT library, with some plugin like Google Listings and Ads.
 
