@@ -133,7 +133,6 @@ class LP_Session_Handler {
 
 	protected function init_hooks() {
 		add_action( 'wp_login', [ $this, 'handle_when_user_login_success' ], 10, 2 );
-		//add_action( 'set_current_user', [ $this, 'handle_user_logged_change' ], 10, 2 );
 		add_action( 'wp_logout', array( $this, 'destroy_session' ) );
 		//add_action( 'learn_press_set_cart_cookies', array( $this, 'set_customer_session_cookie' ), 10 );
 		//add_action( 'learn_press_cleanup_sessions', array( $this, 'cleanup_sessions' ), 10 );
@@ -593,38 +592,6 @@ class LP_Session_Handler {
 		}
 
 		return self::$_instance;
-	}
-
-	/**
-	 * @deprecated 4.2.0
-	 */
-	public function offsetExists( $offset ) {
-		_deprecated_function( __METHOD__, '4.2.0' );
-		return array_key_exists( $offset, $this->_data );
-	}
-
-	/**
-	 * @deprecated 4.2.0
-	 */
-	public function offsetGet( $offset ) {
-		_deprecated_function( __METHOD__, '4.2.0' );
-		//return $this->get( $offset );
-	}
-
-	/**
-	 * @deprecated 4.2.0
-	 */
-	public function offsetUnset( $offset ) {
-		_deprecated_function( __METHOD__, '4.2.0' );
-		//$this->remove( $offset );
-	}
-
-	/**
-	 * @deprecated 4.2.0
-	 */
-	public function offsetSet( $offset, $value ) {
-		_deprecated_function( __METHOD__, '4.2.0' );
-		//$this->set( $offset, $value );
 	}
 }
 

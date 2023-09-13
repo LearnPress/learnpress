@@ -11,6 +11,7 @@
 namespace LearnPress\ExternalPlugin\Elementor\Widgets\Course;
 
 use LearnPress\ExternalPlugin\Elementor\LPElementor;
+use LP_Course;
 
 trait SingleCourseBaseElementor {
 	/**

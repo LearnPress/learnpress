@@ -97,16 +97,16 @@ class LP_Checkout {
 
 	/**
 	 * Check valid fields login/register/guest checkout.
+	 * Store session guest before login success.
+	 * When user login success, will update session data of guest for user.
 	 *
 	 * @throws Exception
 	 */
 	public function check_validate_fields() {
-		$session    = LearnPress::instance()->session;
-		$cart       = LearnPress::instance()->cart;
-		$cart_items = $cart->get_items();
-
-		$checkout_account_type = LP_Request::get_param( 'checkout-account-switch-form' );
-		$this->checkout_action = $checkout_account_type;
+		$session                        = LearnPress::instance()->session;
+		$data_session_before_user_login = $session->get_session_data();
+		$checkout_account_type          = LP_Request::get_param( 'checkout-account-switch-form' );
+		$this->checkout_action          = $checkout_account_type;
 
 		switch ( $this->checkout_action ) {
 			case 'login':
@@ -187,9 +187,12 @@ class LP_Checkout {
 		}
 
 		// Set session, cart for user have just login/register success.
-		if ( in_array( $this->checkout_action, [ 'checkout-login', 'checkout-register' ] ) ) {
-			$cart->empty_cart();
-			$session->set( 'cart', $cart_items, true );
+		if ( in_array( $this->checkout_action, [ 'login', 'register' ] ) ) {
+			foreach ( $data_session_before_user_login as $key => $item ) {
+				$session->set( $key, maybe_unserialize( $item ) );
+			}
+
+			$session->save_data();
 		}
 	}
 

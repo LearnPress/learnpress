@@ -59,7 +59,7 @@ $userCourseTemplate = UserCourseTemplate::instance();
 		<td>
 			<?php echo $userCourseTemplate->html_expire_date( $course_data ); ?>
 		</td>
-		<td><?php echo $userCourseTemplate->html_start_date( $course_data ); ?></td>
+		<td><?php echo $userCourseTemplate->html_end_date( $course_data ); ?></td>
 	</tr>
 		<?php
 	}
