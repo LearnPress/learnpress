@@ -3,9 +3,9 @@ Contributors: thimpress, tungnx89, nhamdv, hungkv, nguyenlammanh, tunnhn, phongl
 Donate link:
 Tags: elearning, education, course, lms, learning management system
 Requires at least: 5.8
-Tested up to: 6.2
+Tested up to: 6.3.1
 Requires PHP: 7.0
-Stable tag: 4.2.2.4
+Stable tag: 4.2.3.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -210,7 +210,7 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
-= 4.2.3.5 (2023-09-13) =
+= 4.2.3.5 (2023-09-14) =
 ~ Tweak: checkout.
 ~ Fixed: case start quiz but user_item_id = 0.
 ~ Added: dynamic tag Course for Elementor.

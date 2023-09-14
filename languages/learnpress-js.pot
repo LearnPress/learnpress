@@ -208,7 +208,7 @@ msgid "Are you sure you want to retake the quiz?"
 msgstr ""
 
 #: assets/src/apps/js/frontend/quiz/components/buttons/index.js:105
-#: assets/src/apps/js/frontend/quiz/components/status/index.js:67
+#: assets/src/apps/js/frontend/quiz/components/status/index.js:55
 msgid "Are you sure to submit the quiz?"
 msgstr ""
 
@@ -229,7 +229,7 @@ msgid "Start"
 msgstr ""
 
 #: assets/src/apps/js/frontend/quiz/components/buttons/index.js:288
-#: assets/src/apps/js/frontend/quiz/components/status/index.js:128
+#: assets/src/apps/js/frontend/quiz/components/status/index.js:116
 msgid "Finish Quiz"
 msgstr ""
 
@@ -277,23 +277,23 @@ msgstr ""
 msgid "Skipped"
 msgstr ""
 
-#: assets/src/apps/js/frontend/quiz/components/status/index.js:105
+#: assets/src/apps/js/frontend/quiz/components/status/index.js:93
 msgid "Question <span>%d to %d of %d</span>"
 msgstr ""
 
-#: assets/src/apps/js/frontend/quiz/components/status/index.js:107
+#: assets/src/apps/js/frontend/quiz/components/status/index.js:95
 msgid "Question <span>%d of %d</span>"
 msgstr ""
 
-#: assets/src/apps/js/frontend/quiz/components/status/index.js:110
+#: assets/src/apps/js/frontend/quiz/components/status/index.js:98
 msgid "Question <span>%d to %d</span>"
 msgstr ""
 
-#: assets/src/apps/js/frontend/quiz/components/status/index.js:119
+#: assets/src/apps/js/frontend/quiz/components/status/index.js:107
 msgid "Earned Point: %s"
 msgstr ""
 
-#: assets/src/apps/js/frontend/quiz/components/status/index.js:128
+#: assets/src/apps/js/frontend/quiz/components/status/index.js:116
 msgid "Submitting…"
 msgstr ""
 
