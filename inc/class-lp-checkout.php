@@ -191,7 +191,6 @@ class LP_Checkout {
 			foreach ( $data_session_before_user_login as $key => $item ) {
 				$session->set( $key, maybe_unserialize( $item ) );
 			}
-
 			$session->save_data();
 		}
 	}
