@@ -57,9 +57,9 @@ $userCourseTemplate = UserCourseTemplate::instance();
 		<td><a href="<?php the_permalink(); ?>" title="<?php the_title(); ?>"><?php the_title(); ?></a></td>
 		<td><?php echo esc_html( $course_result['result'] ); ?>%</td>
 		<td>
-			<?php echo $userCourseTemplate->html_expire_date( $course_data ); ?>
+			<?php echo $userCourseTemplate->html_expire_date_time( $course_data ); ?>
 		</td>
-		<td><?php echo $userCourseTemplate->html_end_date( $course_data ); ?></td>
+		<td><?php echo $userCourseTemplate->html_end_date_time( $course_data ); ?></td>
 	</tr>
 		<?php
 	}

@@ -68,12 +68,14 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 	 * @var string
 	 */
 	public $_parent_id = '';
-
 	/**
-	 * @var string
-	 * @deprecated 4.1.7.3
+	 * Key get data start time form DB.
 	 */
-	protected $_data_key = '';
+	const KEY_DATA_START_TIME = 'start_time';
+	/**
+	 * Key get data end time form DB.
+	 */
+	const KEY_DATA_END_TIME = 'end_time';
 
 	/**
 	 * LP_User_Item constructor.
@@ -116,8 +118,8 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 			$item_id = $item['item_id'];
 		}
 
-		$this->set_start_time( $item['start_time'] ?? time() );
-		$this->set_end_time( $item['end_time'] ?? '' );
+		$this->set_start_time( $item[ self::KEY_DATA_START_TIME ] ?? time() );
+		$this->set_end_time( $item[ self::KEY_DATA_END_TIME ] ?? '' );
 		$this->set_user_id( absint( $item['user_id'] ?? get_current_user_id() ) );
 		$this->set_status( $item['status'] ?? '' );
 
@@ -201,57 +203,17 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 	}
 
 	/**
-	 * @deprecated 4.1.7.3
-	 */
-	public function get_time( $field, $format = '', $human_diff_time = false ) {
-		_deprecated_function( __METHOD__, '.4.1.7.3' );
-		/*if ( ! $format ) {
-			$format = get_option( 'date_format' );
-		}
-
-		$m_time    = call_user_func( array( $this, 'get_' . $field ) );
-		$time      = mysql2date( 'G', call_user_func( array( $this, 'get_' . $field . '_gmt' ) ) );
-		$time_diff = time() - $time;
-
-		if ( $human_diff_time && $time_diff > 0 && $time_diff < DAY_IN_SECONDS ) {
-			$h_time = sprintf( __( '%s ago', 'learnpress' ), human_time_diff( $time ) );
-		} else {
-			$h_time = mysql2date( $format, $m_time );
-		}
-
-		return $h_time;*/
-	}
-
-	/**
 	 * Get start-time.
 	 *
 	 * @param string $format
 	 * @param bool   $local
 	 *
-	 * @return string|LP_Datetime
+	 * @return string|LP_Datetime|false
 	 */
-	public function get_start_time( $format = '', $local = false ) {
-		$date = $this->get_data( 'start_time' );
+	public function get_start_time( string $format = '', $local = false ) {
+		$date = $this->get_data( self::KEY_DATA_START_TIME );
 
 		return $this->format_time( $date, $format, $local );
-	}
-
-	/**
-	 * @param string $format
-	 *
-	 * @return array|bool|LP_Datetime|mixed|string
-	 * @deprecated
-	 * Addon certificate v4.0.3 is using.
-	 */
-	public function get_start_time_gmt( $format = '' ) {
-		_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '4.0.0' );
-
-		// $date = $this->get_data_date( 'start_time_gmt' );
-		// if ( $format ) {
-		// return $date->is_null() ? false : ( $format = 'i18n' ? learn_press_date_i18n( $date->getTimestamp() ) : $date->format( $format ) );
-		// }
-		//
-		// return $date;
 	}
 
 	/**
@@ -274,14 +236,10 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 	 *
 	 * @return string|LP_Datetime
 	 */
-	public function get_end_time( $format = '' ) {
-		$date = $this->get_data( 'end_time' );
+	public function get_end_time( string $format = '' ) {
+		$date = $this->get_data( self::KEY_DATA_END_TIME );
 
 		return $this->format_time( $date, $format );
-	}
-
-	public function get_start_time_local() {
-
 	}
 
 	/**
@@ -301,29 +259,6 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 		}
 
 		return $format ? $date->format( $format, $local ) : $date;
-	}
-
-	/**
-	 * Get end-time.
-	 *
-	 * @param mixed $time
-	 *
-	 * @deprecated 4.0.0
-	 */
-	public function set_end_time_gmt( $time ) {
-		_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '4.0.0' );
-	}
-
-	/**
-	 * Get end-time.
-	 *
-	 * @param string $format
-	 *
-	 * @return string|LP_Datetime
-	 * @deprecated
-	 */
-	public function get_end_time_gmt( $format = '' ) {
-		_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '4.0.0' );
 	}
 
 	/**
@@ -647,12 +582,6 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 		$columns = array();
 
 		foreach ( $this->get_data() as $k => $v ) {
-			switch ( $k ) {
-				case 'start_time':
-				case 'end_time':
-					//$v = is_a( $v, 'LP_Datetime' ) ? $v->toSql( false ) : $v;
-					break;
-			}
 			$columns[ $k ] = $v;
 		}
 
@@ -753,16 +682,6 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 		return $rs;
 	}
 
-	/**
-	 * @editor tungnx
-	 * @reason commnet - not use
-	 * @modify 4.1.2
-	 */
-	/*
-	public function is_course_item() {
-		return learn_press_is_support_course_item_type( $this->get_data( 'item_type' ) );
-	}*/
-
 	public function get_status_label( $status = '' ) {
 		$statuses = array(
 			LP_COURSE_ENROLLED  => esc_html__( 'Enrolled', 'learnpress' ),
@@ -799,81 +718,6 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 		}
 
 		return $end->getTimestamp() - $start->getTimestamp();
-	}
-
-	/**
-	 * Return number of seconds has exceeded from the expiration time to now.
-	 * If less than or equals to 0 that means the time is exceeded.
-	 * Otherwise, the time is not exceeded.
-	 *
-	 * @return float|int
-	 * @since 3.3.0
-	 * @deprecated 4.1.7.3
-	 */
-	public function get_exceeded() {
-		_deprecated_function( __METHOD__, '4.1.7.3' );
-		/*$time     = new LP_Datetime();
-		$current  = $time->getTimestamp( false );
-		$exceeded = $this->get_expiration_time();
-
-		return false !== $exceeded ? $exceeded->getTimestamp() - $current : false;*/
-	}
-
-	/**
-	 * Check if user was finished before the expiration time is exceeded.
-	 * If the expiration-time is NULL that mean the course is not set duration.
-	 *
-	 * @return bool|float|int
-	 * @since 3.3.0
-	 * Todo: check remove function
-	 * @deprecated 4.1.7.3
-	 */
-	public function is_exceeded() {
-		_deprecated_function( __METHOD__, '4.1.7.3' );
-		/*$expiration = $this->get_expiration_time();
-		$end        = $this->get_end_time();
-
-		if ( ! $expiration ) {
-			return false;
-		}
-
-		// If course is not finished then consider end time is current time
-		if ( ! $end || 0 >= $end->getTimestamp() ) {
-			$end = new LP_Datetime();
-			$end = $end->getTimestamp();
-		} else {
-			$end = $end->getTimestamp();
-		}
-
-		return $expiration->getTimestamp() - $end;*/
-	}
-
-	/**
-	 * Get time remaining for user item.
-	 *
-	 * @param string $return - Optional. What kind of data to return.
-	 *
-	 * @return LP_Duration
-	 * @since 3.3.0
-	 * @deprecated 4.1.7.3
-	 */
-	public function get_time_remaining( $return = 'object' ) {
-		_deprecated_function( __METHOD__, '4.1.7.3' );
-		/*$is_exceeded = $this->is_exceeded();
-		$time        = false;
-
-		if ( false !== $is_exceeded ) {
-			$time = 0 < $is_exceeded ? absint( $is_exceeded ) : 0;
-		}
-
-		// return apply_filters( 'learn-press/quiz/time-remaining', $remaining, $this->get_item_id(), $this->get_course_id() );
-		return apply_filters(
-			'learn-press/user-item-time-remaining',
-			$return === 'object' ? new LP_Duration( $time ) : $time,
-			$this->get_item_id(),
-			$this->get_parent_id(),
-			$this->get_user_id()
-		);*/
 	}
 
 	/**
@@ -919,7 +763,7 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 	/**
 	 * @return bool
 	 */
-	public function is_passed() {
+	public function is_passed(): bool {
 		return LP_COURSE_GRADUATION_PASSED === $this->get_graduation();
 	}
 
@@ -937,79 +781,13 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 		);
 	}
 
-	/**
-	 * Calculate expiration time from the start time and duration.
-	 *
-	 * @param int|string|LP_Datetime $duration
-	 *
-	 * @return LP_Datetime
-	 * @since 3.3.0
-	 * @deprecated 4.1.7
-	 */
-	/*public function set_duration( $duration ) {
-		if ( $duration instanceof LP_Datetime ) {
-			$period = $duration->toSql();
-		} else {
-			$period = $duration;
-		}
-
-		return $this->get_expiration_time();
-	}*/
-
-	/**
-	 * @deprecated 4.1.7
-	 */
-	/*public function is_change() {
-
-		$new_data = $this->get_mysql_data();
-		ksort( $new_data );
-
-		return $this->_data_key !== md5( serialize( $new_data ) );
-	}*/
-
-	/**
-	 * @deprecated 4.1.7.3
-	 */
-	protected function _set_data_date( $key, $value, $extra = false ) {
-		_deprecated_function( __FUNCTION__, '4.1.7.3', 'set_data_date' );
-		if ( $value instanceof LP_Datetime ) {
-			$value = $value->getTimestamp();
-		} else {
-			$value = is_numeric( $value ) ? $value : strtotime( $value );
-		}
-		$offset = (int) ( get_option( 'gmt_offset', 0 ) * HOUR_IN_SECONDS );
-
-		parent::_set_data_date( $key, $value + $offset, $extra );
-	}
-
-	/**
-	 * @param $name
-	 * @param $arguments
-	 *
-	 * @return mixed
-	 * @deprecated 4.1.7
-	 */
-	/*public function __call( $name, $arguments ) {
-		if ( ! method_exists( $this, $name ) ) {
-			$course = $this->get_course();
-
-			if ( $course ) {
-				$item = $course->get_item( $this->get_item_id() );
-
-				if ( is_callable( array( $item, $name ) ) ) {
-					return call_user_func_array( array( $item, $name ), $arguments );
-				}
-			}
-		}
-
-		return false;
-	}*/
-
 	public function offsetSet( $offset, $value ) {
+		_deprecated_function( __METHOD__, '4.2.3.5' );
 		// TODO: Implement offsetSet() method.
 	}
 
 	public function offsetGet( $offset ) {
+		_deprecated_function( __METHOD__, '4.2.3.5' );
 		if ( is_callable( array( $this, 'get_' . $offset ) ) ) {
 			return call_user_func( array( $this, 'get_' . $offset ) );
 		}
@@ -1018,10 +796,12 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 	}
 
 	public function offsetUnset( $offset ) {
+		_deprecated_function( __METHOD__, '4.2.3.5' );
 		// TODO: Implement offsetUnset() method.
 	}
 
 	public function offsetExists( $offset ) {
+		_deprecated_function( __METHOD__, '4.2.3.5' );
 		// TODO: Implement offsetExists() method.
 	}
 }

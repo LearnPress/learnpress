@@ -8,6 +8,18 @@ class LP_Datetime {
 	 * @var string $format.
 	 */
 	public static $format = 'Y-m-d H:i:s';
+	/**
+	 * Format date by config WP.
+	 */
+	const I18N_FORMAT = 'i18n';
+	/**
+	 * Format date time by config WP.
+	 */
+	const I18N_FORMAT_HAS_TIME = 'i18n_has_time';
+	/**
+	 * Format date time Human.
+	 */
+	const HUMAN_FORMAT = 'human';
 
 	/**
 	 * @var object
@@ -51,10 +63,6 @@ class LP_Datetime {
 		if ( empty( $this->raw_date ) ) {
 			$this->raw_date = current_time( 'mysql', 1 );
 		}
-
-		//date_default_timezone_set( 'UTC' );
-		//parent::__construct( $this->raw_date );
-		//$m = $this->format( 'm' );
 	}
 
 	/**
@@ -105,71 +113,6 @@ class LP_Datetime {
 	}
 
 	/**
-	 * @param string $name The name of the property.
-	 *
-	 * @return  mixed
-	 * @deprecated 4.1.7.3
-	 */
-	public function __get( $name ) {
-		_deprecated_function( __METHOD__, '4.1.7.3' );
-		/*$value = null;
-
-		switch ( $name ) {
-			case 'daysinmonth':
-				$value = $this->format( 't', true );
-				break;
-
-			case 'dayofweek':
-				$value = $this->format( 'N', true );
-				break;
-
-			case 'dayofyear':
-				$value = $this->format( 'z', true );
-				break;
-
-			case 'isleapyear':
-				$value = (bool) $this->format( 'L', true );
-				break;
-
-			case 'day':
-				$value = $this->format( 'd', true );
-				break;
-
-			case 'hour':
-				$value = $this->format( 'H', true );
-				break;
-
-			case 'minute':
-				$value = $this->format( 'i', true );
-				break;
-
-			case 'second':
-				$value = $this->format( 's', true );
-				break;
-
-			case 'month':
-				$value = $this->format( 'm', true );
-				break;
-
-			case 'ordinal':
-				$value = $this->format( 'S', true );
-				break;
-
-			case 'week':
-				$value = $this->format( 'W', true );
-				break;
-
-			case 'year':
-				$value = $this->format( 'Y', true );
-				break;
-
-			default:
-		}
-
-		return $value;*/
-	}
-
-	/**
 	 * @return  string  The date as a formatted string.
 	 */
 	public function __toString() {
@@ -215,9 +158,6 @@ class LP_Datetime {
 					$this->getTimestamp()
 				);
 				break;
-			/*case 'timestamp':
-				$date_str = $this->getTimestamp();
-				break;*/
 			case 'human':
 				$time      = $this->getTimestamp();
 				$time_diff = time() - $time;
