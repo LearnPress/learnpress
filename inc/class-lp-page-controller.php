@@ -63,6 +63,8 @@ class LP_Page_Controller {
 
 			// Rewrite lesson comment links
 			add_filter( 'get_comment_link', array( $this, 'edit_lesson_comment_links' ), 10, 2 );
+			// Active menu
+			add_filter( 'wp_nav_menu_objects', [ $this, 'menu_active' ], 10, 1 );
 		}
 	}
 
@@ -1234,6 +1236,50 @@ class LP_Page_Controller {
 		}
 
 		return $link;
+	}
+
+	/**
+	 * Set menu active for page courses.
+	 *
+	 * @param $menu_items
+	 * @return mixed
+	 */
+	public function menu_active( $menu_items ) {
+		$course_page    = learn_press_get_page_id( 'courses' );
+		$page_for_posts = (int) get_option( 'page_for_posts' );
+
+		if ( is_array( $menu_items ) && ! empty( $menu_items ) ) {
+			foreach ( $menu_items as $key => $menu_item ) {
+				$classes = (array) $menu_item->classes;
+				$menu_id = (int) $menu_item->object_id;
+
+				// Unset active class for blog page.
+				if ( $page_for_posts === $menu_id ) {
+					$menu_item->current = false;
+
+					if ( in_array( 'current_page_parent', $classes, true ) ) {
+						unset( $classes[ array_search( 'current_page_parent', $classes, true ) ] );
+					}
+
+					if ( in_array( 'current-menu-item', $classes, true ) ) {
+						unset( $classes[ array_search( 'current-menu-item', $classes, true ) ] );
+					}
+				} elseif ( ( is_post_type_archive( 'lp_course' ) || is_page( $course_page ) ) && $course_page === $menu_id && 'page' === $menu_item->object ) {
+					// Set active state if this is the shop page link.
+					$menu_item->current = true;
+					$classes[]          = 'current-menu-item';
+					$classes[]          = 'current_page_item';
+				} elseif ( is_singular( 'lp_course' ) && $course_page === $menu_id ) {
+					// Set parent state if this is a product page.
+					$classes[] = 'current_page_parent';
+				}
+
+				$menu_item->classes = array_unique( $classes );
+				$menu_items[ $key ] = $menu_item;
+			}
+		}
+
+		return $menu_items;
 	}
 
 	/**
