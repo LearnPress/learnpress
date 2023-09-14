@@ -622,7 +622,7 @@ class LP_Checkout {
 					}
 				}
 			}
-		} catch ( Exception $e ) {
+		} catch ( Throwable $e ) {
 			$result = array(
 				'result'   => 'fail',
 				'messages' => $e->getMessage(),

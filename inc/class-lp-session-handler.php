@@ -43,7 +43,6 @@ class LP_Session_Handler {
 	 */
 	protected function __construct() {
 		$this->init_hooks();
-
 		if ( is_admin() ) {
 			return;
 		}
@@ -86,7 +85,8 @@ class LP_Session_Handler {
 			$this->_customer_id = get_current_user_id();
 		}
 
-		//$this->_data = $this->get_session_data();
+		// Get session data from DB.
+		$this->_data = $this->get_session_data();
 
 		return $this;
 	}
@@ -372,12 +372,6 @@ class LP_Session_Handler {
 	 * @return mixed|null
 	 */
 	public function get( string $key, $default = null ) {
-		$key = sanitize_key( $key );
-
-		if ( empty( $this->_data ) ) {
-			$this->_data = $this->get_session_data();
-		}
-
 		return isset( $this->_data[ $key ] ) ? LP_Helper::maybe_unserialize( $this->_data[ $key ] ) : $default;
 	}
 
@@ -403,7 +397,6 @@ class LP_Session_Handler {
 	 * @param bool   $force_change
 	 */
 	public function remove( string $key, bool $force_change = false ) {
-		$this->_data = $this->get_session_data();
 		if ( ! array_key_exists( $key, $this->_data ) ) {
 			return;
 		}
