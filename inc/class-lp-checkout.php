@@ -14,11 +14,6 @@ defined( 'ABSPATH' ) || exit;
 class LP_Checkout {
 	use Singleton;
 	/**
-	 * @var LP_Checkout object instance
-	 * @access protected
-	 */
-	protected static $_instance = null;
-	/**
 	 * Payment method
 	 *
 	 * @var LP_Gateway_Abstract
@@ -231,52 +226,6 @@ class LP_Checkout {
 	}
 
 	/**
-	 * Verify nonce.
-	 *
-	 * @return bool
-	 */
-	public function verify_nonce(): bool {
-		if ( empty( $_POST['learn-press-checkout-nonce'] ) ) {
-			return false;
-		}
-
-		if ( ! is_user_logged_in() ) {
-			$actions = array( 'guest-checkout', 'checkout-register', 'checkout-login' );
-		} else {
-			$actions = array( 'guest-checkout', 'checkout-register', 'user-logged' );
-		}
-
-		foreach ( $actions as $action ) {
-			if ( wp_verify_nonce( $_REQUEST['learn-press-checkout-nonce'], "learn-press-{$action}" ) ) {
-				$this->checkout_action = $action;
-
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	/**
-	 * Check if an order is pending or failed.
-	 *
-	 * @param $order_id
-	 *
-	 * @return LP_Order|bool
-	 * @deprecated 4.2.3.5
-	 */
-	protected function _is_resume_order( $order_id ) {
-		_deprecated_function( __METHOD__, '4.2.3.5' );
-		$order = learn_press_get_order( $order_id );
-
-		if ( $order_id > 0 && $order && $order->has_status( array( 'pending', 'failed' ) ) ) {
-			return $order;
-		}
-
-		return false;
-	}
-
-	/**
 	 * Create LP Order.
 	 *
 	 * @since 3.0.0
@@ -378,7 +327,7 @@ class LP_Checkout {
 	}
 
 	/**
-	 * Enable user can login in checkout page?
+	 * Enable user can log in checkout page?
 	 *
 	 * @return bool
 	 * @since 3.0.0

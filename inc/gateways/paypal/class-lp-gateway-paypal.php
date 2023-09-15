@@ -83,11 +83,6 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		protected $settings = null;
 
 		/**
-		 * @var array
-		 */
-		//protected $line_items = array();
-
-		/**
 		 * LP_Gateway_Paypal constructor.
 		 */
 		public function __construct() {
@@ -95,7 +90,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 
 			$this->method_title       = esc_html__( 'PayPal', 'learnpress' );
 			$this->method_description = esc_html__( 'Make a payment via Paypal.', 'learnpress' );
-			$this->icon               = '';
+			$this->icon               = LP_PLUGIN_URL . 'assets/images/paypal-logo-preview.png';
 
 			$this->title       = esc_html__( 'PayPal', 'learnpress' );
 			$this->description = esc_html__( 'Pay with PayPal', 'learnpress' );
@@ -185,46 +180,6 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		}
 
 		/**
-		 * Handle a completed payment
-		 *
-		 * @param LP_Order $order
-		 * @param array    $request
-		 */
-		/*protected function payment_status_completed( $order, $request ) {
-			if ( $order->has_status( 'completed' ) ) {
-				exit;
-			}
-
-			if ( 'completed' === $request['payment_status'] ) {
-				$this->payment_complete( $order, ( ! empty( $request['txn_id'] ) ? $request['txn_id'] : '' ), __( 'IPN payment completed', 'learnpress' ) );
-				// save paypal fee
-				if ( ! empty( $request['mc_fee'] ) ) {
-					update_post_meta( $order->get_id(), '_transaction_fee', $request['mc_fee'] );
-				}
-			} else {
-			}
-		}*/
-
-		/**
-		 * Handle a pending payment
-		 *
-		 * @param LP_Order
-		 * @param Paypal IPN params
-		 */
-		/*protected function payment_status_pending( $order, $request ) {
-			$this->payment_status_completed( $order, $request );
-		}*/
-
-		/**
-		 * @param LP_Order
-		 * @param string   $txn_id
-		 * @param string   $note - not use
-		 */
-		/*public function payment_complete( $order, $txn_id = '', $note = '' ) {
-			$order->payment_complete( $txn_id );
-		}*/
-
-		/**
 		 * Handle payment.
 		 *
 		 * @param int $order_id
@@ -300,19 +255,6 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 */
 		public function get_settings(): array {
 			return Config::instance()->get( $this->id, 'settings/gateway' );
-		}
-
-		/**
-		 * Icon for the gateway
-		 *
-		 * @return string
-		 */
-		public function get_icon() {
-			if ( empty( $this->icon ) ) {
-				$this->icon = LearnPress::instance()->plugin_url( 'assets/images/paypal-logo-preview.png' );
-			}
-
-			return parent::get_icon();
 		}
 	}
 }

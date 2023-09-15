@@ -1177,7 +1177,7 @@ class LP_Page_Controller {
 		}
 
 		try {
-			$paypal = new LP_Gateway_Paypal();
+			$paypal = LP_Gateway_Paypal::instance();
 			$verify = $paypal->validate_ipn();
 
 			if ( $verify ) {
