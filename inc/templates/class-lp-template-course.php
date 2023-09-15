@@ -153,7 +153,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 		$price_html = '';
 
 		try {
-			if ( $user && $user->has_enrolled_course( get_the_ID() ) && ! $user->can_purchase_course() ) {
+			if ( $user && ! $user->can_purchase_course() ) {
 				throw new Exception( 'The user has enrolled in the course' );
 			}
 
