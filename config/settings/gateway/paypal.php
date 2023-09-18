@@ -34,6 +34,16 @@ return apply_filters(
 			'type'  => 'text',
 		),
 		array(
+			'title' => esc_html__( 'Client ID', 'learnpress' ),
+			'id'    => '[app_client_id]',
+			'type'  => 'text',
+		),
+		array(
+			'title' => esc_html__( 'Client Secret', 'learnpress' ),
+			'id'    => '[app_client_secret]',
+			'type'  => 'text',
+		),
+		array(
 			'type' => 'sectionend',
 		),
 	)

@@ -55,6 +55,21 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		/**
 		 * @var string
 		 */
+		protected $api_sandbox_url = 'https://api-m.sandbox.paypal.com/';
+
+		/**
+		 * @var string
+		 */
+		protected $api_live_url = 'https://api-m.paypal.com/';
+
+		/**
+		 * @var string|null
+		 */
+		protected $api_url = null;
+
+		/**
+		 * @var string
+		 */
 		protected $method = '';
 
 		/**
@@ -81,6 +96,16 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 * @var null
 		 */
 		protected $settings = null;
+
+		/**
+		 * @var null
+		 */
+		protected $client_id = null;
+
+		/**
+		 * @var null
+		 */
+		protected $client_secret = null;
 
 		/**
 		 * LP_Gateway_Paypal constructor.
@@ -115,12 +140,16 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 					$this->paypal_payment_url = $this->paypal_payment_live_url;
 					$this->paypal_nvp_api_url = $this->paypal_nvp_api_live_url;
 					$this->paypal_email       = $this->settings->get( 'paypal_email' );
+					$this->api_url            = $this->api_live_url;
 				} else {
 					$this->paypal_url         = $this->paypal_sandbox_url;
 					$this->paypal_payment_url = $this->paypal_payment_sandbox_url;
 					$this->paypal_nvp_api_url = $this->paypal_nvp_api_sandbox_url;
 					$this->paypal_email       = $this->settings->get( 'paypal_sandbox_email' );
+					$this->api_url            = $this->api_sandbox_url;
 				}
+				$this->client_id     = $this->settings->get( 'app_client_id' );
+				$this->client_secret = $this->settings->get( 'app_client_secret' );
 			}
 
 			add_filter( 'learn-press/payment-gateway/' . $this->id . '/available', array( $this, 'paypal_available' ), 10, 2 );
@@ -246,6 +275,91 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			);
 
 			return apply_filters( 'learn-press/paypal/args', $args );
+		}
+
+		public function get_access_token() {
+			$client_id     = $this->client_id;
+			$client_secret = $this->client_secret;
+			if ( ! $client_id ) {
+				throw new Exception( 'Paypal Client id is required.', 'learnpress' );
+			}
+			if ( ! $client_secret ) {
+				throw new Exception( 'Paypal Client secret is required', 'learnpress' );
+			}
+			$data     = array( 'grant_type' => 'client_credentials' );
+			$response = wp_remote_post(
+				$this->api_url . 'v1/oauth2/token',
+				array(
+					'body'    => $data,
+					'headers' => array(
+						'Authorization' => 'Basic ' . base64_encode( $client_id . ':' . $client_secret ),
+					),
+					'timeout' => 60,
+				)
+			);
+			return $response['response']['code'] == 200 ? wp_remote_retrieve_body( $response ) : false;
+		}
+
+		public function create_payment_url( LP_Order $order ) {
+			$lp_cart          = LearnPress::instance()->get_cart();
+			$cart_total       = $lp_cart->calculate_totals();
+			$data             = [
+				'intent'         => 'CAPTURE',
+				'purchase_units' => [
+					[
+						'amount'    => [
+							'currency_code' => learn_press_get_currency(),
+							'value'         => $cart_total,
+						],
+						'custom_id' => $order->get_id(),
+					],
+				],
+				'payment_source' => [
+					'paypal' => [
+						'experience_context' => [
+							'payment_method_preference' => 'UNRESTRICTED',
+							'brand_name'                => get_bloginfo(),
+							// "locale" => "en-US",
+							'landing_page'              => 'LOGIN',
+							'user_action'               => 'PAY_NOW',
+							'return_url'                => esc_url_raw( $this->get_return_url( $order ) ),
+							'cancel_url'                => esc_url_raw( learn_press_is_enable_cart() ? learn_press_get_page_link( 'cart' ) : get_home_url() ),
+						],
+					],
+				],
+			];
+			$access_token_obj = $this->get_access_token();
+			if ( ! $access_token_obj ) {
+				throw new Exception( 'Invalid Paypal access token', 'learnpress' );
+			}
+			$access_token_obj = json_decode( $access_token_obj );
+			$response         = wp_remote_post(
+				$this->api_url . 'v2/checkout/orders',
+				array(
+					'body'    => $data,
+					'headers' => array(
+						'Authorization' => $access_token_obj->token_type . ' ' . $access_token_obj->access_token,
+						'Content-Type'  => 'application/json',
+					),
+					'timeout' => 60,
+				)
+			);
+			$checkout_url     = '';
+			if ( $response['response']['code'] === 200 ) {
+				$body        = wp_remote_retrieve_body( $response );
+				$transaction = json_decode( $body );
+				if ( $transaction->links ) {
+					foreach ( $transaction->links as $obj ) {
+						if ( $obj->rel == 'payer-action' ) {
+							$checkout_url = $obj->href;
+							break;
+						}
+					}
+				}
+			} else {
+				throw new Exception( 'Cannot create order', 'learnpress' );
+			}
+			return $checkout_url;
 		}
 
 		/**
