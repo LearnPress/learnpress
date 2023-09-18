@@ -210,6 +210,12 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.2.3.6 (2023-09-18) =
+~ Tweak: display Date Time, time zone by format of WP.
+~ Fixed: count Progress course on the Single Item.
+~ Fixed: current item active on the Curriculum.
+~ Fixed: error not show price course when user repurchase course.
+
 = 4.2.3.5 (2023-09-14) =
 ~ Tweak: checkout.
 ~ Fixed: case start quiz but user_item_id = 0.
