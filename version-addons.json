@@ -351,8 +351,8 @@
   "learnpress-stripe": {
     "name": "Stripe Add-On for LearnPress",
     "basename": "learnpress-stripe/learnpress-stripe.php",
-    "version": "4.0.1",
-    "require_lp": "4.2.0",
+    "version": "4.0.2",
+    "require_lp": "4.2.3.6",
     "description": "Provide Stripe payment method, more choices, more flexible.",
     "image": "https://plugins.thimpress.com/downloads/images/lp-stripe.png",
     "link": "https://thimpress.com/product/stripe-add-on-for-learnpress/",
