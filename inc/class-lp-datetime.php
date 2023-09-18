@@ -141,21 +141,26 @@ class LP_Datetime {
 		}
 
 		switch ( $format ) {
-			case 'i18n':
-				$date_str = learn_press_date_i18n( $this->getTimestamp() );
+			case 'i18n': // Display format Date by Timezone of WP.
+				$time_stamp              = $this->getTimestamp(); // UTC+0 (GMT)
+				$time_stamp_by_time_zone = $time_stamp + get_option( 'gmt_offset' ) * HOUR_IN_SECONDS;
+				$date_str                = learn_press_date_i18n( $time_stamp_by_time_zone );
 				break;
-			case 'i18n_has_time':
-				$date_time_format_wp = apply_filters(
+			case 'i18n_has_time': // Display format Date Time by Timezone of WP.
+				$date_time_format_wp     = apply_filters(
 					'learn-press/datetime/format/i18n_has_time',
 					get_option( 'date_format' ) . ' ' . get_option( 'time_format' )
 				);
-				$date_str            = apply_filters(
+				$time_stamp              = $this->getTimestamp(); // UTC+0 (GMT)
+				$time_stamp_by_time_zone = $time_stamp + get_option( 'gmt_offset' ) * HOUR_IN_SECONDS;
+				$date_str                = apply_filters(
 					'learn-press/datetime/date/i18n_has_time',
 					sprintf(
 						'%s',
-						gmdate( $date_time_format_wp, $this->getTimestamp() )
+						gmdate( $date_time_format_wp, $time_stamp_by_time_zone )
 					),
-					$this->getTimestamp()
+					$time_stamp,
+					$time_stamp_by_time_zone
 				);
 				break;
 			case 'human':

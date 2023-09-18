@@ -222,14 +222,8 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			$result = false;
 
 			try {
-				$old_status = $this->get_status();
-
-				//do_action( 'learn-press/before-update-status-lp-order', $new_status, $old_status, $this, $manual );
-
 				$this->set_status( $new_status );
 				$result = $this->save();
-
-				//do_action( 'learn-press/after-update-status-lp-order', $new_status, $old_status, $this, $manual );
 			} catch ( Throwable $e ) {
 				error_log( $e->getMessage() );
 			}
