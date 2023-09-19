@@ -1568,33 +1568,6 @@ function learn_press_plugin_basename_from_slug( $slug ) {
 	return $slug;
 }
 
-/**
- * @deprecated 4.2.0
- */
-function learn_press_request_query( $vars = array() ) {
-	_deprecated_function( __FUNCTION__, '4.2.0' );
-	/*global $typenow, $wp_query, $wp_post_statuses;
-
-	if ( LP_ORDER_CPT === $typenow ) {
-		if ( ! isset( $vars['post_status'] ) ) {
-			$post_statuses = learn_press_get_order_statuses();
-
-			foreach ( $post_statuses as $status => $value ) {
-				if ( isset( $wp_post_statuses[ $status ] ) && false === $wp_post_statuses[ $status ]->show_in_admin_all_list ) {
-					unset( $post_statuses[ $status ] );
-				}
-			}
-
-			$vars['post_status'] = array_keys( $post_statuses );
-
-		}
-	}*/
-
-	return $vars;
-}
-
-//add_filter( 'request', 'learn_press_request_query', 0 );
-
 function _learn_press_reset_course_data() {
 	if ( empty( $_REQUEST['reset-course-data'] ) ) {
 		return false;
@@ -2346,31 +2319,13 @@ function learn_press_touch_time( $edit = 1, $for_post = 1, $tab_index = 0, $mult
 }
 
 /**
- * Filter to modal search items to void filter the posts by author.
- *
- * @param int|string $context_id
- * @param string     $context
- *
- * @return bool|int|string
- * @since 3.0.4
- */
-function learn_press_modal_search_items_context( $context_id, $context ) {
-	if ( 'order-items' === $context ) {
-		$context_id = false;
-	}
-
-	return $context_id;
-}
-
-add_filter( 'learn-press/modal-search-items/context-id', 'learn_press_modal_search_items_context', 10, 2 );
-
-/**
  * Return id of current screen.
  *
  * @return bool|string
  * @since 3.2.6
  */
 function learn_press_get_screen_id() {
+	_deprecated_function( __METHOD__, '4.2.3.6' );
 	$screen    = get_current_screen();
 	$screen_id = $screen ? $screen->id : false;
 
