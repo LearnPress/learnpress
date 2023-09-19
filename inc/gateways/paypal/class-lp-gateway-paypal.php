@@ -221,7 +221,6 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 
 			try {
 				$order       = new LP_Order( $order_id );
-				error_log('test');
 				// $paypal_args = $this->get_paypal_args( $order );
 
 				// $paypal_payment_url = $this->paypal_url . '?' . http_build_query( $paypal_args );
@@ -336,6 +335,8 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			$lp_cart          = LearnPress::instance()->get_cart();
 			$cart_total       = $lp_cart->calculate_totals();
 			$order_id         = $order->get_id();
+			$return_url       = esc_url_raw( add_query_arg( 'paypay_express_checkout', 1, $this->get_return_url( $order ) ) );
+			error_log( $return_url );
 			$data             = [
 				'intent'         => 'CAPTURE',
 				'purchase_units' => [
@@ -355,7 +356,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 							// "locale" => "en-US",
 							'landing_page'              => 'LOGIN',
 							'user_action'               => 'PAY_NOW',
-							'return_url'                => esc_url_raw( 'paypay_express_checkout', 1, add_query_arg( $this->get_return_url( $order ) ) ),
+							'return_url'                => $return_url,
 							'cancel_url'                => esc_url_raw( learn_press_is_enable_cart() ? learn_press_get_page_link( 'cart' ) : get_home_url() ),
 						],
 					],
