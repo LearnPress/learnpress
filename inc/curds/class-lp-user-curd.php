@@ -467,8 +467,10 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * Read meta data of an user item.
 	 *
 	 * @param $item
+	 * @deprecated 4.2.4
 	 */
 	protected function _read_item_meta( &$item ) {
+		_deprecated_function( __METHOD__, '4.2.4' );
 		global $wpdb;
 		$query = $wpdb->prepare(
 			"
@@ -616,8 +618,11 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @param int $user_id
 	 *
 	 * @return array|bool|mixed
+	 * @deprecated 4.2.4
 	 */
 	public function query_courses_by_order( $user_id ) {
+		_deprecated_function( __METHOD__, '4.2.4' );
+		return false;
 		global $wpdb;
 
 		$query         = $wpdb->prepare(
@@ -660,7 +665,12 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		return $course_ids;
 	}
 
+	/**
+	 * @deprecated 4.2.4
+	 */
 	public function read_course_info( $course ) {
+		_deprecated_function( __METHOD__, '4.2.4' );
+		return [];
 		$data = $course;
 		global $wpdb;
 		$query = $wpdb->prepare(
@@ -693,7 +703,12 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		}
 	}
 
+	/**
+	 * @deprecated 4.2.4
+	 */
 	public function get_current_user_order( $user_id, $course_id ) {
+		_deprecated_function( __METHOD__, '4.2.4' );
+		return 0;
 		global $wpdb;
 		$sql      = $wpdb->prepare(
 			"
@@ -715,39 +730,5 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 	public function duplicate( &$user, $args = array() ) {
 		// TODO: Implement duplicate() method.
-	}
-
-	public static function create_user( $email, $username, $password ) {
-		if ( empty( $email ) || ! is_email( $email ) ) {
-			return new WP_Error( 'registration-error-invalid-email', __( 'Please provide a valid email address.', 'learnpress' ) );
-		}
-
-		if ( email_exists( $email ) ) {
-			return new WP_Error( 'registration-error-email-exists', __( 'An account is already registered with your email address. Please log in.', 'learnpress' ) );
-		}
-
-		$username = sanitize_user( $username );
-
-		if ( empty( $username ) || ! validate_username( $username ) ) {
-			return new WP_Error( 'registration-error-invalid-username', __( 'Please enter a valid account username.', 'learnpress' ) );
-		}
-
-		if ( username_exists( $username ) ) {
-			return new WP_Error( 'registration-error-username-exists', __( 'An account is already registered with that username. Please choose another one.', 'learnpress' ) );
-		}
-
-		$new_user = wp_insert_user(
-			array(
-				'user_login' => $username,
-				'user_pass'  => $password,
-				'user_email' => $email,
-			)
-		);
-
-		if ( is_wp_error( $new_user ) ) {
-			return new WP_Error( 'registration-error', __( 'Failed to create the user', 'learnpress' ) );
-		}
-
-		return $new_user;
 	}
 }
