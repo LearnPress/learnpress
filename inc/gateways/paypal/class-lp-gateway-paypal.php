@@ -336,7 +336,6 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			$cart_total       = $lp_cart->calculate_totals();
 			$order_id         = $order->get_id();
 			$return_url       = esc_url_raw( add_query_arg( 'paypay_express_checkout', 1, $this->get_return_url( $order ) ) );
-			error_log( $return_url );
 			$data             = [
 				'intent'         => 'CAPTURE',
 				'purchase_units' => [
@@ -396,6 +395,35 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				throw new Exception( 'Cannot create paypal transaction.', 'learnpress' );
 			}
 			return $checkout_url;
+		}
+
+		/**
+		 * check paypal transaction status use paypal oauth2 token
+		 * @param  [$transaction_id string paypal transaction id]
+		 * @return [void]
+		 */
+		public function check_transaction_status( $transaction_id ) {
+			$access_token     = get_option( 'lp_pp_oauth2_json' );
+			$access_token_obj = json_decode( $access_token );
+			
+			$response         = wp_remote_get(
+				$this->api_url . 'v2/checkout/orders/'.$transaction_id,
+				array(
+					'headers' => array(
+						'Authorization' => $access_token_obj->token_type . ' ' . $access_token_obj->access_token
+					),
+					'timeout' => 60,
+				)
+			);
+			if ( $response['response']['code'] === 200 ) {
+				$body = wp_remote_retrieve_body( $response );
+				$transaction = json_decode( $body );
+				if ( $transaction->status == 'APPROVED' || $transaction->status == 'COMPLETED' ) {
+					$order_id = $transaction->purchase_units[0]->custom_id;
+					$lp_order = learn_press_get_order( $order_id );
+					$lp_order->update_status( LP_ORDER_COMPLETED );	
+				}
+			}
 		}
 
 		/**

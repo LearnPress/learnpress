@@ -58,6 +58,7 @@ class LP_Page_Controller {
 
 			// Web hook detected PayPal request.
 			add_action( 'init', [ $this, 'check_webhook_paypal_ipn' ] );
+			add_action( 'init', [ $this, 'check_paypal_transaction_status' ] );
 			// Set again x-wp-nonce on header when has cache with not login.
 			add_filter( 'rest_send_nocache_headers', array( $this, 'check_x_wp_nonce_cache' ) );
 
@@ -1192,6 +1193,22 @@ class LP_Page_Controller {
 				}
 			}
 		} catch ( Throwable $e ) {
+			error_log( $e->getMessage() );
+		}
+	}
+
+	public function check_paypal_transaction_status() {
+		if ( ! isset( $_GET['paypay_express_checkout'] ) ) {
+			return;
+		}
+		if ( ! isset( $_GET['token'] ) ) {
+			return;
+		}
+		try {
+			$paypal = LP_Gateway_Paypal::instance();
+			$transaction_id = sanitize_text_field( $_GET['token'] );
+			$paypal->check_transaction_status( $transaction_id );			
+		} catch ( Throwable $e) {
 			error_log( $e->getMessage() );
 		}
 	}
