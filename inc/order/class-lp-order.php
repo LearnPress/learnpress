@@ -572,8 +572,8 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 *
 		 * @return int
 		 * @throws Exception
-		 * @editor tungnx
-		 * @modify 4.1.5
+		 * @since 1.0.0
+		 * @version 4.2.4
 		 */
 		public function add_item( $item ): int {
 			global $wpdb;
@@ -642,7 +642,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 				// End insert new order item
 
 				// Add learnpress_order_itemmeta
-				$item['meta']['_quantity'] = $item['quantity'];
+				$item['meta']['_quantity'] = $item['quantity'] ?? 1;
 				$item['meta']['_subtotal'] = $item['subtotal'] ?? 0;
 				$item['meta']['_total']    = $item['total'] ?? 0;
 
