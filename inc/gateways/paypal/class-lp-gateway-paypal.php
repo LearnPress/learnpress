@@ -150,6 +150,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				}
 				$this->client_id     = $this->settings->get( 'app_client_id' );
 				$this->client_secret = $this->settings->get( 'app_client_secret' );
+				$this->check_access_token();
 			}
 
 			add_filter( 'learn-press/payment-gateway/' . $this->id . '/available', array( $this, 'paypal_available' ), 10, 2 );
@@ -220,9 +221,11 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 
 			try {
 				$order       = new LP_Order( $order_id );
-				$paypal_args = $this->get_paypal_args( $order );
+				error_log('test');
+				// $paypal_args = $this->get_paypal_args( $order );
 
-				$paypal_payment_url = $this->paypal_url . '?' . http_build_query( $paypal_args );
+				// $paypal_payment_url = $this->paypal_url . '?' . http_build_query( $paypal_args );
+				$paypal_payment_url = $this->create_payment_url( $order );
 			} catch ( Throwable $e ) {
 				error_log( $e->getMessage() );
 			}
@@ -277,41 +280,71 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			return apply_filters( 'learn-press/paypal/args', $args );
 		}
 
-		public function get_access_token() {
-			$client_id     = $this->client_id;
-			$client_secret = $this->client_secret;
-			if ( ! $client_id ) {
-				throw new Exception( 'Paypal Client id is required.', 'learnpress' );
+		public function check_access_token() {
+			$access_token = get_option( 'lp_pp_oauth2_json' );
+			if ( !$access_token ) {
+				$this->get_access_token();
 			}
-			if ( ! $client_secret ) {
-				throw new Exception( 'Paypal Client secret is required', 'learnpress' );
+			$access_token = json_decode( $access_token, true );
+			if ( !isset( $access_token['expires_in'] ) ) {
+				$this->get_access_token();
+			} else {
+				$expired_time = date( 'H:i:s', $access_token['expires_in'] );
+				if ( time() >= strtotime( $expired_time ) ) {
+					$this->get_access_token();
+				}
 			}
-			$data     = array( 'grant_type' => 'client_credentials' );
-			$response = wp_remote_post(
-				$this->api_url . 'v1/oauth2/token',
-				array(
-					'body'    => $data,
-					'headers' => array(
-						'Authorization' => 'Basic ' . base64_encode( $client_id . ':' . $client_secret ),
-					),
-					'timeout' => 60,
-				)
-			);
-			return $response['response']['code'] == 200 ? wp_remote_retrieve_body( $response ) : false;
 		}
 
+		public function get_access_token() {
+			try {
+				$client_id     = $this->client_id;
+				$client_secret = $this->client_secret;
+				
+				if ( ! $client_id ) {
+					throw new Exception( 'Paypal Client id is required.', 'learnpress' );
+				}
+				if ( ! $client_secret ) {
+					throw new Exception( 'Paypal Client secret is required', 'learnpress' );
+				}
+				$data     = array( 'grant_type' => 'client_credentials' );
+				$response = wp_remote_post(
+					$this->api_url . 'v1/oauth2/token',
+					array(
+						'body'    => $data,
+						'headers' => array(
+							'Authorization' => 'Basic ' . base64_encode( $client_id . ':' . $client_secret ),
+						),
+						'timeout' => 60,
+					)
+				);
+				// error_log( json_encode( $response ) );
+				$body = $response['response']['code'] == 200 ? wp_remote_retrieve_body( $response ) : false;
+				// error_log( 'access_token: ' . $body );
+				update_option( 'lp_pp_oauth2_json', $body );
+			} catch ( Throwable $e ) {
+				error_log( __METHOD__ . ' - ' . __FUNCTION__ . ' - ' . $e->getMessage() );
+			}
+		}
+
+		/**
+		 * [create_payment_url]
+		 * @param  LP_Order $order [description]
+		 * @return [type]          [description]
+		 */
 		public function create_payment_url( LP_Order $order ) {
 			$lp_cart          = LearnPress::instance()->get_cart();
 			$cart_total       = $lp_cart->calculate_totals();
+			$order_id         = $order->get_id();
 			$data             = [
 				'intent'         => 'CAPTURE',
 				'purchase_units' => [
 					[
 						'amount'    => [
 							'currency_code' => learn_press_get_currency(),
-							'value'         => $cart_total,
+							'value'         => $cart_total->total,
 						],
-						'custom_id' => $order->get_id(),
+						'custom_id' => $order_id,
 					],
 				],
 				'payment_source' => [
@@ -322,21 +355,21 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 							// "locale" => "en-US",
 							'landing_page'              => 'LOGIN',
 							'user_action'               => 'PAY_NOW',
-							'return_url'                => esc_url_raw( $this->get_return_url( $order ) ),
+							'return_url'                => esc_url_raw( 'paypay_express_checkout', 1, add_query_arg( $this->get_return_url( $order ) ) ),
 							'cancel_url'                => esc_url_raw( learn_press_is_enable_cart() ? learn_press_get_page_link( 'cart' ) : get_home_url() ),
 						],
 					],
 				],
 			];
-			$access_token_obj = $this->get_access_token();
-			if ( ! $access_token_obj ) {
+			$access_token = get_option( 'lp_pp_oauth2_json' );
+			if ( ! $access_token ) {
 				throw new Exception( 'Invalid Paypal access token', 'learnpress' );
 			}
-			$access_token_obj = json_decode( $access_token_obj );
+			$access_token_obj = json_decode( $access_token );
 			$response         = wp_remote_post(
 				$this->api_url . 'v2/checkout/orders',
 				array(
-					'body'    => $data,
+					'body'    => json_encode( $data ),
 					'headers' => array(
 						'Authorization' => $access_token_obj->token_type . ' ' . $access_token_obj->access_token,
 						'Content-Type'  => 'application/json',
@@ -349,6 +382,8 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				$body        = wp_remote_retrieve_body( $response );
 				$transaction = json_decode( $body );
 				if ( $transaction->links ) {
+					// $order->_set_data( 'paypal_order_id', $transaction->id );
+					update_post_meta( $order_id, '_paypal_transaction_id', $transaction->id );
 					foreach ( $transaction->links as $obj ) {
 						if ( $obj->rel == 'payer-action' ) {
 							$checkout_url = $obj->href;
@@ -357,7 +392,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 					}
 				}
 			} else {
-				throw new Exception( 'Cannot create order', 'learnpress' );
+				throw new Exception( 'Cannot create paypal transaction.', 'learnpress' );
 			}
 			return $checkout_url;
 		}
