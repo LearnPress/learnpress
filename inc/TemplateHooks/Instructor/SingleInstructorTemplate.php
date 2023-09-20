@@ -384,13 +384,13 @@ class SingleInstructorTemplate {
 			);
 
 			$count_course = sprintf(
-				'<div><span>%s</span>%s</div>',
+				'<div class="wrapper-instructor-total-courses"><span>%s</span>%s</div>',
 				wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-courses.svg' ),
 				$this->html_count_courses( $instructor )
 			);
 
 			$count_student = sprintf(
-				'<div><span>%s</span>%s</div>',
+				'<div class="wrapper-instructor-total-students"><span>%s</span>%s</div>',
 				wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-students.svg' ),
 				$this->html_count_students( $instructor )
 			);
