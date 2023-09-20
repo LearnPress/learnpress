@@ -122,10 +122,7 @@ class LP_Filter {
 	 */
 	public $filter_extra;
 
-	public function __construct() {
-		$this->limit     = apply_filters( 'lp/filter/limit', $this->limit );
-		$this->max_limit = apply_filters( 'lp/filter/max/limit', $this->max_limit );
-	}
+	public function __construct() {}
 }
 
 

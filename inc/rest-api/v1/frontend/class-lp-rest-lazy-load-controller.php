@@ -1,5 +1,7 @@
 <?php
 
+use LearnPress\Helpers\Template;
+
 /**
  * Class LP_REST_Lazy_Load_Controller
  */
@@ -227,14 +229,6 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 			$response->data->pages   = $sections['pages'];
 			$response->data->page    = $filters->page;
 			$response->data->content = ob_get_clean();
-
-			// For old value use on theme Eduma <= v4.6.0 - deprecated 4.1.6.1
-			// Comment from v4.2.0 - Theme must update
-			/*if ( defined( 'THIM_THEME_VERSION' ) && version_compare( THIM_THEME_VERSION, '4.6.3', '<=' ) ) {
-				$response->pages       = $sections['pages'];
-				$response->data        = $content;
-				$response->section_ids = wp_list_pluck( $sections['results'], 'section_id' );
-			}*/
 		} catch ( Throwable $e ) {
 			ob_end_clean();
 			$response->message = $e->getMessage();
@@ -264,8 +258,9 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 		$include    = LP_Helper::sanitize_params_submitted( $params['include'] ?? array() );
 		$exclude    = LP_Helper::sanitize_params_submitted( $params['exclude'] ?? array() );
 
-		$response = new LP_REST_Response();
-
+		$response                = new LP_REST_Response();
+		$response->data->content = '';
+		ob_start();
 		try {
 			if ( empty( $section_id ) ) {
 				throw new Exception( esc_html__( 'The section is invalid!', 'learnpress' ) );
@@ -281,14 +276,9 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 			$filters->item_not_ids = $exclude;
 
 			$section_items = LP_Section_DB::getInstance()->get_section_items_by_section_id( $filters );
-
 			if ( is_wp_error( $section_items ) ) {
 				throw new Exception( $section_items->get_error_message() );
 			}
-
-			ob_start();
-
-			$content = '';
 
 			foreach ( $section_items['results'] as $key => $section_item ) {
 				$course_id = LP_Section_DB::getInstance()->get_course_id_by_section( $section_id );
@@ -314,8 +304,8 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 					// Ordinal numbers
 					$key = absint( ( ( $page - 1 ) * $per_page ) + $key + 1 );
 
-					learn_press_get_template(
-						'loop/single-course/loop-section-item',
+					Template::instance()->get_frontend_template(
+						'loop/single-course/loop-section-item.php',
 						compact( 'section_item', 'course_item', 'can_view_item', 'course_id', 'user', 'key' )
 					);
 				}
@@ -325,18 +315,10 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 			$response->data->page     = $filters->page;
 			$response->data->content  = ob_get_clean();
 			$response->data->item_ids = wp_list_pluck( $section_items['results'], 'ID' );
-
-			$response->status = 'success';
-			// For old value use on theme Eduma <= v4.6.0 - deprecated 4.1.6.1
-			// Comment from v4.2.0 - Theme must update
-			/*if ( defined( 'THIM_THEME_VERSION' ) && version_compare( THIM_THEME_VERSION, '4.6.3', '<=' ) ) {
-				$response->pages    = $section_items['pages'];
-				$response->page     = $filters->page;
-				$response->data     = $content;
-				$response->item_ids = wp_list_pluck( $section_items['results'], 'ID' );
-			}*/
-		} catch ( \Throwable $e ) {
+			$response->status         = 'success';
+		} catch ( Throwable $e ) {
 			ob_end_clean();
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
 			$response->message = $e->getMessage();
 		}
 

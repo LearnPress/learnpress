@@ -265,10 +265,11 @@ class LP_Section_DB extends LP_Database {
 			$total = $this->wpdb->get_var( $query_total );
 		}
 
+		$pages = LP_Database::get_total_pages( $total, $filter->limit );
 		return array(
 			'results' => $results,
 			'total'   => $total,
-			'pages'   => (int) ceil( $total / (int) $filter->limit ),
+			'pages'   => $pages,
 		);
 	}
 
