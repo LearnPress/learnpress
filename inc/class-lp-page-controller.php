@@ -58,7 +58,7 @@ class LP_Page_Controller {
 
 			// Web hook detected PayPal request.
 			add_action( 'init', [ $this, 'check_webhook_paypal_ipn' ] );
-			add_action( 'init', [ $this, 'check_paypal_transaction_status' ] );
+
 			// Set again x-wp-nonce on header when has cache with not login.
 			add_filter( 'rest_send_nocache_headers', array( $this, 'check_x_wp_nonce_cache' ) );
 
@@ -1168,47 +1168,43 @@ class LP_Page_Controller {
 	public function check_webhook_paypal_ipn() {
 		//error_log( 'xxx:' . json_encode( $_POST, JSON_UNESCAPED_UNICODE ) );
 
-		// Paypal payment done
-		if ( ! isset( $_GET['paypal_notify'] ) ) {
-			return;
-		}
-
-		if ( ! isset( $_POST['ipn_track_id'] ) ) {
-			return;
-		}
-
 		try {
 			$paypal = LP_Gateway_Paypal::instance();
-			$verify = $paypal->validate_ipn();
+			if ( $paypal->settings->get( 'use_paypal_rest' ) == 'no' ) {
+				// Paypal payment done
+				if ( ! isset( $_GET['paypal_notify'] ) ) {
+					return;
+				}
 
-			if ( $verify ) {
-				if ( isset( $_POST['custom'] ) ) {
-					$data_order = json_decode( LP_Helper::sanitize_params_submitted( $_POST['custom'] ) );
+				if ( ! isset( $_POST['ipn_track_id'] ) ) {
+					return;
+				}
 
-					if ( json_last_error() === JSON_ERROR_NONE ) {
-						$order_id = $data_order->order_id;
-						$lp_order = learn_press_get_order( $order_id );
-						$lp_order->update_status( LP_ORDER_COMPLETED );
+				$verify = $paypal->validate_ipn();
+
+				if ( $verify ) {
+					if ( isset( $_POST['custom'] ) ) {
+						$data_order = json_decode( LP_Helper::sanitize_params_submitted( $_POST['custom'] ) );
+
+						if ( json_last_error() === JSON_ERROR_NONE ) {
+							$order_id = $data_order->order_id;
+							$lp_order = learn_press_get_order( $order_id );
+							$lp_order->update_status( LP_ORDER_COMPLETED );
+						}
 					}
 				}
+			} else {
+				if ( ! isset( $_GET['paypay_express_checkout'] ) ) {
+					return;
+				}
+				if ( ! isset( $_GET['token'] ) ) {
+					return;
+				}
+				$paypal         = LP_Gateway_Paypal::instance();
+				$transaction_id = sanitize_text_field( $_GET['token'] );
+				$paypal->check_transaction_status( $transaction_id );
 			}
 		} catch ( Throwable $e ) {
-			error_log( $e->getMessage() );
-		}
-	}
-
-	public function check_paypal_transaction_status() {
-		if ( ! isset( $_GET['paypay_express_checkout'] ) ) {
-			return;
-		}
-		if ( ! isset( $_GET['token'] ) ) {
-			return;
-		}
-		try {
-			$paypal = LP_Gateway_Paypal::instance();
-			$transaction_id = sanitize_text_field( $_GET['token'] );
-			$paypal->check_transaction_status( $transaction_id );			
-		} catch ( Throwable $e) {
 			error_log( $e->getMessage() );
 		}
 	}

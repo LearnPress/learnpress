@@ -34,14 +34,33 @@ return apply_filters(
 			'type'  => 'text',
 		),
 		array(
+			'title'      => esc_html__( 'Use paypal app', 'learnpress' ),
+			'id'         => '[use_paypal_rest]',
+			'default'    => 'no',
+			'type'       => 'yes-no',
+			'visibility' => array(
+				'state'       => 'show',
+				'conditional' => array(
+					array(
+						'field'   => '[enable]',
+						'compare' => '=',
+						'value'   => 'yes',
+					),
+				),
+			),
+			'desc'       => esc_html__( 'Use PayPal Standard Rest API, Create your app in Dashboard and use app Client ID and Client Secret', 'learnpress' ),
+		),
+		array(
 			'title' => esc_html__( 'Client ID', 'learnpress' ),
 			'id'    => '[app_client_id]',
 			'type'  => 'text',
+			'desc'  => esc_html__( 'PayPal Application Client ID', 'learnpress' ),
 		),
 		array(
 			'title' => esc_html__( 'Client Secret', 'learnpress' ),
 			'id'    => '[app_client_secret]',
 			'type'  => 'text',
+			'desc'  => esc_html__( 'PayPal Application Client Secret', 'learnpress' ),
 		),
 		array(
 			'type' => 'sectionend',
