@@ -135,43 +135,6 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	}
 
 	/**
-	 * Remove all items from each section and delete course's sections.
-	 *
-	 * @return bool
-	 * @since 3.0.0
-	 * @editor tungnx
-	 * @modify 4.1.4.1 - comment - not use
-	 */
-	/*public function clear() {
-
-		$sections_ids = LP_Object_Cache::get( 'course-' . $this->course_id, 'learn-press/course-sections-ids' );
-
-		if ( ! $sections_ids ) {
-			return false;
-		}
-
-		global $wpdb;
-
-		do_action( 'learn-press/before-clear-section', $this->course_id );
-
-		// Remove all items in course's sections
-		$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}learnpress_section_items WHERE %d AND section_id IN(" . join( ',', $sections_ids ) . ')', 1 ) );
-		learn_press_reset_auto_increment( 'learnpress_section_items' );
-		// delete sections ids cache
-		// wp_cache_delete( 'course-' . $this->course_id, 'learn-press/course-sections-ids' );
-
-		// delete sections in course
-		$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}learnpress_sections WHERE section_course_id = %d", $this->course_id ) );
-		learn_press_reset_auto_increment( 'learnpress_sections' );
-		// delete sections cache
-		// wp_cache_delete( 'course-' . $this->course_id, 'learn-press/course-sections' );
-
-		LP_Course_Utils::set_cache_db_sections( $this->course_id, false );
-
-		return true;
-	}*/
-
-	/**
 	 * Load data from database.
 	 *
 	 * @param object $object
@@ -207,58 +170,6 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	}
 
 	/**
-	 * Get course sections ids and set data to cache.
-	 *
-	 * @return array
-	 * @since 3.0.0
-	 * @deprecated 4.1.6.3
-	 */
-	/*public function read_sections_ids() {
-
-		// Get course's sections id data from cache
-		$ids = LP_Object_Cache::get( 'course-' . $this->course_id, 'learn-press/course-sections-ids' );
-
-		if ( ! $ids ) {
-			global $wpdb;
-			// get sections id
-			$ids = $wpdb->get_col( $wpdb->prepare( "SELECT section_id FROM {$wpdb->prefix}learnpress_sections WHERE section_course_id = %d", $this->course_id ) );
-			// Set cache
-			LP_Object_Cache::set( 'course-' . $this->course_id, $ids, 'learn-press/course-sections-ids' );
-		}
-
-		return $ids;
-	}*/
-
-	/**
-	 * Read all items from DB
-	 *
-	 * @param int $section_id
-	 *
-	 * @return array
-	 * @deprecated 4.1.6.9 Remove when release Addon Frontend Editor 4.0.1
-	 */
-	public function read_items( $section_id ) {
-		global $wpdb;
-
-		$query = $wpdb->prepare(
-			"
-			SELECT item_id id
-			FROM {$wpdb->learnpress_section_items} si
-			INNER JOIN {$wpdb->learnpress_sections} s ON si.section_id = s.section_id
-			INNER JOIN {$wpdb->posts} c ON c.ID = s.section_course_id
-			INNER JOIN {$wpdb->posts} it ON it.ID = si.item_id
-			WHERE s.section_id = %d
-			AND it.post_status = %s
-			ORDER BY si.item_order, si.section_item_id ASC
-		",
-			$section_id,
-			'publish'
-		);
-
-		return $wpdb->get_col( $query );
-	}
-
-	/**
 	 * Update sort sections.
 	 *
 	 * @param string[] $sections_new_order
@@ -268,11 +179,6 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 */
 	public function update_sections_order( $sections_new_order ) {
 		global $wpdb;
-
-		//$current_sections = LP_Course_Utils::get_cached_db_sections( $this->course_id );
-		//$new_sections     = array();
-		//$course = learn_press_get_course( $this->course_id );
-		//$sections_items = $course->get_full_sections_and_items_course();
 
 		$orders = array();
 
@@ -284,31 +190,7 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				array( 'section_order' => $order_new ),
 				array( 'section_id' => $section_id )
 			);
-
-			// $this->get_section_items( $section_id );
 		}
-
-		/*foreach ( $sections as $index => $section_id ) {
-			$order = $index + 1;
-
-			$orders[ $section_id ] = $order;
-
-			$wpdb->update(
-				$wpdb->learnpress_sections,
-				array( 'section_order' => $order ),
-				array( 'section_id' => $section_id )
-			);
-
-			foreach ( $current_sections as $current_section ) {
-				if ( $current_section->section_id == $section_id ) {
-					$new_sections[ $index ] = $current_section;
-				}
-			}
-
-			$this->get_section_items( $section_id );
-		}*/
-
-		//LP_Course_Utils::set_cache_db_sections( $this->course_id, $new_sections );
 
 		return $orders;
 	}
@@ -337,8 +219,6 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				}
 			}
 		}
-
-		// LP_Object_Cache::set( 'course-' . $this->course_id . '-' . $section_id, $return, 'learn-press/course-section-items' );
 
 		return $return;
 	}
@@ -557,57 +437,6 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	}
 
 	/**
-	 * Update course final item.
-	 *
-	 * @return bool
-	 * @version 4.0.0
-	 * @deprecated 4.1.6.9
-	 */
-	public function update_final_item() {
-		_deprecated_function( __FUNCTION__, '4.1.6.9' );
-		/*$sections = LP_Course_Utils::get_cached_db_sections( $this->course_id );
-
-		if ( ! $sections ) {
-			return false;
-		}
-
-		$last_section = end( $sections );
-		$section_id   = $last_section->section_id;
-
-		// get last section items
-		$section_items = LP_Object_Cache::get( 'course-' . $this->course_id . '-' . $section_id, 'learn-press/course-section-items' );
-
-		$types = apply_filters( 'learn-press/post-types-support-assessment-by-final-item', array( LP_QUIZ_CPT ) );
-
-		if ( $section_items ) {
-			// last item in last section
-			$final = end( $section_items );
-
-			if ( is_array( $types ) && in_array( $final['type'], $types ) ) {
-				update_post_meta( $this->course_id, '_' . substr_replace( $final['type'], '_final_', 2, 1 ), $final['id'] );
-				$diff = array_diff( $types, array( $final['type'] ) );
-				foreach ( $diff as $type ) {
-					// delete all other final meta
-					delete_post_meta( $this->course_id, '_' . substr_replace( $type, '_final_', 2, 1 ) );
-				}
-			} else {
-				// for last item is not post type need check final item
-				foreach ( $types as $type ) {
-					delete_post_meta( $this->course_id, '_' . substr_replace( $type, '_final_', 2, 1 ) );
-				}
-			}
-		} else {
-			// for last section does not has any item
-			foreach ( $types as $type ) {
-				delete_post_meta( $this->course_id, '_' . substr_replace( $type, '_final_', 2, 1 ) );
-			}
-		}
-
-		return true;*/
-
-	}
-
-	/**
 	 * Remove section item.
 	 *
 	 * @param $section_id
@@ -672,23 +501,6 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				);
 			}
 		}
-
-		/**
-		 * Remove non-existent items.
-		 */
-		/*foreach ( $current_items as $item ) {
-			$find = $this->check_item_exist( $items, $item['id'] );
-
-			if ( ! $find ) {
-				$wpdb->delete(
-					$wpdb->learnpress_section_items,
-					array(
-						'section_id' => $section_id,
-						'item_id'    => $item['id'],
-					)
-				);
-			}
-		}*/
 
 		return $items;
 	}
