@@ -399,7 +399,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				$transaction = json_decode( $body );
 				if ( $transaction->links ) {
 					// $order->_set_data( 'paypal_order_id', $transaction->id );
-					update_post_meta( $order_id, '_paypal_transaction_id', $transaction->id );
+					// update_post_meta( $order_id, '_paypal_transaction_id', $transaction->id );
 					foreach ( $transaction->links as $obj ) {
 						if ( $obj->rel == 'payer-action' ) {
 							$checkout_url = $obj->href;
