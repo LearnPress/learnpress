@@ -39,6 +39,12 @@ body {
 		font-weight: bold;
 	}
 
+	.wrapper-instructor-total-courses, .wrapper-instructor-total-students {
+		display: flex;
+		align-items: center;
+		gap: 5px;
+	}
+
 	&__info {
 		border: 1px solid var(--lp-instructor-border-color);
 		margin-bottom: 50px;
