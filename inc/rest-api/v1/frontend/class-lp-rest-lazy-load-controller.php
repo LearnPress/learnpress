@@ -164,20 +164,15 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 	 * @return LP_REST_Response
 	 * @author nhamdv
 	 * @since 4.1.5
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public function course_curriculum( WP_REST_Request $request ): LP_REST_Response {
-		$response = new LP_REST_Response();
-		$params   = $request->get_params();
-		$content  = '';
-
+		$response   = new LP_REST_Response();
+		$params     = $request->get_params();
+		$total_rows = 0;
 		$course_id  = absint( $params['courseId'] ?? 0 );
 		$per_page   = LP_Settings::get_option( 'section_per_page', -1 );
 		$page       = absint( $params['page'] ?? 1 );
-		$order      = wp_unslash( $params['order'] ?? 'ASC' );
-		$search     = wp_unslash( $params['search'] ?? '' );
-		$include    = wp_unslash( $params['include'] ?? array() );
-		$exclude    = wp_unslash( $params['exclude'] ?? array() );
 		$section_id = wp_unslash( $params['sectionID'] ?? false );
 
 		ob_start();
@@ -195,38 +190,42 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 			$filters->section_course_id = $course_id;
 			$filters->limit             = $per_page;
 			$filters->page              = $page;
-			$filters->order             = $order;
-			$filters->search_section    = $search;
-			$filters->section_ids       = $include;
-			$filters->section_not_ids   = $exclude;
-
-			$sections = LP_Section_DB::getInstance()->get_sections_by_course_id( $filters );
-			if ( is_wp_error( $sections ) ) {
-				throw new Exception( $sections->get_error_message() );
+			$sections_result            = LP_Section_DB::getInstance()->get_sections( $filters, $total_rows );
+			$sections_tmp               = [];
+			foreach ( $sections_result as $section ) {
+				$sections_tmp[] = (array) $section;
 			}
 
-			ob_start();
+			$total_page = 1;
+			if ( $filters->limit > 0 ) {
+				$total_page = LP_Database::get_total_pages( $filters->limit, $total_rows );
+			}
+			$sections = array(
+				'results' => $sections_tmp,
+				'total'   => $total_rows,
+				'pages'   => $total_page,
+			);
 
 			if ( ! empty( $params['loadMore'] ) ) {
-				foreach ( $sections['results'] as $section ) {
-					learn_press_get_template(
-						'loop/single-course/loop-section',
+				foreach ( $sections_tmp as $section ) {
+					Template::instance()->get_frontend_template(
+						'loop/single-course/loop-section.php',
 						compact( 'sections', 'section', 'course_id', 'filters' )
 					);
 				}
 			} else {
-				learn_press_get_template(
-					'single-course/tabs/curriculum-v2',
+				Template::instance()->get_frontend_template(
+					'single-course/tabs/curriculum-v2.php',
 					compact( 'sections', 'course_id', 'filters' )
 				);
 			}
 
 			if ( $section_id ) {
-				$response->data->section_ids = wp_list_pluck( $sections['results'], 'section_id' );
+				$response->data->section_ids = LP_Database::get_values_by_key( $sections_result, 'section_id' );
 			}
 
 			$response->status        = 'success';
-			$response->data->pages   = $sections['pages'];
+			$response->data->pages   = $total_page;
 			$response->data->page    = $filters->page;
 			$response->data->content = ob_get_clean();
 		} catch ( Throwable $e ) {

@@ -28,21 +28,32 @@ class LP_Section_DB extends LP_Database {
 	 *
 	 * @throws Exception
 	 * @since 4.1.6
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
-	public function get_sections( LP_Section_Filter $filter ) {
+	public function get_sections( LP_Section_Filter $filter, &$total_rows = 0 ) {
 		$default_fields = $this->get_cols_of_table( $this->tb_lp_sections );
 		$filter->fields = array_merge( $default_fields, $filter->fields );
 
 		if ( empty( $filter->collection ) ) {
-			$filter->collection = $this->tb_posts;
+			$filter->collection = $this->tb_lp_sections;
 		}
 
 		if ( empty( $filter->collection_alias ) ) {
-			$filter->collection_alias = 's';
+			$filter->collection_alias = 'st';
 		}
 
-		$this->execute( $filter );
+		$filter->field_count = 'st.section_id';
+
+		if ( ! empty( $filter->section_course_id ) ) {
+			$filter->where[] = $this->wpdb->prepare( 'AND st.section_course_id = %d', $filter->section_course_id );
+		}
+
+		if ( ! empty( $filter->section_ids ) ) {
+			$section_ids_format = LP_Helper::db_format_array( $filter->section_ids, '%d' );
+			$filter->where[]    = $this->wpdb->prepare( 'AND st.section_id IN (' . $section_ids_format . ')', $filter->section_ids );
+		}
+
+		return $this->execute( $filter, $total_rows );
 	}
 
 	/**
@@ -319,24 +330,28 @@ class LP_Section_DB extends LP_Database {
 		return $this->execute( $filter, $total_rows );
 	}
 
+	/**
+	 * Get course id by section id
+	 *
+	 * @param int $section_id
+	 * @return int
+	 * @throws Exception
+	 * @since 4.1.4.2
+	 * @version 1.0.1
+	 */
 	public function get_course_id_by_section( int $section_id ) : int {
-		static $output;
+		$filter                      = new LP_Section_Filter();
+		$filter->only_fields         = [ 'section_course_id' ];
+		$filter->section_ids         = [ $section_id ];
+		$filter->run_query_count     = false;
+		$filter->limit               = 1;
+		$filter->return_string_query = true;
+		$result                      = $this->get_sections( $filter );
+		$course_id                   = (int) $this->wpdb->get_var( $result );
 
-		global $wpdb;
+		$this->check_execute_has_error();
 
-		if ( empty( $section_id ) ) {
-			return false;
-		}
-
-		if ( ! isset( $output ) ) {
-			$output = $wpdb->get_var( $wpdb->prepare( "SELECT section_course_id FROM {$wpdb->learnpress_sections} WHERE section_id = %d ORDER BY section_id DESC LIMIT 1", $section_id ) );
-		}
-
-		if ( $output ) {
-			return absint( $output );
-		}
-
-		return false;
+		return $course_id;
 	}
 
 	public function get_section_id_by_item_id( $item_id ) {
