@@ -291,6 +291,34 @@ class LP_Section_DB extends LP_Database {
 		);
 	}
 
+	/**
+	 * Get items by section_id in section_items table
+	 *
+	 * @throws Exception
+	 * @version 1.0.0
+	 * @since 4.2.4
+	 */
+	public function get_items( LP_Section_Items_Filter $filter, &$total_rows = 0 ) {
+		$filter->fields           = [ 'ID', 'post_title' ];
+		$filter->collection       = $this->tb_posts;
+		$filter->collection_alias = 'p';
+
+		if ( empty( $filter->collection_alias ) ) {
+			$filter->collection_alias = 'p';
+		}
+
+		$filter->join[] = "INNER JOIN {$this->tb_lp_section_items} AS si ON p.ID = si.item_id";
+
+		// Search in section id
+		if ( ! empty( $filter->section_id ) ) {
+			$filter->where[] = $this->wpdb->prepare( 'AND si.section_id = %s', $filter->section_id );
+		}
+
+		$filter = apply_filters( 'lp/section/items/query/filter', $filter );
+
+		return $this->execute( $filter, $total_rows );
+	}
+
 	public function get_course_id_by_section( int $section_id ) : int {
 		static $output;
 
