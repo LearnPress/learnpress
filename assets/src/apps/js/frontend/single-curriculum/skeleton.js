@@ -35,17 +35,13 @@ export default function courseCurriculumSkeleton( courseID = '' ) {
 			} );
 
 			const { data, status, message } = response;
-			let section_ids = data.section_ids;
+			const section_ids = data.section_ids;
 
 			if ( status === 'error' ) {
 				throw new Error( message || 'Error' );
 			}
 
-			let returnData = data.content;
-			if ( undefined === returnData ) { // For old Eduma <= 4.6.0
-				returnData = data;
-				section_ids = response.section_ids;
-			}
+			const returnData = data.content;
 
 			if ( sectionID ) {
 				if ( section_ids && ! section_ids.includes( sectionID ) ) {
@@ -59,7 +55,7 @@ export default function courseCurriculumSkeleton( courseID = '' ) {
 				} else {
 					await parseContentItems( { ele, returnData, sectionID, itemID } );
 				}
- 			} else {
+			} else {
 				returnData && ele.insertAdjacentHTML( 'beforeend', returnData );
 			}
 		} catch ( error ) {
@@ -137,13 +133,8 @@ export default function courseCurriculumSkeleton( courseID = '' ) {
 		let item_ids;
 
 		if ( status === 'success' ) {
-			let dataTmp = data.content;
+			const dataTmp = data.content;
 			item_ids = data.item_ids;
-
-			if ( undefined === dataTmp ) { // For old Eduma <= 4.6.0
-				dataTmp = data;
-				item_ids = response.item_ids;
-			}
 
 			returnData += dataTmp;
 
@@ -170,14 +161,9 @@ export default function courseCurriculumSkeleton( courseID = '' ) {
 
 		const { data, status, message } = response;
 
-		let returnDataTmp = data.content;
-		let section_ids = data.section_ids;
-		let pages = data.pages;
-		if ( undefined === returnDataTmp ) { // For old Eduma <= 4.6.0
-			returnDataTmp = data;
-			section_ids = response.section_ids;
-			pages = response.pages;
-		}
+		const returnDataTmp = data.content;
+		const section_ids = data.section_ids;
+		const pages = data.pages;
 
 		if ( status === 'success' ) {
 			returnData += returnDataTmp;

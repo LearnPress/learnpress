@@ -748,12 +748,16 @@ if ( ! class_exists( 'LP_Course' ) ) {
 					$item->type    = $sections_item->item_type;
 
 					if ( $section_new != $section_current ) {
-						$sections_items[ $section_new ]              = new stdClass();
-						$sections_items[ $section_new ]->id          = $section_new;
-						$sections_items[ $section_new ]->order       = $section_order;
-						$sections_items[ $section_new ]->title       = html_entity_decode( $sections_item->section_name );
-						$sections_items[ $section_new ]->description = html_entity_decode( $sections_item->section_description );
-						$sections_items[ $section_new ]->items       = [];
+						$sections_items[ $section_new ]                      = new stdClass();
+						$sections_items[ $section_new ]->id                  = $section_new; // old field will be deprecated in future
+						$sections_items[ $section_new ]->section_id          = $section_new; // new field
+						$sections_items[ $section_new ]->order               = $section_order; // old field will be deprecated in future
+						$sections_items[ $section_new ]->section_order       = $section_order; // new field
+						$sections_items[ $section_new ]->title               = html_entity_decode( $sections_item->section_name ); // old field will be deprecated in future
+						$sections_items[ $section_new ]->section_name        = html_entity_decode( $sections_item->section_name ); // new field
+						$sections_items[ $section_new ]->description         = html_entity_decode( $sections_item->section_description ); // old field will be deprecated in future
+						$sections_items[ $section_new ]->section_description = html_entity_decode( $sections_item->section_description ); // new field
+						$sections_items[ $section_new ]->items               = [];
 
 						// Sort item by item_order
 						if ( $section_current != 0 ) {

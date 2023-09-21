@@ -180,6 +180,7 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 		$exclude    = wp_unslash( $params['exclude'] ?? array() );
 		$section_id = wp_unslash( $params['sectionID'] ?? false );
 
+		ob_start();
 		try {
 			if ( empty( $course_id ) ) {
 				throw new Exception( esc_html__( 'The course is invalid!', 'learnpress' ) );
@@ -200,7 +201,6 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 			$filters->section_not_ids   = $exclude;
 
 			$sections = LP_Section_DB::getInstance()->get_sections_by_course_id( $filters );
-
 			if ( is_wp_error( $sections ) ) {
 				throw new Exception( $sections->get_error_message() );
 			}
@@ -231,6 +231,7 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 			$response->data->content = ob_get_clean();
 		} catch ( Throwable $e ) {
 			ob_end_clean();
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
 			$response->message = $e->getMessage();
 		}
 

@@ -199,7 +199,11 @@ class LP_Section_DB extends LP_Database {
 			$total = $this->wpdb->get_var( $query_total );
 		}
 
-		$pages = LP_Database::get_total_pages( $total, $filter->limit );
+		if ( $filter->limit > 0 ) {
+			$pages = LP_Database::get_total_pages( $filter->limit, $total );
+		} else {
+			$pages = 1;
+		}
 		return array(
 			'results' => $results,
 			'total'   => $total,
@@ -275,7 +279,11 @@ class LP_Section_DB extends LP_Database {
 			$total = $this->wpdb->get_var( $query_total );
 		}
 
-		$pages = LP_Database::get_total_pages( $total, $filter->limit );
+		if ( $filter->limit > 0 ) {
+			$pages = LP_Database::get_total_pages( $filter->limit, $total );
+		} else {
+			$pages = 1;
+		}
 		return array(
 			'results' => $results,
 			'total'   => $total,
