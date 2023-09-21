@@ -264,6 +264,7 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 			}
 
 			$filters              = new LP_Section_Items_Filter();
+			$filters->only_fields = [ 'ID', 'post_title' ];
 			$filters->section_id  = $section_id;
 			$filters->limit       = $per_page;
 			$filters->page        = $page;

@@ -57,17 +57,6 @@ class LP_Section_DB extends LP_Database {
 	}
 
 	/**
-	 * Get course id by section id
-	 *
-	 * @param int $section_Id
-	 *
-	 * @return mixed
-	 */
-	public function get_course_id_by_section_id( int $section_Id = 0 ) {
-
-	}
-
-	/**
 	 * Get section ids by course id
 	 *
 	 * @param int $course_id
@@ -310,14 +299,13 @@ class LP_Section_DB extends LP_Database {
 	 * @since 4.2.4
 	 */
 	public function get_items( LP_Section_Items_Filter $filter, &$total_rows = 0 ) {
-		$filter->fields           = [ 'ID', 'post_title' ];
+		// Get fields from table posts
+		$default_fields           = $this->get_cols_of_table( $this->tb_posts );
+		$filter->fields           = array_merge( $default_fields, $filter->fields );
 		$filter->collection       = $this->tb_posts;
 		$filter->collection_alias = 'p';
 
-		if ( empty( $filter->collection_alias ) ) {
-			$filter->collection_alias = 'p';
-		}
-
+		// Join to table learnpress_section_items
 		$filter->join[] = "INNER JOIN {$this->tb_lp_section_items} AS si ON p.ID = si.item_id";
 
 		// Search in section id
