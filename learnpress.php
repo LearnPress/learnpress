@@ -432,11 +432,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/class-lp-widget.php';
 			require_once 'inc/lp-widget-functions.php';
 
-			// For plugin Elementor
-			if ( defined( 'ELEMENTOR_VERSION' ) ) {
-				LPElementor::instance();
-			}
-
 			// TODO: update frontend editor before move to function include_files_admin.
 			require_once 'inc/admin/views/meta-boxes/class-lp-meta-box.php';
 
@@ -639,6 +634,11 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			if ( defined( 'POLYLANG_VERSION' ) ) {
 				require_once 'inc/ExternalPlugin/Polylang/class-lp-polylang.php';
 				LP_Polylang::instance();
+			}
+
+			// For plugin Elementor
+			if ( defined( 'ELEMENTOR_VERSION' ) ) {
+				LPElementor::instance();
 			}
 
 			$this->init();
