@@ -623,7 +623,7 @@ function learn_press_get_message( $message, $type = 'success' ) {
 /**
  * Set LP message to COOKIE.
  *
- * @param array $message_data
+ * @param array $message_data ['status' => 'success/warning/error', 'content' => 'Message content']
  * @since 4.2.0
  * @version 1.0.0
  * @return void
