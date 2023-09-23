@@ -421,20 +421,21 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		public function check_transaction_status( $transaction_id ) {
 			$access_token = get_option( 'lp_pp_oauth2_json' );
 
-			$response = wp_remote_get(
-				$this->api_url . 'v2/checkout/orders/' . $transaction_id,
+			$response = wp_remote_post(
+				$this->api_url . 'v2/checkout/orders/' . $transaction_id . '/capture',
 				array(
 					'headers' => array(
+						'Content-Type'  => 'application/json',
 						'Authorization' => $access_token['token_type'] . ' ' . $access_token['access_token'],
 					),
 					'timeout' => 60,
 				)
 			);
-			if ( $response['response']['code'] === 200 ) {
+			if ( $response['response']['code'] === 201 ) {
 				$body        = wp_remote_retrieve_body( $response );
 				$transaction = json_decode( $body );
-				if ( $transaction->status == 'APPROVED' || $transaction->status == 'COMPLETED' ) {
-					$order_id = $transaction->purchase_units[0]->custom_id;
+				if ( $transaction->status == 'COMPLETED' ) {
+					$order_id = $transaction->purchase_units[0]->payments->captures[0]->custom_id;
 					$lp_order = learn_press_get_order( $order_id );
 					$lp_order->update_status( LP_ORDER_COMPLETED );
 				}
