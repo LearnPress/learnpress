@@ -53,6 +53,12 @@ class LP_Section_DB extends LP_Database {
 			$filter->where[]    = $this->wpdb->prepare( 'AND st.section_id IN (' . $section_ids_format . ')', $filter->section_ids );
 		}
 
+		// Default Order
+		if ( empty( $filter->order ) ) {
+			$filter->order_by = 'st.section_order';
+			$filter->order    = 'ASC';
+		}
+
 		return $this->execute( $filter, $total_rows );
 	}
 

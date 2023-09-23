@@ -160,10 +160,8 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 
 			if ( $finished ) {
 				learn_press_update_user_item_meta( $finished, 'finishing_type', 'click' );
-				learn_press_add_message( sprintf( __( 'You have finished this course "%s"', 'learnpress' ), $course->get_title() ) );
 				$response['result'] = 'success';
 			} else {
-				learn_press_add_message( __( 'Error! You cannot finish this course. Please contact your administrator for more information.', 'learnpress' ) );
 				$response['result'] = 'error';
 			}
 

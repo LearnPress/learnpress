@@ -350,16 +350,6 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 	}
 
 	/**
-	 * Register and enqueue a custom stylesheet in the WordPress admin.
-	 *
-	 * @author
-	 */
-	public function wpdocs_enqueue_custom_admin_style() {
-		wp_register_style( 'custom_wp_admin_css', get_template_directory_uri() . '/admin-style.css', false, '1.0.0' );
-		wp_enqueue_style( 'custom_wp_admin_css' );
-	}
-
-	/**
 	 * Show overlay
 	 */
 	public function add_elements_global() {

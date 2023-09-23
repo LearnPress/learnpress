@@ -30,7 +30,7 @@ class LP_Filter {
 	 */
 	public $group_by = '';
 	/**
-	 * @var string
+	 * @var string field name for order, EX ID
 	 */
 	public $order_by = '';
 	/**

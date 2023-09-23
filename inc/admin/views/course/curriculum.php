@@ -26,6 +26,13 @@ learn_press_admin_view( 'course/sections' );
 	jQuery( function( $ ) {
 		( function( $store ) {
 			$Vue.component( 'lp-curriculum', {
+				data: function() {
+					return {
+						firstLoad    : true,
+						indexOfSection: 0,
+						sections_items: [],
+					}
+				},
 				template: '#tmpl-lp-course-curriculum',
 				computed: {
 					status: function() {
@@ -48,8 +55,43 @@ learn_press_admin_view( 'course/sections' );
 						});
 
 						return count + ' ' + (count <= 1 ? labels.singular : labels.plural);
+					},
+					add: function ( indexOfSection ){
+						setTimeout( () => {
+							const dataSet = this.sections_items[ indexOfSection ];
+							if ( 'undefined' !== typeof dataSet ) {
+								$store.state.ss.sections.push( dataSet );
+								this.indexOfSection++;
+								console.log( this.indexOfSection, this.sections_items.length);
+								if ( this.sections_items.length > this.indexOfSection ) {
+									this.add( this.indexOfSection );
+								}
+							}
+						}, 100 );
+					}
+				},
+				beforeMount: function() {
+					console.log( 'beforeCreate');
+					this.sections_items = lpAdminCourseEditorSettings.sections.sections || [];
+
+					console.log( this.sections_items.length );
+
+					if ( this.sections_items.length > 0 ) {
+						$store.state.ss.sections = [ this.sections_items[0] ];
+						this.indexOfSection++;
+					}
+				},
+				mounted: function() {
+					console.log( 'Mount');
+					if ( this.firstLoad ) {
+						this.firstLoad = false;
+						console.log(this.sections_items.length);
+						if ( this.sections_items.length > 1 ) {
+							this.add( this.indexOfSection );
+						}
 					}
 				}
+
 			});
 
 		})( LP_Curriculum_Store );
