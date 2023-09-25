@@ -683,7 +683,7 @@ const lpMetaboxsalePriceDate = () => {
 
 	$( '.lp_sale_dates_fields' ).each( function() {
 		const $this = $( this );
-		const $wrap = $this.closest( 'div.lp-meta-box-course-panels' );
+		const $wrap = $this.closest( '#price_course_data' );
 		let saleScheduleSet = false;
 
 		$this.find( 'input' ).each( function() {
@@ -702,7 +702,7 @@ const lpMetaboxsalePriceDate = () => {
 	} );
 
 	$( '.lp-meta-box-course-panels' ).on( 'click', '.lp_sale_price_schedule', function() {
-		const wrap = $( this ).closest( 'div.lp-meta-box-course-panels' );
+		const wrap = $( this ).closest( '#price_course_data' );
 
 		$( this ).hide();
 
