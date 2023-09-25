@@ -1,4 +1,3 @@
-
 // Rest API load content in Tab Curriculum - Nhamdv.
 import { addQueryArgs } from '@wordpress/url';
 import apiFetch from '@wordpress/api-fetch';
@@ -9,7 +8,9 @@ export default function courseCurriculumSkeleton( courseID = '' ) {
 	let isLoadingItems = false;
 	let isLoadingSections = false;
 	const Sekeleton = () => {
-		const elementCurriculum = document.querySelector( '.learnpress-course-curriculum' );
+		const elementCurriculum = document.querySelector(
+			'.learnpress-course-curriculum'
+		);
 
 		if ( ! elementCurriculum ) {
 			return;
@@ -45,21 +46,44 @@ export default function courseCurriculumSkeleton( courseID = '' ) {
 
 			if ( sectionID ) {
 				if ( section_ids && ! section_ids.includes( sectionID ) ) {
-					const response2 = await getResponsive( '', page + 1, sectionID );
+					const response2 = await getResponsive(
+						'',
+						page + 1,
+						sectionID
+					);
 
 					if ( response2 ) {
 						const { data2, pages2, page2 } = response2;
 
-						await parseContentItems( { ele, returnData, sectionID, itemID, data2, pages2, page2 } );
+						await parseContentItems( {
+							ele,
+							returnData,
+							sectionID,
+							itemID,
+							data2,
+							pages2,
+							page2,
+						} );
 					}
 				} else {
-					await parseContentItems( { ele, returnData, sectionID, itemID } );
+					await parseContentItems( {
+						ele,
+						returnData,
+						sectionID,
+						itemID,
+					} );
 				}
 			} else {
 				returnData && ele.insertAdjacentHTML( 'beforeend', returnData );
 			}
 		} catch ( error ) {
-			ele.insertAdjacentHTML( 'beforeend', `<div class="lp-ajax-message error" style="display:block">${ error.message || 'Error: Query lp/v1/lazy-load/course-curriculum' }</div>` );
+			ele.insertAdjacentHTML(
+				'beforeend',
+				`<div class="lp-ajax-message error" style="display:block">${
+					error.message ||
+					'Error: Query lp/v1/lazy-load/course-curriculum'
+				}</div>`
+			);
 		}
 
 		skeleton && skeleton.remove();
@@ -67,7 +91,15 @@ export default function courseCurriculumSkeleton( courseID = '' ) {
 		searchCourseContent();
 	};
 
-	const parseContentItems = async ( { ele, returnData, sectionID, itemID, data2, pages2, page2 } ) => {
+	const parseContentItems = async ( {
+		ele,
+		returnData,
+		sectionID,
+		itemID,
+		data2,
+		pages2,
+		page2,
+	} ) => {
 		const parser = new DOMParser();
 		const doc = parser.parseFromString( returnData, 'text/html' );
 
@@ -93,10 +125,17 @@ export default function courseCurriculumSkeleton( courseID = '' ) {
 			const items = section.querySelectorAll( '.course-item' );
 			const item_ids = [ ...items ].map( ( item ) => item.dataset.id );
 			const sectionContent = section.querySelector( '.section-content' );
-			const itemLoadMore = section.querySelector( '.section-item__loadmore' );
+			const itemLoadMore = section.querySelector(
+				'.section-item__loadmore'
+			);
 
 			if ( itemID && ! item_ids.includes( itemID ) ) {
-				const responseItem = await getResponsiveItem( '', 2, sectionID, itemID );
+				const responseItem = await getResponsiveItem(
+					'',
+					2,
+					sectionID,
+					itemID
+				);
 
 				const { data3, pages3, paged3, page } = responseItem;
 
@@ -139,13 +178,24 @@ export default function courseCurriculumSkeleton( courseID = '' ) {
 			returnData += dataTmp;
 
 			if ( sectionID && item_ids && itemID && ! item_ids.includes( itemID ) ) {
-				return getResponsiveItem( returnData, paged + 1, sectionID, itemID );
+				return getResponsiveItem(
+					returnData,
+					paged + 1,
+					sectionID,
+					itemID
+				);
 			}
 		}
 
 		isLoadingItems = false;
 
-		return { data3: returnData, pages3: pages || data.pages, status3: status, message3: message, page: page || 0 };
+		return {
+			data3: returnData,
+			pages3: pages || data.pages,
+			status3: status,
+			message3: message,
+			page: page || 0,
+		};
 	};
 
 	const getResponsive = async ( returnData, page, sectionID ) => {
@@ -168,34 +218,53 @@ export default function courseCurriculumSkeleton( courseID = '' ) {
 		if ( status === 'success' ) {
 			returnData += returnDataTmp;
 
-			if ( sectionID && section_ids && section_ids.length > 0 && ! section_ids.includes( sectionID ) ) {
+			if (
+				sectionID &&
+				section_ids &&
+				section_ids.length > 0 &&
+				! section_ids.includes( sectionID )
+			) {
 				return getResponsive( returnData, page + 1, sectionID );
 			}
 		}
 
 		isLoadingSections = false;
 
-		return { data2: returnData, pages2: pages || data.pages, page2: page, status2: status, message2: message };
+		return {
+			data2: returnData,
+			pages2: pages || data.pages,
+			page2: page,
+			status2: status,
+			message2: message,
+		};
 	};
 
 	Sekeleton();
 
 	document.addEventListener( 'click', ( e ) => {
-		const sectionBtns = document.querySelectorAll( '.section-item__loadmore' );
+		const sectionBtns = document.querySelectorAll(
+			'.section-item__loadmore'
+		);
 
 		[ ...sectionBtns ].map( async ( sectionBtn ) => {
 			if ( sectionBtn.contains( e.target ) && ! isLoadingItems ) {
 				isLoadingItems = true;
 				const sectionItem = sectionBtn.parentNode;
 				const sectionId = sectionItem.getAttribute( 'data-section-id' );
-				const sectionContent = sectionItem.querySelector( '.section-content' );
+				const sectionContent =
+					sectionItem.querySelector( '.section-content' );
 
 				const paged = parseInt( sectionBtn.dataset.page );
 
 				sectionBtn.classList.add( 'loading' );
 
 				try {
-					const response = await getResponsiveItem( '', paged + 1, sectionId, '' );
+					const response = await getResponsiveItem(
+						'',
+						paged + 1,
+						sectionId,
+						''
+					);
 
 					const { data3, pages3, status3, message3 } = response;
 
@@ -211,7 +280,13 @@ export default function courseCurriculumSkeleton( courseID = '' ) {
 
 					sectionContent.insertAdjacentHTML( 'beforeend', data3 );
 				} catch ( e ) {
-					sectionContent.insertAdjacentHTML( 'beforeend', `<div class="lp-ajax-message error" style="display:block">${ e.message || 'Error: Query lp/v1/lazy-load/course-curriculum' }</div>` );
+					sectionContent.insertAdjacentHTML(
+						'beforeend',
+						`<div class="lp-ajax-message error" style="display:block">${
+							e.message ||
+							'Error: Query lp/v1/lazy-load/course-curriculum'
+						}</div>`
+					);
 				}
 
 				sectionBtn.classList.remove( 'loading' );
@@ -221,20 +296,29 @@ export default function courseCurriculumSkeleton( courseID = '' ) {
 		} );
 
 		// Load more Sections
-		const moreSections = document.querySelectorAll( '.curriculum-more__button' );
+		const moreSections = document.querySelectorAll(
+			'.curriculum-more__button'
+		);
 
 		[ ...moreSections ].map( async ( moreSection ) => {
 			if ( moreSection.contains( e.target ) && ! isLoadingSections ) {
 				isLoadingSections = true;
 				const paged = parseInt( moreSection.dataset.page );
 
-				const sections = moreSection.parentNode.parentNode.querySelector( '.curriculum-sections' );
+				const sections =
+					moreSection.parentNode.parentNode.querySelector(
+						'.curriculum-sections'
+					);
 
 				if ( paged && sections ) {
 					moreSection.classList.add( 'loading' );
 
 					try {
-						const response2 = await getResponsive( '', paged + 1, '' );
+						const response2 = await getResponsive(
+							'',
+							paged + 1,
+							''
+						);
 
 						const { data2, pages2, status2, message2 } = response2;
 
@@ -250,7 +334,13 @@ export default function courseCurriculumSkeleton( courseID = '' ) {
 
 						sections.insertAdjacentHTML( 'beforeend', data2 );
 					} catch ( e ) {
-						sections.insertAdjacentHTML( 'beforeend', `<div class="lp-ajax-message error" style="display:block">${ e.message || 'Error: Query lp/v1/lazy-load/course-curriculum' }</div>` );
+						sections.insertAdjacentHTML(
+							'beforeend',
+							`<div class="lp-ajax-message error" style="display:block">${
+								e.message ||
+								'Error: Query lp/v1/lazy-load/course-curriculum'
+							}</div>`
+						);
 					}
 
 					moreSection.classList.remove( 'loading' );
@@ -268,7 +358,8 @@ export default function courseCurriculumSkeleton( courseID = '' ) {
 				if ( section.contains( e.target ) ) {
 					const toggle = section.querySelector( '.section-left' );
 
-					toggle.contains( e.target ) && section.classList.toggle( 'closed' );
+					toggle.contains( e.target ) &&
+						section.classList.toggle( 'closed' );
 				}
 			} );
 		}
