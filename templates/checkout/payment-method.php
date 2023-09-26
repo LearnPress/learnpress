@@ -11,7 +11,7 @@
 
 defined( 'ABSPATH' ) || exit();
 
-if ( ! isset( $gateway ) || ! $gateway->is_display() ) {
+if ( ! isset( $gateway ) ) {
 	return;
 }
 

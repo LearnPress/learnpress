@@ -227,8 +227,6 @@ class SingleInstructorTemplate {
 	 * @return string
 	 */
 	public function render_data( LP_User $instructor, string $data_content = '' ): string {
-		$singleInstructorTemplate = SingleInstructorTemplate::instance();
-
 		return str_replace(
 			[
 				'{{instructor_id}}',
@@ -242,12 +240,12 @@ class SingleInstructorTemplate {
 			],
 			[
 				$instructor->get_id(),
-				$singleInstructorTemplate->html_avatar( $instructor ),
-				$singleInstructorTemplate->html_display_name( $instructor ),
-				$singleInstructorTemplate->html_description( $instructor ),
-				$singleInstructorTemplate->html_count_courses( $instructor ),
-				$singleInstructorTemplate->html_count_students( $instructor ),
-				$singleInstructorTemplate->html_social( $instructor ),
+				$this->html_avatar( $instructor ),
+				$this->html_display_name( $instructor ),
+				$this->html_description( $instructor ),
+				$this->html_count_courses( $instructor ),
+				$this->html_count_students( $instructor ),
+				$this->html_social( $instructor ),
 				$instructor->get_url_instructor(),
 			],
 			$data_content
@@ -273,15 +271,8 @@ class SingleInstructorTemplate {
 			if ( isset( $data['instructor_id'] ) ) {
 				$instructor_id = $data['instructor_id'];
 				$instructor    = learn_press_get_user( $instructor_id );
-			} elseif ( $wp_query->get( 'is_single_instructor' ) ) {
-				if ( $wp_query->get( 'instructor_name' ) && 'page' !== $wp_query->get( 'instructor_name' ) ) {
-					$user = get_user_by( 'slug', $wp_query->get( 'instructor_name' ) );
-					if ( $user ) {
-						$instructor = learn_press_get_user( $user->ID );
-					}
-				} else {
-					$instructor = learn_press_get_user( get_current_user_id() );
-				}
+			} else {
+				$instructor = $this->detect_instructor_by_page();
 			}
 
 			if ( ! $instructor || ! $instructor->can_create_course() ) {
@@ -313,6 +304,33 @@ class SingleInstructorTemplate {
 			ob_end_clean();
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
+	}
+
+	/**
+	 * Detected single instructor Page.
+	 *
+	 * @return false|LP_User
+	 */
+	public function detect_instructor_by_page() {
+		$instructor = false;
+
+		try {
+			if ( get_query_var( 'is_single_instructor' ) ) {
+				$instructor_name = get_query_var( 'instructor_name' );
+				if ( $instructor_name && 'page' !== $instructor_name ) {
+					$user = get_user_by( 'slug', $instructor_name );
+					if ( $user ) {
+						$instructor = learn_press_get_user( $user->ID );
+					}
+				} else {
+					$instructor = learn_press_get_user( get_current_user_id() );
+				}
+			}
+		} catch ( Throwable $e ) {
+
+		}
+
+		return $instructor;
 	}
 
 	/**
@@ -365,12 +383,26 @@ class SingleInstructorTemplate {
 				$instructor
 			);
 
+			$count_course = sprintf(
+				'<div class="wrapper-instructor-total-courses">%s%s</div>',
+				wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-courses.svg' ),
+				$this->html_count_courses( $instructor )
+			);
+
+			$count_student = sprintf(
+				'<div class="wrapper-instructor-total-students">%s%s</div>',
+				wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-students.svg' ),
+				$this->html_count_students( $instructor )
+			);
+
 			$sections = apply_filters(
 				'learn-press/single-instructor/info-right/sections',
 				[
-					'title'       => [ 'text_html' => "<h2>{$this->html_display_name( $instructor )}</h2>" ],
-					'social'      => [ 'text_html' => $this->html_social( $instructor ) ],
-					'description' => [ 'text_html' => $this->html_description( $instructor ) ],
+					'title'         => [ 'text_html' => "<h2>{$this->html_display_name( $instructor )}</h2>" ],
+					'social'        => [ 'text_html' => $this->html_social( $instructor ) ],
+					'description'   => [ 'text_html' => $this->html_description( $instructor ) ],
+					'count_course'  => [ 'text_html' => $count_course ],
+					'count_student' => [ 'text_html' => $count_student ],
 				],
 				$instructor
 			);

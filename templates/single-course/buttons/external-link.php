@@ -22,6 +22,8 @@ if ( ! $course ) {
 	<input type="hidden" name="lp-ajax" value="external-link">
 	<input type="hidden" name="id" value="<?php echo esc_attr( $course->get_id() ); ?>">
 	<input type="hidden" name="nonce" value="<?php echo wp_create_nonce( 'external-link-' . $course->get_external_link() ); ?>">
-	<button type="submit" class="lp-button button"><?php echo esc_html( $course->get_external_link_text() ); ?></button>
+	<button type="submit" class="lp-button button">
+		<?php echo esc_html( apply_filters( 'learn-press/external-course-button-text', esc_html( $course->get_external_link_text() )) ); ?>
+ 	</button>
 
 </form>

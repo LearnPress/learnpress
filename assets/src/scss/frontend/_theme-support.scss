@@ -7,12 +7,12 @@
 	 ul, ol {
 		 list-style-type:decimal;
 		 list-style-position:inside;
-		 padding:0 0 23px;
+		 padding:0 0 1.5em;
 	 }
 
 	 ul {
         list-style-type: revert;
-        padding:0 0 23px 1em;
+		 padding:0 0 1em 1em;
 
         &.course-nav-tabs{
             list-style: none;

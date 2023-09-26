@@ -63,6 +63,8 @@ class LP_Page_Controller {
 
 			// Rewrite lesson comment links
 			add_filter( 'get_comment_link', array( $this, 'edit_lesson_comment_links' ), 10, 2 );
+			// Active menu
+			add_filter( 'wp_nav_menu_objects', [ $this, 'menu_active' ], 10, 1 );
 		}
 	}
 
@@ -120,52 +122,6 @@ class LP_Page_Controller {
 	}
 
 	/**
-	 * @deprecated 4.2.2.4
-	 */
-	//  private function has_block_template( $template_name ) {
-	//      if ( ! $template_name ) {
-	//          return false;
-	//      }
-	//
-	//      $has_template      = false;
-	//      $template_name     = str_replace( 'course', LP_COURSE_CPT, $template_name );
-	//      $template_filename = $template_name . '.html';
-	//      // Since Gutenberg 12.1.0, the conventions for block templates directories have changed,
-	//      // we should check both these possible directories for backwards-compatibility.
-	//      $possible_templates_dirs = array( 'templates', 'block-templates' );
-	//
-	//      // Combine the possible root directory names with either the template directory
-	//      // or the stylesheet directory for child themes, getting all possible block templates
-	//      // locations combinations.
-	//      $filepath        = DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $template_filename;
-	//      $legacy_filepath = DIRECTORY_SEPARATOR . 'block-templates' . DIRECTORY_SEPARATOR . $template_filename;
-	//      $possible_paths  = array(
-	//          get_stylesheet_directory() . $filepath,
-	//          get_stylesheet_directory() . $legacy_filepath,
-	//          get_template_directory() . $filepath,
-	//          get_template_directory() . $legacy_filepath,
-	//      );
-	//
-	//      // Check the first matching one.
-	//      foreach ( $possible_paths as $path ) {
-	//          if ( is_readable( $path ) ) {
-	//              $has_template = true;
-	//              break;
-	//          }
-	//      }
-	//
-	//      /**
-	//       * Filters the value of the result of the block template check.
-	//       *
-	//       * @since x.x.x
-	//       *
-	//       * @param boolean $has_template value to be filtered.
-	//       * @param string $template_name The name of the template.
-	//       */
-	//      return (bool) apply_filters( 'learnpress_has_block_template', $has_template, $template_name );
-	//  }
-
-	/**
 	 * Set title of pages
 	 *
 	 * 1. Title course archive page
@@ -193,7 +149,7 @@ class LP_Page_Controller {
 				$flag_title_course = true;
 			}
 		} elseif ( LP_Page_Controller::is_page_courses() ) { // Set title course archive page.
-			if ( learn_press_is_search() ) {
+			if ( isset( $_GET['c_search'] ) ) {
 				$title = __( 'Course Search Results', 'learnpress' );
 			} elseif ( is_tax( LP_COURSE_CATEGORY_TAX ) || is_tax( LP_COURSE_TAXONOMY_TAG ) ) {
 				/**
@@ -395,26 +351,14 @@ class LP_Page_Controller {
 
 			// Set item viewing
 			$user->set_viewing_item( $lp_course_item );
+
+			wp_localize_script( 'lp-single-curriculum', 'lpCourseItem', [ 'id' => $lp_course_item->get_id() ] );
 		} catch ( Throwable $e ) {
 			error_log( $e->getMessage() );
 		}
 
 		return $post;
 	}
-
-	/**
-	 * Set page 404
-	 *
-	 * @return mixed
-	 * @editor tungnx
-	 * @reason not use
-	 * @deprecated 4.0.0
-	 */
-	/*
-	public function set_404( $is_404 ) {
-		global $wp_query;
-		$wp_query->is_404 = $this->_is_404 = (bool) $is_404;
-	}*/
 
 	public function is_404() {
 		return apply_filters( 'learn-press/query/404', $this->_is_404 );
@@ -832,6 +776,14 @@ class LP_Page_Controller {
 
 			// Handle 404 if user are viewing course item directly.
 			$this->set_link_item_course_default_wp_to_page_404( $q );
+
+			// set 404 if viewing single instructor but not logged
+			$slug_instructor = get_query_var( 'instructor_name' );
+			if ( get_query_var( 'is_single_instructor' ) ) {
+				if ( empty( $slug_instructor ) && ! is_user_logged_in() ) {
+					self::set_page_404();
+				}
+			}
 		} catch ( Throwable $e ) {
 			error_log( $e->getMessage() );
 		}
@@ -905,7 +857,7 @@ class LP_Page_Controller {
 			$flag_load_404 = apply_filters( 'learnpress/page/set-link-item-course-404', $flag_load_404, $post_author, $user );
 
 			if ( $flag_load_404 ) {
-				learn_press_404_page();
+				self::set_page_404();
 			}
 		} catch ( Throwable $e ) {
 			error_log( $e->getMessage() );
@@ -1165,7 +1117,7 @@ class LP_Page_Controller {
 		}
 
 		try {
-			$paypal = new LP_Gateway_Paypal();
+			$paypal = LP_Gateway_Paypal::instance();
 			$verify = $paypal->validate_ipn();
 
 			if ( $verify ) {
@@ -1224,6 +1176,61 @@ class LP_Page_Controller {
 		}
 
 		return $link;
+	}
+
+	/**
+	 * Set menu active for page courses.
+	 *
+	 * @param $menu_items
+	 * @return mixed
+	 */
+	public function menu_active( $menu_items ) {
+		$course_page    = learn_press_get_page_id( 'courses' );
+		$page_for_posts = (int) get_option( 'page_for_posts' );
+
+		if ( is_array( $menu_items ) && ! empty( $menu_items ) ) {
+			foreach ( $menu_items as $key => $menu_item ) {
+				$classes = (array) $menu_item->classes;
+				$menu_id = (int) $menu_item->object_id;
+
+				// Unset active class for blog page.
+				if ( $page_for_posts === $menu_id ) {
+					$menu_item->current = false;
+
+					if ( in_array( 'current_page_parent', $classes, true ) ) {
+						unset( $classes[ array_search( 'current_page_parent', $classes, true ) ] );
+					}
+
+					if ( in_array( 'current-menu-item', $classes, true ) ) {
+						unset( $classes[ array_search( 'current-menu-item', $classes, true ) ] );
+					}
+				} elseif ( ( is_post_type_archive( 'lp_course' ) || is_page( $course_page ) ) && $course_page === $menu_id && 'page' === $menu_item->object ) {
+					// Set active state if this is the shop page link.
+					$menu_item->current = true;
+					$classes[]          = 'current-menu-item';
+					$classes[]          = 'current_page_item';
+				} elseif ( is_singular( 'lp_course' ) && $course_page === $menu_id ) {
+					// Set parent state if this is a product page.
+					$classes[] = 'current_page_parent';
+				}
+
+				$menu_item->classes = array_unique( $classes );
+				$menu_items[ $key ] = $menu_item;
+			}
+		}
+
+		return $menu_items;
+	}
+
+	/**
+	 * Set Page viewing to 404
+	 *
+	 * @return void
+	 */
+	public static function set_page_404() {
+		global $wp_query;
+		$wp_query->set_404();
+		status_header( 404 );
 	}
 }
 

@@ -1568,33 +1568,6 @@ function learn_press_plugin_basename_from_slug( $slug ) {
 	return $slug;
 }
 
-/**
- * @deprecated 4.2.0
- */
-function learn_press_request_query( $vars = array() ) {
-	_deprecated_function( __FUNCTION__, '4.2.0' );
-	/*global $typenow, $wp_query, $wp_post_statuses;
-
-	if ( LP_ORDER_CPT === $typenow ) {
-		if ( ! isset( $vars['post_status'] ) ) {
-			$post_statuses = learn_press_get_order_statuses();
-
-			foreach ( $post_statuses as $status => $value ) {
-				if ( isset( $wp_post_statuses[ $status ] ) && false === $wp_post_statuses[ $status ]->show_in_admin_all_list ) {
-					unset( $post_statuses[ $status ] );
-				}
-			}
-
-			$vars['post_status'] = array_keys( $post_statuses );
-
-		}
-	}*/
-
-	return $vars;
-}
-
-//add_filter( 'request', 'learn_press_request_query', 0 );
-
 function _learn_press_reset_course_data() {
 	if ( empty( $_REQUEST['reset-course-data'] ) ) {
 		return false;
@@ -2346,156 +2319,17 @@ function learn_press_touch_time( $edit = 1, $for_post = 1, $tab_index = 0, $mult
 }
 
 /**
- * Filter to modal search items to void filter the posts by author.
- *
- * @param int|string $context_id
- * @param string     $context
- *
- * @return bool|int|string
- * @since 3.0.4
- */
-function learn_press_modal_search_items_context( $context_id, $context ) {
-	if ( 'order-items' === $context ) {
-		$context_id = false;
-	}
-
-	return $context_id;
-}
-
-add_filter( 'learn-press/modal-search-items/context-id', 'learn_press_modal_search_items_context', 10, 2 );
-
-/**
- * Sync post meta when saving post type.
- *
- * @param int $post_id
- *
- * @since 3.2.0
- * @editor tungnx
- * @modify 1.4.1 - comment - not use
- */
-/*function learn_press_maybe_sync_data( $post_id ) {
-	$post_type = get_post_type( $post_id );
-
-	switch ( $post_type ) {
-		case LP_COURSE_CPT:
-			LP_Repair_Database::instance()->sync_user_courses();
-			break;
-		case LP_LESSON_CPT:
-			break;
-		case LP_QUIZ_CPT:
-			break;
-		default:
-	}
-}*/
-
-//add_action( 'save_post', 'learn_press_maybe_sync_data' );
-
-/**
  * Return id of current screen.
  *
  * @return bool|string
  * @since 3.2.6
  */
 function learn_press_get_screen_id() {
+	_deprecated_function( __METHOD__, '4.2.3.6' );
 	$screen    = get_current_screen();
 	$screen_id = $screen ? $screen->id : false;
 
 	return $screen_id;
-}
-
-/**
- * Check if current screen is a page of LP or
- * editing post type of LP such as course, lesson, etc...
- *
- * @return bool
- * @since 3.2.6
- */
-/*
-function learn_press_is_admin_page() {
-	$screen_id     = learn_press_get_screen_id();
-	$is_learnpress = false;
-
-	$post_types = apply_filters(
-		'learn-press/admin-post-type-pages',
-		array( LP_COURSE_CPT, LP_QUIZ_CPT, LP_LESSON_CPT, LP_QUESTION_CPT, LP_ORDER_CPT, 'lp_cert', 'lp_assignment' )
-	);
-	foreach ( $post_types as $post_type ) {
-		if ( in_array( $screen_id, array( "edit-{$post_type}", $post_type ) ) ) {
-			$is_learnpress = true;
-			break;
-		}
-	}
-
-	if ( strpos( $screen_id, 'learnpress_page_' ) === 0 ) {
-		$is_learnpress = true;
-	}
-
-	return apply_filters( 'learn-press/is-admin-page', $is_learnpress, $screen_id );
-}*/
-
-/**
- * @deprecated 4.2.0
- */
-function learn_press_get_orders_status_chart_data() {
-	_deprecated_function( __FUNCTION__, '4.2.0' );
-	/*$data = array(
-		'type'    => 'pie',
-		'data'    => array(
-			'labels'   => array(),
-			'datasets' => array(
-				array(
-					'label'           => '# of Votes',
-					'data'            => array(),
-					'backgroundColor' => array(
-						'rgba(54, 162, 235, 0.2)',
-						'rgba(255, 206, 86, 0.2)',
-						'rgba(75, 192, 192, 0.2)',
-						'rgba(153, 102, 255, 0.2)',
-						'rgba(255, 159, 64, 0.2)',
-					),
-					'borderColor'     => array(
-						'rgba(54, 162, 235, 1)',
-						'rgba(255, 206, 86, 1)',
-						'rgba(75, 192, 192, 1)',
-						'rgba(153, 102, 255, 1)',
-						'rgba(255, 159, 64, 1)',
-					),
-					'borderWidth'     => 1,
-				),
-			),
-		),
-		'options' => array(
-			'scales' => array(
-				'yAxes' => array(
-					array(
-						'ticks' => array(
-							'beginAtZero' => true,
-						),
-					),
-				),
-			),
-		),
-	);
-
-	$order_statuses    = learn_press_get_order_statuses( true, true );
-	$specific_statuses = array( 'lp-completed', 'lp-failed' );
-
-	foreach ( $order_statuses as $status ) {
-		if ( ! in_array( $status, $specific_statuses ) ) {
-			$specific_statuses[] = $status;
-		}
-	}
-
-	$labels = learn_press_get_order_statuses();
-	$counts = learn_press_count_orders( array( 'status' => $specific_statuses ) );
-
-	foreach ( $counts as $k => $v ) {
-		$data['data']['labels'][]              = isset( $labels[ $k ] ) ? $labels[ $k ] : 'Untitled';
-		$data['data']['datasets'][0]['data'][] = $v;
-	}*/
-
-	//return $data;
-	return [];
 }
 
 require_once 'class-lp-post-type-actions.php';

@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the LearnPress plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: LearnPress 4.2.3.3-beta-1\n"
+"Project-Id-Version: LearnPress 4.2.3.5-beta-5\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/learnpress\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2023-08-03T11:10:10+02:00\n"
+"POT-Creation-Date: 2023-09-14T12:34:14+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.8.1\n"
 "X-Domain: learnpress\n"
@@ -42,7 +42,7 @@ msgstr ""
 #: inc/admin/views/quiz/editor.php:47
 #: inc/lp-deprecated.php:2245
 #: templates/global/become-teacher-form.php:35
-#: templates/profile/tabs/courses/course-list.php:22
+#: templates/profile/tabs/courses/course-list.php:26
 msgid "Name"
 msgstr ""
 
@@ -87,6 +87,17 @@ msgstr ""
 msgid "This is an editor placeholder for the Archive Course page. Content will render content of list courses. Should be not remove it"
 msgstr ""
 
+#. Plugin Name of the plugin
+#: assets/js/dist/frontend/quiz.min.js:8
+#: inc/admin/class-lp-admin.php:141
+#: inc/admin/class-lp-admin.php:149
+#: inc/admin/lp-admin-functions.php:1642
+#: inc/admin/settings/class-lp-settings-emails.php:153
+#: inc/ExternalPlugin/Elementor/LPElementor.php:52
+#: inc/ExternalPlugin/Elementor/LPElementor.php:100
+msgid "LearnPress"
+msgstr ""
+
 #: assets/js/dist/frontend/quiz.min.js:13
 msgid "Item Curriculum Course"
 msgstr ""
@@ -103,6 +114,23 @@ msgstr ""
 msgid "This is an editor placeholder for the Single Course page. Content will render content of single course. Should be not remove it"
 msgstr ""
 
+#: assets/js/dist/frontend/quiz.min.js:9
+msgid "LearnPress Single Course Template"
+msgstr ""
+
+#: assets/js/dist/frontend/quiz.min.js:13
+msgid "LearnPress Course Archive Template"
+msgstr ""
+
+#. %s is the template title
+#: assets/js/dist/frontend/quiz.min.js:32
+msgid "This is an editor placeholder for the %s. This will be replaced by the template in your store and displayed with your course image(s), title, price, and so on. You can move this placeholder around and add further blocks around it to extend the template."
+msgstr ""
+
+#: assets/js/dist/frontend/quiz.min.js:13
+msgid "Renders LearnPress PHP templates."
+msgstr ""
+
 #: assets/js/dist/frontend/quiz.min.js:41
 #: inc/class-lp-assets.php:94
 #: inc/lp-core-functions.php:2819
@@ -116,7 +144,7 @@ msgstr ""
 #: inc/admin/views/meta-boxes/fields/date.php:39
 #: inc/class-lp-assets.php:95
 #: inc/lp-core-functions.php:2820
-#: inc/order/class-lp-order.php:1015
+#: inc/order/class-lp-order.php:952
 msgid "Cancel"
 msgstr ""
 
@@ -202,7 +230,7 @@ msgstr ""
 
 #: assets/js/dist/frontend/quiz.min.js:25
 #: assets/js/dist/frontend/quiz.min.js:299
-#: templates/profile/tabs/courses/course-list.php:23
+#: templates/profile/tabs/courses/course-list.php:27
 #: templates/profile/tabs/quizzes.php:54
 msgid "Result"
 msgstr ""
@@ -227,7 +255,7 @@ msgid "Are you sure you want to retake the quiz?"
 msgstr ""
 
 #: assets/js/dist/frontend/quiz.min.js:105
-#: assets/js/dist/frontend/quiz.min.js:67
+#: assets/js/dist/frontend/quiz.min.js:55
 msgid "Are you sure to submit the quiz?"
 msgstr ""
 
@@ -249,7 +277,7 @@ msgid "Start"
 msgstr ""
 
 #: assets/js/dist/frontend/quiz.min.js:288
-#: assets/js/dist/frontend/quiz.min.js:128
+#: assets/js/dist/frontend/quiz.min.js:116
 msgid "Finish Quiz"
 msgstr ""
 
@@ -298,7 +326,7 @@ msgstr ""
 #: assets/js/dist/frontend/quiz.min.js:169
 #: inc/course/lp-course-functions.php:938
 #: inc/lp-core-functions.php:2453
-#: inc/order/class-lp-order.php:350
+#: inc/order/class-lp-order.php:295
 #: inc/templates/class-lp-template-profile.php:155
 #: inc/user-item/class-lp-user-item-quiz.php:148
 #: inc/user/class-lp-profile.php:934
@@ -318,37 +346,28 @@ msgstr ""
 msgid "Skipped"
 msgstr ""
 
-#: assets/js/dist/frontend/quiz.min.js:105
+#: assets/js/dist/frontend/quiz.min.js:93
 msgid "Question <span>%d to %d of %d</span>"
 msgstr ""
 
-#: assets/js/dist/frontend/quiz.min.js:107
+#: assets/js/dist/frontend/quiz.min.js:95
 msgid "Question <span>%d of %d</span>"
 msgstr ""
 
-#: assets/js/dist/frontend/quiz.min.js:110
+#: assets/js/dist/frontend/quiz.min.js:98
 msgid "Question <span>%d to %d</span>"
 msgstr ""
 
-#: assets/js/dist/frontend/quiz.min.js:119
+#: assets/js/dist/frontend/quiz.min.js:107
 msgid "Earned Point: %s"
 msgstr ""
 
-#: assets/js/dist/frontend/quiz.min.js:128
+#: assets/js/dist/frontend/quiz.min.js:116
 msgid "Submitting…"
 msgstr ""
 
 #: assets/js/dist/frontend/quiz.min.js:107
 msgid "Search by user"
-msgstr ""
-
-#. Plugin Name of the plugin
-#: inc/admin/class-lp-admin.php:141
-#: inc/admin/class-lp-admin.php:149
-#: inc/admin/lp-admin-functions.php:1642
-#: inc/admin/settings/class-lp-settings-emails.php:153
-#: inc/ExternalPlugin/Elementor/LPElementor.php:33
-msgid "LearnPress"
 msgstr ""
 
 #. Plugin URI of the plugin
@@ -367,6 +386,39 @@ msgstr ""
 msgid "http://thimpress.com"
 msgstr ""
 
+#: config/elementor/course/course-price.php:16
+msgid "Regular Price"
+msgstr ""
+
+#: config/elementor/course/course-price.php:21
+#: config/elementor/course/list-courses-by-page.php:331
+msgid "Alignment"
+msgstr ""
+
+#: config/elementor/course/course-price.php:47
+#: config/elementor/course/course-price.php:66
+#: config/elementor/course/course-price.php:97
+#: config/elementor/course/list-courses-by-page.php:411
+#: config/elementor/course/list-courses-by-page.php:431
+msgid "Color"
+msgstr ""
+
+#: config/elementor/course/course-price.php:61
+msgid "Origin Price"
+msgstr ""
+
+#: config/elementor/course/course-price.php:78
+#: config/elementor/course/list-courses-by-page.php:374
+#: inc/ExternalPlugin/Elementor/LPElementorControls.php:382
+#: inc/ExternalPlugin/Elementor/LPElementorControls.php:507
+msgid "Padding"
+msgstr ""
+
+#: config/elementor/course/course-price.php:92
+msgid "Free Price"
+msgstr ""
+
+#: config/elementor/course/list-courses-by-page.php:23
 #: config/elementor/course/list-courses.php:34
 #: config/elementor/instructor/become-a-teacher.php:15
 #: config/elementor/instructor/list-instructors.php:178
@@ -378,8 +430,169 @@ msgstr ""
 msgid "Content"
 msgstr ""
 
+#: config/elementor/course/list-courses-by-page.php:37
+#: config/elementor/course/list-courses-by-page.php:49
+#: config/elementor/course/list-courses-by-page.php:61
+#: inc/class-lp-assets.php:96
+#: inc/lp-core-functions.php:2821
+#: templates/global/lp-modal-overlay.php:24
+msgid "Yes"
+msgstr ""
+
+#: config/elementor/course/list-courses-by-page.php:38
+#: config/elementor/course/list-courses-by-page.php:50
+#: config/elementor/course/list-courses-by-page.php:62
+#: inc/class-lp-assets.php:97
+#: inc/lp-core-functions.php:2822
+#: templates/global/lp-modal-overlay.php:23
+msgid "No"
+msgstr ""
+
+#: config/elementor/course/list-courses-by-page.php:72
+msgid "Courses Per Page"
+msgstr ""
+
+#: config/elementor/course/list-courses-by-page.php:78
+msgid "Order By Default"
+msgstr ""
+
+#: config/elementor/course/list-courses-by-page.php:80
+msgid "Newest"
+msgstr ""
+
+#: config/elementor/course/list-courses-by-page.php:81
+msgid "Title a-z"
+msgstr ""
+
+#: config/elementor/course/list-courses-by-page.php:82
+msgid "Title z-a"
+msgstr ""
+
+#: config/elementor/course/list-courses-by-page.php:83
+msgid "Price High to Low"
+msgstr ""
+
+#: config/elementor/course/list-courses-by-page.php:84
+msgid "Price Low to High"
+msgstr ""
+
+#: config/elementor/course/list-courses-by-page.php:90
+msgid "Pagination type"
+msgstr ""
+
+#: config/elementor/course/list-courses-by-page.php:92
+#: config/settings/course.php:84
+#: config/settings/profile.php:96
+msgid "Number"
+msgstr ""
+
+#: config/elementor/course/list-courses-by-page.php:93
+msgid "Button load more"
+msgstr ""
+
+#: config/elementor/course/list-courses-by-page.php:94
+msgid "Infinite scroll"
+msgstr ""
+
+#: config/elementor/course/list-courses-by-page.php:107
+msgid "Layout Courses"
+msgstr ""
+
+#: config/elementor/course/list-courses-by-page.php:116
+msgid ""
+"Enter the layout for each item course. You can use the following variables:\n"
+"\t\t\t\t\t{{courses_order_by}}, {{courses_items}}, {{courses_pagination_number}}, {{courses_page_result}}"
+msgstr ""
+
+#: config/elementor/course/list-courses-by-page.php:161
+#: config/elementor/instructor/list-instructors.php:77
+msgid "Gap"
+msgstr ""
+
+#: config/elementor/course/list-courses-by-page.php:187
+#: config/elementor/course/list-courses-by-page.php:418
+#: config/elementor/course/list-courses-by-page.php:438
+#: inc/ExternalPlugin/Elementor/LPElementorControls.php:415
+msgid "Background Color"
+msgstr ""
+
+#: config/elementor/course/list-courses-by-page.php:194
+#: config/elementor/course/list-courses-by-page.php:391
+#: config/elementor/instructor/list-instructors.php:144
+#: inc/ExternalPlugin/Elementor/LPElementorControls.php:452
+#: inc/ExternalPlugin/Elementor/LPElementorControls.php:524
+msgid "Border Radius"
+msgstr ""
+
+#: config/elementor/course/list-courses-by-page.php:221
+msgid "Course Free Color"
+msgstr ""
+
+#: config/elementor/course/list-courses-by-page.php:228
+msgid "Course Sale Color"
+msgstr ""
+
+#: config/elementor/course/list-courses-by-page.php:238
+msgid "Course Sale Typography"
+msgstr ""
+
+#: config/elementor/course/list-courses-by-page.php:271
 #: config/elementor/course/list-courses.php:39
 msgid "Layout"
+msgstr ""
+
+#: config/elementor/course/list-courses-by-page.php:277
+msgid "Sort By"
+msgstr ""
+
+#: config/elementor/course/list-courses-by-page.php:295
+msgid "Course Title"
+msgstr ""
+
+#: config/elementor/course/list-courses-by-page.php:301
+msgid "Course Description"
+msgstr ""
+
+#: config/elementor/course/list-courses-by-page.php:307
+#: inc/ExternalPlugin/Elementor/Widgets/Course/Sections/CoursePriceElementor.php:20
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1117
+msgid "Course Price"
+msgstr ""
+
+#: config/elementor/course/list-courses-by-page.php:313
+msgid "Meta Data"
+msgstr ""
+
+#: config/elementor/course/list-courses-by-page.php:319
+#: config/elementor/course/list-courses.php:130
+msgid "Course Image"
+msgstr ""
+
+#: config/elementor/course/list-courses-by-page.php:325
+#: inc/admin/views/meta-boxes/quiz/settings.php:77
+msgid "Pagination"
+msgstr ""
+
+#: config/elementor/course/list-courses-by-page.php:362
+#: inc/ExternalPlugin/Elementor/LPElementorControls.php:370
+#: inc/ExternalPlugin/Elementor/LPElementorControls.php:495
+msgid "Margin"
+msgstr ""
+
+#: config/elementor/course/list-courses-by-page.php:407
+msgid "Normal"
+msgstr ""
+
+#: config/elementor/course/list-courses-by-page.php:427
+msgid "Hover"
+msgstr ""
+
+#: config/elementor/course/list-courses-by-page.php:445
+msgid "Border Color"
+msgstr ""
+
+#: config/elementor/course/list-courses-by-page.php:458
+msgid "Courses Not Found"
 msgstr ""
 
 #: config/elementor/course/list-courses.php:41
@@ -406,7 +619,6 @@ msgstr ""
 
 #: config/elementor/course/list-courses.php:70
 #: config/elementor/instructor/list-instructors.php:55
-#: inc/admin/meta-box/fields/course-permalink.php:22
 msgid "Default"
 msgstr ""
 
@@ -415,6 +627,7 @@ msgid "Recent"
 msgstr ""
 
 #: config/elementor/course/list-courses.php:72
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:218
 msgid "Popular"
 msgstr ""
 
@@ -461,10 +674,6 @@ msgstr ""
 msgid "Price"
 msgstr ""
 
-#: config/elementor/course/list-courses.php:130
-msgid "Course Image"
-msgstr ""
-
 #: config/elementor/course/materials.php:15
 msgid "Course/Lesson Materials"
 msgstr ""
@@ -483,12 +692,12 @@ msgid "Show Column"
 msgstr ""
 
 #: config/elementor/course/materials.php:40
-#: inc/ExternalPlugin/Elementor/LPElementorControls.php:440
+#: inc/ExternalPlugin/Elementor/LPElementorControls.php:490
 msgid "Show"
 msgstr ""
 
 #: config/elementor/course/materials.php:41
-#: inc/ExternalPlugin/Elementor/LPElementorControls.php:439
+#: inc/ExternalPlugin/Elementor/LPElementorControls.php:489
 msgid "Hide"
 msgstr ""
 
@@ -523,11 +732,11 @@ msgstr ""
 #: config/elementor/instructor/become-a-teacher.php:46
 #: config/elementor/login-user-form.php:19
 #: config/elementor/register-user-form.php:19
+#: config/settings/gateway/offline-payment.php:33
 #: config/widgets/course/filter-course.php:9
 #: inc/admin/views/meta-boxes/fields/extra-faq.php:37
 #: inc/admin/views/meta-boxes/fields/extra-faq.php:57
 #: inc/admin/views/setup/setup-stripe.php:7
-#: inc/gateways/offline-payment/class-lp-gateway-offline-payment.php:118
 #: inc/Widgets/course-extra.php:25
 #: inc/Widgets/course-info.php:32
 #: inc/Widgets/course-progress.php:29
@@ -573,7 +782,7 @@ msgstr ""
 
 #: config/elementor/instructor/become-a-teacher.php:37
 #: inc/class-lp-assets.php:112
-#: inc/order/class-lp-order.php:344
+#: inc/order/class-lp-order.php:289
 #: inc/Shortcodes/class-lp-shortcode-become-a-teacher.php:89
 msgid "Processing"
 msgstr ""
@@ -621,10 +830,6 @@ msgstr ""
 msgid "Column number"
 msgstr ""
 
-#: config/elementor/instructor/list-instructors.php:77
-msgid "Gap"
-msgstr ""
-
 #: config/elementor/instructor/list-instructors.php:94
 msgid "Item Padding"
 msgstr ""
@@ -635,12 +840,6 @@ msgstr ""
 
 #: config/elementor/instructor/list-instructors.php:119
 msgid "Item Border"
-msgstr ""
-
-#: config/elementor/instructor/list-instructors.php:144
-#: inc/ExternalPlugin/Elementor/LPElementorControls.php:402
-#: inc/ExternalPlugin/Elementor/LPElementorControls.php:474
-msgid "Border Radius"
 msgstr ""
 
 #: config/elementor/instructor/list-instructors.php:154
@@ -659,16 +858,26 @@ msgstr ""
 msgid "Name z-a"
 msgstr ""
 
+#: config/elementor/instructor/sections/avatar.php:16
 #: config/elementor/instructor/sections/button_view.php:16
+#: config/elementor/instructor/sections/count_courses.php:16
+#: config/elementor/instructor/sections/count_students.php:16
 #: config/elementor/instructor/sections/description.php:16
 #: config/elementor/instructor/sections/title.php:16
 msgid "Wrapper"
 msgstr ""
 
+#: config/elementor/instructor/sections/avatar.php:21
 #: config/elementor/instructor/sections/button_view.php:21
+#: config/elementor/instructor/sections/count_courses.php:21
+#: config/elementor/instructor/sections/count_students.php:21
 #: config/elementor/instructor/sections/description.php:21
 #: config/elementor/instructor/sections/title.php:21
 msgid "Set Instructor ID"
+msgstr ""
+
+#: config/elementor/instructor/sections/avatar.php:37
+msgid "Instructor avatar"
 msgstr ""
 
 #: config/elementor/instructor/sections/button_view.php:30
@@ -690,6 +899,18 @@ msgstr ""
 #: config/elementor/instructor/sections/button_view.php:66
 #: inc/ExternalPlugin/Elementor/Widgets/Instructor/Sections/InstructorButtonViewElementor.php:44
 msgid "Instructor Button View"
+msgstr ""
+
+#: config/elementor/instructor/sections/count_courses.php:37
+#: inc/ExternalPlugin/Elementor/Widgets/Instructor/Sections/InstructorCountCoursesElementor.php:20
+#: inc/ExternalPlugin/Elementor/Widgets/Instructor/Sections/InstructorCountCoursesElementor.php:44
+msgid "Instructor Count Courses"
+msgstr ""
+
+#: config/elementor/instructor/sections/count_students.php:37
+#: inc/ExternalPlugin/Elementor/Widgets/Instructor/Sections/InstructorCountStudentsElementor.php:20
+#: inc/ExternalPlugin/Elementor/Widgets/Instructor/Sections/InstructorCountStudentsElementor.php:44
+msgid "Instructor Count Students"
 msgstr ""
 
 #: config/elementor/instructor/sections/description.php:30
@@ -797,11 +1018,6 @@ msgstr ""
 msgid "Display the pagination type on the Course Archive page."
 msgstr ""
 
-#: config/settings/course.php:84
-#: config/settings/profile.php:96
-msgid "Number"
-msgstr ""
-
 #: config/settings/course.php:85
 msgid "Load More"
 msgstr ""
@@ -850,40 +1066,87 @@ msgstr ""
 msgid "Which types of file will be allowed uploading?"
 msgstr ""
 
-#: config/settings/course.php:198
+#: config/settings/course.php:192
 msgid "Upload Files"
 msgstr ""
 
-#: config/settings/course.php:202
+#: config/settings/course.php:196
 msgid "Number files the user can upload. Set to 0 to disable"
 msgstr ""
 
-#: config/settings/course.php:208
+#: config/settings/course.php:202
 msgid "File Size Limit"
 msgstr ""
 
-#: config/settings/course.php:212
+#: config/settings/course.php:206
 msgid "Set Maximum Attachment size for upload (MB)"
 msgstr ""
 
-#: config/settings/course.php:218
+#: config/settings/course.php:212
 msgid "File Per Page"
 msgstr ""
 
-#: config/settings/course.php:222
+#: config/settings/course.php:216
 msgid "The number of displayed files per page (Enter -1 to display all files, set to 0 to disable)."
 msgstr ""
 
-#: config/settings/course.php:238
+#: config/settings/course.php:222
+msgid "Url nofollow"
+msgstr ""
+
+#: config/settings/course.php:223
+msgid "Add rel=\"nofollow\" to material external link."
+msgstr ""
+
+#: config/settings/course.php:239
 msgid "Instructor Settings"
 msgstr ""
 
-#: config/settings/course.php:242
+#: config/settings/course.php:243
 msgid "Instructor Per Page"
 msgstr ""
 
-#: config/settings/course.php:246
+#: config/settings/course.php:247
 msgid "The number of displayed instructors per page (Enter -1 to display all sections)."
+msgstr ""
+
+#: config/settings/gateway/offline-payment.php:20
+#: inc/admin/views/setup/setup-stripe.php:3
+msgid "Enable"
+msgstr ""
+
+#: config/settings/gateway/offline-payment.php:26
+msgid "Testing Mode"
+msgstr ""
+
+#: config/settings/gateway/offline-payment.php:39
+msgid "Instruction"
+msgstr ""
+
+#: config/settings/gateway/paypal.php:13
+#: inc/admin/meta-box/fields/payment-order.php:10
+#: inc/emails/class-lp-email.php:856
+msgid "Enable/Disable"
+msgstr ""
+
+#: config/settings/gateway/paypal.php:17
+msgid "Enable PayPal Standard"
+msgstr ""
+
+#: config/settings/gateway/paypal.php:20
+msgid "PayPal email"
+msgstr ""
+
+#: config/settings/gateway/paypal.php:25
+msgid "Sandbox mode"
+msgstr ""
+
+#: config/settings/gateway/paypal.php:29
+msgid "Enable PayPal sandbox"
+msgstr ""
+
+#: config/settings/gateway/paypal.php:32
+msgid "Sandbox email address"
 msgstr ""
 
 #: config/settings/general.php:13
@@ -1005,7 +1268,7 @@ msgstr ""
 
 #: config/settings/permalink.php:36
 #: inc/admin/lp-admin-functions.php:57
-#: inc/admin/meta-box/fields/course-permalink.php:27
+#: inc/admin/meta-box/fields/course-permalink.php:22
 #: inc/admin/settings/class-lp-settings-advanced.php:73
 #: inc/admin/views/statistics/orders.php:48
 #: inc/custom-post-types/abstract.php:797
@@ -1052,7 +1315,7 @@ msgstr ""
 #: inc/admin/lp-admin-actions.php:217
 #: inc/admin/sub-menus/class-lp-submenu-statistics.php:21
 #: inc/admin/sub-menus/class-lp-submenu-statistics.php:28
-#: inc/class-lp-page-controller.php:207
+#: inc/class-lp-page-controller.php:209
 #: inc/custom-post-types/course.php:106
 #: inc/custom-post-types/course.php:108
 #: inc/lp-template-functions.php:329
@@ -1088,9 +1351,9 @@ msgstr ""
 #: config/settings/permalink.php:119
 #: inc/admin/sub-menus/class-lp-submenu-statistics.php:22
 #: inc/admin/sub-menus/class-lp-submenu-statistics.php:29
-#: inc/custom-post-types/order.php:817
-#: inc/custom-post-types/order.php:818
-#: inc/custom-post-types/order.php:822
+#: inc/custom-post-types/order.php:596
+#: inc/custom-post-types/order.php:597
+#: inc/custom-post-types/order.php:601
 #: inc/user/class-lp-profile.php:300
 msgid "Orders"
 msgstr ""
@@ -1151,23 +1414,23 @@ msgid "Enable default fields"
 msgstr ""
 
 #: config/settings/profile.php:60
-#: inc/user/lp-user-functions.php:1812
-#: inc/user/lp-user-functions.php:1814
+#: inc/user/lp-user-functions.php:1816
+#: inc/user/lp-user-functions.php:1818
 #: templates/profile/tabs/settings/basic-information.php:33
 msgid "First name"
 msgstr ""
 
 #: config/settings/profile.php:67
-#: inc/user/lp-user-functions.php:1825
-#: inc/user/lp-user-functions.php:1827
+#: inc/user/lp-user-functions.php:1829
+#: inc/user/lp-user-functions.php:1831
 #: templates/profile/tabs/settings/basic-information.php:39
 msgid "Last name"
 msgstr ""
 
 #: config/settings/profile.php:74
 #: config/settings/profile.php:86
-#: inc/user/lp-user-functions.php:1838
-#: inc/user/lp-user-functions.php:1840
+#: inc/user/lp-user-functions.php:1842
+#: inc/user/lp-user-functions.php:1844
 #: templates/profile/tabs/settings/basic-information.php:45
 msgid "Display name"
 msgstr ""
@@ -1522,7 +1785,7 @@ msgstr ""
 #: inc/custom-post-types/abstract.php:943
 #: inc/custom-post-types/abstract.php:953
 #: inc/custom-post-types/question.php:366
-#: inc/order/class-lp-order.php:1007
+#: inc/order/class-lp-order.php:944
 msgid "View"
 msgstr ""
 
@@ -1655,8 +1918,8 @@ msgid "Last Updated:"
 msgstr ""
 
 #: inc/admin/class-lp-plugin-install-list-table.php:483
-#: inc/class-lp-datetime.php:226
-#: inc/custom-post-types/order.php:756
+#: inc/class-lp-datetime.php:166
+#: inc/custom-post-types/order.php:535
 #: inc/order/class-lp-order.php:148
 msgid "%s ago"
 msgstr ""
@@ -1736,8 +1999,8 @@ msgid "Finish"
 msgstr ""
 
 #: inc/admin/class-lp-setup-wizard.php:354
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:92
 #: inc/gateways/paypal/class-lp-gateway-paypal.php:96
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:100
 msgid "PayPal"
 msgstr ""
 
@@ -1934,7 +2197,7 @@ msgstr ""
 #: inc/admin/lp-admin-functions.php:1155
 #: inc/admin/lp-admin-functions.php:1372
 #: inc/admin/lp-admin-functions.php:2237
-#: inc/order/class-lp-order.php:341
+#: inc/order/class-lp-order.php:286
 #: inc/templates/class-lp-template-profile.php:111
 #: inc/user/class-lp-profile.php:899
 msgid "Pending"
@@ -1952,17 +2215,17 @@ msgstr ""
 #: inc/admin/lp-admin-functions.php:2247
 #: inc/admin/views/addons.php:108
 #: inc/admin/views/addons.php:195
-#: inc/course/abstract-course.php:676
-#: inc/course/abstract-course.php:705
+#: inc/course/abstract-course.php:677
+#: inc/course/abstract-course.php:706
 #: inc/TemplateHooks/Course/FilterCourseTemplate.php:207
 #: templates/order/order-details.php:43
 msgid "Free"
 msgstr ""
 
 #: inc/admin/lp-admin-functions.php:1367
-#: inc/order/class-lp-order.php:338
+#: inc/order/class-lp-order.php:283
 #: inc/user-item/class-lp-user-item-quiz.php:146
-#: inc/user-item/class-lp-user-item.php:770
+#: inc/user-item/class-lp-user-item.php:689
 #: templates/content-lesson/button-complete.php:41
 msgid "Completed"
 msgstr ""
@@ -1987,19 +2250,19 @@ msgstr ""
 msgid "Quiz id %s does not exist."
 msgstr ""
 
-#: inc/admin/meta-box/fields/course-permalink.php:32
+#: inc/admin/meta-box/fields/course-permalink.php:27
 msgid "Courses base"
 msgstr ""
 
-#: inc/admin/meta-box/fields/course-permalink.php:37
+#: inc/admin/meta-box/fields/course-permalink.php:32
 msgid "Courses base with category"
 msgstr ""
 
-#: inc/admin/meta-box/fields/course-permalink.php:85
+#: inc/admin/meta-box/fields/course-permalink.php:80
 msgid "Custom Base"
 msgstr ""
 
-#: inc/admin/meta-box/fields/course-permalink.php:89
+#: inc/admin/meta-box/fields/course-permalink.php:84
 msgid "Enter a custom base to use. A base must be set or WordPress will use default values instead."
 msgstr ""
 
@@ -2060,8 +2323,6 @@ msgstr ""
 #: inc/admin/meta-box/fields/list-emails.php:7
 #: inc/admin/views/meta-boxes/order/content-tab-preview-exports-invoice.php:43
 #: inc/admin/views/meta-boxes/order/exports-invoice.php:80
-#: inc/class-lp-checkout.php:362
-#: inc/class-lp-checkout.php:370
 #: inc/lp-deprecated.php:2253
 #: templates/checkout/account-register.php:25
 #: templates/global/become-teacher-form.php:39
@@ -2079,12 +2340,6 @@ msgstr ""
 
 #: inc/admin/meta-box/fields/list-emails.php:59
 msgid "Disable all"
-msgstr ""
-
-#: inc/admin/meta-box/fields/payment-order.php:10
-#: inc/emails/class-lp-email.php:856
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:309
-msgid "Enable/Disable"
 msgstr ""
 
 #: inc/admin/settings/class-lp-settings-advanced.php:16
@@ -2549,7 +2804,7 @@ msgstr ""
 #: inc/admin/views/meta-boxes/quiz/settings.php:23
 #: inc/custom-post-types/lesson.php:226
 #: inc/custom-post-types/quiz.php:239
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1083
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1076
 #: inc/jwt/rest-api/version1/class-lp-rest-lessons-v1-controller.php:500
 #: inc/jwt/rest-api/version1/class-lp-rest-quiz-v1-controller.php:636
 msgid "Duration"
@@ -2836,6 +3091,11 @@ msgstr ""
 msgid "Students can view this lesson content without taking the course."
 msgstr ""
 
+#: inc/admin/views/meta-boxes/lesson/settings.php:63
+#: inc/lp-template-functions.php:97
+msgid "Materials"
+msgstr ""
+
 #: inc/admin/views/meta-boxes/order/actions.php:19
 msgid "Choose an action"
 msgstr ""
@@ -2898,7 +3158,7 @@ msgstr ""
 
 #: inc/admin/views/meta-boxes/order/content-tab-preview-exports-invoice.php:111
 #: inc/admin/views/meta-boxes/order/details.php:164
-#: inc/custom-post-types/order.php:686
+#: inc/custom-post-types/order.php:465
 #: templates/checkout/order-received.php:116
 #: templates/checkout/review-order.php:106
 #: templates/emails/order-items-table.php:118
@@ -3078,10 +3338,6 @@ msgstr ""
 msgid "How many times can the user re-take this quiz? Set 0 to disable. Set -1 to infinite."
 msgstr ""
 
-#: inc/admin/views/meta-boxes/quiz/settings.php:77
-msgid "Pagination"
-msgstr ""
-
 #: inc/admin/views/meta-boxes/quiz/settings.php:78
 msgid "The number of displayed questions on each page."
 msgstr ""
@@ -3231,11 +3487,6 @@ msgstr ""
 
 #: inc/admin/views/setup/setup-paypal.php:22
 msgid "Your Paypal email is in live mode."
-msgstr ""
-
-#: inc/admin/views/setup/setup-stripe.php:3
-#: inc/gateways/offline-payment/class-lp-gateway-offline-payment.php:105
-msgid "Enable"
 msgstr ""
 
 #: inc/admin/views/setup/setup-stripe.php:15
@@ -3405,7 +3656,7 @@ msgid "Sale by"
 msgstr ""
 
 #: inc/admin/views/statistics/orders.php:47
-#: inc/custom-post-types/order.php:685
+#: inc/custom-post-types/order.php:464
 #: templates/checkout/order-received.php:103
 #: templates/profile/tabs/orders/list.php:31
 #: templates/profile/tabs/quizzes.php:56
@@ -3507,48 +3758,36 @@ msgstr ""
 msgid "Create a new account with this email. The account information will be sent with this email."
 msgstr ""
 
-#: inc/class-lp-ajax.php:148
+#: inc/class-lp-ajax.php:146
 msgid "Access denied!"
 msgstr ""
 
-#: inc/class-lp-ajax.php:165
+#: inc/class-lp-ajax.php:163
 msgid "You have finished this course \"%s\""
 msgstr ""
 
-#: inc/class-lp-ajax.php:168
+#: inc/class-lp-ajax.php:166
 msgid "Error! You cannot finish this course. Please contact your administrator for more information."
 msgstr ""
 
-#: inc/class-lp-ajax.php:195
+#: inc/class-lp-ajax.php:194
 msgid "Error! Invalid lesson or failed security check."
 msgstr ""
 
-#: inc/class-lp-ajax.php:200
+#: inc/class-lp-ajax.php:199
 msgid "Error! Invalid lesson."
 msgstr ""
 
-#: inc/class-lp-ajax.php:205
+#: inc/class-lp-ajax.php:204
 msgid "Please login."
 msgstr ""
 
-#: inc/class-lp-ajax.php:210
+#: inc/class-lp-ajax.php:209
 msgid "Course is invalid!."
 msgstr ""
 
-#: inc/class-lp-ajax.php:229
+#: inc/class-lp-ajax.php:232
 msgid "Congrats! You have completed \"%s\"."
-msgstr ""
-
-#: inc/class-lp-assets.php:96
-#: inc/lp-core-functions.php:2821
-#: templates/global/lp-modal-overlay.php:24
-msgid "Yes"
-msgstr ""
-
-#: inc/class-lp-assets.php:97
-#: inc/lp-core-functions.php:2822
-#: templates/global/lp-modal-overlay.php:23
-msgid "No"
 msgstr ""
 
 #: inc/class-lp-assets.php:113
@@ -3596,105 +3835,62 @@ msgstr ""
 msgid "Page %d"
 msgstr ""
 
-#: inc/class-lp-checkout.php:270
+#: inc/class-lp-checkout.php:181
 msgid "Your email is not valid!"
 msgstr ""
 
-#: inc/class-lp-checkout.php:359
-msgid "Your session has expired."
-msgstr ""
-
-#: inc/class-lp-checkout.php:363
-#: inc/class-lp-checkout.php:367
-#: templates/checkout/account-register.php:28
-#: templates/checkout/account-register.php:29
-#: templates/global/form-register.php:32
-#: templates/global/form-register.php:33
-msgid "Username"
-msgstr ""
-
-#: inc/class-lp-checkout.php:364
-#: inc/class-lp-checkout.php:368
-#: inc/jwt/rest-api/version1/class-lp-rest-users-v1-controller.php:121
-#: inc/user/class-lp-profile.php:333
-#: templates/checkout/account-login.php:30
-#: templates/checkout/account-login.php:31
-#: templates/checkout/account-register.php:32
-#: templates/checkout/account-register.php:33
-#: templates/checkout/account-register.php:37
-#: templates/global/form-login.php:31
-#: templates/global/form-login.php:32
-#: templates/global/form-register.php:36
-#: templates/global/form-register.php:37
-#: templates/global/form-register.php:41
-msgid "Password"
-msgstr ""
-
-#: inc/class-lp-checkout.php:365
-#: templates/checkout/account-register.php:36
-#: templates/global/form-register.php:40
-msgid "Confirm Password"
-msgstr ""
-
-#: inc/class-lp-checkout.php:447
+#: inc/class-lp-checkout.php:303
 msgid "New account email is existed"
 msgstr ""
 
-#: inc/class-lp-checkout.php:457
+#: inc/class-lp-checkout.php:313
 msgid "Create account failed"
 msgstr ""
 
-#: inc/class-lp-checkout.php:501
-msgid "Error %d: Unable to create order. Please try again."
+#: inc/class-lp-checkout.php:355
+msgid "Error %d: Unable to add item to order. Please try again."
 msgstr ""
 
-#: inc/class-lp-checkout.php:514
-msgid "Unable to checkout. Order creation failed."
+#: inc/class-lp-checkout.php:466
+msgid "Your session has expired."
 msgstr ""
 
-#: inc/class-lp-checkout.php:570
-#: inc/class-lp-checkout.php:578
-#: inc/class-lp-checkout.php:586
-#: inc/class-lp-checkout.php:590
-#: inc/class-lp-checkout.php:600
-#: inc/class-lp-checkout.php:608
-#: inc/class-lp-checkout.php:616
-msgid "%s is required field."
-msgstr ""
-
-#: inc/class-lp-checkout.php:572
-#: inc/class-lp-checkout.php:580
-msgid "%s is exists."
-msgstr ""
-
-#: inc/class-lp-checkout.php:574
-msgid "%s is not a valid username."
-msgstr ""
-
-#: inc/class-lp-checkout.php:582
-msgid "%s is not a valid email."
-msgstr ""
-
-#: inc/class-lp-checkout.php:604
-msgid "%s is not exist."
-msgstr ""
-
-#: inc/class-lp-checkout.php:618
-msgid "Your email is not valid."
-msgstr ""
-
-#: inc/class-lp-checkout.php:715
+#: inc/class-lp-checkout.php:496
 msgid "No payment method is selected"
 msgstr ""
 
-#: inc/class-lp-checkout.php:748
+#: inc/class-lp-checkout.php:529
 #: templates/checkout/empty-cart.php:16
 msgid "Your cart is currently empty."
 msgstr ""
 
-#: inc/class-lp-checkout.php:755
+#: inc/class-lp-checkout.php:536
 msgid "Type item buy invalid!"
 msgstr ""
+
+#: inc/class-lp-datetime.php:415
+msgid "%s Minute"
+msgid_plural "%s Minutes"
+msgstr[0] ""
+msgstr[1] ""
+
+#: inc/class-lp-datetime.php:421
+msgid "%s Hour"
+msgid_plural "%s Hours"
+msgstr[0] ""
+msgstr[1] ""
+
+#: inc/class-lp-datetime.php:427
+msgid "%s Day"
+msgid_plural "%s Days"
+msgstr[0] ""
+msgstr[1] ""
+
+#: inc/class-lp-datetime.php:433
+msgid "%s Week"
+msgid_plural "%s Weeks"
+msgstr[0] ""
+msgstr[1] ""
 
 #: inc/class-lp-forms-handler.php:30
 #: inc/class-lp-forms-handler.php:248
@@ -3808,7 +4004,7 @@ msgstr ""
 msgid "Missing post title"
 msgstr ""
 
-#: inc/class-lp-helper.php:630
+#: inc/class-lp-helper.php:634
 msgctxt "slug"
 msgid "uncategorized"
 msgstr ""
@@ -3822,12 +4018,12 @@ msgstr ""
 msgid "Update failed!"
 msgstr ""
 
-#: inc/class-lp-page-controller.php:197
+#: inc/class-lp-page-controller.php:199
 #: inc/lp-template-functions.php:327
 msgid "Course Search Results"
 msgstr ""
 
-#: inc/class-lp-page-controller.php:279
+#: inc/class-lp-page-controller.php:281
 msgid "No payment method is available."
 msgstr ""
 
@@ -3890,23 +4086,23 @@ msgstr ""
 msgid "There are no options for this widget."
 msgstr ""
 
-#: inc/course/abstract-course.php:785
-#: inc/course/abstract-course.php:805
+#: inc/course/abstract-course.php:786
+#: inc/course/abstract-course.php:806
 #: inc/lesson/class-lp-lesson.php:104
 #: inc/quiz/class-lp-quiz.php:648
 msgid "The function %s doesn't exist"
 msgstr ""
 
-#: inc/course/abstract-course.php:1311
+#: inc/course/abstract-course.php:1313
 msgid "This course will end within the next %s"
 msgstr ""
 
-#: inc/course/abstract-course.php:1339
+#: inc/course/abstract-course.php:1341
 msgctxt "External Link button text"
 msgid "More Info"
 msgstr ""
 
-#: inc/course/abstract-course.php:1376
+#: inc/course/abstract-course.php:1378
 msgid "Tags: "
 msgstr ""
 
@@ -3979,24 +4175,24 @@ msgstr ""
 msgid "Invalid lesson with ID \"%d\"."
 msgstr ""
 
-#: inc/curds/class-lp-order-curd.php:469
+#: inc/curds/class-lp-order-curd.php:473
 msgid "Invalid order with ID \"%d\"."
 msgstr ""
 
-#: inc/curds/class-lp-order-curd.php:531
+#: inc/curds/class-lp-order-curd.php:535
 #: templates/checkout/order-received.php:25
 msgid "Invalid order."
 msgstr ""
 
-#: inc/curds/class-lp-order-curd.php:535
+#: inc/curds/class-lp-order-curd.php:539
 msgid "Order is already assigned."
 msgstr ""
 
-#: inc/curds/class-lp-order-curd.php:541
+#: inc/curds/class-lp-order-curd.php:545
 msgid "Invalid User!"
 msgstr ""
 
-#: inc/curds/class-lp-order-curd.php:545
+#: inc/curds/class-lp-order-curd.php:549
 msgid "Invalid order key with Email!"
 msgstr ""
 
@@ -4027,12 +4223,12 @@ msgid "There are no items in the order"
 msgstr ""
 
 #: inc/curds/class-lp-user-curd.php:2068
-#: inc/user/class-lp-user.php:732
+#: inc/user/class-lp-user.php:728
 msgid "quiz"
 msgstr ""
 
 #: inc/curds/class-lp-user-curd.php:2069
-#: inc/user/class-lp-user.php:733
+#: inc/user/class-lp-user.php:729
 msgid "quizzes"
 msgstr ""
 
@@ -4173,7 +4369,7 @@ msgstr ""
 
 #: inc/custom-post-types/course.php:111
 #: inc/custom-post-types/lesson.php:162
-#: inc/custom-post-types/order.php:824
+#: inc/custom-post-types/order.php:603
 #: inc/custom-post-types/question.php:211
 msgid "Add New"
 msgstr ""
@@ -4352,40 +4548,40 @@ msgstr ""
 msgid "Assigned"
 msgstr ""
 
-#: inc/custom-post-types/order.php:400
+#: inc/custom-post-types/order.php:179
 msgid "Order number, course name, etc."
 msgstr ""
 
-#: inc/custom-post-types/order.php:599
-#: inc/custom-post-types/order.php:823
+#: inc/custom-post-types/order.php:378
+#: inc/custom-post-types/order.php:602
 msgid "View Order"
 msgstr ""
 
-#: inc/custom-post-types/order.php:615
+#: inc/custom-post-types/order.php:394
 msgid "View child orders"
 msgstr ""
 
-#: inc/custom-post-types/order.php:682
-#: inc/custom-post-types/order.php:819
+#: inc/custom-post-types/order.php:461
+#: inc/custom-post-types/order.php:598
 #: templates/profile/tabs/orders/list.php:28
 msgid "Order"
 msgstr ""
 
-#: inc/custom-post-types/order.php:683
+#: inc/custom-post-types/order.php:462
 #: inc/TemplateHooks/Instructor/SingleInstructorTemplate.php:186
 msgid "Student"
 msgid_plural "Students"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/custom-post-types/order.php:684
+#: inc/custom-post-types/order.php:463
 #: inc/lp-deprecated.php:354
-#: inc/user-item/class-lp-user-item.php:769
+#: inc/user-item/class-lp-user-item.php:688
 msgid "Purchased"
 msgstr ""
 
-#: inc/custom-post-types/order.php:687
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1341
+#: inc/custom-post-types/order.php:466
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1334
 #: templates/checkout/order-received.php:60
 #: templates/emails/order-items-table.php:72
 #: templates/emails/plain/order-items-table.php:58
@@ -4393,60 +4589,60 @@ msgstr ""
 msgid "Status"
 msgstr ""
 
-#: inc/custom-post-types/order.php:736
-#: inc/order/class-lp-order.php:513
+#: inc/custom-post-types/order.php:515
+#: inc/order/class-lp-order.php:458
 msgid "(Guest)"
 msgstr ""
 
-#: inc/custom-post-types/order.php:771
+#: inc/custom-post-types/order.php:550
 #: templates/checkout/order-received.php:80
 msgid "The course does not exist"
 msgstr ""
 
-#: inc/custom-post-types/order.php:773
+#: inc/custom-post-types/order.php:552
 msgid "Deleted"
 msgstr ""
 
-#: inc/custom-post-types/order.php:789
+#: inc/custom-post-types/order.php:568
 #: templates/checkout/order-received.php:97
 msgid "(No item)"
 msgstr ""
 
-#: inc/custom-post-types/order.php:799
+#: inc/custom-post-types/order.php:578
 msgid "Pay via <strong>%s</strong>"
 msgstr ""
 
-#: inc/custom-post-types/order.php:820
+#: inc/custom-post-types/order.php:599
 msgid "Add A New Order"
 msgstr ""
 
-#: inc/custom-post-types/order.php:821
-#: inc/custom-post-types/order.php:991
+#: inc/custom-post-types/order.php:600
+#: inc/custom-post-types/order.php:726
 #: templates/order/order-details.php:20
 msgid "Order Details"
 msgstr ""
 
-#: inc/custom-post-types/order.php:825
+#: inc/custom-post-types/order.php:604
 msgid "Update Order"
 msgstr ""
 
-#: inc/custom-post-types/order.php:826
+#: inc/custom-post-types/order.php:605
 msgid "Search Orders"
 msgstr ""
 
-#: inc/custom-post-types/order.php:827
+#: inc/custom-post-types/order.php:606
 msgid "No order found"
 msgstr ""
 
-#: inc/custom-post-types/order.php:828
+#: inc/custom-post-types/order.php:607
 msgid "There was no order found in the trash"
 msgstr ""
 
-#: inc/custom-post-types/order.php:999
+#: inc/custom-post-types/order.php:734
 msgid "Order Actions"
 msgstr ""
 
-#: inc/custom-post-types/order.php:1007
+#: inc/custom-post-types/order.php:742
 msgid "Order Exports"
 msgstr ""
 
@@ -4854,46 +5050,40 @@ msgstr ""
 msgid "[{{site_title}}] Reset Password"
 msgstr ""
 
-#: inc/ExternalPlugin/Elementor/LPElementor.php:37
+#: inc/ExternalPlugin/Elementor/LPElementor.php:56
 msgid "LearnPress Instructor Sections"
 msgstr ""
 
-#: inc/ExternalPlugin/Elementor/LPElementorControls.php:299
+#: inc/ExternalPlugin/Elementor/LPElementor.php:60
+msgid "LearnPress Course Sections"
+msgstr ""
+
+#: inc/ExternalPlugin/Elementor/LPElementorControls.php:349
 msgid "Display"
 msgstr ""
 
-#: inc/ExternalPlugin/Elementor/LPElementorControls.php:320
-#: inc/ExternalPlugin/Elementor/LPElementorControls.php:445
-msgid "Margin"
-msgstr ""
-
-#: inc/ExternalPlugin/Elementor/LPElementorControls.php:332
-#: inc/ExternalPlugin/Elementor/LPElementorControls.php:457
-msgid "Padding"
-msgstr ""
-
-#: inc/ExternalPlugin/Elementor/LPElementorControls.php:355
+#: inc/ExternalPlugin/Elementor/LPElementorControls.php:405
 msgid "Text Color"
 msgstr ""
 
-#: inc/ExternalPlugin/Elementor/LPElementorControls.php:360
+#: inc/ExternalPlugin/Elementor/LPElementorControls.php:410
 msgid "Text Color Hover"
 msgstr ""
 
-#: inc/ExternalPlugin/Elementor/LPElementorControls.php:365
-msgid "Background Color"
-msgstr ""
-
-#: inc/ExternalPlugin/Elementor/LPElementorControls.php:370
+#: inc/ExternalPlugin/Elementor/LPElementorControls.php:420
 msgid "Background Color Hover"
 msgstr ""
 
-#: inc/ExternalPlugin/Elementor/LPElementorControls.php:433
+#: inc/ExternalPlugin/Elementor/LPElementorControls.php:483
 msgid "Image"
 msgstr ""
 
 #: inc/ExternalPlugin/Elementor/Widgets/Course/CourseMaterialElementor.php:9
 msgid "Course/Lesson Material"
+msgstr ""
+
+#: inc/ExternalPlugin/Elementor/Widgets/Course/ListCoursesByPageElementor.php:26
+msgid "List Courses by Page"
 msgstr ""
 
 #: inc/ExternalPlugin/Elementor/Widgets/CourseListElementor.php:16
@@ -4902,6 +5092,11 @@ msgstr ""
 
 #: inc/ExternalPlugin/Elementor/Widgets/Instructor/ListInstructorsElementor.php:19
 msgid "List Instructors"
+msgstr ""
+
+#: inc/ExternalPlugin/Elementor/Widgets/Instructor/Sections/InstructorAvatarElementor.php:20
+#: inc/ExternalPlugin/Elementor/Widgets/Instructor/Sections/InstructorAvatarElementor.php:44
+msgid "Instructor Avatar"
 msgstr ""
 
 #: inc/ExternalPlugin/Elementor/Widgets/Instructor/Sections/InstructorButtonViewElementor.php:20
@@ -4913,11 +5108,11 @@ msgstr ""
 msgid "Instructor Name"
 msgstr ""
 
-#: inc/ExternalPlugin/Elementor/Widgets/Instructor/SingleInstructorBaseElementor.php:66
+#: inc/ExternalPlugin/Elementor/Widgets/Instructor/SingleInstructorBaseElementor.php:67
 msgid "Instructor not found!"
 msgstr ""
 
-#: inc/ExternalPlugin/Elementor/Widgets/Instructor/SingleInstructorBaseElementor.php:70
+#: inc/ExternalPlugin/Elementor/Widgets/Instructor/SingleInstructorBaseElementor.php:71
 msgid "User is not Instructor!"
 msgstr ""
 
@@ -4933,56 +5128,28 @@ msgstr ""
 msgid "Register Form"
 msgstr ""
 
-#: inc/gateways/class-lp-gateway-abstract.php:218
+#: inc/gateways/class-lp-gateway-abstract.php:227
 msgid "%s has been deprecated. Please use % instead of."
 msgstr ""
 
-#: inc/gateways/offline-payment/class-lp-gateway-offline-payment.php:43
+#: inc/gateways/offline-payment/class-lp-gateway-offline-payment.php:41
 msgid "Offline Payment"
 msgstr ""
 
-#: inc/gateways/offline-payment/class-lp-gateway-offline-payment.php:44
+#: inc/gateways/offline-payment/class-lp-gateway-offline-payment.php:42
 msgid "Make a payment with cash."
 msgstr ""
 
-#: inc/gateways/offline-payment/class-lp-gateway-offline-payment.php:111
-msgid "Testing Mode"
-msgstr ""
-
-#: inc/gateways/offline-payment/class-lp-gateway-offline-payment.php:124
-msgid "Instruction"
-msgstr ""
-
-#: inc/gateways/offline-payment/class-lp-gateway-offline-payment.php:167
+#: inc/gateways/offline-payment/class-lp-gateway-offline-payment.php:118
 msgid "Payment can be made upon delivery."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:93
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:97
 msgid "Make a payment via Paypal."
 msgstr ""
 
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:97
+#: inc/gateways/paypal/class-lp-gateway-paypal.php:101
 msgid "Pay with PayPal"
-msgstr ""
-
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:313
-msgid "Enable PayPal Standard"
-msgstr ""
-
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:316
-msgid "PayPal email"
-msgstr ""
-
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:321
-msgid "Sandbox mode"
-msgstr ""
-
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:325
-msgid "Enable PayPal sandbox"
-msgstr ""
-
-#: inc/gateways/paypal/class-lp-gateway-paypal.php:328
-msgid "Sandbox email address"
 msgstr ""
 
 #: inc/handle-steps/class-lp-handle-steps.php:26
@@ -5001,64 +5168,64 @@ msgstr ""
 msgid "Path file %s not exists"
 msgstr ""
 
-#: inc/jwt/includes/class-jwt-public.php:44
+#: inc/jwt/includes/class-jwt-public.php:45
 msgid "The username of the user."
 msgstr ""
 
-#: inc/jwt/includes/class-jwt-public.php:50
+#: inc/jwt/includes/class-jwt-public.php:51
 msgid "The password of the user."
 msgstr ""
 
-#: inc/jwt/includes/class-jwt-public.php:85
+#: inc/jwt/includes/class-jwt-public.php:86
 msgid "JSON Web Token"
 msgstr ""
 
-#: inc/jwt/includes/class-jwt-public.php:89
+#: inc/jwt/includes/class-jwt-public.php:90
 msgid "JSON Web Token."
 msgstr ""
 
-#: inc/jwt/includes/class-jwt-public.php:94
+#: inc/jwt/includes/class-jwt-public.php:95
 msgid "The ID of the user."
 msgstr ""
 
-#: inc/jwt/includes/class-jwt-public.php:99
+#: inc/jwt/includes/class-jwt-public.php:100
 msgid "The username of the user"
 msgstr ""
 
-#: inc/jwt/includes/class-jwt-public.php:104
+#: inc/jwt/includes/class-jwt-public.php:105
 msgid "The email address of the user."
 msgstr ""
 
-#: inc/jwt/includes/class-jwt-public.php:155
-#: inc/jwt/includes/class-jwt-public.php:300
+#: inc/jwt/includes/class-jwt-public.php:156
+#: inc/jwt/includes/class-jwt-public.php:301
 msgid "LearnPress JWT is not configurated properly, please contact the admin"
 msgstr ""
 
-#: inc/jwt/includes/class-jwt-public.php:271
+#: inc/jwt/includes/class-jwt-public.php:272
 msgid "Authorization header not found."
 msgstr ""
 
-#: inc/jwt/includes/class-jwt-public.php:287
+#: inc/jwt/includes/class-jwt-public.php:288
 msgid "Authentication token is missing."
 msgstr ""
 
-#: inc/jwt/includes/class-jwt-public.php:315
+#: inc/jwt/includes/class-jwt-public.php:316
 msgid "The iss do not match with this server"
 msgstr ""
 
-#: inc/jwt/includes/class-jwt-public.php:326
+#: inc/jwt/includes/class-jwt-public.php:327
 msgid "User ID not found in the token"
 msgstr ""
 
-#: inc/jwt/includes/class-jwt-public.php:336
+#: inc/jwt/includes/class-jwt-public.php:337
 msgid "The token must have an expiration date."
 msgstr ""
 
-#: inc/jwt/includes/class-jwt-public.php:346
+#: inc/jwt/includes/class-jwt-public.php:347
 msgid "The token has expired."
 msgstr ""
 
-#: inc/jwt/includes/class-jwt-public.php:361
+#: inc/jwt/includes/class-jwt-public.php:362
 msgid "Valid access token."
 msgstr ""
 
@@ -5066,7 +5233,7 @@ msgstr ""
 #: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:64
 #: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:89
 #: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:114
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1003
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:996
 #: inc/jwt/rest-api/version1/class-lp-rest-lessons-v1-controller.php:32
 #: inc/jwt/rest-api/version1/class-lp-rest-lessons-v1-controller.php:58
 #: inc/jwt/rest-api/version1/class-lp-rest-lessons-v1-controller.php:430
@@ -5077,7 +5244,7 @@ msgstr ""
 #: inc/jwt/rest-api/version1/class-lp-rest-section-items-v1-controller.php:213
 #: inc/jwt/rest-api/version1/class-lp-rest-sections-v1-controller.php:116
 #: inc/jwt/rest-api/version1/class-lp-rest-users-v1-controller.php:42
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:62
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:71
 #: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:25
 #: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:69
 #: inc/rest-api/v1/frontend/class-lp-rest-settings-controller.php:23
@@ -5108,268 +5275,264 @@ msgid "The course ID is invalid."
 msgstr ""
 
 #: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:356
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:285
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:430
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:324
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:464
 msgid "Error: The course cannot be added to the cart."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:374
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:367
 msgid "Verify Receipt Data successfully."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:402
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:395
 msgid "Error: No Course ID available."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:409
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:402
 msgid "Cannot finish this course."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:415
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:408
 msgid "Error: Cannot finish this course."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:419
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:412
 msgid "Congrats! You have completed the Course."
 msgstr ""
 
 #. translators: %s: post type
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:448
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:441
 #: inc/jwt/rest-api/version1/class-lp-rest-posts-controller.php:148
 msgid "Cannot create existing %s."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:587
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:580
 #: inc/jwt/rest-api/version1/class-lp-rest-lessons-v1-controller.php:296
 #: inc/jwt/rest-api/version1/class-lp-rest-quiz-v1-controller.php:372
 #: templates/single-course/sidebar/user-time.php:42
 msgid "Lifetime"
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:838
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:831
 #: inc/jwt/rest-api/version1/class-lp-rest-section-items-v1-controller.php:160
 msgid "%s days"
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:839
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:832
 #: inc/jwt/rest-api/version1/class-lp-rest-section-items-v1-controller.php:161
 msgid "%s hours"
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:840
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:833
 #: inc/jwt/rest-api/version1/class-lp-rest-section-items-v1-controller.php:162
 msgid "%s mins"
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:841
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:834
 #: inc/jwt/rest-api/version1/class-lp-rest-section-items-v1-controller.php:163
 msgid "%s secs"
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1009
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1002
 #: inc/jwt/rest-api/version1/class-lp-rest-lessons-v1-controller.php:436
 #: inc/jwt/rest-api/version1/class-lp-rest-questions-v1-controller.php:203
 #: inc/jwt/rest-api/version1/class-lp-rest-quiz-v1-controller.php:572
 msgid "Course name."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1014
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1007
 #: inc/jwt/rest-api/version1/class-lp-rest-lessons-v1-controller.php:441
 #: inc/jwt/rest-api/version1/class-lp-rest-questions-v1-controller.php:208
 #: inc/jwt/rest-api/version1/class-lp-rest-quiz-v1-controller.php:577
 msgid "Course slug."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1019
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1012
 #: inc/jwt/rest-api/version1/class-lp-rest-lessons-v1-controller.php:446
 #: inc/jwt/rest-api/version1/class-lp-rest-questions-v1-controller.php:213
 #: inc/jwt/rest-api/version1/class-lp-rest-quiz-v1-controller.php:582
 msgid "Course URL."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1026
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1019
 msgid "Course Image URL."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1032
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1025
 #: inc/jwt/rest-api/version1/class-lp-rest-lessons-v1-controller.php:453
 #: inc/jwt/rest-api/version1/class-lp-rest-questions-v1-controller.php:220
 #: inc/jwt/rest-api/version1/class-lp-rest-quiz-v1-controller.php:589
 msgid "The date the Course was created, in the site's timezone."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1039
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1032
 #: inc/jwt/rest-api/version1/class-lp-rest-lessons-v1-controller.php:459
 #: inc/jwt/rest-api/version1/class-lp-rest-questions-v1-controller.php:226
 #: inc/jwt/rest-api/version1/class-lp-rest-quiz-v1-controller.php:595
 msgid "The date the Course was created, as GMT."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1046
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1039
 #: inc/jwt/rest-api/version1/class-lp-rest-lessons-v1-controller.php:465
 #: inc/jwt/rest-api/version1/class-lp-rest-questions-v1-controller.php:232
 #: inc/jwt/rest-api/version1/class-lp-rest-quiz-v1-controller.php:601
 msgid "The date the Course was last modified, in the site's timezone."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1053
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1046
 #: inc/jwt/rest-api/version1/class-lp-rest-lessons-v1-controller.php:471
 #: inc/jwt/rest-api/version1/class-lp-rest-questions-v1-controller.php:238
 #: inc/jwt/rest-api/version1/class-lp-rest-quiz-v1-controller.php:607
 msgid "The date the Course was last modified, as GMT."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1060
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1053
 msgid "Display courses if they are on sale."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1066
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1059
 #: inc/jwt/rest-api/version1/class-lp-rest-lessons-v1-controller.php:477
 #: inc/jwt/rest-api/version1/class-lp-rest-questions-v1-controller.php:244
 #: inc/jwt/rest-api/version1/class-lp-rest-quiz-v1-controller.php:613
 msgid "Course status (post status)."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1073
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1066
 #: inc/jwt/rest-api/version1/class-lp-rest-lessons-v1-controller.php:484
 #: inc/jwt/rest-api/version1/class-lp-rest-questions-v1-controller.php:251
 #: inc/jwt/rest-api/version1/class-lp-rest-quiz-v1-controller.php:620
 msgid "Course content."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1078
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1071
 #: inc/jwt/rest-api/version1/class-lp-rest-lessons-v1-controller.php:489
 #: inc/jwt/rest-api/version1/class-lp-rest-questions-v1-controller.php:256
 #: inc/jwt/rest-api/version1/class-lp-rest-quiz-v1-controller.php:625
 msgid "Retrieves the course excerpt.."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1088
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1081
 msgid "Count the number of enrolled students."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1094
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1087
 #: inc/jwt/rest-api/version1/class-lp-rest-lessons-v1-controller.php:494
 #: inc/jwt/rest-api/version1/class-lp-rest-quiz-v1-controller.php:630
 msgid "Can finish the course"
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1100
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1093
 msgid "Can retake the course"
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1106
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1099
 msgid "Total retakes"
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1112
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1105
 msgid "Retaken"
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1118
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1111
 msgid "Course Review add-on"
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1124
-msgid "Course Price"
-msgstr ""
-
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1130
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1123
 msgid "Course Price Rendered"
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1136
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1129
 msgid "Course Origin Price"
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1142
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1135
 msgid "Course Origin Price Rendered"
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1148
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1141
 msgid "Course Sale Price"
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1154
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1147
 msgid "Course Sale Price Rendered"
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1160
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1153
 msgid "List of categories."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1167
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1160
 msgid "Category ID."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1172
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1165
 msgid "Category name."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1178
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1171
 msgid "Category slug."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1187
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1180
 msgid "List of tags."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1194
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1187
 msgid "Tag ID."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1199
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1192
 msgid "Tag name."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1205
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1232
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1198
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1225
 msgid "Tag slug."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1214
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1247
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1207
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1240
 msgid "Retrieves the course sections and items.."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1221
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1214
 msgid "User ID."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1226
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1219
 msgid "Display name."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1238
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1231
 msgid "Social Infor."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1254
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1247
 #: inc/jwt/rest-api/version1/class-lp-rest-section-items-v1-controller.php:14
 msgid "Section ID."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1259
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1252
 #: inc/jwt/rest-api/version1/class-lp-rest-sections-v1-controller.php:122
 msgid "Section name."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1264
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1257
 #: inc/jwt/rest-api/version1/class-lp-rest-sections-v1-controller.php:14
 msgid "Course ID."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1269
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1262
 #: inc/jwt/rest-api/version1/class-lp-rest-sections-v1-controller.php:127
 msgid "Section description."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1274
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1267
 msgid "Section items."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1279
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1294
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1272
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1287
 #: inc/jwt/rest-api/version1/class-lp-rest-lessons-v1-controller.php:510
 #: inc/jwt/rest-api/version1/class-lp-rest-questions-v1-controller.php:266
 #: inc/jwt/rest-api/version1/class-lp-rest-quiz-v1-controller.php:646
@@ -5377,57 +5540,57 @@ msgstr ""
 msgid "Item ID."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1284
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1277
 #: inc/jwt/rest-api/version1/class-lp-rest-quiz-v1-controller.php:687
 msgid "Item Type."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1289
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1282
 #: inc/jwt/rest-api/version1/class-lp-rest-quiz-v1-controller.php:692
 #: inc/jwt/rest-api/version1/class-lp-rest-quiz-v1-controller.php:721
 msgid "Item title."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1299
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1292
 msgid "Percent."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1304
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1297
 msgid "Duration."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1309
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1302
 msgid "Graduation."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1314
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1307
 #: inc/jwt/rest-api/version1/class-lp-rest-lessons-v1-controller.php:542
 msgid "Status."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1319
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1312
 msgid "Locked."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1329
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1322
 msgid "List of course user data."
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1336
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1329
 msgid "Graduation"
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1347
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1340
 msgid "Start time"
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1353
-#: templates/profile/tabs/courses/course-list.php:25
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1346
+#: templates/profile/tabs/courses/course-list.php:29
 msgid "End time"
 msgstr ""
 
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1359
-#: templates/profile/tabs/courses/course-list.php:24
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1352
+#: templates/profile/tabs/courses/course-list.php:28
 msgid "Expiration time"
 msgstr ""
 
@@ -5724,6 +5887,21 @@ msgstr ""
 
 #: inc/jwt/rest-api/version1/class-lp-rest-users-v1-controller.php:116
 msgid "User ID"
+msgstr ""
+
+#: inc/jwt/rest-api/version1/class-lp-rest-users-v1-controller.php:121
+#: inc/user/class-lp-profile.php:333
+#: templates/checkout/account-login.php:30
+#: templates/checkout/account-login.php:31
+#: templates/checkout/account-register.php:32
+#: templates/checkout/account-register.php:33
+#: templates/checkout/account-register.php:37
+#: templates/global/form-login.php:31
+#: templates/global/form-login.php:32
+#: templates/global/form-register.php:36
+#: templates/global/form-register.php:37
+#: templates/global/form-register.php:41
+msgid "Password"
 msgstr ""
 
 #: inc/jwt/rest-api/version1/class-lp-rest-users-v1-controller.php:307
@@ -6491,71 +6669,71 @@ msgctxt "static-page-name"
 msgid "Become a Teacher"
 msgstr ""
 
-#: inc/lp-core-functions.php:3026
+#: inc/lp-core-functions.php:3034
 msgid "Loading..."
 msgstr ""
 
-#: inc/lp-core-functions.php:3029
+#: inc/lp-core-functions.php:3037
 msgid "Get A Passing Grade"
 msgstr ""
 
-#: inc/lp-core-functions.php:3034
+#: inc/lp-core-functions.php:3042
 msgid "Evaluate by the number of completed lessons per the total number of lessons."
 msgstr ""
 
-#: inc/lp-core-functions.php:3035
+#: inc/lp-core-functions.php:3043
 msgid "E.g: If a course has 10 lessons and a user completes 5 lessons, then the result is 5/10 (50%)."
 msgstr ""
 
-#: inc/lp-core-functions.php:3037
+#: inc/lp-core-functions.php:3045
 msgid "Evaluate by the result of the final quiz in the course. You have to add a quiz at the end of the course."
 msgstr ""
 
-#: inc/lp-core-functions.php:3043
+#: inc/lp-core-functions.php:3051
 msgid "Evaluate by the number of passed quizzes per the total number of quizzes."
 msgstr ""
 
-#: inc/lp-core-functions.php:3044
+#: inc/lp-core-functions.php:3052
 msgid "E.g: If the course has 10 quizzes and the user passes 5 quizzes, then the result is 5/10 (50%)."
 msgstr ""
 
-#: inc/lp-core-functions.php:3051
+#: inc/lp-core-functions.php:3059
 msgid "Evaluate by the number of correct answers per the total number of questions."
 msgstr ""
 
-#: inc/lp-core-functions.php:3052
+#: inc/lp-core-functions.php:3060
 msgid "E.g: If the course has 10 questions and the user corrects 5 questions, then the result is 5/10 (50%)."
 msgstr ""
 
-#: inc/lp-core-functions.php:3057
+#: inc/lp-core-functions.php:3065
 msgid "Evaluate by the number of achieved scores per the total score of the questions."
 msgstr ""
 
-#: inc/lp-core-functions.php:3063
+#: inc/lp-core-functions.php:3071
 msgid "Evaluate via lessons"
 msgstr ""
 
-#: inc/lp-core-functions.php:3067
+#: inc/lp-core-functions.php:3075
 msgid "Evaluate via results of the final quiz"
 msgstr ""
 
-#: inc/lp-core-functions.php:3071
+#: inc/lp-core-functions.php:3079
 msgid "Evaluate via passed quizzes"
 msgstr ""
 
-#: inc/lp-core-functions.php:3075
+#: inc/lp-core-functions.php:3083
 msgid "Evaluate via questions"
 msgstr ""
 
-#: inc/lp-core-functions.php:3079
+#: inc/lp-core-functions.php:3087
 msgid "Evaluate via mark"
 msgstr ""
 
-#: inc/lp-core-functions.php:3225
+#: inc/lp-core-functions.php:3233
 msgid "Heads up! Please backup before upgrading!"
 msgstr ""
 
-#: inc/lp-core-functions.php:3228
+#: inc/lp-core-functions.php:3236
 msgid "The latest update includes some substantial changes across different areas of the plugin. We highly recommend you backup your site before upgrading, and make sure you first update in a staging environment"
 msgstr ""
 
@@ -6566,7 +6744,7 @@ msgstr ""
 #: inc/lp-deprecated.php:355
 #: inc/lp-deprecated.php:389
 #: inc/templates/class-lp-template-profile.php:153
-#: inc/user-item/class-lp-user-item.php:772
+#: inc/user-item/class-lp-user-item.php:691
 #: inc/user/class-lp-profile.php:932
 #: inc/user/class-lp-profile.php:966
 msgid "Finished"
@@ -6677,28 +6855,28 @@ msgstr ""
 msgid "Thank you. Your order has been received."
 msgstr ""
 
-#: inc/order/class-lp-order.php:347
+#: inc/order/class-lp-order.php:292
 msgid "Cancelled"
 msgstr ""
 
-#: inc/order/class-lp-order.php:353
+#: inc/order/class-lp-order.php:298
 msgid "On hold"
 msgstr ""
 
-#: inc/order/class-lp-order.php:356
+#: inc/order/class-lp-order.php:301
 msgid "Refunded"
 msgstr ""
 
-#: inc/order/class-lp-order.php:511
+#: inc/order/class-lp-order.php:456
 msgid "%s (Guest)"
 msgstr ""
 
-#: inc/order/class-lp-order.php:1065
+#: inc/order/class-lp-order.php:1002
 msgctxt "full name"
 msgid "%1$s"
 msgstr ""
 
-#: inc/order/class-lp-order.php:1177
+#: inc/order/class-lp-order.php:1076
 msgid "Order on"
 msgstr ""
 
@@ -6911,90 +7089,93 @@ msgstr ""
 msgid "successfully"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:197
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:206
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:152
 msgid "Showing only one result"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:200
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:209
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:155
 msgid "Showing last course of %s results"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:203
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:212
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:158
 msgid "Showing %1$s of %2$s results"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:238
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:277
 msgid "Invalid course!"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:245
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:284
 msgid "Error: Cannot enroll in the course."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:266
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:305
 msgid "Error: Cannot Enroll in the course."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:305
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:339
 msgid "Congrats! You have enrolled in the course successfully. Redirecting..."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:323
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:445
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:357
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:479
 msgid "Error: Please set up a page for checkout."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:328
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:362
 msgid "Redirecting..."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:358
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:392
 msgid "Error: Invalid Course ID."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:363
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:397
 msgid "Error: No Course available."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:368
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:402
 msgid "Error: Cannot purchase the course!"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:392
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:426
 msgid "Reset Course progress"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:398
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:432
 msgid "Continue Course progress"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:406
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:440
 msgid "Repurchase Options"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:452
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:486
 msgid "\"%s\" has been added to your cart."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:477
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:511
 msgid "Invalid params"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:483
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:618
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:517
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:652
 #: inc/user/abstract-lp-user.php:855
 msgid "Invalid course"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:495
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:529
 msgid "You can't retry the course"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:500
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:534
 msgid "Invalid course data of user"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:524
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:558
 msgid "Now you can begin this course"
 msgstr ""
 
@@ -7309,7 +7490,7 @@ msgstr ""
 msgid "You can't view the user profile"
 msgstr ""
 
-#: inc/TemplateHooks/Course/CourseMaterialTemplate.php:48
+#: inc/TemplateHooks/Course/CourseMaterialTemplate.php:49
 msgid "Load more."
 msgstr ""
 
@@ -7329,22 +7510,46 @@ msgstr ""
 msgid "Reset"
 msgstr ""
 
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:41
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:36
 msgid "Load more"
 msgstr ""
 
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:164
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:214
+msgid "Newly published"
+msgstr ""
+
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:215
+msgid "Sort by Title"
+msgstr ""
+
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:216
+msgid "Price low to high"
+msgstr ""
+
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:217
+msgid "Price high to low"
+msgstr ""
+
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:292
 msgid "Course Found"
 msgid_plural "Courses Found"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:169
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:297
 msgid "View All"
+msgstr ""
+
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:389
+msgid "No courses found"
 msgstr ""
 
 #: inc/TemplateHooks/Instructor/SingleInstructorTemplate.php:212
 msgid "View Profile"
+msgstr ""
+
+#: inc/TemplateHooks/UserItem/UserItemBaseTemplate.php:115
+msgid "Never"
 msgstr ""
 
 #: inc/templates/class-lp-template-course.php:319
@@ -7387,23 +7592,23 @@ msgstr ""
 msgid "Not Started"
 msgstr ""
 
-#: inc/user-item/class-lp-user-item-quiz.php:747
+#: inc/user-item/class-lp-user-item-quiz.php:748
 msgid "The question is invalid!"
 msgstr ""
 
-#: inc/user-item/class-lp-user-item-quiz.php:752
+#: inc/user-item/class-lp-user-item-quiz.php:753
 msgid "Cannot check the answer to the question."
 msgstr ""
 
-#: inc/user-item/class-lp-user-item.php:768
+#: inc/user-item/class-lp-user-item.php:687
 msgid "Enrolled"
 msgstr ""
 
-#: inc/user-item/class-lp-user-item.php:771
+#: inc/user-item/class-lp-user-item.php:690
 msgid "Started"
 msgstr ""
 
-#: inc/user-item/class-lp-user-item.php:779
+#: inc/user-item/class-lp-user-item.php:698
 msgid "Not Enrolled"
 msgstr ""
 
@@ -7540,48 +7745,48 @@ msgstr ""
 msgid "Error: Filter the disabled finished courses."
 msgstr ""
 
-#: inc/user/class-lp-user.php:496
+#: inc/user/class-lp-user.php:495
 msgid "You cannot start a quiz in preview mode."
 msgstr ""
 
-#: inc/user/class-lp-user.php:505
-#: inc/user/class-lp-user.php:644
+#: inc/user/class-lp-user.php:502
+#: inc/user/class-lp-user.php:640
 msgid "The course does not exist or does not contain a quiz."
 msgstr ""
 
-#: inc/user/class-lp-user.php:515
+#: inc/user/class-lp-user.php:511
 msgid "You have already finished the course of this quiz"
 msgstr ""
 
-#: inc/user/class-lp-user.php:523
+#: inc/user/class-lp-user.php:519
 msgid "Please enroll in the course before starting the quiz."
 msgstr ""
 
-#: inc/user/class-lp-user.php:532
+#: inc/user/class-lp-user.php:528
 msgid "The user has started or completed the quiz."
 msgstr ""
 
-#: inc/user/class-lp-user.php:541
+#: inc/user/class-lp-user.php:537
 msgid "You have to log in to start the quiz."
 msgstr ""
 
-#: inc/user/class-lp-user.php:596
+#: inc/user/class-lp-user.php:592
 msgid "The user has already finished the course of this quiz."
 msgstr ""
 
-#: inc/user/class-lp-user.php:605
+#: inc/user/class-lp-user.php:601
 msgid "The user has completed the quiz"
 msgstr ""
 
-#: inc/user/class-lp-user.php:659
+#: inc/user/class-lp-user.php:655
 msgid "You can not redo a quiz in a finished course."
 msgstr ""
 
-#: inc/user/class-lp-user.php:672
+#: inc/user/class-lp-user.php:668
 msgid "%1$s::%2$s - The ser has not completed the quiz."
 msgstr ""
 
-#: inc/user/class-lp-user.php:685
+#: inc/user/class-lp-user.php:681
 msgid "%1$s::%2$s - Your quiz can't be retaken."
 msgstr ""
 
@@ -7617,31 +7822,35 @@ msgstr ""
 msgid "Invalid item data."
 msgstr ""
 
-#: inc/user/lp-user-functions.php:1560
+#: inc/user/lp-user-functions.php:1515
+msgid "Course of Quiz not enroll"
+msgstr ""
+
+#: inc/user/lp-user-functions.php:1564
 msgid "Invalid Course ID."
 msgstr ""
 
-#: inc/user/lp-user-functions.php:1580
+#: inc/user/lp-user-functions.php:1584
 msgid "Invalid Quiz"
 msgstr ""
 
-#: inc/user/lp-user-functions.php:1980
+#: inc/user/lp-user-functions.php:1984
 msgid "Facebook Profile"
 msgstr ""
 
-#: inc/user/lp-user-functions.php:1983
+#: inc/user/lp-user-functions.php:1987
 msgid "Twitter Profile"
 msgstr ""
 
-#: inc/user/lp-user-functions.php:1986
+#: inc/user/lp-user-functions.php:1990
 msgid "Google Profile"
 msgstr ""
 
-#: inc/user/lp-user-functions.php:1989
+#: inc/user/lp-user-functions.php:1993
 msgid "Youtube Channel"
 msgstr ""
 
-#: inc/user/lp-user-functions.php:1992
+#: inc/user/lp-user-functions.php:1996
 msgid "Linkedin Profile"
 msgstr ""
 
@@ -7870,11 +8079,23 @@ msgstr ""
 msgid "Email address"
 msgstr ""
 
+#: templates/checkout/account-register.php:28
+#: templates/checkout/account-register.php:29
+#: templates/global/form-register.php:32
+#: templates/global/form-register.php:33
+msgid "Username"
+msgstr ""
+
+#: templates/checkout/account-register.php:36
+#: templates/global/form-register.php:40
+msgid "Confirm Password"
+msgstr ""
+
 #: templates/checkout/account-register.php:52
 msgid "Already had an account?"
 msgstr ""
 
-#: templates/checkout/form.php:22
+#: templates/checkout/form.php:21
 msgid "Please log in to enroll in the course!"
 msgstr ""
 
@@ -7962,11 +8183,11 @@ msgstr ""
 msgid "You have completed this lesson at "
 msgstr ""
 
-#: templates/content-lesson/button-complete.php:47
+#: templates/content-lesson/button-complete.php:49
 msgid "Complete lesson"
 msgstr ""
 
-#: templates/content-lesson/button-complete.php:60
+#: templates/content-lesson/button-complete.php:63
 msgid "Complete"
 msgstr ""
 
@@ -8023,6 +8244,10 @@ msgstr ""
 
 #: templates/global/before-main-content.php:30
 msgid "Please <a href=\\\"%s\\\" target=\\\"_blank\\\">setup</a> it so users can purchase courses."
+msgstr ""
+
+#: templates/global/breadcrumb.php:31
+msgid "Search results for: "
 msgstr ""
 
 #: templates/global/form-login.php:17
@@ -8098,7 +8323,7 @@ msgid "Please <a href=\"%s\">login</a> to see your profile content"
 msgstr ""
 
 #: templates/profile/tabs/courses/course-grid.php:48
-#: templates/profile/tabs/courses/course-list.php:73
+#: templates/profile/tabs/courses/course-list.php:77
 msgid "View more"
 msgstr ""
 
@@ -8208,7 +8433,7 @@ msgid "Start Now"
 msgstr ""
 
 #: templates/single-course/buttons/finish.php:15
-#: templates/single-course/buttons/finish.php:16
+#: templates/single-course/buttons/finish.php:17
 msgid "Finish course"
 msgstr ""
 

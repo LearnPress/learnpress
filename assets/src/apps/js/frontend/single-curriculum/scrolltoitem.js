@@ -30,6 +30,7 @@ const scrollToItemCurrent = {
 				}
 
 				const elItemCurrent = $( '.course-item-' + idItem );
+				elItemCurrent.addClass( 'current' );
 				const offSetTop = elItemCurrent.offset().top;
 				const offset = elItemCurrent.offset().top - elCourseCurriculumn.offset().top +
 					elCourseCurriculumn.scrollTop();

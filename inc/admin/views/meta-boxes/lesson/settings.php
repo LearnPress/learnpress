@@ -56,8 +56,18 @@ class LP_Meta_Box_Lesson extends LP_Meta_Box {
 						$is_old = true;
 					}
 				}
+				?>
+				<style type="text/css"> .lesson-materials{display: flex; flex-direction: row; flex-wrap: nowrap; } .field-material__label{width: 180px; max-width: 180px; min-width: 180px; } .field-material__label label{color: #23282d; font-size: 14px; font-weight: 600; flex: 0 0 auto; } </style>
+				<div class="lesson-materials">
+					<div class="field-material__label">
+						<label><?php echo __( 'Materials', 'learnpress' ); ?></label>
+					</div>
+				<?php
 				$material = new LP_Meta_Box_Material_Fields();
 				$material->output( $post->ID );
+				?>
+				</div>
+				<?php
 				if ( $is_old ) {
 					lp_meta_box_output( $this->metabox( $post->ID ) );
 				}

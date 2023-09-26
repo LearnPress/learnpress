@@ -1481,13 +1481,15 @@ function learn_press_isset_user_item_for_quiz( $quiz_id, $course_id ) {
  * Create new user item prepare for user starts a quiz
  * Update error retry course not work - Nhamdv.
  *
- * @param int  $quiz_id
- * @param int  $user_id
- * @param int  $course_id
+ * @param int $quiz_id
+ * @param int $user_id
+ * @param int $course_id
  * @param bool $wp_error
  *
  * @return array|bool|LP_User_Item|WP_Error
+ * @throws Exception
  * @since 4.0.0
+ * @version 1.0.1
  */
 function learn_press_user_start_quiz( $quiz_id, $user_id = 0, $course_id = 0, $wp_error = false ) {
 	if ( ! $user_id ) {
@@ -1503,30 +1505,32 @@ function learn_press_user_start_quiz( $quiz_id, $user_id = 0, $course_id = 0, $w
 	    WHERE user_item_id = (SELECT max(user_item_id)
 	    FROM {$wpdb->learnpress_user_items}
 	    WHERE user_id = %d AND item_id = %d AND status IN ('enrolled', 'in-progress'))
-	",
+		",
 		$user_id,
 		$course_id
 	);
 
 	$parent = $wpdb->get_row( $query );
+	if ( is_null( $parent ) ) {
+		throw new Exception( __( 'Course of Quiz not enroll', 'learnpress' ) );
+	}
 
 	do_action( 'learn-press/before-user-start-quiz', $quiz_id, $user_id, $course_id );
 
-	$user        = learn_press_get_user( $user_id );
+	/*$user        = learn_press_get_user( $user_id );
 	$course_data = $user->get_course_data( $course_id );
-	$quiz_data   = $course_data->get_item( $quiz_id );
+	$quiz_data   = $course_data->get_item( $quiz_id );*/
 
-	$quiz      = LP_Quiz::get_quiz( $quiz_id );
-	$duration  = $quiz->get_duration();
+	//$quiz      = LP_Quiz::get_quiz( $quiz_id );
+	//$duration  = $quiz->get_duration();
 	$user_quiz = learn_press_create_user_item_for_quiz(
 		array(
-			'user_item_id' => $quiz_data ? $quiz_data->get_user_item_id() : 0,
-			'item_id'      => $quiz->get_id(),
-			'duration'     => $duration ? $duration->get() : 0,
-			'user_id'      => $user_id,
-			'parent_id'    => $parent ? absint( $parent->user_item_id ) : 0,
-			'ref_type'     => $parent ? $parent->type : '',
-			'ref_id'       => $parent ? $parent->id : '',
+			'item_id'   => $quiz_id,
+			//'duration'  => $duration ? $duration->get() : 0,
+			'user_id'   => $user_id,
+			'parent_id' => $parent ? absint( $parent->user_item_id ) : 0,
+			'ref_type'  => $parent ? $parent->type : '',
+			'ref_id'    => $parent ? $parent->id : '',
 		),
 		$wp_error
 	);

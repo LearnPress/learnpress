@@ -94,7 +94,7 @@ if ( ! function_exists( 'learn_press_get_course_tabs' ) ) {
 		}
 		if ( $course->get_downloadable_material() && $is_enrolled_course ) {
 			$defaults['materials'] = array(
-				'title'    => 'Materials',
+				'title'    => esc_html__( 'Materials', 'learnpress' ),
 				'priority' => 45,
 				'callback' => LearnPress::instance()->template( 'course' )->func( 'metarials' ),
 			);
@@ -623,7 +623,7 @@ function learn_press_get_message( $message, $type = 'success' ) {
 /**
  * Set LP message to COOKIE.
  *
- * @param array $message_data
+ * @param array $message_data ['status' => 'success/warning/error', 'content' => 'Message content']
  * @since 4.2.0
  * @version 1.0.0
  * @return void

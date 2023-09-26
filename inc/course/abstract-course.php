@@ -197,6 +197,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 					'block_course_finished'          => $block_course_finished ? $block_course_finished : 'yes',
 					'allow_repurchase'               => get_post_meta( $id, '_lp_allow_course_repurchase', true ),
 					'allow_repurchase_course_option' => get_post_meta( $id, '_lp_course_repurchase_option', true ),
+					'excerpt'                        => $post_object->post_excerpt,
 				)
 			);
 		}
@@ -922,7 +923,8 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		}*/
 
 		/**
-		 * Get total user enrolled or finished
+		 * Get total user enrolled, purchased or finished
+		 *
 		 * @since 4.1.4
 		 * @version 1.0.1
 		 * @return int
@@ -1426,6 +1428,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 				$this
 			);
 		}
+
 		/**
 		 * [get_downloadable_material get all material files of this course and lesson of this course]
 		 * @return [array] [array of material files or empty array]

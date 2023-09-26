@@ -105,6 +105,10 @@ if ( ! class_exists( 'LP_Modal_Search_Items' ) ) {
 				'offset'         => ( $paged - 1 ) * $this->_options['limit'],
 			);
 
+			if ( 'order-items' === $context ) {
+				$context_id = false;
+			}
+
 			$context_id = apply_filters( 'learn-press/modal-search-items/context-id', $context_id, $context );
 			if ( $context_id ) {
 				// Admin can get all items

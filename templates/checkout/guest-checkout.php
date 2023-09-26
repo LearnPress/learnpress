@@ -49,5 +49,5 @@ $is_exists = $checkout->checkout_email_exists();
 			<?php endif; ?>
 		</li>
 	</ul>
-	<input type="hidden" name="learn-press-checkout-nonce" value="<?php echo esc_attr( wp_create_nonce( 'learn-press-guest-checkout' ) ); ?>"/>
+<!--	<input type="hidden" name="learn-press-checkout-nonce" value="--><?php //echo esc_attr( wp_create_nonce( 'learn-press-guest-checkout' ) ); ?><!--"/>-->
 </div>

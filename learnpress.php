@@ -4,10 +4,10 @@
  * Plugin URI: http://thimpress.com/learnpress
  * Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
  * Author: ThimPress
- * Version: 4.2.3.3
+ * Version: 4.2.4-beta-1
  * Author URI: http://thimpress.com
  * Requires at least: 5.8
- * Tested up to: 6.2.2
+ * Tested up to: 6.3.1
  * Requires PHP: 7.0
  * Text Domain: learnpress
  * Domain Path: /languages/
@@ -241,18 +241,18 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/class-lp-multi-language.php';
 
 			// Filter query .
-			require_once 'inc/filters/class-lp-filter.php';
-			require_once 'inc/filters/class-lp-post-type-filter.php';
-			require_once 'inc/filters/class-lp-course-filter.php';
-			require_once 'inc/filters/class-lp-order-filter.php';
-			require_once 'inc/filters/class-lp-session-filter.php';
-			require_once 'inc/filters/class-lp-section-filter.php';
-			require_once 'inc/filters/class-lp-section-items-filter.php';
-			require_once 'inc/filters/class-lp-question-filter.php';
-			require_once 'inc/filters/class-lp-user-items-filter.php';
-			require_once 'inc/filters/class-lp-quiz-questions-filter.php';
-			require_once 'inc/filters/class-lp-question-answers-filter.php';
-			require_once 'inc/filters/class-lp-question-answermeta-filter.php';
+			require_once 'inc/Filters/class-lp-filter.php';
+			require_once 'inc/Filters/class-lp-post-type-filter.php';
+			require_once 'inc/Filters/class-lp-course-filter.php';
+			require_once 'inc/Filters/class-lp-order-filter.php';
+			require_once 'inc/Filters/class-lp-session-filter.php';
+			require_once 'inc/Filters/class-lp-section-filter.php';
+			require_once 'inc/Filters/class-lp-section-items-filter.php';
+			require_once 'inc/Filters/class-lp-question-filter.php';
+			require_once 'inc/Filters/class-lp-user-items-filter.php';
+			require_once 'inc/Filters/class-lp-quiz-questions-filter.php';
+			require_once 'inc/Filters/class-lp-question-answers-filter.php';
+			require_once 'inc/Filters/class-lp-question-answermeta-filter.php';
 
 			// Query Database .
 			require_once 'inc/databases/class-lp-db.php';
@@ -431,11 +431,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			LPRegisterWidget::instance();
 			require_once 'inc/class-lp-widget.php';
 			require_once 'inc/lp-widget-functions.php';
-
-			// For plugin Elementor
-			if ( defined( 'ELEMENTOR_VERSION' ) ) {
-				LPElementor::instance();
-			}
 
 			// TODO: update frontend editor before move to function include_files_admin.
 			require_once 'inc/admin/views/meta-boxes/class-lp-meta-box.php';
@@ -639,6 +634,11 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			if ( defined( 'POLYLANG_VERSION' ) ) {
 				require_once 'inc/ExternalPlugin/Polylang/class-lp-polylang.php';
 				LP_Polylang::instance();
+			}
+
+			// For plugin Elementor
+			if ( defined( 'ELEMENTOR_VERSION' ) ) {
+				LPElementor::instance();
 			}
 
 			$this->init();

@@ -71,9 +71,9 @@ defined( 'ABSPATH' ) || exit();
 		</button>
 
 		<?php
-		if ( is_user_logged_in() ) {
+		/*if ( is_user_logged_in() ) {
 			wp_nonce_field( 'learn-press-user-logged', 'learn-press-checkout-nonce' );
-		}
+		}*/
 
 		do_action( 'learn-press/after-checkout-submit-button' );
 		?>

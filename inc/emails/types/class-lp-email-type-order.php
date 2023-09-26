@@ -83,7 +83,8 @@ class LP_Email_Type_Order extends LP_Email {
 				'{{order_detail_url}}'  => $order->get_view_order_url(),
 				'{{order_number}}'      => $order->get_order_number(),
 				'{{order_key}}'         => $order->get_order_key(),
-			]
+			],
+			$order
 		);
 
 		$variables_common = $this->get_common_variables( $this->email_format );

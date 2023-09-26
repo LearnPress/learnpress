@@ -9,6 +9,7 @@ namespace LearnPress\TemplateHooks\Course;
 
 use LearnPress\Helpers\Template;
 use LP_WP_Filesystem;
+use LP_Settings;
 use Throwable;
 class CourseMaterialTemplate {
 	public static function instance() {
@@ -170,16 +171,22 @@ class CourseMaterialTemplate {
 	public function html_file_link( $material ) {
 		$content = '';
 		try {
-			$html_wrapper   =
+			$html_wrapper    =
 				[
 					'<td class="lp-material-file-link">' => '</td>',
 				];
-			$file_url       = $material->method == 'upload' ? wp_upload_dir()['baseurl'] . $material->file_path : $material->file_path;
+			$file_url        = $material->method == 'upload' ? wp_upload_dir()['baseurl'] . $material->file_path : $material->file_path;
+			$enable_nofollow = LP_Settings::instance()->get_option( 'material_url_nofollow', 'yes' );
+			$rel             = '';
+			if ( $enable_nofollow == 'yes' && $material->method == 'external' ) {
+				$rel = 'nofollow';
+			}
 			$html_file_link = sprintf(
-				'<a href="%s" target="_blank">
+				'<a href="%s" target="_blank" rel="%s">
                     <i class="fas fa-file-download btn-download-material"></i>
                 </a>',
-				$file_url
+				$file_url,
+				$rel
 			);
 			$content        = Template::instance()->nest_elements( $html_wrapper, $html_file_link );
 		} catch ( Throwable $e ) {

@@ -9,10 +9,10 @@ defined( 'ABSPATH' ) or die();
 
 ?>
 <div id="learn-press-reset-user-courses" class="card">
-	<h2><?php _e( 'Reset user progress', 'learnpress' ); ?></h2>
+	<h2><?php _e( 'Reset User Progress', 'learnpress' ); ?></h2>
 	<div class="description">
-		<p><?php _e( 'This action will reset progress of all courses that an user has enrolled.', 'learnpress' ); ?></p>
-		<p><?php _e( 'Search results only show users have course data.', 'learnpress' ); ?></p>
+		<p><?php _e( 'This action will reset all course progresses of users.', 'learnpress' ); ?></p>
+		<p><?php _e( 'Search results only show if users have course data.', 'learnpress' ); ?></p>
 	</div>
 	<p>
 		<input class="wide-fat" type="text" name="s" @keyup="updateSearch($event)"
@@ -60,7 +60,7 @@ defined( 'ABSPATH' ) or die();
 		</table>
 	</template>
 	<template v-else>
-		<p v-if="s.length < 3"><?php _e( 'Please enter at least 3 characters to searching users.', 'learnpress' ); ?></p>
+		<p v-if="s.length < 3"><?php _e( 'Please enter at least 3 characters.', 'learnpress' ); ?></p>
 		<p v-else-if="status=='result'"><?php _e( 'No user found.', 'learnpress' ); ?></p>
 		<p v-else-if="status=='searching'"><?php _e( 'Searching user...', 'learnpress' ); ?></p>
 	</template>

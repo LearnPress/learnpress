@@ -1,4 +1,7 @@
 <?php
+
+use LP\Firebase\JWT\JWT;
+
 /**
  * REST API: LP_Jwt_Public
  *
@@ -6,8 +9,6 @@
  * @since 1.0.0
  * @author Nhamdv <daonham95@gmail.com>
  */
-
-use \Firebase\JWT\JWT;
 
 class LP_Jwt_Public {
 	private $name;

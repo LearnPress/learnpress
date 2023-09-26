@@ -17,21 +17,9 @@ const Status = () => {
 		}
 
 		const $sc = $pc.find( '.content-item-scrollable:eq(1)' );
-		const $ciw = $pc.find( '.content-item-wrap' );
 		const $qs = $pc.find( '.quiz-status' );
 		const pcTop = $qs.offset().top - 92;
-
 		let isFixed = false;
-		let marginLeft = '-' + $ciw.css( 'margin-left' );
-
-		$( window ).on( 'resize.refresh-quiz-stauts-bar', debounce( function() {
-			marginLeft = '-' + $ciw.css( 'margin-left' );
-
-			$qs.css( {
-				'margin-left': marginLeft,
-				'margin-right': marginLeft,
-			} );
-		}, 100 ) ).trigger( 'resize.refresh-quiz-stauts-bar' );
 
 		/**
 		 * Check when status bar is stopped in the top

@@ -67,6 +67,7 @@ class LP_User_Factory {
 
 	/**
 	 * Update lp_user_items has Order
+	 * Only handle when change status LP Order from Completed to another status
 	 *
 	 * @param LP_Order $order
 	 * @param string $old_status
@@ -76,7 +77,7 @@ class LP_User_Factory {
 	 * @author Nhamdv <email@email.com>
 	 * @editor tungnx
 	 * @modify 4.1.4
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	protected static function _update_user_item_order_pending( $order, $old_status, $new_status ) {
 		$items            = $order->get_items();
@@ -84,6 +85,10 @@ class LP_User_Factory {
 		$lp_user_items_db = LP_User_Items_DB::getInstance();
 
 		if ( ! $items ) {
+			return;
+		}
+
+		if ( $old_status !== LP_ORDER_COMPLETED ) {
 			return;
 		}
 
@@ -110,6 +115,7 @@ class LP_User_Factory {
 
 	/**
 	 * Enroll course if Order completed
+	 * Only Order completed, will be added user_item and deleted user_items old
 	 *
 	 * @param LP_Order $order
 	 * @param string $old_status
@@ -122,12 +128,10 @@ class LP_User_Factory {
 	protected static function _update_user_item_order_completed( LP_Order $order, string $old_status, string $new_status ) {
 		$lp_order_db = LP_Order_DB::getInstance();
 		$items       = $order->get_items();
-
+		$created_via = $order->get_created_via();
 		if ( ! $items ) {
 			return;
 		}
-
-		$created_via = $order->get_created_via();
 
 		foreach ( $order->get_users() as $user_id ) {
 			$user = learn_press_get_user( $user_id );

@@ -28,7 +28,7 @@ if ( $completed ) :
 		return;
 	}
 	?>
-	<div>
+	<div class="learn-press-message success">
 		<?php
 		echo sprintf(
 			'%s %s',

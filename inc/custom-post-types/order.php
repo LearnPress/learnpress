@@ -4,7 +4,7 @@
  *
  * @author  ThimPress
  * @package LearnPress/Classes
- * @version 1.0.1
+ * @version 1.0.2
  */
 
 if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
@@ -23,25 +23,15 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		/**
 		 * LP_Order_Post_Type constructor.
 		 *
-		 * @param $post_type
 		 */
 		public function __construct() {
 			add_action( 'admin_init', array( $this, 'register_post_statues' ) );
 			add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ) );
 			add_action( 'admin_init', array( $this, 'remove_box' ) );
 			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
-			// add_action( 'transition_post_status', array( $this, 'restore_order' ), 1, 3 );
 			add_filter( 'wp_untrash_post_status', array( $this, 'restore_status_order' ), 11, 3 );
-			// add_action( 'save_post', array( $this, 'recount_enrolled_users' ), 11, 3 );
-
 			add_filter( 'admin_footer', array( $this, 'admin_footer' ) );
-
-			// $this->add_map_method( 'save', 'save_order' );
-
-			// Hungkv => Fix error child order not show in trash
-			// add_filter( 'wp_count_posts', array( $this, 'filter_count_posts' ), 100, 3 );
 			add_filter( 'views_edit-lp_order', array( $this, 'filter_views' ) );
-			// add_filter( 'posts_where_paged', array( $this, 'filter_orders' ) );
 			// LP Order title
 
 			// Override title of LP Order on Admin
@@ -64,91 +54,6 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			}
 
 			parent::__construct();
-		}
-
-		/**
-		 * Re-count enrolled users to the courses in current order
-		 * is being changed status
-		 *
-		 * @param int $post_id
-		 * @since 3.0.10
-		 * @editor tungnx
-		 * @reason not use
-		 */
-		/*
-		public function recount_enrolled_users( int $post_id ) {
-			$order = learn_press_get_order( $post_id );
-			$curd  = new LP_Course_CURD();
-			$items = $order->get_items();
-
-			if ( $items ) {
-				foreach ( $items as $item ) {
-					if ( ! isset( $item['course_id'] ) ) {
-						continue;
-					}
-
-					$course_id = $item['course_id'];
-					LP_Repair_Database::instance()->sync_course_orders( $course_id );
-					$count = $curd->count_enrolled_users_by_orders( $course_id );
-					update_post_meta( $course_id, 'count_enrolled_users', $count );
-				}
-			}
-		}*/
-
-		/**
-		 * Filter the counts of posts when wp counting orders by statuses.
-		 * Maybe there are some orders are created for multiple users,
-		 * and each user in main order will be assigned to a separated
-		 * order with post_parent is ID of main order. And, we do not
-		 * want to show these orders in the list.
-		 *
-		 * @param array  $counts
-		 * @param string $type
-		 * @param string $perm
-		 *
-		 * @return array|object
-		 */
-		public function filter_count_posts( $counts, $type, $perm ) {
-			if ( LP_ORDER_CPT === $type ) {
-				$cache_key = 'lp-' . _count_posts_cache_key( $type, $perm );
-
-				$counts = LP_Object_Cache::get( $cache_key, 'counts' );
-
-				if ( false !== $counts ) {
-					return $counts;
-				}
-
-				global $wpdb;
-				$query = "
-				        SELECT post_status, COUNT( ID ) AS num_posts
-                        FROM {$wpdb->posts}
-                        WHERE post_type = %s
-                        AND post_parent = %d
-				    ";
-
-				if ( 'readable' == $perm && is_user_logged_in() ) {
-					$post_type_object = get_post_type_object( $type );
-					if ( ! current_user_can( $post_type_object->cap->read_private_posts ) ) {
-						$query .= $wpdb->prepare(
-							" AND (post_status != 'private' OR ( post_author = %d AND post_status = 'private' ))",
-							get_current_user_id()
-						);
-					}
-				}
-				$query  .= ' GROUP BY post_status';
-				$query   = $wpdb->prepare( $query, $type, 0 );
-				$results = (array) $wpdb->get_results( $query, ARRAY_A );
-				$counts  = array_fill_keys( get_post_stati(), 0 );
-
-				foreach ( $results as $row ) {
-					$counts[ $row['post_status'] ] = $row['num_posts'];
-				}
-
-				$counts = (object) $counts;
-				LP_Object_Cache::set( $cache_key, $counts, 'counts' );
-			}
-
-			return $counts;
 		}
 
 		/**
@@ -203,74 +108,6 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		/**
 		 * Restore user course item when the order is stored (usually from trash).
 		 *
-		 * @param string $new
-		 * @param string $old
-		 * @param WP_Post $post
-		 *
-		 * @editor tungnx
-		 * @modify 4.1.3 - commnet - not use
-		 */
-		/*
-		public function restore_order( $new, $old, $post ) {
-
-			if ( ! ( 'trash' === $old ) ) {
-				return;
-			}
-
-			$order = learn_press_get_order( $post->ID );
-			if ( ! $order ) {
-				return;
-			}
-
-			$user_item_data = get_post_meta( $post->ID, '_lp_user_data', true );
-			if ( ! $user_item_data ) {
-				return;
-			}
-
-			$items = $order->get_items();
-			if ( ! $items ) {
-				return;
-			}
-
-			$users = $order->get_users();
-			if ( ! $users ) {
-				return;
-			}
-
-			// Restore child order if current order is for multi users
-			$child_orders = $order->get_child_orders();
-			if ( $order->is_multi_users() && $child_orders ) {
-				foreach ( $child_orders as $child_order ) {
-					wp_untrash_post( $child_order );
-				}
-			}
-
-			$user_curd = new LP_User_CURD();
-
-			foreach ( $user_item_data as $user_item_id => $data ) {
-				$item_course = $user_curd->get_user_item_by_id( $user_item_id );
-
-				if ( ! $item_course ) {
-					continue;
-				}
-
-				$order_status = $order->get_order_status();
-				$last_status  = ( $order_status != '' && $order_status != 'completed' ) ? 'pending' : 'in-progress';
-				$user_curd->update_user_item_status( $user_item_id, $last_status );
-				// Restore data
-				$user_curd->update_user_item_by_id(
-					$user_item_id,
-					$data
-				);
-			}
-
-			// Delete data
-			delete_post_meta( $post->ID, '_lp_user_data' );
-		}*/
-
-		/**
-		 * Restore user course item when the order is stored (usually from trash).
-		 *
 		 * @param string $new_status
 		 * @param int    $post_id
 		 * @param string $previous_status
@@ -283,64 +120,6 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 
 			return $previous_status;
 		}
-
-		/**
-		 * @param LP_Order $order
-		 * @param array $user_ids
-		 * @param bool $trigger_action
-		 *
-		 * @throws Exception
-		 * @editor tungnx
-		 * @reason comment - not use
-		 */
-		/*
-		protected function _update_child( $order, $user_ids, $trigger_action = false ) {
-			$new_orders   = array();
-			$child_orders = $order->get_child_orders( true );
-
-			if ( $child_orders ) {
-				foreach ( $child_orders as $child_id ) {
-					$child_order         = learn_press_get_order( $child_id );
-					$child_order_user_id = $child_order->get_user( 'id' );
-
-					if ( ! in_array( $child_order_user_id, $user_ids ) ) {
-						wp_delete_post( $child_id );
-						continue;
-					}
-
-					$order->cln_items( $child_order->get_id() );
-					$new_orders[ $child_order_user_id ] = $child_order;
-				}
-			}
-
-			foreach ( $user_ids as $uid ) {
-				if ( empty( $new_orders[ $uid ] ) ) {
-					$new_order          = $order->cln();
-					$new_orders[ $uid ] = $new_order;
-				} else {
-					$new_order = $new_orders[ $uid ];
-				}
-
-				$old_status = get_post_status( $new_order->get_id() );
-				$new_order->set_order_date( $order->get_order_date( 'edit' ) );
-				$new_order->set_parent_id( $order->get_id() );
-				$new_order->set_user_id( $uid );
-				$new_order->set_total( $order->get_total() );
-				$new_order->set_subtotal( $order->get_subtotal() );
-
-				$new_order->set_status( learn_press_get_request( 'order-status' ) );
-				$new_order->save();
-				$new_status = get_post_status( $new_order->get_id() );
-
-				if ( ( $new_status == $old_status ) && $trigger_action ) {
-					$status     = str_replace( 'lp-', '', $new_status );
-					$old_status = str_replace( 'lp-', '', $new_status );
-					do_action( 'learn-press/order/status-' . $status, $new_order->get_id(), $status );
-					do_action( 'learn-press/order/status-' . $old_status . '-to-' . $status, $new_order->get_id() );
-					do_action( 'learn-press/order/status-changed', $new_order->get_id(), $status, $old_status );
-				}
-			}
-		}*/
 
 		/**
 		 * Save order post.
@@ -413,7 +192,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		public function posts_where_paged( $where ) {
 			global $wpdb, $wp_query;
 			if ( is_admin() && $this->is_page_list_posts_on_backend() &&
-				 ( ! isset( $wp_query->query['post_status'] ) || ! $wp_query->query['post_status'] ) ) {
+				( ! isset( $wp_query->query['post_status'] ) || ! $wp_query->query['post_status'] ) ) {
 				$statuses = array_keys( LP_Order::get_order_statuses() );
 				$search   = "{$wpdb->posts}.post_status = 'publish' ";
 				$tmps     = array( $search );
@@ -857,30 +636,6 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			remove_meta_box( 'commentstatusdiv', LP_ORDER_CPT, 'normal' );
 		}
 
-		// /**
-		// * Order details view.
-		// *
-		// * @param WP_Post $post
-		// */
-		// public static function order_details( $post ) {
-		// learn_press_admin_view( 'meta-boxes/order/details.php', array( 'order' => new LP_Order( $post ) ) );
-		// }
-
-		// /**
-		// * Order actions view.
-		// *
-		// * @param WP_Post $post
-		// */
-		// public static function order_actions( $post ) {
-		// learn_press_admin_view( 'meta-boxes/order/actions.php', array( 'order' => new LP_Order( $post ) ) );
-		// }
-
-		public function preparing_to_trash_order( $post_id ) {
-			if ( LP_ORDER_CPT != learn_press_get_post_type( $post_id ) ) {
-				return;
-			}
-		}
-
 		/**
 		 * Register new post status for order
 		 *
@@ -901,20 +656,6 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 
 			return self::$_instance;
 		}
-
-		/**
-		 * Order export view.
-		 *
-		 * @param WP_Post $post
-		 *
-		 * @throws Exception
-		 * @since 3.2.7.8
-		 *
-		 * @author hungkv
-		 */
-		// public static function order_exports( $post ) {
-		// learn_press_admin_view( 'meta-boxes/order/exports-invoice.php', array( 'order' => new LP_Order( $post ) ) );
-		// }
 
 		/**
 		 * Before post deleted
@@ -962,12 +703,6 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				$lp_order_db->delete_order_item( $filter_delete );
 				$lp_order_db->delete_order_itemmeta( $filter_delete );
 				// End
-
-				// $this->remove_user_items_by_order_id( $order_id );
-
-				if ( ! empty( $data['child'] ) ) {
-					// $this->remove_child_orders( $data['child'] );
-				}
 			} catch ( Throwable $e ) {
 				error_log( $e->getMessage() . '>' . __FILE__ );
 			}
@@ -1018,10 +753,4 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 	// end LP_Order_Post_Type
 
 	$order_post_type = LP_Order_Post_Type::instance();
-
-	// Todo: Nhamdv see to rewrite
-	// $order_post_type
-	// ->add_meta_box( 'order_details', esc_html__( 'Order Details', 'learnpress' ), 'order_details', 'normal', 'high' )
-	// ->add_meta_box( 'submitdiv', esc_html__( 'Order Actions', 'learnpress' ), 'order_actions', 'side', 'high' )
-	// ->add_meta_box( 'order_export', esc_html__( 'Order Exports', 'learnpress' ), 'order_exports', 'side', 'high' );
 }

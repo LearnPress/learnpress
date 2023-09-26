@@ -10,12 +10,7 @@ namespace LearnPress\TemplateHooks\Course;
 
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
-use LP_Assets;
-use LP_Page_Controller;
-use LP_User;
-use LP_WP_Filesystem;
 use Throwable;
-use WP_Query;
 
 class ListCoursesTemplate {
 	use Singleton;
@@ -97,6 +92,139 @@ class ListCoursesTemplate {
 		);
 
 		return Template::instance()->nest_elements( $html_wrapper, $pagination );
+	}
+
+	/**
+	 * Pagination
+	 *
+	 * @param array $data
+	 *
+	 * @return string
+	 * @since 4.2.3.3
+	 * @version 1.0.0
+	 */
+	public function html_pagination( array $data = [] ): string {
+		if ( empty( $data['total_pages'] ) || $data['total_pages'] <= 1 ) {
+			return '';
+		}
+
+		$pagination_type = $data['type'] ?? 'number';
+		switch ( $pagination_type ) {
+			case 'load-more':
+				if ( $data['paged'] >= $data['total_pages'] ) {
+					return '';
+				}
+				return $this->html_pagination_load_more();
+			case 'infinite':
+				if ( $data['paged'] >= $data['total_pages'] ) {
+					return '';
+				}
+				return $this->html_pagination_infinite();
+			default:
+				return $this->html_pagination_number( $data );
+		}
+	}
+
+	/**
+	 * Pagination
+	 *
+	 * @param array $data
+	 *
+	 * @return string
+	 * @since 4.2.3.3
+	 * @version 1.0.0
+	 */
+	public function html_courses_page_result( array $data = [] ): string {
+		$html = '';
+
+		try {
+			$total_rows      = $data['total_rows'] ?? 0;
+			$paged           = $data['paged'] ?? 1;
+			$course_per_page = $data['courses_per_page'] ?? 8;
+
+			$from = 1 + ( $paged - 1 ) * $course_per_page;
+			$to   = ( $paged * $course_per_page > $total_rows ) ? $total_rows : $paged * $course_per_page;
+
+			$content = '';
+			if ( 0 === $total_rows ) {
+
+			} elseif ( 1 === $total_rows ) {
+				$content = esc_html__( 'Showing only one result', 'learnpress' );
+			} else {
+				if ( $from == $to ) {
+					$content = sprintf( esc_html__( 'Showing last course of %s results', 'learnpress' ), $total_rows );
+				} else {
+					$from_to = $from . '-' . $to;
+					$content = sprintf( esc_html__( 'Showing %1$s of %2$s results', 'learnpress' ), $from_to, $total_rows );
+				}
+			}
+
+			$html = '<span class="courses-page-result">' . $content . '</span>';
+		} catch ( Throwable $e ) {
+			error_log( $e->getMessage() );
+		}
+
+		return $html;
+	}
+
+	/**
+	 * Layouts type
+	 *
+	 * @param array $data
+	 *
+	 * @return string
+	 * @since 4.2.3.3
+	 * @version 1.0.0
+	 */
+	public function html_layout_type( array $data = [] ): string {
+		$html_wrapper = [
+			'<div class="courses-layouts-display">' => '</div>',
+		];
+
+		$ico_grid_default = wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-grid.svg' );
+		$ico_list_default = wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-list.svg' );
+		$layouts          = [
+			'list' => $data['courses_ico_list'] ?? $ico_list_default,
+			'grid' => $data['courses_ico_grid'] ?? $ico_grid_default,
+		];
+
+		$content = '<ul class="courses-layouts-display-list">';
+		foreach ( $layouts as $k => $v ) {
+			$active   = ( $data['courses_layout_default'] ?? '' ) === $k ? 'active' : '';
+			$content .= '<li class="courses-layout ' . $active . '" data-layout="' . $k . '">' . $v . '</li>';
+		}
+		$content .= '</ul>';
+
+		return Template::instance()->nest_elements( $html_wrapper, $content );
+	}
+
+	/**
+	 * Order by
+	 *
+	 * @param string $default
+	 *
+	 * @return string
+	 */
+	public function html_order_by( string $default = 'post_date' ): string {
+		$html_wrapper = [
+			'<div class="courses-order-by-wrapper">' => '</div>',
+		];
+
+		$values = [
+			'post_date'  => __( 'Newly published', 'learnpress' ),
+			'post_title' => __( 'Sort by Title', 'learnpress' ),
+			'price_low'  => __( 'Price low to high', 'learnpress' ),
+			'price'      => __( 'Price high to low', 'learnpress' ),
+			'popular'    => __( 'Popular', 'learnpress' ),
+		];
+
+		$content = '<select name="order_by" class="courses-order-by">';
+		foreach ( $values as $k => $v ) {
+			$content .= '<option value="' . $k . '" ' . selected( $default, $k, false ) . '>' . $v . '</option>';
+		}
+		$content .= '</select>';
+
+		return Template::instance()->nest_elements( $html_wrapper, $content );
 	}
 
 	/**
@@ -211,5 +339,73 @@ class ListCoursesTemplate {
 		} catch ( Throwable $e ) {
 			error_log( $e->getMessage() );
 		}
+	}
+
+	/**
+	 * Render string to data content
+	 *
+	 * @param array $data
+	 * @param string $data_content
+	 *
+	 * @return string
+	 */
+	public function render_data( array $data, string $data_content ): string {
+		return str_replace(
+			[
+				'{{courses_order_by}}',
+				'{{courses_layout_type}}',
+				'{{courses_pagination}}',
+				'{{courses_items}}',
+				'{{courses_page_result}}',
+			],
+			[
+				$this->html_order_by( $data['order_by'] ?? '' ),
+				$this->html_layout_type( $data ),
+				$this->html_pagination( $data['pagination'] ?? [] ),
+				$this->html_courses_items( $data ),
+				$this->html_courses_page_result( $data ),
+			],
+			$data_content
+		);
+	}
+
+	/**
+	 * Render html list courses
+	 *
+	 * @param array $data
+	 *
+	 * @return false|string
+	 */
+	public function html_courses_items( array $data ) {
+		$courses_item_layout = $data['courses_item_layout'] ?? '';
+		$layout_default      = $data['courses_layout_default'] ?? 'grid';
+		$courses             = $data['courses_list'] ?? [];
+		$ul_classes          = $data['courses_ul_classes'] ?? [];
+		$ul_classes[]        = $layout_default;
+		$ul_classes_str      = implode( ' ', $ul_classes );
+
+		// No courses found
+		if ( empty( $courses ) ) {
+			return '<div class="courses-not-found"><span>' . esc_html__( 'No courses found', 'learnpress' ) . '</span></div>';
+		}
+
+		// Start show list courses
+		ob_start();
+		$singleCourseTemplate = SingleCourseTemplate::instance();
+		echo '<ul class="' . esc_attr( $ul_classes_str ) . '">';
+		foreach ( $courses as $courseObj ) {
+			$course_id = $courseObj->ID;
+			$course    = learn_press_get_course( $course_id );
+			if ( ! $course ) {
+				continue;
+			}
+			?>
+			<li class="item-course">
+				<?php echo $singleCourseTemplate->render_data( $course, html_entity_decode( $courses_item_layout ) ); ?>
+			</li>
+			<?php
+		}
+		echo '</ul>';
+		return ob_get_clean();
 	}
 }

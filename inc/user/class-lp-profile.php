@@ -857,17 +857,6 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		}
 
 		/**
-		 * @param mixed $args
-		 *
-		 * @return array|LP_Query_List_Table
-		 * @deprecated 4.2.2.4
-		 */
-		public function query_quizzes( $args = '' ) {
-			_deprecated_function( __METHOD__, '4.2.2.4' );
-			return $this->_curd->query_quizzes( $this->get_user_data( 'id' ), $args );
-		}
-
-		/**
 		 * Get the order is viewing details.
 		 */
 		public function get_view_order() {

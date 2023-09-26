@@ -115,10 +115,10 @@ const ResetCourse = () => {
 
 	return (
 		<>
-			<h2>{ __( 'Reset course progress', 'learnpress' ) }</h2>
+			<h2>{ __( 'Reset Course Progress', 'learnpress' ) }</h2>
 			<div className="description">
-				<p>{ __( 'This action will reset progress of a course for all users have enrolled.', 'learnpress' ) }</p>
-				<p>{ __( 'Search results only show course have user data.', 'learnpress' ) }</p>
+				<p>{ __( 'This action will reset course progress of all users who have enrolled.', 'learnpress' ) }</p>
+				<p>{ __( 'Search results only show if courses have user data.', 'learnpress' ) }</p>
 				<div>
 					<TextControl
 						placeholder={ __( 'Search course by name', 'learnpress' ) }

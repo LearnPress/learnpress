@@ -8,6 +8,9 @@
  * @version 3.0.1
  */
 
+use LearnPress\Helpers\Config;
+use LearnPress\Helpers\Singleton;
+
 /**
  * Prevent loading this file directly
  */
@@ -18,6 +21,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 	 * Class LP_Gateway_Paypal.
 	 */
 	class LP_Gateway_Paypal extends LP_Gateway_Abstract {
+		use Singleton;
 		/**
 		 * @var string
 		 */
@@ -79,11 +83,6 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		protected $settings = null;
 
 		/**
-		 * @var array
-		 */
-		//protected $line_items = array();
-
-		/**
 		 * LP_Gateway_Paypal constructor.
 		 */
 		public function __construct() {
@@ -91,7 +90,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 
 			$this->method_title       = esc_html__( 'PayPal', 'learnpress' );
 			$this->method_description = esc_html__( 'Make a payment via Paypal.', 'learnpress' );
-			$this->icon               = '';
+			$this->icon               = LP_PLUGIN_URL . 'assets/images/paypal-logo-preview.png';
 
 			$this->title       = esc_html__( 'PayPal', 'learnpress' );
 			$this->description = esc_html__( 'Pay with PayPal', 'learnpress' );
@@ -136,10 +135,6 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 * @return bool
 		 */
 		public function paypal_available( bool $default, $payment ): bool {
-			if ( ! $this->is_enabled() ) {
-				return false;
-			}
-
 			// Empty live email and Sandbox mode also disabled
 			if ( $this->settings->get( 'paypal_sandbox' ) != 'yes' && ! $this->settings->get( 'paypal_email' ) ) {
 				return false;
@@ -183,46 +178,6 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 
 			return false;
 		}
-
-		/**
-		 * Handle a completed payment
-		 *
-		 * @param LP_Order $order
-		 * @param array    $request
-		 */
-		/*protected function payment_status_completed( $order, $request ) {
-			if ( $order->has_status( 'completed' ) ) {
-				exit;
-			}
-
-			if ( 'completed' === $request['payment_status'] ) {
-				$this->payment_complete( $order, ( ! empty( $request['txn_id'] ) ? $request['txn_id'] : '' ), __( 'IPN payment completed', 'learnpress' ) );
-				// save paypal fee
-				if ( ! empty( $request['mc_fee'] ) ) {
-					update_post_meta( $order->get_id(), '_transaction_fee', $request['mc_fee'] );
-				}
-			} else {
-			}
-		}*/
-
-		/**
-		 * Handle a pending payment
-		 *
-		 * @param LP_Order
-		 * @param Paypal IPN params
-		 */
-		/*protected function payment_status_pending( $order, $request ) {
-			$this->payment_status_completed( $order, $request );
-		}*/
-
-		/**
-		 * @param LP_Order
-		 * @param string   $txn_id
-		 * @param string   $note - not use
-		 */
-		/*public function payment_complete( $order, $txn_id = '', $note = '' ) {
-			$order->payment_complete( $txn_id );
-		}*/
 
 		/**
 		 * Handle payment.
@@ -298,55 +253,8 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 *
 		 * @return array
 		 */
-		public function get_settings() {
-			return apply_filters(
-				'learn-press/gateway-payment/paypal/settings',
-				array(
-					array(
-						'type' => 'title',
-					),
-					array(
-						'title'   => esc_html__( 'Enable/Disable', 'learnpress' ),
-						'id'      => '[enable]',
-						'default' => 'no',
-						'type'    => 'checkbox',
-						'desc'    => esc_html__( 'Enable PayPal Standard', 'learnpress' ),
-					),
-					array(
-						'title' => esc_html__( 'PayPal email', 'learnpress' ),
-						'id'    => '[paypal_email]',
-						'type'  => 'text',
-					),
-					array(
-						'title'   => esc_html__( 'Sandbox mode', 'learnpress' ),
-						'id'      => '[paypal_sandbox]',
-						'default' => 'no',
-						'type'    => 'checkbox',
-						'desc'    => esc_html__( 'Enable PayPal sandbox', 'learnpress' ),
-					),
-					array(
-						'title' => esc_html__( 'Sandbox email address', 'learnpress' ),
-						'id'    => '[paypal_sandbox_email]',
-						'type'  => 'text',
-					),
-					array(
-						'type' => 'sectionend',
-					),
-				)
-			);
-		}
-
-		/**
-		 * Icon for the gateway
-		 *
-		 * @return string
-		 */
-		public function get_icon() {
-			if ( empty( $this->icon ) ) {
-				$this->icon = LearnPress::instance()->plugin_url( 'assets/images/paypal-logo-preview.png' );
-			}
-
-			return parent::get_icon();
+		public function get_settings(): array {
+			return Config::instance()->get( $this->id, 'settings/gateway' );
 		}
 	}
 }

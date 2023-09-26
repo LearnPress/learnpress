@@ -8,6 +8,18 @@ class LP_Datetime {
 	 * @var string $format.
 	 */
 	public static $format = 'Y-m-d H:i:s';
+	/**
+	 * Format date by config WP.
+	 */
+	const I18N_FORMAT = 'i18n';
+	/**
+	 * Format date time by config WP.
+	 */
+	const I18N_FORMAT_HAS_TIME = 'i18n_has_time';
+	/**
+	 * Format date time Human.
+	 */
+	const HUMAN_FORMAT = 'human';
 
 	/**
 	 * @var object
@@ -51,10 +63,6 @@ class LP_Datetime {
 		if ( empty( $this->raw_date ) ) {
 			$this->raw_date = current_time( 'mysql', 1 );
 		}
-
-		//date_default_timezone_set( 'UTC' );
-		//parent::__construct( $this->raw_date );
-		//$m = $this->format( 'm' );
 	}
 
 	/**
@@ -105,71 +113,6 @@ class LP_Datetime {
 	}
 
 	/**
-	 * @param string $name The name of the property.
-	 *
-	 * @return  mixed
-	 * @deprecated 4.1.7.3
-	 */
-	public function __get( $name ) {
-		_deprecated_function( __METHOD__, '4.1.7.3' );
-		/*$value = null;
-
-		switch ( $name ) {
-			case 'daysinmonth':
-				$value = $this->format( 't', true );
-				break;
-
-			case 'dayofweek':
-				$value = $this->format( 'N', true );
-				break;
-
-			case 'dayofyear':
-				$value = $this->format( 'z', true );
-				break;
-
-			case 'isleapyear':
-				$value = (bool) $this->format( 'L', true );
-				break;
-
-			case 'day':
-				$value = $this->format( 'd', true );
-				break;
-
-			case 'hour':
-				$value = $this->format( 'H', true );
-				break;
-
-			case 'minute':
-				$value = $this->format( 'i', true );
-				break;
-
-			case 'second':
-				$value = $this->format( 's', true );
-				break;
-
-			case 'month':
-				$value = $this->format( 'm', true );
-				break;
-
-			case 'ordinal':
-				$value = $this->format( 'S', true );
-				break;
-
-			case 'week':
-				$value = $this->format( 'W', true );
-				break;
-
-			case 'year':
-				$value = $this->format( 'Y', true );
-				break;
-
-			default:
-		}
-
-		return $value;*/
-	}
-
-	/**
 	 * @return  string  The date as a formatted string.
 	 */
 	public function __toString() {
@@ -198,26 +141,28 @@ class LP_Datetime {
 		}
 
 		switch ( $format ) {
-			case 'i18n':
-				$date_str = learn_press_date_i18n( $this->getTimestamp() );
+			case 'i18n': // Display format Date by Timezone of WP.
+				$time_stamp              = $this->getTimestamp(); // UTC+0 (GMT)
+				$time_stamp_by_time_zone = $time_stamp + get_option( 'gmt_offset' ) * HOUR_IN_SECONDS;
+				$date_str                = learn_press_date_i18n( $time_stamp_by_time_zone );
 				break;
-			case 'i18n_has_time':
-				$date_time_format_wp = apply_filters(
+			case 'i18n_has_time': // Display format Date Time by Timezone of WP.
+				$date_time_format_wp     = apply_filters(
 					'learn-press/datetime/format/i18n_has_time',
 					get_option( 'date_format' ) . ' ' . get_option( 'time_format' )
 				);
-				$date_str            = apply_filters(
+				$time_stamp              = $this->getTimestamp(); // UTC+0 (GMT)
+				$time_stamp_by_time_zone = $time_stamp + get_option( 'gmt_offset' ) * HOUR_IN_SECONDS;
+				$date_str                = apply_filters(
 					'learn-press/datetime/date/i18n_has_time',
 					sprintf(
 						'%s',
-						gmdate( $date_time_format_wp, $this->getTimestamp() )
+						gmdate( $date_time_format_wp, $time_stamp_by_time_zone )
 					),
-					$this->getTimestamp()
+					$time_stamp,
+					$time_stamp_by_time_zone
 				);
 				break;
-			/*case 'timestamp':
-				$date_str = $this->getTimestamp();
-				break;*/
 			case 'human':
 				$time      = $this->getTimestamp();
 				$time_diff = time() - $time;
@@ -456,5 +401,48 @@ class LP_Datetime {
 		}
 
 		return date( 'Y-m-d H:i:s', $timestamp + $seconds );*/
+	}
+
+	/**
+	 * Get string plural duration.
+	 *
+	 * @param float $duration_number
+	 * @param string $duration_type
+	 *
+	 * @return string
+	 * @version 1.0.0
+	 * @since 4.2.3.5
+	 */
+	public static function get_string_plural_duration( float $duration_number, string $duration_type = '' ): string {
+		switch ( strtolower( $duration_type ) ) {
+			case 'minute':
+				$duration_str = sprintf(
+					_n( '%s Minute', '%s Minutes', $duration_number, 'learnpress' ),
+					$duration_number
+				);
+				break;
+			case 'hour':
+				$duration_str = sprintf(
+					_n( '%s Hour', '%s Hours', $duration_number, 'learnpress' ),
+					$duration_number
+				);
+				break;
+			case 'day':
+				$duration_str = sprintf(
+					_n( '%s Day', '%s Days', $duration_number, 'learnpress' ),
+					$duration_number
+				);
+				break;
+			case 'week':
+				$duration_str = sprintf(
+					_n( '%s Week', '%s Weeks', $duration_number, 'learnpress' ),
+					$duration_number
+				);
+				break;
+			default:
+				$duration_str = $duration_number;
+		}
+
+		return $duration_str;
 	}
 }

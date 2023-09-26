@@ -157,6 +157,8 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		 * @deprecated 4.2.3
 		 */
 		public function get_class( $more = '', $user_id = 0 ) {
+			_deprecated_function( __METHOD__, '4.2.3', 'LP_Course_Item::get_class_v2' );
+			return;
 			$course_id = get_the_ID();
 
 			if ( empty( $GLOBALS['get_class'] ) ) {

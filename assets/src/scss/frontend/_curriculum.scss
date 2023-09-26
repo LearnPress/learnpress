@@ -114,7 +114,11 @@
 			color: #666;
 			font-style: italic;
 		}
-
+		.instructor-social{
+			display: flex;
+			gap: 16px;
+			margin-bottom: 12px;
+		}
 		.author-socials {
 			display: grid;
 			grid-template-columns: repeat(4, 33px);
@@ -648,7 +652,7 @@ ul.learn-press-nav-tabs {
 
 		.section-item-link {
 			display: flex;
-			align-items: center;
+			align-items: flex-start;
 			justify-content: space-between;
 			width: 100%;
 			padding: 16px 0;

@@ -61,6 +61,10 @@ msgid ""
 "render content of list courses. Should be not remove it"
 msgstr ""
 
+#: assets/src/apps/js/blocks/category.js:8
+msgid "LearnPress"
+msgstr ""
+
 #: assets/src/apps/js/blocks/item-curriculum-course/edit.js:13
 msgid "Item Curriculum Course"
 msgstr ""
@@ -80,6 +84,27 @@ msgstr ""
 msgid ""
 "This is an editor placeholder for the Single Course page. Content will "
 "render content of single course. Should be not remove it"
+msgstr ""
+
+#: assets/src/apps/js/blocks/template/edit.js:9
+msgid "LearnPress Single Course Template"
+msgstr ""
+
+#: assets/src/apps/js/blocks/template/edit.js:13
+msgid "LearnPress Course Archive Template"
+msgstr ""
+
+#: assets/src/apps/js/blocks/template/edit.js:32
+#. %s is the template title
+msgid ""
+"This is an editor placeholder for the %s. This will be replaced by the "
+"template in your store and displayed with your course image(s), title, "
+"price, and so on. You can move this placeholder around and add further "
+"blocks around it to extend the template."
+msgstr ""
+
+#: assets/src/apps/js/blocks/template/index.js:13
+msgid "Renders LearnPress PHP templates."
 msgstr ""
 
 #: assets/src/apps/js/frontend/modal/index.js:41
@@ -183,7 +208,7 @@ msgid "Are you sure you want to retake the quiz?"
 msgstr ""
 
 #: assets/src/apps/js/frontend/quiz/components/buttons/index.js:105
-#: assets/src/apps/js/frontend/quiz/components/status/index.js:67
+#: assets/src/apps/js/frontend/quiz/components/status/index.js:55
 msgid "Are you sure to submit the quiz?"
 msgstr ""
 
@@ -204,7 +229,7 @@ msgid "Start"
 msgstr ""
 
 #: assets/src/apps/js/frontend/quiz/components/buttons/index.js:288
-#: assets/src/apps/js/frontend/quiz/components/status/index.js:128
+#: assets/src/apps/js/frontend/quiz/components/status/index.js:116
 msgid "Finish Quiz"
 msgstr ""
 
@@ -252,23 +277,23 @@ msgstr ""
 msgid "Skipped"
 msgstr ""
 
-#: assets/src/apps/js/frontend/quiz/components/status/index.js:105
+#: assets/src/apps/js/frontend/quiz/components/status/index.js:93
 msgid "Question <span>%d to %d of %d</span>"
 msgstr ""
 
-#: assets/src/apps/js/frontend/quiz/components/status/index.js:107
+#: assets/src/apps/js/frontend/quiz/components/status/index.js:95
 msgid "Question <span>%d of %d</span>"
 msgstr ""
 
-#: assets/src/apps/js/frontend/quiz/components/status/index.js:110
+#: assets/src/apps/js/frontend/quiz/components/status/index.js:98
 msgid "Question <span>%d to %d</span>"
 msgstr ""
 
-#: assets/src/apps/js/frontend/quiz/components/status/index.js:119
+#: assets/src/apps/js/frontend/quiz/components/status/index.js:107
 msgid "Earned Point: %s"
 msgstr ""
 
-#: assets/src/apps/js/frontend/quiz/components/status/index.js:128
+#: assets/src/apps/js/frontend/quiz/components/status/index.js:116
 msgid "Submitting…"
 msgstr ""
 

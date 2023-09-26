@@ -2,7 +2,7 @@ import API from './api';
 import { lpAddQueryArgs, lpFetchAPI, lpGetCurrentURLNoParam } from '../utils/utils';
 import Cookies from '../utils/cookies';
 
-if ( undefined === lpGlobalSettings ) {
+if ( 'undefined' === typeof lpGlobalSettings ) {
 	console.log( 'lpGlobalSettings is undefined' );
 }
 
@@ -286,7 +286,7 @@ window.lpCourseList = ( () => {
 					}
 					// Scroll to archive element
 					const optionScroll = { behavior: 'smooth' };
-					elListCourse.closest( `.${ classListCourse }` ).scrollIntoView( optionScroll );
+					elListCourse.closest( `.${ classArchiveCourse }` ).scrollIntoView( optionScroll );
 				},
 			};
 		},

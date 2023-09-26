@@ -37,7 +37,7 @@ $message_data_confirm = sprintf(
 	<input type="hidden" name="retake-course" value="<?php echo esc_attr( $course->get_id() ); ?>"/>
 
 	<button class="lp-button button button-retake-course">
-		<?php echo sprintf( '%s (%d)', esc_html__( 'Retake course', 'learnpress' ), $can_retake_times ); ?>
+ 		<?php echo sprintf( '%s (%d)', apply_filters( 'learn-press/retake-course-button-text', esc_html__( 'Retake course', 'learnpress' ) ), $can_retake_times ); ?>
 	</button>
 
 	<div class="lp-ajax-message"></div>

@@ -62,7 +62,7 @@ class Template {
 	 * @param array $args
 	 *
 	 * @return void|string
-	 * @since 1.0.0
+	 * @since 4.2.0
 	 * @version 1.0.0
 	 */
 	public function get_frontend_template( string $file_name = '', array $args = array() ) {
@@ -183,7 +183,9 @@ class Template {
 	/**
 	 * Display sections
 	 *
-	 * @param array $sections ['name_section' => 'text html', 'link_template' => '']
+	 * @param array $sections
+	 * ['name_section' => [ 'text_html' => '<span>example</span>' ]]
+	 * ['name_section' => [ 'link_templates' => 'path_template' ]]
 	 *
 	 * @return void
 	 */

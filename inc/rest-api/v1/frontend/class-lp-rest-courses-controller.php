@@ -4,6 +4,7 @@
  * Class LP_REST_Courses_Controller
  */
 
+use LearnPress\ExternalPlugin\Elementor\Widgets\Course\ListCoursesByPageElementor;
 use LearnPress\Helpers\Template;
 use LearnPress\TemplateHooks\Course\ListCoursesTemplate;
 
@@ -22,21 +23,21 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 	 */
 	public function register_routes() {
 		$this->routes = array(
-			'purchase-course' => array(
+			'purchase-course'        => array(
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'purchase_course' ),
 					'permission_callback' => '__return_true',
 				),
 			),
-			'enroll-course'   => array(
+			'enroll-course'          => array(
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'enroll_courses' ),
 					'permission_callback' => '__return_true',
 				),
 			),
-			'retake-course'   => array(
+			'retake-course'          => array(
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'retake_course' ),
@@ -48,7 +49,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 					),
 				),
 			),
-			'archive-course'  => array(
+			'archive-course'         => array(
 				array(
 					'methods'             => WP_REST_Server::ALLMETHODS,
 					'callback'            => array( $this, 'list_courses' ),
@@ -56,7 +57,15 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 					'args'                => [],
 				),
 			),
-			'(?P<key>[\w]+)'  => array(
+			'courses-widget-by-page' => array(
+				array(
+					'methods'             => WP_REST_Server::ALLMETHODS,
+					'callback'            => array( $this, 'courses_widget_by_page' ),
+					'permission_callback' => '__return_true',
+					'args'                => [],
+				),
+			),
+			'(?P<key>[\w]+)'         => array(
 				'args'   => array(
 					'id' => array(
 						'description' => __( 'A unique identifier for the resource.', 'learnpress' ),
@@ -81,7 +90,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				),
 				'schema' => array( $this, 'get_public_item_schema' ),
 			),
-			'continue-course' => array(
+			'continue-course'        => array(
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'continue_course' ),
@@ -216,6 +225,36 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 	}
 
 	/**
+	 * Get list courses - Widget Elementor
+	 *
+	 * @param WP_REST_Request $request
+	 *
+	 * @return LP_REST_Response
+	 */
+	public function courses_widget_by_page( WP_REST_Request $request ): LP_REST_Response {
+		$response       = new LP_REST_Response();
+		$response->data = new stdClass();
+
+		try {
+			$settings                = array_merge(
+				$request->get_params(),
+				[
+					'courses_ul_classes' => [ 'list-courses-elm' ],
+				]
+			);
+			$response->data->content = ListCoursesByPageElementor::render_data_from_setting( $settings );
+
+			$response->status = 'success';
+		} catch ( Throwable $e ) {
+			ob_end_clean();
+			$response->data->content = $e->getMessage();
+			$response->message       = $e->getMessage();
+		}
+
+		return apply_filters( 'lp/rest-api/frontend/course/archive_course/response', $response );
+	}
+
+	/**
 	 * Rest API for Enroll in single course.
 	 *
 	 * @param WP_REST_Request $request
@@ -287,12 +326,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 
 				if ( is_user_logged_in() ) {
 					$order_id = $checkout->create_order();
-
-					if ( is_wp_error( $order_id ) ) {
-						throw new Exception( $order_id->get_error_message() );
-					}
-
-					$order = new LP_Order( $order_id );
+					$order    = new LP_Order( $order_id );
 					$order->payment_complete();
 
 					$cart->empty_cart();
@@ -368,13 +402,11 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				throw new Exception( esc_html__( 'Error: Cannot purchase the course!', 'learnpress' ) );
 			}
 
+			$filter              = new LP_User_Items_Filter();
+			$filter->user_id     = get_current_user_id();
+			$filter->item_id     = $course_id;
+			$course_item         = $lp_user_items_db->get_last_user_course( $filter );
 			$latest_user_item_id = 0;
-
-			$filter          = new LP_User_Items_Filter();
-			$filter->user_id = get_current_user_id();
-			$filter->item_id = $course_id;
-			$course_item     = $lp_user_items_db->get_last_user_course( $filter );
-
 			if ( $course_item && isset( $course_item->user_item_id ) ) {
 				$latest_user_item_id = $course_item->user_item_id;
 			}
@@ -388,7 +420,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 							<li>
 								<label>
 									<input name="_lp_allow_repurchase_type" value="reset" type="radio"
-										   checked="checked"/>
+										checked="checked"/>
 									<?php esc_html_e( 'Reset Course progress', 'learnpress' ); ?>
 								</label>
 							</li>
@@ -412,15 +444,9 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				}
 			}
 
-			//LearnPress::instance()->session->set( 'order_awaiting_payment', '' );
-
 			$cart = LearnPress::instance()->cart;
-			//$checkout = LP_Checkout::instance();
-
 			if ( ! learn_press_enable_cart() ) {
-				//$order_awaiting_payment = LearnPress::instance()->session->order_awaiting_payment;
 				$cart->empty_cart();
-				//LearnPress::instance()->session->order_awaiting_payment = $order_awaiting_payment;
 			}
 
 			do_action( 'learnpress/rest-api/courses/purchase/before-add-to-cart' );

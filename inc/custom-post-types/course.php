@@ -34,65 +34,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			add_action( 'init', array( $this, 'register_taxonomy' ) );
 			add_filter( 'posts_where_paged', array( $this, '_posts_where_paged_course_items' ), 10 );
 			add_filter( 'posts_join_paged', array( $this, '_posts_join_paged_course_items' ), 10 );
-
-			// Comment by tungnx
-			// add_action( 'learn-press/admin/after-enqueue-scripts', array( $this, 'data_course_editor' ) );
-			add_action( 'admin_enqueue_scripts', array( $this, 'add_script_data' ) );
-		}
-
-		public function add_script_data() {
-			global $post, $pagenow;
-
-			if ( empty( $post ) || ( get_post_type() !== $this->_post_type ) || ! in_array( $pagenow, array( 'post.php', 'post-new.php' ) ) ) {
-				return;
-			}
-
-			$course          = learn_press_get_course( $post->ID );
-			$hidden_sections = get_post_meta( $post->ID, '_admin_hidden_sections', true );
-
-			$data = apply_filters(
-				'learn-press/admin-localize-course-editor',
-				array(
-					'root'        => array(
-						'course_id'          => $post->ID,
-						'auto_draft'         => get_post_status( $post->ID ) == 'auto-draft',
-						'ajax'               => admin_url( 'index.php' ),
-						'disable_curriculum' => false,
-						'action'             => 'admin_course_editor',
-						'nonce'              => wp_create_nonce( 'learnpress_update_curriculum' ),
-					),
-					'chooseItems' => array(
-						'types'      => learn_press_course_get_support_item_types(),
-						'open'       => false,
-						'addedItems' => array(),
-						'items'      => array(),
-					),
-					'i18n'        => array(
-						'item'                   => __( 'item', 'learnpress' ),
-						'new_section_item'       => __( 'Create a new', 'learnpress' ),
-						'back'                   => __( 'Back', 'learnpress' ),
-						'selected_items'         => __( 'Selected items', 'learnpress' ),
-						'confirm_remove_item'    => __( 'Do you want to remove the "{{ITEM_NAME}}" item from the course?', 'learnpress' ),
-						'confirm_trash_item'     => __( 'Do you want to move the "{{ITEM_NAME}}" item to the trash?', 'learnpress' ),
-						'item_labels'            => array(
-							'singular' => __( 'Item', 'learnpress' ),
-							'plural'   => __( 'Items', 'learnpress' ),
-						),
-						'notice_sale_price'      => __( 'The course sale price must be less than the regular price', 'learnpress' ),
-						'notice_price'           => __( 'The course price must be greater than the sale price', 'learnpress' ),
-						'notice_sale_start_date' => __( 'The sale start date must be before the sale end date', 'learnpress' ),
-						'notice_sale_end_date'   => __( 'The sale end date must be after the sale start date', 'learnpress' ),
-						'notice_invalid_date'    => __( 'Invalid date', 'learnpress' ),
-					),
-					'sections'    => array(
-						'sections'        => $course->get_curriculum_raw(),
-						'hidden_sections' => ! empty( $hidden_sections ) ? $hidden_sections : array(),
-						'urlEdit'         => admin_url( 'post.php?action=edit&post=' ),
-					),
-				)
-			);
-
-			learn_press_admin_assets()->add_script_data( 'learn-press-admin-course-editor', $data );
 		}
 
 		/**
@@ -217,21 +158,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				)
 			);
 		}
-
-		/**
-		 * Load data for course editor.
-		 *
-		 * @since 3.0.0
-		 * @editor tungnx
-		 * @reason not use
-		 */
-		/*
-		public function data_course_editor() {
-			if ( LP_COURSE_CPT !== get_post_type() ) {
-				return;
-			}
-
-		}*/
 
 		/**
 		 * Delete course sections before delete course.
@@ -604,6 +530,4 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 	}
 
 	$course_post_type = LP_Course_Post_Type::instance();
-
-	// $course_post_type->add_meta_box( 'course-editor', esc_html__( 'Curriculum', 'learnpress' ), 'admin_editor', 'normal', 'high' );
 }
