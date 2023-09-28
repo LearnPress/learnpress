@@ -162,5 +162,44 @@ class LP_Order_DB extends LP_Database {
 			"
 		);
 	}
+
+	public function date_analytics( $date = '' ) {
+		if ( ! $date ) {
+			$date = current_time( 'mysql' );
+		}
+		$date                            = date( 'Y-m-d', strtotime( $date ) );
+		$filter_course                   = new LP_Order_Filter();
+		$filter_course->collection       = $this->tb_posts;
+		$filter_course->collection_alias = 'p';
+		$oi_table                        = $this->tb_lp_order_items;
+		$oim_table                       = $this->tb_lp_order_itemmeta;
+		$filter_course->only_fields      = array(
+			'p.post_date',
+			'HOUR(p.post_date) as post_hour',
+			'SUM(oim.meta_value) as hour_sale',
+			'COUNT(oim.meta_key) as sale_count',
+		);
+		$filter_course->join             = [
+			"INNER JOIN $oi_table AS oi ON p.ID = oi.order_id",
+			"INNER JOIN $oim_table AS oim ON oi.order_item_id = oim.learnpress_order_item_id",
+		];
+		// $filter_course->order_by = 'popular';
+		$filter_course->limit           = -1;
+		$order_complete_status          = LP_ORDER_COMPLETED_DB;
+		$filter_course->where           = [
+			"and cast( p.post_date as DATE)= cast('$date' as DATE)",
+			"and p.post_type='$filter_course->post_type'",
+			"and p.post_status='$order_complete_status'",
+			"and oim.meta_key='_total'",
+		];
+		$filter_course->order_by        = 'p.post_date';
+		$filter_course->order           = 'asc';
+		$filter_course->group_by        = 'post_hour';
+		$filter_course->query_count     = false;
+		$filter_course->run_query_count = false;
+		// $filter_course->debug_string_query=true;
+		$result = $this->execute( $filter_course );
+		return $result;
+	}
 }
 
