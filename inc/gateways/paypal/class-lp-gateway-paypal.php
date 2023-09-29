@@ -310,10 +310,13 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				]
 			);
 
-			$data_token = json_decode( wp_remote_retrieve_body( $response ) );
+			$data_token_str = wp_remote_retrieve_body( $response );
+			$data_token     = json_decode( $data_token_str );
 			if ( isset( $data->error ) ) {
 				throw new Exception( $data->error_description );
 			}
+
+			LP_Settings::update_option( 'paypal_token', $data_token_str );
 
 			return $data_token;
 		}
@@ -405,20 +408,26 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 * check paypal transaction status use paypal oauth2 token
 		 * @param  [$transaction_id string paypal transaction id]
 		 * @return [void]
+		 * @throws Exception
 		 */
 		public function check_transaction_status( $transaction_id ) {
-			$access_token = get_option( 'lp_pp_oauth2_json' );
+			$data_token_str = LP_Settings::get_option( 'paypal_token' );
+			$data_token     = json_decode( $data_token_str );
+			if ( ! isset( $data_token->access_token ) || ! isset( $data_token->token_type ) ) {
+				throw new Exception( __( 'Invalid Paypal access token', 'learnpress' ) );
+			}
 
 			$response = wp_remote_post(
 				$this->api_url . 'v2/checkout/orders/' . $transaction_id . '/capture',
 				array(
 					'headers' => array(
 						'Content-Type'  => 'application/json',
-						'Authorization' => $access_token['token_type'] . ' ' . $access_token['access_token'],
+						'Authorization' => $data_token->token_type . ' ' . $data_token->access_token,
 					),
 					'timeout' => 60,
 				)
 			);
+
 			if ( $response['response']['code'] === 201 ) {
 				$body        = wp_remote_retrieve_body( $response );
 				$transaction = json_decode( $body );
