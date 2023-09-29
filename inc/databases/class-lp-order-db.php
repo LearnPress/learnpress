@@ -163,43 +163,63 @@ class LP_Order_DB extends LP_Database {
 		);
 	}
 
-	public function date_analytics( $date = '' ) {
+	public function date_analytics( LP_Order_Filter $filter, string $date ) {
+
+		$filter->only_fields[] = 'HOUR(p.post_date) as order_time';
+		$filter->where[]       = $this->wpdb->prepare( 'AND cast( p.post_date as DATE)= cast(%s as DATE)', $date );
+
+		return $filter;
+	}
+
+	public function month_analytics( LP_Order_Filter $filter, string $date ) {
+		$filter->only_fields[] = 'DAY(p.post_date) as order_time';
+		$filter->where[]       = $this->wpdb->prepare( 'AND EXTRACT(YEAR_MONTH FROM p.post_date)= EXTRACT(YEAR_MONTH FROM %s)', $date );
+		return $filter;
+	}
+
+	public function year_analytics( LP_Order_Filter $filter, string $date ) {
+		$filter->only_fields[] = 'MONTH(p.post_date) as order_time';
+		$filter->where[]       = $this->wpdb->prepare( 'AND YEAR(p.post_date)= YEAR(%s)', $date );
+		return $filter;
+	}
+
+	public function order_analytics_filter( $type = '', $value = '' ) {
 		if ( ! $date ) {
 			$date = current_time( 'mysql' );
 		}
-		$date                            = date( 'Y-m-d', strtotime( $date ) );
-		$filter_course                   = new LP_Order_Filter();
-		$filter_course->collection       = $this->tb_posts;
-		$filter_course->collection_alias = 'p';
-		$oi_table                        = $this->tb_lp_order_items;
-		$oim_table                       = $this->tb_lp_order_itemmeta;
-		$filter_course->only_fields      = array(
-			'p.post_date',
-			'HOUR(p.post_date) as post_hour',
-			'SUM(oim.meta_value) as hour_sale',
-			'COUNT(oim.meta_key) as sale_count',
+		$date                     = date( 'Y-m-d', strtotime( $date ) );
+		$filter                   = new LP_Order_Filter();
+		$filter->collection       = $this->tb_posts;
+		$filter->collection_alias = 'p';
+		$oi_table                 = $this->tb_lp_order_items;
+		$oim_table                = $this->tb_lp_order_itemmeta;
+		$filter->only_fields      = array(
+			'p.ID as order_id',
+			'p.post_date as order_date',
+			'oi.item_id as course_id',
+
+			$this->wpdb->prepare( 'REPLACE(p.post_status, %s, %s) as order_status', 'lp-', '' ),
+			'oim.meta_value as sale_price',
 		);
-		$filter_course->join             = [
+		$filter->join             = [
 			"INNER JOIN $oi_table AS oi ON p.ID = oi.order_id",
 			"INNER JOIN $oim_table AS oim ON oi.order_item_id = oim.learnpress_order_item_id",
 		];
-		// $filter_course->order_by = 'popular';
-		$filter_course->limit           = -1;
-		$order_complete_status          = LP_ORDER_COMPLETED_DB;
-		$filter_course->where           = [
-			"and cast( p.post_date as DATE)= cast('$date' as DATE)",
-			"and p.post_type='$filter_course->post_type'",
-			"and p.post_status='$order_complete_status'",
-			"and oim.meta_key='_total'",
+		$filter->limit            = -1;
+		$filter->where            = [
+			$this->wpdb->prepare( 'AND p.post_type=%s', $filter->post_type ),
+			// $this->wpdb->prepare( 'AND p.post_status=%s', LP_ORDER_COMPLETED_DB ),
+			$this->wpdb->prepare( 'AND oim.meta_key=%s', '_total' ),
 		];
-		$filter_course->order_by        = 'p.post_date';
-		$filter_course->order           = 'asc';
-		$filter_course->group_by        = 'post_hour';
-		$filter_course->query_count     = false;
-		$filter_course->run_query_count = false;
-		// $filter_course->debug_string_query=true;
-		$result = $this->execute( $filter_course );
+		$filter->order_by         = 'p.post_date';
+		$filter->order            = 'asc';
+		// $filter->group_by        = 'post_hour';
+		$filter->query_count     = false;
+		$filter->run_query_count = false;
+		// $filter->debug_string_query=true;
+		$result = $this->execute( $filter );
 		return $result;
 	}
+
 }
 
