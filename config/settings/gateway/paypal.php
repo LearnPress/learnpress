@@ -14,7 +14,7 @@ return apply_filters(
 			'id'      => '[enable]',
 			'default' => 'no',
 			'type'    => 'checkbox',
-			'desc'    => esc_html__( 'Enable PayPal Standard', 'learnpress' ),
+			'desc'    => esc_html__( 'Enable PayPal', 'learnpress' ),
 		),
 		array(
 			'title' => esc_html__( 'PayPal email', 'learnpress' ),
@@ -48,19 +48,25 @@ return apply_filters(
 					),
 				),
 			),
-			'desc'       => esc_html__( 'Use PayPal Standard Rest API, Create your app in Dashboard and use app Client ID and Client Secret', 'learnpress' ),
+			'desc'       => esc_html__( 'Use PayPal Rest API, Create your app in Dashboard and use app Client ID and Client Secret', 'learnpress' ),
 		),
 		array(
 			'title' => esc_html__( 'Client ID', 'learnpress' ),
 			'id'    => '[app_client_id]',
 			'type'  => 'text',
-			'desc'  => esc_html__( 'PayPal Application Client ID', 'learnpress' ),
+			'desc'  => sprintf(
+				__( 'PayPal Application <a href="%s" target="_blank">Client ID</a>', 'learnpress' ),
+				'https://developer.paypal.com/api/rest/#link-getclientidandclientsecret'
+			),
 		),
 		array(
 			'title' => esc_html__( 'Client Secret', 'learnpress' ),
 			'id'    => '[app_client_secret]',
 			'type'  => 'text',
-			'desc'  => esc_html__( 'PayPal Application Client Secret', 'learnpress' ),
+			'desc'  => sprintf(
+				__( 'PayPal Application <a href="%s" target="_blank">Client Secret</a>', 'learnpress' ),
+				'https://developer.paypal.com/api/rest/#link-getclientidandclientsecret'
+			),
 		),
 		array(
 			'type' => 'sectionend',

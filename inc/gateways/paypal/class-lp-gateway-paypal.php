@@ -37,71 +37,43 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		/**
 		 * @var null|string
 		 */
-		protected $paypal_nvp_api_live_url = 'https://api-3t.paypal.com/nvp';
-
-		/**
-		 * @var null|string
-		 */
 		protected $paypal_sandbox_url = 'https://www.sandbox.paypal.com/';
 		/**
 		 * @var null|string
 		 */
 		protected $paypal_payment_sandbox_url = 'https://www.sandbox.paypal.com/cgi-bin/webscr';
 		/**
-		 * @var null
-		 */
-		protected $paypal_nvp_api_sandbox_url = 'https://api-3t.sandbox.paypal.com/nvp';
-
-		/**
 		 * @var string
 		 */
 		protected $api_sandbox_url = 'https://api-m.sandbox.paypal.com/';
-
 		/**
 		 * @var string
 		 */
 		protected $api_live_url = 'https://api-m.paypal.com/';
-
 		/**
 		 * @var string|null
 		 */
 		protected $api_url = null;
-
-		/**
-		 * @var string
-		 */
-		protected $method = '';
-
 		/**
 		 * @var null
 		 */
 		protected $paypal_url = null;
-
 		/**
 		 * @var null
 		 */
 		protected $paypal_payment_url = null;
-
-		/**
-		 * @var null
-		 */
-		protected $paypal_nvp_api_url = null;
-
 		/**
 		 * @var null
 		 */
 		protected $paypal_email = '';
-
 		/**
 		 * @var null
 		 */
 		protected $settings = null;
-
 		/**
 		 * @var null
 		 */
 		protected $client_id = null;
-
 		/**
 		 * @var null
 		 */
@@ -138,13 +110,11 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				if ( $this->settings->get( 'paypal_sandbox', 'no' ) === 'no' ) {
 					$this->paypal_url         = $this->paypal_live_url;
 					$this->paypal_payment_url = $this->paypal_payment_live_url;
-					$this->paypal_nvp_api_url = $this->paypal_nvp_api_live_url;
 					$this->paypal_email       = $this->settings->get( 'paypal_email' );
 					$this->api_url            = $this->api_live_url; //use for paypal rest api
 				} else {
 					$this->paypal_url         = $this->paypal_sandbox_url;
 					$this->paypal_payment_url = $this->paypal_payment_sandbox_url;
-					$this->paypal_nvp_api_url = $this->paypal_nvp_api_sandbox_url;
 					$this->paypal_email       = $this->settings->get( 'paypal_sandbox_email' );
 					$this->api_url            = $this->api_sandbox_url; //use for paypal rest api
 				}
@@ -162,12 +132,10 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		/**
 		 * Check payment gateway available.
 		 *
-		 * @param bool $default
-		 * @param $payment
-		 *
+		 * @param bool $available
 		 * @return bool
 		 */
-		public function paypal_available( bool $default, $payment ): bool {
+		public function paypal_available( bool $available ): bool {
 			// Empty live email and Sandbox mode also disabled
 			if ( $this->settings->get( 'paypal_sandbox' ) != 'yes' && ! $this->settings->get( 'paypal_email' ) ) {
 				return false;
@@ -178,7 +146,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				return false;
 			}
 
-			return $default;
+			return $available;
 		}
 
 		/**
@@ -332,6 +300,8 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 * Get access token from PayPal
 		 *
 		 * @throws Exception
+		 * @since 4.2.4
+		 * @version 1.0.0
 		 */
 		public function get_access_token() {
 			$client_id     = $this->client_id;
@@ -368,7 +338,15 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			return $data_token;
 		}
 
-		public function get_order_args( LP_Order $order ) {
+		/**
+		 * create args to create PayPal order
+		 *
+		 * @param LP_Order $order
+		 * @return array
+		 * @since 4.2.4
+		 * @version 1.0.0
+		 */
+		public function get_order_args( LP_Order $order ): array {
 			$lp_cart    = LearnPress::instance()->get_cart();
 			$cart_total = $lp_cart->calculate_totals();
 			$order_id   = $order->get_id();
@@ -404,11 +382,15 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 
 		/**
 		 * Create Order PayPal and get checkout url
-		 * @param LP_Order $order [description]
+		 *
+		 * @param LP_Order $order
 		 * @param object $data_token { scope, access_token, token_type, app_id, expires_in, nonce }
+		 * @return string
 		 * @throws Exception
+		 * @since 4.2.4
+		 * @version 1.0.0
 		 */
-		public function create_payment_url( LP_Order $order, $data_token ) {
+		public function create_payment_url( LP_Order $order, $data_token ): string {
 			$checkout_url = '';
 			$params       = $this->get_order_args( $order );
 
@@ -457,6 +439,9 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 * @param string $paypal_order_id
 		 * https://developer.paypal.com/docs/api/orders/v2/#orders_capture
 		 * @throws Exception
+		 *
+		 * @since 4.2.4
+		 * @version 1.0.0
 		 */
 		public function capture_payment_for_order( string $paypal_order_id ) {
 			$data_token_str = LP_Settings::get_option( 'paypal_token' );
@@ -479,7 +464,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			if ( $response['response']['code'] === 201 ) {
 				$body        = wp_remote_retrieve_body( $response );
 				$transaction = json_decode( $body );
-				if ( $transaction->status == 'COMPLETED' ) {
+				if ( $transaction->status === 'COMPLETED' ) {
 					$order_id = $transaction->purchase_units[0]->payments->captures[0]->custom_id;
 					$lp_order = learn_press_get_order( $order_id );
 					$lp_order->update_status( LP_ORDER_COMPLETED );
