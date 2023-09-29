@@ -156,6 +156,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			}
 
 			add_filter( 'learn-press/payment-gateway/' . $this->id . '/available', array( $this, 'paypal_available' ), 10, 2 );
+			add_action( 'init', array( $this, 'check_webhook_callback' ) );
 		}
 
 		/**
@@ -178,6 +179,52 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			}
 
 			return $default;
+		}
+
+		/**
+		 * Listen callback, webhook form PayPal.
+		 */
+		public function check_webhook_callback() {
+			try {
+				$paypal = LP_Gateway_Paypal::instance();
+				if ( $paypal->settings->get( 'use_paypal_rest' ) == 'no' ) {
+					// Paypal payment done
+					if ( ! isset( $_GET['paypal_notify'] ) ) {
+						return;
+					}
+
+					if ( ! isset( $_POST['ipn_track_id'] ) ) {
+						return;
+					}
+
+					$verify = $paypal->validate_ipn();
+
+					if ( $verify ) {
+						if ( isset( $_POST['custom'] ) ) {
+							$data_order = json_decode( LP_Helper::sanitize_params_submitted( $_POST['custom'] ) );
+
+							if ( json_last_error() === JSON_ERROR_NONE ) {
+								$order_id = $data_order->order_id;
+								$lp_order = learn_press_get_order( $order_id );
+								$lp_order->update_status( LP_ORDER_COMPLETED );
+							}
+						}
+					}
+				} else {
+					if ( ! isset( $_GET['paypay_express_checkout'] ) ) {
+						return;
+					}
+
+					$paypal_order_id = LP_Request::get_param( 'token' );
+					if ( empty( $paypal_order_id ) ) {
+						return;
+					}
+
+					$this->capture_payment_for_order( $paypal_order_id );
+				}
+			} catch ( Throwable $e ) {
+				error_log( $e->getMessage() );
+			}
 		}
 
 		/**
@@ -405,12 +452,13 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		}
 
 		/**
-		 * check paypal transaction status use paypal oauth2 token
-		 * @param  [$transaction_id string paypal transaction id]
-		 * @return [void]
+		 * Capture payment for order
+		 *
+		 * @param string $paypal_order_id
+		 * https://developer.paypal.com/docs/api/orders/v2/#orders_capture
 		 * @throws Exception
 		 */
-		public function check_transaction_status( $transaction_id ) {
+		public function capture_payment_for_order( string $paypal_order_id ) {
 			$data_token_str = LP_Settings::get_option( 'paypal_token' );
 			$data_token     = json_decode( $data_token_str );
 			if ( ! isset( $data_token->access_token ) || ! isset( $data_token->token_type ) ) {
@@ -418,7 +466,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			}
 
 			$response = wp_remote_post(
-				$this->api_url . 'v2/checkout/orders/' . $transaction_id . '/capture',
+				$this->api_url . 'v2/checkout/orders/' . $paypal_order_id . '/capture',
 				array(
 					'headers' => array(
 						'Content-Type'  => 'application/json',

@@ -444,6 +444,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			require_once 'inc/gateways/class-lp-gateway-abstract.php';
 			require_once 'inc/gateways/class-lp-gateways.php';
+			new LP_Gateways();
 		}
 
 		/**
