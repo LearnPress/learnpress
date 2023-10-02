@@ -218,6 +218,7 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Tweak: layout single instructor.
 ~ Fixed: error set Section Per Page = 0 or < -1.
 ~ Fixed: error set load curriculum item = 0.
+~ Tweak: logic create/delete user_item.
 
 = 4.2.3.6 (2023-09-18) =
 ~ Tweak: display Date Time, time zone by format of WP.
