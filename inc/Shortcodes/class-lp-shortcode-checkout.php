@@ -45,7 +45,7 @@ if ( ! class_exists( 'LP_Shortcode_Checkout' ) ) {
 			if ( isset( $wp->query_vars['lp-order-received'] ) ) {
 				$this->order_received( $wp->query_vars['lp-order-received'] );
 			} else {
-				$checkout_cart = LearnPress::instance()->cart;
+				$checkout_cart = LearnPress::instance()->get_cart();
 
 				echo '<div id="learn-press-checkout" class="lp-content-area">';
 

@@ -64,6 +64,7 @@
         "gulp-cli": "^2.3.0",
         "react-easy-crop": "^4.7.4",
         "refx": "^3.1.1",
-        "sortablejs": "^1.13.0"
+        "sortablejs": "^1.13.0",
+		"@paypal/paypal-js": "^7.0.3"
     }
 }
