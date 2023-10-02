@@ -163,27 +163,48 @@ class LP_Order_DB extends LP_Database {
 		);
 	}
 
-	public function date_analytics( LP_Order_Filter $filter, string $date ) {
-
+	public function date_chart_analytics( LP_Order_Filter $filter, string $date ) {
+		$filter->only_fields[] = 'count( p.ID) as count_order';
 		$filter->only_fields[] = 'HOUR(p.post_date) as order_time';
 		$filter->where[]       = $this->wpdb->prepare( 'AND cast( p.post_date as DATE)= cast(%s as DATE)', $date );
+		$filter->group_by      = 'order_time';
+		// $filter->run_query_count = false;
 
 		return $filter;
 	}
 
-	public function month_analytics( LP_Order_Filter $filter, string $date ) {
+	public function privious_days_analytics( LP_Order_Filter $filter, int $day ) {
+		if ( $day < 2 ) {
+			throw new Exception( 'Day must be greater than 2 days.', 'learnpress' );
+		}
+		$filter->only_fields[] = 'count( p.ID) as count_order';
+		$filter->only_fields[] = 'DAY(p.post_date) as order_time';
+		$filter->where[]       = $this->wpdb->prepare( 'AND p.post_date >= DATE_ADD(CURDATE(), INTERVAL -%d DAY)', $day );
+		$filter->group_by      = 'order_time';
+
+		return $filter;
+	}
+
+	public function month_chart_analytics( LP_Order_Filter $filter, string $date ) {
+		$filter->only_fields[] = 'count( p.ID) as count_order';
 		$filter->only_fields[] = 'DAY(p.post_date) as order_time';
 		$filter->where[]       = $this->wpdb->prepare( 'AND EXTRACT(YEAR_MONTH FROM p.post_date)= EXTRACT(YEAR_MONTH FROM %s)', $date );
+		$filter->group_by      = 'order_time';
+		// $filter->run_query_count = false;
+
 		return $filter;
 	}
 
-	public function year_analytics( LP_Order_Filter $filter, string $date ) {
+	public function year_chart_analytics( LP_Order_Filter $filter, string $date ) {
+		$filter->only_fields[] = 'count( p.ID) as count_order';
 		$filter->only_fields[] = 'MONTH(p.post_date) as order_time';
 		$filter->where[]       = $this->wpdb->prepare( 'AND YEAR(p.post_date)= YEAR(%s)', $date );
+		$filter->group_by      = 'order_time';
+		// $filter->run_query_count = false;
 		return $filter;
 	}
 
-	public function order_analytics_filter( $type = '', $value = '' ) {
+	public function order_analytics_execute( $type = '', $value = '' ) {
 		if ( ! $date ) {
 			$date = current_time( 'mysql' );
 		}
@@ -194,32 +215,67 @@ class LP_Order_DB extends LP_Database {
 		$oi_table                 = $this->tb_lp_order_items;
 		$oim_table                = $this->tb_lp_order_itemmeta;
 		$filter->only_fields      = array(
-			'p.ID as order_id',
+			'p.ID',
 			'p.post_date as order_date',
-			'oi.item_id as course_id',
+			// 'oi.item_id as course_id',
 
-			$this->wpdb->prepare( 'REPLACE(p.post_status, %s, %s) as order_status', 'lp-', '' ),
-			'oim.meta_value as sale_price',
+			// $this->wpdb->prepare( 'REPLACE(p.post_status, %s, %s) as order_status', 'lp-', '' ),
+			// 'oim.meta_value as sale_price',
 		);
-		$filter->join             = [
-			"INNER JOIN $oi_table AS oi ON p.ID = oi.order_id",
-			"INNER JOIN $oim_table AS oim ON oi.order_item_id = oim.learnpress_order_item_id",
-		];
-		$filter->limit            = -1;
-		$filter->where            = [
+		// $filter->join             = [
+		// 	"INNER JOIN $oi_table AS oi ON p.ID = oi.order_id",
+		// 	"INNER JOIN $oim_table AS oim ON oi.order_item_id = oim.learnpress_order_item_id",
+		// ];
+		$filter->limit = -1;
+		$filter->where = [
 			$this->wpdb->prepare( 'AND p.post_type=%s', $filter->post_type ),
 			// $this->wpdb->prepare( 'AND p.post_status=%s', LP_ORDER_COMPLETED_DB ),
-			$this->wpdb->prepare( 'AND oim.meta_key=%s', '_total' ),
+			// $this->wpdb->prepare( 'AND oim.meta_key=%s', '_total' ),
 		];
-		$filter->order_by         = 'p.post_date';
-		$filter->order            = 'asc';
+		$filter->order_by = 'p.post_date';
+		$filter->order    = 'asc';
 		// $filter->group_by        = 'post_hour';
-		$filter->query_count     = false;
-		$filter->run_query_count = false;
-		// $filter->debug_string_query=true;
-		$result = $this->execute( $filter );
+		$filter->query_count = false;
+		$result              = $this->execute( $filter );
 		return $result;
 	}
 
-}
+	public function filter_order_count_statics( LP_Order_Filter $filter ) {
+		// $filter->query_count = true;
+		$filter->only_fields[]   = 'count( p.ID) as count_order';
+		$filter->only_fields[]   = 'p.post_status';
+		$filter->group_by        = 'p.post_status';
+		$filter->run_query_count = false;
 
+		return $filter;
+	}
+
+	public function get_chart_data( string $type, string $date ) {
+		if ( ! $date ) {
+			$date = current_time( 'mysql' );
+		}
+		$date                     = date( 'Y-m-d', strtotime( $date ) );
+		$filter                   = new LP_Order_Filter();
+		$filter->collection       = $this->tb_posts;
+		$filter->collection_alias = 'p';
+
+		$filter->where[] = $this->wpdb->prepare( 'AND p.post_status=%s', LP_ORDER_COMPLETED_DB );
+		switch ( $type ) {
+			case 'date':
+				$filter = $this->date_chart_analytics( $filter, $date );
+				break;
+			case 'month':
+				$filter = $this->month_chart_analytics( $filter, $date );
+				break;
+			case 'year':
+				$filter = $this->year_chart_analytics( $filter, $date );
+				break;
+			default:
+				// code...
+				break;
+		}
+		$filter->run_query_count = false;
+	}
+
+	// public function
+}
