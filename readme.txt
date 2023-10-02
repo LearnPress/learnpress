@@ -5,7 +5,7 @@ Tags: elearning, education, course, lms, learning management system
 Requires at least: 5.8
 Tested up to: 6.3.1
 Requires PHP: 7.0
-Stable tag: 4.2.3.5
+Stable tag: 4.2.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -209,6 +209,15 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.
 
 == Changelog ==
+
+= 4.2.4 (2023-10-02) =
+~ Fixed: error Paypal Standard (use IPN), replace to use API REST, client ID, client secret.
+~ Clean resource.
+~ Check load Widget Elementor on hooks plugins_loaded.
+~ Tweak: load Curriculum when edit course, query on Frontend.
+~ Tweak: layout single instructor.
+~ Fixed: error set Section Per Page = 0 or < -1.
+~ Fixed: error set load curriculum item = 0.
 
 = 4.2.3.6 (2023-09-18) =
 ~ Tweak: display Date Time, time zone by format of WP.
