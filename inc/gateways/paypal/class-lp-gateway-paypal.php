@@ -136,16 +136,6 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 * @return bool
 		 */
 		public function paypal_available( bool $available ): bool {
-			// Empty live email and Sandbox mode also disabled
-			if ( $this->settings->get( 'paypal_sandbox' ) != 'yes' && ! $this->settings->get( 'paypal_email' ) ) {
-				return false;
-			}
-
-			// Enable Sandbox mode but it's email is empty
-			if ( ! $this->settings->get( 'paypal_sandbox_email' ) && $this->settings->get( 'paypal_sandbox' ) == 'yes' ) {
-				return false;
-			}
-
 			return $available;
 		}
 
