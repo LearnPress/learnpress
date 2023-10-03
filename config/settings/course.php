@@ -119,6 +119,7 @@ return apply_filters(
 					'id'      => 'section_per_page',
 					'default' => -1,
 					'type'    => 'number',
+					'min'     => '-1',
 					'desc'    => esc_html__( 'The number of displayed sections per page (Enter -1 to display all sections).', 'learnpress' ),
 				),
 				array(
@@ -126,6 +127,7 @@ return apply_filters(
 					'id'      => 'course_item_per_page',
 					'default' => -1,
 					'type'    => 'number',
+					'min'     => '-1',
 					'desc'    => esc_html__( 'The number of displayed course items per page in a section (Enter -1 to display all course items).', 'learnpress' ),
 				),
 				array(

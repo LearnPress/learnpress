@@ -7,7 +7,7 @@
  * @author Nhamdv <email@email.com>
  */
 
-$option_value = $value['value'];
+$option_value     = $value['value'];
 $visibility_class = [];
 if ( isset( $value['show_if_checked'] ) ) {
 	$visibility_class[] = 'show_if_' . $value['show_if_checked'];
@@ -34,6 +34,8 @@ if ( isset( $value['show_if_checked'] ) ) {
 			value="<?php echo esc_attr( $option_value ); ?>"
 			class="<?php echo esc_attr( $value['class'] ); ?>"
 			placeholder="<?php echo esc_attr( $value['placeholder'] ); ?>"
+			<?php echo isset( $value['min'] ) ? 'min="' . $value['min'] . '"' : ''; ?>
+			<?php echo isset( $value['max'] ) ? 'max="' . $value['max'] . '"' : ''; ?>
 			<?php echo implode( ' ', $custom_attributes ); ?>
 			/><?php echo esc_html( $value['suffix'] ); ?> <?php echo wp_kses_post( $description ); ?>
 	</td>
