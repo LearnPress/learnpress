@@ -322,7 +322,7 @@ class LP_Section_DB extends LP_Database {
 		// Order items
 		if ( empty( $filter->order_by ) ) {
 			$filter->order_by = 'si.item_order';
-			$filter->order = 'ASC';
+			$filter->order    = 'ASC';
 		}
 
 		$filter = apply_filters( 'lp/section/items/query/filter', $filter );
