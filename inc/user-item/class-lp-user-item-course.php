@@ -829,7 +829,7 @@ class LP_User_Item_Course extends LP_User_Item {
 			$filter_count->graduation = LP_COURSE_GRADUATION_PASSED;
 			$count_items_completed    = $lp_user_items_db->count_items_of_course_with_status( $filter_count );
 		} catch ( Throwable $e ) {
-
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 
 		return $count_items_completed;

@@ -52,14 +52,14 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 			'search-course'           => array(
 				array(
 					'methods'             => WP_REST_Server::READABLE,
-					'callback'            => array( $this, 'search_couse' ),
+					'callback'            => array( $this, 'search_courses' ),
 					'permission_callback' => array( $this, 'check_permission' ),
 				),
 			),
 			'search-user'             => array(
 				array(
 					'methods'             => WP_REST_Server::READABLE,
-					'callback'            => array( $this, 'search_user' ),
+					'callback'            => array( $this, 'search_users' ),
 					'permission_callback' => array( $this, 'check_permission' ),
 				),
 			),
@@ -73,7 +73,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 			'assign-course'           => array(
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
-					'callback'            => array( $this, 'assign_course' ),
+					'callback'            => array( $this, 'assign_courses_to_users' ),
 					'permission_callback' => array( $this, 'check_permission' ),
 				),
 			),
@@ -330,74 +330,65 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 
 
 	/**
-	 * [search_couse search course to assign]
-	 * @param  WP_REST_Request $request [description]
-	 * @return [array]                   [description]
+	 * Search courses by title
+	 *
+	 * @param  WP_REST_Request $request
+	 * @return LP_REST_Response
+	 * @since 4.2.5
+	 * @version 1.0.0
 	 */
-	public function search_couse( WP_REST_Request $request ) {
+	public function search_courses( WP_REST_Request $request ): LP_REST_Response {
 		$response = new LP_REST_Response();
 		try {
-			$filter = new LP_Course_Filter();
-			$params = $request->get_params();
-			//
-			LP_course::handle_params_for_query_courses( $filter, $params );
+			$filter              = new LP_Course_Filter();
+			$params              = $request->get_params();
+			$filter->limit       = 5;
 			$filter->only_fields = [ 'ID', 'post_title' ];
-
-			$courses          = LP_Course::get_courses( $filter );
-			$response->data   = $courses;
-			$response->status = 'success';
+			$filter->post_title  = $params['c_search'] ?? '';
+			$courses             = LP_Course::get_courses( $filter );
+			$response->data      = $courses;
+			$response->status    = 'success';
 		} catch ( Throwable $e ) {
-			error_log( $e->getMessage() );
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
-		return rest_ensure_response( $response );
+
+		return $response;
 	}
 
 	/**
-	 * [search_user search user to assign]
-	 * @param  WP_REST_Request $request [description]
-	 * @return [array]                   [description]
+	 * Search user by name or email
+	 *
+	 * @param WP_REST_Request $request
+	 * @return LP_REST_Response
+	 * @since 4.2.5
+	 * @version 1.0.0
 	 */
-	public function search_user( WP_REST_Request $request ) {
+	public function search_users( WP_REST_Request $request ): LP_REST_Response {
 		$response = new LP_REST_Response();
 		try {
-			$params    = $request->get_params();
-			$course_id = intval( $params['course_id'] );
-			if ( isset( $params['remove'] ) ) {
-				$user_items = learn_press_get_user_item(
-					array(
-						'item_id'   => $course_id,
-						'item_type' => LP_COURSE_CPT,
+			$params        = $request->get_params();
+			$search_string = sanitize_text_field( $params['search'] ?? '' );
+			$users         = get_users(
+				array(
+					'search'         => "*{$search_string}*",
+					'search_columns' => array(
+						'user_login',
+						'user_nicename',
+						'user_email',
 					),
-					false
-				);
-				if ( ! empty( $user_items ) ) {
-					foreach ( $user_items as $user ) {
-						$user->display_name = get_userdata( $user->user_id )->display_name;
-					}
-					$response->data = $user_items;
-				}
-			} else {
-				$search_string = sanitize_text_field( $params['search'] );
-				$users         = get_users(
-					array(
-						'search'         => "*{$search_string}*",
-						'search_columns' => array(
-							'user_login',
-							'user_nicename',
-							'user_email',
-						),
-						'fields'         => array( 'ID', 'display_name', 'user_login', 'user_email' ),
-					)
-				);
-				if ( ! empty( $users ) ) {
-					$response->data = $users;
-				}
+					'number'         => 10,
+					'fields'         => array( 'ID', 'display_name', 'user_login', 'user_email' ),
+				)
+			);
+			if ( ! empty( $users ) ) {
+				$response->data = $users;
 			}
 			$response->status = 'success';
 		} catch ( Throwable $e ) {
-			error_log( $e->getMessage() );
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
-		return rest_ensure_response( $response );
+
+		return $response;
 	}
 
 	/**
@@ -426,12 +417,15 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 	}
 
 	/**
-	 * [assign_course assign users to course]
-	 * @param  WP_REST_Request $request [description]
-	 * @return [type]                   [description]
+	 * Enroll users to courses
+	 * @param WP_REST_Request $request [description]
+	 * @return LP_REST_Response
+	 * @since 4.2.5
+	 * @version 1.0.0
 	 */
-	public function assign_course( WP_REST_Request $request ) {
+	public function assign_courses_to_users( WP_REST_Request $request ): LP_REST_Response {
 		$response = new LP_REST_Response();
+
 		try {
 			$params    = $request->get_params();
 			$course_id = (int) $params['course_id'];
@@ -468,7 +462,8 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 		} catch ( Throwable $e ) {
 			$response->message = $e->getMessage();
 		}
-		return rest_ensure_response( $response );
+
+		return $response;
 	}
 
 	/**
