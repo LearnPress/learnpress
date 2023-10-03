@@ -210,7 +210,7 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
-= 4.2.4 (2023-10-02) =
+= 4.2.4 (2023-10-03) =
 ~ Fixed: error Paypal Standard (use IPN), replace to use API REST, client ID, client secret.
 ~ Clean resource.
 ~ Check load Widget Elementor on hooks plugins_loaded.
