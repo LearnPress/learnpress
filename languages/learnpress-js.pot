@@ -4,15 +4,15 @@ msgid ""
 msgstr "Content-Type: text/plain; charset=utf-8\n"
 
 #: assets/src/apps/js/admin/pages/tools/reset-data/course.js:118
-msgid "Reset course progress"
+msgid "Reset Course Progress"
 msgstr ""
 
 #: assets/src/apps/js/admin/pages/tools/reset-data/course.js:120
-msgid "This action will reset progress of a course for all users have enrolled."
+msgid "This action will reset course progress of all users who have enrolled."
 msgstr ""
 
 #: assets/src/apps/js/admin/pages/tools/reset-data/course.js:121
-msgid "Search results only show course have user data."
+msgid "Search results only show if courses have user data."
 msgstr ""
 
 #: assets/src/apps/js/admin/pages/tools/reset-data/course.js:124
