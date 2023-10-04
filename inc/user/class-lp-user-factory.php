@@ -165,7 +165,7 @@ class LP_User_Factory {
 	 *
 	 * @author  tungnx
 	 * @since   4.1.3
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 */
 	protected static function handle_item_order_completed( LP_Order $order, LP_User $user, $item ) {
 		$lp_user_items_db = LP_User_Items_DB::getInstance();

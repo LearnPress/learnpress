@@ -29,12 +29,32 @@ class LP_User_Items_DB extends LP_Database {
 	}
 
 	/**
+	 * Insert data
+	 *
+	 * @param $data array [ user_id, item_id, start_time, end_time, item_type, status, graduation, ref_id, ref_type, parent_id ]
+	 * @return int
+	 * @since 4.2.5
+	 * @version 1.0.0
+	 */
+	public function insert_data( array $data ): int {
+		if ( empty( $data['start_time'] ) ) {
+			unset( $data['start_time'] );
+		}
+		if ( empty( $data['end_time'] ) ) {
+			unset( $data['end_time'] );
+		}
+
+		$this->wpdb->insert( $this->tb_lp_user_items, $data );
+		return $this->wpdb->insert_id;
+	}
+
+	/**
 	 * Get users items
 	 *
 	 * @return array|null|int|string
 	 * @throws Exception
 	 * @since 4.1.6.9
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function get_user_items( LP_User_Items_Filter $filter, int &$total_rows = 0 ) {
 		$default_fields = $this->get_cols_of_table( $this->tb_lp_user_items );
@@ -50,6 +70,10 @@ class LP_User_Items_DB extends LP_Database {
 
 		if ( $filter->ref_id ) {
 			$filter->where[] = $this->wpdb->prepare( 'AND ui.ref_id = %d', $filter->ref_id );
+		}
+
+		if ( $filter->user_item_id ) {
+			$filter->where[] = $this->wpdb->prepare( 'AND ui.user_item_id = %s', $filter->user_item_id );
 		}
 
 		$filter = apply_filters( 'lp/user_items/query/filter', $filter );
@@ -252,33 +276,6 @@ class LP_User_Items_DB extends LP_Database {
 				}
 			}
 		}
-	}
-
-	/**
-	 * Get total courses is has graduation is 'in_progress'
-	 *
-	 * @param int $user_id
-	 * @param string $status
-	 * @return int
-	 * @throws Exception
-	 */
-	public function get_total_courses_has_status( int $user_id, string $status ): int {
-		$query = $this->wpdb->prepare(
-			"
-			SELECT COUNT(DISTINCT(ui.item_id)) total
-			FROM $this->tb_lp_user_items AS ui
-			WHERE ui.item_type = %s
-			AND ui.user_id = %d
-			AND ui.graduation = %s
-			",
-			LP_COURSE_CPT,
-			$user_id,
-			$status
-		);
-
-		$this->check_execute_has_error();
-
-		return (int) $this->wpdb->get_var( $query );
 	}
 
 	/**
@@ -630,7 +627,6 @@ class LP_User_Items_DB extends LP_Database {
 			$filter->item_id = $course_id;
 
 			$user_course_ids = $lp_user_items_db->get_ids_course_user( $filter );
-
 			if ( empty( $user_course_ids ) ) {
 				return;
 			}

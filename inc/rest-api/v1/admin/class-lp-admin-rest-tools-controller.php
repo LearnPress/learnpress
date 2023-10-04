@@ -427,9 +427,9 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 		$response = new LP_REST_Response();
 
 		try {
-			$params    = $request->get_params();
-			$course_id = (int) $params['course_id'];
-
+			$params      = $request->get_params();
+			$course_id   = absint( $params['course_id'] ?? 0 );
+			$course_ids  = $params['course_ids'] ?? [ 1155, 1117 ];
 			$assign_type = sanitize_text_field( $params['assign_type'] );
 			if ( $assign_type == 'user' ) {
 				$assign_value = map_deep( $params['assign_value'], 'intval' );
@@ -443,21 +443,28 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 					)
 				);
 				$user_ids         = map_deep( $user_get_by_role, 'intval' );
-				// $user_ids         = [];
-				// foreach ( $user_get_by_role as $id ) {
-				// 	$lp_user = learn_press_get_user( $id );
-				// 	if ( $lp_user->can_enroll_course( $course_id ) || $lp_user->can_purchase_course( $course_id ) ) {
-				// 		$user_ids[] = $id;
-				// 	}
-				// }
 			}
-			$assign_to_course = $this->add_user_to_course( $course_id, $user_ids );
-			if ( ! $assign_to_course ) {
-				throw new Exception( 'Cannot assign selected user to course.', 'learnpress' );
+
+			foreach ( $user_ids as $user_id ) {
+				foreach ( $course_ids as $course_id ) {
+					// Delete data user who already enrolled this course.
+					LP_User_Items_DB::getInstance()->delete_user_items_old( $user_id, $course_id );
+					// End
+
+					// Insert new data user to user_item table.
+					$user_course_new             = new LP_User_Item( [] );
+					$user_course_new->user_id    = $user_id;
+					$user_course_new->item_id    = $course_id;
+					$user_course_new->item_type  = LP_COURSE_CPT;
+					$user_course_new->status     = LP_COURSE_ENROLLED;
+					$user_course_new->graduation = LP_COURSE_GRADUATION_IN_PROGRESS;
+					$user_course_new->start_time = gmdate( LP_Datetime::$format, time() );
+					$user_course_new->save();
+					// End
+				}
 			}
-			$this->update_course_cache( $course_id );
-			$response->status = 'success';
-			// $response->data    = $params;
+
+			$response->status  = 'success';
 			$response->message = __( 'Assign user to course successfully.', 'learnpress' );
 		} catch ( Throwable $e ) {
 			$response->message = $e->getMessage();

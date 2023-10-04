@@ -11,7 +11,14 @@ defined( 'ABSPATH' ) or die();
 <div id="learn-press-assign-course" class="card">
 	<h2><?php _e( 'Assign Course', 'learnpress' ); ?></h2>
 	<div class="description">
-		<?php _e( 'User can enroll in a specific course by manually assign to them.', 'learnpress' ); ?>
+		<p>
+			<?php _e( 'User can enroll in a specific course by manually assign to them.', 'learnpress' ); ?>
+		</p>
+		<p>
+			<i>
+				<?php _e( 'Noted: when assign user to course, the progress old of user with course assign will eraser, so be careful before do this.', 'learnpress' ); ?>
+			</i>
+		</p>
 	</div>
 	<div class="content">
 		<form id="lp-assign-course-form">
