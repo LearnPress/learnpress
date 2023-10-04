@@ -468,8 +468,10 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 	 *
 	 * @return mixed
 	 * @since 3.1.0
+	 * @deprecated 4.2.5
 	 */
 	public function get_item_by( $field, $value = '' ) {
+		_deprecated_function( __METHOD__, '4.2.5' );
 		if ( $rows = $this->get_items_by( $field, $value ) ) {
 			return $rows[0];
 		}
@@ -485,8 +487,10 @@ class LP_User_Item_CURD implements LP_Interface_CURD {
 	 *
 	 * @return array
 	 * @since 3.1.0
+	 * @deprecated 4.2.5
 	 */
 	public function get_items_by( $field, $value = '' ) {
+		_deprecated_function( __METHOD__, '4.2.5' );
 		global $wpdb;
 
 		$where = '';
