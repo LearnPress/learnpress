@@ -1,6 +1,7 @@
 <?php
 
 use LearnPress\Helpers\Template;
+use LearnPress\Models\UserItemCourseModel;
 
 /**
  * Class LP_REST_Admin_Tools_Controller
@@ -452,7 +453,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 					// End
 
 					// Insert new data user to user_item table.
-					$user_course_new             = new LP_User_Item( [] );
+					$user_course_new             = new UserItemCourseModel();
 					$user_course_new->user_id    = $user_id;
 					$user_course_new->item_id    = $course_id;
 					$user_course_new->item_type  = LP_COURSE_CPT;
@@ -465,7 +466,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 			}
 
 			$response->status  = 'success';
-			$response->message = __( 'Assign user to course successfully.', 'learnpress' );
+			$response->message = __( 'Assign users to courses successfully.', 'learnpress' );
 		} catch ( Throwable $e ) {
 			$response->message = $e->getMessage();
 		}

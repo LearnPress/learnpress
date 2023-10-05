@@ -6,7 +6,7 @@
  *
  * @author  tungnx
  * @package LearnPress/Classes/Filters
- * @version 4.0.0
+ * @version 4.0.1
  */
 
 /**
@@ -16,6 +16,22 @@ defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_User_Items_Filter' ) ) {
 	class LP_User_Items_Filter extends LP_Filter {
+		/**
+		 * @var string[] all fields of table
+		 */
+		public $all_fields = [
+			'user_item_id',
+			'user_id',
+			'item_id',
+			'start_time',
+			'end_time',
+			'item_type',
+			'status',
+			'graduation',
+			'ref_id',
+			'ref_type',
+			'parent_id',
+		];
 		/**
 		 * @var int
 		 */
@@ -35,7 +51,7 @@ if ( ! class_exists( 'LP_User_Items_Filter' ) ) {
 		/**
 		 * @var array int
 		 */
-		public $course_ids = [];
+		public $item_ids = [];
 		/**
 		 * @var string
 		 */

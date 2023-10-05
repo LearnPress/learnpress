@@ -114,7 +114,7 @@
                             $('.assign-to-container').find('.select2-container').hide();
                             alert(res.message);
                         } else {
-                            alert($('#assign-course-message').data('assign-error'));
+							alert( res.message );
                         }
                     },
                     error: function(request, status, error) {

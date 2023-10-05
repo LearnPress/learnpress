@@ -722,7 +722,7 @@ class LP_Database {
 
 		// SET value
 		$SET = apply_filters( 'lp/query/update/set', $filter->set, $filter );
-		$SET = implode( ' ', array_unique( $SET ) );
+		$SET = implode( ',', array_unique( $SET ) );
 
 		// Where
 		$WHERE = array( 'WHERE 1=1' );
