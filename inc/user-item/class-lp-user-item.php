@@ -11,63 +11,63 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 	 *
 	 * @var int
 	 */
-	public $user_item_id = 0;
+	public $_user_item_id = 0;
 	/**
 	 * User id
 	 *
 	 * @var string
 	 */
-	public $user_id = 0;
+	public $_user_id = 0;
 	/**
 	 * Item id (course, lesson, quiz ...)
 	 *
 	 * @var string
 	 */
-	public $item_id = 0;
+	public $_item_id = 0;
 	/**
 	 * @var string
 	 */
-	public $start_time = '';
+	public $_start_time = '';
 	/**
 	 * @var string
 	 */
-	public $end_time = '';
+	public $_end_time = '';
 	/**
 	 * Item type (course, lesson, quiz ...)
 	 *
 	 * @var string
 	 */
-	public $item_type = '';
+	public $_item_type = '';
 	/**
 	 * Status
 	 *
 	 * @var string
 	 */
-	public $status = '';
+	public $_status = '';
 	/**
 	 * Graduation
 	 *
 	 * @var string
 	 */
-	public $graduation = '';
+	public $_graduation = '';
 	/**
 	 * Ref id (Order, course ...)
 	 *
 	 * @var string
 	 */
-	public $ref_id = '';
+	public $_ref_id = '';
 	/**
 	 * Ref type (Order, course ...)
 	 *
 	 * @var string
 	 */
-	public $ref_type = '';
+	public $_ref_type = '';
 	/**
 	 * Parent id
 	 *
 	 * @var string
 	 */
-	public $parent_id = '';
+	public $_parent_id = '';
 	/**
 	 * Key get data start time form DB.
 	 */
@@ -680,91 +680,6 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 		}
 
 		return $rs;
-	}
-
-	/**
-	 * Update data to database.
-	 *
-	 * @since 4.2.5
-	 * @version 1.0.0
-	 * @return false|LP_User_Item
-	 */
-	public function save() {
-		$lp_user_item_db  = LP_User_Items_DB::getInstance();
-		$user_item_id_new = 0;
-
-		try {
-			$data = [];
-			foreach ( get_object_vars( $this ) as $k => $v ) {
-				$data[ $k ] = $v;
-			}
-
-			// Check if exists user_item_id
-			if ( empty( $this->user_item_id ) ) {
-				if ( isset( $data['start_time'] ) ) {
-					$data['start_time'] = gmdate( 'Y-m-d H:i:s', time() );
-				}
-
-				$data_default = array(
-					'user_id'    => 0,
-					'item_id'    => 0,
-					'start_time' => '',
-					'end_time'   => '',
-					'item_type'  => '',
-					'status'     => '',
-					'graduation' => '',
-					'ref_id'     => 0,
-					'ref_type'   => '',
-					'parent_id'  => 0,
-				);
-
-				$data_insert = [];
-				foreach ( $data_default as $key => $value ) {
-					if ( isset( $data[ $key ] ) ) {
-						$data_insert[ $key ] = $data[ $key ];
-					} else {
-						$data_insert[ $key ] = $value;
-					}
-				}
-
-				$user_item_id_new = $lp_user_item_db->insert_data( $data_insert );
-			} else {
-				$filter_update             = new LP_User_Items_Filter();
-				$filter_update->collection = $lp_user_item_db->tb_lp_user_items;
-				foreach ( get_object_vars( $this ) as $k => $v ) {
-					$filter_update->set[] = $lp_user_item_db->wpdb->prepare( $k . ' = %s', $v );
-				}
-				$filter_update->where[] = $lp_user_item_db->wpdb->prepare( 'AND user_item_id = %d', $this->user_item_id );
-				$lp_user_item_db->update_execute( $filter_update );
-			}
-
-			if ( $user_item_id_new ) {
-				$this->user_item_id = $user_item_id_new;
-			}
-
-			// Clear caches.
-			// Clear cache total students enrolled.
-			if ( LP_COURSE_CPT === $this->item_type
-				&& isset( $this->item_id ) ) {
-				$lp_course_cache = new LP_Course_Cache( true );
-				$lp_course_cache->clean_total_students_enrolled( $this->item_id );
-				$lp_course_cache->clean_total_students_enrolled_or_purchased( $this->item_id );
-			}
-			// Clear cache user item.
-			$lp_user_items_cache = new LP_User_Items_Cache( true );
-			$lp_user_items_cache->clean_user_item(
-				[
-					$this->user_id,
-					$this->item_id,
-					$this->item_type,
-				]
-			);
-		} catch ( Throwable $e ) {
-			error_log( __METHOD__ . ':' . $e->getMessage() );
-			return false;
-		}
-
-		return $this;
 	}
 
 	public function get_status_label( $status = '' ) {
