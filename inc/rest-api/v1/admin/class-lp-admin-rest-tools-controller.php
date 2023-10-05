@@ -1,7 +1,7 @@
 <?php
 
 use LearnPress\Helpers\Template;
-use LearnPress\Models\UserItemCourseModel;
+use LearnPress\Models\UserItems\UserItemCourseModel;
 
 /**
  * Class LP_REST_Admin_Tools_Controller
@@ -457,6 +457,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 					$user_course_new->user_id    = $user_id;
 					$user_course_new->item_id    = $course_id;
 					$user_course_new->item_type  = LP_COURSE_CPT;
+					$user_course_new->ref_type   = '';
 					$user_course_new->status     = LP_COURSE_ENROLLED;
 					$user_course_new->graduation = LP_COURSE_GRADUATION_IN_PROGRESS;
 					$user_course_new->start_time = gmdate( LP_Datetime::$format, time() );

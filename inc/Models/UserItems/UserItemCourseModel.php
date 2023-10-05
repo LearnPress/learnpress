@@ -8,7 +8,7 @@
  * @since 4.2.5
  */
 
-namespace LearnPress\Models;
+namespace LearnPress\Models\UserItems;
 
 use LP_Course_Cache;
 

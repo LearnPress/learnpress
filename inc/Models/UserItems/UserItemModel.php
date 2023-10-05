@@ -2,13 +2,14 @@
 
 /**
  * Class UserItemModel
+ * To replace class LP_User_Item
  *
  * @package LearnPress/Classes
  * @version 1.0.0
  * @since 4.2.5
  */
 
-namespace LearnPress\Models;
+namespace LearnPress\Models\UserItems;
 
 use Exception;
 use LP_User_Items_Cache;
