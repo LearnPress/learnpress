@@ -41,6 +41,7 @@ class LP_User_Items_DB extends LP_Database {
 		$filter = new LP_User_Items_Filter();
 		foreach ( $data as $col_name => $value ) {
 			if ( ! in_array( $col_name, $filter->all_fields ) ) {
+				unset( $data[ $col_name ] );
 				continue;
 			}
 

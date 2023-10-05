@@ -17,7 +17,7 @@ use LP_User_Items_DB;
 
 class UserItemModel {
 	/**
-	 * Auto increment
+	 * Auto increment, Primary key
 	 *
 	 * @var int
 	 */
@@ -120,8 +120,8 @@ class UserItemModel {
 		$lp_user_item_db  = LP_User_Items_DB::getInstance();
 		$user_item_id_new = 0;
 		$data             = [];
-		foreach ( get_object_vars( $this ) as $k => $v ) {
-			$data[ $k ] = $v;
+		foreach ( get_object_vars( $this ) as $property => $value ) {
+			$data[ $property ] = $value;
 		}
 
 		if ( ! isset( $data['start_time'] ) ) {

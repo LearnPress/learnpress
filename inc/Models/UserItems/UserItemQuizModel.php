@@ -8,11 +8,9 @@
  * @since 4.2.5
  */
 
-namespace LearnPress\UserItems\Models;
+namespace LearnPress\Models\UserItems;
 
 use Exception;
-use LearnPress\Models\UserItems\UserItemModel;
-use LearnPress\Models\UserItems\UserItemQuizMetaModel;
 use LP_Datetime;
 
 /**
@@ -37,6 +35,15 @@ class UserItemQuizModel extends UserItemModel {
 	 * @var UserItemQuizMetaModel
 	 */
 	public $meta_data;
+
+	/**
+	 * Get status
+	 *
+	 * @return string
+	 */
+	public function get_status(): string {
+		return $this->status;
+	}
 
 	/**
 	 * Retake quiz.
