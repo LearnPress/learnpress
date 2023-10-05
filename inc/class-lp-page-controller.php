@@ -56,8 +56,6 @@ class LP_Page_Controller {
 			// Set link profile to admin menu
 			//add_action( 'admin_bar_menu', array( $this, 'learn_press_edit_admin_bar' ) );
 
-			// Web hook detected PayPal request.
-			add_action( 'init', [ $this, 'check_webhook_paypal_ipn' ] );
 			// Set again x-wp-nonce on header when has cache with not login.
 			add_filter( 'rest_send_nocache_headers', array( $this, 'check_x_wp_nonce_cache' ) );
 
@@ -1096,43 +1094,6 @@ class LP_Page_Controller {
 					'href'   => learn_press_user_profile_link( $user_id, false ),
 				)
 			);
-		}
-	}
-
-	/**
-	 * Check notify papal call when done.
-	 *
-	 * Set in param notify_url on @see LP_Gateway_Paypal::get_paypal_args()
-	 */
-	public function check_webhook_paypal_ipn() {
-		//error_log( 'xxx:' . json_encode( $_POST, JSON_UNESCAPED_UNICODE ) );
-
-		// Paypal payment done
-		if ( ! isset( $_GET['paypal_notify'] ) ) {
-			return;
-		}
-
-		if ( ! isset( $_POST['ipn_track_id'] ) ) {
-			return;
-		}
-
-		try {
-			$paypal = LP_Gateway_Paypal::instance();
-			$verify = $paypal->validate_ipn();
-
-			if ( $verify ) {
-				if ( isset( $_POST['custom'] ) ) {
-					$data_order = json_decode( LP_Helper::sanitize_params_submitted( $_POST['custom'] ) );
-
-					if ( json_last_error() === JSON_ERROR_NONE ) {
-						$order_id = $data_order->order_id;
-						$lp_order = learn_press_get_order( $order_id );
-						$lp_order->update_status( LP_ORDER_COMPLETED );
-					}
-				}
-			}
-		} catch ( Throwable $e ) {
-			error_log( $e->getMessage() );
 		}
 	}
 

@@ -319,6 +319,12 @@ class LP_Section_DB extends LP_Database {
 			$filter->where[] = $this->wpdb->prepare( 'AND si.section_id = %s', $filter->section_id );
 		}
 
+		// Order items
+		if ( empty( $filter->order_by ) ) {
+			$filter->order_by = 'si.item_order';
+			$filter->order    = 'ASC';
+		}
+
 		$filter = apply_filters( 'lp/section/items/query/filter', $filter );
 
 		return $this->execute( $filter, $total_rows );

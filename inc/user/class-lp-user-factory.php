@@ -171,8 +171,9 @@ class LP_User_Factory {
 		$lp_user_items_db = LP_User_Items_DB::getInstance();
 
 		try {
-			$course      = learn_press_get_course( $item['course_id'] );
-			$auto_enroll = LP_Settings::is_auto_start_course();
+			$course                     = learn_press_get_course( $item['course_id'] );
+			$auto_enroll                = LP_Settings::is_auto_start_course();
+			$keep_progress_items_course = false;
 
 			$user_id = $user->get_id();
 			if ( $user instanceof LP_User_Guest ) {
@@ -203,12 +204,14 @@ class LP_User_Factory {
 			}
 
 			// If > 1 time purchase same course and allow repurchase
-			if ( ! empty( $allow_repurchase_type ) && $course->allow_repurchase() && ! empty( $latest_user_item_id ) && ! $course->is_free() ) {
+			if ( ! empty( $allow_repurchase_type ) && $course->allow_repurchase()
+				&& ! empty( $latest_user_item_id ) && ! $course->is_free() ) {
 				/**
 				 * If keep course progress will reset start_time, end_time, status, graduation
 				 * where user_item_id = $latest_user_item_id
 				 */
 				if ( $allow_repurchase_type === 'keep' ) {
+					$keep_progress_items_course = true;
 					// Set data for update user item
 					$user_item_data['user_item_id'] = $latest_user_item_id;
 					$user_item_data['start_time']   = time();
@@ -239,6 +242,11 @@ class LP_User_Factory {
 				// Set data for create user_item
 				$user_item_data['status']     = LP_COURSE_ENROLLED;
 				$user_item_data['graduation'] = LP_COURSE_GRADUATION_IN_PROGRESS;
+			}
+
+			// Delete items old
+			if ( ! $keep_progress_items_course ) {
+				$lp_user_items_db->delete_user_items_old( $user_id, $item['course_id'] );
 			}
 
 			$user_item_new_or_update = new LP_User_Item_Course( $user_item_data );

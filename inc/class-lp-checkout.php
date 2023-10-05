@@ -492,11 +492,9 @@ class LP_Checkout {
 						$error = $error->get_error_message();
 						throw new Exception( $error );
 					}
-					//$messages[ $key ] = array( $error, 'error' );
 				}
 			} else {
-				//LearnPress::instance()->cart->calculate_totals();
-				// maybe throw new exception
+
 				$this->validate_payment();
 
 				// Create order if not handle done.
@@ -520,8 +518,6 @@ class LP_Checkout {
 						if ( 'success' === $result['result'] ) {
 							// Clear cart.
 							LearnPress::instance()->get_cart()->empty_cart();
-							// Clear order_awaiting_payment.
-							//$lp_session->remove( 'order_awaiting_payment', true );
 							$result = apply_filters( 'learn-press/payment-successful-result', $result, $order_id );
 						}
 
@@ -554,8 +550,6 @@ class LP_Checkout {
 
 						// Clear cart.
 						LearnPress::instance()->get_cart()->empty_cart();
-						// Clear order_awaiting_payment.
-						//$lp_session->remove( 'order_awaiting_payment', true );
 
 						$result = array(
 							'result'   => 'success',

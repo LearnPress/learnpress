@@ -8,9 +8,17 @@
  */
 
 $option_value = $value['value'];
+$visibility_class = [];
+if ( isset( $value['show_if_checked'] ) ) {
+	$visibility_class[] = 'show_if_' . $value['show_if_checked'];
+
+	if ( 'no' === LP_Settings::get_option( $value['show_if_checked'] ) ) {
+		$visibility_class[] = 'hidden';
+	}
+}
 ?>
 
-<tr valign="top">
+<tr valign="top" class="<?php echo esc_attr( implode( ' ', $visibility_class ) ); ?>">
 	<th scope="row" class="titledesc">
 		<label for="<?php echo esc_attr( $value['id'] ); ?>">
 			<?php echo wp_kses_post( $value['title'] ); ?>
