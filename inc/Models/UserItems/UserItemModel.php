@@ -12,8 +12,12 @@
 namespace LearnPress\Models\UserItems;
 
 use Exception;
+use LP_User;
 use LP_User_Items_Cache;
 use LP_User_Items_DB;
+use LP_User_Items_Filter;
+use stdClass;
+use Throwable;
 
 class UserItemModel {
 	/**
@@ -76,6 +80,10 @@ class UserItemModel {
 	 * @var int
 	 */
 	public $parent_id = 0;
+	/**
+	 * @var LP_User|null
+	 */
+	public $user;
 
 	/**
 	 * If data get from database, map to object.
@@ -107,6 +115,36 @@ class UserItemModel {
 	}
 
 	/**
+	 * Get user item from database by user_id, item_id, item_type.
+	 * If not exists, return false.
+	 * If exists, return UserItemModel.
+	 *
+	 * @param LP_User_Items_Filter $filter
+	 * @param bool $no_cache
+	 * @return UserItemModel|false
+	 */
+	public static function get_user_item_model_from_db( LP_User_Items_Filter $filter, bool $no_cache = false ) {
+		$lp_user_item_db = LP_User_Items_DB::getInstance();
+		$user_item_model = false;
+
+		try {
+			$filter->order    = $filter::ORDER_DESC;
+			$filter->order_by = $filter::COL_USER_ITEM_ID;
+			$lp_user_item_db->get_query_single_row( $filter );
+			$query_single_row = $lp_user_item_db->get_user_items( $filter );
+			$user_item_rs     = $lp_user_item_db->wpdb->get_row( $query_single_row );
+			if ( $user_item_rs instanceof stdClass ) {
+				$user_item_model       = new self( $user_item_rs );
+				$user_item_model->user = learn_press_get_user( $user_item_model->user_id );
+			}
+		} catch ( Throwable $e ) {
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
+		}
+
+		return $user_item_model;
+	}
+
+	/**
 	 * Update data to database.
 	 *
 	 * If user_item_id is empty, insert new data, else update data.
@@ -130,6 +168,16 @@ class UserItemModel {
 
 		// Check if exists user_item_id.
 		if ( empty( $this->user_item_id ) ) { // Insert data.
+			if ( empty( $data['user_id'] ) ) {
+				throw new Exception( 'User ID is require.' );
+			}
+			if ( empty( $data['item_id'] ) ) {
+				throw new Exception( 'Item ID is require.' );
+			}
+			if ( empty( $data['item_type'] ) ) {
+				throw new Exception( 'Item Type is require.' );
+			}
+
 			$user_item_id_new = $lp_user_item_db->insert_data( $data );
 			if ( empty( $user_item_id_new ) ) {
 				throw new Exception( 'Cannot insert data to database.' );

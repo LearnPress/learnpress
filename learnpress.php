@@ -250,27 +250,29 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/Filters/class-lp-section-items-filter.php';
 			require_once 'inc/Filters/class-lp-question-filter.php';
 			require_once 'inc/Filters/class-lp-user-items-filter.php';
+			require_once 'inc/Filters/class-lp-user-item-meta-filter.php';
 			require_once 'inc/Filters/class-lp-quiz-questions-filter.php';
 			require_once 'inc/Filters/class-lp-question-answers-filter.php';
 			require_once 'inc/Filters/class-lp-question-answermeta-filter.php';
 
 			// Query Database .
-			require_once 'inc/databases/class-lp-db.php';
-			require_once 'inc/databases/class-lp-order-db.php';
-			require_once 'inc/databases/class-lp-course-db.php';
-			require_once 'inc/databases/class-lp-lesson-db.php';
-			require_once 'inc/databases/class-lp-section-db.php';
-			require_once 'inc/databases/class-lp-section-items-db.php';
-			require_once 'inc/databases/class-lp-quiz-db.php';
-			require_once 'inc/databases/class-lp-quiz-questions-db.php';
-			require_once 'inc/databases/class-lp-question-answers-db.php';
-			require_once 'inc/databases/class-lp-sessions-db.php';
-			require_once 'inc/databases/class-lp-question-db.php';
-			require_once 'inc/databases/class-lp-user-items-db.php';
-			require_once 'inc/databases/class-lp-user-item-results-db.php';
-			require_once 'inc/databases/class-thim-cace-db.php';
-			require_once 'inc/databases/class-lp-material-db.php';
-			require_once 'inc/databases/class-lp-wpdb-multiple.php';
+			require_once 'inc/Databases/class-lp-db.php';
+			require_once 'inc/Databases/class-lp-order-db.php';
+			require_once 'inc/Databases/class-lp-course-db.php';
+			require_once 'inc/Databases/class-lp-lesson-db.php';
+			require_once 'inc/Databases/class-lp-section-db.php';
+			require_once 'inc/Databases/class-lp-section-items-db.php';
+			require_once 'inc/Databases/class-lp-quiz-db.php';
+			require_once 'inc/Databases/class-lp-quiz-questions-db.php';
+			require_once 'inc/Databases/class-lp-question-answers-db.php';
+			require_once 'inc/Databases/class-lp-sessions-db.php';
+			require_once 'inc/Databases/class-lp-question-db.php';
+			require_once 'inc/Databases/class-lp-user-items-db.php';
+			require_once 'inc/Databases/class-lp-user-item-meta-db.php';
+			require_once 'inc/Databases/class-lp-user-item-results-db.php';
+			require_once 'inc/Databases/class-thim-cace-db.php';
+			require_once 'inc/Databases/class-lp-material-db.php';
+			require_once 'inc/Databases/class-lp-wpdb-multiple.php';
 			// Read files config on folder config .
 			//require_once 'inc/Helper/Config.php';
 

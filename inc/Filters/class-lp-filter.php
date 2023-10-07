@@ -13,6 +13,8 @@
 defined( 'ABSPATH' ) || exit();
 
 class LP_Filter {
+	const ORDER_DESC = 'DESC';
+	const ORDER_ASC  = 'ASC';
 	/**
 	 * @var int set -1 for no limit
 	 */

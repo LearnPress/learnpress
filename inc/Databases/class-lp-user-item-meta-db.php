@@ -22,6 +22,50 @@ class LP_User_Item_Meta_DB extends LP_Database {
 		return self::$_instance;
 	}
 
+	/**
+	 * Get user item metas
+	 *
+	 * @return array|null|int|string
+	 * @throws Exception
+	 * @since 4.2.5
+	 * @version 1.0.0
+	 */
+	public function get_user_item_metas( LP_User_Item_Meta_Filter $filter, int &$total_rows = 0 ) {
+		$filter->fields = array_merge( $filter->all_fields, $filter->fields );
+
+		if ( empty( $filter->collection ) ) {
+			$filter->collection = $this->tb_lp_user_itemmeta;
+		}
+
+		if ( empty( $filter->collection_alias ) ) {
+			$filter->collection_alias = 'uim';
+		}
+
+		if ( ! empty( $filter->meta_id ) ) {
+			$filter->where[] = $this->wpdb->prepare( 'AND uim.meta_id = %d', $filter->meta_id );
+		}
+
+		if ( ! empty( $filter->learnpress_user_item_id ) ) {
+			$filter->where[] = $this->wpdb->prepare( 'AND uim.learnpress_user_item_id = %d', $filter->learnpress_user_item_id );
+		}
+
+		if ( ! empty( $filter->meta_key ) ) {
+			$filter->where[] = $this->wpdb->prepare( 'AND uim.meta_key = %s', $filter->meta_key );
+		}
+
+		if ( ! empty( $filter->meta_value ) ) {
+			$filter->where[] = $this->wpdb->prepare( 'AND uim.meta_value = %s', $filter->meta_value );
+		}
+
+		if ( ! empty( $filter->extra_value ) ) {
+			$filter->where[] = $this->wpdb->prepare( 'AND uim.extra_value = %s', $filter->extra_value );
+		}
+
+		$filter = apply_filters( 'lp/user_item_meta/query/filter', $filter );
+
+		return $this->execute( $filter, $total_rows );
+	}
+
 
 	/**
 	 * Insert data

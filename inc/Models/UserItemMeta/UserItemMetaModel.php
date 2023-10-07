@@ -12,6 +12,7 @@
 namespace LearnPress\Models\UserItemMeta;
 
 use Exception;
+use LP_User_Item_Meta_DB;
 
 class UserItemMetaModel {
 	/**
@@ -31,11 +32,11 @@ class UserItemMetaModel {
 	/**
 	 * @var string meta value
 	 */
-	public $meta_value = null;
+	public $meta_value = '';
 	/**
-	 * @var string Extra value JSON
+	 * @var string Extra value
 	 */
-	public $extra_value = null;
+	public $extra_value = '';
 
 	/**
 	 * If data get from database, map to object.
@@ -77,7 +78,26 @@ class UserItemMetaModel {
 	 * @version 1.0.0
 	 */
 	public function save(): UserItemMetaModel {
-		//Todo: write code to save/update data to database.
+		$lp_user_item_meta_db = LP_User_Item_Meta_DB::getInstance();
+		$data                 = [];
+		foreach ( get_object_vars( $this ) as $property => $value ) {
+			$data[ $property ] = $value;
+		}
+
+		// Check if exists user_item_id.
+		if ( empty( $this->meta_id ) ) { // Insert data.
+			$meta_id_new = $lp_user_item_meta_db->insert_data( $data );
+			if ( empty( $user_item_id_new ) ) {
+				throw new Exception( __METHOD__ . ': ' . 'Cannot insert data to database.' );
+			}
+		} else { // Update data.
+			$lp_user_item_meta_db->update_data( $data );
+		}
+
+		if ( ! empty( $meta_id_new ) ) {
+			$this->meta_id = $meta_id_new;
+		}
+
 		$this->clean_caches();
 
 		return $this;

@@ -1,7 +1,7 @@
 <?php
 
 use LearnPress\Helpers\Template;
-use LearnPress\Models\UserItems\UserItemCourseModel;
+use LearnPress\Models\UserItems\UserCourseModel;
 
 /**
  * Class LP_REST_Admin_Tools_Controller
@@ -453,7 +453,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 					// End
 
 					// Insert new data user to user_item table.
-					$user_course_new             = new UserItemCourseModel();
+					$user_course_new             = new UserCourseModel();
 					$user_course_new->user_id    = $user_id;
 					$user_course_new->item_id    = $course_id;
 					$user_course_new->item_type  = LP_COURSE_CPT;

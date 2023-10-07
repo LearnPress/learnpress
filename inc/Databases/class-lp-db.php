@@ -571,6 +571,18 @@ class LP_Database {
 	}
 
 	/**
+	 * Get query string single row
+	 *
+	 * @since 4.2.5
+	 * @version 1.0.0
+	 */
+	public function get_query_single_row( LP_Filter &$filter ) {
+		$filter->limit               = 1;
+		$filter->return_string_query = true;
+		$filter->run_query_count     = false;
+	}
+
+	/**
 	 * Get result query
 	 *
 	 * @return array|object|null|int|string
