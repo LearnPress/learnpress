@@ -163,50 +163,68 @@ class LP_Order_DB extends LP_Database {
 		);
 	}
 
-	public function date_filter( LP_Order_Filter $filter, string $date ) {
-		// $filter->only_fields[] = 'count( p.ID) as count_order';
+	public function chart_filter_date_group_by( LP_Order_Filter $filter ) {
 		$filter->only_fields[] = 'HOUR(p.post_date) as order_time';
-		$filter->where[]       = $this->wpdb->prepare( 'AND cast( p.post_date as DATE)= cast(%s as DATE)', $date );
 		$filter->group_by      = 'order_time';
-
 		return $filter;
 	}
 
-	public function previous_days_filter( LP_Order_Filter $filter, int $day ) {
-		if ( $day < 2 ) {
+	public function chart_filter_previous_days_group_by( LP_Order_Filter $filter ) {
+		$filter->only_fields[] = 'CAST(p.post_date AS DATE) as order_time';
+		$filter->group_by      = 'order_time';
+		return $filter;
+	}
+
+	public function chart_filter_month_group_by( LP_Order_Filter $filter ) {
+		$filter->only_fields[] = 'DAY(p.post_date) as order_time';
+		$filter->group_by      = 'order_time';
+		return $filter;
+	}
+
+	public function chart_filter_previous_months_group_by( LP_Order_Filter $filter ) {
+		$filter->only_fields[] = 'DATE_FORMAT( p.post_date , "%b-%Y") as order_time';
+		$filter->group_by      = 'order_time';
+		return $filter;
+	}
+
+	public function chart_filter_year_group_by( LP_Order_Filter $filter ) {
+		$filter->only_fields[] = 'MONTH(p.post_date) as order_time';
+		$filter->group_by      = 'order_time';
+		return $filter;
+	}
+
+	public function date_filter( LP_Order_Filter $filter, string $date ) {
+		$filter->where[] = $this->wpdb->prepare( 'AND cast( p.post_date as DATE)= cast(%s as DATE)', $date );
+		return $filter;
+	}
+
+	public function previous_days_filter( LP_Order_Filter $filter, int $value ) {
+		if ( $value < 2 ) {
 			throw new Exception( 'Day must be greater than 2 days.', 'learnpress' );
 		}
-		// $filter->only_fields[] = 'count( p.ID) as count_order';
-		$filter->only_fields[] = 'DAY(p.post_date) as order_time';
-		$filter->where[]       = $this->wpdb->prepare( 'AND p.post_date >= DATE_ADD(CURDATE(), INTERVAL -%d DAY)', $day );
-		$filter->group_by      = 'order_time';
-
+		$filter->where[] = $this->wpdb->prepare( 'AND p.post_date >= DATE_ADD(CURDATE(), INTERVAL -%d DAY)', $value );
 		return $filter;
 	}
 
 	public function month_filter( LP_Order_Filter $filter, string $date ) {
-		// $filter->only_fields[] = 'count( p.ID) as count_order';
-		$filter->only_fields[] = 'DAY(p.post_date) as order_time';
-		$filter->where[]       = $this->wpdb->prepare( 'AND EXTRACT(YEAR_MONTH FROM p.post_date)= EXTRACT(YEAR_MONTH FROM %s)', $date );
-		$filter->group_by      = 'order_time';
+		$filter->where[] = $this->wpdb->prepare( 'AND EXTRACT(YEAR_MONTH FROM p.post_date)= EXTRACT(YEAR_MONTH FROM %s)', $date );
+		return $filter;
+	}
 
+	public function previous_months_filter( LP_Order_Filter $filter, int $value ) {
+		if ( $value < 2 ) {
+			throw new Exception( 'Values must be greater than 2 months.', 'learnpress' );
+		}
+		$filter->where[] = $this->wpdb->prepare( 'AND EXTRACT(YEAR_MONTH FROM p.post_date) >= EXTRACT(YEAR_MONTH FROM DATE_ADD(CURDATE(), INTERVAL -%d MONTH))', $value );
 		return $filter;
 	}
 
 	public function year_filter( LP_Order_Filter $filter, string $date ) {
-		// $filter->only_fields[] = 'count( p.ID) as count_order';
-		$filter->only_fields[] = 'MONTH(p.post_date) as order_time';
-		$filter->where[]       = $this->wpdb->prepare( 'AND YEAR(p.post_date)= YEAR(%s)', $date );
-		$filter->group_by      = 'order_time';
-		
+		$filter->where[] = $this->wpdb->prepare( 'AND YEAR(p.post_date)= YEAR(%s)', $date );
 		return $filter;
 	}
 
-	public function get_net_sales_data( $type = '', $value = '' ) {
-		if ( ! $date ) {
-			$date = current_time( 'mysql' );
-		}
-		$date                     = date( 'Y-m-d', strtotime( $date ) );
+	public function get_net_sales_data( string $type, string $value ) {
 		$filter                   = new LP_Order_Filter();
 		$filter->collection       = $this->tb_posts;
 		$filter->collection_alias = 'p';
@@ -217,29 +235,28 @@ class LP_Order_DB extends LP_Database {
 			"INNER JOIN $oi_table AS oi ON p.ID = oi.order_id",
 			"INNER JOIN $oim_table AS oim ON oi.order_item_id = oim.learnpress_order_item_id",
 		];
-		$filter->limit = -1;
-		$filter->where = [
+		$filter->limit            = -1;
+		$filter->where            = [
 			$this->wpdb->prepare( 'AND p.post_type=%s', $filter->post_type ),
 			$this->wpdb->prepare( 'AND p.post_status=%s', LP_ORDER_COMPLETED_DB ),
 			$this->wpdb->prepare( 'AND oim.meta_key=%s', '_total' ),
 		];
-		$filter->order_by = 'p.post_date';
-		$filter->order    = 'asc';
-		$filter->run_query_count = false;
-		$result              = $this->execute( $filter );
+		$filter                   = $this->filter_time( $filter, $type, $value );
+		$filter                   = $this->chart_filter_group_by( $filter, $type );
+		$filter->order_by         = 'p.post_date';
+		$filter->order            = 'asc';
+		$filter->run_query_count  = false;
+		$result                   = $this->execute( $filter );
+		error_log( $this->check_execute_has_error() );
 		return $result;
 	}
 
-	public function filter_order_count_statics( LP_Order_Filter $filter ) {
-		// $filter->query_count = true;
-		$filter->only_fields[]   = 'count( p.ID) as count_order';
-		$filter->only_fields[]   = 'p.post_status';
-		$filter->group_by        = 'p.post_status';
-		$filter->run_query_count = false;
-
-		return $filter;
-	}
-
+	/**
+	 * [get_completed_order_data use this for complete order report chart]
+	 * @param  string $type  [time type filter: date|month|year|previous_days|custom]
+	 * @param  string $value [time value ]
+	 * @return [array]        []
+	 */
 	public function get_completed_order_data( string $type, string $value ) {
 		// $date                     = date( 'Y-m-d', strtotime( $date ) );
 		$filter                   = new LP_Order_Filter();
@@ -247,10 +264,12 @@ class LP_Order_DB extends LP_Database {
 		$filter->collection_alias = 'p';
 
 		$filter->only_fields[] = 'count( p.ID) as count_order';
+		$filter                = $this->filter_time( $filter, $type, $value );
+		$filter                = $this->chart_filter_group_by( $filter, $type );
 
 		$filter->where[] = $this->wpdb->prepare( 'AND p.post_status=%s', LP_ORDER_COMPLETED_DB );
 		$filter->limit   = -1;
-		
+
 		$filter->order_by = 'p.post_date';
 		$filter->order    = 'asc';
 
@@ -270,13 +289,62 @@ class LP_Order_DB extends LP_Database {
 			case 'year':
 				$filter = $this->year_filter( $filter, $value );
 				break;
-			case 'previous_day':
-				$filter = $this->previous_days_filter( $filter, $value );
+			case 'previous_days':
+				$filter = $this->previous_days_filter( $filter, (int) $value );
+				break;
+			case 'previous_months':
+				$filter = $this->previous_months_filter( $filter, (int) $value );
 				break;
 			default:
 				// code...
 				break;
 		}
 		return $filter;
+	}
+	public function chart_filter_group_by( LP_Order_Filter $filter, string $type ) {
+		switch ( $type ) {
+			case 'date':
+				$filter = $this->chart_filter_date_group_by( $filter );
+				break;
+			case 'month':
+				$filter = $this->chart_filter_month_group_by( $filter );
+				break;
+			case 'year':
+				$filter = $this->chart_filter_year_group_by( $filter );
+				break;
+			case 'previous_days':
+				$filter = $this->chart_filter_previous_days_group_by( $filter );
+				break;
+			case 'previous_months':
+				$filter = $this->chart_filter_previous_months_group_by( $filter );
+				break;
+			default:
+				// code...
+				break;
+		}
+		return $filter;
+	}
+
+
+	public function filter_order_count_statics( LP_Order_Filter $filter ) {
+		// $filter->query_count = true;
+		$filter->only_fields[]   = 'count( p.ID) as count_order';
+		$filter->only_fields[]   = 'p.post_status';
+		$filter->group_by        = 'p.post_status';
+		$filter->where[]         = $this->wpdb->prepare( 'AND p.post_status LIKE CONCAT(%s,"%")', 'lp-' );
+		$filter->run_query_count = false;
+
+		return $filter;
+	}
+
+	public function get_order_statics( string $type, $value ) {
+		$filter                   = new LP_Order_Filter();
+		$filter->collection       = $this->tb_posts;
+		$filter->collection_alias = 'p';
+		$filter                   = $this->filter_time( $filter, $type, $value );
+		$filter                   = $this->filter_order_count_statics( $filter );
+		$filter->limit            = -1;
+		$result                   = $this->execute( $filter );
+		return $result;
 	}
 }
