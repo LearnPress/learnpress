@@ -247,7 +247,7 @@ class LP_Order_DB extends LP_Database {
 		$filter->order            = 'asc';
 		$filter->run_query_count  = false;
 		$result                   = $this->execute( $filter );
-		error_log( $this->check_execute_has_error() );
+		// error_log( $this->check_execute_has_error() );
 		return $result;
 	}
 

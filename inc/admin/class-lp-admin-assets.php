@@ -284,6 +284,13 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					0,
 					1
 				),
+				'learn-press-statistic-beta'        => new LP_Asset_Key(
+					$this->url( 'src/apps/js/admin/pages/statistics-beta.js' ),
+					array( 'chart', 'wp-api-fetch' ),
+					array( 'learnpress_page_learn-press-statistics-beta', ),
+					0,
+					1
+				),
 			)
 		);
 
