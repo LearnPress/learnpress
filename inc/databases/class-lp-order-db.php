@@ -329,7 +329,7 @@ class LP_Order_DB extends LP_Database {
 	public function filter_order_count_statics( LP_Order_Filter $filter ) {
 		// $filter->query_count = true;
 		$filter->only_fields[]   = 'count( p.ID) as count_order';
-		$filter->only_fields[]   = 'p.post_status';
+		$filter->only_fields[]   = 'REPLACE(p.post_status,"lp-","") as order_status';
 		$filter->group_by        = 'p.post_status';
 		$filter->where[]         = $this->wpdb->prepare( 'AND p.post_status LIKE CONCAT(%s,"%")', 'lp-' );
 		$filter->run_query_count = false;

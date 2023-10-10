@@ -53,7 +53,7 @@ class LP_Submenu_Statistics_Beta extends LP_Abstract_Submenu {
 	}
 
 	public function page_content_orders() {
-		// learn_press_admin_view( 'statistics-beta/orders' );
+		learn_press_admin_view( 'statistics-beta/orders' );
 	}
 
 }
