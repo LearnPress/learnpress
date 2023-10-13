@@ -147,6 +147,10 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * LearnPress constructor.
 		 */
 		protected function __construct() {
+			/*if ( isset( $_POST['action'] ) && 'heartbeat' === $_POST['action'] ) {
+				return;
+			}*/
+
 			if ( self::$_instance ) {
 				return;
 			}

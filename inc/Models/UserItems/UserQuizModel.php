@@ -11,12 +11,17 @@
 namespace LearnPress\Models\UserItems;
 
 use Exception;
+use LearnPress\Models\UserItemMeta\UserItemMetaModel;
 use LearnPress\Models\UserItemMeta\UserQuizMetaModel;
 use LP_Course;
 use LP_Datetime;
 use LP_Quiz;
+use LP_Quiz_CURD;
 use LP_User;
+use LP_User_Item_Meta_Filter;
 use LP_User_Items_Filter;
+use LP_User_Items_Result_DB;
+use stdClass;
 use WP_Error;
 
 /**
@@ -35,12 +40,6 @@ class UserQuizModel extends UserItemModel {
 	 * @var string
 	 */
 	public $ref_type = LP_COURSE_CPT;
-	/**
-	 * Meta data of quiz.
-	 *
-	 * @var UserQuizMetaModel
-	 */
-	public $meta_data;
 	/**
 	 * @var LP_User
 	 */
@@ -87,8 +86,31 @@ class UserQuizModel extends UserItemModel {
 	}
 
 	/**
+	 * Get all question's ids of the quiz.
+	 *
+	 * @param string $context
+	 *
+	 * @move from LP_Quiz
+	 * @return int[]
+	 * @editor tungnx
+	 * @version 1.0.1
+	 * @since 3.2.0
+	 */
+	public function get_question_ids( string $context = 'display' ): array {
+		$curd         = new LP_Quiz_CURD();
+		$question_ids = $curd->read_question_ids( $this->item_id, $context );
+		$question_ids = apply_filters( 'learn-press/quiz/get-question-ids', $question_ids, $this->item_id, $this->ref_id, $context );
+		if ( ! is_array( $question_ids ) ) {
+			$question_ids = array();
+		}
+
+		return $question_ids;
+	}
+
+	/**
 	 * Get Timestamp remaining when user doing quiz
 	 *
+	 * @move from LP_Quiz
 	 * @return int
 	 * @throws Exception
 	 * @author tungnx
@@ -152,9 +174,34 @@ class UserQuizModel extends UserItemModel {
 	 * @throws Exception
 	 */
 	public function retake(): UserQuizModel {
-		$this->check_can_retake();
+		$can_retake = $this->check_can_retake();
+		if ( is_wp_error( $can_retake ) ) {
+			/**
+			 * @var WP_Error $can_retake
+			 */
+			throw new Exception( $can_retake->get_error_message() );
+		}
 
-		//Todo: update quiz meta data.
+		// Update retaken count.
+		$user_quiz_retaken = $this->get_meta_model_from_key( UserQuizMetaModel::KEY_RETAKEN_COUNT );
+		if ( $user_quiz_retaken instanceof UserItemMetaModel ) {
+			$number_retaken = absint( $user_quiz_retaken->meta_value );
+			++$number_retaken;
+			$user_quiz_retaken->meta_value = $number_retaken;
+			$user_quiz_retaken->save();
+		} else {
+			$user_quiz_retaken_new                          = new UserQuizMetaModel();
+			$user_quiz_retaken_new->learnpress_user_item_id = $this->user_item_id;
+			$user_quiz_retaken_new->meta_key                = UserQuizMetaModel::KEY_RETAKEN_COUNT;
+			$user_quiz_retaken_new->meta_value              = 1;
+			$user_quiz_retaken_new->save();
+		}
+
+		//Todo: rewrite by object.
+		//Create new result in table learnpress_user_item_results.
+		LP_User_Items_Result_DB::instance()->insert( $this->user_item_id );
+		// Remove user_item_meta.
+		learn_press_delete_user_item_meta( $this->user_item_id, '_lp_question_checked' );
 
 		$this->status     = LP_ITEM_STARTED;
 		$this->start_time = gmdate( LP_Datetime::$format, time() );
@@ -165,6 +212,8 @@ class UserQuizModel extends UserItemModel {
 
 	/**
 	 * Check user can start quiz.
+	 * If user can start quiz, return true, else return WP_Error.
+	 * Set user, quiz, course, user_course and parent_id for this object.
 	 *
 	 * @throws Exception
 	 * return bool|WP_Error
@@ -225,6 +274,143 @@ class UserQuizModel extends UserItemModel {
 	 * @throws Exception
 	 */
 	public function check_can_retake() {
+		$can_retake = true;
 
+		$this->user = learn_press_get_user( $this->user_id );
+		if ( ! $this->user instanceof LP_User ) {
+			$can_retake = new WP_Error( 'user_invalid', __( 'User is invalid.', 'learnpress' ) );
+		}
+
+		$this->quiz = learn_press_get_quiz( $this->item_id );
+		if ( empty( $this->quiz ) ) {
+			$can_start = new WP_Error( 'quiz_invalid', __( 'Quiz is invalid.', 'learnpress' ) );
+		}
+
+		$this->course = learn_press_get_course( $this->ref_id );
+		if ( empty( $this->course ) ) {
+			$can_retake = new WP_Error( 'course_invalid', __( 'Course is invalid.', 'learnpress' ) );
+		}
+
+		// Check user, course of quiz is enrolled.
+		$filter_user_course          = new LP_User_Items_Filter();
+		$filter_user_course->user_id = $this->user_id;
+		$filter_user_course->item_id = $this->ref_id;
+		$user_course                 = UserCourseModel::get_user_course_model_from_db( $filter_user_course, true );
+		$this->user_course           = $user_course;
+		if ( ! $user_course instanceof UserCourseModel
+			|| $user_course->graduation !== LP_COURSE_GRADUATION_IN_PROGRESS ) {
+			$can_retake = new WP_Error( 'not_errol_course', __( 'Please enroll in the course before starting the quiz.', 'learnpress' ) );
+		} elseif ( $user_course->status === LP_COURSE_FINISHED ) {
+			$can_retake = new WP_Error( 'finished_course', __( 'You have already finished the course of this quiz.', 'learnpress' ) );
+		}
+
+		$filter_user_quiz           = new LP_User_Items_Filter();
+		$filter_user_quiz->user_id  = $this->user_id;
+		$filter_user_quiz->item_id  = $this->item_id;
+		$filter_user_quiz->ref_id   = $this->ref_id;
+		$filter_user_quiz->ref_type = $this->ref_type;
+		$user_quiz_exists           = UserQuizModel::get_user_quiz_model_from_db( $filter_user_quiz, true );
+		if ( ! $user_quiz_exists instanceof UserQuizModel ) {
+			$can_retake = new WP_Error( 'not_started_quiz', __( 'You have not start the quiz.', 'learnpress' ) );
+		} elseif ( $user_quiz_exists->status !== LP_ITEM_COMPLETED ) {
+			$can_retake = new WP_Error( 'not_completed_quiz', __( 'You have not completed the quiz.', 'learnpress' ) );
+		}
+
+		// Set data for this object.
+		$this->map_to_object( $user_quiz_exists );
+
+		// Check retaken count.
+		$retake_config = get_post_meta( $this->item_id, '_lp_retake_count', true );
+		if ( $retake_config != '-1' ) {
+			$number_retaken = absint( $this->get_meta_value_from_key( UserQuizMetaModel::KEY_RETAKEN_COUNT ) );
+			if ( $number_retaken >= $retake_config ) {
+				$can_retake = new WP_Error( 'exceed_retaken_count', __( 'You have exceeded the number of retakes.', 'learnpress' ) );
+			}
+		}
+
+		// Hook can retake quiz
+		return apply_filters(
+			'learn-press/can-retake-quiz',
+			$can_retake,
+			$user_course,
+			$this
+		);
+	}
+
+	/**
+	 * Get all attempts of a quiz.
+	 *
+	 * @move from LP_Quiz
+	 *
+	 * @return array
+	 */
+	public function get_attempts( $limit = 3 ) {
+		$limit = $limit ?? 3;
+
+		$limit = absint( apply_filters( 'lp/quiz/get-attempts/limit', $limit ) );
+
+		$results = LP_User_Items_Result_DB::instance()->get_results( $this->user_item_id, $limit, true );
+		$output  = array();
+
+		if ( ! empty( $results ) ) {
+			foreach ( $results as $result ) {
+				if ( $result && is_string( $result ) ) {
+					$result = json_decode( $result );
+
+					unset( $result->questions );
+
+					$output[] = $result;
+				}
+			}
+		}
+
+		return $output;
+	}
+
+	/**
+	 * Get number retaken count.
+	 * @move from LP_Quiz
+	 *
+	 * @return integer
+	 */
+	public function get_retaken_count(): int {
+		//Todo: must get from user quiz meta data. UserQuizMetaModel
+		return absint( learn_press_get_user_item_meta( $this->user_item_id, '_lp_retaken_count' ) );
+	}
+
+	/**
+	 * Get all questions user has already used "Check"
+	 * @move from LP_Quiz
+	 *
+	 * @return array
+	 */
+	public function get_checked_questions(): array {
+		$value = learn_press_get_user_item_meta( $this->user_item_id, '_lp_question_checked' );
+
+		if ( $value ) {
+			$value = (array) $value;
+		} else {
+			$value = array();
+		}
+
+		return $value;
+	}
+
+	/**
+	 * Get all questions user has already used "Check"
+	 * @move from LP_Quiz
+	 *
+	 * @return array
+	 */
+	public function get_hint_questions() {
+		$value = learn_press_get_user_item_meta( $this->user_item_id, '_lp_question_hint' );
+
+		if ( $value ) {
+			$value = (array) $value;
+		} else {
+			$value = array();
+		}
+
+		return $value;
 	}
 }

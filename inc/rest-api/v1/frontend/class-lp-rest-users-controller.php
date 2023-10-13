@@ -186,37 +186,43 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			 *
 			 * @var LP_User_Item_Quiz|WP_Error $user_quiz
 			 */
-			$checked_questions = [];
-			$hinted_questions  = [];
-			$retaken_count     = 0;
-			$attempts          = [];
-			$user_item_id      = 0;
-			if ( $user->has_started_quiz( $item_id, $course_id ) ) {
-				$user_quiz = $user->retake_quiz( $item_id, $course_id, true );
-				if ( is_wp_error( $user_quiz ) ) {
-					throw new Exception( $user_quiz->get_error_message() );
-				}
+			$checked_questions         = [];
+			$hinted_questions          = [];
+			$retaken_count             = 0;
+			$attempts                  = [];
+			$user_item_id              = 0;
+			$filter_user_quiz          = new LP_User_Items_Filter();
+			$filter_user_quiz->user_id = $user_id;
+			$filter_user_quiz->item_id = $item_id;
+			$filter_user_quiz->ref_id  = $course_id;
+			$user_quiz_exists          = UserQuizModel::get_user_quiz_model_from_db( $filter_user_quiz, true );
+			if ( $user_quiz_exists instanceof UserQuizModel
+				&& $user_quiz_exists->status === LP_ITEM_COMPLETED ) {
+				/**
+				 * @uses LP_User::retake_quiz
+				 */
+				//$user_quiz = $user->retake_quiz( $item_id, $course_id, true );
+				$user_quiz = $user_quiz_exists;
+				$user_quiz->retake();
 				$results['answered'] = []; // Reset answered for js
 				$checked_questions   = $user_quiz->get_checked_questions();
 				$hinted_questions    = $user_quiz->get_hint_questions();
 				$retaken_count       = $user_quiz->get_retaken_count();
 				$attempts            = $user_quiz->get_attempts();
-				$user_item_id        = $user_quiz->get_user_item_id();
 			} else { // Create new user quiz and insert to database.
 				/**
 				 * @uses LP_User::start_quiz
 				 */
 				//$user_quiz                = $user->start_quiz( $item_id, $course_id, true );
-				$user_quiz_new            = new UserQuizModel();
-				$user_quiz_new->user_id   = $user_id;
-				$user_quiz_new->item_id   = $item_id;
-				$user_quiz_new->ref_id    = $course_id;
-				$user_quiz_meta_new       = new UserQuizMetaModel();
-				$user_quiz_new->meta_data = $user_quiz_meta_new;
+				$user_quiz_new          = new UserQuizModel();
+				$user_quiz_new->user_id = $user_id;
+				$user_quiz_new->item_id = $item_id;
+				$user_quiz_new->ref_id  = $course_id;
 				$user_quiz_new->start_quiz();
-				$user_quiz    = $user_quiz_new;
-				$user_item_id = $user_quiz->user_item_id;
+				$user_quiz = $user_quiz_new;
 			}
+
+			$user_item_id = $user_quiz->user_item_id;
 
 			/**
 			 * Clear cache result quiz

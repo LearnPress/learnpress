@@ -83,7 +83,7 @@ class LP_User_Item_Meta_DB extends LP_Database {
 			}
 		}
 
-		$this->wpdb->insert( $this->tb_lp_user_itemmeta, $data );
+		$result = $this->wpdb->insert( $this->tb_lp_user_itemmeta, $data );
 		return $this->wpdb->insert_id;
 	}
 

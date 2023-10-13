@@ -1435,6 +1435,7 @@ function learn_press_create_user_item( $args = array(), $wp_error = false ) {
  * @param bool  $wp_error - Optional. TRUE will return WP_Error on fail.
  *
  * @return bool|array|LP_User_Item|WP_Error
+ * @deprecated 4.2.5
  */
 function learn_press_create_user_item_for_quiz( $args = array(), $wp_error = false ) {
 	$item_data = wp_parse_args(
@@ -1490,6 +1491,7 @@ function learn_press_isset_user_item_for_quiz( $quiz_id, $course_id ) {
  * @throws Exception
  * @since 4.0.0
  * @version 1.0.1
+ * @deprecated 4.2.5
  */
 function learn_press_user_start_quiz( $quiz_id, $user_id = 0, $course_id = 0, $wp_error = false ) {
 	if ( ! $user_id ) {
@@ -1552,6 +1554,7 @@ function learn_press_user_start_quiz( $quiz_id, $user_id = 0, $course_id = 0, $w
  * @param integer $user_id
  * @param integer $course_id
  * @param boolean $wp_error
+ * @deprecated 4.2.5
  *
  * @return void
  */

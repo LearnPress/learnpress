@@ -76,11 +76,11 @@ class LP_User_Items_DB extends LP_Database {
 				continue;
 			}
 
-			if ( in_array( $col_name, [ 'start_time', 'end_time' ] ) && empty( $value ) ) {
-				continue;
+			if ( is_null( $value ) ) {
+				$filter->set[] = $col_name . ' = null';
+			} else {
+				$filter->set[] = $this->wpdb->prepare( $col_name . ' = %s', $value );
 			}
-
-			$filter->set[] = $this->wpdb->prepare( $col_name . ' = %s', $value );
 		}
 		$filter->where[] = $this->wpdb->prepare( 'AND user_item_id = %d', $data['user_item_id'] );
 		$this->update_execute( $filter );
@@ -97,8 +97,7 @@ class LP_User_Items_DB extends LP_Database {
 	 * @version 1.0.1
 	 */
 	public function get_user_items( LP_User_Items_Filter $filter, int &$total_rows = 0 ) {
-		$default_fields = $this->get_cols_of_table( $this->tb_lp_user_items );
-		$filter->fields = array_merge( $default_fields, $filter->fields );
+		$filter->fields = array_merge( $filter->all_fields, $filter->fields );
 
 		if ( empty( $filter->collection ) ) {
 			$filter->collection = $this->tb_lp_user_items;

@@ -9,15 +9,20 @@
  */
 
 class LP_User_Item_Meta_Filter extends LP_Filter {
+	const COL_META_ID                 = 'meta_id';
+	const COL_LEARNPRESS_USER_ITEM_ID = 'learnpress_user_item_id';
+	const COL_META_KEY                = 'meta_key';
+	const COL_META_VALUE              = 'meta_value';
+	const COL_EXTRA_VALUE             = 'extra_value';
 	/**
 	 * @var string[] all fields of table
 	 */
 	public $all_fields = [
-		'meta_id',
-		'learnpress_user_item_id',
-		'meta_key',
-		'meta_value',
-		'extra_value',
+		self::COL_META_ID,
+		self::COL_LEARNPRESS_USER_ITEM_ID,
+		self::COL_META_KEY,
+		self::COL_META_VALUE,
+		self::COL_EXTRA_VALUE,
 	];
 	/**
 	 * @var int
@@ -39,6 +44,10 @@ class LP_User_Item_Meta_Filter extends LP_Filter {
 	 * @var array string (LONGTEXT)
 	 */
 	public $extra_value = '';
+	/**
+	 * @var string column count.
+	 */
+	public $field_count = self::COL_META_ID;
 }
 
 

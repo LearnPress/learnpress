@@ -12,7 +12,9 @@
 namespace LearnPress\Models\UserItems;
 
 use Exception;
+use LearnPress\Models\UserItemMeta\UserItemMetaModel;
 use LP_User;
+use LP_User_Item_Meta_Filter;
 use LP_User_Items_Cache;
 use LP_User_Items_DB;
 use LP_User_Items_Filter;
@@ -84,6 +86,12 @@ class UserItemModel {
 	 * @var LP_User|null
 	 */
 	public $user;
+	/**
+	 * object {meta_key: {meta_id, learnpress_user_item_id, meta_key, meta_value, extra_value}}
+	 *
+	 * @var {meta_key: UserItemMetaModel}
+	 */
+	public $meta_data;
 
 	/**
 	 * If data get from database, map to object.
@@ -106,7 +114,7 @@ class UserItemModel {
 	 */
 	public function map_to_object( $data ): UserItemModel {
 		foreach ( $data as $key => $value ) {
-			if ( isset( $this->{$key} ) ) {
+			if ( property_exists( $this, $key ) ) {
 				$this->{$key} = $value;
 			}
 		}
@@ -142,6 +150,56 @@ class UserItemModel {
 		}
 
 		return $user_item_model;
+	}
+
+	/**
+	 * Get user item metadata from object meta_data or database by user_item_id, meta_key.
+	 *
+	 * @param string $key
+	 * @return false|UserItemMetaModel
+	 */
+	public function get_meta_model_from_key( string $key ) {
+		$user_item_metadata = false;
+
+		// Check object meta_data has value of key.
+		if ( $this->meta_data instanceof stdClass
+			&& property_exists( $this->meta_data, $key ) ) {
+			$user_item_metadata = $this->meta_data->{$key};
+		} else { // Get from DB
+			$filter                          = new LP_User_Item_Meta_Filter();
+			$filter->meta_key                = $key;
+			$filter->learnpress_user_item_id = $this->user_item_id;
+			$user_item_metadata              = UserItemMetaModel::get_user_item_meta_model_from_db( $filter );
+		}
+
+		return $user_item_metadata;
+	}
+
+	/**
+	 * Get metadata from key
+	 *
+	 * @param string $key
+	 * @param bool $get_extra
+	 * @return false|string
+	 */
+	public function get_meta_value_from_key( string $key, bool $get_extra = false ) {
+		$data = false;
+
+		$user_item_metadata = $this->get_meta_model_from_key( $key );
+		if ( $user_item_metadata instanceof UserItemMetaModel ) {
+			if ( ! $this->meta_data instanceof stdClass ) {
+				$this->meta_data = new stdClass();
+			}
+			$this->meta_data->{$key} = $user_item_metadata;
+
+			if ( $get_extra ) {
+				$data = $user_item_metadata->extra_value;
+			} else {
+				$data = $user_item_metadata->meta_value;
+			}
+		}
+
+		return $data;
 	}
 
 	/**
