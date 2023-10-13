@@ -376,46 +376,16 @@
 
 			if ( $( '#lp-invoice__content' ).length ) {
 				$( '#lp-invoice__export' ).click( function() {
-					/*
-					//deprecated
-					const doc = new jsPDF( 'p', 'pt', 'letter' );
-
-					// We'll make our own renderer to skip this editor
-					const specialElementHandlers = {
-						'#bypassme'( element, renderer ) {
-							return true;
-						},
+					const pdfOptions = {
+						margin: 1,
+						filename: document.title,
+						image: { type: 'webp', quality: 0.98 },
+						html2canvas: { scale: 2 },
+						jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
 					};
-					const margins = {
-						top: 80,
-						bottom: 60,
-						left: 40,
-						width: 522,
-					};
-
-					doc.fromHTML(
-						$( '#lp-invoice__content' )[ 0 ],
-						margins.left, // x coord
-						margins.top, { // y coord
-							width: margins.width, // max width of content on PDF
-							elementHandlers: specialElementHandlers,
-						},
-						function( dispose ) {
-							// dispose: object with X, Y of the last line add to the PDF
-							//          this allow the insertion of new lines after html
-							const blob = doc.output( 'blob' );
-							window.open( URL.createObjectURL( blob ) );
-						}, margins );*/
-					let pdfOptions = {
-			 				margin: 1,
-			  				filename: document.title,
-			  				image: { type: 'webp', quality: 0.98 },
-			  				html2canvas: { scale: 2 },
-			  				jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' } 
-			  			};
-			  		let pdfContentEle = document.getElementById( 'lp-invoice__content' );
-			  		pdfContentEle.style.padding = '30px';
-			  		html2pdf( pdfContentEle, pdfOptions );
+					const pdfContentEle = document.getElementById( 'lp-invoice__content' );
+					pdfContentEle.style.padding = '30px';
+					html2pdf( pdfContentEle, pdfOptions );
 				} );
 			}
 
