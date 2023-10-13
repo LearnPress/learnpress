@@ -374,8 +374,7 @@ class UserQuizModel extends UserItemModel {
 	 * @return integer
 	 */
 	public function get_retaken_count(): int {
-		//Todo: must get from user quiz meta data. UserQuizMetaModel
-		return absint( learn_press_get_user_item_meta( $this->user_item_id, '_lp_retaken_count' ) );
+		return absint( $this->get_meta_value_from_key( UserQuizMetaModel::KEY_RETAKEN_COUNT ) );
 	}
 
 	/**
@@ -386,24 +385,6 @@ class UserQuizModel extends UserItemModel {
 	 */
 	public function get_checked_questions(): array {
 		$value = learn_press_get_user_item_meta( $this->user_item_id, '_lp_question_checked' );
-
-		if ( $value ) {
-			$value = (array) $value;
-		} else {
-			$value = array();
-		}
-
-		return $value;
-	}
-
-	/**
-	 * Get all questions user has already used "Check"
-	 * @move from LP_Quiz
-	 *
-	 * @return array
-	 */
-	public function get_hint_questions() {
-		$value = learn_press_get_user_item_meta( $this->user_item_id, '_lp_question_hint' );
 
 		if ( $value ) {
 			$value = (array) $value;

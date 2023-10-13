@@ -534,8 +534,11 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 *
 		 * @return WP_Error|mixed
 		 * @since 3.0.0
+		 * @deprecated 4.2.5
 		 */
 		public function hint( $question_id, $quiz_id, $course_id ) {
+			_deprecated_function( __FUNCTION__, '4.2.5' );
+			return false;
 			$course = learn_press_get_course( $course_id );
 			if ( ! $course ) {
 				return false;

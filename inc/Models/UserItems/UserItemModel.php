@@ -87,6 +87,7 @@ class UserItemModel {
 	 */
 	public $user;
 	/**
+	 * List UserItemMetaModel
 	 * object {meta_key: {meta_id, learnpress_user_item_id, meta_key, meta_value, extra_value}}
 	 *
 	 * @var {meta_key: UserItemMetaModel}

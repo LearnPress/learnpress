@@ -206,8 +206,8 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 				$user_quiz->retake();
 				$results['answered'] = []; // Reset answered for js
 				$checked_questions   = $user_quiz->get_checked_questions();
-				$hinted_questions    = $user_quiz->get_hint_questions();
-				$retaken_count       = $user_quiz->get_retaken_count();
+				//$hinted_questions    = $user_quiz->get_hint_questions();
+				$retaken_count       = (int) $user_quiz->get_retaken_count();
 				$attempts            = $user_quiz->get_attempts();
 			} else { // Create new user quiz and insert to database.
 				/**
