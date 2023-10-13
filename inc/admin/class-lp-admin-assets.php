@@ -284,12 +284,21 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					0,
 					1
 				),
-				'lp-tools-assign-course'               => new LP_Asset_Key(
+				'lp-tools-assign-course'            => new LP_Asset_Key(
 					$this->url( 'src/apps/js/admin/admin-tools-assign-course.js' ),
 					array(
-						'jquery'
+						'jquery',
 					),
 					array( 'learnpress_page_learn-press-tools' ),
+					0,
+					1
+				),
+				'ekoopmans-html2pdf'                => new LP_Asset_Key(
+					$this->url( 'src/js/vendor/html2pdf.bundle.min.js' ),
+					array(),
+					array(
+						LP_ORDER_CPT,
+					),
 					0,
 					1
 				),

@@ -184,7 +184,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			/**
 			 * Require enroll course
 			 *
-			 * @var LP_User_Item_Quiz|WP_Error $user_quiz
+			 * @var UserQuizModel $user_quiz
 			 */
 			$checked_questions         = [];
 			$hinted_questions          = [];
@@ -206,9 +206,9 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 				$user_quiz->retake();
 				$results['answered'] = []; // Reset answered for js
 				$checked_questions   = $user_quiz->get_checked_questions();
-				//$hinted_questions    = $user_quiz->get_hint_questions();
-				$retaken_count       = (int) $user_quiz->get_retaken_count();
+				$retaken_count       = $user_quiz->get_retaken_count();
 				$attempts            = $user_quiz->get_attempts();
+				//$hinted_questions    = $user_quiz->get_hint_questions();
 			} else { // Create new user quiz and insert to database.
 				/**
 				 * @uses LP_User::start_quiz
@@ -246,7 +246,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 					'instant_check'       => $show_check,
 					'quiz_status'         => $status,
 					'checked_questions'   => $checked_questions,
-					'hinted_questions'    => $hinted_questions,
+					//'hinted_questions'    => $hinted_questions,
 					'answered'            => [],
 					'show_correct_review' => $show_correct_review,
 				)

@@ -376,6 +376,8 @@
 
 			if ( $( '#lp-invoice__content' ).length ) {
 				$( '#lp-invoice__export' ).click( function() {
+					/*
+					//deprecated
 					const doc = new jsPDF( 'p', 'pt', 'letter' );
 
 					// We'll make our own renderer to skip this editor
@@ -403,7 +405,17 @@
 							//          this allow the insertion of new lines after html
 							const blob = doc.output( 'blob' );
 							window.open( URL.createObjectURL( blob ) );
-						}, margins );
+						}, margins );*/
+					let pdfOptions = {
+			 				margin: 1,
+			  				filename: document.title,
+			  				image: { type: 'webp', quality: 0.98 },
+			  				html2canvas: { scale: 2 },
+			  				jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' } 
+			  			};
+			  		let pdfContentEle = document.getElementById( 'lp-invoice__content' );
+			  		pdfContentEle.style.padding = '30px';
+			  		html2pdf( pdfContentEle, pdfOptions );
 				} );
 			}
 
