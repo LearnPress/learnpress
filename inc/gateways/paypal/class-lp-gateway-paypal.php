@@ -37,50 +37,47 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		/**
 		 * @var null|string
 		 */
-		protected $paypal_nvp_api_live_url = 'https://api-3t.paypal.com/nvp';
-
-		/**
-		 * @var null|string
-		 */
 		protected $paypal_sandbox_url = 'https://www.sandbox.paypal.com/';
 		/**
 		 * @var null|string
 		 */
 		protected $paypal_payment_sandbox_url = 'https://www.sandbox.paypal.com/cgi-bin/webscr';
 		/**
-		 * @var null
+		 * @var string
 		 */
-		protected $paypal_nvp_api_sandbox_url = 'https://api-3t.sandbox.paypal.com/nvp';
-
+		protected $api_sandbox_url = 'https://api-m.sandbox.paypal.com/';
 		/**
 		 * @var string
 		 */
-		protected $method = '';
-
+		protected $api_live_url = 'https://api-m.paypal.com/';
+		/**
+		 * @var string|null
+		 */
+		protected $api_url = null;
 		/**
 		 * @var null
 		 */
 		protected $paypal_url = null;
-
 		/**
 		 * @var null
 		 */
 		protected $paypal_payment_url = null;
-
-		/**
-		 * @var null
-		 */
-		protected $paypal_nvp_api_url = null;
-
 		/**
 		 * @var null
 		 */
 		protected $paypal_email = '';
-
 		/**
 		 * @var null
 		 */
 		protected $settings = null;
+		/**
+		 * @var null
+		 */
+		protected $client_id = null;
+		/**
+		 * @var null
+		 */
+		protected $client_secret = null;
 
 		/**
 		 * LP_Gateway_Paypal constructor.
@@ -113,39 +110,79 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				if ( $this->settings->get( 'paypal_sandbox', 'no' ) === 'no' ) {
 					$this->paypal_url         = $this->paypal_live_url;
 					$this->paypal_payment_url = $this->paypal_payment_live_url;
-					$this->paypal_nvp_api_url = $this->paypal_nvp_api_live_url;
 					$this->paypal_email       = $this->settings->get( 'paypal_email' );
+					$this->api_url            = $this->api_live_url; //use for paypal rest api
 				} else {
 					$this->paypal_url         = $this->paypal_sandbox_url;
 					$this->paypal_payment_url = $this->paypal_payment_sandbox_url;
-					$this->paypal_nvp_api_url = $this->paypal_nvp_api_sandbox_url;
 					$this->paypal_email       = $this->settings->get( 'paypal_sandbox_email' );
+					$this->api_url            = $this->api_sandbox_url; //use for paypal rest api
+				}
+				// Use Paypal rest api
+				if ( $this->settings->get( 'use_paypal_rest' ) == 'yes' ) {
+					$this->client_id     = $this->settings->get( 'app_client_id' );
+					$this->client_secret = $this->settings->get( 'app_client_secret' );
 				}
 			}
 
 			add_filter( 'learn-press/payment-gateway/' . $this->id . '/available', array( $this, 'paypal_available' ), 10, 2 );
+			add_action( 'init', array( $this, 'check_webhook_callback' ) );
 		}
 
 		/**
 		 * Check payment gateway available.
 		 *
-		 * @param bool $default
-		 * @param $payment
-		 *
+		 * @param bool $available
 		 * @return bool
 		 */
-		public function paypal_available( bool $default, $payment ): bool {
-			// Empty live email and Sandbox mode also disabled
-			if ( $this->settings->get( 'paypal_sandbox' ) != 'yes' && ! $this->settings->get( 'paypal_email' ) ) {
-				return false;
-			}
+		public function paypal_available( bool $available ): bool {
+			return $available;
+		}
 
-			// Enable Sandbox mode but it's email is empty
-			if ( ! $this->settings->get( 'paypal_sandbox_email' ) && $this->settings->get( 'paypal_sandbox' ) == 'yes' ) {
-				return false;
-			}
+		/**
+		 * Listen callback, webhook form PayPal.
+		 */
+		public function check_webhook_callback() {
+			try {
+				$paypal = LP_Gateway_Paypal::instance();
+				if ( $paypal->settings->get( 'use_paypal_rest' ) == 'no' ) {
+					// Paypal payment done
+					if ( ! isset( $_GET['paypal_notify'] ) ) {
+						return;
+					}
 
-			return $default;
+					if ( ! isset( $_POST['ipn_track_id'] ) ) {
+						return;
+					}
+
+					$verify = $paypal->validate_ipn();
+
+					if ( $verify ) {
+						if ( isset( $_POST['custom'] ) ) {
+							$data_order = json_decode( LP_Helper::sanitize_params_submitted( $_POST['custom'] ) );
+
+							if ( json_last_error() === JSON_ERROR_NONE ) {
+								$order_id = $data_order->order_id;
+								$lp_order = learn_press_get_order( $order_id );
+								$lp_order->update_status( LP_ORDER_COMPLETED );
+							}
+						}
+					}
+				} else {
+					if ( ! isset( $_GET['paypay_express_checkout'] ) ) {
+						return;
+					}
+
+					$paypal_order_id = LP_Request::get_param( 'token' );
+					if ( empty( $paypal_order_id ) ) {
+						return;
+					}
+
+					$this->capture_payment_for_order( $paypal_order_id );
+				}
+			} catch ( Throwable $e ) {
+				error_log( $e->getMessage() );
+			}
 		}
 
 		/**
@@ -185,23 +222,24 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 * @param int $order_id
 		 *
 		 * @return array
+		 * @throws Exception
 		 */
 		public function process_payment( $order_id = 0 ): array {
 			$paypal_payment_url = '';
 
-			try {
-				$order       = new LP_Order( $order_id );
-				$paypal_args = $this->get_paypal_args( $order );
-
+			$order = new LP_Order( $order_id );
+			if ( $this->settings->get( 'use_paypal_rest' ) == 'no' ) {
+				$paypal_args        = $this->get_paypal_args( $order );
 				$paypal_payment_url = $this->paypal_url . '?' . http_build_query( $paypal_args );
-			} catch ( Throwable $e ) {
-				error_log( $e->getMessage() );
+			} else {
+				$data_token         = $this->get_access_token();
+				$paypal_payment_url = $this->create_payment_url( $order, $data_token );
 			}
 
-			return array(
-				'result'   => ! empty( $paypal_payment_url ) ? 'success' : 'fail',
-				'redirect' => $paypal_payment_url,
-			);
+			$result['result']   = 'success';
+			$result['redirect'] = $paypal_payment_url;
+
+			return $result;
 		}
 
 		/**
@@ -246,6 +284,182 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			);
 
 			return apply_filters( 'learn-press/paypal/args', $args );
+		}
+
+		/**
+		 * Get access token from PayPal
+		 *
+		 * @throws Exception
+		 * @since 4.2.4
+		 * @version 1.0.0
+		 */
+		public function get_access_token() {
+			$client_id     = $this->client_id;
+			$client_secret = $this->client_secret;
+
+			if ( empty( $client_id ) ) {
+				throw new Exception( __( 'Paypal Client id is required.', 'learnpress' ) );
+			}
+
+			if ( ! $client_secret ) {
+				throw new Exception( __( 'Paypal Client secret is required', 'learnpress' ) );
+			}
+
+			$params   = [ 'grant_type' => 'client_credentials' ];
+			$response = wp_remote_post(
+				$this->api_url . 'v1/oauth2/token',
+				[
+					'body'    => $params,
+					'headers' => [
+						'Authorization' => 'Basic ' . base64_encode( $client_id . ':' . $client_secret ),
+					],
+					'timeout' => 60,
+				]
+			);
+
+			$data_token_str = wp_remote_retrieve_body( $response );
+			$data_token     = json_decode( $data_token_str );
+			if ( isset( $data->error ) ) {
+				throw new Exception( $data->error_description );
+			}
+
+			LP_Settings::update_option( 'paypal_token', $data_token_str );
+
+			return $data_token;
+		}
+
+		/**
+		 * create args to create PayPal order
+		 *
+		 * @param LP_Order $order
+		 * @return array
+		 * @since 4.2.4
+		 * @version 1.0.0
+		 */
+		public function get_order_args( LP_Order $order ): array {
+			$lp_cart    = LearnPress::instance()->get_cart();
+			$cart_total = $lp_cart->calculate_totals();
+			$order_id   = $order->get_id();
+			$return_url = esc_url_raw(
+				add_query_arg( 'paypay_express_checkout', 1, $this->get_return_url( $order ) )
+			);
+			$data       = [
+				'intent'         => 'CAPTURE',
+				'purchase_units' => [
+					[
+						'amount'    => [
+							'currency_code' => learn_press_get_currency(),
+							'value'         => $cart_total->total,
+						],
+						'custom_id' => $order_id,
+					],
+				],
+				'payment_source' => [
+					'paypal' => [
+						'experience_context' => [
+							'payment_method_preference' => 'UNRESTRICTED',
+							'brand_name'                => get_bloginfo(),
+							'landing_page'              => 'LOGIN',
+							'user_action'               => 'PAY_NOW',
+							'return_url'                => $return_url,
+							'cancel_url'                => esc_url_raw( learn_press_is_enable_cart() ? learn_press_get_page_link( 'cart' ) : get_home_url() ),
+						],
+					],
+				],
+			];
+			return apply_filters( 'learn-press/paypal-rest/args', $data );
+		}
+
+		/**
+		 * Create Order PayPal and get checkout url
+		 *
+		 * @param LP_Order $order
+		 * @param object $data_token { scope, access_token, token_type, app_id, expires_in, nonce }
+		 * @return string
+		 * @throws Exception
+		 * @since 4.2.4
+		 * @version 1.0.0
+		 */
+		public function create_payment_url( LP_Order $order, $data_token ): string {
+			$checkout_url = '';
+			$params       = $this->get_order_args( $order );
+
+			if ( ! isset( $data_token->access_token ) || ! isset( $data_token->token_type ) ) {
+				throw new Exception( __( 'Invalid Paypal access token', 'learnpress' ) );
+			}
+
+			$response = wp_remote_post(
+				$this->api_url . 'v2/checkout/orders',
+				[
+					'body'    => json_encode( $params ),
+					'headers' => [
+						'Authorization' => $data_token->token_type . ' ' . $data_token->access_token,
+						'Content-Type'  => 'application/json',
+					],
+					'timeout' => 60,
+				]
+			);
+
+			$result = json_decode( wp_remote_retrieve_body( $response ) );
+			if ( isset( $result->error ) ) {
+				throw new Exception( $result->error_description );
+			}
+
+			if ( empty( $result->links ) ) {
+				throw new Exception( __( 'Invalid Paypal checkout url', 'learnpress' ) );
+			}
+
+			foreach ( $result->links as $link ) {
+				if ( $link->rel == 'payer-action' ) {
+					$checkout_url = $link->href;
+					break;
+				}
+			}
+
+			if ( empty( $checkout_url ) ) {
+				throw new Exception( __( 'Invalid Paypal checkout url', 'learnpress' ) );
+			}
+
+			return $checkout_url;
+		}
+
+		/**
+		 * Capture payment for order
+		 *
+		 * @param string $paypal_order_id
+		 * https://developer.paypal.com/docs/api/orders/v2/#orders_capture
+		 * @throws Exception
+		 *
+		 * @since 4.2.4
+		 * @version 1.0.0
+		 */
+		public function capture_payment_for_order( string $paypal_order_id ) {
+			$data_token_str = LP_Settings::get_option( 'paypal_token' );
+			$data_token     = json_decode( $data_token_str );
+			if ( ! isset( $data_token->access_token ) || ! isset( $data_token->token_type ) ) {
+				throw new Exception( __( 'Invalid Paypal access token', 'learnpress' ) );
+			}
+
+			$response = wp_remote_post(
+				$this->api_url . 'v2/checkout/orders/' . $paypal_order_id . '/capture',
+				array(
+					'headers' => array(
+						'Content-Type'  => 'application/json',
+						'Authorization' => $data_token->token_type . ' ' . $data_token->access_token,
+					),
+					'timeout' => 60,
+				)
+			);
+
+			if ( $response['response']['code'] === 201 ) {
+				$body        = wp_remote_retrieve_body( $response );
+				$transaction = json_decode( $body );
+				if ( $transaction->status === 'COMPLETED' ) {
+					$order_id = $transaction->purchase_units[0]->payments->captures[0]->custom_id;
+					$lp_order = learn_press_get_order( $order_id );
+					$lp_order->update_status( LP_ORDER_COMPLETED );
+				}
+			}
 		}
 
 		/**

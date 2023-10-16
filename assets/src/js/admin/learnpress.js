@@ -682,22 +682,21 @@ const lpMetaboxsalePriceDate = () => {
 	}
 
 	$( '.lp_sale_dates_fields' ).each( function() {
-		const $this = $( this );
-		const $wrap = $this.closest( '#price_course_data' );
+		const wrap = $( this ).closest( '#price_course_data' );
 		let saleScheduleSet = false;
 
-		$this.find( 'input' ).each( function() {
+		$( this ).find( 'input' ).each( function() {
 			if ( '' !== $( this ).val() ) {
 				saleScheduleSet = true;
 			}
 		} );
 
 		if ( saleScheduleSet ) {
-			$wrap.find( '.lp_sale_price_schedule' ).hide();
-			$wrap.find( '.lp_sale_dates_fields' ).show();
+			wrap.find( '.lp_sale_price_schedule' ).hide();
+			wrap.find( '.lp_sale_dates_fields' ).show();
 		} else {
-			$wrap.find( '.lp_sale_price_schedule' ).show();
-			$wrap.find( '.lp_sale_dates_fields' ).hide();
+			wrap.find( '.lp_sale_price_schedule' ).show();
+			wrap.find( '.lp_sale_dates_fields' ).hide();
 		}
 	} );
 
