@@ -227,13 +227,6 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					0,
 					1
 				),*/
-				/*'lp-admin-notice'                   => new LP_Asset_Key(
-					$this->url( self::$_folder_source . 'js/admin/share/admin-notice' . self::$_min_assets . '.js' ),
-					array( 'jquery' ),
-					array(),
-					0,
-					1
-				),*/
 				'lp-modal-search-users'             => new LP_Asset_Key(
 					$this->url( self::$_folder_source . 'js/admin/share/modal-search-users' . self::$_min_assets . '.js' ),
 					array( 'jquery' ),

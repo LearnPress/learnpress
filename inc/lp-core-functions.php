@@ -1813,8 +1813,10 @@ function learn_press_get_register_url() {
  * @param string
  *
  * @return mixed
+ * @deprecated 4.2.5
  */
 function learn_press_add_notice( $message, $type = 'updated' ) {
+	_deprecated_function( __FUNCTION__, '4.2.5' );
 	LP_Admin_Notice::instance()->add( $message, $type );
 }
 
