@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	      color: #000;
 	      margin-right: 10px;
 	      padding: 15px 30px;
-	      cursor: pointer;
+/*	      cursor: pointer;*/
 	      float: left;
 	      display: flex;
 	      flex-direction: column;
@@ -52,17 +52,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 		line-height: normal;
 		text-transform: capitalize;
 	}
-	#orders-chart{
+	/*#orders-chart{
 		min-height: 630px;
 		width: 100%;
-	}
+	}*/
 </style>
 <div class="lp-admin-tab-content card">
 	<div class="btn-group btn-group-filter">
 	  <button class="btn-filter-time" type="button" data-filter="today" ><?php _e( 'Today', 'learnpress' ) ?></button>
 	  <button class="btn-filter-time" type="button" data-filter="yesterday" ><?php _e( 'Yesterday', 'learnpress' ) ?></button>
-	  <button class="btn-filter-time" type="button" data-filter="lastweek" ><?php _e( 'Last week', 'learnpress' ) ?></button>
-	  <button class="btn-filter-time" type="button" data-filter="lastmonth" ><?php _e( 'Last month', 'learnpress' ) ?></button>
+	  <button class="btn-filter-time" type="button" data-filter="last7days" ><?php _e( 'Last 7 days', 'learnpress' ) ?></button>
+	  <button class="btn-filter-time" type="button" data-filter="last30days" ><?php _e( 'Last 30 days', 'learnpress' ) ?></button>
+	  <button class="btn-filter-time" type="button" data-filter="lastyear" ><?php _e( 'Last month', 'learnpress' ) ?></button>
 	  <button class="btn-filter-time" type="button" data-filter="custom" ><?php _e( 'Custom', 'learnpress' ) ?></button>
 	</div>
 	<div class="statistics-content">
@@ -78,7 +79,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			</div>
 			<div class="statistics-item">
 				<span class="statistics-item-title"><?php _e( 'Proccessing Orders', 'learnpress' ) ?></span>
-				<span class="statistics-item-count proccessing-order-count">0</span>
+				<span class="statistics-item-count processing-order-count">0</span>
 			</div>
 			<div class="statistics-item">
 				<span class="statistics-item-title"><?php _e( 'Pending Orders', 'learnpress' ) ?></span>
@@ -90,7 +91,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			</div>
 			<div class="statistics-item">
 				<span class="statistics-item-title"><?php _e( 'Fail Orders', 'learnpress' ) ?></span>
-				<span class="statistics-item-count fail-order-count">0</span>
+				<span class="statistics-item-count failed-order-count">0</span>
 			</div>
 		</div>
 		<h3 class="statistics-title"><?php _e( 'Completed Orders', 'learnpress' ) ?></h3>
