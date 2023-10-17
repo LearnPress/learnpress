@@ -4,7 +4,7 @@
  *
  * @author hungkv
  * @since 3.2.7.8
- * @version 1.0.0
+ * @version 1.0.1
  */
 
 /**
@@ -16,9 +16,6 @@ if ( ! isset( $order ) ) {
 }
 
 $currency_symbol = learn_press_get_currency_symbol( $order->get_currency() );
-
-// get script learnpress js pdf
-wp_enqueue_script( 'learnpress-jspdf' );
 ?>
 
 <?php global $post; ?>
@@ -66,19 +63,19 @@ wp_enqueue_script( 'learnpress-jspdf' );
 			</div>
 			<div class="export-options panel">
 				<div class="export-options__content">
-					<h5>Please select the fields you want to display</h5>
+					<h4>Please select the fields you want to display</h4>
 					<div class="export-options__select">
-						<input type="checkbox" name="site_title" value="" checked="checked">
+						<input type="checkbox" name="invoice-title" value="" checked="checked">
 						<label for="order_date"> <?php echo esc_html__( 'Site Title', 'learnpress' ); ?></label><br>
-						<input type="checkbox" name="order_date" value="" checked="checked">
+						<input type="checkbox" name="invoice-date" value="" checked="checked">
 						<label for="order_date"> <?php echo esc_html__( 'Order Date', 'learnpress' ); ?></label><br>
-						<input type="checkbox" name="invoice_no" value="" checked="checked">
+						<input type="checkbox" name="invoice-no" value="" checked="checked">
 						<label for="order_date"> <?php echo esc_html__( 'Invoice No.', 'learnpress' ); ?></label><br>
-						<input type="checkbox" name="order_customer" value="" checked="checked">
+						<input type="checkbox" name="invoice-customer" value="" checked="checked">
 						<label for="order_date"> <?php echo esc_html__( 'Customer', 'learnpress' ); ?></label><br>
-						<input type="checkbox" name="order_email" value="" checked="checked">
+						<input type="checkbox" name="invoice-email" value="" checked="checked">
 						<label for="order_date"> <?php echo esc_html__( 'Email', 'learnpress' ); ?></label><br>
-						<input type="checkbox" name="order_payment" value="" checked="checked">
+						<input type="checkbox" name="invoice-method" value="" checked="checked">
 						<label for="order_payment"> <?php echo esc_html__( 'Payment Medthod', 'learnpress' ); ?></label>
 					</div>
 					<div class="export-options__loading">

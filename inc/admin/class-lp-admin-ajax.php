@@ -39,7 +39,6 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'search_course_category' => false,
 				'custom_stats'           => false,
 				'get_page_permalink'     => false,
-				'update_order_exports'   => false,
 			);
 
 			foreach ( $ajax_events as $ajax_event => $nopriv ) {
@@ -707,39 +706,6 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				die();
 			}
 			learn_press_process_chart( learn_press_get_chart_students( $to, 'days', floor( $date_diff / ( 60 * 60 * 24 ) ) + 1 ) );
-			die();
-		}
-
-		/**
-		 * Export Order invoice to PDF
-		 *
-		 * @since 3.2.7.8
-		 * @author hungkv
-		 */
-		public static function update_order_exports() {
-			if ( ! current_user_can( ADMIN_ROLE ) ) { // Fix security
-				return;
-			}
-
-			$nonce = LP_Request::get_param( 'nonce' );
-			if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
-				die( 'Nonce is invalid!' );
-			}
-
-			$order_id        = absint( $_POST['order_id'] );
-			$order           = learn_press_get_order( $order_id );
-			$currency_symbol = learn_press_get_currency_symbol( $order->get_currency() );
-
-			ob_start();
-			learn_press_admin_view(
-				'meta-boxes/order/content-tab-preview-exports-invoice.php',
-				array(
-					'order'           => $order,
-					'currency_symbol' => $currency_symbol,
-				)
-			);
-			$html = ob_get_clean();
-			echo wp_kses_post( $html );
 			die();
 		}
 	}

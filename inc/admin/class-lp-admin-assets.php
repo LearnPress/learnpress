@@ -66,7 +66,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 	protected function _get_scripts(): array {
 		$lp_admin_js = new LP_Asset_Key(
 			$this->url( self::$_folder_source . 'js/admin/admin' . self::$_min_assets . '.js' ),
-			array( 'learn-press-global', 'lp-utils', 'wp-color-picker', 'jspdf', 'vue-libs', 'wp-i18n' ),
+			array( 'learn-press-global', 'lp-utils', 'wp-color-picker', 'vue-libs', 'wp-i18n' ),
 			array(),
 			0,
 			1
@@ -80,7 +80,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				'vue-libs'                          => new LP_Asset_Key( $this->url( 'js/vendor/vue/vue_libs.js' ) ),
 				'select2'                           => new LP_Asset_Key( $this->url( 'src/js/vendor/select2.full.min.js' ) ),
 				'jquery-tipsy'                      => new LP_Asset_Key( $this->url( 'src/js/vendor/jquery/jquery-tipsy.js' ) ),
-				'jspdf'                             => new LP_Asset_Key( $this->url( 'src/js/vendor/jspdf.min.js' ) ),
+				'html2pdf'                          => new LP_Asset_Key( $this->url( 'src/js/vendor/html2pdf.bundle.min.js' ) ),
 				'chart'                             => new LP_Asset_Key( $this->url( 'src/js/vendor/chart.min.js' ) ),
 				'dropdown-pages'                    => new LP_Asset_Key( $this->url( self::$_folder_source . 'js/admin/share/dropdown-pages' . self::$_min_assets . '.js' ) ),
 				'jquery-ui-timepicker-addon'        => new LP_Asset_Key(
@@ -162,6 +162,13 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 						'lp-modal-search-courses',
 						'lp-modal-search-users',
 					),
+					array( LP_ORDER_CPT ),
+					0,
+					1
+				),
+				'lp-admin-order'                    => new LP_Asset_Key(
+					$this->url( 'js/dist/admin/admin-order' . self::$_min_assets . '.js' ),
+					array( 'html2pdf' ),
 					array( LP_ORDER_CPT ),
 					0,
 					1
@@ -290,15 +297,6 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 						'jquery',
 					),
 					array( 'learnpress_page_learn-press-tools' ),
-					0,
-					1
-				),
-				'ekoopmans-html2pdf'                => new LP_Asset_Key(
-					$this->url( 'src/js/vendor/html2pdf.bundle.min.js' ),
-					array(),
-					array(
-						LP_ORDER_CPT,
-					),
 					0,
 					1
 				),
