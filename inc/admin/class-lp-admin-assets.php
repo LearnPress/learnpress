@@ -220,13 +220,6 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					1,
 					1
 				),
-				/*'lp-admin-tabs'                     => new LP_Asset_Key(
-					$this->url( self::$_folder_source . 'js/admin/share/admin-tabs' . self::$_min_assets . '.js' ),
-					array( 'jquery' ),
-					array( LP_COURSE_CPT ),
-					0,
-					1
-				),*/
 				'lp-modal-search-users'             => new LP_Asset_Key(
 					$this->url( self::$_folder_source . 'js/admin/share/modal-search-users' . self::$_min_assets . '.js' ),
 					array( 'jquery' ),
