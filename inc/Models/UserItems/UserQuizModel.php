@@ -24,9 +24,6 @@ use LP_User_Items_Result_DB;
 use stdClass;
 use WP_Error;
 
-/**
- * @method update()
- */
 class UserQuizModel extends UserItemModel {
 	/**
 	 * Item type Course
@@ -41,19 +38,19 @@ class UserQuizModel extends UserItemModel {
 	 */
 	public $ref_type = LP_COURSE_CPT;
 	/**
-	 * @var LP_User
+	 * @var LP_User $user not column in DB
 	 */
 	public $user;
 	/**
-	 * @var LP_Course
+	 * @var LP_Course $course not column in DB
 	 */
 	public $course;
 	/**
-	 * @var LP_Quiz
+	 * @var LP_Quiz $quiz not column in DB
 	 */
 	public $quiz;
 	/**
-	 * @var UserCourseModel
+	 * @var UserCourseModel $user_course not column in DB
 	 */
 	public $user_course;
 
@@ -64,7 +61,7 @@ class UserQuizModel extends UserItemModel {
 	 * @param bool $no_cache
 	 * @return UserQuizModel|false
 	 */
-	public static function get_user_quiz_model_from_db( LP_User_Items_Filter $filter, bool $no_cache = false ) {
+	public static function get_user_quiz_model_from_db( LP_User_Items_Filter $filter, bool $no_cache = true ) {
 		$user_quiz         = false;
 		$filter->item_type = ( new UserQuizModel )->item_type;
 		$user_item         = self::get_user_item_model_from_db( $filter, $no_cache );
@@ -237,26 +234,19 @@ class UserQuizModel extends UserItemModel {
 		}
 
 		// Check user, course of quiz is enrolled.
-		$filter_user_course          = new LP_User_Items_Filter();
-		$filter_user_course->user_id = $this->user_id;
-		$filter_user_course->item_id = $this->ref_id;
-		$user_course                 = UserCourseModel::get_user_course_model_from_db( $filter_user_course, true );
-		$this->user_course           = $user_course;
+		$user_course       = $this->user->get_course_attend( $this->ref_id );
+		$this->user_course = $user_course;
 		if ( ! $user_course instanceof UserCourseModel
 			|| $user_course->graduation !== LP_COURSE_GRADUATION_IN_PROGRESS ) {
 			$can_start = new WP_Error( 'not_errol_course', __( 'Please enroll in the course before starting the quiz.', 'learnpress' ) );
 		} elseif ( $user_course->status === LP_COURSE_FINISHED ) {
 			$can_start = new WP_Error( 'finished_course', __( 'You have already finished the course of this quiz.', 'learnpress' ) );
 		}
+		// Set Parent id for user quiz to save DB.
+		$this->parent_id = $this->user_course->user_item_id;
 
 		// Check if user has already started or completed quiz
-		$filter_user_quiz            = new LP_User_Items_Filter();
-		$filter_user_quiz->user_id   = $this->user_id;
-		$filter_user_quiz->item_id   = $this->item_id;
-		$filter_user_quiz->parent_id = $user_course->user_item_id;
-		$user_quiz                   = self::get_user_quiz_model_from_db( $filter_user_quiz, true );
-		// Set Parent id for user quiz to save DB.
-		$this->parent_id = $user_course->user_item_id;
+		$user_quiz = $this->user_course->get_item_attend( $this->item_id, $this->item_type );
 		if ( $user_quiz instanceof UserQuizModel ) {
 			$can_start = new WP_Error( 'started_quiz', __( 'You have already started or completed the quiz.', 'learnpress' ) );
 		}
@@ -271,6 +261,8 @@ class UserQuizModel extends UserItemModel {
 	}
 
 	/**
+	 * Check can retake quiz.
+	 *
 	 * @throws Exception
 	 */
 	public function check_can_retake() {
@@ -292,11 +284,8 @@ class UserQuizModel extends UserItemModel {
 		}
 
 		// Check user, course of quiz is enrolled.
-		$filter_user_course          = new LP_User_Items_Filter();
-		$filter_user_course->user_id = $this->user_id;
-		$filter_user_course->item_id = $this->ref_id;
-		$user_course                 = UserCourseModel::get_user_course_model_from_db( $filter_user_course, true );
-		$this->user_course           = $user_course;
+		$user_course       = $this->user->get_course_attend( $this->ref_id );
+		$this->user_course = $user_course;
 		if ( ! $user_course instanceof UserCourseModel
 			|| $user_course->graduation !== LP_COURSE_GRADUATION_IN_PROGRESS ) {
 			$can_retake = new WP_Error( 'not_errol_course', __( 'Please enroll in the course before starting the quiz.', 'learnpress' ) );
@@ -304,20 +293,13 @@ class UserQuizModel extends UserItemModel {
 			$can_retake = new WP_Error( 'finished_course', __( 'You have already finished the course of this quiz.', 'learnpress' ) );
 		}
 
-		$filter_user_quiz           = new LP_User_Items_Filter();
-		$filter_user_quiz->user_id  = $this->user_id;
-		$filter_user_quiz->item_id  = $this->item_id;
-		$filter_user_quiz->ref_id   = $this->ref_id;
-		$filter_user_quiz->ref_type = $this->ref_type;
-		$user_quiz_exists           = UserQuizModel::get_user_quiz_model_from_db( $filter_user_quiz, true );
+		// Check user quiz start and completed?.
+		$user_quiz_exists = $this->user_course->get_item_attend( $this->item_id, $this->item_type );
 		if ( ! $user_quiz_exists instanceof UserQuizModel ) {
 			$can_retake = new WP_Error( 'not_started_quiz', __( 'You have not start the quiz.', 'learnpress' ) );
 		} elseif ( $user_quiz_exists->status !== LP_ITEM_COMPLETED ) {
 			$can_retake = new WP_Error( 'not_completed_quiz', __( 'You have not completed the quiz.', 'learnpress' ) );
 		}
-
-		// Set data for this object.
-		$this->map_to_object( $user_quiz_exists );
 
 		// Check retaken count.
 		$retake_config = get_post_meta( $this->item_id, '_lp_retake_count', true );
@@ -384,7 +366,8 @@ class UserQuizModel extends UserItemModel {
 	 * @return array
 	 */
 	public function get_checked_questions(): array {
-		$value = learn_press_get_user_item_meta( $this->user_item_id, '_lp_question_checked' );
+		$value_str = $this->get_meta_value_from_key( UserQuizMetaModel::KEY_QUESTION_CHECKED );
+		$value     = maybe_unserialize( $value_str );
 
 		if ( $value ) {
 			$value = (array) $value;

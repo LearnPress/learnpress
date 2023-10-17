@@ -205,7 +205,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 				$user_quiz = $user_quiz_exists;
 				$user_quiz->retake();
 				$results['answered'] = []; // Reset answered for js
-				$checked_questions   = $user_quiz->get_checked_questions();
+				//$checked_questions   = $user_quiz->get_checked_questions();
 				$retaken_count       = $user_quiz->get_retaken_count();
 				$attempts            = $user_quiz->get_attempts();
 				//$hinted_questions    = $user_quiz->get_hint_questions();
@@ -244,8 +244,8 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 				$question_ids,
 				array(
 					'instant_check'       => $show_check,
-					'quiz_status'         => $status,
-					'checked_questions'   => $checked_questions,
+					//'quiz_status'         => $status,
+					//'checked_questions'   => $checked_questions,
 					//'hinted_questions'    => $hinted_questions,
 					'answered'            => [],
 					'show_correct_review' => $show_correct_review,

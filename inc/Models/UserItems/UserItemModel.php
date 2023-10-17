@@ -132,7 +132,7 @@ class UserItemModel {
 	 * @param bool $no_cache
 	 * @return UserItemModel|false
 	 */
-	public static function get_user_item_model_from_db( LP_User_Items_Filter $filter, bool $no_cache = false ) {
+	public static function get_user_item_model_from_db( LP_User_Items_Filter $filter, bool $no_cache = true ) {
 		$lp_user_item_db = LP_User_Items_DB::getInstance();
 		$user_item_model = false;
 

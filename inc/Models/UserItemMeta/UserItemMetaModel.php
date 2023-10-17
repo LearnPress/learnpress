@@ -102,7 +102,7 @@ class UserItemMetaModel {
 	 * @param bool $no_cache
 	 * @return UserItemMetaModel|false
 	 */
-	public static function get_user_item_meta_model_from_db( LP_User_Item_Meta_Filter $filter, bool $no_cache = false ) {
+	public static function get_user_item_meta_model_from_db( LP_User_Item_Meta_Filter $filter, bool $no_cache = true ) {
 		$lp_user_item_meta_db = LP_User_Item_Meta_DB::getInstance();
 		$user_item_meta_model = false;
 
