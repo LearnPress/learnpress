@@ -21,38 +21,11 @@ class LP_Submenu_Tools extends LP_Abstract_Submenu {
 				'database'        => __( 'Database', 'learnpress' ),
 				'template'        => __( 'Templates', 'learnpress' ),
 				'lp_beta_version' => __( 'LearnPress Beta Version', 'learnpress' ),
+				'assign_course'   => __( 'Assign/Unassign Course', 'learnpress' ),
 			)
 		);
 
 		parent::__construct();
-		//$this->_process_actions();
-	}
-
-	/**
-	 * @deprecated 4.1.7.3
-	 */
-	protected function _process_actions() {
-		_deprecated_function( __METHOD__, '4.1.7.3' );
-		/*$has_action = true;
-		switch ( LP_Request::get( 'page' ) ) {
-			default:
-				$has_action = false;
-		}
-
-		$nonce = LP_Request::get( '_wpnonce' );
-
-		if ( LP_Request::get( 'generate-cron-url' ) && $nonce ) {
-			if ( wp_verify_nonce( $nonce ) ) {
-				delete_option( 'learnpress_cron_url_nonce' );
-
-				wp_redirect( esc_url_raw( remove_query_arg( array( 'generate-cron-url', '_wpnonce' ) ) ) );
-				die();
-			}
-		}
-
-		if ( $has_action ) {
-			die();
-		}*/
 	}
 
 	/**
@@ -98,6 +71,11 @@ class LP_Submenu_Tools extends LP_Abstract_Submenu {
 				],
 			]
 		);
+	}
+
+	public function page_content_assign_course() {
+		learn_press_admin_view( 'tools/course/html-assign-course' );
+		learn_press_admin_view( 'tools/course/html-unassign-course' );
 	}
 
 	/**

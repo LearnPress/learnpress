@@ -784,8 +784,11 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 * @param int $question_id
 	 *
 	 * @return int
+	 * @deprecated 4.2.5
 	 */
 	public function hint( $question_id ) {
+		_deprecated_function( __METHOD__, '4.2.5' );
+		return false;
 		$remain = $this->can_hint_answer();
 
 		if ( $remain ) {
@@ -865,8 +868,11 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 * Get all questions user has already used "Check"
 	 *
 	 * @return array
+	 * @deprecated 4.2.5
 	 */
 	public function get_hint_questions() {
+		return [];
+		_deprecated_function( __METHOD__, '4.2.5' );
 		$value = $this->get_meta( '_lp_question_hint', true );
 
 		if ( $value ) {
@@ -878,7 +884,12 @@ class LP_User_Item_Quiz extends LP_User_Item {
 		return $value;
 	}
 
+	/**
+	 * @deprecated 4.2.5
+	 */
 	public function get_count_hint() {
+		_deprecated_function( __METHOD__, '4.2.5' );
+		return 0;
 		return count( $this->get_hint_questions() );
 	}
 

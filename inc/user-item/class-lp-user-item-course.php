@@ -812,13 +812,12 @@ class LP_User_Item_Course extends LP_User_Item {
 			$course = learn_press_get_course( $this->get_course_id() );
 
 			if ( ! $course ) {
-				throw new Exception( __FUNCTION__ . ': Course is invalid!' );
+				throw new Exception( 'Course is invalid!' );
 			}
 
 			$user_course = $this->get_last_user_course();
-
 			if ( ! $user_course ) {
-				throw new Exception();
+				throw new Exception( 'User course is invalid!' );
 			}
 
 			$filter_count             = new LP_User_Items_Filter();
@@ -829,7 +828,7 @@ class LP_User_Item_Course extends LP_User_Item {
 			$filter_count->graduation = LP_COURSE_GRADUATION_PASSED;
 			$count_items_completed    = $lp_user_items_db->count_items_of_course_with_status( $filter_count );
 		} catch ( Throwable $e ) {
-
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 
 		return $count_items_completed;

@@ -665,7 +665,7 @@ class LP_User extends LP_Abstract_User {
 			if ( ! $this->has_item_status( array( 'completed' ), $quiz_id, $course_id ) ) {
 				throw new Exception(
 					sprintf(
-						__( '%1$s::%2$s - The ser has not completed the quiz.', 'learnpress' ),
+						__( '%1$s::%2$s - The user has not completed the quiz.', 'learnpress' ),
 						__CLASS__,
 						__FUNCTION__
 					),

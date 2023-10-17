@@ -12,6 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @author tungnx
  */
 class LP_User_Items_DB extends LP_Database {
+
 	private static $_instance;
 	public static $user_item_id_col = 'learnpress_user_item_id';
 	public static $extra_value_col  = 'extra_value';
@@ -29,16 +30,74 @@ class LP_User_Items_DB extends LP_Database {
 	}
 
 	/**
+	 * Insert data
+	 *
+	 * @param array $data [ user_id, item_id, start_time, end_time, item_type, status, graduation, ref_id, ref_type, parent_id ]
+	 * @return int
+	 * @since 4.2.5
+	 * @version 1.0.0
+	 */
+	public function insert_data( array $data ): int {
+		$filter = new LP_User_Items_Filter();
+		foreach ( $data as $col_name => $value ) {
+			if ( ! in_array( $col_name, $filter->all_fields ) ) {
+				unset( $data[ $col_name ] );
+				continue;
+			}
+
+			if ( in_array( $col_name, [ 'start_time', 'end_time' ] ) && empty( $value ) ) {
+				unset( $data[ $col_name ] );
+			}
+		}
+
+		$this->wpdb->insert( $this->tb_lp_user_items, $data );
+		return $this->wpdb->insert_id;
+	}
+
+	/**
+	 * Update data
+	 *
+	 * @param array $data [ user_id, item_id, start_time, end_time, item_type, status, graduation, ref_id, ref_type, parent_id ]
+	 * @return bool
+	 *
+	 * @throws Exception
+	 * @since 4.2.5
+	 * @version 1.0.0
+	 */
+	public function update_data( array $data ): bool {
+		if ( empty( $data['user_item_id'] ) ) {
+			throw new Exception( __( 'Invalid user item id!', 'learnpress' ) . ' | ' . __FUNCTION__ );
+		}
+
+		$filter             = new LP_User_Items_Filter();
+		$filter->collection = $this->tb_lp_user_items;
+		foreach ( $data as $col_name => $value ) {
+			if ( ! in_array( $col_name, $filter->all_fields ) ) {
+				continue;
+			}
+
+			if ( is_null( $value ) ) {
+				$filter->set[] = $col_name . ' = null';
+			} else {
+				$filter->set[] = $this->wpdb->prepare( $col_name . ' = %s', $value );
+			}
+		}
+		$filter->where[] = $this->wpdb->prepare( 'AND user_item_id = %d', $data['user_item_id'] );
+		$this->update_execute( $filter );
+
+		return true;
+	}
+
+	/**
 	 * Get users items
 	 *
 	 * @return array|null|int|string
 	 * @throws Exception
 	 * @since 4.1.6.9
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function get_user_items( LP_User_Items_Filter $filter, int &$total_rows = 0 ) {
-		$default_fields = $this->get_cols_of_table( $this->tb_lp_user_items );
-		$filter->fields = array_merge( $default_fields, $filter->fields );
+		$filter->fields = array_merge( $filter->all_fields, $filter->fields );
 
 		if ( empty( $filter->collection ) ) {
 			$filter->collection = $this->tb_lp_user_items;
@@ -48,8 +107,29 @@ class LP_User_Items_DB extends LP_Database {
 			$filter->collection_alias = 'ui';
 		}
 
-		if ( $filter->ref_id ) {
+		if ( ! empty( $filter->ref_id ) ) {
 			$filter->where[] = $this->wpdb->prepare( 'AND ui.ref_id = %d', $filter->ref_id );
+		}
+
+		if ( ! empty( $filter->user_item_id ) ) {
+			$filter->where[] = $this->wpdb->prepare( 'AND ui.user_item_id = %d', $filter->user_item_id );
+		}
+
+		if ( ! empty( $filter->user_id ) ) {
+			$filter->where[] = $this->wpdb->prepare( 'AND ui.user_id = %d', $filter->user_id );
+		}
+
+		if ( ! empty( $filter->item_type ) ) {
+			$filter->where[] = $this->wpdb->prepare( 'AND ui.item_type = %s', $filter->item_type );
+		}
+
+		if ( ! empty( $filter->item_ids ) ) {
+			$item_ids_format = LP_Helper::db_format_array( $filter->item_ids, '%d' );
+			$filter->where[] = $this->wpdb->prepare( 'AND ui.item_id IN (' . $item_ids_format . ')', $filter->item_ids );
+		}
+
+		if ( ! empty( $filter->item_id ) ) {
+			$filter->where[] = $this->wpdb->prepare( 'AND ui.item_id = %s', $filter->item_id );
 		}
 
 		$filter = apply_filters( 'lp/user_items/query/filter', $filter );
@@ -252,33 +332,6 @@ class LP_User_Items_DB extends LP_Database {
 				}
 			}
 		}
-	}
-
-	/**
-	 * Get total courses is has graduation is 'in_progress'
-	 *
-	 * @param int $user_id
-	 * @param string $status
-	 * @return int
-	 * @throws Exception
-	 */
-	public function get_total_courses_has_status( int $user_id, string $status ): int {
-		$query = $this->wpdb->prepare(
-			"
-			SELECT COUNT(DISTINCT(ui.item_id)) total
-			FROM $this->tb_lp_user_items AS ui
-			WHERE ui.item_type = %s
-			AND ui.user_id = %d
-			AND ui.graduation = %s
-			",
-			LP_COURSE_CPT,
-			$user_id,
-			$status
-		);
-
-		$this->check_execute_has_error();
-
-		return (int) $this->wpdb->get_var( $query );
 	}
 
 	/**
@@ -630,7 +683,6 @@ class LP_User_Items_DB extends LP_Database {
 			$filter->item_id = $course_id;
 
 			$user_course_ids = $lp_user_items_db->get_ids_course_user( $filter );
-
 			if ( empty( $user_course_ids ) ) {
 				return;
 			}
