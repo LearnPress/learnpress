@@ -397,9 +397,10 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				throw new Exception( __( 'Error: No Course available.', 'learnpress' ) );
 			}
 
-			$user = learn_press_get_current_user();
-			if ( ! $user->can_purchase_course( $course_id ) ) {
-				throw new Exception( esc_html__( 'Error: Cannot purchase the course!', 'learnpress' ) );
+			$user         = learn_press_get_current_user();
+			$can_purchase = $user->can_purchase_course( $course_id );
+			if ( is_wp_error( $can_purchase ) ) {
+				throw new Exception( $can_purchase->get_error_message() );
 			}
 
 			$filter              = new LP_User_Items_Filter();
