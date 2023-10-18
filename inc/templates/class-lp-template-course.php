@@ -736,7 +736,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 		$user   = learn_press_get_current_user();
 		$course = learn_press_get_course();
 
-		$file_per_page = LP_Settings::instance()->get_option( 'material_file_per_page' );
+		$file_per_page = LP_Settings::get_option( 'material_file_per_page', -1 );
 		if ( ! $course || (int) $file_per_page == 0 ) {
 			return;
 		}
