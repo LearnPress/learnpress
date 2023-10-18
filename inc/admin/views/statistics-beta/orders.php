@@ -8,6 +8,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 	.lp-admin-tab-content.card{
 		max-width: 100%;
 	}
+	.btn-group{
+		display:flex;
+		margin-bottom: 20px;
+	}
+	.custom-filter-time{
+		display: none;
+	}
 	.btn-group button.btn-filter-time {
 	  border: 1px solid #284BCA;
 	  color: #000; /* White text */
@@ -52,10 +59,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 		line-height: normal;
 		text-transform: capitalize;
 	}
-	/*#orders-chart{
-		min-height: 630px;
-		width: 100%;
-	}*/
 </style>
 <div class="lp-admin-tab-content card">
 	<div class="btn-group btn-group-filter">
@@ -63,8 +66,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 	  <button class="btn-filter-time" type="button" data-filter="yesterday" ><?php _e( 'Yesterday', 'learnpress' ) ?></button>
 	  <button class="btn-filter-time" type="button" data-filter="last7days" ><?php _e( 'Last 7 days', 'learnpress' ) ?></button>
 	  <button class="btn-filter-time" type="button" data-filter="last30days" ><?php _e( 'Last 30 days', 'learnpress' ) ?></button>
-	  <button class="btn-filter-time" type="button" data-filter="lastyear" ><?php _e( 'Last month', 'learnpress' ) ?></button>
+	  <button class="btn-filter-time" type="button" data-filter="thismonth" ><?php _e( 'This month', 'learnpress' ) ?></button>
+	  <button class="btn-filter-time" type="button" data-filter="thisyear" ><?php _e( 'This year', 'learnpress' ) ?></button>
 	  <button class="btn-filter-time" type="button" data-filter="custom" ><?php _e( 'Custom', 'learnpress' ) ?></button>
+	  <div class="custom-filter-time">
+	  	<input type="date" id="ct-filter-1" />
+	  	<input type="date" id="ct-filter-2">
+	  	<button class="custom-filter-btn button button-primary" type="button"><?php _e( 'Filter', 'learnpress' ) ?></button>
+	  </div>
 	</div>
 	<div class="statistics-content">
 		<input class="statistics-type" type="hidden" value="orders-statistics">

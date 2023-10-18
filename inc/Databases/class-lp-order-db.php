@@ -163,42 +163,42 @@ class LP_Order_DB extends LP_Database {
 		);
 	}
 
-	public function chart_filter_date_group_by( LP_Order_Filter $filter ) {
+	public function chart_filter_date_group_by( LP_Filter $filter ) {
 		$filter->only_fields[] = 'HOUR(p.post_date) as order_time';
 		$filter->group_by      = 'order_time';
 		return $filter;
 	}
 
-	public function chart_filter_previous_days_group_by( LP_Order_Filter $filter ) {
+	public function chart_filter_previous_days_group_by( LP_Filter $filter ) {
 		$filter->only_fields[] = 'CAST(p.post_date AS DATE) as order_time';
 		$filter->group_by      = 'order_time';
 		return $filter;
 	}
 
-	public function chart_filter_month_group_by( LP_Order_Filter $filter ) {
+	public function chart_filter_month_group_by( LP_Filter $filter ) {
 		$filter->only_fields[] = 'DAY(p.post_date) as order_time';
 		$filter->group_by      = 'order_time';
 		return $filter;
 	}
 
-	public function chart_filter_previous_months_group_by( LP_Order_Filter $filter ) {
+	public function chart_filter_previous_months_group_by( LP_Filter $filter ) {
 		$filter->only_fields[] = 'DATE_FORMAT( p.post_date , "%b-%Y") as order_time';
 		$filter->group_by      = 'order_time';
 		return $filter;
 	}
 
-	public function chart_filter_year_group_by( LP_Order_Filter $filter ) {
+	public function chart_filter_year_group_by( LP_Filter $filter ) {
 		$filter->only_fields[] = 'MONTH(p.post_date) as order_time';
 		$filter->group_by      = 'order_time';
 		return $filter;
 	}
 
-	public function date_filter( LP_Order_Filter $filter, string $date ) {
+	public function date_filter( LP_Filter $filter, string $date ) {
 		$filter->where[] = $this->wpdb->prepare( 'AND cast( p.post_date as DATE)= cast(%s as DATE)', $date );
 		return $filter;
 	}
 
-	public function previous_days_filter( LP_Order_Filter $filter, int $value ) {
+	public function previous_days_filter( LP_Filter $filter, int $value ) {
 		if ( $value < 2 ) {
 			throw new Exception( 'Day must be greater than 2 days.', 'learnpress' );
 		}
@@ -206,12 +206,12 @@ class LP_Order_DB extends LP_Database {
 		return $filter;
 	}
 
-	public function month_filter( LP_Order_Filter $filter, string $date ) {
+	public function month_filter( LP_Filter $filter, string $date ) {
 		$filter->where[] = $this->wpdb->prepare( 'AND EXTRACT(YEAR_MONTH FROM p.post_date)= EXTRACT(YEAR_MONTH FROM %s)', $date );
 		return $filter;
 	}
 
-	public function previous_months_filter( LP_Order_Filter $filter, int $value ) {
+	public function previous_months_filter( LP_Filter $filter, int $value ) {
 		if ( $value < 2 ) {
 			throw new Exception( 'Values must be greater than 2 months.', 'learnpress' );
 		}
@@ -219,11 +219,22 @@ class LP_Order_DB extends LP_Database {
 		return $filter;
 	}
 
-	public function year_filter( LP_Order_Filter $filter, string $date ) {
+	public function year_filter( LP_Filter $filter, string $date ) {
 		$filter->where[] = $this->wpdb->prepare( 'AND YEAR(p.post_date)= YEAR(%s)', $date );
 		return $filter;
 	}
 
+	public function custom_time_filter( LP_Filter $filter, array $dates ) {
+		$diff1 = date_create( $dates[0] );
+		$diff2 = date_create( $dates[1] );
+		if ( ! $diff1 || ! $diff2 ) {
+			throw new Exception( 'Custom filter date is invalid.', 'learnpress' );
+		}
+		$diff = date_diff( $diff1, $diff2, true );
+		
+
+		return $filter;
+	}
 	public function get_net_sales_data( string $type, string $value ) {
 		$filter                   = new LP_Order_Filter();
 		$filter->collection       = $this->tb_posts;
@@ -295,6 +306,8 @@ class LP_Order_DB extends LP_Database {
 			case 'previous_months':
 				$filter = $this->previous_months_filter( $filter, (int) $value );
 				break;
+			case 'custom':
+				$filter = $this->custom_time_filter( $filter, $value );
 			default:
 				// code...
 				break;

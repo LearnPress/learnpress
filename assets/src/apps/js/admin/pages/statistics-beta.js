@@ -81,10 +81,20 @@ document.addEventListener("DOMContentLoaded", function() {
 	document.querySelectorAll('.btn-filter-time').forEach(btn => btn.addEventListener( 'click', () => {
 		let filterType = btn.dataset.filter;
 		if (filterType == 'custom') {
-
+			document.querySelector( '.custom-filter-time' ).style.display = 'flex';
 		} else {
 			orderLoadData(filterType);
 		}
 	}));
+	document.querySelector('.custom-filter-btn').addEventListener( 'click', (e) => {
+		let time1 = document.querySelector( '#ct-filter-1' ).value,
+			time2 = document.querySelector( '#ct-filter-2' ).value;
+			console.log( time1 + ' - ' + time2 );
+		if ( ! time1 || ! time2 ) {
+			alert( 'Choose date' );
+		} else {
+			orderLoadData( 'custom', `${time1}+${time2}` );
+		}
+	} );
 	orderStatisticsLoad();
 });
