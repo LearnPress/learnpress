@@ -1,12 +1,11 @@
 import { addQueryArgs } from '@wordpress/url';
 import apiFetch from '@wordpress/api-fetch';
 
-
-export default function lpMaterialsLoad ( is_curriculum = false ) {
+export default function lpMaterialsLoad( is_curriculum = false ) {
 	// console.log('loaded');
 	const Sekeleton = () => {
 		const elementSkeleton = document.querySelector( '.lp-material-skeleton' );
-			  
+
 		if ( ! elementSkeleton ) {
 			return;
 		}
@@ -16,18 +15,24 @@ export default function lpMaterialsLoad ( is_curriculum = false ) {
 		getResponse( elementSkeleton );
 	};
 	const getResponse = async ( ele, page = 1 ) => {
+		const elCurriculum = document.querySelector( '.learnpress-course-curriculum' );
+		if ( ! elCurriculum ) {
+			return;
+		}
+		const itemId = elCurriculum.dataset.id;
+
 		let itemID = 0;
 		if ( is_curriculum ) {
-			itemID = lpCourseItem ? lpCourseItem.id : 0;
+			itemID = itemId || 0;
 		} else {
 			itemID = lpGlobalSettings.post_id;
 		}
 		const elementMaterial = ele.querySelector( '.course-material-table' );
-		const loadMoreBtn     = document.querySelector( '.lp-loadmore-material' )
+		const loadMoreBtn = document.querySelector( '.lp-loadmore-material' );
 		try {
 			const response = await apiFetch( {
-				path: addQueryArgs( `lp/v1/material/item-materials/${itemID}`, {
-					page: page,
+				path: addQueryArgs( `lp/v1/material/item-materials/${ itemID }`, {
+					page,
 				} ),
 				method: 'GET',
 			} );
@@ -39,7 +44,7 @@ export default function lpMaterialsLoad ( is_curriculum = false ) {
 			}
 			if ( data.length > 0 ) {
 				if ( ele.querySelector( '.lp-skeleton-animation' ) ) {
-					ele.querySelector( '.lp-skeleton-animation' ).remove();	
+					ele.querySelector( '.lp-skeleton-animation' ).remove();
 				}
 				// console.log( data );
 				elementMaterial.style.display = 'table';
@@ -61,33 +66,14 @@ export default function lpMaterialsLoad ( is_curriculum = false ) {
 			console.log( error.message );
 		}
 	};
-	/*
-	const insertRow = ( tbody, file_name, file_type, file_size, file_url ) => {
-		if ( !tbody ) {
-			return;
-		}
-		tbody.insertAdjacentHTML( 
-			'beforeend',
-			`<tr>
-                <td colspan="4">${file_name}</td>
-                <td>${file_type}</td>
-                <td>${file_size}</td>
-                <td>
-                    <a href="${file_url}" target="_blank">
-                        <i class="fas fa-file-download btn-download-material"></i>
-                    </a>
-                </td>
-            </tr>`
-			 );
-	}
-	*/
+
 	Sekeleton();
 	document.addEventListener( 'click', function( e ) {
-		let target = e.target;
+		const target = e.target;
 		if ( target.classList.contains( 'lp-loadmore-material' ) ) {
 			const elementSkeleton = document.querySelector( '.lp-material-skeleton' ),
-				  loadMoreBtn     = elementSkeleton.querySelector( '.lp-loadmore-material' );
-			let page = ~~ target.getAttribute( 'page' );
+				  loadMoreBtn = elementSkeleton.querySelector( '.lp-loadmore-material' );
+			const page = ~~target.getAttribute( 'page' );
 			target.classList.add( 'loading' );
 			getResponse( elementSkeleton, page );
 			// target.classList.remove( 'loading' );
