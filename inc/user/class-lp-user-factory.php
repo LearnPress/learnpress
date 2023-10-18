@@ -412,6 +412,8 @@ class LP_User_Factory {
 	 * @deprecated 4.2.2.4
 	 */
 	public static function start_quiz( $quiz_id, $course_id, $user_id ) {
+		_deprecated_function( __FUNCTION__, '4.2.2.4' );
+		return;
 		if ( learn_press_get_user( $user_id ) ) {
 			$user = learn_press_get_user( $user_id );
 			if ( $user->get_item_data( $quiz_id, $course_id ) ) {
@@ -428,6 +430,8 @@ class LP_User_Factory {
 	 * @deprecated 4.2.2.4
 	 */
 	private static function _update_user_item_meta( $item, $quiz_id, $course_id, $user_id ) {
+		_deprecated_function( __FUNCTION__, '4.2.2.4' );
+		return;
 		if ( get_user_by( 'id', $user_id ) ) {
 			return;
 		}

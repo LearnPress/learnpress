@@ -10,11 +10,11 @@
 
 namespace LearnPress\Models\UserItems;
 
-use Exception;
 use LP_Course;
 use LP_Course_Cache;
 use LP_User;
 use LP_User_Items_Filter;
+use Throwable;
 
 class UserCourseModel extends UserItemModel {
 	/**
@@ -45,7 +45,7 @@ class UserCourseModel extends UserItemModel {
 	 * @param bool $no_cache
 	 * @return UserCourseModel|false
 	 */
-	public static function get_user_course_model_from_db( LP_User_Items_Filter $filter, bool $no_cache = false ) {
+	public static function get_user_course_model_from_db( LP_User_Items_Filter $filter, bool $no_cache = true ) {
 		$filter->item_type = ( new UserCourseModel )->item_type;
 		$user_course       = self::get_user_item_model_from_db( $filter, $no_cache );
 		if ( ! empty( $user_course ) ) {
@@ -54,6 +54,44 @@ class UserCourseModel extends UserItemModel {
 		}
 
 		return $user_course;
+	}
+
+	/**
+	 * Get user_items is child of user course.
+	 *
+	 * @param int $item_id
+	 * @param string $item_type
+	 * @return false|UserItemModel
+	 */
+	public function get_item_attend( int $item_id, string $item_type ) {
+		$item = false;
+
+		try {
+			$filter            = new LP_User_Items_Filter();
+			$filter->parent_id = $this->user_item_id;
+			$filter->item_id   = $item_id;
+			$filter->item_type = $item_type;
+			$filter->ref_type  = $this->item_type;
+			$filter->ref_id    = $this->item_id;
+			$filter->user_id   = $this->user_id;
+			$item              = UserItemModel::get_user_item_model_from_db( $filter );
+
+			if ( $item ) {
+				switch ( $item_type ) {
+					case LP_QUIZ_CPT:
+						$item = new UserQuizModel( $item );
+						break;
+					default:
+						break;
+				}
+
+				$item = apply_filters( 'learn-press/user-course-has-item-attend', $item, $item_type, $this );
+			}
+		} catch ( Throwable $e ) {
+			error_log( $e->getMessage() );
+		}
+
+		return $item;
 	}
 
 	public function clean_caches() {
