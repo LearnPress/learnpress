@@ -1,4 +1,3 @@
-import { page } from '@wordpress/icons';
 import { __ } from '@wordpress/i18n';
 import { useBlockProps } from '@wordpress/block-editor';
 import { Placeholder } from '@wordpress/components';
@@ -9,7 +8,6 @@ export const edit = ( props ) => {
 	return (
 		<div { ...blockProps }>
 			<Placeholder
-				icon={ page }
 				label={ __( 'Archive Course', 'learnpress' ) }
 			>
 				<div>
