@@ -6,8 +6,7 @@
  * Author: ThimPress
  * Version: 4.2.5-beta-2
  * Author URI: http://thimpress.com
- * Requires at least: 5.8
- * Tested up to: 6.3.1
+ * Requires at least: 6.2
  * Requires PHP: 7.0
  * Text Domain: learnpress
  * Domain Path: /languages/
