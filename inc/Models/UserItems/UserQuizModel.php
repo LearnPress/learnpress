@@ -18,10 +18,8 @@ use LP_Datetime;
 use LP_Quiz;
 use LP_Quiz_CURD;
 use LP_User;
-use LP_User_Item_Meta_Filter;
 use LP_User_Items_Filter;
 use LP_User_Items_Result_DB;
-use stdClass;
 use WP_Error;
 
 class UserQuizModel extends UserItemModel {
@@ -276,7 +274,7 @@ class UserQuizModel extends UserItemModel {
 
 		$this->quiz = learn_press_get_quiz( $this->item_id );
 		if ( empty( $this->quiz ) ) {
-			$can_start = new WP_Error( 'quiz_invalid', __( 'Quiz is invalid.', 'learnpress' ) );
+			$can_retake = new WP_Error( 'quiz_invalid', __( 'Quiz is invalid.', 'learnpress' ) );
 		}
 
 		$this->course = learn_press_get_course( $this->ref_id );
