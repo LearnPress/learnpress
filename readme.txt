@@ -210,10 +210,14 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
-= 4.2.5 (2023-10-18) =
-~ Fixed: error font Arabic when export invoice.
+= 4.2.5 (2023-10-19) =
 ~ Tweak: start quiz, retake quiz.
 ~ Tweaks: icon social.
+~ Fixed: error font Arabic when export invoice.
+~ Fixed: minus point when skip question.
+~ Fixed: error duplicate message "out of stock" on the single course.
+~ Fixed: error not show material of lesson.
+~ Fixed: error set 0 to not show material.
 
 = 4.2.4 (2023-10-03) =
 ~ Fixed: error Paypal Standard (use IPN), replace to use API REST, client ID, client secret.
