@@ -18,10 +18,8 @@ use LP_Datetime;
 use LP_Quiz;
 use LP_Quiz_CURD;
 use LP_User;
-use LP_User_Item_Meta_Filter;
 use LP_User_Items_Filter;
 use LP_User_Items_Result_DB;
-use stdClass;
 use WP_Error;
 
 class UserQuizModel extends UserItemModel {
@@ -241,14 +239,15 @@ class UserQuizModel extends UserItemModel {
 			$can_start = new WP_Error( 'not_errol_course', __( 'Please enroll in the course before starting the quiz.', 'learnpress' ) );
 		} elseif ( $user_course->status === LP_COURSE_FINISHED ) {
 			$can_start = new WP_Error( 'finished_course', __( 'You have already finished the course of this quiz.', 'learnpress' ) );
-		}
-		// Set Parent id for user quiz to save DB.
-		$this->parent_id = $this->user_course->user_item_id;
+		} else {
+			// Set Parent id for user quiz to save DB.
+			$this->parent_id = $this->user_course->user_item_id;
 
-		// Check if user has already started or completed quiz
-		$user_quiz = $this->user_course->get_item_attend( $this->item_id, $this->item_type );
-		if ( $user_quiz instanceof UserQuizModel ) {
-			$can_start = new WP_Error( 'started_quiz', __( 'You have already started or completed the quiz.', 'learnpress' ) );
+			// Check if user has already started or completed quiz
+			$user_quiz = $this->user_course->get_item_attend( $this->item_id, $this->item_type );
+			if ( $user_quiz instanceof UserQuizModel ) {
+				$can_start = new WP_Error( 'started_quiz', __( 'You have already started or completed the quiz.', 'learnpress' ) );
+			}
 		}
 
 		// Hook can start quiz
@@ -275,7 +274,7 @@ class UserQuizModel extends UserItemModel {
 
 		$this->quiz = learn_press_get_quiz( $this->item_id );
 		if ( empty( $this->quiz ) ) {
-			$can_start = new WP_Error( 'quiz_invalid', __( 'Quiz is invalid.', 'learnpress' ) );
+			$can_retake = new WP_Error( 'quiz_invalid', __( 'Quiz is invalid.', 'learnpress' ) );
 		}
 
 		$this->course = learn_press_get_course( $this->ref_id );

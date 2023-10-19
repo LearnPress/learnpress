@@ -14,7 +14,7 @@ if ( ! $user ) {
 	return;
 }
 
-$socials = $user->get_profile_socials( $user->get_id() );
+$socials = $user->get_profile_social( $user->get_id() );
 if ( empty( $socials ) ) {
 	return;
 }
