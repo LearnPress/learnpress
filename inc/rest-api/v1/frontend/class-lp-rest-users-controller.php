@@ -57,9 +57,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			'submit-quiz'  => array(
 				array(
 					'methods'             => WP_REST_Server::EDITABLE,
-					// 'callback' => array( $this, 'submit_quiz' ),
-					'callback'            => array( $this, 'submit_quiz_new' ),
-					// 'permission_callback' => array( $this, 'check_admin_permission' ),
+					'callback'            => array( $this, 'submit_quiz' ),
 					'permission_callback' => '__return_true',
 					'args'                => $this->get_item_endpoint_args(),
 				),
@@ -205,9 +203,9 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 				$user_quiz = $user_quiz_exists;
 				$user_quiz->retake();
 				$results['answered'] = []; // Reset answered for js
-				//$checked_questions   = $user_quiz->get_checked_questions();
 				$retaken_count       = $user_quiz->get_retaken_count();
 				$attempts            = $user_quiz->get_attempts();
+				//$checked_questions   = $user_quiz->get_checked_questions();
 				//$hinted_questions    = $user_quiz->get_hint_questions();
 			} else { // Create new user quiz and insert to database.
 				/**
@@ -279,7 +277,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 	 * @modify 4.1.4.1
 	 * @version 1.0.2
 	 */
-	public function submit_quiz_new( WP_REST_Request $request ) {
+	public function submit_quiz( WP_REST_Request $request ) {
 		//$response = new LP_REST_Response();
 		$response = array(
 			'status'  => 'error',

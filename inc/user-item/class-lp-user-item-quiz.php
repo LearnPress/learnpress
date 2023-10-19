@@ -432,7 +432,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 * @param array $answered [question_id => answered, 'instant_check' => 0]
 	 *
 	 * @return array
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 * @author tungnx
 	 * @since 4.1.4.1
 	 */
@@ -441,6 +441,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 			'questions'         => array(),
 			'mark'              => 0,
 			'user_mark'         => 0,
+			'minus_point'       => 0,
 			'question_count'    => 0,
 			'question_empty'    => 0,
 			'question_answered' => 0,
@@ -485,11 +486,8 @@ class LP_User_Item_Quiz extends LP_User_Item {
 				$question = LP_Question::get_question( $question_id );
 				$point    = floatval( $question->get_mark() );
 
-				// if ( ! array_key_exists( 'instant_check', $answered ) || array_key_exists( $question_id, $answered ) ) {
 				$result['questions'][ $question_id ]             = array();
 				$result['questions'][ $question_id ]['answered'] = $answered[ $question_id ] ?? '';
-
-				// }
 
 				if ( isset( $answered[ $question_id ] ) ) { // User's answer
 					$result['question_answered']++;
@@ -504,7 +502,8 @@ class LP_User_Item_Quiz extends LP_User_Item {
 						$result['questions'][ $question_id ]['mark']    = $point;
 					} else {
 						if ( $quiz->get_negative_marking() ) {
-							$result['user_mark'] -= $point;
+							$result['user_mark']   -= $point;
+							$result['minus_point'] += $point;
 						}
 						$result['question_wrong']++;
 
@@ -512,8 +511,9 @@ class LP_User_Item_Quiz extends LP_User_Item {
 						$result['questions'][ $question_id ]['mark']    = 0;
 					}
 				} elseif ( ! array_key_exists( 'instant_check', $answered ) ) { // User skip question
-					if ( $quiz->get_negative_marking() && $quiz->get_minus_skip_questions() ) {
-						$result['user_mark'] -= $point;
+					if ( $quiz->get_minus_skip_questions() ) {
+						$result['user_mark']   -= $point;
+						$result['minus_point'] += $point;
 					}
 					$result['question_empty']++;
 
@@ -549,11 +549,6 @@ class LP_User_Item_Quiz extends LP_User_Item {
 			} else {
 				$result['pass'] = 0;
 			}
-
-			// $result['answered'] = $answered;
-			// $results['status']   = $quiz->get_status();
-			// $result['results']  = $result;
-			// $result['attempts'] = $this->get_attempts();
 		} catch ( Throwable $e ) {
 
 		}
