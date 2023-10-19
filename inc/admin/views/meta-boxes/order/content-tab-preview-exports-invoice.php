@@ -30,7 +30,7 @@ $order_date = new LP_Datetime( $order->get_data( 'order_date' ) );
 		echo wp_sprintf(
 			'<p class="invoice-field invoice-date">%s: %s</p>',
 			esc_html__( 'Order Date', 'learnpress' ),
-			$order_date->format( 'i18n_has_time' )
+			$order_date->format( LP_Datetime::I18N_FORMAT_HAS_TIME )
 		);
 		echo wp_sprintf( '<p class="invoice-field invoice-no">%s: %s</p>', esc_html__( 'Invoice No.', 'learnpress' ), esc_attr( $order->get_order_number() ) );
 		echo wp_sprintf( '<p class="invoice-field invoice-customer">%s: %s</p>', esc_html__( 'Customer', 'learnpress' ), esc_html( $order->get_customer_name() ) );
