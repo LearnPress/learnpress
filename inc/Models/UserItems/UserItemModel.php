@@ -146,7 +146,7 @@ class UserItemModel {
 	 *
 	 * @param LP_User_Items_Filter $filter
 	 * @param bool $no_cache
-	 * @return UserItemModel|false
+	 * @return UserItemModel|false|static
 	 */
 	public static function get_user_item_model_from_db( LP_User_Items_Filter $filter, bool $no_cache = true ) {
 		$lp_user_item_db = LP_User_Items_DB::getInstance();
@@ -155,11 +155,14 @@ class UserItemModel {
 		try {
 			$filter->order    = $filter::ORDER_DESC;
 			$filter->order_by = $filter::COL_USER_ITEM_ID;
+			if ( empty( $filter->item_type ) ) {
+				$filter->item_type = ( new static() )->item_type;
+			}
 			$lp_user_item_db->get_query_single_row( $filter );
 			$query_single_row = $lp_user_item_db->get_user_items( $filter );
 			$user_item_rs     = $lp_user_item_db->wpdb->get_row( $query_single_row );
 			if ( $user_item_rs instanceof stdClass ) {
-				$user_item_model       = new self( $user_item_rs );
+				$user_item_model       = new static( $user_item_rs );
 				$user_item_model->user = learn_press_get_user( $user_item_model->user_id );
 			}
 		} catch ( Throwable $e ) {

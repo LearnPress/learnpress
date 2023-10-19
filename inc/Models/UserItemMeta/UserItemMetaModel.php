@@ -86,7 +86,7 @@ class UserItemMetaModel {
 		if ( $user_itemmeta_rs instanceof stdClass ) {
 			$all_data = new stdClass();
 			foreach ( $user_itemmeta_rs as $value ) {
-				$all_data->{$value->meta_key} = new self( $value );
+				$all_data->{$value->meta_key} = new static( $value );
 			}
 		}
 
@@ -111,7 +111,7 @@ class UserItemMetaModel {
 			$query_single_row = $lp_user_item_meta_db->get_user_item_metas( $filter );
 			$user_item_rs     = $lp_user_item_meta_db->wpdb->get_row( $query_single_row );
 			if ( $user_item_rs instanceof stdClass ) {
-				$user_item_meta_model = new self( $user_item_rs );
+				$user_item_meta_model = new static( $user_item_rs );
 			}
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );

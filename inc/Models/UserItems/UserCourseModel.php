@@ -60,24 +60,6 @@ class UserCourseModel extends UserItemModel {
 	}
 
 	/**
-	 * Get user_course from DB.
-	 *
-	 * @param LP_User_Items_Filter $filter
-	 * @param bool $no_cache
-	 * @return UserCourseModel|false
-	 */
-	public static function get_user_course_model_from_db( LP_User_Items_Filter $filter, bool $no_cache = true ) {
-		$filter->item_type = ( new UserCourseModel )->item_type;
-		$user_course       = self::get_user_item_model_from_db( $filter, $no_cache );
-		if ( ! empty( $user_course ) ) {
-			$user_course         = new self( $user_course );
-			$user_course->course = learn_press_get_course( $user_course->item_id );
-		}
-
-		return $user_course;
-	}
-
-	/**
 	 * Get user_items is child of user course.
 	 *
 	 * @param int $item_id

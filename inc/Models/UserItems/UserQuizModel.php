@@ -64,25 +64,6 @@ class UserQuizModel extends UserItemModel {
 	}
 
 	/**
-	 * Get user_course from DB.
-	 *
-	 * @param LP_User_Items_Filter $filter
-	 * @param bool $no_cache
-	 * @return UserQuizModel|false
-	 */
-	public static function get_user_quiz_model_from_db( LP_User_Items_Filter $filter, bool $no_cache = true ) {
-		$user_quiz         = false;
-		$filter->item_type = ( new UserQuizModel )->item_type;
-		$user_item         = self::get_user_item_model_from_db( $filter, $no_cache );
-
-		if ( ! empty( $user_item ) ) {
-			$user_quiz = new self( $user_item );
-		}
-
-		return $user_quiz;
-	}
-
-	/**
 	 * Get quiz model
 	 *
 	 * @return bool|LP_Quiz

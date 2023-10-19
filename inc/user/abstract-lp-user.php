@@ -152,7 +152,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			$filter          = new LP_User_Items_Filter();
 			$filter->item_id = $course_id;
 			$filter->user_id = $this->get_id();
-			return UserCourseModel::get_user_course_model_from_db( $filter );
+			return UserCourseModel::get_user_item_model_from_db( $filter );
 		}
 
 		/**
