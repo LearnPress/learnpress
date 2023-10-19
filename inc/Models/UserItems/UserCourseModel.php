@@ -38,6 +38,27 @@ class UserCourseModel extends UserItemModel {
 	 */
 	public $course;
 
+	public function __construct( $data = null ) {
+		parent::__construct( $data );
+
+		if ( $data ) {
+			$this->get_course_model();
+		}
+	}
+
+	/**
+	 * Get quiz model
+	 *
+	 * @return bool|LP_Course
+	 */
+	public function get_course_model() {
+		if ( empty( $this->course ) ) {
+			$this->course = learn_press_get_course( $this->item_id );
+		}
+
+		return $this->course;
+	}
+
 	/**
 	 * Get user_course from DB.
 	 *

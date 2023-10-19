@@ -15,6 +15,7 @@ use Exception;
 use LearnPress\Models\UserItemMeta\UserItemMetaModel;
 use LP_Datetime;
 use LP_User;
+use LP_User_Guest;
 use LP_User_Item_Meta_Filter;
 use LP_User_Items_Cache;
 use LP_User_Items_DB;
@@ -104,7 +105,21 @@ class UserItemModel {
 	public function __construct( $data = null ) {
 		if ( $data ) {
 			$this->map_to_object( $data );
+			$this->get_user_model();
 		}
+	}
+
+	/**
+	 * Get user model
+	 *
+	 * @return false|LP_User|LP_User_Guest
+	 */
+	public function get_user_model() {
+		if ( empty( $this->user ) ) {
+			$this->user = learn_press_get_user( $this->user_id );
+		}
+
+		return $this->user;
 	}
 
 	/**

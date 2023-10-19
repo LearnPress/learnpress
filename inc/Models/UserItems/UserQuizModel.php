@@ -55,6 +55,14 @@ class UserQuizModel extends UserItemModel {
 	 */
 	public $user_course;
 
+	public function __construct( $data = null ) {
+		parent::__construct( $data );
+
+		if ( $data ) {
+			$this->get_quiz_model();
+		}
+	}
+
 	/**
 	 * Get user_course from DB.
 	 *
@@ -72,19 +80,6 @@ class UserQuizModel extends UserItemModel {
 		}
 
 		return $user_quiz;
-	}
-
-	/**
-	 * Get quiz model
-	 *
-	 * @return false|LP_User|LP_User_Guest
-	 */
-	public function get_user_model() {
-		if ( empty( $this->user ) ) {
-			$this->user = learn_press_get_user( $this->user_id );
-		}
-
-		return $this->user;
 	}
 
 	/**
