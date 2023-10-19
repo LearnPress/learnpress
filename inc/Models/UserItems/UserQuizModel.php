@@ -241,14 +241,15 @@ class UserQuizModel extends UserItemModel {
 			$can_start = new WP_Error( 'not_errol_course', __( 'Please enroll in the course before starting the quiz.', 'learnpress' ) );
 		} elseif ( $user_course->status === LP_COURSE_FINISHED ) {
 			$can_start = new WP_Error( 'finished_course', __( 'You have already finished the course of this quiz.', 'learnpress' ) );
-		}
-		// Set Parent id for user quiz to save DB.
-		$this->parent_id = $this->user_course->user_item_id;
+		} else {
+			// Set Parent id for user quiz to save DB.
+			$this->parent_id = $this->user_course->user_item_id;
 
-		// Check if user has already started or completed quiz
-		$user_quiz = $this->user_course->get_item_attend( $this->item_id, $this->item_type );
-		if ( $user_quiz instanceof UserQuizModel ) {
-			$can_start = new WP_Error( 'started_quiz', __( 'You have already started or completed the quiz.', 'learnpress' ) );
+			// Check if user has already started or completed quiz
+			$user_quiz = $this->user_course->get_item_attend( $this->item_id, $this->item_type );
+			if ( $user_quiz instanceof UserQuizModel ) {
+				$can_start = new WP_Error( 'started_quiz', __( 'You have already started or completed the quiz.', 'learnpress' ) );
+			}
 		}
 
 		// Hook can start quiz
