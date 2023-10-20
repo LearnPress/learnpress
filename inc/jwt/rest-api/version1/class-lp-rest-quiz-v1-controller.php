@@ -304,7 +304,7 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		$request->set_param( 'course_id', $course_id );
 		$request->set_param( 'item_id', $quiz_id );
 
-		return $controller->submit_quiz_new( $request );
+		return $controller->submit_quiz( $request );
 	}
 
 	public function prepare_object_for_response( $object, $request ) {
