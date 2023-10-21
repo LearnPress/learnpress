@@ -277,8 +277,17 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					0,
 					1
 				),
-				'lp-tools-assign-course'            => new LP_Asset_Key(
+				/*'lp-tools-assign-course'            => new LP_Asset_Key(
 					$this->url( 'src/apps/js/admin/admin-tools-assign-course.js' ),
+					array(
+						'jquery',
+					),
+					array( 'learnpress_page_learn-press-tools' ),
+					0,
+					1
+				),*/
+				'lp-admin-tools'            => new LP_Asset_Key(
+					$this->url( 'js/dist/admin/admin-tools' . self::$_min_assets . '.js' ),
 					array(
 						'jquery',
 					),
@@ -328,6 +337,12 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					LP_CSS_URL . 'admin/statistic' . $is_rtl . self::$_min_assets . '.css',
 					array(),
 					array( 'learners_page_learn-press-statistics' ),
+					0
+				),
+				'lp-tom-select' => new LP_Asset_Key(
+					'https://cdn.jsdelivr.net/npm/tom-select@2.2.3/dist/css/tom-select.css',
+					[],
+					array( 'learnpress_page_learn-press-tools' ),
 					0
 				),
 			)

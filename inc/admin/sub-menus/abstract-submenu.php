@@ -350,9 +350,9 @@ abstract class LP_Abstract_Submenu {
 			}
 			?>
 
-			<form class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>" method="post" enctype="multipart/form-data">
+			<div class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>">
 				<?php $this->page_content(); ?>
-			</form>
+			</div>
 		</div>
 		<?php
 	}
@@ -360,7 +360,7 @@ abstract class LP_Abstract_Submenu {
 	/**
 	 * This function for displaying content of active tab only.
 	 * For displaying content of main page without tab,
-	 * overwrite this function in sub class.
+	 * overwrite this function in subclass.
 	 */
 	public function page_content() {
 		do_action( 'learn-press/admin/page-content-sections', $this );
