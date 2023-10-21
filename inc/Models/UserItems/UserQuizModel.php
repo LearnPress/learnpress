@@ -19,8 +19,6 @@ use LP_Question;
 use LP_Quiz;
 use LP_Quiz_CURD;
 use LP_User;
-use LP_User_Guest;
-use LP_User_Items_Filter;
 use LP_User_Items_Result_DB;
 use Throwable;
 use WP_Error;
@@ -534,7 +532,7 @@ class UserQuizModel extends UserItemModel {
 	 * @return string
 	 */
 	public function get_time_spend(): string {
-		$interval = $this->get_total_timestamp_complete();
+		$interval = $this->get_total_timestamp_completed();
 		if ( empty( $interval ) ) {
 			return '--:--';
 		}

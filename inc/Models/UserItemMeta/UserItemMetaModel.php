@@ -23,7 +23,7 @@ class UserItemMetaModel {
 	 *
 	 * @var int
 	 */
-	public $meta_id = 0;
+	private $meta_id = 0;
 	/**
 	 * @var string User ID, foreign key
 	 */
@@ -68,6 +68,24 @@ class UserItemMetaModel {
 		}
 
 		return $this;
+	}
+
+	/**
+	 * Get meta id
+	 *
+	 * @return int
+	 */
+	public function get_meta_id(): int {
+		return $this->meta_id;
+	}
+
+	/**
+	 * Set meta id
+	 *
+	 * @param int $meta_id
+	 */
+	public function set_meta_id( int $meta_id ) {
+		$this->meta_id = $meta_id;
 	}
 
 	/**
@@ -138,7 +156,7 @@ class UserItemMetaModel {
 		}
 
 		// Check if exists user_item_id.
-		if ( empty( $this->meta_id ) ) { // Insert data.
+		if ( empty( $this->get_meta_id() ) ) { // Insert data.
 			$meta_id_new = $lp_user_item_meta_db->insert_data( $data );
 			if ( empty( $meta_id_new ) ) {
 				throw new Exception( __METHOD__ . ': ' . 'Cannot insert data to database.' );
@@ -148,7 +166,7 @@ class UserItemMetaModel {
 		}
 
 		if ( ! empty( $meta_id_new ) ) {
-			$this->meta_id = $meta_id_new;
+			$this->set_meta_id( $meta_id_new );
 		}
 
 		$this->clean_caches();
@@ -162,6 +180,5 @@ class UserItemMetaModel {
 	 * @return void
 	 */
 	public function clean_caches() {
-
 	}
 }

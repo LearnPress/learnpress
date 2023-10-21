@@ -296,7 +296,7 @@ class UserItemModel {
 	 *
 	 * @return int
 	 */
-	public function get_total_timestamp_complete(): int {
+	public function get_total_timestamp_completed(): int {
 		$time_interval = 0;
 
 		if ( empty( $this->start_time ) || empty( $this->end_time ) ) {
