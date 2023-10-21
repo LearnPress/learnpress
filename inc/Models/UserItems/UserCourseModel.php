@@ -71,7 +71,7 @@ class UserCourseModel extends UserItemModel {
 
 		try {
 			$filter            = new LP_User_Items_Filter();
-			$filter->parent_id = $this->user_item_id;
+			$filter->parent_id = $this->get_user_item_id();
 			$filter->item_id   = $item_id;
 			$filter->item_type = $item_type;
 			$filter->ref_type  = $this->item_type;

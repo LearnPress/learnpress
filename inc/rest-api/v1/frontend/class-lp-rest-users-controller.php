@@ -220,7 +220,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 				$user_quiz = $user_quiz_new;
 			}
 
-			$user_item_id = $user_quiz->user_item_id;
+			$user_item_id = $user_quiz->get_user_item_id();
 
 			/**
 			 * Clear cache result quiz
