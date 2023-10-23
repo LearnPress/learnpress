@@ -182,7 +182,7 @@ class LP_Order_DB extends LP_Database {
 	}
 
 	public function chart_filter_previous_months_group_by( LP_Filter $filter ) {
-		$filter->only_fields[] = 'DATE_FORMAT( p.post_date , "%b-%Y") as order_time';
+		$filter->only_fields[] = 'DATE_FORMAT( p.post_date , "%m-%Y") as order_time';
 		$filter->group_by      = 'order_time';
 		return $filter;
 	}
@@ -190,6 +190,38 @@ class LP_Order_DB extends LP_Database {
 	public function chart_filter_year_group_by( LP_Filter $filter ) {
 		$filter->only_fields[] = 'MONTH(p.post_date) as order_time';
 		$filter->group_by      = 'order_time';
+		return $filter;
+	}
+	public function chart_filter_custom_group_by( LP_Filter $filter, $dates ) {
+		$diff1 = date_create( $dates[0] );
+		$diff2 = date_create( $dates[1] );
+		if ( ! $diff1 || ! $diff2 ) {
+			throw new Exception( 'Custom filter date is invalid.', 'learnpress' );
+		}
+		$diff = date_diff( $diff1, $diff2, true );
+		$y = $diff->y;
+		$m = $diff->m;
+		$d = $diff->d;
+		if ( $y < 1 ) {
+		    if ( $m < 1 ) {
+		    	if ( $d < 1 ) {
+		    		$filter = $this->chart_filter_date_group_by( $filter );
+		    	} else {
+		    		$filter = $this->chart_filter_previous_days_group_by( $filter );
+		    	}
+		    } else {
+		    	$filter = $this->chart_filter_previous_months_group_by( $filter );
+		    }
+		} elseif( $y < 2 ) {
+		    $filter = $this->chart_filter_previous_months_group_by( $filter );
+		} elseif ( $y < 5 ) {
+		    $filter->only_fields[] = 'CONCAT( "Q", QUARTER(p.post_date) ,"-", Year(p.post_date)) as order_time';
+		    // $filter->only_fields[] = 'Year(p.post_date) as year';
+		    $filter->group_by      = 'order_time';
+		} else {
+			$filter->only_fields[] = 'YEAR(p.post_date) as order_time';
+			$filter->group_by      = 'order_time';
+		}
 		return $filter;
 	}
 
@@ -225,14 +257,14 @@ class LP_Order_DB extends LP_Database {
 	}
 
 	public function custom_time_filter( LP_Filter $filter, array $dates ) {
-		$diff1 = date_create( $dates[0] );
-		$diff2 = date_create( $dates[1] );
-		if ( ! $diff1 || ! $diff2 ) {
-			throw new Exception( 'Custom filter date is invalid.', 'learnpress' );
+		if ( empty( $dates ) ) {
+			throw new Exception( 'Select date', 'learnpress' );
 		}
-		$diff = date_diff( $diff1, $diff2, true );
-		
-
+		$filter->where[] = $this->wpdb->prepare( 
+			'AND (DATE(p.post_date) BETWEEN %s AND %s)', 
+			date( 'Y-m-d', strtotime( $dates[0] ) ),
+			date( 'Y-m-d', strtotime( $dates[1] ) ) 
+		);
 		return $filter;
 	}
 	public function get_net_sales_data( string $type, string $value ) {
