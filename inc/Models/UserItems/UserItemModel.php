@@ -13,6 +13,7 @@ namespace LearnPress\Models\UserItems;
 
 use Exception;
 use LearnPress\Models\UserItemMeta\UserItemMetaModel;
+use LP_Datetime;
 use LP_User;
 use LP_User_Item_Meta_Filter;
 use LP_User_Items_Cache;
@@ -252,6 +253,24 @@ class UserItemModel {
 		$this->clean_caches();
 
 		return $this;
+	}
+
+	/**
+	 * Get total timestamp complete, done item.
+	 *
+	 * @return int
+	 */
+	public function get_total_timestamp_complete(): int {
+		$time_interval = 0;
+
+		if ( empty( $this->start_time ) || empty( $this->end_time ) ) {
+			return $time_interval;
+		}
+
+		$start = new LP_Datetime( $this->start_time );
+		$end   = new LP_Datetime( $this->end_time );
+
+		return $end->getTimestamp() - $start->getTimestamp();
 	}
 
 	/**
