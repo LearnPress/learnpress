@@ -255,7 +255,6 @@ if ( ! function_exists( 'learn_press_content_item_edit_links' ) ) {
 				);
 			}
 		}
-
 	}
 }
 add_filter( 'admin_bar_menu', 'learn_press_content_item_edit_links', 90 );
@@ -1721,7 +1720,7 @@ function lp_get_email_content( $format, $meta = array(), $field = array() ) {
 function lp_skeleton_animation_html( $count_li = 3, $width = 'random', $styleli = '', $styleul = '' ) {
 	?>
 	<ul class="lp-skeleton-animation" style="<?php echo esc_attr( $styleul ); ?>">
-		<?php for ( $i = 0; $i < absint( $count_li ); $i ++ ) : ?>
+		<?php for ( $i = 0; $i < absint( $count_li ); $i++ ) : ?>
 			<li style="width: <?php echo esc_attr( $width === 'random' ? wp_rand( 60, 100 ) . '%' : $width ); ?>; <?php echo ! empty( $styleli ) ? $styleli : ''; ?>"></li>
 		<?php endfor; ?>
 	</ul>
@@ -1825,13 +1824,10 @@ function lp_archive_skeleton_get_args(): array {
 		$args['taxonomy'] = $cat->taxonomy;
 	}
 
-	/*if ( learn_press_is_course_archive() ) {
-		foreach ( $params as $key => $param ) {
-			if ( isset( $_REQUEST[ $key ] ) ) {
-				$args[ $key ] = LP_Helper::sanitize_params_submitted( $_REQUEST[ $key ] );
-			}
-		}
-	}*/
+	$args = apply_filters( 'lp/template/archive-course/skeleton/args', $args );
+	if ( ! is_array( $args ) ) {
+		$args = [];
+	}
 
-	return apply_filters( 'lp/template/archive-course/skeleton/args', $args );
+	return LP_Helper::sanitize_params_submitted( $args );
 }
