@@ -130,7 +130,6 @@ class LP_User extends LP_Abstract_User {
 	 * @param int $course_id .
 	 *
 	 * @return int
-	 * @throws Exception .
 	 * @since 4.0.0
 	 * @author tungnx
 	 */
@@ -322,91 +321,70 @@ class LP_User extends LP_Abstract_User {
 	 * Check can show purchase course button
 	 *
 	 * @param int $course_id
-	 * @return bool
-	 * @throws Exception
+	 * @return true|WP_Error
 	 * @author nhamdv
 	 * @editor tungnx
-	 * @modify 4.1.4
-	 * @version 1.0.3
+	 * @since 4.0.8
+	 * @version 1.0.4
 	 */
-	public function can_purchase_course( int $course_id = 0 ): bool {
+	public function can_purchase_course( int $course_id = 0 ) {
 		$can_purchase = true;
 		$course       = learn_press_get_course( $course_id );
 
+		if ( ! $course ) {
+			$can_purchase = new WP_Error( 'course_unavailable', __( 'Course is unavailable', 'learnpress' ) );
+		}
+
+		if ( ! $course->is_publish() ) {
+			$can_purchase = new WP_Error( 'course_not_publish', __( 'Course is not publish', 'learnpress' ) );
+		}
+
+		if ( $course->is_free() ) {
+			$can_purchase = new WP_Error( 'course_is_free', __( 'Course is free, so you can not purchase', 'learnpress' ) );
+		}
+
+		if ( $course->get_external_link() ) {
+			$can_purchase = new WP_Error( 'course_is_external', __( 'Course is type external, so you can not purchase', 'learnpress' ) );
+		}
+
+		// Course is not require enrolling.
+		if ( $course->is_no_required_enroll() ) {
+			$can_purchase = new WP_Error( 'course_is_no_required_enroll', __( 'Course is not required enroll', 'learnpress' ) );
+		}
+
+		if ( $this->can_retry_course( $course_id ) ) {
+			$can_purchase = new WP_Error( 'course_can_retry', __( 'Course can not retry', 'learnpress' ) );
+		}
+
+		// If course is reached limitation.
+		if ( ! $course->is_in_stock() ) {
+			$can_purchase = new WP_Error( 'course_out_of_stock', __( 'Course is out of stock', 'learnpress' ) );
+		}
+
+		// If the order contains course is processing
 		try {
-			if ( ! $course ) {
-				throw new Exception( 'Course is unavailable' );
-			}
-
-			if ( ! $course->is_publish() ) {
-				throw new Exception( 'Course is not publish' );
-			}
-
-			if ( $course->is_free() ) {
-				throw new Exception( 'Course is free' );
-			}
-
-			if ( $course->get_external_link() ) {
-				throw new Exception( 'Course is type external, so can not purchase' );
-			}
-
-			// Course is not require enrolling.
-			if ( $course->is_no_required_enroll() ) {
-				throw new Exception( 'Course is type no required enroll' );
-			}
-
-			if ( $this->can_retry_course( $course_id ) ) {
-				throw new Exception( 'Course is has retake' );
-			}
-
-			// If course is reached limitation.
-			if ( ! $course->is_in_stock() ) {
-				$message = apply_filters(
-					'learn-press/maximum-students-reach',
-					esc_html__( 'This course is out of stock', 'learnpress' )
-				);
-
-				if ( $message ) {
-					learn_press_display_message( $message );
-				}
-
-				throw new Exception( $message );
-			}
-
-			// If the order contains course is processing
 			$order = $this->get_course_order( $course_id );
-			if ( $order && $order->get_status() === 'processing' ) {
-				$message = apply_filters(
-					'learn-press/order-processing-message',
-					__( 'Your order is waiting for processing', 'learnpress' )
-				);
-
-				if ( $message ) {
-					learn_press_display_message( $message );
-				}
-
-				throw new Exception( $message );
+			if ( $order && $order->get_status() === LP_ORDER_PROCESSING ) {
+				$can_purchase = new WP_Error( 'order_processing', __( 'Your order is waiting for processing', 'learnpress' ) );
 			}
 
 			if ( $this->has_purchased_course( $course_id ) ) {
 				throw new Exception( 'Course is purchased' );
 			}
+		} catch ( Throwable $e ) {
+			$can_purchase = new WP_Error( 'course_code_err', $e->getMessage() );
+		}
 
-			$is_blocked_course  = 0 === $course->timestamp_remaining_duration();
-			$is_enrolled_course = $this->has_enrolled_course( $course_id );
-			$is_finished_course = $this->has_finished_course( $course_id );
-
-			if ( $course->allow_repurchase() ) {
-				if ( $is_enrolled_course && ! $is_blocked_course ) {
-					throw new Exception( 'Course is enrolled' );
-				}
-			} else {
-				if ( $this->has_enrolled_or_finished( $course_id ) ) {
-					throw new Exception( 'Course is enrolled' );
-				}
+		$is_blocked_course  = 0 === $course->timestamp_remaining_duration();
+		$is_enrolled_course = $this->has_enrolled_course( $course_id );
+		if ( $course->allow_repurchase() ) {
+			if ( $is_enrolled_course && ! $is_blocked_course ) {
+				$can_purchase = new WP_Error( 'course_is_enrolled', __( 'Course is enrolled', 'learnpress' ) );
 			}
-		} catch ( Exception $e ) {
-			$can_purchase = false;
+		} else {
+			if ( $this->has_enrolled_or_finished( $course_id ) ) {
+				$can_purchase = new WP_Error( 'course_is_enrolled_or_finished', __( 'Course is enrolled or finished', 'learnpress' ) );
+			}
 		}
 
 		return apply_filters( 'learn-press/user/can-purchase-course', $can_purchase, $this->get_id(), $course_id );
@@ -665,7 +643,7 @@ class LP_User extends LP_Abstract_User {
 			if ( ! $this->has_item_status( array( 'completed' ), $quiz_id, $course_id ) ) {
 				throw new Exception(
 					sprintf(
-						__( '%1$s::%2$s - The ser has not completed the quiz.', 'learnpress' ),
+						__( '%1$s::%2$s - The user has not completed the quiz.', 'learnpress' ),
 						__CLASS__,
 						__FUNCTION__
 					),

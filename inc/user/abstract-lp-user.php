@@ -11,6 +11,9 @@
 /**
  * Prevent loading this file directly
  */
+
+use LearnPress\Models\UserItems\UserCourseModel;
+
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Abstract_User' ) ) {
@@ -134,6 +137,22 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			}
 
 			return $object_course_data;
+		}
+
+		/**
+		 * Get course attend of user.
+		 * Replace get_course_data method.
+		 *
+		 * @param int $course_id
+		 * @return false|UserCourseModel
+		 * @since 4.2.5
+		 * @version 1.0.0
+		 */
+		public function get_course_attend( int $course_id = 0 ) {
+			$filter          = new LP_User_Items_Filter();
+			$filter->item_id = $course_id;
+			$filter->user_id = $this->get_id();
+			return UserCourseModel::get_user_course_model_from_db( $filter );
 		}
 
 		/**
@@ -534,8 +553,11 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 *
 		 * @return WP_Error|mixed
 		 * @since 3.0.0
+		 * @deprecated 4.2.5
 		 */
 		public function hint( $question_id, $quiz_id, $course_id ) {
+			_deprecated_function( __FUNCTION__, '4.2.5' );
+			return false;
 			$course = learn_press_get_course( $course_id );
 			if ( ! $course ) {
 				return false;

@@ -23,3 +23,24 @@
         }
     }
 }
+#learn-press-assign-course, #learn-press-unassign-course{
+    .lp-assign-course__options {
+        // .select2-selection {
+        //     height: 30px;
+        //     >span {
+        //         height: 30px;
+        //     }
+        // }
+    }
+    .assign-to-container {
+        div {
+            margin-bottom: 1rem;
+        }
+        label {
+            vertical-align: baseline;
+        }
+        .select2-container {
+            margin-top: 1rem;
+        }
+    }
+}

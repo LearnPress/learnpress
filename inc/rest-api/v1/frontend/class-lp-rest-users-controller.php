@@ -1,5 +1,8 @@
 <?php
 
+use LearnPress\Models\UserItemMeta\UserQuizMetaModel;
+use LearnPress\Models\UserItems\UserQuizModel;
+
 /**
  * Class LP_REST_Users_Controller
  *
@@ -54,9 +57,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			'submit-quiz'  => array(
 				array(
 					'methods'             => WP_REST_Server::EDITABLE,
-					// 'callback' => array( $this, 'submit_quiz' ),
-					'callback'            => array( $this, 'submit_quiz_new' ),
-					// 'permission_callback' => array( $this, 'check_admin_permission' ),
+					'callback'            => array( $this, 'submit_quiz' ),
 					'permission_callback' => '__return_true',
 					'args'                => $this->get_item_endpoint_args(),
 				),
@@ -181,18 +182,45 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			/**
 			 * Require enroll course
 			 *
-			 * @var LP_User_Item_Quiz|WP_Error $user_quiz
+			 * @var UserQuizModel $user_quiz
 			 */
-			if ( $user->has_started_quiz( $item_id, $course_id ) ) {
-				$user_quiz           = $user->retake_quiz( $item_id, $course_id, true );
+			$checked_questions         = [];
+			$hinted_questions          = [];
+			$retaken_count             = 0;
+			$attempts                  = [];
+			$user_item_id              = 0;
+			$filter_user_quiz          = new LP_User_Items_Filter();
+			$filter_user_quiz->user_id = $user_id;
+			$filter_user_quiz->item_id = $item_id;
+			$filter_user_quiz->ref_id  = $course_id;
+			$user_quiz_exists          = UserQuizModel::get_user_quiz_model_from_db( $filter_user_quiz, true );
+			if ( $user_quiz_exists instanceof UserQuizModel
+				&& $user_quiz_exists->status === LP_ITEM_COMPLETED ) {
+				/**
+				 * @uses LP_User::retake_quiz
+				 */
+				//$user_quiz = $user->retake_quiz( $item_id, $course_id, true );
+				$user_quiz = $user_quiz_exists;
+				$user_quiz->retake();
 				$results['answered'] = []; // Reset answered for js
-			} else {
-				$user_quiz = $user->start_quiz( $item_id, $course_id, true );
+				$retaken_count       = $user_quiz->get_retaken_count();
+				$attempts            = $user_quiz->get_attempts();
+				//$checked_questions   = $user_quiz->get_checked_questions();
+				//$hinted_questions    = $user_quiz->get_hint_questions();
+			} else { // Create new user quiz and insert to database.
+				/**
+				 * @uses LP_User::start_quiz
+				 */
+				//$user_quiz                = $user->start_quiz( $item_id, $course_id, true );
+				$user_quiz_new          = new UserQuizModel();
+				$user_quiz_new->user_id = $user_id;
+				$user_quiz_new->item_id = $item_id;
+				$user_quiz_new->ref_id  = $course_id;
+				$user_quiz_new->start_quiz();
+				$user_quiz = $user_quiz_new;
 			}
 
-			if ( is_wp_error( $user_quiz ) ) {
-				throw new Exception( $user_quiz->get_error_message() );
-			}
+			$user_item_id = $user_quiz->user_item_id;
 
 			/**
 			 * Clear cache result quiz
@@ -208,17 +236,15 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			$show_correct_review = $quiz->get_show_correct_review();
 			$question_ids        = $quiz->get_question_ids();
 			$status              = $user_quiz->get_status();
-			$checked_questions   = $user_quiz->get_checked_questions();
-			$hinted_questions    = $user_quiz->get_hint_questions();
 			$time_remaining      = $user_quiz->get_timestamp_remaining();
 
 			$questions = learn_press_rest_prepare_user_questions(
 				$question_ids,
 				array(
 					'instant_check'       => $show_check,
-					'quiz_status'         => $status,
-					'checked_questions'   => $checked_questions,
-					'hinted_questions'    => $hinted_questions,
+					//'quiz_status'         => $status,
+					//'checked_questions'   => $checked_questions,
+					//'hinted_questions'    => $hinted_questions,
 					'answered'            => [],
 					'show_correct_review' => $show_correct_review,
 				)
@@ -229,9 +255,9 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			$results['total_time']   = $time_remaining;
 			$results['duration']     = $duration ? $duration->get() : false;
 			$results['status']       = $status; // Must be started
-			$results['retaken']      = absint( $user_quiz->get_retaken_count() );
-			$results['attempts']     = $user_quiz->get_attempts();
-			$results['user_item_id'] = $user_quiz->get_user_item_id();
+			$results['retaken']      = $retaken_count;
+			$results['attempts']     = $attempts;
+			$results['user_item_id'] = $user_item_id;
 			$response['status']      = 'success';
 			$response['results']     = $results;
 		} catch ( Throwable $e ) {
@@ -251,7 +277,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 	 * @modify 4.1.4.1
 	 * @version 1.0.2
 	 */
-	public function submit_quiz_new( WP_REST_Request $request ) {
+	public function submit_quiz( WP_REST_Request $request ) {
 		//$response = new LP_REST_Response();
 		$response = array(
 			'status'  => 'error',

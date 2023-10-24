@@ -214,6 +214,12 @@ const Result = () => {
 					<span>{ __( 'Skipped', 'learnpress' ) }</span>
 					<p>{ results.questionEmpty }</p>
 				</li>
+				{ typeof results.minusPoint !== 'undefined' && (
+					<li className="result-statistic-field result-questions-minus">
+						<span>{ __( 'Minus points', 'learnpress' ) }</span>
+						<p>{ results.minusPoint }</p>
+					</li>
+				) }
 			</ul>
 		</div>
 	);

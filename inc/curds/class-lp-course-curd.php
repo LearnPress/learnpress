@@ -272,87 +272,6 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		}
 
 		/**
-		 * Read all items in a course from database with an array in pair of
-		 * post ID and post type.
-		 *
-		 * @param int  $course_id
-		 * @param bool $publish_only
-		 *
-		 * @return array
-		 * @deprecated 4.1.6.9
-		 */
-		/*public function read_course_items( $course_id, $publish_only = true, $section_ids = array() ) {
-			global $wpdb;
-			$where = '';
-
-			if ( $publish_only ) {
-				$where = $wpdb->prepare(
-					'
-					AND c.post_status = %s
-					AND it.post_status = %s
-				',
-					'publish',
-					'publish'
-				);
-			}
-
-			$types  = learn_press_course_get_support_item_types( true );
-			$where .= $wpdb->prepare(
-				' AND si.item_type IN(' . LP_Helper::db_format_array( $types, '%s' ) . ')',
-				$types
-			);
-
-			if ( $section_ids ) {
-				$where .= $wpdb->prepare(
-					' AND s.section_id IN(' . LP_Helper::db_format_array(
-						$section_ids,
-						'%d'
-					) . ')',
-					$section_ids
-				);
-			}
-
-			$query = $wpdb->prepare(
-				"
-				SELECT item_id id, it.post_type `type`, si.section_id
-				FROM {$wpdb->learnpress_section_items} si
-				INNER JOIN {$wpdb->learnpress_sections} s ON si.section_id = s.section_id
-				INNER JOIN {$wpdb->posts} c ON c.ID = s.section_course_id
-				INNER JOIN {$wpdb->posts} it ON it.ID = si.item_id
-				WHERE c.ID = %d
-				{$where}
-				ORDER BY s.section_order, si.item_order, si.section_item_id ASC
-			",
-				$course_id
-			);
-
-			$results = $wpdb->get_results( $query );
-
-			return $results;
-
-			//////////////////////////////////////////// Code new - tungnx
-
-			$items = [];
-
-			$course = learn_press_get_course( $course_id );
-			if ( ! $course ) {
-				return $items;
-			}
-
-			$sections_items = $course->get_full_sections_and_items_course();
-			foreach ( $sections_items as $section_items ) {
-				$section_id = $section_items->id;
-
-				foreach ( $section_items->items as $item ) {
-					$item->section_id = $section_id;
-					$items[]          = $item;
-				}
-			}
-
-			return $items;
-		}*/
-
-		/**
 		 * Get all courses that contains an item by item id.
 		 * Data returned is an array of all courses found.
 		 *
@@ -384,109 +303,6 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		}
 
 		/**
-		 * @deprecated 4.1.6.9
-		 */
-		/*public static function update_items_format( $item ) {
-
-			if ( empty( $item['args']['course_id'] ) ) {
-				return false;
-			}
-
-			$course_id = absint( $item['args']['course_id'] );
-
-			delete_option( 'update_items_format_' . $course_id );
-
-			global $wpdb;
-
-			$course = learn_press_get_course( $course_id );
-
-			if ( ! $course ) {
-				return false;
-			}
-
-			$item_ids = $course->get_items();
-
-			if ( ! $item_ids ) {
-				return false;
-			}
-
-			$query = $wpdb->prepare(
-				"
-				SELECT object_id AS id, REPLACE(slug, 'post-format-', '') AS format
-				FROM {$wpdb->terms} AS t
-				INNER JOIN {$wpdb->term_taxonomy} AS tt ON t.term_id = tt.term_id
-				INNER JOIN {$wpdb->term_relationships} AS tr ON tr.term_taxonomy_id = tt.term_taxonomy_id
-				WHERE tt.taxonomy IN (%s)
-					AND tr.object_id IN (" . join( ',', $item_ids ) . ')
-				ORDER BY t.name ASC
-			',
-				'post_format'
-			);
-
-			$terms = $wpdb->get_results( $query );
-
-			if ( $terms ) {
-				$updated = array();
-				foreach ( $terms as $term ) {
-					update_post_meta( $term->id, 'post_format', $term->format );
-					$updated[] = $term->id;
-				}
-				$item_ids = array_diff( $item_ids, $updated );
-			}
-
-			if ( $item_ids ) {
-				foreach ( $item_ids as $item_id ) {
-					update_post_meta( $item_id, 'post_format', 'standard' );
-				}
-			}
-
-			return false;
-		}*/
-
-		/**
-		 * Read curriculum of a course from db into cache.
-		 *
-		 * @param $course_id
-		 *
-		 * @return array|mixed
-		 */
-		/*public function read_course_curriculum( $course_id ) {
-
-			if ( learn_press_get_post_type( $course_id ) != LP_COURSE_CPT ) {
-				return false;
-			}
-
-			if ( false !== LP_Course_Utils::get_course_items( $course_id ) ) {
-				return false;
-			}
-
-			if ( $this->get_course_sections( $course_id, 'ids' ) ) {
-				return $this->read_course_items( $course_id );
-			}
-
-			return false;
-		}*/
-
-		/**
-		 * Get sections of course
-		 *
-		 * @param int    $course_id
-		 * @param string $return
-		 *
-		 * @return array
-		 * @version 4.0.0
-		 *
-		 */
-		/*public function get_course_sections( $course_id, $return = '' ) {
-			// if ( false === ( $sections = LP_Object_Cache::get( $course_id, 'learn-press/course-sections' ) ) ) {
-			$sections = $this->read_course_sections( $course_id );
-			// }
-
-			// return $return === 'ids' ? LP_Object_Cache::get( $course_id, 'learn-press/course-sections-ids' ) : $sections;
-			return $return === 'ids' ? LP_Course_Utils::get_cached_db_sections( $course_id, 'ids' ) : $sections;
-		}*/
-
-		/**
 		 * Retrieve total sections of a course.
 		 *
 		 * @param int $course_id
@@ -508,44 +324,6 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 
 			return $wpdb->get_var( $query );
 		}
-
-		/**
-		 * Retrieve total items of a course.
-		 *
-		 * @param int $course_id
-		 *
-		 * @return array
-		 * @since 3.1.0
-		 * @editor tungnx
-		 * @modify 4.1.4.1 - comment - not use
-		 */
-		/*public function count_items( $course_id, $context = 'view' ) {
-			global $wpdb;
-			$params = array( $course_id );
-			$sql    = "
-				SELECT COUNT(it.ID) `count`, it.post_type
-				FROM {$wpdb->learnpress_section_items} si
-				INNER JOIN {$wpdb->learnpress_sections} s ON si.section_id = s.section_id
-				INNER JOIN {$wpdb->posts} c ON c.ID = s.section_course_id
-				INNER JOIN {$wpdb->posts} it ON it.ID = si.item_id
-				WHERE s.section_course_id = %d";
-			if ( $context == 'view' ) {
-				$sql   .= ' AND c.post_status = %s
-					AND it.post_status = %s ';
-				$params = array_merge( $params, array( 'publish', 'publish' ) );
-			}
-			$sql  .= ' GROUP BY it.post_type ';
-			$query = $wpdb->prepare( $sql, $params );
-
-			$stats_object = array();
-			if ( $results = $wpdb->get_results( $query ) ) {
-				foreach ( $results as $result ) {
-					$stats_object[ $result->post_type ] = $result->count;
-				}
-			}
-
-			return $stats_object;
-		}*/
 
 		/**
 		 * Read sections of a bundle of courses by ids
@@ -660,46 +438,6 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		}
 
 		/**
-		 * Remove all course data from database, includes section and course's items
-		 *
-		 * @param $course_id
-		 * @editor tungnx
-		 * @modify 4.1.4.1 - comment - not use
-		 */
-		/*public function remove_course( $course_id ) {
-			global $wpdb;
-
-			$section_ids = $wpdb->get_col(
-				$wpdb->prepare(
-					"SELECT section_id FROM {$wpdb->prefix}learnpress_sections WHERE section_course_id = %d",
-					$course_id
-				)
-			);
-			if ( $section_ids ) {
-				$wpdb->query(
-					$wpdb->prepare(
-						"DELETE FROM {$wpdb->prefix}learnpress_section_items WHERE %d AND section_id IN(" . join(
-							',',
-							$section_ids
-						) . ')',
-						1
-					)
-				);
-				learn_press_reset_auto_increment( 'learnpress_section_items' );
-			}
-
-			// delete all sections
-			$query = $wpdb->prepare(
-				"
-				DELETE FROM {$wpdb->prefix}learnpress_sections
-				WHERE section_course_id = %d",
-				$course_id
-			);
-			$wpdb->query( $query );
-			learn_press_reset_auto_increment( 'learnpress_sections' );
-		}*/
-
-		/**
 		 * Get recent courses.
 		 *
 		 * @param array $args
@@ -745,6 +483,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 *
 		 * @return array
 		 * @Todo tungnx from LP 4.1.3.1 use LP_Course_DB::get_user_ids_enrolled replace
+		 * Addon Student List still use
 		 */
 		public function get_user_enrolled( $course_id, $limit = - 1 ) {
 			global $wpdb;

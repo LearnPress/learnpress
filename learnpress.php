@@ -4,10 +4,9 @@
  * Plugin URI: http://thimpress.com/learnpress
  * Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
  * Author: ThimPress
- * Version: 4.2.4
+ * Version: 4.2.5
  * Author URI: http://thimpress.com
- * Requires at least: 5.8
- * Tested up to: 6.3.1
+ * Requires at least: 6.2
  * Requires PHP: 7.0
  * Text Domain: learnpress
  * Domain Path: /languages/
@@ -147,6 +146,10 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * LearnPress constructor.
 		 */
 		protected function __construct() {
+			/*if ( isset( $_POST['action'] ) && 'heartbeat' === $_POST['action'] ) {
+				return;
+			}*/
+
 			if ( self::$_instance ) {
 				return;
 			}
@@ -250,26 +253,29 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/Filters/class-lp-section-items-filter.php';
 			require_once 'inc/Filters/class-lp-question-filter.php';
 			require_once 'inc/Filters/class-lp-user-items-filter.php';
+			require_once 'inc/Filters/class-lp-user-item-meta-filter.php';
 			require_once 'inc/Filters/class-lp-quiz-questions-filter.php';
 			require_once 'inc/Filters/class-lp-question-answers-filter.php';
 			require_once 'inc/Filters/class-lp-question-answermeta-filter.php';
 
 			// Query Database .
-			require_once 'inc/databases/class-lp-db.php';
-			require_once 'inc/databases/class-lp-order-db.php';
-			require_once 'inc/databases/class-lp-course-db.php';
-			require_once 'inc/databases/class-lp-lesson-db.php';
-			require_once 'inc/databases/class-lp-section-db.php';
-			require_once 'inc/databases/class-lp-section-items-db.php';
-			require_once 'inc/databases/class-lp-quiz-db.php';
-			require_once 'inc/databases/class-lp-quiz-questions-db.php';
-			require_once 'inc/databases/class-lp-question-answers-db.php';
-			require_once 'inc/databases/class-lp-sessions-db.php';
-			require_once 'inc/databases/class-lp-question-db.php';
-			require_once 'inc/databases/class-lp-user-items-db.php';
-			require_once 'inc/databases/class-lp-user-item-results-db.php';
-			require_once 'inc/databases/class-thim-cace-db.php';
-			require_once 'inc/databases/class-lp-material-db.php';
+			require_once 'inc/Databases/class-lp-db.php';
+			require_once 'inc/Databases/class-lp-order-db.php';
+			require_once 'inc/Databases/class-lp-course-db.php';
+			require_once 'inc/Databases/class-lp-lesson-db.php';
+			require_once 'inc/Databases/class-lp-section-db.php';
+			require_once 'inc/Databases/class-lp-section-items-db.php';
+			require_once 'inc/Databases/class-lp-quiz-db.php';
+			require_once 'inc/Databases/class-lp-quiz-questions-db.php';
+			require_once 'inc/Databases/class-lp-question-answers-db.php';
+			require_once 'inc/Databases/class-lp-sessions-db.php';
+			require_once 'inc/Databases/class-lp-question-db.php';
+			require_once 'inc/Databases/class-lp-user-items-db.php';
+			require_once 'inc/Databases/class-lp-user-item-meta-db.php';
+			require_once 'inc/Databases/class-lp-user-item-results-db.php';
+			require_once 'inc/Databases/class-thim-cace-db.php';
+			require_once 'inc/Databases/class-lp-material-db.php';
+			require_once 'inc/Databases/class-lp-wpdb-multiple.php';
 			// Read files config on folder config .
 			//require_once 'inc/Helper/Config.php';
 
@@ -291,10 +297,10 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			CourseMaterialTemplate::instance();
 
 			// Models
-			require_once 'inc/models/class-lp-rest-response.php';
-			include_once 'inc/models/steps/class-lp-group-step.php';
-			include_once 'inc/models/steps/class-lp-step.php';
-			require_once 'inc/models/class-lp-course-extra-info-fast-query-model.php';
+			require_once 'inc/Models/class-lp-rest-response.php';
+			include_once 'inc/Models/steps/class-lp-group-step.php';
+			include_once 'inc/Models/steps/class-lp-step.php';
+			require_once 'inc/Models/class-lp-course-extra-info-fast-query-model.php';
 
 			// Handle steps.
 			require_once 'inc/handle-steps/class-lp-handle-steps.php';

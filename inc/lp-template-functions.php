@@ -92,7 +92,8 @@ if ( ! function_exists( 'learn_press_get_course_tabs' ) ) {
 			|| $user->is_instructor() || $user->is_admin() ) {
 			$is_enrolled_course = true;
 		}
-		if ( $course->get_downloadable_material() && $is_enrolled_course ) {
+		$file_per_page = LP_Settings::get_option( 'material_file_per_page', -1 );
+		if ( $course->get_downloadable_material() && $is_enrolled_course && (int) $file_per_page != 0 ) {
 			$defaults['materials'] = array(
 				'title'    => esc_html__( 'Materials', 'learnpress' ),
 				'priority' => 45,

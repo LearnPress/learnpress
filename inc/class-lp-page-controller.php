@@ -349,8 +349,6 @@ class LP_Page_Controller {
 
 			// Set item viewing
 			$user->set_viewing_item( $lp_course_item );
-
-			wp_localize_script( 'lp-single-curriculum', 'lpCourseItem', [ 'id' => $lp_course_item->get_id() ] );
 		} catch ( Throwable $e ) {
 			error_log( $e->getMessage() );
 		}

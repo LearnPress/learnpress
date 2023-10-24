@@ -257,7 +257,6 @@
 		.modal-content {
 			background-color: #fefefe;
 			margin: 5% auto;
-			padding: 20px;
 			border: 1px solid #888;
 			width: 60%;
 			position: relative;
@@ -290,7 +289,7 @@
 	#order-export__tabs.tabs {
 		display: flex;
 		justify-content: space-around;
-		margin: 20px 2px 40px 2px;
+		//margin: 20px 2px 40px 2px;
 		height: 40px;
 		box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.2);
 		>* {
@@ -313,6 +312,8 @@
 		}
 	}
 	#lp-invoice__content {
+		padding: 20px 40px 0;
+
 		thead {
 			th {
 				border-bottom: 1px solid #000;
@@ -338,6 +339,7 @@
 	}
 	.export-options__content {
 		margin-bottom: 25px;
+		padding: 10px 40px;
 	}
 	.export-options {
 		position: relative;
