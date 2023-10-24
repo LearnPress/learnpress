@@ -98,7 +98,7 @@ class Block_Template_Handle {
 			if ( $block_custom ) {
 				$new->is_custom = true;
 				$new->source    = 'custom';
-				if ( version_compare( get_bloginfo( 'version' ), '6.4', '>=' ) ) {
+				if ( version_compare( get_bloginfo( 'version' ), '6.4-beta', '>=' ) ) {
 					$new->content = traverse_and_serialize_blocks( parse_blocks( $block_custom->post_content ) );
 				} else {
 					$new->content = _inject_theme_attribute_in_block_template_content( $block_custom->post_content );
