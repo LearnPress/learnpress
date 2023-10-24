@@ -212,6 +212,7 @@ https://www.transifex.com/projects/p/learnpress/
 
 = 4.2.5.1 (2023-10-24) =
 ~ Fixed: security issue.
+~ Compatible with WP 6.4.
 
 = 4.2.5 (2023-10-19) =
 ~ Tweak: start quiz, retake quiz.
