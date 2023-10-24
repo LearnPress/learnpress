@@ -55,7 +55,7 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 			$lp_order_db      = LP_Order_DB::getInstance();
 			$statistics       = $lp_order_db->get_order_statics( $filter['filter_type'], $filter['time'] );
 			$completed_orders = $lp_order_db->get_completed_order_data( $filter['filter_type'], $filter['time'] );
-			$chart_data       = $this->process_order_complete_data( $filter, $completed_orders );
+			$chart_data       = $this->process_order_chart_data( $filter, $completed_orders );
 			$data             = array(
 				'statistics' => $statistics,
 				'chart_data' => $chart_data,
@@ -68,61 +68,50 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 		}
 		return rest_ensure_response( $response );
 	}
-	public function process_order_complete_data( array $filter, array $input_data ) {
+	public function process_order_chart_data( array $filter, array $input_data ) {
 		$chart_data = array();
 		$data       = array();
 		if ( $filter['filter_type'] == 'date' ) {
-			for ( $i = 0; $i < 24;$i++ ) {
-				$row              = new stdClass();
-				$row->order_time  = $i;
-				$row->count_order = 0;
-				$data[ $i ]       = $row;
-			}
-			if ( ! empty( $input_data ) ) {
-				foreach ( $input_data as $row ) {
-					$data[ $row->order_time ] = $row;
-				}
-			}
+			$data                  = $this->process_date_data( $input_data );
 			$chart_data['x_label'] = __( 'Hour', 'learnpress' );
 		} elseif ( $filter['filter_type'] == 'previous_days' ) {
-			for ( $i = $filter['time']; $i >= 0; $i-- ) {
-				$date             = date( 'Y-m-d', strtotime( -$i . 'days' ) );
-				$row              = new stdClass();
-				$row->order_time  = $date;
-				$row->count_order = 0;
-				$data[ $date ]    = $row;
-			}
-			foreach ( $input_data as $row ) {
-				$data[ $row->order_time ] = $row;
-			}
+			$data                  = $this->process_previous_days_data( $filter['time'], $input_data );
 			$chart_data['x_label'] = __( 'Dates', 'learnpress' );
 		} elseif ( $filter['filter_type'] == 'month' ) {
-			$max_day = cal_days_in_month( 0, date( 'm', strtotime( $filter['time'] ) ), date( 'Y', strtotime( $filter['time'] ) ) );
-			for( $i = 1; $i <= $max_day; $i++ ) {
-				$row              = new stdClass();
-				$row->order_time  = $i;
-				$row->count_order = 0;
-				$data[ $i ]       = $row;
-			}
-			if ( ! empty( $input_data ) ) {
-				foreach ( $input_data as $row ) {
-					$data[ $row->order_time ] = $row;
-				}
-			}
+			$data                  = $this->process_month_data( $filter, $input_data );
 			$chart_data['x_label'] = __( 'Dates', 'learnpress' );
 		} elseif ( $filter['filter_type'] == 'year' ) {
-			for( $i = 1; $i <= 12; $i++ ) {
-				$row              = new stdClass();
-				$row->order_time  = $i;
-				$row->count_order = 0;
-				$data[ $i ]       = $row;
-			}
-			if ( ! empty( $input_data ) ) {
-				foreach ( $input_data as $row ) {
-					$data[ $row->order_time ] = $row;
-				}
-			}
+			$data                  = $this->process_year_data( $input_data );
 			$chart_data['x_label'] = __( 'Months', 'learnpress' );
+		} elseif ( $filter['filter_type'] == 'custom' ) {
+			$dates = $filter['time'];
+			$dates = explode( '+', $dates );
+			sort( $dates );
+			$diff = date_diff( date_create( $dates[0] ), date_create( $dates[1] ), true );
+			$y    = $diff->y;
+			$m    = $diff->m;
+			$d    = $diff->d;
+			if ( $y < 1 ) {
+				if ( $m <= 1 ) {
+					if ( $d < 1 ) {
+						$data                  = $this->process_date_data( $input_data );
+						$chart_data['x_label'] = __( 'Hour', 'learnpress' );
+					} else {
+						$data                  = $this->process_previous_days_data( $d, $input_data, $dates[1] );
+						$chart_data['x_label'] = __( 'Dates', 'learnpress' );
+					}
+				} else {
+					// TODO
+					// $filter = $this->chart_filter_previous_months_group_by( $filter );
+				}
+			} elseif ( $y < 2 ) {
+				// TODO
+				// $filter = $this->chart_filter_previous_months_group_by( $filter );
+			} elseif ( $y < 5 ) {
+				// TODO
+			} else {
+				// TODO
+			}
 		}
 		foreach ( $data as $row ) {
 			$chart_data['labels'][] = $row->order_time;
@@ -153,15 +142,75 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 		} elseif ( $params['filterType'] == 'thisyear' ) {
 			$filter['filter_type'] = 'year';
 			$filter['time']        = current_time( 'Y-m-d' );
-		} elseif ( $params['filterType'] == 'custom' && !empty( $params['date'] ) ) {
+		} elseif ( $params['filterType'] == 'custom' && ! empty( $params['date'] ) ) {
 			$filter['filter_type'] = 'custom';
-			$dates                 = explode( '+', $params['date'] );
-			if ( count( $dates ) !== 2 ) {
-				throw new Exception( 'Invalid custom time', 'learnpress');
-			}
-			$filter['time']        = $dates;
+			$filter['time']        = $params['date'];
 		}
 		return $filter;
+	}
+
+	public function process_date_data( array $input_data ) {
+		$data = array();
+		for ( $i = 0; $i < 24;$i++ ) {
+			$row              = new stdClass();
+			$row->order_time  = $i;
+			$row->count_order = 0;
+			$data[ $i ]       = $row;
+		}
+		if ( ! empty( $input_data ) ) {
+			foreach ( $input_data as $row ) {
+				$data[ $row->order_time ] = $row;
+			}
+		}
+		return $data;
+	}
+
+	public function process_previous_days_data( int $days, array $input_data, $last_date = false ) {
+		$data = array();
+		for ( $i = $days; $i >= 0; $i-- ) {
+			$date             = date( 'Y-m-d', strtotime( ( $last_date ? $last_date : '' ) . -$i . 'days' ) );
+			$row              = new stdClass();
+			$row->order_time  = $date;
+			$row->count_order = 0;
+			$data[ $date ]    = $row;
+		}
+		foreach ( $input_data as $row ) {
+			$data[ $row->order_time ] = $row;
+		}
+		return $data;
+	}
+
+	public function process_month_data( array $filter, array $input_data ) {
+		$data    = array();
+		$max_day = cal_days_in_month( 0, date( 'm', strtotime( $filter['time'] ) ), date( 'Y', strtotime( $filter['time'] ) ) );
+		for ( $i = 1; $i <= $max_day; $i++ ) {
+			$row              = new stdClass();
+			$row->order_time  = $i;
+			$row->count_order = 0;
+			$data[ $i ]       = $row;
+		}
+		if ( ! empty( $input_data ) ) {
+			foreach ( $input_data as $row ) {
+				$data[ $row->order_time ] = $row;
+			}
+		}
+		return $data;
+	}
+
+	public function process_year_data() {
+		$data = array();
+		for ( $i = 1; $i <= 12; $i++ ) {
+			$row              = new stdClass();
+			$row->order_time  = $i;
+			$row->count_order = 0;
+			$data[ $i ]       = $row;
+		}
+		if ( ! empty( $input_data ) ) {
+			foreach ( $input_data as $row ) {
+				$data[ $row->order_time ] = $row;
+			}
+		}
+		return $data;
 	}
 
 	public function permission_check( $request ) {

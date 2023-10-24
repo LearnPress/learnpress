@@ -199,25 +199,25 @@ class LP_Order_DB extends LP_Database {
 			throw new Exception( 'Custom filter date is invalid.', 'learnpress' );
 		}
 		$diff = date_diff( $diff1, $diff2, true );
-		$y = $diff->y;
-		$m = $diff->m;
-		$d = $diff->d;
+		$y    = $diff->y;
+		$m    = $diff->m;
+		$d    = $diff->d;
 		if ( $y < 1 ) {
-		    if ( $m < 1 ) {
-		    	if ( $d < 1 ) {
-		    		$filter = $this->chart_filter_date_group_by( $filter );
-		    	} else {
-		    		$filter = $this->chart_filter_previous_days_group_by( $filter );
-		    	}
-		    } else {
-		    	$filter = $this->chart_filter_previous_months_group_by( $filter );
-		    }
-		} elseif( $y < 2 ) {
-		    $filter = $this->chart_filter_previous_months_group_by( $filter );
+			if ( $m <= 1 ) {
+				if ( $d < 1 ) {
+					$filter = $this->chart_filter_date_group_by( $filter );
+				} else {
+					$filter = $this->chart_filter_previous_days_group_by( $filter );
+				}
+			} else {
+				$filter = $this->chart_filter_previous_months_group_by( $filter );
+			}
+		} elseif ( $y < 2 ) {
+			$filter = $this->chart_filter_previous_months_group_by( $filter );
 		} elseif ( $y < 5 ) {
-		    $filter->only_fields[] = 'CONCAT( "Q", QUARTER(p.post_date) ,"-", Year(p.post_date)) as order_time';
-		    // $filter->only_fields[] = 'Year(p.post_date) as year';
-		    $filter->group_by      = 'order_time';
+			$filter->only_fields[] = $this->wpdb->prepare( 'CONCAT( %s, QUARTER(p.post_date) ,%s, Year(p.post_date)) as order_time', [ 'q', '-' ] );
+			// $filter->only_fields[] = 'Year(p.post_date) as year';
+			$filter->group_by = 'order_time';
 		} else {
 			$filter->only_fields[] = 'YEAR(p.post_date) as order_time';
 			$filter->group_by      = 'order_time';
@@ -260,10 +260,11 @@ class LP_Order_DB extends LP_Database {
 		if ( empty( $dates ) ) {
 			throw new Exception( 'Select date', 'learnpress' );
 		}
-		$filter->where[] = $this->wpdb->prepare( 
-			'AND (DATE(p.post_date) BETWEEN %s AND %s)', 
+		sort( $dates );
+		$filter->where[] = $this->wpdb->prepare(
+			'AND (DATE(p.post_date) BETWEEN %s AND %s)',
 			date( 'Y-m-d', strtotime( $dates[0] ) ),
-			date( 'Y-m-d', strtotime( $dates[1] ) ) 
+			date( 'Y-m-d', strtotime( $dates[1] ) )
 		);
 		return $filter;
 	}
@@ -285,7 +286,7 @@ class LP_Order_DB extends LP_Database {
 			$this->wpdb->prepare( 'AND oim.meta_key=%s', '_total' ),
 		];
 		$filter                   = $this->filter_time( $filter, $type, $value );
-		$filter                   = $this->chart_filter_group_by( $filter, $type );
+		$filter                   = $this->chart_filter_group_by( $filter, $type, $value );
 		$filter->order_by         = 'p.post_date';
 		$filter->order            = 'asc';
 		$filter->run_query_count  = false;
@@ -308,7 +309,7 @@ class LP_Order_DB extends LP_Database {
 
 		$filter->only_fields[] = 'count( p.ID) as count_order';
 		$filter                = $this->filter_time( $filter, $type, $value );
-		$filter                = $this->chart_filter_group_by( $filter, $type );
+		$filter                = $this->chart_filter_group_by( $filter, $type, $value );
 
 		$filter->where[] = $this->wpdb->prepare( 'AND p.post_status=%s', LP_ORDER_COMPLETED_DB );
 		$filter->limit   = -1;
@@ -321,7 +322,10 @@ class LP_Order_DB extends LP_Database {
 		$result = $this->execute( $filter );
 		return $result;
 	}
-	public function filter_time( LP_Order_Filter $filter, string $type, string $value ) {
+	public function filter_time( LP_Order_Filter $filter, string $type, $value = false ) {
+		if ( ! $value ) {
+			throw new Exception( 'Empty statistic time', 'learnpress' );
+		}
 		switch ( $type ) {
 			case 'date':
 				$filter = $this->date_filter( $filter, $value );
@@ -339,6 +343,10 @@ class LP_Order_DB extends LP_Database {
 				$filter = $this->previous_months_filter( $filter, (int) $value );
 				break;
 			case 'custom':
+				$value = explode( '+', $value );
+				if ( count( $value ) !== 2 ) {
+					throw new Exception( 'Invalid custom time', 'learnpress' );
+				}
 				$filter = $this->custom_time_filter( $filter, $value );
 			default:
 				// code...
@@ -346,7 +354,7 @@ class LP_Order_DB extends LP_Database {
 		}
 		return $filter;
 	}
-	public function chart_filter_group_by( LP_Order_Filter $filter, string $type ) {
+	public function chart_filter_group_by( LP_Order_Filter $filter, string $type, $value = false ) {
 		switch ( $type ) {
 			case 'date':
 				$filter = $this->chart_filter_date_group_by( $filter );
@@ -363,6 +371,15 @@ class LP_Order_DB extends LP_Database {
 			case 'previous_months':
 				$filter = $this->chart_filter_previous_months_group_by( $filter );
 				break;
+			case 'custom':
+				if ( empty( $value ) ) {
+					throw new Exception( 'Empty statistic time', 'learnpress' );
+				}
+				$value = explode( '+', $value );
+				if ( count( $value ) !== 2 ) {
+					throw new Exception( 'Invalid custom time', 'learnpress' );
+				}
+				$filter = $this->chart_filter_custom_group_by( $filter, $value );
 			default:
 				// code...
 				break;
