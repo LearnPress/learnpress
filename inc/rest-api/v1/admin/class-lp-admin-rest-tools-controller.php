@@ -71,7 +71,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 					'permission_callback' => array( $this, 'check_permission' ),
 				),
 			),
-			'assign-user-course'           => array(
+			'assign-user-course'      => array(
 				array(
 					'methods'             => WP_REST_Server::ALLMETHODS,
 					'callback'            => array( $this, 'assign_courses_to_users' ),
@@ -428,12 +428,12 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 		$response = new LP_REST_Response();
 
 		try {
-			$params      = $request->get_params();
-			$course_ids  = $params['course_ids'] ?? [];
-			$user_ids  = $params['user_ids'] ?? [];
+			$params     = $request->get_params();
+			$course_ids = $params['course_ids'] ?? [];
+			$user_ids   = $params['user_ids'] ?? [];
 
-			if ( empty($course_ids) || empty($user_ids) ) {
-				throw new Exception( __('Invalid course or user.', 'learnpress') );
+			if ( empty( $course_ids ) || empty( $user_ids ) ) {
+				throw new Exception( __( 'Invalid course or user.', 'learnpress' ) );
 			}
 
 			foreach ( $user_ids as $user_id ) {
