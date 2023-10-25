@@ -4,7 +4,7 @@
  * Plugin URI: http://thimpress.com/learnpress
  * Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
  * Author: ThimPress
- * Version: 4.2.5.1
+ * Version: 4.2.5.3-beta-1
  * Author URI: http://thimpress.com
  * Requires at least: 6.2
  * Requires PHP: 7.0
@@ -150,37 +150,40 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				return;
 			}*/
 
-			if ( self::$_instance ) {
-				return;
+			try {
+				if ( self::$_instance ) {
+					return;
+				}
+				self::$_instance = $this;
+
+				// Update for case compare version of LP if LEARNPRESS_VERSION undefined
+				if ( is_admin() ) {
+					update_option( 'learnpress_version', $this->version );
+				}
+
+				// Define constant .
+				$this->plugin_defines();
+
+				// define table prefixes .
+				$this->define_tables();
+
+				// Include files .
+				$this->includes();
+
+				// Copy mu plugin.
+				$this->mu_plugin();
+
+				// hooks .
+				$this->init_hooks();
+			} catch ( Throwable $e ) {
+				error_log( __METHOD__ . ': ' . $e->getMessage() );
 			}
-			self::$_instance = $this;
-
-			// Update for case compare version of LP if LEARNPRESS_VERSION undefined
-			if ( is_admin() ) {
-				update_option( 'learnpress_version', $this->version );
-			}
-
-			// Define constant .
-			$this->plugin_defines();
-
-			// define table prefixes .
-			$this->define_tables();
-
-			// Include files .
-			$this->includes();
-
-			// Copy mu plugin.
-			$this->mu_plugin();
-
-			// hooks .
-			$this->init_hooks();
 		}
 
 		/**
 		 * Define constant.
 		 */
 		protected function plugin_defines() {
-
 		}
 
 		/**
