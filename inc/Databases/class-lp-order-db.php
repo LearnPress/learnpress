@@ -216,7 +216,6 @@ class LP_Order_DB extends LP_Database {
 			$filter = $this->chart_filter_previous_months_group_by( $filter );
 		} elseif ( $y < 5 ) {
 			$filter->only_fields[] = $this->wpdb->prepare( 'CONCAT( %s, QUARTER(p.post_date) ,%s, Year(p.post_date)) as order_time', [ 'q', '-' ] );
-			// $filter->only_fields[] = 'Year(p.post_date) as year';
 			$filter->group_by = 'order_time';
 		} else {
 			$filter->only_fields[] = 'YEAR(p.post_date) as order_time';
@@ -307,7 +306,8 @@ class LP_Order_DB extends LP_Database {
 		$filter->collection       = $this->tb_posts;
 		$filter->collection_alias = 'p';
 
-		$filter->only_fields[] = 'count( p.ID) as count_order';
+		// count completed orders
+		$filter->only_fields[] = 'count( p.ID) as x_axis_data';
 		$filter                = $this->filter_time( $filter, $type, $value );
 		$filter                = $this->chart_filter_group_by( $filter, $type, $value );
 
@@ -322,7 +322,7 @@ class LP_Order_DB extends LP_Database {
 		$result = $this->execute( $filter );
 		return $result;
 	}
-	public function filter_time( LP_Order_Filter $filter, string $type, $value = false ) {
+	public function filter_time( LP_Filter $filter, string $type, $value = false ) {
 		if ( ! $value ) {
 			throw new Exception( 'Empty statistic time', 'learnpress' );
 		}
@@ -354,7 +354,7 @@ class LP_Order_DB extends LP_Database {
 		}
 		return $filter;
 	}
-	public function chart_filter_group_by( LP_Order_Filter $filter, string $type, $value = false ) {
+	public function chart_filter_group_by( LP_Filter $filter, string $type, $value = false ) {
 		switch ( $type ) {
 			case 'date':
 				$filter = $this->chart_filter_date_group_by( $filter );

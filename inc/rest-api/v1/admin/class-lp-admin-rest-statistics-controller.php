@@ -50,7 +50,7 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 		try {
 			$params = $request->get_params();
 			$params = LP_Helper::sanitize_params_submitted( $params );
-			$filter = $this->get_order_statistics_filter( $params );
+			$filter = $this->get_statistics_filter( $params );
 
 			$lp_order_db      = LP_Order_DB::getInstance();
 			$statistics       = $lp_order_db->get_order_statics( $filter['filter_type'], $filter['time'] );
@@ -101,28 +101,33 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 						$chart_data['x_label'] = __( 'Dates', 'learnpress' );
 					}
 				} else {
-					// TODO
+					$data                  = $this->process_previous_months_data( $m, $input_data, $dates[1] );
+					$chart_data['x_label'] = __( 'Months', 'learnpress' );
 					// $filter = $this->chart_filter_previous_months_group_by( $filter );
 				}
 			} elseif ( $y < 2 ) {
-				// TODO
-				// $filter = $this->chart_filter_previous_months_group_by( $filter );
+				$months                = $y * 12 + $m;
+				$data                  = $this->process_previous_months_data( $m, $input_data, $dates[1] );
+				$chart_data['x_label'] = __( 'Months', 'learnpress' );
 			} elseif ( $y < 5 ) {
 				// TODO
+				$data                  = $this->process_quarters_data( $dates, $input_data );
+				$chart_data['x_label'] = __( 'Quarters', 'learnpress' );
 			} else {
-				// TODO
+				$data                  = $this->process_years_data( $y, $input_data, $dates[1] );
+				$chart_data['x_label'] = __( 'Years', 'learnpress' );
 			}
 		}
 		foreach ( $data as $row ) {
 			$chart_data['labels'][] = $row->order_time;
-			$chart_data['data'][]   = (int) $row->count_order;
+			$chart_data['data'][]   = (int) $row->x_axis_data;
 		}
 		$chart_data['line_label'] = __( 'Completed orders', 'learnpress' );
 
 		return $chart_data;
 	}
 
-	public function get_order_statistics_filter( $params ) {
+	public function get_statistics_filter( $params ) {
 		$filter = [];
 		if ( ! $params['filterType'] || $params['filterType'] == 'today' ) {
 			$filter['filter_type'] = 'date';
@@ -154,7 +159,7 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 		for ( $i = 0; $i < 24;$i++ ) {
 			$row              = new stdClass();
 			$row->order_time  = $i;
-			$row->count_order = 0;
+			$row->x_axis_data = 0;
 			$data[ $i ]       = $row;
 		}
 		if ( ! empty( $input_data ) ) {
@@ -171,11 +176,13 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 			$date             = date( 'Y-m-d', strtotime( ( $last_date ? $last_date : '' ) . -$i . 'days' ) );
 			$row              = new stdClass();
 			$row->order_time  = $date;
-			$row->count_order = 0;
+			$row->x_axis_data = 0;
 			$data[ $date ]    = $row;
 		}
-		foreach ( $input_data as $row ) {
-			$data[ $row->order_time ] = $row;
+		if ( ! empty( $input_data ) ) {
+			foreach ( $input_data as $row ) {
+				$data[ $row->order_time ] = $row;
+			}
 		}
 		return $data;
 	}
@@ -186,7 +193,7 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 		for ( $i = 1; $i <= $max_day; $i++ ) {
 			$row              = new stdClass();
 			$row->order_time  = $i;
-			$row->count_order = 0;
+			$row->x_axis_data = 0;
 			$data[ $i ]       = $row;
 		}
 		if ( ! empty( $input_data ) ) {
@@ -197,13 +204,85 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 		return $data;
 	}
 
-	public function process_year_data() {
+	public function process_previous_months_data( int $months, array $input_data, $last_date = false ) {
+		$data = array();
+		for ( $i = $months; $i >= 0; $i-- ) {
+			$date             = date( 'm-Y', strtotime( ( $last_date ? $last_date : '' ) . -$i . 'months' ) );
+			$row              = new stdClass();
+			$row->order_time  = $date;
+			$row->x_axis_data = 0;
+			$data[ $date ]    = $row;
+		}
+		if ( ! empty( $input_data ) ) {
+			foreach ( $input_data as $row ) {
+				$data[ $row->order_time ] = $row;
+			}
+		}
+		return $data;
+	}
+
+	public function process_quarters_data( array $dates, array $input_data ) {
+		$data       = array();
+		$start_time = strtotime( $dates[0] );
+		$end_time   = strtotime( $dates[1] );
+		for ( $i = date( 'Y', $start_time ); $i <= date( 'Y', $end_time ); $i++ ) {
+			if ( $i == date( 'Y', $start_time ) ) {
+				$quarter = ceil( date( 'm', $start_time ) / 3 );
+				for ( $j = $quarter;$j <= 4;$j++ ) {
+					$row              = new stdClass();
+					$row->order_time  = 'q' . $j . '-' . $i;
+					$row->x_axis_data = 0;
+					$data[]           = $row;
+				}
+			} elseif ( $i == date( 'Y', $start_time ) ) {
+				$quarter = ceil( date( 'm', $end_time ) / 3 );
+				for ( $j = 1;$j <= $quarter;$j++ ) {
+					$row              = new stdClass();
+					$row->order_time  = 'q' . $j . '-' . $i;
+					$row->x_axis_data = 0;
+					$data[]           = $row;
+				}
+			} else {
+				for ( $j = 1; $j <= 4;$j++ ) {
+					$row              = new stdClass();
+					$row->order_time  = 'q' . $j . '-' . $i;
+					$row->x_axis_data = 0;
+					$data[]           = $row;
+				}
+			}
+		}
+		if ( ! empty( $input_data ) ) {
+			foreach ( $input_data as $row ) {
+				$data[ $row->order_time ] = $row;
+			}
+		}
+		return $data;
+	}
+
+	public function process_year_data( array $input_data ) {
 		$data = array();
 		for ( $i = 1; $i <= 12; $i++ ) {
 			$row              = new stdClass();
 			$row->order_time  = $i;
-			$row->count_order = 0;
+			$row->x_axis_data = 0;
 			$data[ $i ]       = $row;
+		}
+		if ( ! empty( $input_data ) ) {
+			foreach ( $input_data as $row ) {
+				$data[ $row->order_time ] = $row;
+			}
+		}
+		return $data;
+	}
+
+	public function process_years_data( int $years, array $input_data, $last_date = false ) {
+		$data = array();
+		for ( $i = $years; $i >= 0; $i-- ) {
+			$year             = date( 'Y', strtotime( ( $last_date ? $last_date : '' ) . -$i . 'years' ) );
+			$row              = new stdClass();
+			$row->order_time  = $year;
+			$row->x_axis_data = 0;
+			$data[ $year ]    = $row;
 		}
 		if ( ! empty( $input_data ) ) {
 			foreach ( $input_data as $row ) {
