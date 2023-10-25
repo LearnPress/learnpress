@@ -355,7 +355,7 @@ abstract class LP_Abstract_Submenu {
 			ob_start();
 			$this->page_content();
 			$content = ob_get_clean();
-			if ( 'learn-press-settings' === LP_Request::get_param('page')) {
+			if ( 'learn-press-settings' === LP_Request::get_param( 'page' ) ) {
 				$wrapper = [ sprintf( '<form class="%s" method="post" enctype="multipart/form-data">', esc_attr( implode( ' ', $classes ) ) ) => '</form>' ];
 			} else {
 				$wrapper = [ sprintf( '<div class="%s">', esc_attr( implode( ' ', $classes ) ) ) => '</div>' ];
