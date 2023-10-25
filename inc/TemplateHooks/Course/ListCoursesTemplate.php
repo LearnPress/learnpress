@@ -10,6 +10,8 @@ namespace LearnPress\TemplateHooks\Course;
 
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
+use LP_Course_DB;
+use LP_User_Items_DB;
 use Throwable;
 
 class ListCoursesTemplate {
@@ -339,6 +341,56 @@ class ListCoursesTemplate {
 		} catch ( Throwable $e ) {
 			error_log( $e->getMessage() );
 		}
+	}
+
+	/**
+	 * Show total course free by Category.
+	 * @param int $term_id
+	 *
+	 * @version 1.0.0
+	 * @since 4.2.5.3 - branch info-course-cat
+	 * @return string
+	 */
+	public function html_count_course_free_by_category( int $term_id ): string {
+		$html_wrapper = [
+			'<div class="courses-count-free-of-category">' => '</div>',
+		];
+
+		$lp_course_db = LP_Course_DB::getInstance();
+		$count = $lp_course_db->count_course_free_by_category( $term_id );
+
+		$content = sprintf(
+			'<span class="courses-count-free-of-category-number">%1$s</span> %2$s',
+			$count,
+			_n( 'Free Course', 'Free Courses', $count, 'learnpress' )
+		);
+
+		return Template::instance()->nest_elements( $html_wrapper, $content );
+	}
+
+	/**
+	 * Show total students on Course Category.
+	 * @param int $term_id
+	 *
+	 * @version 1.0.0
+	 * @since 4.2.5.3 - branch info-course-cat
+	 * @return string
+	 */
+	public function html_count_students_by_category( int $term_id ): string {
+		$html_wrapper = [
+			'<div class="courses-count-students-of-category">' => '</div>',
+		];
+
+		$lp_user_items_db = LP_User_Items_DB::getInstance();
+		$count = $lp_user_items_db->count_students_by_category( $term_id );
+
+		$content = sprintf(
+			'<span class="courses-count-students-of-number">%1$s</span> %2$s',
+			$count,
+			_n( 'Student', 'Students', $count, 'learnpress' )
+		);
+
+		return Template::instance()->nest_elements( $html_wrapper, $content );
 	}
 
 	/**

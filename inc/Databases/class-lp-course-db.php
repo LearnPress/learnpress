@@ -573,7 +573,7 @@ class LP_Course_DB extends LP_Database {
 	 * @author tungnx
 	 * @version 1.0.0
 	 */
-	public function get_courses_order_by_price( LP_Course_Filter $filter ): LP_Course_Filter {
+	public function get_courses_order_by_price( LP_Course_Filter &$filter ): LP_Course_Filter {
 		$filter->join[]   = "INNER JOIN $this->tb_postmeta AS pm ON p.ID = pm.post_id";
 		$filter->where[]  = $this->wpdb->prepare( 'AND pm.meta_key = %s', '_lp_price' );
 		$filter->order_by = 'CAST( pm.meta_value AS UNSIGNED )';
@@ -591,7 +591,7 @@ class LP_Course_DB extends LP_Database {
 	 * @author tungnx
 	 * @version 1.0.0
 	 */
-	public function get_courses_sort_by_sale( LP_Course_Filter $filter ): LP_Course_Filter {
+	public function get_courses_sort_by_sale( LP_Course_Filter &$filter ): LP_Course_Filter {
 		$filter->join[]  = "INNER JOIN $this->tb_postmeta AS pm ON p.ID = pm.post_id";
 		$filter->where[] = $this->wpdb->prepare( 'AND pm.meta_key = %s', '_lp_course_is_sale' );
 
@@ -608,7 +608,7 @@ class LP_Course_DB extends LP_Database {
 	 * @version 1.0.0
 	 * @since 4.2.3.2
 	 */
-	public function get_courses_sort_by_free( LP_Course_Filter $filter ): LP_Course_Filter {
+	public function get_courses_sort_by_free( LP_Course_Filter &$filter ): LP_Course_Filter {
 		$filter_course_price                      = new LP_Course_Filter();
 		$filter_course_price->only_fields         = [ 'DISTINCT(ID)' ];
 		$filter_course_price                      = $this->get_courses_sort_by_paid( $filter_course_price );
@@ -647,12 +647,38 @@ class LP_Course_DB extends LP_Database {
 	 * @version 1.0.0
 	 * @since 4.1.5
 	 */
-	public function get_courses_sort_by_feature( LP_Course_Filter $filter ): LP_Course_Filter {
+	public function get_courses_sort_by_feature( LP_Course_Filter &$filter ): LP_Course_Filter {
 		$filter->join[]  = "INNER JOIN $this->tb_postmeta AS pm ON p.ID = pm.post_id";
 		$filter->where[] = $this->wpdb->prepare( 'AND pm.meta_key = %s', '_lp_featured' );
 		$filter->where[] = $this->wpdb->prepare( 'AND pm.meta_value = %s', 'yes' );
 
 		return $filter;
+	}
+
+	/**
+	 * Count total courses free on category
+	 *
+	 * @param int $term_id
+	 *
+	 * @since 4.2.5.3 - branch info-course-cat
+	 * @version 1.0.0
+	 * @return int
+	 */
+	public function count_course_free_by_category ( int $term_id ): int {
+		$count = 0;
+
+		try {
+			$filter = new LP_Course_Filter();
+			$filter->query_count = true;
+			$filter->term_ids	= [ $term_id ];
+			$filter->only_fields = [ 'DISTINCT(ID)' ];
+			$this->get_courses_sort_by_free( $filter );
+			LP_Course::get_courses( $filter, $count );
+		} catch ( Throwable $e ) {
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
+		}
+
+		return $count;
 	}
 
 	/**
