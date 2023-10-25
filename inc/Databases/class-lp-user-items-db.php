@@ -540,31 +540,6 @@ class LP_User_Items_DB extends LP_Database {
 	}
 
 	/**
-	 * Get items is course has user
-	 *
-	 * @param LP_User_Items_Filter $filter $filter->user_id, $filter->item_id
-	 *
-	 * @throws Exception
-	 * @author tungnx
-	 * @since 4.1.4
-	 * @version 1.0.0
-	 */
-	public function get_ids_course_user( LP_User_Items_Filter $filter ): array {
-		$query = $this->wpdb->prepare(
-			"SELECT user_item_id FROM $this->tb_lp_user_items
-			WHERE user_id = %d
-			AND item_id = %d
-			AND item_type = %s
-			",
-			$filter->user_id,
-			$filter->item_id,
-			LP_COURSE_CPT
-		);
-
-		return $this->wpdb->get_col( $query );
-	}
-
-	/**
 	 * Get items of course has user
 	 *
 	 * @param LP_User_Items_Filter $filter user_item_ids
@@ -681,8 +656,11 @@ class LP_User_Items_DB extends LP_Database {
 			$filter          = new LP_User_Items_Filter();
 			$filter->user_id = $user_id;
 			$filter->item_id = $course_id;
-
-			$user_course_ids = $lp_user_items_db->get_ids_course_user( $filter );
+			$filter->only_fields = [ 'user_item_id' ];
+			$filter->run_query_count = false;
+			$filter->return_string_query = true;
+			$user_course_ids_query = $lp_user_items_db->get_user_items( $filter );
+			$user_course_ids = $this->wpdb->get_col( $user_course_ids_query );
 			if ( empty( $user_course_ids ) ) {
 				return;
 			}

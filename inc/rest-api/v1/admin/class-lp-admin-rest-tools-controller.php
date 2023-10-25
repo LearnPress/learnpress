@@ -25,7 +25,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 			'create-indexs'           => array(
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
-					'callback'            => array( $this, 'create_indexs' ),
+					'callback'            => array( $this, 'create_indexes' ),
 					'permission_callback' => '__return_true',
 				),
 			),
@@ -52,7 +52,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 			),
 			'search-course'           => array(
 				array(
-					'methods'             => WP_REST_Server::READABLE,
+					'methods'             => WP_REST_Server::ALLMETHODS,
 					'callback'            => array( $this, 'search_courses' ),
 					'permission_callback' => array( $this, 'check_permission' ),
 				),
@@ -71,9 +71,9 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 					'permission_callback' => array( $this, 'check_permission' ),
 				),
 			),
-			'assign-course'           => array(
+			'assign-user-course'      => array(
 				array(
-					'methods'             => WP_REST_Server::CREATABLE,
+					'methods'             => WP_REST_Server::ALLMETHODS,
 					'callback'            => array( $this, 'assign_courses_to_users' ),
 					'permission_callback' => array( $this, 'check_permission' ),
 				),
@@ -91,13 +91,13 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 	}
 
 	/**
-	 * Create indexs.
+	 * Create create_indexes.
 	 *
 	 * @param WP_REST_Request $request .
 	 *
 	 * @return void
 	 */
-	public function create_indexs( WP_REST_Request $request ) {
+	public function create_indexes( WP_REST_Request $request ) {
 		$response = new LP_REST_Response();
 		$lp_db    = LP_Database::getInstance();
 
@@ -146,7 +146,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 
 			// Set next table key.
 			$index_key = array_search( $table, $table_keys );
-			++ $index_key;
+			++$index_key;
 
 			if ( ! array_key_exists( $index_key, $table_keys ) ) {
 				$response->status        = 'finished';
@@ -167,7 +167,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 		$response = new LP_REST_Response();
 		$lp_db    = LP_Database::getInstance();
 
-		$tables_indexs = array(
+		$tables_indexes = array(
 			$lp_db->tb_lp_user_items          => array( 'user_id', 'item_id', 'item_type', 'status', 'ref_type', 'ref_id', 'parent_id' ),
 			$lp_db->tb_lp_user_itemmeta       => array( 'learnpress_user_item_id', 'meta_key', 'meta_value' ),
 			$lp_db->tb_lp_quiz_questions      => array( 'quiz_id', 'question_id' ),
@@ -179,7 +179,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 			$lp_db->tb_lp_section_items       => '',
 		);
 
-		$response->data->tables = $tables_indexs;
+		$response->data->tables = $tables_indexes;
 		$response->data->table  = $lp_db->tb_lp_user_items;
 		$response->status       = 'success';
 
@@ -428,22 +428,12 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 		$response = new LP_REST_Response();
 
 		try {
-			$params      = $request->get_params();
-			$course_id   = absint( $params['course_id'] ?? 0 );
-			$course_ids  = $params['course_ids'] ?? [ 1155, 1117 ];
-			$assign_type = sanitize_text_field( $params['assign_type'] );
-			if ( $assign_type == 'user' ) {
-				$assign_value = map_deep( $params['assign_value'], 'intval' );
-				$user_ids     = $assign_value;
-			} else {
-				$assign_value     = map_deep( $params['assign_value'], 'sanitize_text_field' );
-				$user_get_by_role = get_users(
-					array(
-						'role__in' => $assign_value,
-						'fields'   => 'id',
-					)
-				);
-				$user_ids         = map_deep( $user_get_by_role, 'intval' );
+			$params     = $request->get_params();
+			$course_ids = $params['course_ids'] ?? [];
+			$user_ids   = $params['user_ids'] ?? [];
+
+			if ( empty( $course_ids ) || empty( $user_ids ) ) {
+				throw new Exception( __( 'Invalid course or user.', 'learnpress' ) );
 			}
 
 			foreach ( $user_ids as $user_id ) {
@@ -660,7 +650,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 	 * @param  [type] $request [wp request]
 	 * @return [bool]
 	 */
-	public function check_permission( $request ) : bool {
+	public function check_permission( $request ): bool {
 		$permission = current_user_can( 'administrator' );
 		return $permission;
 	}

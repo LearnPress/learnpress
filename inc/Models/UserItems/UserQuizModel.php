@@ -19,8 +19,6 @@ use LP_Question;
 use LP_Quiz;
 use LP_Quiz_CURD;
 use LP_User;
-use LP_User_Guest;
-use LP_User_Items_Filter;
 use LP_User_Items_Result_DB;
 use Throwable;
 use WP_Error;
@@ -55,36 +53,12 @@ class UserQuizModel extends UserItemModel {
 	 */
 	public $user_course;
 
-	/**
-	 * Get user_course from DB.
-	 *
-	 * @param LP_User_Items_Filter $filter
-	 * @param bool $no_cache
-	 * @return UserQuizModel|false
-	 */
-	public static function get_user_quiz_model_from_db( LP_User_Items_Filter $filter, bool $no_cache = true ) {
-		$user_quiz         = false;
-		$filter->item_type = ( new UserQuizModel )->item_type;
-		$user_item         = self::get_user_item_model_from_db( $filter, $no_cache );
+	public function __construct( $data = null ) {
+		parent::__construct( $data );
 
-		if ( ! empty( $user_item ) ) {
-			$user_quiz = new self( $user_item );
+		if ( $data ) {
+			$this->get_quiz_model();
 		}
-
-		return $user_quiz;
-	}
-
-	/**
-	 * Get quiz model
-	 *
-	 * @return false|LP_User|LP_User_Guest
-	 */
-	public function get_user_model() {
-		if ( empty( $this->user ) ) {
-			$this->user = learn_press_get_user( $this->user_id );
-		}
-
-		return $this->user;
 	}
 
 	/**
@@ -140,13 +114,9 @@ class UserQuizModel extends UserItemModel {
 	 * @sicne 4.1.4.1
 	 */
 	public function get_timestamp_remaining(): int {
-		$timestamp_remaining = - 1;
-		if ( $this->status != LP_ITEM_STARTED ) {
-			throw new Exception( 'User quiz is not started.' );
-		}
-
-		if ( empty( $this->user_item_id ) ) {
-			throw new Exception( 'User quiz is not exists.' );
+		$timestamp_remaining = 0;
+		if ( empty( $this->get_user_item_id() ) || $this->status !== LP_ITEM_STARTED ) {
+			return $timestamp_remaining;
 		}
 
 		$quiz = $this->get_quiz_model();
@@ -212,7 +182,7 @@ class UserQuizModel extends UserItemModel {
 			$user_quiz_retaken->save();
 		} else {
 			$user_quiz_retaken_new                          = new UserQuizMetaModel();
-			$user_quiz_retaken_new->learnpress_user_item_id = $this->user_item_id;
+			$user_quiz_retaken_new->learnpress_user_item_id = $this->get_user_item_id();
 			$user_quiz_retaken_new->meta_key                = UserQuizMetaModel::KEY_RETAKEN_COUNT;
 			$user_quiz_retaken_new->meta_value              = 1;
 			$user_quiz_retaken_new->save();
@@ -220,9 +190,9 @@ class UserQuizModel extends UserItemModel {
 
 		//Todo: rewrite by object.
 		//Create new result in table learnpress_user_item_results.
-		LP_User_Items_Result_DB::instance()->insert( $this->user_item_id );
+		LP_User_Items_Result_DB::instance()->insert( $this->get_user_item_id() );
 		// Remove user_item_meta.
-		learn_press_delete_user_item_meta( $this->user_item_id, '_lp_question_checked' );
+		learn_press_delete_user_item_meta( $this->get_user_item_id(), '_lp_question_checked' );
 
 		$this->status     = LP_ITEM_STARTED;
 		$this->start_time = gmdate( LP_Datetime::$format, time() );
@@ -267,7 +237,7 @@ class UserQuizModel extends UserItemModel {
 			$can_start = new WP_Error( 'finished_course', __( 'You have already finished the course of this quiz.', 'learnpress' ) );
 		} else {
 			// Set Parent id for user quiz to save DB.
-			$this->parent_id = $this->user_course->user_item_id;
+			$this->parent_id = $this->user_course->get_user_item_id();
 
 			// Check if user has already started or completed quiz
 			$user_quiz = $this->user_course->get_item_attend( $this->item_id, $this->item_type );
@@ -356,7 +326,7 @@ class UserQuizModel extends UserItemModel {
 
 		$limit = absint( apply_filters( 'lp/quiz/get-attempts/limit', $limit ) );
 
-		$results = LP_User_Items_Result_DB::instance()->get_results( $this->user_item_id, $limit, true );
+		$results = LP_User_Items_Result_DB::instance()->get_results( $this->get_user_item_id(), $limit, true );
 		$output  = array();
 
 		if ( ! empty( $results ) ) {
@@ -428,7 +398,7 @@ class UserQuizModel extends UserItemModel {
 		);
 
 		try {
-			$result_tmp = LP_User_Items_Result_DB::instance()->get_result( $this->user_item_id );
+			$result_tmp = LP_User_Items_Result_DB::instance()->get_result( $this->get_user_item_id() );
 			if ( $result_tmp ) {
 				if ( isset( $result_tmp['user_mark'] ) && $result_tmp['user_mark'] < 0 ) {
 					$result_tmp['user_mark'] = 0;
@@ -562,7 +532,7 @@ class UserQuizModel extends UserItemModel {
 	 * @return string
 	 */
 	public function get_time_spend(): string {
-		$interval = $this->get_total_timestamp_complete();
+		$interval = $this->get_total_timestamp_completed();
 		if ( empty( $interval ) ) {
 			return '--:--';
 		}

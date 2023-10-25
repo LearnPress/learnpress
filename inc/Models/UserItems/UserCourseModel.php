@@ -38,22 +38,25 @@ class UserCourseModel extends UserItemModel {
 	 */
 	public $course;
 
+	public function __construct( $data = null ) {
+		parent::__construct( $data );
+
+		if ( $data ) {
+			$this->get_course_model();
+		}
+	}
+
 	/**
-	 * Get user_course from DB.
+	 * Get quiz model
 	 *
-	 * @param LP_User_Items_Filter $filter
-	 * @param bool $no_cache
-	 * @return UserCourseModel|false
+	 * @return bool|LP_Course
 	 */
-	public static function get_user_course_model_from_db( LP_User_Items_Filter $filter, bool $no_cache = true ) {
-		$filter->item_type = ( new UserCourseModel )->item_type;
-		$user_course       = self::get_user_item_model_from_db( $filter, $no_cache );
-		if ( ! empty( $user_course ) ) {
-			$user_course         = new self( $user_course );
-			$user_course->course = learn_press_get_course( $user_course->item_id );
+	public function get_course_model() {
+		if ( empty( $this->course ) ) {
+			$this->course = learn_press_get_course( $this->item_id );
 		}
 
-		return $user_course;
+		return $this->course;
 	}
 
 	/**
@@ -68,7 +71,7 @@ class UserCourseModel extends UserItemModel {
 
 		try {
 			$filter            = new LP_User_Items_Filter();
-			$filter->parent_id = $this->user_item_id;
+			$filter->parent_id = $this->get_user_item_id();
 			$filter->item_id   = $item_id;
 			$filter->item_type = $item_type;
 			$filter->ref_type  = $this->item_type;

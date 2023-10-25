@@ -95,11 +95,14 @@ class Block_Template_Handle {
 
 			// Get block template if custom - save on table posts.
 			$block_custom = $this->is_custom_block_template( $template_type, $new->slug );
-
 			if ( $block_custom ) {
 				$new->is_custom = true;
 				$new->source    = 'custom';
-				$new->content   = _inject_theme_attribute_in_block_template_content( $block_custom->post_content );
+				if ( version_compare( get_bloginfo( 'version' ), '6.4-beta', '>=' ) ) {
+					$new->content = traverse_and_serialize_blocks( parse_blocks( $block_custom->post_content ) );
+				} else {
+					$new->content = _inject_theme_attribute_in_block_template_content( $block_custom->post_content );
+				}
 			}
 
 			if ( empty( $query ) ) { // For Admin and rest api call to this function, so $query is empty

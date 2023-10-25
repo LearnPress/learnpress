@@ -171,43 +171,45 @@ class LP_Abstract_Template {
 			return;
 		}
 
-		$callbacks = $wp_filter[ $tag ]->callbacks;
+		try {
+			$callbacks = $wp_filter[ $tag ]->callbacks;
 
-		if ( ! $callbacks ) {
-			return;
+			if ( ! $callbacks ) {
+				return;
+			}
+
+			$priorities = array_keys( $callbacks );
+
+			foreach ( $priorities as $priority1 ) {
+
+				if ( $priority !== '*' && $priority !== $priority1 ) {
+					continue;
+				}
+
+				if ( empty( $callbacks[ $priority1 ] ) ) {
+					continue;
+				}
+
+				foreach ( $callbacks[ $priority1 ] as $callback ) {
+
+					if ( ! $callback['function'][0] instanceof LP_Template_Callback ) {
+						continue;
+					}
+
+					if ( $callback['function'][1] !== 'callback' ) {
+						continue;
+					}
+
+					if ( $callback['function'][0]->get_template() !== $function ) {
+						continue;
+					}
+
+					remove_action( $tag, $callback['function'], $priority1 );
+				}
+			}
+		} catch ( Throwable $e ) {
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
-
-		$priorities = array_keys( $callbacks );
-
-		foreach ( $priorities as $priority1 ) {
-
-			if ( $priority !== '*' && $priority !== $priority1 ) {
-				continue;
-			}
-
-			if ( empty( $callbacks[ $priority1 ] ) ) {
-				continue;
-			}
-
-			foreach ( $callbacks[ $priority1 ] as $callback ) {
-
-				if ( ! $callback['function'][0] instanceof LP_Template_Callback ) {
-					continue;
-				}
-
-				if ( $callback['function'][1] !== 'callback' ) {
-					continue;
-				}
-
-				if ( $callback['function'][0]->get_template() !== $function ) {
-					continue;
-				}
-
-				remove_action( $tag, $callback['function'], $priority1 );
-			}
-		}
-
-		return;
 	}
 
 	/**
