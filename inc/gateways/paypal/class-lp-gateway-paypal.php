@@ -332,7 +332,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 * @param LP_Order $order
 		 * @return array
 		 * @since 4.2.4
-		 * @version 1.0.0
+		 * @version 1.0.1
 		 */
 		public function get_order_args( LP_Order $order ): array {
 			$lp_cart    = LearnPress::instance()->get_cart();
@@ -347,7 +347,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 					[
 						'amount'    => [
 							'currency_code' => learn_press_get_currency(),
-							'value'         => $cart_total->total,
+							'value'         => number_format( $cart_total->total, 2 ),
 						],
 						'custom_id' => $order_id,
 					],
