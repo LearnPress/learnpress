@@ -276,15 +276,12 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			include_once 'inc/Databases/class-thim-cace-db.php';
 			include_once 'inc/Databases/class-lp-material-db.php';
 			include_once 'inc/Databases/class-lp-wpdb-multiple.php';
-			// Read files config on folder config .
-			//include_once 'inc/Helper/Config.php';
 
 			// File system .
 			include_once 'inc/class-lp-file-system.php';
 
 			// File helper
 			include_once 'inc/class-lp-helper.php';
-			//include_once 'inc/Helper/Template.php';
 
 			// Template Hooks.
 			ListCoursesTemplate::instance();
