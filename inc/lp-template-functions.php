@@ -666,6 +666,7 @@ function learn_press_show_message() {
 		error_log( $e->getMessage() );
 	}
 }
+add_action( 'learn-press/before-course-item-content', 'learn_press_show_message', 50 );
 
 /**
  * Remove message added into queue by id and/or type.
@@ -723,45 +724,9 @@ function learn_press_print_messages( $clear = true ) {
 	}
 }
 
-/**
- * @deprecated 4.2.0
- */
-function learn_press_message_count( $type = '' ) {
-	_deprecated_function( __FUNCTION__, '4.2.0' );
-	$count    = 0;
-	$messages = learn_press_session_get( learn_press_session_message_id(), array() );
-
-	if ( isset( $messages[ $type ] ) ) {
-		$count = absint( sizeof( $messages[ $type ] ) );
-	} elseif ( empty( $type ) ) {
-		foreach ( $messages as $message ) {
-			$count += absint( sizeof( $message ) );
-		}
-	}
-
-	return $count;
-}
-
 function learn_press_session_message_id() {
 	return 'messages' . get_current_user_id();
 }
-
-/**
- * Displays messages before main content
- *
- * @deprecated 4.2.0
- */
-function _learn_press_print_messages() {
-	//_deprecated_function( __FUNCTION__, '4.2.0' );
-	$item = LP_Global::course_item();
-	if ( ( 'learn_press_before_main_content' == current_action() ) && $item ) {
-		return;
-	}
-	learn_press_print_messages( true );
-}
-
-//add_action( 'learn_press_before_main_content', '_learn_press_print_messages', 50 );
-add_action( 'learn-press/before-course-item-content', 'learn_press_show_message', 50 );
 
 if ( ! function_exists( 'learn_press_page_title' ) ) {
 
@@ -1177,39 +1142,6 @@ if ( ! function_exists( 'learn_press_get_profile_display_name' ) ) {
 	}
 }
 
-/**
- * @deprecated 4.1.6.9
- */
-/*if ( ! function_exists( 'learn_press_content_item_comments' ) ) {
-	function learn_press_content_item_comments() {
-		$item = LP_Global::course_item();
-
-		if ( ! $item ) {
-			return;
-		}
-
-		if ( ! $item->is_support( 'comments' ) ) {
-			return;
-		}
-
-		global $post;
-
-		$post = get_post( $item->get_id() );
-
-		setup_postdata( $post );
-
-		if ( ! have_comments() ) {
-			return;
-		}
-
-		add_filter( 'deprecated_file_trigger_error', '__return_false' );
-		comments_template();
-		remove_filter( 'deprecated_file_trigger_error', '__return_false' );
-
-		wp_reset_postdata();
-	}
-}*/
-
 function learn_press_is_content_item_only() {
 	return ! empty( $_REQUEST['content-item-only'] );
 }
@@ -1223,72 +1155,12 @@ function learn_press_label_html( $label, $type = '' ) {
 }
 
 /**
- * @deprecated 4.1.6.4
- */
-function learn_press_get_course_redirect( $link ) {
-	_deprecated_function( __FUNCTION__, '4.1.6.4' );
-	if ( empty( $_SERVER['HTTP_REFERER'] ) ) {
-		return $link;
-	}
-
-	$referer = $_SERVER['HTTP_REFERER'];
-	$info_a  = parse_url( $referer );
-	$info_b  = parse_url( $link );
-
-	$a = explode( '/', $info_a['path'] );
-	$a = array_filter( $a );
-
-	$b = explode( '/', $info_b['path'] );
-	$b = array_filter( $b );
-
-	$same = array_intersect_assoc( $a, $b );
-
-	$a = array_diff_assoc( $a, $same );
-	$b = array_diff_assoc( $b, $same );
-
-	$a = array_values( $a );
-	$b = array_values( $b );
-
-	if ( array_shift( $a ) === 'popup' ) {
-		unset( $a[0] );
-
-		if ( ! ( array_diff_assoc( $a, $b ) ) ) {
-			$link = '';
-			foreach ( array( 'scheme', 'host', 'port', 'path' ) as $v ) {
-				if ( ! isset( $info_a[ $v ] ) ) {
-					continue;
-				}
-
-				if ( $v == 'scheme' ) {
-					$sep = '://';
-				} elseif ( $v == 'host' ) {
-					$sep = '';
-				} elseif ( $v == 'port' ) {
-					$link .= ':';
-					$sep   = '';
-				} else {
-					$sep = '/';
-				}
-				$link = $link . $info_a[ $v ] . $sep;
-			}
-
-			if ( ! empty( $info_b['query'] ) ) {
-				$link .= '?' . $info_b['query'];
-			}
-
-			if ( ! empty( $info_b['fragment'] ) ) {
-				$link .= '#' . $info_b['fragment'];
-			}
-		}
-	}
-
-	return $link;
-}
-
-/**
  * @param LP_Quiz $item
+ * @deprecated 4.2.3.5
  */
 function learn_press_quiz_meta_final( $item ) {
+	_deprecated_function( __METHOD__, '4.2.3.5' );
+	return;
 	$course = learn_press_get_course();
 
 	if ( ! $course->is_final_quiz( $item->get_id() ) ) {
