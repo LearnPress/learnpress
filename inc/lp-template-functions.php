@@ -1210,16 +1210,6 @@ if ( ! function_exists( 'learn_press_get_profile_display_name' ) ) {
 	}
 }*/
 
-function learn_press_course_comments_open( $open, $post_id ) {
-	$post = get_post( $post_id );
-
-	if ( LP_COURSE_CPT == $post->post_type ) {
-		$open = false;
-	}
-
-	return $open;
-}
-
 function learn_press_is_content_item_only() {
 	return ! empty( $_REQUEST['content-item-only'] );
 }
@@ -1413,35 +1403,6 @@ function learn_press_is_learning_course( int $course_id = 0 ): bool {
 	}
 
 	return apply_filters( 'lp/is-learning-course', $is_learning, $course_id );
-}
-
-/**
- * Return TRUE if current user has already enroll course in single view.
- *
- * @return bool
- * @since 3.0.0
- * @editor tungnx
- * @version 4.1.3
- */
-function learn_press_current_user_enrolled_course() {
-	_deprecated_function( __FUNCTION__, '4.1.3' );
-}
-
-/**
- * Check if an user can access content of a course.
- *
- * @param int $course_id
- * @param int $user_id
- *
- * @return bool
- * @since 3.x.x
- * @editor tungnx
- * @modify 4.1.3
- * @reason comment - not use
- */
-
-function learn_press_user_can_access_course( $course_id, $user_id = 0 ) {
-	_deprecated_function( __FUNCTION__, '4.1.2' );
 }
 
 function learn_press_content_item_summary_class( $more = '', $echo = true ) {
@@ -1688,12 +1649,6 @@ function lp_course_level() {
 		)
 	);
 }
-
-// function learn_press_is_preview_course() {
-// $course_id = isset( $GLOBALS['preview_course'] ) ? $GLOBALS['preview_course'] : 0;
-//
-// return $course_id && get_post_type( $course_id ) === LP_COURSE_CPT;
-// }
 
 /**
  * Get slug for logout action in user profile.

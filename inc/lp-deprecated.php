@@ -1966,33 +1966,6 @@ if ( ! function_exists( 'learn_press_search_form' ) ) {
 	}
 }
 
-/**
- * @deprecated 4.1.6.9
- */
-/*if ( ! function_exists( 'learn_press_content_single_item' ) ) {
-	function learn_press_content_single_item() {
-		if ( $course_item = LP_Global::course_item() ) {
-			// remove course comment form on singler item
-			add_filter( 'comments_open', 'learn_press_course_comments_open', 10, 2 );
-			learn_press_get_template( 'content-single-item.php' );
-		}
-	}
-}*/
-
-/**
- * @deprecated 4.1.6.9
- */
-/*if ( ! function_exists( 'learn_press_content_single_course' ) ) {
-	function learn_press_content_single_course() {
-
-		if ( ! $course_item = LP_Global::course_item() ) {
-			learn_press_get_template( 'content-single-course.php' );
-		}
-	}
-}*/
-
-
-
 if ( ! function_exists( 'learn_press_section_item_meta' ) ) {
 	/**
 	 * @param object

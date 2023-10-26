@@ -498,6 +498,8 @@ class LP_Helper {
 	 * => $wpdb->prepare($sql, $one, $two, $three, $four, $file)
 	 */
 	public static function prepare( $query, $args ) {
+		_deprecated_function( __METHOD__, '4.2.5.3' );
+		return '';
 		global $wpdb;
 
 		$args = func_get_args();
