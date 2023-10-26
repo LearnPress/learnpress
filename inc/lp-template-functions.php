@@ -1829,5 +1829,5 @@ function lp_archive_skeleton_get_args(): array {
 		$args = [];
 	}
 
-	return LP_Helper::sanitize_params_submitted( $args );
+	return LP_Helper::sanitize_params_submitted( $args, 'key' );
 }

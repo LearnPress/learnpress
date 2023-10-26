@@ -53,18 +53,18 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 			?>
 			<style>
 				table.lp-material--table {
-				  border-collapse: collapse;
-				  width: 100%;
+					border-collapse: collapse;
+					width: 100%;
 				}
 
 				table.lp-material--table td, th {
-				  border: 1px solid #dddddd;
-				  text-align: left;
-				  padding: 8px;
+					border: 1px solid #dddddd;
+					text-align: left;
+					padding: 8px;
 				}
 
 				table.lp-material--table tr:nth-child(even) {
-				  background-color: #dddddd;
+					background-color: #dddddd;
 				}
 				.lp-material--field-wrap {
 					display: flex;
@@ -111,7 +111,7 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 		<div id="lp-material-container">
 			<?php if ( $allow_upload_amount == 0 ) : ?>
 				<?php if ( get_post_type( $thepostid ) == LP_COURSE_CPT ) : ?>
-					<div > <?php esc_html_e( 'Downloadable Materials is not allowed!', 'learnpress' ); ?> </div>	
+					<div > <?php esc_html_e( 'Downloadable Materials is not allowed!', 'learnpress' ); ?> </div>
 				<?php endif ?>
 			<?php else : ?>
 			<div>
@@ -168,46 +168,59 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 			<table class="lp-material--table">
 				<thead>
 					<tr>
-					  <th><?php esc_html_e( 'File Title', 'learnpress' ); ?></th>
-					  <th><?php esc_html_e( 'Method', 'learnpress' ); ?></th>
-					  <th><?php esc_html_e( 'Action', 'learnpress' ); ?></th>
-					</tr>	
+						<th><?php esc_html_e( 'File Title', 'learnpress' ); ?></th>
+						<th><?php esc_html_e( 'Method', 'learnpress' ); ?></th>
+						<th><?php esc_html_e( 'Action', 'learnpress' ); ?></th>
+					</tr>
 				</thead>
 				<tbody>
 
 				<!-- <?php if ( $course_materials ) : ?>
 					<?php foreach ( $course_materials as $row ) : ?>
-					  <tr data-id="<?php esc_attr_e( $row->file_id ); ?>" data-sort="<?php esc_attr_e( $row->orders ); ?>">
+						<tr data-id="<?php esc_attr_e( $row->file_id ); ?>" data-sort="<?php esc_attr_e( $row->orders ); ?>">
 						<td class="sort"><?php esc_attr_e( $row->file_name ); ?></td>
 						<td><?php esc_attr_e( ucfirst( $row->method ) ); ?></td>
 						<td><a href="javascript:void(0)" class="delete-material-row" data-id="<?php esc_attr_e( $row->file_id ); ?>"><?php esc_html_e( 'Delete', 'learnpress' ); ?></a></td>
-					  </tr>
+						</tr>
 					<?php endforeach; ?>
 				<?php endif; ?> -->
 				</tbody>
-				
+
 			</table>
 				<?php if ( $course_materials ) : ?>
 					<?php lp_skeleton_animation_html( 3, 100 ); ?>
 			<?php endif ?>
 			<div id="lp-material--group-container">
-				
+
 			</div>
 			<?php endif; ?>
 		</div>
 			<?php
 		}
+
 		/**
+		 * Remove material when delete course or lesson
+		 *
+		 * @param int $post_id id of course or lesson
+		 *
 		 * @author khanhbd
-		 * @version 1.0.0
+		 * @version 1.0.1
 		 * @since 4.2.2
-		 * [clear_material_in_post description]
-		 * @param  [int] $post_id [course_id or lesson_id]
 		 */
 		public function clear_material_in_post( $post_id ) {
-			$material_init = LP_Material_Files_DB::getInstance();
-			$material_init->delete_material_by_item_id( $post_id );
+			try {
+				$post_type = get_post_type( $post_id );
+				if ( ! in_array( $post_type, [ LP_COURSE_CPT, LP_LESSON_CPT ] ) ) {
+					return;
+				}
+
+				$material_init = LP_Material_Files_DB::getInstance();
+				$material_init->delete_material_by_item_id( $post_id );
+			} catch ( Throwable $e ) {
+				error_log( __METHOD__ . ': ' . $e->getMessage() );
+			}
 		}
+
 		/**
 		 * Get instance
 		 *
@@ -220,7 +233,6 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 
 			return self::$instance;
 		}
-
 	}
 	LP_Meta_Box_Material_Fields::instance();
 }
