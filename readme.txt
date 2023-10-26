@@ -213,6 +213,7 @@ https://www.transifex.com/projects/p/learnpress/
 = 4.2.5.3 (2023-10-26) =
 ~ Fixed: security issue.
 ~ Fixed: miss hook start quiz, retake quiz.
+~ Fixed: minor bug material.
 
 = 4.2.5.2 (2023-10-24) =
 ~ Fixed: security issue.

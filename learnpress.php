@@ -170,9 +170,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				// Include files .
 				$this->includes();
 
-				// Copy mu plugin.
-				$this->mu_plugin();
-
 				// hooks .
 				$this->init_hooks();
 			} catch ( Throwable $e ) {
@@ -908,25 +905,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			}
 
 			return self::$_instance;
-		}
-
-		/**
-		 * Copy class-lp-mu-plugin.php to mu_plugins folder
-		 *
-		 * @return void
-		 */
-		public function mu_plugin() {
-			try {
-				// Remove file mu plugin create on version 4.1.7.
-				$name                = 'class-lp-mu-plugin.php';
-				$mu_plugins_path     = WPMU_PLUGIN_DIR;
-				$mu_plugin_file_path = $mu_plugins_path . '/' . $name;
-				if ( file_exists( $mu_plugin_file_path ) ) {
-					LP_WP_Filesystem::instance()->lp_filesystem->delete( $mu_plugin_file_path );
-				}
-			} catch ( Throwable $e ) {
-				error_log( $e->getMessage() );
-			}
 		}
 	}
 }
