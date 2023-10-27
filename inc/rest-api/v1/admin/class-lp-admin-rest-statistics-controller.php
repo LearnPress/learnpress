@@ -52,9 +52,9 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 			$params = LP_Helper::sanitize_params_submitted( $params );
 			$filter = $this->get_statistics_filter( $params );
 
-			$lp_order_db      = LP_Order_DB::getInstance();
-			$statistics       = $lp_order_db->get_order_statics( $filter['filter_type'], $filter['time'] );
-			$completed_orders = $lp_order_db->get_completed_order_data( $filter['filter_type'], $filter['time'] );
+			$lp_statistic_db  = LP_Statistics_DB::getInstance();
+			$statistics       = $lp_statistic_db->get_order_statics( $filter['filter_type'], $filter['time'] );
+			$completed_orders = $lp_statistic_db->get_completed_order_data( $filter['filter_type'], $filter['time'] );
 			$chart_data       = $this->process_order_chart_data( $filter, $completed_orders );
 			$data             = array(
 				'statistics' => $statistics,
