@@ -42,7 +42,9 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 				array(
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'items_progress' ),
-					'permission_callback' => '__return_true',
+					'permission_callback' => function () {
+						return is_user_logged_in();
+					},
 				),
 			),
 		);
