@@ -140,12 +140,11 @@ class UserQuizModel extends UserItemModel {
 	/**
 	 * Start quiz.
 	 *
-	 * @return UserQuizModel
 	 * @throws Exception
 	 * @since 4.2.5
 	 * @version 1.0.0
 	 */
-	public function start_quiz(): UserQuizModel {
+	public function start_quiz() {
 		$can_start = $this->check_can_start();
 		if ( is_wp_error( $can_start ) ) {
 			/**
@@ -156,7 +155,12 @@ class UserQuizModel extends UserItemModel {
 
 		$this->status     = LP_ITEM_STARTED;
 		$this->graduation = LP_COURSE_GRADUATION_IN_PROGRESS;
-		return $this->save();
+		$this->save();
+
+		// Hook old - random quiz using.
+		do_action( 'learn-press/user/quiz-started', $this->item_id, $this->ref_id, $this->user_id );
+		// Hook new
+		do_action( 'learn-press/user/quiz/started', $this );
 	}
 
 	/**
@@ -164,7 +168,7 @@ class UserQuizModel extends UserItemModel {
 	 *
 	 * @throws Exception
 	 */
-	public function retake(): UserQuizModel {
+	public function retake() {
 		$can_retake = $this->check_can_retake();
 		if ( is_wp_error( $can_retake ) ) {
 			/**
@@ -198,7 +202,12 @@ class UserQuizModel extends UserItemModel {
 		$this->start_time = gmdate( LP_Datetime::$format, time() );
 		$this->end_time   = null;
 		$this->graduation = LP_COURSE_GRADUATION_IN_PROGRESS;
-		return $this->save();
+		$this->save();
+
+		// Hook old - random quiz using.
+		do_action( 'learn-press/user/quiz-retried', $this->item_id, $this->ref_id, $this->user_id );
+		// Hook new
+		do_action( 'learn-press/user/quiz/retried', $this );
 	}
 
 	/**
@@ -298,7 +307,7 @@ class UserQuizModel extends UserItemModel {
 
 		// Check retaken count.
 		$retake_config = get_post_meta( $this->item_id, '_lp_retake_count', true );
-		if ( $retake_config != '-1' ) {
+		if ( $retake_config !== '-1' ) {
 			$number_retaken = absint( $this->get_meta_value_from_key( UserQuizMetaModel::KEY_RETAKEN_COUNT ) );
 			if ( $number_retaken >= $retake_config ) {
 				$can_retake = new WP_Error( 'exceed_retaken_count', __( 'You have exceeded the number of retakes.', 'learnpress' ) );
@@ -463,12 +472,12 @@ class UserQuizModel extends UserItemModel {
 			$result['questions'][ $question_id ]['answered'] = $answered[ $question_id ] ?? '';
 
 			if ( isset( $answered[ $question_id ] ) ) { // User's answer
-				$result['question_answered']++;
+				++$result['question_answered'];
 
 				$check = $question->check( $answered[ $question_id ] );
 				$point = apply_filters( 'learn-press/user/calculate-quiz-result/point', $point, $question, $check );
 				if ( $check['correct'] ) {
-					$result['question_correct']++;
+					++$result['question_correct'];
 					$result['user_mark'] += $point;
 
 					$result['questions'][ $question_id ]['correct'] = true;
@@ -478,7 +487,7 @@ class UserQuizModel extends UserItemModel {
 						$result['user_mark']   -= $point;
 						$result['minus_point'] += $point;
 					}
-					$result['question_wrong']++;
+					++$result['question_wrong'];
 
 					$result['questions'][ $question_id ]['correct'] = false;
 					$result['questions'][ $question_id ]['mark']    = 0;
@@ -488,7 +497,7 @@ class UserQuizModel extends UserItemModel {
 					$result['user_mark']   -= $point;
 					$result['minus_point'] += $point;
 				}
-				$result['question_empty']++;
+				++$result['question_empty'];
 
 				$result['questions'][ $question_id ]['correct'] = false;
 				$result['questions'][ $question_id ]['mark']    = 0;
