@@ -152,8 +152,8 @@ class LP_Template_Course extends LP_Abstract_Template {
 	 * @return void
 	 */
 	public function course_pricing() {
-		$course     = learn_press_get_course();
-		$user       = learn_press_get_current_user();
+		$course = learn_press_get_course();
+		$user   = learn_press_get_current_user();
 
 		$can_show = $user->can_purchase_course();
 		$can_show = apply_filters( 'learnpress/course/template/price/can-show', $can_show, $user, $course );
@@ -474,7 +474,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 		$completed_items = 0;
 		$course_data     = $user->get_course_data( $course->get_id() );
 
-		if ( $course_data && ! $course->is_no_required_enroll() ) {
+		if ( $course_data && ! empty( $course_data->get_user_id() ) && ! $course->is_no_required_enroll() ) {
 			$course_results  = $course_data->get_result();
 			$completed_items = $course_results['completed_items'];
 			$total_items     = $course_results['count_items'];

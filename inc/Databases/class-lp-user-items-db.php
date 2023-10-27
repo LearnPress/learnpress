@@ -115,7 +115,7 @@ class LP_User_Items_DB extends LP_Database {
 			$filter->where[] = $this->wpdb->prepare( 'AND ui.user_item_id = %d', $filter->user_item_id );
 		}
 
-		if ( ! empty( $filter->user_id ) ) {
+		if ( $filter->user_id !== false ) {
 			$filter->where[] = $this->wpdb->prepare( 'AND ui.user_id = %d', $filter->user_id );
 		}
 
@@ -653,14 +653,14 @@ class LP_User_Items_DB extends LP_Database {
 			}*/
 
 			// Get all user_item_ids has user_id and course_id
-			$filter          = new LP_User_Items_Filter();
-			$filter->user_id = $user_id;
-			$filter->item_id = $course_id;
-			$filter->only_fields = [ 'user_item_id' ];
-			$filter->run_query_count = false;
+			$filter                      = new LP_User_Items_Filter();
+			$filter->user_id             = $user_id;
+			$filter->item_id             = $course_id;
+			$filter->only_fields         = [ 'user_item_id' ];
+			$filter->run_query_count     = false;
 			$filter->return_string_query = true;
-			$user_course_ids_query = $lp_user_items_db->get_user_items( $filter );
-			$user_course_ids = $this->wpdb->get_col( $user_course_ids_query );
+			$user_course_ids_query       = $lp_user_items_db->get_user_items( $filter );
+			$user_course_ids             = $this->wpdb->get_col( $user_course_ids_query );
 			if ( empty( $user_course_ids ) ) {
 				return;
 			}
@@ -737,7 +737,7 @@ class LP_User_Items_DB extends LP_Database {
 		$query_count .= $this->wpdb->prepare( 'SUM(ui.status = %s) AS count_status,', $filter->status );
 
 		foreach ( $item_types as $item_type ) {
-			$i++;
+			++$i;
 			$query_count .= $this->wpdb->prepare( 'SUM(ui.status = %s AND ui.item_type = %s) AS %s,', $filter->status, $item_type, $item_type . '_status_' . $filter->status );
 			$query_count .= $this->wpdb->prepare( 'SUM(ui.graduation = %s AND ui.item_type = %s) AS %s', $filter->graduation, $item_type, $item_type . '_graduation_' . $filter->graduation );
 
@@ -932,7 +932,35 @@ class LP_User_Items_DB extends LP_Database {
 
 		return $this->execute( $filter, $total_rows );
 	}
+
+	/**
+	 * Count students on category course.
+	 *
+	 * @param int $term_id
+	 *
+	 * @since 4.2.5.3 - branch info-course-cat
+	 * @version 1.0.0
+	 * @return int
+	 */
+	public function count_students_by_category( int $term_id ): int {
+		$count = 0;
+
+		try {
+			$filter              = new LP_User_Items_Filter();
+			$filter->query_count = true;
+			$filter->only_fields = [ 'ui.user_id' ];
+			$filter->field_count = 'ui.user_id';
+			$filter->item_type   = LP_COURSE_CPT;
+			$filter->join[]      = "INNER JOIN {$this->tb_posts} AS p ON ui.item_id = p.ID";
+			$filter->join[]      = "INNER JOIN {$this->tb_term_relationships} AS r_term ON ui.item_id = r_term.object_id";
+			$filter->where[]     = $this->wpdb->prepare( 'AND r_term.term_taxonomy_id = %d', $term_id );
+			$this->get_user_items( $filter, $count );
+		} catch ( Throwable $e ) {
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
+		}
+
+		return $count;
+	}
 }
 
 LP_Course_DB::getInstance();
-
