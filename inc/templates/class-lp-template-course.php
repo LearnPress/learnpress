@@ -152,18 +152,12 @@ class LP_Template_Course extends LP_Abstract_Template {
 	 * @return void
 	 */
 	public function course_pricing() {
-		$can_show   = true;
 		$course     = learn_press_get_course();
 		$user       = learn_press_get_current_user();
-		$price_html = '';
 
-		/*$can_show = $user->can_purchase_course();
-		if ( is_wp_error( $can_show ) ) {
-			$can_show = false;
-		}*/
-
+		$can_show = $user->can_purchase_course();
 		$can_show = apply_filters( 'learnpress/course/template/price/can-show', $can_show, $user, $course );
-		if ( ! $can_show ) {
+		if ( is_wp_error( $can_show ) ) {
 			return;
 		}
 
@@ -737,7 +731,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 		$course = learn_press_get_course();
 
 		$file_per_page = LP_Settings::get_option( 'material_file_per_page', -1 );
-		if ( ! $course || (int) $file_per_page == 0 ) {
+		if ( ! $course || (int) $file_per_page === 0 ) {
 			return;
 		}
 		try {
@@ -873,7 +867,6 @@ class LP_Template_Course extends LP_Abstract_Template {
 
 			learn_press_get_template( 'single-course/extra-info', $box );
 		}
-
 	}
 
 	public function metarials() {
@@ -984,9 +977,8 @@ class LP_Template_Course extends LP_Abstract_Template {
 		}
 	}
 
-	public function course_comment_template() {
-		 global $post;
 
+	public function course_comment_template() {
 		if ( comments_open() || get_comments_number() ) {
 			add_filter( 'deprecated_file_trigger_error', '__return_false' );
 			comments_template();

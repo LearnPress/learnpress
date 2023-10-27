@@ -119,7 +119,7 @@ $js = array(
 
 $js = array_merge( $js, $user_js );
 
-if ( $total_question ) :
+if ( $total_question || $user_quiz ) :
 	?>
 	<div id="learn-press-quiz-app"></div>
 
