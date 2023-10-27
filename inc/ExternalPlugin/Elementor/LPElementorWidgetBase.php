@@ -68,6 +68,10 @@ class LPElementorWidgetBase extends Widget_Base {
 	 * @return void
 	 */
 	protected function register_controls() {
+		if ( ! is_array( $this->controls ) ) {
+			error_log( __METHOD__ . ': ' . json_encode( $this->controls ) );
+			return;
+		}
 		$this->print_fields( $this->controls );
 	}
 
