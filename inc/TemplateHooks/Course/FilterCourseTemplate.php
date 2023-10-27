@@ -7,7 +7,7 @@
  */
 namespace LearnPress\TemplateHooks\Course;
 
-use Google\Exception;
+use Exception;
 use LearnPress\Helpers\Template;
 use LP_Course;
 use LP_Course_DB;
