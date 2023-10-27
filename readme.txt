@@ -5,7 +5,7 @@ Tags: elearning, education, course, lms, learning management system
 Requires at least: 6.2
 Tested up to: 6.3.2
 Requires PHP: 7.0
-Stable tag: 4.2.5.1
+Stable tag: 4.2.5.3
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -210,10 +210,12 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
-= 4.2.5.3 (2023-10-26) =
+= 4.2.5.3 (2023-10-27) =
 ~ Fixed: security issue.
 ~ Fixed: miss hook start quiz, retake quiz.
 ~ Fixed: minor bug material.
+~ Fixed: error same course when access any single course.
+~ Fixed: error don't hide info price/free when user enrolled course.
 
 = 4.2.5.2 (2023-10-24) =
 ~ Fixed: security issue.
