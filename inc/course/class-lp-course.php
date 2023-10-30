@@ -682,7 +682,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		 * @version 1.0.0
 		 * @author tungnx
 		 */
-		public function get_full_sections_and_items_course(): array {
+		public function get_full_sections_and_items_course() {
 			$sections_items = [];
 			$course_id      = $this->get_id();
 
