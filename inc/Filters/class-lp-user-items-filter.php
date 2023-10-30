@@ -45,7 +45,7 @@ class LP_User_Items_Filter extends LP_Filter {
 	/**
 	 * @var int
 	 */
-	public $user_id = 0;
+	public $user_id = false;
 	/**
 	 * @var array int
 	 */
@@ -99,5 +99,3 @@ class LP_User_Items_Filter extends LP_Filter {
 	 */
 	public $field_count = 'user_item_id';
 }
-
-
