@@ -464,8 +464,128 @@ class LP_Statistics_DB extends LP_Database {
 
 		return $result;
 	}
+	/**
+	 * Overviews get total courses was created ( all statuses )
+	 * @param  string  $type   date|month|year|previous_days|custom
+	 * @param  string  $value  time value string "Y-m-d" for date|month|year, int for previous_days, string
+	 * @return int     $result course count
+	 */
+	public function get_total_course_created( string $type, string $value ) {
+		$filter                   = new LP_Course_Filter();
+		$filter->collection       = $this->tb_posts;
+		$filter->collection_alias = 'p';
+		$filter->only_fields[]    = 'p.ID';
+		$time_field               = 'p.post_date';
 
-	public function get_top_enrolled_courses() {
-		// TODO
+		$filter->where[]     = $this->wpdb->prepare( 'AND p.post_type=%s', LP_COURSE_CPT );
+		$filter              = $this->filter_time( $filter, $type, $time_field, $value );
+		$filter->query_count = true;
+		$result              = $this->execute( $filter );
+		return $result;
 	}
+	/**
+	 * Overviews get total orders was created ( all statuses )
+	 * @param  string  $type   date|month|year|previous_days|custom
+	 * @param  string  $value  time value string "Y-m-d" for date|month|year, int for previous_days, string
+	 * @return int     $result order count
+	 */
+	public function get_total_order_created( string $type, string $value ) {
+		$filter                   = new LP_Course_Filter();
+		$filter->collection       = $this->tb_posts;
+		$filter->collection_alias = 'p';
+		$filter->only_fields[]    = 'p.ID';
+		$time_field               = 'p.post_date';
+
+		$filter->where[]     = $this->wpdb->prepare( 'AND p.post_type=%s', LP_ORDER_CPT );
+		$filter              = $this->filter_time( $filter, $type, $time_field, $value );
+		$filter->query_count = true;
+		$result              = $this->execute( $filter );
+		return $result;
+	}
+	/**
+	 * Overviews get total instructors was created ( administrator and lp_teacher )
+	 * @param  string  $type   date|month|year|previous_days|custom
+	 * @param  string  $value  time value string "Y-m-d" for date|month|year, int for previous_days, string
+	 * @return int     $result user count
+	 */
+	public function get_total_instructor_created( string $type, string $value ) {
+		$filter                   = new LP_Filter();
+		$filter->collection       = $this->wpdb->users;
+		$filter->collection_alias = 'u';
+		$filter->only_fields[]    = 'u.ID';
+		$usermeta_table           = $this->wpdb->usermeta;
+		$filter->join[]           = "INNER JOIN $usermeta_table AS um ON um.user_id = u.ID";
+		$time_field               = 'u.user_registered';
+		$filter->where[]          = $this->wpdb->prepare( 'AND um.meta_key=%s', 'wp_capabilities' );
+		$filter->where[]          = $this->wpdb->prepare( 'AND um.meta_value LIKE CONCAT("%",%s,"%")', ADMIN_ROLE );
+		$filter->where[]          = $this->wpdb->prepare( 'OR um.meta_value LIKE CONCAT("%",%s,"%")', LP_TEACHER_ROLE );
+		$filter                   = $this->filter_time( $filter, $type, $time_field, $value );
+		$filter->query_count      = true;
+		$result                   = $this->execute( $filter );
+		return $result;
+	}
+	/**
+	 * Overviews get total student was created ( subscriber )
+	 * @param  string  $type   date|month|year|previous_days|custom
+	 * @param  string  $value  time value string "Y-m-d" for date|month|year, int for previous_days, string
+	 * @return int     $result user count
+	 */
+	public function get_total_student_created( string $type, string $value ) {
+		$filter                   = new LP_Filter();
+		$filter->collection       = $this->wpdb->users;
+		$filter->collection_alias = 'u';
+		$filter->only_fields[]    = 'u.ID';
+		$usermeta_table           = $this->wpdb->usermeta;
+		$filter->join[]           = "INNER JOIN $usermeta_table AS um ON um.user_id = u.ID";
+		$time_field               = 'u.user_registered';
+		$filter->where[]          = $this->wpdb->prepare( 'AND um.meta_key=%s', 'wp_capabilities' );
+		$filter->where[]          = $this->wpdb->prepare( 'AND um.meta_value LIKE CONCAT("%",%s,"%")', 'subscriber' );
+		$filter                   = $this->filter_time( $filter, $type, $time_field, $value );
+		$filter->query_count      = true;
+		$result                   = $this->execute( $filter );
+		return $result;
+	}
+	/**
+	 * get top courses was enrolled by users
+	 * @param  string  $type                date|month|year|previous_days|custom
+	 * @param  string  $value               time value string "Y-m-d" for date|month|year, int for previous_days, string "Y-m-d+Y-m-d" for custom
+	 * @param  integer $limit               limit of query, default 10
+	 * @param  boolean $exclude_free_course exclude free course, get result only purchase course
+	 * @return array   $result
+	 */
+	public function get_top_enrolled_courses( string $type, string $value, $limit = 0, $exclude_free_course = false ) {
+		$filter                   = new LP_Filter();
+		$filter->collection       = $this->tb_lp_user_items;
+		$filter->collection_alias = 'ui';
+		$filter->only_fields[]    = 'ui.item_id as course_id';
+		$filter->only_fields[]    = 'COUNT(ui.user_item_id) as enrolled_user';
+		$filter->limit            = $limit > 0 ? $limit : 10;
+		$time_field               = 'ui.start_time';
+		$filter->where[]          = $this->wpdb->prepare( 'AND ui.item_type=%s', LP_COURSE_CPT );
+		$filter                   = $this->filter_time( $filter, $type, $time_field, $value );
+		$filter->group_by         = 'course_id';
+		$filter->order_by         = 'enrolled_user';
+		$filter->order            = 'DESC';
+		$filter->run_query_count  = false;
+		$result                   = $this->execute( $filter );
+		return $result;
+	}
+
+	// public function get_top_instructor_by_students( string $type, string $value, $limit = 0, $exclude_free_course = false ) {
+	// 	$filter                   = new LP_Filter();
+	// 	$filter->collection       = $this->tb_lp_user_items;
+	// 	$filter->collection_alias = 'ui';
+	// 	$filter->only_fields[]    = 'ui.item_id as course_id';
+	// 	$filter->only_fields[]    = 'COUNT(ui.user_item_id) as enrolled_user';
+	// 	$filter->limit            = $limit > 0 ? $limit : 10;
+	// 	$time_field               = 'ui.start_time';
+	// 	$filter->where[]          = $this->wpdb->prepare( 'AND ui.item_type=%s', LP_COURSE_CPT );
+	// 	$filter                   = $this->filter_time( $filter, $type, $time_field, $value );
+	// 	$filter->group_by         = 'course_id';
+	// 	$filter->order_by         = 'enrolled_user';
+	// 	$filter->order            = 'DESC';
+	// 	$filter->run_query_count  = false;
+	// 	$result                   = $this->execute( $filter );
+	// 	return $result;
+	// }
 }
