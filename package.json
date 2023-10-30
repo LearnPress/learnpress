@@ -65,6 +65,7 @@
         "react-easy-crop": "^4.7.4",
         "refx": "^3.1.1",
         "sortablejs": "^1.15.0",
-		"@paypal/paypal-js": "^7.0.3"
+		"@paypal/paypal-js": "^7.0.3",
+		"tom-select": "^2.2.3"
     }
 }

@@ -193,7 +193,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			$filter_user_quiz->user_id = $user_id;
 			$filter_user_quiz->item_id = $item_id;
 			$filter_user_quiz->ref_id  = $course_id;
-			$user_quiz_exists          = UserQuizModel::get_user_quiz_model_from_db( $filter_user_quiz, true );
+			$user_quiz_exists          = UserQuizModel::get_user_item_model_from_db( $filter_user_quiz, true );
 			if ( $user_quiz_exists instanceof UserQuizModel
 				&& $user_quiz_exists->status === LP_ITEM_COMPLETED ) {
 				/**
@@ -220,7 +220,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 				$user_quiz = $user_quiz_new;
 			}
 
-			$user_item_id = $user_quiz->user_item_id;
+			$user_item_id = $user_quiz->get_user_item_id();
 
 			/**
 			 * Clear cache result quiz

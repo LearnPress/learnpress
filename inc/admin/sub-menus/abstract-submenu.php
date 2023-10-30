@@ -1,4 +1,7 @@
 <?php
+
+use LearnPress\Helpers\Template;
+
 defined( 'ABSPATH' ) || exit();
 
 /**
@@ -348,11 +351,18 @@ abstract class LP_Abstract_Submenu {
 			if ( $sections && sizeof( $sections ) > 1 ) {
 				$classes[] = 'has-sections';
 			}
-			?>
 
-			<form class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>" method="post" enctype="multipart/form-data">
-				<?php $this->page_content(); ?>
-			</form>
+			ob_start();
+			$this->page_content();
+			$content = ob_get_clean();
+			if ( 'learn-press-settings' === LP_Request::get_param( 'page' ) ) {
+				$wrapper = [ sprintf( '<form class="%s" method="post" enctype="multipart/form-data">', esc_attr( implode( ' ', $classes ) ) ) => '</form>' ];
+			} else {
+				$wrapper = [ sprintf( '<div class="%s">', esc_attr( implode( ' ', $classes ) ) ) => '</div>' ];
+			}
+
+			echo Template::instance()->nest_elements( $wrapper, $content );
+			?>
 		</div>
 		<?php
 	}
@@ -360,7 +370,7 @@ abstract class LP_Abstract_Submenu {
 	/**
 	 * This function for displaying content of active tab only.
 	 * For displaying content of main page without tab,
-	 * overwrite this function in sub class.
+	 * overwrite this function in subclass.
 	 */
 	public function page_content() {
 		do_action( 'learn-press/admin/page-content-sections', $this );

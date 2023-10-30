@@ -22,6 +22,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 	 */
 	class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 		use Singleton;
+
 		/**
 		 * @var string
 		 */
@@ -116,10 +117,10 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 					$this->paypal_url         = $this->paypal_sandbox_url;
 					$this->paypal_payment_url = $this->paypal_payment_sandbox_url;
 					$this->paypal_email       = $this->settings->get( 'paypal_sandbox_email' );
-					$this->api_url            = $this->api_sandbox_url; //use for paypal rest api
+					$this->api_url            = $this->api_sandbox_url; //use for PayPal rest api
 				}
 				// Use Paypal rest api
-				if ( $this->settings->get( 'use_paypal_rest' ) == 'yes' ) {
+				if ( $this->settings->get( 'use_paypal_rest', 'yes' ) === 'yes' ) {
 					$this->client_id     = $this->settings->get( 'app_client_id' );
 					$this->client_secret = $this->settings->get( 'app_client_secret' );
 				}
@@ -145,7 +146,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		public function check_webhook_callback() {
 			try {
 				$paypal = LP_Gateway_Paypal::instance();
-				if ( $paypal->settings->get( 'use_paypal_rest' ) == 'no' ) {
+				if ( $paypal->settings->get( 'use_paypal_rest', 'yes' ) === 'no' ) {
 					// Paypal payment done
 					if ( ! isset( $_GET['paypal_notify'] ) ) {
 						return;
@@ -159,13 +160,10 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 
 					if ( $verify ) {
 						if ( isset( $_POST['custom'] ) ) {
-							$data_order = json_decode( LP_Helper::sanitize_params_submitted( $_POST['custom'] ) );
-
-							if ( json_last_error() === JSON_ERROR_NONE ) {
-								$order_id = $data_order->order_id;
-								$lp_order = learn_press_get_order( $order_id );
-								$lp_order->update_status( LP_ORDER_COMPLETED );
-							}
+							$data_order = LP_Helper::json_decode( LP_Helper::sanitize_params_submitted( $_POST['custom'] ) );
+							$order_id   = $data_order->order_id;
+							$lp_order   = learn_press_get_order( $order_id );
+							$lp_order->update_status( LP_ORDER_COMPLETED );
 						}
 					}
 				} else {
@@ -191,7 +189,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 *
 		 * @return bool
 		 */
-		public function validate_ipn():bool {
+		public function validate_ipn(): bool {
 			$validate_ipn  = array( 'cmd' => '_notify-validate' );
 			$validate_ipn += wp_unslash( $_POST );
 
@@ -228,7 +226,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			$paypal_payment_url = '';
 
 			$order = new LP_Order( $order_id );
-			if ( $this->settings->get( 'use_paypal_rest' ) == 'no' ) {
+			if ( $this->settings->get( 'use_paypal_rest', 'yes' ) === 'no' ) {
 				$paypal_args        = $this->get_paypal_args( $order );
 				$paypal_payment_url = $this->paypal_url . '?' . http_build_query( $paypal_args );
 			} else {
@@ -318,9 +316,9 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			);
 
 			$data_token_str = wp_remote_retrieve_body( $response );
-			$data_token     = json_decode( $data_token_str );
-			if ( isset( $data->error ) ) {
-				throw new Exception( $data->error_description );
+			$data_token     = LP_Helper::json_decode( $data_token_str );
+			if ( isset( $data_token->error ) ) {
+				throw new Exception( $data_token->error_description );
 			}
 
 			LP_Settings::update_option( 'paypal_token', $data_token_str );
@@ -334,7 +332,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 * @param LP_Order $order
 		 * @return array
 		 * @since 4.2.4
-		 * @version 1.0.0
+		 * @version 1.0.1
 		 */
 		public function get_order_args( LP_Order $order ): array {
 			$lp_cart    = LearnPress::instance()->get_cart();
@@ -349,7 +347,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 					[
 						'amount'    => [
 							'currency_code' => learn_press_get_currency(),
-							'value'         => $cart_total->total,
+							'value'         => number_format( $cart_total->total, 2 ),
 						],
 						'custom_id' => $order_id,
 					],
@@ -400,7 +398,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				]
 			);
 
-			$result = json_decode( wp_remote_retrieve_body( $response ) );
+			$result = LP_Helper::json_decode( wp_remote_retrieve_body( $response ) );
 			if ( isset( $result->error ) ) {
 				throw new Exception( $result->error_description );
 			}
@@ -410,7 +408,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			}
 
 			foreach ( $result->links as $link ) {
-				if ( $link->rel == 'payer-action' ) {
+				if ( $link->rel === 'payer-action' ) {
 					$checkout_url = $link->href;
 					break;
 				}
@@ -453,7 +451,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 
 			if ( $response['response']['code'] === 201 ) {
 				$body        = wp_remote_retrieve_body( $response );
-				$transaction = json_decode( $body );
+				$transaction = LP_Helper::json_decode( $body );
 				if ( $transaction->status === 'COMPLETED' ) {
 					$order_id = $transaction->purchase_units[0]->payments->captures[0]->custom_id;
 					$lp_order = learn_press_get_order( $order_id );

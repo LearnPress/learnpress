@@ -21,7 +21,7 @@ class LP_Submenu_Tools extends LP_Abstract_Submenu {
 				'database'        => __( 'Database', 'learnpress' ),
 				'template'        => __( 'Templates', 'learnpress' ),
 				'lp_beta_version' => __( 'LearnPress Beta Version', 'learnpress' ),
-				//'assign_course'   => __( 'Assign/Unassign Course', 'learnpress' ),
+				//'assign_course'   => __( 'Assign/Unassigned Course', 'learnpress' ),
 			)
 		);
 

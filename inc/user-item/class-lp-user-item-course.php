@@ -810,7 +810,6 @@ class LP_User_Item_Course extends LP_User_Item {
 
 		try {
 			$course = learn_press_get_course( $this->get_course_id() );
-
 			if ( ! $course ) {
 				throw new Exception( 'Course is invalid!' );
 			}

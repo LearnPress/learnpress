@@ -15,6 +15,7 @@ use Exception;
 use LearnPress\Models\UserItemMeta\UserItemMetaModel;
 use LP_Datetime;
 use LP_User;
+use LP_User_Guest;
 use LP_User_Item_Meta_Filter;
 use LP_User_Items_Cache;
 use LP_User_Items_DB;
@@ -28,7 +29,7 @@ class UserItemModel {
 	 *
 	 * @var int
 	 */
-	public $user_item_id = 0;
+	private $user_item_id = 0;
 	/**
 	 * @var string User ID, foreign key
 	 */
@@ -104,7 +105,39 @@ class UserItemModel {
 	public function __construct( $data = null ) {
 		if ( $data ) {
 			$this->map_to_object( $data );
+			$this->get_user_model();
 		}
+	}
+
+	/**
+	 * Get user item id
+	 *
+	 * @return int
+	 */
+	public function get_user_item_id(): int {
+		return $this->user_item_id;
+	}
+
+	/**
+	 * Set user item id
+	 *
+	 * @param int $user_item_id
+	 */
+	private function set_user_item_id( int $user_item_id ) {
+		$this->user_item_id = $user_item_id;
+	}
+
+	/**
+	 * Get user model
+	 *
+	 * @return false|LP_User|LP_User_Guest
+	 */
+	public function get_user_model() {
+		if ( empty( $this->user ) ) {
+			$this->user = learn_press_get_user( $this->user_id );
+		}
+
+		return $this->user;
 	}
 
 	/**
@@ -131,7 +164,7 @@ class UserItemModel {
 	 *
 	 * @param LP_User_Items_Filter $filter
 	 * @param bool $no_cache
-	 * @return UserItemModel|false
+	 * @return UserItemModel|false|static
 	 */
 	public static function get_user_item_model_from_db( LP_User_Items_Filter $filter, bool $no_cache = true ) {
 		$lp_user_item_db = LP_User_Items_DB::getInstance();
@@ -140,12 +173,15 @@ class UserItemModel {
 		try {
 			$filter->order    = $filter::ORDER_DESC;
 			$filter->order_by = $filter::COL_USER_ITEM_ID;
+			if ( empty( $filter->item_type ) ) {
+				$filter->item_type = ( new static() )->item_type;
+			}
 			$lp_user_item_db->get_query_single_row( $filter );
 			$query_single_row = $lp_user_item_db->get_user_items( $filter );
 			$user_item_rs     = $lp_user_item_db->wpdb->get_row( $query_single_row );
 			if ( $user_item_rs instanceof stdClass ) {
-				$user_item_model       = new self( $user_item_rs );
-				$user_item_model->user = learn_press_get_user( $user_item_model->user_id );
+				$user_item_model       = new static( $user_item_rs );
+				$user_item_model->user = $user_item_model->get_user_model();
 			}
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
@@ -170,7 +206,7 @@ class UserItemModel {
 		} else { // Get from DB
 			$filter                          = new LP_User_Item_Meta_Filter();
 			$filter->meta_key                = $key;
-			$filter->learnpress_user_item_id = $this->user_item_id;
+			$filter->learnpress_user_item_id = $this->get_user_item_id();
 			$user_item_metadata              = UserItemMetaModel::get_user_item_meta_model_from_db( $filter );
 		}
 
@@ -227,7 +263,7 @@ class UserItemModel {
 		}
 
 		// Check if exists user_item_id.
-		if ( empty( $this->user_item_id ) ) { // Insert data.
+		if ( empty( $this->get_user_item_id() ) ) { // Insert data.
 			if ( empty( $data['user_id'] ) ) {
 				throw new Exception( 'User ID is require.' );
 			}
@@ -247,7 +283,7 @@ class UserItemModel {
 		}
 
 		if ( $user_item_id_new ) {
-			$this->user_item_id = $user_item_id_new;
+			$this->set_user_item_id( $user_item_id_new );
 		}
 
 		$this->clean_caches();
@@ -260,7 +296,7 @@ class UserItemModel {
 	 *
 	 * @return int
 	 */
-	public function get_total_timestamp_complete(): int {
+	public function get_total_timestamp_completed(): int {
 		$time_interval = 0;
 
 		if ( empty( $this->start_time ) || empty( $this->end_time ) ) {

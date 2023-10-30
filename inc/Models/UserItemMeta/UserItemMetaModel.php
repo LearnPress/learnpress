@@ -23,7 +23,7 @@ class UserItemMetaModel {
 	 *
 	 * @var int
 	 */
-	public $meta_id = 0;
+	private $meta_id = 0;
 	/**
 	 * @var string User ID, foreign key
 	 */
@@ -71,6 +71,24 @@ class UserItemMetaModel {
 	}
 
 	/**
+	 * Get meta id
+	 *
+	 * @return int
+	 */
+	public function get_meta_id(): int {
+		return $this->meta_id;
+	}
+
+	/**
+	 * Set meta id
+	 *
+	 * @param int $meta_id
+	 */
+	public function set_meta_id( int $meta_id ) {
+		$this->meta_id = $meta_id;
+	}
+
+	/**
 	 * Get all data, all keys of a user item
 	 *
 	 * @throws Exception
@@ -86,7 +104,7 @@ class UserItemMetaModel {
 		if ( $user_itemmeta_rs instanceof stdClass ) {
 			$all_data = new stdClass();
 			foreach ( $user_itemmeta_rs as $value ) {
-				$all_data->{$value->meta_key} = new self( $value );
+				$all_data->{$value->meta_key} = new static( $value );
 			}
 		}
 
@@ -111,7 +129,7 @@ class UserItemMetaModel {
 			$query_single_row = $lp_user_item_meta_db->get_user_item_metas( $filter );
 			$user_item_rs     = $lp_user_item_meta_db->wpdb->get_row( $query_single_row );
 			if ( $user_item_rs instanceof stdClass ) {
-				$user_item_meta_model = new self( $user_item_rs );
+				$user_item_meta_model = new static( $user_item_rs );
 			}
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
@@ -138,7 +156,7 @@ class UserItemMetaModel {
 		}
 
 		// Check if exists user_item_id.
-		if ( empty( $this->meta_id ) ) { // Insert data.
+		if ( empty( $this->get_meta_id() ) ) { // Insert data.
 			$meta_id_new = $lp_user_item_meta_db->insert_data( $data );
 			if ( empty( $meta_id_new ) ) {
 				throw new Exception( __METHOD__ . ': ' . 'Cannot insert data to database.' );
@@ -148,7 +166,7 @@ class UserItemMetaModel {
 		}
 
 		if ( ! empty( $meta_id_new ) ) {
-			$this->meta_id = $meta_id_new;
+			$this->set_meta_id( $meta_id_new );
 		}
 
 		$this->clean_caches();
@@ -162,6 +180,5 @@ class UserItemMetaModel {
 	 * @return void
 	 */
 	public function clean_caches() {
-
 	}
 }

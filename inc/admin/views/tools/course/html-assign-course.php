@@ -21,12 +21,17 @@ defined( 'ABSPATH' ) or die();
 		</p>
 	</div>
 	<div class="content">
-		<form id="lp-assign-course-form">
+		<form id="lp-assign-user-course-form" name="" method="post">
 			<fieldset class="lp-assign-course__options">
 				<legend><?php _e( 'Options', 'learnpress' ); ?></legend>
 				<ul>
 					<li>
-						<p><b><?php _e( 'Course', 'learnpress' ); ?></b></p><select class="js-data-select-assign-course" style="width: 100%;"></select>
+						<label>
+							Choose Course:
+							<select name="course_ids" class="lp-tom-select" style="width: 100%;" multiple>
+									<option value=""><?php _e( 'Search courses', 'learnpress' ); ?></option>
+							</select>
+						</label>
 					</li>
 					<li><p><b><?php _e( 'Assign To:', 'learnpress' ); ?></b></p>
 						<div class="assign-to-container">
@@ -53,7 +58,7 @@ defined( 'ABSPATH' ) or die();
 					/>
 				</ul>
 			</fieldset>
-			<p><button class="button button-primary lp-button-assign-course" type="button"><?php _e( 'Assign', 'learnpress' ); ?></button></p>
+			<p><button class="button button-primary lp-button-assign-course" type="submit"><?php _e( 'Assign', 'learnpress' ); ?></button></p>
 		</form>
 	</div>
 </div>

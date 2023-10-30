@@ -61,10 +61,6 @@ msgid ""
 "render content of list courses. Should be not remove it"
 msgstr ""
 
-#: assets/src/apps/js/blocks/category.js:8
-msgid "LearnPress"
-msgstr ""
-
 #: assets/src/apps/js/blocks/item-curriculum-course/edit.js:13
 msgid "Item Curriculum Course"
 msgstr ""
@@ -84,27 +80,6 @@ msgstr ""
 msgid ""
 "This is an editor placeholder for the Single Course page. Content will "
 "render content of single course. Should be not remove it"
-msgstr ""
-
-#: assets/src/apps/js/blocks/template/edit.js:9
-msgid "LearnPress Single Course Template"
-msgstr ""
-
-#: assets/src/apps/js/blocks/template/edit.js:13
-msgid "LearnPress Course Archive Template"
-msgstr ""
-
-#: assets/src/apps/js/blocks/template/edit.js:32
-#. %s is the template title
-msgid ""
-"This is an editor placeholder for the %s. This will be replaced by the "
-"template in your store and displayed with your course image(s), title, "
-"price, and so on. You can move this placeholder around and add further "
-"blocks around it to extend the template."
-msgstr ""
-
-#: assets/src/apps/js/blocks/template/index.js:13
-msgid "Renders LearnPress PHP templates."
 msgstr ""
 
 #: assets/src/apps/js/frontend/modal/index.js:41

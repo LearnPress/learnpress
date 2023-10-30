@@ -339,10 +339,12 @@ class LP_Helper {
 	 *
 	 * @param array|string $props
 	 * @param array|object $obj
-	 *
+	 * @deprecated 4.2.5.3
 	 * @return array|object
 	 */
 	public function pick( $props, $obj ) {
+		_deprecated_function( __METHOD__, '4.2.5.3' );
+		return [];
 		$is_array  = is_array( $obj );
 		$new_array = array();
 		settype( $props, 'array' );
@@ -496,6 +498,8 @@ class LP_Helper {
 	 * => $wpdb->prepare($sql, $one, $two, $three, $four, $file)
 	 */
 	public static function prepare( $query, $args ) {
+		_deprecated_function( __METHOD__, '4.2.5.3' );
+		return '';
 		global $wpdb;
 
 		$args = func_get_args();
@@ -566,12 +570,20 @@ class LP_Helper {
 	 * Check string is json
 	 *
 	 * @param string $str
+	 * @param null $associative
 	 *
-	 * @return bool
+	 * @since 4.1.6.4
+	 * @version 1.0.1
+	 * @return mixed
+	 * @throws Exception
 	 */
-	public static function is_json( string $str ): bool {
-		json_decode( $str );
-		return json_last_error() === JSON_ERROR_NONE;
+	public static function json_decode( string $str, $associative = null ) {
+		$obj = json_decode( $str );
+		if ( json_last_error() !== JSON_ERROR_NONE ) {
+			throw new Exception( json_last_error_msg() );
+		}
+
+		return $obj;
 	}
 
 	/**

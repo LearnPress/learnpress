@@ -17,6 +17,11 @@ export const itemsProgress = () => {
 		return;
 	}
 
+	const user_id = lpGlobalSettings.user_id || 0;
+	if ( user_id === 0 ) {
+		return;
+	}
+
 	if ( 'IntersectionObserver' in window ) {
 		const eleObserver = new IntersectionObserver( ( entries, observer ) => {
 			entries.forEach( ( entry ) => {
