@@ -3,7 +3,7 @@
  * Template hooks Archive Package.
  *
  * @since 4.2.3.2
- * @version 1.0.0
+ * @version 1.0.1
  */
 namespace LearnPress\TemplateHooks\Course;
 
@@ -99,8 +99,8 @@ class FilterCourseTemplate {
 	 * @return string
 	 */
 	public function html_item( string $title = '', string $content = '' ): string {
-		ob_start();
 		try {
+			ob_start();
 			$html_wrapper = apply_filters(
 				'learn-press/filter-courses/item/wrapper',
 				[
@@ -126,7 +126,6 @@ class FilterCourseTemplate {
 			Template::instance()->print_sections( $sections );
 			$content = Template::instance()->nest_elements( $html_wrapper, ob_get_clean() );
 		} catch ( Throwable $e ) {
-			ob_end_clean();
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 
@@ -142,6 +141,7 @@ class FilterCourseTemplate {
 	 */
 	public function html_search( array $data = [] ): string {
 		$content = '';
+
 		try {
 			$html_wrapper = apply_filters(
 				'learn-press/filter-courses/sections/search/wrapper',
@@ -165,7 +165,6 @@ class FilterCourseTemplate {
 			$content .= '<div class="lp-course-filter-search-result"></div>';
 			$content  = $this->html_item( esc_html__( 'Search', 'learnpress' ), $content );
 		} catch ( Throwable $e ) {
-			ob_end_clean();
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 
@@ -181,7 +180,7 @@ class FilterCourseTemplate {
 	 */
 	public function html_price( array $data = [] ): string {
 		$content = '';
-		ob_start();
+
 		try {
 			$data_selected = LP_Request::get_param( 'sort_by' );
 			$data_selected = isset( $data['params_url'] ) ? ( $data['params_url']['sort_by'] ?? $data_selected ) : $data_selected;
@@ -215,6 +214,7 @@ class FilterCourseTemplate {
 				]
 			);
 
+			ob_start();
 			foreach ( $fields as $key => $field ) {
 				$html_wrapper = [
 					'<div class="lp-course-filter__field">' => '</div>',
@@ -243,10 +243,8 @@ class FilterCourseTemplate {
 				echo Template::instance()->nest_elements( $html_wrapper, $content_item );
 			}
 
-			$content = ob_get_clean();
-			$content = $this->html_item( esc_html__( 'Price', 'learnpress' ), $content );
+			$content = $this->html_item( esc_html__( 'Price', 'learnpress' ), ob_get_clean() );
 		} catch ( Throwable $e ) {
-			ob_end_clean();
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 
@@ -262,6 +260,7 @@ class FilterCourseTemplate {
 	 */
 	public function html_category( array $data = [] ): string {
 		$content = '';
+
 		try {
 			$data_selected = LP_Request::get_param( 'term_id' );
 			$data_selected = isset( $data['params_url'] ) ? ( $data['params_url']['term_id'] ?? $data_selected ) : $data_selected;
@@ -343,6 +342,7 @@ class FilterCourseTemplate {
 	 */
 	public function html_tag( array $data = [] ): string {
 		$content = '';
+
 		try {
 			$data_selected = LP_Request::get_param( 'tag_id' );
 			$data_selected = isset( $data['params_url'] ) ? ( $data['params_url']['tag_id'] ?? $data_selected ) : $data_selected;
@@ -402,7 +402,7 @@ class FilterCourseTemplate {
 	 */
 	public function html_author( array $data = [] ): string {
 		$content = '';
-		ob_start();
+
 		try {
 			$data_selected = LP_Request::get_param( 'c_authors' );
 			$data_selected = isset( $data['params_url'] ) ? ( $data['params_url']['c_authors'] ?? $data_selected ) : $data_selected;
@@ -414,6 +414,7 @@ class FilterCourseTemplate {
 				)
 			);
 
+			ob_start();
 			foreach ( $instructors as $instructor ) {
 				$html_wrapper               = [
 					'<div class="lp-course-filter__field">' => '</div>',
@@ -422,6 +423,10 @@ class FilterCourseTemplate {
 
 				$filter = LP_Course_DB::getInstance()->count_courses_of_author( $instructor->ID, [ 'publish' ] );
 				LP_Course::get_courses( $filter, $total_course_of_instructor );
+
+				if ( ! $total_course_of_instructor ) {
+					continue;
+				}
 
 				$value   = $instructor->ID;
 				$checked = in_array( $value, $data_selected ) ? 'checked' : '';
@@ -447,8 +452,7 @@ class FilterCourseTemplate {
 				echo Template::instance()->nest_elements( $html_wrapper, $content_item );
 			}
 
-			$content = ob_get_clean();
-			$content = $this->html_item( esc_html__( 'Author', 'learnpress' ), $content );
+			$content = $this->html_item( esc_html__( 'Author', 'learnpress' ), ob_get_clean() );
 		} catch ( Throwable $e ) {
 			ob_end_clean();
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
@@ -466,13 +470,14 @@ class FilterCourseTemplate {
 	 */
 	public function html_level( array $data = [] ): string {
 		$content = '';
-		ob_start();
+
 		try {
 			$data_selected = LP_Request::get_param( 'c_level' );
 			$data_selected = isset( $data['params_url'] ) ? ( $data['params_url']['c_level'] ?? $data_selected ) : $data_selected;
 			$data_selected = explode( ',', $data_selected );
 			$fields        = lp_course_level();
 
+			ob_start();
 			foreach ( $fields as $key => $field ) {
 				$html_wrapper = [
 					'<div class="lp-course-filter__field">' => '</div>',
@@ -513,10 +518,8 @@ class FilterCourseTemplate {
 				echo Template::instance()->nest_elements( $html_wrapper, $content_item );
 			}
 
-			$content = ob_get_clean();
-			$content = $this->html_item( esc_html__( 'Levels', 'learnpress' ), $content );
+			$content = $this->html_item( esc_html__( 'Levels', 'learnpress' ), ob_get_clean() );
 		} catch ( Throwable $e ) {
-			ob_end_clean();
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 
