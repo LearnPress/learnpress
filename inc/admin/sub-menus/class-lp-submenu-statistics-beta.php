@@ -15,22 +15,13 @@ class LP_Submenu_Statistics_Beta extends LP_Abstract_Submenu {
 		$this->page_title = __( 'LearnPress Statistics Beta', 'learnpress' );
 		$this->priority   = 100;
 		$this->callback   = [ $this, 'display' ];
-
-		if ( current_user_can( LP_TEACHER_ROLE ) ) {
-			// $tabs = array(
-			// 	'courses' => __( 'Courses', 'learnpress' ),
-			// 	'orders'  => __( 'Orders', 'learnpress' ),
-			// );
-		} else {
-			$tabs = array(
-				'overview' => __( 'Overview', 'learnpress' ),
-				'orders'  => __( 'Orders', 'learnpress' ),
-				'courses' => __( 'Courses', 'learnpress' ),
-				'users'   => __( 'Users', 'learnpress' ),
-			);
-		}
-
-		$this->tabs = apply_filters(
+		$tabs             = array(
+			'overview' => __( 'Overview', 'learnpress' ),
+			'orders'   => __( 'Orders', 'learnpress' ),
+			'courses'  => __( 'Courses', 'learnpress' ),
+			'users'    => __( 'Users', 'learnpress' ),
+		);
+		$this->tabs       = apply_filters(
 			'learn-press/admin/page-statistic-beta-tabs',
 			$tabs
 		);
@@ -55,7 +46,6 @@ class LP_Submenu_Statistics_Beta extends LP_Abstract_Submenu {
 	public function page_content_orders() {
 		learn_press_admin_view( 'statistics-beta/orders' );
 	}
-
 }
 
 return new LP_Submenu_Statistics_Beta();

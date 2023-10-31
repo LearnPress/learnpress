@@ -119,8 +119,8 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 			}
 		}
 		foreach ( $data as $row ) {
-			$chart_data['labels'][] = $row->order_time;
-			$chart_data['data'][]   = (int) $row->x_axis_data;
+			$chart_data['labels'][] = $row->x_data_label;
+			$chart_data['data'][]   = (int) $row->x_data;
 		}
 		$chart_data['line_label'] = __( 'Completed orders', 'learnpress' );
 
@@ -157,14 +157,14 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 	public function process_date_data( array $input_data ) {
 		$data = array();
 		for ( $i = 0; $i < 24;$i++ ) {
-			$row              = new stdClass();
-			$row->order_time  = $i;
-			$row->x_axis_data = 0;
-			$data[ $i ]       = $row;
+			$row               = new stdClass();
+			$row->x_data_label = $i;
+			$row->x_data       = 0;
+			$data[ $i ]        = $row;
 		}
 		if ( ! empty( $input_data ) ) {
 			foreach ( $input_data as $row ) {
-				$data[ $row->order_time ] = $row;
+				$data[ $row->x_data_label ] = $row;
 			}
 		}
 		return $data;
@@ -173,15 +173,15 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 	public function process_previous_days_data( int $days, array $input_data, $last_date = false ) {
 		$data = array();
 		for ( $i = $days; $i >= 0; $i-- ) {
-			$date             = date( 'Y-m-d', strtotime( ( $last_date ? $last_date : '' ) . -$i . 'days' ) );
-			$row              = new stdClass();
-			$row->order_time  = $date;
-			$row->x_axis_data = 0;
-			$data[ $date ]    = $row;
+			$date              = date( 'Y-m-d', strtotime( ( $last_date ? $last_date : '' ) . -$i . 'days' ) );
+			$row               = new stdClass();
+			$row->x_data_label = $date;
+			$row->x_data       = 0;
+			$data[ $date ]     = $row;
 		}
 		if ( ! empty( $input_data ) ) {
 			foreach ( $input_data as $row ) {
-				$data[ $row->order_time ] = $row;
+				$data[ $row->x_data_label ] = $row;
 			}
 		}
 		return $data;
@@ -191,14 +191,14 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 		$data    = array();
 		$max_day = cal_days_in_month( 0, date( 'm', strtotime( $filter['time'] ) ), date( 'Y', strtotime( $filter['time'] ) ) );
 		for ( $i = 1; $i <= $max_day; $i++ ) {
-			$row              = new stdClass();
-			$row->order_time  = $i;
-			$row->x_axis_data = 0;
-			$data[ $i ]       = $row;
+			$row               = new stdClass();
+			$row->x_data_label = $i;
+			$row->x_data       = 0;
+			$data[ $i ]        = $row;
 		}
 		if ( ! empty( $input_data ) ) {
 			foreach ( $input_data as $row ) {
-				$data[ $row->order_time ] = $row;
+				$data[ $row->x_data_label ] = $row;
 			}
 		}
 		return $data;
@@ -207,15 +207,15 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 	public function process_previous_months_data( int $months, array $input_data, $last_date = false ) {
 		$data = array();
 		for ( $i = $months; $i >= 0; $i-- ) {
-			$date             = date( 'm-Y', strtotime( ( $last_date ? $last_date : '' ) . -$i . 'months' ) );
-			$row              = new stdClass();
-			$row->order_time  = $date;
-			$row->x_axis_data = 0;
-			$data[ $date ]    = $row;
+			$date              = date( 'm-Y', strtotime( ( $last_date ? $last_date : '' ) . -$i . 'months' ) );
+			$row               = new stdClass();
+			$row->x_data_label = $date;
+			$row->x_data       = 0;
+			$data[ $date ]     = $row;
 		}
 		if ( ! empty( $input_data ) ) {
 			foreach ( $input_data as $row ) {
-				$data[ $row->order_time ] = $row;
+				$data[ $row->x_data_label ] = $row;
 			}
 		}
 		return $data;
@@ -229,31 +229,31 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 			if ( $i == date( 'Y', $start_time ) ) {
 				$quarter = ceil( date( 'm', $start_time ) / 3 );
 				for ( $j = $quarter;$j <= 4;$j++ ) {
-					$row              = new stdClass();
-					$row->order_time  = 'q' . $j . '-' . $i;
-					$row->x_axis_data = 0;
-					$data[]           = $row;
+					$row               = new stdClass();
+					$row->x_data_label = 'q' . $j . '-' . $i;
+					$row->x_data       = 0;
+					$data[]            = $row;
 				}
 			} elseif ( $i == date( 'Y', $start_time ) ) {
 				$quarter = ceil( date( 'm', $end_time ) / 3 );
 				for ( $j = 1;$j <= $quarter;$j++ ) {
-					$row              = new stdClass();
-					$row->order_time  = 'q' . $j . '-' . $i;
-					$row->x_axis_data = 0;
-					$data[]           = $row;
+					$row               = new stdClass();
+					$row->x_data_label = 'q' . $j . '-' . $i;
+					$row->x_data       = 0;
+					$data[]            = $row;
 				}
 			} else {
 				for ( $j = 1; $j <= 4;$j++ ) {
-					$row              = new stdClass();
-					$row->order_time  = 'q' . $j . '-' . $i;
-					$row->x_axis_data = 0;
-					$data[]           = $row;
+					$row               = new stdClass();
+					$row->x_data_label = 'q' . $j . '-' . $i;
+					$row->x_data       = 0;
+					$data[]            = $row;
 				}
 			}
 		}
 		if ( ! empty( $input_data ) ) {
 			foreach ( $input_data as $row ) {
-				$data[ $row->order_time ] = $row;
+				$data[ $row->x_data_label ] = $row;
 			}
 		}
 		return $data;
@@ -262,14 +262,14 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 	public function process_year_data( array $input_data ) {
 		$data = array();
 		for ( $i = 1; $i <= 12; $i++ ) {
-			$row              = new stdClass();
-			$row->order_time  = $i;
-			$row->x_axis_data = 0;
-			$data[ $i ]       = $row;
+			$row               = new stdClass();
+			$row->x_data_label = $i;
+			$row->x_data       = 0;
+			$data[ $i ]        = $row;
 		}
 		if ( ! empty( $input_data ) ) {
 			foreach ( $input_data as $row ) {
-				$data[ $row->order_time ] = $row;
+				$data[ $row->x_data_label ] = $row;
 			}
 		}
 		return $data;
@@ -278,15 +278,15 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 	public function process_years_data( int $years, array $input_data, $last_date = false ) {
 		$data = array();
 		for ( $i = $years; $i >= 0; $i-- ) {
-			$year             = date( 'Y', strtotime( ( $last_date ? $last_date : '' ) . -$i . 'years' ) );
-			$row              = new stdClass();
-			$row->order_time  = $year;
-			$row->x_axis_data = 0;
-			$data[ $year ]    = $row;
+			$year              = date( 'Y', strtotime( ( $last_date ? $last_date : '' ) . -$i . 'years' ) );
+			$row               = new stdClass();
+			$row->x_data_label = $year;
+			$row->x_data       = 0;
+			$data[ $year ]     = $row;
 		}
 		if ( ! empty( $input_data ) ) {
 			foreach ( $input_data as $row ) {
-				$data[ $row->order_time ] = $row;
+				$data[ $row->x_data_label ] = $row;
 			}
 		}
 		return $data;
