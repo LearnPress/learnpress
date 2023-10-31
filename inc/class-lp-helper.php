@@ -477,7 +477,8 @@ class LP_Helper {
 			}
 		} elseif ( is_array( $value ) ) {
 			foreach ( $value as $k => $v ) {
-				$value[ $k ] = self::sanitize_params_submitted( $v, $type_content );
+				unset( $value[ $k ] );
+				$value[ sanitize_key( $k ) ] = self::sanitize_params_submitted( $v, $type_content );
 			}
 		}
 

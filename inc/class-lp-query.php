@@ -132,7 +132,7 @@ class LP_Query {
 					}
 
 					// Todo fix: temporary addons before addons updated, when all addons updated, this code will be removed
-					if ( class_exists( 'LP_Addon_H5p_Preload' ) ) {
+					if ( class_exists( 'LP_Addon_H5p_Preload' ) ) { // LP_Addon_H5p fix on v4.0.3
 						$h5p_slug                                     = urldecode( sanitize_title_with_dashes( LP_Settings::get_option( 'h5p_slug', 'h5p' ) ) );
 						$rules['course-with-cat-items'][ LP_H5P_CPT ] = [
 							"^{$course_slug}(?:/{$h5p_slug}/([^/]+))/?$" =>
@@ -150,7 +150,7 @@ class LP_Query {
 				}
 
 				// Todo Fix: temporary addons before addons updated, when all addons updated, this code will be removed
-				if ( class_exists( 'LP_Addon_H5p_Preload' ) ) {
+				if ( class_exists( 'LP_Addon_H5p_Preload' ) ) { // LP_Addon_H5p fix on v4.0.3
 					$h5p_slug                            = urldecode( sanitize_title_with_dashes( LP_Settings::get_option( 'h5p_slug', 'h5p' ) ) );
 					$rules['course-items'][ LP_H5P_CPT ] = [
 						"^{$course_slug}/([^/]+)(?:/{$h5p_slug}/([^/]+))/?$" =>

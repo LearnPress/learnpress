@@ -376,7 +376,7 @@ class LP_User_Item_Course extends LP_User_Item {
 
 			LP_Cache::cache_load_first( 'set', $key_first_cache, $results );
 		} catch ( Throwable $e ) {
-
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 
 		return $results;

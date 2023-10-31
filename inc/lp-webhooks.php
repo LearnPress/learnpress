@@ -5,6 +5,7 @@
  * @author  ThimPress
  * @package LearnPress/Functions
  * @version 1.0
+ * @deprecated 4.2.5.4 Addon learnpress-2checkout-payment v4.0.1 is using
  */
 
 defined( 'ABSPATH' ) || exit();
