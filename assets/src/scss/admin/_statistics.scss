@@ -1,0 +1,64 @@
+.lp-admin-statistics-tab-content {
+	position: relative;
+    margin-top: 20px;
+    padding: 0.7em 2em 1em;
+    // min-width: 255px;
+    // max-width: 520px;
+    border: 1px solid #c3c4c7;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+    background: #fff;
+    box-sizing: border-box;
+	max-width: 100%;
+	.btn-group {
+		display: flex;
+		margin-bottom: 20px;
+		button.btn-filter-time {
+			border: 1px solid #284BCA;
+			color: #000;
+			margin-right: 10px;
+			padding: 10px 24px;
+			cursor: pointer;
+			float: left;
+			background: linear-gradient(0deg, #FFFFFF, #FFFFFF);
+		}
+		&:after {
+			content: "";
+			clear: both;
+			display: table;
+			height: 20px;
+		}
+	}
+	.custom-filter-time {
+		display: none;
+	}
+	.statistics-group {
+		.statistics-item {
+			border: 1px solid #000;
+			color: #000;
+			margin-right: 10px;
+			padding: 15px 30px;
+			float: left;
+			display: flex;
+			flex-direction: column;
+			text-align: center;
+		}
+		content: "";
+		clear: both;
+		display: table;
+		height: 20px;
+		.statistics-content {
+			border: 1px solid #D9D9D9;
+			padding: 22px;
+		}
+		.statistics-title {
+			color: #000;
+			text-align: center;
+			font-family: Inter;
+			font-size: 24px;
+			font-style: normal;
+			font-weight: 700;
+			line-height: normal;
+			text-transform: capitalize;
+		}
+	}
+}

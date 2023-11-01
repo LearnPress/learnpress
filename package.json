@@ -41,13 +41,14 @@
         "gulp-replace": "^1.1.4",
         "gulp-rtlcss": "^2.0.0",
         "gulp-sass": "^5.1.0",
-        "gulp-sourcemaps": "^3.0.0",
+        "gulp-sourcemaps": "^2.6.5",
         "gulp-uglify": "^3.0.2",
         "gulp-uglify-es": "^3.0.0",
         "gulp-uglifycss": "^1.1.0",
-        "gulp-vinyl-zip": "^2.5.0",
+        "gulp-vinyl-zip": "^2.1.0",
         "gulp-wp-pot": "^2.5.0",
         "jquery": "^3.7.0",
+        "prettier": "npm:wp-prettier@^3.0.3",
         "read-file": "^0.2.0",
         "sass": "^1.69.4",
         "stylelint": "^15.11.0",
@@ -56,6 +57,7 @@
         "webpack-merge-and-include-globally": "^2.3.4"
     },
     "dependencies": {
+        "@paypal/paypal-js": "^7.0.3",
         "@wordpress/block-editor": "^12.12.0",
         "@wordpress/blocks": "^12.21.0",
         "@wordpress/components": "^25.10.0",
@@ -65,7 +67,6 @@
         "react-easy-crop": "^4.7.4",
         "refx": "^3.1.1",
         "sortablejs": "^1.15.0",
-		"@paypal/paypal-js": "^7.0.3",
-		"tom-select": "^2.2.3"
+        "tom-select": "^2.2.3"
     }
 }

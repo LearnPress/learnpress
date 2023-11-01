@@ -50,12 +50,16 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 		try {
 			$params = $request->get_params();
 			$params = LP_Helper::sanitize_params_submitted( $params );
+			error_log( json_encode( $params ) );
 			$filter = $this->get_statistics_filter( $params );
 
 			$lp_statistic_db  = LP_Statistics_DB::getInstance();
 			$statistics       = $lp_statistic_db->get_order_statics( $filter['filter_type'], $filter['time'] );
 			$completed_orders = $lp_statistic_db->get_completed_order_data( $filter['filter_type'], $filter['time'] );
-			$chart_data       = $this->process_order_chart_data( $filter, $completed_orders );
+			$chart_data       = $this->process_chart_data( $filter, $completed_orders );
+
+			$chart_data['line_label'] = __( 'Completed orders', 'learnpress' );
+
 			$data             = array(
 				'statistics' => $statistics,
 				'chart_data' => $chart_data,
@@ -68,7 +72,7 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 		}
 		return rest_ensure_response( $response );
 	}
-	public function process_order_chart_data( array $filter, array $input_data ) {
+	public function process_chart_data( array $filter, array $input_data ) {
 		$chart_data = array();
 		$data       = array();
 		if ( $filter['filter_type'] == 'date' ) {
@@ -80,6 +84,9 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 		} elseif ( $filter['filter_type'] == 'month' ) {
 			$data                  = $this->process_month_data( $filter, $input_data );
 			$chart_data['x_label'] = __( 'Dates', 'learnpress' );
+		} elseif ( $filter['filter_type'] == 'previous_months' ) {
+			$data                  = $this->process_previous_months_data( $filter['time'], $input_data );
+			$chart_data['x_label'] = __( 'Months', 'learnpress' );
 		} elseif ( $filter['filter_type'] == 'year' ) {
 			$data                  = $this->process_year_data( $input_data );
 			$chart_data['x_label'] = __( 'Months', 'learnpress' );
@@ -107,7 +114,7 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 				}
 			} elseif ( $y < 2 ) {
 				$months                = $y * 12 + $m;
-				$data                  = $this->process_previous_months_data( $m, $input_data, $dates[1] );
+				$data                  = $this->process_previous_months_data( $months, $input_data, $dates[1] );
 				$chart_data['x_label'] = __( 'Months', 'learnpress' );
 			} elseif ( $y < 5 ) {
 				// TODO
@@ -122,34 +129,49 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 			$chart_data['labels'][] = $row->x_data_label;
 			$chart_data['data'][]   = (int) $row->x_data;
 		}
-		$chart_data['line_label'] = __( 'Completed orders', 'learnpress' );
+		// $chart_data['line_label'] = __( 'Completed orders', 'learnpress' );
 
 		return $chart_data;
 	}
 
 	public function get_statistics_filter( $params ) {
-		$filter = [];
-		if ( ! $params['filterType'] || $params['filterType'] == 'today' ) {
-			$filter['filter_type'] = 'date';
-			$filter['time']        = current_time( 'Y-m-d' );
-		} elseif ( $params['filterType'] == 'yesterday' ) {
-			$filter['filter_type'] = 'date';
-			$filter['time']        = date( 'Y-m-d', strtotime( current_time( 'Y-m-d' ) . '-1 days' ) );
-		} elseif ( $params['filterType'] == 'last7days' ) {
-			$filter['filter_type'] = 'previous_days';
-			$filter['time']        = 6;
-		} elseif ( $params['filterType'] == 'last30days' ) {
-			$filter['filter_type'] = 'previous_days';
-			$filter['time']        = 30;
-		} elseif ( $params['filterType'] == 'thismonth' ) {
-			$filter['filter_type'] = 'month';
-			$filter['time']        = current_time( 'Y-m-d' );
-		} elseif ( $params['filterType'] == 'thisyear' ) {
-			$filter['filter_type'] = 'year';
-			$filter['time']        = current_time( 'Y-m-d' );
-		} elseif ( $params['filterType'] == 'custom' && ! empty( $params['date'] ) ) {
-			$filter['filter_type'] = 'custom';
-			$filter['time']        = $params['date'];
+		$filter     = [];
+		$filtertype = $params['filtertype'] ?? 'today';
+		switch ( $filtertype ) {
+			case 'today':
+				$filter['filter_type'] = 'date';
+				$filter['time']        = current_time( 'Y-m-d' );
+				break;
+			case 'yesterday':
+				$filter['filter_type'] = 'date';
+				$filter['time']        = date( 'Y-m-d', strtotime( current_time( 'Y-m-d' ) . '-1 days' ) );
+				break;
+			case 'last7days':
+				$filter['filter_type'] = 'previous_days';
+				$filter['time']        = 6;
+				break;
+			case 'last30days':
+				$filter['filter_type'] = 'previous_days';
+				$filter['time']        = 30;
+				break;
+			case 'thismonth':
+				$filter['filter_type'] = 'month';
+				$filter['time']        = current_time( 'Y-m-d' );
+				break;
+			case 'last12months':
+				$filter['filter_type'] = 'previous_months';
+				$filter['time']        = 11;
+				break;
+			case 'thisyear':
+				$filter['filter_type'] = 'year';
+				$filter['time']        = current_time( 'Y-m-d' );
+				break;
+			case 'custom':
+				$filter['filter_type'] = 'custom';
+				$filter['time']        = $params['date'];
+				break;
+			default:
+				break;
 		}
 		return $filter;
 	}

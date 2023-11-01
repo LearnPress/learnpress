@@ -4,69 +4,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 ?>
-<style type="text/css">
-	.lp-admin-tab-content.card{
-		max-width: 100%;
-	}
-	.btn-group{
-		display:flex;
-		margin-bottom: 20px;
-	}
-	.custom-filter-time{
-		display: none;
-	}
-	.btn-group button.btn-filter-time {
-	  border: 1px solid #284BCA;
-	  color: #000; /* White text */
-	  margin-right:10px;
-	  padding: 10px 24px; /* Some padding */
-	  cursor: pointer; /* Pointer/hand icon */
-	  float: left; /* Float the buttons side by side */
-	  background:linear-gradient(0deg, #FFFFFF, #FFFFFF);
-	}
-	.statistics-group .statistics-item {
-	  	border: 1px solid #000;
-	      color: #000;
-	      margin-right: 10px;
-	      padding: 15px 30px;
-/*	      cursor: pointer;*/
-	      float: left;
-	      display: flex;
-	      flex-direction: column;
-	      text-align: center;
-	}
 
-	.btn-group:after, .statistics-group {
-	  content: "";
-	  clear: both;
-	  display: table;
-	  height: 20px;
-	}
-	.btn-group button:not(:last-child) {
-
-	}
-	.statistics-content{
-		border: 1px solid #D9D9D9;
-		padding: 22px;
-	}
-	.statistics-title{
-		color: #000;
-		text-align: center;
-		font-family: Inter;
-		font-size: 24px;
-		font-style: normal;
-		font-weight: 700;
-		line-height: normal;
-		text-transform: capitalize;
-	}
-</style>
-<div class="lp-admin-tab-content card">
+<div class="lp-admin-statistics-tab-content">
 	<div class="btn-group btn-group-filter">
 	  <button class="btn-filter-time" type="button" data-filter="today" ><?php _e( 'Today', 'learnpress' ) ?></button>
 	  <button class="btn-filter-time" type="button" data-filter="yesterday" ><?php _e( 'Yesterday', 'learnpress' ) ?></button>
 	  <button class="btn-filter-time" type="button" data-filter="last7days" ><?php _e( 'Last 7 days', 'learnpress' ) ?></button>
 	  <button class="btn-filter-time" type="button" data-filter="last30days" ><?php _e( 'Last 30 days', 'learnpress' ) ?></button>
 	  <button class="btn-filter-time" type="button" data-filter="thismonth" ><?php _e( 'This month', 'learnpress' ) ?></button>
+	  <button class="btn-filter-time" type="button" data-filter="last12months"><?php _e( 'Last 12 months', 'learnpress' ) ?></button>
 	  <button class="btn-filter-time" type="button" data-filter="thisyear" ><?php _e( 'This year', 'learnpress' ) ?></button>
 	  <button class="btn-filter-time" type="button" data-filter="custom" ><?php _e( 'Custom', 'learnpress' ) ?></button>
 	  <div class="custom-filter-time">
