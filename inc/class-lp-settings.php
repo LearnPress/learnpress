@@ -25,11 +25,6 @@ class LP_Settings {
 	/**
 	 * @var bool
 	 */
-	protected $_load_data = false;
-
-	/**
-	 * @var bool
-	 */
 	protected static $_instance = null;
 
 	/**
@@ -39,15 +34,17 @@ class LP_Settings {
 	 * @param string      $prefix
 	 */
 	protected function __construct( $data = false, $prefix = 'learn_press_' ) {
+		try {
+			$this->_prefix = $prefix;
 
-		$this->_prefix = $prefix;
-
-		if ( false === $data ) {
-			$this->_load_data = true;
-			$this->_load_options();
-		} else {
-			settype( $data, 'array' );
-			$this->_options = $data;
+			if ( false === $data ) {
+				$this->_load_options();
+			} else {
+				settype( $data, 'array' );
+				$this->_options = $data;
+			}
+		} catch ( Throwable $e ) {
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 	}
 
@@ -66,19 +63,16 @@ class LP_Settings {
 	/**
 	 * Load all options.
 	 *
+	 * @throws Exception
+	 * @version 1.0.2
 	 * @since 3.0.0
-	 * @version 1.0.1
 	 */
 	protected function _load_options() {
 		// Check cache exists
 		$lp_settings_cache = new LP_Settings_Cache( true );
 		$lp_options        = $lp_settings_cache->get_lp_settings();
 		if ( false !== $lp_options ) {
-			$this->_options = json_decode( $lp_options, true );
-			if ( json_last_error() !== JSON_ERROR_NONE ) {
-				error_log( 'Load options: ' . json_last_error_msg() );
-			}
-
+			$this->_options = LP_Helper::json_decode( $lp_options, true );
 			return;
 		}
 
@@ -91,13 +85,15 @@ class LP_Settings {
 		);
 
 		$options = $wpdb->get_results( $query );
-		if ( $options ) {
+		if ( ! empty( $options ) ) {
 			foreach ( $options as $option ) {
 				$this->_options[ $option->option_name ] = LP_Helper::maybe_unserialize( $option->option_value );
 			}
 
 			// Set cache
-			$lp_settings_cache->set_lp_settings( json_encode( $this->_options ) );
+			$lp_settings_cache
+				->set_action_thim_cache( Thim_Cache_DB::ACTION_INSERT )
+				->set_lp_settings( json_encode( $this->_options ) );
 		}
 	}
 
@@ -209,17 +205,6 @@ class LP_Settings {
 		}
 		update_option( $this->_prefix . $key, $value );
 		// $this->refresh();
-	}
-
-	/**
-	 * @deprecated 4.2.2
-	 */
-	public function refresh() {
-		if ( $this->_load_data ) {
-			// $this->_load_options( true );
-		}
-
-		return $this;
 	}
 
 	/**

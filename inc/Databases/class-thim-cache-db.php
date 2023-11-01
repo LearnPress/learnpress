@@ -14,6 +14,23 @@ if ( class_exists( 'Thim_Cache_DB' ) ) {
 
 class Thim_Cache_DB {
 	private static $_instance = null;
+	private $action = null; // one of insert/update
+	const ACTION_INSERT = 'insert';
+	const ACTION_UPDATE = 'update';
+
+	/**
+	 * Set action for thim cache (one of insert/update)
+	 * Default is null
+	 *
+	 * @param string|null $action
+	 * @description Null for not set manual action insert/update
+	 * @description Else it will be auto check exist key_cache to insert/update
+	 * @return Thim_Cache_DB
+	 */
+	public function set_action( $action ): Thim_Cache_DB {
+		$this->action = $action;
+		return $this;
+	}
 
 	/**
 	 * Singleton
@@ -63,24 +80,39 @@ class Thim_Cache_DB {
 	 *
 	 * @param string $key_cache
 	 * @param string $value
-	 *
+	 * @param int $expire timestamp
 	 * @return bool|int|mysqli_result|resource|null
 	 */
-	public function set_value( string $key_cache, string $value ) {
-		$value_old = $this->get_value( $key_cache );
-		if ( false !== $value_old ) {
-			// Update
+	public function set_value( string $key_cache, string $value, int $expire = 0 ) {
+		$action = self::ACTION_INSERT;
+
+		// Set manual action insert/update
+		if ( ! empty( $this->action ) ) {
+			if ( in_array( $this->action, [self::ACTION_INSERT, self::ACTION_UPDATE] ) ) {
+				$action = $this->action;
+			} else {
+				return null;
+			}
+		} else { // Auto check exist key_cache
+			$value_old = $this->get_value( $key_cache );
+			if ( false !== $value_old ) {
+				$action = self::ACTION_UPDATE;
+			}
+		}
+
+		if ( self::ACTION_UPDATE === $action ) { // Update
 			$sql = $this->wpdb->prepare(
-				"UPDATE {$this->table_name} SET value = %s WHERE key_cache = %s",
+				"UPDATE {$this->table_name} SET value = %s, expiration = %d WHERE key_cache = %s",
 				$value,
+				$expire,
 				$key_cache
 			);
-		} else {
-			// Insert
+		} else { // Insert
 			$sql = $this->wpdb->prepare(
-				"INSERT INTO {$this->table_name} (key_cache, value) VALUES (%s, %s)",
+				"INSERT INTO {$this->table_name} (key_cache, value, expiration) VALUES (%s, %s, %d)",
 				$key_cache,
-				$value
+				$value,
+				$expire
 			);
 		}
 
