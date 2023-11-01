@@ -101,10 +101,29 @@ class Thim_Cache_DB {
 			$key_cache
 		);
 
+		$result = $this->wpdb->query( $sql );
+
 		if ( $this->wpdb->last_error ) {
 			throw new Exception( $this->wpdb->last_error );
 		}
 
-		return $this->wpdb->query( $sql );
+		return $result;
+	}
+
+	/**
+	 * Delete all cache.
+	 *
+	 * @return bool|int|mysqli_result|resource|null
+	 * @throws Exception
+	 */
+	public function remove_all_cache() {
+		$sql    = "TRUNCATE TABLE {$this->table_name}";
+		$result = $this->wpdb->query( $sql );
+
+		if ( $this->wpdb->last_error ) {
+			throw new Exception( $this->wpdb->last_error );
+		}
+
+		return $result;
 	}
 }

@@ -43,16 +43,23 @@ class LP_Cache {
 	 * @param string $key
 	 * @param mixed  $data
 	 * @param int    $expire
+	 *
+	 * @since 4.0.8
+	 * @version 1.0.2
 	 */
 	public function set_cache( string $key, $data, int $expire = 0 ) {
-		// Cache WP
-		wp_cache_set( $key, $data, $this->key_group, $expire );
-		// Cache thim_cache
-		if ( $this->has_thim_cache && LP_Settings::is_created_tb_thim_cache() ) {
-			$key = "{$this->key_group}/{$key}";
-			Thim_Cache_DB::instance()->set_value( $key, $data );
-			/*$lp_bg_thim_cache = new LP_Background_Thim_Cache();
-			$lp_bg_thim_cache->data( compact( 'key', 'data' ) )->dispatch();*/
+		try {
+			// Cache WP
+			wp_cache_set( $key, $data, $this->key_group, $expire );
+			// Cache thim_cache
+			if ( $this->can_handle_with_thim_cache() ) {
+				$key = "{$this->key_group}/{$key}";
+				Thim_Cache_DB::instance()->set_value( $key, $data );
+				/*$lp_bg_thim_cache = new LP_Background_Thim_Cache();
+				$lp_bg_thim_cache->data( compact( 'key', 'data' ) )->dispatch();*/
+			}
+		} catch ( Throwable $e ) {
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 	}
 
@@ -66,7 +73,7 @@ class LP_Cache {
 		// Get WP Cache
 		$cache = wp_cache_get( $key, $this->key_group );
 		// Get thim_cache
-		if ( false === $cache && $this->has_thim_cache && LP_Settings::is_created_tb_thim_cache() ) {
+		if ( false === $cache && $this->can_handle_with_thim_cache() ) {
 			$key   = "{$this->key_group}/{$key}";
 			$cache = Thim_Cache_DB::instance()->get_value( $key );
 			/*if ( is_string( $cache ) ) {
@@ -122,7 +129,7 @@ class LP_Cache {
 			}
 
 			wp_cache_delete( $key, $this->key_group );
-			if ( $this->has_thim_cache && LP_Settings::is_created_tb_thim_cache() ) {
+			if ( $this->can_handle_with_thim_cache() ) {
 				$key = "{$this->key_group}/{$key}";
 				Thim_Cache_DB::instance()->remove_cache( $key );
 			}
@@ -131,7 +138,30 @@ class LP_Cache {
 		}
 	}
 
+	/**
+	 * Check can handle with thim cache
+	 *
+	 * @since 4.2.5.4
+	 * @version 1.0.0
+	 * @return bool
+	 */
+	public function can_handle_with_thim_cache(): bool {
+		return $this->has_thim_cache && LP_Settings::is_created_tb_thim_cache();
+	}
+
+	/**
+	 * Clear all cache
+	 *
+	 * @since 4.0.8
+	 * @version 1.0.1
+	 * @return void
+	 */
 	public function clear_all() {
-		wp_cache_flush();
+		try {
+			wp_cache_flush();
+			Thim_Cache_DB::instance()->remove_all_cache();
+		} catch ( Throwable $e ) {
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
+		}
 	}
 }

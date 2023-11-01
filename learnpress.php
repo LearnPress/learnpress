@@ -273,7 +273,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			include_once 'inc/Databases/class-lp-user-items-db.php';
 			include_once 'inc/Databases/class-lp-user-item-meta-db.php';
 			include_once 'inc/Databases/class-lp-user-item-results-db.php';
-			include_once 'inc/Databases/class-thim-cace-db.php';
+			include_once 'inc/Databases/class-thim-cache-db.php';
 			include_once 'inc/Databases/class-lp-material-db.php';
 			include_once 'inc/Databases/class-lp-wpdb-multiple.php';
 
