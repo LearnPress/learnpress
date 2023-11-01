@@ -7,7 +7,7 @@
  * @since 4.2.5.4
  * @version 1.0.0
  */
-namespace learnpress\inc\ExternalPlugin\Elementor\Widgets\Course\Dynamic;
+namespace LearnPress\ExternalPlugin\Elementor\Widgets\Course\Dynamic;
 use Elementor\Core\DynamicTags\Tag;
 use LearnPress\ExternalPlugin\Elementor\LPDynamicElementor;
 use LearnPress\TemplateHooks\Course\ListCoursesTemplate;

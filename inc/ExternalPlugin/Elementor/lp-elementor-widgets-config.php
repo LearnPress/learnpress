@@ -26,8 +26,8 @@ use LearnPress\ExternalPlugin\Elementor\Widgets\Instructor\Sections\InstructorCo
 use LearnPress\ExternalPlugin\Elementor\Widgets\Instructor\ListInstructorsElementor;
 use LearnPress\ExternalPlugin\Elementor\Widgets\LoginUserFormElementor;
 use LearnPress\ExternalPlugin\Elementor\Widgets\RegisterUserFormElementor;
-use learnpress\inc\ExternalPlugin\Elementor\Widgets\Course\Dynamic\CountCoursesFreeDynamicElementor;
-use learnpress\inc\ExternalPlugin\Elementor\Widgets\Course\Dynamic\CountStudentDynamicElementor;
+use LearnPress\ExternalPlugin\Elementor\Widgets\Course\Dynamic\CountCoursesFreeDynamicElementor;
+use LearnPress\ExternalPlugin\Elementor\Widgets\Course\Dynamic\CountStudentDynamicElementor;
 
 return [
 	'widgets' => apply_filters(
