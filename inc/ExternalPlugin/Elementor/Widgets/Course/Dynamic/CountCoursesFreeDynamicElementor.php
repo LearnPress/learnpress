@@ -17,6 +17,7 @@ defined( 'ABSPATH' ) || exit;
 
 class CountCoursesFreeDynamicElementor extends Tag {
 	use LPDynamicElementor;
+
 	public function __construct( array $data = [] ) {
 		$this->lp_dynamic_title = 'Count Courses Free';
 		$this->lp_dynamic_name  = 'count-courses-free';

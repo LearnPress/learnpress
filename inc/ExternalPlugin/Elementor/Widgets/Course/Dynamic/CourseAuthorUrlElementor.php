@@ -17,9 +17,10 @@ defined( 'ABSPATH' ) || exit;
 
 class CourseAuthorUrlElementor extends Tag {
 	use LPDynamicElementor;
+
 	public function __construct( array $data = [] ) {
-		$this->lp_dynamic_title = 'Course Author Url';
-		$this->lp_dynamic_name  = 'course-author-url';
+		$this->lp_dynamic_title      = 'Course Author Url';
+		$this->lp_dynamic_name       = 'course-author-url';
 		$this->lp_dynamic_categories = [ Module::URL_CATEGORY ];
 		parent::__construct( $data );
 	}

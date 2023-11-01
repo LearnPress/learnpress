@@ -16,6 +16,7 @@ defined( 'ABSPATH' ) || exit;
 
 class CourseCountQuizDynamicElementor extends Tag {
 	use LPDynamicElementor;
+
 	public function __construct( array $data = [] ) {
 		$this->lp_dynamic_title = 'Course Count Quiz';
 		$this->lp_dynamic_name  = 'course-count-quiz';
@@ -34,6 +35,5 @@ class CourseCountQuizDynamicElementor extends Tag {
 		} catch ( \Throwable $e ) {
 			error_log( $e->getMessage() );
 		}
-
 	}
 }

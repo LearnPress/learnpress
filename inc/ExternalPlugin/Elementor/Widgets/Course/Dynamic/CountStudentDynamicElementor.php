@@ -17,6 +17,7 @@ defined( 'ABSPATH' ) || exit;
 
 class CountStudentDynamicElementor extends Tag {
 	use LPDynamicElementor;
+
 	public function __construct( array $data = [] ) {
 		$this->lp_dynamic_title = 'Count Student many courses';
 		$this->lp_dynamic_name  = 'count-student-courses';
@@ -31,6 +32,5 @@ class CountStudentDynamicElementor extends Tag {
 		} catch ( Throwable $e ) {
 			error_log( $e->getMessage() );
 		}
-
 	}
 }

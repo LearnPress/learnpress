@@ -45,6 +45,5 @@ class CourseCountLessonDynamicElementor extends Tag {
 		} catch ( \Throwable $e ) {
 			error_log( $e->getMessage() );
 		}
-
 	}
 }
