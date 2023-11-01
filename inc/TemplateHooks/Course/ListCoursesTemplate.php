@@ -10,9 +10,12 @@ namespace LearnPress\TemplateHooks\Course;
 
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
-use LP_Course_DB;
+use LearnPress\Models\Courses;
+use LP_Course_Filter;
 use LP_User_Items_DB;
+use LP_User_Items_Filter;
 use Throwable;
+use WP_Term;
 
 class ListCoursesTemplate {
 	use Singleton;
@@ -345,20 +348,31 @@ class ListCoursesTemplate {
 
 	/**
 	 * Show total course free by Category.
-	 * @param int $term_id
-	 *
-	 * @version 1.0.0
-	 * @since 4.2.5.3 - branch info-course-cat
 	 * @return string
+	 * @version 1.0.0
+	 *
+	 * @since 4.2.5.4
 	 */
-	public function html_count_course_free_by_category( int $term_id ): string {
+	public function html_count_course_free(): string {
 		$html_wrapper = [
-			'<div class="courses-count-free-of-category">' => '</div>',
+			'<div class="courses-count-free">' => '</div>',
 		];
 
-		$lp_course_db = LP_Course_DB::getInstance();
-		$count = $lp_course_db->count_course_free_by_category( $term_id );
+		$category_current = 0;
+		$category_current_slug = get_query_var( 'term' );
+		if ( ! empty( $category_current_slug ) ) {
+			$category_current_obj = get_term_by( 'slug', $category_current_slug, LP_COURSE_CATEGORY_TAX );
+			if ( $category_current_obj instanceof WP_Term ) {
+				$category_current = $category_current_obj->term_id;
+			}
+		}
 
+		$filter = new LP_Course_Filter();
+		if ( ! empty( $category_current ) ) {
+			$filter->term_ids = [ $category_current ];
+		}
+
+		$count = Courses::count_course_free( $filter );
 		$content = sprintf(
 			'<span class="courses-count-free-of-category-number">%1$s</span> %2$s',
 			$count,
@@ -370,20 +384,35 @@ class ListCoursesTemplate {
 
 	/**
 	 * Show total students on Course Category.
-	 * @param int $term_id
 	 *
 	 * @version 1.0.0
-	 * @since 4.2.5.3 - branch info-course-cat
+	 * @since 4.2.5.4
 	 * @return string
 	 */
-	public function html_count_students_by_category( int $term_id ): string {
+	public function html_count_students(): string {
 		$html_wrapper = [
-			'<div class="courses-count-students-of-category">' => '</div>',
+			'<div class="courses-count-students">' => '</div>',
 		];
 
-		$lp_user_items_db = LP_User_Items_DB::getInstance();
-		$count = $lp_user_items_db->count_students_by_category( $term_id );
+		$category_current = 0;
+		$category_current_slug = get_query_var( 'term' );
+		if ( ! empty( $category_current_slug ) ) {
+			$category_current_obj = get_term_by( 'slug', $category_current_slug, LP_COURSE_CATEGORY_TAX );
+			if ( $category_current_obj instanceof WP_Term ) {
+				$category_current = $category_current_obj->term_id;
+			}
+		}
 
+		$lp_user_items_db = LP_User_Items_DB::getInstance();
+		$filter = new LP_User_Items_Filter();
+
+		if ( ! empty( $category_current ) ) {
+			$filter->join[]      = "INNER JOIN {$lp_user_items_db->tb_posts} AS p ON ui.item_id = p.ID";
+			$filter->join[]      = "INNER JOIN {$lp_user_items_db->tb_term_relationships} AS r_term ON ui.item_id = r_term.object_id";
+			$filter->where[]     = $lp_user_items_db->wpdb->prepare( 'AND r_term.term_taxonomy_id = %d', $category_current );
+		}
+
+		$count = $lp_user_items_db->count_students( $filter );
 		$content = sprintf(
 			'<span class="courses-count-students-of-number">%1$s</span> %2$s',
 			$count,

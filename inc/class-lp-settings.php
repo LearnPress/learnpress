@@ -439,7 +439,7 @@ class LP_Settings {
 	 * @return bool
 	 */
 	public static function is_created_tb_thim_cache(): bool {
-		return get_option( 'thim_cache_tb_created' ) == 'yes';
+		return get_option( 'thim_cache_tb_created' ) === 'yes';
 	}
 	/**
 	 * Check table learnpress_files is created

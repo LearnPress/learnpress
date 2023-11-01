@@ -658,19 +658,16 @@ class LP_Course_DB extends LP_Database {
 	/**
 	 * Count total courses free on category
 	 *
-	 * @param int $term_id
-	 *
-	 * @since 4.2.5.3 - branch info-course-cat
-	 * @version 1.0.0
+	 * @param LP_Course_Filter $filter
 	 * @return int
+	 * @since 4.2.5.4
+	 * @version 1.0.0
 	 */
-	public function count_course_free_by_category ( int $term_id ): int {
+	public function count_course_free( LP_Course_Filter $filter ): int {
 		$count = 0;
 
 		try {
-			$filter = new LP_Course_Filter();
 			$filter->query_count = true;
-			$filter->term_ids	= [ $term_id ];
 			$filter->only_fields = [ 'DISTINCT(ID)' ];
 			$this->get_courses_sort_by_free( $filter );
 			LP_Course::get_courses( $filter, $count );

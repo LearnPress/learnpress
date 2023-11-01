@@ -936,24 +936,19 @@ class LP_User_Items_DB extends LP_Database {
 	/**
 	 * Count students on category course.
 	 *
-	 * @param int $term_id
-	 *
-	 * @since 4.2.5.3 - branch info-course-cat
-	 * @version 1.0.0
+	 * @param LP_User_Items_Filter $filter
 	 * @return int
+	 * @since 4.2.5.4
+	 * @version 1.0.0
 	 */
-	public function count_students_by_category( int $term_id ): int {
+	public function count_students( LP_User_Items_Filter $filter ): int {
 		$count = 0;
 
 		try {
-			$filter              = new LP_User_Items_Filter();
 			$filter->query_count = true;
 			$filter->only_fields = [ 'ui.user_id' ];
 			$filter->field_count = 'ui.user_id';
 			$filter->item_type   = LP_COURSE_CPT;
-			$filter->join[]      = "INNER JOIN {$this->tb_posts} AS p ON ui.item_id = p.ID";
-			$filter->join[]      = "INNER JOIN {$this->tb_term_relationships} AS r_term ON ui.item_id = r_term.object_id";
-			$filter->where[]     = $this->wpdb->prepare( 'AND r_term.term_taxonomy_id = %d', $term_id );
 			$this->get_user_items( $filter, $count );
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
