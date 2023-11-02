@@ -27,8 +27,8 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 				array(
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'get_order_statistics' ),
-					// 'permission_callback' => array( $this, 'permission_check' ),
-					'permission_callback' => '__return_true',
+					'permission_callback' => array( $this, 'permission_check' ),
+					// 'permission_callback' => '__return_true',
 				),
 			),
 		);
@@ -38,6 +38,33 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 	public function get_overviews_statistics( $request ) {
 		$response = new LP_REST_Response();
 		try {
+			$params = $request->get_params();
+			$params = LP_Helper::sanitize_params_submitted( $params );
+			$filter = $this->get_statistics_filter( $params );
+
+			$lp_statistic_db          = LP_Statistics_DB::getInstance();
+			$net_sales                = $lp_statistic_db->get_net_sales_data( $filter['filter_type'], $filter['time'] );
+			$total_courses            = $lp_statistic_db->get_total_course_created( $filter['filter_type'], $filter['time'] );
+			$total_orders             = $lp_statistic_db->get_total_order_created( $filter['filter_type'], $filter['time'] );
+			$total_instructors        = $lp_statistic_db->get_total_instructor_created( $filter['filter_type'], $filter['time'] );
+			$total_students           = $lp_statistic_db->get_total_student_created( $filter['filter_type'], $filter['time'] );
+			$chart_data               = $this->process_chart_data( $filter, $net_sales );
+			$top_courses              = $lp_statistic_db->get_top_sold_courses( $filter['filter_type'], $filter['time'] );
+			$top_categories           = $lp_statistic_db->get_top_sold_categories( $filter['filter_type'], $filter['time'] );
+			$chart_data['line_label'] = __( 'Net sales', 'learnpress' );
+			$total_sales              = array_sum( $chart_data['data'] );
+
+			$data             = array(
+				'total_sales'       => $total_sales,
+				'total_orders'      => $total_orders,
+				'total_instructors' => $total_instructors,
+				'total_courses'     => $total_courses,
+				'total_students'    => $total_students,
+				'chart_data'        => $chart_data,
+				'top_courses'       => $top_courses,
+				'top_categories'    => $top_categories,
+			);
+			$response->data   = $data;
 			$response->status = 'success';
 		} catch ( Throwable $e ) {
 			$response->message = $e->getMessage();
@@ -48,24 +75,20 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 	public function get_order_statistics( $request ) {
 		$response = new LP_REST_Response();
 		try {
-			$params = $request->get_params();
-			$params = LP_Helper::sanitize_params_submitted( $params );
-			error_log( json_encode( $params ) );
-			$filter = $this->get_statistics_filter( $params );
-
-			$lp_statistic_db  = LP_Statistics_DB::getInstance();
-			$statistics       = $lp_statistic_db->get_order_statics( $filter['filter_type'], $filter['time'] );
-			$completed_orders = $lp_statistic_db->get_completed_order_data( $filter['filter_type'], $filter['time'] );
-			$chart_data       = $this->process_chart_data( $filter, $completed_orders );
-
+			$params                   = $request->get_params();
+			$params                   = LP_Helper::sanitize_params_submitted( $params );
+			$filter                   = $this->get_statistics_filter( $params );
+			$lp_statistic_db          = LP_Statistics_DB::getInstance();
+			$statistics               = $lp_statistic_db->get_order_statics( $filter['filter_type'], $filter['time'] );
+			$completed_orders         = $lp_statistic_db->get_completed_order_data( $filter['filter_type'], $filter['time'] );
+			$chart_data               = $this->process_chart_data( $filter, $completed_orders );
 			$chart_data['line_label'] = __( 'Completed orders', 'learnpress' );
-
-			$data             = array(
+			$data                     = array(
 				'statistics' => $statistics,
 				'chart_data' => $chart_data,
 			);
-			$response->data   = $data;
-			$response->status = 'success';
+			$response->data           = $data;
+			$response->status         = 'success';
 		} catch ( Throwable $e ) {
 			$response->message = $e->getMessage();
 			$response->status  = 'error';

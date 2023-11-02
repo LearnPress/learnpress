@@ -127,8 +127,12 @@ class LP_Statistics_DB extends LP_Database {
 	 * @param  string    $time_field $time_field the column use to filter time. ex: post_date with posts table, user_registered on
 	 * @return LP_Filter
 	 */
-	public function date_filter( LP_Filter $filter, string $date, string $time_field ) {
-		$filter->where[] = $this->wpdb->prepare( "AND cast( $time_field as DATE)= cast(%s as DATE)", $date );
+	public function date_filter( LP_Filter $filter, string $date, string $time_field, $is_until = false ) {
+		if ( $is_until ) {
+			$filter->where[] = $this->wpdb->prepare( "AND cast( $time_field as DATE)<= cast(%s as DATE)", $date );
+		} else {
+			$filter->where[] = $this->wpdb->prepare( "AND cast( $time_field as DATE)= cast(%s as DATE)", $date );
+		}
 		return $filter;
 	}
 	/**
@@ -137,11 +141,16 @@ class LP_Statistics_DB extends LP_Database {
 	 * @param  string    $time_field $time_field the column use to filter time. ex: post_date with posts table, user_registered on
 	 * @return LP_Filter
 	 */
-	public function previous_days_filter( LP_Filter $filter, int $value, string $time_field ) {
+	public function previous_days_filter( LP_Filter $filter, int $value, string $time_field, $is_until = false ) {
 		if ( $value < 2 ) {
 			throw new Exception( 'Day must be greater than 2 days.', 'learnpress' );
 		}
-		$filter->where[] = $this->wpdb->prepare( "AND $time_field >= DATE_ADD(CURDATE(), INTERVAL -%d DAY)", $value );
+		if ( $is_until ) {
+			$filter->where[] = $this->wpdb->prepare( "AND $time_field <= DATE_ADD(CURDATE())" );
+		} else {
+			$filter->where[] = $this->wpdb->prepare( "AND $time_field >= DATE_ADD(CURDATE(), INTERVAL -%d DAY)", $value );
+		}
+
 		return $filter;
 	}
 	/**
@@ -150,8 +159,12 @@ class LP_Statistics_DB extends LP_Database {
 	 * @param  string    $time_field $time_field the column use to filter time. ex: post_date with posts table, user_registered on
 	 * @return LP_Filter
 	 */
-	public function month_filter( LP_Filter $filter, string $date, string $time_field ) {
-		$filter->where[] = $this->wpdb->prepare( "AND EXTRACT(YEAR_MONTH FROM $time_field)= EXTRACT(YEAR_MONTH FROM %s)", $date );
+	public function month_filter( LP_Filter $filter, string $date, string $time_field, $is_until = false ) {
+		if ( $is_until ) {
+			$filter->where[] = $this->wpdb->prepare( "AND cast( $time_field as DATE)<= cast(%s as DATE)", $date );
+		} else {
+			$filter->where[] = $this->wpdb->prepare( "AND EXTRACT(YEAR_MONTH FROM $time_field)= EXTRACT(YEAR_MONTH FROM %s)", $date );
+		}
 		return $filter;
 	}
 	/**
@@ -160,11 +173,15 @@ class LP_Statistics_DB extends LP_Database {
 	 * @param  string    $time_field $time_field the column use to filter time. ex: post_date with posts table, user_registered on
 	 * @return LP_Filter
 	 */
-	public function previous_months_filter( LP_Filter $filter, int $value, string $time_field ) {
+	public function previous_months_filter( LP_Filter $filter, int $value, string $time_field, $is_until = false ) {
 		if ( $value < 2 ) {
 			throw new Exception( 'Values must be greater than 2 months.', 'learnpress' );
 		}
-		$filter->where[] = $this->wpdb->prepare( "AND EXTRACT(YEAR_MONTH FROM $time_field) >= EXTRACT(YEAR_MONTH FROM DATE_ADD(CURDATE(), INTERVAL -%d MONTH))", $value );
+		if ( $is_until ) {
+			$filter->where[] = $this->wpdb->prepare( "AND $time_field <= DATE_ADD(CURDATE())" );
+		} else {
+			$filter->where[] = $this->wpdb->prepare( "AND EXTRACT(YEAR_MONTH FROM $time_field) >= EXTRACT(YEAR_MONTH FROM DATE_ADD(CURDATE(), INTERVAL -%d MONTH))", $value );
+		}
 		return $filter;
 	}
 	/**
@@ -174,8 +191,12 @@ class LP_Statistics_DB extends LP_Database {
 	 * @param  string    $time_field $time_field the column use to filter time. ex: post_date with posts table, user_registered on
 	 * @return LP_Filter
 	 */
-	public function year_filter( LP_Filter $filter, string $date, string $time_field ) {
-		$filter->where[] = $this->wpdb->prepare( "AND YEAR($time_field)= YEAR(%s)", $date );
+	public function year_filter( LP_Filter $filter, string $date, string $time_field, $is_until = false ) {
+		if ( $is_until ) {
+			$filter->where[] = $this->wpdb->prepare( "AND cast( $time_field as DATE) <= cast(%s as DATE)", $date );
+		} else {
+			$filter->where[] = $this->wpdb->prepare( "AND YEAR($time_field)= YEAR(%s)", $date );
+		}
 		return $filter;
 	}
 	/**
@@ -185,16 +206,21 @@ class LP_Statistics_DB extends LP_Database {
 	 * @param  string    $time_field $time_field the column use to filter time. ex: post_date with posts table, user_registered on
 	 * @return LP_Filter
 	 */
-	public function custom_time_filter( LP_Filter $filter, array $dates, string $time_field ) {
+	public function custom_time_filter( LP_Filter $filter, array $dates, string $time_field, $is_until = false ) {
 		if ( empty( $dates ) ) {
 			throw new Exception( 'Select date', 'learnpress' );
 		}
 		sort( $dates );
-		$filter->where[] = $this->wpdb->prepare(
-			"AND (DATE($time_field) BETWEEN %s AND %s)",
-			date( 'Y-m-d', strtotime( $dates[0] ) ),
-			date( 'Y-m-d', strtotime( $dates[1] ) )
-		);
+		if ( $is_until ) {
+			$filter->where[] = $this->wpdb->prepare( "AND cast( $time_field as DATE) <= cast(%s as DATE)", $dates[1] );
+		} else {
+			$filter->where[] = $this->wpdb->prepare(
+				"AND (DATE($time_field) BETWEEN %s AND %s)",
+				date( 'Y-m-d', strtotime( $dates[0] ) ),
+				date( 'Y-m-d', strtotime( $dates[1] ) )
+			);
+		}
+
 		return $filter;
 	}
 
@@ -204,34 +230,35 @@ class LP_Statistics_DB extends LP_Database {
 	 * @param  string    $type       date|month|year|previous_days|custom
 	 * @param  string    $time_field datetime colummn
 	 * @param  boolean   $value      value to query datetimes
+	 * @param  boolean   $is_until   filter time by the last date
 	 * @return LP_Filter
 	 */
-	public function filter_time( LP_Filter $filter, string $type, string $time_field, $value = false ) {
+	public function filter_time( LP_Filter $filter, string $type, string $time_field, $value = false, $is_until = false ) {
 		if ( ! $value ) {
 			throw new Exception( 'Empty statistic time', 'learnpress' );
 		}
 		switch ( $type ) {
 			case 'date':
-				$filter = $this->date_filter( $filter, $value, $time_field );
+				$filter = $this->date_filter( $filter, $value, $time_field, $is_until );
 				break;
 			case 'month':
-				$filter = $this->month_filter( $filter, $value, $time_field );
+				$filter = $this->month_filter( $filter, $value, $time_field, $is_until );
 				break;
 			case 'year':
-				$filter = $this->year_filter( $filter, $value, $time_field );
+				$filter = $this->year_filter( $filter, $value, $time_field, $is_until );
 				break;
 			case 'previous_days':
-				$filter = $this->previous_days_filter( $filter, (int) $value, $time_field );
+				$filter = $this->previous_days_filter( $filter, (int) $value, $time_field, $is_until );
 				break;
 			case 'previous_months':
-				$filter = $this->previous_months_filter( $filter, (int) $value, $time_field );
+				$filter = $this->previous_months_filter( $filter, (int) $value, $time_field, $is_until );
 				break;
 			case 'custom':
 				$value = explode( '+', $value );
 				if ( count( $value ) !== 2 ) {
 					throw new Exception( 'Invalid custom time', 'learnpress' );
 				}
-				$filter = $this->custom_time_filter( $filter, $value, $time_field );
+				$filter = $this->custom_time_filter( $filter, $value, $time_field, $is_until );
 			default:
 				// code...
 				break;
@@ -403,10 +430,12 @@ class LP_Statistics_DB extends LP_Database {
 		$filter->collection_alias = 'p';
 		$filter->only_fields[]    = 'r_term.term_taxonomy_id as term_id';
 		$filter->only_fields[]    = 'COUNT(r_term.term_taxonomy_id) as term_count';
+		$filter->only_fields[]    = 'terms.name as term_name';
 		$filter->limit            = $limit > 0 ? $limit : 10;
 		$time_field               = 'p.post_date';
 		$tb_term_relationships    = $this->tb_term_relationships;
 		$tb_term_taxonomy         = $this->tb_term_taxonomy;
+		$tb_terms                 = $this->tb_terms;
 		$oi_table                 = $this->tb_lp_order_items;
 		$oim_table                = $this->tb_lp_order_itemmeta;
 
@@ -415,6 +444,7 @@ class LP_Statistics_DB extends LP_Database {
 			"INNER JOIN $oim_table AS oim ON oi.order_item_id = oim.learnpress_order_item_id",
 			"INNER JOIN $tb_term_relationships AS r_term ON oi.item_id = r_term.object_id",
 			"INNER JOIN $tb_term_taxonomy AS tax_term ON tax_term.term_taxonomy_id = r_term.term_taxonomy_id",
+			"INNER JOIN $tb_terms AS terms ON terms.term_id = r_term.term_taxonomy_id",
 		];
 
 		$filter->where = array(
@@ -450,10 +480,12 @@ class LP_Statistics_DB extends LP_Database {
 			return;
 		}
 		$filter                   = new LP_Order_Filter();
-		$filter->collection       = $this->tb_posts;
+		$tb_posts                 = $this->tb_posts;
+		$filter->collection       = $tb_posts;
 		$filter->collection_alias = 'p';
 		$filter->only_fields[]    = 'oi.item_id as course_id';
 		$filter->only_fields[]    = 'COUNT(oi.item_id) as course_count';
+		$filter->only_fields[]    = 'p2.post_title as course_name';
 		$filter->limit            = $limit > 0 ? $limit : 10;
 		$time_field               = 'p.post_date';
 		$oi_table                 = $this->tb_lp_order_items;
@@ -462,6 +494,7 @@ class LP_Statistics_DB extends LP_Database {
 		$filter->join  = [
 			"INNER JOIN $oi_table AS oi ON p.ID = oi.order_id",
 			"INNER JOIN $oim_table AS oim ON oi.order_item_id = oim.learnpress_order_item_id",
+			"INNER JOIN $tb_posts AS p2 ON p2.ID = oi.item_id",
 		];
 		$filter->where = array(
 			$this->wpdb->prepare( 'AND p.post_type=%s', $filter->post_type ),
@@ -545,7 +578,7 @@ class LP_Statistics_DB extends LP_Database {
 		$filter->where[]          = $this->wpdb->prepare( 'AND um.meta_key=%s', 'wp_capabilities' );
 		$filter->where[]          = $this->wpdb->prepare( 'AND um.meta_value LIKE CONCAT("%",%s,"%")', ADMIN_ROLE );
 		$filter->where[]          = $this->wpdb->prepare( 'OR um.meta_value LIKE CONCAT("%",%s,"%")', LP_TEACHER_ROLE );
-		$filter                   = $this->filter_time( $filter, $type, $time_field, $value );
+		$filter                   = $this->filter_time( $filter, $type, $time_field, $value, true );
 		$filter->query_count      = true;
 		$result                   = $this->execute( $filter );
 		return $result;
@@ -569,7 +602,7 @@ class LP_Statistics_DB extends LP_Database {
 		$time_field               = 'u.user_registered';
 		$filter->where[]          = $this->wpdb->prepare( 'AND um.meta_key=%s', 'wp_capabilities' );
 		$filter->where[]          = $this->wpdb->prepare( 'AND um.meta_value LIKE CONCAT("%",%s,"%")', 'subscriber' );
-		$filter                   = $this->filter_time( $filter, $type, $time_field, $value );
+		$filter                   = $this->filter_time( $filter, $type, $time_field, $value, true );
 		$filter->query_count      = true;
 		$result                   = $this->execute( $filter );
 		return $result;
