@@ -672,10 +672,13 @@ class LP_User_Items_DB extends LP_Database {
 
 			$course->delete_user_item_and_result( $user_course_ids );
 
-			// Clear cache total students enrolled.
+			// Clear cache total students enrolled of one course.
 			$lp_course_cache = new LP_Course_Cache( true );
 			$lp_course_cache->clean_total_students_enrolled( $course_id );
 			$lp_course_cache->clean_total_students_enrolled_or_purchased( $course_id );
+			// Clear cache count students many courses.
+			$lp_courses_cache = new LP_Courses_Cache( true );
+			$lp_courses_cache->clear_cache_on_group( LP_Courses_Cache::KEYS_COUNT_STUDENT_COURSES );
 			// Clear cache user course.
 			$lp_user_items_cache = new LP_User_Items_Cache( true );
 			$lp_user_items_cache->clean_user_item(

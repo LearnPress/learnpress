@@ -23,6 +23,7 @@ class LP_Courses_Cache extends LP_Cache {
 	 */
 	public static $keys           = 'keys';
 	const KEYS_COUNT_COURSES_FREE = 'keys/count_courses_free';
+	const KEYS_COUNT_STUDENT_COURSES = 'keys/count_student_courses';
 
 	/**
 	 * Get instance
@@ -50,5 +51,16 @@ class LP_Courses_Cache extends LP_Cache {
 	 */
 	public function save_cache_keys_count_courses_free( string $key_cache ) {
 		$this->save_cache_keys( self::KEYS_COUNT_COURSES_FREE, $key_cache );
+	}
+
+	/**
+	 * Store list keys cache of query count student of courses
+	 *
+	 * @param string $key_cache
+	 * @since 4.2.5.4
+	 * @version 1.0.0
+	 */
+	public function save_cache_keys_count_student_courses( string $key_cache ) {
+		$this->save_cache_keys( self::KEYS_COUNT_STUDENT_COURSES, $key_cache );
 	}
 }

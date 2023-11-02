@@ -11,6 +11,7 @@ namespace LearnPress\TemplateHooks\Course;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\Courses;
+use LearnPress\Models\UserItems\UserCourseModel;
 use LP_Course_Filter;
 use LP_User_Items_DB;
 use LP_User_Items_Filter;
@@ -406,13 +407,14 @@ class ListCoursesTemplate {
 		$lp_user_items_db = LP_User_Items_DB::getInstance();
 		$filter           = new LP_User_Items_Filter();
 
+		// If page is course category, get total students of this category.
 		if ( ! empty( $category_current ) ) {
 			$filter->join[]  = "INNER JOIN {$lp_user_items_db->tb_posts} AS p ON ui.item_id = p.ID";
 			$filter->join[]  = "INNER JOIN {$lp_user_items_db->tb_term_relationships} AS r_term ON ui.item_id = r_term.object_id";
 			$filter->where[] = $lp_user_items_db->wpdb->prepare( 'AND r_term.term_taxonomy_id = %d', $category_current );
 		}
 
-		$count   = $lp_user_items_db->count_students( $filter );
+		$count   = UserCourseModel::count_students( $filter );
 		$content = sprintf(
 			'<span class="courses-count-students-number">%1$s</span> %2$s',
 			$count,

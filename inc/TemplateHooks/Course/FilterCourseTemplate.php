@@ -9,6 +9,7 @@ namespace LearnPress\TemplateHooks\Course;
 
 use Exception;
 use LearnPress\Helpers\Template;
+use LearnPress\Models\Courses;
 use LP_Course;
 use LP_Course_DB;
 use LP_Course_Filter;
@@ -187,11 +188,8 @@ class FilterCourseTemplate {
 			$data_selected = explode( ',', $data_selected );
 
 			// Get number courses free
-			$filter_courses_free              = new LP_Course_Filter();
-			$filter_courses_free->query_count = true;
-			$filter_courses_free->sort_by     = [ 'on_free' ];
-			$count_courses_free               = 0;
-			LP_Course::get_courses( $filter_courses_free, $count_courses_free );
+			$filter_courses_free = new LP_Course_Filter();
+			$count_courses_free  = Courses::count_course_free( $filter_courses_free );
 
 			// Get number courses has price
 			$filter_courses_price              = new LP_Course_Filter();
