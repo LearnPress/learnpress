@@ -22,6 +22,7 @@ class LP_Submenu_Tools extends LP_Abstract_Submenu {
 				'template'        => __( 'Templates', 'learnpress' ),
 				'lp_beta_version' => __( 'LearnPress Beta Version', 'learnpress' ),
 				//'assign_course'   => __( 'Assign/Unassigned Course', 'learnpress' ),
+				'cache'           => __( 'Cache', 'learnpress' ),
 			)
 		);
 
@@ -76,6 +77,22 @@ class LP_Submenu_Tools extends LP_Abstract_Submenu {
 	public function page_content_assign_course() {
 		learn_press_admin_view( 'tools/course/html-assign-course' );
 		learn_press_admin_view( 'tools/course/html-unassign-course' );
+	}
+
+	/**
+	 * Temporary, go to this page run clear all cache
+	 *
+	 * @since 4.2.5.4
+	 * @version 1.0.0
+	 */
+	public function page_content_cache() {
+		$lp_cache = new LP_Cache( true );
+		$lp_cache->clear_all();
+
+		echo sprintf(
+			'<form action="" method="post"><button class="button button-primary" type="submit">%s</button></form>',
+			__( 'Clear all cache', 'learnpress' )
+		);
 	}
 
 	/**

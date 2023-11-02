@@ -579,7 +579,7 @@ class LP_Helper {
 	 * @throws Exception
 	 */
 	public static function json_decode( string $str, $associative = null ) {
-		$obj = json_decode( $str );
+		$obj = json_decode( $str, $associative );
 		if ( json_last_error() !== JSON_ERROR_NONE ) {
 			throw new Exception( json_last_error_msg() );
 		}

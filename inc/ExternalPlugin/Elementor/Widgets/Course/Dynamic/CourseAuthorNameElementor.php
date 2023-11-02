@@ -16,6 +16,7 @@ defined( 'ABSPATH' ) || exit;
 
 class CourseAuthorNameElementor extends Tag {
 	use LPDynamicElementor;
+
 	public function __construct( array $data = [] ) {
 		$this->lp_dynamic_title = 'Course Author Name';
 		$this->lp_dynamic_name  = 'course-author-name';

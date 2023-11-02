@@ -25,11 +25,6 @@ class LP_Settings {
 	/**
 	 * @var bool
 	 */
-	protected $_load_data = false;
-
-	/**
-	 * @var bool
-	 */
 	protected static $_instance = null;
 
 	/**
@@ -39,15 +34,17 @@ class LP_Settings {
 	 * @param string      $prefix
 	 */
 	protected function __construct( $data = false, $prefix = 'learn_press_' ) {
+		try {
+			$this->_prefix = $prefix;
 
-		$this->_prefix = $prefix;
-
-		if ( false === $data ) {
-			$this->_load_data = true;
-			$this->_load_options();
-		} else {
-			settype( $data, 'array' );
-			$this->_options = $data;
+			if ( false === $data ) {
+				$this->_load_options();
+			} else {
+				settype( $data, 'array' );
+				$this->_options = $data;
+			}
+		} catch ( Throwable $e ) {
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 	}
 
@@ -66,19 +63,16 @@ class LP_Settings {
 	/**
 	 * Load all options.
 	 *
+	 * @throws Exception
+	 * @version 1.0.2
 	 * @since 3.0.0
-	 * @version 1.0.1
 	 */
 	protected function _load_options() {
 		// Check cache exists
 		$lp_settings_cache = new LP_Settings_Cache( true );
 		$lp_options        = $lp_settings_cache->get_lp_settings();
 		if ( false !== $lp_options ) {
-			$this->_options = json_decode( $lp_options, true );
-			if ( json_last_error() !== JSON_ERROR_NONE ) {
-				error_log( 'Load options: ' . json_last_error_msg() );
-			}
-
+			$this->_options = LP_Helper::json_decode( $lp_options, true );
 			return;
 		}
 
@@ -91,13 +85,15 @@ class LP_Settings {
 		);
 
 		$options = $wpdb->get_results( $query );
-		if ( $options ) {
+		if ( ! empty( $options ) ) {
 			foreach ( $options as $option ) {
 				$this->_options[ $option->option_name ] = LP_Helper::maybe_unserialize( $option->option_value );
 			}
 
 			// Set cache
-			$lp_settings_cache->set_lp_settings( json_encode( $this->_options ) );
+			$lp_settings_cache
+				->set_action_thim_cache( Thim_Cache_DB::ACTION_INSERT )
+				->set_lp_settings( json_encode( $this->_options ) );
 		}
 	}
 
@@ -212,17 +208,6 @@ class LP_Settings {
 	}
 
 	/**
-	 * @deprecated 4.2.2
-	 */
-	public function refresh() {
-		if ( $this->_load_data ) {
-			// $this->_load_options( true );
-		}
-
-		return $this;
-	}
-
-	/**
 	 * Update option with default prefix is learn_press_
 	 *
 	 * @param string $name
@@ -271,89 +256,6 @@ class LP_Settings {
 
 		return self::$_instance;
 	}
-
-	/**
-	 * Load all 'no' options from other plugins for caching purpose.
-	 *
-	 * @since 3.0.0
-	 * @deprecated 4.0.0
-	 * @editor tungnx
-	 * @reason not use
-	 */
-	/*
-	public static function load_site_options() {
-		static $loaded = false;
-
-		if ( $loaded ) {
-			return;
-		}
-
-		$options = array(
-			'pmpro_updates',
-			'pmpro_stripe_billingaddress',
-			'pmpro_only_filter_pmpro_emails',
-			'pmpro_email_member_notification',
-			'pmpro_hideads',
-			'pmpro_hideadslevels',
-			'_bbp_enable_group_forums',
-			'_bbp_theme_package_id',
-			'_bbp_root_slug',
-			'_bbp_include_root',
-			'_bbp_forum_slug',
-			'_bbp_topic_slug',
-			'_bbp_show_on_root',
-			'_bbp_topic_archive_slug',
-			'_bbp_reply_slug',
-			'_bbp_topic_tag_slug',
-			'_bbp_allow_topic_tags',
-			'_bbp_use_autoembed',
-			'_bbp_user_slug',
-			'_bbp_view_slug',
-			'_bbp_search_slug',
-			'_bbp_reply_archive_slug',
-			'_bbp_user_favs_slug',
-			'_bbp_user_subs_slug',
-			'pmpro_nuclear_HTTPS',
-			'pmpro_gateway',
-			'pmpro_recaptcha',
-			'pmpro_use_ssl',
-			'_bbp_enable_favorites',
-			'_bbp_enable_subscriptions',
-			'_bbp_allow_search',
-			'_bbp_use_wp_editor',
-			'pmpro_hide_footer_link',
-			'learn-press-flush-rewrite-rules',
-			'_lp_tabs_data',
-			'learn_press_permalinks',
-		);
-		global $wpdb;
-
-		$format = array_fill( 0, sizeof( $options ), '%s' );
-		$q      = $wpdb->prepare( "
-			SELECT option_name, option_value
-			FROM $wpdb->options
-			WHERE 1
-			AND option_name IN(" . join( ',', $format ) . ")
-		", $options );
-
-		$alloptions_db = $wpdb->get_results( $q, OBJECT_K );
-		$notoptions    = wp_cache_get( 'notoptions', 'options' );
-
-		foreach ( $options as $o_name ) {
-			if ( ! empty( $alloptions_db[ $o_name ] ) ) {
-				$o_value = LP_Helper::maybe_unserialize( $alloptions_db[ $o_name ]->option_value );
-				wp_cache_set( $o_name, $o_value, 'options' );
-			} else {
-				if ( ! is_array( $notoptions ) ) {
-					$notoptions = array();
-				}
-				$notoptions[ $o_name ] = '';
-			}
-		}
-
-		wp_cache_set( 'notoptions', $notoptions, 'options' );
-		$loaded = true;
-	}*/
 
 	/**
 	 * Get settings endpoints for checkout page.
@@ -439,7 +341,7 @@ class LP_Settings {
 	 * @return bool
 	 */
 	public static function is_created_tb_thim_cache(): bool {
-		return get_option( 'thim_cache_tb_created' ) == 'yes';
+		return get_option( 'thim_cache_tb_created' ) === 'yes';
 	}
 	/**
 	 * Check table learnpress_files is created

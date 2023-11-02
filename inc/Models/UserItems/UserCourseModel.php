@@ -12,8 +12,11 @@ namespace LearnPress\Models\UserItems;
 
 use LP_Course;
 use LP_Course_Cache;
+use LP_Courses_Cache;
 use LP_User;
+use LP_User_Items_DB;
 use LP_User_Items_Filter;
+use Thim_Cache_DB;
 use Throwable;
 
 class UserCourseModel extends UserItemModel {
@@ -97,11 +100,44 @@ class UserCourseModel extends UserItemModel {
 		return $item;
 	}
 
+	/**
+	 * Count students.
+	 *
+	 * @param LP_User_Items_Filter $filter
+	 * @return int
+	 * @since 4.2.5.4
+	 * @version 1.0.0
+	 */
+	public static function count_students( LP_User_Items_Filter $filter ): int {
+		// Check cache
+		$key_cache        = 'count-courses-student-' . md5( json_encode( $filter ) );
+		$lp_courses_cache = new LP_Courses_Cache( true );
+		$count            = $lp_courses_cache->get_cache( $key_cache );
+		if ( false !== $count ) {
+			return $count;
+		}
+
+		$lp_user_items_db = LP_User_Items_DB::getInstance();
+		$count = $lp_user_items_db->count_students( $filter );
+
+		// Set cache
+		$lp_courses_cache
+			->set_action_thim_cache( Thim_Cache_DB::ACTION_INSERT )
+			->set_cache( $key_cache, $count );
+		$lp_courses_cache_keys = new LP_Courses_Cache( true );
+		$lp_courses_cache_keys->save_cache_keys_count_student_courses( $key_cache );
+
+		return $count;
+	}
+
 	public function clean_caches() {
 		parent::clean_caches();
-		// Clear cache total students enrolled.
+		// Clear cache total students enrolled of a course.
 		$lp_course_cache = new LP_Course_Cache( true );
 		$lp_course_cache->clean_total_students_enrolled( $this->item_id );
 		$lp_course_cache->clean_total_students_enrolled_or_purchased( $this->item_id );
+		// Clear cache count students of many course
+		$lp_courses_cache = new LP_Courses_Cache( true );
+		$lp_courses_cache->clear_cache_on_group( LP_Courses_Cache::KEYS_COUNT_STUDENT_COURSES );
 	}
 }

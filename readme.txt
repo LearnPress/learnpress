@@ -210,6 +210,13 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.2.5.3 (2023-11-02) =
+~ Fixed: security issue.
+~ Tweak: only show 1 level categories right behind cate parent, on the widget "Course Filter".
+~ Added: method count students enrolled of course.
+~ Added: method count courses free.
+~ Added: cache for count.
+
 = 4.2.5.3 (2023-10-27) =
 ~ Fixed: security issue.
 ~ Fixed: miss hook start quiz, retake quiz.
