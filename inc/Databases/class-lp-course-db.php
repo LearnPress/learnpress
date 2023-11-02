@@ -203,7 +203,7 @@ class LP_Course_DB extends LP_Database {
 		return $first_item_id;
 	}
 
-	public function get_recent_courses( LP_Course_Filter $filter ) : array {
+	public function get_recent_courses( LP_Course_Filter $filter ): array {
 		global $wpdb;
 
 		$limit = $filter->limit ?? - 1;
@@ -231,7 +231,7 @@ class LP_Course_DB extends LP_Database {
 		return $wpdb->get_col( $query );
 	}
 
-	public function get_featured_courses( LP_Course_Filter $filter ) : array {
+	public function get_featured_courses( LP_Course_Filter $filter ): array {
 		global $wpdb;
 
 		$limit    = ! empty( $filter->limit ) ? $filter->limit : -1;
@@ -378,7 +378,7 @@ class LP_Course_DB extends LP_Database {
 			$query_count = $this->wpdb->prepare( 'SUM(s.section_course_id = %d) AS count_items,', $course_id );
 
 			foreach ( $item_types as $item_type ) {
-				$i++;
+				++$i;
 				if ( $i == $count_item_types ) {
 					$query_count .= $this->wpdb->prepare( 'SUM(s.section_course_id = %d AND si.item_type = %s) AS %s', $course_id, $item_type, $item_type );
 				} else {
@@ -667,10 +667,11 @@ class LP_Course_DB extends LP_Database {
 		$count = 0;
 
 		try {
-			$filter->query_count = true;
-			$filter->only_fields = [ 'DISTINCT(ID)' ];
+			$filter->only_fields = [ 'COUNT( DISTINCT(ID) )' ];
 			$this->get_courses_sort_by_free( $filter );
-			LP_Course::get_courses( $filter, $count );
+			$filter->return_string_query = true;
+			$query_count                 = LP_Course::get_courses( $filter, $count );
+			$count                       = $this->wpdb->get_var( $query_count );
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}

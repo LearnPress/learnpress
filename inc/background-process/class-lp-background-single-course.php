@@ -79,6 +79,10 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 				}
 				LP_Courses_Cache::instance()->clear( LP_Courses_Cache::$keys );
 			}
+
+			// Clear total courses free.
+			$lp_courses_cache = new LP_Courses_Cache( true );
+			$lp_courses_cache->clear_cache_on_group( LP_Courses_Cache::KEYS_COUNT_COURSES_FREE );
 			// End
 		}
 

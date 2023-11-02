@@ -235,11 +235,11 @@ if ( ! class_exists( 'LP_Course' ) ) {
 			return 'yes' === $this->get_data( 'block_course_finished' );
 		}
 
-		public function allow_repurchase() : bool {
+		public function allow_repurchase(): bool {
 			return 'yes' === $this->get_data( 'allow_repurchase' );
 		}
 
-		public function allow_repurchase_course_option() : string {
+		public function allow_repurchase_course_option(): string {
 			return $this->get_data( 'allow_repurchase_course_option', 'reset' );
 		}
 
@@ -312,17 +312,12 @@ if ( ! class_exists( 'LP_Course' ) ) {
 			try {
 				$extra_info_str = get_post_meta( $this->get_id(), $this->key_info_extra_fast_query, true );
 
-				if ( $extra_info_str ) {
-					$extra_info_stdclass = json_decode( $extra_info_str );
-
-					if ( JSON_ERROR_NONE !== json_last_error() ) {
-						throw new Exception( 'Error json decode on ' . __METHOD__ );
-					}
-
-					$extra_info = $extra_info->map_stdclass( $extra_info_stdclass );
+				if ( ! empty( $extra_info_str ) ) {
+					$extra_info_stdclass = LP_Helper::json_decode( $extra_info_str );
+					$extra_info          = $extra_info->map_stdclass( $extra_info_stdclass );
 				}
 			} catch ( Throwable $e ) {
-				error_log( $e->getMessage() );
+				error_log( __METHOD__ . ': ' . $e->getMessage() );
 			}
 
 			return $extra_info;
@@ -664,8 +659,8 @@ if ( ! class_exists( 'LP_Course' ) ) {
 				 * Save key cache to array to clear
 				 * @see LP_Background_Single_Course::save_post() - clear cache when save post
 				 */
-				LP_Courses_Cache::instance()->save_cache_keys( $key_cache );
-				LP_Courses_Cache::instance()->save_cache_keys( $key_cache_total_rows );
+				//LP_Courses_Cache::instance()->save_cache_keys( $key_cache );
+				//LP_Courses_Cache::instance()->save_cache_keys( $key_cache_total_rows );
 			} catch ( Throwable $e ) {
 				$courses = [];
 				error_log( __FUNCTION__ . ': ' . $e->getMessage() );

@@ -158,6 +158,57 @@ class LP_Cache {
 	}
 
 	/**
+	 * Store list keys cache to a group.
+	 *
+	 * @param string $key_group
+	 * @param string $key_cache_new
+	 * @since 4.2.5.4
+	 * @version 1.0.0
+	 */
+	public function save_cache_keys( string $key_group, string $key_cache_new ) {
+		try {
+			$keys = $this->get_cache( $key_group );
+			if ( false === $keys ) {
+				$keys_cache = array();
+			} else {
+				$keys_cache = LP_Helper::json_decode( $keys, true );
+			}
+
+			$keys_cache[] = $key_cache_new;
+			$this->set_cache( $key_group, json_encode( $keys_cache ) );
+		} catch ( Throwable $e ) {
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
+		}
+	}
+
+	/**
+	 * Clear cache on group store list keys.
+	 *
+	 * @param string $key_group
+	 * @since 4.2.5.4
+	 * @version 1.0.0
+	 */
+	public function clear_cache_on_group( string $key_group ) {
+		try {
+			$keys_cache_of_group_str = $this->get_cache( $key_group );
+			if ( false === $keys_cache_of_group_str ) {
+				return;
+			}
+			$keys_cache_of_group = LP_Helper::json_decode( $keys_cache_of_group_str, true );
+			if ( ! empty( $keys_cache_of_group ) ) {
+				foreach ( $keys_cache_of_group as $key ) {
+					// Clear cache by key
+					$this->clear( $key );
+				}
+				// Clear cache store list keys
+				$this->clear( $key_group );
+			}
+		} catch ( Throwable $e ) {
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
+		}
+	}
+
+	/**
 	 * Check can handle with thim cache
 	 *
 	 * @since 4.2.5.4
