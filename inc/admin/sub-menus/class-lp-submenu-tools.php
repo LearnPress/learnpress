@@ -88,6 +88,11 @@ class LP_Submenu_Tools extends LP_Abstract_Submenu {
 	public function page_content_cache() {
 		$lp_cache = new LP_Cache( true );
 		$lp_cache->clear_all();
+
+		echo sprintf(
+			'<form action="" method="post"><button class="button button-primary" type="submit">%s</button></form>',
+			__( 'Clear all cache', 'learnpress' )
+		);
 	}
 
 	/**

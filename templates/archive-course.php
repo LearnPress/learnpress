@@ -7,7 +7,7 @@
  * @version 4.0.1
  */
 
-use LearnPress\TemplateHooks\Course\ListCoursesTemplate;
+//use LearnPress\TemplateHooks\Course\ListCoursesTemplate;
 
 defined( 'ABSPATH' ) || exit;
 wp_enqueue_script( 'lp-courses' );
@@ -34,9 +34,9 @@ if ( is_active_sidebar( 'archive-courses-sidebar' ) ) {
 	$classes[] = 'has-sidebar';
 }
 // For test
-$m = ListCoursesTemplate::instance();
+/*$m = ListCoursesTemplate::instance();
 echo $m->html_count_course_free();
-echo $m->html_count_students();
+echo $m->html_count_students();*/
 // End test
 /**
  * @since 4.2.3.4
