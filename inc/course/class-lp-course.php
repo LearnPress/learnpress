@@ -582,14 +582,15 @@ if ( ! class_exists( 'LP_Course' ) ) {
 			$lp_course_db = LP_Course_DB::getInstance();
 
 			try {
-				$key_cache            = md5( json_encode( $filter ) );
-				$key_cache_total_rows = md5( json_encode( $filter ) . 'total_rows' );
-				$courses_cache        = LP_Courses_Cache::instance()->get_cache( $key_cache );
+				/*$lp_courses_cache = new LP_Courses_Cache( true );
+				$key_cache            = 'query-courses-' . md5( json_encode( $filter ) );
+				$key_cache_total_rows = 'query-courses-total-' . md5( json_encode( $filter ) );
+				$courses_cache        = $lp_courses_cache->get_cache( $key_cache );
 
 				if ( false !== $courses_cache ) {
-					$total_rows = LP_Courses_Cache::instance()->get_cache( $key_cache_total_rows );
-					return $courses_cache;
-				}
+					$total_rows = $lp_courses_cache->get_cache( $key_cache_total_rows );
+					return LP_Helper::json_decode( $courses_cache );
+				}*/
 
 				// Sort by
 				$filter->sort_by = (array) $filter->sort_by;
@@ -656,15 +657,15 @@ if ( ! class_exists( 'LP_Course' ) ) {
 				$filter  = apply_filters( 'lp/courses/filter', $filter );
 				$courses = LP_Course_DB::getInstance()->get_courses( $filter, $total_rows );
 
-				LP_Courses_Cache::instance()->set_cache( $key_cache, $courses );
-				LP_Courses_Cache::instance()->set_cache( $key_cache_total_rows, $total_rows );
-
-				/**
-				 * Save key cache to array to clear
-				 * @see LP_Background_Single_Course::save_post() - clear cache when save post
-				 */
-				//LP_Courses_Cache::instance()->save_cache_keys( $key_cache );
-				//LP_Courses_Cache::instance()->save_cache_keys( $key_cache_total_rows );
+//				$lp_courses_cache->set_cache( $key_cache, json_encode( $courses ) );
+//				$lp_courses_cache->set_cache( $key_cache_total_rows, $total_rows );
+//
+//				/**
+//				 * Save key cache to array to clear
+//				 * @see LP_Background_Single_Course::save_post() - clear cache when save post
+//				 */
+//				$lp_courses_cache->save_cache_keys_query_courses( $key_cache );
+//				$lp_courses_cache->save_cache_keys( LP_Courses_Cache::KEYS_QUERY_TOTAL_COURSES, $key_cache_total_rows );
 			} catch ( Throwable $e ) {
 				$courses = [];
 				error_log( __FUNCTION__ . ': ' . $e->getMessage() );
