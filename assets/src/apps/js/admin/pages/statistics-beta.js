@@ -9,6 +9,8 @@ document.addEventListener( 'DOMContentLoaded', function () {
 			orderLoadData();
 		} else if ( elementLoad.value == 'overview-statistics' ) {
 			overviewLoadData();
+		} else if ( elementLoad.value == 'courses-statistics' ) {
+			courseLoadData();
 		}
 	};
 	const overviewLoadData = ( filterType = 'today', date = '' ) => {
@@ -169,6 +171,86 @@ document.addEventListener( 'DOMContentLoaded', function () {
 			} )
 			.finally( () => {} );
 	};
+	const courseLoadData = ( filterType = 'today', date = '' ) => {
+		wp.apiFetch( {
+			path: wp.url.addQueryArgs( 'lp/v1/statistics/course-statistics', {
+				filtertype: filterType,
+				date: date,
+			} ),
+			method: 'GET',
+		} )
+			.then( ( res ) => {
+				const { data, status, message } = res;
+				if ( status === 'error' ) {
+					throw new Error( message || 'Error' );
+				}
+				let chart = Chart.getChart( 'course-chart-content' ),
+					chartEle = document.getElementById(
+						'course-chart-content'
+					);
+				chartEle.removeAttribute( 'hidden' );
+				loadLpSkeletonAnimations();
+				if ( chart === undefined ) {
+					chart = generateChart(
+						'course-chart-content',
+						data.chart_data
+					);
+				} else {
+					chart.data.labels = data.chart_data.labels;
+					chart.data.datasets[ 0 ].data = data.chart_data.data;
+					chart.config.options.scales.x.title.text =
+						data.chart_data.x_label;
+					chart.update();
+				}
+				let totalCourse = 0;
+
+				for ( let i = 0; i < data.courses.length; i++ ) {
+					let v = data.courses[ i ];
+					if ( v.course_status == 'publish' ) {
+						document.querySelector(
+							'.statistics-published-courses'
+						).textContent = v.course_count;
+						totalCourse += ~~v.course_count;
+					} else if ( v.course_status == 'pending' ) {
+						document.querySelector(
+							'.statistics-pending-courses'
+						).textContent = v.course_count;
+						totalCourse += ~~v.course_count;
+					} else if ( v.course_status == 'future' ) {
+						document.querySelector(
+							'.statistics-future-courses'
+						).textContent = v.course_count;
+						totalCourse += ~~v.course_count;
+					}
+					console.log( v );
+				}
+				document.querySelector(
+					'.statistics-total-courses'
+				).textContent = totalCourse;
+				for ( let i = 0; i < data.items.length; i++ ) {
+					let v = data.items[ i ];
+					if ( v.item_type == 'lp_lesson' ) {
+						document.querySelector(
+							'.statistics-lessons'
+						).textContent = v.item_count;
+					} else if ( v.item_type == 'lp_quiz' ) {
+						document.querySelector(
+							'.statistics-quizes'
+						).textContent = v.item_count;
+					} else if ( v.course_status == 'lp_assignment' ) {
+						document.querySelector(
+							'.statistics-assignment'
+						).textContent = v.item_count;
+					}
+					console.log( v );
+				}
+				console.log( data );
+			} )
+			.catch( ( err ) => {
+				console.log( err );
+			} )
+			.finally( () => {} );
+	};
 	const generateChart = ( chartEle = '', data = [] ) => {
 		let canvas = document.getElementById( chartEle );
 		const chart_data = {
@@ -254,6 +336,8 @@ document.addEventListener( 'DOMContentLoaded', function () {
 						document.querySelector( '.top-course-sold' ).innerHTML =
 							'';
 						overviewLoadData( filterType );
+					} else if ( elementLoad.value == 'courses-statistics' ) {
+						courseLoadData( filterType );
 					}
 				}
 			}
@@ -284,6 +368,8 @@ document.addEventListener( 'DOMContentLoaded', function () {
 						document.querySelector( '.top-course-sold' ).innerHTML =
 							'';
 						overviewLoadData( 'custom', `${ time1 }+${ time2 }` );
+					} else if ( elementLoad.value == 'courses-statistics' ) {
+						courseLoadData( 'custom', `${ time1 }+${ time2 }` );
 					}
 				}
 			}

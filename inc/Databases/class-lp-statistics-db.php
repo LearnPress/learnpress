@@ -146,7 +146,7 @@ class LP_Statistics_DB extends LP_Database {
 			throw new Exception( 'Day must be greater than 2 days.', 'learnpress' );
 		}
 		if ( $is_until ) {
-			$filter->where[] = $this->wpdb->prepare( "AND $time_field <= DATE_ADD(CURDATE())" );
+			$filter->where[] = $this->wpdb->prepare( "AND $time_field <= CURDATE()" );
 		} else {
 			$filter->where[] = $this->wpdb->prepare( "AND $time_field >= DATE_ADD(CURDATE(), INTERVAL -%d DAY)", $value );
 		}
@@ -178,7 +178,7 @@ class LP_Statistics_DB extends LP_Database {
 			throw new Exception( 'Values must be greater than 2 months.', 'learnpress' );
 		}
 		if ( $is_until ) {
-			$filter->where[] = $this->wpdb->prepare( "AND $time_field <= DATE_ADD(CURDATE())" );
+			$filter->where[] = $this->wpdb->prepare( "AND $time_field <= CURDATE()" );
 		} else {
 			$filter->where[] = $this->wpdb->prepare( "AND EXTRACT(YEAR_MONTH FROM $time_field) >= EXTRACT(YEAR_MONTH FROM DATE_ADD(CURDATE(), INTERVAL -%d MONTH))", $value );
 		}
@@ -576,8 +576,8 @@ class LP_Statistics_DB extends LP_Database {
 		$filter->join[]           = "INNER JOIN $usermeta_table AS um ON um.user_id = u.ID";
 		$time_field               = 'u.user_registered';
 		$filter->where[]          = $this->wpdb->prepare( 'AND um.meta_key=%s', 'wp_capabilities' );
-		$filter->where[]          = $this->wpdb->prepare( 'AND um.meta_value LIKE CONCAT("%",%s,"%")', ADMIN_ROLE );
-		$filter->where[]          = $this->wpdb->prepare( 'OR um.meta_value LIKE CONCAT("%",%s,"%")', LP_TEACHER_ROLE );
+		$filter->where[]          = $this->wpdb->prepare( "AND um.meta_value LIKE CONCAT('%',%s,'%')", ADMIN_ROLE );
+		$filter->where[]          = $this->wpdb->prepare( "OR um.meta_value LIKE CONCAT('%',%s,'%')", LP_TEACHER_ROLE );
 		$filter                   = $this->filter_time( $filter, $type, $time_field, $value, true );
 		$filter->query_count      = true;
 		$result                   = $this->execute( $filter );
@@ -686,9 +686,9 @@ class LP_Statistics_DB extends LP_Database {
 		$time_field               = 'p.post_date';
 		$filter                   = $this->filter_time( $filter, $type, $time_field, $value );
 		if ( class_exists( 'LP_Assignment' ) ) {
-			$filter->where[] = $this->wpdb->prepare( 'AND p.post_type IN (%s, %s, %s)', LP_LESSON_CPT, LP_QUESTION_CPT, LP_ASSIGNMENT_CPT );
+			$filter->where[] = $this->wpdb->prepare( 'AND p.post_type IN (%s, %s, %s)', LP_LESSON_CPT, LP_QUIZ_CPT, LP_ASSIGNMENT_CPT );
 		} else {
-			$filter->where[] = $this->wpdb->prepare( 'AND p.post_type IN (%s, %s)', LP_LESSON_CPT, LP_QUESTION_CPT );
+			$filter->where[] = $this->wpdb->prepare( 'AND p.post_type IN (%s, %s)', LP_LESSON_CPT, LP_QUIZ_CPT );
 		}
 		$filter->where[]         = $this->wpdb->prepare( 'AND p.post_status IN(%s,%s,%s)', 'publish', 'pending', 'future' );
 		$filter->group_by        = 'p.post_type';

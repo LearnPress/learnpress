@@ -28,7 +28,20 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'get_order_statistics' ),
 					'permission_callback' => array( $this, 'permission_check' ),
-					// 'permission_callback' => '__return_true',
+				),
+			),
+			'course-statistics'    => array(
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'get_courses_statistics' ),
+					'permission_callback' => array( $this, 'permission_check' ),
+				),
+			),
+			'user-statistics'      => array(
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'get_users_statistics' ),
+					'permission_callback' => array( $this, 'permission_check' ),
 				),
 			),
 		);
@@ -86,6 +99,72 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 			$data                     = array(
 				'statistics' => $statistics,
 				'chart_data' => $chart_data,
+			);
+			$response->data           = $data;
+			$response->status         = 'success';
+		} catch ( Throwable $e ) {
+			$response->message = $e->getMessage();
+			$response->status  = 'error';
+		}
+		return rest_ensure_response( $response );
+	}
+	public function get_courses_statistics( $request ) {
+		$response = new LP_REST_Response();
+		try {
+			$params                   = $request->get_params();
+			$params                   = LP_Helper::sanitize_params_submitted( $params );
+			$filter                   = $this->get_statistics_filter( $params );
+			$lp_statistic_db          = LP_Statistics_DB::getInstance();
+			$published_course         = $lp_statistic_db->get_published_course_data( $filter['filter_type'], $filter['time'] );
+			$courses                  = $lp_statistic_db->get_course_count_by_statuses( $filter['filter_type'], $filter['time'] );
+			$items                    = $lp_statistic_db->get_course_items_count( $filter['filter_type'], $filter['time'] );
+			$chart_data               = $this->process_chart_data( $filter, $published_course );
+			$chart_data['line_label'] = __( 'Published Courses', 'learnpress' );
+			$data                     = array(
+				'courses'    => $courses,
+				'items'      => $items,
+				'chart_data' => $chart_data,
+			);
+			$response->data           = $data;
+			$response->status         = 'success';
+		} catch ( Throwable $e ) {
+			$response->message = $e->getMessage();
+			$response->status  = 'error';
+		}
+		return rest_ensure_response( $response );
+	}
+	public function get_users_statistics( $request ) {
+		$response = new LP_REST_Response();
+		try {
+			$params                  = $request->get_params();
+			$params                  = LP_Helper::sanitize_params_submitted( $params );
+			$filter                  = $this->get_statistics_filter( $params );
+			$lp_statistic_db         = LP_Statistics_DB::getInstance();
+			$user_registers          = $lp_statistic_db->get_user_registered_data( $filter['filter_type'], $filter['time'] );
+			$user_course_statused    = $lp_statistic_db->get_users_by_user_item_graduation_statuses( $filter['filter_type'], $filter['time'] );
+			$user_not_start_course   = $lp_statistic_db->get_users_not_started_any_course( $filter['filter_type'], $filter['time'] );
+			$top_enrolled_courses    = $lp_statistic_db->get_top_enrolled_courses( $filter['filter_type'], $filter['time'] );
+			$chart_data              = $this->process_chart_data( $filter, $user_registers );
+			$top_enrolled_instructor = [];
+			if ( ! empty( $top_enrolled_courses ) ) {
+				foreach ( $top_enrolled_courses as $key => $course ) {
+					if ( ! array_key_exists( $course->instructor_id, $top_enrolled_instructor ) ) {
+						$top_enrolled_instructor[ $course->instructor_id ] = array(
+							'name'     => $course->instructor_name,
+							'students' => (int) $course->enrolled_user,
+						);
+					} else {
+						$top_enrolled_instructor[ $course->instructor_id ]['students'] += (int) $course->enrolled_user;
+					}
+				}
+			}
+			$chart_data['line_label'] = __( 'Published Courses', 'learnpress' );
+			$data                     = array(
+				'chart_data'              => $chart_data,
+				'user_course_statused'    => $user_course_statused,
+				'user_not_start_course'   => $user_not_start_course,
+				'top_enrolled_courses'    => $top_enrolled_courses,
+				'top_enrolled_instructor' => $top_enrolled_instructor,
 			);
 			$response->data           = $data;
 			$response->status         = 'success';

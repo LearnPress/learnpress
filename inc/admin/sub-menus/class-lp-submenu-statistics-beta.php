@@ -32,7 +32,7 @@ class LP_Submenu_Statistics_Beta extends LP_Abstract_Submenu {
 	}
 
 	public function page_content_courses() {
-		// learn_press_admin_view( 'statistics/courses' );
+		learn_press_admin_view( 'statistics-beta/courses' );
 	}
 
 	public function page_content_overview() {
@@ -40,7 +40,7 @@ class LP_Submenu_Statistics_Beta extends LP_Abstract_Submenu {
 	}
 
 	public function page_content_users() {
-		// learn_press_admin_view( 'statistics/users' );
+		learn_press_admin_view( 'statistics-beta/users' );
 	}
 
 	public function page_content_orders() {
