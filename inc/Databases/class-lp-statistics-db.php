@@ -798,6 +798,7 @@ class LP_Statistics_DB extends LP_Database {
 		$filter->only_fields[]    = 'ui.item_id as course_id';
 		$filter->only_fields[]    = 'COUNT(ui.user_item_id) as enrolled_user';
 		$filter->only_fields[]    = 'p.post_author as instructor_id';
+		$filter->only_fields[]    = 'p.post_title as course_name';
 		$filter->only_fields[]    = 'u.display_name as instructor_name';
 		$filter->limit            = ! $limit ? 10 : $limit;
 		$time_field               = 'ui.start_time';

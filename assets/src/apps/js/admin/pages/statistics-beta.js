@@ -11,6 +11,8 @@ document.addEventListener( 'DOMContentLoaded', function () {
 			overviewLoadData();
 		} else if ( elementLoad.value == 'courses-statistics' ) {
 			courseLoadData();
+		} else if ( elementLoad.value == 'users-statistics' ) {
+			userLoadData();
 		}
 	};
 	const overviewLoadData = ( filterType = 'today', date = '' ) => {
@@ -33,7 +35,7 @@ document.addEventListener( 'DOMContentLoaded', function () {
 					chartEle = document.getElementById(
 						'net-sales-chart-content'
 					);
-				chartEle.removeAttribute( 'hidden' );
+				chartEle.style.display = 'block';
 				loadLpSkeletonAnimations();
 				if ( chart === undefined ) {
 					chart = generateChart(
@@ -98,7 +100,10 @@ document.addEventListener( 'DOMContentLoaded', function () {
 				if ( status === 'error' ) {
 					throw new Error( message || 'Error' );
 				}
-				let chart = Chart.getChart( 'orders-chart-content' );
+				let chart = Chart.getChart( 'orders-chart-content' ),
+					chartEle = document.getElementById(
+						'orders-chart-content'
+					);
 
 				if ( chart === undefined ) {
 					chart = generateChart(
@@ -112,6 +117,7 @@ document.addEventListener( 'DOMContentLoaded', function () {
 						data.chart_data.x_label;
 					chart.update();
 				}
+				chartEle.style.display = 'block';
 				if ( data.statistics.length > 0 ) {
 					let totalOrder = 0;
 					for ( let i = data.statistics.length - 1; i >= 0; i-- ) {
@@ -146,24 +152,11 @@ document.addEventListener( 'DOMContentLoaded', function () {
 					document.querySelector( '.total-order-count' ).textContent =
 						totalOrder;
 				} else {
-					document.querySelector(
-						'.completed-order-count'
-					).textContent = 0;
-					document.querySelector(
-						'.pending-order-count'
-					).textContent = 0;
-					document.querySelector(
-						'.processing-order-count'
-					).textContent = 0;
-					document.querySelector(
-						'.cancelled-order-count'
-					).textContent = 0;
-					document.querySelector(
-						'.failed-order-count'
-					).textContent = 0;
-					document.querySelector(
-						'.total-order-count'
-					).textContent = 0;
+					document
+						.querySelectorAll( '.statistics-item-count' )
+						.forEach( ( ele ) => {
+							ele.textContent = 0;
+						} );
 				}
 			} )
 			.catch( ( err ) => {
@@ -188,7 +181,7 @@ document.addEventListener( 'DOMContentLoaded', function () {
 					chartEle = document.getElementById(
 						'course-chart-content'
 					);
-				chartEle.removeAttribute( 'hidden' );
+				chartEle.style.display = 'block';
 				loadLpSkeletonAnimations();
 				if ( chart === undefined ) {
 					chart = generateChart(
@@ -202,49 +195,158 @@ document.addEventListener( 'DOMContentLoaded', function () {
 						data.chart_data.x_label;
 					chart.update();
 				}
-				let totalCourse = 0;
-
-				for ( let i = 0; i < data.courses.length; i++ ) {
-					let v = data.courses[ i ];
-					if ( v.course_status == 'publish' ) {
-						document.querySelector(
-							'.statistics-published-courses'
-						).textContent = v.course_count;
-						totalCourse += ~~v.course_count;
-					} else if ( v.course_status == 'pending' ) {
-						document.querySelector(
-							'.statistics-pending-courses'
-						).textContent = v.course_count;
-						totalCourse += ~~v.course_count;
-					} else if ( v.course_status == 'future' ) {
-						document.querySelector(
-							'.statistics-future-courses'
-						).textContent = v.course_count;
-						totalCourse += ~~v.course_count;
+				if ( data.courses.length > 0 ) {
+					let totalCourse = 0;
+					for ( let i = 0; i < data.courses.length; i++ ) {
+						let v = data.courses[ i ];
+						if ( v.course_status == 'publish' ) {
+							document.querySelector(
+								'.statistics-courses.published'
+							).textContent = v.course_count;
+							totalCourse += ~~v.course_count;
+						} else if ( v.course_status == 'pending' ) {
+							document.querySelector(
+								'.statistics-courses.pending'
+							).textContent = v.course_count;
+							totalCourse += ~~v.course_count;
+						} else if ( v.course_status == 'future' ) {
+							document.querySelector(
+								'.statistics-courses.future'
+							).textContent = v.course_count;
+							totalCourse += ~~v.course_count;
+						}
 					}
-					console.log( v );
+					document.querySelector(
+						'.statistics-courses.total'
+					).textContent = totalCourse;
+				} else {
+					document
+						.querySelectorAll( '.statistics-courses' )
+						.forEach( ( ele ) => {
+							ele.textContent = 0;
+						} );
 				}
+				if ( data.items.length > 0 ) {
+					for ( let i = 0; i < data.items.length; i++ ) {
+						let v = data.items[ i ];
+						if ( v.item_type == 'lp_lesson' ) {
+							document.querySelector(
+								'.statistics-items.lessons'
+							).textContent = v.item_count;
+						} else if ( v.item_type == 'lp_quiz' ) {
+							document.querySelector(
+								'.statistics-items.quizes'
+							).textContent = v.item_count;
+						} else if ( v.item_type == 'lp_assignment' ) {
+							document.querySelector(
+								'.statistics-items.assignment'
+							).textContent = v.item_count;
+						}
+					}
+				} else {
+					document
+						.querySelectorAll( '.statistics-items' )
+						.forEach( ( ele ) => {
+							ele.textContent = 0;
+						} );
+				}
+			} )
+			.catch( ( err ) => {
+				console.log( err );
+			} )
+			.finally( () => {} );
+	};
+	const userLoadData = ( filterType = 'today', date = '' ) => {
+		wp.apiFetch( {
+			path: wp.url.addQueryArgs( 'lp/v1/statistics/user-statistics', {
+				filtertype: filterType,
+				date: date,
+			} ),
+			method: 'GET',
+		} )
+			.then( ( res ) => {
+				const { data, status, message } = res;
+				if ( status === 'error' ) {
+					throw new Error( message || 'Error' );
+				}
+				let chart = Chart.getChart( 'user-chart-content' ),
+					chartEle = document.getElementById( 'user-chart-content' );
+				chartEle.style.display = 'block';
+				loadLpSkeletonAnimations();
+				if ( chart === undefined ) {
+					chart = generateChart(
+						'user-chart-content',
+						data.chart_data
+					);
+				} else {
+					chart.data.labels = data.chart_data.labels;
+					chart.data.datasets[ 0 ].data = data.chart_data.data;
+					chart.config.options.scales.x.title.text =
+						data.chart_data.x_label;
+					chart.update();
+				}
+				let totalUserActived = 0;
 				document.querySelector(
-					'.statistics-total-courses'
-				).textContent = totalCourse;
-				for ( let i = 0; i < data.items.length; i++ ) {
-					let v = data.items[ i ];
-					if ( v.item_type == 'lp_lesson' ) {
-						document.querySelector(
-							'.statistics-lessons'
-						).textContent = v.item_count;
-					} else if ( v.item_type == 'lp_quiz' ) {
-						document.querySelector(
-							'.statistics-quizes'
-						).textContent = v.item_count;
-					} else if ( v.course_status == 'lp_assignment' ) {
-						document.querySelector(
-							'.statistics-assignment'
-						).textContent = v.item_count;
+					'.statistics-instructors'
+				).textContent = data.total_instructors;
+				document.querySelector( '.statistics-students' ).textContent =
+					data.total_students;
+				document.querySelector(
+					'.statistics-user-actived'
+				).textContent = data.total_instructors + data.total_students;
+				document.querySelector(
+					'.statistics-not-started'
+				).textContent = data.user_not_start_course;
+				if ( data.user_course_statused.length > 0 ) {
+					let userGraduration = data.user_course_statused,
+						userFinished = 0;
+					for ( let i = 0; i < userGraduration.length; i++ ) {
+						if (
+							userGraduration[ i ].graduation_status ==
+							'in-progress'
+						) {
+							document.querySelector(
+								'.statistics-graduration.in-progress'
+							).textContent = userGraduration[ i ].user_count;
+						} else {
+							userFinished += ~~userGraduration[ i ].user_count;
+						}
 					}
-					console.log( v );
+					document.querySelector(
+						'.statistics-graduration.finished'
+					).textContent = userFinished;
+				} else {
+					document
+						.querySelectorAll( '.statistics-graduration' )
+						.forEach( ( ele ) => {
+							ele.textContent = 0;
+						} );
 				}
-				console.log( data );
+				if ( Object.keys( data.top_enrolled_instructor ).length > 0 ) {
+					let topInstructor = data.top_enrolled_instructor,
+						topInstructorWrap = document.querySelector(
+							'.top-intructor-by-student'
+						);
+					Object.keys( topInstructor ).forEach( function ( key ) {
+						// console.log(key, topInstructor[key]);
+						topInstructorWrap.insertAdjacentHTML(
+							'beforeend',
+							`<li>${ topInstructor[ key ].name } - ${ topInstructor[ key ].students }</li>`
+						);
+					} );
+				}
+				if ( data.top_enrolled_courses.length > 0 ) {
+					let topCourse = data.top_enrolled_courses,
+						topCourseWrap = document.querySelector(
+							'.top-course-by-student'
+						);
+					for ( let i = 0; i < topCourse.length; i++ ) {
+						topCourseWrap.insertAdjacentHTML(
+							'beforeend',
+							`<li>${ topCourse[ i ].course_name } - ${ topCourse[ i ].enrolled_user }</li>`
+						);
+					}
+				}
 			} )
 			.catch( ( err ) => {
 				console.log( err );
@@ -312,8 +414,12 @@ document.addEventListener( 'DOMContentLoaded', function () {
 				} );
 		}
 	};
-	document.querySelectorAll( '.btn-filter-time' ).forEach( ( btn ) =>
+	document.querySelectorAll( '.btn-filter-time' ).forEach( ( btn ) => {
 		btn.addEventListener( 'click', () => {
+			document
+				.querySelectorAll( '.btn-filter-time' )
+				.forEach( ( ele ) => ele.classList.remove( 'active' ) );
+			btn.classList.add( 'active' );
 			let filterType = btn.dataset.filter;
 			if ( filterType == 'custom' ) {
 				document.querySelector( '.custom-filter-time' ).style.display =
@@ -323,9 +429,9 @@ document.addEventListener( 'DOMContentLoaded', function () {
 					'input.statistics-type'
 				);
 				if ( elementLoad ) {
-					document
-						.querySelector( '.statistics-content canvas' )
-						.setAttribute( 'hidden', true );
+					document.querySelector(
+						'.statistics-content canvas'
+					).style.display = 'none';
 					loadLpSkeletonAnimations( true );
 					if ( elementLoad.value == 'orders-statistics' ) {
 						orderLoadData( filterType );
@@ -338,11 +444,19 @@ document.addEventListener( 'DOMContentLoaded', function () {
 						overviewLoadData( filterType );
 					} else if ( elementLoad.value == 'courses-statistics' ) {
 						courseLoadData( filterType );
+					} else if ( elementLoad.value == 'users-statistics' ) {
+						document.querySelector(
+							'.top-course-by-student'
+						).innerHTML = '';
+						document.querySelector(
+							'.top-intructor-by-student'
+						).innerHTML = '';
+						userLoadData( filterType );
 					}
 				}
 			}
-		} )
-	);
+		} );
+	} );
 	document
 		.querySelector( '.custom-filter-btn' )
 		.addEventListener( 'click', ( e ) => {
@@ -354,9 +468,9 @@ document.addEventListener( 'DOMContentLoaded', function () {
 				let elementLoad = document.querySelector(
 					'input.statistics-type'
 				);
-				document
-					.querySelector( '.statistics-content canvas' )
-					.setAttribute( 'hidden', true );
+				document.querySelector(
+					'.statistics-content canvas'
+				).style.display = 'none';
 				loadLpSkeletonAnimations( true );
 				if ( elementLoad ) {
 					if ( elementLoad.value == 'orders-statistics' ) {
@@ -370,6 +484,8 @@ document.addEventListener( 'DOMContentLoaded', function () {
 						overviewLoadData( 'custom', `${ time1 }+${ time2 }` );
 					} else if ( elementLoad.value == 'courses-statistics' ) {
 						courseLoadData( 'custom', `${ time1 }+${ time2 }` );
+					} else if ( elementLoad.value == 'users-statistics' ) {
+						userLoadData( 'custom', `${ time1 }+${ time2 }` );
 					}
 				}
 			}

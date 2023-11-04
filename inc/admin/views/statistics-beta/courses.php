@@ -7,7 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 <div class="lp-admin-statistics-tab-content">
 	<div class="btn-group btn-group-filter">
-		<button class="btn-filter-time" type="button" data-filter="today" ><?php _e( 'Today', 'learnpress' ); ?></button>
+		<button class="btn-filter-time active" type="button" data-filter="today" ><?php _e( 'Today', 'learnpress' ); ?></button>
 		<!-- <button class="btn-filter-time" type="button" data-filter="yesterday" ><?php _e( 'Yesterday', 'learnpress' ); ?></button> -->
 		<button class="btn-filter-time" type="button" data-filter="last7days" ><?php _e( 'Last 7 days', 'learnpress' ); ?></button>
 		<button class="btn-filter-time" type="button" data-filter="last30days" ><?php _e( 'Last 30 days', 'learnpress' ); ?></button>
@@ -26,39 +26,39 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<div class="statistics-group">
 			<div class="statistics-item">
 				<span class="statistics-item-title"><?php _e( 'Total Courses', 'learnpress' ); ?></span>
-				<span class="statistics-item-count statistics-total-courses">0</span>
+				<span class="statistics-item-count statistics-courses total">0</span>
 			</div>
 			<div class="statistics-item">
 				<span class="statistics-item-title"><?php _e( 'Published Courses', 'learnpress' ); ?></span>
-				<span class="statistics-item-count statistics-published-courses">0</span>
+				<span class="statistics-item-count statistics-courses published">0</span>
 			</div>
 			<div class="statistics-item">
 				<span class="statistics-item-title"><?php _e( 'Pending Courses', 'learnpress' ); ?></span>
-				<span class="statistics-item-count statistics-pending-courses">0</span>
+				<span class="statistics-item-count statistics-courses pending">0</span>
 			</div>
 			<div class="statistics-item">
 				<span class="statistics-item-title"><?php _e( 'Future Courses', 'learnpress' ); ?></span>
-				<span class="statistics-item-count statistics-future-courses">0</span>
+				<span class="statistics-item-count statistics-courses future">0</span>
 			</div>
 			<div class="statistics-item">
 				<span class="statistics-item-title"><?php _e( 'Lessons', 'learnpress' ); ?></span>
-				<span class="statistics-item-count statistics-lessons">0</span>
+				<span class="statistics-item-count statistics-items lessons">0</span>
 			</div>
 			<div class="statistics-item">
 				<span class="statistics-item-title"><?php _e( 'Quizes', 'learnpress' ); ?></span>
-				<span class="statistics-item-count statistics-quizes">0</span>
+				<span class="statistics-item-count statistics-items quizes">0</span>
 			</div>
-			<?php if ( class_exists( 'LP_Assignment' ) ): ?>
+			<?php if ( class_exists( 'LP_Assignment' ) ) : ?>
 				<div class="statistics-item">
 					<span class="statistics-item-title"><?php _e( 'Assginments', 'learnpress' ); ?></span>
-					<span class="statistics-item-count statistics-assignment">0</span>
+					<span class="statistics-item-count statistics-items assignment">0</span>
 				</div>
 			<?php endif; ?>
 		</div>
 		<h3 class="statistics-title"><?php _e( 'Published Courses', 'learnpress' ); ?></h3>
 		<div id="course-chart" class="statistics-chart-wrapper">
 			<?php lp_skeleton_animation_html( 10, 100 ); ?>
-			<canvas id="course-chart-content" hidden>
+			<canvas id="course-chart-content" style="display: none;">
 				
 			</canvas>
 		</div>

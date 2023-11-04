@@ -144,8 +144,10 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 			$user_course_statused    = $lp_statistic_db->get_users_by_user_item_graduation_statuses( $filter['filter_type'], $filter['time'] );
 			$user_not_start_course   = $lp_statistic_db->get_users_not_started_any_course( $filter['filter_type'], $filter['time'] );
 			$top_enrolled_courses    = $lp_statistic_db->get_top_enrolled_courses( $filter['filter_type'], $filter['time'] );
+			$total_instructors       = $lp_statistic_db->get_total_instructor_created( $filter['filter_type'], $filter['time'] );
+			$total_students          = $lp_statistic_db->get_total_student_created( $filter['filter_type'], $filter['time'] );
 			$chart_data              = $this->process_chart_data( $filter, $user_registers );
-			$top_enrolled_instructor = [];
+			$top_enrolled_instructor = array();
 			if ( ! empty( $top_enrolled_courses ) ) {
 				foreach ( $top_enrolled_courses as $key => $course ) {
 					if ( ! array_key_exists( $course->instructor_id, $top_enrolled_instructor ) ) {
@@ -158,13 +160,15 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 					}
 				}
 			}
-			$chart_data['line_label'] = __( 'Published Courses', 'learnpress' );
+			$chart_data['line_label'] = __( 'User registed', 'learnpress' );
 			$data                     = array(
 				'chart_data'              => $chart_data,
 				'user_course_statused'    => $user_course_statused,
 				'user_not_start_course'   => $user_not_start_course,
 				'top_enrolled_courses'    => $top_enrolled_courses,
 				'top_enrolled_instructor' => $top_enrolled_instructor,
+				'total_instructors'       => $total_instructors,
+				'total_students'          => $total_students,
 			);
 			$response->data           = $data;
 			$response->status         = 'success';

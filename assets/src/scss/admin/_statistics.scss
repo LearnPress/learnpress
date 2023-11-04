@@ -19,13 +19,18 @@
 			padding: 10px 24px;
 			cursor: pointer;
 			float: left;
-			background: linear-gradient(0deg, #FFFFFF, #FFFFFF);
+			background: #fff;
 		}
 		&:after {
 			content: "";
 			clear: both;
 			display: table;
 			height: 20px;
+		}
+		.btn-filter-time.active {
+			background: #284BCA;
+			color: #fff;
+			border: 1px solid #284BCA;
 		}
 	}
 	.custom-filter-time {
@@ -45,6 +50,15 @@
 				display: flex;
 				flex-direction: column;
 				text-align: center;
+				.statistics-item-title {
+					font-size: 16px;
+					line-height: 1.2;
+				}
+				.statistics-item-count {
+					font-size: 24px;
+					line-height: 1.2;
+					font-weight: 700;
+				}
 			}
 			display: flex;
 		    justify-content: space-evenly;
@@ -53,7 +67,6 @@
 		.statistics-title {
 			color: #000;
 			text-align: center;
-			font-family: Inter;
 			font-size: 24px;
 			font-style: normal;
 			font-weight: 700;
@@ -74,6 +87,16 @@
 		    		padding: 15px;
 		    	}
 		    }
+		    li {
+		    	font-size: 16px;
+		    	line-height: 1.2;
+		    	font-weight: 400;
+		    }
+		}
+		.top-course-analytics-title{
+			font-size: 24px;
+			line-height: 1.2;
+			font-weight: 700;
 		}
 	}
 }

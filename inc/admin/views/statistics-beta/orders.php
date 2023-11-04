@@ -7,7 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 <div class="lp-admin-statistics-tab-content">
 	<div class="btn-group btn-group-filter">
-		<button class="btn-filter-time" type="button" data-filter="today" ><?php _e( 'Today', 'learnpress' ); ?></button>
+		<button class="btn-filter-time active" type="button" data-filter="today" ><?php _e( 'Today', 'learnpress' ); ?></button>
 		<!-- <button class="btn-filter-time" type="button" data-filter="yesterday" ><?php _e( 'Yesterday', 'learnpress' ); ?></button> -->
 		<button class="btn-filter-time" type="button" data-filter="last7days" ><?php _e( 'Last 7 days', 'learnpress' ); ?></button>
 		<button class="btn-filter-time" type="button" data-filter="last30days" ><?php _e( 'Last 30 days', 'learnpress' ); ?></button>
@@ -51,7 +51,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		</div>
 		<h3 class="statistics-title"><?php _e( 'Completed Orders', 'learnpress' ); ?></h3>
 		<div id="orders-chart" class="statistics-chart-wrapper">
-			<canvas id="orders-chart-content">
+			<canvas id="orders-chart-content" style="display: none;">
 				
 			</canvas>
 		</div>

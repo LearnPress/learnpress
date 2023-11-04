@@ -7,7 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 ?>
 <div class="lp-admin-statistics-tab-content">
 	<div class="btn-group btn-group-filter">
-		<button class="btn-filter-time" type="button" data-filter="today" ><?php _e( 'Today', 'learnpress' ); ?></button>
+		<button class="btn-filter-time active" type="button" data-filter="today" ><?php _e( 'Today', 'learnpress' ); ?></button>
 		<!-- <button class="btn-filter-time" type="button" data-filter="yesterday" ><?php _e( 'Yesterday', 'learnpress' ); ?></button> -->
 		<button class="btn-filter-time" type="button" data-filter="last7days" ><?php _e( 'Last 7 days', 'learnpress' ); ?></button>
 		<button class="btn-filter-time" type="button" data-filter="last30days" ><?php _e( 'Last 30 days', 'learnpress' ); ?></button>
@@ -48,7 +48,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<h3 class="statistics-title"><?php _e( 'Net Sales', 'learnpress' ); ?></h3>
 		<div id="net-sales-chart" class="statistics-chart-wrapper">
 			<?php lp_skeleton_animation_html( 10, 100 ); ?>
-			<canvas id="net-sales-chart-content" hidden>
+			<canvas id="net-sales-chart-content" style="display: none;">
 				
 			</canvas>
 		</div>
