@@ -279,10 +279,12 @@ class FilterCourseTemplate {
 
 			$arg_query_terms = [
 				'hide_empty' => true,
-				'parent'     => 0,
 			];
+
 			if ( ! empty( $category_current ) ) {
 				$arg_query_terms['parent'] = $category_current;
+			} else {
+				$arg_query_terms['parent'] = 0;
 			}
 
 			$terms = get_terms(
@@ -291,7 +293,19 @@ class FilterCourseTemplate {
 			);
 
 			if ( empty( $terms ) ) {
-				return $content;
+				if ( ! empty( $category_current ) ) {
+					$arg_query_terms['parent'] = 0;
+					$terms                     = get_terms(
+						LP_COURSE_CATEGORY_TAX,
+						$arg_query_terms
+					);
+
+					if ( empty( $terms ) ) {
+						return $content;
+					}
+				} else {
+					return $content;
+				}
 			}
 
 			foreach ( $terms as $term ) {
