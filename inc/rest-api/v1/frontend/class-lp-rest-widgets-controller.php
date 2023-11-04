@@ -27,7 +27,7 @@ class LP_REST_Widgets_Controller extends LP_Abstract_REST_Controller {
 		parent::register_routes();
 	}
 
-	public function get_content_widgets( WP_REST_Request $request ) {
+	public function get_content_widgets( WP_REST_Request $request ): LP_REST_Response {
 		global $wp_widget_factory;
 
 		$response       = new LP_REST_Response();
@@ -66,6 +66,6 @@ class LP_REST_Widgets_Controller extends LP_Abstract_REST_Controller {
 			$response->message = $th->getMessage();
 		}
 
-		return rest_ensure_response( $response );
+		return $response;
 	}
 }

@@ -294,7 +294,6 @@ class FilterCourseTemplate {
 				return $content;
 			}
 
-			ob_start();
 			foreach ( $terms as $term ) {
 				$html_wrapper = [
 					'<div class="lp-course-filter__field">' => '</div>',
@@ -319,11 +318,10 @@ class FilterCourseTemplate {
 
 				ob_start();
 				Template::instance()->print_sections( $sections );
-				$content_item = ob_get_clean();
-				echo Template::instance()->nest_elements( $html_wrapper, $content_item );
+				$content .= Template::instance()->nest_elements( $html_wrapper, ob_get_clean() );
 			}
 
-			$content = $this->html_item( esc_html__( 'Categories', 'learnpress' ), ob_get_clean() );
+			$content = $this->html_item( esc_html__( 'Categories', 'learnpress' ), $content );
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
@@ -378,11 +376,9 @@ class FilterCourseTemplate {
 
 				ob_start();
 				Template::instance()->print_sections( $sections );
-				$content_item = ob_get_clean();
-				echo Template::instance()->nest_elements( $html_wrapper, $content_item );
+				$content .= Template::instance()->nest_elements( $html_wrapper, ob_get_clean() );
 			}
 
-			$content = ob_get_clean();
 			$content = $this->html_item( esc_html__( 'Tags', 'learnpress' ), $content );
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
