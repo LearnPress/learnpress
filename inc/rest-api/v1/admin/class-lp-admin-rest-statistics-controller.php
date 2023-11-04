@@ -48,6 +48,13 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 
 		parent::register_routes();
 	}
+	/**
+	 * Gets the overviews statistics.
+	 *
+	 * @param       $request  The request
+	 *
+	 * @return      The overviews statistics.
+	 */
 	public function get_overviews_statistics( $request ) {
 		$response = new LP_REST_Response();
 		try {
@@ -178,6 +185,14 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 		}
 		return rest_ensure_response( $response );
 	}
+	/**
+	 * Process data use for chart js
+	 *
+	 * @param      array  $filter      The filter in get_statistics_filter
+	 * @param      array  $input_data  The input data ( data from DB )
+	 *
+	 * @return     array  $chart_data  Data use for chart js
+	 */
 	public function process_chart_data( array $filter, array $input_data ) {
 		$chart_data = array();
 		$data       = array();
@@ -239,7 +254,13 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 
 		return $chart_data;
 	}
-
+	/**
+	 * Gets the statistics filter.
+	 *
+	 * @param      http request  $params  The parameters
+	 *
+	 * @return     array   The statistics filter. use for process data
+	 */
 	public function get_statistics_filter( $params ) {
 		$filter     = [];
 		$filtertype = $params['filtertype'] ?? 'today';
@@ -281,7 +302,13 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 		}
 		return $filter;
 	}
-
+	/**
+	 * process data of a date ( in 24h )
+	 *
+	 * @param      array  $input_data  The input data
+	 *
+	 * @return     array  ( description_of_the_return_value )
+	 */
 	public function process_date_data( array $input_data ) {
 		$data = array();
 		for ( $i = 0; $i < 24;$i++ ) {
@@ -297,7 +324,15 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 		}
 		return $data;
 	}
-
+	/**
+	 * process data of days since the last date, if dont have last date, last date is current date
+	 *
+	 * @param      int    $days        The days
+	 * @param      array  $input_data  The input data
+	 * @param      bool   $last_date   The last date
+	 *
+	 * @return     array  ( description_of_the_return_value )
+	 */
 	public function process_previous_days_data( int $days, array $input_data, $last_date = false ) {
 		$data = array();
 		for ( $i = $days; $i >= 0; $i-- ) {
@@ -314,7 +349,14 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 		}
 		return $data;
 	}
-
+	/**
+	 * process data of a month
+	 *
+	 * @param      array  $filter      The filter
+	 * @param      array  $input_data  The input data
+	 *
+	 * @return     array  ( description_of_the_return_value )
+	 */
 	public function process_month_data( array $filter, array $input_data ) {
 		$data    = array();
 		$max_day = cal_days_in_month( 0, date( 'm', strtotime( $filter['time'] ) ), date( 'Y', strtotime( $filter['time'] ) ) );
@@ -331,7 +373,15 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 		}
 		return $data;
 	}
-
+	/**
+	 * process data of months since the last date, if dont have last date, last date is current date
+	 *
+	 * @param      int    $months      The months
+	 * @param      array  $input_data  The input data
+	 * @param      bool   $last_date   The last date
+	 *
+	 * @return     array  ( description_of_the_return_value )
+	 */
 	public function process_previous_months_data( int $months, array $input_data, $last_date = false ) {
 		$data = array();
 		for ( $i = $months; $i >= 0; $i-- ) {
@@ -348,7 +398,13 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 		}
 		return $data;
 	}
-
+	/**
+	 *
+	 * @param      array  $dates       The dates
+	 * @param      array  $input_data  The input data
+	 *
+	 * @return     array  process data for date range 2-5 years
+	 */
 	public function process_quarters_data( array $dates, array $input_data ) {
 		$data       = array();
 		$start_time = strtotime( $dates[0] );
@@ -386,7 +442,13 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 		}
 		return $data;
 	}
-
+	/**
+	 * process data of a year
+	 *
+	 * @param      array  $input_data  data from DB
+	 *
+	 * @return     array  chart data
+	 */
 	public function process_year_data( array $input_data ) {
 		$data = array();
 		for ( $i = 1; $i <= 12; $i++ ) {
@@ -403,6 +465,15 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 		return $data;
 	}
 
+	/**
+	 * process data of years( when date range > 5 years )
+	 *
+	 * @param      int    $years       The years
+	 * @param      array  $input_data  The input data
+	 * @param      bool   $last_date   The last date
+	 *
+	 * @return     array  ( description_of_the_return_value )
+	 */
 	public function process_years_data( int $years, array $input_data, $last_date = false ) {
 		$data = array();
 		for ( $i = $years; $i >= 0; $i-- ) {
