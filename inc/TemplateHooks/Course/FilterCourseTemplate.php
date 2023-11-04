@@ -42,7 +42,7 @@ class FilterCourseTemplate {
 	 */
 	public function sections( array $data = [] ) {
 		wp_enqueue_script( 'lp-course-filter' );
-		ob_start();
+
 		try {
 			if ( ! isset( $data['fields'] ) ) {
 				$data['fields'] = [
@@ -82,9 +82,10 @@ class FilterCourseTemplate {
 					$sections[ $field ] = [ 'text_html' => $this->{'html_' . $field}( $data ) ];
 				}
 			}
+
+			ob_start();
 			Template::instance()->print_sections( $sections );
-			$content = ob_get_clean();
-			echo Template::instance()->nest_elements( $html_wrapper, $content );
+			echo Template::instance()->nest_elements( $html_wrapper, ob_get_clean() );
 		} catch ( Throwable $e ) {
 			ob_end_clean();
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
@@ -237,11 +238,10 @@ class FilterCourseTemplate {
 
 				ob_start();
 				Template::instance()->print_sections( $sections );
-				$content_item = ob_get_clean();
-				echo Template::instance()->nest_elements( $html_wrapper, $content_item );
+				$content .= Template::instance()->nest_elements( $html_wrapper, ob_get_clean() );
 			}
 
-			$content = $this->html_item( esc_html__( 'Price', 'learnpress' ), ob_get_clean() );
+			$content = $this->html_item( esc_html__( 'Price', 'learnpress' ), $content );
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
@@ -408,7 +408,6 @@ class FilterCourseTemplate {
 				)
 			);
 
-			ob_start();
 			foreach ( $instructors as $instructor ) {
 				$html_wrapper               = [
 					'<div class="lp-course-filter__field">' => '</div>',
@@ -442,13 +441,11 @@ class FilterCourseTemplate {
 
 				ob_start();
 				Template::instance()->print_sections( $sections );
-				$content_item = ob_get_clean();
-				echo Template::instance()->nest_elements( $html_wrapper, $content_item );
+				$content .= Template::instance()->nest_elements( $html_wrapper, ob_get_clean() );
 			}
 
-			$content = $this->html_item( esc_html__( 'Author', 'learnpress' ), ob_get_clean() );
+			$content = $this->html_item( esc_html__( 'Author', 'learnpress' ), $content );
 		} catch ( Throwable $e ) {
-			ob_end_clean();
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 
@@ -471,7 +468,6 @@ class FilterCourseTemplate {
 			$data_selected = explode( ',', $data_selected );
 			$fields        = lp_course_level();
 
-			ob_start();
 			foreach ( $fields as $key => $field ) {
 				$html_wrapper = [
 					'<div class="lp-course-filter__field">' => '</div>',
@@ -508,11 +504,10 @@ class FilterCourseTemplate {
 
 				ob_start();
 				Template::instance()->print_sections( $sections );
-				$content_item = ob_get_clean();
-				echo Template::instance()->nest_elements( $html_wrapper, $content_item );
+				$content .= Template::instance()->nest_elements( $html_wrapper, ob_get_clean() );
 			}
 
-			$content = $this->html_item( esc_html__( 'Levels', 'learnpress' ), ob_get_clean() );
+			$content = $this->html_item( esc_html__( 'Levels', 'learnpress' ), $content );
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
