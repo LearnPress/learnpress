@@ -15,4 +15,7 @@ export default {
 		apiSearchCourses: lpGlobalSettings.rest + 'lp/v1/admin/tools/search-course',
 		apiAssignUserCourse: lpGlobalSettings.rest + 'lp/v1/admin/tools/assign-user-course',
 	},
+	frontend: {
+		apiWidgets: lpGlobalSettings.lp_rest_url + 'lp/v1/widgets/api',
+	},
 };
