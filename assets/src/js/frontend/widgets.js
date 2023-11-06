@@ -10,7 +10,6 @@ function widgetRestAPI() {
 
 	const getResponse = ( ele ) => {
 		const widget = ele.dataset.widget ? JSON.parse( ele.dataset.widget ) : '';
-
 		const url = API.frontend.apiWidgets;
 		const paramsFetch = {
 			method: 'POST',

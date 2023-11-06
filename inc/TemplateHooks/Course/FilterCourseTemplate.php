@@ -213,17 +213,22 @@ class FilterCourseTemplate {
 				]
 			);
 
-			ob_start();
 			foreach ( $fields as $key => $field ) {
 				$html_wrapper = [
 					'<div class="lp-course-filter__field">' => '</div>',
 				];
 
-				$value   = "on_{$key}";
-				$checked = in_array( $value, $data_selected ) ? 'checked' : '';
-				$input   = sprintf( '<input name="sort_by" type="checkbox" value="%s" %s>', esc_attr( $value ), esc_attr( $checked ) );
-				$label   = sprintf( '<label for="">%s</label>', wp_kses_post( $field['label'] ) );
-				$count   = sprintf( '<span class="count">%s</span>', esc_html( $field['count'] ) );
+				$value    = "on_{$key}";
+				$checked  = in_array( $value, $data_selected ) ? 'checked' : '';
+				$disabled = $field['count'] > 0 ? '' : 'disabled';
+				$input    = sprintf(
+					'<input name="sort_by" type="checkbox" value="%1$s" %2$s %3$s>',
+					esc_attr( $value ),
+					esc_attr( $checked ),
+					esc_attr( $disabled )
+				);
+				$label    = sprintf( '<label for="">%s</label>', wp_kses_post( $field['label'] ) );
+				$count    = sprintf( '<span class="count">%s</span>', esc_html( $field['count'] ) );
 
 				$sections = apply_filters(
 					'learn-press/filter-courses/price/sections',
@@ -499,10 +504,16 @@ class FilterCourseTemplate {
 				$total_courses       = 0;
 				LP_Course::get_courses( $filter, $total_courses );
 
-				$checked = in_array( $value, $data_selected ) ? 'checked' : '';
-				$input   = sprintf( '<input name="c_level" type="checkbox" value="%s" %s>', esc_attr( $value ), esc_attr( $checked ) );
-				$label   = sprintf( '<label for="">%s</label>', esc_html( $field ) );
-				$count   = sprintf( '<span class="count">%s</span>', esc_html( $total_courses ) );
+				$checked  = in_array( $value, $data_selected ) ? 'checked' : '';
+				$disabled = $total_courses > 0 ? '' : 'disabled';
+				$input    = sprintf(
+					'<input name="c_level" type="checkbox" value="%1$s" %2$s %3$s>',
+					esc_attr( $value ),
+					esc_attr( $checked ),
+					esc_attr( $disabled )
+				);
+				$label    = sprintf( '<label for="">%s</label>', esc_html( $field ) );
+				$count    = sprintf( '<span class="count">%s</span>', esc_html( $total_courses ) );
 
 				$sections = apply_filters(
 					'learn-press/filter-courses/levels/sections',
