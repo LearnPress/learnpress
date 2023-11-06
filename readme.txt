@@ -210,6 +210,13 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.2.5.3 (2023-11-06) =
+~ Fixed: security issue.
+~ Tweak: display Category for filter courses.
+~ Added: attribute disable if filter count = 0.
+~ Tweak: widgets.js use fetch instead of wp.apiFetch.
+~ Added: page tool clear cache.
+
 = 4.2.5.3 (2023-11-02) =
 ~ Fixed: security issue.
 ~ Tweak: only show 1 level categories right behind cate parent, on the widget "Course Filter".
