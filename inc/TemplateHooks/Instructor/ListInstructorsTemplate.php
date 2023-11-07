@@ -10,6 +10,7 @@ namespace LearnPress\TemplateHooks\Instructor;
 
 use LearnPress\Helpers\Template;
 use LP_Assets;
+use LP_Helper;
 use LP_Page_Controller;
 use LP_User;
 use LP_WP_Filesystem;
@@ -40,7 +41,7 @@ class ListInstructorsTemplate {
 		<script id="lp-list-instructors-data">
 			const lpInstructorsUrl = '<?php echo learn_press_get_page_link( 'instructors' ); ?>';
 			const urlListInstructorsAPI = '<?php echo site_url( 'wp-json/lp/v1/instructors' ); ?>';
-			let lpSkeletonParam = '<?php echo html_entity_decode( esc_js( json_encode( lp_archive_skeleton_get_args() ) ) ); ?>';
+			let lpSkeletonParam = '<?php echo html_entity_decode( json_encode( LP_Helper::sanitize_params_submitted( lp_archive_skeleton_get_args(), 'key' ) ) ); ?>';
 			<?php
 			if ( LP_Page_Controller::is_page_instructors() ) {
 				echo 'const isPageInstructors = true;';
