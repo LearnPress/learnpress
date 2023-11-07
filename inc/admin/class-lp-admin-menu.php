@@ -112,15 +112,14 @@ class LP_Admin_Menu {
 		);
 
 		// Default submenu items
-		$menu_items                   = array();
-		$menu_items['statistic']      = include_once 'sub-menus/class-lp-submenu-statistics.php';
-		$menu_items['statistic-beta'] = include_once 'sub-menus/class-lp-submenu-statistics-beta.php';
-		$menu_items['addons']         = include_once 'sub-menus/class-lp-submenu-addons.php';
-		$menu_items['themes']         = include_once 'sub-menus/class-lp-submenu-themes.php';
-		$menu_items['settings']       = include_once 'sub-menus/class-lp-submenu-settings.php';
-		$menu_items['tools']          = include_once 'sub-menus/class-lp-submenu-tools.php';
-		$menu_items['categories']     = include_once 'sub-menus/class-lp-submenu-categories.php';
-		$menu_items['tags']           = include_once 'sub-menus/class-lp-submenu-tags.php';
+		$menu_items               = array();
+		$menu_items['statistic']  = include_once 'sub-menus/class-lp-submenu-statistics.php';
+		$menu_items['addons']     = include_once 'sub-menus/class-lp-submenu-addons.php';
+		$menu_items['themes']     = include_once 'sub-menus/class-lp-submenu-themes.php';
+		$menu_items['settings']   = include_once 'sub-menus/class-lp-submenu-settings.php';
+		$menu_items['tools']      = include_once 'sub-menus/class-lp-submenu-tools.php';
+		$menu_items['categories'] = include_once 'sub-menus/class-lp-submenu-categories.php';
+		$menu_items['tags']       = include_once 'sub-menus/class-lp-submenu-tags.php';
 
 		$menu_items = apply_filters( 'learn-press/admin/menu-items', $menu_items );
 
@@ -129,7 +128,7 @@ class LP_Admin_Menu {
 
 		add_action(
 			'parent_file',
-			function( $parent_file ) {
+			function ( $parent_file ) {
 				global $current_screen;
 
 				$taxonomy = $current_screen->taxonomy;

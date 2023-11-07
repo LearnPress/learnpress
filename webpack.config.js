@@ -20,6 +20,7 @@ module.exports = {
 		'./assets/js/dist/admin/pages/tools': './assets/src/apps/js/admin/pages/tools.js',
 		'./assets/js/dist/admin/pages/setup': './assets/src/apps/js/admin/pages/setup.js',
 		'./assets/js/dist/admin/pages/statistic': './assets/src/apps/js/admin/pages/statistic.js',
+		'./assets/js/dist/admin/admin-statistic': './assets/src/js/admin/admin-statistic.js',
 		'./assets/js/dist/admin/pages/sync-data': './assets/src/apps/js/admin/pages/sync-data.js',
 		'./assets/js/dist/admin/pages/themes-addons': './assets/src/apps/js/admin/pages/themes-addons.js',
 		'./assets/js/dist/admin/pages/addons': './assets/src/apps/js/admin/pages/addons.js',

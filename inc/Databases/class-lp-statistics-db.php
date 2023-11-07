@@ -552,7 +552,8 @@ class LP_Statistics_DB extends LP_Database {
 		$filter->only_fields[]    = 'p.ID';
 		$time_field               = 'p.post_date';
 
-		$filter->where[]     = $this->wpdb->prepare( 'AND p.post_type=%s', LP_ORDER_CPT );
+		$filter->where[]     = $this->wpdb->prepare( 'AND p.post_type = %s', LP_ORDER_CPT );
+		$filter->where[]     = $this->wpdb->prepare( 'AND p.post_status != %s', 'auto-draft' );
 		$filter              = $this->filter_time( $filter, $type, $time_field, $value );
 		$filter->query_count = true;
 		$result              = $this->execute( $filter );

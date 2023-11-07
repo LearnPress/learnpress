@@ -1,17 +1,22 @@
-// console.log('load-js');
-document.addEventListener( 'DOMContentLoaded', function () {
+/**
+ * Statistics chart.
+ *
+ * @since 4.2.5.5
+ * @version 1.0.0
+ */
+document.addEventListener( 'DOMContentLoaded', function() {
 	const lpStatisticsLoad = () => {
 		const elementLoad = document.querySelector( 'input.statistics-type' );
 		if ( ! elementLoad ) {
 			return;
 		}
-		if ( elementLoad.value == 'orders-statistics' ) {
+		if ( elementLoad.value === 'orders-statistics' ) {
 			orderLoadData();
-		} else if ( elementLoad.value == 'overview-statistics' ) {
+		} else if ( elementLoad.value === 'overview-statistics' ) {
 			overviewLoadData();
-		} else if ( elementLoad.value == 'courses-statistics' ) {
+		} else if ( elementLoad.value === 'courses-statistics' ) {
 			courseLoadData();
-		} else if ( elementLoad.value == 'users-statistics' ) {
+		} else if ( elementLoad.value === 'users-statistics' ) {
 			userLoadData();
 		}
 	};
@@ -21,7 +26,7 @@ document.addEventListener( 'DOMContentLoaded', function () {
 				'lp/v1/statistics/overviews-statistics',
 				{
 					filtertype: filterType,
-					date: date,
+					date,
 				}
 			),
 			method: 'GET',
@@ -38,9 +43,25 @@ document.addEventListener( 'DOMContentLoaded', function () {
 				chartEle.style.display = 'block';
 				loadLpSkeletonAnimations();
 				if ( chart === undefined ) {
+					const configChartOverview = {
+						options: {
+							scales: {
+								y: {
+									min: 0,
+									ticks: {
+										callback( value, index, ticks ) {
+											return '$' + value;
+										},
+									},
+								},
+							},
+						},
+					};
+
 					chart = generateChart(
 						'net-sales-chart-content',
-						data.chart_data
+						data.chart_data,
+						configChartOverview
 					);
 				} else {
 					chart.data.labels = data.chart_data.labels;
@@ -60,7 +81,7 @@ document.addEventListener( 'DOMContentLoaded', function () {
 				document.querySelector( '.total-students' ).textContent =
 					data.total_students;
 				if ( data.top_courses.length > 0 ) {
-					let topCourses = data.top_courses,
+					const topCourses = data.top_courses,
 						topCoursesWrap =
 							document.querySelector( '.top-course-sold' );
 					for ( let i = 0; i < topCourses.length; i++ ) {
@@ -71,7 +92,7 @@ document.addEventListener( 'DOMContentLoaded', function () {
 					}
 				}
 				if ( data.top_categories.length > 0 ) {
-					let topCategories = data.top_categories,
+					const topCategories = data.top_categories,
 						topCategoriesWrap =
 							document.querySelector( '.top-category-sold' );
 					for ( let i = 0; i < topCategories.length; i++ ) {
@@ -91,7 +112,7 @@ document.addEventListener( 'DOMContentLoaded', function () {
 		wp.apiFetch( {
 			path: wp.url.addQueryArgs( 'lp/v1/statistics/order-statistics', {
 				filtertype: filterType,
-				date: date,
+				date,
 			} ),
 			method: 'GET',
 		} )
@@ -104,6 +125,8 @@ document.addEventListener( 'DOMContentLoaded', function () {
 					chartEle = document.getElementById(
 						'orders-chart-content'
 					);
+
+				console.log( data );
 
 				if ( chart === undefined ) {
 					chart = generateChart(
@@ -121,7 +144,7 @@ document.addEventListener( 'DOMContentLoaded', function () {
 				if ( data.statistics.length > 0 ) {
 					let totalOrder = 0;
 					for ( let i = data.statistics.length - 1; i >= 0; i-- ) {
-						let v = data.statistics[ i ];
+						const v = data.statistics[ i ];
 						if ( v.order_status == 'completed' ) {
 							document.querySelector(
 								'.completed-order-count'
@@ -168,7 +191,7 @@ document.addEventListener( 'DOMContentLoaded', function () {
 		wp.apiFetch( {
 			path: wp.url.addQueryArgs( 'lp/v1/statistics/course-statistics', {
 				filtertype: filterType,
-				date: date,
+				date,
 			} ),
 			method: 'GET',
 		} )
@@ -198,7 +221,7 @@ document.addEventListener( 'DOMContentLoaded', function () {
 				if ( data.courses.length > 0 ) {
 					let totalCourse = 0;
 					for ( let i = 0; i < data.courses.length; i++ ) {
-						let v = data.courses[ i ];
+						const v = data.courses[ i ];
 						if ( v.course_status == 'publish' ) {
 							document.querySelector(
 								'.statistics-courses.published'
@@ -228,7 +251,7 @@ document.addEventListener( 'DOMContentLoaded', function () {
 				}
 				if ( data.items.length > 0 ) {
 					for ( let i = 0; i < data.items.length; i++ ) {
-						let v = data.items[ i ];
+						const v = data.items[ i ];
 						if ( v.item_type == 'lp_lesson' ) {
 							document.querySelector(
 								'.statistics-items.lessons'
@@ -260,7 +283,7 @@ document.addEventListener( 'DOMContentLoaded', function () {
 		wp.apiFetch( {
 			path: wp.url.addQueryArgs( 'lp/v1/statistics/user-statistics', {
 				filtertype: filterType,
-				date: date,
+				date,
 			} ),
 			method: 'GET',
 		} )
@@ -285,7 +308,7 @@ document.addEventListener( 'DOMContentLoaded', function () {
 						data.chart_data.x_label;
 					chart.update();
 				}
-				let totalUserActived = 0;
+				const totalUserActived = 0;
 				document.querySelector(
 					'.statistics-instructors'
 				).textContent = data.total_instructors;
@@ -301,10 +324,7 @@ document.addEventListener( 'DOMContentLoaded', function () {
 					let userGraduration = data.user_course_statused,
 						userFinished = 0;
 					for ( let i = 0; i < userGraduration.length; i++ ) {
-						if (
-							userGraduration[ i ].graduation_status ==
-							'in-progress'
-						) {
+						if ( userGraduration[ i ].graduation_status === 'in-progress' ) {
 							document.querySelector(
 								'.statistics-graduration.in-progress'
 							).textContent = userGraduration[ i ].user_count;
@@ -323,11 +343,11 @@ document.addEventListener( 'DOMContentLoaded', function () {
 						} );
 				}
 				if ( Object.keys( data.top_enrolled_instructor ).length > 0 ) {
-					let topInstructor = data.top_enrolled_instructor,
+					const topInstructor = data.top_enrolled_instructor,
 						topInstructorWrap = document.querySelector(
 							'.top-intructor-by-student'
 						);
-					Object.keys( topInstructor ).forEach( function ( key ) {
+					Object.keys( topInstructor ).forEach( function( key ) {
 						// console.log(key, topInstructor[key]);
 						topInstructorWrap.insertAdjacentHTML(
 							'beforeend',
@@ -336,7 +356,7 @@ document.addEventListener( 'DOMContentLoaded', function () {
 					} );
 				}
 				if ( data.top_enrolled_courses.length > 0 ) {
-					let topCourse = data.top_enrolled_courses,
+					const topCourse = data.top_enrolled_courses,
 						topCourseWrap = document.querySelector(
 							'.top-course-by-student'
 						);
@@ -353,20 +373,21 @@ document.addEventListener( 'DOMContentLoaded', function () {
 			} )
 			.finally( () => {} );
 	};
-	const generateChart = ( chartEle = '', data = [] ) => {
-		let canvas = document.getElementById( chartEle );
+	const generateChart = ( chartEle = '', data = [], config = {} ) => {
+		const canvas = document.getElementById( chartEle );
 		const chart_data = {
 			labels: data.labels,
 			datasets: [
 				{
 					label: data.line_label,
-					borderColor: 'blue',
+					borderColor: 'rgb(49 74 199)',
+					borderWidth: 2,
 					data: data.data,
-					backgroundColor: 'blue',
+					backgroundColor: 'rgb(49 74 199)',
 				},
 			],
 		};
-		const config = {
+		const configDefault = {
 			type: 'line',
 			data: chart_data,
 			options: {
@@ -379,24 +400,22 @@ document.addEventListener( 'DOMContentLoaded', function () {
 				scales: {
 					y: {
 						min: 0,
-						ticks: {
-							// stepSize: 1,
-						},
-						title: {
-							display: true,
-							text: data.line_label,
-						},
 					},
 					x: {
 						title: {
 							display: true,
 							text: data.x_label,
+							align: 'end',
 						},
 					},
 				},
 			},
 		};
-		const chart = new Chart( canvas, config );
+
+		const configChart = { ...configDefault, ...config };
+		configChart.options = { ...configDefault.options, ...config.options };
+
+		const chart = new Chart( canvas, configChart );
 		return chart;
 	};
 	const loadLpSkeletonAnimations = ( show = false ) => {
@@ -420,12 +439,12 @@ document.addEventListener( 'DOMContentLoaded', function () {
 				.querySelectorAll( '.btn-filter-time' )
 				.forEach( ( ele ) => ele.classList.remove( 'active' ) );
 			btn.classList.add( 'active' );
-			let filterType = btn.dataset.filter;
+			const filterType = btn.dataset.filter;
 			if ( filterType == 'custom' ) {
 				document.querySelector( '.custom-filter-time' ).style.display =
 					'flex';
 			} else {
-				let elementLoad = document.querySelector(
+				const elementLoad = document.querySelector(
 					'input.statistics-type'
 				);
 				if ( elementLoad ) {
@@ -460,12 +479,12 @@ document.addEventListener( 'DOMContentLoaded', function () {
 	document
 		.querySelector( '.custom-filter-btn' )
 		.addEventListener( 'click', ( e ) => {
-			let time1 = document.querySelector( '#ct-filter-1' ).value,
+			const time1 = document.querySelector( '#ct-filter-1' ).value,
 				time2 = document.querySelector( '#ct-filter-2' ).value;
 			if ( ! time1 || ! time2 ) {
 				alert( 'Choose date' );
 			} else {
-				let elementLoad = document.querySelector(
+				const elementLoad = document.querySelector(
 					'input.statistics-type'
 				);
 				document.querySelector(
