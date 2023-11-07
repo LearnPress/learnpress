@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the LearnPress plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: LearnPress 4.2.5.4-beta-1\n"
+"Project-Id-Version: LearnPress 4.2.5.4-beta-3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/learnpress\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2023-11-02T13:13:40+03:00\n"
+"POT-Creation-Date: 2023-11-06T12:17:40+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.8.1\n"
 "X-Domain: learnpress\n"
@@ -298,7 +298,7 @@ msgid "Questions:"
 msgstr ""
 
 #: assets/js/dist/frontend/quiz.min.js:87
-#: inc/admin/class-lp-install-sample-data.php:164
+#: inc/admin/class-lp-install-sample-data.php:167
 #: inc/custom-post-types/abstract.php:824
 #: inc/custom-post-types/question.php:364
 #: templates/content-lesson/content.php:27
@@ -671,7 +671,7 @@ msgstr ""
 #: config/widgets/course/filter-course.php:37
 #: inc/custom-post-types/course.php:392
 #: inc/custom-post-types/course.php:409
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:244
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:249
 #: templates/emails/order-items-table.php:87
 msgid "Price"
 msgstr ""
@@ -1536,7 +1536,7 @@ msgstr ""
 #: inc/custom-post-types/lesson.php:220
 #: inc/custom-post-types/question.php:319
 #: inc/custom-post-types/quiz.php:236
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:453
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:466
 msgid "Author"
 msgstr ""
 
@@ -1773,7 +1773,7 @@ msgid "Invoice"
 msgstr ""
 
 #: inc/admin/class-lp-admin.php:259
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:519
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:535
 msgid "Levels"
 msgstr ""
 
@@ -1865,11 +1865,11 @@ msgstr ""
 msgid "Are you sure you want to delete the sample course data?"
 msgstr ""
 
-#: inc/admin/class-lp-install-sample-data.php:161
+#: inc/admin/class-lp-install-sample-data.php:164
 msgid "The Course \"%s\" has been created"
 msgstr ""
 
-#: inc/admin/class-lp-install-sample-data.php:162
+#: inc/admin/class-lp-install-sample-data.php:165
 #: inc/admin/views/meta-boxes/course/assigned.php:23
 #: inc/admin/views/meta-boxes/quiz/assigned.php:28
 #: inc/admin/views/meta-boxes/quiz/assigned.php:37
@@ -1882,24 +1882,24 @@ msgstr ""
 msgid "View"
 msgstr ""
 
-#: inc/admin/class-lp-install-sample-data.php:190
+#: inc/admin/class-lp-install-sample-data.php:193
 msgid "No data sample."
 msgstr ""
 
-#: inc/admin/class-lp-install-sample-data.php:211
+#: inc/admin/class-lp-install-sample-data.php:214
 msgid "The sample data was successfully deleted!"
 msgstr ""
 
-#: inc/admin/class-lp-install-sample-data.php:357
+#: inc/admin/class-lp-install-sample-data.php:360
 msgid "Sample course"
 msgstr ""
 
-#: inc/admin/class-lp-install-sample-data.php:705
+#: inc/admin/class-lp-install-sample-data.php:708
 msgctxt "install-sample-course"
 msgid "[TRUE] - "
 msgstr ""
 
-#: inc/admin/class-lp-install-sample-data.php:713
+#: inc/admin/class-lp-install-sample-data.php:716
 msgctxt "install-sample-course"
 msgid " [TRUE] - "
 msgstr ""
@@ -2161,14 +2161,14 @@ msgstr ""
 #: inc/admin/sub-menus/class-lp-submenu-categories.php:11
 #: inc/admin/sub-menus/class-lp-submenu-categories.php:12
 #: inc/custom-post-types/course.php:412
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:326
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:343
 msgid "Categories"
 msgstr ""
 
 #: inc/admin/lp-admin-actions.php:227
 #: inc/admin/sub-menus/class-lp-submenu-tags.php:11
 #: inc/admin/sub-menus/class-lp-submenu-tags.php:12
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:386
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:401
 msgid "Tags"
 msgstr ""
 
@@ -2299,7 +2299,7 @@ msgstr ""
 #: inc/admin/lp-admin-functions.php:2215
 #: inc/admin/views/addons.php:108
 #: inc/admin/views/addons.php:194
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:209
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:210
 msgid "Paid"
 msgstr ""
 
@@ -2309,7 +2309,7 @@ msgstr ""
 #: inc/admin/views/addons.php:195
 #: inc/course/abstract-course.php:673
 #: inc/course/abstract-course.php:702
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:205
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:206
 #: templates/order/order-details.php:43
 msgid "Free"
 msgstr ""
@@ -7543,19 +7543,19 @@ msgstr ""
 msgid "Load more."
 msgstr ""
 
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:159
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:160
 msgid "Search Course"
 msgstr ""
 
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:167
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:168
 msgid "Search"
 msgstr ""
 
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:537
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:553
 msgid "Filter"
 msgstr ""
 
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:551
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:567
 msgid "Reset"
 msgstr ""
 

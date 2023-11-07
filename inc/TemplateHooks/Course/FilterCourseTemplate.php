@@ -42,7 +42,7 @@ class FilterCourseTemplate {
 	 */
 	public function sections( array $data = [] ) {
 		wp_enqueue_script( 'lp-course-filter' );
-		ob_start();
+
 		try {
 			if ( ! isset( $data['fields'] ) ) {
 				$data['fields'] = [
@@ -82,9 +82,10 @@ class FilterCourseTemplate {
 					$sections[ $field ] = [ 'text_html' => $this->{'html_' . $field}( $data ) ];
 				}
 			}
+
+			ob_start();
 			Template::instance()->print_sections( $sections );
-			$content = ob_get_clean();
-			echo Template::instance()->nest_elements( $html_wrapper, $content );
+			echo Template::instance()->nest_elements( $html_wrapper, ob_get_clean() );
 		} catch ( Throwable $e ) {
 			ob_end_clean();
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
@@ -212,17 +213,22 @@ class FilterCourseTemplate {
 				]
 			);
 
-			ob_start();
 			foreach ( $fields as $key => $field ) {
 				$html_wrapper = [
 					'<div class="lp-course-filter__field">' => '</div>',
 				];
 
-				$value   = "on_{$key}";
-				$checked = in_array( $value, $data_selected ) ? 'checked' : '';
-				$input   = sprintf( '<input name="sort_by" type="checkbox" value="%s" %s>', esc_attr( $value ), esc_attr( $checked ) );
-				$label   = sprintf( '<label for="">%s</label>', wp_kses_post( $field['label'] ) );
-				$count   = sprintf( '<span class="count">%s</span>', esc_html( $field['count'] ) );
+				$value    = "on_{$key}";
+				$checked  = in_array( $value, $data_selected ) ? 'checked' : '';
+				$disabled = $field['count'] > 0 ? '' : 'disabled';
+				$input    = sprintf(
+					'<input name="sort_by" type="checkbox" value="%1$s" %2$s %3$s>',
+					esc_attr( $value ),
+					esc_attr( $checked ),
+					esc_attr( $disabled )
+				);
+				$label    = sprintf( '<label for="">%s</label>', wp_kses_post( $field['label'] ) );
+				$count    = sprintf( '<span class="count">%s</span>', esc_html( $field['count'] ) );
 
 				$sections = apply_filters(
 					'learn-press/filter-courses/price/sections',
@@ -237,11 +243,10 @@ class FilterCourseTemplate {
 
 				ob_start();
 				Template::instance()->print_sections( $sections );
-				$content_item = ob_get_clean();
-				echo Template::instance()->nest_elements( $html_wrapper, $content_item );
+				$content .= Template::instance()->nest_elements( $html_wrapper, ob_get_clean() );
 			}
 
-			$content = $this->html_item( esc_html__( 'Price', 'learnpress' ), ob_get_clean() );
+			$content = $this->html_item( esc_html__( 'Price', 'learnpress' ), $content );
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
@@ -279,10 +284,12 @@ class FilterCourseTemplate {
 
 			$arg_query_terms = [
 				'hide_empty' => true,
-				'parent'     => 0,
 			];
+
 			if ( ! empty( $category_current ) ) {
 				$arg_query_terms['parent'] = $category_current;
+			} else {
+				$arg_query_terms['parent'] = 0;
 			}
 
 			$terms = get_terms(
@@ -291,10 +298,21 @@ class FilterCourseTemplate {
 			);
 
 			if ( empty( $terms ) ) {
-				return $content;
+				if ( ! empty( $category_current ) ) {
+					$arg_query_terms['parent'] = 0;
+					$terms                     = get_terms(
+						LP_COURSE_CATEGORY_TAX,
+						$arg_query_terms
+					);
+
+					if ( empty( $terms ) ) {
+						return $content;
+					}
+				} else {
+					return $content;
+				}
 			}
 
-			ob_start();
 			foreach ( $terms as $term ) {
 				$html_wrapper = [
 					'<div class="lp-course-filter__field">' => '</div>',
@@ -319,11 +337,10 @@ class FilterCourseTemplate {
 
 				ob_start();
 				Template::instance()->print_sections( $sections );
-				$content_item = ob_get_clean();
-				echo Template::instance()->nest_elements( $html_wrapper, $content_item );
+				$content .= Template::instance()->nest_elements( $html_wrapper, ob_get_clean() );
 			}
 
-			$content = $this->html_item( esc_html__( 'Categories', 'learnpress' ), ob_get_clean() );
+			$content = $this->html_item( esc_html__( 'Categories', 'learnpress' ), $content );
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
@@ -378,11 +395,9 @@ class FilterCourseTemplate {
 
 				ob_start();
 				Template::instance()->print_sections( $sections );
-				$content_item = ob_get_clean();
-				echo Template::instance()->nest_elements( $html_wrapper, $content_item );
+				$content .= Template::instance()->nest_elements( $html_wrapper, ob_get_clean() );
 			}
 
-			$content = ob_get_clean();
 			$content = $this->html_item( esc_html__( 'Tags', 'learnpress' ), $content );
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
@@ -412,7 +427,6 @@ class FilterCourseTemplate {
 				)
 			);
 
-			ob_start();
 			foreach ( $instructors as $instructor ) {
 				$html_wrapper               = [
 					'<div class="lp-course-filter__field">' => '</div>',
@@ -446,13 +460,11 @@ class FilterCourseTemplate {
 
 				ob_start();
 				Template::instance()->print_sections( $sections );
-				$content_item = ob_get_clean();
-				echo Template::instance()->nest_elements( $html_wrapper, $content_item );
+				$content .= Template::instance()->nest_elements( $html_wrapper, ob_get_clean() );
 			}
 
-			$content = $this->html_item( esc_html__( 'Author', 'learnpress' ), ob_get_clean() );
+			$content = $this->html_item( esc_html__( 'Author', 'learnpress' ), $content );
 		} catch ( Throwable $e ) {
-			ob_end_clean();
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 
@@ -475,7 +487,6 @@ class FilterCourseTemplate {
 			$data_selected = explode( ',', $data_selected );
 			$fields        = lp_course_level();
 
-			ob_start();
 			foreach ( $fields as $key => $field ) {
 				$html_wrapper = [
 					'<div class="lp-course-filter__field">' => '</div>',
@@ -493,10 +504,16 @@ class FilterCourseTemplate {
 				$total_courses       = 0;
 				LP_Course::get_courses( $filter, $total_courses );
 
-				$checked = in_array( $value, $data_selected ) ? 'checked' : '';
-				$input   = sprintf( '<input name="c_level" type="checkbox" value="%s" %s>', esc_attr( $value ), esc_attr( $checked ) );
-				$label   = sprintf( '<label for="">%s</label>', esc_html( $field ) );
-				$count   = sprintf( '<span class="count">%s</span>', esc_html( $total_courses ) );
+				$checked  = in_array( $value, $data_selected ) ? 'checked' : '';
+				$disabled = $total_courses > 0 ? '' : 'disabled';
+				$input    = sprintf(
+					'<input name="c_level" type="checkbox" value="%1$s" %2$s %3$s>',
+					esc_attr( $value ),
+					esc_attr( $checked ),
+					esc_attr( $disabled )
+				);
+				$label    = sprintf( '<label for="">%s</label>', esc_html( $field ) );
+				$count    = sprintf( '<span class="count">%s</span>', esc_html( $total_courses ) );
 
 				$sections = apply_filters(
 					'learn-press/filter-courses/levels/sections',
@@ -512,11 +529,10 @@ class FilterCourseTemplate {
 
 				ob_start();
 				Template::instance()->print_sections( $sections );
-				$content_item = ob_get_clean();
-				echo Template::instance()->nest_elements( $html_wrapper, $content_item );
+				$content .= Template::instance()->nest_elements( $html_wrapper, ob_get_clean() );
 			}
 
-			$content = $this->html_item( esc_html__( 'Levels', 'learnpress' ), ob_get_clean() );
+			$content = $this->html_item( esc_html__( 'Levels', 'learnpress' ), $content );
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}

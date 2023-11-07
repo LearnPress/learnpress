@@ -510,9 +510,11 @@ class LP_Course_DB extends LP_Database {
 			// Term ids
 			if ( ! empty( $filter->term_ids ) ) {
 				$filter->join[] = "INNER JOIN $this->tb_term_relationships AS r_term ON p.ID = r_term.object_id";
+				$filter->join[] = "INNER JOIN $this->tb_term_taxonomy AS tx ON r_term.term_taxonomy_id = tx.term_taxonomy_id";
 
 				$term_ids_format = LP_Helper::db_format_array( $filter->term_ids, '%d' );
-				$filter->where[] = $this->wpdb->prepare( 'AND r_term.term_taxonomy_id IN (' . $term_ids_format . ')', $filter->term_ids );
+				$filter->where[] = $this->wpdb->prepare( 'AND tx.term_id IN (' . $term_ids_format . ')', $filter->term_ids );
+				$filter->where[] = $this->wpdb->prepare( 'AND tx.taxonomy = %s', LP_COURSE_CATEGORY_TAX );
 			}
 
 			// Tag ids
