@@ -84,7 +84,7 @@ class LP_Install_Sample_Data {
 	 * @TODO - Need write to api, not hook init.
 	 */
 	public function install() {
-		if ( ! wp_verify_nonce( LP_Request::get_string( '_wpnonce' ), 'install-sample-course' ) ) {
+		if ( ! wp_verify_nonce( LP_Request::get_param( '_wpnonce', 'key' ), 'install-sample-course' ) ) {
 			return;
 		}
 
@@ -149,7 +149,10 @@ class LP_Install_Sample_Data {
 				array(
 					'handle_name' => 'save_post',
 					'course_id'   => $course_id,
-					'data'        => [ 'data_sample' => 1 ],
+					'data'        => [
+						'data_sample'       => 1,
+						'_lp_regular_price' => $price,
+					],
 				)
 			)->dispatch();
 
@@ -306,7 +309,7 @@ class LP_Install_Sample_Data {
 		$max    = sizeof( $this->dummy_text ) - 1;
 		$words  = array();
 
-		for ( $i = 0; $i < $length; $i ++ ) {
+		for ( $i = 0; $i < $length; $i++ ) {
 			$words[] = $this->dummy_text[ rand( 0, $max ) ];
 		}
 
@@ -337,7 +340,7 @@ class LP_Install_Sample_Data {
 		$length = rand( $min, $max );
 		$max    = sizeof( $this->dummy_text ) - 1;
 		$words  = array();
-		for ( $i = 0; $i < $length; $i ++ ) {
+		for ( $i = 0; $i < $length; $i++ ) {
 			$words[] = $this->dummy_text[ rand( 0, $max ) ];
 		}
 
@@ -390,7 +393,7 @@ class LP_Install_Sample_Data {
 		// Requirements, Target audiences, Key Features
 		foreach ( $features as $feature ) {
 			$feature_data = array();
-			for ( $i = 0, $n = rand( 5, 10 ); $i <= $n; $i ++ ) {
+			for ( $i = 0, $n = rand( 5, 10 ); $i <= $n; $i++ ) {
 				$feature_data[] = $this->generate_title();
 			}
 			update_post_meta( $course_id, '_lp_' . $feature, $feature_data );
@@ -398,7 +401,7 @@ class LP_Install_Sample_Data {
 
 		// FAQs
 		$feature_data = array();
-		for ( $i = 0, $n = rand( 5, 10 ); $i <= $n; $i ++ ) {
+		for ( $i = 0, $n = rand( 5, 10 ); $i <= $n; $i++ ) {
 			$feature_data[] = array( $this->generate_title() . '?', $this->generate_content( 20, 30, 3 ) );
 		}
 		update_post_meta( $course_id, '_lp_faqs', $feature_data );
@@ -415,7 +418,7 @@ class LP_Install_Sample_Data {
 	protected function create_sections( $course_id ) {
 		$section_length = call_user_func_array( 'rand', ( self::$section_range ) );
 
-		for ( $i = 1; $i <= $section_length; $i ++ ) {
+		for ( $i = 1; $i <= $section_length; $i++ ) {
 			$section_id = $this->create_section( 'Section ' . $i, $course_id );
 
 			if ( $section_id ) {
@@ -451,7 +454,7 @@ class LP_Install_Sample_Data {
 		);
 
 		if ( $wpdb->insert_id ) {
-			$order ++;
+			++$order;
 
 			return $wpdb->insert_id;
 		}
@@ -474,11 +477,11 @@ class LP_Install_Sample_Data {
 
 		$item_length = call_user_func_array( 'rand', self::$item_range );
 
-		for ( $i = 1; $i < $item_length; $i ++ ) {
-			$lesson_id = $this->create_lesson( 'Lesson ' . $lesson_count ++, $section_id, $course_id, $order );
+		for ( $i = 1; $i < $item_length; $i++ ) {
+			$lesson_id = $this->create_lesson( 'Lesson ' . $lesson_count++, $section_id, $course_id, $order );
 
 			if ( $lesson_id ) {
-				$order ++;
+				++$order;
 
 				if ( $i == 1 ) {
 					update_post_meta( $lesson_id, '_lp_preview', 'yes' );
@@ -486,10 +489,10 @@ class LP_Install_Sample_Data {
 			}
 		}
 
-		$quiz_id = $this->create_quiz( 'Quiz ' . $quiz_count ++, $section_id, $course_id, $order );
+		$quiz_id = $this->create_quiz( 'Quiz ' . $quiz_count++, $section_id, $course_id, $order );
 
 		if ( $quiz_id ) {
-			$order ++;
+			++$order;
 		}
 	}
 
@@ -613,9 +616,9 @@ class LP_Install_Sample_Data {
 		global $wpdb;
 
 		$question_count = call_user_func_array( 'rand', self::$question_range );
-		for ( $i = 1; $i <= $question_count; $i ++ ) {
+		for ( $i = 1; $i <= $question_count; $i++ ) {
 			$data = array(
-				'post_title'   => 'Question ' . $question_index ++,
+				'post_title'   => 'Question ' . $question_index++,
 				'post_type'    => LP_QUESTION_CPT,
 				'post_status'  => 'publish',
 				'post_content' => $this->generate_content( 25, 40, 2 ),
@@ -690,7 +693,7 @@ class LP_Install_Sample_Data {
 
 		$option_count = $type === 'true_or_false' ? 2 : call_user_func_array( 'rand', self::$answer_range );
 
-		for ( $i = 1; $i <= $option_count; $i ++ ) {
+		for ( $i = 1; $i <= $option_count; $i++ ) {
 			$answers[] = array(
 				'title'   => $this->generate_title(),
 				'value'   => learn_press_random_value(),

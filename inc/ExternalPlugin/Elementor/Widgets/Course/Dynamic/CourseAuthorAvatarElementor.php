@@ -17,9 +17,10 @@ defined( 'ABSPATH' ) || exit;
 
 class CourseAuthorAvatarElementor extends Tag {
 	use LPDynamicElementor;
+
 	public function __construct( array $data = [] ) {
-		$this->lp_dynamic_title = 'Course Author Avatar';
-		$this->lp_dynamic_name  = 'course-author-avatar';
+		$this->lp_dynamic_title      = 'Course Author Avatar';
+		$this->lp_dynamic_name       = 'course-author-avatar';
 		$this->lp_dynamic_categories = [ Module::TEXT_CATEGORY ];
 		parent::__construct( $data );
 	}
@@ -31,7 +32,7 @@ class CourseAuthorAvatarElementor extends Tag {
 	 */
 	public function render() {
 		$singleInstructorTemplate = SingleInstructorTemplate::instance();
-		
+
 		try {
 			$course = $this->get_course();
 			if ( ! $course ) {

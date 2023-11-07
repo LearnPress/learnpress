@@ -1647,8 +1647,10 @@ function lp_archive_skeleton_get_args(): array {
 	if ( learn_press_is_course_category() || learn_press_is_course_tag() ) {
 		$cat = get_queried_object();
 
-		$args['term_id']  = $cat->term_id;
-		$args['taxonomy'] = $cat->taxonomy;
+		// For case not filter by term_id
+		if ( ! isset( $args['term_id'] ) ) {
+			$args['term_id'] = $cat->term_id;
+		}
 	}
 
 	$args = apply_filters( 'lp/template/archive-course/skeleton/args', $args );
@@ -1656,5 +1658,5 @@ function lp_archive_skeleton_get_args(): array {
 		$args = [];
 	}
 
-	return LP_Helper::sanitize_params_submitted( $args, 'key' );
+	return LP_Helper::sanitize_params_submitted( $args, 'sanitize_text_field' );
 }

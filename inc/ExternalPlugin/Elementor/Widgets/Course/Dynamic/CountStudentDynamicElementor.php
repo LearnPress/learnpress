@@ -1,39 +1,34 @@
 <?php
 /**
- * Class CourseLevelDynamicElementor
+ * Class CountStudentDynamicElementor
  *
- * Dynamic course level elementor.
+ * Dynamic count student of many courses elementor.
  *
- * @since 4.2.3.5
+ * @since 4.2.5.4
  * @version 1.0.0
  */
-
 namespace LearnPress\ExternalPlugin\Elementor\Widgets\Course\Dynamic;
 use Elementor\Core\DynamicTags\Tag;
 use LearnPress\ExternalPlugin\Elementor\LPDynamicElementor;
-use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
+use LearnPress\TemplateHooks\Course\ListCoursesTemplate;
 use Throwable;
 
 defined( 'ABSPATH' ) || exit;
 
-class CourseLevelDynamicElementor extends Tag {
+class CountStudentDynamicElementor extends Tag {
 	use LPDynamicElementor;
 
 	public function __construct( array $data = [] ) {
-		$this->lp_dynamic_title = 'Course Level';
-		$this->lp_dynamic_name  = 'course-level';
+		$this->lp_dynamic_title = 'Count Student many courses';
+		$this->lp_dynamic_name  = 'count-student-courses';
 		parent::__construct( $data );
 	}
 
 	public function render() {
-		$singleCourseTemplate = SingleCourseTemplate::instance();
+		$listCoursesTemplate = ListCoursesTemplate::instance();
 
 		try {
-			$course = $this->get_course();
-			if ( ! $course ) {
-				return;
-			}
-			echo $singleCourseTemplate->html_level( $course );
+			echo $listCoursesTemplate->html_count_students();
 		} catch ( Throwable $e ) {
 			error_log( $e->getMessage() );
 		}

@@ -35,6 +35,9 @@
 					&:focus{
 						outline: none;
 					}
+					&[disabled] {
+						cursor: not-allowed;
+					}
 				}
 				label{
 					color: #333;

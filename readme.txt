@@ -5,7 +5,7 @@ Tags: elearning, education, course, lms, learning management system
 Requires at least: 6.2
 Tested up to: 6.3.2
 Requires PHP: 7.0
-Stable tag: 4.2.5.3
+Stable tag: 4.2.5.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -209,6 +209,20 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.
 
 == Changelog ==
+
+= 4.2.5.4 (2023-11-07) =
+~ Fixed: security issue.
+~ Tweak: display Category for filter courses.
+~ Added: attribute disable if filter count = 0.
+~ Tweak: widgets.js use fetch instead of wp.apiFetch.
+~ Added: page tool clear cache.
+
+= 4.2.5.3 (2023-11-02) =
+~ Fixed: security issue.
+~ Tweak: only show 1 level categories right behind cate parent, on the widget "Course Filter".
+~ Added: method count students enrolled of course.
+~ Added: method count courses free.
+~ Added: cache for count.
 
 = 4.2.5.3 (2023-10-27) =
 ~ Fixed: security issue.

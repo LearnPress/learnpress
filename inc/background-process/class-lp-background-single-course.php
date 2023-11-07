@@ -30,14 +30,14 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 		 */
 		protected function handle() {
 			try {
-				$handle_name = LP_Helper::sanitize_params_submitted( $_POST['handle_name'] ?? '' );
+				$handle_name = LP_Request::get_param( 'handle_name', '', 'key', 'post' );
 				$course_id   = intval( $_POST['course_id'] ?? 0 );
 				if ( empty( $handle_name ) || ! $course_id ) {
 					return;
 				}
 
 				$this->lp_course = learn_press_get_course( $course_id );
-				$this->data      = LP_Helper::sanitize_params_submitted( $_POST['data'] ?? '' );
+				$this->data      = LP_Request::get_param( 'data', '', 'key', 'post' );
 
 				if ( empty( $this->lp_course ) ) {
 					return;
@@ -79,6 +79,10 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 				}
 				LP_Courses_Cache::instance()->clear( LP_Courses_Cache::$keys );
 			}
+
+			// Clear total courses free.
+			$lp_courses_cache = new LP_Courses_Cache( true );
+			$lp_courses_cache->clear_cache_on_group( LP_Courses_Cache::KEYS_COUNT_COURSES_FREE );
 			// End
 		}
 
@@ -88,11 +92,12 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 		 * @return void
 		 */
 		protected function save_price() {
-			$has_sale_price = false;
-			$regular_price  = $this->data['_lp_regular_price'] ?? '';
-			/*if ( empty( $regular_price ) ) {
+			if ( ! isset( $this->data['_lp_regular_price'] ) ) {
 				return;
-			}*/
+			}
+
+			$has_sale_price = false;
+			$regular_price  = (float) $this->data['_lp_regular_price'];
 
 			$sale_price = $this->data['_lp_sale_price'] ?? '';
 			$start_date = $this->data['_lp_sale_start'] ?? '';
@@ -119,6 +124,7 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 				}
 			}
 
+			error_log( 'price: ' . $price );
 			update_post_meta( $this->lp_course->get_id(), '_lp_price', $price );
 
 			// Update course is sale
