@@ -2,8 +2,8 @@ import API from '../api';
 import { lpAddQueryArgs, lpFetchAPI, lpGetCurrentURLNoParam } from '../utils';
 import Cookies from '../utils/cookies';
 
-if ( 'undefined' === typeof lpData || 'undefined' === typeof lpCoursesSettings ) {
-	console.log( 'lpData || lpCoursesSettings is undefined' );
+if ( 'undefined' === typeof lpData || 'undefined' === typeof lpSettingCourses ) {
+	console.log( 'lpData || lpSettingCourses is undefined' );
 }
 
 // Call API load courses.
@@ -48,12 +48,12 @@ window.lpCourseList = ( () => {
 	const classListCourse = 'learn-press-courses';
 	const classPaginationCourse = 'learn-press-pagination';
 	const classSkeletonArchiveCourse = 'lp-archive-course-skeleton';
-	const lpArchiveLoadAjax = lpCoursesSettings.lpArchiveLoadAjax || 0;
-	const lpArchiveNoLoadAjaxFirst = lpCoursesSettings.lpArchiveNoLoadAjaxFirst || 0;
+	const lpArchiveLoadAjax = lpSettingCourses.lpArchiveLoadAjax || 0;
+	const lpArchiveNoLoadAjaxFirst = parseInt( lpSettingCourses.lpArchiveNoLoadAjaxFirst ) === 1;
 	const lpArchiveSkeletonParam = lpData.urlParams || [];
 	const currentUrl = lpGetCurrentURLNoParam();
 	let filterCourses = {};
-	const typePagination = lpCoursesSettings.lpArchivePaginationType || 'number';
+	const typePagination = lpSettingCourses.lpArchivePaginationType || 'number';
 	let typeEventBeforeFetch;
 	let timeOutSearch;
 	let isLoadingInfinite = false;
@@ -469,7 +469,6 @@ window.lpCourseList = ( () => {
 		},
 		ajaxEnableLoadPage: () => { // For case enable AJAX when load page.
 			let countTime = 0;
-
 			if ( ! lpArchiveNoLoadAjaxFirst ) {
 				let detectedElArchive;
 				const callBack = {

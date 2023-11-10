@@ -16,11 +16,11 @@ function widgetRestAPI() {
 			headers: {
 				'Content-Type': 'application/json',
 			},
-			body: JSON.stringify( { ...widget, ...{ params_url: lpGlobalSettings.lpArchiveSkeleton } } ),
+			body: JSON.stringify( { ...widget, ...{ params_url: lpData.urlParams } } ),
 		};
 
-		if ( 0 !== lpGlobalSettings.user_id ) {
-			paramsFetch.headers[ 'X-WP-Nonce' ] = lpGlobalSettings.nonce;
+		if ( 0 !== lpData.user_id ) {
+			paramsFetch.headers[ 'X-WP-Nonce' ] = lpData.nonce;
 		}
 
 		const callBack = {

@@ -1,4 +1,4 @@
-import API from './api';
+import API from '../api';
 
 const classCourseFilter = 'lp-form-course-filter';
 
@@ -84,11 +84,11 @@ window.lpCourseFilter = {
 		let paramsFetch = {
 			method: 'GET',
 		};
-		if ( 0 !== lpGlobalSettings.user_id ) {
+		if ( 0 !== lpData.user_id ) {
 			paramsFetch = {
 				...paramsFetch,
 				headers: {
-					'X-WP-Nonce': lpGlobalSettings.nonce,
+					'X-WP-Nonce': lpData.nonce,
 				},
 			};
 		}
@@ -122,10 +122,10 @@ window.lpCourseFilter = {
 			}
 		}
 
-		if ( lpGlobalSettings.is_course_archive && lpGlobalSettings.lpArchiveLoadAjax && elListCourse && skeleton ) {
+		if ( lpSettingCourses.is_course_archive && lpSettingCourses.lpArchiveLoadAjax && elListCourse && skeleton ) {
 			window.lpCourseList.triggerFetchAPI( filterCourses );
 		} else {
-			const courseUrl = lpGlobalSettings.courses_url || '';
+			const courseUrl = lpData.courses_url || '';
 			const url = new URL( courseUrl );
 			Object.keys( filterCourses ).forEach( ( arg ) => {
 				url.searchParams.set( arg, filterCourses[ arg ] );
@@ -152,7 +152,7 @@ window.lpCourseFilter = {
 			form.elements[ i ].removeAttribute( 'checked' );
 		}
 		// If on the page archive course will call btnSubmit click.
-		if ( lpGlobalSettings.is_course_archive ) {
+		if ( lpSettingCourses.is_course_archive ) {
 			btnSubmit.click();
 		}
 	},

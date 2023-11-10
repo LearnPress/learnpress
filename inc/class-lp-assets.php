@@ -121,15 +121,6 @@ class LP_Assets extends LP_Abstract_Assets {
 				'text_remove'  => __( 'Remove', 'learnpress' ),
 				'text_save'    => __( 'Save', 'learnpress' ),
 			),
-			'lp-courses'  => apply_filters(
-				'learn-press/frontend/localize-script/courses',
-				[
-					'lpArchiveLoadAjax'        => LP_Settings_Courses::is_ajax_load_courses() ? 1 : 0,
-					'lpArchiveNoLoadAjaxFirst' => LP_Settings_Courses::is_ajax_load_courses() && LP_Settings_Courses::is_no_load_ajax_first_courses() ? 1 : 0,
-					'lpArchivePaginationType'  => LP_Settings::get_option( 'course_pagination_type' ),
-					'noLoadCoursesJs'          => LP_Settings::theme_no_support_load_courses_ajax() ? 1 : 0,
-				]
-			),
 			'lp-quiz'     => learn_press_single_quiz_args(),
 		];
 
@@ -152,6 +143,23 @@ class LP_Assets extends LP_Abstract_Assets {
 				'nonce'             => wp_create_nonce( 'wp_rest' ),
 				'is_course_archive' => LP_Page_Controller::is_page_courses(),
 				'urlParams'         => lp_archive_skeleton_get_args(),
+			]
+		);
+	}
+
+	/**
+	 * Localize data for all page frontend.
+	 *
+	 * @return array
+	 */
+	public function localize_data_courses(): array {
+		return apply_filters(
+			'learn-press/frontend/localize-script/courses',
+			[
+				'lpArchiveLoadAjax'        => LP_Settings_Courses::is_ajax_load_courses() ? 1 : 0,
+				'lpArchiveNoLoadAjaxFirst' => LP_Settings_Courses::is_ajax_load_courses() && LP_Settings_Courses::is_no_load_ajax_first_courses() ? 1 : 0,
+				'lpArchivePaginationType'  => LP_Settings::get_option( 'course_pagination_type' ),
+				'noLoadCoursesJs'          => LP_Settings::theme_no_support_load_courses_ajax() ? 1 : 0,
 			]
 		);
 	}
@@ -305,7 +313,7 @@ class LP_Assets extends LP_Abstract_Assets {
 				),
 				'lp-course-filter'     => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/course-filter' . self::$_min_assets . '.js' ),
-					array( 'lp-global' ),
+					array(),
 					array(),
 					1,
 					1
@@ -355,6 +363,10 @@ class LP_Assets extends LP_Abstract_Assets {
 	 */
 	public function load_scripts_on_head() {
 		LP_Helper::print_inline_script_tag( 'lpData', $this->localize_data_global(), [ 'id' => 'lpData' ] );
+
+		if ( LP_Page_Controller::is_page_courses() ) {
+			LP_Helper::print_inline_script_tag( 'lpSettingCourses', $this->localize_data_courses(), [ 'id' => 'lpSettingCourses' ] );
+		}
 	}
 
 	/**
