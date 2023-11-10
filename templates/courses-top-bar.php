@@ -21,7 +21,7 @@ $s       = LP_Request::get_param( 'c_search' );
 		<input type="hidden" name="term_id" value="<?php echo esc_attr( get_queried_object()->term_id ?? $_GET['term_id'] ?? '' ); ?>">
 		<input type="hidden" name="term" value="<?php echo esc_attr( get_queried_object()->slug ?? $_GET['term'] ?? '' ); ?>">
 		<input type="text" placeholder="<?php esc_attr_e( 'Search courses...', 'learnpress' ); ?>" name="c_search" value="<?php echo esc_attr( $s ); ?>">
-		<button type="submit"><i class="fas fa-search"></i></button>
+		<button type="submit" name="lp-btn-search-courses"><i class="fas fa-search"></i></button>
 	</form>
 
 	<div class="switch-layout">

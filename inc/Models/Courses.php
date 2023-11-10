@@ -12,6 +12,7 @@
 
 namespace LearnPress\Models;
 
+use LP_Cache;
 use LP_Course_DB;
 use LP_Course_Filter;
 use LP_Courses_Cache;
@@ -28,10 +29,16 @@ class Courses {
 	 */
 	public static function count_course_free( LP_Course_Filter $filter ): int {
 		// Check cache
-		$key_cache        = 'count-courses-free-' . md5( json_encode( $filter ) );
+		$key_cache = 'count-courses-free-' . md5( json_encode( $filter ) );
+		$count     = LP_Cache::cache_load_first( 'get', $key_cache );
+		if ( false !== $count ) {
+			return $count;
+		}
+
 		$lp_courses_cache = new LP_Courses_Cache( true );
 		$count            = $lp_courses_cache->get_cache( $key_cache );
 		if ( false !== $count ) {
+			LP_Cache::cache_load_first( 'set', $key_cache, $count );
 			return $count;
 		}
 
@@ -44,6 +51,7 @@ class Courses {
 			->set_cache( $key_cache, $count );
 		$lp_courses_cache_keys = new LP_Courses_Cache( true );
 		$lp_courses_cache_keys->save_cache_keys_count_courses_free( $key_cache );
+		LP_Cache::cache_load_first( 'set', $key_cache, $count );
 
 		return $count;
 	}
