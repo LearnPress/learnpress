@@ -19,7 +19,7 @@ class LP_Assets extends LP_Abstract_Assets {
 		parent::__construct();
 
 		add_action( 'wp_print_footer_scripts', array( $this, 'show_overlay' ) );
-		add_action( 'wp_head', [ $this, 'global_config_styles' ] );
+		add_action( 'wp_head', [ $this, 'load_scripts_styles_on_head' ], -1 );
 	}
 
 	/**
@@ -121,12 +121,39 @@ class LP_Assets extends LP_Abstract_Assets {
 				'text_remove'  => __( 'Remove', 'learnpress' ),
 				'text_save'    => __( 'Save', 'learnpress' ),
 			),
-			//'lp-course'       => learn_press_single_course_args(),
+			'lp-courses'  => apply_filters(
+				'learn-press/frontend/localize-script/courses',
+				[
+					'lpArchiveLoadAjax'        => LP_Settings_Courses::is_ajax_load_courses() ? 1 : 0,
+					'lpArchiveNoLoadAjaxFirst' => LP_Settings_Courses::is_ajax_load_courses() && LP_Settings_Courses::is_no_load_ajax_first_courses() ? 1 : 0,
+					'lpArchivePaginationType'  => LP_Settings::get_option( 'course_pagination_type' ),
+					'noLoadCoursesJs'          => LP_Settings::theme_no_support_load_courses_ajax() ? 1 : 0,
+				]
+			),
 			'lp-quiz'     => learn_press_single_quiz_args(),
 		];
 
 		return apply_filters( 'learnpress/frontend/localize_script', $localize_script );
+	}
 
+	/**
+	 * Localize data for all page frontend.
+	 *
+	 * @return array
+	 */
+	public function localize_data_global(): array {
+		return apply_filters(
+			'learn-press/frontend/localize-data-global',
+			[
+				'site_url'          => site_url(),
+				'user_id'           => get_current_user_id(),
+				'theme'             => get_stylesheet(),
+				'lp_rest_url'       => get_rest_url(),
+				'nonce'             => wp_create_nonce( 'wp_rest' ),
+				'is_course_archive' => LP_Page_Controller::is_page_courses(),
+				'urlParams'         => lp_archive_skeleton_get_args(),
+			]
+		);
 	}
 
 	/**
@@ -235,10 +262,12 @@ class LP_Assets extends LP_Abstract_Assets {
 				),
 				'lp-courses'           => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/courses' . self::$_min_assets . '.js' ),
-					array( 'lp-global', 'wp-hooks' ),
+					array( 'wp-hooks' ),
 					array( LP_PAGE_COURSES ),
 					0,
-					0
+					0,
+					'',
+					[ 'strategy' => 'async' ]
 				),
 				'lp-instructors'       => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/instructors' . self::$_min_assets . '.js' ),
@@ -310,6 +339,46 @@ class LP_Assets extends LP_Abstract_Assets {
 	}
 
 	/**
+	 * Add javascript to head
+	 * Add style to head
+	 *
+	 * @return void
+	 */
+	public function load_scripts_styles_on_head() {
+		$this->load_scripts_on_head();
+		$this->load_styles_on_head();
+	}
+
+	/**
+	 * Load scripts on head
+	 * @return void
+	 */
+	public function load_scripts_on_head() {
+		LP_Helper::print_inline_script_tag( 'lpData', $this->localize_data_global(), [ 'id' => 'lpData' ] );
+	}
+
+	/**
+	 * Load styles on head
+	 * @return void
+	 */
+	public function load_styles_on_head() {
+		$max_with          = LP_Settings::get_option( 'width_container', '1290px' );
+		$padding_container = apply_filters( 'learn-press/container-padding-width', '2rem' );
+		$primary_color     = LP_Settings::get_option( 'primary_color' );
+		$secondary_color   = LP_Settings::get_option( 'secondary_color' );
+		?>
+		<style id="learn-press-custom-css">
+			:root {
+				--lp-cotainer-max-with: <?php echo $max_with; ?>;
+				--lp-cotainer-padding: <?php echo $padding_container; ?>;
+				--lp-primary-color: <?php echo ! empty( $primary_color ) ? $primary_color : '#ffb606'; ?>;
+				--lp-secondary-color: <?php echo ! empty( $secondary_color ) ? $secondary_color : '#442e66'; ?>;
+			}
+		</style>
+		<?php
+	}
+
+	/**
 	 * Add lp overlay
 	 *
 	 * @since 3.2.8
@@ -332,28 +401,6 @@ class LP_Assets extends LP_Abstract_Assets {
 		echo '<div class="lp-overlay">';
 		apply_filters( 'learnpress/modal-dialog', learn_press_get_template( 'global/lp-modal-overlay' ) );
 		echo '</div>';
-	}
-
-	/**
-	 * Global config styles
-	 *
-	 * @return void
-	 */
-	public function global_config_styles() {
-		$max_with          = LP_Settings::get_option( 'width_container', '1290px' );
-		$padding_container = apply_filters( 'learn-press/container-padding-width', '2rem' );
-		$primary_color     = LP_Settings::instance()->get( 'primary_color' );
-		$secondary_color   = LP_Settings::instance()->get( 'secondary_color' );
-		?>
-		<style id="learn-press-custom-css">
-			:root {
-				--lp-cotainer-max-with: <?php echo $max_with; ?>;
-				--lp-cotainer-padding: <?php echo $padding_container; ?>;
-				--lp-primary-color: <?php echo ! empty( $primary_color ) ? $primary_color : '#ffb606'; ?>;
-				--lp-secondary-color: <?php echo ! empty( $secondary_color ) ? $secondary_color : '#442e66'; ?>;
-			}
-		</style>
-		<?php
 	}
 
 	public static function instance() {

@@ -1,9 +1,9 @@
-import API from './api';
-import { lpAddQueryArgs, lpFetchAPI, lpGetCurrentURLNoParam } from '../utils/utils';
+import API from '../api';
+import { lpAddQueryArgs, lpFetchAPI, lpGetCurrentURLNoParam } from '../utils';
 import Cookies from '../utils/cookies';
 
-if ( 'undefined' === typeof lpGlobalSettings ) {
-	console.log( 'lpGlobalSettings is undefined' );
+if ( 'undefined' === typeof lpData || 'undefined' === typeof lpCoursesSettings ) {
+	console.log( 'lpData || lpCoursesSettings is undefined' );
 }
 
 // Call API load courses.
@@ -48,24 +48,24 @@ window.lpCourseList = ( () => {
 	const classListCourse = 'learn-press-courses';
 	const classPaginationCourse = 'learn-press-pagination';
 	const classSkeletonArchiveCourse = 'lp-archive-course-skeleton';
-	const lpArchiveLoadAjax = lpGlobalSettings.lpArchiveLoadAjax || 0;
-	const lpArchiveNoLoadAjaxFirst = lpGlobalSettings.lpArchiveNoLoadAjaxFirst || 0;
-	const lpArchiveSkeletonParam = lpGlobalSettings.lpArchiveSkeleton || 0;
+	const lpArchiveLoadAjax = lpCoursesSettings.lpArchiveLoadAjax || 0;
+	const lpArchiveNoLoadAjaxFirst = lpCoursesSettings.lpArchiveNoLoadAjaxFirst || 0;
+	const lpArchiveSkeletonParam = lpData.urlParams || [];
 	const currentUrl = lpGetCurrentURLNoParam();
 	let filterCourses = {};
-	const typePagination = lpGlobalSettings.lpArchivePaginationType || 'number';
+	const typePagination = lpCoursesSettings.lpArchivePaginationType || 'number';
 	let typeEventBeforeFetch;
 	let timeOutSearch;
 	let isLoadingInfinite = false;
 	const fetchAPI = ( args, callBack = {} ) => {
 		//console.log( 'Fetch API Courses' );
-		const url = lpAddQueryArgs( API.apiCourses, args );
+		const url = lpAddQueryArgs( API.frontend.apiCourses, args );
 		let paramsFetch = {};
 
-		if ( 0 !== lpGlobalSettings.user_id ) {
+		if ( 0 !== lpData.user_id ) {
 			paramsFetch = {
 				headers: {
-					'X-WP-Nonce': lpGlobalSettings.nonce,
+					'X-WP-Nonce': lpData.nonce,
 				},
 			};
 		}
