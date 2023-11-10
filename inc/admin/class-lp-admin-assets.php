@@ -81,7 +81,6 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				'select2'                           => new LP_Asset_Key( $this->url( 'src/js/vendor/select2.full.min.js' ) ),
 				'jquery-tipsy'                      => new LP_Asset_Key( $this->url( 'src/js/vendor/jquery/jquery-tipsy.js' ) ),
 				'html2pdf'                          => new LP_Asset_Key( $this->url( 'src/js/vendor/html2pdf.bundle.min.js' ) ),
-				'chart'                             => new LP_Asset_Key( 'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js' ),
 				'dropdown-pages'                    => new LP_Asset_Key( $this->url( self::$_folder_source . 'js/admin/share/dropdown-pages' . self::$_min_assets . '.js' ) ),
 				'jquery-ui-timepicker-addon'        => new LP_Asset_Key(
 					$this->url( 'src/js/vendor/jquery/jquery-ui-timepicker-addon.js' ),
@@ -264,7 +263,12 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				),
 				'lp-admin-notices'                  => new LP_Asset_Key(
 					self::url( 'js/dist/admin/admin-notices' . self::$_min_assets . '.js' ),
-					[ 'wp-api-fetch' ]
+					[ 'wp-api-fetch' ],
+					[],
+					1,
+					0,
+					'',
+					[ 'strategy' => 'async' ]
 				),
 				'lp-material'                       => new LP_Asset_Key(
 					$this->url( 'js/dist/admin/course-material' . self::$_min_assets . '.js' ),
@@ -296,10 +300,12 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				),
 				'lp-admin-statistic'                => new LP_Asset_Key(
 					$this->url( 'js/dist/admin/admin-statistic' . self::$_min_assets . '.js' ),
-					array( 'chart', 'wp-api-fetch' ),
+					array( 'wp-api-fetch' ),
 					array( 'learnpress_page_learn-press-statistics' ),
 					0,
-					1
+					0,
+					'',
+					[ 'strategy' => 'defer' ]
 				),
 			)
 		);

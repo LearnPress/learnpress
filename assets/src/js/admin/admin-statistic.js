@@ -4,6 +4,9 @@
  * @since 4.2.5.5
  * @version 1.0.0
  */
+
+import Chart from 'chart.js/auto';
+
 document.addEventListener( 'DOMContentLoaded', function() {
 	const lpStatisticsLoad = () => {
 		const elementLoad = document.querySelector( 'input.statistics-type' );
