@@ -1,6 +1,7 @@
 <?php
 
 use LearnPress\Helpers\Template;
+use LearnPress\Models\UserItems\UserCourseModel;
 
 /**
  * Class LP_Course_Template
@@ -147,17 +148,19 @@ class LP_Template_Course extends LP_Abstract_Template {
 	}
 
 	/**
-	 * Display price, free of course
+	 * Display price or free of course, not button.
 	 *
 	 * @return void
+	 * @since 4.0.0
+	 * @version 1.0.2
 	 */
 	public function course_pricing() {
 		$course = learn_press_get_course();
 		$user   = learn_press_get_current_user();
 
-		$can_show = $user->can_purchase_course();
-		$can_show = apply_filters( 'learnpress/course/template/price/can-show', $can_show, $user, $course );
-		if ( is_wp_error( $can_show ) ) {
+		// Check if user not attend course will show.
+		$user_course = $user->get_course_attend( $course->get_id() );
+		if ( $user_course instanceof UserCourseModel ) {
 			return;
 		}
 
