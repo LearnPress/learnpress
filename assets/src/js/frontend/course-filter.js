@@ -113,7 +113,11 @@ window.lpCourseFilter = {
 		const elListCourse = document.querySelector( '.learn-press-courses' );
 		const skeleton = document.querySelector( '.lp-archive-course-skeleton' );
 		const filterCourses = { paged: 1 };
-		window.lpCourseList.updateEventTypeBeforeFetch( 'filter' );
+
+		if ( 'undefined' !== typeof window.lpCourseList ) {
+			window.lpCourseList.updateEventTypeBeforeFetch( 'filter' );
+		}
+
 		for ( const pair of formData.entries() ) {
 			const key = pair[ 0 ];
 			const value = formData.getAll( key );
@@ -122,7 +126,11 @@ window.lpCourseFilter = {
 			}
 		}
 
-		if ( lpSettingCourses.is_course_archive && lpSettingCourses.lpArchiveLoadAjax && elListCourse && skeleton ) {
+		if ( 'undefined' !== typeof lpSettingCourses &&
+			lpData.is_course_archive &&
+			lpSettingCourses.lpArchiveLoadAjax &&
+			elListCourse && skeleton &&
+			'undefined' !== typeof window.lpCourseList ) {
 			window.lpCourseList.triggerFetchAPI( filterCourses );
 		} else {
 			const courseUrl = lpData.courses_url || '';
@@ -152,7 +160,7 @@ window.lpCourseFilter = {
 			form.elements[ i ].removeAttribute( 'checked' );
 		}
 		// If on the page archive course will call btnSubmit click.
-		if ( lpSettingCourses.is_course_archive ) {
+		if ( lpData.is_course_archive ) {
 			btnSubmit.click();
 		}
 	},

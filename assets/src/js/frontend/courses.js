@@ -48,7 +48,7 @@ window.lpCourseList = ( () => {
 	const classListCourse = 'learn-press-courses';
 	const classPaginationCourse = 'learn-press-pagination';
 	const classSkeletonArchiveCourse = 'lp-archive-course-skeleton';
-	const lpArchiveLoadAjax = lpSettingCourses.lpArchiveLoadAjax || 0;
+	const lpArchiveLoadAjax = parseInt( lpSettingCourses.lpArchiveLoadAjax || 0 );
 	const lpArchiveNoLoadAjaxFirst = parseInt( lpSettingCourses.lpArchiveNoLoadAjaxFirst ) === 1;
 	const lpArchiveSkeletonParam = lpData.urlParams || [];
 	const currentUrl = lpGetCurrentURLNoParam();
@@ -123,9 +123,10 @@ window.lpCourseList = ( () => {
 			}
 		},
 		clickNumberPage: ( e, target ) => {
-			if ( ! lpArchiveLoadAjax || lpGlobalSettings.noLoadCoursesJs ) {
+			if ( ! lpArchiveLoadAjax || parseInt( lpSettingCourses.noLoadCoursesJs ) ) {
 				return;
 			}
+
 			if ( target.classList.contains( 'page-numbers' ) ) {
 				const parentArchive = target.closest( `.${ classArchiveCourse }` );
 				if ( ! parentArchive ) {

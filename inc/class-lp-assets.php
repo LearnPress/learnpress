@@ -142,6 +142,7 @@ class LP_Assets extends LP_Abstract_Assets {
 				'lp_rest_url'       => get_rest_url(),
 				'nonce'             => wp_create_nonce( 'wp_rest' ),
 				'is_course_archive' => LP_Page_Controller::is_page_courses(),
+				'courses_url'       => learn_press_get_page_link( 'courses' ),
 				'urlParams'         => lp_archive_skeleton_get_args(),
 			]
 		);
