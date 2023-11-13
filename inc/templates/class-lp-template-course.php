@@ -540,34 +540,24 @@ class LP_Template_Course extends LP_Abstract_Template {
 
 	/**
 	 * Display course curriculum.
+	 *
+	 * @since 4.1.6
+	 * @since 4.2.5.5 remove code load old template user for course curriculum load page instead of via AJAX.
+	 * @version 1.0.1
 	 */
 	public function course_curriculum() {
-		if ( ! learn_press_override_templates() || ( learn_press_override_templates() && has_filter( 'lp/template-course/course_curriculum/skeleton' ) ) ) {
-			$course_item = LP_Global::course_item();
+		$course_item = LP_Global::course_item();
 
-			if ( $course_item ) { // Check if current item is viewable
-				$item_id    = $course_item->get_id();
-				$section_id = LP_Section_DB::getInstance()->get_section_id_by_item_id( absint( $item_id ) );
-			}
-			?>
-			<div class="learnpress-course-curriculum" data-section="<?php echo esc_attr( $section_id ?? '' ); ?>"
-				data-id="<?php echo esc_attr( $item_id ?? '' ); ?>">
-				<ul class="lp-skeleton-animation">
-					<li style="width: 100%; height: 50px"></li>
-					<li style="width: 100%; height: 20px"></li>
-					<li style="width: 100%; height: 20px"></li>
-					<li style="width: 100%; height: 20px"></li>
-
-					<li style="width: 100%; height: 50px; margin-top: 40px;"></li>
-					<li style="width: 100%; height: 20px"></li>
-					<li style="width: 100%; height: 20px"></li>
-					<li style="width: 100%; height: 20px"></li>
-				</ul>
-			</div>
-			<?php
-		} else {
-			learn_press_get_template( 'single-course/tabs/curriculum' );
+		if ( $course_item ) { // Check if current item is viewable
+			$item_id    = $course_item->get_id();
+			$section_id = LP_Section_DB::getInstance()->get_section_id_by_item_id( absint( $item_id ) );
 		}
+		?>
+		<div class="learnpress-course-curriculum" data-section="<?php echo esc_attr( $section_id ?? '' ); ?>"
+			data-id="<?php echo esc_attr( $item_id ?? '' ); ?>">
+			<?php lp_skeleton_animation_html( 10 ); ?>
+		</div>
+		<?php
 	}
 
 	/**
