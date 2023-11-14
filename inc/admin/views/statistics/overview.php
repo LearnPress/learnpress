@@ -1,9 +1,7 @@
 <?php
-
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
-
+/**
+ * Template for displaying orders statistics tab Overview statistics page.
+ */
 ?>
 <div class="lp-admin-statistics-tab-content">
 	<div class="btn-group btn-group-filter">
@@ -48,9 +46,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<h3 class="statistics-title"><?php _e( 'Net Sales', 'learnpress' ); ?></h3>
 		<div id="net-sales-chart" class="statistics-chart-wrapper">
 			<?php lp_skeleton_animation_html( 10, 100 ); ?>
-			<canvas id="net-sales-chart-content" style="display: none;">
-				
-			</canvas>
+			<canvas id="net-sales-chart-content" style="display: none;"></canvas>
 		</div>
 		<div class="sold-course-analytics">
 			<div class="col-50">

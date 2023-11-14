@@ -36,7 +36,7 @@
 	.custom-filter-time {
 		display: none;
 	}
-	
+
 	.statistics-content {
 		border: 1px solid #D9D9D9;
 		padding: 22px;
@@ -46,7 +46,6 @@
 				color: #000;
 				margin-right: 10px;
 				padding: 15px 30px;
-				float: left;
 				display: flex;
 				flex-direction: column;
 				text-align: center;
@@ -61,8 +60,10 @@
 				}
 			}
 			display: flex;
-		    justify-content: space-evenly;
-		    flex-direction: row;
+			justify-content: center;
+			flex-direction: row;
+			flex-wrap: wrap;
+			gap: 5px;
 		}
 		.statistics-title {
 			color: #000;

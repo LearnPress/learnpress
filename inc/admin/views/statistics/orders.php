@@ -1,8 +1,7 @@
 <?php
-
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
+/**
+ * Template for displaying orders statistics tab Orders statistics page.
+ */
 ?>
 
 <div class="lp-admin-statistics-tab-content">
@@ -51,9 +50,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		</div>
 		<h3 class="statistics-title"><?php _e( 'Completed Orders', 'learnpress' ); ?></h3>
 		<div id="orders-chart" class="statistics-chart-wrapper">
-			<canvas id="orders-chart-content" style="display: none;">
-				
-			</canvas>
+			<canvas id="orders-chart-content" style="display: none;"></canvas>
 		</div>
 	</div>
 </div>

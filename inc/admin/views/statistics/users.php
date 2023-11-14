@@ -1,7 +1,7 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
+/**
+ * Template for displaying orders statistics tab Users statistics page.
+ */
 ?>
 
 <div class="lp-admin-statistics-tab-content">
@@ -51,9 +51,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<h3 class="statistics-title"><?php _e( 'Registed Users', 'learnpress' ); ?></h3>
 		<div id="user-chart" class="statistics-chart-wrapper">
 			<?php lp_skeleton_animation_html( 10, 100 ); ?>
-			<canvas id="user-chart-content" style="display: none;">
-				
-			</canvas>
+			<canvas id="user-chart-content" style="display: none;"></canvas>
 		</div>
 		<div class="sold-course-analytics">
 			<div class="col-50">

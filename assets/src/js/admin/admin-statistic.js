@@ -395,6 +395,8 @@ document.addEventListener( 'DOMContentLoaded', function() {
 			data: chart_data,
 			options: {
 				responsive: true,
+				maintainAspectRatio: false,
+				aspectRatio: 0.8,
 				plugins: {
 					legend: {
 						display: false,
@@ -417,6 +419,8 @@ document.addEventListener( 'DOMContentLoaded', function() {
 
 		const configChart = { ...configDefault, ...config };
 		configChart.options = { ...configDefault.options, ...config.options };
+
+		console.log( configChart );
 
 		const chart = new Chart( canvas, configChart );
 		return chart;
