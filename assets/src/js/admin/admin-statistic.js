@@ -129,7 +129,9 @@ document.addEventListener( 'DOMContentLoaded', function() {
 						'orders-chart-content'
 					);
 
-				console.log( data );
+				// console.log( data );
+				chartEle.style.display = 'block';
+				loadLpSkeletonAnimations();
 
 				if ( chart === undefined ) {
 					chart = generateChart(
@@ -143,7 +145,7 @@ document.addEventListener( 'DOMContentLoaded', function() {
 						data.chart_data.x_label;
 					chart.update();
 				}
-				chartEle.style.display = 'block';
+				// chartEle.style.display = 'block';
 				if ( data.statistics.length > 0 ) {
 					let totalOrder = 0;
 					for ( let i = data.statistics.length - 1; i >= 0; i-- ) {
@@ -420,7 +422,7 @@ document.addEventListener( 'DOMContentLoaded', function() {
 		const configChart = { ...configDefault, ...config };
 		configChart.options = { ...configDefault.options, ...config.options };
 
-		console.log( configChart );
+		// console.log( configChart );
 
 		const chart = new Chart( canvas, configChart );
 		return chart;

@@ -50,6 +50,7 @@
 		</div>
 		<h3 class="statistics-title"><?php _e( 'Completed Orders', 'learnpress' ); ?></h3>
 		<div id="orders-chart" class="statistics-chart-wrapper">
+			<?php lp_skeleton_animation_html( 10, 100 ); ?>
 			<canvas id="orders-chart-content" style="display: none;"></canvas>
 		</div>
 	</div>
