@@ -161,7 +161,11 @@ class LP_Template_Course extends LP_Abstract_Template {
 		// Check if user not attend course will show.
 		$user_course = $user->get_course_attend( $course->get_id() );
 		if ( $user_course instanceof UserCourseModel ) {
-			return;
+			if ( $user_course->status === LP_COURSE_ENROLLED ) {
+				return;
+			} elseif ( ! $user->can_purchase_course( $course->get_id() ) ) {
+				return;
+			}
 		}
 
 		$price_html = $course->get_course_price_html();
