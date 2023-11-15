@@ -7,7 +7,7 @@
 
 import Chart from 'chart.js/auto';
 
-document.addEventListener( 'DOMContentLoaded', function () {
+document.addEventListener( 'DOMContentLoaded', function() {
 	const lpStatisticsLoad = () => {
 		const elementLoad = document.querySelector( 'input.statistics-type' );
 		if ( ! elementLoad ) {
@@ -119,27 +119,27 @@ document.addEventListener( 'DOMContentLoaded', function () {
 							document.querySelector(
 								'.completed-order-count'
 							).textContent = v.count_order;
-							totalOrder += ~~v.count_order;
+							totalOrder += parseInt( v.count_order );
 						} else if ( v.order_status == 'pending' ) {
 							document.querySelector(
 								'.pending-order-count'
 							).textContent = v.count_order;
-							totalOrder += ~~v.count_order;
+							totalOrder += parseInt( v.count_order );
 						} else if ( v.order_status == 'processing' ) {
 							document.querySelector(
 								'.processing-order-count'
 							).textContent = v.count_order;
-							totalOrder += ~~v.count_order;
+							totalOrder += parseInt( v.count_order );
 						} else if ( v.order_status == 'cancelled' ) {
 							document.querySelector(
 								'.cancelled-order-count'
 							).textContent = v.count_order;
-							totalOrder += ~~v.count_order;
+							totalOrder += parseInt( v.count_order );
 						} else if ( v.order_status == 'failed' ) {
 							document.querySelector(
 								'.failed-order-count'
 							).textContent = v.count_order;
-							totalOrder += ~~v.count_order;
+							totalOrder += parseInt( v.count_order );
 						}
 					}
 					document.querySelector( '.total-order-count' ).textContent =
@@ -179,17 +179,17 @@ document.addEventListener( 'DOMContentLoaded', function () {
 							document.querySelector(
 								'.statistics-courses.published'
 							).textContent = v.course_count;
-							totalCourse += ~~v.course_count;
+							totalCourse += parseInt( v.course_count );
 						} else if ( v.course_status == 'pending' ) {
 							document.querySelector(
 								'.statistics-courses.pending'
 							).textContent = v.course_count;
-							totalCourse += ~~v.course_count;
+							totalCourse += parseInt( v.course_count );
 						} else if ( v.course_status == 'future' ) {
 							document.querySelector(
 								'.statistics-courses.future'
 							).textContent = v.course_count;
-							totalCourse += ~~v.course_count;
+							totalCourse += parseInt( v.course_count );
 						}
 					}
 					document.querySelector(
@@ -270,7 +270,7 @@ document.addEventListener( 'DOMContentLoaded', function () {
 								'.statistics-graduration.in-progress'
 							).textContent = userGraduration[ i ].user_count;
 						} else {
-							userFinished += ~~userGraduration[ i ].user_count;
+							userFinished += parseInt( userGraduration[ i ].user_count );
 						}
 					}
 					document.querySelector(
@@ -288,7 +288,7 @@ document.addEventListener( 'DOMContentLoaded', function () {
 						topInstructorWrap = document.querySelector(
 							'.top-intructor-by-student'
 						);
-					Object.keys( topInstructor ).forEach( function ( key ) {
+					Object.keys( topInstructor ).forEach( function( key ) {
 						// console.log(key, topInstructor[key]);
 						topInstructorWrap.insertAdjacentHTML(
 							'beforeend',
@@ -437,18 +437,18 @@ document.addEventListener( 'DOMContentLoaded', function () {
 				).style.display = 'none';
 				loadLpSkeletonAnimations( true );
 				if ( elementLoad ) {
-					if ( elementLoad.value == 'orders-statistics' ) {
+					if ( elementLoad.value === 'orders-statistics' ) {
 						orderLoadData( 'custom', `${ time1 }+${ time2 }` );
-					} else if ( elementLoad.value == 'overview-statistics' ) {
+					} else if ( elementLoad.value === 'overview-statistics' ) {
 						document.querySelector(
 							'.top-category-sold'
 						).innerHTML = '';
 						document.querySelector( '.top-course-sold' ).innerHTML =
 							'';
 						overviewLoadData( 'custom', `${ time1 }+${ time2 }` );
-					} else if ( elementLoad.value == 'courses-statistics' ) {
+					} else if ( elementLoad.value === 'courses-statistics' ) {
 						courseLoadData( 'custom', `${ time1 }+${ time2 }` );
-					} else if ( elementLoad.value == 'users-statistics' ) {
+					} else if ( elementLoad.value === 'users-statistics' ) {
 						userLoadData( 'custom', `${ time1 }+${ time2 }` );
 					}
 				}
@@ -460,8 +460,8 @@ document.addEventListener( 'DOMContentLoaded', function () {
 		chartData = [],
 		chartConfig = false
 	) => {
-		let chart = Chart.getChart( chartID ),
-			chartEle = document.getElementById( chartID );
+		let chart = Chart.getChart( chartID );
+		const chartEle = document.getElementById( chartID );
 
 		// console.log( data );
 		chartEle.style.display = 'block';

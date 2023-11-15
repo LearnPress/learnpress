@@ -4,6 +4,8 @@ use LearnPress\Helpers\Template;
 
 /**
  * Class LP_REST_Admin_Statistics_Controller
+ *
+ * @since 4.2.5.5
  */
 class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 	protected static $_instance = null;
@@ -48,31 +50,33 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 
 		parent::register_routes();
 	}
+
 	/**
 	 * Gets the overviews statistics.
 	 *
-	 * @param       $request  The request
+	 * @param WP_REST_Request $request
 	 *
-	 * @return      The overviews statistics.
+	 * @return LP_REST_Response.
 	 */
-	public function get_overviews_statistics( $request ) {
+	public function get_overviews_statistics( WP_REST_Request $request ): LP_REST_Response {
 		$response = new LP_REST_Response();
+
 		try {
 			$params = $request->get_params();
 			$params = LP_Helper::sanitize_params_submitted( $params );
 			$filter = $this->get_statistics_filter( $params );
 
-			$lp_statistic_db          = LP_Statistics_DB::getInstance();
-			$net_sales                = $lp_statistic_db->get_net_sales_data( $filter['filter_type'], $filter['time'] );
-			$total_courses            = $lp_statistic_db->get_total_course_created( $filter['filter_type'], $filter['time'] );
-			$total_orders             = $lp_statistic_db->get_total_order_created( $filter['filter_type'], $filter['time'] );
-			$total_instructors        = $lp_statistic_db->get_total_instructor_created( $filter['filter_type'], $filter['time'] );
-			$total_students           = $lp_statistic_db->get_total_student_created( $filter['filter_type'], $filter['time'] );
-			$chart_data               = $this->process_chart_data( $filter, $net_sales );
-			$top_courses              = $lp_statistic_db->get_top_sold_courses( $filter['filter_type'], $filter['time'] );
-			$top_categories           = $lp_statistic_db->get_top_sold_categories( $filter['filter_type'], $filter['time'] );
-			$chart_data['line_label'] = __( 'Net sales', 'learnpress' );
-			$total_sales              = array_sum( $chart_data['data'] );
+			$lp_statistic_db                    = LP_Statistics_DB::getInstance();
+			$net_sales                          = $lp_statistic_db->get_net_sales_data( $filter['filter_type'], $filter['time'] );
+			$total_courses                      = $lp_statistic_db->get_total_course_created( $filter['filter_type'], $filter['time'] );
+			$total_orders                       = $lp_statistic_db->get_total_order_created( $filter['filter_type'], $filter['time'] );
+			$total_instructors                  = $lp_statistic_db->get_total_instructor_created( $filter['filter_type'], $filter['time'] );
+			$total_students                     = $lp_statistic_db->get_total_student_created( $filter['filter_type'], $filter['time'] );
+			$chart_data                         = $this->process_chart_data( $filter, $net_sales );
+			$top_courses                        = $lp_statistic_db->get_top_sold_courses( $filter['filter_type'], $filter['time'] );
+			$top_categories                     = $lp_statistic_db->get_top_sold_categories( $filter['filter_type'], $filter['time'] );
+			$chart_data['line_label']           = __( 'Net sales', 'learnpress' );
+			$total_sales                        = html_entity_decode( learn_press_format_price( array_sum( $chart_data['data'] ) ) );
 
 			$data             = array(
 				'total_sales'       => $total_sales,
@@ -90,10 +94,17 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 			$response->message = $e->getMessage();
 			$response->status  = 'error';
 		}
-		return rest_ensure_response( $response );
+
+		return $response;
 	}
-	public function get_order_statistics( $request ) {
+
+	/**
+	 * @param WP_REST_Request $request
+	 * @return LP_REST_Response
+	 */
+	public function get_order_statistics( WP_REST_Request $request ): LP_REST_Response {
 		$response = new LP_REST_Response();
+
 		try {
 			$params                   = $request->get_params();
 			$params                   = LP_Helper::sanitize_params_submitted( $params );
@@ -113,7 +124,8 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 			$response->message = $e->getMessage();
 			$response->status  = 'error';
 		}
-		return rest_ensure_response( $response );
+
+		return $response;
 	}
 	public function get_courses_statistics( $request ) {
 		$response = new LP_REST_Response();
@@ -138,9 +150,15 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 			$response->message = $e->getMessage();
 			$response->status  = 'error';
 		}
-		return rest_ensure_response( $response );
+
+		return $response;
 	}
-	public function get_users_statistics( $request ) {
+
+	/**
+	 * @param $request
+	 * @return LP_REST_Response
+	 */
+	public function get_users_statistics( $request ): LP_REST_Response {
 		$response = new LP_REST_Response();
 		try {
 			$params                  = $request->get_params();
@@ -183,7 +201,8 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 			$response->message = $e->getMessage();
 			$response->status  = 'error';
 		}
-		return rest_ensure_response( $response );
+
+		return $response;
 	}
 	/**
 	 * Process data use for chart js
@@ -248,7 +267,7 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 		}
 		foreach ( $data as $row ) {
 			$chart_data['labels'][] = $row->x_data_label;
-			$chart_data['data'][]   = (int) $row->x_data;
+			$chart_data['data'][]   = (float) number_format( $row->x_data, 2 );
 		}
 		// $chart_data['line_label'] = __( 'Completed orders', 'learnpress' );
 
@@ -494,11 +513,4 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 	public function permission_check( $request ) {
 		return apply_filters( 'learnpress/admin-statistics/permission', current_user_can( 'administrator' ) );
 	}
-	public static function getInstance() {
-		if ( is_null( self::$_instance ) ) {
-			self::$_instance = new self();
-		}
-		return self::$_instance;
-	}
 }
-LP_REST_Admin_Statistics_Controller::getInstance();
