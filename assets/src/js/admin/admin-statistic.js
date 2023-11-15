@@ -7,7 +7,7 @@
 
 import Chart from 'chart.js/auto';
 
-document.addEventListener( 'DOMContentLoaded', function() {
+document.addEventListener( 'DOMContentLoaded', function () {
 	const lpStatisticsLoad = () => {
 		const elementLoad = document.querySelector( 'input.statistics-type' );
 		if ( ! elementLoad ) {
@@ -39,40 +39,25 @@ document.addEventListener( 'DOMContentLoaded', function() {
 				if ( status === 'error' ) {
 					throw new Error( message || 'Error' );
 				}
-				let chart = Chart.getChart( 'net-sales-chart-content' ),
-					chartEle = document.getElementById(
-						'net-sales-chart-content'
-					);
-				chartEle.style.display = 'block';
-				loadLpSkeletonAnimations();
-				if ( chart === undefined ) {
-					const configChartOverview = {
-						options: {
-							scales: {
-								y: {
-									min: 0,
-									ticks: {
-										callback( value, index, ticks ) {
-											return '$' + value;
-										},
+				const configChartOverview = {
+					options: {
+						scales: {
+							y: {
+								min: 0,
+								ticks: {
+									callback( value, index, ticks ) {
+										return '$' + value;
 									},
 								},
 							},
 						},
-					};
-
-					chart = generateChart(
-						'net-sales-chart-content',
-						data.chart_data,
-						configChartOverview
-					);
-				} else {
-					chart.data.labels = data.chart_data.labels;
-					chart.data.datasets[ 0 ].data = data.chart_data.data;
-					chart.config.options.scales.x.title.text =
-						data.chart_data.x_label;
-					chart.update();
-				}
+					},
+				};
+				initStatisticChart(
+					'net-sales-chart-content',
+					data.chart_data,
+					configChartOverview
+				);
 				document.querySelector( '.total-sales' ).textContent =
 					data.total_sales;
 				document.querySelector( '.total-orders' ).textContent =
@@ -124,27 +109,7 @@ document.addEventListener( 'DOMContentLoaded', function() {
 				if ( status === 'error' ) {
 					throw new Error( message || 'Error' );
 				}
-				let chart = Chart.getChart( 'orders-chart-content' ),
-					chartEle = document.getElementById(
-						'orders-chart-content'
-					);
-
-				// console.log( data );
-				chartEle.style.display = 'block';
-				loadLpSkeletonAnimations();
-
-				if ( chart === undefined ) {
-					chart = generateChart(
-						'orders-chart-content',
-						data.chart_data
-					);
-				} else {
-					chart.data.labels = data.chart_data.labels;
-					chart.data.datasets[ 0 ].data = data.chart_data.data;
-					chart.config.options.scales.x.title.text =
-						data.chart_data.x_label;
-					chart.update();
-				}
+				initStatisticChart( 'orders-chart-content', data.chart_data );
 				// chartEle.style.display = 'block';
 				if ( data.statistics.length > 0 ) {
 					let totalOrder = 0;
@@ -205,24 +170,7 @@ document.addEventListener( 'DOMContentLoaded', function() {
 				if ( status === 'error' ) {
 					throw new Error( message || 'Error' );
 				}
-				let chart = Chart.getChart( 'course-chart-content' ),
-					chartEle = document.getElementById(
-						'course-chart-content'
-					);
-				chartEle.style.display = 'block';
-				loadLpSkeletonAnimations();
-				if ( chart === undefined ) {
-					chart = generateChart(
-						'course-chart-content',
-						data.chart_data
-					);
-				} else {
-					chart.data.labels = data.chart_data.labels;
-					chart.data.datasets[ 0 ].data = data.chart_data.data;
-					chart.config.options.scales.x.title.text =
-						data.chart_data.x_label;
-					chart.update();
-				}
+				initStatisticChart( 'course-chart-content', data.chart_data );
 				if ( data.courses.length > 0 ) {
 					let totalCourse = 0;
 					for ( let i = 0; i < data.courses.length; i++ ) {
@@ -297,22 +245,7 @@ document.addEventListener( 'DOMContentLoaded', function() {
 				if ( status === 'error' ) {
 					throw new Error( message || 'Error' );
 				}
-				let chart = Chart.getChart( 'user-chart-content' ),
-					chartEle = document.getElementById( 'user-chart-content' );
-				chartEle.style.display = 'block';
-				loadLpSkeletonAnimations();
-				if ( chart === undefined ) {
-					chart = generateChart(
-						'user-chart-content',
-						data.chart_data
-					);
-				} else {
-					chart.data.labels = data.chart_data.labels;
-					chart.data.datasets[ 0 ].data = data.chart_data.data;
-					chart.config.options.scales.x.title.text =
-						data.chart_data.x_label;
-					chart.update();
-				}
+				initStatisticChart( 'user-chart-content', data.chart_data );
 				const totalUserActived = 0;
 				document.querySelector(
 					'.statistics-instructors'
@@ -329,7 +262,10 @@ document.addEventListener( 'DOMContentLoaded', function() {
 					let userGraduration = data.user_course_statused,
 						userFinished = 0;
 					for ( let i = 0; i < userGraduration.length; i++ ) {
-						if ( userGraduration[ i ].graduation_status === 'in-progress' ) {
+						if (
+							userGraduration[ i ].graduation_status ===
+							'in-progress'
+						) {
 							document.querySelector(
 								'.statistics-graduration.in-progress'
 							).textContent = userGraduration[ i ].user_count;
@@ -352,7 +288,7 @@ document.addEventListener( 'DOMContentLoaded', function() {
 						topInstructorWrap = document.querySelector(
 							'.top-intructor-by-student'
 						);
-					Object.keys( topInstructor ).forEach( function( key ) {
+					Object.keys( topInstructor ).forEach( function ( key ) {
 						// console.log(key, topInstructor[key]);
 						topInstructorWrap.insertAdjacentHTML(
 							'beforeend',
@@ -519,4 +455,29 @@ document.addEventListener( 'DOMContentLoaded', function() {
 			}
 		} );
 	lpStatisticsLoad();
+	const initStatisticChart = (
+		chartID = '',
+		chartData = [],
+		chartConfig = false
+	) => {
+		let chart = Chart.getChart( chartID ),
+			chartEle = document.getElementById( chartID );
+
+		// console.log( data );
+		chartEle.style.display = 'block';
+		loadLpSkeletonAnimations();
+
+		if ( chart === undefined ) {
+			if ( chartConfig ) {
+				chart = generateChart( chartID, chartData, chartConfig );
+			} else {
+				chart = generateChart( chartID, chartData );
+			}
+		} else {
+			chart.data.labels = chartData.labels;
+			chart.data.datasets[ 0 ].data = chartData.data;
+			chart.config.options.scales.x.title.text = chartData.x_label;
+			chart.update();
+		}
+	};
 } );
