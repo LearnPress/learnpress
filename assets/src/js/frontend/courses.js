@@ -62,7 +62,7 @@ window.lpCourseList = ( () => {
 		const url = lpAddQueryArgs( API.frontend.apiCourses, args );
 		let paramsFetch = {};
 
-		if ( 0 !== lpData.user_id ) {
+		if ( 0 !== parseInt( lpData.user_id ) ) {
 			paramsFetch = {
 				headers: {
 					'X-WP-Nonce': lpData.nonce,

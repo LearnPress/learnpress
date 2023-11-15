@@ -84,7 +84,7 @@ window.lpCourseFilter = {
 		let paramsFetch = {
 			method: 'GET',
 		};
-		if ( 0 !== lpData.user_id ) {
+		if ( 0 !== parseInt( lpData.user_id ) ) {
 			paramsFetch = {
 				...paramsFetch,
 				headers: {
