@@ -40,17 +40,23 @@ class FilterCourseElementor extends LPElementorWidgetBase {
 
     protected function render() {
         try {
-			$settings = $this->get_settings_for_display();
-			$filter   = FilterCourseTemplate::instance();
-
+			$settings 	= $this->get_settings_for_display();
+			$filter   	= FilterCourseTemplate::instance();
+			$extraClass = '';
 			if ( empty( $settings['item_filter'] ) ) {
 				return;
+			}
+
+			if ( $settings['layout'] == 'popup' ) {
+				$text_popup = $settings['button_popup'] ?? esc_html__( 'Filter', 'learnpress' );
+				$extraClass = 'lp-filter-popup';
+				echo '<button class="lp-button-popup">'. $text_popup .'</button>';
 			}
 
 			$html_wrapper = apply_filters(
 				'learn-press/filter-courses/sections/wrapper',
 				[
-					'<form class="lp-form-course-filter">' => '</form>',
+					'<form class="lp-form-course-filter '. esc_attr( $extraClass ) .'">' => '</form>',
 				],
 				$settings
 			);

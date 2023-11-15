@@ -7,7 +7,7 @@
  */
 
 use Elementor\Controls_Manager;
-use Elementor\Group_Control_Typography;
+use Elementor\Group_Control_Border;
 use LearnPress\ExternalPlugin\Elementor\LPElementorControls;
 
 $content_fields = array_merge( 
@@ -16,6 +16,41 @@ $content_fields = array_merge(
         esc_html__( 'Filter Course', 'learnpress' ),
         Controls_Manager::TAB_CONTENT,
         [
+            LPElementorControls::add_control_type_select(
+                'layout',
+                esc_html__( 'Layout', 'learnpress' ),
+                [
+                    'base'  => esc_html__( 'Default', 'learnpress' ),
+                    'popup' => esc_html__( 'Popup', 'learnpress' ),
+                ],
+                'base' 
+            ),
+            LPElementorControls::add_control_type(
+                'button_popup',
+                esc_html__( 'Text Popup', 'learnpress' ),
+                esc_html__( 'Filter', 'learnpress' ),
+                Controls_Manager::TEXT,
+                [
+                    'label_block' => true,
+                    'condition'   => [
+                        'layout' => 'popup',
+                    ]
+                ]
+            ),
+            LPElementorControls::add_control_type(
+                'icon_popup',
+                esc_html__( 'Icon Popup', 'learnpress' ),
+                [],
+                Controls_Manager::ICONS,
+                [
+                    'skin'        => 'inline',
+                    'label_block' => false,
+                    'condition'   => [
+                        'layout' => 'popup',
+                    ]
+                ]
+
+            ),
             LPElementorControls::add_control_type(
 				'show_in_rest',
                 esc_html__( 'Load widget via REST', 'learnpress' ),
@@ -74,12 +109,250 @@ $content_fields = array_merge(
                     'title_field'   => '{{{ item_fields }}}',
                 ]
             ),
-        ],
+        ]
     ),
     []
 );
 
-// $style_fields   = '';
+$style_fields   = array_merge(
+    LPElementorControls::add_fields_in_section(
+		'filter_item',
+		esc_html__( 'Item', 'learnpress' ),
+		Controls_Manager::TAB_STYLE,
+        [
+            "item_margin"           => LPElementorControls::add_responsive_control_type(
+                "item_margin",
+                esc_html__( 'Margin', 'learnpress' ),
+                [],
+                Controls_Manager::DIMENSIONS,
+                [
+                    'size_units' => [ 'px', '%', 'custom' ],
+                    'selectors'  => array(
+                        "{{WRAPPER}} .lp-form-course-filter__item" => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                    ),
+                ]
+            ),
+            "item_padding"          => LPElementorControls::add_responsive_control_type(
+                "item_padding",
+                esc_html__( 'Padding', 'learnpress' ),
+                [],
+                Controls_Manager::DIMENSIONS,
+                [
+                    'size_units' => [ 'px', '%', 'custom' ],
+                    'selectors'  => array(
+                        "{{WRAPPER}} .lp-form-course-filter__item" => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                    ),
+                ]
+            ),
+            "style_sort_border" => LPElementorControls::add_group_control_type(
+                "style_sort_border",
+                Group_Control_Border::get_type(),
+                '{{WRAPPER}} .lp-form-course-filter__item'
+            ),
+        ]
+	),
+    LPElementorControls::add_fields_in_section(
+		'filter_title',
+		esc_html__( 'Title', 'learnpress' ),
+		Controls_Manager::TAB_STYLE,
+		LPElementorControls::add_controls_style_text(
+			'filter_title',
+			'.lp-form-course-filter .lp-form-course-filter__title',
+            [],
+            [ 'text_display','text_background', 'text_background_hover' ]
+		)
+	),
+    LPElementorControls::add_fields_in_section(
+		'filter_content',
+		esc_html__( 'Label', 'learnpress' ),
+		Controls_Manager::TAB_STYLE,
+		LPElementorControls::add_controls_style_text(
+			'filter_content',
+			'.lp-form-course-filter .lp-form-course-filter__item .lp-form-course-filter__content label',
+            [],
+            [ 'text_display','text_shadow', 'text_background', 'text_background_hover' ]
+		)
+	),
+    LPElementorControls::add_fields_in_section(
+		'input_search',
+		esc_html__( 'Search', 'learnpress' ),
+		Controls_Manager::TAB_STYLE,
+		LPElementorControls::add_controls_style_button(
+			'input_search',
+			'.lp-form-course-filter__content .lp-course-filter-search-field input',
+            [],
+            [ 'text_display','text_shadow', 'text_color_hover', 'text_background', 'text_background_hover' ]
+		)
+    ),
+    LPElementorControls::add_fields_in_section(
+		'btn_submit',
+		esc_html__( 'Button Submit', 'learnpress' ),
+		Controls_Manager::TAB_STYLE,
+		LPElementorControls::add_controls_style_button(
+			'btn_submit',
+			'.course-filter-submit',
+            [
+                'btn_submit_align'         => LPElementorControls::add_responsive_control_type(
+					'btn_submit_align',
+					esc_html__( 'Alignment', 'learnpress' ),
+					'',
+					Controls_Manager::CHOOSE,
+					[
+						'options'   => [
+							'left'   => [
+								'title' => esc_html__( 'Left', 'learnpress' ),
+								'icon'  => 'eicon-text-align-left',
+							],
+							'center' => [
+								'title' => esc_html__( 'Center', 'learnpress' ),
+								'icon'  => 'eicon-text-align-center',
+							],
+							'right'  => [
+								'title' => esc_html__( 'Right', 'learnpress' ),
+								'icon'  => 'eicon-text-align-right',
+							],
+						],
+						'selectors' => [
+							'{{WRAPPER}} .course-filter-submit' => 'text-align: {{VALUE}};',
+						],
+					]
+				),
+                "btn_submit_width"          => LPElementorControls::add_responsive_control_type(
+                    "btn_submit_width",
+                    esc_html__( 'Width', 'learnpress' ),
+                    [],
+                    Controls_Manager::SLIDER,
+                    [
+                        'size_units' => array( 'px', '%', 'custom' ),
+                        'range'      => array(
+                            'px' => array(
+                                'min' => 1,
+                                'max' => 500,
+                                'step'=> 5
+                            ),
+                        ),
+                        'selectors'  => array(
+                            '{{WRAPPER}} .course-filter-submit' => 'width: {{SIZE}}{{UNIT}};',
+                        ),
+                    ]
+                )
+            ],
+            [ 'text_display' ]
+		)
+    ),
+    LPElementorControls::add_fields_in_section(
+		'btn_reset',
+		esc_html__( 'Button Reset', 'learnpress' ),
+		Controls_Manager::TAB_STYLE,
+        LPElementorControls::add_controls_style_button(
+            'btn_reset',
+            '.course-filter-reset',
+            [
+                'btn_reset_align'         => LPElementorControls::add_responsive_control_type(
+					'btn_reset_align',
+					esc_html__( 'Alignment', 'learnpress' ),
+					'',
+					Controls_Manager::CHOOSE,
+					[
+						'options'   => [
+							'left'   => [
+								'title' => esc_html__( 'Left', 'learnpress' ),
+								'icon'  => 'eicon-text-align-left',
+							],
+							'center' => [
+								'title' => esc_html__( 'Center', 'learnpress' ),
+								'icon'  => 'eicon-text-align-center',
+							],
+							'right'  => [
+								'title' => esc_html__( 'Right', 'learnpress' ),
+								'icon'  => 'eicon-text-align-right',
+							],
+						],
+						'selectors' => [
+							'{{WRAPPER}} .course-filter-reset' => 'text-align: {{VALUE}};',
+						],
+					]
+				),
+                "btn_reset_width"          => LPElementorControls::add_responsive_control_type(
+                    "btn_reset_width",
+                    esc_html__( 'Width', 'learnpress' ),
+                    [],
+                    Controls_Manager::SLIDER,
+                    [
+                        'size_units' => array( 'px', '%', 'custom' ),
+                        'range'      => array(
+                            'px' => array(
+                                'min' => 1,
+                                'max' => 500,
+                                'step'=> 5
+                            ),
+                        ),
+                        'selectors'  => array(
+                            '{{WRAPPER}} .course-filter-reset' => 'width: {{SIZE}}{{UNIT}};',
+                        ),
+                    ]
+                )
+            ],
+            [ 'text_display' ]
+        )
+    ),
+    LPElementorControls::add_fields_in_section(
+		'btn_popup',
+		esc_html__( 'Button Popup', 'learnpress' ),
+		Controls_Manager::TAB_STYLE,
+        LPElementorControls::add_controls_style_button(
+            'btn_popup',
+            '.lp-button-popup',
+            [
+                'btn_popup_align'         => LPElementorControls::add_responsive_control_type(
+					'btn_popup_align',
+					esc_html__( 'Alignment', 'learnpress' ),
+					'',
+					Controls_Manager::CHOOSE,
+					[
+						'options'   => [
+							'left'   => [
+								'title' => esc_html__( 'Left', 'learnpress' ),
+								'icon'  => 'eicon-text-align-left',
+							],
+							'center' => [
+								'title' => esc_html__( 'Center', 'learnpress' ),
+								'icon'  => 'eicon-text-align-center',
+							],
+							'right'  => [
+								'title' => esc_html__( 'Right', 'learnpress' ),
+								'icon'  => 'eicon-text-align-right',
+							],
+						],
+						'selectors' => [
+							'{{WRAPPER}} .lp-button-popup' => 'text-align: {{VALUE}};',
+						],
+					]
+				),
+                "btn_popup_width"          => LPElementorControls::add_responsive_control_type(
+                    "btn_popup_width",
+                    esc_html__( 'Width', 'learnpress' ),
+                    [],
+                    Controls_Manager::SLIDER,
+                    [
+                        'size_units' => array( 'px', '%', 'custom' ),
+                        'range'      => array(
+                            'px' => array(
+                                'min' => 1,
+                                'max' => 500,
+                                'step'=> 5
+                            ),
+                        ),
+                        'selectors'  => array(
+                            '{{WRAPPER}} .lp-button-popup' => 'width: {{SIZE}}{{UNIT}};',
+                        ),
+                    ]
+                )
+            ],
+            [ 'text_display' ]
+        )
+    )
+);
 
 
 return apply_filters(
@@ -89,9 +362,9 @@ return apply_filters(
             'learn-press/elementor/course/filter-course-el/tab-content',
             $content_fields
         ),
-        // apply_filters(
-        //     'learn-press/elementor/course/filter-course-el/tab-styles',
-        //     $style_fields
-        // )
+        apply_filters(
+            'learn-press/elementor/course/filter-course-el/tab-styles',
+            $style_fields
+        )
     )
 );
