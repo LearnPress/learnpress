@@ -216,6 +216,7 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Fixed: minor bug material.
 ~ Added: strategy defer/async for some script (WP 6.3 or higher will run).
 ~ Fixed: label 'Free' not show on the single free course.
+~ Fixed: error sanitize key, make certificate can't save.
 
 = 4.2.5.4 (2023-11-07) =
 ~ Fixed: security issue.
