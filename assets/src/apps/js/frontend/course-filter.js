@@ -22,6 +22,15 @@ document.addEventListener( 'click', function( e ) {
 		window.lpCourseFilter.reset( target );
 	}
 
+	if ( target.classList.contains( 'lp-button-popup' ) ) {
+		e.preventDefault();
+		const elLpCourseFilter = target.closest( '.elementor-widget-learnpress_filter_course' );
+		if ( ! elLpCourseFilter ) {
+			return;
+		}
+		elLpCourseFilter.classList.toggle("filter-popup-show");
+	}
+
 	// Show/hide search suggest result
 	window.lpCourseFilter.showHideSearchResult( target );
 

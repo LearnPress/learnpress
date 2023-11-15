@@ -454,4 +454,9 @@
     .lp-filter-popup {
         display: none;
     }
+	&.filter-popup-show {
+		.lp-filter-popup {
+			display: block;
+		}
+	}
 }
