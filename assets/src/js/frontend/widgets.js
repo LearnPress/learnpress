@@ -19,7 +19,7 @@ function widgetRestAPI() {
 			body: JSON.stringify( { ...widget, ...{ params_url: lpData.urlParams } } ),
 		};
 
-		if ( 0 !== lpData.user_id ) {
+		if ( 0 !== parseInt( lpData.user_id ) ) {
 			paramsFetch.headers[ 'X-WP-Nonce' ] = lpData.nonce;
 		}
 
