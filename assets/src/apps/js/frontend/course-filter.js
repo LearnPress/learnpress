@@ -22,7 +22,7 @@ document.addEventListener( 'click', function( e ) {
 		window.lpCourseFilter.reset( target );
 	}
 
-	if ( target.classList.contains( 'lp-button-popup' ) ) {
+	if ( target.classList.contains( 'lp-button-popup' ) || target.classList.contains( 'icon-align-right' ) || target.classList.contains( 'icon-align-left' ) ) {
 		e.preventDefault();
 		const elLpCourseFilter = target.closest( '.elementor-widget-learnpress_filter_course' );
 		if ( ! elLpCourseFilter ) {

@@ -11,6 +11,7 @@ namespace LearnPress\ExternalPlugin\Elementor\Widgets\Course;
 use LearnPress\ExternalPlugin\Elementor\LPElementorWidgetBase;
 use LearnPress\Helpers\Config;
 use LearnPress\Helpers\Template;
+use Elementor\Icons_Manager;
 use LearnPress\TemplateHooks\Course\FilterCourseTemplate;
 use Throwable;
 
@@ -19,7 +20,7 @@ class FilterCourseElementor extends LPElementorWidgetBase {
 		$this->title    = esc_html__( 'Filter Course', 'learnpress' );
 		$this->name     = 'filter_course';
 		$this->keywords = [ 'filter course' ];
-		$this->icon     = 'eicon-filter';
+		$this->icon     = 'eicon-taxonomy-filter';
 
 		wp_enqueue_script( 'lp-course-filter' );
 		parent::__construct( $data, $args );
@@ -50,7 +51,20 @@ class FilterCourseElementor extends LPElementorWidgetBase {
 			if ( $settings['layout'] == 'popup' ) {
 				$text_popup = $settings['button_popup'] ?? esc_html__( 'Filter', 'learnpress' );
 				$extraClass = 'lp-filter-popup';
-				echo '<button class="lp-button-popup">'. $text_popup .'</button>';
+				
+				echo '<button class="lp-button-popup">';
+				if ( ! empty( $settings['icon_popup'] ) ) {
+					Icons_Manager::render_icon(
+						$settings['icon_popup'],
+						array(
+							'aria-hidden' => 'true',
+							'class'       => 'icon-align-' . esc_attr( $settings['icon_align'] ),
+						)
+					);
+				}
+				echo $text_popup ;
+				echo self::selected_style_number();
+				echo '</button>';
 			}
 
 			$html_wrapper = apply_filters(
@@ -76,4 +90,33 @@ class FilterCourseElementor extends LPElementorWidgetBase {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
     }
+
+	protected function selected_style_number(){
+		$cat = $tag = $price = $level = $author = $total = 0;
+
+		if( ! empty( $_GET['term_id'] ) ){
+			$cat =  count(explode(',',$_GET['term_id']));
+		}
+		if( ! empty( $_GET['tag_id'] ) ){
+			$tag =  count(explode(',',$_GET['tag_id']));
+		}
+		if( ! empty( $_GET['sort_by'] ) ){
+			$price =  count(explode(',',$_GET['sort_by']));
+		}
+		if( ! empty( $_GET['c_level'] ) ){
+			$level =  count(explode(',',$_GET['c_level']));
+		}
+		if( ! empty( $_GET['c_authors'] ) ){
+			$author =  count(explode(',',$_GET['c_authors']));
+		}
+		$total = $cat + $tag + $price + $level + $author;
+
+		if( $total == 0 ){
+			$total = '';
+		}
+
+		if( ! empty( $total ) ){
+			echo '<span>'. $total .'</span>';
+		}
+	}
 }

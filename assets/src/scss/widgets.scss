@@ -450,6 +450,18 @@
 .elementor-widget-learnpress_filter_course {
     .lp-button-popup {
         padding: 10px 30px;
+		display: -webkit-box;
+		display: -ms-flexbox;
+		display: flex;
+		-webkit-box-pack: center;
+		-ms-flex-pack: center;
+		justify-content: center;
+		gap: 10px;
+		align-items: center;
+		position: relative;
+		.icon-align-right {
+			order: 3;
+		}
     }
     .lp-filter-popup {
         display: none;

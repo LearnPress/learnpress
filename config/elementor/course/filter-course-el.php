@@ -8,12 +8,13 @@
 
 use Elementor\Controls_Manager;
 use Elementor\Group_Control_Border;
+use Elementor\Group_Control_Box_Shadow;
 use LearnPress\ExternalPlugin\Elementor\LPElementorControls;
 
 $content_fields = array_merge( 
     LPElementorControls::add_fields_in_section(
-        'content_filter',
-        esc_html__( 'Filter Course', 'learnpress' ),
+        'layout_filter',
+        esc_html__( 'Layout', 'learnpress' ),
         Controls_Manager::TAB_CONTENT,
         [
             LPElementorControls::add_control_type_select(
@@ -51,6 +52,43 @@ $content_fields = array_merge(
                 ]
 
             ),
+            LPElementorControls::add_control_type_select(
+                'icon_align',
+                esc_html__( 'Icon Position', 'learnpress' ),
+                [
+                    'left'  => esc_html__( 'Before', 'learnpress' ),
+					'right' => esc_html__( 'After', 'learnpress' ),
+                ],
+                'left',
+                [
+                    'condition' => [
+                        'layout' => 'popup',
+                        'icon_popup[value]!' => ''
+                    ] 
+                ] 
+            ),
+            LPElementorControls::add_control_type_select(
+                'selected_style_show',
+                esc_html__( 'Selected Style', 'learnpress' ),
+                [
+                    'none'   => esc_html__( 'None', 'learnpress' ),
+					'number' => esc_html__( 'Number', 'learnpress' ),
+                    'list'   => esc_html__( 'List', 'learnpress' ),
+                ],
+                'number',
+                [
+                    'condition'   => [
+                        'layout' => 'popup',
+                    ]
+                ] 
+            ),
+        ]
+    ),
+    LPElementorControls::add_fields_in_section(
+        'content_filter',
+        esc_html__( 'Content', 'learnpress' ),
+        Controls_Manager::TAB_CONTENT,
+        [
             LPElementorControls::add_control_type(
 				'show_in_rest',
                 esc_html__( 'Load widget via REST', 'learnpress' ),
@@ -116,6 +154,64 @@ $content_fields = array_merge(
 
 $style_fields   = array_merge(
     LPElementorControls::add_fields_in_section(
+		'filter_layout',
+		esc_html__( 'Layout', 'learnpress' ),
+		Controls_Manager::TAB_STYLE,
+        [
+            "filter_layout_margin"           => LPElementorControls::add_responsive_control_type(
+                "filter_layout_margin",
+                esc_html__( 'Margin', 'learnpress' ),
+                [],
+                Controls_Manager::DIMENSIONS,
+                [
+                    'size_units' => [ 'px', '%', 'custom' ],
+                    'selectors'  => array(
+                        "{{WRAPPER}} .lp-form-course-filter" => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                    ),
+                ]
+            ),
+            "filter_layout_padding"          => LPElementorControls::add_responsive_control_type(
+                "filter_layout_padding",
+                esc_html__( 'Padding', 'learnpress' ),
+                [],
+                Controls_Manager::DIMENSIONS,
+                [
+                    'size_units' => [ 'px', '%', 'custom' ],
+                    'selectors'  => array(
+                        "{{WRAPPER}} .lp-form-course-filter" => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                    ),
+                ]
+            ),
+            "filter_layout_border" => LPElementorControls::add_group_control_type(
+                "filter_layout_border",
+                Group_Control_Border::get_type(),
+                '{{WRAPPER}} .lp-form-course-filter'
+            ),
+            "filter_layout_background" => LPElementorControls::add_control_type_color(
+                "filter_layout_background",
+                esc_html__( 'Background', 'learnpress' ),
+                ['{{WRAPPER}} .lp-form-course-filter' =>  'background: {{VALUE}}' ]
+            ),
+            "filter_layout_radius"          => LPElementorControls::add_responsive_control_type(
+                "filter_layout_radius",
+                esc_html__( 'Radius', 'learnpress' ),
+                [],
+                Controls_Manager::DIMENSIONS,
+                [
+                    'size_units' => [ 'px', '%', 'custom' ],
+                    'selectors'  => array(
+                        "{{WRAPPER}} .lp-form-course-filter" => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                    ),
+                ]
+            ),
+            "filter_layout_Shadow" => LPElementorControls::add_group_control_type(
+                "filter_layout_Shadow",
+                Group_Control_Box_Shadow::get_type(),
+                '{{WRAPPER}} .lp-form-course-filter'
+            ),
+        ]
+	),
+    LPElementorControls::add_fields_in_section(
 		'filter_item',
 		esc_html__( 'Item', 'learnpress' ),
 		Controls_Manager::TAB_STYLE,
@@ -144,11 +240,28 @@ $style_fields   = array_merge(
                     ),
                 ]
             ),
-            "style_sort_border" => LPElementorControls::add_group_control_type(
-                "style_sort_border",
+            "item_border" => LPElementorControls::add_group_control_type(
+                "item_border",
                 Group_Control_Border::get_type(),
                 '{{WRAPPER}} .lp-form-course-filter__item'
             ),
+            "item_background" => LPElementorControls::add_control_type_color(
+                "layout_background",
+                esc_html__( 'Background', 'learnpress' ),
+                ['{{WRAPPER}} .lp-form-course-filter__item' =>  'background: {{VALUE}}' ]
+            ),
+            "item_radius"          => LPElementorControls::add_responsive_control_type(
+                "item_radius",
+                esc_html__( 'Radius', 'learnpress' ),
+                [],
+                Controls_Manager::DIMENSIONS,
+                [
+                    'size_units' => [ 'px', '%', 'custom' ],
+                    'selectors'  => array(
+                        "{{WRAPPER}} .lp-form-course-filter__item" => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                    ),
+                ]
+            )
         ]
 	),
     LPElementorControls::add_fields_in_section(
