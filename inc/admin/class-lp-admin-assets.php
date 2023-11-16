@@ -16,7 +16,44 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 	 */
 	protected function __construct() {
 		add_action( 'admin_footer', array( $this, 'add_elements_global' ) );
+		add_action( 'admin_head', [ $this, 'load_scripts_styles_on_head' ], -1 );
 		parent::__construct();
+	}
+
+	/**
+	 * Add javascript to head
+	 * Add style to head
+	 *
+	 * @since 4.2.5.6
+	 * @version 1.0.0
+	 * @return void
+	 */
+	public function load_scripts_styles_on_head() {
+		LP_Helper::print_inline_script_tag( 'lpDataAdmin', $this->localize_data_global(), [ 'id' => 'lpDataAdmin' ] );
+	}
+
+	/**
+	 * Localize data for all page backend.
+	 *
+	 * @since 4.2.5.6
+	 * @return array
+	 * @version 1.0.0
+	 */
+	public function localize_data_global(): array {
+		return apply_filters(
+			'learn-press/admin/localize-data-global',
+			[
+				'site_url'    => site_url(),
+				'user_id'     => get_current_user_id(),
+				'is_admin'    => current_user_can( ADMIN_ROLE ),
+				'theme'       => get_stylesheet(),
+				'lp_version'  => LP()->version,
+				'lp_rest_url' => get_rest_url(),
+				'nonce'       => wp_create_nonce( 'wp_rest' ),
+				'courses_url' => learn_press_get_page_link( 'courses' ),
+				'urlParams'   => lp_archive_skeleton_get_args(),
+			]
+		);
 	}
 
 	/**

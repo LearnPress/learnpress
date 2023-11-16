@@ -27,7 +27,7 @@ export default function assignUserCourse() {
 			const params = {
 				headers: {
 					'Content-Type': 'application/json',
-					'X-WP-Nonce': lpGlobalSettings.nonce,
+					'X-WP-Nonce': lpDataAdmin.nonce,
 				},
 				method: 'POST',
 				body: JSON.stringify( obj ),
@@ -44,7 +44,7 @@ export default function assignUserCourse() {
 		const params = {
 			headers: {
 				'Content-Type': 'application/json',
-				'X-WP-Nonce': lpGlobalSettings.nonce,
+				'X-WP-Nonce': lpDataAdmin.nonce,
 			},
 			method: 'POST',
 			body: JSON.stringify( { c_search: keySearch } ),
