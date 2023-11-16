@@ -4,7 +4,7 @@
  * @since 4.1.7.3.2
  * @version 1.0.1
  */
-import adminAPI from '../api';
+import API from '../api';
 let elAddonsPage;
 let dataHtml;
 let dataAddons;
@@ -18,10 +18,10 @@ const isHandling = [];
 // API get list addons.
 const getAddons = ( set = '' ) => {
 	const params = tab ? `?tab=${ tab }` : `?${ set }`;
-	fetch( adminAPI.apiAddons + params, {
+	fetch( API.admin.apiAddons + params, {
 		method: 'GET',
 		headers: {
-			'X-WP-Nonce': lpGlobalSettings.nonce,
+			'X-WP-Nonce': lpDataAdmin.nonce,
 		},
 	} ).then( ( res ) =>
 		res.json()
@@ -47,11 +47,11 @@ const addonsAction = ( data, callBack ) => {
 	}
 	isHandling.push( addonSlug );
 
-	fetch( adminAPI.apiAddonAction, {
+	fetch( API.admin.apiAddonAction, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
-			'X-WP-Nonce': lpGlobalSettings.nonce,
+			'X-WP-Nonce': lpDataAdmin.nonce,
 		},
 		body: JSON.stringify( { ...data } ),
 	} ).then( ( res ) =>

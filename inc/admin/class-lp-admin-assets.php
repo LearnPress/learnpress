@@ -108,7 +108,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 			0,
 			1
 		);
-		$lp_admin_js->exclude_screen( array( 'plugin-install', 'learnpress_page_learn-press-statistics' ) );
+		$lp_admin_js->exclude_screen( array( 'plugin-install', 'learnpress_page_learn-press-statistics', 'learnpress_page_learn-press-addons' ) );
 
 		$scripts = apply_filters(
 			'learn-press/admin-default-scripts',
@@ -124,11 +124,13 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					array( 'jquery-ui-datepicker' )
 				),
 				'lp-addons'                         => new LP_Asset_Key(
-					$this->url( 'js/dist/admin/pages/addons' . self::$_min_assets . '.js' ),
-					array( 'jquery' ),
-					array( 'learnpress_page_learn-press-addons' ),
+					$this->url( 'js/dist/admin/addons' . self::$_min_assets . '.js' ),
+					[],
+					[ 'learnpress_page_learn-press-addons' ],
 					0,
-					0
+					0,
+					'',
+					[ 'strategy' => 'async' ]
 				),
 				'advanced-list'                     => new LP_Asset_Key( $this->url( self::$_folder_source . 'js/admin/share/advanced-list' . self::$_min_assets . '.js' ) ),
 				'learn-press-global'                => new LP_Asset_Key(
