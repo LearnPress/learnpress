@@ -210,7 +210,7 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
-= 4.2.5.5 (2023-11-15) =
+= 4.2.5.5 (2023-11-16) =
 ~ Fixed: security issue.
 ~ Added: new feature Statistic on the Backend.
 ~ Fixed: minor bug material.
