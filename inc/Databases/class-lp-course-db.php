@@ -514,7 +514,7 @@ class LP_Course_DB extends LP_Database {
 
 				$term_ids_format = LP_Helper::db_format_array( $filter->term_ids, '%d' );
 				$filter->where[] = $this->wpdb->prepare( 'AND tx.term_id IN (' . $term_ids_format . ')', $filter->term_ids );
-				$filter->where[] = $this->wpdb->prepare( 'AND tx.taxonomy = %s', LP_COURSE_CATEGORY_TAX );
+				$filter->where[] = $this->wpdb->prepare( 'AND (tx.taxonomy = %s OR tx.taxonomy = %s)', LP_COURSE_CATEGORY_TAX, LP_COURSE_TAXONOMY_TAG );
 			}
 
 			// Tag ids
