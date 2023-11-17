@@ -70,7 +70,7 @@ class UserCourseModel extends UserItemModel {
 	 * @param string $item_type
 	 * @return false|UserItemModel
 	 */
-	public function get_item_attend( int $item_id, string $item_type ) {
+	public function get_item_attend( int $item_id, string $item_type = '' ) {
 		$item = false;
 
 		try {
@@ -89,6 +89,7 @@ class UserCourseModel extends UserItemModel {
 						$item = new UserQuizModel( $item );
 						break;
 					default:
+						$item = new UserItemModel( $item );
 						break;
 				}
 
