@@ -465,6 +465,7 @@
     }
     .lp-filter-popup {
         display: none;
+		position: absolute;
     }
 	.selected-list {
 		display: -webkit-box;
@@ -472,6 +473,7 @@
 		display: inline-flex;
 		gap: 10px;
 		align-items: center;
+		flex-wrap: wrap;
 	}
 	&.filter-popup-show {
 		.lp-filter-popup {

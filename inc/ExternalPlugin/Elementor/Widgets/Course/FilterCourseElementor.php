@@ -55,34 +55,8 @@ class FilterCourseElementor extends LPElementorWidgetBase
 			}
 
 			if ($settings['layout'] == 'popup') {
-				$text_popup = $settings['button_popup'] ?? esc_html__('Filter', 'learnpress');
 				$extraClass = 'lp-filter-popup';
-
-				echo '<button class="lp-button-popup">';
-				if (!empty($settings['icon_popup'])) {
-					Icons_Manager::render_icon(
-						$settings['icon_popup'],
-						array(
-							'aria-hidden' => 'true',
-							'class'       => 'icon-align-' . esc_attr($settings['icon_align']),
-						)
-					);
-				}
-				echo $text_popup;
-				if ($settings['selected_style_show'] == 'number') {
-					echo self::selected_style_number();
-				}
-				echo '</button>';
-
-				if ($settings['selected_style_show'] == 'list') {
-					echo '<div class="selected-list">';
-					echo self::selected_style_list();
-					echo '</div>';
-				}
-
-				if ((!empty($_GET['term_id']) || !empty($_GET['tag_id']) || !empty($_GET['sort_by']) || !empty($_GET['c_level']) || !empty($_GET['c_authors'])) && $settings['selected_style_show'] != 'none') {
-					echo $filter->html_btn_reset();
-				}
+				echo self::layout_popup($settings, $filter);
 			}
 
 			$html_wrapper = apply_filters(
@@ -106,6 +80,36 @@ class FilterCourseElementor extends LPElementorWidgetBase
 		} catch (Throwable $e) {
 			ob_end_clean();
 			error_log(__METHOD__ . ': ' . $e->getMessage());
+		}
+	}
+
+	protected function layout_popup($settings, $filter ){
+		$text_popup = $settings['button_popup'] ?? esc_html__('Filter', 'learnpress');
+
+		echo '<button class="lp-button-popup">';
+		if (!empty($settings['icon_popup'])) {
+			Icons_Manager::render_icon(
+				$settings['icon_popup'],
+				array(
+					'aria-hidden' => 'true',
+					'class'       => 'icon-align-' . esc_attr($settings['icon_align']),
+				)
+			);
+		}
+		echo $text_popup;
+		if ($settings['selected_style_show'] == 'number') {
+			echo self::selected_style_number();
+		}
+		echo '</button>';
+
+		if ($settings['selected_style_show'] == 'list') {
+			echo '<div class="selected-list">';
+			echo self::selected_style_list();
+			echo '</div>';
+		}
+
+		if ((!empty($_GET['term_id']) || !empty($_GET['tag_id']) || !empty($_GET['sort_by']) || !empty($_GET['c_level']) || !empty($_GET['c_authors'])) && $settings['selected_style_show'] != 'none') {
+			echo $filter->html_btn_reset();
 		}
 	}
 
