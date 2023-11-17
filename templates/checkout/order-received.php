@@ -39,6 +39,7 @@ defined( 'ABSPATH' ) || exit();
 			)
 		)
 	);
+	do_action( 'learn-press/order/after-received-order-message', $order_received->get_id() );
 
 	?>
 	<table class="order_details">
