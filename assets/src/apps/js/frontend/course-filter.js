@@ -22,7 +22,7 @@ document.addEventListener( 'click', function( e ) {
 		window.lpCourseFilter.reset( target );
 	}
 
-	if ( target.classList.contains( 'lp-button-popup' ) || target.classList.contains( 'icon-align-right' ) || target.classList.contains( 'icon-align-left' ) ) {
+	if ( target.classList.contains( 'lp-button-popup' ) || target.classList.contains( 'icon-align-right' ) || target.classList.contains( 'icon-align-left' ) || target.classList.contains( 'selected-filter' ) ) {
 		e.preventDefault();
 		const elLpCourseFilter = target.closest( '.elementor-widget-learnpress_filter_course' );
 		if ( ! elLpCourseFilter ) {
@@ -144,7 +144,7 @@ window.lpCourseFilter = {
 		}
 	},
 	reset: ( btnReset ) => {
-		const form = btnReset.closest( `.${ classCourseFilter }` );
+		const form = document.querySelector( `.${ classCourseFilter }` );
 		const btnSubmit = form.querySelector( '.course-filter-submit' );
 		const elResult = form.querySelector( '.lp-course-filter-search-result' );
 		const elSearch = form.querySelector( '.lp-course-filter-search' );

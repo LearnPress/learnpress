@@ -154,12 +154,12 @@ $content_fields = array_merge(
 
 $style_fields   = array_merge(
     LPElementorControls::add_fields_in_section(
-		'filter_layout',
-		esc_html__( 'Layout', 'learnpress' ),
+		'filter_section',
+		esc_html__( 'Section', 'learnpress' ),
 		Controls_Manager::TAB_STYLE,
         [
-            "filter_layout_margin"           => LPElementorControls::add_responsive_control_type(
-                "filter_layout_margin",
+            "filter_section_margin"           => LPElementorControls::add_responsive_control_type(
+                "filter_section_margin",
                 esc_html__( 'Margin', 'learnpress' ),
                 [],
                 Controls_Manager::DIMENSIONS,
@@ -170,8 +170,8 @@ $style_fields   = array_merge(
                     ),
                 ]
             ),
-            "filter_layout_padding"          => LPElementorControls::add_responsive_control_type(
-                "filter_layout_padding",
+            "filter_section_padding"          => LPElementorControls::add_responsive_control_type(
+                "filter_section_padding",
                 esc_html__( 'Padding', 'learnpress' ),
                 [],
                 Controls_Manager::DIMENSIONS,
@@ -182,18 +182,37 @@ $style_fields   = array_merge(
                     ),
                 ]
             ),
-            "filter_layout_border" => LPElementorControls::add_group_control_type(
-                "filter_layout_border",
+            "filter_section_width"          => LPElementorControls::add_responsive_control_type(
+                "filter_section_width",
+                esc_html__( 'Width', 'learnpress' ),
+                [],
+                Controls_Manager::SLIDER,
+                [
+                    'size_units' => array( 'px', '%', 'custom' ),
+                    'range'      => array(
+                        'px' => array(
+                            'min' => 1,
+                            'max' => 1000,
+                            'step'=> 5
+                        ),
+                    ),
+                    'selectors'  => array(
+                        '{{WRAPPER}} .lp-form-course-filter' => 'width: {{SIZE}}{{UNIT}};',
+                    ),
+                ]
+            ),
+            "filter_section_border" => LPElementorControls::add_group_control_type(
+                "filter_section_border",
                 Group_Control_Border::get_type(),
                 '{{WRAPPER}} .lp-form-course-filter'
             ),
-            "filter_layout_background" => LPElementorControls::add_control_type_color(
-                "filter_layout_background",
+            "filter_section_background" => LPElementorControls::add_control_type_color(
+                "filter_section_background",
                 esc_html__( 'Background', 'learnpress' ),
                 ['{{WRAPPER}} .lp-form-course-filter' =>  'background: {{VALUE}}' ]
             ),
-            "filter_layout_radius"          => LPElementorControls::add_responsive_control_type(
-                "filter_layout_radius",
+            "filter_section_radius"          => LPElementorControls::add_responsive_control_type(
+                "filter_section_radius",
                 esc_html__( 'Radius', 'learnpress' ),
                 [],
                 Controls_Manager::DIMENSIONS,
@@ -204,8 +223,8 @@ $style_fields   = array_merge(
                     ),
                 ]
             ),
-            "filter_layout_Shadow" => LPElementorControls::add_group_control_type(
-                "filter_layout_Shadow",
+            "filter_section_Shadow" => LPElementorControls::add_group_control_type(
+                "filter_section_Shadow",
                 Group_Control_Box_Shadow::get_type(),
                 '{{WRAPPER}} .lp-form-course-filter'
             ),
@@ -285,6 +304,17 @@ $style_fields   = array_merge(
             [],
             [ 'text_display','text_shadow', 'text_background', 'text_background_hover' ]
 		)
+	),
+    LPElementorControls::add_fields_in_section(
+		'filter_count',
+		esc_html__( 'Count', 'learnpress' ),
+		Controls_Manager::TAB_STYLE,
+        LPElementorControls::add_controls_style_text(
+            'filter_count',
+            '.lp-form-course-filter .lp-form-course-filter__item .lp-form-course-filter__content .count',
+            [],
+            [ 'text_display','text_shadow', 'text_background', 'text_background_hover' ]
+        )
 	),
     LPElementorControls::add_fields_in_section(
 		'input_search',
@@ -413,56 +443,75 @@ $style_fields   = array_merge(
 		'btn_popup',
 		esc_html__( 'Button Popup', 'learnpress' ),
 		Controls_Manager::TAB_STYLE,
-        LPElementorControls::add_controls_style_button(
-            'btn_popup',
-            '.lp-button-popup',
-            [
-                'btn_popup_align'         => LPElementorControls::add_responsive_control_type(
-					'btn_popup_align',
-					esc_html__( 'Alignment', 'learnpress' ),
-					'',
-					Controls_Manager::CHOOSE,
-					[
-						'options'   => [
-							'left'   => [
-								'title' => esc_html__( 'Left', 'learnpress' ),
-								'icon'  => 'eicon-text-align-left',
-							],
-							'center' => [
-								'title' => esc_html__( 'Center', 'learnpress' ),
-								'icon'  => 'eicon-text-align-center',
-							],
-							'right'  => [
-								'title' => esc_html__( 'Right', 'learnpress' ),
-								'icon'  => 'eicon-text-align-right',
-							],
-						],
-						'selectors' => [
-							'{{WRAPPER}} .lp-button-popup' => 'text-align: {{VALUE}};',
-						],
-					]
-				),
-                "btn_popup_width"          => LPElementorControls::add_responsive_control_type(
-                    "btn_popup_width",
-                    esc_html__( 'Width', 'learnpress' ),
-                    [],
-                    Controls_Manager::SLIDER,
-                    [
-                        'size_units' => array( 'px', '%', 'custom' ),
-                        'range'      => array(
-                            'px' => array(
-                                'min' => 1,
-                                'max' => 500,
-                                'step'=> 5
+        array_merge(
+            LPElementorControls::add_controls_style_button(
+                'btn_popup',
+                '.lp-button-popup',
+                [
+                    'btn_popup_align'         => LPElementorControls::add_responsive_control_type(
+                        'btn_popup_align',
+                        esc_html__( 'Alignment', 'learnpress' ),
+                        '',
+                        Controls_Manager::CHOOSE,
+                        [
+                            'options'   => [
+                                'left'   => [
+                                    'title' => esc_html__( 'Left', 'learnpress' ),
+                                    'icon'  => 'eicon-text-align-left',
+                                ],
+                                'center' => [
+                                    'title' => esc_html__( 'Center', 'learnpress' ),
+                                    'icon'  => 'eicon-text-align-center',
+                                ],
+                                'right'  => [
+                                    'title' => esc_html__( 'Right', 'learnpress' ),
+                                    'icon'  => 'eicon-text-align-right',
+                                ],
+                            ],
+                            'selectors' => [
+                                '{{WRAPPER}} .lp-button-popup' => 'text-align: {{VALUE}};',
+                            ],
+                        ]
+                    ),
+                    "btn_popup_width"          => LPElementorControls::add_responsive_control_type(
+                        "btn_popup_width",
+                        esc_html__( 'Width', 'learnpress' ),
+                        [],
+                        Controls_Manager::SLIDER,
+                        [
+                            'size_units' => array( 'px', '%', 'custom' ),
+                            'range'      => array(
+                                'px' => array(
+                                    'min' => 1,
+                                    'max' => 500,
+                                    'step'=> 5
+                                ),
                             ),
-                        ),
-                        'selectors'  => array(
-                            '{{WRAPPER}} .lp-button-popup' => 'width: {{SIZE}}{{UNIT}};',
-                        ),
+                            'selectors'  => array(
+                                '{{WRAPPER}} .lp-button-popup' => 'width: {{SIZE}}{{UNIT}};',
+                            ),
+                        ]
+                    )
+                ],
+                [ 'text_display' ]
+            ),
+            [
+                'heading_selected_list' => LPElementorControls::add_control_type(
+                    'heading_selected_list',
+                    esc_html__( 'Selected List', 'learnpress' ),
+                    '',
+                    Controls_Manager::HEADING,
+                    [
+                        'separator' => 'before',
                     ]
-                )
+                ),
             ],
-            [ 'text_display' ]
+            LPElementorControls::add_controls_style_button(
+                'selected_list',
+                '.selected-list span',
+                [],
+                [ 'text_display', 'text_shadow' ]
+            ),
         )
     )
 );

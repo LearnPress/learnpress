@@ -452,7 +452,7 @@
         padding: 10px 30px;
 		display: -webkit-box;
 		display: -ms-flexbox;
-		display: flex;
+		display: inline-flex;
 		-webkit-box-pack: center;
 		-ms-flex-pack: center;
 		justify-content: center;
@@ -466,6 +466,13 @@
     .lp-filter-popup {
         display: none;
     }
+	.selected-list {
+		display: -webkit-box;
+		display: -ms-flexbox;
+		display: inline-flex;
+		gap: 10px;
+		align-items: center;
+	}
 	&.filter-popup-show {
 		.lp-filter-popup {
 			display: block;
