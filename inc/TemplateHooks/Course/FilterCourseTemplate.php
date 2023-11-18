@@ -5,6 +5,7 @@
  * @since 4.2.3.2
  * @version 1.0.1
  */
+
 namespace LearnPress\TemplateHooks\Course;
 
 use Exception;
@@ -184,19 +185,27 @@ class FilterCourseTemplate {
 		$content = '';
 
 		try {
-			$data_selected = LP_Request::get_param( 'sort_by' );
-			$data_selected = isset( $data['params_url'] ) ? ( $data['params_url']['sort_by'] ?? $data_selected ) : $data_selected;
+			$params_url    = $data['params_url'] ?? [];
+			$data_selected = $params_url['sort_by'] ?? '';
 			$data_selected = explode( ',', $data_selected );
 
 			// Get number courses free
 			$filter_courses_free = new LP_Course_Filter();
-			$count_courses_free  = Courses::count_course_free( $filter_courses_free );
+			// Check has in category or tag.
+			if ( isset( $params_url['page_term_id_current'] ) ) {
+				$filter_courses_free->term_ids = [ $params_url['page_term_id_current'] ];
+			}
+			$count_courses_free = Courses::count_course_free( $filter_courses_free );
 
 			// Get number courses has price
 			$filter_courses_price              = new LP_Course_Filter();
 			$filter_courses_price->query_count = true;
 			$filter_courses_price->sort_by     = [ 'on_paid' ];
 			$count_courses_paid                = 0;
+			// Check has in category or tag.
+			if ( isset( $params_url['page_term_id_current'] ) ) {
+				$filter_courses_price->term_ids = [ $params_url['page_term_id_current'] ];
+			}
 			LP_Course::get_courses( $filter_courses_price, $count_courses_paid );
 
 			$fields = apply_filters(
@@ -417,8 +426,8 @@ class FilterCourseTemplate {
 		$content = '';
 
 		try {
-			$data_selected = LP_Request::get_param( 'c_authors' );
-			$data_selected = isset( $data['params_url'] ) ? ( $data['params_url']['c_authors'] ?? $data_selected ) : $data_selected;
+			$params_url    = $data['params_url'] ?? [];
+			$data_selected = $params_url['c_authors'] ?? '';
 			$data_selected = explode( ',', $data_selected );
 			$instructors   = get_users(
 				array(
@@ -434,6 +443,9 @@ class FilterCourseTemplate {
 				$total_course_of_instructor = 0;
 
 				$filter = LP_Course_DB::getInstance()->count_courses_of_author( $instructor->ID, [ 'publish' ] );
+				if ( isset( $params_url['page_term_id_current'] ) ) {
+					$filter->term_ids = [ $params_url['page_term_id_current'] ];
+				}
 				LP_Course::get_courses( $filter, $total_course_of_instructor );
 
 				if ( ! $total_course_of_instructor ) {
@@ -482,8 +494,8 @@ class FilterCourseTemplate {
 		$content = '';
 
 		try {
-			$data_selected = LP_Request::get_param( 'c_level' );
-			$data_selected = isset( $data['params_url'] ) ? ( $data['params_url']['c_level'] ?? $data_selected ) : $data_selected;
+			$params_url    = $data['params_url'] ?? [];
+			$data_selected = $params_url['c_level'] ?? '';
 			$data_selected = explode( ',', $data_selected );
 			$fields        = lp_course_level();
 
@@ -502,6 +514,9 @@ class FilterCourseTemplate {
 				$filter->query_count = true;
 				$filter->levels      = [ $key ];
 				$total_courses       = 0;
+				if ( isset( $params_url['page_term_id_current'] ) ) {
+					$filter->term_ids = [ $params_url['page_term_id_current'] ];
+				}
 				LP_Course::get_courses( $filter, $total_courses );
 
 				$checked  = in_array( $value, $data_selected ) ? 'checked' : '';

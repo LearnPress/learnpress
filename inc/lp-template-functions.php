@@ -1648,8 +1648,19 @@ function lp_archive_skeleton_get_args(): array {
 	if ( learn_press_is_course_category() || learn_press_is_course_tag() ) {
 		$cat = get_queried_object();
 
-		// For case not filter by term_id
-		if ( ! isset( $args['term_id'] ) ) {
+		// Info of page
+		if ( learn_press_is_course_category() ) {
+			$args['is_page_category'] = true;
+		} elseif ( learn_press_is_course_tag() ) {
+			$args['is_page_tag'] = true;
+		}
+
+		// Set id of term
+		$args['page_term_id_current'] = $cat->term_id;
+		$args['page_term_url'] = get_term_link( $cat );
+
+		// For case not filter by categories id, tag ids
+		if ( ! isset( $args['term_id'] ) && ! isset( $args['tag_id'] ) ) {
 			$args['term_id'] = $cat->term_id;
 		}
 	}

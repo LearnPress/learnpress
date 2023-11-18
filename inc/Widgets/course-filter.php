@@ -31,7 +31,7 @@ if ( ! class_exists( 'LP_Widget_Course_Filter' ) ) {
 		 */
 		public function lp_rest_api_content( $instance, $params ) {
 			$data = array_merge(
-				[ 'params_url' => LP_Helper::sanitize_params_submitted( $params['params_url'] ?? '' ) ],
+				[ 'params_url' => $params['params_url'] ?? lp_archive_skeleton_get_args() ],
 				$instance
 			);
 
