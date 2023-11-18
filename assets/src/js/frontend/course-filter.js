@@ -133,7 +133,7 @@ window.lpCourseFilter = {
 			'undefined' !== typeof window.lpCourseList ) {
 			window.lpCourseList.triggerFetchAPI( filterCourses );
 		} else {
-			const courseUrl = lpData.courses_url || '';
+			const courseUrl = lpData.urlParams.page_term_url || lpData.courses_url || '';
 			const url = new URL( courseUrl );
 			Object.keys( filterCourses ).forEach( ( arg ) => {
 				url.searchParams.set( arg, filterCourses[ arg ] );
