@@ -54,7 +54,7 @@ class FilterCourseElementor extends LPElementorWidgetBase
 				return;
 			}
 
-			if ($settings['layout'] == 'popup') {
+			if ($settings['enable_filter_button'] == 'yes') {
 				$extraClass = 'lp-filter-popup';
 				echo self::layout_popup($settings, $filter);
 			}
@@ -84,15 +84,15 @@ class FilterCourseElementor extends LPElementorWidgetBase
 	}
 
 	protected function layout_popup($settings, $filter ){
-		$text_popup = $settings['button_popup'] ?? esc_html__('Filter', 'learnpress');
+		$text_popup = $settings['text_filter_button'] ?? esc_html__('Filter', 'learnpress');
 
 		echo '<button class="lp-button-popup">';
-		if (!empty($settings['icon_popup'])) {
+		if (!empty($settings['icon_filter_button'])) {
 			Icons_Manager::render_icon(
-				$settings['icon_popup'],
+				$settings['icon_filter_button'],
 				array(
 					'aria-hidden' => 'true',
-					'class'       => 'icon-align-' . esc_attr($settings['icon_align']),
+					'class'       => 'icon-align-' . esc_attr($settings['icon_position']),
 				)
 			);
 		}
@@ -108,7 +108,7 @@ class FilterCourseElementor extends LPElementorWidgetBase
 			echo '</div>';
 		}
 
-		if ((!empty($_GET['term_id']) || !empty($_GET['tag_id']) || !empty($_GET['sort_by']) || !empty($_GET['c_level']) || !empty($_GET['c_authors'])) && $settings['selected_style_show'] != 'none') {
+		if ((!empty($_GET['term_id']) || !empty($_GET['tag_id']) || !empty($_GET['sort_by']) || !empty($_GET['c_level']) || !empty($_GET['c_authors'])) && $settings['selected_style_show'] == 'list') {
 			echo $filter->html_btn_reset();
 		}
 	}

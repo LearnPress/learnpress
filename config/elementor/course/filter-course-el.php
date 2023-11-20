@@ -13,106 +13,10 @@ use LearnPress\ExternalPlugin\Elementor\LPElementorControls;
 
 $content_fields = array_merge( 
     LPElementorControls::add_fields_in_section(
-        'layout_filter',
-        esc_html__( 'Layout', 'learnpress' ),
+        'filter_area',
+        esc_html__( 'Filter Area', 'learnpress' ),
         Controls_Manager::TAB_CONTENT,
         [
-            LPElementorControls::add_control_type_select(
-                'layout',
-                esc_html__( 'Layout', 'learnpress' ),
-                [
-                    'base'  => esc_html__( 'Default', 'learnpress' ),
-                    'popup' => esc_html__( 'Popup', 'learnpress' ),
-                ],
-                'base' 
-            ),
-            LPElementorControls::add_control_type(
-                'button_popup',
-                esc_html__( 'Text Popup', 'learnpress' ),
-                esc_html__( 'Filter', 'learnpress' ),
-                Controls_Manager::TEXT,
-                [
-                    'label_block' => true,
-                    'condition'   => [
-                        'layout' => 'popup',
-                    ]
-                ]
-            ),
-            LPElementorControls::add_control_type(
-                'icon_popup',
-                esc_html__( 'Icon Popup', 'learnpress' ),
-                [],
-                Controls_Manager::ICONS,
-                [
-                    'skin'        => 'inline',
-                    'label_block' => false,
-                    'condition'   => [
-                        'layout' => 'popup',
-                    ]
-                ]
-
-            ),
-            LPElementorControls::add_control_type_select(
-                'icon_align',
-                esc_html__( 'Icon Position', 'learnpress' ),
-                [
-                    'left'  => esc_html__( 'Before', 'learnpress' ),
-					'right' => esc_html__( 'After', 'learnpress' ),
-                ],
-                'left',
-                [
-                    'condition' => [
-                        'layout' => 'popup',
-                        'icon_popup[value]!' => ''
-                    ] 
-                ] 
-            ),
-            LPElementorControls::add_control_type_select(
-                'selected_style_show',
-                esc_html__( 'Selected Style', 'learnpress' ),
-                [
-                    'none'   => esc_html__( 'None', 'learnpress' ),
-					'number' => esc_html__( 'Number', 'learnpress' ),
-                    'list'   => esc_html__( 'List', 'learnpress' ),
-                ],
-                'number',
-                [
-                    'condition'   => [
-                        'layout' => 'popup',
-                    ]
-                ] 
-            ),
-        ]
-    ),
-    LPElementorControls::add_fields_in_section(
-        'content_filter',
-        esc_html__( 'Content', 'learnpress' ),
-        Controls_Manager::TAB_CONTENT,
-        [
-            LPElementorControls::add_control_type(
-				'show_in_rest',
-                esc_html__( 'Load widget via REST', 'learnpress' ),
-				'yes',
-				Controls_Manager::SWITCHER,
-				[
-					'label_on'     => esc_html__( 'Yes', 'learnpress' ),
-					'label_off'    => esc_html__( 'No', 'learnpress' ),
-					'return_value' => 'yes',
-					'default'      => 'yes',
-				]
-			),
-            LPElementorControls::add_control_type(
-				'search_suggestion',
-                esc_html__( 'Enable Keyword Search Suggestion', 'learnpress' ),
-				'yes',
-				Controls_Manager::SWITCHER,
-				[
-					'label_on'     => esc_html__( 'Yes', 'learnpress' ),
-					'label_off'    => esc_html__( 'No', 'learnpress' ),
-					'return_value' => 'yes',
-					'default'      => 'yes',
-				]
-			),
             LPElementorControls::add_control_type(
                 'item_filter',
                 esc_html__( 'Fields', 'learnpress' ),
@@ -141,12 +45,240 @@ $content_fields = array_merge(
                                 'btn_submit' =>  esc_html__( 'Button Submit', 'learnpress' ),
                                 'btn_reset'  =>  esc_html__( 'Button Reset', 'learnpress' ),
                             ),
-                        ]
+                        ],
+                        [
+                            'name'        => 'type_source',
+                            'label'       => esc_html__( 'Select Source', 'learnpress' ),
+                            'type'        => Controls_Manager::SELECT,
+                            'default'   => 'checkbox',
+                            'options'     => array(
+                                'checkbox'     =>  esc_html__( 'CheckBox', 'learnpress' ),
+                                'dropdown'     =>  esc_html__( 'Drop Down', 'learnpress' ),
+                            ),
+                            'condition' => [
+                                'item_fields' => [ 'price', 'category', 'tag', 'author', 'level' ]
+                            ]
+                        ],
+                        [
+                            'name'       => 'enable_count',
+                            'label'      => esc_html__( 'Show Count', 'learnpress' ),
+                            'type'       => Controls_Manager::SWITCHER,
+                            'default'   =>  'yes',
+                            'label_on'     => esc_html__( 'Show', 'learnpress' ),
+                            'label_off'    => esc_html__( 'Hide', 'learnpress' ),
+                            'return_value' => 'yes',
+                            'condition' => [
+                                'item_fields' => [ 'price', 'category', 'tag', 'author', 'level' ]
+                            ]
+                        ],
+                        [
+                            'name'       => 'heading_setting',
+                            'label'      =>  esc_html__( 'Heading Setting', 'learnpress' ),   
+                            'type'       =>  Controls_Manager::POPOVER_TOGGLE,  
+                            'label_off'  =>  esc_html__( 'Default', 'learnpress' ),
+				            'label_on'   =>  esc_html__( 'Custom', 'learnpress' ),
+                            'return_value' => 'yes',
+                        ],
+                        [ 'method' => 'start_popover', ],
+                        [
+                            'name'       => 'enable_heading',
+                            'label'      => esc_html__( 'Enable Heading', 'learnpress' ),
+                            'type'       => Controls_Manager::SWITCHER,
+                            'default'   =>  'yes',
+                            'label_on'     => esc_html__( 'Show', 'learnpress' ),
+                            'label_off'    => esc_html__( 'Hide', 'learnpress' ),
+                            'return_value' => 'yes',
+                        ],
+                        [
+                            'name'       => 'heading_customs',
+                            'label'      =>  esc_html__( 'Heading Text', 'learnpress' ), 
+                            'type'       =>  Controls_Manager::TEXT,
+                            'label_block' => false,
+                            'condition' => [
+                                'enable_heading' => 'yes'
+                            ]
+                        ], 
+                        [
+                            'name'       => 'toggle_disable',
+                            'label'      => esc_html__( 'Toggle Disable', 'learnpress' ),
+                            'type'       => Controls_Manager::SWITCHER,
+                            'default'   =>  'yes',
+                            'label_on'     => esc_html__( 'Show', 'learnpress' ),
+                            'label_off'    => esc_html__( 'Hide', 'learnpress' ),
+                            'return_value' => 'yes',
+                            'condition' => [
+                                'enable_heading' => 'yes'
+                            ]
+                        ],
+                        [
+                            'name'       => 'default_toggle_on',
+                            'label'      => esc_html__( 'Default Toggle On', 'learnpress' ),
+                            'type'       => Controls_Manager::SWITCHER,
+                            'default'   =>  'yes',
+                            'label_on'     => esc_html__( 'Show', 'learnpress' ),
+                            'label_off'    => esc_html__( 'Hide', 'learnpress' ),
+                            'return_value' => 'yes',
+                            'condition' => [
+                                'enable_heading' => 'yes',
+                                'toggle_disable' => 'yes'
+                            ]
+                        ],
+                        [
+                            'name'       => 'show_icon_heading',
+                            'label'      => esc_html__( 'Show Icon', 'learnpress' ),
+                            'type'       => Controls_Manager::SWITCHER,
+                            'default'   =>  'no',
+                            'label_on'     => esc_html__( 'Show', 'learnpress' ),
+                            'label_off'    => esc_html__( 'Hide', 'learnpress' ),
+                            'return_value' => 'yes',
+                            'condition' => [
+                                'enable_heading' => 'yes'
+                            ]
+                        ],
+                        [
+                            'name'        => 'icon_heading',
+                            'label'       => esc_html__( 'Icon', 'thim-elementor-kit' ),
+                            'type'        => Controls_Manager::ICONS,
+                            'skin'        => 'inline',
+                            'label_block' => false,
+                            'condition' => [
+                                'enable_heading'    => 'yes',
+                                'show_icon_heading' => 'yes'
+                            ]
+                        ],
+                        [ 'method' => 'end_popover' ],
                     ],
                     'prevent_empty' => false,
                     'title_field'   => '{{{ item_fields }}}',
                 ]
             ),
+        ]
+    ),
+    LPElementorControls::add_fields_in_section(
+        'extra_option',
+        esc_html__( 'Extra Option', 'learnpress' ),
+        Controls_Manager::TAB_CONTENT,
+        [
+            LPElementorControls::add_control_type(
+				'show_in_rest',
+                esc_html__( 'Load widget via REST', 'learnpress' ),
+				'yes',
+				Controls_Manager::SWITCHER,
+				[
+					'label_on'     => esc_html__( 'Yes', 'learnpress' ),
+					'label_off'    => esc_html__( 'No', 'learnpress' ),
+					'return_value' => 'yes',
+					'default'      => 'yes',
+				]
+			),
+            LPElementorControls::add_control_type(
+				'search_suggestion',
+                esc_html__( 'Enable Keyword Search Suggestion', 'learnpress' ),
+				'yes',
+				Controls_Manager::SWITCHER,
+				[
+					'label_on'     => esc_html__( 'Yes', 'learnpress' ),
+					'label_off'    => esc_html__( 'No', 'learnpress' ),
+					'return_value' => 'yes',
+				]
+            ),
+            LPElementorControls::add_control_type(
+                'filter_toggle_button',
+                esc_html__( 'Filter Toggle Button', 'learnpress' ),
+                'no',
+                Controls_Manager::POPOVER_TOGGLE,
+				[
+					'label_on'     => esc_html__( 'Yes', 'learnpress' ),
+					'label_off'    => esc_html__( 'No', 'learnpress' ),
+					'return_value' => 'yes',
+                ],
+            ),
+            'popover_start' => [
+                'method' => 'start_popover',
+            ],
+            LPElementorControls::add_control_type(
+                'enable_filter_button',
+                esc_html__( 'Filter Toggle Button', 'learnpress' ),
+                'no',
+				Controls_Manager::SWITCHER,
+				[
+					'label_on'     => esc_html__( 'Show', 'learnpress' ),
+					'label_off'    => esc_html__( 'Hide', 'learnpress' ),
+					'return_value' => 'yes',
+				]
+            ),
+            LPElementorControls::add_control_type(
+                'text_filter_button',
+                esc_html__( 'Text Button', 'learnpress' ),
+                esc_html__( 'Filter', 'learnpress' ),
+                Controls_Manager::TEXT,
+                [
+                    'label_block' => false,
+                    'condition'   => [
+                        'enable_filter_button' => 'yes',
+                    ]
+                ]
+            ),
+            LPElementorControls::add_control_type(
+                'enable_icon_filter_button',
+                esc_html__( 'Button Icon', 'learnpress' ),
+                'no',
+				Controls_Manager::SWITCHER,
+				[
+					'label_on'     => esc_html__( 'Show', 'learnpress' ),
+					'label_off'    => esc_html__( 'Hide', 'learnpress' ),
+					'return_value' => 'yes',
+                    'condition'   => [
+                        'enable_filter_button' => 'yes',
+                    ]
+				]
+            ),
+            LPElementorControls::add_control_type(
+                'icon_filter_button',
+                esc_html__( 'Icon', 'learnpress' ),
+                [],
+                Controls_Manager::ICONS,
+                [
+                    'skin'        => 'inline',
+                    'label_block' => false,
+                    'condition'   => [
+                        'enable_filter_button'    => 'yes',
+                        'enable_icon_filter_button' => 'yes'
+                    ]
+                ],
+            ),
+            LPElementorControls::add_control_type_select(
+                'icon_position',
+                esc_html__( 'Icon Position', 'learnpress' ),
+                [
+                    'left'  => esc_html__( 'Before', 'learnpress' ),
+					'right' => esc_html__( 'After', 'learnpress' ),
+                ],
+                'left',
+                [
+                    'condition' => [
+                        'enable_filter_button'    => 'yes',
+                        'type_icon_filter_button' => 'yes'
+                    ] 
+                ] 
+            ),
+            LPElementorControls::add_control_type_select(
+                'selected_style_show',
+                esc_html__( 'Selected Style', 'learnpress' ),
+                [
+                    'number'    => esc_html__( 'Number', 'learnpress' ),
+					'list'      => esc_html__( 'List', 'learnpress' ),
+                ],
+                'number',
+                [
+                    'condition' => [
+                        'enable_filter_button'    => 'yes',
+                    ] 
+                ] 
+            ),
+            'popover_end' => [
+                'method' => 'end_popover',
+            ],
         ]
     ),
     []
