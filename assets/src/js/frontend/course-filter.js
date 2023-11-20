@@ -126,6 +126,14 @@ window.lpCourseFilter = {
 			}
 		}
 
+		if ( 'undefined' !== typeof lpData.urlParams.page_term_id_current ) {
+			filterCourses.page_term_id_current = lpData.urlParams.page_term_id_current;
+		}
+
+		if ( 'undefined' !== typeof lpData.urlParams.page_tag_id_current ) {
+			filterCourses.page_tag_id_current = lpData.urlParams.page_tag_id_current;
+		}
+
 		if ( 'undefined' !== typeof lpSettingCourses &&
 			lpData.is_course_archive &&
 			lpSettingCourses.lpArchiveLoadAjax &&

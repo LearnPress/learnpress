@@ -3,7 +3,7 @@
  * Template hooks Archive Package.
  *
  * @since 4.2.3.2
- * @version 1.0.1
+ * @version 1.0.2
  */
 
 namespace LearnPress\TemplateHooks\Course;
@@ -153,9 +153,9 @@ class FilterCourseTemplate {
 				$data
 			);
 
-			$value   = LP_Request::get_param( 'c_search' );
-			$value   = isset( $data['params_url'] ) ? ( $data['params_url']['c_search'] ?? $value ) : $value;
-			$content = sprintf(
+			$value    = LP_Request::get_param( 'c_search' );
+			$value    = isset( $data['params_url'] ) ? ( $data['params_url']['c_search'] ?? $value ) : $value;
+			$content  = sprintf(
 				'<input type="text" name="c_search" placeholder="%s" value="%s" class="%s" data-search-suggest="%d">',
 				__( 'Search Course', 'learnpress' ),
 				$value,
@@ -163,9 +163,9 @@ class FilterCourseTemplate {
 				$data['search_suggestion'] ?? 1
 			);
 			$content .= '<span class="lp-loading-circle hide"></span>';
-			$content = Template::instance()->nest_elements( $html_wrapper, $content );
+			$content  = Template::instance()->nest_elements( $html_wrapper, $content );
 			$content .= '<div class="lp-course-filter-search-result"></div>';
-			$content = $this->html_item( esc_html__( 'Search', 'learnpress' ), $content );
+			$content  = $this->html_item( esc_html__( 'Search', 'learnpress' ), $content );
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
@@ -179,6 +179,8 @@ class FilterCourseTemplate {
 	 * @param array $data
 	 *
 	 * @return string
+	 * @since 4.2.3.2
+	 * @version 1.0.2
 	 */
 	public function html_price( array $data = [] ): string {
 		$content = '';
@@ -194,12 +196,12 @@ class FilterCourseTemplate {
 			$count_courses_free = Courses::count_course_free( $filter_courses_free );
 
 			// Get number courses has price
-			$filter_courses_price              = new LP_Course_Filter();
+			$filter_courses_price = new LP_Course_Filter();
 			$this->handle_filter_params_before_query( $filter_courses_price, $params_url );
 			$filter_courses_price->query_count = true;
 			$filter_courses_price->sort_by     = [ 'on_paid' ];
 			$count_courses_paid                = 0;
-			LP_Course::get_courses( $filter_courses_price, $count_courses_paid );
+			Courses::get_courses( $filter_courses_price, $count_courses_paid );
 
 			$fields = apply_filters(
 				'learn-press/filter-courses/price/fields',
@@ -262,6 +264,8 @@ class FilterCourseTemplate {
 	 * @param array $data
 	 *
 	 * @return string
+	 * @since 4.2.3.2
+	 * @version 1.0.2
 	 */
 	public function html_category( array $data = [] ): string {
 		$content = '';
@@ -270,70 +274,56 @@ class FilterCourseTemplate {
 			$params_url    = $data['params_url'] ?? [];
 			$data_selected = $params_url['term_id'] ?? '';
 			$data_selected = explode( ',', $data_selected );
-
-			$category_current = 0;
-			if ( isset( $params_url['page_term_id_current'] ) ) {
-				$category_current = $params_url['page_term_id_current'];
-			} elseif ( isset( $params_url['page_tag_id_current'] ) ) {
-				$category_current = $params_url['page_tag_id_current'];
+			// Check has in cate page.
+			if ( isset( $params_url['page_term_id_current'] ) &&
+				empty( $params_url['term_id'] ) ) {
+				$data_selected[] = $params_url['page_term_id_current'];
 			}
+			$arg_query_terms  = [ 'hide_empty' => true ];
+			$category_current = null;
 
-			$arg_query_terms = [
-				'hide_empty' => true,
-			];
+			if ( isset( $params_url['page_term_id_current'] ) ) {
+				$category_current_id = $params_url['page_term_id_current'];
+				$category_current    = get_term_by( 'id', $category_current_id, LP_COURSE_CATEGORY_TAX );
 
-			if ( ! empty( $category_current ) ) {
-				$arg_query_terms['parent'] = $category_current;
+				if ( ! empty( $category_current ) ) {
+					$arg_query_terms['parent'] = $category_current->term_id;
+				}
 			} else {
 				$arg_query_terms['parent'] = 0;
 			}
 
-			$terms = get_terms(
+			$terms = [];
+			if ( ! empty( $category_current ) ) {
+				$terms[] = $category_current;
+			}
+			$terms_sub = get_terms(
 				LP_COURSE_CATEGORY_TAX,
 				$arg_query_terms
 			);
 
-			if ( empty( $terms ) ) {
-				if ( ! empty( $category_current ) ) {
-					$arg_query_terms['parent'] = 0;
-					$terms                     = get_terms(
-						LP_COURSE_CATEGORY_TAX,
-						$arg_query_terms
-					);
-
-					if ( empty( $terms ) ) {
-						return $content;
-					}
-				} else {
-					return $content;
-				}
-			}
+			$terms = array_merge( $terms, $terms_sub );
 
 			foreach ( $terms as $term ) {
 				$html_wrapper = [
 					'<div class="lp-course-filter__field">' => '</div>',
 				];
 
-				$filter = new LP_Course_Filter();
+				$count_courses       = 0;
+				$filter              = new LP_Course_Filter();
 				$filter->query_count = true;
 				$filter->only_fields = [ 'DISTINCT(ID)' ];
-				Courses::handle_params_for_query_courses( $filter, $params_url );
-				$filter->term_ids[] = $term->term_id;
-				if ( isset( $params_url['page_term_id_current'] ) ) {
-					$filter->term_ids[] = $params_url['page_term_id_current'];
-				} elseif ( isset( $params_url['page_tag_id_current'] ) ) {
-					$filter->tag_ids[] = $params_url['page_tag_id_current'];
-				}
-
-				$count_courses= 0;
+				$this->handle_filter_params_before_query( $filter, $params_url );
+				$filter->term_ids = [ $term->term_id ];
+				//$filter->debug_string_query = true;
 				Courses::get_courses( $filter, $count_courses );
 
-				$value   = $term->term_id;
-				$checked = in_array( $value, $data_selected ) ? 'checked' : '';
+				$value    = $term->term_id;
+				$checked  = in_array( $value, $data_selected ) ? 'checked' : '';
 				$disabled = $count_courses > 0 ? '' : 'disabled';
-				$input   = sprintf( '<input name="term_id" type="checkbox" value="%s" %s %s>', esc_attr( $value ), esc_attr( $checked ), $disabled );
-				$label   = sprintf( '<label for="">%s</label>', wp_kses_post( $term->name ) );
-				$count   = sprintf( '<span class="count">%s</span>', esc_html( $term->count ) );
+				$input    = sprintf( '<input name="term_id" type="checkbox" value="%s" %s %s>', esc_attr( $value ), esc_attr( $checked ), $disabled );
+				$label    = sprintf( '<label for="">%s</label>', wp_kses_post( $term->name ) );
+				$count    = sprintf( '<span class="count">%s</span>', esc_html( $count_courses ) );
 
 				$sections = apply_filters(
 					'learn-press/filter-courses/course-tag/sections',
@@ -365,6 +355,8 @@ class FilterCourseTemplate {
 	 * @param array $data
 	 *
 	 * @return string
+	 * @since 4.2.3.2
+	 * @version 1.0.2
 	 */
 	public function html_tag( array $data = [] ): string {
 		$content = '';
@@ -373,7 +365,13 @@ class FilterCourseTemplate {
 			$params_url    = $data['params_url'] ?? [];
 			$data_selected = $params_url['tag_id'] ?? '';
 			$data_selected = explode( ',', $data_selected );
-			$terms         = get_terms(
+			// Check has in tag page.
+			if ( isset( $params_url['page_tag_id_current'] ) &&
+				empty( $params_url['tag_id'] ) ) {
+				$data_selected[] = $params_url['page_tag_id_current'];
+			}
+
+			$terms = get_terms(
 				[
 					'taxonomy'   => LP_COURSE_TAXONOMY_TAG,
 					'hide_empty' => true,
@@ -390,24 +388,19 @@ class FilterCourseTemplate {
 					'<div class="lp-course-filter__field">' => '</div>',
 				];
 
-				$value         = $term->term_id;
-				$filter = new LP_Course_Filter();
+				$value               = $term->term_id;
+				$filter              = new LP_Course_Filter();
 				$filter->query_count = true;
-				Courses::handle_params_for_query_courses( $filter, $params_url );
-				$filter->tag_ids[] = $value;
-				if ( isset( $params_url['page_tag_id_current'] ) ) {
-					$filter->term_ids[] = $params_url['page_tag_id_current'];
-				} elseif ( isset( $params_url['page_term_id_current'] ) ) {
-					$filter->term_ids[] = $params_url['page_term_id_current'];
-				}
+				$this->handle_filter_params_before_query( $filter, $params_url );
+				$filter->tag_ids = [ $value ];
 
-				$count_courses= 0;
+				$count_courses = 0;
 				Courses::get_courses( $filter, $count_courses );
-				$checked       = in_array( $value, $data_selected ) ? 'checked' : '';
+				$checked  = in_array( $value, $data_selected ) ? 'checked' : '';
 				$disabled = $count_courses > 0 ? '' : 'disabled';
-				$input         = sprintf( '<input name="tag_id" type="checkbox" value="%s" %s %s>', esc_attr( $value ), esc_attr( $checked ), $disabled );
-				$label         = sprintf( '<label for="">%s</label>', wp_kses_post( $term->name ) );
-				$count         = sprintf( '<span class="count">%s</span>', esc_html( $count_courses ) );
+				$input    = sprintf( '<input name="tag_id" type="checkbox" value="%s" %s %s>', esc_attr( $value ), esc_attr( $checked ), $disabled );
+				$label    = sprintf( '<label for="">%s</label>', wp_kses_post( $term->name ) );
+				$count    = sprintf( '<span class="count">%s</span>', esc_html( $count_courses ) );
 
 				$sections = apply_filters(
 					'learn-press/filter-courses/course-tag/sections',
@@ -439,6 +432,8 @@ class FilterCourseTemplate {
 	 * @param array $data
 	 *
 	 * @return string
+	 * @since 4.2.3.2
+	 * @version 1.0.2
 	 */
 	public function html_author( array $data = [] ): string {
 		$content = '';
@@ -460,18 +455,19 @@ class FilterCourseTemplate {
 				];
 				$total_course_of_instructor = 0;
 
-				$filter = new LP_Course_Filter();
+				$filter              = new LP_Course_Filter();
 				$filter->query_count = true;
 				$filter->only_fields = [ 'DISTINCT(ID)' ];
 				$this->handle_filter_params_before_query( $filter, $params_url );
 				$filter->post_author = $instructor->ID;
 				LP_Course::get_courses( $filter, $total_course_of_instructor );
 
-				$value   = $instructor->ID;
-				$checked = in_array( $value, $data_selected ) ? 'checked' : '';
-				$input   = sprintf( '<input name="c_authors" type="checkbox" value="%s" %s>', esc_attr( $value ), esc_attr( $checked ) );
-				$label   = sprintf( '<label for="">%s</label>', esc_html( $instructor->display_name ) );
-				$count   = sprintf( '<span class="count">%s</span>', esc_html( $total_course_of_instructor ) );
+				$value    = $instructor->ID;
+				$checked  = in_array( $value, $data_selected ) ? 'checked' : '';
+				$disabled = $total_course_of_instructor > 0 ? '' : 'disabled';
+				$input    = sprintf( '<input name="c_authors" type="checkbox" value="%s" %s %s>', esc_attr( $value ), esc_attr( $checked ), $disabled );
+				$label    = sprintf( '<label for="">%s</label>', esc_html( $instructor->display_name ) );
+				$count    = sprintf( '<span class="count">%s</span>', esc_html( $total_course_of_instructor ) );
 
 				$sections = apply_filters(
 					'learn-press/filter-courses/author/sections',
@@ -504,6 +500,8 @@ class FilterCourseTemplate {
 	 * @param array $data
 	 *
 	 * @return string
+	 * @since 4.2.3.2
+	 * @version 1.0.2
 	 */
 	public function html_level( array $data = [] ): string {
 		$content = '';
@@ -524,7 +522,7 @@ class FilterCourseTemplate {
 					$value = 'all';
 				}
 
-				$filter              = new LP_Course_Filter();
+				$filter = new LP_Course_Filter();
 				$this->handle_filter_params_before_query( $filter, $params_url );
 				$filter->only_fields = [ 'DISTINCT(ID)' ];
 				$filter->query_count = true;
@@ -604,15 +602,16 @@ class FilterCourseTemplate {
 	 *
 	 * @return void
 	 */
-	public function handle_filter_params_before_query( LP_Course_Filter &$filter,array $params_url = [] ) {
+	public function handle_filter_params_before_query( LP_Course_Filter &$filter, array $params_url = [] ) {
 		Courses::handle_params_for_query_courses( $filter, $params_url );
 
 		// Check has in category page.
-		if ( isset( $params_url['page_term_id_current'] ) ) {
+		if ( isset( $params_url['page_term_id_current'] ) &&
+			empty( $params_url['term_id'] ) ) {
 			$filter->term_ids[] = $params_url['page_term_id_current'];
-		}
-		// Check has in tag page.
-		elseif ( isset( $params_url['page_tag_id_current'] ) ) {
+		} // Check has in tag page.
+		elseif ( isset( $params_url['page_tag_id_current'] ) &&
+				empty( $params_url['tag_id'] ) ) {
 			$filter->tag_ids[] = $params_url['page_tag_id_current'];
 		}
 	}
