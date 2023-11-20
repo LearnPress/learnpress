@@ -31,6 +31,21 @@ document.addEventListener( 'click', function( e ) {
 		elLpCourseFilter.classList.toggle("filter-popup-show");
 	}
 
+	if ( target.classList.contains( 'icon-toggle-filter' )) {
+		e.preventDefault();
+		const toggleContent = target.closest( '.toggle-content' );
+		if ( ! toggleContent ) {
+			return;
+		}
+		const toggleOn = target.closest( '.toggle-on' );
+		
+		if (  ! toggleOn ) {
+			toggleContent.classList.add("toggle-on");
+		}else {
+			toggleContent.classList.remove("toggle-on");
+		}
+	}
+
 	// Show/hide search suggest result
 	window.lpCourseFilter.showHideSearchResult( target );
 

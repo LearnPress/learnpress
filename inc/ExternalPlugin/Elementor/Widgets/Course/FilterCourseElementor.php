@@ -69,8 +69,32 @@ class FilterCourseElementor extends LPElementorWidgetBase
 			$sections     = [];
 
 			foreach ($settings['item_filter'] as $field) {
+				$extraClassItem = $icon_toggle = $wrapper = $wrapper_end = '';
+
+				if ($field['enable_count'] != 'yes') {
+					$extraClassItem .= ' hide-count';
+				}
+				if ($field['enable_heading'] != 'yes') {
+					$extraClassItem .= ' hide-title';
+				}
+				if ($field['toggle_content'] == 'yes') {
+					$extraClassItem .= ' toggle-content';
+					$icon_toggle = '<i class="icon-toggle-filter fas fa-angle-up"></i><i class="icon-toggle-filter fas fa-angle-down"></i>';
+					
+					if($field['default_toggle_on'] == 'yes'){
+						$extraClassItem .= ' toggle-on';
+					}
+				}
+				if ($extraClassItem != '' || $icon_toggle != '') {
+					$wrapper 		= '<div class="' . esc_attr($extraClassItem) . '"> '.$icon_toggle.'';
+					$wrapper_end 	= '</div>';
+				}
 				if (is_callable(array($filter, 'html_' . $field['item_fields']))) {
-					$sections[$field['item_fields']] = ['text_html' => $filter->{'html_' . $field['item_fields']}($settings)];
+					$sections[$field['item_fields']] = [
+						'wrapper' => $wrapper,
+						'text_html' => $filter->{'html_' . $field['item_fields']}($settings),
+						'wrapper_end' => $wrapper_end,
+					];
 				}
 			}
 
@@ -83,7 +107,8 @@ class FilterCourseElementor extends LPElementorWidgetBase
 		}
 	}
 
-	protected function layout_popup($settings, $filter ){
+	protected function layout_popup($settings, $filter)
+	{
 		$text_popup = $settings['text_filter_button'] ?? esc_html__('Filter', 'learnpress');
 
 		echo '<button class="lp-button-popup">';

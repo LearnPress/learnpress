@@ -99,10 +99,10 @@ $content_fields = array_merge(
                             ]
                         ], 
                         [
-                            'name'       => 'toggle_disable',
-                            'label'      => esc_html__( 'Toggle Disable', 'learnpress' ),
+                            'name'       => 'toggle_content',
+                            'label'      => esc_html__( 'Toggle Content', 'learnpress' ),
                             'type'       => Controls_Manager::SWITCHER,
-                            'default'   =>  'yes',
+                            'default'   =>  'no',
                             'label_on'     => esc_html__( 'Show', 'learnpress' ),
                             'label_off'    => esc_html__( 'Hide', 'learnpress' ),
                             'return_value' => 'yes',
@@ -120,7 +120,33 @@ $content_fields = array_merge(
                             'return_value' => 'yes',
                             'condition' => [
                                 'enable_heading' => 'yes',
-                                'toggle_disable' => 'yes'
+                                'toggle_content' => 'yes'
+                            ]
+                        ],
+                        [
+                            'name'       => 'offset_x',
+                            'label'       => esc_html__( 'Offset X (px)', 'thim-elementor-kit' ),
+                            'type'        => Controls_Manager::NUMBER,
+                            'label_block' => false,
+                            'selectors'   => array(
+                                '{{WRAPPER}} .toggle-content >.icon-toggle-filter' => 'right:{{VALUE}}px',
+                            ),
+                            'condition' => [
+                                'enable_heading' => 'yes',
+                                'toggle_content' => 'yes'
+                            ]
+                        ],
+                        [
+                            'name'       => 'offset_y',
+                            'label'       => esc_html__( 'Offset Y (px)', 'thim-elementor-kit' ),
+                            'type'        => Controls_Manager::NUMBER,
+                            'label_block' => false,
+                            'selectors'   => array(
+                                '{{WRAPPER}} .toggle-content >.icon-toggle-filter' => 'top:{{VALUE}}px',
+                            ),
+                            'condition' => [
+                                'enable_heading' => 'yes',
+                                'toggle_content' => 'yes'
                             ]
                         ],
                         [

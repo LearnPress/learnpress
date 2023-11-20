@@ -480,4 +480,49 @@
 			display: block;
 		}
 	}
+	.lp-form-course-filter {
+		.hide-count {
+			> .lp-form-course-filter__item .count{
+				display: none;
+			}
+		}
+		.toggle-content {
+			position: relative;
+			.icon-toggle-filter {
+				position: absolute;
+				right: 15px;
+				top: 15px;
+				z-index: 99;
+				transition: 0.3s;
+				cursor: pointer;
+				&.fa-angle-down {
+					display: block;
+				}
+				&.fa-angle-up {
+					display: none;
+				}
+			}
+			> .lp-form-course-filter__item {
+				.lp-form-course-filter__content {
+					display: none;
+				}
+			}
+
+			&.toggle-on {
+				.icon-toggle-filter{
+					&.fa-angle-down {
+						display: none;
+					}
+					&.fa-angle-up {
+						display: block;
+					}
+				}
+				> .lp-form-course-filter__item {
+					.lp-form-course-filter__content {
+						display: block;
+					}
+				}
+			}
+		}
+	}
 }

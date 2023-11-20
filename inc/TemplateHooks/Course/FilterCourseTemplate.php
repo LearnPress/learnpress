@@ -233,7 +233,7 @@ class FilterCourseTemplate {
 				$sections = apply_filters(
 					'learn-press/filter-courses/price/sections',
 					[
-						'input' => [ 'text_html' => $input ],
+						'input' => [ 'text_html' => $input,  ],
 						'label' => [ 'text_html' => $label ],
 						'count' => [ 'text_html' => $count ],
 					],
