@@ -106,7 +106,7 @@ class FilterCourseElementor extends LPElementorWidgetBase
 				if (is_callable(array($filter, 'html_' . $field['item_fields']))) {
 					$sections[$field['item_fields']] = [
 						'wrapper' => $wrapper,
-						'text_html' => $filter->{'html_' . $field['item_fields']}($settings),
+						'text_html' => $filter->{'html_' . $field['item_fields']}($field),
 						'wrapper_end' => $wrapper_end,
 					];
 				}
@@ -121,7 +121,7 @@ class FilterCourseElementor extends LPElementorWidgetBase
 		}
 	}
 
-	protected function layout_popup($settings, $filter)
+	protected function layout_popup($settings)
 	{
 		$text_popup = $settings['text_filter_button'] ?? esc_html__('Filter', 'learnpress');
 
