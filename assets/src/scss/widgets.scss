@@ -474,6 +474,17 @@
 		gap: 10px;
 		align-items: center;
 		flex-wrap: wrap;
+		.selected-item {
+			display: inline-flex;
+			gap: 5px;
+			align-items: center;
+			.icon-remove-selected {
+				cursor: pointer;
+				&:hover {
+					color: var(--lp-primary-color);
+				}
+			}
+		}
 	}
 	&.filter-popup-show {
 		.lp-filter-popup {
@@ -521,6 +532,13 @@
 					.lp-form-course-filter__content {
 						display: block;
 					}
+				}
+			}
+		}
+		.heading-custom {
+			> .lp-form-course-filter__item {
+				.lp-form-course-filter__title {
+					display: none;
 				}
 			}
 		}

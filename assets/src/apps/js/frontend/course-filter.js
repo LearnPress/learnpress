@@ -46,6 +46,11 @@ document.addEventListener( 'click', function( e ) {
 		}
 	}
 
+	if ( target.classList.contains( 'icon-remove-selected' ) ) {
+		e.preventDefault();
+		window.lpCourseFilter.resetSelected( target );
+	}
+
 	// Show/hide search suggest result
 	window.lpCourseFilter.showHideSearchResult( target );
 
@@ -176,6 +181,25 @@ window.lpCourseFilter = {
 			form.elements[ i ].removeAttribute( 'checked' );
 		}
 		// If on the page archive course will call btnSubmit click.
+		if ( lpGlobalSettings.is_course_archive ) {
+			btnSubmit.click();
+		}
+	},
+	resetSelected: ( target ) => {
+		const form = document.querySelector( `.${ classCourseFilter }` );
+		const btnSubmit = form.querySelector( '.course-filter-submit' );
+		const lpSelected = target.closest( '.selected-item' );
+		const lpSelectedName = lpSelected.getAttribute( 'data-name' ); 
+		const lpSelectedID = lpSelected.getAttribute( 'data-value' );
+
+		if ( ! lpSelected ) {
+			return;
+		}
+		for ( let i = 0; i < form.elements.length; i++ ) {
+			if(form.elements[ i ].getAttribute('name') ==  lpSelectedName && form.elements[ i ].getAttribute('value') == lpSelectedID){
+				form.elements[ i ].removeAttribute( 'checked' );
+			}
+		}
 		if ( lpGlobalSettings.is_course_archive ) {
 			btnSubmit.click();
 		}

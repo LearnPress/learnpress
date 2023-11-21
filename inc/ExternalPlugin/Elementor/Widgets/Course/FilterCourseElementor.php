@@ -69,26 +69,35 @@ class FilterCourseElementor extends LPElementorWidgetBase
 			$sections     = [];
 
 			foreach ($settings['item_filter'] as $field) {
-				$extraClassItem = $icon_toggle = $wrapper = $wrapper_end = '';
+				$extraClassItem = $icon_toggle = $wrapper = $wrapper_end = $custom_heading = '';
 
-				if ($field['enable_count'] != 'yes') {
+				if (isset($field['enable_count']) && $field['enable_count'] != 'yes') {
 					$extraClassItem .= ' hide-count';
 				}
+
 				if ($field['enable_heading'] != 'yes') {
 					$extraClassItem .= ' hide-title';
 				}
+
 				if ($field['toggle_content'] == 'yes') {
 					$extraClassItem .= ' toggle-content';
 					$icon_toggle = '<i class="icon-toggle-filter fas fa-angle-up"></i><i class="icon-toggle-filter fas fa-angle-down"></i>';
-					
-					if($field['default_toggle_on'] == 'yes'){
+
+					if ($field['default_toggle_on'] == 'yes') {
 						$extraClassItem .= ' toggle-on';
 					}
 				}
-				if ($extraClassItem != '' || $icon_toggle != '') {
-					$wrapper 		= '<div class="' . esc_attr($extraClassItem) . '"> '.$icon_toggle.'';
+
+				if ($field['heading_custom'] != '') {
+					$extraClassItem .= ' heading-custom';
+					$custom_heading = '<div class="lp-form-course-filter__title"> ' . $field['heading_custom'] . ' </div>';
+				}
+
+				if ($extraClassItem != '' || $icon_toggle != '' || $custom_heading != '') {
+					$wrapper 		= '<div class="' . esc_attr($extraClassItem) . '"> ' . $icon_toggle . '' . $custom_heading . '';
 					$wrapper_end 	= '</div>';
 				}
+
 				if (is_callable(array($filter, 'html_' . $field['item_fields']))) {
 					$sections[$field['item_fields']] = [
 						'wrapper' => $wrapper,
@@ -140,7 +149,8 @@ class FilterCourseElementor extends LPElementorWidgetBase
 
 	protected function selected_style_number()
 	{
-		$cat = $tag = $price = $level = $author = $total = 0;
+		$cat = $tag = $price = $level = $author = 0;
+		$total = '';
 
 		if (!empty($_GET['term_id'])) {
 			$cat =  count(explode(',', $_GET['term_id']));
@@ -158,11 +168,7 @@ class FilterCourseElementor extends LPElementorWidgetBase
 			$author =  count(explode(',', $_GET['c_authors']));
 		}
 		$total = $cat + $tag + $price + $level + $author;
-
-		if ($total == 0) {
-			$total = '';
-		}
-
+		
 		if (!empty($total)) {
 			echo '<span class="selected-filter">' . $total . '</span>';
 		}
@@ -171,34 +177,36 @@ class FilterCourseElementor extends LPElementorWidgetBase
 	protected function selected_style_list()
 	{
 		$cats = $tags = $authors = '';
+		$classListItem = 'selected-item';
+		$icon_move = '<i class="icon-remove-selected fas fa-times"></i>';
 
 		if (!empty($_GET['term_id'])) {
 			$cats = explode(',', $_GET['term_id']);
 			foreach ($cats as $cat) {
-				echo '<span>' . get_term($cat, 'course_category')->name . '</span>';
+				echo '<span class="' . $classListItem . '" data-name="term_id" data-value="' . $cat . '">' . get_term($cat, 'course_category')->name . '' . $icon_move . '</span>';
 			}
 		}
 
 		if (!empty($_GET['tag_id'])) {
 			$tags = explode(',', $_GET['tag_id']);
 			foreach ($tags as $tag) {
-				echo '<span>' . get_term($tag, 'course_tag')->name . '</span>';
+				echo '<span class="' . $classListItem . '" data-name="tag_id" data-value="' . $tag . '">' . get_term($tag, 'course_tag')->name . '' . $icon_move . '</span>';
 			}
 		}
 
 		if (!empty($_GET['sort_by'])) {
 			if ($_GET['sort_by'] == 'on_free') {
-				echo  '<span>' . __('Free', 'learnpress') . '</span>';
+				echo  '<span class="' . $classListItem . '" data-name="sort_by" data-value="' . $_GET['sort_by'] . '">' . __('Free', 'learnpress') . '' . $icon_move . '</span>';
 			} else {
-				echo '<span>' . __('Paid', 'learnpress') . '</span>';
+				echo '<span class="' . $classListItem . '" data-name="sort_by" data-value="' . $_GET['sort_by'] . '">' . __('Paid', 'learnpress') . '' . $icon_move . '</span>';
 			}
 		}
 
 		if (!empty($_GET['c_level'])) {
 			if ($_GET['c_level'] == 'all') {
-				echo  '<span>' . __('All Levels', 'learnpress') . '</span>';
+				echo  '<span class="' . $classListItem . '" data-name="c_level" data-value="' . $_GET['c_level'] . '">' . __('All Levels', 'learnpress') . '' . $icon_move . '</span>';
 			} else {
-				echo  '<span>' . $_GET['c_level'] . '</span>';
+				echo  '<span class="' . $classListItem . '" data-name="c_level" data-value="' . $_GET['c_level'] . '">' . $_GET['c_level'] . '' . $icon_move . '</span>';
 			}
 		}
 
@@ -206,7 +214,7 @@ class FilterCourseElementor extends LPElementorWidgetBase
 			$authors = explode(',', $_GET['c_authors']);
 			foreach ($authors as $author) {
 				$user = get_userdata($author);
-				echo  '<span>' . $user->display_name . '</span>';
+				echo  '<span class="' . $classListItem . '" data-name="c_authors" data-value="' . $_GET['c_authors'] . '">' . $user->display_name . '' . $icon_move . '</span>';
 			}
 		}
 	}

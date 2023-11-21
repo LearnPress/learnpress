@@ -48,7 +48,7 @@ $content_fields = array_merge(
                         ],
                         [
                             'name'        => 'type_source',
-                            'label'       => esc_html__( 'Select Source', 'learnpress' ),
+                            'label'       => esc_html__( 'Type (Coming Soon)', 'learnpress' ),
                             'type'        => Controls_Manager::SELECT,
                             'default'   => 'checkbox',
                             'options'     => array(
@@ -90,7 +90,7 @@ $content_fields = array_merge(
                             'return_value' => 'yes',
                         ],
                         [
-                            'name'       => 'heading_customs',
+                            'name'       => 'heading_custom',
                             'label'      =>  esc_html__( 'Heading Text', 'learnpress' ), 
                             'type'       =>  Controls_Manager::TEXT,
                             'label_block' => false,
