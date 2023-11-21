@@ -265,23 +265,34 @@ $content_fields = array_merge(
                     ] 
                 ] 
             ),
-            LPElementorControls::add_control_type_select(
-                'selected_style_show',
-                esc_html__( 'Selected Style', 'learnpress' ),
-                [
-                    'number'    => esc_html__( 'Number', 'learnpress' ),
-					'list'      => esc_html__( 'List', 'learnpress' ),
-                ],
-                'number',
-                [
+            LPElementorControls::add_control_type(
+				'filter_selected_number',
+                esc_html__( 'Filter Selected Number', 'learnpress' ),
+				'yes',
+				Controls_Manager::SWITCHER,
+				[
+					'label_on'     => esc_html__( 'Yes', 'learnpress' ),
+					'label_off'    => esc_html__( 'No', 'learnpress' ),
+					'return_value' => 'yes',
                     'condition' => [
                         'enable_filter_button'    => 'yes',
                     ] 
-                ] 
+				]
             ),
             'popover_end' => [
                 'method' => 'end_popover',
             ],
+            LPElementorControls::add_control_type(
+				'filter_selected_list',
+                esc_html__( 'Filter Selected List', 'learnpress' ),
+				'no',
+				Controls_Manager::SWITCHER,
+				[
+					'label_on'     => esc_html__( 'Yes', 'learnpress' ),
+					'label_off'    => esc_html__( 'No', 'learnpress' ),
+					'return_value' => 'yes', 
+				]
+            ),
         ]
     ),
     []

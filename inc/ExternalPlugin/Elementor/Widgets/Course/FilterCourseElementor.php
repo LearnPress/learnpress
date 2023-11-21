@@ -59,6 +59,16 @@ class FilterCourseElementor extends LPElementorWidgetBase
 				echo self::layout_popup($settings, $filter);
 			}
 
+			if ($settings['filter_selected_list'] == 'yes') {
+				echo '<div class="selected-list">';
+				echo self::selected_style_list();
+				echo '</div>';
+			}
+	
+			if ((!empty($_GET['term_id']) || !empty($_GET['tag_id']) || !empty($_GET['sort_by']) || !empty($_GET['c_level']) || !empty($_GET['c_authors'])) && $settings['filter_selected_list'] == 'yes') {
+				echo $filter->html_btn_reset();
+			}
+
 			$html_wrapper = apply_filters(
 				'learn-press/filter-courses/sections/wrapper',
 				[
@@ -131,20 +141,10 @@ class FilterCourseElementor extends LPElementorWidgetBase
 			);
 		}
 		echo $text_popup;
-		if ($settings['selected_style_show'] == 'number') {
+		if ($settings['filter_selected_number'] == 'yes') {
 			echo self::selected_style_number();
 		}
 		echo '</button>';
-
-		if ($settings['selected_style_show'] == 'list') {
-			echo '<div class="selected-list">';
-			echo self::selected_style_list();
-			echo '</div>';
-		}
-
-		if ((!empty($_GET['term_id']) || !empty($_GET['tag_id']) || !empty($_GET['sort_by']) || !empty($_GET['c_level']) || !empty($_GET['c_authors'])) && $settings['selected_style_show'] == 'list') {
-			echo $filter->html_btn_reset();
-		}
 	}
 
 	protected function selected_style_number()
