@@ -273,14 +273,9 @@ class FilterCourseTemplate {
 		$content = '';
 
 		try {
-			$params_url    = $data['params_url'] ?? [];
-			$data_selected = $params_url['term_id'] ?? '';
-			$data_selected = explode( ',', $data_selected );
-			// Check has in cate page.
-			if ( isset( $params_url['page_term_id_current'] ) &&
-				empty( $params_url['term_id'] ) ) {
-				$data_selected[] = $params_url['page_term_id_current'];
-			}
+			$params_url       = $data['params_url'] ?? [];
+			$data_selected    = $params_url['term_id'] ?? '';
+			$data_selected    = explode( ',', $data_selected );
 			$arg_query_terms  = [ 'hide_empty' => true ];
 			$category_current = null;
 

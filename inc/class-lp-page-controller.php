@@ -673,10 +673,11 @@ class LP_Page_Controller {
 						$term_ids = explode( ',', $term_ids_str );
 
 						$tax_query[] = array(
-							'taxonomy' => 'course_category',
-							'field'    => 'term_id',
-							'terms'    => $term_ids,
-							'operator' => 'IN',
+							'taxonomy'         => 'course_category',
+							'field'            => 'term_id',
+							'terms'            => $term_ids,
+							'operator'         => 'IN',
+							'include_children' => false,
 						);
 					}
 
