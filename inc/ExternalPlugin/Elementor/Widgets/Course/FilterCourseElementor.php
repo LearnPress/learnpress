@@ -98,11 +98,6 @@ class FilterCourseElementor extends LPElementorWidgetBase
 					}
 				}
 
-				if ($field['heading_custom'] != '') {
-					$extraClassItem .= ' heading-custom';
-					$custom_heading = '<div class="lp-form-course-filter__title"> ' . $field['heading_custom'] . ' </div>';
-				}
-
 				if ($extraClassItem != '' || $icon_toggle != '' || $custom_heading != '') {
 					$wrapper 		= '<div class="' . esc_attr($extraClassItem) . '"> ' . $icon_toggle . '' . $custom_heading . '';
 					$wrapper_end 	= '</div>';

@@ -93,15 +93,6 @@ $content_fields = array_merge(
                             'return_value' => 'yes',
                         ],
                         [
-                            'name'       => 'heading_custom',
-                            'label'      =>  esc_html__( 'Heading Text', 'learnpress' ), 
-                            'type'       =>  Controls_Manager::TEXT,
-                            'label_block' => false,
-                            'condition' => [
-                                'enable_heading' => 'yes'
-                            ]
-                        ], 
-                        [
                             'name'       => 'toggle_content',
                             'label'      => esc_html__( 'Toggle Content', 'learnpress' ),
                             'type'       => Controls_Manager::SWITCHER,
