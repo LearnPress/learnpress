@@ -1,4 +1,5 @@
 import API from '../api';
+import { lpFetchAPI } from '../utils';
 
 const classCourseFilter = 'lp-form-course-filter';
 
@@ -108,6 +109,68 @@ window.lpCourseFilter = {
 				}
 			} );
 	},
+	loadWidgetFilterREST: ( widgetForm ) => {
+		const parent = widgetForm.closest( '.learnpress-widget-wrapper' );
+		if ( ! parent ) {
+			return;
+		}
+
+		const widgetData = parent.dataset.widget ? JSON.parse( parent.dataset.widget ) : '';
+		const url = API.frontend.apiWidgets;
+		const formData = new FormData( widgetForm );
+		const filterCourses = { paged: 1 };
+		const elLoadingChange = parent.querySelector( '.lp-widget-loading-change' );
+
+		elLoadingChange.style.display = 'block';
+
+		for ( const pair of formData.entries() ) {
+			const key = pair[ 0 ];
+			const value = formData.getAll( key );
+			if ( ! filterCourses.hasOwnProperty( key ) ) {
+				let value_convert = value;
+				if ( 'object' === typeof value ) {
+					value_convert = value.join( ',' );
+				}
+				filterCourses[ key ] = value_convert;
+			}
+		}
+
+		const paramsFetch = {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify( { ...widgetData, ...{ params_url: filterCourses } } ),
+		};
+
+		if ( 0 !== parseInt( lpData.user_id ) ) {
+			paramsFetch.headers[ 'X-WP-Nonce' ] = lpData.nonce;
+		}
+
+		const callBack = {
+			before: () => {
+
+			},
+			success: ( res ) => {
+				const { data, status, message } = res;
+
+				if ( data && status === 'success' ) {
+					widgetForm.innerHTML = data;
+				} else if ( message ) {
+					parent.insertAdjacentHTML( 'afterbegin', `<div class="lp-ajax-message error" style="display:block">${ message }</div>` );
+				}
+			},
+			error: ( error ) => {
+
+			},
+			completed: () => {
+				elLoadingChange.style.display = 'none';
+			},
+		};
+
+		// Call API load widget
+		lpFetchAPI( url, paramsFetch, callBack );
+	},
 	submit: ( form ) => {
 		const formData = new FormData( form ); // Create a FormData object from the form
 		const elListCourse = document.querySelector( '.learn-press-courses' );
@@ -187,10 +250,22 @@ window.lpCourseFilter = {
 	},
 	triggerInputChoice: ( target ) => {
 		if ( target.tagName === 'INPUT' ) {
+			const parent = target.closest( '.lp-course-filter__field' );
+			if ( ! parent ) {
+				return;
+			}
+
+			// Filter courses
+			const form = parent.closest( `.${ classCourseFilter }` );
+			const btnSubmit = form.querySelector( '.course-filter-submit' );
+			//btnSubmit.click();
+
+			// Load AJAX widget by params
+			window.lpCourseFilter.loadWidgetFilterREST( form );
 			return;
 		}
 
-		// Choice field
+		// Click el parent of input to tick/untick field
 		let elChoice;
 
 		if ( target.classList.contains( 'lp-course-filter__field' ) ) {

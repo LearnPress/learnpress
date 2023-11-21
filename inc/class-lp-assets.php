@@ -303,7 +303,9 @@ class LP_Assets extends LP_Abstract_Assets {
 					),
 					array(),
 					1,
-					1
+					1,
+					'',
+					[ 'strategy' => 'defer' ]
 				),
 				'lp-become-a-teacher'  => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/become-teacher' . self::$_min_assets . '.js' ),

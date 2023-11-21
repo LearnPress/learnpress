@@ -193,7 +193,9 @@ class FilterCourseTemplate {
 			// Get number courses free
 			$filter_courses_free = new LP_Course_Filter();
 			$this->handle_filter_params_before_query( $filter_courses_free, $params_url );
-			$count_courses_free = Courses::count_course_free( $filter_courses_free );
+			// Not count include sort by price.
+			$filter_courses_free->sort_by = [];
+			$count_courses_free           = Courses::count_course_free( $filter_courses_free );
 
 			// Get number courses has price
 			$filter_courses_price = new LP_Course_Filter();
@@ -459,7 +461,7 @@ class FilterCourseTemplate {
 				$filter->query_count = true;
 				$filter->only_fields = [ 'DISTINCT(ID)' ];
 				$this->handle_filter_params_before_query( $filter, $params_url );
-				$filter->post_author = $instructor->ID;
+				$filter->post_authors = [ $instructor->ID ];
 				LP_Course::get_courses( $filter, $total_course_of_instructor );
 
 				$value    = $instructor->ID;

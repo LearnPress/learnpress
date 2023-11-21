@@ -9,14 +9,14 @@ function widgetRestAPI() {
 	}
 
 	const getResponse = ( ele ) => {
-		const widget = ele.dataset.widget ? JSON.parse( ele.dataset.widget ) : '';
+		const widgetData = ele.dataset.widget ? JSON.parse( ele.dataset.widget ) : '';
 		const url = API.frontend.apiWidgets;
 		const paramsFetch = {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
 			},
-			body: JSON.stringify( { ...widget, ...{ params_url: lpData.urlParams } } ),
+			body: JSON.stringify( { ...widgetData, ...{ params_url: lpData.urlParams } } ),
 		};
 
 		if ( 0 !== parseInt( lpData.user_id ) ) {
@@ -40,7 +40,7 @@ function widgetRestAPI() {
 
 			},
 			completed: () => {
-				delete ele.dataset.widget;
+				//delete ele.dataset.widget;
 				ele.querySelector( '.lp-skeleton-animation' ).remove();
 			},
 		};
