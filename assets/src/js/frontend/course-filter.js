@@ -240,6 +240,9 @@ window.lpCourseFilter = {
 		if ( lpData.is_course_archive ) {
 			btnSubmit.click();
 		}
+
+		// Load AJAX widget by params
+		window.lpCourseFilter.loadWidgetFilterREST( form );
 	},
 	showHideSearchResult: ( target ) => {
 		const elResult = document.querySelector( '.lp-course-filter-search-result' );
