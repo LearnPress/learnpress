@@ -168,7 +168,7 @@ class FilterCourseElementor extends LPElementorWidgetBase
 			$author =  count(explode(',', $_GET['c_authors']));
 		}
 		$total = $cat + $tag + $price + $level + $author;
-		
+
 		if (!empty($total)) {
 			echo '<span class="selected-filter">' . $total . '</span>';
 		}

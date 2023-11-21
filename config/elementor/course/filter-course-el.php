@@ -149,29 +149,6 @@ $content_fields = array_merge(
                                 'toggle_content' => 'yes'
                             ]
                         ],
-                        [
-                            'name'       => 'show_icon_heading',
-                            'label'      => esc_html__( 'Show Icon', 'learnpress' ),
-                            'type'       => Controls_Manager::SWITCHER,
-                            'default'   =>  'no',
-                            'label_on'     => esc_html__( 'Show', 'learnpress' ),
-                            'label_off'    => esc_html__( 'Hide', 'learnpress' ),
-                            'return_value' => 'yes',
-                            'condition' => [
-                                'enable_heading' => 'yes'
-                            ]
-                        ],
-                        [
-                            'name'        => 'icon_heading',
-                            'label'       => esc_html__( 'Icon', 'thim-elementor-kit' ),
-                            'type'        => Controls_Manager::ICONS,
-                            'skin'        => 'inline',
-                            'label_block' => false,
-                            'condition' => [
-                                'enable_heading'    => 'yes',
-                                'show_icon_heading' => 'yes'
-                            ]
-                        ],
                         [ 'method' => 'end_popover' ],
                     ],
                     'prevent_empty' => false,
