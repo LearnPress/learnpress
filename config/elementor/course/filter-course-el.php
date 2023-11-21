@@ -78,6 +78,9 @@ $content_fields = array_merge(
                             'label_off'  =>  esc_html__( 'Default', 'learnpress' ),
 				            'label_on'   =>  esc_html__( 'Custom', 'learnpress' ),
                             'return_value' => 'yes',
+                            'condition' => [
+                                'item_fields!' => [ 'btn_submit', 'btn_reset' ]
+                            ]
                         ],
                         [ 'method' => 'start_popover', ],
                         [
