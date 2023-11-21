@@ -438,12 +438,37 @@ $style_fields   = array_merge(
 		'filter_content',
 		esc_html__( 'Label', 'learnpress' ),
 		Controls_Manager::TAB_STYLE,
-		LPElementorControls::add_controls_style_text(
-			'filter_content',
-			'.lp-form-course-filter .lp-form-course-filter__item .lp-form-course-filter__content label',
-            [],
-            [ 'text_display','text_shadow', 'text_background', 'text_background_hover' ]
-		)
+        array_merge(
+            LPElementorControls::add_controls_style_text(
+                'filter_content',
+                '.lp-form-course-filter .lp-form-course-filter__item .lp-form-course-filter__content label',
+                [],
+                [ 'text_display', 'text_shadow', 'text_background', 'text_background_hover' ]
+            ),
+            [
+                'horizontal_align'  => LPElementorControls::add_responsive_control_type(
+                    'horizontal_align',
+                    esc_html__( 'Horizontal Align', 'learnpress' ),
+                    '',
+                    Controls_Manager::CHOOSE,
+                    [
+                        'options'   => [
+                            'row-reverse'   => [
+                                'title' => esc_html__( 'Left', 'learnpress' ),
+                                'icon'  => 'eicon-h-align-left',
+                            ],
+                            'row'  => [
+                                'title' => esc_html__( 'Right', 'learnpress' ),
+                                'icon'  => 'eicon-h-align-right',
+                            ],
+                        ],
+                        'selectors' => [
+                            '{{WRAPPER}} .lp-form-course-filter__item .lp-form-course-filter__content .lp-course-filter__field' => 'flex-direction: {{VALUE}};',
+                        ],
+                    ]
+                ),
+            ]
+        )
 	),
     LPElementorControls::add_fields_in_section(
 		'filter_count',

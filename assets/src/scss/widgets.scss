@@ -493,9 +493,14 @@
 	}
 	.lp-form-course-filter {
 		.hide-count {
-			> .lp-form-course-filter__item .count{
-				display: none;
-			}
+			> .lp-form-course-filter__item {
+				.lp-course-filter__field {
+					padding: 0;
+				}
+				.count {
+					display: none;
+				}
+			} 
 		}
 		.toggle-content {
 			position: relative;
