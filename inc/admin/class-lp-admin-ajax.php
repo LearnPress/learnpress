@@ -385,16 +385,27 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 * @note tungnx checked has use
 		 */
 		public static function modal_search_users() {
-			$term        = LP_Request::get_param( 'term' );
-			$type        = LP_Request::get_param( 'type' );
-			$context     = LP_Request::get_param( 'context' );
-			$context_id  = LP_Request::get_param( 'context_id' );
-			$paged       = LP_Request::get_param( 'paged' );
-			$multiple    = LP_Request::get_param( 'multiple' ) == 'yes';
-			$text_format = LP_Request::get_param( 'text_format' );
-			$exclude     = LP_Request::get_param( 'exclude' );
+			$term         = LP_Request::get_param( 'term' );
+			$type         = LP_Request::get_param( 'type' );
+			$context      = LP_Request::get_param( 'context' );
+			$context_id   = LP_Request::get_param( 'context_id' );
+			$paged        = LP_Request::get_param( 'paged' );
+			$multiple     = LP_Request::get_param( 'multiple' ) == 'yes';
+			$text_format  = LP_Request::get_param( 'text_format' );
+			$exclude      = LP_Request::get_param( 'exclude' );
+			$roles_accept = apply_filters(
+				'lp/backend/roles/can-search-users',
+				[ ADMIN_ROLE ]
+			);
 
-			if ( ! current_user_can( ADMIN_ROLE ) ) { // Fix security.
+			$flag = false;
+			foreach ( $roles_accept as $role ) {
+				if ( current_user_can( $role ) ) {
+					$flag = true;
+				}
+			}
+
+			if ( ! $flag ) {
 				return;
 			}
 
@@ -687,9 +698,9 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			?>
 
 			<a href="<?php echo get_edit_post_link( $page_id ); ?>"
-			   target="_blank"><?php _e( 'Edit Page', 'learnpress' ); ?></a>
+				target="_blank"><?php _e( 'Edit Page', 'learnpress' ); ?></a>
 			<a href="<?php echo get_permalink( $page_id ); ?>"
-			   target="_blank"><?php _e( 'View Page', 'learnpress' ); ?></a>
+				target="_blank"><?php _e( 'View Page', 'learnpress' ); ?></a>
 
 			<?php
 			die();

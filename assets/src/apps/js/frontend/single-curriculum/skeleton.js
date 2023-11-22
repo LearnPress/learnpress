@@ -1,6 +1,6 @@
 // Rest API load content in Tab Curriculum - Nhamdv.
 import { addQueryArgs } from '@wordpress/url';
-import apiFetch from '@wordpress/api-fetch';
+//import apiFetch from '@wordpress/api-fetch';
 import scrollToItemCurrent from './scrolltoitem';
 import { searchCourseContent } from './components/search';
 
@@ -26,14 +26,23 @@ export default function courseCurriculumSkeleton( courseID = '' ) {
 
 		try {
 			const page = 1;
-			const response = await apiFetch( {
-				path: addQueryArgs( 'lp/v1/lazy-load/course-curriculum', {
-					courseId: courseID || lpGlobalSettings.post_id || '',
-					page,
-					sectionID: sectionID || '',
-				} ),
-				method: 'GET',
+			let url = lpData.lp_rest_url + 'lp/v1/lazy-load/course-curriculum/';
+			url = addQueryArgs( url, {
+				courseId: courseID || lpGlobalSettings.post_id || '',
+				page,
+				sectionID: sectionID || '',
 			} );
+			let paramsFetch = {};
+			if ( 0 !== parseInt( lpData.user_id ) ) {
+				paramsFetch = {
+					headers: {
+						'X-WP-Nonce': lpData.nonce,
+					},
+				};
+			}
+
+			let response = await fetch( url, { method: 'GET', ...paramsFetch } );
+			response = await response.json();
 
 			const { data, status, message } = response;
 			const section_ids = data.section_ids;
@@ -157,13 +166,22 @@ export default function courseCurriculumSkeleton( courseID = '' ) {
 	};
 
 	const getResponsiveItem = async ( returnData, paged, sectionID, itemID ) => {
-		const response = await apiFetch( {
-			path: addQueryArgs( 'lp/v1/lazy-load/course-curriculum-items', {
-				sectionId: sectionID || '',
-				page: paged,
-			} ),
-			method: 'GET',
+		let url = lpData.lp_rest_url + 'lp/v1/lazy-load/course-curriculum-items/';
+		url = addQueryArgs( url, {
+			sectionId: sectionID || '',
+			page: paged,
 		} );
+		let paramsFetch = {};
+		if ( 0 !== parseInt( lpData.user_id ) ) {
+			paramsFetch = {
+				headers: {
+					'X-WP-Nonce': lpData.nonce,
+				},
+			};
+		}
+
+		let response = await fetch( url, { method: 'GET', ...paramsFetch } );
+		response = await response.json();
 
 		const { data, status, pages, message } = response;
 
@@ -199,15 +217,24 @@ export default function courseCurriculumSkeleton( courseID = '' ) {
 	};
 
 	const getResponsive = async ( returnData, page, sectionID ) => {
-		const response = await apiFetch( {
-			path: addQueryArgs( 'lp/v1/lazy-load/course-curriculum', {
-				courseId: courseID || lpGlobalSettings.post_id || '',
-				page,
-				sectionID: sectionID || '',
-				loadMore: true,
-			} ),
-			method: 'GET',
+		let url = lpData.lp_rest_url + 'lp/v1/lazy-load/course-curriculum/';
+		url = addQueryArgs( url, {
+			courseId: courseID || lpGlobalSettings.post_id || '',
+			page,
+			sectionID: sectionID || '',
+			loadMore: true,
 		} );
+		let paramsFetch = {};
+		if ( 0 !== parseInt( lpData.user_id ) ) {
+			paramsFetch = {
+				headers: {
+					'X-WP-Nonce': lpData.nonce,
+				},
+			};
+		}
+
+		let response = await fetch( url, { method: 'GET', ...paramsFetch } );
+		response = await response.json();
 
 		const { data, status, message } = response;
 

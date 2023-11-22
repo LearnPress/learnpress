@@ -111,6 +111,10 @@ abstract class LP_Abstract_Assets {
 			// End
 
 			wp_register_script( $handle, $script->_url, $script->_deps, self::$_version_assets, $script->_in_footer );
+			// Add strategy for script defer/async. @since 4.2.5.5
+			foreach ( $script->_strategy as $key => $value ) {
+				wp_script_add_data( $handle, $key, $value );
+			}
 
 			if ( ! $script->_only_register ) {
 				$can_load_js = $this->check_can_load_asset( $handle, $page_current, $script->_screens, $script->_exclude_screens );
@@ -354,7 +358,6 @@ abstract class LP_Abstract_Assets {
 				$wp_scripts->print_extra_script( $handle );
 			}
 		}
-
 	}
 
 	public function localize_printed_admin_scripts() {

@@ -667,16 +667,20 @@ class LP_Page_Controller {
 					// End Meta query
 
 					// Search on Category
+					$args_cat     = lp_archive_skeleton_get_args();
 					$tax_query    = [];
-					$term_ids_str = LP_Helper::sanitize_params_submitted( urldecode( $_REQUEST['term_id'] ?? '' ) );
+					$term_ids_str = LP_Helper::sanitize_params_submitted(
+						urldecode( $_REQUEST['term_id'] ?? $args_cat['page_term_id_current'] ?? '' )
+					);
 					if ( ! empty( $term_ids_str ) ) {
 						$term_ids = explode( ',', $term_ids_str );
 
 						$tax_query[] = array(
-							'taxonomy' => 'course_category',
-							'field'    => 'term_id',
-							'terms'    => $term_ids,
-							'operator' => 'IN',
+							'taxonomy'         => 'course_category',
+							'field'            => 'term_id',
+							'terms'            => $term_ids,
+							'operator'         => 'IN',
+							'include_children' => false,
 						);
 					}
 

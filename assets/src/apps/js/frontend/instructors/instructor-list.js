@@ -1,13 +1,16 @@
 import { lpAddQueryArgs } from '../../utils/utils';
 let query = {};
-if ( lpSkeletonParam ) {
-	lpSkeletonParam = JSON.parse( lpSkeletonParam );
+
+let lpUrlParam = [];
+if ( 'undefined' !== typeof lpSkeletonParam ) {
+	lpUrlParam = lpSkeletonParam;
 }
+
 export default function InstructorList() {
 	// Call API get instructors without wait element ready
 	let htmlListItemInstructor = '';
 	let htmlPagination = '';
-	getInstructors( { ...lpSkeletonParam, paged: 1 }, true, function( res ) {
+	getInstructors( { ...lpUrlParam, paged: 1 }, true, function( res ) {
 		htmlListItemInstructor = res.data.content;
 		if ( res.data.pagination !== undefined ) {
 			htmlPagination = res.data.pagination;
@@ -82,6 +85,9 @@ const pagination = () => {
 	document.addEventListener( 'click', function( event ) {
 		const target = event.target;
 		const elListInstructors = target.closest( '.lp-list-instructors' );
+		if ( ! elListInstructors ) {
+			return;
+		}
 		const elUlListInstructors = elListInstructors.querySelector( '.ul-list-instructors' );
 		const pagination = target.closest( '.learn-press-pagination' );
 
@@ -111,7 +117,7 @@ const pagination = () => {
 			paged = pageLinkNode.innerHTML;
 		}
 
-		query = { ...query, paged, ...lpSkeletonParam };
+		query = { ...query, paged, ...lpUrlParam };
 		getInstructors( query, false, function( res ) {
 			elUlListInstructors.innerHTML = res.data.content;
 			pagination.remove();

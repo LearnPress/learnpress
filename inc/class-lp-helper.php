@@ -478,7 +478,7 @@ class LP_Helper {
 		} elseif ( is_array( $value ) ) {
 			foreach ( $value as $k => $v ) {
 				unset( $value[ $k ] );
-				$value[ sanitize_key( $k ) ] = self::sanitize_params_submitted( $v, $type_content );
+				$value[ sanitize_text_field( $k ) ] = self::sanitize_params_submitted( $v, $type_content );
 			}
 		}
 
@@ -652,5 +652,30 @@ class LP_Helper {
 		}
 
 		return str_replace( $find, $replace, $post_link );
+	}
+
+	/**
+	 * Print variable script inline script tag.
+	 *
+	 * @param $name_variable_script
+	 * @param array $data
+	 * @param array $tag_args as ['type' => 'text/javascript', 'id' => '']
+	 * @since 4.2.5.5
+	 * @version 1.0.0
+	 * @return void
+	 */
+	public static function print_inline_script_tag( $name_variable_script, array $data, array $tag_args = [] ) {
+		foreach ( $data as $key => $value ) {
+			if ( ! is_scalar( $value ) ) {
+				continue;
+			}
+
+			$data[ $key ] = html_entity_decode( (string) $value, ENT_QUOTES, 'UTF-8' );
+		}
+
+		$data_json = wp_json_encode( $data );
+		//$name_variable_script = LP_Helper::sanitize_params_submitted( $name_variable_script, 'key' );
+		$script = "let {$name_variable_script} = {$data_json};";
+		wp_print_inline_script_tag( $script, $tag_args );
 	}
 }

@@ -163,4 +163,3 @@ class LP_Order_DB extends LP_Database {
 		);
 	}
 }
-

@@ -62,7 +62,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			// Set link item course when edit on Backend | tungnx
 			add_filter( 'get_sample_permalink_html', array( $this, 'lp_course_set_link_item_backend' ), 10, 5 );
 
-			add_action(
+			/*add_action(
 				'admin_init',
 				function () {
 					// From LP v4.2.3 temporary run create pages to add page instructors, single instructor for client upgrade LP.
@@ -71,7 +71,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 						LP_Install::create_pages();
 					}
 				}
-			);
+			);*/
 		}
 
 		/**

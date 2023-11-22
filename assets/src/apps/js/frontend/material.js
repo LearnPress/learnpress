@@ -15,14 +15,13 @@ export default function lpMaterialsLoad( is_curriculum = false ) {
 		getResponse( elementSkeleton );
 	};
 	const getResponse = async ( ele, page = 1 ) => {
-		const elCurriculum = document.querySelector( '.learnpress-course-curriculum' );
-		if ( ! elCurriculum ) {
-			return;
-		}
-		const itemId = elCurriculum.dataset.id;
-
 		let itemID = 0;
 		if ( is_curriculum ) {
+			const elCurriculum = document.querySelector( '.learnpress-course-curriculum' );
+			if ( ! elCurriculum ) {
+				return;
+			}
+			const itemId = elCurriculum.dataset.id;
 			itemID = itemId || 0;
 		} else {
 			itemID = lpGlobalSettings.post_id;
@@ -71,9 +70,8 @@ export default function lpMaterialsLoad( is_curriculum = false ) {
 	document.addEventListener( 'click', function( e ) {
 		const target = e.target;
 		if ( target.classList.contains( 'lp-loadmore-material' ) ) {
-			const elementSkeleton = document.querySelector( '.lp-material-skeleton' ),
-				  loadMoreBtn = elementSkeleton.querySelector( '.lp-loadmore-material' );
-			const page = ~~target.getAttribute( 'page' );
+			const elementSkeleton = document.querySelector( '.lp-material-skeleton' );
+			const page = parseInt( target.getAttribute( 'page' ) );
 			target.classList.add( 'loading' );
 			getResponse( elementSkeleton, page );
 			// target.classList.remove( 'loading' );

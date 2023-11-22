@@ -6,6 +6,7 @@
 
 use LearnPress\ExternalPlugin\Elementor\Widgets\Course\ListCoursesByPageElementor;
 use LearnPress\Helpers\Template;
+use LearnPress\Models\Courses;
 use LearnPress\TemplateHooks\Course\ListCoursesTemplate;
 
 class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
@@ -125,7 +126,17 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 
 		try {
 			$filter = new LP_Course_Filter();
-			LP_course::handle_params_for_query_courses( $filter, $request->get_params() );
+			Courses::handle_params_for_query_courses( $filter, $request->get_params() );
+
+			// Check is in category page.
+			if ( ! empty( $request->get_param( 'page_term_id_current' ) ) &&
+				empty( $request->get_param( 'term_id' ) ) ) {
+				$filter->term_ids[] = $request->get_param( 'page_term_id_current' );
+			} // Check is in tag page.
+			elseif ( ! empty( $request->get_param( 'page_tag_id_current' ) ) &&
+					empty( $request->get_param( 'tag_id' ) ) ) {
+				$filter->tag_ids[] = $request->get_param( 'page_tag_id_current' );
+			}
 
 			$total_rows = 0;
 			$filter     = apply_filters( 'lp/api/courses/filter', $filter, $request );
@@ -421,7 +432,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 							<li>
 								<label>
 									<input name="_lp_allow_repurchase_type" value="reset" type="radio"
-										checked="checked"/>
+											checked="checked"/>
 									<?php esc_html_e( 'Reset Course progress', 'learnpress' ); ?>
 								</label>
 							</li>
@@ -532,10 +543,10 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 
 			// Set status, start_time, end_time of course to enrol.
 			$user_course_data->set_status( LP_COURSE_ENROLLED )
-							 ->set_start_time( time() )
-							 ->set_end_time()
-							 ->set_graduation( LP_COURSE_GRADUATION_IN_PROGRESS )
-							 ->update();
+							->set_start_time( time() )
+							->set_end_time()
+							->set_graduation( LP_COURSE_GRADUATION_IN_PROGRESS )
+							->update();
 
 			// Remove items' course user learned.
 			$filter_remove            = new LP_User_Items_Filter();

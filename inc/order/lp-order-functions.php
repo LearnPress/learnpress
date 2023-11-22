@@ -826,15 +826,16 @@ function learn_press_get_total_price_order_complete() {
 		"SELECT SUM(meta_value) as order_total From `{$wpdb->prefix}postmeta` as mt
 		INNER JOIN `{$wpdb->prefix}posts` as p ON p.id = mt.post_id
 		WHERE p.post_type = %s AND mt.meta_key = %s
+		AND p.post_status = %s
 		",
 		LP_ORDER_CPT,
-		'_order_total'
+		'_order_total',
+		'lp-completed'
 	);
 
 	$total = $wpdb->get_results( $query )[0]->order_total;
 
 	return learn_press_format_price( $total, true );
-
 }
 /**
  * Auto enroll course after user checkout
@@ -875,4 +876,3 @@ function learn_press_get_total_price_order_complete() {
 
 	return $result;
 }*/
-

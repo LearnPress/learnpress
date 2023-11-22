@@ -2,6 +2,7 @@
 @import "frontend/skeleton-animation";
 @import "loading-circle-animation";
 @import "frontend/course-filter";
+@import "ajaxload";
 
 .learnpress.widget {
 	margin-bottom: 30px;
@@ -18,6 +19,11 @@
 
 	.learnpress-widget-wrapper {
 		margin-top: 16px;
+		position: relative;
+
+		.lp-widget-loading-change {
+			@include loading-change;
+		}
 	}
 
 	h3 {
