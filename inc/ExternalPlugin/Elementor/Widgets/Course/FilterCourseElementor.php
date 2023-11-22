@@ -56,8 +56,8 @@ class FilterCourseElementor extends LPElementorWidgetBase
 
 			if ($settings['enable_filter_button'] == 'yes') {
 				$extraClass = 'lp-filter-popup';
-				echo self::layout_popup($settings, $filter);
 			}
+			echo self::button_popup($settings, $extraClass);
 
 			if ($settings['filter_selected_list'] == 'yes') {
 				echo '<div class="selected-list">';
@@ -72,7 +72,7 @@ class FilterCourseElementor extends LPElementorWidgetBase
 			$html_wrapper = apply_filters(
 				'learn-press/filter-courses/sections/wrapper',
 				[
-					'<form class="lp-form-course-filter ' . esc_attr($extraClass) . '">' => '</form>',
+					'<form class="lp-form-course-filter ' . esc_attr($extraClass) . '">' => '</form><div class="filter-bg"></div>',
 				],
 				$settings
 			);
@@ -121,11 +121,11 @@ class FilterCourseElementor extends LPElementorWidgetBase
 		}
 	}
 
-	protected function layout_popup($settings)
+	protected function button_popup($settings, $extraClass)
 	{
 		$text_popup = $settings['text_filter_button'] ?? esc_html__('Filter', 'learnpress');
 
-		echo '<button class="lp-button-popup">';
+		echo '<button class="lp-button-popup ' . esc_attr($extraClass) . '">';
 		if (!empty($settings['icon_filter_button'])) {
 			Icons_Manager::render_icon(
 				$settings['icon_filter_button'],

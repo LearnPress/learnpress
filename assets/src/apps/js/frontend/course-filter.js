@@ -46,6 +46,14 @@ document.addEventListener( 'click', function( e ) {
 		}
 	}
 
+	if ( target.classList.contains( 'filter-bg' ) ) {
+		const elLpCourseFilter = target.closest( '.elementor-widget-learnpress_filter_course' );
+		if ( ! elLpCourseFilter ) {
+			return;
+		}
+		elLpCourseFilter.classList.remove("filter-popup-show");
+	}
+
 	if ( target.classList.contains( 'icon-remove-selected' ) ) {
 		e.preventDefault();
 		window.lpCourseFilter.resetSelected( target );
