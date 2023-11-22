@@ -180,7 +180,8 @@ window.lpCourseFilter = {
 	submit: ( form ) => {
 		const formData = new FormData( form ); // Create a FormData object from the form
 		const elListCourse = document.querySelector( '.learn-press-courses' );
-		const skeleton = document.querySelector( '.lp-archive-course-skeleton' );
+
+		//const skeleton = elListCourse.querySelector( '.lp-archive-course-skeleton' );
 		const filterCourses = { paged: 1 };
 
 		if ( 'undefined' !== typeof window.lpCourseList ) {
@@ -206,7 +207,7 @@ window.lpCourseFilter = {
 		if ( 'undefined' !== typeof lpSettingCourses &&
 			lpData.is_course_archive &&
 			lpSettingCourses.lpArchiveLoadAjax &&
-			elListCourse && skeleton &&
+			elListCourse &&
 			'undefined' !== typeof window.lpCourseList ) {
 			window.lpCourseList.triggerFetchAPI( filterCourses );
 		} else {
@@ -267,7 +268,13 @@ window.lpCourseFilter = {
 			// Filter courses
 			const form = parent.closest( `.${ classCourseFilter }` );
 			const btnSubmit = form.querySelector( '.course-filter-submit' );
-			//btnSubmit.click();
+			let enableLoadAJAXCourses = false;
+			enableLoadAJAXCourses = parseInt( lpSettingCourses.lpArchiveLoadAjax );
+			const elListCourse = document.querySelector( '.learn-press-courses' );
+
+			if ( 'undefined' !== typeof elListCourse && enableLoadAJAXCourses ) {
+				btnSubmit.click();
+			}
 
 			// Load AJAX widget by params
 			window.lpCourseFilter.loadWidgetFilterREST( form );
