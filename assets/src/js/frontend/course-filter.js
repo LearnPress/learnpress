@@ -271,8 +271,7 @@ window.lpCourseFilter = {
 			let enableLoadAJAXCourses = false;
 			enableLoadAJAXCourses = parseInt( lpSettingCourses.lpArchiveLoadAjax );
 			const elListCourse = document.querySelector( '.learn-press-courses' );
-
-			if ( 'undefined' !== typeof elListCourse && enableLoadAJAXCourses ) {
+			if ( elListCourse && enableLoadAJAXCourses ) {
 				btnSubmit.click();
 			}
 
