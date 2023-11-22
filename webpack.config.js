@@ -81,6 +81,7 @@ module.exports = {
 
 		// Elementor
 		'./assets/js/dist/elementor/courses': './assets/src/js/elementor/courses.js',
+		'./assets/js/dist/elementor/course-filter': './assets/src/js/elementor/course-filter.js',
 	},
 	output: {
 		path: path.resolve( __dirname ),

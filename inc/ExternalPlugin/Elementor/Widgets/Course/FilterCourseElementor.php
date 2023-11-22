@@ -32,9 +32,19 @@ class FilterCourseElementor extends LPElementorWidgetBase
 			array(),
 			uniqid()
 		);
-		$this->add_style_depends( 'lp-course-filter-el' );
 
+		wp_register_script(
+			'lp-course-filter-el',
+			LP_PLUGIN_URL . 'assets/js/dist/elementor/course-filter.js',
+			array(),
+			uniqid(),
+			true
+		);
+
+		$this->add_style_depends( 'lp-course-filter-el' );
 		wp_enqueue_script('lp-course-filter');
+		wp_enqueue_script('lp-widgets');
+		$this->add_script_depends( 'lp-course-filter-el' );
 		parent::__construct($data, $args);
 	}
 
