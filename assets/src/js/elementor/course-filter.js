@@ -38,11 +38,11 @@ document.addEventListener( 'click', function( e ) {
 
 	if ( target.classList.contains( 'icon-remove-selected' ) ) {
 		e.preventDefault();
-		window.lpCourseFilter.resetSelected( target );
+		window.lpCourseFilterEl.resetSelected( target );
 	}
 });
 
-window.lpCourseFilter = {
+window.lpCourseFilterEl = {
     resetSelected: ( target ) => {
 		const form = document.querySelector( `.${ classCourseFilter }` );
 		const btnSubmit = form.querySelector( '.course-filter-submit' );
