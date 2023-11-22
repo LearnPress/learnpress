@@ -159,7 +159,7 @@ $content_fields = array_merge(
             LPElementorControls::add_control_type(
 				'show_in_rest',
                 esc_html__( 'Load widget via REST', 'learnpress' ),
-				'yes',
+				'no',
 				Controls_Manager::SWITCHER,
 				[
 					'label_on'     => esc_html__( 'Yes', 'learnpress' ),
@@ -171,12 +171,12 @@ $content_fields = array_merge(
             LPElementorControls::add_control_type(
 				'search_suggestion',
                 esc_html__( 'Enable Keyword Search Suggestion', 'learnpress' ),
-				'yes',
+				'0',
 				Controls_Manager::SWITCHER,
 				[
-					'label_on'     => esc_html__( 'Yes', 'learnpress' ),
-					'label_off'    => esc_html__( 'No', 'learnpress' ),
-					'return_value' => 'yes',
+					'1'     => esc_html__( 'Yes', 'learnpress' ),
+					'0'    => esc_html__( 'No', 'learnpress' ),
+					'return_value' => '1',
 				]
             ),
             LPElementorControls::add_control_type(
