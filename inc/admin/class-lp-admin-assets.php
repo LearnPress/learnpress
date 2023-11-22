@@ -7,7 +7,6 @@ use LearnPress\Helpers\Template;
  *
  * Manage admin assets
  */
-
 class LP_Admin_Assets extends LP_Abstract_Assets {
 	protected static $_instance;
 
@@ -16,7 +15,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 	 */
 	protected function __construct() {
 		add_action( 'admin_footer', array( $this, 'add_elements_global' ) );
-		add_action( 'admin_head', [ $this, 'load_scripts_styles_on_head' ], -1 );
+		add_action( 'admin_head', [ $this, 'load_scripts_styles_on_head' ], - 1 );
 		parent::__construct();
 	}
 
@@ -24,9 +23,9 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 	 * Add javascript to head
 	 * Add style to head
 	 *
-	 * @since 4.2.5.6
-	 * @version 1.0.0
 	 * @return void
+	 * @version 1.0.0
+	 * @since 4.2.5.6
 	 */
 	public function load_scripts_styles_on_head() {
 		LP_Helper::print_inline_script_tag( 'lpDataAdmin', $this->localize_data_global(), [ 'id' => 'lpDataAdmin' ] );
@@ -35,8 +34,8 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 	/**
 	 * Localize data for all page backend.
 	 *
-	 * @since 4.2.5.6
 	 * @return array
+	 * @since 4.2.5.6
 	 * @version 1.0.0
 	 */
 	public function localize_data_global(): array {
@@ -108,7 +107,13 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 			0,
 			1
 		);
-		$lp_admin_js->exclude_screen( array( 'plugin-install', 'learnpress_page_learn-press-statistics', 'learnpress_page_learn-press-addons' ) );
+		$lp_admin_js->exclude_screen(
+			[
+				'plugin-install',
+				'learnpress_page_learn-press-statistics',
+				'learnpress_page_learn-press-addons',
+			]
+		);
 
 		$scripts = apply_filters(
 			'learn-press/admin-default-scripts',
@@ -155,7 +160,13 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 						'wp-api-fetch',
 						'jquery-ui-timepicker-addon',
 					),
-					array( LP_LESSON_CPT, LP_QUIZ_CPT, LP_COURSE_CPT, LP_ORDER_CPT, 'learnpress_page_learn-press-settings' ),
+					array(
+						LP_LESSON_CPT,
+						LP_QUIZ_CPT,
+						LP_COURSE_CPT,
+						LP_ORDER_CPT,
+						'learnpress_page_learn-press-settings',
+					),
 					0,
 					1
 				),
@@ -330,12 +341,12 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				),*/
 				'lp-admin-tools'                    => new LP_Asset_Key(
 					$this->url( 'js/dist/admin/admin-tools' . self::$_min_assets . '.js' ),
-					array(
-						'jquery',
-					),
+					[],
 					array( 'learnpress_page_learn-press-tools' ),
 					0,
-					1
+					1,
+					'',
+					[ 'strategy' => 'defer' ]
 				),
 				'lp-admin-statistic'                => new LP_Asset_Key(
 					$this->url( 'js/dist/admin/admin-statistic' . self::$_min_assets . '.js' ),
@@ -380,7 +391,15 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				),
 				'learn-press-admin'     => new LP_Asset_Key(
 					$this->url( 'css/admin/admin' . $is_rtl . self::$_min_assets . '.css' ),
-					array( 'wp-color-picker', 'wp-components', 'select2', 'jquery-ui', 'jquery-ui-timepicker', 'font-awesome', 'jquery-tipsy' ),
+					array(
+						'wp-color-picker',
+						'wp-components',
+						'select2',
+						'jquery-ui',
+						'jquery-ui-timepicker',
+						'font-awesome',
+						'jquery-tipsy',
+					),
 					array(),
 					0
 				),
@@ -439,7 +458,13 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 	public function get_course_data_for_editor_vue() {
 		global $post, $pagenow;
 
-		if ( empty( $post ) || ( get_post_type() !== LP_COURSE_CPT ) || ! in_array( $pagenow, array( 'post.php', 'post-new.php' ) ) ) {
+		if ( empty( $post ) || ( get_post_type() !== LP_COURSE_CPT ) || ! in_array(
+			$pagenow,
+			array(
+				'post.php',
+				'post-new.php',
+			)
+		) ) {
 			return [];
 		}
 

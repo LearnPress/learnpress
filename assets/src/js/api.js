@@ -11,6 +11,7 @@ if ( 'undefined' !== typeof lpDataAdmin ) {
 		apiAddons: lpDataAdmin.lp_rest_url + 'lp/v1/addon/all',
 		apiAddonAction: lpDataAdmin.lp_rest_url + 'lp/v1/addon/action',
 		apiSearchCourses: lpDataAdmin.lp_rest_url + 'lp/v1/admin/tools/search-course',
+		apiSearchUsers: lpDataAdmin.lp_rest_url + 'lp/v1/admin/tools/search-user',
 		apiAssignUserCourse: lpDataAdmin.lp_rest_url + 'lp/v1/admin/tools/assign-user-course',
 	};
 }

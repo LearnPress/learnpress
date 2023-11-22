@@ -39,6 +39,7 @@ export default function assignUserCourse() {
 			} );
 		} );
 	};
+
 	const fetchCourses = ( keySearch, callback, elTomSelect ) => {
 		const url = Api.admin.apiSearchCourses;
 		const params = {
@@ -49,12 +50,44 @@ export default function assignUserCourse() {
 			method: 'POST',
 			body: JSON.stringify( { c_search: keySearch } ),
 		};
+
 		lpFetchAPI( url, params, {
 			success: ( response ) => {
 				const options = response.data.map( ( item ) => {
 					return {
 						value: item.ID,
 						text: item.post_title + `(#${ item.ID })`,
+					};
+				} );
+
+				if ( 'function' === typeof callback ) {
+					if ( callback.name === 'setupOptions' ) {
+						elTomSelect.setupOptions( options );
+					} else {
+						callback( options );
+					}
+				}
+			},
+		} );
+	};
+
+	const fetchUsers = ( keySearch, callback, elTomSelect ) => {
+		const url = Api.admin.apiSearchUsers;
+		const params = {
+			headers: {
+				'Content-Type': 'application/json',
+				'X-WP-Nonce': lpDataAdmin.nonce,
+			},
+			method: 'POST',
+			body: JSON.stringify( { search: keySearch } ),
+		};
+
+		lpFetchAPI( url, params, {
+			success: ( response ) => {
+				const options = response.data.map( ( item ) => {
+					return {
+						value: item.ID,
+						text: `${ item.display_name } (#${ item.ID }) - ${ item.user_email }`,
 					};
 				} );
 
@@ -78,12 +111,39 @@ export default function assignUserCourse() {
 		const tomSelectCourseAssign = new TomSelect( elCourseAssign, {
 			maxItems: 5,
 			options: [],
+			plugins: {
+				remove_button: {
+					title: 'Remove this item',
+				},
+			},
 			load( keySearch, callback ) {
 				fetchCourses( keySearch, callback );
 			},
 		} );
 
-		fetchCourses( 'course', tomSelectCourseAssign.setupOptions, tomSelectCourseAssign );
+		fetchCourses( '', tomSelectCourseAssign.setupOptions, tomSelectCourseAssign );
+	};
+
+	const createUserTomSelect = () => {
+		const elUserAssign = elFormAssignUserCourse.querySelector( '[name=user-assign]' );
+		if ( ! elUserAssign ) {
+			return;
+		}
+
+		const tomSelectUserAssign = new TomSelect( elUserAssign, {
+			maxItems: 5,
+			options: [],
+			plugins: {
+				remove_button: {
+					title: 'Remove this item',
+				},
+			},
+			load( keySearch, callback ) {
+				fetchUsers( keySearch, callback );
+			},
+		} );
+
+		fetchUsers( '', tomSelectUserAssign.setupOptions, tomSelectUserAssign );
 	};
 
 	document.addEventListener( 'DOMContentLoaded', () => {
@@ -94,5 +154,6 @@ export default function assignUserCourse() {
 		events();
 
 		createSelectTom();
+		createUserTomSelect();
 	} );
 }

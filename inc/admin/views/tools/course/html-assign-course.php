@@ -23,42 +23,40 @@ defined( 'ABSPATH' ) or die();
 	<div class="content">
 		<form id="lp-assign-user-course-form" name="" method="post">
 			<fieldset class="lp-assign-course__options">
-				<legend><?php _e( 'Options', 'learnpress' ); ?></legend>
 				<ul>
 					<li>
 						<label>
-							Choose Course:
+							<?php _e( 'Choose Course: (Max 5 courses)', 'learnpress' ); ?>
 							<select name="course_ids" class="lp-tom-select" style="width: 100%;" multiple>
-									<option value=""><?php _e( 'Search courses', 'learnpress' ); ?></option>
+								<option value=""><?php _e( 'Search courses', 'learnpress' ); ?></option>
 							</select>
 						</label>
 					</li>
-					<li><p><b><?php _e( 'Assign To:', 'learnpress' ); ?></b></p>
-						<div class="assign-to-container">
-							<div class="assign-to-user">
-								<input type="radio" name="assign-to" value="user" id="assign-to-user">
-								<label for="assign-to-user"><b><?php _e( 'Users', 'learnpress' ); ?></b></label><br>
-								<select id="assign-to-user-select" multiple style="width:100%"></select>
-							</div>
-							<div class="assign-to-role">
-								<input type="radio" name="assign-to" value="role" id="assign-to-role">
-								<label for="assign-to-role"><b><?php _e( 'Roles', 'learnpress' ); ?></b></label><br>
-								<select id="assign-to-role-select" multiple style="width:100%"></select>
-							</div>
+					<li>
+						<div class="assign-to-user">
+							<label>
+								<?php _e( 'Choose User: (Max 5 users)', 'learnpress' ); ?>
+								<select name="user-assign" multiple style="width:100%">
+									<option value=""><?php _e( 'Search users', 'learnpress' ); ?></option>
+								</select>
+							</label>
 						</div>
 					</li>
 					<input type="hidden" id="assign-course-message"
-					data-placeholder-course="<?php _e( 'Select a course.', 'learnpress' ); ?>"
-					data-placeholder-student="<?php _e( 'Select students.', 'learnpress' ); ?>"
-					data-placeholder-role="<?php _e( 'Select roles.', 'learnpress' ); ?>"
-					data-select-type="<?php _e( 'Select Assign Type.', 'learnpress' ); ?>"
-					data-select-data="<?php _e( 'Select Users Or Roles', 'learnpress' ); ?>"
-					data-assign-error="<?php _e( 'Cannot assign users to course', 'learnpress' ); ?>"
-					data-unassign-error="<?php _e( 'Cannot remove users.', 'learnpress' ); ?>"
+							data-placeholder-course="<?php _e( 'Select a course.', 'learnpress' ); ?>"
+							data-placeholder-student="<?php _e( 'Select students.', 'learnpress' ); ?>"
+							data-placeholder-role="<?php _e( 'Select roles.', 'learnpress' ); ?>"
+							data-select-type="<?php _e( 'Select Assign Type.', 'learnpress' ); ?>"
+							data-select-data="<?php _e( 'Select Users Or Roles', 'learnpress' ); ?>"
+							data-assign-error="<?php _e( 'Cannot assign users to course', 'learnpress' ); ?>"
+							data-unassign-error="<?php _e( 'Cannot remove users.', 'learnpress' ); ?>"
 					/>
 				</ul>
 			</fieldset>
-			<p><button class="button button-primary lp-button-assign-course" type="submit"><?php _e( 'Assign', 'learnpress' ); ?></button></p>
+			<p>
+				<button class="button button-primary lp-button-assign-course"
+						type="submit"><?php _e( 'Assign', 'learnpress' ); ?></button>
+			</p>
 		</form>
 	</div>
 </div>

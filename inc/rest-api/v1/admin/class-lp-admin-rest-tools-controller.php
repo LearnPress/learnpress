@@ -59,7 +59,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 			),
 			'search-user'             => array(
 				array(
-					'methods'             => WP_REST_Server::READABLE,
+					'methods'             => WP_REST_Server::ALLMETHODS,
 					'callback'            => array( $this, 'search_users' ),
 					'permission_callback' => array( $this, 'check_permission' ),
 				),
@@ -343,7 +343,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 		try {
 			$filter              = new LP_Course_Filter();
 			$params              = $request->get_params();
-			$filter->limit       = 5;
+			$filter->limit       = 10;
 			$filter->only_fields = [ 'ID', 'post_title' ];
 			$filter->post_title  = $params['c_search'] ?? '';
 			$courses             = LP_Course::get_courses( $filter );
@@ -369,18 +369,21 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 		try {
 			$params        = $request->get_params();
 			$search_string = sanitize_text_field( $params['search'] ?? '' );
-			$users         = get_users(
-				array(
-					'search'         => "*{$search_string}*",
-					'search_columns' => array(
-						'user_login',
-						'user_nicename',
-						'user_email',
-					),
-					'number'         => 10,
-					'fields'         => array( 'ID', 'display_name', 'user_login', 'user_email' ),
-				)
+			$args_get_user = array(
+				'search_columns' => array(
+					'user_login',
+					'user_nicename',
+					'user_email',
+				),
+				'number'         => 10,
+				'fields'         => array( 'ID', 'display_name', 'user_login', 'user_email' ),
 			);
+
+			if ( ! empty( $search_string ) ) {
+				$args_get_user['search'] = "*{$search_string}*";
+			}
+
+			$users = get_users( $args_get_user );
 			if ( ! empty( $users ) ) {
 				$response->data = $users;
 			}
