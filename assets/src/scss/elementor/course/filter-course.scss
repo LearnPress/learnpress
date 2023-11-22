@@ -158,10 +158,11 @@
 		height: 100%;
 		left: 0;
 		top: 0;
-		z-index: 10;
 		background-color: transparent;
 		display: none;
+        z-index: -1;
 		@media (max-width: 600px) {
+            z-index: 10;
 			background-color: rgb(0 0 0 / 60%);
 		}
 	}

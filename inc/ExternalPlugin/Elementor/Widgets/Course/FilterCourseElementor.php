@@ -120,11 +120,16 @@ class FilterCourseElementor extends LPElementorWidgetBase
 					$wrapper 		= '<div class="' . esc_attr($extraClassItem) . '"> ' . $icon_toggle . '' . $custom_heading . '';
 					$wrapper_end 	= '</div>';
 				}
+				
+				$fields = array_merge(
+					[ 'params_url' => lp_archive_skeleton_get_args() ],
+					$field
+				);
 
 				if (is_callable(array($filter, 'html_' . $field['item_fields']))) {
 					$sections[$field['item_fields']] = [
 						'wrapper' => $wrapper,
-						'text_html' => $filter->{'html_' . $field['item_fields']}($field),
+						'text_html' => $filter->{'html_' . $field['item_fields']}($fields),
 						'wrapper_end' => $wrapper_end,
 					];
 				}
