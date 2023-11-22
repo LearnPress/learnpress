@@ -26,6 +26,14 @@ class FilterCourseElementor extends LPElementorWidgetBase
 		$this->keywords = ['filter course'];
 		$this->icon     = 'eicon-taxonomy-filter';
 
+		wp_register_style(
+			'lp-course-filter-el',
+			LP_PLUGIN_URL . 'assets/css/elementor/course/filter-course.css',
+			array(),
+			uniqid()
+		);
+		$this->add_style_depends( 'lp-course-filter-el' );
+
 		wp_enqueue_script('lp-course-filter');
 		parent::__construct($data, $args);
 	}
