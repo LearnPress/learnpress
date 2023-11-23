@@ -12,10 +12,12 @@ export default function assignUserCourse() {
 	let elFormAssignUserCourse;
 	let elFormUnAssignUserCourse;
 	const limitHandle = 5;
+
 	const getAllElements = () => {
 		elFormAssignUserCourse = document.querySelector( '#lp-assign-user-course-form' );
 		elFormUnAssignUserCourse = document.querySelector( '#lp-unassign-user-course-form' );
 	};
+
 	const buildTomSelect = ( elTomSelect, options, fetchAPI ) => {
 		if ( ! elTomSelect ) {
 			return;
@@ -37,50 +39,51 @@ export default function assignUserCourse() {
 		options = { ...optionDefault, ...options };
 
 		const tomSelectCourseAssign = new TomSelect( elTomSelect, options );
-
-		fetchAPI( '', tomSelectCourseAssign.setupOptions, tomSelectCourseAssign );
 	};
+
 	const events = () => {
-		elFormAssignUserCourse.addEventListener( 'submit', ( e ) => {
-			e.preventDefault();
+		const elForm = document.querySelector( 'form' );
+		if ( ! elForm ) {
+			return;
+		}
 
-			if ( ! confirm( 'Are you sure you want to Assign?' ) ) {
+		document.addEventListener( 'submit', ( e ) => {
+			const elForm = e.target;
+
+			if ( elForm.tagName !== 'FORM' ) {
 				return;
 			}
 
 			const formData = new FormData( e.target ); // Create a FormData object from the form
 
-			// get values
+			// get values of form.
 			const obj = Object.fromEntries( Array.from( formData.keys(), ( key ) => {
 				const val = formData.getAll( key );
 				return [ key, val.length > 1 ? val : val.pop() ];
 			} ) );
 
-			const { packages, data, totalPage } = handleDataBeforeSend( obj );
+			if ( elForm.id === 'lp-assign-user-course-form' ) {
+				e.preventDefault();
 
-			fetchAPIAssignCourse( packages, data, 1, totalPage );
-		} );
+				if ( ! confirm( 'Are you sure you want to Assign?' ) ) {
+					return;
+				}
 
-		elFormUnAssignUserCourse.addEventListener( 'submit', ( e ) => {
-			e.preventDefault();
+				const { packages, data, totalPage } = handleDataBeforeSend( obj );
+				fetchAPIAssignCourse( packages, data, 1, totalPage );
+			} else if ( elForm.id === 'lp-unassign-user-course-form' ) {
+				e.preventDefault();
 
-			if ( ! confirm( 'Are you sure you want to Unassign?' ) ) {
-				return;
+				if ( ! confirm( 'Are you sure you want to Unassign?' ) ) {
+					return;
+				}
+
+				const { packages, data, totalPage } = handleDataBeforeSend( obj );
+				fetchAPIUnAssignCourse( packages, data, 1, totalPage );
 			}
-
-			const formData = new FormData( e.target ); // Create a FormData object from the form
-
-			// get values
-			const obj = Object.fromEntries( Array.from( formData.keys(), ( key ) => {
-				const val = formData.getAll( key );
-				return [ key, val.length > 1 ? val : val.pop() ];
-			} ) );
-
-			const { packages, data, totalPage } = handleDataBeforeSend( obj );
-
-			fetchAPIUnAssignCourse( packages, data, 1, totalPage );
 		} );
 	};
+
 	const handleDataBeforeSend = ( dataRaw ) => {
 		// Cut to packages to send, 1 packages has 5 items.
 		let arrCourseIds = [];
@@ -113,7 +116,8 @@ export default function assignUserCourse() {
 
 		return { packages, data, totalPage };
 	};
-	const fetchCourses = ( keySearch, callback, elTomSelect ) => {
+
+	const fetchCourses = ( keySearch = '', callback, elTomSelect ) => {
 		const url = Api.admin.apiSearchCourses;
 		const params = {
 			headers: {
@@ -133,6 +137,19 @@ export default function assignUserCourse() {
 					};
 				} );
 
+				// Set data courses default first to Tom Select.
+				if ( keySearch === '' ) {
+					const elCourseAssign = elFormAssignUserCourse.querySelector( '[name=course_ids]' );
+					if ( elCourseAssign ) {
+						buildTomSelect( elCourseAssign, { options }, fetchCourses );
+					}
+
+					const elCourseUnAssign = elFormUnAssignUserCourse.querySelector( '[name=course_ids]' );
+					if ( elCourseUnAssign ) {
+						buildTomSelect( elCourseUnAssign, { options }, fetchCourses );
+					}
+				}
+
 				if ( 'function' === typeof callback ) {
 					if ( callback.name === 'setupOptions' ) {
 						elTomSelect.setupOptions( options );
@@ -143,7 +160,8 @@ export default function assignUserCourse() {
 			},
 		} );
 	};
-	const fetchUsers = ( keySearch, callback, elTomSelect ) => {
+
+	const fetchUsers = ( keySearch = '', callback, elTomSelect ) => {
 		const url = Api.admin.apiSearchUsers;
 		const params = {
 			headers: {
@@ -163,6 +181,19 @@ export default function assignUserCourse() {
 					};
 				} );
 
+				// Set data users default first to Tom Select.
+				if ( keySearch === '' ) {
+					const elUserAssign = elFormAssignUserCourse.querySelector( '[name=user_ids]' );
+					if ( elUserAssign ) {
+						buildTomSelect( elUserAssign, { options }, fetchUsers );
+					}
+
+					const elUserUnAssign = elFormUnAssignUserCourse.querySelector( '[name=user_ids]' );
+					if ( elUserUnAssign ) {
+						buildTomSelect( elUserUnAssign, { options }, fetchUsers );
+					}
+				}
+
 				if ( 'function' === typeof callback ) {
 					if ( callback.name === 'setupOptions' ) {
 						elTomSelect.setupOptions( options );
@@ -173,6 +204,7 @@ export default function assignUserCourse() {
 			},
 		} );
 	};
+
 	const fetchAPIAssignCourse = ( packages, data, page, totalPage ) => {
 		const url = Api.admin.apiAssignUserCourse;
 		const params = {
@@ -224,6 +256,7 @@ export default function assignUserCourse() {
 			},
 		} );
 	};
+
 	const fetchAPIUnAssignCourse = ( packages, data, page, totalPage ) => {
 		const url = Api.admin.apiUnAssignUserCourse;
 		const params = {
@@ -275,38 +308,6 @@ export default function assignUserCourse() {
 			},
 		} );
 	};
-	const createCourseSelectTom = () => {
-		const elCourseAssign = elFormAssignUserCourse.querySelector( '[name=course_ids]' );
-		if ( ! elCourseAssign ) {
-			return;
-		}
-
-		buildTomSelect( elCourseAssign, {}, fetchCourses );
-	};
-	const createUnAssignCourseSelectTom = () => {
-		const elCourseUnAssign = elFormUnAssignUserCourse.querySelector( '[name=course_ids]' );
-		if ( ! elCourseUnAssign ) {
-			return;
-		}
-
-		buildTomSelect( elCourseUnAssign, {}, fetchCourses );
-	};
-	const createUserTomSelect = () => {
-		const elUserAssign = elFormAssignUserCourse.querySelector( '[name=user_ids]' );
-		if ( ! elUserAssign ) {
-			return;
-		}
-
-		buildTomSelect( elUserAssign, {}, fetchUsers );
-	};
-	const createUnAssignUserSelectTom = () => {
-		const elUserUnAssign = elFormUnAssignUserCourse.querySelector( '[name=user_ids]' );
-		if ( ! elUserUnAssign ) {
-			return;
-		}
-
-		buildTomSelect( elUserUnAssign, {}, fetchUsers );
-	};
 
 	document.addEventListener( 'DOMContentLoaded', () => {
 		getAllElements();
@@ -314,10 +315,11 @@ export default function assignUserCourse() {
 			return;
 		}
 
+		// Get list courses default first and build Tom Select.
+		fetchCourses();
+		// Get list users default first and build Tom Select.
+		fetchUsers();
+		// Events.
 		events();
-		createCourseSelectTom();
-		createUserTomSelect();
-		createUnAssignCourseSelectTom();
-		createUnAssignUserSelectTom();
 	} );
 }
