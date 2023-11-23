@@ -2,11 +2,9 @@
 /**
  * @author  ThimPress
  * @package LearnPress/Admin/Views
- * @version 4.2.4
+ * @since 4.2.5.6
+ * @version 1.0.0
  */
-
-defined( 'ABSPATH' ) or die();
-
 ?>
 <div id="learn-press-assign-course" class="card">
 	<h2><?php _e( 'Assign Course', 'learnpress' ); ?></h2>
@@ -36,26 +34,20 @@ defined( 'ABSPATH' ) or die();
 						<div class="assign-to-user">
 							<label>
 								<?php _e( 'Choose User: (Max 5 users)', 'learnpress' ); ?>
-								<select name="user-assign" multiple style="width:100%">
+								<select name="user_ids" multiple style="width:100%">
 									<option value=""><?php _e( 'Search users', 'learnpress' ); ?></option>
 								</select>
 							</label>
 						</div>
 					</li>
-					<input type="hidden" id="assign-course-message"
-							data-placeholder-course="<?php _e( 'Select a course.', 'learnpress' ); ?>"
-							data-placeholder-student="<?php _e( 'Select students.', 'learnpress' ); ?>"
-							data-placeholder-role="<?php _e( 'Select roles.', 'learnpress' ); ?>"
-							data-select-type="<?php _e( 'Select Assign Type.', 'learnpress' ); ?>"
-							data-select-data="<?php _e( 'Select Users Or Roles', 'learnpress' ); ?>"
-							data-assign-error="<?php _e( 'Cannot assign users to course', 'learnpress' ); ?>"
-							data-unassign-error="<?php _e( 'Cannot remove users.', 'learnpress' ); ?>"
-					/>
 				</ul>
 			</fieldset>
 			<p>
-				<button class="button button-primary lp-button-assign-course"
-						type="submit"><?php _e( 'Assign', 'learnpress' ); ?></button>
+				<button class="button button-primary lp-button-assign-course" type="submit">
+					<?php _e( 'Assign', 'learnpress' ); ?>
+				</button>
+				<span class="percent" style="margin-left: 10px"></span>
+				<span class="message" style="margin-left: 10px"></span>
 			</p>
 		</form>
 	</div>
