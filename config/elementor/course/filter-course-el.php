@@ -734,7 +734,27 @@ $style_fields   = array_merge(
             LPElementorControls::add_controls_style_button(
                 'selected_number',
                 '.selected-filter',
-                [],
+                [
+                    "selected_number_width"          => LPElementorControls::add_responsive_control_type(
+                        "selected_number_width",
+                        esc_html__( 'Width', 'learnpress' ),
+                        [],
+                        Controls_Manager::SLIDER,
+                        [
+                            'size_units' => array( 'px', '%', 'custom' ),
+                            'range'      => array(
+                                'px' => array(
+                                    'min' => 1,
+                                    'max' => 50,
+                                    'step'=> 1
+                                ),
+                            ),
+                            'selectors'  => array(
+                                '{{WRAPPER}} .selected-filter' => 'width: {{SIZE}}{{UNIT}};',
+                            ),
+                        ]
+                    )
+                ],
                 [ 'text_display', 'text_shadow' ]
             ),
         )
