@@ -720,6 +720,23 @@ $style_fields   = array_merge(
                 [],
                 [ 'text_display', 'text_shadow' ]
             ),
+            [
+                'heading_selected_number' => LPElementorControls::add_control_type(
+                    'heading_selected_number',
+                    esc_html__( 'Selected Number', 'learnpress' ),
+                    '',
+                    Controls_Manager::HEADING,
+                    [
+                        'separator' => 'before',
+                    ]
+                ),
+            ],
+            LPElementorControls::add_controls_style_button(
+                'selected_number',
+                '.selected-filter',
+                [],
+                [ 'text_display', 'text_shadow' ]
+            ),
         )
     )
 );
