@@ -210,6 +210,13 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.2.5.6 (2023-11-24) =
+~ Tweak: logic load Widget Filter Courses.
+~ Dev: assign/unassign course to user.
+~ Fixed: error still show price when user has bought course but not start course.
+~ Fixed: search suggest courses on Widget Filter Courses.
+~ Fixed: not call function calculate price when edit course with user is instructor.
+
 = 4.2.5.5 (2023-11-16) =
 ~ Fixed: security issue.
 ~ Added: new feature Statistic on the Backend.
