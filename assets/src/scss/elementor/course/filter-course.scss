@@ -44,13 +44,13 @@
 	}
 	&.filter-popup-show {
 		.lp-form-course-filter.lp-filter-popup {
-			display: block;
+			transform: none;
 			& ~.filter-bg {
 				display: block;
 			}
 		}
 		.lp-form-course-filter {
-			display: block;
+			transform: none;
 		}
 		.filter-bg {
 			display: block;
@@ -58,13 +58,15 @@
 	}
 	.lp-form-course-filter {
 		z-index: 20;
+		transition: 0.3s;
 		@media (max-width: 600px) {
 			position: fixed !important;
 			top: 0;
 			right: 0;
-			max-height: 100vh;
+			height: 100vh;
 			overflow-y: auto;
-			display: none;
+			display: block;
+			transform: translate3d(300px,0,0);
 			&::-webkit-scrollbar {
 				width: 5px;
 			}
@@ -152,6 +154,7 @@
 			}
 			@media (max-width: 600px) {
 				height: 100vh;
+				display: block;
 			}
 		}
 	}
@@ -166,7 +169,7 @@
         z-index: -1;
 		@media (max-width: 600px) {
             z-index: 10;
-			background-color: rgb(0 0 0 / 60%);
+			background-color: rgb(0 0 0 / 80%);
 		}
 	}
 }
