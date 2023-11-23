@@ -30,6 +30,9 @@
 		align-items: center;
 		flex-wrap: wrap;
 		margin: 0 10px;
+		@media (max-width: 600px) {
+			margin: 10px 0;
+		}
 		.selected-item {
 			display: inline-flex;
 			gap: 5px;
@@ -46,9 +49,6 @@
 		.lp-form-course-filter.lp-filter-popup {
 			transform: none;
 			display: block;
-			& ~.filter-bg {
-				display: block;
-			}
 		}
 		.lp-form-course-filter {
 			transform: none;
@@ -149,9 +149,6 @@
 			}
 			&::-webkit-scrollbar-thumb {
 				background: #f5f5f5;
-			}
-			& ~.filter-bg {
-				display: none;
 			}
 			@media (max-width: 600px) {
 				height: 100vh;
