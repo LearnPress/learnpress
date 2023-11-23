@@ -49,11 +49,6 @@ export default function assignUserCourse() {
 
 		document.addEventListener( 'submit', ( e ) => {
 			const elForm = e.target;
-
-			if ( elForm.tagName !== 'FORM' ) {
-				return;
-			}
-
 			const formData = new FormData( e.target ); // Create a FormData object from the form
 
 			// get values of form.
