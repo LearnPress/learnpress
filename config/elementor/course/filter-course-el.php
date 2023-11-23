@@ -119,7 +119,7 @@ $content_fields = array_merge(
                         ],
                         [
                             'name'       => 'offset_x',
-                            'label'       => esc_html__( 'Offset X (px)', 'thim-elementor-kit' ),
+                            'label'       => esc_html__( 'Offset X (px)', 'learnpress' ),
                             'type'        => Controls_Manager::NUMBER,
                             'label_block' => false,
                             'selectors'   => array(
@@ -132,7 +132,7 @@ $content_fields = array_merge(
                         ],
                         [
                             'name'       => 'offset_y',
-                            'label'       => esc_html__( 'Offset Y (px)', 'thim-elementor-kit' ),
+                            'label'       => esc_html__( 'Offset Y (px)', 'learnpress' ),
                             'type'        => Controls_Manager::NUMBER,
                             'label_block' => false,
                             'selectors'   => array(
@@ -598,7 +598,51 @@ $style_fields   = array_merge(
                             '{{WRAPPER}} .course-filter-reset' => 'width: {{SIZE}}{{UNIT}};',
                         ),
                     ]
-                )
+                ),
+                'btn_reset_position'         => LPElementorControls::add_control_type_select(
+                    'btn_reset_position',
+                    esc_html__( 'Position', 'learnpress' ),
+                    [
+                        'static'   => esc_html__( 'Static', 'learnpress' ),
+                        'absolute' => esc_html__( 'Absolute', 'learnpress' ),
+                    ],
+                    'static',
+                    [
+                        'selectors'  => [
+                            '{{WRAPPER}} .lp-form-course-filter .course-filter-reset' => 'position: {{VALUE}};',
+                        ]
+                    ] 
+                ),
+                'reset_offset_x'          => LPElementorControls::add_responsive_control_type(
+                    'reset_offset_x',
+                    esc_html__( 'Offset X (px)', 'learnpress' ),
+                    '',
+                    Controls_Manager::NUMBER,
+                    [
+                        'label_block' => false,
+                        'selectors'   => array(
+                            '{{WRAPPER}} .lp-form-course-filter .course-filter-reset' => 'right:{{VALUE}}px',
+                        ),
+                        'condition' => [
+                            'btn_reset_position' => 'absolute',
+                        ]
+                    ]
+                ),
+                'reset_offset_y'          => LPElementorControls::add_responsive_control_type(
+                    'reset_offset_y',
+                    esc_html__( 'Offset Y (px)', 'learnpress' ),
+                    '',
+                    Controls_Manager::NUMBER,
+                    [
+                        'label_block' => false,
+                        'selectors'   => array(
+                            '{{WRAPPER}} .lp-form-course-filter .course-filter-reset' => 'top:{{VALUE}}px',
+                        ),
+                        'condition' => [
+                            'btn_reset_position' => 'absolute',
+                        ]
+                    ]
+                ),
             ],
             [ 'text_display' ]
         )
