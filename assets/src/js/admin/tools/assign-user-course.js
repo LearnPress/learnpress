@@ -1,5 +1,8 @@
 /**
  * Assign user to course
+ *
+ * @since 4.2.5.6
+ * @version 1.0.0
  */
 import TomSelect from 'tom-select';
 import { lpFetchAPI } from '../../utils.js';
@@ -8,6 +11,7 @@ import Api from '../../api.js';
 export default function assignUserCourse() {
 	let elFormAssignUserCourse;
 	let elFormUnAssignUserCourse;
+	const limitHandle = 5;
 	const getAllElements = () => {
 		elFormAssignUserCourse = document.querySelector( '#lp-assign-user-course-form' );
 		elFormUnAssignUserCourse = document.querySelector( '#lp-unassign-user-course-form' );
@@ -40,6 +44,10 @@ export default function assignUserCourse() {
 		elFormAssignUserCourse.addEventListener( 'submit', ( e ) => {
 			e.preventDefault();
 
+			if ( ! confirm( 'Are you sure you want to Assign?' ) ) {
+				return;
+			}
+
 			const formData = new FormData( e.target ); // Create a FormData object from the form
 
 			// get values
@@ -48,35 +56,7 @@ export default function assignUserCourse() {
 				return [ key, val.length > 1 ? val : val.pop() ];
 			} ) );
 
-			// Cut to packages to send, 1 packages has 5 items.
-			let arrCourseIds = [];
-			let arrUserIds = [];
-			if ( typeof obj.course_ids === 'string' ) {
-				arrCourseIds.push( obj.course_ids );
-			} else if ( typeof obj.course_ids === 'object' ) {
-				arrCourseIds = obj.course_ids;
-			}
-
-			if ( typeof obj.user_ids === 'string' ) {
-				arrUserIds.push( obj.user_ids );
-			} else if ( typeof obj.user_ids === 'object' ) {
-				arrUserIds = obj.user_ids;
-			}
-
-			const packages = [];
-			arrCourseIds.map( ( courseId, indexCourse ) => {
-				const item = {};
-
-				item.course_id = courseId;
-				arrUserIds.map( ( userID, indexUser ) => {
-					const newItem = { ...item, user_id: userID };
-					packages.push( newItem );
-				} );
-			} );
-
-			const limitHandle = 5;
-			const data = packages.slice( 0, limitHandle );
-			const totalPage = Math.ceil( packages.length / limitHandle );
+			const { packages, data, totalPage } = handleDataBeforeSend( obj );
 
 			fetchAPIAssignCourse( packages, data, 1, totalPage );
 		} );
@@ -84,6 +64,10 @@ export default function assignUserCourse() {
 		elFormUnAssignUserCourse.addEventListener( 'submit', ( e ) => {
 			e.preventDefault();
 
+			if ( ! confirm( 'Are you sure you want to Unassign?' ) ) {
+				return;
+			}
+
 			const formData = new FormData( e.target ); // Create a FormData object from the form
 
 			// get values
@@ -92,40 +76,42 @@ export default function assignUserCourse() {
 				return [ key, val.length > 1 ? val : val.pop() ];
 			} ) );
 
-			// Cut to packages to send, 1 packages has 5 items.
-			let arrCourseIds = [];
-			let arrUserIds = [];
-			if ( typeof obj.course_ids === 'string' ) {
-				arrCourseIds.push( obj.course_ids );
-			} else if ( typeof obj.course_ids === 'object' ) {
-				arrCourseIds = obj.course_ids;
-			}
-
-			if ( typeof obj.user_ids === 'string' ) {
-				arrUserIds.push( obj.user_ids );
-			} else if ( typeof obj.user_ids === 'object' ) {
-				arrUserIds = obj.user_ids;
-			}
-
-			console.log( arrCourseIds, arrUserIds );
-
-			const packages = [];
-			arrCourseIds.map( ( courseId, indexCourse ) => {
-				const item = {};
-
-				item.course_id = courseId;
-				arrUserIds.map( ( userID, indexUser ) => {
-					const newItem = { ...item, user_id: userID };
-					packages.push( newItem );
-				} );
-			} );
-
-			const limitHandle = 5;
-			const data = packages.slice( 0, limitHandle );
-			const totalPage = Math.ceil( packages.length / limitHandle );
+			const { packages, data, totalPage } = handleDataBeforeSend( obj );
 
 			fetchAPIUnAssignCourse( packages, data, 1, totalPage );
 		} );
+	};
+	const handleDataBeforeSend = ( dataRaw ) => {
+		// Cut to packages to send, 1 packages has 5 items.
+		let arrCourseIds = [];
+		let arrUserIds = [];
+		if ( typeof dataRaw.course_ids === 'string' ) {
+			arrCourseIds.push( dataRaw.course_ids );
+		} else if ( typeof dataRaw.course_ids === 'object' ) {
+			arrCourseIds = dataRaw.course_ids;
+		}
+
+		if ( typeof dataRaw.user_ids === 'string' ) {
+			arrUserIds.push( dataRaw.user_ids );
+		} else if ( typeof dataRaw.user_ids === 'object' ) {
+			arrUserIds = dataRaw.user_ids;
+		}
+
+		const packages = [];
+		arrCourseIds.map( ( courseId, indexCourse ) => {
+			const item = {};
+
+			item.course_id = courseId;
+			arrUserIds.map( ( userID, indexUser ) => {
+				const newItem = { ...item, user_id: userID };
+				packages.push( newItem );
+			} );
+		} );
+
+		const data = packages.slice( 0, limitHandle );
+		const totalPage = Math.ceil( packages.length / limitHandle );
+
+		return { packages, data, totalPage };
 	};
 	const fetchCourses = ( keySearch, callback, elTomSelect ) => {
 		const url = Api.admin.apiSearchCourses;
@@ -207,8 +193,8 @@ export default function assignUserCourse() {
 				const { status, message } = response;
 				if ( status === 'success' ) {
 					let page = parseInt( response.data.page );
-					const begin = page * 5;
-					const end = begin + 5;
+					const begin = page * limitHandle;
+					const end = begin + limitHandle;
 					data = packages.slice( begin, end );
 					elProgress.innerHTML = response.data.percent;
 					fetchAPIAssignCourse( packages, data, ++page, totalPage );
@@ -258,8 +244,8 @@ export default function assignUserCourse() {
 				const { status, message } = response;
 				if ( status === 'success' ) {
 					let page = parseInt( response.data.page );
-					const begin = page * 5;
-					const end = begin + 5;
+					const begin = page * limitHandle;
+					const end = begin + limitHandle;
 					data = packages.slice( begin, end );
 					elProgress.innerHTML = response.data.percent;
 					fetchAPIUnAssignCourse( packages, data, ++page, totalPage );
