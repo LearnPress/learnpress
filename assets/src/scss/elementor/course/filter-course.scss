@@ -45,6 +45,7 @@
 	&.filter-popup-show {
 		.lp-form-course-filter.lp-filter-popup {
 			transform: none;
+			display: block;
 			& ~.filter-bg {
 				display: block;
 			}
