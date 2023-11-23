@@ -254,7 +254,7 @@ $content_fields = array_merge(
                 [
                     'condition' => [
                         'enable_filter_button'    => 'yes',
-                        'type_icon_filter_button' => 'yes'
+                        'enable_icon_filter_button' => 'yes'
                     ] 
                 ] 
             ),
