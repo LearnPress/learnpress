@@ -13,7 +13,7 @@
 			<?php _e( 'User can enroll in a specific course by manually assign to them.', 'learnpress' ); ?>
 		</p>
 		<p>
-			<i>
+			<i style="color: #a20707">
 				<?php _e( 'Noted: when assign user to course, the progress old of user with course assign will eraser, so be careful before do this.', 'learnpress' ); ?>
 			</i>
 		</p>

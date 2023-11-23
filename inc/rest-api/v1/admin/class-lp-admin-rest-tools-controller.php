@@ -22,66 +22,66 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 	 */
 	public function register_routes() {
 		$this->routes = array(
-			'create-indexs'           => array(
+			'create-indexs'        => array(
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'create_indexes' ),
 					'permission_callback' => '__return_true',
 				),
 			),
-			'list-tables-indexs'      => array(
+			'list-tables-indexs'   => array(
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'get_list_tables_indexs' ),
 					'permission_callback' => '__return_true',
 				),
 			),
-			'clean-tables'            => array(
+			'clean-tables'         => array(
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'clean_tables' ),
 					'permission_callback' => '__return_true',
 				),
 			),
-			'admin-notices'           => array(
+			'admin-notices'        => array(
 				array(
 					'methods'             => WP_REST_Server::ALLMETHODS,
 					'callback'            => array( $this, 'admin_notices' ),
 					'permission_callback' => '__return_true',
 				),
 			),
-			'search-course'           => array(
+			'search-course'        => array(
 				array(
 					'methods'             => WP_REST_Server::ALLMETHODS,
 					'callback'            => array( $this, 'search_courses' ),
 					'permission_callback' => array( $this, 'check_permission' ),
 				),
 			),
-			'search-user'             => array(
+			'search-user'          => array(
 				array(
 					'methods'             => WP_REST_Server::ALLMETHODS,
 					'callback'            => array( $this, 'search_users' ),
 					'permission_callback' => array( $this, 'check_permission' ),
 				),
 			),
-			'search-roles'            => array(
+			'search-roles'         => array(
 				array(
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'search_roles' ),
 					'permission_callback' => array( $this, 'check_permission' ),
 				),
 			),
-			'assign-user-course'      => array(
+			'assign-user-course'   => array(
 				array(
-					'methods'             => WP_REST_Server::ALLMETHODS,
+					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'assign_courses_to_users' ),
 					'permission_callback' => array( $this, 'check_permission' ),
 				),
 			),
-			'remove-user-from-course' => array(
+			'unassign-user-course' => array(
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
-					'callback'            => array( $this, 'remove_user_from_course' ),
+					'callback'            => array( $this, 'unassign_user_from_course' ),
 					'permission_callback' => array( $this, 'check_permission' ),
 				),
 			),
@@ -493,6 +493,61 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 			}
 
 			$response->message = __( 'Assign users to courses successfully.', 'learnpress' );
+		} catch ( Throwable $e ) {
+			$response->message = $e->getMessage();
+		}
+
+		return $response;
+	}
+
+	/**
+	 * Enroll users to courses
+	 *
+	 * @param WP_REST_Request $request
+	 *
+	 * @return LP_REST_Response
+	 * @since 4.2.5.6
+	 * @version 1.0.0
+	 */
+	public function unassign_user_from_course( WP_REST_Request $request ): LP_REST_Response {
+		$response = new LP_REST_Response();
+
+		try {
+			$params     = $request->get_params();
+			$data       = $params['data'] ?? [];
+			$page       = $params['page'] ?? 1;
+			$total_page = $params['totalPage'] ?? 1;
+
+			if ( ! is_array( $data ) ) {
+				throw new Exception( 'Data assign is invalid' );
+			}
+
+			if ( empty( $data ) ) {
+				throw new Exception( 'Please choose User and Course you want to Unassign' );
+			}
+
+			foreach ( $data as $user_course ) {
+				$user_id   = $user_course['user_id'] ?? 0;
+				$course_id = $user_course['course_id'] ?? 0;
+				if ( ! $user_id || ! $course_id ) {
+					throw new Exception( 'User or Course is invalid', 'learnpress' );
+				}
+
+				// Delete data user who already enrolled this course.
+				LP_User_Items_DB::getInstance()->delete_user_items_old( $user_id, $course_id );
+				// End
+			}
+
+			if ( $page === $total_page ) {
+				$response->status        = 'finished';
+				$response->data->percent = 100 . '%';
+			} else {
+				$response->status        = 'success';
+				$response->data->page    = $page;
+				$response->data->percent = number_format( ( $page / $total_page ) * 100, 2 ) . '%';
+			}
+
+			$response->message = __( 'Unassigned users from courses successfully.', 'learnpress' );
 		} catch ( Throwable $e ) {
 			$response->message = $e->getMessage();
 		}
