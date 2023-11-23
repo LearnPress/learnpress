@@ -165,7 +165,6 @@ $content_fields = array_merge(
 					'label_on'     => esc_html__( 'Yes', 'learnpress' ),
 					'label_off'    => esc_html__( 'No', 'learnpress' ),
 					'return_value' => 'yes',
-					'default'      => 'yes',
 				]
 			),
             LPElementorControls::add_control_type(
