@@ -150,6 +150,9 @@
 			& ~.filter-bg {
 				display: none;
 			}
+			@media (max-width: 600px) {
+				height: 100vh;
+			}
 		}
 	}
 	.filter-bg {
