@@ -1,9 +1,6 @@
 .elementor-widget-learnpress_filter_course {
     .lp-button-popup {
         padding: 10px 30px;
-		display: -webkit-box;
-		display: -ms-flexbox;
-		display: inline-flex;
 		-webkit-box-pack: center;
 		-ms-flex-pack: center;
 		justify-content: center;
@@ -20,7 +17,9 @@
 			order: 3;
 		}
 		&.lp-filter-popup {
-			display: flex;
+			display: -webkit-box;
+			display: -ms-flexbox;
+			display: inline-flex;
 		}
     }
 	.selected-list {
