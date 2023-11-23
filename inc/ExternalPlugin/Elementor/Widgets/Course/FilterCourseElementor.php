@@ -44,7 +44,6 @@ class FilterCourseElementor extends LPElementorWidgetBase
 		$this->add_style_depends( 'lp-course-filter-el' );
 		$this->add_script_depends( 'lp-course-filter-el' );
 		wp_enqueue_script('lp-course-filter');
-		wp_enqueue_script('lp-widgets');
 		parent::__construct($data, $args);
 	}
 
