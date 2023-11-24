@@ -1,34 +1,54 @@
 <?php
 /**
-  * @author  ThimPress
-  * @package LearnPress/Admin/Views
-  * @version 4.2.4
-  */
+ * @author  ThimPress
+ * @package LearnPress/Admin/Views
+ * @version 4.2.4
+ */
 
 defined( 'ABSPATH' ) or die();
 ?>
-<div id="learn-press-unassign-course" class="card">
+<div id="learn-press-unassigned-course" class="card">
 	<h2><?php _e( 'Unassign Course', 'learnpress' ); ?></h2>
 	<div class="description">
-		<?php _e( 'Remove user from a course', 'learnpress' ); ?>
+		<div><?php _e( 'Remove user from a course', 'learnpress' ); ?></div>
+		<i style="color: #a20707">
+			<?php
+			_e(
+				'Noted: when remove user from course, the progress of user with course assign will eraser, so be careful before do this.',
+				'learnpress'
+			);
+			?>
+		</i>
 	</div>
 	<div class="content">
-		<form id="lp-unassign-course-form">
-			<!-- <fieldset class="lp-assign-course__options"> -->
-				<!-- <legend><?php _e( 'Options', 'learnpress' ); ?></legend> -->
-				<ul>
-					<li>
-						<p><b><?php _e( 'Course', 'learnpress' ); ?></b></p><select class="js-data-select-unassign-course" style="width: 100%;"></select>
-					</li>
-					<li>
-						<div class="assign-to-user">
-							<p><b><?php _e( 'User', 'learnpress' ); ?></b></p>
-							<select id="remove-user-select" multiple style="width:100%"></select>
-						</div>
-					</li>
-				</ul>
-			<!-- </fieldset> -->
-			<p><button class="button button-primary lp-button-unassign-course" type="button"><?php _e( 'Remove', 'learnpress' ); ?></button></p>
+		<form id="lp-unassign-user-course-form">
+			<ul>
+				<li>
+					<label>
+						<?php _e( 'Choose Course: (Max 5 courses)', 'learnpress' ); ?>
+						<select name="course_ids" class="lp-tom-select" style="width: 100%;" multiple>
+							<option value=""><?php _e( 'Search courses', 'learnpress' ); ?></option>
+						</select>
+					</label>
+				</li>
+				<li>
+					<div class="assign-to-user">
+						<label>
+							<?php _e( 'Choose User: (Max 5 users)', 'learnpress' ); ?>
+							<select name="user_ids" multiple style="width:100%">
+								<option value=""><?php _e( 'Search users', 'learnpress' ); ?></option>
+							</select>
+						</label>
+					</div>
+				</li>
+			</ul>
+			<p>
+				<button class="button button-primary lp-button-unassign-course" type="submit">
+					<?php _e( 'Remove', 'learnpress' ); ?>
+				</button>
+				<span class="percent" style="margin-left: 10px"></span>
+				<span class="message" style="margin-left: 10px"></span>
+			</p>
 		</form>
 	</div>
 </div>

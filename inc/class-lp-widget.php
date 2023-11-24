@@ -166,6 +166,7 @@ class LP_Widget extends WP_Widget {
 			<div class="learnpress-widget-wrapper learnpress-widget-wrapper__restapi"
 				data-widget="<?php echo htmlentities( wp_json_encode( $data ) ); ?>">
 				<?php lp_skeleton_animation_html( 5 ); ?>
+				<div class="lp-widget-loading-change"></div>
 			</div>
 			<?php
 		} else { // Use for Preview in Widget Editor since WordPress 5.8

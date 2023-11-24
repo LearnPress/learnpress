@@ -547,7 +547,7 @@ function learn_press_footer_advertisement() {
 		'learnpress_page_learn-press-statistics',
 		'learnpress_page_learn-press-settings',
 		'learnpress_page_learn-press-tools',
-
+		'learnpress_page_learn-press-statistics-beta',
 	);
 
 	$screen = get_current_screen();

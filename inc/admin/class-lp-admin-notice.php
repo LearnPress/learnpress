@@ -134,7 +134,7 @@ class LP_Admin_Notice {
 		$result   = wp_remote_get( $test_url, $args );
 		$body     = ! is_wp_error( $result ) ? wp_remote_retrieve_body( $result ) : $result;
 
-		return $body === '[TEST_REMOTE]' ? true : $result;
+		return $body === '[TEST_REMOTE]' ? true : new WP_Error( 'wp_remote_get_err', $body );
 	}
 
 	/**

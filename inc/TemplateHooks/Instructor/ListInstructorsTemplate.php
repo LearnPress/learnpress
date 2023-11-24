@@ -10,6 +10,7 @@ namespace LearnPress\TemplateHooks\Instructor;
 
 use LearnPress\Helpers\Template;
 use LP_Assets;
+use LP_Helper;
 use LP_Page_Controller;
 use LP_User;
 use LP_WP_Filesystem;
@@ -36,16 +37,12 @@ class ListInstructorsTemplate {
 		if ( ! LP_Page_Controller::is_page_instructors() ) {
 			return;
 		}
+
+		LP_Helper::print_inline_script_tag( 'lpSkeletonParam', lp_archive_skeleton_get_args(), [ 'id' => 'lpSkeletonParam' ] );
 		?>
 		<script id="lp-list-instructors-data">
 			const lpInstructorsUrl = '<?php echo learn_press_get_page_link( 'instructors' ); ?>';
 			const urlListInstructorsAPI = '<?php echo site_url( 'wp-json/lp/v1/instructors' ); ?>';
-			let lpSkeletonParam = '<?php echo html_entity_decode( esc_js( json_encode( lp_archive_skeleton_get_args() ) ) ); ?>';
-			<?php
-			if ( LP_Page_Controller::is_page_instructors() ) {
-				echo 'const isPageInstructors = true;';
-			}
-			?>
 		</script>
 		<?php
 		$is_rtl = is_rtl() ? '-rtl' : '';
@@ -54,7 +51,7 @@ class ListInstructorsTemplate {
 		<style id="lp-list-instructors">
 			<?php echo wp_remote_fopen( LP_Assets::instance()->url( 'css/instructors' . $is_rtl . $min . '.css' ) ); ?>
 		</style>
-		<script id="lp-list-instructors">
+		<script id="lp-list-instructors" async data-wp-strategy="async" >
 			<?php //echo wp_remote_fopen( LP_Assets::instance()->url( 'js/dist/frontend/instructors' . $min . '.js' ) ); ?>
 			<?php echo LP_WP_Filesystem::instance()->file_get_contents( LP_PLUGIN_PATH . 'assets/js/dist/frontend/instructors' . $min . '.js' ); ?>
 		</script>

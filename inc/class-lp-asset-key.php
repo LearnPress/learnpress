@@ -33,6 +33,13 @@ class LP_Asset_Key {
 	 */
 	public $_in_footer = 0;
 	/**
+	 * Strategy load defer/async support from WP 6.3
+	 *
+	 * @var array
+	 * @since 4.2.5.5
+	 */
+	public $_strategy = [];
+	/**
 	 * Value 1 for run wp_register_script(), 0 for run wp_enqueue_script()
 	 *
 	 * @var int
@@ -66,13 +73,22 @@ class LP_Asset_Key {
 	 * @param int      $only_register .
 	 * @param int      $in_footer .
 	 */
-	public function __construct( string $url = '', array $deps = array(), array $screens = array(), int $only_register = 1, int $in_footer = 0, string $version = '' ) {
+	public function __construct(
+		string $url = '',
+		array $deps = array(),
+		array $screens = array(),
+		int $only_register = 1,
+		int $in_footer = 0,
+		string $version = '',
+		array $strategy = []
+	) {
 		$this->_url           = $url;
 		$this->_deps          = $deps;
 		$this->_in_footer     = $in_footer;
 		$this->_only_register = $only_register;
 		$this->_screens       = $screens;
 		$this->_version       = $version;
+		$this->_strategy      = $strategy;
 	}
 
 	/**

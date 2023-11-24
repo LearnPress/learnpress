@@ -151,7 +151,6 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 				compact( 'user', 'course', 'course_data', 'course_results' )
 			);
 		} catch ( Throwable $e ) {
-			ob_end_clean();
 			$response->message = $e->getMessage();
 		}
 
@@ -177,8 +176,8 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 		$page       = absint( $params['page'] ?? 1 );
 		$section_id = wp_unslash( $params['sectionID'] ?? false );
 
-		ob_start();
 		try {
+			ob_start();
 			if ( empty( $course_id ) ) {
 				throw new Exception( esc_html__( 'The course is invalid!', 'learnpress' ) );
 			}
@@ -259,8 +258,9 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 
 		$response                = new LP_REST_Response();
 		$response->data->content = '';
-		ob_start();
+
 		try {
+			ob_start();
 			if ( empty( $section_id ) ) {
 				throw new Exception( esc_html__( 'The section is invalid!', 'learnpress' ) );
 			}

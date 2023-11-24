@@ -1,4 +1,5 @@
-import API from './api';
+import API from '../api';
+import { lpFetchAPI } from '../utils';
 
 const classCourseFilter = 'lp-form-course-filter';
 
@@ -80,15 +81,15 @@ window.lpCourseFilter = {
 		controller = new AbortController();
 		signal = controller.signal;
 
-		const url = API.apiCourses + '?c_search=' + keyword + '&c_suggest=1';
+		const url = API.frontend.apiCourses + '?c_search=' + keyword + '&c_suggest=1';
 		let paramsFetch = {
 			method: 'GET',
 		};
-		if ( 0 !== lpGlobalSettings.user_id ) {
+		if ( 0 !== parseInt( lpData.user_id ) ) {
 			paramsFetch = {
 				...paramsFetch,
 				headers: {
-					'X-WP-Nonce': lpGlobalSettings.nonce,
+					'X-WP-Nonce': lpData.nonce,
 				},
 			};
 		}
@@ -100,20 +101,93 @@ window.lpCourseFilter = {
 					callBackDone( response );
 				}
 			} ).catch( ( error ) => {
-				console.log( error );
-			} )
+			console.log( error );
+		} )
 			.finally( () => {
 				if ( undefined !== callBackFinally ) {
 					callBackFinally();
 				}
 			} );
 	},
+	loadWidgetFilterREST: ( widgetForm ) => {
+		const parent = widgetForm.closest( '.learnpress-widget-wrapper' );
+		if ( ! parent ) {
+			return;
+		}
+
+		const widgetData = parent.dataset.widget ? JSON.parse( parent.dataset.widget ) : '';
+		const url = API.frontend.apiWidgets;
+		const formData = new FormData( widgetForm );
+		const filterCourses = { paged: 1 };
+		const elLoadingChange = parent.querySelector( '.lp-widget-loading-change' );
+
+		elLoadingChange.style.display = 'block';
+
+		for ( const pair of formData.entries() ) {
+			const key = pair[ 0 ];
+			const value = formData.getAll( key );
+			if ( ! filterCourses.hasOwnProperty( key ) ) {
+				let value_convert = value;
+				if ( 'object' === typeof value ) {
+					value_convert = value.join( ',' );
+				}
+				filterCourses[ key ] = value_convert;
+			}
+		}
+
+		if ( 'undefined' !== typeof lpData.urlParams.page_term_id_current ) {
+			filterCourses.page_term_id_current = lpData.urlParams.page_term_id_current;
+		} else if ( 'undefined' !== typeof lpData.urlParams.page_tag_id_current ) {
+			filterCourses.page_tag_id_current = lpData.urlParams.page_tag_id_current;
+		}
+
+		const paramsFetch = {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify( { ...widgetData, ...{ params_url: filterCourses } } ),
+		};
+
+		if ( 0 !== parseInt( lpData.user_id ) ) {
+			paramsFetch.headers[ 'X-WP-Nonce' ] = lpData.nonce;
+		}
+
+		const callBack = {
+			before: () => {
+
+			},
+			success: ( res ) => {
+				const { data, status, message } = res;
+
+				if ( data && status === 'success' ) {
+					widgetForm.innerHTML = data;
+				} else if ( message ) {
+					parent.insertAdjacentHTML( 'afterbegin', `<div class="lp-ajax-message error" style="display:block">${ message }</div>` );
+				}
+			},
+			error: ( error ) => {
+
+			},
+			completed: () => {
+				elLoadingChange.style.display = 'none';
+			},
+		};
+
+		// Call API load widget
+		lpFetchAPI( url, paramsFetch, callBack );
+	},
 	submit: ( form ) => {
 		const formData = new FormData( form ); // Create a FormData object from the form
 		const elListCourse = document.querySelector( '.learn-press-courses' );
-		const skeleton = document.querySelector( '.lp-archive-course-skeleton' );
+
+		//const skeleton = elListCourse.querySelector( '.lp-archive-course-skeleton' );
 		const filterCourses = { paged: 1 };
-		window.lpCourseList.updateEventTypeBeforeFetch( 'filter' );
+
+		if ( 'undefined' !== typeof window.lpCourseList ) {
+			window.lpCourseList.updateEventTypeBeforeFetch( 'filter' );
+		}
+
 		for ( const pair of formData.entries() ) {
 			const key = pair[ 0 ];
 			const value = formData.getAll( key );
@@ -122,10 +196,22 @@ window.lpCourseFilter = {
 			}
 		}
 
-		if ( lpGlobalSettings.is_course_archive && lpGlobalSettings.lpArchiveLoadAjax && elListCourse && skeleton ) {
+		if ( 'undefined' !== typeof lpData.urlParams.page_term_id_current ) {
+			filterCourses.page_term_id_current = lpData.urlParams.page_term_id_current;
+		}
+
+		if ( 'undefined' !== typeof lpData.urlParams.page_tag_id_current ) {
+			filterCourses.page_tag_id_current = lpData.urlParams.page_tag_id_current;
+		}
+
+		if ( 'undefined' !== typeof lpSettingCourses &&
+			lpData.is_course_archive &&
+			lpSettingCourses.lpArchiveLoadAjax &&
+			elListCourse &&
+			'undefined' !== typeof window.lpCourseList ) {
 			window.lpCourseList.triggerFetchAPI( filterCourses );
 		} else {
-			const courseUrl = lpGlobalSettings.courses_url || '';
+			const courseUrl = lpData.urlParams.page_term_url || lpData.courses_url || '';
 			const url = new URL( courseUrl );
 			Object.keys( filterCourses ).forEach( ( arg ) => {
 				url.searchParams.set( arg, filterCourses[ arg ] );
@@ -152,9 +238,12 @@ window.lpCourseFilter = {
 			form.elements[ i ].removeAttribute( 'checked' );
 		}
 		// If on the page archive course will call btnSubmit click.
-		if ( lpGlobalSettings.is_course_archive ) {
+		if ( lpData.is_course_archive ) {
 			btnSubmit.click();
 		}
+
+		// Load AJAX widget by params
+		window.lpCourseFilter.loadWidgetFilterREST( form );
 	},
 	showHideSearchResult: ( target ) => {
 		const elResult = document.querySelector( '.lp-course-filter-search-result' );
@@ -171,10 +260,27 @@ window.lpCourseFilter = {
 	},
 	triggerInputChoice: ( target ) => {
 		if ( target.tagName === 'INPUT' ) {
+			const parent = target.closest( '.lp-course-filter__field' );
+			if ( ! parent ) {
+				return;
+			}
+
+			// Filter courses
+			const form = parent.closest( `.${ classCourseFilter }` );
+			const btnSubmit = form.querySelector( '.course-filter-submit' );
+			let enableLoadAJAXCourses = false;
+			enableLoadAJAXCourses = 'undefined' !== typeof lpSettingCourses ? parseInt( lpSettingCourses.lpArchiveLoadAjax ) : 0;
+			const elListCourse = document.querySelector( '.learn-press-courses' );
+			if ( elListCourse && enableLoadAJAXCourses ) {
+				btnSubmit.click();
+			}
+
+			// Load AJAX widget by params
+			window.lpCourseFilter.loadWidgetFilterREST( form );
 			return;
 		}
 
-		// Choice field
+		// Click el parent of input to tick/untick field
 		let elChoice;
 
 		if ( target.classList.contains( 'lp-course-filter__field' ) ) {

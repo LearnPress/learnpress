@@ -71,3 +71,12 @@
 		@include animation(lp-rotating 1s linear infinite);
 	}
 }
+
+@mixin loading-change {
+	position: absolute;
+	display: none;
+	width: 100%;
+	height: 100%;
+	background: #ffffff29;
+	top: 0;
+}

@@ -15,7 +15,7 @@ if ( ! is_wp_error( $data['check'] ) ) {
 	return;
 }
 
-$message_error = $data['check'] instanceof WP_Error ? $data['check']->get_error_message() : 'Result do not match!';
+$message_error = $data['check']->get_error_message();
 ?>
 
 <div class="lp-admin-notice notice notice-error">

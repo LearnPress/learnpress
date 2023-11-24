@@ -165,7 +165,7 @@ abstract class LP_Abstract_Post_Type {
 	 *
 	 * @return array
 	 */
-	public function args_register_post_type() : array {
+	public function args_register_post_type(): array {
 		return array();
 	}
 
@@ -174,8 +174,9 @@ abstract class LP_Abstract_Post_Type {
 	 *
 	 * In child-class use function save()
 	 *
-	 * @param int     $post_id
+	 * @param int $post_id
 	 * @param WP_Post $post
+	 *
 	 * @editor tungnx
 	 * @since modify 4.0.9
 	 * @version 4.0.1
@@ -229,6 +230,7 @@ abstract class LP_Abstract_Post_Type {
 	 * Function for child class handle before post deleted
 	 *
 	 * @param int $post_id
+	 *
 	 * @editor tungnx
 	 * @since modify 4.0.9
 	 */
@@ -256,6 +258,7 @@ abstract class LP_Abstract_Post_Type {
 	}
 
 	protected $course_of_item_trashed = 0;
+
 	/**
 	 * Hook before delete post
 	 *
@@ -324,10 +327,11 @@ abstract class LP_Abstract_Post_Type {
 	 * Method handle Trashed post
 	 *
 	 * @param int $post_id
-	 * @author tungnx
+	 *
+	 * @return void
 	 * @since 4.1.6.9
 	 * @version 1.0.0
-	 * @return void
+	 * @author tungnx
 	 */
 	public function trashed_post( int $post_id ) {
 		// Implement from child
@@ -402,7 +406,7 @@ abstract class LP_Abstract_Post_Type {
 						$message = $('<p class="learn-press-notice-assigned-item"></p>').html(isAssigned),
 						currentStatus = $postStatus.val();
 
-					(currentStatus === 'publish') && isAssigned && $postStatus.on('change', function() {
+					(currentStatus === 'publish') && isAssigned && $postStatus.on('change', function () {
 						if (this.value !== 'publish') {
 							$message.insertBefore($('#post-status-select'));
 						} else {
@@ -467,6 +471,7 @@ abstract class LP_Abstract_Post_Type {
 	 * Maybe remove assigned item
 	 *
 	 * @param WP_Post $post
+	 *
 	 * @editor tungnx
 	 * @todo Review and move to place correct
 	 */
@@ -543,7 +548,7 @@ abstract class LP_Abstract_Post_Type {
 	 * Ouput meta boxes.
 	 *
 	 * @param WP_Post $post
-	 * @param mixed   $box
+	 * @param mixed $box
 	 */
 	public function _do_output_meta_box( $post, $box ) {
 		$callback = $this->_meta_boxes[ $box['id'] ][2];
@@ -632,7 +637,7 @@ abstract class LP_Abstract_Post_Type {
 	 *
 	 * @return bool
 	 */
-	public function _check_post():bool {
+	public function _check_post(): bool {
 		global $pagenow, $post_type;
 
 		if ( ! is_admin() || ( ! in_array( $pagenow, array( 'edit.php', 'post.php' ) ) ) || ( $this->_post_type != $post_type ) ) {
@@ -651,7 +656,7 @@ abstract class LP_Abstract_Post_Type {
 	 * @since 4.1.6.9
 	 * @version 1.0.0
 	 */
-	public function check_post( int $post_id = 0 ):bool {
+	public function check_post( int $post_id = 0 ): bool {
 		$can_save = true;
 
 		try {
@@ -664,10 +669,9 @@ abstract class LP_Abstract_Post_Type {
 				throw new Exception( 'Post type is invalid' );
 			}
 
-			if ( ! current_user_can( ADMIN_ROLE ) ) {
-				if ( get_current_user_id() !== $post->post_author ) {
-					$can_save = false;
-				}
+			if ( ! current_user_can( ADMIN_ROLE ) &&
+				get_current_user_id() !== (int) $post->post_author ) {
+				$can_save = false;
 			}
 
 			$can_save = apply_filters( 'lp/custom-post-type/can-save', $can_save, $post );
@@ -683,7 +687,7 @@ abstract class LP_Abstract_Post_Type {
 	 *
 	 * @return bool
 	 */
-	protected function is_page_list_posts_on_backend():bool {
+	protected function is_page_list_posts_on_backend(): bool {
 		global $pagenow, $post_type;
 
 		if ( ! is_admin() || $pagenow != 'edit.php' || ( $this->_post_type != $post_type ) ) {
@@ -696,9 +700,8 @@ abstract class LP_Abstract_Post_Type {
 	/**
 	 * New Metabox instance
 	 *
-	 * @author Nhamdv
-	 *
 	 * @return void
+	 * @author Nhamdv
 	 */
 	public function meta_boxes() {
 		return array();
@@ -707,9 +710,8 @@ abstract class LP_Abstract_Post_Type {
 	/**
 	 * Render Metabox.
 	 *
-	 * @author Nhamdv
-	 *
 	 * @return void
+	 * @author Nhamdv
 	 */
 	public function render_meta_box() {
 		$add_meta_box = $this->meta_boxes();
@@ -759,16 +761,14 @@ abstract class LP_Abstract_Post_Type {
 			$meta_box[2] = array( $this, '_do_output_meta_box' );
 			call_user_func_array( 'add_meta_box', $meta_box );
 		}
-
 	}
 
 	/**
 	 * Filter item by the course selected.
 	 *
-	 * @since 3.0.7
-	 *
 	 * @return bool|int
 	 * @Todo move to course LP_Course_Post_Type
+	 * @since 3.0.7
 	 */
 	protected function _filter_items_by_course() {
 		$course_id = ! empty( $_REQUEST['course'] ) ? absint( $_REQUEST['course'] ) : false;

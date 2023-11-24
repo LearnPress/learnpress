@@ -128,7 +128,7 @@ class LP_Admin_Menu {
 
 		add_action(
 			'parent_file',
-			function( $parent_file ) {
+			function ( $parent_file ) {
 				global $current_screen;
 
 				$taxonomy = $current_screen->taxonomy;

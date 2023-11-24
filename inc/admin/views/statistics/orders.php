@@ -1,72 +1,57 @@
 <?php
-
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
-
-$sections = array(
-	'students'    => __( 'Students', 'learnpress' ),
-	'instructors' => __( 'Instructors', 'learnpress' ),
-);
-
-$section        = 'students';
-$sections_count = sizeof( $sections );
-$count          = 0;
+/**
+ * Template for displaying orders statistics tab Orders statistics page.
+ */
 ?>
 
-<div id="learn-press-statistic" class="learn-press-statistic-orders">
-	<ul class="subsubsub chart-buttons">
-		<li>
-			<button class="button" data-type="order-last-7-days" disabled="disabled"><?php _e( 'Last 7 Days', 'learnpress' ); ?></button>
-		</li>
-		<li>
-			<button class="button" data-type="order-last-30-days"><?php _e( 'Last 30 Days', 'learnpress' ); ?></button>
-		</li>
-		<li>
-			<button class="button" data-type="order-last-12-months"><?php _e( 'Last 12 Months', 'learnpress' ); ?></button>
-		</li>
-		<li>
-			<button class="button" data-type="order-all"><?php _e( 'All', 'learnpress' ); ?></button>
-		</li>
-		<li>
-			<form id="order-custom-time">
-				<span><?php _e( 'From', 'learnpress' ); ?></span>
-				<input type="text" placeholder="Y/m/d" name="from" class="date-picker" readonly="readonly">
-				<span><?php _e( 'To', 'learnpress' ); ?></span>
-				<input type="text" placeholder="Y/m/d" name="to" class="date-picker" readonly="readonly">
-				<input type="hidden" name="action" value="learnpress_custom_stats">
-				<button class="button button-primary" data-type="order-custom-time" type="submit" disabled="disabled"><?php _e( 'Go', 'learnpress' ); ?></button>
-			</form>
-		</li>
-	</ul>
-	<div class="clear"></div>
-	<br/>
-	<div id="chart-options">
-		<?php _e( 'Sale by', 'learnpress' ); ?>
-		<select id="report_sales_by">
-			<option value="date"><?php _e( 'Date', 'learnpress' ); ?></option>
-			<option value="course"><?php _e( 'Course', 'learnpress' ); ?></option>
-			<option value="category"><?php _e( 'Course Category', 'learnpress' ); ?></option>
-		</select>
-		<span id="panel_report_sales_by_course" class="panel_report_option">
-			<?php _e( 'Select a course', 'learnpress' ); ?>
-			<input id="report-by-course-id" class="statistics-search-course" />
-		</span>
-		<span id="panel_report_sales_by_category" class="panel_report_option">
-			<?php _e( 'Select a course category', 'learnpress' ); ?>
-			<input id="report-by-course-category-id" class="statistics-search-course-category" />
-		</span>
+<div class="lp-admin-statistics-tab-content">
+	<div class="btn-group btn-group-filter">
+		<button class="btn-filter-time active" type="button" data-filter="today" ><?php _e( 'Today', 'learnpress' ); ?></button>
+		<!-- <button class="btn-filter-time" type="button" data-filter="yesterday" ><?php _e( 'Yesterday', 'learnpress' ); ?></button> -->
+		<button class="btn-filter-time" type="button" data-filter="last7days" ><?php _e( 'Last 7 days', 'learnpress' ); ?></button>
+		<button class="btn-filter-time" type="button" data-filter="last30days" ><?php _e( 'Last 30 days', 'learnpress' ); ?></button>
+		<!-- <button class="btn-filter-time" type="button" data-filter="thismonth" ><?php _e( 'This month', 'learnpress' ); ?></button> -->
+		<button class="btn-filter-time" type="button" data-filter="last12months"><?php _e( 'Last 12 months', 'learnpress' ); ?></button>
+		<button class="btn-filter-time" type="button" data-filter="thisyear" ><?php _e( 'This year', 'learnpress' ); ?></button>
+		<button class="btn-filter-time" type="button" data-filter="custom" ><?php _e( 'Custom', 'learnpress' ); ?></button>
+		<div class="custom-filter-time">
+			<input type="date" id="ct-filter-1" />
+			<input type="date" id="ct-filter-2">
+			<button class="custom-filter-btn button button-primary" type="button"><?php _e( 'Filter', 'learnpress' ); ?></button>
+		</div>
 	</div>
-
-	<div class="clear"></div>
-	<div id="learn-press-chart" class="learn-press-chart">
+	<div class="statistics-content">
+		<input class="statistics-type" type="hidden" value="orders-statistics">
+		<div class="statistics-group group-statistic-order">
+			<div class="statistics-item">
+				<span class="statistics-item-title"><?php _e( 'Total Orders', 'learnpress' ); ?></span>
+				<span class="statistics-item-count total-order-count">0</span>
+			</div>
+			<div class="statistics-item">
+				<span class="statistics-item-title"><?php _e( 'Completed Orders', 'learnpress' ); ?></span>
+				<span class="statistics-item-count completed-order-count">0</span>
+			</div>
+			<div class="statistics-item">
+				<span class="statistics-item-title"><?php _e( 'Proccessing Orders', 'learnpress' ); ?></span>
+				<span class="statistics-item-count processing-order-count">0</span>
+			</div>
+			<div class="statistics-item">
+				<span class="statistics-item-title"><?php _e( 'Pending Orders', 'learnpress' ); ?></span>
+				<span class="statistics-item-count pending-order-count">0</span>
+			</div>
+			<div class="statistics-item">
+				<span class="statistics-item-title"><?php _e( 'Cancelled Orders', 'learnpress' ); ?></span>
+				<span class="statistics-item-count cancelled-order-count">0</span>
+			</div>
+			<div class="statistics-item">
+				<span class="statistics-item-title"><?php _e( 'Fail Orders', 'learnpress' ); ?></span>
+				<span class="statistics-item-count failed-order-count">0</span>
+			</div>
+		</div>
+		<h3 class="statistics-title"><?php _e( 'Completed Orders', 'learnpress' ); ?></h3>
+		<div id="orders-chart" class="statistics-chart-wrapper">
+			<?php lp_skeleton_animation_html( 10, 100 ); ?>
+			<canvas id="orders-chart-content" style="display: none;"></canvas>
+		</div>
 	</div>
-
-	<script type="text/javascript">
-		var LP_Chart_Config =  <?php learn_press_config_chart(); ?>;
-		jQuery(document).ready(function ($) {
-			$('#learn-press-chart').LP_Chart_Line(<?php echo json_encode( learn_press_get_chart_orders( null, 'days', 7 ) ); ?>, LP_Chart_Config);
-		});
-	</script>
 </div>
-

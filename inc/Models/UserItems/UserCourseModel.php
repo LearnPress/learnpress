@@ -10,6 +10,7 @@
 
 namespace LearnPress\Models\UserItems;
 
+use LP_Cache;
 use LP_Course;
 use LP_Course_Cache;
 use LP_Courses_Cache;
@@ -69,7 +70,7 @@ class UserCourseModel extends UserItemModel {
 	 * @param string $item_type
 	 * @return false|UserItemModel
 	 */
-	public function get_item_attend( int $item_id, string $item_type ) {
+	public function get_item_attend( int $item_id, string $item_type = '' ) {
 		$item = false;
 
 		try {
@@ -88,6 +89,7 @@ class UserCourseModel extends UserItemModel {
 						$item = new UserQuizModel( $item );
 						break;
 					default:
+						$item = new UserItemModel( $item );
 						break;
 				}
 
@@ -110,15 +112,21 @@ class UserCourseModel extends UserItemModel {
 	 */
 	public static function count_students( LP_User_Items_Filter $filter ): int {
 		// Check cache
-		$key_cache        = 'count-courses-student-' . md5( json_encode( $filter ) );
-		$lp_courses_cache = new LP_Courses_Cache( true );
-		$count            = $lp_courses_cache->get_cache( $key_cache );
+		$key_cache = 'count-courses-student-' . md5( json_encode( $filter ) );
+		$count     = LP_Cache::cache_load_first( 'get', $key_cache );
 		if ( false !== $count ) {
 			return $count;
 		}
 
+		$lp_courses_cache = new LP_Courses_Cache( true );
+		$count            = $lp_courses_cache->get_cache( $key_cache );
+		if ( false !== $count ) {
+			LP_Cache::cache_load_first( 'set', $key_cache, $count );
+			return $count;
+		}
+
 		$lp_user_items_db = LP_User_Items_DB::getInstance();
-		$count = $lp_user_items_db->count_students( $filter );
+		$count            = $lp_user_items_db->count_students( $filter );
 
 		// Set cache
 		$lp_courses_cache
@@ -126,6 +134,7 @@ class UserCourseModel extends UserItemModel {
 			->set_cache( $key_cache, $count );
 		$lp_courses_cache_keys = new LP_Courses_Cache( true );
 		$lp_courses_cache_keys->save_cache_keys_count_student_courses( $key_cache );
+		LP_Cache::cache_load_first( 'set', $key_cache, $count );
 
 		return $count;
 	}

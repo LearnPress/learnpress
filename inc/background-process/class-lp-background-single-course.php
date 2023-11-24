@@ -124,7 +124,7 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 				}
 			}
 
-			error_log( 'price: ' . $price );
+			//error_log( 'price: ' . $price );
 			update_post_meta( $this->lp_course->get_id(), '_lp_price', $price );
 
 			// Update course is sale
