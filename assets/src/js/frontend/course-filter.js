@@ -81,7 +81,7 @@ window.lpCourseFilter = {
 		controller = new AbortController();
 		signal = controller.signal;
 
-		const url = API.apiCourses + '?c_search=' + keyword + '&c_suggest=1';
+		const url = API.frontend.apiCourses + '?c_search=' + keyword + '&c_suggest=1';
 		let paramsFetch = {
 			method: 'GET',
 		};

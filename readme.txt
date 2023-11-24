@@ -5,7 +5,7 @@ Tags: elearning, education, course, lms, learning management system
 Requires at least: 6.2
 Tested up to: 6.4.1
 Requires PHP: 7.0
-Stable tag: 4.2.5.5
+Stable tag: 4.2.5.6
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -209,6 +209,13 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.
 
 == Changelog ==
+
+= 4.2.5.6 (2023-11-24) =
+~ Tweak: logic load Widget Filter Courses.
+~ Dev: assign/unassign course to user.
+~ Fixed: error still show price when user has bought course but not start course.
+~ Fixed: search suggest courses on Widget Filter Courses.
+~ Fixed: not call function calculate price when edit course with user is instructor.
 
 = 4.2.5.5 (2023-11-16) =
 ~ Fixed: security issue.

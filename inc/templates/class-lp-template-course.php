@@ -163,7 +163,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 		if ( $user_course instanceof UserCourseModel ) {
 			if ( $user_course->status === LP_COURSE_ENROLLED ) {
 				return;
-			} elseif ( ! $user->can_purchase_course( $course->get_id() ) ) {
+			} elseif ( $user->can_purchase_course( $course->get_id() ) instanceof WP_Error ) {
 				return;
 			}
 		}
