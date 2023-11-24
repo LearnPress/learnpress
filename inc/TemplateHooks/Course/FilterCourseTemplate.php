@@ -3,7 +3,7 @@
  * Template hooks Archive Package.
  *
  * @since 4.2.3.2
- * @version 1.0.2
+ * @version 1.0.3
  */
 
 namespace LearnPress\TemplateHooks\Course;
@@ -180,7 +180,7 @@ class FilterCourseTemplate {
 	 *
 	 * @return string
 	 * @since 4.2.3.2
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 */
 	public function html_price( array $data = [] ): string {
 		$content = '';
@@ -225,8 +225,8 @@ class FilterCourseTemplate {
 				];
 
 				$value    = "on_{$key}";
-				$checked  = in_array( $value, $data_selected ) ? 'checked' : '';
 				$disabled = $field['count'] > 0 ? '' : 'disabled';
+				$checked  = in_array( $value, $data_selected ) && empty( $disabled ) ? 'checked' : '';
 				$input    = sprintf(
 					'<input name="sort_by" type="checkbox" value="%1$s" %2$s %3$s>',
 					esc_attr( $value ),
@@ -267,7 +267,7 @@ class FilterCourseTemplate {
 	 *
 	 * @return string
 	 * @since 4.2.3.2
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 */
 	public function html_category( array $data = [] ): string {
 		$content = '';
@@ -316,8 +316,8 @@ class FilterCourseTemplate {
 				Courses::get_courses( $filter, $count_courses );
 
 				$value    = $term->term_id;
-				$checked  = in_array( $value, $data_selected ) ? 'checked' : '';
 				$disabled = $count_courses > 0 ? '' : 'disabled';
+				$checked  = in_array( $value, $data_selected ) && empty( $disabled ) ? 'checked' : '';
 				$input    = sprintf( '<input name="term_id" type="checkbox" value="%s" %s %s>', esc_attr( $value ), esc_attr( $checked ), $disabled );
 				$label    = sprintf( '<label for="">%s</label>', wp_kses_post( $term->name ) );
 				$count    = sprintf( '<span class="count">%s</span>', esc_html( $count_courses ) );
@@ -353,7 +353,7 @@ class FilterCourseTemplate {
 	 *
 	 * @return string
 	 * @since 4.2.3.2
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 */
 	public function html_tag( array $data = [] ): string {
 		$content = '';
@@ -393,8 +393,8 @@ class FilterCourseTemplate {
 
 				$count_courses = 0;
 				Courses::get_courses( $filter, $count_courses );
-				$checked  = in_array( $value, $data_selected ) ? 'checked' : '';
 				$disabled = $count_courses > 0 ? '' : 'disabled';
+				$checked  = in_array( $value, $data_selected ) && empty( $disabled ) ? 'checked' : '';
 				$input    = sprintf( '<input name="tag_id" type="checkbox" value="%s" %s %s>', esc_attr( $value ), esc_attr( $checked ), $disabled );
 				$label    = sprintf( '<label for="">%s</label>', wp_kses_post( $term->name ) );
 				$count    = sprintf( '<span class="count">%s</span>', esc_html( $count_courses ) );
@@ -430,7 +430,7 @@ class FilterCourseTemplate {
 	 *
 	 * @return string
 	 * @since 4.2.3.2
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 */
 	public function html_author( array $data = [] ): string {
 		$content = '';
@@ -460,8 +460,8 @@ class FilterCourseTemplate {
 				LP_Course::get_courses( $filter, $total_course_of_instructor );
 
 				$value    = $instructor->ID;
-				$checked  = in_array( $value, $data_selected ) ? 'checked' : '';
 				$disabled = $total_course_of_instructor > 0 ? '' : 'disabled';
+				$checked  = in_array( $value, $data_selected ) && empty( $disabled ) ? 'checked' : '';
 				$input    = sprintf( '<input name="c_authors" type="checkbox" value="%s" %s %s>', esc_attr( $value ), esc_attr( $checked ), $disabled );
 				$label    = sprintf( '<label for="">%s</label>', esc_html( $instructor->display_name ) );
 				$count    = sprintf( '<span class="count">%s</span>', esc_html( $total_course_of_instructor ) );
@@ -498,7 +498,7 @@ class FilterCourseTemplate {
 	 *
 	 * @return string
 	 * @since 4.2.3.2
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 */
 	public function html_level( array $data = [] ): string {
 		$content = '';
@@ -527,8 +527,8 @@ class FilterCourseTemplate {
 				$total_courses       = 0;
 				LP_Course::get_courses( $filter, $total_courses );
 
-				$checked  = in_array( $value, $data_selected ) ? 'checked' : '';
 				$disabled = $total_courses > 0 ? '' : 'disabled';
+				$checked  = in_array( $value, $data_selected ) && empty( $disabled ) ? 'checked' : '';
 				$input    = sprintf(
 					'<input name="c_level" type="checkbox" value="%1$s" %2$s %3$s>',
 					esc_attr( $value ),
@@ -604,11 +604,11 @@ class FilterCourseTemplate {
 
 		// Check has in category page.
 		if ( isset( $params_url['page_term_id_current'] ) &&
-			empty( $params_url['term_id'] ) ) {
+		empty( $params_url['term_id'] ) ) {
 			$filter->term_ids[] = $params_url['page_term_id_current'];
 		} // Check has in tag page.
 		elseif ( isset( $params_url['page_tag_id_current'] ) &&
-				empty( $params_url['tag_id'] ) ) {
+		empty( $params_url['tag_id'] ) ) {
 			$filter->tag_ids[] = $params_url['page_tag_id_current'];
 		}
 	}
