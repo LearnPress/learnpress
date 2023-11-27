@@ -24,7 +24,6 @@ export default function assignUserCourse() {
 		}
 
 		const optionDefault = {
-			maxItems: 5,
 			options: [],
 			plugins: {
 				remove_button: {

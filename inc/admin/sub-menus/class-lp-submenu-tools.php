@@ -18,7 +18,7 @@ class LP_Submenu_Tools extends LP_Abstract_Submenu {
 			'learn-press/admin/tools-tabs',
 			array(
 				'course'          => __( 'Course Data', 'learnpress' ),
-				//'assign_course'   => __( 'Assign/Unassigned Course', 'learnpress' ),
+				'assign_course'   => __( 'Assign/Unassigned Course', 'learnpress' ),
 				'database'        => __( 'Database', 'learnpress' ),
 				'template'        => __( 'Templates', 'learnpress' ),
 				'lp_beta_version' => __( 'LearnPress Beta Version', 'learnpress' ),
