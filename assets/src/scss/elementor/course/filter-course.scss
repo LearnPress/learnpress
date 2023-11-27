@@ -20,9 +20,10 @@
 			display: -webkit-box;
 			display: -ms-flexbox;
 			display: inline-flex;
-			
+
 			& ~.selected-list {
 				display: inline-flex;
+				margin: 0 10px;
 			}
 		}
     }
@@ -33,7 +34,6 @@
 		gap: 10px;
 		align-items: center;
 		flex-wrap: wrap;
-		margin: 0 10px;
 		@media (max-width: 600px) {
 			margin: 10px 0;
 		}
