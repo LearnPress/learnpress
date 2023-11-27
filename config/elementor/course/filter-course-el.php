@@ -48,12 +48,12 @@ $content_fields = array_merge(
 						],
 						[
 							'name'      => 'type_source',
-							'label'     => esc_html__( 'Type (Coming Soon)', 'learnpress' ),
+							'label'     => esc_html__( 'Type Source', 'learnpress' ),
 							'type'      => Controls_Manager::SELECT,
 							'default'   => 'checkbox',
 							'options'   => array(
-								'checkbox' => esc_html__( 'CheckBox', 'learnpress' ),
-								'dropdown' => esc_html__( 'Drop Down', 'learnpress' ),
+								'checkbox' => esc_html__( 'Check Box', 'learnpress' ),
+								'dropdown' => esc_html__( 'Drop Down (Coming Soon)', 'learnpress' ),
 							),
 							'condition' => [
 								'item_fields' => [ 'price', 'category', 'tag', 'author', 'level' ],
