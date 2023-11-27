@@ -101,8 +101,8 @@ window.lpCourseFilter = {
 					callBackDone( response );
 				}
 			} ).catch( ( error ) => {
-				console.log( error );
-			} )
+			console.log( error );
+		} )
 			.finally( () => {
 				if ( undefined !== callBackFinally ) {
 					callBackFinally();
@@ -269,7 +269,7 @@ window.lpCourseFilter = {
 			const form = parent.closest( `.${ classCourseFilter }` );
 			const btnSubmit = form.querySelector( '.course-filter-submit' );
 			let enableLoadAJAXCourses = false;
-			enableLoadAJAXCourses = parseInt( lpSettingCourses.lpArchiveLoadAjax );
+			enableLoadAJAXCourses = 'undefined' !== typeof lpSettingCourses ? parseInt( lpSettingCourses.lpArchiveLoadAjax ) : 0;
 			const elListCourse = document.querySelector( '.learn-press-courses' );
 			if ( elListCourse && enableLoadAJAXCourses ) {
 				btnSubmit.click();

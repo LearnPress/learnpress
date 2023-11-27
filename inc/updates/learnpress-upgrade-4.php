@@ -1254,60 +1254,18 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 		$response  = new LP_Step( __FUNCTION__, '' );
 		$lp_db     = LP_Database::getInstance();
 		$wpdb      = $lp_db->wpdb;
-		$page      = 0;
-		$offset    = 0;
-		$limit     = 100;
-		$total_row = 0;
 
 		try {
-			if ( empty( $data ) ) {
-				// Check total rows.
-				$query = $lp_db->wpdb->prepare(
-					"
-					SELECT COUNT(meta_id) FROM $lp_db->tb_postmeta
-					WHERE meta_key = %s
-					AND meta_value = %s
-					",
-					'lp_type',
-					'fill_in_blank'
-				);
-
-				$total_row = $response->data->total_rows = (int) $lp_db->wpdb->get_var( $query );
-			} else {
-				$page      = $data['p'];
-				$offset    = $limit * $page;
-				$total_row = $data['total_rows'];
-			}
-
-			$query_get_question_ids = $wpdb->prepare(
-				"
-				    SELECT meta_id
-					FROM  {$lp_db->tb_postmeta}
-				    WHERE meta_key = %s
-				    AND meta_value = %s
-				    LIMIT %d, %d
-				",
-				'_lp_type',
-				'fill_in_blank',
-				$offset,
-				$limit
-			);
-
-			$question_ids = $lp_db->wpdb->get_col( $query_get_question_ids );
-
-			if ( empty( $question_ids ) ) {
-				return $this->finish_step( $response, __FUNCTION__ . ' finished' );
-			}
-
-			$question_ids_str = implode( ',', $question_ids );
-
 			$query = $wpdb->prepare(
 				"
 				UPDATE {$lp_db->tb_postmeta}
 				SET meta_value = %s
-				WHERE meta_id IN ($question_ids_str)
+				WHERE meta_key = %s
+				AND meta_value = %s
 				",
-				'fill_in_blanks'
+				'fill_in_blanks',
+				'_lp_type',
+				'fill_in_blank'
 			);
 			$lp_db->wpdb->query( $query );
 
@@ -1315,13 +1273,7 @@ class LP_Upgrade_4 extends LP_Handle_Upgrade_Steps {
 				throw new Exception( $lp_db->wpdb->last_error );
 			}
 
-			$percent = LP_Helper::progress_percent( $offset, $limit, $total_row );
-
-			$response->status           = 'success';
-			$response->message          = 'Convert question FIB success';
-			$response->percent          = $percent;
-			$response->data->p          = ++ $page;
-			$response->data->total_rows = $total_row;
+			return $this->finish_step( $response, __FUNCTION__ . ' finished' );
 		} catch ( Exception $e ) {
 			$response->message = $this->error_step( $response->name, $e->getMessage() );
 		}
