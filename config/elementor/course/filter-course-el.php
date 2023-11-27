@@ -46,19 +46,19 @@ $content_fields = array_merge(
 								'btn_reset'  => esc_html__( 'Button Reset', 'learnpress' ),
 							),
 						],
-						[
-							'name'      => 'type_source',
-							'label'     => esc_html__( 'Type Source', 'learnpress' ),
-							'type'      => Controls_Manager::SELECT,
-							'default'   => 'checkbox',
-							'options'   => array(
-								'checkbox' => esc_html__( 'Check Box', 'learnpress' ),
-								'dropdown' => esc_html__( 'Drop Down (Coming Soon)', 'learnpress' ),
-							),
-							'condition' => [
-								'item_fields' => [ 'price', 'category', 'tag', 'author', 'level' ],
-							],
-						],
+						// [
+						// 	'name'      => 'type_source',
+						// 	'label'     => esc_html__( 'Type Source', 'learnpress' ),
+						// 	'type'      => Controls_Manager::SELECT,
+						// 	'default'   => 'checkbox',
+						// 	'options'   => array(
+						// 		'checkbox' => esc_html__( 'Check Box', 'learnpress' ),
+						// 		'dropdown' => esc_html__( 'Drop Down (Coming Soon)', 'learnpress' ),
+						// 	),
+						// 	'condition' => [
+						// 		'item_fields' => [ 'price', 'category', 'tag', 'author', 'level' ],
+						// 	],
+						// ],
 						[
 							'name'         => 'enable_count',
 							'label'        => esc_html__( 'Show Count', 'learnpress' ),
