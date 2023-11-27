@@ -25,7 +25,7 @@ defined( 'ABSPATH' ) or die();
 			<ul>
 				<li>
 					<label>
-						<?php _e( 'Choose Course: (Max 5 courses)', 'learnpress' ); ?>
+						<?php _e( 'Choose Course:', 'learnpress' ); ?>
 						<select name="course_ids" class="lp-tom-select" style="width: 100%;" multiple>
 							<option value=""><?php _e( 'Search courses', 'learnpress' ); ?></option>
 						</select>
@@ -34,7 +34,7 @@ defined( 'ABSPATH' ) or die();
 				<li>
 					<div class="assign-to-user">
 						<label>
-							<?php _e( 'Choose User: (Max 5 users)', 'learnpress' ); ?>
+							<?php _e( 'Choose User:', 'learnpress' ); ?>
 							<select name="user_ids" multiple style="width:100%">
 								<option value=""><?php _e( 'Search users', 'learnpress' ); ?></option>
 							</select>
