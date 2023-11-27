@@ -272,6 +272,30 @@ $content_fields = array_merge(
                     ] 
 				]
             ),
+            LPElementorControls::add_responsive_control_type(
+                "filter_section_width",
+                esc_html__( 'Width', 'learnpress' ),
+                [
+                    'size' => 300,
+                ],
+                Controls_Manager::SLIDER,
+                [
+                    'size_units' => array( 'px', '%', 'custom' ),
+                    'range'      => array(
+                        'px' => array(
+                            'min' => 1,
+                            'max' => 1000,
+                            'step'=> 5
+                        ),
+                    ),
+                    'selectors'  => array(
+                        '{{WRAPPER}} .lp-form-course-filter' => 'width: {{SIZE}}{{UNIT}};',
+                    ),
+                    'condition' => [
+                        'enable_filter_button'    => 'yes',
+                    ] 
+                ]
+            ),
             'popover_end' => [
                 'method' => 'end_popover',
             ],
@@ -318,25 +342,6 @@ $style_fields   = array_merge(
                     'size_units' => [ 'px', '%', 'custom' ],
                     'selectors'  => array(
                         "{{WRAPPER}} .lp-form-course-filter" => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-                    ),
-                ]
-            ),
-            "filter_section_width"          => LPElementorControls::add_responsive_control_type(
-                "filter_section_width",
-                esc_html__( 'Width', 'learnpress' ),
-                [],
-                Controls_Manager::SLIDER,
-                [
-                    'size_units' => array( 'px', '%', 'custom' ),
-                    'range'      => array(
-                        'px' => array(
-                            'min' => 1,
-                            'max' => 1000,
-                            'step'=> 5
-                        ),
-                    ),
-                    'selectors'  => array(
-                        '{{WRAPPER}} .lp-form-course-filter' => 'width: {{SIZE}}{{UNIT}};',
                     ),
                 ]
             ),
