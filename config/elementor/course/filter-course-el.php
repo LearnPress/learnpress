@@ -117,32 +117,6 @@ $content_fields = array_merge(
 								'toggle_content' => 'yes',
 							],
 						],
-						[
-							'name'        => 'offset_x',
-							'label'       => esc_html__( 'Offset X (px)', 'learnpress' ),
-							'type'        => Controls_Manager::NUMBER,
-							'label_block' => false,
-							'selectors'   => array(
-								'{{WRAPPER}} .toggle-content >.icon-toggle-filter' => 'right:{{VALUE}}px',
-							),
-							'condition'   => [
-								'enable_heading' => 'yes',
-								'toggle_content' => 'yes',
-							],
-						],
-						[
-							'name'        => 'offset_y',
-							'label'       => esc_html__( 'Offset Y (px)', 'learnpress' ),
-							'type'        => Controls_Manager::NUMBER,
-							'label_block' => false,
-							'selectors'   => array(
-								'{{WRAPPER}} .toggle-content >.icon-toggle-filter' => 'top:{{VALUE}}px',
-							),
-							'condition'   => [
-								'enable_heading' => 'yes',
-								'toggle_content' => 'yes',
-							],
-						],
 						[ 'method' => 'end_popover' ],
 					],
 					'prevent_empty' => false,
@@ -212,7 +186,7 @@ $content_fields = array_merge(
 					'label_block' => false,
 					'condition'   => [
 						'enable_filter_button' => 'yes',
-					],
+					]
 				]
 			),
 			LPElementorControls::add_control_type(
@@ -226,7 +200,7 @@ $content_fields = array_merge(
 					'return_value' => 'yes',
 					'condition'    => [
 						'enable_filter_button' => 'yes',
-					],
+					]
 				]
 			),
 			LPElementorControls::add_control_type(
@@ -240,7 +214,7 @@ $content_fields = array_merge(
 					'condition'   => [
 						'enable_filter_button'      => 'yes',
 						'enable_icon_filter_button' => 'yes',
-					],
+					]
 				]
 			),
 			LPElementorControls::add_control_type_select(
@@ -255,7 +229,7 @@ $content_fields = array_merge(
 					'condition' => [
 						'enable_filter_button'      => 'yes',
 						'enable_icon_filter_button' => 'yes',
-					],
+					]
 				]
 			),
 			LPElementorControls::add_control_type(
@@ -269,7 +243,7 @@ $content_fields = array_merge(
 					'return_value' => 'yes',
 					'condition'    => [
 						'enable_filter_button' => 'yes',
-					],
+					]
 				]
             ),
             LPElementorControls::add_responsive_control_type(
@@ -425,6 +399,30 @@ $style_fields = array_merge(
 					),
 				]
 			),
+            'toggle_offset_x'    => LPElementorControls::add_responsive_control_type(  
+                'toggle_offset_x',
+                esc_html__( 'Toggle Offset X (px)', 'learnpress' ),
+                '',
+                Controls_Manager::NUMBER,
+                [
+                    'label_block' => false,
+                    'selectors'   => array(
+                        '{{WRAPPER}} .toggle-content >.icon-toggle-filter' => 'right:{{VALUE}}px',
+                    ),
+                ]
+            ),
+            'toggle_offset_y'    => LPElementorControls::add_responsive_control_type(  
+                'toggle_offset_y',
+                esc_html__( 'Toggle Offset Y (px)', 'learnpress' ),
+                '',
+                Controls_Manager::NUMBER,
+                [
+                    'label_block' => false,
+                    'selectors'   => array(
+                        '{{WRAPPER}} .toggle-content >.icon-toggle-filter' => 'top:{{VALUE}}px',
+                    ),
+                ]
+            ),
 		]
 	),
 	LPElementorControls::add_fields_in_section(
