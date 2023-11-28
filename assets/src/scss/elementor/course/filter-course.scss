@@ -159,6 +159,13 @@
 				display: block;
 			}
 		}
+		.lp-form-course-filter__content .lp-course-filter__field input[disabled] {
+			opacity: 0.7;
+
+			& ~label, ~.count {
+				opacity: 0.7;
+			}
+		}
 	}
 	.filter-bg {
 		position: fixed;

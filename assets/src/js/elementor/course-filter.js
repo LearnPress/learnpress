@@ -4,6 +4,11 @@ const classCourseFilter = 'lp-form-course-filter';
 document.addEventListener( 'click', function( e ) {
     const target = e.target;
 
+	if ( target.classList.contains( 'course-filter-reset' ) ) {
+		e.preventDefault();
+		window.lpCourseFilterEl.resetList( target );
+	}
+
     if ( target.classList.contains( 'lp-button-popup' ) || target.classList.contains( 'icon-align-right' ) || target.classList.contains( 'icon-align-left' ) || target.classList.contains( 'selected-filter' ) ) {
 		e.preventDefault();
 		const elLpCourseFilter = target.closest( '.elementor-widget-learnpress_filter_course' );
@@ -43,6 +48,12 @@ document.addEventListener( 'click', function( e ) {
 });
 
 window.lpCourseFilterEl = {
+	resetList: ( btnReset ) => {
+		const elSelectedList = document.querySelector( '.selected-list' );
+		if ( elSelectedList ) {
+			elSelectedList.remove();
+		}
+	},
     resetSelected: ( target ) => {
 		const form = document.querySelector( `.${ classCourseFilter }` );
 		const btnSubmit = form.querySelector( '.course-filter-submit' );
@@ -61,5 +72,10 @@ window.lpCourseFilterEl = {
 		if ( lpGlobalSettings.is_course_archive ) {
 			btnSubmit.click();
 		}
+		if ( lpSelected ) {
+			lpSelected.remove();
+		}
+		// Load AJAX widget by params
+		window.lpCourseFilter.loadWidgetFilterREST( form );
 	},
 }
