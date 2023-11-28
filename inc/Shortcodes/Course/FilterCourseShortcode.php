@@ -26,7 +26,11 @@ class FilterCourseShortcode extends AbstractShortcode {
 				$attrs = [];
 			}
 			ob_start();
-			do_action( 'learn-press/filter-courses/layout', $attrs );
+			$data = array_merge(
+				[ 'params_url' => lp_archive_skeleton_get_args() ],
+				$attrs
+			);
+			do_action( 'learn-press/filter-courses/layout', $data );
 			$content = ob_get_clean();
 		} catch ( \Throwable $e ) {
 			ob_end_clean();
