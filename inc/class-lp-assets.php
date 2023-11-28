@@ -323,6 +323,15 @@ class LP_Assets extends LP_Abstract_Assets {
 					'',
 					[ 'strategy' => 'defer' ]
 				),
+				'lp-load-ajax'     => new LP_Asset_Key(
+					self::url( 'js/dist/loadAJAX' . self::$_min_assets . '.js' ),
+					array(),
+					array(),
+					0,
+					0,
+					'',
+					[ 'strategy' => 'async' ]
+				),
 			)
 		);
 

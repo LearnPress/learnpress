@@ -27,6 +27,7 @@ module.exports = {
 		'./assets/js/dist/admin/pages/dashboard': './assets/src/apps/js/admin/pages/dashboard.js',
 		'./assets/js/dist/admin/pages/widgets': './assets/src/apps/js/admin/pages/widgets.js',
 		'./assets/js/dist/admin/course-material': './assets/src/apps/js/admin/course-material.js',
+		'./assets/js/dist/loadAJAX': './assets/src/js/loadAJAX.js',
 		'./assets/js/dist/utils': './assets/src/js/utils/index.js',
 
 		'./assets/js/dist/js/data-controls': {
