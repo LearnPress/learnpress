@@ -101,8 +101,8 @@ window.lpCourseFilter = {
 					callBackDone( response );
 				}
 			} ).catch( ( error ) => {
-			console.log( error );
-		} )
+				console.log( error );
+			} )
 			.finally( () => {
 				if ( undefined !== callBackFinally ) {
 					callBackFinally();
@@ -221,7 +221,7 @@ window.lpCourseFilter = {
 		}
 	},
 	reset: ( btnReset ) => {
-		const form = document.querySelector( `.${ classCourseFilter }` );
+		const form = btnReset.closest( `.${ classCourseFilter }` );
 		const btnSubmit = form.querySelector( '.course-filter-submit' );
 		const elResult = form.querySelector( '.lp-course-filter-search-result' );
 		const elSearch = form.querySelector( '.lp-course-filter-search' );
