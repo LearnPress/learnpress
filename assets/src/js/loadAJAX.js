@@ -5,6 +5,7 @@
  */
 
 import { lpFetchAPI } from './utils';
+import API from './api';
 
 const lpAJAX = ( () => {
 	return {
@@ -31,4 +32,4 @@ const m = window.lpAJAXG();
 const n = lpAJAX();
 export default lpAJAX;
 
-m.fetchAPI('12312', {}, {});
+m.fetchAPI(API.frontend.apiAJAX, { method: 'POST' }, {});
