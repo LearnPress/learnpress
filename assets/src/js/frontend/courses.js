@@ -48,6 +48,7 @@ window.lpCourseList = ( () => {
 	const classListCourse = 'learn-press-courses';
 	const classPaginationCourse = 'learn-press-pagination';
 	const classSkeletonArchiveCourse = 'lp-archive-course-skeleton';
+	const classCoursesPageResult = 'courses-page-result';
 	const lpArchiveLoadAjax = parseInt( lpSettingCourses.lpArchiveLoadAjax || 0 );
 	const lpArchiveNoLoadAjaxFirst = parseInt( lpSettingCourses.lpArchiveNoLoadAjaxFirst ) === 1;
 	const lpArchiveSkeletonParam = lpData.urlParams || [];
@@ -279,7 +280,7 @@ window.lpCourseList = ( () => {
 					elListCourse.insertAdjacentHTML( 'afterend', pagination );
 
 					// Set showing results page.
-					const elCoursesPageResult = document.querySelector( '.courses-page-result' );
+					const elCoursesPageResult = document.querySelector( `.${ classCoursesPageResult }` );
 					if ( elCoursesPageResult ) {
 						elCoursesPageResult.innerHTML = res.data.from_to || '';
 					}
@@ -379,7 +380,7 @@ window.lpCourseList = ( () => {
 					elListCourse.insertAdjacentHTML( 'afterend', res.data.pagination || '' );
 
 					// Set showing results page.
-					const elCoursesPageResult = document.querySelector( '.courses-page-result' );
+					const elCoursesPageResult = document.querySelector( `.${ classCoursesPageResult }` );
 					if ( elCoursesPageResult ) {
 						elCoursesPageResult.innerHTML = res.data.from_to || '';
 					}
@@ -427,7 +428,7 @@ window.lpCourseList = ( () => {
 					}
 
 					// Set showing results page.
-					const elCoursesPageResult = document.querySelector( '.courses-page-result' );
+					const elCoursesPageResult = document.querySelector( `.${ classCoursesPageResult }` );
 					if ( elCoursesPageResult ) {
 						elCoursesPageResult.innerHTML = res.data.from_to || '';
 					}
@@ -512,6 +513,12 @@ window.lpCourseList = ( () => {
 
 								const pagination = res.data.pagination || '';
 								elListCourse.insertAdjacentHTML( 'afterend', pagination );
+
+								// Set showing results page.
+								const elCoursesPageResult = document.querySelector( `.${ classCoursesPageResult }` );
+								if ( elCoursesPageResult ) {
+									elCoursesPageResult.innerHTML = res.data.from_to || '';
+								}
 							}
 						}, 1 );
 					},
