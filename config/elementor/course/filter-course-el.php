@@ -316,7 +316,7 @@ $style_fields = array_merge(
 			'filter_section_background' => LPElementorControls::add_control_type_color(
 				'filter_section_background',
 				esc_html__( 'Background', 'learnpress' ),
-				[ '{{WRAPPER}} .lp-form-course-filter' => 'background: {{VALUE}}' ]
+				[ '{{WRAPPER}} .lp-form-course-filter' => 'background: {{VALUE}};' ]
 			),
 			'filter_section_radius'     => LPElementorControls::add_responsive_control_type(
 				'filter_section_radius',
@@ -374,7 +374,7 @@ $style_fields = array_merge(
 			'item_background' => LPElementorControls::add_control_type_color(
 				'layout_background',
 				esc_html__( 'Background', 'learnpress' ),
-				[ '{{WRAPPER}} .lp-form-course-filter__item' => 'background: {{VALUE}}' ]
+				[ '{{WRAPPER}} .lp-form-course-filter__item' => 'background: {{VALUE}};' ]
 			),
 			'item_radius'     => LPElementorControls::add_responsive_control_type(
 				'item_radius',
