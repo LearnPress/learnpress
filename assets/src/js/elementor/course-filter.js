@@ -46,9 +46,8 @@ document.addEventListener( 'click', function( e ) {
 		window.lpCourseFilterEl.resetSelected( target );
 	}
 
-	//if ( target.closest( '.lp-course-filter__field' ) ){
-		window.lpCourseFilterEl.updateSelected( target );
-	//}
+	window.lpCourseFilterEl.updateSelected( target );
+
 });
 
 window.lpCourseFilterEl = {
@@ -83,21 +82,20 @@ window.lpCourseFilterEl = {
 		if ( lpSelected ) {
 			lpSelected.remove();
 		}
-		// Load AJAX widget by params
+
 		window.lpCourseFilter.loadWidgetFilterREST( form );
 	},
 	updateSelected: ( target ) => {
 		const form = document.querySelector( `.${ classCourseFilter }` );
 		const selectedList = document.querySelector( '.selected-list' );
 		const selectedListItem = document.querySelectorAll( '.selected-item' );
-		const btnSubmit = form.querySelector( '.course-filter-submit' );
 		
 		if ( target.tagName === 'INPUT' ) {
 			const lpSelectedName = target.getAttribute( 'name' ); 
 			const lpSelectedID = target.getAttribute( 'value' );
 
 			if ( ! selectedList ){
-				selectedList.innerHTML = ''; 
+				return; 
 			}
 			const parent = target.closest( '.lp-course-filter__field' );
 
@@ -114,10 +112,8 @@ window.lpCourseFilterEl = {
 			
 			selectedList.innerHTML += '<span class="selected-item" data-name="'+ lpSelectedName +'" data-value="'+ lpSelectedID +'">' + parent.querySelector('label').innerHTML + '<i class="icon-remove-selected fas fa-times"></i></span>';
 
-			// Load AJAX widget by params
 			window.lpCourseFilter.loadWidgetFilterREST( form );
 		}else {
-			// Click el parent of input to tick/untick field
 			let elChoice;
 
 			if ( target.classList.contains( 'lp-course-filter__field' ) ) {
@@ -139,7 +135,7 @@ window.lpCourseFilterEl = {
 					return;
 				}
 			}
-			// Load AJAX widget by params
+
 			window.lpCourseFilter.loadWidgetFilterREST( form );
 			return;
 		}
