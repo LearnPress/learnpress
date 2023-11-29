@@ -6,30 +6,34 @@
  * @version 1.0.0
  */
 
-namespace learnpress\inc\TemplateHooks;
+namespace LearnPress\TemplateHooks;
 
 use LearnPress\Helpers\Template;
 use Throwable;
 
 class TemplateAJAX {
 	/**
+	 * @param string $content
 	 * @param array $args
 	 * @param array $callback [ 'class', 'method' ]
 	 *
 	 * @return string
+	 * @since 4.2.5.7
+	 * @version 1.0.0
 	 */
-	public static function send_data_to_load_ajax( array $args = [], array $callback = [] ): string {
-		wp_enqueue_script( 'lp-load-template-via-ajax' );
-		$content = '';
+	public static function load_content_via_ajax( string $content = '', array $args = [], array $callback = [] ): string {
+		$html_wrapper = '';
 
 		try {
-			$html_wrapper = [
-				'<div class="lp-load-ajax-element">' => '</div>',
+			$data         = [
+				'args'     => $args,
+				'callback' => $callback,
 			];
-			$content      = sprintf(
-				'%s<span class="lp-loading-circle hide"></span>',
-				__( 'Load more', 'learnpress' )
-			);
+			$data_send    = esc_attr( htmlentities2( json_encode( $data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) ) );
+			$el_has_data = sprintf( '<div class="lp-load-ajax-element" data-send="%s">', $data_send );
+			$html_wrapper = [
+				$el_has_data => '</div>',
+			];
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ' ' . $e->getMessage() );
 		}

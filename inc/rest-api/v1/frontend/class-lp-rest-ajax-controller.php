@@ -18,7 +18,7 @@ class LP_REST_AJAX_Controller extends LP_Abstract_REST_Controller {
 		$this->routes = array(
 			'/' => array(
 				array(
-					'methods'             => WP_REST_Server::CREATABLE,
+					'methods'             => WP_REST_Server::ALLMETHODS,
 					'callback'            => array( $this, 'get_content' ),
 					'permission_callback' => '__return_true',
 				),
@@ -30,8 +30,13 @@ class LP_REST_AJAX_Controller extends LP_Abstract_REST_Controller {
 
 	/**
 	 * @param WP_REST_Request $request
+	 * Has two params: callback and args.
+	 * Data type of callback is [ 'class' => '', 'method' => '' ].
+	 * Data type of args is array.
 	 *
 	 * @return LP_REST_Response
+	 * @since 4.2.5.7
+	 * @version 1.0.0
 	 */
 	public function get_content( WP_REST_Request $request ): LP_REST_Response {
 		$response = new LP_REST_Response();
@@ -39,17 +44,33 @@ class LP_REST_AJAX_Controller extends LP_Abstract_REST_Controller {
 		try {
 			$params = $request->get_params();
 
-			if ( empty( $params['class'] ) ||
-			     empty( $params['method'] ) ||
-			     empty( $params['target'] ) ) {
+			if ( empty( $params['callback'] ) ||
+				empty( $params['args'] ) ) {
 				throw new Exception( 'Error: params invalid!' );
 			}
 
-			$class  = $params['class'];
-			$method = $params['method'];
-			$data   = new stdClass();
+			// @var array $args
+			$args     = $params['args'];
+			$callBack = $params['callback'];
+			if ( $request->get_method() === 'GET' ) {
+				$args     = LP_Helper::json_decode( $params['args'], true );
+				$callBack = LP_Helper::json_decode( $params['callback'], true );
+			}
+
+			if ( empty( $callBack['class'] ) ||
+				empty( $callBack['method'] ) ) {
+				throw new Exception( 'Error: callback invalid!' );
+			}
+
+			$class  = $callBack['class'];
+			$method = $callBack['method'];
+			$data   = null;
 			if ( is_callable( [ $class, $method ] ) ) {
-				$data = call_user_func( [ $class, $method ], $params );
+				$data = call_user_func( [ $class, $method ], $args );
+			}
+
+			if ( ! $data instanceof stdClass && ! isset( $data->content ) ) {
+				throw new Exception( 'Error: data content invalid!' );
 			}
 
 			$response->status  = 'success';
