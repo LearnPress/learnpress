@@ -51,6 +51,8 @@
 			display: block;
 			width: 300px;
 			transform: translate3d(300px,0,0);
+			background-color: #ffffff;
+			padding: 15px;
 			&::-webkit-scrollbar {
 				width: 5px;
 			}
