@@ -707,23 +707,6 @@ $style_fields = array_merge(
 				[ 'text_display' ]
 			),
 			[
-				'heading_selected_list' => LPElementorControls::add_control_type(
-					'heading_selected_list',
-					esc_html__( 'Selected List', 'learnpress' ),
-					'',
-					Controls_Manager::HEADING,
-					[
-						'separator' => 'before',
-					]
-				),
-			],
-			LPElementorControls::add_controls_style_button(
-				'selected_list',
-				'.selected-list span',
-				[],
-				[ 'text_display', 'text_shadow' ]
-			),
-			[
 				'heading_selected_number' => LPElementorControls::add_control_type(
 					'heading_selected_number',
 					esc_html__( 'Selected Number', 'learnpress' ),
