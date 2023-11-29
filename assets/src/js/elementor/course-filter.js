@@ -45,6 +45,10 @@ document.addEventListener( 'click', function( e ) {
 		e.preventDefault();
 		window.lpCourseFilterEl.resetSelected( target );
 	}
+
+	//if ( target.closest( '.lp-course-filter__field' ) ){
+		window.lpCourseFilterEl.updateSelected( target );
+	//}
 });
 
 window.lpCourseFilterEl = {
@@ -66,7 +70,11 @@ window.lpCourseFilterEl = {
 		}
 		for ( let i = 0; i < form.elements.length; i++ ) {
 			if(form.elements[ i ].getAttribute('name') ==  lpSelectedName && form.elements[ i ].getAttribute('value') == lpSelectedID){
-				form.elements[ i ].removeAttribute( 'checked' );
+				if ( ! form.elements[ i ].getAttribute('checked')){
+					form.elements[ i ].click();
+				}else {
+					form.elements[ i ].removeAttribute( 'checked' );
+				}
 			}
 		}
 		if ( lpGlobalSettings.is_course_archive ) {
@@ -77,5 +85,63 @@ window.lpCourseFilterEl = {
 		}
 		// Load AJAX widget by params
 		window.lpCourseFilter.loadWidgetFilterREST( form );
+	},
+	updateSelected: ( target ) => {
+		const form = document.querySelector( `.${ classCourseFilter }` );
+		const selectedList = document.querySelector( '.selected-list' );
+		const selectedListItem = document.querySelectorAll( '.selected-item' );
+		const btnSubmit = form.querySelector( '.course-filter-submit' );
+		
+		if ( target.tagName === 'INPUT' ) {
+			const lpSelectedName = target.getAttribute( 'name' ); 
+			const lpSelectedID = target.getAttribute( 'value' );
+
+			if ( ! selectedList ){
+				selectedList.innerHTML = ''; 
+			}
+			const parent = target.closest( '.lp-course-filter__field' );
+
+			if ( ! parent ) {
+				return;
+			}
+
+			for ( let i = 0; i < selectedListItem.length; i++ ) {
+				if( selectedListItem[i].getAttribute( 'data-name' ) ==  lpSelectedName && selectedListItem[i].getAttribute( 'data-value' ) == lpSelectedID ){
+					selectedListItem[i].remove();
+					return;
+				}
+			}
+			
+			selectedList.innerHTML += '<span class="selected-item" data-name="'+ lpSelectedName +'" data-value="'+ lpSelectedID +'">' + parent.querySelector('label').innerHTML + '<i class="icon-remove-selected fas fa-times"></i></span>';
+
+			// Load AJAX widget by params
+			window.lpCourseFilter.loadWidgetFilterREST( form );
+		}else {
+			// Click el parent of input to tick/untick field
+			let elChoice;
+
+			if ( target.classList.contains( 'lp-course-filter__field' ) ) {
+				elChoice = target;
+			}
+
+			const parent = target.closest( '.lp-course-filter__field' );
+			if ( parent ) {
+				elChoice = parent;
+			}
+
+			if ( ! elChoice ) {
+				return;
+			}
+
+			for ( let i = 0; i < selectedListItem.length; i++ ) {
+				if( selectedListItem[i].getAttribute( 'data-name' ) ==  elChoice.querySelector('input').getAttribute('name') && selectedListItem[i].getAttribute( 'data-value' ) == elChoice.querySelector('input').getAttribute('value') ){
+					selectedListItem[i].innerHTML = '';
+					return;
+				}
+			}
+			// Load AJAX widget by params
+			window.lpCourseFilter.loadWidgetFilterREST( form );
+			return;
+		}
 	},
 }
