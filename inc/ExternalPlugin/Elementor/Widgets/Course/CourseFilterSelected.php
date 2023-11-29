@@ -67,7 +67,7 @@ class CourseFilterSelected extends LPElementorWidgetBase
 
     protected function selected_style_list()
 	{
-		$cats = $tags = $authors = $icon_move = '';
+		$cats = $tags = $authors = $levels = $icon_move = '';
 		$classListItem = 'selected-item';
         $icon_move = '<i class="icon-remove-selected fas fa-times"></i>';
 
@@ -95,11 +95,14 @@ class CourseFilterSelected extends LPElementorWidgetBase
 		}
 
 		if (!empty($_GET['c_level'])) {
-			if ($_GET['c_level'] == 'all') {
-				echo  '<span class="' . $classListItem . '" data-name="c_level" data-value="' . $_GET['c_level'] . '">' . __('All Levels', 'learnpress') . '' . $icon_move . '</span>';
-			} else {
-				echo  '<span class="' . $classListItem . '" data-name="c_level" data-value="' . $_GET['c_level'] . '">' . $_GET['c_level'] . '' . $icon_move . '</span>';
-			}
+            $levels = explode(',', $_GET['c_level']);
+            foreach ($levels as $level) {
+                if ($level == 'all') {
+                    echo  '<span class="' . $classListItem . '" data-name="c_level" data-value="' . $level . '">' . __('All Levels', 'learnpress') . '' . $icon_move . '</span>';
+                } else {
+                    echo  '<span class="' . $classListItem . '" data-name="c_level" data-value="' . $level . '">' . $level . '' . $icon_move . '</span>';
+                }
+            }
 		}
 
 		if (!empty($_GET['c_authors'])) {
