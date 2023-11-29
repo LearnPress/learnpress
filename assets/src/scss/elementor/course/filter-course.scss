@@ -49,6 +49,7 @@
 			height: 100vh;
 			overflow-y: auto;
 			display: block;
+			width: 300px;
 			transform: translate3d(300px,0,0);
 			&::-webkit-scrollbar {
 				width: 5px;
