@@ -273,17 +273,6 @@ $content_fields = array_merge(
             'popover_end' => [
                 'method' => 'end_popover',
             ],
-			LPElementorControls::add_control_type(
-				'filter_selected_list',
-				esc_html__( 'Filter Selected List', 'learnpress' ),
-				'no',
-				Controls_Manager::SWITCHER,
-				[
-					'label_on'     => esc_html__( 'Yes', 'learnpress' ),
-					'label_off'    => esc_html__( 'No', 'learnpress' ),
-					'return_value' => 'yes',
-				]
-			),
 		]
 	),
 	[]
