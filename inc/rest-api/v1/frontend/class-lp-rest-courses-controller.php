@@ -123,6 +123,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 		$response            = new LP_REST_Response();
 		$response->data      = new stdClass();
 		$listCoursesTemplate = ListCoursesTemplate::instance();
+		$pagination_type     = LP_Settings::get_option( 'course_pagination_type' );
 
 		try {
 			$filter = new LP_Course_Filter();
@@ -162,7 +163,6 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 						global $wp, $post;
 
 						// Template Pagination.
-						$pagination_type = LP_Settings::get_option( 'course_pagination_type' );
 						switch ( $pagination_type ) {
 							case 'load-more':
 								if ( $filter->page < $total_pages ) {
@@ -219,7 +219,16 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 					if ( $from == $to ) {
 						$response->data->from_to = sprintf( esc_html__( 'Showing last course of %s results', 'learnpress' ), $total_rows );
 					} else {
-						$from_to                 = $from . '-' . $to;
+						switch ( $pagination_type ) {
+							case 'load-more':
+							case 'infinite':
+								$from_to = $filter->page * $filter->limit;
+								break;
+							default:
+								$from_to = $from . '-' . $to;
+								break;
+						}
+
 						$response->data->from_to = sprintf( esc_html__( 'Showing %1$s of %2$s results', 'learnpress' ), $from_to, $total_rows );
 					}
 				}
