@@ -330,15 +330,6 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					0,
 					1
 				),
-				/*'lp-tools-assign-course'            => new LP_Asset_Key(
-					$this->url( 'src/apps/js/admin/admin-tools-assign-course.js' ),
-					array(
-						'jquery',
-					),
-					array( 'learnpress_page_learn-press-tools' ),
-					0,
-					1
-				),*/
 				'lp-admin-tools'                    => new LP_Asset_Key(
 					$this->url( 'js/dist/admin/admin-tools' . self::$_min_assets . '.js' ),
 					[],
