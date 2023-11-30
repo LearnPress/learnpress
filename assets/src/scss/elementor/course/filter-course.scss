@@ -184,12 +184,17 @@
 			}
 		}
 		.preview {
-			display: none;
+			display: none !important;
 		}
 	}
 	.clear-selected-list {
+		display: none;
 		order: 2;
 		background-color: transparent;
+
+		&.clear-show {
+			display: block !important;
+		}
 	}
 }
 .elementor-editor-active .elementor-widget-learnpress_course_filter_selected .selected-list .preview {

@@ -98,10 +98,13 @@ window.lpCourseFilterEl = {
 		const form = document.querySelector( `.${ classCourseFilter }` );
 		const selectedList = document.querySelector( '.selected-list' );
 		const selectedListItem = document.querySelectorAll( '.selected-item' );
+		const btnClear 	=	document.querySelector( '.clear-selected-list' );	
 		
 		if ( target.tagName === 'INPUT' ) {
 			const lpSelectedName = target.getAttribute( 'name' ); 
 			const lpSelectedID = target.getAttribute( 'value' );
+
+			btnClear.style.display = 'block';
 
 			if ( ! selectedList ){
 				return; 
@@ -118,7 +121,6 @@ window.lpCourseFilterEl = {
 					return;
 				}
 			}
-			
 			selectedList.innerHTML += '<span class="selected-item" data-name="'+ lpSelectedName +'" data-value="'+ lpSelectedID +'">' + parent.querySelector('label').innerHTML + '<i class="icon-remove-selected fas fa-times"></i></span>';
 
 			window.lpCourseFilter.loadWidgetFilterREST( form );
@@ -146,7 +148,10 @@ window.lpCourseFilterEl = {
 			}
 
 			window.lpCourseFilter.loadWidgetFilterREST( form );
-			return;
+		}
+
+		if ( selectedListItem.length > 0 || selectedListItem ) {
+			btnClear.style.display = 'block';
 		}
 	},
 }

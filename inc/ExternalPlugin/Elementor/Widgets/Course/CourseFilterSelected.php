@@ -42,20 +42,22 @@ class CourseFilterSelected extends LPElementorWidgetBase
     protected function render()
 	{
 		try {
-			$settings 	= $this->get_settings_for_display();
-            $text_reset = $settings['text_reset'] ?? esc_html__('Clear', 'learnpress');
+			$settings 	 = $this->get_settings_for_display();
+			$extraClass = '';
+            $text_reset  = $settings['text_reset'] ?? esc_html__('Clear', 'learnpress');
 
             echo '<div class="selected-list">';
             if (!empty($settings['show_preview'])) {
-                echo '<span class="selected-item preview" >Preview 1<i class="icon-remove-selected fas fa-times"></i></span><span class="selected-item preview" >Preview 2<i class="icon-remove-selected fas fa-times"></i></span>';
-                echo '<button class="clear-selected-list preview">'. $text_reset .'</button>';
+                echo '<span class="preview" >Preview 1<i class="icon-remove-selected fas fa-times"></i></span><span class="preview" >Preview 2<i class="icon-remove-selected fas fa-times"></i></span>';
+                echo '<button class="preview">'. $text_reset .'</button>';
             }
 
             echo self::selected_style_list();
-            
-            if ((!empty($_GET['term_id']) || !empty($_GET['tag_id']) || !empty($_GET['sort_by']) || !empty($_GET['c_level']) || !empty($_GET['c_authors'])) ) {
-				echo '<button class="clear-selected-list">'. $text_reset .'</button>';
+			if (!empty(lp_archive_skeleton_get_args()) ) {
+				$extraClass = ' clear-show';
 			}
+
+			echo '<button class="clear-selected-list ' . esc_attr($extraClass) . '">'. $text_reset .'</button>';
             echo '</div>';
 
         } catch (Throwable $e) {

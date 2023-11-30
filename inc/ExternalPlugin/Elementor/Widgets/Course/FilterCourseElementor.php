@@ -145,11 +145,11 @@ class FilterCourseElementor extends LPElementorWidgetBase
 
 			ob_start();
 			Template::instance()->print_sections($sections);
-			$m = Template::instance()->nest_elements($html_wrapper, ob_get_clean());
+			$contents = Template::instance()->nest_elements($html_wrapper, ob_get_clean());
 			
-			$ob = new \stdClass();
-			$ob->content = $m;
-			return $ob;
+			$filter_course = new \stdClass();
+			$filter_course->content = $contents;
+			return $filter_course;
 		} catch (Throwable $e) {
 			ob_end_clean();
 			error_log(__METHOD__ . ': ' . $e->getMessage());

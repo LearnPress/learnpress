@@ -47,7 +47,7 @@ $style_fields = array_merge(
 		Controls_Manager::TAB_STYLE,
         LPElementorControls::add_controls_style_button(
             'selected_list',
-            '.selected-list .selected-item',
+            '.selected-list span',
             [],
             [ 'text_display', 'text_shadow' ]
         ),
@@ -58,13 +58,13 @@ $style_fields = array_merge(
 		Controls_Manager::TAB_STYLE,
         LPElementorControls::add_controls_style_button(
             'btn_reset',
-            '.clear-selected-list',
+            '.selected-list button',
             [
                 'border_color_hover'    => LPElementorControls::add_control_type_color(
                     'border_color_hover',
                     esc_html__( 'Border Color Hover', 'learnpress' ),
                     [
-                        '{{WRAPPER}} .clear-selected-list:hover' => 'border-color: {{VALUE}};'
+                        '{{WRAPPER}} .selected-list button:hover' => 'border-color: {{VALUE}};'
                     ],
                 )
             ],
