@@ -14,6 +14,7 @@ use LearnPress\Helpers\Config;
 use LearnPress\Helpers\Template;
 use Elementor\Icons_Manager;
 use LearnPress\TemplateHooks\Course\FilterCourseTemplate;
+use LearnPress\TemplateHooks\TemplateAJAX;
 use Throwable;
 use WP_Term;
 
@@ -63,8 +64,27 @@ class FilterCourseElementor extends LPElementorWidgetBase
 
 	protected function render()
 	{
+		$settings 	= $this->get_settings_for_display();
+		$id_el_target = 'lp-' . $this->get_id();
+		$wrapper 	= sprintf( '<div id="%s"></div>', $id_el_target );
+		$args = [
+			'el_target' => '#' . $id_el_target,
+			'params_url' => lp_archive_skeleton_get_args(),
+		];
+
+		$args = $args + $settings;
+
+		$callback = [
+			'class' => FilterCourseElementor::class,
+			'method' => 'html_content',
+		];
+
+		echo TemplateAJAX::load_content_via_ajax( $wrapper, $args, $callback );	
+	}
+
+	public static function html_content( $settings = [] ) {
 		try {
-			$settings 	= $this->get_settings_for_display();
+
 			$filter   	= FilterCourseTemplate::instance();
 			$extraClass = '';
 			if (empty($settings['item_filter'])) {
@@ -74,15 +94,14 @@ class FilterCourseElementor extends LPElementorWidgetBase
 			if ($settings['enable_filter_button'] == 'yes') {
 				$extraClass = 'lp-filter-popup';
 			}
-			echo self::button_popup($settings, $extraClass);
+			// button mobile and button style popup
+			ob_start();
+			self::button_popup_mobile($settings, $extraClass);
+			$button_popup_mobile = ob_get_clean();
 
-			$html_wrapper = apply_filters(
-				'learn-press/filter-courses/sections/wrapper',
-				[
-					'<form class="lp-form-course-filter ' . esc_attr($extraClass) . '">' => '</form><div class="filter-bg"></div>',
-				],
-				$settings
-			);
+			$html_wrapper = [
+				'' . $button_popup_mobile . '<form class="lp-form-course-filter ' . esc_attr($extraClass) . '">' => '</form><div class="filter-bg"></div>',
+			];
 			$sections     = [];
 
 			foreach ($settings['item_filter'] as $field) {
@@ -126,14 +145,18 @@ class FilterCourseElementor extends LPElementorWidgetBase
 
 			ob_start();
 			Template::instance()->print_sections($sections);
-			echo Template::instance()->nest_elements($html_wrapper, ob_get_clean());
+			$m = Template::instance()->nest_elements($html_wrapper, ob_get_clean());
+			
+			$ob = new \stdClass();
+			$ob->content = $m;
+			return $ob;
 		} catch (Throwable $e) {
 			ob_end_clean();
 			error_log(__METHOD__ . ': ' . $e->getMessage());
 		}
 	}
 
-	protected function button_popup($settings, $extraClass)
+	protected static function button_popup_mobile( $settings, $extraClass)
 	{
 		$text_popup = $settings['text_filter_button'] ?? esc_html__('Filter', 'learnpress');
 

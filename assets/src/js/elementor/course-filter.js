@@ -4,7 +4,7 @@ const classCourseFilter = 'lp-form-course-filter';
 document.addEventListener( 'click', function( e ) {
     const target = e.target;
 
-	if ( target.classList.contains( 'course-filter-reset' ) ) {
+	if ( target.classList.contains( 'clear-selected-list' ) ) {
 		e.preventDefault();
 		window.lpCourseFilterEl.resetList( target );
 	}
@@ -51,11 +51,18 @@ document.addEventListener( 'click', function( e ) {
 });
 
 window.lpCourseFilterEl = {
-	resetList: ( btnReset ) => {
-		const elSelectedList = document.querySelector( '.selected-list' );
-		if ( elSelectedList ) {
-			elSelectedList.remove();
+	resetList: ( target ) => {
+		const selectedList   = document.querySelector( '.selected-list' );
+		const elSelectedList = selectedList.querySelectorAll( '.selected-item' );
+
+		if ( ! elSelectedList ) {
+			return; 
 		}
+
+		for ( let i = 0; i < elSelectedList.length; i++ ) {
+			elSelectedList[i].remove();
+		}
+		target.remove();
 	},
     resetSelected: ( target ) => {
 		const form = document.querySelector( `.${ classCourseFilter }` );

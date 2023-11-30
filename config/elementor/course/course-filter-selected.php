@@ -54,17 +54,17 @@ $style_fields = array_merge(
     ),
     LPElementorControls::add_fields_in_section(
 		'btn_reset',
-		esc_html__( 'Button Reset', 'learnpress' ),
+		esc_html__( 'Button Clear', 'learnpress' ),
 		Controls_Manager::TAB_STYLE,
         LPElementorControls::add_controls_style_button(
             'btn_reset',
-            '.course-filter-reset',
+            '.clear-selected-list',
             [
                 'border_color_hover'    => LPElementorControls::add_control_type_color(
                     'border_color_hover',
                     esc_html__( 'Border Color Hover', 'learnpress' ),
                     [
-                        '{{WRAPPER}} .course-filter-reset:hover' => 'border-color: {{VALUE}};'
+                        '{{WRAPPER}} .clear-selected-list:hover' => 'border-color: {{VALUE}};'
                     ],
                 )
             ],

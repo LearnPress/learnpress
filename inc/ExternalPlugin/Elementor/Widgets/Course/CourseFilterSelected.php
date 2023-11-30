@@ -11,8 +11,6 @@ namespace LearnPress\ExternalPlugin\Elementor\Widgets\Course;
 
 use LearnPress\ExternalPlugin\Elementor\LPElementorWidgetBase;
 use LearnPress\Helpers\Config;
-use Elementor\Icons_Manager;
-use LearnPress\TemplateHooks\Course\FilterCourseTemplate;
 use Throwable;
 
 class CourseFilterSelected extends LPElementorWidgetBase 
@@ -50,13 +48,13 @@ class CourseFilterSelected extends LPElementorWidgetBase
             echo '<div class="selected-list">';
             if (!empty($settings['show_preview'])) {
                 echo '<span class="selected-item preview" >Preview 1<i class="icon-remove-selected fas fa-times"></i></span><span class="selected-item preview" >Preview 2<i class="icon-remove-selected fas fa-times"></i></span>';
-                echo '<span class="course-filter-reset preview">'. $text_reset .'</span>';
+                echo '<span class="clear-selected-list preview">'. $text_reset .'</span>';
             }
 
             echo self::selected_style_list();
             
             if ((!empty($_GET['term_id']) || !empty($_GET['tag_id']) || !empty($_GET['sort_by']) || !empty($_GET['c_level']) || !empty($_GET['c_authors'])) ) {
-				echo '<button class="course-filter-reset">'. $text_reset .'</button>';
+				echo '<button class="cclear-selected-list">'. $text_reset .'</button>';
 			}
             echo '</div>';
 
@@ -65,7 +63,7 @@ class CourseFilterSelected extends LPElementorWidgetBase
 		}
     }
 
-    protected function selected_style_list()
+    protected static function selected_style_list()
 	{
 		$cats = $tags = $authors = $levels = $icon_move = '';
 		$classListItem = 'selected-item';
