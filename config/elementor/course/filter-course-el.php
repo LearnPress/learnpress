@@ -273,17 +273,6 @@ $content_fields = array_merge(
             'popover_end' => [
                 'method' => 'end_popover',
             ],
-			LPElementorControls::add_control_type(
-				'filter_selected_list',
-				esc_html__( 'Filter Selected List', 'learnpress' ),
-				'no',
-				Controls_Manager::SWITCHER,
-				[
-					'label_on'     => esc_html__( 'Yes', 'learnpress' ),
-					'label_off'    => esc_html__( 'No', 'learnpress' ),
-					'return_value' => 'yes',
-				]
-			),
 		]
 	),
 	[]
@@ -327,7 +316,7 @@ $style_fields = array_merge(
 			'filter_section_background' => LPElementorControls::add_control_type_color(
 				'filter_section_background',
 				esc_html__( 'Background', 'learnpress' ),
-				[ '{{WRAPPER}} .lp-form-course-filter' => 'background: {{VALUE}}' ]
+				[ '{{WRAPPER}} .lp-form-course-filter' => 'background: {{VALUE}};' ]
 			),
 			'filter_section_radius'     => LPElementorControls::add_responsive_control_type(
 				'filter_section_radius',
@@ -385,7 +374,7 @@ $style_fields = array_merge(
 			'item_background' => LPElementorControls::add_control_type_color(
 				'layout_background',
 				esc_html__( 'Background', 'learnpress' ),
-				[ '{{WRAPPER}} .lp-form-course-filter__item' => 'background: {{VALUE}}' ]
+				[ '{{WRAPPER}} .lp-form-course-filter__item' => 'background: {{VALUE}};' ]
 			),
 			'item_radius'     => LPElementorControls::add_responsive_control_type(
 				'item_radius',
@@ -705,23 +694,6 @@ $style_fields = array_merge(
 					),
 				],
 				[ 'text_display' ]
-			),
-			[
-				'heading_selected_list' => LPElementorControls::add_control_type(
-					'heading_selected_list',
-					esc_html__( 'Selected List', 'learnpress' ),
-					'',
-					Controls_Manager::HEADING,
-					[
-						'separator' => 'before',
-					]
-				),
-			],
-			LPElementorControls::add_controls_style_button(
-				'selected_list',
-				'.selected-list span',
-				[],
-				[ 'text_display', 'text_shadow' ]
 			),
 			[
 				'heading_selected_number' => LPElementorControls::add_control_type(

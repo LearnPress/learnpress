@@ -76,16 +76,6 @@ class FilterCourseElementor extends LPElementorWidgetBase
 			}
 			echo self::button_popup($settings, $extraClass);
 
-			if ($settings['filter_selected_list'] == 'yes') {
-				echo '<div class="selected-list">';
-				echo self::selected_style_list();
-				echo '</div>';
-			}
-	
-			if ((!empty($_GET['term_id']) || !empty($_GET['tag_id']) || !empty($_GET['sort_by']) || !empty($_GET['c_level']) || !empty($_GET['c_authors'])) && $settings['filter_selected_list'] == 'yes') {
-				echo $filter->html_btn_reset();
-			}
-
 			$html_wrapper = apply_filters(
 				'learn-press/filter-courses/sections/wrapper',
 				[
@@ -188,51 +178,6 @@ class FilterCourseElementor extends LPElementorWidgetBase
 
 		if (!empty($total)) {
 			echo '<span class="selected-filter">' . $total . '</span>';
-		}
-	}
-
-	protected function selected_style_list()
-	{
-		$cats = $tags = $authors = '';
-		$classListItem = 'selected-item';
-		$icon_move = '<i class="icon-remove-selected fas fa-times"></i>';
-
-		if (!empty($_GET['term_id'])) {
-			$cats = explode(',', $_GET['term_id']);
-			foreach ($cats as $cat) {
-				echo '<span class="' . $classListItem . '" data-name="term_id" data-value="' . $cat . '">' . get_term($cat, 'course_category')->name . '' . $icon_move . '</span>';
-			}
-		}
-
-		if (!empty($_GET['tag_id'])) {
-			$tags = explode(',', $_GET['tag_id']);
-			foreach ($tags as $tag) {
-				echo '<span class="' . $classListItem . '" data-name="tag_id" data-value="' . $tag . '">' . get_term($tag, 'course_tag')->name . '' . $icon_move . '</span>';
-			}
-		}
-
-		if (!empty($_GET['sort_by'])) {
-			if ($_GET['sort_by'] == 'on_free') {
-				echo  '<span class="' . $classListItem . '" data-name="sort_by" data-value="' . $_GET['sort_by'] . '">' . __('Free', 'learnpress') . '' . $icon_move . '</span>';
-			} else {
-				echo '<span class="' . $classListItem . '" data-name="sort_by" data-value="' . $_GET['sort_by'] . '">' . __('Paid', 'learnpress') . '' . $icon_move . '</span>';
-			}
-		}
-
-		if (!empty($_GET['c_level'])) {
-			if ($_GET['c_level'] == 'all') {
-				echo  '<span class="' . $classListItem . '" data-name="c_level" data-value="' . $_GET['c_level'] . '">' . __('All Levels', 'learnpress') . '' . $icon_move . '</span>';
-			} else {
-				echo  '<span class="' . $classListItem . '" data-name="c_level" data-value="' . $_GET['c_level'] . '">' . $_GET['c_level'] . '' . $icon_move . '</span>';
-			}
-		}
-
-		if (!empty($_GET['c_authors'])) {
-			$authors = explode(',', $_GET['c_authors']);
-			foreach ($authors as $author) {
-				$user = get_userdata($author);
-				echo  '<span class="' . $classListItem . '" data-name="c_authors" data-value="' . $_GET['c_authors'] . '">' . $user->display_name . '' . $icon_move . '</span>';
-			}
 		}
 	}
 }
