@@ -9,26 +9,18 @@
 namespace LearnPress\TemplateHooks\Course;
 
 use Exception;
+use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\Courses;
 use LP_Course;
-use LP_Course_DB;
 use LP_Course_Filter;
 use LP_Request;
 use Throwable;
 
 class FilterCourseTemplate {
-	public static function instance() {
-		static $instance = null;
+	use Singleton;
 
-		if ( is_null( $instance ) ) {
-			$instance = new self();
-		}
-
-		return $instance;
-	}
-
-	protected function __construct() {
+	public function init() {
 		add_action( 'learn-press/filter-courses/layout', [ $this, 'sections' ] );
 		//add_action( 'wp_head', [ $this, 'add_internal_scripts_to_head' ] );
 	}
@@ -239,7 +231,7 @@ class FilterCourseTemplate {
 				$sections = apply_filters(
 					'learn-press/filter-courses/price/sections',
 					[
-						'input' => [ 'text_html' => $input,  ],
+						'input' => [ 'text_html' => $input ],
 						'label' => [ 'text_html' => $label ],
 						'count' => [ 'text_html' => $count ],
 					],

@@ -172,7 +172,8 @@ class LP_Widget extends WP_Widget {
 		} else { // Use for Preview in Widget Editor since WordPress 5.8
 			$content = $this->lp_rest_api_content( $instance, array() );
 
-			echo '<div class="learnpress-widget-wrapper">';
+			echo '<div class="learnpress-widget-wrapper" data-widget="' . htmlentities( wp_json_encode( $data ) ) . '">';
+			echo '<div class="lp-widget-loading-change"></div>';
 
 			if ( is_wp_error( $content ) ) {
 				echo $content->get_error_message();
