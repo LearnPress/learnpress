@@ -3,6 +3,12 @@
  * Template load via AJAX.
  * Use for load any content via AJAX.
  *
+ * Logic:
+ * 1. Create html has class .lp-load-ajax-element attach setting, args want to handle on Template.
+ * 2. Create html element target to attach content via AJAX.
+ * 3. (loadAJAX.js) JS detect html element target and send data to server.
+ * 4. (LP_REST_AJAX_Controller) Server receive data, call callback Class::Method and render content.
+ *
  * @since 4.2.5.7
  * @version 1.0.0
  */
@@ -18,8 +24,9 @@ class TemplateAJAX {
 	 * @param string $html_el_target html content element want to attach innerHTML.
 	 * EX: '<div id="el-want-attach-content-ajax"></div>'
 	 *
-	 * @param array $args [ 'el_target' => 'id/class' ],
-	 * id/class is target for js detect to attach content to $html_el_target, id has prefix '#', class has prefix '.'
+	 * @param array $args [ 'el_target' => 'id/class', 'method_request' => 'GET/POST' ],
+	 * id/class is target for js detect to attach content to $html_el_target,
+	 * id has prefix '#', class has prefix '.'
 	 *
 	 * @param array $callback [ 'class', 'method' ] method use to render content html
 	 *
