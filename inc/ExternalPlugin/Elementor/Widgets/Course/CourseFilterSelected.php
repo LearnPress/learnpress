@@ -48,7 +48,7 @@ class CourseFilterSelected extends LPElementorWidgetBase
             echo '<div class="selected-list">';
             if (!empty($settings['show_preview'])) {
                 echo '<span class="selected-item preview" >Preview 1<i class="icon-remove-selected fas fa-times"></i></span><span class="selected-item preview" >Preview 2<i class="icon-remove-selected fas fa-times"></i></span>';
-                echo '<span class="clear-selected-list preview">'. $text_reset .'</span>';
+                echo '<button class="clear-selected-list preview">'. $text_reset .'</button>';
             }
 
             echo self::selected_style_list();
