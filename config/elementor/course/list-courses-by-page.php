@@ -23,11 +23,6 @@ $content_fields = array_merge(
 		esc_html__( 'Content', 'learnpress' ),
 		Controls_Manager::TAB_CONTENT,
 		[
-			'courses_layout_id'            => LPElementorControls::add_control_type(
-				'courses_layout_id',
-				'Layout want to use',
-				'685'
-			),
 			'courses_detect_page'          => LPElementorControls::add_control_type(
 				'courses_detect_page',
 				'Auto detect page',
