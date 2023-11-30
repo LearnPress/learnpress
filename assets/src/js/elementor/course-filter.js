@@ -52,6 +52,7 @@ document.addEventListener( 'click', function( e ) {
 
 window.lpCourseFilterEl = {
 	resetList: ( target ) => {
+		const form = document.querySelector( `.${ classCourseFilter }` );
 		const selectedList   = document.querySelector( '.selected-list' );
 		const elSelectedList = selectedList.querySelectorAll( '.selected-item' );
 
@@ -62,6 +63,7 @@ window.lpCourseFilterEl = {
 		for ( let i = 0; i < elSelectedList.length; i++ ) {
 			elSelectedList[i].remove();
 		}
+		window.lpCourseFilter.reset( form );
 		target.remove();
 	},
     resetSelected: ( target ) => {

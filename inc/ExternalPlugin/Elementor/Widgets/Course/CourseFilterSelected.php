@@ -54,7 +54,7 @@ class CourseFilterSelected extends LPElementorWidgetBase
             echo self::selected_style_list();
             
             if ((!empty($_GET['term_id']) || !empty($_GET['tag_id']) || !empty($_GET['sort_by']) || !empty($_GET['c_level']) || !empty($_GET['c_authors'])) ) {
-				echo '<button class="cclear-selected-list">'. $text_reset .'</button>';
+				echo '<button class="clear-selected-list">'. $text_reset .'</button>';
 			}
             echo '</div>';
 
