@@ -65,21 +65,26 @@ class FilterCourseElementor extends LPElementorWidgetBase
 	protected function render()
 	{
 		$settings 	= $this->get_settings_for_display();
-		$id_el_target = 'lp-' . $this->get_id();
-		$wrapper 	= sprintf( '<div id="%s"></div>', $id_el_target );
-		$args = [
-			'el_target' => '#' . $id_el_target,
-			'params_url' => lp_archive_skeleton_get_args(),
-		];
 
-		$args = $args + $settings;
+		if ((isset($settings['show_in_rest']) && $settings['show_in_rest'] == 'yes') && ! \Elementor\Plugin::$instance->editor->is_edit_mode() ){
+			$id_el_target = 'lp-' . $this->get_id();
+			$wrapper 	= sprintf( '<div id="%s"></div>', $id_el_target );
+			$args = [
+				'el_target' => '#' . $id_el_target,
+				'params_url' => lp_archive_skeleton_get_args(),
+			];
 
-		$callback = [
-			'class' => FilterCourseElementor::class,
-			'method' => 'html_content',
-		];
+			$args = $args + $settings;
 
-		echo TemplateAJAX::load_content_via_ajax( $wrapper, $args, $callback );	
+			$callback = [
+				'class' => FilterCourseElementor::class,
+				'method' => 'html_content',
+			];
+
+			echo TemplateAJAX::load_content_via_ajax( $wrapper, $args, $callback );
+		}else{
+			echo self::html_content($settings)->content;
+		}	
 	}
 
 	public static function html_content( $settings = [] ) {
