@@ -50,11 +50,10 @@ class CourseFilterSelected extends LPElementorWidgetBase
             echo '<div class="selected-list">';
             if (!empty($settings['show_preview'])) {
                 echo '<span class="preview" >Preview 1<i class="icon-remove-selected fas fa-times"></i></span><span class="preview" >Preview 2<i class="icon-remove-selected fas fa-times"></i></span>';
-                echo '<button class="preview">'. $text_reset .'</button>';
             }
 
             echo self::selected_style_list();
-			if (!empty(lp_archive_skeleton_get_args()) && ! Plugin::$instance->editor->is_edit_mode() ) {
+			if (!empty(lp_archive_skeleton_get_args()) ) {
 				$extraClass = ' clear-show';
 			}
 
