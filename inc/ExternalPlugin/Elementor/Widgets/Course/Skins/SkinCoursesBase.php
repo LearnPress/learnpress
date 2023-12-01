@@ -1,26 +1,130 @@
 <?php
+/**
+ * Class SkinCoursesBase
+ *
+ * For render course in list course
+ *
+ * @since 4.2.5.7
+ */
+
 namespace LearnPress\ExternalPlugin\Elementor\Widgets\Course\Skins;
 
+use Elementor\Plugin;
 use Elementor\Widget_Base;
 use LearnPress\ExternalPlugin\Elementor\LPSkinBase;
+use LearnPress\Helpers\Template;
+use LearnPress\Models\Courses;
+use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
+use LearnPress\TemplateHooks\TemplateAJAX;
+use LP_Course_Filter;
+use stdClass;
+use Throwable;
 
 class SkinCoursesBase extends LPSkinBase {
 	protected function _register_controls_actions() {
-		add_action( 'elementor/element/learnpress_list_courses_by_page/section_content/before_section_end', array( $this, 'register_controls_on_section_content' ), 10, 2 );
-		//add_action( 'elementor/element/learnpress_list_courses_by_page/section_query/after_section_end', array( $this, 'register_style_sections' ), 10, 2 );
+		add_action(
+			'elementor/element/learnpress_list_courses_by_page/section_content/before_section_end',
+			[ $this, 'register_controls_on_section_content' ],
+			10,
+			2
+		);
 	}
 
 	public function register_controls_on_section_content( Widget_Base $widget, $args ) {
-		$this->parent = $widget;
+		// Only add controls here
 	}
 
-	public function register_style_sections( Widget_Base $widget, $args ) {
-		$this->parent = $widget;
-	}
-
+	/**
+	 * Render widget content.
+	 * @override elementor
+	 *
+	 * @return void
+	 */
 	public function render() {
-		echo 'Skin Courses Base';
+		try {
+			$settings                  = $this->parent->get_settings_for_display();
+			$is_load_restapi           = $settings['courses_rest'] ?? 0;
+			$courses_rest_no_load_page = $settings['courses_rest_no_load_page'] ?? 0;
 
-		// Query course on here and call to skill chose
+			// Merge params filter form url
+			$settings = array_merge(
+				$settings,
+				lp_archive_skeleton_get_args()
+			);
+
+			$html_wrapper = [
+				'<div class="list-courses-elm-wrapper" data-widget-id="' . $this->get_id() . '">' => '</div>',
+			];
+
+			if ( 'yes' !== $is_load_restapi || Plugin::$instance->editor->is_edit_mode() || 'yes' === $courses_rest_no_load_page ) {
+				$templateObj = self::render_courses( $settings );
+				$content     = $templateObj->content;
+				$content     = Template::instance()->nest_elements(
+					[ '<div class="list-courses-elm">' => '</div>' ],
+					$content
+				);
+			} else {
+				$html_el_target = '<div class="list-courses-elm"></div>';
+				$args           = array_merge(
+					[
+						'el_target' => '.list-courses-elm',
+					],
+					$settings
+				);
+
+				$callback = [
+					'class'  => get_class( $this ),
+					'method' => 'render_courses',
+				];
+				$content  = TemplateAJAX::load_content_via_ajax( $html_el_target, $args, $callback );
+			}
+
+			echo Template::instance()->nest_elements( $html_wrapper, $content );
+		} catch ( Throwable $e ) {
+			echo $e->getMessage();
+		}
+	}
+
+	/**
+	 * Render template list courses with settings param.
+	 *
+	 * @param array $settings
+	 *
+	 * @return stdClass { content: string_html }
+	 */
+	public static function render_courses( array $settings = [] ): stdClass {
+		$filter = new LP_Course_Filter();
+		Courses::handle_params_for_query_courses( $filter, $settings );
+		$total_rows    = 0;
+		$filter->limit = $settings['courses_per_page'] ?? 8;
+		$courses       = Courses::get_courses( $filter, $total_rows );
+
+		ob_start();
+		foreach ( $courses as $courseObj ) {
+			$course = learn_press_get_course( $courseObj->ID );
+			echo static::render_course( $course, $settings );
+		}
+
+		$content          = new stdClass();
+		$content->content = ob_get_clean();
+
+		return $content;
+	}
+
+	/**
+	 * Render single item course
+	 *
+	 * @param $course
+	 * @param array $settings
+	 *
+	 * @return string
+	 */
+	public static function render_course( $course, array $settings = [] ): string {
+		$singleCourseTemplate = SingleCourseTemplate::instance();
+		$content              = '';
+		$content             .= $singleCourseTemplate->html_title( $course );
+		$content             .= $singleCourseTemplate->html_image( $course );
+
+		return $content;
 	}
 }

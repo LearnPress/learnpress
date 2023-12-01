@@ -36,18 +36,19 @@ class ListCoursesByPageElementor extends LPElementorWidgetBase {
 			true
 		);
 		$this->add_style_depends( 'lp-courses-by-page' );
-		$this->add_script_depends( 'lp-courses-by-page' );
+		//$this->add_script_depends( 'lp-courses-by-page' );
 		parent::__construct( $data, $args );
 	}
 
-	public function register_skins() {
-		parent::register_skins();
-
+	protected function register_skins() {
 		$skins = [
-			'courses_grid'       => CoursesGrid::class,
-			'courses_list'       => CoursesList::class,
-			'courses_loop_item'  => CoursesLoopItem::class,
+			'courses_grid' => CoursesGrid::class,
+			'courses_list' => CoursesList::class,
 		];
+
+		if ( class_exists( \Thim_EL_Kit::class ) ) {
+			$skins['courses_loop_item'] = CoursesLoopItem::class;
+		}
 
 		foreach ( $skins as $skin ) {
 			$this->add_skin( new $skin( $this ) );

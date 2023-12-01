@@ -66,7 +66,11 @@ $content_fields = array_merge(
 				'courses_per_page',
 				esc_html__( 'Courses Per Page', 'learnpress' ),
 				8,
-				Controls_Manager::NUMBER
+				Controls_Manager::NUMBER,
+				[
+					'min'  => 0,
+					'step' => 1,
+				]
 			),
 			'courses_order_by_default'     => LPElementorControls::add_control_type_select(
 				'courses_order_by_default',
@@ -94,56 +98,9 @@ $content_fields = array_merge(
 						'courses_rest' => 'yes',
 					],
 				]
-			)
-		]
-	),
-	LPElementorControls::add_fields_in_section(
-		'courses_layout',
-		esc_html__( 'Layout Courses', 'learnpress' ),
-		Controls_Manager::TAB_CONTENT,
-		[
-			'courses_layout' => LPElementorControls::add_control_type(
-				'courses_layout',
-				'',
-				'<div class="list-courses-elm-topbar">{{courses_order_by}}{{courses_layout_type}}</div>{{courses_items}}{{courses_pagination}}',
-				Controls_Manager::WYSIWYG,
-				[
-					'description' => esc_html__(
-						'Enter the layout for each item course. You can use the following variables:
-					{{courses_order_by}}, {{courses_items}}, {{courses_pagination_number}}, {{courses_page_result}}',
-						'learnpress'
-					),
-				]
 			),
 		]
 	),
-	/*LPElementorControls::add_fields_in_section(
-		'courses_item_layout',
-		esc_html__( 'Layout Item Course', 'learnpress' ),
-		Controls_Manager::TAB_CONTENT,
-		[
-			'courses_item_layout' => LPElementorControls::add_control_type(
-				'courses_item_layout',
-				'',
-				'<a href="{{course_url}}">{{course_image}}</a>
-					<div>
-					<a href="{{course_url}}">{{course_title}}</a>
-					<a href="{{course_author_url}}">{{course_author_display_name}}</a>
-					{{course_count_lesson}}
-					{{course_price}}
-					</div>',
-				Controls_Manager::WYSIWYG,
-				[
-					'description' => esc_html__(
-						'Enter the layout for each item course. You can use the following variables: {{course_title}},
-						{{course_image}}, {{course_url}}, {{course_author_display_name}}, {{course_author_url}}, {{course_author_avatar}},
-						{{course_price}}, {{course_categories}}, {{course_count_student}}, {{course_count_lesson}}, {{course_short_description}}',
-						'learnpress'
-					),
-				]
-			),
-		]
-	),*/
 	[]
 );
 
@@ -151,8 +108,8 @@ $content_fields = array_merge(
 // Controls tab Grid
 function lp_el_style_list_course_by_page( $style_for = 'layout' ) {
 	$style_layout_general      = [
-		"gap"              => LPElementorControls::add_control_type(
-			"gap",
+		'gap'              => LPElementorControls::add_control_type(
+			'gap',
 			__( 'Gap', 'learnpress' ),
 			[
 				'size' => 30,
@@ -168,67 +125,67 @@ function lp_el_style_list_course_by_page( $style_for = 'layout' ) {
 					],
 				],
 				'selectors' => [
-					"{{WRAPPER}} .list-courses-elm" => 'gap: {{SIZE}}{{UNIT}};',
+					'{{WRAPPER}} .list-courses-elm' => 'gap: {{SIZE}}{{UNIT}};',
 				],
 			]
 		),
-		"border"           => LPElementorControls::add_group_control_type(
-			"border",
+		'border'           => LPElementorControls::add_group_control_type(
+			'border',
 			Group_Control_Border::get_type(),
-			"{{WRAPPER}} .list-courses-elm li"
+			'{{WRAPPER}} .list-courses-elm li'
 		),
-		"background_color" => LPElementorControls::add_control_type_color(
-			"background_color",
+		'background_color' => LPElementorControls::add_control_type_color(
+			'background_color',
 			__( 'Background Color', 'learnpress' ),
 			[
-				".list-courses-elm li" => 'background-color: {{VALUE}};',
+				'.list-courses-elm li' => 'background-color: {{VALUE}};',
 			]
 		),
-		"border_radius"    => LPElementorControls::add_responsive_control_type(
-			"border_radius",
+		'border_radius'    => LPElementorControls::add_responsive_control_type(
+			'border_radius',
 			__( 'Border Radius', 'learnpress' ),
 			[],
 			Controls_Manager::DIMENSIONS,
 			[
 				'size_units' => [ 'px', '%', 'custom' ],
 				'selectors'  => [
-					"{{WRAPPER}} .list-courses-elm li" => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}}; overflow: hidden;',
+					'{{WRAPPER}} .list-courses-elm li' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}}; overflow: hidden;',
 				],
 			]
 		),
 	];
 	$style_title_general       = LPElementorControls::add_controls_style_text(
-		"title",
-		".list-courses-elm .course-title"
+		'title',
+		'.list-courses-elm .course-title'
 	);
 	$style_description_general = LPElementorControls::add_controls_style_text(
-		"description",
-		".list-courses-elm .course-short-description"
+		'description',
+		'.list-courses-elm .course-short-description'
 	);
 	$style_price_general       = array_merge(
 		LPElementorControls::add_controls_style_text(
-			"price",
-			".list-courses-elm .course-item-price"
+			'price',
+			'.list-courses-elm .course-item-price'
 		),
 		[
-			"price_free"      => LPElementorControls::add_control_type_color(
-				"price_free",
+			'price_free'      => LPElementorControls::add_control_type_color(
+				'price_free',
 				__( 'Course Free Color', 'learnpress' ),
 				[
-					"{{WRAPPER}} .list-courses-elm .course-item-price .free" => 'color: {{VALUE}};',
+					'{{WRAPPER}} .list-courses-elm .course-item-price .free' => 'color: {{VALUE}};',
 				]
 			),
-			"price_sale"      => LPElementorControls::add_control_type_color(
-				"price_sale",
+			'price_sale'      => LPElementorControls::add_control_type_color(
+				'price_sale',
 				__( 'Course Sale Color', 'learnpress' ),
 				[
-					"{{WRAPPER}} .list-courses-elm .course-item-price .origin-price" => 'color: {{VALUE}};',
+					'{{WRAPPER}} .list-courses-elm .course-item-price .origin-price' => 'color: {{VALUE}};',
 				]
 			),
-			"price_sale_typo" => LPElementorControls::add_group_control_type(
-				"price_sale_typo",
+			'price_sale_typo' => LPElementorControls::add_group_control_type(
+				'price_sale_typo',
 				Group_Control_Typography::get_type(),
-				"{{WRAPPER}} .list-courses-elm .course-item-price .origin-price",
+				'{{WRAPPER}} .list-courses-elm .course-item-price .origin-price',
 				[
 					'label' => esc_html__( 'Course Sale Typography', 'learnpress' ),
 				]
@@ -236,12 +193,12 @@ function lp_el_style_list_course_by_page( $style_for = 'layout' ) {
 		]
 	);
 	$style_meta_data_general   = LPElementorControls::add_controls_style_text(
-		"meta_data",
-		".list-courses-elm .course-count-lesson, .list-courses-elm .instructor-display-name, .list-courses-elm .course-count-student"
+		'meta_data',
+		'.list-courses-elm .course-count-lesson, .list-courses-elm .instructor-display-name, .list-courses-elm .course-count-student'
 	);
 	$style_image_general       = LPElementorControls::add_controls_style_image(
-		"img",
-		".list-courses-elm .course-img"
+		'img',
+		'.list-courses-elm .course-img'
 	);
 
 	switch ( $style_for ) {
