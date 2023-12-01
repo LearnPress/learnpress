@@ -183,7 +183,7 @@ class FilterCourseElementor extends LPElementorWidgetBase
 		echo '</button>';
 	}
 
-	protected function selected_style_number()
+	protected static function selected_style_number()
 	{
 		$cat = $tag = $price = $level = $author = 0;
 		$total = '';
