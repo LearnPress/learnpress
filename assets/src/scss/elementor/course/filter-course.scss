@@ -1,6 +1,6 @@
 .elementor-widget-learnpress_filter_course {
-    .lp-button-popup {
-        padding: 10px 30px;
+	.lp-button-popup {
+		padding: 10px 30px;
 		-webkit-box-pack: center;
 		-ms-flex-pack: center;
 		justify-content: center;
@@ -9,39 +9,47 @@
 		position: relative;
 		z-index: 11;
 		display: none;
+
 		@media (max-width: 600px) {
 			z-index: 9;
 			display: block;
 		}
+
 		.icon-align-right {
 			order: 3;
 		}
+
 		&.lp-filter-popup {
 			display: -webkit-box;
 			display: -ms-flexbox;
 			display: inline-flex;
 
-			& ~.selected-list {
+			&~.selected-list {
 				display: inline-flex;
 				margin: 0 10px;
 			}
 		}
-    }
+	}
+
 	&.filter-popup-show {
 		.lp-form-course-filter.lp-filter-popup {
 			transform: none;
 			display: block;
 		}
+
 		.lp-form-course-filter {
 			transform: none;
 		}
+
 		.filter-bg {
 			display: block;
 		}
 	}
+
 	.lp-form-course-filter {
 		z-index: 20;
 		transition: 0.3s;
+
 		@media (max-width: 600px) {
 			position: fixed !important;
 			top: 0;
@@ -50,32 +58,39 @@
 			overflow-y: auto;
 			display: block;
 			width: 300px;
-			transform: translate3d(300px,0,0);
+			transform: translate3d(300px, 0, 0);
 			background-color: #ffffff;
 			padding: 15px;
+
 			&::-webkit-scrollbar {
 				width: 5px;
 			}
+
 			&::-webkit-scrollbar-thumb {
 				background: #f5f5f5;
 			}
+
 			.course-filter-submit {
 				position: fixed;
 				bottom: 0;
 			}
 		}
+
 		.hide-count {
-			> .lp-form-course-filter__item {
+			>.lp-form-course-filter__item {
 				.lp-course-filter__field {
 					padding: 0;
 				}
+
 				.count {
 					display: none;
 				}
-			} 
+			}
 		}
+
 		.toggle-content {
 			position: relative;
+
 			.icon-toggle-filter {
 				position: absolute;
 				right: 15px;
@@ -83,71 +98,85 @@
 				z-index: 9;
 				transition: 0.3s;
 				cursor: pointer;
+
 				&.fa-angle-down {
 					display: block;
 				}
+
 				&.fa-angle-up {
 					display: none;
 				}
 			}
-			> .lp-form-course-filter__item {
+
+			>.lp-form-course-filter__item {
 				.lp-form-course-filter__content {
 					display: none;
 				}
 			}
 
 			&.toggle-on {
-				.icon-toggle-filter{
+				.icon-toggle-filter {
 					&.fa-angle-down {
 						display: none;
 					}
+
 					&.fa-angle-up {
 						display: block;
 					}
 				}
-				> .lp-form-course-filter__item {
+
+				>.lp-form-course-filter__item {
 					.lp-form-course-filter__content {
 						display: block;
 					}
 				}
 			}
 		}
+
 		.hide-title {
-			> .lp-form-course-filter__item {
+			>.lp-form-course-filter__item {
 				.lp-form-course-filter__title {
 					display: none;
 				}
 			}
 		}
+
 		.lp-course-filter-search-result {
 			&::-webkit-scrollbar {
 				width: 5px;
 			}
 		}
+
 		&.lp-filter-popup {
 			display: none;
 			position: absolute;
 			max-height: 100vh;
 			overflow-y: auto;
+
 			&::-webkit-scrollbar {
 				width: 5px;
 			}
+
 			&::-webkit-scrollbar-thumb {
 				background: #f5f5f5;
 			}
+
 			@media (max-width: 600px) {
 				height: 100vh;
 				display: block;
 			}
 		}
+
 		.lp-form-course-filter__content .lp-course-filter__field input[disabled] {
 			opacity: 0.7;
 
-			& ~label, ~.count {
+			&~label,
+			~.count {
 				opacity: 0.7;
 			}
 		}
 	}
+
 	.filter-bg {
 		position: fixed;
 		width: 100%;
@@ -156,9 +185,10 @@
 		top: 0;
 		background-color: transparent;
 		display: none;
-        z-index: -1;
+		z-index: -1;
+
 		@media (max-width: 600px) {
-            z-index: 10;
+			z-index: 10;
 			background-color: rgb(0 0 0 / 80%);
 		}
 	}
@@ -172,21 +202,27 @@
 		gap: 10px;
 		align-items: center;
 		flex-wrap: wrap;
-		.selected-item {
+
+		.selected-item,
+		span {
 			display: inline-flex;
 			gap: 8px;
 			align-items: center;
+
 			.icon-remove-selected {
 				cursor: pointer;
+
 				&:hover {
 					color: var(--lp-primary-color);
 				}
 			}
 		}
+
 		.preview {
 			display: none !important;
 		}
 	}
+
 	.clear-selected-list {
 		display: none;
 		order: 2;
@@ -197,6 +233,7 @@
 		}
 	}
 }
+
 .elementor-editor-active .elementor-widget-learnpress_course_filter_selected .selected-list .preview {
-	display: inline-flex;
+	display: inline-flex !important;
 }

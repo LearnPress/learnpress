@@ -11,6 +11,7 @@ namespace LearnPress\ExternalPlugin\Elementor\Widgets\Course;
 
 use LearnPress\ExternalPlugin\Elementor\LPElementorWidgetBase;
 use LearnPress\Helpers\Config;
+use Elementor\Plugin;
 use Throwable;
 
 class CourseFilterSelected extends LPElementorWidgetBase 
@@ -53,7 +54,7 @@ class CourseFilterSelected extends LPElementorWidgetBase
             }
 
             echo self::selected_style_list();
-			if (!empty(lp_archive_skeleton_get_args()) ) {
+			if (!empty(lp_archive_skeleton_get_args()) && ! Plugin::$instance->editor->is_edit_mode() ) {
 				$extraClass = ' clear-show';
 			}
 

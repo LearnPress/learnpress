@@ -13,6 +13,7 @@ use LearnPress\ExternalPlugin\Elementor\LPElementorWidgetBase;
 use LearnPress\Helpers\Config;
 use LearnPress\Helpers\Template;
 use Elementor\Icons_Manager;
+use Elementor\Plugin;
 use LearnPress\TemplateHooks\Course\FilterCourseTemplate;
 use LearnPress\TemplateHooks\TemplateAJAX;
 use Throwable;
@@ -66,7 +67,7 @@ class FilterCourseElementor extends LPElementorWidgetBase
 	{
 		$settings 	= $this->get_settings_for_display();
 
-		if ((isset($settings['show_in_rest']) && $settings['show_in_rest'] == 'yes') && ! \Elementor\Plugin::$instance->editor->is_edit_mode() ){
+		if ((isset($settings['show_in_rest']) && $settings['show_in_rest'] == 'yes') && ! Plugin::$instance->editor->is_edit_mode() ){
 			$id_el_target = 'lp-' . $this->get_id();
 			$wrapper 	= sprintf( '<div id="%s"></div>', $id_el_target );
 			$args = [
