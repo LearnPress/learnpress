@@ -1,6 +1,6 @@
 <?php
 /**
- * Elementor Controls for widget Become a teacher settings.
+ * Elementor Controls for skin Courses Loop Item.
  *
  * @since 4.2.3
  * @version 1.0.0
@@ -30,5 +30,18 @@ $CoursesLoopItem->add_control(
 		'default'       => '0',
 		'options'       => [ '0' => esc_html__( 'None', 'thim-elementor-kit' ) ] + $layout_loop_items,
 		'prevent_empty' => false,
+	)
+);
+
+$CoursesLoopItem->add_responsive_control(
+	'columns',
+	array(
+		'label'          => esc_html__( 'Columns', 'learnpress' ),
+		'type'           => Controls_Manager::NUMBER,
+		'default'        => 3,
+		'min'            => 1,
+		'selectors'      => array(
+			'{{WRAPPER}}' => '--lp-el-list-courses-grid-columns: {{VALUE}}',
+		),
 	)
 );

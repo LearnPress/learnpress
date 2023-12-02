@@ -14,23 +14,25 @@ use Elementor\Widget_Base;
 use LearnPress\ExternalPlugin\Elementor\LPSkinBase;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\Courses;
+use LearnPress\TemplateHooks\Course\ListCoursesTemplate;
 use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
 use LearnPress\TemplateHooks\TemplateAJAX;
 use LP_Course_Filter;
+use LP_Helper;
 use stdClass;
 use Throwable;
 
 class SkinCoursesBase extends LPSkinBase {
 	protected function _register_controls_actions() {
 		add_action(
-			'elementor/element/learnpress_list_courses_by_page/section_content/before_section_end',
-			[ $this, 'register_controls_on_section_content' ],
+			'elementor/element/learnpress_list_courses_by_page/section_skin/before_section_end',
+			[ $this, 'controls_on_section_skin' ],
 			10,
 			2
 		);
 	}
 
-	public function register_controls_on_section_content( Widget_Base $widget, $args ) {
+	public function controls_on_section_skin( Widget_Base $widget, $args ) {
 		// Only add controls here
 	}
 
@@ -45,6 +47,7 @@ class SkinCoursesBase extends LPSkinBase {
 			$settings                  = $this->parent->get_settings_for_display();
 			$is_load_restapi           = $settings['courses_rest'] ?? 0;
 			$courses_rest_no_load_page = $settings['courses_rest_no_load_page'] ?? 0;
+			$settings['url_current'] = LP_Helper::getUrlCurrent();
 
 			// Merge params filter form url
 			$settings = array_merge(
@@ -60,14 +63,14 @@ class SkinCoursesBase extends LPSkinBase {
 				$templateObj = self::render_courses( $settings );
 				$content     = $templateObj->content;
 				$content     = Template::instance()->nest_elements(
-					[ '<div class="list-courses-elm">' => '</div>' ],
+					[ '<div class="learn-press-courses">' => '</div>' ],
 					$content
 				);
 			} else {
-				$html_el_target = '<div class="list-courses-elm"></div>';
+				$html_el_target = '<div class="learn-press-courses"></div>';
 				$args           = array_merge(
 					[
-						'el_target' => '.list-courses-elm',
+						'el_target' => '.learn-press-courses',
 					],
 					$settings
 				);
@@ -105,6 +108,15 @@ class SkinCoursesBase extends LPSkinBase {
 			echo static::render_course( $course, $settings );
 		}
 
+		$listCoursesTemplate = ListCoursesTemplate::instance();
+		$data_pagination     = [
+			'total_pages' => ceil( $total_rows / $filter->limit ),
+			'type'        => 'number',
+			'base' => add_query_arg( 'paged', '%#%', $settings[ 'url_current' ] ?? '' ),
+			'paged' => $settings['paged'] ?? 1,
+		];
+		echo $listCoursesTemplate->html_pagination( $data_pagination );
+
 		$content          = new stdClass();
 		$content->content = ob_get_clean();
 
@@ -122,8 +134,8 @@ class SkinCoursesBase extends LPSkinBase {
 	public static function render_course( $course, array $settings = [] ): string {
 		$singleCourseTemplate = SingleCourseTemplate::instance();
 		$content              = '';
-		$content             .= $singleCourseTemplate->html_title( $course );
-		$content             .= $singleCourseTemplate->html_image( $course );
+		$content              .= $singleCourseTemplate->html_title( $course );
+		$content              .= $singleCourseTemplate->html_image( $course );
 
 		return $content;
 	}

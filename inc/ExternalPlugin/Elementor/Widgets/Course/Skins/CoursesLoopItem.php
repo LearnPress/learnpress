@@ -10,7 +10,7 @@ class CoursesLoopItem extends SkinCoursesBase {
 	public $lp_el_skin_id    = 'courses_loop_item';
 	public $lp_el_skin_title = 'Courses Loop Item';
 
-	public function register_controls_on_section_content( Widget_Base $widget, $args ) {
+	public function controls_on_section_skin( Widget_Base $widget, $args ) {
 		$this->parent = $widget;
 
 		Config::instance()->get(
