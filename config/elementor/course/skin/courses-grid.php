@@ -25,10 +25,10 @@ $CoursesGrid->add_responsive_control(
 	array(
 		'label'          => esc_html__( 'Columns', 'learnpress' ),
 		'type'           => Controls_Manager::NUMBER,
-		'default'        => '3',
+		'default'        => 3,
 		'min'            => 1,
 		'selectors'      => array(
-			'{{WRAPPER}}' => '--lp-el-list-courses-grid-columns: {{VALUE}}',
+			'{{WRAPPER}}' => '--lp-el-courses-grid-columns: {{VALUE}}',
 		),
 	)
 );

@@ -18,6 +18,11 @@ class CoursesLoopItem extends SkinCoursesBase {
 	public $lp_el_skin_title = 'Courses Loop Item';
 
 	public function controls_on_section_skin( Widget_Base $widget, $args ) {
+		// Only load on the Admin
+		if ( ! is_admin() ) {
+			return;
+		}
+
 		$this->parent = $widget;
 
 		Config::instance()->get(
