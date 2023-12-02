@@ -201,6 +201,15 @@ class LP_Assets extends LP_Abstract_Assets {
 					self::url( 'js/dist/utils' . self::$_min_assets . '.js' ),
 					array( 'jquery' )
 				),
+				'lp-load-ajax'         => new LP_Asset_Key(
+					self::url( 'js/dist/loadAJAX' . self::$_min_assets . '.js' ),
+					[],
+					[],
+					0,
+					0,
+					'',
+					[ 'strategy' => 'defer' ]
+				),
 				'lp-checkout'          => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/checkout' . self::$_min_assets . '.js' ),
 					array( 'lp-global', 'lp-utils', 'wp-api-fetch', 'jquery' ),
@@ -322,15 +331,6 @@ class LP_Assets extends LP_Abstract_Assets {
 					1,
 					'',
 					[ 'strategy' => 'defer' ]
-				),
-				'lp-load-ajax'     => new LP_Asset_Key(
-					self::url( 'js/dist/loadAJAX' . self::$_min_assets . '.js' ),
-					array(),
-					array(),
-					0,
-					0,
-					'',
-					[ 'strategy' => 'async' ]
 				),
 			)
 		);

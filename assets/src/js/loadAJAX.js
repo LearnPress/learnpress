@@ -45,6 +45,7 @@ const lpAJAX = ( () => {
 					const url = API.frontend.apiAJAX;
 					const dataObj = JSON.parse( element.dataset.send );
 					const dataSend = { ...dataObj };
+					const elLoadingFirst = element.querySelector( '.loading-first' );
 
 					const callBack = {
 						success: ( response ) => {
@@ -67,6 +68,9 @@ const lpAJAX = ( () => {
 						},
 						completed: () => {
 							console.log( 'completed' );
+							if ( elLoadingFirst ) {
+								elLoadingFirst.remove();
+							}
 						},
 					};
 
