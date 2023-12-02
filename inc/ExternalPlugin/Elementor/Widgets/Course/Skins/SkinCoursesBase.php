@@ -17,7 +17,9 @@ use LearnPress\Models\Courses;
 use LearnPress\TemplateHooks\Course\ListCoursesTemplate;
 use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
 use LearnPress\TemplateHooks\TemplateAJAX;
+use LP_Course;
 use LP_Course_Filter;
+use LP_Database;
 use LP_Helper;
 use stdClass;
 use Throwable;
@@ -37,7 +39,7 @@ class SkinCoursesBase extends LPSkinBase {
 	}
 
 	/**
-	 * Render widget content.
+	 * Render content list courses. (Grid/List)
 	 * @override elementor
 	 *
 	 * @return void
@@ -47,7 +49,7 @@ class SkinCoursesBase extends LPSkinBase {
 			$settings                  = $this->parent->get_settings_for_display();
 			$is_load_restapi           = $settings['courses_rest'] ?? 0;
 			$courses_rest_no_load_page = $settings['courses_rest_no_load_page'] ?? 0;
-			$settings['url_current'] = LP_Helper::getUrlCurrent();
+			$settings['url_current']   = LP_Helper::getUrlCurrent();
 
 			// Merge params filter form url
 			$settings = array_merge(
@@ -55,22 +57,22 @@ class SkinCoursesBase extends LPSkinBase {
 				lp_archive_skeleton_get_args()
 			);
 
-			$html_wrapper = [
-				'<div class="list-courses-elm-wrapper" data-widget-id="' . $this->get_id() . '">' => '</div>',
+			$html_wrapper_widget      = [
+				'<div class="list-courses-elm-wrapper">' => '</div>',
 			];
+			$name_target              = 'learn-press-courses-wrapper';
+			$html_wrapper_courses     = [ '<div class="' . $name_target . '">' => '</div>' ];
+			$el_target_render_courses = '<div class="' . $name_target . '"></div>';
 
+			// No load AJAX
 			if ( 'yes' !== $is_load_restapi || Plugin::$instance->editor->is_edit_mode() || 'yes' === $courses_rest_no_load_page ) {
 				$templateObj = self::render_courses( $settings );
 				$content     = $templateObj->content;
-				$content     = Template::instance()->nest_elements(
-					[ '<div class="learn-press-courses">' => '</div>' ],
-					$content
-				);
-			} else {
-				$html_el_target = '<div class="learn-press-courses"></div>';
-				$args           = array_merge(
+				$content     = Template::instance()->nest_elements( $html_wrapper_courses, $content );
+			} else { // Load AJAX
+				$args = array_merge(
 					[
-						'el_target' => '.learn-press-courses',
+						'el_target' => '.' . $name_target,
 					],
 					$settings
 				);
@@ -79,10 +81,10 @@ class SkinCoursesBase extends LPSkinBase {
 					'class'  => get_class( $this ),
 					'method' => 'render_courses',
 				];
-				$content  = TemplateAJAX::load_content_via_ajax( $html_el_target, $args, $callback );
+				$content  = TemplateAJAX::load_content_via_ajax( $el_target_render_courses, $args, $callback );
 			}
 
-			echo Template::instance()->nest_elements( $html_wrapper, $content );
+			echo Template::instance()->nest_elements( $html_wrapper_widget, $content );
 		} catch ( Throwable $e ) {
 			echo $e->getMessage();
 		}
@@ -101,19 +103,22 @@ class SkinCoursesBase extends LPSkinBase {
 		$total_rows    = 0;
 		$filter->limit = $settings['courses_per_page'] ?? 8;
 		$courses       = Courses::get_courses( $filter, $total_rows );
+		$skin          = $settings['skin'] ?? 'grid';
 
 		ob_start();
+		echo '<ul class="learn-press-courses ' . $skin . '">';
 		foreach ( $courses as $courseObj ) {
 			$course = learn_press_get_course( $courseObj->ID );
 			echo static::render_course( $course, $settings );
 		}
+		echo '</ul>';
 
 		$listCoursesTemplate = ListCoursesTemplate::instance();
 		$data_pagination     = [
-			'total_pages' => ceil( $total_rows / $filter->limit ),
+			'total_pages' => LP_Database::get_total_pages( $filter->limit, $total_rows ),
 			'type'        => 'number',
-			'base' => add_query_arg( 'paged', '%#%', $settings[ 'url_current' ] ?? '' ),
-			'paged' => $settings['paged'] ?? 1,
+			'base'        => add_query_arg( 'paged', '%#%', $settings['url_current'] ?? '' ),
+			'paged'       => $settings['paged'] ?? 1,
 		];
 		echo $listCoursesTemplate->html_pagination( $data_pagination );
 
@@ -126,17 +131,38 @@ class SkinCoursesBase extends LPSkinBase {
 	/**
 	 * Render single item course
 	 *
-	 * @param $course
+	 * @param LP_Course $course
 	 * @param array $settings
 	 *
 	 * @return string
 	 */
-	public static function render_course( $course, array $settings = [] ): string {
+	public static function render_course( LP_Course $course, array $settings = [] ): string {
+		$html_item            = '';
 		$singleCourseTemplate = SingleCourseTemplate::instance();
-		$content              = '';
-		$content              .= $singleCourseTemplate->html_title( $course );
-		$content              .= $singleCourseTemplate->html_image( $course );
 
-		return $content;
+		try {
+			$html_wrapper = [
+				'<li class="course-item">' => '</li>',
+			];
+
+			$title = sprintf( '<a href="%s">%s</a>', $course->get_permalink(), $course->get_title() );
+
+			$section = [
+				'image'  => [ 'text_html' => $singleCourseTemplate->html_image( $course ) ],
+				'author' => [ 'text_html' => sprintf( '<div>%s</div>', $course->get_instructor_html() ) ],
+				'title'  => [ 'text_html' => $title ],
+				'price'  => [ 'text_html' => sprintf( '<div>%s</div>', $singleCourseTemplate->html_price( $course ) ) ],
+				'button' => [ 'text_html' => sprintf( '<div><a href="%s">%s</a></div>', $course->get_permalink(), __( 'View More' ) ) ],
+			];
+
+			ob_start();
+			Template::instance()->print_sections( $section );
+			$html_item = ob_get_clean();
+			$html_item = Template::instance()->nest_elements( $html_wrapper, $html_item );
+		} catch ( Throwable $e ) {
+			$html_item = $e->getMessage();
+		}
+
+		return $html_item;
 	}
 }

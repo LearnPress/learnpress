@@ -1,10 +1,17 @@
 <?php
-
+/**
+ * Skin Loop Item for Widget Courses
+ * Call list item on plugin Thim Elementor Kit.
+ *
+ * @since 4.2.5.7
+ * @version 1.0.0
+ */
 namespace LearnPress\ExternalPlugin\Elementor\Widgets\Course\Skins;
 
 use Elementor\Plugin;
 use Elementor\Widget_Base;
 use LearnPress\Helpers\Config;
+use LP_Course;
 
 class CoursesLoopItem extends SkinCoursesBase {
 	public $lp_el_skin_id    = 'courses_loop_item';
@@ -23,12 +30,12 @@ class CoursesLoopItem extends SkinCoursesBase {
 	/**
 	 * Render single item course
 	 *
-	 * @param $course
+	 * @param LP_Course $course
 	 * @param array $settings
 	 *
 	 * @return string
 	 */
-	public static function render_course( $course, array $settings = [] ): string {
+	public static function render_course( LP_Course $course, array $settings = [] ): string {
 		global $post;
 		$post = get_post( $course->get_id() );
 		$id   = $settings['lp_el_skin_courses_loop_item_template_id'] ?? 0;
