@@ -101,8 +101,17 @@ window.lpCourseList = ( () => {
 			}
 
 			e.preventDefault();
-			filterCourses.order_by = target.value;
-			window.location.href = lpAddQueryArgs( currentUrl, filterCourses );
+
+			const filterCourses = JSON.parse( window.localStorage.getItem( 'lp_filter_courses' ) ) || {};
+			filterCourses.order_by = target.value || '';
+
+			if ( 'undefined' !== typeof lpSettingCourses &&
+				lpData.is_course_archive &&
+				lpSettingCourses.lpArchiveLoadAjax ) {
+				window.lpCourseList.triggerFetchAPI( filterCourses );
+			} else {
+				window.location.href = lpAddQueryArgs( currentUrl, filterCourses );
+			}
 		},
 		onChangeTypeLayout: ( e, target ) => {
 			if ( 'lp-switch-layout-btn' !== target.getAttribute( 'name' ) ) {
