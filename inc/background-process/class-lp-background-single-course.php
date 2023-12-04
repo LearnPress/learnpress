@@ -30,14 +30,14 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 		 */
 		protected function handle() {
 			try {
-				$handle_name = LP_Request::get_param( 'handle_name', '', 'key', 'post' );
+				$handle_name = LP_Request::get_param( 'handle_name', '', 'text', 'post' );
 				$course_id   = intval( $_POST['course_id'] ?? 0 );
 				if ( empty( $handle_name ) || ! $course_id ) {
 					return;
 				}
 
 				$this->lp_course = learn_press_get_course( $course_id );
-				$this->data      = LP_Request::get_param( 'data', '', 'key', 'post' );
+				$this->data      = LP_Request::get_param( 'data', '', 'text', 'post' );
 
 				if ( empty( $this->lp_course ) ) {
 					return;
@@ -97,7 +97,7 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 			}
 
 			$has_sale_price = false;
-			$regular_price  = (float) $this->data['_lp_regular_price'];
+			$regular_price  = $this->data['_lp_regular_price'];
 
 			$sale_price = $this->data['_lp_sale_price'] ?? '';
 			$start_date = $this->data['_lp_sale_start'] ?? '';
@@ -105,10 +105,12 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 			$price      = 0;
 
 			if ( '' != $regular_price ) {
-				$price = $regular_price;
+				$regular_price = floatval( $regular_price );
+				$price         = $regular_price;
 
 				if ( '' != $sale_price ) {
-					if ( floatval( $sale_price ) < floatval( $regular_price ) ) {
+					$sale_price = floatval( $sale_price );
+					if ( $sale_price < $regular_price ) {
 						$price          = $sale_price;
 						$has_sale_price = true;
 					}
