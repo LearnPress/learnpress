@@ -30,7 +30,7 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 		 */
 		protected function handle() {
 			try {
-				$handle_name = LP_Request::get_param( 'handle_name', '', 'text', 'post' );
+				$handle_name = LP_Request::get_param( 'handle_name', '', 'key', 'post' );
 				$course_id   = intval( $_POST['course_id'] ?? 0 );
 				if ( empty( $handle_name ) || ! $course_id ) {
 					return;

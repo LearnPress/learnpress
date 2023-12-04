@@ -223,6 +223,9 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 							case 'load-more':
 							case 'infinite':
 								$from_to = $filter->page * $filter->limit;
+								if ( $from_to > $total_rows ) {
+									$from_to = $total_rows;
+								}
 								break;
 							default:
 								$from_to = $from . '-' . $to;
