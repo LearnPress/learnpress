@@ -145,6 +145,7 @@ class FilterCourseTemplate {
 				$data
 			);
 
+			$this->check_param_url_has_lang( $data );
 			$value    = LP_Request::get_param( 'c_search' );
 			$value    = isset( $data['params_url'] ) ? ( $data['params_url']['c_search'] ?? $value ) : $value;
 			$content  = sprintf(
@@ -178,6 +179,7 @@ class FilterCourseTemplate {
 		$content = '';
 
 		try {
+			$this->check_param_url_has_lang( $data );
 			$params_url    = $data['params_url'] ?? [];
 			$data_selected = $params_url['sort_by'] ?? '';
 			$data_selected = explode( ',', $data_selected );
@@ -265,6 +267,7 @@ class FilterCourseTemplate {
 		$content = '';
 
 		try {
+			$this->check_param_url_has_lang( $data );
 			$params_url       = $data['params_url'] ?? [];
 			$data_selected    = $params_url['term_id'] ?? '';
 			$data_selected    = explode( ',', $data_selected );
@@ -351,6 +354,7 @@ class FilterCourseTemplate {
 		$content = '';
 
 		try {
+			$this->check_param_url_has_lang( $data );
 			$params_url    = $data['params_url'] ?? [];
 			$data_selected = $params_url['tag_id'] ?? '';
 			$data_selected = explode( ',', $data_selected );
@@ -428,6 +432,7 @@ class FilterCourseTemplate {
 		$content = '';
 
 		try {
+			$this->check_param_url_has_lang( $data );
 			$params_url    = $data['params_url'] ?? [];
 			$data_selected = $params_url['c_authors'] ?? '';
 			$data_selected = explode( ',', $data_selected );
@@ -496,6 +501,7 @@ class FilterCourseTemplate {
 		$content = '';
 
 		try {
+			$this->check_param_url_has_lang( $data );
 			$params_url    = $data['params_url'] ?? [];
 			$data_selected = $params_url['c_level'] ?? '';
 			$data_selected = explode( ',', $data_selected );
@@ -596,12 +602,28 @@ class FilterCourseTemplate {
 
 		// Check has in category page.
 		if ( isset( $params_url['page_term_id_current'] ) &&
-		empty( $params_url['term_id'] ) ) {
+			empty( $params_url['term_id'] ) ) {
 			$filter->term_ids[] = $params_url['page_term_id_current'];
 		} // Check has in tag page.
 		elseif ( isset( $params_url['page_tag_id_current'] ) &&
-		empty( $params_url['tag_id'] ) ) {
+			empty( $params_url['tag_id'] ) ) {
 			$filter->tag_ids[] = $params_url['page_tag_id_current'];
+		}
+	}
+
+	/**
+	 * Check param url has lang for multiple lang.
+	 *
+	 * @param array $data
+	 *
+	 * @return void
+	 * @since 4.2.5.7
+	 * @version 1.0.0
+	 */
+	public function check_param_url_has_lang( array $data = [] ) {
+		$params_url = $data['params_url'] ?? [];
+		if ( isset( $params_url['lang'] ) ) {
+			$_REQUEST['lang'] = sanitize_text_field( $params_url['lang'] );
 		}
 	}
 }

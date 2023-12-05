@@ -141,12 +141,18 @@ window.lpCourseFilter = {
 			filterCourses.page_tag_id_current = lpData.urlParams.page_tag_id_current;
 		}
 
+		const filterParamsUrl = { params_url: filterCourses };
+		// Send lang to API if exist for multiple lang.
+		if ( lpData.urlParams.hasOwnProperty( 'lang' ) ) {
+			filterParamsUrl.params_url.lang = lpData.urlParams.lang;
+		}
+
 		const paramsFetch = {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
 			},
-			body: JSON.stringify( { ...widgetData, ...{ params_url: filterCourses } } ),
+			body: JSON.stringify( { ...widgetData, ...filterParamsUrl } ),
 		};
 
 		if ( 0 !== parseInt( lpData.user_id ) ) {
@@ -202,6 +208,11 @@ window.lpCourseFilter = {
 
 		if ( 'undefined' !== typeof lpData.urlParams.page_tag_id_current ) {
 			filterCourses.page_tag_id_current = lpData.urlParams.page_tag_id_current;
+		}
+
+		// Send lang to API if exist for multiple lang.
+		if ( lpData.urlParams.hasOwnProperty( 'lang' ) ) {
+			filterCourses.lang = lpData.urlParams.lang;
 		}
 
 		if ( 'undefined' !== typeof lpSettingCourses &&
