@@ -226,9 +226,9 @@ class LP_Query {
 					}
 				}
 			}
-		}
 
-		apply_filters( 'learn-press/rewrite-rules/profile', $rules['profile'], $profile_id );
+			apply_filters( 'learn-press/rewrite-rules/profile', $rules['profile'], $profile_id );
+		}
 	}
 
 	/**
