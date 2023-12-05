@@ -210,6 +210,13 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.2.5.7 (2023-12-06) =
+~ Added: new feature "Assign/Unassign Courses" on the Tools Backend.
+~ Added: courses filter support multiple language.
+~ Dev: widget elementor filter courses.
+~ Dev: widget elementor list courses.
+~ Fixed: save sale price.
+
 = 4.2.5.6 (2023-11-24) =
 ~ Tweak: logic load Widget Filter Courses.
 ~ Dev: assign/unassign course to user.
