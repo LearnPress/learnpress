@@ -513,10 +513,10 @@ class LP_Course_DB extends LP_Database {
 
 		// Level
 		if ( ! empty( $filter->levels ) ) {
-			$filter->join[]  = "INNER JOIN $this->tb_postmeta AS pm ON p.ID = pm.post_id";
-			$filter->where[] = $this->wpdb->prepare( 'AND pm.meta_key = %s', '_lp_level' );
+			$filter->join[]  = "INNER JOIN $this->tb_postmeta AS pml ON p.ID = pml.post_id";
+			$filter->where[] = $this->wpdb->prepare( 'AND pml.meta_key = %s', '_lp_level' );
 			$levels_format   = LP_Helper::db_format_array( $filter->levels, '%s' );
-			$filter->where[] = $this->wpdb->prepare( 'AND pm.meta_value IN (' . $levels_format . ')', $filter->levels );
+			$filter->where[] = $this->wpdb->prepare( 'AND pml.meta_value IN (' . $levels_format . ')', $filter->levels );
 		}
 
 		// course ids
@@ -602,7 +602,7 @@ class LP_Course_DB extends LP_Database {
 		$filter_course_price->return_string_query = true;
 		$courses_price                            = $this->get_courses( $filter_course_price );
 
-		$filter->join[]  = "INNER JOIN $this->tb_postmeta AS pm ON p.ID = pm.post_id";
+		$filter->join[]  = "INNER JOIN $this->tb_postmeta AS pmfr ON p.ID = pmfr.post_id";
 		$filter->where[] = 'AND ID NOT IN( ' . $courses_price . ' )';
 
 		return $filter;
@@ -618,8 +618,8 @@ class LP_Course_DB extends LP_Database {
 	 * @since 4.2.3.2
 	 */
 	public function get_courses_sort_by_paid( LP_Course_Filter $filter ): LP_Course_Filter {
-		$filter->join[]  = "INNER JOIN $this->tb_postmeta AS pm ON p.ID = pm.post_id";
-		$filter->where[] = $this->wpdb->prepare( 'AND pm.meta_key = %s AND pm.meta_value > %d', '_lp_price', 0 );
+		$filter->join[]  = "INNER JOIN $this->tb_postmeta AS pmp ON p.ID = pmp.post_id";
+		$filter->where[] = $this->wpdb->prepare( 'AND pmp.meta_key = %s AND pmp.meta_value > %d', '_lp_price', 0 );
 
 		return $filter;
 	}
@@ -635,9 +635,9 @@ class LP_Course_DB extends LP_Database {
 	 * @since 4.1.5
 	 */
 	public function get_courses_sort_by_feature( LP_Course_Filter &$filter ): LP_Course_Filter {
-		$filter->join[]  = "INNER JOIN $this->tb_postmeta AS pm ON p.ID = pm.post_id";
-		$filter->where[] = $this->wpdb->prepare( 'AND pm.meta_key = %s', '_lp_featured' );
-		$filter->where[] = $this->wpdb->prepare( 'AND pm.meta_value = %s', 'yes' );
+		$filter->join[]  = "INNER JOIN $this->tb_postmeta AS pmf ON p.ID = pmf.post_id";
+		$filter->where[] = $this->wpdb->prepare( 'AND pmf.meta_key = %s', '_lp_featured' );
+		$filter->where[] = $this->wpdb->prepare( 'AND pmf.meta_value = %s', 'yes' );
 
 		return $filter;
 	}
