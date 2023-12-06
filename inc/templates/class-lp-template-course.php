@@ -250,7 +250,6 @@ class LP_Template_Course extends LP_Abstract_Template {
 
 			if ( $user->has_finished_course( $course->get_id() ) ) {
 				throw new Exception( 'Course is finished' );
-
 			}
 		} catch ( Throwable $e ) {
 			$can_show = false;

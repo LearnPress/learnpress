@@ -290,7 +290,7 @@ class LP_User extends LP_Abstract_User {
 				throw new Exception( esc_html__( 'The course is external', 'learnpress' ) );
 			}
 
-			if ( ! $course->is_in_stock() ) {
+			if ( ! $course->is_in_stock_enroll() ) {
 				throw new Exception( esc_html__( 'The course is full of students.', 'learnpress' ) );
 			}
 
