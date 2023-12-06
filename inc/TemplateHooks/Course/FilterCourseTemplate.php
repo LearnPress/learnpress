@@ -183,7 +183,7 @@ class FilterCourseTemplate {
 			$params_url      = $data['params_url'] ?? [];
 			$data_selected   = $params_url['sort_by'] ?? '';
 			$data_selected   = explode( ',', $data_selected );
-			$hide_count_zero = $data['hide_count_zero'] ?? 0;
+			$hide_count_zero = $data['hide_count_zero'] ?? 1;
 
 			// Get number courses free
 			$filter_courses_free = new LP_Course_Filter();
@@ -277,7 +277,7 @@ class FilterCourseTemplate {
 			$data_selected    = explode( ',', $data_selected );
 			$arg_query_terms  = [ 'hide_empty' => true ];
 			$category_current = null;
-			$hide_count_zero  = $data['hide_count_zero'] ?? 0;
+			$hide_count_zero  = $data['hide_count_zero'] ?? 1;
 
 			if ( isset( $params_url['page_term_id_current'] ) ) {
 				$category_current_id = $params_url['page_term_id_current'];
@@ -366,7 +366,7 @@ class FilterCourseTemplate {
 			$params_url      = $data['params_url'] ?? [];
 			$data_selected   = $params_url['tag_id'] ?? '';
 			$data_selected   = explode( ',', $data_selected );
-			$hide_count_zero = $data['hide_count_zero'] ?? 0;
+			$hide_count_zero = $data['hide_count_zero'] ?? 1;
 			// Check has in tag page.
 			if ( isset( $params_url['page_tag_id_current'] ) &&
 				empty( $params_url['tag_id'] ) ) {
@@ -448,7 +448,7 @@ class FilterCourseTemplate {
 			$params_url      = $data['params_url'] ?? [];
 			$data_selected   = $params_url['c_authors'] ?? '';
 			$data_selected   = explode( ',', $data_selected );
-			$hide_count_zero = $data['hide_count_zero'] ?? 0;
+			$hide_count_zero = $data['hide_count_zero'] ?? 1;
 			$instructors     = get_users(
 				array(
 					'role__in' => [ LP_TEACHER_ROLE, ADMIN_ROLE ],
@@ -522,7 +522,7 @@ class FilterCourseTemplate {
 			$data_selected   = $params_url['c_level'] ?? '';
 			$data_selected   = explode( ',', $data_selected );
 			$fields          = lp_course_level();
-			$hide_count_zero = $data['hide_count_zero'] ?? 0;
+			$hide_count_zero = $data['hide_count_zero'] ?? 1;
 
 			foreach ( $fields as $key => $field ) {
 				$html_wrapper = [
