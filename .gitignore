@@ -25,8 +25,6 @@ languages/strings
 /assets/js/admin/lp-material.min.js
 /inc/test.php
 /local-debug.php
-/languages/learnpress-vi.mo
-/languages/learnpress-vi.po
 /releases
 /build
 /**/*.js.map

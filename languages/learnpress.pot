@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the LearnPress plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: LearnPress 4.2.5.5-beta-1\n"
+"Project-Id-Version: LearnPress 4.2.5.7-beta-3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/learnpress\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2023-11-16T06:17:14+03:00\n"
+"POT-Creation-Date: 2023-12-07T07:23:58+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.8.1\n"
 "X-Domain: learnpress\n"
@@ -86,17 +86,6 @@ msgstr ""
 msgid "This is an editor placeholder for the Archive Course page. Content will render content of list courses. Should be not remove it"
 msgstr ""
 
-#. Plugin Name of the plugin
-#: assets/js/dist/frontend/quiz.min.js:8
-#: inc/admin/class-lp-admin.php:141
-#: inc/admin/class-lp-admin.php:149
-#: inc/admin/lp-admin-functions.php:1615
-#: inc/admin/settings/class-lp-settings-emails.php:153
-#: inc/ExternalPlugin/Elementor/LPElementor.php:52
-#: inc/ExternalPlugin/Elementor/LPElementor.php:100
-msgid "LearnPress"
-msgstr ""
-
 #: assets/js/dist/frontend/quiz.min.js:13
 msgid "Item Curriculum Course"
 msgstr ""
@@ -111,23 +100,6 @@ msgstr ""
 
 #: assets/js/dist/frontend/quiz.min.js:15
 msgid "This is an editor placeholder for the Single Course page. Content will render content of single course. Should be not remove it"
-msgstr ""
-
-#: assets/js/dist/frontend/quiz.min.js:9
-msgid "LearnPress Single Course Template"
-msgstr ""
-
-#: assets/js/dist/frontend/quiz.min.js:13
-msgid "LearnPress Course Archive Template"
-msgstr ""
-
-#. %s is the template title
-#: assets/js/dist/frontend/quiz.min.js:32
-msgid "This is an editor placeholder for the %s. This will be replaced by the template in your store and displayed with your course image(s), title, price, and so on. You can move this placeholder around and add further blocks around it to extend the template."
-msgstr ""
-
-#: assets/js/dist/frontend/quiz.min.js:13
-msgid "Renders LearnPress PHP templates."
 msgstr ""
 
 #: assets/js/dist/frontend/quiz.min.js:41
@@ -373,6 +345,16 @@ msgstr ""
 msgid "Search by user"
 msgstr ""
 
+#. Plugin Name of the plugin
+#: inc/admin/class-lp-admin.php:141
+#: inc/admin/class-lp-admin.php:149
+#: inc/admin/lp-admin-functions.php:1615
+#: inc/admin/settings/class-lp-settings-emails.php:153
+#: inc/ExternalPlugin/Elementor/LPElementor.php:52
+#: inc/ExternalPlugin/Elementor/LPElementor.php:100
+msgid "LearnPress"
+msgstr ""
+
 #. Plugin URI of the plugin
 msgid "http://thimpress.com/learnpress"
 msgstr ""
@@ -394,15 +376,18 @@ msgid "Regular Price"
 msgstr ""
 
 #: config/elementor/course/course-price.php:21
-#: config/elementor/course/list-courses-by-page.php:331
+#: config/elementor/course/filter-course-el.php:507
+#: config/elementor/course/filter-course-el.php:563
+#: config/elementor/course/filter-course-el.php:664
+#: config/elementor/course/list-courses-by-page-bk.php:283
 msgid "Alignment"
 msgstr ""
 
 #: config/elementor/course/course-price.php:47
 #: config/elementor/course/course-price.php:66
 #: config/elementor/course/course-price.php:97
-#: config/elementor/course/list-courses-by-page.php:411
-#: config/elementor/course/list-courses-by-page.php:431
+#: config/elementor/course/list-courses-by-page-bk.php:363
+#: config/elementor/course/list-courses-by-page-bk.php:383
 msgid "Color"
 msgstr ""
 
@@ -411,9 +396,11 @@ msgid "Origin Price"
 msgstr ""
 
 #: config/elementor/course/course-price.php:78
-#: config/elementor/course/list-courses-by-page.php:374
+#: config/elementor/course/filter-course-el.php:312
+#: config/elementor/course/filter-course-el.php:370
+#: config/elementor/course/list-courses-by-page-bk.php:326
 #: inc/ExternalPlugin/Elementor/LPElementorControls.php:382
-#: inc/ExternalPlugin/Elementor/LPElementorControls.php:507
+#: inc/ExternalPlugin/Elementor/LPElementorControls.php:508
 msgid "Padding"
 msgstr ""
 
@@ -421,7 +408,372 @@ msgstr ""
 msgid "Free Price"
 msgstr ""
 
-#: config/elementor/course/list-courses-by-page.php:23
+#: config/elementor/course/filter-course-el.php:17
+msgid "Filter Area"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:22
+#: config/widgets/course/filter-course.php:33
+msgid "Fields"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:36
+msgid "Filter By"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:39
+#: config/widgets/course/filter-course.php:38
+msgid "Keyword"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:40
+#: config/elementor/course/list-courses.php:121
+#: config/widgets/course/filter-course.php:42
+#: inc/custom-post-types/course.php:392
+#: inc/custom-post-types/course.php:409
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:253
+#: templates/emails/order-items-table.php:87
+msgid "Price"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:41
+#: config/widgets/course/filter-course.php:46
+#: inc/admin/views/statistics-bk/orders.php:49
+#: inc/custom-post-types/course.php:103
+msgid "Course Category"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:42
+#: config/widgets/course/filter-course.php:50
+msgid "Course Tag"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:43
+#: config/widgets/course/filter-course.php:54
+#: inc/admin/views/meta-boxes/course/settings.php:50
+#: inc/admin/views/meta-boxes/course/settings.php:293
+#: inc/custom-post-types/course.php:389
+#: inc/custom-post-types/course.php:406
+#: inc/custom-post-types/lesson.php:220
+#: inc/custom-post-types/question.php:319
+#: inc/custom-post-types/quiz.php:236
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:499
+msgid "Author"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:44
+#: config/widgets/course/filter-course.php:58
+#: inc/admin/views/meta-boxes/course/settings.php:122
+msgid "Level"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:45
+#: config/elementor/course/filter-course-el.php:499
+#: config/elementor/instructor/become-a-teacher.php:82
+#: config/elementor/login-user-form.php:46
+#: config/elementor/register-user-form.php:46
+#: config/widgets/course/filter-course.php:62
+msgid "Button Submit"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:46
+#: config/elementor/course/filter-course-el.php:555
+#: config/widgets/course/filter-course.php:66
+msgid "Button Reset"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:64
+msgid "Show Count"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:67
+#: config/elementor/course/filter-course-el.php:91
+#: config/elementor/course/filter-course-el.php:100
+#: config/elementor/course/filter-course-el.php:112
+#: config/elementor/course/filter-course-el.php:175
+#: config/elementor/course/filter-course-el.php:198
+#: config/elementor/course/materials.php:40
+#: inc/ExternalPlugin/Elementor/LPElementorControls.php:491
+msgid "Show"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:68
+#: config/elementor/course/filter-course-el.php:92
+#: config/elementor/course/filter-course-el.php:101
+#: config/elementor/course/filter-course-el.php:113
+#: config/elementor/course/filter-course-el.php:176
+#: config/elementor/course/filter-course-el.php:199
+#: config/elementor/course/materials.php:41
+#: inc/ExternalPlugin/Elementor/LPElementorControls.php:490
+msgid "Hide"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:76
+msgid "Heading Setting"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:78
+#: config/elementor/course/list-courses.php:70
+#: config/elementor/instructor/list-instructors.php:55
+msgid "Default"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:79
+#: config/elementor/instructor/list-instructors.php:56
+#: inc/admin/views/statistics/courses.php:16
+#: inc/admin/views/statistics/orders.php:16
+#: inc/admin/views/statistics/overview.php:15
+#: inc/admin/views/statistics/users.php:16
+msgid "Custom"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:88
+msgid "Enable Heading"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:97
+msgid "Toggle Content"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:109
+msgid "Default Toggle On"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:130
+msgid "Extra Option"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:135
+#: config/widgets/course/filter-course.php:14
+msgid "Load widget via REST"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:139
+#: config/elementor/course/filter-course-el.php:150
+#: config/elementor/course/filter-course-el.php:161
+#: config/elementor/course/filter-course-el.php:241
+#: config/elementor/course/filter-course-el.php:282
+#: config/elementor/course/list-courses-by-page-bk.php:32
+#: config/elementor/course/list-courses-by-page-bk.php:44
+#: config/elementor/course/list-courses-by-page-bk.php:56
+#: config/elementor/course/list-courses-by-page.php:34
+#: config/elementor/course/list-courses-by-page.php:46
+#: config/elementor/course/list-courses-by-page.php:68
+#: config/elementor/course/list-courses-by-page.php:80
+#: inc/class-lp-assets.php:96
+#: inc/lp-core-functions.php:2823
+#: templates/global/lp-modal-overlay.php:24
+msgid "Yes"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:140
+#: config/elementor/course/filter-course-el.php:151
+#: config/elementor/course/filter-course-el.php:162
+#: config/elementor/course/filter-course-el.php:242
+#: config/elementor/course/filter-course-el.php:283
+#: config/elementor/course/list-courses-by-page-bk.php:33
+#: config/elementor/course/list-courses-by-page-bk.php:45
+#: config/elementor/course/list-courses-by-page-bk.php:57
+#: config/elementor/course/list-courses-by-page.php:35
+#: config/elementor/course/list-courses-by-page.php:47
+#: config/elementor/course/list-courses-by-page.php:69
+#: config/elementor/course/list-courses-by-page.php:81
+#: inc/class-lp-assets.php:97
+#: inc/lp-core-functions.php:2824
+#: templates/global/lp-modal-overlay.php:23
+msgid "No"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:146
+#: config/widgets/course/filter-course.php:24
+msgid "Enable Keyword Search Suggestion"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:157
+#: config/elementor/course/filter-course-el.php:171
+msgid "Filter Toggle Button"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:182
+msgid "Text Button"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:183
+#: inc/admin/views/statistics/courses.php:20
+#: inc/admin/views/statistics/orders.php:20
+#: inc/admin/views/statistics/overview.php:19
+#: inc/admin/views/statistics/users.php:20
+#: inc/ExternalPlugin/Elementor/Widgets/Course/FilterCourseElementor.php:148
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:594
+msgid "Filter"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:194
+msgid "Button Icon"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:208
+msgid "Icon"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:222
+msgid "Icon Position"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:224
+msgid "Before"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:225
+msgid "After"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:237
+msgid "Filter Selected Number"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:251
+#: config/elementor/course/filter-course-el.php:532
+#: config/elementor/course/filter-course-el.php:588
+#: config/elementor/course/filter-course-el.php:689
+#: config/elementor/course/filter-course-el.php:743
+msgid "Width"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:278
+msgid "Filter Selected List"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:295
+msgid "Section"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:300
+#: config/elementor/course/filter-course-el.php:358
+#: config/elementor/course/list-courses-by-page-bk.php:314
+#: inc/ExternalPlugin/Elementor/LPElementorControls.php:370
+#: inc/ExternalPlugin/Elementor/LPElementorControls.php:496
+msgid "Margin"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:329
+#: config/elementor/course/filter-course-el.php:387
+msgid "Background"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:334
+#: config/elementor/course/filter-course-el.php:392
+msgid "Radius"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:353
+#: inc/admin/class-lp-admin-assets.php:490
+#: inc/admin/views/meta-boxes/order/content-tab-preview-exports-invoice.php:66
+#: inc/admin/views/meta-boxes/order/details.php:161
+#: templates/checkout/order-received.php:70
+#: templates/order/order-details.php:25
+msgid "Item"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:404
+msgid "Toggle Offset X (px)"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:416
+msgid "Toggle Offset Y (px)"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:430
+#: config/elementor/instructor/become-a-teacher.php:20
+#: config/elementor/instructor/become-a-teacher.php:46
+#: config/elementor/login-user-form.php:19
+#: config/elementor/register-user-form.php:19
+#: config/settings/gateway/offline-payment.php:33
+#: config/widgets/course/filter-course.php:9
+#: inc/admin/views/meta-boxes/fields/extra-faq.php:37
+#: inc/admin/views/meta-boxes/fields/extra-faq.php:57
+#: inc/admin/views/setup/setup-stripe.php:7
+#: inc/Widgets/course-extra.php:25
+#: inc/Widgets/course-info.php:32
+#: inc/Widgets/course-progress.php:29
+#: inc/Widgets/featured-courses.php:28
+#: inc/Widgets/popular-courses.php:24
+#: inc/Widgets/recent-courses.php:29
+msgid "Title"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:441
+msgid "Label"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:453
+msgid "Horizontal Align"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:459
+#: config/elementor/course/filter-course-el.php:513
+#: config/elementor/course/filter-course-el.php:569
+#: config/elementor/course/filter-course-el.php:670
+#: inc/lp-core-functions.php:875
+msgid "Left"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:463
+#: config/elementor/course/filter-course-el.php:521
+#: config/elementor/course/filter-course-el.php:577
+#: config/elementor/course/filter-course-el.php:678
+#: inc/lp-core-functions.php:876
+msgid "Right"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:477
+msgid "Count"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:488
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:161
+msgid "Search"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:517
+#: config/elementor/course/filter-course-el.php:573
+#: config/elementor/course/filter-course-el.php:674
+msgid "Center"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:607
+msgid "Position"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:609
+msgid "Static"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:610
+msgid "Absolute"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:621
+msgid "Offset X (px)"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:636
+msgid "Offset Y (px)"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:655
+msgid "Button Popup"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:712
+msgid "Selected List"
+msgstr ""
+
+#: config/elementor/course/filter-course-el.php:729
+msgid "Selected Number"
+msgstr ""
+
+#: config/elementor/course/list-courses-by-page-bk.php:23
 #: config/elementor/course/list-courses.php:34
 #: config/elementor/instructor/become-a-teacher.php:15
 #: config/elementor/instructor/list-instructors.php:178
@@ -433,169 +785,167 @@ msgstr ""
 msgid "Content"
 msgstr ""
 
-#: config/elementor/course/list-courses-by-page.php:37
-#: config/elementor/course/list-courses-by-page.php:49
-#: config/elementor/course/list-courses-by-page.php:61
-#: inc/class-lp-assets.php:96
-#: inc/lp-core-functions.php:2823
-#: templates/global/lp-modal-overlay.php:24
-msgid "Yes"
-msgstr ""
-
-#: config/elementor/course/list-courses-by-page.php:38
-#: config/elementor/course/list-courses-by-page.php:50
-#: config/elementor/course/list-courses-by-page.php:62
-#: inc/class-lp-assets.php:97
-#: inc/lp-core-functions.php:2824
-#: templates/global/lp-modal-overlay.php:23
-msgid "No"
-msgstr ""
-
-#: config/elementor/course/list-courses-by-page.php:72
+#: config/elementor/course/list-courses-by-page-bk.php:67
+#: config/elementor/course/list-courses-by-page.php:106
 msgid "Courses Per Page"
 msgstr ""
 
-#: config/elementor/course/list-courses-by-page.php:78
+#: config/elementor/course/list-courses-by-page-bk.php:77
+#: config/elementor/course/list-courses-by-page.php:117
 msgid "Order By Default"
 msgstr ""
 
-#: config/elementor/course/list-courses-by-page.php:80
+#: config/elementor/course/list-courses-by-page-bk.php:79
+#: config/elementor/course/list-courses-by-page.php:119
 msgid "Newest"
 msgstr ""
 
-#: config/elementor/course/list-courses-by-page.php:81
+#: config/elementor/course/list-courses-by-page-bk.php:80
+#: config/elementor/course/list-courses-by-page.php:120
 msgid "Title a-z"
 msgstr ""
 
-#: config/elementor/course/list-courses-by-page.php:82
+#: config/elementor/course/list-courses-by-page-bk.php:81
+#: config/elementor/course/list-courses-by-page.php:121
 msgid "Title z-a"
 msgstr ""
 
-#: config/elementor/course/list-courses-by-page.php:83
+#: config/elementor/course/list-courses-by-page-bk.php:82
+#: config/elementor/course/list-courses-by-page.php:122
 msgid "Price High to Low"
 msgstr ""
 
-#: config/elementor/course/list-courses-by-page.php:84
+#: config/elementor/course/list-courses-by-page-bk.php:83
+#: config/elementor/course/list-courses-by-page.php:123
 msgid "Price Low to High"
 msgstr ""
 
-#: config/elementor/course/list-courses-by-page.php:90
+#: config/elementor/course/list-courses-by-page-bk.php:89
 msgid "Pagination type"
 msgstr ""
 
-#: config/elementor/course/list-courses-by-page.php:92
+#: config/elementor/course/list-courses-by-page-bk.php:91
 #: config/settings/course.php:84
 #: config/settings/profile.php:96
 msgid "Number"
 msgstr ""
 
-#: config/elementor/course/list-courses-by-page.php:93
+#: config/elementor/course/list-courses-by-page-bk.php:92
 msgid "Button load more"
 msgstr ""
 
-#: config/elementor/course/list-courses-by-page.php:94
+#: config/elementor/course/list-courses-by-page-bk.php:93
 msgid "Infinite scroll"
 msgstr ""
 
-#: config/elementor/course/list-courses-by-page.php:107
-msgid "Layout Courses"
-msgstr ""
-
-#: config/elementor/course/list-courses-by-page.php:116
-msgid ""
-"Enter the layout for each item course. You can use the following variables:\n"
-"\t\t\t\t\t{{courses_order_by}}, {{courses_items}}, {{courses_pagination_number}}, {{courses_page_result}}"
-msgstr ""
-
-#: config/elementor/course/list-courses-by-page.php:161
+#: config/elementor/course/list-courses-by-page-bk.php:113
 #: config/elementor/instructor/list-instructors.php:77
 msgid "Gap"
 msgstr ""
 
-#: config/elementor/course/list-courses-by-page.php:187
-#: config/elementor/course/list-courses-by-page.php:418
-#: config/elementor/course/list-courses-by-page.php:438
+#: config/elementor/course/list-courses-by-page-bk.php:139
+#: config/elementor/course/list-courses-by-page-bk.php:370
+#: config/elementor/course/list-courses-by-page-bk.php:390
 #: inc/ExternalPlugin/Elementor/LPElementorControls.php:415
 msgid "Background Color"
 msgstr ""
 
-#: config/elementor/course/list-courses-by-page.php:194
-#: config/elementor/course/list-courses-by-page.php:391
+#: config/elementor/course/list-courses-by-page-bk.php:146
+#: config/elementor/course/list-courses-by-page-bk.php:343
 #: config/elementor/instructor/list-instructors.php:144
 #: inc/ExternalPlugin/Elementor/LPElementorControls.php:452
-#: inc/ExternalPlugin/Elementor/LPElementorControls.php:524
+#: inc/ExternalPlugin/Elementor/LPElementorControls.php:525
 msgid "Border Radius"
 msgstr ""
 
-#: config/elementor/course/list-courses-by-page.php:221
+#: config/elementor/course/list-courses-by-page-bk.php:173
 msgid "Course Free Color"
 msgstr ""
 
-#: config/elementor/course/list-courses-by-page.php:228
+#: config/elementor/course/list-courses-by-page-bk.php:180
 msgid "Course Sale Color"
 msgstr ""
 
-#: config/elementor/course/list-courses-by-page.php:238
+#: config/elementor/course/list-courses-by-page-bk.php:190
 msgid "Course Sale Typography"
 msgstr ""
 
-#: config/elementor/course/list-courses-by-page.php:271
+#: config/elementor/course/list-courses-by-page-bk.php:223
+#: config/elementor/course/list-courses-by-page.php:59
 #: config/elementor/course/list-courses.php:39
 msgid "Layout"
 msgstr ""
 
-#: config/elementor/course/list-courses-by-page.php:277
+#: config/elementor/course/list-courses-by-page-bk.php:229
 msgid "Sort By"
 msgstr ""
 
-#: config/elementor/course/list-courses-by-page.php:295
+#: config/elementor/course/list-courses-by-page-bk.php:247
 msgid "Course Title"
 msgstr ""
 
-#: config/elementor/course/list-courses-by-page.php:301
+#: config/elementor/course/list-courses-by-page-bk.php:253
 msgid "Course Description"
 msgstr ""
 
-#: config/elementor/course/list-courses-by-page.php:307
+#: config/elementor/course/list-courses-by-page-bk.php:259
 #: inc/ExternalPlugin/Elementor/Widgets/Course/Sections/CoursePriceElementor.php:20
 #: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1117
 msgid "Course Price"
 msgstr ""
 
-#: config/elementor/course/list-courses-by-page.php:313
+#: config/elementor/course/list-courses-by-page-bk.php:265
 msgid "Meta Data"
 msgstr ""
 
-#: config/elementor/course/list-courses-by-page.php:319
+#: config/elementor/course/list-courses-by-page-bk.php:271
 #: config/elementor/course/list-courses.php:130
 msgid "Course Image"
 msgstr ""
 
-#: config/elementor/course/list-courses-by-page.php:325
+#: config/elementor/course/list-courses-by-page-bk.php:277
 #: inc/admin/views/meta-boxes/quiz/settings.php:77
 msgid "Pagination"
 msgstr ""
 
-#: config/elementor/course/list-courses-by-page.php:362
-#: inc/ExternalPlugin/Elementor/LPElementorControls.php:370
-#: inc/ExternalPlugin/Elementor/LPElementorControls.php:495
-msgid "Margin"
-msgstr ""
-
-#: config/elementor/course/list-courses-by-page.php:407
+#: config/elementor/course/list-courses-by-page-bk.php:359
 msgid "Normal"
 msgstr ""
 
-#: config/elementor/course/list-courses-by-page.php:427
+#: config/elementor/course/list-courses-by-page-bk.php:379
 msgid "Hover"
 msgstr ""
 
-#: config/elementor/course/list-courses-by-page.php:445
+#: config/elementor/course/list-courses-by-page-bk.php:397
 msgid "Border Color"
 msgstr ""
 
-#: config/elementor/course/list-courses-by-page.php:458
+#: config/elementor/course/list-courses-by-page-bk.php:410
 msgid "Courses Not Found"
+msgstr ""
+
+#: config/elementor/course/list-courses-by-page.php:21
+msgid "Skin"
+msgstr ""
+
+#: config/elementor/course/list-courses-by-page.php:25
+msgid "Option load REST API"
+msgstr ""
+
+#: config/elementor/course/list-courses-by-page.php:90
+msgid "Query"
+msgstr ""
+
+#: config/elementor/course/list-courses-by-page.php:95
+msgid "Courses limit"
+msgstr ""
+
+#: config/elementor/course/list-courses-by-page.php:101
+msgid "Number courses you when to query, default 0 is no limit"
+msgstr ""
+
+#: config/elementor/course/list-courses-by-page.php:112
+msgid "Default 0 is show all of Courses Limit"
 msgstr ""
 
 #: config/elementor/course/list-courses.php:41
@@ -618,11 +968,6 @@ msgstr ""
 
 #: config/elementor/course/list-courses.php:68
 msgid "Sort In"
-msgstr ""
-
-#: config/elementor/course/list-courses.php:70
-#: config/elementor/instructor/list-instructors.php:55
-msgid "Default"
 msgstr ""
 
 #: config/elementor/course/list-courses.php:71
@@ -668,15 +1013,6 @@ msgstr ""
 msgid "Title Instructor"
 msgstr ""
 
-#: config/elementor/course/list-courses.php:121
-#: config/widgets/course/filter-course.php:37
-#: inc/custom-post-types/course.php:392
-#: inc/custom-post-types/course.php:409
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:249
-#: templates/emails/order-items-table.php:87
-msgid "Price"
-msgstr ""
-
 #: config/elementor/course/materials.php:15
 msgid "Course/Lesson Materials"
 msgstr ""
@@ -692,16 +1028,6 @@ msgstr ""
 
 #: config/elementor/course/materials.php:38
 msgid "Show Column"
-msgstr ""
-
-#: config/elementor/course/materials.php:40
-#: inc/ExternalPlugin/Elementor/LPElementorControls.php:490
-msgid "Show"
-msgstr ""
-
-#: config/elementor/course/materials.php:41
-#: inc/ExternalPlugin/Elementor/LPElementorControls.php:489
-msgid "Hide"
 msgstr ""
 
 #: config/elementor/course/materials.php:53
@@ -731,22 +1057,9 @@ msgstr ""
 msgid "Download"
 msgstr ""
 
-#: config/elementor/instructor/become-a-teacher.php:20
-#: config/elementor/instructor/become-a-teacher.php:46
-#: config/elementor/login-user-form.php:19
-#: config/elementor/register-user-form.php:19
-#: config/settings/gateway/offline-payment.php:33
-#: config/widgets/course/filter-course.php:9
-#: inc/admin/views/meta-boxes/fields/extra-faq.php:37
-#: inc/admin/views/meta-boxes/fields/extra-faq.php:57
-#: inc/admin/views/setup/setup-stripe.php:7
-#: inc/Widgets/course-extra.php:25
-#: inc/Widgets/course-info.php:32
-#: inc/Widgets/course-progress.php:29
-#: inc/Widgets/featured-courses.php:28
-#: inc/Widgets/popular-courses.php:24
-#: inc/Widgets/recent-courses.php:29
-msgid "Title"
+#: config/elementor/course/skin/courses-grid.php:26
+#: config/elementor/course/skin/courses-loop-item.php:39
+msgid "Columns"
 msgstr ""
 
 #: config/elementor/instructor/become-a-teacher.php:21
@@ -802,13 +1115,6 @@ msgstr ""
 msgid "Form Input"
 msgstr ""
 
-#: config/elementor/instructor/become-a-teacher.php:82
-#: config/elementor/login-user-form.php:46
-#: config/elementor/register-user-form.php:46
-#: config/widgets/course/filter-course.php:57
-msgid "Button Submit"
-msgstr ""
-
 #: config/elementor/instructor/list-instructors.php:22
 msgid "Layout Item Instructor"
 msgstr ""
@@ -823,14 +1129,6 @@ msgstr ""
 
 #: config/elementor/instructor/list-instructors.php:53
 msgid "Ul Style"
-msgstr ""
-
-#: config/elementor/instructor/list-instructors.php:56
-#: inc/admin/views/statistics/courses.php:16
-#: inc/admin/views/statistics/orders.php:16
-#: inc/admin/views/statistics/overview.php:15
-#: inc/admin/views/statistics/users.php:16
-msgid "Custom"
 msgstr ""
 
 #: config/elementor/instructor/list-instructors.php:64
@@ -1509,51 +1807,8 @@ msgstr ""
 msgid "Course Filter"
 msgstr ""
 
-#: config/widgets/course/filter-course.php:14
-msgid "Load widget via REST"
-msgstr ""
-
 #: config/widgets/course/filter-course.php:19
-msgid "Enable Keyword Search Suggestion"
-msgstr ""
-
-#: config/widgets/course/filter-course.php:28
-msgid "Fields"
-msgstr ""
-
-#: config/widgets/course/filter-course.php:33
-msgid "Keyword"
-msgstr ""
-
-#: config/widgets/course/filter-course.php:41
-#: inc/admin/views/statistics-bk/orders.php:49
-#: inc/custom-post-types/course.php:103
-msgid "Course Category"
-msgstr ""
-
-#: config/widgets/course/filter-course.php:45
-msgid "Course Tag"
-msgstr ""
-
-#: config/widgets/course/filter-course.php:49
-#: inc/admin/views/meta-boxes/course/settings.php:50
-#: inc/admin/views/meta-boxes/course/settings.php:293
-#: inc/custom-post-types/course.php:389
-#: inc/custom-post-types/course.php:406
-#: inc/custom-post-types/lesson.php:220
-#: inc/custom-post-types/question.php:319
-#: inc/custom-post-types/quiz.php:236
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:466
-msgid "Author"
-msgstr ""
-
-#: config/widgets/course/filter-course.php:53
-#: inc/admin/views/meta-boxes/course/settings.php:122
-msgid "Level"
-msgstr ""
-
-#: config/widgets/course/filter-course.php:61
-msgid "Button Reset"
+msgid "Hide field has count is zero"
 msgstr ""
 
 #: inc/abstract-settings.php:89
@@ -1585,47 +1840,47 @@ msgstr ""
 msgid "Duplicate post failed. Please try again"
 msgstr ""
 
-#: inc/admin/class-lp-admin-ajax.php:443
+#: inc/admin/class-lp-admin-ajax.php:454
 msgid "Access denied"
 msgstr ""
 
-#: inc/admin/class-lp-admin-ajax.php:449
+#: inc/admin/class-lp-admin-ajax.php:460
 msgid "Nonce check failed"
 msgstr ""
 
-#: inc/admin/class-lp-admin-ajax.php:455
-#: inc/admin/class-lp-admin-ajax.php:519
+#: inc/admin/class-lp-admin-ajax.php:466
+#: inc/admin/class-lp-admin-ajax.php:530
 #: templates/order/order-details.php:15
 msgid "Invalid order"
 msgstr ""
 
-#: inc/admin/class-lp-admin-ajax.php:513
+#: inc/admin/class-lp-admin-ajax.php:524
 msgid "Permission denied"
 msgstr ""
 
-#: inc/admin/class-lp-admin-ajax.php:671
-#: inc/admin/class-lp-admin-ajax.php:690
+#: inc/admin/class-lp-admin-ajax.php:682
+#: inc/admin/class-lp-admin-ajax.php:701
 msgid "Edit Page"
 msgstr ""
 
-#: inc/admin/class-lp-admin-ajax.php:672
-#: inc/admin/class-lp-admin-ajax.php:692
+#: inc/admin/class-lp-admin-ajax.php:683
+#: inc/admin/class-lp-admin-ajax.php:703
 msgid "View Page"
 msgstr ""
 
-#: inc/admin/class-lp-admin-ajax.php:674
+#: inc/admin/class-lp-admin-ajax.php:685
 msgid "Error! Page creation failed. Please try again."
 msgstr ""
 
-#: inc/admin/class-lp-admin-ajax.php:677
+#: inc/admin/class-lp-admin-ajax.php:688
 msgid "Empty page name!"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:35
+#: inc/admin/class-lp-admin-assets.php:71
 msgid "Oops! Error."
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:36
+#: inc/admin/class-lp-admin-assets.php:72
 #: inc/emails/guest/class-lp-email-cancelled-order-guest.php:25
 #: inc/emails/guest/class-lp-email-completed-order-guest.php:29
 #: inc/emails/guest/class-lp-email-new-order-guest.php:25
@@ -1634,69 +1889,61 @@ msgstr ""
 msgid "Guest"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:42
+#: inc/admin/class-lp-admin-assets.php:78
 msgid "Before taking this action, we strongly recommend you backup your site first before proceeding. If you encounter any problems, please do not hesitate to contact our support team. Are you sure to proceed with the update protocol?"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:428
+#: inc/admin/class-lp-admin-assets.php:483
 #: inc/class-lp-query-list-table.php:32
 msgid "item"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:429
+#: inc/admin/class-lp-admin-assets.php:484
 msgid "Create a new"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:430
+#: inc/admin/class-lp-admin-assets.php:485
 #: inc/admin/views/setup/content.php:50
 #: inc/custom-post-types/quiz.php:169
 msgid "Back"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:431
+#: inc/admin/class-lp-admin-assets.php:486
 #: inc/admin/views/course/modal-choose-items.php:54
 #: inc/admin/views/quiz/modal-choose-items.php:52
 #: inc/custom-post-types/quiz.php:170
 msgid "Selected items"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:432
+#: inc/admin/class-lp-admin-assets.php:487
 msgid "Do you want to remove the \"{{ITEM_NAME}}\" item from the course?"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:433
+#: inc/admin/class-lp-admin-assets.php:488
 msgid "Do you want to move the \"{{ITEM_NAME}}\" item to the trash?"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:435
-#: inc/admin/views/meta-boxes/order/content-tab-preview-exports-invoice.php:66
-#: inc/admin/views/meta-boxes/order/details.php:161
-#: templates/checkout/order-received.php:69
-#: templates/order/order-details.php:25
-msgid "Item"
-msgstr ""
-
-#: inc/admin/class-lp-admin-assets.php:436
+#: inc/admin/class-lp-admin-assets.php:491
 msgid "Items"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:438
+#: inc/admin/class-lp-admin-assets.php:493
 msgid "The course sale price must be less than the regular price"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:439
+#: inc/admin/class-lp-admin-assets.php:494
 msgid "The course price must be greater than the sale price"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:440
+#: inc/admin/class-lp-admin-assets.php:495
 msgid "The sale start date must be before the sale end date"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:441
+#: inc/admin/class-lp-admin-assets.php:496
 msgid "The sale end date must be after the sale start date"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:442
+#: inc/admin/class-lp-admin-assets.php:497
 msgid "Invalid date"
 msgstr ""
 
@@ -1780,7 +2027,7 @@ msgid "Invoice"
 msgstr ""
 
 #: inc/admin/class-lp-admin.php:259
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:535
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:576
 msgid "Levels"
 msgstr ""
 
@@ -2169,14 +2416,14 @@ msgstr ""
 #: inc/admin/sub-menus/class-lp-submenu-categories.php:11
 #: inc/admin/sub-menus/class-lp-submenu-categories.php:12
 #: inc/custom-post-types/course.php:412
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:343
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:344
 msgid "Categories"
 msgstr ""
 
 #: inc/admin/lp-admin-actions.php:227
 #: inc/admin/sub-menus/class-lp-submenu-tags.php:11
 #: inc/admin/sub-menus/class-lp-submenu-tags.php:12
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:401
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:426
 msgid "Tags"
 msgstr ""
 
@@ -2307,7 +2554,8 @@ msgstr ""
 #: inc/admin/lp-admin-functions.php:2215
 #: inc/admin/views/addons.php:108
 #: inc/admin/views/addons.php:194
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:210
+#: inc/ExternalPlugin/Elementor/Widgets/Course/FilterCourseElementor.php:218
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:211
 msgid "Paid"
 msgstr ""
 
@@ -2317,7 +2565,8 @@ msgstr ""
 #: inc/admin/views/addons.php:195
 #: inc/course/abstract-course.php:673
 #: inc/course/abstract-course.php:702
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:206
+#: inc/ExternalPlugin/Elementor/Widgets/Course/FilterCourseElementor.php:216
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:207
 #: templates/order/order-details.php:43
 msgid "Free"
 msgstr ""
@@ -2669,14 +2918,18 @@ msgid "Course Data"
 msgstr ""
 
 #: inc/admin/sub-menus/class-lp-submenu-tools.php:21
-msgid "Database"
+msgid "Assign/Unassigned Course"
 msgstr ""
 
 #: inc/admin/sub-menus/class-lp-submenu-tools.php:22
-msgid "Templates"
+msgid "Database"
 msgstr ""
 
 #: inc/admin/sub-menus/class-lp-submenu-tools.php:23
+msgid "Templates"
+msgstr ""
+
+#: inc/admin/sub-menus/class-lp-submenu-tools.php:24
 msgid "LearnPress Beta Version"
 msgstr ""
 
@@ -3087,8 +3340,8 @@ msgid "The conditions that must be achieved to finish the course."
 msgstr ""
 
 #: inc/admin/views/meta-boxes/course/settings.php:386
-#: inc/templates/class-lp-template-course.php:293
-#: inc/templates/class-lp-template-course.php:839
+#: inc/templates/class-lp-template-course.php:292
+#: inc/templates/class-lp-template-course.php:838
 #: inc/Widgets/course-extra.php:35
 msgid "Requirements"
 msgstr ""
@@ -3263,7 +3516,7 @@ msgstr ""
 #: inc/admin/views/meta-boxes/order/content-tab-preview-exports-invoice.php:102
 #: inc/admin/views/meta-boxes/order/details.php:164
 #: inc/custom-post-types/order.php:465
-#: templates/checkout/order-received.php:116
+#: templates/checkout/order-received.php:117
 #: templates/checkout/review-order.php:106
 #: templates/emails/order-items-table.php:118
 #: templates/emails/plain/order-items-table.php:88
@@ -3755,7 +4008,7 @@ msgstr ""
 
 #: inc/admin/views/statistics-bk/orders.php:47
 #: inc/custom-post-types/order.php:464
-#: templates/checkout/order-received.php:103
+#: templates/checkout/order-received.php:104
 #: templates/profile/tabs/orders/list.php:31
 #: templates/profile/tabs/quizzes.php:56
 msgid "Date"
@@ -3816,14 +4069,6 @@ msgstr ""
 #: inc/admin/views/statistics/overview.php:14
 #: inc/admin/views/statistics/users.php:15
 msgid "This year"
-msgstr ""
-
-#: inc/admin/views/statistics/courses.php:20
-#: inc/admin/views/statistics/orders.php:20
-#: inc/admin/views/statistics/overview.php:19
-#: inc/admin/views/statistics/users.php:20
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:553
-msgid "Filter"
 msgstr ""
 
 #: inc/admin/views/statistics/courses.php:27
@@ -4265,11 +4510,11 @@ msgstr ""
 msgid "Password reset is not allowed for this user."
 msgstr ""
 
-#: inc/class-lp-helper.php:275
+#: inc/class-lp-helper.php:276
 msgid "Missing post title"
 msgstr ""
 
-#: inc/class-lp-helper.php:647
+#: inc/class-lp-helper.php:651
 msgctxt "slug"
 msgid "uncategorized"
 msgstr ""
@@ -4341,7 +4586,7 @@ msgctxt "no course thumbnail"
 msgid "course thumbnail"
 msgstr ""
 
-#: inc/class-lp-widget.php:258
+#: inc/class-lp-widget.php:260
 #: inc/Widgets/LPWidgetBase.php:41
 msgid "There are no options for this widget."
 msgstr ""
@@ -4353,16 +4598,16 @@ msgstr ""
 msgid "The function %s doesn't exist"
 msgstr ""
 
-#: inc/course/abstract-course.php:1309
+#: inc/course/abstract-course.php:1331
 msgid "This course will end within the next %s"
 msgstr ""
 
-#: inc/course/abstract-course.php:1337
+#: inc/course/abstract-course.php:1359
 msgctxt "External Link button text"
 msgid "More Info"
 msgstr ""
 
-#: inc/course/abstract-course.php:1374
+#: inc/course/abstract-course.php:1396
 msgid "Tags: "
 msgstr ""
 
@@ -4482,15 +4727,15 @@ msgstr ""
 msgid "Invalid quiz."
 msgstr ""
 
-#: inc/custom-post-types/abstract.php:436
+#: inc/custom-post-types/abstract.php:440
 msgid "This item has already been assigned to the course. It will be removed from the course if it is not published."
 msgstr ""
 
-#: inc/custom-post-types/abstract.php:451
+#: inc/custom-post-types/abstract.php:455
 msgid "This question has already been assigned to the quiz. It will be removed from the quiz if it is not published."
 msgstr ""
 
-#: inc/custom-post-types/abstract.php:723
+#: inc/custom-post-types/abstract.php:725
 msgid "Unknown"
 msgstr ""
 
@@ -4777,7 +5022,7 @@ msgstr ""
 
 #: inc/custom-post-types/order.php:466
 #: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1334
-#: templates/checkout/order-received.php:60
+#: templates/checkout/order-received.php:61
 #: templates/emails/order-items-table.php:72
 #: templates/emails/plain/order-items-table.php:58
 #: templates/profile/tabs/orders/list.php:30
@@ -4790,7 +5035,7 @@ msgid "(Guest)"
 msgstr ""
 
 #: inc/custom-post-types/order.php:550
-#: templates/checkout/order-received.php:80
+#: templates/checkout/order-received.php:81
 msgid "The course does not exist"
 msgstr ""
 
@@ -4799,7 +5044,7 @@ msgid "Deleted"
 msgstr ""
 
 #: inc/custom-post-types/order.php:568
-#: templates/checkout/order-received.php:97
+#: templates/checkout/order-received.php:98
 msgid "(No item)"
 msgstr ""
 
@@ -5277,7 +5522,7 @@ msgstr ""
 msgid "Background Color Hover"
 msgstr ""
 
-#: inc/ExternalPlugin/Elementor/LPElementorControls.php:483
+#: inc/ExternalPlugin/Elementor/LPElementorControls.php:484
 msgid "Image"
 msgstr ""
 
@@ -5285,7 +5530,15 @@ msgstr ""
 msgid "Course/Lesson Material"
 msgstr ""
 
-#: inc/ExternalPlugin/Elementor/Widgets/Course/ListCoursesByPageElementor.php:26
+#: inc/ExternalPlugin/Elementor/Widgets/Course/FilterCourseElementor.php:24
+msgid "Filter Course"
+msgstr ""
+
+#: inc/ExternalPlugin/Elementor/Widgets/Course/FilterCourseElementor.php:224
+msgid "All Levels"
+msgstr ""
+
+#: inc/ExternalPlugin/Elementor/Widgets/Course/ListCoursesByPageElementor.php:19
 msgid "List Courses by Page"
 msgstr ""
 
@@ -5465,7 +5718,7 @@ msgstr ""
 #: inc/jwt/rest-api/version1/class-lp-rest-section-items-v1-controller.php:213
 #: inc/jwt/rest-api/version1/class-lp-rest-sections-v1-controller.php:116
 #: inc/jwt/rest-api/version1/class-lp-rest-users-v1-controller.php:42
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:71
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:72
 #: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:25
 #: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:69
 #: inc/rest-api/v1/frontend/class-lp-rest-settings-controller.php:23
@@ -5496,8 +5749,8 @@ msgid "The course ID is invalid."
 msgstr ""
 
 #: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:356
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:324
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:457
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:347
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:480
 msgid "Error: The course cannot be added to the cart."
 msgstr ""
 
@@ -6159,14 +6412,6 @@ msgstr ""
 
 #: inc/lp-core-functions.php:737
 msgid "Week(s)"
-msgstr ""
-
-#: inc/lp-core-functions.php:875
-msgid "Left"
-msgstr ""
-
-#: inc/lp-core-functions.php:876
-msgid "Right"
 msgstr ""
 
 #: inc/lp-core-functions.php:877
@@ -7318,20 +7563,16 @@ msgstr ""
 msgid "Years"
 msgstr ""
 
-#: inc/rest-api/v1/admin/class-lp-admin-rest-tools-controller.php:255
+#: inc/rest-api/v1/admin/class-lp-admin-rest-tools-controller.php:263
 msgid "Dismissed!"
 msgstr ""
 
-#: inc/rest-api/v1/admin/class-lp-admin-rest-tools-controller.php:436
-msgid "Invalid course or user."
-msgstr ""
-
-#: inc/rest-api/v1/admin/class-lp-admin-rest-tools-controller.php:460
+#: inc/rest-api/v1/admin/class-lp-admin-rest-tools-controller.php:495
 msgid "Assign users to courses successfully."
 msgstr ""
 
-#: inc/rest-api/v1/admin/class-lp-admin-rest-tools-controller.php:549
-msgid "Remove user successfully."
+#: inc/rest-api/v1/admin/class-lp-admin-rest-tools-controller.php:550
+msgid "Unassigned users from courses successfully."
 msgstr ""
 
 #: inc/rest-api/v1/frontend/class-lp-rest-addon-controller.php:91
@@ -7351,89 +7592,89 @@ msgstr ""
 msgid "successfully"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:206
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:217
 #: inc/TemplateHooks/Course/ListCoursesTemplate.php:158
 msgid "Showing only one result"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:209
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:220
 #: inc/TemplateHooks/Course/ListCoursesTemplate.php:161
 msgid "Showing last course of %s results"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:212
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:235
 #: inc/TemplateHooks/Course/ListCoursesTemplate.php:164
 msgid "Showing %1$s of %2$s results"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:277
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:300
 msgid "Invalid course!"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:284
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:307
 msgid "Error: Cannot enroll in the course."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:305
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:328
 msgid "Error: Cannot Enroll in the course."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:339
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:362
 msgid "Congrats! You have enrolled in the course successfully. Redirecting..."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:357
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:472
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:380
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:495
 msgid "Error: Please set up a page for checkout."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:362
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:385
 msgid "Redirecting..."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:392
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:415
 msgid "Error: Invalid Course ID."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:397
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:420
 msgid "Error: No Course available."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:425
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:448
 msgid "Reset Course progress"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:431
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:454
 msgid "Continue Course progress"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:439
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:462
 msgid "Repurchase Options"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:479
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:502
 msgid "\"%s\" has been added to your cart."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:504
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:527
 msgid "Invalid params"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:510
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:645
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:533
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:668
 #: inc/user/abstract-lp-user.php:877
 msgid "Invalid course"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:522
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:545
 msgid "You can't retry the course"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:527
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:550
 msgid "Invalid course data of user"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:551
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:574
 msgid "Now you can begin this course"
 msgstr ""
 
@@ -7443,8 +7684,8 @@ msgstr ""
 
 #: inc/rest-api/v1/frontend/class-lp-rest-lazy-load-controller.php:74
 #: inc/rest-api/v1/frontend/class-lp-rest-lazy-load-controller.php:129
-#: inc/rest-api/v1/frontend/class-lp-rest-lazy-load-controller.php:183
-#: inc/rest-api/v1/frontend/class-lp-rest-lazy-load-controller.php:188
+#: inc/rest-api/v1/frontend/class-lp-rest-lazy-load-controller.php:182
+#: inc/rest-api/v1/frontend/class-lp-rest-lazy-load-controller.php:187
 #: inc/rest-api/v1/frontend/class-lp-rest-users-controller.php:163
 #: inc/Widgets/course-progress.php:65
 msgid "The course is invalid!"
@@ -7756,15 +7997,11 @@ msgstr ""
 msgid "Load more."
 msgstr ""
 
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:160
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:153
 msgid "Search Course"
 msgstr ""
 
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:168
-msgid "Search"
-msgstr ""
-
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:567
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:608
 msgid "Reset"
 msgstr ""
 
@@ -7816,39 +8053,39 @@ msgstr ""
 msgid "Never"
 msgstr ""
 
-#: inc/templates/class-lp-template-course.php:319
+#: inc/templates/class-lp-template-course.php:318
 #: inc/Widgets/course-extra.php:33
 msgid "Key features"
 msgstr ""
 
-#: inc/templates/class-lp-template-course.php:345
-#: inc/templates/class-lp-template-course.php:847
+#: inc/templates/class-lp-template-course.php:344
+#: inc/templates/class-lp-template-course.php:846
 msgid "Target audiences"
 msgstr ""
 
-#: inc/templates/class-lp-template-course.php:803
+#: inc/templates/class-lp-template-course.php:802
 msgid "%d lesson"
 msgid_plural "%d lessons"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/templates/class-lp-template-course.php:807
+#: inc/templates/class-lp-template-course.php:806
 msgid "%d quiz"
 msgid_plural "%d quizzes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/templates/class-lp-template-course.php:811
+#: inc/templates/class-lp-template-course.php:810
 msgid "%d student"
 msgid_plural "%d students"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/templates/class-lp-template-course.php:843
+#: inc/templates/class-lp-template-course.php:842
 msgid "Features"
 msgstr ""
 
-#: inc/templates/class-lp-template-course.php:945
+#: inc/templates/class-lp-template-course.php:944
 msgid "View More"
 msgstr ""
 
@@ -8433,17 +8670,17 @@ msgstr ""
 msgid "Note to administrator"
 msgstr ""
 
-#: templates/checkout/order-received.php:47
+#: templates/checkout/order-received.php:48
 msgid "Order Key"
 msgstr ""
 
-#: templates/checkout/order-received.php:54
+#: templates/checkout/order-received.php:55
 #: templates/emails/order-items-table.php:60
 #: templates/emails/plain/order-items-table.php:52
 msgid "Order Number"
 msgstr ""
 
-#: templates/checkout/order-received.php:126
+#: templates/checkout/order-received.php:127
 #: templates/emails/order-items-table.php:68
 #: templates/emails/plain/order-items-table.php:56
 msgid "Payment Method"
