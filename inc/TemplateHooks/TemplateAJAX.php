@@ -54,12 +54,14 @@ class TemplateAJAX {
 				throw new Exception( 'Missing args callback class || method' );
 			}
 
+			$target_id   = uniqid( 'lp-load-ajax-element-' );
 			$data        = [
 				'args'     => $args,
 				'callback' => $callback,
+				'id'       => $target_id,
 			];
 			$data_send   = esc_attr( htmlentities2( json_encode( $data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) ) );
-			$el_has_data = sprintf( '<div class="lp-load-ajax-element" data-send="%s">', $data_send );
+			$el_has_data = sprintf( '<div class="lp-load-ajax-element" data-send="%s" data-id="%s">', $data_send, $target_id );
 			ob_start();
 			lp_skeleton_animation_html( 10 );
 			$el_loading_before_show_content_default = ob_get_clean();
