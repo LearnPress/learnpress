@@ -44,7 +44,7 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 				array(
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'get_avatar' ),
-					'permission_callback' => function() {
+					'permission_callback' => function () {
 						return get_current_user_id() ? true : false;
 					},
 				),
@@ -53,7 +53,7 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'upload_avatar' ),
-					'permission_callback' => function() {
+					'permission_callback' => function () {
 						return get_current_user_id() ? true : false;
 					},
 				),
@@ -62,7 +62,7 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'remove_avatar' ),
-					'permission_callback' => function() {
+					'permission_callback' => function () {
 						return get_current_user_id() ? true : false;
 					},
 				),
@@ -365,7 +365,7 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 		$user_id    = $params['userID'] ?? get_current_user_id();
 		$status     = $params['status'] ?? '';
 		$paged      = $params['paged'] ?? 1;
-		$query_type = $params['query'] ?? 'purchased';
+		$query_type = $params['query'] ?? '';
 		$layout     = $params['layout'] ?? 'grid';
 		$response   = new LP_REST_Response();
 
@@ -375,6 +375,17 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 			}
 
 			$profile = learn_press_get_profile( $user_id );
+			if ( 'purchased' === $query_type ) {
+				if ( ! $profile->current_user_can( 'view-tab-my-courses' ) ) {
+					throw new Exception( esc_html__( 'No user ID found!', 'learnpress' ) );
+				}
+			} elseif ( 'own' === $query_type ) {
+				if ( ! $profile->current_user_can( 'view-tab-courses' ) ) {
+					throw new Exception( esc_html__( 'Request invalid!', 'learnpress' ) );
+				}
+			} else {
+				throw new Exception( esc_html__( 'Request invalid!', 'learnpress' ) );
+			}
 
 			$query = $profile->query_courses(
 				$query_type,
@@ -397,7 +408,7 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 			}
 
 			$course_ids = array_map(
-				function( $course_object ) {
+				function ( $course_object ) {
 					return ! is_object( $course_object ) ? absint( $course_object ) : $course_object->get_id();
 				},
 				$course_item_objects
@@ -435,7 +446,7 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 			$response->message = $e->getMessage();
 		}
 
-		return rest_ensure_response( $response );
+		return $response;
 	}
 
 	/**
@@ -443,10 +454,10 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 	 *
 	 * @param WP_REST_Request $request
 	 *
-	 * @author tungnx
+	 * @return LP_REST_Response
 	 * @since 4.1.5
 	 * @version 1.0.0
-	 * @return LP_REST_Response
+	 * @author tungnx
 	 */
 	public function course_attend( WP_REST_Request $request ): LP_REST_Response {
 		$params   = $request->get_params();
