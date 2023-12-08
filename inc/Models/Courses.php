@@ -68,8 +68,9 @@ class Courses {
 	 * @param array $param
 	 * @param LP_Course_Filter $filter
 	 *
-	 * @return void
 	 * @since 4.2.3.3 move from class LP_Course
+	 * @version 1.0.1
+	 * @return void
 	 */
 	public static function handle_params_for_query_courses( LP_Course_Filter &$filter, array $param = [] ) {
 		$filter->page       = absint( $param['paged'] ?? 1 );
@@ -131,8 +132,8 @@ class Courses {
 		}
 
 		// Order by
-		$filter->order_by = LP_Helper::sanitize_params_submitted( ! empty( $param['order_by'] ) ? $param['order_by'] : 'post_date' );
-		$filter->order    = LP_Helper::sanitize_params_submitted( ! empty( $param['order'] ) ? $param['order'] : 'DESC' );
+		$filter->order_by = LP_Helper::sanitize_params_submitted( ! empty( $param['order_by'] ) ? $param['order_by'] : 'post_date', 'key' );
+		$filter->order    = LP_Helper::sanitize_params_submitted( ! empty( $param['order'] ) ? $param['order'] : 'DESC', 'key' );
 		$filter->limit    = $param['limit'] ?? LP_Settings::get_option( 'archive_course_limit', 10 );
 
 		// For search suggest courses
