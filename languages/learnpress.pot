@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the LearnPress plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: LearnPress 4.2.5.7-beta-3\n"
+"Project-Id-Version: LearnPress 4.2.5.8-beta-1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/learnpress\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2023-12-07T07:23:58+03:00\n"
+"POT-Creation-Date: 2023-12-08T04:25:48+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.8.1\n"
 "X-Domain: learnpress\n"
@@ -39,6 +39,7 @@ msgstr ""
 #: config/elementor/course/materials.php:66
 #: config/settings/profile.php:83
 #: inc/admin/views/quiz/editor.php:47
+#: inc/TemplateHooks/Course/CourseMaterialTemplate.php:74
 #: templates/global/become-teacher-form.php:35
 #: templates/profile/tabs/courses/course-list.php:26
 msgid "Name"
@@ -1045,15 +1046,18 @@ msgstr ""
 #: config/settings/profile.php:89
 #: inc/admin/views/quiz/editor.php:48
 #: inc/custom-post-types/question.php:321
+#: inc/TemplateHooks/Course/CourseMaterialTemplate.php:75
 #: inc/Widgets/course-extra.php:30
 msgid "Type"
 msgstr ""
 
 #: config/elementor/course/materials.php:76
+#: inc/TemplateHooks/Course/CourseMaterialTemplate.php:76
 msgid "Size"
 msgstr ""
 
 #: config/elementor/course/materials.php:81
+#: inc/TemplateHooks/Course/CourseMaterialTemplate.php:77
 msgid "Download"
 msgstr ""
 
@@ -1619,8 +1623,12 @@ msgstr[1] ""
 #: inc/course/lp-course-functions.php:450
 #: inc/custom-post-types/lesson.php:158
 #: inc/lp-template-functions.php:1093
+#: inc/TemplateHooks/Course/SingleCourseTemplate.php:169
+#: inc/TemplateHooks/Instructor/SingleInstructorTemplate.php:549
 msgid "Lesson"
-msgstr ""
+msgid_plural "Lessons"
+msgstr[0] ""
+msgstr[1] ""
 
 #: config/settings/permalink.php:50
 #: inc/admin/settings/class-lp-settings-advanced.php:87
@@ -1628,9 +1636,12 @@ msgstr ""
 #: inc/custom-post-types/question.php:320
 #: inc/custom-post-types/quiz.php:87
 #: inc/lp-template-functions.php:1083
+#: inc/TemplateHooks/Course/SingleCourseTemplate.php:172
 #: templates/profile/tabs/quizzes.php:53
 msgid "Quiz"
-msgstr ""
+msgid_plural "Quizzes"
+msgstr[0] ""
+msgstr[1] ""
 
 #: config/settings/permalink.php:58
 msgid "Category base"
@@ -5010,6 +5021,7 @@ msgstr ""
 #: inc/custom-post-types/order.php:462
 #: inc/TemplateHooks/Course/ListCoursesTemplate.php:421
 #: inc/TemplateHooks/Instructor/SingleInstructorTemplate.php:186
+#: inc/TemplateHooks/Instructor/SingleInstructorTemplate.php:550
 msgid "Student"
 msgid_plural "Students"
 msgstr[0] ""
@@ -8044,6 +8056,18 @@ msgstr[1] ""
 #: inc/TemplateHooks/Course/ListCoursesTemplate.php:472
 msgid "No courses found"
 msgstr ""
+
+#: inc/TemplateHooks/Course/SingleCourseTemplate.php:175
+msgid "Assignment"
+msgid_plural "Assignments"
+msgstr[0] ""
+msgstr[1] ""
+
+#: inc/TemplateHooks/Course/SingleCourseTemplate.php:178
+msgid "H5P"
+msgid_plural "H5Ps"
+msgstr[0] ""
+msgstr[1] ""
 
 #: inc/TemplateHooks/Instructor/SingleInstructorTemplate.php:212
 msgid "View Profile"

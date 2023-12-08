@@ -166,16 +166,16 @@ class SingleCourseTemplate {
 
 		switch ( $post_type_item ) {
 			case LP_LESSON_CPT:
-				$content = sprintf( '%d %s', $count_item, _n( 'Lesson', 'Lessons', $count_item ) );
+				$content = sprintf( '%d %s', $count_item, _n( 'Lesson', 'Lessons', $count_item, 'learnpress' ) );
 				break;
 			case LP_QUIZ_CPT:
-				$content = sprintf( '%d %s', $count_item, _n( 'Quiz', 'Quizzes', $count_item ) );
+				$content = sprintf( '%d %s', $count_item, _n( 'Quiz', 'Quizzes', $count_item, 'learnpress' ) );
 				break;
 			case 'lp_assignment':
-				$content = sprintf( '%d %s', $count_item, _n( 'Assignment', 'Assignments', $count_item ) );
+				$content = sprintf( '%d %s', $count_item, _n( 'Assignment', 'Assignments', $count_item, 'learnpress' ) );
 				break;
 			case 'lp_h5p':
-				$content = sprintf( '%d %s', $count_item, _n( 'H5P', 'H5Ps', $count_item ) );
+				$content = sprintf( '%d %s', $count_item, _n( 'H5P', 'H5Ps', $count_item, 'learnpress' ) );
 				break;
 			default:
 				$content = '';
