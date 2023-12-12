@@ -3,7 +3,7 @@
  * REST API LP, load all content want via REST.
  *
  * @since 4.2.5.7
- * @version 1.0.0
+ * @version 1.0.1
  */
 
 class LP_REST_AJAX_Controller extends LP_Abstract_REST_Controller {
@@ -36,7 +36,7 @@ class LP_REST_AJAX_Controller extends LP_Abstract_REST_Controller {
 	 *
 	 * @return LP_REST_Response
 	 * @since 4.2.5.7
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function get_content( WP_REST_Request $request ): LP_REST_Response {
 		$response = new LP_REST_Response();
@@ -65,6 +65,18 @@ class LP_REST_AJAX_Controller extends LP_Abstract_REST_Controller {
 			$class  = $callBack['class'];
 			$method = $callBack['method'];
 			$data   = null;
+
+			// Security: check callback is registered.
+			$allow_callbacks = apply_filters(
+				'lp/rest/ajax/allow_callback',
+				[]
+			);
+			$callBackStr     = $class . ':' . $method;
+			if ( ! in_array( $callBackStr, $allow_callbacks ) ) {
+				throw new Exception( 'Error: callback is not register!' );
+			}
+
+			// Check class and method is callable.
 			if ( is_callable( [ $class, $method ] ) ) {
 				$data = call_user_func( [ $class, $method ], $args );
 			}
