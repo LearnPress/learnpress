@@ -5,6 +5,7 @@
  * For render course in list course
  *
  * @since 4.2.5.7
+ * @version 1.0.1
  */
 
 namespace LearnPress\ExternalPlugin\Elementor\Widgets\Course\Skins;
@@ -96,19 +97,25 @@ class SkinCoursesBase extends LPSkinBase {
 	 * @param array $settings
 	 *
 	 * @return stdClass { content: string_html }
+	 * @since 4.2.5.7
+	 * @version 1.0.1
 	 */
 	public static function render_courses( array $settings = [] ): stdClass {
+		$listCoursesTemplate      = ListCoursesTemplate::instance();
 		$skin                     = $settings['skin'] ?? 'grid';
 		$courses_limit            = $settings['courses_limit'] ?? 0;
 		$courses_per_page         = $settings['courses_per_page'] ?? 8;
 		$courses_order_by_default = $settings['courses_order_by_default'] ?? 'post_date';
 		$total_pages              = 0;
 		$paged                    = $settings['paged'] ?? 1;
+		$show_el_sorting          = ( $settings['el_sorting'] ?? 'yes' ) === 'yes';
+		$show_el_result_count     = ( $settings['el_result_count'] ?? 'yes' ) === 'yes';
+		$pagination_type          = $settings['pagination_type'] ?? 'number';
 
 		if ( $courses_limit > 0 ) {
 			if ( $courses_per_page > $courses_limit ) {
 				$courses_per_page = $courses_limit;
-			} else if ( $courses_per_page === 0 ) {
+			} elseif ( $courses_per_page === 0 ) {
 				$courses_per_page = $courses_limit;
 			}
 
@@ -132,6 +139,8 @@ class SkinCoursesBase extends LPSkinBase {
 					$number_courses_residual = $courses_limit - $courses_per_page * ( $paged - 1 );
 					$courses                 = array_slice( $courses, 0, $number_courses_residual );
 				}
+
+				$total_rows = $courses_limit;
 			} else {
 				$total_pages = $total_pages_result;
 			}
@@ -141,6 +150,18 @@ class SkinCoursesBase extends LPSkinBase {
 
 		// Handle layout
 		ob_start();
+		$data_rs     = [
+			'total_rows'       => $total_rows,
+			'paged'            => $paged,
+			'courses_per_page' => $courses_per_page,
+		];
+		$section_top = [
+			'wrapper'         => [ 'text_html' => '<div class="learn-press-elms-courses-top">' ],
+			'el_result_count' => [ 'text_html' => $show_el_result_count ? $listCoursesTemplate->html_courses_page_result( $data_rs ) : '' ],
+			'el_sorting'      => [ 'text_html' => $show_el_sorting ? $listCoursesTemplate->html_order_by( $courses_order_by_default ) : '' ],
+			'close_wrapper'   => [ 'text_html' => '</div>' ],
+		];
+		Template::instance()->print_sections( $section_top );
 		echo '<ul class="learn-press-courses ' . $skin . '">';
 		foreach ( $courses as $courseObj ) {
 			$course = learn_press_get_course( $courseObj->ID );
@@ -148,10 +169,9 @@ class SkinCoursesBase extends LPSkinBase {
 		}
 		echo '</ul>';
 
-		$listCoursesTemplate = ListCoursesTemplate::instance();
-		$data_pagination     = [
+		$data_pagination = [
 			'total_pages' => $total_pages,
-			'type'        => 'number',
+			'type'        => $pagination_type,
 			'base'        => add_query_arg( 'paged', '%#%', $settings['url_current'] ?? '' ),
 			'paged'       => $settings['paged'] ?? 1,
 		];

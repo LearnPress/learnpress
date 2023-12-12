@@ -3,7 +3,7 @@
  * Template hooks List Courses.
  *
  * @since 4.2.3.2
- * @version 1.0.0
+ * @version 1.0.1
  */
 
 namespace LearnPress\TemplateHooks\Course;
@@ -120,11 +120,13 @@ class ListCoursesTemplate {
 				if ( $data['paged'] >= $data['total_pages'] ) {
 					return '';
 				}
+
 				return $this->html_pagination_load_more();
 			case 'infinite':
 				if ( $data['paged'] >= $data['total_pages'] ) {
 					return '';
 				}
+
 				return $this->html_pagination_infinite();
 			default:
 				return $this->html_pagination_number( $data );
@@ -210,6 +212,8 @@ class ListCoursesTemplate {
 	 * @param string $default
 	 *
 	 * @return string
+	 * @since 4.2.3.2
+	 * @version 1.0.1
 	 */
 	public function html_order_by( string $default = 'post_date' ): string {
 		$html_wrapper = [
@@ -217,11 +221,12 @@ class ListCoursesTemplate {
 		];
 
 		$values = [
-			'post_date'  => __( 'Newly published', 'learnpress' ),
-			'post_title' => __( 'Sort by Title', 'learnpress' ),
-			'price_low'  => __( 'Price low to high', 'learnpress' ),
-			'price'      => __( 'Price high to low', 'learnpress' ),
-			'popular'    => __( 'Popular', 'learnpress' ),
+			'post_date'       => esc_html__( 'Newly published', 'learnpress' ),
+			'post_title'      => esc_html__( 'Title a-z', 'learnpress' ),
+			'post_title_desc' => esc_html__( 'Title z-a', 'learnpress' ),
+			'price'           => esc_html__( 'Price high to low', 'learnpress' ),
+			'price_low'       => esc_html__( 'Price low to high', 'learnpress' ),
+			'popular'         => esc_html__( 'Popular', 'learnpress' ),
 		];
 
 		$content = '<select name="order_by" class="courses-order-by">';
@@ -327,9 +332,9 @@ class ListCoursesTemplate {
 	/**
 	 * Sidebar
 	 *
-	 * @since 4.2.3.2
-	 * @version 1.0.0
 	 * @return void
+	 * @version 1.0.0
+	 * @since 4.2.3.2
 	 */
 	public function sidebar() {
 		try {
@@ -386,9 +391,9 @@ class ListCoursesTemplate {
 	/**
 	 * Show total students on Course Category.
 	 *
-	 * @version 1.0.0
-	 * @since 4.2.5.4
 	 * @return string
+	 * @since 4.2.5.4
+	 * @version 1.0.0
 	 */
 	public function html_count_students(): string {
 		$html_wrapper = [
@@ -489,6 +494,7 @@ class ListCoursesTemplate {
 			<?php
 		}
 		echo '</ul>';
+
 		return ob_get_clean();
 	}
 }
