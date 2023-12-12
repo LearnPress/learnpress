@@ -101,8 +101,8 @@ window.lpCourseFilter = {
 					callBackDone( response );
 				}
 			} ).catch( ( error ) => {
-			console.log( error );
-		} )
+				console.log( error );
+			} )
 			.finally( () => {
 				if ( undefined !== callBackFinally ) {
 					callBackFinally();

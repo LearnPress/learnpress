@@ -27,6 +27,7 @@ module.exports = {
 		'./assets/js/dist/admin/pages/dashboard': './assets/src/apps/js/admin/pages/dashboard.js',
 		'./assets/js/dist/admin/pages/widgets': './assets/src/apps/js/admin/pages/widgets.js',
 		'./assets/js/dist/admin/course-material': './assets/src/apps/js/admin/course-material.js',
+		'./assets/js/dist/loadAJAX': './assets/src/js/loadAJAX.js',
 		'./assets/js/dist/utils': './assets/src/js/utils/index.js',
 
 		'./assets/js/dist/js/data-controls': {
@@ -81,6 +82,7 @@ module.exports = {
 
 		// Elementor
 		'./assets/js/dist/elementor/courses': './assets/src/js/elementor/courses.js',
+		'./assets/js/dist/elementor/course-filter': './assets/src/js/elementor/course-filter.js',
 	},
 	output: {
 		path: path.resolve( __dirname ),

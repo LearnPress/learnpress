@@ -453,6 +453,7 @@ class LPElementorControls {
 					[],
 					Controls_Manager::DIMENSIONS,
 					[
+						'size_units' => [ 'px', '%', 'custom' ],
 						'selectors' => [
 							"{{WRAPPER}} $selector" => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 						],

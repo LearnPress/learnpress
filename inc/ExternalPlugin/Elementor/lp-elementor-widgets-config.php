@@ -15,6 +15,7 @@ use LearnPress\ExternalPlugin\Elementor\Widgets\Course\Dynamic\CourseDurationDyn
 use LearnPress\ExternalPlugin\Elementor\Widgets\Course\Dynamic\CourseLevelDynamicElementor;
 use LearnPress\ExternalPlugin\Elementor\Widgets\Course\ListCoursesByPageElementor;
 use LearnPress\ExternalPlugin\Elementor\Widgets\Course\Sections\CoursePriceElementor;
+use LearnPress\ExternalPlugin\Elementor\Widgets\Course\FilterCourseElementor;
 use LearnPress\ExternalPlugin\Elementor\Widgets\CourseListElementor;
 use LearnPress\ExternalPlugin\Elementor\Widgets\Instructor\Sections\InstructorButtonViewElementor;
 use LearnPress\ExternalPlugin\Elementor\Widgets\Instructor\Sections\InstructorDescriptionElementor;
@@ -47,6 +48,7 @@ return [
 			//'list-courses-by-page'      => ListCoursesByPageElementor::class,
 			// Single Course
 			'course-price'              => CoursePriceElementor::class,
+			'filter-course'				=> FilterCourseElementor::class
 		]
 	),
 	'dynamic' => apply_filters(
