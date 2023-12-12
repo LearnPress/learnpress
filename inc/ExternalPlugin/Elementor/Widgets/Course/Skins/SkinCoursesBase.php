@@ -98,13 +98,48 @@ class SkinCoursesBase extends LPSkinBase {
 	 * @return stdClass { content: string_html }
 	 */
 	public static function render_courses( array $settings = [] ): stdClass {
-		$filter = new LP_Course_Filter();
-		Courses::handle_params_for_query_courses( $filter, $settings );
-		$total_rows    = 0;
-		$filter->limit = $settings['courses_per_page'] ?? 8;
-		$courses       = Courses::get_courses( $filter, $total_rows );
-		$skin          = $settings['skin'] ?? 'grid';
+		$skin                     = $settings['skin'] ?? 'grid';
+		$courses_limit            = $settings['courses_limit'] ?? 0;
+		$courses_per_page         = $settings['courses_per_page'] ?? 8;
+		$courses_order_by_default = $settings['courses_order_by_default'] ?? 'post_date';
+		$total_pages              = 0;
+		$paged                    = $settings['paged'] ?? 1;
 
+		if ( $courses_limit > 0 ) {
+			if ( $courses_per_page > $courses_limit ) {
+				$courses_per_page = $courses_limit;
+			} else if ( $courses_per_page === 0 ) {
+				$courses_per_page = $courses_limit;
+			}
+
+			$total_pages = LP_Database::get_total_pages( $courses_per_page, $courses_limit );
+		}
+
+		if ( $courses_per_page === 0 ) {
+			$courses_per_page = - 1;
+		}
+
+		$filter               = new LP_Course_Filter();
+		$settings['order_by'] = $courses_order_by_default;
+		Courses::handle_params_for_query_courses( $filter, $settings );
+		$total_rows         = 0;
+		$filter->limit      = $courses_per_page;
+		$courses            = Courses::get_courses( $filter, $total_rows );
+		$total_pages_result = LP_Database::get_total_pages( $courses_per_page, $total_rows );
+		if ( $total_pages > 0 ) {
+			if ( $total_pages_result > $total_pages ) {
+				if ( $paged === $total_pages && $total_pages > 1 ) {
+					$number_courses_residual = $courses_limit - $courses_per_page * ( $paged - 1 );
+					$courses                 = array_slice( $courses, 0, $number_courses_residual );
+				}
+			} else {
+				$total_pages = $total_pages_result;
+			}
+		} else {
+			$total_pages = $total_pages_result;
+		}
+
+		// Handle layout
 		ob_start();
 		echo '<ul class="learn-press-courses ' . $skin . '">';
 		foreach ( $courses as $courseObj ) {
@@ -115,7 +150,7 @@ class SkinCoursesBase extends LPSkinBase {
 
 		$listCoursesTemplate = ListCoursesTemplate::instance();
 		$data_pagination     = [
-			'total_pages' => LP_Database::get_total_pages( $filter->limit, $total_rows ),
+			'total_pages' => $total_pages,
 			'type'        => 'number',
 			'base'        => add_query_arg( 'paged', '%#%', $settings['url_current'] ?? '' ),
 			'paged'       => $settings['paged'] ?? 1,

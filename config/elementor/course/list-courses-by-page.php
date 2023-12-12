@@ -98,7 +98,7 @@ $content_fields = array_merge(
 				[
 					'min'  => 0,
 					'step' => 1,
-					'description' => esc_html__( 'Number courses you when to query, default 0 is no limit', 'learnpress' ),
+					'description' => esc_html__( 'Total courses you want to query, default 0 is no limit', 'learnpress' ),
 				]
 			),
 			'courses_per_page'             => LPElementorControls::add_control_type(
@@ -109,7 +109,7 @@ $content_fields = array_merge(
 				[
 					'min'  => 0,
 					'step' => 1,
-					'description' => esc_html__( 'Default 0 is show all of Courses Limit', 'learnpress' ),
+					'description' => esc_html__( 'Number courses show on 1 page. Default 0 is show all of Courses Limit', 'learnpress' ),
 				]
 			),
 			'courses_order_by_default'     => LPElementorControls::add_control_type_select(
