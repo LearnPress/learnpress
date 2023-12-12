@@ -173,6 +173,7 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 		);
 
 		$new_question = $this->question_curd->create( $args );
+		$this->clear_cache_of_quiz_questions( $quiz_id );
 
 		if ( ! is_wp_error( $new_question ) ) {
 			// update hidden questions in quiz meta
@@ -282,6 +283,7 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 
 		// duplicate question
 		$new_question_id = $this->question_curd->duplicate( $question['id'], array( 'post_status' => 'publish' ) );
+		$this->clear_cache_of_quiz_questions( $this->quiz->get_id() );
 
 		if ( ! is_wp_error( $new_question_id ) ) {
 
@@ -317,6 +319,7 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 		}
 
 		$this->result = $this->quiz_curd->remove_questions( $this->quiz->get_id(), $question_id );
+		$this->clear_cache_of_quiz_questions( $this->quiz->get_id() );
 
 		return true;
 	}
@@ -334,6 +337,7 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 		}
 
 		$this->result = wp_trash_post( $question_id );
+		$this->clear_cache_of_quiz_questions( $this->quiz->get_id() );
 
 		return true;
 	}
@@ -584,13 +588,13 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 			return false;
 		}
 
-		$questions = json_decode( wp_unslash( $questions ), true );
+		$questions = json_decode( $questions, true );
 
 		$quiz_id = $this->quiz->get_id();
 
 		if ( get_post_status( $quiz_id ) == 'auto-draft' ) {
 			$draft_quiz = ! empty( $args['draft_quiz'] ) ? $args['draft_quiz'] : '';
-			$draft_quiz = (array) ( json_decode( wp_unslash( $draft_quiz ), '' ) );
+			$draft_quiz = (array) json_decode( $draft_quiz, '' );
 
 			$quiz_args = array(
 				'id'      => $quiz_id,
@@ -624,12 +628,27 @@ class LP_Admin_Editor_Quiz extends LP_Admin_Editor {
 
 			update_post_meta( $quiz_id, '_lp_hidden_questions', $hidden_questions );
 
-			LP_Object_Cache::flush();
+			$this->clear_cache_of_quiz_questions( $quiz_id );
 			$this->result = $this->quiz->quiz_editor_get_questions();
 
 			return true;
 		}
 
 		return false;
+	}
+
+	/**
+	 * Clear cache when add/remove question to quiz
+	 *
+	 * @param $quiz_id
+	 *
+	 * @return void
+	 * @since 4.2.5.8
+	 * @version 1.0.0
+	 */
+	public function clear_cache_of_quiz_questions( $quiz_id ) {
+		$lp_quiz_cache = LP_Quiz_Cache::instance();
+		$key_cache     = "$quiz_id/question_ids";
+		$lp_quiz_cache->clear( $key_cache );
 	}
 }
