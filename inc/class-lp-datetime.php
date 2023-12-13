@@ -410,10 +410,14 @@ class LP_Datetime {
 	 * @param string $duration_type
 	 *
 	 * @return string
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 * @since 4.2.3.5
 	 */
 	public static function get_string_plural_duration( float $duration_number, string $duration_type = '' ): string {
+		if ( $duration_number == 0 ) {
+			return esc_html__( 'Lifetime', 'learnpress');
+		}
+
 		switch ( strtolower( $duration_type ) ) {
 			case 'minute':
 				$duration_str = sprintf(

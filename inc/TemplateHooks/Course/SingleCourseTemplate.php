@@ -232,7 +232,7 @@ class SingleCourseTemplate {
 		try {
 			$duration        = $course->get_duration();
 			$duration_arr    = explode( ' ', $duration );
-			$duration_number = $duration_arr[0] ?? 0;
+			$duration_number = floatval( $duration_arr[0] ?? 0 );
 			$duration_type   = $duration_arr[1] ?? '';
 			$duration_str    = LP_Datetime::get_string_plural_duration( $duration_number, $duration_type );
 

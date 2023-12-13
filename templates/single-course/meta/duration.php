@@ -4,13 +4,16 @@
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 4.0.0
+ * @version 4.0.1
  */
+
+use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
 
 defined( 'ABSPATH' ) or die;
 
 $course = learn_press_get_course();
+$duration_str = SingleCourseTemplate::instance()->html_duration( $course );
 ?>
 
-<div class="meta-item meta-item-duration"><?php echo learn_press_get_post_translated_duration( get_the_ID(), esc_html__( 'Lifetime access', 'learnpress' ) ); ?></div>
+<div class="meta-item meta-item-duration"><?php echo $duration_str; ?></div>
 
