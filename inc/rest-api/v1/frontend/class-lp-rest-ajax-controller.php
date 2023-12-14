@@ -45,7 +45,7 @@ class LP_REST_AJAX_Controller extends LP_Abstract_REST_Controller {
 			$params = $request->get_params();
 
 			if ( empty( $params['callback'] ) ||
-				empty( $params['args'] ) ) {
+				! isset( $params['args'] ) ) {
 				throw new Exception( 'Error: params invalid!' );
 			}
 

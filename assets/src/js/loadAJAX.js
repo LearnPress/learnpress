@@ -2,6 +2,7 @@
  * Load all you need via AJAX
  *
  * @since 4.2.5.7
+ * @version 1.0.1
  */
 
 import { lpAddQueryArgs, lpFetchAPI } from './utils';
@@ -43,19 +44,14 @@ const lpAJAX = ( () => {
 			if ( elements.length ) {
 				elements.forEach( ( element ) => {
 					const url = API.frontend.apiAJAX;
-					const dataObj = JSON.parse( element.dataset.send );
+					const elTarget = element.querySelector( '.lp-target' );
+					const dataObj = JSON.parse( elTarget.dataset.send );
 					const dataSend = { ...dataObj };
 					const elLoadingFirst = element.querySelector( '.loading-first' );
 
 					const callBack = {
 						success: ( response ) => {
 							const { status, message, data } = response;
-							const args = dataObj.args;
-							const elTarget = element.querySelector( args.el_target || '' );
-							if ( ! elTarget ) {
-								console.log( 'elTarget load ajax content not found' );
-								return;
-							}
 
 							if ( 'success' === status ) {
 								elTarget.innerHTML = data.content;
@@ -67,7 +63,7 @@ const lpAJAX = ( () => {
 							console.log( error );
 						},
 						completed: () => {
-							console.log( 'completed' );
+							//console.log( 'completed' );
 							if ( elLoadingFirst ) {
 								elLoadingFirst.remove();
 							}

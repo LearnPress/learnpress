@@ -12,9 +12,16 @@ use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\Courses;
 use LearnPress\Models\UserItems\UserCourseModel;
+use LearnPress\TemplateHooks\TemplateAJAX;
+use LP_Course;
 use LP_Course_Filter;
+use LP_Database;
+use LP_Request;
+use LP_Settings;
+use LP_Settings_Courses;
 use LP_User_Items_DB;
 use LP_User_Items_Filter;
+use stdClass;
 use Throwable;
 use WP_Term;
 
@@ -22,8 +29,87 @@ class ListCoursesTemplate {
 	use Singleton;
 
 	public function init() {
+		add_action( 'learn-press/list-courses/layout', [ $this, 'layout_courses' ] );
 		add_action( 'learn-press/rest-api/courses/suggest/layout', [ $this, 'sections_course_suggest' ] );
 		add_action( 'learn-press/archive-course/sidebar', [ $this, 'sidebar' ] );
+		add_filter( 'lp/rest/ajax/allow_callback', [ $this, 'allow_callback' ] );
+	}
+
+	public function allow_callback( $callbacks ) {
+		$callbacks[] = get_class( $this ) . ':render_courses';
+
+		return $callbacks;
+	}
+
+	public function layout_courses() {
+		$html_wrapper = [
+			'<div class="learn-press-courses-wrapper">' => '</div>',
+		];
+
+		if ( LP_Settings_Courses::is_ajax_load_courses() && ! LP_Settings_Courses::is_no_load_ajax_first_courses() ) {
+			$callback = [
+				'class'  => get_class( $this ),
+				'method' => 'render_courses',
+			];
+			$content  = TemplateAJAX::load_content_via_ajax( [], $callback );
+		} else {
+			$content_obj = self::render_courses();
+			$content     = $content_obj->content;
+		}
+
+		echo Template::instance()->nest_elements( $html_wrapper, $content );
+	}
+
+	/**
+	 * Render template list courses with settings param.
+	 *
+	 * @param array $settings
+	 *
+	 * @return stdClass { content: string_html }
+	 * @since 4.2.5.7
+	 * @version 1.0.1
+	 */
+	public static function render_courses( array $settings = [] ): stdClass {
+		$filter = new LP_Course_Filter();
+		Courses::handle_params_for_query_courses( $filter, $settings );
+		$total_rows          = 0;
+		$courses             = Courses::get_courses( $filter, $total_rows );
+		$total_pages         = LP_Database::get_total_pages( $filter->limit, $total_rows );
+		$skin                = learn_press_get_courses_layout();
+		$paged               = $settings['paged'] ?? 1;
+		$listCoursesTemplate = self::instance();
+
+		// Handle layout
+		ob_start();
+
+		$section_top = [
+			'wrapper'         => [ 'text_html' => '<div class="lp-courses-bar">' ],
+			'el_result_count' => [ 'text_html' => $listCoursesTemplate->html_search_form() ],
+			'el_sorting'      => [ 'text_html' => $listCoursesTemplate->switch_layout() ],
+			'close_wrapper'   => [ 'text_html' => '</div>' ],
+		];
+		Template::instance()->print_sections( $section_top );
+		echo '<ul class="learn-press-courses ' . $skin . '" data-layout="' . $skin . '">';
+		foreach ( $courses as $courseObj ) {
+			$course = learn_press_get_course( $courseObj->ID );
+			echo static::render_course( $course, $settings );
+		}
+		echo '</ul>';
+
+		$data_pagination = [
+			'total_pages' => $total_pages,
+			'type'        => LP_Settings::get_option( 'course_pagination_type', 'number' ),
+			'base'        => add_query_arg( 'paged', '%#%', $settings['url_current'] ?? '' ),
+			'paged'       => $settings['paged'] ?? 1,
+		];
+		echo static::instance()->html_pagination( $data_pagination );
+
+		$content              = new stdClass();
+		$content->content     = ob_get_clean();
+		$content->total_pages = $total_pages;
+		$content->paged       = $paged;
+
+		return $content;
 	}
 
 	/**
@@ -238,6 +324,46 @@ class ListCoursesTemplate {
 		return Template::instance()->nest_elements( $html_wrapper, $content );
 	}
 
+	public function html_search_form() {
+		$s = LP_Request::get_param( 'c_search' );
+		ob_start();
+		?>
+		<form class="search-courses" method="get"
+				action="<?php echo esc_url_raw( learn_press_get_page_link( 'courses' ) ); ?>">
+			<input type="hidden" name="post_type" value="<?php echo esc_attr( LP_COURSE_CPT ); ?>">
+			<input type="hidden" name="taxonomy"
+					value="<?php echo esc_attr( get_queried_object()->taxonomy ?? $_GET['taxonomy'] ?? '' ); ?>">
+			<input type="hidden" name="term_id"
+					value="<?php echo esc_attr( get_queried_object()->term_id ?? $_GET['term_id'] ?? '' ); ?>">
+			<input type="hidden" name="term"
+					value="<?php echo esc_attr( get_queried_object()->slug ?? $_GET['term'] ?? '' ); ?>">
+			<input type="text" placeholder="<?php esc_attr_e( 'Search courses...', 'learnpress' ); ?>" name="c_search"
+					value="<?php echo esc_attr( $s ); ?>">
+			<button type="submit" name="lp-btn-search-courses"><i class="fas fa-search"></i></button>
+		</form>
+		<?php
+		return ob_get_clean();
+	}
+
+	public function switch_layout() {
+		$layouts = learn_press_courses_layouts();
+		$active  = learn_press_get_courses_layout();
+		ob_start();
+		?>
+		<div class="switch-layout">
+			<?php foreach ( $layouts as $layout => $value ) : ?>
+				<input type="radio" name="lp-switch-layout-btn"
+						value="<?php echo esc_attr( $layout ); ?>"
+						id="lp-switch-layout-btn-<?php echo esc_attr( $layout ); ?>" <?php checked( $layout, $active ); ?>>
+				<label class="switch-btn <?php echo esc_attr( $layout ); ?>"
+						title="<?php echo sprintf( esc_attr__( 'Switch to %s', 'learnpress' ), $layout ); ?>"
+						for="lp-switch-layout-btn-<?php echo esc_attr( $layout ); ?>"></label>
+			<?php endforeach; ?>
+		</div>
+		<?php
+		return ob_get_clean();
+	}
+
 	/**
 	 * Layout course search suggest result.
 	 *
@@ -443,14 +569,12 @@ class ListCoursesTemplate {
 				'{{courses_order_by}}',
 				'{{courses_layout_type}}',
 				'{{courses_pagination}}',
-				'{{courses_items}}',
 				'{{courses_page_result}}',
 			],
 			[
 				$this->html_order_by( $data['order_by'] ?? '' ),
 				$this->html_layout_type( $data ),
 				$this->html_pagination( $data['pagination'] ?? [] ),
-				$this->html_courses_items( $data ),
 				$this->html_courses_page_result( $data ),
 			],
 			$data_content
@@ -458,43 +582,71 @@ class ListCoursesTemplate {
 	}
 
 	/**
-	 * Render html list courses
+	 * Render single item course
 	 *
-	 * @param array $data
+	 * @param LP_Course $course
+	 * @param array $settings
 	 *
-	 * @return false|string
+	 * @return string
 	 */
-	public function html_courses_items( array $data ) {
-		$courses_item_layout = $data['courses_item_layout'] ?? '';
-		$layout_default      = $data['courses_layout_default'] ?? 'grid';
-		$courses             = $data['courses_list'] ?? [];
-		$ul_classes          = $data['courses_ul_classes'] ?? [];
-		$ul_classes[]        = $layout_default;
-		$ul_classes_str      = implode( ' ', $ul_classes );
-
-		// No courses found
-		if ( empty( $courses ) ) {
-			return '<div class="courses-not-found"><span>' . esc_html__( 'No courses found', 'learnpress' ) . '</span></div>';
-		}
-
-		// Start show list courses
-		ob_start();
+	public static function render_course( LP_Course $course, array $settings = [] ): string {
+		$html_item            = '';
 		$singleCourseTemplate = SingleCourseTemplate::instance();
-		echo '<ul class="' . esc_attr( $ul_classes_str ) . '">';
-		foreach ( $courses as $courseObj ) {
-			$course_id = $courseObj->ID;
-			$course    = learn_press_get_course( $course_id );
-			if ( ! $course ) {
-				continue;
-			}
-			?>
-			<li class="item-course">
-				<?php echo $singleCourseTemplate->render_data( $course, html_entity_decode( $courses_item_layout ) ); ?>
-			</li>
-			<?php
-		}
-		echo '</ul>';
 
-		return ob_get_clean();
+		try {
+			$html_wrapper = [
+				'<li class="course">'       => '</li>',
+				'<div class="course-item">' => '</div>',
+			];
+
+			$top_wrapper = [
+				'<div class="course-wrap-thumbnail">' => '</div>',
+				'<div class="course-thumbnail">'      => '</div>',
+			];
+			$img         = sprintf( '<a href="%s">%s</a>', $course->get_permalink(), $singleCourseTemplate->html_image( $course ) );
+			$html_top    = Template::instance()->nest_elements( $top_wrapper, $img );
+
+			$bottom_wrapper  = [
+				'<div class="course-content">' => '</div>',
+			];
+			$bottom_content  = '';
+			$bottom_content .= str_replace( ',', '', $singleCourseTemplate->html_categories( $course ) );
+			$bottom_content .= $singleCourseTemplate->html_instructor( $course );
+			$bottom_content .= sprintf( '<a class="course-permalink" href="%s">%s</a>', $course->get_permalink(), $singleCourseTemplate->html_title( $course ) );
+			$bottom_content .= sprintf(
+				'<div class="course-wrap-meta">%s%s%s%s%s</div>',
+				sprintf( '<div class="meta-item meta-item-duration">%s</div>', $singleCourseTemplate->html_duration( $course ) ),
+				sprintf( '<div class="meta-item meta-item-level">%s</div>', $singleCourseTemplate->html_level( $course ) ),
+				sprintf( '<div class="meta-item meta-item-lesson">%s</div>', $singleCourseTemplate->html_count_item( $course, 'lesson' ) ),
+				sprintf( '<div class="meta-item meta-item-quiz">%s</div>', $singleCourseTemplate->html_count_item( $course, 'quiz' ) ),
+				sprintf( '<div class="meta-item meta-item-student">%s</div>', $singleCourseTemplate->html_count_student( $course ) )
+			);
+			$bottom_content .= '<div class="separator"></div>';
+			$course_info     = sprintf(
+				'<div class="course-info">%s%s%s%s</div>',
+				$singleCourseTemplate->html_short_description( $course ),
+				'<div class="clearfix"></div>',
+				sprintf( '<div class="course-footer">%s</div>', $singleCourseTemplate->html_price( $course ) ),
+				sprintf( '<div class="course-readmore"><a href="%s">%s</a></div>', $course->get_permalink(), __( 'Read more', 'learnpress' ) )
+			);
+
+			$bottom_content .= $course_info;
+
+			$html_bottom = Template::instance()->nest_elements( $bottom_wrapper, $bottom_content );
+
+			$section = [
+				'top'    => [ 'text_html' => $html_top ],
+				'bottom' => [ 'text_html' => $html_bottom ],
+			];
+
+			ob_start();
+			Template::instance()->print_sections( $section );
+			$html_item = ob_get_clean();
+			$html_item = Template::instance()->nest_elements( $html_wrapper, $html_item );
+		} catch ( Throwable $e ) {
+			$html_item = $e->getMessage();
+		}
+
+		return $html_item;
 	}
 }

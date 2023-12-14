@@ -36,7 +36,7 @@ class ListCoursesByPageElementor extends LPElementorWidgetBase {
 			true
 		);
 		$this->add_style_depends( 'lp-courses-by-page' );
-		//$this->add_script_depends( 'lp-courses-by-page' );
+		$this->add_script_depends( 'lp-courses-v2' );
 		parent::__construct( $data, $args );
 	}
 
