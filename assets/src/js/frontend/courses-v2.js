@@ -1,6 +1,5 @@
 import API from '../api';
-import { lpAddQueryArgs } from '../utils';
-import Cookies from '../utils/cookies';
+import { lpAddQueryArgs, lpGetCurrentURLNoParam } from '../utils';
 
 if ( 'undefined' === typeof lpData ) {
 	console.log( 'lpData is undefined' );
@@ -36,6 +35,7 @@ window.lpCoursesList = ( () => {
 	const classListCourseWrapper = '.learn-press-courses-wrapper';
 	const classListCourse = '.learn-press-courses';
 	const classLPTarget = '.lp-target';
+	const urlCurrent = lpGetCurrentURLNoParam();
 	return {
 		clickNumberPage: ( e, target ) => {
 			const btnNumber = target.closest( '.page-numbers' );
@@ -65,6 +65,12 @@ window.lpCoursesList = ( () => {
 			}
 
 			elLPTarget.dataset.send = JSON.stringify( dataSend );
+
+			// Set url params to reload page.
+			// Todo: need check allow set url params.
+			lpData.urlParams.paged = dataSend.args.paged;
+			window.history.pushState( {}, '', lpAddQueryArgs( urlCurrent, lpData.urlParams ) );
+			// End.
 
 			// Scroll to archive element
 			const elCoursesWrapper = elLPTarget.closest( `${ classListCourseWrapper }` );
@@ -222,6 +228,13 @@ window.lpCoursesList = ( () => {
 			dataSend.args.paged = 1;
 			dataSend.args.order_by = target.value || '';
 			elLPTarget.dataset.send = JSON.stringify( dataSend );
+
+			// Set url params to reload page.
+			// Todo: need check allow set url params.
+			lpData.urlParams.paged = dataSend.args.paged;
+			lpData.urlParams.order_by = dataSend.args.order_by;
+			window.history.pushState( {}, '', lpAddQueryArgs( urlCurrent, lpData.urlParams ) );
+			// End.
 
 			const callBack = {
 				success: ( response ) => {

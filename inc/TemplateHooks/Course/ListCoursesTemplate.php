@@ -43,7 +43,7 @@ class ListCoursesTemplate {
 
 	public function layout_courses() {
 		$html_wrapper = [
-			'<div class="learn-press-courses-wrapper">' => '</div>',
+			'<div id="learn-press-courses-default" class="learn-press-courses-wrapper">' => '</div>',
 		];
 
 		if ( LP_Settings_Courses::is_ajax_load_courses() && ! LP_Settings_Courses::is_no_load_ajax_first_courses() ) {
@@ -51,7 +51,7 @@ class ListCoursesTemplate {
 				'class'  => get_class( $this ),
 				'method' => 'render_courses',
 			];
-			$content  = TemplateAJAX::load_content_via_ajax( [], $callback );
+			$content  = TemplateAJAX::load_content_via_ajax( lp_archive_skeleton_get_args(), $callback );
 		} else {
 			$content_obj = self::render_courses();
 			$content     = $content_obj->content;
@@ -72,6 +72,15 @@ class ListCoursesTemplate {
 	public static function render_courses( array $settings = [] ): stdClass {
 		$filter = new LP_Course_Filter();
 		Courses::handle_params_for_query_courses( $filter, $settings );
+		// Check is in category page.
+		if ( ! empty( $settings[ 'page_term_id_current' ] ) &&
+			 empty( $settings[ 'term_id' ] ) ) {
+			$filter->term_ids[] = $settings[ 'page_term_id_current' ];
+		} // Check is in tag page.
+		elseif ( ! empty( $settings[ 'page_tag_id_current' ] ) &&
+				 empty( $settings[ 'tag_id' ] ) ) {
+			$filter->tag_ids[] = $settings[ 'page_tag_id_current' ];
+		}
 		$total_rows          = 0;
 		$courses             = Courses::get_courses( $filter, $total_rows );
 		$total_pages         = LP_Database::get_total_pages( $filter->limit, $total_rows );

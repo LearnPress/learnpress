@@ -25,7 +25,7 @@ const lpAJAX = ( () => {
 				option.method = 'POST';
 			}
 
-			params.args = { ...params.args, ...lpData.urlParams };
+			//params.args = { ...params.args, ...lpData.urlParams };
 
 			if ( 'POST' === option.method ) {
 				option.body = JSON.stringify( params );

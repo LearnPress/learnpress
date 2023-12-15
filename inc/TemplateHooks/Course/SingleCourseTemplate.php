@@ -79,6 +79,10 @@ class SingleCourseTemplate {
 		];
 
 		$cats      = $course->get_categories();
+		if ( empty( $cats ) ) {
+			return '';
+		}
+
 		$cat_names = [];
 		array_map(
 			function ( $cat ) use ( &$cat_names ) {

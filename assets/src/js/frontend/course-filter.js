@@ -1,5 +1,5 @@
 import API from '../api';
-import { lpFetchAPI } from '../utils';
+import { lpAddQueryArgs, lpFetchAPI, lpGetCurrentURLNoParam } from '../utils';
 
 const classCourseFilter = 'lp-form-course-filter';
 
@@ -190,6 +190,8 @@ window.lpCourseFilter = {
 	submit: ( form ) => {
 		const formData = new FormData( form ); // Create a FormData object from the form
 		const elListCourse = document.querySelector( '.learn-press-courses' );
+		const idListCourseTarget = '' || '#learn-press-courses-default';
+		const elListCourseTarget = document.querySelector( idListCourseTarget );
 
 		//const skeleton = elListCourse.querySelector( '.lp-archive-course-skeleton' );
 		const filterCourses = { paged: 1 };
@@ -202,7 +204,8 @@ window.lpCourseFilter = {
 			const key = pair[ 0 ];
 			const value = formData.getAll( key );
 			if ( ! filterCourses.hasOwnProperty( key ) ) {
-				filterCourses[ key ] = value;
+				// Convert value array to string.
+				filterCourses[ key ] = value.join( ',' );
 			}
 		}
 
@@ -225,6 +228,34 @@ window.lpCourseFilter = {
 			elListCourse &&
 			'undefined' !== typeof window.lpCourseList ) {
 			window.lpCourseList.triggerFetchAPI( filterCourses );
+		} else if ( elListCourseTarget ) {
+			const elLPTarget = elListCourseTarget.querySelector( '.lp-target' );
+			const dataObj = JSON.parse( elLPTarget.dataset.send );
+			const dataSend = { ...dataObj };
+
+			dataSend.args = filterCourses;
+			elLPTarget.dataset.send = JSON.stringify( dataSend );
+			// Set url params to reload page.
+			// Todo: need check allow set url params.
+			lpData.urlParams = filterCourses;
+			window.history.pushState( {}, '', lpAddQueryArgs( lpGetCurrentURLNoParam(), lpData.urlParams ) );
+			// End.
+
+			const callBack = {
+				success: ( response ) => {
+					//console.log( 'response', response );
+					const { status, message, data } = response;
+					elLPTarget.innerHTML = data.content || '';
+				},
+				error: ( error ) => {
+					console.log( error );
+				},
+				completed: () => {
+					//console.log( 'completed' );
+				},
+			};
+
+			window.lpAJAXG.fetchAPI( API.frontend.apiAJAX, dataSend, callBack );
 		} else {
 			const courseUrl = lpData.urlParams.page_term_url || lpData.courses_url || '';
 			const url = new URL( courseUrl );
