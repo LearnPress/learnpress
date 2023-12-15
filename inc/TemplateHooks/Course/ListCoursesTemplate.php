@@ -46,15 +46,28 @@ class ListCoursesTemplate {
 			'<div id="learn-press-courses-default" class="learn-press-courses-wrapper">' => '</div>',
 		];
 
+		$callback = [
+			'class'  => get_class( $this ),
+			'method' => 'render_courses',
+		];
+
 		if ( LP_Settings_Courses::is_ajax_load_courses() && ! LP_Settings_Courses::is_no_load_ajax_first_courses() ) {
-			$callback = [
-				'class'  => get_class( $this ),
-				'method' => 'render_courses',
-			];
-			$content  = TemplateAJAX::load_content_via_ajax( lp_archive_skeleton_get_args(), $callback );
+			$content = TemplateAJAX::load_content_via_ajax( lp_archive_skeleton_get_args(), $callback );
 		} else {
-			$content_obj = self::render_courses();
-			$content     = $content_obj->content;
+			$target_id   = uniqid( 'lp-target-' );
+			$url_params = lp_archive_skeleton_get_args();
+			$settings    = [
+				'args'     => $url_params,
+				'callback' => $callback,
+				'id'       => $target_id,
+			];
+			$content_obj = self::render_courses( $url_params );
+			$content     = sprintf(
+				'<div class="lp-target" data-send="%s" data-id="%s">%s</div>',
+				esc_attr( htmlentities2( json_encode( $settings, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) ) ),
+				$target_id,
+				$content_obj->content
+			);
 		}
 
 		echo Template::instance()->nest_elements( $html_wrapper, $content );

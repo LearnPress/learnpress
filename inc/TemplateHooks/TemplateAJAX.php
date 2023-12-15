@@ -77,4 +77,8 @@ class TemplateAJAX {
 
 		return Template::instance()->nest_elements( $html_wrapper, $html_content );
 	}
+
+	public function create_lp_target_with_data_for_load_ajax() {
+
+	}
 }
