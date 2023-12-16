@@ -278,7 +278,7 @@ class LP_Assets extends LP_Abstract_Assets {
 					0,
 					1
 				),
-				/*'lp-courses'           => new LP_Asset_Key(
+				'lp-courses'           => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/courses' . self::$_min_assets . '.js' ),
 					array( 'lp-global', 'wp-hooks' ), // when Eduma v5.3.6 release a long time, will be remove lp-global.
 					array( LP_PAGE_COURSES ),
@@ -286,7 +286,7 @@ class LP_Assets extends LP_Abstract_Assets {
 					0,
 					'',
 					[ 'strategy' => 'async' ]
-				),*/
+				),
 				'lp-courses-v2'        => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/courses-v2' . self::$_min_assets . '.js' ),
 					[ 'utils' ],

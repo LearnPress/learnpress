@@ -190,7 +190,7 @@ window.lpCourseFilter = {
 	submit: ( form ) => {
 		const formData = new FormData( form ); // Create a FormData object from the form
 		const elListCourse = document.querySelector( '.learn-press-courses' );
-		const idListCourseTarget = '' || '#learn-press-courses-default';
+		const idListCourseTarget = '' || '#lp-list-courses-default';
 		const elListCourseTarget = document.querySelector( idListCourseTarget );
 
 		//const skeleton = elListCourse.querySelector( '.lp-archive-course-skeleton' );
@@ -222,7 +222,7 @@ window.lpCourseFilter = {
 			filterCourses.lang = lpData.urlParams.lang;
 		}
 
-		if ( 'undefined' !== typeof lpSettingCourses &&
+		if ( 'undefined' !== typeof lpSettingCourses && // Old version.
 			lpData.is_course_archive &&
 			lpSettingCourses.lpArchiveLoadAjax &&
 			elListCourse &&
@@ -311,13 +311,18 @@ window.lpCourseFilter = {
 				return;
 			}
 
+			const idListCourseTarget = '' || '#lp-list-courses-default';
+			const elListCourseTarget = document.querySelector( idListCourseTarget );
+
 			// Filter courses
 			const form = parent.closest( `.${ classCourseFilter }` );
 			const btnSubmit = form.querySelector( '.course-filter-submit' );
 			let enableLoadAJAXCourses = false;
 			enableLoadAJAXCourses = 'undefined' !== typeof lpSettingCourses ? parseInt( lpSettingCourses.lpArchiveLoadAjax ) : 0;
 			const elListCourse = document.querySelector( '.learn-press-courses' );
-			if ( elListCourse && enableLoadAJAXCourses ) {
+			if ( elListCourse && enableLoadAJAXCourses ) { // Old version.
+				btnSubmit.click();
+			} else if ( elListCourseTarget ) {
 				btnSubmit.click();
 			}
 

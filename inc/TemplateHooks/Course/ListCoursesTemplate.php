@@ -12,7 +12,7 @@ use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\Courses;
 use LearnPress\Models\UserItems\UserCourseModel;
-use LearnPress\TemplateHooks\TemplateAJAX;
+use LearnPress\TemplateHoFoks\TemplateAJAX;
 use LP_Course;
 use LP_Course_Filter;
 use LP_Database;
@@ -43,7 +43,7 @@ class ListCoursesTemplate {
 
 	public function layout_courses() {
 		$html_wrapper = [
-			'<div id="learn-press-courses-default" class="learn-press-courses-wrapper">' => '</div>',
+			'<div id="lp-list-courses-default" class="learn-press-courses-wrapper">' => '</div>',
 		];
 
 		$callback = [
@@ -55,7 +55,7 @@ class ListCoursesTemplate {
 			$content = TemplateAJAX::load_content_via_ajax( lp_archive_skeleton_get_args(), $callback );
 		} else {
 			$target_id   = uniqid( 'lp-target-' );
-			$url_params = lp_archive_skeleton_get_args();
+			$url_params  = lp_archive_skeleton_get_args();
 			$settings    = [
 				'args'     => $url_params,
 				'callback' => $callback,
@@ -86,13 +86,13 @@ class ListCoursesTemplate {
 		$filter = new LP_Course_Filter();
 		Courses::handle_params_for_query_courses( $filter, $settings );
 		// Check is in category page.
-		if ( ! empty( $settings[ 'page_term_id_current' ] ) &&
-			 empty( $settings[ 'term_id' ] ) ) {
-			$filter->term_ids[] = $settings[ 'page_term_id_current' ];
+		if ( ! empty( $settings['page_term_id_current'] ) &&
+			empty( $settings['term_id'] ) ) {
+			$filter->term_ids[] = $settings['page_term_id_current'];
 		} // Check is in tag page.
-		elseif ( ! empty( $settings[ 'page_tag_id_current' ] ) &&
-				 empty( $settings[ 'tag_id' ] ) ) {
-			$filter->tag_ids[] = $settings[ 'page_tag_id_current' ];
+		elseif ( ! empty( $settings['page_tag_id_current'] ) &&
+				empty( $settings['tag_id'] ) ) {
+			$filter->tag_ids[] = $settings['page_tag_id_current'];
 		}
 		$total_rows          = 0;
 		$courses             = Courses::get_courses( $filter, $total_rows );
@@ -106,15 +106,19 @@ class ListCoursesTemplate {
 
 		$section_top = [
 			'wrapper'         => [ 'text_html' => '<div class="lp-courses-bar">' ],
-			'el_result_count' => [ 'text_html' => $listCoursesTemplate->html_search_form() ],
+			'el_result_count' => [ 'text_html' => $listCoursesTemplate->html_search_form( $settings ) ],
 			'el_sorting'      => [ 'text_html' => $listCoursesTemplate->switch_layout() ],
 			'close_wrapper'   => [ 'text_html' => '</div>' ],
 		];
 		Template::instance()->print_sections( $section_top );
 		echo '<ul class="learn-press-courses ' . $skin . '" data-layout="' . $skin . '">';
-		foreach ( $courses as $courseObj ) {
-			$course = learn_press_get_course( $courseObj->ID );
-			echo static::render_course( $course, $settings );
+		if ( empty( $courses ) ) {
+			echo sprintf( '<p class="learn-press-message success">%s!</p>', __( 'No courses found', 'learnpress' ) );
+		} else {
+			foreach ( $courses as $courseObj ) {
+				$course = learn_press_get_course( $courseObj->ID );
+				echo static::render_course( $course, $settings );
+			}
 		}
 		echo '</ul>';
 
@@ -346,21 +350,17 @@ class ListCoursesTemplate {
 		return Template::instance()->nest_elements( $html_wrapper, $content );
 	}
 
-	public function html_search_form() {
-		$s = LP_Request::get_param( 'c_search' );
+	public function html_search_form( array $data = [] ) {
+		$s = $data['c_search'] ?? '';
 		ob_start();
 		?>
 		<form class="search-courses" method="get"
 				action="<?php echo esc_url_raw( learn_press_get_page_link( 'courses' ) ); ?>">
-			<input type="hidden" name="post_type" value="<?php echo esc_attr( LP_COURSE_CPT ); ?>">
-			<input type="hidden" name="taxonomy"
-					value="<?php echo esc_attr( get_queried_object()->taxonomy ?? $_GET['taxonomy'] ?? '' ); ?>">
-			<input type="hidden" name="term_id"
-					value="<?php echo esc_attr( get_queried_object()->term_id ?? $_GET['term_id'] ?? '' ); ?>">
-			<input type="hidden" name="term"
-					value="<?php echo esc_attr( get_queried_object()->slug ?? $_GET['term'] ?? '' ); ?>">
-			<input type="text" placeholder="<?php esc_attr_e( 'Search courses...', 'learnpress' ); ?>" name="c_search"
-					value="<?php echo esc_attr( $s ); ?>">
+			<label>
+				<input type="text" placeholder="<?php esc_attr_e( 'Search courses...', 'learnpress' ); ?>"
+						name="c_search"
+						value="<?php echo esc_attr( $s ); ?>">
+			</label>
 			<button type="submit" name="lp-btn-search-courses"><i class="fas fa-search"></i></button>
 		</form>
 		<?php

@@ -23,6 +23,8 @@ document.addEventListener( 'scroll', function( e ) {
 } );
 document.addEventListener( 'keyup', function( e ) {
 	const target = e.target;
+
+	window.lpCoursesList.searchCourse( e, target );
 } );
 document.addEventListener( 'submit', function( e ) {
 	const target = e.target;
@@ -31,6 +33,7 @@ document.addEventListener( 'submit', function( e ) {
 } );
 
 const elListenScroll = [];
+let timeOutSearch;
 window.lpCoursesList = ( () => {
 	const classListCourseWrapper = '.learn-press-courses-wrapper';
 	const classListCourse = '.learn-press-courses';
@@ -266,6 +269,51 @@ window.lpCoursesList = ( () => {
 			if ( layout ) {
 				elListCourse.dataset.layout = layout;
 				window.wpCookies.set( 'courses-layout', layout, 24 * 60 * 60, '/' );
+			}
+		},
+		searchCourse: ( e, target ) => {
+			if ( 'c_search' !== target.name ) {
+				return;
+			}
+
+			const elLPTarget = target.closest( classLPTarget );
+			if ( ! elLPTarget ) {
+				return;
+			}
+
+			e.preventDefault();
+			const dataObj = JSON.parse( elLPTarget.dataset.send );
+			const dataSend = { ...dataObj };
+
+			const keyword = target.value;
+			dataSend.args.c_search = keyword || '';
+			dataSend.args.paged = 1;
+			elLPTarget.dataset.send = JSON.stringify( dataSend );
+
+			console.log(dataSend);
+
+			if ( ! keyword || ( keyword && keyword.length > 2 ) ) {
+				if ( undefined !== timeOutSearch ) {
+					clearTimeout( timeOutSearch );
+				}
+
+				timeOutSearch = setTimeout( function() {
+					const callBack = {
+						success: ( response ) => {
+							//console.log( 'response', response );
+							const { status, message, data } = response;
+							elLPTarget.innerHTML = data.content || '';
+						},
+						error: ( error ) => {
+							console.log( error );
+						},
+						completed: () => {
+							//console.log( 'completed' );
+						},
+					};
+
+					window.lpAJAXG.fetchAPI( API.frontend.apiAJAX, dataSend, callBack );
+				}, 800 );
 			}
 		},
 	};
