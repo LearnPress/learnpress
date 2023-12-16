@@ -12,7 +12,7 @@ use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\Courses;
 use LearnPress\Models\UserItems\UserCourseModel;
-use LearnPress\TemplateHoFoks\TemplateAJAX;
+use LearnPress\TemplateHooks\TemplateAJAX;
 use LP_Course;
 use LP_Course_Filter;
 use LP_Database;
