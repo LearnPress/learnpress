@@ -251,7 +251,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 
 		// Get request header.
 		$platform = ! empty( $request->get_header( 'x-platform' ) ) ? sanitize_text_field( $request->get_header( 'x-platform' ) ) : '';
-		$password = learnpress_mobile_iap_settings( $platform )['apple_token_secret'];
+		$password = function_exists( 'learnpress_mobile_iap_settings' ) ? learnpress_mobile_iap_settings( $platform )['apple_token_secret'] : LP_Settings::instance()->get( 'in_app_purchase_apple_shared_secret', '' );
 
 		try {
 			if ( empty( $receipt ) ) {
@@ -317,7 +317,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 					throw new Exception( __( 'Cannot verify the receipt', 'learnpress' ) );
 				}
 
-				$access_token = learnpress_in_app_purchase_get_access_token( $platform );
+				$access_token = function_exists( 'learnpress_mobile_iap_settings' ) ? learnpress_in_app_purchase_get_access_token( $platform ) : learnpress_in_app_purchase_get_access_token();
 
 				$verify = wp_remote_get(
 					'https://androidpublisher.googleapis.com/androidpublisher/v3/applications/' . $package_name . '/purchases/products/' . $course_id . '/tokens/' . $purchase_token,
