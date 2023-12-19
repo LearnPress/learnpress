@@ -506,7 +506,16 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 * @note tungnx checked has use
 		 */
 		public static function add_items_to_order() {
-			if ( ! current_user_can( ADMIN_ROLE ) ) { // Fix security
+			$roles_accept = apply_filters( 'lp/backend/roles/can-add-items', [ ADMIN_ROLE ] );
+
+			$flag = false;
+			foreach ( $roles_accept as $role ) {
+				if ( current_user_can( $role ) ) {
+					$flag = true;
+				}
+			}
+
+			if ( ! $flag ) {
 				return;
 			}
 
