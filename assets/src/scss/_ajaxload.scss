@@ -77,6 +77,14 @@
 	display: none;
 	width: 100%;
 	height: 100%;
-	background: #ffffff29;
+	background: rgba(255, 255, 255, 0.38);
 	top: 0;
+}
+
+.lp-loading-change {
+	@include loading-change;
+}
+
+.lp-load-ajax-element {
+	position: relative;
 }

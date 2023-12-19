@@ -225,7 +225,7 @@ window.lpCourseFilter = {
 		if ( 'undefined' !== typeof lpSettingCourses && // Old version.
 			lpData.is_course_archive &&
 			lpSettingCourses.lpArchiveLoadAjax &&
-			elListCourse &&
+			elListCourse && ! elListCourseTarget &&
 			'undefined' !== typeof window.lpCourseList ) {
 			window.lpCourseList.triggerFetchAPI( filterCourses );
 		} else if ( elListCourseTarget ) {
@@ -233,8 +233,16 @@ window.lpCourseFilter = {
 			const dataObj = JSON.parse( elLPTarget.dataset.send );
 			const dataSend = { ...dataObj };
 
+			// Show loading list courses
+			const elLoading = elListCourseTarget.closest( 'div:not(.lp-target)' ).querySelector( '.lp-loading-change' );
+			if ( elLoading ) {
+				elLoading.style.display = 'block';
+			}
+			// End
+
 			dataSend.args = filterCourses;
 			elLPTarget.dataset.send = JSON.stringify( dataSend );
+
 			// Set url params to reload page.
 			// Todo: need check allow set url params.
 			lpData.urlParams = filterCourses;
@@ -252,6 +260,9 @@ window.lpCourseFilter = {
 				},
 				completed: () => {
 					//console.log( 'completed' );
+					if ( elLoading ) {
+						elLoading.style.display = 'none';
+					}
 				},
 			};
 

@@ -75,6 +75,13 @@ window.lpCoursesList = ( () => {
 			window.history.pushState( {}, '', lpAddQueryArgs( urlCurrent, lpData.urlParams ) );
 			// End.
 
+			// Show loading
+			const elLoading = elLPTarget.closest( 'div:not(.lp-target)' ).querySelector( '.lp-loading-change' );
+			if ( elLoading ) {
+				elLoading.style.display = 'block';
+			}
+			// End
+
 			// Scroll to archive element
 			const elCoursesWrapper = elLPTarget.closest( `${ classListCourseWrapper }` );
 			if ( elCoursesWrapper ) {
@@ -94,6 +101,9 @@ window.lpCoursesList = ( () => {
 				},
 				completed: () => {
 					//console.log( 'completed' );
+					if ( elLoading ) {
+						elLoading.style.display = 'none';
+					}
 				},
 			};
 
@@ -290,7 +300,11 @@ window.lpCoursesList = ( () => {
 			dataSend.args.paged = 1;
 			elLPTarget.dataset.send = JSON.stringify( dataSend );
 
-			console.log(dataSend);
+			// Set url params to reload page.
+			// Todo: need check allow set url params.
+			lpData.urlParams = dataSend.args;
+			window.history.pushState( {}, '', lpAddQueryArgs( lpGetCurrentURLNoParam(), lpData.urlParams ) );
+			// End.
 
 			if ( ! keyword || ( keyword && keyword.length > 2 ) ) {
 				if ( undefined !== timeOutSearch ) {

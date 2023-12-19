@@ -208,7 +208,7 @@ class LP_Assets extends LP_Abstract_Assets {
 					0,
 					0,
 					'',
-					[ 'strategy' => 'async' ]
+					[ 'strategy' => 'defer' ]
 				),
 				'lp-checkout'          => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/checkout' . self::$_min_assets . '.js' ),
