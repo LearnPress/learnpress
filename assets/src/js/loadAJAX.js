@@ -39,6 +39,7 @@ const lpAJAX = ( () => {
 			lpFetchAPI( url, option, callBack );
 		},
 		getElements: () => {
+			//console.log( 'getElements' );
 			// Finds all elements with the class '.lp-load-ajax-element'
 			const elements = document.querySelectorAll( '.lp-load-ajax-element' );
 			if ( elements.length ) {
@@ -81,4 +82,22 @@ if ( 'undefined' === typeof window.lpAJAXG ) {
 	window.lpAJAXG = lpAJAX();
 	window.lpAJAXG.getElements();
 }
+
+/*document.addEventListener( 'readystatechange', ( event ) => {
+	console.log( 'readystatechange' );
+	const elements = document.querySelectorAll( '.lp-load-ajax-element' );
+	elements.forEach( ( element ) => {
+		if ( ! element.classList.contains( 'loading-first' ) ) {
+			console.log( 'okokkk' );
+			element.classList.add( 'loading-first' );
+		} else {
+			console.log( 'nooooo' );
+		}
+	} );
+} );
+
+document.addEventListener( 'DOMContentLoaded', () => {
+	console.log( 'DOMContentLoaded' );
+} );*/
+
 export default lpAJAX;
