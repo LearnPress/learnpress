@@ -1,3 +1,9 @@
+/**
+ * @deprecated 4.2.5.8
+ * But still support for theme has html old, override.
+ * Todo: if want remove file, need to check theme override file archive, can via remove hook override file.
+ */
+
 import API from '../api';
 import { lpAddQueryArgs, lpFetchAPI, lpGetCurrentURLNoParam } from '../utils';
 import Cookies from '../utils/cookies';

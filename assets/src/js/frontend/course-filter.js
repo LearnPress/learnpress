@@ -240,7 +240,18 @@ window.lpCourseFilter = {
 			}
 			// End
 
-			dataSend.args = filterCourses;
+			// Get all fields in form.
+			const fields = form.elements;
+			// If field not selected on form, will remove value on dataSend.
+			for ( let i = 0; i < fields.length; i++ ) {
+				if ( ! filterCourses.hasOwnProperty( fields[ i ].name ) ) {
+					delete dataSend.args[ fields[ i ].name ];
+				} else {
+					dataSend.args[ fields[ i ].name ] = filterCourses[ fields[ i ].name ];
+				}
+			}
+			// End.
+
 			elLPTarget.dataset.send = JSON.stringify( dataSend );
 
 			// Set url params to reload page.

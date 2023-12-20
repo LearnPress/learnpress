@@ -1,17 +1,17 @@
 <?php
 /**
- * Template for displaying content of archive courses page.
+ * Template default for displaying content of archive courses page.
+ * If you want to override layout default, please override via hook 'learn-press/list-courses/layout', or another hook inside.
+ * Override file is will be soon not support on the feature. Because it is many risks.
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 4.0.1
+ * @version 4.0.2
  */
 
 //use LearnPress\TemplateHooks\Course\ListCoursesTemplate;
 
 defined( 'ABSPATH' ) || exit;
-wp_enqueue_script( 'lp-courses' );
-wp_enqueue_style( 'learnpress' );
 
 /**
  * @since 4.0.0
@@ -33,11 +33,6 @@ $classes    = [];
 if ( is_active_sidebar( 'archive-courses-sidebar' ) ) {
 	$classes[] = 'has-sidebar';
 }
-// For test
-/*$m = ListCoursesTemplate::instance();
-echo $m->html_count_course_free();
-echo $m->html_count_students();*/
-// End test
 /**
  * @since 4.2.3.4
  *
@@ -55,9 +50,7 @@ echo $m->html_count_students();*/
 		</header>
 	<?php endif; ?>
 
-	<?php
-	do_action( 'learn-press/list-courses/layout' );
-	?>
+	<?php do_action( 'learn-press/list-courses/layout' ); ?>
 	</div>
 	<?php
 	/**

@@ -23,11 +23,13 @@ use Throwable;
 class TemplateAJAX {
 	/**
 	 * When AJAX load done will innerHTML to class lp-target self.
+	 * To use this, you need add hook 'lp/rest/ajax/allow_callback' to register for security reasons.
 	 *
 	 * @param array $args [ method_request' => 'GET/POST', 'el_loading_before_show_content' => '', 'el_loading_after_content_loaded' => '',... ],
 	 * method_request: default is POST, use to set method type call to server.
-	 * el_loading_before_show_content: html loading before content call API to render.
-	 * el_loading_after_content_loaded: html loading when content rendered, and change.
+	 * html_loading_before_show_content: html loading before content call API to render.
+	 * html_loading_after_content_loaded: html loading when content rendered, and change.
+	 * html_no_load_ajax_first: if not empty, remove el_loading_before_show_content, will not load ajax first, only send data to handle AJAX via event.
 	 *
 	 * @param array $callback [ 'class', 'method' ] method use to render content html
 	 *
@@ -36,12 +38,18 @@ class TemplateAJAX {
 	 * @version 1.0.1
 	 */
 	public static function load_content_via_ajax( array $args = [], array $callback = [] ): string {
-		$html_wrapper = '';
+		$html_wrapper = [
+			'<div class="lp-load-ajax-element">' => '</div>',
+		];
 		$html_content = '';
 
 		try {
 			if ( ! isset( $callback['class'] ) || ! isset( $callback['method'] ) ) {
 				throw new Exception( 'Missing args callback class || method' );
+			}
+
+			if ( isset( $args['html_no_load_ajax_first'] ) ) {
+				$html_wrapper = [];
 			}
 
 			$target_id = uniqid( 'lp-target-' );
@@ -50,27 +58,39 @@ class TemplateAJAX {
 				'callback' => $callback,
 				'id'       => $target_id,
 			];
+			unset( $data['args']['html_no_load_ajax_first'] );
+			unset( $data['args']['html_loading_before_show_content'] );
+			unset( $data['args']['html_loading_after_content_loaded'] );
 			$data_send = esc_attr( htmlentities2( json_encode( $data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) ) );
 			ob_start();
 			lp_skeleton_animation_html( 10 );
 			$el_loading_before_show_content_default = ob_get_clean();
-			$el_loading_before_show_content         = sprintf(
+
+			$el_loading_before_show_content = sprintf(
 				'<div class="loading-first">%s</div>',
-				$args['el_loading_before_show_content'] ?? $el_loading_before_show_content_default
+				$args['html_loading_before_show_content'] ?? $el_loading_before_show_content_default
 			);
-			$el_loading_after_content_loaded        = sprintf(
+			if ( isset( $args['html_no_load_ajax_first'] ) ) {
+				$el_loading_before_show_content = '';
+			}
+
+			$el_loading_after_content_loaded = sprintf(
 				'<div class="loading-after">%s</div>',
-				$args['el_loading_after_content_loaded'] ?? '<div class="lp-loading-change"></div>'
+				$args['html_loading_after_content_loaded'] ?? '<div class="lp-loading-change"></div>'
 			);
-			$html_wrapper                           = [
-				'<div class="lp-load-ajax-element">' => '</div>',
-			];
-			$html_el_target                         = sprintf(
-				'<div class="lp-target" data-id="%s" data-send="%s"></div>',
+
+			$html_el_target = sprintf(
+				'<div class="lp-target" data-id="%s" data-send="%s">%s</div>',
 				$target_id,
-				$data_send
+				$data_send,
+				$args['html_no_load_ajax_first'] ?? ''
 			);
-			$html_content                           = $el_loading_before_show_content . $html_el_target . $el_loading_after_content_loaded;
+			$html_content   = sprintf(
+				'%1s%2s%3s',
+				$el_loading_before_show_content,
+				$html_el_target,
+				$el_loading_after_content_loaded
+			);
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ' ' . $e->getMessage() );
 		}
@@ -79,6 +99,5 @@ class TemplateAJAX {
 	}
 
 	public function create_lp_target_with_data_for_load_ajax() {
-
 	}
 }

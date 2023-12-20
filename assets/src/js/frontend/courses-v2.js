@@ -302,7 +302,8 @@ window.lpCoursesList = ( () => {
 
 			// Set url params to reload page.
 			// Todo: need check allow set url params.
-			lpData.urlParams = dataSend.args;
+			lpData.urlParams.paged = dataSend.args.paged;
+			lpData.urlParams.c_search = dataSend.args.c_search;
 			window.history.pushState( {}, '', lpAddQueryArgs( lpGetCurrentURLNoParam(), lpData.urlParams ) );
 			// End.
 
