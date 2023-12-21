@@ -249,6 +249,13 @@ window.lpCoursesList = ( () => {
 			window.history.pushState( {}, '', lpAddQueryArgs( urlCurrent, lpData.urlParams ) );
 			// End.
 
+			// Show loading
+			const elLoading = elLPTarget.closest( 'div:not(.lp-target)' ).querySelector( '.lp-loading-change' );
+			if ( elLoading ) {
+				elLoading.style.display = 'block';
+			}
+			// End
+
 			const callBack = {
 				success: ( response ) => {
 					//console.log( 'response', response );
@@ -260,6 +267,9 @@ window.lpCoursesList = ( () => {
 				},
 				completed: () => {
 					//console.log( 'completed' );
+					if ( elLoading ) {
+						elLoading.style.display = 'none';
+					}
 				},
 			};
 
