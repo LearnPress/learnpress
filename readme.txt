@@ -210,7 +210,7 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
-= 4.2.5.7 (2023-12-22) =
+= 4.2.5.8 (2023-12-22) =
 ~ Fixed: security.
 ~ Fixed: translate some text.
 ~ Tweak: layout list courses, set hooks for override, will soon stop support override template file.

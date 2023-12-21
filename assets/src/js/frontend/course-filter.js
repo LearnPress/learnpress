@@ -252,6 +252,7 @@ window.lpCourseFilter = {
 			}
 			// End.
 
+			dataSend.args.paged = 1;
 			elLPTarget.dataset.send = JSON.stringify( dataSend );
 
 			// Set url params to reload page.

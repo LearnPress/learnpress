@@ -58,14 +58,15 @@ class ListCoursesTemplate {
 			'method' => 'render_courses',
 		];
 
-		$url_params = lp_archive_skeleton_get_args();
+		$args                          = lp_archive_skeleton_get_args();
+		$args['courses_load_ajax']     = LP_Settings_Courses::is_ajax_load_courses() ? 1 : 0;
+		$args['courses_first_no_ajax'] = LP_Settings_Courses::is_no_load_ajax_first_courses() ? 1 : 0;
 
 		// Load list courses via AJAX.
 		if ( LP_Settings_Courses::is_ajax_load_courses() && ! LP_Settings_Courses::is_no_load_ajax_first_courses() ) {
-			$content = TemplateAJAX::load_content_via_ajax( $url_params, $callback );
+			$content = TemplateAJAX::load_content_via_ajax( $args, $callback );
 		} else { // Load courses first not AJAX.
-			$content_obj                     = static::render_courses( $url_params );
-			$args                            = $url_params;
+			$content_obj                     = static::render_courses( $args );
 			$args['html_no_load_ajax_first'] = $content_obj->content;
 			$content                         = TemplateAJAX::load_content_via_ajax( $args, $callback );
 		}
@@ -130,9 +131,14 @@ class ListCoursesTemplate {
 		}
 		$html_courses = Template::instance()->nest_elements( $html_courses_wrapper, ob_get_clean() );
 
+		// Pagination html
+		$data_pagination_type = LP_Settings::get_option( 'course_pagination_type', 'number' );
+		if ( empty( $settings['courses_load_ajax'] ) ) {
+			$data_pagination_type = 'number';
+		}
 		$data_pagination = [
 			'total_pages' => $total_pages,
-			'type'        => LP_Settings::get_option( 'course_pagination_type', 'number' ),
+			'type'        => $data_pagination_type,
 			'base'        => add_query_arg( 'paged', '%#%', $settings['url_current'] ?? '' ),
 			'paged'       => $settings['paged'] ?? 1,
 		];

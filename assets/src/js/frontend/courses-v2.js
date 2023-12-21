@@ -51,13 +51,18 @@ window.lpCoursesList = ( () => {
 				return;
 			}
 
-			e.preventDefault();
-
 			const dataObj = JSON.parse( elLPTarget.dataset.send );
 			const dataSend = { ...dataObj };
 			if ( ! dataSend.args.hasOwnProperty( 'paged' ) ) {
 				dataSend.args.paged = 1;
 			}
+
+			// If no load ajax, will return.
+			if ( dataSend.args.courses_load_ajax === 0 ) {
+				return;
+			}
+
+			e.preventDefault();
 
 			if ( btnNumber.classList.contains( 'prev' ) ) {
 				dataSend.args.paged--;

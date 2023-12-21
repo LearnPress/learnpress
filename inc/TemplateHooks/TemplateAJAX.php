@@ -54,7 +54,7 @@ class TemplateAJAX {
 
 			$target_id = uniqid( 'lp-target-' );
 			$data      = [
-				'args'     => empty( $args ) ? new stdClass() : $args,
+				'args'     => $args,
 				'callback' => $callback,
 				'id'       => $target_id,
 			];
@@ -72,6 +72,11 @@ class TemplateAJAX {
 						unset( $data['args'][ $key ] );
 					}
 				}
+			}
+
+			// If empty args, set to stdClass to JS read like an object, not array.
+			if ( empty( $data['args'] ) ) {
+				$data['args'] = new stdClass();
 			}
 
 			$data_send = esc_attr( htmlentities2( json_encode( $data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) ) );
