@@ -53,5 +53,5 @@ if ( ! isset( $course ) || ! isset( $user ) || ! isset( $percentage ) ||
 		</div>
 		<?php endif; ?>
 	</div>
-	<a href="<?php echo esc_url_raw( $course->get_permalink() ); ?>" class="back-course"><i class="lpicon-times"></i></a>
+	<a href="<?php echo esc_url_raw( $course->get_permalink() ); ?>" class="back-course"><i class="lp-icon-times"></i></a>
 </div>

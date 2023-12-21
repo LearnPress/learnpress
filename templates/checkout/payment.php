@@ -24,7 +24,7 @@ defined( 'ABSPATH' ) || exit();
 		<h4>
 			<?php esc_html_e( 'Payment', 'learnpress' ); ?>
 			<span class="secure-connection">
-				<i class="lpicon-lock"></i>
+				<i class="lp-icon-lock"></i>
 				<?php echo esc_html_x( 'Secure Connection', 'payment method', 'learnpress' ); ?>
 			</span>
 		</h4>

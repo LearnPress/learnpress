@@ -388,13 +388,13 @@ class SingleInstructorTemplate {
 
 			$count_course = sprintf(
 				'<div class="wrapper-instructor-total-courses">%s%s</div>',
-				wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-courses.svg' ),
+				'<span class="lp-ico lp-icon-courses"></span> ',
 				$this->html_count_courses( $instructor )
 			);
 
 			$count_student = sprintf(
 				'<div class="wrapper-instructor-total-students">%s%s</div>',
-				wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-students.svg' ),
+				'<span class="lp-ico lp-icon-students"></span> ',
 				$this->html_count_students( $instructor )
 			);
 
@@ -545,8 +545,10 @@ class SingleInstructorTemplate {
 
 			$count_lesson  = $course->count_items( LP_LESSON_CPT );
 			$count_student = $course->get_total_user_enrolled_or_purchased();
-			$ico_lesson    = sprintf( '<span class="course-ico lesson">%s</span>', wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-file.svg' ) );
-			$ico_student   = sprintf( '<span class="course-ico student">%s</span>', wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-students.svg' ) );
+//			$ico_lesson    = sprintf( '<span class="course-ico lesson">%s</span>', wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-file.svg' ) );
+//			$ico_student   = sprintf( '<span class="course-ico student">%s</span>', wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-students.svg' ) );
+			$ico_lesson = '<span class="course-ico lp-icon-file"></span>';
+			$ico_student = '<span class="course-ico lp-icon-students"></span>';
 			$html_count    = sprintf(
 				'<div class="course-count">%s %s</div>',
 				sprintf( '<div class="course-count-lesson">%s <span>%d %s</span></div>', $ico_lesson, $count_lesson, _n( 'Lesson', 'Lessons', $count_lesson ) ),

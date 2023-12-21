@@ -138,10 +138,10 @@ class SingleCourseTemplate {
 	 */
 	public function html_count_student( LP_Course $course ): string {
 		$count_student = $course->get_total_user_enrolled_or_purchased();
-		$ico_student   = sprintf(
-			'<span class="course-ico student">%s</span>',
-			wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-students.svg' )
-		);
+//		$ico_student   = sprintf(
+//			'<span class="course-ico student">%s</span>',
+//			wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-students.svg' )
+//		);
 		$ico_student   = '';
 		$content       = sprintf( '%s %d %s', $ico_student, $count_student, _n( 'Student', 'Students', $count_student ) );
 		$html_wrapper  = [

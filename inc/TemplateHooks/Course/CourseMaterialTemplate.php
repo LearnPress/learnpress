@@ -183,7 +183,7 @@ class CourseMaterialTemplate {
 			}
 			$html_file_link = sprintf(
 				'<a href="%s" target="_blank" rel="%s">
-                    <i class="lpicon-file-download btn-download-material"></i>
+                    <i class="lp-icon-file-download btn-download-material"></i>
                 </a>',
 				$file_url,
 				$rel
