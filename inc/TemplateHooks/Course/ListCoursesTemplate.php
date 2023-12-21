@@ -86,12 +86,10 @@ class ListCoursesTemplate {
 		$filter = new LP_Course_Filter();
 		Courses::handle_params_for_query_courses( $filter, $settings );
 		// Check is in category page.
-		if ( ! empty( $settings['page_term_id_current'] ) &&
-			empty( $settings['term_id'] ) ) {
+		if ( ! empty( $settings['page_term_id_current'] ) && empty( $settings['term_id'] ) ) {
 			$filter->term_ids[] = $settings['page_term_id_current'];
 		} // Check is in tag page.
-		elseif ( ! empty( $settings['page_tag_id_current'] ) &&
-				empty( $settings['tag_id'] ) ) {
+		elseif ( ! empty( $settings['page_tag_id_current'] ) && empty( $settings['tag_id'] ) ) {
 			$filter->tag_ids[] = $settings['page_tag_id_current'];
 		}
 		$total_rows          = 0;
@@ -102,16 +100,24 @@ class ListCoursesTemplate {
 		$listCoursesTemplate = self::instance();
 
 		// Handle layout
-		ob_start();
-
-		$section_top = [
-			'wrapper'         => [ 'text_html' => '<div class="lp-courses-bar">' ],
-			'el_result_count' => [ 'text_html' => $listCoursesTemplate->html_search_form( $settings ) ],
-			'el_sorting'      => [ 'text_html' => $listCoursesTemplate->switch_layout() ],
-			'close_wrapper'   => [ 'text_html' => '</div>' ],
+		$html_courses_wrapper = [
+			'<ul class="learn-press-courses ' . $skin . '" data-layout="' . $skin . '">' => '</ul>',
 		];
+
+		ob_start();
+		$section_top = apply_filters(
+			'learn-press/list-courses/layout/section/top',
+			[
+				'wrapper'       => [ 'text_html' => '<div class="lp-courses-bar">' ],
+				'search'        => [ 'text_html' => $listCoursesTemplate->html_search_form( $settings ) ],
+				'switch_layout' => [ 'text_html' => $listCoursesTemplate->switch_layout() ],
+				'close_wrapper' => [ 'text_html' => '</div>' ],
+			]
+		);
 		Template::instance()->print_sections( $section_top );
-		echo '<ul class="learn-press-courses ' . $skin . '" data-layout="' . $skin . '">';
+		$html_top = ob_get_clean();
+
+		ob_start();
 		if ( empty( $courses ) ) {
 			echo sprintf( '<p class="learn-press-message success">%s!</p>', __( 'No courses found', 'learnpress' ) );
 		} else {
@@ -120,7 +126,7 @@ class ListCoursesTemplate {
 				echo static::render_course( $course, $settings );
 			}
 		}
-		echo '</ul>';
+		$html_courses = Template::instance()->nest_elements( $html_courses_wrapper, ob_get_clean() );
 
 		$data_pagination = [
 			'total_pages' => $total_pages,
@@ -128,7 +134,19 @@ class ListCoursesTemplate {
 			'base'        => add_query_arg( 'paged', '%#%', $settings['url_current'] ?? '' ),
 			'paged'       => $settings['paged'] ?? 1,
 		];
-		echo static::instance()->html_pagination( $data_pagination );
+		$html_pagination = static::instance()->html_pagination( $data_pagination );
+
+		$section = apply_filters(
+			'learn-press/list-courses/layout/section',
+			[
+				'top'        => [ 'text_html' => $html_top ],
+				'courses'    => [ 'text_html' => $html_courses ],
+				'pagination' => [ 'text_html' => $html_pagination ],
+			]
+		);
+
+		ob_start();
+		Template::instance()->print_sections( $section );
 
 		$content              = new stdClass();
 		$content->content     = ob_get_clean();

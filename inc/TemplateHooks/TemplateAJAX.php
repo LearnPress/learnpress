@@ -58,9 +58,22 @@ class TemplateAJAX {
 				'callback' => $callback,
 				'id'       => $target_id,
 			];
-			unset( $data['args']['html_no_load_ajax_first'] );
-			unset( $data['args']['html_loading_before_show_content'] );
-			unset( $data['args']['html_loading_after_content_loaded'] );
+
+			// Remove argument html no need send via AJAX.
+			if ( ! empty( $args ) ) {
+				$keys_unset = [
+					'html_no_load_ajax_first',
+					'html_loading_before_show_content',
+					'html_loading_after_content_loaded',
+				];
+
+				foreach ( $keys_unset as $key ) {
+					if ( isset( $data['args'][ $key ] ) ) {
+						unset( $data['args'][ $key ] );
+					}
+				}
+			}
+
 			$data_send = esc_attr( htmlentities2( json_encode( $data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) ) );
 			ob_start();
 			lp_skeleton_animation_html( 10 );
