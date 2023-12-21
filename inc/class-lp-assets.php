@@ -33,14 +33,14 @@ class LP_Assets extends LP_Abstract_Assets {
 		return apply_filters(
 			'learn-press/frontend-default-styles',
 			array(
-				'font-awesome-5-all' => new LP_Asset_Key(
-					self::url( 'src/css/vendor/font-awesome-5.min.css' ),
-					array(),
-					array()
-				),
+//				'font-awesome-5-all' => new LP_Asset_Key(
+//					self::url( 'src/css/vendor/font-awesome-5.min.css' ),
+//					array(),
+//					array()
+//				),
 				'learnpress'         => new LP_Asset_Key(
 					self::url( 'css/learnpress' . $is_rtl . self::$_min_assets . '.css' ),
-					array( 'font-awesome-5-all' ),
+					array( ),
 					array(
 						LP_PAGE_COURSES,
 						LP_PAGE_SINGLE_COURSE,

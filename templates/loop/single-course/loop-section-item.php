@@ -18,6 +18,7 @@ defined( 'ABSPATH' ) || exit();
 if ( empty( $section_item ) || empty( $course_item ) || empty( $can_view_item ) || empty( $course_id ) ) {
 	return;
 }
+
 ?>
 
 <li class="course-item <?php echo esc_attr( implode( ' ', $course_item->get_class_v2( $course_id, $section_item['ID'], $can_view_item ) ) ); ?> "
@@ -26,22 +27,18 @@ if ( empty( $section_item ) || empty( $course_item ) || empty( $can_view_item ) 
 
 		<div class="course-item-info">
 			<span class="item-name"><?php echo esc_html( $section_item['post_title'] ); ?></span>
-			<div class="course-item-info-pre">
-				<?php if ( $course_item->is_preview() ) : ?>
-				<span class=" item-meta course-item-preview"
-					data-preview="<?php esc_attr_e( 'Preview', 'learnpress' ); ?>"></span>
-				<?php endif; ?>
-
-				<?php do_action( 'learn-press/course-section-item/before-' . $course_item->get_item_type() . '-meta', $course_item ); ?>
-			</div>
+			<div
+				class="course-item-info-pre"><?php do_action( 'learn-press/course-section-item/before-' . $course_item->get_item_type() . '-meta', $course_item ); ?></div>
 		</div>
 
-
 		<div class="course-item-meta">
-
-
-			<span class="item-meta course-item-status"
-				title="<?php echo esc_attr( $course_item->get_status_title() ); ?>"></span>
+			<?php if ( $course_item->is_preview() && isset( $user ) && ! $user->has_enrolled_or_finished( $course_id ) ) : ?>
+				<span class="item-meta course-item-preview"
+					  data-preview="<?php esc_attr_e( 'Preview', 'learnpress' ); ?>"></span>
+			<?php else: ?>
+				<span class="item-meta course-item-status"
+					  title="<?php echo esc_attr( $course_item->get_status_title() ); ?>"></span>
+			<?php endif; ?>
 
 			<?php do_action( 'learn-press/course-section-item/after-' . $course_item->get_item_type() . '-meta', $course_item ); ?>
 		</div>

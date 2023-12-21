@@ -173,7 +173,7 @@ add_action( 'learn-press/after-courses-loop-item', LearnPress::instance()->templ
 add_action(
 	'learn-press/after-courses-loop-item',
 	LearnPress::instance()->template( 'course' )->text( '</div> <!-- END .course-content-footer -->', 'course-footer-close' ),
-	50
+	56
 );
 add_action( 'learn-press/after-courses-loop-item', LearnPress::instance()->template( 'course' )->func( 'course_readmore' ), 55 );
 
@@ -268,12 +268,12 @@ add_action(
 	LearnPress::instance()->template( 'course' )->text( '<div class="entry-content-left">', 'entry-content-left-open' ),
 	35
 );
-add_action(
-	'learn-press/course-content-summary',
-	LearnPress::instance()->template( 'course' )->func( 'course_extra_boxes_position_control' ),
-	39
-);
-add_action( 'learn-press/course-content-summary', LearnPress::instance()->template( 'course' )->func( 'course_extra_boxes' ), 40 );
+//add_action(
+//	'learn-press/course-content-summary',
+//	LearnPress::instance()->template( 'course' )->func( 'course_extra_boxes_position_control' ),
+//	39
+//);
+//add_action( 'learn-press/course-content-summary', LearnPress::instance()->template( 'course' )->func( 'course_extra_boxes' ), 40 );
 // add_action( 'learn-press/course-content-summary', LearnPress::instance()->template( 'course' )->callback( 'single-course/progress' ), 40 );
 // add_action( 'learn-press/course-content-summary', LearnPress::instance()->template( 'course' )->func( 'remaining_time' ), 50 );
 add_action(

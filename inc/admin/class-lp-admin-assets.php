@@ -388,7 +388,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 						'select2',
 						'jquery-ui',
 						'jquery-ui-timepicker',
-						'font-awesome',
+//						'font-awesome',
 						'jquery-tipsy',
 					),
 					array(),

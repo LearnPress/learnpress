@@ -91,7 +91,7 @@
 				.count {
 					display: none;
 				}
-			} 
+			}
 		}
 		.toggle-content {
 			position: relative;
@@ -102,10 +102,10 @@
 				z-index: 9;
 				transition: 0.3s;
 				cursor: pointer;
-				&.fa-angle-down {
+				&.fa-angle-down ,&.lpicon-angle-down{
 					display: block;
 				}
-				&.fa-angle-up {
+				&.fa-angle-up,&.lpicon-angle-up {
 					display: none;
 				}
 			}
@@ -117,10 +117,10 @@
 
 			&.toggle-on {
 				.icon-toggle-filter{
-					&.fa-angle-down {
+					&.fa-angle-down,&.lpicon-angle-down {
 						display: none;
 					}
-					&.fa-angle-up {
+					&.fa-angle-up,&.lpicon-angle-up {
 						display: block;
 					}
 				}

@@ -34,11 +34,11 @@ $singleInstructorTemplate = SingleInstructorTemplate::instance();
 		</div>
 
 		<div class="course-author__pull-right">
-			<div class="author-title"><?php echo wp_kses_post( $course->get_instructor_html() ); ?></div>
+			<h4 class="author-title"><?php echo wp_kses_post( $course->get_instructor_html() ); ?></h4>
 			<?php
 				echo $singleInstructorTemplate->html_social( $instructor );
 			?>
-			<div class="author-description ">
+			<div class="author-description">
 
 				<?php
 				/**

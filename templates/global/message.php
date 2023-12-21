@@ -51,7 +51,7 @@ if ( ! isset( $messages ) ) {
 			}
 			?>
 			<div class="<?php echo esc_attr( join( ' ', $classes ) ); ?>" <?php echo esc_attr( $data ? join( ' ', $data ) : '' ); ?>>
-				<i class="fa"></i><?php echo apply_filters( 'learn-press/message', wp_kses_post( $content ), $content ); ?>
+				 <?php echo apply_filters( 'learn-press/message', wp_kses_post( $content ), $content ); ?>
 			</div>
 
 		<?php } ?>

@@ -60,17 +60,20 @@ class SingleInstructorTemplate {
 		$content = '';
 
 		try {
-			$html_wrapper = [
-				'<div class="instructor-social">' => '</div>',
-			];
-			$socials      = $instructor->get_profile_social( $instructor->get_id() );
-			ob_start();
-			foreach ( $socials as $k => $social ) {
-				echo $social;
+			$socials = $instructor->get_profile_social( $instructor->get_id() );
+			if ( $socials ) {
+				$html_wrapper = [
+					'<div class="instructor-social">' => '</div>',
+				];
+				ob_start();
+				foreach ( $socials as $k => $social ) {
+					echo $social;
+				}
+				$content = ob_get_clean();
+				$content = Template::instance()->nest_elements( $html_wrapper, $content );
 			}
-			$content = ob_get_clean();
-			$content = Template::instance()->nest_elements( $html_wrapper, $content );
-		} catch ( Throwable $e ) {
+ 		}
+		catch ( Throwable $e ) {
 			ob_end_clean();
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
@@ -530,7 +533,7 @@ class SingleInstructorTemplate {
 				$singleCourseTemplate->html_image( $course )
 			);
 			$html_title            = sprintf(
-				'<h3><a href="%s">%s</a></h3>',
+				'<h2><a href="%s">%s</a></h2>',
 				$course->get_permalink(),
 				$singleCourseTemplate->html_title( $course )
 			);
@@ -546,8 +549,8 @@ class SingleInstructorTemplate {
 			$ico_student   = sprintf( '<span class="course-ico student">%s</span>', wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-students.svg' ) );
 			$html_count    = sprintf(
 				'<div class="course-count">%s %s</div>',
-				sprintf( '<div class="course-count-lesson">%s %d %s</div>', $ico_lesson, $count_lesson, _n( 'Lesson', 'Lessons', $count_lesson ) ),
-				sprintf( '<div class="course-count-student">%s %d %s</div>', $ico_student, $count_student, _n( 'Student', 'Students', $count_student ) )
+				sprintf( '<div class="course-count-lesson">%s <span>%d %s</span></div>', $ico_lesson, $count_lesson, _n( 'Lesson', 'Lessons', $count_lesson ) ),
+				sprintf( '<div class="course-count-student">%s <span>%d %s</span></div>', $ico_student, $count_student, _n( 'Student', 'Students', $count_student ) )
 			);
 
 			$sections = apply_filters(

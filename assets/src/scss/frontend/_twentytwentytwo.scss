@@ -17,6 +17,16 @@
 	}
 }
 
+.learnpress.twentytwentyone {
+	--lp-font-size-base: 0.925em;
+	.lp-archive-courses a:focus {
+		background: transparent !important;
+		text-decoration: none !important;;
+		outline: none !important;;
+	}
+}
+
+
 .learnpress.twentytwentytwo {
 	.wp-container-11, .wp-container-9, .wp-container-12 {
 		.alignfull {

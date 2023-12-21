@@ -81,7 +81,7 @@ class FilterCourseElementor extends LPElementorWidgetBase
 				echo self::selected_style_list();
 				echo '</div>';
 			}
-	
+
 			if ((!empty($_GET['term_id']) || !empty($_GET['tag_id']) || !empty($_GET['sort_by']) || !empty($_GET['c_level']) || !empty($_GET['c_authors'])) && $settings['filter_selected_list'] == 'yes') {
 				echo $filter->html_btn_reset();
 			}
@@ -108,7 +108,7 @@ class FilterCourseElementor extends LPElementorWidgetBase
 
 				if ($field['toggle_content'] == 'yes') {
 					$extraClassItem .= ' toggle-content';
-					$icon_toggle = '<i class="icon-toggle-filter fas fa-angle-up"></i><i class="icon-toggle-filter fas fa-angle-down"></i>';
+					$icon_toggle = '<i class="icon-toggle-filter lpicon-angle-up"></i><i class="icon-toggle-filter lpicon-angle-down"></i>';
 
 					if ($field['default_toggle_on'] == 'yes') {
 						$extraClassItem .= ' toggle-on';
@@ -195,7 +195,7 @@ class FilterCourseElementor extends LPElementorWidgetBase
 	{
 		$cats = $tags = $authors = '';
 		$classListItem = 'selected-item';
-		$icon_move = '<i class="icon-remove-selected fas fa-times"></i>';
+		$icon_move = '<i class="icon-remove-selected lpicon-times"></i>';
 
 		if (!empty($_GET['term_id'])) {
 			$cats = explode(',', $_GET['term_id']);
