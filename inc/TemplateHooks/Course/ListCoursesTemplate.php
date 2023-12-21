@@ -112,7 +112,9 @@ class ListCoursesTemplate {
 				'search'        => [ 'text_html' => $listCoursesTemplate->html_search_form( $settings ) ],
 				'switch_layout' => [ 'text_html' => $listCoursesTemplate->switch_layout() ],
 				'close_wrapper' => [ 'text_html' => '</div>' ],
-			]
+			],
+			$courses,
+			$settings
 		);
 		Template::instance()->print_sections( $section_top );
 		$html_top = ob_get_clean();
@@ -142,7 +144,9 @@ class ListCoursesTemplate {
 				'top'        => [ 'text_html' => $html_top ],
 				'courses'    => [ 'text_html' => $html_courses ],
 				'pagination' => [ 'text_html' => $html_pagination ],
-			]
+			],
+			$courses,
+			$settings
 		);
 
 		ob_start();
@@ -154,6 +158,141 @@ class ListCoursesTemplate {
 		$content->paged       = $paged;
 
 		return $content;
+	}
+
+	/**
+	 * Render single item course
+	 *
+	 * @param LP_Course $course
+	 * @param array $settings
+	 *
+	 * @return string
+	 * @since 4.2.5.8
+	 * @version 1.0.0
+	 */
+	public static function render_course( LP_Course $course, array $settings = [] ): string {
+		$singleCourseTemplate = SingleCourseTemplate::instance();
+
+		try {
+			$html_course_wrapper = apply_filters(
+				'learn-press/list-courses/layout/item/wrapper',
+				[
+					'<li class="course">'       => '</li>',
+					'<div class="course-item">' => '</div>',
+				],
+				$course,
+				$settings
+			);
+
+			$top_wrapper = [
+				'<div class="course-wrap-thumbnail">' => '</div>',
+				'<div class="course-thumbnail">'      => '</div>',
+			];
+			$img         = sprintf( '<a href="%s">%s</a>', $course->get_permalink(), $singleCourseTemplate->html_image( $course ) );
+			$html_top    = Template::instance()->nest_elements( $top_wrapper, $img );
+
+			$section_bottom_meta = apply_filters(
+				'learn-press/list-courses/layout/item/section/bottom/meta',
+				[
+					'wrapper'       => [ 'text_html' => '<div class="course-wrap-meta">' ],
+					'duration'      => [
+						'text_html' => sprintf(
+							'<div class="meta-item meta-item-duration">%s</div>',
+							$singleCourseTemplate->html_duration( $course ) )
+					],
+					'level'         => [
+						'text_html' => sprintf(
+							'<div class="meta-item meta-item-level">%s</div>',
+							$singleCourseTemplate->html_level( $course ) )
+					],
+					'lesson'        => [
+						'text_html' => sprintf(
+							'<div class="meta-item meta-item-lesson">%s</div>',
+							$singleCourseTemplate->html_count_item( $course, 'lesson' ) )
+					],
+					'quiz'          => [
+						'text_html' => sprintf(
+							'<div class="meta-item meta-item-quiz">%s</div>',
+							$singleCourseTemplate->html_count_item( $course, 'quiz' ) )
+					],
+					'student'       => [
+						'text_html' => sprintf(
+							'<div class="meta-item meta-item-student">%s</div>',
+							$singleCourseTemplate->html_count_student( $course ) )
+					],
+					'close_wrapper' => [ 'text_html' => '</div>' ],
+				],
+				$course,
+				$settings
+			);
+			ob_start();
+			Template::instance()->print_sections( $section_bottom_meta );
+			$html_meta = ob_get_clean();
+
+			ob_start();
+			$section_bottom_end = apply_filters(
+				'learn-press/list-courses/layout/item/section/bottom/end',
+				[
+					'wrapper'       => [ 'text_html' => '<div class="course-info">' ],
+					'short_des'     => [ 'text_html' => wp_trim_words( $singleCourseTemplate->html_short_description( $course ), 15 ) ],
+					'clearfix'      => [ 'text_html' => '<div class="clearfix"></div>' ],
+					'price'         => [
+						'text_html' => sprintf(
+							'<div class="course-footer">%s</div>',
+							$singleCourseTemplate->html_price( $course ) )
+					],
+					'read_more'     => [
+						'text_html' => sprintf(
+							'<div class="course-readmore"><a href="%s">%s</a></div>',
+							$course->get_permalink(), __( 'Read more', 'learnpress' )
+						)
+					],
+					'close_wrapper' => [ 'text_html' => '</div>' ],
+				]
+			);
+			Template::instance()->print_sections( $section_bottom_end );
+			$html_bottom_end = ob_get_clean();
+
+			ob_start();
+			$section_bottom = apply_filters(
+				'learn-press/list-courses/layout/item/section/bottom',
+				[
+					'wrapper'       => [ 'text_html' => '<div class="course-content">' ],
+					'category'      => [ 'text_html' => str_replace( ',', '', $singleCourseTemplate->html_categories( $course ) ) ],
+					'instructor'    => [ 'text_html' => $singleCourseTemplate->html_instructor( $course ) ],
+					'title'         => [
+						'text_html' => sprintf(
+							'<a class="course-permalink" href="%s">%s</a>',
+							$course->get_permalink(),
+							$singleCourseTemplate->html_title( $course ) )
+					],
+					'meta'          => [ 'text_html' => $html_meta ],
+					'separator'     => [ 'text_html' => '<div class="separator"></div>' ],
+					'info'          => [ 'text_html' => $html_bottom_end ],
+					'close_wrapper' => [ 'text_html' => '</div>' ],
+				]
+			);
+			Template::instance()->print_sections( $section_bottom );
+			$html_bottom = ob_get_clean();
+
+			$section = apply_filters(
+				'learn-press/list-courses/layout/item/section',
+				[
+					'top'    => [ 'text_html' => $html_top ],
+					'bottom' => [ 'text_html' => $html_bottom ],
+				],
+				$course,
+				$settings
+			);
+			ob_start();
+			Template::instance()->print_sections( $section );
+			$html_item = ob_get_clean();
+			$html_item = Template::instance()->nest_elements( $html_course_wrapper, $html_item );
+		} catch ( Throwable $e ) {
+			$html_item = $e->getMessage();
+		}
+
+		return $html_item;
 	}
 
 	/**
@@ -449,7 +588,10 @@ class ListCoursesTemplate {
 					[
 						'course_image' => [ 'text_html' => $singleCourseTemplate->html_image( $course ) ],
 						'course_title' => [ 'text_html' => $course_title ],
-					]
+					],
+					$course,
+					$key_search,
+					$data
 				);
 				ob_start();
 				Template::instance()->print_sections( $item_sections );
@@ -478,7 +620,11 @@ class ListCoursesTemplate {
 				[
 					'count'    => [ 'text_html' => $count_courses ],
 					'view_all' => [ 'text_html' => $view_all ],
-				]
+				],
+				$courses,
+				$key_search,
+				$total_courses,
+				$data
 			);
 
 			ob_start();
@@ -619,140 +765,5 @@ class ListCoursesTemplate {
 			],
 			$data_content
 		);
-	}
-
-	/**
-	 * Render single item course
-	 *
-	 * @param LP_Course $course
-	 * @param array $settings
-	 *
-	 * @return string
-	 * @since 4.2.5.8
-	 * @version 1.0.0
-	 */
-	public static function render_course( LP_Course $course, array $settings = [] ): string {
-		$singleCourseTemplate = SingleCourseTemplate::instance();
-
-		try {
-			$html_course_wrapper = apply_filters(
-				'learn-press/list-courses/layout/item/wrapper',
-				[
-					'<li class="course">'       => '</li>',
-					'<div class="course-item">' => '</div>',
-				],
-				$course,
-				$settings
-			);
-
-			$top_wrapper = [
-				'<div class="course-wrap-thumbnail">' => '</div>',
-				'<div class="course-thumbnail">'      => '</div>',
-			];
-			$img         = sprintf( '<a href="%s">%s</a>', $course->get_permalink(), $singleCourseTemplate->html_image( $course ) );
-			$html_top    = Template::instance()->nest_elements( $top_wrapper, $img );
-
-			$section_bottom_meta = apply_filters(
-				'learn-press/list-courses/layout/item/section/bottom/meta',
-				[
-					'wrapper'       => [ 'text_html' => '<div class="course-wrap-meta">' ],
-					'duration'      => [
-						'text_html' => sprintf(
-							'<div class="meta-item meta-item-duration">%s</div>',
-							$singleCourseTemplate->html_duration( $course ) )
-					],
-					'level'         => [
-						'text_html' => sprintf(
-							'<div class="meta-item meta-item-level">%s</div>',
-							$singleCourseTemplate->html_level( $course ) )
-					],
-					'lesson'        => [
-						'text_html' => sprintf(
-							'<div class="meta-item meta-item-lesson">%s</div>',
-							$singleCourseTemplate->html_count_item( $course, 'lesson' ) )
-					],
-					'quiz'          => [
-						'text_html' => sprintf(
-							'<div class="meta-item meta-item-quiz">%s</div>',
-							$singleCourseTemplate->html_count_item( $course, 'quiz' ) )
-					],
-					'student'       => [
-						'text_html' => sprintf(
-							'<div class="meta-item meta-item-student">%s</div>',
-							$singleCourseTemplate->html_count_student( $course ) )
-					],
-					'close_wrapper' => [ 'text_html' => '</div>' ],
-				],
-				$course,
-				$settings
-			);
-			ob_start();
-			Template::instance()->print_sections( $section_bottom_meta );
-			$html_meta = ob_get_clean();
-
-			ob_start();
-			$section_bottom_end = apply_filters(
-				'learn-press/list-courses/layout/item/section/bottom/end',
-				[
-					'wrapper'       => [ 'text_html' => '<div class="course-info">' ],
-					'short_des'     => [ 'text_html' => wp_trim_words( $singleCourseTemplate->html_short_description( $course ), 15 ) ],
-					'clearfix'      => [ 'text_html' => '<div class="clearfix"></div>' ],
-					'price'         => [
-						'text_html' => sprintf(
-							'<div class="course-footer">%s</div>',
-							$singleCourseTemplate->html_price( $course ) )
-					],
-					'read_more'     => [
-						'text_html' => sprintf(
-							'<div class="course-readmore"><a href="%s">%s</a></div>',
-							$course->get_permalink(), __( 'Read more', 'learnpress' )
-						)
-					],
-					'close_wrapper' => [ 'text_html' => '</div>' ],
-				]
-			);
-			Template::instance()->print_sections( $section_bottom_end );
-			$html_bottom_end = ob_get_clean();
-
-			ob_start();
-			$section_bottom = apply_filters(
-				'learn-press/list-courses/layout/item/section/bottom',
-				[
-					'wrapper'       => [ 'text_html' => '<div class="course-content">' ],
-					'category'      => [ 'text_html' => str_replace( ',', '', $singleCourseTemplate->html_categories( $course ) ) ],
-					'instructor'    => [ 'text_html' => $singleCourseTemplate->html_instructor( $course ) ],
-					'title'         => [
-						'text_html' => sprintf(
-							'<a class="course-permalink" href="%s">%s</a>',
-							$course->get_permalink(),
-							$singleCourseTemplate->html_title( $course ) )
-					],
-					'meta'          => [ 'text_html' => $html_meta ],
-					'separator'     => [ 'text_html' => '<div class="separator"></div>' ],
-					'info'          => [ 'text_html' => $html_bottom_end ],
-					'close_wrapper' => [ 'text_html' => '</div>' ],
-				]
-			);
-			Template::instance()->print_sections( $section_bottom );
-			$html_bottom = ob_get_clean();
-
-			$section = apply_filters(
-				'learn-press/list-courses/layout/item/section',
-				[
-					'top'    => [ 'text_html' => $html_top ],
-					'bottom' => [ 'text_html' => $html_bottom ],
-				],
-				$course,
-				$settings
-			);
-			ob_start();
-			Template::instance()->print_sections( $section );
-			$html_item = ob_get_clean();
-			$html_item = Template::instance()->nest_elements( $html_course_wrapper, $html_item );
-		} catch ( Throwable $e ) {
-			$html_item = $e->getMessage();
-		}
-
-		return $html_item;
 	}
 }
