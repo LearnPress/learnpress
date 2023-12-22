@@ -1,5 +1,12 @@
+/**
+ * Handle events for courses list.
+ *
+ * @since 4.2.5.8
+ * @version 1.0.0
+ */
+
 import API from '../api';
-import { lpAddQueryArgs, lpGetCurrentURLNoParam } from '../utils';
+import { lpAddQueryArgs, lpGetCurrentURLNoParam, listenElementViewed, listenElementCreated } from '../utils';
 
 if ( 'undefined' === typeof lpData ) {
 	console.log( 'lpData is undefined' );
@@ -18,9 +25,7 @@ document.addEventListener( 'click', function( e ) {
 	window.lpCoursesList.clickNumberPage( e, target );
 	window.lpCoursesList.LoadMore( e, target );
 } );
-document.addEventListener( 'scroll', function( e ) {
-	window.lpCoursesList.LoadInfinite( e );
-} );
+
 document.addEventListener( 'keyup', function( e ) {
 	const target = e.target;
 
@@ -163,71 +168,64 @@ window.lpCoursesList = ( () => {
 
 			window.lpAJAXG.fetchAPI( API.frontend.apiAJAX, dataSend, callBack );
 		},
-		LoadInfinite: ( e ) => {
-			const elInfinite = document.querySelector( '.courses-load-infinite' );
-			if ( ! elInfinite ) {
-				return;
-			}
+		LoadInfinite: () => {
+			// When see element, will call API to load more items.
+			const callBackAfterSeeItem = ( entry ) => {
+				const elInfinite = entry.target;
+				const elLoading = elInfinite.querySelector( '.lp-loading-circle' );
+				elLoading.classList.remove( 'hide' );
+				const elLPTarget = elInfinite.closest( classLPTarget );
+				if ( ! elLPTarget ) {
+					return;
+				}
 
-			const elLPTarget = elInfinite.closest( classLPTarget );
-			if ( ! elLPTarget ) {
-				return;
-			}
+				const dataObj = JSON.parse( elLPTarget.dataset.send );
+				const dataSend = { ...dataObj }; // Clone object
 
-			// Check if el scroll is registered listener observer, will return.
-			const lpTargetId = elLPTarget.dataset.id;
-			if ( elListenScroll.indexOf( lpTargetId ) !== -1 ) {
-				return;
-			}
-			elListenScroll.push( lpTargetId );
+				if ( ! dataSend.args.hasOwnProperty( 'paged' ) ) {
+					dataSend.args.paged = 1;
+				}
 
-			// Create an IntersectionObserver object.
-			const observer = new IntersectionObserver( function( entries ) {
-				for ( const entry of entries ) {
-					// If the entry is intersecting, call API.
-					if ( entry.isIntersecting ) {
-						const elInfinite = entry.target;
-						const elLoading = elInfinite.querySelector( '.lp-loading-circle' );
-						elLoading.classList.remove( 'hide' );
-						const elLPTarget = elInfinite.closest( classLPTarget );
-						const dataObj = JSON.parse( elLPTarget.dataset.send );
-						const dataSend = { ...dataObj }; // Clone object
+				// Handle set data send to call API
+				dataSend.args.paged++;
+				elLPTarget.dataset.send = JSON.stringify( dataSend );
+				const callBack = {
+					success: ( response ) => {
+						const { status, message, data } = response;
 
-						if ( ! dataSend.args.hasOwnProperty( 'paged' ) ) {
-							dataSend.args.paged = 1;
+						const newEl = document.createElement( 'div' );
+						newEl.innerHTML = data.content || '';
+						const elListCourse = elLPTarget.querySelector( classListCourse );
+
+						elListCourse.insertAdjacentHTML( 'beforeend', newEl.querySelector( classListCourse ).innerHTML );
+
+						if ( data.total_pages === data.paged ) {
+							elInfinite.remove();
 						}
+					},
+					error: ( error ) => {
+						console.log( error );
+					},
+					completed: () => {
+						//console.log( 'completed' );
+					},
+				};
 
-						// Handle set data send to call API
-						dataSend.args.paged++;
-						elLPTarget.dataset.send = JSON.stringify( dataSend );
-						const callBack = {
-							success: ( response ) => {
-								const { status, message, data } = response;
+				window.lpAJAXG.fetchAPI( API.frontend.apiAJAX, dataSend, callBack );
+			};
 
-								const newEl = document.createElement( 'div' );
-								newEl.innerHTML = data.content || '';
-								const elListCourse = elLPTarget.querySelector( classListCourse );
-
-								elListCourse.insertAdjacentHTML( 'beforeend', newEl.querySelector( classListCourse ).innerHTML );
-
-								if ( data.total_pages === data.paged ) {
-									elInfinite.remove();
-								}
-							},
-							error: ( error ) => {
-								console.log( error );
-							},
-							completed: () => {
-								//console.log( 'completed' );
-							},
-						};
-
-						window.lpAJAXG.fetchAPI( API.frontend.apiAJAX, dataSend, callBack );
-					}
+			// Listen el courses load infinite have just created.
+			listenElementCreated( ( node ) => {
+				if ( node.classList.contains( 'courses-load-infinite' ) ) {
+					listenElementViewed( node, callBackAfterSeeItem );
 				}
 			} );
 
-			observer.observe( elInfinite );
+			// If el created on DOMContentLoaded.
+			const elInfinite = document.querySelector( '.courses-load-infinite' );
+			if ( elInfinite ) {
+				listenElementViewed( elInfinite, callBackAfterSeeItem );
+			}
 		},
 		onChangeSortBy: ( e, target ) => {
 			if ( ! target.classList.contains( 'courses-order-by' ) ) {
@@ -348,3 +346,4 @@ window.lpCoursesList = ( () => {
 		},
 	};
 } )();
+window.lpCoursesList.LoadInfinite();
