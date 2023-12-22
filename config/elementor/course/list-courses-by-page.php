@@ -14,6 +14,25 @@ if ( isset( $options ) ) {
 	$option_data = $options;
 }
 
+$filter              = new LP_Course_Filter();
+$filter->limit       = - 1;
+$filter->only_fields = array( 'ID', 'post_title' );
+$courses_obj         = (array) LP_Course::get_courses( $filter );
+$courses             = [];
+$categories          = [];
+
+// Only show courses and categories in Admin
+if ( is_admin() ) {
+	foreach ( $courses_obj as $course ) {
+		$courses[ $course->ID ] = $course->post_title;
+	}
+
+	$categories_obj = LP_Course::get_all_categories();
+	foreach ( $categories_obj as $category ) {
+		$categories[ $category->term_id ] = $category->name;
+	}
+}
+
 // Fields tab content
 $content_fields = array_merge(
 	LPElementorControls::add_fields_in_section(
@@ -124,6 +143,16 @@ $content_fields = array_merge(
 					'popular'         => esc_html__( 'Popular', 'learnpress' ),
 				],
 				'post_date'
+			),
+			'courses_category_ids'             => LPElementorControls::add_control_type(
+				'courses_category_ids',
+				esc_html__( 'Select Categories', 'learnpress' ),
+				[],
+				Controls_Manager::SELECT2,
+				[
+					'multiple' => true,
+					'options'  => $categories,
+				]
 			),
 		]
 	),

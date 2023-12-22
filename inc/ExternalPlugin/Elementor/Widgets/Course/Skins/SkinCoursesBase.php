@@ -58,18 +58,26 @@ class SkinCoursesBase extends LPSkinBase {
 				lp_archive_skeleton_get_args()
 			);
 
-			$html_wrapper_widget      = [
-				'<div class="list-courses-elm-wrapper">' => '</div>',
-				'<div class="learn-press-courses-wrapper">'         => '</div>',
+			$html_wrapper_widget  = [
+				'<div class="list-courses-elm-wrapper">'    => '</div>',
+				'<div class="learn-press-courses-wrapper">' => '</div>',
 			];
-			$name_target              = 'learn-press-courses-wrapper';
-			$html_wrapper_courses     = [ '<div class="' . $name_target . '">' => '</div>' ];
+			$name_target          = 'learn-press-courses-wrapper';
+			$html_wrapper_courses = [ '<div class="' . $name_target . '">' => '</div>' ];
 
 			// No load AJAX
-			if ( 'yes' !== $is_load_restapi || Plugin::$instance->editor->is_edit_mode() || 'yes' === $courses_rest_no_load_page ) {
+			if ( 'yes' !== $is_load_restapi || Plugin::$instance->editor->is_edit_mode() ) {
 				$templateObj = self::render_courses( $settings );
 				$content     = $templateObj->content;
 				$content     = Template::instance()->nest_elements( $html_wrapper_courses, $content );
+			} elseif ( 'yes' === $courses_rest_no_load_page ) {
+				$callback                            = [
+					'class'  => get_class( $this ),
+					'method' => 'render_courses',
+				];
+				$content_obj                         = static::render_courses( $settings );
+				$settings['html_no_load_ajax_first'] = $content_obj->content;
+				$content                             = TemplateAJAX::load_content_via_ajax( $settings, $callback );
 			} else { // Load AJAX
 				$callback = [
 					'class'  => get_class( $this ),
@@ -94,16 +102,17 @@ class SkinCoursesBase extends LPSkinBase {
 	 * @version 1.0.1
 	 */
 	public static function render_courses( array $settings = [] ): stdClass {
-		$listCoursesTemplate      = ListCoursesTemplate::instance();
-		$skin                     = $settings['skin'] ?? 'grid';
-		$courses_limit            = $settings['courses_limit'] ?? 0;
-		$courses_per_page         = $settings['courses_per_page'] ?? 8;
-		$courses_order_by = $settings['order_by'] ?? $settings['courses_order_by_default'] ?? 'post_date';
-		$total_pages              = 0;
-		$paged                    = $settings['paged'] ?? 1;
-		$show_el_sorting          = ( $settings['el_sorting'] ?? 'yes' ) === 'yes';
-		$show_el_result_count     = ( $settings['el_result_count'] ?? 'yes' ) === 'yes';
-		$pagination_type          = $settings['pagination_type'] ?? 'number';
+		$listCoursesTemplate  = ListCoursesTemplate::instance();
+		$skin                 = $settings['skin'] ?? 'grid';
+		$courses_limit        = $settings['courses_limit'] ?? 0;
+		$courses_per_page     = $settings['courses_per_page'] ?? 8;
+		$courses_order_by     = $settings['order_by'] ?? $settings['courses_order_by_default'] ?? 'post_date';
+		$total_pages          = 0;
+		$paged                = $settings['paged'] ?? 1;
+		$show_el_sorting      = ( $settings['el_sorting'] ?? 'yes' ) === 'yes';
+		$show_el_result_count = ( $settings['el_result_count'] ?? 'yes' ) === 'yes';
+		$pagination_type      = $settings['pagination_type'] ?? 'number';
+		$courses_category_ids = $settings['courses_category_ids'] ?? [];
 
 		if ( $courses_limit > 0 ) {
 			if ( $courses_per_page > $courses_limit ) {
@@ -122,6 +131,9 @@ class SkinCoursesBase extends LPSkinBase {
 		$filter               = new LP_Course_Filter();
 		$settings['order_by'] = $courses_order_by;
 		Courses::handle_params_for_query_courses( $filter, $settings );
+		// Term
+		$filter->term_ids = array_merge( $filter->term_ids, $courses_category_ids );
+		// End term
 		$total_rows         = 0;
 		$filter->limit      = $courses_per_page;
 		$courses            = Courses::get_courses( $filter, $total_rows );
