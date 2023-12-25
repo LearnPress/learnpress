@@ -234,6 +234,9 @@ window.lpCoursesList = ( () => {
 
 			const elLPTarget = target.closest( classLPTarget );
 			if ( ! elLPTarget ) {
+				lpData.urlParams.paged = 1;
+				lpData.urlParams.order_by = target.value || '';
+				window.location.href = lpAddQueryArgs( urlCurrent, lpData.urlParams );
 				return;
 			}
 
