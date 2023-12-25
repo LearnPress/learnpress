@@ -41,9 +41,11 @@ const lpAJAX = ( () => {
 		getElements: () => {
 			//console.log( 'getElements' );
 			// Finds all elements with the class '.lp-load-ajax-element'
-			const elements = document.querySelectorAll( '.lp-load-ajax-element' );
+			const elements = document.querySelectorAll( '.lp-load-ajax-element:not(.loaded)' );
 			if ( elements.length ) {
 				elements.forEach( ( element ) => {
+					//console.log( 'Element handing', element );
+					element.classList.add( 'loaded' );
 					const url = API.frontend.apiAJAX;
 					const elTarget = element.querySelector( '.lp-target' );
 					const dataObj = JSON.parse( elTarget.dataset.send );
@@ -78,26 +80,21 @@ const lpAJAX = ( () => {
 	};
 } );
 
+// Case 1: file JS loaded, find all elements with the class '.lp-load-ajax-element' not have class 'loaded'
 if ( 'undefined' === typeof window.lpAJAXG ) {
 	window.lpAJAXG = lpAJAX();
 	window.lpAJAXG.getElements();
 }
 
-/*document.addEventListener( 'readystatechange', ( event ) => {
-	console.log( 'readystatechange' );
-	const elements = document.querySelectorAll( '.lp-load-ajax-element' );
-	elements.forEach( ( element ) => {
-		if ( ! element.classList.contains( 'loading-first' ) ) {
-			console.log( 'okokkk' );
-			element.classList.add( 'loading-first' );
-		} else {
-			console.log( 'nooooo' );
-		}
-	} );
+// Case 2: readystatechange, find all elements with the class '.lp-load-ajax-element' not have class 'loaded'
+document.addEventListener( 'readystatechange', ( event ) => {
+	//console.log( 'readystatechange' );
+	window.lpAJAXG.getElements();
 } );
 
+// Case 3: DOMContentLoaded, find all elements with the class '.lp-load-ajax-element' not have class 'loaded'
 document.addEventListener( 'DOMContentLoaded', () => {
-	console.log( 'DOMContentLoaded' );
-} );*/
+	window.lpAJAXG.getElements();
+} );
 
 export default lpAJAX;
