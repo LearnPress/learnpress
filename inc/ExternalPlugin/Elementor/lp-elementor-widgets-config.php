@@ -48,7 +48,7 @@ return [
 			'login-form'                => LoginUserFormElementor::class,
 			'register-form'             => RegisterUserFormElementor::class,
 			'list-courses'              => CourseListElementor::class,
-			'list-courses-by-page'      => ListCoursesByPageElementor::class,
+			//'list-courses-by-page'      => ListCoursesByPageElementor::class,
 			// Single Course
 			'course-price'              => CoursePriceElementor::class,
 			//'filter-course'				=> FilterCourseElementor::class

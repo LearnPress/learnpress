@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the LearnPress plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: LearnPress 4.2.5.8-beta-1\n"
+"Project-Id-Version: LearnPress 4.2.5.8-beta-3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/learnpress\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2023-12-21T09:52:26+03:00\n"
+"POT-Creation-Date: 2023-12-25T05:49:17+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.8.1\n"
 "X-Domain: learnpress\n"
@@ -557,10 +557,10 @@ msgstr ""
 #: config/elementor/course/list-courses-by-page-bk.php:32
 #: config/elementor/course/list-courses-by-page-bk.php:44
 #: config/elementor/course/list-courses-by-page-bk.php:56
-#: config/elementor/course/list-courses-by-page.php:34
-#: config/elementor/course/list-courses-by-page.php:46
-#: config/elementor/course/list-courses-by-page.php:68
-#: config/elementor/course/list-courses-by-page.php:80
+#: config/elementor/course/list-courses-by-page.php:53
+#: config/elementor/course/list-courses-by-page.php:65
+#: config/elementor/course/list-courses-by-page.php:87
+#: config/elementor/course/list-courses-by-page.php:99
 #: inc/class-lp-assets.php:96
 #: inc/lp-core-functions.php:2823
 #: templates/global/lp-modal-overlay.php:24
@@ -575,10 +575,10 @@ msgstr ""
 #: config/elementor/course/list-courses-by-page-bk.php:33
 #: config/elementor/course/list-courses-by-page-bk.php:45
 #: config/elementor/course/list-courses-by-page-bk.php:57
-#: config/elementor/course/list-courses-by-page.php:35
-#: config/elementor/course/list-courses-by-page.php:47
-#: config/elementor/course/list-courses-by-page.php:69
-#: config/elementor/course/list-courses-by-page.php:81
+#: config/elementor/course/list-courses-by-page.php:54
+#: config/elementor/course/list-courses-by-page.php:66
+#: config/elementor/course/list-courses-by-page.php:88
+#: config/elementor/course/list-courses-by-page.php:100
 #: inc/class-lp-assets.php:97
 #: inc/lp-core-functions.php:2824
 #: templates/global/lp-modal-overlay.php:23
@@ -787,49 +787,49 @@ msgid "Content"
 msgstr ""
 
 #: config/elementor/course/list-courses-by-page-bk.php:67
-#: config/elementor/course/list-courses-by-page.php:106
+#: config/elementor/course/list-courses-by-page.php:125
 msgid "Courses Per Page"
 msgstr ""
 
 #: config/elementor/course/list-courses-by-page-bk.php:77
-#: config/elementor/course/list-courses-by-page.php:117
+#: config/elementor/course/list-courses-by-page.php:136
 msgid "Order By Default"
 msgstr ""
 
 #: config/elementor/course/list-courses-by-page-bk.php:79
-#: config/elementor/course/list-courses-by-page.php:119
+#: config/elementor/course/list-courses-by-page.php:138
 msgid "Newest"
 msgstr ""
 
 #: config/elementor/course/list-courses-by-page-bk.php:80
-#: config/elementor/course/list-courses-by-page.php:120
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:494
+#: config/elementor/course/list-courses-by-page.php:139
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:500
 msgid "Title a-z"
 msgstr ""
 
 #: config/elementor/course/list-courses-by-page-bk.php:81
-#: config/elementor/course/list-courses-by-page.php:121
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:495
+#: config/elementor/course/list-courses-by-page.php:140
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:501
 msgid "Title z-a"
 msgstr ""
 
 #: config/elementor/course/list-courses-by-page-bk.php:82
-#: config/elementor/course/list-courses-by-page.php:122
+#: config/elementor/course/list-courses-by-page.php:141
 msgid "Price High to Low"
 msgstr ""
 
 #: config/elementor/course/list-courses-by-page-bk.php:83
-#: config/elementor/course/list-courses-by-page.php:123
+#: config/elementor/course/list-courses-by-page.php:142
 msgid "Price Low to High"
 msgstr ""
 
 #: config/elementor/course/list-courses-by-page-bk.php:89
-#: config/elementor/course/list-courses-by-page.php:137
+#: config/elementor/course/list-courses-by-page.php:166
 msgid "Pagination type"
 msgstr ""
 
 #: config/elementor/course/list-courses-by-page-bk.php:91
-#: config/elementor/course/list-courses-by-page.php:140
+#: config/elementor/course/list-courses-by-page.php:169
 #: config/settings/course.php:84
 #: config/settings/profile.php:96
 msgid "Number"
@@ -840,7 +840,7 @@ msgid "Button load more"
 msgstr ""
 
 #: config/elementor/course/list-courses-by-page-bk.php:93
-#: config/elementor/course/list-courses-by-page.php:142
+#: config/elementor/course/list-courses-by-page.php:171
 msgid "Infinite scroll"
 msgstr ""
 
@@ -877,7 +877,7 @@ msgid "Course Sale Typography"
 msgstr ""
 
 #: config/elementor/course/list-courses-by-page-bk.php:223
-#: config/elementor/course/list-courses-by-page.php:59
+#: config/elementor/course/list-courses-by-page.php:78
 #: config/elementor/course/list-courses.php:39
 msgid "Layout"
 msgstr ""
@@ -910,7 +910,7 @@ msgid "Course Image"
 msgstr ""
 
 #: config/elementor/course/list-courses-by-page-bk.php:277
-#: config/elementor/course/list-courses-by-page.php:132
+#: config/elementor/course/list-courses-by-page.php:161
 #: inc/admin/views/meta-boxes/quiz/settings.php:77
 msgid "Pagination"
 msgstr ""
@@ -931,42 +931,47 @@ msgstr ""
 msgid "Courses Not Found"
 msgstr ""
 
-#: config/elementor/course/list-courses-by-page.php:21
+#: config/elementor/course/list-courses-by-page.php:40
 msgid "Skin"
 msgstr ""
 
-#: config/elementor/course/list-courses-by-page.php:25
+#: config/elementor/course/list-courses-by-page.php:44
 msgid "Option load REST API"
 msgstr ""
 
-#: config/elementor/course/list-courses-by-page.php:90
+#: config/elementor/course/list-courses-by-page.php:109
 msgid "Query"
 msgstr ""
 
-#: config/elementor/course/list-courses-by-page.php:95
+#: config/elementor/course/list-courses-by-page.php:114
 msgid "Courses limit"
 msgstr ""
 
-#: config/elementor/course/list-courses-by-page.php:101
+#: config/elementor/course/list-courses-by-page.php:120
 msgid "Total courses you want to query, default 0 is no limit"
 msgstr ""
 
-#: config/elementor/course/list-courses-by-page.php:112
+#: config/elementor/course/list-courses-by-page.php:131
 msgid "Number courses show on 1 page. Default 0 is show all of Courses Limit"
 msgstr ""
 
-#: config/elementor/course/list-courses-by-page.php:124
+#: config/elementor/course/list-courses-by-page.php:143
 #: config/elementor/course/list-courses.php:72
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:498
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:504
 msgid "Popular"
 msgstr ""
 
-#: config/elementor/course/list-courses-by-page.php:139
+#: config/elementor/course/list-courses-by-page.php:149
+#: config/elementor/course/list-courses.php:58
+msgid "Select Categories"
+msgstr ""
+
+#: config/elementor/course/list-courses-by-page.php:168
 msgid "Nonce"
 msgstr ""
 
-#: config/elementor/course/list-courses-by-page.php:141
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:311
+#: config/elementor/course/list-courses-by-page.php:170
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:317
 msgid "Load more"
 msgstr ""
 
@@ -982,10 +987,6 @@ msgstr ""
 
 #: config/elementor/course/list-courses.php:48
 msgid "Select Courses"
-msgstr ""
-
-#: config/elementor/course/list-courses.php:58
-msgid "Select Categories"
 msgstr ""
 
 #: config/elementor/course/list-courses.php:68
@@ -1732,7 +1733,7 @@ msgstr ""
 #: inc/admin/sub-menus/class-lp-submenu-settings.php:18
 #: inc/admin/views/addons.php:125
 #: inc/user/class-lp-profile.php:314
-#: learnpress.php:563
+#: learnpress.php:559
 msgid "Settings"
 msgstr ""
 
@@ -2888,7 +2889,7 @@ msgid "Reset Password"
 msgstr ""
 
 #: inc/admin/sub-menus/class-lp-submenu-addons.php:14
-#: learnpress.php:565
+#: learnpress.php:561
 msgid "Add-ons"
 msgstr ""
 
@@ -5043,7 +5044,7 @@ msgid "Order"
 msgstr ""
 
 #: inc/custom-post-types/order.php:462
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:738
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:744
 #: inc/TemplateHooks/Instructor/SingleInstructorTemplate.php:186
 #: inc/TemplateHooks/Instructor/SingleInstructorTemplate.php:550
 msgid "Student"
@@ -7622,17 +7623,17 @@ msgid "successfully"
 msgstr ""
 
 #: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:217
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:429
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:435
 msgid "Showing only one result"
 msgstr ""
 
 #: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:220
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:432
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:438
 msgid "Showing last course of %s results"
 msgstr ""
 
 #: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:235
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:435
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:441
 msgid "Showing %1$s of %2$s results"
 msgstr ""
 
@@ -8040,47 +8041,47 @@ msgstr ""
 msgid "Reset"
 msgstr ""
 
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:124
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:125
 msgid "No courses found"
 msgstr ""
 
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:247
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:253
 msgid "Read more"
 msgstr ""
 
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:493
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:499
 msgid "Newly published"
 msgstr ""
 
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:496
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:502
 msgid "Price high to low"
 msgstr ""
 
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:497
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:503
 msgid "Price low to high"
 msgstr ""
 
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:517
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:523
 #: templates/courses-top-bar.php:23
 msgid "Search courses..."
 msgstr ""
 
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:538
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:544
 #: templates/courses-top-bar.php:33
 msgid "Switch to %s"
 msgstr ""
 
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:611
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:617
 msgid "Course Found"
 msgid_plural "Courses Found"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:616
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:622
 msgid "View All"
 msgstr ""
 
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:697
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:703
 msgid "Free Course"
 msgid_plural "Free Courses"
 msgstr[0] ""
@@ -8605,7 +8606,7 @@ msgstr ""
 msgid "Recent Courses"
 msgstr ""
 
-#: learnpress.php:564
+#: learnpress.php:560
 msgid "Documentation"
 msgstr ""
 
