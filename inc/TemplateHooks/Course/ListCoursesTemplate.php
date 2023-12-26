@@ -254,7 +254,9 @@ class ListCoursesTemplate {
 						)
 					],
 					'close_wrapper' => [ 'text_html' => '</div>' ],
-				]
+				],
+				$course,
+				$settings
 			);
 			Template::instance()->print_sections( $section_bottom_end );
 			$html_bottom_end = ob_get_clean();
@@ -276,7 +278,9 @@ class ListCoursesTemplate {
 					'separator'     => [ 'text_html' => '<div class="separator"></div>' ],
 					'info'          => [ 'text_html' => $html_bottom_end ],
 					'close_wrapper' => [ 'text_html' => '</div>' ],
-				]
+				],
+				$course,
+				$settings
 			);
 			Template::instance()->print_sections( $section_bottom );
 			$html_bottom = ob_get_clean();
