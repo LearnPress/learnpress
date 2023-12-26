@@ -16,8 +16,8 @@
   "learnpress-announcements": {
     "name": "Announcement add-on for LearnPress",
     "basename": "learnpress-announcements/learnpress-announcements.php",
-    "version": "4.0.4",
-    "require_lp": "4.2.5.6",
+    "version": "4.0.5",
+    "require_lp": "4.2.5.7",
     "description": "Announcement is a great way to promote your courses and update new features + contents to your courses, including email notification.",
     "image": "https://plugins.thimpress.com/downloads/images/lp-announcement.png",
     "link": "https://thimpress.com/product/announcement-add-on-for-learnpress/",
@@ -476,8 +476,8 @@
   "learnpress-mobile-app": {
     "name": "LearnPress - Mobile App",
     "basename": "learnpress-mobile-app/learnpress-mobile-app.php",
-    "version": "4.0.2",
-    "require_lp": "4.2.3.3",
+    "version": "4.0.3",
+    "require_lp": "4.2.5.7",
     "description": "Support for Mobile App.",
     "image": "https://thimpress.com/wp-content/uploads/2015/06/Co-instructors-690x460px.png",
     "link": "https://thimpress.com/product/learnpress-in-app-purchase/",
