@@ -70,15 +70,24 @@ abstract class LP_Async_Request {
 		}*/
 
 		// Some site don't know why denied access to wp_admin. So we use init hook to handle async request
-		add_action( 'init', function () {
-			if ( ! isset( $_GET['lp_async_request'] ) ) {
-				return;
-			}
+		add_action( 'init', [ $this, 'listen_request' ] );
+	}
 
-			if ( isset( $_POST['action'] ) && str_contains( $_POST['action'], 'lp_async_' ) ) {
-				$this->maybe_handle();
-			}
-		} );
+	/**
+	 * Listen request valid to handel.
+	 *
+	 * @return void
+	 * @since 4.2.5.9
+	 * @version 1.0.0
+	 */
+	public function listen_request() {
+		if ( ! isset( $_GET['lp_async_request'] ) ) {
+			return;
+		}
+
+		if ( isset( $_POST['action'] ) && false !== strpos( $_POST['action'], 'lp_async_' ) ) {
+			$this->maybe_handle();
+		}
 	}
 
 	/**
@@ -235,5 +244,4 @@ abstract class LP_Async_Request {
 	 * during the async request.
 	 */
 	abstract protected function handle();
-
 }
