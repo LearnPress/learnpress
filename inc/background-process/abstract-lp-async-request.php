@@ -4,7 +4,7 @@
  * Abstract LP_Async_Request class.
  *
  * @since 4.1.6.9.4
- * @version 1.0.1
+ * @version 1.0.2
  */
 abstract class LP_Async_Request {
 	/**
@@ -52,6 +52,9 @@ abstract class LP_Async_Request {
 
 	/**
 	 * Initiate new async request
+	 *
+	 * @since 4.1.6.9.4
+	 * @version 1.0.2
 	 */
 	public function __construct( $auth_level = self::BOTH ) {
 		$this->identifier = $this->prefix . '_' . $this->action;
@@ -59,12 +62,23 @@ abstract class LP_Async_Request {
 		//add_action( 'wp_ajax_' . $this->identifier, array( $this, 'maybe_handle' ) );
 		//add_action( 'wp_ajax_nopriv_' . $this->identifier, array( $this, 'maybe_handle' ) );
 
-		if ( $auth_level & self::LOGGED_IN ) {
+		/*if ( $auth_level & self::LOGGED_IN ) {
 			add_action( "admin_post_lp_async_$this->identifier", [ $this, 'maybe_handle' ] );
 		}
 		if ( $auth_level & self::LOGGED_OUT ) {
 			add_action( "admin_post_nopriv_lp_async_$this->identifier", [ $this, 'maybe_handle' ] );
-		}
+		}*/
+
+		// Some site don't know why denied access to wp_admin. So we use init hook to handle async request
+		add_action( 'init', function () {
+			if ( ! isset( $_GET['lp_async_request'] ) ) {
+				return;
+			}
+
+			if ( isset( $_POST['action'] ) && str_contains( $_POST['action'], 'lp_async_' ) ) {
+				$this->maybe_handle();
+			}
+		} );
 	}
 
 	/**
@@ -93,31 +107,6 @@ abstract class LP_Async_Request {
 	}
 
 	/**
-	 * Get query args
-	 *
-	 * @return array
-	 * @deprecated 4.2.3
-	 */
-	//  protected function get_query_args() {
-	//      require_once( ABSPATH . 'wp-includes/pluggable.php' );
-	//      if ( property_exists( $this, 'query_args' ) ) {
-	//          return $this->query_args;
-	//      }
-	//
-	//      $args = array(
-	//          'action' => $this->identifier,
-	//          'nonce'  => wp_create_nonce( $this->identifier ),
-	//      );
-	//
-	//      /**
-	//       * Filters the post arguments used during an async request.
-	//       *
-	//       * @param array $url
-	//       */
-	//      return apply_filters( $this->identifier . '_query_args', $args );
-	//  }
-
-	/**
 	 * Get query URL
 	 *
 	 * @return string
@@ -127,7 +116,8 @@ abstract class LP_Async_Request {
 			return $this->query_url;
 		}
 
-		$url = admin_url( 'admin-post.php' );
+		$url = home_url( '?lp_async_request=1' );
+
 		return apply_filters( $this->identifier . '/query_url', $url );
 	}
 

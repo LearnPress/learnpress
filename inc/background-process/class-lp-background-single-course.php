@@ -61,6 +61,10 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 		 * @throws Exception
 		 */
 		protected function save_post() {
+			if ( ! current_user_can( 'edit_lp_courses' ) ) {
+				error_log( 'Not permission save background course' );
+			}
+
 			$this->save_price();
 			$this->save_extra_info();
 			$this->review_post_author();
