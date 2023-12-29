@@ -145,7 +145,7 @@ $keys_purchase             = LP_Settings::get_option( LP_Manager_Addons::instanc
 						} elseif ( $number_days_remaining < 61 ) {
 							$color_expire = 'orange';
 							$message      = sprintf(
-								__( 'You have a license for this item with %s days of support remaining. Extend update & support to have the best support from ThimPress before it expires.', 'learnpress' ),
+								__( 'You have a license for this item with %s days of update & support remaining. Extend the license to be able to update the newest version and have the best support from ThimPress before it expires.', 'learnpress' ),
 								sprintf( '<strong style="color: #D93C65">%d</strong>', $number_days_remaining )
 							);
 						} else {
