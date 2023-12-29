@@ -19,7 +19,8 @@ class LP_Manager_Addons {
 	/**
 	 * @var string $link_addon_action Link download plugin from Thimpress.
 	 */
-	private $link_addon_action = 'https://updates.thimpress.com/thim-addon-market/download-addon';
+	private $link_addon_action    = 'https://updates.thimpress.com/thim-addon-market/download-addon';
+	public $link_addons_purchased = 'https://updates.thimpress.com/thim-addon-market/info-addons-purchased';
 	//public $link_addon_action = 'http://updates/thim-addon-market/download-addon';
 	/**
 	 * @var string $link_addon_action Link active site.
@@ -46,8 +47,8 @@ class LP_Manager_Addons {
 	 * Constructor
 	 */
 	protected function __construct() {
-		include_once( ABSPATH . 'wp-admin/includes/class-wp-upgrader.php' );
-		include_once( ABSPATH . 'wp-admin/includes/plugin-install.php' );
+		include_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
+		include_once ABSPATH . 'wp-admin/includes/plugin-install.php';
 
 		$this->upgrader_skin   = new WP_Ajax_Upgrader_Skin();
 		$this->plugin_upgrader = new Plugin_Upgrader( $this->upgrader_skin );
@@ -267,4 +268,3 @@ class LP_Manager_Addons {
 		return $addons_new_version;
 	}
 }
-
