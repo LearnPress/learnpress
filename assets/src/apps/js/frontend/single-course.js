@@ -355,7 +355,7 @@ const courseContinue = () => {
 		getResponse( formContinue ).then( function( result ) {
 			if ( result.status === 'success' ) {
 				formContinue.forEach( ( form ) => {
-					form.style.display = 'block';
+					form.style.display = 'inline-block';
 					form.action = result.data;
 				} );
 			}
@@ -390,7 +390,7 @@ const detectedElCurriculum = setInterval( function() {
 	const elementCurriculum = document.querySelector( '.learnpress-course-curriculum' );
 	if ( elementCurriculum ) {
 		courseCurriculumSkeleton();
-		
+
 		clearInterval( detectedElCurriculum );
 	}
 }, 1 );
