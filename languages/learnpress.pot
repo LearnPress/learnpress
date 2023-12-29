@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the LearnPress plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: LearnPress 4.2.5.8-beta-3\n"
+"Project-Id-Version: LearnPress 4.2.5.9-beta-1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/learnpress\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2023-12-25T05:49:17+03:00\n"
+"POT-Creation-Date: 2023-12-28T11:41:34+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.8.1\n"
 "X-Domain: learnpress\n"
@@ -803,13 +803,13 @@ msgstr ""
 
 #: config/elementor/course/list-courses-by-page-bk.php:80
 #: config/elementor/course/list-courses-by-page.php:139
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:500
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:504
 msgid "Title a-z"
 msgstr ""
 
 #: config/elementor/course/list-courses-by-page-bk.php:81
 #: config/elementor/course/list-courses-by-page.php:140
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:501
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:505
 msgid "Title z-a"
 msgstr ""
 
@@ -957,7 +957,7 @@ msgstr ""
 
 #: config/elementor/course/list-courses-by-page.php:143
 #: config/elementor/course/list-courses.php:72
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:504
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:508
 msgid "Popular"
 msgstr ""
 
@@ -971,7 +971,7 @@ msgid "Nonce"
 msgstr ""
 
 #: config/elementor/course/list-courses-by-page.php:170
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:317
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:321
 msgid "Load more"
 msgstr ""
 
@@ -5044,7 +5044,7 @@ msgid "Order"
 msgstr ""
 
 #: inc/custom-post-types/order.php:462
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:744
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:748
 #: inc/TemplateHooks/Instructor/SingleInstructorTemplate.php:186
 #: inc/TemplateHooks/Instructor/SingleInstructorTemplate.php:550
 msgid "Student"
@@ -7623,17 +7623,17 @@ msgid "successfully"
 msgstr ""
 
 #: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:217
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:435
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:439
 msgid "Showing only one result"
 msgstr ""
 
 #: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:220
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:438
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:442
 msgid "Showing last course of %s results"
 msgstr ""
 
 #: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:235
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:441
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:445
 msgid "Showing %1$s of %2$s results"
 msgstr ""
 
@@ -8049,39 +8049,39 @@ msgstr ""
 msgid "Read more"
 msgstr ""
 
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:499
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:503
 msgid "Newly published"
 msgstr ""
 
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:502
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:506
 msgid "Price high to low"
 msgstr ""
 
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:503
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:507
 msgid "Price low to high"
 msgstr ""
 
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:523
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:527
 #: templates/courses-top-bar.php:23
 msgid "Search courses..."
 msgstr ""
 
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:544
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:548
 #: templates/courses-top-bar.php:33
 msgid "Switch to %s"
 msgstr ""
 
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:617
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:621
 msgid "Course Found"
 msgid_plural "Courses Found"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:622
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:626
 msgid "View All"
 msgstr ""
 
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:703
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:707
 msgid "Free Course"
 msgid_plural "Free Courses"
 msgstr[0] ""

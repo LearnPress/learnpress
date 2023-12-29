@@ -267,4 +267,42 @@ class LP_Manager_Addons {
 
 		return $addons_new_version;
 	}
+
+	/**
+	 * Check addons purchased need extend.
+	 *
+	 * @return bool
+	 * @throws Exception
+	 * @since 4.2.5.9
+	 * @version 1.0.0
+	 */
+	public function check_addons_purchased_need_extend(): bool {
+		$addon_contr = new LP_REST_Addon_Controller();
+		$request     = new WP_REST_Request();
+		$request->set_param( 'return_obj', true );
+		$addons_rs = $addon_contr->list_addons( $request );
+		foreach ( $addons_rs->data as $addon ) {
+			if ( isset( $addon->purchase_info ) ) {
+				$addon_purchased  = $addon->purchase_info;
+				$date_expired_str = $addon_purchased->date_expire ?? '';
+				// Test
+				$date_expired_str = '2024-02-01';
+				//$date_expired_str = '2023-01-12';
+				// End
+				$date_expired          = new DateTime( $date_expired_str );
+				$date_now              = new DateTime( gmdate( 'Y-m-d' ) );
+				$date_diff             = date_diff( $date_now, $date_expired );
+				$number_days_remaining = $date_diff->days;
+				if ( $date_diff->invert ) {
+					$number_days_remaining = 0;
+				}
+
+				if ( $number_days_remaining <= 60 ) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
 }

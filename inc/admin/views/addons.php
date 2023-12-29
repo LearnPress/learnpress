@@ -133,27 +133,27 @@ $keys_purchase             = LP_Settings::get_option( LP_Manager_Addons::instanc
 						$color_expire   = '#27BF49';
 						$message        = '';
 						$button_extends = sprintf(
-							'<a href="%s" target="_blank" rel="noopener"><button data-action="extends">%s</button></a>',
+							'<p><a href="%s" target="_blank" rel="noopener" style="color: #E64B50;text-decoration: underline">%s</a></p>',
 							$addon->link,
 							__( 'Extends Now', 'learnpress' )
 						);
 
 						if ( $number_days_remaining === 0 ) {
 							$color_expire = 'red';
-							$message      = __( 'Addon expired', 'learnpress' );
+							$message      = __( 'Your update and support has expired!', 'learnpress' );
 
 						} elseif ( $number_days_remaining < 61 ) {
 							$color_expire = 'orange';
-							$message      = sprintf( __( ', %d days left until expiration', 'learnpress' ), $number_days_remaining );
+							$message      = sprintf(
+								__( 'You have a license for this item with %s days of support remaining. Extend update & support to have the best support from ThimPress before it expires.', 'learnpress' ),
+								sprintf( '<strong style="color: #D93C65">%d</strong>', $number_days_remaining )
+							);
 						} else {
 							$button_extends = '';
 						}
 
 						echo sprintf(
-							'<span class="new-update" style="color:%s;display: block">%s: %s %s %s</span>',
-							$color_expire,
-							__( 'Date expire', 'learnpress' ),
-							$date_expired_str,
+							'<span class="need-extend" style="display: block">%s %s</span>',
 							$message,
 							$button_extends
 						);

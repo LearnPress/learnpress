@@ -28,24 +28,17 @@ class LP_REST_Addon_Controller extends LP_Abstract_REST_Controller {
 
 	public function register_routes() {
 		$this->routes = array(
-			'all'                  => array(
+			'all'    => array(
 				array(
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'list_addons' ),
 					'permission_callback' => [ $this, 'permission_callback' ],
 				),
 			),
-			'action'               => array(
+			'action' => array(
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'action' ),
-					'permission_callback' => [ $this, 'permission_callback' ],
-				),
-			),
-			'info-addons-purchase' => array(
-				array(
-					'methods'             => WP_REST_Server::READABLE,
-					'callback'            => array( $this, 'info_addons_purchase' ),
 					'permission_callback' => [ $this, 'permission_callback' ],
 				),
 			),
@@ -82,8 +75,8 @@ class LP_REST_Addon_Controller extends LP_Abstract_REST_Controller {
 
 			// Get list addons purchased.
 			$addons_purchase = LP_Settings::get_option( $lp_addon->key_purchase_addons, [] );
-			if ( ! empty( $addons_purchase ) ){
-				$args          = [
+			if ( ! empty( $addons_purchase ) ) {
+				$args = [
 					'method'     => 'POST',
 					'body'       => [
 						'addons_purchase' => $addons_purchase,
@@ -206,73 +199,6 @@ class LP_REST_Addon_Controller extends LP_Abstract_REST_Controller {
 
 			$response->status  = 'success';
 			$response->message = sprintf( '"%s" %s <strong>%s</strong>', $addon['name'], $action, __( 'successfully', 'learnpress' ) );
-		} catch ( Throwable $e ) {
-			$response->message = $e->getMessage();
-		}
-
-		return $response;
-	}
-
-	/**
-	 * Check purchase code addons expired.
-	 *
-	 * @param WP_REST_Request $request
-	 *
-	 * @return LP_REST_Response
-	 */
-	public function info_addons_purchase( WP_REST_Request $request ): LP_REST_Response {
-		$response           = new LP_REST_Response();
-		$response->data     = '';
-		$count_near_expired = 0;
-		$addons_message     = '';
-
-		try {
-			$url_check     = LP_Manager_Addons::instance()->link_addons_purchased;
-			$keys_purchase = LP_Settings::get_option( $this->lp_addons->key_purchase_addons, [] );
-			$args          = [
-				'method'     => 'POST',
-				'body'       => [
-					'addons_purchase' => $keys_purchase,
-				],
-				'user-agent' => site_url(),
-			];
-
-			$result = wp_remote_post( $url_check, $args );
-			if ( is_wp_error( $result ) ) {
-				throw new Exception( $result->get_error_message() );
-			}
-
-			$data_str = wp_remote_retrieve_body( $result );
-			if ( preg_match( '/^Error.*/', $data_str ) ) {
-				throw new Exception( $data_str );
-			}
-
-			$data = LP_Helper::json_decode( $data_str );
-
-			foreach ( $data as $addon ) {
-				$date_expired_str = $addon->date_expire ?? '';
-				$date_expired     = new DateTime( $date_expired_str );
-				$date_now         = new DateTime();
-				$date_diff        = date_diff( $date_expired, $date_now );
-				$days_remaining   = $date_diff->d;
-//				if ( $days_remaining > 60 ) {
-//
-//					continue;
-//				}
-
-				++ $count_near_expired;
-				$addons_message .= sprintf( '<p>%s: %s</p>', $addon->product_slug, $date_diff->format( '%a days' ) );
-			}
-
-			if ( $count_near_expired > 0 ) {
-				$response->message = sprintf(
-					'<div class="lp-message-near-expire learn-press-message"><p>%s</p> %s</div>',
-					__( 'You have addons will be expired soon:', 'learnpress' ),
-					$addons_message
-				);
-			}
-
-			$response->status = 'success';
 		} catch ( Throwable $e ) {
 			$response->message = $e->getMessage();
 		}

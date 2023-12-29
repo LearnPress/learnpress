@@ -152,32 +152,7 @@ const loadElData = setInterval( () => {
 	}
 }, 1 );
 
-const getInfoAddonsPurchase = () => {
-	const params = tab ? `?tab=${ tab }` : `?${ set }`;
-	fetch( API.admin.apiAddonsPurchase, {
-		method: 'GET',
-		headers: {
-			'X-WP-Nonce': lpDataAdmin.nonce,
-		},
-	} ).then( ( res ) =>
-		res.json()
-	).then( ( res ) => {
-		const { status, message, data } = res;
-		if ( status === 'success' ) {
-			if ( message ) {
-				const elAddonsPage = document.querySelector( '.lp-addons-page' );
-				elAddonsPage.insertAdjacentHTML( 'beforebegin', message );
-			}
-		} else {
-
-		}
-	} ).catch( ( err ) => {
-		console.log( err );
-	} );
-};
-
 document.addEventListener( 'DOMContentLoaded', ( e ) => {
-	//getInfoAddonsPurchase();
 } );
 
 /*** Events ***/
