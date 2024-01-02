@@ -286,7 +286,7 @@ class LP_Manager_Addons {
 				$addon_purchased  = $addon->purchase_info;
 				$date_expired_str = $addon_purchased->date_expire ?? '';
 				// Test
-				$date_expired_str = '2024-02-01';
+				//$date_expired_str = '2024-02-01';
 				//$date_expired_str = '2023-01-12';
 				// End
 				$date_expired          = new DateTime( $date_expired_str );

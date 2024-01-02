@@ -315,7 +315,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 							'allow_dismiss' => 1,
 							'dismiss'       => isset( $admin_notices_dismiss['lp-addons-new-version'] ),
 						],
-						// Show notification addons new version.
+						// Show notification addons purchased need extend.
 						'lp-addons-purchased-extend' => [
 							'template'      => 'admin-notices/addons-purchased-extend.php',
 							'need-extend'   => LP_Manager_Addons::instance()->check_addons_purchased_need_extend(),
