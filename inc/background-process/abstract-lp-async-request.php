@@ -4,7 +4,7 @@
  * Abstract LP_Async_Request class.
  *
  * @since 4.1.6.9.4
- * @version 1.0.2
+ * @version 1.0.1
  */
 abstract class LP_Async_Request {
 	/**
@@ -52,9 +52,6 @@ abstract class LP_Async_Request {
 
 	/**
 	 * Initiate new async request
-	 *
-	 * @since 4.1.6.9.4
-	 * @version 1.0.2
 	 */
 	public function __construct( $auth_level = self::BOTH ) {
 		$this->identifier = $this->prefix . '_' . $this->action;
@@ -62,31 +59,11 @@ abstract class LP_Async_Request {
 		//add_action( 'wp_ajax_' . $this->identifier, array( $this, 'maybe_handle' ) );
 		//add_action( 'wp_ajax_nopriv_' . $this->identifier, array( $this, 'maybe_handle' ) );
 
-		/*if ( $auth_level & self::LOGGED_IN ) {
+		if ( $auth_level & self::LOGGED_IN ) {
 			add_action( "admin_post_lp_async_$this->identifier", [ $this, 'maybe_handle' ] );
 		}
 		if ( $auth_level & self::LOGGED_OUT ) {
 			add_action( "admin_post_nopriv_lp_async_$this->identifier", [ $this, 'maybe_handle' ] );
-		}*/
-
-		// Some site don't know why denied access to wp_admin. So we use init hook to handle async request
-		add_action( 'init', [ $this, 'listen_request' ] );
-	}
-
-	/**
-	 * Listen request valid to handel.
-	 *
-	 * @return void
-	 * @since 4.2.5.9
-	 * @version 1.0.0
-	 */
-	public function listen_request() {
-		if ( ! isset( $_GET['lp_async_request'] ) ) {
-			return;
-		}
-
-		if ( isset( $_POST['action'] ) && false !== strpos( $_POST['action'], 'lp_async_' ) ) {
-			$this->maybe_handle();
 		}
 	}
 
@@ -125,8 +102,7 @@ abstract class LP_Async_Request {
 			return $this->query_url;
 		}
 
-		$url = home_url( '?lp_async_request=1' );
-
+		$url = admin_url( 'admin-post.php' );
 		return apply_filters( $this->identifier . '/query_url', $url );
 	}
 
