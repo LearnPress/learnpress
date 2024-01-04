@@ -41,6 +41,21 @@ const updateUserQuestionAnswer = ( state, action ) => {
 	};
 };
 
+const updateUserQuestionFibAnswer = ( state, action ) => {
+	const { id } = state;
+	const { questionId, idInput, valueInput } = action;
+
+	if ( state.answered.hasOwnProperty( questionId ) ) {
+		state.answered[ questionId ].answered[ idInput ] = valueInput;
+	} else {
+		state.answered[ action.questionId ] = { answered: { [ idInput ]: valueInput }, temp: true };
+	}
+
+	localStorage.setItem( `LP_Quiz_${ id }_Answered`, JSON.stringify( state.answered ) );
+
+	return state;
+};
+
 const markQuestionRendered = ( state, action ) => {
 	const {
 		questionsRendered,
@@ -109,7 +124,7 @@ const checkAnswer = ( state, action ) => {
 		newAnswered = {
 			...JSON.parse( newAnswered ),
 			...answered,
-		}
+		};
 
 		localStorage.setItem( `LP_Quiz_${ state.id }_Answered`, JSON.stringify( newAnswered ) );
 	}
@@ -117,7 +132,7 @@ const checkAnswer = ( state, action ) => {
 	return {
 		...state,
 		questions: [ ...questions ],
-		answered: answered,
+		answered,
 		checkedQuestions: [ ...state.checkedQuestions, action.questionId ],
 	};
 };
@@ -208,6 +223,8 @@ export const userQuiz = ( state = STORE_DATA, action ) => {
 		return submitQuiz( state, action );
 	case 'UPDATE_USER_QUESTION_ANSWERS':
 		return state.status === 'started' ? updateUserQuestionAnswer( state, action ) : state;
+	case 'UPDATE_USER_QUESTION_FIB_ANSWERS':
+		return state.status === 'started' ? updateUserQuestionFibAnswer( state, action ) : state;
 	case 'MARK_QUESTION_RENDERED':
 		return markQuestionRendered( state, action );
 	case 'SET_QUIZ_MODE':

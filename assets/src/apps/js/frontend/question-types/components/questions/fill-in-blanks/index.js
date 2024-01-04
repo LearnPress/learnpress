@@ -1,16 +1,22 @@
 import { __ } from '@wordpress/i18n';
 import QuestionBase from '../../question-base';
 
+let flagEventEnterInput = false;
+
 class QuestionFillInBlanks extends QuestionBase {
 	componentDidMount() {
-		const { answered } = this.props;
+		const { answered, question } = this.props;
 
 		if ( answered ) {
 			const allFIBs = document.querySelectorAll( '.lp-fib-input > input' );
 
 			[ ...allFIBs ].map( ( ele ) => {
-				if ( answered[ ele.dataset.id ] ) {
-					ele.value = answered[ ele.dataset.id ];
+				const question_id = parseInt( ele.closest( '.question' ).dataset.id );
+
+				if ( question_id === question.id ) {
+					if ( answered[ ele.dataset.id ] ) {
+						ele.value = answered[ ele.dataset.id ];
+					}
 				}
 			} );
 		}
@@ -25,29 +31,24 @@ class QuestionFillInBlanks extends QuestionBase {
 	}
 
 	updateFibAnswer = () => {
-		const allFIBs = document.querySelectorAll( '.lp-fib-input > input' );
-		const { answered } = this.props;
+		if ( ! flagEventEnterInput ) {
+			document.addEventListener( 'input', ( e ) => {
+				const target = e.target;
+				const parent = target.closest( '.lp-fib-input' );
 
-		const answereds = answered || {};
-
-		[ ...allFIBs ].map( ( ele ) => {
-			if ( answered === undefined ) {
-				ele.value = '';
-			}
-
-			ele.addEventListener( 'input', ( e ) => {
-				this.setAnswered( answereds, ele.dataset.id, e.target.value );
+				if ( parent ) {
+					const question_id = e.target.closest( '.question-fill_in_blanks' ).dataset.id;
+					this.setAnswered( question_id, target.dataset.id, target.value );
+				}
 			} );
+		}
 
-			ele.addEventListener( 'paste', ( e ) => {
-				this.setAnswered( answereds, ele.dataset.id, e.target.value );
-			} );
-		} );
+		flagEventEnterInput = true;
 	};
 
-	setAnswered = ( answered, id, value ) => {
+	setAnswered = ( question_id, id, value ) => {
 		const {
-			updateUserQuestionAnswers,
+			updateUserQuestionFibAnswers,
 			question,
 			status,
 		} = this.props;
@@ -56,9 +57,10 @@ class QuestionFillInBlanks extends QuestionBase {
 			return 'LP Error: can not set answers';
 		}
 
-		const newAnswered = Object.assign( answered, { [ id ]: value } );
+		const newAnswered = {};
+		newAnswered[ id ] = value;
 
-		updateUserQuestionAnswers( question.id, newAnswered );
+		updateUserQuestionFibAnswers( question_id, id, value );
 	};
 
 	getCorrectLabel = () => {

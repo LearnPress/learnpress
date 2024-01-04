@@ -12,8 +12,8 @@ const { camelCaseDashObjectKeys, Hook } = LP;
 /**
  * Set user data for app.
  *
- * @param  key
- * @param  data
+ * @param key
+ * @param data
  */
 export function setQuizData( key, data ) {
 	if ( typeof key === 'string' ) {
@@ -31,7 +31,7 @@ export function setQuizData( key, data ) {
 /**
  * Set question will display.
  *
- * @param  questionId
+ * @param questionId
  */
 export function setCurrentQuestion( questionId ) {
 	return {
@@ -237,6 +237,27 @@ export function updateUserQuestionAnswers( questionId, answers, quizId, courseId
 		type: 'UPDATE_USER_QUESTION_ANSWERS',
 		questionId,
 		answers,
+	};
+}
+
+/**
+ * Handle when user change value on input fill in blanks.
+ *
+ * @param questionId
+ * @param idInput
+ * @param valueInput
+ * @param quizId
+ * @param courseId
+ * @param userId
+ * @since 4.2.5.9
+ * @version 1.0.0
+ */
+export function updateUserQuestionFibAnswers( questionId, idInput, valueInput, quizId, courseId = 0, userId = 0 ) {
+	return {
+		type: 'UPDATE_USER_QUESTION_FIB_ANSWERS',
+		questionId,
+		idInput,
+		valueInput,
 	};
 }
 

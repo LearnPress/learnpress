@@ -232,12 +232,14 @@ export default compose( [
 	withDispatch( ( dispatch ) => {
 		const {
 			updateUserQuestionAnswers,
+			updateUserQuestionFibAnswers,
 			markQuestionRendered,
 		} = dispatch( 'learnpress/quiz' );
 
 		return {
 			markQuestionRendered,
 			updateUserQuestionAnswers,
+			updateUserQuestionFibAnswers,
 		};
 	} ),
 ] )( Question );
