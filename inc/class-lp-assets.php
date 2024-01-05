@@ -19,7 +19,7 @@ class LP_Assets extends LP_Abstract_Assets {
 		parent::__construct();
 
 		add_action( 'wp_print_footer_scripts', array( $this, 'show_overlay' ) );
-		add_action( 'wp_head', [ $this, 'load_scripts_styles_on_head' ], -1 );
+		add_action( 'wp_head', [ $this, 'load_scripts_styles_on_head' ], - 1 );
 	}
 
 	/**
@@ -201,6 +201,15 @@ class LP_Assets extends LP_Abstract_Assets {
 					self::url( 'js/dist/utils' . self::$_min_assets . '.js' ),
 					array( 'jquery' )
 				),
+				'lp-load-ajax'         => new LP_Asset_Key(
+					self::url( 'js/dist/loadAJAX' . self::$_min_assets . '.js' ),
+					[],
+					[],
+					0,
+					0,
+					'',
+					[ 'strategy' => 'async' ]
+				),
 				'lp-checkout'          => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/checkout' . self::$_min_assets . '.js' ),
 					array( 'lp-global', 'lp-utils', 'wp-api-fetch', 'jquery' ),
@@ -278,6 +287,15 @@ class LP_Assets extends LP_Abstract_Assets {
 					'',
 					[ 'strategy' => 'async' ]
 				),
+				'lp-courses-v2'        => new LP_Asset_Key(
+					self::url( 'js/dist/frontend/courses-v2' . self::$_min_assets . '.js' ),
+					[ 'utils' ],
+					[ LP_PAGE_COURSES ],
+					0,
+					1,
+					'',
+					[ 'strategy' => 'async' ]
+				),
 				'lp-instructors'       => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/instructors' . self::$_min_assets . '.js' ),
 					[ 'lp-global' ],
@@ -323,22 +341,13 @@ class LP_Assets extends LP_Abstract_Assets {
 					'',
 					[ 'strategy' => 'defer' ]
 				),
-				'lp-load-ajax'     => new LP_Asset_Key(
-					self::url( 'js/dist/loadAJAX' . self::$_min_assets . '.js' ),
-					array(),
-					array(),
-					0,
-					0,
-					'',
-					[ 'strategy' => 'async' ]
-				),
 			)
 		);
 
 		// Dequeue script 'smoothPageScroll' on item details, it makes can't scroll, when rewrite page item detail, can check to remove.
 		if ( LP_PAGE_SINGLE_COURSE_CURRICULUM === LP_Page_Controller::page_current() ||
-			LP_PAGE_QUIZ === LP_Page_Controller::page_current() ||
-			LP_PAGE_QUESTION === LP_Page_Controller::page_current() ) {
+			 LP_PAGE_QUIZ === LP_Page_Controller::page_current() ||
+			 LP_PAGE_QUESTION === LP_Page_Controller::page_current() ) {
 			wp_dequeue_script( 'smoothPageScroll' );
 		}
 

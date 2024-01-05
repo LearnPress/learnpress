@@ -9,8 +9,8 @@ import { lpFetchAPI } from '../../utils.js';
 import Api from '../../api.js';
 
 export default function assignUserCourse() {
-	let elFormAssignUserCourse;
-	let elFormUnAssignUserCourse;
+	let elFormAssignUserCourse, elTomSelectCourseAssign, elTomSelectUserAssign;
+	let elFormUnAssignUserCourse, elTomSelectCourseUnAssign, elTomSelectUserUnAssign;
 	const limitHandle = 5;
 
 	const getAllElements = () => {
@@ -37,7 +37,7 @@ export default function assignUserCourse() {
 
 		options = { ...optionDefault, ...options };
 
-		const tomSelectCourseAssign = new TomSelect( elTomSelect, options );
+		return new TomSelect( elTomSelect, options );
 	};
 
 	const events = () => {
@@ -135,12 +135,12 @@ export default function assignUserCourse() {
 				if ( keySearch === '' ) {
 					const elCourseAssign = elFormAssignUserCourse.querySelector( '[name=course_ids]' );
 					if ( elCourseAssign ) {
-						buildTomSelect( elCourseAssign, { options }, fetchCourses );
+						elTomSelectCourseAssign = buildTomSelect( elCourseAssign, { options }, fetchCourses );
 					}
 
 					const elCourseUnAssign = elFormUnAssignUserCourse.querySelector( '[name=course_ids]' );
 					if ( elCourseUnAssign ) {
-						buildTomSelect( elCourseUnAssign, { options }, fetchCourses );
+						elTomSelectCourseUnAssign = buildTomSelect( elCourseUnAssign, { options }, fetchCourses );
 					}
 				}
 
@@ -179,12 +179,12 @@ export default function assignUserCourse() {
 				if ( keySearch === '' ) {
 					const elUserAssign = elFormAssignUserCourse.querySelector( '[name=user_ids]' );
 					if ( elUserAssign ) {
-						buildTomSelect( elUserAssign, { options }, fetchUsers );
+						elTomSelectUserAssign = buildTomSelect( elUserAssign, { options }, fetchUsers );
 					}
 
 					const elUserUnAssign = elFormUnAssignUserCourse.querySelector( '[name=user_ids]' );
 					if ( elUserUnAssign ) {
-						buildTomSelect( elUserUnAssign, { options }, fetchUsers );
+						elTomSelectUserUnAssign = buildTomSelect( elUserUnAssign, { options }, fetchUsers );
 					}
 				}
 
@@ -232,6 +232,9 @@ export default function assignUserCourse() {
 						elMessage.innerHTML = '';
 					}, 2000 );
 					elButtonAssign.disabled = false;
+					// Clear data selected on Tom Select.
+					elTomSelectCourseAssign.clear();
+					elTomSelectUserAssign.clear();
 				} else if ( status === 'error' ) {
 					elButtonAssign.disabled = false;
 					elMessage.style.color = 'red';
@@ -284,6 +287,9 @@ export default function assignUserCourse() {
 						elMessage.innerHTML = '';
 					}, 2000 );
 					elButtonAssign.disabled = false;
+					// Clear data selected on Tom Select.
+					elTomSelectCourseUnAssign.clear();
+					elTomSelectUserUnAssign.clear();
 				} else if ( status === 'error' ) {
 					elButtonAssign.disabled = false;
 					elMessage.style.color = 'red';

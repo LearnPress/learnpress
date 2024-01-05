@@ -15,6 +15,11 @@ return apply_filters(
 			'type'  => 'checkbox',
 			'std'   => 1,
 		),
+		'hide_count_zero'   => array(
+			'label' => __( 'Hide field has count is zero', 'learnpress' ),
+			'type'  => 'checkbox',
+			'std'   => 1,
+		),
 		'search_suggestion' => array(
 			'label' => __( 'Enable Keyword Search Suggestion', 'learnpress' ),
 			'type'  => 'checkbox',

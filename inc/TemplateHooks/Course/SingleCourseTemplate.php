@@ -3,7 +3,7 @@
  * Template hooks Single Course.
  *
  * @since 4.2.3
- * @version 1.0.1
+ * @version 1.0.2
  */
 namespace LearnPress\TemplateHooks\Course;
 
@@ -22,7 +22,6 @@ class SingleCourseTemplate {
 	}
 
 	public function sections( $data = [] ) {
-
 	}
 
 	/**
@@ -80,9 +79,13 @@ class SingleCourseTemplate {
 		];
 
 		$cats      = $course->get_categories();
+		if ( empty( $cats ) ) {
+			return '';
+		}
+
 		$cat_names = [];
 		array_map(
-			function( $cat ) use ( &$cat_names ) {
+			function ( $cat ) use ( &$cat_names ) {
 				$term        = sprintf( '<a href="%s">%s</a>', get_term_link( $cat->term_id ), $cat->name );
 				$cat_names[] = $term;
 			},
@@ -111,7 +114,35 @@ class SingleCourseTemplate {
 
 			$content = $course->get_image();
 			$content = Template::instance()->nest_elements( $html_wrapper, $content );
-		} catch ( \Throwable $e ) {
+		} catch ( Throwable $e ) {
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
+		}
+
+		return $content;
+	}
+
+
+	/**
+	 * Get display instructor course.
+	 *
+	 * @param LP_Course $course
+	 * @param bool $with_avatar
+	 *
+	 * @return string
+	 * @since 4.2.5.8
+	 * @version 1.0.0
+	 */
+	public function html_instructor( LP_Course $course, bool $with_avatar = false ): string {
+		$content = '';
+
+		try {
+			$html_wrapper = [
+				'<span class="course-instructor">' => '</span>',
+			];
+
+			$content = $course->get_instructor_html( $with_avatar );
+			$content = Template::instance()->nest_elements( $html_wrapper, $content );
+		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 
@@ -126,7 +157,10 @@ class SingleCourseTemplate {
 	 * @return string
 	 */
 	public function html_price( LP_Course $course ): string {
-		return $course->get_course_price_html();
+		$html_wrapper = [
+			'<div class="course-price">' => '</div>',
+		];
+		return Template::instance()->nest_elements( $html_wrapper, $course->get_course_price_html() );
 	}
 
 	/**
@@ -166,16 +200,16 @@ class SingleCourseTemplate {
 
 		switch ( $post_type_item ) {
 			case LP_LESSON_CPT:
-				$content = sprintf( '%d %s', $count_item, _n( 'Lesson', 'Lessons', $count_item ) );
+				$content = sprintf( '%d %s', $count_item, _n( 'Lesson', 'Lessons', $count_item, 'learnpress' ) );
 				break;
 			case LP_QUIZ_CPT:
-				$content = sprintf( '%d %s', $count_item, _n( 'Quiz', 'Quizzes', $count_item ) );
+				$content = sprintf( '%d %s', $count_item, _n( 'Quiz', 'Quizzes', $count_item, 'learnpress' ) );
 				break;
 			case 'lp_assignment':
-				$content = sprintf( '%d %s', $count_item, _n( 'Assignment', 'Assignments', $count_item ) );
+				$content = sprintf( '%d %s', $count_item, _n( 'Assignment', 'Assignments', $count_item, 'learnpress' ) );
 				break;
 			case 'lp_h5p':
-				$content = sprintf( '%d %s', $count_item, _n( 'H5P', 'H5Ps', $count_item ) );
+				$content = sprintf( '%d %s', $count_item, _n( 'H5P', 'H5Ps', $count_item, 'learnpress' ) );
 				break;
 			default:
 				$content = '';
@@ -232,7 +266,7 @@ class SingleCourseTemplate {
 		try {
 			$duration        = $course->get_duration();
 			$duration_arr    = explode( ' ', $duration );
-			$duration_number = $duration_arr[0] ?? 0;
+			$duration_number = floatval( $duration_arr[0] ?? 0 );
 			$duration_type   = $duration_arr[1] ?? '';
 			$duration_str    = LP_Datetime::get_string_plural_duration( $duration_number, $duration_type );
 

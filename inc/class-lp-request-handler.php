@@ -511,13 +511,7 @@ class LP_Request {
 	}
 
 	public static function get_cookie( $name, $def = false, $global = false ) {
-		if ( $global ) {
-			return $_COOKIE[ $name ] ?? $def;
-		}
-
-		$cookie = isset( $_COOKIE['LP'] ) ? (array) json_decode( stripslashes( $_COOKIE['LP'] ) ) : array();
-
-		return $cookie[ $name ] ?? $def;
+		return $_COOKIE[ $name ] ?? $def;
 	}
 
 	/*public static function set_cookie( $name, $value, $expires = '', $domain = '', $path = '', $secure = false ) {

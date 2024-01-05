@@ -352,7 +352,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 		try {
 			$filter              = new LP_Course_Filter();
 			$params              = $request->get_params();
-			$filter->limit       = 10;
+			$filter->limit       = 20;
 			$filter->only_fields = [ 'ID', 'post_title' ];
 			$filter->post_title  = $params['c_search'] ?? '';
 			$courses             = LP_Course::get_courses( $filter );
@@ -385,7 +385,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 					'user_nicename',
 					'user_email',
 				),
-				'number'         => 10,
+				'number'         => 20,
 				'fields'         => array( 'ID', 'display_name', 'user_login', 'user_email' ),
 			);
 

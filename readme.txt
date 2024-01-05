@@ -3,9 +3,9 @@ Contributors: thimpress, tungnx89, nhamdv, hungkv, nguyenlammanh, tunnhn, phongl
 Donate link:
 Tags: elearning, education, course, lms, learning management system
 Requires at least: 6.2
-Tested up to: 6.4.1
+Tested up to: 6.4.2
 Requires PHP: 7.0
-Stable tag: 4.2.5.6
+Stable tag: 4.2.5.8
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -209,6 +209,20 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.
 
 == Changelog ==
+
+= 4.2.5.8 (2023-12-25) =
+~ Fixed: security.
+~ Fixed: translate some text.
+~ Tweak: layout list courses, set hooks for override, will soon stop support override template file.
+~ Fixed: clear cache quiz question_ids when add/remove/delete/clone question on the quiz.
+~ Added: code use for flutter.
+
+= 4.2.5.7 (2023-12-06) =
+~ Added: new feature "Assign/Unassign Courses" on the Tools Backend.
+~ Added: courses filter support multiple language.
+~ Dev: widget elementor filter courses.
+~ Dev: widget elementor list courses.
+~ Fixed: save sale price.
 
 = 4.2.5.6 (2023-11-24) =
 ~ Tweak: logic load Widget Filter Courses.

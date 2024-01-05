@@ -2,6 +2,7 @@
  * Load all you need via AJAX
  *
  * @since 4.2.5.7
+ * @version 1.0.1
  */
 
 import { lpAddQueryArgs, lpFetchAPI } from './utils';
@@ -24,7 +25,7 @@ const lpAJAX = ( () => {
 				option.method = 'POST';
 			}
 
-			params.args = { ...params.args, ...lpData.urlParams };
+			//params.args = { ...params.args, ...lpData.urlParams };
 
 			if ( 'POST' === option.method ) {
 				option.body = JSON.stringify( params );
@@ -38,23 +39,22 @@ const lpAJAX = ( () => {
 			lpFetchAPI( url, option, callBack );
 		},
 		getElements: () => {
+			//console.log( 'getElements' );
 			// Finds all elements with the class '.lp-load-ajax-element'
-			const elements = document.querySelectorAll( '.lp-load-ajax-element' );
+			const elements = document.querySelectorAll( '.lp-load-ajax-element:not(.loaded)' );
 			if ( elements.length ) {
 				elements.forEach( ( element ) => {
+					//console.log( 'Element handing', element );
+					element.classList.add( 'loaded' );
 					const url = API.frontend.apiAJAX;
-					const dataObj = JSON.parse( element.dataset.send );
+					const elTarget = element.querySelector( '.lp-target' );
+					const dataObj = JSON.parse( elTarget.dataset.send );
 					const dataSend = { ...dataObj };
+					const elLoadingFirst = element.querySelector( '.loading-first' );
 
 					const callBack = {
 						success: ( response ) => {
 							const { status, message, data } = response;
-							const args = dataObj.args;
-							const elTarget = element.querySelector( args.el_target || '' );
-							if ( ! elTarget ) {
-								console.log( 'elTarget load ajax content not found' );
-								return;
-							}
 
 							if ( 'success' === status ) {
 								elTarget.innerHTML = data.content;
@@ -66,7 +66,10 @@ const lpAJAX = ( () => {
 							console.log( error );
 						},
 						completed: () => {
-							console.log( 'completed' );
+							//console.log( 'completed' );
+							if ( elLoadingFirst ) {
+								elLoadingFirst.remove();
+							}
 						},
 					};
 
@@ -77,8 +80,21 @@ const lpAJAX = ( () => {
 	};
 } );
 
+// Case 1: file JS loaded, find all elements with the class '.lp-load-ajax-element' not have class 'loaded'
 if ( 'undefined' === typeof window.lpAJAXG ) {
 	window.lpAJAXG = lpAJAX();
 	window.lpAJAXG.getElements();
 }
+
+// Case 2: readystatechange, find all elements with the class '.lp-load-ajax-element' not have class 'loaded'
+document.addEventListener( 'readystatechange', ( event ) => {
+	//console.log( 'readystatechange' );
+	window.lpAJAXG.getElements();
+} );
+
+// Case 3: DOMContentLoaded, find all elements with the class '.lp-load-ajax-element' not have class 'loaded'
+document.addEventListener( 'DOMContentLoaded', () => {
+	window.lpAJAXG.getElements();
+} );
+
 export default lpAJAX;

@@ -5,7 +5,7 @@
  * Register widgets
  *
  * @since 4.2.3
- * @version 1.0.0
+ * @version 1.0.1
  */
 
 namespace LearnPress\ExternalPlugin\Elementor;
@@ -26,6 +26,7 @@ class LPElementor {
 		add_action( 'elementor/elements/categories_registered', array( $this, 'register_category' ) );
 		add_action( 'elementor/widgets/register', array( $this, 'register_widgets' ), 10, 1 );
 		add_action( 'elementor/dynamic_tags/register', array( $this, 'register_tags' ) );
+		add_filter( 'lp/rest/ajax/allow_callback', [ $this, 'register_callback_ajax' ] );
 	}
 
 	/**
@@ -107,5 +108,22 @@ class LPElementor {
 		foreach ( $this->config['dynamic'] as $key => $tag_class_name ) {
 			$dynamic_tags->register( new $tag_class_name() );
 		}
+	}
+
+	/**
+	 * Register callback ajax for load content via ajax.
+	 * Of LearnPress
+	 *
+	 * @param array $callbacks
+	 *
+	 * @return array
+	 * @since 4.2.5.8
+	 * @version 1.0.0
+	 */
+	public function register_callback_ajax( array $callbacks ): array {
+		return array_merge(
+			$callbacks,
+			$this->config['loadAjax']
+		);
 	}
 }

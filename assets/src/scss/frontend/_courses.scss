@@ -763,7 +763,7 @@ a {
 				background: #e4a2a2;
 				line-height: 1;
 			}
-			.course-excerpt{
+			.course-excerpt, .course-short-description{
 				width: 100%;
 			}
 
@@ -841,6 +841,10 @@ a {
 					color: var(--lp-primary-color);
 					font-family: "Font Awesome 5 Free";
 					font-weight: 900;
+				}
+
+				&>div {
+					display: inline-block;
 				}
 			}
 
@@ -1007,6 +1011,13 @@ a {
 		li {
 			display: none;
 		}
+	}
+}
+
+#lp-list-courses-default {
+	.lp-skeleton-animation {
+		clear: both;
+		padding: 5px 0 0 0;
 	}
 }
 

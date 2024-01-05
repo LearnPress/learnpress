@@ -57,7 +57,7 @@ $clean_tables = array( 'learnpress_sessions' );
 			<div class="progressbar__item step-<?php echo esc_attr( $i ); ?>" data-total="<?php echo esc_attr( $rows ); ?>">
 				<div class="progressbar__container">
 					<div class="progressbar__content">
-						<h4><?php echo esc_html( 'Table name: ' . $clean_table . '' ); ?></h4>
+						<h4><?php echo sprintf('%s: %s', esc_html__( 'Table name', 'learnpress' ), $clean_table ); ?></h4>
 						<div class="progressbar__indexs">
 							<span class="progressbar__rows">
 								<?php echo esc_html( '0 / ' . $rows . ' expire' ); ?>

@@ -66,6 +66,7 @@ module.exports = {
 			},
 		},
 		'./assets/js/dist/frontend/courses': './assets/src/js/frontend/courses.js',
+		'./assets/js/dist/frontend/courses-v2': './assets/src/js/frontend/courses-v2.js',
 		'./assets/js/dist/frontend/instructors': './assets/src/apps/js/frontend/instructors.js',
 		'./assets/js/dist/frontend/become-teacher': './assets/src/apps/js/frontend/become-teacher.js',
 		'./assets/js/dist/frontend/checkout': './assets/src/apps/js/frontend/checkout.js',

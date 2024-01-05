@@ -1,5 +1,5 @@
 import API from '../api';
-import { lpFetchAPI } from '../utils';
+import { lpAddQueryArgs, lpFetchAPI, lpGetCurrentURLNoParam } from '../utils';
 
 const classCourseFilter = 'lp-form-course-filter';
 
@@ -81,7 +81,11 @@ window.lpCourseFilter = {
 		controller = new AbortController();
 		signal = controller.signal;
 
-		const url = API.frontend.apiCourses + '?c_search=' + keyword + '&c_suggest=1';
+		let url = API.frontend.apiCourses + '?c_search=' + keyword + '&c_suggest=1';
+		if ( lpData.urlParams.hasOwnProperty( 'lang' ) ) {
+			url += '&lang=' + lpData.urlParams.lang;
+		}
+
 		let paramsFetch = {
 			method: 'GET',
 		};
@@ -141,12 +145,18 @@ window.lpCourseFilter = {
 			filterCourses.page_tag_id_current = lpData.urlParams.page_tag_id_current;
 		}
 
+		const filterParamsUrl = { params_url: filterCourses };
+		// Send lang to API if exist for multiple lang.
+		if ( lpData.urlParams.hasOwnProperty( 'lang' ) ) {
+			filterParamsUrl.params_url.lang = lpData.urlParams.lang;
+		}
+
 		const paramsFetch = {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
 			},
-			body: JSON.stringify( { ...widgetData, ...{ params_url: filterCourses } } ),
+			body: JSON.stringify( { ...widgetData, ...filterParamsUrl } ),
 		};
 
 		if ( 0 !== parseInt( lpData.user_id ) ) {
@@ -180,6 +190,8 @@ window.lpCourseFilter = {
 	submit: ( form ) => {
 		const formData = new FormData( form ); // Create a FormData object from the form
 		const elListCourse = document.querySelector( '.learn-press-courses' );
+		const idListCourseTarget = '' || '#lp-list-courses-default';
+		const elListCourseTarget = document.querySelector( idListCourseTarget );
 
 		//const skeleton = elListCourse.querySelector( '.lp-archive-course-skeleton' );
 		const filterCourses = { paged: 1 };
@@ -192,7 +204,8 @@ window.lpCourseFilter = {
 			const key = pair[ 0 ];
 			const value = formData.getAll( key );
 			if ( ! filterCourses.hasOwnProperty( key ) ) {
-				filterCourses[ key ] = value;
+				// Convert value array to string.
+				filterCourses[ key ] = value.join( ',' );
 			}
 		}
 
@@ -204,12 +217,68 @@ window.lpCourseFilter = {
 			filterCourses.page_tag_id_current = lpData.urlParams.page_tag_id_current;
 		}
 
-		if ( 'undefined' !== typeof lpSettingCourses &&
+		// Send lang to API if exist for multiple lang.
+		if ( lpData.urlParams.hasOwnProperty( 'lang' ) ) {
+			filterCourses.lang = lpData.urlParams.lang;
+		}
+
+		if ( 'undefined' !== typeof lpSettingCourses && // Old version.
 			lpData.is_course_archive &&
 			lpSettingCourses.lpArchiveLoadAjax &&
-			elListCourse &&
+			elListCourse && ! elListCourseTarget &&
 			'undefined' !== typeof window.lpCourseList ) {
 			window.lpCourseList.triggerFetchAPI( filterCourses );
+		} else if ( elListCourseTarget ) {
+			const elLPTarget = elListCourseTarget.querySelector( '.lp-target' );
+			const dataObj = JSON.parse( elLPTarget.dataset.send );
+			const dataSend = { ...dataObj };
+
+			// Show loading list courses
+			const elLoading = elListCourseTarget.closest( 'div:not(.lp-target)' ).querySelector( '.lp-loading-change' );
+			if ( elLoading ) {
+				elLoading.style.display = 'block';
+			}
+			// End
+
+			// Get all fields in form.
+			const fields = form.elements;
+			// If field not selected on form, will remove value on dataSend.
+			for ( let i = 0; i < fields.length; i++ ) {
+				if ( ! filterCourses.hasOwnProperty( fields[ i ].name ) ) {
+					delete dataSend.args[ fields[ i ].name ];
+				} else {
+					dataSend.args[ fields[ i ].name ] = filterCourses[ fields[ i ].name ];
+				}
+			}
+			// End.
+
+			dataSend.args.paged = 1;
+			elLPTarget.dataset.send = JSON.stringify( dataSend );
+
+			// Set url params to reload page.
+			// Todo: need check allow set url params.
+			lpData.urlParams = filterCourses;
+			window.history.pushState( {}, '', lpAddQueryArgs( lpGetCurrentURLNoParam(), lpData.urlParams ) );
+			// End.
+
+			const callBack = {
+				success: ( response ) => {
+					//console.log( 'response', response );
+					const { status, message, data } = response;
+					elLPTarget.innerHTML = data.content || '';
+				},
+				error: ( error ) => {
+					console.log( error );
+				},
+				completed: () => {
+					//console.log( 'completed' );
+					if ( elLoading ) {
+						elLoading.style.display = 'none';
+					}
+				},
+			};
+
+			window.lpAJAXG.fetchAPI( API.frontend.apiAJAX, dataSend, callBack );
 		} else {
 			const courseUrl = lpData.urlParams.page_term_url || lpData.courses_url || '';
 			const url = new URL( courseUrl );
@@ -265,13 +334,18 @@ window.lpCourseFilter = {
 				return;
 			}
 
+			const idListCourseTarget = '' || '#lp-list-courses-default';
+			const elListCourseTarget = document.querySelector( idListCourseTarget );
+
 			// Filter courses
 			const form = parent.closest( `.${ classCourseFilter }` );
 			const btnSubmit = form.querySelector( '.course-filter-submit' );
 			let enableLoadAJAXCourses = false;
 			enableLoadAJAXCourses = 'undefined' !== typeof lpSettingCourses ? parseInt( lpSettingCourses.lpArchiveLoadAjax ) : 0;
 			const elListCourse = document.querySelector( '.learn-press-courses' );
-			if ( elListCourse && enableLoadAJAXCourses ) {
+			if ( elListCourse && enableLoadAJAXCourses ) { // Old version.
+				btnSubmit.click();
+			} else if ( elListCourseTarget ) {
 				btnSubmit.click();
 			}
 

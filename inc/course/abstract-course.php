@@ -817,9 +817,12 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		}
 
 		/**
-		 * Check if students have enrolled or purchased course is reached.
+		 * Check if students have purchased course is reached.
+		 * For case check course can purchase.
 		 *
 		 * @return mixed
+		 * @since 3.0.0
+		 * @version 1.0.1
 		 */
 		public function is_in_stock() {
 			$in_stock    = true;
@@ -827,6 +830,25 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 
 			if ( $max_allowed ) {
 				$in_stock = $max_allowed > $this->get_total_user_enrolled_or_purchased();
+			}
+
+			return apply_filters( 'learn-press/is-in-stock', $in_stock, $this->get_id() );
+		}
+
+		/**
+		 * Check max student can enroll.
+		 * For case check course can enroll.
+		 *
+		 * @return mixed
+		 * @since 4.2.5.7
+		 * @version 1.0.0
+		 */
+		public function is_in_stock_enroll() {
+			$in_stock    = true;
+			$max_allowed = $this->get_max_students();
+
+			if ( $max_allowed ) {
+				$in_stock = $max_allowed > $this->get_total_user_enrolled();
 			}
 
 			return apply_filters( 'learn-press/is-in-stock', $in_stock, $this->get_id() );

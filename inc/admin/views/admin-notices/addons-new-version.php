@@ -25,7 +25,7 @@ if ( empty( $data['dismiss'] ) ) {
 		}
 		?>
 		<p><?php echo sprintf( '<strong>%s</strong>', __( 'New version Addons.', 'learnpress' ) ); ?></p>
-		<p style="display: flex;gap: 5px">
+		<p style="display: flex;gap: 5px;flex-wrap: wrap">
 			<?php
 			foreach ( $data['addons'] as $addon ) {
 				echo sprintf(

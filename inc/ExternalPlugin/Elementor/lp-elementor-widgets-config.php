@@ -16,6 +16,9 @@ use LearnPress\ExternalPlugin\Elementor\Widgets\Course\Dynamic\CourseLevelDynami
 use LearnPress\ExternalPlugin\Elementor\Widgets\Course\ListCoursesByPageElementor;
 use LearnPress\ExternalPlugin\Elementor\Widgets\Course\Sections\CoursePriceElementor;
 use LearnPress\ExternalPlugin\Elementor\Widgets\Course\FilterCourseElementor;
+use LearnPress\ExternalPlugin\Elementor\Widgets\Course\Skins\CoursesGrid;
+use LearnPress\ExternalPlugin\Elementor\Widgets\Course\Skins\CoursesList;
+use LearnPress\ExternalPlugin\Elementor\Widgets\Course\Skins\CoursesLoopItem;
 use LearnPress\ExternalPlugin\Elementor\Widgets\CourseListElementor;
 use LearnPress\ExternalPlugin\Elementor\Widgets\Instructor\Sections\InstructorButtonViewElementor;
 use LearnPress\ExternalPlugin\Elementor\Widgets\Instructor\Sections\InstructorDescriptionElementor;
@@ -48,7 +51,7 @@ return [
 			//'list-courses-by-page'      => ListCoursesByPageElementor::class,
 			// Single Course
 			'course-price'              => CoursePriceElementor::class,
-			'filter-course'				=> FilterCourseElementor::class
+			//'filter-course'				=> FilterCourseElementor::class
 		]
 	),
 	'dynamic' => apply_filters(
@@ -64,6 +67,14 @@ return [
 			'course-author-url'     => CourseAuthorUrlElementor::class,
 			'count-student-courses' => CountStudentDynamicElementor::class,
 			'course-courses-free'   => CountCoursesFreeDynamicElementor::class,
+		]
+	),
+	'loadAjax' => apply_filters(
+		'lp/elementor/loadAjax',
+		[
+			CoursesGrid::class . ':render_courses',
+			CoursesList::class . ':render_courses',
+			CoursesLoopItem::class . ':render_courses',
 		]
 	),
 ];

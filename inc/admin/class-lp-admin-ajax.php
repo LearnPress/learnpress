@@ -359,8 +359,19 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			$paged      = LP_Request::get_param( 'paged' );
 			$exclude    = LP_Request::get_param( 'exclude' );
 
-			if ( ! current_user_can( ADMIN_ROLE ) ) { // Fix security.
-				return;
+			if ( ! current_user_can( ADMIN_ROLE ) ) { // Fix security
+				$roles_accept = apply_filters( 'lp/backend/roles/search-items', [ ADMIN_ROLE ] );
+
+				$flag = false;
+				foreach ( $roles_accept as $role ) {
+					if ( current_user_can( $role ) ) {
+						$flag = true;
+					}
+				}
+
+				if ( ! $flag ) {
+					return;
+				}
 			}
 
 			$nonce = LP_Request::get_param( 'nonce' );
@@ -506,7 +517,16 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 * @note tungnx checked has use
 		 */
 		public static function add_items_to_order() {
-			if ( ! current_user_can( ADMIN_ROLE ) ) { // Fix security
+			$roles_accept = apply_filters( 'lp/backend/roles/can-add-items', [ ADMIN_ROLE ] );
+
+			$flag = false;
+			foreach ( $roles_accept as $role ) {
+				if ( current_user_can( $role ) ) {
+					$flag = true;
+				}
+			}
+
+			if ( ! $flag ) {
 				return;
 			}
 

@@ -26,13 +26,15 @@ class Courses {
 	 * Count total courses free
 	 *
 	 * @param LP_Course_Filter $filter
+	 *
 	 * @return int
 	 * @since 4.2.5.4
 	 * @version 1.0.0
 	 */
 	public static function count_course_free( LP_Course_Filter $filter ): int {
 		// Check cache
-		$key_cache = 'count-courses-free-' . md5( json_encode( $filter ) );
+		$lang      = $_REQUEST['lang'] ?? '';
+		$key_cache = 'count-courses-free-' . md5( json_encode( $filter ) . $lang );
 		$count     = LP_Cache::cache_load_first( 'get', $key_cache );
 		if ( false !== $count ) {
 			return $count;
@@ -42,6 +44,7 @@ class Courses {
 		$count            = $lp_courses_cache->get_cache( $key_cache );
 		if ( false !== $count ) {
 			LP_Cache::cache_load_first( 'set', $key_cache, $count );
+
 			return $count;
 		}
 
@@ -64,7 +67,9 @@ class Courses {
 	 *
 	 * @param array $param
 	 * @param LP_Course_Filter $filter
+	 *
 	 * @since 4.2.3.3 move from class LP_Course
+	 * @version 1.0.1
 	 * @return void
 	 */
 	public static function handle_params_for_query_courses( LP_Course_Filter &$filter, array $param = [] ) {
@@ -127,8 +132,8 @@ class Courses {
 		}
 
 		// Order by
-		$filter->order_by = LP_Helper::sanitize_params_submitted( ! empty( $param['order_by'] ) ? $param['order_by'] : 'post_date' );
-		$filter->order    = LP_Helper::sanitize_params_submitted( ! empty( $param['order'] ) ? $param['order'] : 'DESC' );
+		$filter->order_by = LP_Helper::sanitize_params_submitted( ! empty( $param['order_by'] ) ? $param['order_by'] : 'post_date', 'key' );
+		$filter->order    = LP_Helper::sanitize_params_submitted( ! empty( $param['order'] ) ? $param['order'] : 'DESC', 'key' );
 		$filter->limit    = $param['limit'] ?? LP_Settings::get_option( 'archive_course_limit', 10 );
 
 		// For search suggest courses

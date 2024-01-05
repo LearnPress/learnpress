@@ -64,6 +64,10 @@
 					loadPage: function loadPage( e ) {
 						e.preventDefault();
 						const $button = $( e.target );
+						const elPageNumbers = $button.find( '.page-numbers' );
+						if ( elPageNumbers.hasClass( 'disabled' ) ) {
+							return;
+						}
 
 						if ( $button.is( 'span' ) ) {
 							return;

@@ -145,6 +145,7 @@ class FilterCourseTemplate {
 				$data
 			);
 
+			$this->check_param_url_has_lang( $data );
 			$value    = LP_Request::get_param( 'c_search' );
 			$value    = isset( $data['params_url'] ) ? ( $data['params_url']['c_search'] ?? $value ) : $value;
 			$content  = sprintf(
@@ -178,9 +179,11 @@ class FilterCourseTemplate {
 		$content = '';
 
 		try {
-			$params_url    = $data['params_url'] ?? [];
-			$data_selected = $params_url['sort_by'] ?? '';
-			$data_selected = explode( ',', $data_selected );
+			$this->check_param_url_has_lang( $data );
+			$params_url      = $data['params_url'] ?? [];
+			$data_selected   = $params_url['sort_by'] ?? '';
+			$data_selected   = explode( ',', $data_selected );
+			$hide_count_zero = $data['hide_count_zero'] ?? 1;
 
 			// Get number courses free
 			$filter_courses_free = new LP_Course_Filter();
@@ -218,15 +221,18 @@ class FilterCourseTemplate {
 
 				$value    = "on_{$key}";
 				$disabled = $field['count'] > 0 ? '' : 'disabled';
-				$checked  = in_array( $value, $data_selected ) && empty( $disabled ) ? 'checked' : '';
-				$input    = sprintf(
+				if ( ! empty( $disabled ) && $hide_count_zero ) {
+					continue;
+				}
+				$checked = in_array( $value, $data_selected ) && empty( $disabled ) ? 'checked' : '';
+				$input   = sprintf(
 					'<input name="sort_by" type="checkbox" value="%1$s" %2$s %3$s>',
 					esc_attr( $value ),
 					esc_attr( $checked ),
 					esc_attr( $disabled )
 				);
-				$label    = sprintf( '<label for="">%s</label>', wp_kses_post( $field['label'] ) );
-				$count    = sprintf( '<span class="count">%s</span>', esc_html( $field['count'] ) );
+				$label   = sprintf( '<label for="">%s</label>', wp_kses_post( $field['label'] ) );
+				$count   = sprintf( '<span class="count">%s</span>', esc_html( $field['count'] ) );
 
 				$sections = apply_filters(
 					'learn-press/filter-courses/price/sections',
@@ -265,11 +271,13 @@ class FilterCourseTemplate {
 		$content = '';
 
 		try {
+			$this->check_param_url_has_lang( $data );
 			$params_url       = $data['params_url'] ?? [];
 			$data_selected    = $params_url['term_id'] ?? '';
 			$data_selected    = explode( ',', $data_selected );
 			$arg_query_terms  = [ 'hide_empty' => true ];
 			$category_current = null;
+			$hide_count_zero  = $data['hide_count_zero'] ?? 1;
 
 			if ( isset( $params_url['page_term_id_current'] ) ) {
 				$category_current_id = $params_url['page_term_id_current'];
@@ -309,10 +317,13 @@ class FilterCourseTemplate {
 
 				$value    = $term->term_id;
 				$disabled = $count_courses > 0 ? '' : 'disabled';
-				$checked  = in_array( $value, $data_selected ) && empty( $disabled ) ? 'checked' : '';
-				$input    = sprintf( '<input name="term_id" type="checkbox" value="%s" %s %s>', esc_attr( $value ), esc_attr( $checked ), $disabled );
-				$label    = sprintf( '<label for="">%s</label>', wp_kses_post( $term->name ) );
-				$count    = sprintf( '<span class="count">%s</span>', esc_html( $count_courses ) );
+				if ( ! empty( $disabled ) && $hide_count_zero ) {
+					continue;
+				}
+				$checked = in_array( $value, $data_selected ) && empty( $disabled ) ? 'checked' : '';
+				$input   = sprintf( '<input name="term_id" type="checkbox" value="%s" %s %s>', esc_attr( $value ), esc_attr( $checked ), $disabled );
+				$label   = sprintf( '<label for="">%s</label>', wp_kses_post( $term->name ) );
+				$count   = sprintf( '<span class="count">%s</span>', esc_html( $count_courses ) );
 
 				$sections = apply_filters(
 					'learn-press/filter-courses/course-tag/sections',
@@ -351,9 +362,11 @@ class FilterCourseTemplate {
 		$content = '';
 
 		try {
-			$params_url    = $data['params_url'] ?? [];
-			$data_selected = $params_url['tag_id'] ?? '';
-			$data_selected = explode( ',', $data_selected );
+			$this->check_param_url_has_lang( $data );
+			$params_url      = $data['params_url'] ?? [];
+			$data_selected   = $params_url['tag_id'] ?? '';
+			$data_selected   = explode( ',', $data_selected );
+			$hide_count_zero = $data['hide_count_zero'] ?? 1;
 			// Check has in tag page.
 			if ( isset( $params_url['page_tag_id_current'] ) &&
 				empty( $params_url['tag_id'] ) ) {
@@ -386,10 +399,13 @@ class FilterCourseTemplate {
 				$count_courses = 0;
 				Courses::get_courses( $filter, $count_courses );
 				$disabled = $count_courses > 0 ? '' : 'disabled';
-				$checked  = in_array( $value, $data_selected ) && empty( $disabled ) ? 'checked' : '';
-				$input    = sprintf( '<input name="tag_id" type="checkbox" value="%s" %s %s>', esc_attr( $value ), esc_attr( $checked ), $disabled );
-				$label    = sprintf( '<label for="">%s</label>', wp_kses_post( $term->name ) );
-				$count    = sprintf( '<span class="count">%s</span>', esc_html( $count_courses ) );
+				if ( ! empty( $disabled ) && $hide_count_zero ) {
+					continue;
+				}
+				$checked = in_array( $value, $data_selected ) && empty( $disabled ) ? 'checked' : '';
+				$input   = sprintf( '<input name="tag_id" type="checkbox" value="%s" %s %s>', esc_attr( $value ), esc_attr( $checked ), $disabled );
+				$label   = sprintf( '<label for="">%s</label>', wp_kses_post( $term->name ) );
+				$count   = sprintf( '<span class="count">%s</span>', esc_html( $count_courses ) );
 
 				$sections = apply_filters(
 					'learn-press/filter-courses/course-tag/sections',
@@ -428,10 +444,12 @@ class FilterCourseTemplate {
 		$content = '';
 
 		try {
-			$params_url    = $data['params_url'] ?? [];
-			$data_selected = $params_url['c_authors'] ?? '';
-			$data_selected = explode( ',', $data_selected );
-			$instructors   = get_users(
+			$this->check_param_url_has_lang( $data );
+			$params_url      = $data['params_url'] ?? [];
+			$data_selected   = $params_url['c_authors'] ?? '';
+			$data_selected   = explode( ',', $data_selected );
+			$hide_count_zero = $data['hide_count_zero'] ?? 1;
+			$instructors     = get_users(
 				array(
 					'role__in' => [ LP_TEACHER_ROLE, ADMIN_ROLE ],
 					'fields'   => array( 'ID', 'display_name' ),
@@ -453,10 +471,13 @@ class FilterCourseTemplate {
 
 				$value    = $instructor->ID;
 				$disabled = $total_course_of_instructor > 0 ? '' : 'disabled';
-				$checked  = in_array( $value, $data_selected ) && empty( $disabled ) ? 'checked' : '';
-				$input    = sprintf( '<input name="c_authors" type="checkbox" value="%s" %s %s>', esc_attr( $value ), esc_attr( $checked ), $disabled );
-				$label    = sprintf( '<label for="">%s</label>', esc_html( $instructor->display_name ) );
-				$count    = sprintf( '<span class="count">%s</span>', esc_html( $total_course_of_instructor ) );
+				if ( ! empty( $disabled ) && $hide_count_zero ) {
+					continue;
+				}
+				$checked = in_array( $value, $data_selected ) && empty( $disabled ) ? 'checked' : '';
+				$input   = sprintf( '<input name="c_authors" type="checkbox" value="%s" %s %s>', esc_attr( $value ), esc_attr( $checked ), $disabled );
+				$label   = sprintf( '<label for="">%s</label>', esc_html( $instructor->display_name ) );
+				$count   = sprintf( '<span class="count">%s</span>', esc_html( $total_course_of_instructor ) );
 
 				$sections = apply_filters(
 					'learn-press/filter-courses/author/sections',
@@ -496,10 +517,12 @@ class FilterCourseTemplate {
 		$content = '';
 
 		try {
-			$params_url    = $data['params_url'] ?? [];
-			$data_selected = $params_url['c_level'] ?? '';
-			$data_selected = explode( ',', $data_selected );
-			$fields        = lp_course_level();
+			$this->check_param_url_has_lang( $data );
+			$params_url      = $data['params_url'] ?? [];
+			$data_selected   = $params_url['c_level'] ?? '';
+			$data_selected   = explode( ',', $data_selected );
+			$fields          = lp_course_level();
+			$hide_count_zero = $data['hide_count_zero'] ?? 1;
 
 			foreach ( $fields as $key => $field ) {
 				$html_wrapper = [
@@ -520,15 +543,18 @@ class FilterCourseTemplate {
 				LP_Course::get_courses( $filter, $total_courses );
 
 				$disabled = $total_courses > 0 ? '' : 'disabled';
-				$checked  = in_array( $value, $data_selected ) && empty( $disabled ) ? 'checked' : '';
-				$input    = sprintf(
+				if ( ! empty( $disabled ) && $hide_count_zero ) {
+					continue;
+				}
+				$checked = in_array( $value, $data_selected ) && empty( $disabled ) ? 'checked' : '';
+				$input   = sprintf(
 					'<input name="c_level" type="checkbox" value="%1$s" %2$s %3$s>',
 					esc_attr( $value ),
 					esc_attr( $checked ),
 					esc_attr( $disabled )
 				);
-				$label    = sprintf( '<label for="">%s</label>', esc_html( $field ) );
-				$count    = sprintf( '<span class="count">%s</span>', esc_html( $total_courses ) );
+				$label   = sprintf( '<label for="">%s</label>', esc_html( $field ) );
+				$count   = sprintf( '<span class="count">%s</span>', esc_html( $total_courses ) );
 
 				$sections = apply_filters(
 					'learn-press/filter-courses/levels/sections',
@@ -596,12 +622,28 @@ class FilterCourseTemplate {
 
 		// Check has in category page.
 		if ( isset( $params_url['page_term_id_current'] ) &&
-		empty( $params_url['term_id'] ) ) {
+			empty( $params_url['term_id'] ) ) {
 			$filter->term_ids[] = $params_url['page_term_id_current'];
 		} // Check has in tag page.
 		elseif ( isset( $params_url['page_tag_id_current'] ) &&
-		empty( $params_url['tag_id'] ) ) {
+			empty( $params_url['tag_id'] ) ) {
 			$filter->tag_ids[] = $params_url['page_tag_id_current'];
+		}
+	}
+
+	/**
+	 * Check param url has lang for multiple lang.
+	 *
+	 * @param array $data
+	 *
+	 * @return void
+	 * @since 4.2.5.7
+	 * @version 1.0.0
+	 */
+	public function check_param_url_has_lang( array $data = [] ) {
+		$params_url = $data['params_url'] ?? [];
+		if ( isset( $params_url['lang'] ) ) {
+			$_REQUEST['lang'] = sanitize_text_field( $params_url['lang'] );
 		}
 	}
 }

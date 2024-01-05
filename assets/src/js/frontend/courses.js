@@ -1,6 +1,14 @@
+/**
+ * @deprecated 4.2.5.8
+ * But still support for theme has html old, override.
+ * Todo: if want remove file, need to check theme override file archive, can via remove hook override file.
+ */
+
 import API from '../api';
 import { lpAddQueryArgs, lpFetchAPI, lpGetCurrentURLNoParam } from '../utils';
 import Cookies from '../utils/cookies';
+
+const elListCoursesIdNewDefault = '#lp-list-courses-default';
 
 if ( 'undefined' === typeof lpData || 'undefined' === typeof lpSettingCourses ) {
 	console.log( 'lpData || lpSettingCourses is undefined' );
@@ -17,6 +25,9 @@ window.lpArchiveRequestCourse = ( args ) => {
 // Events
 document.addEventListener( 'change', function( e ) {
 	const target = e.target;
+	if ( window.lpCourseList.checkIsNewListCourses() ) {
+		return;
+	}
 
 	window.lpCourseList.onChangeSortBy( e, target );
 	window.lpCourseList.onChangeTypeLayout( e, target );
@@ -24,21 +35,37 @@ document.addEventListener( 'change', function( e ) {
 document.addEventListener( 'click', function( e ) {
 	const target = e.target;
 
+	if ( window.lpCourseList.checkIsNewListCourses() ) {
+		return;
+	}
+
 	window.lpCourseList.clickLoadMore( e, target );
 	window.lpCourseList.clickNumberPage( e, target );
 } );
 document.addEventListener( 'scroll', function( e ) {
 	const target = e.target;
 
+	if ( window.lpCourseList.checkIsNewListCourses() ) {
+		return;
+	}
+
 	window.lpCourseList.scrollInfinite( e, target );
 } );
 document.addEventListener( 'keyup', function( e ) {
 	const target = e.target;
 
+	if ( window.lpCourseList.checkIsNewListCourses() ) {
+		return;
+	}
+
 	window.lpCourseList.searchCourse( e, target );
 } );
 document.addEventListener( 'submit', function( e ) {
 	const target = e.target;
+
+	if ( window.lpCourseList.checkIsNewListCourses() ) {
+		return;
+	}
 
 	window.lpCourseList.searchCourse( e, target );
 } );
@@ -101,8 +128,17 @@ window.lpCourseList = ( () => {
 			}
 
 			e.preventDefault();
-			filterCourses.order_by = target.value;
-			window.location.href = lpAddQueryArgs( currentUrl, filterCourses );
+
+			const filterCourses = JSON.parse( window.localStorage.getItem( 'lp_filter_courses' ) ) || {};
+			filterCourses.order_by = target.value || '';
+
+			if ( 'undefined' !== typeof lpSettingCourses &&
+				lpData.is_course_archive &&
+				lpSettingCourses.lpArchiveLoadAjax ) {
+				window.lpCourseList.triggerFetchAPI( filterCourses );
+			} else {
+				window.location.href = lpAddQueryArgs( currentUrl, filterCourses );
+			}
 		},
 		onChangeTypeLayout: ( e, target ) => {
 			if ( 'lp-switch-layout-btn' !== target.getAttribute( 'name' ) ) {
@@ -533,8 +569,19 @@ window.lpCourseList = ( () => {
 		getFilterParams: () => {
 			return filterCourses;
 		},
+		// Check has exists new list courses.
+		checkIsNewListCourses: () => {
+			const elListCoursesNew = document.querySelector( elListCoursesIdNewDefault );
+			return !! elListCoursesNew;
+		},
 	};
 } )();
 
-window.lpCourseList.init();
-window.lpCourseList.ajaxEnableLoadPage();
+document.addEventListener( 'DOMContentLoaded', function() {
+	if ( window.lpCourseList.checkIsNewListCourses() ) {
+		return;
+	}
+
+	window.lpCourseList.init();
+	window.lpCourseList.ajaxEnableLoadPage();
+} );

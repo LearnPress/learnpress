@@ -71,10 +71,10 @@ class CourseMaterialTemplate {
 			$sections = apply_filters(
 				'learn-press/course-material/header/fields',
 				[
-					'file-name' => [ 'text_html' => sprintf( '<th class="lp-material-th-file-name">%s</th>', esc_html( 'Name', 'learnpress' ) ) ],
-					'file-type' => [ 'text_html' => sprintf( '<th class="lp-material-th-file-type">%s</th>', esc_html( 'Type', 'learnpress' ) ) ],
-					'file-size' => [ 'text_html' => sprintf( '<th class="lp-material-th-file-size">%s</th>', esc_html( 'Size', 'learnpress' ) ) ],
-					'file-link' => [ 'text_html' => sprintf( '<th class="lp-material-th-file-link">%s</th>', esc_html( 'Download', 'learnpress' ) ) ],
+					'file-name' => [ 'text_html' => sprintf( '<th class="lp-material-th-file-name">%s</th>', esc_html__( 'Name', 'learnpress' ) ) ],
+					'file-type' => [ 'text_html' => sprintf( '<th class="lp-material-th-file-type">%s</th>', esc_html__( 'Type', 'learnpress' ) ) ],
+					'file-size' => [ 'text_html' => sprintf( '<th class="lp-material-th-file-size">%s</th>', esc_html__( 'Size', 'learnpress' ) ) ],
+					'file-link' => [ 'text_html' => sprintf( '<th class="lp-material-th-file-link">%s</th>', esc_html__( 'Download', 'learnpress' ) ) ],
 				]
 			);
 			Template::instance()->print_sections( $sections );
