@@ -120,7 +120,8 @@ window.lpCourseFilter = {
 		}
 
 		const widgetData = parent.dataset.widget ? JSON.parse( parent.dataset.widget ) : '';
-		const url = API.frontend.apiWidgets;
+		const lang = lpData.urlParams.lang ? `?lang=${ lpData.urlParams.lang }` : '';
+		const url = API.frontend.apiWidgets + lang;
 		const formData = new FormData( widgetForm );
 		const filterCourses = { paged: 1 };
 		const elLoadingChange = parent.querySelector( '.lp-widget-loading-change' );

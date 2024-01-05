@@ -9,8 +9,9 @@ function widgetRestAPI() {
 	}
 
 	const getResponse = ( ele ) => {
+		const lang = lpData.urlParams.lang ? `?lang=${ lpData.urlParams.lang }` : '';
 		const widgetData = ele.dataset.widget ? JSON.parse( ele.dataset.widget ) : '';
-		const url = API.frontend.apiWidgets;
+		const url = API.frontend.apiWidgets + lang;
 		const paramsFetch = {
 			method: 'POST',
 			headers: {
