@@ -168,13 +168,14 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 	 * @version 1.0.2
 	 */
 	public function course_curriculum( WP_REST_Request $request ): LP_REST_Response {
-		$response   = new LP_REST_Response();
-		$params     = $request->get_params();
-		$total_rows = 0;
-		$course_id  = absint( $params['courseId'] ?? 0 );
-		$per_page   = LP_Settings::get_option( 'section_per_page', -1 );
-		$page       = absint( $params['page'] ?? 1 );
-		$section_id = wp_unslash( $params['sectionID'] ?? false );
+		$response     = new LP_REST_Response();
+		$params       = $request->get_params();
+		$total_rows   = 0;
+		$course_id    = absint( $params['courseId'] ?? 0 );
+		$per_page     = LP_Settings::get_option( 'section_per_page', - 1 );
+		$page         = absint( $params['page'] ?? 1 );
+		$section_id   = wp_unslash( $params['sectionID'] ?? false );
+		$item_viewing = absint( $params['idItemViewing'] ?? 0 );
 
 		try {
 			ob_start();
@@ -243,17 +244,17 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 	 *
 	 * @param WP_REST_Request $request
 	 *
-	 * @author nhamdv
+	 * @return WP_REST_Response|WP_Error
 	 * @since 4.1.5
 	 * @version 1.0.2
-	 * @return WP_REST_Response|WP_Error
+	 * @author nhamdv
 	 */
 	public function course_curriculum_items( WP_REST_Request $request ) {
 		$params = $request->get_params();
 
 		$section_id = absint( $params['sectionId'] ?? 0 );
 		$course_id  = absint( $params['courseId'] ?? 0 );
-		$per_page   = LP_Settings::get_option( 'course_item_per_page', -1 );
+		$per_page   = LP_Settings::get_option( 'course_item_per_page', - 1 );
 		$page       = absint( $params['page'] ?? 1 );
 
 		$response                = new LP_REST_Response();

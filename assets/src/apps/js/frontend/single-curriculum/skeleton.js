@@ -5,6 +5,22 @@ import scrollToItemCurrent from './scrolltoitem';
 import { searchCourseContent } from './components/search';
 
 export default function courseCurriculumSkeleton( courseID = '' ) {
+	let idItemViewing = 0;
+	const elItemViewing = document.querySelector( '.viewing-course-item' );
+	if ( elItemViewing ) {
+		const regex = new RegExp( '^viewing-course-item-([0-9].*)' );
+		const classList = elItemViewing.classList;
+
+		classList.forEach( function( className ) {
+			const compare = regex.exec( className );
+
+			if ( compare ) {
+				idItemViewing = compare[ 1 ];
+				return false;
+			}
+		} );
+	}
+
 	let isLoadingItems = false;
 	let isLoadingSections = false;
 	const Sekeleton = () => {
@@ -31,6 +47,7 @@ export default function courseCurriculumSkeleton( courseID = '' ) {
 				courseId: courseID || lpGlobalSettings.post_id || '',
 				page,
 				sectionID: sectionID || '',
+				idItemViewing,
 			} );
 			let paramsFetch = {};
 			if ( 0 !== parseInt( lpData.user_id ) ) {
