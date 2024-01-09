@@ -1,15 +1,15 @@
-# Copyright (C) 2023 ThimPress
+# Copyright (C) 2024 ThimPress
 # This file is distributed under the same license as the LearnPress plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: LearnPress 4.2.5.9-beta-1\n"
+"Project-Id-Version: LearnPress 4.2.5.9\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/learnpress\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2023-12-28T11:41:34+03:00\n"
+"POT-Creation-Date: 2024-01-09T07:48:02+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.8.1\n"
 "X-Domain: learnpress\n"
@@ -111,8 +111,8 @@ msgstr ""
 
 #: assets/js/dist/frontend/quiz.min.js:44
 #: inc/admin/class-lp-admin.php:255
-#: inc/admin/views/addons.php:168
-#: inc/admin/views/addons.php:178
+#: inc/admin/views/addons.php:231
+#: inc/admin/views/addons.php:243
 #: inc/admin/views/meta-boxes/fields/date.php:39
 #: inc/class-lp-assets.php:95
 #: inc/lp-core-functions.php:2822
@@ -141,14 +141,14 @@ msgid "The render function should be overwritten from the base."
 msgstr ""
 
 #: assets/js/dist/frontend/quiz.min.js:207
-#: assets/js/dist/frontend/quiz.min.js:78
+#: assets/js/dist/frontend/quiz.min.js:81
 #: assets/js/dist/frontend/quiz.min.js:206
 #: inc/custom-post-types/question.php:127
 msgid "Correct"
 msgstr ""
 
 #: assets/js/dist/frontend/quiz.min.js:207
-#: assets/js/dist/frontend/quiz.min.js:79
+#: assets/js/dist/frontend/quiz.min.js:82
 #: inc/custom-post-types/question.php:133
 msgid "Incorrect"
 msgstr ""
@@ -157,14 +157,14 @@ msgstr ""
 msgid "%d/%d point"
 msgstr ""
 
-#: assets/js/dist/frontend/quiz.min.js:76
+#: assets/js/dist/frontend/quiz.min.js:79
 #: assets/js/dist/frontend/quiz.min.js:198
 #: inc/admin/views/meta-boxes/question/settings.php:17
 #: inc/admin/views/quiz/question-meta.php:28
 msgid "Points"
 msgstr ""
 
-#: assets/js/dist/frontend/quiz.min.js:77
+#: assets/js/dist/frontend/quiz.min.js:80
 msgid "point"
 msgstr ""
 
@@ -207,11 +207,11 @@ msgstr ""
 msgid "Result"
 msgstr ""
 
-#: assets/js/dist/frontend/quiz.min.js:40
+#: assets/js/dist/frontend/quiz.min.js:54
 msgid "Check answers"
 msgstr ""
 
-#: assets/js/dist/frontend/quiz.min.js:43
+#: assets/js/dist/frontend/quiz.min.js:57
 msgid "You need to answer the question before checking the answer key."
 msgstr ""
 
@@ -327,11 +327,8 @@ msgid "Question <span>%d to %d of %d</span>"
 msgstr ""
 
 #: assets/js/dist/frontend/quiz.min.js:95
-msgid "Question <span>%d of %d</span>"
-msgstr ""
-
 #: assets/js/dist/frontend/quiz.min.js:98
-msgid "Question <span>%d to %d</span>"
+msgid "Question <span>%d of %d</span>"
 msgstr ""
 
 #: assets/js/dist/frontend/quiz.min.js:107
@@ -1107,7 +1104,7 @@ msgid "Button text"
 msgstr ""
 
 #: config/elementor/instructor/become-a-teacher.php:32
-#: inc/admin/views/addons.php:162
+#: inc/admin/views/addons.php:223
 #: inc/Shortcodes/class-lp-shortcode-become-a-teacher.php:88
 #: templates/global/become-teacher-form.php:58
 msgid "Submit"
@@ -1731,7 +1728,7 @@ msgstr ""
 
 #: config/settings/permalink.php:141
 #: inc/admin/sub-menus/class-lp-submenu-settings.php:18
-#: inc/admin/views/addons.php:125
+#: inc/admin/views/addons.php:181
 #: inc/user/class-lp-profile.php:314
 #: learnpress.php:559
 msgid "Settings"
@@ -2073,7 +2070,7 @@ msgid "Register"
 msgstr ""
 
 #: inc/admin/class-lp-admin.php:290
-#: inc/admin/views/addons.php:150
+#: inc/admin/views/addons.php:210
 msgid "Activate"
 msgstr ""
 
@@ -2547,7 +2544,7 @@ msgstr ""
 #: inc/admin/lp-admin-functions.php:1145
 #: inc/admin/lp-admin-functions.php:1362
 #: inc/admin/lp-admin-functions.php:2200
-#: inc/admin/views/addons.php:192
+#: inc/admin/views/addons.php:257
 #: inc/admin/views/statistics-bk/courses.php:27
 #: inc/admin/views/statistics-bk/general.php:43
 #: inc/admin/views/statistics-bk/orders.php:29
@@ -2580,8 +2577,8 @@ msgstr ""
 
 #: inc/admin/lp-admin-functions.php:1160
 #: inc/admin/lp-admin-functions.php:2215
-#: inc/admin/views/addons.php:108
-#: inc/admin/views/addons.php:194
+#: inc/admin/views/addons.php:164
+#: inc/admin/views/addons.php:259
 #: inc/ExternalPlugin/Elementor/Widgets/Course/FilterCourseElementor.php:218
 #: inc/TemplateHooks/Course/FilterCourseTemplate.php:211
 msgid "Paid"
@@ -2589,8 +2586,8 @@ msgstr ""
 
 #: inc/admin/lp-admin-functions.php:1165
 #: inc/admin/lp-admin-functions.php:2220
-#: inc/admin/views/addons.php:108
-#: inc/admin/views/addons.php:195
+#: inc/admin/views/addons.php:164
+#: inc/admin/views/addons.php:260
 #: inc/course/abstract-course.php:673
 #: inc/course/abstract-course.php:702
 #: inc/ExternalPlugin/Elementor/Widgets/Course/FilterCourseElementor.php:216
@@ -2969,38 +2966,58 @@ msgstr ""
 msgid "Clear all cache"
 msgstr ""
 
-#: inc/admin/views/addons.php:109
+#: inc/admin/views/addons.php:127
+msgid "Latest version"
+msgstr ""
+
+#: inc/admin/views/addons.php:138
+msgid "Extends Now"
+msgstr ""
+
+#: inc/admin/views/addons.php:143
+msgid "Your update and support has expired!"
+msgstr ""
+
+#: inc/admin/views/addons.php:148
+msgid "You have a license of for this item with %s days of update & support remaining. Please extend the update & support license to keep updating the latest versions & receive customer support from ThimPress before it expires."
+msgstr ""
+
+#: inc/admin/views/addons.php:165
 msgid "WP.org"
 msgstr ""
 
-#: inc/admin/views/addons.php:109
+#: inc/admin/views/addons.php:165
 msgid "Thimpress"
 msgstr ""
 
-#: inc/admin/views/addons.php:135
+#: inc/admin/views/addons.php:191
 msgid "Change Purchase Code"
 msgstr ""
 
-#: inc/admin/views/addons.php:141
-#: inc/admin/views/addons.php:143
+#: inc/admin/views/addons.php:198
+#: inc/admin/views/addons.php:201
 msgid "Install"
 msgstr ""
 
-#: inc/admin/views/addons.php:147
+#: inc/admin/views/addons.php:206
 msgid "Deactivate"
 msgstr ""
 
-#: inc/admin/views/addons.php:176
-#: inc/admin/views/addons.php:196
+#: inc/admin/views/addons.php:240
+#: inc/admin/views/addons.php:261
 #: inc/admin/views/meta-boxes/order/exports-invoice.php:87
 msgid "Update"
 msgstr ""
 
-#: inc/admin/views/addons.php:193
+#: inc/admin/views/addons.php:258
 msgid "Installed"
 msgstr ""
 
-#: inc/admin/views/addons.php:197
+#: inc/admin/views/addons.php:262
+msgid "License"
+msgstr ""
+
+#: inc/admin/views/addons.php:263
 msgid "Not Installed"
 msgstr ""
 
@@ -3014,6 +3031,14 @@ msgstr ""
 
 #: inc/admin/views/admin-notices/addons-new-version.php:27
 msgid "New version Addons."
+msgstr ""
+
+#: inc/admin/views/admin-notices/addons-purchased-extend.php:30
+msgid "You have a LearnPress add-ons license that needs to be extended."
+msgstr ""
+
+#: inc/admin/views/admin-notices/addons-purchased-extend.php:34
+msgid "Check now!"
 msgstr ""
 
 #: inc/admin/views/admin-notices/plugin-base.php:19
@@ -4555,11 +4580,11 @@ msgctxt "slug"
 msgid "uncategorized"
 msgstr ""
 
-#: inc/class-lp-manager-addons.php:128
+#: inc/class-lp-manager-addons.php:129
 msgid "Install failed!"
 msgstr ""
 
-#: inc/class-lp-manager-addons.php:160
+#: inc/class-lp-manager-addons.php:161
 #: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:390
 msgid "Update failed!"
 msgstr ""
@@ -7597,28 +7622,28 @@ msgstr ""
 msgid "Dismissed!"
 msgstr ""
 
-#: inc/rest-api/v1/admin/class-lp-admin-rest-tools-controller.php:495
+#: inc/rest-api/v1/admin/class-lp-admin-rest-tools-controller.php:502
 msgid "Assign users to courses successfully."
 msgstr ""
 
-#: inc/rest-api/v1/admin/class-lp-admin-rest-tools-controller.php:550
+#: inc/rest-api/v1/admin/class-lp-admin-rest-tools-controller.php:557
 msgid "Unassigned users from courses successfully."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-addon-controller.php:91
+#: inc/rest-api/v1/frontend/class-lp-rest-addon-controller.php:120
 msgid "Get addons successfully"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-addon-controller.php:118
+#: inc/rest-api/v1/frontend/class-lp-rest-addon-controller.php:147
 msgid "Action is invalid!"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-addon-controller.php:123
+#: inc/rest-api/v1/frontend/class-lp-rest-addon-controller.php:152
 #: inc/rest-api/v1/frontend/class-lp-rest-lazy-load-controller.php:124
 msgid "Params is invalid!"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-addon-controller.php:172
+#: inc/rest-api/v1/frontend/class-lp-rest-addon-controller.php:201
 msgid "successfully"
 msgstr ""
 
@@ -7714,8 +7739,8 @@ msgstr ""
 
 #: inc/rest-api/v1/frontend/class-lp-rest-lazy-load-controller.php:74
 #: inc/rest-api/v1/frontend/class-lp-rest-lazy-load-controller.php:129
-#: inc/rest-api/v1/frontend/class-lp-rest-lazy-load-controller.php:182
-#: inc/rest-api/v1/frontend/class-lp-rest-lazy-load-controller.php:187
+#: inc/rest-api/v1/frontend/class-lp-rest-lazy-load-controller.php:183
+#: inc/rest-api/v1/frontend/class-lp-rest-lazy-load-controller.php:188
 #: inc/rest-api/v1/frontend/class-lp-rest-users-controller.php:163
 #: inc/Widgets/course-progress.php:65
 msgid "The course is invalid!"
@@ -7737,11 +7762,11 @@ msgstr ""
 msgid "You are a not enroll course"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-lazy-load-controller.php:265
+#: inc/rest-api/v1/frontend/class-lp-rest-lazy-load-controller.php:266
 msgid "The section is invalid!"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-lazy-load-controller.php:286
+#: inc/rest-api/v1/frontend/class-lp-rest-lazy-load-controller.php:287
 msgid "Item not assign to course"
 msgstr ""
 
@@ -8782,7 +8807,7 @@ msgstr ""
 msgid "The lesson content is empty."
 msgstr ""
 
-#: templates/content-quiz/js.php:141
+#: templates/content-quiz/js.php:144
 msgid "You haven't any question!"
 msgstr ""
 

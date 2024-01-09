@@ -210,7 +210,7 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
-= 4.2.5.9 (2023-01-08) =
+= 4.2.5.9 (2024-01-09) =
 ~ Added: show notification addons bought near expire support.
 ~ Fixed: error "Fib in blank" question case duplicate, when submit quiz wrong result.
 ~ Fixed widget course filter: error WPML handle wrong if link send not param lang.

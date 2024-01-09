@@ -111,13 +111,13 @@ msgid "The render function should be overwritten from the base."
 msgstr ""
 
 #: assets/src/apps/js/frontend/question-types/components/question-base/index.js:207
-#: assets/src/apps/js/frontend/question-types/components/questions/fill-in-blanks/index.js:78
+#: assets/src/apps/js/frontend/question-types/components/questions/fill-in-blanks/index.js:81
 #: assets/src/apps/js/frontend/quiz/components/result/index.js:206
 msgid "Correct"
 msgstr ""
 
 #: assets/src/apps/js/frontend/question-types/components/question-base/index.js:207
-#: assets/src/apps/js/frontend/question-types/components/questions/fill-in-blanks/index.js:79
+#: assets/src/apps/js/frontend/question-types/components/questions/fill-in-blanks/index.js:82
 msgid "Incorrect"
 msgstr ""
 
@@ -125,12 +125,12 @@ msgstr ""
 msgid "%d/%d point"
 msgstr ""
 
-#: assets/src/apps/js/frontend/question-types/components/questions/fill-in-blanks/index.js:76
+#: assets/src/apps/js/frontend/question-types/components/questions/fill-in-blanks/index.js:79
 #: assets/src/apps/js/frontend/quiz/components/result/index.js:198
 msgid "Points"
 msgstr ""
 
-#: assets/src/apps/js/frontend/question-types/components/questions/fill-in-blanks/index.js:77
+#: assets/src/apps/js/frontend/question-types/components/questions/fill-in-blanks/index.js:80
 msgid "point"
 msgstr ""
 
@@ -165,11 +165,11 @@ msgstr ""
 msgid "Result"
 msgstr ""
 
-#: assets/src/apps/js/frontend/quiz/components/buttons/button-check.js:40
+#: assets/src/apps/js/frontend/quiz/components/buttons/button-check.js:54
 msgid "Check answers"
 msgstr ""
 
-#: assets/src/apps/js/frontend/quiz/components/buttons/button-check.js:43
+#: assets/src/apps/js/frontend/quiz/components/buttons/button-check.js:57
 msgid "You need to answer the question before checking the answer key."
 msgstr ""
 
@@ -261,11 +261,8 @@ msgid "Question <span>%d to %d of %d</span>"
 msgstr ""
 
 #: assets/src/apps/js/frontend/quiz/components/status/index.js:95
-msgid "Question <span>%d of %d</span>"
-msgstr ""
-
 #: assets/src/apps/js/frontend/quiz/components/status/index.js:98
-msgid "Question <span>%d to %d</span>"
+msgid "Question <span>%d of %d</span>"
 msgstr ""
 
 #: assets/src/apps/js/frontend/quiz/components/status/index.js:107
