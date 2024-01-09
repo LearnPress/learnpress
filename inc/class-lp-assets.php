@@ -285,7 +285,7 @@ class LP_Assets extends LP_Abstract_Assets {
 					0,
 					0,
 					'',
-					[ 'strategy' => 'async' ]
+					[ 'strategy' => 'defer' ]
 				),
 				'lp-courses-v2'        => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/courses-v2' . self::$_min_assets . '.js' ),

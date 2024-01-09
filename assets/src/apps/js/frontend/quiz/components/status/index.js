@@ -95,7 +95,7 @@ const Status = () => {
 			indexHtml = sprintf( __( 'Question <span>%d of %d</span>', 'learnpress' ), start, questionsCount );
 		}
 	} else {
-		indexHtml = sprintf( __( 'Question <span>%d to %d</span>', 'learnpress' ), start, end );
+		indexHtml = sprintf( __( 'Question <span>%d of %d</span>', 'learnpress' ), start, end );
 	}
 
 	return (

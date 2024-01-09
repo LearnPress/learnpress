@@ -37,7 +37,8 @@ class QuestionFillInBlanks extends QuestionBase {
 				const parent = target.closest( '.lp-fib-input' );
 
 				if ( parent ) {
-					const question_id = e.target.closest( '.question-fill_in_blanks' ).dataset.id;
+					const elQuestionFIB = target.closest( '.question-fill_in_blanks' );
+					const question_id = elQuestionFIB.dataset.id;
 					this.setAnswered( question_id, target.dataset.id, target.value );
 				}
 			} );

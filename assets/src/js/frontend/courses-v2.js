@@ -43,6 +43,7 @@ window.lpCoursesList = ( () => {
 	const classListCourseWrapper = '.learn-press-courses-wrapper';
 	const classListCourse = '.learn-press-courses';
 	const classLPTarget = '.lp-target';
+	const classLoadMore = 'courses-btn-load-more';
 	const urlCurrent = lpGetCurrentURLNoParam();
 	return {
 		clickNumberPage: ( e, target ) => {
@@ -120,8 +121,12 @@ window.lpCoursesList = ( () => {
 			window.lpAJAXG.fetchAPI( API.frontend.apiAJAX, dataSend, callBack );
 		},
 		LoadMore: ( e, btnLoadMore ) => {
-			if ( ! btnLoadMore.classList.contains( 'courses-btn-load-more' ) ) {
-				return;
+			const parent = btnLoadMore.closest( `.${ classLoadMore }` );
+			if ( ! btnLoadMore.classList.contains( classLoadMore ) ) {
+				if ( ! parent ) {
+					return;
+				}
+				btnLoadMore = parent;
 			}
 
 			const elLPTarget = btnLoadMore.closest( `${ classLPTarget }` );

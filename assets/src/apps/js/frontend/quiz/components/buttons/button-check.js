@@ -17,6 +17,21 @@ class ButtonCheck extends Component {
 	checkAnswer = () => {
 		const { checkAnswer, question, answered } = this.props;
 
+		// Fix temporary for FIB.
+		if ( question.type === 'fill_in_blanks' ) {
+			const elFIB = document.querySelector( `.question-fill_in_blanks[data-id="${ question.id }"]` );
+			const elInputs = elFIB.querySelectorAll( '.lp-fib-input > input' );
+			elInputs.forEach( ( elInput ) => {
+				if ( elInput.value.length > 0 ) {
+					this.setState( {
+						loading: true,
+					} );
+					checkAnswer( question.id );
+					return false;
+				}
+			} );
+		}
+
 		if ( answered ) {
 			checkAnswer( question.id );
 
@@ -33,7 +48,6 @@ class ButtonCheck extends Component {
 			<>
 				<button className={ classNames( 'lp-button', 'instant-check', {
 					loading: this.state.loading,
-					disable: ! answered,
 				} ) } onClick={ this.checkAnswer }
 				>
 					<span className="instant-check__icon" />
