@@ -419,7 +419,7 @@ class ListCoursesTemplate {
 	 *
 	 * @return string
 	 * @since 4.2.3.3
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function html_courses_page_result( array $data = [] ): string {
 		$html = '';
@@ -428,6 +428,7 @@ class ListCoursesTemplate {
 			$total_rows      = $data['total_rows'] ?? 0;
 			$paged           = $data['paged'] ?? 1;
 			$course_per_page = $data['courses_per_page'] ?? 8;
+			$pagination_type = $data['pagination_type'] ?? 'number';
 
 			$from = 1 + ( $paged - 1 ) * $course_per_page;
 			$to   = ( $paged * $course_per_page > $total_rows ) ? $total_rows : $paged * $course_per_page;
@@ -438,12 +439,12 @@ class ListCoursesTemplate {
 			} elseif ( 1 === $total_rows ) {
 				$content = esc_html__( 'Showing only one result', 'learnpress' );
 			} else {
-				if ( $from === $to ) {
-					$content = sprintf( esc_html__( 'Showing last course of %s results', 'learnpress' ), $total_rows );
-				} else {
-					$from_to = $from . '-' . $to;
-					$content = sprintf( esc_html__( 'Showing %1$s of %2$s results', 'learnpress' ), $from_to, $total_rows );
+				$from_to = $from . '-' . $to;
+				// For pagination type is load-more or infinite.
+				if ( $pagination_type !== 'number' ) {
+					$from_to = '1 - ' . $to;
 				}
+				$content = sprintf( esc_html__( 'Showing %1$s of %2$s results', 'learnpress' ), $from_to, $total_rows );
 			}
 
 			$html = '<span class="courses-page-result">' . $content . '</span>';

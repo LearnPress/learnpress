@@ -44,6 +44,7 @@ window.lpCoursesList = ( () => {
 	const classListCourse = '.learn-press-courses';
 	const classLPTarget = '.lp-target';
 	const classLoadMore = 'courses-btn-load-more';
+	const classPageResult = '.courses-page-result';
 	const urlCurrent = lpGetCurrentURLNoParam();
 	return {
 		clickNumberPage: ( e, target ) => {
@@ -153,9 +154,14 @@ window.lpCoursesList = ( () => {
 
 					const newEl = document.createElement( 'div' );
 					newEl.innerHTML = data.content || '';
-					const elListCourse = elLPTarget.querySelector( `${ classListCourse }` );
+					const elListCourse = elLPTarget.querySelector( classListCourse );
+					const elPageResult = elLPTarget.querySelector( classPageResult );
+					const elPageResultNew = newEl.querySelector( classPageResult );
 
-					elListCourse.insertAdjacentHTML( 'beforeend', newEl.querySelector( `${ classListCourse }` ).innerHTML );
+					elListCourse.insertAdjacentHTML( 'beforeend', newEl.querySelector( classListCourse ).innerHTML );
+					if ( elPageResult && elPageResultNew ) {
+						elPageResult.innerHTML = elPageResultNew.innerHTML;
+					}
 
 					if ( data.total_pages === data.paged ) {
 						const elPagination = elLPTarget.querySelector( '.learn-press-pagination' );
@@ -201,8 +207,13 @@ window.lpCoursesList = ( () => {
 						const newEl = document.createElement( 'div' );
 						newEl.innerHTML = data.content || '';
 						const elListCourse = elLPTarget.querySelector( classListCourse );
+						const elPageResult = elLPTarget.querySelector( classPageResult );
+						const elPageResultNew = newEl.querySelector( classPageResult );
 
 						elListCourse.insertAdjacentHTML( 'beforeend', newEl.querySelector( classListCourse ).innerHTML );
+						if ( elPageResult && elPageResultNew ) {
+							elPageResult.innerHTML = elPageResultNew.innerHTML;
+						}
 
 						if ( data.total_pages === data.paged ) {
 							elInfinite.remove();
