@@ -433,7 +433,7 @@ class LP_Assets extends LP_Abstract_Assets {
 			return;
 		}
 
-		echo '<div class="lp-overlay">';
+		echo '<div class="lp-overlay" style="display: none">';
 		apply_filters( 'learnpress/modal-dialog', learn_press_get_template( 'global/lp-modal-overlay' ) );
 		echo '</div>';
 	}
