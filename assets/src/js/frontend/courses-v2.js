@@ -48,7 +48,7 @@ window.lpCoursesList = ( () => {
 	const urlCurrent = lpGetCurrentURLNoParam();
 	return {
 		clickNumberPage: ( e, target ) => {
-			const btnNumber = target.closest( '.page-numbers' );
+			const btnNumber = target.closest( '.page-numbers:not(.disabled)' );
 			if ( ! btnNumber ) {
 				return;
 			}
@@ -99,7 +99,7 @@ window.lpCoursesList = ( () => {
 			if ( elCoursesWrapper ) {
 				const optionScroll = { behavior: 'smooth' };
 				elCoursesWrapper.scrollIntoView( optionScroll );
-				//window.scrollBy( 0, -40 );
+				window.scrollBy( 0, -40 );
 			}
 
 			const callBack = {
