@@ -102,7 +102,7 @@ class ListCoursesTemplate {
 
 		// Handle layout
 		$html_courses_wrapper = [
-			'<ul class="learn-press-courses ' . $skin . '" data-layout="' . $skin . '">' => '</ul>',
+			'<ul class="learn-press-courses learn-press-courses-no-css ' . $skin . '" data-layout="' . $skin . '">' => '</ul>',
 		];
 
 		ob_start();
@@ -314,10 +314,10 @@ class ListCoursesTemplate {
 	 */
 	public function html_pagination_load_more(): string {
 		$html_wrapper = [
-			'<button class="courses-btn-load-more learn-press-pagination lp-button">' => '</button>',
+			'<button class="courses-btn-load-more learn-press-pagination lp-button courses-btn-load-more-no-css">' => '</button>',
 		];
 		$content      = sprintf(
-			'%s<span class="lp-loading-circle hide"></span>',
+			'%s<span class="lp-loading-circle lp-loading-circle-no-css hide"></span>',
 			__( 'Load more', 'learnpress' )
 		);
 
@@ -333,9 +333,9 @@ class ListCoursesTemplate {
 	 */
 	public function html_pagination_infinite(): string {
 		$html_wrapper = [
-			'<div class="courses-load-infinite learn-press-pagination">' => '</div>',
+			'<div class="courses-load-infinite-no-css learn-press-pagination">' => '</div>',
 		];
-		$content      = '<span class="lp-loading-circle hide"></span>';
+		$content      = '<span class="lp-loading-circle lp-loading-circle-no-css hide"></span>';
 
 		return Template::instance()->nest_elements( $html_wrapper, $content );
 	}

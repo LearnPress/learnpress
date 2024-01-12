@@ -144,6 +144,7 @@ class LP_Assets extends LP_Abstract_Assets {
 				'is_course_archive' => LP_Page_Controller::is_page_courses(),
 				'courses_url'       => learn_press_get_page_link( 'courses' ),
 				'urlParams'         => lp_archive_skeleton_get_args(),
+				'lp_version'        => LearnPress::instance()->version,
 			]
 		);
 	}
@@ -280,7 +281,10 @@ class LP_Assets extends LP_Abstract_Assets {
 				),
 				'lp-courses'           => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/courses' . self::$_min_assets . '.js' ),
-					array( 'lp-global', 'wp-hooks' ), // when Eduma v5.3.6 release a long time, will be remove lp-global.
+					array(
+						'lp-global',
+						'wp-hooks'
+					), // when Eduma v5.3.6 release a long time, will be remove lp-global.
 					array( LP_PAGE_COURSES ),
 					0,
 					0,
