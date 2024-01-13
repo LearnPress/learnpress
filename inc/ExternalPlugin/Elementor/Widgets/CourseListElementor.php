@@ -69,7 +69,7 @@ class CourseListElementor extends LPElementorWidgetBase {
 			}
 			?>
 			<div class="lp-archive-courses">
-				<ul class="learn-press-courses learn-press-courses-no-css" data-layout="<?php echo esc_attr( $layout ); ?>"
+				<ul class="learn-press-courses lp-list-courses-no-css" data-layout="<?php echo esc_attr( $layout ); ?>"
 					data-size="<?php echo absint( $settings['number_posts'] ?? 10 ); ?>">
 					<?php
 					global $post;

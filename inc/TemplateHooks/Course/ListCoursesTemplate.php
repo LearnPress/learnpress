@@ -102,7 +102,7 @@ class ListCoursesTemplate {
 
 		// Handle layout
 		$html_courses_wrapper = [
-			'<ul class="learn-press-courses learn-press-courses-no-css ' . $skin . '" data-layout="' . $skin . '">' => '</ul>',
+			'<ul class="learn-press-courses lp-list-courses-no-css ' . $skin . '" data-layout="' . $skin . '">' => '</ul>',
 		];
 
 		ob_start();

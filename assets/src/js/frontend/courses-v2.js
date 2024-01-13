@@ -41,7 +41,7 @@ const elListenScroll = [];
 let timeOutSearch;
 window.lpCoursesList = ( () => {
 	const classListCourseWrapper = '.learn-press-courses-wrapper';
-	const classListCourse = '.learn-press-courses-no-css';
+	const classListCourse = '.lp-list-courses-no-css';
 	const classLPTarget = '.lp-target';
 	const classLoadMore = 'courses-btn-load-more-no-css';
 	const classPageResult = '.courses-page-result';

@@ -167,7 +167,7 @@ class SkinCoursesBase extends LPSkinBase {
 			'close_wrapper'   => [ 'text_html' => '</div>' ],
 		];
 		Template::instance()->print_sections( $section_top );
-		echo '<ul class="learn-press-courses learn-press-courses-no-css ' . $skin . '">';
+		echo '<ul class="learn-press-courses lp-list-courses-no-css ' . $skin . '">';
 		foreach ( $courses as $courseObj ) {
 			$course = learn_press_get_course( $courseObj->ID );
 			echo static::render_course( $course, $settings );
