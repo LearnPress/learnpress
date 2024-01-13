@@ -5,6 +5,7 @@
  * @since 4.2.3
  * @version 1.0.2
  */
+
 namespace LearnPress\TemplateHooks\Course;
 
 use LearnPress\Helpers\Singleton;
@@ -35,6 +36,7 @@ class SingleCourseTemplate {
 		$html_wrapper = [
 			'<span class="course-title">' => '</span>',
 		];
+
 		return Template::instance()->nest_elements( $html_wrapper, $course->get_title() );
 	}
 
@@ -49,6 +51,7 @@ class SingleCourseTemplate {
 		$html_wrapper = [
 			'<p class="course-short-description">' => '</p>',
 		];
+
 		return Template::instance()->nest_elements( $html_wrapper, $course->get_data( 'excerpt' ) );
 	}
 
@@ -63,6 +66,7 @@ class SingleCourseTemplate {
 		$html_wrapper = [
 			'<p class="course-description">' => '</p>',
 		];
+
 		return Template::instance()->nest_elements( $html_wrapper, $course->get_data( 'description' ) );
 	}
 
@@ -78,7 +82,7 @@ class SingleCourseTemplate {
 			'<div class="course-categories">' => '</div>',
 		];
 
-		$cats      = $course->get_categories();
+		$cats = $course->get_categories();
 		if ( empty( $cats ) ) {
 			return '';
 		}
@@ -160,6 +164,7 @@ class SingleCourseTemplate {
 		$html_wrapper = [
 			'<div class="course-price">' => '</div>',
 		];
+
 		return Template::instance()->nest_elements( $html_wrapper, $course->get_course_price_html() );
 	}
 
@@ -169,16 +174,17 @@ class SingleCourseTemplate {
 	 * @param LP_Course $course
 	 *
 	 * @return string
+	 * @since 4.2.3.4
+	 * @version 1.0.1
 	 */
 	public function html_count_student( LP_Course $course ): string {
 		$count_student = $course->get_total_user_enrolled_or_purchased();
-		$ico_student   = sprintf(
-			'<span class="course-ico student">%s</span>',
-			wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-students.svg' )
-		);
-		$ico_student   = '';
-		$content       = sprintf( '%s %d %s', $ico_student, $count_student, _n( 'Student', 'Students', $count_student ) );
-		$html_wrapper  = [
+		$fake_student  = $course->get_fake_students();
+		if ( $fake_student ) {
+			$count_student += $fake_student;
+		}
+		$content      = sprintf( '%d %s', $count_student, _n( 'Student', 'Students', $count_student ) );
+		$html_wrapper = [
 			'<div class="course-count-student">' => '</div>',
 		];
 
@@ -228,9 +234,9 @@ class SingleCourseTemplate {
 	 *
 	 * @param LP_Course $course
 	 *
-	 * @version 1.0.0
-	 * @since 4.2.3.5
 	 * @return string
+	 * @since 4.2.3.5
+	 * @version 1.0.0
 	 */
 	public function html_level( LP_Course $course ): string {
 		$content = '';
@@ -256,9 +262,9 @@ class SingleCourseTemplate {
 	 *
 	 * @param LP_Course $course
 	 *
-	 * @version 1.0.0
-	 * @since 4.2.3.5
 	 * @return string
+	 * @since 4.2.3.5
+	 * @version 1.0.0
 	 */
 	public function html_duration( LP_Course $course ): string {
 		$content = '';
