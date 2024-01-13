@@ -102,6 +102,39 @@ class SingleCourseTemplate {
 	}
 
 	/**
+	 * Get display tags course.
+	 *
+	 * @param LP_Course $course
+	 *
+	 * @return string
+	 * @since 4.2.6
+	 * @version 1.0.0
+	 */
+	public function html_tags( LP_Course $course ): string {
+		$html_wrapper = [
+			'<div class="course-tags">' => '</div>',
+		];
+
+		$cats = $course->get_tags();
+		if ( empty( $cats ) ) {
+			return '';
+		}
+
+		$cat_names = [];
+		array_map(
+			function ( $cat ) use ( &$cat_names ) {
+				$term        = sprintf( '<a href="%s">%s</a>', get_term_link( $cat->term_id ), $cat->name );
+				$cat_names[] = $term;
+			},
+			$cats
+		);
+
+		$content = implode( ', ', $cat_names );
+
+		return Template::instance()->nest_elements( $html_wrapper, $content );
+	}
+
+	/**
 	 * Get display title course.
 	 *
 	 * @param LP_Course $course
