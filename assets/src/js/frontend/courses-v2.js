@@ -2,7 +2,7 @@
  * Handle events for courses list.
  *
  * @since 4.2.5.8
- * @version 1.0.0
+ * @version 1.0.1
  */
 
 import API from '../api';
@@ -45,6 +45,7 @@ window.lpCoursesList = ( () => {
 	const classLPTarget = '.lp-target';
 	const classLoadMore = 'courses-btn-load-more-no-css';
 	const classPageResult = '.courses-page-result';
+	const classLoading = '.lp-loading-no-css';
 	const urlCurrent = lpGetCurrentURLNoParam();
 	return {
 		clickNumberPage: ( e, target ) => {
@@ -135,7 +136,7 @@ window.lpCoursesList = ( () => {
 			e.preventDefault();
 			btnLoadMore.classList.add( 'disabled' );
 
-			const elLoading = btnLoadMore.querySelector( '.lp-loading-circle-no-css' );
+			const elLoading = btnLoadMore.querySelector( classLoading );
 			const dataObj = JSON.parse( elLPTarget.dataset.send );
 			const dataSend = { ...dataObj };
 			if ( ! dataSend.args.hasOwnProperty( 'paged' ) ) {
@@ -187,7 +188,7 @@ window.lpCoursesList = ( () => {
 			// When see element, will call API to load more items.
 			const callBackAfterSeeItem = ( entry ) => {
 				const elInfinite = entry.target;
-				const elLoading = elInfinite.querySelector( '.lp-loading-circle-no-css:not(.disabled)' );
+				const elLoading = elInfinite.querySelector( `${ classLoading }:not(.disabled)` );
 				if ( ! elLoading ) {
 					return;
 				}

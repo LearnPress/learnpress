@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-01-09T07:48:02+03:00\n"
+"POT-Creation-Date: 2024-01-11T12:57:47+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.8.1\n"
 "X-Domain: learnpress\n"
@@ -377,15 +377,12 @@ msgstr ""
 #: config/elementor/course/filter-course-el.php:507
 #: config/elementor/course/filter-course-el.php:563
 #: config/elementor/course/filter-course-el.php:664
-#: config/elementor/course/list-courses-by-page-bk.php:283
 msgid "Alignment"
 msgstr ""
 
 #: config/elementor/course/course-price.php:47
 #: config/elementor/course/course-price.php:66
 #: config/elementor/course/course-price.php:97
-#: config/elementor/course/list-courses-by-page-bk.php:363
-#: config/elementor/course/list-courses-by-page-bk.php:383
 msgid "Color"
 msgstr ""
 
@@ -396,7 +393,6 @@ msgstr ""
 #: config/elementor/course/course-price.php:78
 #: config/elementor/course/filter-course-el.php:312
 #: config/elementor/course/filter-course-el.php:370
-#: config/elementor/course/list-courses-by-page-bk.php:326
 #: inc/ExternalPlugin/Elementor/LPElementorControls.php:382
 #: inc/ExternalPlugin/Elementor/LPElementorControls.php:508
 msgid "Padding"
@@ -551,9 +547,6 @@ msgstr ""
 #: config/elementor/course/filter-course-el.php:161
 #: config/elementor/course/filter-course-el.php:241
 #: config/elementor/course/filter-course-el.php:282
-#: config/elementor/course/list-courses-by-page-bk.php:32
-#: config/elementor/course/list-courses-by-page-bk.php:44
-#: config/elementor/course/list-courses-by-page-bk.php:56
 #: config/elementor/course/list-courses-by-page.php:53
 #: config/elementor/course/list-courses-by-page.php:65
 #: config/elementor/course/list-courses-by-page.php:87
@@ -569,9 +562,6 @@ msgstr ""
 #: config/elementor/course/filter-course-el.php:162
 #: config/elementor/course/filter-course-el.php:242
 #: config/elementor/course/filter-course-el.php:283
-#: config/elementor/course/list-courses-by-page-bk.php:33
-#: config/elementor/course/list-courses-by-page-bk.php:45
-#: config/elementor/course/list-courses-by-page-bk.php:57
 #: config/elementor/course/list-courses-by-page.php:54
 #: config/elementor/course/list-courses-by-page.php:66
 #: config/elementor/course/list-courses-by-page.php:88
@@ -648,7 +638,6 @@ msgstr ""
 
 #: config/elementor/course/filter-course-el.php:300
 #: config/elementor/course/filter-course-el.php:358
-#: config/elementor/course/list-courses-by-page-bk.php:314
 #: inc/ExternalPlugin/Elementor/LPElementorControls.php:370
 #: inc/ExternalPlugin/Elementor/LPElementorControls.php:496
 msgid "Margin"
@@ -771,169 +760,17 @@ msgstr ""
 msgid "Selected Number"
 msgstr ""
 
-#: config/elementor/course/list-courses-by-page-bk.php:23
-#: config/elementor/course/list-courses.php:34
-#: config/elementor/instructor/become-a-teacher.php:15
-#: config/elementor/instructor/list-instructors.php:178
-#: config/elementor/instructor/single-instructor.php:16
-#: inc/admin/views/meta-boxes/fields/extra-faq.php:41
-#: inc/admin/views/meta-boxes/fields/extra-faq.php:61
-#: inc/custom-post-types/course.php:390
-#: inc/custom-post-types/course.php:407
-msgid "Content"
-msgstr ""
-
-#: config/elementor/course/list-courses-by-page-bk.php:67
-#: config/elementor/course/list-courses-by-page.php:125
-msgid "Courses Per Page"
-msgstr ""
-
-#: config/elementor/course/list-courses-by-page-bk.php:77
-#: config/elementor/course/list-courses-by-page.php:136
-msgid "Order By Default"
-msgstr ""
-
-#: config/elementor/course/list-courses-by-page-bk.php:79
-#: config/elementor/course/list-courses-by-page.php:138
-msgid "Newest"
-msgstr ""
-
-#: config/elementor/course/list-courses-by-page-bk.php:80
-#: config/elementor/course/list-courses-by-page.php:139
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:504
-msgid "Title a-z"
-msgstr ""
-
-#: config/elementor/course/list-courses-by-page-bk.php:81
-#: config/elementor/course/list-courses-by-page.php:140
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:505
-msgid "Title z-a"
-msgstr ""
-
-#: config/elementor/course/list-courses-by-page-bk.php:82
-#: config/elementor/course/list-courses-by-page.php:141
-msgid "Price High to Low"
-msgstr ""
-
-#: config/elementor/course/list-courses-by-page-bk.php:83
-#: config/elementor/course/list-courses-by-page.php:142
-msgid "Price Low to High"
-msgstr ""
-
-#: config/elementor/course/list-courses-by-page-bk.php:89
-#: config/elementor/course/list-courses-by-page.php:166
-msgid "Pagination type"
-msgstr ""
-
-#: config/elementor/course/list-courses-by-page-bk.php:91
-#: config/elementor/course/list-courses-by-page.php:169
-#: config/settings/course.php:84
-#: config/settings/profile.php:96
-msgid "Number"
-msgstr ""
-
-#: config/elementor/course/list-courses-by-page-bk.php:92
-msgid "Button load more"
-msgstr ""
-
-#: config/elementor/course/list-courses-by-page-bk.php:93
-#: config/elementor/course/list-courses-by-page.php:171
-msgid "Infinite scroll"
-msgstr ""
-
-#: config/elementor/course/list-courses-by-page-bk.php:113
-#: config/elementor/instructor/list-instructors.php:77
-msgid "Gap"
-msgstr ""
-
-#: config/elementor/course/list-courses-by-page-bk.php:139
-#: config/elementor/course/list-courses-by-page-bk.php:370
-#: config/elementor/course/list-courses-by-page-bk.php:390
-#: inc/ExternalPlugin/Elementor/LPElementorControls.php:415
-msgid "Background Color"
-msgstr ""
-
-#: config/elementor/course/list-courses-by-page-bk.php:146
-#: config/elementor/course/list-courses-by-page-bk.php:343
-#: config/elementor/instructor/list-instructors.php:144
-#: inc/ExternalPlugin/Elementor/LPElementorControls.php:452
-#: inc/ExternalPlugin/Elementor/LPElementorControls.php:525
-msgid "Border Radius"
-msgstr ""
-
-#: config/elementor/course/list-courses-by-page-bk.php:173
-msgid "Course Free Color"
-msgstr ""
-
-#: config/elementor/course/list-courses-by-page-bk.php:180
-msgid "Course Sale Color"
-msgstr ""
-
-#: config/elementor/course/list-courses-by-page-bk.php:190
-msgid "Course Sale Typography"
-msgstr ""
-
-#: config/elementor/course/list-courses-by-page-bk.php:223
-#: config/elementor/course/list-courses-by-page.php:78
-#: config/elementor/course/list-courses.php:39
-msgid "Layout"
-msgstr ""
-
-#: config/elementor/course/list-courses-by-page-bk.php:229
-msgid "Sort By"
-msgstr ""
-
-#: config/elementor/course/list-courses-by-page-bk.php:247
-msgid "Course Title"
-msgstr ""
-
-#: config/elementor/course/list-courses-by-page-bk.php:253
-msgid "Course Description"
-msgstr ""
-
-#: config/elementor/course/list-courses-by-page-bk.php:259
-#: inc/ExternalPlugin/Elementor/Widgets/Course/Sections/CoursePriceElementor.php:20
-#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1120
-msgid "Course Price"
-msgstr ""
-
-#: config/elementor/course/list-courses-by-page-bk.php:265
-msgid "Meta Data"
-msgstr ""
-
-#: config/elementor/course/list-courses-by-page-bk.php:271
-#: config/elementor/course/list-courses.php:130
-msgid "Course Image"
-msgstr ""
-
-#: config/elementor/course/list-courses-by-page-bk.php:277
-#: config/elementor/course/list-courses-by-page.php:161
-#: inc/admin/views/meta-boxes/quiz/settings.php:77
-msgid "Pagination"
-msgstr ""
-
-#: config/elementor/course/list-courses-by-page-bk.php:359
-msgid "Normal"
-msgstr ""
-
-#: config/elementor/course/list-courses-by-page-bk.php:379
-msgid "Hover"
-msgstr ""
-
-#: config/elementor/course/list-courses-by-page-bk.php:397
-msgid "Border Color"
-msgstr ""
-
-#: config/elementor/course/list-courses-by-page-bk.php:410
-msgid "Courses Not Found"
-msgstr ""
-
 #: config/elementor/course/list-courses-by-page.php:40
 msgid "Skin"
 msgstr ""
 
 #: config/elementor/course/list-courses-by-page.php:44
 msgid "Option load REST API"
+msgstr ""
+
+#: config/elementor/course/list-courses-by-page.php:78
+#: config/elementor/course/list-courses.php:39
+msgid "Layout"
 msgstr ""
 
 #: config/elementor/course/list-courses-by-page.php:109
@@ -948,13 +785,43 @@ msgstr ""
 msgid "Total courses you want to query, default 0 is no limit"
 msgstr ""
 
+#: config/elementor/course/list-courses-by-page.php:125
+msgid "Courses Per Page"
+msgstr ""
+
 #: config/elementor/course/list-courses-by-page.php:131
 msgid "Number courses show on 1 page. Default 0 is show all of Courses Limit"
 msgstr ""
 
+#: config/elementor/course/list-courses-by-page.php:136
+msgid "Order By Default"
+msgstr ""
+
+#: config/elementor/course/list-courses-by-page.php:138
+msgid "Newest"
+msgstr ""
+
+#: config/elementor/course/list-courses-by-page.php:139
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:505
+msgid "Title a-z"
+msgstr ""
+
+#: config/elementor/course/list-courses-by-page.php:140
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:506
+msgid "Title z-a"
+msgstr ""
+
+#: config/elementor/course/list-courses-by-page.php:141
+msgid "Price High to Low"
+msgstr ""
+
+#: config/elementor/course/list-courses-by-page.php:142
+msgid "Price Low to High"
+msgstr ""
+
 #: config/elementor/course/list-courses-by-page.php:143
 #: config/elementor/course/list-courses.php:72
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:508
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:509
 msgid "Popular"
 msgstr ""
 
@@ -963,13 +830,43 @@ msgstr ""
 msgid "Select Categories"
 msgstr ""
 
+#: config/elementor/course/list-courses-by-page.php:161
+#: inc/admin/views/meta-boxes/quiz/settings.php:77
+msgid "Pagination"
+msgstr ""
+
+#: config/elementor/course/list-courses-by-page.php:166
+msgid "Pagination type"
+msgstr ""
+
 #: config/elementor/course/list-courses-by-page.php:168
 msgid "Nonce"
+msgstr ""
+
+#: config/elementor/course/list-courses-by-page.php:169
+#: config/settings/course.php:84
+#: config/settings/profile.php:96
+msgid "Number"
 msgstr ""
 
 #: config/elementor/course/list-courses-by-page.php:170
 #: inc/TemplateHooks/Course/ListCoursesTemplate.php:321
 msgid "Load more"
+msgstr ""
+
+#: config/elementor/course/list-courses-by-page.php:171
+msgid "Infinite scroll"
+msgstr ""
+
+#: config/elementor/course/list-courses.php:34
+#: config/elementor/instructor/become-a-teacher.php:15
+#: config/elementor/instructor/list-instructors.php:178
+#: config/elementor/instructor/single-instructor.php:16
+#: inc/admin/views/meta-boxes/fields/extra-faq.php:41
+#: inc/admin/views/meta-boxes/fields/extra-faq.php:61
+#: inc/custom-post-types/course.php:390
+#: inc/custom-post-types/course.php:407
+msgid "Content"
 msgstr ""
 
 #: config/elementor/course/list-courses.php:41
@@ -1026,6 +923,10 @@ msgstr ""
 
 #: config/elementor/course/list-courses.php:112
 msgid "Title Instructor"
+msgstr ""
+
+#: config/elementor/course/list-courses.php:130
+msgid "Course Image"
 msgstr ""
 
 #: config/elementor/course/materials.php:15
@@ -1153,6 +1054,10 @@ msgstr ""
 msgid "Column number"
 msgstr ""
 
+#: config/elementor/instructor/list-instructors.php:77
+msgid "Gap"
+msgstr ""
+
 #: config/elementor/instructor/list-instructors.php:94
 msgid "Item Padding"
 msgstr ""
@@ -1163,6 +1068,12 @@ msgstr ""
 
 #: config/elementor/instructor/list-instructors.php:119
 msgid "Item Border"
+msgstr ""
+
+#: config/elementor/instructor/list-instructors.php:144
+#: inc/ExternalPlugin/Elementor/LPElementorControls.php:452
+#: inc/ExternalPlugin/Elementor/LPElementorControls.php:525
+msgid "Border Radius"
 msgstr ""
 
 #: config/elementor/instructor/list-instructors.php:154
@@ -5069,7 +4980,7 @@ msgid "Order"
 msgstr ""
 
 #: inc/custom-post-types/order.php:462
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:748
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:749
 #: inc/TemplateHooks/Instructor/SingleInstructorTemplate.php:186
 #: inc/TemplateHooks/Instructor/SingleInstructorTemplate.php:550
 msgid "Student"
@@ -5580,6 +5491,10 @@ msgstr ""
 msgid "Text Color Hover"
 msgstr ""
 
+#: inc/ExternalPlugin/Elementor/LPElementorControls.php:415
+msgid "Background Color"
+msgstr ""
+
 #: inc/ExternalPlugin/Elementor/LPElementorControls.php:420
 msgid "Background Color Hover"
 msgstr ""
@@ -5602,6 +5517,11 @@ msgstr ""
 
 #: inc/ExternalPlugin/Elementor/Widgets/Course/ListCoursesByPageElementor.php:19
 msgid "List Courses by Page"
+msgstr ""
+
+#: inc/ExternalPlugin/Elementor/Widgets/Course/Sections/CoursePriceElementor.php:20
+#: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1120
+msgid "Course Price"
 msgstr ""
 
 #: inc/ExternalPlugin/Elementor/Widgets/CourseListElementor.php:16
@@ -7648,17 +7568,16 @@ msgid "successfully"
 msgstr ""
 
 #: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:217
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:439
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:440
 msgid "Showing only one result"
 msgstr ""
 
 #: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:220
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:442
 msgid "Showing last course of %s results"
 msgstr ""
 
 #: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:235
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:445
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:447
 msgid "Showing %1$s of %2$s results"
 msgstr ""
 
@@ -8074,39 +7993,39 @@ msgstr ""
 msgid "Read more"
 msgstr ""
 
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:503
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:504
 msgid "Newly published"
 msgstr ""
 
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:506
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:507
 msgid "Price high to low"
 msgstr ""
 
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:507
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:508
 msgid "Price low to high"
 msgstr ""
 
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:527
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:528
 #: templates/courses-top-bar.php:23
 msgid "Search courses..."
 msgstr ""
 
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:548
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:549
 #: templates/courses-top-bar.php:33
 msgid "Switch to %s"
 msgstr ""
 
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:621
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:622
 msgid "Course Found"
 msgid_plural "Courses Found"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:626
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:627
 msgid "View All"
 msgstr ""
 
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:707
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:708
 msgid "Free Course"
 msgid_plural "Free Courses"
 msgstr[0] ""

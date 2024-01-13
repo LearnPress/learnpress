@@ -317,7 +317,7 @@ class ListCoursesTemplate {
 			'<button class="courses-btn-load-more learn-press-pagination lp-button courses-btn-load-more-no-css">' => '</button>',
 		];
 		$content      = sprintf(
-			'%s<span class="lp-loading-circle lp-loading-circle-no-css hide"></span>',
+			'%s<span class="lp-loading-circle lp-loading-no-css hide"></span>',
 			__( 'Load more', 'learnpress' )
 		);
 
@@ -335,7 +335,7 @@ class ListCoursesTemplate {
 		$html_wrapper = [
 			'<div class="courses-load-infinite-no-css learn-press-pagination">' => '</div>',
 		];
-		$content      = '<span class="lp-loading-circle lp-loading-circle-no-css hide"></span>';
+		$content      = '<span class="lp-loading-circle lp-loading-no-css hide"></span>';
 
 		return Template::instance()->nest_elements( $html_wrapper, $content );
 	}
