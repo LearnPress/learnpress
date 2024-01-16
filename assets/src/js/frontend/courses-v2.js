@@ -40,7 +40,6 @@ document.addEventListener( 'submit', function( e ) {
 const elListenScroll = [];
 let timeOutSearch;
 window.lpCoursesList = ( () => {
-	const classListCourseWrapper = '.learn-press-courses-wrapper';
 	const classListCourse = '.lp-list-courses-no-css';
 	const classLPTarget = '.lp-target';
 	const classLoadMore = 'courses-btn-load-more-no-css';
@@ -95,13 +94,10 @@ window.lpCoursesList = ( () => {
 			}
 			// End
 
-			// Scroll to archive element
-			const elCoursesWrapper = elLPTarget.closest( `${ classListCourseWrapper }` );
-			if ( elCoursesWrapper ) {
-				const optionScroll = { behavior: 'smooth' };
-				elCoursesWrapper.scrollIntoView( optionScroll );
-				window.scrollBy( 0, -40 );
-			}
+			// Scroll to archive element{
+			const optionScroll = { behavior: 'smooth' };
+			elLPTarget.scrollIntoView( optionScroll );
+			window.scrollBy( 0, -40 );
 
 			const callBack = {
 				success: ( response ) => {
