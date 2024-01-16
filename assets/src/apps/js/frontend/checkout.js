@@ -44,18 +44,53 @@
 		};
 
 		const getActiveFormData = function() {
-			const formName = $formCheckout.find( 'input[name="checkout-account-switch-form"]:checked' ).val();
-			const $form = $( '#checkout-account-' + formName );
+			const formCheckout = document.querySelector( '#learn-press-checkout-form' );
+			const formName = formCheckout.querySelector( 'input[name="checkout-account-switch-form"]:checked' ).value;
+			const form = formCheckout.querySelector( '#checkout-account-' + formName );
+			if ( ! form ) {
+				return {};
+			}
 
-			return $form.serializeJSON();
+			const fields = form.querySelectorAll( 'input' );
+			const formData = {};
+			fields.forEach( function( field ) {
+				formData[ field.name ] = field.value;
+			} );
+
+			return formData;
 		};
 
 		const getPaymentData = function() {
-			return $( '#checkout-payment' ).serializeJSON();
+			const formCheckout = document.querySelector( '#learn-press-checkout-form' );
+			const form = formCheckout.querySelector( '#checkout-payment' );
+			if ( ! form ) {
+				return {};
+			}
+
+			const fields = form.querySelectorAll( 'input' );
+			const formData = {};
+			fields.forEach( function( field ) {
+				formData[ field.name ] = field.value;
+			} );
+
+			//console.log( 'getPaymentData', formData );
+
+			return formData;
 		};
 
 		const getPaymentNote = function() {
-			return $( '.learn-press-checkout-comment' ).serializeJSON();
+			const formCheckout = document.querySelector( '#learn-press-checkout-form' );
+			const form = formCheckout.querySelector( '.learn-press-checkout-comment' );
+			if ( ! form ) {
+				return {};
+			}
+
+			const field = form.querySelector( 'textarea' );
+			const formData = { [ field.name ]: field.value };
+
+			//console.log( 'getPaymentNote', formData );
+
+			return formData;
 		};
 
 		const showErrors = function( errors ) {
