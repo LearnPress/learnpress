@@ -216,7 +216,9 @@ class LP_Assets extends LP_Abstract_Assets {
 					array( 'lp-global', 'lp-utils', 'wp-api-fetch', 'jquery' ),
 					array( LP_PAGE_CHECKOUT ),
 					0,
-					1
+					1,
+					'',
+					[ 'strategy' => 'defer' ]
 				),
 				'lp-data-controls'     => new LP_Asset_Key(
 					self::url( 'js/dist/js/data-controls' . self::$_min_assets . '.js' ),
@@ -245,7 +247,9 @@ class LP_Assets extends LP_Abstract_Assets {
 					),
 					array( LP_PAGE_SINGLE_COURSE_CURRICULUM ),
 					0,
-					1
+					1,
+					'',
+					[ 'strategy' => 'defer' ]
 				),
 				'lp-quiz'              => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/quiz' . self::$_min_assets . '.js' ),
@@ -264,7 +268,9 @@ class LP_Assets extends LP_Abstract_Assets {
 					),
 					array( LP_PAGE_QUIZ ),
 					0,
-					1
+					1,
+					'',
+					[ 'strategy' => 'defer' ]
 				),
 				'lp-single-course'     => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/single-course' . self::$_min_assets . '.js' ),
@@ -277,7 +283,9 @@ class LP_Assets extends LP_Abstract_Assets {
 					),
 					array( LP_PAGE_SINGLE_COURSE ),
 					0,
-					1
+					1,
+					'',
+					[ 'strategy' => 'defer' ]
 				),
 				'lp-courses'           => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/courses' . self::$_min_assets . '.js' ),
@@ -315,7 +323,9 @@ class LP_Assets extends LP_Abstract_Assets {
 					),
 					array( LP_PAGE_PROFILE ),
 					0,
-					1
+					1,
+					'',
+					[ 'strategy' => 'defer' ]
 				),
 				'lp-widgets'           => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/widgets' . self::$_min_assets . '.js' ),
@@ -334,7 +344,9 @@ class LP_Assets extends LP_Abstract_Assets {
 					array( 'jquery', 'lp-utils' ),
 					array( LP_PAGE_BECOME_A_TEACHER ),
 					0,
-					1
+					1,
+					'',
+					[ 'strategy' => 'defer' ]
 				),
 				'lp-course-filter'     => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/course-filter' . self::$_min_assets . '.js' ),
