@@ -36,7 +36,7 @@ if ( ! class_exists( 'LP_Shortcode_Login_Form' ) ) {
 				$output = sprintf( __( 'Your are logged in as %1$s. <a href="%2$s">Log out</a>?', 'learnpress' ), $user->get_display_name(), wp_logout_url() );
 			} else {
 				ob_start();
-				learn_press_print_messages();
+				learn_press_show_message();
 				learn_press_get_template( 'global/form-login.php' );
 				$output = ob_get_clean();
 			}
