@@ -50,7 +50,7 @@ class ListCoursesTemplate {
 	 */
 	public function layout_courses() {
 		$html_wrapper = [
-			'<div id="lp-list-courses-default" class="learn-press-courses-wrapper">' => '</div>',
+			'<div class="lp-list-courses-default">' => '</div>',
 		];
 
 		$callback = [

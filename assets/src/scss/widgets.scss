@@ -6,17 +6,8 @@
 
 .learnpress.widget {
 	margin-bottom: 30px;
-	@media (max-width:420px) {
+	@media (max-width: 420px) {
 		max-width: 400px;
-	}
-
-	.learnpress-widget-wrapper {
-		margin-top: 16px;
-		position: relative;
-
-		.lp-widget-loading-change {
-			@include loading-change;
-		}
 	}
 
 	h3 {
@@ -25,6 +16,16 @@
 
 	a {
 		text-decoration: none;
+	}
+}
+
+.learnpress-widget-wrapper {
+	margin-top: 16px;
+	position: relative;
+
+	.lp-widget-loading-change {
+		@include loading-change;
+		z-index: 10;
 	}
 }
 
