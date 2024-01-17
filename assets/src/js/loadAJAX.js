@@ -46,7 +46,10 @@ const lpAJAX = ( () => {
 				elements.forEach( ( element ) => {
 					//console.log( 'Element handing', element );
 					element.classList.add( 'loaded' );
-					const url = API.frontend.apiAJAX;
+					let url = API.frontend.apiAJAX;
+					if ( lpData.urlParams.hasOwnProperty( 'lang' ) ) {
+						url = lpAddQueryArgs( url, { lang: lpData.urlParams.lang } );
+					}
 					const elTarget = element.querySelector( '.lp-target' );
 					const dataObj = JSON.parse( elTarget.dataset.send );
 					const dataSend = { ...dataObj };
