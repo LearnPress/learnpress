@@ -19,7 +19,7 @@ if ( $item->is_preview() && ! $user->has_enrolled_course( $course->get_id() ) ) 
 	return;
 }
 
-$message_confirm_complete_item = sprintf( '%s "%s" ?', __( 'Do you want to complete the lesson', 'learnpress' ), $item->get_title() );
+$message_confirm_complete_item = sprintf( '%s "%s"?', __( 'Do you want to complete the lesson', 'learnpress' ), $item->get_title() );
 $completed                     = $user->has_completed_item( $item->get_id(), $course->get_id() );
 
 if ( $completed ) :
