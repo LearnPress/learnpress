@@ -114,10 +114,21 @@ window.lpCourseFilter = {
 				}
 			} );
 	},
-	loadWidgetFilterREST: ( widgetForm, elListCourseTarget, elFieldFilter ) => {
-		const parent = widgetForm.closest( '.learnpress-widget-wrapper' );
+	loadWidgetFilterREST: ( widgetForm ) => {
+		const parent = widgetForm.closest( `.learnpress-widget-wrapper:not(.${ classProcessing })` );
 		if ( ! parent ) {
 			return;
+		}
+		parent.classList.add( classProcessing );
+
+		const elOptionWidget = widgetForm.closest( 'div[data-widget]' );
+		let elListCourseTarget = null;
+		if ( elOptionWidget ) {
+			const dataWidgetObj = JSON.parse( elOptionWidget.dataset.widget );
+			const dataWidgetObjInstance = JSON.parse( dataWidgetObj.instance );
+
+			const classListCourseTarget = dataWidgetObjInstance.class_list_courses_target || '.lp-list-courses-default';
+			elListCourseTarget = document.querySelector( classListCourseTarget );
 		}
 
 		const widgetData = parent.dataset.widget ? JSON.parse( parent.dataset.widget ) : '';
@@ -186,7 +197,7 @@ window.lpCourseFilter = {
 					if ( ! elListCourseTarget.classList.contains( classProcessing ) ) {
 						clearInterval( timeOutDone );
 						elLoadingChange.style.display = 'none';
-						elFieldFilter.classList.remove( classProcessing );
+						parent.classList.remove( classProcessing );
 					}
 				}, 1 );
 			},
@@ -281,6 +292,10 @@ window.lpCourseFilter = {
 			window.history.pushState( {}, '', lpAddQueryArgs( lpGetCurrentURLNoParam(), lpData.urlParams ) );
 			// End.
 
+			// Load AJAX widget by params
+			window.lpCourseFilter.loadWidgetFilterREST( form );
+
+			// Load list courses by AJAX.
 			const callBack = {
 				success: ( response ) => {
 					//console.log( 'response', response );
@@ -312,6 +327,10 @@ window.lpCourseFilter = {
 	},
 	reset: ( btnReset ) => {
 		const form = btnReset.closest( `.${ classCourseFilter }` );
+		if ( ! form ) {
+			return;
+		}
+
 		const btnSubmit = form.querySelector( '.course-filter-submit' );
 		const elResult = form.querySelector( '.lp-course-filter-search-result' );
 		const elSearch = form.querySelector( '.lp-course-filter-search' );
@@ -327,13 +346,11 @@ window.lpCourseFilter = {
 		for ( let i = 0; i < form.elements.length; i++ ) {
 			form.elements[ i ].removeAttribute( 'checked' );
 		}
-		// If on the page archive course will call btnSubmit click.
-		if ( lpData.is_course_archive ) {
-			btnSubmit.click();
-		}
+
+		btnSubmit.click();
 
 		// Load AJAX widget by params
-		window.lpCourseFilter.loadWidgetFilterREST( form );
+		//window.lpCourseFilter.loadWidgetFilterREST( form );
 	},
 	showHideSearchResult: ( target ) => {
 		const elResult = document.querySelector( '.lp-course-filter-search-result' );
@@ -349,14 +366,13 @@ window.lpCourseFilter = {
 		}
 	},
 	triggerInputChoice: ( target ) => {
-		if ( target.tagName === 'INPUT' ) {
-			const elField = target.closest( `.lp-course-filter__field:not(.${ classProcessing })` );
-			if ( ! elField ) {
-				return;
-			}
-			elField.classList.add( classProcessing );
+		const elField = target.closest( `.lp-course-filter__field` );
+		if ( ! elField ) {
+			return;
+		}
 
-			const elOptionWidget = target.closest( 'div[data-widget]' );
+		if ( target.tagName === 'INPUT' ) {
+			const elOptionWidget = elField.closest( 'div[data-widget]' );
 
 			let elListCourseTarget = null;
 			if ( elOptionWidget ) {
@@ -365,35 +381,17 @@ window.lpCourseFilter = {
 
 				const classListCourseTarget = dataWidgetObjInstance.class_list_courses_target || '.lp-list-courses-default';
 				elListCourseTarget = document.querySelector( classListCourseTarget );
-			}
+				if ( ! elListCourseTarget ) {
+					return;
+				}
 
-			// Filter courses
-			const form = elField.closest( `.${ classCourseFilter }` );
-			const btnSubmit = form.querySelector( '.course-filter-submit' );
-			if ( elListCourseTarget ) {
+				// Filter courses
+				const form = elField.closest( `.${ classCourseFilter }` );
+				const btnSubmit = form.querySelector( '.course-filter-submit' );
 				btnSubmit.click();
-
-				// Load AJAX widget by params
-				window.lpCourseFilter.loadWidgetFilterREST( form, elListCourseTarget, elField );
 			}
+		} else {
+			elField.querySelector( 'input' ).click();
 		}
-
-		// Click el parent of input to tick/untick field
-		let elChoice;
-
-		const parent = target.closest( '.lp-course-filter__field' );
-		if ( parent ) {
-			elChoice = parent;
-		}
-
-		if ( ! elChoice ) {
-			return;
-		}
-
-		if ( 'INPUT' === target.tagName ) {
-			return;
-		}
-
-		elChoice.querySelector( 'input' ).click();
 	},
 };
