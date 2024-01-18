@@ -48,7 +48,7 @@ document.addEventListener( 'DOMContentLoaded', function() {
 		parent.insertAdjacentHTML(
 			'beforeend',
 			`<tr data-id="${ data.file_id }" data-sort="${ data.orders }" >
-              <td class="sort">${ data.file_name }</td>
+              <td class="sort"><span class="dashicons dashicons-menu"></span> ${ data.file_name }</td>
               <td>${ capitalizeFirstChar( data.method ) }</td>
               <td><a href="javascript:void(0)" class="delete-material-row" data-id="${ data.file_id }">${ delete_btn_text }</a></td>
             </tr>`
