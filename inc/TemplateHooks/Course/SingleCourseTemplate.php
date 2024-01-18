@@ -44,15 +44,21 @@ class SingleCourseTemplate {
 	 * Get short description course.
 	 *
 	 * @param LP_Course $course
+	 * @param int $number_words
 	 *
 	 * @return string
 	 */
-	public function html_short_description( LP_Course $course ): string {
+	public function html_short_description( LP_Course $course, int $number_words = 0  ): string {
 		$html_wrapper = [
 			'<p class="course-short-description">' => '</p>',
 		];
 
-		return Template::instance()->nest_elements( $html_wrapper, $course->get_data( 'excerpt' ) );
+		$short_description = $course->get_data( 'excerpt' );
+		if ( $number_words > 0 ) {
+			$short_description = wp_trim_words( $short_description, $number_words, '...' );
+		}
+
+		return Template::instance()->nest_elements( $html_wrapper, $short_description );
 	}
 
 	/**
