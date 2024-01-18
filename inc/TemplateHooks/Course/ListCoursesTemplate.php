@@ -240,7 +240,7 @@ class ListCoursesTemplate {
 				'learn-press/list-courses/layout/item/section/bottom/end',
 				[
 					'wrapper'       => [ 'text_html' => '<div class="course-info">' ],
-					'short_des'     => [ 'text_html' => $singleCourseTemplate->html_short_description( $course, 5 ) ],
+					'short_des'     => [ 'text_html' => $singleCourseTemplate->html_short_description( $course, 15 ) ],
 					'clearfix'      => [ 'text_html' => '<div class="clearfix"></div>' ],
 					'price'         => [
 						'text_html' => sprintf(
