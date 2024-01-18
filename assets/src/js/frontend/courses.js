@@ -8,7 +8,7 @@ import API from '../api';
 import { lpAddQueryArgs, lpFetchAPI, lpGetCurrentURLNoParam } from '../utils';
 import Cookies from '../utils/cookies';
 
-const elListCoursesIdNewDefault = '#lp-list-courses-default';
+const elListCoursesIdNewDefault = '.lp-list-courses-default';
 
 if ( 'undefined' === typeof lpData || 'undefined' === typeof lpSettingCourses ) {
 	console.log( 'lpData || lpSettingCourses is undefined' );

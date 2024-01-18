@@ -108,6 +108,9 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 					display: flex;
 					justify-content: space-between;
 				}
+				.lp-meta-box .lp-material--field-wrap input{
+					width: 100%;
+				}
 				#available-to-upload{
 					font-weight: bold;
 				}
