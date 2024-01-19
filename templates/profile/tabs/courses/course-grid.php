@@ -5,8 +5,11 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  4.0.10
+ * @version  4.0.11
  */
+
+use LearnPress\Helpers\Template;
+use LearnPress\TemplateHooks\Course\ListCoursesTemplate;
 
 defined( 'ABSPATH' ) || exit();
 
@@ -21,19 +24,31 @@ if ( ! isset( $user ) || ! isset( $course_ids ) || ! isset( $current_page ) || !
 		<?php endif; ?>
 
 		<?php
-		global $post;
+		$template_is_override = Template::check_template_is_override( 'content-course.php' );
+		$listCoursesTemplate  = ListCoursesTemplate::instance();
+		if ( $template_is_override ) {
+			global $post;
+		}
 
 		foreach ( $course_ids as $id ) {
 			$course = learn_press_get_course( $id );
-			$post   = get_post( $id );
-			setup_postdata( $post );
+			if ( ! $course ) {
+				continue;
+			}
 
-			//$course_data    = $user->get_course_data( $id );
-			//$course_results = $course_data->get_result();
-			learn_press_get_template( 'content-course.php' );
+			if ( $template_is_override ) {
+				$post = get_post( $id );
+				setup_postdata( $post );
+
+				learn_press_get_template( 'content-course.php' );
+			} else {
+				echo $listCoursesTemplate::render_course( $course );
+			}
 		}
 
-		wp_reset_postdata();
+		if ( $template_is_override ) {
+			wp_reset_postdata();
+		}
 		?>
 
 		<?php if ( $current_page === 1 ) : ?>

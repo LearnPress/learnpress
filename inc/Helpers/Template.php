@@ -139,7 +139,6 @@ class Template {
 		}
 	}
 
-	//
 	/**
 	 * Get frontend template block file
 	 *
@@ -155,6 +154,39 @@ class Template {
 		if ( ! $this->include ) {
 			return $template;
 		}
+	}
+
+	/**
+	 * Check file template is overwritten
+	 * @param string $file_name
+	 *
+	 * @return bool|string return false if not, path file if yes
+	 * @since 4.2.6
+	 * @version 1.0.0
+	 */
+	public static function check_template_is_override( string $file_name = '' ) {
+		$default_path          = LP_PLUGIN_PATH . "templates/{$file_name}";
+		$folder_name_rewrite   = learn_press_template_path();
+		$from_child_theme_path = sprintf(
+			'%s/%s/%s',
+			get_stylesheet_directory(),
+			$folder_name_rewrite,
+			$file_name
+		);
+		$from_theme_path       = sprintf(
+			'%s/%s/%s',
+			get_template_directory(),
+			$folder_name_rewrite,
+			$file_name
+		);
+
+		if ( file_exists( $from_child_theme_path ) ) {
+			return $from_child_theme_path;
+		} elseif ( file_exists( $from_theme_path ) ) {
+			return $from_theme_path;
+		}
+
+		return false;
 	}
 
 	/**
