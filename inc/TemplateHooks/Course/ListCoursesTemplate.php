@@ -259,6 +259,10 @@ class ListCoursesTemplate {
 				$settings
 			);
 			Template::instance()->print_sections( $section_bottom_end );
+
+			// Hook old, addon LP Woo v4.1.2 still use.
+			do_action( 'learn-press/after-courses-loop-item', $course );
+
 			$html_bottom_end = ob_get_clean();
 
 			ob_start();
