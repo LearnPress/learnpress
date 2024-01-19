@@ -210,6 +210,19 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.2.6 (2024-01-25) =
+~ Tweak: courses js.
+~ Tweak: course filter js.
+~ Added: some class has -no-css for purpose not set style on this class.
+~ Added: fake student on count students show on list courses.
+~ Added: get_tags function for single courses.
+~ Tweak: checkout js, not use serializeJSON() of JQuery.
+~ Added: defer js some script.
+~ Fixed: add param lang if exist for loadAjax.
+~ Added: option "Class of list courses want to filter" on the Widget Filter Courses.
+~ Added: icon drag material.
+~ Remove callback hook learn-press/before-courses-loop-item, learn-press/after-courses-loop-item.
+
 = 4.2.5.9 (2024-01-09) =
 ~ Added: show notification addons bought near expire support.
 ~ Fixed: error "Fib in blank" question case duplicate, when submit quiz wrong result.
