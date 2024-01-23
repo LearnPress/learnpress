@@ -1,4 +1,7 @@
 <?php
+
+use LearnPress\Helpers\Template;
+
 defined( 'ABSPATH' ) || exit;
 
 if ( ! class_exists( 'LP_AJAX' ) ) {
@@ -103,30 +106,36 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 		}
 
 		public static function checkout_user_email_exists() {
-			$email    = LP_Request::get_email( 'email' );
-			$response = array(
-				'exists' => 0,
-			);
+			$response = new LP_REST_Response();
 
-			if ( email_exists( $email ) ) {
-				$response['exists'] = $email;
-				$output             = '<div class="lp-guest-checkout-output">' . __(
-					'Your email already exists. Do you want to continue with this email?',
-					'learnpress'
-				) . '</div>';
-			} else {
-				$output = '<label class="lp-guest-checkout-output">
-					<input type="checkbox" name="checkout-email-option" value="new-account">
-				' . __(
-					'Create a new account with this email. The account information will be sent with this email.',
-					'learnpress'
-				) . '
-				</label>';
+			try {
+				$email        = LP_Request::get_email( 'email' );
+				$html_wrapper = [
+					'<label class="lp-guest-checkout-output">' => '</label>',
+				];
+
+				if ( email_exists( $email ) ) {
+					$output = __(
+						'Your email already exists. Do you want to continue with this email?',
+						'learnpress'
+					);
+				} else {
+					$output = sprintf(
+						'<input type="checkbox" name="checkout-email-option" value="new-account"> <span>%s</span>',
+						__(
+							'Create a new account with this email. The account information will be sent with this email.',
+							'learnpress'
+						)
+					);
+				}
+
+				$response->status        = 'success';
+				$response->data->content = Template::instance()->nest_elements( $html_wrapper, $output );
+			} catch ( Throwable $e ) {
+				$response->message = $e->getMessage();
 			}
 
-			$response['output'] = apply_filters( 'learnpress/guest_checkout_email_exist_output', $output, $email );
-
-			learn_press_maybe_send_json( $response );
+			wp_send_json( $response );
 		}
 
 		/**

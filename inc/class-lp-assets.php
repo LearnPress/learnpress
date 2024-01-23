@@ -213,12 +213,12 @@ class LP_Assets extends LP_Abstract_Assets {
 				),
 				'lp-checkout'          => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/checkout' . self::$_min_assets . '.js' ),
-					array( 'lp-global', 'lp-utils', 'wp-api-fetch', 'jquery' ),
-					array( LP_PAGE_CHECKOUT ),
+					[ 'lp-utils' ],
+					[ LP_PAGE_CHECKOUT ],
 					0,
-					1,
+					0,
 					'',
-					[ 'strategy' => 'defer' ]
+					[ 'strategy' => 'async' ]
 				),
 				'lp-data-controls'     => new LP_Asset_Key(
 					self::url( 'js/dist/js/data-controls' . self::$_min_assets . '.js' ),
@@ -291,7 +291,7 @@ class LP_Assets extends LP_Abstract_Assets {
 					self::url( 'js/dist/frontend/courses' . self::$_min_assets . '.js' ),
 					array(
 						'lp-global',
-						'wp-hooks'
+						'wp-hooks',
 					), // when Eduma v5.3.6 release a long time, will be remove lp-global.
 					array( LP_PAGE_COURSES ),
 					0,
@@ -362,8 +362,8 @@ class LP_Assets extends LP_Abstract_Assets {
 
 		// Dequeue script 'smoothPageScroll' on item details, it makes can't scroll, when rewrite page item detail, can check to remove.
 		if ( LP_PAGE_SINGLE_COURSE_CURRICULUM === LP_Page_Controller::page_current() ||
-			 LP_PAGE_QUIZ === LP_Page_Controller::page_current() ||
-			 LP_PAGE_QUESTION === LP_Page_Controller::page_current() ) {
+			LP_PAGE_QUIZ === LP_Page_Controller::page_current() ||
+			LP_PAGE_QUESTION === LP_Page_Controller::page_current() ) {
 			wp_dequeue_script( 'smoothPageScroll' );
 		}
 

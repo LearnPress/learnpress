@@ -69,7 +69,7 @@ module.exports = {
 		'./assets/js/dist/frontend/courses-v2': './assets/src/js/frontend/courses-v2.js',
 		'./assets/js/dist/frontend/instructors': './assets/src/apps/js/frontend/instructors.js',
 		'./assets/js/dist/frontend/become-teacher': './assets/src/apps/js/frontend/become-teacher.js',
-		'./assets/js/dist/frontend/checkout': './assets/src/apps/js/frontend/checkout.js',
+		'./assets/js/dist/frontend/checkout': './assets/src/js/frontend/checkout.js',
 		'./assets/js/dist/frontend/single-course': './assets/src/apps/js/frontend/single-course.js',
 		'./assets/js/dist/frontend/single-curriculum': './assets/src/apps/js/frontend/single-curriculum.js',
 		'./assets/js/dist/frontend/lesson': './assets/src/apps/js/frontend/lesson.js',
