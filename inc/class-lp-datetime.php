@@ -149,7 +149,7 @@ class LP_Datetime {
 			case 'i18n_has_time': // Display format Date Time by Timezone of WP.
 				$date_time_format_wp     = apply_filters(
 					'learn-press/datetime/format/i18n_has_time',
-					get_option( 'date_format' ) . ' ' . get_option( 'time_format' )
+					date_i18n( get_option( 'date_format' ) ) . ' ' . get_option( 'time_format' )
 				);
 				$time_stamp              = $this->getTimestamp(); // UTC+0 (GMT)
 				$time_stamp_by_time_zone = $time_stamp + get_option( 'gmt_offset' ) * HOUR_IN_SECONDS;
