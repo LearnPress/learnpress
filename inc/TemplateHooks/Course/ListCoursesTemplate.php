@@ -204,27 +204,32 @@ class ListCoursesTemplate {
 					'duration'      => [
 						'text_html' => sprintf(
 							'<div class="meta-item meta-item-duration">%s</div>',
-							$singleCourseTemplate->html_duration( $course ) )
+							$singleCourseTemplate->html_duration( $course )
+						),
 					],
 					'level'         => [
 						'text_html' => sprintf(
 							'<div class="meta-item meta-item-level">%s</div>',
-							$singleCourseTemplate->html_level( $course ) )
+							$singleCourseTemplate->html_level( $course )
+						),
 					],
 					'lesson'        => [
 						'text_html' => sprintf(
 							'<div class="meta-item meta-item-lesson">%s</div>',
-							$singleCourseTemplate->html_count_item( $course, 'lesson' ) )
+							$singleCourseTemplate->html_count_item( $course, 'lesson' )
+						),
 					],
 					'quiz'          => [
 						'text_html' => sprintf(
 							'<div class="meta-item meta-item-quiz">%s</div>',
-							$singleCourseTemplate->html_count_item( $course, 'quiz' ) )
+							$singleCourseTemplate->html_count_item( $course, 'quiz' )
+						),
 					],
 					'student'       => [
 						'text_html' => sprintf(
 							'<div class="meta-item meta-item-student">%s</div>',
-							$singleCourseTemplate->html_count_student( $course ) )
+							$singleCourseTemplate->html_count_student( $course )
+						),
 					],
 					'close_wrapper' => [ 'text_html' => '</div>' ],
 				],
@@ -245,13 +250,15 @@ class ListCoursesTemplate {
 					'price'         => [
 						'text_html' => sprintf(
 							'<div class="course-footer">%s</div>',
-							$singleCourseTemplate->html_price( $course ) )
+							$singleCourseTemplate->html_price( $course )
+						),
 					],
 					'read_more'     => [
 						'text_html' => sprintf(
 							'<div class="course-readmore"><a href="%s">%s</a></div>',
-							$course->get_permalink(), __( 'Read more', 'learnpress' )
-						)
+							$course->get_permalink(),
+							__( 'Read more', 'learnpress' )
+						),
 					],
 					'close_wrapper' => [ 'text_html' => '</div>' ],
 				],
@@ -276,7 +283,8 @@ class ListCoursesTemplate {
 						'text_html' => sprintf(
 							'<a class="course-permalink" href="%s">%s</a>',
 							$course->get_permalink(),
-							$singleCourseTemplate->html_title( $course ) )
+							$singleCourseTemplate->html_title( $course )
+						),
 					],
 					'meta'          => [ 'text_html' => $html_meta ],
 					'separator'     => [ 'text_html' => '<div class="separator"></div>' ],
@@ -337,7 +345,7 @@ class ListCoursesTemplate {
 	 */
 	public function html_pagination_infinite(): string {
 		$html_wrapper = [
-			'<div class="courses-load-infinite-no-css learn-press-pagination">' => '</div>',
+			'<div class="courses-load-infinite-no-css courses-load-infinite learn-press-pagination">' => '</div>',
 		];
 		$content      = '<span class="lp-loading-circle lp-loading-no-css hide"></span>';
 
@@ -482,7 +490,7 @@ class ListCoursesTemplate {
 
 		$content = '<ul class="courses-layouts-display-list">';
 		foreach ( $layouts as $k => $v ) {
-			$active  = ( $data['courses_layout_default'] ?? '' ) === $k ? 'active' : '';
+			$active   = ( $data['courses_layout_default'] ?? '' ) === $k ? 'active' : '';
 			$content .= '<li class="courses-layout ' . $active . '" data-layout="' . $k . '">' . $v . '</li>';
 		}
 		$content .= '</ul>';
@@ -527,11 +535,11 @@ class ListCoursesTemplate {
 		ob_start();
 		?>
 		<form class="search-courses" method="get"
-			  action="<?php echo esc_url_raw( learn_press_get_page_link( 'courses' ) ); ?>">
+				action="<?php echo esc_url_raw( learn_press_get_page_link( 'courses' ) ); ?>">
 			<label>
 				<input type="text" placeholder="<?php esc_attr_e( 'Search courses...', 'learnpress' ); ?>"
-					   name="c_search"
-					   value="<?php echo esc_attr( $s ); ?>">
+						name="c_search"
+						value="<?php echo esc_attr( $s ); ?>">
 			</label>
 			<button type="submit" name="lp-btn-search-courses"><i class="fas fa-search"></i></button>
 		</form>
@@ -547,11 +555,11 @@ class ListCoursesTemplate {
 		<div class="switch-layout">
 			<?php foreach ( $layouts as $layout => $value ) : ?>
 				<input type="radio" name="lp-switch-layout-btn"
-					   value="<?php echo esc_attr( $layout ); ?>"
-					   id="lp-switch-layout-btn-<?php echo esc_attr( $layout ); ?>" <?php checked( $layout, $active ); ?>>
+						value="<?php echo esc_attr( $layout ); ?>"
+						id="lp-switch-layout-btn-<?php echo esc_attr( $layout ); ?>" <?php checked( $layout, $active ); ?>>
 				<label class="switch-btn <?php echo esc_attr( $layout ); ?>"
-					   title="<?php echo sprintf( esc_attr__( 'Switch to %s', 'learnpress' ), $layout ); ?>"
-					   for="lp-switch-layout-btn-<?php echo esc_attr( $layout ); ?>"></label>
+						title="<?php echo sprintf( esc_attr__( 'Switch to %s', 'learnpress' ), $layout ); ?>"
+						for="lp-switch-layout-btn-<?php echo esc_attr( $layout ); ?>"></label>
 			<?php endforeach; ?>
 		</div>
 		<?php
@@ -611,7 +619,7 @@ class ListCoursesTemplate {
 				ob_start();
 				Template::instance()->print_sections( $item_sections );
 				$item_content = ob_get_clean();
-				$list_course  .= Template::instance()->nest_elements( $item_wrapper, $item_content );
+				$list_course .= Template::instance()->nest_elements( $item_wrapper, $item_content );
 			}
 			$list_course = Template::instance()->nest_elements( $html_item_wrapper, $list_course );
 			// End section list courses.

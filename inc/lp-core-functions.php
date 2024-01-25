@@ -2691,6 +2691,7 @@ function learn_press_sort_list_by_priority_callback( $a, $b ) {
  *
  * @return string
  * @since 3.0.0
+ * @deprcated 4.2.6 use LP_Datetime format instead
  */
 function learn_press_date_i18n( $timestamp = 0, string $format = '', bool $gmt = false ): string {
 	if ( ! $format ) {

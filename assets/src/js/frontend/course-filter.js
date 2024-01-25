@@ -382,7 +382,7 @@ window.lpCourseFilter = {
 				const classListCourseTarget = dataWidgetObjInstance.class_list_courses_target || '.lp-list-courses-default';
 				elListCourseTarget = document.querySelector( classListCourseTarget );
 				if ( ! elListCourseTarget ) {
-					return;
+					//return;
 				}
 
 				// Filter courses
