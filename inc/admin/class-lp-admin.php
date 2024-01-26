@@ -436,7 +436,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		 * @return mixed
 		 */
 		public function get_pages_of_lp( $q ) {
-			if ( ! is_admin() ) {
+			if ( ! is_admin() || ! $q->is_main_query() ) {
 				return $q;
 			}
 
