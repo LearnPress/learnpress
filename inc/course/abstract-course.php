@@ -1164,6 +1164,9 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 */
 		public function get_prev_item( $args = null ) {
 			$item_nav = $this->get_item_nav();
+			if ( ! is_array( $item_nav ) || empty( $item_nav ) ) {
+				return 0;
+			}
 
 			return apply_filters( 'learn-press/course/prev-item', $item_nav[0], $this->get_id(), $args );
 		}
