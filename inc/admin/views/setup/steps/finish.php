@@ -20,7 +20,7 @@ defined( 'ABSPATH' ) or exit;
 		<?php _e( 'Install a demo course', 'learnpress' ); ?>
 	</a>
 
-	<a class="button" href="https://docspress.thimpress.com/admin-learnpress-4-0/">
+	<a class="button" href="https://docs.thimpress.com/learnpress/">
 		<?php _e( 'View Documentation', 'learnpress' ); ?>
 	</a>
 

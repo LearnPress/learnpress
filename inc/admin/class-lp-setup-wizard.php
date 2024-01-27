@@ -352,7 +352,7 @@ class LP_Setup_Wizard {
 		return array(
 			'paypal' => array(
 				'name'     => __( 'PayPal', 'learnpress' ),
-				'icon'     => LearnPress::instance()->plugin_url( '/assets/images/paypal-2.png' ),
+				'icon'     => LearnPress::instance()->plugin_url( 'assets/images/paypal-logo-preview.png' ),
 				'callback' => array( $this, 'setup_paypal' ),
 			),
 		);
