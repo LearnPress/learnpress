@@ -38,13 +38,13 @@
 					</li>
 				</ul>
 			</fieldset>
-			<p>
+			<div>
 				<button class="button button-primary lp-button-assign-course" type="submit">
 					<?php _e( 'Assign', 'learnpress' ); ?>
 				</button>
 				<span class="percent" style="margin-left: 10px"></span>
 				<span class="message" style="margin-left: 10px"></span>
-			</p>
+			</div>
 		</form>
 	</div>
 </div>
