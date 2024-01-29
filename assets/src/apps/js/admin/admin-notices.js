@@ -55,7 +55,7 @@ const callAdminNotices = ( set = '' ) => {
 	params += set ? ( tab ? '&' : '?' ) + `${ set }` : '';
 
 	fetch( adminAPI.apiAdminNotice + params, {
-		method: 'GET',
+		method: 'POST',
 		headers: {
 			'X-WP-Nonce': lpGlobalSettings.nonce,
 		},
