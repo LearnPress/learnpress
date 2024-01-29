@@ -210,7 +210,7 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
-= 4.2.6 (2024-01-25) =
+= 4.2.6 (2024-01-29) =
 ~ Tweak: courses js.
 ~ Tweak: course filter js.
 ~ Added: some class has -no-css for purpose not set style on this class.
@@ -222,6 +222,7 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Added: option "Class of list courses want to filter" on the Widget Filter Courses.
 ~ Added: icon drag material.
 ~ Remove callback hook learn-press/before-courses-loop-item, learn-press/after-courses-loop-item.
+~ Fixed: code searching post by taxonomies make error block Woocommerce.
 
 = 4.2.5.9 (2024-01-09) =
 ~ Added: show notification addons bought near expire support.
