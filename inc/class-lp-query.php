@@ -24,7 +24,7 @@ class LP_Query {
 		/**
 		 * Add searching post by taxonomies
 		 */
-		add_action( 'pre_get_posts', array( $this, 'query_taxonomy' ) );
+		//add_action( 'pre_get_posts', array( $this, 'query_taxonomy' ) );
 	}
 
 	/**
@@ -233,6 +233,8 @@ class LP_Query {
 
 	/**
 	 * @param WP_Query $q
+	 *
+	 * @todo has error with block theme of Woo, when search ?s=test
 	 */
 	public function query_taxonomy( $q ) {
 

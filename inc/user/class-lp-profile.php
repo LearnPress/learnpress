@@ -1133,7 +1133,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 					$file_path = $upload['basedir'] . DIRECTORY_SEPARATOR . $profile_picture;
 
 					if ( file_exists( $file_path ) ) {
-						$uploaded_profile_src = $upload['baseurl'] . '/' . $profile_picture;
+						$uploaded_profile_src = $upload['baseurl'] . $profile_picture;
 					} else {
 						$uploaded_profile_src = false;
 					}

@@ -58,18 +58,14 @@ class SkinCoursesBase extends LPSkinBase {
 				lp_archive_skeleton_get_args()
 			);
 
-			$html_wrapper_widget  = [
-				'<div class="list-courses-elm-wrapper">'    => '</div>',
-				'<div class="learn-press-courses-wrapper">' => '</div>',
+			$html_wrapper_widget = [
+				'<div class="list-courses-elm-wrapper">' => '</div>',
 			];
-			$name_target          = 'learn-press-courses-wrapper';
-			$html_wrapper_courses = [ '<div class="' . $name_target . '">' => '</div>' ];
 
 			// No load AJAX
 			if ( 'yes' !== $is_load_restapi || Plugin::$instance->editor->is_edit_mode() ) {
 				$templateObj = self::render_courses( $settings );
 				$content     = $templateObj->content;
-				$content     = Template::instance()->nest_elements( $html_wrapper_courses, $content );
 			} elseif ( 'yes' === $courses_rest_no_load_page ) {
 				$callback                            = [
 					'class'  => get_class( $this ),
@@ -167,7 +163,7 @@ class SkinCoursesBase extends LPSkinBase {
 			'close_wrapper'   => [ 'text_html' => '</div>' ],
 		];
 		Template::instance()->print_sections( $section_top );
-		echo '<ul class="learn-press-courses ' . $skin . '">';
+		echo '<ul class="learn-press-courses lp-list-courses-no-css ' . $skin . '">';
 		foreach ( $courses as $courseObj ) {
 			$course = learn_press_get_course( $courseObj->ID );
 			echo static::render_course( $course, $settings );

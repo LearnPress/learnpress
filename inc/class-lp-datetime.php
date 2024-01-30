@@ -144,7 +144,8 @@ class LP_Datetime {
 			case 'i18n': // Display format Date by Timezone of WP.
 				$time_stamp              = $this->getTimestamp(); // UTC+0 (GMT)
 				$time_stamp_by_time_zone = $time_stamp + get_option( 'gmt_offset' ) * HOUR_IN_SECONDS;
-				$date_str                = learn_press_date_i18n( $time_stamp_by_time_zone );
+				$date_format             = get_option( 'date_format' );
+				$date_str                = date_i18n( $date_format, $time_stamp_by_time_zone );
 				break;
 			case 'i18n_has_time': // Display format Date Time by Timezone of WP.
 				$date_time_format_wp     = apply_filters(
@@ -157,7 +158,7 @@ class LP_Datetime {
 					'learn-press/datetime/date/i18n_has_time',
 					sprintf(
 						'%s',
-						gmdate( $date_time_format_wp, $time_stamp_by_time_zone )
+						date_i18n( $date_time_format_wp, $time_stamp_by_time_zone )
 					),
 					$time_stamp,
 					$time_stamp_by_time_zone
@@ -415,7 +416,7 @@ class LP_Datetime {
 	 */
 	public static function get_string_plural_duration( float $duration_number, string $duration_type = '' ): string {
 		if ( $duration_number == 0 ) {
-			return esc_html__( 'Lifetime', 'learnpress');
+			return esc_html__( 'Lifetime', 'learnpress' );
 		}
 
 		switch ( strtolower( $duration_type ) ) {

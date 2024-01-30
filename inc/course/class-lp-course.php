@@ -1023,6 +1023,23 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		}
 
 		/**
+		 * Get tags of course.
+		 *
+		 * @since 4.2.3
+		 * @version 1.0.0
+		 * @return array|WP_Term[]
+		 */
+		public function get_tags(): array {
+			// Todo: set cache.
+			$tags = get_the_terms( $this->get_id(), LP_COURSE_TAXONOMY_TAG);
+			if ( ! $tags ) {
+				$tags = array();
+			}
+
+			return $tags;
+		}
+
+		/**
 		 * Get all categories.
 		 *
 		 * @return array

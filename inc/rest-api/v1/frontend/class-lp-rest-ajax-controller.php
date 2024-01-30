@@ -79,6 +79,8 @@ class LP_REST_AJAX_Controller extends LP_Abstract_REST_Controller {
 			// Check class and method is callable.
 			if ( is_callable( [ $class, $method ] ) ) {
 				$data = call_user_func( [ $class, $method ], $args );
+			} else {
+				throw new Exception( 'Error: callback is not callable!' );
 			}
 
 			if ( ! $data instanceof stdClass && ! isset( $data->content ) ) {

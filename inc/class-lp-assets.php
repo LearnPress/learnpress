@@ -144,6 +144,7 @@ class LP_Assets extends LP_Abstract_Assets {
 				'is_course_archive' => LP_Page_Controller::is_page_courses(),
 				'courses_url'       => learn_press_get_page_link( 'courses' ),
 				'urlParams'         => lp_archive_skeleton_get_args(),
+				'lp_version'        => LearnPress::instance()->version,
 			]
 		);
 	}
@@ -212,10 +213,12 @@ class LP_Assets extends LP_Abstract_Assets {
 				),
 				'lp-checkout'          => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/checkout' . self::$_min_assets . '.js' ),
-					array( 'lp-global', 'lp-utils', 'wp-api-fetch', 'jquery' ),
-					array( LP_PAGE_CHECKOUT ),
+					[ 'lp-utils' ],
+					[ LP_PAGE_CHECKOUT ],
 					0,
-					1
+					0,
+					'',
+					[ 'strategy' => 'async' ]
 				),
 				'lp-data-controls'     => new LP_Asset_Key(
 					self::url( 'js/dist/js/data-controls' . self::$_min_assets . '.js' ),
@@ -244,7 +247,9 @@ class LP_Assets extends LP_Abstract_Assets {
 					),
 					array( LP_PAGE_SINGLE_COURSE_CURRICULUM ),
 					0,
-					1
+					1,
+					'',
+					[ 'strategy' => 'defer' ]
 				),
 				'lp-quiz'              => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/quiz' . self::$_min_assets . '.js' ),
@@ -263,7 +268,9 @@ class LP_Assets extends LP_Abstract_Assets {
 					),
 					array( LP_PAGE_QUIZ ),
 					0,
-					1
+					1,
+					'',
+					[ 'strategy' => 'defer' ]
 				),
 				'lp-single-course'     => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/single-course' . self::$_min_assets . '.js' ),
@@ -276,16 +283,21 @@ class LP_Assets extends LP_Abstract_Assets {
 					),
 					array( LP_PAGE_SINGLE_COURSE ),
 					0,
-					1
+					1,
+					'',
+					[ 'strategy' => 'defer' ]
 				),
 				'lp-courses'           => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/courses' . self::$_min_assets . '.js' ),
-					array( 'lp-global', 'wp-hooks' ), // when Eduma v5.3.6 release a long time, will be remove lp-global.
+					array(
+						'lp-global',
+						'wp-hooks',
+					), // when Eduma v5.3.6 release a long time, will be remove lp-global.
 					array( LP_PAGE_COURSES ),
 					0,
 					0,
 					'',
-					[ 'strategy' => 'async' ]
+					[ 'strategy' => 'defer' ]
 				),
 				'lp-courses-v2'        => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/courses-v2' . self::$_min_assets . '.js' ),
@@ -311,7 +323,9 @@ class LP_Assets extends LP_Abstract_Assets {
 					),
 					array( LP_PAGE_PROFILE ),
 					0,
-					1
+					1,
+					'',
+					[ 'strategy' => 'defer' ]
 				),
 				'lp-widgets'           => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/widgets' . self::$_min_assets . '.js' ),
@@ -330,7 +344,9 @@ class LP_Assets extends LP_Abstract_Assets {
 					array( 'jquery', 'lp-utils' ),
 					array( LP_PAGE_BECOME_A_TEACHER ),
 					0,
-					1
+					1,
+					'',
+					[ 'strategy' => 'defer' ]
 				),
 				'lp-course-filter'     => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/course-filter' . self::$_min_assets . '.js' ),
@@ -346,8 +362,8 @@ class LP_Assets extends LP_Abstract_Assets {
 
 		// Dequeue script 'smoothPageScroll' on item details, it makes can't scroll, when rewrite page item detail, can check to remove.
 		if ( LP_PAGE_SINGLE_COURSE_CURRICULUM === LP_Page_Controller::page_current() ||
-			 LP_PAGE_QUIZ === LP_Page_Controller::page_current() ||
-			 LP_PAGE_QUESTION === LP_Page_Controller::page_current() ) {
+			LP_PAGE_QUIZ === LP_Page_Controller::page_current() ||
+			LP_PAGE_QUESTION === LP_Page_Controller::page_current() ) {
 			wp_dequeue_script( 'smoothPageScroll' );
 		}
 
@@ -433,7 +449,7 @@ class LP_Assets extends LP_Abstract_Assets {
 			return;
 		}
 
-		echo '<div class="lp-overlay">';
+		echo '<div class="lp-overlay" style="display: none">';
 		apply_filters( 'learnpress/modal-dialog', learn_press_get_template( 'global/lp-modal-overlay' ) );
 		echo '</div>';
 	}

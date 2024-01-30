@@ -14,9 +14,14 @@ defined( 'ABSPATH' ) || exit();
 if ( is_user_logged_in() ) {
 	return;
 }
+
+$checked = 'checked="checked"';
+if ( ! is_user_logged_in() && LearnPress::instance()->checkout()->is_enable_guest_checkout() ) {
+	$checked = '';
+}
 ?>
 
-<input type="radio" id="checkout-account-switch-to-login" checked="checked" name="checkout-account-switch-form" value="login"/>
+<input type="radio" id="checkout-account-switch-to-login" <?php echo $checked ?> name="checkout-account-switch-form" value="login"/>
 <div id="checkout-account-login" class="lp-checkout-block left">
 
 	<h4><?php esc_html_e( 'Sign in', 'learnpress' ); ?></h4>

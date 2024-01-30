@@ -155,7 +155,7 @@ class FilterCourseTemplate {
 				'lp-course-filter-search',
 				$data['search_suggestion'] ?? 1
 			);
-			$content .= '<span class="lp-loading-circle hide"></span>';
+			$content .= '<span class="lp-loading-circle lp-loading-no-css hide"></span>';
 			$content  = Template::instance()->nest_elements( $html_wrapper, $content );
 			$content .= '<div class="lp-course-filter-search-result"></div>';
 			$content  = $this->html_item( esc_html__( 'Search', 'learnpress' ), $content );

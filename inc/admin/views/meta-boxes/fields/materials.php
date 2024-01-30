@@ -63,6 +63,10 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 					padding: 8px;
 				}
 
+				table.lp-material--table td.sort {
+					cursor: move;
+				}
+
 				table.lp-material--table tr:nth-child(even) {
 					background-color: #dddddd;
 				}
@@ -103,6 +107,9 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 				.lp-material--field-wrap.field-action-wrap{
 					display: flex;
 					justify-content: space-between;
+				}
+				.lp-meta-box .lp-material--field-wrap input{
+					width: 100%;
 				}
 				#available-to-upload{
 					font-weight: bold;

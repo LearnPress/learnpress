@@ -50,7 +50,7 @@ class ListCoursesTemplate {
 	 */
 	public function layout_courses() {
 		$html_wrapper = [
-			'<div id="lp-list-courses-default" class="learn-press-courses-wrapper">' => '</div>',
+			'<div class="lp-list-courses-default">' => '</div>',
 		];
 
 		$callback = [
@@ -102,7 +102,7 @@ class ListCoursesTemplate {
 
 		// Handle layout
 		$html_courses_wrapper = [
-			'<ul class="learn-press-courses ' . $skin . '" data-layout="' . $skin . '">' => '</ul>',
+			'<ul class="learn-press-courses lp-list-courses-no-css ' . $skin . '" data-layout="' . $skin . '">' => '</ul>',
 		];
 
 		ob_start();
@@ -204,27 +204,32 @@ class ListCoursesTemplate {
 					'duration'      => [
 						'text_html' => sprintf(
 							'<div class="meta-item meta-item-duration">%s</div>',
-							$singleCourseTemplate->html_duration( $course ) )
+							$singleCourseTemplate->html_duration( $course )
+						),
 					],
 					'level'         => [
 						'text_html' => sprintf(
 							'<div class="meta-item meta-item-level">%s</div>',
-							$singleCourseTemplate->html_level( $course ) )
+							$singleCourseTemplate->html_level( $course )
+						),
 					],
 					'lesson'        => [
 						'text_html' => sprintf(
 							'<div class="meta-item meta-item-lesson">%s</div>',
-							$singleCourseTemplate->html_count_item( $course, 'lesson' ) )
+							$singleCourseTemplate->html_count_item( $course, 'lesson' )
+						),
 					],
 					'quiz'          => [
 						'text_html' => sprintf(
 							'<div class="meta-item meta-item-quiz">%s</div>',
-							$singleCourseTemplate->html_count_item( $course, 'quiz' ) )
+							$singleCourseTemplate->html_count_item( $course, 'quiz' )
+						),
 					],
 					'student'       => [
 						'text_html' => sprintf(
 							'<div class="meta-item meta-item-student">%s</div>',
-							$singleCourseTemplate->html_count_student( $course ) )
+							$singleCourseTemplate->html_count_student( $course )
+						),
 					],
 					'close_wrapper' => [ 'text_html' => '</div>' ],
 				],
@@ -240,18 +245,20 @@ class ListCoursesTemplate {
 				'learn-press/list-courses/layout/item/section/bottom/end',
 				[
 					'wrapper'       => [ 'text_html' => '<div class="course-info">' ],
-					'short_des'     => [ 'text_html' => wp_trim_words( $singleCourseTemplate->html_short_description( $course ), 15 ) ],
+					'short_des'     => [ 'text_html' => $singleCourseTemplate->html_short_description( $course, 15 ) ],
 					'clearfix'      => [ 'text_html' => '<div class="clearfix"></div>' ],
 					'price'         => [
 						'text_html' => sprintf(
 							'<div class="course-footer">%s</div>',
-							$singleCourseTemplate->html_price( $course ) )
+							$singleCourseTemplate->html_price( $course )
+						),
 					],
 					'read_more'     => [
 						'text_html' => sprintf(
 							'<div class="course-readmore"><a href="%s">%s</a></div>',
-							$course->get_permalink(), __( 'Read more', 'learnpress' )
-						)
+							$course->get_permalink(),
+							__( 'Read more', 'learnpress' )
+						),
 					],
 					'close_wrapper' => [ 'text_html' => '</div>' ],
 				],
@@ -259,6 +266,10 @@ class ListCoursesTemplate {
 				$settings
 			);
 			Template::instance()->print_sections( $section_bottom_end );
+
+			// Hook old, addon LP Woo v4.1.2 still use.
+			do_action( 'learn-press/after-courses-loop-item', $course );
+
 			$html_bottom_end = ob_get_clean();
 
 			ob_start();
@@ -272,7 +283,8 @@ class ListCoursesTemplate {
 						'text_html' => sprintf(
 							'<a class="course-permalink" href="%s">%s</a>',
 							$course->get_permalink(),
-							$singleCourseTemplate->html_title( $course ) )
+							$singleCourseTemplate->html_title( $course )
+						),
 					],
 					'meta'          => [ 'text_html' => $html_meta ],
 					'separator'     => [ 'text_html' => '<div class="separator"></div>' ],
@@ -314,10 +326,10 @@ class ListCoursesTemplate {
 	 */
 	public function html_pagination_load_more(): string {
 		$html_wrapper = [
-			'<button class="courses-btn-load-more learn-press-pagination lp-button">' => '</button>',
+			'<button class="courses-btn-load-more learn-press-pagination lp-button courses-btn-load-more-no-css">' => '</button>',
 		];
 		$content      = sprintf(
-			'%s<span class="lp-loading-circle hide"></span>',
+			'%s<span class="lp-loading-circle lp-loading-no-css hide"></span>',
 			__( 'Load more', 'learnpress' )
 		);
 
@@ -333,9 +345,9 @@ class ListCoursesTemplate {
 	 */
 	public function html_pagination_infinite(): string {
 		$html_wrapper = [
-			'<div class="courses-load-infinite learn-press-pagination">' => '</div>',
+			'<div class="courses-load-infinite-no-css courses-load-infinite learn-press-pagination">' => '</div>',
 		];
-		$content      = '<span class="lp-loading-circle hide"></span>';
+		$content      = '<span class="lp-loading-circle lp-loading-no-css hide"></span>';
 
 		return Template::instance()->nest_elements( $html_wrapper, $content );
 	}
@@ -419,7 +431,7 @@ class ListCoursesTemplate {
 	 *
 	 * @return string
 	 * @since 4.2.3.3
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function html_courses_page_result( array $data = [] ): string {
 		$html = '';
@@ -428,6 +440,7 @@ class ListCoursesTemplate {
 			$total_rows      = $data['total_rows'] ?? 0;
 			$paged           = $data['paged'] ?? 1;
 			$course_per_page = $data['courses_per_page'] ?? 8;
+			$pagination_type = $data['pagination_type'] ?? 'number';
 
 			$from = 1 + ( $paged - 1 ) * $course_per_page;
 			$to   = ( $paged * $course_per_page > $total_rows ) ? $total_rows : $paged * $course_per_page;
@@ -438,12 +451,12 @@ class ListCoursesTemplate {
 			} elseif ( 1 === $total_rows ) {
 				$content = esc_html__( 'Showing only one result', 'learnpress' );
 			} else {
-				if ( $from === $to ) {
-					$content = sprintf( esc_html__( 'Showing last course of %s results', 'learnpress' ), $total_rows );
-				} else {
-					$from_to = $from . '-' . $to;
-					$content = sprintf( esc_html__( 'Showing %1$s of %2$s results', 'learnpress' ), $from_to, $total_rows );
+				$from_to = $from . '-' . $to;
+				// For pagination type is load-more or infinite.
+				if ( $pagination_type !== 'number' ) {
+					$from_to = '1 - ' . $to;
 				}
+				$content = sprintf( esc_html__( 'Showing %1$s of %2$s results', 'learnpress' ), $from_to, $total_rows );
 			}
 
 			$html = '<span class="courses-page-result">' . $content . '</span>';
@@ -477,7 +490,7 @@ class ListCoursesTemplate {
 
 		$content = '<ul class="courses-layouts-display-list">';
 		foreach ( $layouts as $k => $v ) {
-			$active  = ( $data['courses_layout_default'] ?? '' ) === $k ? 'active' : '';
+			$active   = ( $data['courses_layout_default'] ?? '' ) === $k ? 'active' : '';
 			$content .= '<li class="courses-layout ' . $active . '" data-layout="' . $k . '">' . $v . '</li>';
 		}
 		$content .= '</ul>';
@@ -522,11 +535,11 @@ class ListCoursesTemplate {
 		ob_start();
 		?>
 		<form class="search-courses" method="get"
-			  action="<?php echo esc_url_raw( learn_press_get_page_link( 'courses' ) ); ?>">
+				action="<?php echo esc_url_raw( learn_press_get_page_link( 'courses' ) ); ?>">
 			<label>
 				<input type="text" placeholder="<?php esc_attr_e( 'Search courses...', 'learnpress' ); ?>"
-					   name="c_search"
-					   value="<?php echo esc_attr( $s ); ?>">
+						name="c_search"
+						value="<?php echo esc_attr( $s ); ?>">
 			</label>
 			<button type="submit" name="lp-btn-search-courses"><i class="fas fa-search"></i></button>
 		</form>
@@ -542,11 +555,11 @@ class ListCoursesTemplate {
 		<div class="switch-layout">
 			<?php foreach ( $layouts as $layout => $value ) : ?>
 				<input type="radio" name="lp-switch-layout-btn"
-					   value="<?php echo esc_attr( $layout ); ?>"
-					   id="lp-switch-layout-btn-<?php echo esc_attr( $layout ); ?>" <?php checked( $layout, $active ); ?>>
+						value="<?php echo esc_attr( $layout ); ?>"
+						id="lp-switch-layout-btn-<?php echo esc_attr( $layout ); ?>" <?php checked( $layout, $active ); ?>>
 				<label class="switch-btn <?php echo esc_attr( $layout ); ?>"
-					   title="<?php echo sprintf( esc_attr__( 'Switch to %s', 'learnpress' ), $layout ); ?>"
-					   for="lp-switch-layout-btn-<?php echo esc_attr( $layout ); ?>"></label>
+						title="<?php echo sprintf( esc_attr__( 'Switch to %s', 'learnpress' ), $layout ); ?>"
+						for="lp-switch-layout-btn-<?php echo esc_attr( $layout ); ?>"></label>
 			<?php endforeach; ?>
 		</div>
 		<?php
@@ -606,7 +619,7 @@ class ListCoursesTemplate {
 				ob_start();
 				Template::instance()->print_sections( $item_sections );
 				$item_content = ob_get_clean();
-				$list_course  .= Template::instance()->nest_elements( $item_wrapper, $item_content );
+				$list_course .= Template::instance()->nest_elements( $item_wrapper, $item_content );
 			}
 			$list_course = Template::instance()->nest_elements( $html_item_wrapper, $list_course );
 			// End section list courses.

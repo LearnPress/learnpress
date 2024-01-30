@@ -2,7 +2,7 @@
  * Handle events for courses list.
  *
  * @since 4.2.5.8
- * @version 1.0.0
+ * @version 1.0.1
  */
 
 import API from '../api';
@@ -40,13 +40,15 @@ document.addEventListener( 'submit', function( e ) {
 const elListenScroll = [];
 let timeOutSearch;
 window.lpCoursesList = ( () => {
-	const classListCourseWrapper = '.learn-press-courses-wrapper';
-	const classListCourse = '.learn-press-courses';
+	const classListCourse = '.lp-list-courses-no-css';
 	const classLPTarget = '.lp-target';
+	const classLoadMore = 'courses-btn-load-more-no-css';
+	const classPageResult = '.courses-page-result';
+	const classLoading = '.lp-loading-no-css';
 	const urlCurrent = lpGetCurrentURLNoParam();
 	return {
 		clickNumberPage: ( e, target ) => {
-			const btnNumber = target.closest( '.page-numbers' );
+			const btnNumber = target.closest( '.page-numbers:not(.disabled)' );
 			if ( ! btnNumber ) {
 				return;
 			}
@@ -92,13 +94,10 @@ window.lpCoursesList = ( () => {
 			}
 			// End
 
-			// Scroll to archive element
-			const elCoursesWrapper = elLPTarget.closest( `${ classListCourseWrapper }` );
-			if ( elCoursesWrapper ) {
-				const optionScroll = { behavior: 'smooth' };
-				elCoursesWrapper.scrollIntoView( optionScroll );
-				//window.scrollBy( 0, -40 );
-			}
+			// Scroll to archive element{
+			const optionScroll = { behavior: 'smooth' };
+			elLPTarget.scrollIntoView( optionScroll );
+			window.scrollBy( 0, -40 );
 
 			const callBack = {
 				success: ( response ) => {
@@ -119,8 +118,9 @@ window.lpCoursesList = ( () => {
 
 			window.lpAJAXG.fetchAPI( API.frontend.apiAJAX, dataSend, callBack );
 		},
-		LoadMore: ( e, btnLoadMore ) => {
-			if ( ! btnLoadMore.classList.contains( 'courses-btn-load-more' ) ) {
+		LoadMore: ( e, target ) => {
+			const btnLoadMore = target.closest( `.${ classLoadMore + ':not(.disabled)' }` );
+			if ( ! btnLoadMore ) {
 				return;
 			}
 
@@ -130,8 +130,9 @@ window.lpCoursesList = ( () => {
 			}
 
 			e.preventDefault();
+			btnLoadMore.classList.add( 'disabled' );
 
-			const elLoading = btnLoadMore.querySelector( '.lp-loading-circle' );
+			const elLoading = btnLoadMore.querySelector( classLoading );
 			const dataObj = JSON.parse( elLPTarget.dataset.send );
 			const dataSend = { ...dataObj };
 			if ( ! dataSend.args.hasOwnProperty( 'paged' ) ) {
@@ -140,29 +141,40 @@ window.lpCoursesList = ( () => {
 
 			dataSend.args.paged++;
 			elLPTarget.dataset.send = JSON.stringify( dataSend );
-			elLoading.classList.remove( 'hide' );
+			if ( elLoading ) {
+				elLoading.classList.remove( 'hide' );
+			}
 
 			const callBack = {
 				success: ( response ) => {
 					const { status, message, data } = response;
+					const paged = parseInt( data.paged );
+					const totalPages = parseInt( data.total_pages );
 
 					const newEl = document.createElement( 'div' );
 					newEl.innerHTML = data.content || '';
-					const elListCourse = elLPTarget.querySelector( `${ classListCourse }` );
+					const elListCourse = elLPTarget.querySelector( classListCourse );
+					const elPageResult = elLPTarget.querySelector( classPageResult );
+					const elPageResultNew = newEl.querySelector( classPageResult );
 
-					elListCourse.insertAdjacentHTML( 'beforeend', newEl.querySelector( `${ classListCourse }` ).innerHTML );
+					elListCourse.insertAdjacentHTML( 'beforeend', newEl.querySelector( classListCourse ).innerHTML );
+					if ( elPageResult && elPageResultNew ) {
+						elPageResult.innerHTML = elPageResultNew.innerHTML;
+					}
 
-					if ( data.total_pages === data.paged ) {
-						const elPagination = elLPTarget.querySelector( '.learn-press-pagination' );
-						elPagination.remove();
+					if ( paged >= totalPages ) {
+						btnLoadMore.remove();
 					}
 				},
 				error: ( error ) => {
 					console.log( error );
 				},
 				completed: () => {
-					console.log( 'completed' );
-					elLoading.classList.add( 'hide' );
+					//console.log( 'completed' );
+					if ( elLoading ) {
+						elLoading.classList.add( 'hide' );
+					}
+					btnLoadMore.classList.remove( 'disabled' );
 				},
 			};
 
@@ -172,8 +184,13 @@ window.lpCoursesList = ( () => {
 			// When see element, will call API to load more items.
 			const callBackAfterSeeItem = ( entry ) => {
 				const elInfinite = entry.target;
-				const elLoading = elInfinite.querySelector( '.lp-loading-circle' );
+				const elLoading = elInfinite.querySelector( `${ classLoading }:not(.disabled)` );
+				if ( ! elLoading ) {
+					return;
+				}
 				elLoading.classList.remove( 'hide' );
+				elLoading.classList.add( 'disabled' );
+
 				const elLPTarget = elInfinite.closest( classLPTarget );
 				if ( ! elLPTarget ) {
 					return;
@@ -196,8 +213,13 @@ window.lpCoursesList = ( () => {
 						const newEl = document.createElement( 'div' );
 						newEl.innerHTML = data.content || '';
 						const elListCourse = elLPTarget.querySelector( classListCourse );
+						const elPageResult = elLPTarget.querySelector( classPageResult );
+						const elPageResultNew = newEl.querySelector( classPageResult );
 
 						elListCourse.insertAdjacentHTML( 'beforeend', newEl.querySelector( classListCourse ).innerHTML );
+						if ( elPageResult && elPageResultNew ) {
+							elPageResult.innerHTML = elPageResultNew.innerHTML;
+						}
 
 						if ( data.total_pages === data.paged ) {
 							elInfinite.remove();
@@ -208,6 +230,8 @@ window.lpCoursesList = ( () => {
 					},
 					completed: () => {
 						//console.log( 'completed' );
+						elLoading.classList.add( 'hide' );
+						elLoading.classList.remove( 'disabled' );
 					},
 				};
 
@@ -216,13 +240,13 @@ window.lpCoursesList = ( () => {
 
 			// Listen el courses load infinite have just created.
 			listenElementCreated( ( node ) => {
-				if ( node.classList.contains( 'courses-load-infinite' ) ) {
+				if ( node.classList.contains( 'courses-load-infinite-no-css' ) ) {
 					listenElementViewed( node, callBackAfterSeeItem );
 				}
 			} );
 
 			// If el created on DOMContentLoaded.
-			const elInfinite = document.querySelector( '.courses-load-infinite' );
+			const elInfinite = document.querySelector( '.courses-load-infinite-no-css' );
 			if ( elInfinite ) {
 				listenElementViewed( elInfinite, callBackAfterSeeItem );
 			}

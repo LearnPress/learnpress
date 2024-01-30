@@ -3,13 +3,17 @@
  * Class CourseListElementor
  *
  * @sicne 4.2.3
- * @version 1.0.0
+ * @version 1.0.1
  */
 
 namespace LearnPress\ExternalPlugin\Elementor\Widgets;
 
 use LearnPress\ExternalPlugin\Elementor\LPElementorWidgetBase;
 use LearnPress\Helpers\Config;
+use LearnPress\Helpers\Template;
+use LearnPress\Models\Courses;
+use LearnPress\TemplateHooks\Course\ListCoursesTemplate;
+use LP_Course;
 
 class CourseListElementor extends LPElementorWidgetBase {
 	public function __construct( $data = [], $args = null ) {
@@ -61,24 +65,41 @@ class CourseListElementor extends LPElementorWidgetBase {
 					break;
 			}
 
-			$courses = \LP_Course::get_courses( $filter );
+			$courses = Courses::get_courses( $filter );
 
 			if ( empty( $courses ) ) {
 				\LearnPress::instance()->template( 'course' )->no_courses_found();
+
 				return;
 			}
 			?>
 			<div class="lp-archive-courses">
-				<ul class="learn-press-courses" data-layout="<?php echo esc_attr( $layout ); ?>"
+				<ul class="learn-press-courses lp-list-courses-no-css" data-layout="<?php echo esc_attr( $layout ); ?>"
 					data-size="<?php echo absint( $settings['number_posts'] ?? 10 ); ?>">
 					<?php
-					global $post;
-					foreach ( $courses as $course ) {
-						$post = $course;
-						setup_postdata( $course );
-						learn_press_get_template( 'content-course.php' );
+					$template_is_override = Template::check_template_is_override( 'content-course.php' );
+					if ( $template_is_override ) {
+						global $post;
 					}
-					wp_reset_postdata();
+
+					foreach ( $courses as $courseObj ) {
+						$course = learn_press_get_course( $courseObj->ID );
+						if ( ! $course ) {
+							continue;
+						}
+
+						if ( $template_is_override ) {
+							$post = $course;
+							setup_postdata( $course );
+							learn_press_get_template( 'content-course.php' );
+						} else {
+							echo ListCoursesTemplate::render_course( $course );
+						}
+					}
+
+					if ( $template_is_override ) {
+						wp_reset_postdata();
+					}
 					?>
 				</ul>
 			</div>

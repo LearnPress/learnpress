@@ -1,10 +1,6 @@
 ( function( $, settings ) {
 	'use strict';
 
-	if ( window.LP === undefined ) {
-		window.LP = {};
-	}
-
 	/**
 	 * Checkout
 	 *
@@ -31,33 +27,6 @@
 			};
 		}
 
-		const needPayment = function() {
-			return $payments.length > 0;
-		};
-
-		const selectedPayment = function() {
-			return $payments.find( 'input[name="payment_method"]:checked' ).val();
-		};
-
-		const isLoggedIn = function() {
-			return $formCheckout.find( 'input[name="checkout-account-switch-form"]:checked' ).length = 0;
-		};
-
-		const getActiveFormData = function() {
-			const formName = $formCheckout.find( 'input[name="checkout-account-switch-form"]:checked' ).val();
-			const $form = $( '#checkout-account-' + formName );
-
-			return $form.serializeJSON();
-		};
-
-		const getPaymentData = function() {
-			return $( '#checkout-payment' ).serializeJSON();
-		};
-
-		const getPaymentNote = function() {
-			return $( '.learn-press-checkout-comment' ).serializeJSON();
-		};
-
 		const showErrors = function( errors ) {
 			showMessage( errors );
 			const firstId = Object.keys( errors )[ 0 ];
@@ -68,19 +37,6 @@
 		const _formSubmit = function( e ) {
 			e.preventDefault();
 
-			if ( needPayment() && ! selectedPayment() ) {
-				showMessage( 'Please select payment method', true );
-				return false;
-			}
-
-			let formData = {};
-
-			if ( ! isLoggedIn() ) {
-				formData = $.extend( formData, getActiveFormData(), getPaymentNote() );
-			}
-
-			formData = $.extend( formData, getPaymentData() );
-
 			removeMessage();
 
 			const btnText = $buttonCheckout.text();
@@ -89,17 +45,28 @@
 			urlHandle.searchParams.set( 'lp-ajax', 'checkout' );
 
 			const elCheckoutForm = document.querySelector( '#learn-press-checkout-form' );
-			const elInputNonce = document.querySelector( 'input[name="learn-press-checkout-nonce"]' );
-			const elElCheckoutAccountType = elCheckoutForm.querySelector( 'input[name="checkout-account-switch-form"]:checked' );
-			if ( elElCheckoutAccountType ) {
-				formData[ 'checkout-account-switch-form' ] = elElCheckoutAccountType.value;
+
+			// Test
+			const formDatax = new FormData( elCheckoutForm );
+
+			// get values from FormData
+			const obj = Object.fromEntries( Array.from( formDatax.keys(), ( key ) => {
+				const val = formDatax.getAll( key );
+
+				return [ key, val.length > 1 ? val : val.pop() ];
+			} ) );
+
+			// Check validates form
+			if ( 'undefined' === typeof obj.payment_method || obj.payment_method.length === 0 ) {
+				showMessage( 'Please select payment method', 'error' );
+				return false;
 			}
-			formData[ 'learn-press-checkout-nonce' ] = elInputNonce.value;
+			// End check validates form
 
 			$.ajax( {
 				url: urlHandle,
 				dataType: 'html',
-				data: formData,
+				data: obj,
 				type: 'POST',
 				beforeSend() {
 					$( '#learn-press-checkout-place-order' ).addClass( 'loading' );
@@ -128,7 +95,7 @@
 				error( jqXHR, textStatus, errorThrown ) {
 					$( '#learn-press-checkout-place-order' ).removeClass( 'loading' );
 
-					showMessage( '<div class="learn-press-message error">' + errorThrown + '</div>' );
+					showMessage( errorThrown );
 
 					$buttonCheckout.html( btnText );
 
@@ -170,38 +137,16 @@
 		 * Append messages into document.
 		 *
 		 * @param message
-		 * @param wrap
+		 * @param status
 		 */
-		const showMessage = function( message, wrap = false ) {
+		const showMessage = function( message, status = 'error' ) {
 			removeMessage();
+			const $formCheckout = document.querySelector( '#learn-press-checkout-form' );
 
-			if ( $.isPlainObject( message ) ) {
-				Object.keys( message ).reverse().forEach( ( id ) => {
-					const m = message[ id ];
-					let msg = Array.isArray( m ) ? m[ 0 ] : m;
-					const type = Array.isArray( m ) ? m[ 1 ] : '';
-					msg = '<div class="learn-press-message ' + ( typeof ( type ) === 'string' ? type : '' ) + '">' + msg + '</div>';
-					$formCheckout.prepend( msg );
-				} );
+			message = `<div class="learn-press-message ${ status }">${ message }</div>`;
+			$formCheckout.insertAdjacentHTML( 'afterbegin', message );
 
-				return;
-			}
-
-			if ( wrap ) {
-				message = '<div class="learn-press-message ' + ( typeof ( wrap ) === 'string' ? wrap : '' ) + '">' + message + '</div>';
-			}
-
-			if ( Array.isArray( message ) ) {
-				message.map( ( msg ) => $formCheckout.prepend( '<div class="learn-press-message error">' + msg + '</div>' ) );
-			} else {
-				$formCheckout.prepend( '<div class="learn-press-message error">' + message + '</div>' );
-			}
-
-			$( 'html, body' ).animate( {
-				scrollTop: ( $formCheckout.offset().top - 100 ),
-			}, 1000 );
-
-			$( document ).trigger( 'learn-press/checkout-error' );
+			$formCheckout.scrollIntoView();
 		};
 
 		/**
@@ -244,7 +189,11 @@
 		 * Remove all messages
 		 */
 		const removeMessage = function() {
-			$( '.learn-press-error, .learn-press-notice, .learn-press-message' ).remove();
+			const lpMessage = document.querySelector( '.learn-press-message' );
+			if ( ! lpMessage ) {
+				return;
+			}
+			lpMessage.remove();
 		};
 
 		/**

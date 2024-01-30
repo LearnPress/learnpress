@@ -42,13 +42,13 @@ defined( 'ABSPATH' ) or die();
 					</div>
 				</li>
 			</ul>
-			<p>
+			<div>
 				<button class="button button-primary lp-button-unassign-course" type="submit">
 					<?php _e( 'Remove', 'learnpress' ); ?>
 				</button>
 				<span class="percent" style="margin-left: 10px"></span>
 				<span class="message" style="margin-left: 10px"></span>
-			</p>
+			</div>
 		</form>
 	</div>
 </div>

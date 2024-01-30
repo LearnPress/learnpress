@@ -12,7 +12,7 @@
 defined( 'ABSPATH' ) || exit();
 ?>
 
-<input type="radio" id="checkout-account-switch-to-register" name="checkout-account-switch-form" checked="checked" value="register"/>
+<input type="radio" id="checkout-account-switch-to-register" name="checkout-account-switch-form" value="register"/>
 <div id="checkout-account-register" class="lp-checkout-block left">
 
 	<h4><?php esc_html_e( 'Sign up', 'learnpress' ); ?></h4>

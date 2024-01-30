@@ -25,6 +25,11 @@ return apply_filters(
 			'type'  => 'checkbox',
 			'std'   => 1,
 		),
+		'class_list_courses_target'      => array(
+			'label' => __( 'Class of list courses want to filter', 'learnpress' ),
+			'type'  => 'text',
+			'std'   => '.lp-list-courses-default',
+		),
 		'fields_order'      => array(
 			'label' => '',
 			'type'  => 'hidden',
