@@ -127,11 +127,15 @@ class LP_Polylang {
 			return $filter;
 		}
 
+		if ( $pll_current_lang == pll_default_language() ) {
+			return $filter;
+		}
+
 		$lp_db = LP_Database::getInstance();
 
-		$filter->join[]  = "INNER JOIN $lp_db->tb_term_relationships AS r_term ON ui.item_id = r_term.object_id";
-		$filter->join[]  = "INNER JOIN $lp_db->tb_terms AS term ON r_term.term_taxonomy_id = term.term_id";
-		$filter->where[] = $lp_db->wpdb->prepare( 'AND term.slug = %s', $pll_current_lang );
+		$filter->join[]  = "INNER JOIN $lp_db->tb_term_relationships AS r_term_pll ON ui.item_id = r_term_pll.object_id";
+		$filter->join[]  = "INNER JOIN $lp_db->tb_terms AS pll_terms ON r_term_pll.term_taxonomy_id = pll_terms.term_id";
+		$filter->where[] = $lp_db->wpdb->prepare( 'AND pll_terms.slug = %s', $pll_current_lang );
 
 		return $filter;
 	}
