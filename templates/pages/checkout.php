@@ -10,7 +10,7 @@
 defined( 'ABSPATH' ) or die;
 
 if ( ! wp_is_block_theme() ) {
-	get_header();
+	do_action( 'learn-press/template-header' );
 }
 
 do_action( 'learn-press/before-main-content' );
@@ -42,5 +42,5 @@ do_action( 'learnpress/template/pages/checkout/after-content' );
 do_action( 'learn-press/after-main-content' );
 
 if ( ! wp_is_block_theme() ) {
-	get_footer();
+	do_action( 'learn-press/template-footer' );
 }

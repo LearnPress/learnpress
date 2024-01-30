@@ -18,7 +18,7 @@ if ( ! isset( $data ) || empty( $data['addons'] ) ) {
 
 if ( empty( $data['dismiss'] ) ) {
 	?>
-	<div id="notice-install" class="lp-notice notice notice-info">
+	<div class="lp-notice notice notice-info">
 		<?php
 		if ( isset( $data['allow_dismiss'] ) ) {
 			Template::instance()->get_admin_template( 'admin-notices/button-dismiss.php', array( 'key' => 'lp-addons-new-version' ) );

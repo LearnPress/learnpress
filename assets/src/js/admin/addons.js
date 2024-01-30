@@ -151,8 +151,8 @@ const loadElData = setInterval( () => {
 		clearInterval( loadElData );
 	}
 }, 1 );
-document.addEventListener( 'DOMContentLoaded', ( e ) => {
 
+document.addEventListener( 'DOMContentLoaded', ( e ) => {
 } );
 
 /*** Events ***/

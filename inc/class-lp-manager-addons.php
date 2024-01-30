@@ -19,7 +19,8 @@ class LP_Manager_Addons {
 	/**
 	 * @var string $link_addon_action Link download plugin from Thimpress.
 	 */
-	private $link_addon_action = 'https://updates.thimpress.com/thim-addon-market/download-addon';
+	private $link_addon_action    = 'https://updates.thimpress.com/thim-addon-market/download-addon';
+	public $link_addons_purchased = 'https://updates.thimpress.com/thim-addon-market/info-addons-purchased';
 	//public $link_addon_action = 'http://updates/thim-addon-market/download-addon';
 	/**
 	 * @var string $link_addon_action Link active site.
@@ -46,8 +47,8 @@ class LP_Manager_Addons {
 	 * Constructor
 	 */
 	protected function __construct() {
-		include_once( ABSPATH . 'wp-admin/includes/class-wp-upgrader.php' );
-		include_once( ABSPATH . 'wp-admin/includes/plugin-install.php' );
+		include_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
+		include_once ABSPATH . 'wp-admin/includes/plugin-install.php';
 
 		$this->upgrader_skin   = new WP_Ajax_Upgrader_Skin();
 		$this->plugin_upgrader = new Plugin_Upgrader( $this->upgrader_skin );
@@ -266,5 +267,42 @@ class LP_Manager_Addons {
 
 		return $addons_new_version;
 	}
-}
 
+	/**
+	 * Check addons purchased need extend.
+	 *
+	 * @return bool
+	 * @throws Exception
+	 * @since 4.2.5.9
+	 * @version 1.0.0
+	 */
+	public function check_addons_purchased_need_extend(): bool {
+		$addon_contr = new LP_REST_Addon_Controller();
+		$request     = new WP_REST_Request();
+		$request->set_param( 'return_obj', true );
+		$addons_rs = $addon_contr->list_addons( $request );
+		foreach ( $addons_rs->data as $addon ) {
+			if ( isset( $addon->purchase_info ) ) {
+				$addon_purchased  = $addon->purchase_info;
+				$date_expired_str = $addon_purchased->date_expire ?? '';
+				// Test
+				//$date_expired_str = '2024-02-01';
+				//$date_expired_str = '2023-01-12';
+				// End
+				$date_expired          = new DateTime( $date_expired_str );
+				$date_now              = new DateTime( gmdate( 'Y-m-d' ) );
+				$date_diff             = date_diff( $date_now, $date_expired );
+				$number_days_remaining = $date_diff->days;
+				if ( $date_diff->invert ) {
+					$number_days_remaining = 0;
+				}
+
+				if ( $number_days_remaining <= 60 ) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+}

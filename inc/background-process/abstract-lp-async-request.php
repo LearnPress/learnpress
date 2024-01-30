@@ -93,31 +93,6 @@ abstract class LP_Async_Request {
 	}
 
 	/**
-	 * Get query args
-	 *
-	 * @return array
-	 * @deprecated 4.2.3
-	 */
-	//  protected function get_query_args() {
-	//      require_once( ABSPATH . 'wp-includes/pluggable.php' );
-	//      if ( property_exists( $this, 'query_args' ) ) {
-	//          return $this->query_args;
-	//      }
-	//
-	//      $args = array(
-	//          'action' => $this->identifier,
-	//          'nonce'  => wp_create_nonce( $this->identifier ),
-	//      );
-	//
-	//      /**
-	//       * Filters the post arguments used during an async request.
-	//       *
-	//       * @param array $url
-	//       */
-	//      return apply_filters( $this->identifier . '_query_args', $args );
-	//  }
-
-	/**
 	 * Get query URL
 	 *
 	 * @return string
@@ -245,5 +220,4 @@ abstract class LP_Async_Request {
 	 * during the async request.
 	 */
 	abstract protected function handle();
-
 }

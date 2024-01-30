@@ -13,7 +13,7 @@ defined( 'ABSPATH' ) || exit;
  * Header for page
  */
 if ( ! wp_is_block_theme() ) {
-	get_header( 'course' );
+	do_action( 'learn-press/template-header' );
 }
 
 /**
@@ -54,5 +54,5 @@ do_action( 'learn-press/sidebar' );
  * Footer for page
  */
 if ( ! wp_is_block_theme() ) {
-	get_footer( 'course' );
+	do_action( 'learn-press/template-footer' );
 }

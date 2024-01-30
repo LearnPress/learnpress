@@ -8,7 +8,7 @@ use LearnPress\Models\UserItems\UserCourseModel;
  *
  * @since 4.0.3
  * @author tungnx
- * @version 1.0.2
+ * @version 1.0.3
  */
 class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 	public function __construct() {
@@ -241,7 +241,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 	 *
 	 * @return void
 	 * @since 4.1.7.3.2
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function admin_notices( WP_REST_Request $request ) {
 		$response = new LP_REST_Response();
@@ -275,45 +275,52 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 					'learn-press/admin-notices',
 					[
 						// Check wp_remote call success.
-						'check_wp_remote'       => [
+						'check_wp_remote'            => [
 							'template' => 'admin-notices/wp-remote.php',
 							'check'    => LP_Admin_Notice::check_wp_remote(),
 						],
 						// Check name plugin base.
-						'check_plugin_base'     => [
+						'check_plugin_base'          => [
 							'template' => 'admin-notices/plugin-base.php',
 							'check'    => LP_Admin_Notice::check_plugin_base(),
 						],
 						// Show beta version of LP.
-						'lp-beta-version'       => [
+						'lp-beta-version'            => [
 							'template'      => 'admin-notices/beta-version.php',
 							'check'         => $show_notice_lp_beta_version,
 							'info'          => $lp_beta_version_info,
 							'allow_dismiss' => 1,
 						],
 						// Show message needs upgrades database compatible with LP version current.
-						'lp-upgrade-db'         => [
+						'lp-upgrade-db'              => [
 							'template' => 'admin-notices/upgrade-db.php',
 							'check'    => LP_Updater::instance()->check_lp_db_need_upgrade(),
 						],
 						// Show message wrong permalink structure.
-						'lp-permalink'          => [
+						'lp-permalink'               => [
 							'template' => 'admin-notices/permalink-wrong.php',
 							'check'    => ! get_option( 'permalink_structure' ),
 						],
 						// Show notice setup wizard.
-						'lp-setup-wizard'       => [
+						'lp-setup-wizard'            => [
 							'template'      => 'admin-notices/setup-wizard.php',
 							'check'         => ! get_option( 'learn_press_setup_wizard_completed', false )
 												&& ! isset( $admin_notices_dismiss['lp-setup-wizard'] ),
 							'allow_dismiss' => 1,
 						],
 						// Show notification addons new version.
-						'lp-addons-new-version' => [
+						'lp-addons-new-version'      => [
 							'template'      => 'admin-notices/addons-new-version.php',
 							'addons'        => LP_Manager_Addons::instance()->list_addon_new_version(),
 							'allow_dismiss' => 1,
 							'dismiss'       => isset( $admin_notices_dismiss['lp-addons-new-version'] ),
+						],
+						// Show notification addons purchased need extend.
+						'lp-addons-purchased-extend' => [
+							'template'      => 'admin-notices/addons-purchased-extend.php',
+							'need-extend'   => LP_Manager_Addons::instance()->check_addons_purchased_need_extend(),
+							'allow_dismiss' => 1,
+							'dismiss'       => isset( $admin_notices_dismiss['lp-addons-purchased-extend'] ),
 						],
 					]
 				);

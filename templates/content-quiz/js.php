@@ -114,8 +114,11 @@ $js = array(
 	'edit_permalink'         => $editable ? get_edit_post_link( $quiz->get_id() ) : '',
 	'results'                => array(),
 	'required_password'      => post_password_required( $quiz->get_id() ),
-	'allow_retake'           => $quiz->get_retake_count() == -1,
+	'allow_retake'           => $quiz->get_retake_count() == - 1,
+	'quiz_description'       => $quiz->get_content(),
 );
+
+LP_Helper::print_inline_script_tag( 'lp_quiz_js_data', [ 'data' => $js ] );
 
 $js = array_merge( $js, $user_js );
 
@@ -124,16 +127,16 @@ if ( $total_question || $user_quiz ) :
 	<div id="learn-press-quiz-app"></div>
 
 	<script>
-	document.addEventListener( 'DOMContentLoaded', () => {
-		if ( typeof LP !== 'undefined' ) {
-			LP.Hook.addAction('course-ready', () => {
-				LP.quiz.init(
-					'#learn-press-quiz-app',
-					<?php echo json_encode( $js ); ?>
-				)
-			});
-		}
-	});
+		document.addEventListener( 'DOMContentLoaded', () => {
+			if ( typeof LP !== 'undefined' ) {
+				LP.Hook.addAction( 'course-ready', () => {
+					LP.quiz.init(
+						'#learn-press-quiz-app',
+						<?php echo json_encode( $js ); ?>
+					)
+				} );
+			}
+		} );
 	</script>
 
 	<?php
