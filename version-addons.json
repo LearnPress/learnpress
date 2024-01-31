@@ -45,8 +45,8 @@
   "learnpress-authorizenet-payment": {
     "name": "LearnPress - Authorize.Net Payment",
     "basename": "learnpress-authorizenet-payment/learnpress-authorizenet-payment.php",
-    "version": "4.0.0",
-    "require_lp": "4.2.0",
+    "version": "4.0.1",
+    "require_lp": "4.2.6",
     "description": "Transaction can be done by Authorize.net account if other payment gateways are not available.",
     "image": "https://thimpress.com/wp-content/uploads/2015/06/Co-instructors-690x460px.png",
     "link": "https://thimpress.com/product/authorize-net-add-on-learnpress/",
