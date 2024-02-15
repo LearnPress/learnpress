@@ -4,7 +4,7 @@
  * @class LP_Polylang
  *
  * @since 4.1.5
- * @version 1.0.0
+ * @version 1.0.1
  * @author tungnx
  */
 
