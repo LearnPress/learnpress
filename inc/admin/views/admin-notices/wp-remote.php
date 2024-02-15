@@ -1,6 +1,6 @@
 <?php
 /**
- * Template for display error wrong name plugin learnpress
+ * Template for display error wp_remote.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
