@@ -126,7 +126,17 @@ gulp.task( 'clearJsFrontend', () => {
 // Min JS.
 gulp.task( 'minJsAdmin', () => {
 	return gulp
-		.src( [ 'assets/src/js/admin/**/*.js' ] )
+		.src(
+			[
+				'assets/src/js/admin/**/*.js',
+				'!assets/src/js/admin/admin.js',
+				'!assets/src/js/admin/admin-order.js',
+				'!assets/src/js/admin/admin-tools.js',
+				'!assets/src/js/admin/addons.js',
+				'!assets/src/js/admin/admin-statistic.js',
+				'!assets/src/js/admin/tools/assign-user-course.js',
+			]
+		)
 		.pipe(
 			rename( {
 				suffix: '.min',
@@ -198,11 +208,6 @@ gulp.task( 'makepot', function() {
 		.pipe( gulp.dest( './languages/learnpress.pot' ) );
 } );
 
-// Clean folder to releases.
-gulp.task( 'cleanReleaseFolder', () => {
-	return del( './releases/learnpress/' );
-} );
-
 gulp.task(
 	'build',
 	gulp.series(
@@ -226,14 +231,14 @@ gulp.task( 'release', gulp.series( 'build', 'noticeReleases', ( done ) => {
 	done();
 } ) );
 
-gulp.task( 'release1', gulp.series( 'build', 'cleanReleaseFolder', 'noticeReleases', ( done ) => {
-	done();
-} ) );
-
 gulp.task( 'updatePot', () => {
 	return gulp
 		.src( [ './languages/learnpress.pot' ] )
-		.pipe( replace( /(assets\/)(.*)(.js)/g, 'assets/js/dist/frontend/quiz.min.js' ) )
+		.pipe( replace( /(assets\/.*\/frontend\/quiz)(.*)(.js)/g, 'assets/js/dist/frontend/quiz.min.js' ) )
+		.pipe( replace( /(assets\/.*\/frontend\/question)(.*)(.js)/g, 'assets/js/dist/frontend/quiz.min.js' ) )
+		.pipe( replace( /(assets\/.*\/frontend\/modal)(.*)(.js)/g, 'assets/js/dist/frontend/quiz.min.js' ) )
+		.pipe( replace( /(assets\/.*\/frontend\/profile)(.*)(.js)/g, 'assets/js/dist/frontend/profile.min.js' ) )
+		.pipe( replace( /(assets\/.*\/admin\/pages\/tools)(.*)(.js)/g, 'assets/js/dist/admin/pages/tools.min.js' ) )
 		.pipe( gulp.dest( './languages/' ) );
 } );
 

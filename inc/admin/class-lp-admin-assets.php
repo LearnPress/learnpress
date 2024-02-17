@@ -293,7 +293,9 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					),
 					array( 'learnpress_page_learn-press-tools' ),
 					0,
-					1
+					1,
+					'',
+					[ 'strategy' => 'defer' ]
 				),
 				'lp-dashboard'                      => new LP_Asset_Key(
 					self::url( 'js/dist/admin/pages/dashboard' . self::$_min_assets . '.js' ),
