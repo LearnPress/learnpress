@@ -51,7 +51,7 @@
 		} );
 	};
 
-	const pluginActions = function pluginActions( e ) {
+	/*const pluginActions = function pluginActions( e ) {
 		// Premium addon
 		if ( $( e.target ).hasClass( 'buy-now' ) ) {
 			return;
@@ -83,7 +83,7 @@
 				} );
 			},
 		} );
-	};
+	};*/
 
 	const preventDefault = function preventDefault( e ) {
 		e.preventDefault();
@@ -116,7 +116,7 @@
 		} );
 	};
 
-	const updateDb = () => {
+	/*const updateDb = () => {
 		$( '.lp-button-upgrade' ).each( function() {
 			$( this ).on( 'click', function( e ) {
 				e.preventDefault();
@@ -167,7 +167,7 @@
 		};
 
 		lpUpdateModal();
-	};
+	};*/
 
 	const lpMetaboxFileInput = () => {
 		$( '.lp-meta-box__file' ).each( ( i, element ) => {
@@ -296,7 +296,7 @@
 
 	const onReady = function onReady() {
 		lpMetaboxFileInput();
-		updateDb();
+		//updateDb();
 		$( '.learn-press-dropdown-pages' ).LP( 'DropdownPages' );
 		$( '.learn-press-advertisement-slider' ).LP( 'Advertisement', 'a', 's' ).appendTo( $( '#wpbody-content' ) );
 		//$( '.learn-press-toggle-item-preview' ).on( 'change', updateItemPreview );
@@ -304,7 +304,7 @@
 
 		$( document ).on( 'click', '#learn-press-create-pages', createPages )
 			.on( 'click', '.lp-upgrade-notice .close-notice', hideUpgradeMessage )
-			.on( 'click', '.plugin-action-buttons a', pluginActions )
+			//.on( 'click', '.plugin-action-buttons a', pluginActions )
 			.on( 'click', '[data-remove-confirm]', preventDefault )
 			.on( 'mousedown', '.lp-sortable-handle', function( e ) {
 				$( 'html, body' ).addClass( 'lp-item-moving' );
