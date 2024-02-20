@@ -1,4 +1,7 @@
 <?php
+
+use LearnPress\Models\Courses;
+
 defined( 'ABSPATH' ) || exit;
 
 require_once 'class-lp-profile-tabs.php';
@@ -103,7 +106,6 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 					LP_Request::register( 'save-profile-' . $action, array( $this, 'save' ) );
 				}
 			}
-
 		}
 
 		/**
@@ -829,10 +831,11 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 					break;
 				case 'own':
 					//$query = $this->_curd->query_own_courses( $this->get_user_data( 'id' ), $args );
-					$filter              = new LP_Course_Filter();
+					$filter = new LP_Course_Filter();
+					Courses::handle_params_for_query_courses( $filter, $args );
 					$filter->fields      = array( 'ID' );
 					$filter->post_author = $this->get_user_data( 'id' );
-					$filter->post_status = isset( $args['status'] ) && ! empty( $args['status'] ) ? $args['status'] : array(
+					$filter->post_status = ! empty( $args['status'] ) ? $args['status'] : array(
 						'publish',
 						'pending',
 					);
@@ -840,7 +843,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 					$filter->limit       = $args['limit'] ?? $filter->limit;
 					$total_rows          = 0;
 					$filter              = apply_filters( 'lp/api/profile/courses/own/filter', $filter, $args );
-					$result_courses      = LP_Course::get_courses( $filter, $total_rows );
+					$result_courses      = Courses::get_courses( $filter, $total_rows );
 
 					$course_ids = LP_Database::get_values_by_key( $result_courses );
 

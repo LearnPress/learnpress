@@ -233,7 +233,7 @@ class LP_User extends LP_Abstract_User {
 	 * @return bool
 	 * @throws Exception
 	 */
-	public function has_finished_course( int $course_id ) : bool {
+	public function has_finished_course( int $course_id ): bool {
 		$user_course = $this->get_course_data( $course_id );
 
 		return apply_filters( 'learn-press/user-has-finished-course', $user_course && $user_course->is_finished(), $this->get_id(), $course_id );
@@ -810,11 +810,13 @@ class LP_User extends LP_Abstract_User {
 	/**
 	 * Get statistic info of instructor user
 	 *
+	 * @param array $params
+	 *
 	 * @return array
 	 * @since 4.1.6
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
-	public function get_instructor_statistic(): array {
+	public function get_instructor_statistic( array $params = [] ): array {
 		$statistic = array(
 			'total_course'        => 0,
 			'published_course'    => 0,
