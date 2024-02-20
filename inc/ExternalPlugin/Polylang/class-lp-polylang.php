@@ -259,7 +259,7 @@ class LP_Polylang {
 		}
 
 		$arr_page = array( LP_PAGE_COURSES, LP_PAGE_PROFILE );
-		if ( in_array( LP_Page_Controller::page_current(), $arr_page ) ) {
+		if ( in_array( LP_Page_Controller::page_current(), $arr_page ) && ! learn_press_is_course_tax() ) {
 			$name_page = str_replace( 'lp_page_', '', LP_Page_Controller::page_current() );
 			$url       = get_permalink( LP_Settings::get_option( $name_page . '_page_id' . $slug_lang ) );
 		}
