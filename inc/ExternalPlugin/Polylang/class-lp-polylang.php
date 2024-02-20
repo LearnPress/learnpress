@@ -97,10 +97,10 @@ class LP_Polylang {
 			}
 		}
 
-		$lp_db          = LP_Database::getInstance();
-		$filter->join[] = "INNER JOIN $lp_db->tb_term_relationships AS r_term_pll ON p.ID = r_term_pll.object_id";
-		$filter->join[] = "INNER JOIN $lp_db->tb_term_taxonomy AS pll_term_taxonomy ON r_term_pll.term_taxonomy_id = pll_term_taxonomy.term_taxonomy_id";
-		$filter->join[] = "INNER JOIN $lp_db->tb_terms AS pll_terms ON pll_term_taxonomy.term_id = pll_terms.term_id";
+		$lp_db           = LP_Database::getInstance();
+		$filter->join[]  = "INNER JOIN $lp_db->tb_term_relationships AS r_term_pll ON p.ID = r_term_pll.object_id";
+		$filter->join[]  = "INNER JOIN $lp_db->tb_term_taxonomy AS pll_term_taxonomy ON r_term_pll.term_taxonomy_id = pll_term_taxonomy.term_taxonomy_id";
+		$filter->join[]  = "INNER JOIN $lp_db->tb_terms AS pll_terms ON pll_term_taxonomy.term_id = pll_terms.term_id";
 		$filter->where[] = $lp_db->wpdb->prepare( 'AND pll_terms.slug = %s', $pll_current_lang );
 
 		return $filter;
@@ -130,8 +130,8 @@ class LP_Polylang {
 		$lp_db = LP_Database::getInstance();
 
 		$filter->join[]  = "INNER JOIN $lp_db->tb_term_relationships AS r_term_pll ON ui.item_id = r_term_pll.object_id";
-		$filter->join[] = "INNER JOIN $lp_db->tb_term_taxonomy AS pll_term_taxonomy ON r_term_pll.term_taxonomy_id = pll_term_taxonomy.term_taxonomy_id";
-		$filter->join[] = "INNER JOIN $lp_db->tb_terms AS pll_terms ON pll_term_taxonomy.term_id = pll_terms.term_id";
+		$filter->join[]  = "INNER JOIN $lp_db->tb_term_taxonomy AS pll_term_taxonomy ON r_term_pll.term_taxonomy_id = pll_term_taxonomy.term_taxonomy_id";
+		$filter->join[]  = "INNER JOIN $lp_db->tb_terms AS pll_terms ON pll_term_taxonomy.term_id = pll_terms.term_id";
 		$filter->where[] = $lp_db->wpdb->prepare( 'AND pll_terms.slug = %s', $pll_current_lang );
 
 		return $filter;
@@ -248,9 +248,9 @@ class LP_Polylang {
 	 * @param $slug
 	 * @param $locale
 	 *
-	 * @since 4.1.5
-	 * @version 1.0.0
 	 * @return false|mixed|string
+	 * @version 1.0.1
+	 * @since 4.1.5
 	 */
 	public function get_link_switcher( $url, $slug, $locale ) {
 		$slug_lang = '';
@@ -259,7 +259,9 @@ class LP_Polylang {
 		}
 
 		$arr_page = array( LP_PAGE_COURSES, LP_PAGE_PROFILE );
-		if ( in_array( LP_Page_Controller::page_current(), $arr_page ) && ! learn_press_is_course_tax() ) {
+		if ( in_array( LP_Page_Controller::page_current(), $arr_page )
+			&& ! learn_press_is_course_tax()
+			&& ! learn_press_is_course_tag() ) {
 			$name_page = str_replace( 'lp_page_', '', LP_Page_Controller::page_current() );
 			$url       = get_permalink( LP_Settings::get_option( $name_page . '_page_id' . $slug_lang ) );
 		}
@@ -272,10 +274,10 @@ class LP_Polylang {
 	 *
 	 * @param array $rules
 	 *
-	 * @uses LP_Query::add_rewrite_rules
+	 * @return array
 	 * @since 4.2.3.3
 	 * @version 1.0.0
-	 * @return array
+	 * @uses LP_Query::add_rewrite_rules
 	 */
 	public function pll_rewrite_rules( array $rules ): array {
 		if ( ! is_callable( 'pll_default_language' ) || ! is_callable( 'pll_current_language' ) ) {
@@ -416,9 +418,9 @@ class LP_Polylang {
 	/**
 	 * Get polylang settings
 	 *
-	 * @since 4.2.3.3
-	 * @version 1.0.0
 	 * @return array
+	 * @version 1.0.0
+	 * @since 4.2.3.3
 	 */
 	public function get_pll_options(): array {
 		return is_array( PLL()->options ) ? PLL()->options : [];
