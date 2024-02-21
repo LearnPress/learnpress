@@ -33,9 +33,11 @@ class LP_User_Items_DB extends LP_Database {
 	 * Insert data
 	 *
 	 * @param array $data [ user_id, item_id, start_time, end_time, item_type, status, graduation, ref_id, ref_type, parent_id ]
+	 *
 	 * @return int
+	 * @throws Exception
+	 * @version 1.0.1
 	 * @since 4.2.5
-	 * @version 1.0.0
 	 */
 	public function insert_data( array $data ): int {
 		$filter = new LP_User_Items_Filter();
@@ -50,14 +52,20 @@ class LP_User_Items_DB extends LP_Database {
 			}
 		}
 
+		// Remove user_item_id (if exists) to insert new row, because user_item_id is auto increment.
+		unset( $data['user_item_id'] );
+
 		$this->wpdb->insert( $this->tb_lp_user_items, $data );
+
+		$this->check_execute_has_error();
+
 		return $this->wpdb->insert_id;
 	}
 
 	/**
 	 * Update data
 	 *
-	 * @param array $data [ user_id, item_id, start_time, end_time, item_type, status, graduation, ref_id, ref_type, parent_id ]
+	 * @param array $data [ 'user_item_id', user_id, item_id, start_time, end_time, item_type, status, graduation, ref_id, ref_type, parent_id ]
 	 * @return bool
 	 *
 	 * @throws Exception

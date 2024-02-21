@@ -222,7 +222,7 @@ class SingleCourseTemplate {
 		if ( $fake_student ) {
 			$count_student += $fake_student;
 		}
-		$content      = sprintf( '%d %s', $count_student, _n( 'Student', 'Students', $count_student ) );
+		$content      = sprintf( '%d %s', $count_student, _n( 'Student', 'Students', $count_student, 'learnpress' ) );
 		$html_wrapper = [
 			'<div class="course-count-student">' => '</div>',
 		];

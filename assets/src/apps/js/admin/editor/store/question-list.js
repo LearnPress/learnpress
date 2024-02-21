@@ -6,14 +6,14 @@ const $ = window.jQuery || jQuery;
 
 const QuestionList = function QuestionList( data ) {
 	const listQuestions = data.listQuestions;
-	var state = $.extend( {
+	const state = $.extend( {
 		statusUpdateQuestions: {},
 		statusUpdateQuestionItem: {},
 		statusUpdateQuestionAnswer: {},
 		questions: listQuestions.questions.map( function( question ) {
-			var hiddenQuestions = listQuestions.hidden_questions;
-
-			var find = hiddenQuestions.find( function( questionId ) {
+			const hiddenQuestions = listQuestions.hidden_questions;
+			const ArrQuestionIds = Object.keys( hiddenQuestions );
+			const find = ArrQuestionIds.find( function( questionId ) {
 				return parseInt( question.id ) === parseInt( questionId );
 			} );
 
@@ -25,10 +25,10 @@ const QuestionList = function QuestionList( data ) {
 
 	return {
 		namespaced: true,
-		state: state,
-		getters: getters,
-		mutations: mutations,
-		actions: actions,
+		state,
+		getters,
+		mutations,
+		actions,
 	};
 };
 

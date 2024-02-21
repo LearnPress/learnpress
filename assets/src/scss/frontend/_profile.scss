@@ -361,6 +361,10 @@ body {
 					background: #fff;
 					box-shadow: 0 15px 20px 0 rgba(0, 0, 0, 0.05);
 					list-style: none;
+
+					li {
+						white-space: nowrap;
+					}
 				}
 
 				&.active,
@@ -635,7 +639,7 @@ body {
 						padding: 16px 0;
 						display: -webkit-box;
 						-webkit-line-clamp: 2;
-						-webkit-box-orient: vertical;  
+						-webkit-box-orient: vertical;
 						overflow: hidden;
 					}
 
@@ -751,7 +755,7 @@ body {
 					border: 0;
 					border-radius: 3px;
 					color: #fff;
-					background: var(--lp-primary-color);					
+					background: var(--lp-primary-color);
 					font-weight: 400;
 
 					&:hover {
@@ -830,7 +834,7 @@ body {
 			}
 		}
 
-		
+
 	}
 
 	.statistic-box {
@@ -863,8 +867,6 @@ body {
 			text-transform: capitalize;
 		}
 	}
-	
-
 
 	.lp-profile-content {
 		table.lp-list-table {

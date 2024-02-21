@@ -4,14 +4,14 @@
  * @class LP_Polylang
  *
  * @since 4.1.5
- * @version 1.0.0
+ * @version 1.0.1
  * @author tungnx
  */
 
 use LearnPress\Helpers\Singleton;
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+	exit; // Exit if accesDsed directly
 }
 
 class LP_Polylang {
@@ -25,12 +25,12 @@ class LP_Polylang {
 		add_filter( 'learn-press/general-settings-fields', [ $this, 'general_settings_fields' ], 10, 2 );
 		add_filter( 'lp/settings/permalinks', [ $this, 'permalink_settings_fields' ], 10, 2 );
 		add_filter( 'learn_press_get_page_id', [ $this, 'get_page_id' ], 10, 2 );
-		add_filter( 'lp/template/archive-course/skeleton/args', [ $this, 'wpml_arg_query_course' ] );
-		add_filter( 'lp/profile/args/user_courses_attend', [ $this, 'wpml_arg_query_course' ] );
-		add_filter( 'lp/profile/args/user_courses_created', [ $this, 'wpml_arg_query_course' ] );
-		add_filter( 'lp/profile/args/user_courses_statistic', [ $this, 'wpml_arg_query_course' ] );
+		add_filter( 'lp/template/archive-course/skeleton/args', [ $this, 'lang_arg_query_course' ] );
+		add_filter( 'lp/profile/args/user_courses_attend', [ $this, 'lang_arg_query_course' ] );
+		add_filter( 'lp/profile/args/user_courses_created', [ $this, 'lang_arg_query_course' ] );
+		add_filter( 'lp/profile/args/user_courses_statistic', [ $this, 'lang_arg_query_course' ] );
 		add_filter( 'learnpress/rest/frontend/profile/course_tab/query', [ $this, 'args_query_user_courses' ], 10, 2 );
-		add_filter( 'lp/course/query/filter', [ $this, 'filter_query_courses' ], 10 );
+		add_action( 'learn-press/courses/handle_params_for_query_courses', [ $this, 'filter_query_courses' ], 10, 2 );
 		add_filter( 'lp/user/course/query/filter', [ $this, 'filter_query_user_courses' ], 10 );
 		add_filter( 'pll_the_language_link', [ $this, 'get_link_switcher' ], 10, 3 );
 		add_filter( 'learn-press/rewrite/rules', [ $this, 'pll_rewrite_rules' ] );
@@ -67,7 +67,7 @@ class LP_Polylang {
 	 *
 	 * @return array
 	 */
-	public function wpml_arg_query_course( array $args ): array {
+	public function lang_arg_query_course( array $args ): array {
 		if ( ! function_exists( 'pll_current_language' ) ) {
 			return $args;
 		}
@@ -81,31 +81,27 @@ class LP_Polylang {
 	 * Query get course by current language
 	 *
 	 * @param LP_Course_Filter $filter
+	 * @param array $param
 	 *
-	 * @since 4.1.4
-	 * @version 1.0.1
 	 * @return LP_Course_Filter
+	 * @since 4.1.4
+	 * @version 1.0.2
 	 */
-	public function filter_query_courses( LP_Course_Filter $filter ): LP_Course_Filter {
-		$pll_current_lang = pll_current_language(); // For query load page
-		if ( ! $pll_current_lang ) { // For query call API
-			$pll_current_lang = LP_Request::get_param( 'pll-current-lang' );
-		}
-
+	public function filter_query_courses( LP_Course_Filter $filter, array $param ): LP_Course_Filter {
+		$pll_current_lang = $param['pll-current-lang'] ?? '';
 		if ( empty( $pll_current_lang ) ) {
-			return $filter;
+			$pll_current_lang = LP_Request::get_param( 'pll-current-lang' );
+
+			if ( empty( $pll_current_lang ) ) {
+				return $filter;
+			}
 		}
 
-		if ( $pll_current_lang == pll_default_language() ) {
-			return $filter;
-		}
-
-		$lp_db          = LP_Database::getInstance();
-		$filter->join[] = "INNER JOIN $lp_db->tb_term_relationships AS r_term_pll ON p.ID = r_term_pll.object_id";
-		$filter->join[] = "INNER JOIN $lp_db->tb_terms AS pll_terms ON r_term_pll.term_taxonomy_id = pll_terms.term_id";
-		if ( empty( LP_Request::get_param( 'term_id' ) ) ) {
-			$filter->where[] = $lp_db->wpdb->prepare( 'AND pll_terms.slug = %s', $pll_current_lang );
-		}
+		$lp_db           = LP_Database::getInstance();
+		$filter->join[]  = "INNER JOIN $lp_db->tb_term_relationships AS r_term_pll ON p.ID = r_term_pll.object_id";
+		$filter->join[]  = "INNER JOIN $lp_db->tb_term_taxonomy AS pll_term_taxonomy ON r_term_pll.term_taxonomy_id = pll_term_taxonomy.term_taxonomy_id";
+		$filter->join[]  = "INNER JOIN $lp_db->tb_terms AS pll_terms ON pll_term_taxonomy.term_id = pll_terms.term_id";
+		$filter->where[] = $lp_db->wpdb->prepare( 'AND pll_terms.slug = %s', $pll_current_lang );
 
 		return $filter;
 	}
@@ -134,7 +130,8 @@ class LP_Polylang {
 		$lp_db = LP_Database::getInstance();
 
 		$filter->join[]  = "INNER JOIN $lp_db->tb_term_relationships AS r_term_pll ON ui.item_id = r_term_pll.object_id";
-		$filter->join[]  = "INNER JOIN $lp_db->tb_terms AS pll_terms ON r_term_pll.term_taxonomy_id = pll_terms.term_id";
+		$filter->join[]  = "INNER JOIN $lp_db->tb_term_taxonomy AS pll_term_taxonomy ON r_term_pll.term_taxonomy_id = pll_term_taxonomy.term_taxonomy_id";
+		$filter->join[]  = "INNER JOIN $lp_db->tb_terms AS pll_terms ON pll_term_taxonomy.term_id = pll_terms.term_id";
 		$filter->where[] = $lp_db->wpdb->prepare( 'AND pll_terms.slug = %s', $pll_current_lang );
 
 		return $filter;
@@ -251,9 +248,9 @@ class LP_Polylang {
 	 * @param $slug
 	 * @param $locale
 	 *
-	 * @since 4.1.5
-	 * @version 1.0.0
 	 * @return false|mixed|string
+	 * @version 1.0.1
+	 * @since 4.1.5
 	 */
 	public function get_link_switcher( $url, $slug, $locale ) {
 		$slug_lang = '';
@@ -262,7 +259,9 @@ class LP_Polylang {
 		}
 
 		$arr_page = array( LP_PAGE_COURSES, LP_PAGE_PROFILE );
-		if ( in_array( LP_Page_Controller::page_current(), $arr_page ) ) {
+		if ( in_array( LP_Page_Controller::page_current(), $arr_page )
+			&& ! learn_press_is_course_tax()
+			&& ! learn_press_is_course_tag() ) {
 			$name_page = str_replace( 'lp_page_', '', LP_Page_Controller::page_current() );
 			$url       = get_permalink( LP_Settings::get_option( $name_page . '_page_id' . $slug_lang ) );
 		}
@@ -275,10 +274,10 @@ class LP_Polylang {
 	 *
 	 * @param array $rules
 	 *
-	 * @uses LP_Query::add_rewrite_rules
+	 * @return array
 	 * @since 4.2.3.3
 	 * @version 1.0.0
-	 * @return array
+	 * @uses LP_Query::add_rewrite_rules
 	 */
 	public function pll_rewrite_rules( array $rules ): array {
 		if ( ! is_callable( 'pll_default_language' ) || ! is_callable( 'pll_current_language' ) ) {
@@ -419,9 +418,9 @@ class LP_Polylang {
 	/**
 	 * Get polylang settings
 	 *
-	 * @since 4.2.3.3
-	 * @version 1.0.0
 	 * @return array
+	 * @version 1.0.0
+	 * @since 4.2.3.3
 	 */
 	public function get_pll_options(): array {
 		return is_array( PLL()->options ) ? PLL()->options : [];

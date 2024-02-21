@@ -11,6 +11,7 @@ const isProduction = process.env.NODE_ENV === 'production';
 module.exports = {
 	...defaultConfig,
 	entry: {
+		'./assets/js/dist/admin/admin': './assets/src/js/admin/admin.js',
 		'./assets/js/dist/admin/admin-notices': './assets/src/apps/js/admin/admin-notices.js',
 		'./assets/js/dist/admin/admin-order': './assets/src/js/admin/admin-order.js',
 		'./assets/js/dist/admin/admin-tools': './assets/src/js/admin/admin-tools.js',
@@ -19,9 +20,9 @@ module.exports = {
 		'./assets/js/dist/admin/editor/question': './assets/src/apps/js/admin/editor/question.js',
 		'./assets/js/dist/admin/pages/tools': './assets/src/apps/js/admin/pages/tools.js',
 		'./assets/js/dist/admin/pages/setup': './assets/src/apps/js/admin/pages/setup.js',
-		'./assets/js/dist/admin/pages/statistic': './assets/src/apps/js/admin/pages/statistic.js',
+		//'./assets/js/dist/admin/pages/statistic': './assets/src/apps/js/admin/pages/statistic.js',
 		'./assets/js/dist/admin/admin-statistic': './assets/src/js/admin/admin-statistic.js',
-		'./assets/js/dist/admin/pages/sync-data': './assets/src/apps/js/admin/pages/sync-data.js',
+		// './assets/js/dist/admin/pages/sync-data': './assets/src/apps/js/admin/pages/sync-data.js',
 		'./assets/js/dist/admin/pages/themes-addons': './assets/src/apps/js/admin/pages/themes-addons.js',
 		'./assets/js/dist/admin/addons': './assets/src/js/admin/addons.js',
 		'./assets/js/dist/admin/pages/dashboard': './assets/src/apps/js/admin/pages/dashboard.js',

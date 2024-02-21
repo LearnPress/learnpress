@@ -7,6 +7,8 @@
  * @version 4.0.0
  */
 
+use LearnPress\TemplateHooks\Course\ListCoursesTemplate;
+
 defined( 'ABSPATH' ) || exit;
 
 if ( ! isset( $query ) ) {
@@ -27,24 +29,27 @@ if ( ! isset( $query ) ) {
 			/**
 			 * LP Hook
 			 */
-			do_action( 'learn-press/shortcode/before-courses-loop' );
+			//do_action( 'learn-press/shortcode/before-courses-loop' );
 
-			LearnPress::instance()->template( 'course' )->begin_courses_loop();
+			echo '<ul class="learn-press-courses" data-layout="grid">';
 
 			while ( $query->have_posts() ) :
 				$query->the_post();
 
-				learn_press_get_template_part( 'content', 'course' );
+				$course = learn_press_get_course( $query->post->ID );
+				if ( ! $course ) {
+					continue;
+				}
 
+				echo ListCoursesTemplate::render_course( $course );
 			endwhile;
 
-			LearnPress::instance()->template( 'course' )->end_courses_loop();
+			echo '</ul>';
 
 			/**
 			 * LP Hook
 			 */
-			do_action( 'learn-press/shortcode/after-main-content' );
-			wp_reset_postdata();
+			//do_action( 'learn-press/shortcode/after-main-content' );
 		else :
 			_e( 'No courses', 'learnpress' );
 		endif;

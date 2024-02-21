@@ -147,6 +147,8 @@ class Courses {
 		if ( 'json' !== $return_type ) {
 			$filter->only_fields = array( 'DISTINCT(ID) AS ID' );
 		}
+
+		do_action( 'learn-press/courses/handle_params_for_query_courses', $filter, $param );
 	}
 
 	/**

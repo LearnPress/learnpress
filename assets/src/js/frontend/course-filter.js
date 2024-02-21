@@ -162,6 +162,8 @@ window.lpCourseFilter = {
 		// Send lang to API if exist for multiple lang.
 		if ( lpData.urlParams.hasOwnProperty( 'lang' ) ) {
 			filterParamsUrl.params_url.lang = lpData.urlParams.lang;
+		} else if ( lpData.urlParams.hasOwnProperty( 'pll-current-lang' ) ) {
+			filterParamsUrl.params_url[ 'pll-current-lang' ] = lpData.urlParams[ 'pll-current-lang' ];
 		}
 
 		const paramsFetch = {
@@ -247,6 +249,8 @@ window.lpCourseFilter = {
 		// Send lang to API if exist for multiple lang.
 		if ( lpData.urlParams.hasOwnProperty( 'lang' ) ) {
 			filterCourses.lang = lpData.urlParams.lang;
+		} else if ( lpData.urlParams.hasOwnProperty( 'pll-current-lang' ) ) {
+			filterCourses[ 'pll-current-lang' ] = lpData.urlParams[ 'pll-current-lang' ];
 		}
 
 		if ( 'undefined' !== typeof lpSettingCourses && // Old version.

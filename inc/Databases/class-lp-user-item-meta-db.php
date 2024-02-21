@@ -70,10 +70,12 @@ class LP_User_Item_Meta_DB extends LP_Database {
 	/**
 	 * Insert data
 	 *
-	 * @param array $data [ meta_id, learnpress_user_item_id, meta_key, meta_value, extra_value ]
+	 * @param array $data [ learnpress_user_item_id, meta_key, meta_value, extra_value ]
+	 *
 	 * @return int
+	 * @throws Exception
+	 * @version 1.0.1
 	 * @since 4.2.5
-	 * @version 1.0.0
 	 */
 	public function insert_data( array $data ): int {
 		$filter = new LP_User_Item_Meta_Filter();
@@ -83,7 +85,10 @@ class LP_User_Item_Meta_DB extends LP_Database {
 			}
 		}
 
+		unset( $data['meta_id'] );
 		$result = $this->wpdb->insert( $this->tb_lp_user_itemmeta, $data );
+		$this->check_execute_has_error();
+
 		return $this->wpdb->insert_id;
 	}
 
@@ -91,6 +96,7 @@ class LP_User_Item_Meta_DB extends LP_Database {
 	 * Update data
 	 *
 	 * @param array $data [ meta_id, learnpress_user_item_id, meta_key, meta_value, extra_value ]
+	 *
 	 * @return bool
 	 *
 	 * @throws Exception

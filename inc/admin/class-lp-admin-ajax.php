@@ -186,26 +186,30 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 * @note tungnx checked has use
 		 */
 		public static function duplicator() {
-			if ( ! current_user_can( ADMIN_ROLE ) ) { // Fix security.
-				return;
-			}
-
 			$nonce = LP_Request::get_param( 'nonce' );
 			if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
-				die( 'Nonce is invalid!' );
+				learn_press_send_json_error( __( 'Nonce is invalid!', 'learnpress' ) );
 			}
 
 			$post_id = intval( $_GET['id'] ?? 0 );
-
-			// get post type
 			$post_type = learn_press_get_post_type( $post_id );
 
 			if ( ! $post_id ) {
 				learn_press_send_json_error( __( 'Oops! ID not found', 'learnpress' ) );
 			} else {
+				$can_duplicate = apply_filters( 'learn-press/can-duplicate-course', true, $post_id, $post_type );
+				if ( ! current_user_can( ADMIN_ROLE ) ) {
+					$post_author = get_post_field( 'post_author', $post_id );
+					if ( get_current_user_id() != $post_author ) {
+						$can_duplicate = false;
+					}
+				}
 
-				$new_item_id = '';
+				if ( ! $can_duplicate ) {
+					learn_press_send_json_error( __( 'You cannot duplicate this item.', 'learnpress' ) );
+				}
 
+				$new_item_id    = '';
 				$duplicate_args = apply_filters( 'learn-press/duplicate-post-args', array( 'post_status' => 'publish' ) );
 
 				switch ( $post_type ) {

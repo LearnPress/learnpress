@@ -101,11 +101,13 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 	 */
 	protected function _get_scripts(): array {
 		$lp_admin_js = new LP_Asset_Key(
-			$this->url( self::$_folder_source . 'js/admin/admin' . self::$_min_assets . '.js' ),
+			$this->url( 'js/dist/admin/admin' . self::$_min_assets . '.js' ),
 			array( 'learn-press-global', 'lp-utils', 'wp-color-picker', 'vue-libs', 'wp-i18n' ),
 			array(),
 			0,
-			1
+			1,
+			'',
+			[ 'strategy' => 'defer' ]
 		);
 		$lp_admin_js->exclude_screen(
 			[
@@ -222,13 +224,13 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					0,
 					1
 				),
-				'learn-press-sync-data'             => new LP_Asset_Key(
+				/*'learn-press-sync-data'             => new LP_Asset_Key(
 					$this->url( 'js/dist/admin/pages/sync-data' . self::$_min_assets . '.js' ),
 					array(),
 					array( 'learnpress_page_learn-press-tools' ),
 					0,
 					1
-				),
+				),*/
 				'lp-setup'                          => new LP_Asset_Key(
 					$this->url( 'js/dist/admin/pages/setup' . self::$_min_assets . '.js' ),
 					array( 'jquery', 'lp-utils', 'dropdown-pages' ),
@@ -291,7 +293,9 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					),
 					array( 'learnpress_page_learn-press-tools' ),
 					0,
-					1
+					1,
+					'',
+					[ 'strategy' => 'defer' ]
 				),
 				'lp-dashboard'                      => new LP_Asset_Key(
 					self::url( 'js/dist/admin/pages/dashboard' . self::$_min_assets . '.js' ),

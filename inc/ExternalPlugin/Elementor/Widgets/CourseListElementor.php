@@ -89,8 +89,8 @@ class CourseListElementor extends LPElementorWidgetBase {
 						}
 
 						if ( $template_is_override ) {
-							$post = $course;
-							setup_postdata( $course );
+							$post = get_post( $course->get_id() );
+							setup_postdata( $post );
 							learn_press_get_template( 'content-course.php' );
 						} else {
 							echo ListCoursesTemplate::render_course( $course );
