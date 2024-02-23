@@ -170,7 +170,7 @@ class LP_Course_DB extends LP_Database {
 	 * @return int
 	 * @throws Exception
 	 * @since 4.0.0
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 * @modify 4.1.3
 	 * @author tungnx
 	 */
@@ -187,7 +187,7 @@ class LP_Course_DB extends LP_Database {
 				INNER JOIN $this->tb_lp_sections AS sections
 				ON items.section_id = sections.section_id
 				AND sections.section_course_id = %d
-				ORDER BY items.item_order ASC, sections.section_order ASC
+				ORDER BY sections.section_order ASC, items.item_order ASC
 				LIMIT %d
 				",
 				$course_id,
