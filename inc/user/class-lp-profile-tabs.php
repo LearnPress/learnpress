@@ -65,7 +65,6 @@ class LP_Profile_Tabs {
 	 *
 	 */
 	protected function init() {
-
 	}
 
 	/**

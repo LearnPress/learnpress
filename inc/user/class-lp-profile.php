@@ -1,6 +1,7 @@
 <?php
 
 use LearnPress\Models\Courses;
+use LearnPress\TemplateHooks\Profile\ProfileOrdersTemplate;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -258,7 +259,12 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			return 'id' === strtolower( $field ) ? $user_id : $user_data;
 		}
 
+		/**
+		 * @deprecated 4.2.6.2
+		 */
 		public function tab_dashboard() {
+			_deprecated_function( __METHOD__, '4.2.6.2' );
+			return;
 			learn_press_get_template( 'profile/dashboard.php', array( 'user' => $this->_user ) );
 		}
 
@@ -301,7 +307,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				'orders'        => array(
 					'title'    => esc_html__( 'Orders', 'learnpress' ),
 					'slug'     => $settings->get( 'profile_endpoints.orders', 'orders' ),
-					'callback' => array( $this, 'tab_orders' ),
+					'callback' => array( ProfileOrdersTemplate::class, 'tab_content' ),
 					'priority' => 25,
 					'icon'     => '<i class="fas fa-shopping-cart"></i>',
 				),

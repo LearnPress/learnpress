@@ -89,7 +89,7 @@ if ( LP_Settings::theme_no_support_load_courses_ajax() ) {
 } else {
 	add_action(
 		'learn-press/after-courses-loop',
-		function() {
+		function () {
 			$listCourseTemplate    = ListCoursesTemplate::instance();
 			$pagination_type       = LP_Settings::get_option( 'course_pagination_type', 'number' );
 			$enableAjaxLoadCourses = LP_Settings_Courses::is_ajax_load_courses();
@@ -385,8 +385,13 @@ add_action( 'learn-press/user-profile-account', LearnPress::instance()->template
 
 add_action( 'learn-press/user-profile-tabs', LearnPress::instance()->template( 'profile' )->func( 'tabs' ), 10 );
 
-
+/**
+ * @deprecated 4.2.6.2
+ */
 add_action( 'learn-press/profile/orders', LearnPress::instance()->template( 'profile' )->callback( 'profile/tabs/orders/list.php' ), 10 );
+/**
+ * @deprecated 4.2.6.2
+ */
 add_action(
 	'learn-press/profile/orders',
 	LearnPress::instance()->template( 'profile' )->callback( 'profile/tabs/orders/recover-order.php' ),
@@ -407,16 +412,16 @@ add_action( 'learn-press/profile/order-details', LearnPress::instance()->templat
  * @deprecated 4.1.6
  */
 // add_action( 'learn-press/profile/before-dashboard', LearnPress::instance()->template( 'profile' )->func( 'dashboard_statistic' ), 10 );
-add_action(
+/*add_action(
 	'learn-press/profile/dashboard-summary',
 	LearnPress::instance()->template( 'profile' )->func( 'dashboard_featured_courses' ),
 	20
-);
-add_action(
+);*/
+/*add_action(
 	'learn-press/profile/dashboard-summary',
 	LearnPress::instance()->template( 'profile' )->func( 'dashboard_latest_courses' ),
 	30
-);
+);*/
 
 /**
  * @see LP_Template_Profile::dashboard_not_logged_in()

@@ -186,25 +186,11 @@ class LP_Template_Profile extends LP_Abstract_Template {
 	}
 
 	/**
-	 * @author tungnx
-	 * @deprecated 4.1.6
+	 * @deprecated 4.2.6.2
 	 */
-	/*public function dashboard_statistic() {
-		$user      = $this->get_user();
-		$query     = LP_Profile::instance()->query_courses( 'purchased' );
-		$counts    = $query['counts'];
-		$statistic = array(
-			'enrolled_courses'  => isset( $counts['all'] ) ? $counts['all'] : 0,
-			'active_courses'    => isset( $counts['in-progress'] ) ? $counts['in-progress'] : 0,
-			'completed_courses' => isset( $counts['finished'] ) ? $counts['finished'] : 0,
-			'total_courses'     => count_user_posts( $user->get_id(), LP_COURSE_CPT ),
-			'total_users'       => learn_press_count_instructor_users( $user->get_id() ),
-		);
-
-		learn_press_get_template( 'profile/tabs/courses/general-statistic', compact( 'statistic' ) );
-	}*/
-
 	public function dashboard_featured_courses() {
+		_deprecated_function( __METHOD__, '4.2.6.2' );
+		die;
 		$profile_privacy = $this->get_user()->get_extra_data(
 			'profile_privacy',
 			array(
@@ -232,7 +218,12 @@ class LP_Template_Profile extends LP_Abstract_Template {
 		learn_press_get_template( 'profile/dashboard/featured-courses', (array) $data );
 	}
 
+	/**
+	 * @deprecated 4.2.6.2
+	 */
 	public function dashboard_latest_courses() {
+		_deprecated_function( __METHOD__, '4.2.6.2' );
+		die;
 		$profile_privacy = $this->get_user()->get_extra_data(
 			'profile_privacy',
 			array(

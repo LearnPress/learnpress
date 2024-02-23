@@ -25,19 +25,36 @@ if ( ! isset( $user ) || ! isset( $tab_key ) || ! isset( $profile ) || ! isset( 
 		<?php do_action( 'learn-press/before-profile-content', $tab_key, $profile_tab, $user ); ?>
 
 		<?php
-		if ( empty( $profile_tab->get( 'sections' ) ) ) {
-			if ( $profile_tab->get( 'callback' ) && is_callable( $profile_tab->get( 'callback' ) ) ) {
-				echo call_user_func_array( $profile_tab->get( 'callback' ), array( $tab_key, $profile_tab, $user ) );
-			} else {
-				do_action( 'learn-press/profile-content', $tab_key, $profile_tab, $user );
-			}
+		$user_can_view = $profile_tab->user_can_view();
+
+		if ( ! $user_can_view ) {
+			?>
+			<div class="learn-press-message error">
+				<?php esc_html_e( 'You can\'t view this tab', 'learnpress' ); ?>
+			</div>
+			<?php
 		} else {
-			foreach ( $profile_tab->get( 'sections' ) as $key => $section ) {
-				if ( $profile->get_current_section( '', false, false ) === $section['slug'] ) {
-					if ( isset( $section['callback'] ) && is_callable( $section['callback'] ) ) {
-						echo call_user_func_array( $section['callback'], array( $key, $section, $user ) );
-					} else {
-						do_action( 'learn-press/profile-section-content', $key, $section, $user );
+			if ( empty( $profile_tab->get( 'sections' ) ) ) {
+				if ( $profile_tab->get( 'callback' ) && is_callable( $profile_tab->get( 'callback' ) ) ) {
+					echo call_user_func_array(
+						$profile_tab->get( 'callback' ),
+						[
+							$tab_key,
+							$profile_tab,
+							$user,
+						]
+					);
+				} else {
+					do_action( 'learn-press/profile-content', $tab_key, $profile_tab, $user );
+				}
+			} else {
+				foreach ( $profile_tab->get( 'sections' ) as $key => $section ) {
+					if ( $profile->get_current_section( '', false, false ) === $section['slug'] ) {
+						if ( isset( $section['callback'] ) && is_callable( $section['callback'] ) ) {
+							echo call_user_func_array( $section['callback'], array( $key, $section, $user ) );
+						} else {
+							do_action( 'learn-press/profile-section-content', $key, $section, $user );
+						}
 					}
 				}
 			}
