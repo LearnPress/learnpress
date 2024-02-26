@@ -1138,8 +1138,12 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				$profile_picture = get_user_meta( $user->get_id(), '_lp_profile_picture', true );
 
 				if ( $profile_picture ) {
+					// Check if hase slug / at the beginning of the path, if not, add it.
+					$slash = substr( $profile_picture, 0, 1 ) === '/' ? '' : '/';
+					$profile_picture = $slash . $profile_picture;
+					// End check.
 					$upload    = learn_press_user_profile_picture_upload_dir();
-					$file_path = $upload['basedir'] . DIRECTORY_SEPARATOR . $profile_picture;
+					$file_path = $upload['basedir'] . $profile_picture;
 
 					if ( file_exists( $file_path ) ) {
 						$uploaded_profile_src = $upload['baseurl'] . $profile_picture;
