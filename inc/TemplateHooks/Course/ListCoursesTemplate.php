@@ -174,7 +174,7 @@ class ListCoursesTemplate {
 	 *
 	 * @return string
 	 * @since 4.2.5.8
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public static function render_course( LP_Course $course, array $settings = [] ): string {
 		$singleCourseTemplate = SingleCourseTemplate::instance();
@@ -183,8 +183,8 @@ class ListCoursesTemplate {
 			$html_course_wrapper = apply_filters(
 				'learn-press/list-courses/layout/item/wrapper',
 				[
-					'<li class="course">'       => '</li>',
-					'<div class="course-item">' => '</div>',
+					'<li class="course">' => '</li>',
+					'<div class="course-item" data-id="' . esc_attr( $course->get_id() ) . '">' => '</div>',
 				],
 				$course,
 				$settings

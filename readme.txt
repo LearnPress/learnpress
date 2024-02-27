@@ -216,6 +216,7 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Tweak: get_first_item_id method.
 ~ Fixed: error js hiddenQuestions.find not a function.
 ~ Fixed: avatar url profile with old value.
+~ Fixed: error payment PayPal with Currency EUR.
 ~ Check user current can view content of tab Profile.
 ~ Deprecated hook 'learn-press/profile/orders', dashboard_featured_courses, dashboard_latest_courses, tab_dashboard methods.
 
