@@ -359,10 +359,12 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			/*
 			 * Check if user not Admin/Instructor, will be hide tab Courses.
 			 * And not call from function add_rewrite_rules.
+			 * And not set option publish profile to yes.
 			 */
 			$method_called_to = debug_backtrace()[1]['function'];
 			if ( $user_of_profile instanceof LP_User && 'add_rewrite_rules' !== $method_called_to
-				&& ! in_array( $user_of_profile->get_data( 'role' ), [ ADMIN_ROLE, LP_TEACHER_ROLE ] ) ) {
+				&& ! in_array( $user_of_profile->get_data( 'role' ), [ ADMIN_ROLE, LP_TEACHER_ROLE ] )
+				&& 'yes' !== self::get_option_publish_profile() ) {
 				unset( $this->_default_settings['courses'] );
 			}
 
