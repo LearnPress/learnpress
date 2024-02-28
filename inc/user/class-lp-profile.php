@@ -112,24 +112,6 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			}
 		}
 
-		/**
-		 * Prevent access view owned course in non admin, instructor profile page.
-		 * @deprecated 4.1.7.3
-		 */
-		public function init() {
-			_deprecated_function( __FUNCTION__, '4.1.7.3' );
-			/*$profile = self::instance();
-			$user    = $profile->get_user();
-			$role    = $user->get_role();
-
-			if ( ! in_array( $role, array( 'admin', 'instructor' ) ) ) {
-				unset( $this->_default_settings['courses']['sections']['owned'] );
-
-				$data_tabs   = apply_filters( 'learn-press/profile-tabs', $this->_default_settings );
-				$this->_tabs = new LP_Profile_Tabs( $data_tabs, self::instance() );
-			}*/
-		}
-
 		public function is_guest() {
 			return ! $this->_user || $this->_user && $this->_user->is_guest();
 		}
@@ -357,33 +339,6 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		public function get_slug( $data, $default = '' ) {
 			return $this->get_tabs()->get_slug( $data, $default );
 		}
-
-		/**
-		 * Enable custom avatar?
-		 *
-		 * @return bool
-		 * @deprecated 4.2.2.2
-		 */
-		/*public function is_enable_avatar() {
-			$profile_avatar = get_option( 'learn_press_profile_avatar' );
-
-			if ( ! $profile_avatar ) {
-				update_option( 'learn_press_profile_avatar', 'yes' );
-			}
-
-			$setting_avatar = LP_Settings::instance()->get( 'profile_endpoints.settings-avatar' );
-
-			if ( ! $setting_avatar ) {
-				$profile_endpoints['settings-basic-information'] = 'basic-information';
-				$profile_endpoints['settings-avatar']            = 'avatar';
-				$profile_endpoints['settings-change-password']   = 'change-password';
-
-				update_option( 'learn_press_profile_endpoints', $profile_endpoints, 'yes' );
-				add_rewrite_rule( '(.?.+?)/avatar(/(.*))?/?$', 'index.php?pagename=$matches[1]&section=avatar', 'top' );
-			}
-
-			return LP_Settings::instance()->get( 'profile_avatar' ) === 'yes';
-		}*/
 
 		/**
 		 * Get current tab slug in query string.
@@ -857,77 +812,6 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		}
 
 		/**
-		 * Get filters for own courses tab.
-		 *
-		 * @param string $current_filter
-		 *
-		 * @return array
-		 * @deprecated 4.2.0
-		 */
-		public function get_own_courses_filters( $current_filter = '' ) {
-			_deprecated_function( __METHOD__, '4.2.0' );
-			$url = $this->get_current_url();
-
-			$defaults = array(
-				'all'     => sprintf( '<a href="%s">%s</a>', esc_url_raw( $url ), esc_html__( 'All', 'learnpress' ) ),
-				'publish' => sprintf( '<a href="%s">%s</a>', esc_url_raw( add_query_arg( 'filter-status', 'publish', $url ) ), esc_html__( 'Publish', 'learnpress' ) ),
-				'pending' => sprintf( '<a href="%s">%s</a>', esc_url_raw( add_query_arg( 'filter-status', 'pending', $url ) ), esc_html__( 'Pending', 'learnpress' ) ),
-			);
-
-			if ( ! $current_filter ) {
-				$keys           = array_keys( $defaults );
-				$current_filter = reset( $keys );
-			}
-
-			foreach ( $defaults as $k => $v ) {
-				if ( $k === $current_filter ) {
-					$defaults[ $k ] = sprintf( '<span>%s</span>', strip_tags( $v ) );
-				}
-			}
-
-			return apply_filters(
-				'learn-press/profile/own-courses-filters',
-				$defaults
-			);
-		}
-
-		/**
-		 * Get filters for purchased courses tab.
-		 *
-		 * @param string $current_filter
-		 *
-		 * @return array
-		 * @deprecated 4.2.0
-		 */
-		public function get_purchased_courses_filters( $current_filter = '' ) {
-			_deprecated_function( __METHOD__, '4.2.0' );
-			$url      = $this->get_current_url( false );
-			$defaults = array(
-				'all'          => sprintf( '<a href="%s">%s</a>', esc_url_raw( $url ), __( 'All', 'learnpress' ) ),
-				'finished'     => sprintf( '<a href="%s">%s</a>', esc_url_raw( add_query_arg( 'filter-status', 'finished', $url ) ), __( 'Finished', 'learnpress' ) ),
-				'passed'       => sprintf( '<a href="%s">%s</a>', esc_url_raw( add_query_arg( 'filter-status', 'passed', $url ) ), __( 'Passed', 'learnpress' ) ),
-				'failed'       => sprintf( '<a href="%s">%s</a>', esc_url_raw( add_query_arg( 'filter-status', 'failed', $url ) ), __( 'Failed', 'learnpress' ) ),
-				'not-enrolled' => sprintf( '<a href="%s">%s</a>', esc_url_raw( add_query_arg( 'filter-status', 'not-enrolled', $url ) ), __( 'Not enrolled', 'learnpress' ) ),
-			);
-
-			if ( ! $current_filter ) {
-				$keys           = array_keys( $defaults );
-				$current_filter = reset( $keys );
-			}
-
-			foreach ( $defaults as $k => $v ) {
-				if ( $k === $current_filter ) {
-					$defaults[ $k ] = sprintf( '<span>%s</span>', strip_tags( $v ) );
-				}
-			}
-
-			return apply_filters(
-				'learn-press/profile/purchased-courses-filters',
-				$defaults
-			);
-		}
-
-		/**
 		 * Get filters for purchased courses tab.
 		 *
 		 * @param string $current_filter
@@ -958,36 +842,6 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				'learn-press/profile/quizzes-filters',
 				$defaults
 			);
-		}
-
-		/**
-		 * @param bool $redirect
-		 *
-		 * @return string
-		 * @deprecated 4.1.7.3
-		 */
-		public function logout_url( $redirect = false ) {
-			_deprecated_function( __FUNCTION__, '4.1.7.3' );
-			/*if ( $this->enable_login() ) {
-				$profile_url = learn_press_get_page_link( 'profile' );
-				$url         = esc_url_raw(
-					add_query_arg(
-						array(
-							'lp-logout' => 'true',
-							'nonce'     => wp_create_nonce( 'lp-logout' ),
-						),
-						untrailingslashit( $profile_url )
-					)
-				);
-
-				if ( $redirect !== false ) {
-					$url = esc_url_raw( add_query_arg( 'redirect', urlencode( $redirect ), $url ) );
-				}
-			} else {
-				$url = wp_logout_url( $redirect !== false ? $redirect : $this->get_current_url() );
-			}
-
-			return apply_filters( 'learn-press/logout-url', $url );*/
 		}
 
 		/**
@@ -1049,28 +903,6 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		}
 
 		/**
-		 * TRUE if enable show login form in user profile if user is not logged in.
-		 *
-		 * @return bool
-		 * @deprecated 4.2.3
-		 */
-		public function enable_login() {
-			_deprecated_function( __FUNCTION__, '4.2.3' );
-			//return 'yes' === LP_Settings::instance()->get( 'enable_login_profile' );
-		}
-
-		/**
-		 * TRUE if enable show register form in user profile if user is not logged in.
-		 *
-		 * @return bool
-		 * @deprecated 4.2.3
-		 */
-		public function enable_register() {
-			_deprecated_function( __FUNCTION__, '4.2.3' );
-			//return 'yes' === LP_Settings::instance()->get( 'enable_register_profile' );
-		}
-
-		/**
 		 * Get queried user in profile link.
 		 *
 		 * @param string $return
@@ -1088,19 +920,6 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			}
 
 			return $return === 'id' && $user ? $user->ID : $user;
-		}
-
-		/**
-		 * Return true if there is a name of user in profile link.
-		 *
-		 * @return bool
-		 * @deprecated 4.2.3
-		 */
-		public static function is_queried_user() {
-			_deprecated_function( __FUNCTION__, '4.2.3' );
-			/*global $wp_query;
-
-			return isset( $wp_query->query['user'] ) ? $wp_query->query['user'] : false;*/
 		}
 
 		public function get_upload_profile_src( $size = '' ) {
