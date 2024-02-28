@@ -1075,20 +1075,30 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 *
 		 * @return LP_Profile mixed
 		 * @since 3.0.0
-		 * @version 1.0.2
+		 * @version 1.0.3
 		 */
 		public static function instance( $user_id = 0 ) {
-			if ( 'add_rewrite_rules_profile' === debug_backtrace()[2]['function'] ) {
-				return new self( 0 );
-			} elseif ( ! $user_id ) {
-				$user_id = self::get_queried_user( 'id' );
-			}
+			$is_page_profile = LP_Page_Controller::page_is( 'profile');
 
-			if ( empty( self::$_instance ) ) {
-				self::$_instance = new self( $user_id );
-			}
+			if ( $is_page_profile ) {
+				if ( 'add_rewrite_rules_profile' === debug_backtrace()[2]['function'] ) {
+					return new self( 0 );
+				} elseif ( ! $user_id ) {
+					$user_id = self::get_queried_user( 'id' );
+				}
 
-			return self::$_instance;
+				if ( empty( self::$_instance ) ) {
+					self::$_instance = new self( $user_id );
+				}
+
+				return self::$_instance;
+			} else {
+				if ( empty( self::$_instances[ $user_id ] ) ) {
+					self::$_instances[ $user_id ] = new self( $user_id );
+				}
+
+				return self::$_instances[ $user_id ];
+			}
 		}
 	}
 }
