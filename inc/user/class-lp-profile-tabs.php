@@ -21,7 +21,7 @@ class LP_Profile_Tabs {
 	/**
 	 * LP_Profile_Tabs constructor.
 	 *
-	 * @param array      $tabs
+	 * @param array $tabs
 	 * @param LP_Profile $profile
 	 */
 	public function __construct( $tabs, $profile ) {
@@ -42,7 +42,7 @@ class LP_Profile_Tabs {
 			$tabs_tmp,
 			function ( $tab1, $tab2 ) {
 				if ( $tab1['priority'] < $tab2['priority'] ) {
-					return -1;
+					return - 1;
 				} elseif ( $tab1['priority'] > $tab2['priority'] ) {
 					return 1;
 				} else {
@@ -205,13 +205,13 @@ class LP_Profile_Tabs {
 
 
 	/**
-	 * @param bool    $tab
-	 * @param bool    $with_section
+	 * @param bool $tab
+	 * @param bool $with_section
 	 * @param LP_User $user
 	 *
-	 * @version 4.0.0
-	 * @since 3.0.0
 	 * @return string
+	 * @since 3.0.0
+	 * @version 4.0.0
 	 */
 	public function get_tab_link( $tab = false, $with_section = false, $user = null ) {
 		if ( ( $tab || $with_section ) && empty( $user ) ) {
@@ -263,7 +263,7 @@ class LP_Profile_Tabs {
 	/**
 	 * Get the slug of tab or section if defined.
 	 *
-	 * @param array  $tab_or_section
+	 * @param array $tab_or_section
 	 * @param string $default
 	 *
 	 * @return string
@@ -284,7 +284,7 @@ class LP_Profile_Tabs {
 	 * Get current link of profile
 	 *
 	 * @param string $args - Optional. Add more query args to url.
-	 * @param bool   $with_permalink - Optional. TRUE to build url as friendly url.
+	 * @param bool $with_permalink - Optional. TRUE to build url as friendly url.
 	 *
 	 * @return mixed|string
 	 * @Todo tungnx - need check this function
@@ -365,6 +365,7 @@ class LP_Profile_Tabs {
 	 * Remove tab.
 	 *
 	 * @param $key
+	 *
 	 * @deprecated 4.2.2.3
 	 */
 	public function remove_tab( $key ) {
@@ -421,8 +422,8 @@ class LP_Profile_Tab {
 	/**
 	 * LP_Profile_Tab constructor.
 	 *
-	 * @param string     $id
-	 * @param array      $data
+	 * @param string $id
+	 * @param array $data
 	 * @param LP_Profile $profile
 	 */
 	public function __construct( $id, $data, $profile ) {
@@ -459,7 +460,12 @@ class LP_Profile_Tab {
 		return $this->profile;
 	}
 
+	/**
+	 * @deprecated 4.2.6.2
+	 */
 	public function user_can_view() {
+		_deprecated_function( __METHOD__, '4.2.6.2' );
+		return false;
 		if ( $this->is_public() || current_user_can( ADMIN_ROLE ) ) {
 			return true;
 		}
@@ -469,7 +475,12 @@ class LP_Profile_Tab {
 		return $can;
 	}
 
+	/**
+	 * @deprecated 4.2.6.2
+	 */
 	public function user_can_view_section( $section ) {
+		_deprecated_function( __METHOD__, '4.2.6.2' );
+		return false;
 		return $this->get_profile()->current_user_can( "view-section-{$section}" );
 	}
 
@@ -490,8 +501,11 @@ class LP_Profile_Tab {
 	 *
 	 * @return bool
 	 * @since 4.0.0
+	 * @deprecated 4.2.6.2
 	 */
 	public function is_public() {
+		_deprecated_function( __METHOD__, '4.2.6.2' );
+		return false;
 		$public_tabs = $this->profile->get_public_tabs();
 
 		return $public_tabs && in_array( $this->id, $public_tabs );

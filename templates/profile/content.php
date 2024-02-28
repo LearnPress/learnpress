@@ -6,7 +6,7 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  4.0.1
+ * @version  4.0.2
  */
 
 defined( 'ABSPATH' ) || exit();
@@ -20,41 +20,30 @@ if ( ! isset( $user ) || ! isset( $tab_key ) || ! isset( $profile ) || ! isset( 
 ?>
 
 <article id="profile-content" class="lp-profile-content">
-	<?php learn_press_print_messages( true ); ?>
 	<div id="profile-content-<?php echo esc_attr( $tab_key ); ?>">
 		<?php do_action( 'learn-press/before-profile-content', $tab_key, $profile_tab, $user ); ?>
 
 		<?php
-		$user_can_view = $profile_tab->user_can_view();
-
-		if ( ! $user_can_view ) {
-			?>
-			<div class="learn-press-message error">
-				<?php esc_html_e( 'You can\'t view this tab', 'learnpress' ); ?>
-			</div>
-			<?php
-		} else {
-			if ( empty( $profile_tab->get( 'sections' ) ) ) {
-				if ( $profile_tab->get( 'callback' ) && is_callable( $profile_tab->get( 'callback' ) ) ) {
-					echo call_user_func_array(
-						$profile_tab->get( 'callback' ),
-						[
-							$tab_key,
-							$profile_tab,
-							$user,
-						]
-					);
-				} else {
-					do_action( 'learn-press/profile-content', $tab_key, $profile_tab, $user );
-				}
+		if ( empty( $profile_tab->get( 'sections' ) ) ) {
+			if ( $profile_tab->get( 'callback' ) && is_callable( $profile_tab->get( 'callback' ) ) ) {
+				echo call_user_func_array(
+					$profile_tab->get( 'callback' ),
+					[
+						$tab_key,
+						$profile_tab,
+						$user,
+					]
+				);
 			} else {
-				foreach ( $profile_tab->get( 'sections' ) as $key => $section ) {
-					if ( $profile->get_current_section( '', false, false ) === $section['slug'] ) {
-						if ( isset( $section['callback'] ) && is_callable( $section['callback'] ) ) {
-							echo call_user_func_array( $section['callback'], array( $key, $section, $user ) );
-						} else {
-							do_action( 'learn-press/profile-section-content', $key, $section, $user );
-						}
+				do_action( 'learn-press/profile-content', $tab_key, $profile_tab, $user );
+			}
+		} else {
+			foreach ( $profile_tab->get( 'sections' ) as $key => $section ) {
+				if ( $profile->get_current_section( '', false, false ) === $section['slug'] ) {
+					if ( isset( $section['callback'] ) && is_callable( $section['callback'] ) ) {
+						echo call_user_func_array( $section['callback'], array( $key, $section, $user ) );
+					} else {
+						do_action( 'learn-press/profile-section-content', $key, $section, $user );
 					}
 				}
 			}
