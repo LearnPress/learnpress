@@ -210,10 +210,11 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
-= 4.2.6.2 (2024-02-27) =
+= 4.2.6.2 (2024-02-28) =
 ~ Added: param lang on url when submit filter courses.
 ~ Added: ProfileOrdersTemplate show layout orders on the Profile page.
 ~ Tweak: get_first_item_id method.
+~ Tweak: methods Profile, templates Profile.
 ~ Fixed: error js hiddenQuestions.find not a function.
 ~ Fixed: avatar url profile with old value.
 ~ Fixed: error payment PayPal with Currency EUR.
