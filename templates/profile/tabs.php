@@ -35,7 +35,7 @@ if ( ! isset( $user ) || ! isset( $profile ) ) {
 
 			// Admin view another user profile
 			if ( $profile->get_user()->get_id() !== $profile->get_user_current()->get_id() && current_user_can( ADMIN_ROLE ) ) {
-				$tab_key_hidden_admin_view_user = [ 'settings', 'logout', 'gradebook' ];
+				$tab_key_hidden_admin_view_user = [ 'settings', 'logout', 'order', 'gradebook' ];
 				if ( in_array( $tab_key, $tab_key_hidden_admin_view_user ) ) {
 					continue;
 				}
