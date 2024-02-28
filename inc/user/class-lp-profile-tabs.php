@@ -57,55 +57,6 @@ class LP_Profile_Tabs {
 		}
 
 		$this->profile = $profile;
-		//$this->_sanitize();
-		//$this->init();
-	}
-
-	/**
-	 *
-	 */
-	protected function init() {
-	}
-
-	/**
-	 * Sort tabs
-	 */
-	protected function _sanitize() {
-		$tabs = $this->_data;
-		foreach ( $tabs as $slug => $data ) {
-			if ( ! array_key_exists( 'slug', $data ) ) {
-				$tabs[ $slug ]['slug'] = $slug;
-			}
-
-			if ( ! array_key_exists( 'priority', $data ) ) {
-				$tabs[ $slug ]['priority'] = 10;
-			}
-
-			if ( empty( $data['sections'] ) ) {
-				continue;
-			}
-
-			foreach ( $data['sections'] as $section_slug => $section_data ) {
-				if ( ! array_key_exists( 'slug', $section_data ) ) {
-					$tabs[ $slug ]['sections'][ $section_slug ]['slug'] = $section_slug;
-				}
-
-				if ( ! array_key_exists( 'priority', $section_data ) ) {
-					$tabs[ $slug ]['sections'][ $section_slug ]['priority'] = 10;
-				}
-			}
-			uasort( $tabs[ $slug ]['sections'], array( $this, '_sort_tabs' ) );
-		}
-
-		uasort( $tabs, array( $this, '_sort_tabs' ) );
-
-		$key = md5( serialize( array_keys( $tabs ) ) );
-		if ( $key !== get_option( '_lp_tabs_data' ) ) {
-			//flush_rewrite_rules();
-			update_option( '_lp_tabs_data', $key, false );
-		}
-
-		$this->_data = $tabs;
 	}
 
 	/**
@@ -359,46 +310,6 @@ class LP_Profile_Tabs {
 		}
 
 		return $a['priority'] < $b['priority'] ? - 1 : 1;
-	}
-
-	/**
-	 * Remove tab.
-	 *
-	 * @param $key
-	 *
-	 * @deprecated 4.2.2.3
-	 */
-	public function remove_tab( $key ) {
-		_deprecated_function( __FUNCTION__, '4.2.2.3' );
-		$tabs = $this->_data;
-
-		foreach ( $tabs as $slug => $data ) {
-			if ( $key == $slug ) {
-				unset( $tabs[ $key ] );
-			}
-		}
-
-		$this->_data = $tabs;
-	}
-
-	/**
-	 * @deprecated 4.2.2.3
-	 */
-	public function current_user_can_view( $key = '' ) {
-		_deprecated_function( __FUNCTION__, '4.2.2.3' );
-		global $wp;
-
-		if ( ! $key ) {
-			$key = isset( $wp->query_vars['view'] ) ? $wp->query_vars['view'] : 'overview';
-		}
-
-		$tab = isset( $this->_data[ $key ] ) ? $this->_data[ $key ] : false;
-
-		if ( $tab ) {
-			return $tab->user_can_view();
-		}
-
-		return false;
 	}
 }
 
