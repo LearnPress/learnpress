@@ -5,7 +5,7 @@
  * @author  ThimPress
  * @package LearnPress/Classes
  * @since   3.0.0
- * @version 3.0.1
+ * @version 3.0.2
  */
 
 use LearnPress\Helpers\Config;
@@ -112,7 +112,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 					$this->paypal_url         = $this->paypal_live_url;
 					$this->paypal_payment_url = $this->paypal_payment_live_url;
 					$this->paypal_email       = $this->settings->get( 'paypal_email' );
-					$this->api_url            = $this->api_live_url; //use for paypal rest api
+					$this->api_url            = $this->api_live_url; //use for PayPal rest api
 				} else {
 					$this->paypal_url         = $this->paypal_sandbox_url;
 					$this->paypal_payment_url = $this->paypal_payment_sandbox_url;
@@ -126,7 +126,15 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				}
 			}
 
-			add_filter( 'learn-press/payment-gateway/' . $this->id . '/available', array( $this, 'paypal_available' ), 10, 2 );
+			add_filter(
+				'learn-press/payment-gateway/' . $this->id . '/available',
+				[
+					$this,
+					'paypal_available',
+				],
+				10,
+				2
+			);
 			add_action( 'init', array( $this, 'check_webhook_callback' ) );
 		}
 
@@ -134,6 +142,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 * Check payment gateway available.
 		 *
 		 * @param bool $available
+		 *
 		 * @return bool
 		 */
 		public function paypal_available( bool $available ): bool {
@@ -330,6 +339,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 * create args to create PayPal order
 		 *
 		 * @param LP_Order $order
+		 *
 		 * @return array
 		 * @since 4.2.4
 		 * @version 1.0.1
@@ -347,7 +357,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 					[
 						'amount'    => [
 							'currency_code' => learn_press_get_currency(),
-							'value'         => number_format( $cart_total->total, 2 ),
+							'value'         => round( $cart_total->total, 2 ),
 						],
 						'custom_id' => $order_id,
 					],
@@ -365,6 +375,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 					],
 				],
 			];
+
 			return apply_filters( 'learn-press/paypal-rest/args', $data );
 		}
 
@@ -373,6 +384,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 *
 		 * @param LP_Order $order
 		 * @param object $data_token { scope, access_token, token_type, app_id, expires_in, nonce }
+		 *
 		 * @return string
 		 * @throws Exception
 		 * @since 4.2.4
@@ -426,6 +438,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 *
 		 * @param string $paypal_order_id
 		 * https://developer.paypal.com/docs/api/orders/v2/#orders_capture
+		 *
 		 * @throws Exception
 		 *
 		 * @since 4.2.4

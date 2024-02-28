@@ -6,7 +6,7 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  4.0.1
+ * @version  4.0.2
  */
 
 defined( 'ABSPATH' ) || exit();
@@ -20,14 +20,20 @@ if ( ! isset( $user ) || ! isset( $tab_key ) || ! isset( $profile ) || ! isset( 
 ?>
 
 <article id="profile-content" class="lp-profile-content">
-	<?php learn_press_print_messages( true ); ?>
 	<div id="profile-content-<?php echo esc_attr( $tab_key ); ?>">
 		<?php do_action( 'learn-press/before-profile-content', $tab_key, $profile_tab, $user ); ?>
 
 		<?php
 		if ( empty( $profile_tab->get( 'sections' ) ) ) {
 			if ( $profile_tab->get( 'callback' ) && is_callable( $profile_tab->get( 'callback' ) ) ) {
-				echo call_user_func_array( $profile_tab->get( 'callback' ), array( $tab_key, $profile_tab, $user ) );
+				echo call_user_func_array(
+					$profile_tab->get( 'callback' ),
+					[
+						$tab_key,
+						$profile_tab,
+						$user,
+					]
+				);
 			} else {
 				do_action( 'learn-press/profile-content', $tab_key, $profile_tab, $user );
 			}

@@ -4,7 +4,7 @@
  * Plugin URI: http://thimpress.com/learnpress
  * Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
  * Author: ThimPress
- * Version: 4.2.6.1
+ * Version: 4.2.6.2
  * Author URI: http://thimpress.com
  * Requires at least: 6.3
  * Requires PHP: 7.0
@@ -24,6 +24,7 @@ use LearnPress\TemplateHooks\Course\ListCoursesTemplate;
 use LearnPress\TemplateHooks\Instructor\ListInstructorsTemplate;
 use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileInstructorStatisticsTemplate;
+use LearnPress\TemplateHooks\Profile\ProfileOrdersTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileStudentStatisticsTemplate;
 use LearnPress\TemplateHooks\Course\CourseMaterialTemplate;
 use LearnPress\Widgets\LPRegisterWidget;
@@ -286,6 +287,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			SingleInstructorTemplate::instance();
 			ProfileInstructorStatisticsTemplate::instance();
 			ProfileStudentStatisticsTemplate::instance();
+			ProfileOrdersTemplate::instance();
 			FilterCourseTemplate::instance();
 
 			CourseMaterialTemplate::instance();

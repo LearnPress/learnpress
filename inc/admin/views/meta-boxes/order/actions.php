@@ -17,7 +17,8 @@ global $post;
 			<div class="misc-pub-section">
 				<select name="trigger-order-action">
 					<option value=""><?php esc_html_e( 'Choose an action', 'learnpress' ); ?></option>
-					<option value="current-status"><?php esc_html_e( 'Trigger action of the current order status', 'learnpress' ); ?></option>
+					<option
+						value="current-status"><?php esc_html_e( 'Trigger action of the current order status', 'learnpress' ); ?></option>
 				</select>
 			</div>
 		</div>
@@ -40,7 +41,8 @@ global $post;
 			<div id="publishing-action">
 				<span class="spinner"></span>
 				<input name="original_publish" type="hidden" id="original_publish" value="Update">
-				<input name="save" type="submit" class="button button-primary button-large" id="publish" value="Update">
+				<input name="save" type="submit" class="button button-primary button-large" id="publish"
+						value="<?php esc_attr_e( 'Update', 'learnpress' ); ?>">
 			</div>
 			<div class="clear"></div>
 		</div>

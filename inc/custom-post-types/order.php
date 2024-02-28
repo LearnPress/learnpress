@@ -571,11 +571,16 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				case 'order_total':
 					echo wp_kses_post( $lp_order->get_formatted_order_total() );
 					$method_title = $lp_order->get_payment_method_title();
+					$method_title = apply_filters( 'learn-press/order-payment-method-title', $method_title, $lp_order );
 
-					if ( $method_title ) {
+					if ( ! empty( $method_title ) ) {
+						$method_title_html = sprintf(
+							__( 'Pay via <strong>%s</strong>', 'learnpress' ),
+							$method_title
+						);
 						?>
 						<div class="payment-method-title">
-							<?php echo wp_kses_post( $lp_order->get_total() == 0 ? $method_title : sprintf( __( 'Pay via <strong>%s</strong>', 'learnpress' ), apply_filters( 'learn-press/order-payment-method-title', $method_title, $lp_order ), $lp_order ) ); ?>
+							<?php echo wp_kses_post( $method_title_html ); ?>
 						</div>
 						<?php
 					}

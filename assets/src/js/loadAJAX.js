@@ -2,11 +2,26 @@
  * Load all you need via AJAX
  *
  * @since 4.2.5.7
- * @version 1.0.1
+ * @version 1.0.2
  */
 
 import { lpAddQueryArgs, lpFetchAPI } from './utils';
 import API from './api';
+
+// Handle general parameter in the Frontend and Backend
+let apiData = API.admin;
+if ( 'undefined' === typeof apiData ) {
+	apiData = API.frontend;
+}
+const urlAPI = apiData.apiAJAX;
+
+let lpSettings = {};
+if ( 'undefined' !== typeof lpDataAdmin ) {
+	lpSettings = lpDataAdmin;
+} else if ( 'undefined' !== typeof lpData ) {
+	lpSettings = lpData;
+}
+// End Handle general parameter in the Frontend and Backend
 
 const lpAJAX = ( () => {
 	return {
@@ -15,8 +30,8 @@ const lpAJAX = ( () => {
 		},
 		fetchAPI: ( url, params, callBack ) => {
 			const option = { headers: {} };
-			if ( 0 !== parseInt( lpData.user_id ) ) {
-				option.headers[ 'X-WP-Nonce' ] = lpData.nonce;
+			if ( 0 !== parseInt( lpSettings.user_id ) ) {
+				option.headers[ 'X-WP-Nonce' ] = lpSettings.nonce;
 			}
 
 			if ( 'undefined' !== typeof params.args.method_request ) {
@@ -46,9 +61,9 @@ const lpAJAX = ( () => {
 				elements.forEach( ( element ) => {
 					//console.log( 'Element handing', element );
 					element.classList.add( 'loaded' );
-					let url = API.frontend.apiAJAX;
-					if ( lpData.urlParams.hasOwnProperty( 'lang' ) ) {
-						url = lpAddQueryArgs( url, { lang: lpData.urlParams.lang } );
+					let url = urlAPI;
+					if ( lpSettings.urlParams.hasOwnProperty( 'lang' ) ) {
+						url = lpAddQueryArgs( url, { lang: lpSettings.urlParams.lang } );
 					}
 					const elTarget = element.querySelector( '.lp-target' );
 					const dataObj = JSON.parse( elTarget.dataset.send );

@@ -21,7 +21,7 @@ class LP_Profile_Tabs {
 	/**
 	 * LP_Profile_Tabs constructor.
 	 *
-	 * @param array      $tabs
+	 * @param array $tabs
 	 * @param LP_Profile $profile
 	 */
 	public function __construct( $tabs, $profile ) {
@@ -42,7 +42,7 @@ class LP_Profile_Tabs {
 			$tabs_tmp,
 			function ( $tab1, $tab2 ) {
 				if ( $tab1['priority'] < $tab2['priority'] ) {
-					return -1;
+					return - 1;
 				} elseif ( $tab1['priority'] > $tab2['priority'] ) {
 					return 1;
 				} else {
@@ -57,56 +57,6 @@ class LP_Profile_Tabs {
 		}
 
 		$this->profile = $profile;
-		//$this->_sanitize();
-		//$this->init();
-	}
-
-	/**
-	 *
-	 */
-	protected function init() {
-
-	}
-
-	/**
-	 * Sort tabs
-	 */
-	protected function _sanitize() {
-		$tabs = $this->_data;
-		foreach ( $tabs as $slug => $data ) {
-			if ( ! array_key_exists( 'slug', $data ) ) {
-				$tabs[ $slug ]['slug'] = $slug;
-			}
-
-			if ( ! array_key_exists( 'priority', $data ) ) {
-				$tabs[ $slug ]['priority'] = 10;
-			}
-
-			if ( empty( $data['sections'] ) ) {
-				continue;
-			}
-
-			foreach ( $data['sections'] as $section_slug => $section_data ) {
-				if ( ! array_key_exists( 'slug', $section_data ) ) {
-					$tabs[ $slug ]['sections'][ $section_slug ]['slug'] = $section_slug;
-				}
-
-				if ( ! array_key_exists( 'priority', $section_data ) ) {
-					$tabs[ $slug ]['sections'][ $section_slug ]['priority'] = 10;
-				}
-			}
-			uasort( $tabs[ $slug ]['sections'], array( $this, '_sort_tabs' ) );
-		}
-
-		uasort( $tabs, array( $this, '_sort_tabs' ) );
-
-		$key = md5( serialize( array_keys( $tabs ) ) );
-		if ( $key !== get_option( '_lp_tabs_data' ) ) {
-			//flush_rewrite_rules();
-			update_option( '_lp_tabs_data', $key, false );
-		}
-
-		$this->_data = $tabs;
 	}
 
 	/**
@@ -206,13 +156,13 @@ class LP_Profile_Tabs {
 
 
 	/**
-	 * @param bool    $tab
-	 * @param bool    $with_section
+	 * @param bool $tab
+	 * @param bool $with_section
 	 * @param LP_User $user
 	 *
-	 * @version 4.0.0
-	 * @since 3.0.0
 	 * @return string
+	 * @since 3.0.0
+	 * @version 4.0.0
 	 */
 	public function get_tab_link( $tab = false, $with_section = false, $user = null ) {
 		if ( ( $tab || $with_section ) && empty( $user ) ) {
@@ -264,7 +214,7 @@ class LP_Profile_Tabs {
 	/**
 	 * Get the slug of tab or section if defined.
 	 *
-	 * @param array  $tab_or_section
+	 * @param array $tab_or_section
 	 * @param string $default
 	 *
 	 * @return string
@@ -285,7 +235,7 @@ class LP_Profile_Tabs {
 	 * Get current link of profile
 	 *
 	 * @param string $args - Optional. Add more query args to url.
-	 * @param bool   $with_permalink - Optional. TRUE to build url as friendly url.
+	 * @param bool $with_permalink - Optional. TRUE to build url as friendly url.
 	 *
 	 * @return mixed|string
 	 * @Todo tungnx - need check this function
@@ -361,45 +311,6 @@ class LP_Profile_Tabs {
 
 		return $a['priority'] < $b['priority'] ? - 1 : 1;
 	}
-
-	/**
-	 * Remove tab.
-	 *
-	 * @param $key
-	 * @deprecated 4.2.2.3
-	 */
-	public function remove_tab( $key ) {
-		_deprecated_function( __FUNCTION__, '4.2.2.3' );
-		$tabs = $this->_data;
-
-		foreach ( $tabs as $slug => $data ) {
-			if ( $key == $slug ) {
-				unset( $tabs[ $key ] );
-			}
-		}
-
-		$this->_data = $tabs;
-	}
-
-	/**
-	 * @deprecated 4.2.2.3
-	 */
-	public function current_user_can_view( $key = '' ) {
-		_deprecated_function( __FUNCTION__, '4.2.2.3' );
-		global $wp;
-
-		if ( ! $key ) {
-			$key = isset( $wp->query_vars['view'] ) ? $wp->query_vars['view'] : 'overview';
-		}
-
-		$tab = isset( $this->_data[ $key ] ) ? $this->_data[ $key ] : false;
-
-		if ( $tab ) {
-			return $tab->user_can_view();
-		}
-
-		return false;
-	}
 }
 
 /**
@@ -422,8 +333,8 @@ class LP_Profile_Tab {
 	/**
 	 * LP_Profile_Tab constructor.
 	 *
-	 * @param string     $id
-	 * @param array      $data
+	 * @param string $id
+	 * @param array $data
 	 * @param LP_Profile $profile
 	 */
 	public function __construct( $id, $data, $profile ) {
@@ -460,7 +371,12 @@ class LP_Profile_Tab {
 		return $this->profile;
 	}
 
+	/**
+	 * @deprecated 4.2.6.2
+	 */
 	public function user_can_view() {
+		_deprecated_function( __METHOD__, '4.2.6.2' );
+		return false;
 		if ( $this->is_public() || current_user_can( ADMIN_ROLE ) ) {
 			return true;
 		}
@@ -470,7 +386,12 @@ class LP_Profile_Tab {
 		return $can;
 	}
 
+	/**
+	 * @deprecated 4.2.6.2
+	 */
 	public function user_can_view_section( $section ) {
+		_deprecated_function( __METHOD__, '4.2.6.2' );
+		return false;
 		return $this->get_profile()->current_user_can( "view-section-{$section}" );
 	}
 
@@ -491,8 +412,11 @@ class LP_Profile_Tab {
 	 *
 	 * @return bool
 	 * @since 4.0.0
+	 * @deprecated 4.2.6.2
 	 */
 	public function is_public() {
+		_deprecated_function( __METHOD__, '4.2.6.2' );
+		return false;
 		$public_tabs = $this->profile->get_public_tabs();
 
 		return $public_tabs && in_array( $this->id, $public_tabs );
