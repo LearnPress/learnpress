@@ -21,6 +21,8 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 */
 		protected static $_instances = array();
 
+		protected static $_instance = null;
+
 		/**
 		 * @var LP_User Current user viewing profile
 		 */
@@ -232,6 +234,10 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			return $this->_user;
 		}
 
+		public function get_user_current() {
+			return $this->user_current;
+		}
+
 		/**
 		 * Check current user view self profile.
 		 *
@@ -362,9 +368,10 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			 * And not set option publish profile to yes.
 			 */
 			$method_called_to = debug_backtrace()[1]['function'];
-			if ( $user_of_profile instanceof LP_User && 'add_rewrite_rules' !== $method_called_to
-				&& ! in_array( $user_of_profile->get_data( 'role' ), [ ADMIN_ROLE, LP_TEACHER_ROLE ] )
-				&& 'yes' !== self::get_option_publish_profile() ) {
+			error_log( 'Method called to: ' . $method_called_to);
+			if ( $user_of_profile instanceof LP_User && 'add_rewrite_rules_profile' !== $method_called_to
+				&& ! in_array( $user_of_profile->get_data( 'role' ), [ ADMIN_ROLE, LP_TEACHER_ROLE ] ) ) {
+				error_log('g: ' . $user_of_profile->get_data( 'role' ));
 				unset( $this->_default_settings['courses'] );
 			}
 
@@ -1282,15 +1289,27 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @return LP_Profile mixed
 		 */
 		public static function instance( $user_id = 0 ) {
-			if ( ! $user_id ) {
+
+
+//			if ( empty( self::$_instances[ $user_id ] ) ) {
+//				self::$_instances[ $user_id ] = new self( $user_id );
+//			}
+
+
+
+			if ( 'add_rewrite_rules_profile' === debug_backtrace()[2]['function'] ) {
+					return new self(0 );
+			} elseif ( ! $user_id ) {
 				$user_id = self::get_queried_user( 'id' );
 			}
 
-			if ( empty( self::$_instances[ $user_id ] ) ) {
-				self::$_instances[ $user_id ] = new self( $user_id );
+
+			if (  empty( self::$_instance ) ) {
+				error_log('user: ' . $user_id);
+				self::$_instance = new self( $user_id );
 			}
 
-			return self::$_instances[ $user_id ];
+			return self::$_instance;
 		}
 	}
 }

@@ -23,9 +23,7 @@ class LP_Template_Profile extends LP_Abstract_Template {
 	public function sidebar() {
 		$profile = LP_Global::profile();
 
-		if ( $profile->get_user()->is_guest() ) {
-			return;
-		}
+
 
 		learn_press_get_template( 'profile/sidebar.php' );
 	}

@@ -201,7 +201,12 @@ class LP_Global {
 		return LP_Profile::instance();
 	}
 
+	/**
+	 * @deprecated 4.2.6.2
+	 */
 	public static function init() {
+		_deprecated_function( __METHOD__, '4.2.6.2' );
+		return;
 		global $profile;
 		self::$_profile = $profile = LP_Profile::instance( get_current_user_id() );
 	}

@@ -4,7 +4,7 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  4.0.1
+ * @version  4.0.2
  */
 
 use LearnPress\Helpers\Template;
@@ -16,37 +16,27 @@ if ( ! isset( $profile ) ) {
 }
 ?>
 	<div id="learn-press-profile" <?php $profile->main_class(); ?>>
-		<?php if ( $profile->is_public() || $profile->get_user()->is_guest() ) : ?>
-
-			<?php do_action( 'learn-press/before-user-profile', $profile ); ?>
-
-			<div class="lp-content-area">
+		<div class="lp-content-area">
+			<?php if ( $profile->is_public() ) : ?>
+				<?php //do_action( 'learn-press/before-user-profile', $profile ); ?>
 				<?php
 				if ( ! is_user_logged_in() ) {
 					learn_press_print_messages( true );
 				}
-
 				/**
 				 * @since 3.0.0
 				 */
 				do_action( 'learn-press/user-profile', $profile );
 				?>
-			</div>
-		<?php else : ?>
-			<div class="lp-content-area">
+			<?php else : ?>
 				<?php
-				if ( ! is_user_logged_in() ) {
-					learn_press_print_messages( true );
-				}
-
-				if ( $profile->get_user() instanceof LP_User && $profile->get_user()->can_create_course() ) {
-					$data = [
-						'instructor_id' => $profile->get_user()->get_id(),
-					];
-					do_action( 'learn-press/single-instructor/layout', $data );
-				}
+				$customer_message = [
+					'status'  => 'error',
+					'content' => __( 'This profile is private. Only the owner of this profile can view it.', 'learnpress' ),
+				];
+				Template::instance()->get_frontend_template( 'global/lp-message.php', compact( 'customer_message' ) );
 				?>
-			</div>
-		<?php endif; ?>
+			<?php endif; ?>
+		</div>
 	</div>
 <?php
