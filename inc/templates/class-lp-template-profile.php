@@ -11,16 +11,15 @@ use LearnPress\Helpers\Template;
  */
 class LP_Template_Profile extends LP_Abstract_Template {
 	public function header( $user ) {
-		$profile = LP_Global::profile();
-
-		if ( $profile->get_user()->is_guest() ) {
-			return;
-		}
-
 		learn_press_get_template( 'profile/header.php', array( 'user' => $user ) );
 	}
 
 	public function sidebar() {
+		$profile = LP_Profile::instance();
+		if ( $profile->get_user_current()->is_guest() ) {
+			return;
+		}
+
 		learn_press_get_template( 'profile/sidebar.php' );
 	}
 
@@ -35,6 +34,10 @@ class LP_Template_Profile extends LP_Abstract_Template {
 		$current_tab   = $profile->get_current_tab();
 		$user_can_view = $profile->current_user_can( 'view-tab-' . $current_tab );
 		if ( ! $user_can_view ) {
+			return;
+		}
+
+		if ( $profile->get_user_current()->is_guest() ) {
 			return;
 		}
 
@@ -55,6 +58,9 @@ class LP_Template_Profile extends LP_Abstract_Template {
 
 	public function tabs( $user = null ) {
 		$profile = LP_Profile::instance();
+		if ( $profile->get_user_current()->is_guest() ) {
+			return;
+		}
 
 		learn_press_get_template( 'profile/tabs.php', compact( 'user', 'profile' ) );
 	}
