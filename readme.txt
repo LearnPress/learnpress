@@ -210,6 +210,10 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.2.6.3 (2024-02-29) =
+~ Fixed: error wrong avatar's instructor.
+~ Fixed: error page Profile with user not login.
+
 = 4.2.6.2 (2024-02-28) =
 ~ Added: param lang on url when submit filter courses.
 ~ Added: ProfileOrdersTemplate show layout orders on the Profile page.
