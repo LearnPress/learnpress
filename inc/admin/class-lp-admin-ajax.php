@@ -120,18 +120,6 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		}
 
 		/**
-		 * Hide notice install
-		 * @deprecated 4.2.3.1
-		 */
-		/*public static function skip_notice_install() {
-			if ( ! current_user_can( ADMIN_ROLE ) ) { // Fix security.
-				return;
-			}
-
-			delete_option( 'learn_press_install' );
-		}*/
-
-		/**
 		 * Handle ajax admin course editor.
 		 *
 		 * @since 3.0.0
@@ -191,7 +179,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				learn_press_send_json_error( __( 'Nonce is invalid!', 'learnpress' ) );
 			}
 
-			$post_id = intval( $_GET['id'] ?? 0 );
+			$post_id   = intval( $_GET['id'] ?? 0 );
 			$post_type = learn_press_get_post_type( $post_id );
 
 			if ( ! $post_id ) {
@@ -364,7 +352,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			$exclude    = LP_Request::get_param( 'exclude' );
 
 			if ( ! current_user_can( ADMIN_ROLE ) ) { // Fix security
-				$roles_accept = apply_filters( 'lp/backend/roles/search-items', [ ADMIN_ROLE ] );
+				$roles_accept = apply_filters( 'lp/backend/roles/can-search-items', [ ADMIN_ROLE ] );
 
 				$flag = false;
 				foreach ( $roles_accept as $role ) {
@@ -588,55 +576,6 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			learn_press_send_json( $response );
 		}
 
-		/**
-		 * Get content send via payload and parse to json.
-		 *
-		 * @param mixed $params (Optional) List of keys want to get from payload.
-		 *
-		 * @return array|bool|mixed|object
-		 * @deprecated 4.1.6.9
-		 */
-		/*public static function get_php_input( $params = '' ) {
-			static $data = false;
-			if ( false === $data ) {
-				try {
-					$data = json_decode( file_get_contents( 'php://input' ), true );
-				} catch ( Exception $exception ) {
-				}
-			}
-
-			if ( $data && func_num_args() > 0 ) {
-				$params = is_array( func_get_arg( 0 ) ) ? func_get_arg( 0 ) : func_get_args();
-				if ( $params ) {
-					$request = array();
-					foreach ( $params as $key ) {
-						$request[] = array_key_exists( $key, $data ) ? $data[ $key ] : false;
-					}
-
-					return $request;
-				}
-			}
-
-			return $data;
-		}*/
-
-		/**
-		 * Parse request content into var.
-		 * Normally, parse and assign to $_POST or $_GET.
-		 *
-		 * @param $var
-		 * @deprecated 4.1.6.9
-		 */
-		/*public static function parsePhpInput( &$var ) {
-			$data = self::get_php_input();
-
-			if ( $data ) {
-				foreach ( $data as $k => $v ) {
-					$var[ $k ] = $v;
-				}
-			}
-		}*/
-
 		public static function load_chart() {
 			if ( ! class_exists( 'LP_Submenu_Statistics' ) ) {
 				$statistic = include_once LP_PLUGIN_PATH . '/inc/admin/sub-menus/class-lp-submenu-statistics.php';
@@ -704,7 +643,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					preg_match_all( '!value=\"([0-9]+)\"!', $html, $matches );
 					$response['positions'] = $matches[1];
 					$response['html']      = '<a href="' . get_edit_post_link( $page_id ) . '" target="_blank">' . __( 'Edit Page', 'learnpress' ) . '</a>&nbsp;';
-					$response['html']     .= '<a href="' . get_permalink( $page_id ) . '" target="_blank">' . __( 'View Page', 'learnpress' ) . '</a>';
+					$response['html']      .= '<a href="' . get_permalink( $page_id ) . '" target="_blank">' . __( 'View Page', 'learnpress' ) . '</a>';
 				} else {
 					$response['error'] = __( 'Error! Page creation failed. Please try again.', 'learnpress' );
 				}
