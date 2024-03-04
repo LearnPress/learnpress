@@ -376,7 +376,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		 * Display the page is assigned to LP Page.
 		 *
 		 * @param string $column_name
-		 * @param int    $post
+		 * @param int $post
 		 */
 		public function page_columns_content( $column_name, $post ) {
 			$pages = $this->_get_static_pages();
@@ -455,7 +455,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		/**
 		 * Add actions to users list
 		 *
-		 * @param array   $actions
+		 * @param array $actions
 		 * @param WP_User $user
 		 *
 		 * @return mixed
@@ -464,13 +464,16 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			$pending_request = LP_User_Factory::get_pending_requests();
 			if ( LP_Request::get_string( 'lp-action' ) == 'pending-request' && $pending_request ) {
 				$actions = array();
+				$nonce   = 'nonce=' . wp_create_nonce( 'lp-action-permit-role-teacher' );
 				if ( in_array( $user->ID, $pending_request ) ) {
 					$actions['accept']      = sprintf(
-						'<a href="' . admin_url( 'users.php?lp-action=accept-request&user_id=' . $user->ID ) . '">%s</a>',
+						'<a href="%s">%s</a>',
+						admin_url( "users.php?lp-action=accept-request&user_id={$user->ID}&{$nonce}" ),
 						_x( 'Accept', 'pending-request', 'learnpress' )
 					);
 					$actions['delete deny'] = sprintf(
-						'<a class="submitdelete" href="' . admin_url( 'users.php?lp-action=deny-request&user_id=' . $user->ID ) . '">%s</a>',
+						'<a class="submitdelete" href="%s">%s</a>',
+						admin_url( "users.php?lp-action=deny-request&user_id={$user->ID}&{$nonce}" ),
 						_x( 'Deny', 'pending-request', 'learnpress' )
 					);
 				}
@@ -490,13 +493,16 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			}
 
 			$user_id = LP_Request::get_int( 'user_id' );
-
 			if ( ! $user_id || ! get_user_by( 'id', $user_id ) ) {
 				return;
 			}
 
-			$user_data = get_userdata( $user_id );
+			$nonce = LP_Request::get_param( 'nonce' );
+			if ( wp_verify_nonce( $nonce, 'lp-action-permit-role-teacher' ) === false ) {
+				return;
+			}
 
+			$user_data = get_userdata( $user_id );
 			if ( in_array( $action, array( 'accept-request', 'deny-request' ) ) ) {
 
 				delete_user_meta( $user_id, '_requested_become_teacher' );
@@ -633,9 +639,9 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			$pages          = learn_press_get_screens();
 
 			if ( isset( $current_screen->id ) && apply_filters(
-				'learn_press_display_admin_footer_text',
-				in_array( $current_screen->id, $pages )
-			) ) {
+					'learn_press_display_admin_footer_text',
+					in_array( $current_screen->id, $pages )
+				) ) {
 				if ( ! get_option( 'learn_press_message_user_rated' ) ) {
 					$footer_text = sprintf(
 						__(
@@ -692,7 +698,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		/**
 		 * Send data to join newsletter or dismiss.
 		 *
-		 * @param array  $data
+		 * @param array $data
 		 * @param string $notice
 		 *
 		 * @return array
@@ -818,10 +824,10 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		/**
 		 * Set link item of course when edit item on Backend
 		 *
-		 * @param string       $post_link
-		 * @param int          $post_id
-		 * @param string       $new_title
-		 * @param string       $new_slug
+		 * @param string $post_link
+		 * @param int $post_id
+		 * @param string $new_title
+		 * @param string $new_slug
 		 * @param WP_Post|null $post
 		 *
 		 * @return string
