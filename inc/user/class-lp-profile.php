@@ -1083,11 +1083,17 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			if ( $is_page_profile ) {
 				if ( 'add_rewrite_rules_profile' === debug_backtrace()[2]['function'] ) {
 					return new self( 0 );
-				} elseif ( ! $user_id ) {
-					$user_id = self::get_queried_user( 'id' );
 				}
 
 				if ( empty( self::$_instance ) ) {
+					$user_name = get_query_var( 'user' );
+					if ( ! empty( $user_name ) ) {
+						$user = get_user_by( 'login', urldecode( $user_name ) );
+						$user_id = $user ? $user->ID : 0;
+					} else {
+						$user_id = get_current_user_id();
+					}
+
 					self::$_instance = new self( $user_id );
 				}
 
