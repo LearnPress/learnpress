@@ -2078,6 +2078,7 @@ function learn_press_get_current_version() {
  *
  * @return mixed|string
  * @deprecated 4.2.2
+ * addon commission 4.0.2 still use this function
  */
 function learn_press_get_current_profile_tab( $default = true ) {
 	global $wp_query, $wp;

@@ -913,7 +913,13 @@ function learn_press_profile_tab_edit_content( $current, $tab, $user ) {
 	);
 }
 
+/**
+ * @deprecated 4.2.6.4
+ */
 function learn_press_get_profile_endpoints() {
+	_deprecated_function( __FUNCTION__, '4.2.6.4' );
+	return [];
+
 	$endpoints = (array) LP_Settings::instance()->get( 'profile_endpoints' );
 	$tabs      = LP_Profile::instance()->get_tabs();
 	if ( $tabs ) {

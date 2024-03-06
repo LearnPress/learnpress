@@ -7,7 +7,9 @@
  * @author   ThimPress
  * @package  Learnpress/Templates
  * @version  3.0.0
+ * @deprecated 4.2.6.4
  */
+return;
 
 /**
  * Prevent loading this file directly

@@ -498,7 +498,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			}
 
 			$nonce = LP_Request::get_param( 'nonce' );
-			if ( wp_verify_nonce( $nonce, 'lp-action-permit-role-teacher' ) === false ) {
+			if ( ! wp_verify_nonce( $nonce, 'lp-action-permit-role-teacher' ) ) {
 				return;
 			}
 

@@ -11,6 +11,9 @@
 
 defined( 'ABSPATH' ) || exit();
 
+/**
+ * @var LP_Order $order
+ */
 if ( ! isset( $order ) ) {
 	echo esc_html__( 'Invalid order', 'learnpress' );
 	return;

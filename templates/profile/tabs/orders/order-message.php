@@ -3,7 +3,9 @@
  * @author  ThimPress
  * @package LearnPress/Templates
  * @version 4.0.0
+ * @deprecated 4.2.6.4
  */
+return;
 
 defined( 'ABSPATH' ) || exit();
 

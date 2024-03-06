@@ -386,21 +386,20 @@ class LP_Polylang {
 			];
 
 			// Rule view profile of user (self or another) with tab
-			$profile = learn_press_get_profile();
-			$tabs    = $profile->get_tabs()->get();
+			$tabs = LP_Profile::get_tabs_arr();
 			if ( $tabs ) {
 				/**
 				 * @var LP_Profile_Tab $args
 				 */
 				foreach ( $tabs as $tab_key => $args ) {
-					$tab_slug                                   = $args->get( 'slug' ) ?? $tab_key;
+					$tab_slug                                   = $args['slug'] ?? $tab_key;
 					$rules['profile'][ $tab_key . '_' . $lang ] = [
 						"^{$lang_slug}{$page_profile_slug}/([^/]*)/({$tab_slug})/?([0-9]*)/?$" =>
 							'index.php?page_id=' . $profile_page_id_lang . '&user=$matches[1]&view=$matches[2]&view_id=$matches[3]',
 					];
 
-					if ( ! empty( $args->get( 'sections' ) ) ) {
-						foreach ( $args->get( 'sections' ) as $section_key => $section ) {
+					if ( ! empty( $args['sections'] ) ) {
+						foreach ( $args['sections'] as $section_key => $section ) {
 							$section_slug                                   = $section['slug'] ?? $section_key;
 							$rules['profile'][ $section_key . '_' . $lang ] = [
 								"^{$lang_slug}{$page_profile_slug}/([^/]*)/({$tab_slug})/({$section_slug})/?([0-9]*)?$" =>

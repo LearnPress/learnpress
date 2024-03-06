@@ -108,10 +108,10 @@ class LP_Query {
 	 *
 	 * link item course
 	 * link profile
-	 * @since 3.0.0
-	 * @version 1.0.3
-	 * @modify 4.2.2
 	 * @return array
+	 * @version 1.0.4
+	 * @modify 4.2.2
+	 * @since 3.0.0
 	 */
 	public function add_rewrite_rules(): array {
 		$rules = array();
@@ -202,21 +202,17 @@ class LP_Query {
 			];
 
 			// Rule view profile of user (self or another) with tab
-			$profile = learn_press_get_profile();
-			$tabs    = $profile->get_tabs()->get();
+			$tabs = LP_Profile::get_tabs_arr();
 			if ( $tabs ) {
-				/**
-				 * @var LP_Profile_Tab $args
-				 */
 				foreach ( $tabs as $tab_key => $args ) {
-					$tab_slug                     = $args->get( 'slug' ) ?? $tab_key;
+					$tab_slug                     = $args['slug'] ?? $tab_key;
 					$rules['profile'][ $tab_key ] = [
 						"^{$page_profile_slug}/([^/]*)/({$tab_slug})/?([0-9]*)/?$" =>
 							'index.php?page_id=' . $profile_id . '&user=$matches[1]&view=$matches[2]&view_id=$matches[3]',
 					];
 
-					if ( ! empty( $args->get( 'sections' ) ) ) {
-						foreach ( $args->get( 'sections' ) as $section_key => $section ) {
+					if ( ! empty( $args['sections'] ) ) {
+						foreach ( $args['sections'] as $section_key => $section ) {
 							$section_slug                     = $section['slug'] ?? $section_key;
 							$rules['profile'][ $section_key ] = [
 								"^{$page_profile_slug}/([^/]*)/({$tab_slug})/({$section_slug})/?([0-9]*)?$" =>
@@ -313,10 +309,10 @@ class LP_Query {
 	 * Fixed for case: addons Certificates (v4.0.5), FE(4.0.5), Live(4.0.2), Collections(4.0.2) not installed on site client.
 	 * Run only one time when reload page Frontend.
 	 *
-	 * @see get_option() hook in this function.
+	 * @return mixed|array
 	 * @since 4.2.2
 	 * @version 1.0.1
-	 * @return mixed|array
+	 * @see get_option() hook in this function.
 	 */
 	public function update_option_rewrite_rules( $wp_rules ) {
 		if ( ! is_array( $wp_rules ) ) {

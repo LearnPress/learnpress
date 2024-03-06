@@ -1,5 +1,6 @@
 <?php
 
+use LearnPress\Helpers\Config;
 use LearnPress\Models\Courses;
 use LearnPress\TemplateHooks\Profile\ProfileOrdersTemplate;
 
@@ -149,6 +150,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 */
 		protected function get_role() {
 			_deprecated_function( __METHOD__, '4.2.6.2' );
+
 			return '';
 			$user = $this->get_user();
 
@@ -216,12 +218,24 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 */
 		public function tab_dashboard() {
 			_deprecated_function( __METHOD__, '4.2.6.2' );
+
 			return;
 			learn_press_get_template( 'profile/dashboard.php', array( 'user' => $this->_user ) );
 		}
 
 		public function get_login_url( $redirect = false ) {
 			return learn_press_get_login_url( $redirect !== false ? $redirect : LP_Helper::getUrlCurrent() );
+		}
+
+		/**
+		 * Get tabs.
+		 *
+		 * @return array
+		 * @since 4.2.6.4
+		 * @version 1.0.0
+		 */
+		public static function get_tabs_arr(): array {
+			return Config::instance()->get( 'profile-tabs' );
 		}
 
 		/**
@@ -232,105 +246,17 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 */
 		public function get_tabs() {
 			$user_of_profile = $this->get_user();
-			$settings        = LP_Settings::instance();
-
-			$this->_default_settings = array(
-				'courses'       => array(
-					'title'    => esc_html__( 'Courses', 'learnpress' ),
-					'slug'     => $settings->get( 'profile_endpoints.courses', 'courses' ),
-					'callback' => array( LP_Template_Profile::class, 'tab_courses' ),
-					'priority' => 1,
-					'icon'     => '<i class="fas fa-book-open"></i>',
-				),
-				'my-courses'    => array(
-					'title'    => esc_html__( 'My Courses', 'learnpress' ),
-					'slug'     => $settings->get( 'profile_endpoints.my-courses', 'my-courses' ),
-					'callback' => array( LP_Template_Profile::class, 'tab_my_courses' ),
-					'priority' => 1,
-					'icon'     => '<i class="fas fa-bars"></i>',
-				),
-				'quizzes'       => array(
-					'title'    => esc_html__( 'Quizzes', 'learnpress' ),
-					'slug'     => $settings->get( 'profile_endpoints.quizzes', 'quizzes' ),
-					'callback' => array( $this, 'tab_quizzes' ),
-					'priority' => 20,
-					'icon'     => '<i class="fas fa-puzzle-piece"></i>',
-				),
-				'orders'        => array(
-					'title'    => esc_html__( 'Orders', 'learnpress' ),
-					'slug'     => $settings->get( 'profile_endpoints.orders', 'orders' ),
-					'callback' => array( ProfileOrdersTemplate::class, 'tab_content' ),
-					'priority' => 25,
-					'icon'     => '<i class="fas fa-shopping-cart"></i>',
-				),
-				'order-details' => array(
-					'title'    => esc_html__( 'Order details', 'learnpress' ),
-					'slug'     => $settings->get( 'profile_endpoints.order-details', 'order-details' ),
-					'hidden'   => true,
-					'callback' => array( $this, 'tab_order_details' ),
-					'priority' => 30,
-				),
-				'settings'      => array(
-					'title'    => esc_html__( 'Settings', 'learnpress' ),
-					'slug'     => $settings->get( 'profile_endpoints.settings', 'settings' ),
-					'callback' => array( $this, 'tab_settings' ),
-					'sections' => array(
-						'basic-information' => array(
-							'title'    => esc_html__( 'General', 'learnpress' ),
-							'slug'     => $settings->get( 'profile_endpoints.settings-basic-information', 'basic-information' ),
-							'callback' => array( $this, 'tab_order_details' ),
-							'priority' => 10,
-							'icon'     => '<i class="fas fa-home"></i>',
-						),
-						'avatar'            => array(
-							'title'    => esc_html__( 'Avatar', 'learnpress' ),
-							'callback' => array( $this, 'tab_order_details' ),
-							'slug'     => $settings->get( 'profile_endpoints.settings-avatar', 'avatar' ),
-							'priority' => 20,
-							'icon'     => '<i class="fas fa-user-circle"></i>',
-						),
-						'change-password'   => array(
-							'title'    => esc_html__( 'Password', 'learnpress' ),
-							'slug'     => $settings->get( 'profile_endpoints.settings-change-password', 'change-password' ),
-							'callback' => array( $this, 'tab_order_details' ),
-							'priority' => 30,
-							'icon'     => '<i class="fas fa-key"></i>',
-						),
-					),
-					'priority' => 90,
-					'icon'     => '<i class="fas fa-cog"></i>',
-				),
-				'logout'        => array(
-					'title'    => esc_html__( 'Logout', 'learnpress' ),
-					'slug'     => learn_press_profile_logout_slug(),
-					'icon'     => '<i class="fas fa-sign-out-alt"></i>',
-					'priority' => 100,
-				),
-			);
+			$tabs            = self::get_tabs_arr();
 
 			/*
 			 * Check if user not Admin/Instructor, will be hide tab Courses.
-			 * And not call from function add_rewrite_rules.
-			 * And not set option publish profile to yes.
 			 */
-			$method_called_to = debug_backtrace()[1]['function'];
-			if ( $user_of_profile instanceof LP_User && 'add_rewrite_rules_profile' !== $method_called_to
-			&& ! in_array( $user_of_profile->get_data( 'role' ), [ ADMIN_ROLE, LP_TEACHER_ROLE ] ) ) {
-				unset( $this->_default_settings['courses'] );
+			if ( $user_of_profile instanceof LP_User
+			     && ! in_array( $user_of_profile->get_data( 'role' ), [ ADMIN_ROLE, LP_TEACHER_ROLE ] ) ) {
+				unset( $tabs['courses'] );
 			}
 
-			if ( 'yes' === self::get_option_publish_profile() ) {
-				$this->_default_settings['settings']['sections']['privacy'] = array(
-					'title'    => esc_html__( 'Privacy', 'learnpress' ),
-					'slug'     => $settings->get( 'profile_endpoints.settings-privacy', 'privacy' ),
-					'priority' => 40,
-					'callback' => array( $this, 'tab_order_details' ),
-					'icon'     => '<i class="fas fa-user-secret"></i>',
-				);
-			}
-
-			$tabs        = $this->_default_settings;
-			$tabs        = apply_filters( 'learn-press/profile-tabs', $tabs );
+			$tabs        = apply_filters( 'learn-press/get-profile-tabs', $tabs );
 			$this->_tabs = new LP_Profile_Tabs( $tabs, $this );
 
 			return $this->_tabs;
@@ -452,7 +378,9 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 */
 		public function is_public() {
 			_deprecated_function( __METHOD__, '4.2.6.2' );
+
 			return false;
+
 			return $this->current_user_can( 'view-tab-dashboard' ) || is_super_admin();
 		}
 
@@ -1075,20 +1003,16 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 *
 		 * @return LP_Profile mixed
 		 * @since 3.0.0
-		 * @version 1.0.3
+		 * @version 1.0.4
 		 */
 		public static function instance( $user_id = 0 ) {
-			$is_page_profile = LP_Page_Controller::page_is( 'profile');
+			$is_page_profile = LP_Page_Controller::page_is( 'profile' );
 
 			if ( $is_page_profile ) {
-				if ( 'add_rewrite_rules_profile' === debug_backtrace()[2]['function'] ) {
-					return new self( 0 );
-				}
-
 				if ( empty( self::$_instance ) ) {
 					$user_name = get_query_var( 'user' );
 					if ( ! empty( $user_name ) ) {
-						$user = get_user_by( 'login', urldecode( $user_name ) );
+						$user    = get_user_by( 'login', urldecode( $user_name ) );
 						$user_id = $user ? $user->ID : 0;
 					} else {
 						$user_id = get_current_user_id();

@@ -6,7 +6,7 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  4.0.2
+ * @version  4.0.3
  */
 
 defined( 'ABSPATH' ) || exit();
@@ -62,7 +62,7 @@ defined( 'ABSPATH' ) || exit();
 			<td>
 				<?php
 				$status = $order_received->get_status();
-				echo ucfirst( wp_kses_post( $status ) );
+				echo ucfirst( $order_received::get_status_label( $status ) );
 				?>
 			</td>
 		</tr>
