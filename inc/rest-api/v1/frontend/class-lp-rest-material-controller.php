@@ -1,6 +1,8 @@
 <?php
+
 use LearnPress\Helpers\Template;
 use LearnPress\TemplateHooks\Course\CourseMaterialTemplate;
+
 /**
  * Class LP_Rest_Material_Controller
  * in LearnPres > Downloadable Materials
@@ -216,57 +218,58 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 	}
 
 	/**
-	 * @version 1.0.0
+	 * Get list files of a course or a lesson
+	 *
+	 * @param WP_REST_Request $request
+	 *
+	 * @return LP_REST_Response
+	 * @version 1.0.1
 	 * @since 4.2.2
-	 * [get_materials_by_item get materials file of a course or a lesson]
-	 * @param  [wp_request] $request [description]
-	 * @return [type]          [description]
 	 */
-	public function get_materials_by_item( WP_REST_Request $request ) {
-		/*$response = array(
-			'data'    => array(),
-			'status'  => 400,
-			'message' => esc_html__( 'There was an error when save the file.', 'learnpress' ),
-		);*/
+	public function get_materials_by_item( WP_REST_Request $request ): LP_REST_Response {
 		$response = new LP_REST_Response();
+
 		try {
 			$params  = $request->get_params();
-			$item_id = $request['item_id'];
+			$item_id = $params['item_id'] ?? 0;
 			if ( ! $item_id ) {
 				throw new Exception( esc_html__( 'Invalid course or lesson identifier', 'learnpress' ) );
 			}
+
 			$is_admin         = $params['is_admin'] ?? false;
 			$material_init    = LP_Material_Files_DB::getInstance();
 			$page             = absint( $params['page'] ?? 1 );
-			$per_page         = $params['per_page'] ?? (int) LP_Settings::get_option( 'material_file_per_page', -1 );
+			$per_page         = $params['per_page'] ?? (int) LP_Settings::get_option( 'material_file_per_page', - 1 );
 			$offset           = ( $per_page > 0 && $page > 1 ) ? $per_page * ( $page - 1 ) : 0;
 			$total            = $material_init->get_total( $item_id );
 			$pages            = $per_page > 0 ? ceil( $total / $per_page ) : 0;
 			$item_materials   = $material_init->get_material_by_item_id( $item_id, $per_page, $offset, $is_admin );
-			$response->status = 200;
+
 			if ( $item_materials ) {
-				// $lp_file = LP_WP_Filesystem::instance();
 				if ( $is_admin ) {
-					$response->data = $item_materials;
+					$response->data->items = $item_materials;
 				} else {
-					$response->load_more = ( $page < $pages && $per_page > 0 ) ? true : false;
+					$response->data->load_more = $page < $pages && $per_page > 0;
 					ob_start();
 					$material_template = CourseMaterialTemplate::instance();
 					foreach ( $item_materials as $m ) {
 						$m->current_item_id = $item_id;
 						echo $material_template->material_item( $m );
 					}
-					$response->data = ob_get_clean();
+					$response->data->items = ob_get_clean();
 				}
+
 				$response->message = esc_html__( 'Successfully', 'learnpress' );
 			} else {
 				$response->message = esc_html__( 'Empty material!', 'learnpress' );
 			}
+
+			$response->status = 'success';
 		} catch ( Throwable $th ) {
-			$response->status  = 400;
 			$response->message = $th->getMessage();
 		}
-		return rest_ensure_response( $response );
+
+		return $response;
 	}
 
 	/**
