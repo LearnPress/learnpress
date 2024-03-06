@@ -654,7 +654,7 @@ abstract class LP_Abstract_Post_Type {
 	 *
 	 * @return bool
 	 * @since 4.1.6.9
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function check_post( int $post_id = 0 ): bool {
 		$can_save = true;
@@ -662,11 +662,13 @@ abstract class LP_Abstract_Post_Type {
 		try {
 			$post = get_post( $post_id );
 			if ( ! $post ) {
-				throw new Exception( 'Post is invalid' );
+				//throw new Exception( 'Post is invalid' );
+				return false;
 			}
 
 			if ( $this->_post_type !== $post->post_type ) {
-				throw new Exception( 'Post type is invalid' );
+				//throw new Exception( 'Post type is invalid' );
+				return false;
 			}
 
 			if ( ! current_user_can( ADMIN_ROLE ) &&
