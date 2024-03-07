@@ -1453,11 +1453,12 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		/**
 		 * [get_downloadable_material get all material files of this course and lesson of this course]
 		 * @return [array] [array of material files or empty array]
+		 * @deprecated 4.2.6.4
 		 */
-		public function get_downloadable_material(): array {
+		/*public function get_downloadable_material(): array {
 			$material  = LP_Material_Files_DB::getInstance();
 			$materials = $material->get_material_by_item_id( $this->get_id(), 1 );
 			return apply_filters( 'learn-press/course-materials', $materials, $this->get_id() );
-		}
+		}*/
 	}
 }

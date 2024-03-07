@@ -94,11 +94,13 @@ if ( ! function_exists( 'learn_press_get_course_tabs' ) ) {
 		}
 
 		$file_per_page = LP_Settings::get_option( 'material_file_per_page', -1 );
-		if ( $course->get_downloadable_material() && $is_enrolled_course && (int) $file_per_page != 0 ) {
+		if ( $is_enrolled_course && (int) $file_per_page != 0 ) {
 			$defaults['materials'] = array(
 				'title'    => esc_html__( 'Materials', 'learnpress' ),
 				'priority' => 45,
-				'callback' => LearnPress::instance()->template( 'course' )->func( 'metarials' ),
+				'callback' => function () {
+					do_action( 'learn-press/course-material/layout', [] );
+				},
 			);
 		}
 
