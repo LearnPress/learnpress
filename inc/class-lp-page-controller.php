@@ -63,6 +63,14 @@ class LP_Page_Controller {
 			add_filter( 'get_comment_link', array( $this, 'edit_lesson_comment_links' ), 10, 2 );
 			// Active menu
 			add_filter( 'wp_nav_menu_objects', [ $this, 'menu_active' ], 10, 1 );
+			// Canonical
+			add_filter( 'get_canonical_url', function ( $canonical_url ) {
+				if ( LP_Page_Controller::is_page_instructor() ) {
+					$canonical_url = LP_Helper::getUrlCurrent();
+				}
+
+				return $canonical_url;
+			} );
 		}
 	}
 

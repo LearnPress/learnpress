@@ -15,6 +15,7 @@
  */
 
 use LearnPress\ExternalPlugin\Elementor\LPElementor;
+use LearnPress\ExternalPlugin\YoastSeo\LPYoastSeo;
 use LearnPress\Shortcodes\Course\FilterCourseShortcode;
 use LearnPress\Shortcodes\ListInstructorsShortcode;
 use LearnPress\Shortcodes\SingleInstructorShortcode;
@@ -25,6 +26,7 @@ use LearnPress\TemplateHooks\Instructor\ListInstructorsTemplate;
 use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileInstructorStatisticsTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileOrdersTemplate;
+use LearnPress\TemplateHooks\Profile\ProfileOrderTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileStudentStatisticsTemplate;
 use LearnPress\TemplateHooks\Course\CourseMaterialTemplate;
 use LearnPress\Widgets\LPRegisterWidget;
@@ -288,6 +290,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			ProfileInstructorStatisticsTemplate::instance();
 			ProfileStudentStatisticsTemplate::instance();
 			ProfileOrdersTemplate::instance();
+			ProfileOrderTemplate::instance();
 			FilterCourseTemplate::instance();
 
 			CourseMaterialTemplate::instance();
@@ -642,6 +645,11 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				// For plugin Elementor
 				if ( defined( 'ELEMENTOR_VERSION' ) ) {
 					LPElementor::instance();
+				}
+
+				// For plugin Elementor
+				if ( defined( 'WPSEO_FILE' ) ) {
+					LPYoastSeo::instance();
 				}
 
 				$this->init();
