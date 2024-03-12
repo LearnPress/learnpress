@@ -256,7 +256,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				unset( $tabs['courses'] );
 			}
 
-			$tabs        = apply_filters( 'learn-press/get-profile-tabs', $tabs );
+			$tabs        = apply_filters( 'learn-press/get-profile-tabs', $tabs, $user_of_profile, $this->user_current );
 			$this->_tabs = new LP_Profile_Tabs( $tabs, $this );
 
 			return $this->_tabs;
