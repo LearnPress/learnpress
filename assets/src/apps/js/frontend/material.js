@@ -28,6 +28,7 @@ export default function lpMaterialsLoad( is_curriculum = false ) {
 		}
 		const elementMaterial = ele.querySelector( '.course-material-table' );
 		const loadMoreBtn = document.querySelector( '.lp-loadmore-material' );
+		const elListItems = document.querySelector( '.lp-list-material' );
 		try {
 			const response = await apiFetch( {
 				path: addQueryArgs( `lp/v1/material/item-materials/${ itemID }`, {
@@ -41,14 +42,17 @@ export default function lpMaterialsLoad( is_curriculum = false ) {
 				return console.log( message );
 			}
 
-			if ( data.items.length > 0 ) {
+			if ( data.items && data.items.length > 0 ) {
 				if ( ele.querySelector( '.lp-skeleton-animation' ) ) {
 					ele.querySelector( '.lp-skeleton-animation' ).remove();
 				}
 
 				elementMaterial.style.display = 'table';
 				elementMaterial.querySelector( 'tbody' ).insertAdjacentHTML( 'beforeend', data.items );
+			} else {
+				elListItems.innerHTML = message;
 			}
+
 			if ( data.load_more ) {
 				loadMoreBtn.style.display = 'inline-block';
 				loadMoreBtn.setAttribute( 'page', page + 1 );
