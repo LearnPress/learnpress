@@ -30,6 +30,7 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 		 */
 		protected function handle() {
 			try {
+				@set_time_limit( 0 );
 				$handle_name = LP_Request::get_param( 'handle_name', '', 'key', 'post' );
 				$course_id   = intval( $_POST['course_id'] ?? 0 );
 				if ( empty( $handle_name ) || ! $course_id ) {
@@ -65,6 +66,7 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 				error_log( 'Not permission save background course' );
 			}
 
+			$this->clean_data_invalid();
 			$this->save_price();
 			$this->save_extra_info();
 			$this->review_post_author();
@@ -88,6 +90,19 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 			$lp_courses_cache = new LP_Courses_Cache( true );
 			$lp_courses_cache->clear_cache_on_group( LP_Courses_Cache::KEYS_COUNT_COURSES_FREE );
 			// End
+		}
+
+		/**
+		 * Clean data invalid
+		 *
+		 * @throws Exception
+		 * @since 4.2.6.4
+		 * @version 1.0.0
+		 */
+		protected function clean_data_invalid() {
+			error_log(1111);
+			// Delete items of course not in table Post, can error from old data, delete item, but not remove it in sections course
+			LP_Section_Items_DB::getInstance()->delete_item_not_in_tb_post( $this->lp_course->get_id() );
 		}
 
 		/**

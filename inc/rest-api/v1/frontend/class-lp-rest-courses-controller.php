@@ -646,7 +646,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 	 *
 	 * @return LP_REST_Response
 	 * @since 4.1.4
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 * @author minhpd
 	 * @editor tungnx
 	 */
@@ -685,7 +685,8 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 							$course,
 							$user
 						);
-						if ( $item_now_condition ) {
+
+						if ( $item_now_condition && ! empty( get_post( $item->id ) ) ) {
 							$item_link  = $course->get_item_link( $item->id );
 							$flag_found = true;
 							break;

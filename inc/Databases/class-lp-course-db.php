@@ -86,6 +86,8 @@ class LP_Course_DB extends LP_Database {
 			FROM {$this->tb_lp_section_items} AS si
 			INNER JOIN {$this->tb_lp_sections} AS s
 			ON si.section_id = s.section_id
+			INNER JOIN {$this->tb_posts} AS p
+			ON si.item_id = p.ID AND p.post_status = 'publish'
 			WHERE section_course_id = %d
 			ORDER BY s.section_order",
 			$course_id
@@ -183,11 +185,14 @@ class LP_Course_DB extends LP_Database {
 		if ( ! $first_item_id ) {
 			$query = $this->wpdb->prepare(
 				"
-				SELECT item_id FROM $this->tb_lp_section_items AS items
+				SELECT item_id FROM $this->tb_lp_section_items AS si
 				INNER JOIN $this->tb_lp_sections AS sections
-				ON items.section_id = sections.section_id
+				ON si.section_id = sections.section_id
 				AND sections.section_course_id = %d
-				ORDER BY sections.section_order ASC, items.item_order ASC
+				INNER JOIN $this->tb_posts AS p
+				ON si.item_id = p.ID
+				AND p.post_status = 'publish'
+				ORDER BY sections.section_order ASC, si.item_order ASC
 				LIMIT %d
 				",
 				$course_id,
@@ -240,7 +245,7 @@ class LP_Course_DB extends LP_Database {
 		$order_by = ! empty( $filter->order_by ) ? $filter->order_by : 'post_date';
 		$order    = ! empty( $filter->order ) ? $filter->order : 'DESC';
 
-		if ( $limit <= 0 ) {
+		if ( $limit < 0 ) {
 			$limit = 0;
 		}
 
@@ -393,6 +398,8 @@ class LP_Course_DB extends LP_Database {
 			SELECT $query_count
 			FROM $this->tb_lp_section_items si
 			INNER JOIN $this->tb_lp_sections s ON s.section_id = si.section_id
+			INNER JOIN $this->tb_posts p ON si.item_id = p.ID
+			AND p.post_status = 'publish'
 			";
 
 			$total_items = $this->wpdb->get_row( $query );

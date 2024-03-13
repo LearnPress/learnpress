@@ -7,7 +7,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class LP_Section_Items_DB
  */
-
 class LP_Section_Items_DB extends LP_Database {
 	public static $_instance;
 
@@ -26,13 +25,13 @@ class LP_Section_Items_DB extends LP_Database {
 	/**
 	 * Get section items
 	 *
-	 * @throws Exception
-	 * @since 4.1.6
-	 * @version 1.0.0
 	 * @return array|null|int|string
+	 * @throws Exception
+	 * @version 1.0.1
+	 * @since 4.1.6
 	 */
 	public function get_section_items( LP_Section_Items_Filter $filter ) {
-		$default_fields = $this->get_cols_of_table( $this->tb_lp_section_items );
+		$default_fields = $filter->all_fields;
 		$filter->fields = array_merge( $default_fields, $filter->fields );
 
 		if ( empty( $filter->collection ) ) {
@@ -100,6 +99,29 @@ class LP_Section_Items_DB extends LP_Database {
 		$this->check_execute_has_error();
 
 		return $number_order;
+	}
+
+	/**
+	 * Delete item on section of course not in table posts.
+	 *
+	 *
+	 * @throws Exception
+	 * @since 4.2.6.4
+	 * @version 1.0.0
+	 */
+	public function delete_item_not_in_tb_post( $course_id ) {
+		$filter_section = $this->wpdb->prepare(
+			"DELETE si
+			FROM $this->tb_lp_section_items AS si
+			INNER JOIN $this->tb_lp_sections AS s ON si.section_id = s.section_id
+			AND s.section_course_id = %d
+			WHERE item_id NOT IN (SELECT ID FROM $this->tb_posts WHERE post_status = 'publish')
+            ", $course_id
+		);
+
+		$this->wpdb->query( $filter_section );
+
+		$this->check_execute_has_error();
 	}
 }
 

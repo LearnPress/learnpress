@@ -760,9 +760,9 @@ class LP_Database {
 	 *
 	 * @throws Exception
 	 * @since 4.1.7
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
-	public function delete_execute( LP_Filter $filter ) {
+	public function delete_execute( LP_Filter $filter, string $table = '' ) {
 		$COLLECTION = $filter->collection;
 
 		// Where
@@ -771,10 +771,21 @@ class LP_Database {
 		$WHERE = apply_filters( 'lp/query/delete/where', $WHERE, $filter );
 		$WHERE = implode( ' ', array_unique( $WHERE ) );
 
+		// Join
+		$INNER_JOIN = array();
+		$INNER_JOIN = array_merge( $INNER_JOIN, $filter->join );
+		$INNER_JOIN = apply_filters( 'lp/query/delete/inner_join', $INNER_JOIN, $filter );
+		$INNER_JOIN = implode( ' ', array_unique( $INNER_JOIN ) );
+
 		$query = "
-			DELETE FROM $COLLECTION
+			DELETE $table FROM $COLLECTION
+			$INNER_JOIN
 			$WHERE
 		";
+
+		if ( $filter->return_string_query ) {
+			return $query;
+		}
 
 		$result = $this->wpdb->query( $query );
 
