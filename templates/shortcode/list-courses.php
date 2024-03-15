@@ -4,7 +4,7 @@
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 4.0.0
+ * @version 4.0.1
  */
 
 use LearnPress\TemplateHooks\Course\ListCoursesTemplate;
@@ -25,31 +25,20 @@ if ( ! isset( $query ) ) {
 		<?php endif; ?>
 
 		<?php
-		if ( $query->have_posts() ) :
-			/**
-			 * LP Hook
-			 */
-			//do_action( 'learn-press/shortcode/before-courses-loop' );
-
+		$posts = $query->posts;
+		if ( count( $posts ) > 0 ) :
 			echo '<ul class="learn-press-courses" data-layout="grid">';
 
-			while ( $query->have_posts() ) :
-				$query->the_post();
-
-				$course = learn_press_get_course( $query->post->ID );
+			foreach ( $posts as $post ) {
+				$course = learn_press_get_course( $post->ID );
 				if ( ! $course ) {
 					continue;
 				}
 
 				echo ListCoursesTemplate::render_course( $course );
-			endwhile;
+			}
 
 			echo '</ul>';
-
-			/**
-			 * LP Hook
-			 */
-			//do_action( 'learn-press/shortcode/after-main-content' );
 		else :
 			_e( 'No courses', 'learnpress' );
 		endif;
