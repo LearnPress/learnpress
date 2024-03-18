@@ -16,7 +16,12 @@ class LP_Template_Profile extends LP_Abstract_Template {
 
 	public function sidebar() {
 		$profile = LP_Profile::instance();
-		if ( $profile->get_user_current()->is_guest() ) {
+		if ( $profile->get_user()->is_guest() ) {
+			return;
+		}
+
+		if ( $profile->get_user_current()->is_guest()
+		     && 'yes' !== LP_Profile::get_option_publish_profile() ) {
 			return;
 		}
 
@@ -227,7 +232,7 @@ class LP_Template_Profile extends LP_Abstract_Template {
 
 	public function order_details() {
 		$profile = LP_Profile::instance();
-		$order = $profile->get_view_order();
+		$order   = $profile->get_view_order();
 		if ( false === $order ) {
 			return;
 		}
@@ -262,8 +267,11 @@ class LP_Template_Profile extends LP_Abstract_Template {
 			return;
 		}
 
-		if ( 'yes' === LP_Settings::get_option( 'enable_login_profile' )
-		     || 'yes' === LP_Settings::get_option( 'enable_register_profile' ) ) {
+		if ( ! LP_Profile::instance()->get_user()->is_guest() ) {
+			return;
+		}
+
+		if ( 'yes' === LP_Settings::get_option( 'enable_login_profile' ) ) {
 			return;
 		}
 
@@ -272,6 +280,10 @@ class LP_Template_Profile extends LP_Abstract_Template {
 
 	public function login_form() {
 		if ( is_user_logged_in() ) {
+			return;
+		}
+
+		if ( ! LP_Profile::instance()->get_user()->is_guest() ) {
 			return;
 		}
 
@@ -284,6 +296,10 @@ class LP_Template_Profile extends LP_Abstract_Template {
 
 	public function register_form() {
 		if ( is_user_logged_in() ) {
+			return;
+		}
+
+		if ( ! LP_Profile::instance()->get_user()->is_guest() ) {
 			return;
 		}
 
