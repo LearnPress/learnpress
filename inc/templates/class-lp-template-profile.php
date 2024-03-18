@@ -258,8 +258,7 @@ class LP_Template_Profile extends LP_Abstract_Template {
 	}
 
 	public function dashboard_not_logged_in() {
-		$profile = LP_Profile::instance();
-		if ( ! $profile->get_user()->is_guest() ) {
+		if ( is_user_logged_in() ) {
 			return;
 		}
 
@@ -272,8 +271,7 @@ class LP_Template_Profile extends LP_Abstract_Template {
 	}
 
 	public function login_form() {
-		$profile = LP_Profile::instance();
-		if ( ! $profile->get_user()->is_guest() ) {
+		if ( is_user_logged_in() ) {
 			return;
 		}
 
@@ -285,8 +283,7 @@ class LP_Template_Profile extends LP_Abstract_Template {
 	}
 
 	public function register_form() {
-		$profile = LP_Profile::instance();
-		if ( ! $profile->get_user()->is_guest() ) {
+		if ( is_user_logged_in() ) {
 			return;
 		}
 

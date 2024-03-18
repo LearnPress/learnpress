@@ -145,6 +145,7 @@ class LP_Assets extends LP_Abstract_Assets {
 				'courses_url'       => learn_press_get_page_link( 'courses' ),
 				'urlParams'         => lp_archive_skeleton_get_args(),
 				'lp_version'        => LearnPress::instance()->version,
+				'lp_rest_load_ajax' => get_rest_url( null, 'lp/v1/load_content_via_ajax/' )
 			]
 		);
 	}
@@ -283,7 +284,7 @@ class LP_Assets extends LP_Abstract_Assets {
 					),
 					array( LP_PAGE_SINGLE_COURSE ),
 					0,
-					1,
+					0,
 					'',
 					[ 'strategy' => 'defer' ]
 				),
@@ -313,7 +314,9 @@ class LP_Assets extends LP_Abstract_Assets {
 					[ 'lp-global' ],
 					[],
 					1,
-					1
+					0,
+					'',
+					[ 'strategy' => 'defer' ]
 				),
 				'lp-profile'           => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/profile' . self::$_min_assets . '.js' ),
@@ -323,7 +326,7 @@ class LP_Assets extends LP_Abstract_Assets {
 					),
 					array( LP_PAGE_PROFILE ),
 					0,
-					1,
+					0,
 					'',
 					[ 'strategy' => 'defer' ]
 				),

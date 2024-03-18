@@ -5,7 +5,7 @@ Tags: elearning, education, course, lms, learning management system
 Requires at least: 6.3
 Tested up to: 6.4.3
 Requires PHP: 7.0
-Stable tag: 4.2.6.2
+Stable tag: 4.2.6.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -209,6 +209,14 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.
 
 == Changelog ==
+
+= 4.2.6.4 (2024-03-15) =
+~ Fixed: security.
+~ Fixed: compatible PHP8 on get_materials_by_item method.
+~ Fixed: minor bug save order on the backend.
+~ Fixed: error wrong link continue item, reason by old data still save item assigned to course, but deleted on post.
+~ Fixed: minor bug profile shortcode.
+~ Deprecated: get_downloadable_material method.
 
 = 4.2.6.3 (2024-02-29) =
 ~ Fixed: error wrong avatar's instructor.
