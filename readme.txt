@@ -210,34 +210,13 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
-= 4.2.6.4 (2024-03-15) =
+= 4.2.6.4 (2024-03-18) =
 ~ Fixed: security.
 ~ Fixed: compatible PHP8 on get_materials_by_item method.
 ~ Fixed: minor bug save order on the backend.
 ~ Fixed: error wrong link continue item, reason by old data still save item assigned to course, but deleted on post.
 ~ Fixed: minor bug profile shortcode.
+~ Fixed: error shortcode list courses when add on Elementor.
 ~ Deprecated: get_downloadable_material method.
-
-= 4.2.6.3 (2024-02-29) =
-~ Fixed: error wrong avatar's instructor.
-~ Fixed: error page Profile with user not login.
-
-= 4.2.6.2 (2024-02-28) =
-~ Added: param lang on url when submit filter courses.
-~ Added: ProfileOrdersTemplate show layout orders on the Profile page.
-~ Tweak: get_first_item_id method.
-~ Tweak: methods Profile, templates Profile.
-~ Fixed: error js hiddenQuestions.find not a function.
-~ Fixed: avatar url profile with old value.
-~ Fixed: error payment PayPal with Currency EUR.
-~ Check user current can view content of tab Profile.
-~ Deprecated hook 'learn-press/profile/orders', dashboard_featured_courses, dashboard_latest_courses, tab_dashboard methods.
-
-= 4.2.6.1 (2024-02-20) =
-~ Fixed: missing translate on "html_count_student" function.
-~ Fixed: missing translate on profile avatar function.
-~ Fixed: error when only has a payment method, will be not show payment form.
-~ Fixed: error widget list courses elementor with theme override content-course.php.
-~ Fixed: course query filter with polylang.
 
 <a href="https://raw.githubusercontent.com/LearnPress/learnpress/develop/changelog.txt" target="_blank">See changelog for all versions.</a>

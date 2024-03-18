@@ -1,3 +1,25 @@
+= 4.2.6.3 (2024-02-29) =
+~ Fixed: error wrong avatar's instructor.
+~ Fixed: error page Profile with user not login.
+
+= 4.2.6.2 (2024-02-28) =
+~ Added: param lang on url when submit filter courses.
+~ Added: ProfileOrdersTemplate show layout orders on the Profile page.
+~ Tweak: get_first_item_id method.
+~ Tweak: methods Profile, templates Profile.
+~ Fixed: error js hiddenQuestions.find not a function.
+~ Fixed: avatar url profile with old value.
+~ Fixed: error payment PayPal with Currency EUR.
+~ Check user current can view content of tab Profile.
+~ Deprecated hook 'learn-press/profile/orders', dashboard_featured_courses, dashboard_latest_courses, tab_dashboard methods.
+
+= 4.2.6.1 (2024-02-20) =
+~ Fixed: missing translate on "html_count_student" function.
+~ Fixed: missing translate on profile avatar function.
+~ Fixed: error when only has a payment method, will be not show payment form.
+~ Fixed: error widget list courses elementor with theme override content-course.php.
+~ Fixed: course query filter with polylang.
+
 = 4.2.6 (2024-01-29) =
 ~ Tweak: courses js.
 ~ Tweak: course filter js.
@@ -907,11 +929,3 @@
 ~ Fixed some text is not translatable
 ~ Fixed breadcrumb not show page name when viewing archive course
 ~ Fixed archive course show header is title of first course
-
-== Upgrade Notice ==
-
-= 4.0.0 =
-In this version, we have to change the database structure, so that if you have installed LP3 on your site before, please backup your site and follow these steps to upgrade.
-
-= 0.9.19 =
-In this version, we have changed a little bit about LearnPress Plugin directory structure and moved all add-ons to become independent plugins. If you face any problems related to add-ons, please completely remove old version and re-install LearnPress. It does not affect your current data. Thank you.
