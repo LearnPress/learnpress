@@ -104,12 +104,13 @@ class LP_Section_Items_DB extends LP_Database {
 	/**
 	 * Delete item on section of course not in table posts.
 	 *
+	 * @param int $course_id
 	 *
 	 * @throws Exception
 	 * @since 4.2.6.4
 	 * @version 1.0.0
 	 */
-	public function delete_item_not_in_tb_post( $course_id ) {
+	public function delete_item_not_in_tb_post( int $course_id ) {
 		$filter_section = $this->wpdb->prepare(
 			"DELETE si
 			FROM $this->tb_lp_section_items AS si

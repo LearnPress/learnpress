@@ -410,7 +410,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			ListInstructorsShortcode::instance();
 			CourseMaterialShortcode::instance();
 			FilterCourseShortcode::instance();
-			ListCourseRecentShortcode::instance();
+			//ListCourseRecentShortcode::instance();
 			include_once 'inc/class-lp-shortcodes.php';
 
 			// include template functions .

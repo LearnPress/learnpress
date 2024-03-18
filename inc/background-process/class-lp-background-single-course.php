@@ -100,7 +100,6 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 		 * @version 1.0.0
 		 */
 		protected function clean_data_invalid() {
-			error_log(1111);
 			// Delete items of course not in table Post, can error from old data, delete item, but not remove it in sections course
 			LP_Section_Items_DB::getInstance()->delete_item_not_in_tb_post( $this->lp_course->get_id() );
 		}
