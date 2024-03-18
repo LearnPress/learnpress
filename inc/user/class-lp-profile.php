@@ -103,12 +103,14 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				add_action( 'learn-press/before-profile-content', array( $this, 'output_section' ), 10, 3 );
 				add_action( 'learn-press/profile-section-content', array( $this, 'output_section_content' ), 10, 3 );
 
-				/*
-				 * Register actions with request handler class to process
-				 * requesting from user profile.
-				 */
-				foreach ( $this->_default_actions as $action => $message ) {
+				/*foreach ( $this->_default_actions as $action => $message ) {
 					LP_Request::register( 'save-profile-' . $action, array( $this, 'save' ) );
+				}*/
+
+				foreach ( $this->_default_actions as $action => $message ) {
+					if ( isset( $_REQUEST[ 'save-profile-' . $action ] ) ) {
+						$this->save( $_REQUEST[ 'save-profile-' . $action ] );
+					}
 				}
 			}
 		}

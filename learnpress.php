@@ -4,7 +4,7 @@
  * Plugin URI: http://thimpress.com/learnpress
  * Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
  * Author: ThimPress
- * Version: 4.2.6.4-beta.1
+ * Version: 4.2.6.4-beta.3
  * Author URI: http://thimpress.com
  * Requires at least: 6.3
  * Requires PHP: 7.0
@@ -17,7 +17,7 @@
 use LearnPress\ExternalPlugin\Elementor\LPElementor;
 use LearnPress\ExternalPlugin\YoastSeo\LPYoastSeo;
 use LearnPress\Shortcodes\Course\FilterCourseShortcode;
-use LearnPress\Shortcodes\Course\ListCourseRecentShortcode;
+//use LearnPress\Shortcodes\Course\ListCourseRecentShortcode;
 use LearnPress\Shortcodes\ListInstructorsShortcode;
 use LearnPress\Shortcodes\SingleInstructorShortcode;
 use LearnPress\Shortcodes\CourseMaterialShortcode;
@@ -25,6 +25,7 @@ use LearnPress\TemplateHooks\Course\FilterCourseTemplate;
 use LearnPress\TemplateHooks\Course\ListCoursesTemplate;
 use LearnPress\TemplateHooks\Instructor\ListInstructorsTemplate;
 use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
+use LearnPress\TemplateHooks\Profile\ProfileGeneralInfoTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileInstructorStatisticsTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileOrdersTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileOrderTemplate;
@@ -292,6 +293,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			ProfileStudentStatisticsTemplate::instance();
 			ProfileOrdersTemplate::instance();
 			ProfileOrderTemplate::instance();
+			ProfileGeneralInfoTemplate::instance();
 			FilterCourseTemplate::instance();
 
 			CourseMaterialTemplate::instance();
