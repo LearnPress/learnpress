@@ -1,5 +1,6 @@
 import { dispatch, select, apiFetch } from '@learnpress/data-controls';
 import { select as wpSelect, dispatch as wpDispatch } from '@wordpress/data';
+import { lpAddQueryArgs } from '../../../../../js/utils';
 
 function _dispatch() {
 	const args = [].slice.call( arguments, 2 );
@@ -121,7 +122,8 @@ const startQuiz = function*() {
 
 		// Reload when start/retake quiz
 		window.localStorage.removeItem( 'LP' );
-		window.location.reload();
+		const urlReloadNocache = lpAddQueryArgs( window.location.href, { v: Date.now() } );
+		window.location.href = urlReloadNocache;
 
 		//yield _dispatch( 'learnpress/quiz', '__requestStartQuizSuccess', camelCaseDashObjectKeys( response ), itemId, courseId );
 	} else {

@@ -1,4 +1,7 @@
 <?php
+
+use LearnPress\Helpers\Template;
+
 /**
  * Class LP_Submenu_Tools
  */
@@ -83,16 +86,15 @@ class LP_Submenu_Tools extends LP_Abstract_Submenu {
 	 * Temporary, go to this page run clear all cache
 	 *
 	 * @since 4.2.5.4
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function page_content_cache() {
-		$lp_cache = new LP_Cache( true );
-		$lp_cache->clear_all();
+		if ( LP_Request::get_param( 'clear_all', false ) ) {
+			$lp_cache = new LP_Cache( true );
+			$lp_cache->clear_all();
+		}
 
-		echo sprintf(
-			'<form action="" method="post"><button class="button button-primary" type="submit">%s</button></form>',
-			__( 'Clear all cache', 'learnpress' )
-		);
+		Template::instance()->get_admin_template( 'tools/html-cache' );
 	}
 
 	/**
