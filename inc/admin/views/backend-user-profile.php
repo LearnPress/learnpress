@@ -4,7 +4,7 @@
  *
  * @author  ThimPress
  * @package LearnPress/Views
- * @version 4.0.0
+ * @version 4.0.1
  */
 
 defined( 'ABSPATH' ) || die;
@@ -28,44 +28,7 @@ $custom_profile = lp_get_user_custom_register_fields( $user->ID );
 <table class="form-table">
 	<tbody>
 		<?php
-		$custom_fields = LP_Settings::instance()->get( 'register_profile_fields' );
-
-		if ( $custom_fields ) {
-			foreach ( $custom_fields as $field ) {
-				?>
-				<tr>
-					<th>
-						<label for="learn-press-custom-register-<?php echo esc_attr( $field['id'] ); ?>"><?php echo esc_html( $field['name'] ); ?></label>
-					</th>
-					<td>
-					<?php
-					switch ( $field['type'] ) {
-						case 'text':
-						case 'number':
-						case 'email':
-						case 'url':
-						case 'tel':
-							?>
-							<input name="_lp_custom_register[<?php echo esc_attr( $field['id'] ); ?>]" type="<?php echo esc_attr( $field['type'] ); ?>" class="regular-text" value="<?php echo esc_attr( $custom_profile[ $field['id'] ] ?? '' ); ?>">
-							<?php
-							break;
-						case 'textarea':
-							?>
-							<textarea name="_lp_custom_register[<?php echo esc_attr( $field['id'] ); ?>]"><?php echo isset( $custom_profile[ $field['id'] ] ) ? esc_textarea( $custom_profile[ $field['id'] ] ) : ''; ?></textarea>
-							<?php
-							break;
-						case 'checkbox':
-							?>
-							<input name="_lp_custom_register[<?php echo esc_attr( $field['id'] ); ?>]" type="<?php echo esc_attr( $field['type'] ); ?>" value="1" <?php echo isset( $custom_profile[ $field['id'] ] ) ? checked( $custom_profile[ $field['id'] ], 1 ) : ''; ?>>
-							<?php
-							break;
-					}
-					?>
-					</td>
-				</tr>
-				<?php
-			}
-		}
+		do_action( 'learn-press/admin/user/layout/general-info-custom', $user, $custom_profile );
 
 		foreach ( $extra_profile_fields as $key => $label ) {
 			$type = apply_filters( 'learn-press/extra-profile-field-type', 'text' );

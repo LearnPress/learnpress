@@ -1227,24 +1227,10 @@ if ( ! function_exists( 'learn_press_filter_get_comments_number' ) ) {
  * @deprecated 4.2.3
  */
 function learn_press_body_classes( $classes ) {
-	$pages = learn_press_static_page_ids();
-
-	if ( $pages ) {
-		$is_lp_page = false;
-		settype( $classes, 'array' );
-
-		foreach ( $pages as $slug => $id ) {
-			if ( is_page( $id ) ) {
-				$classes[]  = $slug;
-				$is_lp_page = true;
-			}
-		}
-
-		if ( $is_lp_page || is_learnpress() ) {
-			$classes[] = get_stylesheet();
-			$classes[] = 'learnpress';
-			$classes[] = 'learnpress-page';
-		}
+	if ( is_learnpress() ) {
+		$classes[] = get_stylesheet();
+		$classes[] = 'learnpress';
+		$classes[] = 'learnpress-page';
 	}
 
 	return $classes;

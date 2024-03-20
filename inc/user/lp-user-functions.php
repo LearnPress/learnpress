@@ -1867,7 +1867,7 @@ add_filter( 'learn-press/after-form-register-fields', 'lp_add_default_fields' );
 
 function lp_custom_register_fields_display() {
 	?>
-	<?php $custom_fields = LP_Settings::instance()->get( 'register_profile_fields' ); ?>
+	<?php $custom_fields = LP_Profile::get_register_fields_custom(); ?>
 
 	<?php if ( $custom_fields ) : ?>
 		<?php foreach ( $custom_fields as $custom_field ) : ?>
@@ -1965,7 +1965,7 @@ function lp_get_user_custom_register_fields( $user_id = 0 ) {
 }
 
 function lp_get_user_custom_fields() {
-	$custom_fields = LP_Settings::instance()->get( 'register_profile_fields' );
+	$custom_fields = LP_Settings::get_option( 'register_profile_fields', [] );
 
 	$output = array();
 

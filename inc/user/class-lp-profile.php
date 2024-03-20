@@ -999,6 +999,19 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		}
 
 		/**
+		 * Get register fields custom
+		 *
+		 * @return mixed|null
+		 * @since 4.2.6.4
+		 */
+		public static function get_register_fields_custom() {
+			return apply_filters(
+				'learn-press/profile/register-fields-custom',
+				LP_Settings::get_option( 'register_profile_fields', [] )
+			);
+		}
+
+		/**
 		 * Get an instance of LP_Profile for a user id
 		 *
 		 * @param $user_id

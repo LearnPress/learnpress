@@ -385,11 +385,16 @@ class LP_Forms_Handler {
 			return new WP_Error( 'error_email', esc_html__( 'This email address is already registered.', 'learnpress' ) );
 		}
 
-		$custom_fields = LP_Settings::instance()->get( 'register_profile_fields' );
-
+		$custom_fields = LP_Profile::get_register_fields_custom();
 		if ( $custom_fields && ! empty( $update_meta ) ) {
 			foreach ( $custom_fields as $field ) {
-				if ( $field['required'] === 'yes' && empty( $update_meta[ $field['id'] ] ) ) {
+				if ( $field['required'] !== 'yes') {
+					continue;
+				}
+
+				$is_empty = empty( $update_meta[ $field['id'] ] );
+				$is_empty = apply_filters( 'learn-press/profile/update-register-custom-field/is-require', $is_empty, $field );
+				if ( $is_empty ) {
 					return new WP_Error( 'registration-custom-exists', $field['name'] . __( ' is required field.', 'learnpress' ) );
 				}
 			}

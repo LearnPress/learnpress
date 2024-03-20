@@ -1190,7 +1190,7 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 		$output = array();
 
 		if ( function_exists( 'lp_get_user_custom_register_fields' ) ) {
-			$custom_fields  = LP_Settings::instance()->get( 'register_profile_fields' );
+			$custom_fields  = LP_Profile::get_register_fields_custom();
 			$custom_profile = lp_get_user_custom_register_fields( $user->ID );
 
 			if ( $custom_fields ) {
