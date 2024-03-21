@@ -1402,8 +1402,15 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			return $course_results['completed_items'] >= $course->count_items();
 		}
 
+		/**
+		 * Get role of user.
+		 *
+		 * @return string
+		 * @since 3.0.0
+		 * @version 1.0.1
+		 */
 		public function get_role() {
-			return $this->is_admin() ? 'admin' : ( $this->is_instructor() ? 'instructor' : 'user' );
+			return $this->get_data( 'role' );
 		}
 
 		/**

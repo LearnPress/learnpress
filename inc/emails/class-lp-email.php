@@ -331,9 +331,10 @@ if ( ! class_exists( 'LP_Email' ) ) {
 			/**
 			 * Init general options
 			 */
-			$this->heading = $this->settings->get( 'heading', $this->default_heading );
-			$this->subject = $this->settings->get( 'subject', $this->default_subject );
-			$this->enable  = $this->settings->get( 'enable', 'no' ) === 'yes';
+			$this->heading    = $this->settings->get( 'heading', $this->default_heading );
+			$this->subject    = $this->settings->get( 'subject', $this->default_subject );
+			$this->enable     = $this->settings->get( 'enable', 'no' ) === 'yes';
+			$this->recipients = $this->settings->get( 'recipients', '' );
 
 			if ( $this->settings->get( 'email_content.format' ) ) {
 				$this->email_format = ( $this->settings->get( 'email_content.format' ) == 'plain_text' ) ? 'plain' : 'html';
@@ -594,7 +595,18 @@ if ( ! class_exists( 'LP_Email' ) ) {
 		 * @return string|array
 		 */
 		public function get_headers() {
-			return apply_filters( 'learn-press/email-headers', 'Content-Type: ' . $this->get_content_format() . "\r\n", $this->id, $this->object );
+			$headers = [
+				'Content-Type: ' . $this->get_content_format() . "\r\n",
+			];
+
+			if ( ! empty( $this->recipients ) ) {
+				$cc_emails = explode( ',', $this->recipients );
+				foreach ( $cc_emails as $cc_email ) {
+					$headers[] = 'Cc: ' . $cc_email;
+				}
+			}
+
+			return apply_filters( 'learn-press/email-headers', $headers, $this );
 		}
 
 		/**
@@ -675,7 +687,10 @@ if ( ! class_exists( 'LP_Email' ) ) {
 		 * @return string
 		 */
 		public function apply_style_inline( $content ) {
-			if ( in_array( $this->get_content_format(), array( 'text/html', 'multipart/alternative' ) ) && class_exists( 'DOMDocument' ) ) {
+			if ( in_array( $this->get_content_format(), array(
+					'text/html',
+					'multipart/alternative'
+				) ) && class_exists( 'DOMDocument' ) ) {
 
 				// get CSS styles
 				ob_start();
@@ -749,12 +764,12 @@ if ( ! class_exists( 'LP_Email' ) ) {
 		 * @param string $subject
 		 * @param string $message
 		 * @param string|string[] $headers
-		 * @param array  $attachments
+		 * @param array $attachments
 		 *
 		 * @editor tungnx
+		 * @return bool
 		 * @version 1.0.1
 		 *
-		 * @return bool
 		 */
 		public function send( $to, string $subject, string $message, $headers, array $attachments ): bool {
 			$return  = false;
@@ -791,6 +806,7 @@ if ( ! class_exists( 'LP_Email' ) ) {
 		 * Variables use for click add to content of Email
 		 *
 		 * @param string $format
+		 *
 		 * @return array
 		 * @author tungnx
 		 * @since 4.1.1
@@ -808,6 +824,7 @@ if ( ! class_exists( 'LP_Email' ) ) {
 			}
 
 			$admin_user = get_user_by( 'email', get_option( 'admin_email' ) );
+
 			return apply_filters(
 				'email_variables_common',
 				[
@@ -864,7 +881,7 @@ if ( ! class_exists( 'LP_Email' ) ) {
 					array(
 						'title'   => esc_html__( 'Recipient(s)', 'learnpress' ),
 						'type'    => 'text',
-						'default' => get_option( 'admin_email' ),
+						'default' => $this->recipients,
 						'id'      => $this->get_field_name( 'recipients' ),
 						'desc'    => esc_html__( 'Separate other recipients with commas.', 'learnpress' ),
 					),
@@ -909,9 +926,9 @@ if ( ! class_exists( 'LP_Email' ) ) {
 		/**
 		 * Get settings in admin.
 		 *
+		 * @return bool|mixed
 		 * @since 3.0.0
 		 *
-		 * @return bool|mixed
 		 */
 		public function get_settings() {
 			return apply_filters( 'learn-press/email-settings/' . $this->id . '/settings', $this->_default_settings() );
@@ -920,11 +937,11 @@ if ( ! class_exists( 'LP_Email' ) ) {
 		/**
 		 * Get instructors to send mail.
 		 *
-		 * @since 3.0.0
-		 *
 		 * @param null $order_id
 		 *
 		 * @return array
+		 * @since 3.0.0
+		 *
 		 */
 		public function get_order_instructors( $order_id ) {
 			if ( ! $order_id ) {
@@ -982,7 +999,7 @@ if ( ! class_exists( 'LP_Email' ) ) {
 		 * Email header.
 		 *
 		 * @param string $heading
-		 * @param bool   $echo
+		 * @param bool $echo
 		 *
 		 * @return string
 		 */
@@ -1008,7 +1025,7 @@ if ( ! class_exists( 'LP_Email' ) ) {
 		 * Email footer.
 		 *
 		 * @param string $footer_text
-		 * @param bool   $echo
+		 * @param bool $echo
 		 *
 		 * @return string
 		 */
@@ -1035,9 +1052,11 @@ if ( ! class_exists( 'LP_Email' ) ) {
 
 		/**
 		 * Method called by background on LP_Background_Single_Email
-		 * @see LP_Background_Single_Email::handle()
 		 *
 		 * @param array $params
+		 *
+		 * @see LP_Background_Single_Email::handle()
+		 *
 		 */
 		public function handle( array $params ) {
 
