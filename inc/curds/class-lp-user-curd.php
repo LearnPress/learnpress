@@ -263,7 +263,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					'display_name'    => $user_object->display_name,
 					'date_created'    => $user_object->user_registered,
 					'date_modified'   => get_user_meta( $user_id, 'last_update', true ),
-					'role'            => array_shift( $user_object->roles),
+					'role'            => $user_object->roles[0] ?? '',
 					'roles'           => $user_object->roles,
 					'profile_picture' => get_user_meta( $user_id, '_lp_profile_picture', true ),
 					'profile_privacy' => get_user_meta( $user_id, '_lp_profile_privacy', true ),
@@ -288,7 +288,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 *      ...
 	 *  )
 	 *
-	 * @param int   $user_id
+	 * @param int $user_id
 	 * @param array $args
 	 *
 	 * @return array|mixed
@@ -467,6 +467,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * Read meta data of an user item.
 	 *
 	 * @param $item
+	 *
 	 * @deprecated 4.2.4
 	 */
 	protected function _read_item_meta( &$item ) {
@@ -493,7 +494,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	}
 
 	/**
-	 * @param int    $user_item_id
+	 * @param int $user_item_id
 	 * @param string $type
 	 *
 	 * @return array
@@ -518,7 +519,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	/**
 	 * Update status of an user item by id.
 	 *
-	 * @param int    $user_item_id
+	 * @param int $user_item_id
 	 * @param string $new_status
 	 *
 	 * @return mixed
@@ -622,6 +623,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 */
 	public function query_courses_by_order( $user_id ) {
 		_deprecated_function( __METHOD__, '4.2.4' );
+
 		return false;
 		global $wpdb;
 
@@ -670,6 +672,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 */
 	public function read_course_info( $course ) {
 		_deprecated_function( __METHOD__, '4.2.4' );
+
 		return [];
 		$data = $course;
 		global $wpdb;
@@ -708,6 +711,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 */
 	public function get_current_user_order( $user_id, $course_id ) {
 		_deprecated_function( __METHOD__, '4.2.4' );
+
 		return 0;
 		global $wpdb;
 		$sql      = $wpdb->prepare(

@@ -77,8 +77,14 @@ if ( ! class_exists( 'LP_Email' ) ) {
 		public $recipient;
 
 		/**
-		 * For display the field to setting specific emails.
-		 * .
+		 * @var bool Enable recipients
+		 *
+		 * @since 4.2.6.4
+		 */
+		public $enable_recipients = false;
+
+		/**
+		 * For send CC or BB email.
 		 *
 		 * @var string
 		 */
@@ -334,7 +340,6 @@ if ( ! class_exists( 'LP_Email' ) ) {
 			$this->heading    = $this->settings->get( 'heading', $this->default_heading );
 			$this->subject    = $this->settings->get( 'subject', $this->default_subject );
 			$this->enable     = $this->settings->get( 'enable', 'no' ) === 'yes';
-			$this->recipients = $this->settings->get( 'recipients', '' );
 
 			if ( $this->settings->get( 'email_content.format' ) ) {
 				$this->email_format = ( $this->settings->get( 'email_content.format' ) == 'plain_text' ) ? 'plain' : 'html';
@@ -599,8 +604,10 @@ if ( ! class_exists( 'LP_Email' ) ) {
 				'Content-Type: ' . $this->get_content_format() . "\r\n",
 			];
 
-			if ( ! empty( $this->recipients ) ) {
-				$cc_emails = explode( ',', $this->recipients );
+			$recipients = $this->settings->get( 'recipients', $this->recipients );
+
+			if ( ! empty( $recipients ) ) {
+				$cc_emails = explode( ',', $recipients );
 				foreach ( $cc_emails as $cc_email ) {
 					$headers[] = 'Cc: ' . $cc_email;
 				}
@@ -862,7 +869,7 @@ if ( ! class_exists( 'LP_Email' ) ) {
 			 * So, we do not need this field.
 			 */
 
-			$enable_recipients = apply_filters( 'learn-press/enable-email-recipients', ! empty( $this->recipients ), $this );
+			$enable_recipients = $this->enable_recipients;
 
 			$default = array_merge(
 				array(
