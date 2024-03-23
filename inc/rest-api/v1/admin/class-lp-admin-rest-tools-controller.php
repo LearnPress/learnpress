@@ -146,7 +146,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 
 			// Set next table key.
 			$index_key = array_search( $table, $table_keys );
-			++$index_key;
+			++ $index_key;
 
 			if ( ! array_key_exists( $index_key, $table_keys ) ) {
 				$response->status        = 'finished';
@@ -379,7 +379,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 	 *
 	 * @return LP_REST_Response
 	 * @since 4.2.5
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function search_users( WP_REST_Request $request ): LP_REST_Response {
 		$response = new LP_REST_Response();
@@ -399,6 +399,18 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 			if ( ! empty( $search_string ) ) {
 				$args_get_user['search'] = "*{$search_string}*";
 			}
+
+			$role_in = sanitize_text_field( $params['role_in'] ?? '' );
+			if ( ! empty( $role_in ) ) {
+				$args_get_user['role__in'] = array( $role_in );
+			}
+
+			$id_not_in = sanitize_text_field( $params['id_not_in'] ?? '' );
+			if ( ! empty( $role_in ) ) {
+				$args_get_user['exclude'] = explode( ',', $id_not_in );
+			}
+
+			$args_get_user = apply_filters( 'learn-press/rest-admin-tools/args-search-users', $args_get_user );
 
 			$users = get_users( $args_get_user );
 			if ( ! empty( $users ) ) {
@@ -564,7 +576,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 
 	/**
 	 * Check permission for request.
-	*
+	 *
 	 * @return bool
 	 */
 	public function check_permission(): bool {

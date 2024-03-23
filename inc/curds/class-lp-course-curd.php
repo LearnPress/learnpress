@@ -444,13 +444,13 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 		 *
 		 * @return array
 		 * @since 3.0.0
-		 * @version 1.0.1
+		 * @version 1.0.2
 		 */
 		public function get_recent_courses( $args = array() ) {
 			global $wpdb;
 
 			$limit = absint( $args['limit'] ?? 5 );
-			$order = LP_Helper::sanitize_params_submitted( $args['order'] ?? 'DESC' );
+			$order = esc_sql( $args['order'] ?? 'DESC' );
 			if ( ! in_array( $order, array( 'ASC', 'DESC' ) ) ) {
 				$order = 'DESC';
 			}
@@ -566,9 +566,9 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 
 			try {
 				$limit    = absint( $args['limit'] ?? 5 );
-				$order    = LP_Helper::sanitize_params_submitted( $args['order'] ?? 'DESC' );
-				$order    = in_array( $order, array( 'ASC', 'DESC' ) ) ? $order : 'DESC';
-				$order_by = LP_Helper::sanitize_params_submitted( $args['order_by'] ?? 'post_date' );
+				$order    = $args['order'] ?? 'DESC';
+				$order    = esc_sql( in_array( $order, array( 'ASC', 'DESC' ) ) ? $order : 'DESC' );
+				$order_by = esc_sql( $args['order_by'] ?? 'post_date' );
 				$cols     = $lp_course_db->get_cols_of_table( $lp_course_db->tb_posts );
 				$order_by = in_array( $order_by, $cols ) ? $order_by : 'post_date'; // For security
 
