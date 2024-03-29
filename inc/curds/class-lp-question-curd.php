@@ -358,22 +358,24 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		 * @param $question LP_Question
 		 * @param $new_type
 		 *
-		 * @return bool|int|LP_Question
+		 * @return false|void
+		 * @since 3.0.0
+		 * @version 1.0.1
 		 */
-		public function change_question_type( $question, $new_type ) {
+		public function change_question_type( &$question, $new_type ) {
 			if ( learn_press_get_post_type( $question->get_id() ) != LP_QUESTION_CPT ) {
 				return false;
 			}
 
 			$question_id = $question->get_id();
-			$old_type    = $question->get_type();
 
-			/*if ( $old_type == $new_type ) {
-				return false;
-			}*/
+			// If not new Question or not change type return
+			$old_type    = get_post_meta( $question_id, '_lp_type', true );
+			if ( ! empty( $old_type ) && $old_type === $new_type ) {
+				return;
+			}
 
 			$answer_options = $question->get_data( 'answer_options' );
-
 			update_post_meta( $question_id, '_lp_type', $new_type );
 			$question->set_type( $new_type );
 
@@ -406,10 +408,8 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				LP_Object_Cache::set( 'answer-options-' . $question_id, $answer_options, 'learn-press/questions' );
 				$new_question->set_data( 'answer_options', $answer_options );
 
-				return $new_question;
+				$question = $new_question;
 			}
-
-			return false;
 		}
 
 		/**

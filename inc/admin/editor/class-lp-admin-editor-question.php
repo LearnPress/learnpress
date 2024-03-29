@@ -151,7 +151,7 @@ class LP_Admin_Editor_Question extends LP_Admin_Editor {
 		}
 
 		if ( isset( $question ) ) {
-			$question     = $this->question_curd->change_question_type( $question, $type );
+			$this->question_curd->change_question_type( $question, $type );
 			$this->result = $this->get_question_data_to_question_editor( $question, true );
 
 			return true;
