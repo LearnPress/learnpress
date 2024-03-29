@@ -210,8 +210,10 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
-= 4.2.6.4 (2024-03-18) =
+= 4.2.6.4 (2024-04-01) =
+~ Compatible with WordPress 6.5.
 ~ Fixed: security.
+~ Fixed: error remove question_anwsermeta when create new post question.
 ~ Fixed: compatible PHP8 on get_materials_by_item method.
 ~ Fixed: minor bug save order on the backend.
 ~ Fixed: error wrong link continue item, reason by old data still save item assigned to course, but deleted on post.
