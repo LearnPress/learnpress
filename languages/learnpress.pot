@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the LearnPress plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: LearnPress 4.2.6.4-beta.1\n"
+"Project-Id-Version: LearnPress 4.2.6.4\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/learnpress\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-03-15T10:50:55+03:00\n"
+"POT-Creation-Date: 2024-04-01T05:19:12+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.8.1\n"
 "X-Domain: learnpress\n"
@@ -288,9 +288,9 @@ msgstr ""
 #: assets/js/dist/frontend/quiz.min.js:167
 #: inc/course/lp-course-functions.php:935
 #: inc/lp-core-functions.php:2453
-#: inc/templates/class-lp-template-profile.php:131
+#: inc/templates/class-lp-template-profile.php:136
 #: inc/user-item/class-lp-user-item-quiz.php:147
-#: inc/user/class-lp-profile.php:754
+#: inc/user/class-lp-profile.php:756
 msgid "Passed"
 msgstr ""
 
@@ -298,9 +298,9 @@ msgstr ""
 #: inc/course/lp-course-functions.php:938
 #: inc/lp-core-functions.php:2456
 #: inc/order/class-lp-order.php:289
-#: inc/templates/class-lp-template-profile.php:132
+#: inc/templates/class-lp-template-profile.php:137
 #: inc/user-item/class-lp-user-item-quiz.php:148
-#: inc/user/class-lp-profile.php:755
+#: inc/user/class-lp-profile.php:757
 msgid "Failed"
 msgstr ""
 
@@ -1179,7 +1179,7 @@ msgstr ""
 #: inc/custom-post-types/course.php:49
 #: inc/lp-template-functions.php:332
 #: inc/settings/class-lp-settings-courses.php:16
-#: inc/user/class-lp-profile.php:513
+#: inc/user/class-lp-profile.php:515
 msgid "Courses"
 msgstr ""
 
@@ -1193,7 +1193,7 @@ msgstr ""
 #: inc/custom-post-types/quiz.php:85
 #: inc/custom-post-types/quiz.php:86
 #: inc/custom-post-types/quiz.php:90
-#: inc/user/class-lp-profile.php:520
+#: inc/user/class-lp-profile.php:522
 #: templates/widgets/course-info.php:30
 msgid "Quizzes"
 msgstr ""
@@ -1220,7 +1220,7 @@ msgstr ""
 #: config/settings/permalink.php:141
 #: inc/admin/sub-menus/class-lp-submenu-settings.php:18
 #: inc/admin/views/addons.php:181
-#: learnpress.php:564
+#: learnpress.php:568
 msgid "Settings"
 msgstr ""
 
@@ -1441,7 +1441,7 @@ msgstr ""
 
 #: config/settings/gateway/paypal.php:13
 #: inc/admin/meta-box/fields/payment-order.php:10
-#: inc/emails/class-lp-email.php:856
+#: inc/emails/class-lp-email.php:880
 msgid "Enable/Disable"
 msgstr ""
 
@@ -2440,16 +2440,16 @@ msgstr ""
 #: inc/admin/views/statistics-bk/orders.php:29
 #: inc/admin/views/statistics-bk/users.php:30
 #: inc/lp-deprecated.php:211
-#: inc/templates/class-lp-template-profile.php:86
-#: inc/templates/class-lp-template-profile.php:128
-#: inc/user/class-lp-profile.php:752
+#: inc/templates/class-lp-template-profile.php:91
+#: inc/templates/class-lp-template-profile.php:133
+#: inc/user/class-lp-profile.php:754
 #: templates/widgets/course-info.php:35
 msgid "All"
 msgstr ""
 
 #: inc/admin/lp-admin-functions.php:1150
 #: inc/admin/lp-admin-functions.php:2205
-#: inc/templates/class-lp-template-profile.php:87
+#: inc/templates/class-lp-template-profile.php:92
 msgid "Publish"
 msgstr ""
 
@@ -2457,7 +2457,7 @@ msgstr ""
 #: inc/admin/lp-admin-functions.php:1372
 #: inc/admin/lp-admin-functions.php:2210
 #: inc/order/class-lp-order.php:280
-#: inc/templates/class-lp-template-profile.php:88
+#: inc/templates/class-lp-template-profile.php:93
 msgid "Pending"
 msgstr ""
 
@@ -2682,7 +2682,7 @@ msgid "This section lets you customize the LearnPress emails"
 msgstr ""
 
 #: inc/admin/settings/class-lp-settings-emails.php:135
-#: inc/emails/class-lp-email.php:888
+#: inc/emails/class-lp-email.php:912
 msgid "Content type"
 msgstr ""
 
@@ -2772,7 +2772,7 @@ msgid "Reset Password"
 msgstr ""
 
 #: inc/admin/sub-menus/class-lp-submenu-addons.php:14
-#: learnpress.php:566
+#: learnpress.php:570
 msgid "Add-ons"
 msgstr ""
 
@@ -2816,36 +2816,40 @@ msgstr ""
 msgid "LearnPress Themes"
 msgstr ""
 
-#: inc/admin/sub-menus/class-lp-submenu-tools.php:15
+#: inc/admin/sub-menus/class-lp-submenu-tools.php:12
 msgid "Tools"
 msgstr ""
 
-#: inc/admin/sub-menus/class-lp-submenu-tools.php:16
+#: inc/admin/sub-menus/class-lp-submenu-tools.php:13
 msgid "LearnPress Tools"
 msgstr ""
 
-#: inc/admin/sub-menus/class-lp-submenu-tools.php:23
+#: inc/admin/sub-menus/class-lp-submenu-tools.php:20
 msgid "Course Data"
 msgstr ""
 
-#: inc/admin/sub-menus/class-lp-submenu-tools.php:24
+#: inc/admin/sub-menus/class-lp-submenu-tools.php:21
 msgid "Assign/Unassigned Course"
 msgstr ""
 
-#: inc/admin/sub-menus/class-lp-submenu-tools.php:25
+#: inc/admin/sub-menus/class-lp-submenu-tools.php:22
 msgid "Database"
 msgstr ""
 
-#: inc/admin/sub-menus/class-lp-submenu-tools.php:26
+#: inc/admin/sub-menus/class-lp-submenu-tools.php:23
 msgid "Templates"
 msgstr ""
 
-#: inc/admin/sub-menus/class-lp-submenu-tools.php:27
+#: inc/admin/sub-menus/class-lp-submenu-tools.php:24
 msgid "LearnPress Beta Version"
 msgstr ""
 
-#: inc/admin/sub-menus/class-lp-submenu-tools.php:28
+#: inc/admin/sub-menus/class-lp-submenu-tools.php:25
 msgid "Cache"
+msgstr ""
+
+#: inc/admin/sub-menus/class-lp-submenu-tools.php:94
+msgid "Clear all cache"
 msgstr ""
 
 #: inc/admin/views/addons.php:127
@@ -3387,7 +3391,7 @@ msgstr ""
 #: inc/custom-post-types/lesson.php:130
 #: inc/custom-post-types/lesson.php:229
 #: inc/lp-template-functions.php:1098
-#: templates/loop/single-course/loop-section-item.php:33
+#: templates/loop/single-course/loop-section-item.php:32
 #: templates/single-course/section/item-meta.php:32
 msgid "Preview"
 msgstr ""
@@ -4108,9 +4112,9 @@ msgstr ""
 
 #: inc/admin/views/statistics/users.php:43
 #: inc/lp-deprecated.php:213
-#: inc/templates/class-lp-template-profile.php:130
+#: inc/templates/class-lp-template-profile.php:135
 #: inc/user-item/class-lp-user-item.php:691
-#: inc/user/class-lp-profile.php:753
+#: inc/user/class-lp-profile.php:755
 msgid "Finished"
 msgstr ""
 
@@ -4429,7 +4433,7 @@ msgid "Password and Confirm Password does not match!"
 msgstr ""
 
 #: inc/class-lp-forms-handler.php:286
-#: inc/class-lp-forms-handler.php:393
+#: inc/class-lp-forms-handler.php:398
 msgid " is required field."
 msgstr ""
 
@@ -4450,16 +4454,16 @@ msgstr ""
 msgid "This email address is already registered."
 msgstr ""
 
-#: inc/class-lp-forms-handler.php:417
+#: inc/class-lp-forms-handler.php:422
 msgid "Enter a username or email address."
 msgstr ""
 
-#: inc/class-lp-forms-handler.php:437
-#: inc/class-lp-forms-handler.php:441
+#: inc/class-lp-forms-handler.php:442
+#: inc/class-lp-forms-handler.php:446
 msgid "Invalid username or email."
 msgstr ""
 
-#: inc/class-lp-forms-handler.php:452
+#: inc/class-lp-forms-handler.php:457
 msgid "Password reset is not allowed for this user."
 msgstr ""
 
@@ -4591,7 +4595,7 @@ msgstr ""
 #: inc/course/lp-course-functions.php:941
 #: inc/lp-core-functions.php:2459
 #: inc/lp-deprecated.php:212
-#: inc/templates/class-lp-template-profile.php:129
+#: inc/templates/class-lp-template-profile.php:134
 #: inc/user-item/class-lp-user-item-quiz.php:144
 #: inc/user-item/class-lp-user-item-quiz.php:145
 msgid "In Progress"
@@ -5274,19 +5278,19 @@ msgstr ""
 msgid "New user order"
 msgstr ""
 
-#: inc/emails/class-lp-email.php:865
+#: inc/emails/class-lp-email.php:889
 msgid "Recipient(s)"
 msgstr ""
 
-#: inc/emails/class-lp-email.php:869
+#: inc/emails/class-lp-email.php:893
 msgid "Separate other recipients with commas."
 msgstr ""
 
-#: inc/emails/class-lp-email.php:874
+#: inc/emails/class-lp-email.php:898
 msgid "Subject"
 msgstr ""
 
-#: inc/emails/class-lp-email.php:881
+#: inc/emails/class-lp-email.php:905
 msgid "Email heading"
 msgstr ""
 
@@ -6993,28 +6997,28 @@ msgid "Jersey pound"
 msgstr ""
 
 #: inc/lp-core-functions.php:1410
-#: inc/lp-template-functions.php:1487
+#: inc/lp-template-functions.php:1473
 msgid "%s week"
 msgid_plural "%s weeks"
 msgstr[0] ""
 msgstr[1] ""
 
 #: inc/lp-core-functions.php:1414
-#: inc/lp-template-functions.php:1483
+#: inc/lp-template-functions.php:1469
 msgid "%s day"
 msgid_plural "%s days"
 msgstr[0] ""
 msgstr[1] ""
 
 #: inc/lp-core-functions.php:1419
-#: inc/lp-template-functions.php:1478
+#: inc/lp-template-functions.php:1464
 msgid "%s hour"
 msgid_plural "%s hours"
 msgstr[0] ""
 msgstr[1] ""
 
 #: inc/lp-core-functions.php:1423
-#: inc/lp-template-functions.php:1472
+#: inc/lp-template-functions.php:1458
 msgid "%s minute"
 msgid_plural "%s minutes"
 msgstr[0] ""
@@ -7160,36 +7164,36 @@ msgstr ""
 msgid "Final"
 msgstr ""
 
-#: inc/lp-template-functions.php:1361
+#: inc/lp-template-functions.php:1347
 msgid "Course Sidebar"
 msgstr ""
 
-#: inc/lp-template-functions.php:1363
+#: inc/lp-template-functions.php:1349
 msgid "Widgets in this area will be shown in a single course"
 msgstr ""
 
-#: inc/lp-template-functions.php:1372
+#: inc/lp-template-functions.php:1358
 msgid "All Courses"
 msgstr ""
 
-#: inc/lp-template-functions.php:1374
+#: inc/lp-template-functions.php:1360
 msgid "Widgets in this area will be shown on all course pages"
 msgstr ""
 
-#: inc/lp-template-functions.php:1511
-#: inc/lp-template-functions.php:1520
+#: inc/lp-template-functions.php:1497
+#: inc/lp-template-functions.php:1506
 msgid "All levels"
 msgstr ""
 
-#: inc/lp-template-functions.php:1521
+#: inc/lp-template-functions.php:1507
 msgid "Beginner"
 msgstr ""
 
-#: inc/lp-template-functions.php:1522
+#: inc/lp-template-functions.php:1508
 msgid "Intermediate"
 msgstr ""
 
-#: inc/lp-template-functions.php:1523
+#: inc/lp-template-functions.php:1509
 msgid "Expert"
 msgstr ""
 
@@ -7504,11 +7508,11 @@ msgstr ""
 msgid "Dismissed!"
 msgstr ""
 
-#: inc/rest-api/v1/admin/class-lp-admin-rest-tools-controller.php:502
+#: inc/rest-api/v1/admin/class-lp-admin-rest-tools-controller.php:514
 msgid "Assign users to courses successfully."
 msgstr ""
 
-#: inc/rest-api/v1/admin/class-lp-admin-rest-tools-controller.php:557
+#: inc/rest-api/v1/admin/class-lp-admin-rest-tools-controller.php:569
 msgid "Unassigned users from courses successfully."
 msgstr ""
 
@@ -8111,15 +8115,15 @@ msgstr ""
 msgid "Account privacy updated successfully."
 msgstr ""
 
-#: inc/user/class-lp-profile.php:517
+#: inc/user/class-lp-profile.php:519
 msgid "Public your profile courses attended."
 msgstr ""
 
-#: inc/user/class-lp-profile.php:524
+#: inc/user/class-lp-profile.php:526
 msgid "Public your profile quizzes."
 msgstr ""
 
-#: inc/user/class-lp-profile.php:920
+#: inc/user/class-lp-profile.php:922
 msgid "User Avatar"
 msgstr ""
 
@@ -8500,7 +8504,7 @@ msgstr ""
 msgid "Recent Courses"
 msgstr ""
 
-#: learnpress.php:565
+#: learnpress.php:569
 msgid "Documentation"
 msgstr ""
 
@@ -8888,7 +8892,7 @@ msgstr ""
 msgid "Share a little biographical information to fill out your profile. This may be shown publicly."
 msgstr ""
 
-#: templates/profile/tabs/settings/basic-information.php:142
+#: templates/profile/tabs/settings/basic-information.php:104
 #: templates/profile/tabs/settings/change-password.php:59
 #: templates/profile/tabs/settings/privacy.php:51
 msgid "Save changes"
