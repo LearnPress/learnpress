@@ -23,11 +23,19 @@ do_action( 'learn-press/before-main-content' );
 do_action( 'learn-press/before-main-content-single-course' );
 
 // WP 6.4 with Block theme can't detect single course, so code while ( have_posts() ) not run.
-$args  = array(
-	'name'           => get_query_var( LP_COURSE_CPT ),
-	'post_type'      => LP_COURSE_CPT,
-	'posts_per_page' => 1,
+$args = array(
+	'name'        => get_query_var( LP_COURSE_CPT ),
+	'post_type'   => LP_COURSE_CPT,
+	'numberposts' => 1,
 );
+
+// Fix preview course
+if ( isset( $_REQUEST['preview'] ) && isset( $_REQUEST['p'] ) ) {
+	unset( $args['name'] );
+	$args['include']     = [ (int) $_REQUEST['p'] ];
+	$args['post_status'] = 'any';
+}
+
 $posts = get_posts( $args );
 $post  = $posts[0] ?? 0;
 
