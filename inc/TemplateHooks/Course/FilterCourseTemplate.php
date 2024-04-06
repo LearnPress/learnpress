@@ -3,7 +3,7 @@
  * Template hooks Archive Package.
  *
  * @since 4.2.3.2
- * @version 1.0.3
+ * @version 1.0.4
  */
 
 namespace LearnPress\TemplateHooks\Course;
@@ -31,6 +31,8 @@ class FilterCourseTemplate {
 	 * @param array $data
 	 *
 	 * @return void
+	 * @since 4.2.3.2
+	 * @version 1.0.1
 	 */
 	public function sections( array $data = [] ) {
 		wp_enqueue_script( 'lp-course-filter' );
@@ -72,6 +74,10 @@ class FilterCourseTemplate {
 			foreach ( $data['fields'] as $field ) {
 				if ( is_callable( [ $this, 'html_' . $field ] ) ) {
 					$sections[ $field ] = [ 'text_html' => $this->{'html_' . $field}( $data ) ];
+				} elseif ( isset( $field['class'] ) && isset( $field['method'] ) ) { // For custom field.
+					if ( is_callable( [ $field['class']::instance(), $field['method'] ] ) ) {
+						$sections[ $field ] = [ 'text_html' => $field['class']::instance()->{$field['method']}( $data ) ];
+					}
 				}
 			}
 

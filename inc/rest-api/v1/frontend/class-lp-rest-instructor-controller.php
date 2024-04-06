@@ -53,8 +53,12 @@ class LP_REST_Instructor_Controller extends LP_Abstract_REST_Controller {
 		$response = new LP_REST_Response();
 
 		try {
-			$params = $request->get_params();
-			$args   = apply_filters(
+			$params      = $request->get_params();
+			$roles_query = [ LP_TEACHER_ROLE ];
+			if ( 'yes' === LP_Settings::get_option( 'show_admin_on_list_instructors', 'yes' ) ) {
+				$roles_query[] = ADMIN_ROLE;
+			}
+			$args = apply_filters(
 				'learnpress/instructor-list/args',
 				array(
 					'fields'   => [ 'ID' ],
@@ -62,7 +66,7 @@ class LP_REST_Instructor_Controller extends LP_Abstract_REST_Controller {
 					'paged'    => $params['paged'] ?? 1,
 					'orderby'  => $params['orderby'] ?? 'display_name',
 					'order'    => $params['order'] ?? 'asc',
-					'role__in' => [ LP_TEACHER_ROLE, ADMIN_ROLE ],
+					'role__in' => $roles_query,
 				)
 			);
 

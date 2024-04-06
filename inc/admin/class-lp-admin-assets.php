@@ -36,21 +36,22 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 	 *
 	 * @return array
 	 * @since 4.2.5.6
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function localize_data_global(): array {
 		return apply_filters(
 			'learn-press/admin/localize-data-global',
 			[
-				'site_url'    => site_url(),
-				'user_id'     => get_current_user_id(),
-				'is_admin'    => current_user_can( ADMIN_ROLE ),
-				'theme'       => get_stylesheet(),
-				'lp_version'  => LP()->version,
-				'lp_rest_url' => get_rest_url(),
-				'nonce'       => wp_create_nonce( 'wp_rest' ),
-				'courses_url' => learn_press_get_page_link( 'courses' ),
-				'urlParams'   => lp_archive_skeleton_get_args(),
+				'site_url'          => site_url(),
+				'user_id'           => get_current_user_id(),
+				'is_admin'          => current_user_can( ADMIN_ROLE ),
+				'theme'             => get_stylesheet(),
+				'lp_version'        => LP()->version,
+				'lp_rest_url'       => get_rest_url(),
+				'lp_rest_load_ajax' => get_rest_url( null, 'lp/v1/load_content_via_ajax/' ),
+				'nonce'             => wp_create_nonce( 'wp_rest' ),
+				'courses_url'       => learn_press_get_page_link( 'courses' ),
+				'urlParams'         => lp_archive_skeleton_get_args(),
 			]
 		);
 	}
@@ -352,7 +353,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'',
 					[ 'strategy' => 'defer' ]
 				),
-				'lp-load-ajax'         => new LP_Asset_Key(
+				'lp-load-ajax'                      => new LP_Asset_Key(
 					self::url( 'js/dist/loadAJAX' . self::$_min_assets . '.js' ),
 					[],
 					[],
@@ -463,12 +464,12 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 		global $post, $pagenow;
 
 		if ( empty( $post ) || ( get_post_type() !== LP_COURSE_CPT ) || ! in_array(
-			$pagenow,
-			array(
-				'post.php',
-				'post-new.php',
-			)
-		) ) {
+				$pagenow,
+				array(
+					'post.php',
+					'post-new.php',
+				)
+			) ) {
 			return [];
 		}
 

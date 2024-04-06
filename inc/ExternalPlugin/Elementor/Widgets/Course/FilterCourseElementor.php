@@ -220,7 +220,7 @@ class FilterCourseElementor extends LPElementorWidgetBase {
 
 		if ( ! empty( $_GET['c_level'] ) ) {
 			if ( $_GET['c_level'] === 'all' ) {
-				echo '<span class="' . $classListItem . '" data-name="c_level" data-value="' . $_GET['c_level'] . '">' . __( 'All Levels', 'learnpress' ). $icon_move . '</span>';
+				echo '<span class="' . $classListItem . '" data-name="c_level" data-value="' . $_GET['c_level'] . '">' . __( 'All Levels', 'learnpress' ) . $icon_move . '</span>';
 			} else {
 				echo '<span class="' . $classListItem . '" data-name="c_level" data-value="' . $_GET['c_level'] . '">' . $_GET['c_level'] . $icon_move . '</span>';
 			}

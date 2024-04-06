@@ -5,6 +5,7 @@
  * @param data
  * @param functions
  * @since 4.2.5.1
+ * @version 1.0.1
  */
 const lpFetchAPI = ( url, data = {}, functions = {} ) => {
 	if ( 'function' === typeof functions.before ) {
