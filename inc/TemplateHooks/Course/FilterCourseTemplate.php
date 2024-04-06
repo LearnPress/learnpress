@@ -49,6 +49,8 @@ class FilterCourseTemplate {
 					'btn_submit',
 					'btn_reset',
 				];
+
+				$data = apply_filters( 'learn-press/filter-courses/data', $data );
 			} elseif ( is_string( $data['fields'] ) ) {
 				$data['fields'] = explode( ',', $data['fields'] );
 			}
@@ -56,8 +58,6 @@ class FilterCourseTemplate {
 			if ( ! is_array( $data['fields'] ) ) {
 				throw new Exception( 'Fields must be array' );
 			}
-
-			$data = apply_filters( 'learn-press/filter-courses/data', $data );
 
 			if ( isset( $data['fields']['btn_submit'] ) ) {
 				$data['fields'][] = 'btn_submit';
