@@ -75,7 +75,7 @@ class FilterCourseTemplate {
 				if ( is_callable( [ $this, 'html_' . $field ] ) ) {
 					$sections[ $field ] = [ 'text_html' => $this->{'html_' . $field}( $data ) ];
 				} else { // For custom field.
-					$sections[ $field ] = apply_filters( 'learn-press/filter-courses/sections/field/html', '', $sections, $field, $data );
+					do_action_ref_array( 'learn-press/filter-courses/sections/field/html', [ &$sections, $field, $data ] );
 				}
 			}
 
@@ -150,9 +150,9 @@ class FilterCourseTemplate {
 			);
 
 			$this->check_param_url_has_lang( $data );
-			$value   = LP_Request::get_param( 'c_search' );
-			$value   = isset( $data['params_url'] ) ? ( $data['params_url']['c_search'] ?? $value ) : $value;
-			$content = sprintf(
+			$value    = LP_Request::get_param( 'c_search' );
+			$value    = isset( $data['params_url'] ) ? ( $data['params_url']['c_search'] ?? $value ) : $value;
+			$content  = sprintf(
 				'<input type="text" name="c_search" placeholder="%s" value="%s" class="%s" data-search-suggest="%d">',
 				__( 'Search Course', 'learnpress' ),
 				$value,
@@ -626,11 +626,11 @@ class FilterCourseTemplate {
 
 		// Check has in category page.
 		if ( isset( $params_url['page_term_id_current'] ) &&
-		     empty( $params_url['term_id'] ) ) {
+			empty( $params_url['term_id'] ) ) {
 			$filter->term_ids[] = $params_url['page_term_id_current'];
 		} // Check has in tag page.
 		elseif ( isset( $params_url['page_tag_id_current'] ) &&
-		         empty( $params_url['tag_id'] ) ) {
+				empty( $params_url['tag_id'] ) ) {
 			$filter->tag_ids[] = $params_url['page_tag_id_current'];
 		}
 	}
