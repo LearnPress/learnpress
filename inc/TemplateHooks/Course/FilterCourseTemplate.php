@@ -75,7 +75,14 @@ class FilterCourseTemplate {
 				if ( is_callable( [ $this, 'html_' . $field ] ) ) {
 					$sections[ $field ] = [ 'text_html' => $this->{'html_' . $field}( $data ) ];
 				} else { // For custom field.
-					do_action_ref_array( 'learn-press/filter-courses/sections/field/html', [ &$sections, $field, $data ] );
+					do_action_ref_array(
+						'learn-press/filter-courses/sections/field/html',
+						[
+							&$sections,
+							$field,
+							$data,
+						]
+					);
 				}
 			}
 
@@ -279,70 +286,32 @@ class FilterCourseTemplate {
 			$params_url       = $data['params_url'] ?? [];
 			$data_selected    = $params_url['term_id'] ?? '';
 			$data_selected    = explode( ',', $data_selected );
-			$arg_query_terms  = [ 'hide_empty' => true ];
 			$category_current = null;
 			$hide_count_zero  = $data['hide_count_zero'] ?? 1;
+			$number_level_category      = $data['number_level_category'] ?? 1;
+			//$number_level_category      = 10;
+			$load_courses_subcategories = $data['load_courses_of_subcategories_for_parent'] ?? 0;
+			$arg_query_terms            = [];
+			$parent_cat_id = 0;
 
 			if ( isset( $params_url['page_term_id_current'] ) ) {
 				$category_current_id = $params_url['page_term_id_current'];
 				$category_current    = get_term_by( 'id', $category_current_id, LP_COURSE_CATEGORY_TAX );
 
 				if ( ! empty( $category_current ) ) {
-					$arg_query_terms['parent'] = $category_current->term_id;
+					$parent_cat_id = $category_current_id;
+					$content .= sprintf(
+						'<p>%s</p>',
+						$category_current->name
+					);
 				}
-			} else {
-				$arg_query_terms['parent'] = 0;
 			}
 
-			$terms = [];
-			if ( ! empty( $category_current ) ) {
-				$terms[] = $category_current;
-			}
-			$terms_sub = get_terms(
-				LP_COURSE_CATEGORY_TAX,
-				$arg_query_terms
-			);
-
-			$terms = array_merge( $terms, $terms_sub );
-
-			foreach ( $terms as $term ) {
-				$html_wrapper = [
-					'<div class="lp-course-filter__field">' => '</div>',
-				];
-
-				$count_courses       = 0;
-				$filter              = new LP_Course_Filter();
-				$filter->query_count = true;
-				$filter->only_fields = [ 'DISTINCT(ID)' ];
-				$this->handle_filter_params_before_query( $filter, $params_url );
-				$filter->term_ids = [ $term->term_id ];
-				//$filter->debug_string_query = true;
-				Courses::get_courses( $filter, $count_courses );
-
-				$value    = $term->term_id;
-				$disabled = $count_courses > 0 ? '' : 'disabled';
-				if ( ! empty( $disabled ) && $hide_count_zero ) {
-					continue;
-				}
-				$checked = in_array( $value, $data_selected ) && empty( $disabled ) ? 'checked' : '';
-				$input   = sprintf( '<input name="term_id" type="checkbox" value="%s" %s %s>', esc_attr( $value ), esc_attr( $checked ), $disabled );
-				$label   = sprintf( '<label for="">%s</label>', wp_kses_post( $term->name ) );
-				$count   = sprintf( '<span class="count">%s</span>', esc_html( $count_courses ) );
-
-				$sections = apply_filters(
-					'learn-press/filter-courses/course-tag/sections',
-					[
-						'input' => [ 'text_html' => $input ],
-						'label' => [ 'text_html' => $label ],
-						'count' => [ 'text_html' => $count ],
-					],
-					$term,
-					$data
-				);
-
+			// For subcategories.
+			if ( $number_level_category > 1 ) {
 				ob_start();
-				Template::instance()->print_sections( $sections );
-				$content .= Template::instance()->nest_elements( $html_wrapper, ob_get_clean() );
+				$this->html_struct_categories( $parent_cat_id, $number_level_category, 0, $params_url, $data_selected, $hide_count_zero );
+				$content .= ob_get_clean();
 			}
 
 			$content = $this->html_item( esc_html__( 'Categories', 'learnpress' ), $content );
@@ -649,5 +618,83 @@ class FilterCourseTemplate {
 		if ( isset( $params_url['lang'] ) ) {
 			$_REQUEST['lang'] = sanitize_text_field( $params_url['lang'] );
 		}
+	}
+
+	/**
+	 * Get categories course.
+	 *
+	 * @param array $arg_query_terms
+	 *
+	 * @return array [ term_id => term_name ]
+	 */
+	public function get_categories( array $arg_query_terms = [] ): array {
+		$terms = [];
+
+		try {
+			$arg_query_terms_default = [
+				'taxonomy' => LP_COURSE_CATEGORY_TAX,
+				'fields'   => 'id=>name',
+				'parent'   => 0,
+			];
+
+			$arg_query_terms = array_merge( $arg_query_terms_default, $arg_query_terms );
+
+			$terms = get_terms( $arg_query_terms );
+		} catch ( Throwable $e ) {
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
+		}
+
+		return $terms;
+	}
+
+	public function html_struct_categories( $parent_term_id, $number_level_category, $i, $params_url = [], $data_selected = [], $hide_count_zero = 1 ) {
+		if ( $i >= $number_level_category ) {
+			return;
+		}
+
+		$terms = $this->get_categories( [ 'parent' => $parent_term_id ] );
+		if ( empty( $terms ) ) {
+			return;
+		}
+
+		echo '<div class="lp-cate-sub">';
+		foreach ( $terms as $term_id => $term_name ) {
+			echo '<div class="lp-cat-' . $term_id . '">';
+
+			$count_courses       = 0;
+			$filter              = new LP_Course_Filter();
+			$filter->query_count = true;
+			$filter->only_fields = [ 'DISTINCT(ID)' ];
+			$this->handle_filter_params_before_query( $filter, $params_url );
+			$filter->term_ids = [ $term_id ];
+			//$filter->debug_string_query = true;
+			Courses::get_courses( $filter, $count_courses );
+
+			$value    = $term_id;
+			$disabled = $count_courses > 0 ? '' : 'disabled';
+			if ( ! empty( $disabled ) && $hide_count_zero ) {
+				continue;
+			}
+			$checked = in_array( $value, $data_selected ) && empty( $disabled ) ? 'checked' : '';
+			$input   = sprintf( '<input name="term_id" type="checkbox" value="%s" %s %s>', esc_attr( $value ), esc_attr( $checked ), $disabled );
+			$label   = sprintf( '<label for="">%s</label>', wp_kses_post( $term_name ) );
+			$count   = sprintf( '<span class="count">%s</span>', esc_html( $count_courses ) );
+
+			$sections = apply_filters(
+				'learn-press/filter-courses/course-tag/sections',
+				[
+					'start' => [ 'text_html' => '<div class="lp-course-filter__field">' ],
+					'input' => [ 'text_html' => $input ],
+					'label' => [ 'text_html' => $label ],
+					'count' => [ 'text_html' => $count ],
+					'end'   => [ 'text_html' => '</div>' ],
+				]
+			);
+			Template::instance()->print_sections( $sections );
+
+			$this->html_struct_categories( $term_id, $number_level_category, $i + 1, $params_url, $data_selected, $hide_count_zero );
+			echo '</div>';
+		}
+		echo '</div>';
 	}
 }
