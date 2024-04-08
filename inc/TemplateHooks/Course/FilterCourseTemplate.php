@@ -75,7 +75,7 @@ class FilterCourseTemplate {
 				if ( is_callable( [ $this, 'html_' . $field ] ) ) {
 					$sections[ $field ] = [ 'text_html' => $this->{'html_' . $field}( $data ) ];
 				} else { // For custom field.
-					$sections[ $field ] = apply_filters( 'learn-press/filter-courses/sections/field/html', NULL, $field, $data );
+					$sections[ $field ] = apply_filters( 'learn-press/filter-courses/sections/field/html', '', $sections, $field, $data );
 				}
 			}
 
