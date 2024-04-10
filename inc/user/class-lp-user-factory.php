@@ -93,22 +93,23 @@ class LP_User_Factory {
 		}
 
 		foreach ( $order->get_users() as $user_id ) {
+			$user = learn_press_get_user( $user_id );
+
 			foreach ( $items as $item ) {
-				if ( ! isset( $item['course_id'] ) ) {
-					continue;
+				if ( isset( $item['course_id'] ) ) {
+					$course_id = $item['course_id'];
+
+					// Check this order is the latest by user and course_id
+					$last_order_id = $lp_order_db->get_last_lp_order_id_of_user_course( $user_id, $course_id );
+					if ( $last_order_id && $last_order_id != $order->get_id() ) {
+						continue;
+					}
+
+					$lp_user_items_db->delete_user_items_old( $user_id, $course_id );
 				} else {
-					do_action( 'lp/order-pending/update/user-item', $item, $order );
+					// For buy other item type (not course)
+					do_action( 'lp/order-pending/update/user-item', $item, $order, $user );
 				}
-
-				$course_id = $item['course_id'];
-
-				// Check this order is the latest by user and course_id
-				$last_order_id = $lp_order_db->get_last_lp_order_id_of_user_course( $user_id, $course_id );
-				if ( $last_order_id && $last_order_id != $order->get_id() ) {
-					continue;
-				}
-
-				$lp_user_items_db->delete_user_items_old( $user_id, $course_id );
 			}
 		}
 	}
@@ -137,24 +138,23 @@ class LP_User_Factory {
 			$user = learn_press_get_user( $user_id );
 
 			foreach ( $items as $item ) {
-				if ( ! isset( $item['course_id'] ) || get_post_type( $item['course_id'] ) !== LP_COURSE_CPT ) {
-					continue;
+				if ( isset( $item['course_id'] ) && LP_COURSE_CPT === get_post_type( $item['course_id'] ) ) {
+					$course_id = $item['course_id'];
+
+					// Check this order is the latest by user and course_id
+					$last_order_id = $lp_order_db->get_last_lp_order_id_of_user_course( $user->get_id(), $course_id );
+					if ( $last_order_id && $last_order_id != $order->get_id() ) {
+						continue;
+					}
+
+					if ( 'manual' === $created_via ) {
+						self::handle_item_manual_order_completed( $order, $user, $item );
+					} else {
+						self::handle_item_order_completed( $order, $user, $item );
+					}
 				} else {
-					do_action( 'lp/order-completed/update/user-item', $item, $order );
-				}
-
-				$course_id = $item['course_id'];
-
-				// Check this order is the latest by user and course_id
-				$last_order_id = $lp_order_db->get_last_lp_order_id_of_user_course( $user->get_id(), $course_id );
-				if ( $last_order_id && $last_order_id != $order->get_id() ) {
-					continue;
-				}
-
-				if ( 'manual' === $created_via ) {
-					self::handle_item_manual_order_completed( $order, $user, $item );
-				} else {
-					self::handle_item_order_completed( $order, $user, $item );
+					// For buy other item type (not course)
+					do_action( 'lp/order-completed/update/user-item', $item, $order, $user );
 				}
 			}
 		}
