@@ -101,7 +101,7 @@ class ListInstructorsElementor extends LPElementorWidgetBase {
 			$content = ob_get_clean();
 
 			$html_wrap = [
-				'<div class="' . ( 'elementor-repeater-item-' . $item_layout['_id'] ?? '' ) . '">' => '</div>',
+				'<div class="' . ( 'elementor-repeater-item-' . esc_attr__( $item_layout['_id'] ?? '' ) ) . '">' => '</div>',
 			];
 			echo Template::instance()->nest_elements( $html_wrap, $content );
 			// End show list instructors
