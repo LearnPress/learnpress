@@ -685,6 +685,8 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 
 						$lp_user_items_db->delete_user_items_old( $user_id, $course_id );
 					}
+
+					do_action( 'learn-press/order/before-delete', $order, $user_id );
 				}
 
 				// Delete lp_order_item, lp_order_itemmeta

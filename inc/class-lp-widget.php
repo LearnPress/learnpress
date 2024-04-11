@@ -219,7 +219,7 @@ class LP_Widget extends WP_Widget {
 
 			switch ( $setting['type'] ) {
 				case 'number':
-					$instance[ $key ] = absint( $new_instance[ $key ] );
+					$instance[ $key ] = absint( $new_instance[ $key ] ?? '' );
 
 					if ( isset( $setting['min'] ) && '' !== $setting['min'] ) {
 						$instance[ $key ] = max( $instance[ $key ], $setting['min'] );
