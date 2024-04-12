@@ -2,7 +2,7 @@ import { lpFetchAPI } from '../utils';
 import API from '../api';
 
 function widgetRestAPI() {
-	const widgets = document.querySelectorAll( '.learnpress-widget-wrapper' );
+	const widgets = document.querySelectorAll( '.learnpress-widget-wrapper:not(.loaded)' );
 
 	if ( ! widgets.length ) {
 		return;
@@ -42,7 +42,10 @@ function widgetRestAPI() {
 			},
 			completed: () => {
 				//delete ele.dataset.widget;
-				ele.querySelector( '.lp-skeleton-animation' ).remove();
+				const elSkeleton = ele.querySelector( '.lp-skeleton-animation' );
+				if ( elSkeleton ) {
+					elSkeleton.remove();
+				}
 			},
 		};
 
@@ -51,12 +54,21 @@ function widgetRestAPI() {
 	};
 
 	widgets.forEach( ( ele ) => {
+		ele.classList.add( 'loaded' );
 		if ( ele.classList.contains( 'learnpress-widget-wrapper__restapi' ) ) {
 			getResponse( ele );
 		}
 	} );
 }
 
-document.addEventListener( 'DOMContentLoaded', function( event ) {
+widgetRestAPI();
+
+// Case 2: readystatechange, find all elements with the class '.lp-load-ajax-element' not have class 'loaded'
+document.addEventListener( 'readystatechange', ( event ) => {
+	widgetRestAPI();
+} );
+
+// Case 3: DOMContentLoaded, find all elements with the class '.lp-load-ajax-element' not have class 'loaded'
+document.addEventListener( 'DOMContentLoaded', () => {
 	widgetRestAPI();
 } );

@@ -332,15 +332,12 @@ class LP_Assets extends LP_Abstract_Assets {
 				),
 				'lp-widgets'           => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/widgets' . self::$_min_assets . '.js' ),
-					array_merge(
-						$wp_js,
-						array( 'wp-i18n' )
-					),
+					[],
 					array(),
 					1,
-					1,
+					0,
 					'',
-					[ 'strategy' => 'defer' ]
+					[ 'strategy' => 'async' ]
 				),
 				'lp-become-a-teacher'  => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/become-teacher' . self::$_min_assets . '.js' ),
