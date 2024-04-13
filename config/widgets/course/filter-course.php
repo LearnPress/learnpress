@@ -13,7 +13,7 @@ return apply_filters(
 		'number_level_category'      => array(
 			'label' => __( 'Number level category want to show', 'learnpress' ),
 			'type'  => 'number',
-			'std'   => 1,
+			'std'   => 2,
 			'min'   => 1,
 		),
 		'class_list_courses_target'      => array(
@@ -25,11 +25,6 @@ return apply_filters(
 			'label' => __( 'Load widget via REST', 'learnpress' ),
 			'type'  => 'checkbox',
 			'std'   => 1,
-		),
-		'load_courses_of_subcategories_for_parent'      => array(
-			'label' => __( 'Load courses of subcategories on Parent Category without tick Parent', 'learnpress' ),
-			'type'  => 'checkbox',
-			'std'   => 0,
 		),
 		'hide_count_zero'   => array(
 			'label' => __( 'Hide field has count is zero', 'learnpress' ),

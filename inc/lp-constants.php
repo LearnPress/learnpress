@@ -9,6 +9,10 @@ $plugin_info = get_plugin_data( LP_PLUGIN_FILE );
 // version.
 define( 'LEARNPRESS_VERSION', $plugin_info['Version'] );
 const LP_KEY_DB_VERSION = 'learnpress_db_version';
+/**
+ * @since 4.2.6.5
+ */
+define( "LP_TEXT_DOMAIN", $plugin_info['TextDomain'] );
 
 // Plugin paths and urls.
 define( 'LP_PLUGIN_PATH', plugin_dir_path( LP_PLUGIN_FILE ) );
