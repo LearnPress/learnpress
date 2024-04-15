@@ -286,18 +286,19 @@ class FilterCourseTemplate {
 
 		try {
 			$this->check_param_url_has_lang( $data );
-			$params_url      = $data['params_url'] ?? [];
-			$data_selected   = $params_url['term_id'] ?? '';
-			$data_selected   = explode( ',', $data_selected );
-			$hide_count_zero = $data['hide_count_zero'] ?? 1;
-			$parent_cat_id   = 0;
+			$params_url            = $data['params_url'] ?? [];
+			$data_selected         = $params_url['term_id'] ?? '';
+			$data_selected         = explode( ',', $data_selected );
+			$data['data_selected'] = $data_selected;
+			$parent_cat_id         = 0;
 
 			if ( isset( $params_url['page_term_id_current'] ) ) {
 				$category_current_id = $params_url['page_term_id_current'];
 				$category_current    = get_term_by( 'id', $category_current_id, LP_COURSE_CATEGORY_TAX );
 
 				if ( ! empty( $category_current ) ) {
-					$this->html_field_category( $category_current->term_id, $category_current->name, $data );
+					$parent_cat_id = $category_current_id;
+					$content       .= $this->html_field_category( $category_current->term_id, $category_current->name, $data );
 				}
 			}
 
@@ -305,11 +306,14 @@ class FilterCourseTemplate {
 			ob_start();
 			$data['level_current']  = 0;
 			$data['parent_term_id'] = $parent_cat_id;
-			$data['data_selected']  = $data_selected;
 			$this->html_struct_categories( $data );
 			$content .= ob_get_clean();
 
-			$content = $this->html_item( esc_html__( 'Categories', 'learnpress' ), $content );
+			$html_wrapper = [
+				'<div class="lp-course-filter-category">' => '</div>',
+			];
+			$content      = $this->html_item( esc_html__( 'Categories', 'learnpress' ), $content );
+			$content      = Template::instance()->nest_elements( $html_wrapper, $content );
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
@@ -347,8 +351,7 @@ class FilterCourseTemplate {
 
 		echo sprintf( '<div class="%s">', esc_attr( $class_wrapper ) );
 		foreach ( $terms as $term_id => $term_name ) {
-			echo '<div class="lp-cat-' . $term_id . '">';
-
+			echo sprintf( '<div class="lp-cat-%s">', esc_attr( $term_id ) );
 			echo $this->html_field_category( $term_id, $term_name, $args );
 
 			$args['level_current']  = $level_current + 1;
@@ -402,11 +405,15 @@ class FilterCourseTemplate {
 				'label' => [ 'text_html' => $label ],
 				'count' => [ 'text_html' => $count ],
 				'end'   => [ 'text_html' => '</div>' ],
-			]
+			],
+			$category_id,
+			$category_name,
+			$args
 		);
 
 		ob_start();
 		Template::instance()->print_sections( $sections );
+
 		return ob_get_clean();
 	}
 
