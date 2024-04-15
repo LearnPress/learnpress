@@ -60,6 +60,14 @@ return apply_filters(
 					'css'               => 'min-width: 50px; width: 50px;',
 				),
 				array(
+					'title'             => esc_html__( 'Load courses of subcategory', 'learnpress' ),
+					'desc'              => esc_html__( 'Load courses of subcategories on Parent Category without tick Parent.', 'learnpress' ),
+					'id'                => 'get_courses_of_subcategory',
+					'default'           => 'no',
+					'type'              => 'checkbox',
+					'css'               => 'min-width: 50px; width: 50px;',
+				),
+				array(
 					'title'   => esc_html__( 'Loading ajax Courses', 'learnpress' ),
 					'desc'    => __( 'On/Off <i>loading ajax courses on the Course Archive page </i>.', 'learnpress' ),
 					'id'      => 'courses_load_ajax',

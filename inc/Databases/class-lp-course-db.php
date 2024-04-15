@@ -386,7 +386,7 @@ class LP_Course_DB extends LP_Database {
 			$query_count = $this->wpdb->prepare( 'SUM(s.section_course_id = %d) AS count_items,', $course_id );
 
 			foreach ( $item_types as $item_type ) {
-				++$i;
+				++ $i;
 				if ( $i == $count_item_types ) {
 					$query_count .= $this->wpdb->prepare( 'SUM(s.section_course_id = %d AND si.item_type = %s) AS %s', $course_id, $item_type, $item_type );
 				} else {
@@ -503,8 +503,14 @@ class LP_Course_DB extends LP_Database {
 			$filter->join[] = "INNER JOIN $this->tb_term_relationships AS r_term ON p.ID = r_term.object_id";
 			$filter->join[] = "INNER JOIN $this->tb_term_taxonomy AS tx ON r_term.term_taxonomy_id = tx.term_taxonomy_id";
 
-			$term_ids_format = LP_Helper::db_format_array( $filter->term_ids, '%d' );
-			$filter->where[] = $this->wpdb->prepare( 'AND tx.term_id IN (' . $term_ids_format . ')', $filter->term_ids );
+			if ( LP_Settings::get_option( 'get_courses_of_subcategory' ) !== 'yes' ) {
+				$term_ids_format = esc_sql( join( ',', $filter->term_ids ) );
+				$filter->where[] = $this->wpdb->prepare( 'AND tx.term_id IN (' . $term_ids_format . ')' );
+			} else {
+				$term_all        = $this->recursion_sub_categories( $filter->term_ids );
+				$term_ids_format = esc_sql( join( ',', $term_all ) );
+				$filter->where[] = "AND tx.term_id IN ($term_ids_format)";
+			}
 			$filter->where[] = $this->wpdb->prepare( 'AND tx.taxonomy = %s', LP_COURSE_CATEGORY_TAX );
 		}
 
@@ -772,6 +778,40 @@ class LP_Course_DB extends LP_Database {
 		$filter_course->query_count = true;
 
 		return apply_filters( 'lp/user/course/query/filter/count-courses-of-author', $filter_course );
+	}
+
+	/**
+	 * Get child categories of category and add to query OR
+	 *
+	 * @param array $term_ids
+	 *
+	 * @return array
+	 * @throws Exception
+	 * @version 1.0.0
+	 * @since 4.2.6.5
+	 */
+	public function recursion_sub_categories( array $term_ids ): array {
+		$total_found                           = 0;
+		$term_ids_format                       = esc_sql( join( ',', $term_ids ) );
+		$filter_sub_category                   = new LP_Filter();
+		$filter_sub_category->collection       = $this->tb_term_taxonomy;
+		$filter_sub_category->collection_alias = 'tx';
+		$filter_sub_category->field_count      = 'tx.term_id';
+		$filter_sub_category->only_fields      = [ 'term_id' ];
+		$filter_sub_category->where[]          = "AND tx.parent IN ($term_ids_format)";
+		$query_sub_category                    = $this->execute( $filter_sub_category, $total_found );
+		$term_sub_ids                          = [];
+
+		if ( $total_found > 0 ) {
+			foreach ( $query_sub_category as $term_id ) {
+				$term_sub_ids[] = $term_id->term_id;
+			}
+
+			$term_sub_idss = $this->recursion_sub_categories( $term_sub_ids );
+			$term_sub_ids  = array_merge( $term_sub_ids, $term_sub_idss );
+		}
+
+		return array_merge( $term_ids, $term_sub_ids );
 	}
 }
 

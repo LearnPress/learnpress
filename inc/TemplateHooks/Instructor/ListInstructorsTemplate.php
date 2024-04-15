@@ -34,7 +34,7 @@ class ListInstructorsTemplate {
 	}
 
 	public function add_internal_scripts_to_head() {
-		if ( ! LP_Page_Controller::is_page_instructors() ) {
+		if ( ! class_exists( 'LP_Page_Controller' ) || ! LP_Page_Controller::is_page_instructors() ) {
 			return;
 		}
 
