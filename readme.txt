@@ -210,6 +210,12 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.2.6.5 (2024-04-17) =
+~ Fixed: security.
+~ Added: option "Load courses of subcategory", get all the courses in the child category that are not selected in the parent category.
+~ Added: option "Number level category want to show" for widget course filter.
+~ Added: option "show/hide author Admin on list instructors".
+
 = 4.2.6.4 (2024-04-01) =
 ~ Compatible with WordPress 6.5.
 ~ Fixed: security.

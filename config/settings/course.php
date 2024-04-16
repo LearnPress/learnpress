@@ -61,7 +61,7 @@ return apply_filters(
 				),
 				array(
 					'title'             => esc_html__( 'Load courses of subcategory', 'learnpress' ),
-					'desc'              => esc_html__( 'Load courses of subcategories on Parent Category without tick Parent.', 'learnpress' ),
+					'desc'              => esc_html__( 'Get all the courses in the child category that are not selected in the parent category.', 'learnpress' ),
 					'id'                => 'get_courses_of_subcategory',
 					'default'           => 'no',
 					'type'              => 'checkbox',
