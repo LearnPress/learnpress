@@ -54,6 +54,7 @@ class LP_Email_Type_Order_Student extends LP_Email_Type_Order {
 
 		$this->variables['{{order_user_id}}']   = $user_id;
 		$this->variables['{{order_user_name}}'] = $order->get_user_name( $user_id );
+		$this->variables = apply_filters( 'lp/email/type-order/variables-mapper/type-order-student', $this->variables, $order, $user_id );
 	}
 
 	/**
