@@ -257,6 +257,13 @@ return apply_filters(
 					'desc'    => esc_html__( 'The number of displayed instructors per page (Enter -1 to display all sections).', 'learnpress' ),
 				),
 				array(
+					'title'   => esc_html__( 'Show Admin on list', 'learnpress' ),
+					'id'      => 'show_admin_on_list_instructors',
+					'default' => 'yes',
+					'type'    => 'checkbox',
+					'desc'    => esc_html__( 'Show author Admin on list instructors.', 'learnpress' ),
+				),
+				array(
 					'type' => 'sectionend',
 					'id'   => 'lp_metabox_instructor_setting',
 				),
