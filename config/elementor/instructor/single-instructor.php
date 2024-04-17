@@ -6,10 +6,10 @@
 use Elementor\Controls_Manager;
 
 return apply_filters(
-	'learn-press/courses-settings-fields',
+	'learn-press/elementor/single-instructor',
 	array_merge(
 		apply_filters(
-			'learn-press/elementor/tab-content/fields',
+			'learn-press/elementor/single-instructor/tab-content/fields',
 			[
 				'section_content' => [
 					'type_detect' => 'section',
@@ -28,9 +28,6 @@ return apply_filters(
 				'end_section'     => [],
 			]
 		),
-		apply_filters(
-			'learn-press/elementor/tab-styles/fields',
-			[]
-		)
+		[]
 	)
 );

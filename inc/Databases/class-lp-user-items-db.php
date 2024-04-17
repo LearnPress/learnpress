@@ -140,6 +140,10 @@ class LP_User_Items_DB extends LP_Database {
 			$filter->where[] = $this->wpdb->prepare( 'AND ui.item_id = %s', $filter->item_id );
 		}
 
+		if ( ! empty( $filter->graduation ) ) {
+			$filter->where[] = $this->wpdb->prepare( 'AND ui.graduation = %s', $filter->graduation );
+		}
+
 		$filter = apply_filters( 'lp/user_items/query/filter', $filter );
 
 		return $this->execute( $filter, $total_rows );

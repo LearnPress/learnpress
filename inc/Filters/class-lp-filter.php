@@ -123,8 +123,6 @@ class LP_Filter {
 	 * @var object stdclass
 	 */
 	public $filter_extra;
-
-	public function __construct() {}
 }
 
 
