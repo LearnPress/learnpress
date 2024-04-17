@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the LearnPress plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: LearnPress 4.2.6.4\n"
+"Project-Id-Version: LearnPress 4.2.6.5-beta.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/learnpress\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-04-01T05:19:12+03:00\n"
+"POT-Creation-Date: 2024-04-16T05:49:34+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.8.1\n"
 "X-Domain: learnpress\n"
@@ -405,7 +405,7 @@ msgid "Filter Area"
 msgstr ""
 
 #: config/elementor/course/filter-course-el.php:22
-#: config/widgets/course/filter-course.php:38
+#: config/widgets/course/filter-course.php:44
 msgid "Fields"
 msgstr ""
 
@@ -414,34 +414,34 @@ msgid "Filter By"
 msgstr ""
 
 #: config/elementor/course/filter-course-el.php:39
-#: config/widgets/course/filter-course.php:43
+#: config/widgets/course/filter-course.php:49
 msgid "Keyword"
 msgstr ""
 
 #: config/elementor/course/filter-course-el.php:40
 #: config/elementor/course/list-courses.php:121
-#: config/widgets/course/filter-course.php:47
+#: config/widgets/course/filter-course.php:53
 #: inc/custom-post-types/course.php:392
 #: inc/custom-post-types/course.php:409
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:253
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:267
 #: templates/emails/order-items-table.php:87
 msgid "Price"
 msgstr ""
 
 #: config/elementor/course/filter-course-el.php:41
-#: config/widgets/course/filter-course.php:51
+#: config/widgets/course/filter-course.php:57
 #: inc/admin/views/statistics-bk/orders.php:49
 #: inc/custom-post-types/course.php:103
 msgid "Course Category"
 msgstr ""
 
 #: config/elementor/course/filter-course-el.php:42
-#: config/widgets/course/filter-course.php:55
+#: config/widgets/course/filter-course.php:61
 msgid "Course Tag"
 msgstr ""
 
 #: config/elementor/course/filter-course-el.php:43
-#: config/widgets/course/filter-course.php:59
+#: config/widgets/course/filter-course.php:65
 #: inc/admin/views/meta-boxes/course/settings.php:50
 #: inc/admin/views/meta-boxes/course/settings.php:293
 #: inc/custom-post-types/course.php:389
@@ -449,12 +449,12 @@ msgstr ""
 #: inc/custom-post-types/lesson.php:220
 #: inc/custom-post-types/question.php:319
 #: inc/custom-post-types/quiz.php:236
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:499
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:567
 msgid "Author"
 msgstr ""
 
 #: config/elementor/course/filter-course-el.php:44
-#: config/widgets/course/filter-course.php:63
+#: config/widgets/course/filter-course.php:69
 #: inc/admin/views/meta-boxes/course/settings.php:122
 msgid "Level"
 msgstr ""
@@ -464,13 +464,13 @@ msgstr ""
 #: config/elementor/instructor/become-a-teacher.php:82
 #: config/elementor/login-user-form.php:46
 #: config/elementor/register-user-form.php:46
-#: config/widgets/course/filter-course.php:67
+#: config/widgets/course/filter-course.php:73
 msgid "Button Submit"
 msgstr ""
 
 #: config/elementor/course/filter-course-el.php:46
 #: config/elementor/course/filter-course-el.php:555
-#: config/widgets/course/filter-course.php:71
+#: config/widgets/course/filter-course.php:77
 msgid "Button Reset"
 msgstr ""
 
@@ -536,7 +536,7 @@ msgid "Extra Option"
 msgstr ""
 
 #: config/elementor/course/filter-course-el.php:135
-#: config/widgets/course/filter-course.php:14
+#: config/widgets/course/filter-course.php:25
 msgid "Load widget via REST"
 msgstr ""
 
@@ -571,7 +571,7 @@ msgid "No"
 msgstr ""
 
 #: config/elementor/course/filter-course-el.php:146
-#: config/widgets/course/filter-course.php:24
+#: config/widgets/course/filter-course.php:35
 msgid "Enable Keyword Search Suggestion"
 msgstr ""
 
@@ -589,8 +589,8 @@ msgstr ""
 #: inc/admin/views/statistics/orders.php:20
 #: inc/admin/views/statistics/overview.php:19
 #: inc/admin/views/statistics/users.php:20
-#: inc/ExternalPlugin/Elementor/Widgets/Course/FilterCourseElementor.php:148
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:594
+#: inc/ExternalPlugin/Elementor/Widgets/Course/FilterCourseElementor.php:147
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:662
 msgid "Filter"
 msgstr ""
 
@@ -652,7 +652,7 @@ msgid "Radius"
 msgstr ""
 
 #: config/elementor/course/filter-course-el.php:353
-#: inc/admin/class-lp-admin-assets.php:503
+#: inc/admin/class-lp-admin-assets.php:504
 #: inc/admin/views/meta-boxes/order/content-tab-preview-exports-invoice.php:66
 #: inc/admin/views/meta-boxes/order/details.php:161
 #: templates/checkout/order-received.php:70
@@ -716,7 +716,7 @@ msgid "Count"
 msgstr ""
 
 #: config/elementor/course/filter-course-el.php:488
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:161
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:175
 msgid "Search"
 msgstr ""
 
@@ -842,7 +842,7 @@ msgid "Nonce"
 msgstr ""
 
 #: config/elementor/course/list-courses-by-page.php:169
-#: config/settings/course.php:84
+#: config/settings/course.php:92
 #: config/settings/profile.php:96
 msgid "Number"
 msgstr ""
@@ -1220,7 +1220,7 @@ msgstr ""
 #: config/settings/permalink.php:141
 #: inc/admin/sub-menus/class-lp-submenu-settings.php:18
 #: inc/admin/views/addons.php:181
-#: learnpress.php:568
+#: learnpress.php:567
 msgid "Settings"
 msgstr ""
 
@@ -1311,119 +1311,135 @@ msgid "The number of displayed courses per page."
 msgstr ""
 
 #: config/settings/course.php:63
-msgid "Loading ajax Courses"
+msgid "Load courses of subcategory"
 msgstr ""
 
 #: config/settings/course.php:64
-msgid "On/Off <i>loading ajax courses on the Course Archive page </i>."
-msgstr ""
-
-#: config/settings/course.php:70
-msgid "Do not run Ajax when reloading the Course Archive page"
+msgid "Get all the courses in the child category that are not selected in the parent category."
 msgstr ""
 
 #: config/settings/course.php:71
-msgid "Ajax is only applied when selecting pagination, filtering, searching, and sorting. Not applicable when reloading the Course Archive page."
+msgid "Loading ajax Courses"
+msgstr ""
+
+#: config/settings/course.php:72
+msgid "On/Off <i>loading ajax courses on the Course Archive page </i>."
 msgstr ""
 
 #: config/settings/course.php:78
-msgid "Pagination Type"
+msgid "Do not run Ajax when reloading the Course Archive page"
 msgstr ""
 
 #: config/settings/course.php:79
-msgid "Display the pagination type on the Course Archive page."
-msgstr ""
-
-#: config/settings/course.php:85
-msgid "Load More"
+msgid "Ajax is only applied when selecting pagination, filtering, searching, and sorting. Not applicable when reloading the Course Archive page."
 msgstr ""
 
 #: config/settings/course.php:86
+msgid "Pagination Type"
+msgstr ""
+
+#: config/settings/course.php:87
+msgid "Display the pagination type on the Course Archive page."
+msgstr ""
+
+#: config/settings/course.php:93
+msgid "Load More"
+msgstr ""
+
+#: config/settings/course.php:94
 msgid "Infinite Scroll"
 msgstr ""
 
-#: config/settings/course.php:91
+#: config/settings/course.php:99
 msgid "Thumbnail dimensions"
 msgstr ""
 
-#: config/settings/course.php:97
+#: config/settings/course.php:105
 msgid "Redirect when finishing the course"
 msgstr ""
 
-#: config/settings/course.php:114
+#: config/settings/course.php:122
 msgid "Curriculum Settings"
 msgstr ""
 
-#: config/settings/course.php:118
+#: config/settings/course.php:126
 msgid "Section Per Page"
 msgstr ""
 
-#: config/settings/course.php:123
+#: config/settings/course.php:131
 msgid "The number of displayed sections per page (Enter -1 to display all sections)."
 msgstr ""
 
-#: config/settings/course.php:126
+#: config/settings/course.php:134
 msgid "Course Item Per Page"
 msgstr ""
 
-#: config/settings/course.php:131
+#: config/settings/course.php:139
 msgid "The number of displayed course items per page in a section (Enter -1 to display all course items)."
 msgstr ""
 
-#: config/settings/course.php:144
+#: config/settings/course.php:152
 msgid "Material Settings"
 msgstr ""
 
-#: config/settings/course.php:148
+#: config/settings/course.php:156
 msgid "File Type"
 msgstr ""
 
-#: config/settings/course.php:154
+#: config/settings/course.php:162
 msgid "Which types of file will be allowed uploading?"
 msgstr ""
 
-#: config/settings/course.php:194
+#: config/settings/course.php:202
 msgid "Upload Files"
 msgstr ""
 
-#: config/settings/course.php:198
+#: config/settings/course.php:206
 msgid "Number files the user can upload. Set to 0 to disable"
 msgstr ""
 
-#: config/settings/course.php:204
+#: config/settings/course.php:212
 msgid "File Size Limit"
 msgstr ""
 
-#: config/settings/course.php:208
+#: config/settings/course.php:216
 msgid "Set Maximum Attachment size for upload (MB)"
 msgstr ""
 
-#: config/settings/course.php:214
+#: config/settings/course.php:222
 msgid "File Per Page"
 msgstr ""
 
-#: config/settings/course.php:218
+#: config/settings/course.php:226
 msgid "The number of displayed files per page (Enter -1 to display all files, set to 0 to disable)."
 msgstr ""
 
-#: config/settings/course.php:224
+#: config/settings/course.php:232
 msgid "Url nofollow"
 msgstr ""
 
-#: config/settings/course.php:225
+#: config/settings/course.php:233
 msgid "Add rel=\"nofollow\" to material external link."
 msgstr ""
 
-#: config/settings/course.php:241
+#: config/settings/course.php:249
 msgid "Instructor Settings"
 msgstr ""
 
-#: config/settings/course.php:245
+#: config/settings/course.php:253
 msgid "Instructor Per Page"
 msgstr ""
 
-#: config/settings/course.php:249
+#: config/settings/course.php:257
 msgid "The number of displayed instructors per page (Enter -1 to display all sections)."
+msgstr ""
+
+#: config/settings/course.php:260
+msgid "Show Admin on list"
+msgstr ""
+
+#: config/settings/course.php:264
+msgid "Show author Admin on list instructors."
 msgstr ""
 
 #: config/settings/gateway/offline-payment.php:20
@@ -1768,12 +1784,16 @@ msgstr ""
 msgid "Course Filter"
 msgstr ""
 
-#: config/widgets/course/filter-course.php:19
-msgid "Hide field has count is zero"
+#: config/widgets/course/filter-course.php:14
+msgid "Number level category want to show"
 msgstr ""
 
-#: config/widgets/course/filter-course.php:29
+#: config/widgets/course/filter-course.php:20
 msgid "Class of list courses want to filter"
+msgstr ""
+
+#: config/widgets/course/filter-course.php:30
+msgid "Hide field has count is zero"
 msgstr ""
 
 #: inc/abstract-settings.php:89
@@ -1849,11 +1869,11 @@ msgstr ""
 msgid "Empty page name!"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:71
+#: inc/admin/class-lp-admin-assets.php:72
 msgid "Oops! Error."
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:72
+#: inc/admin/class-lp-admin-assets.php:73
 #: inc/emails/guest/class-lp-email-cancelled-order-guest.php:25
 #: inc/emails/guest/class-lp-email-completed-order-guest.php:29
 #: inc/emails/guest/class-lp-email-new-order-guest.php:25
@@ -1862,61 +1882,61 @@ msgstr ""
 msgid "Guest"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:78
+#: inc/admin/class-lp-admin-assets.php:79
 msgid "Before taking this action, we strongly recommend you backup your site first before proceeding. If you encounter any problems, please do not hesitate to contact our support team. Are you sure to proceed with the update protocol?"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:496
+#: inc/admin/class-lp-admin-assets.php:497
 #: inc/class-lp-query-list-table.php:32
 msgid "item"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:497
+#: inc/admin/class-lp-admin-assets.php:498
 msgid "Create a new"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:498
+#: inc/admin/class-lp-admin-assets.php:499
 #: inc/admin/views/setup/content.php:50
 #: inc/custom-post-types/quiz.php:169
 msgid "Back"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:499
+#: inc/admin/class-lp-admin-assets.php:500
 #: inc/admin/views/course/modal-choose-items.php:54
 #: inc/admin/views/quiz/modal-choose-items.php:52
 #: inc/custom-post-types/quiz.php:170
 msgid "Selected items"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:500
+#: inc/admin/class-lp-admin-assets.php:501
 msgid "Do you want to remove the \"{{ITEM_NAME}}\" item from the course?"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:501
+#: inc/admin/class-lp-admin-assets.php:502
 msgid "Do you want to move the \"{{ITEM_NAME}}\" item to the trash?"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:504
+#: inc/admin/class-lp-admin-assets.php:505
 msgid "Items"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:506
+#: inc/admin/class-lp-admin-assets.php:507
 msgid "The course sale price must be less than the regular price"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:507
+#: inc/admin/class-lp-admin-assets.php:508
 msgid "The course price must be greater than the sale price"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:508
+#: inc/admin/class-lp-admin-assets.php:509
 msgid "The sale start date must be before the sale end date"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:509
+#: inc/admin/class-lp-admin-assets.php:510
 msgid "The sale end date must be after the sale start date"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:510
+#: inc/admin/class-lp-admin-assets.php:511
 msgid "Invalid date"
 msgstr ""
 
@@ -2000,7 +2020,7 @@ msgid "Invoice"
 msgstr ""
 
 #: inc/admin/class-lp-admin.php:259
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:576
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:644
 msgid "Levels"
 msgstr ""
 
@@ -2331,14 +2351,14 @@ msgstr ""
 #: inc/admin/sub-menus/class-lp-submenu-categories.php:11
 #: inc/admin/sub-menus/class-lp-submenu-categories.php:12
 #: inc/custom-post-types/course.php:412
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:344
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:315
 msgid "Categories"
 msgstr ""
 
 #: inc/admin/lp-admin-actions.php:227
 #: inc/admin/sub-menus/class-lp-submenu-tags.php:11
 #: inc/admin/sub-menus/class-lp-submenu-tags.php:12
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:426
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:494
 msgid "Tags"
 msgstr ""
 
@@ -2465,8 +2485,8 @@ msgstr ""
 #: inc/admin/lp-admin-functions.php:2215
 #: inc/admin/views/addons.php:164
 #: inc/admin/views/addons.php:259
-#: inc/ExternalPlugin/Elementor/Widgets/Course/FilterCourseElementor.php:218
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:211
+#: inc/ExternalPlugin/Elementor/Widgets/Course/FilterCourseElementor.php:217
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:225
 msgid "Paid"
 msgstr ""
 
@@ -2476,8 +2496,8 @@ msgstr ""
 #: inc/admin/views/addons.php:260
 #: inc/course/abstract-course.php:673
 #: inc/course/abstract-course.php:702
-#: inc/ExternalPlugin/Elementor/Widgets/Course/FilterCourseElementor.php:216
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:207
+#: inc/ExternalPlugin/Elementor/Widgets/Course/FilterCourseElementor.php:215
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:221
 #: templates/order/order-details.php:46
 msgid "Free"
 msgstr ""
@@ -2772,7 +2792,7 @@ msgid "Reset Password"
 msgstr ""
 
 #: inc/admin/sub-menus/class-lp-submenu-addons.php:14
-#: learnpress.php:570
+#: learnpress.php:569
 msgid "Add-ons"
 msgstr ""
 
@@ -5007,7 +5027,7 @@ msgid "Add A New Order"
 msgstr ""
 
 #: inc/custom-post-types/order.php:590
-#: inc/custom-post-types/order.php:716
+#: inc/custom-post-types/order.php:718
 #: templates/order/order-details.php:23
 msgid "Order Details"
 msgstr ""
@@ -5032,11 +5052,11 @@ msgstr ""
 msgid "There was no order found in the trash"
 msgstr ""
 
-#: inc/custom-post-types/order.php:724
+#: inc/custom-post-types/order.php:726
 msgid "Order Actions"
 msgstr ""
 
-#: inc/custom-post-types/order.php:732
+#: inc/custom-post-types/order.php:734
 msgid "Order Exports"
 msgstr ""
 
@@ -5488,11 +5508,11 @@ msgstr ""
 msgid "Course/Lesson Material"
 msgstr ""
 
-#: inc/ExternalPlugin/Elementor/Widgets/Course/FilterCourseElementor.php:24
+#: inc/ExternalPlugin/Elementor/Widgets/Course/FilterCourseElementor.php:21
 msgid "Filter Course"
 msgstr ""
 
-#: inc/ExternalPlugin/Elementor/Widgets/Course/FilterCourseElementor.php:224
+#: inc/ExternalPlugin/Elementor/Widgets/Course/FilterCourseElementor.php:223
 msgid "All Levels"
 msgstr ""
 
@@ -7618,7 +7638,7 @@ msgstr ""
 msgid "Now you can begin this course"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-instructor-controller.php:75
+#: inc/rest-api/v1/frontend/class-lp-rest-instructor-controller.php:79
 msgid "No instructor found!"
 msgstr ""
 
@@ -7947,11 +7967,11 @@ msgstr ""
 msgid "Load more."
 msgstr ""
 
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:153
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:167
 msgid "Search Course"
 msgstr ""
 
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:608
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:676
 msgid "Reset"
 msgstr ""
 
@@ -8504,7 +8524,7 @@ msgstr ""
 msgid "Recent Courses"
 msgstr ""
 
-#: learnpress.php:569
+#: learnpress.php:568
 msgid "Documentation"
 msgstr ""
 
