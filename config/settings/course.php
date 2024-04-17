@@ -60,8 +60,8 @@ return apply_filters(
 					'css'               => 'min-width: 50px; width: 50px;',
 				),
 				array(
-					'title'             => esc_html__( 'Load courses of subcategory', 'learnpress' ),
-					'desc'              => esc_html__( 'Get all the courses in the child category that are not selected in the parent category.', 'learnpress' ),
+					'title'             => esc_html__( 'Include courses in subcategory', 'learnpress' ),
+					'desc'              => esc_html__( 'Show all courses within the subcategory that have not been chosen in the parent category.', 'learnpress' ),
 					'id'                => 'get_courses_of_subcategory',
 					'default'           => 'no',
 					'type'              => 'checkbox',

@@ -11,7 +11,7 @@ return apply_filters(
 			'std'   => esc_html__( 'Course Filter', 'learnpress' ),
 		),
 		'number_level_category'      => array(
-			'label' => __( 'Number level category want to show', 'learnpress' ),
+			'label' => __( 'Level of category to display on Frontend', 'learnpress' ),
 			'type'  => 'number',
 			'std'   => 2,
 			'min'   => 1,
