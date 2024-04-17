@@ -332,7 +332,7 @@ class FilterCourseTemplate {
 	 */
 	public function html_struct_categories( array $args = [] ) {
 		$level_current         = $args['level_current'] ?? 0;
-		$number_level_category = $args['number_level_category'] ?? 1;
+		$number_level_category = $args['number_level_category'] ?? 2;
 		$parent_term_id        = $args['parent_term_id'] ?? 0;
 
 		if ( $level_current >= $number_level_category ) {

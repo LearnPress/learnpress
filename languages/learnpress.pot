@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the LearnPress plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: LearnPress 4.2.6.5-beta.1\n"
+"Project-Id-Version: LearnPress 4.2.6.5\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/learnpress\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-04-16T05:49:34+03:00\n"
+"POT-Creation-Date: 2024-04-17T12:25:17+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.8.1\n"
 "X-Domain: learnpress\n"
@@ -1311,11 +1311,11 @@ msgid "The number of displayed courses per page."
 msgstr ""
 
 #: config/settings/course.php:63
-msgid "Load courses of subcategory"
+msgid "Include courses in subcategory"
 msgstr ""
 
 #: config/settings/course.php:64
-msgid "Get all the courses in the child category that are not selected in the parent category."
+msgid "Show all courses within the subcategory that have not been chosen in the parent category."
 msgstr ""
 
 #: config/settings/course.php:71
@@ -1785,7 +1785,7 @@ msgid "Course Filter"
 msgstr ""
 
 #: config/widgets/course/filter-course.php:14
-msgid "Number level category want to show"
+msgid "Level of category to display on Frontend"
 msgstr ""
 
 #: config/widgets/course/filter-course.php:20
@@ -5185,8 +5185,8 @@ msgstr ""
 
 #: inc/Databases/class-lp-order-db.php:111
 #: inc/Databases/class-lp-order-db.php:145
-#: inc/Databases/class-lp-user-items-db.php:199
-#: inc/Databases/class-lp-user-items-db.php:531
+#: inc/Databases/class-lp-user-items-db.php:203
+#: inc/Databases/class-lp-user-items-db.php:535
 msgid "Invalid user!"
 msgstr ""
 
