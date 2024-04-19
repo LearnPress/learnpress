@@ -964,6 +964,7 @@ class LP_User_Items_DB extends LP_Database {
 			$filter->only_fields = [ 'ui.user_id' ];
 			$filter->field_count = 'ui.user_id';
 			$filter->item_type   = LP_COURSE_CPT;
+			$filter->where[]     = 'AND ui.user_id != 0';
 			$this->get_user_items( $filter, $count );
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );

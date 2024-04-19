@@ -318,6 +318,7 @@ class LP_Course_DB extends LP_Database {
 				SELECT COUNT(DISTINCT user_id) AS total FROM {$this->tb_lp_user_items}
 				WHERE item_id = %d
 				AND item_type = %s
+				AND user_id > 0
 				AND (status = %s OR status = %s )
 			",
 			$course_id,
@@ -348,6 +349,7 @@ class LP_Course_DB extends LP_Database {
 				SELECT COUNT(DISTINCT user_id) AS total FROM {$this->tb_lp_user_items}
 				WHERE item_id = %d
 				AND item_type = %s
+				AND user_id > 0
 				AND (status = %s OR status = %s OR status = %s )
 			",
 			$course_id,
