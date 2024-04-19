@@ -41,7 +41,7 @@ class LP_Template_General extends LP_Abstract_Template {
 			apply_filters(
 				'learn_press_breadcrumb_defaults',
 				array(
-					'delimiter'   => '<li class="breadcrumb-delimiter"><i class="fas fa-chevron-right"></i></li>',
+					'delimiter'   => '<li class="breadcrumb-delimiter"><i class="lp-icon-angle-right"></i></li>',
 					'wrap_before' => '<ul class="learn-press-breadcrumb">',
 					'wrap_after'  => '</ul>',
 					'before'      => '',

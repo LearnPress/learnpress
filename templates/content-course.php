@@ -29,22 +29,20 @@ defined( 'ABSPATH' ) || exit();
 		 * @echo DIV tag
 		 */
 		do_action( 'learn-press/before-courses-loop-item' );
-		?>
+        ?>
 
-		<a href="<?php the_permalink(); ?>" class="course-permalink">
 
-			<?php
-			/**
-			 * @since 3.0.0
-			 *
-			 * @called loop/course/title.php
-			 */
-			do_action( 'learn-press/courses-loop-item-title' );
-			?>
+        <?php
+        /**
+         * @since  3.0.0
+         *
+         * @called loop/course/title.php
+         */
+        do_action('learn-press/courses-loop-item-title');
+        ?>
 
-		</a>
 
-		<?php
+        <?php
 
 		/**
 		 * LP Hook

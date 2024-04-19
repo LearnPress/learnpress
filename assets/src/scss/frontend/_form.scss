@@ -1,3 +1,12 @@
+input[type="text"],
+input[type="email"],
+input[type="number"],
+input[type="password"] {
+	@include box-sizing(border-box);
+	margin: 0;
+	box-shadow: unset;
+}
+
 .lp-list-table {
 	width: 100%;
 	margin-bottom: 20px;
@@ -106,7 +115,6 @@
 }
 
 .learn-press-form {
-
 	.form-fields {
 		margin: 0;
 		padding: 0;
@@ -117,6 +125,8 @@
 
 			label {
 				display: block;
+				font-size: $font-size-label;
+				font-weight: $heading-font-weight;
 				margin: 0 0 10px 0;
 			}
 
@@ -142,6 +152,17 @@
 				color: #f00;
 			}
 
+		}
+	}
+
+	&.completed {
+		button {
+			&::before {
+				margin-right: 10px;
+				font-family: 'lp-icon';
+				font-size: 1.125em;
+				content: "\f00c";
+			}
 		}
 	}
 }
@@ -188,6 +209,7 @@
 				}
 			}
 		}
+
 		.form-field.required {
 			label {
 				&::after {
@@ -201,14 +223,14 @@
 	form[name="learn-press-login"] {
 
 
-		>p {
-			>label {
+		> p {
+			> label {
 				color: #666;
 				cursor: pointer;
 				user-select: none;
 			}
 
-			>a {
+			> a {
 				color: #666;
 			}
 
@@ -235,6 +257,7 @@
 .required {
 	label {
 		font-weight: bold;
+
 		&:after {
 			content: ' *';
 			display: inline;
@@ -265,8 +288,8 @@
 	}
 
 	.lp-show-password-input::after {
-		font-family: "Font Awesome 5 Free";
-		font-weight: 900;
+		font-family: 'lp-icon';
+		//font-weight: 900;
 		content: "\f06e";
 	}
 
@@ -295,10 +318,19 @@
 			width: 100%;
 		}
 	}
-	.become-teacher-form__description{
+
+	.become-teacher-form__description {
 		margin-top: 12px;
 	}
-	button{
+
+	button {
 		padding: 12px 24px;
 	}
 }
+
+.btn-base {
+	border-color: var(--lp-primary-color);
+	color: white;
+	background-color: var(--lp-primary-color);
+}
+

@@ -458,7 +458,7 @@ $remove-icon-color: #e74c3c;
 .advanced-list {
 	padding: 5px 0 0 8px;
 	border: 1px solid #ddd;
-	border-radius: 3px;
+	border-radius: var( --lp-border-radius);
 	background: #fff;
 	list-style: none;
 
@@ -467,8 +467,7 @@ $remove-icon-color: #e74c3c;
 		margin: 0 5px 5px -3px;
 		padding: 3px 8px;
 		background: #eee;
-
-		@include border-radius(2px);
+		border-radius: var( --lp-border-radius);
 
 		.remove-item {
 			display: inline-block;
@@ -564,7 +563,7 @@ ul .clearfix {
 .lp-button {
 	padding: 8px 16px;
 	border: 1px solid #e5e7eb;
-	border-radius: 6px;
+ 	border-radius: var( --lp-border-radius);
 	color: #374151;
 	font-size: 0.9em;
 	font-weight: 500;

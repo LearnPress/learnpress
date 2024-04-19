@@ -38,7 +38,7 @@ if ( $completed ) :
 		?>
 	</div>
 	<button class="lp-button completed" disabled>
-		<i class="fa fa-check"></i><?php esc_html_e( 'Completed', 'learnpress' ); ?>
+		<i class="lp-icon-check"></i><?php esc_html_e( 'Completed', 'learnpress' ); ?>
 	</button>
 	<?php
 else :

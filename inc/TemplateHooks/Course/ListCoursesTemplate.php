@@ -379,8 +379,8 @@ class ListCoursesTemplate {
 					'add_args'  => '',
 					'current'   => max( 1, $data['paged'] ?? 1 ),
 					'total'     => $data[ 'total_pages' ?? 1 ],
-					'prev_text' => '<i class="fas fa-angle-left"></i>',
-					'next_text' => '<i class="fas fa-angle-right"></i>',
+					'prev_text' => '<i class="lp-icon-angle-left"></i>',
+					'next_text' => '<i class="lp-icon-angle-right"></i>',
 					'type'      => 'list',
 					'end_size'  => 3,
 					'mid_size'  => 3,
@@ -541,7 +541,7 @@ class ListCoursesTemplate {
 						name="c_search"
 						value="<?php echo esc_attr( $s ); ?>">
 			</label>
-			<button type="submit" name="lp-btn-search-courses"><i class="fas fa-search"></i></button>
+			<button type="submit" name="lp-btn-search-courses"><i class="lp-icon-search"></i></button>
 		</form>
 		<?php
 		return ob_get_clean();

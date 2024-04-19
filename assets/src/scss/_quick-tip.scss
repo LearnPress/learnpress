@@ -14,7 +14,7 @@
 	}
 
 	&::before {
-		font-family: "Font Awesome 5 Free";
+		font-family: 'lp-icon';
 		content: "\f059";
 	}
 
@@ -57,7 +57,7 @@
 		@include border-radius(50%);
 
 		&::before {
-			font-family: "Font Awesome 5 Free";
+			font-family: 'lp-icon';
 			content: "\f00d";
 		}
 	}

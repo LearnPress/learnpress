@@ -108,7 +108,7 @@ class FilterCourseElementor extends LPElementorWidgetBase {
 
 				if ( $field['toggle_content'] === 'yes' ) {
 					$extraClassItem .= ' toggle-content';
-					$icon_toggle     = '<i class="icon-toggle-filter fas fa-angle-up"></i><i class="icon-toggle-filter fas fa-angle-down"></i>';
+					$icon_toggle = '<i class="icon-toggle-filter lp-icon-angle-up"></i><i class="icon-toggle-filter lp-icon-angle-down"></i>';
 
 					if ( $field['default_toggle_on'] === 'yes' ) {
 						$extraClassItem .= ' toggle-on';
@@ -194,7 +194,7 @@ class FilterCourseElementor extends LPElementorWidgetBase {
 
 	protected function selected_style_list() {
 		$classListItem = 'selected-item';
-		$icon_move     = '<i class="icon-remove-selected fas fa-times"></i>';
+		$icon_move = '<i class="icon-remove-selected lp-icon-times"></i>';
 
 		if ( ! empty( $_GET['term_id'] ) ) {
 			$cats = explode( ',', $_GET['term_id'] );

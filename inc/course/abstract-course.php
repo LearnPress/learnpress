@@ -529,7 +529,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 				$html = apply_filters(
 					'learn-press/course/instructor-html',
 					sprintf(
-						'<a href="%s"%s>%s%s</a>',
+						'<a href="%s"%s>%s %s</a>',
 						$instructor->get_url_instructor(),
 						$link_class ? sprintf( 'class="%s"', $link_class ) : '',
 						$with_avatar ? $instructor->get_profile_picture() : '',

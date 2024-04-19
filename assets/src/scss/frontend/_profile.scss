@@ -7,10 +7,11 @@ body {
 			max-width: var(--lp-content-width, 100%);
 		}
 	}
-	.entry-content{
-		&.has-global-padding{
+
+	.entry-content {
+		&.has-global-padding {
 			padding-left: 0;
-			padding-right:0;
+			padding-right: 0;
 		}
 	}
 }
@@ -123,6 +124,7 @@ body {
 			right: 100%;
 			left: auto;
 		}
+
 		&::after {
 			left: 100%;
 			right: auto;
@@ -162,6 +164,8 @@ body {
 		font-size: 1.125em;
 		font-weight: 500;
 		text-transform: capitalize;
+		color: inherit;
+
 		&::before, &::after {
 			content: "";
 			width: 30px;
@@ -171,9 +175,11 @@ body {
 			vertical-align: middle;
 			margin: 0;
 		}
+
 		&::before {
 			margin-right: 5px;
 		}
+
 		&::after {
 			margin-left: 5px;
 		}
@@ -186,7 +192,6 @@ body {
 	#profile-sidebar {
 		float: left;
 		width: 270px;
-		margin-top: 0;
 		border: 1px solid rgba(0, 0, 0, 0.1);
 		border-top: 0;
 		background: #fff;
@@ -215,38 +220,29 @@ body {
 
 				a {
 					display: block;
-					padding: 0 20px;
-					color: #333;
+					padding: 10px 20px;
+					color: inherit;
 					font-weight: 500;
-					line-height: 3em;
+					//line-height: 3em;
 					text-decoration: none;
 				}
 
 				> a {
-					padding: 0 20px 0 52px;
+					padding: 12px 20px 12px 52px;
 					position: relative;
+
 					> i {
 						position: absolute;
-						left: 24px;
+						left: 20px;
 						top: 50%;
-    					transform: translateY(-50%);
+						transform: translateY(-50%);
 						color: var(--lp-primary-color);
-						font-size: 0.75rem;
-						@media (max-width:560px) {
+						//font-size: 0.75rem;
+						@media (max-width: 560px) {
 							left: 50%;
 							top: 50%;
 							transform: translate(-50%, -50%);
 						}
-					}
-
-					&::after {
-						float: right;
-						margin-right: 4px;
-						color: #999;
-						font-family: "Font Awesome 5 Free";
-						font-size: 0.625em;
-						font-weight: 900;
-						content: "\f054";
 					}
 				}
 
@@ -257,15 +253,14 @@ body {
 
 						a {
 							border-bottom: 1px solid #f9f9f9;
-							font-size: 0.875em;
+							font-size: $font-size-small;
 							padding-left: 32px;
 
 							i {
 								margin-right: 8px;
-
-								&::before {
-									font-size: 0.75em;
-								}
+								//&::before {
+								//	font-size: 0.75em;
+								//}
 							}
 
 							&:hover {
@@ -274,34 +269,23 @@ body {
 							}
 						}
 
-
 						&:hover {
-
 							> a {
-
 								i {
 									color: var(--lp-primary-color);
-									background: #fff;
+									//background: #fff;
 								}
 							}
 						}
 					}
 				}
 
-				&.active,
-				&:hover {
+				&.active, &:hover {
 					background: var(--lp-primary-color);
 
-					> a {
-
-						&::after {
-							content: "\f053";
-						}
-					}
 				}
 
 				&.active {
-
 					a {
 						padding-left: 52px;
 
@@ -318,22 +302,21 @@ body {
 					border-bottom-left-radius: 4px;
 				}
 
-				&.wishlist {
-
-					& > a::before {
-						position: absolute;
-						left: 25px;
-						color: var(--lp-primary-color);
-						font-family: "Font Awesome 5 Free";
-						font-size: 0.75em;
-						font-weight: 900;
-						content: "\f004";
-					}
-
-					&:hover a::before {
-						color: #fff;
-					}
-				}
+				//&.wishlist {
+				//	& > a::before {
+				//		position: absolute;
+				//		left: 25px;
+				//		color: var(--lp-primary-color);
+				//		font-family: 'lp-icon';
+				//		//font-size: 0.75em;
+				//		//font-weight: 900;
+				//		content: "\f004";
+				//	}
+				//
+				//	&:hover a::before {
+				//		color: #fff;
+				//	}
+				//}
 
 				&.logout {
 
@@ -341,13 +324,30 @@ body {
 						display: none;
 					}
 				}
+
+				&.has-child {
+					> a:after {
+						float: right;
+						margin-top: 8px;
+						opacity: 0.4;
+						font-family: 'lp-icon';
+						font-size: 0.625em;
+						//font-weight: 900;
+						content: "\f054";
+					}
+
+					&:hover > a:after {
+						opacity: 1;
+					}
+
+					&.active > a:after {
+						content: "\f053";
+						opacity: 1;
+					}
+				}
 			}
 
 			li {
-
-				> a {
-					box-sizing: border-box;
-				}
 
 				> ul {
 					display: none;
@@ -355,7 +355,7 @@ body {
 					z-index: 1000;
 					top: 0;
 					left: 100%;
-					min-width: 150px;
+					min-width: 180px;
 					margin: 0;
 					padding: 0;
 					background: #fff;
@@ -370,12 +370,10 @@ body {
 				&.active,
 				&:hover {
 
-
 					> a {
 						color: #fff;
 
-						i,
-						&::after {
+						i {
 							color: #fff;
 						}
 					}
@@ -386,7 +384,6 @@ body {
 				}
 
 				&.active {
-
 					> ul {
 						position: relative;
 						left: 0;
@@ -512,6 +509,7 @@ body {
 					> a {
 						font-size: 0;
 						height: 56px;
+
 						&::after {
 							margin-left: 0;
 						}
@@ -569,17 +567,17 @@ body {
 
 		.lp-button {
 			display: block;
-			margin: 0 auto 52px auto;
-			padding: 13px 34px;
-			border-color: var(--lp-secondary-color);
-			font-size: 0.875em;
-			font-weight: 500;
-
-			@include border-radius(9px);
-
-			&:hover {
-				border-color: var(--lp-primary-color);
-			}
+			margin: 0 auto;
+			//padding: 13px 34px;
+			//border-color: var(--lp-secondary-color);
+			//font-size: 0.875em;
+			//font-weight: 500;
+			//
+			//@include border-radius(9px);
+			//
+			//&:hover {
+			//	border-color: var(--lp-primary-color);
+			//}
 		}
 
 
@@ -711,59 +709,59 @@ body {
 			}
 		}
 
-		.learn-press-form {
-			.form-fields {
-				.form-field {
-					label {
-						display: block;
-						margin: 0 0 10px 0;
-						color: #333;
-						font-weight: 500;
-						font-style: italic;
-					}
+		//.learn-press-form {
+		//	.form-fields {
+		//		.form-field {
+		//			label {
+		//				display: block;
+		//				margin: 0 0 10px 0;
+		//				color: #333;
+		//				font-weight: 500;
+		//				font-style: italic;
+		//			}
+		//
+		//			.form-field-input {
+		//				display: flex;
+		//				align-items: center;
+		//				flex-wrap: wrap;
+		//				gap: 16px;
+		//
+		//				input {
+		//					border: 1px solid #ccc;
+		//					color: #333;
+		//					font-size: 0.875em;
+		//					padding: 8px 20px;
+		//					line-height: 1.75em;
+		//
+		//					&[type='checkbox'] {
+		//						line-height: 15px;
+		//					}
+		//				}
+		//
+		//				.description {
+		//					margin-top: 0;
+		//				}
+		//			}
+		//		}
+		//	}
+		//}
 
-					.form-field-input {
-						display: flex;
-						align-items: center;
-						flex-wrap: wrap;
-						gap: 16px;
-
-						input {
-							border: 1px solid #ccc;
-							color: #333;
-							font-size: 0.875em;
-							padding: 8px 20px;
-							line-height: 1.75em;
-
-							&[type='checkbox'] {
-								line-height: 15px;
-							}
-						}
-
-						.description {
-							margin-top: 0;
-						}
-					}
-				}
-			}
-		}
-
-		form {
-			&[name=profile-privacy] {
-				button {
-					padding: 16px 24px;
-					border: 0;
-					border-radius: 3px;
-					color: #fff;
-					background: var(--lp-primary-color);
-					font-weight: 400;
-
-					&:hover {
-						opacity: 0.5;
-					}
-				}
-			}
-		}
+		//form {
+		//	&[name=profile-privacy] {
+		//		button {
+		//			padding: 16px 24px;
+		//			border: 0;
+		//			border-radius: 3px;
+		//			color: #fff;
+		//			background: var(--lp-primary-color);
+		//			font-weight: 400;
+		//
+		//			&:hover {
+		//				opacity: 0.5;
+		//			}
+		//		}
+		//	}
+		//}
 	}
 
 	#profile-content-courses {
@@ -795,256 +793,315 @@ body {
 		}
 	}
 }
-	.dashboard-statistic__row {
-		display: flex;
-		gap: 8px;
-		flex-wrap: wrap;
-		@media (max-width: 520px) {
-			display: inherit;
-			background: #f9fafc;
-			padding: 10px 16px;
-		}
 
+.wrap-fullwidth {
 
-		.statistic-box {
-			padding: 15px 10px;
-			border: 1px solid var(--thim-border-color, #ccc);
-			background: #f9fafc;
-			text-align: center;
-			display: flex;
-			gap: 12px;
-			border-radius: 0;
-			flex-direction: column;
-			justify-content: space-between;
-			align-items: center;
-			margin: 0;
-			width: calc((100% - 40px) / 6);
-			&:hover {
-				background: #eaeaea;
-			}
-			@media (max-width: 520px) {
-				width: 100% !important;
-				background: transparent;
-				flex-direction: row;
-				padding: 12px 0;
-				border-width: 0 0 1px 0;
-				&:last-child{
-					border: none;
-				}
-			}
-		}
+	//a,
+	//button,
+	//input,
+	//textarea {
+	//
+	//	&:focus {
+	//		border: 0;
+	//		outline: 0;
+	//	}
+	//}
+	//
+	//a:hover {
+	//	text-decoration: none;
+	//}
+	//
+	//p {
+	//	word-break: break-word;
+	//
+	//	&:last-child {
+	//		margin-bottom: 0;
+	//	}
+	//}
 
+	//label {
+	//	display: block;
+	//	margin: 0;
+	//	outline: none;
+	//}
 
+	//img {
+	//	max-width: 100%;
+	//	height: auto;
+	//}
+
+	//form {
+	//	margin: 0;
+	//}
+
+	//.col-full {
+	//	box-sizing: border-box;
+	//	max-width: 100%;
+	//	padding: 0;
+	//
+	//	.woocommerce-breadcrumb {
+	//		display: none;
+	//	}
+	//}
+}
+
+.dashboard-statistic__row {
+	display: flex;
+	gap: 8px;
+	flex-wrap: wrap;
+	@media (max-width: 520px) {
+		display: inherit;
+		background: #f9fafc;
+		padding: 10px 16px;
 	}
+
 
 	.statistic-box {
-		.statistic-box__text {
-			padding: 0;
-			color: #666;
-			font-weight: 600;
-			margin-bottom: 0;
+		padding: 15px 10px;
+		border: 1px solid var(--thim-border-color, #ccc);
+		background: #f9fafc;
+		text-align: center;
+		display: flex;
+		gap: 12px;
+		border-radius: 0;
+		flex-direction: column;
+		justify-content: space-between;
+		align-items: center;
+		margin: 0;
+		width: calc((100% - 40px) / 6);
+
+		&:hover {
+			background: #eaeaea;
 		}
 
-		.statistic-box__number {
-			color: var(--lp-primary-color);
-			font-size: 1.2em;
-			font-weight: 600;
-			@media (max-width:520px) {
-				font-size: 1em;
+		@media (max-width: 520px) {
+			width: 100% !important;
+			background: transparent;
+			flex-direction: row;
+			padding: 12px 0;
+			border-width: 0 0 1px 0;
+			&:last-child {
+				border: none;
 			}
 		}
 	}
+}
 
-	.profile-courses {
-
-		& > h3 {
-			margin-top: 0;
-			margin-bottom: 36px;
-			color: #333;
-			font-size: 1.875em;
-			font-weight: 600;
-			line-height: 1;
-			text-transform: capitalize;
-		}
+.statistic-box {
+	.statistic-box__text {
+		padding: 0;
+		color: #666;
+		font-weight: 600;
+		margin-bottom: 0;
 	}
 
-	.lp-profile-content {
-		table.lp-list-table {
-			border-spacing: 0;
-			border-top: 1px solid #ccc;
-			border-left: 1px solid #ccc;
-			margin-bottom: 40px;
-
-			tr {
-				th, td {
-					border-right: 1px solid #ccc;
-					border-bottom: 1px solid #ccc;
-					text-align: center;
-				}
-
-				td a {
-					color: var(--wp--preset--color--foreground);
-					font-weight: 400;
-
-					&:hover {
-						color: var(--lp-primary-color);
-					}
-				}
-			}
-		}
-
-		#profile-content-order-details {
-			h3 {
-				margin-top: 0;
-				font-size: 1.875em;
-				line-height: 1.5;
-				font-weight: 500;
-				margin-bottom: 15px;
-				font-family: var(--wp--preset--font-family--system-font);
-			}
+	.statistic-box__number {
+		color: var(--lp-primary-color);
+		font-size: 1.2em;
+		font-weight: 600;
+		@media (max-width: 520px) {
+			font-size: 1em;
 		}
 	}
+}
 
-.profile-basic-information,
-form[name="profile-change-password"] {
+.profile-courses {
 
-	.form-field {
-		margin: 0 10px 24px 10px;
+	& > h3 {
+		margin-top: 0;
+		margin-bottom: 36px;
+		color: #333;
+		font-size: 1.875em;
+		font-weight: 600;
+		line-height: 1;
+		text-transform: capitalize;
+	}
+}
 
-		& > label {
-			margin: 0 0 12px 0;
-			color: #333;
-			font-weight: 500;
-			font-style: italic;
-		}
+.lp-profile-content {
+	table.lp-list-table {
+		border-spacing: 0;
+		border-top: 1px solid #ccc;
+		border-left: 1px solid #ccc;
+		margin-bottom: 40px;
 
-		.form-field-input {
+		tr {
+			th, td {
+				border-right: 1px solid #ccc;
+				border-bottom: 1px solid #ccc;
+				text-align: center;
+			}
 
-			input {
-				height: 43px;
-				padding: 8px 20px;
+			td a {
+				color: var(--wp--preset--color--foreground);
 				font-weight: 400;
 
-			}
-
-			input[type="password"] {
-				padding: 8px 20px;
-			}
-
-			textarea {
-				padding: 9px 20px 16px 20px;
-				font-weight: 300;
-				line-height: 1.5rem;
-			}
-
-			input,
-			textarea {
-				border: 1px solid #ccc;
-				color: #999;
-				font-size: 0.875em;
-				font-style: italic;
-
-				&:focus {
-					border-color: var(--lp-primary-color);
-					outline: 0;
-					color: #222;
+				&:hover {
+					color: var(--lp-primary-color);
 				}
 			}
-
-			::placeholder {
-				opacity: 1;
-				color: #999;
-			}
-
-			:-ms-input-placeholder {
-				color: #999;
-			}
-
-			::-ms-input-placeholder {
-				color: #999;
-			}
-
-			.description {
-				margin-top: 15px;
-			}
-		}
-
-		@media (max-width: 767px) {
-			margin: 0 0 24px 0;
 		}
 	}
 
-	.form-field__50 {
-		float: left;
-		width: calc(50% - 20px);
-		margin-right: 10px;
-
-		@media (max-width: 767px) {
-			float: unset;
-			width: 100%;
-			margin: 0 0 24px 0;
+	#profile-content-order-details {
+		h3 {
+			margin-top: 0;
+			font-size: 1.875em;
+			line-height: 1.5;
+			font-weight: 500;
+			margin-bottom: 15px;
+			font-family: var(--wp--preset--font-family--system-font);
 		}
 	}
+
+}
+
+//.profile-basic-information,
+//form[name="profile-change-password"] {
+//
+//
+//}
+
+.learn-press-form{
+	.form-fields {
+		.form-field {
+			& > label {
+ 				font-style: italic;
+			}
+		}
+		@media (min-width: 767px) {
+			.form-field__50 {
+				float: left;
+				width: calc(50% - 20px);
+				margin-right: 20px;
+ 			}
+		}
+ 	}
+	//.form-field {
+	//	margin: 0 10px 24px 10px;
+	//
+	//	& > label {
+	//		margin: 0 0 12px 0;
+	//		color: #333;
+	//		font-weight: 500;
+	//		font-style: italic;
+	//	}
+	//
+	//	//.form-field-input {
+	//	//
+	//	//	input {
+	//	//		height: 43px;
+	//	//		padding: 8px 20px;
+	//	//		font-weight: 400;
+	//	//
+	//	//	}
+	//	//
+	//	//	input[type="password"] {
+	//	//		padding: 8px 20px;
+	//	//	}
+	//	//
+	//	//	textarea {
+	//	//		padding: 9px 20px 16px 20px;
+	//	//		font-weight: 300;
+	//	//		line-height: 1.5rem;
+	//	//	}
+	//	//
+	//	//	input, textarea {
+	//	//		border: 1px solid $input-border-color;
+	//	//		color: #999;
+	//	//		font-size: 0.875em;
+	//	//		font-style: italic;
+	//	//
+	//	//		&:focus {
+	//	//			border-color: var(--lp-primary-color);
+	//	//			outline: 0;
+	//	//			color: #222;
+	//	//		}
+	//	//	}
+	//	//
+	//	//	@include placeholder-color($input-color-placeholder);
+	//	//
+	//	//	.description {
+	//	//		margin-top: 15px;
+	//	//	}
+	//	//}
+	//
+	//	@media (max-width: 767px) {
+	//		margin: 0 0 24px 0;
+	//	}
+	//}
+	//
+	//.form-field__50 {
+	//	float: left;
+	//	width: calc(50% - 20px);
+	//	margin-right: 10px;
+	//
+	//	@media (max-width: 767px) {
+	//		float: unset;
+	//		width: 100%;
+	//		margin: 0 0 24px 0;
+	//	}
+	//}
 
 	.form-field__clear {
 		clear: both;
 	}
 
-	button {
-		padding: 16px 24px;
-		border: 0;
-		border-radius: 3px;
-		color: #fff;
-		background: var(--lp-primary-color);
-		font-weight: 400;
-
-		&:hover {
-			opacity: 0.5;
-			background: var(--lp-primary-color);
-		}
-	}
+	//button {
+	//	//padding: 16px 24px;
+	//	//border: 0;
+	//	//border-radius: 3px;
+	//	color: #fff;
+	//	background: var(--lp-primary-color);
+	//	font-weight: 400;
+	//
+	//	&:hover {
+	//		opacity: 0.5;
+	//		background: var(--lp-primary-color);
+	//	}
+	//}
 
 	p {
 		margin: 0;
 	}
 }
-
-#learn-press-profile-basic-information {
-
-	.form-fields {
-
-		&::after {
-			display: block;
-			clear: both;
-			content: "";
-		}
-
-		@media (max-width: 767px) {
-			margin: 0;
-		}
-	}
-
-	button[type="submit"] {
-		padding: 0 15px;
-		height: 40px;
-		line-height: 2.5rem;
-		border: 0;
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		background-color: var(--lp-primary-color);
-		color: white;
-		font-size: 1rem;
-		font-weight: 400;
-		@include transition(.3s);
-		@include border-radius(3px);
-
-		&:hover {
-			opacity: .5;
-			background-color: var(--lp-primary-color);
-		}
-	}
-}
+//
+//#learn-press-profile-basic-information {
+//
+//	//.form-fields {
+//	//
+//	//	&::after {
+//	//		display: block;
+//	//		clear: both;
+//	//		content: "";
+//	//	}
+//	//
+//	//	@media (max-width: 767px) {
+//	//		margin: 0;
+//	//	}
+//	//}
+//
+//	button[type="submit"] {
+//		//padding: 0 15px;
+//		//height: 40px;
+//		//line-height: 2.5rem;
+//		//border: 0;
+//		//display: inline-flex;
+//		//align-items: center;
+//		//justify-content: center;
+//		background-color: var(--lp-primary-color);
+//		color: white;
+//		//font-size: 1rem;
+//		//font-weight: 400;
+//		//@include transition(.3s);
+//		//@include border-radius(3px);
+//
+//		&:hover {
+//			opacity: .5;
+//			background-color: var(--lp-primary-color);
+//		}
+//	}
+//}
 
 .recover-order {
 
@@ -1062,6 +1119,7 @@ form[name="profile-change-password"] {
 
 div.order-recover {
 	display: flex;
+	gap: 10px;
 
 	> .button-recover-order {
 		margin: 0;
@@ -1073,8 +1131,8 @@ div.order-recover {
 			&::before {
 				display: inline-block;
 				margin-right: 5px;
-				font-family: "Font Awesome 5 Free";
-				font-weight: 900;
+				font-family: 'lp-icon';
+				//font-weight: 900;
 				content: "\f110";
 				animation: lp-rotating 1s linear infinite;
 			}
@@ -1083,16 +1141,16 @@ div.order-recover {
 
 	input[type="text"] {
 		width: 100%;
-		height: 43px;
-		margin-right: 10px;
-		padding: 0 22px;
-		border: 1px solid #ccc;
-		border-radius: 3px;
-		background-color: #fff;
-		font-size: 0.875em;
-		font-weight: 300;
+		//height: 43px;
+		//margin-right: 10px;
+		//padding: 0 22px;
+		//border: 1px solid #ccc;
+		//border-radius: 3px;
+		//background-color: #fff;
+		//font-size: 0.875em;
+		//font-weight: 300;
 		font-style: italic;
-		line-height: 2.6875em;
+		//line-height: 2.6875em;
 		flex: 1 1 auto;
 	}
 }
@@ -1124,7 +1182,7 @@ div.order-recover {
 				&:first-child {
 					width: 15%;
 					padding: 0px;
-					@media (max-width:768px ) {
+					@media (max-width: 768px) {
 						display: none;
 					}
 				}
@@ -1164,8 +1222,9 @@ div.order-recover {
 				padding: 16px 8px;
 				font-weight: 600;
 				text-align: center;
-				&:first-child{
-					@media (max-width:768px ) {
+
+				&:first-child {
+					@media (max-width: 768px) {
 						display: none;
 					}
 				}
@@ -1183,8 +1242,8 @@ div.order-recover {
 			&::before {
 				display: inline-block;
 				margin-right: 5px;
-				font-family: "Font Awesome 5 Free";
-				font-weight: 900;
+				font-family: 'lp-icon';
+				//font-weight: 900;
 				content: "\f110";
 
 				@include animation(lp-rotating 1s linear infinite);
@@ -1309,8 +1368,8 @@ div.order-recover {
 			&::before {
 				display: inline-block;
 				margin-right: 5px;
-				font-family: "Font Awesome 5 Free";
-				font-weight: 900;
+				font-family: 'lp-icon';
+				//font-weight: 900;
 				content: "\f110";
 
 				@include animation(lp-rotating 1s linear infinite);

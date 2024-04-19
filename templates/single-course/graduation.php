@@ -24,9 +24,9 @@ $classes = array(
 <div class="<?php echo implode( ' ', $classes ); ?>">
 	<?php
 	if ( $graduation === 'passed' ) {
-		echo '<i class="far fa-check-circle icon"></i>';
+		echo '<i class="lp-icon-check-circle"></i>';
 	} else {
-		echo '<i class="far fa-times-circle icon"></i>';
+		echo '<i class="lp-icon-times"></i>';
 	}
 	?>
 

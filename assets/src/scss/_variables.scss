@@ -1,0 +1,49 @@
+// Global variables
+$item-preview: #059de9;
+$primary-bg-duration: #c0c0c0;
+$primary-bg-questions: #9672cf;
+$primary-color-course-item-status: #3bb54a;
+$bg-course-featured: #FF2828;
+
+//** color global
+$color-primary: var(--lp-primary-color);
+$color-white: var(--lp-color-white, #fff);
+$color-black: var(--lp-color-black, #000);
+$text-color-base: var(--lp-color-base, #333);
+$text-color-accent: var(--lp-color-accent, #666);
+$bg-color-lesson: var(--lp-bg-color-lesson, #fff);
+
+
+//** Placeholder text color, Input options
+$input-color-placeholder: #999;
+$input-border-color: #ccc;
+$input-font-weight: 400;
+$border-radius-global: var(--lp-border-radius, 3px);
+
+
+//*** Font Size
+$font-size-base: var(--lp-font-size-base, 1em);
+$font-size-large: calc(($font-size-base * 1.25)); // ~18px
+$font-size-small: calc(($font-size-base * 0.86)); // ~12px
+$font-size-label: calc(($font-size-base * 0.76)); // ~11px
+
+// Typography for H
+$font-size-h1: calc(($font-size-base * 2.6)); // ~36px
+$font-size-h2: calc(($font-size-base * 2.15)); // ~30px
+$font-size-h3: calc(($font-size-base * 1.7)); // ~24px
+$font-size-h4: calc(($font-size-base * 1.25)); // ~18px
+$font-size-h5: $font-size-base;
+$font-size-h6: calc(($font-size-base * 0.85)); // ~12px
+$heading-font-weight: 700;
+
+// LP Single Item Popup
+$popup_header_height: 70px;
+
+// ** Padding item Global
+$spacing-base: 4px;
+$spacing-base-2x: (floor($spacing-base * 2));
+$spacing-base-3x: (floor($spacing-base * 3));
+$spacing-base-4x: (floor($spacing-base * 4));
+$spacing-base-5x: (floor($spacing-base * 5)); // spacing of item default
+$spacing-base-6x: (floor($spacing-base * 6));
+$spacing-base-7x: (floor($spacing-base * 7));

@@ -60,7 +60,7 @@ if ( ! isset( $user ) || ! isset( $profile ) ) {
 				<a href="<?php echo esc_url_raw( $link ); ?>" data-slug="<?php echo esc_attr( $link ); ?>">
 					<?php
 					if ( ! empty( $profile_tab->get( 'icon' ) ) ) {
-						echo wp_kses_post( $profile_tab->get( 'icon' ) );
+						echo wp_kses_post( str_replace(array('fas fa-','fa fa-'),'lp-icon-', $profile_tab->get( 'icon' ) ));
 					}
 					?>
 					<?php echo apply_filters( 'learn_press_profile_' . $tab_key . '_tab_title', $profile_tab->get( 'title' ), $tab_key ); ?>
