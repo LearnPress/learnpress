@@ -8,6 +8,7 @@
 
 use Elementor\Controls_Manager;
 use LearnPress\ExternalPlugin\Elementor\LPElementorControls;
+use LearnPress\Models\Courses;
 
 $option_data = [];
 if ( isset( $options ) ) {
@@ -17,7 +18,7 @@ if ( isset( $options ) ) {
 $filter              = new LP_Course_Filter();
 $filter->limit       = - 1;
 $filter->only_fields = array( 'ID', 'post_title' );
-$courses_obj         = (array) LP_Course::get_courses( $filter );
+$courses_obj         = (array) Courses::get_courses( $filter );
 $courses             = [];
 $categories          = [];
 

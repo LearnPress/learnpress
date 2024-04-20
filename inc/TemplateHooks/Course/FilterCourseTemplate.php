@@ -535,7 +535,7 @@ class FilterCourseTemplate {
 				$filter->only_fields = [ 'DISTINCT(ID)' ];
 				$this->handle_filter_params_before_query( $filter, $params_url );
 				$filter->post_authors = [ $instructor->ID ];
-				LP_Course::get_courses( $filter, $total_course_of_instructor );
+				Courses::get_courses( $filter, $total_course_of_instructor );
 
 				$value    = $instructor->ID;
 				$disabled = $total_course_of_instructor > 0 ? '' : 'disabled';
@@ -608,7 +608,7 @@ class FilterCourseTemplate {
 				$filter->query_count = true;
 				$filter->levels      = [ $key ];
 				$total_courses       = 0;
-				LP_Course::get_courses( $filter, $total_courses );
+				Courses::get_courses( $filter, $total_courses );
 
 				$disabled = $total_courses > 0 ? '' : 'disabled';
 				if ( ! empty( $disabled ) && $hide_count_zero ) {
