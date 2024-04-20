@@ -381,8 +381,8 @@
   "learnpress-students-list": {
     "name": "Student List Add-On for LearnPress",
     "basename": "learnpress-students-list/learnpress-students-list.php",
-    "version": "4.0.1",
-    "require_lp": "4.2.0",
+    "version": "4.0.2",
+    "require_lp": "4.2.6",
     "description": "Student List let people check the list of students who have signed up for the course. You can choose to enable or disable student list for each course.",
     "image": "https://plugins.thimpress.com/downloads/images/lp-students-list.png",
     "link": "https://thimpress.com/product/student-list-add-on-for-learnpress/",
