@@ -142,8 +142,10 @@ class LP_Course_DB extends LP_Database {
 	 * @param int $user_id
 	 *
 	 * @return int
+	 * @deprecated 4.2.6.6 not use anywhere
 	 */
 	public function get_user_item_id( $order_id = 0, $course_id = 0, $user_id = 0 ): int {
+		_deprecated_function( __METHOD__, '4.2.6.6' );
 		$query = $this->wpdb->prepare(
 			"
 			SELECT user_item_id
@@ -313,23 +315,21 @@ class LP_Course_DB extends LP_Database {
 	 * @version 1.0.0
 	 */
 	public function get_total_user_enrolled( int $course_id ): int {
-		$query = $this->wpdb->prepare(
-			"
-				SELECT COUNT(DISTINCT user_id) AS total FROM {$this->tb_lp_user_items}
-				WHERE item_id = %d
-				AND item_type = %s
-				AND user_id > 0
-				AND (status = %s OR status = %s )
-			",
-			$course_id,
-			LP_COURSE_CPT,
-			LP_COURSE_ENROLLED,
-			LP_COURSE_FINISHED
-		);
+		$filter              = new LP_User_Items_Filter();
+		$filter->only_fields = [ 'DISTINCT(user_id)' ];
+		$filter->item_id     = $course_id;
+		$filter->item_type   = LP_COURSE_CPT;
+		$filter->field_count = 'ui.user_id';
+		$filter->join[]      = "INNER JOIN {$this->tb_users} AS u ON ui.user_id = u.ID";
+		$filter->where[]     = 'AND ui.user_id > 0';
+		$filter->where[]     = $this->wpdb->prepare( 'AND ( ui.status = %s OR ui.status = %s )', LP_COURSE_ENROLLED, LP_COURSE_FINISHED );
+		$filter->query_count = true;
 
-		$this->check_execute_has_error();
+		$total            = 0;
+		$lp_user_items_db = LP_User_Items_DB::getInstance();
+		$lp_user_items_db->get_user_items( $filter, $total );
 
-		return (int) $this->wpdb->get_var( $query );
+		return $total;
 	}
 
 	/**
@@ -344,24 +344,26 @@ class LP_Course_DB extends LP_Database {
 	 * @version 1.0.0
 	 */
 	public function get_total_user_enrolled_or_purchased( int $course_id ): int {
-		$query = $this->wpdb->prepare(
-			"
-				SELECT COUNT(DISTINCT user_id) AS total FROM {$this->tb_lp_user_items}
-				WHERE item_id = %d
-				AND item_type = %s
-				AND user_id > 0
-				AND (status = %s OR status = %s OR status = %s )
-			",
-			$course_id,
-			LP_COURSE_CPT,
+		$filter              = new LP_User_Items_Filter();
+		$filter->only_fields = [ 'DISTINCT(user_id)' ];
+		$filter->item_id     = $course_id;
+		$filter->item_type   = LP_COURSE_CPT;
+		$filter->field_count = 'ui.user_id';
+		$filter->join[]      = "INNER JOIN {$this->tb_users} AS u ON ui.user_id = u.ID";
+		$filter->where[]     = 'AND ui.user_id > 0';
+		$filter->where[]     = $this->wpdb->prepare(
+			'AND ( ui.status = %s OR ui.status = %s OR ui.status = %s )',
 			LP_COURSE_ENROLLED,
 			LP_COURSE_FINISHED,
 			LP_COURSE_PURCHASED
 		);
+		$filter->query_count = true;
 
-		$this->check_execute_has_error();
+		$total            = 0;
+		$lp_user_items_db = LP_User_Items_DB::getInstance();
+		$lp_user_items_db->get_user_items( $filter, $total );
 
-		return (int) $this->wpdb->get_var( $query );
+		return $total;
 	}
 
 	/**
@@ -673,7 +675,7 @@ class LP_Course_DB extends LP_Database {
 			$filter->only_fields = [ 'COUNT( DISTINCT(ID) )' ];
 			$this->get_courses_sort_by_free( $filter );
 			$filter->return_string_query = true;
-			$query_count                 = LP_Course::get_courses( $filter, $count );
+			$query_count                 = $this->get_courses( $filter, $count );
 			$count                       = $this->wpdb->get_var( $query_count );
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
@@ -746,8 +748,10 @@ class LP_Course_DB extends LP_Database {
 	 * @throws Exception
 	 * @version 1.0.0
 	 * @since 4.1.6
+	 * @deprecated 4.2.6.6 not use anywhere
 	 */
 	public function count_courses_publish_of_author( int $author_id ): LP_Course_Filter {
+		_deprecated_function( __METHOD__, '4.2.6.6' );
 		$filter_course              = new LP_Course_Filter();
 		$filter_course->only_fields = array( 'ID' );
 		$filter_course->post_author = $author_id;
