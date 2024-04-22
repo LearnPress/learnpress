@@ -247,18 +247,15 @@ class ListCoursesTemplate {
 					'wrapper'       => [ 'text_html' => '<div class="course-info">' ],
 					'short_des'     => [ 'text_html' => $singleCourseTemplate->html_short_description( $course, 15 ) ],
 					'clearfix'      => [ 'text_html' => '<div class="clearfix"></div>' ],
-					'price'         => [
-						'text_html' => sprintf(
-							'<div class="course-footer">%s</div>',
-							$singleCourseTemplate->html_price( $course )
-						),
-					],
-					'read_more'     => [
-						'text_html' => sprintf(
+					'course-footer' => [
+						'course-footer-start' => '<div class="course-footer">',
+						'price'               => $singleCourseTemplate->html_price( $course ),
+						'btn_read_more'       => sprintf(
 							'<div class="course-readmore"><a href="%s">%s</a></div>',
 							$course->get_permalink(),
 							__( 'Read more', 'learnpress' )
 						),
+						'course-footer-end'   => '</div>',
 					],
 					'close_wrapper' => [ 'text_html' => '</div>' ],
 				],
