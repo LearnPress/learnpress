@@ -512,14 +512,17 @@ class ListCoursesTemplate {
 			'<div class="courses-order-by-wrapper">' => '</div>',
 		];
 
-		$values = [
-			'post_date'       => esc_html__( 'Newly published', 'learnpress' ),
-			'post_title'      => esc_html__( 'Title a-z', 'learnpress' ),
-			'post_title_desc' => esc_html__( 'Title z-a', 'learnpress' ),
-			'price'           => esc_html__( 'Price high to low', 'learnpress' ),
-			'price_low'       => esc_html__( 'Price low to high', 'learnpress' ),
-			'popular'         => esc_html__( 'Popular', 'learnpress' ),
-		];
+		$values = apply_filters(
+			'learn-press/courses/order-by/values',
+			[
+				'post_date'       => esc_html__( 'Newly published', 'learnpress' ),
+				'post_title'      => esc_html__( 'Title a-z', 'learnpress' ),
+				'post_title_desc' => esc_html__( 'Title z-a', 'learnpress' ),
+				'price'           => esc_html__( 'Price high to low', 'learnpress' ),
+				'price_low'       => esc_html__( 'Price low to high', 'learnpress' ),
+				'popular'         => esc_html__( 'Popular', 'learnpress' ),
+			]
+		);
 
 		$content = '<select name="order_by" class="courses-order-by">';
 		foreach ( $values as $k => $v ) {
