@@ -932,7 +932,7 @@ class LP_Page_Controller {
 		}
 
 		// If pages of LP set to homepage will return false
-		$link_page = get_the_permalink( $page_id );
+		$link_page = urldecode( get_the_permalink( $page_id ) );
 		$home_url  = home_url( '/' );
 		if ( $home_url === $link_page ) {
 			return false;
