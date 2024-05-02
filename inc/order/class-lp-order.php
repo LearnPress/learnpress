@@ -717,6 +717,18 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			 */
 			do_action( 'learn-press/before-delete-order-item', $item_id, $this->get_id() );
 
+			$course_id = learn_press_get_order_item_meta( $item_id, '_course_id' );
+			if ( ! empty( $course_id ) ) {
+				$user_ids = $this->get_user_id();
+				if ( is_array( $user_ids ) ) {
+					foreach ( $user_ids as $user_id ) {
+						LP_User_Items_DB::getInstance()->delete_user_items_old( (int) $user_id, (int) $course_id );
+					}
+				} else {
+					LP_User_Items_DB::getInstance()->delete_user_items_old( (int) $user_ids, (int) $course_id );
+				}
+			}
+
 			$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}learnpress_order_items WHERE order_item_id = %d", $item_id ) );
 			$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}learnpress_order_itemmeta WHERE learnpress_order_item_id = %d", $item_id ) );
 
@@ -826,7 +838,6 @@ if ( ! class_exists( 'LP_Order' ) ) {
 
 
 		public function get_checkout_payment_url() {
-
 		}
 
 		public function get_formatted_order_subtotal() {
