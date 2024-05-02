@@ -72,7 +72,8 @@ $singleCourseTemplate = SingleCourseTemplate::instance();
 
 <?php if ( $num_pages > 1 && $current_page < $num_pages && $current_page === 1 ) : ?>
 	<div class="lp_profile_course_progress__nav">
-		<button data-paged="<?php echo absint( $current_page + 1 ); ?>"
+		<button class="lp-button"
+				data-paged="<?php echo absint( $current_page + 1 ); ?>"
 				data-number="<?php echo absint( $num_pages ); ?>"><?php esc_html_e( 'View more', 'learnpress' ); ?>
 		</button>
 	</div>
