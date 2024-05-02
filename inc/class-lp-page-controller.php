@@ -781,14 +781,6 @@ class LP_Page_Controller {
 					$q->set( 'post__not_in', $list_ids_exclude );
 				}
 
-				// Not search questions
-				$searchable_types = get_post_types();
-				unset( $searchable_types[ LP_QUESTION_CPT ] );
-				$q->set(
-					'post_type',
-					$searchable_types
-				);
-
 				return $q;
 			}
 
