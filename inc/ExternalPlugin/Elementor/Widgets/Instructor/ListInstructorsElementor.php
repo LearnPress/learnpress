@@ -93,7 +93,10 @@ class ListInstructorsElementor extends LPElementorWidgetBase {
 				}
 				?>
 				<li class="item-instructor">
-					<?php echo $singleInstructorTemplate->render_data( $instructor, html_entity_decode( $item_layout['layout_html'] ) ); ?>
+					<?php echo $singleInstructorTemplate->render_data(
+						$instructor,
+						wp_kses_post( html_entity_decode( $item_layout['layout_html'] ) )
+					); ?>
 				</li>
 				<?php
 			}
