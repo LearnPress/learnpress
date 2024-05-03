@@ -85,9 +85,9 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			}
 
 			// Force option users_can_register to ON.
-			if ( ! get_option( 'users_can_register' ) ) {
+			/*if ( ! get_option( 'users_can_register' ) ) {
 				update_option( 'users_can_register', 1 );
-			}
+			}*/
 		}
 
 		/**
