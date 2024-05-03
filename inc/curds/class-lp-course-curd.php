@@ -450,7 +450,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 			global $wpdb;
 
 			$limit = absint( $args['limit'] ?? 5 );
-			$order = esc_sql( $args['order'] ?? 'DESC' );
+			$order = $args['order'] ?? 'DESC';
 			if ( ! in_array( $order, array( 'ASC', 'DESC' ) ) ) {
 				$order = 'DESC';
 			}
@@ -567,7 +567,6 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 			try {
 				$limit    = absint( $args['limit'] ?? 5 );
 				$order    = $args['order'] ?? 'DESC';
-				$order    = esc_sql( in_array( $order, array( 'ASC', 'DESC' ) ) ? $order : 'DESC' );
 				$order_by = esc_sql( $args['order_by'] ?? 'post_date' );
 				$cols     = $lp_course_db->get_cols_of_table( $lp_course_db->tb_posts );
 				$order_by = in_array( $order_by, $cols ) ? $order_by : 'post_date'; // For security

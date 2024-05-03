@@ -504,15 +504,17 @@ class LP_Course_DB extends LP_Database {
 
 		// Term ids
 		if ( ! empty( $filter->term_ids ) ) {
+			// Sanitize term ids
+			$filter->term_ids = array_map( 'absint', $filter->term_ids );
 			$filter->join[] = "INNER JOIN $this->tb_term_relationships AS r_term ON p.ID = r_term.object_id";
 			$filter->join[] = "INNER JOIN $this->tb_term_taxonomy AS tx ON r_term.term_taxonomy_id = tx.term_taxonomy_id";
 
 			if ( LP_Settings::get_option( 'get_courses_of_subcategory' ) !== 'yes' ) {
-				$term_ids_format = esc_sql( join( ',', $filter->term_ids ) );
-				$filter->where[] = $this->wpdb->prepare( 'AND tx.term_id IN (' . $term_ids_format . ')' );
+				$term_ids_format = join( ',', $filter->term_ids );
+				$filter->where[] = "AND tx.term_id IN ($term_ids_format)";
 			} else {
 				$term_all        = $this->recursion_sub_categories( $filter->term_ids );
-				$term_ids_format = esc_sql( join( ',', $term_all ) );
+				$term_ids_format = join( ',', $term_all );
 				$filter->where[] = "AND tx.term_id IN ($term_ids_format)";
 			}
 			$filter->where[] = $this->wpdb->prepare( 'AND tx.taxonomy = %s', LP_COURSE_CATEGORY_TAX );
@@ -520,11 +522,13 @@ class LP_Course_DB extends LP_Database {
 
 		// Tag ids
 		if ( ! empty( $filter->tag_ids ) ) {
+			// Sanitize tag ids
+			$filter->tag_ids = array_map( 'absint', $filter->tag_ids );
 			$filter->join[] = "INNER JOIN $this->tb_term_relationships AS r_tag ON p.ID = r_tag.object_id";
 			$filter->join[] = "INNER JOIN $this->tb_term_taxonomy AS tag ON r_tag.term_taxonomy_id = tag.term_taxonomy_id";
 
-			$tag_ids_format  = LP_Helper::db_format_array( $filter->tag_ids, '%d' );
-			$filter->where[] = $this->wpdb->prepare( 'AND tag.term_id IN (' . $tag_ids_format . ')', $filter->tag_ids );
+			$tag_ids_format  = join( ',', $filter->tag_ids );
+			$filter->where[] = "AND tag.term_id IN ($tag_ids_format)";
 			$filter->where[] = $this->wpdb->prepare( 'AND tag.taxonomy = %s', LP_COURSE_TAXONOMY_TAG );
 		}
 
@@ -798,7 +802,7 @@ class LP_Course_DB extends LP_Database {
 	 */
 	public function recursion_sub_categories( array $term_ids ): array {
 		$total_found                           = 0;
-		$term_ids_format                       = esc_sql( join( ',', $term_ids ) );
+		$term_ids_format                       = join( ',', $term_ids );
 		$filter_sub_category                   = new LP_Filter();
 		$filter_sub_category->collection       = $this->tb_term_taxonomy;
 		$filter_sub_category->collection_alias = 'tx';
