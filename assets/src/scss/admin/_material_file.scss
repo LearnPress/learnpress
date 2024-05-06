@@ -1,25 +1,26 @@
 table.lp-material--table {
 	border-collapse: collapse;
 	width: 100%;
+
+	td, th {
+		border: 1px solid #dddddd;
+		text-align: left;
+		padding: 8px;
+	}
+
+	thead.hidden {
+		display: none;
+	}
+
+	td.sort {
+		cursor: move;
+	}
+
+	tr:nth-child(even) {
+		background-color: #dddddd40;
+	}
 }
 
-table.lp-material--table td, th {
-	border: 1px solid #dddddd;
-	text-align: left;
-	padding: 8px;
-}
-
-table.lp-material--table thead.hidden {
-	display: none;
-}
-
-table.lp-material--table td.sort {
-	cursor: move;
-}
-
-table.lp-material--table tr:nth-child(even) {
-	background-color: #dddddd40;
-}
 .lp-material--field-wrap {
 	display: flex;
 	flex-direction: row;
