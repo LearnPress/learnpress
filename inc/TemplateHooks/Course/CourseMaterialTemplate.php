@@ -185,7 +185,7 @@ class CourseMaterialTemplate {
 				'<a href="%s" target="_blank" rel="%s">
                     <i class="fas fa-file-download btn-download-material"></i>
                 </a>',
-				$file_url,
+				esc_url_raw( $file_url ),
 				$rel
 			);
 			$content        = Template::instance()->nest_elements( $html_wrapper, $html_file_link );

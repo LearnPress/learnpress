@@ -155,7 +155,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 				$sql = "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}learnpress_files (
 					file_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 					file_name varchar(191) NOT NULL DEFAULT '',
-					file_type varchar(10) NOT NULL DEFAULT '',
+					file_type varchar(100) NOT NULL DEFAULT '',
 					item_id bigint(20) unsigned NOT NULL DEFAULT '0',
 					item_type varchar(100) NOT NULL DEFAULT '',
 					method varchar(10) NOT NULL DEFAULT 'upload' CHECK ( method IN ( 'upload', 'external' ) ),

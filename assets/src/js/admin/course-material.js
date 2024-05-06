@@ -129,13 +129,13 @@ document.addEventListener( 'DOMContentLoaded', function() {
 			let material_data = [];
 			let formData = new FormData(),
 				send_request = true;
-			formData.append( 'action', '_lp_save_materials' );
+
 			materials.forEach( function( ele, index ) {
-				let label = ele.querySelector( '.lp-material--field-title' ).value,
+				const label = ele.querySelector( '.lp-material--field-title' ).value,
 					method = ele.querySelector( '.lp-material--field-method' ).value,
 					external_field = ele.querySelector( '.lp-material--field-external-link' ),
-					upload_field = ele.querySelector( '.lp-material--field-upload' ),
-					file, link;
+					upload_field = ele.querySelector( '.lp-material--field-upload' );
+				let file, link;
 				if ( ! label ) {
 					send_request = false;
 				}
@@ -159,6 +159,7 @@ document.addEventListener( 'DOMContentLoaded', function() {
 				}
 				material_data.push( { label, method, file, link } );
 			} );
+
 			if ( ! send_request ) {
 				alert( 'Enter file title, choose file or enter file link!' );
 			} else {
@@ -167,7 +168,7 @@ document.addEventListener( 'DOMContentLoaded', function() {
 				const url = `${ lpGlobalSettings.rest }lp/v1/material/item-materials/${ postID }`;
 				formData.append( 'data', material_data );
 				target.classList.add( 'loading' );
-				// formData.append( 'post_id', postID );
+
 				fetch( url, {
 					method: 'POST',
 					headers: {
@@ -176,31 +177,34 @@ document.addEventListener( 'DOMContentLoaded', function() {
 					body: formData,
 				} ) // wrapped
 					.then( ( res ) => res.text() )
-					.then( ( data ) => {
+					.then( ( resString ) => {
 						// console.log( data );
 						if ( ! is_single ) {
 							material__group_container.innerHTML = '';
 						} else {
 							materials[ 0 ].remove();
 						}
-						data = JSON.parse( data );
-						if ( data.material && data.material.length > 0 ) {
-							const material_table = document.querySelector( '.lp-material--table tbody' );
-							for ( let i = 0; i < data.material.length; i++ ) {
-								const row = data.material[ i ].data;
-								insertRow( material_table, row );
+						const res = JSON.parse( resString );
+						const { message, data, status } = res;
+						alert( message );
+
+						if ( status === 'success' ) {
+							if ( data.length > 0 ) {
+								const material_table = document.querySelector( '.lp-material--table' );
+								const thead = material_table.querySelector( 'thead' );
+								const tbody = material_table.querySelector( 'tbody' );
+
+								thead.classList.remove( 'hidden' );
+								for ( let i = 0; i < data.length; i++ ) {
+									const row = data[ i ];
+									insertRow( tbody, row );
+								}
+								can_upload.innerText = parseInt( can_upload.innerText ) - data.length;
+								add_btn.setAttribute( 'can-upload', can_upload.innerText );
 							}
-							can_upload.innerText = ~~can_upload.innerText - data.material.length;
-							add_btn.setAttribute( 'can-upload', can_upload.innerText );
 						}
-						if ( data.items && data.items.length > 0 ) {
-							for ( let i = 0; i < data.items.length; i++ ) {
-								add_btn.insertAdjacentHTML(
-									'beforebegin',
-									`<h3 class="notice notice-error">${ data.items[ i ].message }</h3>`
-								);
-							}
-						}
+					} )
+					.finally( () => {
 						target.classList.remove( 'loading' );
 					} )
 					.catch( ( err ) => console.log( err ) );

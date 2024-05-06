@@ -42,147 +42,102 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 			$can_upload          = $allow_upload_amount - $uploaded_files;
 			$allow_file_type     = LP_Settings::get_option( 'material_allow_file_type', array( 'pdf', 'txt' ) );
 			$accept              = '';
-			$accept_file_type    = '';
+			$accept_file_type    = implode( ', ', $allow_file_type );
 			$material_mime_types = LP_Settings::lp_material_file_types();
 			foreach ( $allow_file_type as $ext ) {
-				$accept           .= $material_mime_types[ $ext ] . ',';
-				$accept_file_type .= $ext . ',';
+				$accept .= $material_mime_types[ $ext ] . ',';
 			}
-			$accept           = rtrim( $accept, ',' );
-			$accept_file_type = rtrim( $accept_file_type, ',' );
+			$accept = rtrim( $accept, ',' );
 			?>
-			<style>
-				table.lp-material--table {
-					border-collapse: collapse;
-					width: 100%;
-				}
-
-				table.lp-material--table td, th {
-					border: 1px solid #dddddd;
-					text-align: left;
-					padding: 8px;
-				}
-
-				table.lp-material--table td.sort {
-					cursor: move;
-				}
-
-				table.lp-material--table tr:nth-child(even) {
-					background-color: #dddddd;
-				}
-				.lp-material--field-wrap {
-					display: flex;
-					flex-direction: row;
-					align-items: center;
-					padding-block: 5px;
-				}
-				.lp-material--field-wrap label { min-width:70px }
-				.lp-material--group{
-					margin-top: 10px;
-					padding: 10px;
-					border: 1px solid #dedede;
-					border-radius: 10px;
-					box-shadow: 2px 2px rgba(180, 180, 180, 0.2);
-				}
-				.lp-material-btn-wrap{
-					display: flex;
-					justify-content: space-between;
-				}
-				.lp-material-btn-wrap.loading::before, #btn-lp--save-material.loading::before{
-					display: inline-block;
-					margin-right: 5px;
-					font-family: "Font Awesome 5 Free";
-					font-weight: 900;
-					content: "\f110";
-					-webkit-animation: lp-rotating 1s linear infinite;
-					-moz-animation: lp-rotating 1s linear infinite;
-					animation: lp-rotating 1s linear infinite;
-				}
-				.button.lp-material--delete{
-					color: white;
-					border-color: red;
-					background: red;
-					vertical-align: top;
-				}
-				.lp-material--field-wrap.field-action-wrap{
-					display: flex;
-					justify-content: space-between;
-				}
-				.lp-meta-box .lp-material--field-wrap input{
-					width: 100%;
-				}
-				#available-to-upload{
-					font-weight: bold;
-				}
-			</style>
-		<div id="lp-material-container">
-			<?php if ( $allow_upload_amount == 0 ) : ?>
-				<?php if ( get_post_type( $thepostid ) == LP_COURSE_CPT ) : ?>
-					<div > <?php esc_html_e( 'Downloadable Materials is not allowed!', 'learnpress' ); ?> </div>
-				<?php endif ?>
-			<?php else : ?>
-			<div>
-				<?php esc_html_e( 'Maximum amount of files you can upload more: ', 'learnpress' ); ?>
-				<span id="available-to-upload"><?php esc_html_e( $can_upload ); ?></span>
-				<?php esc_html_e( ' files ( maximum file size is ' . $max_file_size . 'MB ). And allow upload only these types: ' . $accept_file_type . '.', 'learnpress' ); ?>
-			</div>
-			<hr>
-			<div class="lp-material-btn-wrap">
-				<button class="button button-primary" id="btn-lp--add-material" type="button" can-upload="<?php esc_attr_e( $can_upload ); ?>" ><?php esc_html_e( 'Add Course Materials', 'learnpress' ); ?></button>
-				<button class="button button-primary" id="btn-lp--save-material" type="button"><?php esc_html_e( 'Save', 'learnpress' ); ?></button>
-			</div>
-			<hr>
-			<input type="hidden" id="material-max-file-size" value="<?php esc_attr_e( $max_file_size ); ?>"/>
-			<div id="lp-material--add-material-template" hidden>
-				<div class="lp-material--group">
-					<div class="lp-material--field-wrap">
-						<label ><?php esc_html_e( 'File Title', 'learnpress' ); ?></label>
-						<input type="text" class="lp-material--field-title" value="" placeholder="<?php esc_attr_e( 'Enter File Title', 'learnpress' ); ?>" />
+			<div id="lp-material-container">
+				<?php if ( $allow_upload_amount == 0 ) : ?>
+					<?php if ( get_post_type( $thepostid ) == LP_COURSE_CPT ) : ?>
+						<div> <?php esc_html_e( 'Downloadable Materials is not allowed!', 'learnpress' ); ?> </div>
+					<?php endif ?>
+				<?php else : ?>
+					<div>
+						<?php esc_html_e( '+ Maximum amount of files you can upload more: ', 'learnpress' ); ?>
+						<span id="available-to-upload"><?php esc_html_e( $can_upload ); ?></span>
+						<?php esc_html_e( ' files ( maximum file size is ' . $max_file_size . 'MB ).', 'learnpress' ); ?>
 					</div>
-					<div class="lp-material--field-wrap">
-						<label ><?php esc_html_e( 'Method', 'learnpress' ); ?></label>
-						<select class="lp-material--field-method">
-							<option value="upload" selected><?php esc_html_e( 'Upload', 'learnpress' ); ?></option>
-							<option value="external"><?php esc_html_e( 'External', 'learnpress' ); ?></option>
-						</select>
+					<div>
+						<?php esc_html_e( '+ And allow upload only these types: ' . $accept_file_type . '.', 'learnpress' ); ?>
 					</div>
-					<div class="lp-material--field-wrap lp-material--upload-wrap">
-						<label ><?php esc_html_e( 'Choose File  ', 'learnpress' ); ?><input type="file" class="lp-material--field-upload" value="" accept="<?php esc_attr_e( $accept ); ?>"/></label>
+					<hr>
+					<div class="lp-material-btn-wrap">
+						<button class="button button-primary" id="btn-lp--add-material" type="button"
+								can-upload="<?php esc_attr_e( $can_upload ); ?>"><?php esc_html_e( 'Add Course Materials', 'learnpress' ); ?></button>
+						<button class="button button-primary" id="btn-lp--save-material"
+								type="button"><?php esc_html_e( 'Save', 'learnpress' ); ?></button>
 					</div>
-					<div class="lp-material--field-wrap field-action-wrap">
-						<button type="button" class="button lp-material-save-field"><?php esc_html_e( 'Save field', 'learnpress' ); ?></button>
-						<button class="button lp-material--delete" type="button"><?php esc_html_e( 'Remove', 'learnpress' ); ?></button>
+					<input type="hidden" id="material-max-file-size" value="<?php esc_attr_e( $max_file_size ); ?>"/>
+					<div id="lp-material--add-material-template" hidden>
+						<div class="lp-material--group">
+							<div class="lp-material--field-wrap">
+								<label><?php esc_html_e( 'File Title', 'learnpress' ); ?></label>
+								<input type="text" class="lp-material--field-title" value=""
+									   placeholder="<?php esc_attr_e( 'Enter File Title', 'learnpress' ); ?>"/>
+							</div>
+							<div class="lp-material--field-wrap">
+								<label><?php esc_html_e( 'Method', 'learnpress' ); ?></label>
+								<select class="lp-material--field-method">
+									<option value="upload"
+											selected><?php esc_html_e( 'Upload', 'learnpress' ); ?></option>
+									<option value="external"><?php esc_html_e( 'External', 'learnpress' ); ?></option>
+								</select>
+							</div>
+							<div class="lp-material--field-wrap lp-material--upload-wrap">
+								<label><?php esc_html_e( 'Choose File  ', 'learnpress' ); ?><input type="file"
+																								   class="lp-material--field-upload"
+																								   value=""
+																								   accept="<?php esc_attr_e( $accept ); ?>"/></label>
+							</div>
+							<div class="lp-material--field-wrap field-action-wrap">
+								<button type="button"
+										class="button lp-material-save-field"><?php esc_html_e( 'Save field', 'learnpress' ); ?></button>
+								<button class="button lp-material--delete"
+										type="button"><?php esc_html_e( 'Remove', 'learnpress' ); ?></button>
+							</div>
+						</div>
 					</div>
-				</div>
-			</div>
-			<div id="lp-material--upload-field-template" hidden>
-				<div class="lp-material--field-wrap lp-material--upload-wrap">
-					<label >
-						<?php esc_html_e( 'Choose File  ', 'learnpress' ); ?>
-						<input type="file" class="lp-material--field-upload" value="" accept="<?php esc_attr_e( $accept ); ?>"/>
-					</label>
-				</div>
-			</div>
-			<div id="lp-material--external-field-template" hidden>
-				<div class="lp-material--field-wrap lp-material--external-wrap">
-					<label ><?php esc_html_e( 'File URL', 'learnpress' ); ?></label>
-					<input type="url" class="lp-material--field-external-link" value="" placeholder="<?php esc_attr_e( 'Enter File URL', 'learnpress' ); ?>" />
-				</div>
-			</div>
-			<input type="hidden" id="current-material-post-id" value="<?php echo esc_attr( $thepostid ); ?>">
-			<input type="hidden" id="delete-material-message" value="<?php esc_attr_e( 'Do you want to delete this file?', 'learnpress' ); ?>">
-			<input type="hidden" id="delete-material-row-text" value="<?php esc_attr_e( 'Delete', 'learnpress' ); ?>">
-			<table class="lp-material--table">
-				<thead>
-					<tr>
-						<th><?php esc_html_e( 'File Title', 'learnpress' ); ?></th>
-						<th><?php esc_html_e( 'Method', 'learnpress' ); ?></th>
-						<th><?php esc_html_e( 'Action', 'learnpress' ); ?></th>
-					</tr>
-				</thead>
-				<tbody>
+					<div id="lp-material--upload-field-template" hidden>
+						<div class="lp-material--field-wrap lp-material--upload-wrap">
+							<label>
+								<?php esc_html_e( 'Choose File  ', 'learnpress' ); ?>
+								<input type="file" class="lp-material--field-upload" value=""
+									   accept="<?php esc_attr_e( $accept ); ?>"/>
+							</label>
+						</div>
+					</div>
+					<div id="lp-material--external-field-template" hidden>
+						<div class="lp-material--field-wrap lp-material--external-wrap">
+							<label><?php esc_html_e( 'File URL', 'learnpress' ); ?></label>
+							<input type="url" class="lp-material--field-external-link" value=""
+								   placeholder="<?php esc_attr_e( 'Enter File URL', 'learnpress' ); ?>"/>
+						</div>
+					</div>
+					<input type="hidden" id="current-material-post-id" value="<?php echo esc_attr( $thepostid ); ?>">
+					<input type="hidden" id="delete-material-message"
+						   value="<?php esc_attr_e( 'Do you want to delete this file?', 'learnpress' ); ?>">
+					<input type="hidden" id="delete-material-row-text"
+						   value="<?php esc_attr_e( 'Delete', 'learnpress' ); ?>">
+					<table class="lp-material--table">
+						<?php
+						$class_hidden_thead = '';
+						if ( empty( $uploaded_files ) ) {
+							$class_hidden_thead = 'hidden';
+						}
+						?>
+						<thead class="<?php echo esc_attr( $class_hidden_thead ); ?>">
+						<tr>
+							<th><?php esc_html_e( 'File Title', 'learnpress' ); ?></th>
+							<th><?php esc_html_e( 'Method', 'learnpress' ); ?></th>
+							<th><?php esc_html_e( 'Action', 'learnpress' ); ?></th>
+						</tr>
+						</thead>
+						<tbody>
 
-				<!-- <?php if ( $course_materials ) : ?>
+						<!-- <?php if ( $course_materials ) : ?>
 					<?php foreach ( $course_materials as $row ) : ?>
 						<tr data-id="<?php esc_attr_e( $row->file_id ); ?>" data-sort="<?php esc_attr_e( $row->orders ); ?>">
 						<td class="sort"><?php esc_attr_e( $row->file_name ); ?></td>
@@ -191,17 +146,17 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 						</tr>
 					<?php endforeach; ?>
 				<?php endif; ?> -->
-				</tbody>
+						</tbody>
 
-			</table>
-				<?php if ( $course_materials ) : ?>
-					<?php lp_skeleton_animation_html( 3, 100 ); ?>
-			<?php endif ?>
-			<div id="lp-material--group-container">
+					</table>
+					<?php if ( $course_materials ) : ?>
+						<?php lp_skeleton_animation_html( 3, 100 ); ?>
+					<?php endif ?>
+					<div id="lp-material--group-container">
 
+					</div>
+				<?php endif; ?>
 			</div>
-			<?php endif; ?>
-		</div>
 			<?php
 		}
 
