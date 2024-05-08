@@ -588,7 +588,10 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 
 			// Check in days sale
 			if ( $has_sale_price && '' !== $start_date && '' !== $end_date ) {
-				$now   = time();
+				$nowObj = new LP_Datetime();
+				// Compare via timezone WP
+				$nowStr = $nowObj->toSql( true );
+				$now = strtotime($nowStr);
 				$end   = strtotime( $end_date );
 				$start = strtotime( $start_date );
 
