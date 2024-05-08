@@ -38,7 +38,7 @@ a {
 }
 
 .lp-content-area {
-	max-width: var(--lp-container-max-width);
+	max-width: var(--lp-container-max-width)!important;
 	margin: 0 auto;
 	padding-right: var(--lp-cotainer-padding);
 	padding-left: var(--lp-cotainer-padding);
