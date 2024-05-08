@@ -24,8 +24,8 @@ $border-radius-global: var(--lp-border-radius, 3px);
 //*** Font Size
 $font-size-base: var(--lp-font-size-base, 1em);
 $font-size-large: calc(($font-size-base * 1.25)); // ~18px
-$font-size-small: calc(($font-size-base * 0.86)); // ~12px
-$font-size-label: calc(($font-size-base * 0.76)); // ~11px
+$font-size-small: calc(($font-size-base * 0.925)); // ~12px
+$font-size-label: calc(($font-size-base * 0.86)); // ~11px
 
 // Typography for H
 $font-size-h1: calc(($font-size-base * 2.6)); // ~36px
@@ -47,3 +47,14 @@ $spacing-base-4x: (floor($spacing-base * 4));
 $spacing-base-5x: (floor($spacing-base * 5)); // spacing of item default
 $spacing-base-6x: (floor($spacing-base * 6));
 $spacing-base-7x: (floor($spacing-base * 7));
+$spacing-base-8x: (floor($spacing-base * 8));
+$spacing-base-9x: (floor($spacing-base * 9));
+$spacing-base-10x: (floor($spacing-base * 10));
+// fix for old variable
+:root {
+	--lp-cotainer-max-with: var(--lp-container-max-width);
+}
+
+.wp-block-group {
+	--lp-container-max-width: var(--wp--style--global--wide-size);
+}

@@ -105,7 +105,9 @@
 body.astra {
 	--lp-bg-color-lesson: var(--ast-global-color-4);
 }
-
+.ast-container{
+	--lp-cotainer-padding: 0
+}
 // Twenty Sixteen
 body {
 	&.learnpress-page {

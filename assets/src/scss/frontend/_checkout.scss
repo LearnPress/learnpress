@@ -116,48 +116,6 @@
 			}
 		}
 	}
-
-	//.rwmb-input {
-	//
-	//	input:not([type="checkbox"]) {
-	//		width: 100%;
-	//		//height: 43px;
-	//		padding: 0 22px;
-	//		border: 1px solid #ccc;
-	//		border-radius: 3px;
-	//		//background-color: #fff;
-	//		//font-size: 0.875em;
-	//		//font-weight: 300;
-	//		//font-style: italic;
-	//		//line-height: 2.6875em;
-	//
-	//		&:focus {
-	//			border-color: var(--lp-primary-color);
-	//			outline: 0;
-	//			color: #222;
-	//		}
-	//	}
-	//
-	//	::placeholder {
-	//		opacity: 1;
-	//		color: #999;
-	//	}
-	//
-	//	:-ms-input-placeholder {
-	//		color: #999;
-	//	}
-	//
-	//	::-ms-input-placeholder {
-	//		color: #999;
-	//	}
-	//
-	//	input:-webkit-autofill,
-	//	input:-webkit-autofill:hover,
-	//	input:-webkit-autofill:focus {
-	//		-webkit-box-shadow: 0 0 0 1000px #fff inset;
-	//		-webkit-text-fill-color: #999 !important;
-	//	}
-	//}
 }
 
 .lp-checkout-form {
@@ -707,6 +665,7 @@
 		display: none;
 	}
 }
+
 .lp-content-area .order_details {
 	width: 100%;
 	border-collapse: collapse;
@@ -720,5 +679,12 @@
 		a {
 			color: var(--lp-primary-color);
 		}
+	}
+}
+
+.learnpress-checkout {
+	.learnpress > .learn-press-message {
+		max-width: var(--lp-container-max-width);
+		margin: 0 auto;
 	}
 }

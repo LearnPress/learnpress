@@ -161,28 +161,28 @@ body {
 
 	.lp-profile-username {
 		padding-bottom: 10px;
-		font-size: 1.125em;
+		font-size: $font-size-h4;
 		font-weight: 500;
 		text-transform: capitalize;
 		color: inherit;
 
-		&::before, &::after {
-			content: "";
-			width: 30px;
-			height: 1px;
-			background-color: white;
-			display: inline-block;
-			vertical-align: middle;
-			margin: 0;
-		}
-
-		&::before {
-			margin-right: 5px;
-		}
-
-		&::after {
-			margin-left: 5px;
-		}
+		//&::before, &::after {
+		//	content: "";
+		//	width: 30px;
+		//	height: 1px;
+		//	background-color: white;
+		//	display: inline-block;
+		//	vertical-align: middle;
+		//	margin: 0;
+		//}
+		//
+		//&::before {
+		//	margin-right: 5px;
+		//}
+		//
+		//&::after {
+		//	margin-left: 5px;
+		//}
 	}
 
 	.lp-profile-user-bio {

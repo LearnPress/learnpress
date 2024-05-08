@@ -655,7 +655,10 @@
 	.section-content {
 		margin-bottom: 0;
 	}
-
+	.curriculum-more{
+		padding-right: $spacing-base-4x;
+		padding-left: $spacing-base-4x;
+	}
 	.course-item {
 		//min-height: 50px;
 		//margin-bottom: 4px;

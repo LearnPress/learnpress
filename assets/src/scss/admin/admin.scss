@@ -26,6 +26,18 @@
 @import "../frontend/skeleton-animation";
 @import "statistics";
 @import "material_file";
+
+@font-face {
+	font-family: 'lp-icon';
+	src: url('../../src/css/vendor/fonts/lp-icon/lp-icon.ttf?v3eoq3') format('truetype'),
+	url('../../src/css/vendor/fonts/lp-icon//lp-icon.woff?v3eoq4') format('woff'),
+	url('../../src/css/vendor/fonts/lp-icon//lp-icon.svg?v3eoq4#lp-icon') format('svg');
+	font-weight: normal;
+	font-style: normal;
+	font-display: block;
+	font-size: 1em;
+}
+
 .button {
 
 	&.disabled {
@@ -154,8 +166,7 @@
 	}
 }
 
-.lp-notice,
-.learn-press-notice {
+.lp-notice, .learn-press-notice {
 	position: relative;
 	padding: 12px;
 	margin: 0;

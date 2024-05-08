@@ -635,14 +635,14 @@ ul.learn-press-nav-tabs {
 		display: flex;
 		position: relative;
 		margin: 0 0 2px 0;
-		padding: 0 $spacing-base-5x;
+		padding: 0 $spacing-base-4x;
 		background: rgba(241, 242, 248, 0.4);
 		//font-size: 0.8em;
 		transition: padding-left linear 0.15s;
 
-		@media (max-width: 767px) {
-			padding: 0 $spacing-base-4x;
-		}
+		//@media (max-width: 767px) {
+		//	padding: 0 $spacing-base-4x;
+		//}
 
 		& > span {
 			display: flex;
