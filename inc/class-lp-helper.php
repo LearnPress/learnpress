@@ -655,7 +655,11 @@ class LP_Helper {
 			$replace[] = $course_category;
 		}
 
-		return str_replace( $find, $replace, $post_link );
+		return apply_filters(
+			'learn-press/single-course/permalink',
+			str_replace( $find, $replace, $post_link ),
+			$post
+		);
 	}
 
 	/**
