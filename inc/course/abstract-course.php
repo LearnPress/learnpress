@@ -591,9 +591,9 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 				$nowObj = new LP_Datetime();
 				// Compare via timezone WP
 				$nowStr = $nowObj->toSql( true );
-				$now = strtotime($nowStr);
-				$end   = strtotime( $end_date );
-				$start = strtotime( $start_date );
+				$now    = strtotime( $nowStr );
+				$end    = strtotime( $end_date );
+				$start  = strtotime( $start_date );
 
 				$has_sale_price = $now >= $start && $now <= $end;
 			}

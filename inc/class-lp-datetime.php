@@ -66,28 +66,6 @@ class LP_Datetime {
 	}
 
 	/**
-	 * Get default timezone from param and wp settings
-	 *
-	 * @param mixed $tz
-	 *
-	 * @return DateTimeZone|null|string
-	 * @deprecated 4.1.7.3
-	 */
-	public static function get_default_timezone( $tz ) {
-		_deprecated_function( __METHOD__, '4.1.7.3' );
-		if ( empty( self::$def_timezone ) ) {
-			if ( $tz === null ) {
-				$tz = wp_timezone();
-			} elseif ( is_string( $tz ) && $tz ) {
-				$tz = new DateTimeZone( $tz );
-			}
-			self::$def_timezone = $tz;
-		}
-
-		return self::$def_timezone;
-	}
-
-	/**
 	 * Check if time is exceeded with current time
 	 *
 	 * using by Addon Content Drip.
@@ -225,41 +203,6 @@ class LP_Datetime {
 	}
 
 	/**
-	 * @param boolean $hours True to return the value in hours.
-	 *
-	 * @return float
-	 * @deprecated 4.1.7.3
-	 */
-	public function getOffset( $hours = false ) {
-		_deprecated_function( __METHOD__, '4.1.7.3' );
-		return $this->tz ? (float) $hours ? ( $this->tz->getOffset( $this ) / 3600 ) : $this->tz->getOffset( $this ) : 0;
-	}
-
-	/**
-	 * @param DateTimeZone $tz The new DateTimeZone object.
-	 *
-	 * @return void
-	 * @deprecated 4.1.7.3
-	 */
-	/*public function setTimezone( $tz ) {
-		_deprecated_function( __METHOD__, '4.1.7.3' );
-		$this->tz = $tz;
-
-		parent::setTimezone( $tz );
-	}*/
-
-	/**
-	 * @param boolean $local True to return the date string in the local time zone, false to return it in GMT.
-	 *
-	 * @return  string
-	 * @deprecated 4.1.7.3
-	 */
-	public function toISO8601( $local = true ) {
-		_deprecated_function( __METHOD__, '4.1.7.3' );
-		//return $this->format( DateTime::RFC3339, $local );
-	}
-
-	/**
 	 * Get the date as an SQL datetime string.
 	 *
 	 * @param boolean $local True to return the date string in the local time zone, false to return it in GMT.
@@ -277,27 +220,6 @@ class LP_Datetime {
 	}
 
 	/**
-	 * Consider the date is in GMT and convert to local time with
-	 * gmt_offset option of WP Core.
-	 *
-	 * @param string $format
-	 *
-	 * @return int|string
-	 * @since 4.0.0
-	 * @deprecated 4.1.7.3
-	 */
-	public function toLocal( $format = 'Y-m-d H:i:s' ) {
-		_deprecated_function( __METHOD__, '4.1.7.3' );
-		$time = $this->getTimestamp() + get_option( 'gmt_offset' ) * HOUR_IN_SECONDS;
-
-		if ( $format ) {
-			return date( $format, $time ); // phpcs:ignore
-		}
-
-		return $time;
-	}
-
-	/**
 	 * Convert to format sql local time.
 	 *
 	 * @return string
@@ -310,37 +232,16 @@ class LP_Datetime {
 	}
 
 	/**
-	 * Gets the date as an RFC 822 string.  IETF RFC 2822 supercedes RFC 822 and its definition
-	 * can be found at the IETF Web site.
-	 *
-	 * @param boolean $local True to return the date string in the local time zone, false to return it in GMT.
-	 *
-	 * @return  string
-	 * @deprecated 4.1.7.3
-	 */
-	public function toRFC822( $local = true ) {
-		_deprecated_function( __METHOD__, '4.1.7.3' );
-		return $this->format( DateTime::RFC2822, $local );
-	}
-
-	/**
-	 * Gets the date as UNIX time stamp.
-	 *
-	 * @return  integer  The date as a UNIX timestamp.
-	 * @deprecated 4.1.7.3
-	 */
-	public function toUnix() {
-		_deprecated_function( __METHOD__, '4.1.7.3' );
-		//return (int) parent::format( 'U' );
-	}
-
-	/**
 	 * Get timestamp of Date.
 	 *
 	 * @return int
 	 */
 	public function getTimestamp( $local = true ): int {
 		try {
+			if ( ! $local ) {
+				_deprecated_argument( __METHOD__, '4.2.6.6' );
+			}
+
 			$date = new DateTime( $this->get_raw_date() );
 		} catch ( Throwable $e ) {
 			error_log( $e->getMessage() );
@@ -348,60 +249,6 @@ class LP_Datetime {
 		}
 
 		return $date->getTimestamp();
-	}
-
-	/**
-	 * @deprecated 4.1.7.3
-	 */
-	protected function setGMT( $local = false, $gmt = true ) {
-		_deprecated_function( __METHOD__, '4.1.7.3' );
-		/*if ( $gmt ) {
-			if ( $local == false && ! empty( self::$gmt ) ) {
-				parent::setTimezone( self::$gmt );
-			}
-		} else {
-			if ( $local == false && ! empty( $this->tz ) ) {
-				parent::setTimezone( $this->tz );
-			}
-		}*/
-	}
-
-	/**
-	 * @deprecated 4.1.7.3
-	 */
-	public static function getSqlNullDate() {
-		_deprecated_function( __METHOD__, '4.1.7.3' );
-		return '0000-00-00 00:00:00';
-	}
-
-	/**
-	 * Add X seconds into datetime of this object.
-	 *
-	 * @param int $seconds
-	 *
-	 * @throws
-	 *
-	 * @since 3.3.0
-	 * @deprecated 4.1.7.3
-	 */
-	public function addDuration( $seconds ) {
-		_deprecated_function( __METHOD__, '4.1.7.3' );
-		$timestamp = $this->getTimestamp();
-		//parent::__construct( date( 'Y-m-d H:i:s', $timestamp + $seconds ), $this->tz ); // phpcs:ignore
-	}
-
-	/**
-	 * @deprecated 4.1.7.3
-	 */
-	public function getPeriod( $seconds, $local = true ) {
-		_deprecated_function( __METHOD__, '4.1.7.3' );
-		/*$timestamp = $this->getTimestamp( $local );
-
-		if ( ! is_numeric( $seconds ) ) {
-			$seconds = strtotime( $seconds ) - time();
-		}
-
-		return date( 'Y-m-d H:i:s', $timestamp + $seconds );*/
 	}
 
 	/**
