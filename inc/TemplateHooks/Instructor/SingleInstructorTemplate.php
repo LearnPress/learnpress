@@ -91,7 +91,7 @@ class SingleInstructorTemplate {
 
 		try {
 			$html_wrapper = [
-				'<p class="instructor-description">' => '</p>',
+				'<div class="instructor-description">' => '</div>',
 			];
 
 			$content = Template::instance()->nest_elements( $html_wrapper, $instructor->get_description() );
