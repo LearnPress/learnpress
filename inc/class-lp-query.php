@@ -21,10 +21,6 @@ class LP_Query {
 		add_action( 'init', array( $this, 'add_rewrite_tags' ), 1000 );
 		add_action( 'init', array( $this, 'add_rewrite_endpoints' ) );
 		add_filter( 'option_rewrite_rules', [ $this, 'update_option_rewrite_rules' ], 1 );
-		/**
-		 * Add searching post by taxonomies
-		 */
-		//add_action( 'pre_get_posts', array( $this, 'query_taxonomy' ) );
 	}
 
 	/**
@@ -228,30 +224,12 @@ class LP_Query {
 	}
 
 	/**
-	 * @param WP_Query $q
-	 *
-	 * @todo has error with block theme of Woo, when search ?s=test
-	 */
-	public function query_taxonomy( $q ) {
-
-		// We only want to affect the main query
-		if ( ! $q->is_main_query() ) {
-			return;
-		}
-
-		if ( is_search() ) {
-			add_filter( 'posts_where', array( $this, 'add_tax_search' ) );
-			add_filter( 'posts_join', array( $this, 'join_term' ) );
-			add_filter( 'posts_groupby', array( $this, 'tax_groupby' ) );
-		}
-	}
-
-	/**
 	 * @param string $join
 	 *
 	 * @return string
+	 * @deprecated 4.2.6.6
 	 */
-	public function join_term( $join ) {
+	/*public function join_term( $join ) {
 		global $wp_query, $wpdb;
 
 		if ( ! empty( $wp_query->query_vars['s'] ) && ! is_admin() ) {
@@ -263,14 +241,15 @@ class LP_Query {
 		}
 
 		return $join;
-	}
+	}*/
 
 	/**
 	 * @param string $where
 	 *
 	 * @return string
+	 * @deprecated 4.2.6.6
 	 */
-	public function add_tax_search( $where ) {
+	/*public function add_tax_search( $where ) {
 		global $wp_query, $wpdb;
 
 		if ( ! empty( $wp_query->query_vars['s'] ) && ! is_admin() ) {
@@ -279,30 +258,32 @@ class LP_Query {
 		}
 
 		return $where;
-	}
+	}*/
 
 	/**
 	 * @param string $groupby
 	 *
 	 * @return string
+	 * @deprecated 4.2.6.6
 	 */
-	public function tax_groupby( $groupby ) {
+	/*public function tax_groupby( $groupby ) {
 		global $wpdb;
 		$groupby = "{$wpdb->posts}.ID";
 
 		$this->remove_query_tax();
 
 		return $groupby;
-	}
+	}*/
 
 	/**
 	 * Remove filter query
+	 * @deprecated 4.2.6.6
 	 */
-	public function remove_query_tax() {
+	/*public function remove_query_tax() {
 		remove_filter( 'posts_where', 'learn_press_add_tax_search' );
 		remove_filter( 'posts_join', 'learn_press_join_term' );
 		remove_filter( 'posts_groupby', 'learn_press_tax_groupby' );
-	}
+	}*/
 
 	/**
 	 * Clear cache rewrite rules when update option rewrite_rules

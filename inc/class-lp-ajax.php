@@ -109,8 +109,9 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			$response = new LP_REST_Response();
 
 			try {
-				$email        = LP_Request::get_email( 'email' );
-				$html_wrapper = [
+				$email             = LP_Request::get_email( 'email' );
+				$user_can_register = get_option( 'users_can_register' );
+				$html_wrapper      = [
 					'<label class="lp-guest-checkout-output">' => '</label>',
 				];
 
@@ -119,7 +120,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 						'Your email already exists. Do you want to continue with this email?',
 						'learnpress'
 					);
-				} else {
+				} elseif ( $user_can_register ) {
 					$output = sprintf(
 						'<input type="checkbox" name="checkout-email-option" value="new-account"> <span>%s</span>',
 						__(

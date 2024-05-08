@@ -142,8 +142,10 @@ class LP_Course_DB extends LP_Database {
 	 * @param int $user_id
 	 *
 	 * @return int
+	 * @deprecated 4.2.6.6 not use anywhere
 	 */
 	public function get_user_item_id( $order_id = 0, $course_id = 0, $user_id = 0 ): int {
+		_deprecated_function( __METHOD__, '4.2.6.6' );
 		$query = $this->wpdb->prepare(
 			"
 			SELECT user_item_id
@@ -313,23 +315,21 @@ class LP_Course_DB extends LP_Database {
 	 * @version 1.0.0
 	 */
 	public function get_total_user_enrolled( int $course_id ): int {
-		$query = $this->wpdb->prepare(
-			"
-				SELECT COUNT(DISTINCT user_id) AS total FROM {$this->tb_lp_user_items}
-				WHERE item_id = %d
-				AND item_type = %s
-				AND user_id > 0
-				AND (status = %s OR status = %s )
-			",
-			$course_id,
-			LP_COURSE_CPT,
-			LP_COURSE_ENROLLED,
-			LP_COURSE_FINISHED
-		);
+		$filter              = new LP_User_Items_Filter();
+		$filter->only_fields = [ 'DISTINCT(user_id)' ];
+		$filter->item_id     = $course_id;
+		$filter->item_type   = LP_COURSE_CPT;
+		$filter->field_count = 'ui.user_id';
+		$filter->join[]      = "INNER JOIN {$this->tb_users} AS u ON ui.user_id = u.ID";
+		$filter->where[]     = 'AND ui.user_id > 0';
+		$filter->where[]     = $this->wpdb->prepare( 'AND ( ui.status = %s OR ui.status = %s )', LP_COURSE_ENROLLED, LP_COURSE_FINISHED );
+		$filter->query_count = true;
 
-		$this->check_execute_has_error();
+		$total            = 0;
+		$lp_user_items_db = LP_User_Items_DB::getInstance();
+		$lp_user_items_db->get_user_items( $filter, $total );
 
-		return (int) $this->wpdb->get_var( $query );
+		return $total;
 	}
 
 	/**
@@ -344,24 +344,26 @@ class LP_Course_DB extends LP_Database {
 	 * @version 1.0.0
 	 */
 	public function get_total_user_enrolled_or_purchased( int $course_id ): int {
-		$query = $this->wpdb->prepare(
-			"
-				SELECT COUNT(DISTINCT user_id) AS total FROM {$this->tb_lp_user_items}
-				WHERE item_id = %d
-				AND item_type = %s
-				AND user_id > 0
-				AND (status = %s OR status = %s OR status = %s )
-			",
-			$course_id,
-			LP_COURSE_CPT,
+		$filter              = new LP_User_Items_Filter();
+		$filter->only_fields = [ 'DISTINCT(user_id)' ];
+		$filter->item_id     = $course_id;
+		$filter->item_type   = LP_COURSE_CPT;
+		$filter->field_count = 'ui.user_id';
+		$filter->join[]      = "INNER JOIN {$this->tb_users} AS u ON ui.user_id = u.ID";
+		$filter->where[]     = 'AND ui.user_id > 0';
+		$filter->where[]     = $this->wpdb->prepare(
+			'AND ( ui.status = %s OR ui.status = %s OR ui.status = %s )',
 			LP_COURSE_ENROLLED,
 			LP_COURSE_FINISHED,
 			LP_COURSE_PURCHASED
 		);
+		$filter->query_count = true;
 
-		$this->check_execute_has_error();
+		$total            = 0;
+		$lp_user_items_db = LP_User_Items_DB::getInstance();
+		$lp_user_items_db->get_user_items( $filter, $total );
 
-		return (int) $this->wpdb->get_var( $query );
+		return $total;
 	}
 
 	/**
@@ -502,15 +504,17 @@ class LP_Course_DB extends LP_Database {
 
 		// Term ids
 		if ( ! empty( $filter->term_ids ) ) {
+			// Sanitize term ids
+			$filter->term_ids = array_map( 'absint', $filter->term_ids );
 			$filter->join[] = "INNER JOIN $this->tb_term_relationships AS r_term ON p.ID = r_term.object_id";
 			$filter->join[] = "INNER JOIN $this->tb_term_taxonomy AS tx ON r_term.term_taxonomy_id = tx.term_taxonomy_id";
 
 			if ( LP_Settings::get_option( 'get_courses_of_subcategory' ) !== 'yes' ) {
-				$term_ids_format = esc_sql( join( ',', $filter->term_ids ) );
-				$filter->where[] = $this->wpdb->prepare( 'AND tx.term_id IN (' . $term_ids_format . ')' );
+				$term_ids_format = join( ',', $filter->term_ids );
+				$filter->where[] = "AND tx.term_id IN ($term_ids_format)";
 			} else {
 				$term_all        = $this->recursion_sub_categories( $filter->term_ids );
-				$term_ids_format = esc_sql( join( ',', $term_all ) );
+				$term_ids_format = join( ',', $term_all );
 				$filter->where[] = "AND tx.term_id IN ($term_ids_format)";
 			}
 			$filter->where[] = $this->wpdb->prepare( 'AND tx.taxonomy = %s', LP_COURSE_CATEGORY_TAX );
@@ -518,11 +522,13 @@ class LP_Course_DB extends LP_Database {
 
 		// Tag ids
 		if ( ! empty( $filter->tag_ids ) ) {
+			// Sanitize tag ids
+			$filter->tag_ids = array_map( 'absint', $filter->tag_ids );
 			$filter->join[] = "INNER JOIN $this->tb_term_relationships AS r_tag ON p.ID = r_tag.object_id";
 			$filter->join[] = "INNER JOIN $this->tb_term_taxonomy AS tag ON r_tag.term_taxonomy_id = tag.term_taxonomy_id";
 
-			$tag_ids_format  = LP_Helper::db_format_array( $filter->tag_ids, '%d' );
-			$filter->where[] = $this->wpdb->prepare( 'AND tag.term_id IN (' . $tag_ids_format . ')', $filter->tag_ids );
+			$tag_ids_format  = join( ',', $filter->tag_ids );
+			$filter->where[] = "AND tag.term_id IN ($tag_ids_format)";
 			$filter->where[] = $this->wpdb->prepare( 'AND tag.taxonomy = %s', LP_COURSE_TAXONOMY_TAG );
 		}
 
@@ -673,7 +679,7 @@ class LP_Course_DB extends LP_Database {
 			$filter->only_fields = [ 'COUNT( DISTINCT(ID) )' ];
 			$this->get_courses_sort_by_free( $filter );
 			$filter->return_string_query = true;
-			$query_count                 = LP_Course::get_courses( $filter, $count );
+			$query_count                 = $this->get_courses( $filter, $count );
 			$count                       = $this->wpdb->get_var( $query_count );
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
@@ -746,8 +752,10 @@ class LP_Course_DB extends LP_Database {
 	 * @throws Exception
 	 * @version 1.0.0
 	 * @since 4.1.6
+	 * @deprecated 4.2.6.6 not use anywhere
 	 */
 	public function count_courses_publish_of_author( int $author_id ): LP_Course_Filter {
+		_deprecated_function( __METHOD__, '4.2.6.6' );
 		$filter_course              = new LP_Course_Filter();
 		$filter_course->only_fields = array( 'ID' );
 		$filter_course->post_author = $author_id;
@@ -794,7 +802,7 @@ class LP_Course_DB extends LP_Database {
 	 */
 	public function recursion_sub_categories( array $term_ids ): array {
 		$total_found                           = 0;
-		$term_ids_format                       = esc_sql( join( ',', $term_ids ) );
+		$term_ids_format                       = join( ',', $term_ids );
 		$filter_sub_category                   = new LP_Filter();
 		$filter_sub_category->collection       = $this->tb_term_taxonomy;
 		$filter_sub_category->collection_alias = 'tx';

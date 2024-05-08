@@ -48,12 +48,16 @@ class SingleCourseTemplate {
 	 *
 	 * @return string
 	 */
-	public function html_short_description( LP_Course $course, int $number_words = 0  ): string {
+	public function html_short_description( LP_Course $course, int $number_words = 0 ): string {
 		$html_wrapper = [
 			'<p class="course-short-description">' => '</p>',
 		];
 
 		$short_description = $course->get_data( 'excerpt' );
+		if ( empty( $short_description ) || $number_words === 0 ) {
+			return '';
+		}
+
 		if ( $number_words > 0 ) {
 			$short_description = wp_trim_words( $short_description, $number_words, '...' );
 		}
@@ -121,8 +125,8 @@ class SingleCourseTemplate {
 			'<div class="course-tags">' => '</div>',
 		];
 
-		$cats = $course->get_tags();
-		if ( empty( $cats ) ) {
+		$tags = $course->get_tags();
+		if ( empty( $tags ) ) {
 			return '';
 		}
 
@@ -132,7 +136,7 @@ class SingleCourseTemplate {
 				$term        = sprintf( '<a href="%s">%s</a>', get_term_link( $cat->term_id ), $cat->name );
 				$cat_names[] = $term;
 			},
-			$cats
+			$tags
 		);
 
 		$content = implode( ', ', $cat_names );

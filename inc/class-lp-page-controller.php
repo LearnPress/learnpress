@@ -1,5 +1,7 @@
 <?php
 
+use LearnPress\Models\Courses;
+
 /**
  * Class LP_Page_Controller
  */
@@ -740,7 +742,7 @@ class LP_Page_Controller {
 					}
 
 					if ( $is_need_check_in_arr ) {
-						$posts_in = LP_Course::get_courses( $filter );
+						$posts_in = Courses::get_courses( $filter );
 						if ( ! empty( $posts_in ) ) {
 							$posts_in = LP_Database::get_values_by_key( $posts_in );
 							$q->set( 'post__in', $posts_in );
@@ -798,28 +800,6 @@ class LP_Page_Controller {
 
 		return $q;
 	}
-
-	/**
-	 * Write temporary for optimize.
-	 *
-	 * @param $posts
-	 * @param $wp_query
-	 *
-	 * @return array|mixed
-	 */
-	/*public function posts_pre_query( $posts, $wp_query ) {
-		if ( self::is_page_courses() ) {
-			$filter                  = new LP_Course_Filter();
-			$filter->only_fields     = array( 'ID' );
-			$filter->run_query_count = false;
-			$filter->where[]         = "AND post_status = 'publish'";
-			$filter->limit           = 1;
-			$courses                 = LP_Course::get_courses( $filter );
-
-			$posts = [ get_post( $courses[0]->ID ) ];
-		}
-		return $posts;
-	}*/
 
 	/**
 	 * Handle 404 if user are viewing course item directly.
@@ -944,7 +924,7 @@ class LP_Page_Controller {
 		}
 
 		// If pages of LP set to homepage will return false
-		$link_page = get_the_permalink( $page_id );
+		$link_page = urldecode( get_the_permalink( $page_id ) );
 		$home_url  = home_url( '/' );
 		if ( $home_url === $link_page ) {
 			return false;

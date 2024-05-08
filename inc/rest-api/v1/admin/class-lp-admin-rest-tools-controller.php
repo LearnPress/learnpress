@@ -1,6 +1,7 @@
 <?php
 
 use LearnPress\Helpers\Template;
+use LearnPress\Models\Courses;
 use LearnPress\Models\UserItems\UserCourseModel;
 
 /**
@@ -362,7 +363,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 			$filter->limit       = 20;
 			$filter->only_fields = [ 'ID', 'post_title' ];
 			$filter->post_title  = $params['c_search'] ?? '';
-			$courses             = LP_Course::get_courses( $filter );
+			$courses             = Courses::get_courses( $filter );
 			$response->data      = $courses;
 			$response->status    = 'success';
 		} catch ( Throwable $e ) {

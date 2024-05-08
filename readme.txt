@@ -210,6 +210,11 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.2.6.6 (2024-05-07) =
+~ Fixed: security.
+~ Fixed: delete user item when remove order item.
+~ Excluded: questions from search via param ?s of WordPress.
+
 = 4.2.6.5 (2024-04-17) =
 ~ Fixed: security.
 ~ Added: option "Load courses of subcategory", get all the courses in the child category that are not selected in the parent category.

@@ -1,0 +1,65 @@
+table.lp-material--table {
+	border-collapse: collapse;
+	width: 100%;
+
+	td, th {
+		border: 1px solid #dddddd;
+		text-align: left;
+		padding: 8px;
+	}
+
+	thead.hidden {
+		display: none;
+	}
+
+	td.sort {
+		cursor: move;
+	}
+
+	tr:nth-child(even) {
+		background-color: #dddddd40;
+	}
+}
+
+.lp-material--field-wrap {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	padding-block: 5px;
+}
+.lp-material--field-wrap label { min-width:70px }
+.lp-material--group{
+	margin-top: 10px;
+	padding: 10px;
+	border: 1px solid #dedede;
+	border-radius: 10px;
+	box-shadow: 2px 2px rgba(180, 180, 180, 0.2);
+}
+.lp-material-btn-wrap{
+	margin-bottom: 10px;
+}
+.lp-material-btn-wrap.loading::before, #btn-lp--save-material.loading::before{
+	display: inline-block;
+	margin-right: 5px;
+	font-weight: 900;
+	content: "\f110";
+	-webkit-animation: lp-rotating 1s linear infinite;
+	-moz-animation: lp-rotating 1s linear infinite;
+	animation: lp-rotating 1s linear infinite;
+}
+.button.lp-material--delete{
+	color: white;
+	border-color: red;
+	background: red;
+	vertical-align: top;
+}
+.lp-material--field-wrap.field-action-wrap{
+	display: flex;
+	justify-content: space-between;
+}
+.lp-meta-box .lp-material--field-wrap input{
+	width: 100%;
+}
+#available-to-upload{
+	font-weight: bold;
+}

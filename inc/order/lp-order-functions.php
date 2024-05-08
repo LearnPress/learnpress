@@ -88,57 +88,6 @@ function learn_press_update_order_status( $order_id, $status = '' ) {
 	return false;
 }
 
-/**
- * Add an order item into order.
- *
- * @param int   $order_id
- * @param mixed $item - Array of item data or ID
- *
- * @return bool
- * @editor tungnx
- * @modify 4.1.4 - comment - not use
- */
-/*function learn_press_add_order_item( $order_id, $item ) {
-	$item_id = false;
-	$order   = learn_press_get_order( $order_id );
-
-	if ( $order ) {
-		$item_id = $order->add_item( $item );
-	}
-
-	return $item_id;
-}*/
-
-/**
- * Remove an order item by order_item_id.
- *
- * @param int $order_id
- * @param int $item_id
- *
- * @return bool
- */
-function learn_press_remove_order_item( $order_id, $item_id ) {
-	$order = learn_press_get_order( $order_id );
-
-	if ( $order ) {
-		return $order->remove_item( $item_id );
-	}
-
-	return false;
-}
-
-function _learn_press_before_delete_order_item( $item_id, $order_id ) {
-	global $wpdb;
-	$order = learn_press_get_order_by_item_id( $item_id );
-
-	if ( $order ) {
-		$course_id = learn_press_get_order_item_meta( $item_id, '_course_id' );
-		learn_press_delete_user_data( $order->user_id, $course_id );
-	}
-}
-
-// add_action( 'learn-press/before-delete-order-item', '_learn_press_before_delete_order_item', 10, 2 );
-
 function _learn_press_ajax_add_order_item_meta( $item ) {
 	$item_id = $item['id'];
 	$order   = learn_press_get_order_by_item_id( $item_id );

@@ -13,6 +13,7 @@ defined( 'ABSPATH' ) || exit;
 
 class LP_Checkout {
 	use Singleton;
+
 	/**
 	 * Payment method
 	 *
@@ -228,20 +229,21 @@ class LP_Checkout {
 	/**
 	 * Create LP Order.
 	 *
-	 * @since 3.0.0
-	 * @version 4.0.2
 	 * @return mixed|string
 	 * @throws Exception
+	 * @since 3.0.0
+	 * @version 4.0.3
 	 */
 	public function create_order() {
-		$cart       = LearnPress::instance()->cart;
-		$cart_total = $cart->calculate_totals();
-		$order      = new LP_Order();
-		$user_id    = 0;
+		$cart              = LearnPress::instance()->cart;
+		$cart_total        = $cart->calculate_totals();
+		$order             = new LP_Order();
+		$user_id           = 0;
+		$user_can_register = get_option( 'users_can_register' );
 
 		if ( is_user_logged_in() ) {
 			$user_id = get_current_user_id();
-		} else {
+		} elseif ( $user_can_register ) {
 			$checkout_option = LP_Request::get_param( 'checkout-email-option' );
 			// Set user id for Order if buy with Guest and email exists on the user
 			$user_id = $this->checkout_email_exists();
@@ -333,7 +335,7 @@ class LP_Checkout {
 	 * @since 3.0.0
 	 */
 	public function is_enable_login() {
-		return apply_filters( 'learn-press/checkout/enable-login', in_array( LP_Settings::instance()->get( 'enable_login_checkout' ), array( '', 'yes' ) ) );
+		return apply_filters( 'learn-press/checkout/enable-login', 'yes' === LP_Settings::get_option( 'enable_login_checkout', 'yes' ) );
 	}
 
 	/**
@@ -343,7 +345,7 @@ class LP_Checkout {
 	 * @since 3.0.0
 	 */
 	public function is_enable_register() {
-		return apply_filters( 'learn-press/checkout/enable-register', in_array( LP_Settings::instance()->get( 'enable_registration_checkout' ), array( '', 'yes' ) ) && get_option( 'users_can_register' ) );
+		return apply_filters( 'learn-press/checkout/enable-register', 'yes' === LP_Settings::get_option( 'enable_registration_checkout', 'yes' ) );
 	}
 
 	/**
@@ -418,6 +420,7 @@ class LP_Checkout {
 		$error = apply_filters( 'learn-press/validate-checkout-fields', $this->errors, $fields, $this );
 		if ( is_wp_error( $error ) ) {
 			$this->errors[] = $error;
+
 			return false;
 		}
 

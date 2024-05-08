@@ -8,6 +8,7 @@
 namespace LearnPress\TemplateHooks\Instructor;
 
 use LearnPress\Helpers\Template;
+use LearnPress\Models\Courses;
 use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
 use LP_Course;
 use LP_Course_Filter;
@@ -90,7 +91,7 @@ class SingleInstructorTemplate {
 
 		try {
 			$html_wrapper = [
-				'<p class="instructor-description">' => '</p>',
+				'<div class="instructor-description">' => '</div>',
 			];
 
 			$content = Template::instance()->nest_elements( $html_wrapper, $instructor->get_description() );
@@ -437,7 +438,7 @@ class SingleInstructorTemplate {
 				$filter->page        = $GLOBALS['wp_query']->get( 'paged', 1 ) ? $GLOBALS['wp_query']->get( 'paged', 1 ) : 1;
 
 				$total_courses = 0;
-				$courses       = LP_Course::get_courses( $filter, $total_courses );
+				$courses       = Courses::get_courses( $filter, $total_courses );
 
 				$sections = apply_filters(
 					'learn-press/single-instructor/courses/sections',

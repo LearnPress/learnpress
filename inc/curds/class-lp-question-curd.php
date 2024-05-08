@@ -613,27 +613,21 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 
 			global $wpdb;
 
-			// delete all answer in question
-			if ( $force ) {
-				$delete = $wpdb->delete(
-					$wpdb->learnpress_question_answers,
-					array( 'question_id' => $question_id )
-				);
+			// Delete answer meta
+			$wpdb->delete(
+				$wpdb->learnpress_question_answermeta,
+				array( 'learnpress_question_answer_id' => $answer_id )
+			);
 
-				if ( $delete ) {
-					$question->set_data( 'answer_options', '' );
-				}
-			} else {
-				$delete = $wpdb->delete(
-					$wpdb->learnpress_question_answers,
-					array( 'question_answer_id' => $answer_id )
-				);
-				if ( $delete ) {
-					unset( $answers[ $answer_id ] );
-					$question->set_data( 'answer_options', $answers );
+			$delete = $wpdb->delete(
+				$wpdb->learnpress_question_answers,
+				array( 'question_answer_id' => $answer_id )
+			);
+			if ( $delete ) {
+				unset( $answers[ $answer_id ] );
+				$question->set_data( 'answer_options', $answers );
 
-					$this->sort_answers( $question_id, array_keys( $answers ) );
-				}
+				$this->sort_answers( $question_id, array_keys( $answers ) );
 			}
 
 			return $delete;
@@ -968,42 +962,6 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 		}
 
 		/**
-		 * Load answer options for the question from database.
-		 * Load from cache if data is already loaded into cache.
-		 * Otherwise, load from database and put to cache.
-		 *
-		 * @param $question LP_Question
-		 * @deprecated 4.1.7
-		 */
-		/*protected function _load_answer_options( &$question ) {
-			$id             = $question->get_id();
-			$answer_options = LP_Object_Cache::get( 'answer-options-' . $id, 'lp-questions' );
-
-			if ( false === $answer_options ) {
-				global $wpdb;
-				$query = $wpdb->prepare(
-					"
-					SELECT *
-					FROM {$wpdb->prefix}learnpress_question_answers
-					WHERE question_id = %d
-					ORDER BY `order` ASC
-				",
-					$id
-				);
-
-				$answer_options = $this->load_answer_options( $question->get_id() );
-			}
-			$answer_options = apply_filters( 'learn-press/question/load-answer-options', $answer_options, $id );
-
-			if ( ! empty( $answer_options['question_answer_id'] ) && $answer_options['question_answer_id'] > 0 ) {
-				$this->_load_answer_option_meta( $answer_options );
-			}
-			LP_Object_Cache::set( 'answer-options-' . $id, $answer_options, 'lp-questions' );
-
-			$question->set_data( 'answer_options', $answer_options );
-		}*/
-
-		/**
 		 * Load question answers
 		 *
 		 * @updated 3.1.0
@@ -1036,64 +994,6 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 			}
 
 			return $answer_options;
-		}
-
-		/**
-		 * Load meta data for answer options.
-		 *
-		 * @param array $answer_options
-		 *
-		 * @return mixed;
-		 * @deprecated 4.1.7
-		 */
-		/*protected function _load_answer_option_meta( &$answer_options ) {
-			if ( ! $answer_options ) {
-				return false;
-			}
-
-			$answer_option_ids = wp_list_pluck( $answer_options, 'question_answer_id' );
-			$format            = array_fill( 0, sizeof( $answer_option_ids ), '%d' );
-			$query             = $wpdb->prepare(
-				"
-				SELECT *
-				FROM {$wpdb->prefix}learnpress_question_answermeta
-				WHERE learnpress_question_answer_id IN(" . join( ', ', $format ) . ')
-			',
-				$answer_option_ids
-			);
-
-			$metas = $wpdb->get_results( $query );
-
-			if ( $metas ) {
-				foreach ( $metas as $meta ) {
-					$key        = $meta->meta_key;
-					$option_key = $meta->learnpress_question_answer_id;
-					if ( ! empty( $answer_options[ $option_key ] ) ) {
-						if ( $key == 'checked' ) {
-							$key = 'is_true';
-						}
-						$answer_options[ $option_key ][ $key ] = $meta->meta_value;
-					}
-				}
-			}
-
-			return true;
-		}*/
-
-		public function add_meta( &$object, $meta ) {
-			// TODO: Implement add_meta() method.
-		}
-
-		public function delete_meta( &$object, $meta ) {
-			// TODO: Implement delete_meta() method.
-		}
-
-		public function read_meta( &$object ) {
-			// TODO: Implement read_meta() method.
-		}
-
-		public function update_meta( &$object, $meta ) {
-			// TODO: Implement update_meta() method.
 		}
 	}
 }

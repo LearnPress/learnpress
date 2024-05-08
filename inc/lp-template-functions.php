@@ -93,8 +93,9 @@ if ( ! function_exists( 'learn_press_get_course_tabs' ) ) {
 			$is_enrolled_course = true;
 		}
 
-		$file_per_page = LP_Settings::get_option( 'material_file_per_page', -1 );
-		if ( $is_enrolled_course && (int) $file_per_page != 0 ) {
+		$file_per_page = LP_Settings::get_option( 'material_file_per_page', - 1 );
+		$count_files   = LP_Material_Files_DB::getInstance()->get_total( $course->get_id() );
+		if ( $is_enrolled_course && (int) $file_per_page != 0 && $count_files > 0 ) {
 			$defaults['materials'] = array(
 				'title'    => esc_html__( 'Materials', 'learnpress' ),
 				'priority' => 45,

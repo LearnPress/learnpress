@@ -140,15 +140,19 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		}
 
 		/**
-		 * Get course attend of user.
+		 * Get course attend of user not Guest.
 		 * Replace get_course_data method.
 		 *
 		 * @param int $course_id
 		 * @return false|UserCourseModel
 		 * @since 4.2.5
-		 * @version 1.0.0
+		 * @version 1.0.1
 		 */
 		public function get_course_attend( int $course_id = 0 ) {
+			if ( $this instanceof LP_User_Guest ) {
+				return false;
+			}
+
 			$filter          = new LP_User_Items_Filter();
 			$filter->item_id = $course_id;
 			$filter->user_id = $this->get_id();

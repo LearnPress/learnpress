@@ -142,7 +142,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			$total_rows = 0;
 			$filter     = apply_filters( 'lp/api/courses/filter', $filter, $request );
 
-			$courses     = LP_Course::get_courses( $filter, $total_rows );
+			$courses     = Courses::get_courses( $filter, $total_rows );
 			$total_pages = LP_Database::get_total_pages( $filter->limit, $total_rows );
 			$return_type = $request['return_type'] ?? 'html';
 			if ( 'json' === $return_type ) {

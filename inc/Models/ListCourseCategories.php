@@ -30,6 +30,8 @@ class ListCourseCategories {
 				'taxonomy' => LP_COURSE_CATEGORY_TAX,
 				'fields'   => 'id=>name',
 				'parent'   => 0,
+				'orderby'  => 'term_order',
+				'order'    => 'ASC',
 			];
 
 			$arg_query_terms = array_merge( $arg_query_terms_default, $arg_query_terms );

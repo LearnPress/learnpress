@@ -201,7 +201,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 			add_post_type_support( 'question', 'comments' );
 
 			return array(
-				'labels'             => array(
+				'labels'              => array(
 					'name'               => esc_html__( 'Question Bank', 'learnpress' ),
 					'menu_name'          => esc_html__( 'Question Bank', 'learnpress' ),
 					'singular_name'      => esc_html__( 'Question', 'learnpress' ),
@@ -215,23 +215,24 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 					'not_found'          => esc_html__( 'No questions found', 'learnpress' ),
 					'not_found_in_trash' => esc_html__( 'There was no questions found in the trash', 'learnpress' ),
 				),
-				'public'             => true,
-				'publicly_queryable' => true,
-				'show_ui'            => true,
-				'has_archive'        => false,
-				'capability_type'    => LP_LESSON_CPT,
-				'map_meta_cap'       => true,
-				'show_in_menu'       => 'learn_press',
-				'show_in_admin_bar'  => true,
-				'show_in_nav_menus'  => true,
-				'show_in_rest'       => learn_press_user_maybe_is_a_teacher(),
-				'supports'           => array( 'title', 'editor', 'revisions' ),
-				'hierarchical'       => false,
-				'rewrite'            => array(
+				'public'              => true,
+				'publicly_queryable'  => true,
+				'show_ui'             => true,
+				'has_archive'         => false,
+				'capability_type'     => LP_LESSON_CPT,
+				'map_meta_cap'        => true,
+				'show_in_menu'        => 'learn_press',
+				'show_in_admin_bar'   => true,
+				'show_in_nav_menus'   => true,
+				'show_in_rest'        => learn_press_user_maybe_is_a_teacher(),
+				'supports'            => array( 'title', 'editor', 'revisions' ),
+				'hierarchical'        => false,
+				'rewrite'             => array(
 					'slug'         => 'questions',
 					'hierarchical' => true,
 					'with_front'   => false,
 				),
+				'exclude_from_search' => true,
 			);
 		}
 
