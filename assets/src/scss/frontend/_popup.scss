@@ -1160,7 +1160,9 @@ body {
 
 	.content-item-description {
 		margin-bottom: 30px;
-
+		.wp-video,.mejs-container{
+			margin-bottom: 15px;
+		}
 		h2, h3, h4, h5, h6 {
 			margin-top: 10px;
 			margin-bottom: 15px;

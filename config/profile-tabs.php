@@ -79,7 +79,7 @@ $default_settings = array(
 	'logout'        => array(
 		'title'    => esc_html__( 'Logout', 'learnpress' ),
 		'slug'     => learn_press_profile_logout_slug(),
-		'icon'     => '<i class="lp-icon-sign-out-alt"></i>',
+		'icon'     => '<i class="lp-icon-sign-out"></i>',
 		'priority' => 100,
 	),
 );
