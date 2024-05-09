@@ -210,10 +210,12 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
-= 4.2.6.6 (2024-05-07) =
+= 4.2.6.6 (2024-05-09) =
 ~ Fixed: security.
 ~ Fixed: delete user item when remove order item.
+~ Tweak: material files feature.
 ~ Excluded: questions from search via param ?s of WordPress.
+~ Compare the sale dates of courses through WordPress's Timezone.
 
 = 4.2.6.5 (2024-04-17) =
 ~ Fixed: security.

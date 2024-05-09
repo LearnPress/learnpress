@@ -175,6 +175,7 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 						continue;
 					}
 
+					LP_WP_Filesystem::instance();
 					$file_uploading     = [
 						'name'     => $file_name,
 						'type'     => $file_type,
