@@ -20,12 +20,8 @@ if ( ! $course ) {
 
 <div class="course-thumbnail">
 	<a href="<?php the_permalink(); ?>">
-		<div class="thumbnail-preview">
-			<div class="thumbnail">
-				<div class="centered">
-					<?php echo wp_kses_post( $course->get_image( 'course_thumbnail' ) ); ?>
-				</div>
-			</div>
-		</div>
+<!--		<div class="thumbnail">-->
+			<?php echo wp_kses_post( $course->get_image( 'course_thumbnail' ) ); ?>
+<!--		</div>-->
 	</a>
 </div>

@@ -22,7 +22,8 @@
 		text-decoration: none;
 	}
 }
-.lp-sidebar-toggle{
+
+.lp-sidebar-toggle {
 	//&__open{
 	//	.content-item-wrap{
 	//		.quiz-buttons.align-center{
@@ -32,14 +33,35 @@
 	//		}
 	//	}
 	//}
-	&__close{
-		.content-item-wrap{
-			.quiz-buttons.align-center{
-				.button-left.fixed{
-					margin-left: 0!important;
+	&__close {
+		.content-item-wrap {
+			.quiz-buttons.align-center {
+				.button-left.fixed {
+					margin-left: 0 !important;
 				}
 			}
 		}
+	}
+}
+.course-item-nav {
+	display: flex;
+
+	.prev,
+	.next {
+
+		/* flex: 1;*/
+		span {
+			display: block;
+			font-weight: bold;
+		}
+
+		a {
+			color: #999;
+		}
+	}
+
+	.next {
+		text-align: right;
 	}
 }
 #popup-course {
@@ -50,27 +72,31 @@
 	right: 0;
 	bottom: 0;
 	left: 0;
-	background: #fff;
-	.back-course{
-		padding-left: 30px;
-		padding-right: 30px;
-		line-height: 70px;
-		background: rgba(255,255,255, 0.1);
+	background: $bg-color-lesson;
+	//flex-direction: row-reverse;
+	.back-course {
+		padding-left: 24px;
+		padding-right: 24px;
+		line-height: $popup_header_height;
+		background: rgba(255, 255, 255, 0.1);
 		color: #fff;
-		&:hover{
-			background: rgba(255,255,255, 0.15);
+
+		&:hover {
+			background: rgba(255, 255, 255, 0.15);
 		}
- 		@media (max-width: 768px){
- 			background: transparent;
+
+		@media (max-width: 768px) {
+			background: transparent;
 			opacity: 0.6;
 			padding-left: 15px;
 			padding-right: 15px;
-			&:hover{
+			&:hover {
 				background: transparent;
 				opacity: 1;
 			}
 		}
 	}
+
 	.popup-header__inner {
 		display: flex;
 		width: 792px;
@@ -89,7 +115,7 @@
 		}
 	}
 
- 	.lp-quiz-buttons {
+	.lp-quiz-buttons {
 
 		.complete-quiz,
 		.back-quiz,
@@ -154,7 +180,7 @@
 			font-weight: 400;
 			align-items: center;
 
-			>span {
+			> span {
 				display: inline-block;
 				width: 20px;
 				height: 20px;
@@ -213,6 +239,7 @@
 		}
 	}
 }
+
 #popup-header {
 	display: flex;
 	position: fixed;
@@ -315,6 +342,7 @@
 		}
 	}
 }
+
 #popup-sidebar {
 	overflow: auto;
 	position: relative;
@@ -326,48 +354,51 @@
 	.search-course {
 		display: flex;
 		position: relative;
-		height: 70px;
+		height: $popup_header_height;
 		background: #f9fafc;
 
 		input[name="s"] {
 			display: block;
 			width: 100%;
-			margin: 6px 0;
+			//margin: 6px 0;
 			padding-left: 20px;
 			border: none;
-			color: #999;
+			color: $text-color-base;
 			background: transparent;
 			box-shadow: none;
 			//font-size: 0.8em;
 			//line-height: 1;
 
 			@include box-sizing(border-box);
-			@include placeholder-color(#999);
+			@include placeholder-color($input-color-placeholder);
 			@include placeholder-fontStyle(italic);
 
 			&:focus {
 				outline: 0;
-				color: #222;
-			}
+ 			}
 		}
 
 		button {
 			position: absolute;
 			top: 0;
 			right: 10px;
-			width: 16px;
-			height: 70px;
-			margin: 0 10px;
-			padding: 0;
+			//width: 16px;
+			height: $popup_header_height;
+			padding: 0 10px;
+			//padding: 0;
 			border: 0;
 			background: transparent;
 			line-height: 1px;
 
+			&:focus {
+				outline: none;
+			}
+
 			&::before {
-				color: #666;
-				font-family: "Font Awesome 5 Free";
-				font-size: 1em;
-				font-weight: 900;
+				color: $text-color-accent;
+				font-family: 'lp-icon';
+				//font-size: 1em;
+				//font-weight: 900;
 				content: "\f002";
 			}
 
@@ -508,15 +539,18 @@
 	.course-curriculum {
 		overflow: auto;
 		position: absolute;
-		top: 70px;
+		top: $popup_header_height;
 		bottom: 0;
 		width: 475px;
+
 		&::-webkit-scrollbar-thumb {
 			background: #ccc;
 		}
+
 		&::-webkit-scrollbar {
 			width: 8px;
 		}
+
 		&::-webkit-scrollbar-track {
 			background: #f5f5f5;
 		}
@@ -584,21 +618,20 @@
 		position: sticky;
 		z-index: 1000;
 		top: 0;
-		padding: 24px 20px;
+		padding: 20px 16px;
 		cursor: pointer;
-		background-color: white;
-
-		.section-title {
-			color: #000;
-			font-size: 1.25em;
-			font-weight: 500;
+		background-color: $bg-color-lesson;
+ 		.section-title {
+			//color: #000;
+			//font-size: 1.25em;
+			//font-weight: 500;
 
 			.show-desc {
 
 				&::before {
-					font-family: "Font Awesome 5 Free";
+					font-family: 'lp-icon';
 					font-size: 1.125em;
-					font-weight: 900;
+					//font-weight: 900;
 					content: "\f0d7";
 				}
 			}
@@ -609,7 +642,7 @@
 			flex: 0;
 
 			i {
-				color: #666;
+				color: $text-color-accent;
 			}
 		}
 
@@ -622,13 +655,16 @@
 	.section-content {
 		margin-bottom: 0;
 	}
-
+	.curriculum-more{
+		padding-right: $spacing-base-4x;
+		padding-left: $spacing-base-4x;
+	}
 	.course-item {
-		min-height: 50px;
-		margin-bottom: 4px;
-		padding: 0px 20px;
-		background: #f9fafc;
-		align-items: center;
+		//min-height: 50px;
+		//margin-bottom: 4px;
+		//padding: 0px 20px;
+		//background: #f9fafc;
+		//align-items: center;
 
 		& > span {
 			display: none;
@@ -662,47 +698,49 @@
 		}
 
 	}
-	.section-item-link {
-		padding-right: 0;
-		&::before {
-			vertical-align: unset;
-		}
 
-		.item-name {
-			width: 100%;
-			font-weight: 500;
-		}
+	//.section-item-link {
+	//	padding-right: 0;
+	//
+	//	&::before {
+	//		vertical-align: unset;
+	//	}
+	//
+	//	.item-name {
+	//		width: 100%;
+	//		font-weight: 500;
+	//	}
+	//
+	//}
 
-	}
-
-	.course-item-meta {
-		padding: 0;
-
-		.item-meta {
-			padding: 0;
-			color: #999;
-			background: transparent;
-			font-size: 0.75em;
-			line-height: 1.5;
-			height: auto;
-
-			&:first-child {
-				margin-left: 0;
-
-			}
-
-			&::before {
-				font-size: 0.75em;
-				line-height: 1.3125em;
-			}
-		}
-	}
+	//.course-item-meta {
+	//	padding: 0;
+	//
+	//	.item-meta {
+	//		padding: 0;
+	//		color: #999;
+	//		background: transparent;
+	//		font-size: 0.75em;
+	//		line-height: 1.5;
+	//		height: auto;
+	//
+	//		&:first-child {
+	//			margin-left: 0;
+	//
+	//		}
+	//
+	//		&::before {
+	//			font-size: 0.75em;
+	//			line-height: 1.3125em;
+	//		}
+	//	}
+	//}
 }
 
 #popup-content {
 	overflow: auto;
 	position: relative;
-	margin: 70px 0 50px 0;
+	margin: $popup_header_height 0 50px 0;
 	flex: 1;
 	padding-left: 15px;
 	padding-right: 15px;
@@ -723,7 +761,7 @@
 					margin-right: 5px;
 
 					&::before {
-						font-family: "Font Awesome 5 Free";
+						font-family: 'lp-icon';
 						content: "\f058";
 					}
 				}
@@ -762,6 +800,7 @@
 				&::before {
 					display: none;
 				}
+
 				.instant-check__icon {
 					display: inline-block;
 					animation: lp-rotating 1s linear infinite;
@@ -806,13 +845,16 @@
 			}
 		}
 	}
-	&::-webkit-scrollbar{
+
+	&::-webkit-scrollbar {
 		width: 8px;
 	}
-	&::-webkit-scrollbar-thumb{
+
+	&::-webkit-scrollbar-thumb {
 		background: #ccc;
 	}
-	&::-webkit-scrollbar-track{
+
+	&::-webkit-scrollbar-track {
 		background: #f5f5f5;
 	}
 }
@@ -828,7 +870,7 @@
 	height: 50px;
 	margin: 0 auto;
 	border-top: 1px solid #ebebeb;
-	background: #fff;
+	background: $bg-color-lesson;
 	@include transition(left 0.25s);
 
 	@media (max-width: 1024px) {
@@ -846,14 +888,14 @@
 
 			a {
 				display: block;
-				color: #666;
+				color: $text-color-accent;
 			}
 
 			&::before {
 				color: #999;
-				font-family: "Font Awesome 5 Free";
-				font-size: 0.75em;
-				font-weight: 900;
+				font-family: 'lp-icon';
+				//font-size: 0.75em;
+				//font-weight: 900;
 			}
 
 			&:hover {
@@ -880,7 +922,6 @@
 		}
 
 
-
 		&[data-nav="next"] {
 			justify-content: flex-end;
 		}
@@ -896,10 +937,12 @@
 		.course-item-nav__name {
 			right: auto;
 			left: -30px;
+
 			&::before {
 				right: auto;
 				left: 5px;
 			}
+
 			@media (max-width: 1024px) {
 				left: 15px;
 			}
@@ -913,10 +956,9 @@
 		right: -30px;
 		width: auto;
 		padding: 10px 15px;
-		color: #666;
+		color: $text-color-accent;
 		background: #ccc;
-		font-size: 0.8em;
-		font-weight: 300;
+		font-size: $font-size-small;
 		line-height: 1;
 		@media (max-width: 1024px) {
 			top: -25px;
@@ -929,34 +971,44 @@
 
 #sidebar-toggle {
 	display: inline-block;
-	position: absolute;
-	z-index: 100;
-	top: 198px;
-	left: 475px;
-	width: 25px;
-	height: 56px;
+	//position: absolute;
+	//z-index: 100;
+	//top: 198px;
+	//left: 475px;
+	width: 32px;
+	line-height: $popup_header_height;
+	height: unset;
 	margin: 0;
-	background: #fff;
-	box-shadow: 0 0px 20px 0 rgba(0, 0, 0, 0.15);
+	background: rgba(255, 255, 255, 0.1);
+	color: $color-white;
+	font-size: 1.4em;
+	//box-shadow: 0 0px 20px 0 rgba(0, 0, 0, 0.15);
 	cursor: pointer;
 	transition: 0.25s;
 	-webkit-appearance: none;
-	border:none;
-	&:after{
+	border: none;
+	text-align: center;
+
+	&:after {
 		display: none;
 	}
+
 	&::before {
 		display: inline-block;
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		color: var(--lp-primary-color);
-		font-family: "Font Awesome 5 Free";
-		font-size: 1.125em;
-		font-weight: 900;
+		position: static;
+		margin: 0;
+		width: auto;
+		height: auto;
+		//position: absolute;
+		//top: 50%;
+		//left: 50%;
+		//color: var(--lp-primary-color);
+		font-family: 'lp-icon';
+		//font-size: 1.125em;
+		//font-weight: 900;
 		content: "\f0d9";
-		transition: 0.25s;
-		transform: translate(-50%, -50%);
+		//transition: 0.25s;
+		//transform: translate(-50%, -50%);
 	}
 
 	&:focus {
@@ -975,16 +1027,17 @@ body {
 		}
 	}
 
-	&.lp-sidebar-toggle__close{
+	&.lp-sidebar-toggle__close {
 		//#popup-course {
 		//
 		//}
-		 #sidebar-toggle {
-			left: 0;
+		#sidebar-toggle {
+			//left: 0;
 			&::before {
 				content: "\f0da";
 			}
 		}
+
 		#popup-sidebar {
 			flex: 0 0 0;
 		}
@@ -993,17 +1046,19 @@ body {
 			left: 0;
 		}
 	}
-	@media (max-width: 768px){
-		&:not(.lp-sidebar-toggle__open){
+
+	@media (max-width: 768px) {
+		&:not(.lp-sidebar-toggle__open) {
 			//#popup-course {
 			//
 			//}
 			#sidebar-toggle {
-				left: 0;
+				//left: 0;
 				&::before {
 					content: "\f0da";
 				}
 			}
+
 			#popup-sidebar {
 				flex: 0 0 0;
 			}
@@ -1024,25 +1079,18 @@ body {
 
 @media screen and (max-width: 1280px) {
 
-	//#popup-course {
+	#popup-sidebar {
+		flex-basis: 300px;
 
-		#popup-sidebar {
-			flex-basis: 300px;
-
-			.course-curriculum {
-				width: 300px;
-			}
+		.course-curriculum {
+			width: 300px;
 		}
+	}
 
-		#popup-header,
-		#popup-footer {
-			left: 300px;
-		}
-
-		#sidebar-toggle {
-			left: 299px;
-		}
-	//}
+	#popup-header, #popup-footer {
+		left: 300px;
+		width: 100%;
+	}
 }
 
 @media screen and (max-width: 782px) {
@@ -1070,21 +1118,19 @@ body {
 		}
 	}
 	#popup-sidebar {
-		flex-basis: 250px;
+		flex-basis: 300px;
 
 		.course-curriculum {
-			width: 250px;
+			width: 300px;
 		}
 	}
 
 	#popup-header,
 	#popup-footer {
-		left: 250px;
+		left: 300px;
+		width: 100%;
 	}
 
-	#sidebar-toggle {
-		left: 249px;
-	}
 }
 
 .content-item-wrap {
@@ -1100,9 +1146,8 @@ body {
 	.course-item-title {
 		margin-top: 0;
 		margin-bottom: 24px;
-		color: #333;
-		font-size: 1.875em;
-		font-weight: 600;
+ 		font-size: $font-size-h1;
+		font-weight: $heading-font-weight;
 
 		@media (max-width: 767px) {
 			text-align: center;
@@ -1115,7 +1160,9 @@ body {
 
 	.content-item-description {
 		margin-bottom: 30px;
-
+		.wp-video,.mejs-container{
+			margin-bottom: 15px;
+		}
 		h2, h3, h4, h5, h6 {
 			margin-top: 10px;
 			margin-bottom: 15px;
@@ -1124,11 +1171,13 @@ body {
 
 		p {
 			margin-bottom: 20px;
-			&:last-child{
+
+			&:last-child {
 				margin-bottom: 0;
 			}
-		//	color: #666;
-		//	font-weight: 300;
+
+			//	color: #666;
+			//	font-weight: 300;
 		}
 
 		img {
@@ -1228,6 +1277,7 @@ body {
 						width: 100% !important;
 					}
 				}
+
 				&.nav-center {
 					height: 50px;
 					margin-left: 0 !important;
@@ -1245,7 +1295,6 @@ body {
 			}
 
 			&.is-last {
-
 				.next {
 					display: none;
 				}
@@ -1274,8 +1323,8 @@ body {
 			justify-content: center;
 			gap: 4px;
 			margin-top: 6px;
+
 			.page-numbers {
-				display: inline-block;
 				vertical-align: middle;
 				width: fit-content;
 				padding: 0 15px;
@@ -1306,13 +1355,14 @@ body {
 		}
 	}
 }
+
 .course-curriculum {
 	.section-title {
 		position: relative;
 		margin-bottom: 0;
-		padding: 8px 0;
-		color: #5383f7;
-		font-weight: normal;
+		//padding: 8px 0;
+		//color: #5383f7;
+		//font-weight: normal;
 
 		span.show-desc {
 			display: inline-block;
@@ -1324,9 +1374,9 @@ body {
 			transform: translate(0, -50%);
 
 			&::before {
-				font-family: "Font Awesome 5 Free";
+				font-family: 'lp-icon';
 				font-size: 1.125em;
-				font-weight: 900;
+				//font-weight: 900;
 				content: "\f107";
 			}
 
@@ -1337,5 +1387,37 @@ body {
 				}
 			}
 		}
+	}
+}
+
+.quiz-attempts {
+	.attempts-heading {
+		margin-bottom: 15px;
+	}
+
+	table {
+		border-spacing: 0;
+		border-left: 1px solid var(--lp-secondary-color);
+		border-top: 1px solid var(--lp-secondary-color);
+		width: 100%;
+
+		tr {
+			th, td {
+				border-right: 1px solid var(--lp-secondary-color);
+				border-bottom: 1px solid var(--lp-secondary-color);
+				padding: 5px 15px;
+				text-align: center;
+			}
+
+			th {
+				font-weight: 500;
+			}
+		}
+	}
+}
+
+#popup-course .quiz-attempts {
+	@media (max-width: 575px) {
+		overflow-x: auto;
 	}
 }

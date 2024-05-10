@@ -16,7 +16,7 @@ if ( ! isset( $user ) ) {
 }
 
 ?>
-	<div class="lp-profile-username">
+	<h2 class="lp-profile-username">
 		<?php echo wp_kses_post( $user->get_display_name() ); ?>
-	</div>
+	</h2>
 <?php

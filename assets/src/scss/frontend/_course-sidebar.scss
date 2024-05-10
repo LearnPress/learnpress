@@ -2,6 +2,7 @@
 .course-summary-sidebar {
 	--lp-button-background-color: #28303d;
 	--lp-button-color: #d1e4dd;
+	position: relative;
 	.course-sidebar-preview {
 		margin-bottom: 35px;
 		background: #fff;
@@ -42,8 +43,8 @@
 				&.loading {
 					&::before {
 						display: inline-block;
-						font-family: "Font Awesome 5 Free";
-						font-weight: 900;
+						font-family: 'lp-icon';
+						//font-weight: 900;
 						content: "\f110";
 						animation: lp-rotating 1s linear infinite;
 					}
@@ -103,6 +104,25 @@
 			font-weight: 300;
 			line-height: 1em;
 			text-align: right;
+		}
+	}
+
+
+	&.slide-down {
+
+		@media (min-width: 769px) {
+			.course-summary-sidebar__inner {
+				position: fixed;
+				top: 0;
+			}
+		}
+	}
+
+	&.slide-top {
+		@media (min-width: 1200px) {
+			.course-summary-sidebar__inner {
+				// position: absolute;
+			}
 		}
 	}
 }

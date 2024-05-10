@@ -33,8 +33,8 @@ if ( isset( $args['section'] ) ) {
 			</div>
 
 			<span class="section-toggle">
-				<i class="fas fa-caret-down"></i>
-				<i class="fas fa-caret-up"></i>
+				<i class="lp-icon-caret-down"></i>
+				<i class="lp-icon-caret-up"></i>
 			</span>
 		</div>
 	</div>

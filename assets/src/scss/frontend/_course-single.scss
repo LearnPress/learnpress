@@ -1,0 +1,260 @@
+.lp-archive-courses {
+
+	.course-detail-info {
+		padding: $spacing-base-7x 0 $spacing-base-5x 0;
+		color: $color-white;
+		background: var(--lp-secondary-color);
+		position: relative;
+
+		.course-title {
+			margin: 0 0 $spacing-base-6x 0;
+			border-bottom: 1px solid rgb(255 255 255 / 10%);
+			color: $color-white;
+			font-weight: $heading-font-weight;
+			font-size: $font-size-h2;
+			padding-bottom: $spacing-base-6x;
+		}
+
+		&::before, &::after {
+			content: "";
+			width: 50%;
+			height: 100%;
+			background: var(--lp-secondary-color);
+			position: absolute;
+			top: 0;
+		}
+
+		&::before {
+			right: 100%;
+			left: auto;
+		}
+
+		&::after {
+			left: 100%;
+			right: auto;
+		}
+	}
+
+	.course-meta__pull-left {
+		font-size: $font-size-small;
+
+		.meta-item {
+			display: flex;
+			text-transform: capitalize;
+			align-items: center;
+			&::before {
+				margin-right: $spacing-base-2x;
+				color: var(--lp-primary-color);
+				font-family: 'lp-icon';
+			}
+
+			.meta-item__image {
+				margin-right: $spacing-base-2x;
+				flex: 0 0 46px;
+ 				img {
+					overflow: hidden;
+					position: relative;
+					width: 46px;
+					height: 46px;
+					border-radius: 50%;
+					display: block;
+				}
+			}
+
+			&.meta-item-duration::before {
+				content: "\f017";
+			}
+
+			&.meta-item-level::before {
+				content: "\f012";
+			}
+
+			&.meta-item-lesson::before {
+				content: "\f0c5";
+			}
+
+			&.meta-item-quiz::before {
+				content: "\f12e";
+			}
+
+			&.meta-item-student::before {
+				content: "\f501";
+			}
+		}
+
+		.meta-item__value {
+
+			label {
+				margin: 0;
+				color: var(--lp-color-accent-1);
+				font-size: $font-size-label;
+				font-weight: 300;
+				line-height: 1.5;
+				display: block;
+			}
+
+			> div {
+				line-height: 1.5;
+
+				a {
+					color: $color-white;
+					text-transform: capitalize;
+					text-decoration: none;
+
+					&:hover {
+						color: var(--lp-primary-color);
+					}
+				}
+			}
+		}
+
+		.meta-item-categories {
+			align-items: center;
+
+			&::before {
+				margin-right: $spacing-base-2x;
+				font-size: 2.25em;
+				line-height: 1;
+				content: "\f097";
+			}
+
+			.meta-item__value {
+				div {
+					span {
+						padding: 0 $spacing-base;
+					}
+				}
+			}
+		}
+
+		.meta-item-review {
+
+			.meta-item__value {
+				display: flex;
+				flex-direction: column;
+				justify-content: space-between;
+
+				.review-stars-rated {
+					margin-bottom: 0;
+					line-height: 1;
+				}
+			}
+		}
+
+
+	}
+
+	.course-meta-primary {
+		margin-bottom: $spacing-base-5x;
+
+		.meta-item-categories::before {
+			font-weight: 400;
+		}
+	}
+
+	.lp-entry-content {
+		display: flex;
+		flex-direction: row;
+
+		.entry-content-left {
+			width: calc(100% - 300px);
+			max-width: 100%;
+			margin: 0;
+			padding-right: 40px;
+			padding-top: 60px;
+
+			@media (max-width: 768px) {
+				width: 100%;
+				padding-right: 0;
+				margin-bottom: 50px;
+			}
+		}
+
+		@media (max-width: 768px) {
+			flex-direction: column;
+		}
+	}
+
+	.course-summary-sidebar {
+		width: 300px;
+		max-width: 100%;
+		margin-top: -190px;
+
+		@media (max-width: 768px) {
+			width: 100%;
+			margin-top: 0;
+
+			.course-summary-sidebar__inner {
+				width: 100%;
+			}
+		}
+
+		@media (max-width: 767px) {
+			width: 100%;
+			padding-left: 0;
+		}
+	}
+
+	.course-summary-sidebar__inner {
+		width: 300px;
+
+		.course-sidebar-top {
+			box-shadow: 0 15px 20px 0 rgba(0, 0, 0, 0.05);
+		}
+
+		.course-sidebar-secondary {
+			margin-top: 30px;
+			padding: 0;
+		}
+
+		.learn-press-course-wishlist {
+			color: $color-white;
+			background: transparent !important;
+			font-size: 0;
+
+			&.on,
+			&:hover {
+				color: var(--lp-primary-color);
+			}
+
+			&::before {
+				font-family: 'lp-icon';
+				font-size: 1em;
+				//font-weight: 900;
+				content: "\f004";
+			}
+		}
+
+		> div {
+			overflow: hidden;
+			padding: 20px;
+			background: $color-white;
+
+			ul {
+				list-style: none;
+
+				li a {
+					color: #666;
+					font-weight: 300;
+					line-height: 1.5em;
+
+					&:hover {
+						color: var(--lp-primary-color);
+						box-shadow: unset;
+					}
+				}
+			}
+		}
+
+	}
+
+	.courses-btn-load-more {
+		display: flex;
+		align-items: center;
+		gap: 5px;
+	}
+
+	.course-wishlist:before{
+		font-family: 'lp-icon';
+	}
+}

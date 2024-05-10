@@ -18,6 +18,13 @@ if ( ! isset( $course ) || ! isset( $user ) || ! isset( $percentage ) ||
 ?>
 
 <div id="popup-header">
+	<?php
+	/**
+	 * @since 4.0.6
+	 * @see single-button-toggle-sidebar - 5
+	 */
+	do_action( 'learn-press/single-button-toggle-sidebar' );
+	?>
 	<div class="popup-header__inner">
 		<h2 class="course-title">
 			<a
@@ -46,5 +53,5 @@ if ( ! isset( $course ) || ! isset( $user ) || ! isset( $percentage ) ||
 		</div>
 		<?php endif; ?>
 	</div>
-	<a href="<?php echo esc_url_raw( $course->get_permalink() ); ?>" class="back-course"><i class="fa fa-times"></i></a>
+	<a href="<?php echo esc_url_raw( $course->get_permalink() ); ?>" class="back-course"><i class="lp-icon-times"></i></a>
 </div>

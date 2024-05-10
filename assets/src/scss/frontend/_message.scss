@@ -1,17 +1,110 @@
 .learn-press-message {
-    &.fixed {
-        position: fixed;
-        top: 32px;
-        left: 0;
-        right: 0;
-        background: rgba(0, 173, 255, 0.6);
-        text-align: center;
-        z-index: 100;
-        color: #FFF;
-        padding: 10px;
+	&.fixed {
+		position: fixed;
+		top: 32px;
+		left: 0;
+		right: 0;
+		background: rgba(0, 173, 255, 0.6);
+		text-align: center;
+		z-index: 100;
+		color: #FFF;
+		padding: 10px;
 
-        &[data-delay-in] {
-            display: none;
-        }
-    }
+		&[data-delay-in] {
+			display: none;
+		}
+	}
+}
+
+.lp-ajax-message {
+	display: none;
+	margin-top: 20px;
+	padding: 20px;
+	border: 2px solid $msg-success;
+	border-radius: 9px;
+	font-size: 0.9em;
+	line-height: 1.4;
+
+	&.error {
+		border-color: $msg-error;
+	}
+}
+
+.course-graduation {
+
+	span {
+		color: #999;
+	}
+
+	.icon {
+		margin-right: 5px;
+		font-size: 1.25em;
+	}
+
+	&.passed {
+
+		.icon {
+			color: #059601;
+		}
+	}
+
+	&.error {
+
+		.icon {
+			color: #d85554;
+		}
+	}
+
+}
+
+.learn-press-template-warning {
+
+	&::before {
+		color: #ffc107;
+		font-family: 'lp-icon';
+		content: "\f071";
+	}
+}
+
+.lp-badge {
+	display: flex;
+	height: 30px;
+	padding: 0;
+	line-height: 1;
+	align-items: center;
+	justify-content: center;
+
+	&::before,
+	&::after {
+		content: "";
+	}
+
+	&::before {
+		display: inline-block;
+		position: relative;
+		z-index: 10;
+		color: #fff;
+		font-weight: bold;
+		line-height: 1;
+	}
+
+
+	&.featured-course {
+		position: absolute;
+		z-index: 1;
+		top: 15px;
+		left: -120px;
+		width: 300px;
+		background: $bg-course-featured;
+		text-align: center;
+		transform: rotate(-45deg);
+		height: auto;
+		padding: 5px 0;
+
+		&::before {
+			font-size: 0.75em;
+			text-transform: uppercase;
+			content: attr(data-text);
+		}
+	}
 }

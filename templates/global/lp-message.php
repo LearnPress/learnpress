@@ -19,6 +19,5 @@ if ( ! isset( $customer_message ) || ! isset( $customer_message['content'] ) || 
 $classes = array( 'learn-press-message', $customer_message['status'], 'lp-content-area' );
 ?>
 <div
-	class="<?php echo esc_attr( join( ' ', $classes ) ); ?>">
-	<i class="fa"></i><?php echo wp_kses_post( $customer_message['content'] ); ?>
+	class="<?php echo esc_attr( join( ' ', $classes ) ); ?>"><?php echo wp_kses_post( $customer_message['content'] ); ?>
 </div>

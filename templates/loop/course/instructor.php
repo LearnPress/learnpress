@@ -23,6 +23,6 @@ if ( ! $instructor ) {
 }
 ?>
 
-<span class="course-instructor">
+<div class="course-instructor">
 	<?php echo wp_kses_post( sprintf( '<a href="%s">%s</a>', $instructor->get_url_instructor(), $instructor->get_display_name() ) ); ?>
-</span>
+</div>

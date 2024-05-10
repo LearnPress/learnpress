@@ -16,5 +16,5 @@ if ( ! $level ) {
 }
 ?>
 
-<div class="meta-item meta-item-level"><?php echo esc_html( $level ); ?></div>
+<div class="meta-item meta-item-level"><span><?php echo esc_html( $level ); ?></span></div>
 

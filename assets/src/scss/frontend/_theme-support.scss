@@ -2,207 +2,218 @@
  * CSS for overriding some style defaults of themes
  */
 
- // Theme Divi
- .lp-archive-courses {
-	 ul, ol {
-		 list-style-type:decimal;
-		 list-style-position:inside;
-		 padding:0 0 1.5em;
-	 }
+// Theme Divi
+.lp-archive-courses {
+	ul, ol {
+		list-style-type: decimal;
+		list-style-position: inside;
+		padding: 0 0 1.5em;
+	}
 
-	 ul {
-        list-style-type: revert;
-		 padding:0 0 1em 1em;
+	ul {
+		list-style-type: revert;
+		padding: 0 0 1em 1em;
 
-        &.course-nav-tabs{
-            list-style: none;
-            padding: 0;
-            @media (max-width: 768px) {
-                padding-left: 15px;
-                padding-right: 15px;
-            }
-        }
-    }
+		&.course-nav-tabs {
+			list-style: none;
+			padding: 0;
+ 		}
+	}
 
-    ol ul {
-        padding:2px 0 2px 35px
-    }
-    ol ol {
-        padding:2px 0 2px 20px
-    }
-    thead, tr {
-        th {
-            padding:9px 24px
-        }
-    }
-    tr td{
-        border-top:1px solid #eee;
-        padding:6px 24px
-    }
+	ol ul {
+		padding: 2px 0 2px 35px
+	}
+
+	ol ol {
+		padding: 2px 0 2px 20px
+	}
+
+	thead, tr {
+		th {
+			padding: 9px 24px
+		}
+	}
+
+	tr td {
+		border-top: 1px solid #eee;
+		padding: 6px 24px
+	}
 }
 
 .learnpress {
-    #left-area ul, .entry-content ul, .et-l--body ul, .et-l--footer ul, .et-l--header ul {
-        padding: 0 !important;
-        list-style: none !important;
-    }
+	#left-area ul, .entry-content ul, .et-l--body ul, .et-l--footer ul, .et-l--header ul {
+		padding: 0 !important;
+		list-style: none !important;
+	}
 }
 
 // Theme Avada
 
 
-
 // Theme DT the7
 .learnpress.dt-the7 {
-    .learn-press-filters {
-        margin-bottom: 20px;
-    }
-    .learn-press-courses[data-size="3"] .course {
-        width: 50%;
-    }
+	.learn-press-filters {
+		margin-bottom: 20px;
+	}
+
+	.learn-press-courses[data-size="3"] .course {
+		width: 50%;
+	}
 }
 
 // Theme Bridge
 
 .bridge.learnpress {
-    .lp-archive-courses {
-        margin-top: 100px;
-        ul.learn-press-breadcrumb  {
-            padding-top: 45px;
-        }
-    }
-    .content {
-        z-index: 110;
-    }
-    .comment-respond .comment-form {
-        margin: 0;
-        > p, > div {
-            padding: 0;
-        }
-    }
-    &.learnpress-profile {
-        .content {
-            z-index: 100;
-        }
-    }
-    #learn-press-item-comments {
-        background: #f6f6f6;
-    }
+	.lp-archive-courses {
+		margin-top: 100px;
+
+		ul.learn-press-breadcrumb {
+			padding-top: 45px;
+		}
+	}
+
+	.content {
+		z-index: 110;
+	}
+
+	.comment-respond .comment-form {
+		margin: 0;
+
+		> p, > div {
+			padding: 0;
+		}
+	}
+
+	&.learnpress-profile {
+		.content {
+			z-index: 100;
+		}
+	}
+
+	#learn-press-item-comments {
+		background: #f6f6f6;
+	}
 }
 
 // theme Astra
 
 .learnpress.ast-separate-container .ast-article-single {
-    padding-left: 15px;
-    padding-right: 15px;
+	padding-left: 15px;
+	padding-right: 15px;
 }
 
+body.astra {
+	--lp-bg-color-lesson: var(--ast-global-color-4);
+}
+.ast-container{
+	--lp-cotainer-padding: 0
+}
 // Twenty Sixteen
 body {
-    &.learnpress-page {
-        &.twentysixteen {
-            #primary {
-                .lp-entry-content {
-                    float: none;
-                    width: auto;
-                    margin: 0 15%;
-                }
-            }
-        }
+	&.learnpress-page {
+		&.twentysixteen {
+			#primary {
+				.lp-entry-content {
+					float: none;
+					width: auto;
+					margin: 0 15%;
+				}
+			}
+		}
 
-        &.twentyfifteen {
-            .course-summary-sidebar {
-                .widget {
-                    width: 100%;
-                    padding: 0;
-                }
-            }
-        }
+		&.twentyfifteen {
+			.course-summary-sidebar {
+				.widget {
+					width: 100%;
+					padding: 0;
+				}
+			}
+		}
 
-        &.twentysixteen {
-            .entry-footer {
-                display: none;
-            }
+		&.twentysixteen {
+			.entry-footer {
+				display: none;
+			}
 
-            .lp-entry-content {
-                float: none;
-                width: auto;
-            }
-        }
+			.lp-entry-content {
+				float: none;
+				width: auto;
+			}
+		}
 
-        &.twentyseventeen {
-            #primary {
-                article {
-                    &.type-page {
-                        width: 100%;
-                    }
-                }
-            }
-        }
-    }
+		&.twentyseventeen {
+			#primary {
+				article {
+					&.type-page {
+						width: 100%;
+					}
+				}
+			}
+		}
+	}
 }
 
 @media screen and (min-width: 61.5625em) {
-    body {
-        &.twentysixteen {
-            &.learnpress-page {
-                .entry-footer {
-                    display: none;
-                }
+	body {
+		&.twentysixteen {
+			&.learnpress-page {
+				.entry-footer {
+					display: none;
+				}
 
-                .lp-entry-content {
-                    float: none;
-                    width: auto;
-                }
-            }
-        }
+				.lp-entry-content {
+					float: none;
+					width: auto;
+				}
+			}
+		}
 
-        &:not(.search-results) {
-            article:not(.type-page) {
-                .entry-footer {
-                    display: none;
-                }
+		&:not(.search-results) {
+			article:not(.type-page) {
+				.entry-footer {
+					display: none;
+				}
 
-                .lp-entry-content {
-                    float: none;
-                    width: auto;
-                }
-            }
-        }
-    }
+				.lp-entry-content {
+					float: none;
+					width: auto;
+				}
+			}
+		}
+	}
 }
 
 // Twenty Seventeen
 body.twentyseventeen.learnpress-page {
-    #primary {
-        article {
-            &.page {
-                .entry-header,
-                .lp-entry-content {
-                    width: 100%;
-                    float: none;
-                }
-            }
-        }
-    }
+	#primary {
+		article {
+			&.page {
+				.entry-header,
+				.lp-entry-content {
+					width: 100%;
+					float: none;
+				}
+			}
+		}
+	}
 }
 
 @media screen and (min-width: 48em) {
-    body {
-        &.twentyseventeen {
-            &.learnpress-page {
-                #primary {
-                    article {
-                        &.page {
-                            .entry-header,
-                            .lp-entry-content {
-                                width: 100%;
-                                float: none;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+	body {
+		&.twentyseventeen {
+			&.learnpress-page {
+				#primary {
+					article {
+						&.page {
+							.entry-header,
+							.lp-entry-content {
+								width: 100%;
+								float: none;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 }

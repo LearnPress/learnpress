@@ -167,15 +167,13 @@ class ListInstructorsTemplate {
 			$singleInstructorTemplate = SingleInstructorTemplate::instance();
 
 			$html_total_courses = sprintf(
-				'<div class="instructor-count-courses"><span class="lp-ico courses">%s</span> %s</div>',
-				wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-courses.svg' ),
+				'<div class="instructor-count-courses"><span class="lp-ico lp-icon-courses"></span> %s</div>',
 				$singleInstructorTemplate->html_count_courses( $instructor )
 			);
 
 			$html_total_students = sprintf(
-				'<div class="instructor-count-students"><span class="lp-ico students">%s</span> %s</div>',
-				wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-students.svg' ),
-				$singleInstructorTemplate->html_count_students( $instructor )
+				'<div class="instructor-count-students"><span class="lp-ico lp-icon-students"></span> %s</div>',
+ 				$singleInstructorTemplate->html_count_students( $instructor )
 			);
 
 			$sections = apply_filters(

@@ -15,9 +15,7 @@
 	.lp-archive-courses {
 		max-width: none;
 	}
-}
 
-.learnpress.twentytwentytwo {
 	.wp-container-11, .wp-container-9, .wp-container-12 {
 		.alignfull {
 			max-width: 100%;
@@ -26,6 +24,21 @@
 			padding-left: 0 !important;
 			padding-right: 0 !important;
 		}
+	}
+}
+
+.learnpress.twentytwentyone {
+	--lp-font-size-base: 0.925em;
+
+	.lp-archive-courses a:focus {
+		background: transparent !important;
+		text-decoration: none !important;;
+		outline: none !important;;
+	}
+
+	.pagination, .comments-pagination {
+		border-top: 0;
+		padding-top: 0;
 	}
 }
 

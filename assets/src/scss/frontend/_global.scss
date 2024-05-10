@@ -4,9 +4,41 @@
 * @since 4.2.3
 * @version 1.0.0
 */
+@import "../mixin.scss";
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+/*  start reset css */
+body {
+	background: #fff;
+
+	&.learnpress-page {
+		overflow-x: hidden;
+	}
+}
+
+button {
+	cursor: pointer;
+}
+
+input, button, select, textarea {
+	outline: none;
+}
+
+html {
+	overflow-x: hidden;
+}
+
+a {
+	@include transition(.3s);
+	text-decoration: none;
+}
 
 .lp-content-area {
-	max-width: var(--lp-cotainer-max-with) !important;
+	max-width: var(--lp-container-max-width)!important;
 	margin: 0 auto;
 	padding-right: var(--lp-cotainer-padding);
 	padding-left: var(--lp-cotainer-padding);
@@ -18,4 +50,11 @@
 		height: 20px;
 	}
 }
+
+//label{
+//	font-size: 0.694rem;
+//}
+//span{
+//	font-size: 0.833rem;
+//}
 

@@ -1310,31 +1310,35 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 					switch ( $k ) {
 						case 'facebook':
-							$i = sprintf(
-								'<i class="lp-user-ico">%s</i>',
-								wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-facebook.svg' )
-							);
+//							$i = sprintf(
+//								'<i class="lp-user-ico">%s</i>',
+//								wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-facebook.svg' )
+//							);
+							$i ='<i class="lp-user-ico lp-icon-facebook"></i>';
 							break;
 						case 'twitter':
-							$i = sprintf(
-								'<i class="lp-user-ico">%s</i>',
-								wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-twitter.svg' )
-							);
+//							$i = sprintf(
+//								'<i class="lp-user-ico">%s</i>',
+//								wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-twitter.svg' )
+//							);
+							$i ='<i class="lp-user-ico lp-icon-twitter"></i>';
 							break;
 						case 'linkedin':
-							$i = sprintf(
-								'<i class="lp-user-ico">%s</i>',
-								wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-linkedin.svg' )
-							);
+//							$i = sprintf(
+//								'<i class="lp-user-ico">%s</i>',
+//								wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-linkedin.svg' )
+//							);
+							$i ='<i class="lp-user-ico lp-icon-linkedin"></i>';
 							break;
 						case 'youtube':
-							$i = sprintf(
-								'<i class="lp-user-ico">%s</i>',
-								wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-youtube.svg' )
-							);
+//							$i = sprintf(
+//								'<i class="lp-user-ico">%s</i>',
+//								wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-youtube.svg' )
+//							);
+							$i ='<i class="lp-user-ico lp-icon-youtube-play"></i>';
 							break;
 						default:
-							$i = sprintf( '<i class="fab fa-%s"></i>', $k );
+							$i = sprintf( '<i class="lp-user-ico lp-icon-%s"></i>', $k );
 					}
 
 					$icon          = apply_filters(
