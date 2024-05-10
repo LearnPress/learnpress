@@ -427,7 +427,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			}
 
 			$filter              = new LP_User_Items_Filter();
-			$filter->user_id     = get_current_user_id();
+			$filter->user_id     = $user->get_id();
 			$filter->item_id     = $course_id;
 			$course_item         = $lp_user_items_db->get_last_user_course( $filter );
 			$latest_user_item_id = 0;
@@ -435,7 +435,10 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				$latest_user_item_id = $course_item->user_item_id;
 			}
 
-			if ( $course->allow_repurchase() && ! empty( $latest_user_item_id ) && empty( $allow_repurchase_type ) ) {
+			if ( $course->allow_repurchase()
+				 && ! $user->is_guest()
+				 && ! empty( $latest_user_item_id )
+				 && empty( $allow_repurchase_type ) ) {
 				if ( $course->allow_repurchase_course_option() === 'popup' ) {
 					ob_start();
 					?>
@@ -444,7 +447,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 							<li>
 								<label>
 									<input name="_lp_allow_repurchase_type" value="reset" type="radio"
-											checked="checked"/>
+										   checked="checked"/>
 									<?php esc_html_e( 'Reset Course progress', 'learnpress' ); ?>
 								</label>
 							</li>

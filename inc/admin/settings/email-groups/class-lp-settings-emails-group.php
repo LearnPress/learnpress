@@ -26,21 +26,23 @@ class LP_Settings_Emails_Group extends LP_Settings {
 		parent::__construct();
 
 		$emails = LP_Emails::instance()->emails;
+		$this->items = apply_filters(
+			"learn-press/settings/emails-group/$this->group_id/key-ids",
+			$this->items
+		);
 
-		$ids = array_fill_keys( $this->items, '' );
-
-		foreach ( $this->items as $id ) {
-			foreach ( $emails as $email ) {
-				if ( ! is_object( $email ) ) {
-					continue;
-				}
-
-				if ( ! array_key_exists( $email->id, $ids ) ) {
-					continue;
-				}
-				$email->group      = $this;
-				$ids[ $email->id ] = $email;
+		$ids = [];
+		foreach ( $emails as $email ) {
+			if ( ! is_object( $email ) ) {
+				continue;
 			}
+
+			//Todo: need review code here
+			if ( ! in_array( $email->id, $this->items ) ) {
+				continue;
+			}
+			$email->group      = $this;
+			$ids[ $email->id ] = $email;
 		}
 
 		$this->items = $ids;
