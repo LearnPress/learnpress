@@ -382,9 +382,9 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				'select2'               => new LP_Asset_Key(
 					$this->url( 'src/css/vendor/select2.min.css' )
 				),
-				'font-awesome'          => new LP_Asset_Key(
+				/*'font-awesome'          => new LP_Asset_Key(
 					$this->url( 'src/css/vendor/font-awesome-5.min.css' )
-				),
+				),*/
 				'jquery-ui'             => new LP_Asset_Key(
 					$this->url( 'src/css/vendor/jquery-ui/jquery-ui.min.css' )
 				),

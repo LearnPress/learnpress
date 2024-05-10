@@ -210,6 +210,10 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.2.6.7 (2024-05-13) =
+~ Optimize: style.
+~ Remove font awesome, replace to font LearnPress.
+
 = 4.2.6.6 (2024-05-09) =
 ~ Fixed: security.
 ~ Fixed: delete user item when remove order item.
