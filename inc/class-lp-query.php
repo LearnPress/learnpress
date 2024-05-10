@@ -120,6 +120,13 @@ class LP_Query {
 				if ( ! preg_match( '!page!', LP_Helper::getUrlCurrent() ) ) {
 					$course_slug = preg_replace( '!%course_category%!', '([^/]+)/([^/]+)', $course_slug );
 
+					// Rule single course
+					$rules['single-course-with-cat'][] = [
+						"^{$course_slug}/?$" =>
+							'index.php?' . LP_COURSE_CPT . '=$matches[2]&course_category=$matches[1]',
+					];
+
+					// Rule single item
 					foreach ( $course_item_slugs as $post_type => $course_item_slug ) {
 						$rules['course-with-cat-items'][ $post_type ] = [
 							"^{$course_slug}(?:/{$course_item_slug}/([^/]+))/?$" =>
@@ -128,6 +135,13 @@ class LP_Query {
 					}
 				}
 			} else {
+				// Rule single course
+				$rules['single-course'][] = [
+					"^{$course_slug}/([^/]+)/?$" =>
+						'index.php?' . LP_COURSE_CPT . '=$matches[1]',
+				];
+
+				// Rule single item
 				foreach ( $course_item_slugs as $post_type => $course_item_slug ) {
 					$rules['course-items'][ $post_type ] = [
 						"^{$course_slug}/([^/]+)(?:/{$course_item_slug}/([^/]+))/?$" =>

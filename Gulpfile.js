@@ -72,7 +72,6 @@ const releasesFiles = [
 	'!packages/**',
 	'!languages/strings/**',
 	'!languages/learnpress-js.pot',
-	'version-addons.json',
 ];
 
 const errorHandler = ( r ) => {
