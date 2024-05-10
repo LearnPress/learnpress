@@ -280,7 +280,7 @@ class LP_Forms_Handler {
 			}
 
 			$custom_fields = LP_Settings::get_option( 'register_profile_fields', [] );
-			if ( $custom_fields && ! empty( $update_meta ) ) {
+			if ( ! empty( $custom_fields ) ) {
 				foreach ( $custom_fields as $field ) {
 					if ( $field['required'] === 'yes' && empty( $update_meta[ $field['id'] ] ) ) {
 						throw new Exception( $field['name'] . __( ' is required field.', 'learnpress' ), 109 );
