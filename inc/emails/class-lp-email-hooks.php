@@ -96,7 +96,7 @@ if ( ! class_exists( 'LP_Email_Hooks' ) ) {
 		 */
 		public function handle_send_email_on_background() {
 			$args           = func_get_args();
-			$args           = array_merge( $args, $_REQUEST );
+			$args           = array_merge( $args, [ 'params_request' => $_REQUEST ] );
 			$email_bg       = LP_Background_Single_Email::instance();
 			$current_filter = current_filter();
 
