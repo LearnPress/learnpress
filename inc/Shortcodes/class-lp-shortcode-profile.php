@@ -5,7 +5,7 @@
  * @author   ThimPress
  * @category Shortcodes
  * @package  Learnpress/Shortcodes
- * @version  4.0.0
+ * @version  4.0.1
  * @extends  LP_Abstract_Shortcode
  */
 
@@ -74,6 +74,8 @@ if ( ! class_exists( 'LP_Shortcode_Profile' ) ) {
 			wp_enqueue_script( 'lp-profile' );
 
 			try {
+				ob_start();
+
 				if ( ! LP_Page_Controller::is_page_profile() ) {
 					$customer_message = [
 						'status'  => 'error',
@@ -84,10 +86,10 @@ if ( ! class_exists( 'LP_Shortcode_Profile' ) ) {
 						)
 					];
 					Template::instance()->get_frontend_template( 'global/lp-message.php', compact( 'customer_message' ) );
+
 					return ob_get_clean();
 				}
 
-				ob_start();
 				if ( is_wp_error( $this->can_view_profile() ) ) {
 					$messages = [
 						'status'  => 'error',
@@ -103,7 +105,6 @@ if ( ! class_exists( 'LP_Shortcode_Profile' ) ) {
 
 				$output = ob_get_clean();
 			} catch ( Throwable $e ) {
-				ob_end_clean();
 				error_log( $e->getMessage() );
 			}
 
