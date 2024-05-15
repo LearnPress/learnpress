@@ -185,7 +185,7 @@ class LP_Query {
 		$profile_id = learn_press_get_page_id( 'profile' );
 		if ( $profile_id ) {
 			// Rule view profile of user (self or another)
-			$page_profile_slug        = get_post_field( 'post_name', $profile_id );
+			$page_profile_slug        = urldecode( get_post_field( 'post_name', $profile_id ) );
 			$rules['profile']['user'] = [
 				"^{$page_profile_slug}/([^/]*)/?$" =>
 					"index.php?page_id={$profile_id}&user=" . '$matches[1]',
