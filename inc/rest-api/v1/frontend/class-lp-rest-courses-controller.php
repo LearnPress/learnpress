@@ -239,7 +239,6 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 
 			$response->status = 'success';
 		} catch ( Throwable $e ) {
-			ob_end_clean();
 			$response->data->content = $e->getMessage();
 			$response->message       = $e->getMessage();
 		}

@@ -918,7 +918,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				$avatar = apply_filters(
 					'learn-press/user-profile/avatar',
 					sprintf(
-						'<img alt="%s" src="%s" height="%d" width="%d">',
+						'<img alt="%s" class="avatar" src="%s" height="%d" width="%d">',
 						esc_attr__( 'User Avatar', 'learnpress' ),
 						$avatar_url,
 						$args['width'] ?? 96,
