@@ -202,9 +202,22 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 
 			// Search by keyword
 			if ( ! empty( $wp_query->get( 's' ) ) ) {
-				$s     = '%' . $wpdb->esc_like( $wp_query->get( 's' ) ) . '%';
-				$where .= $wpdb->prepare( " AND {$lp_db->tb_posts}.ID like %s", $s );
-				$where .= $wpdb->prepare( " OR lpori.order_item_name like %s", $s );
+				$s = $wp_query->get( 's' );
+
+
+				// Check search LP Order ID with format #000[ID] or 000[ID]
+				$pattern = '/^#\d+$/';
+				if ( preg_match( $pattern, $s ) ) {
+					$s = str_replace( '#', '', $s );
+				}
+
+				$pattern2 = '#^0+.*\d+$#';
+				if ( preg_match( $pattern2, $s ) ) {
+					$s = (int) $s;
+				}
+
+				$where .= $wpdb->prepare( " AND {$lp_db->tb_posts}.ID = %d", $s );
+				$where .= $wpdb->prepare( " OR lpori.order_item_name like %s", '%' . $wpdb->esc_like( $s ) . '%' );
 			}
 
 			// Search by author id
