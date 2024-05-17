@@ -214,7 +214,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * Updates order to new status if needed
 		 *
 		 * @param mixed $new_status
-		 * @param bool  $manual Is this a manual order status change?.
+		 * @param bool $manual Is this a manual order status change?.
 		 *
 		 * @return bool
 		 */
@@ -330,6 +330,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 *
 		 * @param string $new_status
 		 * @param string $note - Optional. Note for changing status.
+		 *
 		 * @sicne 3.0.0
 		 * @version 1.0.1
 		 */
@@ -466,6 +467,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 */
 		public function get_items() {
 			$items = $this->_curd->read_items( $this );
+
 			return apply_filters( 'learn-press/order-items', $items );
 		}
 
@@ -611,7 +613,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 						$course                     = learn_press_get_course( $item['item_id'] );
 						$item['subtotal']           = apply_filters( 'learnpress/order/item/subtotal', $course->get_price() * $item['quantity'], $course, $item, $this );
 						$item['total']              = apply_filters( 'learnpress/order/item/total', $course->get_price() * $item['quantity'], $course, $item, $this );
-						$item['order_item_name']    = apply_filters( 'learnpress/order/item/title', $course->get_title(), $course, $item, $this );
+						$item['order_item_name']    = apply_filters( 'learnpress/order/item/title', get_post_field( 'post_title', $item['item_id'], 'raw' ), $course, $item, $this );
 						$item['meta']['_course_id'] = $item['item_id'];
 						break;
 					default:
@@ -802,7 +804,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 */
 		public function get_users(): array {
 			$users = $this->get_user_id();
-			if ( $users !== -1 ) {
+			if ( $users !== - 1 ) {
 				settype( $users, 'array' );
 
 				$users = array_map(
@@ -982,6 +984,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * Get user_name
 		 *
 		 * @param int $user_id
+		 *
 		 * @return string
 		 */
 		public function get_user_name( int $user_id = 0 ): string {
@@ -1044,6 +1047,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * Get email's user by user_id
 		 *
 		 * @param int $user_id
+		 *
 		 * @return string
 		 * @editor tungnx
 		 * @modify 4.1.3
@@ -1097,7 +1101,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @return array|int
 		 */
 		public function get_user_id() {
-			return $this->get_data( 'user_id', -1 );
+			return $this->get_data( 'user_id', - 1 );
 		}
 
 		/**

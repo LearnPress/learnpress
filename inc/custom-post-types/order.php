@@ -216,6 +216,8 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					$s = (int) $s;
 				}
 
+				$s = trim( $s );
+
 				$where .= $wpdb->prepare( " AND {$lp_db->tb_posts}.ID = %d", $s );
 				$where .= $wpdb->prepare( " OR lpori.order_item_name like %s", '%' . $wpdb->esc_like( $s ) . '%' );
 			}
