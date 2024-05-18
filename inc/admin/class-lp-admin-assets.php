@@ -52,6 +52,9 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				'nonce'             => wp_create_nonce( 'wp_rest' ),
 				'courses_url'       => learn_press_get_page_link( 'courses' ),
 				'urlParams'         => lp_archive_skeleton_get_args(),
+				'i18n'              => [
+					'select_page' => esc_html__( 'Select page', 'learnpress' ),
+				],
 			]
 		);
 	}
@@ -103,7 +106,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 	protected function _get_scripts(): array {
 		$lp_admin_js = new LP_Asset_Key(
 			$this->url( 'js/dist/admin/admin' . self::$_min_assets . '.js' ),
-			array( 'learn-press-global', 'lp-utils', 'wp-color-picker', 'vue-libs', 'wp-i18n' ),
+			array( 'learn-press-global', 'lp-utils', 'wp-color-picker' ),
 			array(),
 			0,
 			1,
