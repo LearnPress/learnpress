@@ -97,4 +97,25 @@ const listenElementCreated = ( callback ) => {
 	// End.
 };
 
+// Parse JSON from string with content include LP_AJAX_START.
+const lpAjaxParseJsonOld = ( data ) => {
+	if ( typeof data !== 'string' ) {
+		return data;
+	}
+
+	const m = String.raw( { raw: data } ).match( /<-- LP_AJAX_START -->(.*)<-- LP_AJAX_END -->/s );
+
+	try {
+		if ( m ) {
+			data = JSON.parse( m[ 1 ].replace( /(?:\r\n|\r|\n)/g, '' ) );
+		} else {
+			data = JSON.parse( data );
+		}
+	} catch ( e ) {
+		data = {};
+	}
+
+	return data;
+};
+
 export { lpFetchAPI, lpAddQueryArgs, lpGetCurrentURLNoParam, listenElementViewed, listenElementCreated };
