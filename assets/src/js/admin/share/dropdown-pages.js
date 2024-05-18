@@ -17,14 +17,14 @@
 			$( '.learn-press-dropdown-pages select' ).each( function() {
 				const $sel = $( this ),
 					$option = $new_option.clone();
-				if ( position == 0 ) {
+				if ( position === 0 ) {
 					$( 'option', $sel ).each( function() {
 						if ( parseInt( $( this ).val() ) ) {
 							$option.insertBefore( $( this ) );
 							return false;
 						}
 					} );
-				} else if ( position == args.positions.length - 1 ) {
+				} else if ( position === args.positions.length - 1 ) {
 					$sel.append( $option );
 				} else {
 					$option.insertAfter( $( 'option[value="' + args.positions[ position - 1 ] + '"]', $sel ) );
@@ -56,6 +56,7 @@
 
 		$select.select2( {
 			allowClear: true,
+			placeholder: lpDataAdmin.i18n.select_page,
 		} );
 
 		$select.on( 'select2:select', function( e ) {
