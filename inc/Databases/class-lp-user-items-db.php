@@ -102,7 +102,7 @@ class LP_User_Items_DB extends LP_Database {
 	 * @return array|null|int|string
 	 * @throws Exception
 	 * @since 4.1.6.9
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public function get_user_items( LP_User_Items_Filter $filter, int &$total_rows = 0 ) {
 		$filter->fields = array_merge( $filter->all_fields, $filter->fields );
@@ -117,6 +117,10 @@ class LP_User_Items_DB extends LP_Database {
 
 		if ( ! empty( $filter->ref_id ) ) {
 			$filter->where[] = $this->wpdb->prepare( 'AND ui.ref_id = %d', $filter->ref_id );
+		}
+
+		if ( ! empty( $filter->ref_type ) ) {
+			$filter->where[] = $this->wpdb->prepare( 'AND ui.ref_type = %s', $filter->ref_type );
 		}
 
 		if ( ! empty( $filter->user_item_id ) ) {
@@ -142,6 +146,10 @@ class LP_User_Items_DB extends LP_Database {
 
 		if ( ! empty( $filter->graduation ) ) {
 			$filter->where[] = $this->wpdb->prepare( 'AND ui.graduation = %s', $filter->graduation );
+		}
+
+		if ( ! empty( $filter->parent_id ) ) {
+			$filter->where[] = $this->wpdb->prepare( 'AND ui.parent_id = %s', $filter->parent_id );
 		}
 
 		$filter = apply_filters( 'lp/user_items/query/filter', $filter );
