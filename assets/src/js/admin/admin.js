@@ -85,10 +85,10 @@
 		} );
 	};*/
 
-	const preventDefault = function preventDefault( e ) {
+	/*const preventDefault = function preventDefault( e ) {
 		e.preventDefault();
 		return false;
-	};
+	};*/
 
 	$.fn._filter_post_by_author = function() {
 		const $input = $( '#post-search-input' );
@@ -305,7 +305,7 @@
 		$( document ).on( 'click', '#learn-press-create-pages', createPages )
 			//.on( 'click', '.lp-upgrade-notice .close-notice', hideUpgradeMessage )
 			//.on( 'click', '.plugin-action-buttons a', pluginActions )
-			.on( 'click', '[data-remove-confirm]', preventDefault )
+			//.on( 'click', '[data-remove-confirm]', preventDefault )
 			.on( 'mousedown', '.lp-sortable-handle', function( e ) {
 				$( 'html, body' ).addClass( 'lp-item-moving' );
 				$( e.target ).closest( '.lp-sortable-handle' ).css( 'cursor', 'inherit' );

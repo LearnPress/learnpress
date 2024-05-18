@@ -106,10 +106,10 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 	protected function _get_scripts(): array {
 		$lp_admin_js = new LP_Asset_Key(
 			$this->url( 'js/dist/admin/admin' . self::$_min_assets . '.js' ),
-			array( 'lp-utils' ),
-			array(),
+			[ 'wp-i18n' ],
+			[],
 			0,
-			1,
+			0,
 			'',
 			[ 'strategy' => 'defer' ]
 		);
@@ -251,7 +251,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				),*/
 				'lp-advertisement'                  => new LP_Asset_Key(
 					$this->url( self::$_folder_source . 'js/admin/share/advertisement' . self::$_min_assets . '.js' ),
-					array(),
+					[ 'lp-utils' ],
 					array(
 						'edit-' . LP_COURSE_CPT,
 						'edit-' . LP_QUESTION_CPT,
