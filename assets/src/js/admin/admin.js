@@ -38,7 +38,7 @@
 		} );
 	};
 
-	const hideUpgradeMessage = function hideUpgradeMessage( e ) {
+	/*const hideUpgradeMessage = function hideUpgradeMessage( e ) {
 		e.preventDefault();
 		const $btn = $( this );
 		$btn.closest( '.lp-upgrade-notice' ).fadeOut();
@@ -49,7 +49,7 @@
 			},
 			success: function success( res ) {},
 		} );
-	};
+	};*/
 
 	/*const pluginActions = function pluginActions( e ) {
 		// Premium addon
@@ -303,7 +303,7 @@
 		$( '.learn-press-tip' ).LP( 'QuickTip' ); //$('.learn-press-tabs').LP('AdminTab');
 
 		$( document ).on( 'click', '#learn-press-create-pages', createPages )
-			.on( 'click', '.lp-upgrade-notice .close-notice', hideUpgradeMessage )
+			//.on( 'click', '.lp-upgrade-notice .close-notice', hideUpgradeMessage )
 			//.on( 'click', '.plugin-action-buttons a', pluginActions )
 			.on( 'click', '[data-remove-confirm]', preventDefault )
 			.on( 'mousedown', '.lp-sortable-handle', function( e ) {
