@@ -147,6 +147,7 @@ https://www.transifex.com/projects/p/learnpress/
 <a href="http://docs.thimpress.com/learnpress" target="_blank">Documentation</a> is available in ThimPress site.
 
 ## For Developer.
+# Note: node use is version 16
 
 1. <code>git clone https://github.com/LearnPress/learnpress.git</code>
 
