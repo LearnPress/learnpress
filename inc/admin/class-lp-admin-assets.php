@@ -239,7 +239,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				),*/
 				'lp-setup'                          => new LP_Asset_Key(
 					$this->url( 'js/dist/admin/pages/setup' . self::$_min_assets . '.js' ),
-					array( 'jquery', 'lp-utils', 'dropdown-pages' ),
+					array( 'jquery', 'dropdown-pages' ),
 					array( 'lp-page-setup' ),
 					0,
 					1
@@ -522,3 +522,12 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 	}
 }
 
+/**
+ * Shortcut function to get instance of LP_Admin_Assets
+ *
+ * @return LP_Admin_Assets|null
+ * Addon Certificate, Import/Export is using.
+ */
+function learn_press_admin_assets() {
+	return LP_Admin_Assets::instance();
+}

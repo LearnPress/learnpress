@@ -120,7 +120,7 @@ class LP_Setup_Wizard {
 		// Refresh new changes
 		// LP_Settings::instance()->refresh();
 
-		$assets = learn_press_admin_assets();
+		$assets = LP_Admin_Assets::instance();
 
 		// tungnx: fix error with Woocommerce
 		remove_action( 'admin_enqueue_scripts', array( 'Automattic\WooCommerce\Admin\Loader', 'register_scripts' ) );

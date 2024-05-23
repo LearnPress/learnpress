@@ -258,7 +258,7 @@ $user_ip      = $order->get_user_ip_address();
 </script>
 
 <?php
-$assets = learn_press_admin_assets();
+$assets = LP_Admin_Assets::instance();
 $assets->add_localize( 'learn-press-meta-box-order', 'users', $order->get_user_data() );
 $assets->add_localize( 'learn-press-meta-box-order', 'userTextFormat', '{{display_name}} ({{email}})' );
 

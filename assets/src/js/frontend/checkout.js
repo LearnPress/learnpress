@@ -2,7 +2,7 @@
  * File JS handling checkout page.
  */
 
-import { lpAddQueryArgs, lpFetchAPI } from '../utils';
+import { lpAddQueryArgs, lpFetchAPI, lpAjaxParseJsonOld } from '../utils.js';
 
 // Events
 document.addEventListener( 'submit', ( e ) => {
@@ -38,7 +38,7 @@ window.lpCheckout = {
 		fetch( url, option )
 			.then( ( res ) => res.text() )
 			.then( ( data ) => {
-				data = LP.parseJSON( data );
+				data = lpAjaxParseJsonOld( data );
 				callBack.success( data );
 			} )
 			.finally( () => {
@@ -80,7 +80,7 @@ window.lpCheckout = {
 
 		const callBack = {
 			success: ( response ) => {
-				response = LP.parseJSON( response );
+				response = lpAjaxParseJsonOld( response );
 				const { messages, result } = response;
 				if ( 'success' !== result ) {
 					window.lpCheckout.showErrors( formCheckout, 'error', messages );
