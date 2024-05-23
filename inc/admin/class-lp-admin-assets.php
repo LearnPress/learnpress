@@ -251,21 +251,6 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					0,
 					1
 				),*/
-				'lp-advertisement'                  => new LP_Asset_Key(
-					$this->url( self::$_folder_source . 'js/admin/share/advertisement' . self::$_min_assets . '.js' ),
-					[ 'lp-utils' ],
-					array(
-						'edit-' . LP_COURSE_CPT,
-						'edit-' . LP_QUESTION_CPT,
-						'edit-' . LP_LESSON_CPT,
-						'edit-' . LP_ORDER_CPT,
-						'edit-' . LP_QUIZ_CPT,
-						'learnpress_page_learn-press-settings',
-						'learnpress_page_learn-press-tools',
-					),
-					0,
-					1
-				),
 				'lp-modal-search-courses'           => new LP_Asset_Key(
 					$this->url( self::$_folder_source . 'js/admin/share/modal-search-courses' . self::$_min_assets . '.js' ),
 					array(

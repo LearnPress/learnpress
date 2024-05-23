@@ -26,14 +26,14 @@ if ( ! class_exists( 'LP_Admin_Dashboard' ) ) {
 				);
 			}
 
-			wp_add_dashboard_widget(
+			/*wp_add_dashboard_widget(
 				'learn_press_dashboard_plugin_status',
 				esc_html__( 'LearnPress status', 'learnpress' ),
 				array(
 					$this,
 					'plugin_status',
 				)
-			);
+			);*/
 		}
 
 		/**
