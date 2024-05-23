@@ -1,6 +1,6 @@
+import { lpAjaxParseJsonOld } from '../utils';
 const $ = jQuery;
 const $doc = $( document );
-const $win = $( window );
 
 const makePaymentsSortable = function makePaymentsSortable() {
 	// Make payments sortable
@@ -646,7 +646,7 @@ const togglePaymentStatus = function togglePaymentStatus( e ) {
 			nonce: $( 'input[name=lp-settings-nonce]' ).val(),
 		},
 		success( response ) {
-			response = LP.parseJSON( response );
+			response = lpAjaxParseJsonOld( response );
 			for ( const i in response ) {
 				$( '#payment-' + i + ' .status' ).toggleClass( 'enabled', response[ i ] );
 			}
@@ -666,7 +666,7 @@ const updateEmailStatus = function updateEmailStatus() {
 			},
 			dataType: 'text',
 			success: $.proxy( function( res ) {
-				res = LP.parseJSON( res );
+				res = lpAjaxParseJsonOld( res );
 				for ( const i in res ) {
 					$( '#email-' + i + ' .status' ).toggleClass( 'enabled', res[ i ] );
 				}
@@ -832,7 +832,7 @@ const toggleEmails = function toggleEmails( e ) {
 			status,
 		},
 		success( response ) {
-			response = LP.parseJSON( response );
+			response = lpAjaxParseJsonOld( response );
 			for ( const i in response ) {
 				$( '#email-' + i + ' .status' ).toggleClass( 'enabled', response[ i ] );
 			}
@@ -864,7 +864,7 @@ const importCourses = function importCourses() {
 			yes: action,
 		},
 		success( response ) {
-			response = LP.parseJSON( response );
+			response = lpAjaxParseJsonOld( response );
 			if ( response.url ) {
 				$.ajax( {
 					url: response.url,

@@ -118,4 +118,4 @@ const lpAjaxParseJsonOld = ( data ) => {
 	return data;
 };
 
-export { lpFetchAPI, lpAddQueryArgs, lpGetCurrentURLNoParam, listenElementViewed, listenElementCreated };
+export { lpFetchAPI, lpAddQueryArgs, lpGetCurrentURLNoParam, listenElementViewed, listenElementCreated, lpAjaxParseJsonOld };
