@@ -98,7 +98,9 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 		//$lp_settings_cache->clean_lp_rewrite_rules();
 
 		// Flush rewrite rules after save settings.
-		flush_rewrite_rules();
+		if ( isset( $_REQUEST['tab'] ) && 'permalink' === $_REQUEST['tab'] ) {
+			flush_rewrite_rules();
+		}
 
 		// Filter redirect
 		$redirect = apply_filters( 'learn-press/update-settings/redirect', esc_url_raw( add_query_arg( 'settings-updated', 'yes' ) ), $this );
