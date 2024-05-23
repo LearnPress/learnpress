@@ -5,6 +5,7 @@
  * @version 3.0.0
  */
 
+import { lpAjaxParseJsonOld } from '../utils.js';
 jQuery( function( $ ) {
 	$( 'form[name="become-teacher-form"]' ).each( function() {
 		const $form = $( this ),
@@ -42,7 +43,7 @@ jQuery( function( $ ) {
 					.html( $submit.data( 'text' ) );
 			},
 			ajaxSuccess = function( response ) {
-				response = LP.parseJSON( response );
+				response = lpAjaxParseJsonOld( response );
 				if ( response.message ) {
 					showMessages( response.message );
 				}

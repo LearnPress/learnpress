@@ -6,7 +6,7 @@
  */
 
 import API from '../api';
-import { lpAddQueryArgs, lpGetCurrentURLNoParam, listenElementViewed, listenElementCreated } from '../utils';
+import { lpAddQueryArgs, lpGetCurrentURLNoParam, listenElementViewed, listenElementCreated } from '../utils.js';
 
 if ( 'undefined' === typeof lpData ) {
 	console.log( 'lpData is undefined' );
