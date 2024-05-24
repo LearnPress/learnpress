@@ -106,7 +106,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 	protected function _get_scripts(): array {
 		$lp_admin_js = new LP_Asset_Key(
 			$this->url( 'js/dist/admin/admin' . self::$_min_assets . '.js' ),
-			[ 'wp-i18n' ],
+			[ 'wp-i18n', 'lp-utils' ],
 			[],
 			0,
 			0,
