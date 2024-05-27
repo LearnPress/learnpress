@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the LearnPress plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: LearnPress 4.2.6.7\n"
+"Project-Id-Version: LearnPress 4.2.6.8\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/learnpress\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-05-20T04:25:32+03:00\n"
+"POT-Creation-Date: 2024-05-27T07:43:42+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.8.1\n"
 "X-Domain: learnpress\n"
@@ -46,7 +46,7 @@ msgid "Name"
 msgstr ""
 
 #: assets/js/dist/admin/pages/tools.min.js:156
-#: inc/admin/lp-admin-functions.php:961
+#: inc/admin/lp-admin-functions.php:841
 #: inc/admin/views/statistics-bk/courses.php:8
 #: inc/admin/views/statistics-bk/general.php:8
 #: inc/admin/views/statistics-bk/orders.php:8
@@ -344,7 +344,7 @@ msgstr ""
 #. Plugin Name of the plugin
 #: inc/admin/class-lp-admin.php:141
 #: inc/admin/class-lp-admin.php:149
-#: inc/admin/lp-admin-functions.php:1615
+#: inc/admin/lp-admin-functions.php:1495
 #: inc/admin/settings/class-lp-settings-emails.php:153
 #: inc/ExternalPlugin/Elementor/LPElementor.php:53
 #: inc/ExternalPlugin/Elementor/LPElementor.php:101
@@ -652,7 +652,7 @@ msgid "Radius"
 msgstr ""
 
 #: config/elementor/course/filter-course-el.php:353
-#: inc/admin/class-lp-admin-assets.php:507
+#: inc/admin/class-lp-admin-assets.php:494
 #: inc/admin/views/meta-boxes/order/content-tab-preview-exports-invoice.php:66
 #: inc/admin/views/meta-boxes/order/details.php:161
 #: templates/checkout/order-received.php:70
@@ -1170,7 +1170,7 @@ msgstr ""
 #: config/profile-tabs.php:15
 #: config/settings/permalink.php:87
 #: inc/admin/class-lp-admin.php:318
-#: inc/admin/lp-admin-actions.php:217
+#: inc/admin/lp-admin-actions.php:214
 #: inc/admin/sub-menus/class-lp-submenu-statistics-bk.php:21
 #: inc/admin/sub-menus/class-lp-submenu-statistics-bk.php:28
 #: inc/admin/sub-menus/class-lp-submenu-statistics.php:22
@@ -1890,66 +1890,62 @@ msgstr ""
 msgid "Before taking this action, we strongly recommend you backup your site first before proceeding. If you encounter any problems, please do not hesitate to contact our support team. Are you sure to proceed with the update protocol?"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:500
+#: inc/admin/class-lp-admin-assets.php:487
 #: inc/class-lp-query-list-table.php:32
 msgid "item"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:501
+#: inc/admin/class-lp-admin-assets.php:488
 msgid "Create a new"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:502
+#: inc/admin/class-lp-admin-assets.php:489
 #: inc/admin/views/setup/content.php:50
 #: inc/custom-post-types/quiz.php:169
 msgid "Back"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:503
+#: inc/admin/class-lp-admin-assets.php:490
 #: inc/admin/views/course/modal-choose-items.php:54
 #: inc/admin/views/quiz/modal-choose-items.php:52
 #: inc/custom-post-types/quiz.php:170
 msgid "Selected items"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:504
+#: inc/admin/class-lp-admin-assets.php:491
 msgid "Do you want to remove the \"{{ITEM_NAME}}\" item from the course?"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:505
+#: inc/admin/class-lp-admin-assets.php:492
 msgid "Do you want to move the \"{{ITEM_NAME}}\" item to the trash?"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:508
+#: inc/admin/class-lp-admin-assets.php:495
 msgid "Items"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:510
+#: inc/admin/class-lp-admin-assets.php:497
 msgid "The course sale price must be less than the regular price"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:511
+#: inc/admin/class-lp-admin-assets.php:498
 msgid "The course price must be greater than the sale price"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:512
+#: inc/admin/class-lp-admin-assets.php:499
 msgid "The sale start date must be before the sale end date"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:513
+#: inc/admin/class-lp-admin-assets.php:500
 msgid "The sale end date must be after the sale start date"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:514
+#: inc/admin/class-lp-admin-assets.php:501
 msgid "Invalid date"
 msgstr ""
 
 #: inc/admin/class-lp-admin-dashboard.php:21
 msgid "LearnPress order status"
-msgstr ""
-
-#: inc/admin/class-lp-admin-dashboard.php:31
-msgid "LearnPress status"
 msgstr ""
 
 #: inc/admin/class-lp-admin-dashboard.php:74
@@ -2047,7 +2043,7 @@ msgid "Activate"
 msgstr ""
 
 #: inc/admin/class-lp-admin.php:319
-#: inc/admin/lp-admin-functions.php:956
+#: inc/admin/lp-admin-functions.php:836
 #: inc/admin/views/statistics-bk/courses.php:9
 #: inc/admin/views/statistics-bk/general.php:9
 #: inc/admin/views/statistics-bk/orders.php:9
@@ -2106,7 +2102,7 @@ msgstr ""
 msgid "Thanks :)"
 msgstr ""
 
-#: inc/admin/class-lp-admin.php:870
+#: inc/admin/class-lp-admin.php:871
 msgid "Permalink is only available if the item is already assigned to a course."
 msgstr ""
 
@@ -2351,7 +2347,7 @@ msgstr ""
 msgid "Buy Now"
 msgstr ""
 
-#: inc/admin/lp-admin-actions.php:222
+#: inc/admin/lp-admin-actions.php:219
 #: inc/admin/sub-menus/class-lp-submenu-categories.php:11
 #: inc/admin/sub-menus/class-lp-submenu-categories.php:12
 #: inc/custom-post-types/course.php:412
@@ -2359,7 +2355,7 @@ msgstr ""
 msgid "Categories"
 msgstr ""
 
-#: inc/admin/lp-admin-actions.php:227
+#: inc/admin/lp-admin-actions.php:224
 #: inc/admin/sub-menus/class-lp-submenu-tags.php:11
 #: inc/admin/sub-menus/class-lp-submenu-tags.php:12
 #: inc/TemplateHooks/Course/FilterCourseTemplate.php:494
@@ -2444,20 +2440,10 @@ msgstr ""
 msgid "HTML"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:637
-#: inc/admin/views/addons/html-loop-theme.php:45
-msgid "Get it now"
-msgstr ""
-
-#: inc/admin/lp-admin-functions.php:639
-#: inc/admin/views/addons/html-loop-theme.php:46
-msgid "View Demo"
-msgstr ""
-
-#: inc/admin/lp-admin-functions.php:951
-#: inc/admin/lp-admin-functions.php:1145
-#: inc/admin/lp-admin-functions.php:1362
-#: inc/admin/lp-admin-functions.php:2200
+#: inc/admin/lp-admin-functions.php:831
+#: inc/admin/lp-admin-functions.php:1025
+#: inc/admin/lp-admin-functions.php:1242
+#: inc/admin/lp-admin-functions.php:2080
 #: inc/admin/views/addons.php:257
 #: inc/admin/views/statistics-bk/courses.php:27
 #: inc/admin/views/statistics-bk/general.php:43
@@ -2471,22 +2457,22 @@ msgstr ""
 msgid "All"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:1150
-#: inc/admin/lp-admin-functions.php:2205
+#: inc/admin/lp-admin-functions.php:1030
+#: inc/admin/lp-admin-functions.php:2085
 #: inc/templates/class-lp-template-profile.php:92
 msgid "Publish"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:1155
-#: inc/admin/lp-admin-functions.php:1372
-#: inc/admin/lp-admin-functions.php:2210
+#: inc/admin/lp-admin-functions.php:1035
+#: inc/admin/lp-admin-functions.php:1252
+#: inc/admin/lp-admin-functions.php:2090
 #: inc/order/class-lp-order.php:280
 #: inc/templates/class-lp-template-profile.php:93
 msgid "Pending"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:1160
-#: inc/admin/lp-admin-functions.php:2215
+#: inc/admin/lp-admin-functions.php:1040
+#: inc/admin/lp-admin-functions.php:2095
 #: inc/admin/views/addons.php:164
 #: inc/admin/views/addons.php:259
 #: inc/ExternalPlugin/Elementor/Widgets/Course/FilterCourseElementor.php:217
@@ -2494,8 +2480,8 @@ msgstr ""
 msgid "Paid"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:1165
-#: inc/admin/lp-admin-functions.php:2220
+#: inc/admin/lp-admin-functions.php:1045
+#: inc/admin/lp-admin-functions.php:2100
 #: inc/admin/views/addons.php:164
 #: inc/admin/views/addons.php:260
 #: inc/course/abstract-course.php:676
@@ -2506,7 +2492,7 @@ msgstr ""
 msgid "Free"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:1367
+#: inc/admin/lp-admin-functions.php:1247
 #: inc/order/class-lp-order.php:277
 #: inc/user-item/class-lp-user-item-quiz.php:146
 #: inc/user-item/class-lp-user-item.php:689
@@ -2514,23 +2500,23 @@ msgstr ""
 msgid "Completed"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:1400
+#: inc/admin/lp-admin-functions.php:1280
 msgid "Pending Courses/Publish Courses"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:1401
+#: inc/admin/lp-admin-functions.php:1281
 msgid "Free Courses/Paid Courses"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:1758
+#: inc/admin/lp-admin-functions.php:1638
 msgid "Copy"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:1866
+#: inc/admin/lp-admin-functions.php:1746
 msgid "Question id %s does not exist."
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:1870
+#: inc/admin/lp-admin-functions.php:1750
 msgid "Quiz id %s does not exist."
 msgstr ""
 
@@ -2930,6 +2916,14 @@ msgstr ""
 
 #: inc/admin/views/addons.php:263
 msgid "Not Installed"
+msgstr ""
+
+#: inc/admin/views/addons/html-loop-theme.php:45
+msgid "Get it now"
+msgstr ""
+
+#: inc/admin/views/addons/html-loop-theme.php:46
+msgid "View Demo"
 msgstr ""
 
 #: inc/admin/views/addons/html-themes.php:18
@@ -4330,7 +4324,7 @@ msgstr ""
 msgid "%s ago"
 msgstr ""
 
-#: inc/class-lp-datetime.php:266
+#: inc/class-lp-datetime.php:283
 #: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:583
 #: inc/jwt/rest-api/version1/class-lp-rest-lessons-v1-controller.php:296
 #: inc/jwt/rest-api/version1/class-lp-rest-quiz-v1-controller.php:372
@@ -4338,25 +4332,25 @@ msgstr ""
 msgid "Lifetime"
 msgstr ""
 
-#: inc/class-lp-datetime.php:272
+#: inc/class-lp-datetime.php:289
 msgid "%s Minute"
 msgid_plural "%s Minutes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/class-lp-datetime.php:278
+#: inc/class-lp-datetime.php:295
 msgid "%s Hour"
 msgid_plural "%s Hours"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/class-lp-datetime.php:284
+#: inc/class-lp-datetime.php:301
 msgid "%s Day"
 msgid_plural "%s Days"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/class-lp-datetime.php:290
+#: inc/class-lp-datetime.php:307
 msgid "%s Week"
 msgid_plural "%s Weeks"
 msgstr[0] ""

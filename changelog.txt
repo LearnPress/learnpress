@@ -1,3 +1,27 @@
+= 4.2.6.6 (2024-05-09) =
+~ Fixed: security.
+~ Fixed: delete user item when remove order item.
+~ Tweak: material files feature.
+~ Excluded: questions from search via param ?s of WordPress.
+~ Compare the sale dates of courses through WordPress's Timezone.
+
+= 4.2.6.5 (2024-04-17) =
+~ Fixed: security.
+~ Added: option "Load courses of subcategory", get all the courses in the child category that are not selected in the parent category.
+~ Added: option "Number level category want to show" for widget course filter.
+~ Added: option "show/hide author Admin on list instructors".
+
+= 4.2.6.4 (2024-04-01) =
+~ Compatible with WordPress 6.5.
+~ Fixed: security.
+~ Fixed: error remove question_anwsermeta when create new post question.
+~ Fixed: compatible PHP8 on get_materials_by_item method.
+~ Fixed: minor bug save order on the backend.
+~ Fixed: error wrong link continue item, reason by old data still save item assigned to course, but deleted on post.
+~ Fixed: minor bug profile shortcode.
+~ Fixed: error shortcode list courses when add on Elementor.
+~ Deprecated: get_downloadable_material method.
+
 = 4.2.6.3 (2024-02-29) =
 ~ Fixed: error wrong avatar's instructor.
 ~ Fixed: error page Profile with user not login.

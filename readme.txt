@@ -3,9 +3,9 @@ Contributors: thimpress, tungnx89, nhamdv, nguyenlammanh, tunnhn, phonglq.foobla
 Donate link:
 Tags: elearning, education, course, lms, learning management system
 Requires at least: 6.3
-Tested up to: 6.5.2
+Tested up to: 6.5.3
 Requires PHP: 7.0
-Stable tag: 4.2.6.7
+Stable tag: 4.2.6.8
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -210,35 +210,16 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.2.6.8 (2024-05-27) =
+~ Fixed: error create answers question.
+~ Fixed: minor bugs.
+
 = 4.2.6.7 (2024-05-20) =
 ~ Fixed: security.
+~ Fixed: error conflict with CookieYes plugin.
+~ Fixed: sale course price with config timezone of WordPress.
 ~ Optimize: style.
 ~ Remove Font Awesome and replace it with Font LearnPress.
 ~ Tweak: query search LP Order.
-~ Fixed: error conflict with CookieYes plugin.
-
-= 4.2.6.6 (2024-05-09) =
-~ Fixed: security.
-~ Fixed: delete user item when remove order item.
-~ Tweak: material files feature.
-~ Excluded: questions from search via param ?s of WordPress.
-~ Compare the sale dates of courses through WordPress's Timezone.
-
-= 4.2.6.5 (2024-04-17) =
-~ Fixed: security.
-~ Added: option "Load courses of subcategory", get all the courses in the child category that are not selected in the parent category.
-~ Added: option "Number level category want to show" for widget course filter.
-~ Added: option "show/hide author Admin on list instructors".
-
-= 4.2.6.4 (2024-04-01) =
-~ Compatible with WordPress 6.5.
-~ Fixed: security.
-~ Fixed: error remove question_anwsermeta when create new post question.
-~ Fixed: compatible PHP8 on get_materials_by_item method.
-~ Fixed: minor bug save order on the backend.
-~ Fixed: error wrong link continue item, reason by old data still save item assigned to course, but deleted on post.
-~ Fixed: minor bug profile shortcode.
-~ Fixed: error shortcode list courses when add on Elementor.
-~ Deprecated: get_downloadable_material method.
 
 <a href="https://raw.githubusercontent.com/LearnPress/learnpress/develop/changelog.txt" target="_blank">See changelog for all versions.</a>

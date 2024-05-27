@@ -5,7 +5,7 @@
  */
 class LP_Datetime {
 	/**
-	 * @var string $format.
+	 * @var string $format .
 	 */
 	public static $format = 'Y-m-d H:i:s';
 	/**
@@ -39,7 +39,7 @@ class LP_Datetime {
 	/**
 	 * String date time.
 	 *
-	 * @var string $raw_date.
+	 * @var string $raw_date .
 	 */
 	protected $raw_date = null;
 
@@ -49,7 +49,7 @@ class LP_Datetime {
 	 * Constructor.
 	 *
 	 * @param string|int $date
-	 * @param mixed  $tz
+	 * @param mixed $tz
 	 *
 	 * @throws
 	 */
@@ -100,12 +100,12 @@ class LP_Datetime {
 	/**
 	 * Gets the date as a formatted string.
 	 *
-	 * @param string  $format Set i18n to return date in local time.
-	 * @param boolean $local.
+	 * @param string $format Set i18n to return date in local time.
+	 * @param boolean $local .
 	 *
-	 * @since 3.0.0
-	 * @version 4.0.1
 	 * @return string.
+	 * @version 4.0.1
+	 * @since 3.0.0
 	 */
 	public function format( string $format = '', bool $local = true ): string {
 		$date_str = '';
@@ -173,33 +173,50 @@ class LP_Datetime {
 	 * @param DateTime $date_start
 	 * @param DateTime $date_end
 	 *
-	 * @version 1.0.0
-	 * @since 4.0.3
 	 * @return string
+	 * @since 4.0.3
+	 * @version 1.0.1
 	 */
 	public static function format_human_time_diff( DateTime $date_start, DateTime $date_end ): string {
 		$diff = $date_end->diff( $date_start );
+		$week = floor( $diff->d / 7 );
 
 		$format_date = '';
-		if ( $diff->d > 0 ) {
-			$format_date .= '%d days, ';
+		$string      = array(
+			'y' => '%y years',
+			'm' => '%m months',
+			'w' => '', // object don't have week, only add to custom week format
+			'd' => '%d days, %h hours',
+			'h' => '%h hours, %i minutes',
+			'i' => '%i minutes, %s seconds',
+			's' => '%s seconds',
+		);
 
-			if ( $diff->h > 0 ) {
-				$format_date .= '%h hours';
+		foreach ( $string as $k => $v ) {
+			if ( isset( $diff->{$k} ) && $diff->{$k} > 0 ) {
+				if ( in_array( $k, array( 'y', 'm' ) ) ) {
+					$date        = new LP_Datetime( $date_end->getTimestamp() );
+					$format_date = $date->format( LP_Datetime::I18N_FORMAT_HAS_TIME );
+				} else {
+					$format_date = $diff->format( $v );
+				}
+				break;
+			} elseif ( 'w' === $k && $week > 0 ) {
+				$day_remain  = $diff->d - $week * 7;
+				$format_date = sprintf(
+					'%d %s, %d %s', $week,
+					_n( 'week', 'weeks', $week ),
+					$day_remain,
+					_n( 'day', 'days', $day_remain )
+				);
+				break;
 			}
-		} elseif ( $diff->h > 0 ) {
-			$format_date .= '%h hours, ';
-
-			if ( $diff->i > 0 ) {
-				$format_date .= '%i minutes';
-			}
-		} elseif ( $diff->i > 0 ) {
-			$format_date .= '<span class="minute">%i</span> minutes';
-		} else {
-			$format_date .= '<span class="second">%s</span> seconds';
 		}
 
-		return $diff->format( $format_date );
+		return apply_filters(
+			'learn-press/datetime/format_human_time_diff',
+			$format_date, $diff, $date_start, $date_end
+		);
 	}
 
 	/**
@@ -207,9 +224,9 @@ class LP_Datetime {
 	 *
 	 * @param boolean $local True to return the date string in the local time zone, false to return it in GMT.
 	 *
-	 * @since 3.0.0
-	 * @version 4.0.1
 	 * @return  string
+	 * @version 4.0.1
+	 * @since 3.0.0
 	 */
 	public function toSql( bool $local = false ): string {
 		if ( $local ) {
