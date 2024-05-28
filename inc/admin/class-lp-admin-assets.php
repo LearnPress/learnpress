@@ -106,7 +106,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 	protected function _get_scripts(): array {
 		$lp_admin_js = new LP_Asset_Key(
 			$this->url( 'js/dist/admin/admin' . self::$_min_assets . '.js' ),
-			[ 'wp-i18n', 'lp-utils' ],
+			[ 'wp-i18n', 'lp-utils', 'select2' ],
 			[],
 			0,
 			0,
@@ -137,7 +137,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				),
 				'dropdown-pages'                    => new LP_Asset_Key(
 					$this->url( self::$_folder_source . 'js/admin/share/dropdown-pages' . self::$_min_assets . '.js' ),
-					[ 'lp-utils' ]
+					[ 'lp-utils', 'select2' ]
 				),
 				'jquery-ui-timepicker-addon'        => new LP_Asset_Key(
 					$this->url( 'src/js/vendor/jquery/jquery-ui-timepicker-addon.js' ),
@@ -155,7 +155,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				'advanced-list'                     => new LP_Asset_Key( $this->url( self::$_folder_source . 'js/admin/share/advanced-list' . self::$_min_assets . '.js' ) ),
 				'learn-press-global'                => new LP_Asset_Key(
 					$this->url( self::$_folder_source . 'js/global' . self::$_min_assets . '.js' ),
-					array( 'jquery', 'underscore', 'utils', 'jquery-ui-sortable', 'select2' )
+					array( 'jquery', 'underscore', 'utils', 'jquery-ui-sortable' )
 				),
 				'lp-admin'                          => $lp_admin_js,
 				'lp-admin-learnpress'               => new LP_Asset_Key(
@@ -167,6 +167,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 						'dropdown-pages',
 						'wp-api-fetch',
 						'jquery-ui-timepicker-addon',
+						'select2'
 					),
 					array(
 						LP_LESSON_CPT,
@@ -239,7 +240,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				),*/
 				'lp-setup'                          => new LP_Asset_Key(
 					$this->url( 'js/dist/admin/pages/setup' . self::$_min_assets . '.js' ),
-					array( 'jquery', 'dropdown-pages' ),
+					array( 'jquery', 'dropdown-pages', 'select2' ),
 					array( 'lp-page-setup' ),
 					0,
 					1
@@ -301,6 +302,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 						'wp-url',
 						'wp-api-fetch',
 						'lodash',
+						'select2'
 					),
 					array( 'widgets', 'elementor' ),
 					0,
