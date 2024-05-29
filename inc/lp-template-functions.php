@@ -1318,8 +1318,8 @@ function learn_press_courses_layouts() {
 	return apply_filters(
 		'learnpress/archive-courses-layouts',
 		[
-			'grid' => 'Grid',
-			'list' => 'List',
+			'grid' => __( 'Grid', 'learnpress' ),
+			'list' => __( 'List', 'learnpress' )
 		]
 	);
 }

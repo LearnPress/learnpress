@@ -30,7 +30,7 @@ $s       = LP_Request::get_param( 'c_search' );
 				value="<?php echo esc_attr( $layout ); ?>"
 				id="lp-switch-layout-btn-<?php echo esc_attr( $layout ); ?>" <?php checked( $layout, $active ); ?>>
 			<label class="switch-btn <?php echo esc_attr( $layout ); ?>"
-				title="<?php echo sprintf( esc_attr__( 'Switch to %s', 'learnpress' ), $layout ); ?>"
+				title="<?php echo sprintf( esc_attr__( 'Switch to %s', 'learnpress' ), $value ); ?>"
 				for="lp-switch-layout-btn-<?php echo esc_attr( $layout ); ?>"></label>
 		<?php endforeach; ?>
 	</div>
