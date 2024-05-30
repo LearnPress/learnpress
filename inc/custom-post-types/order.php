@@ -236,6 +236,12 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				}
 			}
 
+			// Filter by order status
+			if ( ! empty( $wp_query->get( 'post_status' ) ) ) {
+				$status = $wp_query->get( 'post_status' );
+				$where .= $wpdb->prepare( " AND {$lp_db->tb_posts}.post_status = %s", $status );
+			}
+
 			return $where;
 		}
 
