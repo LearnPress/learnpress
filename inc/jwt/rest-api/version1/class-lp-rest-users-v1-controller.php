@@ -1308,7 +1308,7 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 				'username'           => array(
 					'description' => __( 'Login name for the user.' ),
 					'type'        => 'string',
-					'context'     => array( 'view', 'edit' ),
+					'context'     => array( 'edit' ),
 					'required'    => true,
 					'arg_options' => array(
 						'sanitize_callback' => array( $this, 'check_username' ),
@@ -1342,7 +1342,7 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 					'description' => __( 'The email address for the user.' ),
 					'type'        => 'string',
 					'format'      => 'email',
-					'context'     => array( 'view', 'edit' ),
+					'context'     => array( 'edit' ),
 					'required'    => true,
 				),
 				'url'                => array(
@@ -1372,7 +1372,7 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 				'nickname'           => array(
 					'description' => __( 'The nickname for the user.' ),
 					'type'        => 'string',
-					'context'     => array( 'view', 'edit' ),
+					'context'     => array( 'edit' ),
 					'arg_options' => array(
 						'sanitize_callback' => 'sanitize_text_field',
 					),
