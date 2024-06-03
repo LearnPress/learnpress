@@ -5,7 +5,7 @@ Tags: elearning, education, course, lms, learning management system
 Requires at least: 6.3
 Tested up to: 6.5.3
 Requires PHP: 7.0
-Stable tag: 4.2.6.8
+Stable tag: 4.2.6.8.1
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
