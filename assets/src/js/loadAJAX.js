@@ -13,7 +13,7 @@ let apiData = API.admin;
 if ( 'undefined' === typeof apiData ) {
 	apiData = API.frontend;
 }
-const urlAPI = apiData.apiAJAX;
+const urlAPI = apiData.apiAJAX ?? '';
 
 let lpSettings = {};
 if ( 'undefined' !== typeof lpDataAdmin ) {

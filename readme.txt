@@ -210,6 +210,12 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.2.6.8.1 (2024-06-03) =
+~ Fixed: security.
+~ Fixed: query by status on list LP Orders.
+~ Fixed: minor bugs.
+~ Added: translate text grid, list.
+
 = 4.2.6.8 (2024-05-27) =
 ~ Fixed: error create answers question.
 ~ Fixed: minor bugs.
