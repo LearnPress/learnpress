@@ -506,8 +506,8 @@ class LP_Course_DB extends LP_Database {
 		if ( ! empty( $filter->term_ids ) ) {
 			// Sanitize term ids
 			$filter->term_ids = array_map( 'absint', $filter->term_ids );
-			$filter->join[] = "INNER JOIN $this->tb_term_relationships AS r_term ON p.ID = r_term.object_id";
-			$filter->join[] = "INNER JOIN $this->tb_term_taxonomy AS tx ON r_term.term_taxonomy_id = tx.term_taxonomy_id";
+			$filter->join[]   = "INNER JOIN $this->tb_term_relationships AS r_term ON p.ID = r_term.object_id";
+			$filter->join[]   = "INNER JOIN $this->tb_term_taxonomy AS tx ON r_term.term_taxonomy_id = tx.term_taxonomy_id";
 
 			if ( LP_Settings::get_option( 'get_courses_of_subcategory' ) !== 'yes' ) {
 				$term_ids_format = join( ',', $filter->term_ids );
@@ -524,8 +524,8 @@ class LP_Course_DB extends LP_Database {
 		if ( ! empty( $filter->tag_ids ) ) {
 			// Sanitize tag ids
 			$filter->tag_ids = array_map( 'absint', $filter->tag_ids );
-			$filter->join[] = "INNER JOIN $this->tb_term_relationships AS r_tag ON p.ID = r_tag.object_id";
-			$filter->join[] = "INNER JOIN $this->tb_term_taxonomy AS tag ON r_tag.term_taxonomy_id = tag.term_taxonomy_id";
+			$filter->join[]  = "INNER JOIN $this->tb_term_relationships AS r_tag ON p.ID = r_tag.object_id";
+			$filter->join[]  = "INNER JOIN $this->tb_term_taxonomy AS tag ON r_tag.term_taxonomy_id = tag.term_taxonomy_id";
 
 			$tag_ids_format  = join( ',', $filter->tag_ids );
 			$filter->where[] = "AND tag.term_id IN ($tag_ids_format)";
@@ -702,15 +702,25 @@ class LP_Course_DB extends LP_Database {
 	 */
 	public function get_courses_order_by_popular( LP_Course_Filter &$filter ): LP_Course_Filter {
 		// Set list name columns get
-		$columns_table_posts = $this->get_cols_of_table( $this->tb_posts );
-		$filter->fields      = array_merge( $columns_table_posts, $filter->fields );
+		//$columns_table_posts = $this->get_cols_of_table( $this->tb_posts );
+		//$filter->fields      = array_merge( $columns_table_posts, $filter->fields );
 
 		$filter_user_course       = clone $filter;
 		$filter_course_not_attend = clone $filter;
 
 		// Query get users total attend courses
-		$filter_user_course->fields              = array( 'ID', 'COUNT(ID) AS total' );
-		$filter_user_course->only_fields         = [];
+		$fields_user_course_require = [ 'ID', 'COUNT(ID) AS total' ];
+		$filter_user_course->fields = array( 'ID', 'COUNT(ID) AS total' );
+		if ( ! empty( $filter_user_course->only_fields ) ) {
+			$pattern = '#ID.*#';
+			foreach ( $filter_user_course->only_fields as $k => $field ) {
+				if ( preg_match( $pattern, $field ) ) {
+					unset( $filter_user_course->only_fields[ $k ] );
+				}
+			}
+			$filter_user_course->only_fields = array_unique( array_merge( $filter_user_course->only_fields, $fields_user_course_require ) );
+		}
+
 		$filter_user_course->join[]              = "INNER JOIN {$this->tb_lp_user_items} AS ui ON p.ID = ui.item_id";
 		$filter_user_course->where[]             = $this->wpdb->prepare( 'AND ui.item_type = %s', LP_COURSE_CPT );
 		$filter_user_course->where[]             = $this->wpdb->prepare(
@@ -728,9 +738,18 @@ class LP_Course_DB extends LP_Database {
 		$filter_user_course_cl->only_fields = array( 'ID' );
 		$query_user_course_for_not_in       = LP_Course_DB::getInstance()->get_courses( $filter_user_course_cl );
 
+		$fields_user_course_not_attend_require = [ 'ID', '0 AS total' ];
 		$filter_course_not_attend->fields      = [ 'ID', '0 AS total' ];
-		$filter_course_not_attend->only_fields = [];
-		$filter_course_not_attend->where[]     = 'AND p.ID NOT IN(' . $query_user_course_for_not_in . ')';
+		if ( ! empty( $filter_course_not_attend->only_fields ) ) {
+			$pattern = '#ID.*#';
+			foreach ( $filter_course_not_attend->only_fields as $k => $field ) {
+				if ( preg_match( $pattern, $field ) ) {
+					unset( $filter_course_not_attend->only_fields[ $k ] );
+				}
+			}
+			$filter_course_not_attend->only_fields = array_unique( array_merge( $filter_course_not_attend->only_fields, $fields_user_course_not_attend_require ) );
+		}
+		$filter_course_not_attend->where[] = 'AND p.ID NOT IN(' . $query_user_course_for_not_in . ')';
 
 		$filter_course_not_attend->return_string_query = true;
 		$query_course_not_attend                       = LP_Course_DB::getInstance()->get_courses( $filter_course_not_attend );

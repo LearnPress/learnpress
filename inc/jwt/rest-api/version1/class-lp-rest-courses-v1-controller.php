@@ -1,4 +1,7 @@
 <?php
+
+use LearnPress\Models\Courses;
+
 class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 	protected $namespace = 'learnpress/v1';
 
@@ -15,7 +18,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			array(
 				array(
 					'methods'             => WP_REST_Server::READABLE,
-					'callback'            => array( $this, 'get_items' ),
+					'callback'            => array( $this, 'get_courses' ),
 					'permission_callback' => array( $this, 'get_items_permissions_check' ),
 					'args'                => $this->get_collection_params(),
 				),
@@ -183,10 +186,10 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 	 *
 	 * Correctly handles courses with the inherit status.
 	 *
-	 * @author Nhamdv
-	 *
 	 * @return bool Whether the post can be read.
-	 * */
+	 * *@author Nhamdv
+	 *
+	 */
 	public function check_read_permission( $post_id ) {
 		if ( empty( absint( $post_id ) ) ) {
 			return false;
@@ -377,6 +380,43 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		return rest_ensure_response( $response );
 	}
 
+	public function convert_params_query_courses( $params = [] ) {
+		$params['limit']         = $params['per_page'] ?? 10;
+		$params['order_by']      = isset( $params['popular'] ) ? 'popular' : '';
+		$params['return_type']   = 'json';
+		$params['c_only_fields'] = empty( $params['c_only_fields'] ) ? '' : explode( ',', $params['c_only_fields'] );
+
+		return $params;
+	}
+
+	public function get_courses( WP_REST_Request $request ) {
+		$res         = new LP_REST_Response();
+		$courses     = [];
+		$total       = 0;
+		$total_pages = 0;
+		try {
+			$filter = new LP_Course_Filter();
+			$params = $request->get_params();
+			$params = $this->convert_params_query_courses( $params );
+			if ( ! empty( $params['c_only_fields'] ) ) {
+				$filter->only_fields = $params['c_only_fields'];
+			}
+			Courses::handle_params_for_query_courses( $filter, $params );
+			$courses     = Courses::get_courses( $filter, $total );
+			$total_pages = LP_Database::get_total_pages( $filter->limit, $total );
+		} catch ( Throwable $e ) {
+			$res->message = $e->getMessage();
+
+			return $res;
+		}
+
+		$response = rest_ensure_response( $courses );
+		$response->header( 'X-WP-Total', $total );
+		$response->header( 'X-WP-TotalPages', (int) $total_pages );
+
+		return $response;
+	}
+
 	public function enroll_course( $request ) {
 		if ( ! class_exists( 'LP_REST_Courses_Controller' ) ) {
 			include_once LP_PLUGIN_PATH . 'inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php';
@@ -437,6 +477,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 	 * Create a single product.
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
+	 *
 	 * @return WP_Error|WP_REST_Response
 	 */
 	public function create_item( $request ) {
