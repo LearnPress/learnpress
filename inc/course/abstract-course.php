@@ -851,7 +851,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			$max_allowed = $this->get_max_students();
 
 			if ( $max_allowed ) {
-				$in_stock = $max_allowed > $this->get_total_user_enrolled();
+				$in_stock = $max_allowed > $this->get_total_user_enrolled_or_purchased();
 			}
 
 			return apply_filters( 'learn-press/is-in-stock', $in_stock, $this->get_id() );
@@ -884,7 +884,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 * @Todo: view and rewrite this function
 		 */
 		public function count_students(): int {
-			$total  = $this->get_total_user_enrolled();
+			$total  = $this->get_total_user_enrolled_or_purchased();
 			$total += $this->get_fake_students();
 
 			return $total;

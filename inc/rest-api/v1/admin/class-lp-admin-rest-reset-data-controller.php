@@ -94,7 +94,7 @@ class LP_REST_Admin_Reset_Data_Controller extends LP_Abstract_REST_Controller {
 				if ( $rows ) {
 					foreach ( $rows as $k => $row ) {
 						$course        = learn_press_get_course( $row->id );
-						$row->students = $course->get_total_user_enrolled();
+						$row->students = $course->get_total_user_enrolled_or_purchased();
 
 						if ( $row->students ) {
 							$courses[] = $row;
