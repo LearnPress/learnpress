@@ -772,15 +772,6 @@ class LP_Page_Controller {
 					$list_ids_exclude = array_merge( $list_ids_exclude, $exclude_item );
 				}
 
-				// Exclude question not assign any quiz
-				$question_ids     = LP_Question_DB::getInstance()->get_questions_not_assign_quiz();
-				$question_ids     = LP_Course_DB::get_values_by_key( $question_ids );
-				$list_ids_exclude = array_merge( $list_ids_exclude, $question_ids );
-
-				if ( ! empty( $list_ids_exclude ) ) {
-					$q->set( 'post__not_in', $list_ids_exclude );
-				}
-
 				return $q;
 			}
 

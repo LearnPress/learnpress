@@ -23,12 +23,4 @@ class LP_Question_Filter extends LP_Post_Type_Filter {
 	 * @var string
 	 */
 	public $post_type = 'lp_question';
-	/**
-	 * @var int
-	 */
-	public $quiz_id = 0;
-	/**
-	 * @var array
-	 */
-	public $statues = array();
 }

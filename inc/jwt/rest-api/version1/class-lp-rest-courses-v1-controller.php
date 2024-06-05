@@ -855,6 +855,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 	/**
 	 * Get Items of sections
 	 *
+	 * @param LP_Course $course
 	 * @throws Exception
 	 * @editor tungnx
 	 * @modify 4.1.3

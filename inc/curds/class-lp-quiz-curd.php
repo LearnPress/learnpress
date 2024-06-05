@@ -285,8 +285,8 @@ if ( ! function_exists( 'LP_Quiz_CURD' ) ) {
 				}
 
 				$filter          = new LP_Question_Filter();
-				$filter->quiz_id = $quiz_id;
-				$filter->statues = $statuses;
+				$filter->ID = $quiz_id;
+				$filter->post_status = $statuses;
 
 				$question_ids = $lp_question_db->get_list_question_ids_of_quiz( $filter );
 			} catch ( Throwable $e ) {

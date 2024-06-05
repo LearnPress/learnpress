@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 3.2.8
  * @version 1.0.1
  */
-class LP_Question_DB extends LP_Database {
+class LP_Question_DB extends LP_Post_DB {
 	private static $_instance;
 
 	protected function __construct() {
@@ -34,62 +34,11 @@ class LP_Question_DB extends LP_Database {
 	 * @version 1.0.0
 	 */
 	public function get_questions( LP_Question_Filter $filter, &$total_rows = 0 ) {
-		$default_fields = $this->get_cols_of_table( $this->tb_posts );
-		$filter->fields = array_merge( $default_fields, $filter->fields );
-
-		if ( empty( $filter->collection ) ) {
-			$filter->collection = $this->tb_posts;
-		}
-
 		if ( empty( $filter->collection_alias ) ) {
 			$filter->collection_alias = 'q';
 		}
 
-		$ca = $filter->collection_alias;
-
-		// Where
-		$filter->where[] = $this->wpdb->prepare( "AND $ca.post_type = %s", $filter->post_type );
-
-		// Status
-		$filter->post_status = (array) $filter->post_status;
-		if ( ! empty( $filter->post_status ) ) {
-			$post_status_format = LP_Helper::db_format_array( $filter->post_status, '%s' );
-			$filter->where[]    = $this->wpdb->prepare( "AND $ca.post_status IN (" . $post_status_format . ')', $filter->post_status );
-		}
-
-		// Term ids
-		if ( ! empty( $filter->term_ids ) ) {
-			$filter->join[] = "INNER JOIN $this->tb_term_relationships AS r_term ON p.ID = r_term.object_id";
-
-			$term_ids_format = LP_Helper::db_format_array( $filter->term_ids, '%d' );
-			$filter->where[] = $this->wpdb->prepare( 'AND r_term.term_taxonomy_id IN (' . $term_ids_format . ')', $filter->term_ids );
-		}
-
-		// Question ids
-		if ( ! empty( $filter->post_ids ) ) {
-			$list_ids_format = LP_Helper::db_format_array( $filter->post_ids, '%d' );
-			$filter->where[] = $this->wpdb->prepare( "AND $ca.ID IN (" . $list_ids_format . ')', $filter->post_ids );
-		}
-
-		// Title
-		if ( $filter->post_title ) {
-			$filter->where[] = $this->wpdb->prepare( "AND $ca.post_title LIKE %s", '%' . $filter->post_title . '%' );
-		}
-
-		// Author
-		if ( $filter->post_author ) {
-			$filter->where[] = $this->wpdb->prepare( "AND $ca.post_author = %d", $filter->post_author );
-		}
-
-		// Authors
-		if ( ! empty( $filter->post_authors ) ) {
-			$post_authors_format = LP_Helper::db_format_array( $filter->post_authors, '%d' );
-			$filter->where[]     = $this->wpdb->prepare( "AND $ca.ID IN (" . $post_authors_format . ')', $filter->post_authors );
-		}
-
-		$filter = apply_filters( 'lp/question/query/filter', $filter );
-
-		return $this->execute( $filter, $total_rows );
+		return $this->get_posts( $filter, $total_rows );
 	}
 
 	/**
@@ -109,9 +58,8 @@ class LP_Question_DB extends LP_Database {
 		if ( is_null( $filter ) ) {
 			$filter = new LP_Question_Filter();
 		}
-		$filter->collection_alias = 'q';
 		$filter->only_fields      = array( 'q.ID' );
-		$filter->where[]          = 'AND ID NOT IN(' . $query_question_ids_assigned . ')';
+		$filter->where[]          = "AND ID NOT IN($query_question_ids_assigned)";
 		$filter->where[]          = $this->wpdb->prepare( 'AND q.post_status not IN(%s, %s)', 'trash', 'auto-draft' );
 
 		return $this->get_questions( $filter );
@@ -133,8 +81,8 @@ class LP_Question_DB extends LP_Database {
 		}
 
 		$filter->query_count = true;
-		$filter->post_status = array();
-		$filter->field_count = 'ID';
+		$filter->post_status = [];
+		$filter->field_count = 'q.ID';
 
 		return $this->get_questions_not_assign_quiz( $filter );
 	}
@@ -152,7 +100,7 @@ class LP_Question_DB extends LP_Database {
 	 *
 	 */
 	public function get_list_question_ids_of_quiz( LP_Question_Filter $filter = null ): array {
-		$key_cache = "$filter->quiz_id/question_ids";
+		$key_cache = "$filter->ID/question_ids";
 
 		// Get cache
 		$lp_quiz_cache = LP_Quiz_Cache::instance();
@@ -163,12 +111,12 @@ class LP_Question_DB extends LP_Database {
 		}
 
 		$statues = array( 'publish' );
-		if ( ! empty( $filter->statues ) ) {
-			$statues = $filter->statues;
+		if ( ! empty( $filter->post_status ) ) {
+			$statues = $filter->post_status;
 		}
 
 		$format = LP_Helper::format_query_IN( $statues );
-		$args   = array_merge( array( LP_QUESTION_CPT, $filter->quiz_id ), $statues );
+		$args   = array_merge( array( LP_QUESTION_CPT, $filter->ID ), $statues );
 
 		$query = $this->wpdb->prepare(
 			"
