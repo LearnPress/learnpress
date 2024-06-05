@@ -293,8 +293,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				$join .= " INNER JOIN {$lp_db->tb_lp_order_items} lpori ON {$wpdb->posts}.ID = lpori.order_id";
 			}
 
-			if ( ! empty( $wp_query->get( 'author' ) )
-				 || ! empty( $wp_query->get( 'orderby' ) ) ) {
+			if ( ! empty( $wp_query->get( 'author' ) ) ) {
 				$join .= " INNER JOIN {$lp_db->tb_postmeta} pm1 ON {$wpdb->posts}.ID = pm1.post_id AND pm1.meta_key = '_user_id'";
 				$join .= " INNER JOIN {$lp_db->tb_postmeta} pm2 ON {$wpdb->posts}.ID = pm2.post_id AND pm2.meta_key = '_order_total'";
 				$join .= " LEFT JOIN {$lp_db->tb_users} uu ON pm1.meta_value = uu.ID";
