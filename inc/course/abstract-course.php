@@ -303,11 +303,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			}
 
 			if ( ! $url ) {
-				if ( 'course_thumbnail' == $size ) {
-					$url = LearnPress::instance()->image( 'no-image.png' );
-				} else {
-					$url = LearnPress::instance()->image( 'placeholder-500x300' );
-				}
+				$url = LearnPress::instance()->image( 'no-image.png' );
 			}
 
 			return apply_filters( 'learn-press/course-thumbnail-url', $url, $this->get_id(), $size );

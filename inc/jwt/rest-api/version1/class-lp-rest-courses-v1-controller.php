@@ -1,5 +1,6 @@
 <?php
 
+use LearnPress\Models\CourseModel;
 use LearnPress\Models\Courses;
 
 class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
@@ -402,7 +403,8 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 				$filter->only_fields = $params['c_only_fields'];
 			}
 			Courses::handle_params_for_query_courses( $filter, $params );
-			$courses     = Courses::get_courses( $filter, $total );
+			$rs_courses  = Courses::get_courses( $filter, $total );
+			$courses     = $this->prepare_struct_courses_response( $rs_courses );
 			$total_pages = LP_Database::get_total_pages( $filter->limit, $total );
 		} catch ( Throwable $e ) {
 			$res->message = $e->getMessage();
@@ -415,6 +417,22 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		$response->header( 'X-WP-TotalPages', (int) $total_pages );
 
 		return $response;
+	}
+
+	public function prepare_struct_courses_response( $courses ): array {
+		$data = [];
+		foreach ( $courses as $courseObj ) {
+			$course = new CourseModel( $courseObj );
+			$courseObjPrepare        = new stdClass();
+			$courseObjPrepare->id    = $courseObj->ID;
+			$courseObjPrepare->name  = $courseObj->post_title;
+			$courseObjPrepare->image = $course->get_image_url( 'full' );
+			$courseObjPrepare->price = $course->get_price();
+
+			$data[] = $courseObjPrepare;
+		}
+
+		return $data;
 	}
 
 	public function enroll_course( $request ) {
