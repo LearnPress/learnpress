@@ -115,8 +115,10 @@
 		@media (max-width: 767px) {
 			flex-direction: column;
 			gap: 5px;
+			&.can-finish-course .items-progress{
+				display: none;
+			}
 		}
-
 	}
 
 	.lp-quiz-buttons {
