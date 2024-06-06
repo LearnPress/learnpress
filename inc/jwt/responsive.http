@@ -1,11 +1,25 @@
 ###
-POST http://learnpress4.local/wp-json/learnpress/v1/token
+POST http://lp/wp-json/learnpress/v1/token
 Content-Type: application/json
 
 {
 	"username": "admin",
 	"password": "admin"
 }
+
+###
+POST http://test.thimpress.com/wp-json/learnpress/v1/token
+Content-Type: application/json
+
+{
+    "username": "demo",
+    "password": "demo"
+}
+
+###
+GET https://test.thimpress.com/wp-json/learnpress/v1/courses?learned=true
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvdGVzdC50aGltcHJlc3MuY29tIiwiaWF0IjoxNzE3NjYxMjczLCJuYmYiOjE3MTc2NjEyNzMsImV4cCI6MTcxODI2NjA3MywiZGF0YSI6eyJ1c2VyIjp7ImlkIjoiMzI1OCJ9fX0.izSGEH9SV_EadRuLQIRA4Li7-vfALpd_pvnsKJR_4Vk
 
 ###
 POST http://learnpress4.local/wp-json/learnpress/v1/token
@@ -35,8 +49,9 @@ Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvX
 ## Get list Course learned by user, if not learned will get all course
 ## add param: learned, course_filter: in-progress, passed, failed.
 ###
-GET http://lp/wp-json/learnpress/v1/courses?on_sale=true
+GET http://lp/wp-json/learnpress/v1/courses?learned=true
 Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9scCIsImlhdCI6MTcxNzY2MDgyNSwibmJmIjoxNzE3NjYwODI1LCJleHAiOjE3MTgyNjU2MjUsImRhdGEiOnsidXNlciI6eyJpZCI6IjEifX19.-9nqdz_wSe_7peppyqu_pA8wpytt2ytkmhy4IGz8Zj4
 
 ## Get list Course learned by user, if not learned will get all course
 ## add param: learned, course_filter: in-progress, passed, failed.

@@ -21,6 +21,8 @@ use LP_User;
 use LP_User_Guest;
 
 use Throwable;
+use WP_Post;
+use WP_Term;
 
 class CourseModel {
 	/**
@@ -30,25 +32,23 @@ class CourseModel {
 	 */
 	public $ID = 0;
 	/**
-	 * @var string User ID, foreign key
+	 * @var string author id, foreign key
 	 */
 	public $post_author = 0;
 	/**
-	 * @var LP_User
+	 * @var LP_User author model
 	 */
 	public $author;
 	/**
-	 * Item id (course, lesson, quiz ...)
-	 *
-	 * @var string foreign key
+	 * @var string post date
 	 */
 	public $post_date = null;
 	/**
-	 * @var string Time start item
+	 * @var string post date gmt
 	 */
 	public $post_date_gmt = null;
 	/**
-	 * @var string Time finish item
+	 * @var string post content
 	 */
 	public $post_content = '';
 	/**
@@ -99,11 +99,12 @@ class CourseModel {
 	/**
 	 * Get user model
 	 *
-	 * @return false|LP_User|LP_User_Guest
+	 * @return false|LP_User
 	 */
 	public function get_author_model() {
 		if ( empty( $this->author ) ) {
-			$this->author = learn_press_get_user( $this->post_author );
+			$author_id = get_post_field( 'post_author', $this );
+			$this->author = learn_press_get_user( $author_id );
 		}
 
 		return $this->author;
@@ -199,9 +200,9 @@ class CourseModel {
 	/**
 	 * Get the price of course.
 	 *
-	 * @return mixed
+	 * @return float
 	 */
-	public function get_price() {
+	public function get_price(): float {
 		$key_cache = "{$this->ID}/price";
 		$price     = LP_Course_Cache::cache_load_first( 'get', $key_cache );
 
@@ -224,7 +225,7 @@ class CourseModel {
 			LP_Course_Cache::cache_load_first( 'set', $key_cache, $price );
 		}
 
-		return apply_filters( 'learnPress/course/price', $price, $this->get_id() );
+		return apply_filters( 'learnPress/course/price', (float) $price, $this->get_id() );
 	}
 
 	/**
@@ -298,5 +299,76 @@ class CourseModel {
 		}
 
 		return apply_filters( 'learnPress/course/has-sale-price', $has_sale_price, $this );
+	}
+
+	/**
+	 * Check if a course is Free
+	 *
+	 * @return bool
+	 */
+	public function is_free(): bool {
+		return apply_filters( 'learnPress/course/is-free', $this->get_price() == 0, $this );
+	}
+
+	/**
+	 * Get html course price
+	 *
+	 * @author tungnx
+	 * @since 4.1.5
+	 * @version 1.0.1
+	 * @return string
+	 */
+	public function get_price_html(): string {
+		$price_html = '';
+
+		if ( $this->is_free() ) {
+			if ( is_float( $this->get_sale_price() ) ) {
+				$price_html .= sprintf( '<span class="origin-price">%s</span>', $this->get_regular_price_html() );
+			}
+
+			$price_html .= sprintf( '<span class="free">%s</span>', esc_html__( 'Free', 'learnpress' ) );
+			$price_html  = apply_filters( 'learn_press_course_price_html_free', $price_html, $this );
+		} else {
+			if ( $this->has_sale_price() ) {
+				$price_html .= sprintf( '<span class="origin-price">%s</span>', $this->get_regular_price_html() );
+			}
+
+			$price_html .= sprintf( '<span class="price">%s</span>', learn_press_format_price( $this->get_price(), true ) );
+			$price_html  = apply_filters( 'learn_press_course_price_html', $price_html, $this->has_sale_price(), $this->get_id() );
+		}
+
+		return sprintf( '<span class="course-item-price">%s</span>', $price_html );
+	}
+
+	/**
+	 * Get the regular price format of course.
+	 *
+	 * @since 4.1.5
+	 * @version 1.0.0
+	 * @author tungnx
+	 * @return mixed
+	 */
+	public function get_regular_price_html() {
+		$price = learn_press_format_price( $this->get_regular_price(), true );
+
+		return apply_filters( 'learnPress/course/regular-price', $price, $this );
+	}
+
+	/**
+	 * Get categories of course.
+	 *
+	 * @since 4.2.3
+	 * @version 1.0.0
+	 * @return array|WP_Term[]
+	 */
+	public function get_categories(): array {
+		// Todo: set cache.
+		$wpPost = new WP_Post( $this );
+		$categories = get_the_terms( $wpPost, LP_COURSE_CATEGORY_TAX );
+		if ( ! $categories ) {
+			$categories = array();
+		}
+
+		return $categories;
 	}
 }

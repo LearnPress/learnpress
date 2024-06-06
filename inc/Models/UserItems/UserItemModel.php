@@ -310,6 +310,33 @@ class UserItemModel {
 	}
 
 	/**
+	 * Get expiration time.
+	 *
+	 * @return null|LP_Datetime $time
+	 * @since 3.3.0
+	 * @version 3.3.3
+	 */
+	public function get_expiration_time() {
+		$duration   = get_post_meta( $this->item_id, '_lp_duration', true );
+
+		if ( ! absint( $duration ) || empty( $this->start_time ) ) {
+			$expire = null;
+		} else {
+			$start = new LP_Datetime( $this->start_time );
+			$start_time = $start->getTimestamp();
+			// Convert duration from string to seconds.
+			if ( ! is_numeric( $duration ) ) {
+				$duration = strtotime( $duration ) - time();
+			}
+
+			$expire_time = $start_time + $duration;
+			$expire      = new LP_Datetime( $expire_time );
+		}
+
+		return apply_filters( 'learnPress/user-item/expiration-time', $expire, $duration, $this );
+	}
+
+	/**
 	 * Clean caches.
 	 *
 	 * @return void

@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Class LP_Lesson_DB
  *
  * @since 3.2.8
- * @version 1.0.1
+ * @version 1.0.2
  */
 class LP_Question_DB extends LP_Post_DB {
 	private static $_instance;
