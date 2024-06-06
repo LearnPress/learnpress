@@ -196,10 +196,10 @@ body {
 		border-top: 0;
 		background: #fff;
 		margin-top: 58px;
-
+		margin-bottom: 30px;
 		@media (max-width: 990px) {
 			width: 100%;
-
+			margin-bottom: 0;
 			.lp-user-profile-avatar {
 				max-width: 150px;
 			}
@@ -242,6 +242,7 @@ body {
 							left: 50%;
 							top: 50%;
 							transform: translate(-50%, -50%);
+							font-size: 1rem;
 						}
 					}
 				}
@@ -427,7 +428,7 @@ body {
 
 					> a {
 						height: auto;
-						padding: 0 20px 0 45px;
+						padding: 9px 20px 9px 45px;
 
 						&::after {
 							display: none;
@@ -962,21 +963,23 @@ body {
 //
 //}
 
-.learn-press-form{
+.learn-press-form {
 	.form-fields {
 		.form-field {
 			& > label {
- 				font-style: italic;
+				font-style: italic;
 			}
 		}
+
 		@media (min-width: 767px) {
 			.form-field__50 {
 				float: left;
 				width: calc(50% - 20px);
 				margin-right: 20px;
- 			}
+			}
 		}
- 	}
+	}
+
 	//.form-field {
 	//	margin: 0 10px 24px 10px;
 	//
@@ -1065,6 +1068,7 @@ body {
 		margin: 0;
 	}
 }
+
 //
 //#learn-press-profile-basic-information {
 //
