@@ -487,7 +487,7 @@ class ListCoursesTemplate {
 
 		$content = '<ul class="courses-layouts-display-list">';
 		foreach ( $layouts as $k => $v ) {
-			$active   = ( $data['courses_layout_default'] ?? '' ) === $k ? 'active' : '';
+			$active  = ( $data['courses_layout_default'] ?? '' ) === $k ? 'active' : '';
 			$content .= '<li class="courses-layout ' . $active . '" data-layout="' . $k . '">' . $v . '</li>';
 		}
 		$content .= '</ul>';
@@ -535,12 +535,10 @@ class ListCoursesTemplate {
 		ob_start();
 		?>
 		<form class="search-courses" method="get"
-				action="<?php echo esc_url_raw( learn_press_get_page_link( 'courses' ) ); ?>">
-			<label>
-				<input type="text" placeholder="<?php esc_attr_e( 'Search courses...', 'learnpress' ); ?>"
-						name="c_search"
-						value="<?php echo esc_attr( $s ); ?>">
-			</label>
+			  action="<?php echo esc_url_raw( learn_press_get_page_link( 'courses' ) ); ?>">
+			<input type="search" placeholder="<?php esc_attr_e( 'Search courses...', 'learnpress' ); ?>"
+				   name="c_search"
+				   value="<?php echo esc_attr( $s ); ?>">
 			<button type="submit" name="lp-btn-search-courses"><i class="lp-icon-search"></i></button>
 		</form>
 		<?php
@@ -555,11 +553,11 @@ class ListCoursesTemplate {
 		<div class="switch-layout">
 			<?php foreach ( $layouts as $layout => $value ) : ?>
 				<input type="radio" name="lp-switch-layout-btn"
-						value="<?php echo esc_attr( $layout ); ?>"
-						id="lp-switch-layout-btn-<?php echo esc_attr( $layout ); ?>" <?php checked( $layout, $active ); ?>>
+					   value="<?php echo esc_attr( $layout ); ?>"
+					   id="lp-switch-layout-btn-<?php echo esc_attr( $layout ); ?>" <?php checked( $layout, $active ); ?>>
 				<label class="switch-btn <?php echo esc_attr( $layout ); ?>"
-						title="<?php echo sprintf( esc_attr__( 'Switch to %s', 'learnpress' ), $value ); ?>"
-						for="lp-switch-layout-btn-<?php echo esc_attr( $layout ); ?>"></label>
+					   title="<?php echo sprintf( esc_attr__( 'Switch to %s', 'learnpress' ), $value ); ?>"
+					   for="lp-switch-layout-btn-<?php echo esc_attr( $layout ); ?>"></label>
 			<?php endforeach; ?>
 		</div>
 		<?php
@@ -619,7 +617,7 @@ class ListCoursesTemplate {
 				ob_start();
 				Template::instance()->print_sections( $item_sections );
 				$item_content = ob_get_clean();
-				$list_course .= Template::instance()->nest_elements( $item_wrapper, $item_content );
+				$list_course  .= Template::instance()->nest_elements( $item_wrapper, $item_content );
 			}
 			$list_course = Template::instance()->nest_elements( $html_item_wrapper, $list_course );
 			// End section list courses.
