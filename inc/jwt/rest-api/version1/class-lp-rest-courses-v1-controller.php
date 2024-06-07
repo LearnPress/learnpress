@@ -450,6 +450,8 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			}
 
 			Courses::handle_params_for_query_courses( $filter, $params );
+			$key_cache        = 'api/' . md5( json_encode( $params ) );
+			$lp_courses_cache = new LP_Courses_Cache( true );
 
 			if ( ! empty( $params['learned'] ) ) {
 				$user_id = get_current_user_id();
@@ -477,6 +479,14 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 				if ( ! empty( $params['course_filter'] ) ) {
 					$filter->where[] = $lp_user_items_db->wpdb->prepare( "AND ui.graduation = %s", $params['course_filter'] );
 				}
+			} else {
+				// Check cache
+				$courses_cache = $lp_courses_cache->get_cache( $key_cache );
+				if ( $courses_cache !== false ) {
+					$courses = json_decode( $courses_cache, true );
+
+					return rest_ensure_response( $courses );
+				}
 			}
 
 			$rs_courses  = Courses::get_courses( $filter, $total );
@@ -491,6 +501,12 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		$response = rest_ensure_response( $courses );
 		$response->header( 'X-WP-Total', $total );
 		$response->header( 'X-WP-TotalPages', (int) $total_pages );
+
+		// Set cache
+		if ( empty( $params['learned'] ) ) {
+			//$key_cache = 'api/' . md5( json_encode( $params ) );
+			$lp_courses_cache->set_cache( $key_cache, json_encode( $courses, JSON_UNESCAPED_UNICODE ) );
+		}
 
 		return $response;
 	}
