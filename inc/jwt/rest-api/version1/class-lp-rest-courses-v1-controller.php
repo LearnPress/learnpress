@@ -382,6 +382,12 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		return rest_ensure_response( $response );
 	}
 
+	/**
+	 * Convert params App to query courses.
+	 * @param $params
+	 *
+	 * @return array|mixed
+	 */
 	public function convert_params_query_courses( $params = [] ) {
 		$params['limit'] = $params['per_page'] ?? 10;
 
@@ -394,12 +400,28 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			switch ( $params['order_by'] ) {
 				case 'date':
 					$params['order_by'] = 'post_date';
-					$params['order'] = 'DESC';
+					$params['order']    = $params['order'] ?? 'DESC';
+					break;
+				case 'title':
+					$params['order_by'] = 'post_title';
+					break;
+				case 'price':
+					if ( ! empty( $params['order'] ) && 'asc' === $params['order'] ) {
+						$params['order_by'] = 'price_low';
+					}
 					break;
 				default:
 					$params['order'] = $params['order'] ?? 'DESC';
 					break;
 			}
+		}
+
+		if ( ! empty( $params['search'] ) ) {
+			$params['c_search'] = trim( $params['search'] );
+		}
+
+		if ( ! empty( $params['user'] ) ) {
+			$params['c_author'] = trim( $params['user'] );
 		}
 
 		if ( ! empty( $params['on_sale'] ) ) {
