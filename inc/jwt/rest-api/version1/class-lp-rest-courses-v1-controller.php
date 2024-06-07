@@ -384,6 +384,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 
 	/**
 	 * Convert params App to query courses.
+	 *
 	 * @param $params
 	 *
 	 * @return array|mixed
@@ -421,7 +422,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		}
 
 		if ( ! empty( $params['user'] ) ) {
-			$params['c_author'] = trim( $params['user'] );
+			$params['c_author'] = $params['user'];
 		}
 
 		if ( ! empty( $params['on_sale'] ) ) {
@@ -506,9 +507,8 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			$courseObjPrepare->instructor            = $author ? $this->get_author_info( $author ) : [];
 			$courseObjPrepare->categories            = $course->get_categories();
 			$courseObjPrepare->price                 = $course->get_price();
-			$courseObjPrepare->price_rendered        = html_entity_decode(
-				$course->get_price_html()
-			);
+			$courseObjPrepare->price_rendered        = $this->render_course_price( $course );
+			$courseObjPrepare->origin_price          = $course->get_regular_price();
 			$courseObjPrepare->origin_price_rendered = html_entity_decode(
 				learn_press_format_price( $course->get_regular_price(), true )
 			);
@@ -796,6 +796,31 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		$data['meta_data'] = $this->get_course_meta( $id );
 
 		return $data;
+	}
+
+	/**
+	 * Handle price course return to App
+	 *
+	 * @param CourseModel $course
+	 *
+	 * @return string
+	 * @since 4.2.6.9
+	 * @version 1.0.0
+	 */
+	public function render_course_price( CourseModel $course ): string {
+		$price_string = '';
+
+		if ( $course->is_free() ) {
+			$price_string = apply_filters(
+				'learn_press_course_price_html_free',
+				esc_html__( 'Free', 'learnpress' ),
+				$this
+			);
+		} else {
+			$price_string .= learn_press_format_price( $course->get_price() );
+		}
+
+		return html_entity_decode( $price_string );
 	}
 
 	public function get_retaken_count( $id ) {
