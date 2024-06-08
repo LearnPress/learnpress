@@ -34,12 +34,13 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			add_action( 'init', array( $this, 'register_taxonomy' ) );
 			add_filter( 'posts_where_paged', array( $this, '_posts_where_paged_course_items' ), 10 );
 			add_filter( 'posts_join_paged', array( $this, '_posts_join_paged_course_items' ), 10 );
+			add_action( 'clean_post_cache', [ $this, 'clear_cache' ] );
 		}
 
 		/**
 		 * Register course post type.
 		 */
-		public function args_register_post_type() : array {
+		public function args_register_post_type(): array {
 			$settings         = LP_Settings::instance();
 			$labels           = array(
 				'name'               => _x( 'Courses', 'Post Type General Name', 'learnpress' ),
@@ -163,6 +164,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 * Delete course sections before delete course.
 		 *
 		 * @param int $post_id
+		 *
 		 * @since 3.0.0
 		 * @editor tungnx
 		 * @since modify 4.0.9
@@ -495,8 +497,9 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 * Save course post
 		 * Should write run background if handle big and need more time
 		 *
-		 * @param int     $post_id
+		 * @param int $post_id
 		 * @param WP_Post $post
+		 *
 		 * @since 4.0.9
 		 * @version 1.0.0
 		 * @editor tungnx
@@ -513,6 +516,16 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					'data'        => $_POST ?? array(),
 				)
 			)->dispatch();
+		}
+
+		/**
+		 * Clear cache courses
+		 *
+		 * @return void
+		 */
+		public function clear_cache() {
+			$lp_cache_course = new LP_Courses_Cache( true );
+			$lp_cache_course->clear_cache_on_group( LP_Courses_Cache::KEYS_QUERY_COURSES_APP );
 		}
 
 		/**

@@ -450,8 +450,10 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			}
 
 			Courses::handle_params_for_query_courses( $filter, $params );
-			$key_cache        = 'api/' . md5( json_encode( $params ) );
-			$lp_courses_cache = new LP_Courses_Cache( true );
+			$key_cache             = 'api/' . md5( json_encode( $params ) );
+			$key_cache_total       = $key_cache . '_total';
+			$key_cache_total_pages = $key_cache . '_total_pages';
+			$lp_courses_cache      = new LP_Courses_Cache( true );
 
 			if ( ! empty( $params['learned'] ) ) {
 				$user_id = get_current_user_id();
@@ -480,12 +482,18 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 					$filter->where[] = $lp_user_items_db->wpdb->prepare( "AND ui.graduation = %s", $params['course_filter'] );
 				}
 			} else {
-				// Check cache
+				// Check cache with case not learned
 				$courses_cache = $lp_courses_cache->get_cache( $key_cache );
 				if ( $courses_cache !== false ) {
-					$courses = json_decode( $courses_cache, true );
+					$courses     = json_decode( $courses_cache, true );
+					$total       = (int) $lp_courses_cache->get_cache( $key_cache_total );
+					$total_pages = (int) $lp_courses_cache->get_cache( $key_cache_total_pages );
 
-					return rest_ensure_response( $courses );
+					$response = rest_ensure_response( $courses );
+					$response->header( 'X-WP-Total', $total );
+					$response->header( 'X-WP-TotalPages', $total_pages );
+
+					return $response;
 				}
 			}
 
@@ -500,12 +508,16 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 
 		$response = rest_ensure_response( $courses );
 		$response->header( 'X-WP-Total', $total );
-		$response->header( 'X-WP-TotalPages', (int) $total_pages );
+		$response->header( 'X-WP-TotalPages', $total_pages );
 
-		// Set cache
+		// Set cache with case not learned
 		if ( empty( $params['learned'] ) ) {
-			//$key_cache = 'api/' . md5( json_encode( $params ) );
 			$lp_courses_cache->set_cache( $key_cache, json_encode( $courses, JSON_UNESCAPED_UNICODE ) );
+			$lp_courses_cache->save_cache_keys( LP_Courses_Cache::KEYS_QUERY_COURSES_APP, $key_cache );
+			$lp_courses_cache->set_cache( $key_cache_total, $total );
+			$lp_courses_cache->save_cache_keys( LP_Courses_Cache::KEYS_QUERY_COURSES_APP, $key_cache_total );
+			$lp_courses_cache->set_cache( $key_cache_total_pages, $total_pages );
+			$lp_courses_cache->save_cache_keys( LP_Courses_Cache::KEYS_QUERY_COURSES_APP, $key_cache_total_pages );
 		}
 
 		return $response;
