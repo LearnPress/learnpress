@@ -528,7 +528,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		foreach ( $courses as $courseObj ) {
 			$course                                  = new CourseModel( $courseObj );
 			$courseObjPrepare                        = new stdClass();
-			$courseObjPrepare->id                    = $courseObj->ID;
+			$courseObjPrepare->id                    = (int) $courseObj->ID;
 			$courseObjPrepare->name                  = $courseObj->post_title;
 			$courseObjPrepare->image                 = $course->get_image_url();
 			$author                                  = $course->get_author_model();
@@ -565,7 +565,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 
 				$userCourse                                     = new UserCourseModel( $courseObjPrepare->course_data );
 				$expirationTime                                 = $userCourse->get_expiration_time();
-				$courseObjPrepare->course_data->expiration_time = $expirationTime ? $expirationTime->format( LP_Datetime::I18N_FORMAT ) : '';
+				$courseObjPrepare->course_data->expiration_time = $expirationTime ? $expirationTime->format( LP_Datetime::I18N_FORMAT ) : __( 'Lifetime', 'learnpress' );
 				$courseObjPrepare->course_data->result          = $userCourse->calculate_course_results();
 			}
 

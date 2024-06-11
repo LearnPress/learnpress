@@ -279,8 +279,8 @@ class CourseModel {
 		$has_sale_price = false;
 		$regular_price  = $this->get_regular_price();
 		$sale_price     = $this->get_sale_price();
-		$start_date     = $this->get_meta_value_by_key( 'sale_start' );
-		$end_date       = $this->get_meta_value_by_key( 'sale_end' );
+		$start_date     = $this->get_meta_value_by_key( '_lp_sale_start' );
+		$end_date       = $this->get_meta_value_by_key( '_lp_sale_end' );
 
 		if ( $regular_price > $sale_price && is_float( $sale_price ) ) {
 			$has_sale_price = true;
