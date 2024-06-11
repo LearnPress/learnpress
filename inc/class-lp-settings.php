@@ -91,9 +91,7 @@ class LP_Settings {
 			}
 
 			// Set cache
-			$lp_settings_cache
-				->set_action_thim_cache( Thim_Cache_DB::ACTION_INSERT )
-				->set_lp_settings( json_encode( $this->_options ) );
+			$lp_settings_cache->set_lp_settings( json_encode( $this->_options ) );
 		}
 	}
 

@@ -86,18 +86,10 @@ class Thim_Cache_DB {
 	public function set_value( string $key_cache, string $value, int $expire = 0 ) {
 		$action = self::ACTION_INSERT;
 
-		// Set manual action insert/update
-		if ( ! empty( $this->action ) ) {
-			if ( in_array( $this->action, [self::ACTION_INSERT, self::ACTION_UPDATE] ) ) {
-				$action = $this->action;
-			} else {
-				return null;
-			}
-		} else { // Auto check exist key_cache
-			$value_old = $this->get_value( $key_cache );
-			if ( false !== $value_old ) {
-				$action = self::ACTION_UPDATE;
-			}
+		// Auto check exist key_cache
+		$value_old = $this->get_value( $key_cache );
+		if ( false !== $value_old ) {
+			$action = self::ACTION_UPDATE;
 		}
 
 		if ( self::ACTION_UPDATE === $action ) { // Update

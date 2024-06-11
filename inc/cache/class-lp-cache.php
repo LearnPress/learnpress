@@ -26,10 +26,6 @@ class LP_Cache {
 	 * @var string Add key group parent with key group child
 	 */
 	protected $has_thim_cache = false;
-	/**
-	 * @var string|null
-	 */
-	private $thim_cache_action = null; // one of insert/update
 
 	/**
 	 * If set $has_thim_cache = true, will use thim cache
@@ -39,19 +35,6 @@ class LP_Cache {
 	public function __construct( $has_thim_cache = false ) {
 		$this->key_group      = $this->key_group_parent . '/' . $this->key_group_child;
 		$this->has_thim_cache = $has_thim_cache;
-	}
-
-	/**
-	 * Set action for thim cache (one of insert/update)
-	 *
-	 * @param string $action insert/update
-	 * @since 4.2.5.3
-	 * @version 1.0.0
-	 * @return LP_Cache
-	 */
-	public function set_action_thim_cache( string $action ): self {
-		$this->thim_cache_action = $action;
-		return $this;
 	}
 
 	/**
@@ -71,9 +54,7 @@ class LP_Cache {
 			// Cache thim_cache
 			if ( $this->can_handle_with_thim_cache() ) {
 				$key = "{$this->key_group}/{$key}";
-				Thim_Cache_DB::instance()
-					->set_action( $this->thim_cache_action )
-					->set_value( $key, $data, $expire );
+				Thim_Cache_DB::instance()->set_value( $key, $data, $expire );
 				/*$lp_bg_thim_cache = new LP_Background_Thim_Cache();
 				$lp_bg_thim_cache->data( compact( 'key', 'data' ) )->dispatch();*/
 			}

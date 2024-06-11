@@ -52,9 +52,7 @@ class Courses {
 		$count        = $lp_course_db->count_course_free( $filter );
 
 		// Set cache
-		$lp_courses_cache
-			->set_action_thim_cache( Thim_Cache_DB::ACTION_INSERT )
-			->set_cache( $key_cache, $count );
+		$lp_courses_cache->set_cache( $key_cache, $count );
 		$lp_courses_cache_keys = new LP_Courses_Cache( true );
 		$lp_courses_cache_keys->save_cache_keys_count_courses_free( $key_cache );
 		LP_Cache::cache_load_first( 'set', $key_cache, $count );
