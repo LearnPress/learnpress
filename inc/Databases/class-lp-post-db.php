@@ -45,6 +45,11 @@ class LP_Post_DB extends LP_Database {
 		// Where
 		$filter->where[] = $this->wpdb->prepare( "AND $ca.post_type = %s", $filter->post_type );
 
+		// Find ID
+		if ( ! empty( $filter->ID ) ) {
+			$filter->where[]    = $this->wpdb->prepare( "AND $ca.ID = %d", $filter->ID );
+		}
+
 		// Status
 		$filter->post_status = (array) $filter->post_status;
 		if ( ! empty( $filter->post_status ) ) {
