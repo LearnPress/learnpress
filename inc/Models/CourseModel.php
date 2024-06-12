@@ -35,20 +35,6 @@ class CourseModel extends PostModel {
 	const META_KEY_SALE_START = '_lp_sale_start';
 	const META_KEY_SALE_END = '_lp_sale_end';
 
-	public function get_image_url( $size = 'post-thumbnail' ): string {
-		$image_url = '';
-
-		if ( has_post_thumbnail( $this ) ) {
-			$image_url = get_the_post_thumbnail_url( $this, $size );
-		}
-
-		if ( empty( $image_url ) ) {
-			$image_url = LearnPress::instance()->image( 'no-image.png' );
-		}
-
-		return $image_url;
-	}
-
 	/**
 	 * Get the price of course.
 	 *
@@ -111,15 +97,6 @@ class CourseModel extends PostModel {
 		}
 
 		return $sale_price_value;
-	}
-
-	public function get_meta_value_by_key( $key, $default = false ) {
-		$value = get_post_meta( $this->ID, $key, true );
-		if ( empty( $value ) ) {
-			$value = $default;
-		}
-
-		return $value;
 	}
 
 	/**

@@ -73,9 +73,7 @@ class PostModel {
 	 */
 	public $post_name = '';
 	/**
-	 * Parent id
-	 *
-	 * @var int
+	 * @var string Post type
 	 */
 	public $post_type = 'post';
 	/**
