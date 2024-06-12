@@ -107,6 +107,8 @@ abstract class LP_Abstract_Assets {
 			// For version addon.
 			if ( ! LP_Debug::is_debug() && ! empty( $script->_version ) ) {
 				self::$_version_assets = $script->_version;
+			} else {
+				self::$_version_assets = LEARNPRESS_VERSION;
 			}
 			// End
 
@@ -146,7 +148,7 @@ abstract class LP_Abstract_Assets {
 		$styles = $this->_get_styles();
 		if ( $styles ) {
 			/**
-			 * @var LP_Asset_Key[] $style
+			 * @var LP_Asset_Key[] $styles
 			 */
 			foreach ( $styles as $handle => $style ) {
 				if ( ! $style instanceof LP_Asset_Key ) {
@@ -156,6 +158,8 @@ abstract class LP_Abstract_Assets {
 				// For version addon.
 				if ( ! LP_Debug::is_debug() && ! empty( $style->_version ) ) {
 					self::$_version_assets = $style->_version;
+				} else {
+					self::$_version_assets = LEARNPRESS_VERSION;
 				}
 				// End
 
