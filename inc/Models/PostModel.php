@@ -83,7 +83,7 @@ class PostModel {
 	/**
 	 * @var stdClass all meta data
 	 */
-	public $metadata = null;
+	public $meta_data = null;
 
 	/**
 	 * If data get from database, map to object.
@@ -161,13 +161,13 @@ class PostModel {
 	}
 
 	/**
-	 * Get all metadata, all keys of a user it
+	 * Get all meta_data, all keys of a user it
 	 *
 	 * @return stdClass|null
 	 * @throws Exception
 	 */
 	public function get_all_metadata() {
-		if ( empty( $this->metadata ) ) {
+		if ( empty( $this->meta_data ) ) {
 			$lp_item_meta_db = LP_Post_Meta_DB::getInstance();
 			$filter          = new LP_Post_Meta_Filter();
 			$filter->post_id = $this->get_id();
@@ -175,14 +175,14 @@ class PostModel {
 
 			$metadata_rs = $lp_item_meta_db->get_post_metas( $filter );
 			if ( ! $metadata_rs instanceof stdClass ) {
-				$this->metadata = new stdClass();
+				$this->meta_data = new stdClass();
 				foreach ( $metadata_rs as $value ) {
-					$this->metadata->{$value->meta_key} = $value;
+					$this->meta_data->{$value->meta_key} = $value;
 				}
 			}
 		}
 
-		return $this->metadata;
+		return $this->meta_data;
 	}
 
 	/**
@@ -240,8 +240,8 @@ class PostModel {
 	 * @return false|mixed
 	 */
 	public function get_meta_value_by_key( string $key, $default = false ) {
-		if ( $this->metadata instanceof stdClass && isset( $this->metadata->{$key} ) ) {
-			return $this->metadata->{$key}->meta_value;
+		if ( $this->meta_data instanceof stdClass && isset( $this->meta_data->{$key} ) ) {
+			return $this->meta_data->{$key}->meta_value;
 		}
 
 		$value = get_post_meta( $this->ID, $key, true );

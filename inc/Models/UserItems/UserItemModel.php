@@ -12,6 +12,8 @@
 namespace LearnPress\Models\UserItems;
 
 use Exception;
+use LearnPress\Models\CourseModel;
+use LearnPress\Models\PostModel;
 use LearnPress\Models\UserItemMeta\UserItemMetaModel;
 use LP_Datetime;
 use LP_User;
@@ -84,6 +86,10 @@ class UserItemModel {
 	 * @var int
 	 */
 	public $parent_id = 0;
+	/**
+	 * @var null|PostModel|CourseModel
+	 */
+	public $item;
 	/**
 	 * @var LP_User|null
 	 */
