@@ -128,6 +128,8 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 							'learnpress'
 						)
 					);
+				} else {
+					$output = __( 'The system does not allow the creation of a new account, you must enter an existing account.', 'learnpress' );
 				}
 
 				$response->status        = 'success';

@@ -345,7 +345,11 @@ class LP_Checkout {
 	 * @since 3.0.0
 	 */
 	public function is_enable_register() {
-		return apply_filters( 'learn-press/checkout/enable-register', 'yes' === LP_Settings::get_option( 'enable_registration_checkout', 'yes' ) );
+		return apply_filters(
+			'learn-press/checkout/enable-register',
+			'yes' === LP_Settings::get_option( 'enable_registration_checkout', 'yes' )
+			&& get_option( 'users_can_register' )
+		);
 	}
 
 	/**
