@@ -38,7 +38,7 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 				}
 
 				$this->lp_course = learn_press_get_course( $course_id );
-				$this->data      = LP_Request::get_param( 'data', '', 'text', 'post' );
+				$this->data      = LP_Request::get_param( 'data', [], 'text', 'post' );
 
 				if ( empty( $this->lp_course ) ) {
 					return;

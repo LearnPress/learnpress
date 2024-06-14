@@ -202,7 +202,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			global $wpdb;
 
 			$course_id = $this->_filter_items_by_course();
-			if ( $course_id || ( LP_Request::get( 'orderby' ) == 'course-name' ) ) {
+			if ( $course_id || LP_Request::get_param( 'orderby' ) === 'course-name' ) {
 				$join .= " LEFT JOIN {$wpdb->prefix}learnpress_section_items si ON {$wpdb->posts}.ID = si.item_id";
 				$join .= " LEFT JOIN {$wpdb->prefix}learnpress_sections s ON s.section_id = si.section_id";
 				$join .= " LEFT JOIN {$wpdb->posts} c ON c.ID = s.section_course_id";
