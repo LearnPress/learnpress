@@ -39,6 +39,15 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			if ( ! LP_Settings::is_created_tb_thim_cache() ) {
 				$this->create_table_thim_cache();
 			}
+
+			// From LP v4.2.6.9 temporary run create table learnpress_files.
+			// After a long time, will remove this code. Only run create table when activate plugin LP.
+			if ( ! LP_Settings::is_created_tb_course() ) {
+				$this->create_table_course();
+			}
+
+			// From LP v4.2.6.6 temporary run create table learnpress_files.
+			// After a long time, will remove this code. Only run create table when activate plugin LP.
 			if ( ! LP_Settings::is_created_tb_material_files() ) {
 				$this->create_table_learnpress_files();
 			}
@@ -141,10 +150,46 @@ if ( ! function_exists( 'LP_Install' ) ) {
 				error_log( $e->getMessage() );
 			}
 		}
+
+		/**
+		 * Create table learnpress_course
+		 *
+		 * @since 4.2.6.9
+		 */
+		private function create_table_course() {
+			global $wpdb;
+
+			try {
+				$collation = $wpdb->has_cap( 'collation' ) ? $wpdb->get_charset_collate() : 'ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci';
+
+				$sql = "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}learnpress_course (
+					ID bigint(20) unsigned NOT NULL,
+					json LONGTEXT NOT NULL,
+					post_author bigint unsigned default 0,
+					post_date datetime,
+					post_content LONGTEXT,
+					post_title text not null,
+					post_status varchar(20) default 'publish' not null,
+					post_name varchar(200) default '' not null,
+					menu_order int default 0 not null,
+					lang varchar(20),
+					PRIMARY KEY (ID)
+				) $collation";
+
+				$rs = $wpdb->query( $sql );
+
+				if ( $rs ) {
+					update_option( 'learnpress_course', 'yes' );
+				}
+			} catch ( Throwable $e ) {
+				error_log( $e->getMessage() );
+			}
+		}
+
 		/**
 		 * Create table learnpress_material_files
 		 *
-		 * @since 4.2.2
+		 * @since 4.2.6.6
 		 */
 		private function create_table_learnpress_files() {
 			global $wpdb;

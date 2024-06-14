@@ -6,7 +6,7 @@
  *
  * @since 4.1.1
  * @author tungnx
- * @version 1.0.1
+ * @version 1.0.2
  */
 defined( 'ABSPATH' ) || exit;
 
