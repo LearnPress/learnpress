@@ -42,8 +42,8 @@ if ( ! function_exists( 'LP_Install' ) ) {
 
 			// From LP v4.2.6.9 temporary run create table learnpress_files.
 			// After a long time, will remove this code. Only run create table when activate plugin LP.
-			if ( ! LP_Settings::is_created_tb_course() ) {
-				$this->create_table_course();
+			if ( ! LP_Settings::is_created_tb_courses() ) {
+				$this->create_table_courses();
 			}
 
 			// From LP v4.2.6.6 temporary run create table learnpress_files.
@@ -152,34 +152,36 @@ if ( ! function_exists( 'LP_Install' ) ) {
 		}
 
 		/**
-		 * Create table learnpress_course
+		 * Create table learnpress_courses
 		 *
 		 * @since 4.2.6.9
 		 */
-		private function create_table_course() {
+		private function create_table_courses() {
 			global $wpdb;
 
 			try {
 				$collation = $wpdb->has_cap( 'collation' ) ? $wpdb->get_charset_collate() : 'ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci';
 
-				$sql = "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}learnpress_course (
+				$sql = "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}learnpress_courses (
 					ID bigint(20) unsigned NOT NULL,
 					json LONGTEXT NOT NULL,
-					post_author bigint unsigned default 0,
+					post_author bigint unsigned,
 					post_date datetime,
 					post_content LONGTEXT,
 					post_title text not null,
 					post_status varchar(20) default 'publish' not null,
-					post_name varchar(200) default '' not null,
-					menu_order int default 0 not null,
+					post_name varchar(200) default '',
+					menu_order int default 0,
 					lang varchar(20),
-					PRIMARY KEY (ID)
+					PRIMARY KEY (ID),
+					KEY post_title (post_title(191)),
+					KEY post_status (post_status)
 				) $collation";
 
 				$rs = $wpdb->query( $sql );
 
 				if ( $rs ) {
-					update_option( 'learnpress_course', 'yes' );
+					update_option( 'tb_learnpress_courses', 'yes' );
 				}
 			} catch ( Throwable $e ) {
 				error_log( $e->getMessage() );

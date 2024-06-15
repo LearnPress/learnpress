@@ -4,7 +4,7 @@
  *
  * @author tungnx
  * @since 3.2.7.5
- * @version 2.0.1
+ * @version 2.0.2
  */
 defined( 'ABSPATH' ) || exit();
 
@@ -13,6 +13,7 @@ defined( 'ABSPATH' ) || exit();
 class LP_Database {
 	private static $_instance;
 	public $wpdb, $tb_users;
+	public $tb_lp_courses;
 	public $tb_lp_user_items, $tb_lp_user_itemmeta;
 	public $tb_posts, $tb_postmeta, $tb_options;
 	public $tb_terms, $tb_term_relationships, $tb_term_taxonomy;
@@ -25,7 +26,7 @@ class LP_Database {
 	public $tb_lp_upgrade_db;
 	public $tb_lp_sessions;
 	public $tb_lp_files;
-	private $collate         = '';
+	private $collate = '';
 	public $max_index_length = '191';
 
 	protected function __construct() {
@@ -43,6 +44,7 @@ class LP_Database {
 		$this->tb_terms                  = $wpdb->terms;
 		$this->tb_term_relationships     = $wpdb->term_relationships;
 		$this->tb_term_taxonomy          = $wpdb->term_taxonomy;
+		$this->tb_lp_courses             = $prefix . 'learnpress_courses';
 		$this->tb_lp_user_items          = $prefix . 'learnpress_user_items';
 		$this->tb_lp_user_itemmeta       = $prefix . 'learnpress_user_itemmeta';
 		$this->tb_lp_order_items         = $prefix . 'learnpress_order_items';
@@ -174,7 +176,7 @@ class LP_Database {
 	 *
 	 * @throws Exception
 	 */
-	public function clone_table( string $name_table ):bool {
+	public function clone_table( string $name_table ): bool {
 		if ( ! current_user_can( ADMIN_ROLE ) ) {
 			throw new Exception( 'You don\'t have permission' );
 		}
@@ -302,7 +304,7 @@ class LP_Database {
 	 * Add Index of Table
 	 *
 	 * @param string $name_table .
-	 * @param array  $indexs.
+	 * @param array $indexs .
 	 *
 	 * @return bool|int
 	 * @throws Exception
@@ -477,10 +479,10 @@ class LP_Database {
 	 * because if want change value of "option_name" will error "database error Duplicate entry"
 	 * So before set must drop and add when done all
 	 *
-	 * @author tungnx
+	 * @throws Exception
 	 * @version 1.0.0
 	 * @since 4.0.3
-	 * @throws Exception
+	 * @author tungnx
 	 */
 	public function create_indexes_tb_options() {
 		$this->drop_indexs_table( $this->tb_options );
@@ -500,10 +502,10 @@ class LP_Database {
 	/**
 	 * Rename table
 	 *
-	 * @author tungnx
+	 * @throws Exception
 	 * @version 1.0.0
 	 * @since 4.0.3
-	 * @throws Exception
+	 * @author tungnx
 	 */
 	public function rename_table( string $name_table = '', string $new_name = '' ) {
 		if ( ! current_user_can( ADMIN_ROLE ) ) {
@@ -564,7 +566,7 @@ class LP_Database {
 
 		$total_pages = floor( $total_rows / $limit );
 		if ( $total_rows % $limit !== 0 ) {
-			$total_pages++;
+			$total_pages ++;
 		}
 
 		return (int) $total_pages;
@@ -604,7 +606,7 @@ class LP_Database {
 		} elseif ( ! empty( $filter->fields ) ) {
 			// exclude more fields
 			if ( ! empty( $filter->exclude_fields ) ) {
-				foreach ( $filter->exclude_fields as  $field ) {
+				foreach ( $filter->exclude_fields as $field ) {
 					$index_field = array_search( $field, $filter->fields );
 					if ( $index_field ) {
 						unset( $filter->fields[ $index_field ] );
@@ -628,7 +630,7 @@ class LP_Database {
 		$GROUP_BY = '';
 		if ( $filter->group_by ) {
 			$GROUP_BY .= 'GROUP BY ' . $filter->group_by;
-			$GROUP_BY  = apply_filters( 'lp/query/group_by', $GROUP_BY, $filter );
+			$GROUP_BY = apply_filters( 'lp/query/group_by', $GROUP_BY, $filter );
 		}
 
 		// Order by
@@ -640,12 +642,12 @@ class LP_Database {
 			}
 
 			$ORDER_BY .= 'ORDER BY ' . $filter->order_by . ' ' . $filter->order . ' ';
-			$ORDER_BY  = apply_filters( 'lp/query/order_by', $ORDER_BY, $filter );
+			$ORDER_BY = apply_filters( 'lp/query/order_by', $ORDER_BY, $filter );
 		}
 
 		// Limit
 		$LIMIT = '';
-		if ( $filter->limit != -1 ) {
+		if ( $filter->limit != - 1 ) {
 			$filter->limit = absint( $filter->limit );
 			/*if ( $filter->limit > $filter->max_limit ) {
 				$filter->limit = $filter->max_limit;
@@ -683,7 +685,7 @@ class LP_Database {
 		if ( $filter->return_string_query ) {
 			return $query;
 		} elseif ( ! empty( $filter->union ) ) {
-			$query  = implode( ' UNION ', array_unique( $filter->union ) );
+			$query = implode( ' UNION ', array_unique( $filter->union ) );
 			$query .= $GROUP_BY;
 			$query .= $ORDER_BY;
 			$query .= $LIMIT;

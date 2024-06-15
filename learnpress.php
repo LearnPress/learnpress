@@ -262,6 +262,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			// Query Database .
 			include_once 'inc/Databases/class-lp-db.php';
+			include_once 'inc/Databases/class-lp-course-json-db.php';
 			include_once 'inc/Databases/class-lp-order-db.php';
 			include_once 'inc/Databases/class-lp-post-db.php';
 			include_once 'inc/Databases/class-lp-post-meta-db.php';

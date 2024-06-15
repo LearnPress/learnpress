@@ -339,8 +339,8 @@ class LP_Settings {
 	 *
 	 * @return bool
 	 */
-	public static function is_created_tb_course(): bool {
-		return get_option( 'tb_learnpress_course' ) === 'yes';
+	public static function is_created_tb_courses(): bool {
+		return get_option( 'tb_learnpress_courses' ) === 'yes';
 	}
 
 	/**
