@@ -5,15 +5,15 @@
  * @version 1.0.2
  */
 
-import { lpAddQueryArgs, lpFetchAPI } from './utils';
-import API from './api';
+import { lpAddQueryArgs, lpFetchAPI } from './utils.js';
+import API from './api.js';
 
 // Handle general parameter in the Frontend and Backend
 let apiData = API.admin;
 if ( 'undefined' === typeof apiData ) {
 	apiData = API.frontend;
 }
-const urlAPI = apiData.apiAJAX ?? '';
+const urlAPI = apiData.hasOwnProperty( 'apiAJAX' ) ? apiData.apiAJAX : '';
 
 let lpSettings = {};
 if ( 'undefined' !== typeof lpDataAdmin ) {
