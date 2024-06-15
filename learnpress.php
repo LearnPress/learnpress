@@ -249,6 +249,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			include_once 'inc/Filters/class-lp-post-type-filter.php';
 			include_once 'inc/Filters/class-lp-post-meta-filter.php';
 			include_once 'inc/Filters/class-lp-course-filter.php';
+			include_once 'inc/Filters/class-lp-course-json-filter.php';
 			include_once 'inc/Filters/class-lp-order-filter.php';
 			include_once 'inc/Filters/class-lp-session-filter.php';
 			include_once 'inc/Filters/class-lp-section-filter.php';

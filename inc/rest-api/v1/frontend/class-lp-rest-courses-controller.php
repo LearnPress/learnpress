@@ -579,7 +579,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			$response->message = $e->getMessage();
 		}
 
-		wp_send_json( $response );
+		return $response;
 	}
 
 	/**

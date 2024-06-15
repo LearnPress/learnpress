@@ -166,7 +166,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 					ID bigint(20) unsigned NOT NULL,
 					json LONGTEXT NOT NULL,
 					post_author bigint unsigned,
-					post_date datetime,
+					post_date_gmt datetime,
 					post_content LONGTEXT,
 					post_title text not null,
 					post_status varchar(20) default 'publish' not null,

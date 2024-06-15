@@ -83,7 +83,7 @@ class UserModel {
 	/**
 	 * Get course from database.
 	 * If not exists, return false.
-	 * If exists, return CourseModel.
+	 * If exists, return CoursePostModel.
 	 *
 	 * @param LP_User_Filter $filter
 	 * @param bool $no_cache

@@ -8,6 +8,10 @@
  * @author tungnx
  * @version 1.0.2
  */
+
+use LearnPress\Models\CourseModel;
+use LearnPress\Models\PostModel;
+
 defined( 'ABSPATH' ) || exit;
 
 if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
@@ -25,7 +29,7 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 
 		/**
 		 * Get params via $_POST and handle
-		 * @in_array
+		 *
 		 * @see LP_Course_Post_Type::save
 		 */
 		protected function handle() {
@@ -36,6 +40,8 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 				if ( empty( $handle_name ) || ! $course_id ) {
 					return;
 				}
+
+				$this->save_data_to_table_courses( $course_id );
 
 				$this->lp_course = learn_press_get_course( $course_id );
 				$this->data      = LP_Request::get_param( 'data', [], 'text', 'post' );
@@ -282,6 +288,37 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 				);
 			}
 			// End
+		}
+
+		/**
+		 * Save all data course to table learnpress_courses
+		 *
+		 * @return void
+		 * @throws Exception
+		 * @since 4.2.6.9
+		 * @version 1.0.0
+		 */
+		protected function save_data_to_table_courses( int $course_id ) {
+			if ( ! LP_Settings::is_created_tb_courses() ) {
+				return;
+			}
+
+			// Get all data course on table posts
+			$filter_post            = new LP_Post_Type_Filter();
+			$filter_post->ID        = $course_id;
+			$filter_post->post_type = LP_COURSE_CPT;
+			$post                   = PostModel::get_item_model_from_db( $filter_post );
+			if ( ! empty( $post ) ) {
+				$post->get_all_metadata();
+
+				// create new Course with data
+				$courseObj       = new CourseModel( $post );
+				$courseObjToJSON = clone $courseObj;
+				$courseObjToJSON->get_image_url();
+				unset( $courseObjToJSON->post_content );
+				$courseObj->json = json_encode( $courseObjToJSON, JSON_UNESCAPED_UNICODE );
+				$courseObj->save();
+			}
 		}
 
 		/**

@@ -1,6 +1,7 @@
 <?php
 
 use LearnPress\Models\CourseModel;
+use LearnPress\Models\CoursePostModel;
 use LearnPress\Models\Courses;
 use LearnPress\Models\UserItems\UserCourseModel;
 
@@ -523,10 +524,14 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		return $response;
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public function prepare_struct_courses_response( $courses, $params ): array {
 		$data = [];
 		foreach ( $courses as $courseObj ) {
 			$course                                  = new CourseModel( $courseObj );
+			$course->get_obj_from_json();
 			$courseObjPrepare                        = new stdClass();
 			$courseObjPrepare->id                    = (int) $courseObj->ID;
 			$courseObjPrepare->name                  = $courseObj->post_title;
@@ -623,13 +628,18 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 	public function retake_course( $request ) {
 		$response = new LP_REST_Response();
 
-		if ( ! class_exists( 'LP_REST_Courses_Controller' ) ) {
-			include_once LP_PLUGIN_PATH . 'inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php';
+		try {
+			if ( ! class_exists( 'LP_REST_Courses_Controller' ) ) {
+				include_once LP_PLUGIN_PATH . 'inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php';
+			}
+
+			$course_controller = new LP_REST_Courses_Controller();
+			$response = $course_controller->retake_course( $request );
+		} catch ( Throwable $e ) {
+			$response->message = $e->getMessage();
 		}
 
-		$course_controller = new LP_REST_Courses_Controller();
-
-		return $course_controller->retake_course( $request );
+		return $response;
 	}
 
 	/**
@@ -829,13 +839,13 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 	/**
 	 * Handle price course return to App
 	 *
-	 * @param CourseModel $course
+	 * @param CoursePostModel $course
 	 *
 	 * @return string
 	 * @since 4.2.6.9
 	 * @version 1.0.0
 	 */
-	public function render_course_price( CourseModel $course ): string {
+	public function render_course_price( CoursePostModel $course ): string {
 		$price_string = '';
 
 		if ( $course->is_free() ) {

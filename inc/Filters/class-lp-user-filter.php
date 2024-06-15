@@ -28,6 +28,10 @@ class LP_User_Filter extends LP_Filter {
 		'display_name',
 	];
 	/**
+	 * @var int user id.
+	 */
+	public $id = [];
+	/**
 	 * @var int[] List of user ids.
 	 */
 	public $ids = [];

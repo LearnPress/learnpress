@@ -26,7 +26,7 @@ class LP_Course_JSON_DB extends LP_Database {
 	/**
 	 * Get Courses
 	 *
-	 * @param LP_Course_Filter $filter
+	 * @param LP_Course_JSON_Filter $filter
 	 * @param int $total_rows return total_rows
 	 *
 	 * @return array|int|string|null
@@ -34,7 +34,7 @@ class LP_Course_JSON_DB extends LP_Database {
 	 * @version 1.0.0
 	 * @since 4.2.6.9
 	 */
-	public function get_courses( LP_Course_Filter $filter, int &$total_rows = 0 ) {
+	public function get_courses( LP_Course_JSON_Filter $filter, int &$total_rows = 0 ) {
 		$filter->fields = array_merge( $filter->all_fields, $filter->fields );
 
 		if ( empty( $filter->collection ) ) {
@@ -49,7 +49,7 @@ class LP_Course_JSON_DB extends LP_Database {
 
 		// Find ID
 		if ( ! empty( $filter->ID ) ) {
-			$filter->where[]    = $this->wpdb->prepare( "AND $ca.ID = %d", $filter->ID );
+			$filter->where[] = $this->wpdb->prepare( "AND $ca.ID = %d", $filter->ID );
 		}
 
 		// Status
@@ -96,5 +96,66 @@ class LP_Course_JSON_DB extends LP_Database {
 		$filter = apply_filters( 'lp/courses-json/query/filter', $filter );
 
 		return $this->execute( $filter, $total_rows );
+	}
+
+	/**
+	 * Insert data
+	 *
+	 * @param array $data
+	 *
+	 * @return int
+	 * @throws Exception
+	 * @version 1.0.1
+	 * @since 4.2.6.9
+	 */
+	public function insert_data( array $data ): int {
+		$filter = new LP_Course_JSON_Filter();
+		foreach ( $data as $col_name => $value ) {
+			if ( ! in_array( $col_name, $filter->all_fields ) ) {
+				unset( $data[ $col_name ] );
+			}
+		}
+
+		$this->wpdb->insert( $this->tb_lp_courses, $data );
+
+		$this->check_execute_has_error();
+
+		return $this->wpdb->insert_id;
+	}
+
+	/**
+	 * Update data
+	 *
+	 * @param array $data
+	 *
+	 * @return bool
+	 *
+	 * @throws Exception
+	 * @since 4.2.6.9
+	 * @version 1.0.0
+	 */
+	public function update_data( array $data ): bool {
+		if ( empty( $data['ID'] ) ) {
+			throw new Exception( __( 'Invalid ID!', 'learnpress' ) . ' | ' . __FUNCTION__ );
+		}
+
+		$filter             = new LP_Course_JSON_Filter();
+		$filter->collection = $this->tb_lp_courses;
+		foreach ( $data as $col_name => $value ) {
+			if ( ! in_array( $col_name, $filter->all_fields ) ) {
+				continue;
+			}
+
+			if ( is_null( $value ) ) {
+				$filter->set[] = $col_name . ' = null';
+			} else {
+				$filter->set[] = $this->wpdb->prepare( $col_name . ' = %s', $value );
+			}
+		}
+
+		$filter->where[] = $this->wpdb->prepare( 'AND ID = %d', $data['ID'] );
+		$this->update_execute( $filter );
+
+		return true;
 	}
 }
