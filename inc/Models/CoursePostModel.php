@@ -34,6 +34,7 @@ class CoursePostModel extends PostModel {
 	const META_KEY_SALE_PRICE = '_lp_sale_price';
 	const META_KEY_SALE_START = '_lp_sale_start';
 	const META_KEY_SALE_END = '_lp_sale_end';
+	const META_KEY_PASSING_CONDITION = 'passing_condition';
 
 	/**
 	 * Get the price of course.
@@ -102,9 +103,9 @@ class CoursePostModel extends PostModel {
 	/**
 	 * Check course has 'sale price'
 	 *
-	 * @return mixed
+	 * @return bool
 	 */
-	public function has_sale_price() {
+	public function has_sale_price(): bool {
 		$has_sale_price = false;
 		$regular_price  = $this->get_regular_price();
 		$sale_price     = $this->get_sale_price();

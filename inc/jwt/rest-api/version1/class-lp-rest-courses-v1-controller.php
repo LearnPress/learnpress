@@ -4,6 +4,7 @@ use LearnPress\Models\CourseModel;
 use LearnPress\Models\CoursePostModel;
 use LearnPress\Models\Courses;
 use LearnPress\Models\UserItems\UserCourseModel;
+use LearnPress\Models\UserModel;
 
 class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 	protected $namespace = 'learnpress/v1';
@@ -530,20 +531,20 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 	public function prepare_struct_courses_response( $courses, $params ): array {
 		$data = [];
 		foreach ( $courses as $courseObj ) {
-			$course                                  = new CourseModel( $courseObj );
+			$course = new CourseModel( $courseObj );
 			$course->get_obj_from_json();
 			$courseObjPrepare                        = new stdClass();
 			$courseObjPrepare->id                    = (int) $courseObj->ID;
 			$courseObjPrepare->name                  = $courseObj->post_title;
 			$courseObjPrepare->image                 = $course->get_image_url();
 			$author                                  = $course->get_author_model();
-			$courseObjPrepare->instructor            = $author ? $this->get_author_info( $author ) : [];
+			$courseObjPrepare->instructor            = ! empty( $author ) ? $this->get_author_info( $author ) : [];
 			$courseObjPrepare->categories            = $course->get_categories();
 			$courseObjPrepare->price                 = $course->get_price();
 			$courseObjPrepare->price_rendered        = $this->render_course_price( $course );
 			$courseObjPrepare->origin_price          = $course->get_regular_price();
 			$courseObjPrepare->origin_price_rendered = html_entity_decode(
-				learn_press_format_price( $course->get_regular_price(), true )
+				learn_press_format_price( $courseObjPrepare->origin_price, true )
 			);
 			$courseObjPrepare->on_sale               = $course->has_sale_price();
 			$courseObjPrepare->sale_price            = (float) $course->get_sale_price();
@@ -553,7 +554,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			// When release Addon Course Review v4.1.3 a long time, we will remove this code.
 			$courseObjPrepare->rating                           = $this->get_course_rating( $courseObj->ID );
 			$courseObjPrepare->meta_data                        = new stdClass();
-			$courseObjPrepare->meta_data->_lp_passing_condition = $course->get_meta_value_by_key( '_lp_passing_condition' );
+			$courseObjPrepare->meta_data->_lp_passing_condition = $course->get_meta_value_by_key( CoursePostModel::META_KEY_PASSING_CONDITION );
 
 
 			// Add more fields
@@ -634,7 +635,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			}
 
 			$course_controller = new LP_REST_Courses_Controller();
-			$response = $course_controller->retake_course( $request );
+			$response          = $course_controller->retake_course( $request );
 		} catch ( Throwable $e ) {
 			$response->message = $e->getMessage();
 		}
@@ -839,13 +840,14 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 	/**
 	 * Handle price course return to App
 	 *
-	 * @param CoursePostModel $course
+	 * @param CourseModel $course
 	 *
 	 * @return string
-	 * @since 4.2.6.9
+	 * @throws Exception
 	 * @version 1.0.0
+	 * @since 4.2.6.9
 	 */
-	public function render_course_price( CoursePostModel $course ): string {
+	public function render_course_price( CourseModel $course ): string {
 		$price_string = '';
 
 		if ( $course->is_free() ) {
@@ -971,11 +973,11 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 	/**
 	 * Get instructor info
 	 *
-	 * @param LP_User $author
+	 * @param LP_User|UserModel $author
 	 *
 	 * @return array
 	 */
-	public function get_author_info( LP_User $author ): array {
+	public function get_author_info( $author ): array {
 		$output                = [];
 		$output['avatar']      = $author->get_upload_profile_src();
 		$output['id']          = absint( $author->get_id() );

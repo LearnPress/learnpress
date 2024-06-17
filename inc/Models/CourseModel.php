@@ -16,7 +16,9 @@ namespace LearnPress\Models;
 use Exception;
 use LP_Course_JSON_DB;
 use LP_Course_JSON_Filter;
+use LP_Datetime;
 use LP_Helper;
+use LP_User;
 use LP_User_Filter;
 use stdClass;
 use Throwable;
@@ -32,10 +34,6 @@ class CourseModel {
 	 * @var string author id, foreign key
 	 */
 	public $post_author = 0;
-	/**
-	 * @var UserModel author model
-	 */
-	public $author;
 	/**
 	 * @var string post date gmt
 	 */
@@ -57,10 +55,6 @@ class CourseModel {
 	 */
 	public $post_name = '';
 	/**
-	 * @var stdClass all meta data
-	 */
-	public $meta_data = null;
-	/**
 	 * @var string JSON Store all data a single course
 	 */
 	public $json = null;
@@ -70,10 +64,21 @@ class CourseModel {
 	public $lang = null;
 	/***** Field not on table *****/
 	/**
-	 * @var null|stdClass Course object from json
+	 * @var UserModel author model
 	 */
+	public $author;
+	/**
+	 * @var stdClass all meta data
+	 */
+	public $meta_data = null;
 	public $course_from_json = null;
 	public $image_url = '';
+	public $categories = [];
+	public $price = 0; // Not save in database, must auto reload calculate
+	public $regular_price = 0;
+	public $sale_price = '';
+	public $sale_start = '';
+	public $sale_end = '';
 
 	/**
 	 * If data get from database, map to object.
@@ -125,7 +130,15 @@ class CourseModel {
 		}
 
 		if ( ! empty( $this->json ) ) {
-			$this->course_from_json = LP_Helper::json_decode( $this->json );
+			$this->course_from_json = LP_Helper::json_decode( $this->json, JSON_UNESCAPED_UNICODE );
+		} else {
+			$filter     = new LP_Course_JSON_Filter();
+			$filter->ID = $this->ID;
+			$course_rs  = self::get_item_model_from_db( $filter );
+			if ( $course_rs ) {
+				$this->json = $course_rs->json;
+				$this->get_obj_from_json();
+			}
 		}
 
 		return $this->course_from_json;
@@ -133,7 +146,6 @@ class CourseModel {
 
 	/**
 	 * Get image url
-	 * Check has data on table learnpress_courses return
 	 * if not check get from Post
 	 *
 	 * @return string
@@ -159,7 +171,230 @@ class CourseModel {
 	}
 
 	/**
-	 * Get post from database.
+	 * Get author model
+	 * Check has data on table learnpress_courses return
+	 * if not check get from Post
+	 *
+	 * @return UserModel|false|LP_User
+	 * @throws Exception
+	 */
+	public function get_author_model() {
+		if ( ! empty( $this->author ) ) {
+			return $this->author;
+		}
+
+		if ( $this->course_from_json && isset( $this->course_from_json->author ) ) {
+			$author = $this->course_from_json->author;
+		} else {
+			$post   = new PostModel( $this );
+			$author = $post->get_author_model();
+		}
+
+		$this->author = $author;
+
+		return $this->author;
+	}
+
+	/**
+	 * Get categories
+	 * Check has data on table learnpress_courses return
+	 * if not check get from Post
+	 *
+	 * @return array
+	 */
+	public function get_categories(): array {
+		if ( ! empty( $this->categories ) ) {
+			return $this->categories;
+		}
+
+		if ( $this->course_from_json && isset( $this->course_from_json->categories ) ) {
+			$categories = $this->course_from_json->categories;
+		} else {
+			$post       = new PostModel( $this );
+			$categories = $post->get_categories();
+		}
+
+		$this->categories = $categories;
+
+		return $this->categories;
+	}
+
+	/**
+	 * Get price
+	 *
+	 * @return float
+	 */
+	public function get_price(): float {
+		if ( ! empty( $this->price ) ) {
+			return $this->price;
+		}
+
+		if ( $this->has_sale_price() ) {
+			$price = $this->get_sale_price();
+			// Add key _lp_course_is_sale for query - Todo: Check performance, need write function get all courses, and set on Admin, on background
+			//update_post_meta( $this->get_id(), '_lp_course_is_sale', 1 );
+		} else {
+			// Delete key _lp_course_is_sale
+			//delete_post_meta( $this->get_id(), '_lp_course_is_sale' );
+			$price = $this->get_regular_price();
+		}
+
+		$this->price = $price;
+
+		return apply_filters( 'learnPress/course/price', (float) $price, $this->get_id() );
+	}
+
+	/**
+	 * Get regular price
+	 * Check has data on table learnpress_courses return
+	 * if not check get from Post
+	 *
+	 * @return float
+	 */
+	public function get_regular_price(): float {
+		if ( ! empty( $this->regular_price ) ) {
+			return $this->regular_price;
+		}
+
+		if ( $this->course_from_json && isset( $this->course_from_json->regular_price ) ) {
+			$regular_price = $this->course_from_json->regular_price;
+		} else {
+			$coursePost    = new CoursePostModel( $this );
+			$regular_price = $coursePost->get_regular_price();
+		}
+
+		$this->regular_price = $regular_price;
+
+		return $this->regular_price;
+	}
+
+	/**
+	 * Get regular price
+	 * Check has data on table learnpress_courses return
+	 * if not check get from Post
+	 *
+	 * @return float|string
+	 */
+	public function get_sale_price() {
+		if ( $this->sale_price !== '' ) {
+			return $this->sale_price;
+		}
+
+		if ( $this->course_from_json && isset( $this->course_from_json->sale_price ) ) {
+			$sale_price = $this->course_from_json->sale_price;
+		} else {
+			$coursePost = new CoursePostModel( $this );
+			$sale_price = $coursePost->get_sale_price();
+		}
+
+		$this->sale_price = $sale_price;
+
+		return $this->sale_price;
+	}
+
+	/**
+	 * Check course has 'sale price'
+	 *
+	 * @return bool
+	 */
+	public function has_sale_price(): bool {
+		$has_sale_price = false;
+		$regular_price  = $this->get_regular_price();
+		$sale_price     = $this->get_sale_price();
+		$start_date     = $this->get_sale_start();
+		$end_date       = $this->get_sale_end();
+
+		if ( $regular_price > $sale_price && is_float( $sale_price ) ) {
+			$has_sale_price = true;
+		}
+
+		// Check in days sale
+		if ( $has_sale_price && ! empty( $start_date ) && ! empty( $end_date ) ) {
+			$nowObj = new LP_Datetime();
+			// Compare via timezone WP
+			$nowStr = $nowObj->toSql( true );
+			$now    = strtotime( $nowStr );
+			$end    = strtotime( $end_date );
+			$start  = strtotime( $start_date );
+
+			$has_sale_price = $now >= $start && $now <= $end;
+		}
+
+		return apply_filters( 'learnPress/course/has-sale-price', $has_sale_price, $this );
+	}
+
+	/**
+	 * Get date sale start
+	 *
+	 * @return mixed
+	 */
+	public function get_sale_start() {
+		if ( $this->sale_start !== '' ) {
+			return $this->sale_start;
+		}
+
+		if ( $this->course_from_json && isset( $this->course_from_json->sale_start ) ) {
+			$sale_start = $this->course_from_json->sale_start;
+		} else {
+			$coursePost = new CoursePostModel( $this );
+			$sale_start = $coursePost->get_meta_value_by_key( CoursePostModel::META_KEY_SALE_START );
+		}
+
+		$this->sale_start = $sale_start;
+
+		return $this->sale_start;
+	}
+
+	/**
+	 * Get date sale end
+	 *
+	 * @return mixed
+	 */
+	public function get_sale_end() {
+		if ( $this->sale_end !== '' ) {
+			return $this->sale_end;
+		}
+
+		if ( $this->course_from_json && isset( $this->course_from_json->sale_end ) ) {
+			$sale_end = $this->course_from_json->sale_end;
+		} else {
+			$coursePost = new CoursePostModel( $this );
+			$sale_end   = $coursePost->get_meta_value_by_key( CoursePostModel::META_KEY_SALE_END );
+		}
+
+		$this->sale_end = $sale_end;
+
+		return $this->sale_end;
+	}
+
+	/**
+	 * Check if a course is Free
+	 *
+	 * @return bool
+	 * @throws Exception
+	 */
+	public function is_free(): bool {
+		return apply_filters( 'learnPress/course/is-free', $this->get_price() == 0, $this );
+	}
+
+	public function get_meta_value_by_key( string $key ) {
+		if ( ! empty( $this->meta_data ) && ! empty( $this->meta_data->{$key} ) ) {
+			return $this->sale_end;
+		}
+
+		if ( $this->course_from_json && ! empty( $this->course_from_json->meta_data )
+		     && isset( $this->course_from_json->meta_data->{$key} ) ) {
+			$value = $this->course_from_json->meta_data->{$key};
+		} else {
+			$coursePost = new CoursePostModel( $this );
+			$value      = $coursePost->get_meta_value_by_key( $key );
+		}
+
+		return $value;
+	}
+
+	/**
+	 * Get item model if query success.
 	 * If not exists, return false.
 	 * If exists, return PostModel.
 	 *
@@ -169,13 +404,15 @@ class CourseModel {
 	 * @return CourseModel|false|static
 	 */
 	public static function get_item_model_from_db( LP_Course_JSON_Filter $filter, bool $no_cache = true ) {
-		$lp_course_json_db = LP_Course_JSON_DB::getInstance();
-		$course_model      = false;
+		$course_model = false;
 
 		try {
-			$course_rs = self::get_course_from_db( $filter );
-			if ( $course_rs instanceof stdClass ) {
-				$course_model = new static( $course_rs );
+			$filter->only_fields = [ 'json' ];
+			$course_rs           = self::get_course_from_db( $filter );
+			if ( $course_rs instanceof stdClass && isset( $course_rs->json ) ) {
+				$course_obj         = LP_Helper::json_decode( $course_rs->json );
+				$course_model       = new static( $course_obj );
+				$course_model->json = $course_rs->json;
 			}
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
@@ -215,9 +452,10 @@ class CourseModel {
 			throw new Exception( 'Course ID is invalid!' );
 		}
 
-		$filter     = new LP_Course_JSON_Filter();
-		$filter->ID = $this->ID;
-		$course_rs  = self::get_course_from_db( $filter );
+		$filter              = new LP_Course_JSON_Filter();
+		$filter->ID          = $this->ID;
+		$filter->only_fields = [ 'ID' ];
+		$course_rs           = self::get_course_from_db( $filter );
 		// Check if exists course id.
 		if ( empty( $course_rs ) ) { // Insert data.
 			$lp_course_json_db->insert_data( $data );
