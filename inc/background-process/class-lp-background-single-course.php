@@ -10,6 +10,7 @@
  */
 
 use LearnPress\Models\CourseModel;
+use LearnPress\Models\CoursePostModel;
 use LearnPress\Models\PostModel;
 
 defined( 'ABSPATH' ) || exit;
@@ -41,10 +42,10 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 					return;
 				}
 
+				$this->data = LP_Request::get_param( 'data', [], 'text', 'post' );
 				$this->save_data_to_table_courses( $course_id );
 
 				$this->lp_course = learn_press_get_course( $course_id );
-				$this->data      = LP_Request::get_param( 'data', [], 'text', 'post' );
 
 				if ( empty( $this->lp_course ) ) {
 					return;
@@ -308,15 +309,41 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 			$filter_post->ID        = $course_id;
 			$filter_post->post_type = LP_COURSE_CPT;
 			$post                   = PostModel::get_item_model_from_db( $filter_post );
-			if ( ! empty( $post ) ) {
-				$post->get_all_metadata();
 
-				// create new Course with data
-				$courseObj       = new CourseModel( $post );
+			if ( ! empty( $post ) ) {
+				// Create new Course with data
+				$courseObj = new CourseModel( $post );
+				$courseObj->get_image_url();
+				$courseObj->get_categories();
+				// Get all meta key and map
+				$lp_meta_box_course   = new LP_Meta_Box_Course();
+				$ground_fields        = $lp_meta_box_course->metabox( $course_id );
+				$courseObj->meta_data = new stdClass();
+				foreach ( $ground_fields as $fields ) {
+					if ( ! isset( $fields['content'] ) ) {
+						continue;
+					}
+					foreach ( $fields['content'] as $meta_key => $option ) {
+						if ( isset( $this->data[ $meta_key ] ) ) {
+							switch ( $meta_key ) {
+								case CoursePostModel::META_KEY_DURATION:
+									if ( is_array( $this->data[ $meta_key ] ) ) {
+										$this->data[ $meta_key ] = sprintf( '%s %s', $this->data[ $meta_key ][0], $this->data[ $meta_key ][1] );
+									}
+									break;
+							}
+
+							$courseObj->meta_data->{$meta_key} = $this->data[ $meta_key ];
+						}
+					}
+
+				}
+				$courseObj->price_to_sort = $courseObj->get_price();
+				// End get all meta key and map
+
 				$courseObjToJSON = clone $courseObj;
-				$courseObjToJSON->get_image_url();
 				unset( $courseObjToJSON->post_content );
-				$courseObj->json = json_encode( $courseObjToJSON, JSON_UNESCAPED_UNICODE );
+				$courseObj->course_from_json = $courseObjToJSON;
 				$courseObj->save();
 			}
 		}

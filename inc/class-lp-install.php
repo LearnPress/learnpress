@@ -165,6 +165,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 				$sql = "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}learnpress_courses (
 					ID bigint(20) unsigned NOT NULL,
 					json LONGTEXT NOT NULL,
+					price_to_sort FLOAT,
 					post_author bigint unsigned,
 					post_date_gmt datetime,
 					post_content LONGTEXT,

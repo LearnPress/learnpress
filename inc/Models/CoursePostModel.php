@@ -34,7 +34,20 @@ class CoursePostModel extends PostModel {
 	const META_KEY_SALE_PRICE = '_lp_sale_price';
 	const META_KEY_SALE_START = '_lp_sale_start';
 	const META_KEY_SALE_END = '_lp_sale_end';
-	const META_KEY_PASSING_CONDITION = 'passing_condition';
+	const META_KEY_PASSING_CONDITION = '_lp_passing_condition';
+	const META_KEY_DURATION = '_lp_duration';
+	const META_KEY_BLOCK_EXPIRE_DURATION = '_lp_block_expire_duration';
+	const META_KEY_BLOCK_FINISH = '_lp_block_finished';
+	const META_KEY_ALLOW_COURSE_REPURCHASE = '_lp_allow_course_repurchase';
+	const META_KEY_COURSE_REPURCHASE_OPTION = '_lp_course_repurchase_option';
+	const META_KEY_LEVEL = '_lp_level';
+	const META_KEY_STUDENTS = '_lp_students';
+	const META_KEY_MAX_STUDENTS = '_lp_max_students';
+	const META_KEY_RETAKE_COUNT = '_lp_retake_count';
+	const META_KEY_HAS_FINISH = '_lp_has_finish';
+	const META_KEY_FEATURED = '_lp_featured';
+	const META_KEY_FEATURED_REVIEW = '_lp_featured_review';
+	const META_KEY_EXTERNAL_LINK_BY_COURSE = '_lp_external_link_buy_course';
 
 	/**
 	 * Get the price of course.

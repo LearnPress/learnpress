@@ -55,9 +55,14 @@ class CourseModel {
 	 */
 	public $post_name = '';
 	/**
+	 * @var float price only using for filter courses, don't use for course detail
+	 * Because price can change by date if set schedule sale
+	 */
+	public $price_to_sort = 0;
+	/**
 	 * @var string JSON Store all data a single course
 	 */
-	public $json = null;
+	private $json = null; // Only set when save, don't set when get
 	/**
 	 * @var string lang of Course
 	 */
@@ -71,14 +76,19 @@ class CourseModel {
 	 * @var stdClass all meta data
 	 */
 	public $meta_data = null;
+	/**
+	 * @var null|stdClass object get from table learnpress_courses
+	 */
 	public $course_from_json = null;
 	public $image_url = '';
 	public $categories = [];
-	public $price = 0; // Not save in database, must auto reload calculate
-	public $regular_price = 0;
-	public $sale_price = '';
-	public $sale_start = '';
-	public $sale_end = '';
+	private $price = 0; // Not save in database, must auto reload calculate
+	private $regular_price = 0;
+	private $sale_price = '';
+	private $sale_start = '';
+	private $sale_end = '';
+	private $passing_condition = '';
+	public $post_excerpt = '';
 
 	/**
 	 * If data get from database, map to object.
@@ -117,31 +127,6 @@ class CourseModel {
 	 */
 	public function get_id(): int {
 		return $this->ID;
-	}
-
-	/**
-	 * @return stdClass|null
-	 * @throws Exception
-	 *
-	 */
-	public function get_obj_from_json() {
-		if ( ! empty( $this->course_from_json ) ) {
-			return $this->course_from_json;
-		}
-
-		if ( ! empty( $this->json ) ) {
-			$this->course_from_json = LP_Helper::json_decode( $this->json, JSON_UNESCAPED_UNICODE );
-		} else {
-			$filter     = new LP_Course_JSON_Filter();
-			$filter->ID = $this->ID;
-			$course_rs  = self::get_item_model_from_db( $filter );
-			if ( $course_rs ) {
-				$this->json = $course_rs->json;
-				$this->get_obj_from_json();
-			}
-		}
-
-		return $this->course_from_json;
 	}
 
 	/**
@@ -256,14 +241,15 @@ class CourseModel {
 			return $this->regular_price;
 		}
 
-		if ( $this->course_from_json && isset( $this->course_from_json->regular_price ) ) {
-			$regular_price = $this->course_from_json->regular_price;
+		$key = CoursePostModel::META_KEY_REGULAR_PRICE;
+		if ( $this->meta_data && isset( $this->meta_data->{$key} ) ) {
+			$regular_price = $this->meta_data->{$key};
 		} else {
 			$coursePost    = new CoursePostModel( $this );
 			$regular_price = $coursePost->get_regular_price();
 		}
 
-		$this->regular_price = $regular_price;
+		$this->regular_price = (float) $regular_price;
 
 		return $this->regular_price;
 	}
@@ -280,8 +266,13 @@ class CourseModel {
 			return $this->sale_price;
 		}
 
-		if ( $this->course_from_json && isset( $this->course_from_json->sale_price ) ) {
-			$sale_price = $this->course_from_json->sale_price;
+		$key = CoursePostModel::META_KEY_SALE_PRICE;
+		if ( $this->meta_data && isset( $this->meta_data->{$key} ) ) {
+			$sale_price = $this->meta_data->{$key};
+
+			if ( '' !== $sale_price ) {
+				$sale_price = floatval( $sale_price );
+			}
 		} else {
 			$coursePost = new CoursePostModel( $this );
 			$sale_price = $coursePost->get_sale_price();
@@ -333,14 +324,7 @@ class CourseModel {
 			return $this->sale_start;
 		}
 
-		if ( $this->course_from_json && isset( $this->course_from_json->sale_start ) ) {
-			$sale_start = $this->course_from_json->sale_start;
-		} else {
-			$coursePost = new CoursePostModel( $this );
-			$sale_start = $coursePost->get_meta_value_by_key( CoursePostModel::META_KEY_SALE_START );
-		}
-
-		$this->sale_start = $sale_start;
+		$this->sale_start = $this->get_meta_value_by_key( CoursePostModel::META_KEY_SALE_START );
 
 		return $this->sale_start;
 	}
@@ -355,14 +339,7 @@ class CourseModel {
 			return $this->sale_end;
 		}
 
-		if ( $this->course_from_json && isset( $this->course_from_json->sale_end ) ) {
-			$sale_end = $this->course_from_json->sale_end;
-		} else {
-			$coursePost = new CoursePostModel( $this );
-			$sale_end   = $coursePost->get_meta_value_by_key( CoursePostModel::META_KEY_SALE_END );
-		}
-
-		$this->sale_end = $sale_end;
+		$this->sale_end = $this->get_meta_value_by_key( CoursePostModel::META_KEY_SALE_END );
 
 		return $this->sale_end;
 	}
@@ -378,13 +355,8 @@ class CourseModel {
 	}
 
 	public function get_meta_value_by_key( string $key ) {
-		if ( ! empty( $this->meta_data ) && ! empty( $this->meta_data->{$key} ) ) {
-			return $this->sale_end;
-		}
-
-		if ( $this->course_from_json && ! empty( $this->course_from_json->meta_data )
-		     && isset( $this->course_from_json->meta_data->{$key} ) ) {
-			$value = $this->course_from_json->meta_data->{$key};
+		if ( ! empty( $this->meta_data ) && isset( $this->meta_data->{$key} ) ) {
+			$value = $this->meta_data->{$key};
 		} else {
 			$coursePost = new CoursePostModel( $this );
 			$value      = $coursePost->get_meta_value_by_key( $key );
@@ -407,12 +379,13 @@ class CourseModel {
 		$course_model = false;
 
 		try {
-			$filter->only_fields = [ 'json' ];
+			$filter->only_fields = [ 'json', 'post_content' ];
 			$course_rs           = self::get_course_from_db( $filter );
 			if ( $course_rs instanceof stdClass && isset( $course_rs->json ) ) {
-				$course_obj         = LP_Helper::json_decode( $course_rs->json );
-				$course_model       = new static( $course_obj );
-				$course_model->json = $course_rs->json;
+				$course_obj                 = LP_Helper::json_decode( $course_rs->json, JSON_UNESCAPED_UNICODE );
+				$course_model               = new static( $course_obj );
+				$course_model->json         = $course_rs->json;
+				$course_model->post_content = $course_rs->post_content;
 			}
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
@@ -444,6 +417,11 @@ class CourseModel {
 		$lp_course_json_db = LP_Course_JSON_DB::getInstance();
 
 		$data = [];
+
+		if ( ! empty( $this->course_from_json ) ) {
+			$this->json = json_encode( $this->course_from_json, JSON_UNESCAPED_UNICODE );
+		}
+
 		foreach ( get_object_vars( $this ) as $property => $value ) {
 			$data[ $property ] = $value;
 		}

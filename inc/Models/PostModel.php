@@ -242,7 +242,7 @@ class PostModel {
 	 */
 	public function get_meta_value_by_key( string $key, $default = false ) {
 		if ( $this->meta_data instanceof stdClass && isset( $this->meta_data->{$key} ) ) {
-			return $this->meta_data->{$key}->meta_value;
+			return $this->meta_data->{$key};
 		}
 
 		$value = get_post_meta( $this->ID, $key, true );
