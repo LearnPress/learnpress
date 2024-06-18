@@ -340,10 +340,6 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 				}
 				$courseObj->price_to_sort = $courseObj->get_price();
 				// End get all meta key and map
-
-				$courseObjToJSON = clone $courseObj;
-				unset( $courseObjToJSON->post_content );
-				$courseObj->course_from_json = $courseObjToJSON;
 				$courseObj->save();
 			}
 		}

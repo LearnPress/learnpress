@@ -76,10 +76,6 @@ class CourseModel {
 	 * @var stdClass all meta data
 	 */
 	public $meta_data = null;
-	/**
-	 * @var null|stdClass object get from table learnpress_courses
-	 */
-	public $course_from_json = null;
 	public $image_url = '';
 	public $categories = [];
 	private $price = 0; // Not save in database, must auto reload calculate
@@ -143,12 +139,8 @@ class CourseModel {
 			return $this->image_url;
 		}
 
-		if ( $this->course_from_json && isset( $this->course_from_json->image_url ) ) {
-			$image_url = $this->course_from_json->image_url;
-		} else {
-			$post      = new PostModel( $this );
-			$image_url = $post->get_image_url();
-		}
+		$post      = new PostModel( $this );
+		$image_url = $post->get_image_url();
 
 		$this->image_url = $image_url;
 
@@ -168,12 +160,8 @@ class CourseModel {
 			return $this->author;
 		}
 
-		if ( $this->course_from_json && isset( $this->course_from_json->author ) ) {
-			$author = $this->course_from_json->author;
-		} else {
-			$post   = new PostModel( $this );
-			$author = $post->get_author_model();
-		}
+		$post   = new PostModel( $this );
+		$author = $post->get_author_model();
 
 		$this->author = $author;
 
@@ -192,12 +180,8 @@ class CourseModel {
 			return $this->categories;
 		}
 
-		if ( $this->course_from_json && isset( $this->course_from_json->categories ) ) {
-			$categories = $this->course_from_json->categories;
-		} else {
-			$post       = new PostModel( $this );
-			$categories = $post->get_categories();
-		}
+		$post       = new PostModel( $this );
+		$categories = $post->get_categories();
 
 		$this->categories = $categories;
 
@@ -418,10 +402,9 @@ class CourseModel {
 
 		$data = [];
 
-		if ( ! empty( $this->course_from_json ) ) {
-			$this->json = json_encode( $this->course_from_json, JSON_UNESCAPED_UNICODE );
-		}
-
+		$courseObjToJSON = clone $this;
+		unset( $courseObjToJSON->post_content );
+		$this->json = json_encode( $courseObjToJSON, JSON_UNESCAPED_UNICODE );
 		foreach ( get_object_vars( $this ) as $property => $value ) {
 			$data[ $property ] = $value;
 		}
