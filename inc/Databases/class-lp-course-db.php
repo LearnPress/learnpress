@@ -843,5 +843,3 @@ class LP_Course_DB extends LP_Database {
 		return array_merge( $term_ids, $term_sub_ids );
 	}
 }
-
-LP_Course_DB::getInstance();

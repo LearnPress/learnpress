@@ -22,6 +22,7 @@ use LP_Post_Meta_DB;
 use LP_Post_Meta_Filter;
 use LP_Post_Type_Filter;
 use LP_User;
+use LP_User_Filter;
 use LP_User_Guest;
 
 use stdClass;
@@ -41,7 +42,7 @@ class PostModel {
 	 */
 	public $post_author = 0;
 	/**
-	 * @var LP_User author model
+	 * @var UserModel author model
 	 */
 	public $author;
 	/**
@@ -100,13 +101,22 @@ class PostModel {
 	/**
 	 * Get user model
 	 *
-	 * @return false|LP_User
+	 * @return false|UserModel
 	 */
 	public function get_author_model() {
-		if ( empty( $this->author ) ) {
-			$author_id    = get_post_field( 'post_author', $this );
-			$this->author = learn_press_get_user( $author_id );
+		if ( ! empty( $this->author ) ) {
+			return $this->author;
 		}
+
+		if ( empty( $this->post_author ) ) {
+			$author_id = $this->post_author;
+		} else {
+			$author_id = get_post_field( 'post_author', $this );
+		}
+
+		$filter       = new LP_User_Filter();
+		$filter->ID   = $author_id;
+		$this->author = UserModel::get_user_model_from_db( $filter );
 
 		return $this->author;
 	}

@@ -30,7 +30,7 @@ class LP_User_Filter extends LP_Filter {
 	/**
 	 * @var int user id.
 	 */
-	public $id = [];
+	public $ID = 0;
 	/**
 	 * @var int[] List of user ids.
 	 */

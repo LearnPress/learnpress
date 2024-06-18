@@ -315,6 +315,7 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 				$courseObj = new CourseModel( $post );
 				$courseObj->get_image_url();
 				$courseObj->get_categories();
+				$courseObj->get_author_model();
 				// Get all meta key and map
 				$lp_meta_box_course   = new LP_Meta_Box_Course();
 				$ground_fields        = $lp_meta_box_course->metabox( $course_id );

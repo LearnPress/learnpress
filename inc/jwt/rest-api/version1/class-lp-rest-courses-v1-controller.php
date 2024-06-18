@@ -979,15 +979,15 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 	/**
 	 * Get instructor info
 	 *
-	 * @param LP_User|UserModel $author
+	 * @param UserModel $author
 	 *
 	 * @return array
 	 */
 	public function get_author_info( $author ): array {
 		$output                = [];
-		$output['avatar']      = $author->get_upload_profile_src();
-		$output['id']          = absint( $author->get_id() );
-		$output['name']        = $author->get_display_name();
+		$output['avatar']      = $author->get_image_url();
+		$output['id']          = $author->get_id();
+		$output['name']        = $author->display_name;
 		$output['description'] = $author->get_description();
 
 		return $output;

@@ -248,6 +248,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			include_once 'inc/Filters/class-lp-filter.php';
 			include_once 'inc/Filters/class-lp-post-type-filter.php';
 			include_once 'inc/Filters/class-lp-post-meta-filter.php';
+			include_once 'inc/Filters/class-lp-user-filter.php';
 			include_once 'inc/Filters/class-lp-course-filter.php';
 			include_once 'inc/Filters/class-lp-course-json-filter.php';
 			include_once 'inc/Filters/class-lp-order-filter.php';
@@ -267,6 +268,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			include_once 'inc/Databases/class-lp-order-db.php';
 			include_once 'inc/Databases/class-lp-post-db.php';
 			include_once 'inc/Databases/class-lp-post-meta-db.php';
+			include_once 'inc/Databases/class-lp-user-db.php';
 			include_once 'inc/Databases/class-lp-course-db.php';
 			include_once 'inc/Databases/class-lp-lesson-db.php';
 			include_once 'inc/Databases/class-lp-section-db.php';

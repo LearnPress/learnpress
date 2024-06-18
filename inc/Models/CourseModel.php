@@ -99,12 +99,12 @@ class CourseModel {
 	}
 
 	/**
-	 * Map array, object data to PostModel.
+	 * Map array, object data to CourseModel.
 	 * Use for data get from database.
 	 *
 	 * @param array|object|mixed $data
 	 *
-	 * @return PostModel|static
+	 * @return CourseModel
 	 */
 	public function map_to_object( $data ): CourseModel {
 		foreach ( $data as $key => $value ) {
@@ -139,7 +139,7 @@ class CourseModel {
 			return $this->image_url;
 		}
 
-		$post      = new PostModel( $this );
+		$post      = new CoursePostModel( $this );
 		$image_url = $post->get_image_url();
 
 		$this->image_url = $image_url;
@@ -152,7 +152,7 @@ class CourseModel {
 	 * Check has data on table learnpress_courses return
 	 * if not check get from Post
 	 *
-	 * @return UserModel|false|LP_User
+	 * @return UserModel|false
 	 * @throws Exception
 	 */
 	public function get_author_model() {
@@ -160,10 +160,8 @@ class CourseModel {
 			return $this->author;
 		}
 
-		$post   = new PostModel( $this );
-		$author = $post->get_author_model();
-
-		$this->author = $author;
+		$post         = new CoursePostModel( $this );
+		$this->author = $post->get_author_model();
 
 		return $this->author;
 	}

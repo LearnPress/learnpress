@@ -29,7 +29,7 @@ class LP_Post_DB extends LP_Database {
 	 * @since 4.1.6
 	 * @version 1.0.0
 	 */
-	public function get_posts( LP_Post_Type_Filter $filter, &$total_rows = 0 ) {
+	public function get_posts( LP_Post_Type_Filter $filter, int &$total_rows = 0 ) {
 		$filter->fields = array_merge( $filter->all_fields, $filter->fields );
 
 		if ( empty( $filter->collection ) ) {
