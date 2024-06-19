@@ -61,7 +61,7 @@ if ( ! class_exists( 'LP_Email_Reset_Password' ) ) {
 		/**
 		 * Set data content
 		 */
-		protected function set_data_content( $params ): bool {
+		public function set_data_content( $params ): bool {
 			$user_login = $params['user_login'] ?? '';
 			$reset_key  = $params['reset_key'] ?? '';
 
