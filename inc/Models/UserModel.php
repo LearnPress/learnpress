@@ -73,6 +73,10 @@ class UserModel {
 		if ( $data ) {
 			$this->map_to_object( $data );
 		}
+
+		if ( is_null( $this->meta_data ) ) {
+			$this->meta_data = new stdClass();
+		}
 	}
 
 	/**
@@ -101,7 +105,7 @@ class UserModel {
 	 * @param LP_User_Filter $filter
 	 * @param bool $no_cache
 	 *
-	 * @return CourseModel|false|static
+	 * @return UserModel|false|static
 	 */
 	public static function get_user_model_from_db( LP_User_Filter $filter, bool $no_cache = true ) {
 		$lp_user_db = LP_User_DB::instance();
@@ -149,6 +153,8 @@ class UserModel {
 		if ( empty( $value ) ) {
 			$value = $default;
 		}
+
+		$this->meta_data->{$key} = $value;
 
 		return $value;
 	}

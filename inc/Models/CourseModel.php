@@ -96,6 +96,10 @@ class CourseModel {
 		if ( $data ) {
 			$this->map_to_object( $data );
 		}
+
+		if ( is_null( $this->meta_data ) ) {
+			$this->meta_data = new stdClass();
+		}
 	}
 
 	/**
@@ -336,13 +340,19 @@ class CourseModel {
 		return apply_filters( 'learnPress/course/is-free', $this->get_price() == 0, $this );
 	}
 
-	public function get_meta_value_by_key( string $key ) {
+	public function get_meta_value_by_key( string $key, $default = false ) {
 		if ( ! empty( $this->meta_data ) && isset( $this->meta_data->{$key} ) ) {
 			$value = $this->meta_data->{$key};
 		} else {
 			$coursePost = new CoursePostModel( $this );
 			$value      = $coursePost->get_meta_value_by_key( $key );
 		}
+
+		if ( empty( $value ) ) {
+			$value = $default;
+		}
+
+		$this->meta_data->{$key} = $value;
 
 		return $value;
 	}

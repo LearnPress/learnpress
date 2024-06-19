@@ -96,6 +96,10 @@ class PostModel {
 		if ( $data ) {
 			$this->map_to_object( $data );
 		}
+
+		if ( is_null( $this->meta_data ) ) {
+			$this->meta_data = new stdClass();
+		}
 	}
 
 	/**
@@ -259,6 +263,8 @@ class PostModel {
 		if ( empty( $value ) ) {
 			$value = $default;
 		}
+
+		$this->meta_data->{$key} = $value;
 
 		return $value;
 	}
