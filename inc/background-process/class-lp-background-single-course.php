@@ -20,7 +20,7 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 		protected $action = 'background_single_course';
 		protected static $instance;
 		/**
-		 * @var $lp_course LP_Course
+		 * @var $lp_course CourseModel
 		 */
 		protected $lp_course;
 		/**
@@ -43,13 +43,6 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 				}
 
 				$this->data = LP_Request::get_param( 'data', [], 'text', 'post' );
-				$this->save_data_to_table_courses( $course_id );
-
-				$this->lp_course = learn_press_get_course( $course_id );
-
-				if ( empty( $this->lp_course ) ) {
-					return;
-				}
 
 				switch ( $handle_name ) {
 					case 'save_post':
@@ -64,7 +57,7 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 		}
 
 		/**
-		 * Save course post data
+		 * Save course via post data
 		 *
 		 * @throws Exception
 		 */
@@ -72,6 +65,17 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 			if ( ! current_user_can( 'edit_lp_courses' ) ) {
 				error_log( 'Not permission save background course' );
 			}
+
+			$post_obj_str = LP_Request::get_param( 'post_obj', [], 'text', 'post' );
+			$is_update    = LP_Request::get_param( 'update', [], 'int', 'post' );
+			if ( empty( $post_obj_str ) ) {
+				return;
+			}
+
+			$post_obj        = LP_Helper::json_decode( $post_obj_str );
+			$this->lp_course = $this->save_data_to_table_courses( $post_obj, $is_update );
+
+			return;
 
 			$this->clean_data_invalid();
 			$this->save_price();
@@ -294,55 +298,71 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 		/**
 		 * Save all data course to table learnpress_courses
 		 *
-		 * @return void
+		 * @param stdClass $post_obj
+		 * @param bool $is_update Create new post is false, else update is true
+		 *
+		 * @return CourseModel|null
 		 * @throws Exception
 		 * @since 4.2.6.9
 		 * @version 1.0.0
 		 */
-		protected function save_data_to_table_courses( int $course_id ) {
-			if ( ! LP_Settings::is_created_tb_courses() ) {
-				return;
-			}
+		protected function save_data_to_table_courses( $post_obj, $is_update ) {
+			// Create/Update Course with data
+			$courseObj = new CourseModel( $post_obj );
+			// Get all meta key and map
+			$lp_meta_box_course = new LP_Meta_Box_Course();
+			$ground_fields      = $lp_meta_box_course->metabox( $post_obj->ID );
 
-			// Get all data course on table posts
-			$filter_post            = new LP_Post_Type_Filter();
-			$filter_post->ID        = $course_id;
-			$filter_post->post_type = LP_COURSE_CPT;
-			$post                   = PostModel::get_item_model_from_db( $filter_post );
+			// If is action is update post.
+			if ( $is_update ) {
+				$coursePost           = new CoursePostModel( $post_obj );
+				$courseObj->meta_data = $coursePost->get_all_metadata();
 
-			if ( ! empty( $post ) ) {
-				// Create new Course with data
-				$courseObj = new CourseModel( $post );
-				$courseObj->get_image_url();
-				$courseObj->get_categories();
-				$courseObj->get_author_model();
-				// Get all meta key and map
-				$lp_meta_box_course   = new LP_Meta_Box_Course();
-				$ground_fields        = $lp_meta_box_course->metabox( $course_id );
-				$courseObj->meta_data = new stdClass();
-				foreach ( $ground_fields as $fields ) {
-					if ( ! isset( $fields['content'] ) ) {
-						continue;
-					}
-					foreach ( $fields['content'] as $meta_key => $option ) {
-						if ( isset( $this->data[ $meta_key ] ) ) {
-							switch ( $meta_key ) {
-								case CoursePostModel::META_KEY_DURATION:
-									if ( is_array( $this->data[ $meta_key ] ) ) {
-										$this->data[ $meta_key ] = sprintf( '%s %s', $this->data[ $meta_key ][0], $this->data[ $meta_key ][1] );
-									}
-									break;
-							}
-
-							$courseObj->meta_data->{$meta_key} = $this->data[ $meta_key ];
-						}
-					}
-
+				// Get from table learnpress_courses
+				$filter_course     = new LP_Course_JSON_Filter();
+				$filter_course->ID = $coursePost->ID;
+				$courseModel       = CourseModel::get_item_model_from_db( $filter_course );
+				// Merge meta data
+				if ( ! empty( $courseModel ) ) {
+					$courseModelMeta      = json_decode( $courseModel->json );
+					$courseObj->meta_data = (object) array_merge(
+						(array) $courseObj->meta_data,
+						(array) $courseModelMeta->meta_data
+					);
 				}
-				$courseObj->price_to_sort = $courseObj->get_price();
-				// End get all meta key and map
-				$courseObj->save();
 			}
+
+			foreach ( $ground_fields as $fields ) {
+				if ( ! isset( $fields['content'] ) ) {
+					continue;
+				}
+				foreach ( $fields['content'] as $meta_key => $option ) {
+					if ( isset( $this->data[ $meta_key ] ) ) {
+						switch ( $meta_key ) {
+							case CoursePostModel::META_KEY_DURATION:
+								if ( is_array( $this->data[ $meta_key ] ) ) {
+									$this->data[ $meta_key ] = sprintf( '%s %s', $this->data[ $meta_key ][0], $this->data[ $meta_key ][1] );
+								}
+								break;
+							default:
+								break;
+						}
+
+						$courseObj->meta_data->{$meta_key} = $this->data[ $meta_key ];
+					} elseif ( ! $is_update ) {
+						$courseObj->meta_data->{$meta_key} = $option->default ?? '';
+					}
+				}
+			}
+
+			$courseObj->get_image_url();
+			$courseObj->get_categories();
+			$courseObj->get_author_model();
+			$courseObj->price_to_sort = $courseObj->get_price();
+			// End get all meta key and map
+			$courseObj->save();
+
+			return $courseObj;
 		}
 
 		/**

@@ -477,6 +477,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 	}
 
 	public function save( $post_id ) {
+		return;
 		if ( ! empty( $this->metabox( $post_id ) ) ) {
 			foreach ( $this->metabox( $post_id ) as $key => $tab_content ) {
 				if ( isset( $tab_content['content'] ) ) {
@@ -547,113 +548,6 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 		}
 
 		return $a['priority'] < $b['priority'] ? - 1 : 1;
-	}
-
-	/**
-	 * In child theme use metabox in v3,
-	 * so need use for child theme.
-	 * function in child: thim_add_course_meta.
-	 *
-	 * @return void
-	 */
-	public static function eduma_child_metabox_v3( $meta_boxes ) {
-		if ( ! empty( $meta_boxes['fields'] ) ) {
-			foreach ( $meta_boxes['fields'] as $setting ) {
-				$field = wp_parse_args(
-					$setting,
-					array(
-						'id'   => '',
-						'name' => '',
-						'desc' => '',
-						'std'  => '',
-					)
-				);
-
-				switch ( $field['type'] ) {
-					case 'text':
-					case 'number':
-						lp_meta_box_text_input_field(
-							array(
-								'id'                => $field['id'],
-								'label'             => isset( $field['label'] ) ? $field['label'] : $field['name'],
-								'description'       => isset( $field['description'] ) ? $field['description'] : $field['desc'],
-								'type'              => $field['type'],
-								'default'           => isset( $field['default'] ) ? $field['default'] : $field['std'],
-								'custom_attributes' => isset( $field['custom_attributes'] ) ? $field['custom_attributes'] : '',
-							)
-						);
-						break;
-
-					case 'textarea':
-						lp_meta_box_textarea_field(
-							array(
-								'id'                => $field['id'],
-								'label'             => isset( $field['label'] ) ? $field['label'] : $field['name'],
-								'description'       => isset( $field['description'] ) ? $field['description'] : $field['desc'],
-								'default'           => isset( $field['default'] ) ? $field['default'] : $field['std'],
-								'custom_attributes' => isset( $field['custom_attributes'] ) ? $field['custom_attributes'] : '',
-							)
-						);
-						break;
-
-					case 'checkbox':
-						lp_meta_box_checkbox_field(
-							array(
-								'id'          => $field['id'],
-								'label'       => isset( $field['label'] ) ? $field['label'] : $field['name'],
-								'description' => isset( $field['description'] ) ? $field['description'] : $field['desc'],
-								'default'     => isset( $field['default'] ) ? $field['default'] : $field['std'],
-							)
-						);
-						break;
-
-					case 'duration':
-						lp_meta_box_duration_field(
-							array(
-								'id'                => $field['id'],
-								'label'             => isset( $field['label'] ) ? $field['label'] : $field['name'],
-								'default_time'      => $field['default_time'],
-								'default'           => isset( $field['default'] ) ? $field['default'] : $field['std'],
-								'description'       => isset( $field['description'] ) ? $field['description'] : $field['desc'],
-								'default'           => isset( $field['default'] ) ? $field['default'] : $field['std'],
-								'custom_attributes' => isset( $field['custom_attributes'] ) ? $field['custom_attributes'] : '',
-							)
-						);
-						break;
-
-					case 'select':
-						lp_meta_box_select_field(
-							array(
-								'id'                => $field['id'],
-								'label'             => isset( $field['label'] ) ? $field['label'] : $field['name'],
-								'default'           => isset( $field['default'] ) ? $field['default'] : $field['std'],
-								'description'       => isset( $field['description'] ) ? $field['description'] : $field['desc'],
-								'options'           => $field['options'],
-								'default'           => isset( $field['default'] ) ? $field['default'] : $field['std'],
-								'custom_attributes' => isset( $field['custom_attributes'] ) ? $field['custom_attributes'] : '',
-							)
-						);
-						break;
-
-					case 'select_advanced':
-						lp_meta_box_select_field(
-							array(
-								'id'                => $field['id'],
-								'label'             => isset( $field['label'] ) ? $field['label'] : $field['name'],
-								'default'           => isset( $field['default'] ) ? $field['default'] : $field['std'],
-								'description'       => isset( $field['description'] ) ? $field['description'] : $field['desc'],
-								'options'           => $field['options'],
-								'multiple'          => true,
-								'default'           => isset( $field['default'] ) ? $field['default'] : $field['std'],
-								'wrapper_class'     => 'lp-select-2',
-								'style'             => 'min-width: 200px',
-								'custom_attributes' => isset( $field['custom_attributes'] ) ? $field['custom_attributes'] : '',
-							)
-						);
-						break;
-				}
-			}
-		}
 	}
 
 	public static function save_eduma_child_metabox_v3( $post_id ) {

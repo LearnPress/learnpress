@@ -74,6 +74,7 @@ abstract class LP_Abstract_Post_Type {
 		}
 		add_action( 'init', array( $this, '_do_register' ) );
 		add_action( 'save_post', array( $this, '_do_save_post' ), 10, 2 );
+		add_action( 'wp_after_insert_post', [ $this, 'wp_after_insert_post' ], 10, 3 );
 		add_action( 'before_delete_post', array( $this, '_before_delete_post' ) );
 		add_action( 'deleted_post', array( $this, '_deleted_post' ) );
 		add_action( 'wp_trash_post', array( $this, '_before_trash_post' ) );
@@ -199,6 +200,36 @@ abstract class LP_Abstract_Post_Type {
 	 * @docs Class post type extend need override this function if want to handle when save
 	 */
 	public function save( int $post_id, WP_Post $post ) {
+		// Implement from child
+	}
+
+	/**
+	 * Callback hook 'wp_after_insert_post'
+	 *
+	 * @param $post_id
+	 * @param $post
+	 * @param $update
+	 *
+	 * @return void
+	 * @since 4.2.6.9
+	 * @version 1.0.0
+	 */
+	final function wp_after_insert_post( $post_id, $post, $update ) {
+		if ( ! $this->check_post( $post_id ) ) {
+			return;
+		}
+
+		$this->after_insert_post( $post_id, $post, $update );
+	}
+
+	/**
+	 * Function for child class handle when post has just saved
+	 *
+	 * @param int $post_id
+	 * @param WP_Post|null $post
+	 * @param bool $update
+	 */
+	public function after_insert_post( int $post_id, WP_Post $post, bool $update ) {
 		// Implement from child
 	}
 

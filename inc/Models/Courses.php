@@ -66,9 +66,9 @@ class Courses {
 	 * @param array $param
 	 * @param LP_Course_Filter $filter
 	 *
-	 * @since 4.2.3.3 move from class LP_Course
-	 * @version 1.0.1
 	 * @return void
+	 * @version 1.0.1
+	 * @since 4.2.3.3 move from class LP_Course
 	 */
 	public static function handle_params_for_query_courses( LP_Course_Filter &$filter, array $param = [] ) {
 		$filter->page       = absint( $param['paged'] ?? 1 );

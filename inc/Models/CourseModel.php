@@ -62,7 +62,7 @@ class CourseModel {
 	/**
 	 * @var string JSON Store all data a single course
 	 */
-	private $json = null; // Only set when save, don't set when get
+	public $json = null; // Only set when save, don't set when get
 	/**
 	 * @var string lang of Course
 	 */
@@ -202,11 +202,7 @@ class CourseModel {
 
 		if ( $this->has_sale_price() ) {
 			$price = $this->get_sale_price();
-			// Add key _lp_course_is_sale for query - Todo: Check performance, need write function get all courses, and set on Admin, on background
-			//update_post_meta( $this->get_id(), '_lp_course_is_sale', 1 );
 		} else {
-			// Delete key _lp_course_is_sale
-			//delete_post_meta( $this->get_id(), '_lp_course_is_sale' );
 			$price = $this->get_regular_price();
 		}
 
@@ -374,7 +370,7 @@ class CourseModel {
 			$filter->only_fields = [ 'json', 'post_content' ];
 			$course_rs           = self::get_course_from_db( $filter );
 			if ( $course_rs instanceof stdClass && isset( $course_rs->json ) ) {
-				$course_obj                 = LP_Helper::json_decode( $course_rs->json, JSON_UNESCAPED_UNICODE );
+				$course_obj                 = LP_Helper::json_decode( $course_rs->json );
 				$course_model               = new static( $course_obj );
 				$course_model->json         = $course_rs->json;
 				$course_model->post_content = $course_rs->post_content;

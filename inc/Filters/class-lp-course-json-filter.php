@@ -57,7 +57,7 @@ class LP_Course_JSON_Filter extends LP_Filter {
 	/**
 	 * @var string[]
 	 */
-	public $post_status = array( 'publish' );
+	public $post_status = [];
 	/**
 	 * @var int
 	 */
@@ -65,19 +65,19 @@ class LP_Course_JSON_Filter extends LP_Filter {
 	/**
 	 * @var int[]
 	 */
-	public $post_authors = array();
+	public $post_authors = [];
 	/**
 	 * @var array
 	 */
-	public $term_ids = array();
+	public $term_ids = [];
 	/**
 	 * @var array
 	 */
-	public $tag_ids = array();
+	public $tag_ids = [];
 	/**
 	 * @var array
 	 */
-	public $post_ids = array();
+	public $ids = [];
 	/**
 	 * @var string
 	 */

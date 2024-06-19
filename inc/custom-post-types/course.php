@@ -499,13 +499,13 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 *
 		 * @param int $post_id
 		 * @param WP_Post $post
+		 * @param bool $update
 		 *
-		 * @since 4.0.9
+		 * @since 4.2.6.9
 		 * @version 1.0.0
-		 * @editor tungnx
 		 * @see LP_Background_Single_Course::handle()
 		 */
-		public function save( int $post_id = 0, WP_Post $post = null ) {
+		public function after_insert_post( int $post_id, WP_Post $post, bool $update ) {
 			// Save in background.
 			$bg = LP_Background_Single_Course::instance();
 
@@ -513,6 +513,8 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				array(
 					'handle_name' => 'save_post',
 					'course_id'   => $post_id,
+					'post_obj'    => json_encode( $post, JSON_UNESCAPED_UNICODE ),
+					'update'      => $update,
 					'data'        => $_POST ?? array(),
 				)
 			)->dispatch();
