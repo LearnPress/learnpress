@@ -5,6 +5,13 @@
 @import "frontend/course-filter";
 @import "ajaxload";
 
+// fix for theme divi on page instructor
+@media(min-width: 1024px){
+	body.theme-divi{
+		--lp-cotainer-padding:0;
+	}
+}
+
 .learnpress.widget {
 	margin-bottom: 30px;
 	@media (max-width: 420px) {

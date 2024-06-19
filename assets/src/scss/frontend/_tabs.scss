@@ -141,7 +141,7 @@
 		margin: 0;
 		font-size: 1em;
 		line-height: 1.5rem;
-
+		white-space: nowrap;
 		@media (max-width: 767px) {
 			margin-right: 24px;
 			margin-left: 0;
@@ -201,7 +201,7 @@
 		}
 
 		&::after {
-			margin: 0 35px;
+			margin: 0 25px;
 			color: #ccc;
 			content: "|";
 

@@ -43,6 +43,7 @@
 		}
 	}
 }
+
 .course-item-nav {
 	display: flex;
 
@@ -64,6 +65,7 @@
 		text-align: right;
 	}
 }
+
 #popup-course {
 	display: flex;
 	position: fixed;
@@ -105,13 +107,17 @@
 		align-items: center;
 		padding-left: 15px;
 		padding-right: 15px;
-
+		column-gap: 10px;
 		@media (max-width: 1024px) {
 			width: 100%;
 		}
 
 		@media (max-width: 767px) {
 			flex-direction: column;
+			gap: 5px;
+			&.can-finish-course .items-progress{
+				display: none;
+			}
 		}
 	}
 
@@ -249,7 +255,7 @@
 	padding: 0;
 	border-bottom: 1px solid #d9e0f1;
 	background: var(--lp-secondary-color);
-
+	align-items: center;
 	@include transition(left 0.25s);
 
 	.course-title {
@@ -284,6 +290,7 @@
 		justify-content: center;
 		align-items: center;
 		column-gap: 10px;
+		white-space: nowrap;
 		//@media (max-width: 768px) {
 		//	flex: 1;
 		//}
@@ -305,16 +312,13 @@
 	.lp-button {
 		display: flex;
 		position: relative;
-		height: 40px;
-		margin: 9px;
+		height: auto;
 		border: none;
 		color: #fff;
 		background: var(--lp-primary-color);
-		//font-size: 0.8em;
-		//font-weight: 400;
-		justify-content: center;
-		line-height: 2.5em;
-		align-items: center;
+		white-space: nowrap;
+		padding: 6px 15px;
+		font-size: 1rem;
 
 		&:hover {
 			opacity: 0.8;
@@ -375,7 +379,7 @@
 
 			&:focus {
 				outline: 0;
- 			}
+			}
 		}
 
 		button {
@@ -621,7 +625,8 @@
 		padding: 20px 16px;
 		cursor: pointer;
 		background-color: $bg-color-lesson;
- 		.section-title {
+
+		.section-title {
 			//color: #000;
 			//font-size: 1.25em;
 			//font-weight: 500;
@@ -655,10 +660,12 @@
 	.section-content {
 		margin-bottom: 0;
 	}
-	.curriculum-more{
+
+	.curriculum-more {
 		padding-right: $spacing-base-4x;
 		padding-left: $spacing-base-4x;
 	}
+
 	.course-item {
 		//min-height: 50px;
 		//margin-bottom: 4px;
@@ -747,7 +754,7 @@
 
 	.lp-button {
 		position: relative;
-		margin: 0 10px 0 0;
+		margin: 0;
 		padding: 8px 25px;
 		border-color: var(--lp-secondary-color);
 		//font-size: 0.8em;
@@ -774,9 +781,14 @@
 					margin-top: 3px;
 					padding: 11px 20px;
 					border-radius: 3px;
+					color: #333;
 					background: #eee;
 					white-space: nowrap;
 					text-transform: none;
+					@media (max-width: 600px) {
+						white-space: normal;
+						width: 90vw;
+					}
 				}
 			}
 
@@ -784,15 +796,15 @@
 
 				.instant-check__info {
 					visibility: visible;
-					position: absolute;
-					top: 100%;
-					left: 0;
-					margin-top: 3px;
-					padding: 11px 11px;
-					border-radius: 3px;
-					color: #333;
-					background: #eee;
-					white-space: nowrap;
+					//position: absolute;
+					//top: 100%;
+					//left: 0;
+					//margin-top: 3px;
+					//padding: 11px 11px;
+					//border-radius: 3px;
+					//color: #333;
+					//background: #eee;
+					//white-space: nowrap;
 				}
 			}
 
@@ -821,12 +833,13 @@
 		&.completed {
 			display: flex;
 			flex-direction: row-reverse;
-			margin-top: 32px;
+			//margin-top: 32px;
 			border-color: transparent;
 			color: #fff;
 			background: #3db748;
 			align-items: center;
 			justify-content: center;
+			float: left;
 
 			i {
 				margin-left: 9px;
@@ -977,7 +990,7 @@
 	//left: 475px;
 	width: 32px;
 	min-width: 32px;
- 	line-height: $popup_header_height;
+	line-height: $popup_header_height;
 	height: unset;
 	margin: 0;
 	background: rgba(255, 255, 255, 0.1);
@@ -1067,19 +1080,34 @@ body {
 	}
 }
 
+@media screen and (max-width: 480px) {
+	#popup-header, #popup-footer {
+		width: 100%;
+		// fix theme eduma, coaching...
+		.learnpress-v4 &, .lp-4 & {
+			width: auto;
+		}
+	}
+	// fix theme starkid
+	.learnpress-v4.starkid {
+		#popup-header, #popup-footer {
+			width: 100%;
+		}
+	}
+	#popup-content {
+		min-width: 100vw;
+	}
+}
+
 .course-curriculum {
-
 	.section-header {
-
 		.section-meta {
 			position: relative;
 		}
-
 	}
 }
 
 @media screen and (max-width: 1280px) {
-
 	#popup-sidebar {
 		flex-basis: 300px;
 
@@ -1147,7 +1175,7 @@ body {
 	.course-item-title {
 		margin-top: 0;
 		margin-bottom: 24px;
- 		font-size: $font-size-h1;
+		font-size: $font-size-h1;
 		font-weight: $heading-font-weight;
 
 		@media (max-width: 767px) {
@@ -1157,13 +1185,21 @@ body {
 
 	.content-item-summary {
 		padding-top: 50px;
+
+		&:after {
+			clear: both;
+			content: "";
+			display: block;
+		}
 	}
 
 	.content-item-description {
 		margin-bottom: 30px;
-		.wp-video,.mejs-container{
+
+		.wp-video, .mejs-container {
 			margin-bottom: 15px;
 		}
+
 		h2, h3, h4, h5, h6 {
 			margin-top: 10px;
 			margin-bottom: 15px;
@@ -1208,6 +1244,7 @@ body {
 		display: flex;
 		justify-content: center;
 		text-align: center;
+		gap: 10px;
 
 		.button-right {
 
@@ -1351,6 +1388,19 @@ body {
 				&.current,
 				&:hover {
 					color: var(--lp-primary-color);
+				}
+
+			}
+
+			@media (max-width: 575px) {
+				margin-top: 10px;
+				.page-numbers {
+					padding: 0 10px;
+
+					&.next,
+					&.prev {
+						padding: 5px;
+					}
 				}
 			}
 		}

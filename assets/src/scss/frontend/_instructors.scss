@@ -40,7 +40,7 @@ body {
 		display: grid;
 		grid-template-columns: repeat( auto-fill, minmax(var(--lp-instructor-minmax-column), 1fr) );
 		gap: 30px;
-		padding: 0;
+		padding: 0!important;
 		margin: 0 0 30px 0;
 		list-style: none;
 
@@ -55,7 +55,7 @@ body {
 		li.item-instructor {
 			border: 1px solid var(--lp-instructor-border-color);
 			padding: var(--lp-instructor-item-padding);
-
+			list-style: none;
 			.instructor-display-name {
 				display: block;
 				text-align: center;

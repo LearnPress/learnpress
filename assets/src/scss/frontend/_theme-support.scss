@@ -40,13 +40,15 @@
 	}
 }
 
-.learnpress {
+.learnpress,.learnpress-profile {
 	#left-area ul, .entry-content ul, .et-l--body ul, .et-l--footer ul, .et-l--header ul {
 		padding: 0 !important;
 		list-style: none !important;
 	}
 }
-
+//body.theme-divi{
+//	--lp-cotainer-padding:0;
+//}
 // Theme Avada
 
 
