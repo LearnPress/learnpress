@@ -14,10 +14,11 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 		 * @param string $id
 		 * @param string $label
 		 * @param string $description
-		 * @param mixed  $default
-		 * @param array  $extra
+		 * @param mixed $default
+		 * @param array $extra
 		 */
 		private static $instance = null;
+
 		public function __construct( $label = '', $description = '', $default = '', $extra = array() ) {
 			parent::__construct( $label, $description, $default, $extra );
 			// delete materials in post when post is deleted
@@ -56,17 +57,27 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 					<?php endif ?>
 				<?php else : ?>
 					<div>
-						<?php esc_html_e( '+ Maximum amount of files you can upload more: ', 'learnpress' ); ?>
-						<span id="available-to-upload"><?php esc_html_e( $can_upload ); ?></span>
-						<?php esc_html_e( ' files ( maximum file size is ' . $max_file_size . 'MB ).', 'learnpress' ); ?>
+						<?php
+						echo '+ ';
+						echo sprintf(
+							__( 'Maximum amount of files you can upload more: %d files (maximum file size is %s MB)', 'learnpress' ),
+							$can_upload,
+							$max_file_size
+						);
+						?>
 					</div>
 					<div>
-						<?php esc_html_e( '+ And allow upload only these types: ' . $accept_file_type . '.', 'learnpress' ); ?>
+						<?php
+						echo '+ ';
+						echo sprintf( __( 'And allow upload only these types: %s.', 'learnpress' ), $accept_file_type );
+						?>
 					</div>
 					<hr>
 					<div class="lp-material-btn-wrap">
 						<button class="button button-primary" id="btn-lp--add-material" type="button"
-								can-upload="<?php esc_attr_e( $can_upload ); ?>"><?php esc_html_e( 'Add Course Materials', 'learnpress' ); ?></button>
+								can-upload="<?php esc_attr_e( $can_upload ); ?>">
+							<?php esc_html_e( 'Add Course Materials', 'learnpress' ); ?>
+						</button>
 						<button class="button button-primary" id="btn-lp--save-material"
 								type="button"><?php esc_html_e( 'Save', 'learnpress' ); ?></button>
 					</div>
@@ -196,5 +207,6 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 			return self::$instance;
 		}
 	}
+
 	LP_Meta_Box_Material_Fields::instance();
 }
