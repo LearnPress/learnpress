@@ -166,6 +166,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 					ID bigint(20) unsigned NOT NULL,
 					json LONGTEXT NOT NULL,
 					price_to_sort FLOAT,
+					is_sale int(1) default 0,
 					post_author bigint unsigned,
 					post_date_gmt datetime,
 					post_content LONGTEXT,

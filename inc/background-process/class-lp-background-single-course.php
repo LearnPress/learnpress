@@ -78,7 +78,6 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 			return;
 
 			$this->clean_data_invalid();
-			$this->save_price();
 			$this->save_extra_info();
 			$this->review_post_author();
 
@@ -120,7 +119,7 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 		 *
 		 * @return void
 		 */
-		protected function save_price() {
+		protected function save_price_old() {
 			if ( ! isset( $this->data['_lp_regular_price'] ) ) {
 				return;
 			}
@@ -163,6 +162,37 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 				update_post_meta( $this->lp_course->get_id(), '_lp_course_is_sale', 1 );
 			} else {
 				delete_post_meta( $this->lp_course->get_id(), '_lp_course_is_sale' );
+			}
+		}
+
+		/**
+		 * Save price course
+		 *
+		 * @return void
+		 */
+		protected function save_price( CourseModel $courseObj ) {
+			$coursePost = new CoursePostModel( $courseObj );
+
+			$regular_price = (float) $courseObj->meta_data->{CoursePostModel::META_KEY_REGULAR_PRICE};
+			$sale_price = $courseObj->meta_data->{CoursePostModel::META_KEY_SALE_PRICE};
+			if ( $courseObj->get_regular_price() < 0 ) {
+				$courseObj->meta_data->{CoursePostModel::META_KEY_REGULAR_PRICE} = 0;
+			}
+
+			if ( $courseObj->get_sale_price() > $courseObj->get_regular_price() ) {
+				$courseObj->meta_data->{CoursePostModel::META_KEY_SALE_PRICE} = 0;
+			}
+
+			// Save sale regular price and sale price to postmeta
+
+
+			$has_sale = $courseObj->has_sale_price();
+			if ( $has_sale ) {
+				$courseObj->is_sale = 1;
+				$coursePost->save_meta_value_by_key( CoursePostModel::META_KEY_IS_SALE, 1 );
+			} else {
+				$courseObj->is_sale = 0;
+				delete_post_meta( $courseObj->get_id(), CoursePostModel::META_KEY_IS_SALE );
 			}
 		}
 
@@ -308,7 +338,8 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 		 */
 		protected function save_data_to_table_courses( $post_obj, $is_update ) {
 			// Create/Update Course with data
-			$courseObj = new CourseModel( $post_obj );
+			$courseObj  = new CourseModel( $post_obj );
+			$coursePost = new CoursePostModel( $post_obj );
 			// Get all meta key and map
 			$lp_meta_box_course = new LP_Meta_Box_Course();
 			$ground_fields      = $lp_meta_box_course->metabox( $post_obj->ID );
@@ -333,6 +364,7 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 				}
 			}
 
+			// Save meta fields
 			foreach ( $ground_fields as $fields ) {
 				if ( ! isset( $fields['content'] ) ) {
 					continue;
@@ -350,12 +382,21 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 						}
 
 						$courseObj->meta_data->{$meta_key} = $this->data[ $meta_key ];
+						//Todo: save all meta key, after when optimize, not call direct key via get_post_meta, will remove
+						// Only save with key need to query list
+						// @since 4.2.6.9
+						$coursePost->save_meta_value_by_key( $meta_key, $courseObj->meta_data->{$meta_key} );
 					} elseif ( ! $is_update ) {
 						$courseObj->meta_data->{$meta_key} = $option->default ?? '';
+						//Todo: save all meta key, after when optimize, not call direct key via get_post_meta, will remove
+						// Only save with key need to query list
+						// @since 4.2.6.9
+						$coursePost->save_meta_value_by_key( $meta_key, $courseObj->meta_data->{$meta_key} );
 					}
 				}
 			}
 
+			$this->save_price( $courseObj );
 			$courseObj->get_image_url();
 			$courseObj->get_categories();
 			$courseObj->get_author_model();

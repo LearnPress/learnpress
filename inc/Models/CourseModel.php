@@ -59,6 +59,7 @@ class CourseModel {
 	 * Because price can change by date if set schedule sale
 	 */
 	public $price_to_sort = 0;
+	public $is_sale = 0;
 	/**
 	 * @var string JSON Store all data a single course
 	 */
@@ -79,8 +80,6 @@ class CourseModel {
 	public $image_url = '';
 	public $categories = [];
 	private $price = 0; // Not save in database, must auto reload calculate
-	private $regular_price = 0;
-	private $sale_price = '';
 	private $sale_start = '';
 	private $sale_end = '';
 	private $passing_condition = '';
@@ -216,53 +215,40 @@ class CourseModel {
 	 * Check has data on table learnpress_courses return
 	 * if not check get from Post
 	 *
-	 * @return float
+	 * @return float|string
 	 */
 	public function get_regular_price(): float {
-		if ( ! empty( $this->regular_price ) ) {
-			return $this->regular_price;
-		}
-
 		$key = CoursePostModel::META_KEY_REGULAR_PRICE;
 		if ( $this->meta_data && isset( $this->meta_data->{$key} ) ) {
-			$regular_price = $this->meta_data->{$key};
-		} else {
-			$coursePost    = new CoursePostModel( $this );
-			$regular_price = $coursePost->get_regular_price();
+			return (float) $this->meta_data->{$key};
 		}
 
-		$this->regular_price = (float) $regular_price;
+		$coursePost              = new CoursePostModel( $this );
+		$this->meta_data->{$key} = $coursePost->get_regular_price();
 
-		return $this->regular_price;
+		return (float) $this->meta_data->{$key};
 	}
 
 	/**
-	 * Get regular price
+	 * Get sale price
+	 * Sale price can is string empty if not set
+	 * Sale price set if is number >= 0
 	 * Check has data on table learnpress_courses return
 	 * if not check get from Post
 	 *
 	 * @return float|string
 	 */
 	public function get_sale_price() {
-		if ( $this->sale_price !== '' ) {
-			return $this->sale_price;
-		}
-
 		$key = CoursePostModel::META_KEY_SALE_PRICE;
 		if ( $this->meta_data && isset( $this->meta_data->{$key} ) ) {
-			$sale_price = $this->meta_data->{$key};
-
-			if ( '' !== $sale_price ) {
-				$sale_price = floatval( $sale_price );
-			}
-		} else {
-			$coursePost = new CoursePostModel( $this );
-			$sale_price = $coursePost->get_sale_price();
+			return $this->meta_data->{$key};
 		}
 
-		$this->sale_price = $sale_price;
+		$coursePost              = new CoursePostModel( $this );
+		$sale_price              = $coursePost->get_sale_price();
+		$this->meta_data->{$key} = (float) $sale_price;
 
-		return $this->sale_price;
+		return $this->meta_data->{$key};
 	}
 
 	/**

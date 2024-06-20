@@ -48,6 +48,7 @@ class CoursePostModel extends PostModel {
 	const META_KEY_FEATURED = '_lp_featured';
 	const META_KEY_FEATURED_REVIEW = '_lp_featured_review';
 	const META_KEY_EXTERNAL_LINK_BY_COURSE = '_lp_external_link_buy_course';
+	const META_KEY_IS_SALE = '_lp_course_is_sale';
 
 	/**
 	 * Get the price of course.
@@ -61,11 +62,7 @@ class CoursePostModel extends PostModel {
 		if ( false === $price ) {
 			if ( $this->has_sale_price() ) {
 				$price = $this->get_sale_price();
-				// Add key _lp_course_is_sale for query - Todo: Check performance, need write function get all courses, and set on Admin, on background
-				//update_post_meta( $this->get_id(), '_lp_course_is_sale', 1 );
 			} else {
-				// Delete key _lp_course_is_sale
-				//delete_post_meta( $this->get_id(), '_lp_course_is_sale' );
 				$price = $this->get_regular_price();
 			}
 

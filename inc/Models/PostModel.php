@@ -275,6 +275,18 @@ class PostModel {
 	}
 
 	/**
+	 * Get meta value by key.
+	 *
+	 * @param string $key
+	 * @param mixed $value
+	 *
+	 * @return void
+	 */
+	public function save_meta_value_by_key( string $key, $value ) {
+		update_post_meta( $this->ID, $key, $value );
+	}
+
+	/**
 	 * Get categories of course.
 	 *
 	 * @return array|WP_Term[]
