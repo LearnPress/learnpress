@@ -243,18 +243,22 @@ abstract class LP_Abstract_Post_Type {
 	 * @since modify 4.0.9
 	 */
 	final function _before_delete_post( int $post_id ) {
-		// Todo: check is pages of LP
-		if ( 'page' === get_post_type( $post_id ) ) {
-			// Clear cache LP settings
-			$lp_settings_cache = new LP_Settings_Cache( true );
-			$lp_settings_cache->clean_lp_settings();
-		}
+		try {
+			// Todo: check is pages of LP
+			if ( 'page' === get_post_type( $post_id ) ) {
+				// Clear cache LP settings
+				$lp_settings_cache = new LP_Settings_Cache( true );
+				$lp_settings_cache->clean_lp_settings();
+			}
 
-		if ( ! $this->check_post( $post_id ) ) {
-			return;
-		}
+			if ( ! $this->check_post( $post_id ) ) {
+				return;
+			}
 
-		$this->before_delete( $post_id );
+			$this->before_delete( $post_id );
+		} catch ( Throwable $e ) {
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
+		}
 	}
 
 	/**
@@ -671,7 +675,10 @@ abstract class LP_Abstract_Post_Type {
 	public function _check_post(): bool {
 		global $pagenow, $post_type;
 
-		if ( ! is_admin() || ( ! in_array( $pagenow, array( 'edit.php', 'post.php' ) ) ) || ( $this->_post_type != $post_type ) ) {
+		if ( ! is_admin() || ( ! in_array( $pagenow, array(
+				'edit.php',
+				'post.php'
+			) ) ) || ( $this->_post_type != $post_type ) ) {
 			return false;
 		}
 
@@ -703,7 +710,7 @@ abstract class LP_Abstract_Post_Type {
 			}
 
 			if ( ! current_user_can( ADMIN_ROLE ) &&
-				get_current_user_id() !== (int) $post->post_author ) {
+				 get_current_user_id() !== (int) $post->post_author ) {
 				$can_save = false;
 			}
 
@@ -926,7 +933,8 @@ abstract class LP_Abstract_Post_Type {
 	 * Show actions on list post
 	 *
 	 * @param string[] $actions
-	 * @param WP_Post  $post
+	 * @param WP_Post $post
+	 *
 	 * @return array|false|mixed
 	 */
 	public function _post_row_actions( $actions, $post ) {
@@ -995,7 +1003,7 @@ abstract class LP_Abstract_Post_Type {
 
 			$preview_permalink = learn_press_get_preview_url( $post->ID );
 
-			$preview_link                       = sprintf( ' <a target="_blank" href="%s">%s</a>', esc_url_raw( $preview_permalink ), sprintf( '%s %s', __( 'Preview', 'learnpress' ), $post_type_object->labels->singular_name ) );
+			$preview_link                      = sprintf( ' <a target="_blank" href="%s">%s</a>', esc_url_raw( $preview_permalink ), sprintf( '%s %s', __( 'Preview', 'learnpress' ), $post_type_object->labels->singular_name ) );
 			$messages[ $this->_post_type ][8]  .= $preview_link;
 			$messages[ $this->_post_type ][10] .= $preview_link;
 		}

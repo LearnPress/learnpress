@@ -430,4 +430,17 @@ class CourseModel {
 
 		return $this;
 	}
+
+	/**
+	 * Delete row
+	 *
+	 * @throws Exception
+	 */
+	public function delete() {
+		$lp_course_json_db  = LP_Course_JSON_DB::getInstance();
+		$filter             = new LP_Course_JSON_Filter();
+		$filter->where[]    = $lp_course_json_db->wpdb->prepare( "AND ID = %d", $this->ID );
+		$filter->collection = $lp_course_json_db->tb_lp_courses;
+		$lp_course_json_db->delete_execute( $filter );
+	}
 }

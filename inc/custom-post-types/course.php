@@ -7,6 +7,8 @@
  * @version 3.0.0
  */
 
+use LearnPress\Models\CourseModel;
+
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
@@ -165,14 +167,18 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 *
 		 * @param int $post_id
 		 *
+		 * @throws Exception
+		 * @since modify 4.0.9
 		 * @since 3.0.0
 		 * @editor tungnx
-		 * @since modify 4.0.9
 		 */
 		public function before_delete( int $post_id ) {
-			// course curd
-			// $curd = new LP_Course_CURD();
-			// $curd->remove_course( $post_id );
+			// Delete course from table learnpress_courses
+			$filter = new LP_Course_JSON_Filter();
+			$filter->ID = $post_id;
+			$courseModel = CourseModel::get_item_model_from_db( $filter );
+			$courseModel->delete();
+
 			$course = learn_press_get_course( $post_id );
 			if ( ! $course ) {
 				return;

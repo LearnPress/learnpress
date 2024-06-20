@@ -315,6 +315,7 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 
 			// If is action is update post.
 			if ( $is_update ) {
+				// Get meta from table postmeta
 				$coursePost           = new CoursePostModel( $post_obj );
 				$courseObj->meta_data = $coursePost->get_all_metadata();
 
