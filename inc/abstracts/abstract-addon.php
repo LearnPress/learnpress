@@ -175,6 +175,7 @@ class LP_Addon {
 	 */
 	public function get_plugin_slug() {
 		_deprecated_function( __METHOD__, '4.2.0' );
+
 		return $this->plugin_base;
 	}
 
@@ -263,7 +264,16 @@ class LP_Addon {
 	public function admin_notice_require_addon_version() {
 		?>
 		<div class="notice notice-error">
-			<p><?php echo( '<strong>LearnPress version ' . LEARNPRESS_VERSION . ' require ' . $this->get_name() . '</strong> version ' . $this->lp_require_addon_version . ' or higher' ); ?></p>
+			<p>
+				<?php
+				printf(
+					wp_kses_post( __( '<strong>LearnPress version %s require %s</strong> version %s or higher', 'learnpress' ) ),
+					esc_html( LEARNPRESS_VERSION ),
+					esc_html( $this->get_name() ),
+					esc_html( $this->lp_require_addon_version )
+				);
+				?>
+			</p>
 		</div>
 		<?php
 	}
@@ -277,10 +287,10 @@ class LP_Addon {
 			<p>
 				<?php
 				printf(
-					__(
+					wp_kses_post( __(
 						'<strong>%1$s</strong> add-on version %2$s requires <strong>LearnPress</strong> version %3$s or higher %4$s',
 						'learnpress'
-					),
+					) ),
 					esc_html( $this->get_name() ),
 					esc_html( $this->version ),
 					esc_html( $this->require_version ),
@@ -469,7 +479,8 @@ class LP_Addon {
 	 * Get content template of addon.
 	 *
 	 * @param string $template_name
-	 * @param mixed  $args
+	 * @param mixed $args
+	 *
 	 * @since 4.2.1
 	 * @version 1.0.1
 	 */
@@ -491,6 +502,7 @@ class LP_Addon {
 	 */
 	public function locate_template( $template_name ) {
 		_deprecated_function( __FUNCTION__, '4.2.0', 'LP_Addon::get_template' );
+
 		return learn_press_locate_template(
 			$template_name,
 			$this->get_template_path(),
@@ -502,7 +514,7 @@ class LP_Addon {
 	 * Output content of admin view file.
 	 *
 	 * @param string $view
-	 * @param array  $args
+	 * @param array $args
 	 *
 	 * @since x.x.x
 	 */
@@ -515,7 +527,7 @@ class LP_Addon {
 	 * Get content of admin view file.
 	 *
 	 * @param string $view
-	 * @param array  $args
+	 * @param array $args
 	 *
 	 * @return string
 	 * @since x.x.x
