@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Class LP_Forms_Handler
  *
@@ -234,6 +235,11 @@ class LP_Forms_Handler {
 	 */
 	public static function learnpress_create_new_customer( $email = '', $username = '', $password = '', $confirm_password = '', $args = array(), $update_meta = array() ) {
 		try {
+			$user_can_register = get_option( 'users_can_register' );
+			if ( ! $user_can_register ) {
+				throw new Exception( __( 'System WordPress does not allow register.', 'learnpress' ), 110 );
+			}
+
 			if ( empty( $email ) || ! is_email( $email ) ) {
 				throw new Exception( __( 'Please provide a valid email address.', 'learnpress' ), 101 );
 			}
@@ -353,10 +359,14 @@ class LP_Forms_Handler {
 				case 109:
 					$code_str = 'registration-custom-required-field';
 					break;
+				case 110:
+					$code_str = 'registration-not-allow';
+					break;
 				default:
 					$code_str = $e->getMessage();
 					break;
 			}
+
 			return new WP_Error( $code_str, $e->getMessage() );
 		}
 
@@ -388,7 +398,7 @@ class LP_Forms_Handler {
 		$custom_fields = LP_Profile::get_register_fields_custom();
 		if ( $custom_fields && ! empty( $update_meta ) ) {
 			foreach ( $custom_fields as $field ) {
-				if ( $field['required'] !== 'yes') {
+				if ( $field['required'] !== 'yes' ) {
 					continue;
 				}
 
