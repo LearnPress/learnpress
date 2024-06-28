@@ -3,9 +3,9 @@ Contributors: thimpress, tungnx89, nhamdv, nguyenlammanh, tunnhn, phonglq.foobla
 Donate link:
 Tags: elearning, education, course, lms, learning management system
 Requires at least: 6.3
-Tested up to: 6.5.3
+Tested up to: 6.5.4
 Requires PHP: 7.0
-Stable tag: 4.2.6.8.1
+Stable tag: 4.2.6.8.2
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -209,6 +209,12 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.
 
 == Changelog ==
+
+= 4.2.6.8.2 (2024-06-28) =
+~ Added: function retrieve_password_message override message reset password.
+~ Fixed: security.
+~ Fixed: style login/register for Divi theme.
+~ Fixed: responsive curriculum.
 
 = 4.2.6.8.1 (2024-06-03) =
 ~ Fixed: security.
