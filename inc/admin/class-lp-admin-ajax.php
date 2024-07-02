@@ -625,6 +625,13 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				learn_press_send_json( $response );
 			}
 
+			// Check nonce
+			$nonce = LP_Request::get_param( 'nonce' );
+			if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
+				$response['message'] = 'Request invalid';
+				learn_press_send_json( $response );
+			}
+
 			$page_name  = LP_Helper::sanitize_params_submitted( $_POST['page_name'] );
 			$field_name = LP_Request::get_param( 'field_name' );
 
