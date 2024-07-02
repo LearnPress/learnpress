@@ -210,6 +210,9 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.2.6.8.3 (2024-07-03) =
+~ Fixed: security.
+
 = 4.2.6.8.2 (2024-06-28) =
 ~ Added: function retrieve_password_message override message reset password.
 ~ Fixed: security.
