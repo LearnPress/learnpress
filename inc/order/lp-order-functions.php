@@ -610,8 +610,6 @@ function learn_press_get_order_status_label( $order_id = 0 ) {
  * @param bool $prefix
  * @param bool $status_only
  *
- * @since 2.1.7
- *
  * @return array
  * @deprecated 4.2.0
  */
@@ -731,31 +729,51 @@ if ( ! function_exists( 'learn_press_cancel_order_process' ) ) {
 	 */
 	function learn_press_cancel_order_process() {
 		if ( empty( $_REQUEST['cancel-order'] ) || empty( $_REQUEST['lp-nonce'] ) ||
-			! wp_verify_nonce( $_REQUEST['lp-nonce'], 'cancel-order' ) || is_admin() ) {
+		     ! wp_verify_nonce( $_REQUEST['lp-nonce'], 'cancel-order' ) || is_admin() ) {
 			return;
 		}
 
-		$url      = '';
-		$order_id = absint( $_REQUEST['cancel-order'] );
-		$order    = learn_press_get_order( $order_id );
-		$user     = learn_press_get_current_user();
+		$user = learn_press_get_current_user();
+		$url  = learn_press_user_profile_link(
+			$user->get_id(),
+			LP_Settings::instance()->get( 'profile_endpoints.orders', 'orders' )
+		);
 
-		if ( ! $order ) {
-			learn_press_add_message( sprintf( __( 'Order number <strong>%s</strong> not found', 'learnpress' ), $order_id ), 'error' );
-		} elseif ( $order->has_status( 'pending' ) ) {
-			$order->update_status( LP_ORDER_CANCELLED );
-			$order->add_note( __( 'The order is cancelled by the customer', 'learnpress' ) );
+		try {
+			$message = [
+				'status'  => 'error',
+				'content' => '',
+			];
 
-			// set updated message
-			learn_press_add_message( sprintf( __( 'Order number <strong>%s</strong> has been cancelled', 'learnpress' ), $order->get_order_number() ) );
-			$url = $order->get_cancel_order_url( true );
-		} else {
-			learn_press_add_message( sprintf( __( 'The order number <strong>%s</strong> can not be cancelled.', 'learnpress' ), $order->get_order_number() ), 'error' );
+			$order_id = absint( $_REQUEST['cancel-order'] );
+			$order    = learn_press_get_order( $order_id );
+
+			if ( ! $order ) {
+				throw new Exception( sprintf( __( 'Order number <strong>%s</strong> not found', 'learnpress' ), $order_id ) );
+			}
+
+			$user_ids = (array) $order->get_user_id();
+			if ( ! in_array( $user->get_id(), $user_ids ) ) {
+				throw new Exception( __( 'You do not have permission to cancel this order.', 'learnpress' ) );
+			}
+
+			if ( $order->has_status( LP_ORDER_PENDING ) ) {
+				$order->update_status( LP_ORDER_CANCELLED );
+				$order->add_note( __( 'The order is cancelled by the customer', 'learnpress' ) );
+
+				$message['status']  = 'success';
+				$message['content'] = sprintf( __( 'Order number <strong>%s</strong> has been cancelled', 'learnpress' ), $order->get_order_number() );
+			} else {
+				throw new Exception(
+					__( 'The order number <strong>%s</strong> can not be cancelled.', 'learnpress' ),
+					$order->get_order_number()
+				);
+			}
+		} catch ( Throwable $e ) {
+			$message['content'] = $e->getMessage();
 		}
 
-		if ( ! $url ) {
-			$url = learn_press_user_profile_link( $user->get_id(), LP_Settings::instance()->get( 'profile_endpoints.orders', 'orders' ) );
-		}
+		learn_press_set_message( $message );
 		wp_safe_redirect( $url );
 		exit();
 	}
