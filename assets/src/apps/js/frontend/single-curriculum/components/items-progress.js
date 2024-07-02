@@ -51,6 +51,7 @@ export const getResponse = async ( ele ) => {
 	const { data } = response;
 
 	ele.innerHTML += data;
+	ele.classList.add( 'can-finish-course' );
 
 	lpModalOverlayCompleteItem.init();
 };

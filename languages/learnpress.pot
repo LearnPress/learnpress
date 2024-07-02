@@ -2,16 +2,16 @@
 # This file is distributed under the same license as the LearnPress plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: LearnPress 4.2.6.8.1-beta.1\n"
+"Project-Id-Version: LearnPress 4.2.6.8.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/learnpress\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-06-03T05:12:49+03:00\n"
+"POT-Creation-Date: 2024-06-28T14:36:49+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.8.1\n"
+"X-Generator: WP-CLI 2.7.1\n"
 "X-Domain: learnpress\n"
 
 #: assets/js/dist/admin/pages/tools.min.js:118
@@ -4358,108 +4358,112 @@ msgid_plural "%s Weeks"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/class-lp-forms-handler.php:30
-#: inc/class-lp-forms-handler.php:248
+#: inc/class-lp-forms-handler.php:31
+#: inc/class-lp-forms-handler.php:254
 msgid "Please enter a valid account username."
 msgstr ""
 
-#: inc/class-lp-forms-handler.php:37
-#: inc/class-lp-forms-handler.php:238
+#: inc/class-lp-forms-handler.php:38
+#: inc/class-lp-forms-handler.php:244
 msgid "Please provide a valid email address."
 msgstr ""
 
-#: inc/class-lp-forms-handler.php:44
+#: inc/class-lp-forms-handler.php:45
 msgid "Your email does not exist!"
 msgstr ""
 
-#: inc/class-lp-forms-handler.php:52
+#: inc/class-lp-forms-handler.php:53
 msgid "Thank you! Your message has been sent."
 msgstr ""
 
-#: inc/class-lp-forms-handler.php:80
+#: inc/class-lp-forms-handler.php:81
 msgid "Error:"
 msgstr ""
 
-#: inc/class-lp-forms-handler.php:80
+#: inc/class-lp-forms-handler.php:81
 msgid "A username is required"
 msgstr ""
 
-#: inc/class-lp-forms-handler.php:118
+#: inc/class-lp-forms-handler.php:119
 msgid "Login successfully!"
 msgstr ""
 
-#: inc/class-lp-forms-handler.php:181
+#: inc/class-lp-forms-handler.php:182
 msgid "I need to become an instructor"
 msgstr ""
 
-#: inc/class-lp-forms-handler.php:196
+#: inc/class-lp-forms-handler.php:197
 msgid " was successfully created!"
 msgstr ""
 
-#: inc/class-lp-forms-handler.php:199
+#: inc/class-lp-forms-handler.php:200
 msgid "Your request to become an instructor has been sent. We will get back to you soon!"
 msgstr ""
 
-#: inc/class-lp-forms-handler.php:242
+#: inc/class-lp-forms-handler.php:240
+msgid "System WordPress does not allow register."
+msgstr ""
+
+#: inc/class-lp-forms-handler.php:248
 msgid "An account is already registered with your email address."
 msgstr ""
 
-#: inc/class-lp-forms-handler.php:253
+#: inc/class-lp-forms-handler.php:259
 msgid "An account is already registered with that username. Please choose another one."
 msgstr ""
 
-#: inc/class-lp-forms-handler.php:263
+#: inc/class-lp-forms-handler.php:269
 msgid "Please enter an account password."
 msgstr ""
 
-#: inc/class-lp-forms-handler.php:267
+#: inc/class-lp-forms-handler.php:273
 msgid "Password must contain at least six characters."
 msgstr ""
 
-#: inc/class-lp-forms-handler.php:271
+#: inc/class-lp-forms-handler.php:277
 msgid "Password can not contain spaces!"
 msgstr ""
 
-#: inc/class-lp-forms-handler.php:275
+#: inc/class-lp-forms-handler.php:281
 msgid "Please enter confirm password."
 msgstr ""
 
-#: inc/class-lp-forms-handler.php:279
+#: inc/class-lp-forms-handler.php:285
 msgid "Password and Confirm Password does not match!"
 msgstr ""
 
-#: inc/class-lp-forms-handler.php:286
-#: inc/class-lp-forms-handler.php:398
+#: inc/class-lp-forms-handler.php:292
+#: inc/class-lp-forms-handler.php:408
 msgid " is required field."
 msgstr ""
 
-#: inc/class-lp-forms-handler.php:371
+#: inc/class-lp-forms-handler.php:381
 msgid "Email is required"
 msgstr ""
 
-#: inc/class-lp-forms-handler.php:375
+#: inc/class-lp-forms-handler.php:385
 msgid "Display name is required"
 msgstr ""
 
-#: inc/class-lp-forms-handler.php:379
-#: inc/class-lp-forms-handler.php:383
+#: inc/class-lp-forms-handler.php:389
+#: inc/class-lp-forms-handler.php:393
 msgid "Due to privacy concerns, the display name cannot be changed to an email address."
 msgstr ""
 
-#: inc/class-lp-forms-handler.php:385
+#: inc/class-lp-forms-handler.php:395
 msgid "This email address is already registered."
 msgstr ""
 
-#: inc/class-lp-forms-handler.php:422
+#: inc/class-lp-forms-handler.php:432
 msgid "Enter a username or email address."
 msgstr ""
 
-#: inc/class-lp-forms-handler.php:442
-#: inc/class-lp-forms-handler.php:446
+#: inc/class-lp-forms-handler.php:452
+#: inc/class-lp-forms-handler.php:456
 msgid "Invalid username or email."
 msgstr ""
 
-#: inc/class-lp-forms-handler.php:457
+#: inc/class-lp-forms-handler.php:467
 msgid "Password reset is not allowed for this user."
 msgstr ""
 

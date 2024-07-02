@@ -86,6 +86,7 @@
 					action: 'learnpress_create_page',
 					page_name,
 					field_name,
+					nonce: lpDataAdmin.nonce,
 				},
 				type: 'post',
 				dataType: 'html',
