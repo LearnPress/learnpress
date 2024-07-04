@@ -205,7 +205,7 @@ class CourseModel {
 			$price = $this->get_regular_price();
 		}
 
-		$this->price = $price;
+		$this->price = (float) $price;
 
 		return apply_filters( 'learnPress/course/price', (float) $price, $this->get_id() );
 	}
@@ -214,10 +214,11 @@ class CourseModel {
 	 * Get regular price
 	 * Check has data on table learnpress_courses return
 	 * if not check get from Post
+	 * Value can be string empty if not set
 	 *
 	 * @return float|string
 	 */
-	public function get_regular_price(): float {
+	public function get_regular_price() {
 		$key = CoursePostModel::META_KEY_REGULAR_PRICE;
 		if ( $this->meta_data && isset( $this->meta_data->{$key} ) ) {
 			return (float) $this->meta_data->{$key};
@@ -226,7 +227,7 @@ class CourseModel {
 		$coursePost              = new CoursePostModel( $this );
 		$this->meta_data->{$key} = $coursePost->get_regular_price();
 
-		return (float) $this->meta_data->{$key};
+		return $this->meta_data->{$key};
 	}
 
 	/**
@@ -246,7 +247,7 @@ class CourseModel {
 
 		$coursePost              = new CoursePostModel( $this );
 		$sale_price              = $coursePost->get_sale_price();
-		$this->meta_data->{$key} = (float) $sale_price;
+		$this->meta_data->{$key} = $sale_price;
 
 		return $this->meta_data->{$key};
 	}
@@ -258,12 +259,12 @@ class CourseModel {
 	 */
 	public function has_sale_price(): bool {
 		$has_sale_price = false;
-		$regular_price  = $this->get_regular_price();
-		$sale_price     = $this->get_sale_price();
+		$regular_price  = (float) $this->get_regular_price();
+		$sale_price     = (float) $this->get_sale_price();
 		$start_date     = $this->get_sale_start();
 		$end_date       = $this->get_sale_end();
 
-		if ( $regular_price > $sale_price && is_float( $sale_price ) ) {
+		if ( $regular_price > $sale_price ) {
 			$has_sale_price = true;
 		}
 

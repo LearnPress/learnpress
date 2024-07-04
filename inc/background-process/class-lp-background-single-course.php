@@ -173,18 +173,21 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 		protected function save_price( CourseModel $courseObj ) {
 			$coursePost = new CoursePostModel( $courseObj );
 
-			$regular_price = (float) $courseObj->meta_data->{CoursePostModel::META_KEY_REGULAR_PRICE};
-			$sale_price = $courseObj->meta_data->{CoursePostModel::META_KEY_SALE_PRICE};
-			if ( $courseObj->get_regular_price() < 0 ) {
-				$courseObj->meta_data->{CoursePostModel::META_KEY_REGULAR_PRICE} = 0;
+			$regular_price = $courseObj->get_regular_price();
+			$sale_price    = $courseObj->get_sale_price();
+			if ( (float) $regular_price < 0 ) {
+				$courseObj->meta_data->{CoursePostModel::META_KEY_REGULAR_PRICE} = '';
+				$regular_price                                                   = $courseObj->get_regular_price();
 			}
 
-			if ( $courseObj->get_sale_price() > $courseObj->get_regular_price() ) {
-				$courseObj->meta_data->{CoursePostModel::META_KEY_SALE_PRICE} = 0;
+			if ( (float) $sale_price > (float) $regular_price ) {
+				$courseObj->meta_data->{CoursePostModel::META_KEY_SALE_PRICE} = '';
+				$sale_price                                                   = $courseObj->get_sale_price();
 			}
 
-			// Save sale regular price and sale price to postmeta
-
+			// Save sale regular price and sale price to table postmeta
+			$coursePost->save_meta_value_by_key( CoursePostModel::META_KEY_REGULAR_PRICE, $regular_price );
+			$coursePost->save_meta_value_by_key( CoursePostModel::META_KEY_SALE_PRICE, $sale_price );
 
 			$has_sale = $courseObj->has_sale_price();
 			if ( $has_sale ) {

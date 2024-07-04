@@ -89,6 +89,10 @@ class PostModel {
 	 * @var stdClass all meta data
 	 */
 	public $is_got_meta_data = 0;
+	/**
+	 * @var string only for set same property with class WP_Post
+	 */
+	public $filter;
 
 	/**
 	 * If data get from database, map to object.
