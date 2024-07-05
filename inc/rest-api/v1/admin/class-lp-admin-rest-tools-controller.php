@@ -353,19 +353,22 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 	 *
 	 * @return LP_REST_Response
 	 * @since 4.2.5
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function search_courses( WP_REST_Request $request ): LP_REST_Response {
 		$response = new LP_REST_Response();
 		try {
-			$filter              = new LP_Course_Filter();
-			$params              = $request->get_params();
-			$filter->limit       = 20;
-			$filter->only_fields = [ 'ID', 'post_title' ];
-			$filter->post_title  = $params['c_search'] ?? '';
-			$courses             = Courses::get_courses( $filter );
-			$response->data      = $courses;
-			$response->status    = 'success';
+			$total_rows                  = 0;
+			$filter                      = new LP_Course_Filter();
+			$params                      = $request->get_params();
+			$filter->limit               = 20;
+			$filter->only_fields         = [ 'ID', 'post_title' ];
+			$filter->post_title          = $params['c_search'] ?? '';
+			$filter->page                = $params['paged'] ?? 1;
+			$courses                     = Courses::get_courses( $filter, $total_rows );
+			$response->data->courses     = $courses;
+			$response->data->total_pages = LP_Database::get_total_pages( $filter->limit, $total_rows );
+			$response->status            = 'success';
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}

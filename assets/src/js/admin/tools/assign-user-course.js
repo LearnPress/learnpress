@@ -124,7 +124,7 @@ export default function assignUserCourse() {
 
 		lpFetchAPI( url, params, {
 			success: ( response ) => {
-				const options = response.data.map( ( item ) => {
+				const options = response.data.courses.map( ( item ) => {
 					return {
 						value: item.ID,
 						text: item.post_title + `(#${ item.ID })`,
