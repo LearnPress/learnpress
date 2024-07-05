@@ -12,10 +12,6 @@
  */
 defined( 'ABSPATH' ) || exit();
 
-if ( class_exists( 'LP_Question_Filter' ) ) {
-	return;
-}
-
 class LP_Course_JSON_Filter extends LP_Filter {
 	const COL_ID = 'ID';
 	const COL_POST_AUTHOR = 'post_author';
@@ -26,7 +22,9 @@ class LP_Course_JSON_Filter extends LP_Filter {
 	const COL_POST_NAME = 'post_name';
 	const COL_MENU_ORDER = 'menu_order';
 	const COL_JSON = 'json';
-	const COL_LANG = 'lang'; // For multiple languages
+	const COL_PRICE_TO_SORT = 'price_to_sort';
+	const COL_IS_SALE = 'is_sale';
+	const COL_LANG = 'lang'; // For multiple languages, wpml or polylang will store here.
 	/**
 	 * @var string[]
 	 */
@@ -40,7 +38,9 @@ class LP_Course_JSON_Filter extends LP_Filter {
 		self::COL_POST_NAME,
 		self::COL_MENU_ORDER,
 		self::COL_JSON,
-		self::COL_LANG
+		self::COL_PRICE_TO_SORT,
+		self::COL_IS_SALE,
+		self::COL_LANG,
 	];
 	/**
 	 * @var int
@@ -82,4 +82,12 @@ class LP_Course_JSON_Filter extends LP_Filter {
 	 * @var string
 	 */
 	public $taxonomy = 'category';
+	/**
+	 * @var string
+	 */
+	public $lang = '';
+	/**
+	 * @var int
+	 */
+	public $is_sale = 0;
 }

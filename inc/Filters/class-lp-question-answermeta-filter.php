@@ -14,10 +14,6 @@
  */
 defined( 'ABSPATH' ) || exit();
 
-if ( class_exists( 'LP_Question_Filter' ) ) {
-	return;
-}
-
 class LP_Question_Answermeta_Filter extends LP_Filter {
 	const COL_META_ID            = 'meta_id';
 	const COL_QUESTION_ANSWER_ID = 'learnpress_question_answer_id';

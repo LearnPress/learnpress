@@ -14,10 +14,6 @@
  */
 defined( 'ABSPATH' ) || exit();
 
-if ( class_exists( 'LP_Question_Filter' ) ) {
-	return;
-}
-
 class LP_Question_Answers_Filter extends LP_Filter {
 	public $field_count = 'question_answer_id';
 	/**

@@ -12,10 +12,6 @@
  */
 defined( 'ABSPATH' ) || exit();
 
-if ( class_exists( 'LP_Question_Filter' ) ) {
-	return;
-}
-
 class LP_Course_Filter extends LP_Post_Type_Filter {
 	/**
 	 * @var string

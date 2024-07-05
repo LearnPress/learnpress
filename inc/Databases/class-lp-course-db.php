@@ -174,40 +174,30 @@ class LP_Course_DB extends LP_Database {
 	 * @return int
 	 * @throws Exception
 	 * @since 4.0.0
-	 * @version 1.0.3
+	 * @version 1.0.4
 	 * @modify 4.1.3
 	 * @author tungnx
 	 */
 	public function get_first_item_id( int $course_id = 0 ): int {
-		// Get cache
-		$lp_course_cache = LP_Course_Cache::instance();
-		$key_cache       = "$course_id/first_item_id";
-		$first_item_id   = $lp_course_cache->get_cache( $key_cache );
+		$query = $this->wpdb->prepare(
+			"
+			SELECT item_id FROM $this->tb_lp_section_items AS si
+			INNER JOIN $this->tb_lp_sections AS sections
+			ON si.section_id = sections.section_id
+			AND sections.section_course_id = %d
+			INNER JOIN $this->tb_posts AS p
+			ON si.item_id = p.ID
+			AND p.post_status = 'publish'
+			ORDER BY sections.section_order ASC, si.item_order ASC
+			LIMIT %d
+			",
+			$course_id,
+			1
+		);
 
-		if ( ! $first_item_id ) {
-			$query = $this->wpdb->prepare(
-				"
-				SELECT item_id FROM $this->tb_lp_section_items AS si
-				INNER JOIN $this->tb_lp_sections AS sections
-				ON si.section_id = sections.section_id
-				AND sections.section_course_id = %d
-				INNER JOIN $this->tb_posts AS p
-				ON si.item_id = p.ID
-				AND p.post_status = 'publish'
-				ORDER BY sections.section_order ASC, si.item_order ASC
-				LIMIT %d
-				",
-				$course_id,
-				1
-			);
+		$first_item_id = (int) $this->wpdb->get_var( $query );
 
-			$first_item_id = (int) $this->wpdb->get_var( $query );
-
-			$this->check_execute_has_error();
-
-			// Set cache
-			$lp_course_cache->set_cache( $key_cache, $first_item_id );
-		}
+		$this->check_execute_has_error();
 
 		return $first_item_id;
 	}

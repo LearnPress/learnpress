@@ -74,11 +74,8 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 
 			$post_obj        = LP_Helper::json_decode( $post_obj_str );
 			$this->lp_course = $this->save_data_to_table_courses( $post_obj, $is_update );
-
-			return;
-
-			$this->clean_data_invalid();
 			$this->save_extra_info();
+			$this->clean_data_invalid();
 			$this->review_post_author();
 
 			do_action( 'lp/background/course/save', $this->lp_course, $this->data );
@@ -170,7 +167,7 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 		 *
 		 * @return void
 		 */
-		protected function save_price( CourseModel $courseObj ) {
+		protected function save_price( CourseModel &$courseObj ) {
 			$coursePost = new CoursePostModel( $courseObj );
 
 			$regular_price = $courseObj->get_regular_price();
@@ -197,6 +194,9 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 				$courseObj->is_sale = 0;
 				delete_post_meta( $courseObj->get_id(), CoursePostModel::META_KEY_IS_SALE );
 			}
+
+			// Set price to sort on lists.
+			$courseObj->price_to_sort = $courseObj->get_price();
 		}
 
 		/**
@@ -208,12 +208,12 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 		 */
 		protected function save_extra_info() {
 			$lp_course_db    = LP_Course_DB::getInstance();
-			$lp_course       = $this->lp_course;
+			$lp_course       = learn_press_get_course( $this->lp_course->get_id() );
 			$lp_course_cache = LP_Course_Cache::instance();
 			$course_id       = $lp_course->get_id();
 
 			try {
-				$extra_info = $this->lp_course->get_info_extra_for_fast_query();
+				$extra_info = $lp_course->get_info_extra_for_fast_query();
 
 				// Get and set first item id
 				// Clean cache
@@ -264,7 +264,7 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 			$lp_user_item_results_db = LP_User_Items_Result_DB::instance();
 
 			try {
-				$course = $this->lp_course;
+				$course = learn_press_get_course( $this->lp_course->get_id() );
 
 				// Get all items of course is attend
 				$filter_user_items              = new LP_User_Items_Filter();
@@ -316,7 +316,7 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 			$user            = learn_press_get_current_user();
 			$required_review = LP_Settings::get_option( 'required_review', 'yes' ) === 'yes';
 
-			if ( $user->is_instructor() && $required_review && $lp_course->get_status() === 'publish' ) {
+			if ( $user->is_instructor() && $required_review && $lp_course->post_status === 'publish' ) {
 				wp_update_post(
 					array(
 						'ID'          => $lp_course->get_id(),
@@ -403,7 +403,7 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 			$courseObj->get_image_url();
 			$courseObj->get_categories();
 			$courseObj->get_author_model();
-			$courseObj->price_to_sort = $courseObj->get_price();
+			$courseObj->get_first_item_id();
 			// End get all meta key and map
 			$courseObj->save();
 

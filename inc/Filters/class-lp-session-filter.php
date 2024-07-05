@@ -12,7 +12,7 @@
  */
 defined( 'ABSPATH' ) || exit();
 
-if ( class_exists( 'LP_Section_Filter' ) ) {
+if ( class_exists( 'LP_Session_Filter' ) ) {
 	return;
 }
 

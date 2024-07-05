@@ -14,10 +14,6 @@
  */
 defined( 'ABSPATH' ) || exit();
 
-if ( class_exists( 'LP_Question_Filter' ) ) {
-	return;
-}
-
 class LP_Quiz_Questions_Filter extends LP_Filter {
 	/**
 	 * @var array

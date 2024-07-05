@@ -14,6 +14,7 @@
 namespace LearnPress\Models;
 
 use Exception;
+use LP_Course_DB;
 use LP_Course_JSON_DB;
 use LP_Course_JSON_Filter;
 use LP_Datetime;
@@ -68,7 +69,7 @@ class CourseModel {
 	 * @var string lang of Course
 	 */
 	public $lang = null;
-	/***** Field not on table *****/
+	/********** Field not on table **********/
 	/**
 	 * @var UserModel author model
 	 */
@@ -80,10 +81,20 @@ class CourseModel {
 	public $image_url = '';
 	public $categories = [];
 	private $price = 0; // Not save in database, must auto reload calculate
-	private $sale_start = '';
-	private $sale_end = '';
 	private $passing_condition = '';
 	public $post_excerpt = '';
+	/**
+	 * @var int ID of first item
+	 */
+	public $first_item_id;
+	/**
+	 * @var array info total items {'count_items': 20, 'lp_lesson': 10, 'lp_quiz': 10, ...}
+	 */
+	public $total_items;
+	/**
+	 * @var array list sections items
+	 */
+	public $sections_items = [];
 
 	/**
 	 * If data get from database, map to object.
@@ -289,13 +300,12 @@ class CourseModel {
 	 * @return mixed
 	 */
 	public function get_sale_start() {
-		if ( $this->sale_start !== '' ) {
-			return $this->sale_start;
+		$key = CoursePostModel::META_KEY_SALE_START;
+		if ( $this->meta_data && isset( $this->meta_data->{$key} ) ) {
+			return $this->meta_data->{$key};
 		}
 
-		$this->sale_start = $this->get_meta_value_by_key( CoursePostModel::META_KEY_SALE_START );
-
-		return $this->sale_start;
+		return $this->meta_data->{$key};
 	}
 
 	/**
@@ -304,13 +314,12 @@ class CourseModel {
 	 * @return mixed
 	 */
 	public function get_sale_end() {
-		if ( $this->sale_end !== '' ) {
-			return $this->sale_end;
+		$key = CoursePostModel::META_KEY_SALE_END;
+		if ( $this->meta_data && isset( $this->meta_data->{$key} ) ) {
+			return $this->meta_data->{$key};
 		}
 
-		$this->sale_end = $this->get_meta_value_by_key( CoursePostModel::META_KEY_SALE_END );
-
-		return $this->sale_end;
+		return $this->meta_data->{$key};
 	}
 
 	/**
@@ -321,6 +330,25 @@ class CourseModel {
 	 */
 	public function is_free(): bool {
 		return apply_filters( 'learnPress/course/is-free', $this->get_price() == 0, $this );
+	}
+
+	/**
+	 * Get first item of course
+	 *
+	 * @return int
+	 */
+	public function get_first_item_id(): int {
+		if ( ! empty( $this->first_item_id ) ) {
+			return $this->first_item_id;
+		}
+
+		try {
+			$this->first_item_id = LP_Course_DB::getInstance()->get_first_item_id( $this->get_id() );
+		} catch ( Throwable $e ) {
+			$this->first_item_id = 0;
+		}
+
+		return $this->first_item_id;
 	}
 
 	public function get_meta_value_by_key( string $key, $default = false ) {

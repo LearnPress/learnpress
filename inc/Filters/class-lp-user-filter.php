@@ -12,10 +12,6 @@
  */
 defined( 'ABSPATH' ) || exit();
 
-if ( class_exists( 'LP_Question_Filter' ) ) {
-	return;
-}
-
 class LP_User_Filter extends LP_Filter {
 	/**
 	 * @var string[] List of fields can be filtered.
