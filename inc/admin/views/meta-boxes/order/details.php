@@ -86,10 +86,12 @@ $user_ip      = $order->get_user_ip_address();
 		<div class="order-data-field order-data-user">
 			<div class="order-users">
 				<?php
-				$data_user_id = $order->get_data( 'user_id' ) ? json_encode( $order->get_data( 'user_id' ) ) : '';
-				$is_pending   = 'pending' === $order->get_status() ? true : false;
-				$disabled     = $is_pending ? '' : 'disabled';
-				?>
+				$user_id = get_post_meta( $id, '_lp_course_author', true );
+				if ( 'pending' === $order->get_status() ) :
+					$data_user_id = $order->get_user_id() ? json_encode( $order->get_user_id() ) : '';
+					$is_pending   = 'pending' === $order->get_status() ? true : false;
+					$disabled     = $is_pending ? '' : 'disabled';
+					?>
 				<label><?php esc_html_e( 'Customers:', 'learnpress' ); ?></label>
 				<select id="list-users" class="advanced-list" <?php esc_attr_e( $disabled ); ?>
 					data-user-id="<?php esc_attr_e( $data_user_id ); ?>">
@@ -98,8 +100,34 @@ $user_ip      = $order->get_user_ip_address();
 					<?php endif; ?>
 				</select>
 
-				<?php
+					<?php
+				endif;
 				if ( 'pending' !== $order->get_status() ) {
+					?>
+				<label><?php esc_html_e( 'Customers:', 'learnpress' ); ?></label>
+				<div class="ts-wrapper advanced-list multi plugin-remove_button has-items disabled locked">
+					<div class="ts-control">
+						<?php
+						$user_ids = $order->get_user_id();
+						if ( is_array( $user_ids ) ) {
+							foreach ( $user_ids as $user_id ) {
+								$data       = learn_press_get_user( $user_id ) ? learn_press_get_user( $user_id ) : '';
+								$name_user  = $data->get_data( 'display_name' ) ? $data->get_data( 'display_name' ) : '';
+								$gmail_user = $data->get_data( 'email' ) ? $data->get_data( 'email' ) : '';
+								echo '<li data-id="' . $user_id . '"><div class="item" data-ts-item="">' . $name_user . '(#' . $user_id . ') - ' . $gmail_user . '</div><input type="hidden" name="order-customer[]" value="' . $user_id . '"></li>';
+							}
+						} else {
+							$data       = learn_press_get_user( $user_ids ) ? learn_press_get_user( $user_ids ) : '';
+							$name_user  = $data->get_data( 'display_name' ) ? $data->get_data( 'display_name' ) : '';
+							$gmail_user = $data->get_data( 'email' ) ? $data->get_data( 'email' ) : '';
+							echo '<li data-id="' . $user_ids . '"><div class="item" data-ts-item="">' . $name_user . '(#' . $user_ids . ') - ' . $gmail_user . '</div><input type="hidden" name="order-customer[]" value="' . $user_ids . '"></li>';
+						}
+						?>
+
+					</div>
+				</div>
+
+					<?php
 					echo '<p class="description">';
 					esc_html_e( 'In order to change the order user, please change the order status to \'Pending\'.', 'learnpress' );
 					echo '</p>';
