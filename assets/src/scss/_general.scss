@@ -457,13 +457,14 @@ $remove-icon-color: #e74c3c;
 
 .advanced-list {
 	width: 100%;
+	min-width: 200px;
 	border-radius: var( --lp-border-radius);
 	background: #fff;
 	list-style: none;
 
 	li {
 		display: inline-block;
-		margin: 0 5px 5px -3px;
+		margin: 0 5px;
 		padding: 3px 8px;
 		background: #eee;
 		border-radius: var( --lp-border-radius);
@@ -502,6 +503,14 @@ $remove-icon-color: #e74c3c;
 		display: block;
 		clear: both;
 		content: "";
+	}
+
+	&.ts-wrapper.plugin-remove_button:not(.rtl).disabled .item .remove {
+		display: none;
+	}
+
+	&.disabled .ts-control {
+		opacity: 1;
 	}
 }
 
