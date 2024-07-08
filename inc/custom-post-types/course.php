@@ -174,8 +174,8 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 */
 		public function before_delete( int $post_id ) {
 			// Delete course from table learnpress_courses
-			$filter = new LP_Course_JSON_Filter();
-			$filter->ID = $post_id;
+			$filter      = new LP_Course_JSON_Filter();
+			$filter->ID  = $post_id;
 			$courseModel = CourseModel::get_item_model_from_db( $filter );
 			$courseModel->delete();
 
@@ -511,7 +511,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 * @version 1.0.0
 		 * @see LP_Background_Single_Course::handle()
 		 */
-		public function after_insert_post( int $post_id, WP_Post $post, bool $update ) {
+		public function after_insert_post( int $post_id, WP_Post $post = null, bool $update = false ) {
 			// Save in background.
 			$bg = LP_Background_Single_Course::instance();
 

@@ -59,7 +59,8 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 		$this->call( $args['type'], array( $args ) );
 
 		$course_post = get_post( $course_id );
-		LP_Course_Post_Type::instance()->save( $course_id, $course_post );
+		//LP_Course_Post_Type::instance()->save( $course_id, $course_post );
+		LP_Course_Post_Type::instance()->after_insert_post( $course_id, $course_post, true );
 
 		return $this->get_result();
 	}

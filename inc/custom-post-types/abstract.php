@@ -229,7 +229,7 @@ abstract class LP_Abstract_Post_Type {
 	 * @param WP_Post|null $post
 	 * @param bool $update
 	 */
-	public function after_insert_post( int $post_id, WP_Post $post, bool $update ) {
+	public function after_insert_post( int $post_id, WP_Post $post = null, bool $update = false ) {
 		// Implement from child
 	}
 
