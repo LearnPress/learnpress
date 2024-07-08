@@ -404,6 +404,8 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 			$courseObj->get_categories();
 			$courseObj->get_author_model();
 			$courseObj->get_first_item_id();
+			$courseObj->get_total_items();
+			$courseObj->get_section_items();
 			// End get all meta key and map
 			$courseObj->save();
 

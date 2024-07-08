@@ -362,9 +362,10 @@ class LP_Course_DB extends LP_Database {
 	 * @param int $course_id
 	 *
 	 * @return null|object
-	 * @since 4.1.4.1
+	 * @throws Exception
 	 * @version 1.0.0
 	 * @author tungnx
+	 * @since 4.1.4.1
 	 */
 	public function get_total_items( int $course_id = 0 ) {
 		// Get cache
@@ -397,6 +398,8 @@ class LP_Course_DB extends LP_Database {
 			";
 
 			$total_items = $this->wpdb->get_row( $query );
+
+			$this->check_execute_has_error();
 
 			// Set cache
 			$lp_course_cache->set_cache( $key_cache, $total_items );

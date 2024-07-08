@@ -14,6 +14,7 @@
 namespace LearnPress\Models;
 
 use Exception;
+use LP_Course_Cache;
 use LP_Course_DB;
 use LP_Course_JSON_DB;
 use LP_Course_JSON_Filter;
@@ -88,7 +89,7 @@ class CourseModel {
 	 */
 	public $first_item_id;
 	/**
-	 * @var array info total items {'count_items': 20, 'lp_lesson': 10, 'lp_quiz': 10, ...}
+	 * @var null|object info total items {'count_items': 20, 'lp_lesson': 10, 'lp_quiz': 10, ...}
 	 */
 	public $total_items;
 	/**
@@ -349,6 +350,144 @@ class CourseModel {
 		}
 
 		return $this->first_item_id;
+	}
+
+	/**
+	 * Get total items of course
+	 *
+	 * @return null|object
+	 */
+	public function get_total_items() {
+		if ( ! empty( $this->total_items ) ) {
+			return $this->total_items;
+		}
+
+		try {
+			$this->total_items = LP_Course_DB::getInstance()->get_total_items( $this->get_id() );
+		} catch ( Throwable $e ) {
+			$this->total_items = 0;
+		}
+
+		return $this->total_items;
+	}
+
+	/**
+	 * Get total items of course
+	 *
+	 * @return array
+	 */
+	public function get_section_items(): array {
+		if ( ! empty( $this->sections_items ) ) {
+			return $this->sections_items;
+		}
+
+		try {
+			$this->sections_items = $this->get_sections_and_items_course_from_db_and_sort();
+		} catch ( Throwable $e ) {
+			$this->sections_items = 0;
+		}
+
+		return $this->sections_items;
+	}
+
+	/**
+	 * Get all sections and items from database, then handle sort
+	 * Only call when data change or not set
+	 *
+	 * @return array
+	 * @since 4.1.6.9
+	 * @version 1.0.0
+	 * @author tungnx
+	 */
+	public function get_sections_and_items_course_from_db_and_sort(): array {
+		$sections_items  = [];
+		$course_id       = $this->get_id();
+		$lp_course_db    = LP_Course_DB::getInstance();
+		$lp_course_cache = LP_Course_Cache::instance();
+		$key_cache       = "$course_id/sections_items";
+
+		try {
+			$sections_results       = $lp_course_db->get_sections( $course_id );
+			$sections_items_results = $lp_course_db->get_full_sections_and_items_course( $course_id );
+			$count_items            = count( $sections_items_results );
+			$index_items_last       = $count_items - 1;
+			$section_current        = 0;
+
+			foreach ( $sections_items_results as $index => $sections_item ) {
+				$section_new   = $sections_item->section_id;
+				$section_order = $sections_item->section_order;
+				$item          = new stdClass();
+				$item->id      = $sections_item->item_id;
+				$item->order   = $sections_item->item_order;
+				$item->type    = $sections_item->item_type;
+
+				if ( $section_new != $section_current ) {
+					$sections_items[ $section_new ]                      = new stdClass();
+					$sections_items[ $section_new ]->id                  = $section_new; // old field will be deprecated in future
+					$sections_items[ $section_new ]->section_id          = $section_new; // new field
+					$sections_items[ $section_new ]->order               = $section_order; // old field will be deprecated in future
+					$sections_items[ $section_new ]->section_order       = $section_order; // new field
+					$sections_items[ $section_new ]->title               = html_entity_decode( $sections_item->section_name ); // old field will be deprecated in future
+					$sections_items[ $section_new ]->section_name        = html_entity_decode( $sections_item->section_name ); // new field
+					$sections_items[ $section_new ]->description         = html_entity_decode( $sections_item->section_description ); // old field will be deprecated in future
+					$sections_items[ $section_new ]->section_description = html_entity_decode( $sections_item->section_description ); // new field
+					$sections_items[ $section_new ]->items               = [];
+
+					// Sort item by item_order
+					if ( $section_current != 0 ) {
+						usort(
+							$sections_items[ $section_current ]->items,
+							function ( $item1, $item2 ) {
+								return $item1->order - $item2->order;
+							}
+						);
+					}
+
+					$section_current = $section_new;
+				}
+
+				$sections_items[ $section_new ]->items[ $item->id ] = $item;
+
+				if ( $index_items_last === $index ) {
+					usort(
+						$sections_items[ $section_current ]->items,
+						function ( $item1, $item2 ) {
+							return $item1->order - $item2->order;
+						}
+					);
+				}
+			}
+
+			// Check case if section empty items
+			foreach ( $sections_results as $section ) {
+				$section_id = $section->section_id;
+				if ( isset( $sections_items[ $section_id ] ) ) {
+					continue;
+				}
+
+				$section_obj                   = new stdClass();
+				$section_obj->id               = $section_id;
+				$section_obj->order            = $section->section_order;
+				$section_obj->title            = html_entity_decode( $section->section_name );
+				$section_obj->description      = html_entity_decode( $section->section_description );
+				$section_obj->items            = [];
+				$sections_items[ $section_id ] = $section_obj;
+			}
+
+			// Sort section by section_order
+			usort(
+				$sections_items,
+				function ( $section1, $section2 ) {
+					return $section1->order - $section2->order;
+				}
+			);
+
+			$lp_course_cache->set_cache( $key_cache, $sections_items );
+		} catch ( Throwable $e ) {
+			error_log( $e->getMessage() );
+		}
+
+		return $sections_items;
 	}
 
 	public function get_meta_value_by_key( string $key, $default = false ) {
