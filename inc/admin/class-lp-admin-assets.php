@@ -410,7 +410,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				'lp-tom-select'         => new LP_Asset_Key(
 					'https://cdn.jsdelivr.net/npm/tom-select@2.2.3/dist/css/tom-select.css',
 					[],
-					array( 'learnpress_page_learn-press-tools' ),
+					array( 'learnpress_page_learn-press-tools', 'lp_order' ),
 					0
 				),
 			)

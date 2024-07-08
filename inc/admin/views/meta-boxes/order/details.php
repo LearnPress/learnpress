@@ -85,56 +85,28 @@ $user_ip      = $order->get_user_ip_address();
 
 		<div class="order-data-field order-data-user">
 			<div class="order-users">
-				<?php if ( $order->is_multi_users() ) : ?>
-					<label><?php esc_html_e( 'Customers:', 'learnpress' ); ?></label>
-					<ul id="list-users" class="advanced-list <?php echo esc_attr( $order->get_status() === 'completed' ? 'locked' : '' ); ?>">
-					</ul>
-
+				<?php
+				$data_user_id = $order->get_data( 'user_id' ) ? json_encode( $order->get_data( 'user_id' ) ) : '';
+				$is_pending   = 'pending' === $order->get_status() ? true : false;
+				$disabled     = $is_pending ? '' : 'disabled';
+				?>
+				<label><?php esc_html_e( 'Customers:', 'learnpress' ); ?></label>
+				<select id="list-users" class="advanced-list" <?php esc_attr_e( $disabled ); ?>
+					data-user-id="<?php esc_attr_e( $data_user_id ); ?>">
 					<?php if ( 'pending' === $order->get_status() ) : ?>
-						<a href="" class="change-user" data-multiple="yes"><?php esc_html_e( 'Add multiple users', 'learnpress' ); ?></a>
+					<option value=""><?php _e( 'Choose User:', 'learnpress' ); ?></option>
 					<?php endif; ?>
-
-					<?php else : ?>
-
-					<label><?php esc_html_e( 'Customer:', 'learnpress' ); ?></label>
-						<?php
-						$user_email = $order->get_user( 'email' );
-
-						if ( $user_email ) {
-							printf( '%s (%s) ', $order->get_customer_name(), $order->get_user( 'email' ) );
-
-							if ( $order->get_user_id( 'edit' ) ) {
-								printf( '<a href="%s">%s</a>', esc_url_raw( add_query_arg( 'user_id', absint( $order->get_user_id( 'edit' ) ), admin_url( 'user-edit.php' ) ) ), esc_html__( 'Profile', 'learnpress' ) );
-							}
-						} else {
-							echo wp_kses_post( $order->get_customer_name() );
-						}
-						?>
-
-						<input type="hidden" name="order-customer" id="order-customer" value="<?php echo esc_attr( $order->get_user( 'id' ) ); ?>"/>
-
-						<?php if ( 'pending' === $order->get_status() ) : ?>
-							<?php echo ' |'; ?>
-							<a href="" class="change-user"><?php esc_html_e( 'Change', 'learnpress' ); ?></a>
-						<?php endif; ?>
-				<?php endif; ?>
-
-				<?php if ( $order->get_post_status() == 'auto-draft' ) : ?>
-					<?php esc_html_e( '- Or -', 'learnpress' ); ?>
-					<a href="" class="change-user" data-multiple="yes"><?php esc_html_e( 'Add multiple users', 'learnpress' ); ?></a>
-				<?php endif; ?>
+				</select>
 
 				<?php
 				if ( 'pending' !== $order->get_status() ) {
 					echo '<p class="description">';
 					esc_html_e( 'In order to change the order user, please change the order status to \'Pending\'.', 'learnpress' );
 					echo '</p>';
-
 				}
 
-				//learn_press_admin_view( 'meta-boxes/order/child-order', array( 'order' => $order ) );
+				// learn_press_admin_view( 'meta-boxes/order/child-order', array( 'order' => $order ) );
 				?>
-
 			</div>
 		</div>
 
@@ -228,34 +200,6 @@ $user_ip      = $order->get_user_ip_address();
 		</table>
 	</div>
 </div>
-
-<script type="text/html" id="tmpl-order-data-user">
-	<# if(!data.multiple){ #>
-		<div class="order-data-field order-data-user">
-			<label><?php esc_html_e( 'Customer', 'learnpress' ); ?></label>
-			<div class="order-users">
-				{{data.name}}
-				<input type="hidden" name="order-customer" id="order-customer" value="{{data.id}}">
-			</div>
-			<a href="" class="change-user"><?php esc_html_e( 'Change', 'learnpress' ); ?></a>
-		</div>
-	<# }else{ #>
-		<div class="order-data-field order-data-user">
-			<label><?php esc_html_e( 'Customer', 'learnpress' ); ?></label>
-			<div class="order-users">
-				<ul id="list-users" class="advanced-list <?php echo esc_attr( $order->get_status() === 'completed' ? 'locked' : '' ); ?>"></ul>
-			</div>
-			<a href="" class="change-user" data-multiple="yes"><?php esc_html_e( 'Add multiple users', 'learnpress' ); ?></a>
-		</div>
-	<# } #>
-</script>
-
-<script type="text/html" id="tmpl-order-advanced-list-item">
-	<li data-id="{{id}}">
-		<span class="remove-item"></span><span>{{text}}</span>
-		<input type="hidden" name="order-customer[]" value="{{id}}">
-	</li>
-</script>
 
 <?php
 $assets = LP_Admin_Assets::instance();
