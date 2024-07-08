@@ -174,10 +174,10 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 */
 		public function before_delete( int $post_id ) {
 			// Delete course from table learnpress_courses
-			$filter      = new LP_Course_JSON_Filter();
-			$filter->ID  = $post_id;
-			$courseModel = CourseModel::get_item_model_from_db( $filter );
-			$courseModel->delete();
+			$courseModel = CourseModel::find( $post_id );
+			if ( $courseModel ) {
+				$courseModel->delete();
+			}
 
 			$course = learn_press_get_course( $post_id );
 			if ( ! $course ) {

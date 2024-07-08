@@ -354,9 +354,7 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 				$courseObj->meta_data = $coursePost->get_all_metadata();
 
 				// Get from table learnpress_courses
-				$filter_course     = new LP_Course_JSON_Filter();
-				$filter_course->ID = $coursePost->ID;
-				$courseModel       = CourseModel::get_item_model_from_db( $filter_course );
+				$courseModel       = CourseModel::find( $coursePost->ID );
 				// Merge meta data
 				if ( ! empty( $courseModel ) ) {
 					$courseModelMeta      = json_decode( $courseModel->json );

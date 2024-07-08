@@ -16,6 +16,7 @@ namespace LearnPress\Models;
 use Exception;
 use LP_Course_Cache;
 use LP_Course_DB;
+use LP_Course_Item;
 use LP_Course_JSON_DB;
 use LP_Course_JSON_Filter;
 use LP_Datetime;
@@ -420,6 +421,11 @@ class CourseModel {
 				$item->id      = $sections_item->item_id;
 				$item->order   = $sections_item->item_order;
 				$item->type    = $sections_item->item_type;
+				$item_tmp      = LP_Course_Item::get_item( $item->id );
+				if ( $item_tmp ) {
+					$item->title = $item_tmp->get_title();
+					$item->preview = $item_tmp->is_preview();
+				}
 
 				if ( $section_new != $section_current ) {
 					$sections_items[ $section_new ]                      = new stdClass();
@@ -534,6 +540,20 @@ class CourseModel {
 		}
 
 		return $course_model;
+	}
+
+	/**
+	 * Get course by ID
+	 *
+	 * @param int $course_id
+	 * @param bool $no_cache
+	 *
+	 * @return false|CourseModel|static
+	 */
+	public static function find( int $course_id, bool $no_cache = true ) {
+		$filter_course     = new LP_Course_JSON_Filter();
+		$filter_course->ID = $course_id;
+		return self::get_item_model_from_db( $filter_course, $no_cache );
 	}
 
 	/**

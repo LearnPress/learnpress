@@ -1,6 +1,7 @@
 <?php
 
 use LearnPress\Helpers\Template;
+use LearnPress\Models\CourseModel;
 
 /**
  * Class LP_Admin_Assets
@@ -465,7 +466,13 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 			return [];
 		}
 
-		$course          = learn_press_get_course( $post->ID );
+		$course = CourseModel::find( $post->ID );
+		if ( $course ) {
+			$course_section_items = $course->get_section_items();
+		} else { // Code old if not found course on the table learnpress_courses.
+			$course               = learn_press_get_course( $post->ID );
+			$course_section_items = $course->get_curriculum_raw();
+		}
 		$hidden_sections = get_post_meta( $post->ID, '_admin_hidden_sections', true );
 
 		return apply_filters(
@@ -503,7 +510,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'notice_invalid_date'    => __( 'Invalid date', 'learnpress' ),
 				),
 				'sections'    => array(
-					'sections'        => $course->get_curriculum_raw(),
+					'sections'        => $course_section_items,
 					'hidden_sections' => ! empty( $hidden_sections ) ? $hidden_sections : array(),
 					'urlEdit'         => admin_url( 'post.php?action=edit&post=' ),
 				),
