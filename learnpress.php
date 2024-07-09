@@ -58,7 +58,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 *
 		 * @var int
 		 */
-		public $db_version = 4;
+		public $db_version = 5;
 
 		/**
 		 * The single instance of the class

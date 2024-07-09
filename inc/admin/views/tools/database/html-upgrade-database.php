@@ -36,7 +36,7 @@ if ( ! $check_lp_need_upgrade_db ) {
 			<div class="terms-upgrade">
 				<h2>Terms of Service update</h2>
 				<div class="pd-2em">
-					<p>To system Learnpress runs normally on v4.0.0 we need to upgrade database on your site.</p>
+					<p>To system LearnPress runs normally, we need to upgrade database on your site.</p>
 					<p>
 						Please read these Terms and Conditions carefully before you upgrade the database of Learn Press
 						operated by ThimPress on your website. Your access to and use this action is conditioned on your

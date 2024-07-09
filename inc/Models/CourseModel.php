@@ -307,6 +307,10 @@ class CourseModel {
 			return $this->meta_data->{$key};
 		}
 
+		$coursePost              = new CoursePostModel( $this );
+		$sale_start              = $coursePost->get_meta_value_by_key( $key, false );
+		$this->meta_data->{$key} = $sale_start;
+
 		return $this->meta_data->{$key};
 	}
 
@@ -320,6 +324,10 @@ class CourseModel {
 		if ( $this->meta_data && isset( $this->meta_data->{$key} ) ) {
 			return $this->meta_data->{$key};
 		}
+
+		$coursePost              = new CoursePostModel( $this );
+		$sale_end                = $coursePost->get_meta_value_by_key( $key, false );
+		$this->meta_data->{$key} = $sale_end;
 
 		return $this->meta_data->{$key};
 	}
@@ -423,7 +431,7 @@ class CourseModel {
 				$item->type    = $sections_item->item_type;
 				$item_tmp      = LP_Course_Item::get_item( $item->id );
 				if ( $item_tmp ) {
-					$item->title = $item_tmp->get_title();
+					$item->title   = $item_tmp->get_title();
 					$item->preview = $item_tmp->is_preview();
 				}
 
@@ -471,13 +479,17 @@ class CourseModel {
 					continue;
 				}
 
-				$section_obj                   = new stdClass();
-				$section_obj->id               = $section_id;
-				$section_obj->order            = $section->section_order;
-				$section_obj->title            = html_entity_decode( $section->section_name );
-				$section_obj->description      = html_entity_decode( $section->section_description );
-				$section_obj->items            = [];
-				$sections_items[ $section_id ] = $section_obj;
+				$section_obj                      = new stdClass();
+				$section_obj->id                  = $section_id;
+				$section_obj->section_id          = $section_id;
+				$section_obj->order               = $section->section_order;
+				$section_obj->section_order       = $section->section_order;
+				$section_obj->title               = html_entity_decode( $section->section_name );
+				$section_obj->section_name        = html_entity_decode( $section->section_name );
+				$section_obj->description         = html_entity_decode( $section->section_description );
+				$section_obj->section_description = html_entity_decode( $section->section_description );
+				$section_obj->items               = [];
+				$sections_items[ $section_id ]    = $section_obj;
 			}
 
 			// Sort section by section_order
@@ -553,6 +565,7 @@ class CourseModel {
 	public static function find( int $course_id, bool $no_cache = true ) {
 		$filter_course     = new LP_Course_JSON_Filter();
 		$filter_course->ID = $course_id;
+
 		return self::get_item_model_from_db( $filter_course, $no_cache );
 	}
 

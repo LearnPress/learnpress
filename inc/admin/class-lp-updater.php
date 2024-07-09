@@ -26,6 +26,7 @@ class LP_Updater {
 			array(
 				'3' => 4, // DB v3 need up DB v4
 				'4' => 5, // DB v4 need up DB v5
+				'5' => 6, // DB v4 need up DB v6
 			)
 		);
 	}

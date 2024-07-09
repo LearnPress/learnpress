@@ -645,15 +645,17 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 
 				foreach ( $user_ids as $user_id ) {
 					delete_user_meta( $user_id, 'orders' );
+					$item_ids = $order->get_item_ids();
+					if ( ! empty( $item_ids ) ) {
+						foreach ( $order->get_item_ids() as $course_id ) {
+							// Check this order is the latest by user and course_id
+							$last_order_id = $lp_order_db->get_last_lp_order_id_of_user_course( $user_id, $course_id );
+							if ( $last_order_id && $last_order_id != $order->get_id() ) {
+								continue;
+							}
 
-					foreach ( $order->get_item_ids() as $course_id ) {
-						// Check this order is the latest by user and course_id
-						$last_order_id = $lp_order_db->get_last_lp_order_id_of_user_course( $user_id, $course_id );
-						if ( $last_order_id && $last_order_id != $order->get_id() ) {
-							continue;
+							$lp_user_items_db->delete_user_items_old( $user_id, $course_id );
 						}
-
-						$lp_user_items_db->delete_user_items_old( $user_id, $course_id );
 					}
 
 					do_action( 'learn-press/order/before-delete', $order, $user_id );
