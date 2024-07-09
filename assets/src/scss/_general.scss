@@ -504,14 +504,6 @@ $remove-icon-color: #e74c3c;
 		clear: both;
 		content: "";
 	}
-
-	&.ts-wrapper.plugin-remove_button:not(.rtl).disabled .item .remove {
-		display: none;
-	}
-
-	&.disabled .ts-control {
-		opacity: 1;
-	}
 }
 
 .lp-label-counter {

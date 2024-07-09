@@ -102,7 +102,7 @@ $user_ids     = $order->get_user_id();
 					<?php
 				} else {
 					?>
-					<div class="ts-wrapper advanced-list multi plugin-remove_button has-items disabled locked">
+					<div class="advanced-list">
 						<div class="ts-control">
 							<?php
 							if ( ! is_array( $user_ids ) ) {
