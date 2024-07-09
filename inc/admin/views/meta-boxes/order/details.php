@@ -117,7 +117,7 @@ $user_ids     = $order->get_user_id();
 								printf(
 									'<li data-id="%1$s"><div class="item" data-ts-item="">%2$s</div><input type="hidden" name="order-customer[]" value="%1$s"></li>',
 									$user_id,
-									sprintf( '%s (#%d) %s', $user->get_display_name(), $user->get_id(), $user->get_email() )
+									sprintf( '%s (#%d) - %s', $user->get_display_name(), $user->get_id(), $user->get_email() )
 								);
 							}
 							?>
