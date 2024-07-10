@@ -56,8 +56,6 @@ class LP_Setup_Wizard {
 	 */
 	public static function get_price_format() {
 		self::instance()->save();
-		// LP_Settings::instance()->refresh();
-		echo learn_press_format_price( 1234.56, true );
 		die();
 	}
 
@@ -176,10 +174,10 @@ class LP_Setup_Wizard {
 			return;
 		}
 
-		$postdata = LP_Request::get_array( 'settings' );
+		$postdata = LP_Request::get_param( 'settings' );
 		$steps    = array( 'payment', 'pages', 'currency', 'emails' );
 
-		if ( ( 'yes' !== LP_Request::get( 'skip' ) ) && in_array( $step, $steps ) ) {
+		if ( ( 'yes' !== LP_Request::get_param( 'skip' ) ) && in_array( $step, $steps ) ) {
 			if ( array_key_exists( 'paypal', $postdata ) ) {
 				update_option( 'learn_press_paypal', $postdata['paypal'] );
 			}
@@ -207,6 +205,9 @@ class LP_Setup_Wizard {
 					}
 				}
 			}
+
+			$lp_settings_cache = new LP_Settings_Cache( true );
+			$lp_settings_cache->clean_lp_settings();
 		}
 
 		do_action( 'learn-press/setup-wizard/update-settings', $postdata, $step );
