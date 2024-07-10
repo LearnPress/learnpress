@@ -546,6 +546,9 @@ class CourseModel {
 				$course_model               = new static( $course_obj );
 				$course_model->json         = $course_rs->json;
 				$course_model->post_content = $course_rs->post_content;
+				if ( $course_model->author instanceof stdClass ) {
+					$course_model->author = new UserModel( $course_model->author );
+				}
 			}
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );

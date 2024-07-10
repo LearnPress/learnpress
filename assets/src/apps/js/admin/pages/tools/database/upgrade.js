@@ -52,7 +52,7 @@ const upgradeDB = () => {
 	lpModalOverlay.setTitleModal( elToolUpgradeDB.find( 'h2' ).html() );
 	lpModalOverlay.elBtnYes.text( 'Upgrade' );
 	lpModalOverlay.elBtnYes.show();
-	lpModalOverlay.elBtnNo.text( 'close' );
+	lpModalOverlay.elBtnNo.text( 'Cancel' );
 	lpModalOverlay.callBackYes = function() {
 		if ( ! checkValidBeforeUpgrade() ) {
 			return;
