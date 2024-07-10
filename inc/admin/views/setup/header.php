@@ -15,11 +15,12 @@ defined( 'ABSPATH' ) || exit;
 	<meta name="viewport" content="width=device-width"/>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<title><?php esc_html_e( 'LearnPress &rsaquo; Setup Wizard', 'learnpress' ); ?></title>
-	<?php wp_print_scripts( 'lp-setup' ); ?>
-	<?php do_action( 'admin_print_styles' ); ?>
-	<?php do_action( 'admin_print_scripts' ); ?>
-	<?php //do_action( 'admin_head' ); ?>
-
+	<?php
+	wp_print_scripts( 'lp-setup' );
+	remove_action( 'admin_print_styles', 'print_emoji_styles' );
+	do_action( 'admin_print_styles' );
+	do_action( 'admin_print_scripts' );
+	?>
 </head>
 <body class="lp-setup wp-core-ui js">
 <div id="content">

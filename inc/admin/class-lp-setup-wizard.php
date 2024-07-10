@@ -70,11 +70,13 @@ class LP_Setup_Wizard {
 	 */
 	public function create_page( $page ) {
 		$page_titles = array(
-			'courses_page_id'          => _x( 'LP Courses', 'static-page', 'learnpress' ),
-			'profile_page_id'          => _x( 'LP Profile', 'static-page', 'learnpress' ),
-			'checkout_page_id'         => _x( 'LP Checkout', 'static-page', 'learnpress' ),
-			'become_a_teacher_page_id' => _x( 'LP Become a Teacher', 'static-page', 'learnpress' ),
-			'term_conditions_page_id'  => _x( 'LP Terms and Conditions', 'static-page', 'learnpress' ),
+			'courses_page_id'           => _x( 'LP Courses', 'static-page', 'learnpress' ),
+			'profile_page_id'           => _x( 'LP Profile', 'static-page', 'learnpress' ),
+			'checkout_page_id'          => _x( 'LP Checkout', 'static-page', 'learnpress' ),
+			'become_a_teacher_page_id'  => _x( 'LP Become a Teacher', 'static-page', 'learnpress' ),
+			'term_conditions_page_id'   => _x( 'LP Terms and Conditions', 'static-page', 'learnpress' ),
+			'instructors_page_id'       => _x( 'Instructors', 'static-page', 'learnpress' ),
+			'single_instructor_page_id' => _x( 'Instructor', 'static-page', 'learnpress' ),
 		);
 
 		if ( $page === 'profile_page_id' ) {
@@ -85,10 +87,10 @@ class LP_Setup_Wizard {
 
 		return wp_insert_post(
 			array(
-				'post_title'   => $page_titles[ $page ],
+				'post_title'   => $page_titles[ $page ] ?? $page,
 				'post_status'  => 'publish',
 				'post_type'    => 'page',
-				'post_content' => isset( $page_content ) ? $page_content : '',
+				'post_content' => $page_content,
 			)
 		);
 	}
@@ -125,7 +127,10 @@ class LP_Setup_Wizard {
 		// tungnx: fix error with Woocommerce
 		remove_action( 'admin_enqueue_scripts', array( 'Automattic\WooCommerce\Admin\Loader', 'register_scripts' ) );
 		remove_action( 'admin_enqueue_scripts', array( 'Automattic\WooCommerce\Admin\Loader', 'load_scripts' ), 15 );
-		remove_action( 'admin_enqueue_scripts', array( 'Automattic\WooCommerce\Admin\Features\Features', 'load_scripts' ), 15 );
+		remove_action( 'admin_enqueue_scripts', array(
+			'Automattic\WooCommerce\Admin\Features\Features',
+			'load_scripts'
+		), 15 );
 		// End fix
 		// @do_action( 'admin_enqueue_scripts' );
 
@@ -143,7 +148,13 @@ class LP_Setup_Wizard {
 		wp_enqueue_script( 'lp-utils', $assets->url( 'js/dist/utils.js' ) );
 		wp_enqueue_script( 'lp-admin', $assets->url( 'src/js/admin/admin.js' ), uniqid(), true );
 		wp_enqueue_script( 'drop-down-page', $assets->url( 'src/js/admin/share/dropdown-pages.js' ), uniqid(), true );
-		wp_register_script( 'lp-setup', $assets->url( 'js/dist/admin/pages/setup.js' ), array( 'jquery', 'lp-admin' ), uniqid(), true );
+		wp_register_script(
+			'lp-setup',
+			$assets->url( 'js/dist/admin/pages/setup.js' ),
+			array( 'jquery', 'lp-admin' ),
+			uniqid(),
+			true
+		);
 		wp_localize_script( 'lp-setup', 'lpGlobalSettings', learn_press_global_script_params() );
 		$lp_admin_assets = LP_Admin_Assets::instance();
 		wp_localize_script( 'lp-setup', 'lpDataAdmin', $lp_admin_assets->localize_data_global(), [ 'id' => 'lpDataAdmin' ] );
@@ -212,12 +223,12 @@ class LP_Setup_Wizard {
 			$steps = apply_filters(
 				'learn-press/setup-wizard/steps',
 				array(
-					'welcome'     => array(
+					'welcome' => array(
 						'title'       => __( 'Welcome', 'learnpress' ),
 						'callback'    => array( $this, 'step_welcome' ),
 						'next_button' => __( 'Run Setup Wizard', 'learnpress' ),
 					),
-					'pages'       => array(
+					'pages'   => array(
 						'title'    => __( 'Pages', 'learnpress' ),
 						'callback' => array( $this, 'step_pages' ),
 					),
@@ -227,18 +238,18 @@ class LP_Setup_Wizard {
 					// 'back_button'      => false,
 					// 'skip_prev_button' => false
 					// ),
-						'payment' => array(
-							'title'    => __( 'Payment', 'learnpress' ),
-							'callback' => array( $this, 'step_payment' ),
-						),
+					'payment' => array(
+						'title'    => __( 'Payment', 'learnpress' ),
+						'callback' => array( $this, 'step_payment' ),
+					),
 					// 'emails'   => array(
 					// 'title'    => __( 'Emails', 'learnpress' ),
 					// 'callback' => array( $this, 'step_emails' )
 					// ),
-						'finish'  => array(
-							'title'    => __( 'Finish', 'learnpress' ),
-							'callback' => array( $this, 'step_finish' ),
-						),
+					'finish'  => array(
+						'title'    => __( 'Finish', 'learnpress' ),
+						'callback' => array( $this, 'step_finish' ),
+					),
 				)
 			);
 		}
@@ -415,4 +426,5 @@ class LP_Setup_Wizard {
 		return $instance;
 	}
 }
+
 return LP_Setup_Wizard::instance();
