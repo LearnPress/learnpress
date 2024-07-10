@@ -189,5 +189,13 @@ return array(
 			KEY id_status (ID, post_status)
 		) $collate;
 	",
+	$lp_db->tb_thim_cache             => "
+		CREATE TABLE IF NOT EXISTS {$lp_db->tb_thim_cache} (
+			key_cache VARCHAR (191) NOT NULL UNIQUE,
+			value LONGTEXT NOT NULL,
+			expiration VARCHAR (191),
+			PRIMARY KEY (key_cache)
+		) $collate;
+	",
 );
 
