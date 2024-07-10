@@ -68,6 +68,7 @@ class Template {
 	public function get_frontend_template( string $file_name = '', array $args = array() ) {
 		$default_path          = LP_PLUGIN_PATH . "templates/{$file_name}";
 		$folder_name_rewrite   = learn_press_template_path();
+		$file_name             = sanitize_file_name( $file_name );
 		$from_child_theme_path = sprintf(
 			'%s/%s/%s',
 			get_stylesheet_directory(),
@@ -110,6 +111,7 @@ class Template {
 			$this->get_frontend_template( $file_name, $args );
 		}
 	}
+
 	/**
 	 * Include path file
 	 *
@@ -158,6 +160,7 @@ class Template {
 
 	/**
 	 * Check file template is overwritten
+	 *
 	 * @param string $file_name
 	 *
 	 * @return bool|string return false if not, path file if yes
