@@ -45,7 +45,7 @@ class LP_Upgrade_5 extends LP_Handle_Upgrade_Steps {
 			array(
 				'learnpress_user_items' => new LP_Group_Step(
 					'learnpress_user_items',
-					'Do not close this process until the process is complete',
+					'Optimize database courses. Do not close this process until the process is complete',
 					array(
 						'sync_table_courses'  => new LP_Step(
 							'sync_table_courses',
@@ -77,7 +77,9 @@ class LP_Upgrade_5 extends LP_Handle_Upgrade_Steps {
 
 		try {
 			if ( empty( $data ) ) {
-				// Check total rows.
+				// Check table learnpress_courses exists.
+				LP_Install::instance()->create_table_courses();
+
 				$total_row           = 0;
 				$filter              = new LP_Course_Filter();
 				$filter->post_status = [];

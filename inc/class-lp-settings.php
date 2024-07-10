@@ -340,7 +340,8 @@ class LP_Settings {
 	 * @return bool
 	 */
 	public static function is_created_tb_courses(): bool {
-		return get_option( 'tb_learnpress_courses' ) === 'yes';
+		$lp_db = LP_Database::getInstance();
+		return $lp_db->check_table_exists( $lp_db->tb_lp_courses );
 	}
 
 	/**
@@ -357,7 +358,8 @@ class LP_Settings {
 	 * @return boolean
 	 */
 	public static function is_created_tb_material_files(): bool {
-		return get_option( 'table_learnpress_files_created' ) === 'yes';
+		$lp_db = LP_Database::getInstance();
+		return $lp_db->check_table_exists( $lp_db->tb_lp_files );
 	}
 
 	public static function lp_material_file_types(): array {

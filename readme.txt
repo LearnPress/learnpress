@@ -214,6 +214,7 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Fixed: security.
 ~ Optimize courses.
 ~ Create table learnpress_courses from posts to query faster.
+~ Tweak: choose users when create manual LP Order.
 
 = 4.2.6.8.2 (2024-06-28) =
 ~ Added: function retrieve_password_message override message reset password.

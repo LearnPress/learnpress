@@ -152,7 +152,7 @@ return array(
 			KEY user_item_id (user_item_id)
 		) $collate;
 	",
-	$lp_db->tb_lp_files	=> "
+	$lp_db->tb_lp_files               => "
 		CREATE TABLE IF NOT EXISTS {$lp_db->tb_lp_files} (
 			file_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 			file_name varchar(191) NOT NULL DEFAULT '',
@@ -167,6 +167,26 @@ return array(
 			KEY file_name (file_name),
 			KEY item_id (item_id),
 			KEY item_type (item_type)
+		) $collate;
+	",
+	$lp_db->tb_lp_courses             => "
+		CREATE TABLE IF NOT EXISTS {$lp_db->tb_lp_courses} (
+			ID bigint(20) unsigned NOT NULL,
+			json LONGTEXT NOT NULL,
+			price_to_sort FLOAT,
+			is_sale int(1) default 0,
+			post_author bigint unsigned,
+			post_date_gmt datetime,
+			post_content LONGTEXT,
+			post_title text not null,
+			post_status varchar(20) default 'publish' not null,
+			post_name varchar(200) default '',
+			menu_order int default 0,
+			lang varchar(20),
+			PRIMARY KEY (ID),
+			KEY post_title (post_title(191)),
+			KEY post_status (post_status),
+			KEY id_status (ID, post_status)
 		) $collate;
 	",
 );

@@ -18,6 +18,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 	 */
 	class LP_Install {
 		protected static $instance;
+		protected $lp_db;
 		/**
 		 * Default pages used by LP
 		 *
@@ -35,6 +36,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 
 		protected function __construct() {
 			@set_time_limit( 0 );
+			$this->lp_db = LP_Database::getInstance();
 			// From LP v4.2.2 temporary run create table thim_cache.
 			// After a long time, will remove this code. Only run create table when activate plugin LP.
 			if ( ! LP_Settings::is_created_tb_thim_cache() ) {
@@ -135,7 +137,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			try {
 				$collation = $wpdb->has_cap( 'collation' ) ? $wpdb->get_charset_collate() : 'ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci';
 
-				$sql = "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}thim_cache (
+				$sql = "CREATE TABLE IF NOT EXISTS {$this->lp_db->tb_thim_cache} (
 					key_cache VARCHAR (191) NOT NULL UNIQUE,
 					value LONGTEXT NOT NULL,
 					expiration VARCHAR (191),
@@ -157,13 +159,13 @@ if ( ! function_exists( 'LP_Install' ) ) {
 		 *
 		 * @since 4.2.6.9
 		 */
-		private function create_table_courses() {
+		public function create_table_courses() {
 			global $wpdb;
 
 			try {
 				$collation = $wpdb->has_cap( 'collation' ) ? $wpdb->get_charset_collate() : 'ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci';
 
-				$sql = "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}learnpress_courses (
+				$sql = "CREATE TABLE IF NOT EXISTS {$this->lp_db->tb_lp_courses} (
 					ID bigint(20) unsigned NOT NULL,
 					json LONGTEXT NOT NULL,
 					price_to_sort FLOAT,
@@ -178,7 +180,8 @@ if ( ! function_exists( 'LP_Install' ) ) {
 					lang varchar(20),
 					PRIMARY KEY (ID),
 					KEY post_title (post_title(191)),
-					KEY post_status (post_status)
+					KEY post_status (post_status),
+					KEY id_status (ID, post_status)
 				) $collation";
 
 				$rs = $wpdb->query( $sql );
@@ -202,7 +205,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			try {
 				$collation = $wpdb->has_cap( 'collation' ) ? $wpdb->get_charset_collate() : 'ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci';
 
-				$sql = "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}learnpress_files (
+				$sql = "CREATE TABLE IF NOT EXISTS {$this->lp_db->tb_lp_files} (
 					file_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 					file_name varchar(191) NOT NULL DEFAULT '',
 					file_type varchar(100) NOT NULL DEFAULT '',
