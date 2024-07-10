@@ -33,10 +33,10 @@ class LP_Upgrade_5 extends LP_Handle_Upgrade_Steps {
 	 * LP_Upgrade_5 constructor.
 	 *
 	 * @see sync_table_courses
-	 * @see convert_lp_settings
+	 * @see finish_upgrade
 	 */
 	protected function __construct() {
-		$this->version = '4.0.0';
+		$this->version = '5.0.0';
 		/**
 		 * Name key not > 50 character
 		 */
@@ -45,17 +45,17 @@ class LP_Upgrade_5 extends LP_Handle_Upgrade_Steps {
 			array(
 				'learnpress_user_items' => new LP_Group_Step(
 					'learnpress_user_items',
-					'Sync table courses',
+					'Do not close this process until the process is complete',
 					array(
 						'sync_table_courses'  => new LP_Step(
 							'sync_table_courses',
 							'Sync table courses',
 							'This process sync post type lp_course to table learnpress_courses'
 						),
-						'convert_lp_settings' => new LP_Step(
-							'convert_lp_settings',
-							'Convert data settings learnpress',
-							'Courses thumbnail dimensions, Profile thumbnail dimensions, Profile rename dashboard to overview, Block course by duration, Block course when finished, Assessment course by quizzes - Evaluate, '
+						'finish_upgrade' => new LP_Step(
+							'finish_upgrade',
+							'Update settings',
+							'Update settings'
 						),
 					)
 				),
@@ -131,7 +131,7 @@ class LP_Upgrade_5 extends LP_Handle_Upgrade_Steps {
 	 *
 	 * @return LP_Step
 	 */
-	protected function convert_lp_settings(): LP_Step {
+	protected function finish_upgrade(): LP_Step {
 		$response = new LP_Step( __FUNCTION__, '' );
 		$lp_db    = LP_Database::getInstance();
 

@@ -357,7 +357,7 @@ class LP_Settings {
 	 * @return boolean
 	 */
 	public static function is_created_tb_material_files(): bool {
-		return get_option( 'table_learnpress_files_created' ) == 'yes';
+		return get_option( 'table_learnpress_files_created' ) === 'yes';
 	}
 
 	public static function lp_material_file_types(): array {
