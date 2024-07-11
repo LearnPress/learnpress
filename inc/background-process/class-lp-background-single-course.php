@@ -354,7 +354,7 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 				$courseObj->meta_data = $coursePost->get_all_metadata();
 
 				// Get from table learnpress_courses
-				$courseModel       = CourseModel::find( $coursePost->ID );
+				$courseModel = CourseModel::find( $coursePost->ID );
 				// Merge meta data
 				if ( ! empty( $courseModel ) ) {
 					$courseModelMeta      = json_decode( $courseModel->json );
@@ -371,6 +371,7 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 					continue;
 				}
 				foreach ( $fields['content'] as $meta_key => $option ) {
+					$option->id = $meta_key;
 					if ( isset( $this->data[ $meta_key ] ) ) {
 						switch ( $meta_key ) {
 							case CoursePostModel::META_KEY_DURATION:
@@ -380,6 +381,15 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 								break;
 							default:
 								break;
+						}
+
+						if ( $option instanceof LP_Meta_Box_Checkbox_Field ) {
+							$this->data[ $meta_key ] = 'yes';
+						}
+
+						if ( $option instanceof LP_Meta_Box_Extra_Faq_Field ) {
+							$option->save( $courseObj->get_id(), $this->data );
+							$this->data[ $meta_key ] = get_post_meta( $courseObj->get_id(), $meta_key, true );
 						}
 
 						$courseObj->meta_data->{$meta_key} = $this->data[ $meta_key ];
