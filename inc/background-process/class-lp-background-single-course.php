@@ -77,11 +77,15 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 			unset( $courseModel->total_items );
 			unset( $courseModel->sections_items );
 			unset( $courseModel->meta_data->_lp_final_quiz );
+			unset( $courseModel->categories );
+			unset( $courseModel->image_url );
 			$courseModel->get_author_model();
 			$courseModel->get_first_item_id();
 			$courseModel->get_total_items();
 			$courseModel->get_section_items();
 			$courseModel->get_final_quiz();
+			$courseModel->get_categories();
+			$courseModel->get_image_url();
 			$courseModel->save();
 
 			$this->save_extra_info();

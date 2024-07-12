@@ -1,5 +1,7 @@
 <?php
 
+use LearnPress\Models\CourseModel;
+use LearnPress\Models\CoursePostModel;
 use LearnPress\Models\Courses;
 
 /**
@@ -101,7 +103,18 @@ class LP_Upgrade_5 extends LP_Handle_Upgrade_Steps {
 			$filter->run_query_count = false;
 			$courses                 = Courses::get_courses( $filter );
 			foreach ( $courses as $course_obj ) {
-				LP_Course_Post_Type::instance()->save_post( $course_obj->ID, null, true );
+				$coursePostModel = new CoursePostModel( $course_obj );
+				$coursePostModel->get_all_metadata();
+				$courseModelNew = new CourseModel( $coursePostModel );
+				$courseModelNew->save();
+				$bg = LP_Background_Single_Course::instance();
+				$bg->data(
+					array(
+						'handle_name' => 'save_post',
+						'course_id'   => $courseModelNew->get_id(),
+						'data'        => [],
+					)
+				)->dispatch();
 			}
 
 			if ( $page >= $total_pages ) {
