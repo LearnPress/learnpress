@@ -55,6 +55,7 @@ class LP_Query {
 			'%content-item-only%'    => '(.*)',
 			'%is_single_instructor%' => '(.*)',
 			'%instructor_name%'      => '(.*)',
+			'%course-slug%'          => '(.*)',
 		];
 
 		$tags = apply_filters( 'learn-press/rewrite/tags', $tags );
@@ -130,7 +131,7 @@ class LP_Query {
 					foreach ( $course_item_slugs as $post_type => $course_item_slug ) {
 						$rules['course-with-cat-items'][ $post_type ] = [
 							"^{$course_slug}(?:/{$course_item_slug}/([^/]+))/?$" =>
-								'index.php?' . LP_COURSE_CPT . '=$matches[2]&course_category=$matches[1]&course-item=$matches[3]&item-type=' . $post_type,
+								'index.php?' . $post_type . '=$matches[3]&course_category=$matches[1]&course-slug=$matches[2]',
 						];
 					}
 				}
@@ -145,7 +146,7 @@ class LP_Query {
 				foreach ( $course_item_slugs as $post_type => $course_item_slug ) {
 					$rules['course-items'][ $post_type ] = [
 						"^{$course_slug}/([^/]+)(?:/{$course_item_slug}/([^/]+))/?$" =>
-							'index.php?' . LP_COURSE_CPT . '=$matches[1]&course-item=$matches[2]&item-type=' . $post_type,
+							'index.php?' . $post_type . '=$matches[2]&course-slug=$matches[1]',
 					];
 				}
 			}

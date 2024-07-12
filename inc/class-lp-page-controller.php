@@ -805,7 +805,7 @@ class LP_Page_Controller {
 		$post_type_apply_404 = apply_filters( 'lp/page-controller/', array( LP_LESSON_CPT, LP_QUIZ_CPT, LP_QUESTION_CPT, 'lp_assignment' ) );
 
 		if ( ! isset( $q->query_vars['post_type'] ) || ! in_array( $q->query_vars['post_type'], $post_type_apply_404 ) ) {
-			return $q;
+			return;
 		}
 
 		try {
