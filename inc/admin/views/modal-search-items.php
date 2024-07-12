@@ -1,4 +1,4 @@
-<script type="text/x-template" id="learn-press-modal-search-items">
+<script type="text/template" id="learn-press-modal-search-items">
 	<div id="modal-search-items" class="learn-press-modal">
 		<div class="modal-overlay">
 
