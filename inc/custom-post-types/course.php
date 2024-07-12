@@ -521,7 +521,10 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				if ( $post->post_status === 'auto-draft' ) {
 					return;
 				}
-				$courseModel = new CourseModel( $post );
+				$courseModel = CourseModel::find( $post_id );
+				if ( ! $courseModel ) {
+					$courseModel = new CourseModel( $post );
+				}
 
 				// Save option single course
 				include_once LP_PLUGIN_PATH . 'inc/admin/class-lp-admin.php';

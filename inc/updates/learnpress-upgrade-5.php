@@ -72,7 +72,7 @@ class LP_Upgrade_5 extends LP_Handle_Upgrade_Steps {
 	 */
 	protected function sync_table_courses( array $data ): LP_Step {
 		$response = new LP_Step( __FUNCTION__, 'Sync table courses' );
-		$limit    = 10;
+		$limit    = 5;
 		$page     = 1;
 
 		try {

@@ -44,7 +44,7 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 
 				$this->data      = LP_Request::get_param( 'data', [], 'text', 'post' );
 				$this->lp_course = CourseModel::find( $course_id, false );
-				if ( ! $this->lp_course ) {
+				if ( ! $this->lp_course instanceof CourseModel ) {
 					return;
 				}
 
@@ -71,10 +71,17 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 			}
 
 			$courseModel = $this->lp_course;
+			// Unset value of keys for calculate again
+			unset( $courseModel->author );
+			unset( $courseModel->first_item_id );
+			unset( $courseModel->total_items );
+			unset( $courseModel->sections_items );
+			unset( $courseModel->meta_data->_lp_final_quiz );
 			$courseModel->get_author_model();
 			$courseModel->get_first_item_id();
 			$courseModel->get_total_items();
 			$courseModel->get_section_items();
+			$courseModel->get_final_quiz();
 			$courseModel->save();
 
 			$this->save_extra_info();
