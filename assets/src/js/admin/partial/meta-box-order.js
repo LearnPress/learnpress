@@ -1,41 +1,45 @@
 ( function( $ ) {
 	'use strict';
-	window.$Vue = window.$Vue || Vue;
-
 	jQuery( function() {
 		// eslint-disable-next-line no-var
-		var $listItems = $( '.list-order-items' ).find( 'tbody' )
-
-		function getAddedItems() {
-			return $( '.list-order-items tbody' ).children( '.order-item-row' ).map( function() {
-				return $( this ).data( 'id' );
-			} ).get();
-		}
+		const $listItems = $( '#learn-press-order .list-order-items' ).find( 'tbody' );
 
 		$listItems.on( 'click', '.remove-order-item', function( e ) {
 			e.preventDefault();
+
 			const $item = $( this ).closest( 'tr' ),
 				item_id = $item.data( 'item_id' );
 
 			$item.remove();
+
 			if ( $listItems.children( ':not(.no-order-items)' ).length === 0 ) {
 				$listItems.find( '.no-order-items' ).show();
 			}
 
-			$Vue.http.post(
-				window.location.href, {
+			$.ajax( {
+				url: window.location.href,
+				type: 'POST',
+				data: {
 					order_id: $( '#post_ID' ).val(),
 					items: [ item_id ],
 					'lp-ajax': 'remove_items_from_order',
 					remove_nonce: $( this ).closest( '.order-item-row' ).data( 'remove_nonce' ),
-				}, {
-					emulateJSON: true,
-					params: {},
-				}
-			).then( function( response ) {
-				const result = LP.parseJSON( response.body || response.bodyText );
-				$( '.order-subtotal' ).html( result.order_data.subtotal_html );
-				$( '.order-total' ).html( result.order_data.total_html );
+				},
+				dataType: 'text',
+				success( response ) {
+					const jsonString = response.replace( /<-- LP_AJAX_START -->|<-- LP_AJAX_END -->/g, '' ).trim();
+					try {
+						const data = JSON.parse( jsonString );
+						$( '.order-subtotal' ).html( data.order_data.subtotal_html );
+						$( '.order-total' ).html( data.order_data.total_html );
+						$( '#item-container' ).html( data.item_html );
+					} catch ( e ) {
+						console.error( 'Error parsing JSON:', e );
+					}
+				},
+				error( xhr, status, error ) {
+					console.error( 'Request failed:', status, error );
+				},
 			} );
 		} );
 
@@ -51,41 +55,6 @@
 			select() {
 				console.log( arguments );
 			},
-		} );
-
-		$( '#learn-press-add-order-item' ).on( 'click', function() {
-			LP.$modalSearchItems.open( {
-				data: {
-					postType: 'lp_course',
-					context: 'order-items',
-					contextId: $( '#post_ID' ).val(),
-					exclude: getAddedItems(),
-					show: true,
-				},
-				callbacks: {
-					addItems() {
-						const that = this;
-						$Vue.http.post(
-							window.location.href, {
-								order_id: this.contextId,
-								items: this.selected,
-								'lp-ajax': 'add_items_to_order',
-								nonce: lpGlobalSettings.nonce,
-							}, {
-								emulateJSON: true,
-								params: {},
-							}	
-						).then( function( response ) {
-							const result = LP.parseJSON( response.body || response.bodyText ),
-								$noItem = $listItems.find( '.no-order-items' ).hide();
-							$( result.item_html ).insertBefore( $noItem );
-							$( '.order-subtotal' ).html( result.order_data.subtotal_html );
-							$( '.order-total' ).html( result.order_data.total_html );
-						} );
-						this.close();
-					},
-				},
-			} );
 		} );
 	} );
 }( jQuery ) );

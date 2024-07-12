@@ -7,26 +7,24 @@
 			<div class="modal-container">
 				<header><?php echo wp_kses_post( $this->_options['title'] ); ?></header>
 				<article>
-					<input type="text" name="search" @keyup="doSearch" ref="term" value="" placeholder="<?php esc_html_e( 'Search items', 'learnpress' ); ?>" autocomplete="off"/>
-					<ul class="search-results" @click="selectItem"></ul>
+					<input type="text" name="search" value="" placeholder="<?php esc_html_e( 'Search items', 'learnpress' ); ?>" autocomplete="off"/>
+					<ul class="search-results"></ul>
 				</article>
 				<footer>
-					<div class="search-nav" @click="loadPage" v-if="hasItems">
+					<div class="search-nav" style="display:none">
 					</div>
-					<button class="button"
-							@click="close"><?php echo wp_kses_post( $this->_options['close_button'] ); ?></button>
-					<button class="button button-primary"
-							@click="addItems"
-							v-if="selected.length"><?php echo wp_kses_post( $this->_options['add_button'] ); ?></button>
+					<button class="button close"><?php echo wp_kses_post( $this->_options['close_button'] ); ?></button>
+					<button class="button button-primary add" style="display:none"><?php echo wp_kses_post( $this->_options['add_button'] ); ?></button>
 				</footer>
 			</div>
 		</div>
 	</div>
 </script>
-<div id="vue-modal-search-items" style="position: relative;z-index: 10000;">
-	<learn-press-modal-search-items v-if="show" :post-type="postType" :term="term" :context="context"
-									:context-id="contextId" :show="show" :callbacks="callbacks"
-									:exclude="exclude"
-									v-on:close="close">
-	</learn-press-modal-search-items>
+<?php
+
+?>
+<div id="container-modal-search-items" style="position: relative;z-index: 10000;">
 </div>
+
+
+
