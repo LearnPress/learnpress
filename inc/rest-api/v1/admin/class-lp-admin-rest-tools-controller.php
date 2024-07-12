@@ -406,11 +406,11 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 
 			$role_in = sanitize_text_field( $params['role_in'] ?? '' );
 			if ( ! empty( $role_in ) ) {
-				$args_get_user['role__in'] = array( $role_in );
+				$args_get_user['role__in'] = explode( ',', $role_in );
 			}
 
 			$id_not_in = sanitize_text_field( $params['id_not_in'] ?? '' );
-			if ( ! empty( $role_in ) ) {
+			if ( ! empty( $id_not_in ) ) {
 				$args_get_user['exclude'] = explode( ',', $id_not_in );
 			}
 

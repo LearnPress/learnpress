@@ -1,3 +1,5 @@
+import { searchUserAdmin, searchUserOrder, selectAuthorCourse, selectCoInstructor } from "./init-tom-select";
+
 ( function( $ ) {
 	/*const updateItemPreview = function updateItemPreview() {
 		$.ajax( {
@@ -314,7 +316,7 @@
 				$( '.lp-sortable-handle' ).css( 'cursor', '' );
 			} );
 
-		$.fn._filter_post_by_author();
+		// $.fn._filter_post_by_author();
 
 		// Scroll to Passing grade when click link final Quiz in Course Setting.
 		if ( window.location.hash ) {
@@ -356,3 +358,10 @@
 
 	$( document ).ready( onReady );
 }( jQuery ) );
+
+document.addEventListener("DOMContentLoaded", () => {
+	selectAuthorCourse();
+	searchUserAdmin();
+	searchUserOrder();
+	selectCoInstructor();
+});

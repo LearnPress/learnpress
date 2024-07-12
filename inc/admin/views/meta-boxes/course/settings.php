@@ -272,19 +272,6 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 		$author = $post ? $post->post_author : get_current_user_id();
 
 		$options = array();
-		$role    = array( 'administrator', 'lp_teacher' );
-
-		$role = apply_filters( 'learn_press_course_author_role_meta_box', $role );
-
-		foreach ( $role as $_role ) {
-			$users_by_role = get_users( array( 'role' => $_role ) );
-
-			if ( $users_by_role ) {
-				foreach ( $users_by_role as $user ) {
-					$options[ $user->get( 'ID' ) ] = $user->user_login;
-				}
-			}
-		}
 
 		return apply_filters(
 			'lp/course/meta-box/fields/author',
