@@ -91,6 +91,10 @@ abstract class LP_Meta_Box {
 
 		self::$saved_meta_boxes = true;
 
+		// Not apply for course.
+		if ( $post->post_type === LP_COURSE_CPT ) {
+			return;
+		}
 		do_action( 'learnpress_save_' . $post->post_type . '_metabox', $post_id, $post );
 	}
 }

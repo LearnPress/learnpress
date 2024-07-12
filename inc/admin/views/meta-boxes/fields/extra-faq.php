@@ -29,6 +29,7 @@ class LP_Meta_Box_Extra_Faq_Field extends LP_Meta_Box_Field {
 		<div class="form-field lp_course_faq_meta_box">
 			<label for="_lp_key_features"><?php echo wp_kses_post( $this->label ); ?></label>
 			<div class="lp_course_faq_meta_box__content">
+				<input type="hidden" name="<?php echo esc_attr( $this->id ) ?>" value="">
 				<div class="lp_course_faq_meta_box__fields">
 					<?php if ( ! empty( $faqs[0][0] ) ) : ?>
 						<?php foreach ( $faqs as $key => $faq ) : ?>
@@ -75,8 +76,8 @@ class LP_Meta_Box_Extra_Faq_Field extends LP_Meta_Box_Field {
 	}
 
 	public function save( $post_id ) {
-		$faqs_question = isset( $_POST['_lp_faqs_question'] ) ? LP_Helper::sanitize_params_submitted( $_POST['_lp_faqs_question'], 'html' ) : array();
-		$faqs_answer   = isset( $_POST['_lp_faqs_answer'] ) ? LP_Helper::sanitize_params_submitted( $_POST['_lp_faqs_answer'], 'html' ) : array();
+		$faqs_question = LP_Request::get_param( '_lp_faqs_question', [], 'html' );
+		$faqs_answer   = LP_Request::get_param( '_lp_faqs_answer', [], 'html' );
 
 		$faqs = array();
 		if ( ! empty( $faqs_question ) ) {

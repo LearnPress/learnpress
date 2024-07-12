@@ -66,7 +66,8 @@ class LP_Meta_Box_Autocomplete_Field extends LP_Meta_Box_Field {
 			'rest_url'    => rest_url(),
 		);
 		?>
-		<p class="form-field lp_autocomplete_metabox_field <?php echo esc_attr( $field['id'] . '_field ' . $wrapper_class ); ?>" data-atts="<?php echo esc_attr( wp_json_encode( $data_atts ) ); ?>">
+		<p class="form-field lp_autocomplete_metabox_field <?php echo esc_attr( $field['id'] . '_field ' . $wrapper_class ); ?>"
+			data-atts="<?php echo esc_attr( wp_json_encode( $data_atts ) ); ?>">
 			<label for="<?php echo esc_attr( $field['id'] ); ?>">
 				<?php echo wp_kses_post( $field['label'] ); ?>
 			</label>
@@ -115,12 +116,10 @@ class LP_Meta_Box_Autocomplete_Field extends LP_Meta_Box_Field {
 	}
 
 	public function save( $post_id ) {
-		$raw_value = isset( $_POST[ $this->id ] ) ? (array) wp_unslash( $_POST[ $this->id ] ) : array();
-		$value     = array_map( 'absint', $raw_value );
-		$value     = apply_filters( 'learn-press/admin/metabox/autocomplete/' . $this->id . '/save', $value, $raw_value, $post_id );
+		$value = LP_Request::get_param( $this->id, $this->default ?? [] );
 
 		update_post_meta( $post_id, $this->id, $value );
 
-		do_action( 'lp/metabox/field/autocomplete/save/after', $post_id, $this->id, $value );
+		return $value;
 	}
 }

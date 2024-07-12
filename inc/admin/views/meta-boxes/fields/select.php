@@ -12,11 +12,10 @@ class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
 	/**
 	 * Constructor.
 	 *
-	 * @param string $id
 	 * @param string $label
 	 * @param string $description
-	 * @param mixed  $default
-	 * @param array  $extra
+	 * @param mixed $default
+	 * @param array $extra
 	 */
 	public function __construct( $label = '', $description = '', $default = '', $extra = array() ) {
 		parent::__construct( $label, $description, $default, $extra );
@@ -24,6 +23,7 @@ class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
 
 	public function meta_value( $thepostid ) {
 		$multil_meta = isset( $this->extra['multil_meta'] ) ? $this->extra['multil_meta'] : false;
+
 		return $multil_meta ? get_post_meta( $thepostid, $this->id, false ) : get_post_meta( $thepostid, $this->id, true );
 	}
 
@@ -105,21 +105,19 @@ class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
 	public function save( $post_id ) {
 		$multiple_meta = $this->extra['multil_meta'] ?? false;
 
-		if ( ! isset( $_POST[ $this->id ] ) ) {
-			return;
-		}
-
 		if ( ! empty( $this->extra['custom_save'] ) ) {
 			do_action( 'learnpress/admin/metabox/select/save', $this->id, $_POST[ $this->id ], $post_id );
+
 			return;
 		}
 
 		if ( $multiple_meta ) {
-			$get_values = get_post_meta( $post_id, $this->id ) ?? array();
-			$new_values = LP_Helper::sanitize_params_submitted( $_POST[ $this->id ] ?? [] );
+			$data       = LP_Request::get_param( $this->id, $this->default ?? [] );
+			$get_values = get_post_meta( $post_id, $this->id ) ?? [];
+			$new_values = $data;
 
-			$array_get_values = ! empty( $get_values ) ? array_values( $get_values ) : array();
-			$array_new_values = ! empty( $new_values ) ? array_values( $new_values ) : array();
+			$array_get_values = ! empty( $get_values ) ? array_values( $get_values ) : [];
+			$array_new_values = ! empty( $new_values ) ? array_values( $new_values ) : [];
 
 			$del_val = array_diff( $array_get_values, $array_new_values );
 			$new_val = array_diff( $array_new_values, $array_get_values );
@@ -131,26 +129,30 @@ class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
 			foreach ( $new_val as $level_id ) {
 				add_post_meta( $post_id, $this->id, $level_id, false );
 			}
+
+			return $data;
 		} else {
 			$multiple = ! empty( $this->extra['multiple'] );
-
 			if ( $multiple ) {
-				$value_tmp = ! empty( $_POST[ $this->id ] ) ? LP_Helper::sanitize_params_submitted( $_POST[ $this->id ] ) : array();
+				$data = LP_Request::get_param( $this->id, $this->default ?? [] );
 				// Clear item has value empty.
 				$value = [];
 				array_map(
-					function( $item ) use ( &$value ) {
+					function ( $item ) use ( &$value ) {
 						if ( $item !== '' ) {
 							$value[] = $item;
 						}
 					},
-					$value_tmp
+					$data
 				);
 			} else {
-				$value = ! empty( $_POST[ $this->id ] ) ? sanitize_text_field( wp_unslash( $_POST[ $this->id ] ) ) : '';
+				$data  = LP_Request::get_param( $this->id, $this->default ?? '' );
+				$value = $data;
 			}
 
 			update_post_meta( $post_id, $this->id, $value );
+
+			return $value;
 		}
 	}
 }

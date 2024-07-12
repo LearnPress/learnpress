@@ -56,7 +56,7 @@ class LP_Meta_Box_Repeater_Field extends LP_Meta_Box_Field {
 	}
 
 	public function save( $post_id ) {
-		$data   = isset( $_POST[ $this->id ] ) ? wp_unslash( $_POST[ $this->id ] ) : array();
+		$data   = LP_Request::get_param( $this->id, $this->default ?? [] );
 		$output = array();
 
 		if ( ! empty( $data ) && is_array( $data ) ) {
@@ -75,6 +75,8 @@ class LP_Meta_Box_Repeater_Field extends LP_Meta_Box_Field {
 		}
 
 		update_post_meta( $post_id, $this->id, $output );
+
+		return $output;
 	}
 
 	public function repeater_html( $thepostid, $repeater, $is_attr = false, $key = 'lp_metabox_repeater_key' ) {

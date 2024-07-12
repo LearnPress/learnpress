@@ -8,6 +8,7 @@
  */
 
 use LearnPress\Models\CourseModel;
+use LearnPress\Models\CoursePostModel;
 
 defined( 'ABSPATH' ) || exit();
 
@@ -501,29 +502,109 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 
 		/**
 		 * Save course post
-		 * Should write run background if handle big and need more time
 		 *
 		 * @param int $post_id
 		 * @param WP_Post $post
-		 * @param bool $update
+		 * @param bool $is_update
 		 *
 		 * @since 4.2.6.9
 		 * @version 1.0.0
-		 * @see LP_Background_Single_Course::handle()
 		 */
-		public function after_insert_post( int $post_id, WP_Post $post = null, bool $update = false ) {
-			// Save in background.
-			$bg = LP_Background_Single_Course::instance();
+		public function save_post( int $post_id, WP_Post $post = null, bool $is_update = false ) {
+			try {
+				// Save to table learnpress_courses
+				LP_Install::instance()->create_table_courses();
+				if ( empty( $post ) ) {
+					$post = get_post( $post_id );
+				}
 
-			$bg->data(
-				array(
-					'handle_name' => 'save_post',
-					'course_id'   => $post_id,
-					'post_obj'    => json_encode( $post, JSON_UNESCAPED_UNICODE ),
-					'update'      => $update,
-					'data'        => $_POST ?? array(),
-				)
-			)->dispatch();
+				if ( $post->post_status === 'auto-draft' ) {
+					return;
+				}
+				$courseModel = new CourseModel( $post );
+
+				// Save option single course
+				include_once LP_PLUGIN_PATH . 'inc/admin/class-lp-admin.php';
+				$lp_meta_box_course = new LP_Meta_Box_Course();
+				$ground_fields      = $lp_meta_box_course->metabox( $courseModel->ID );
+				// Save meta fields
+				foreach ( $ground_fields as $fields ) {
+					if ( ! isset( $fields['content'] ) ) {
+						continue;
+					}
+					foreach ( $fields['content'] as $meta_key => $option ) {
+						$option->id = $meta_key;
+						if ( ! $option instanceof LP_Meta_Box_Field ) {
+							continue;
+						}
+
+						if ( isset( $_POST[ $meta_key ] ) ) {
+							$value_saved = $option->save( $courseModel->ID );
+							if ( ! empty( $value_saved ) ) {
+								$courseModel->meta_data->{$meta_key} = $value_saved;
+							} else {
+								$courseModel->meta_data->{$meta_key} = get_post_meta( $courseModel->ID, $meta_key, true );
+							}
+						} elseif ( ! $is_update ) {
+							$courseModel->meta_data->{$meta_key} = $option->default ?? '';
+						}
+					}
+				}
+
+				$this->save_price( $courseModel );
+				$courseModel->save();
+				// End save to table learnpress_courses
+
+				// Save extra info course
+				// Save in background.
+				$bg = LP_Background_Single_Course::instance();
+				$bg->data(
+					array(
+						'handle_name' => 'save_post',
+						'course_id'   => $post_id,
+						'data'        => $_POST ?? [],
+					)
+				)->dispatch();
+			} catch ( Throwable $e ) {
+				error_log( __METHOD__ . ' ' . $e->getMessage() );
+			}
+		}
+
+		/**
+		 * Save price course
+		 *
+		 * @return void
+		 */
+		protected function save_price( CourseModel &$courseObj ) {
+			$coursePost = new CoursePostModel( $courseObj );
+
+			$regular_price = $courseObj->get_regular_price();
+			$sale_price    = $courseObj->get_sale_price();
+			if ( (float) $regular_price < 0 ) {
+				$courseObj->meta_data->{CoursePostModel::META_KEY_REGULAR_PRICE} = '';
+				$regular_price                                                   = $courseObj->get_regular_price();
+			}
+
+			if ( (float) $sale_price > (float) $regular_price ) {
+				$courseObj->meta_data->{CoursePostModel::META_KEY_SALE_PRICE} = '';
+				$sale_price                                                   = $courseObj->get_sale_price();
+			}
+
+			// Save sale regular price and sale price to table postmeta
+			$coursePost->save_meta_value_by_key( CoursePostModel::META_KEY_REGULAR_PRICE, $regular_price );
+			$coursePost->save_meta_value_by_key( CoursePostModel::META_KEY_SALE_PRICE, $sale_price );
+
+			$has_sale = $courseObj->has_sale_price();
+			if ( $has_sale ) {
+				$courseObj->is_sale = 1;
+				$coursePost->save_meta_value_by_key( CoursePostModel::META_KEY_IS_SALE, 1 );
+			} else {
+				$courseObj->is_sale = 0;
+				delete_post_meta( $courseObj->get_id(), CoursePostModel::META_KEY_IS_SALE );
+			}
+
+			// Set price to sort on lists.
+			$courseObj->price_to_sort = $courseObj->get_price();
 		}
 
 		/**

@@ -70,7 +70,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 		return $tabs;
 	}
 
-	public function general( $thepostid ) {
+	public function general( $post_id ) {
 		$repurchase_option_desc  = sprintf( '1. %s', __( 'Reset course progress: The course progress and results of student will be removed.' ) );
 		$repurchase_option_desc .= '<br/>' . sprintf( '2. %s', __( 'Keep course progress: The course progress and results of student will remain.' ) );
 		$repurchase_option_desc .= '<br/>' . sprintf( '3. %s', __( 'Open popup: The student can decide whether their course progress will be reset with the confirm popup.' ) );
@@ -463,8 +463,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 		<?php
 	}
 
-	public function save( $post_id ) {
-		return;
+	/*public function save( $post_id ) {
 		if ( ! empty( $this->metabox( $post_id ) ) ) {
 			foreach ( $this->metabox( $post_id ) as $key => $tab_content ) {
 				if ( isset( $tab_content['content'] ) ) {
@@ -523,7 +522,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 
 			$wpdb->update( $wpdb->posts, array( 'post_author' => $author ), array( 'ID' => $post_id ) );
 		}
-	}
+	}*/
 
 	private static function data_tabs_sort( $a, $b ) {
 		if ( ! isset( $a['priority'], $b['priority'] ) ) {

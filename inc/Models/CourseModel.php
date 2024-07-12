@@ -234,7 +234,7 @@ class CourseModel {
 	public function get_regular_price() {
 		$key = CoursePostModel::META_KEY_REGULAR_PRICE;
 		if ( $this->meta_data && isset( $this->meta_data->{$key} ) ) {
-			return (float) $this->meta_data->{$key};
+			return $this->meta_data->{$key};
 		}
 
 		$coursePost              = new CoursePostModel( $this );
@@ -540,6 +540,17 @@ class CourseModel {
 
 		try {
 			$filter->only_fields = [ 'json', 'post_content' ];
+			// Load cache
+			if ( ! $no_cache ) {
+				$key_cache = "course-model/{$filter->ID}";
+				$lp_course_cache = new LP_Course_Cache();
+				$course_model = $lp_course_cache->get_cache( $key_cache );
+
+				if ( $course_model instanceof CourseModel ) {
+					return $course_model;
+				}
+			}
+
 			$course_rs           = self::get_course_from_db( $filter );
 			if ( $course_rs instanceof stdClass && isset( $course_rs->json ) ) {
 				$course_obj                 = LP_Helper::json_decode( $course_rs->json );
@@ -617,6 +628,12 @@ class CourseModel {
 		} else { // Update data.
 			$lp_course_json_db->update_data( $data );
 		}
+
+		// Set cache single course when save done.
+		$key_cache = "course-model/{$this->ID}";
+		$lp_course_cache = new LP_Course_Cache();
+		$lp_course_cache->clear( $this->ID );
+		$lp_course_cache->set_cache( $key_cache, $this->ID );
 
 		return $this;
 	}

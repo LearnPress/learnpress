@@ -15,8 +15,8 @@ class LP_Meta_Box_Duration_Field extends LP_Meta_Box_Field {
 	 * @param string $id
 	 * @param string $label
 	 * @param string $description
-	 * @param mixed  $default
-	 * @param array  $extra
+	 * @param mixed $default
+	 * @param array $extra
 	 */
 	public function __construct( $label = '', $description = '', $default = '', $extra = array() ) {
 		parent::__construct( $label, $description, $default, $extra );
@@ -90,9 +90,11 @@ class LP_Meta_Box_Duration_Field extends LP_Meta_Box_Field {
 		$duration      = learn_press_get_course_duration_support();
 		$duration_keys = array_keys( $duration );
 		$default_time  = ! empty( $this->extra['default_time'] ) ? $this->extra['default_time'] : end( $duration_keys );
-
-		$duration = isset( $_POST[ $this->id ][0] ) && $_POST[ $this->id ][0] !== '' ? absint( wp_unslash( $_POST[ $this->id ][0] ) ) . ' ' . trim( wp_unslash( $_POST[ $this->id ][1] ) ) : absint( $this->default ) . ' ' . trim( $default_time );
+		$data          = LP_Request::get_param( $this->id, [] );
+		$duration      = isset( $data[0] ) && $data[0] !== '' ? absint( $data[0] ) . ' ' . trim( $data[1] ) : absint( $this->default ) . ' ' . trim( $default_time );
 
 		update_post_meta( $post_id, $this->id, $duration );
+
+		return $duration;
 	}
 }

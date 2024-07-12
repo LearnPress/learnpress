@@ -150,7 +150,7 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 				$this->duplicate_sections( $course_id_new, $course_origin );
 
 				// Call save course duplicate
-				LP_Course_Post_Type::instance()->save( $course_id_new );
+				LP_Course_Post_Type::instance()->save_post( $course_id_new );
 
 				do_action( 'learn-press/item/after-duplicate', $course_id, $course_id_new, $args );
 			} catch ( Throwable $e ) {

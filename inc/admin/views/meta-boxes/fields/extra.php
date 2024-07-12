@@ -14,8 +14,8 @@ class LP_Meta_Box_Extra_Field extends LP_Meta_Box_Field {
 	 *
 	 * @param string $label
 	 * @param string $description
-	 * @param mixed  $default
-	 * @param array  $extra
+	 * @param mixed $default
+	 * @param array $extra
 	 */
 	public function __construct( $label = '', $description = '', $default = '', $extra = array() ) {
 		parent::__construct( $label, $description, $default, $extra );
@@ -44,7 +44,16 @@ class LP_Meta_Box_Extra_Field extends LP_Meta_Box_Field {
 					<?php endif; ?>
 				</div>
 
-				<a href="#" class="button button-primary lp_course_extra_meta_box__add" data-add="<?php echo esc_attr( '<div class="lp_course_extra_meta_box__field"><span class="sort"></span></a><input name="' . $this->id . '[]" value="" type="text" class="lp_course_extra_meta_box__input"><a href="#" class="delete"></a></div>' ); ?>">
+				<a href="#" class="button button-primary lp_course_extra_meta_box__add"
+				   data-add="
+				   <?php echo esc_attr(
+					'<div class="lp_course_extra_meta_box__field">
+						<span class="sort"></span>
+						<input name="' . $this->id . '[]" value="" type="text" class="lp_course_extra_meta_box__input">
+						<a href="#" class="delete"></a>
+					</div>'
+					);
+				   ?>">
 					<?php esc_html_e( '+ Add more', 'learnpress' ); ?>
 				</a>
 			</div>
@@ -53,8 +62,10 @@ class LP_Meta_Box_Extra_Field extends LP_Meta_Box_Field {
 	}
 
 	public function save( $post_id ) {
-		$fields = isset( $_POST[ $this->id ] ) ? LP_Helper::sanitize_params_submitted( $_POST[ $this->id ], 'html' ) : array();
+		$fields = LP_Request::get_param( $this->id, $this->default ?? [], 'html' );
 
 		update_post_meta( $post_id, $this->id, $fields );
+
+		return $fields;
 	}
 }
