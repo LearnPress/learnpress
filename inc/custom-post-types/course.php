@@ -512,7 +512,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 */
 		public function save_post( int $post_id, WP_Post $post = null, bool $is_update = false ) {
 			try {
-				$wp_screen = get_current_screen();
+				$wp_screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
 				// Save to table learnpress_courses
 				LP_Install::instance()->create_table_courses();
 				if ( empty( $post ) ) {
