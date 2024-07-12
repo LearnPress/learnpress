@@ -105,6 +105,12 @@
 
 				event.preventDefault();
 
+				const buttons = modalSearchItems.querySelectorAll( '.search-nav *' );
+
+				buttons.forEach( ( button ) => {
+					button.classList.add( 'disabled' );
+				} );
+
 				if ( target.classList.contains( 'next' ) ) {
 					paged++;
 				} else if ( target.classList.contains( 'prev' ) ) {
@@ -235,12 +241,13 @@
 			mountSearchModal();
 			focusSearch();
 			search();
-			doSearch();
-			loadPage();
-			selectItems();
-			addItems();
-			closeModal();
 		} );
+
+		doSearch();
+		loadPage();
+		selectItems();
+		addItems();
+		closeModal();
 	} );
 }( jQuery ) );
 
