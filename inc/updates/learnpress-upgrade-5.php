@@ -101,8 +101,7 @@ class LP_Upgrade_5 extends LP_Handle_Upgrade_Steps {
 			$filter->run_query_count = false;
 			$courses                 = Courses::get_courses( $filter );
 			foreach ( $courses as $course_obj ) {
-				$course_post = new WP_Post( $course_obj );
-				LP_Course_Post_Type::instance()->after_insert_post( $course_obj->ID, $course_post, true );
+				LP_Course_Post_Type::instance()->save_post( $course_obj->ID, null, true );
 			}
 
 			if ( $page >= $total_pages ) {

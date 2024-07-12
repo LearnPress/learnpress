@@ -512,14 +512,19 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 */
 		public function save_post( int $post_id, WP_Post $post = null, bool $is_update = false ) {
 			try {
+				// Save to table learnpress_courses
+				LP_Install::instance()->create_table_courses();
+				if ( empty( $post ) ) {
+					$post = get_post( $post_id );
+				}
+
 				if ( $post->post_status === 'auto-draft' ) {
 					return;
 				}
-				// Save to table learnpress_courses
-				LP_Install::instance()->create_table_courses();
 				$courseModel = new CourseModel( $post );
 
 				// Save option single course
+				include_once LP_PLUGIN_PATH . 'inc/admin/class-lp-admin.php';
 				$lp_meta_box_course = new LP_Meta_Box_Course();
 				$ground_fields      = $lp_meta_box_course->metabox( $courseModel->ID );
 				// Save meta fields
@@ -549,6 +554,17 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				$this->save_price( $courseModel );
 				$courseModel->save();
 				// End save to table learnpress_courses
+
+				// Save extra info course
+				// Save in background.
+				$bg = LP_Background_Single_Course::instance();
+				$bg->data(
+					array(
+						'handle_name' => 'save_post',
+						'course_id'   => $post_id,
+						'data'        => $_POST ?? [],
+					)
+				)->dispatch();
 			} catch ( Throwable $e ) {
 				error_log( __METHOD__ . ' ' . $e->getMessage() );
 			}
@@ -590,33 +606,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			// Set price to sort on lists.
 			$courseObj->price_to_sort = $courseObj->get_price();
 		}
-
-		/**
-		 * Preserve additional information for the course post
-		 * Should write run background if handle big and need more time
-		 *
-		 * @param int $post_id
-		 * @param WP_Post $post
-		 * @param bool $update
-		 *
-		 * @since 4.2.6.9
-		 * @version 1.0.0
-		 * @see LP_Background_Single_Course::handle()
-		 */
-		/*public function after_insert_post( int $post_id, WP_Post $post = null, bool $update = false ) {
-			// Save in background.
-			$bg = LP_Background_Single_Course::instance();
-
-			$bg->data(
-				array(
-					'handle_name' => 'save_post',
-					'course_id'   => $post_id,
-					'post_obj'    => json_encode( $post, JSON_UNESCAPED_UNICODE ),
-					'update'      => $update,
-					'data'        => $_POST ?? array(),
-				)
-			)->dispatch();
-		}*/
 
 		/**
 		 * Clear cache courses

@@ -42,7 +42,11 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 					return;
 				}
 
-				$this->data = LP_Request::get_param( 'data', [], 'text', 'post' );
+				$this->data      = LP_Request::get_param( 'data', [], 'text', 'post' );
+				$this->lp_course = CourseModel::find( $course_id, false );
+				if ( ! $this->lp_course ) {
+					return;
+				}
 
 				switch ( $handle_name ) {
 					case 'save_post':
@@ -66,14 +70,13 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 				error_log( 'Not permission save background course' );
 			}
 
-			$post_obj_str = LP_Request::get_param( 'post_obj', [], 'text', 'post' );
-			$is_update    = LP_Request::get_param( 'update', [], 'int', 'post' );
-			if ( empty( $post_obj_str ) ) {
-				return;
-			}
+			$courseModel = $this->lp_course;
+			$courseModel->get_author_model();
+			$courseModel->get_first_item_id();
+			$courseModel->get_total_items();
+			$courseModel->get_section_items();
+			$courseModel->save();
 
-			$post_obj        = LP_Helper::json_decode( $post_obj_str );
-			$this->lp_course = $this->save_data_to_table_courses( $post_obj, $is_update );
 			$this->save_extra_info();
 			$this->clean_data_invalid();
 			$this->review_post_author();
@@ -205,7 +208,7 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 		/**
 		 * Save Extra info of course
 		 *
-		 * @author tungnx
+		 * @TODO after use value from CourseModel, will not use this function
 		 * @since 4.1.4.1
 		 * @version 1.0.1
 		 */
@@ -240,7 +243,7 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 				$extra_info->sections_items = $sections_items;
 
 				// Check items removed course, will delete on 'learnpress_user_items', 'learnpress_user_item_results' table
-				$this->delete_user_items_data( $sections_items );
+				$this->delete_user_items_data();
 
 				// @since 4.2.1
 				do_action( 'lp/course/extra-info/before-save', $lp_course, $extra_info );

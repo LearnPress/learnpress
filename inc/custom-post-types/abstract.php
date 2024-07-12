@@ -212,12 +212,12 @@ abstract class LP_Abstract_Post_Type {
 	 *
 	 * @param int $post_id
 	 * @param WP_Post $post
-	 * @param bool $update
+	 * @param bool $is_update
 	 *
 	 * @since 4.2.6.9
 	 * @version 1.0.0
 	 */
-	public function save_post( int $post_id, WP_Post $post = null, bool $update = false ) {
+	public function save_post( int $post_id, WP_Post $post = null, bool $is_update = false ) {
 		// Implement from child
 	}
 
