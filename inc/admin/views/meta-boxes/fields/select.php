@@ -112,7 +112,7 @@ class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
 		}
 
 		if ( $multiple_meta ) {
-			$data       = LP_Request::get_param( $this->id, [], $this->default ?? [] );
+			$data       = LP_Request::get_param( $this->id, $this->default ?? [] );
 			$get_values = get_post_meta( $post_id, $this->id ) ?? [];
 			$new_values = $data;
 
@@ -134,7 +134,7 @@ class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
 		} else {
 			$multiple = ! empty( $this->extra['multiple'] );
 			if ( $multiple ) {
-				$data = LP_Request::get_param( $this->id, [], $this->default ?? [] );
+				$data = LP_Request::get_param( $this->id, $this->default ?? [] );
 				// Clear item has value empty.
 				$value = [];
 				array_map(
@@ -146,7 +146,7 @@ class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
 					$data
 				);
 			} else {
-				$data  = LP_Request::get_param( $this->id, '', $this->default ?? '' );
+				$data  = LP_Request::get_param( $this->id, $this->default ?? '' );
 				$value = $data;
 			}
 
