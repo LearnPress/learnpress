@@ -55,7 +55,7 @@
 
 						$modal_search_items.find( '.search-results' ).html( result.html ).find( 'input[type="checkbox"]' ).each( function() {
 							const id = parseInt( $( this ).val() );
-							if ( _.indexOf( selectedItems, id ) >= 0 ) { // checked checkbox khi search lại kết quả cũ
+							if ( _.indexOf( selectedItems, id ) >= 0 ) {
 								this.checked = true;
 							}
 						} );
@@ -183,11 +183,9 @@
 						try {
 							const result = LP.parseJSON( jsonString );
 
-							// Tìm phần tử không có item và ẩn nó
 							const $noItem = $listItems.find( '.no-order-items' ).hide();
-							// Chèn HTML mới vào trước phần tử không có item
+
 							$( result.item_html ).insertBefore( $noItem );
-							// Cập nhật subtotal và total
 							$( '.order-subtotal' ).html( result.order_data.subtotal_html );
 							$( '.order-total' ).html( result.order_data.total_html );
 							removeModal();
@@ -225,7 +223,6 @@
 			}
 		};
 
-		//Khi click vào add Items -> Chuyển từ meta-box-order sang
 		$( '#learn-press-add-order-item' ).on( 'click', function() {
 			data = {
 				postType: 'lp_course',
