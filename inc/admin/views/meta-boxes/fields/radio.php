@@ -70,8 +70,9 @@ class LP_Meta_Box_Radio_Field extends LP_Meta_Box_Field {
 	}
 
 	public function save( $post_id ) {
-		$value = ! empty( $_POST[ $this->id ] ) ? wp_unslash( $_POST[ $this->id ] ) : '';
-
+		$value = LP_Request::get_param( $this->id, $this->default ?? '' );
 		update_post_meta( $post_id, $this->id, $value );
+
+		return $value;
 	}
 }

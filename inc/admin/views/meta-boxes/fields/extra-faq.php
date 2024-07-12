@@ -75,9 +75,9 @@ class LP_Meta_Box_Extra_Faq_Field extends LP_Meta_Box_Field {
 		<?php
 	}
 
-	public function save( $post_id, $data = [] ) {
-		$faqs_question = $data['_lp_faqs_question'] ?? LP_Request::get_param( '_lp_faqs_question', [], 'html' );
-		$faqs_answer   = $data['_lp_faqs_answer'] ?? LP_Request::get_param( '_lp_faqs_question', [], 'html' );
+	public function save( $post_id ) {
+		$faqs_question = LP_Request::get_param( '_lp_faqs_question', [], 'html' );
+		$faqs_answer   = LP_Request::get_param( '_lp_faqs_answer', [], 'html' );
 
 		$faqs = array();
 		if ( ! empty( $faqs_question ) ) {
