@@ -573,4 +573,8 @@ ul .clearfix {
 
 .ts-wrapper {
 	min-width: 200px;
+
+	.ts-control input[type=text] {
+		width: auto;
+	}
 }

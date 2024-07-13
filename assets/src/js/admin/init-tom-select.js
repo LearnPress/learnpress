@@ -52,10 +52,10 @@ const initTomSelect = (
 		render: {
 			item(data, escape) {
 				return (
-					`<li data-id="${data.value}">` +
+					`<div data-id="${data.value}">` +
 					`<div class="item" data-ts-item="">${data.text}</div>` +
 					`<input type="hidden" name="author" value="${data.value}">` +
-					"</li>"
+					"</div>"
 				);
 			},
 		},
@@ -344,6 +344,7 @@ const selectCoInstructor = () => {
 	const customOptions = {
 		maxItems: null,
 		items: defaultId[0],
+		placeholder: "Chose user",
 		plugins: {
 			remove_button: {
 				title: "Remove this item",
