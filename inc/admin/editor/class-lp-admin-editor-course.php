@@ -57,7 +57,15 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 		$this->result       = array( $args['type'] );
 
 		$this->call( $args['type'], array( $args ) );
-		LP_Course_Post_Type::instance()->save_post( $course_id, null, true );
+		//LP_Course_Post_Type::instance()->save_post( $course_id, null, true );
+		$bg = LP_Background_Single_Course::instance();
+		$bg->data(
+			array(
+				'handle_name' => 'save_post',
+				'course_id'   => $course_id,
+				'data'        => [],
+			)
+		)->dispatch();
 
 		return $this->get_result();
 	}

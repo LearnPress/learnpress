@@ -96,7 +96,7 @@ class CourseModel {
 	/**
 	 * @var array list sections items
 	 */
-	public $sections_items = [];
+	public $sections_items;
 
 	/**
 	 * If data get from database, map to object.
@@ -393,10 +393,58 @@ class CourseModel {
 		try {
 			$this->sections_items = $this->get_sections_and_items_course_from_db_and_sort();
 		} catch ( Throwable $e ) {
-			$this->sections_items = 0;
+			$this->sections_items = [];
 		}
 
 		return $this->sections_items;
+	}
+
+	/**
+	 * Get final quiz id
+	 *
+	 * @return array
+	 */
+	public function get_final_quiz() {
+		$key = '_lp_final_quiz';
+		if ( ! empty( $this->meta_data->{$key} ) ) {
+			return $this->meta_data->$key;
+		}
+
+		$final_quiz = 0;
+
+		$evaluation_type = $this->meta_data->_lp_course_result ?? '';
+		if ( $evaluation_type !== 'evaluate_final_quiz' ) {
+			return;
+		}
+
+		// Not use array_reverse, it's make change object
+		$section_items = $this->get_section_items();
+		$found         = 0;
+		for ( $i = count( $section_items ); $i > 0; $i -- ) {
+			$section = $section_items[ $i - 1 ];
+			for ( $j = count( $section->items ); $j > 0; $j -- ) {
+				$item = $section->items[ $j - 1 ];
+				if ( learn_press_get_post_type( $item->id ) === LP_QUIZ_CPT ) {
+					$final_quiz = $item->id;
+					$found      = 1;
+					break;
+				}
+			}
+
+			if ( $found ) {
+				break;
+			}
+		}
+
+		if ( isset( $final_quiz ) ) {
+			update_post_meta( $this->ID, $key, $final_quiz );
+		} else {
+			delete_post_meta( $this->ID, $key );
+		}
+
+		$this->meta_data->{$key} = $final_quiz;
+
+		return $this->meta_data->{$key};
 	}
 
 	/**
@@ -542,20 +590,20 @@ class CourseModel {
 			$filter->only_fields = [ 'json', 'post_content' ];
 			// Load cache
 			if ( ! $no_cache ) {
-				$key_cache = "course-model/{$filter->ID}";
+				$key_cache       = "course-model/{$filter->ID}";
 				$lp_course_cache = new LP_Course_Cache();
-				$course_model = $lp_course_cache->get_cache( $key_cache );
+				$course_model    = $lp_course_cache->get_cache( $key_cache );
 
 				if ( $course_model instanceof CourseModel ) {
 					return $course_model;
 				}
 			}
 
-			$course_rs           = self::get_course_from_db( $filter );
+			$course_rs = self::get_course_from_db( $filter );
 			if ( $course_rs instanceof stdClass && isset( $course_rs->json ) ) {
-				$course_obj                 = LP_Helper::json_decode( $course_rs->json );
-				$course_model               = new static( $course_obj );
-				$course_model->json         = $course_rs->json;
+				$course_obj   = LP_Helper::json_decode( $course_rs->json );
+				$course_model = new static( $course_obj );
+				//$course_model->json         = $course_rs->json;
 				$course_model->post_content = $course_rs->post_content;
 				if ( $course_model->author instanceof stdClass ) {
 					$course_model->author = new UserModel( $course_model->author );
@@ -609,6 +657,7 @@ class CourseModel {
 
 		$courseObjToJSON = clone $this;
 		unset( $courseObjToJSON->post_content );
+		unset( $courseObjToJSON->json );
 		$this->json = json_encode( $courseObjToJSON, JSON_UNESCAPED_UNICODE );
 		foreach ( get_object_vars( $this ) as $property => $value ) {
 			$data[ $property ] = $value;
@@ -630,7 +679,7 @@ class CourseModel {
 		}
 
 		// Set cache single course when save done.
-		$key_cache = "course-model/{$this->ID}";
+		$key_cache       = "course-model/{$this->ID}";
 		$lp_course_cache = new LP_Course_Cache();
 		$lp_course_cache->clear( $this->ID );
 		$lp_course_cache->set_cache( $key_cache, $this->ID );

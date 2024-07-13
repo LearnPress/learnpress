@@ -512,6 +512,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 */
 		public function save_post( int $post_id, WP_Post $post = null, bool $is_update = false ) {
 			try {
+				$wp_screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
 				// Save to table learnpress_courses
 				LP_Install::instance()->create_table_courses();
 				if ( empty( $post ) ) {
@@ -521,7 +522,15 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				if ( $post->post_status === 'auto-draft' ) {
 					return;
 				}
-				$courseModel = new CourseModel( $post );
+				$courseModel = CourseModel::find( $post_id );
+				if ( ! $courseModel ) {
+					$courseModel = new CourseModel( $post );
+				}
+				// Merge object
+				$new_obj     = (array) $post;
+				$old_obj     = (array) $courseModel;
+				$old_now     = array_merge( $old_obj, $new_obj );
+				$courseModel = new CourseModel( $old_now );
 
 				// Save option single course
 				include_once LP_PLUGIN_PATH . 'inc/admin/class-lp-admin.php';
@@ -547,6 +556,11 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 							}
 						} elseif ( ! $is_update ) {
 							$courseModel->meta_data->{$meta_key} = $option->default ?? '';
+						} elseif ( $option instanceof LP_Meta_Box_CHEckbox_Field
+						           && ! empty( $wp_screen )
+						           && LP_COURSE_CPT === $wp_screen->id ) {
+							$value_saved                         = $option->save( $courseModel->ID );
+							$courseModel->meta_data->{$meta_key} = $value_saved;
 						}
 					}
 				}

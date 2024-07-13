@@ -35,6 +35,10 @@ if ( ! function_exists( 'LP_Install' ) ) {
 		);
 
 		protected function __construct() {
+			// Only run on backend.
+			if ( ! is_admin() ) {
+				return;
+			}
 			@set_time_limit( 0 );
 			$this->lp_db = LP_Database::getInstance();
 			// From LP v4.2.2 temporary run create table thim_cache.
