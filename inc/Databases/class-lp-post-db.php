@@ -82,7 +82,7 @@ class LP_Post_DB extends LP_Database {
 
 		// Name(slug)
 		if ( $filter->post_name ) {
-			$filter->where[] = $this->wpdb->prepare( "AND $ca.post_name = %s", '%' . $filter->post_name . '%' );
+			$filter->where[] = $this->wpdb->prepare( "AND $ca.post_name = %s", $filter->post_name );
 		}
 
 		// Author
