@@ -66,7 +66,7 @@ const initTomSelect = (
 		return response.data.map((item) => {
 			return {
 				value: item.ID,
-				text: `${item.display_name} (#${item.ID})`,
+				text: `${item.display_name} (#${item.ID}) - ${item.user_email}`,
 			};
 		});
 	};
@@ -278,17 +278,6 @@ const selectAuthorCourse = () => {
 		},
 	};
 
-	const formatOption = (options) => {
-		if (!options) return false;
-		const dataFormat = options.data.map((item) => {
-			return {
-				value: item.ID,
-				text: `${item.display_name} (#${item.ID}) - ${item.user_email}`,
-			};
-		});
-		return dataFormat;
-	};
-
 	const tomAction = (tomSelectEl) => {
 		if (!tomSelectEl) return;
 		if (!authorInputEl) return;
@@ -308,7 +297,7 @@ const selectAuthorCourse = () => {
 		"",
 		customParams,
 		customOptions,
-		formatOption,
+		"",
 		tomAction,
 	);
 };
