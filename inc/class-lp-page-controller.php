@@ -3,6 +3,7 @@
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\CoursePostModel;
 use LearnPress\Models\Courses;
+use LearnPress\Models\PostModel;
 
 /**
  * Class LP_Page_Controller
@@ -1006,6 +1007,7 @@ class LP_Page_Controller {
 			if ( ! in_array( $item->post_type, $item_types_support ) ) {
 				throw new Exception();
 			}
+			$item = new PostModel( $item );
 
 			$course_slug = get_query_var( 'course-slug' );
 			if ( empty( $course_slug ) ) {

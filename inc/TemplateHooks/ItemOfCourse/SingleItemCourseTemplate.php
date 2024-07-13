@@ -11,6 +11,7 @@ namespace LearnPress\TemplateHooks\ItemOfCourse;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
+use LearnPress\Models\PostModel;
 use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\Models\UserItems\UserItemModel;
 use LearnPress\Models\UserModel;
@@ -166,12 +167,62 @@ class SingleItemCourseTemplate {
 		return Template::instance()->nest_elements( $html_wrapper, $content );
 	}
 
-	public function sidebar_section( $data ) {
-		return '';
+	/**
+	 * Section sidebar
+	 *
+	 * @param $data
+	 *
+	 * @return string
+	 */
+	public function sidebar_section( $data ):string {
+		$html_content = '';
+
+		$html_wrapper = [
+			'<div id="popup-sidebar">' => '</div>',
+		];
+
+		return Template::instance()->nest_elements( $html_wrapper, $html_content );
 	}
 
-	public function content_section( $data ) {
-		return '';
+	/**
+	 * Section content's item's course
+	 *
+	 * @param $data
+	 *
+	 * @return string
+	 */
+	public function content_section( $data ): string {
+		/**
+		 * @var CourseModel $course
+		 */
+		$course = $data['course'] ?? false;
+		/**
+		 * @var PostModel $item
+		 */
+		$item = $data['item'] ?? false;
+		if ( empty( $course ) && empty( $item ) ) {
+			return '';
+		}
+		/**
+		 * @var false|UserCourseModel $user_course
+		 */
+		$user_course = $data['user_course'] ?? false;
+
+		$section = [
+			'content_main' => $item->get_the_content(),
+		];
+
+		$html_content = Template::combine_components( $section );
+
+		$html_wrapper = [
+			'<div id="popup-content">' => '</div>',
+			'<div id="learn-press-content-item">' => '</div>',
+			'<div class="content-item-scrollable">' => '</div>',
+			'<div class="content-item-wrap">' => '</div>',
+			'<div class="content-item-summary">' => '</div>',
+		];
+
+		return Template::instance()->nest_elements( $html_wrapper, $html_content );
 	}
 
 	public function footer_section( $data ) {

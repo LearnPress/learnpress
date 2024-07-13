@@ -321,4 +321,17 @@ class PostModel {
 
 		return $permalink;
 	}
+
+	/**
+	 * Get the content of WP
+	 *
+	 * @return array|string|string[]
+	 */
+	public function get_the_content(): string {
+		$content = get_the_content( null, false, $this );
+		$content = apply_filters( 'the_content', $content );
+		$content = str_replace( ']]>', ']]&gt;', $content );
+
+		return $content;
+	}
 }
