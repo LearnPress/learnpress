@@ -402,20 +402,15 @@ class CourseModel {
 	/**
 	 * Get final quiz id
 	 *
-	 * @return array
+	 * @return int
 	 */
-	public function get_final_quiz() {
+	public function get_final_quiz(): int {
 		$key = '_lp_final_quiz';
 		if ( ! empty( $this->meta_data->{$key} ) ) {
 			return $this->meta_data->$key;
 		}
 
 		$final_quiz = 0;
-
-		$evaluation_type = $this->meta_data->_lp_course_result ?? '';
-		if ( $evaluation_type !== 'evaluate_final_quiz' ) {
-			return;
-		}
 
 		// Not use array_reverse, it's make change object
 		$section_items = $this->get_section_items();
@@ -436,15 +431,18 @@ class CourseModel {
 			}
 		}
 
-		if ( isset( $final_quiz ) ) {
-			update_post_meta( $this->ID, $key, $final_quiz );
-		} else {
-			delete_post_meta( $this->ID, $key );
+		$evaluation_type = $this->meta_data->_lp_course_result ?? '';
+		if ( $evaluation_type === 'evaluate_final_quiz' ) {
+			if ( isset( $final_quiz ) ) {
+				update_post_meta( $this->ID, $key, $final_quiz );
+			} else {
+				delete_post_meta( $this->ID, $key );
+			}
 		}
 
 		$this->meta_data->{$key} = $final_quiz;
 
-		return $this->meta_data->{$key};
+		return $final_quiz;
 	}
 
 	/**
