@@ -246,5 +246,22 @@ class Template {
 			}
 		}
 	}
+
+	/**
+	 * Combine html elements
+	 *
+	 * @param array $elms
+	 *
+	 * @return string
+	 * @since 4.2.6.9
+	 */
+	public static function combine_components( array $elms = [] ): string {
+		$html = '';
+		foreach ( $elms as $tag => $val ) {
+			$html .= $val;
+		}
+
+		return $html;
+	}
 }
 

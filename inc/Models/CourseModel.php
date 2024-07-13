@@ -143,6 +143,15 @@ class CourseModel {
 	}
 
 	/**
+	 * Get title course
+	 *
+	 * @return string
+	 */
+	public function get_title(): string {
+		return esc_html( get_the_title( $this ) );
+	}
+
+	/**
 	 * Get image url
 	 * if not check get from Post
 	 *
