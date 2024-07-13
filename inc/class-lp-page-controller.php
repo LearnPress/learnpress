@@ -1,5 +1,7 @@
 <?php
 
+use LearnPress\Models\CourseModel;
+use LearnPress\Models\CoursePostModel;
 use LearnPress\Models\Courses;
 
 /**
@@ -38,10 +40,10 @@ class LP_Page_Controller {
 
 		} else {
 			//add_filter( 'post_type_archive_link', [ $this, 'link_archive_course' ], 10, 2 );
-			add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ), -1 );
+			add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ), - 1 );
 			// For return result query course to cache.
 			//add_action( 'posts_pre_query', [ $this, 'posts_pre_query' ], 10, 2 );
-			add_filter( 'template_include', array( $this, 'template_loader' ), 10 );
+			add_filter( 'template_include', array( $this, 'template_loader' ), - 1 );
 			add_filter( 'template_include', array( $this, 'check_pages' ), 30 );
 			//add_filter( 'template_include', array( $this, 'auto_shortcode' ), 50 );
 
@@ -452,10 +454,14 @@ class LP_Page_Controller {
 	private function get_page_template() {
 		$page_template = '';
 
-		if ( is_singular( LP_COURSE_CPT ) ) {
+		if ( self::is_page_single_item() ) {
+			//$page_template = 'content-single-item.php';
+			//$page_template = 'single-item-course.php';
+			$page_template = 'single-item-course-no-header-footer.php';
+		} elseif ( is_singular( LP_COURSE_CPT ) ) {
 			$page_template = 'single-course.php';
 
-			if ( $this->_is_single() ) {
+			/*if ( $this->_is_single() ) {
 				global $post;
 				setup_postdata( $post );
 
@@ -463,7 +469,7 @@ class LP_Page_Controller {
 				if ( $course_item ) {
 					$page_template = 'content-single-item.php';
 				}
-			}
+			}*/
 		} elseif ( learn_press_is_course_taxonomy() ) {
 			$object = get_queried_object();
 
@@ -577,9 +583,9 @@ class LP_Page_Controller {
 	 *
 	 * @return WP_Query
 	 * @editor tungnx
-	 * @since 3.0.0
-	 * @version 4.1.3
 	 * @throws Exception
+	 * @version 4.1.3
+	 * @since 3.0.0
 	 */
 	public function pre_get_posts( WP_Query $q ): WP_Query {
 		// Affect only the main query and not in admin
@@ -590,7 +596,7 @@ class LP_Page_Controller {
 		try {
 			if ( LP_Page_Controller::is_page_courses() ) {
 				if ( LP_Settings_Courses::is_ajax_load_courses() && ! LP_Settings_Courses::is_no_load_ajax_first_courses()
-				&& ! LP_Settings::theme_no_support_load_courses_ajax() ) {
+				     && ! LP_Settings::theme_no_support_load_courses_ajax() ) {
 					/**
 					 * If page is archive course - query set posts_per_page = 1
 					 * For fastest - because when page loaded - call API to load list courses
@@ -604,7 +610,7 @@ class LP_Page_Controller {
 				} else {
 					$filter               = new LP_Course_Filter();
 					$filter->only_fields  = [ 'ID' ];
-					$filter->limit        = -1;
+					$filter->limit        = - 1;
 					$is_need_check_in_arr = false;
 					$limit                = LP_Settings::get_option( 'archive_course_limit', 6 );
 
@@ -798,11 +804,17 @@ class LP_Page_Controller {
 	 * Apply for user not admin, instructor, co-instructor
 	 *
 	 * @param WP_Query $q
+	 *
 	 * @editor tungnx
 	 * @since  3.2.7.5
 	 */
 	public function set_link_item_course_default_wp_to_page_404( $q ) {
-		$post_type_apply_404 = apply_filters( 'lp/page-controller/', array( LP_LESSON_CPT, LP_QUIZ_CPT, LP_QUESTION_CPT, 'lp_assignment' ) );
+		$post_type_apply_404 = apply_filters( 'lp/page-controller/', array(
+			LP_LESSON_CPT,
+			LP_QUIZ_CPT,
+			LP_QUESTION_CPT,
+			'lp_assignment'
+		) );
 
 		if ( ! isset( $q->query_vars['post_type'] ) || ! in_array( $q->query_vars['post_type'], $post_type_apply_404 ) ) {
 			return;
@@ -882,7 +894,7 @@ class LP_Page_Controller {
 			return LP_PAGE_CHECKOUT;
 		} elseif ( LP_Global::course_item_quiz() ) {
 			return LP_PAGE_QUIZ;
-		} elseif ( learn_press_is_course() && LP_Global::course_item() ) {
+		} elseif ( self::is_page_single_item() ) {
 			return LP_PAGE_SINGLE_COURSE_CURRICULUM;
 		} elseif ( self::is_page_courses() ) {
 			return LP_PAGE_COURSES;
@@ -961,6 +973,66 @@ class LP_Page_Controller {
 			} else {
 				$flag = false;
 			}
+		}
+
+		return $flag;
+	}
+
+	/**
+	 * Check is page single item
+	 *
+	 * @return bool|array
+	 * @since 4.2.6.9
+	 * @version 1.0.0
+	 */
+	public static function is_page_single_item() {
+		global $wp_query;
+		static $flag;
+		if ( ! is_null( $flag ) ) {
+			return $flag;
+		}
+
+		try {
+			if ( empty( $wp_query ) ) {
+				throw new Exception();
+			}
+
+			if ( ! $wp_query->post instanceof WP_Post ) {
+				throw new Exception();
+			}
+
+			$item               = $wp_query->post;
+			$item_types_support = learn_press_get_course_item_types();
+			if ( ! in_array( $item->post_type, $item_types_support ) ) {
+				throw new Exception();
+			}
+
+			$course_slug = get_query_var( 'course-slug' );
+			if ( empty( $course_slug ) ) {
+				throw new Exception();
+			}
+
+			$course_slug              = urldecode( $course_slug );
+			$filter_course            = new LP_Course_JSON_Filter();
+			$filter_course->post_name = $course_slug;
+			$courseModel              = CourseModel::get_item_model_from_db( $filter_course );
+			if ( ! $courseModel instanceof CourseModel ) {
+				$filter_course_post            = new LP_Course_Filter();
+				$filter_course_post->post_name = $course_slug;
+				$coursePostModel               = CoursePostModel::get_item_model_from_db( $filter_course_post, false );
+
+				if ( ! $coursePostModel instanceof CoursePostModel ) {
+					throw new Exception();
+				}
+				$courseModel = new CourseModel( $coursePostModel );
+			}
+
+			$flag = [
+				'course' => $courseModel,
+				'item'   => $item,
+			];
+		} catch ( Throwable $e ) {
+			$flag = false;
 		}
 
 		return $flag;
@@ -1099,9 +1171,10 @@ class LP_Page_Controller {
 	/**
 	 * Override lesson comment permalink.
 	 *
-	 * @return string $link The comment permalink with '#comment-$id' appended.
-	 * @param string     $link    The comment permalink with '#comment-$id' appended.
+	 * @param string $link The comment permalink with '#comment-$id' appended.
 	 * @param WP_Comment $comment The current comment object.
+	 *
+	 * @return string $link The comment permalink with '#comment-$id' appended.
 	 * @since 4.2.3
 	 * @version 1.0.0
 	 */
@@ -1124,6 +1197,7 @@ class LP_Page_Controller {
 	 * Set menu active for page courses.
 	 *
 	 * @param $menu_items
+	 *
 	 * @return mixed
 	 */
 	public function menu_active( $menu_items ) {

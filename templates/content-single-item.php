@@ -36,7 +36,10 @@ do_action( 'learn-press/before-single-item' );
 		 *
 		 * @since 3.0.0
 		 *
+		 * @see LP_Template_Course::popup_header() - 10
+		 * @see LP_Template_Course::popup_sidebar() - 20
 		 * @see LP_Template_Course::popup_content() - 30
+		 * @see LP_Template_Course::popup_footer() - 40
 		 */
 		do_action( 'learn-press/single-item-summary' );
 		?>
