@@ -81,6 +81,7 @@ class CourseModel {
 	 */
 	public $meta_data = null;
 	public $image_url = '';
+	public $permalink = '';
 	public $categories = [];
 	private $price = 0; // Not save in database, must auto reload calculate
 	private $passing_condition = '';
@@ -552,6 +553,26 @@ class CourseModel {
 		}
 
 		return $sections_items;
+	}
+
+	/**
+	 * Get permalink course
+	 *
+	 * @return string
+	 */
+	public function get_permalink(): string {
+		if ( ! empty( $this->permalink ) ) {
+			return $this->permalink;
+		}
+
+		try {
+			$coursePostModel = new CoursePostModel( $this );
+			$this->permalink = $coursePostModel->get_permalink();
+		} catch ( Throwable $e ) {
+			$this->permalink = '';
+		}
+
+		return $this->permalink;
 	}
 
 	public function get_meta_value_by_key( string $key, $default = false ) {
