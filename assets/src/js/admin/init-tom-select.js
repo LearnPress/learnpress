@@ -80,7 +80,7 @@ const initTomSelect = (
 					dataOptions = defaultOutput(response);
 				}
 				tomOptions.options = dataOptions;
-
+				// Fetch API when input change
 				// tomOptions.load = (keySearch, callback) => {
 				// 	const bodyParams = JSON.parse(params.body);
 				// 	bodyParams.search = keySearch;
@@ -118,6 +118,7 @@ const initTomSelect = (
 				// 	}
 				// }
 
+				// Fetch API once
 				tomOptions.load = (keySearch, callback) => {
 					if (self.loading > 1) {
 						callback();
@@ -260,6 +261,11 @@ const selectAuthorCourse = () => {
 	const defaultId = authorInputEl?.value ? authorInputEl.value : "";
 
 	const customParams = {
+		headers: {
+			"Content-Type": "application/json",
+			"X-WP-Nonce": lpDataAdmin.nonce,
+		},
+		method: "POST",
 		body: { role_in: roleSearch },
 	};
 
@@ -320,6 +326,11 @@ const selectCoInstructor = () => {
 	const apiSearchUser = Api.admin.apiSearchUsers;
 	const roleSearch = "administrator,lp_teacher";
 	const customParams = {
+		headers: {
+			"Content-Type": "application/json",
+			"X-WP-Nonce": lpDataAdmin.nonce,
+		},
+		method: "POST",
 		body: { role_in: roleSearch, id_not_in: userId },
 	};
 
@@ -349,7 +360,7 @@ const selectCoInstructor = () => {
 
 		tomSelectEl.on("change", (data, item) => {
 			if (data.length < 1) {
-				selectCoInstructorEl.value = ""
+				selectCoInstructorEl.value = "";
 			}
 		});
 	};
