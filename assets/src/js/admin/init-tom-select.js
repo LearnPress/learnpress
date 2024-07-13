@@ -48,7 +48,7 @@ const initTomSelect = (
 
 	const tomOptions = {
 		maxItems: 1,
-		maxOptions: 2,
+		maxOptions: 10,
 		render: {
 			item(data, escape) {
 				return (
@@ -146,6 +146,9 @@ const initTomSelect = (
 				};
 
 				const initTomSelectEl = new TomSelect(elTomSelect, tomOptions);
+				if ("function" === typeof tomSelectAction) {
+					tomSelectAction(initTomSelectEl);
+				}
 			},
 		});
 	} else {
@@ -310,8 +313,7 @@ const selectCoInstructor = () => {
 	const postAuthorEl = document.querySelector("#post_author");
 	if (!selectCoInstructorEl) return;
 
-	// const userId = postAuthorEl?.value ? postAuthorEl?.value : "";
-	const userId = "";
+	const userId = postAuthorEl?.value ? postAuthorEl?.value : "";
 	const defaultId = selectCoInstructorEl.dataset?.coInstructors
 		? JSON.parse(selectCoInstructorEl.dataset?.coInstructors)
 		: "";
@@ -341,12 +343,25 @@ const selectCoInstructor = () => {
 		},
 	};
 
+	const tomAction = (tomSelectEl) => {
+		if (!tomSelectEl) return;
+		if (!selectCoInstructorEl) return;
+
+		tomSelectEl.on("change", (data, item) => {
+			if (data.length < 1) {
+				selectCoInstructorEl.value = ""
+			}
+		});
+	};
+
 	initTomSelect(
 		apiSearchUser,
 		selectCoInstructorEl,
 		"",
 		customParams,
 		customOptions,
+		{},
+		tomAction,
 	);
 };
 
