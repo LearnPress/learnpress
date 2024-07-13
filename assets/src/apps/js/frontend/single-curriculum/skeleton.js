@@ -39,12 +39,13 @@ export default function courseCurriculumSkeleton( courseID = '' ) {
 		const skeleton = ele.querySelector( '.lp-skeleton-animation' );
 		const itemID = ele.dataset.id;
 		const sectionID = ele.dataset.section;
+		const course_id = ele.dataset.courseId;
 
 		try {
 			const page = 1;
 			let url = lpData.lp_rest_url + 'lp/v1/lazy-load/course-curriculum/';
 			url = addQueryArgs( url, {
-				courseId: courseID || lpGlobalSettings.post_id || '',
+				courseId: course_id || courseID || lpGlobalSettings.post_id || '',
 				page,
 				sectionID: sectionID || '',
 				idItemViewing,

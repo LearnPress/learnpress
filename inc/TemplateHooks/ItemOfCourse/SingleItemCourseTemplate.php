@@ -19,6 +19,7 @@ use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
 use LP_Course;
 use LP_Datetime;
 use LP_Page_Controller;
+use LP_Section_DB;
 use Throwable;
 use WP_Post;
 
@@ -174,8 +175,48 @@ class SingleItemCourseTemplate {
 	 *
 	 * @return string
 	 */
-	public function sidebar_section( $data ):string {
+	public function sidebar_section( $data ): string {
+		/**
+		 * @var CourseModel $course
+		 */
+		$course = $data['course'] ?? false;
+		/**
+		 * @var WP_Post $item
+		 */
+		$item = $data['item'] ?? false;
+		if ( empty( $course ) && empty( $item ) ) {
+			return '';
+		}
+		/**
+		 * @var false|UserCourseModel $user_course
+		 */
+		$user_course = $data['user_course'] ?? false;
+
 		$html_content = '';
+
+		$html_form = sprintf(
+			'<form method="post" class="search-course">
+				<input type="text" name="s" autocomplete="off" placeholder="%s">
+				<button name="submit"></button>
+				<button type="button" class="clear"></button>
+			</form>',
+			esc_attr_x( 'Search for course content', 'search course input placeholder', 'learnpress' )
+		);
+
+		$section_id = LP_Section_DB::getInstance()->get_section_id_by_item_id( $item->ID );
+		ob_start();
+		lp_skeleton_animation_html( 10 );
+		$html_loading    = ob_get_clean();
+		$html_curriculum = sprintf(
+			'<div class="learnpress-course-curriculum" data-section="%d" data-id="%d" data-course-id="%d">%s</div>',
+			$section_id,
+			$item->ID,
+			$course->get_id(),
+			$html_loading
+		);
+
+		$html_content .= $html_form;
+		$html_content .= $html_curriculum;
 
 		$html_wrapper = [
 			'<div id="popup-sidebar">' => '</div>',
@@ -208,18 +249,33 @@ class SingleItemCourseTemplate {
 		 */
 		$user_course = $data['user_course'] ?? false;
 
-		$section = [
-			'content_main' => $item->get_the_content(),
+		ob_start();
+		try {
+			comments_template();
+		} catch ( Throwable $e ) {
+
+		}
+		$html_content_comments = ob_get_clean();
+
+		$html_wrapper_content_main = [
+			'<div id="learn-press-content-item">'   => '</div>',
+			'<div class="content-item-scrollable">' => '</div>',
+			'<div class="content-item-wrap">'       => '</div>',
+			'<div class="content-item-summary">'    => '</div>',
+		];
+		$html_wrapper_comments     = [
+			'<div id="learn-press-item-comments">' => '</div>',
+			'<div class="learn-press-comments">'   => '</div>',
+		];
+		$section                   = [
+			'content_main'     => Template::instance()->nest_elements( $html_wrapper_content_main, $item->get_the_content() ),
+			'content_comments' => Template::instance()->nest_elements( $html_wrapper_comments, $html_content_comments ),
 		];
 
 		$html_content = Template::combine_components( $section );
 
 		$html_wrapper = [
 			'<div id="popup-content">' => '</div>',
-			'<div id="learn-press-content-item">' => '</div>',
-			'<div class="content-item-scrollable">' => '</div>',
-			'<div class="content-item-wrap">' => '</div>',
-			'<div class="content-item-summary">' => '</div>',
 		];
 
 		return Template::instance()->nest_elements( $html_wrapper, $html_content );
