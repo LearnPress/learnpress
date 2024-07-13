@@ -82,6 +82,11 @@ class LP_Course_JSON_DB extends LP_Database {
 			$filter->where[] = $this->wpdb->prepare( "AND $ca.post_title LIKE %s", '%' . $filter->post_title . '%' );
 		}
 
+		// Title
+		if ( $filter->post_name ) {
+			$filter->where[] = $this->wpdb->prepare( "AND $ca.post_name = %s", '%' . $filter->post_name . '%' );
+		}
+
 		// Author
 		if ( $filter->post_author ) {
 			$filter->where[] = $this->wpdb->prepare( "AND $ca.post_author = %d", $filter->post_author );
