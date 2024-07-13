@@ -223,6 +223,7 @@ const searchUserAdmin = () => {
 		const selectAuthor = document.querySelector(`#author`);
 		if (!selectAuthor) return;
 		const authorInputEl = document.querySelector('input[name="author"]');
+		const defaultId = authorInputEl?.value ? authorInputEl.value : "";
 		const tomAction = (tomSelectEl) => {
 			if (!tomSelectEl) return;
 			if (!authorInputEl) return;
@@ -232,11 +233,28 @@ const searchUserAdmin = () => {
 			});
 
 			tomSelectEl.on("item_remove", (data, item) => {
-				authorInputEl.setAttribute("value", defaultId);
+				authorInputEl.setAttribute("value", "");
 			});
 		};
 
-		initTomSelect(apiSearchUser, selectAuthor, "", {}, {}, {}, tomAction);
+		const customOptions = {
+			items: defaultId,
+			plugins: {
+			remove_button: {
+				title: "Remove this item",
+			},
+		},
+		};
+
+		initTomSelect(
+			apiSearchUser,
+			selectAuthor,
+			"",
+			{},
+			customOptions,
+			{},
+			tomAction,
+		);
 	};
 
 	const classSelectBox = "posts-filter";
