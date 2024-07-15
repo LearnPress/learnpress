@@ -307,4 +307,18 @@ class PostModel {
 
 		return $categories;
 	}
+
+	/**
+	 * Get permalink of post
+	 *
+	 * @return string
+	 */
+	public function get_permalink(): string {
+		$permalink = get_permalink( $this );
+		if ( empty( $permalink ) ) {
+			$permalink = '';
+		}
+
+		return $permalink;
+	}
 }

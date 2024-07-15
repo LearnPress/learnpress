@@ -16,7 +16,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 	 */
 	protected function __construct() {
 		add_action( 'admin_footer', array( $this, 'add_elements_global' ) );
-		add_action( 'admin_head', [ $this, 'load_scripts_styles_on_head' ], - 1 );
+		add_action( 'admin_enqueue_scripts', [ $this, 'load_scripts_styles_on_head' ], - 1 );
 		parent::__construct();
 	}
 

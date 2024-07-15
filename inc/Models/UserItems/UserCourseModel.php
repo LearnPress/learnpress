@@ -140,6 +140,15 @@ class UserCourseModel extends UserItemModel {
 		return $count;
 	}
 
+	/**
+	 * Check course of user is enrolled or finished
+	 *
+	 * @return bool
+	 */
+	public function has_enrolled_or_finished(): bool {
+		return $this->status === LP_COURSE_ENROLLED || $this->status === LP_COURSE_FINISHED;
+	}
+
 	public function clean_caches() {
 		parent::clean_caches();
 		// Clear cache total students enrolled of a course.

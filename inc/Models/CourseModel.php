@@ -81,6 +81,7 @@ class CourseModel {
 	 */
 	public $meta_data = null;
 	public $image_url = '';
+	public $permalink = '';
 	public $categories = [];
 	private $price = 0; // Not save in database, must auto reload calculate
 	private $passing_condition = '';
@@ -402,20 +403,15 @@ class CourseModel {
 	/**
 	 * Get final quiz id
 	 *
-	 * @return array
+	 * @return int
 	 */
-	public function get_final_quiz() {
+	public function get_final_quiz(): int {
 		$key = '_lp_final_quiz';
 		if ( ! empty( $this->meta_data->{$key} ) ) {
 			return $this->meta_data->$key;
 		}
 
 		$final_quiz = 0;
-
-		$evaluation_type = $this->meta_data->_lp_course_result ?? '';
-		if ( $evaluation_type !== 'evaluate_final_quiz' ) {
-			return;
-		}
 
 		// Not use array_reverse, it's make change object
 		$section_items = $this->get_section_items();
@@ -436,15 +432,18 @@ class CourseModel {
 			}
 		}
 
-		if ( isset( $final_quiz ) ) {
-			update_post_meta( $this->ID, $key, $final_quiz );
-		} else {
-			delete_post_meta( $this->ID, $key );
+		$evaluation_type = $this->meta_data->_lp_course_result ?? '';
+		if ( $evaluation_type === 'evaluate_final_quiz' ) {
+			if ( isset( $final_quiz ) ) {
+				update_post_meta( $this->ID, $key, $final_quiz );
+			} else {
+				delete_post_meta( $this->ID, $key );
+			}
 		}
 
 		$this->meta_data->{$key} = $final_quiz;
 
-		return $this->meta_data->{$key};
+		return $final_quiz;
 	}
 
 	/**
@@ -554,6 +553,26 @@ class CourseModel {
 		}
 
 		return $sections_items;
+	}
+
+	/**
+	 * Get permalink course
+	 *
+	 * @return string
+	 */
+	public function get_permalink(): string {
+		if ( ! empty( $this->permalink ) ) {
+			return $this->permalink;
+		}
+
+		try {
+			$coursePostModel = new CoursePostModel( $this );
+			$this->permalink = $coursePostModel->get_permalink();
+		} catch ( Throwable $e ) {
+			$this->permalink = '';
+		}
+
+		return $this->permalink;
 	}
 
 	public function get_meta_value_by_key( string $key, $default = false ) {
