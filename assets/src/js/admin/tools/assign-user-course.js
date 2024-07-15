@@ -223,6 +223,7 @@ export default function assignUserCourse() {
 					elCourseAssign,
 					{ options },
 					AdminUtils.AdminUtilsFunctions.fetchCourses,
+					{},
 					callBackCourse
 				);
 
@@ -249,13 +250,14 @@ export default function assignUserCourse() {
 					elCourseUnAssign,
 					{ options },
 					AdminUtils.AdminUtilsFunctions.fetchCourses,
+					{},
 					callBackCourseUnAssign
 				);
 
 				return options;
 			},
 		};
-		AdminUtils.AdminUtilsFunctions.fetchCourses( '', callBackCourseUnAssign );
+		AdminUtils.AdminUtilsFunctions.fetchCourses( '', {}, callBackCourseUnAssign );
 
 		// Get list users default first and build Tom Select.
 		const elUserAssign = elFormAssignUserCourse.querySelector( '[name=user_ids]' );
@@ -276,13 +278,14 @@ export default function assignUserCourse() {
 					elUserAssign,
 					{ options },
 					AdminUtils.AdminUtilsFunctions.fetchUsers,
+					{},
 					callBackUser
 				);
 
 				return options;
 			},
 		};
-		AdminUtils.AdminUtilsFunctions.fetchUsers( '', callBackUser );
+		AdminUtils.AdminUtilsFunctions.fetchUsers( '', {}, callBackUser );
 
 		const elUserUnAssign = elFormUnAssignUserCourse.querySelector( '[name=user_ids]' );
 		const callBackUserUnAssign = {
@@ -302,13 +305,14 @@ export default function assignUserCourse() {
 					elUserUnAssign,
 					{ options },
 					AdminUtils.AdminUtilsFunctions.fetchUsers,
+					{},
 					callBackUserUnAssign
 				);
 
 				return options;
 			},
 		};
-		AdminUtils.AdminUtilsFunctions.fetchUsers( '', callBackUserUnAssign );
+		AdminUtils.AdminUtilsFunctions.fetchUsers( '', {}, callBackUserUnAssign );
 		// Events.
 		events();
 	} );

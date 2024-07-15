@@ -9,7 +9,7 @@ import TomSelect from 'tom-select';
 import Api from '../api.js';
 
 const AdminUtilsFunctions = {
-	buildTomSelect( elTomSelect, options, fetchAPI, callBackHandleData ) {
+	buildTomSelect( elTomSelect, options, fetchAPI, dataSend, callBackHandleData ) {
 		if ( ! elTomSelect ) {
 			return;
 		}
@@ -24,7 +24,8 @@ const AdminUtilsFunctions = {
 			load( keySearch, callbackTom ) {
 				fetchAPI(
 					keySearch,
-					AdminUtilsFunctions.callBackTomSelectSearchAPI( callbackTom, elTomSelect, callBackHandleData )
+					dataSend,
+					AdminUtilsFunctions.callBackTomSelectSearchAPI( callbackTom, callBackHandleData )
 				);
 			},
 		};
@@ -33,7 +34,7 @@ const AdminUtilsFunctions = {
 
 		return new TomSelect( elTomSelect, options );
 	},
-	callBackTomSelectSearchAPI( callbackTom, elTomSelect, callBackHandleData ) {
+	callBackTomSelectSearchAPI( callbackTom, callBackHandleData ) {
 		return {
 			success: ( response ) => {
 				const options = callBackHandleData.success( response );
@@ -41,28 +42,30 @@ const AdminUtilsFunctions = {
 			},
 		};
 	},
-	fetchCourses( keySearch = '', callback ) {
+	fetchCourses( keySearch = '', dataSend = {}, callback ) {
 		const url = Api.admin.apiSearchCourses;
+		dataSend.c_search = keySearch;
 		const params = {
 			headers: {
 				'Content-Type': 'application/json',
 				'X-WP-Nonce': lpDataAdmin.nonce,
 			},
 			method: 'POST',
-			body: JSON.stringify( { c_search: keySearch } ),
+			body: JSON.stringify( dataSend ),
 		};
 
 		Utils.lpFetchAPI( url, params, callback );
 	},
-	fetchUsers( keySearch = '', callback ) {
+	fetchUsers( keySearch = '', dataSend = {}, callback ) {
 		const url = Api.admin.apiSearchUsers;
+		dataSend.search = keySearch;
 		const params = {
 			headers: {
 				'Content-Type': 'application/json',
 				'X-WP-Nonce': lpDataAdmin.nonce,
 			},
 			method: 'POST',
-			body: JSON.stringify( { search: keySearch } ),
+			body: JSON.stringify( dataSend ),
 		};
 
 		Utils.lpFetchAPI( url, params, callback );
