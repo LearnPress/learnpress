@@ -571,6 +571,22 @@ ul .clearfix {
 	cursor: pointer;
 }
 
+.search-box {
+	.ts-wrapper {
+		float: left;
+		margin-right: 4px;
+
+		.ts-control {
+			padding: 3px;
+			height: 30px;
+
+			li {
+				margin: 0;
+			}
+		}
+	}
+}
+
 .ts-wrapper {
 	min-width: 200px;
 

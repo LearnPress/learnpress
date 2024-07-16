@@ -1,21 +1,6 @@
-import { searchUserAdmin, searchUserOrder, selectAuthorCourse, selectCoInstructor } from "./init-tom-select";
+import { searchUserOnListPost, searchUserOrder, selectAuthorCourse, selectCoInstructor } from './init-tom-select.js';
 
 ( function( $ ) {
-	/*const updateItemPreview = function updateItemPreview() {
-		$.ajax( {
-			url: '',
-			data: {
-				'lp-ajax': 'toggle_item_preview',
-				item_id: this.value,
-				previewable: this.checked ? 'yes' : 'no',
-				nonce: $( this ).attr( 'data-nonce' ),
-			},
-			dataType: 'text',
-			success: function success( response ) {
-				response = LP.parseJSON( response );
-			},
-		} );
-	};*/
 	/**
 	 * Callback event for button to creating pages inside error message.
 	 *
@@ -39,137 +24,6 @@ import { searchUserAdmin, searchUserOrder, selectAuthorCourse, selectCoInstructo
 			},
 		} );
 	};
-
-	/*const hideUpgradeMessage = function hideUpgradeMessage( e ) {
-		e.preventDefault();
-		const $btn = $( this );
-		$btn.closest( '.lp-upgrade-notice' ).fadeOut();
-		$.post( {
-			url: '',
-			data: {
-				'lp-hide-upgrade-message': 'yes',
-			},
-			success: function success( res ) {},
-		} );
-	};*/
-
-	/*const pluginActions = function pluginActions( e ) {
-		// Premium addon
-		if ( $( e.target ).hasClass( 'buy-now' ) ) {
-			return;
-		}
-
-		e.preventDefault();
-		const $plugin = $( this ).closest( '.plugin-card' );
-
-		if ( $( this ).hasClass( 'updating-message' ) ) {
-			return;
-		}
-
-		$( this ).addClass( 'updating-message button-working disabled' );
-		$.ajax( {
-			url: $( this ).attr( 'href' ),
-			data: {},
-			success: function success( r ) {
-				$.ajax( {
-					url: window.location.href,
-					success: function success( r ) {
-						const $p = $( r ).find( '#' + $plugin.attr( 'id' ) );
-
-						if ( $p.length ) {
-							$plugin.replaceWith( $p );
-						} else {
-							$plugin.find( '.plugin-action-buttons a' ).removeClass( 'updating-message button-working' ).html( learn_press_admin_localize.plugin_installed );
-						}
-					},
-				} );
-			},
-		} );
-	};*/
-
-	/*const preventDefault = function preventDefault( e ) {
-		e.preventDefault();
-		return false;
-	};*/
-
-	$.fn._filter_post_by_author = function() {
-		const $input = $( '#post-search-input' );
-
-		if ( ! $input.length ) {
-			return;
-		}
-
-		const $form = $( $input[ 0 ].form );
-		const $select = $( '<select name="author" id="author"></select>' ).insertAfter( $input ).select2( {
-			ajax: {
-				url: window.location.href + '&lp-ajax=search-authors',
-				dataType: 'json',
-				s: '',
-			},
-			placeholder: wp.i18n.__( 'Search by user', 'learnpress' ),
-			minimumInputLength: 3,
-			allowClear: true,
-		} ).on( 'select2:select', function() {
-			$( 'input[name="author"]' ).val( $select.val() );
-		} );
-
-		$form.on( 'submit', function() {
-			const url = window.location.href.removeQueryVar( 'author' ).addQueryVar( 'author', $select.val() );
-		} );
-	};
-
-	/*const updateDb = () => {
-		$( '.lp-button-upgrade' ).each( function() {
-			$( this ).on( 'click', function( e ) {
-				e.preventDefault();
-
-				$( '#lp-update-db-modal' ).removeClass( 'lp-update-db-modal__hidden' );
-			} );
-		} );
-
-		$( '.lp-update-db-modal__button' ).on( 'click', function( e ) {
-			e.preventDefault();
-
-			const $button = $( this );
-			const btnText = $button.text();
-			const btxUpdating = $button.data( 'loading' );
-
-			const textSuccess = $( '.lp-update-db-modal__content-text' ).data( 'text' );
-
-			$button.addClass( 'loading' );
-			$button.text( btxUpdating );
-
-			const updateRequest = () => {
-				$.ajax( {
-					url: lpGlobalSettings.ajax + '?action=lp_update_database',
-					method: 'GET',
-					success( response ) {
-						if ( response.status === 'success' ) {
-							$button.text( btnText );
-
-							$( '.lp-update-db-modal__content' ).addClass( 'lp-update-db-modal__success' );
-							$( '.lp-update-db-modal__content-text > h3' ).text( textSuccess );
-
-							$button.removeClass( 'loading' );
-							return false;
-						}
-						updateRequest();
-					},
-				} );
-			};
-
-			updateRequest();
-		} );
-
-		const lpUpdateModal = () => {
-			$( '.lp-update-db-modal__cancel' ).on( 'click', function( e ) {
-				e.preventDefault();
-				$( '#lp-update-db-modal' ).addClass( 'lp-update-db-modal__hidden' );
-			} );
-		};
-
-		lpUpdateModal();
-	};*/
 
 	const lpMetaboxFileInput = () => {
 		$( '.lp-meta-box__file' ).each( ( i, element ) => {
@@ -316,13 +170,11 @@ import { searchUserAdmin, searchUserOrder, selectAuthorCourse, selectCoInstructo
 				$( '.lp-sortable-handle' ).css( 'cursor', '' );
 			} );
 
-		// $.fn._filter_post_by_author();
-
 		// Scroll to Passing grade when click link final Quiz in Course Setting.
 		if ( window.location.hash ) {
 			const hash = window.location.hash;
 
-			if ( hash == '#_lp_passing_grade' ) {
+			if ( hash === '#_lp_passing_grade' ) {
 				const ele = document.querySelector( hash );
 
 				$( 'html, body' ).animate( {
@@ -359,9 +211,9 @@ import { searchUserAdmin, searchUserOrder, selectAuthorCourse, selectCoInstructo
 	$( document ).ready( onReady );
 }( jQuery ) );
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener( 'DOMContentLoaded', () => {
 	selectAuthorCourse();
-	searchUserAdmin();
+	searchUserOnListPost();
 	searchUserOrder();
 	selectCoInstructor();
-});
+} );

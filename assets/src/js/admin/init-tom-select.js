@@ -57,41 +57,54 @@ const searchUserOrder = () => {
 };
 
 // Init Tom-select user in admin
-const searchUserAdmin = () => {
-	const insertAfter = ( referenceNode, newNode ) => {
-		if ( ! referenceNode || ! newNode ) {
-			return;
-		}
-		referenceNode.parentNode.insertBefore(
-			newNode,
-			referenceNode.nextSibling,
-		);
-	};
+const searchUserOnListPost = () => {
+	if ( lpDataAdmin.show_search_author_field === '0' ) {
+		return;
+	}
 
+	const elPostFilter = document.querySelector( '#posts-filter' );
+	if ( ! elPostFilter ) {
+		return;
+	}
+
+	let elSearchPost = elPostFilter.querySelector( '.search-box' );
+	if ( ! elSearchPost ) {
+		elPostFilter.insertAdjacentHTML( 'afterbegin', lpDataAdmin.show_search_author_field );
+		elSearchPost = elPostFilter.querySelector( '.search-box' );
+	}
+
+	let createSelectUser;
 	const createSelectUserHtml = () => {
-		const inputEl = document.querySelector( '#post-search-input' );
-		const createSelectUser = document.createElement( 'select' );
-		if ( ! createSelectUser || ! inputEl ) {
-			return;
+		createSelectUser = document.createElement( 'select' );
+		createSelectUser.setAttribute( 'name', 'author' );
+		const elInputSearch = elSearchPost.querySelector( 'input[name="s"]' );
+		createSelectUser.style.display = 'none';
+		if ( elInputSearch ) {
+			elInputSearch.insertAdjacentElement( 'afterend', createSelectUser );
 		}
-		createSelectUser.setAttribute( 'id', 'author' );
-		insertAfter( inputEl, createSelectUser );
+
+		// Remove input hide default of WP.
+		const elInputAuthor = elPostFilter.querySelector( 'input[name="author"]' );
+		if ( elInputAuthor ) {
+			elInputAuthor.remove();
+		}
 	};
 
 	const tomSearchUser = () => {
 		let tomSelect, defaultId;
-		const selectAuthor = document.querySelector( `#author` );
+		const selectAuthor = document.querySelector( `select[name="author"]` );
 		if ( ! selectAuthor ) {
 			return;
 		}
 
-		const authorInputEl = document.querySelector( 'input[name="author"]' );
-		if ( authorInputEl ) {
-			defaultId = authorInputEl.value ? authorInputEl.value : '';
+		const authorIdFilter = lpDataAdmin.urlParams.author;
+		if ( authorIdFilter ) {
+			defaultId = authorIdFilter;
 		}
 
 		const customOptions = {
 			items: defaultId,
+			placeholder: 'Chose user',
 			render: {
 				item( data, escape ) {
 					return (
@@ -102,17 +115,6 @@ const searchUserAdmin = () => {
 					);
 				},
 			},
-			onItemAdd: ( data, item ) => {
-				if ( authorInputEl ) {
-					authorInputEl.setAttribute( 'value', data );
-				}
-			},
-			onItemRemove: ( data, item ) => {
-				if ( authorInputEl ) {
-					authorInputEl.setAttribute( 'value', '' );
-				}
-			},
-
 		};
 
 		const callBackUser = {
@@ -120,7 +122,7 @@ const searchUserAdmin = () => {
 				const options = response.data.map( ( item ) => {
 					return {
 						value: item.ID,
-						text: `${ item.display_name } (#${ item.ID }) - ${ item.user_email }`,
+						text: `${ item.display_name } (#${ item.ID })`,
 					};
 				} );
 
@@ -142,13 +144,8 @@ const searchUserAdmin = () => {
 		AdminUtilsFunctions.fetchUsers( '', {}, callBackUser );
 	};
 
-	const classSelectBox = 'posts-filter';
-	const selectBoxEl = document.querySelector( `#${ classSelectBox }` );
-
-	if ( selectBoxEl ) {
-		createSelectUserHtml();
-		tomSearchUser();
-	}
+	createSelectUserHtml();
+	tomSearchUser();
 };
 
 // Init Tom-select author in course
@@ -281,7 +278,7 @@ const selectCoInstructor = () => {
 
 export {
 	selectAuthorCourse,
-	searchUserAdmin,
+	searchUserOnListPost,
 	searchUserOrder,
 	selectCoInstructor,
 };

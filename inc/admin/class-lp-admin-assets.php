@@ -37,25 +37,85 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 	 *
 	 * @return array
 	 * @since 4.2.5.6
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public function localize_data_global(): array {
+		$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+		// Check condition show field search by author for post.
+		$show_search_author_field = 0;
+		if ( $screen instanceof WP_Screen ) {
+			$course_item_types                = learn_press_get_course_item_types();
+			$screens_show_search_author_field = [
+				'edit-' . LP_COURSE_CPT,
+				'edit-' . LP_QUESTION_CPT,
+				'edit-' . LP_ORDER_CPT,
+			];
+
+			foreach ( $course_item_types as $type ) {
+				$screens_show_search_author_field[] = 'edit-' . $type;
+			}
+
+			$show_search_author_field = in_array( $screen->id, $screens_show_search_author_field ) ? 1 : 0;
+			if ( $show_search_author_field ) {
+				global $typenow;
+				$post_type        = $typenow;
+				$post_type_object = get_post_type_object( $post_type );
+
+				ob_start();
+				submit_button( $post_type_object->labels->search_items, '', '', false, array( 'id' => 'search-submit' ) );
+				$btn_submit = ob_get_clean();
+
+				ob_start();
+				$input_id = 'post-search-input';
+
+				if ( ! empty( $_REQUEST['orderby'] ) ) {
+					echo '<input type="hidden" name="orderby" value="' . esc_attr( $_REQUEST['orderby'] ) . '" />';
+				}
+				if ( ! empty( $_REQUEST['order'] ) ) {
+					echo '<input type="hidden" name="order" value="' . esc_attr( $_REQUEST['order'] ) . '" />';
+				}
+				if ( ! empty( $_REQUEST['post_mime_type'] ) ) {
+					echo '<input type="hidden" name="post_mime_type" value="' . esc_attr( $_REQUEST['post_mime_type'] ) . '" />';
+				}
+				if ( ! empty( $_REQUEST['detached'] ) ) {
+					echo '<input type="hidden" name="detached" value="' . esc_attr( $_REQUEST['detached'] ) . '" />';
+				}
+
+				printf(
+					'<p class="search-box">
+						<label class="screen-reader-text" for="%s">%s:</label>
+						<input type="search" id="%s" name="s" value="%s" />
+							%s
+					</p>',
+					$post_type_object->labels->search_items,
+					esc_attr( $input_id ),
+					$input_id,
+					isset( $_REQUEST['s'] ) ? esc_attr( wp_unslash( $_REQUEST['s'] ) ) : '',
+					$btn_submit
+				);
+				$show_search_author_field = ob_get_clean();
+			}
+		}
+		// End check condition show field search by author for post.
+
 		return apply_filters(
 			'learn-press/admin/localize-data-global',
 			[
-				'site_url'          => site_url(),
-				'user_id'           => get_current_user_id(),
-				'is_admin'          => current_user_can( ADMIN_ROLE ),
-				'theme'             => get_stylesheet(),
-				'lp_version'        => LP()->version,
-				'lp_rest_url'       => get_rest_url(),
-				'lp_rest_load_ajax' => get_rest_url( null, 'lp/v1/load_content_via_ajax/' ),
-				'nonce'             => wp_create_nonce( 'wp_rest' ),
-				'courses_url'       => learn_press_get_page_link( 'courses' ),
-				'urlParams'         => lp_archive_skeleton_get_args(),
-				'i18n'              => [
+				'site_url'                 => site_url(),
+				'user_id'                  => get_current_user_id(),
+				'is_admin'                 => current_user_can( ADMIN_ROLE ),
+				'theme'                    => get_stylesheet(),
+				'lp_version'               => LP()->version,
+				'lp_rest_url'              => get_rest_url(),
+				'lp_rest_load_ajax'        => get_rest_url( null, 'lp/v1/load_content_via_ajax/' ),
+				'nonce'                    => wp_create_nonce( 'wp_rest' ),
+				'courses_url'              => learn_press_get_page_link( 'courses' ),
+				'urlParams'                => lp_archive_skeleton_get_args(),
+				'i18n'                     => [
 					'select_page' => esc_html__( 'Select page', 'learnpress' ),
 				],
+				'current_screen'           => $screen ? $screen->id : '',
+				'show_search_author_field' => $show_search_author_field
 			]
 		);
 	}
@@ -410,7 +470,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				'lp-tom-select'         => new LP_Asset_Key(
 					'https://cdn.jsdelivr.net/npm/tom-select@2.2.3/dist/css/tom-select.css',
 					[],
-					array( 'learnpress_page_learn-press-tools', LP_ORDER_CPT, LP_COURSE_CPT ),
+					[],
 					0
 				),
 			)
