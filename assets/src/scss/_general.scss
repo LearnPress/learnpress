@@ -574,7 +574,16 @@ ul .clearfix {
 .ts-wrapper {
 	min-width: 200px;
 
-	.ts-control input[type=text] {
-		width: auto;
+	.ts-control {
+		input[type=text] {
+			width: auto;
+		}
+
+		li {
+			margin: 0 5px 5px 0;
+			padding: 3px 8px;
+			background: #eee;
+			border-radius: var(--lp-border-radius);
+		}
 	}
 }
