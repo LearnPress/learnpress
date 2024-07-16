@@ -42,6 +42,10 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 	public function localize_data_global(): array {
 		$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
 
+		ob_start();
+		Template::instance()->get_admin_template( 'search-author-field.php' );
+		$html_search_author_field = ob_get_clean();
+
 		return apply_filters(
 			'learn-press/admin/localize-data-global',
 			[
@@ -59,7 +63,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'select_page' => esc_html__( 'Select page', 'learnpress' ),
 				],
 				'current_screen'           => $screen ? $screen->id : '',
-				'show_search_author_field' => include 'views/search-author-field.php'
+				'show_search_author_field' => $html_search_author_field
 			]
 		);
 	}
