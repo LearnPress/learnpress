@@ -83,14 +83,14 @@ class LP_Meta_Box_Text_Field extends LP_Meta_Box_Field {
 		$meta_value = LP_Request::get_param( $this->id, $this->default ?? '' );
 
 		if ( $meta_value !== '' && $type_input === 'number' ) {
-			$step = $this->extra['custom_attributes']['step'] ?? '';
-			if ( floatval( $step ) != 1 ) {
-				$meta_value = floatval( $meta_value );
-			} else {
-				$meta_value = absint( $meta_value );
+			$meta_value = (float) $meta_value;
+			$value_min  = (float) $this->extra['custom_attributes']['min'] ?? 0;
+			$value_max  = (float) $this->extra['custom_attributes']['max'] ?? 0;
+			if ( $meta_value > $value_max ) {
+				$meta_value = $value_max;
+			} elseif ( $meta_value < $value_min ) {
+				$meta_value = $value_min;
 			}
-		} else {
-			$meta_value = LP_Helper::sanitize_params_submitted( $meta_value );
 		}
 
 		update_post_meta( $post_id, $this->id, $meta_value );
