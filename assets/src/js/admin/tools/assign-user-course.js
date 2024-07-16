@@ -230,7 +230,7 @@ export default function assignUserCourse() {
 				return options;
 			},
 		};
-		AdminUtils.AdminUtilsFunctions.fetchCourses( '', callBackCourse );
+		AdminUtils.AdminUtilsFunctions.fetchCourses( '', {}, callBackCourse );
 
 		const elCourseUnAssign = elFormUnAssignUserCourse.querySelector( '[name=course_ids]' );
 		const callBackCourseUnAssign = {
