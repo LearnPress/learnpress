@@ -394,13 +394,14 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 		try {
 			$params        = $request->get_params();
 			$search_string = sanitize_text_field( $params['search'] ?? '' );
+			$current_ids   = sanitize_text_field( $params['current_ids'] ?? '' );
 			$args_get_user = array(
 				'search_columns' => array(
 					'user_login',
 					'user_nicename',
 					'user_email',
 				),
-				'number'         => 1,
+				'number'         => 20,
 				'fields'         => array( 'ID', 'display_name', 'user_login', 'user_email' ),
 			);
 
@@ -418,9 +419,23 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 				$args_get_user['exclude'] = explode( ',', $id_not_in );
 			}
 
+			if ( ! empty( $current_ids ) ) {
+				$current_ids_array        = explode( ',', $current_ids );
+				$args_get_user['exclude'] = array_merge( $args_get_user['exclude'] ?? [], $current_ids_array );
+			}
+
 			$id_in = sanitize_text_field( $params['ids'] ?? '' );
-			if ( ! empty( $id_not_in ) ) {
+			if ( ! empty( $id_in ) ) {
 				$args_get_user['include'] = explode( ',', $id_in );
+			}
+
+			$users_selected = [];
+			if ( ! empty( $current_ids ) ) {
+				$args_get_user_current = array(
+					'include' => $current_ids_array,
+					'fields'  => array( 'ID', 'display_name', 'user_login', 'user_email' ),
+				);
+				$users_selected        = get_users( $args_get_user_current );
 			}
 
 			$args_get_user = apply_filters( 'learn-press/rest-admin-tools/args-search-users', $args_get_user );
@@ -429,6 +444,11 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 			if ( ! empty( $users ) ) {
 				$response->data = $users;
 			}
+
+			if ( ! empty( $users_selected ) ) {
+				$response->data = ! empty( $users ) ? array_merge( $users_selected, $users ) : $users_selected;
+			}
+
 			$response->status = 'success';
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
