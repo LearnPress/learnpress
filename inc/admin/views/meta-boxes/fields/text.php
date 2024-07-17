@@ -84,12 +84,16 @@ class LP_Meta_Box_Text_Field extends LP_Meta_Box_Field {
 
 		if ( $meta_value !== '' && $type_input === 'number' ) {
 			$meta_value = (float) $meta_value;
-			$value_min  = (float) ( $this->extra['custom_attributes']['min'] ?? 0 );
-			$value_max  = (float) ( $this->extra['custom_attributes']['max'] ?? 0 );
-			if ( $meta_value > $value_max ) {
-				$meta_value = $value_max;
-			} elseif ( $meta_value < $value_min ) {
-				$meta_value = $value_min;
+			if ( isset( $this->extra['custom_attributes']['max'] ) ) {
+				$value_max = (float) $this->extra['custom_attributes']['max'];
+				if ( $meta_value > $value_max ) {
+					$meta_value = $value_max;
+				}
+			} elseif ( isset( $this->extra['custom_attributes']['min'] ) ) {
+				$value_min = (float) $this->extra['custom_attributes']['max'];
+				if ( $meta_value < $value_min ) {
+					$meta_value = $value_min;
+				}
 			}
 		}
 

@@ -220,12 +220,12 @@ const selectAuthorCourse = () => {
 const selectCoInstructor = () => {
 	let tomSelect;
 	const selectCoInstructorEl = document.querySelector( '[name="_lp_co_teacher"]' );
-	const postAuthorEl = document.querySelector( '[name="post_author"]' );
+	let postAuthorEl = document.querySelector( '[name="post_author"]' );
 	if ( ! selectCoInstructorEl ) {
 		return;
 	}
 
-	const userId = postAuthorEl?.value ? postAuthorEl?.value : '';
+	const userId = postAuthorEl?.value || 0;
 	const defaultId = selectCoInstructorEl.dataset?.coInstructors
 		? JSON.parse( selectCoInstructorEl.dataset?.coInstructors )
 		: '';
@@ -258,7 +258,7 @@ const selectCoInstructor = () => {
 	const callBackUser = {
 		success: ( response ) => {
 			let options = [];
-			console.log( 'running' );
+			//console.log( 'running' );
 			if ( response.data.length > 0 ) {
 				options = response.data.map( ( item ) => {
 					return {
