@@ -258,7 +258,6 @@ const selectCoInstructor = () => {
 	const callBackUser = {
 		success: ( response ) => {
 			let options = [];
-			console.log( 'running' );
 			if ( response.data.length > 0 ) {
 				options = response.data.map( ( item ) => {
 					return {
