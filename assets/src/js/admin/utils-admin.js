@@ -44,9 +44,15 @@ const AdminUtilsFunctions = {
 			const tomSelect = new TomSelect( elTomSelect, options );
 
 			for ( let i = 1; i < chunkedOptions.length; i++ ) {
-				chunkedOptions[ i ].forEach( ( option ) => {
-					tomSelect.addOption( option );
-				} );
+				setTimeout( () => {
+					chunkedOptions[ i ].forEach( ( option ) => {
+						tomSelect.addOption( option );
+					} );
+
+					if ( i === chunkedOptions.length - 1 && currentIds ) {
+						tomSelect.setValue( currentIds.split( ',' ) );
+					}
+				}, 200 * i );
 			}
 
 			if ( currentIds ) {
