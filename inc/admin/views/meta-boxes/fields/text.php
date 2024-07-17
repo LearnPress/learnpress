@@ -90,7 +90,7 @@ class LP_Meta_Box_Text_Field extends LP_Meta_Box_Field {
 					$meta_value = $value_max;
 				}
 			} elseif ( isset( $this->extra['custom_attributes']['min'] ) ) {
-				$value_min = (float) $this->extra['custom_attributes']['max'];
+				$value_min = (float) $this->extra['custom_attributes']['min'];
 				if ( $meta_value < $value_min ) {
 					$meta_value = $value_min;
 				}
