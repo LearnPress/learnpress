@@ -268,7 +268,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 				 * Check if LP beta version is not dismissed or dismissed version lower than current version, will bet to show notice.
 				 */
 				if ( $lp_beta_version_info && ! isset( $_GET['tab'] ) &&
-					( ! isset( $_COOKIE['lp_beta_version'] ) || version_compare( $_COOKIE['lp_beta_version'], $lp_beta_version_info['version'], '<' ) ) ) {
+				     ( ! isset( $_COOKIE['lp_beta_version'] ) || version_compare( $_COOKIE['lp_beta_version'], $lp_beta_version_info['version'], '<' ) ) ) {
 					$show_notice_lp_beta_version = true;
 				}
 
@@ -306,7 +306,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 						'lp-setup-wizard'            => [
 							'template'      => 'admin-notices/setup-wizard.php',
 							'check'         => ! get_option( 'learn_press_setup_wizard_completed', false )
-												&& ! isset( $admin_notices_dismiss['lp-setup-wizard'] ),
+							                   && ! isset( $admin_notices_dismiss['lp-setup-wizard'] ),
 							'allow_dismiss' => 1,
 						],
 						// Show notification addons new version.
@@ -403,13 +403,14 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 			$params        = $request->get_params();
 			$search_string = sanitize_text_field( $params['search'] ?? '' );
 			$current_ids   = sanitize_text_field( $params['current_ids'] ?? '' );
+			$number        = sanitize_text_field( $params['number'] ?? 20 );
 			$args_get_user = array(
 				'search_columns' => array(
 					'user_login',
 					'user_nicename',
 					'user_email',
 				),
-				'number'         => 20,
+				'number'         => $number,
 				'fields'         => array( 'ID', 'display_name', 'user_login', 'user_email' ),
 			);
 
@@ -429,23 +430,31 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 
 			// Get only users selected.
 			$users_selected = [];
+			$total_selected = 0;
 			if ( ! empty( $current_ids ) ) {
 				$current_ids_array     = explode( ',', $current_ids );
 				$args_get_user_current = array(
 					'include' => $current_ids_array,
 					'fields'  => array( 'ID', 'display_name', 'user_login', 'user_email' ),
 				);
-				$users_selected        = get_users( $args_get_user_current );
+				$users_selected_query  = new WP_User_Query( $args_get_user_current );
+				$users_selected        = $users_selected_query->get_results();
+				$total_selected        = $users_selected_query->get_total() ?? 0;
 			}
 
 			$args_get_user = apply_filters( 'learn-press/rest-admin-tools/args-search-users', $args_get_user );
 
 			// Get list users for search.
-			$users_search = get_users( $args_get_user );
-			$users        = array_merge( $users_selected, $users_search );
+			$args_get_user['count_total'] = true;
+			$users_search_query           = new WP_User_Query( $args_get_user );
+			$users_search                 = $users_search_query->get_results() ?? [];
+			$total_search                 = $users_search_query->get_total() ?? 0;
+			$users                        = array_merge( $users_selected, $users_search );
 
-			$response->data   = $users;
-			$response->status = 'success';
+			$response->data->users       = $users;
+			$total                       = $total_selected + $total_search;
+			$response->data->total_pages = LP_Database::get_total_pages( $number, $total );
+			$response->status            = 'success';
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}

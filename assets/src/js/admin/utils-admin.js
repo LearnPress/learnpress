@@ -43,7 +43,7 @@ const AdminUtilsFunctions = {
 			options.options = chunkedOptions[ 0 ];
 			const tomSelect = new TomSelect( elTomSelect, options );
 
-			for ( let i = 1; i < chunkedOptions.length; i++ ) {
+			for ( let i = 0; i < chunkedOptions.length; i++ ) {
 				setTimeout( () => {
 					chunkedOptions[ i ].forEach( ( option ) => {
 						tomSelect.addOption( option );
@@ -53,10 +53,6 @@ const AdminUtilsFunctions = {
 						tomSelect.setValue( currentIds.split( ',' ) );
 					}
 				}, 200 * i );
-			}
-
-			if ( currentIds ) {
-				tomSelect.setValue( currentIds.split( ',' ) );
 			}
 
 			return tomSelect;

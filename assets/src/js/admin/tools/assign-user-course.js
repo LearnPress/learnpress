@@ -239,7 +239,7 @@ export default function assignUserCourse() {
 		const callBackCourseUnAssign = {
 			success: ( response ) => {
 				let options = [];
-				if ( response.data.courses.length > 0 ) {
+				if ( response.data.course.length > 0 ) {
 					options = response.data.courses.map( ( item ) => {
 						return {
 							value: item.ID,
@@ -270,8 +270,8 @@ export default function assignUserCourse() {
 		const callBackUser = {
 			success: ( response ) => {
 				let options = [];
-				if ( response.data.length > 0 ) {
-					options = response.data.map( ( item ) => {
+				if ( response.data.users.length > 0 ) {
+					options = response.data.users.map( ( item ) => {
 						return {
 							value: item.ID,
 							text: `${ item.display_name } (#${ item.ID }) - ${ item.user_email }`,
@@ -300,8 +300,8 @@ export default function assignUserCourse() {
 		const callBackUserUnAssign = {
 			success: ( response ) => {
 				let options = [];
-				if ( response.data.length > 0 ) {
-					options = response.data.map( ( item ) => {
+				if ( response.data.users.length > 0 ) {
+					options = response.data.users.map( ( item ) => {
 						return {
 							value: item.ID,
 							text: `${ item.display_name } (#${ item.ID }) - ${ item.user_email }`,

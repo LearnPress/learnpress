@@ -32,8 +32,8 @@ const searchUserOrder = () => {
 	const callBackUser = {
 		success: ( response ) => {
 			let options = [];
-			if ( response.data.length > 0 ) {
-				options = response.data.map( ( item ) => {
+			if ( response.data.users.length > 0 ) {
+				options = response.data.users.map( ( item ) => {
 					return {
 						value: item.ID,
 						text: `${ item.display_name } (#${ item.ID }) - ${ item.user_email }`,
@@ -123,8 +123,8 @@ const searchUserOnListPost = () => {
 		const callBackUser = {
 			success: ( response ) => {
 				let options = [];
-				if ( response.data.length > 0 ) {
-					options = response.data?.map( ( item ) => {
+				if ( response.data.users.length > 0 ) {
+					options = response.data.users.map( ( item ) => {
 						return {
 							value: item.ID,
 							text: `${ item.display_name } (#${ item.ID })`,
@@ -188,8 +188,8 @@ const selectAuthorCourse = () => {
 	const callBackUser = {
 		success: ( response ) => {
 			let options = [];
-			if ( response.data.length > 0 ) {
-				options = response.data.map( ( item ) => {
+			if ( response.data.users.length > 0 ) {
+				options = response.data.users.map( ( item ) => {
 					return {
 						value: item.ID,
 						text: `${ item.display_name } (#${ item.ID }) - ${ item.user_email }`,
@@ -258,9 +258,8 @@ const selectCoInstructor = () => {
 	const callBackUser = {
 		success: ( response ) => {
 			let options = [];
-			//console.log( 'running' );
-			if ( response.data.length > 0 ) {
-				options = response.data.map( ( item ) => {
+			if ( response.data.users.length > 0 ) {
+				options = response.data.users.map( ( item ) => {
 					return {
 						value: item.ID,
 						text: `${ item.display_name } (#${ item.ID }) - ${ item.user_email }`,
