@@ -19,6 +19,7 @@ class LP_Assets extends LP_Abstract_Assets {
 		parent::__construct();
 
 		add_action( 'wp_print_footer_scripts', array( $this, 'show_overlay' ) );
+		//Note: hook wp_head load before hook wp_enqueue_scripts
 		add_action( 'wp_head', [ $this, 'load_scripts_styles_on_head' ], - 1 );
 	}
 

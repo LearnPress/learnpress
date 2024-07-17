@@ -12,11 +12,10 @@ class LP_Meta_Box_Text_Field extends LP_Meta_Box_Field {
 	/**
 	 * Constructor.
 	 *
-	 * @param string $id
 	 * @param string $label
 	 * @param string $description
-	 * @param mixed  $default
-	 * @param array  $extra
+	 * @param mixed $default
+	 * @param array $extra
 	 */
 	public function __construct( $label = '', $description = '', $default = '', $extra = array() ) {
 		parent::__construct( $label, $description, $default, $extra );
@@ -48,13 +47,24 @@ class LP_Meta_Box_Text_Field extends LP_Meta_Box_Field {
 			}
 		}
 
-		echo '<div class="form-field ' . esc_attr( $this->id . '_field ' . $wrapper_class ) . '">
-		<label for="' . esc_attr( $this->id ) . '">' . wp_kses_post( $this->label ) . '</label>';
+		printf(
+			'<div class="form-field %s"><label for="%s">%s</label>',
+			esc_attr( $this->id . '_field ' . $wrapper_class ),
+			esc_attr( $this->id ),
+			wp_kses_post( $this->label )
+		);
 
-		echo '<input type="' . esc_attr( $type_input ) . '" ' . $class . ' ' . $style . ' name="' . $this->id . '" id="' . $this->id . '" value="' . $value . '" placeholder="' . esc_attr( $placeholder ) . '" ' . implode(
-			' ',
-			$custom_attributes
-		) . ' /> ';
+		printf(
+			'<input type="%s" %s %s name="%s" id="%s" value="%s" placeholder="%s" %s />',
+			esc_attr( $type_input ),
+			$class,
+			$style,
+			$this->id,
+			$this->id,
+			$value,
+			esc_attr( $placeholder ),
+			implode( ' ', $custom_attributes )
+		);
 
 		if ( ! empty( $this->description ) ) {
 			echo '<p class="description">';
@@ -70,20 +80,25 @@ class LP_Meta_Box_Text_Field extends LP_Meta_Box_Field {
 
 	public function save( $post_id ) {
 		$type_input = $this->extra['type_input'] ?? 'text';
-		$meta_value = isset( $_POST[ $this->id ] ) ? wp_unslash( $_POST[ $this->id ] ) : $this->default;
+		$meta_value = LP_Request::get_param( $this->id, $this->default ?? '' );
 
 		if ( $meta_value !== '' && $type_input === 'number' ) {
-			$step = isset( $this->extra['custom_attributes']['step'] ) ? $this->extra['custom_attributes']['step'] : '';
-
-			if ( floatval( $step ) !== 1 ) {
-				$meta_value = floatval( $meta_value );
-			} else {
-				$meta_value = absint( $meta_value );
+			$meta_value = (float) $meta_value;
+			if ( isset( $this->extra['custom_attributes']['max'] ) ) {
+				$value_max = (float) $this->extra['custom_attributes']['max'];
+				if ( $meta_value > $value_max ) {
+					$meta_value = $value_max;
+				}
+			} elseif ( isset( $this->extra['custom_attributes']['min'] ) ) {
+				$value_min = (float) $this->extra['custom_attributes']['min'];
+				if ( $meta_value < $value_min ) {
+					$meta_value = $value_min;
+				}
 			}
-		} else {
-			$meta_value = LP_Helper::sanitize_params_submitted( $meta_value );
 		}
 
 		update_post_meta( $post_id, $this->id, $meta_value );
+
+		return $meta_value;
 	}
 }

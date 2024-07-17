@@ -66,7 +66,7 @@ class LP_REST_Addon_Controller extends LP_Abstract_REST_Controller {
 		try {
 			$params   = $request->get_params();
 			$lp_addon = LP_Manager_Addons::instance();
-			$res      = wp_remote_get( $lp_addon->url_list_addons );
+			$res      = wp_remote_get( $lp_addon->url_list_addons, [ 'timeout' => 30, ] );
 			if ( is_wp_error( $res ) ) {
 				throw new Exception( $res->get_error_message() );
 			}
@@ -81,6 +81,7 @@ class LP_REST_Addon_Controller extends LP_Abstract_REST_Controller {
 					'body'       => [
 						'addons_purchase' => $addons_purchase,
 					],
+					'timeout'    => 30,
 					'user-agent' => site_url(),
 				];
 
@@ -119,8 +120,7 @@ class LP_REST_Addon_Controller extends LP_Abstract_REST_Controller {
 			$response->status  = 'success';
 			$response->message = __( 'Get addons successfully', 'learnpress' );
 		} catch ( Throwable $e ) {
-			ob_end_clean();
-			error_log( $e->getMessage() );
+			error_log( __METHOD__ . ':' . $e->getMessage() );
 			$response->message = $e->getMessage();
 		}
 

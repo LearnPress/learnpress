@@ -73,8 +73,8 @@ abstract class LP_Abstract_Post_Type {
 			$this->_post_type = $post_type;
 		}
 		add_action( 'init', array( $this, '_do_register' ) );
-		add_action( 'save_post', array( $this, '_do_save_post' ), 10, 2 );
-		add_action( 'wp_after_insert_post', [ $this, 'wp_after_insert_post' ], 10, 3 );
+		add_action( 'save_post', array( $this, '_do_save_post' ), - 1, 3 );
+		add_action( 'wp_after_insert_post', [ $this, 'wp_after_insert_post' ], - 1, 3 );
 		add_action( 'before_delete_post', array( $this, '_before_delete_post' ) );
 		add_action( 'deleted_post', array( $this, '_deleted_post' ) );
 		add_action( 'wp_trash_post', array( $this, '_before_trash_post' ) );
@@ -177,12 +177,13 @@ abstract class LP_Abstract_Post_Type {
 	 *
 	 * @param int $post_id
 	 * @param WP_Post $post
+	 * @param bool $is_update
 	 *
 	 * @editor tungnx
 	 * @since modify 4.0.9
-	 * @version 4.0.1
+	 * @version 4.0.2
 	 */
-	final function _do_save_post( int $post_id = 0, WP_Post $post = null ) {
+	final function _do_save_post( int $post_id = 0, WP_Post $post = null, bool $is_update = false ) {
 		// Maybe remove
 		$this->maybe_remove_assigned( $post );
 
@@ -191,6 +192,7 @@ abstract class LP_Abstract_Post_Type {
 		}
 
 		$this->save( $post_id, $post );
+		$this->save_post( $post_id, $post, $is_update );
 	}
 
 	/**
@@ -200,6 +202,22 @@ abstract class LP_Abstract_Post_Type {
 	 * @docs Class post type extend need override this function if want to handle when save
 	 */
 	public function save( int $post_id, WP_Post $post ) {
+		// Implement from child
+	}
+
+	/**
+	 * Function for child class handle when post has just saved
+	 * This function provides the argument `$update` to determine whether a post is updated or new.
+	 * Replace for function save only has two args
+	 *
+	 * @param int $post_id
+	 * @param WP_Post $post
+	 * @param bool $is_update
+	 *
+	 * @since 4.2.6.9
+	 * @version 1.0.0
+	 */
+	public function save_post( int $post_id, WP_Post $post = null, bool $is_update = false ) {
 		// Implement from child
 	}
 
@@ -238,11 +256,12 @@ abstract class LP_Abstract_Post_Type {
 	 * Only on receiver 1 param $post_id, can't get param $post - don't know why
 	 *
 	 * @param int $post_id
+	 * @param WP_Post|null $post
 	 *
 	 * @editor tungnx
 	 * @since modify 4.0.9
 	 */
-	final function _before_delete_post( int $post_id ) {
+	final function _before_delete_post( int $post_id, WP_Post $post = null ) {
 		try {
 			// Todo: check is pages of LP
 			if ( 'page' === get_post_type( $post_id ) ) {
@@ -304,7 +323,7 @@ abstract class LP_Abstract_Post_Type {
 	 * @version 1.0.0
 	 */
 	final function _before_trash_post( int $post_id ) {
-		if ( ! $this->check_post() ) {
+		if ( ! $this->check_post( $post_id ) ) {
 			return;
 		}
 
@@ -351,7 +370,7 @@ abstract class LP_Abstract_Post_Type {
 	 * @version 1.0.0
 	 */
 	final function _trashed_post( int $post_id ) {
-		if ( ! $this->check_post() ) {
+		if ( ! $this->check_post( $post_id ) ) {
 			return;
 		}
 
@@ -700,7 +719,6 @@ abstract class LP_Abstract_Post_Type {
 		try {
 			$post = get_post( $post_id );
 			if ( ! $post ) {
-				//throw new Exception( 'Post is invalid' );
 				return false;
 			}
 

@@ -1,5 +1,8 @@
 <?php
 
+use LearnPress\Models\CourseModel;
+use LearnPress\Models\CoursePostModel;
+
 /**
  * Class LP_Install_Sample_Data
  *
@@ -144,15 +147,17 @@ class LP_Install_Sample_Data {
 			/**
 			 * Save info course in background.
 			 */
+			$coursePostModel = new CoursePostModel( get_post( $course_id ) );
+			$coursePostModel->get_all_metadata();
+			$courseModelNew = new CourseModel( $coursePostModel );
+			$courseModelNew->get_price();
+			$courseModelNew->save();
 			$bg = LP_Background_Single_Course::instance();
 			$bg->data(
 				array(
 					'handle_name' => 'save_post',
 					'course_id'   => $course_id,
-					'data'        => [
-						'data_sample'       => 1,
-						'_lp_regular_price' => $price,
-					],
+					'data'        => [],
 				)
 			)->dispatch();
 

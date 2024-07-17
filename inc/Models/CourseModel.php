@@ -81,6 +81,7 @@ class CourseModel {
 	 */
 	public $meta_data = null;
 	public $image_url = '';
+	public $permalink = '';
 	public $categories = [];
 	private $price = 0; // Not save in database, must auto reload calculate
 	private $passing_condition = '';
@@ -96,7 +97,7 @@ class CourseModel {
 	/**
 	 * @var array list sections items
 	 */
-	public $sections_items = [];
+	public $sections_items;
 
 	/**
 	 * If data get from database, map to object.
@@ -234,7 +235,7 @@ class CourseModel {
 	public function get_regular_price() {
 		$key = CoursePostModel::META_KEY_REGULAR_PRICE;
 		if ( $this->meta_data && isset( $this->meta_data->{$key} ) ) {
-			return (float) $this->meta_data->{$key};
+			return $this->meta_data->{$key};
 		}
 
 		$coursePost              = new CoursePostModel( $this );
@@ -272,12 +273,12 @@ class CourseModel {
 	 */
 	public function has_sale_price(): bool {
 		$has_sale_price = false;
-		$regular_price  = (float) $this->get_regular_price();
-		$sale_price     = (float) $this->get_sale_price();
+		$regular_price  = $this->get_regular_price();
+		$sale_price     = $this->get_sale_price();
 		$start_date     = $this->get_sale_start();
 		$end_date       = $this->get_sale_end();
 
-		if ( $regular_price > $sale_price ) {
+		if ( $sale_price !== '' && (float) $regular_price > (float) $sale_price ) {
 			$has_sale_price = true;
 		}
 
@@ -393,10 +394,56 @@ class CourseModel {
 		try {
 			$this->sections_items = $this->get_sections_and_items_course_from_db_and_sort();
 		} catch ( Throwable $e ) {
-			$this->sections_items = 0;
+			$this->sections_items = [];
 		}
 
 		return $this->sections_items;
+	}
+
+	/**
+	 * Get final quiz id
+	 *
+	 * @return int
+	 */
+	public function get_final_quiz(): int {
+		$key = '_lp_final_quiz';
+		if ( ! empty( $this->meta_data->{$key} ) ) {
+			return $this->meta_data->$key;
+		}
+
+		$final_quiz = 0;
+
+		// Not use array_reverse, it's make change object
+		$section_items = $this->get_section_items();
+		$found         = 0;
+		for ( $i = count( $section_items ); $i > 0; $i -- ) {
+			$section = $section_items[ $i - 1 ];
+			for ( $j = count( $section->items ); $j > 0; $j -- ) {
+				$item = $section->items[ $j - 1 ];
+				if ( learn_press_get_post_type( $item->id ) === LP_QUIZ_CPT ) {
+					$final_quiz = $item->id;
+					$found      = 1;
+					break;
+				}
+			}
+
+			if ( $found ) {
+				break;
+			}
+		}
+
+		$evaluation_type = $this->meta_data->_lp_course_result ?? '';
+		if ( $evaluation_type === 'evaluate_final_quiz' ) {
+			if ( isset( $final_quiz ) ) {
+				update_post_meta( $this->ID, $key, $final_quiz );
+			} else {
+				delete_post_meta( $this->ID, $key );
+			}
+		}
+
+		$this->meta_data->{$key} = $final_quiz;
+
+		return $final_quiz;
 	}
 
 	/**
@@ -508,6 +555,26 @@ class CourseModel {
 		return $sections_items;
 	}
 
+	/**
+	 * Get permalink course
+	 *
+	 * @return string
+	 */
+	public function get_permalink(): string {
+		if ( ! empty( $this->permalink ) ) {
+			return $this->permalink;
+		}
+
+		try {
+			$coursePostModel = new CoursePostModel( $this );
+			$this->permalink = $coursePostModel->get_permalink();
+		} catch ( Throwable $e ) {
+			$this->permalink = '';
+		}
+
+		return $this->permalink;
+	}
+
 	public function get_meta_value_by_key( string $key, $default = false ) {
 		if ( ! empty( $this->meta_data ) && isset( $this->meta_data->{$key} ) ) {
 			$value = $this->meta_data->{$key};
@@ -540,11 +607,22 @@ class CourseModel {
 
 		try {
 			$filter->only_fields = [ 'json', 'post_content' ];
-			$course_rs           = self::get_course_from_db( $filter );
+			// Load cache
+			if ( ! $no_cache ) {
+				$key_cache       = "course-model/{$filter->ID}";
+				$lp_course_cache = new LP_Course_Cache();
+				$course_model    = $lp_course_cache->get_cache( $key_cache );
+
+				if ( $course_model instanceof CourseModel ) {
+					return $course_model;
+				}
+			}
+
+			$course_rs = self::get_course_from_db( $filter );
 			if ( $course_rs instanceof stdClass && isset( $course_rs->json ) ) {
-				$course_obj                 = LP_Helper::json_decode( $course_rs->json );
-				$course_model               = new static( $course_obj );
-				$course_model->json         = $course_rs->json;
+				$course_obj   = LP_Helper::json_decode( $course_rs->json );
+				$course_model = new static( $course_obj );
+				//$course_model->json         = $course_rs->json;
 				$course_model->post_content = $course_rs->post_content;
 				if ( $course_model->author instanceof stdClass ) {
 					$course_model->author = new UserModel( $course_model->author );
@@ -598,6 +676,7 @@ class CourseModel {
 
 		$courseObjToJSON = clone $this;
 		unset( $courseObjToJSON->post_content );
+		unset( $courseObjToJSON->json );
 		$this->json = json_encode( $courseObjToJSON, JSON_UNESCAPED_UNICODE );
 		foreach ( get_object_vars( $this ) as $property => $value ) {
 			$data[ $property ] = $value;
@@ -617,6 +696,12 @@ class CourseModel {
 		} else { // Update data.
 			$lp_course_json_db->update_data( $data );
 		}
+
+		// Set cache single course when save done.
+		$key_cache       = "course-model/{$this->ID}";
+		$lp_course_cache = new LP_Course_Cache();
+		$lp_course_cache->clear( $this->ID );
+		$lp_course_cache->set_cache( $key_cache, $this->ID );
 
 		return $this;
 	}

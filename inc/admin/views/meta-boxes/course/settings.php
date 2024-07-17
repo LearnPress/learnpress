@@ -70,7 +70,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 		return $tabs;
 	}
 
-	public function general( $thepostid ) {
+	public function general( $post_id ) {
 		$repurchase_option_desc  = sprintf( '1. %s', __( 'Reset course progress: The course progress and results of student will be removed.' ) );
 		$repurchase_option_desc .= '<br/>' . sprintf( '2. %s', __( 'Keep course progress: The course progress and results of student will remain.' ) );
 		$repurchase_option_desc .= '<br/>' . sprintf( '3. %s', __( 'Open popup: The student can decide whether their course progress will be reset with the confirm popup.' ) );
@@ -272,19 +272,6 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 		$author = $post ? $post->post_author : get_current_user_id();
 
 		$options = array();
-		$role    = array( 'administrator', 'lp_teacher' );
-
-		$role = apply_filters( 'learn_press_course_author_role_meta_box', $role );
-
-		foreach ( $role as $_role ) {
-			$users_by_role = get_users( array( 'role' => $_role ) );
-
-			if ( $users_by_role ) {
-				foreach ( $users_by_role as $user ) {
-					$options[ $user->get( 'ID' ) ] = $user->user_login;
-				}
-			}
-		}
 
 		return apply_filters(
 			'lp/course/meta-box/fields/author',
@@ -476,8 +463,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 		<?php
 	}
 
-	public function save( $post_id ) {
-		return;
+	/*public function save( $post_id ) {
 		if ( ! empty( $this->metabox( $post_id ) ) ) {
 			foreach ( $this->metabox( $post_id ) as $key => $tab_content ) {
 				if ( isset( $tab_content['content'] ) ) {
@@ -536,7 +522,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 
 			$wpdb->update( $wpdb->posts, array( 'post_author' => $author ), array( 'ID' => $post_id ) );
 		}
-	}
+	}*/
 
 	private static function data_tabs_sort( $a, $b ) {
 		if ( ! isset( $a['priority'], $b['priority'] ) ) {

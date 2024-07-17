@@ -268,7 +268,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 				 * Check if LP beta version is not dismissed or dismissed version lower than current version, will bet to show notice.
 				 */
 				if ( $lp_beta_version_info && ! isset( $_GET['tab'] ) &&
-					( ! isset( $_COOKIE['lp_beta_version'] ) || version_compare( $_COOKIE['lp_beta_version'], $lp_beta_version_info['version'], '<' ) ) ) {
+				     ( ! isset( $_COOKIE['lp_beta_version'] ) || version_compare( $_COOKIE['lp_beta_version'], $lp_beta_version_info['version'], '<' ) ) ) {
 					$show_notice_lp_beta_version = true;
 				}
 
@@ -306,7 +306,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 						'lp-setup-wizard'            => [
 							'template'      => 'admin-notices/setup-wizard.php',
 							'check'         => ! get_option( 'learn_press_setup_wizard_completed', false )
-												&& ! isset( $admin_notices_dismiss['lp-setup-wizard'] ),
+							                   && ! isset( $admin_notices_dismiss['lp-setup-wizard'] ),
 							'allow_dismiss' => 1,
 						],
 						// Show notification addons new version.
@@ -358,13 +358,24 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 	public function search_courses( WP_REST_Request $request ): LP_REST_Response {
 		$response = new LP_REST_Response();
 		try {
-			$total_rows                  = 0;
-			$filter                      = new LP_Course_Filter();
-			$params                      = $request->get_params();
-			$filter->limit               = 20;
-			$filter->only_fields         = [ 'ID', 'post_title' ];
-			$filter->post_title          = $params['c_search'] ?? '';
-			$filter->page                = $params['paged'] ?? 1;
+			$params              = $request->get_params();
+			$ids_str             = LP_Helper::sanitize_params_submitted( $params['ids'] ?? '' );
+			$not_ids_str         = LP_Helper::sanitize_params_submitted( $params['not_ids'] ?? '' );
+			$total_rows          = 0;
+			$filter              = new LP_Course_Filter();
+			$filter->limit       = 20;
+			$filter->only_fields = [ 'ID', 'post_title' ];
+			$filter->post_title  = LP_Helper::sanitize_params_submitted( $params['c_search'] ?? '' );
+			$filter->page        = LP_Helper::sanitize_params_submitted( $params['paged'] ?? 1, 'int' );
+			if ( ! empty( $ids_str ) ) {
+				$filter->post_ids = explode( ',', $ids_str );
+			}
+			if ( ! empty( $not_ids_str ) ) {
+				$not_ids         = explode( ',', $not_ids_str );
+				$not_ids         = array_map( 'absint', $not_ids );
+				$not_ids         = implode( ',', $not_ids );
+				$filter->where[] = "AND ID NOT IN ({$not_ids})";
+			}
 			$courses                     = Courses::get_courses( $filter, $total_rows );
 			$response->data->courses     = $courses;
 			$response->data->total_pages = LP_Database::get_total_pages( $filter->limit, $total_rows );
@@ -383,20 +394,23 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 	 *
 	 * @return LP_REST_Response
 	 * @since 4.2.5
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public function search_users( WP_REST_Request $request ): LP_REST_Response {
 		$response = new LP_REST_Response();
 		try {
+			@set_time_limit( 0 );
 			$params        = $request->get_params();
 			$search_string = sanitize_text_field( $params['search'] ?? '' );
+			$current_ids   = sanitize_text_field( $params['current_ids'] ?? '' );
+			$number        = sanitize_text_field( $params['number'] ?? 20 );
 			$args_get_user = array(
 				'search_columns' => array(
 					'user_login',
 					'user_nicename',
 					'user_email',
 				),
-				'number'         => 20,
+				'number'         => $number,
 				'fields'         => array( 'ID', 'display_name', 'user_login', 'user_email' ),
 			);
 
@@ -406,21 +420,41 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 
 			$role_in = sanitize_text_field( $params['role_in'] ?? '' );
 			if ( ! empty( $role_in ) ) {
-				$args_get_user['role__in'] = array( $role_in );
+				$args_get_user['role__in'] = explode( ',', $role_in );
 			}
 
 			$id_not_in = sanitize_text_field( $params['id_not_in'] ?? '' );
-			if ( ! empty( $role_in ) ) {
+			if ( ! empty( $id_not_in ) ) {
 				$args_get_user['exclude'] = explode( ',', $id_not_in );
+			}
+
+			// Get only users selected.
+			$users_selected = [];
+			$total_selected = 0;
+			if ( ! empty( $current_ids ) ) {
+				$current_ids_array     = explode( ',', $current_ids );
+				$args_get_user_current = array(
+					'include' => $current_ids_array,
+					'fields'  => array( 'ID', 'display_name', 'user_login', 'user_email' ),
+				);
+				$users_selected_query  = new WP_User_Query( $args_get_user_current );
+				$users_selected        = $users_selected_query->get_results();
+				$total_selected        = $users_selected_query->get_total() ?? 0;
 			}
 
 			$args_get_user = apply_filters( 'learn-press/rest-admin-tools/args-search-users', $args_get_user );
 
-			$users = get_users( $args_get_user );
-			if ( ! empty( $users ) ) {
-				$response->data = $users;
-			}
-			$response->status = 'success';
+			// Get list users for search.
+			$args_get_user['count_total'] = true;
+			$users_search_query           = new WP_User_Query( $args_get_user );
+			$users_search                 = $users_search_query->get_results() ?? [];
+			$total_search                 = $users_search_query->get_total() ?? 0;
+			$users                        = array_merge( $users_selected, $users_search );
+
+			$response->data->users       = $users;
+			$total                       = $total_selected + $total_search;
+			$response->data->total_pages = LP_Database::get_total_pages( $number, $total );
+			$response->status            = 'success';
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}

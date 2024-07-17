@@ -42,7 +42,11 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 					return;
 				}
 
-				$this->data = LP_Request::get_param( 'data', [], 'text', 'post' );
+				$this->data      = LP_Request::get_param( 'data', [], 'text', 'post' );
+				$this->lp_course = CourseModel::find( $course_id, false );
+				if ( ! $this->lp_course instanceof CourseModel ) {
+					return;
+				}
 
 				switch ( $handle_name ) {
 					case 'save_post':
@@ -66,19 +70,32 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 				error_log( 'Not permission save background course' );
 			}
 
-			$post_obj_str = LP_Request::get_param( 'post_obj', [], 'text', 'post' );
-			$is_update    = LP_Request::get_param( 'update', [], 'int', 'post' );
-			if ( empty( $post_obj_str ) ) {
-				return;
-			}
+			$courseModel = $this->lp_course;
+			// Unset value of keys for calculate again
+			unset( $courseModel->author );
+			unset( $courseModel->first_item_id );
+			unset( $courseModel->total_items );
+			unset( $courseModel->sections_items );
+			unset( $courseModel->meta_data->_lp_final_quiz );
+			unset( $courseModel->categories );
+			unset( $courseModel->image_url );
+			$courseModel->get_author_model();
+			$courseModel->get_first_item_id();
+			$courseModel->get_total_items();
+			$courseModel->get_section_items();
+			$courseModel->get_final_quiz();
+			$courseModel->get_categories();
+			$courseModel->get_image_url();
+			$courseModel->save();
 
-			$post_obj        = LP_Helper::json_decode( $post_obj_str );
-			$this->lp_course = $this->save_data_to_table_courses( $post_obj, $is_update );
 			$this->save_extra_info();
 			$this->clean_data_invalid();
 			$this->review_post_author();
 
-			do_action( 'lp/background/course/save', $this->lp_course, $this->data );
+			// Old hook, addon wpml and assignment is using
+			do_action( 'lp/background/course/save', learn_press_get_course( $this->lp_course->get_id() ), $this->data );
+			// New hook from v4.2.6.9
+			do_action( 'learnPress/background/course/save', $this->lp_course, $this->data );
 
 			/**
 			 * Clean cache courses
@@ -202,7 +219,7 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 		/**
 		 * Save Extra info of course
 		 *
-		 * @author tungnx
+		 * @TODO after use value from CourseModel, will not use this function
 		 * @since 4.1.4.1
 		 * @version 1.0.1
 		 */
@@ -237,7 +254,7 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 				$extra_info->sections_items = $sections_items;
 
 				// Check items removed course, will delete on 'learnpress_user_items', 'learnpress_user_item_results' table
-				$this->delete_user_items_data( $sections_items );
+				$this->delete_user_items_data();
 
 				// @since 4.2.1
 				do_action( 'lp/course/extra-info/before-save', $lp_course, $extra_info );
@@ -354,7 +371,7 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 				$courseObj->meta_data = $coursePost->get_all_metadata();
 
 				// Get from table learnpress_courses
-				$courseModel       = CourseModel::find( $coursePost->ID );
+				$courseModel = CourseModel::find( $coursePost->ID );
 				// Merge meta data
 				if ( ! empty( $courseModel ) ) {
 					$courseModelMeta      = json_decode( $courseModel->json );
@@ -371,6 +388,7 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 					continue;
 				}
 				foreach ( $fields['content'] as $meta_key => $option ) {
+					$option->id = $meta_key;
 					if ( isset( $this->data[ $meta_key ] ) ) {
 						switch ( $meta_key ) {
 							case CoursePostModel::META_KEY_DURATION:
@@ -380,6 +398,15 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 								break;
 							default:
 								break;
+						}
+
+						if ( $option instanceof LP_Meta_Box_Checkbox_Field ) {
+							$this->data[ $meta_key ] = 'yes';
+						}
+
+						if ( $option instanceof LP_Meta_Box_Extra_Faq_Field ) {
+							$option->save( $courseObj->get_id(), $this->data );
+							$this->data[ $meta_key ] = get_post_meta( $courseObj->get_id(), $meta_key, true );
 						}
 
 						$courseObj->meta_data->{$meta_key} = $this->data[ $meta_key ];

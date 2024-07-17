@@ -2,11 +2,9 @@
  * Assign user to course
  *
  * @since 4.2.5.6
- * @version 1.0.0
+ * @version 1.0.1
  */
-import TomSelect from 'tom-select';
-import { lpFetchAPI } from '../../utils.js';
-import Api from '../../api.js';
+import * as AdminUtils from '../utils-admin.js';
 
 export default function assignUserCourse() {
 	let elFormAssignUserCourse, elTomSelectCourseAssign, elTomSelectUserAssign;
@@ -16,28 +14,6 @@ export default function assignUserCourse() {
 	const getAllElements = () => {
 		elFormAssignUserCourse = document.querySelector( '#lp-assign-user-course-form' );
 		elFormUnAssignUserCourse = document.querySelector( '#lp-unassign-user-course-form' );
-	};
-
-	const buildTomSelect = ( elTomSelect, options, fetchAPI ) => {
-		if ( ! elTomSelect ) {
-			return;
-		}
-
-		const optionDefault = {
-			options: [],
-			plugins: {
-				remove_button: {
-					title: 'Remove this item',
-				},
-			},
-			load( keySearch, callback ) {
-				fetchAPI( keySearch, callback );
-			},
-		};
-
-		options = { ...optionDefault, ...options };
-
-		return new TomSelect( elTomSelect, options );
 	};
 
 	const events = () => {
@@ -111,96 +87,8 @@ export default function assignUserCourse() {
 		return { packages, data, totalPage };
 	};
 
-	const fetchCourses = ( keySearch = '', callback, elTomSelect ) => {
-		const url = Api.admin.apiSearchCourses;
-		const params = {
-			headers: {
-				'Content-Type': 'application/json',
-				'X-WP-Nonce': lpDataAdmin.nonce,
-			},
-			method: 'POST',
-			body: JSON.stringify( { c_search: keySearch } ),
-		};
-
-		lpFetchAPI( url, params, {
-			success: ( response ) => {
-				const options = response.data.courses.map( ( item ) => {
-					return {
-						value: item.ID,
-						text: item.post_title + `(#${ item.ID })`,
-					};
-				} );
-
-				// Set data courses default first to Tom Select.
-				if ( keySearch === '' ) {
-					const elCourseAssign = elFormAssignUserCourse.querySelector( '[name=course_ids]' );
-					if ( elCourseAssign ) {
-						elTomSelectCourseAssign = buildTomSelect( elCourseAssign, { options }, fetchCourses );
-					}
-
-					const elCourseUnAssign = elFormUnAssignUserCourse.querySelector( '[name=course_ids]' );
-					if ( elCourseUnAssign ) {
-						elTomSelectCourseUnAssign = buildTomSelect( elCourseUnAssign, { options }, fetchCourses );
-					}
-				}
-
-				if ( 'function' === typeof callback ) {
-					if ( callback.name === 'setupOptions' ) {
-						elTomSelect.setupOptions( options );
-					} else {
-						callback( options );
-					}
-				}
-			},
-		} );
-	};
-
-	const fetchUsers = ( keySearch = '', callback, elTomSelect ) => {
-		const url = Api.admin.apiSearchUsers;
-		const params = {
-			headers: {
-				'Content-Type': 'application/json',
-				'X-WP-Nonce': lpDataAdmin.nonce,
-			},
-			method: 'POST',
-			body: JSON.stringify( { search: keySearch } ),
-		};
-
-		lpFetchAPI( url, params, {
-			success: ( response ) => {
-				const options = response.data.map( ( item ) => {
-					return {
-						value: item.ID,
-						text: `${ item.display_name } (#${ item.ID }) - ${ item.user_email }`,
-					};
-				} );
-
-				// Set data users default first to Tom Select.
-				if ( keySearch === '' ) {
-					const elUserAssign = elFormAssignUserCourse.querySelector( '[name=user_ids]' );
-					if ( elUserAssign ) {
-						elTomSelectUserAssign = buildTomSelect( elUserAssign, { options }, fetchUsers );
-					}
-
-					const elUserUnAssign = elFormUnAssignUserCourse.querySelector( '[name=user_ids]' );
-					if ( elUserUnAssign ) {
-						elTomSelectUserUnAssign = buildTomSelect( elUserUnAssign, { options }, fetchUsers );
-					}
-				}
-
-				if ( 'function' === typeof callback ) {
-					if ( callback.name === 'setupOptions' ) {
-						elTomSelect.setupOptions( options );
-					} else {
-						callback( options );
-					}
-				}
-			},
-		} );
-	};
-
 	const fetchAPIAssignCourse = ( packages, data, page, totalPage ) => {
-		const url = Api.admin.apiAssignUserCourse;
+		const url = AdminUtils.Api.admin.apiAssignUserCourse;
 		const params = {
 			headers: {
 				'Content-Type': 'application/json',
@@ -214,7 +102,7 @@ export default function assignUserCourse() {
 		const elMessage = elFormAssignUserCourse.querySelector( '.message' );
 		elButtonAssign.disabled = true;
 
-		lpFetchAPI( url, params, {
+		AdminUtils.Utils.lpFetchAPI( url, params, {
 			success: ( response ) => {
 				const { status, message } = response;
 				if ( status === 'success' ) {
@@ -255,7 +143,7 @@ export default function assignUserCourse() {
 	};
 
 	const fetchAPIUnAssignCourse = ( packages, data, page, totalPage ) => {
-		const url = Api.admin.apiUnAssignUserCourse;
+		const url = AdminUtils.Api.admin.apiUnAssignUserCourse;
 		const params = {
 			headers: {
 				'Content-Type': 'application/json',
@@ -269,7 +157,7 @@ export default function assignUserCourse() {
 		const elMessage = elFormUnAssignUserCourse.querySelector( '.message' );
 		elButtonAssign.disabled = true;
 
-		lpFetchAPI( url, params, {
+		AdminUtils.Utils.lpFetchAPI( url, params, {
 			success: ( response ) => {
 				const { status, message } = response;
 				if ( status === 'success' ) {
@@ -317,9 +205,126 @@ export default function assignUserCourse() {
 		}
 
 		// Get list courses default first and build Tom Select.
-		fetchCourses();
+		const elCourseAssign = elFormAssignUserCourse.querySelector( '[name=course_ids]' );
+		const callBackCourse = {
+			success: ( response ) => {
+				let options = [];
+				if ( response.data.courses.length > 0 ) {
+					options = response.data.courses.map( ( item ) => {
+						return {
+							value: item.ID,
+							text: item.post_title + `(#${ item.ID })`,
+						};
+					} );
+				}
+
+				if ( null != elTomSelectCourseAssign ) {
+					return options;
+				}
+
+				elTomSelectCourseAssign = AdminUtils.AdminUtilsFunctions.buildTomSelect(
+					elCourseAssign,
+					{ options },
+					AdminUtils.AdminUtilsFunctions.fetchCourses,
+					{},
+					callBackCourse
+				);
+
+				return options;
+			},
+		};
+		AdminUtils.AdminUtilsFunctions.fetchCourses( '', {}, callBackCourse );
+
+		const elCourseUnAssign = elFormUnAssignUserCourse.querySelector( '[name=course_ids]' );
+		const callBackCourseUnAssign = {
+			success: ( response ) => {
+				let options = [];
+				if ( response.data.courses.length > 0 ) {
+					options = response.data.courses.map( ( item ) => {
+						return {
+							value: item.ID,
+							text: item.post_title + `(#${ item.ID })`,
+						};
+					} );
+				}
+
+				if ( null != elTomSelectCourseUnAssign ) {
+					return options;
+				}
+
+				elTomSelectCourseUnAssign = AdminUtils.AdminUtilsFunctions.buildTomSelect(
+					elCourseUnAssign,
+					{ options },
+					AdminUtils.AdminUtilsFunctions.fetchCourses,
+					{},
+					callBackCourseUnAssign
+				);
+
+				return options;
+			},
+		};
+		AdminUtils.AdminUtilsFunctions.fetchCourses( '', {}, callBackCourseUnAssign );
+
 		// Get list users default first and build Tom Select.
-		fetchUsers();
+		const elUserAssign = elFormAssignUserCourse.querySelector( '[name=user_ids]' );
+		const callBackUser = {
+			success: ( response ) => {
+				let options = [];
+				if ( response.data.users.length > 0 ) {
+					options = response.data.users.map( ( item ) => {
+						return {
+							value: item.ID,
+							text: `${ item.display_name } (#${ item.ID }) - ${ item.user_email }`,
+						};
+					} );
+				}
+
+				if ( null != elTomSelectUserAssign ) {
+					return options;
+				}
+
+				elTomSelectUserAssign = AdminUtils.AdminUtilsFunctions.buildTomSelect(
+					elUserAssign,
+					{ options },
+					AdminUtils.AdminUtilsFunctions.fetchUsers,
+					{},
+					callBackUser
+				);
+
+				return options;
+			},
+		};
+		AdminUtils.AdminUtilsFunctions.fetchUsers( '', {}, callBackUser );
+
+		const elUserUnAssign = elFormUnAssignUserCourse.querySelector( '[name=user_ids]' );
+		const callBackUserUnAssign = {
+			success: ( response ) => {
+				let options = [];
+				if ( response.data.users.length > 0 ) {
+					options = response.data.users.map( ( item ) => {
+						return {
+							value: item.ID,
+							text: `${ item.display_name } (#${ item.ID }) - ${ item.user_email }`,
+						};
+					} );
+				}
+
+				if ( null != elTomSelectUserUnAssign ) {
+					return options;
+				}
+
+				elTomSelectUserUnAssign = AdminUtils.AdminUtilsFunctions.buildTomSelect(
+					elUserUnAssign,
+					{ options },
+					AdminUtils.AdminUtilsFunctions.fetchUsers,
+					{},
+					callBackUserUnAssign
+				);
+
+				return options;
+			},
+		};
+		AdminUtils.AdminUtilsFunctions.fetchUsers( '', {}, callBackUserUnAssign );
 		// Events.
 		events();
 	} );

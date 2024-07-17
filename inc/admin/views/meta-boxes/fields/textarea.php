@@ -12,11 +12,10 @@ class LP_Meta_Box_Textarea_Field extends LP_Meta_Box_Field {
 	/**
 	 * Constructor.
 	 *
-	 * @param string $id
 	 * @param string $label
 	 * @param string $description
-	 * @param mixed  $default
-	 * @param array  $extra
+	 * @param mixed $default
+	 * @param array $extra
 	 */
 	public function __construct( $label = '', $description = '', $default = '', $extra = array() ) {
 		parent::__construct( $label, $description, $default, $extra );
@@ -53,9 +52,9 @@ class LP_Meta_Box_Textarea_Field extends LP_Meta_Box_Field {
 			<label for="' . esc_attr( $field['id'] ) . '">' . wp_kses_post( $field['label'] ) . '</label>';
 
 		echo '<textarea class="' . esc_attr( $field['class'] ) . '" style="' . esc_attr( $field['style'] ) . '"  name="' . esc_attr( $field['name'] ) . '" id="' . esc_attr( $field['id'] ) . '" placeholder="' . esc_attr( $field['placeholder'] ) . '" rows="5" ' . implode(
-			' ',
-			$custom_attributes
-		) . '>' . esc_textarea( $field['value'] ) . '</textarea> ';
+				' ',
+				$custom_attributes
+			) . '>' . esc_textarea( $field['value'] ) . '</textarea> ';
 
 		if ( ! empty( $field['description'] ) ) {
 			echo '<span class="description">' . wp_kses_post( $field['description'] ) . '</span>';
@@ -69,8 +68,9 @@ class LP_Meta_Box_Textarea_Field extends LP_Meta_Box_Field {
 	}
 
 	public function save( $post_id ) {
-		$value = ! empty( $_POST[ $this->id ] ) ? wp_kses_post( wp_unslash( $_POST[ $this->id ] ) ) : '';
-
+		$value = wp_kses_post( LP_Request::get_param( $this->id, $this->default ?? '' ) );
 		update_post_meta( $post_id, $this->id, $value );
+
+		return $value;
 	}
 }

@@ -15,8 +15,8 @@ class LP_Meta_Box_Checkbox_Field extends LP_Meta_Box_Field {
 	 * @param string $id
 	 * @param string $label
 	 * @param string $description
-	 * @param mixed  $default
-	 * @param array  $extra
+	 * @param mixed $default
+	 * @param array $extra
 	 */
 	public function __construct( $label = '', $description = '', $default = '', $extra = array() ) {
 		parent::__construct( $label, $description, $default, $extra );
@@ -80,7 +80,8 @@ class LP_Meta_Box_Checkbox_Field extends LP_Meta_Box_Field {
 
 	public function save( $post_id ) {
 		$value = isset( $_POST[ $this->id ] ) ? 'yes' : 'no';
-
 		update_post_meta( $post_id, $this->id, $value );
+
+		return $value;
 	}
 }
