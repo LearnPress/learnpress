@@ -358,16 +358,23 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 	public function search_courses( WP_REST_Request $request ): LP_REST_Response {
 		$response = new LP_REST_Response();
 		try {
-			$ids_str             = $params['ids'] ?? '';
+			$params              = $request->get_params();
+			$ids_str             = LP_Helper::sanitize_params_submitted( $params['ids'] ?? '' );
+			$not_ids_str         = LP_Helper::sanitize_params_submitted( $params['not_ids'] ?? '' );
 			$total_rows          = 0;
 			$filter              = new LP_Course_Filter();
-			$params              = $request->get_params();
 			$filter->limit       = 20;
 			$filter->only_fields = [ 'ID', 'post_title' ];
-			$filter->post_title  = $params['c_search'] ?? '';
-			$filter->page        = $params['paged'] ?? 1;
+			$filter->post_title  = LP_Helper::sanitize_params_submitted( $params['c_search'] ?? '' );
+			$filter->page        = LP_Helper::sanitize_params_submitted( $params['paged'] ?? 1, 'int' );
 			if ( ! empty( $ids_str ) ) {
 				$filter->post_ids = explode( ',', $ids_str );
+			}
+			if ( ! empty( $not_ids_str ) ) {
+				$not_ids         = explode( ',', $not_ids_str );
+				$not_ids         = array_map( 'absint', $not_ids );
+				$not_ids         = implode( ',', $not_ids );
+				$filter->where[] = "AND ID NOT IN ({$not_ids})";
 			}
 			$courses                     = Courses::get_courses( $filter, $total_rows );
 			$response->data->courses     = $courses;
@@ -435,9 +442,9 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 
 			// Get list users for search.
 			$users_search = get_users( $args_get_user );
-			$users = array_merge( $users_selected, $users_search );
+			$users        = array_merge( $users_selected, $users_search );
 
-			$response->data = $users;
+			$response->data   = $users;
 			$response->status = 'success';
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
