@@ -31,6 +31,30 @@ const AdminUtilsFunctions = {
 		};
 
 		options = { ...optionDefault, ...options };
+		if ( options.options.length > 20 ) {
+			const currentIds = dataSend?.current_ids ? dataSend?.current_ids : '';
+			const chunkSize = 20;
+			const chunkedOptions = [];
+
+			for ( let i = 0; i < options.options.length; i += chunkSize ) {
+				chunkedOptions.push( options.options.slice( i, i + chunkSize ) );
+			}
+
+			options.options = chunkedOptions[ 0 ];
+			const tomSelect = new TomSelect( elTomSelect, options );
+
+			for ( let i = 1; i < chunkedOptions.length; i++ ) {
+				chunkedOptions[ i ].forEach( ( option ) => {
+					tomSelect.addOption( option );
+				} );
+			}
+
+			if ( currentIds ) {
+				tomSelect.setValue( currentIds.split( ',' ) );
+			}
+
+			return tomSelect;
+		}
 
 		return new TomSelect( elTomSelect, options );
 	},

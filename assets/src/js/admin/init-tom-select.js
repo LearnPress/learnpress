@@ -46,14 +46,14 @@ const searchUserOrder = () => {
 				searchUserOrderEl,
 				{ ...customOptions, options },
 				AdminUtilsFunctions.fetchUsers,
-				{},
+				{ current_ids: defaultId.toString() },
 				callBackUser
 			);
 
 			return options;
 		},
 	};
-	AdminUtilsFunctions.fetchUsers( '', {}, callBackUser );
+	AdminUtilsFunctions.fetchUsers( '', { current_ids: defaultId.toString() }, callBackUser );
 };
 
 // Init Tom-select user in admin
@@ -119,12 +119,17 @@ const searchUserOnListPost = () => {
 
 		const callBackUser = {
 			success: ( response ) => {
-				const options = response.data.map( ( item ) => {
-					return {
-						value: item.ID,
-						text: `${ item.display_name } (#${ item.ID })`,
-					};
-				} );
+				let options;
+				if ( response.data.length > 0 ) {
+					options = response.data?.map( ( item ) => {
+						return {
+							value: item.ID,
+							text: `${ item.display_name } (#${ item.ID })`,
+						};
+					} );
+				} else {
+					options = [];
+				}
 
 				if ( null != tomSelect ) {
 					return options;
@@ -134,14 +139,14 @@ const searchUserOnListPost = () => {
 					selectAuthor,
 					{ ...customOptions, options },
 					AdminUtilsFunctions.fetchUsers,
-					{},
+					{ current_ids: defaultId },
 					callBackUser
 				);
 
 				return options;
 			},
 		};
-		AdminUtilsFunctions.fetchUsers( '', {}, callBackUser );
+		AdminUtilsFunctions.fetchUsers( '', { current_ids: defaultId }, callBackUser );
 	};
 
 	createSelectUserHtml();
@@ -162,8 +167,7 @@ const selectAuthorCourse = () => {
 	const roleSearch = 'administrator,lp_teacher';
 	const authorInputEl = document.querySelector( 'input[name="post_author"]' );
 	const defaultId = authorInputEl?.value ? authorInputEl.value : '';
-
-	const customParams = { role_in: roleSearch };
+	const customParams = { role_in: roleSearch, current_ids: defaultId };
 	const customOptions = {
 		items: defaultId,
 		plugins: {},
@@ -198,7 +202,7 @@ const selectAuthorCourse = () => {
 				selectAuthorCourseEl,
 				{ ...customOptions, options },
 				AdminUtilsFunctions.fetchUsers,
-				{ customParams },
+				customParams,
 				callBackUser
 			);
 
@@ -225,7 +229,7 @@ const selectCoInstructor = () => {
 
 	const roleSearch = 'administrator,lp_teacher';
 
-	const dataSend = { role_in: roleSearch, id_not_in: userId };
+	const dataSend = { role_in: roleSearch, id_not_in: userId, current_ids: defaultId.toString() };
 
 	const customOptions = {
 		maxItems: null,
