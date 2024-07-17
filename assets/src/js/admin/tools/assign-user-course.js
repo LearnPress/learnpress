@@ -239,7 +239,7 @@ export default function assignUserCourse() {
 		const callBackCourseUnAssign = {
 			success: ( response ) => {
 				let options = [];
-				if ( response.data.course.length > 0 ) {
+				if ( response.data.courses.length > 0 ) {
 					options = response.data.courses.map( ( item ) => {
 						return {
 							value: item.ID,
