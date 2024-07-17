@@ -124,7 +124,7 @@ const searchUserOnListPost = () => {
 			success: ( response ) => {
 				let options = [];
 				if ( response.data.users.length > 0 ) {
-					options = response.data?.map( ( item ) => {
+					options = response.data.users.map( ( item ) => {
 						return {
 							value: item.ID,
 							text: `${ item.display_name } (#${ item.ID })`,
