@@ -208,12 +208,15 @@ export default function assignUserCourse() {
 		const elCourseAssign = elFormAssignUserCourse.querySelector( '[name=course_ids]' );
 		const callBackCourse = {
 			success: ( response ) => {
-				const options = response.data.courses.map( ( item ) => {
-					return {
-						value: item.ID,
-						text: item.post_title + `(#${ item.ID })`,
-					};
-				} );
+				let options = [];
+				if ( response.data.length > 0 ) {
+					options = response.data.courses.map( ( item ) => {
+						return {
+							value: item.ID,
+							text: item.post_title + `(#${ item.ID })`,
+						};
+					} );
+				}
 
 				if ( null != elTomSelectCourseAssign ) {
 					return options;
@@ -235,12 +238,15 @@ export default function assignUserCourse() {
 		const elCourseUnAssign = elFormUnAssignUserCourse.querySelector( '[name=course_ids]' );
 		const callBackCourseUnAssign = {
 			success: ( response ) => {
-				const options = response.data.courses.map( ( item ) => {
-					return {
-						value: item.ID,
-						text: item.post_title + `(#${ item.ID })`,
-					};
-				} );
+				let options = [];
+				if ( response.data.length > 0 ) {
+					options = response.data.courses.map( ( item ) => {
+						return {
+							value: item.ID,
+							text: item.post_title + `(#${ item.ID })`,
+						};
+					} );
+				}
 
 				if ( null != elTomSelectCourseUnAssign ) {
 					return options;
@@ -263,12 +269,15 @@ export default function assignUserCourse() {
 		const elUserAssign = elFormAssignUserCourse.querySelector( '[name=user_ids]' );
 		const callBackUser = {
 			success: ( response ) => {
-				const options = response.data.map( ( item ) => {
-					return {
-						value: item.ID,
-						text: `${ item.display_name } (#${ item.ID }) - ${ item.user_email }`,
-					};
-				} );
+				let options = [];
+				if ( response.data.length > 0 ) {
+					options = response.data.map( ( item ) => {
+						return {
+							value: item.ID,
+							text: `${ item.display_name } (#${ item.ID }) - ${ item.user_email }`,
+						};
+					} );
+				}
 
 				if ( null != elTomSelectUserAssign ) {
 					return options;
@@ -290,12 +299,15 @@ export default function assignUserCourse() {
 		const elUserUnAssign = elFormUnAssignUserCourse.querySelector( '[name=user_ids]' );
 		const callBackUserUnAssign = {
 			success: ( response ) => {
-				const options = response.data.map( ( item ) => {
-					return {
-						value: item.ID,
-						text: `${ item.display_name } (#${ item.ID }) - ${ item.user_email }`,
-					};
-				} );
+				let options = [];
+				if ( response.data.length > 0 ) {
+					options = response.data.map( ( item ) => {
+						return {
+							value: item.ID,
+							text: `${ item.display_name } (#${ item.ID }) - ${ item.user_email }`,
+						};
+					} );
+				}
 
 				if ( null != elTomSelectUserUnAssign ) {
 					return options;
