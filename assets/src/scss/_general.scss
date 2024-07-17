@@ -602,4 +602,15 @@ ul .clearfix {
 			border-radius: var(--lp-border-radius);
 		}
 	}
+
+	.ts-dropdown {
+		// spinner is class of WP, so hide spinner of TomSelect
+		.spinner {
+			visibility: visible;
+			&::after {
+				content: '';
+				border: none;
+			}
+		}
+	}
 }

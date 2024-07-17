@@ -387,11 +387,12 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 	 *
 	 * @return LP_REST_Response
 	 * @since 4.2.5
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public function search_users( WP_REST_Request $request ): LP_REST_Response {
 		$response = new LP_REST_Response();
 		try {
+			@set_time_limit( 0 );
 			$params        = $request->get_params();
 			$search_string = sanitize_text_field( $params['search'] ?? '' );
 			$current_ids   = sanitize_text_field( $params['current_ids'] ?? '' );
@@ -419,18 +420,10 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 				$args_get_user['exclude'] = explode( ',', $id_not_in );
 			}
 
-			if ( ! empty( $current_ids ) ) {
-				$current_ids_array        = explode( ',', $current_ids );
-				$args_get_user['exclude'] = array_merge( $args_get_user['exclude'] ?? [], $current_ids_array );
-			}
-
-			$id_in = sanitize_text_field( $params['ids'] ?? '' );
-			if ( ! empty( $id_in ) ) {
-				$args_get_user['include'] = explode( ',', $id_in );
-			}
-
+			// Get only users selected.
 			$users_selected = [];
 			if ( ! empty( $current_ids ) ) {
+				$current_ids_array     = explode( ',', $current_ids );
 				$args_get_user_current = array(
 					'include' => $current_ids_array,
 					'fields'  => array( 'ID', 'display_name', 'user_login', 'user_email' ),
@@ -440,15 +433,11 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 
 			$args_get_user = apply_filters( 'learn-press/rest-admin-tools/args-search-users', $args_get_user );
 
-			$users = get_users( $args_get_user );
-			if ( ! empty( $users ) ) {
-				$response->data = $users;
-			}
+			// Get list users for search.
+			$users_search = get_users( $args_get_user );
+			$users = array_merge( $users_selected, $users_search );
 
-			if ( ! empty( $users_selected ) ) {
-				$response->data = ! empty( $users ) ? array_merge( $users_selected, $users ) : $users_selected;
-			}
-
+			$response->data = $users;
 			$response->status = 'success';
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
