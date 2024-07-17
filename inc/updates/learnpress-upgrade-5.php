@@ -106,6 +106,7 @@ class LP_Upgrade_5 extends LP_Handle_Upgrade_Steps {
 				$coursePostModel = new CoursePostModel( $course_obj );
 				$coursePostModel->get_all_metadata();
 				$courseModelNew = new CourseModel( $coursePostModel );
+				$courseModelNew->get_price();
 				$courseModelNew->save();
 				$bg = LP_Background_Single_Course::instance();
 				$bg->data(
