@@ -150,6 +150,7 @@ class LP_Install_Sample_Data {
 			$coursePostModel = new CoursePostModel( get_post( $course_id ) );
 			$coursePostModel->get_all_metadata();
 			$courseModelNew = new CourseModel( $coursePostModel );
+			$courseModelNew->get_price();
 			$courseModelNew->save();
 			$bg = LP_Background_Single_Course::instance();
 			$bg->data(

@@ -556,7 +556,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 							}
 						} elseif ( ! $is_update ) {
 							$courseModel->meta_data->{$meta_key} = $option->default ?? '';
-						} elseif ( $option instanceof LP_Meta_Box_CHEckbox_Field
+						} elseif ( $option instanceof LP_Meta_Box_Checkbox_Field
 						           && ! empty( $wp_screen )
 						           && LP_COURSE_CPT === $wp_screen->id ) {
 							$value_saved                         = $option->save( $courseModel->ID );
@@ -599,7 +599,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				$regular_price                                                   = $courseObj->get_regular_price();
 			}
 
-			if ( (float) $sale_price > (float) $regular_price ) {
+			if ( $sale_price !== '' && (float) $sale_price > (float) $regular_price ) {
 				$courseObj->meta_data->{CoursePostModel::META_KEY_SALE_PRICE} = '';
 				$sale_price                                                   = $courseObj->get_sale_price();
 			}
@@ -619,6 +619,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 
 			// Set price to sort on lists.
 			$courseObj->price_to_sort = $courseObj->get_price();
+			$coursePost->save_meta_value_by_key( CoursePostModel::META_KEY_PRICE, $courseObj->price_to_sort );
 		}
 
 		/**

@@ -273,12 +273,12 @@ class CourseModel {
 	 */
 	public function has_sale_price(): bool {
 		$has_sale_price = false;
-		$regular_price  = (float) $this->get_regular_price();
-		$sale_price     = (float) $this->get_sale_price();
+		$regular_price  = $this->get_regular_price();
+		$sale_price     = $this->get_sale_price();
 		$start_date     = $this->get_sale_start();
 		$end_date       = $this->get_sale_end();
 
-		if ( $regular_price > $sale_price ) {
+		if ( $sale_price !== '' && (float) $regular_price > (float) $sale_price ) {
 			$has_sale_price = true;
 		}
 
