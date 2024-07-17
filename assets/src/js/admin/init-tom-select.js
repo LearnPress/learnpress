@@ -31,12 +31,15 @@ const searchUserOrder = () => {
 
 	const callBackUser = {
 		success: ( response ) => {
-			const options = response.data.map( ( item ) => {
-				return {
-					value: item.ID,
-					text: `${ item.display_name } (#${ item.ID }) - ${ item.user_email }`,
-				};
-			} );
+			let options = [];
+			if ( response.data.length > 0 ) {
+				options = response.data.map( ( item ) => {
+					return {
+						value: item.ID,
+						text: `${ item.display_name } (#${ item.ID }) - ${ item.user_email }`,
+					};
+				} );
+			}
 
 			if ( null != tomSelect ) {
 				return options;
@@ -119,7 +122,7 @@ const searchUserOnListPost = () => {
 
 		const callBackUser = {
 			success: ( response ) => {
-				let options;
+				let options = [];
 				if ( response.data.length > 0 ) {
 					options = response.data?.map( ( item ) => {
 						return {
@@ -127,10 +130,7 @@ const searchUserOnListPost = () => {
 							text: `${ item.display_name } (#${ item.ID })`,
 						};
 					} );
-				} else {
-					options = [];
 				}
-
 				if ( null != tomSelect ) {
 					return options;
 				}
@@ -187,12 +187,15 @@ const selectAuthorCourse = () => {
 
 	const callBackUser = {
 		success: ( response ) => {
-			const options = response.data.map( ( item ) => {
-				return {
-					value: item.ID,
-					text: `${ item.display_name } (#${ item.ID }) - ${ item.user_email }`,
-				};
-			} );
+			let options = [];
+			if ( response.data.length > 0 ) {
+				options = response.data.map( ( item ) => {
+					return {
+						value: item.ID,
+						text: `${ item.display_name } (#${ item.ID }) - ${ item.user_email }`,
+					};
+				} );
+			}
 
 			if ( null != tomSelect ) {
 				return options;
@@ -254,12 +257,16 @@ const selectCoInstructor = () => {
 
 	const callBackUser = {
 		success: ( response ) => {
-			const options = response.data.map( ( item ) => {
-				return {
-					value: item.ID,
-					text: `${ item.display_name } (#${ item.ID }) - ${ item.user_email }`,
-				};
-			} );
+			let options = [];
+			console.log( 'running' );
+			if ( response.data.length > 0 ) {
+				options = response.data.map( ( item ) => {
+					return {
+						value: item.ID,
+						text: `${ item.display_name } (#${ item.ID }) - ${ item.user_email }`,
+					};
+				} );
+			}
 
 			if ( null != tomSelect ) {
 				return options;
