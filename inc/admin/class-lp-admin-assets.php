@@ -37,25 +37,33 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 	 *
 	 * @return array
 	 * @since 4.2.5.6
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public function localize_data_global(): array {
+		$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+
+		ob_start();
+		Template::instance()->get_admin_template( 'search-author-field.php' );
+		$html_search_author_field = ob_get_clean();
+
 		return apply_filters(
 			'learn-press/admin/localize-data-global',
 			[
-				'site_url'          => site_url(),
-				'user_id'           => get_current_user_id(),
-				'is_admin'          => current_user_can( ADMIN_ROLE ),
-				'theme'             => get_stylesheet(),
-				'lp_version'        => LP()->version,
-				'lp_rest_url'       => get_rest_url(),
-				'lp_rest_load_ajax' => get_rest_url( null, 'lp/v1/load_content_via_ajax/' ),
-				'nonce'             => wp_create_nonce( 'wp_rest' ),
-				'courses_url'       => learn_press_get_page_link( 'courses' ),
-				'urlParams'         => lp_archive_skeleton_get_args(),
-				'i18n'              => [
+				'site_url'                 => site_url(),
+				'user_id'                  => get_current_user_id(),
+				'is_admin'                 => current_user_can( ADMIN_ROLE ),
+				'theme'                    => get_stylesheet(),
+				'lp_version'               => LP()->version,
+				'lp_rest_url'              => get_rest_url(),
+				'lp_rest_load_ajax'        => get_rest_url( null, 'lp/v1/load_content_via_ajax/' ),
+				'nonce'                    => wp_create_nonce( 'wp_rest' ),
+				'courses_url'              => learn_press_get_page_link( 'courses' ),
+				'urlParams'                => lp_archive_skeleton_get_args(),
+				'i18n'                     => [
 					'select_page' => esc_html__( 'Select page', 'learnpress' ),
 				],
+				'current_screen'           => $screen ? $screen->id : '',
+				'show_search_author_field' => $html_search_author_field
 			]
 		);
 	}
@@ -410,7 +418,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				'lp-tom-select'         => new LP_Asset_Key(
 					'https://cdn.jsdelivr.net/npm/tom-select@2.2.3/dist/css/tom-select.css',
 					[],
-					array( 'learnpress_page_learn-press-tools', 'lp_order' ),
+					[],
 					0
 				),
 			)

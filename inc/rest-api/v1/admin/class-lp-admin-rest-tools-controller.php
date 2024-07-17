@@ -358,13 +358,17 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 	public function search_courses( WP_REST_Request $request ): LP_REST_Response {
 		$response = new LP_REST_Response();
 		try {
-			$total_rows                  = 0;
-			$filter                      = new LP_Course_Filter();
-			$params                      = $request->get_params();
-			$filter->limit               = 20;
-			$filter->only_fields         = [ 'ID', 'post_title' ];
-			$filter->post_title          = $params['c_search'] ?? '';
-			$filter->page                = $params['paged'] ?? 1;
+			$ids_str             = $params['ids'] ?? '';
+			$total_rows          = 0;
+			$filter              = new LP_Course_Filter();
+			$params              = $request->get_params();
+			$filter->limit       = 20;
+			$filter->only_fields = [ 'ID', 'post_title' ];
+			$filter->post_title  = $params['c_search'] ?? '';
+			$filter->page        = $params['paged'] ?? 1;
+			if ( ! empty( $ids_str ) ) {
+				$filter->post_ids = explode( ',', $ids_str );
+			}
 			$courses                     = Courses::get_courses( $filter, $total_rows );
 			$response->data->courses     = $courses;
 			$response->data->total_pages = LP_Database::get_total_pages( $filter->limit, $total_rows );
@@ -396,7 +400,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 					'user_nicename',
 					'user_email',
 				),
-				'number'         => 20,
+				'number'         => 1,
 				'fields'         => array( 'ID', 'display_name', 'user_login', 'user_email' ),
 			);
 
@@ -406,12 +410,17 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 
 			$role_in = sanitize_text_field( $params['role_in'] ?? '' );
 			if ( ! empty( $role_in ) ) {
-				$args_get_user['role__in'] = array( $role_in );
+				$args_get_user['role__in'] = explode( ',', $role_in );
 			}
 
 			$id_not_in = sanitize_text_field( $params['id_not_in'] ?? '' );
-			if ( ! empty( $role_in ) ) {
+			if ( ! empty( $id_not_in ) ) {
 				$args_get_user['exclude'] = explode( ',', $id_not_in );
+			}
+
+			$id_in = sanitize_text_field( $params['ids'] ?? '' );
+			if ( ! empty( $id_not_in ) ) {
+				$args_get_user['include'] = explode( ',', $id_in );
 			}
 
 			$args_get_user = apply_filters( 'learn-press/rest-admin-tools/args-search-users', $args_get_user );
