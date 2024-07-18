@@ -46,14 +46,16 @@ class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
 		$field = wp_parse_args(
 			$field,
 			array(
-				'class'             => 'select',
-				'style'             => '',
-				'wrapper_class'     => '', // Use "lp-select-2" for select2.
-				'value'             => isset( $field['value'] ) ? $field['value'] : $default,
-				'name'              => $field['id'],
-				'desc_tip'          => false,
-				'multiple'          => false,
-				'custom_attributes' => array(),
+				'class'               => 'select',
+				'style'               => '',
+				'wrapper_class'       => '', // Use "lp-select-2" for select2.
+				'value'               => isset( $field['value'] ) ? $field['value'] : $default,
+				'name'                => $field['id'],
+				'desc_tip'            => false,
+				'multiple'            => false,
+				'custom_attributes'   => array(),
+				'tom_select'          => false,
+				'multiple_tom_select' => false,
 			)
 		);
 
@@ -71,6 +73,21 @@ class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
 			$field['wrapper_class']       = 'lp-select-2';
 			$field_attributes['multiple'] = true;
 		}
+
+		if ( $field['tom_select'] ) {
+			$field_attributes['class']           .= ' lp-tom-select';
+			$field_attributes['data-get-data']    = $field['get_data'] ?? 'users';
+			$field_attributes['data-unremoved'] = $field['unremoved'] ?? false;
+		}
+
+		if ( $field ['multiple_tom_select'] ) {
+			$field_attributes['class']         .= ' lp-tom-select';
+			$field_attributes['data-get-data']  = $field['get_data'] ?? 'users';
+			$field_attributes['data-unremoved'] = $field['unremoved'] ?? false;
+			$field_attributes['name']           = $field['name'] . '[]';
+			$field_attributes['multiple']       = true;
+		}
+
 		$field_attributes['data-saved'] = htmlentities2( json_encode( $meta ) );
 
 		$tooltip     = ! empty( $field['description'] ) && false !== $field['desc_tip'] ? $field['description'] : '';
