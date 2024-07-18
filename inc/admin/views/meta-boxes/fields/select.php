@@ -8,7 +8,6 @@
  * @since 4.0.0
  */
 class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
-
 	/**
 	 * Constructor.
 	 *
@@ -21,13 +20,13 @@ class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
 		parent::__construct( $label, $description, $default, $extra );
 	}
 
-	public function meta_value( $thepostid ) {
+	public function meta_value( $post_id ) {
 		$multil_meta = $this->extra['multil_meta'] ?? false;
 
-		return $multil_meta ? get_post_meta( $thepostid, $this->id, false ) : get_post_meta( $thepostid, $this->id, true );
+		return $multil_meta ? get_post_meta( $post_id, $this->id, false ) : get_post_meta( $post_id, $this->id, true );
 	}
 
-	public function output( $thepostid ) {
+	public function output( $post_id ) {
 		if ( empty( $this->id ) ) {
 			return;
 		}
@@ -39,7 +38,7 @@ class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
 		$field['label']       = $this->label;
 
 		$field['multil_meta'] = $field['multil_meta'] ?? false;
-		$meta                 = $this->meta_value( $thepostid );
+		$meta                 = $this->meta_value( $post_id );
 
 		$default = ( ! $meta && isset( $field['default'] ) ) ? $field['default'] : $meta;
 
@@ -49,10 +48,11 @@ class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
 				'class'             => 'select',
 				'style'             => '',
 				'wrapper_class'     => '', // Use "lp-select-2" for select2.
-				'value'             => isset( $field['value'] ) ? $field['value'] : $default,
+				'value'             => $field['value'] ?? $default,
 				'name'              => $field['id'],
 				'desc_tip'          => false,
 				'multiple'          => false,
+				'is_multiple'       => false, // New attribute replace for multiple use for field old.
 				'custom_attributes' => array(),
 			)
 		);
@@ -92,10 +92,10 @@ class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
 			</select>
 			<?php
 			if ( ! empty( $field['description'] ) ) {
-				echo '<span class="description">' . wp_kses_post( $field['description'] ) . '</span>';
+				echo '<span class="description">' . wp_kses_post( $description ) . '</span>';
 
 				if ( ! empty( $field['desc_tip'] ) ) {
-					learn_press_quick_tip( $field['desc_tip'] );
+					learn_press_quick_tip( $tooltip );
 				}
 			}
 			?>
@@ -109,7 +109,7 @@ class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
 		if ( ! empty( $this->extra['custom_save'] ) ) {
 			do_action( 'learnpress/admin/metabox/select/save', $this->id, $_POST[ $this->id ], $post_id );
 
-			return;
+			return '';
 		}
 
 		if ( $multiple_meta ) {
