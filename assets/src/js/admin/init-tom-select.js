@@ -226,17 +226,18 @@ const selectCoInstructor = () => {
 	}
 
 	const userId = postAuthorEl?.value || 0;
-	const defaultId = selectCoInstructorEl.dataset?.coInstructors
-		? JSON.parse( selectCoInstructorEl.dataset?.coInstructors )
-		: '';
+	let defaultIds = selectCoInstructorEl.dataset?.saved || '';
+	if ( defaultIds.length ) {
+		defaultIds = JSON.parse( defaultIds );
+	}
 
 	const roleSearch = 'administrator,lp_teacher';
 
-	const dataSend = { role_in: roleSearch, id_not_in: userId, current_ids: defaultId.toString() };
+	const dataSend = { role_in: roleSearch, id_not_in: userId, current_ids: defaultIds.toString() };
 
 	const customOptions = {
 		maxItems: null,
-		items: defaultId[ 0 ],
+		items: defaultIds,
 		placeholder: 'Chose user',
 		render: {
 			item( data, escape ) {

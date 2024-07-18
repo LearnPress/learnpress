@@ -4,7 +4,7 @@
  * LP_Meta_Box_Duration_Attribute
  *
  * @author Nhamdv
- * @version 1.0.0
+ * @version 1.0.1
  * @since 4.0.0
  */
 class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
@@ -22,7 +22,7 @@ class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
 	}
 
 	public function meta_value( $thepostid ) {
-		$multil_meta = isset( $this->extra['multil_meta'] ) ? $this->extra['multil_meta'] : false;
+		$multil_meta = $this->extra['multil_meta'] ?? false;
 
 		return $multil_meta ? get_post_meta( $thepostid, $this->id, false ) : get_post_meta( $thepostid, $this->id, true );
 	}
@@ -38,7 +38,7 @@ class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
 		$field['description'] = $this->description;
 		$field['label']       = $this->label;
 
-		$field['multil_meta'] = isset( $field['multil_meta'] ) ? $field['multil_meta'] : false;
+		$field['multil_meta'] = $field['multil_meta'] ?? false;
 		$meta                 = $this->meta_value( $thepostid );
 
 		$default = ( ! $meta && isset( $field['default'] ) ) ? $field['default'] : $meta;
@@ -71,6 +71,7 @@ class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
 			$field['wrapper_class']       = 'lp-select-2';
 			$field_attributes['multiple'] = true;
 		}
+		$field_attributes['data-saved'] = htmlentities2( json_encode( $meta ) );
 
 		$tooltip     = ! empty( $field['description'] ) && false !== $field['desc_tip'] ? $field['description'] : '';
 		$description = ! empty( $field['description'] ) && false === $field['desc_tip'] ? $field['description'] : '';
