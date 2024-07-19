@@ -1,11 +1,23 @@
 import { AdminUtilsFunctions } from './utils-admin.js';
 
-// Handle Response
-const handleResponse = ( response, tomSelectEl, dataType, customOptions, customParams, callBack ) => {
+// Process data from api and add to option tom-select
+/**
+ *
+ * @param {*} response
+ * @param {*} tomSelectEl
+ * @param {*} dataType
+ * @param {*} callBack
+ * @param     customOptions
+ * @param     customParams
+ * @return
+ */
+
+const handleResponse = ( response, tomSelectEl, dataType = 'users', customOptions = {}, customParams = {}, callBack ) => {
 	if ( ! response || ! tomSelectEl || ! callBack ) {
 		return;
 	}
 
+	// Get default item tom-select
 	let defaultIds = tomSelectEl.dataset.saved || 0;
 	if ( defaultIds.length ) {
 		defaultIds = JSON.parse( defaultIds );
@@ -16,6 +28,7 @@ const handleResponse = ( response, tomSelectEl, dataType, customOptions, customP
 	let options = [];
 	const fetchFunction = response.data.users ? AdminUtilsFunctions.fetchUsers : AdminUtilsFunctions.fetchCourses;
 
+	// Format response data set option tom-select
 	if ( response.data[ dataType ].length > 0 ) {
 		options = response.data[ dataType ].map( ( item ) => ( {
 			value: item.ID,
@@ -25,6 +38,7 @@ const handleResponse = ( response, tomSelectEl, dataType, customOptions, customP
 		} ) );
 	}
 
+	// Setting option tom-select
 	const settingOption = {
 		items: defaultIds,
 		render: {
@@ -37,6 +51,7 @@ const handleResponse = ( response, tomSelectEl, dataType, customOptions, customP
 		options,
 	};
 
+	// Set params api
 	const params = {
 		current_ids: defaultIds,
 		...customParams,
