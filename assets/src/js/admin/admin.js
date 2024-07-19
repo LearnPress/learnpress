@@ -1,4 +1,4 @@
-import { searchUserOnListPost, searchUserOrder, selectAuthorCourse, selectCoInstructor } from './init-tom-select.js';
+import { defaultInitTomSelect, searchUserOnListPost, selectAuthorCourse, selectCoInstructor } from './init-tom-select.js';
 
 ( function( $ ) {
 	/**
@@ -212,8 +212,13 @@ import { searchUserOnListPost, searchUserOrder, selectAuthorCourse, selectCoInst
 }( jQuery ) );
 
 document.addEventListener( 'DOMContentLoaded', () => {
+	const selectAuthorCourseEl = document.querySelector( '[name="_lp_course_author"' );
+	const selectCoInstructorEl = document.querySelector( '[name="_lp_co_teacher[]"' );
+
+	const registered = [ selectAuthorCourseEl, selectCoInstructorEl ];
+
+	defaultInitTomSelect( registered );
 	selectAuthorCourse();
 	searchUserOnListPost();
-	searchUserOrder();
 	selectCoInstructor();
 } );

@@ -7,13 +7,24 @@
 import * as AdminUtils from '../utils-admin.js';
 
 export default function assignUserCourse() {
-	let elFormAssignUserCourse, elTomSelectCourseAssign, elTomSelectUserAssign;
-	let elFormUnAssignUserCourse, elTomSelectCourseUnAssign, elTomSelectUserUnAssign;
+	let elFormAssignUserCourse;
+	let elFormUnAssignUserCourse;
+	let elUserUnAssign, elCourseUnAssign, elUserAssign, elCourseAssign;
 	const limitHandle = 5;
 
 	const getAllElements = () => {
 		elFormAssignUserCourse = document.querySelector( '#lp-assign-user-course-form' );
 		elFormUnAssignUserCourse = document.querySelector( '#lp-unassign-user-course-form' );
+
+		if ( elFormAssignUserCourse ) {
+			elUserUnAssign = elFormUnAssignUserCourse.querySelector( '[name=user_ids]' );
+			elCourseUnAssign = elFormUnAssignUserCourse.querySelector( '[name=course_ids]' );
+		}
+
+		if ( elFormUnAssignUserCourse ) {
+			elUserAssign = elFormAssignUserCourse.querySelector( '[name=user_ids]' );
+			elCourseAssign = elFormAssignUserCourse.querySelector( '[name=course_ids]' );
+		}
 	};
 
 	const events = () => {
@@ -121,8 +132,12 @@ export default function assignUserCourse() {
 					}, 2000 );
 					elButtonAssign.disabled = false;
 					// Clear data selected on Tom Select.
-					elTomSelectCourseAssign.clear();
-					elTomSelectUserAssign.clear();
+					if ( ! elUserAssign.tomselect || ! elCourseAssign.tomselect ) {
+						return;
+					}
+
+					elUserAssign.tomselect.clear();
+					elCourseAssign.tomselect.clear();
 				} else if ( status === 'error' ) {
 					elButtonAssign.disabled = false;
 					elMessage.style.color = 'red';
@@ -176,8 +191,12 @@ export default function assignUserCourse() {
 					}, 2000 );
 					elButtonAssign.disabled = false;
 					// Clear data selected on Tom Select.
-					elTomSelectCourseUnAssign.clear();
-					elTomSelectUserUnAssign.clear();
+					if ( ! elUserUnAssign.tomselect || ! elCourseUnAssign.tomselect ) {
+						return;
+					}
+
+					elUserUnAssign.tomselect.clear();
+					elCourseUnAssign.tomselect.clear();
 				} else if ( status === 'error' ) {
 					elButtonAssign.disabled = false;
 					elMessage.style.color = 'red';
@@ -204,128 +223,6 @@ export default function assignUserCourse() {
 			return;
 		}
 
-		// Get list courses default first and build Tom Select.
-		const elCourseAssign = elFormAssignUserCourse.querySelector( '[name=course_ids]' );
-		const callBackCourse = {
-			success: ( response ) => {
-				let options = [];
-				if ( response.data.courses.length > 0 ) {
-					options = response.data.courses.map( ( item ) => {
-						return {
-							value: item.ID,
-							text: item.post_title + `(#${ item.ID })`,
-						};
-					} );
-				}
-
-				if ( null != elTomSelectCourseAssign ) {
-					return options;
-				}
-
-				elTomSelectCourseAssign = AdminUtils.AdminUtilsFunctions.buildTomSelect(
-					elCourseAssign,
-					{ options },
-					AdminUtils.AdminUtilsFunctions.fetchCourses,
-					{},
-					callBackCourse
-				);
-
-				return options;
-			},
-		};
-		AdminUtils.AdminUtilsFunctions.fetchCourses( '', {}, callBackCourse );
-
-		const elCourseUnAssign = elFormUnAssignUserCourse.querySelector( '[name=course_ids]' );
-		const callBackCourseUnAssign = {
-			success: ( response ) => {
-				let options = [];
-				if ( response.data.courses.length > 0 ) {
-					options = response.data.courses.map( ( item ) => {
-						return {
-							value: item.ID,
-							text: item.post_title + `(#${ item.ID })`,
-						};
-					} );
-				}
-
-				if ( null != elTomSelectCourseUnAssign ) {
-					return options;
-				}
-
-				elTomSelectCourseUnAssign = AdminUtils.AdminUtilsFunctions.buildTomSelect(
-					elCourseUnAssign,
-					{ options },
-					AdminUtils.AdminUtilsFunctions.fetchCourses,
-					{},
-					callBackCourseUnAssign
-				);
-
-				return options;
-			},
-		};
-		AdminUtils.AdminUtilsFunctions.fetchCourses( '', {}, callBackCourseUnAssign );
-
-		// Get list users default first and build Tom Select.
-		const elUserAssign = elFormAssignUserCourse.querySelector( '[name=user_ids]' );
-		const callBackUser = {
-			success: ( response ) => {
-				let options = [];
-				if ( response.data.users.length > 0 ) {
-					options = response.data.users.map( ( item ) => {
-						return {
-							value: item.ID,
-							text: `${ item.display_name } (#${ item.ID }) - ${ item.user_email }`,
-						};
-					} );
-				}
-
-				if ( null != elTomSelectUserAssign ) {
-					return options;
-				}
-
-				elTomSelectUserAssign = AdminUtils.AdminUtilsFunctions.buildTomSelect(
-					elUserAssign,
-					{ options },
-					AdminUtils.AdminUtilsFunctions.fetchUsers,
-					{},
-					callBackUser
-				);
-
-				return options;
-			},
-		};
-		AdminUtils.AdminUtilsFunctions.fetchUsers( '', {}, callBackUser );
-
-		const elUserUnAssign = elFormUnAssignUserCourse.querySelector( '[name=user_ids]' );
-		const callBackUserUnAssign = {
-			success: ( response ) => {
-				let options = [];
-				if ( response.data.users.length > 0 ) {
-					options = response.data.users.map( ( item ) => {
-						return {
-							value: item.ID,
-							text: `${ item.display_name } (#${ item.ID }) - ${ item.user_email }`,
-						};
-					} );
-				}
-
-				if ( null != elTomSelectUserUnAssign ) {
-					return options;
-				}
-
-				elTomSelectUserUnAssign = AdminUtils.AdminUtilsFunctions.buildTomSelect(
-					elUserUnAssign,
-					{ options },
-					AdminUtils.AdminUtilsFunctions.fetchUsers,
-					{},
-					callBackUserUnAssign
-				);
-
-				return options;
-			},
-		};
-		AdminUtils.AdminUtilsFunctions.fetchUsers( '', {}, callBackUserUnAssign );
-		// Events.
 		events();
 	} );
 }
