@@ -11,7 +11,14 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 	public $post_type = LP_COURSE_CPT;
 
 	public function add_meta_box() {
-		add_meta_box( 'course-settings', esc_html__( 'Course Settings', 'learnpress' ), array( $this, 'output' ), $this->post_type, 'normal', 'high' );
+		add_meta_box(
+			'course-settings',
+			esc_html__( 'Course Settings', 'learnpress' ),
+			array( $this, 'output' ),
+			$this->post_type,
+			'normal',
+			'high'
+		);
 	}
 
 	public function metabox( $post_id ) {
@@ -71,7 +78,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 	}
 
 	public function general( $post_id ) {
-		$repurchase_option_desc  = sprintf( '1. %s', __( 'Reset course progress: The course progress and results of student will be removed.' ) );
+		$repurchase_option_desc = sprintf( '1. %s', __( 'Reset course progress: The course progress and results of student will be removed.' ) );
 		$repurchase_option_desc .= '<br/>' . sprintf( '2. %s', __( 'Keep course progress: The course progress and results of student will remain.' ) );
 		$repurchase_option_desc .= '<br/>' . sprintf( '3. %s', __( 'Open popup: The student can decide whether their course progress will be reset with the confirm popup.' ) );
 
@@ -196,10 +203,10 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 	 *
 	 * @param $post_id
 	 *
-	 * @author tungnx
+	 * @return array
 	 * @since 4.1.5
 	 * @version 1.0.0
-	 * @return array
+	 * @author tungnx
 	 */
 	public function lp_price( $post_id ): array {
 		$key_exists    = LP_Database::getInstance()->check_key_postmeta_exists( $post_id, '_lp_regular_price' );
@@ -273,6 +280,18 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 
 		$options = array();
 
+		$data_struct = [
+			'dataSendApi' => [ 'role_in' => ADMIN_ROLE . ',' . LP_TEACHER_ROLE ],
+			'keyGetValue' => [
+				'value' => 'ID',
+				'text'  => [
+					'display_name' => 'display_name',
+					'ID'           => 'ID',
+					'user_email'   => 'user_email'
+				]
+			]
+		];
+
 		return apply_filters(
 			'lp/course/meta-box/fields/author',
 			array(
@@ -281,8 +300,10 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 					'',
 					$author,
 					array(
-						'options' => $options,
-						'style'   => 'min-width:200px;',
+						'options'     => $options,
+						'style'       => 'min-width:200px;',
+						'tom_select'  => true,
+						'data-struct' => htmlentities2( json_encode( $data_struct ) ),
 					)
 				),
 			)
@@ -432,7 +453,8 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 							}
 							?>
 							<?php if ( isset( $tab_content['content'] ) ) { ?>
-								<div id="<?php echo esc_attr( $tab_content['target'] ); ?>" class="lp-meta-box-course-panels">
+								<div id="<?php echo esc_attr( $tab_content['target'] ); ?>"
+									 class="lp-meta-box-course-panels">
 									<?php
 									do_action( 'learnpress/course-settings/before-' . $key );
 
