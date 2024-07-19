@@ -734,6 +734,10 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}learnpress_order_items WHERE order_item_id = %d", $item_id ) );
 			$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}learnpress_order_itemmeta WHERE learnpress_order_item_id = %d", $item_id ) );
 
+			//Clear cache
+			$key   = "order/{$this->get_id()}/{$this->get_status()}/items";
+			LP_Cache::cache_load_first( 'clear', $key );
+
 			/**
 			 * @since 3.0.0
 			 */

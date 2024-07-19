@@ -1,3 +1,5 @@
+import { lpAjaxParseJsonOld } from '../../utils';
+
 let data = {},
 	paged = 1,
 	term = '',
@@ -20,6 +22,72 @@ const modalSearchCourses = () => {
 	selectItems();
 	addItems();
 	closeModal();
+	removeItem();
+};
+
+const removeItem = () => {
+	document.addEventListener( 'click', function( event ) {
+		const target = event.target;
+
+		if ( ! target.classList.contains( 'remove-order-item' ) && ! target.closest( '.remove-order-item' ) ) {
+			return;
+		}
+
+		const lpOrderNode = target.closest( '#learn-press-order' );
+
+		if ( ! lpOrderNode ) {
+			return;
+		}
+
+		event.preventDefault();
+
+		const item = target.closest( 'tr' );
+		const itemId = item.getAttribute( 'data-item_id' );
+
+		item.remove();
+
+		const orderItems = lpOrderNode.querySelectorAll( '.list-order-items tbody tr:not(.no-order-items)' );
+		const noOrderItems = lpOrderNode.querySelector( '.list-order-items tbody .no-order-items' );
+		if ( orderItems.length === 0 ) {
+			noOrderItems.style.display = 'block';
+		}
+
+		const query = {
+			order_id: document.querySelector( '#post_ID' ).value,
+			items: [ itemId ],
+			'lp-ajax': 'remove_items_from_order',
+			remove_nonce: target.closest( '.order-item-row' ).dataset.remove_nonce,
+		};
+
+		const params = new URLSearchParams();
+
+		for ( const [ key, value ] of Object.entries( query ) ) {
+			if ( Array.isArray( value ) ) {
+				value.forEach( ( item ) => params.append( `${ key }[]`, item ) );
+			} else {
+				params.append( key, value );
+			}
+		}
+
+		fetch( window.location.href, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+			},
+			body: params,
+		} )
+			.then( ( response ) => response.text() )
+			.then( ( response ) => {
+				const data = lpAjaxParseJsonOld( response );
+				console.log(data);
+				lpOrderNode.querySelector( '.order-subtotal' ).innerHTML = data.order_data.subtotal_html;
+				lpOrderNode.querySelector( '.order-total' ).innerHTML = data.order_data.total_html;
+				// lpOrderNode.querySelector( '#item-container' ).innerHTML = data.item_html;
+			} )
+			.catch( ( error ) => {
+				console.error( 'Error:', error );
+			} );
+	} );
 };
 
 const getAddedItems = () => {
@@ -66,51 +134,46 @@ const search = _.debounce( function() {
 		if ( ! response.ok ) {
 			throw new Error( 'Error' );
 		}
+
 		return response.text();
 	} ).then( ( response ) => {
-		const jsonString = response.replace( /<-- LP_AJAX_START -->|<-- LP_AJAX_END -->/g, '' ).trim();
-		try {
-			const result = LP.parseJSON( jsonString );
-			hasItems = !! _.size( result.items );
+		const result = lpAjaxParseJsonOld( response );
+		hasItems = !! _.size( result.items );
 
-			const modal_search_items = document.querySelector( '#modal-search-items' );
-			if ( hasItems ) {
-				modal_search_items.querySelector( '.search-nav' ).style.display = 'block';
+		const modal_search_items = document.querySelector( '#modal-search-items' );
+		if ( hasItems ) {
+			modal_search_items.querySelector( '.search-nav' ).style.display = 'block';
+		}
+
+		modal_search_items.classList.remove( 'loading' );
+
+		modal_search_items.querySelector( '.search-results' ).innerHTML = result.html;
+		const checkBoxNodes = modal_search_items.querySelectorAll( '.search-results input[type="checkbox"]' );
+
+		[ ...checkBoxNodes ].map( ( checkBoxNode ) => {
+			const id = parseInt( checkBoxNode.value );
+
+			if ( _.indexOf( selectedItems, id ) >= 0 ) {
+				checkBoxNode.checked = true;
 			}
+		} );
 
-			modal_search_items.classList.remove( 'loading' );
+		_.debounce( function() {
+			const searchNav = modal_search_items.querySelector( '.search-nav' );
+			searchNav.innerHTML = result.nav;
 
-			modal_search_items.querySelector( '.search-results' ).innerHTML = result.html;
-			const checkBoxNodes = modal_search_items.querySelectorAll( '.search-results input[type="checkbox"]' );
+			const buttons = searchNav.querySelectorAll( 'a,span' );
+			[ ...buttons ].map( ( button ) => {
+				button.classList.add( 'button' );
 
-			[ ...checkBoxNodes ].map( ( checkBoxNode ) => {
-				const id = parseInt( checkBoxNode.value );
-
-				if ( _.indexOf( selectedItems, id ) >= 0 ) {
-					checkBoxNode.checked = true;
+				if ( button.tagName === 'SPAN' ) {
+					button.classList.add( 'disabled' );
 				}
 			} );
-
-			_.debounce( function() {
-				const searchNav = modal_search_items.querySelector( '.search-nav' );
-				searchNav.innerHTML = result.nav;
-
-				const buttons = searchNav.querySelectorAll( 'a,span' );
-				[ ...buttons ].map( ( button ) => {
-					button.classList.add( 'button' );
-
-					if ( button.tagName === 'SPAN' ) {
-						button.classList.add( 'disabled' );
-					}
-				} );
-			}, 10 )();
-		} catch ( e ) {
-			console.error( 'Error parsing JSON:', e );
-		}
-	} )
-		.catch( ( error ) => {
-			console.error( 'Error:', error );
-		} );
+		}, 10 )();
+	} ).catch( ( error ) => {
+		console.error( 'Error:', error );
+	} );
 }, 500 );
 
 const doSearch = () => {
@@ -240,7 +303,6 @@ const addItems = () => {
 			return response.text();
 		} )
 			.then( ( response ) => {
-				console.log( response );
 				const jsonString = response.replace( /<-- LP_AJAX_START -->|<-- LP_AJAX_END -->/g, '' ).trim();
 				try {
 					const result = LP.parseJSON( jsonString );
@@ -249,13 +311,13 @@ const addItems = () => {
 					noItem.style.display = 'none';
 					const itemHtml = result.item_html;
 					noItem.insertAdjacentHTML( 'beforebegin', itemHtml );
-					const lpOrder = document.querySelector( '#learn-press-order' );
-					lpOrder.querySelector( '.order-subtotal' ).innerHTML = result.order_data.subtotal_html;
-					lpOrder.querySelector( '.order-total' ).innerHTML = result.order_data.total_html;
+
+					lpOrderNode.querySelector( '.order-subtotal' ).innerHTML = result.order_data.subtotal_html;
+					lpOrderNode.querySelector( '.order-total' ).innerHTML = result.order_data.total_html;
 
 					removeModal();
-				} catch ( e ) {
-					console.error( 'Error parsing JSON:', e );
+				} catch ( error ) {
+					console.error( 'Error parsing JSON:', error );
 				}
 			} )
 			.catch( ( error ) => {
