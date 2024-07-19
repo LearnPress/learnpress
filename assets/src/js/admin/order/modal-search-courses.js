@@ -1,4 +1,5 @@
 import { lpAjaxParseJsonOld } from '../../utils';
+import { addQueryArgs } from '@wordpress/url';
 
 let data = {},
 	paged = 1,
@@ -79,7 +80,6 @@ const removeItem = () => {
 			.then( ( response ) => response.text() )
 			.then( ( response ) => {
 				const data = lpAjaxParseJsonOld( response );
-				console.log(data);
 				lpOrderNode.querySelector( '.order-subtotal' ).innerHTML = data.order_data.subtotal_html;
 				lpOrderNode.querySelector( '.order-total' ).innerHTML = data.order_data.total_html;
 				// lpOrderNode.querySelector( '#item-container' ).innerHTML = data.item_html;
@@ -108,71 +108,143 @@ const mountSearchModal = () => {
 	modalContainer.innerHTML = modalSearchItems.innerHTML;
 };
 
+const renderSearchResult = ( courses ) => {
+	let html = '';
+
+	for ( let i = 0; i < courses.length; i++ ) {
+		html += `
+		<li class="lp-result-item" data-id="${ courses[ i ].ID }" data-type="lp_course" data-text="${ courses[ i ].post_title }">
+			<label>
+				<input type="checkbox" value="${ courses[ i ].ID }" name="selectedItems[]">
+				<span class="lp-item-text">${ courses[ i ].post_title } (Course - #${ courses[ i ].ID })</span>
+			</label>
+		</li>`;
+	}
+
+	return html;
+};
+
+const renderPagination = ( currentPage, maxPage ) => {
+	currentPage = parseInt( currentPage );
+	maxPage = parseInt( maxPage );
+
+	let html = '';
+	if ( maxPage <= 1 ) {
+		return html;
+	}
+	const nextPage = currentPage + 1;
+	const prevPage = currentPage - 1;
+
+	let pages = [];
+
+	if ( maxPage <= 9 ) {
+		for ( let i = 1; i <= maxPage; i++ ) {
+			pages.push( i );
+		}
+	} else if ( currentPage <= 3 ) {
+		// x is ...
+		pages = [ 1, 2, 3, 4, 5, 'x', maxPage ];
+	} else if ( currentPage <= 5 ) {
+		for ( let i = 1; i <= currentPage; i++ ) {
+			pages.push( i );
+		}
+		for ( let j = 1; j <= 2; j++ ) {
+			const tempPage = currentPage + j;
+			pages.push( tempPage );
+		}
+		pages.push( 'x' );
+		pages.push( maxPage );
+	} else {
+		pages = [ 1, 'x' ];
+
+		for ( let k = 2; k >= 0; k-- ) {
+			const tempPage = currentPage - k;
+			pages.push( tempPage );
+		}
+
+		const currentToLast = maxPage - currentPage;
+
+		if ( currentToLast <= 5 ) {
+			for ( let m = currentPage + 1; m <= maxPage; m++
+			) {
+				pages.push( m );
+			}
+		} else {
+			for ( let n = 1; n <= 2; n++ ) {
+				const tempPage = currentPage + n;
+				pages.push( tempPage );
+			}
+			pages.push( 'x' );
+			pages.push( maxPage );
+		}
+	}
+
+	const maximum = pages.length;
+
+	if ( currentPage !== 1 ) {
+		html += `<a class="prev page-numbers button" href="#" data-page="${ prevPage }"><</a>`;
+	}
+	for ( let i = 0; i < maximum; i++ ) {
+		if ( currentPage === parseInt( pages[ i ] ) ) {
+			html += `<a aria-current="page" class="page-numbers current button disabled" data-page="${ pages[ i ] }">
+				${ pages[ i ] }
+			</a>`;
+		} else if ( pages[ i ] === 'x' ) {
+			html += `<span class="page-numbers dots button disabled">...</span>`;
+		} else {
+			html += `<a class="page-numbers button" href="#" data-page="${ pages[ i ] }">${ pages[ i ] } </a>`;
+		}
+	}
+
+	if ( currentPage !== maxPage ) {
+		html += `<a class="next page-numbers button" href="#" data-page="${ nextPage }">></a>`;
+	}
+
+	return html;
+};
+
 const search = _.debounce( function() {
 	document.querySelector( '#modal-search-items' ).classList.add( 'loading' );
-	const restUrl = lpGlobalSettings.rest || '';
 
 	const query = {
-		type: data.postType, //lp_course
-		context: data.context, //order items
-		context_id: data.contextId, //order id
-		term, // input search
+		c_search: term, // input search
 		paged,
-		'lp-ajax': 'modal_search_items',
-		exclude: data.exclude,
-		nonce: lpGlobalSettings.nonce,
+		not_ids: data.exclude,
 	};
 
-	const params = new URLSearchParams( Object.entries( query ) );
-	fetch( window.location.href, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded',
-		},
-		body: params,
-	} ).then( ( response ) => {
-		if ( ! response.ok ) {
-			throw new Error( 'Error' );
-		}
-
-		return response.text();
-	} ).then( ( response ) => {
-		const result = lpAjaxParseJsonOld( response );
-		hasItems = !! _.size( result.items );
-
-		const modal_search_items = document.querySelector( '#modal-search-items' );
-		if ( hasItems ) {
-			modal_search_items.querySelector( '.search-nav' ).style.display = 'block';
-		}
-
-		modal_search_items.classList.remove( 'loading' );
-
-		modal_search_items.querySelector( '.search-results' ).innerHTML = result.html;
-		const checkBoxNodes = modal_search_items.querySelectorAll( '.search-results input[type="checkbox"]' );
-
-		[ ...checkBoxNodes ].map( ( checkBoxNode ) => {
-			const id = parseInt( checkBoxNode.value );
-
-			if ( _.indexOf( selectedItems, id ) >= 0 ) {
-				checkBoxNode.checked = true;
+	wp.apiFetch( {
+		path: addQueryArgs( '/lp/v1/admin/tools/search-course', query ),
+		method: 'GET',
+	} ).then( ( res ) => {
+		if ( res.status && res.status === 'success' ) {
+			const courses = res.data.courses;
+			hasItems = _.size( courses );
+			const modal_search_items = document.querySelector( '#modal-search-items' );
+			if ( hasItems ) {
+				const searchNav = modal_search_items.querySelector( '.search-nav' );
+				searchNav.style.display = 'flex';
+				searchNav.style.gap = '4px';
 			}
-		} );
+			modal_search_items.classList.remove( 'loading' );
+			modal_search_items.querySelector( '.search-results' ).innerHTML = renderSearchResult( courses );
+			const checkBoxNodes = modal_search_items.querySelectorAll( '.search-results input[type="checkbox"]' );
 
-		_.debounce( function() {
-			const searchNav = modal_search_items.querySelector( '.search-nav' );
-			searchNav.innerHTML = result.nav;
+			[ ...checkBoxNodes ].map( ( checkBoxNode ) => {
+				const id = parseInt( checkBoxNode.value );
 
-			const buttons = searchNav.querySelectorAll( 'a,span' );
-			[ ...buttons ].map( ( button ) => {
-				button.classList.add( 'button' );
-
-				if ( button.tagName === 'SPAN' ) {
-					button.classList.add( 'disabled' );
+				if ( _.indexOf( selectedItems, id ) >= 0 ) {
+					checkBoxNode.checked = true;
 				}
 			} );
-		}, 10 )();
-	} ).catch( ( error ) => {
-		console.error( 'Error:', error );
+
+			_.debounce( function() {
+				const searchNav = modal_search_items.querySelector( '.search-nav' );
+				searchNav.innerHTML = renderPagination( paged, res.data.total_pages );
+			}, 10 )();
+		}
+	} ).catch( ( err ) => {
+		console.log( err );
+	} ).finally( () => {
 	} );
 }, 500 );
 
@@ -209,19 +281,13 @@ const loadPage = () => {
 
 		event.preventDefault();
 
-		const buttons = modalSearchItems.querySelectorAll( '.search-nav *' );
+		const buttons = modalSearchItems.querySelectorAll( '.search-nav a' );
 
 		buttons.forEach( ( button ) => {
 			button.classList.add( 'disabled' );
 		} );
 
-		if ( target.classList.contains( 'next' ) ) {
-			paged++;
-		} else if ( target.classList.contains( 'prev' ) ) {
-			paged--;
-		} else {
-			paged = parseInt( target.innerHTML );
-		}
+		paged = target.getAttribute( 'data-page' );
 		search();
 	} );
 };
