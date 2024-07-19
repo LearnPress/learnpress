@@ -52,13 +52,9 @@ class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
 				'name'              => $field['id'],
 				'desc_tip'          => false,
 				'multiple'          => false,
-				'is_multiple'       => false, // New attribute replace for multiple use for field old.
 				'custom_attributes' => array(),
+				'tom_select'        => false,
 			)
-		);
-
-		$label_attributes = array(
-			'for' => $field['id'],
 		);
 
 		$field_attributes          = (array) $field['custom_attributes'];
@@ -67,10 +63,16 @@ class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
 		$field_attributes['name']  = $field['multiple'] ? $field['name'] . '[]' : $field['name'];
 		$field_attributes['class'] = $field['class'];
 
-		if ( $field['multiple'] ) {
+		if ( $field['tom_select'] ) {
+			$field_attributes['class'] .= ' lp-tom-select';
+			if ( ! empty( $field['ts-remove-button'] ) ) {
+				$field_attributes['data-ts-remove-button'] = $field['ts-remove-button'];
+			}
+		} elseif ( $field['multiple'] ) {
 			$field['wrapper_class']       = 'lp-select-2';
 			$field_attributes['multiple'] = true;
 		}
+
 		$field_attributes['data-saved'] = htmlentities2( json_encode( $meta ) );
 
 		$tooltip     = ! empty( $field['description'] ) && false !== $field['desc_tip'] ? $field['description'] : '';
