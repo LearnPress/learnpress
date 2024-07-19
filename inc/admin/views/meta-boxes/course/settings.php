@@ -283,12 +283,13 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 		$data_struct = [
 			'dataSendApi' => [ 'role_in' => ADMIN_ROLE . ',' . LP_TEACHER_ROLE ],
 			'keyGetValue' => [
-				'value' => 'ID',
-				'text'  => [
+				'value'      => 'ID',
+				'text'       => '{{display_name}} ({{ID}} - {{user_email}})',
+				'key_render' => [
 					'display_name' => 'display_name',
+					'user_email'   => 'user_email',
 					'ID'           => 'ID',
-					'user_email'   => 'user_email'
-				]
+				],
 			]
 		];
 
