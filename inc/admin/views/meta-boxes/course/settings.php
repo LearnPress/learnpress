@@ -281,9 +281,11 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 					'',
 					$author,
 					array(
-						'options' => $options,
-						'style'   => 'min-width:200px;',
-					)
+						'options'    => $options,
+						'style'      => 'min-width:200px;',
+						'tom_select' => true,
+						'unremoved'  => true,
+					),
 				),
 			)
 		);

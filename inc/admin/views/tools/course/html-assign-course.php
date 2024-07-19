@@ -21,7 +21,7 @@
 					<li>
 						<label>
 							<?php _e( 'Choose Course:', 'learnpress' ); ?>
-							<select name="course_ids" class="lp-tom-select" style="width: 100%;" multiple>
+							<select name="course_ids" class="lp-tom-select" style="width: 100%;" multiple  data-type='courses'>
 								<option value=""><?php _e( 'Search courses', 'learnpress' ); ?></option>
 							</select>
 						</label>
@@ -30,7 +30,7 @@
 						<div class="assign-to-user">
 							<label>
 								<?php _e( 'Choose User:', 'learnpress' ); ?>
-								<select name="user_ids" multiple style="width:100%">
+								<select name="user_ids" class="lp-tom-select" multiple style="width:100%">
 									<option value=""><?php _e( 'Search users', 'learnpress' ); ?></option>
 								</select>
 							</label>

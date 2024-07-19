@@ -95,8 +95,8 @@ $user_ids     = $order->get_user_id();
 				<?php
 				if ( LP_ORDER_PENDING === $order->get_status() ) {
 					?>
-					<select id="list-users" class="advanced-list"
-							data-user-id="<?php echo esc_attr( json_encode( $user_ids ) ); ?>">
+					<select id="list-users" name="order-customer[]" class="advanced-list lp-tom-select"
+							data-saved="<?php echo esc_attr( json_encode( $user_ids ) ); ?>" multiple>
 						<option value=""><?php _e( 'Choose User:', 'learnpress' ); ?></option>
 					</select>
 					<?php
