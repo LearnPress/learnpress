@@ -281,6 +281,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 		$options = array();
 
 		$data_struct = [
+			'urlApi'      => get_rest_url( null, 'lp/v1/admin/tools/search-user' ),
 			'dataSendApi' => [ 'role_in' => ADMIN_ROLE . ',' . LP_TEACHER_ROLE ],
 			'keyGetValue' => [
 				'value'      => 'ID',
