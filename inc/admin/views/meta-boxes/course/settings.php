@@ -300,10 +300,10 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 					'',
 					$author,
 					array(
-						'options'     => $options,
-						'style'       => 'min-width:200px;',
-						'tom_select'  => true,
-						'data-struct' => htmlentities2( json_encode( $data_struct ) ),
+						'options'           => $options,
+						'style'             => 'min-width:200px;',
+						'tom_select'        => true,
+						'custom_attributes' => [ 'data-struct' => htmlentities2( json_encode( $data_struct ) ) ]
 					)
 				),
 			)
