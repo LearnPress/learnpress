@@ -1,117 +1,75 @@
 import { AdminUtilsFunctions } from './utils-admin.js';
 
-// Init Tom-select
-const initTomSelect = ( tomSelectEl, customOptions = {}, customParams = {} ) => {
-	let tomSelect;
+// Handle Response
+const handleResponse = ( response, tomSelectEl, dataType, customOptions, customParams, callBack ) => {
+	if ( ! response || ! tomSelectEl || ! callBack ) {
+		return;
+	}
+
 	let defaultIds = tomSelectEl.dataset.saved || 0;
-	const dataType = tomSelectEl.dataset.type || 'users';
-	let plugins = {
-		remove_button: {
-			title: 'Remove this item',
-		},
-	};
-
-	const removePlugin = tomSelectEl.dataset.unremoved || false;
-
 	if ( defaultIds.length ) {
 		defaultIds = JSON.parse( defaultIds );
 	}
 
-	if ( removePlugin ) {
-		plugins = {};
+	const plugins = tomSelectEl.dataset.unremoved ? {} : { remove_button: { title: 'Remove item' }	};
+
+	let options = [];
+	const fetchFunction = response.data.users ? AdminUtilsFunctions.fetchUsers : AdminUtilsFunctions.fetchCourses;
+
+	if ( response.data[ dataType ].length > 0 ) {
+		options = response.data[ dataType ].map( ( item ) => ( {
+			value: item.ID,
+			text: dataType === 'users'
+				? `${ item.display_name } (#${ item.ID }) - ${ item.user_email }`
+				: `${ item.post_title } (#${ item.ID })`,
+		} ) );
 	}
 
-	switch ( dataType ) {
-	case 'courses':
-		const callBackCourse = {
-			success: ( response ) => {
-				let options = [];
-
-				const settingOption = {
-					items: defaultIds,
-					plugins,
-					render: {
-						item( data, escape ) {
-							return (
-								`<li data-id="${ data.value }"><div class="item">${ data.text }</div></li>`
-							);
-						},
-					},
-					...customOptions,
-				};
-
-				if ( response.data.courses.length > 0 ) {
-					options = response.data.courses.map( ( item ) => {
-						return {
-							value: item.ID,
-							text: item.post_title + `(#${ item.ID })`,
-						};
-					} );
-				}
-
-				if ( null != tomSelect ) {
-					return options;
-				}
-
-				tomSelect = AdminUtilsFunctions.buildTomSelect(
-					tomSelectEl,
-					{ ...settingOption, options },
-					AdminUtilsFunctions.fetchCourses,
-					customParams,
-					callBackCourse
-				);
-
-				return options;
+	const settingOption = {
+		items: defaultIds,
+		render: {
+			item( data, escape ) {
+				return `<li data-id="${ data.value }"><div class="item">${ data.text }</div></li>`;
 			},
-		};
+		},
+		plugins,
+		...customOptions,
+		options,
+	};
 
-		AdminUtilsFunctions.fetchCourses( '', customParams, callBackCourse );
-		break;
-	default:
-		const callBackUser = {
-			success: ( response ) => {
-				let options = [];
-				const settingOption = {
-					items: defaultIds,
-					plugins,
-					render: {
-						item( data, escape ) {
-							return (
-								`<li data-id="${ data.value }"><div class="item">${ data.text }</div></li>`
-							);
-						},
-					},
-					...customOptions,
-				};
+	const params = {
+		current_ids: defaultIds,
+		...customParams,
+	};
 
-				if ( response.data.users.length > 0 ) {
-					options = response.data.users.map( ( item ) => {
-						return {
-							value: item.ID,
-							text: `${ item.display_name } (#${ item.ID }) - ${ item.user_email }`,
-						};
-					} );
-				}
-
-				if ( null != tomSelect ) {
-					return options;
-				}
-
-				tomSelect = AdminUtilsFunctions.buildTomSelect(
-					tomSelectEl,
-					{ ...settingOption, options },
-					AdminUtilsFunctions.fetchUsers,
-					customParams,
-					callBackUser
-				);
-
-				return options;
-			},
-		};
-
-		AdminUtilsFunctions.fetchUsers( '', customParams, callBackUser );
-		break;
+	if ( null != tomSelectEl.tomSelectInstance ) {
+		return options;
 	}
+
+	tomSelectEl.tomSelectInstance = AdminUtilsFunctions.buildTomSelect(
+		tomSelectEl,
+		settingOption,
+		fetchFunction,
+		params,
+		callBack
+	);
+
+	return options;
+};
+
+// Init Tom-select
+const initTomSelect = ( tomSelectEl, customOptions = {}, customParams = {} ) => {
+	const dataType = tomSelectEl.dataset.type || 'users';
+
+	const fetchFunction = dataType === 'users' ? AdminUtilsFunctions.fetchUsers : AdminUtilsFunctions.fetchCourses;
+
+	const callBackApi = {
+		success: ( response ) => {
+			handleResponse( response, tomSelectEl, dataType, customOptions, customParams, callBackApi );
+		},
+	};
+
+	fetchFunction( '', customParams, callBackApi );
 };
 
 // Init Tom-select user in admin
