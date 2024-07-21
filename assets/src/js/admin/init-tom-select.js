@@ -43,7 +43,9 @@ const handleResponse = ( response, tomSelectEl, dataStruct, fetchAPI, customOpti
 		render: {
 			item( data, escape ) {
 				if ( tomSelectEl.hasAttribute( 'multiple' ) ) {
-					return `<li data-id="${ data.value }"><div class="item">${ data.text } multiple</div><input type="hidden" name="${ tomSelectEl.getAttribute( 'name' ) }" value="${ data.value }"></li>`;
+					return `<li data-id="${ data.value }"><div class="item">${ data.text } multiple</div>
+					<input type="hidden" name="${ tomSelectEl.getAttribute( 'name' ) }" value="${ data.value }">
+					</li>`;
 				}
 				return `<li data-id="${ data.value }">
 				<div class="item">${ data.text }</div>

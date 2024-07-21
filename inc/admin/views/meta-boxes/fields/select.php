@@ -63,9 +63,9 @@ class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
 		$field_attributes['name']  = $field['multiple'] ? $field['name'] . '[]' : $field['name'];
 		$field_attributes['class'] = $field['class'];
 
-		// if ( $field['multiple'] ) {
-		// 	$field_attributes['multiple'] = true;
-		// }
+		if ( $field['multiple'] ) {
+			$field_attributes['multiple'] = true;
+		}
 
 		if ( $field['tom_select'] ) {
 			$field_attributes['class'] .= ' lp-tom-select';

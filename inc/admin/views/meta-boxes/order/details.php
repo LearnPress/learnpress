@@ -112,11 +112,11 @@ $user_ids     = $order->get_user_id();
 					];
 
 					$select_field = new LP_Meta_Box_Select_Field(
-						'Customer Order',
+						'Customers',
 						'',
 						'',
 						array(
-							// 'options'           => $options,
+							'options'           => array(),
 							'style'             => 'min-width:200px;',
 							'tom_select'        => true,
 							'multiple'          => true,
@@ -124,11 +124,11 @@ $user_ids     = $order->get_user_id();
 						)
 					);
 
-					$select_field->id = 'customer-order';
+					$select_field->id = 'order-customer';
 
 					$select_field->output(
 						array(
-							'id' => 'customer-order',
+							'id' => 'order-customer',
 						)
 					);
 				} else {
