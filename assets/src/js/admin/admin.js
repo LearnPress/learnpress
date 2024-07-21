@@ -1,4 +1,4 @@
-import { searchUserOnListPost, searchUserOrder, selectAuthorCourse, selectCoInstructor } from './init-tom-select.js';
+import { defaultInitTomSelect, searchUserOnListPost } from './init-tom-select.js';
 
 ( function( $ ) {
 	/**
@@ -212,8 +212,6 @@ import { searchUserOnListPost, searchUserOrder, selectAuthorCourse, selectCoInst
 }( jQuery ) );
 
 document.addEventListener( 'DOMContentLoaded', () => {
-	selectAuthorCourse();
 	searchUserOnListPost();
-	searchUserOrder();
-	selectCoInstructor();
+	defaultInitTomSelect();
 } );

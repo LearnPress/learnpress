@@ -78,7 +78,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 	}
 
 	public function general( $post_id ) {
-		$repurchase_option_desc = sprintf( '1. %s', __( 'Reset course progress: The course progress and results of student will be removed.' ) );
+		$repurchase_option_desc  = sprintf( '1. %s', __( 'Reset course progress: The course progress and results of student will be removed.' ) );
 		$repurchase_option_desc .= '<br/>' . sprintf( '2. %s', __( 'Keep course progress: The course progress and results of student will remain.' ) );
 		$repurchase_option_desc .= '<br/>' . sprintf( '3. %s', __( 'Open popup: The student can decide whether their course progress will be reset with the confirm popup.' ) );
 
@@ -282,7 +282,12 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 
 		$data_struct = [
 			'urlApi'      => get_rest_url( null, 'lp/v1/admin/tools/search-user' ),
-			'dataSendApi' => [ 'role_in' => ADMIN_ROLE . ',' . LP_TEACHER_ROLE ],
+			'dataSendApi' => [
+				'role_in'     => ADMIN_ROLE . ',' . LP_TEACHER_ROLE,
+				'current_ids' => $author,
+			],
+			'dataType'    => 'users',
+			'currentIds'  => $author,
 			'keyGetValue' => [
 				'value'      => 'ID',
 				'text'       => '{{display_name}} ({{ID}} - {{user_email}})',
@@ -291,13 +296,16 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 					'user_email'   => 'user_email',
 					'ID'           => 'ID',
 				],
-			]
+			],
+			'setting'     => [
+				'plugins' => array(),
+			],
 		];
 
 		return apply_filters(
 			'lp/course/meta-box/fields/author',
 			array(
-				'_lp_course_author' => new LP_Meta_Box_Select_Field(
+				'post_author' => new LP_Meta_Box_Select_Field(
 					esc_html__( 'Author', 'learnpress' ),
 					'',
 					$author,
@@ -305,7 +313,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 						'options'           => $options,
 						'style'             => 'min-width:200px;',
 						'tom_select'        => true,
-						'custom_attributes' => [ 'data-struct' => htmlentities2( json_encode( $data_struct ) ) ]
+						'custom_attributes' => [ 'data-struct' => htmlentities2( json_encode( $data_struct ) ) ],
 					)
 				),
 			)
@@ -456,7 +464,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 							?>
 							<?php if ( isset( $tab_content['content'] ) ) { ?>
 								<div id="<?php echo esc_attr( $tab_content['target'] ); ?>"
-									 class="lp-meta-box-course-panels">
+									class="lp-meta-box-course-panels">
 									<?php
 									do_action( 'learnpress/course-settings/before-' . $key );
 

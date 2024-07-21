@@ -63,6 +63,10 @@ class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
 		$field_attributes['name']  = $field['multiple'] ? $field['name'] . '[]' : $field['name'];
 		$field_attributes['class'] = $field['class'];
 
+		// if ( $field['multiple'] ) {
+		// 	$field_attributes['multiple'] = true;
+		// }
+
 		if ( $field['tom_select'] ) {
 			$field_attributes['class'] .= ' lp-tom-select';
 			if ( ! empty( $field['ts-remove-button'] ) ) {
@@ -70,10 +74,7 @@ class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
 			}
 		} elseif ( $field['multiple'] ) {
 			$field['wrapper_class']       = 'lp-select-2';
-			$field_attributes['multiple'] = true;
 		}
-
-		$field_attributes['data-saved'] = htmlentities2( json_encode( $meta ) );
 
 		$tooltip     = ! empty( $field['description'] ) && false !== $field['desc_tip'] ? $field['description'] : '';
 		$description = ! empty( $field['description'] ) && false === $field['desc_tip'] ? $field['description'] : '';
