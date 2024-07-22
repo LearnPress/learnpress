@@ -35,12 +35,12 @@ if ( ! function_exists( 'LP_Install' ) ) {
 		);
 
 		protected function __construct() {
+			$this->lp_db = LP_Database::getInstance();
 			// Only run on backend.
 			if ( ! is_admin() ) {
 				return;
 			}
 			@set_time_limit( 0 );
-			$this->lp_db = LP_Database::getInstance();
 			// From LP v4.2.2 temporary run create table thim_cache.
 			// After a long time, will remove this code. Only run create table when activate plugin LP.
 			if ( ! LP_Settings::is_created_tb_thim_cache() ) {
