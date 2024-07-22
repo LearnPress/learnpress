@@ -97,6 +97,9 @@ $user_ids     = $order->get_user_id();
 					$data_struct = [
 						'urlApi'      => get_rest_url( null, 'lp/v1/admin/tools/search-user' ),
 						'currentIds'  => $user_ids,
+						'dataSendApi' => [
+							'current_ids' => $user_ids,
+						],
 						'dataType'    => 'users',
 						'keyGetValue' => [
 							'value'      => 'ID',

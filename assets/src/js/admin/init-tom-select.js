@@ -58,10 +58,8 @@ const handleResponse = ( response, tomSelectEl, dataStruct, fetchAPI, customOpti
 			},
 		},
 		onChange: ( data ) => {
-			if ( tomSelectEl.hasAttribute( 'multiple' ) ) {
-				tomSelectEl.value = data.join( ',' );
-			} else {
-				tomSelectEl.value = data;
+			if ( data.length < 1 ) {
+				tomSelectEl.value = '';
 			}
 		},
 		...customOptions,
@@ -69,6 +67,7 @@ const handleResponse = ( response, tomSelectEl, dataStruct, fetchAPI, customOpti
 	};
 
 	if ( null != tomSelectEl.tomSelectInstance ) {
+		tomSelectEl.tomSelectInstance.addOptions( options );
 		return options;
 	}
 
@@ -161,9 +160,18 @@ const searchUserOnListPost = () => {
 	}
 
 	const createSelectUserHtml = () => {
+		let defaultId = '';
+		const authorIdFilter = lpDataAdmin.urlParams.author;
+		if ( authorIdFilter ) {
+			defaultId = authorIdFilter;
+		}
 		const dataStruct = {
 			urlApi: Api.admin.apiSearchUsers,
 			dataType: 'users',
+			currentIds: defaultId,
+			dataSendApi: {
+				currentIds: defaultId,
+			},
 			keyGetValue: {
 				value: 'ID',
 				text: '{{display_name}} ({{ID}} - {{user_email}})',
@@ -182,7 +190,11 @@ const searchUserOnListPost = () => {
 
 		const htmlSelectUser = `<select data-struct='${ dataStructJson }' style="" id="author" name="author" class="select lp-tom-select"></select>`;
 
-		elSearchPost.insertAdjacentHTML( 'afterend', htmlSelectUser );
+		const elInputSearch = elSearchPost.querySelector( 'input[name="s"]' );
+		if ( elInputSearch ) {
+			elInputSearch.insertAdjacentHTML( 'afterend', htmlSelectUser );
+		}
+
 		// Remove input hide default of WP.
 		const elInputAuthor = elPostFilter.querySelector( 'input[name="author"]' );
 		if ( elInputAuthor ) {
