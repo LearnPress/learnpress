@@ -3,25 +3,8 @@
  * @author  ThimPress
  * @package LearnPress/Admin/Views
  * @since 4.2.5.6
- * @version 1.0.0
+ * @version 1.0.1
  */
-
-$data_struct_user = [
-	'urlApi'      => get_rest_url( null, 'lp/v1/admin/tools/search-user' ),
-	'dataType'    => 'users',
-	'keyGetValue' => [
-		'value'      => 'ID',
-		'text'       => '{{display_name}} ({{ID}} - {{user_email}})',
-		'key_render' => [
-			'display_name' => 'display_name',
-			'user_email'   => 'user_email',
-			'ID'           => 'ID',
-		],
-	],
-	'setting'     => [
-		'placeholder' => esc_html__( 'Choose User', 'learnpress' ),
-	],
-];
 
 $data_struct_course = [
 	'urlApi'      => get_rest_url( null, 'lp/v1/admin/tools/search-course' ),
@@ -38,8 +21,7 @@ $data_struct_course = [
 		'placeholder' => esc_html__( 'Choose Course', 'learnpress' ),
 	],
 ];
-
-$assgin_course = new LP_Meta_Box_Select_Field(
+$assign_course      = new LP_Meta_Box_Select_Field(
 	esc_html__( 'Choose Course', 'learnpress' ),
 	[],
 	'',
@@ -51,10 +33,25 @@ $assgin_course = new LP_Meta_Box_Select_Field(
 		'custom_attributes' => [ 'data-struct' => htmlentities2( json_encode( $data_struct_course ) ) ],
 	]
 );
+$assign_course->id  = 'course_ids';
 
-$assgin_course->id = 'course_ids';
-
-$assgin_user     = new LP_Meta_Box_Select_Field(
+$data_struct_user = [
+	'urlApi'      => get_rest_url( null, 'lp/v1/admin/tools/search-user' ),
+	'dataType'    => 'users',
+	'keyGetValue' => [
+		'value'      => 'ID',
+		'text'       => '{{display_name}}({{ID}}) - {{user_email}}',
+		'key_render' => [
+			'display_name' => 'display_name',
+			'user_email'   => 'user_email',
+			'ID'           => 'ID',
+		],
+	],
+	'setting'     => [
+		'placeholder' => esc_html__( 'Choose User', 'learnpress' ),
+	],
+];
+$assign_user      = new LP_Meta_Box_Select_Field(
 	esc_html__( 'Chose User', 'learnpress' ),
 	[],
 	'',
@@ -66,8 +63,7 @@ $assgin_user     = new LP_Meta_Box_Select_Field(
 		'custom_attributes' => [ 'data-struct' => htmlentities2( json_encode( $data_struct_user ) ) ],
 	]
 );
-$assgin_user->id = 'user_ids';
-
+$assign_user->id  = 'user_ids';
 ?>
 <div id="learn-press-assign-course" class="card">
 	<h2><?php _e( 'Assign Course', 'learnpress' ); ?></h2>
@@ -82,11 +78,11 @@ $assgin_user->id = 'user_ids';
 			<fieldset class="lp-assign-course__options">
 				<ul>
 					<li>
-						<?php $assgin_course->output( '' ); ?>
+						<?php $assign_course->output( 0 ); ?>
 					</li>
 					<li>
 						<div class="assign-to-user">
-							<?php $assgin_user->output( '' ); ?>
+							<?php $assign_user->output( 0 ); ?>
 						</div>
 					</li>
 				</ul>
