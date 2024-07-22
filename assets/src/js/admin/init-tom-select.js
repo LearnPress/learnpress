@@ -6,17 +6,23 @@ import { AdminUtilsFunctions, Api, Utils } from './utils-admin.js';
  * @param {*} response
  * @param {*} tomSelectEl
  * @param {*} dataType
+ * @param     dataStruct
+ * @param     fetchAPI
  * @param {*} callBack
  * @param     customOptions
  * @return
  */
 const handleResponse = ( response, tomSelectEl, dataStruct, fetchAPI, customOptions = {}, callBack ) => {
-	if ( ! response || ! tomSelectEl || ! callBack ) {
+	if ( ! response || ! tomSelectEl || ! dataStruct || ! fetchAPI || ! callBack ) {
 		return;
 	}
 
 	//Function format render data
 	const getTextOption = ( data ) => {
+		if ( ! dataStruct.keyGetValue?.text || ! dataStruct.keyGetValue.key_render ) {
+			return;
+		}
+
 		let text = dataStruct.keyGetValue.text;
 		for ( const [ key, value ] of Object.entries( dataStruct.keyGetValue.key_render ) ) {
 			text = text.replace( new RegExp( `{{${ value }}}`, 'g' ), data[ value ] );
@@ -42,7 +48,7 @@ const handleResponse = ( response, tomSelectEl, dataStruct, fetchAPI, customOpti
 		render: {
 			item( data, escape ) {
 				if ( tomSelectEl.hasAttribute( 'multiple' ) ) {
-					return `<li data-id="${ data.value }"><div class="item">${ data.text } multiple</div>
+					return `<li data-id="${ data.value }"><div class="item">${ data.text }</div>
 					<input type="hidden" name="${ tomSelectEl.getAttribute( 'name' ) }" value="${ data.value }">
 					</li>`;
 				}
@@ -160,29 +166,7 @@ const searchUserOnListPost = () => {
 			elInputAuthor.remove();
 		}
 	};
-
-	const tomSearchUser = () => {
-		let defaultId;
-		const selectAuthor = document.querySelector( `select[name="author"]` );
-		if ( ! selectAuthor ) {
-			return;
-		}
-
-		const authorIdFilter = lpDataAdmin.urlParams.author;
-		if ( authorIdFilter ) {
-			defaultId = authorIdFilter;
-		}
-
-		const customOptions = {
-			items: defaultId,
-			placeholder: 'Chose user',
-		};
-
-		initTomSelect( selectAuthor, customOptions, { current_ids: defaultId } );
-	};
-
 	createSelectUserHtml();
-	// tomSearchUser();
 };
 
 // Init Tom-select author in course
@@ -259,8 +243,6 @@ const defaultInitTomSelect = ( registered = [] ) => {
 
 export {
 	initTomSelect,
-	selectAuthorCourse,
 	searchUserOnListPost,
-	selectCoInstructor,
 	defaultInitTomSelect,
 };
