@@ -26,15 +26,14 @@ $data_struct_user = [
 ];
 
 $data_struct_course = [
-	'urlApi'      => get_rest_url( null, 'lp/v1/admin/tools/search-user' ),
-	'dataType'    => 'users',
+	'urlApi'      => get_rest_url( null, 'lp/v1/admin/tools/search-course' ),
+	'dataType'    => 'courses',
 	'keyGetValue' => [
 		'value'      => 'ID',
-		'text'       => '{{display_name}} ({{ID}} - {{user_email}})',
+		'text'       => '{{post_title}} (#{{ID}})',
 		'key_render' => [
-			'display_name' => 'display_name',
-			'user_email'   => 'user_email',
-			'ID'           => 'ID',
+			'post_title' => 'post_title',
+			'ID'         => 'ID',
 		],
 	],
 	'setting'     => [
