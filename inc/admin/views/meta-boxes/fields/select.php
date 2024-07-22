@@ -62,6 +62,9 @@ class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
 		$field_attributes['style'] = $field['style'];
 		$field_attributes['id']    = $field['id'];
 		$field_attributes['name']  = $field['multiple'] ? $field['name'] . '[]' : $field['name'];
+		if ( isset( $field['name_no_bracket'] ) ) {
+			$field_attributes['name'] = $field['name'];
+		}
 		$field_attributes['class'] = $field['class'];
 
 		if ( $field['multiple'] ) {

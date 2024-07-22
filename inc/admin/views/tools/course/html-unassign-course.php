@@ -21,7 +21,6 @@ $data_struct_user = [
 	],
 	'setting'     => [
 		'placeholder' => esc_html__( 'Choose User', 'learnpress' ),
-		'maxItems'    => null,
 	],
 ];
 
@@ -38,7 +37,6 @@ $data_struct_course = [
 	],
 	'setting'     => [
 		'placeholder' => esc_html__( 'Choose Course', 'learnpress' ),
-		'maxItems'    => null,
 	],
 ];
 
@@ -49,8 +47,10 @@ $unassgin_course     = new LP_Meta_Box_Select_Field(
 	[
 		'options'           => array(),
 		'tom_select'        => true,
+		'multiple'          => true,
+		'name_no_bracket'   => true,
 		'custom_attributes' => [ 'data-struct' => htmlentities2( json_encode( $data_struct_course ) ) ],
-	],
+	]
 );
 $unassgin_course->id = 'course_ids';
 
@@ -62,6 +62,8 @@ $unassgin_user     = new LP_Meta_Box_Select_Field(
 	[
 		'options'           => array(),
 		'tom_select'        => true,
+		'multiple'          => true,
+		'name_no_bracket'   => true,
 		'custom_attributes' => [ 'data-struct' => htmlentities2( json_encode( $data_struct_user ) ) ],
 	]
 );
