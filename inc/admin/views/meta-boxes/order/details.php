@@ -96,10 +96,6 @@ $user_ids     = $order->get_user_id();
 				if ( LP_ORDER_PENDING === $order->get_status() ) {
 					$data_struct = [
 						'urlApi'      => get_rest_url( null, 'lp/v1/admin/tools/search-user' ),
-						'currentIds'  => $user_ids,
-						'dataSendApi' => [
-							'current_ids' => implode( ',', $user_ids ),
-						],
 						'dataType'    => 'users',
 						'keyGetValue' => [
 							'value'      => 'ID',
@@ -122,6 +118,7 @@ $user_ids     = $order->get_user_id();
 							'tom_select'        => true,
 							'multiple'          => true,
 							'custom_attributes' => [ 'data-struct' => htmlentities2( json_encode( $data_struct ) ) ],
+							'data-saved'		=> $user_ids
 						)
 					);
 

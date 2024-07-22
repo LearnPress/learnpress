@@ -284,10 +284,8 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 			'urlApi'      => get_rest_url( null, 'lp/v1/admin/tools/search-user' ),
 			'dataSendApi' => [
 				'role_in'     => ADMIN_ROLE . ',' . LP_TEACHER_ROLE,
-				'current_ids' => $author,
 			],
 			'dataType'    => 'users',
-			'currentIds'  => $author,
 			'keyGetValue' => [
 				'value'      => 'ID',
 				'text'       => '{{display_name}} ({{ID}} - {{user_email}})',

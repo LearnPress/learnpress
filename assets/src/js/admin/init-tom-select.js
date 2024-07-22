@@ -31,7 +31,7 @@ const handleResponse = ( response, tomSelectEl, dataStruct, fetchAPI, customOpti
 	};
 
 	// Get default item tom-select
-	const defaultIds = dataStruct.currentIds || 0;
+	const defaultIds = tomSelectEl.dataset?.saved ? JSON.parse( tomSelectEl.dataset.saved ) : 0;
 	let options = [];
 
 	// Format response data set option tom-select
@@ -88,6 +88,7 @@ const initTomSelect = ( tomSelectEl, customOptions = {}, customParams = {} ) => 
 		return;
 	}
 
+	const defaultIds = tomSelectEl.dataset?.saved ? JSON.parse( tomSelectEl.dataset.saved ) : 0;
 	const dataStruct = tomSelectEl?.dataset?.struct ? JSON.parse( tomSelectEl.dataset.struct ) : '';
 
 	if ( ! dataStruct ) {
@@ -120,7 +121,7 @@ const initTomSelect = ( tomSelectEl, customOptions = {}, customParams = {} ) => 
 
 	const fetchFunction = ( keySearch = '', customParams, callback ) => {
 		const url = urlApi;
-		const dataSend = { ...dataSendApi, ...customParams };
+		const dataSend = { current_ids: defaultIds, ...dataSendApi, ...customParams };
 		dataSend.search = keySearch;
 		const params = {
 			headers: {
@@ -163,15 +164,11 @@ const searchUserOnListPost = () => {
 		let defaultId = '';
 		const authorIdFilter = lpDataAdmin.urlParams.author;
 		if ( authorIdFilter ) {
-			defaultId = authorIdFilter;
+			defaultId = JSON.stringify( authorIdFilter );
 		}
 		const dataStruct = {
 			urlApi: Api.admin.apiSearchUsers,
 			dataType: 'users',
-			currentIds: defaultId,
-			dataSendApi: {
-				currentIds: defaultId,
-			},
 			keyGetValue: {
 				value: 'ID',
 				text: '{{display_name}} ({{ID}} - {{user_email}})',
@@ -188,7 +185,7 @@ const searchUserOnListPost = () => {
 
 		const dataStructJson = JSON.stringify( dataStruct );
 
-		const htmlSelectUser = `<select data-struct='${ dataStructJson }' style="" id="author" name="author" class="select lp-tom-select"></select>`;
+		const htmlSelectUser = `<select data-struct='${ dataStructJson }' data-saved='${ defaultId }' style="" id="author" name="author" class="select lp-tom-select"></select>`;
 
 		const elInputSearch = elSearchPost.querySelector( 'input[name="s"]' );
 		if ( elInputSearch ) {
