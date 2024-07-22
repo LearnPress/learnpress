@@ -5,6 +5,67 @@
  * @since 4.2.5.6
  * @version 1.0.0
  */
+
+$data_struct_user = [
+	'urlApi'      => get_rest_url( null, 'lp/v1/admin/tools/search-user' ),
+	'dataType'    => 'users',
+	'keyGetValue' => [
+		'value'      => 'ID',
+		'text'       => '{{display_name}} ({{ID}} - {{user_email}})',
+		'key_render' => [
+			'display_name' => 'display_name',
+			'user_email'   => 'user_email',
+			'ID'           => 'ID',
+		],
+	],
+	'setting'     => [
+		'placeholder' => esc_html__( 'Choose User', 'learnpress' ),
+	],
+];
+
+$data_struct_course = [
+	'urlApi'      => get_rest_url( null, 'lp/v1/admin/tools/search-course' ),
+	'dataType'    => 'courses',
+	'keyGetValue' => [
+		'value'      => 'ID',
+		'text'       => '{{post_title}} (#{{ID}})',
+		'key_render' => [
+			'post_title' => 'post_title',
+			'ID'         => 'ID',
+		],
+	],
+	'setting'     => [
+		'placeholder' => esc_html__( 'Choose Course', 'learnpress' ),
+	],
+];
+
+$assgin_course = new LP_Meta_Box_Select_Field(
+	esc_html__( 'Choose Course', 'learnpress' ),
+	[],
+	'',
+	[
+		'options'           => array(),
+		'tom_select'        => true,
+		'multiple'          => true,
+		'custom_attributes' => [ 'data-struct' => htmlentities2( json_encode( $data_struct_course ) ) ],
+	]
+);
+
+$assgin_course->id = 'course_ids';
+
+$assgin_user     = new LP_Meta_Box_Select_Field(
+	esc_html__( 'Chose User', 'learnpress' ),
+	[],
+	'',
+	[
+		'options'           => array(),
+		'tom_select'        => true,
+		'multiple'          => true,
+		'custom_attributes' => [ 'data-struct' => htmlentities2( json_encode( $data_struct_user ) ) ],
+	]
+);
+$assgin_user->id = 'user_ids';
+
 ?>
 <div id="learn-press-assign-course" class="card">
 	<h2><?php _e( 'Assign Course', 'learnpress' ); ?></h2>
@@ -19,21 +80,11 @@
 			<fieldset class="lp-assign-course__options">
 				<ul>
 					<li>
-						<label>
-							<?php _e( 'Choose Course:', 'learnpress' ); ?>
-							<select name="course_ids" class="lp-tom-select" style="width: 100%;" multiple  data-type='courses'>
-								<option value=""><?php _e( 'Search courses', 'learnpress' ); ?></option>
-							</select>
-						</label>
+						<?php $assgin_course->output( '' ); ?>
 					</li>
 					<li>
 						<div class="assign-to-user">
-							<label>
-								<?php _e( 'Choose User:', 'learnpress' ); ?>
-								<select name="user_ids" class="lp-tom-select" multiple style="width:100%">
-									<option value=""><?php _e( 'Search users', 'learnpress' ); ?></option>
-								</select>
-							</label>
+							<?php $assgin_user->output( '' ); ?>
 						</div>
 					</li>
 				</ul>

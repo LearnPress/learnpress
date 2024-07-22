@@ -95,7 +95,18 @@ const initTomSelect = ( tomSelectEl, customOptions = {}, customParams = {} ) => 
 		return;
 	}
 
-	const elInput = document.querySelector( 'input[name="' + tomSelectEl.getAttribute( 'name' ) + '"]' );
+	const getParentElByTagName = ( tag, el ) => {
+		const newEl = el.parentElement;
+
+		if ( newEl.tagName.toLowerCase() === tag ) {
+			return newEl;
+		}
+
+		return getParentElByTagName( tag, newEl );
+	};
+
+	const formParent = getParentElByTagName( 'form', tomSelectEl );
+	const elInput = formParent.querySelector( 'input[name="' + tomSelectEl.getAttribute( 'name' ) + '"]' );
 	if ( elInput ) {
 		elInput.remove();
 	}
@@ -149,17 +160,29 @@ const searchUserOnListPost = () => {
 		elSearchPost = elPostFilter.querySelector( '.search-box' );
 	}
 
-	let createSelectUser;
 	const createSelectUserHtml = () => {
-		createSelectUser = document.createElement( 'select' );
-		createSelectUser.setAttribute( 'name', 'author' );
-		createSelectUser.setAttribute( 'class', 'lp-tom-select' );
-		const elInputSearch = elSearchPost.querySelector( 'input[name="author"]' );
-		createSelectUser.style.display = 'none';
-		if ( elInputSearch ) {
-			elInputSearch.insertAdjacentElement( 'afterend', createSelectUser );
-		}
+		const dataStruct = {
+			urlApi: Api.admin.apiSearchUsers,
+			dataType: 'users',
+			keyGetValue: {
+				value: 'ID',
+				text: '{{display_name}} ({{ID}} - {{user_email}})',
+				key_render: {
+					display_name: 'display_name',
+					user_email: 'user_email',
+					ID: 'ID',
+				},
+			},
+			setting: {
+				placeholder: 'Choose User',
+			},
+		};
 
+		const dataStructJson = JSON.stringify( dataStruct );
+
+		const htmlSelectUser = `<select data-struct='${ dataStructJson }' style="" id="author" name="author" class="select lp-tom-select"></select>`;
+
+		elSearchPost.insertAdjacentHTML( 'afterend', htmlSelectUser );
 		// Remove input hide default of WP.
 		const elInputAuthor = elPostFilter.querySelector( 'input[name="author"]' );
 		if ( elInputAuthor ) {
@@ -167,63 +190,6 @@ const searchUserOnListPost = () => {
 		}
 	};
 	createSelectUserHtml();
-};
-
-// Init Tom-select author in course
-const selectAuthorCourse = () => {
-	const selectAuthorCourseEl = document.querySelector(
-		'select#post_author',
-	);
-
-	if ( ! selectAuthorCourseEl ) {
-		return;
-	}
-
-	const roleSearch = 'administrator,lp_teacher';
-	const authorInputEl = document.querySelector( 'input[name="post_author"]' );
-	const defaultId = authorInputEl?.value ? authorInputEl.value : '';
-	const customParams = { role_in: roleSearch, current_ids: defaultId };
-	const customOptions = {
-		onItemAdd: ( data, item ) => {
-			authorInputEl.setAttribute( 'value', data );
-		},
-		onItemRemove: ( data, item ) => {
-			authorInputEl.setAttribute( 'value', defaultId );
-		},
-	};
-
-	initTomSelect( selectAuthorCourseEl, customOptions, customParams, );
-};
-
-//  Init Tom-select author co-instructor course
-const selectCoInstructor = () => {
-	const selectCoInstructorEl = document.querySelector( '[name="_lp_co_teacher[]"' );
-	const postAuthorEl = document.querySelector( '[name="post_author"]' );
-
-	if ( ! selectCoInstructorEl ) {
-		return;
-	}
-
-	const userId = postAuthorEl?.value || 0;
-	let defaultIds = selectCoInstructorEl.dataset?.saved || '';
-	if ( defaultIds.length ) {
-		defaultIds = JSON.parse( defaultIds );
-	}
-
-	const roleSearch = 'administrator,lp_teacher';
-
-	const dataSend = { role_in: roleSearch, id_not_in: userId, current_ids: defaultIds.toString() };
-
-	const customOptions = {
-		items: defaultIds,
-		onChange: ( data ) => {
-			if ( data.length < 1 ) {
-				selectCoInstructorEl.value = '';
-			}
-		},
-	};
-
-	initTomSelect( selectCoInstructorEl, customOptions, dataSend, );
 };
 
 const defaultInitTomSelect = ( registered = [] ) => {
