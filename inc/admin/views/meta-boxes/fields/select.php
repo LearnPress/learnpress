@@ -74,7 +74,11 @@ class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
 				$field_attributes['data-ts-remove-button'] = $field['ts-remove-button'];
 			}
 		} elseif ( $field['multiple'] ) {
-			$field['wrapper_class']       = 'lp-select-2';
+			$field['wrapper_class'] = 'lp-select-2';
+		}
+
+		if ( ! isset( $field['data-saved'] ) ) {
+			$field_attributes['data-saved'] = htmlentities2( json_encode( $meta ) );
 		}
 
 		$tooltip     = ! empty( $field['description'] ) && false !== $field['desc_tip'] ? $field['description'] : '';
