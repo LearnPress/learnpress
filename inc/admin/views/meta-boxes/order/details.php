@@ -94,12 +94,37 @@ $user_ids     = $order->get_user_id();
 				<label><?php esc_html_e( 'Customers:', 'learnpress' ); ?></label>
 				<?php
 				if ( LP_ORDER_PENDING === $order->get_status() ) {
-					?>
-					<select id="list-users" name="order-customer[]" class="advanced-list lp-tom-select"
-							data-saved="<?php echo esc_attr( json_encode( $user_ids ) ); ?>" multiple>
-						<option value=""><?php _e( 'Choose User:', 'learnpress' ); ?></option>
-					</select>
-					<?php
+					$data_struct = [
+						'urlApi'      => get_rest_url( null, 'lp/v1/admin/tools/search-user' ),
+						'currentIds'  => $user_ids,
+						'dataType'    => 'users',
+						'keyGetValue' => [
+							'value'      => 'ID',
+							'text'       => '{{display_name}} ({{ID}} - {{user_email}})',
+							'key_render' => [
+								'display_name' => 'display_name',
+								'user_email'   => 'user_email',
+								'ID'           => 'ID',
+							],
+						],
+					];
+
+					$select_field = new LP_Meta_Box_Select_Field(
+						'Customers',
+						'',
+						'',
+						array(
+							'options'           => array(),
+							'style'             => 'min-width:200px;',
+							'tom_select'        => true,
+							'multiple'          => true,
+							'custom_attributes' => [ 'data-struct' => htmlentities2( json_encode( $data_struct ) ) ],
+						)
+					);
+
+					$select_field->id = 'order-customer';
+
+					$select_field->output( $order->get_id() );
 				} else {
 					?>
 					<div class="advanced-list">

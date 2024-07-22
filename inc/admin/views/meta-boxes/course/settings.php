@@ -11,7 +11,14 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 	public $post_type = LP_COURSE_CPT;
 
 	public function add_meta_box() {
-		add_meta_box( 'course-settings', esc_html__( 'Course Settings', 'learnpress' ), array( $this, 'output' ), $this->post_type, 'normal', 'high' );
+		add_meta_box(
+			'course-settings',
+			esc_html__( 'Course Settings', 'learnpress' ),
+			array( $this, 'output' ),
+			$this->post_type,
+			'normal',
+			'high'
+		);
 	}
 
 	public function metabox( $post_id ) {
@@ -196,10 +203,10 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 	 *
 	 * @param $post_id
 	 *
-	 * @author tungnx
+	 * @return array
 	 * @since 4.1.5
 	 * @version 1.0.0
-	 * @return array
+	 * @author tungnx
 	 */
 	public function lp_price( $post_id ): array {
 		$key_exists    = LP_Database::getInstance()->check_key_postmeta_exists( $post_id, '_lp_regular_price' );
@@ -273,19 +280,41 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 
 		$options = array();
 
+		$data_struct = [
+			'urlApi'      => get_rest_url( null, 'lp/v1/admin/tools/search-user' ),
+			'dataSendApi' => [
+				'role_in'     => ADMIN_ROLE . ',' . LP_TEACHER_ROLE,
+				'current_ids' => $author,
+			],
+			'dataType'    => 'users',
+			'currentIds'  => $author,
+			'keyGetValue' => [
+				'value'      => 'ID',
+				'text'       => '{{display_name}} ({{ID}} - {{user_email}})',
+				'key_render' => [
+					'display_name' => 'display_name',
+					'user_email'   => 'user_email',
+					'ID'           => 'ID',
+				],
+			],
+			'setting'     => [
+				'plugins' => array(),
+			],
+		];
+
 		return apply_filters(
 			'lp/course/meta-box/fields/author',
 			array(
-				'_lp_course_author' => new LP_Meta_Box_Select_Field(
+				'post_author' => new LP_Meta_Box_Select_Field(
 					esc_html__( 'Author', 'learnpress' ),
 					'',
 					$author,
 					array(
-						'options'    => $options,
-						'style'      => 'min-width:200px;',
-						'tom_select' => true,
-						'unremoved'  => true,
-					),
+						'options'           => $options,
+						'style'             => 'min-width:200px;',
+						'tom_select'        => true,
+						'custom_attributes' => [ 'data-struct' => htmlentities2( json_encode( $data_struct ) ) ],
+					)
 				),
 			)
 		);
@@ -434,7 +463,8 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 							}
 							?>
 							<?php if ( isset( $tab_content['content'] ) ) { ?>
-								<div id="<?php echo esc_attr( $tab_content['target'] ); ?>" class="lp-meta-box-course-panels">
+								<div id="<?php echo esc_attr( $tab_content['target'] ); ?>"
+									class="lp-meta-box-course-panels">
 									<?php
 									do_action( 'learnpress/course-settings/before-' . $key );
 

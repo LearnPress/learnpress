@@ -1,4 +1,4 @@
-import { AdminUtilsFunctions } from './utils-admin.js';
+import { AdminUtilsFunctions, Api, Utils } from './utils-admin.js';
 
 // Process data from api and add to option tom-select
 /**
@@ -8,33 +8,31 @@ import { AdminUtilsFunctions } from './utils-admin.js';
  * @param {*} dataType
  * @param {*} callBack
  * @param     customOptions
- * @param     customParams
  * @return
  */
-
-const handleResponse = ( response, tomSelectEl, dataType = 'users', customOptions = {}, customParams = {}, callBack ) => {
+const handleResponse = ( response, tomSelectEl, dataStruct, fetchAPI, customOptions = {}, callBack ) => {
 	if ( ! response || ! tomSelectEl || ! callBack ) {
 		return;
 	}
 
+	//Function format render data
+	const getTextOption = ( data ) => {
+		let text = dataStruct.keyGetValue.text;
+		for ( const [ key, value ] of Object.entries( dataStruct.keyGetValue.key_render ) ) {
+			text = text.replace( new RegExp( `{{${ value }}}`, 'g' ), data[ value ] );
+		}
+		return text;
+	};
+
 	// Get default item tom-select
-	let defaultIds = tomSelectEl.dataset.saved || 0;
-	if ( defaultIds.length ) {
-		defaultIds = JSON.parse( defaultIds );
-	}
-
-	const plugins = tomSelectEl.dataset.unremoved ? {} : { remove_button: { title: 'Remove item' }	};
-
+	const defaultIds = dataStruct.currentIds || 0;
 	let options = [];
-	const fetchFunction = response.data.users ? AdminUtilsFunctions.fetchUsers : AdminUtilsFunctions.fetchCourses;
 
 	// Format response data set option tom-select
-	if ( response.data[ dataType ].length > 0 ) {
-		options = response.data[ dataType ].map( ( item ) => ( {
-			value: item.ID,
-			text: dataType === 'users'
-				? `${ item.display_name } (#${ item.ID }) - ${ item.user_email }`
-				: `${ item.post_title } (#${ item.ID })`,
+	if ( response.data[ dataStruct.dataType ].length > 0 ) {
+		options = response.data[ dataStruct.dataType ].map( ( item ) => ( {
+			value: item[ dataStruct.keyGetValue.value ],
+			text: getTextOption( item ),
 		} ) );
 	}
 
@@ -43,18 +41,25 @@ const handleResponse = ( response, tomSelectEl, dataType = 'users', customOption
 		items: defaultIds,
 		render: {
 			item( data, escape ) {
-				return `<li data-id="${ data.value }"><div class="item">${ data.text }</div></li>`;
+				if ( tomSelectEl.hasAttribute( 'multiple' ) ) {
+					return `<li data-id="${ data.value }"><div class="item">${ data.text } multiple</div>
+					<input type="hidden" name="${ tomSelectEl.getAttribute( 'name' ) }" value="${ data.value }">
+					</li>`;
+				}
+				return `<li data-id="${ data.value }">
+				<div class="item">${ data.text }</div>
+				</li>`;
 			},
 		},
-		plugins,
+		onChange: ( data ) => {
+			if ( tomSelectEl.hasAttribute( 'multiple' ) ) {
+				tomSelectEl.value = data.join( ',' );
+			} else {
+				tomSelectEl.value = data;
+			}
+		},
 		...customOptions,
 		options,
-	};
-
-	// Set params api
-	const params = {
-		current_ids: defaultIds,
-		...customParams,
 	};
 
 	if ( null != tomSelectEl.tomSelectInstance ) {
@@ -64,8 +69,8 @@ const handleResponse = ( response, tomSelectEl, dataType = 'users', customOption
 	tomSelectEl.tomSelectInstance = AdminUtilsFunctions.buildTomSelect(
 		tomSelectEl,
 		settingOption,
-		fetchFunction,
-		params,
+		fetchAPI,
+		{},
 		callBack
 	);
 
@@ -74,13 +79,47 @@ const handleResponse = ( response, tomSelectEl, dataType = 'users', customOption
 
 // Init Tom-select
 const initTomSelect = ( tomSelectEl, customOptions = {}, customParams = {} ) => {
-	const dataType = tomSelectEl.dataset.type || 'users';
+	if ( ! tomSelectEl ) {
+		return;
+	}
 
-	const fetchFunction = dataType === 'users' ? AdminUtilsFunctions.fetchUsers : AdminUtilsFunctions.fetchCourses;
+	const dataStruct = tomSelectEl?.dataset?.struct ? JSON.parse( tomSelectEl.dataset.struct ) : '';
+
+	if ( ! dataStruct ) {
+		return;
+	}
+
+	const elInput = document.querySelector( 'input[name="' + tomSelectEl.getAttribute( 'name' ) + '"]' );
+	if ( elInput ) {
+		elInput.remove();
+	}
+
+	const dataSendApi = dataStruct.dataSendApi;
+	const urlApi = dataStruct.urlApi;
+
+	const settingTomSelect = {
+		...dataStruct.setting,
+		...customOptions,
+	};
+
+	const fetchFunction = ( keySearch = '', customParams, callback ) => {
+		const url = urlApi;
+		const dataSend = { ...dataSendApi, ...customParams };
+		dataSend.search = keySearch;
+		const params = {
+			headers: {
+				'Content-Type': 'application/json',
+				'X-WP-Nonce': lpDataAdmin.nonce,
+			},
+			method: 'POST',
+			body: JSON.stringify( dataSend ),
+		};
+		Utils.lpFetchAPI( url, params, callback );
+	};
 
 	const callBackApi = {
 		success: ( response ) => {
-			handleResponse( response, tomSelectEl, dataType, customOptions, customParams, callBackApi );
+			handleResponse( response, tomSelectEl, dataStruct, fetchFunction, settingTomSelect, callBackApi );
 		},
 	};
 
@@ -108,7 +147,8 @@ const searchUserOnListPost = () => {
 	const createSelectUserHtml = () => {
 		createSelectUser = document.createElement( 'select' );
 		createSelectUser.setAttribute( 'name', 'author' );
-		const elInputSearch = elSearchPost.querySelector( 'input[name="s"]' );
+		createSelectUser.setAttribute( 'class', 'lp-tom-select' );
+		const elInputSearch = elSearchPost.querySelector( 'input[name="author"]' );
 		createSelectUser.style.display = 'none';
 		if ( elInputSearch ) {
 			elInputSearch.insertAdjacentElement( 'afterend', createSelectUser );
@@ -142,13 +182,13 @@ const searchUserOnListPost = () => {
 	};
 
 	createSelectUserHtml();
-	tomSearchUser();
+	// tomSearchUser();
 };
 
 // Init Tom-select author in course
 const selectAuthorCourse = () => {
 	const selectAuthorCourseEl = document.querySelector(
-		'select#_lp_course_author',
+		'select#post_author',
 	);
 
 	if ( ! selectAuthorCourseEl ) {
