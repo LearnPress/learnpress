@@ -279,16 +279,32 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 		$author = $post ? $post->post_author : get_current_user_id();
 
 		$options = array();
+		// Code old only use for addon Frontend Editor v4.0.4
+		if ( class_exists( 'LP_Addon_Frontend_Editor_Preload' )
+			&& defined( 'LP_ADDON_FRONTEND_EDITOR_VER' )
+			&& version_compare( LP_ADDON_FRONTEND_EDITOR_VER, '4.0.5', '<' ) ) {
+			$author_roles   = array( ADMIN_ROLE, LP_TEACHER_ROLE );
+			$author_roles   = apply_filters( 'learn_press_course_author_role_meta_box', $author_roles );
+			$authors        = get_users( [ 'role__in' => $author_roles ] );
+
+			/**
+			 * @var WP_User $author
+			 */
+			foreach ( $authors as $author ) {
+				$options[ $author->get( 'ID' ) ] = $author->display_name . ' (#' . $author->ID . ')';
+			}
+		}
+		// Code old only use for addon Frontend Editor v4.0.4
 
 		$data_struct = [
 			'urlApi'      => get_rest_url( null, 'lp/v1/admin/tools/search-user' ),
 			'dataSendApi' => [
-				'role_in'     => ADMIN_ROLE . ',' . LP_TEACHER_ROLE,
+				'role_in' => ADMIN_ROLE . ',' . LP_TEACHER_ROLE,
 			],
 			'dataType'    => 'users',
 			'keyGetValue' => [
 				'value'      => 'ID',
-				'text'       => '{{display_name}} ({{ID}} - {{user_email}})',
+				'text'       => '{{display_name}}(#{{ID}})',
 				'key_render' => [
 					'display_name' => 'display_name',
 					'user_email'   => 'user_email',

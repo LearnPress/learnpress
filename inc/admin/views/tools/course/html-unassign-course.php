@@ -7,25 +7,7 @@
 
 defined( 'ABSPATH' ) or die();
 
-$data_struct_user = [
-	'urlApi'      => get_rest_url( null, 'lp/v1/admin/tools/search-user' ),
-	'dataType'    => 'users',
-	'keyGetValue' => [
-		'value'      => 'ID',
-		'text'       => '{{display_name}} ({{ID}} - {{user_email}})',
-		'key_render' => [
-			'display_name' => 'display_name',
-			'user_email'   => 'user_email',
-			'ID'           => 'ID',
-		],
-	],
-	'setting'     => [
-		'placeholder' => esc_html__( 'Choose User', 'learnpress' ),
-		'maxItems'    => null,
-	],
-];
-
-$data_struct_course = [
+$data_struct_course  = [
 	'urlApi'      => get_rest_url( null, 'lp/v1/admin/tools/search-course' ),
 	'dataType'    => 'courses',
 	'keyGetValue' => [
@@ -38,34 +20,51 @@ $data_struct_course = [
 	],
 	'setting'     => [
 		'placeholder' => esc_html__( 'Choose Course', 'learnpress' ),
-		'maxItems'    => null,
 	],
 ];
-
-$unassgin_course     = new LP_Meta_Box_Select_Field(
+$unassign_course     = new LP_Meta_Box_Select_Field(
 	esc_html__( 'Choose Course', 'learnpress' ),
 	[],
 	'',
 	[
 		'options'           => array(),
 		'tom_select'        => true,
+		'multiple'          => true,
+		'name_no_bracket'   => true,
 		'custom_attributes' => [ 'data-struct' => htmlentities2( json_encode( $data_struct_course ) ) ],
-	],
+	]
 );
-$unassgin_course->id = 'course_ids';
+$unassign_course->id = 'course_ids';
 
-
-$unassgin_user     = new LP_Meta_Box_Select_Field(
+$data_struct_user  = [
+	'urlApi'      => get_rest_url( null, 'lp/v1/admin/tools/search-user' ),
+	'dataType'    => 'users',
+	'keyGetValue' => [
+		'value'      => 'ID',
+		'text'       => '{{display_name}}({{ID}}) - {{user_email}}',
+		'key_render' => [
+			'display_name' => 'display_name',
+			'user_email'   => 'user_email',
+			'ID'           => 'ID',
+		],
+	],
+	'setting'     => [
+		'placeholder' => esc_html__( 'Choose User', 'learnpress' ),
+	],
+];
+$unassign_user     = new LP_Meta_Box_Select_Field(
 	esc_html__( 'Choose User', 'learnpress' ),
 	[],
 	'',
 	[
 		'options'           => array(),
 		'tom_select'        => true,
+		'multiple'          => true,
+		'name_no_bracket'   => true,
 		'custom_attributes' => [ 'data-struct' => htmlentities2( json_encode( $data_struct_user ) ) ],
 	]
 );
-$unassgin_user->id = 'user_ids';
+$unassign_user->id = 'user_ids';
 
 ?>
 <div id="learn-press-unassigned-course" class="card">
@@ -85,11 +84,11 @@ $unassgin_user->id = 'user_ids';
 		<form id="lp-unassign-user-course-form">
 			<ul>
 				<li>
-					<?php $unassgin_course->output( '' ); ?>
+					<?php $unassign_course->output( 0 ); ?>
 				</li>
 				<li>
 					<div class="assign-to-user">
-						<?php $unassgin_user->output( '' ); ?>
+						<?php $unassign_user->output( 0 ); ?>
 					</div>
 				</li>
 			</ul>

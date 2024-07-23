@@ -47,14 +47,10 @@ const handleResponse = ( response, tomSelectEl, dataStruct, fetchAPI, customOpti
 		items: defaultIds,
 		render: {
 			item( data, escape ) {
-				if ( tomSelectEl.hasAttribute( 'multiple' ) ) {
-					return `<li data-id="${ data.value }"><div class="item">${ data.text }</div>
-					<input type="hidden" name="${ tomSelectEl.getAttribute( 'name' ) }" value="${ data.value }">
-					</li>`;
-				}
-				return `<li data-id="${ data.value }">
-				<div class="item">${ data.text }</div>
-				</li>`;
+				return `` +
+				`<li data-id="${ data.value }">` +
+				`<div class="item">${ data.text }</div>` +
+				`</li>`;
 			},
 		},
 		onChange: ( data ) => {
