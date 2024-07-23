@@ -185,7 +185,7 @@ const searchUserOnListPost = () => {
 
 		const dataStructJson = JSON.stringify( dataStruct );
 
-		const htmlSelectUser = `<select data-struct='${ dataStructJson }' data-saved='${ defaultId }' style="" id="author" name="author" class="select lp-tom-select"></select>`;
+		const htmlSelectUser = `<select data-struct='${ dataStructJson }' style='display:none;' data-saved='${ defaultId }' style="" id="author" name="author" class="select lp-tom-select"></select>`;
 
 		const elInputSearch = elSearchPost.querySelector( 'input[name="s"]' );
 		if ( elInputSearch ) {
