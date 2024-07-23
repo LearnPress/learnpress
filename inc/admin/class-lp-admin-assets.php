@@ -63,7 +63,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'select_page' => esc_html__( 'Select page', 'learnpress' ),
 				],
 				'current_screen'           => $screen ? $screen->id : '',
-				'show_search_author_field' => $html_search_author_field
+				'show_search_author_field' => empty( $html_search_author_field ) ? 0 : 1
 			]
 		);
 	}
@@ -227,7 +227,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 						'vue-libs',
 						'advanced-list',
 						'lp-modal-search-courses',
-						'lp-modal-search-users',
+						//'lp-modal-search-users',
 					),
 					array( LP_ORDER_CPT ),
 					0,
@@ -271,13 +271,13 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					1,
 					1
 				),
-				'lp-modal-search-users'             => new LP_Asset_Key(
+				/*'lp-modal-search-users'             => new LP_Asset_Key(
 					$this->url( self::$_folder_source . 'js/admin/share/modal-search-users' . self::$_min_assets . '.js' ),
 					array( 'jquery' ),
 					array( LP_ORDER_CPT ),
 					1,
 					1
-				),
+				),*/
 				'lp-tools-course-tab'               => new LP_Asset_Key(
 					$this->url( 'js/dist/admin/pages/tools' . self::$_min_assets . '.js' ),
 					array(
