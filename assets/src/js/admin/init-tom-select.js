@@ -1,16 +1,16 @@
 import { AdminUtilsFunctions, Api, Utils } from './utils-admin.js';
 
-// Process data from api and add to option tom-select
 /**
+ * Handle data response from API for tom-select
  *
  * @param {*} response
  * @param {*} tomSelectEl
- * @param {*} dataType
  * @param     dataStruct
  * @param     fetchAPI
- * @param {*} callBack
  * @param     customOptions
- * @return
+ * @param {*} callBack
+ *
+ * @return []
  */
 const handleResponse = ( response, tomSelectEl, dataStruct, fetchAPI, customOptions = {}, callBack ) => {
 	if ( ! response || ! tomSelectEl || ! dataStruct || ! fetchAPI || ! callBack ) {
@@ -48,9 +48,9 @@ const handleResponse = ( response, tomSelectEl, dataStruct, fetchAPI, customOpti
 		render: {
 			item( data, escape ) {
 				return `` +
-				`<li data-id="${ data.value }">` +
-				`<div class="item">${ data.text }</div>` +
-				`</li>`;
+					`<li data-id="${ data.value }">
+						<div class="item">${ data.text }</div>
+					</li>`;
 			},
 		},
 		onChange: ( data ) => {
@@ -181,7 +181,10 @@ const searchUserOnListPost = () => {
 
 		const dataStructJson = JSON.stringify( dataStruct );
 
-		const htmlSelectUser = `<select data-struct='${ dataStructJson }' style='display:none;' data-saved='${ defaultId }' style="" id="author" name="author" class="select lp-tom-select"></select>`;
+		const htmlSelectUser = `` +
+			`<select data-struct='${ dataStructJson }' style='display:none;' data-saved='${ defaultId }'
+					id="author" name="author" class="select lp-tom-select">` +
+			`</select>`;
 
 		const elInputSearch = elSearchPost.querySelector( 'input[name="s"]' );
 		if ( elInputSearch ) {
