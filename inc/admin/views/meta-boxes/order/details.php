@@ -106,10 +106,13 @@ $user_ids     = $order->get_user_id();
 								'ID'           => 'ID',
 							],
 						],
+						'setting'     => [
+							'placeholder' => esc_html__( 'Choose User', 'learnpress' ),
+						],
 					];
 
 					$select_field = new LP_Meta_Box_Select_Field(
-						'Customers',
+						'',
 						'',
 						'',
 						array(
@@ -118,7 +121,7 @@ $user_ids     = $order->get_user_id();
 							'tom_select'        => true,
 							'multiple'          => true,
 							'custom_attributes' => [ 'data-struct' => htmlentities2( json_encode( $data_struct ) ) ],
-							'data-saved'		=> $user_ids
+							'data-saved'        => $user_ids,
 						)
 					);
 
