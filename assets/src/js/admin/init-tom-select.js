@@ -167,7 +167,7 @@ const searchUserOnListPost = () => {
 			dataType: 'users',
 			keyGetValue: {
 				value: 'ID',
-				text: '{{display_name}} ({{ID}} - {{user_email}})',
+				text: '{{display_name}} (#{{ID}} - {{user_email}})',
 				key_render: {
 					display_name: 'display_name',
 					user_email: 'user_email',
