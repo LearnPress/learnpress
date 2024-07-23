@@ -101,7 +101,18 @@ class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
 				<option value="" hidden style="display: none"></option>
 				<?php
 				foreach ( $field['options'] as $key => $value ) {
-					echo '<option value="' . esc_attr( $key ) . '"' . ( is_array( $field['value'] ) ? selected( in_array( (string) $key, $field['value'], true ), true ) : selected( $key, $field['value'], false ) ) . '>' . esc_html( $value ) . '</option>';
+					$selected = '';
+					if ( is_array( $field['value'] ) ) {
+						$selected = in_array( $key, $field['value'] ) ? 'selected="selected"' : '';
+					} else {
+						$selected = selected( $key, $field['value'], false );
+					}
+					printf(
+						'<option value="%s" %s>%s</option>',
+						esc_attr( $key ),
+						esc_attr( $selected),
+						esc_html( $value )
+					);
 				}
 				?>
 			</select>
