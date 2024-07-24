@@ -93,7 +93,7 @@ class LP_REST_Admin_Database_Controller extends LP_Abstract_REST_Controller {
 		$result = new LP_REST_Response();
 
 		if ( $request->get_param( 'agree_terms' ) ) {
-			LP_Settings::update_option( 'agree_terms', 1 );
+			LP_Settings::update_option( 'agree_terms', LP_Updater::instance()->check_lp_db_need_upgrade() );
 			$result->status = 'success';
 		}
 

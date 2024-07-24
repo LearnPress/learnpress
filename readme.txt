@@ -210,6 +210,9 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.2.6.9.1 (2024-07-24) =
+~ Fixed: error check paths override of theme.
+
 = 4.2.6.9 (2024-07-24) =
 ~ Fixed: security.
 ~ Optimize courses.

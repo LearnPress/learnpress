@@ -30,7 +30,7 @@ if ( ! $check_lp_need_upgrade_db ) {
 	<div style="max-height: 500px; overflow: auto" class="wrapper-lp-status-upgrade"></div>
 
 	<?php
-	if ( ! $user_agree_terms ) {
+	if ( $user_agree_terms !== $check_lp_need_upgrade_db ) {
 		?>
 		<div class="wrapper-terms-upgrade">
 			<div class="terms-upgrade">
