@@ -156,6 +156,10 @@ const searchUserOnListPost = () => {
 		elSearchPost = elPostFilter.querySelector( '.search-box' );
 	}
 
+	if ( ! elSearchPost ) {
+		return;
+	}
+
 	const createSelectUserHtml = () => {
 		let defaultId = '';
 		const authorIdFilter = lpDataAdmin.urlParams.author;
