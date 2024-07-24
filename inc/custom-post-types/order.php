@@ -127,39 +127,43 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		 *
 		 * @param int $post_id
 		 * @param WP_Post $post
+		 * @param bool $is_update
 		 *
-		 * @throws Exception
 		 * @editor tungnx
-		 * @version 1.0.3
+		 * @version 1.0.4
 		 */
-		public function save( int $post_id, WP_Post $post ) {
-			global $action;
+		public function save_post( int $post_id, WP_Post $post = null, bool $is_update = false ) {
+			$backtrace = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS );
+			if ( isset( $backtrace[6]['class'] ) && $backtrace[6]['class'] === LP_Order_CURD::class ) {
+				return;
+			}
 
 			if ( wp_is_post_revision( $post_id ) ) {
 				return;
 			}
 
-			if ( $action == 'editpost' ) {
-				$order = learn_press_get_order( $post_id );
-				if ( ! $order ) {
-					return;
-				}
+			// For create LP Order manual on Backend
+			$order = learn_press_get_order( $post_id );
+			if ( ! $order ) {
+				return;
+			}
 
-				$created_via = $order->get_created_via();
-				if ( empty( $created_via ) ) {
-					$created_via = 'manual';
-					$order->set_created_via( 'manual' );
-				}
+			$created_via = $order->get_created_via();
+			if ( empty( $created_via ) ) {
+				$created_via = 'manual';
+				$order->set_created_via( 'manual' );
+			}
 
-				if ( isset( $_POST['order-customer'] ) && $created_via === 'manual' ) {
-					$user_id = LP_Request::get_param( 'order-customer' );
-					$order->set_user_id( $user_id );
-				}
+			if ( isset( $_POST['order-customer'] ) && $created_via === 'manual' ) {
+				$user_id = LP_Request::get_param( 'order-customer' );
+				$order->set_user_id( $user_id );
+			}
 
-				$status = LP_Request::get_param( 'order-status' );
-				if ( ! empty( $status ) ) {
-					$order->update_status( $status );
-				}
+			$status = LP_Request::get_param( 'order-status' );
+			if ( ! empty( $status ) ) {
+				$order->update_status( $status );
+			} elseif ( $post->post_status === 'auto-draft' ) {
+				$order->update_status( 'pending' );
 			}
 		}
 
