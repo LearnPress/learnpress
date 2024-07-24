@@ -17,18 +17,4 @@ class Block_Template_Archive_Course extends Abstract_Block_Template {
 	public function __construct() {
 		parent::__construct();
 	}
-
-	/**
-	 * Render content of block tag
-	 *
-	 * @param array $attributes | Attributes of block tag.
-	 *
-	 * @return false|string
-	 */
-	public function render_content_block_template( array $attributes ) {
-		if ( ! isset( $attributes['template'] ) ) {
-			$attributes['template'] = 'archive-course.php';
-		}
-		return parent::render_content_block_template( $attributes );
-	}
 }

@@ -65,7 +65,7 @@ abstract class Abstract_Block_Template extends \WP_Block_Template {
 
 		try {
 			ob_start();
-			$template = $attributes['template'] ?? $this->path_template_render_default;
+			$template = $this->path_template_render_default;
 			Template::instance()->get_frontend_template( $template, compact( 'attributes' ) );
 
 			$content = ob_get_clean();
