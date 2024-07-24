@@ -365,7 +365,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 			$filter              = new LP_Course_Filter();
 			$filter->limit       = 20;
 			$filter->only_fields = [ 'ID', 'post_title' ];
-			$filter->post_title  = LP_Helper::sanitize_params_submitted( $params['c_search'] ?? '' );
+			$filter->post_title  = LP_Helper::sanitize_params_submitted( $params['search'] ?? '' );
 			$filter->page        = LP_Helper::sanitize_params_submitted( $params['paged'] ?? 1, 'int' );
 			if ( ! empty( $ids_str ) ) {
 				$filter->post_ids = explode( ',', $ids_str );

@@ -38,6 +38,11 @@
 	align-items: center;
 	justify-content: center;
 
+	.learn-press-message {
+		width: auto;
+		margin: 0 !important;
+	}
+
 	.lp-modal-content {
 		display: inline-block;
 		overflow: hidden;
@@ -49,6 +54,24 @@
 		vertical-align: middle;
 		background: white;
 		color: black;
+
+		h2, h3 {
+			margin: 0;
+		}
+
+		.lp-group-step {
+			h3 {
+				border-bottom: 1px solid #eee;
+			}
+		}
+
+		.main-content {
+			.terms-upgrade {
+				.pd-2em {
+					padding: 0 1em;
+				}
+			}
+		}
 	}
 
 	.lp-modal-header {
@@ -68,6 +91,7 @@
 		.main-content {
 			max-height: 500px;
 			overflow: auto;
+			overscroll-behavior: contain;
 
 			h3, h2, .pd-2em {
 				padding: 1em;

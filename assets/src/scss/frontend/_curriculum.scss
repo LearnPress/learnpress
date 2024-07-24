@@ -1082,7 +1082,7 @@ body {
 	margin-bottom: $spacing-base-4x;
 	border: 1px solid rgba(204, 204, 204, 0.3);
 	border-radius: $border-radius-global;
-
+	width: 100%;
 	&.active {
 		.course-extra-box__content {
 			height: auto;

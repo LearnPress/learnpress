@@ -11,7 +11,14 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 	public $post_type = LP_COURSE_CPT;
 
 	public function add_meta_box() {
-		add_meta_box( 'course-settings', esc_html__( 'Course Settings', 'learnpress' ), array( $this, 'output' ), $this->post_type, 'normal', 'high' );
+		add_meta_box(
+			'course-settings',
+			esc_html__( 'Course Settings', 'learnpress' ),
+			array( $this, 'output' ),
+			$this->post_type,
+			'normal',
+			'high'
+		);
 	}
 
 	public function metabox( $post_id ) {
@@ -196,10 +203,10 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 	 *
 	 * @param $post_id
 	 *
-	 * @author tungnx
+	 * @return array
 	 * @since 4.1.5
 	 * @version 1.0.0
-	 * @return array
+	 * @author tungnx
 	 */
 	public function lp_price( $post_id ): array {
 		$key_exists    = LP_Database::getInstance()->check_key_postmeta_exists( $post_id, '_lp_regular_price' );
@@ -269,20 +276,64 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 	public function author( $thepostid ) {
 		$post = get_post( $thepostid );
 
-		$author = $post ? $post->post_author : get_current_user_id();
+		$author_id = $post ? $post->post_author : get_current_user_id();
 
 		$options = array();
+		// Code old only use for addon Frontend Editor v4.0.4
+		// Code old only use for addon Co-Instructor v4.0.2
+		$can_get_options_users = false;
+		if ( class_exists( 'LP_Addon_Frontend_Editor_Preload' )
+			&& defined( 'LP_ADDON_FRONTEND_EDITOR_VER' )
+			&& version_compare( LP_ADDON_FRONTEND_EDITOR_VER, '4.0.5', '<' ) ) {
+			$can_get_options_users = true;
+		}
+
+		if ( $can_get_options_users ) {
+			$author_roles = array( ADMIN_ROLE, LP_TEACHER_ROLE );
+			$author_roles = apply_filters( 'learn_press_course_author_role_meta_box', $author_roles );
+			$authors      = get_users( [ 'role__in' => $author_roles ] );
+
+			/**
+			 * @var WP_User $author
+			 */
+			foreach ( $authors as $author ) {
+				$options[ $author->ID ] = $author->display_name . ' (#' . $author->ID . ')';
+			}
+		}
+		// Code old only use for addon Frontend Editor v4.0.4
+
+		$data_struct = [
+			'urlApi'      => get_rest_url( null, 'lp/v1/admin/tools/search-user' ),
+			'dataSendApi' => [
+				'role_in' => ADMIN_ROLE . ',' . LP_TEACHER_ROLE,
+			],
+			'dataType'    => 'users',
+			'keyGetValue' => [
+				'value'      => 'ID',
+				'text'       => '{{display_name}}(#{{ID}})',
+				'key_render' => [
+					'display_name' => 'display_name',
+					'user_email'   => 'user_email',
+					'ID'           => 'ID',
+				],
+			],
+			'setting'     => [
+				'plugins' => array(),
+			],
+		];
 
 		return apply_filters(
 			'lp/course/meta-box/fields/author',
 			array(
-				'_lp_course_author' => new LP_Meta_Box_Select_Field(
+				'post_author' => new LP_Meta_Box_Select_Field(
 					esc_html__( 'Author', 'learnpress' ),
 					'',
-					$author,
+					$author_id,
 					array(
-						'options' => $options,
-						'style'   => 'min-width:200px;',
+						'options'           => $options,
+						'style'             => 'min-width:200px;',
+						'tom_select'        => true,
+						'custom_attributes' => [ 'data-struct' => htmlentities2( json_encode( $data_struct ) ) ],
 					)
 				),
 			)
@@ -432,7 +483,8 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 							}
 							?>
 							<?php if ( isset( $tab_content['content'] ) ) { ?>
-								<div id="<?php echo esc_attr( $tab_content['target'] ); ?>" class="lp-meta-box-course-panels">
+								<div id="<?php echo esc_attr( $tab_content['target'] ); ?>"
+									class="lp-meta-box-course-panels">
 									<?php
 									do_action( 'learnpress/course-settings/before-' . $key );
 

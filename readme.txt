@@ -3,7 +3,7 @@ Contributors: thimpress, tungnx89, nhamdv, nguyenlammanh, tunnhn, phonglq.foobla
 Donate link:
 Tags: elearning, education, course, lms, learning management system
 Requires at least: 6.3
-Tested up to: 6.5.5
+Tested up to: 6.6
 Requires PHP: 7.0
 Stable tag: 4.2.6.9
 License: GPLv3
@@ -210,11 +210,17 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
-= 4.2.6.9 (2024-07-11) =
+= 4.2.6.9.1 (2024-07-24) =
+~ Fixed: error check paths override of theme.
+
+= 4.2.6.9 (2024-07-24) =
 ~ Fixed: security.
 ~ Optimize courses.
 ~ Create table learnpress_courses from posts to query faster.
 ~ Tweak: choose users when create manual LP Order.
+~ Tweak: filed search instructor on list courses, orders, lessons, quizzes,...
+~ Tweak: get options list author via API when edit courses (make edit load screen edit courses faster).
+~ Fixed: show tab material with course no require enroll.
 
 = 4.2.6.8.2 (2024-06-28) =
 ~ Added: function retrieve_password_message override message reset password.

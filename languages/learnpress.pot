@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the LearnPress plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: LearnPress 4.2.6.9-beta.8\n"
+"Project-Id-Version: LearnPress 4.2.6.9.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/learnpress\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-07-17T12:46:54+03:00\n"
+"POT-Creation-Date: 2024-07-24T12:02:15+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.8.1\n"
 "X-Domain: learnpress\n"
@@ -442,8 +442,8 @@ msgstr ""
 
 #: config/elementor/course/filter-course-el.php:43
 #: config/widgets/course/filter-course.php:65
-#: inc/admin/views/meta-boxes/course/settings.php:50
-#: inc/admin/views/meta-boxes/course/settings.php:280
+#: inc/admin/views/meta-boxes/course/settings.php:57
+#: inc/admin/views/meta-boxes/course/settings.php:329
 #: inc/custom-post-types/course.php:398
 #: inc/custom-post-types/course.php:415
 #: inc/custom-post-types/lesson.php:220
@@ -455,7 +455,7 @@ msgstr ""
 
 #: config/elementor/course/filter-course-el.php:44
 #: config/widgets/course/filter-course.php:69
-#: inc/admin/views/meta-boxes/course/settings.php:122
+#: inc/admin/views/meta-boxes/course/settings.php:129
 msgid "Level"
 msgstr ""
 
@@ -654,7 +654,7 @@ msgstr ""
 #: config/elementor/course/filter-course-el.php:353
 #: inc/admin/class-lp-admin-assets.php:511
 #: inc/admin/views/meta-boxes/order/content-tab-preview-exports-invoice.php:66
-#: inc/admin/views/meta-boxes/order/details.php:156
+#: inc/admin/views/meta-boxes/order/details.php:184
 #: templates/checkout/order-received.php:70
 #: templates/order/order-details.php:28
 msgid "Item"
@@ -716,6 +716,7 @@ msgid "Count"
 msgstr ""
 
 #: config/elementor/course/filter-course-el.php:488
+#: inc/admin/views/search-author-field.php:64
 #: inc/TemplateHooks/Course/FilterCourseTemplate.php:175
 msgid "Search"
 msgstr ""
@@ -869,13 +870,13 @@ msgstr ""
 
 #: config/elementor/course/list-courses.php:42
 #: config/elementor/instructor/single-instructor.php:23
-#: inc/lp-template-functions.php:1322
+#: inc/lp-template-functions.php:1333
 msgid "List"
 msgstr ""
 
 #: config/elementor/course/list-courses.php:43
 #: config/elementor/instructor/single-instructor.php:24
-#: inc/lp-template-functions.php:1321
+#: inc/lp-template-functions.php:1332
 msgid "Grid"
 msgstr ""
 
@@ -1179,7 +1180,7 @@ msgstr ""
 #: inc/class-lp-page-controller.php:171
 #: inc/custom-post-types/course.php:51
 #: inc/custom-post-types/course.php:53
-#: inc/lp-template-functions.php:333
+#: inc/lp-template-functions.php:334
 #: inc/settings/class-lp-settings-courses.php:16
 #: inc/user/class-lp-profile.php:515
 msgid "Courses"
@@ -1233,7 +1234,7 @@ msgstr ""
 #: inc/admin/settings/class-lp-settings-general.php:16
 #: inc/admin/settings/class-lp-settings-payments.php:52
 #: inc/admin/sub-menus/class-lp-submenu-statistics-bk.php:26
-#: inc/admin/views/meta-boxes/course/settings.php:22
+#: inc/admin/views/meta-boxes/course/settings.php:29
 msgid "General"
 msgstr ""
 
@@ -1647,7 +1648,7 @@ msgstr[1] ""
 #: inc/admin/settings/class-lp-settings-advanced.php:80
 #: inc/course/lp-course-functions.php:450
 #: inc/custom-post-types/lesson.php:158
-#: inc/lp-template-functions.php:1096
+#: inc/lp-template-functions.php:1105
 #: inc/TemplateHooks/Course/SingleCourseTemplate.php:252
 #: inc/TemplateHooks/Instructor/SingleInstructorTemplate.php:554
 msgid "Lesson"
@@ -1660,7 +1661,7 @@ msgstr[1] ""
 #: inc/course/lp-course-functions.php:451
 #: inc/custom-post-types/question.php:321
 #: inc/custom-post-types/quiz.php:87
-#: inc/lp-template-functions.php:1086
+#: inc/lp-template-functions.php:1095
 #: inc/TemplateHooks/Course/SingleCourseTemplate.php:255
 #: templates/profile/tabs/quizzes.php:53
 msgid "Quiz"
@@ -2168,7 +2169,7 @@ msgstr ""
 #: inc/admin/class-lp-modal-search-items.php:61
 #: inc/admin/class-lp-modal-search-users.php:49
 #: inc/admin/views/course/modal-choose-items.php:66
-#: inc/admin/views/meta-boxes/order/details.php:251
+#: inc/admin/views/meta-boxes/order/details.php:279
 #: inc/admin/views/quiz/modal-choose-items.php:58
 msgid "Close"
 msgstr ""
@@ -3119,27 +3120,27 @@ msgstr ""
 msgid "Not assigned yet"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:14
+#: inc/admin/views/meta-boxes/course/settings.php:16
 msgid "Course Settings"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:29
+#: inc/admin/views/meta-boxes/course/settings.php:36
 msgid "Pricing"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:36
+#: inc/admin/views/meta-boxes/course/settings.php:43
 msgid "Extra Information"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:43
+#: inc/admin/views/meta-boxes/course/settings.php:50
 msgid "Assessment"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:57
+#: inc/admin/views/meta-boxes/course/settings.php:64
 msgid "Downloadable Materials"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:82
+#: inc/admin/views/meta-boxes/course/settings.php:89
 #: inc/admin/views/meta-boxes/lesson/settings.php:17
 #: inc/admin/views/meta-boxes/quiz/settings.php:23
 #: inc/custom-post-types/lesson.php:226
@@ -3150,190 +3151,190 @@ msgstr ""
 msgid "Duration"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:83
+#: inc/admin/views/meta-boxes/course/settings.php:90
 msgid "Set to 0 for the lifetime access."
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:94
+#: inc/admin/views/meta-boxes/course/settings.php:101
 msgid "Block content"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:95
+#: inc/admin/views/meta-boxes/course/settings.php:102
 msgid "When the duration expires, the course is blocked."
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:100
+#: inc/admin/views/meta-boxes/course/settings.php:107
 msgid "Block the course after the student finished this course."
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:104
+#: inc/admin/views/meta-boxes/course/settings.php:111
 msgid "Allow Repurchase"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:105
+#: inc/admin/views/meta-boxes/course/settings.php:112
 msgid "Allow users to repurchase this course after it has been finished or blocked (Do not apply to free courses or Create Order manual)."
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:109
+#: inc/admin/views/meta-boxes/course/settings.php:116
 msgid "Repurchase action"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:114
+#: inc/admin/views/meta-boxes/course/settings.php:121
 msgid "Reset course progress"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:115
+#: inc/admin/views/meta-boxes/course/settings.php:122
 msgid "Keep course progress"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:116
+#: inc/admin/views/meta-boxes/course/settings.php:123
 msgid "Open popup"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:123
+#: inc/admin/views/meta-boxes/course/settings.php:130
 msgid "Choose a difficulty level."
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:130
+#: inc/admin/views/meta-boxes/course/settings.php:137
 msgid "Fake Students Enrolled"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:131
+#: inc/admin/views/meta-boxes/course/settings.php:138
 msgid "How many students have taken this course?"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:143
+#: inc/admin/views/meta-boxes/course/settings.php:150
 msgid "Max student"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:144
+#: inc/admin/views/meta-boxes/course/settings.php:151
 msgid "The maximum number of students that can join a course. Set 0 for unlimited."
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:156
+#: inc/admin/views/meta-boxes/course/settings.php:163
 msgid "Re-take Course"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:157
+#: inc/admin/views/meta-boxes/course/settings.php:164
 msgid "The number of times a user can learn again from this course. To disable, set to 0."
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:169
+#: inc/admin/views/meta-boxes/course/settings.php:176
 msgid "Finish button"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:170
+#: inc/admin/views/meta-boxes/course/settings.php:177
 msgid "Allow showing the finish button when the student has completed all items but has not passed the course assessment yet."
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:174
+#: inc/admin/views/meta-boxes/course/settings.php:181
 msgid "Featured list"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:175
+#: inc/admin/views/meta-boxes/course/settings.php:182
 msgid "Add the course to the Featured List."
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:179
+#: inc/admin/views/meta-boxes/course/settings.php:186
 msgid "Featured review"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:180
+#: inc/admin/views/meta-boxes/course/settings.php:187
 msgid "A good review to promote the course."
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:183
+#: inc/admin/views/meta-boxes/course/settings.php:190
 msgid "External link"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:184
+#: inc/admin/views/meta-boxes/course/settings.php:191
 msgid "Normally used for offline classes. Ex: link to a contact page. Format: https://google.com"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:214
+#: inc/admin/views/meta-boxes/course/settings.php:221
 msgid "Regular price"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:215
+#: inc/admin/views/meta-boxes/course/settings.php:222
 msgid "Set a regular price (<strong>%s</strong>). Leave it blank for <strong>Free</strong>."
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:228
+#: inc/admin/views/meta-boxes/course/settings.php:235
 msgid "Sale price"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:229
+#: inc/admin/views/meta-boxes/course/settings.php:236
 msgid "Schedule"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:242
+#: inc/admin/views/meta-boxes/course/settings.php:249
 msgid "Sale start dates"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:247
+#: inc/admin/views/meta-boxes/course/settings.php:254
 msgctxt "placeholder"
 msgid "From&hellip;"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:251
+#: inc/admin/views/meta-boxes/course/settings.php:258
 msgid "Sale end dates"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:256
+#: inc/admin/views/meta-boxes/course/settings.php:263
 msgctxt "placeholder"
 msgid "To&hellip;"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:261
+#: inc/admin/views/meta-boxes/course/settings.php:268
 msgid "There is no enrollment requirement"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:262
+#: inc/admin/views/meta-boxes/course/settings.php:269
 msgid "Students can see the content of all course items and take the quiz without logging in."
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:307
+#: inc/admin/views/meta-boxes/course/settings.php:358
 msgid "The method of evaluating a student's performance in a course."
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:310
+#: inc/admin/views/meta-boxes/course/settings.php:361
 msgid "<br /><strong>Note! </strong>There is no final quiz in the course. Please add a final quiz."
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:332
+#: inc/admin/views/meta-boxes/course/settings.php:383
 #: inc/rest-api/v1/admin/class-lp-admin-rest-course-controller.php:81
 msgid "Edit: %s"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:343
+#: inc/admin/views/meta-boxes/course/settings.php:394
 msgid "Evaluation"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:351
+#: inc/admin/views/meta-boxes/course/settings.php:402
 #: inc/admin/views/meta-boxes/quiz/settings.php:35
 msgid "Passing Grade(%)"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:352
+#: inc/admin/views/meta-boxes/course/settings.php:403
 msgid "The conditions that must be achieved to finish the course."
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:373
+#: inc/admin/views/meta-boxes/course/settings.php:424
 #: inc/templates/class-lp-template-course.php:292
 #: inc/templates/class-lp-template-course.php:838
 #: inc/Widgets/course-extra.php:35
 msgid "Requirements"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:378
+#: inc/admin/views/meta-boxes/course/settings.php:429
 msgid "Target Audience"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:383
+#: inc/admin/views/meta-boxes/course/settings.php:434
 msgid "Key Features"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:388
+#: inc/admin/views/meta-boxes/course/settings.php:439
 #: inc/lp-template-functions.php:84
 msgid "FAQs"
 msgstr ""
@@ -3425,7 +3426,7 @@ msgstr ""
 #: inc/custom-post-types/abstract.php:1024
 #: inc/custom-post-types/lesson.php:130
 #: inc/custom-post-types/lesson.php:229
-#: inc/lp-template-functions.php:1099
+#: inc/lp-template-functions.php:1108
 #: templates/loop/single-course/loop-section-item.php:37
 #: templates/single-course/section/item-meta.php:32
 msgid "Preview"
@@ -3436,7 +3437,7 @@ msgid "Students can view this lesson content without taking the course."
 msgstr ""
 
 #: inc/admin/views/meta-boxes/lesson/settings.php:63
-#: inc/lp-template-functions.php:100
+#: inc/lp-template-functions.php:101
 msgid "Materials"
 msgstr ""
 
@@ -3472,12 +3473,12 @@ msgid "Customer"
 msgstr ""
 
 #: inc/admin/views/meta-boxes/order/content-tab-preview-exports-invoice.php:67
-#: inc/admin/views/meta-boxes/order/details.php:157
+#: inc/admin/views/meta-boxes/order/details.php:185
 msgid "Cost"
 msgstr ""
 
 #: inc/admin/views/meta-boxes/order/content-tab-preview-exports-invoice.php:68
-#: inc/admin/views/meta-boxes/order/details.php:158
+#: inc/admin/views/meta-boxes/order/details.php:186
 #: templates/emails/order-items-table.php:86
 msgid "Quantity"
 msgstr ""
@@ -3491,7 +3492,7 @@ msgid "Sub Total"
 msgstr ""
 
 #: inc/admin/views/meta-boxes/order/content-tab-preview-exports-invoice.php:102
-#: inc/admin/views/meta-boxes/order/details.php:159
+#: inc/admin/views/meta-boxes/order/details.php:187
 #: inc/custom-post-types/order.php:420
 #: templates/checkout/order-received.php:117
 #: templates/checkout/review-order.php:106
@@ -3524,49 +3525,49 @@ msgstr ""
 msgid "Customers:"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/order/details.php:100
-msgid "Choose User:"
+#: inc/admin/views/meta-boxes/order/details.php:110
+msgid "Choose User"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/order/details.php:129
+#: inc/admin/views/meta-boxes/order/details.php:157
 msgid "In order to change the order user, please change the order status to \"Pending\"."
 msgstr ""
 
-#: inc/admin/views/meta-boxes/order/details.php:137
+#: inc/admin/views/meta-boxes/order/details.php:165
 #: templates/order/order-details.php:121
 msgid "Order key:"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/order/details.php:146
+#: inc/admin/views/meta-boxes/order/details.php:174
 msgid "Customer Note"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/order/details.php:173
+#: inc/admin/views/meta-boxes/order/details.php:201
 msgid "There are no order items"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/order/details.php:184
+#: inc/admin/views/meta-boxes/order/details.php:212
 msgid "Subtotal:"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/order/details.php:195
+#: inc/admin/views/meta-boxes/order/details.php:223
 #: templates/order/confirm.php:57
 msgid "Total:"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/order/details.php:211
+#: inc/admin/views/meta-boxes/order/details.php:239
 msgid "Add item(s)"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/order/details.php:216
+#: inc/admin/views/meta-boxes/order/details.php:244
 msgid "In order to change the order item, please change the order status to 'Pending'."
 msgstr ""
 
-#: inc/admin/views/meta-boxes/order/details.php:242
+#: inc/admin/views/meta-boxes/order/details.php:270
 msgid "Type here to search for the course"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/order/details.php:246
+#: inc/admin/views/meta-boxes/order/details.php:274
 msgid "No results"
 msgstr ""
 
@@ -4485,7 +4486,7 @@ msgid "Update failed!"
 msgstr ""
 
 #: inc/class-lp-page-controller.php:161
-#: inc/lp-template-functions.php:331
+#: inc/lp-template-functions.php:332
 msgid "Course Search Results"
 msgstr ""
 
@@ -5605,7 +5606,7 @@ msgstr ""
 msgid "Function not found"
 msgstr ""
 
-#: inc/Helpers/Template.php:136
+#: inc/Helpers/Template.php:140
 msgid "Path file %s not exists"
 msgstr ""
 
@@ -7001,28 +7002,28 @@ msgid "Jersey pound"
 msgstr ""
 
 #: inc/lp-core-functions.php:1410
-#: inc/lp-template-functions.php:1474
+#: inc/lp-template-functions.php:1485
 msgid "%s week"
 msgid_plural "%s weeks"
 msgstr[0] ""
 msgstr[1] ""
 
 #: inc/lp-core-functions.php:1414
-#: inc/lp-template-functions.php:1470
+#: inc/lp-template-functions.php:1481
 msgid "%s day"
 msgid_plural "%s days"
 msgstr[0] ""
 msgstr[1] ""
 
 #: inc/lp-core-functions.php:1419
-#: inc/lp-template-functions.php:1465
+#: inc/lp-template-functions.php:1476
 msgid "%s hour"
 msgid_plural "%s hours"
 msgstr[0] ""
 msgstr[1] ""
 
 #: inc/lp-core-functions.php:1423
-#: inc/lp-template-functions.php:1459
+#: inc/lp-template-functions.php:1470
 msgid "%s minute"
 msgid_plural "%s minutes"
 msgstr[0] ""
@@ -7162,42 +7163,42 @@ msgstr ""
 msgid "Back to class"
 msgstr ""
 
-#: inc/lp-template-functions.php:1090
-#: inc/lp-template-functions.php:1173
+#: inc/lp-template-functions.php:1099
+#: inc/lp-template-functions.php:1184
 #: inc/templates/class-lp-template-course.php:135
 msgid "Final"
 msgstr ""
 
-#: inc/lp-template-functions.php:1348
+#: inc/lp-template-functions.php:1359
 msgid "Course Sidebar"
 msgstr ""
 
-#: inc/lp-template-functions.php:1350
+#: inc/lp-template-functions.php:1361
 msgid "Widgets in this area will be shown in a single course"
 msgstr ""
 
-#: inc/lp-template-functions.php:1359
+#: inc/lp-template-functions.php:1370
 msgid "All Courses"
 msgstr ""
 
-#: inc/lp-template-functions.php:1361
+#: inc/lp-template-functions.php:1372
 msgid "Widgets in this area will be shown on all course pages"
 msgstr ""
 
-#: inc/lp-template-functions.php:1498
-#: inc/lp-template-functions.php:1507
+#: inc/lp-template-functions.php:1509
+#: inc/lp-template-functions.php:1518
 msgid "All levels"
 msgstr ""
 
-#: inc/lp-template-functions.php:1508
+#: inc/lp-template-functions.php:1519
 msgid "Beginner"
 msgstr ""
 
-#: inc/lp-template-functions.php:1509
+#: inc/lp-template-functions.php:1520
 msgid "Intermediate"
 msgstr ""
 
-#: inc/lp-template-functions.php:1510
+#: inc/lp-template-functions.php:1521
 msgid "Expert"
 msgstr ""
 
@@ -7516,11 +7517,11 @@ msgstr ""
 msgid "Dismissed!"
 msgstr ""
 
-#: inc/rest-api/v1/admin/class-lp-admin-rest-tools-controller.php:543
+#: inc/rest-api/v1/admin/class-lp-admin-rest-tools-controller.php:552
 msgid "Assign users to courses successfully."
 msgstr ""
 
-#: inc/rest-api/v1/admin/class-lp-admin-rest-tools-controller.php:598
+#: inc/rest-api/v1/admin/class-lp-admin-rest-tools-controller.php:607
 msgid "Unassigned users from courses successfully."
 msgstr ""
 

@@ -37,10 +37,6 @@ global $typenow;
 $post_type        = $typenow;
 $post_type_object = get_post_type_object( $post_type );
 
-ob_start();
-submit_button( $post_type_object->labels->search_items, '', '', false, array( 'id' => 'search-submit' ) );
-$btn_submit = ob_get_clean();
-
 $input_id = 'post-search-input';
 
 if ( ! empty( $_REQUEST['orderby'] ) ) {
@@ -56,9 +52,8 @@ if ( ! empty( $_REQUEST['detached'] ) ) {
 	echo '<input type="hidden" name="detached" value="' . esc_attr( $_REQUEST['detached'] ) . '" />';
 }
 
-$value_search = isset( $_REQUEST['s'] ) ? esc_attr( wp_unslash( $_REQUEST['s'] ) ) : '';
+$value_search = LP_Request::get_param( 's', '' );
 ?>
-
 <p class="search-box">
 	<label class="screen-reader-text" for="<?php echo esc_attr( $input_id ); ?>">
 		<?php echo $post_type_object->labels->search_items; ?>:
@@ -66,7 +61,7 @@ $value_search = isset( $_REQUEST['s'] ) ? esc_attr( wp_unslash( $_REQUEST['s'] )
 	<input type="search"
 		   id="<?php echo esc_attr( $input_id ); ?>"
 		   name="s"
-		   placeholder="Search"
-		   value="<?php esc_attr( $value_search ) ?>"/>
+		   placeholder="<? _e( 'Search', 'learnpress' ); ?>"
+		   value="<?php echo esc_attr( $value_search ) ?>"/>
 	<?php submit_button( $post_type_object->labels->search_items, '', '', false, array( 'id' => 'search-submit' ) ); ?>
 </p>

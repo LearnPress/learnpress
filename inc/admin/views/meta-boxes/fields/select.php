@@ -4,7 +4,7 @@
  * LP_Meta_Box_Duration_Attribute
  *
  * @author Nhamdv
- * @version 1.0.0
+ * @version 1.0.1
  * @since 4.0.0
  */
 class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
@@ -21,13 +21,13 @@ class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
 		parent::__construct( $label, $description, $default, $extra );
 	}
 
-	public function meta_value( $thepostid ) {
-		$multil_meta = isset( $this->extra['multil_meta'] ) ? $this->extra['multil_meta'] : false;
+	public function meta_value( $post_id ) {
+		$multil_meta = $this->extra['multil_meta'] ?? false;
 
-		return $multil_meta ? get_post_meta( $thepostid, $this->id, false ) : get_post_meta( $thepostid, $this->id, true );
+		return $multil_meta ? get_post_meta( $post_id, $this->id, false ) : get_post_meta( $post_id, $this->id, true );
 	}
 
-	public function output( $thepostid ) {
+	public function output( $post_id ) {
 		if ( empty( $this->id ) ) {
 			return;
 		}
@@ -38,8 +38,8 @@ class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
 		$field['description'] = $this->description;
 		$field['label']       = $this->label;
 
-		$field['multil_meta'] = isset( $field['multil_meta'] ) ? $field['multil_meta'] : false;
-		$meta                 = $this->meta_value( $thepostid );
+		$field['multil_meta'] = $field['multil_meta'] ?? false;
+		$meta                 = $this->meta_value( $post_id );
 
 		$default = ( ! $meta && isset( $field['default'] ) ) ? $field['default'] : $meta;
 
@@ -49,27 +49,43 @@ class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
 				'class'             => 'select',
 				'style'             => '',
 				'wrapper_class'     => '', // Use "lp-select-2" for select2.
-				'value'             => isset( $field['value'] ) ? $field['value'] : $default,
+				'value'             => $field['value'] ?? $default,
 				'name'              => $field['id'],
 				'desc_tip'          => false,
 				'multiple'          => false,
 				'custom_attributes' => array(),
+				'tom_select'        => false,
 			)
-		);
-
-		$label_attributes = array(
-			'for' => $field['id'],
 		);
 
 		$field_attributes          = (array) $field['custom_attributes'];
 		$field_attributes['style'] = $field['style'];
 		$field_attributes['id']    = $field['id'];
 		$field_attributes['name']  = $field['multiple'] ? $field['name'] . '[]' : $field['name'];
+		if ( isset( $field['name_no_bracket'] ) ) {
+			$field_attributes['name'] = $field['name'];
+		}
 		$field_attributes['class'] = $field['class'];
 
 		if ( $field['multiple'] ) {
-			$field['wrapper_class']       = 'lp-select-2';
 			$field_attributes['multiple'] = true;
+		}
+
+		if ( $field['tom_select'] ) {
+			$field_attributes['class'] .= ' lp-tom-select';
+			if ( ! empty( $field['ts-remove-button'] ) ) {
+				$field_attributes['data-ts-remove-button'] = $field['ts-remove-button'];
+			}
+		} elseif ( $field['multiple'] ) {
+			$field['wrapper_class'] = 'lp-select-2';
+		}
+
+		if ( isset( $field['data-saved'] ) ) {
+			$field_attributes['data-saved'] = htmlentities2( json_encode( $field['data-saved'] ) );
+		} elseif ( ! empty( $meta ) ) {
+			$field_attributes['data-saved'] = htmlentities2( json_encode( $meta ) );
+		} else {
+			$field_attributes['data-saved'] = htmlentities2( json_encode( $default ) );
 		}
 
 		$tooltip     = ! empty( $field['description'] ) && false !== $field['desc_tip'] ? $field['description'] : '';
@@ -85,16 +101,27 @@ class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
 				<option value="" hidden style="display: none"></option>
 				<?php
 				foreach ( $field['options'] as $key => $value ) {
-					echo '<option value="' . esc_attr( $key ) . '"' . ( is_array( $field['value'] ) ? selected( in_array( (string) $key, $field['value'], true ), true ) : selected( $key, $field['value'], false ) ) . '>' . esc_html( $value ) . '</option>';
+					$selected = '';
+					if ( is_array( $field['value'] ) ) {
+						$selected = in_array( $key, $field['value'] ) ? 'selected="selected"' : '';
+					} else {
+						$selected = selected( $key, $field['value'], false );
+					}
+					printf(
+						'<option value="%s" %s>%s</option>',
+						esc_attr( $key ),
+						esc_attr( $selected),
+						esc_html( $value )
+					);
 				}
 				?>
 			</select>
 			<?php
 			if ( ! empty( $field['description'] ) ) {
-				echo '<span class="description">' . wp_kses_post( $field['description'] ) . '</span>';
+				echo '<span class="description">' . wp_kses_post( $description ) . '</span>';
 
 				if ( ! empty( $field['desc_tip'] ) ) {
-					learn_press_quick_tip( $field['desc_tip'] );
+					learn_press_quick_tip( $tooltip );
 				}
 			}
 			?>
@@ -108,7 +135,7 @@ class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
 		if ( ! empty( $this->extra['custom_save'] ) ) {
 			do_action( 'learnpress/admin/metabox/select/save', $this->id, $_POST[ $this->id ], $post_id );
 
-			return;
+			return '';
 		}
 
 		if ( $multiple_meta ) {

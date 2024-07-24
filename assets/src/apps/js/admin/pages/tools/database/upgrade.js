@@ -11,6 +11,7 @@ const upgradeDB = () => {
 	const elStatusUpgrade = elToolUpgradeDB.find( '.wrapper-lp-status-upgrade' );
 	const elWrapperUpgradeMessage = elToolUpgradeDB.find( '.wrapper-lp-upgrade-message' );
 	let checkValidBeforeUpgrade = null;
+	const elMessageUpgrading = $( 'input[name=message-when-upgrading]' ).val();
 
 	if ( elWrapperTermsUpgrade.length ) { // Show Terms Upgrade.
 		lpModalOverlay.setContentModal( elWrapperTermsUpgrade.html() );
@@ -18,7 +19,6 @@ const upgradeDB = () => {
 		const elTermUpdate = lpModalOverlay.elLPOverlay.find( '.terms-upgrade' );
 		const elLPAgreeTerm = elTermUpdate.find( 'input[name=lp-agree-term]' );
 		const elTermMessage = elTermUpdate.find( '.error' );
-		const elMessageUpgrading = $( 'input[name=message-when-upgrading]' ).val();
 
 		checkValidBeforeUpgrade = function() {
 			elTermMessage.hide();
@@ -28,7 +28,6 @@ const upgradeDB = () => {
 				handleAjax( '/lp/v1/database/agree_terms', { agree_terms: 1 }, {} );
 
 				lpModalOverlay.elFooter.find( '.learn-press-notice' ).remove();
-				lpModalOverlay.elFooter.prepend( '<span class="learn-press-notice">' + elMessageUpgrading + '</span>' );
 				lpModalOverlay.setContentModal( elStatusUpgrade.html() );
 
 				return true;
@@ -53,9 +52,15 @@ const upgradeDB = () => {
 	lpModalOverlay.elBtnYes.text( 'Upgrade' );
 	lpModalOverlay.elBtnYes.show();
 	lpModalOverlay.elBtnNo.text( 'Cancel' );
-	lpModalOverlay.callBackYes = function() {
+	lpModalOverlay.callBackYes = function( e ) {
 		if ( ! checkValidBeforeUpgrade() ) {
 			return;
+		}
+
+		const target = e.target;
+		// Show message note when upgrading.
+		if ( target.innerText === 'Upgrade' ) {
+			lpModalOverlay.elFooter.prepend( '<span class="learn-press-notice">' + elMessageUpgrading + '</span>' );
 		}
 
 		isUpgrading = 1;
@@ -141,6 +146,7 @@ const upgradeDB = () => {
 						lpModalOverlay.setContentModal( elWrapperUpgradeMessage.html() );
 					}, 1000 );
 					lpModalOverlay.elFooter.find( '.learn-press-notice' ).remove();
+					lpModalOverlay.elBtnNo.text( 'Close' );
 					lpModalOverlay.elBtnNo.show();
 					lpModalOverlay.elBtnNo.on( 'click', () => {
 						window.location.reload();

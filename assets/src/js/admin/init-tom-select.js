@@ -1,62 +1,142 @@
-import { AdminUtilsFunctions } from './utils-admin.js';
+import { AdminUtilsFunctions, Api, Utils } from './utils-admin.js';
 
-// Init Tom-select user in order
-const searchUserOrder = () => {
-	const searchUserOrderEl = document.querySelector( '#list-users' );
-	let defaultId = '';
-	let tomSelect;
-
-	if ( ! searchUserOrderEl ) {
+/**
+ * Handle data response from API for tom-select
+ *
+ * @param {*} response
+ * @param {*} tomSelectEl
+ * @param     dataStruct
+ * @param     fetchAPI
+ * @param     customOptions
+ * @param {*} callBack
+ *
+ * @return []
+ */
+const handleResponse = ( response, tomSelectEl, dataStruct, fetchAPI, customOptions = {}, callBack ) => {
+	if ( ! response || ! tomSelectEl || ! dataStruct || ! fetchAPI || ! callBack ) {
 		return;
 	}
 
-	if ( searchUserOrderEl.dataset.userId ) {
-		defaultId = JSON.parse( searchUserOrderEl.dataset.userId );
+	//Function format render data
+	const getTextOption = ( data ) => {
+		if ( ! dataStruct.keyGetValue?.text || ! dataStruct.keyGetValue.key_render ) {
+			return;
+		}
+
+		let text = dataStruct.keyGetValue.text;
+		for ( const [ key, value ] of Object.entries( dataStruct.keyGetValue.key_render ) ) {
+			text = text.replace( new RegExp( `{{${ value }}}`, 'g' ), data[ value ] );
+		}
+		return text;
+	};
+
+	// Get default item tom-select
+	const defaultIds = tomSelectEl.dataset?.saved ? JSON.parse( tomSelectEl.dataset.saved ) : 0;
+	let options = [];
+
+	// Format response data set option tom-select
+	if ( response.data[ dataStruct.dataType ].length > 0 ) {
+		options = response.data[ dataStruct.dataType ].map( ( item ) => ( {
+			value: item[ dataStruct.keyGetValue.value ],
+			text: getTextOption( item ),
+		} ) );
 	}
 
-	const customOptions = {
-		maxItems: null,
-		items: defaultId,
+	// Setting option tom-select
+	const settingOption = {
+		items: defaultIds,
 		render: {
 			item( data, escape ) {
-				return (
-					`<li data-id="${ data.value }">` +
-					`<div class="item" data-ts-item="">${ data.text }</div>` +
-					`<input type="hidden" name="order-customer[]" value="${ data.value }">` +
-					'</li>'
-				);
+				return `` +
+					`<li data-id="${ data.value }">
+						<div class="item">${ data.text }</div>
+					</li>`;
 			},
 		},
+		onChange: ( data ) => {
+			if ( data.length < 1 ) {
+				tomSelectEl.value = '';
+			}
+		},
+		...customOptions,
+		options,
 	};
 
-	const callBackUser = {
+	if ( null != tomSelectEl.tomSelectInstance ) {
+		tomSelectEl.tomSelectInstance.addOptions( options );
+		return options;
+	}
+
+	tomSelectEl.tomSelectInstance = AdminUtilsFunctions.buildTomSelect(
+		tomSelectEl,
+		settingOption,
+		fetchAPI,
+		{},
+		callBack
+	);
+
+	return options;
+};
+
+// Init Tom-select
+const initTomSelect = ( tomSelectEl, customOptions = {}, customParams = {} ) => {
+	if ( ! tomSelectEl ) {
+		return;
+	}
+
+	const defaultIds = tomSelectEl.dataset?.saved ? JSON.parse( tomSelectEl.dataset.saved ) : 0;
+	const dataStruct = tomSelectEl?.dataset?.struct ? JSON.parse( tomSelectEl.dataset.struct ) : '';
+
+	if ( ! dataStruct ) {
+		return;
+	}
+
+	const getParentElByTagName = ( tag, el ) => {
+		const newEl = el.parentElement;
+
+		if ( newEl.tagName.toLowerCase() === tag ) {
+			return newEl;
+		}
+
+		return getParentElByTagName( tag, newEl );
+	};
+
+	const formParent = getParentElByTagName( 'form', tomSelectEl );
+	const elInput = formParent.querySelector( 'input[name="' + tomSelectEl.getAttribute( 'name' ) + '"]' );
+	if ( elInput ) {
+		elInput.remove();
+	}
+
+	const dataSendApi = dataStruct.dataSendApi;
+	const urlApi = dataStruct.urlApi;
+
+	const settingTomSelect = {
+		...dataStruct.setting,
+		...customOptions,
+	};
+
+	const fetchFunction = ( keySearch = '', customParams, callback ) => {
+		const url = urlApi;
+		const dataSend = { current_ids: defaultIds, ...dataSendApi, ...customParams };
+		dataSend.search = keySearch;
+		const params = {
+			headers: {
+				'Content-Type': 'application/json',
+				'X-WP-Nonce': lpDataAdmin.nonce,
+			},
+			method: 'POST',
+			body: JSON.stringify( dataSend ),
+		};
+		Utils.lpFetchAPI( url, params, callback );
+	};
+
+	const callBackApi = {
 		success: ( response ) => {
-			let options = [];
-			if ( response.data.users.length > 0 ) {
-				options = response.data.users.map( ( item ) => {
-					return {
-						value: item.ID,
-						text: `${ item.display_name } (#${ item.ID }) - ${ item.user_email }`,
-					};
-				} );
-			}
-
-			if ( null != tomSelect ) {
-				return options;
-			}
-
-			tomSelect = AdminUtilsFunctions.buildTomSelect(
-				searchUserOrderEl,
-				{ ...customOptions, options },
-				AdminUtilsFunctions.fetchUsers,
-				{ current_ids: defaultId.toString() },
-				callBackUser
-			);
-
-			return options;
+			handleResponse( response, tomSelectEl, dataStruct, fetchFunction, settingTomSelect, callBackApi );
 		},
 	};
-	AdminUtilsFunctions.fetchUsers( '', { current_ids: defaultId.toString() }, callBackUser );
+
+	fetchFunction( '', customParams, callBackApi );
 };
 
 // Init Tom-select user in admin
@@ -76,14 +156,43 @@ const searchUserOnListPost = () => {
 		elSearchPost = elPostFilter.querySelector( '.search-box' );
 	}
 
-	let createSelectUser;
+	if ( ! elSearchPost ) {
+		return;
+	}
+
 	const createSelectUserHtml = () => {
-		createSelectUser = document.createElement( 'select' );
-		createSelectUser.setAttribute( 'name', 'author' );
+		let defaultId = '';
+		const authorIdFilter = lpDataAdmin.urlParams.author;
+		if ( authorIdFilter ) {
+			defaultId = JSON.stringify( authorIdFilter );
+		}
+		const dataStruct = {
+			urlApi: Api.admin.apiSearchUsers,
+			dataType: 'users',
+			keyGetValue: {
+				value: 'ID',
+				text: '{{display_name}}(#{{ID}}) - {{user_email}}',
+				key_render: {
+					display_name: 'display_name',
+					user_email: 'user_email',
+					ID: 'ID',
+				},
+			},
+			setting: {
+				placeholder: 'Choose author',
+			},
+		};
+
+		const dataStructJson = JSON.stringify( dataStruct );
+
+		const htmlSelectUser = `` +
+			`<select data-struct='${ dataStructJson }' style='display:none;' data-saved='${ defaultId }'
+					id="author" name="author" class="select lp-tom-select">` +
+			`</select>`;
+
 		const elInputSearch = elSearchPost.querySelector( 'input[name="s"]' );
-		createSelectUser.style.display = 'none';
 		if ( elInputSearch ) {
-			elInputSearch.insertAdjacentElement( 'afterend', createSelectUser );
+			elInputSearch.insertAdjacentHTML( 'afterend', htmlSelectUser );
 		}
 
 		// Remove input hide default of WP.
@@ -92,203 +201,26 @@ const searchUserOnListPost = () => {
 			elInputAuthor.remove();
 		}
 	};
-
-	const tomSearchUser = () => {
-		let tomSelect, defaultId;
-		const selectAuthor = document.querySelector( `select[name="author"]` );
-		if ( ! selectAuthor ) {
-			return;
-		}
-
-		const authorIdFilter = lpDataAdmin.urlParams.author;
-		if ( authorIdFilter ) {
-			defaultId = authorIdFilter;
-		}
-
-		const customOptions = {
-			items: defaultId,
-			placeholder: 'Chose user',
-			render: {
-				item( data, escape ) {
-					return (
-						`<li data-id="${ data.value }">` +
-						`<div class="item" data-ts-item="">${ data.text }</div>` +
-						`<input type="hidden" name="author" value="${ data.value }">` +
-						'</li>'
-					);
-				},
-			},
-		};
-
-		const callBackUser = {
-			success: ( response ) => {
-				let options = [];
-				if ( response.data.users.length > 0 ) {
-					options = response.data.users.map( ( item ) => {
-						return {
-							value: item.ID,
-							text: `${ item.display_name } (#${ item.ID })`,
-						};
-					} );
-				}
-				if ( null != tomSelect ) {
-					return options;
-				}
-
-				tomSelect = AdminUtilsFunctions.buildTomSelect(
-					selectAuthor,
-					{ ...customOptions, options },
-					AdminUtilsFunctions.fetchUsers,
-					{ current_ids: defaultId },
-					callBackUser
-				);
-
-				return options;
-			},
-		};
-		AdminUtilsFunctions.fetchUsers( '', { current_ids: defaultId }, callBackUser );
-	};
-
 	createSelectUserHtml();
-	tomSearchUser();
 };
 
-// Init Tom-select author in course
-const selectAuthorCourse = () => {
-	let tomSelect;
-	const selectAuthorCourseEl = document.querySelector(
-		'select#_lp_course_author',
-	);
+const defaultInitTomSelect = ( registered = [] ) => {
+	const tomSelectEls = Array.prototype.slice.call( document.querySelectorAll( '.lp-tom-select' ) );
 
-	if ( ! selectAuthorCourseEl ) {
-		return;
+	if ( tomSelectEls.length ) {
+		tomSelectEls.map( ( tomSelectEl ) => {
+			if ( registered.length ) {
+				if ( registered.includes( tomSelectEl ) ) {
+					return;
+				}
+			}
+			initTomSelect( tomSelectEl );
+		} );
 	}
-
-	const roleSearch = 'administrator,lp_teacher';
-	const authorInputEl = document.querySelector( 'input[name="post_author"]' );
-	const defaultId = authorInputEl?.value ? authorInputEl.value : '';
-	const customParams = { role_in: roleSearch, current_ids: defaultId };
-	const customOptions = {
-		items: defaultId,
-		plugins: {},
-		render: {
-			item( data, escape ) {
-				return `<li data-id="${ data.value }"><div class="item" data-ts-item="">${ data.text }</div></li>`;
-			},
-		},
-		onItemAdd: ( data, item ) => {
-			authorInputEl.setAttribute( 'value', data );
-		},
-
-		onItemRemove: ( data, item ) => {
-			authorInputEl.setAttribute( 'value', defaultId );
-		},
-	};
-
-	const callBackUser = {
-		success: ( response ) => {
-			let options = [];
-			if ( response.data.users.length > 0 ) {
-				options = response.data.users.map( ( item ) => {
-					return {
-						value: item.ID,
-						text: `${ item.display_name } (#${ item.ID }) - ${ item.user_email }`,
-					};
-				} );
-			}
-
-			if ( null != tomSelect ) {
-				return options;
-			}
-
-			tomSelect = AdminUtilsFunctions.buildTomSelect(
-				selectAuthorCourseEl,
-				{ ...customOptions, options },
-				AdminUtilsFunctions.fetchUsers,
-				customParams,
-				callBackUser
-			);
-
-			return options;
-		},
-	};
-
-	AdminUtilsFunctions.fetchUsers( '', customParams, callBackUser );
-};
-
-//  Init Tom-select author co-instructor course
-const selectCoInstructor = () => {
-	let tomSelect;
-	const selectCoInstructorEl = document.querySelector( '[name="_lp_co_teacher"]' );
-	let postAuthorEl = document.querySelector( '[name="post_author"]' );
-	if ( ! selectCoInstructorEl ) {
-		return;
-	}
-
-	const userId = postAuthorEl?.value || 0;
-	const defaultId = selectCoInstructorEl.dataset?.coInstructors
-		? JSON.parse( selectCoInstructorEl.dataset?.coInstructors )
-		: '';
-
-	const roleSearch = 'administrator,lp_teacher';
-
-	const dataSend = { role_in: roleSearch, id_not_in: userId, current_ids: defaultId.toString() };
-
-	const customOptions = {
-		maxItems: null,
-		items: defaultId[ 0 ],
-		placeholder: 'Chose user',
-		render: {
-			item( data, escape ) {
-				return (
-					`<li data-id="${ data.value }">` +
-					`<div class="item" data-ts-item="">${ data.text }</div>` +
-					`<input type="hidden" name="_lp_co_teacher[]" value="${ data.value }">` +
-					'</li>'
-				);
-			},
-		},
-		onChange: ( data ) => {
-			if ( data.length < 1 ) {
-				selectCoInstructorEl.value = '';
-			}
-		},
-	};
-
-	const callBackUser = {
-		success: ( response ) => {
-			let options = [];
-			if ( response.data.users.length > 0 ) {
-				options = response.data.users.map( ( item ) => {
-					return {
-						value: item.ID,
-						text: `${ item.display_name } (#${ item.ID }) - ${ item.user_email }`,
-					};
-				} );
-			}
-
-			if ( null != tomSelect ) {
-				return options;
-			}
-
-			tomSelect = AdminUtilsFunctions.buildTomSelect(
-				selectCoInstructorEl,
-				{ ...customOptions, options },
-				AdminUtilsFunctions.fetchUsers,
-				{ dataSend },
-				callBackUser
-			);
-
-			return options;
-		},
-	};
-
-	AdminUtilsFunctions.fetchUsers( '', dataSend, callBackUser );
 };
 
 export {
-	selectAuthorCourse,
+	initTomSelect,
 	searchUserOnListPost,
-	searchUserOrder,
-	selectCoInstructor,
+	defaultInitTomSelect,
 };

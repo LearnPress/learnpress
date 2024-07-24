@@ -87,15 +87,16 @@ if ( ! function_exists( 'learn_press_get_course_tabs' ) ) {
 			);
 		}
 
-		$is_enrolled_course = false;
-		if ( $user->has_course_status( $course->get_id(), array( LP_COURSE_ENROLLED ) )
+		$can_show_tab_material = false;
+		if ( $course->is_no_required_enroll()
+			|| $user->has_enrolled_or_finished( $course->get_id() )
 			|| $user->is_instructor() || $user->is_admin() ) {
-			$is_enrolled_course = true;
+			$can_show_tab_material = true;
 		}
 
 		$file_per_page = LP_Settings::get_option( 'material_file_per_page', - 1 );
 		$count_files   = LP_Material_Files_DB::getInstance()->get_total( $course->get_id() );
-		if ( $is_enrolled_course && (int) $file_per_page != 0 && $count_files > 0 ) {
+		if ( $can_show_tab_material && (int) $file_per_page != 0 && $count_files > 0 ) {
 			$defaults['materials'] = array(
 				'title'    => esc_html__( 'Materials', 'learnpress' ),
 				'priority' => 45,
@@ -537,13 +538,15 @@ if ( ! function_exists( 'learn_press_course_class' ) ) {
 function learn_press_setup_user() {
 	$GLOBALS['lp_user'] = learn_press_get_current_user();
 }
+
 add_action( 'init', 'learn_press_setup_user', 1000 );
 
 /**
  * Display a message immediately with out push into queue
  *
  * @param        $message
- * @param string  $type
+ * @param string $type
+ *
  * @Todo tungnx review code.
  */
 
@@ -576,10 +579,11 @@ function learn_press_get_messages( $clear = false ) {
 /**
  * Add new message into queue for displaying.
  *
- * @param string   $message
- * @param string   $type
- * @param array    $options
+ * @param string $message
+ * @param string $type
+ * @param array $options
  * @param int|bool $current_user . @since 3.0.9 - add for current user only
+ *
  * @deprecated 4.2.2.1
  */
 function learn_press_add_message( $message, $type = 'success', $options = array(), $current_user = true ) {
@@ -628,17 +632,20 @@ function learn_press_get_message( $message, $type = 'success' ) {
  * Set LP message to COOKIE.
  *
  * @param array $message_data ['status' => 'success/warning/error', 'content' => 'Message content']
- * @since 4.2.0
- * @version 1.0.0
+ *
  * @return void
+ * @version 1.0.0
+ * @since 4.2.0
  */
 function learn_press_set_message( array $message_data = [] ) {
 	if ( ! isset( $message_data ['status'] ) ) {
 		error_log( 'Message data must have status' );
+
 		return;
 	}
 	if ( ! isset( $message_data ['content'] ) ) {
 		error_log( 'Message data must have content' );
+
 		return;
 	}
 
@@ -649,9 +656,9 @@ function learn_press_set_message( array $message_data = [] ) {
 
 /**
  * Show message only one time.
- * @since 4.2.0
- * @version 1.0.0
  * @return void
+ * @version 1.0.0
+ * @since 4.2.0
  */
 function learn_press_show_message() {
 	try {
@@ -670,12 +677,13 @@ function learn_press_show_message() {
 		error_log( $e->getMessage() );
 	}
 }
+
 add_action( 'learn-press/before-course-item-content', 'learn_press_show_message', 50 );
 
 /**
  * Remove message added into queue by id and/or type.
  *
- * @param string       $id
+ * @param string $id
  * @param string|array $type
  *
  * @since 3.0.0
@@ -738,6 +746,7 @@ if ( ! function_exists( 'learn_press_page_title' ) ) {
 	 * learn_press_page_title function.
 	 *
 	 * @param boolean $echo
+	 *
 	 * @return string
 	 */
 	function learn_press_page_title( bool $echo = false ): string {
@@ -825,7 +834,7 @@ function learn_press_get_template_part( $slug, $name = '' ) {
  * Get other templates passing attributes and including the file.
  *
  * @param string $template_name .
- * @param array  $args (default: array()) .
+ * @param array $args (default: array()) .
  * @param string $template_path (default: '').
  * @param string $default_path (default: '').
  *
@@ -1000,7 +1009,7 @@ function learn_press_admin_view_content( $name, $args = array() ) {
  * Find a full path of a view and display the content in admin
  *
  * @param            $name
- * @param array      $args
+ * @param array $args
  * @param bool|false $include_once
  * @param bool
  *
@@ -1160,10 +1169,12 @@ function learn_press_label_html( $label, $type = '' ) {
 
 /**
  * @param LP_Quiz $item
+ *
  * @deprecated 4.2.3.5
  */
 function learn_press_quiz_meta_final( $item ) {
 	_deprecated_function( __METHOD__, '4.2.3.5' );
+
 	return;
 	$course = learn_press_get_course();
 
@@ -1319,7 +1330,7 @@ function learn_press_courses_layouts() {
 		'learnpress/archive-courses-layouts',
 		[
 			'grid' => __( 'Grid', 'learnpress' ),
-			'list' => __( 'List', 'learnpress' )
+			'list' => __( 'List', 'learnpress' ),
 		]
 	);
 }
@@ -1387,7 +1398,7 @@ add_action( 'after_setup_theme', 'learn_press_setup_theme' );
 
 /**
  * @param LP_Question $question
- * @param array       $args
+ * @param array $args
  *
  * @return array
  * @since 4.x.x
@@ -1437,7 +1448,7 @@ function learn_press_custom_excerpt_length( $length ) {
 /**
  * Get post meta with key _lp_duration and translate.
  *
- * @param int    $post_id
+ * @param int $post_id
  * @param string $default
  *
  * @return string
@@ -1587,7 +1598,8 @@ if ( ! function_exists( 'lp_archive_course_page_content' ) ) {
 			return;
 		}
 
-		if ( is_post_type_archive( LP_COURSE_CPT ) && in_array( absint( get_query_var( 'paged' ) ), array( 0, 1 ), true ) ) {
+		if ( is_post_type_archive( LP_COURSE_CPT )
+			&& in_array( absint( get_query_var( 'paged' ) ), array( 0, 1 ), true ) ) {
 			$profile_id = learn_press_get_page_id( 'courses' );
 
 			if ( $profile_id ) {

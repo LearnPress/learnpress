@@ -37,7 +37,7 @@ const lpModalOverlay = {
 			e.stopPropagation();
 
 			if ( 'function' === typeof lpModalOverlay.callBackYes ) {
-				lpModalOverlay.callBackYes();
+				lpModalOverlay.callBackYes( e );
 			}
 		} );
 
