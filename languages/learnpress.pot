@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the LearnPress plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: LearnPress 4.2.6.9\n"
+"Project-Id-Version: LearnPress 4.2.6.9.1-beta.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/learnpress\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-07-24T05:12:20+03:00\n"
+"POT-Creation-Date: 2024-07-24T11:10:45+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.8.1\n"
 "X-Domain: learnpress\n"
@@ -716,6 +716,7 @@ msgid "Count"
 msgstr ""
 
 #: config/elementor/course/filter-course-el.php:488
+#: inc/admin/views/search-author-field.php:64
 #: inc/TemplateHooks/Course/FilterCourseTemplate.php:175
 msgid "Search"
 msgstr ""
@@ -5605,7 +5606,7 @@ msgstr ""
 msgid "Function not found"
 msgstr ""
 
-#: inc/Helpers/Template.php:136
+#: inc/Helpers/Template.php:140
 msgid "Path file %s not exists"
 msgstr ""
 

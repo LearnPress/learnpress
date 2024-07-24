@@ -13,7 +13,7 @@ defined( 'ABSPATH' ) or die();
 ?>
 
 <div class="card" id="lp-tool-re-upgrade-db" style="display: none">
-	<h2><?php echo sprintf( '%s', __( 'Reupgrade Database.', 'learnpress' ) ); ?></h2>
+	<h2><?php echo sprintf( '%s', __( 'Reupgrade Database', 'learnpress' ) ); ?></h2>
 	<p><?php _e( '1. Tool only one apply for case Update from LP3 to LP4 didn\'t success', 'learnpress' ); ?></p>
 	<p><?php _e( '2. Please sure what you doing', 'learnpress' ); ?></p>
 	<p class="tools-button">

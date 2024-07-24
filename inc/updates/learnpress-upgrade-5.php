@@ -47,7 +47,7 @@ class LP_Upgrade_5 extends LP_Handle_Upgrade_Steps {
 			array(
 				'learnpress_user_items' => new LP_Group_Step(
 					'learnpress_user_items',
-					'Optimize database courses.',
+					'Optimize database courses',
 					array(
 						'sync_table_courses'  => new LP_Step(
 							'sync_table_courses',
