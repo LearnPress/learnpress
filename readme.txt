@@ -5,7 +5,7 @@ Tags: elearning, education, course, lms, learning management system
 Requires at least: 6.3
 Tested up to: 6.6
 Requires PHP: 7.0
-Stable tag: 4.2.6.9
+Stable tag: 4.2.6.9.2
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -209,6 +209,9 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.
 
 == Changelog ==
+
+= 4.2.6.9.2 (2024-07-25) =
+~ Fixed: error lose section when update section of course.
 
 = 4.2.6.9.1 (2024-07-24) =
 ~ Fixed: error check paths override of theme.
