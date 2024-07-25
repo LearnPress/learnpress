@@ -225,28 +225,4 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Tweak: get options list author via API when edit courses (make edit load screen edit courses faster).
 ~ Fixed: show tab material with course no require enroll.
 
-= 4.2.6.8.2 (2024-06-28) =
-~ Added: function retrieve_password_message override message reset password.
-~ Fixed: security.
-~ Fixed: style login/register for Divi theme.
-~ Fixed: responsive curriculum.
-
-= 4.2.6.8.1 (2024-06-03) =
-~ Fixed: security.
-~ Fixed: query by status on list LP Orders.
-~ Fixed: minor bugs.
-~ Added: translate text grid, list.
-
-= 4.2.6.8 (2024-05-27) =
-~ Fixed: error create answers question.
-~ Fixed: minor bugs.
-
-= 4.2.6.7 (2024-05-20) =
-~ Fixed: security.
-~ Fixed: error conflict with CookieYes plugin.
-~ Fixed: sale course price with config timezone of WordPress.
-~ Optimize: style.
-~ Remove Font Awesome and replace it with Font LearnPress.
-~ Tweak: query search LP Order.
-
 <a href="https://raw.githubusercontent.com/LearnPress/learnpress/develop/changelog.txt" target="_blank">See changelog for all versions.</a>
