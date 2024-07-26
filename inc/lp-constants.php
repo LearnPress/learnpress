@@ -96,6 +96,9 @@ const LP_ORDER_PROCESSING_DB = 'lp-processing';
 const LP_ORDER_CANCELLED_DB  = 'lp-cancelled';
 const LP_ORDER_FAILED_DB     = 'lp-failed';
 
+// LP Order type create via.
+const LP_ORDER_CREATED_VIA_MANUAL = 'manual';
+
 // Graduation user item course
 const LP_COURSE_GRADUATION_IN_PROGRESS = 'in-progress';
 const LP_COURSE_GRADUATION_PASSED      = 'passed';

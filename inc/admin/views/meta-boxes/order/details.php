@@ -28,6 +28,9 @@ $user_ids     = $order->get_user_id();
 		<h3 class="order-data-number"><?php echo sprintf( __( 'Order %s', 'learnpress' ), $order->get_order_number() ); ?></h3>
 		<div class="order-data-field payment-method-title">
 			<?php
+			if ( LP_ORDER_CREATED_VIA_MANUAL === $order->get_created_via() ) {
+				printf( '<strong>%s</strong>', __( 'Created manually', 'learnpress' ) );
+			}
 			if ( $method_title && $user_ip ) {
 				printf( 'Pay via <strong>%s</strong> at <strong>%s</strong>', $method_title, $user_ip );
 			} elseif ( $method_title ) {
@@ -93,7 +96,8 @@ $user_ids     = $order->get_user_id();
 			<div class="order-users">
 				<label><?php esc_html_e( 'Customers:', 'learnpress' ); ?></label>
 				<?php
-				if ( LP_ORDER_PENDING === $order->get_status() ) {
+				if ( LP_ORDER_PENDING === $order->get_status()
+					&& LP_ORDER_CREATED_VIA_MANUAL === $order->get_created_via() ) {
 					$data_struct = [
 						'urlApi'      => get_rest_url( null, 'lp/v1/admin/tools/search-user' ),
 						'dataType'    => 'users',
@@ -133,29 +137,48 @@ $user_ids     = $order->get_user_id();
 					<div class="advanced-list">
 						<div class="ts-control">
 							<?php
-							if ( ! is_array( $user_ids ) ) {
-								$user_ids = (array) $user_ids;
-							}
-
-							foreach ( $user_ids as $user_id ) {
-								$user = learn_press_get_user( $user_id );
-								if ( ! $user ) {
-									continue;
-								}
+							if ( LP_ORDER_CREATED_VIA_MANUAL !== $order->get_created_via() && $order->is_guest() ) {
 								printf(
-									'<li data-id="%1$s"><div class="item" data-ts-item="">%2$s</div><input type="hidden" name="order-customer[]" value="%1$s"></li>',
-									$user_id,
-									sprintf( '%s (#%d) - %s', $user->get_display_name(), $user->get_id(), $user->get_email() )
+									'<li>
+										<div class="item">%s</div>
+									</li>',
+									sprintf( '%s (%s)', $order->get_checkout_email(), __( 'Guest', 'learnpress' ) )
 								);
+							} elseif ( LP_ORDER_CREATED_VIA_MANUAL == $order->get_created_via() && $order->is_guest() ) {
+								printf(
+									'<li>
+										<div class="item">%s</div>
+									</li>',
+									__( 'No customer', 'learnpress' )
+								);
+							} else {
+								if ( ! is_array( $user_ids ) ) {
+									$user_ids = (array) $user_ids;
+								}
+
+								foreach ( $user_ids as $user_id ) {
+									$user = learn_press_get_user( $user_id );
+									if ( ! $user ) {
+										continue;
+									}
+									printf(
+										'<li>
+											<div class="item" data-ts-item="">%s</div>
+										</li>',
+										sprintf( '%s (#%d) - %s', $user->get_display_name(), $user->get_id(), $user->get_email() )
+									);
+								}
 							}
 							?>
 						</div>
 					</div>
 					<?php
-					printf(
-						'<p class="description">%s</p>',
-						esc_html__( 'In order to change the order user, please change the order status to "Pending".', 'learnpress' )
-					);
+					if ( LP_ORDER_CREATED_VIA_MANUAL === $order->get_created_via() ) {
+						printf(
+							'<p class="description">%s</p>',
+							esc_html__( 'In order to change the order user, please change the order status to "Pending".', 'learnpress' )
+						);
+					}
 				}
 				?>
 			</div>

@@ -272,6 +272,10 @@ class LP_User_Factory {
 			$course      = learn_press_get_course( $item['course_id'] );
 			$auto_enroll = LP_Settings::is_auto_start_course();
 
+			if ( $user instanceof LP_User_Guest ) {
+				return;
+			}
+
 			// Data user_item for save database
 			$user_item_data = [
 				'user_id' => $user->get_id(),
