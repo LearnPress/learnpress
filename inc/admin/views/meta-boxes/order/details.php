@@ -254,21 +254,23 @@ $user_ids     = $order->get_user_id();
 				<td colspan="2"></td>
 				<td colspan="2" style="border-bottom: 1px dashed #DDD;"></td>
 			</tr>
-			<tr>
-				<td class="align-right" colspan="4" style="border-top: 1px solid #DDD;">
-					<?php if ( 'pending' === $order->get_status() ) { ?>
-						<button class="button" type="button" id="learn-press-add-order-item">
-							<?php esc_html_e( 'Add item(s)', 'learnpress' ); ?>
-						</button>
-						<?php
-					} else {
-						echo '<p class="description">';
-						esc_html_e( 'In order to change the order item, please change the order status to \'Pending\'.', 'learnpress' );
-						echo '</p>';
-					}
-					?>
-				</td>
-			</tr>
+			<?php if ( $order->is_manual() ) { ?>
+				<tr>
+					<td class="align-right" colspan="4" style="border-top: 1px solid #DDD;">
+						<?php if ( 'pending' === $order->get_status() ) { ?>
+							<button class="button" type="button" id="learn-press-add-order-item">
+								<?php esc_html_e( 'Add item(s)', 'learnpress' ); ?>
+							</button>
+							<?php
+						} else {
+							echo '<p class="description">';
+							esc_html_e( 'In order to change the order item, please change the order status to \'Pending\'.', 'learnpress' );
+							echo '</p>';
+						}
+						?>
+					</td>
+				</tr>
+			<?php } ?>
 			</tfoot>
 		</table>
 	</div>
