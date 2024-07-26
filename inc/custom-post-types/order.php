@@ -150,11 +150,11 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 
 			$created_via = $order->get_created_via();
 			if ( empty( $created_via ) ) {
-				$created_via = 'manual';
-				$order->set_created_via( 'manual' );
+				$created_via = LP_ORDER_CREATED_VIA_MANUAL;
+				$order->set_created_via( $created_via );
 			}
 
-			if ( isset( $_POST['order-customer'] ) && $created_via === 'manual' ) {
+			if ( isset( $_POST['order-customer'] ) && $order->is_manual() ) {
 				$user_id = LP_Request::get_param( 'order-customer' );
 				$order->set_user_id( $user_id );
 			}

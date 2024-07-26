@@ -28,7 +28,7 @@ $user_ids     = $order->get_user_id();
 		<h3 class="order-data-number"><?php echo sprintf( __( 'Order %s', 'learnpress' ), $order->get_order_number() ); ?></h3>
 		<div class="order-data-field payment-method-title">
 			<?php
-			if ( LP_ORDER_CREATED_VIA_MANUAL === $order->get_created_via() ) {
+			if ( $order->is_manual() ) {
 				printf( '<strong>%s</strong>', __( 'Created manually', 'learnpress' ) );
 			}
 			if ( $method_title && $user_ip ) {
@@ -96,8 +96,7 @@ $user_ids     = $order->get_user_id();
 			<div class="order-users">
 				<label><?php esc_html_e( 'Customers:', 'learnpress' ); ?></label>
 				<?php
-				if ( LP_ORDER_PENDING === $order->get_status()
-					&& LP_ORDER_CREATED_VIA_MANUAL === $order->get_created_via() ) {
+				if ( LP_ORDER_PENDING === $order->get_status() && $order->is_manual() ) {
 					$data_struct = [
 						'urlApi'      => get_rest_url( null, 'lp/v1/admin/tools/search-user' ),
 						'dataType'    => 'users',
@@ -137,14 +136,14 @@ $user_ids     = $order->get_user_id();
 					<div class="advanced-list">
 						<div class="ts-control">
 							<?php
-							if ( LP_ORDER_CREATED_VIA_MANUAL !== $order->get_created_via() && $order->is_guest() ) {
+							if ( ! $order->is_manual() && $order->is_guest() ) {
 								printf(
 									'<li>
 										<div class="item">%s</div>
 									</li>',
 									sprintf( '%s (%s)', $order->get_checkout_email(), __( 'Guest', 'learnpress' ) )
 								);
-							} elseif ( LP_ORDER_CREATED_VIA_MANUAL == $order->get_created_via() && $order->is_guest() ) {
+							} elseif ( $order->is_manual() && $order->is_guest() ) {
 								printf(
 									'<li>
 										<div class="item">%s</div>
@@ -173,7 +172,7 @@ $user_ids     = $order->get_user_id();
 						</div>
 					</div>
 					<?php
-					if ( LP_ORDER_CREATED_VIA_MANUAL === $order->get_created_via() ) {
+					if ( $order->is_manual() ) {
 						printf(
 							'<p class="description">%s</p>',
 							esc_html__( 'In order to change the order user, please change the order status to "Pending".', 'learnpress' )
