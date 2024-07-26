@@ -178,7 +178,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 	 * @editor tungnx
 	 * @modify 4.1.3.1
 	 * @throws Exception
-	 * @version 4.0.1
+	 * @version 4.0.2
 	 */
 	public function course_purchase_button( $course = null ) {
 		$can_show = true;
@@ -194,7 +194,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 		$can_purchase = $user->can_purchase_course( $course->get_id() );
 		if ( is_wp_error( $can_purchase ) ) {
 			if ( in_array( $can_purchase->get_error_code(), [ 'order_processing', 'course_out_of_stock' ] ) ) {
-				learn_press_display_message( $can_purchase->get_error_message(), 'warning' );
+				Template::print_message( $can_purchase->get_error_message(), 'warning' );
 			}
 			$can_show = false;
 		}
@@ -229,7 +229,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 	 * @editor tungnx
 	 * @modify 4.1.3.1
 	 * @throws Exception
-	 * @version 4.0.2
+	 * @version 4.0.3
 	 */
 	public function course_enroll_button( $course = null ) {
 		$can_show = true;
@@ -237,6 +237,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 		if ( empty( $course ) ) {
 			$course = learn_press_get_course();
 		}
+		$error_code = '';
 
 		try {
 			if ( ! $course || ! $user ) {
@@ -244,19 +245,25 @@ class LP_Template_Course extends LP_Abstract_Template {
 			}
 
 			// User can not enroll course.
-			if ( ! $user->can_enroll_course( $course->get_id() ) ) {
-				throw new Exception( 'You can not enroll course' );
+			$can_enroll_course = $user->can_enroll_course( $course->get_id(), false );
+			if ( ! $can_enroll_course->check ) {
+				$error_code = $can_enroll_course->code;
+				throw new Exception( $can_enroll_course->message );
 			}
 
 			if ( $user->has_finished_course( $course->get_id() ) ) {
 				throw new Exception( 'Course is finished' );
 			}
 		} catch ( Throwable $e ) {
+			if ( ! in_array( $error_code, [ 'course_is_enrolled', 'course_can_retry' ] ) ) {
+				if ( $course->is_free() ) {
+					Template::print_message( $e->getMessage(), 'warning' );
+				}
+			}
 			$can_show = false;
 		}
 
 		$can_show = apply_filters( 'learnpress/course/template/button-enroll/can-show', $can_show, $user, $course );
-
 		if ( ! $can_show ) {
 			return;
 		}
@@ -722,6 +729,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 			error_log( $e->getMessage() );
 		}
 	}
+
 	public function item_lesson_material() {
 		$user   = learn_press_get_current_user();
 		$course = learn_press_get_course();
@@ -881,7 +889,8 @@ class LP_Template_Course extends LP_Abstract_Template {
 		}
 	}
 
-	public function sidebar() {     }
+	public function sidebar() {
+	}
 
 	public function course_featured_review() {
 		$review_content = get_post_meta( $this->course->get_id(), '_lp_featured_review', true );
