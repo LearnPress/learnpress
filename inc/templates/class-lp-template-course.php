@@ -204,8 +204,6 @@ class LP_Template_Course extends LP_Abstract_Template {
 			$can_show = false;
 		}
 
-		// Hook since 4.2.6.9.3
-		$can_show = apply_filters( 'learn-press/course/template/button-purchase/can-show', $can_show, $can_purchase, $user, $course );
 		// Hook since 4.1.3
 		$can_show = apply_filters( 'learnpress/course/template/button-purchase/can-show', $can_show, $user, $course );
 		if ( ! $can_show ) {
