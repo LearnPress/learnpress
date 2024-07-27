@@ -226,7 +226,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					array(
 						'vue-libs',
 						'advanced-list',
-						'lp-modal-search-courses',
+						//'lp-modal-search-courses',
 						//'lp-modal-search-users',
 					),
 					array( LP_ORDER_CPT ),
@@ -261,7 +261,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					0,
 					1
 				),*/
-				'lp-modal-search-courses'           => new LP_Asset_Key(
+				/*'lp-modal-search-courses'           => new LP_Asset_Key(
 					$this->url( self::$_folder_source . 'js/admin/share/modal-search-courses' . self::$_min_assets . '.js' ),
 					array(
 						'vue-libs',
@@ -270,7 +270,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					array( LP_ORDER_CPT ),
 					1,
 					1
-				),
+				),*/
 				/*'lp-modal-search-users'             => new LP_Asset_Key(
 					$this->url( self::$_folder_source . 'js/admin/share/modal-search-users' . self::$_min_assets . '.js' ),
 					array( 'jquery' ),

@@ -70,7 +70,7 @@ const AdminUtilsFunctions = {
 	},
 	fetchCourses( keySearch = '', dataSend = {}, callback ) {
 		const url = Api.admin.apiSearchCourses;
-		dataSend.c_search = keySearch;
+		dataSend.search = keySearch;
 		const params = {
 			headers: {
 				'Content-Type': 'application/json',
