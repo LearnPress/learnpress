@@ -373,7 +373,7 @@ class LP_Install_Sample_Data {
 		if ( $course_id ) {
 			$metas = array(
 				'_lp_duration'          => '10 week',
-				'_lp_max_students'      => '1000',
+				'_lp_max_students'      => '0',
 				'_lp_students'          => '0',
 				'_lp_retake_count'      => '0',
 				'_lp_featured'          => 'no',

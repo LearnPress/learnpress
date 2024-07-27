@@ -148,12 +148,12 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 			'section_name'        => $section['title'],
 			'section_description' => $section['description'],
 			'section_order'       => $section['order'],
-			'section_course_id'   => $section['course_id'],
+			'section_course_id'   => $this->course->get_id(),
 		);
 
 		$this->result = $this->section_curd->update( $data );
 
-		return true;
+		return $this->result;
 	}
 
 	/**

@@ -1246,7 +1246,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @version 1.0.0
 		 */
 		public function is_manual(): bool {
-			return $this->get_created_via() === 'manual';
+			return $this->get_created_via() === LP_ORDER_CREATED_VIA_MANUAL;
 		}
 
 		/**

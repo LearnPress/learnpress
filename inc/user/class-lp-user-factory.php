@@ -129,7 +129,6 @@ class LP_User_Factory {
 	protected static function _update_user_item_order_completed( LP_Order $order, string $old_status, string $new_status ) {
 		$lp_order_db = LP_Order_DB::getInstance();
 		$items       = $order->get_items();
-		$created_via = $order->get_created_via();
 		if ( ! $items ) {
 			return;
 		}
@@ -147,7 +146,7 @@ class LP_User_Factory {
 						continue;
 					}
 
-					if ( 'manual' === $created_via ) {
+					if ( $order->is_manual() ) {
 						self::handle_item_manual_order_completed( $order, $user, $item );
 					} else {
 						self::handle_item_order_completed( $order, $user, $item );
@@ -271,6 +270,10 @@ class LP_User_Factory {
 		try {
 			$course      = learn_press_get_course( $item['course_id'] );
 			$auto_enroll = LP_Settings::is_auto_start_course();
+
+			if ( $user instanceof LP_User_Guest ) {
+				return;
+			}
 
 			// Data user_item for save database
 			$user_item_data = [

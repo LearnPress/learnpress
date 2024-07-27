@@ -267,5 +267,24 @@ class Template {
 
 		return $html;
 	}
+
+	/**
+	 * Print message
+	 *
+	 * @param string $message
+	 * @param string $status
+	 *
+	 * @return void
+	 * @since 4.2.6.9.3
+	 * @version 1.0.0
+	 */
+	public static function print_message( string $message, string $status = 'success' ) {
+		$customer_message = [
+			'content' => $message,
+			'status'  => $status
+		];
+
+		Template::instance()->get_frontend_template( 'global/lp-message.php', compact( 'customer_message' ) );
+	}
 }
 

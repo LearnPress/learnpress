@@ -40,6 +40,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			if ( ! is_admin() ) {
 				return;
 			}
+			$time_limit_default = ini_get('max_execution_time');
 			@set_time_limit( 0 );
 			// From LP v4.2.2 temporary run create table thim_cache.
 			// After a long time, will remove this code. Only run create table when activate plugin LP.
@@ -58,6 +59,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			if ( ! LP_Settings::is_created_tb_material_files() ) {
 				$this->create_table_learnpress_files();
 			}
+			@set_time_limit( $time_limit_default );
 		}
 
 		/**

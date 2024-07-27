@@ -303,16 +303,7 @@ class CourseModel {
 	 * @return mixed
 	 */
 	public function get_sale_start() {
-		$key = CoursePostModel::META_KEY_SALE_START;
-		if ( $this->meta_data && isset( $this->meta_data->{$key} ) ) {
-			return $this->meta_data->{$key};
-		}
-
-		$coursePost              = new CoursePostModel( $this );
-		$sale_start              = $coursePost->get_meta_value_by_key( $key, false );
-		$this->meta_data->{$key} = $sale_start;
-
-		return $this->meta_data->{$key};
+		return $this->get_meta_value_by_key( CoursePostModel::META_KEY_SALE_START );
 	}
 
 	/**
@@ -321,16 +312,7 @@ class CourseModel {
 	 * @return mixed
 	 */
 	public function get_sale_end() {
-		$key = CoursePostModel::META_KEY_SALE_END;
-		if ( $this->meta_data && isset( $this->meta_data->{$key} ) ) {
-			return $this->meta_data->{$key};
-		}
-
-		$coursePost              = new CoursePostModel( $this );
-		$sale_end                = $coursePost->get_meta_value_by_key( $key, false );
-		$this->meta_data->{$key} = $sale_end;
-
-		return $this->meta_data->{$key};
+		return $this->get_meta_value_by_key( CoursePostModel::META_KEY_SALE_END );
 	}
 
 	/**
@@ -573,6 +555,24 @@ class CourseModel {
 		}
 
 		return $this->permalink;
+	}
+
+	/**
+	 * Get value option No enroll requirement
+	 *
+	 * @return mixed
+	 */
+	public function get_no_enroll_requirement() {
+		return $this->get_meta_value_by_key( CoursePostModel::META_KEY_NO_REQUIRED_ENROLL, 'no' );
+	}
+
+	/**
+	 * Get value option No enroll requirement
+	 *
+	 * @return bool
+	 */
+	public function has_no_enroll_requirement(): bool {
+		return $this->get_no_enroll_requirement() === 'yes';
 	}
 
 	public function get_meta_value_by_key( string $key, $default = false ) {

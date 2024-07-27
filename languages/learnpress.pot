@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the LearnPress plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: LearnPress 4.2.6.9.1\n"
+"Project-Id-Version: LearnPress 4.2.6.9.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/learnpress\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-07-24T12:02:15+03:00\n"
+"POT-Creation-Date: 2024-07-26T10:02:31+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.8.1\n"
 "X-Domain: learnpress\n"
@@ -654,7 +654,7 @@ msgstr ""
 #: config/elementor/course/filter-course-el.php:353
 #: inc/admin/class-lp-admin-assets.php:511
 #: inc/admin/views/meta-boxes/order/content-tab-preview-exports-invoice.php:66
-#: inc/admin/views/meta-boxes/order/details.php:184
+#: inc/admin/views/meta-boxes/order/details.php:206
 #: templates/checkout/order-received.php:70
 #: templates/order/order-details.php:28
 msgid "Item"
@@ -1206,16 +1206,16 @@ msgstr ""
 #: inc/admin/sub-menus/class-lp-submenu-statistics-bk.php:22
 #: inc/admin/sub-menus/class-lp-submenu-statistics-bk.php:29
 #: inc/admin/sub-menus/class-lp-submenu-statistics.php:21
-#: inc/custom-post-types/order.php:556
-#: inc/custom-post-types/order.php:557
+#: inc/custom-post-types/order.php:560
 #: inc/custom-post-types/order.php:561
+#: inc/custom-post-types/order.php:565
 msgid "Orders"
 msgstr ""
 
 #: config/profile-tabs.php:43
 #: config/settings/permalink.php:127
 #: inc/admin/views/meta-boxes/order/content-tab-preview-exports-invoice.php:55
-#: inc/admin/views/meta-boxes/order/details.php:41
+#: inc/admin/views/meta-boxes/order/details.php:44
 msgid "Order details"
 msgstr ""
 
@@ -1885,6 +1885,7 @@ msgid "Oops! Error."
 msgstr ""
 
 #: inc/admin/class-lp-admin-assets.php:85
+#: inc/admin/views/meta-boxes/order/details.php:144
 #: inc/emails/guest/class-lp-email-cancelled-order-guest.php:25
 #: inc/emails/guest/class-lp-email-completed-order-guest.php:29
 #: inc/emails/guest/class-lp-email-new-order-guest.php:25
@@ -2169,7 +2170,7 @@ msgstr ""
 #: inc/admin/class-lp-modal-search-items.php:61
 #: inc/admin/class-lp-modal-search-users.php:49
 #: inc/admin/views/course/modal-choose-items.php:66
-#: inc/admin/views/meta-boxes/order/details.php:279
+#: inc/admin/views/meta-boxes/order/details.php:301
 #: inc/admin/views/quiz/modal-choose-items.php:58
 msgid "Close"
 msgstr ""
@@ -3473,12 +3474,12 @@ msgid "Customer"
 msgstr ""
 
 #: inc/admin/views/meta-boxes/order/content-tab-preview-exports-invoice.php:67
-#: inc/admin/views/meta-boxes/order/details.php:185
+#: inc/admin/views/meta-boxes/order/details.php:207
 msgid "Cost"
 msgstr ""
 
 #: inc/admin/views/meta-boxes/order/content-tab-preview-exports-invoice.php:68
-#: inc/admin/views/meta-boxes/order/details.php:186
+#: inc/admin/views/meta-boxes/order/details.php:208
 #: templates/emails/order-items-table.php:86
 msgid "Quantity"
 msgstr ""
@@ -3492,8 +3493,8 @@ msgid "Sub Total"
 msgstr ""
 
 #: inc/admin/views/meta-boxes/order/content-tab-preview-exports-invoice.php:102
-#: inc/admin/views/meta-boxes/order/details.php:187
-#: inc/custom-post-types/order.php:420
+#: inc/admin/views/meta-boxes/order/details.php:209
+#: inc/custom-post-types/order.php:424
 #: templates/checkout/order-received.php:117
 #: templates/checkout/review-order.php:106
 #: templates/emails/order-items-table.php:118
@@ -3508,66 +3509,74 @@ msgstr ""
 msgid "Order %s"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/order/details.php:44
+#: inc/admin/views/meta-boxes/order/details.php:32
+msgid "Created manually"
+msgstr ""
+
+#: inc/admin/views/meta-boxes/order/details.php:47
 msgid "Date created:"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/order/details.php:65
+#: inc/admin/views/meta-boxes/order/details.php:68
 #: templates/order/confirm.php:70
 msgid "Status:"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/order/details.php:86
+#: inc/admin/views/meta-boxes/order/details.php:89
 msgid "When the Status is changed to \"Pending\", \"Cancelled\", or \"Failed\" all courses, lessons, quizzes, and other progress are deleted!"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/order/details.php:94
+#: inc/admin/views/meta-boxes/order/details.php:97
 msgid "Customers:"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/order/details.php:110
+#: inc/admin/views/meta-boxes/order/details.php:113
 msgid "Choose User"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/order/details.php:157
+#: inc/admin/views/meta-boxes/order/details.php:151
+msgid "No customer"
+msgstr ""
+
+#: inc/admin/views/meta-boxes/order/details.php:178
 msgid "In order to change the order user, please change the order status to \"Pending\"."
 msgstr ""
 
-#: inc/admin/views/meta-boxes/order/details.php:165
+#: inc/admin/views/meta-boxes/order/details.php:187
 #: templates/order/order-details.php:121
 msgid "Order key:"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/order/details.php:174
+#: inc/admin/views/meta-boxes/order/details.php:196
 msgid "Customer Note"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/order/details.php:201
+#: inc/admin/views/meta-boxes/order/details.php:223
 msgid "There are no order items"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/order/details.php:212
+#: inc/admin/views/meta-boxes/order/details.php:234
 msgid "Subtotal:"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/order/details.php:223
+#: inc/admin/views/meta-boxes/order/details.php:245
 #: templates/order/confirm.php:57
 msgid "Total:"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/order/details.php:239
+#: inc/admin/views/meta-boxes/order/details.php:261
 msgid "Add item(s)"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/order/details.php:244
+#: inc/admin/views/meta-boxes/order/details.php:266
 msgid "In order to change the order item, please change the order status to 'Pending'."
 msgstr ""
 
-#: inc/admin/views/meta-boxes/order/details.php:270
+#: inc/admin/views/meta-boxes/order/details.php:292
 msgid "Type here to search for the course"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/order/details.php:274
+#: inc/admin/views/meta-boxes/order/details.php:296
 msgid "No results"
 msgstr ""
 
@@ -3595,7 +3604,7 @@ msgstr ""
 msgid "Payment Medthod"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/order/order-item.php:18
+#: inc/admin/views/meta-boxes/order/order-item.php:20
 msgid "Delete item"
 msgstr ""
 
@@ -3970,7 +3979,7 @@ msgid "Sale by"
 msgstr ""
 
 #: inc/admin/views/statistics-bk/orders.php:47
-#: inc/custom-post-types/order.php:419
+#: inc/custom-post-types/order.php:423
 #: templates/checkout/order-received.php:104
 #: templates/profile/tabs/orders/list.php:31
 #: templates/profile/tabs/quizzes.php:56
@@ -4320,7 +4329,7 @@ msgid "Type item buy invalid!"
 msgstr ""
 
 #: inc/class-lp-datetime.php:150
-#: inc/custom-post-types/order.php:490
+#: inc/custom-post-types/order.php:494
 #: inc/order/class-lp-order.php:148
 msgid "%s ago"
 msgstr ""
@@ -4774,7 +4783,7 @@ msgstr ""
 
 #: inc/custom-post-types/course.php:56
 #: inc/custom-post-types/lesson.php:162
-#: inc/custom-post-types/order.php:563
+#: inc/custom-post-types/order.php:567
 #: inc/custom-post-types/question.php:211
 msgid "Add New"
 msgstr ""
@@ -4946,17 +4955,17 @@ msgstr ""
 msgid "Assigned"
 msgstr ""
 
-#: inc/custom-post-types/order.php:182
+#: inc/custom-post-types/order.php:186
 msgid "Order number, course name, etc."
 msgstr ""
 
-#: inc/custom-post-types/order.php:416
-#: inc/custom-post-types/order.php:558
+#: inc/custom-post-types/order.php:420
+#: inc/custom-post-types/order.php:562
 #: templates/profile/tabs/orders/list.php:28
 msgid "Order"
 msgstr ""
 
-#: inc/custom-post-types/order.php:417
+#: inc/custom-post-types/order.php:421
 #: inc/TemplateHooks/Course/ListCoursesTemplate.php:759
 #: inc/TemplateHooks/Course/SingleCourseTemplate.php:229
 #: inc/TemplateHooks/Instructor/SingleInstructorTemplate.php:187
@@ -4966,12 +4975,12 @@ msgid_plural "Students"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/custom-post-types/order.php:418
+#: inc/custom-post-types/order.php:422
 #: inc/user-item/class-lp-user-item.php:688
 msgid "Purchased"
 msgstr ""
 
-#: inc/custom-post-types/order.php:421
+#: inc/custom-post-types/order.php:425
 #: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1604
 #: templates/checkout/order-received.php:61
 #: templates/emails/order-items-table.php:72
@@ -4980,64 +4989,64 @@ msgstr ""
 msgid "Status"
 msgstr ""
 
-#: inc/custom-post-types/order.php:470
+#: inc/custom-post-types/order.php:474
 #: inc/order/class-lp-order.php:453
 msgid "(Guest)"
 msgstr ""
 
-#: inc/custom-post-types/order.php:505
+#: inc/custom-post-types/order.php:509
 #: templates/checkout/order-received.php:81
 msgid "The course does not exist"
 msgstr ""
 
-#: inc/custom-post-types/order.php:507
+#: inc/custom-post-types/order.php:511
 msgid "Deleted"
 msgstr ""
 
-#: inc/custom-post-types/order.php:523
+#: inc/custom-post-types/order.php:527
 #: templates/checkout/order-received.php:98
 msgid "(No item)"
 msgstr ""
 
-#: inc/custom-post-types/order.php:533
+#: inc/custom-post-types/order.php:537
 msgid "Pay via <strong>%s</strong>"
 msgstr ""
 
-#: inc/custom-post-types/order.php:559
+#: inc/custom-post-types/order.php:563
 msgid "Add A New Order"
 msgstr ""
 
-#: inc/custom-post-types/order.php:560
-#: inc/custom-post-types/order.php:691
+#: inc/custom-post-types/order.php:564
+#: inc/custom-post-types/order.php:695
 #: templates/order/order-details.php:23
 msgid "Order Details"
 msgstr ""
 
-#: inc/custom-post-types/order.php:562
+#: inc/custom-post-types/order.php:566
 msgid "View Order"
 msgstr ""
 
-#: inc/custom-post-types/order.php:564
+#: inc/custom-post-types/order.php:568
 msgid "Update Order"
 msgstr ""
 
-#: inc/custom-post-types/order.php:565
+#: inc/custom-post-types/order.php:569
 msgid "Search Orders"
 msgstr ""
 
-#: inc/custom-post-types/order.php:566
+#: inc/custom-post-types/order.php:570
 msgid "No order found"
 msgstr ""
 
-#: inc/custom-post-types/order.php:567
+#: inc/custom-post-types/order.php:571
 msgid "There was no order found in the trash"
 msgstr ""
 
-#: inc/custom-post-types/order.php:699
+#: inc/custom-post-types/order.php:703
 msgid "Order Actions"
 msgstr ""
 
-#: inc/custom-post-types/order.php:707
+#: inc/custom-post-types/order.php:711
 msgid "Order Exports"
 msgstr ""
 

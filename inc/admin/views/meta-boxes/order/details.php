@@ -28,6 +28,9 @@ $user_ids     = $order->get_user_id();
 		<h3 class="order-data-number"><?php echo sprintf( __( 'Order %s', 'learnpress' ), $order->get_order_number() ); ?></h3>
 		<div class="order-data-field payment-method-title">
 			<?php
+			if ( $order->is_manual() ) {
+				printf( '<strong>%s</strong>', __( 'Created manually', 'learnpress' ) );
+			}
 			if ( $method_title && $user_ip ) {
 				printf( 'Pay via <strong>%s</strong> at <strong>%s</strong>', $method_title, $user_ip );
 			} elseif ( $method_title ) {
@@ -93,7 +96,7 @@ $user_ids     = $order->get_user_id();
 			<div class="order-users">
 				<label><?php esc_html_e( 'Customers:', 'learnpress' ); ?></label>
 				<?php
-				if ( LP_ORDER_PENDING === $order->get_status() ) {
+				if ( LP_ORDER_PENDING === $order->get_status() && $order->is_manual() ) {
 					$data_struct = [
 						'urlApi'      => get_rest_url( null, 'lp/v1/admin/tools/search-user' ),
 						'dataType'    => 'users',
@@ -133,29 +136,48 @@ $user_ids     = $order->get_user_id();
 					<div class="advanced-list">
 						<div class="ts-control">
 							<?php
-							if ( ! is_array( $user_ids ) ) {
-								$user_ids = (array) $user_ids;
-							}
-
-							foreach ( $user_ids as $user_id ) {
-								$user = learn_press_get_user( $user_id );
-								if ( ! $user ) {
-									continue;
-								}
+							if ( ! $order->is_manual() && $order->is_guest() ) {
 								printf(
-									'<li data-id="%1$s"><div class="item" data-ts-item="">%2$s</div><input type="hidden" name="order-customer[]" value="%1$s"></li>',
-									$user_id,
-									sprintf( '%s (#%d) - %s', $user->get_display_name(), $user->get_id(), $user->get_email() )
+									'<li>
+										<div class="item">%s</div>
+									</li>',
+									sprintf( '%s (%s)', $order->get_checkout_email(), __( 'Guest', 'learnpress' ) )
 								);
+							} elseif ( $order->is_manual() && $order->is_guest() ) {
+								printf(
+									'<li>
+										<div class="item">%s</div>
+									</li>',
+									__( 'No customer', 'learnpress' )
+								);
+							} else {
+								if ( ! is_array( $user_ids ) ) {
+									$user_ids = (array) $user_ids;
+								}
+
+								foreach ( $user_ids as $user_id ) {
+									$user = learn_press_get_user( $user_id );
+									if ( ! $user ) {
+										continue;
+									}
+									printf(
+										'<li>
+											<div class="item" data-ts-item="">%s</div>
+										</li>',
+										sprintf( '%s (#%d) - %s', $user->get_display_name(), $user->get_id(), $user->get_email() )
+									);
+								}
 							}
 							?>
 						</div>
 					</div>
 					<?php
-					printf(
-						'<p class="description">%s</p>',
-						esc_html__( 'In order to change the order user, please change the order status to "Pending".', 'learnpress' )
-					);
+					if ( $order->is_manual() ) {
+						printf(
+							'<p class="description">%s</p>',
+							esc_html__( 'In order to change the order user, please change the order status to "Pending".', 'learnpress' )
+						);
+					}
 				}
 				?>
 			</div>
@@ -232,21 +254,23 @@ $user_ids     = $order->get_user_id();
 				<td colspan="2"></td>
 				<td colspan="2" style="border-bottom: 1px dashed #DDD;"></td>
 			</tr>
-			<tr>
-				<td class="align-right" colspan="4" style="border-top: 1px solid #DDD;">
-					<?php if ( 'pending' === $order->get_status() ) { ?>
-						<button class="button" type="button" id="learn-press-add-order-item">
-							<?php esc_html_e( 'Add item(s)', 'learnpress' ); ?>
-						</button>
-						<?php
-					} else {
-						echo '<p class="description">';
-						esc_html_e( 'In order to change the order item, please change the order status to \'Pending\'.', 'learnpress' );
-						echo '</p>';
-					}
-					?>
-				</td>
-			</tr>
+			<?php if ( $order->is_manual() ) { ?>
+				<tr>
+					<td class="align-right" colspan="4" style="border-top: 1px solid #DDD;">
+						<?php if ( 'pending' === $order->get_status() ) { ?>
+							<button class="button" type="button" id="learn-press-add-order-item">
+								<?php esc_html_e( 'Add item(s)', 'learnpress' ); ?>
+							</button>
+							<?php
+						} else {
+							echo '<p class="description">';
+							esc_html_e( 'In order to change the order item, please change the order status to \'Pending\'.', 'learnpress' );
+							echo '</p>';
+						}
+						?>
+					</td>
+				</tr>
+			<?php } ?>
 			</tfoot>
 		</table>
 	</div>

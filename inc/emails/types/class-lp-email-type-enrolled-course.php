@@ -13,6 +13,9 @@
 /**
  * Prevent loading this file directly
  */
+
+use LearnPress\Models\UserItems\UserCourseModel;
+
 defined( 'ABSPATH' ) || exit();
 
 class LP_Email_Type_Enrolled_Course extends LP_Email {
@@ -78,10 +81,16 @@ class LP_Email_Type_Enrolled_Course extends LP_Email {
 				return false;
 			}
 
-			$user_course_status = $user->get_course_status( $course_id );
+			$filter = new LP_User_Items_Filter();
+			$filter->user_id = $user_id;
+			$filter->item_id = $course_id;
+			$filter->item_type = LP_COURSE_CPT;
+			$filter->ref_type = LP_ORDER_CPT;
+			$filter->ref_id = $order_id;
+			$userCourse = UserCourseModel::get_user_item_model_from_db( $filter );
 
-			if ( LP_COURSE_ENROLLED != $user_course_status ) {
-				error_log( 'User did not enrolled course ' . __CLASS__ );
+			if ( LP_COURSE_ENROLLED != $userCourse->status ) {
+				throw new Exception( 'User not enrolled course' );
 			}
 
 			$this->_order  = new LP_Order( $order_id );
