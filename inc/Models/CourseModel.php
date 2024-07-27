@@ -562,7 +562,7 @@ class CourseModel {
 	 *
 	 * @return mixed
 	 */
-	public function no_enroll_requirement() {
+	public function get_no_enroll_requirement() {
 		return $this->get_meta_value_by_key( CoursePostModel::META_KEY_NO_REQUIRED_ENROLL, 'no' );
 	}
 
@@ -572,7 +572,7 @@ class CourseModel {
 	 * @return bool
 	 */
 	public function has_no_enroll_requirement(): bool {
-		return $this->no_enroll_requirement() === 'yes';
+		return $this->get_no_enroll_requirement() === 'yes';
 	}
 
 	public function get_meta_value_by_key( string $key, $default = false ) {

@@ -367,7 +367,12 @@ class LP_User extends LP_Abstract_User {
 			// Not use $course->is_no_required_enroll() because it is not correct, it check with user logged.
 			if ( $course->get_data( 'no_required_enroll', 'no' ) === 'yes' ) {
 				$code_err = 'no_required_enroll';
-				throw new Exception( __( 'Course is free, so you can not purchase', 'learnpress' ) );
+				throw new Exception(
+					__(
+						'Enrollment in the course is not mandatory. You can access materials for learning or to take quizzes now.',
+						'learnpress'
+					)
+				);
 			}
 
 			// If the order contains course is processing

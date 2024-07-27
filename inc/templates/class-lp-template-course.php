@@ -191,14 +191,22 @@ class LP_Template_Course extends LP_Abstract_Template {
 			$can_show = false;
 		}
 
+		if ( $course->is_free() ) {
+			return;
+		}
+
 		$can_purchase = $user->can_purchase_course( $course->get_id() );
 		if ( is_wp_error( $can_purchase ) ) {
-			if ( in_array( $can_purchase->get_error_code(), [ 'order_processing' ] ) ) {
+			if ( in_array( $can_purchase->get_error_code(), [ 'order_processing', 'course_out_of_stock', 'course_is_no_required_enroll_not_login' ] ) ) {
 				Template::print_message( $can_purchase->get_error_message(), 'warning' );
 			}
+
 			$can_show = false;
 		}
 
+		// Hook since 4.2.6.9.3
+		$can_show = apply_filters( 'learn-press/course/template/button-purchase/can-show', $can_show, $can_purchase, $user, $course );
+		// Hook since 4.1.3
 		$can_show = apply_filters( 'learnpress/course/template/button-purchase/can-show', $can_show, $user, $course );
 		if ( ! $can_show ) {
 			return;
