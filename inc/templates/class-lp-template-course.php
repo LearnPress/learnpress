@@ -193,7 +193,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 
 		$can_purchase = $user->can_purchase_course( $course->get_id() );
 		if ( is_wp_error( $can_purchase ) ) {
-			if ( in_array( $can_purchase->get_error_code(), [ 'order_processing', 'course_out_of_stock' ] ) ) {
+			if ( in_array( $can_purchase->get_error_code(), [ 'order_processing' ] ) ) {
 				Template::print_message( $can_purchase->get_error_message(), 'warning' );
 			}
 			$can_show = false;
