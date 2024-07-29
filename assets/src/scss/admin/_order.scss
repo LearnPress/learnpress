@@ -241,19 +241,19 @@
 			cursor: pointer;
 		}
 	}
-	.export-modal.modal {
-		display: none;
-		position: fixed;
-		z-index: 1;
-		left: 0;
-		top: 0;
-		width: 100%;
-		height: 100%;
-		overflow: auto;
-		background-color: #000000;
-		background-color: rgba(0, 0, 0, 0.4);
-	}
 	.export-modal {
+		&.modal {
+			display: none;
+			position: fixed;
+			z-index: 10;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			overflow: auto;
+			background-color: #000000;
+			background-color: rgba(0, 0, 0, 0.4);
+		}
 		.modal-content {
 			background-color: #fefefe;
 			margin: 5% auto;

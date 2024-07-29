@@ -11,7 +11,7 @@
 					<ul class="search-results"></ul>
 				</article>
 				<footer>
-					<div class="search-nav" style="display:none">
+					<div class="search-nav">
 					</div>
 					<button class="button close"><?php echo wp_kses_post( $this->_options['close_button'] ); ?></button>
 					<button class="button button-primary add" style="display:none"><?php echo wp_kses_post( $this->_options['add_button'] ); ?></button>

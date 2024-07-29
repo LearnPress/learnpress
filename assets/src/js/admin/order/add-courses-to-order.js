@@ -3,24 +3,38 @@ import { AdminUtilsFunctions, Api, Utils } from '../utils-admin.js';
 const addCoursesToOrder = () => {
 	let elModalSearchCourses;
 	let elBtnAddOrderItem;
-	let elOrderDetails, modalSearchItems, modalContainer, elModalSearchItem;
+	let elOrderDetails, modalSearchItems, modalContainer;
+	let elOrderModalFooter, elOrderModalBtnAdd;
+	let elListOrderItems;
+	let timeOutSearch;
+	const idModalSearchItems = '#modal-search-items';
+	const idOrderDetails = '#learn-press-order';
+	let dataSend = {
+		search: '',
+		not_ids: '',
+		paged: 1,
+	};
+	const courseIdsNewSelected = [];
+	const courseIdsNewAdded = [];
 
 	const getAllElements = () => {
 		elOrderDetails = document.querySelector( '#learn-press-order' );
-		elModalSearchCourses = document.querySelector( '#modal-search-items' );
+		elListOrderItems = elOrderDetails.querySelector( '.list-order-items' );
 		elBtnAddOrderItem = elOrderDetails.querySelector( '#learn-press-add-order-item' );
 		modalSearchItems = document.querySelector( '#learn-press-modal-search-items' );
 		modalContainer = document.querySelector( '#container-modal-search-items' );
 	};
 
-	const fetchCoursesAPI = ( keySearch = '', course_ids_exclude = '' ) => {
-		const dataSend = {
+	const fetchCoursesAPI = ( keySearch = '', course_ids_exclude = '', paged = 1 ) => {
+		dataSend = {
+			search: keySearch,
 			not_ids: course_ids_exclude,
+			paged,
 		};
 
 		AdminUtilsFunctions.fetchCourses( keySearch, dataSend, {
 			before() {
-				elModalSearchItem.classList.add( 'loading' );
+				elModalSearchCourses.classList.add( 'loading' );
 			},
 			success( response ) {
 				const { data, status, message } = response;
@@ -29,29 +43,257 @@ const addCoursesToOrder = () => {
 				if ( 'success' !== status ) {
 					console.error( message );
 				} else {
-					elModalSearchItem.querySelector( '.search-results' ).innerHTML = renderSearchResult( courses );
+					elModalSearchCourses.querySelector( '.search-results' ).innerHTML = renderSearchResult( courses );
+					const paginationHtml = renderPagination( paged, total_pages );
+					const searchNav = elModalSearchCourses.querySelector( '.search-nav' );
+					searchNav.innerHTML = paginationHtml;
 				}
 			},
 			error( err ) {
 				console.error( err );
 			},
 			completed() {
-				elModalSearchItem.classList.remove( 'loading' );
+				elModalSearchCourses.classList.remove( 'loading' );
 			},
 		} );
+	};
+
+	const getCoursesAdded = () => {
+		const orderItems = document.querySelectorAll( '#learn-press-order .list-order-items tbody .order-item-row' );
+		orderItems.forEach( ( orderItem ) => {
+			const orderItemId = parseInt( orderItem.getAttribute( 'data-id' ) );
+			courseIdsNewAdded.push( orderItemId );
+		} );
+
+		dataSend.not_ids = courseIdsNewAdded.join( ',' );
+	};
+
+	/**
+	 * Add courses to order.
+	 * @param e
+	 * @param target
+	 */
+	const addCourses = ( e, target ) => {
+		if ( ! target.classList.contains( 'add' ) ) {
+			return;
+		}
+
+		if ( ! target.closest( idModalSearchItems ) ) {
+			return;
+		}
+
+		e.preventDefault();
+
+		target.disabled = true;
+		const dataSend = {
+			'lp-ajax': 'add_items_to_order',
+			order_id: document.querySelector( '#post_ID' ).value,
+			items: courseIdsNewSelected,
+			nonce: lpDataAdmin.nonce,
+		};
+
+		const callBack = {
+			success( response ) {
+				const { data, messages, status } = response;
+				if ( 'error' === status ) {
+					console.error( messages );
+					return;
+				}
+
+				const { item_html, order_data } = data;
+				const elNoItem = elListOrderItems.querySelector( '.no-order-items' );
+				elNoItem.style.display = 'none';
+				elNoItem.insertAdjacentHTML( 'beforebegin', item_html );
+				elOrderDetails.querySelector( '.order-subtotal' ).innerHTML = order_data.subtotal_html;
+				elOrderDetails.querySelector( '.order-total' ).innerHTML = order_data.total_html;
+				courseIdsNewAdded.push( ...courseIdsNewSelected );
+			},
+			error( err ) {
+				console.error( err );
+			},
+			completed() {
+				target.disabled = false;
+			},
+		};
+		Utils.lpFetchAPI( Utils.lpAddQueryArgs( Utils.lpGetCurrentURLNoParam(), dataSend ), {}, callBack );
+	};
+
+	const removeCourse = ( e, target ) => {
+		if ( target.tagName !== 'SPAN' ) {
+			return;
+		}
+
+		if ( ! target.closest( idOrderDetails ) ) {
+			return;
+		}
+
+		e.preventDefault();
+		target.disabled = true;
+		target.classList.add( 'dashicons-update' );
+		const elItemRow = target.closest( '.order-item-row' );
+		const elListOrderItems = target.closest( '.list-order-items' );
+		const orderItemId = parseInt( elItemRow.getAttribute( 'data-item_id' ) );
+		const courseId = parseInt( elItemRow.getAttribute( 'data-id' ) );
+
+		const dataSend = {
+			'lp-ajax': 'remove_items_from_order',
+			order_id: document.querySelector( '#post_ID' ).value,
+			items: orderItemId,
+			nonce: lpDataAdmin.nonce,
+		};
+
+		const callBack = {
+			success( response ) {
+				const { data, messages, status } = response;
+				if ( 'error' === status ) {
+					console.error( messages );
+					return;
+				}
+
+				const { item_html, order_data } = data;
+				const elNoItem = elListOrderItems.querySelector( '.no-order-items' );
+				const orderItems = elListOrderItems.querySelectorAll( '.order-item-row' );
+				orderItems.forEach( ( orderItem ) => {
+					orderItem.remove();
+				} );
+				if ( item_html.length ) {
+					elNoItem.insertAdjacentHTML( 'beforebegin', item_html );
+				} else {
+					elNoItem.style.display = 'block';
+				}
+
+				courseIdsNewSelected.splice( courseIdsNewSelected.indexOf( courseId ), 1 );
+				courseIdsNewAdded.splice( courseIdsNewSelected.indexOf( courseId ), 1 );
+				elOrderDetails.querySelector( '.order-subtotal' ).innerHTML = order_data.subtotal_html;
+				elOrderDetails.querySelector( '.order-total' ).innerHTML = order_data.total_html;
+			},
+			error( err ) {
+				console.error( err );
+			},
+			completed() {
+
+			},
+		};
+		Utils.lpFetchAPI( Utils.lpAddQueryArgs( Utils.lpGetCurrentURLNoParam(), dataSend ), {}, callBack );
+	};
+
+	const searchCourse = ( e, target ) => {
+		if ( 'search' !== target.name ) {
+			return;
+		}
+
+		const elLPTarget = target.closest( idModalSearchItems );
+		if ( ! elLPTarget ) {
+			return;
+		}
+
+		e.preventDefault();
+		const keyword = target.value;
+
+		if ( ! keyword || ( keyword && keyword.length > 2 ) ) {
+			if ( undefined !== timeOutSearch ) {
+				clearTimeout( timeOutSearch );
+			}
+
+			timeOutSearch = setTimeout( function() {
+				fetchCoursesAPI( keyword, dataSend.not_ids, 1 );
+			}, 800 );
+		}
 	};
 
 	const renderSearchResult = ( courses ) => {
 		let html = '';
 
-		for ( let i = 0; i < courses.length; i++ ) {
+		courses.forEach( ( course ) => {
+			const courseId = parseInt( course.ID );
+			const checked = courseIdsNewSelected.includes( courseId ) ? 'checked' : '';
+
 			html += `
-		<li class="lp-result-item" data-id="${ courses[ i ].ID }" data-type="lp_course" data-text="${ courses[ i ].post_title }">
-			<label>
-				<input type="checkbox" value="${ courses[ i ].ID }" name="selectedItems[]">
-				<span class="lp-item-text">${ courses[ i ].post_title } (Course - #${ courses[ i ].ID })</span>
-			</label>
-		</li>`;
+			<li class="lp-result-item" data-id="${ courseId }" data-type="lp_course" data-text="${ course.post_title }">
+				<label>
+					<input type="checkbox" value="${ courseId }" name="selectedItems[]" ${ checked }>
+					<span class="lp-item-text">${ course.post_title } (#${ courseId })</span>
+				</label>
+			</li>`;
+		} );
+
+		return html;
+	};
+
+	const renderPagination = ( currentPage, maxPage ) => {
+		currentPage = parseInt( currentPage );
+		maxPage = parseInt( maxPage );
+
+		let html = '';
+		if ( maxPage <= 1 ) {
+			return html;
+		}
+		const nextPage = currentPage + 1;
+		const prevPage = currentPage - 1;
+
+		let pages = [];
+
+		if ( maxPage <= 9 ) {
+			for ( let i = 1; i <= maxPage; i++ ) {
+				pages.push( i );
+			}
+		} else if ( currentPage <= 3 ) {
+			// x is ...
+			pages = [ 1, 2, 3, 4, 5, 'x', maxPage ];
+		} else if ( currentPage <= 5 ) {
+			for ( let i = 1; i <= currentPage; i++ ) {
+				pages.push( i );
+			}
+			for ( let j = 1; j <= 2; j++ ) {
+				const tempPage = currentPage + j;
+				pages.push( tempPage );
+			}
+			pages.push( 'x' );
+			pages.push( maxPage );
+		} else {
+			pages = [ 1, 'x' ];
+
+			for ( let k = 2; k >= 0; k-- ) {
+				const tempPage = currentPage - k;
+				pages.push( tempPage );
+			}
+
+			const currentToLast = maxPage - currentPage;
+
+			if ( currentToLast <= 5 ) {
+				for ( let m = currentPage + 1; m <= maxPage; m++
+				) {
+					pages.push( m );
+				}
+			} else {
+				for ( let n = 1; n <= 2; n++ ) {
+					const tempPage = currentPage + n;
+					pages.push( tempPage );
+				}
+				pages.push( 'x' );
+				pages.push( maxPage );
+			}
+		}
+
+		const maximum = pages.length;
+
+		if ( currentPage !== 1 ) {
+			html += `<a class="prev page-numbers button" href="#" data-page="${ prevPage }"><</a>`;
+		}
+		for ( let i = 0; i < maximum; i++ ) {
+			if ( currentPage === parseInt( pages[ i ] ) ) {
+				html += `<a aria-current="page" class="page-numbers current button disabled" data-page="${ pages[ i ] }">
+				${ pages[ i ] }
+			</a>`;
+			} else if ( pages[ i ] === 'x' ) {
+				html += `<span class="page-numbers dots button disabled">...</span>`;
+			} else {
+				html += `<a class="page-numbers button" href="#" data-page="${ pages[ i ] }">${ pages[ i ] } </a>`;
+			}
+		}
+
+		if ( currentPage !== maxPage ) {
+			html += `<a class="next page-numbers button" href="#" data-page="${ nextPage }">></a>`;
 		}
 
 		return html;
@@ -59,7 +301,7 @@ const addCoursesToOrder = () => {
 
 	const showPopupSearchCourses = () => {
 		modalContainer.style.display = 'block';
-		fetchCoursesAPI();
+		fetchCoursesAPI( dataSend.search, dataSend.not_ids, dataSend.paged );
 	};
 
 	// Events.
@@ -71,10 +313,42 @@ const addCoursesToOrder = () => {
 			showPopupSearchCourses();
 		}
 
-		if ( target.classList.contains( 'close' ) && target.closest( '#modal-search-items' ) ) {
+		if ( target.classList.contains( 'close' ) && target.closest( idModalSearchItems ) ) {
 			e.preventDefault();
 			modalContainer.style.display = 'none';
 		}
+
+		if ( target.classList.contains( 'page-numbers' ) ) {
+			if ( target.closest( idModalSearchItems ) ) {
+				e.preventDefault();
+				const paged = target.getAttribute( 'data-page' );
+				fetchCoursesAPI( dataSend.search, dataSend.not_ids, paged );
+			}
+		}
+
+		if ( target.name === 'selectedItems[]' ) {
+			if ( target.closest( idModalSearchItems ) ) {
+				const courseId = parseInt( target.value );
+				if ( target.checked ) {
+					courseIdsNewSelected.push( courseId );
+				} else {
+					const index = courseIdsNewSelected.indexOf( courseId );
+					if ( index > -1 ) {
+						courseIdsNewSelected.splice( index, 1 );
+					}
+				}
+
+				elOrderModalBtnAdd.style.display = courseIdsNewSelected.length > 0 ? 'block' : 'none';
+			}
+		}
+
+		addCourses( e, target );
+		removeCourse( e, target );
+	} );
+	document.addEventListener( 'keyup', function( e ) {
+		const target = e.target;
+
+		searchCourse( e, target );
 	} );
 
 	// DOMContentLoaded.
@@ -85,11 +359,12 @@ const addCoursesToOrder = () => {
 			return;
 		}
 
+		getCoursesAdded();
 		modalContainer.innerHTML = modalSearchItems.innerHTML;
-		elModalSearchItem = modalContainer.querySelector( '#modal-search-items' );
+		elModalSearchCourses = modalContainer.querySelector( idModalSearchItems );
+		elOrderModalFooter = elModalSearchCourses.querySelector( 'footer' );
+		elOrderModalBtnAdd = elOrderModalFooter.querySelector( '.add' );
 		modalContainer.style.display = 'none';
-
-		fetchCoursesAPI();
 	} );
 };
 
