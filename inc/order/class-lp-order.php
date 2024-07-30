@@ -502,7 +502,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			$course_id = $this->get_id();
 			$key = '_lp_course_out_stock';
 
-			$items = get_post_meta( $course_id, $key);
+			$items = get_post_meta( $course_id, $key, true);
 			return $items;
 		}
 

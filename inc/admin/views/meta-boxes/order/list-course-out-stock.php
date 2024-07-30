@@ -3,7 +3,8 @@ if ( empty( $items_out_stock ) ) {
 	return;
 }
 use LearnPress\Models\CourseModel;
-$course_ids = explode( ',', $items_out_stock[0] );
+
+$course_ids = explode( ',', $items_out_stock );
 ?>
 <div class="lp-course-sold-out">
 	<p class="lp-course-sold-out__title" style="font-style: italic; font-weight:bolder; color: darkred; font-size: 1rem;">
