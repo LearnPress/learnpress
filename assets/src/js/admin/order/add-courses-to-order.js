@@ -3,7 +3,7 @@ import { AdminUtilsFunctions, Api, Utils } from '../utils-admin.js';
 const addCoursesToOrder = () => {
 	let elModalSearchCourses;
 	let elBtnAddOrderItem, elSearchCoursesResult;
-	let elOrderDetails, modalSearchItems, modalContainer;
+	let elOrderDetails, modalSearchItemsTemplate, modalContainer;
 	let elOrderModalFooter, elOrderModalBtnAdd;
 	let elListOrderItems;
 	let timeOutSearch;
@@ -21,7 +21,7 @@ const addCoursesToOrder = () => {
 		elOrderDetails = document.querySelector( '#learn-press-order' );
 		elListOrderItems = elOrderDetails.querySelector( '.list-order-items' );
 		elBtnAddOrderItem = elOrderDetails.querySelector( '#learn-press-add-order-item' );
-		modalSearchItems = document.querySelector( '#learn-press-modal-search-items' );
+		modalSearchItemsTemplate = document.querySelector( '#learn-press-modal-search-items' );
 		modalContainer = document.querySelector( '#container-modal-search-items' );
 	};
 
@@ -368,6 +368,9 @@ const addCoursesToOrder = () => {
 
 		if ( target.classList.contains( 'close' ) && target.closest( idModalSearchItems ) ) {
 			e.preventDefault();
+			elModalSearchCourses.querySelector( 'input[name="search"]' ).value = '';
+			dataSend.search = '';
+			dataSend.paged = 1;
 			modalContainer.style.display = 'none';
 		}
 
@@ -413,7 +416,7 @@ const addCoursesToOrder = () => {
 		}
 
 		getCoursesAdded();
-		modalContainer.innerHTML = modalSearchItems.innerHTML;
+		modalContainer.innerHTML = modalSearchItemsTemplate.innerHTML;
 		elModalSearchCourses = modalContainer.querySelector( idModalSearchItems );
 		elSearchCoursesResult = elModalSearchCourses.querySelector( '.search-results' );
 		elOrderModalFooter = elModalSearchCourses.querySelector( 'footer' );
