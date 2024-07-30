@@ -433,4 +433,49 @@
 			font-size: 1rem;
 		}
 	}
+
+	.lp-course-sold-out {
+		border: 1px solid #ccd0d4;
+		margin: 1rem 0;
+		background-color: #fff;
+	}
+	
+	.lp-course-sold-out__title {
+		padding: 10px;
+		cursor: pointer;
+		margin: 0;
+		position: relative;
+	}
+	
+	.lp-course-sold-out__title::after {
+		content: '';
+		position: absolute;
+		right: 15px;
+		top: 50%;
+		transform: translate(0, -50%);
+		width: 7px;
+		height: 7px;
+		border-top: 2px solid #000;
+		border-left: 2px solid #000;
+		transform: rotate(225deg) translate(0, 50%);
+	}
+	
+	.woocommerce-checkout:has( .lp-course-sold-out__list.is-active) .lp-course-sold-out__title::after {
+		transform: rotate(45deg) translate(0, -50%);
+	}
+	
+	.lp-course-sold-out__list {
+		list-style-type: numeric;
+		padding: 0;
+		height: 0;
+		overflow: hidden;
+		margin-block: 0;
+		transition: all 0.5s ease-out;
+	}
+	
+	.lp-course-sold-out__list.is-active {
+		height: auto;
+		padding: 0 2rem 1rem;
+		margin: 0 20px;
+	}
 }

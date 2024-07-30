@@ -199,6 +199,11 @@ $user_ids     = $order->get_user_id();
 		</div>
 	</div>
 
+	<?php $items_out_stock = $order->get_items_out_stock(); ?>
+	<?php if ( ! empty( $items_out_stock ) ) : ?>
+		<?php include learn_press_get_admin_view( 'meta-boxes/order/list-course-out-stock.php' ); ?>
+	<?php endif; ?>
+
 	<div class="order-items">
 		<table class="list-order-items">
 			<thead>
