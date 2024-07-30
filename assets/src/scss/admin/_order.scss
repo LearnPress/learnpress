@@ -460,7 +460,7 @@
 		transform: rotate(225deg) translate(0, 50%);
 	}
 	
-	.woocommerce-checkout:has( .lp-course-sold-out__list.is-active) .lp-course-sold-out__title::after {
+	.lp-course-sold-out:has( .lp-course-sold-out__list.is-active) .lp-course-sold-out__title::after {
 		transform: rotate(45deg) translate(0, -50%);
 	}
 	
