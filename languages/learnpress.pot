@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the LearnPress plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: LearnPress 4.2.6.9.2\n"
+"Project-Id-Version: LearnPress 4.2.6.9.3-beta.3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/learnpress\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-07-26T10:02:31+03:00\n"
+"POT-Creation-Date: 2024-07-30T13:26:39+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.8.1\n"
 "X-Domain: learnpress\n"
@@ -116,7 +116,7 @@ msgstr ""
 #: inc/admin/views/meta-boxes/fields/date.php:39
 #: inc/class-lp-assets.php:96
 #: inc/lp-core-functions.php:2824
-#: inc/order/class-lp-order.php:948
+#: inc/order/class-lp-order.php:955
 msgid "Cancel"
 msgstr ""
 
@@ -652,9 +652,9 @@ msgid "Radius"
 msgstr ""
 
 #: config/elementor/course/filter-course-el.php:353
-#: inc/admin/class-lp-admin-assets.php:511
+#: inc/admin/class-lp-admin-assets.php:513
 #: inc/admin/views/meta-boxes/order/content-tab-preview-exports-invoice.php:66
-#: inc/admin/views/meta-boxes/order/details.php:206
+#: inc/admin/views/meta-boxes/order/details.php:209
 #: templates/checkout/order-received.php:70
 #: templates/order/order-details.php:28
 msgid "Item"
@@ -1206,9 +1206,9 @@ msgstr ""
 #: inc/admin/sub-menus/class-lp-submenu-statistics-bk.php:22
 #: inc/admin/sub-menus/class-lp-submenu-statistics-bk.php:29
 #: inc/admin/sub-menus/class-lp-submenu-statistics.php:21
-#: inc/custom-post-types/order.php:560
-#: inc/custom-post-types/order.php:561
-#: inc/custom-post-types/order.php:565
+#: inc/custom-post-types/order.php:591
+#: inc/custom-post-types/order.php:592
+#: inc/custom-post-types/order.php:596
 msgid "Orders"
 msgstr ""
 
@@ -1824,55 +1824,60 @@ msgstr ""
 msgid "The following functions %1$s do not exist in %2$s"
 msgstr ""
 
-#: inc/admin/class-lp-admin-ajax.php:179
+#: inc/admin/class-lp-admin-ajax.php:188
 msgid "Nonce is invalid!"
 msgstr ""
 
-#: inc/admin/class-lp-admin-ajax.php:186
+#: inc/admin/class-lp-admin-ajax.php:195
 msgid "Oops! ID not found"
 msgstr ""
 
-#: inc/admin/class-lp-admin-ajax.php:197
+#: inc/admin/class-lp-admin-ajax.php:206
 msgid "You cannot duplicate this item."
 msgstr ""
 
-#: inc/admin/class-lp-admin-ajax.php:239
+#: inc/admin/class-lp-admin-ajax.php:248
 msgid "Duplicate post failed. Please try again"
 msgstr ""
 
-#: inc/admin/class-lp-admin-ajax.php:457
+#: inc/admin/class-lp-admin-ajax.php:468
 msgid "Access denied"
 msgstr ""
 
-#: inc/admin/class-lp-admin-ajax.php:463
+#: inc/admin/class-lp-admin-ajax.php:474
 msgid "Nonce check failed"
 msgstr ""
 
-#: inc/admin/class-lp-admin-ajax.php:469
-#: inc/admin/class-lp-admin-ajax.php:542
+#: inc/admin/class-lp-admin-ajax.php:480
+#: inc/admin/class-lp-admin-ajax.php:551
 #: templates/order/order-details.php:18
 msgid "Invalid order"
 msgstr ""
 
-#: inc/admin/class-lp-admin-ajax.php:536
+#: inc/admin/class-lp-admin-ajax.php:486
+#: inc/admin/class-lp-admin-ajax.php:557
+msgid "Invalid item"
+msgstr ""
+
+#: inc/admin/class-lp-admin-ajax.php:545
 msgid "Permission denied"
 msgstr ""
 
-#: inc/admin/class-lp-admin-ajax.php:652
-#: inc/admin/class-lp-admin-ajax.php:671
+#: inc/admin/class-lp-admin-ajax.php:664
+#: inc/admin/class-lp-admin-ajax.php:683
 msgid "Edit Page"
 msgstr ""
 
-#: inc/admin/class-lp-admin-ajax.php:653
-#: inc/admin/class-lp-admin-ajax.php:673
+#: inc/admin/class-lp-admin-ajax.php:665
+#: inc/admin/class-lp-admin-ajax.php:685
 msgid "View Page"
 msgstr ""
 
-#: inc/admin/class-lp-admin-ajax.php:655
+#: inc/admin/class-lp-admin-ajax.php:667
 msgid "Error! Page creation failed. Please try again."
 msgstr ""
 
-#: inc/admin/class-lp-admin-ajax.php:658
+#: inc/admin/class-lp-admin-ajax.php:670
 msgid "Empty page name!"
 msgstr ""
 
@@ -1885,7 +1890,7 @@ msgid "Oops! Error."
 msgstr ""
 
 #: inc/admin/class-lp-admin-assets.php:85
-#: inc/admin/views/meta-boxes/order/details.php:144
+#: inc/admin/views/meta-boxes/order/details.php:147
 #: inc/emails/guest/class-lp-email-cancelled-order-guest.php:25
 #: inc/emails/guest/class-lp-email-completed-order-guest.php:29
 #: inc/emails/guest/class-lp-email-new-order-guest.php:25
@@ -1898,57 +1903,57 @@ msgstr ""
 msgid "Before taking this action, we strongly recommend you backup your site first before proceeding. If you encounter any problems, please do not hesitate to contact our support team. Are you sure to proceed with the update protocol?"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:504
+#: inc/admin/class-lp-admin-assets.php:506
 #: inc/class-lp-query-list-table.php:32
 msgid "item"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:505
+#: inc/admin/class-lp-admin-assets.php:507
 msgid "Create a new"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:506
+#: inc/admin/class-lp-admin-assets.php:508
 #: inc/admin/views/setup/content.php:50
 #: inc/custom-post-types/quiz.php:169
 msgid "Back"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:507
+#: inc/admin/class-lp-admin-assets.php:509
 #: inc/admin/views/course/modal-choose-items.php:54
 #: inc/admin/views/quiz/modal-choose-items.php:52
 #: inc/custom-post-types/quiz.php:170
 msgid "Selected items"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:508
+#: inc/admin/class-lp-admin-assets.php:510
 msgid "Do you want to remove the \"{{ITEM_NAME}}\" item from the course?"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:509
+#: inc/admin/class-lp-admin-assets.php:511
 msgid "Do you want to move the \"{{ITEM_NAME}}\" item to the trash?"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:512
+#: inc/admin/class-lp-admin-assets.php:514
 msgid "Items"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:514
+#: inc/admin/class-lp-admin-assets.php:516
 msgid "The course sale price must be less than the regular price"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:515
+#: inc/admin/class-lp-admin-assets.php:517
 msgid "The course price must be greater than the sale price"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:516
+#: inc/admin/class-lp-admin-assets.php:518
 msgid "The sale start date must be before the sale end date"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:517
+#: inc/admin/class-lp-admin-assets.php:519
 msgid "The sale end date must be after the sale start date"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:518
+#: inc/admin/class-lp-admin-assets.php:520
 msgid "Invalid date"
 msgstr ""
 
@@ -2134,7 +2139,7 @@ msgstr ""
 #: inc/custom-post-types/abstract.php:1002
 #: inc/custom-post-types/abstract.php:1012
 #: inc/custom-post-types/question.php:367
-#: inc/order/class-lp-order.php:940
+#: inc/order/class-lp-order.php:947
 msgid "View"
 msgstr ""
 
@@ -2170,7 +2175,7 @@ msgstr ""
 #: inc/admin/class-lp-modal-search-items.php:61
 #: inc/admin/class-lp-modal-search-users.php:49
 #: inc/admin/views/course/modal-choose-items.php:66
-#: inc/admin/views/meta-boxes/order/details.php:301
+#: inc/admin/views/meta-boxes/order/details.php:306
 #: inc/admin/views/quiz/modal-choose-items.php:58
 msgid "Close"
 msgstr ""
@@ -2505,7 +2510,7 @@ msgstr ""
 #: inc/course/abstract-course.php:701
 #: inc/ExternalPlugin/Elementor/Widgets/Course/FilterCourseElementor.php:215
 #: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:860
-#: inc/Models/CoursePostModel.php:169
+#: inc/Models/CoursePostModel.php:170
 #: inc/TemplateHooks/Course/FilterCourseTemplate.php:221
 #: templates/order/order-details.php:46
 msgid "Free"
@@ -3321,8 +3326,8 @@ msgid "The conditions that must be achieved to finish the course."
 msgstr ""
 
 #: inc/admin/views/meta-boxes/course/settings.php:424
-#: inc/templates/class-lp-template-course.php:292
-#: inc/templates/class-lp-template-course.php:838
+#: inc/templates/class-lp-template-course.php:305
+#: inc/templates/class-lp-template-course.php:852
 #: inc/Widgets/course-extra.php:35
 msgid "Requirements"
 msgstr ""
@@ -3474,12 +3479,12 @@ msgid "Customer"
 msgstr ""
 
 #: inc/admin/views/meta-boxes/order/content-tab-preview-exports-invoice.php:67
-#: inc/admin/views/meta-boxes/order/details.php:207
+#: inc/admin/views/meta-boxes/order/details.php:210
 msgid "Cost"
 msgstr ""
 
 #: inc/admin/views/meta-boxes/order/content-tab-preview-exports-invoice.php:68
-#: inc/admin/views/meta-boxes/order/details.php:208
+#: inc/admin/views/meta-boxes/order/details.php:211
 #: templates/emails/order-items-table.php:86
 msgid "Quantity"
 msgstr ""
@@ -3493,8 +3498,8 @@ msgid "Sub Total"
 msgstr ""
 
 #: inc/admin/views/meta-boxes/order/content-tab-preview-exports-invoice.php:102
-#: inc/admin/views/meta-boxes/order/details.php:209
-#: inc/custom-post-types/order.php:424
+#: inc/admin/views/meta-boxes/order/details.php:212
+#: inc/custom-post-types/order.php:455
 #: templates/checkout/order-received.php:117
 #: templates/checkout/review-order.php:106
 #: templates/emails/order-items-table.php:118
@@ -3517,66 +3522,66 @@ msgstr ""
 msgid "Date created:"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/order/details.php:68
+#: inc/admin/views/meta-boxes/order/details.php:71
 #: templates/order/confirm.php:70
 msgid "Status:"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/order/details.php:89
+#: inc/admin/views/meta-boxes/order/details.php:92
 msgid "When the Status is changed to \"Pending\", \"Cancelled\", or \"Failed\" all courses, lessons, quizzes, and other progress are deleted!"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/order/details.php:97
+#: inc/admin/views/meta-boxes/order/details.php:100
 msgid "Customers:"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/order/details.php:113
+#: inc/admin/views/meta-boxes/order/details.php:116
 msgid "Choose User"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/order/details.php:151
+#: inc/admin/views/meta-boxes/order/details.php:154
 msgid "No customer"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/order/details.php:178
+#: inc/admin/views/meta-boxes/order/details.php:181
 msgid "In order to change the order user, please change the order status to \"Pending\"."
 msgstr ""
 
-#: inc/admin/views/meta-boxes/order/details.php:187
+#: inc/admin/views/meta-boxes/order/details.php:190
 #: templates/order/order-details.php:121
 msgid "Order key:"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/order/details.php:196
+#: inc/admin/views/meta-boxes/order/details.php:199
 msgid "Customer Note"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/order/details.php:223
+#: inc/admin/views/meta-boxes/order/details.php:226
 msgid "There are no order items"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/order/details.php:234
+#: inc/admin/views/meta-boxes/order/details.php:237
 msgid "Subtotal:"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/order/details.php:245
+#: inc/admin/views/meta-boxes/order/details.php:248
 #: templates/order/confirm.php:57
 msgid "Total:"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/order/details.php:261
+#: inc/admin/views/meta-boxes/order/details.php:265
 msgid "Add item(s)"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/order/details.php:266
+#: inc/admin/views/meta-boxes/order/details.php:270
 msgid "In order to change the order item, please change the order status to 'Pending'."
 msgstr ""
 
-#: inc/admin/views/meta-boxes/order/details.php:292
+#: inc/admin/views/meta-boxes/order/details.php:297
 msgid "Type here to search for the course"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/order/details.php:296
+#: inc/admin/views/meta-boxes/order/details.php:301
 msgid "No results"
 msgstr ""
 
@@ -3602,10 +3607,6 @@ msgstr ""
 
 #: inc/admin/views/meta-boxes/order/exports-invoice.php:79
 msgid "Payment Medthod"
-msgstr ""
-
-#: inc/admin/views/meta-boxes/order/order-item.php:20
-msgid "Delete item"
 msgstr ""
 
 #: inc/admin/views/meta-boxes/question/settings.php:9
@@ -3979,7 +3980,7 @@ msgid "Sale by"
 msgstr ""
 
 #: inc/admin/views/statistics-bk/orders.php:47
-#: inc/custom-post-types/order.php:423
+#: inc/custom-post-types/order.php:454
 #: templates/checkout/order-received.php:104
 #: templates/profile/tabs/orders/list.php:31
 #: templates/profile/tabs/quizzes.php:56
@@ -4329,7 +4330,7 @@ msgid "Type item buy invalid!"
 msgstr ""
 
 #: inc/class-lp-datetime.php:150
-#: inc/custom-post-types/order.php:494
+#: inc/custom-post-types/order.php:525
 #: inc/order/class-lp-order.php:148
 msgid "%s ago"
 msgstr ""
@@ -4646,24 +4647,24 @@ msgstr ""
 msgid "Invalid lesson with ID \"%d\"."
 msgstr ""
 
-#: inc/curds/class-lp-order-curd.php:473
+#: inc/curds/class-lp-order-curd.php:477
 msgid "Invalid order with ID \"%d\"."
 msgstr ""
 
-#: inc/curds/class-lp-order-curd.php:535
+#: inc/curds/class-lp-order-curd.php:539
 #: templates/checkout/order-received.php:25
 msgid "Invalid order."
 msgstr ""
 
-#: inc/curds/class-lp-order-curd.php:539
+#: inc/curds/class-lp-order-curd.php:543
 msgid "Order is already assigned."
 msgstr ""
 
-#: inc/curds/class-lp-order-curd.php:545
+#: inc/curds/class-lp-order-curd.php:549
 msgid "Invalid User!"
 msgstr ""
 
-#: inc/curds/class-lp-order-curd.php:549
+#: inc/curds/class-lp-order-curd.php:553
 msgid "Invalid order key with Email!"
 msgstr ""
 
@@ -4783,7 +4784,7 @@ msgstr ""
 
 #: inc/custom-post-types/course.php:56
 #: inc/custom-post-types/lesson.php:162
-#: inc/custom-post-types/order.php:567
+#: inc/custom-post-types/order.php:598
 #: inc/custom-post-types/question.php:211
 msgid "Add New"
 msgstr ""
@@ -4955,17 +4956,17 @@ msgstr ""
 msgid "Assigned"
 msgstr ""
 
-#: inc/custom-post-types/order.php:186
+#: inc/custom-post-types/order.php:199
 msgid "Order number, course name, etc."
 msgstr ""
 
-#: inc/custom-post-types/order.php:420
-#: inc/custom-post-types/order.php:562
+#: inc/custom-post-types/order.php:451
+#: inc/custom-post-types/order.php:593
 #: templates/profile/tabs/orders/list.php:28
 msgid "Order"
 msgstr ""
 
-#: inc/custom-post-types/order.php:421
+#: inc/custom-post-types/order.php:452
 #: inc/TemplateHooks/Course/ListCoursesTemplate.php:759
 #: inc/TemplateHooks/Course/SingleCourseTemplate.php:229
 #: inc/TemplateHooks/Instructor/SingleInstructorTemplate.php:187
@@ -4975,12 +4976,12 @@ msgid_plural "Students"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/custom-post-types/order.php:422
+#: inc/custom-post-types/order.php:453
 #: inc/user-item/class-lp-user-item.php:688
 msgid "Purchased"
 msgstr ""
 
-#: inc/custom-post-types/order.php:425
+#: inc/custom-post-types/order.php:456
 #: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1604
 #: templates/checkout/order-received.php:61
 #: templates/emails/order-items-table.php:72
@@ -4989,64 +4990,64 @@ msgstr ""
 msgid "Status"
 msgstr ""
 
-#: inc/custom-post-types/order.php:474
-#: inc/order/class-lp-order.php:453
+#: inc/custom-post-types/order.php:505
+#: inc/order/class-lp-order.php:456
 msgid "(Guest)"
 msgstr ""
 
-#: inc/custom-post-types/order.php:509
+#: inc/custom-post-types/order.php:540
 #: templates/checkout/order-received.php:81
 msgid "The course does not exist"
 msgstr ""
 
-#: inc/custom-post-types/order.php:511
+#: inc/custom-post-types/order.php:542
 msgid "Deleted"
 msgstr ""
 
-#: inc/custom-post-types/order.php:527
+#: inc/custom-post-types/order.php:558
 #: templates/checkout/order-received.php:98
 msgid "(No item)"
 msgstr ""
 
-#: inc/custom-post-types/order.php:537
+#: inc/custom-post-types/order.php:568
 msgid "Pay via <strong>%s</strong>"
 msgstr ""
 
-#: inc/custom-post-types/order.php:563
+#: inc/custom-post-types/order.php:594
 msgid "Add A New Order"
 msgstr ""
 
-#: inc/custom-post-types/order.php:564
-#: inc/custom-post-types/order.php:695
+#: inc/custom-post-types/order.php:595
+#: inc/custom-post-types/order.php:726
 #: templates/order/order-details.php:23
 msgid "Order Details"
 msgstr ""
 
-#: inc/custom-post-types/order.php:566
+#: inc/custom-post-types/order.php:597
 msgid "View Order"
 msgstr ""
 
-#: inc/custom-post-types/order.php:568
+#: inc/custom-post-types/order.php:599
 msgid "Update Order"
 msgstr ""
 
-#: inc/custom-post-types/order.php:569
+#: inc/custom-post-types/order.php:600
 msgid "Search Orders"
 msgstr ""
 
-#: inc/custom-post-types/order.php:570
+#: inc/custom-post-types/order.php:601
 msgid "No order found"
 msgstr ""
 
-#: inc/custom-post-types/order.php:571
+#: inc/custom-post-types/order.php:602
 msgid "There was no order found in the trash"
 msgstr ""
 
-#: inc/custom-post-types/order.php:703
+#: inc/custom-post-types/order.php:734
 msgid "Order Actions"
 msgstr ""
 
-#: inc/custom-post-types/order.php:711
+#: inc/custom-post-types/order.php:742
 msgid "Order Exports"
 msgstr ""
 
@@ -6047,7 +6048,7 @@ msgid "Error: This lesson is not assigned in the Course."
 msgstr ""
 
 #: inc/jwt/rest-api/version1/class-lp-rest-lessons-v1-controller.php:214
-#: inc/user/class-lp-user.php:410
+#: inc/user/class-lp-user.php:428
 msgid "Error: No Course or User available."
 msgstr ""
 
@@ -6265,7 +6266,7 @@ msgstr ""
 
 #: inc/jwt/rest-api/version1/class-lp-rest-section-items-v1-controller.php:44
 #: inc/jwt/rest-api/version1/class-lp-rest-sections-v1-controller.php:40
-#: inc/user/class-lp-user.php:286
+#: inc/user/class-lp-user.php:291
 msgid "The course is not public"
 msgstr ""
 
@@ -7236,7 +7237,7 @@ msgstr ""
 
 #: inc/Models/UserItems/UserQuizModel.php:244
 #: inc/Models/UserItems/UserQuizModel.php:295
-#: inc/user/class-lp-user.php:497
+#: inc/user/class-lp-user.php:515
 msgid "Please enroll in the course before starting the quiz."
 msgstr ""
 
@@ -7272,23 +7273,27 @@ msgid "Cancelled"
 msgstr ""
 
 #: inc/order/class-lp-order.php:292
-msgid "On hold"
+msgid "Trash"
 msgstr ""
 
 #: inc/order/class-lp-order.php:295
+msgid "On hold"
+msgstr ""
+
+#: inc/order/class-lp-order.php:298
 msgid "Refunded"
 msgstr ""
 
-#: inc/order/class-lp-order.php:451
+#: inc/order/class-lp-order.php:454
 msgid "%s (Guest)"
 msgstr ""
 
-#: inc/order/class-lp-order.php:999
+#: inc/order/class-lp-order.php:1006
 msgctxt "full name"
 msgid "%1$s"
 msgstr ""
 
-#: inc/order/class-lp-order.php:1074
+#: inc/order/class-lp-order.php:1081
 msgid "Order on"
 msgstr ""
 
@@ -8034,39 +8039,39 @@ msgstr ""
 msgid "Never"
 msgstr ""
 
-#: inc/templates/class-lp-template-course.php:318
+#: inc/templates/class-lp-template-course.php:331
 #: inc/Widgets/course-extra.php:33
 msgid "Key features"
 msgstr ""
 
-#: inc/templates/class-lp-template-course.php:344
-#: inc/templates/class-lp-template-course.php:846
+#: inc/templates/class-lp-template-course.php:357
+#: inc/templates/class-lp-template-course.php:860
 msgid "Target audiences"
 msgstr ""
 
-#: inc/templates/class-lp-template-course.php:802
+#: inc/templates/class-lp-template-course.php:816
 msgid "%d lesson"
 msgid_plural "%d lessons"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/templates/class-lp-template-course.php:806
+#: inc/templates/class-lp-template-course.php:820
 msgid "%d quiz"
 msgid_plural "%d quizzes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/templates/class-lp-template-course.php:810
+#: inc/templates/class-lp-template-course.php:824
 msgid "%d student"
 msgid_plural "%d students"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/templates/class-lp-template-course.php:842
+#: inc/templates/class-lp-template-course.php:856
 msgid "Features"
 msgstr ""
 
-#: inc/templates/class-lp-template-course.php:944
+#: inc/templates/class-lp-template-course.php:959
 msgid "View More"
 msgstr ""
 
@@ -8158,133 +8163,106 @@ msgstr ""
 msgid "The content of this item has been blocked because the course has exceeded its duration."
 msgstr ""
 
-#: inc/user/class-lp-user.php:218
-#: inc/user/class-lp-user.php:420
+#: inc/user/class-lp-user.php:219
+#: inc/user/class-lp-user.php:438
 msgid "The course is not enrolled."
 msgstr ""
 
-#: inc/user/class-lp-user.php:282
+#: inc/user/class-lp-user.php:286
 msgid "No Course or User available"
 msgstr ""
 
-#: inc/user/class-lp-user.php:290
-msgid "The course is external"
-msgstr ""
-
-#: inc/user/class-lp-user.php:294
-msgid "The course is full of students."
-msgstr ""
-
-#: inc/user/class-lp-user.php:298
-msgid "The course is not required to enroll."
-msgstr ""
-
-#: inc/user/class-lp-user.php:302
-msgid "The course is not purchased."
-msgstr ""
-
-#: inc/user/class-lp-user.php:306
+#: inc/user/class-lp-user.php:296
 msgid "This course is already enrolled."
 msgstr ""
 
-#: inc/user/class-lp-user.php:335
-msgid "Course is unavailable"
+#: inc/user/class-lp-user.php:301
+msgid "The course is full of students."
 msgstr ""
 
-#: inc/user/class-lp-user.php:339
-msgid "Course is not publish"
+#: inc/user/class-lp-user.php:306
+msgid "The course is external"
 msgstr ""
 
-#: inc/user/class-lp-user.php:343
+#: inc/user/class-lp-user.php:311
+msgid "Course can retake."
+msgstr ""
+
+#: inc/user/class-lp-user.php:317
+#: inc/user/class-lp-user.php:371
+msgid "Enrollment in the course is not mandatory. You can access materials for learning or to take quizzes now."
+msgstr ""
+
+#: inc/user/class-lp-user.php:323
+msgid "The course is not purchased."
+msgstr ""
+
+#: inc/user/class-lp-user.php:363
 msgid "Course is free, so you can not purchase"
 msgstr ""
 
-#: inc/user/class-lp-user.php:347
-msgid "Course is type external, so you can not purchase"
-msgstr ""
-
-#: inc/user/class-lp-user.php:352
-msgid "Course is not required enroll"
-msgstr ""
-
-#: inc/user/class-lp-user.php:356
-msgid "Course can not retry"
-msgstr ""
-
-#: inc/user/class-lp-user.php:361
-msgid "Course is out of stock"
-msgstr ""
-
-#: inc/user/class-lp-user.php:368
+#: inc/user/class-lp-user.php:382
 msgid "Your order is waiting for processing"
 msgstr ""
 
-#: inc/user/class-lp-user.php:382
-msgid "Course is enrolled"
-msgstr ""
-
-#: inc/user/class-lp-user.php:386
-msgid "Course is enrolled or finished"
-msgstr ""
-
-#: inc/user/class-lp-user.php:416
+#: inc/user/class-lp-user.php:434
 msgid "The course has finished."
 msgstr ""
 
-#: inc/user/class-lp-user.php:424
+#: inc/user/class-lp-user.php:442
 msgid "Error: The course is not in progress."
 msgstr ""
 
-#: inc/user/class-lp-user.php:449
+#: inc/user/class-lp-user.php:467
 msgid "Error: Filter the disabled finished courses."
 msgstr ""
 
-#: inc/user/class-lp-user.php:473
+#: inc/user/class-lp-user.php:491
 msgid "You cannot start a quiz in preview mode."
 msgstr ""
 
-#: inc/user/class-lp-user.php:480
-#: inc/user/class-lp-user.php:618
+#: inc/user/class-lp-user.php:498
+#: inc/user/class-lp-user.php:636
 msgid "The course does not exist or does not contain a quiz."
 msgstr ""
 
-#: inc/user/class-lp-user.php:489
+#: inc/user/class-lp-user.php:507
 msgid "You have already finished the course of this quiz"
 msgstr ""
 
-#: inc/user/class-lp-user.php:506
+#: inc/user/class-lp-user.php:524
 msgid "The user has started or completed the quiz."
 msgstr ""
 
-#: inc/user/class-lp-user.php:515
+#: inc/user/class-lp-user.php:533
 msgid "You have to log in to start the quiz."
 msgstr ""
 
-#: inc/user/class-lp-user.php:570
+#: inc/user/class-lp-user.php:588
 msgid "The user has already finished the course of this quiz."
 msgstr ""
 
-#: inc/user/class-lp-user.php:579
+#: inc/user/class-lp-user.php:597
 msgid "The user has completed the quiz"
 msgstr ""
 
-#: inc/user/class-lp-user.php:633
+#: inc/user/class-lp-user.php:651
 msgid "You can not redo a quiz in a finished course."
 msgstr ""
 
-#: inc/user/class-lp-user.php:646
+#: inc/user/class-lp-user.php:664
 msgid "%1$s::%2$s - The user has not completed the quiz."
 msgstr ""
 
-#: inc/user/class-lp-user.php:659
+#: inc/user/class-lp-user.php:677
 msgid "%1$s::%2$s - Your quiz can't be retaken."
 msgstr ""
 
-#: inc/user/class-lp-user.php:706
+#: inc/user/class-lp-user.php:724
 msgid "quiz"
 msgstr ""
 
-#: inc/user/class-lp-user.php:707
+#: inc/user/class-lp-user.php:725
 msgid "quizzes"
 msgstr ""
 

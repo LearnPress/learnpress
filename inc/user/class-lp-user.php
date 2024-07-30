@@ -395,6 +395,11 @@ class LP_User extends LP_Abstract_User {
 					throw new Exception( 'Course is enrolled' );
 				}
 			} else {
+				if ( $is_enrolled_course && ! $is_blocked_course ) {
+					$code_err = 'course_is_enrolled';
+					throw new Exception( 'Course is enrolled' );
+				}
+
 				if ( $this->has_enrolled_or_finished( $course_id ) ) {
 					$code_err = 'course_is_enrolled_or_finished';
 					throw new Exception( 'Course is enrolled or finished', 'learnpress' );
