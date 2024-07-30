@@ -130,40 +130,53 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		 * @param bool $is_update
 		 *
 		 * @editor tungnx
-		 * @version 1.0.4
+		 * @version 1.0.5
 		 */
 		public function save_post( int $post_id, WP_Post $post = null, bool $is_update = false ) {
-			$backtrace = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS );
-			if ( isset( $backtrace[6]['class'] ) && $backtrace[6]['class'] === LP_Order_CURD::class ) {
-				return;
-			}
+			try {
+				$backtrace = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS );
+				if ( isset( $backtrace[6]['class'] ) && $backtrace[6]['class'] === LP_Order_CURD::class ) {
+					return;
+				}
 
-			if ( wp_is_post_revision( $post_id ) ) {
-				return;
-			}
+				if ( wp_is_post_revision( $post_id ) ) {
+					return;
+				}
 
-			// For create LP Order manual on Backend
-			$order = learn_press_get_order( $post_id );
-			if ( ! $order ) {
-				return;
-			}
+				// For create LP Order manual on Backend
+				$order = learn_press_get_order( $post_id );
+				if ( ! $order ) {
+					return;
+				}
 
-			$created_via = $order->get_created_via();
-			if ( empty( $created_via ) ) {
-				$created_via = LP_ORDER_CREATED_VIA_MANUAL;
-				$order->set_created_via( $created_via );
-			}
+				$created_via = $order->get_created_via();
+				if ( empty( $created_via ) ) {
+					$created_via = LP_ORDER_CREATED_VIA_MANUAL;
+					$order->set_created_via( $created_via );
+				}
 
-			if ( isset( $_POST['order-customer'] ) && $order->is_manual() ) {
-				$user_id = LP_Request::get_param( 'order-customer' );
-				$order->set_user_id( $user_id );
-			}
+				if ( isset( $_POST['order-customer'] ) && $order->is_manual() ) {
+					$user_id = LP_Request::get_param( 'order-customer' );
+					$order->set_user_id( $user_id );
+				}
 
-			$status = LP_Request::get_param( 'order-status' );
-			if ( ! empty( $status ) ) {
-				$order->update_status( $status );
-			} elseif ( $post->post_status === 'auto-draft' ) {
-				$order->update_status( 'pending' );
+				if ( isset( $_POST['order-date'] ) ) {
+					$order_date = LP_Request::get_param( 'order-date' );
+					$order_hour = LP_Request::get_param( 'order-hour', '00' );
+					$order_min  = LP_Request::get_param( 'order-minute', '00' );
+					$order->set_order_date( $order_date . ' ' . $order_hour . ':' . $order_min . ':00' );
+				}
+
+				$status = LP_Request::get_param( 'order-status' );
+				if ( ! empty( $status ) ) {
+					$order->update_status( $status );
+				} elseif ( $post->post_status === 'auto-draft' ) {
+					$order->update_status( 'pending' );
+				}
+
+				$order->save();
+			} catch ( Throwable $e ) {
+				error_log( __METHOD__ . ':' . $e->getMessage() );
 			}
 		}
 

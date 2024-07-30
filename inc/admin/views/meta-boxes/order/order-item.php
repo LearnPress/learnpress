@@ -17,7 +17,7 @@ if ( ! isset( $item ) || ! isset( $order ) ) {
 	<tr class="order-item-row" data-item_id="<?php echo esc_attr( $item['id'] ); ?>" data-id="<?php echo esc_attr( $item['course_id'] ); ?>" data-remove_nonce="<?php echo wp_create_nonce( 'remove_order_item' ); ?>">
 		<td class="column-name">
 			<?php if ( $order->is_manual() ) : ?>
-				<a class="remove-order-item learn-press-tooltip" href="" data-tooltip="<?php esc_attr_e( 'Delete item', 'learnpress' ); ?>">
+				<a class="remove-order-item" href="#">
 					<span class="dashicons dashicons-no-alt"></span>
 				</a>
 			<?php endif; ?>

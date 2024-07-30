@@ -2,7 +2,7 @@ import { AdminUtilsFunctions, Api, Utils } from '../utils-admin.js';
 
 const addCoursesToOrder = () => {
 	let elModalSearchCourses;
-	let elBtnAddOrderItem;
+	let elBtnAddOrderItem, elSearchCoursesResult;
 	let elOrderDetails, modalSearchItems, modalContainer;
 	let elOrderModalFooter, elOrderModalBtnAdd;
 	let elListOrderItems;
@@ -15,7 +15,7 @@ const addCoursesToOrder = () => {
 		paged: 1,
 	};
 	const courseIdsNewSelected = [];
-	const courseIdsNewAdded = [];
+	const courseIdsAdded = [];
 
 	const getAllElements = () => {
 		elOrderDetails = document.querySelector( '#learn-press-order' );
@@ -25,10 +25,22 @@ const addCoursesToOrder = () => {
 		modalContainer = document.querySelector( '#container-modal-search-items' );
 	};
 
-	const fetchCoursesAPI = ( keySearch = '', course_ids_exclude = '', paged = 1 ) => {
+	/**
+	 * Fetch courses from API.
+	 *
+	 * @param keySearch
+	 * @param course_ids_exclude
+	 * @param paged
+	 */
+	const fetchCoursesAPI = ( keySearch = '', course_ids_exclude = [], paged = 1 ) => {
+		let not_ids = '';
+		if ( course_ids_exclude.length > 0 ) {
+			not_ids = course_ids_exclude.join( ',' );
+		}
+
 		dataSend = {
 			search: keySearch,
-			not_ids: course_ids_exclude,
+			not_ids,
 			paged,
 		};
 
@@ -43,7 +55,12 @@ const addCoursesToOrder = () => {
 				if ( 'success' !== status ) {
 					console.error( message );
 				} else {
-					elModalSearchCourses.querySelector( '.search-results' ).innerHTML = renderSearchResult( courses );
+					if ( ! courses.length ) {
+						elSearchCoursesResult.innerHTML = '<li class="lp-result-item">No courses found</li>';
+						return;
+					}
+
+					elSearchCoursesResult.innerHTML = renderSearchResult( courses );
 					const paginationHtml = renderPagination( paged, total_pages );
 					const searchNav = elModalSearchCourses.querySelector( '.search-nav' );
 					searchNav.innerHTML = paginationHtml;
@@ -58,14 +75,15 @@ const addCoursesToOrder = () => {
 		} );
 	};
 
+	/**
+	 * Get list course ids added.
+	 */
 	const getCoursesAdded = () => {
 		const orderItems = document.querySelectorAll( '#learn-press-order .list-order-items tbody .order-item-row' );
 		orderItems.forEach( ( orderItem ) => {
 			const orderItemId = parseInt( orderItem.getAttribute( 'data-id' ) );
-			courseIdsNewAdded.push( orderItemId );
+			courseIdsAdded.push( orderItemId );
 		} );
-
-		dataSend.not_ids = courseIdsNewAdded.join( ',' );
 	};
 
 	/**
@@ -106,18 +124,27 @@ const addCoursesToOrder = () => {
 				elNoItem.insertAdjacentHTML( 'beforebegin', item_html );
 				elOrderDetails.querySelector( '.order-subtotal' ).innerHTML = order_data.subtotal_html;
 				elOrderDetails.querySelector( '.order-total' ).innerHTML = order_data.total_html;
-				courseIdsNewAdded.push( ...courseIdsNewSelected );
+				courseIdsAdded.push( ...courseIdsNewSelected );
+				courseIdsNewSelected.splice( 0, courseIdsNewSelected.length );
 			},
 			error( err ) {
 				console.error( err );
 			},
 			completed() {
 				target.disabled = false;
+				modalContainer.style.display = 'none';
 			},
 		};
+
 		Utils.lpFetchAPI( Utils.lpAddQueryArgs( Utils.lpGetCurrentURLNoParam(), dataSend ), {}, callBack );
 	};
 
+	/**
+	 * Remove course from order.
+	 *
+	 * @param e
+	 * @param target
+	 */
 	const removeCourse = ( e, target ) => {
 		if ( target.tagName !== 'SPAN' ) {
 			return;
@@ -128,6 +155,11 @@ const addCoursesToOrder = () => {
 		}
 
 		e.preventDefault();
+
+		if ( ! confirm( 'Are you sure you want to remove this item?' ) ) {
+			return;
+		}
+
 		target.disabled = true;
 		target.classList.add( 'dashicons-update' );
 		const elItemRow = target.closest( '.order-item-row' );
@@ -163,7 +195,7 @@ const addCoursesToOrder = () => {
 				}
 
 				courseIdsNewSelected.splice( courseIdsNewSelected.indexOf( courseId ), 1 );
-				courseIdsNewAdded.splice( courseIdsNewSelected.indexOf( courseId ), 1 );
+				courseIdsAdded.splice( courseIdsNewSelected.indexOf( courseId ), 1 );
 				elOrderDetails.querySelector( '.order-subtotal' ).innerHTML = order_data.subtotal_html;
 				elOrderDetails.querySelector( '.order-total' ).innerHTML = order_data.total_html;
 			},
@@ -177,6 +209,12 @@ const addCoursesToOrder = () => {
 		Utils.lpFetchAPI( Utils.lpAddQueryArgs( Utils.lpGetCurrentURLNoParam(), dataSend ), {}, callBack );
 	};
 
+	/**
+	 * Search courses before add Order.
+	 *
+	 * @param e
+	 * @param target
+	 */
 	const searchCourse = ( e, target ) => {
 		if ( 'search' !== target.name ) {
 			return;
@@ -196,11 +234,17 @@ const addCoursesToOrder = () => {
 			}
 
 			timeOutSearch = setTimeout( function() {
-				fetchCoursesAPI( keyword, dataSend.not_ids, 1 );
+				fetchCoursesAPI( keyword, courseIdsAdded, 1 );
 			}, 800 );
 		}
 	};
 
+	/**
+	 * Display list courses when search done.
+	 *
+	 * @param courses
+	 * @return string
+	 */
 	const renderSearchResult = ( courses ) => {
 		let html = '';
 
@@ -220,6 +264,13 @@ const addCoursesToOrder = () => {
 		return html;
 	};
 
+	/**
+	 * Render pagination.
+	 *
+	 * @param  currentPage
+	 * @param  maxPage
+	 * @return {string}
+	 */
 	const renderPagination = ( currentPage, maxPage ) => {
 		currentPage = parseInt( currentPage );
 		maxPage = parseInt( maxPage );
@@ -301,13 +352,15 @@ const addCoursesToOrder = () => {
 
 	const showPopupSearchCourses = () => {
 		modalContainer.style.display = 'block';
-		fetchCoursesAPI( dataSend.search, dataSend.not_ids, dataSend.paged );
+		elOrderModalBtnAdd.style.display = 'none';
+		elSearchCoursesResult.innerHTML = '';
+		fetchCoursesAPI( dataSend.search, courseIdsAdded, dataSend.paged );
 	};
 
 	// Events.
 	document.addEventListener( 'click', ( e ) => {
 		const target = e.target;
-		console.dir( target );
+		//console.dir( target );
 		if ( target.id === elBtnAddOrderItem.id ) {
 			e.preventDefault();
 			showPopupSearchCourses();
@@ -362,6 +415,7 @@ const addCoursesToOrder = () => {
 		getCoursesAdded();
 		modalContainer.innerHTML = modalSearchItems.innerHTML;
 		elModalSearchCourses = modalContainer.querySelector( idModalSearchItems );
+		elSearchCoursesResult = elModalSearchCourses.querySelector( '.search-results' );
 		elOrderModalFooter = elModalSearchCourses.querySelector( 'footer' );
 		elOrderModalBtnAdd = elOrderModalFooter.querySelector( '.add' );
 		modalContainer.style.display = 'none';

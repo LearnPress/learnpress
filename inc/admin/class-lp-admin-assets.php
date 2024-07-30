@@ -161,7 +161,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'',
 					[ 'strategy' => 'async' ]
 				),
-				'advanced-list'                     => new LP_Asset_Key( $this->url( self::$_folder_source . 'js/admin/share/advanced-list' . self::$_min_assets . '.js' ) ),
+				//'advanced-list'                     => new LP_Asset_Key( $this->url( self::$_folder_source . 'js/admin/share/advanced-list' . self::$_min_assets . '.js' ) ),
 				'learn-press-global'                => new LP_Asset_Key(
 					$this->url( self::$_folder_source . 'js/global' . self::$_min_assets . '.js' ),
 					array( 'jquery', 'underscore', 'utils', 'jquery-ui-sortable' )
@@ -221,7 +221,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					0,
 					0
 				),
-				'learn-press-meta-box-order'        => new LP_Asset_Key(
+				/*'learn-press-meta-box-order'        => new LP_Asset_Key(
 					$this->url( self::$_folder_source . 'js/admin/partial/meta-box-order' . self::$_min_assets . '.js' ),
 					array(
 						'vue-libs',
@@ -232,13 +232,15 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					array( LP_ORDER_CPT ),
 					0,
 					1
-				),
+				),*/
 				'lp-admin-order'                    => new LP_Asset_Key(
 					$this->url( 'js/dist/admin/admin-order' . self::$_min_assets . '.js' ),
 					array( 'html2pdf' ),
 					array( LP_ORDER_CPT ),
 					0,
-					1
+					0,
+					'',
+					[ 'strategy' => 'defer' ]
 				),
 				/*'learn-press-sync-data'             => new LP_Asset_Key(
 					$this->url( 'js/dist/admin/pages/sync-data' . self::$_min_assets . '.js' ),
