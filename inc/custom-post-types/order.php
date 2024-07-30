@@ -32,6 +32,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			add_filter( 'wp_untrash_post_status', array( $this, 'restore_status_order' ), 11, 3 );
 			add_filter( 'admin_footer', array( $this, 'admin_footer' ) );
 			add_filter( 'views_edit-lp_order', array( $this, 'filter_views' ) );
+			add_action( 'restrict_manage_posts', array( $this, 'show_btn_empty_order' ), 10, 2 );
 			// LP Order title
 
 			// Override title of LP Order on Admin
@@ -54,6 +55,13 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			}
 
 			parent::__construct();
+		}
+
+		public function show_btn_empty_order( $post_type, $which ) {
+			if ( $post_type !== LP_ORDER_CPT || ! isset( $_GET['post_status'] ) || $_GET['post_status'] !== LP_ORDER_TRASH_DB ) {
+				return;
+			}
+			submit_button( __( 'Empty Trash' ), 'apply', 'delete_all', false );
 		}
 
 		/**
@@ -257,6 +265,8 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			if ( ! empty( $wp_query->get( 'post_status' ) ) ) {
 				$status = $wp_query->get( 'post_status' );
 				$where .= $wpdb->prepare( " AND {$lp_db->tb_posts}.post_status = %s", $status );
+			} else {
+				$where .= $wpdb->prepare( " AND {$lp_db->tb_posts}.post_status NOT IN (%s, %s)", LP_ORDER_TRASH_DB, 'auto-draft' );
 			}
 
 			return $where;

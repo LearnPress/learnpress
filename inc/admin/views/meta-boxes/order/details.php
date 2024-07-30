@@ -56,6 +56,15 @@ $user_ids     = $order->get_user_id();
 			:
 			<input type="number" class="order-minute" name="order-minute" min="0" max="59"
 					value="<?php echo esc_attr( $order->get_order_date( 'm' ) ); ?>">
+
+			<!-- Hidden fields for date only for default save post of Wordpress -->
+			<input type="hidden" name="aa" value="<?php echo gmdate( 'Y', $order->get_order_date( 'timestamp' ) ); ?>">
+			<input type="hidden" name="mm" value="<?php echo gmdate( 'm', $order->get_order_date( 'timestamp' ) ); ?>">
+			<input type="hidden" name="jj" value="<?php echo gmdate( 'd', $order->get_order_date( 'timestamp' ) ); ?>">
+			<input type="hidden" name="ss" value="<?php echo gmdate( 's', $order->get_order_date( 'timestamp' ) ); ?>">
+			<input type="hidden" name="hh" value="<?php echo gmdate( 'h', $order->get_order_date( 'h' ) ); ?>">
+			<input type="hidden" name="mn" value="<?php echo gmdate( 'm', $order->get_order_date( 'm' ) ); ?>">
+			<!-- Hidden fields for date only for default save post of Wordpress -->
 		</div>
 
 		<div class="order-data-field order-data-status <?php echo sanitize_title( $order->get_post_status() ); ?>">
@@ -137,7 +146,7 @@ $user_ids     = $order->get_user_id();
 									</li>',
 									sprintf( '%s (%s)', $order->get_checkout_email(), __( 'Guest', 'learnpress' ) )
 								);
-							} elseif ( $order->is_manual() && $order->is_guest() ) {
+							} elseif ( $order->is_manual() && empty( $order->get_users() ) && $order->is_guest() ) {
 								printf(
 									'<li>
 										<div class="item">%s</div>

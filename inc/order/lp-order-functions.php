@@ -613,7 +613,7 @@ function learn_press_get_order_status_label( $order_id = 0 ) {
  * @return array
  * @deprecated 4.2.0
  */
-function learn_press_get_order_statuses( $prefix = true, $status_only = false ) {
+/*function learn_press_get_order_statuses( $prefix = true, $status_only = false ) {
 	_deprecated_function( __FUNCTION__, '4.2.0' );
 	$register_statues = learn_press_get_register_order_statuses();
 
@@ -638,7 +638,7 @@ function learn_press_get_order_statuses( $prefix = true, $status_only = false ) 
 
 	// @since 3.0.0
 	return apply_filters( 'learn-press/order-statues', $order_statuses );
-}
+}*/
 
 /**
  * Get list of registered order's statues for registering with wp post's status.
@@ -689,6 +689,14 @@ function learn_press_get_register_order_statuses() {
 		'show_in_admin_all_list'    => true,
 		'show_in_admin_status_list' => true,
 		'label_count'               => _n_noop( 'Failed <span class="count">(%s)</span>', 'Failed <span class="count">(%s)</span>', 'learnpress' ),
+	);
+	$order_statues['lp-trash']     = array(
+		'label'                     => _x( 'Trash', 'Order status', 'learnpress' ),
+		'public'                    => false,
+		'exclude_from_search'       => false,
+		'show_in_admin_all_list'    => true,
+		'show_in_admin_status_list' => true,
+		'label_count'               => _n_noop( 'Trash <span class="count">(%s)</span>', 'Trash <span class="count">(%s)</span>', 'learnpress' ),
 	);
 
 	return $order_statues;

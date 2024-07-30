@@ -39,6 +39,10 @@
 					background: #f00;
 				}
 
+				&.trash {
+					color: rgba(128, 128, 128, 0.68);
+				}
+
 				i {
 					display: inline-block;
 				}

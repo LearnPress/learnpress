@@ -288,6 +288,9 @@ if ( ! class_exists( 'LP_Order' ) ) {
 				case LP_ORDER_FAILED:
 					$status = __( 'Failed', 'learnpress' );
 					break;
+				case LP_ORDER_TRASH:
+					$status = __( 'Trash', 'learnpress' );
+					break;
 				case 'on-hold':
 					$status = __( 'On hold', 'learnpress' );
 					break;

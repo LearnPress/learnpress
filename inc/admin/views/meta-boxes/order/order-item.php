@@ -16,7 +16,7 @@ if ( ! isset( $item ) || ! isset( $order ) ) {
 <?php if ( ! empty( $item['course_id'] ) ) { ?>
 	<tr class="order-item-row" data-item_id="<?php echo esc_attr( $item['id'] ); ?>" data-id="<?php echo esc_attr( $item['course_id'] ); ?>" data-remove_nonce="<?php echo wp_create_nonce( 'remove_order_item' ); ?>">
 		<td class="column-name">
-			<?php if ( $order->is_manual() ) : ?>
+			<?php if ( $order->is_manual() && $order->get_status() === LP_ORDER_PENDING ) : ?>
 				<a class="remove-order-item" href="#">
 					<span class="dashicons dashicons-no-alt"></span>
 				</a>

@@ -361,7 +361,7 @@ const addCoursesToOrder = () => {
 	document.addEventListener( 'click', ( e ) => {
 		const target = e.target;
 		//console.dir( target );
-		if ( target.id === elBtnAddOrderItem.id ) {
+		if ( elBtnAddOrderItem && target.id === elBtnAddOrderItem.id ) {
 			e.preventDefault();
 			showPopupSearchCourses();
 		}
