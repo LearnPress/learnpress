@@ -142,7 +142,9 @@ class LP_User_Factory {
 
 					// Check this order is the latest by user and course_id
 					$last_order_id = $lp_order_db->get_last_lp_order_id_of_user_course( $user->get_id(), $course_id );
-					if ( $last_order_id && $last_order_id != $order->get_id() ) {
+
+					$course = learn_press_get_course( $course_id );
+					if ( $last_order_id && $last_order_id != $order->get_id() || ! $course->is_in_stock() ) {
 						continue;
 					}
 
