@@ -690,14 +690,6 @@ function learn_press_get_register_order_statuses() {
 		'show_in_admin_status_list' => true,
 		'label_count'               => _n_noop( 'Failed <span class="count">(%s)</span>', 'Failed <span class="count">(%s)</span>', 'learnpress' ),
 	);
-	$order_statues['lp-trash']     = array(
-		'label'                     => _x( 'Trash', 'Order status', 'learnpress' ),
-		'public'                    => false,
-		'exclude_from_search'       => false,
-		'show_in_admin_all_list'    => true,
-		'show_in_admin_status_list' => true,
-		'label_count'               => _n_noop( 'Trash <span class="count">(%s)</span>', 'Trash <span class="count">(%s)</span>', 'learnpress' ),
-	);
 
 	return $order_statues;
 }

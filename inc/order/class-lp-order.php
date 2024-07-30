@@ -738,7 +738,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}learnpress_order_itemmeta WHERE learnpress_order_item_id = %d", $item_id ) );
 
 			//Clear cache
-			$key   = "order/{$this->get_id()}/{$this->get_status()}/items";
+			$key = "order/{$this->get_id()}/{$this->get_status()}/items";
 			LP_Cache::cache_load_first( 'clear', $key );
 
 			/**
@@ -1158,13 +1158,25 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			$old_status = '';
 
 			if ( $this->get_id() ) {
-				$old_status = str_replace( 'lp-', '', get_post_status( $this->get_id() ) );
-				$return     = $this->_curd->update( $this );
+				$old_status_post = get_post_status( $this->get_id() );
+				if ( ! in_array( $old_status_post, [ 'trash', 'auto-draft' ] ) ) {
+					$old_status = str_replace( 'lp-', '', $old_status_post );
+				} else {
+					$old_status = $old_status_post;
+				}
+
+				$return = $this->_curd->update( $this );
 			} else {
 				$return = $this->_curd->create( $this );
 			}
 
-			$new_status = str_replace( 'lp-', '', get_post_status( $this->get_id() ) );
+			$new_status_post = get_post_status( $this->get_id() );
+			if ( ! in_array( $new_status_post, [ 'trash', 'auto-draft' ] ) ) {
+				$new_status = str_replace( 'lp-', '', $new_status_post );
+			} else {
+				$new_status = $new_status_post;
+			}
+
 			$order_id   = $this->get_id();
 
 			if ( $new_status !== $old_status ) {

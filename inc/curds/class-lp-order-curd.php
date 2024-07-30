@@ -115,6 +115,10 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 */
 	private function format_status_save_db( LP_Order $lp_order ): string {
 		$status = ! empty( $lp_order->get_status() ) ? $lp_order->get_status() : LP_ORDER_PENDING;
+		if ( $status === LP_ORDER_TRASH || $status === 'auto-draft' ) {
+			return $status;
+		}
+
 		if ( ! preg_match( '/^lp-/', $status ) ) {
 			$status = 'lp-' . $status;
 		}

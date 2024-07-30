@@ -32,7 +32,6 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			add_filter( 'wp_untrash_post_status', array( $this, 'restore_status_order' ), 11, 3 );
 			add_filter( 'admin_footer', array( $this, 'admin_footer' ) );
 			add_filter( 'views_edit-lp_order', array( $this, 'filter_views' ) );
-			add_action( 'restrict_manage_posts', array( $this, 'show_btn_empty_order' ), 10, 2 );
 			// LP Order title
 
 			// Override title of LP Order on Admin
@@ -55,13 +54,6 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			}
 
 			parent::__construct();
-		}
-
-		public function show_btn_empty_order( $post_type, $which ) {
-			if ( $post_type !== LP_ORDER_CPT || ! isset( $_GET['post_status'] ) || $_GET['post_status'] !== LP_ORDER_TRASH_DB ) {
-				return;
-			}
-			submit_button( __( 'Empty Trash' ), 'apply', 'delete_all', false );
 		}
 
 		/**
@@ -218,6 +210,22 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		 * @return mixed
 		 */
 		public function posts_where_paged( $where ) {
+			// Code temporary, when release about 1 week, will remove it.
+			$lp_filter_post = new LP_Post_Type_Filter();
+			$lp_filter_post->post_type = LP_ORDER_CPT;
+			$lp_filter_post->post_status = [ 'lp-trash' ];
+			$orders_trash = LP_Post_DB::getInstance()->get_posts( $lp_filter_post );
+			if ( $orders_trash ) {
+				foreach ( $orders_trash as $order_trash ) {
+					$order = learn_press_get_order( $order_trash->ID );
+					if ( $order ) {
+						$order->update_status( 'trash' );
+					}
+				}
+			}
+			// Change status course from lp_trash to trash.
+
+			// End code temporary
 			global $wpdb, $wp_query;
 			$lp_db = LP_Database::getInstance();
 			if ( is_admin() && $this->is_page_list_posts_on_backend() ) {
@@ -266,7 +274,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				$status = $wp_query->get( 'post_status' );
 				$where .= $wpdb->prepare( " AND {$lp_db->tb_posts}.post_status = %s", $status );
 			} else {
-				$where .= $wpdb->prepare( " AND {$lp_db->tb_posts}.post_status NOT IN (%s, %s)", LP_ORDER_TRASH_DB, 'auto-draft' );
+				$where .= $wpdb->prepare( " AND {$lp_db->tb_posts}.post_status NOT IN (%s, %s, %s)", LP_ORDER_TRASH_DB, LP_ORDER_TRASH, 'auto-draft' );
 			}
 
 			return $where;
