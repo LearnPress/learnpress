@@ -560,7 +560,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 			$sale_price_value = $this->get_data( 'sale_price', '' );
 
 			if ( '' !== $sale_price_value ) {
-				return floatval( $sale_price_value );
+				return apply_filters( 'learn-press/course/sale-price', floatval( $sale_price_value ), $this->get_id() );
 			}
 
 			return $sale_price_value;
