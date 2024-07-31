@@ -746,7 +746,13 @@ class LP_Template_Course extends LP_Abstract_Template {
 		}
 		try {
 			$item = LP_Global::course_item();
-			if ( ! $course->is_no_required_enroll() && ( ! $user || ! $user->is_course_in_progress( $course->get_id() ) ) ) {
+			$can_show_tab_material = false;
+			if ( $course->is_no_required_enroll()
+				|| $user->has_enrolled_or_finished( $course->get_id() )
+				|| $user->is_instructor() || $user->is_admin() ) {
+				$can_show_tab_material = true;
+			}
+			if ( ! $can_show_tab_material ) {
 				return;
 			}
 

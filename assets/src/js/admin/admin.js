@@ -220,11 +220,7 @@ const showHideOptionsDependency = ( e, target ) => {
 			const elClassDependency = document.querySelectorAll( `.show_if_${ classDependency }` );
 			if ( elClassDependency ) {
 				elClassDependency.forEach( ( el ) => {
-					if ( target.checked ) {
-						el.classList.remove( 'lp-option-disabled' );
-					} else {
-						el.classList.add( 'lp-option-disabled' );
-					}
+					el.classList.toggle( 'lp-option-disabled' );
 				} );
 			}
 		} else if ( target.closest( '.lp-meta-box' ) ) {
