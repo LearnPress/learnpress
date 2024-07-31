@@ -497,19 +497,6 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		}
 
 		/**
-		 * Get items out stock in order
-		 *
-		 * @return mixed
-		 */
-		public function get_items_out_stock() {
-			$course_id = $this->get_id();
-			$key = '_lp_course_out_stock';
-
-			$items = get_post_meta( $course_id, $key, true);
-			return $items;
-		}
-
-		/**
 		 * Get list of course ids from order.
 		 *
 		 * @return array|bool
