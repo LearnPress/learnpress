@@ -82,9 +82,9 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 				LP_Modal_Search_Items::instance();
 			}
 
-			if ( in_array( get_post_type(), array( LP_ORDER_CPT ) ) ) {
+			/*if ( in_array( get_post_type(), array( LP_ORDER_CPT ) ) ) {
 				LP_Modal_Search_Users::instance();
-			}
+			}*/
 		}
 
 		/**
@@ -774,7 +774,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			include_once 'helpers/class-lp-outdated-template-helper.php';
 			include_once 'helpers/class-lp-plugins-helper.php';
 			include_once 'class-lp-modal-search-items.php';
-			include_once 'class-lp-modal-search-users.php';
+			//include_once 'class-lp-modal-search-users.php';
 			include_once 'class-lp-setup-wizard.php';
 			// include_once 'class-lp-updater.php';
 			include_once 'class-lp-install-sample-data.php';

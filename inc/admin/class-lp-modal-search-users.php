@@ -1,6 +1,8 @@
 <?php
 /**
  * Class LP_Modal_Search_Users
+ *
+ * @deprecated 4.2.6.9.3
  */
 class LP_Modal_Search_Users {
 

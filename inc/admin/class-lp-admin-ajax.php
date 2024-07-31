@@ -67,7 +67,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				// Duplicate course, lesson, quiz, question.
 				'modal_search_items',
 				// Used to search courses on LP Order
-				'modal_search_users',
+				//'modal_search_users',
 				// Used to search users on LP Order
 				'add_items_to_order',
 				// Used to add courses on LP Order
@@ -395,8 +395,9 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 * Search items by requesting params.
 		 *
 		 * @note tungnx checked has use
+		 * @deprecated 4.2.6.9.3
 		 */
-		public static function modal_search_users() {
+		/*public static function modal_search_users() {
 			$term         = LP_Request::get_param( 'term' );
 			$type         = LP_Request::get_param( 'type' );
 			$context      = LP_Request::get_param( 'context' );
@@ -435,7 +436,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					'users' => $search->get_items(),
 				)
 			);
-		}
+		}*/
 
 		/**
 		 * Search course category.
