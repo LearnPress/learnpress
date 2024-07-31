@@ -746,7 +746,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 		}
 		try {
 			$item = LP_Global::course_item();
-			if ( ! $user || ! $user->is_course_in_progress( $course->get_id() ) ) {
+			if ( ! $course->is_no_required_enroll() && ( ! $user || ! $user->is_course_in_progress( $course->get_id() ) ) ) {
 				return;
 			}
 
