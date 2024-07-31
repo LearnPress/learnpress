@@ -671,6 +671,8 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 
 				$price_html .= sprintf( '<span class="free">%s</span>', esc_html__( 'Free', 'learnpress' ) );
 				$price_html  = apply_filters( 'learn_press_course_price_html_free', $price_html, $this );
+			} elseif ( $this->get_data( 'no_required_enroll', 'no' ) === 'yes' ) {
+				$price_html .= '';
 			} else {
 				if ( $this->has_sale_price() ) {
 					$price_html .= sprintf( '<span class="origin-price">%s</span>', $this->get_regular_price_html() );

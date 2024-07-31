@@ -169,6 +169,8 @@ class CoursePostModel extends PostModel {
 
 			$price_html .= sprintf( '<span class="free">%s</span>', esc_html__( 'Free', 'learnpress' ) );
 			$price_html = apply_filters( 'learn_press_course_price_html_free', $price_html, $this );
+		}  elseif ( $this->get_meta_value_by_key( self::META_KEY_NO_REQUIRED_ENROLL, 'no' ) === 'yes' ) {
+			$price_html .= '';
 		} else {
 			if ( $this->has_sale_price() ) {
 				$price_html .= sprintf( '<span class="origin-price">%s</span>', $this->get_regular_price_html() );
