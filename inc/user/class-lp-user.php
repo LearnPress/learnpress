@@ -384,7 +384,7 @@ class LP_User extends LP_Abstract_User {
 
 			if ( $this->has_purchased_course( $course_id ) ) {
 				$code_err = 'course_purchased';
-				throw new Exception( 'Course is purchased' );
+				throw new Exception( __( 'Course is purchased', 'learnpress' ) );
 			}
 
 			$is_blocked_course  = 0 === $course->timestamp_remaining_duration();
@@ -395,14 +395,9 @@ class LP_User extends LP_Abstract_User {
 					throw new Exception( 'Course is enrolled' );
 				}
 			} else {
-				if ( $is_enrolled_course && ! $is_blocked_course ) {
-					$code_err = 'course_is_enrolled';
-					throw new Exception( 'Course is enrolled' );
-				}
-
 				if ( $this->has_enrolled_or_finished( $course_id ) ) {
 					$code_err = 'course_is_enrolled_or_finished';
-					throw new Exception( 'Course is enrolled or finished', 'learnpress' );
+					throw new Exception( __( 'Course is enrolled or finished', 'learnpress' ) );
 				}
 			}
 		} catch ( Throwable $e ) {
@@ -815,8 +810,8 @@ class LP_User extends LP_Abstract_User {
 			$filter->user_id        = $user_id;
 			$count_status           = $lp_user_items_db->count_status_by_items( $filter );
 			$total_courses_enrolled = intval( $count_status->{LP_COURSE_PURCHASED} ?? 0 )
-									+ intval( $count_status->{LP_COURSE_ENROLLED} ?? 0 )
-									+ intval( $count_status->{LP_COURSE_FINISHED} ?? 0 );
+				+ intval( $count_status->{LP_COURSE_ENROLLED} ?? 0 )
+				+ intval( $count_status->{LP_COURSE_FINISHED} ?? 0 );
 
 			$statistic['enrolled_courses']   = $total_courses_enrolled;
 			$statistic['in_progress_course'] = $count_status->{LP_COURSE_GRADUATION_IN_PROGRESS} ?? 0;

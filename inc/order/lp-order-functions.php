@@ -650,6 +650,14 @@ function learn_press_get_order_status_label( $order_id = 0 ) {
 function learn_press_get_register_order_statuses() {
 	$order_statues = array();
 
+	$order_statues['lp-completed']  = array(
+		'label'                     => _x( 'Completed', 'Order status', 'learnpress' ),
+		'public'                    => false,
+		'exclude_from_search'       => false,
+		'show_in_admin_all_list'    => true,
+		'show_in_admin_status_list' => true,
+		'label_count'               => _n_noop( 'Completed <span class="count">(%s)</span>', 'Completed <span class="count">(%s)</span>', 'learnpress' ),
+	);
 	$order_statues['lp-pending']    = array(
 		'label'                     => _x( 'Pending', 'Order status', 'learnpress' ),
 		'public'                    => false,
@@ -666,14 +674,6 @@ function learn_press_get_register_order_statuses() {
 		'show_in_admin_status_list' => true,
 		'label_count'               => _n_noop( 'Processing <span class="count">(%s)</span>', 'Processing <span class="count">(%s)</span>', 'learnpress' ),
 	);
-	$order_statues['lp-completed']  = array(
-		'label'                     => _x( 'Completed', 'Order status', 'learnpress' ),
-		'public'                    => false,
-		'exclude_from_search'       => false,
-		'show_in_admin_all_list'    => true,
-		'show_in_admin_status_list' => true,
-		'label_count'               => _n_noop( 'Completed <span class="count">(%s)</span>', 'Completed <span class="count">(%s)</span>', 'learnpress' ),
-	);
 	$order_statues['lp-cancelled']  = array(
 		'label'                     => _x( 'Cancelled', 'Order status', 'learnpress' ),
 		'public'                    => false,
@@ -689,6 +689,14 @@ function learn_press_get_register_order_statuses() {
 		'show_in_admin_all_list'    => true,
 		'show_in_admin_status_list' => true,
 		'label_count'               => _n_noop( 'Failed <span class="count">(%s)</span>', 'Failed <span class="count">(%s)</span>', 'learnpress' ),
+	);
+	$order_statues['trash']     = array(
+		'label'                     => _x( 'Trash', 'Order status', 'learnpress' ),
+		'public'                    => false,
+		'exclude_from_search'       => false,
+		'show_in_admin_all_list'    => true,
+		'show_in_admin_status_list' => true,
+		'label_count'               => _n_noop( 'Trash <span class="count">(%s)</span>', 'Trash <span class="count">(%s)</span>', 'learnpress' ),
 	);
 
 	return $order_statues;
