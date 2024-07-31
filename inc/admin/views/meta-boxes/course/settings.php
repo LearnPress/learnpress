@@ -78,9 +78,11 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 	}
 
 	public function general( $post_id ) {
-		$repurchase_option_desc  = sprintf( '1. %s', __( 'Reset course progress: The course progress and results of student will be removed.' ) );
+		$repurchase_option_desc = sprintf( '1. %s', __( 'Reset course progress: The course progress and results of student will be removed.' ) );
 		$repurchase_option_desc .= '<br/>' . sprintf( '2. %s', __( 'Keep course progress: The course progress and results of student will remain.' ) );
 		$repurchase_option_desc .= '<br/>' . sprintf( '3. %s', __( 'Open popup: The student can decide whether their course progress will be reset with the confirm popup.' ) );
+
+		$is_enable_allow_course_repurchase = get_post_meta( $post_id, '_lp_allow_course_repurchase', true ) === 'yes';
 
 		return apply_filters(
 			'lp/course/meta-box/fields/general',
@@ -122,7 +124,11 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 							'keep'  => esc_html__( 'Keep course progress', 'learnpress' ),
 							'popup' => esc_html__( 'Open popup', 'learnpress' ),
 						),
-						'show'    => array( '_lp_allow_course_repurchase', '=', 'yes' ), // use 'show' or 'hide'
+						'dependency'        => [
+							'name'       => '_lp_allow_course_repurchase',
+							'is_disable' => ! $is_enable_allow_course_repurchase
+						],
+						//'show'    => array( '_lp_allow_course_repurchase', '=', 'yes' ), // use 'show' or 'hide'
 					)
 				),
 				'_lp_level'                    => new LP_Meta_Box_Select_Field(
@@ -214,6 +220,8 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 		$regular_price = $key_exists ? get_post_meta( $post_id, '_lp_regular_price', true ) : $price;
 		$sale_price    = get_post_meta( $post_id, '_lp_sale_price', true );
 
+		$is_enable_no_required_enroll = get_post_meta( $post_id, '_lp_no_required_enroll', true ) === 'yes' ? 1 : 0;
+
 		return apply_filters(
 			'lp/course/meta-box/fields/price',
 			array(
@@ -229,6 +237,10 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 						),
 						'style'             => 'width: 70px;',
 						'class'             => 'lp_meta_box_regular_price',
+						'dependency'        => [
+							'name'       => '_lp_no_required_enroll',
+							'is_disable' => $is_enable_no_required_enroll
+						],
 					)
 				),
 				'_lp_sale_price'         => new LP_Meta_Box_Text_Field(
@@ -243,6 +255,10 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 						),
 						'style'             => 'width: 70px;',
 						'class'             => 'lp_meta_box_sale_price',
+						'dependency'        => [
+							'name'       => '_lp_no_required_enroll',
+							'is_disable' => $is_enable_no_required_enroll
+						],
 					)
 				),
 				'_lp_sale_start'         => new LP_Meta_Box_Date_Field(
@@ -484,7 +500,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 							?>
 							<?php if ( isset( $tab_content['content'] ) ) { ?>
 								<div id="<?php echo esc_attr( $tab_content['target'] ); ?>"
-									class="lp-meta-box-course-panels">
+									 class="lp-meta-box-course-panels">
 									<?php
 									do_action( 'learnpress/course-settings/before-' . $key );
 

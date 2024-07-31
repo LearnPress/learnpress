@@ -55,6 +55,7 @@ class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
 				'multiple'          => false,
 				'custom_attributes' => array(),
 				'tom_select'        => false,
+				'wrapper_attr'      => [],
 			)
 		);
 
@@ -90,9 +91,19 @@ class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
 
 		$tooltip     = ! empty( $field['description'] ) && false !== $field['desc_tip'] ? $field['description'] : '';
 		$description = ! empty( $field['description'] ) && false === $field['desc_tip'] ? $field['description'] : '';
+
+		$dependency_check = $field['dependency'] ?? [];
+		if ( ! empty( $dependency_check ) ) {
+			if ( $dependency_check['is_disable'] ) {
+				$field['wrapper_class'] .= ' lp-option-disabled';
+			}
+
+			$field['wrapper_attr'][] = 'data-dependency=' . $dependency_check['name'];
+		}
 		?>
 
 		<p class="form-field <?php echo esc_attr( $field['id'] ) . '_field ' . esc_attr( $field['wrapper_class'] ); ?>"
+			<?php echo esc_attr( implode( ' ', $field['wrapper_attr'] ) ) ?>
 			<?php learn_press_echo_vuejs_write_on_php( $this->condition ? $this->condition : '' ); ?>>
 			<label for="<?php echo esc_attr( $field['id'] ); ?>">
 				<?php echo wp_kses_post( $field['label'] ); ?>
@@ -101,7 +112,6 @@ class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
 				<option value="" hidden style="display: none"></option>
 				<?php
 				foreach ( $field['options'] as $key => $value ) {
-					$selected = '';
 					if ( is_array( $field['value'] ) ) {
 						$selected = in_array( $key, $field['value'] ) ? 'selected="selected"' : '';
 					} else {
@@ -110,7 +120,7 @@ class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
 					printf(
 						'<option value="%s" %s>%s</option>',
 						esc_attr( $key ),
-						esc_attr( $selected),
+						esc_attr( $selected ),
 						esc_html( $value )
 					);
 				}

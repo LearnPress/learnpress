@@ -31,6 +31,7 @@ class LP_Meta_Box_Text_Field extends LP_Meta_Box_Field {
 		$class         = ! empty( $extra['class'] ) ? 'class="' . esc_attr( $extra['class'] ) . '"' : '';
 		$style         = ! empty( $extra['style'] ) ? 'style="' . esc_attr( $extra['style'] ) . '"' : '';
 		$wrapper_class = ! empty( $extra['wrapper_class'] ) ? esc_attr( $extra['wrapper_class'] ) : '';
+		$wrapper_attr  = $extra['wrapper_attr'] ?? [];
 
 		$meta_exists = LP_Database::getInstance()->check_key_postmeta_exists( $thepostid, $this->id );
 		$meta        = get_post_meta( $thepostid, $this->id, true );
@@ -47,9 +48,19 @@ class LP_Meta_Box_Text_Field extends LP_Meta_Box_Field {
 			}
 		}
 
+		$dependency_check = $extra['dependency'] ?? [];
+		if ( ! empty( $dependency_check ) ) {
+			if ( $dependency_check['is_disable'] ) {
+				$wrapper_class .= ' lp-option-disabled';
+			}
+
+			$wrapper_attr[] = 'data-dependency=' . $dependency_check['name'];
+		}
+
 		printf(
-			'<div class="form-field %s"><label for="%s">%s</label>',
+			'<div class="form-field %s" %s><label for="%s">%s</label>',
 			esc_attr( $this->id . '_field ' . $wrapper_class ),
+			implode( ' ', $wrapper_attr ),
 			esc_attr( $this->id ),
 			wp_kses_post( $this->label )
 		);

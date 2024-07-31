@@ -36,6 +36,7 @@ class LP_Meta_Box_Checkbox_Field extends LP_Meta_Box_Field {
 		$class         = ! empty( $field['class'] ) ? 'class="' . esc_attr( $field['class'] ) . '"' : '';
 		$style         = ! empty( $field['style'] ) ? 'style="' . esc_attr( $field['style'] ) . '"' : '';
 		$wrapper_class = ! empty( $field['wrapper_class'] ) ? esc_attr( $field['wrapper_class'] ) : '';
+		$wrapper_attr  = $extra['wrapper_attr'] ?? [];
 		$name          = ! empty( $field['name'] ) ? esc_attr( $field['name'] ) : esc_attr( $field['id'] );
 		$name          = 'name="' . $name . '"';
 
@@ -62,8 +63,22 @@ class LP_Meta_Box_Checkbox_Field extends LP_Meta_Box_Field {
 			}
 		}
 
-		echo '<div class="form-field ' . esc_attr( $field['id'] . '_field ' . $wrapper_class ) . '">
-		<label for="' . esc_attr( $field['id'] ) . '">' . wp_kses_post( $field['label'] ) . '</label>';
+		$dependency_check = $extra['dependency'] ?? [];
+		if ( ! empty( $dependency_check ) ) {
+			if ( $dependency_check['is_disable'] ) {
+				$wrapper_class .= ' lp-option-disabled';
+			}
+
+			$wrapper_attr[] = 'data-dependency=' . $dependency_check['name'];
+		}
+
+		printf(
+			'<div class="form-field %s" %s><label for="%s">%s</label>',
+			esc_attr( $this->id . '_field ' . $wrapper_class ),
+			implode( ' ', $wrapper_attr ),
+			esc_attr( $this->id ),
+			wp_kses_post( $this->label )
+		);
 
 		echo '<input type="checkbox" ' . $class . ' ' . $style . ' ' . $name . ' ' . $checked . ' id="' . esc_attr( $field['id'] ) . '" ' . implode( ' ', $custom_attributes ) . '/> ';
 

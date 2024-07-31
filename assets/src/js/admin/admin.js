@@ -186,7 +186,7 @@ import { defaultInitTomSelect, searchUserOnListPost } from './init-tom-select.js
 		}
 
 		// Show/hide meta-box field with type checkbox
-		$( 'input' ).on( 'click', function( e ) {
+		/*$( 'input' ).on( 'click', function( e ) {
 			const el = $( e.target );
 			if ( ! el.length ) {
 				return;
@@ -205,11 +205,47 @@ import { defaultInitTomSelect, searchUserOnListPost } from './init-tom-select.js
 			} else {
 				elHide.hide();
 			}
-		} );
+		} );*/
 	};
 
 	$( document ).ready( onReady );
 }( jQuery ) );
+
+const showHideOptionsDependency = ( e, target ) => {
+	if ( target.tagName === 'INPUT' ) {
+		if ( target.closest( '.forminp ' ) ) {
+			const nameInput = target.name;
+			const classDependency = nameInput.replace( 'learn_press_', '' );
+
+			const elClassDependency = document.querySelectorAll( `.show_if_${ classDependency }` );
+			if ( elClassDependency ) {
+				elClassDependency.forEach( ( el ) => {
+					if ( target.checked ) {
+						el.classList.remove( 'lp-option-disabled' );
+					} else {
+						el.classList.add( 'lp-option-disabled' );
+					}
+				} );
+			}
+		} else if ( target.closest( '.lp-meta-box' ) ) {
+			const elLPMetaBox = target.closest( '.lp-meta-box' );
+			const nameInput = target.name;
+
+			const elClassDependency = elLPMetaBox.querySelectorAll( `[data-dependency=${ nameInput }]` );
+			if ( elClassDependency ) {
+				elClassDependency.forEach( ( el ) => {
+					el.classList.toggle( 'lp-option-disabled' );
+				} );
+			}
+		}
+	}
+};
+
+// Events
+document.addEventListener( 'click', ( e ) => {
+	const target = e.target;
+	showHideOptionsDependency( e, target );
+} );
 
 document.addEventListener( 'DOMContentLoaded', () => {
 	searchUserOnListPost();

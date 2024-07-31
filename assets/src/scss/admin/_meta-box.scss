@@ -237,7 +237,6 @@
 
 // Use on LP4.
 .lp-metabox__table {
-
 	.titledesc {
 
 		label {
@@ -267,6 +266,11 @@
 			width: 400px;
 		}
 	}
+}
+
+.lp-option-disabled {
+	pointer-events: none;
+	opacity: 0.5;
 }
 
 .lp-metabox__custom-fields {

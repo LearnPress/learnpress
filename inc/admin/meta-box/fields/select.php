@@ -11,7 +11,7 @@ if ( isset( $value['show_if_checked'] ) ) {
 	$visibility_class[] = 'show_if_' . $value['show_if_checked'];
 
 	if ( 'no' === LP_Settings::get_option( $value['show_if_checked'] ) ) {
-		$visibility_class[] = 'hidden';
+		$visibility_class[] = 'lp-option-disabled';
 	}
 }
 ?>
