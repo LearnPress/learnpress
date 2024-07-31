@@ -68,7 +68,7 @@ class LP_Meta_Box_Textarea_Field extends LP_Meta_Box_Field {
 	}
 
 	public function save( $post_id ) {
-		$value = wp_kses_post( LP_Request::get_param( $this->id, $this->default ?? '' ) );
+		$value = LP_Request::get_param( $this->id, $this->default ?? '', 'html' );
 		update_post_meta( $post_id, $this->id, $value );
 
 		return $value;

@@ -67,7 +67,7 @@ class LP_Meta_Box_WP_Editor_Field extends LP_Meta_Box_Field {
 	}
 
 	public function save( $post_id ) {
-		$meta_value = wpautop( LP_Request::get_param( $this->id, $this->default ?? '' ) );
+		$meta_value = LP_Request::get_param( $this->id, $this->default ?? '', 'html' );
 
 		update_post_meta( $post_id, $this->id, $meta_value );
 
