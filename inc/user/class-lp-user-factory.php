@@ -204,9 +204,11 @@ class LP_User_Factory {
 				$allow_repurchase_type = learn_press_get_user_item_meta( $latest_user_item_id, '_lp_allow_repurchase_type' );
 			}
 
+			$is_no_required_enroll = $course->get_data( 'no_required_enroll', 'no' ) === 'yes';
+
 			// If > 1 time purchase same course and allow repurchase
 			if ( ! empty( $allow_repurchase_type ) && $course->allow_repurchase()
-				&& ! empty( $latest_user_item_id ) && ! $course->is_free() ) {
+				&& ! empty( $latest_user_item_id ) && ! $course->is_free() && ! $is_no_required_enroll ) {
 				/**
 				 * If keep course progress will reset start_time, end_time, status, graduation
 				 * where user_item_id = $latest_user_item_id
@@ -231,7 +233,7 @@ class LP_User_Factory {
 				}
 
 				learn_press_delete_user_item_meta( $latest_user_item_id, '_lp_allow_repurchase_type' );
-			} elseif ( ! $course->is_free() ) { // First purchase course
+			} elseif ( ! $course->is_free() && ! $is_no_required_enroll ) { // First purchase course
 				// Set data for create user_item
 				if ( $auto_enroll ) {
 					$user_item_data['status']     = LP_COURSE_ENROLLED;
