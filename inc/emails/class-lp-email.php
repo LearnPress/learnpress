@@ -344,8 +344,8 @@ if ( ! class_exists( 'LP_Email' ) ) {
 			if ( $this->settings->get( 'email_content.format' ) ) {
 				$this->email_format = ( $this->settings->get( 'email_content.format' ) == 'plain_text' ) ? 'plain' : 'html';
 			} else {
-				if ( LP_Settings::instance()->get( 'emails_general.default_email_content' ) ) {
-					$this->email_format = LP_Settings::instance()->get( 'emails_general.default_email_content' );
+				if ( LP_Settings::instance()->get( 'emails_general.default_email_content', 'html' ) ) {
+					$this->email_format = LP_Settings::instance()->get( 'emails_general.default_email_content', 'html' );
 				}
 			}
 

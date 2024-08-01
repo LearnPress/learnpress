@@ -141,7 +141,7 @@ const lpMetaboxExtraInfo = () => {
 		return false;
 	} );
 
-	document.querySelectorAll( '.lp_course_extra_meta_box__fields' ).forEach( ( ele ) => {
+	/*document.querySelectorAll( '.lp_course_extra_meta_box__fields' ).forEach( ( ele ) => {
 		ele.addEventListener( 'keydown', ( e ) => {
 			const inputs = ele.querySelectorAll( '.lp_course_extra_meta_box__input' );
 
@@ -153,7 +153,7 @@ const lpMetaboxExtraInfo = () => {
 				return false;
 			}
 		} );
-	} );
+	} );*/
 
 	$( '.lp_course_extra_meta_box__fields' ).on( 'click', 'a.delete', function() {
 		$( this ).closest( '.lp_course_extra_meta_box__field' ).remove();
@@ -179,7 +179,7 @@ const lpMetaboxExtraInfo = () => {
 		return false;
 	} );
 
-	document.querySelectorAll( '.lp_course_faq_meta_box__fields' ).forEach( ( ele ) => {
+	/*document.querySelectorAll( '.lp_course_faq_meta_box__fields' ).forEach( ( ele ) => {
 		ele.addEventListener( 'keydown', ( e ) => {
 			const inputs = ele.querySelectorAll( '.lp_course_faq_meta_box__field input' );
 			const textareas = ele.querySelectorAll( '.lp_course_faq_meta_box__field textarea' );
@@ -192,7 +192,7 @@ const lpMetaboxExtraInfo = () => {
 				return false;
 			}
 		} );
-	} );
+	} );*/
 
 	$( '.lp_course_faq_meta_box__fields' ).on( 'click', 'a.delete', function() {
 		$( this ).closest( '.lp_course_faq_meta_box__field' ).remove();
@@ -484,7 +484,7 @@ const lpMetaboxCourseTabs = () => {
 };
 
 // use to show and hide field condition logic metabox.
-const lpMetaboxCondition = () => {
+/*const lpMetaboxCondition = () => {
 	const fields = document.querySelectorAll( '.lp-meta-box .form-field' );
 
 	fields.forEach( ( field ) => {
@@ -494,9 +494,9 @@ const lpMetaboxCondition = () => {
 			lpMetaboxConditionType( field, field.dataset.hide, 'hide' );
 		}
 	} );
-};
+};*/
 
-const lpMetaboxConditionType = ( field, conditions, typeCondition = 'show' ) => {
+/*const lpMetaboxConditionType = ( field, conditions, typeCondition = 'show' ) => {
 	const condition = JSON.parse( conditions ),
 		eles = document.querySelectorAll( `input[id^="${ condition[ 0 ] }"]` ),
 		logic = condition[ 1 ] === '=' ? '=' : '!=',
@@ -535,7 +535,7 @@ const lpMetaboxConditionType = ( field, conditions, typeCondition = 'show' ) => 
 			switchCase( type, ele, target );
 		} );
 	} );
-};
+};*/
 
 /** End Nhamdv code */
 
@@ -856,7 +856,7 @@ const onReady = function onReady() {
 	lpMetaboxExtraInfo();
 	lpHidePassingGrade();
 	lpGetFinalQuiz();
-	lpMetaboxCondition();
+	//lpMetaboxCondition();
 	lpMetaboxRepeaterField();
 
 	$( document )
@@ -867,3 +867,20 @@ const onReady = function onReady() {
 };
 
 $( document ).ready( onReady );
+
+// Events
+document.addEventListener( 'keydown', function( e ) {
+	const target = e.target;
+	if ( e.key === 'Enter' || e.keyCode === 13 ) {
+		// When enter on input on Extra information Options, blur it.
+		if ( target.classList.contains( 'lp_course_extra_meta_box__input' ) ) {
+			e.preventDefault();
+			target.blur();
+		} else if ( target.tagName === 'INPUT' ) {
+			if ( target.closest( '.lp_course_faq_meta_box__field' ) ) {
+				e.preventDefault();
+				target.blur();
+			}
+		}
+	}
+} );

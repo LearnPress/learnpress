@@ -131,7 +131,7 @@ class LP_Settings_Emails extends LP_Abstract_Settings_Page {
 					'type'  => 'title',
 					'desc'  => esc_html__( 'This section lets you customize the LearnPress emails', 'learnpress' ),
 				),
-				array(
+				/*array(
 					'title'   => esc_html__( 'Content type', 'learnpress' ),
 					'id'      => 'emails_general[default_email_content]',
 					'default' => 'html',
@@ -140,7 +140,7 @@ class LP_Settings_Emails extends LP_Abstract_Settings_Page {
 						'plain' => esc_html__( 'Plain Text', 'learnpress' ),
 						'html'  => esc_html__( 'HTML', 'learnpress' ),
 					),
-				),
+				),*/
 				array(
 					'title'   => esc_html__( 'Header image', 'learnpress' ),
 					'id'      => 'emails_general[header_image]',

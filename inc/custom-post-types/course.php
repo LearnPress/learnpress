@@ -556,9 +556,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 							}
 						} elseif ( ! $is_update ) {
 							$courseModel->meta_data->{$meta_key} = $option->default ?? '';
-						} elseif ( $option instanceof LP_Meta_Box_Checkbox_Field
-						           && ! empty( $wp_screen )
-						           && LP_COURSE_CPT === $wp_screen->id ) {
+						} elseif ( ! empty( $wp_screen ) && LP_COURSE_CPT === $wp_screen->id ) {
 							$value_saved                         = $option->save( $courseModel->ID );
 							$courseModel->meta_data->{$meta_key} = $value_saved;
 						}

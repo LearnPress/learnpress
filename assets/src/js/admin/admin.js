@@ -227,7 +227,7 @@ const showHideOptionsDependency = ( e, target ) => {
 			const elLPMetaBox = target.closest( '.lp-meta-box' );
 			const nameInput = target.name;
 
-			const elClassDependency = elLPMetaBox.querySelectorAll( `[data-dependency=${ nameInput }]` );
+			const elClassDependency = elLPMetaBox.querySelectorAll( `[data-dependency="${ nameInput }"]` );
 			if ( elClassDependency ) {
 				elClassDependency.forEach( ( el ) => {
 					el.classList.toggle( 'lp-option-disabled' );
