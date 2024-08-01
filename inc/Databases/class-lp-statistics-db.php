@@ -576,7 +576,7 @@ class LP_Statistics_DB extends LP_Database {
 		$usermeta_table           = $this->wpdb->usermeta;
 		$filter->join[]           = "INNER JOIN $usermeta_table AS um ON um.user_id = u.ID";
 		$time_field               = 'u.user_registered';
-		$filter->where[]          = $this->wpdb->prepare( 'AND um.meta_key=%s', 'wp_capabilities' );
+		$filter->where[]          = $this->wpdb->prepare( 'AND um.meta_key=%s', $this->wpdb->prefix . 'capabilities' );
 		$filter->where[]          = $this->wpdb->prepare( "AND um.meta_value LIKE CONCAT('%',%s,'%')", ADMIN_ROLE );
 		$filter->where[]          = $this->wpdb->prepare( "OR um.meta_value LIKE CONCAT('%',%s,'%')", LP_TEACHER_ROLE );
 		$filter                   = $this->filter_time( $filter, $type, $time_field, $value, true );

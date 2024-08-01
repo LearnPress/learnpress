@@ -629,8 +629,9 @@ function learn_press_get_courses_by_status( $status ) {
  * @param string
  *
  * @return int
+ * @deprecated 4.2.6.9.3
  */
-function learn_press_get_courses_by_price( $fee ) {
+/*function learn_press_get_courses_by_price( $fee ) {
 	global $wpdb;
 
 	$user_id = get_current_user_id();
@@ -655,7 +656,7 @@ function learn_press_get_courses_by_price( $fee ) {
 	);
 
 	return $courses;
-}
+}*/
 
 /**
  * Get data about students to render in chart
@@ -665,8 +666,9 @@ function learn_press_get_courses_by_price( $fee ) {
  * @param float $time_ago
  *
  * @return array
+ * @deprecated 4.2.6.9.3
  */
-function learn_press_get_chart_students( $from = null, $by = null, $time_ago = 0 ) {
+/*function learn_press_get_chart_students( $from = null, $by = null, $time_ago = 0 ) {
 	$labels   = array();
 	$datasets = array();
 
@@ -707,7 +709,7 @@ function learn_press_get_chart_students( $from = null, $by = null, $time_ago = 0
 		'labels'   => $labels,
 		'datasets' => $datasets,
 	);
-}
+}*/
 
 /**
  * Get data about students to render in chart
@@ -717,8 +719,9 @@ function learn_press_get_chart_students( $from = null, $by = null, $time_ago = 0
  * @param float $time_ago
  *
  * @return array
+ * @deprecated 4.2.6.9.3
  */
-function learn_press_get_chart_users( $from = null, $by = null, $time_ago = 0 ) {
+/*function learn_press_get_chart_users( $from = null, $by = null, $time_ago = 0 ) {
 	global $wpdb;
 
 	$labels   = array();
@@ -858,7 +861,7 @@ function learn_press_get_chart_users( $from = null, $by = null, $time_ago = 0 ) 
 		'datasets' => $datasets,
 		'sql'      => $query,
 	);
-}
+}*/
 
 
 /**
@@ -869,8 +872,9 @@ function learn_press_get_chart_users( $from = null, $by = null, $time_ago = 0 ) 
  * @param float $time_ago
  *
  * @return array
+ * @deprecated 4.2.6.9.3
  */
-function learn_press_get_chart_courses( $from = null, $by = null, $time_ago = 0 ) {
+/*function learn_press_get_chart_courses( $from = null, $by = null, $time_ago = 0 ) {
 	global $wpdb;
 
 	$labels   = array();
@@ -1062,7 +1066,7 @@ function learn_press_get_chart_courses( $from = null, $by = null, $time_ago = 0 
 		'datasets' => $datasets,
 		'sql'      => $query,
 	);
-}
+}*/
 
 
 /**
@@ -1073,8 +1077,9 @@ function learn_press_get_chart_courses( $from = null, $by = null, $time_ago = 0 
  * @param float $time_ago
  *
  * @return array
+ * @deprecated 4.2.6.9.3
  */
-function learn_press_get_chart_orders( $from = null, $by = null, $time_ago = 0 ) {
+/*function learn_press_get_chart_orders( $from = null, $by = null, $time_ago = 0 ) {
 	global $wpdb;
 	$sql_join = '';
 
@@ -1269,14 +1274,15 @@ function learn_press_get_chart_orders( $from = null, $by = null, $time_ago = 0 )
 		'datasets' => $datasets,
 		'sql'      => $query,
 	);
-}
+}*/
 
 /**
  * Get data about courses to render in the chart
  *
  * @return array
+ * @deprecated 4.2.6.9.3
  */
-function learn_press_get_chart_courses2() {
+/*function learn_press_get_chart_courses2() {
 	$labels = array(
 		__( 'Pending Courses/Publish Courses', 'learnpress' ),
 		__( 'Free Courses/Paid Courses', 'learnpress' ),
@@ -1303,7 +1309,7 @@ function learn_press_get_chart_courses2() {
 		'labels'   => $labels,
 		'datasets' => $datasets,
 	);
-}
+}*/
 
 /**
  * Get colors setting up by admin user

@@ -35,9 +35,9 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 			$ajax_events = array(
 				'create_page'            => false, // Use create new page on Settings
-				'load_chart'             => false,
+				//'load_chart'             => false,
 				'search_course_category' => false,
-				'custom_stats'           => false,
+				//'custom_stats'           => false,
 				'get_page_permalink'     => false,
 			);
 
@@ -589,14 +589,14 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			wp_send_json( $response );
 		}
 
-		public static function load_chart() {
+		/*public static function load_chart() {
 			if ( ! class_exists( 'LP_Submenu_Statistics' ) ) {
 				$statistic = include_once LP_PLUGIN_PATH . '/inc/admin/sub-menus/class-lp-submenu-statistics.php';
 			} else {
 				$statistic = new LP_Submenu_Statistics();
 			}
 			$statistic->load_chart();
-		}
+		}*/
 
 		public static function json_search_customer_name( $query ) {
 			global $wpdb;
@@ -691,8 +691,10 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 		/**
 		 * Get date from, to for static chart
+		 *
+		 * @deprecated 4.2.6.9.3
 		 */
-		public static function custom_stats() {
+		/*public static function custom_stats() {
 			$from      = LP_Helper::sanitize_params_submitted( $_REQUEST['from'] ?? 0 );
 			$to        = LP_Helper::sanitize_params_submitted( $_REQUEST['to'] ?? 0 );
 			$date_diff = strtotime( $to ) - strtotime( $from );
@@ -701,7 +703,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			}
 			learn_press_process_chart( learn_press_get_chart_students( $to, 'days', floor( $date_diff / ( 60 * 60 * 24 ) ) + 1 ) );
 			die();
-		}
+		}*/
 	}
 
 	add_action( 'init', array( 'LP_Admin_Ajax', 'init' ) );
