@@ -37,14 +37,14 @@ $email_format = $meta['format'];
 	</th>
 	<td class="forminp lp-metabox-field__email-content forminp-<?php echo esc_attr( sanitize_title( $value['type'] ) ); ?>">&lrm;
 		<?php
-		learn_press_email_formats_dropdown(
+		/*learn_press_email_formats_dropdown(
 			array(
 				'name'        => $value['id'] . '[format]',
 				'class'       => 'lp-email-format',
 				'selected'    => $email_format,
 				'option_none' => array( '' => esc_html__( 'General Settings', 'learnpress' ) ),
 			)
-		);
+		);*/
 		?>
 		<div class="lp-email-templates">
 			<?php

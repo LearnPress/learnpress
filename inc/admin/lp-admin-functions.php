@@ -373,8 +373,9 @@ function learn_press_field_question_duration( $args = array(), $question = null 
  * @param array $args
  *
  * @return string
+ * @deprecated 4.2.6.9.3
  */
-function learn_press_email_formats_dropdown( $args = array() ) {
+/*function learn_press_email_formats_dropdown( $args = array() ) {
 	$args = wp_parse_args(
 		$args,
 		array(
@@ -425,7 +426,7 @@ function learn_press_email_formats_dropdown( $args = array() ) {
 	}
 
 	return $output;
-}
+}*/
 
 /**
  * Return array of email formats.
