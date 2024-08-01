@@ -740,7 +740,7 @@ const lpMetaboxsalePriceDate = () => {
 		}
 	} );
 
-	const datePickerSelect = function( datepicker ) {
+	/*const datePickerSelect = function( datepicker ) {
 		const option = $( datepicker ).is( '#_lp_sale_start' ) ? 'minDate' : 'maxDate',
 			otherDateField = 'minDate' === option ? $( '#_lp_sale_end' ) : $( '#_lp_sale_start' ),
 			date = $( datepicker ).datetimepicker( 'getDate' );
@@ -763,7 +763,7 @@ const lpMetaboxsalePriceDate = () => {
 		$( this ).find( 'input' ).each( function() {
 			datePickerSelect( $( this ) );
 		} );
-	} );
+	} );*/
 };
 
 const lpHidePassingGrade = () => {

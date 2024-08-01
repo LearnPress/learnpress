@@ -148,10 +148,10 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					$this->url( self::$_folder_source . 'js/admin/share/dropdown-pages' . self::$_min_assets . '.js' ),
 					[ 'lp-utils', 'select2' ]
 				),
-				'jquery-ui-timepicker-addon'        => new LP_Asset_Key(
+				/*'jquery-ui-timepicker-addon'        => new LP_Asset_Key(
 					$this->url( 'src/js/vendor/jquery/jquery-ui-timepicker-addon.js' ),
 					array( 'jquery-ui-datepicker' )
-				),
+				),*/
 				'lp-addons'                         => new LP_Asset_Key(
 					$this->url( 'js/dist/admin/addons' . self::$_min_assets . '.js' ),
 					[],
@@ -175,7 +175,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 						'jquery-tipsy',
 						'dropdown-pages',
 						'wp-api-fetch',
-						'jquery-ui-timepicker-addon',
+						//'jquery-ui-timepicker-addon',
 						'select2'
 					),
 					array(
@@ -390,12 +390,12 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				/*'font-awesome'          => new LP_Asset_Key(
 					$this->url( 'src/css/vendor/font-awesome-5.min.css' )
 				),*/
-				'jquery-ui'             => new LP_Asset_Key(
+				/*'jquery-ui'             => new LP_Asset_Key(
 					$this->url( 'src/css/vendor/jquery-ui/jquery-ui.min.css' )
 				),
 				'jquery-ui-timepicker'  => new LP_Asset_Key(
 					$this->url( 'src/css/vendor/jquery-ui-timepicker-addon.css' )
-				),
+				),*/
 				'jquery-tipsy'          => new LP_Asset_Key(
 					$this->url( 'src/css/vendor/jquery.tipsy.css' )
 				),
@@ -405,8 +405,8 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 						'wp-color-picker',
 						'wp-components',
 						'select2',
-						'jquery-ui',
-						'jquery-ui-timepicker',
+						//'jquery-ui',
+						//'jquery-ui-timepicker',
 //						'font-awesome',
 						'jquery-tipsy',
 					),

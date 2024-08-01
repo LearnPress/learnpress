@@ -24,12 +24,14 @@ class LP_Meta_Box_Date_Field extends LP_Meta_Box_Field {
 
 	public function output( $thepostid ) {
 		$date = $this->meta_value( $thepostid );
+		$dateObj = new LP_Datetime( $date );
+		$date = $dateObj->format( 'mysql' );
 		?>
 
 		<div class="lp_sale_dates_fields">
 			<p class="form-field <?php echo esc_attr( $this->extra['wrapper_class'] ); ?>">
 				<label for="_lp_sale_start"><?php echo wp_kses_post( $this->label ); ?></label>
-				<input type="text" class="short" name="<?php echo esc_attr( $this->id ); ?>"
+				<input type="datetime-local" class="short" name="<?php echo esc_attr( $this->id ); ?>"
 					id="<?php echo esc_attr( $this->id ); ?>"
 					value="<?php echo esc_attr( $date ); ?>"
 					placeholder="<?php echo esc_attr( $this->extra['placeholder'] ); ?>"
