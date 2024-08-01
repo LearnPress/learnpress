@@ -15,8 +15,8 @@ class LP_Meta_Box_Date_Field extends LP_Meta_Box_Field {
 	 * @param string $id
 	 * @param string $label
 	 * @param string $description
-	 * @param mixed  $default
-	 * @param array  $extra
+	 * @param mixed $default
+	 * @param array $extra
 	 */
 	public function __construct( $label = '', $description = '', $default = '', $extra = array() ) {
 		parent::__construct( $label, $description, $default, $extra );
@@ -24,21 +24,37 @@ class LP_Meta_Box_Date_Field extends LP_Meta_Box_Field {
 
 	public function output( $thepostid ) {
 		$date = $this->meta_value( $thepostid );
-		$dateObj = new LP_Datetime( $date );
-		$date = $dateObj->format( 'mysql' );
+		if ( ! empty( $date ) ) {
+			$dateObj = new LP_Datetime( $date );
+			$date    = $dateObj->format( 'mysql' );
+		}
+
+		$wrapper_attr     = $this->extra['wrapper_attr'] ?? [];
+		$dependency_check = $this->extra['dependency'] ?? [];
+		if ( ! empty( $dependency_check ) ) {
+			if ( $dependency_check['is_disable'] ) {
+				$this->extra['wrapper_class'] .= ' lp-option-disabled';
+			}
+
+			$wrapper_attr[] = 'data-dependency=' . $dependency_check['name'];
+		}
 		?>
 
 		<div class="lp_sale_dates_fields">
-			<p class="form-field <?php echo esc_attr( $this->extra['wrapper_class'] ); ?>">
+			<p class="form-field <?php echo esc_attr( $this->extra['wrapper_class'] ); ?>"
+				<?php echo esc_attr( implode( ' ', $wrapper_attr ) ) ?>>
 				<label for="_lp_sale_start"><?php echo wp_kses_post( $this->label ); ?></label>
 				<input type="datetime-local" class="short" name="<?php echo esc_attr( $this->id ); ?>"
-					id="<?php echo esc_attr( $this->id ); ?>"
-					value="<?php echo esc_attr( $date ); ?>"
-					placeholder="<?php echo esc_attr( $this->extra['placeholder'] ); ?>"
-					style="width:320px;" />
+					   step=1
+					   id="<?php echo esc_attr( $this->id ); ?>"
+					   value="<?php echo esc_attr( $date ); ?>"
+					   placeholder="<?php echo esc_attr( $this->extra['placeholder'] ); ?>"
+					   style="width:320px;"/>
 
 				<?php if ( ! empty( $this->extra['cancel'] ) ) : ?>
-					<a href="#" class="description lp_cancel_sale_schedule"><?php esc_html_e( 'Cancel', 'learnpress' ); ?></a>
+					<a href="#" class="description lp_cancel_sale_schedule">
+						<?php esc_html_e( 'Cancel', 'learnpress' ); ?>
+					</a>
 				<?php endif; ?>
 			</p>
 		</div>

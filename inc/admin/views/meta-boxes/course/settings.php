@@ -268,6 +268,10 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 					array(
 						'wrapper_class' => 'lp_sale_start_dates_fields',
 						'placeholder'   => _x( 'From&hellip;', 'placeholder', 'learnpress' ),
+						'dependency'        => [
+							'name'       => '_lp_no_required_enroll',
+							'is_disable' => $is_enable_no_required_enroll
+						],
 					)
 				),
 				'_lp_sale_end'           => new LP_Meta_Box_Date_Field(
@@ -278,6 +282,10 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 						'wrapper_class' => 'lp_sale_end_dates_fields',
 						'placeholder'   => _x( 'To&hellip;', 'placeholder', 'learnpress' ),
 						'cancel'        => true,
+						'dependency'        => [
+							'name'       => '_lp_no_required_enroll',
+							'is_disable' => $is_enable_no_required_enroll
+						],
 					)
 				),
 				'_lp_no_required_enroll' => new LP_Meta_Box_Checkbox_Field(

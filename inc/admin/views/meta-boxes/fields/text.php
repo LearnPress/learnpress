@@ -60,7 +60,7 @@ class LP_Meta_Box_Text_Field extends LP_Meta_Box_Field {
 		printf(
 			'<div class="form-field %s" %s><label for="%s">%s</label>',
 			esc_attr( $this->id . '_field ' . $wrapper_class ),
-			implode( ' ', $wrapper_attr ),
+			esc_attr( implode( ' ', $wrapper_attr ) ),
 			esc_attr( $this->id ),
 			wp_kses_post( $this->label )
 		);
