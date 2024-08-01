@@ -155,10 +155,6 @@ class LP_Cart {
 				case LP_COURSE_CPT:
 					$course = learn_press_get_course( $item_id );
 
-					if ( ! $course->is_purchasable() ) {
-						throw new Exception( __( 'Sorry! This course is not purchasable.', 'learnpress' ) );
-					}
-
 					if ( ! $course->is_in_stock() ) {
 						throw new Exception( __( 'Sorry! The number of enrolled students has reached its limit', 'learnpress' ) );
 					}
