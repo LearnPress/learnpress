@@ -67,7 +67,7 @@
         "react-easy-crop": "^4.7.4",
         "refx": "^3.1.1",
         "sortablejs": "^1.15.0",
-        "tom-select": "^2.2.3",
+        "tom-select": "2.3.1",
         "chart.js": "^4.4.0"
     }
 }

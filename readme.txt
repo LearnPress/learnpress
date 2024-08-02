@@ -3,9 +3,9 @@ Contributors: thimpress, tungnx89, nhamdv, nguyenlammanh, tunnhn, phonglq.foobla
 Donate link:
 Tags: elearning, education, course, lms, learning management system
 Requires at least: 6.3
-Tested up to: 6.6
+Tested up to: 6.6.1
 Requires PHP: 7.0
-Stable tag: 4.2.6.9.2
+Stable tag: 4.2.6.9.3
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -209,6 +209,19 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.
 
 == Changelog ==
+
+= 4.2.6.9.3 (2024-08-02) =
+~ Tweak: added courses to LP Order manual.
+~ Tweak: list orders status trash.
+~ Tweak: message out of stock, no enroll requirement.
+~ Fixed: material lesson display with case no enroll requirement.
+~ Fixed: error not show email on Order detail when buy with Guest.
+~ Fixed: error can remove empty fields on "Extra Information" options.
+~ Fixed: error clean break row (\n) on "Featured review" option.
+~ Fixed: query Statistics by role.
+~ Fixed: error max student when user bought.
+~ Fixed: case no enroll requirement with course price.
+~ Remove: jquery-ui-timepicker-addon jquery library.
 
 = 4.2.6.9.2 (2024-07-25) =
 ~ Fixed: error lose section when update section of course.
