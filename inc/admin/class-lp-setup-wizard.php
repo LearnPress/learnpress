@@ -144,7 +144,7 @@ class LP_Setup_Wizard {
 
 		wp_enqueue_script( 'lp-select2', $assets->url( 'src/js/vendor/select2.full.min.js' ) );
 		wp_enqueue_script( 'lp-utils', $assets->url( 'js/dist/utils.js' ) );
-		wp_enqueue_script( 'lp-admin', $assets->url( 'src/js/admin/admin.js' ), uniqid(), true );
+		wp_enqueue_script( 'lp-admin', $assets->url( 'js/dist/admin/admin.js' ), uniqid(), true );
 		wp_enqueue_script( 'drop-down-page', $assets->url( 'src/js/admin/share/dropdown-pages.js' ), uniqid(), true );
 		wp_register_script(
 			'lp-setup',

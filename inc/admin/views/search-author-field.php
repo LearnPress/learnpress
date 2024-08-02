@@ -61,7 +61,7 @@ $value_search = LP_Request::get_param( 's', '' );
 	<input type="search"
 		   id="<?php echo esc_attr( $input_id ); ?>"
 		   name="s"
-		   placeholder="<? _e( 'Search', 'learnpress' ); ?>"
+		   placeholder="<?php _e( 'Search', 'learnpress' ); ?>"
 		   value="<?php echo esc_attr( $value_search ) ?>"/>
 	<?php submit_button( $post_type_object->labels->search_items, '', '', false, array( 'id' => 'search-submit' ) ); ?>
 </p>
