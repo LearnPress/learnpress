@@ -251,13 +251,13 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					0,
 					1
 				),*/
-				'lp-setup'                          => new LP_Asset_Key(
+				/*'lp-setup'                          => new LP_Asset_Key(
 					$this->url( 'js/dist/admin/pages/setup' . self::$_min_assets . '.js' ),
 					array( 'jquery', 'dropdown-pages' ),
 					array( 'lp-page-setup' ),
 					0,
 					1
-				),
+				),*/
 				/*'learn-press-statistic'             => new LP_Asset_Key(
 					$this->url( 'js/dist/admin/pages/statistic' . self::$_min_assets . '.js' ),
 					array( 'jquery', 'jquery-ui-datepicker', 'chart' ),
