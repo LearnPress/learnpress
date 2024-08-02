@@ -650,14 +650,13 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 		return $output;
 	}
 
-	public function get_course_tab_contents( $request ) {
+	public function get_course_tab_contents( $user, $request ) {
 		$output = array(
 			'enrolled' => array(),
 			'created'  => array(),
 		);
 
-		$profile          = learn_press_get_profile( $request['id'] );
-		$user             = learn_press_get_user( $request['id'] );
+		$profile          = learn_press_get_profile( $user->get_id() );
 		$filters_enrolled = array(
 			'all'         => 'all',
 			'finished'    => 'finished',
@@ -745,7 +744,7 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 	 *
 	 * @author Nhamdv <daonham@gmail.com>
 	 */
-	public function get_quiz_tab_contents( $request ) {
+	public function get_quiz_tab_contents( $user, $request ) {
 		$output = array();
 
 		$user_profile = learn_press_get_user( $request['id'] );
@@ -796,7 +795,7 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 	 *
 	 * @author Nhamdv <daonham95@gmail.com>
 	 */
-	public function get_order_content_tab( $request ) {
+	public function get_order_content_tab( $user, $request ) {
 		$output = array();
 
 		$profile = learn_press_get_profile( $request['id'] );
@@ -1143,9 +1142,9 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 
 				$content = array(
 					'overview' => $this->get_overview_tab_contents( $user ),
-					'courses'  => $this->get_course_tab_contents( $request ),
-					'quizzes'  => $this->get_quiz_tab_contents( $request ),
-					'orders'   => $this->get_order_content_tab( $request ),
+					'courses'  => $this->get_course_tab_contents( $user, $request ),
+					'quizzes'  => $this->get_quiz_tab_contents( $user, $request ),
+					'orders'   => $this->get_order_content_tab( $user, $request ),
 				);
 
 				/**
