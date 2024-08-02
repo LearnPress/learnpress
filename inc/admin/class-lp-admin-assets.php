@@ -176,7 +176,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 						'dropdown-pages',
 						'wp-api-fetch',
 						//'jquery-ui-timepicker-addon',
-						'select2'
+						//'select2'
 					),
 					array(
 						LP_LESSON_CPT,
@@ -253,7 +253,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				),*/
 				'lp-setup'                          => new LP_Asset_Key(
 					$this->url( 'js/dist/admin/pages/setup' . self::$_min_assets . '.js' ),
-					array( 'jquery', 'dropdown-pages', 'select2' ),
+					array( 'jquery', 'dropdown-pages' ),
 					array( 'lp-page-setup' ),
 					0,
 					1
@@ -404,7 +404,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					array(
 						'wp-color-picker',
 						'wp-components',
-						'select2',
+						//'select2',
 						//'jquery-ui',
 						//'jquery-ui-timepicker',
 //						'font-awesome',
@@ -420,7 +420,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					0
 				),
 				'lp-tom-select'         => new LP_Asset_Key(
-					'https://cdn.jsdelivr.net/npm/tom-select@2.2.3/dist/css/tom-select.css',
+					$this->url( 'src/css/vendor/tom-select.min.css' ),
 					[],
 					[],
 					0

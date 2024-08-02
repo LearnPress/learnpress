@@ -42,7 +42,7 @@ class LP_Meta_Box_Radio_Field extends LP_Meta_Box_Field {
 		$field['name']          = isset( $field['name'] ) ? $field['name'] : $field['id'];
 		$field['desc_tip']      = isset( $field['desc_tip'] ) ? $field['desc_tip'] : false;
 
-		$dependency_check = $extra['dependency'] ?? [];
+		$dependency_check = $this->extra['dependency'] ?? [];
 		if ( ! empty( $dependency_check ) ) {
 			if ( $dependency_check['is_disable'] ) {
 				$field['wrapper_class'] .= ' lp-option-disabled';
