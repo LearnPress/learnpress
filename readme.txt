@@ -216,7 +216,7 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Tweak: message out of stock, no enroll requirement.
 ~ Fixed: material lesson display with case no enroll requirement.
 ~ Fixed: error not show email on Order detail when buy with Guest.
-~ Fixed: error can remove empty fields on "Extra Information" options.
+~ Fixed: error can't remove empty fields on "Extra Information" options.
 ~ Fixed: error clean break row (\n) on "Featured review" option.
 ~ Fixed: query Statistics by role.
 ~ Fixed: error max student when user bought.
