@@ -60,7 +60,7 @@ $clean_tables = array( 'learnpress_sessions' );
 						<h4><?php echo sprintf('%s: %s', esc_html__( 'Table name', 'learnpress' ), $clean_table ); ?></h4>
 						<div class="progressbar__indexs">
 							<span class="progressbar__rows">
-								<?php echo esc_html( '0 / ' . $rows . ' expire' ); ?>
+								<?php echo esc_html( '0 / ' . $rows . __( ' expire', 'learnpress' ) ); ?>
 							</span>
 							<span class="progressbar__percent">( 0% )</span>
 						</div>
