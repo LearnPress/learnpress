@@ -208,7 +208,7 @@ class SkinCoursesBase extends LPSkinBase {
 				'author' => [ 'text_html' => sprintf( '<div>%s</div>', $course->get_instructor_html() ) ],
 				'title'  => [ 'text_html' => $title ],
 				'price'  => [ 'text_html' => sprintf( '<div>%s</div>', $singleCourseTemplate->html_price( $course ) ) ],
-				'button' => [ 'text_html' => sprintf( '<div><a href="%s">%s</a></div>', $course->get_permalink(), __( 'View More' ) ) ],
+				'button' => [ 'text_html' => sprintf( '<div><a href="%s">%s</a></div>', $course->get_permalink(), __( 'View More', 'learnpress' ) ) ],
 			];
 
 			ob_start();
