@@ -227,7 +227,8 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 						'desc_tip' => 'You can apply for case: user register form.<br> You accept for user can learn courses by add manual order on backend',
 					)
 				),
-			)
+			),
+			$post_id
 		);
 	}
 
@@ -320,7 +321,8 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 					esc_html__( 'Students can see the content of all course items and take the quiz without logging in.', 'learnpress' ),
 					'no'
 				),
-			)
+			),
+			$post_id
 		);
 	}
 
