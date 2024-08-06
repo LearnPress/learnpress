@@ -478,7 +478,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 			return [];
 		}
 
-		$course = CourseModel::find( $post->ID );
+		$course = CourseModel::find( $post->ID, true );
 		if ( $course ) {
 			$course_section_items = $course->get_section_items();
 		} else { // Code old if not found course on the table learnpress_courses.

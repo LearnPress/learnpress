@@ -369,7 +369,7 @@ class CourseModel {
 	 * @return array
 	 */
 	public function get_section_items(): array {
-		if ( ! empty( $this->sections_items ) ) {
+		if ( isset( $this->sections_items ) ) {
 			return $this->sections_items;
 		}
 
@@ -602,13 +602,13 @@ class CourseModel {
 	 *
 	 * @return CourseModel|false|static
 	 */
-	public static function get_item_model_from_db( LP_Course_JSON_Filter $filter, bool $no_cache = true ) {
+	public static function get_item_model_from_db( LP_Course_JSON_Filter $filter, bool $check_cache = false ) {
 		$course_model = false;
 
 		try {
 			$filter->only_fields = [ 'json', 'post_content' ];
 			// Load cache
-			if ( ! $no_cache ) {
+			if ( $check_cache ) {
 				$key_cache       = "course-model/{$filter->ID}";
 				$lp_course_cache = new LP_Course_Cache();
 				$course_model    = $lp_course_cache->get_cache( $key_cache );
@@ -643,11 +643,35 @@ class CourseModel {
 	 *
 	 * @return false|CourseModel|static
 	 */
-	public static function find( int $course_id, bool $no_cache = true ) {
+	public static function find( int $course_id, bool $check_cache = false ) {
 		$filter_course     = new LP_Course_JSON_Filter();
 		$filter_course->ID = $course_id;
+		$key_cache         = "course-model/find/id/{$course_id}";
+		$lp_course_cache   = new LP_Course_Cache();
 
-		return self::get_item_model_from_db( $filter_course, $no_cache );
+		// Check cache
+		if ( $check_cache ) {
+			$course_model = LP_Course_Cache::cache_load_first( 'get', $key_cache, $course_id );
+			if ( $course_model instanceof CourseModel ) {
+				return $course_model;
+			}
+
+			$course_model = $lp_course_cache->get_cache( $key_cache );
+			if ( $course_model instanceof CourseModel ) {
+				return $course_model;
+			}
+		}
+
+		// Query database no cache.
+		$course_model = self::get_item_model_from_db( $filter_course );
+
+		// Set cache
+		if ( $course_model instanceof CourseModel ) {
+			LP_Course_Cache::cache_load_first( 'set', $key_cache, $course_model );
+			$lp_course_cache->set_cache( $key_cache, $course_model );
+		}
+
+		return $course_model;
 	}
 
 	/**
