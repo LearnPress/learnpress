@@ -87,6 +87,11 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 		return apply_filters(
 			'lp/course/meta-box/fields/general',
 			array(
+				'_lp_offline_course'                 => new LP_Meta_Box_Checkbox_Field(
+					esc_html__( 'Enable offline course', 'learnpress' ),
+					esc_html__( 'Set to 0 for the lifetime access.', 'learnpress' ),
+					'no'
+				),
 				'_lp_duration'                 => new LP_Meta_Box_Duration_Field(
 					esc_html__( 'Duration', 'learnpress' ),
 					esc_html__( 'Set to 0 for the lifetime access.', 'learnpress' ),

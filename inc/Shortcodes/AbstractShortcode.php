@@ -20,7 +20,7 @@ abstract class AbstractShortcode {
 
 	/**
 	 * Render template of shortcode.
-	 * If not set any atrribute on short, $attrs is empty string.
+	 * If not set any attribute on short, $attrs is empty string.
 	 *
 	 * @param string|array $attrs
 	 *

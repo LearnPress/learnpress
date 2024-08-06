@@ -567,8 +567,13 @@ if ( ! class_exists( 'LP_Course_CURD' ) ) {
 			try {
 				$limit    = absint( $args['limit'] ?? 5 );
 				$order    = $args['order'] ?? 'DESC';
+				$order = strtoupper( $order );
+				if ( ! in_array( $order, [ 'DESC', 'ASC' ] ) ) {
+					$order = 'DESC';
+				}
 				$order_by = esc_sql( $args['order_by'] ?? 'post_date' );
-				$cols     = $lp_course_db->get_cols_of_table( $lp_course_db->tb_posts );
+				$filter = new LP_Course_Filter();
+				$cols     = $filter->all_fields;
 				$order_by = in_array( $order_by, $cols ) ? $order_by : 'post_date'; // For security
 
 				if ( $limit <= 0 ) {
