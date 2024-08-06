@@ -651,11 +651,6 @@ class CourseModel {
 
 		// Check cache
 		if ( $check_cache ) {
-			$course_model = LP_Course_Cache::cache_load_first( 'get', $key_cache, $course_id );
-			if ( $course_model instanceof CourseModel ) {
-				return $course_model;
-			}
-
 			$course_model = $lp_course_cache->get_cache( $key_cache );
 			if ( $course_model instanceof CourseModel ) {
 				return $course_model;
@@ -667,7 +662,6 @@ class CourseModel {
 
 		// Set cache
 		if ( $course_model instanceof CourseModel ) {
-			LP_Course_Cache::cache_load_first( 'set', $key_cache, $course_model );
 			$lp_course_cache->set_cache( $key_cache, $course_model );
 		}
 
