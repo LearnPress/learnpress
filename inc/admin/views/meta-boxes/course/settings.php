@@ -1,5 +1,8 @@
 <?php
 
+use LearnPress\Models\CourseModel;
+use LearnPress\Models\CoursePostModel;
+
 class LP_Meta_Box_Course extends LP_Meta_Box {
 	/**
 	 * Instance
@@ -10,7 +13,15 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 
 	public $post_type = LP_COURSE_CPT;
 
-	public function add_meta_box() {
+	/**
+	 * @param WP_Post $post
+	 *
+	 * @return void
+	 */
+	public function add_meta_boxes( $post ) {
+		$course = CourseModel::find( $post->ID );
+		$is_enable_offline_course = $course->get_meta_value_by_key( CoursePostModel::META_KEY_OFFLINE_COURSE, 'no' ) === 'yes';
+
 		add_meta_box(
 			'course-settings',
 			esc_html__( 'Course Settings', 'learnpress' ),
@@ -19,6 +30,17 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 			'normal',
 			'high'
 		);
+
+		if ( ! $is_enable_offline_course ) {
+			add_meta_box(
+				'course-editor',
+				esc_html__( 'Curriculum', 'learnpress' ),
+				array( $this, 'admin_editor' ),
+				$this->post_type,
+				'normal',
+				'high'
+			);
+		}
 	}
 
 	public function metabox( $post_id ) {
@@ -89,7 +111,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 			array(
 				'_lp_offline_course'                 => new LP_Meta_Box_Checkbox_Field(
 					esc_html__( 'Enable offline course', 'learnpress' ),
-					esc_html__( 'Set to 0 for the lifetime access.', 'learnpress' ),
+					esc_html__( 'When enable feature offline course, system will disable some features as: edit Curriculum.', 'learnpress' ),
 					'no'
 				),
 				'_lp_duration'                 => new LP_Meta_Box_Duration_Field(
@@ -542,6 +564,15 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 		</div>
 
 		<?php
+	}
+
+	/**
+	 * Template Editor Curriculum.
+	 *
+	 * @return void
+	 */
+	public function admin_editor() {
+		learn_press_admin_view( 'course/editor' );
 	}
 
 	/*public function save( $post_id ) {

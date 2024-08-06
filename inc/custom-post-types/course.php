@@ -325,11 +325,11 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 *
 		 * @return void
 		 */
-		public function admin_editor() {
+		/*public function admin_editor() {
 			$course = LP_Course::get_course();
 
 			learn_press_admin_view( 'course/editor' );
-		}
+		}*/
 
 		/**
 		 * Delete all sections in a course and reset auto increment
@@ -489,7 +489,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			}
 		}
 
-		public function meta_boxes() {
+		/*public function meta_boxes() {
 			return array(
 				'course-editor' => array(
 					'title'    => esc_html__( 'Curriculum', 'learnpress' ),
@@ -498,7 +498,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					'priority' => 'high',
 				),
 			);
-		}
+		}*/
 
 		/**
 		 * Save course post

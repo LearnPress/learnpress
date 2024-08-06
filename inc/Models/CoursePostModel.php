@@ -50,6 +50,7 @@ class CoursePostModel extends PostModel {
 	const META_KEY_EXTERNAL_LINK_BY_COURSE = '_lp_external_link_buy_course';
 	const META_KEY_IS_SALE = '_lp_course_is_sale';
 	const META_KEY_NO_REQUIRED_ENROLL = '_lp_no_required_enroll';
+	const META_KEY_OFFLINE_COURSE = '_lp_offline_course';
 
 	/**
 	 * Get the price of course.
@@ -169,7 +170,7 @@ class CoursePostModel extends PostModel {
 
 			$price_html .= sprintf( '<span class="free">%s</span>', esc_html__( 'Free', 'learnpress' ) );
 			$price_html = apply_filters( 'learn_press_course_price_html_free', $price_html, $this );
-		}  elseif ( $this->get_meta_value_by_key( self::META_KEY_NO_REQUIRED_ENROLL, 'no' ) === 'yes' ) {
+		} elseif ( $this->get_meta_value_by_key( self::META_KEY_NO_REQUIRED_ENROLL, 'no' ) === 'yes' ) {
 			$price_html .= '';
 		} else {
 			if ( $this->has_sale_price() ) {
