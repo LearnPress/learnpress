@@ -1,5 +1,7 @@
 <?php
 
+use LearnPress\Helpers\Config;
+
 /**
  * Class LP_Settings_Permalink
  *
@@ -28,8 +30,9 @@ class LP_Settings_Permalink extends LP_Abstract_Settings_Page {
 	 * @return mixed
 	 */
 	public function get_settings( $section = '', $tab = '' ) {
-		return require_once LP_PLUGIN_PATH . 'config/settings/permalink.php';
+		return Config::instance()->get( 'permalink', 'settings' );
 	}
 
 }
+
 return new LP_Settings_Permalink();
