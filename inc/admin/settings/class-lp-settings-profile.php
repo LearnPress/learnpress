@@ -8,6 +8,8 @@
  * @version 1.0
  */
 
+use LearnPress\Helpers\Config;
+
 defined( 'ABSPATH' ) || exit;
 
 if ( class_exists( 'LP_Settings_Profile', false ) ) {
@@ -33,7 +35,7 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 	 * @return array
 	 */
 	public function get_settings( $section = null, $tab = null ) {
-		return require_once LP_PLUGIN_PATH . 'config/settings/profile.php';
+		return Config::instance()->get( 'profile', 'settings' );
 	}
 }
 

@@ -1,5 +1,7 @@
 <?php
 
+use LearnPress\Helpers\Config;
+
 /**
  * Class LP_Settings_General
  *
@@ -27,8 +29,9 @@ class LP_Settings_General extends LP_Abstract_Settings_Page {
 	 * @return mixed
 	 */
 	public function get_settings( $section = '', $tab = '' ) {
-		return require_once LP_PLUGIN_PATH . 'config/settings/general.php';
+		return Config::instance()->get( 'general', 'settings' );
 	}
 
 }
+
 return new LP_Settings_General();
