@@ -40,6 +40,7 @@ class LP_Abstract_Settings_Page extends LP_Abstract_Settings {
 	 * @version 4.0.0
 	 */
 	public function admin_page_settings( $section = null, $tab = '' ) {
+		wp_enqueue_style( 'select2' );
 		$settings = $this->get_settings( $section, $tab );
 		$settings = $this->sanitize_settings( $settings );
 
