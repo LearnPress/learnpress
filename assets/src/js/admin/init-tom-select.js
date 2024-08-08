@@ -101,7 +101,7 @@ const initTomSelect = ( tomSelectEl, customOptions = {}, customParams = {} ) => 
 	const dataStruct = tomSelectEl?.dataset?.struct ? JSON.parse( tomSelectEl.dataset.struct ) : '';
 
 	if ( ! dataStruct ) {
-		initTomSelectWithOption( tomSelectEl, settingTomSelect );
+		initTomSelectWithOption( tomSelectEl );
 		return;
 	}
 
