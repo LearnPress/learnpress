@@ -179,7 +179,7 @@ const searchUserOnListPost = () => {
 				},
 			},
 			setting: {
-				placeholder: 'Choose author',
+				placeholder: 'Choose user',
 			},
 		};
 

@@ -257,8 +257,9 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 
 			// Search by author id
 			if ( ! empty( $wp_query->get( 'author' ) ) ) {
-				$user_id = $wp_query->get( 'author' );
-				$where   .= $wpdb->prepare( ' AND uu.ID like %s ', $user_id );
+				$user_id = absint( $wp_query->get( 'author' ) );
+				//$where   .= $wpdb->prepare( ' AND uu.ID like %s ', $user_id );
+				$where   .= " AND ( pm1.meta_value like '%\"$user_id\"%' OR pm1.meta_value = $user_id ) ";
 			}
 
 			if ( ! empty( $wp_query->get( 'm' ) ) ) {
@@ -329,9 +330,10 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			}
 
 			if ( ! empty( $wp_query->get( 'author' ) ) ) {
+				$author_id = $wp_query->get( 'author' );
 				$join .= " INNER JOIN {$lp_db->tb_postmeta} pm1 ON {$wpdb->posts}.ID = pm1.post_id AND pm1.meta_key = '_user_id'";
 				$join .= " INNER JOIN {$lp_db->tb_postmeta} pm2 ON {$wpdb->posts}.ID = pm2.post_id AND pm2.meta_key = '_order_total'";
-				$join .= " LEFT JOIN {$lp_db->tb_users} uu ON pm1.meta_value = uu.ID";
+				$join .= " LEFT JOIN {$lp_db->tb_users} uu ON uu.ID = $author_id";
 			}
 
 			return $join;
