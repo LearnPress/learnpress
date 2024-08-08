@@ -14,24 +14,34 @@ const AdminUtilsFunctions = {
 			return;
 		}
 
-		const optionDefault = {
-			options: [],
+		let optionDefault = {
 			plugins: {
 				remove_button: {
 					title: 'Remove this item',
 				},
 			},
-			load( keySearch, callbackTom ) {
-				fetchAPI(
-					keySearch,
-					dataSend,
-					AdminUtilsFunctions.callBackTomSelectSearchAPI( callbackTom, callBackHandleData )
-				);
-			},
 		};
 
+		if ( fetchAPI ) {
+			optionDefault = {
+				options: [],
+				plugins: {
+					remove_button: {
+						title: 'Remove this item',
+					},
+				},
+				load( keySearch, callbackTom ) {
+					fetchAPI(
+						keySearch,
+						dataSend,
+						AdminUtilsFunctions.callBackTomSelectSearchAPI( callbackTom, callBackHandleData )
+					);
+				},
+			};
+		}
+
 		options = { ...optionDefault, ...options };
-		if ( options.options.length > 20 ) {
+		if ( options?.options?.length > 20 ) {
 			const currentIds = dataSend?.current_ids ? dataSend?.current_ids : '';
 			const chunkSize = 20;
 			const chunkedOptions = [];
