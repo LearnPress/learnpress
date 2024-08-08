@@ -1,5 +1,6 @@
 <?php
 
+use LearnPress\Models\CourseModel;
 use LearnPress\Models\Courses;
 
 /**
@@ -38,7 +39,7 @@ class LP_Page_Controller {
 
 		} else {
 			//add_filter( 'post_type_archive_link', [ $this, 'link_archive_course' ], 10, 2 );
-			add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ), -1 );
+			add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ), - 1 );
 			// For return result query course to cache.
 			//add_action( 'posts_pre_query', [ $this, 'posts_pre_query' ], 10, 2 );
 			add_filter( 'template_include', array( $this, 'template_loader' ), 10 );
@@ -451,6 +452,7 @@ class LP_Page_Controller {
 	 */
 	private function get_page_template() {
 		$page_template = '';
+		$object = get_queried_object();
 
 		if ( is_singular( LP_COURSE_CPT ) ) {
 			$page_template = 'single-course.php';
@@ -462,11 +464,14 @@ class LP_Page_Controller {
 				$course_item = LP_Global::course_item();
 				if ( $course_item ) {
 					$page_template = 'content-single-item.php';
+				} else if ( $object ) {
+					$course = CourseModel::find( $object->ID, true );
+					if ( $course && $course->is_offline() ) {
+						$page_template = 'single-course-offline.php';
+					}
 				}
 			}
 		} elseif ( learn_press_is_course_taxonomy() ) {
-			$object = get_queried_object();
-
 			if ( is_tax( 'course_category' ) || is_tax( 'course_tag' ) ) {
 				$page_template = 'taxonomy-' . $object->taxonomy . '.php';
 
@@ -501,7 +506,7 @@ class LP_Page_Controller {
 			}
 		}
 
-		if ( is_singular( LP_COURSE_CPT ) ) {
+		/*if ( is_singular( LP_COURSE_CPT ) ) {
 			$object       = get_queried_object();
 			$name_decoded = urldecode( $object->post_name );
 
@@ -510,7 +515,7 @@ class LP_Page_Controller {
 			}
 
 			$templates[] = "single-product-$object->post_name.php";
-		}
+		}*/
 
 		if ( learn_press_is_course_taxonomy() ) {
 			$object      = get_queried_object();
@@ -577,9 +582,9 @@ class LP_Page_Controller {
 	 *
 	 * @return WP_Query
 	 * @editor tungnx
-	 * @since 3.0.0
-	 * @version 4.1.3
 	 * @throws Exception
+	 * @version 4.1.3
+	 * @since 3.0.0
 	 */
 	public function pre_get_posts( WP_Query $q ): WP_Query {
 		// Affect only the main query and not in admin
@@ -590,7 +595,7 @@ class LP_Page_Controller {
 		try {
 			if ( LP_Page_Controller::is_page_courses() ) {
 				if ( LP_Settings_Courses::is_ajax_load_courses() && ! LP_Settings_Courses::is_no_load_ajax_first_courses()
-				&& ! LP_Settings::theme_no_support_load_courses_ajax() ) {
+					&& ! LP_Settings::theme_no_support_load_courses_ajax() ) {
 					/**
 					 * If page is archive course - query set posts_per_page = 1
 					 * For fastest - because when page loaded - call API to load list courses
@@ -604,7 +609,7 @@ class LP_Page_Controller {
 				} else {
 					$filter               = new LP_Course_Filter();
 					$filter->only_fields  = [ 'ID' ];
-					$filter->limit        = -1;
+					$filter->limit        = - 1;
 					$is_need_check_in_arr = false;
 					$limit                = LP_Settings::get_option( 'archive_course_limit', 6 );
 
@@ -798,11 +803,17 @@ class LP_Page_Controller {
 	 * Apply for user not admin, instructor, co-instructor
 	 *
 	 * @param WP_Query $q
+	 *
 	 * @editor tungnx
 	 * @since  3.2.7.5
 	 */
 	public function set_link_item_course_default_wp_to_page_404( $q ) {
-		$post_type_apply_404 = apply_filters( 'lp/page-controller/', array( LP_LESSON_CPT, LP_QUIZ_CPT, LP_QUESTION_CPT, 'lp_assignment' ) );
+		$post_type_apply_404 = apply_filters( 'lp/page-controller/', array(
+			LP_LESSON_CPT,
+			LP_QUIZ_CPT,
+			LP_QUESTION_CPT,
+			'lp_assignment'
+		) );
 
 		if ( ! isset( $q->query_vars['post_type'] ) || ! in_array( $q->query_vars['post_type'], $post_type_apply_404 ) ) {
 			return $q;
@@ -1099,9 +1110,10 @@ class LP_Page_Controller {
 	/**
 	 * Override lesson comment permalink.
 	 *
-	 * @return string $link The comment permalink with '#comment-$id' appended.
-	 * @param string     $link    The comment permalink with '#comment-$id' appended.
+	 * @param string $link The comment permalink with '#comment-$id' appended.
 	 * @param WP_Comment $comment The current comment object.
+	 *
+	 * @return string $link The comment permalink with '#comment-$id' appended.
 	 * @since 4.2.3
 	 * @version 1.0.0
 	 */
@@ -1124,6 +1136,7 @@ class LP_Page_Controller {
 	 * Set menu active for page courses.
 	 *
 	 * @param $menu_items
+	 *
 	 * @return mixed
 	 */
 	public function menu_active( $menu_items ) {
