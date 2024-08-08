@@ -83,7 +83,6 @@ return apply_filters(
 			'id'      => 'currency',
 			'default' => 'USD',
 			'type'    => 'select',
-			'class'   => 'lp-select-2',
 			'options' => $currencies,
 		),
 		array(

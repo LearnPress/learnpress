@@ -48,20 +48,21 @@
 		} );
 
 		// Select 2
-		$select
-			.css( 'width', $select.width() + 50 )
-			.find( 'option' ).each( function() {
-				$( this ).html( $( this ).html().replace( /&nbsp;&nbsp;&nbsp;/g, '' ) );
-			} );
+		// $select
+		// 	.css( 'width', $select.width() + 50 )
+		// 	.find( 'option' ).each( function() {
+		// 		$( this ).html( $( this ).html().replace( /&nbsp;&nbsp;&nbsp;/g, '' ) );
+		// 	} );
 
-		$select.select2( {
-			allowClear: true,
-			placeholder: lpDataAdmin.i18n.select_page,
-		} );
+		// $select.select2( {
+		// 	allowClear: true,
+		// 	placeholder: lpDataAdmin.i18n.select_page,
+		// } );
 
-		$select.on( 'select2:select', function( e ) {
-			const data = e.params.data;
-		} );
+		// $select.on( 'select2:select', function( e ) {
+		// 	const data = e.params.data;
+		// } );
+		//end
 
 		$element.on( 'click', '.quick-add-page-inline button', function() {
 			const $button = $( this ),
