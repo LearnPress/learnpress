@@ -185,6 +185,11 @@ class LP_Template_Course extends LP_Abstract_Template {
 		if ( empty( $course ) ) {
 			$course = learn_press_get_course();
 		}
+
+		if ( ! $course ) {
+			return;
+		}
+
 		$user = learn_press_get_current_user();
 
 		if ( ! $user || ! $course ) {
@@ -262,7 +267,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 			}
 		} catch ( Throwable $e ) {
 			if ( ! in_array( $error_code, [ 'course_is_enrolled', 'course_can_retry' ] ) ) {
-				if ( $course->is_free() ) {
+				if ( $course && $course->is_free() ) {
 					Template::print_message( $e->getMessage(), 'warning' );
 				}
 			}
