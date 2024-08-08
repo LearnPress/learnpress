@@ -149,7 +149,7 @@ function learn_press_pages_dropdown( $name, $selected = false, $args = array() )
 		$id = $name;
 	}
 
-	$class .= 'list-pages lp-list-pages learn-press-select2';
+	$class .= 'list-pages lp-list-pages lp-tom-select';
 
 	$args    = array(
 		'name'             => $name,
@@ -238,7 +238,8 @@ function learn_press_pages_dropdown( $name, $selected = false, $args = array() )
 	if ( $echo ) {
 		$allowed_html           = wp_kses_allowed_html( 'post' );
 		$allowed_html['select'] = [
-			'name' => [],
+			'name'        => [],
+			'class'       => [],
 		];
 		$allowed_html['option'] = [
 			'value'    => [],
