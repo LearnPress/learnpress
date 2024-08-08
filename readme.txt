@@ -210,6 +210,9 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.2.6.9.4 (2024-08-07) =
+~ Fixed: security.
+
 = 4.2.6.9.3 (2024-08-02) =
 ~ Tweak: added courses to LP Order manual.
 ~ Tweak: list orders status trash.
