@@ -40,7 +40,7 @@ class LP_Meta_Box_Textarea_Field extends LP_Meta_Box_Field {
 		$field['desc_tip']    = isset( $field['desc_tip'] ) ? $field['desc_tip'] : false;
 		$field['name']        = isset( $field['name'] ) ? $field['name'] : $field['id'];
 		$wrapper_attr         = $field['wrapper_attr'] ?? [];
-		$wrapper_class        = $extra['wrapper_class'] ?? '';
+		$wrapper_class        = $this->extra['wrapper_class'] ?? '';
 
 		// Custom attribute handling
 		$custom_attributes = array();
@@ -50,7 +50,7 @@ class LP_Meta_Box_Textarea_Field extends LP_Meta_Box_Field {
 			}
 		}
 
-		$dependency_check = $extra['dependency'] ?? [];
+		$dependency_check = $this->extra['dependency'] ?? [];
 		if ( ! empty( $dependency_check ) ) {
 			if ( $dependency_check['is_disable'] ) {
 				$wrapper_class .= ' lp-option-disabled';

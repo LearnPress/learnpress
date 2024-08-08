@@ -100,20 +100,49 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 	}
 
 	public function general( $post_id ) {
+		$course = CourseModel::find( $post_id );
 		$repurchase_option_desc = sprintf( '1. %s', __( 'Reset course progress: The course progress and results of student will be removed.' ) );
 		$repurchase_option_desc .= '<br/>' . sprintf( '2. %s', __( 'Keep course progress: The course progress and results of student will remain.' ) );
 		$repurchase_option_desc .= '<br/>' . sprintf( '3. %s', __( 'Open popup: The student can decide whether their course progress will be reset with the confirm popup.' ) );
 
-		$is_enable_allow_course_repurchase = get_post_meta( $post_id, '_lp_allow_course_repurchase', true ) === 'yes';
+		$is_enable_allow_course_repurchase = $course->get_meta_value_by_key( CoursePostModel::META_KEY_ALLOW_COURSE_REPURCHASE, 'no' ) === 'yes';
+		$is_offline_course = $course->is_offline();
 
 		return apply_filters(
 			'lp/course/meta-box/fields/general',
 			array(
-				/*'_lp_offline_course'                 => new LP_Meta_Box_Checkbox_Field(
+				'_lp_offline_course'                 => new LP_Meta_Box_Checkbox_Field(
 					esc_html__( 'Enable offline course', 'learnpress' ),
 					esc_html__( 'When enable feature offline course, system will disable some features as: edit Curriculum.', 'learnpress' ),
 					'no'
-				),*/
+				),
+				'_lp_deliver_type'                 => new LP_Meta_Box_Select_Field(
+					esc_html__( 'Deliver Type', 'learnpress' ),
+					esc_html__( 'Information for Offline Course', 'learnpress' ),
+					'private_one_one',
+					[
+						'options' => [
+							'private_one_one' => esc_html__( 'Private 1-1', 'learnpress' ),
+							'in_person_class'  => esc_html__( 'In-person class', 'learnpress' ),
+							'live_online'  => esc_html__( 'Live online class', 'learnpress' ),
+						],
+						'dependency'        => [
+							'name'       => '_lp_offline_course',
+							'is_disable' => ! $is_offline_course
+						],
+					]
+				),
+				'_lp_address'                 => new LP_Meta_Box_Textarea_Field(
+					esc_html__( 'Address or Map', 'learnpress' ),
+					esc_html__( 'Enter address or Map of class.', 'learnpress' ),
+					'',
+					[
+						'dependency'        => [
+							'name'       => '_lp_offline_course',
+							'is_disable' => ! $is_offline_course
+						],
+					]
+				),
 				'_lp_duration'                 => new LP_Meta_Box_Duration_Field(
 					esc_html__( 'Duration', 'learnpress' ),
 					esc_html__( 'Set to 0 for the lifetime access.', 'learnpress' ),

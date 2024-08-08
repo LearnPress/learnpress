@@ -326,6 +326,15 @@ class CourseModel {
 	}
 
 	/**
+	 * Check if a course is enabled Offline
+	 *
+	 * @return bool
+	 */
+	public function is_offline(): bool {
+		return $this->get_meta_value_by_key( CoursePostModel::META_KEY_OFFLINE_COURSE, 'no' ) === 'yes';
+	}
+
+	/**
 	 * Get first item of course
 	 *
 	 * @return int

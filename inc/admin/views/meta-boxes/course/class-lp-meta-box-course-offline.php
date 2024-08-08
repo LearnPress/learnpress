@@ -33,7 +33,7 @@ class LP_Meta_Box_Course_Offline {
 	 */
 	public function hide_tabs_when_enable_offline( $tabs, $post_id ) {
 		$course                   = CourseModel::find( $post_id, true );
-		$is_enable_offline_course = $course->get_meta_value_by_key( CoursePostModel::META_KEY_OFFLINE_COURSE, 'no' ) === 'yes';
+		$is_enable_offline_course = $course->is_offline();
 		if ( ! $is_enable_offline_course ) {
 			return $tabs;
 		}
@@ -57,7 +57,7 @@ class LP_Meta_Box_Course_Offline {
 
 	public function hide_fields_general_when_enable_offline( $fields, $post_id ) {
 		$course                   = CourseModel::find( $post_id, true );
-		$is_enable_offline_course = $course->get_meta_value_by_key( CoursePostModel::META_KEY_OFFLINE_COURSE, 'no' ) === 'yes';
+		$is_enable_offline_course = $course->is_offline();
 		if ( ! $is_enable_offline_course ) {
 			return $fields;
 		}
@@ -83,7 +83,7 @@ class LP_Meta_Box_Course_Offline {
 
 	public function hide_fields_price_when_enable_offline( $fields, $post_id ) {
 		$course                   = CourseModel::find( $post_id, true );
-		$is_enable_offline_course = $course->get_meta_value_by_key( CoursePostModel::META_KEY_OFFLINE_COURSE, 'no' ) === 'yes';
+		$is_enable_offline_course = $course->is_offline();
 		if ( ! $is_enable_offline_course ) {
 			return $fields;
 		}
