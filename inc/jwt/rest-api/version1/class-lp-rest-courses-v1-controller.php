@@ -950,26 +950,23 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 	 * @return array
 	 */
 	public function get_instructor_info( $course ) {
-		$user_id = get_post_meta( $course->get_id(), '_lp_course_author', true );
+		if ( ! $course ) {
+			return [];
+		}
 
-		$output = array();
-
-		$extra_info = learn_press_get_user_extra_profile_info( $user_id );
-
+		$output     = array();
+		$extra_info = learn_press_get_user_extra_profile_info( $course->get_id() );
 		$instructor = $course->get_instructor();
 
-		$output['avatar'] = $instructor->get_upload_profile_src();
-
-		if ( $user_id ) {
-			$user = get_user_by( 'ID', absint( $user_id ) );
-
-			if ( $user ) {
-				$output['id']          = absint( $user_id );
-				$output['name']        = $user->display_name;
-				$output['description'] = $user->description;
-				$output['social']      = $extra_info;
-			}
+		if ( ! $instructor ) {
+			return [];
 		}
+
+		$output['avatar']      = $instructor->get_upload_profile_src();
+		$output['id']          = $instructor->get_id();
+		$output['name']        = $instructor->get_display_name();
+		$output['description'] = $instructor->get_description();
+		$output['social']      = $extra_info;
 
 		return $output;
 	}
