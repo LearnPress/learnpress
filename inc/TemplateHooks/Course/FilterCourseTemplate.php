@@ -129,7 +129,9 @@ class FilterCourseTemplate {
 				[
 					'title'   => [ 'text_html' => $title_html ],
 					'content' => [ 'text_html' => $content_html ],
-				]
+				],
+				$title,
+				$content
 			);
 			Template::instance()->print_sections( $sections );
 			$content = Template::instance()->nest_elements( $html_wrapper, ob_get_clean() );
@@ -437,7 +439,7 @@ class FilterCourseTemplate {
 			$hide_count_zero = $data['hide_count_zero'] ?? 1;
 			// Check has in tag page.
 			if ( isset( $params_url['page_tag_id_current'] ) &&
-			     empty( $params_url['tag_id'] ) ) {
+				empty( $params_url['tag_id'] ) ) {
 				$data_selected[] = $params_url['page_tag_id_current'];
 			}
 
