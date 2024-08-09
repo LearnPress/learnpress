@@ -15,7 +15,7 @@ export default function HTTP( options ) {
 		payload.id = options.store.getters.id;
 		payload.nonce = options.store.getters.nonce;
 		payload[ 'lp-ajax' ] = options.store.getters.action;
-		payload.code = options.store.getters.code;
+		//payload.code = options.store.getters.code;
 
 		$publishingAction.find( '#publish' ).addClass( 'disabled' );
 		$publishingAction.find( '.spinner' ).addClass( 'is-active' );
