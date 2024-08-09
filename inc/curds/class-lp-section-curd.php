@@ -58,7 +58,8 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				$insert_data,
 				array( '%d', '%s', '%d', '%s' )
 			);
-			$section['section_id'] = $wpdb->insert_id;
+			$section['section_id']    = $wpdb->insert_id;
+			$section['section_order'] = $section_order_new;
 
 			do_action( 'lp/section/created', $section );
 		} catch ( Throwable $e ) {
@@ -226,7 +227,7 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	/**
 	 * Create new section item and add to course.
 	 *
-	 * @param int   $section_id
+	 * @param int $section_id
 	 * @param array $item
 	 *
 	 * @return array | bool
@@ -284,7 +285,7 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * Add list new items to section.
 	 *
 	 * @param       $section_id
-	 * @param array      $items
+	 * @param array $items
 	 *
 	 * @return array
 	 */
