@@ -98,6 +98,39 @@ class UserModel {
 	}
 
 	/**
+	 * Get course by ID
+	 *
+	 * @param int $course_id
+	 * @param bool $no_cache
+	 *
+	 * @return false|CourseModel|static
+	 */
+	public static function find( int $user_id, bool $check_cache = false ) {
+		$filter_user     = new LP_User_Filter();
+		$filter_user->ID = $user_id;
+		$key_cache       = "user-model/find/id/{$user_id}";
+		$lp_course_cache = new \LP_Cache();
+
+		// Check cache
+		if ( $check_cache ) {
+			$user_model = $lp_course_cache->get_cache( $key_cache );
+			if ( $user_model instanceof UserModel ) {
+				return $user_model;
+			}
+		}
+
+		// Query database no cache.
+		$user_model = self::get_user_model_from_db( $filter_user );
+
+		// Set cache
+		if ( $user_model instanceof UserModel ) {
+			$lp_course_cache->set_cache( $key_cache, $user_model );
+		}
+
+		return $user_model;
+	}
+
+	/**
 	 * Get course from database.
 	 * If not exists, return false.
 	 * If exists, return CoursePostModel.
@@ -107,7 +140,7 @@ class UserModel {
 	 *
 	 * @return UserModel|false|static
 	 */
-	public static function get_user_model_from_db( LP_User_Filter $filter, bool $no_cache = true ) {
+	public static function get_user_model_from_db( LP_User_Filter $filter, bool $check_cache = false ) {
 		$lp_user_db = LP_User_DB::instance();
 		$user_model = false;
 
@@ -184,6 +217,109 @@ class UserModel {
 		}
 
 		return $this->image_url;
+	}
+
+	/**
+	 * Get display name
+	 *
+	 * @return string
+	 */
+	public function get_display_name(): string {
+		return $this->display_name ?? '';
+	}
+
+	public function get_profile_link(): string {
+		return '';
+	}
+
+	/**
+	 * Get url instructor.
+	 *
+	 * @move from LP_User
+	 * @return string
+	 * @version 1.0.0
+	 * @since 4.2.3
+	 */
+	public function get_url_instructor(): string {
+		$single_instructor_link = '';
+
+		try {
+			$user_name                 = $this->user_nicename ?? '';
+			$single_instructor_page_id = learn_press_get_page_id( 'single_instructor' );
+			$single_instructor_link    = trailingslashit(
+				trailingslashit( get_page_link( $single_instructor_page_id ) ) . $user_name
+			);
+		} catch ( Throwable $e ) {
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
+		}
+
+		return $single_instructor_link;
+	}
+
+	/**
+	 * Get profile picture
+	 *
+	 * @param string $type
+	 * @param int $size
+	 * @param bool $src_only
+	 *
+	 * @move from LP_Abstract_User
+	 * @return string
+	 */
+	public function get_profile_picture( $type = '', $size = 96, $src_only = false ) {
+		return LP_Profile::instance( $this->get_id() )->get_profile_picture( $type, $size );
+	}
+
+	/**
+	 * Get links socials of use on Profile page
+	 * Icon is svg
+	 *
+	 * @param int $user_id
+	 *
+	 * @move from LP_Abstract_User
+	 * @return array
+	 * @since 4.2.3
+	 * @version 1.0.0
+	 */
+	public function get_profile_social( int $user_id = 0 ): array {
+		$socials    = array();
+		$extra_info = learn_press_get_user_extra_profile_info( $user_id );
+
+		if ( $extra_info ) {
+			foreach ( $extra_info as $k => $v ) {
+				if ( empty( $v ) ) {
+					continue;
+				}
+
+				switch ( $k ) {
+					case 'facebook':
+						$i = '<i class="lp-user-ico lp-icon-facebook"></i>';
+						break;
+					case 'twitter':
+						$i = '<i class="lp-user-ico lp-icon-twitter"></i>';
+						break;
+					case 'linkedin':
+						$i = '<i class="lp-user-ico lp-icon-linkedin"></i>';
+						break;
+					case 'youtube':
+						$i = '<i class="lp-user-ico lp-icon-youtube-play"></i>';
+						break;
+					default:
+						$i = sprintf( '<i class="lp-user-ico lp-icon-%s"></i>', $k );
+				}
+
+				$icon          = apply_filters(
+					'learn-press/user-profile-social-icon',
+					$i,
+					$k,
+					$this->get_id(),
+					$this
+				);
+				$socials[ $k ] = sprintf( '<a href="%s">%s</a>', esc_url_raw( $v ), $icon );
+			}
+		}
+
+		return apply_filters( 'learn-press/user-profile-socials', $socials, $this->get_id(), $this );
 	}
 
 	/**

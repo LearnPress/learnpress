@@ -8,7 +8,9 @@
 namespace LearnPress\TemplateHooks\Instructor;
 
 use LearnPress\Helpers\Template;
+use LearnPress\Models\CourseModel;
 use LearnPress\Models\Courses;
+use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
 use LP_Course;
 use LP_Course_Filter;
@@ -39,11 +41,11 @@ class SingleInstructorTemplate {
 	/**
 	 * Get display name html of instructor.
 	 *
-	 * @param \LP_User $instructor
+	 * @param LP_User|UserModel $instructor
 	 *
 	 * @return string
 	 */
-	public function html_display_name( LP_User $instructor ): string {
+	public function html_display_name( $instructor ): string {
 		$html_wrapper = [
 			'<span class="instructor-display-name">' => '</span>',
 		];
@@ -53,11 +55,11 @@ class SingleInstructorTemplate {
 	/**
 	 * Get html social of instructor.
 	 *
-	 * @param LP_User $instructor
+	 * @param LP_User|UserModel $instructor
 	 *
 	 * @return string
 	 */
-	public function html_social( LP_User $instructor ): string {
+	public function html_social( $instructor ): string {
 		$content = '';
 
 		try {
@@ -82,11 +84,11 @@ class SingleInstructorTemplate {
 	/**
 	 * Get html description of instructor.
 	 *
-	 * @param LP_User $instructor
+	 * @param LP_User|UserModel $instructor
 	 *
 	 * @return string
 	 */
-	public function html_description( LP_User $instructor ): string {
+	public function html_description( $instructor ): string {
 		$content = '';
 
 		try {
@@ -105,11 +107,11 @@ class SingleInstructorTemplate {
 	/**
 	 * Get html avatar of instructor.
 	 *
-	 * @param LP_User $instructor
+	 * @param LP_User|UserModel $instructor
 	 *
 	 * @return string
 	 */
-	public function html_avatar( LP_User $instructor ): string {
+	public function html_avatar( $instructor ): string {
 		$content = '';
 
 		try {

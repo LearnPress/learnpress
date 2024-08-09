@@ -1,5 +1,6 @@
 <?php
 
+use LearnPress\Helpers\Config;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\CoursePostModel;
 
@@ -119,22 +120,29 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 				'_lp_deliver_type'                 => new LP_Meta_Box_Select_Field(
 					esc_html__( 'Deliver Type', 'learnpress' ),
 					esc_html__( 'Information for Offline Course', 'learnpress' ),
-					'private_one_one',
+					'private_1_1',
 					[
-						'options' => [
-							'private_one_one' => esc_html__( 'Private 1-1', 'learnpress' ),
-							'in_person_class'  => esc_html__( 'In-person class', 'learnpress' ),
-							'live_online'  => esc_html__( 'Live online class', 'learnpress' ),
-						],
+						'options' => Config::instance()->get('course-deliver-type'),
 						'dependency'        => [
 							'name'       => '_lp_offline_course',
 							'is_disable' => ! $is_offline_course
 						],
 					]
 				),
-				'_lp_address'                 => new LP_Meta_Box_Textarea_Field(
-					esc_html__( 'Address or Map', 'learnpress' ),
-					esc_html__( 'Enter address or Map of class.', 'learnpress' ),
+				'_lp_address'                 => new LP_Meta_Box_Text_Field(
+					esc_html__( 'Address', 'learnpress' ),
+					esc_html__( 'Enter address of class.', 'learnpress' ),
+					'',
+					[
+						'dependency'        => [
+							'name'       => '_lp_offline_course',
+							'is_disable' => ! $is_offline_course
+						],
+					]
+				),
+				'_lp_map'                 => new LP_Meta_Box_Textarea_Field(
+					esc_html__( 'Map', 'learnpress' ),
+					esc_html__( 'Enter Map of class.', 'learnpress' ),
 					'',
 					[
 						'dependency'        => [

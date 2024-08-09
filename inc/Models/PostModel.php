@@ -126,9 +126,7 @@ class PostModel {
 			$author_id = get_post_field( 'post_author', $this );
 		}
 
-		$filter       = new LP_User_Filter();
-		$filter->ID   = $author_id;
-		$this->author = UserModel::get_user_model_from_db( $filter );
+		$this->author = UserModel::find( $author_id, true );
 
 		return $this->author;
 	}
@@ -320,5 +318,27 @@ class PostModel {
 		}
 
 		return $permalink;
+	}
+
+	/**
+	 * Get the content of WP
+	 *
+	 * @return string
+	 */
+	public function get_the_content(): string {
+		$content = get_the_content( null, false, $this );
+		$content = apply_filters( 'the_content', $content );
+		$content = str_replace( ']]>', ']]&gt;', $content );
+
+		return $content;
+	}
+
+	/**
+	 * Get title of course
+	 *
+	 * @return string
+	 */
+	public function get_the_title(): string {
+		return get_the_title( $this );
 	}
 }

@@ -51,6 +51,8 @@ class CoursePostModel extends PostModel {
 	const META_KEY_IS_SALE = '_lp_course_is_sale';
 	const META_KEY_NO_REQUIRED_ENROLL = '_lp_no_required_enroll';
 	const META_KEY_OFFLINE_COURSE = '_lp_offline_course';
+	const META_KEY_ADDRESS = '_lp_address';
+	const META_KEY_DELIVER = '_lp_deliver_type';
 
 	/**
 	 * Get the price of course.

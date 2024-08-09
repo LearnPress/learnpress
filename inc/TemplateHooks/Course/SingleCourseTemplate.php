@@ -3,13 +3,16 @@
  * Template hooks Single Course.
  *
  * @since 4.2.3
- * @version 1.0.2
+ * @version 1.0.3
  */
 
 namespace LearnPress\TemplateHooks\Course;
 
+use LearnPress\Helpers\Config;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
+use LearnPress\Models\CourseModel;
+use LearnPress\Models\CoursePostModel;
 use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
 use LP_Course;
 use LP_Datetime;
@@ -19,7 +22,174 @@ class SingleCourseTemplate {
 	use Singleton;
 
 	public function init() {
-		// TODO: Implement init() method.
+		add_action(
+			'learn-press/single-course/offline/layout',
+			[ $this, 'course_offline_layout' ]
+		);
+	}
+
+	/**
+	 * Offline course layout
+	 *
+	 * @param $course
+	 *
+	 * @return void
+	 */
+	public function course_offline_layout( $course ) {
+		if ( ! $course instanceof CourseModel ) {
+			return;
+		}
+
+		if ( ! $course->is_offline() ) {
+			return;
+		}
+
+		ob_start();
+		learn_press_breadcrumb();
+		$html_breadcrumb = ob_get_clean();
+
+		// Author
+		$singleInstructorTemplate = SingleInstructorTemplate::instance();
+		$author                   = $course->get_author_model();
+		$html_author              = '';
+		if ( $author ) {
+			$html_author = sprintf(
+				'%s %s',
+				__( 'By', 'learnpress' ),
+				sprintf( '<a href="%s">%s</a>', $author->get_url_instructor(), $singleInstructorTemplate->html_display_name( $author ) )
+			);
+		}
+		// End author
+
+		// Instructor
+		$html_instructor = '';
+		if ( $author ) {
+			$html_instructor_image = sprintf(
+				'<a href="%s" title="%s">%s</a>',
+				$author->get_url_instructor(),
+				$author->get_display_name(),
+				$singleInstructorTemplate->html_avatar( $author )
+			);
+
+			$section_instructor_right = [
+				'wrapper_instructor_right_start' => '<div class="lp-section-instructor">',
+				'name'                           => $singleInstructorTemplate->html_display_name( $author ),
+				'description'                    => $singleInstructorTemplate->html_description( $author ),
+				'social'                         => $singleInstructorTemplate->html_social( $author ),
+				'wrapper_instructor_right_end'   => '</div>',
+			];
+			$html_instructor_right    = Template::combine_components( $section_instructor_right );
+			$section_instructor       = [
+				'wrapper_instructor_start' => '<div class="lp-section-instructor">',
+				'image'                    => $html_instructor_image,
+				'instructor_right'         => $html_instructor_right,
+				'wrapper_instructor_end'   => '</div>'
+			];
+			$html_instructor          = Template::combine_components( $section_instructor );
+		}
+		// End instructor
+
+		// Info one
+		$section_info_one = [
+			'wrapper_info_one_open'  => '<div class="lp-single-course-offline-info-one">',
+			'author'                 => $html_author,
+			'address'                => $this->html_address( $course ),
+			'wrapper_info_one_close' => '</div>',
+		];
+		$html_info_one    = Template::combine_components( $section_info_one );
+
+		$html_wrapper_section_left = [
+			'<div class="lp-single-course__left">' => '</div>'
+		];
+		$section_left              = [
+			'breadcrumb'  => $html_breadcrumb,
+			'title'       => sprintf( '<h1>%s</h1>', $this->html_title( $course ) ),
+			'info_one'    => $html_info_one,
+			'image'       => $this->html_image( $course ),
+			'description' => $this->html_description( $course ),
+			'instructor'  => $html_instructor
+		];
+		$html_section_left         = Template::combine_components( $section_left );
+		$html_section_left         = Template::instance()->nest_elements( $html_wrapper_section_left, $html_section_left );
+
+		// Section right
+
+		// Info two
+		$data_info_meta =
+			apply_filters(
+				'learn-press/course/info-meta',
+				[
+					'price'        => [
+						'label' => sprintf( '%s %s', learn_press_get_currency(), __( 'Price', 'learnpress' ) ),
+						'value' => $this->html_price( $course )
+					],
+					'deliver_type' => [
+						'label' => sprintf( '<span class="lp-icon-bookmark-o"></span> %s', __( 'Deliver type', 'learnpress' ) ),
+						'value' => $this->html_deliver_type( $course )
+					],
+					'capacity'     => [
+						'label' => sprintf( '<span class="lp-icon-students"></span> %s', __( 'Capacity', 'learnpress' ) ),
+						'value' => $this->html_capacity( $course )
+					],
+					'level'        => [
+						'label' => sprintf( '<span class="lp-icon-signal"></span> %s', __( 'Level', 'learnpress' ) ),
+						'value' => $this->html_deliver_type( $course )
+					],
+					'duration'     => [
+						'label' => sprintf( '<span class="lp-icon-clock-o"></span> %s', __( 'Duration', 'learnpress' ) ),
+						'value' => $this->html_duration( $course )
+					],
+					'lessons'      => [
+						'label' => sprintf( '<span class="lp-icon-book"></span> %s', __( 'Lessons', 'learnpress' ) ),
+						'value' => $this->html_deliver_type( $course )
+					],
+				],
+				$course
+			);
+
+		$html_info_two_items = '';
+		foreach ( $data_info_meta as $info_meta ) {
+			$label               = $info_meta['label'];
+			$value               = $info_meta['value'];
+			$html_info_two_item  = sprintf(
+				'<div class="info-meta-item">
+					<span class="info-meta-left">%s</span>
+					<span class="info-meta-right">%s</span>
+				</div>',
+				$label,
+				$value
+			);
+			$html_info_two_items .= $html_info_two_item;
+		}
+
+		$section_buttons = [
+			'btn_contact' => $this->html_btn_external( $course ),
+			'btn_buy'     => $this->html_btn_purchase_course( $course )
+		];
+		$html_buttons    = Template::combine_components( $section_buttons );
+
+		$section_info_two = [
+			'wrapper_section_info_two_start' => '<div class="info-metas">',
+			'items'                          => $html_info_two_items,
+			'buttons'                        => $html_buttons,
+			'wrapper_section_info_two_end'   => '</div>',
+		];
+		$html_info_two    = Template::combine_components( $section_info_two );
+		// End info two
+		$section_right      = [
+			'wrapper_section_right_start' => '<div class="lp-single-course__left">',
+			'info_two'                    => $html_info_two,
+			'featured_review'             => $this->html_feature_review( $course ),
+			'wrapper_section_right_end'   => '</div>',
+		];
+		$html_section_right = Template::combine_components( $section_right );
+		// End section right
+		$sections = [
+			'section_left'  => $html_section_left,
+			'section_right' => $html_section_right
+		];
+
+		echo Template::combine_components( $sections );
 	}
 
 	public function sections( $data = [] ) {
@@ -28,11 +198,11 @@ class SingleCourseTemplate {
 	/**
 	 * Get display title course.
 	 *
-	 * @param LP_Course $course
+	 * @param LP_Course|CourseModel $course
 	 *
 	 * @return string
 	 */
-	public function html_title( LP_Course $course ): string {
+	public function html_title( $course ): string {
 		$html_wrapper = [
 			'<span class="course-title">' => '</span>',
 		];
@@ -68,16 +238,23 @@ class SingleCourseTemplate {
 	/**
 	 * Get description course.
 	 *
-	 * @param LP_Course $course
+	 * @param LP_Course|CourseModel $course
 	 *
 	 * @return string
 	 */
-	public function html_description( LP_Course $course ): string {
+	public function html_description( $course ): string {
+		$content      = '';
 		$html_wrapper = [
 			'<p class="course-description">' => '</p>',
 		];
 
-		return Template::instance()->nest_elements( $html_wrapper, $course->get_data( 'description' ) );
+		if ( $course instanceof LP_Course ) {
+			$content = $course->get_data( 'description' );
+		} elseif ( $course instanceof CourseModel ) {
+			$content = $course->get_description();
+		}
+
+		return Template::instance()->nest_elements( $html_wrapper, $content );
 	}
 
 	/**
@@ -147,11 +324,11 @@ class SingleCourseTemplate {
 	/**
 	 * Get display title course.
 	 *
-	 * @param LP_Course $course
+	 * @param LP_Course|CourseModel $course
 	 *
 	 * @return string
 	 */
-	public function html_image( LP_Course $course ): string {
+	public function html_image( $course ): string {
 		$content = '';
 
 		try {
@@ -159,7 +336,16 @@ class SingleCourseTemplate {
 				'<div class="course-img">' => '</div>',
 			];
 
-			$content = $course->get_image();
+			if ( $course instanceof LP_Course ) {
+				$content = $course->get_image();
+			} elseif ( $course instanceof CourseModel ) {
+				$content = sprintf(
+					'<img src="%s" alt="%s">',
+					esc_url_raw( $course->get_image_url() ),
+					_x( 'course thumbnail', 'no course thumbnail', 'learnpress' )
+				);
+			}
+
 			$content = Template::instance()->nest_elements( $html_wrapper, $content );
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
@@ -167,7 +353,6 @@ class SingleCourseTemplate {
 
 		return $content;
 	}
-
 
 	/**
 	 * Get display instructor course.
@@ -197,18 +382,98 @@ class SingleCourseTemplate {
 	}
 
 	/**
-	 * Get display price course.
+	 * Get html regular price
 	 *
-	 * @param LP_Course $course
+	 * @param CourseModel $course
 	 *
 	 * @return string
 	 */
-	public function html_price( LP_Course $course ): string {
+	public function html_regular_price( CourseModel $course ): string {
+		$price = learn_press_format_price( $course->get_regular_price() );
+		$price = apply_filters( 'learn-press/course/regular-price-html', $price, $course, $this );
+
+		return sprintf( '<span class="origin-price">%s</span>', $price );
+	}
+
+	/**
+	 * Get display price course.
+	 *
+	 * @param LP_Course|CourseModel $course
+	 *
+	 * @return string
+	 */
+	public function html_price( $course ): string {
+		$price_html = '';
+
+		if ( $course instanceof LP_Course ) {
+			$course = CourseModel::find( $course->get_id(), true );
+		}
+
+		if ( $course->is_free() ) {
+			if ( '' != $course->get_sale_price() ) {
+				$price_html .= sprintf( '<span class="origin-price">%s</span>', $this->html_regular_price( $course ) );
+			}
+
+			$price_html .= sprintf( '<span class="free">%s</span>', esc_html__( 'Free', 'learnpress' ) );
+			$price_html = apply_filters( 'learn_press_course_price_html_free', $price_html, $this );
+		} elseif ( $course->has_no_enroll_requirement() ) {
+			$price_html .= '';
+		} else {
+			if ( $course->has_sale_price() ) {
+				$price_html .= sprintf( '<span class="origin-price">%s</span>', $this->html_regular_price( $course ) );
+			}
+
+			$price_html .= sprintf( '<span class="price">%s</span>', learn_press_format_price( $course->get_price(), true ) );
+			$price_html = apply_filters( 'learn_press_course_price_html', $price_html, $course->has_sale_price(), $course->get_id() );
+			// @since 4.2.7
+			$price_html = apply_filters( 'learn-press/course/html-price', $price_html, $course );
+		}
+
+		return sprintf( '<span class="course-price">%s</span>', $price_html );
+	}
+
+	/**
+	 * Get deliver type
+	 *
+	 * @param CourseModel $course
+	 *
+	 * @return string
+	 */
+	public function html_deliver_type( CourseModel $course ): string {
+		$content = '';
+
 		$html_wrapper = [
-			'<div class="course-price">' => '</div>',
+			'<span class="course-deliver-type">' => '</span>',
 		];
 
-		return Template::instance()->nest_elements( $html_wrapper, $course->get_course_price_html() );
+		$deliver_type_options = Config::instance()->get( 'course-deliver-type' );
+		$key                  = $course->get_meta_value_by_key( CoursePostModel::META_KEY_DELIVER, 'private_1_1' );
+		$content              = $deliver_type_options[ $key ] ?? '';
+
+		return Template::instance()->nest_elements( $html_wrapper, $content );
+	}
+
+	/**
+	 * Get deliver type
+	 *
+	 * @param CourseModel $course
+	 *
+	 * @return string
+	 */
+	public function html_capacity( CourseModel $course ): string {
+		$content = '';
+
+		$html_wrapper = [
+			'<span class="course-capacity">' => '</span>',
+		];
+		$capacity     = $course->get_meta_value_by_key( CoursePostModel::META_KEY_MAX_STUDENTS, 0 );
+		if ( $capacity == 0 ) {
+			$content = __( 'Unlimited', 'learnpress' );
+		} else {
+			$content = sprintf( '%d %s', $capacity, _n( 'Student', 'Students', $capacity, 'learnpress' ) );
+		}
+
+		return Template::instance()->nest_elements( $html_wrapper, $content );
 	}
 
 	/**
@@ -303,17 +568,21 @@ class SingleCourseTemplate {
 	/**
 	 * Get html duration course.
 	 *
-	 * @param LP_Course $course
+	 * @param LP_Course|CourseModel $course
 	 *
 	 * @return string
 	 * @since 4.2.3.5
 	 * @version 1.0.0
 	 */
-	public function html_duration( LP_Course $course ): string {
+	public function html_duration( $course ): string {
 		$content = '';
 
 		try {
-			$duration        = $course->get_duration();
+			if ( $course instanceof LP_Course ) {
+				$course = CourseModel::find( $course->get_id() );
+			}
+
+			$duration        = $course->get_meta_value_by_key( CoursePostModel::META_KEY_DURATION, '' );
 			$duration_arr    = explode( ' ', $duration );
 			$duration_number = floatval( $duration_arr[0] ?? 0 );
 			$duration_type   = $duration_arr[1] ?? '';
@@ -328,6 +597,85 @@ class SingleCourseTemplate {
 		}
 
 		return $content;
+	}
+
+	/**
+	 * Get feature review
+	 *
+	 * @param CourseModel $course
+	 *
+	 * @return string
+	 */
+	public function html_feature_review( CourseModel $course ): string {
+		$feature_review = $course->get_meta_value_by_key( CoursePostModel::META_KEY_FEATURED_REVIEW, '' );
+		if ( empty( $feature_review ) ) {
+			return '';
+		}
+		ob_start();
+		?>
+		<div class="course-featured-review">
+			<div class="featured-review__title">
+				<?php echo esc_html__( 'Featured Review', 'learnpress' ); ?>
+			</div>
+			<div class="featured-review__stars">
+				<i class="lp-icon-star"></i>
+				<i class="lp-icon-star"></i>
+				<i class="lp-icon-star"></i>
+				<i class="lp-icon-star"></i>
+				<i class="lp-icon-star"></i>
+			</div>
+			<div class="featured-review__content">
+				<?php echo wp_kses_post( wpautop( $feature_review ) ); ?>
+			</div>
+		</div>
+		<?php
+		return ob_get_clean();
+	}
+
+	/**
+	 * Get address of course
+	 *
+	 * @param CourseModel $course
+	 *
+	 * @return string
+	 */
+	public function html_address( CourseModel $course ): string {
+		$content = '';
+
+		try {
+			$address = $course->get_meta_value_by_key( CoursePostModel::META_KEY_ADDRESS, '' );
+
+			$html_wrapper = [
+				'<span class="course-address">' => '</span>',
+			];
+			$content      = Template::instance()->nest_elements( $html_wrapper, $address );
+		} catch ( Throwable $e ) {
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
+		}
+
+		return $content;
+	}
+
+	/**
+	 * Get button external
+	 *
+	 * @param CourseModel $course
+	 *
+	 * @return string
+	 */
+	public function html_btn_external( CourseModel $course ): string {
+		$external_link = $course->get_meta_value_by_key( CoursePostModel::META_KEY_EXTERNAL_LINK_BY_COURSE, '' );
+		if ( empty( $external_link ) ) {
+			return '';
+		}
+
+		$content = sprintf( '<a href="%s" class="course-btn-extra">%s</a>', $external_link, __( 'Contact To Request', 'learnpress' ) );
+
+		return apply_filters( 'learn-press/course/html-address', $content );
+	}
+
+	public function html_btn_purchase_course( CourseModel $course ) {
+
 	}
 
 	/**

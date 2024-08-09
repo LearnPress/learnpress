@@ -142,6 +142,11 @@ class CourseModel {
 		return $this->ID;
 	}
 
+	public function get_title(): string {
+		$course_post = new CoursePostModel( $this );
+		return $course_post->get_the_title();
+	}
+
 	/**
 	 * Get image url
 	 * if not check get from Post
@@ -170,10 +175,9 @@ class CourseModel {
 	 * if not check get from Post
 	 *
 	 * @return UserModel|false
-	 * @throws Exception
 	 */
 	public function get_author_model() {
-		if ( ! empty( $this->author ) ) {
+		if ( isset( $this->author ) ) {
 			return $this->author;
 		}
 
@@ -319,7 +323,6 @@ class CourseModel {
 	 * Check if a course is Free
 	 *
 	 * @return bool
-	 * @throws Exception
 	 */
 	public function is_free(): bool {
 		return apply_filters( 'learnPress/course/is-free', $this->get_price() == 0, $this );
@@ -573,6 +576,16 @@ class CourseModel {
 	 */
 	public function get_no_enroll_requirement() {
 		return $this->get_meta_value_by_key( CoursePostModel::META_KEY_NO_REQUIRED_ENROLL, 'no' );
+	}
+
+	/**
+	 * Get description of Course
+	 *
+	 * @return string
+	 */
+	public function get_description(): string {
+		$course_post = new CoursePostModel( $this );
+		return $course_post->get_the_content();
 	}
 
 	/**

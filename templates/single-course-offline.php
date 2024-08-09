@@ -4,8 +4,11 @@
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 4.0.0
+ * @version 4.2.7
+ * @version 1.0.0
  */
+
+use LearnPress\Models\CourseModel;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -16,8 +19,19 @@ if ( ! wp_is_block_theme() ) {
 	do_action( 'learn-press/template-header' );
 }
 
-echo 'ofliine';
-
+?>
+<div class="lp-content-area">
+	<div class="lp-single-course">
+		<?php
+		$course_id = get_the_ID();
+		if ( $course_id ) {
+			$course = CourseModel::find( $course_id, true );
+			do_action( 'learn-press/single-course/offline/layout', $course );
+		}
+		?>
+	</div>
+</div>
+<?php
 /**
  * Footer for page
  */
