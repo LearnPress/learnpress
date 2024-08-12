@@ -97,18 +97,10 @@ class LP_Template_Course extends LP_Abstract_Template {
 	 */
 	public function quiz_meta_questions( $item ) {
 		$count = $item->count_questions();
-		echo '<span class="item-meta count-questions">' . sprintf(
-			$count ? _n(
-				'%d question',
-				'%d questions',
-				$count,
-				'learnpress'
-			) : __(
-				'%d question',
-				'learnpress'
-			),
-			$count
-		) . '</span>';
+		printf(
+			'<span class="item-meta count-questions">%s</span>',
+			sprintf( _n( '%1$d question', '%1$d questions', $count, 'learnpress' ), $count )
+		);
 	}
 
 	/**
@@ -202,7 +194,8 @@ class LP_Template_Course extends LP_Abstract_Template {
 
 		$can_purchase = $user->can_purchase_course( $course->get_id() );
 		if ( is_wp_error( $can_purchase ) ) {
-			if ( in_array( $can_purchase->get_error_code(), [ 'order_processing', 'course_out_of_stock', 'course_is_no_required_enroll_not_login' ] ) ) {
+			if ( in_array( $can_purchase->get_error_code(),
+				[ 'order_processing', 'course_out_of_stock', 'course_is_no_required_enroll_not_login' ] ) ) {
 				Template::print_message( $can_purchase->get_error_message(), 'warning' );
 			}
 
@@ -263,7 +256,8 @@ class LP_Template_Course extends LP_Abstract_Template {
 			}
 
 			if ( $user->has_finished_course( $course->get_id() ) ) {
-				throw new Exception( 'Course is finished' );
+				$error_code = 'course_is_finished';
+				throw new Exception( __( 'Course is finished', 'learnpress' ) );
 			}
 		} catch ( Throwable $e ) {
 			if ( ! in_array( $error_code, [ 'course_is_enrolled', 'course_can_retry' ] ) ) {
@@ -578,7 +572,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 		}
 		?>
 		<div class="learnpress-course-curriculum" data-section="<?php echo esc_attr( $section_id ?? '' ); ?>"
-			data-id="<?php echo esc_attr( $item_id ?? '' ); ?>">
+			 data-id="<?php echo esc_attr( $item_id ?? '' ); ?>">
 			<?php lp_skeleton_animation_html( 10 ); ?>
 		</div>
 		<?php
@@ -745,12 +739,12 @@ class LP_Template_Course extends LP_Abstract_Template {
 		$user   = learn_press_get_current_user();
 		$course = learn_press_get_course();
 
-		$file_per_page = LP_Settings::get_option( 'material_file_per_page', -1 );
+		$file_per_page = LP_Settings::get_option( 'material_file_per_page', - 1 );
 		if ( ! $course || (int) $file_per_page === 0 ) {
 			return;
 		}
 		try {
-			$item = LP_Global::course_item();
+			$item                  = LP_Global::course_item();
 			$can_show_tab_material = false;
 			if ( $course->is_no_required_enroll()
 				|| $user->has_enrolled_or_finished( $course->get_id() )
