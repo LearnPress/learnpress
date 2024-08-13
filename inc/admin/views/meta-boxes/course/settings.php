@@ -20,7 +20,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 	 * @return void
 	 */
 	public function add_meta_boxes( $post ) {
-		$course = CourseModel::find( $post->ID );
+		$course                   = CourseModel::find( $post->ID, true );
 		$is_enable_offline_course = $course->get_meta_value_by_key( CoursePostModel::META_KEY_OFFLINE_COURSE, 'no' ) === 'yes';
 
 		add_meta_box(
@@ -101,51 +101,53 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 	}
 
 	public function general( $post_id ) {
-		$course = CourseModel::find( $post_id );
+		$course                 = CourseModel::find( $post_id, true );
 		$repurchase_option_desc = sprintf( '1. %s', __( 'Reset course progress: The course progress and results of student will be removed.' ) );
 		$repurchase_option_desc .= '<br/>' . sprintf( '2. %s', __( 'Keep course progress: The course progress and results of student will remain.' ) );
 		$repurchase_option_desc .= '<br/>' . sprintf( '3. %s', __( 'Open popup: The student can decide whether their course progress will be reset with the confirm popup.' ) );
+		$max_students_desc      = esc_html__( 'The maximum number of students that can join a course. Set 0 for unlimited.', 'learnpress' );
+		$max_students_desc      .= '<br/>' . esc_html__( 'Not apply for case "No enroll requirement".', 'learnpress' );
 
 		$is_enable_allow_course_repurchase = $course->get_meta_value_by_key( CoursePostModel::META_KEY_ALLOW_COURSE_REPURCHASE, 'no' ) === 'yes';
-		$is_offline_course = $course->is_offline();
+		$is_offline_course                 = $course->is_offline();
 
 		return apply_filters(
 			'lp/course/meta-box/fields/general',
 			array(
-				'_lp_offline_course'                 => new LP_Meta_Box_Checkbox_Field(
+				'_lp_offline_course'           => new LP_Meta_Box_Checkbox_Field(
 					esc_html__( 'Enable offline course', 'learnpress' ),
 					esc_html__( 'When enable feature offline course, system will disable some features as: edit Curriculum.', 'learnpress' ),
 					'no'
 				),
-				'_lp_deliver_type'                 => new LP_Meta_Box_Select_Field(
+				'_lp_deliver_type'             => new LP_Meta_Box_Select_Field(
 					esc_html__( 'Deliver Type', 'learnpress' ),
 					esc_html__( 'Information for Offline Course', 'learnpress' ),
 					'private_1_1',
 					[
-						'options' => Config::instance()->get('course-deliver-type'),
-						'dependency'        => [
+						'options'    => Config::instance()->get( 'course-deliver-type' ),
+						'dependency' => [
 							'name'       => '_lp_offline_course',
 							'is_disable' => ! $is_offline_course
 						],
 					]
 				),
-				'_lp_address'                 => new LP_Meta_Box_Text_Field(
+				'_lp_address'                  => new LP_Meta_Box_Text_Field(
 					esc_html__( 'Address', 'learnpress' ),
 					esc_html__( 'Enter address of class.', 'learnpress' ),
 					'',
 					[
-						'dependency'        => [
+						'dependency' => [
 							'name'       => '_lp_offline_course',
 							'is_disable' => ! $is_offline_course
 						],
 					]
 				),
-				'_lp_map'                 => new LP_Meta_Box_Textarea_Field(
+				'_lp_map'                      => new LP_Meta_Box_Textarea_Field(
 					esc_html__( 'Map', 'learnpress' ),
 					esc_html__( 'Enter Map of class.', 'learnpress' ),
 					'',
 					[
-						'dependency'        => [
+						'dependency' => [
 							'name'       => '_lp_offline_course',
 							'is_disable' => ! $is_offline_course
 						],
@@ -183,12 +185,12 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 					$repurchase_option_desc,
 					'reset',
 					array(
-						'options' => array(
+						'options'    => array(
 							'reset' => esc_html__( 'Reset course progress', 'learnpress' ),
 							'keep'  => esc_html__( 'Keep course progress', 'learnpress' ),
 							'popup' => esc_html__( 'Open popup', 'learnpress' ),
 						),
-						'dependency'        => [
+						'dependency' => [
 							'name'       => '_lp_allow_course_repurchase',
 							'is_disable' => ! $is_enable_allow_course_repurchase
 						],
@@ -218,7 +220,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 				),
 				'_lp_max_students'             => new LP_Meta_Box_Text_Field(
 					esc_html__( 'Max student', 'learnpress' ),
-					esc_html__( 'The maximum number of students that can join a course. Set 0 for unlimited.', 'learnpress' ),
+					$max_students_desc,
 					0,
 					array(
 						'type_input'        => 'number',
@@ -333,7 +335,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 					array(
 						'wrapper_class' => 'lp_sale_start_dates_fields',
 						'placeholder'   => _x( 'From&hellip;', 'placeholder', 'learnpress' ),
-						'dependency'        => [
+						'dependency'    => [
 							'name'       => '_lp_no_required_enroll',
 							'is_disable' => $is_enable_no_required_enroll
 						],
@@ -347,7 +349,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 						'wrapper_class' => 'lp_sale_end_dates_fields',
 						'placeholder'   => _x( 'To&hellip;', 'placeholder', 'learnpress' ),
 						'cancel'        => true,
-						'dependency'        => [
+						'dependency'    => [
 							'name'       => '_lp_no_required_enroll',
 							'is_disable' => $is_enable_no_required_enroll
 						],
@@ -446,6 +448,10 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 		$course_results     = get_post_meta( $thepostid, '_lp_course_result', true );
 
 		$course_result_desc .= __( 'The method of evaluating a student\'s performance in a course.', 'learnpress' );
+		$course_result_desc .= sprintf(
+			'<br/><i style="color: red">%s</i>',
+			__( 'Note: changing the evaluation type will affect the assessment results of student learning.', 'learnpress' )
+		);
 
 		if ( $course_results == 'evaluate_final_quiz' && ! get_post_meta( $thepostid, '_lp_final_quiz', true ) ) {
 			$course_result_desc .= __( '<br /><strong>Note! </strong>There is no final quiz in the course. Please add a final quiz.', 'learnpress' );

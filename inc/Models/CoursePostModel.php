@@ -14,6 +14,7 @@ namespace LearnPress\Models;
 use Exception;
 use LearnPress;
 use LP_Course_Cache;
+use LP_Course_Filter;
 use LP_Datetime;
 
 use Throwable;
@@ -198,5 +199,20 @@ class CoursePostModel extends PostModel {
 		$price = learn_press_format_price( $this->get_regular_price(), true );
 
 		return apply_filters( 'learnPress/course/regular-price', $price, $this );
+	}
+
+	/**
+	 * Get post course by ID
+	 *
+	 * @param int $post_id
+	 * @param bool $check_cache
+	 *
+	 * @return false|static
+	 */
+	public static function find( int $post_id, bool $check_cache = false ) {
+		$filter_post     = new LP_Course_Filter();
+		$filter_post->ID = $post_id;
+
+		return self::get_item_model_from_db( $filter_post );
 	}
 }

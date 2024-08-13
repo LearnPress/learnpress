@@ -155,11 +155,11 @@ class PostModel {
 	 * If exists, return PostModel.
 	 *
 	 * @param LP_Course_Filter $filter
-	 * @param bool $no_cache
+	 * @param bool $check_cache
 	 *
 	 * @return PostModel|false|static
 	 */
-	public static function get_item_model_from_db( LP_Post_Type_Filter $filter, bool $no_cache = true ) {
+	public static function get_item_model_from_db( LP_Post_Type_Filter $filter, bool $check_cache = false ) {
 		$lp_post_db = LP_Post_DB::getInstance();
 		$post_model = false;
 
@@ -167,9 +167,11 @@ class PostModel {
 			if ( empty( $filter->post_type ) ) {
 				$filter->post_type = ( new static() )->post_type;
 			}
+
 			$lp_post_db->get_query_single_row( $filter );
 			$query_single_row = $lp_post_db->get_posts( $filter );
 			$post_rs          = $lp_post_db->wpdb->get_row( $query_single_row );
+
 			if ( $post_rs instanceof stdClass ) {
 				$post_model = new static( $post_rs );
 			}

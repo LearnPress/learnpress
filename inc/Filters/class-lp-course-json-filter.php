@@ -81,7 +81,7 @@ class LP_Course_JSON_Filter extends LP_Filter {
 	/**
 	 * @var string
 	 */
-	public $taxonomy = 'category';
+	public $taxonomy = 'course_category';
 	/**
 	 * @var string
 	 */

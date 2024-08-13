@@ -1,5 +1,8 @@
 <?php
 
+use LearnPress\Models\CourseModel;
+use LearnPress\Models\CoursePostModel;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -40,6 +43,7 @@ class LP_User_Factory {
 	 * @param $the_id
 	 * @param $old_status
 	 * @param $new_status
+	 *
 	 * @Todo tungnx - should write on class LP_Order
 	 */
 	public static function update_user_items( $the_id, $old_status, $new_status ) {
@@ -121,6 +125,7 @@ class LP_User_Factory {
 	 * @param LP_Order $order
 	 * @param string $old_status
 	 * @param string $new_status
+	 *
 	 * @throws Exception
 	 * @editor tungnx
 	 * @modify 4.1.2
@@ -142,9 +147,7 @@ class LP_User_Factory {
 
 					// Check this order is the latest by user and course_id
 					$last_order_id = $lp_order_db->get_last_lp_order_id_of_user_course( $user->get_id(), $course_id );
-
-					$course = learn_press_get_course( $course_id );
-					if ( $last_order_id && $last_order_id != $order->get_id() || ! $course->is_in_stock() ) {
+					if ( $last_order_id && $last_order_id != $order->get_id() ) {
 						continue;
 					}
 
@@ -166,13 +169,19 @@ class LP_User_Factory {
 	 *
 	 * @author  tungnx
 	 * @since   4.1.3
-	 * @version 1.0.3
+	 * @version 1.0.4
 	 */
 	protected static function handle_item_order_completed( LP_Order $order, LP_User $user, $item ) {
 		$lp_user_items_db = LP_User_Items_DB::getInstance();
 
 		try {
-			$course                     = learn_press_get_course( $item['course_id'] );
+			$course_id   = $item['course_id'] ?? 0;
+			$course      = learn_press_get_course( $course_id );
+			$courseModel = CourseModel::find( $course_id, true );
+			if ( ! $courseModel ) {
+				return;
+			}
+
 			$auto_enroll                = LP_Settings::is_auto_start_course();
 			$keep_progress_items_course = false;
 
@@ -184,11 +193,12 @@ class LP_User_Factory {
 			/** Get the newest user_item_id of course for allow_repurchase */
 			$filter          = new LP_User_Items_Filter();
 			$filter->user_id = $user_id;
-			$filter->item_id = $item['course_id'];
+			$filter->item_id = $course_id;
 			$user_course     = $lp_user_items_db->get_last_user_course( $filter );
 
-			$latest_user_item_id   = 0;
-			$allow_repurchase_type = '';
+			$latest_user_item_id     = 0;
+			$allow_repurchase_option = $courseModel->get_meta_value_by_key( CoursePostModel::META_KEY_COURSE_REPURCHASE_OPTION, 'reset' );
+			$allow_repurchase_type   = '';
 
 			// Data user_item for save database
 			$user_item_data = [
@@ -204,11 +214,16 @@ class LP_User_Factory {
 				$allow_repurchase_type = learn_press_get_user_item_meta( $latest_user_item_id, '_lp_allow_repurchase_type' );
 			}
 
-			$is_no_required_enroll = $course->get_data( 'no_required_enroll', 'no' ) === 'yes';
+			$is_no_required_enroll = $courseModel->has_no_enroll_requirement();
+			$is_in_stock           = $courseModel->is_in_stock();
 
 			// If > 1 time purchase same course and allow repurchase
-			if ( ! empty( $allow_repurchase_type ) && $course->allow_repurchase()
-				&& ! empty( $latest_user_item_id ) && ! $course->is_free() && ! $is_no_required_enroll ) {
+			if ( $course->allow_repurchase() && ! empty( $latest_user_item_id )
+				&& ! $course->is_free() && ! $is_no_required_enroll ) {
+				if ( $allow_repurchase_option !== 'popup' ) {
+					$allow_repurchase_type = $allow_repurchase_option;
+				}
+
 				/**
 				 * If keep course progress will reset start_time, end_time, status, graduation
 				 * where user_item_id = $latest_user_item_id
@@ -224,16 +239,14 @@ class LP_User_Factory {
 
 					do_action( 'lp/allow_repurchase_options/continue/db/update', $user_item_data, $latest_user_item_id );
 				} elseif ( $allow_repurchase_type === 'reset' ) {
-					if ( $auto_enroll ) {
-						$user_item_data['status']     = LP_COURSE_ENROLLED;
-						$user_item_data['graduation'] = LP_COURSE_GRADUATION_IN_PROGRESS;
-					} else {
-						$user_item_data['status'] = LP_COURSE_PURCHASED;
-					}
+					$user_item_data['start_time'] = time();
+					$user_item_data['end_time']   = null;
+					$user_item_data['status']     = LP_COURSE_ENROLLED;
+					$user_item_data['graduation'] = LP_COURSE_GRADUATION_IN_PROGRESS;
 				}
 
 				learn_press_delete_user_item_meta( $latest_user_item_id, '_lp_allow_repurchase_type' );
-			} elseif ( ! $course->is_free() && ! $is_no_required_enroll ) { // First purchase course
+			} elseif ( ! $course->is_free() && ! $is_no_required_enroll && $is_in_stock ) { // First purchase course
 				// Set data for create user_item
 				if ( $auto_enroll ) {
 					$user_item_data['status']     = LP_COURSE_ENROLLED;
@@ -241,15 +254,17 @@ class LP_User_Factory {
 				} else {
 					$user_item_data['status'] = LP_COURSE_PURCHASED;
 				}
-			} else { // Enroll course free
+			} elseif ( $user_id && ( $is_in_stock || $is_no_required_enroll ) ) { // Enroll course free or No enroll requirement.
 				// Set data for create user_item
 				$user_item_data['status']     = LP_COURSE_ENROLLED;
 				$user_item_data['graduation'] = LP_COURSE_GRADUATION_IN_PROGRESS;
+			} else {
+				return;
 			}
 
 			// Delete items old
 			if ( ! $keep_progress_items_course ) {
-				$lp_user_items_db->delete_user_items_old( $user_id, $item['course_id'] );
+				$lp_user_items_db->delete_user_items_old( $user_id, $course_id );
 			}
 
 			$user_item_new_or_update = new LP_User_Item_Course( $user_item_data );
@@ -354,7 +369,7 @@ class LP_User_Factory {
 
 	/**
 	 * @param      $the_user
-	 * @param bool     $force
+	 * @param bool $force
 	 *
 	 * @return LP_Abstract_User
 	 */
@@ -416,10 +431,12 @@ class LP_User_Factory {
 	 * @param int $quiz_id
 	 * @param int $course_id
 	 * @param int $user_id
+	 *
 	 * @deprecated 4.2.2.4
 	 */
 	public static function start_quiz( $quiz_id, $course_id, $user_id ) {
 		_deprecated_function( __FUNCTION__, '4.2.2.4' );
+
 		return;
 		if ( learn_press_get_user( $user_id ) ) {
 			$user = learn_press_get_user( $user_id );
@@ -431,13 +448,15 @@ class LP_User_Factory {
 
 	/**
 	 * @param LP_User_Item $item
-	 * @param int          $quiz_id
-	 * @param int          $course_id
-	 * @param int          $user_id
+	 * @param int $quiz_id
+	 * @param int $course_id
+	 * @param int $user_id
+	 *
 	 * @deprecated 4.2.2.4
 	 */
 	private static function _update_user_item_meta( $item, $quiz_id, $course_id, $user_id ) {
 		_deprecated_function( __FUNCTION__, '4.2.2.4' );
+
 		return;
 		if ( get_user_by( 'id', $user_id ) ) {
 			return;

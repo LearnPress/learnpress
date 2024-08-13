@@ -21,8 +21,10 @@ use LP_Course_JSON_DB;
 use LP_Course_JSON_Filter;
 use LP_Datetime;
 use LP_Helper;
+use LP_Post_DB;
 use LP_User;
 use LP_User_Filter;
+use ReflectionClass;
 use stdClass;
 use Throwable;
 
@@ -144,6 +146,7 @@ class CourseModel {
 
 	public function get_title(): string {
 		$course_post = new CoursePostModel( $this );
+
 		return $course_post->get_the_title();
 	}
 
@@ -585,6 +588,7 @@ class CourseModel {
 	 */
 	public function get_description(): string {
 		$course_post = new CoursePostModel( $this );
+
 		return $course_post->get_the_content();
 	}
 
@@ -615,6 +619,52 @@ class CourseModel {
 	}
 
 	/**
+	 * Check course is in stock
+	 *
+	 * @return mixed
+	 * @since 3.0.0
+	 * @version 1.0.1
+	 */
+	public function is_in_stock() {
+		$in_stock    = true;
+		$max_allowed = (int) $this->get_meta_value_by_key( CoursePostModel::META_KEY_MAX_STUDENTS, 0 );
+
+		if ( $max_allowed ) {
+			$in_stock = $max_allowed > $this->get_total_user_enrolled_or_purchased();
+		}
+
+		return apply_filters( 'learn-press/is-in-stock', $in_stock, $this->get_id() );
+	}
+
+	/**
+	 * Get total user enrolled, purchased or finished
+	 *
+	 * @move from LP_Abstract_Course
+	 * @return int
+	 * @version 1.0.1
+	 * @since 4.1.4
+	 */
+	public function get_total_user_enrolled_or_purchased(): int {
+		$total           = 0;
+		$lp_course_cache = new LP_Course_Cache( true );
+
+		try {
+			$total = $lp_course_cache->get_total_students_enrolled_or_purchased( $this->get_id() );
+			if ( false !== $total ) {
+				return $total;
+			}
+
+			$lp_course_db = LP_Course_DB::getInstance();
+			$total        = $lp_course_db->get_total_user_enrolled_or_purchased( $this->get_id() );
+			$lp_course_cache->set_total_students_enrolled_or_purchased( $this->get_id(), $total );
+		} catch ( Throwable $e ) {
+			error_log( $e->getMessage() );
+		}
+
+		return $total;
+	}
+
+	/**
 	 * Get item model if query success.
 	 * If not exists, return false.
 	 * If exists, return PostModel.
@@ -631,7 +681,8 @@ class CourseModel {
 			$filter->only_fields = [ 'json', 'post_content' ];
 			// Load cache
 			if ( $check_cache ) {
-				$key_cache       = "course-model/{$filter->ID}";
+
+				$key_cache       = "course-model/{$filter->ID}/" . md5( json_encode( $filter ) );
 				$lp_course_cache = new LP_Course_Cache();
 				$course_model    = $lp_course_cache->get_cache( $key_cache );
 
@@ -681,6 +732,12 @@ class CourseModel {
 
 		// Query database no cache.
 		$course_model = self::get_item_model_from_db( $filter_course );
+		if ( false === $course_model ) { // Find on table posts
+			$course_rs = CoursePostModel::find( $course_id );
+			if ( $course_rs instanceof CoursePostModel ) {
+				$course_model = new static( $course_rs );
+			}
+		}
 
 		// Set cache
 		if ( $course_model instanceof CourseModel ) {
@@ -738,7 +795,7 @@ class CourseModel {
 		}
 
 		// Set cache single course when save done.
-		$key_cache       = "course-model/{$this->ID}";
+		$key_cache       = "course-model/find/id/{$this->ID}";
 		$lp_course_cache = new LP_Course_Cache();
 		$lp_course_cache->clear( $this->ID );
 		$lp_course_cache->set_cache( $key_cache, $this->ID );

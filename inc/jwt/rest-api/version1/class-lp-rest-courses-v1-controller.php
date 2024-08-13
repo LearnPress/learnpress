@@ -531,7 +531,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 	public function prepare_struct_courses_response( $courses, $params ): array {
 		$data = [];
 		foreach ( $courses as $courseObj ) {
-			$course = CourseModel::find( $courseObj->ID );
+			$course = CourseModel::find( $courseObj->ID, true );
 			if ( empty( $course ) ) {
 				// For course not save on table learnpress_courses but still can use object has course ID
 				$course = new CourseModel( $courseObj );

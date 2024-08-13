@@ -9,6 +9,8 @@
  * @version 1.0
  */
 
+use LearnPress\Models\CourseModel;
+
 defined( 'ABSPATH' ) || exit();
 
 class LP_Cart {
@@ -137,8 +139,8 @@ class LP_Cart {
 	/**
 	 * Add course to cart.
 	 *
-	 * @param int   $item_id
-	 * @param int   $quantity
+	 * @param int $item_id
+	 * @param int $quantity
 	 * @param array $item_data
 	 *
 	 * @return string|false
@@ -153,9 +155,8 @@ class LP_Cart {
 
 			switch ( $item_type ) {
 				case LP_COURSE_CPT:
-					$course = learn_press_get_course( $item_id );
-
-					if ( ! $course->is_in_stock() ) {
+					$course = CourseModel::find( $item_id, true );
+					if ( $course && ! $course->is_in_stock() && ! $course->has_no_enroll_requirement() ) {
 						throw new Exception( __( 'Sorry! The number of enrolled students has reached its limit', 'learnpress' ) );
 					}
 
@@ -188,6 +189,7 @@ class LP_Cart {
 			//$this->set_cart_cookies( true );
 
 			do_action( 'learn-press/add-to-cart', $item_id, $quantity, $item_data, $cart_id );
+
 			return $cart_id;
 		} catch ( Exception $e ) {
 			if ( $e->getMessage() ) {
@@ -308,6 +310,7 @@ class LP_Cart {
 	 */
 	public function get_cart_id() {
 		_deprecated_function( __METHOD__, '4.2.0' );
+
 		return ! empty( $_SESSION['learn_press_cart']['cart_id'] ) ? $_SESSION['learn_press_cart']['cart_id'] : 0;
 	}
 
@@ -335,6 +338,7 @@ class LP_Cart {
 		}
 
 		$this->_cart_content = $cart;
+
 		return $this->_cart_content;
 	}
 
@@ -363,7 +367,7 @@ class LP_Cart {
 	/**
 	 * Generate unique cart id from course id and data.
 	 *
-	 * @param int   $course_id
+	 * @param int $course_id
 	 * @param mixed $data
 	 *
 	 * @return string
@@ -390,7 +394,7 @@ class LP_Cart {
 	 * Return subtotal of cart content
 	 *
 	 * @param LP_Course|LP_Certificate $item
-	 * @param int       $quantity
+	 * @param int $quantity
 	 *
 	 * @return mixed
 	 */
@@ -430,6 +434,7 @@ class LP_Cart {
 	 */
 	public function is_empty(): bool {
 		$cart_content = $this->get_cart_from_session();
+
 		return sizeof( $cart_content ) === 0;
 	}
 
@@ -453,6 +458,7 @@ class LP_Cart {
 	 */
 	public function needs_payment() {
 		$cart_data = $this->calculate_totals();
+
 		return apply_filters( 'learn_press_cart_needs_payment', $cart_data->total > 0, $this );
 	}
 

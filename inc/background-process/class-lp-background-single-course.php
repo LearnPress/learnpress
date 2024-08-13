@@ -43,7 +43,7 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 				}
 
 				$this->data      = LP_Request::get_param( 'data', [], 'text', 'post' );
-				$this->lp_course = CourseModel::find( $course_id, false );
+				$this->lp_course = CourseModel::find( $course_id, true );
 				if ( ! $this->lp_course instanceof CourseModel ) {
 					return;
 				}
@@ -343,98 +343,6 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 				);
 			}
 			// End
-		}
-
-		/**
-		 * Save all data course to table learnpress_courses
-		 *
-		 * @param stdClass $post_obj
-		 * @param bool $is_update Create new post is false, else update is true
-		 *
-		 * @return CourseModel|null
-		 * @throws Exception
-		 * @since 4.2.6.9
-		 * @version 1.0.0
-		 */
-		protected function save_data_to_table_courses( $post_obj, $is_update ) {
-			// Create/Update Course with data
-			$courseObj  = new CourseModel( $post_obj );
-			$coursePost = new CoursePostModel( $post_obj );
-			// Get all meta key and map
-			$lp_meta_box_course = new LP_Meta_Box_Course();
-			$ground_fields      = $lp_meta_box_course->metabox( $post_obj->ID );
-
-			// If is action is update post.
-			if ( $is_update ) {
-				// Get meta from table postmeta
-				$coursePost           = new CoursePostModel( $post_obj );
-				$courseObj->meta_data = $coursePost->get_all_metadata();
-
-				// Get from table learnpress_courses
-				$courseModel = CourseModel::find( $coursePost->ID );
-				// Merge meta data
-				if ( ! empty( $courseModel ) ) {
-					$courseModelMeta      = json_decode( $courseModel->json );
-					$courseObj->meta_data = (object) array_merge(
-						(array) $courseObj->meta_data,
-						(array) $courseModelMeta->meta_data
-					);
-				}
-			}
-
-			// Save meta fields
-			foreach ( $ground_fields as $fields ) {
-				if ( ! isset( $fields['content'] ) ) {
-					continue;
-				}
-				foreach ( $fields['content'] as $meta_key => $option ) {
-					$option->id = $meta_key;
-					if ( isset( $this->data[ $meta_key ] ) ) {
-						switch ( $meta_key ) {
-							case CoursePostModel::META_KEY_DURATION:
-								if ( is_array( $this->data[ $meta_key ] ) ) {
-									$this->data[ $meta_key ] = sprintf( '%s %s', $this->data[ $meta_key ][0], $this->data[ $meta_key ][1] );
-								}
-								break;
-							default:
-								break;
-						}
-
-						if ( $option instanceof LP_Meta_Box_Checkbox_Field ) {
-							$this->data[ $meta_key ] = 'yes';
-						}
-
-						if ( $option instanceof LP_Meta_Box_Extra_Faq_Field ) {
-							$option->save( $courseObj->get_id(), $this->data );
-							$this->data[ $meta_key ] = get_post_meta( $courseObj->get_id(), $meta_key, true );
-						}
-
-						$courseObj->meta_data->{$meta_key} = $this->data[ $meta_key ];
-						//Todo: save all meta key, after when optimize, not call direct key via get_post_meta, will remove
-						// Only save with key need to query list
-						// @since 4.2.6.9
-						$coursePost->save_meta_value_by_key( $meta_key, $courseObj->meta_data->{$meta_key} );
-					} elseif ( ! $is_update ) {
-						$courseObj->meta_data->{$meta_key} = $option->default ?? '';
-						//Todo: save all meta key, after when optimize, not call direct key via get_post_meta, will remove
-						// Only save with key need to query list
-						// @since 4.2.6.9
-						$coursePost->save_meta_value_by_key( $meta_key, $courseObj->meta_data->{$meta_key} );
-					}
-				}
-			}
-
-			$this->save_price( $courseObj );
-			$courseObj->get_image_url();
-			$courseObj->get_categories();
-			$courseObj->get_author_model();
-			$courseObj->get_first_item_id();
-			$courseObj->get_total_items();
-			$courseObj->get_section_items();
-			// End get all meta key and map
-			$courseObj->save();
-
-			return $courseObj;
 		}
 
 		/**

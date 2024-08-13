@@ -296,7 +296,8 @@ class LP_User extends LP_Abstract_User {
 				throw new Exception( esc_html__( 'This course is already enrolled.', 'learnpress' ) );
 			}
 
-			if ( ! $course->is_in_stock_enroll() && ! $this->has_purchased_course( $course_id ) ) {
+			if ( ! $course->is_in_stock_enroll() && ! $this->has_purchased_course( $course_id )
+				&& ! $this->has_enrolled_or_finished( $course_id ) && ! $is_no_required_enroll ) {
 				$output->code = 'course_out_of_stock';
 				throw new Exception( esc_html__( 'The course is full of students.', 'learnpress' ) );
 			}

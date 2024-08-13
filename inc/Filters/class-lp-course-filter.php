@@ -1,6 +1,6 @@
 <?php
 /**
- * Class LP_Question_Filter
+ * Class LP_Course_Filter
  *
  * @author  ThimPress
  * @package LearnPress/Classes/Filters
@@ -21,4 +21,8 @@ class LP_Course_Filter extends LP_Post_Type_Filter {
 	 * @var string Level of Course
 	 */
 	public $levels = [];
+	/**
+	 * @var string
+	 */
+	public $taxonomy = 'course_category';
 }

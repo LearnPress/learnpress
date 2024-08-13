@@ -175,7 +175,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 */
 		public function before_delete( int $post_id ) {
 			// Delete course from table learnpress_courses
-			$courseModel = CourseModel::find( $post_id );
+			$courseModel = CourseModel::find( $post_id, true );
 			if ( $courseModel ) {
 				$courseModel->delete();
 			}
@@ -522,11 +522,11 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				if ( $post->post_status === 'auto-draft' ) {
 					return;
 				}
-				$courseModel = CourseModel::find( $post_id );
+				$courseModel = CourseModel::find( $post_id, true );
 				if ( ! $courseModel ) {
 					$courseModel = new CourseModel( $post );
 				}
-				// Merge object
+				// Merge object post and courseModel
 				$new_obj     = (array) $post;
 				$old_obj     = (array) $courseModel;
 				$old_now     = array_merge( $old_obj, $new_obj );

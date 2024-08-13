@@ -579,7 +579,7 @@ class SingleCourseTemplate {
 
 		try {
 			if ( $course instanceof LP_Course ) {
-				$course = CourseModel::find( $course->get_id() );
+				$course = CourseModel::find( $course->get_id(), true );
 			}
 
 			$duration        = $course->get_meta_value_by_key( CoursePostModel::META_KEY_DURATION, '' );
