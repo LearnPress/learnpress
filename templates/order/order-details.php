@@ -55,7 +55,7 @@ if ( ! isset( $order ) ) {
 					?>
 					<tr class="<?php echo esc_attr( apply_filters( 'learn-press/order/item-class', 'order-item', $item, $order ) ); ?>">
 						<td class="course-name">
-							<?php echo apply_filters( 'learn-press/order/item-name', sprintf( '%s', $item['name'] ), $item ); ?>
+							<?php echo apply_filters( 'learn-press/order/item-name', sprintf( '%s', $item['name'] ), $item, $order ); ?>
 						</td>
 						<td class="course-total">
 							<?php
@@ -77,7 +77,8 @@ if ( ! isset( $order ) ) {
 									esc_url_raw( get_permalink( $item['course_id'] ) ),
 									esc_html( $item['name'] )
 								),
-								$item
+								$item,
+								$order
 							);
 							?>
 						</td>

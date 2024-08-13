@@ -547,7 +547,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 							if ( $count > 1 ) {
 								$link = sprintf( '<li>%s</li>', $link );
 							}
-							$links[] = apply_filters( 'learn-press/order-item-link', $link, $item );
+							$links[] = apply_filters( 'learn-press/order-item-link', $link, $item, $lp_order );
 
 						}
 					}

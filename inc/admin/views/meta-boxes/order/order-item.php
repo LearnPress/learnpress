@@ -25,7 +25,7 @@ if ( ! isset( $item ) || ! isset( $order ) ) {
 			<?php do_action( 'learn_press/before_order_details_item_title', $item ); ?>
 
 			<a href="<?php echo apply_filters( 'learn_press/order_item_link', get_the_permalink( $item['course_id'] ), $item ); ?>">
-				<?php echo apply_filters( 'learn_press/order_item_name', esc_html( $item['name'] ), $item ); ?>
+				<?php echo apply_filters( 'learn_press/order_item_name', esc_html( $item['name'] ), $item, $order ); ?>
 			</a>
 
 			<?php do_action( 'learn_press/after_order_details_item_title', $item ); ?>
