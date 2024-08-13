@@ -160,6 +160,7 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 			}
 
 			update_user_meta( $user_id, '_lp_profile_picture', $upload_dir['subdir'] . '/' . $file_name );
+			do_action( 'learnpress/rest/frontend/profile/upload_avatar', $user_id );
 
 			$response->status  = 'success';
 			$response->message = __( 'Avatar updated', 'learnpress' );
