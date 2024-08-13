@@ -21,7 +21,10 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 	 */
 	public function add_meta_boxes( $post ) {
 		$course                   = CourseModel::find( $post->ID, true );
-		$is_enable_offline_course = $course->get_meta_value_by_key( CoursePostModel::META_KEY_OFFLINE_COURSE, 'no' ) === 'yes';
+		$is_enable_offline_course = false;
+		if ( $course instanceof CourseModel ) {
+			$is_enable_offline_course = $course->get_meta_value_by_key( CoursePostModel::META_KEY_OFFLINE_COURSE, 'no' ) === 'yes';
+		}
 
 		add_meta_box(
 			'course-settings',
@@ -108,8 +111,13 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 		$max_students_desc      = esc_html__( 'The maximum number of students that can join a course. Set 0 for unlimited.', 'learnpress' );
 		$max_students_desc      .= '<br/>' . esc_html__( 'Not apply for case "No enroll requirement".', 'learnpress' );
 
-		$is_enable_allow_course_repurchase = $course->get_meta_value_by_key( CoursePostModel::META_KEY_ALLOW_COURSE_REPURCHASE, 'no' ) === 'yes';
-		$is_offline_course                 = $course->is_offline();
+		$is_enable_allow_course_repurchase = false;
+		$is_offline_course                 = false;
+		if ( $course instanceof CourseModel ) {
+			$is_enable_allow_course_repurchase = $course->get_meta_value_by_key( CoursePostModel::META_KEY_ALLOW_COURSE_REPURCHASE, 'no' ) === 'yes';
+			$is_offline_course                 = $course->is_offline();
+		}
+
 
 		return apply_filters(
 			'lp/course/meta-box/fields/general',
