@@ -537,13 +537,19 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 				$course = new CourseModel( $courseObj );
 			}
 
-			$courseObjPrepare                        = new stdClass();
-			$courseObjPrepare->id                    = (int) $courseObj->ID;
-			$courseObjPrepare->name                  = $courseObj->post_title;
-			$courseObjPrepare->image                 = $course->get_image_url();
-			$author                                  = $course->get_author_model();
-			$courseObjPrepare->instructor            = ! empty( $author ) ? $this->get_author_info( $author ) : [];
-			$courseObjPrepare->categories            = $course->get_categories();
+			$courseObjPrepare             = new stdClass();
+			$courseObjPrepare->id         = (int) $courseObj->ID;
+			$courseObjPrepare->name       = $courseObj->post_title;
+			$courseObjPrepare->image      = $course->get_image_url();
+			$author                       = $course->get_author_model();
+			$courseObjPrepare->instructor = ! empty( $author ) ? $this->get_author_info( $author ) : [];
+			$course_categories            = $course->get_categories();
+			// Add key id, for old app.
+			foreach ( $course_categories as $k => $category ) {
+				$category->id            = $category->term_id;
+				$course_categories[ $k ] = $category;
+			}
+			$courseObjPrepare->categories            = $course_categories;
 			$courseObjPrepare->price                 = $course->get_price();
 			$courseObjPrepare->price_rendered        = $this->render_course_price( $course );
 			$courseObjPrepare->origin_price          = $course->get_regular_price();

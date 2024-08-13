@@ -84,7 +84,7 @@ class CourseModel {
 	public $meta_data = null;
 	public $image_url = '';
 	public $permalink = '';
-	public $categories = [];
+	public $categories;
 	private $price = 0; // Not save in database, must auto reload calculate
 	private $passing_condition = '';
 	public $post_excerpt = '';
@@ -198,7 +198,7 @@ class CourseModel {
 	 * @return array
 	 */
 	public function get_categories(): array {
-		if ( ! empty( $this->categories ) ) {
+		if ( isset( $this->categories ) ) {
 			return $this->categories;
 		}
 
