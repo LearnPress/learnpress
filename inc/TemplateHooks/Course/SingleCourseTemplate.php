@@ -163,8 +163,10 @@ class SingleCourseTemplate {
 		}
 
 		$section_buttons = [
-			'btn_contact' => $this->html_btn_external( $course ),
-			'btn_buy'     => $this->html_btn_purchase_course( $course )
+			'wrapper_buttons_start' => '<div class="course-buttons">',
+			'btn_contact' 			=> $this->html_btn_external( $course ),
+			'btn_buy'     			=> $this->html_btn_purchase_course( $course ),
+			'wrapper_buttons_end'   => '</div>',
 		];
 		$html_buttons    = Template::combine_components( $section_buttons );
 

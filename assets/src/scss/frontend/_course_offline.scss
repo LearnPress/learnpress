@@ -1,0 +1,215 @@
+.lp-single-offline-course {
+    display: flex;
+    gap: 30px;
+    --lp-font-size-base: 1rem;
+
+    p {
+        font-size: var(--lp-font-size-base);
+    }
+
+    &__left {
+        width: 70%;
+
+        >* {
+            margin-bottom: 1rem;
+        }
+
+        .learn-press-breadcrumb {
+            display: flex;
+            list-style: none;
+            flex-wrap: wrap;
+            gap: 5px;
+            font-size: var(--lp-font-size-base);
+        }
+
+        .course-title {
+            display: block;
+        }
+
+        .course-img img {
+            width: 100%;
+        }
+
+        >.lp-section-instructor {
+            display: flex;
+            gap: 30px;
+        }
+
+        .instructor-display-name {
+            font-weight: bold;
+            font-size: 1.4rem;
+        }
+
+        .course-address {
+            margin-left: 12px;
+            padding-left: 12px;
+            border-left: 1px solid #E2E0DB;
+        }
+
+        .lp-single-course-offline-info-one {
+            font-size: var(--lp-font-size-base);
+        }
+
+        .instructor-description {
+            margin-top: 16px;
+        }
+
+        .instructor-social {
+            display: flex;
+            gap: 8px;
+            margin-top: 30px;
+
+            a {
+                width: 37px;
+                height: 37px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                background-color: #F1F2F8;
+                border-radius: 50%;
+
+                &:hover {
+                    background-color: var(--lp-primary-color);
+
+                    i {
+                        color: #fff;
+                    }
+                }
+
+                .lp-icon-facebook {
+                    color: #216BF6;
+                }
+
+                .lp-icon-twitter {
+                    color: #169DF0;
+                }
+
+                .lp-icon-youtube-play {
+                    color: #FF0200;
+                }
+
+                .lp-icon-linkedin {
+                    color: #0078B7;
+                }
+
+                i {
+                    font-size: 18px;
+                }
+            }
+        }
+
+        .instructor-avatar {
+            img {
+                border-radius: 8px;
+            }
+        }
+    }
+
+    &__right {
+        width: 30%;
+
+        .info-metas,
+        .course-featured-review {
+            border: 1px solid #E2E0DB;
+            padding: 30px;
+            margin-bottom: 60px;
+            border-radius: 8px;
+
+            .info-meta-item {
+                display: flex;
+                justify-content: space-between;
+                border-bottom: 1px solid #E2E0DB;
+                padding-bottom: 16px;
+                margin-bottom: 16px;
+                font-size: var(--lp-font-size-base);
+
+                &:last-child {
+                    border: none;
+                    padding-bottom: 0;
+                    margin-bottom: 0;
+                }
+            }
+
+            .info-meta-left {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+            }
+        }
+
+        .course-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+
+            .lp-button {
+                padding: 12px 16px;
+                border-radius: 8px;
+                font-size: 1rem;
+                line-height: 1.5em;
+                font-weight: 600;
+                width: 100%;
+            }
+
+            .course-btn-extra {
+                border-color: var(--lp-primary-color);
+                color: var(--lp-primary-color);
+            }
+
+            .button-purchase-course {
+                background-color: var(--lp-primary-color);
+                color: #fff;
+            }
+        }
+
+        .featured-review__title {
+            font-weight: bold;
+            font-size: 1.4rem;
+            margin-top: 10px;
+        }
+
+        .course-featured-review {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            gap: 16px;
+            position: relative;
+
+            &::before {
+                background-image: url("data:image/svg+xml,%3Csvg width='56' height='56' viewBox='0 0 56 56' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='56' height='56' rx='28' fill='%23F2F1F8'/%3E%3Cpath d='M17.425 40.5325C17.3136 40.5325 17.2015 40.5061 17.0958 40.4518C16.7823 40.2903 16.6073 39.9215 16.6673 39.5504L18.2548 31.142H12.7691C12.3442 31.142 12 30.7678 12 30.3058V15.5028C12 15.0409 12.3442 14.6666 12.7691 14.6666H25.8927C26.3176 14.6666 26.6618 15.0409 26.6618 15.5028V30.3051C26.6618 30.5046 26.5961 30.6979 26.4761 30.8501L18.0084 40.2406C17.8584 40.43 17.6442 40.5325 17.425 40.5325ZM13.5389 29.4689H19.1731C19.4009 29.4689 19.6165 29.5783 19.7629 29.7678C19.9093 29.9572 19.9707 30.2072 19.9307 30.451L18.6739 36.8314L25.1243 29.9953V16.3398H13.5389V29.4689Z' fill='%23121212'/%3E%3Cpath d='M34.7609 40.5325C34.6495 40.5325 34.5374 40.5061 34.4317 40.4518C34.1182 40.2903 33.9433 39.9215 34.0033 39.5496L35.5907 31.1413H30.105C29.6801 31.1413 29.3359 30.767 29.3359 30.3051V15.5028C29.3359 15.0409 29.6801 14.6666 30.105 14.6666H43.2286C43.4329 14.6666 43.6285 14.7551 43.7728 14.912C43.917 15.0688 43.9977 15.2815 43.9977 15.5036V30.3058C43.9977 30.5054 43.9313 30.6987 43.8113 30.8509L35.3436 40.2414C35.1937 40.4308 34.9787 40.5333 34.7595 40.5333L34.7609 40.5325ZM30.8748 29.4689H36.509C36.7368 29.4689 36.9525 29.5783 37.0989 29.7678C37.2452 29.9572 37.3067 30.2072 37.2667 30.451L36.0099 36.8306L42.4603 29.9953V16.3398H30.8755L30.8748 29.4689Z' fill='%23121212'/%3E%3C/svg%3E%0A");
+                content: "";
+                width: 56px;
+                height: 56px;
+                position: absolute;
+                top: -25px;
+            }
+        }
+
+        .featured-review__stars {
+            order: 3;
+            color: var(--lp-primary-color);
+        }
+    }
+}
+
+@media ( max-width: 991px ) {
+    .lp-single-offline-course {
+        flex-direction: column;
+
+        &__left, &__right {
+            width: 100%;
+        }
+    }
+}
+
+@media ( max-width: 767px ) {
+    .lp-single-offline-course {
+        &__left {
+            > .lp-section-instructor {
+                flex-direction: column;
+            }
+        }
+    }
+}
