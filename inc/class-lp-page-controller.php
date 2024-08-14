@@ -464,7 +464,7 @@ class LP_Page_Controller {
 				$course_item = LP_Global::course_item();
 				if ( $course_item ) {
 					$page_template = 'content-single-item.php';
-				} else if ( $object ) {
+				} elseif ( $object ) {
 					$course = CourseModel::find( $object->ID, true );
 					if ( $course && $course->is_offline() ) {
 						$page_template = 'single-course-offline.php';

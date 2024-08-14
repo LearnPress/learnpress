@@ -1,5 +1,7 @@
 <?php
 
+use LearnPress\Models\CourseModel;
+
 /**
  * Class Block_Template_Single_Course
  *
@@ -27,6 +29,7 @@ class Block_Template_Single_Course extends Abstract_Block_Template {
 	 */
 	public function render_content_block_template( array $attributes ) {
 		global $wp;
+		$object = get_queried_object();
 		$vars = $wp->query_vars;
 		// Todo: For item course current display on post_type course
 		// After when handle display item course on correct post_type item, remove this code.
@@ -34,6 +37,11 @@ class Block_Template_Single_Course extends Abstract_Block_Template {
 			global $post;
 			setup_postdata( $post );
 			$this->path_template_render_default = 'content-single-item.php';
+		} elseif ( $object ) {
+			$course = CourseModel::find( $object->ID, true );
+			if ( $course && $course->is_offline() ) {
+				$this->path_template_render_default = 'single-course-offline.php';
+			}
 		}
 
 		return parent::render_content_block_template( $attributes );
