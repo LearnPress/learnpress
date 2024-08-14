@@ -137,6 +137,14 @@
             }
         }
 
+        .course-price {
+            .origin-price {
+                text-decoration: line-through;
+                opacity: 0.7;
+                margin-right: 4px;
+            }
+        }
+
         .course-buttons {
             display: flex;
             gap: 12px;
@@ -145,7 +153,7 @@
 
             .lp-button {
                 padding: 12px 16px;
-                border-radius: 8px;
+                border-radius: var(--lp-border-radius,3px);
                 font-size: 1rem;
                 line-height: 1.5em;
                 font-weight: 600;
