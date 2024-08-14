@@ -416,7 +416,7 @@ class SingleCourseTemplate {
 
 		if ( $course->is_free() ) {
 			if ( '' != $course->get_sale_price() ) {
-				$price_html .= sprintf( '<span class="origin-price">%s</span>', $this->html_regular_price( $course ) );
+				$price_html .= $this->html_regular_price( $course );
 			}
 
 			$price_html .= sprintf( '<span class="free">%s</span>', esc_html__( 'Free', 'learnpress' ) );
@@ -425,7 +425,7 @@ class SingleCourseTemplate {
 			$price_html .= '';
 		} else {
 			if ( $course->has_sale_price() ) {
-				$price_html .= sprintf( '<span class="origin-price">%s</span>', $this->html_regular_price( $course ) );
+				$price_html .= $this->html_regular_price( $course );
 			}
 
 			$price_html .= sprintf( '<span class="price">%s</span>', learn_press_format_price( $course->get_price(), true ) );
