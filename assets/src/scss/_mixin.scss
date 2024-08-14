@@ -57,9 +57,8 @@
 }
 
 @mixin no-outline() {
-
-	@include box-shadow(none);
 	outline: none;
+	@include box-shadow(none);
 }
 
 @mixin text-overflow($base: 1.6em, $line: 5) {

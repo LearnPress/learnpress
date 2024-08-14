@@ -129,14 +129,13 @@ ul.learn-press-breadcrumb {
 
 		//@include box-sizing(border-box);
 		@include border-radius($border-radius-global);
+		@include transition(all 0.25s);
 
 		&.large {
 			height: 52px;
 			padding: 18px 30px;
 			font-size: 1.1em;
 		}
-
-		@include transition(all 0.25s);
 
 		&:hover {
 			border-color: var(--lp-primary-color);

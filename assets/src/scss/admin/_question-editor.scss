@@ -543,12 +543,11 @@
 
 		code {
 			line-height: 1;
+			@include border-radius(4px);
 
 			&.correct {
 				background: #00a1e6;
 			}
-
-			@include border-radius(4px);
 		}
 	}
 }

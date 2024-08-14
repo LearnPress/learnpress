@@ -33,12 +33,11 @@
 	background: #383838;
 	font-size: 0.8em;
 	line-height: 1.2em;
+	@include border-radius(3px);
 
 	> * {
 		font-size: 0.8em;
 	}
-
-	@include border-radius(3px);
 
 	.close {
 		display: inline-block;
