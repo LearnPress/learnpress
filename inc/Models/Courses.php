@@ -88,6 +88,13 @@ class Courses {
 			$filter->exclude_fields = $fields_exclude;
 		}
 
+		// Find by ids
+		$course_ids_str = LP_Helper::sanitize_params_submitted( urldecode( $param['ids'] ?? '' ) );
+		if ( ! empty( $course_ids_str ) ) {
+			$course_ids       = explode( ',', $course_ids_str );
+			$filter->post_ids = $course_ids;
+		}
+
 		// Author
 		$filter->post_author = LP_Helper::sanitize_params_submitted( $param['c_author'] ?? 0 );
 		$author_ids_str      = LP_Helper::sanitize_params_submitted( $param['c_authors'] ?? 0 );
