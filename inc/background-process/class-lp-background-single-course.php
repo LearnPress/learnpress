@@ -31,7 +31,7 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 		/**
 		 * Get params via $_POST and handle
 		 *
-		 * @see LP_Course_Post_Type::save
+		 * @see LP_Course_Post_Type::save_post()
 		 */
 		protected function handle() {
 			try {
