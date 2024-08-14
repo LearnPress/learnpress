@@ -672,13 +672,15 @@ class SingleCourseTemplate {
 			return '';
 		}
 
-		$content = sprintf( '<a href="%s" class="course-btn-extra">%s</a>', $external_link, __( 'Contact To Request', 'learnpress' ) );
+		$content = sprintf( '<a href="%s" class="lp-button course-btn-extra">%s</a>', $external_link, __( 'Contact To Request', 'learnpress' ) );
 
 		return apply_filters( 'learn-press/course/html-address', $content );
 	}
 
 	public function html_btn_purchase_course( CourseModel $course ) {
+		$html_btn = sprintf( '<button class="lp-button button button-purchase-course">%s</button>', __( 'Buy Now', 'learnpress' ) );
 
+		return $html_btn;
 	}
 
 	/**
