@@ -99,7 +99,7 @@ class SingleCourseTemplate {
 		$html_info_one    = Template::combine_components( $section_info_one );
 
 		$html_wrapper_section_left = [
-			'<div class="lp-single-course__left">' => '</div>'
+			'<div class="lp-single-offline-course__left">' => '</div>'
 		];
 		$section_left              = [
 			'breadcrumb'  => $html_breadcrumb,
@@ -177,16 +177,19 @@ class SingleCourseTemplate {
 		$html_info_two    = Template::combine_components( $section_info_two );
 		// End info two
 		$section_right      = [
-			'wrapper_section_right_start' => '<div class="lp-single-course__left">',
+			'wrapper_section_right_start' => '<div class="lp-single-offline-course__right">',
 			'info_two'                    => $html_info_two,
 			'featured_review'             => $this->html_feature_review( $course ),
 			'wrapper_section_right_end'   => '</div>',
 		];
 		$html_section_right = Template::combine_components( $section_right );
 		// End section right
+
 		$sections = [
-			'section_left'  => $html_section_left,
-			'section_right' => $html_section_right
+			'wrapper_section_offline_course_start' => '<div class="lp-single-offline-course">',
+			'section_left'                         => $html_section_left,
+			'section_right'                        => $html_section_right,
+			'wrapper_section_offline_course_end'   => '</div>',
 		];
 
 		echo Template::combine_components( $sections );
