@@ -33,11 +33,14 @@
         >.lp-section-instructor {
             display: flex;
             gap: 30px;
+
+            .instructor-display-name {
+                font-size: 1.4rem;
+            }
         }
 
         .instructor-display-name {
             font-weight: bold;
-            font-size: 1.4rem;
         }
 
         .course-address {
