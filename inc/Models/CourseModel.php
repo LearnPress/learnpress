@@ -637,6 +637,17 @@ class CourseModel {
 	}
 
 	/**
+	 * Get external link
+	 *
+	 * @return string
+	 */
+	public function get_external_link(): string {
+		return esc_url_raw(
+			$this->get_meta_value_by_key( CoursePostModel::META_KEY_EXTERNAL_LINK_BY_COURSE, '' )
+		);
+	}
+
+	/**
 	 * Get total user enrolled, purchased or finished
 	 *
 	 * @move from LP_Abstract_Course

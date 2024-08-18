@@ -10,6 +10,7 @@
 namespace LearnPress\Models;
 
 use Exception;
+use LearnPress\Models\UserItems\UserCourseModel;
 use LP_Course_DB;
 use LP_Profile;
 use LP_User;
@@ -18,6 +19,7 @@ use LP_User_Filter;
 
 use stdClass;
 use Throwable;
+use WP_Error;
 
 class UserModel {
 	/**
@@ -320,6 +322,45 @@ class UserModel {
 		}
 
 		return apply_filters( 'learn-press/user-profile-socials', $socials, $this->get_id(), $this );
+	}
+
+	/**
+	 * Check user can enroll course
+	 *
+	 * @param CourseModel $course
+	 *
+	 * @return mixed|object|bool
+	 */
+	public function can_enroll_course( CourseModel $course ) {
+
+	}
+
+	/**
+	 * Check user can purchase course
+	 *
+	 * @param int $course_id
+	 *
+	 * @return bool|WP_Error
+	 * @author nhamdv
+	 * @editor tungnx
+	 * @since 4.0.8
+	 * @version 1.0.5
+	 */
+	public function can_purchase_course( int $course_id = 0 ) {
+
+	}
+
+	/**
+	 * Check user can retake course.
+	 *
+	 * @param CourseModel $course
+	 *
+	 * @return int
+	 * @since 4.0.0
+	 * @author tungnx
+	 */
+	public function can_retake_course( CourseModel $course ) {
+
 	}
 
 	/**

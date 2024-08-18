@@ -165,23 +165,6 @@ class UserItemModel {
 	}
 
 	/**
-	 * Find User Item by user_id, item_id, item_type.
-	 *
-	 * @param array $data
-	 * @param bool $no_cache
-	 *
-	 * @return false|UserItemModel|static
-	 */
-	public static function find( array $data = [], bool $no_cache = true ) {
-		$filter            = new LP_User_Items_Filter();
-		$filter->user_id   = $data['user_id'] ?? 0;
-		$filter->item_id   = $data['item_id'] ?? 0;
-		$filter->item_type = $data['item_type'] ?? '';
-
-		return static::get_user_item_model_from_db( $filter, $no_cache );
-	}
-
-	/**
 	 * Get user item from database by user_id, item_id, item_type.
 	 * If not exists, return false.
 	 * If exists, return UserItemModel.
@@ -191,7 +174,7 @@ class UserItemModel {
 	 *
 	 * @return UserItemModel|false|static
 	 */
-	public static function get_user_item_model_from_db( LP_User_Items_Filter $filter, bool $no_cache = true ) {
+	public static function get_user_item_model_from_db( LP_User_Items_Filter $filter, bool $check_cache = false ) {
 		$lp_user_item_db = LP_User_Items_DB::getInstance();
 		$user_item_model = false;
 

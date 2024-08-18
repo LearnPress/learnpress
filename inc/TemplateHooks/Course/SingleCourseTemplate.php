@@ -13,6 +13,7 @@ use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\CoursePostModel;
+use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
 use LP_Course;
 use LP_Datetime;
@@ -679,7 +680,10 @@ class SingleCourseTemplate {
 		return apply_filters( 'learn-press/course/html-address', $content );
 	}
 
-	public function html_btn_purchase_course( CourseModel $course ) {
+	public function html_btn_purchase_course( CourseModel $course, UserModel $user ) {
+
+
+
 		$html_btn = sprintf( '<button class="lp-button button button-purchase-course">%s</button>', __( 'Buy Now', 'learnpress' ) );
 
 		return $html_btn;

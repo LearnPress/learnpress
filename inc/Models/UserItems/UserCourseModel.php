@@ -67,6 +67,24 @@ class UserCourseModel extends UserItemModel {
 	}
 
 	/**
+	 * Find User Item by user_id, item_id, item_type.
+	 *
+	 * @param int $user_id
+	 * @param int $course_id
+	 * @param bool $check_cache
+	 *
+	 * @return false|UserItemModel|static
+	 */
+	public static function find( int $user_id, int $course_id, bool $check_cache = false ) {
+		$filter            = new LP_User_Items_Filter();
+		$filter->user_id   = $user_id;
+		$filter->item_id   = $course_id;
+		$filter->item_type = LP_COURSE_CPT;
+
+		return static::get_user_item_model_from_db( $filter );
+	}
+
+	/**
 	 * Get user_items is child of user course.
 	 *
 	 * @param int $item_id
@@ -147,6 +165,33 @@ class UserCourseModel extends UserItemModel {
 	 */
 	public function has_enrolled_or_finished(): bool {
 		return $this->status === LP_COURSE_ENROLLED || $this->status === LP_COURSE_FINISHED;
+	}
+
+	/**
+	 * Check user has enrolled course
+	 *
+	 * @return bool
+	 */
+	public function has_enrolled(): bool {
+		return $this->status === LP_COURSE_ENROLLED;
+	}
+
+	/**
+	 * Check user has purchased course
+	 *
+	 * @return bool
+	 */
+	public function has_purchased(): bool {
+		return $this->status === LP_COURSE_PURCHASED;
+	}
+
+	/**
+	 * Check user has finished course
+	 *
+	 * @return bool
+	 */
+	public function has_finished(): bool {
+		return $this->status === LP_COURSE_FINISHED;
 	}
 
 	public function clean_caches() {
