@@ -224,7 +224,7 @@ const searchUserOnListPost = () => {
 };
 
 const defaultInitTomSelect = ( registered = [] ) => {
-	const tomSelectEls = Array.prototype.slice.call( document.querySelectorAll( '.lp-tom-select' ) );
+	const tomSelectEls = Array.prototype.slice.call( document.querySelectorAll( 'select.lp-tom-select' ) );
 
 	if ( tomSelectEls.length ) {
 		tomSelectEls.map( ( tomSelectEl ) => {
