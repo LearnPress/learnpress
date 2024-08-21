@@ -126,7 +126,7 @@
                 margin-bottom: 16px;
                 font-size: var(--lp-font-size-base);
 
-                &:last-child {
+                &:nth-last-of-type(2) {
                     border: none;
                     padding-bottom: 0;
                     margin-bottom: 0;
