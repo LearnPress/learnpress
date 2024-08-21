@@ -19,7 +19,7 @@ if ( ! isset( $email_heading ) ) {
 	<table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
 		<tr>
 			<td align="center" valign="top">
-				<?php if ( isset( $image_header ) ) { ?>
+				<?php if ( ! empty( $image_header ) ) { ?>
 					<div id="template_header_image">
 						<p style="margin-top:0;">
 							<img src="<?php echo esc_url_raw( $image_header ); ?>"

@@ -8,14 +8,13 @@
  */
 
 defined( 'ABSPATH' ) or exit();
-
-if ( ! isset( $footer_text ) ) {
-	return;
-}
 ?>
 						</td>
 					</tr>
 					</tbody>
+					<?php
+					if ( ! empty( $footer_text ) ) {
+					?>
 					<tfoot id="email-footer">
 					<tr>
 						<td>
@@ -23,6 +22,9 @@ if ( ! isset( $footer_text ) ) {
 						</td>
 					</tr>
 					</tfoot>
+					<?php
+					}
+					?>
 				</table>
 			</td>
 		</tr>
