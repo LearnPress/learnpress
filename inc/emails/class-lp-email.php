@@ -552,7 +552,7 @@ if ( ! class_exists( 'LP_Email' ) ) {
 		 * @return string
 		 */
 		public function get_footer_text(): string {
-			$text = LP_Settings::instance()->get( 'emails_general.footer_text', 'LearnPress' );
+			$text = LP_Settings::instance()->get( 'emails_general.footer_text', '' );
 
 			return LP_Helper::sanitize_params_submitted( $text, 'html' );
 		}
