@@ -341,13 +341,13 @@ if ( ! class_exists( 'LP_Email' ) ) {
 			$this->subject    = $this->settings->get( 'subject', $this->default_subject );
 			$this->enable     = $this->settings->get( 'enable', 'no' ) === 'yes';
 
-			if ( $this->settings->get( 'email_content.format' ) ) {
+			/*if ( $this->settings->get( 'email_content.format' ) ) {
 				$this->email_format = ( $this->settings->get( 'email_content.format' ) == 'plain_text' ) ? 'plain' : 'html';
 			} else {
 				if ( LP_Settings::instance()->get( 'emails_general.default_email_content', 'html' ) ) {
 					$this->email_format = LP_Settings::instance()->get( 'emails_general.default_email_content', 'html' );
 				}
-			}
+			}*/
 
 			$email_formats = array( 'plain', 'html' );
 			if ( ! in_array( $this->email_format, $email_formats ) ) {
@@ -909,7 +909,7 @@ if ( ! class_exists( 'LP_Email' ) ) {
 						'css'     => 'width:400px',
 					),
 					array(
-						'title'                => esc_html__( 'Content type', 'learnpress' ),
+						'title'                => esc_html__( 'Content', 'learnpress' ),
 						'type'                 => 'email-content',
 						'default'              => '',
 						'id'                   => $this->get_field_name( 'email_content' ),
