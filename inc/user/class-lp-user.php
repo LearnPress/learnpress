@@ -302,7 +302,9 @@ class LP_User extends LP_Abstract_User {
 				throw new Exception( esc_html__( 'The course is full of students.', 'learnpress' ) );
 			}
 
-			if ( $course->get_external_link() && ! $this->has_purchased_course( $course_id ) ) {
+			if ( $course->get_external_link()
+				&& ! $this->has_purchased_course( $course_id )
+				&& ! $course->is_offline() ) {
 				$output->code = 'course_is_external';
 				throw new Exception( esc_html__( 'The course is external', 'learnpress' ) );
 			}

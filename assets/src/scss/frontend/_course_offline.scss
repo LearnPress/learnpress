@@ -116,7 +116,7 @@
             border: 1px solid #E2E0DB;
             padding: 30px;
             margin-bottom: 60px;
-            border-radius: 8px;
+            //border-radius: 8px;
 
             .info-meta-item {
                 display: flex;
@@ -147,6 +147,10 @@
                 margin-right: 4px;
             }
         }
+
+		form.purchase-course {
+			width: 100%;
+		}
 
         .course-buttons {
             display: flex;

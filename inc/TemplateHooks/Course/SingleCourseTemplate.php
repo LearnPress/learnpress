@@ -45,6 +45,8 @@ class SingleCourseTemplate {
 			return;
 		}
 
+		$user = UserModel::find( get_current_user_id() );
+
 		ob_start();
 		learn_press_breadcrumb();
 		$html_breadcrumb = ob_get_clean();
@@ -102,14 +104,19 @@ class SingleCourseTemplate {
 		$html_wrapper_section_left = [
 			'<div class="lp-single-offline-course__left">' => '</div>'
 		];
-		$section_left              = [
-			'breadcrumb'  => $html_breadcrumb,
-			'title'       => sprintf( '<h1>%s</h1>', $this->html_title( $course ) ),
-			'info_one'    => $html_info_one,
-			'image'       => $this->html_image( $course ),
-			'description' => $this->html_description( $course ),
-			'instructor'  => $html_instructor
-		];
+		$section_left              = apply_filters(
+			'learn-press/single-course/offline/section-left',
+			[
+				'breadcrumb'  => $html_breadcrumb,
+				'title'       => sprintf( '<h1>%s</h1>', $this->html_title( $course ) ),
+				'info_one'    => $html_info_one,
+				'image'       => $this->html_image( $course ),
+				'description' => $this->html_description( $course ),
+				'instructor'  => $html_instructor,
+			],
+			$course,
+			$user
+		);
 		$html_section_left         = Template::combine_components( $section_left );
 		$html_section_left         = Template::instance()->nest_elements( $html_wrapper_section_left, $html_section_left );
 
@@ -118,10 +125,10 @@ class SingleCourseTemplate {
 		// Info two
 		$data_info_meta =
 			apply_filters(
-				'learn-press/course/info-meta',
+				'learn-press/single-course/offline/info-meta',
 				[
 					'price'        => [
-						'label' => sprintf( '%s %s', learn_press_get_currency(), __( 'Price', 'learnpress' ) ),
+						'label' => sprintf( '<span class="currency">%s</span> %s', learn_press_get_currency_symbol(), __( 'Price', 'learnpress' ) ),
 						'value' => $this->html_price( $course )
 					],
 					'deliver_type' => [
@@ -141,11 +148,12 @@ class SingleCourseTemplate {
 						'value' => $this->html_duration( $course )
 					],
 					'lessons'      => [
-						'label' => sprintf( '<span class="lp-icon-book"></span> %s', __( 'Lessons', 'learnpress' ) ),
+						'label' => sprintf( '<span class="lp-icon-copy"></span> %s', __( 'Lessons', 'learnpress' ) ),
 						'value' => $this->html_deliver_type( $course )
 					],
 				],
-				$course
+				$course,
+				$user
 			);
 
 		$html_info_two_items = '';
@@ -165,8 +173,8 @@ class SingleCourseTemplate {
 
 		$section_buttons = [
 			'wrapper_buttons_start' => '<div class="course-buttons">',
-			'btn_contact' 			=> $this->html_btn_external( $course ),
-			'btn_buy'     			=> $this->html_btn_purchase_course( $course ),
+			'btn_contact'           => $this->html_btn_external( $course ),
+			'btn_buy'               => $this->html_btn_purchase_course( $course, $user ),
 			'wrapper_buttons_end'   => '</div>',
 		];
 		$html_buttons    = Template::combine_components( $section_buttons );
@@ -413,6 +421,10 @@ class SingleCourseTemplate {
 
 		if ( $course instanceof LP_Course ) {
 			$course = CourseModel::find( $course->get_id(), true );
+		}
+
+		if ( ! $course ) {
+			return $price_html;
 		}
 
 		if ( $course->is_free() ) {
@@ -680,11 +692,57 @@ class SingleCourseTemplate {
 		return apply_filters( 'learn-press/course/html-address', $content );
 	}
 
-	public function html_btn_purchase_course( CourseModel $course, UserModel $user ) {
+	/**
+	 * @param CourseModel $course
+	 * @param false|UserModel $user
+	 *
+	 * @return string
+	 */
+	public function html_btn_purchase_course( CourseModel $course, $user ) {
+		$can_show = true;
 
+		if ( $course->is_free() ) {
+			return '';
+		}
 
+		$user         = learn_press_get_current_user();
+		$can_purchase = $user->can_purchase_course( $course->get_id() );
+		if ( is_wp_error( $can_purchase ) ) {
+			if ( in_array( $can_purchase->get_error_code(),
+				[ 'order_processing', 'course_out_of_stock', 'course_is_no_required_enroll_not_login' ] ) ) {
+				Template::print_message( $can_purchase->get_error_message(), 'warning' );
+			}
 
-		$html_btn = sprintf( '<button class="lp-button button button-purchase-course">%s</button>', __( 'Buy Now', 'learnpress' ) );
+			$can_show = false;
+		}
+
+		// Hook since 4.1.3
+		$can_show = apply_filters( 'learnpress/course/template/button-purchase/can-show', $can_show, $user, $course );
+		if ( ! $can_show ) {
+			return '';
+		}
+
+		$args_load_tmpl = array(
+			'template_name' => 'single-course/buttons/purchase.php',
+			'template_path' => '',
+			'default_path'  => '',
+		);
+
+		$args_load_tmpl = apply_filters( 'learn-press/tmpl-button-purchase-course', $args_load_tmpl, $course );
+
+		ob_start();
+		learn_press_get_template(
+			$args_load_tmpl['template_name'],
+			array(
+				'user'   => $user,
+				'course' => $course,
+			),
+			$args_load_tmpl['template_path'],
+			$args_load_tmpl['default_path']
+		);
+		$html_btn = ob_get_clean();
+
+		//$html_btn = sprintf( '<button class="lp-button button button-purchase-course">%s</button>', __( 'Buy Now', 'learnpress' ) );
 
 		return $html_btn;
 	}
