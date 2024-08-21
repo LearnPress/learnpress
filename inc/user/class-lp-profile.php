@@ -881,7 +881,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				}
 			}
 
-			return $uploaded_profile_src;
+			return apply_filters( 'learn-press/profile/get-upload-profile-src', $uploaded_profile_src, $user->get_id() );
 		}
 
 		/**

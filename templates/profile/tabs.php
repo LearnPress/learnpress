@@ -88,7 +88,13 @@ if ( ! isset( $user ) || ! isset( $profile ) ) {
 										echo wp_kses_post( $section_data['icon'] );
 									}
 									?>
-									<?php echo apply_filters( 'learn_press_profile_' . $tab_key . '_tab_title', $section_data['title'], $tab_key ); ?>
+									<?php echo apply_filters(
+										'learn_press_profile_' . $tab_key . '_tab_title',
+										$section_data['title'],
+										$tab_key,
+										$section_key,
+										$section_data
+									); ?>
 								</a>
 							</li>
 
