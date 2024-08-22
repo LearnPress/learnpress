@@ -96,11 +96,19 @@ class SingleCourseTemplate {
 	/**
 	 * Get display title course.
 	 *
-	 * @param LP_Course $course
+	 * @param LP_Course|CourseModel $course
 	 *
 	 * @return string
 	 */
-	public function html_categories( LP_Course $course ): string {
+	public function html_categories( $course ): string {
+		if ( $course instanceof LP_Course ) {
+			$course = CourseModel::find( $course->get_id(), true );
+		}
+
+		if ( empty( $course ) ) {
+			return '';
+		}
+
 		$html_wrapper = [
 			'<div class="course-categories">' => '</div>',
 		];
@@ -319,15 +327,23 @@ class SingleCourseTemplate {
 	/**
 	 * Get display total student's course.
 	 *
-	 * @param LP_Course $course
+	 * @param LP_Course|CourseModel $course
 	 *
 	 * @return string
 	 * @since 4.2.3.4
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
-	public function html_count_student( LP_Course $course ): string {
+	public function html_count_student( $course ): string {
+		if ( $course instanceof LP_Course ) {
+			$course = CourseModel::find( $course->get_id(), true );
+		}
+
+		if ( empty( $course ) ) {
+			return '';
+		}
+
 		$count_student = $course->get_total_user_enrolled_or_purchased();
-		$fake_student  = $course->get_fake_students();
+		$fake_student  = $course->get_meta_value_by_key( CoursePostModel::META_KEY_STUDENTS );
 		if ( $fake_student ) {
 			$count_student += $fake_student;
 		}
@@ -342,17 +358,29 @@ class SingleCourseTemplate {
 	/**
 	 * Get display total lesson's course.
 	 *
-	 * @param LP_Course $course
-	 * @param string $string_type not has prefix 'lp_'
+	 * @param LP_Course|CourseModel $course
+	 * @param string $item_type custom post type item
 	 * @param array $data
 	 *
 	 * @return string
 	 */
-	public function html_count_item( LP_Course $course, string $string_type, array $data = [] ): string {
-		$post_type_item = 'lp_' . $string_type;
-		$count_item     = $course->count_items( $post_type_item );
+	public function html_count_item( $course, string $item_type, array $data = [] ): string {
+		if ( $course instanceof LP_Course ) {
+			$course = CourseModel::find( $course->get_id(), true );
+		}
 
-		switch ( $post_type_item ) {
+		if ( empty( $course ) ) {
+			return '';
+		}
+
+		$info_total_items = $course->get_total_items();
+		if ( empty( $info_total_items ) ) {
+			return '';
+		}
+
+		$count_item = $info_total_items->{$item_type} ?? 0;
+
+		switch ( $item_type ) {
 			case LP_LESSON_CPT:
 				$content = sprintf( '%d %s', $count_item, _n( 'Lesson', 'Lessons', $count_item, 'learnpress' ) );
 				break;
@@ -370,8 +398,9 @@ class SingleCourseTemplate {
 				break;
 		}
 
-		$html_wrapper = [
-			'<div class="course-count-' . $string_type . '">' => '</div>',
+		$item_type_class = str_replace( 'lp_', '', $item_type );
+		$html_wrapper    = [
+			'<div class="course-count-' . $item_type_class . '">' => '</div>',
 		];
 
 		return Template::instance()->nest_elements( $html_wrapper, $content );
@@ -380,17 +409,21 @@ class SingleCourseTemplate {
 	/**
 	 * Get html level course.
 	 *
-	 * @param LP_Course $course
+	 * @param LP_Course|CourseModel $course
 	 *
 	 * @return string
 	 * @since 4.2.3.5
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
-	public function html_level( LP_Course $course ): string {
+	public function html_level( $course ): string {
 		$content = '';
 
 		try {
-			$level  = $course->get_level();
+			if ( $course instanceof LP_Course ) {
+				$course = CourseModel::find( $course->get_id(), true );
+			}
+
+			$level  = $course->get_meta_value_by_key( CoursePostModel::META_KEY_LEVEL, '' );
 			$levels = lp_course_level();
 			$level  = $levels[ $level ] ?? $levels[''];
 
@@ -571,6 +604,35 @@ class SingleCourseTemplate {
 		//$html_btn = sprintf( '<button class="lp-button button button-purchase-course">%s</button>', __( 'Buy Now', 'learnpress' ) );
 
 		return $html_btn;
+	}
+
+	/**
+	 * Sidebar
+	 *
+	 * @param CourseModel $course
+	 *
+	 * @return void
+	 * @version 1.0.0
+	 * @since 4.2.7
+	 */
+	public function html_sidebar( CourseModel $course ): string {
+		$html = '';
+
+		try {
+			if ( is_active_sidebar( 'course-sidebar' ) ) {
+				$html_wrapper = [
+					'<div class="lp-single-course-sidebar">' => '</div>',
+				];
+
+				ob_start();
+				dynamic_sidebar( 'course-sidebar' );
+				$html = Template::instance()->nest_elements( $html_wrapper, ob_get_clean() );
+			}
+		} catch ( Throwable $e ) {
+			error_log( $e->getMessage() );
+		}
+
+		return $html;
 	}
 
 	/**

@@ -31,7 +31,7 @@ class CourseCountQuizDynamicElementor extends Tag {
 			if ( ! $course ) {
 				return;
 			}
-			echo $singleCourseTemplate->html_count_item( $course, 'quiz' );
+			echo $singleCourseTemplate->html_count_item( $course, LP_QUIZ_CPT );
 		} catch ( \Throwable $e ) {
 			error_log( $e->getMessage() );
 		}

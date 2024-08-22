@@ -365,14 +365,14 @@ class CourseModel {
 	 * @return null|object
 	 */
 	public function get_total_items() {
-		if ( ! empty( $this->total_items ) ) {
+		if ( ! isset( $this->total_items ) ) {
 			return $this->total_items;
 		}
 
 		try {
 			$this->total_items = LP_Course_DB::getInstance()->get_total_items( $this->get_id() );
 		} catch ( Throwable $e ) {
-			$this->total_items = 0;
+			$this->total_items = null;
 		}
 
 		return $this->total_items;

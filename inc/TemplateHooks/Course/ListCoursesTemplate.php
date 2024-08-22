@@ -216,13 +216,13 @@ class ListCoursesTemplate {
 					'lesson'        => [
 						'text_html' => sprintf(
 							'<div class="meta-item meta-item-lesson">%s</div>',
-							$singleCourseTemplate->html_count_item( $course, 'lesson' )
+							$singleCourseTemplate->html_count_item( $course, LP_LESSON_CPT )
 						),
 					],
 					'quiz'          => [
 						'text_html' => sprintf(
 							'<div class="meta-item meta-item-quiz">%s</div>',
-							$singleCourseTemplate->html_count_item( $course, 'quiz' )
+							$singleCourseTemplate->html_count_item( $course, LP_QUIZ_CPT )
 						),
 					],
 					'student'       => [

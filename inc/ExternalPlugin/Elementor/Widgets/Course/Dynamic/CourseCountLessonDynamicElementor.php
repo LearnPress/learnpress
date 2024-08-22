@@ -41,7 +41,7 @@ class CourseCountLessonDynamicElementor extends Tag {
 			if ( ! $course ) {
 				return;
 			}
-			echo $singleCourseTemplate->html_count_item( $course, 'lesson' );
+			echo $singleCourseTemplate->html_count_item( $course, LP_LESSON_CPT );
 		} catch ( \Throwable $e ) {
 			error_log( $e->getMessage() );
 		}

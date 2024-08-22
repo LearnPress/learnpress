@@ -198,16 +198,26 @@ class SingleCourseOfflineTemplate {
 			'wrapper_section_right_start' => '<div class="lp-single-offline-course__right">',
 			'info_two'                    => $html_info_two,
 			'featured_review'             => $this->singleCourseTemplate->html_feature_review( $course ),
+			'sidebar'                     => $this->singleCourseTemplate->html_sidebar( $course ),
 			'wrapper_section_right_end'   => '</div>',
 		];
 		$html_section_right = Template::combine_components( $section_right );
 		// End section right
 
+		// Related courses
+		ob_start();
+		do_action( 'learn-press/single-course/courses-related/layout', $course, 4 );
+		$html_courses_related = ob_get_clean();
+		// End related courses
+
 		$sections = [
-			'wrapper_section_offline_course_start' => '<div class="lp-single-offline-course">',
-			'section_left'                         => $html_section_left,
-			'section_right'                        => $html_section_right,
-			'wrapper_section_offline_course_end'   => '</div>',
+			'wrapper_section_offline_course_start'      => '<div class="lp-single-offline-course">',
+			'wrapper_section_offline_course_main_start' => '<div class="lp-single-offline-course-main">',
+			'section_left'                              => $html_section_left,
+			'section_right'                             => $html_section_right,
+			'wrapper_section_offline_course_main_end'   => '</div>',
+			'related_courses'                           => $html_courses_related,
+			'wrapper_section_offline_course_end'        => '</div>',
 		];
 
 		echo Template::combine_components( $sections );

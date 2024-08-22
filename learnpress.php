@@ -22,6 +22,7 @@ use LearnPress\Shortcodes\ListInstructorsShortcode;
 use LearnPress\Shortcodes\SingleInstructorShortcode;
 use LearnPress\Shortcodes\CourseMaterialShortcode;
 use LearnPress\TemplateHooks\Course\FilterCourseTemplate;
+use LearnPress\TemplateHooks\Course\ListCoursesRelatedTemplate;
 use LearnPress\TemplateHooks\Course\ListCoursesTemplate;
 use LearnPress\TemplateHooks\Course\SingleCourseOfflineTemplate;
 use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
@@ -295,6 +296,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			// Template Hooks.
 			ListCoursesTemplate::instance();
+			ListCoursesRelatedTemplate::instance();
 			ListInstructorsTemplate::instance();
 			SingleCourseTemplate::instance();
 			SingleCourseOfflineTemplate::instance();
