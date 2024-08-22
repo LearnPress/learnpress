@@ -662,11 +662,15 @@ class SingleCourseTemplate {
 
 		try {
 			$address = $course->get_meta_value_by_key( CoursePostModel::META_KEY_ADDRESS, '' );
+			if ( empty( $address ) ) {
+				return $content;
+			}
 
 			$html_wrapper = [
 				'<span class="course-address">' => '</span>',
 			];
 			$content      = Template::instance()->nest_elements( $html_wrapper, $address );
+			apply_filters( 'learn-press/single-course/html-address', $content, $course );
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
