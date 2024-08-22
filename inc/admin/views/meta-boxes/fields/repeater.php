@@ -56,7 +56,7 @@ class LP_Meta_Box_Repeater_Field extends LP_Meta_Box_Field {
 	}
 
 	public function save( $post_id ) {
-		$data   = LP_Request::get_param( $this->id, $this->default ?? [] );
+		$data   = LP_Request::get_param( $this->id, $this->default ?? [], 'html' );
 		$output = array();
 
 		if ( ! empty( $data ) && is_array( $data ) ) {

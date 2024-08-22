@@ -108,7 +108,7 @@ class SingleCourseTemplate {
 			'learn-press/single-course/offline/section-left',
 			[
 				'breadcrumb'  => $html_breadcrumb,
-				'title'       => sprintf( '<h1>%s</h1>', $this->html_title( $course ) ),
+				'title'       => $this->html_title( $course, 'h1' ),
 				'info_one'    => $html_info_one,
 				'image'       => $this->html_image( $course ),
 				'description' => $this->html_description( $course ),
@@ -213,13 +213,19 @@ class SingleCourseTemplate {
 	 * Get display title course.
 	 *
 	 * @param LP_Course|CourseModel $course
+	 * @param string $tag_html
 	 *
 	 * @return string
 	 */
-	public function html_title( $course ): string {
-		$html_wrapper = [
-			'<span class="course-title">' => '</span>',
-		];
+	public function html_title( $course, string $tag_html = 'span' ): string {
+		$tag_html     = sanitize_key( $tag_html );
+		$html_wrapper = apply_filters(
+			'learn-press/single-course/html-title',
+			[
+				"<{$tag_html} class='course-title'>" => "</{$tag_html}>",
+			],
+			$course
+		);
 
 		return Template::instance()->nest_elements( $html_wrapper, $course->get_title() );
 	}
