@@ -114,12 +114,21 @@ class SingleCourseOfflineTemplate {
 		// End instructor
 
 		// Info one
-		$section_info_one = [
-			'wrapper_info_one_open'  => '<div class="lp-single-course-offline-info-one">',
-			'author'                 => $html_author,
-			'address'                => $this->singleCourseTemplate->html_address( $course ),
-			'wrapper_info_one_close' => '</div>',
-		];
+		$section_info_one =
+			apply_filters(
+				'lean-press/single-course/offline/info-bar',
+				[
+					'wrapper'     => '<div class="lp-single-course-offline-info-one">',
+					'author'      => sprintf( '<div class="item-meta">%s</div>', $html_author ),
+					'address'     => sprintf(
+						'<div class="item-meta">%s</div>',
+						$this->singleCourseTemplate->html_address( $course )
+					),
+					'wrapper_end' => '</div>',
+				],
+				$course,
+				$user
+			);
 		$html_info_one    = Template::combine_components( $section_info_one );
 
 		$html_wrapper_section_left = [
