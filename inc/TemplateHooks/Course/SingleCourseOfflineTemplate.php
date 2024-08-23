@@ -82,8 +82,14 @@ class SingleCourseOfflineTemplate {
 			);
 			$section_instructor_meta = [
 				'wrapper'        => '<div class="lp-instructor-meta">',
-				'count_students' => $singleInstructorTemplate->html_count_students( $author ),
-				'count_courses'  => $singleInstructorTemplate->html_count_courses( $author ),
+				'count_students' => sprintf(
+					'<div class="instructor-item-meta">%s</div>',
+					$singleInstructorTemplate->html_count_students( $author )
+				),
+				'count_courses'  => sprintf(
+					'<div class="instructor-item-meta">%s</div>',
+					$singleInstructorTemplate->html_count_courses( $author )
+				),
 				'wrapper_end'    => '</div>'
 			];
 			$html_instructor_meta    = Template::combine_components( $section_instructor_meta );
