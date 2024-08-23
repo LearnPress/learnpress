@@ -166,11 +166,11 @@ class ListCoursesRelatedTemplate {
 			// End section main top
 
 			// Section main bottom
-			$html_count_student = $singleCourseTemplate->html_count_student( $course );
+			$html_count_student  = $singleCourseTemplate->html_count_student( $course );
 			$section_main_bottom = [
 				'wrapper_start' => '<div class="course-content-bottom">',
-				'students'         => $html_count_student,
-				'lessons'         => $singleCourseTemplate->html_count_item( $course, LP_LESSON_CPT ),
+				'students'      => $html_count_student,
+				'lessons'       => $singleCourseTemplate->html_count_item( $course, LP_LESSON_CPT ),
 				'wrapper_end'   => '</div>',
 			];
 			$html_main_bottom    = Template::combine_components( $section_main_bottom );
@@ -181,8 +181,9 @@ class ListCoursesRelatedTemplate {
 				[
 					'wrapper_start' => '<div class="course-content">',
 					'top'           => $html_main_top,
+					'category'      => $singleCourseTemplate->html_categories( $course ),
 					'title'         => sprintf( '<a href="%s">%s</a>', $course->get_permalink(), $singleCourseTemplate->html_title( $course, 'h4' ) ),
-					'bottom'         => $html_main_bottom,
+					'bottom'        => $html_main_bottom,
 					'wrapper_end'   => '</div>',
 				],
 				$course,
