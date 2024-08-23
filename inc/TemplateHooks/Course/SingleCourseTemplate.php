@@ -315,6 +315,7 @@ class SingleCourseTemplate {
 			'<span class="course-capacity">' => '</span>',
 		];
 		$capacity     = $course->get_meta_value_by_key( CoursePostModel::META_KEY_MAX_STUDENTS, 0 );
+
 		if ( $capacity == 0 ) {
 			$content = __( 'Unlimited', 'learnpress' );
 		} else {
