@@ -365,7 +365,7 @@ class CourseModel {
 	 * @return null|object
 	 */
 	public function get_total_items() {
-		if ( ! isset( $this->total_items ) ) {
+		if ( isset( $this->total_items ) ) {
 			return $this->total_items;
 		}
 

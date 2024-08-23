@@ -9,11 +9,8 @@ import { lpAddQueryArgs, lpFetchAPI } from './utils.js';
 import API from './api.js';
 
 // Handle general parameter in the Frontend and Backend
-let apiData = API.admin;
-if ( 'undefined' === typeof apiData ) {
-	apiData = API.frontend;
-}
-const urlAPI = apiData.hasOwnProperty( 'apiAJAX' ) ? apiData.apiAJAX : '';
+const apiData = API.admin || API.frontend;
+const urlAPI = apiData?.apiAJAX || '';
 
 let lpSettings = {};
 if ( 'undefined' !== typeof lpDataAdmin ) {

@@ -398,8 +398,7 @@ abstract class LP_Abstract_Post_Type {
 		if ( $this->course_of_item_trashed ) {
 			// Save course when item assign on course is trashed
 			$course_id   = $this->course_of_item_trashed;
-			$course_post = get_post( $course_id );
-			LP_Course_Post_Type::instance()->save_post( $course_id, $course_post );
+			LP_Course_Post_Type::instance()->save_post( $course_id, null, true );
 			$this->course_of_item_trashed = 0;
 		}
 	}
