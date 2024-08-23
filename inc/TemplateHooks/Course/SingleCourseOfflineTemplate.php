@@ -104,10 +104,13 @@ class SingleCourseOfflineTemplate {
 			];
 			$html_instructor_right    = Template::combine_components( $section_instructor_right );
 			$section_instructor       = [
-				'wrapper_instructor_start' => '<div class="lp-section-instructor">',
-				'image'                    => $html_instructor_image,
-				'instructor_right'         => $html_instructor_right,
-				'wrapper_instructor_end'   => '</div>'
+				'wrapper'          => '<div class="lp-section-instructor">',
+				'header'           => sprintf( '<h3>%s</h3>', __( 'Instructor', 'learnpress' ) ),
+				'wrapper_info'     => '<div class="lp-instructor-info">',
+				'image'            => $html_instructor_image,
+				'instructor_right' => $html_instructor_right,
+				'wrapper_info_end' => '</div>',
+				'wrapper_end'      => '</div>'
 			];
 			$html_instructor          = Template::combine_components( $section_instructor );
 		}
