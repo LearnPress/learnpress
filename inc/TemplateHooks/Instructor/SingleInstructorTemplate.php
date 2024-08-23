@@ -5,6 +5,7 @@
  * @since 4.2.3
  * @version 1.0.0
  */
+
 namespace LearnPress\TemplateHooks\Instructor;
 
 use LearnPress\Helpers\Template;
@@ -49,6 +50,7 @@ class SingleInstructorTemplate {
 		$html_wrapper = [
 			'<span class="instructor-display-name">' => '</span>',
 		];
+
 		return Template::instance()->nest_elements( $html_wrapper, $instructor->get_display_name() );
 	}
 
@@ -130,13 +132,13 @@ class SingleInstructorTemplate {
 	/**
 	 * Get html total courses of instructor.
 	 *
-	 * @param LP_User $instructor
+	 * @param LP_User|UserModel $instructor
 	 *
-	 * @since 4.2.3
-	 * @version 1.0.0
 	 * @return string
+	 * @version 1.0.0
+	 * @since 4.2.3
 	 */
-	public function html_count_courses( LP_User $instructor ): string {
+	public function html_count_courses( $instructor ): string {
 		$content = '';
 
 		try {
@@ -164,13 +166,13 @@ class SingleInstructorTemplate {
 	/**
 	 * Get html total students learn instructor.
 	 *
-	 * @param LP_User $instructor
+	 * @param LP_User|UserModel $instructor
 	 *
-	 * @since 4.2.3
-	 * @version 1.0.0
 	 * @return string
+	 * @version 1.0.0
+	 * @since 4.2.3
 	 */
-	public function html_count_students( LP_User $instructor ): string {
+	public function html_count_students( $instructor ): string {
 		$content = '';
 
 		try {
@@ -201,9 +203,9 @@ class SingleInstructorTemplate {
 	 *
 	 * @param LP_User $instructor
 	 *
-	 * @since 4.2.3
-	 * @version 1.0.0
 	 * @return string
+	 * @version 1.0.0
+	 * @since 4.2.3
 	 */
 	public function html_button_view( LP_User $instructor ): string {
 		$btn_view = '';
@@ -434,7 +436,7 @@ class SingleInstructorTemplate {
 
 			// Query courses of instructor
 			if ( ! $load_ajax ) {
-				$filter              = new LP_Course_Filter();
+				$filter = new LP_Course_Filter();
 				Courses::handle_params_for_query_courses( $filter, [] );
 				$filter->post_author = $instructor->get_id();
 				$filter->limit       = \LP_Settings::get_option( 'archive_course_limit', 20 );
@@ -498,7 +500,7 @@ class SingleInstructorTemplate {
 			// List courses
 			$ul_courses = '';
 			foreach ( $courses as $course_obj ) {
-				$course      = LP_Course::get_course( $course_obj->ID );
+				$course     = LP_Course::get_course( $course_obj->ID );
 				$ul_courses .= $this->course_item( $course );
 			}
 			$content = Template::instance()->nest_elements( $html_ul_wrapper, $ul_courses );
@@ -547,10 +549,8 @@ class SingleInstructorTemplate {
 
 			$count_lesson  = $course->count_items( LP_LESSON_CPT );
 			$count_student = $course->get_total_user_enrolled_or_purchased();
-//			$ico_lesson    = sprintf( '<span class="course-ico lesson">%s</span>', wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-file.svg' ) );
-//			$ico_student   = sprintf( '<span class="course-ico student">%s</span>', wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-students.svg' ) );
-			$ico_lesson = '<span class="course-ico lp-icon-file"></span>';
-			$ico_student = '<span class="course-ico lp-icon-students"></span>';
+			$ico_lesson    = '<span class="course-ico lp-icon-file"></span>';
+			$ico_student   = '<span class="course-ico lp-icon-students"></span>';
 			$html_count    = sprintf(
 				'<div class="course-count">%s %s</div>',
 				sprintf( '<div class="course-count-lesson">%s %d %s</div>', $ico_lesson, $count_lesson, _n( 'Lesson', 'Lessons', $count_lesson, 'learnpress' ) ),

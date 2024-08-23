@@ -74,16 +74,24 @@ class SingleCourseOfflineTemplate {
 		// Instructor
 		$html_instructor = '';
 		if ( $author ) {
-			$html_instructor_image = sprintf(
+			$html_instructor_image   = sprintf(
 				'<a href="%s" title="%s">%s</a>',
 				$author->get_url_instructor(),
 				$author->get_display_name(),
 				$singleInstructorTemplate->html_avatar( $author )
 			);
+			$section_instructor_meta = [
+				'wrapper'        => '<div class="lp-instructor-meta">',
+				'count_students' => $singleInstructorTemplate->html_count_students( $author ),
+				'count_courses'  => $singleInstructorTemplate->html_count_courses( $author ),
+				'wrapper_end'    => '</div>'
+			];
+			$html_instructor_meta    = Template::combine_components( $section_instructor_meta );
 
 			$section_instructor_right = [
 				'wrapper_instructor_right_start' => '<div class="lp-section-instructor">',
 				'name'                           => $singleInstructorTemplate->html_display_name( $author ),
+				'meta'                           => $html_instructor_meta,
 				'description'                    => $singleInstructorTemplate->html_description( $author ),
 				'social'                         => $singleInstructorTemplate->html_social( $author ),
 				'wrapper_instructor_right_end'   => '</div>',

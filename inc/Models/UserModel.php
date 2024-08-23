@@ -12,11 +12,14 @@ namespace LearnPress\Models;
 use Exception;
 use LearnPress\Models\UserItems\UserCourseModel;
 use LP_Course_DB;
+use LP_Course_Filter;
 use LP_Profile;
 use LP_User;
 use LP_User_DB;
 use LP_User_Filter;
 
+use LP_User_Items_DB;
+use LP_User_Items_Filter;
 use stdClass;
 use Throwable;
 use WP_Error;
@@ -402,5 +405,72 @@ class UserModel {
 	 */
 	public function get_description(): string {
 		return wpautop( $this->get_meta_value_by_key( 'description', '' ) );
+	}
+
+	/**
+	 * Get statistic info of instructor user
+	 *
+	 * @param array $params
+	 *
+	 * @return array
+	 * @since 4.1.6
+	 * @version 1.0.1
+	 */
+	public function get_instructor_statistic( array $params = [] ): array {
+		$statistic = array(
+			'total_course'        => 0,
+			'published_course'    => 0,
+			'pending_course'      => 0,
+			'total_student'       => 0,
+			'student_completed'   => 0,
+			'student_in_progress' => 0,
+		);
+
+		try {
+			$user_id          = $this->get_id();
+			$lp_user_items_db = LP_User_Items_DB::getInstance();
+			$lp_course_db     = LP_Course_DB::getInstance();
+
+			// Count total user completed course of author
+			$filter_course                      = new LP_Course_Filter();
+			$filter_course->only_fields         = array( 'ID' );
+			$filter_course->post_author         = $user_id;
+			$filter_course->post_status         = 'publish';
+			$filter_course->return_string_query = true;
+			$query_courses_str                  = LP_Course_DB::getInstance()->get_courses( $filter_course );
+
+			$filter_count_users            = new LP_User_Items_Filter();
+			$filter_count_users->item_type = LP_COURSE_CPT;
+			$filter_count_users->where[]   = "AND item_id IN ({$query_courses_str})";
+			$count_student_has_status      = $lp_user_items_db->count_status_by_items( $filter_count_users );
+			// Count total user in progress course of author
+
+			// Get total users attend course of author
+			$filter_count_users                   = $lp_user_items_db->count_user_attend_courses_of_author( $user_id );
+			$count_users_attend_courses_of_author = $lp_user_items_db->get_user_courses( $filter_count_users );
+
+			// Get total courses publish of author
+			$filter_count_courses            = $lp_course_db->count_courses_of_author( $user_id, [ 'publish' ] );
+			$total_courses_publish_of_author = $lp_course_db->get_courses( $filter_count_courses );
+
+			// Get total courses of author
+			$filter_count_courses    = $lp_course_db->count_courses_of_author( $user_id );
+			$total_courses_of_author = $lp_course_db->get_courses( $filter_count_courses );
+
+			// Get total courses pending of author
+			$filter_count_courses            = $lp_course_db->count_courses_of_author( $user_id, [ 'pending' ] );
+			$total_courses_pending_of_author = $lp_course_db->get_courses( $filter_count_courses );
+
+			$statistic['total_course']        = $total_courses_of_author;
+			$statistic['published_course']    = $total_courses_publish_of_author;
+			$statistic['pending_course']      = $total_courses_pending_of_author;
+			$statistic['total_student']       = $count_users_attend_courses_of_author;
+			$statistic['student_completed']   = $count_student_has_status->{LP_COURSE_FINISHED} ?? 0;
+			$statistic['student_in_progress'] = $count_student_has_status->{LP_COURSE_GRADUATION_IN_PROGRESS} ?? 0;
+		} catch ( Throwable $e ) {
+			error_log( __FUNCTION__ . ': ' . $e->getMessage() );
+		}
+
+		return apply_filters( 'lp/profile/instructor/statistic', $statistic, $this );
 	}
 }
