@@ -360,11 +360,11 @@ class SingleCourseTemplate {
 	 *
 	 * @param LP_Course|CourseModel $course
 	 * @param string $item_type custom post type item
-	 * @param array $data
+	 * @param bool $show_only_number
 	 *
 	 * @return string
 	 */
-	public function html_count_item( $course, string $item_type, array $data = [] ): string {
+	public function html_count_item( $course, string $item_type, bool $show_only_number = false ): string {
 		if ( $course instanceof LP_Course ) {
 			$course = CourseModel::find( $course->get_id(), true );
 		}
@@ -380,22 +380,26 @@ class SingleCourseTemplate {
 
 		$count_item = $info_total_items->{$item_type} ?? 0;
 
-		switch ( $item_type ) {
-			case LP_LESSON_CPT:
-				$content = sprintf( '%d %s', $count_item, _n( 'Lesson', 'Lessons', $count_item, 'learnpress' ) );
-				break;
-			case LP_QUIZ_CPT:
-				$content = sprintf( '%d %s', $count_item, _n( 'Quiz', 'Quizzes', $count_item, 'learnpress' ) );
-				break;
-			case 'lp_assignment':
-				$content = sprintf( '%d %s', $count_item, _n( 'Assignment', 'Assignments', $count_item, 'learnpress' ) );
-				break;
-			case 'lp_h5p':
-				$content = sprintf( '%d %s', $count_item, _n( 'H5P', 'H5Ps', $count_item, 'learnpress' ) );
-				break;
-			default:
-				$content = '';
-				break;
+		if ( $show_only_number ) {
+			$content = $count_item;
+		} else {
+			switch ( $item_type ) {
+				case LP_LESSON_CPT:
+					$content = sprintf( '%d %s', $count_item, _n( 'Lesson', 'Lessons', $count_item, 'learnpress' ) );
+					break;
+				case LP_QUIZ_CPT:
+					$content = sprintf( '%d %s', $count_item, _n( 'Quiz', 'Quizzes', $count_item, 'learnpress' ) );
+					break;
+				case 'lp_assignment':
+					$content = sprintf( '%d %s', $count_item, _n( 'Assignment', 'Assignments', $count_item, 'learnpress' ) );
+					break;
+				case 'lp_h5p':
+					$content = sprintf( '%d %s', $count_item, _n( 'H5P', 'H5Ps', $count_item, 'learnpress' ) );
+					break;
+				default:
+					$content = '';
+					break;
+			}
 		}
 
 		$item_type_class = str_replace( 'lp_', '', $item_type );

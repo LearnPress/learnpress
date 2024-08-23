@@ -148,7 +148,7 @@ class SingleCourseOfflineTemplate {
 					],
 					'level'        => [
 						'label' => sprintf( '<span class="lp-icon-signal"></span> %s', __( 'Level', 'learnpress' ) ),
-						'value' => $this->singleCourseTemplate->html_deliver_type( $course )
+						'value' => $this->singleCourseTemplate->html_level( $course )
 					],
 					'duration'     => [
 						'label' => sprintf( '<span class="lp-icon-clock-o"></span> %s', __( 'Duration', 'learnpress' ) ),
@@ -156,7 +156,7 @@ class SingleCourseOfflineTemplate {
 					],
 					'lessons'      => [
 						'label' => sprintf( '<span class="lp-icon-copy"></span> %s', __( 'Lessons', 'learnpress' ) ),
-						'value' => $this->singleCourseTemplate->html_deliver_type( $course )
+						'value' => $this->singleCourseTemplate->html_count_item( $course, LP_LESSON_CPT, true )
 					],
 				],
 				$course,
