@@ -42,7 +42,7 @@ class LP_User_DB extends LP_Database {
 		$ca = $filter->collection_alias;
 
 		// Find ID
-		if ( ! empty( $filter->ID ) ) {
+		if ( isset( $filter->ID ) ) {
 			$filter->where[] = $this->wpdb->prepare( "AND $ca.ID = %d", $filter->ID );
 		}
 

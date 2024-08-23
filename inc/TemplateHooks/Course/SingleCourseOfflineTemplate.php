@@ -52,7 +52,7 @@ class SingleCourseOfflineTemplate {
 			return;
 		}
 
-		$user = UserModel::find( get_current_user_id() );
+		$user = UserModel::find( get_current_user_id(), true );
 
 		ob_start();
 		learn_press_breadcrumb();
