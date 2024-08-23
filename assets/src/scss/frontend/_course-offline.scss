@@ -7,7 +7,7 @@
         margin-bottom: 80px;
     }
 
-    p {
+    p, span {
         font-size: var(--lp-font-size-base);
     }
 
@@ -80,7 +80,8 @@
             font-size: var(--lp-font-size-base);
 
             .item-meta {
-                display: inline-block;
+                display: inline;
+                line-height: 2;
                 margin-left: 12px;
                 padding-left: 12px;
                 border-left: 1px solid #E2E0DB;
@@ -90,6 +91,10 @@
                     padding: 0;
                     border: none;
                 }
+            }
+
+            .lp-item-wishlist.active {
+                color: var(--lp-primary-color);
             }
         }
 
@@ -201,9 +206,14 @@
                 }
             }
 
-            .course-btn-extra {
+            a.course-btn-extra {
                 border-color: var(--lp-primary-color);
                 color: var(--lp-primary-color);
+
+                &:focus, &:hover {
+                    background-color: var(--lp-primary-color);
+                    color: #fff;
+                }
             }
 
             .button-purchase-course {
