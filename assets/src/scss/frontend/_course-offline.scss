@@ -46,7 +46,7 @@
             width: 100%;
         }
 
-        >.lp-section-instructor {
+        .lp-instructor-info {
             display: flex;
             gap: 30px;
             margin-top: 30px;
@@ -96,6 +96,20 @@
             .lp-item-wishlist.active {
                 color: var(--lp-primary-color);
             }
+
+            .star-info {
+                display: inline-block;
+
+                .ico-star {
+                    display: inline-block;
+                    vertical-align: text-top;
+                    margin-right: 4px;
+                }
+
+                svg {
+                    height: 22px;
+                }
+            }
         }
 
         .instructor-description {
@@ -144,6 +158,10 @@
                     font-size: 18px;
                 }
             }
+        }
+
+        .item-title {
+            margin-bottom: 30px;
         }
     }
 
@@ -324,7 +342,7 @@
 @media ( max-width: 767px ) {
     .lp-single-offline-course {
         &__left {
-            > .lp-section-instructor {
+            .lp-instructor-info {
                 flex-direction: column;
             }
         }
