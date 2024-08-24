@@ -88,7 +88,7 @@ class PostModel {
 	/**
 	 * @var stdClass all meta data
 	 */
-	public $is_got_meta_data = 0;
+	public $is_got_meta_data;
 	/**
 	 * @var string only for set same property with class WP_Post
 	 */
@@ -189,11 +189,12 @@ class PostModel {
 	 * @throws Exception
 	 */
 	public function get_all_metadata() {
-		if ( empty( $this->is_got_meta_data ) ) {
+		if ( ! isset( $this->is_got_meta_data ) ) {
 			$lp_item_meta_db         = LP_Post_Meta_DB::getInstance();
 			$filter                  = new LP_Post_Meta_Filter();
 			$filter->post_id         = $this->get_id();
 			$filter->run_query_count = false;
+			$filter->limit           = - 1;
 
 			$metadata_rs = $lp_item_meta_db->get_post_metas( $filter );
 			if ( ! $metadata_rs instanceof stdClass ) {

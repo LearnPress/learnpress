@@ -145,7 +145,6 @@ class Courses {
 		if ( ! empty( $param['c_suggest'] ) ) {
 			$filter->only_fields = [ 'ID', 'post_title' ];
 			$filter->limit       = apply_filters( 'learn-press/rest-api/courses/suggest-limit', 10 );
-			$filter->max_limit   = apply_filters( 'learn-press/rest-api/courses/suggest-max-limit', 10 );
 		}
 
 		$return_type = $param['return_type'] ?? 'html';

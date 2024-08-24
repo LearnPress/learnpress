@@ -33,19 +33,19 @@ class LP_Post_Meta_Filter extends LP_Filter {
 	/**
 	 * @var int
 	 */
-	public $meta_id = 0;
+	public $meta_id;
 	/**
 	 * @var int
 	 */
-	public $post_id = 0;
+	public $post_id;
 	/**
 	 * @var string
 	 */
-	public $meta_value = '';
+	public $meta_value;
 	/**
 	 * @var string
 	 */
-	public $meta_key = '';
+	public $meta_key;
 }
 
 

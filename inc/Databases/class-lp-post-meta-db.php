@@ -47,17 +47,17 @@ class LP_Post_Meta_DB extends LP_Database {
 		$ca = $filter->collection_alias;
 
 		// Find meta_id
-		if ( ! empty( $filter->meta_id ) ) {
+		if ( isset( $filter->meta_id ) ) {
 			$filter->where[] = $this->wpdb->prepare( "AND {$ca}.{$col_meta_id} = %d", $filter->meta_id );
 		}
 
 		// Find post_id
-		if ( ! empty( $filter->post_id ) ) {
+		if ( isset( $filter->post_id ) ) {
 			$filter->where[] = $this->wpdb->prepare( "AND {$ca}.{$col_post_id} = %d", $filter->post_id );
 		}
 
 		// Find meta_key
-		if ( ! empty( $filter->meta_key ) ) {
+		if ( isset( $filter->meta_key ) ) {
 			$filter->where[] = $this->wpdb->prepare( "AND {$ca}.{$col_meta_key} = %s", $filter->meta_key );
 		}
 

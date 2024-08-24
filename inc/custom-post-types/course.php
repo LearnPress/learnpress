@@ -522,15 +522,24 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				if ( $post->post_status === 'auto-draft' ) {
 					return;
 				}
+
 				$courseModel = CourseModel::find( $post_id, true );
 				if ( ! $courseModel ) {
 					$courseModel = new CourseModel( $post );
 				}
+
 				// Merge object post and courseModel
 				$new_obj     = (array) $post;
 				$old_obj     = (array) $courseModel;
 				$old_now     = array_merge( $old_obj, $new_obj );
 				$courseModel = new CourseModel( $old_now );
+
+				// Get all meta data of course
+				if ( $is_update && empty( $wp_screen ) ) {
+					$coursePost = new CoursePostModel( $courseModel );
+					$coursePost->get_all_metadata();
+					$courseModel->meta_data = $coursePost->meta_data;
+				}
 
 				// Save option single course
 				include_once LP_PLUGIN_PATH . 'inc/admin/class-lp-admin.php';
