@@ -96,8 +96,11 @@ class Courses {
 		}
 
 		// Author
-		$filter->post_author = LP_Helper::sanitize_params_submitted( $param['c_author'] ?? 0 );
-		$author_ids_str      = LP_Helper::sanitize_params_submitted( $param['c_authors'] ?? 0 );
+		$c_author = LP_Helper::sanitize_params_submitted( $param['c_author'] ?? 0 );
+		if ( ! empty( $c_author ) ) {
+			$filter->post_author = $c_author;
+		}
+		$author_ids_str = LP_Helper::sanitize_params_submitted( $param['c_authors'] ?? '' );
 		if ( ! empty( $author_ids_str ) ) {
 			$author_ids           = explode( ',', $author_ids_str );
 			$filter->post_authors = $author_ids;
