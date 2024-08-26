@@ -550,7 +550,7 @@ class LP_Course_DB extends LP_Database {
 		}
 
 		// Author
-		if ( $filter->post_author ) {
+		if ( isset( $filter->post_author ) ) {
 			$filter->where[] = $this->wpdb->prepare( 'AND p.post_author = %d', $filter->post_author );
 		}
 		// Authors

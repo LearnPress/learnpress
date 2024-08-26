@@ -90,7 +90,7 @@ class LP_Post_Type_Filter extends LP_Filter {
 	/**
 	 * @var int
 	 */
-	public $post_author = 0;
+	public $post_author;
 	/**
 	 * @var int[]
 	 */

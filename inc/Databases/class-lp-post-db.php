@@ -86,7 +86,7 @@ class LP_Post_DB extends LP_Database {
 		}
 
 		// Author
-		if ( $filter->post_author ) {
+		if ( isset( $filter->post_author ) ) {
 			$filter->where[] = $this->wpdb->prepare( "AND $ca.post_author = %d", $filter->post_author );
 		}
 
