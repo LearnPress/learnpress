@@ -210,6 +210,15 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.2.7 (2024-08-26) =
+~ Added: feature course offline.
+~ Added: duration info for App API list courses.
+~ Tweak: API get instructor info.
+~ Fixed: error empty email content reset password.
+~ Fixed: error empty image header.
+~ Fixed: error create new section not send section_order.
+~ Fixed: case search LP orders by user.
+
 = 4.2.6.9.4 (2024-08-07) =
 ~ Fixed: security.
 
