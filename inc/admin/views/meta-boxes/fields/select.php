@@ -143,7 +143,7 @@ class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
 		$multiple_meta = $this->extra['multil_meta'] ?? false;
 
 		if ( ! empty( $this->extra['custom_save'] ) ) {
-			do_action( 'learnpress/admin/metabox/select/save', $this->id, $_POST[ $this->id ], $post_id );
+			do_action( 'learnpress/admin/metabox/select/save', $this->id, $_POST[ $this->id ] ?? '', $post_id );
 
 			return '';
 		}

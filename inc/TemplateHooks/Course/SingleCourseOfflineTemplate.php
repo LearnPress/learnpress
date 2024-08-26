@@ -156,38 +156,38 @@ class SingleCourseOfflineTemplate {
 		// Section right
 
 		// Info two
-		$data_info_meta =
-			apply_filters(
-				'learn-press/single-course/offline/info-meta',
-				[
-					'price'        => [
-						'label' => sprintf( '<span class="currency">%s</span> %s', learn_press_get_currency_symbol(), __( 'Price', 'learnpress' ) ),
-						'value' => $this->singleCourseTemplate->html_price( $course )
-					],
-					'deliver_type' => [
-						'label' => sprintf( '<span class="lp-icon-bookmark-o"></span> %s', __( 'Deliver type', 'learnpress' ) ),
-						'value' => $this->singleCourseTemplate->html_deliver_type( $course )
-					],
-					'capacity'     => [
-						'label' => sprintf( '<span class="lp-icon-students"></span> %s', __( 'Capacity', 'learnpress' ) ),
-						'value' => $this->singleCourseTemplate->html_capacity( $course )
-					],
-					'level'        => [
-						'label' => sprintf( '<span class="lp-icon-signal"></span> %s', __( 'Level', 'learnpress' ) ),
-						'value' => $this->singleCourseTemplate->html_level( $course )
-					],
-					'duration'     => [
-						'label' => sprintf( '<span class="lp-icon-clock-o"></span> %s', __( 'Duration', 'learnpress' ) ),
-						'value' => $this->singleCourseTemplate->html_duration( $course )
-					],
-					'lessons'      => [
-						'label' => sprintf( '<span class="lp-icon-copy"></span> %s', __( 'Lessons', 'learnpress' ) ),
-						'value' => $this->singleCourseTemplate->html_count_item( $course, LP_LESSON_CPT, true )
-					],
-				],
-				$course,
-				$user
-			);
+		$data_info_meta = [
+			'price'        => [
+				'label' => sprintf( '<span class="currency">%s</span> %s', learn_press_get_currency_symbol(), __( 'Price', 'learnpress' ) ),
+				'value' => $this->singleCourseTemplate->html_price( $course )
+			],
+			'deliver_type' => [
+				'label' => sprintf( '<span class="lp-icon-bookmark-o"></span> %s', __( 'Deliver type', 'learnpress' ) ),
+				'value' => $this->singleCourseTemplate->html_deliver_type( $course )
+			],
+			'capacity'     => [
+				'label' => sprintf( '<span class="lp-icon-students"></span> %s', __( 'Capacity', 'learnpress' ) ),
+				'value' => $this->singleCourseTemplate->html_capacity( $course )
+			],
+			'level'        => [
+				'label' => sprintf( '<span class="lp-icon-signal"></span> %s', __( 'Level', 'learnpress' ) ),
+				'value' => $this->singleCourseTemplate->html_level( $course )
+			],
+			'duration'     => [
+				'label' => sprintf( '<span class="lp-icon-clock-o"></span> %s', __( 'Duration', 'learnpress' ) ),
+				'value' => $this->singleCourseTemplate->html_duration( $course )
+			],
+		];
+
+		$html_lesson = $this->html_lesson_info( $course );
+		if ( ! empty( $html_lesson ) ) {
+			$data_info_meta['lessons'] = [
+				'label' => sprintf( '<span class="lp-icon-copy"></span> %s', __( 'Lessons', 'learnpress' ) ),
+				'value' => $html_lesson
+			];
+		}
+
+		$data_info_meta = apply_filters( 'learn-press/single-course/offline/info-meta', $data_info_meta, $course, $user );
 
 		$html_info_two_items = '';
 		foreach ( $data_info_meta as $info_meta ) {
@@ -247,5 +247,27 @@ class SingleCourseOfflineTemplate {
 		];
 
 		echo Template::combine_components( $sections );
+	}
+
+	/**
+	 * Html lesson info
+	 *
+	 * @param CourseModel $course
+	 *
+	 * @return string
+	 */
+	public function html_lesson_info( CourseModel $course ): string {
+		$lesson_count = $course->get_meta_value_by_key( CoursePostModel::META_KEY_OFFLINE_LESSON_COUNT, 0 );
+
+		if ( ! $lesson_count ) {
+			return '';
+		}
+
+		$html = sprintf(
+			'<span class="lesson-count">%s</span>',
+			$lesson_count
+		);
+
+		return $html;
 	}
 }

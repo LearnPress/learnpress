@@ -262,12 +262,24 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 		return apply_filters(
 			'lp/course/meta-box/fields/offline',
 			array(
-				'_lp_offline_course' => new LP_Meta_Box_Checkbox_Field(
+				CoursePostModel::META_KEY_OFFLINE_COURSE       => new LP_Meta_Box_Checkbox_Field(
 					esc_html__( 'Enable offline course', 'learnpress' ),
 					esc_html__( 'When enable feature offline course, system will disable some features as: edit Curriculum.', 'learnpress' ),
 					'no'
 				),
-				'_lp_deliver_type'   => new LP_Meta_Box_Select_Field(
+				CoursePostModel::META_KEY_OFFLINE_LESSON_COUNT => new LP_Meta_Box_Text_Field(
+					esc_html__( 'Lessons', 'learnpress' ),
+					esc_html__( 'Total lessons of course.', 'learnpress' ),
+					10,
+					[
+						'type_input'        => 'number',
+						'custom_attributes' => array(
+							'min'  => '0',
+							'step' => '1',
+						),
+					]
+				),
+				CoursePostModel::META_KEY_DELIVER         => new LP_Meta_Box_Select_Field(
 					esc_html__( 'Deliver Type', 'learnpress' ),
 					esc_html__( 'Information for Offline Course', 'learnpress' ),
 					'private_1_1',
@@ -279,7 +291,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 						],
 					]
 				),
-				'_lp_address'        => new LP_Meta_Box_Text_Field(
+				CoursePostModel::META_KEY_ADDRESS              => new LP_Meta_Box_Text_Field(
 					esc_html__( 'Address', 'learnpress' ),
 					esc_html__( 'Enter address of class.', 'learnpress' ),
 					'',
