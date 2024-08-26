@@ -257,7 +257,7 @@ class SingleCourseOfflineTemplate {
 	 * @return string
 	 */
 	public function html_lesson_info( CourseModel $course ): string {
-		$lesson_count = $course->get_meta_value_by_key( CoursePostModel::META_KEY_OFFLINE_LESSON_COUNT, 0 );
+		$lesson_count = $course->get_meta_value_by_key( CoursePostModel::META_KEY_OFFLINE_LESSON_COUNT, 10 );
 
 		if ( ! $lesson_count ) {
 			return '';
