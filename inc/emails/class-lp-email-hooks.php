@@ -127,12 +127,17 @@ if ( ! class_exists( 'LP_Email_Hooks' ) ) {
 		 * @param WP_User $user_data
 		 *
 		 * @return array
-		 * @version 1.0.0
+		 * @version 1.0.1
 		 * @since 4.2.6.9
 		 */
 		public function retrieve_password_message( $data_mail, $key, $user_login, $user_data ) {
 			try {
 				include_once LP_PLUGIN_PATH . 'inc/emails/types/class-lp-email-reset-password.php';
+				$email_reset_pass = new LP_Email_Reset_Password();
+				if ( ! $email_reset_pass->enable ) {
+					return $data_mail;
+				}
+
 				$email_reset_pass = new LP_Email_Reset_Password();
 				$params           = [
 					'user_login' => $user_login,
