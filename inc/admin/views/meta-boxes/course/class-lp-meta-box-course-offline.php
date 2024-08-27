@@ -13,7 +13,7 @@ class LP_Meta_Box_Course_Offline {
 	use Singleton;
 
 	public function init() {
-		add_filter( 'learnpress/course/metabox/tabs', [ $this, 'hide_tabs_when_enable_offline' ], 10, 2 );
+		add_filter( 'learnpress/course/metabox/tabs', [ $this, 'hide_tabs_when_enable_offline' ], 9999, 2 );
 		add_filter( 'lp/course/meta-box/fields/general', [
 			$this,
 			'hide_fields_general_when_enable_offline'
