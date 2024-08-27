@@ -94,44 +94,49 @@ class SingleCourseOfflineTemplate {
 			];
 			$html_instructor_meta    = Template::combine_components( $section_instructor_meta );
 
-			$section_instructor_right = [
-				'wrapper_instructor_right_start' => '<div class="lp-section-instructor">',
-				'name'                           => $singleInstructorTemplate->html_display_name( $author ),
-				'meta'                           => $html_instructor_meta,
-				'description'                    => $singleInstructorTemplate->html_description( $author ),
-				'social'                         => $singleInstructorTemplate->html_social( $author ),
-				'wrapper_instructor_right_end'   => '</div>',
-			];
+			$section_instructor_right = apply_filters(
+				'lean-press/single-course/offline/section-instructor/right',
+				[
+					'wrapper'     => '<div class="lp-section-instructor">',
+					'name'        => $singleInstructorTemplate->html_display_name( $author ),
+					'meta'        => $html_instructor_meta,
+					'description' => $singleInstructorTemplate->html_description( $author ),
+					'social'      => $singleInstructorTemplate->html_social( $author ),
+					'wrapper_end' => '</div>',
+				], $course, $user
+			);
 			$html_instructor_right    = Template::combine_components( $section_instructor_right );
-			$section_instructor       = [
-				'wrapper'          => '<div class="lp-section-instructor">',
-				'header'           => sprintf( '<h3>%s</h3>', __( 'Instructor', 'learnpress' ) ),
-				'wrapper_info'     => '<div class="lp-instructor-info">',
-				'image'            => $html_instructor_image,
-				'instructor_right' => $html_instructor_right,
-				'wrapper_info_end' => '</div>',
-				'wrapper_end'      => '</div>'
-			];
+			$section_instructor       = apply_filters(
+				'lean-press/single-course/offline/section-instructor',
+				[
+					'wrapper'          => '<div class="lp-section-instructor">',
+					'header'           => sprintf( '<h3>%s</h3>', __( 'Instructor', 'learnpress' ) ),
+					'wrapper_info'     => '<div class="lp-instructor-info">',
+					'image'            => $html_instructor_image,
+					'instructor_right' => $html_instructor_right,
+					'wrapper_info_end' => '</div>',
+					'wrapper_end'      => '</div>'
+				], $course, $user
+			);
 			$html_instructor          = Template::combine_components( $section_instructor );
 		}
 		// End instructor
 
 		// Info one
-		$section_info_one =
-			apply_filters(
-				'lean-press/single-course/offline/info-bar',
-				[
-					'wrapper'     => '<div class="lp-single-course-offline-info-one">',
-					'author'      => sprintf( '<div class="item-meta">%s</div>', $html_author ),
-					'address'     => sprintf(
-						'<div class="item-meta">%s</div>',
-						$this->singleCourseTemplate->html_address( $course )
-					),
-					'wrapper_end' => '</div>',
-				],
-				$course,
-				$user
-			);
+		$section_info_one = apply_filters(
+			'lean-press/single-course/offline/info-bar',
+			[
+				'wrapper'     => '<div class="lp-single-course-offline-info-one">',
+				'author'      => sprintf( '<div class="item-meta">%s</div>', $html_author ),
+				'address'     => sprintf(
+					'<div class="item-meta">%s</div>',
+					$this->singleCourseTemplate->html_address( $course )
+				),
+				'wrapper_end' => '</div>',
+			],
+			$course,
+			$user
+		);
 		$html_info_one    = Template::combine_components( $section_info_one );
 
 		$html_wrapper_section_left = [
@@ -204,29 +209,44 @@ class SingleCourseOfflineTemplate {
 			$html_info_two_items .= $html_info_two_item;
 		}
 
-		$section_buttons = [
-			'wrapper_buttons_start' => '<div class="course-buttons">',
-			'btn_contact'           => $this->singleCourseTemplate->html_btn_external( $course ),
-			'btn_buy'               => $this->singleCourseTemplate->html_btn_purchase_course( $course, $user ),
-			'wrapper_buttons_end'   => '</div>',
-		];
+		$section_buttons = apply_filters(
+			'learn-press/single-course/offline/section-right/info-meta/buttons',
+			[
+				'wrapper'     => '<div class="course-buttons">',
+				'btn_contact' => $this->singleCourseTemplate->html_btn_external( $course ),
+				'btn_buy'     => $this->singleCourseTemplate->html_btn_purchase_course( $course, $user ),
+				'wrapper_end' => '</div>',
+			],
+			$course,
+			$user
+		);
 		$html_buttons    = Template::combine_components( $section_buttons );
 
-		$section_info_two = [
-			'wrapper_section_info_two_start' => '<div class="info-metas">',
-			'items'                          => $html_info_two_items,
-			'buttons'                        => $html_buttons,
-			'wrapper_section_info_two_end'   => '</div>',
-		];
+		$section_info_two = apply_filters(
+			'learn-press/single-course/offline/section-right/info-meta',
+			[
+				'wrapper'     => '<div class="info-metas">',
+				'items'       => $html_info_two_items,
+				'buttons'     => $html_buttons,
+				'wrapper_end' => '</div>',
+			],
+			$course,
+			$user
+		);
 		$html_info_two    = Template::combine_components( $section_info_two );
 		// End info two
-		$section_right      = [
-			'wrapper_section_right_start' => '<div class="lp-single-offline-course__right">',
-			'info_two'                    => $html_info_two,
-			'featured_review'             => $this->singleCourseTemplate->html_feature_review( $course ),
-			'sidebar'                     => $this->singleCourseTemplate->html_sidebar( $course ),
-			'wrapper_section_right_end'   => '</div>',
-		];
+		$section_right      = apply_filters(
+			'learn-press/single-course/offline/section-right',
+			[
+				'wrapper'         => '<div class="lp-single-offline-course__right">',
+				'info_two'        => $html_info_two,
+				'featured_review' => $this->singleCourseTemplate->html_feature_review( $course ),
+				'sidebar'         => $this->singleCourseTemplate->html_sidebar( $course ),
+				'wrapper_end'     => '</div>',
+			],
+			$course,
+			$user
+		);
 		$html_section_right = Template::combine_components( $section_right );
 		// End section right
 
@@ -237,13 +257,13 @@ class SingleCourseOfflineTemplate {
 		// End related courses
 
 		$sections = [
-			'wrapper_section_offline_course_start'      => '<div class="lp-single-offline-course">',
-			'wrapper_section_offline_course_main_start' => '<div class="lp-single-offline-course-main">',
-			'section_left'                              => $html_section_left,
-			'section_right'                             => $html_section_right,
-			'wrapper_section_offline_course_main_end'   => '</div>',
-			'related_courses'                           => $html_courses_related,
-			'wrapper_section_offline_course_end'        => '</div>',
+			'wrapper'          => '<div class="lp-single-offline-course">',
+			'wrapper_main'     => '<div class="lp-single-offline-course-main">',
+			'section_left'     => $html_section_left,
+			'section_right'    => $html_section_right,
+			'wrapper_main_end' => '</div>',
+			'related_courses'  => $html_courses_related,
+			'wrapper_end'      => '</div>',
 		];
 
 		echo Template::combine_components( $sections );

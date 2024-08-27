@@ -249,9 +249,11 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 	 *
 	 * @param $post_id
 	 *
-	 * @return mixed|null
+	 * @return array
+	 * @since 4.2.7
+	 * @version 1.0.0
 	 */
-	public function tab_offline( $post_id ) {
+	public function tab_offline( $post_id ): array {
 		$course = CourseModel::find( $post_id, true );
 
 		$is_offline_course = false;
