@@ -167,7 +167,7 @@ class SingleCourseOfflineTemplate {
 				'value' => $this->singleCourseTemplate->html_price( $course )
 			],
 			'deliver_type' => [
-				'label' => sprintf( '<span class="lp-icon-bookmark-o"></span> %s', __( 'Deliver type', 'learnpress' ) ),
+				'label' => sprintf( '<span class="lp-icon-bookmark-o"></span> %s', __( 'Delivery type', 'learnpress' ) ),
 				'value' => $this->singleCourseTemplate->html_deliver_type( $course )
 			],
 			'capacity'     => [

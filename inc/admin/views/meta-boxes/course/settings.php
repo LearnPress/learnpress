@@ -291,7 +291,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 					]
 				),
 				CoursePostModel::META_KEY_DELIVER              => new LP_Meta_Box_Select_Field(
-					esc_html__( 'Deliver Type', 'learnpress' ),
+					esc_html__( 'Delivery Type', 'learnpress' ),
 					esc_html__( 'How your content is conveyed to students.', 'learnpress' ),
 					'private_1_1',
 					[
