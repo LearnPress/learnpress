@@ -276,7 +276,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 				),
 				CoursePostModel::META_KEY_OFFLINE_LESSON_COUNT => new LP_Meta_Box_Text_Field(
 					esc_html__( 'Lessons', 'learnpress' ),
-					esc_html__( 'Total lessons of course.', 'learnpress' ),
+					esc_html__( 'Total lessons of the course.', 'learnpress' ),
 					10,
 					[
 						'type_input'        => 'number',
