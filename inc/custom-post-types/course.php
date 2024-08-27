@@ -302,7 +302,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			$order = $this->get_order_sort();
 			switch ( $this->get_order_by() ) {
 				case 'price':
-					$orderby = "pm_price.meta_value {$order}";
+					$orderby = "CAST(pm_price.meta_value AS UNSIGNED) {$order}";
 			}
 
 			return $orderby;
