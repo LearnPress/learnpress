@@ -264,7 +264,12 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 			array(
 				CoursePostModel::META_KEY_OFFLINE_COURSE       => new LP_Meta_Box_Checkbox_Field(
 					esc_html__( 'Enable offline course', 'learnpress' ),
-					esc_html__( 'When enable feature offline course, system will disable some features as: edit Curriculum.', 'learnpress' ),
+					esc_html__(
+						'When you enable the offline course feature, the system will disable certain online course functions,
+						such as curriculum, finish button, re-take course, block content, repurchase.
+						After checking the checkbox, make sure to click the "Update" button to apply the changes successfully.',
+						'learnpress'
+					),
 					'no'
 				),
 				CoursePostModel::META_KEY_OFFLINE_LESSON_COUNT => new LP_Meta_Box_Text_Field(
@@ -277,11 +282,15 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 							'min'  => '0',
 							'step' => '1',
 						),
+						'dependency'        => [
+							'name'       => '_lp_offline_course',
+							'is_disable' => ! $is_offline_course
+						],
 					]
 				),
-				CoursePostModel::META_KEY_DELIVER         => new LP_Meta_Box_Select_Field(
+				CoursePostModel::META_KEY_DELIVER              => new LP_Meta_Box_Select_Field(
 					esc_html__( 'Deliver Type', 'learnpress' ),
-					esc_html__( 'Information for Offline Course', 'learnpress' ),
+					esc_html__( 'How your content is conveyed to students.', 'learnpress' ),
 					'private_1_1',
 					[
 						'options'    => Config::instance()->get( 'course-deliver-type' ),
@@ -293,7 +302,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 				),
 				CoursePostModel::META_KEY_ADDRESS              => new LP_Meta_Box_Text_Field(
 					esc_html__( 'Address', 'learnpress' ),
-					esc_html__( 'Enter address of class.', 'learnpress' ),
+					esc_html__( 'You can enter the physical address of your class or specify the meeting method (e.g., Zoom, Google Meet, etc.).', 'learnpress' ),
 					'',
 					[
 						'dependency' => [
