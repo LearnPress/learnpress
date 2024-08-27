@@ -428,8 +428,8 @@
   "learnpress-wpml": {
     "name": "WPML Add-On for LearnPress",
     "basename": "learnpress-wpml/learnpress-wpml.php",
-    "version": "4.0.2",
-    "require_lp": "4.2.6.9",
+    "version": "4.0.3",
+    "require_lp": "4.2.7",
     "description": "With the help from WPML, WPLM add-on for LearnPress is the perfect solution for LearnPress users to translate anything flashily.",
     "image": "https://plugins.thimpress.com/downloads/images/lp-wpml.png",
     "link": "https://thimpress.com/product/wpml-add-on-for-learnpress/",
