@@ -306,9 +306,9 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				case 'title':
 					$orderby = "{$wpdb->posts}.ID {$order}";
 					break;
-				case 'student':
+				/*case 'student':
 					$orderby = "uu.user_login {$order}";
-					break;
+					break;*/
 				case 'date':
 					$orderby = "{$wpdb->posts}.post_date {$order}";
 					break;
@@ -350,7 +350,6 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		 * @return mixed
 		 */
 		public function sortable_columns( $columns ) {
-			$columns['order_student'] = 'student';
 			$columns['order_date']    = 'date';
 			$columns['order_total']   = 'order_total';
 
