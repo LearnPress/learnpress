@@ -313,7 +313,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					$orderby = "{$wpdb->posts}.post_date {$order}";
 					break;
 				case 'order_total':
-					$orderby = " pm2.meta_value {$order}";
+					$orderby = "CAST(pm2.meta_value AS UNSIGNED) {$order}";
 					break;
 			}
 
@@ -331,9 +331,12 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 
 			if ( ! empty( $wp_query->get( 'author' ) ) ) {
 				$author_id = $wp_query->get( 'author' );
-				$join .= " INNER JOIN {$lp_db->tb_postmeta} pm1 ON {$wpdb->posts}.ID = pm1.post_id AND pm1.meta_key = '_user_id'";
+				$join     .= " INNER JOIN {$lp_db->tb_postmeta} pm1 ON {$wpdb->posts}.ID = pm1.post_id AND pm1.meta_key = '_user_id'";
+				$join     .= " LEFT JOIN {$lp_db->tb_users} uu ON uu.ID = $author_id";
+			}
+
+			if ( $this->get_order_by() === 'order_total' ) {
 				$join .= " INNER JOIN {$lp_db->tb_postmeta} pm2 ON {$wpdb->posts}.ID = pm2.post_id AND pm2.meta_key = '_order_total'";
-				$join .= " LEFT JOIN {$lp_db->tb_users} uu ON uu.ID = $author_id";
 			}
 
 			return $join;
@@ -719,7 +722,6 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		 * @version 1.0.0
 		 */
 		public function deleted_post( int $order_id ) {
-
 		}
 
 		public function meta_boxes() {
