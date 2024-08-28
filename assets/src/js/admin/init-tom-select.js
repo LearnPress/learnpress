@@ -112,13 +112,20 @@ const initTomSelect = ( tomSelectEl, customOptions = {}, customParams = {} ) => 
 			return newEl;
 		}
 
+		if ( newEl.tagName.toLowerCase() === 'html' ) {
+			return false;
+		}
+
 		return getParentElByTagName( tag, newEl );
 	};
 
 	const formParent = getParentElByTagName( 'form', tomSelectEl );
-	const elInput = formParent.querySelector( 'input[name="' + tomSelectEl.getAttribute( 'name' ) + '"]' );
-	if ( elInput ) {
-		elInput.remove();
+
+	if ( formParent ) {
+		const elInput = formParent.querySelector( 'input[name="' + tomSelectEl.getAttribute( 'name' ) + '"]' );
+		if ( elInput ) {
+			elInput.remove();
+		}
 	}
 
 	const dataSendApi = dataStruct.dataSendApi ?? '';
