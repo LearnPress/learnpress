@@ -589,6 +589,7 @@ ul .clearfix {
 
 .ts-wrapper {
 	min-width: 200px;
+	width: fit-content;
 
 	.ts-control {
 		input[type=text] {
@@ -597,6 +598,12 @@ ul .clearfix {
 
 		li {
 			margin: 0 5px 5px 0;
+			padding: 3px 8px;
+			background: #eee;
+			border-radius: var(--lp-border-radius);
+		}
+
+		.item {
 			padding: 3px 8px;
 			background: #eee;
 			border-radius: var(--lp-border-radius);

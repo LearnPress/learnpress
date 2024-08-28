@@ -246,4 +246,8 @@ document.addEventListener( 'click', ( e ) => {
 document.addEventListener( 'DOMContentLoaded', () => {
 	searchUserOnListPost();
 	defaultInitTomSelect();
+
+	document.addEventListener("loadInitTomSelect", (e)=> {
+		defaultInitTomSelect()
+	})
 } );

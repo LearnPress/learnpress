@@ -6,6 +6,12 @@ foreach ( $currencies as $code => $name ) {
 	$currencies[ $code ] = sprintf( '%s (%s)', $name, $currency_symbol );
 }
 
+$data_struct_currency = [
+	'setting' => [
+		'plugins' => [],
+	],
+];
+
 return apply_filters(
 	'learn-press/general-settings-fields',
 	array(
@@ -79,12 +85,13 @@ return apply_filters(
 			'desc'  => esc_html__( 'Setting up your currency unit and its formatting.', 'learnpress' ),
 		),
 		array(
-			'title'   => esc_html__( 'Currency', 'learnpress' ),
-			'id'      => 'currency',
-			'default' => 'USD',
-			'type'    => 'select',
-			'class'   => 'lp-select-2',
-			'options' => $currencies,
+			'title'             => esc_html__( 'Currency', 'learnpress' ),
+			'id'                => 'currency',
+			'default'           => 'USD',
+			'type'              => 'select',
+			'class'             => 'lp-tom-select',
+			'custom_attributes' => [ 'data-struct' => htmlentities2( json_encode( $data_struct_currency ) ) ],
+			'options'           => $currencies,
 		),
 		array(
 			'title'    => esc_html__( 'Currency position', 'learnpress' ),

@@ -230,6 +230,12 @@
 
 .learn-press-dropdown-pages {
 	display: inline-block;
+
+	.list-pages-wrapper {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+	}
 }
 
 .lp-notice-update-database {

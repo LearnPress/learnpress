@@ -157,7 +157,7 @@ return apply_filters(
 					'id'                => 'material_allow_file_type',
 					'type'              => 'multiselect',
 					'is_optgroup'       => '1',
-					'class'             => 'lp-select-2',
+					'class'             => 'lp-tom-select',
 					'default'           => array( 'pdf', 'txt' ),
 					'desc'              => esc_html__( 'Which types of file will be allowed uploading?', 'learnpress' ),
 					'options'           => array(

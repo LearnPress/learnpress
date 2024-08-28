@@ -78,6 +78,19 @@ const handleResponse = ( response, tomSelectEl, dataStruct, fetchAPI, customOpti
 	return options;
 };
 
+//Init Tom-select with available options
+const initTomSelectWithOption = ( tomSelectEl, settingTomSelect = {} ) => {
+	if ( ! tomSelectEl ) {
+		return null;
+	}
+
+	if ( null != tomSelectEl.tomSelectInstance ) {
+		return null;
+	}
+
+	tomSelectEl.tomSelectInstance = AdminUtilsFunctions.buildTomSelect( tomSelectEl, settingTomSelect );
+};
+
 // Init Tom-select
 const initTomSelect = ( tomSelectEl, customOptions = {}, customParams = {} ) => {
 	if ( ! tomSelectEl ) {
@@ -88,6 +101,7 @@ const initTomSelect = ( tomSelectEl, customOptions = {}, customParams = {} ) => 
 	const dataStruct = tomSelectEl?.dataset?.struct ? JSON.parse( tomSelectEl.dataset.struct ) : '';
 
 	if ( ! dataStruct ) {
+		initTomSelectWithOption( tomSelectEl );
 		return;
 	}
 
@@ -107,13 +121,18 @@ const initTomSelect = ( tomSelectEl, customOptions = {}, customParams = {} ) => 
 		elInput.remove();
 	}
 
-	const dataSendApi = dataStruct.dataSendApi;
-	const urlApi = dataStruct.urlApi;
+	const dataSendApi = dataStruct.dataSendApi ?? '';
+	const urlApi = dataStruct.urlApi ?? '';
 
 	const settingTomSelect = {
 		...dataStruct.setting,
 		...customOptions,
 	};
+
+	if ( ! urlApi ) {
+		initTomSelectWithOption( tomSelectEl, settingTomSelect );
+		return;
+	}
 
 	const fetchFunction = ( keySearch = '', customParams, callback ) => {
 		const url = urlApi;
@@ -205,7 +224,7 @@ const searchUserOnListPost = () => {
 };
 
 const defaultInitTomSelect = ( registered = [] ) => {
-	const tomSelectEls = Array.prototype.slice.call( document.querySelectorAll( '.lp-tom-select' ) );
+	const tomSelectEls = Array.prototype.slice.call( document.querySelectorAll( 'select.lp-tom-select' ) );
 
 	if ( tomSelectEls.length ) {
 		tomSelectEls.map( ( tomSelectEl ) => {
