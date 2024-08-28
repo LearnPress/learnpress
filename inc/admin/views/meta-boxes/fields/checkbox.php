@@ -36,7 +36,7 @@ class LP_Meta_Box_Checkbox_Field extends LP_Meta_Box_Field {
 		$class         = ! empty( $field['class'] ) ? 'class="' . esc_attr( $field['class'] ) . '"' : '';
 		$style         = ! empty( $field['style'] ) ? 'style="' . esc_attr( $field['style'] ) . '"' : '';
 		$wrapper_class = ! empty( $field['wrapper_class'] ) ? esc_attr( $field['wrapper_class'] ) : '';
-		$wrapper_attr  = $extra['wrapper_attr'] ?? [];
+		$wrapper_attr  = $this->extra['wrapper_attr'] ?? [];
 		$name          = ! empty( $field['name'] ) ? esc_attr( $field['name'] ) : esc_attr( $field['id'] );
 		$name          = 'name="' . $name . '"';
 
@@ -63,7 +63,7 @@ class LP_Meta_Box_Checkbox_Field extends LP_Meta_Box_Field {
 			}
 		}
 
-		$dependency_check = $extra['dependency'] ?? [];
+		$dependency_check = $this->extra['dependency'] ?? [];
 		if ( ! empty( $dependency_check ) ) {
 			if ( $dependency_check['is_disable'] ) {
 				$wrapper_class .= ' lp-option-disabled';
