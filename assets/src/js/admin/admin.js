@@ -245,9 +245,25 @@ document.addEventListener( 'click', ( e ) => {
 
 document.addEventListener( 'DOMContentLoaded', () => {
 	searchUserOnListPost();
-	defaultInitTomSelect();
 
-	document.addEventListener("loadInitTomSelect", (e)=> {
-		defaultInitTomSelect()
-	})
+	let registered = [];
+
+	const widgetListEl = document.querySelector( '#widget-list' );
+	if ( widgetListEl ) {
+		const tomSelectWidgetEl = widgetListEl.querySelector( 'select.lp-tom-select' );
+
+		if ( tomSelectWidgetEl ) {
+			registered = [ tomSelectWidgetEl, ... registered ];
+		}
+	}
+
+	defaultInitTomSelect( registered );
+
+	document.addEventListener( 'loadInitTomSelect', ( e ) => {
+		if ( e?.detail?.registered ) {
+			registered = [ e?.detail?.registered, ...registered ];
+		}
+
+		defaultInitTomSelect( registered );
+	} );
 } );
