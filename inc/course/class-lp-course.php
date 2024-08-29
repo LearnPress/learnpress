@@ -1063,6 +1063,9 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		 */
 		public function get_level(): string {
 			$level = get_post_meta( $this->get_id(), '_lp_level', true );
+			if ( ! $level ) {
+				$level = '';
+			}
 
 			return $level;
 		}

@@ -108,7 +108,7 @@ class UserModel {
 	 * @param int $course_id
 	 * @param bool $no_cache
 	 *
-	 * @return false|CourseModel|static
+	 * @return false|static
 	 */
 	public static function find( int $user_id, bool $check_cache = false ) {
 		$filter_user     = new LP_User_Filter();
