@@ -1,3 +1,6 @@
+import { initTomSelect } from '../../../../js/admin/init-tom-select';
+import { Api } from '../../../../js/admin/utils-admin';
+
 const $ = jQuery;
 
 function formatCourse( repo ) {
@@ -17,33 +20,60 @@ function autocompleteWidget( widget = null ) {
 	const wpRestUrl = searchs.data( 'rest-url' );
 	const postType = searchs.data( 'post_type' ) || 'lp_course';
 
-	searchs.select2( {
-		ajax: {
-			method: 'GET',
-			url: wpRestUrl + 'wp/v2/' + postType,
-			dataType: 'json',
-			delay: 250,
-			data( params ) {
-				return {
-					search: params.term,
-				};
+	if ( postType === 'lp_course' ) {
+		const dataStruct = {
+			urlApi: Api.admin.apiSearchCourses,
+			dataType: 'courses',
+			keyGetValue: {
+				value: 'ID',
+				text: '{{post_title}} (#{{ID}})',
+				key_render: {
+					post_title: 'post_title',
+					ID: 'ID',
+				},
 			},
-			processResults( data, params ) {
-				params.page = params.page || 1;
+		};
+		const dataStructJson = JSON.stringify( dataStruct );
+		const widgetListEl = document.querySelector( '#widget-list' );
+		let nonTomSelectWidgetEls = '';
+		if ( widgetListEl ) {
+			const tomSelectWidgetEls = Array.prototype.slice.call( widgetListEl.querySelectorAll( '.lp-widget_select_course' ) );
+			nonTomSelectWidgetEls = Array.prototype.slice.call( searchs ).filter( ( el ) => ! tomSelectWidgetEls.includes( el ) );
+		}
 
-				return {
-					results: data,
-				};
+		nonTomSelectWidgetEls.forEach( ( nonTomSelectWidgetEl ) => {
+			$( nonTomSelectWidgetEl ).attr( 'data-struct', dataStructJson );
+			initTomSelect( nonTomSelectWidgetEl );
+		} );
+	} else {
+		searchs.select2( {
+			ajax: {
+				method: 'GET',
+				url: wpRestUrl + 'wp/v2/' + postType,
+				dataType: 'json',
+				delay: 250,
+				data( params ) {
+					return {
+						search: params.term,
+					};
+				},
+				processResults( data, params ) {
+					params.page = params.page || 1;
+
+					return {
+						results: data,
+					};
+				},
+				cache: true,
 			},
-			cache: true,
-		},
-		escapeMarkup( markup ) {
-			return markup;
-		},
-		minimumInputLength: 2,
-		templateResult: formatCourse, // omitted for brevity, see the source of this page
-		templateSelection: formatCourseSelection, // omitted for brevity, see the source of this page
-	} );
+			escapeMarkup( markup ) {
+				return markup;
+			},
+			minimumInputLength: 2,
+			templateResult: formatCourse, // omitted for brevity, see the source of this page
+			templateSelection: formatCourseSelection, // omitted for brevity, see the source of this page
+		} );
+	}
 }
 
 document.addEventListener( 'DOMContentLoaded', function( event ) {

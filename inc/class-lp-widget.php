@@ -411,6 +411,7 @@ class LP_Widget extends WP_Widget {
 								name="<?php echo esc_attr( $this->get_field_name( $key ) ); ?>"
 								data-rest-url="<?php echo get_rest_url(); ?>"
 								data-post-type="<?php echo esc_attr( $setting['post_type'] ?? LP_COURSE_CPT ); ?>"
+								data-saved = "<?php echo esc_attr( $value ?? '' ); ?>"
 								style="width: 300px;">
 							<?php if ( ! empty( $value ) ) : ?>
 								<option value="<?php echo esc_attr( $value ); ?>"
