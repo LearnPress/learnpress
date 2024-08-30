@@ -273,11 +273,11 @@ class SingleCourseTemplate {
 
 			$price_html .= sprintf( '<span class="price">%s</span>', learn_press_format_price( $course->get_price(), true ) );
 			$price_html = apply_filters( 'learn_press_course_price_html', $price_html, $course->has_sale_price(), $course->get_id() );
-			// @since 4.2.7
-			$price_html = apply_filters( 'learn-press/course/html-price', $price_html, $course );
 		}
 
-		return sprintf( '<span class="course-price">%s</span>', $price_html );
+		// @since 4.2.7
+		$price_html = sprintf( '<span class="course-price"><span class="course-item-price">%s</span></span>', $price_html );
+		return apply_filters( 'learn-press/course/html-price', $price_html, $course );
 	}
 
 	/**
