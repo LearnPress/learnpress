@@ -28,7 +28,7 @@ $settings = LP_Settings::instance();
 	<tr>
 		<th><?php _e( 'Currency', 'learnpress' ); ?></th>
 		<td>
-			<select id="currency" name="settings[currency][currency]" class="lp-select-2">
+			<select id="currency" name="settings[currency][currency]" class="lp-tom-select">
 				<?php
 				$payment_currencies = learn_press_currencies();
 
