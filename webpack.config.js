@@ -3,7 +3,7 @@ const defaultConfig = require( '@wordpress/scripts/config/webpack.config' );
 
 const { BundleAnalyzerPlugin } = require( 'webpack-bundle-analyzer' );
 const DependencyExtractionWebpackPlugin = require( '@wordpress/dependency-extraction-webpack-plugin' );
-const MergeIntoSingleFilePlugin = require( 'webpack-merge-and-include-globally' );
+//const MergeIntoSingleFilePlugin = require( 'webpack-merge-and-include-globally' );
 const LearnPressDependencyExtractionWebpackPlugin = require( './packages/dependecy-extraction-webpack-plugin' );
 
 const isProduction = process.env.NODE_ENV === 'production';
