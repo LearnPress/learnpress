@@ -1842,7 +1842,7 @@ function learn_press_setcookie( string $name = '', string $value = '', int $expi
  */
 function learn_press_remove_cookie( string $name = '' ) {
 	if ( ! empty( $name ) ) {
-		setcookie( $name, '', time() - YEAR_IN_SECONDS, COOKIEPATH ? COOKIEPATH : '/', COOKIE_DOMAIN );
+		setcookie( $name, '', time() - YEAR_IN_SECONDS, COOKIEPATH ? COOKIEPATH : '/', COOKIE_DOMAIN, is_ssl(), true );
 	}
 
 	if ( array_key_exists( $name, $_COOKIE ) ) {
