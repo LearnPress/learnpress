@@ -29,12 +29,16 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 				'payments'  => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-payments.php',
 				'emails'    => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-emails.php',
 				'permalink' => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-permalink.php',
+				'open-ai'   => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-open-ai.php',
 				'advanced'  => include_once LP_PLUGIN_PATH . 'inc/admin/settings/class-lp-settings-advanced.php',
 			)
 		);
 
 		add_action( 'learn-press/admin/page-content-settings', array( $this, 'page_contents' ) );
-		add_action( 'learn-press/admin/page-' . $this->_get_page() . '/section-content', array( $this, 'section_content' ) );
+		add_action( 'learn-press/admin/page-' . $this->_get_page() . '/section-content', array(
+			$this,
+			'section_content'
+		) );
 
 		/** Save metabox in LP4 */
 		add_action( 'admin_init', array( $this, 'save_settings' ) );
