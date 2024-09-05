@@ -357,7 +357,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 					[
 						'amount'    => [
 							'currency_code' => learn_press_get_currency(),
-							'value'         => round( $cart_total->total, 2 ),
+							'value'         => strval( round( $cart_total->total, 2 ) ),
 						],
 						'custom_id' => $order_id,
 					],
