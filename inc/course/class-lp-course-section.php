@@ -246,12 +246,13 @@ class LP_Course_Section extends LP_Abstract_Object_Data {
 	 * @param int $user_id
 	 *
 	 * @return mixed
+	 * @deprecated 4.2.7.1
 	 */
-	public function get_completed_items( $user_id = 0 ) {
+	/*public function get_completed_items( $user_id = 0 ) {
 		$items = array();
 
 		return $items;
-	}
+	}*/
 
 	/**
 	 * Count number of items in section.
