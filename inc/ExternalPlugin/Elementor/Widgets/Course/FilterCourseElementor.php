@@ -14,6 +14,7 @@ use LearnPress\Helpers\Config;
 use LearnPress\Helpers\Template;
 use Elementor\Icons_Manager;
 use LearnPress\TemplateHooks\Course\FilterCourseTemplate;
+use LP_Request;
 use Throwable;
 
 class FilterCourseElementor extends LPElementorWidgetBase {
@@ -108,7 +109,7 @@ class FilterCourseElementor extends LPElementorWidgetBase {
 
 				if ( $field['toggle_content'] === 'yes' ) {
 					$extraClassItem .= ' toggle-content';
-					$icon_toggle = '<i class="icon-toggle-filter lp-icon-angle-up"></i><i class="icon-toggle-filter lp-icon-angle-down"></i>';
+					$icon_toggle     = '<i class="icon-toggle-filter lp-icon-angle-up"></i><i class="icon-toggle-filter lp-icon-angle-down"></i>';
 
 					if ( $field['default_toggle_on'] === 'yes' ) {
 						$extraClassItem .= ' toggle-on';
@@ -194,43 +195,84 @@ class FilterCourseElementor extends LPElementorWidgetBase {
 
 	protected function selected_style_list() {
 		$classListItem = 'selected-item';
-		$icon_move = '<i class="icon-remove-selected lp-icon-times"></i>';
+		$icon_move     = '<i class="icon-remove-selected lp-icon-times"></i>';
 
-		if ( ! empty( $_GET['term_id'] ) ) {
-			$cats = explode( ',', $_GET['term_id'] );
+		$term_ids_str = LP_Request::get_param( 'term_id', '' );
+		if ( ! empty( $term_ids_str ) ) {
+			$cats = explode( ',', $term_ids_str );
+			$cats = array_map( 'absint', $cats );
 			foreach ( $cats as $cat ) {
-				echo '<span class="' . $classListItem . '" data-name="term_id" data-value="' . $cat . '">' . get_term( $cat, 'course_category' )->name . $icon_move . '</span>';
+				echo sprintf(
+					'<span class="%s" data-name="term_id" data-value="%s">%s%s</span>',
+					esc_attr( $classListItem ),
+					esc_attr( $cat ),
+					get_term( $cat, LP_COURSE_CATEGORY_TAX )->name,
+					$icon_move
+				);
 			}
 		}
 
-		if ( ! empty( $_GET['tag_id'] ) ) {
-			$tags = explode( ',', $_GET['tag_id'] );
+		$tag_ids_str = LP_Request::get_param( 'tag_id', '' );
+		if ( ! empty( $tag_ids_str ) ) {
+			$tags = explode( ',', $tag_ids_str );
+			$tags = array_map( 'absint', $tags );
 			foreach ( $tags as $tag ) {
-				echo '<span class="' . $classListItem . '" data-name="tag_id" data-value="' . $tag . '">' . get_term( $tag, 'course_tag' )->name . $icon_move . '</span>';
+				echo sprintf(
+					'<span class="%s" data-name="tag_id" data-value="%s">%s%s</span>',
+					esc_attr( $classListItem ),
+					esc_attr( $tag ),
+					get_term( $tag, LP_COURSE_TAXONOMY_TAG )->name,
+					$icon_move
+				);
 			}
 		}
 
-		if ( ! empty( $_GET['sort_by'] ) ) {
-			if ( $_GET['sort_by'] === 'on_free' ) {
-				echo '<span class="' . $classListItem . '" data-name="sort_by" data-value="' . $_GET['sort_by'] . '">' . __( 'Free', 'learnpress' ) . $icon_move . '</span>';
+		$sort_by = LP_Request::get_param( 'sort_by', '' );
+		if ( ! empty( $sort_by ) ) {
+			if ( $sort_by === 'on_free' ) {
+				$label = __( 'Free', 'learnpress' );
 			} else {
-				echo '<span class="' . $classListItem . '" data-name="sort_by" data-value="' . $_GET['sort_by'] . '">' . __( 'Paid', 'learnpress' ) . $icon_move . '</span>';
+				$label = __( 'Paid', 'learnpress' );
 			}
+
+			echo sprintf(
+				'<span class="%s" data-name="sort_by" data-value="%s">%s%s</span>',
+				esc_attr( $classListItem ),
+				esc_attr( $sort_by ),
+				$label,
+				$icon_move
+			);
 		}
 
-		if ( ! empty( $_GET['c_level'] ) ) {
+		$level = LP_Request::get_param( 'c_level', '' );
+		if ( ! empty( $level ) ) {
+			$label = $level;
 			if ( $_GET['c_level'] === 'all' ) {
-				echo '<span class="' . $classListItem . '" data-name="c_level" data-value="' . $_GET['c_level'] . '">' . __( 'All Levels', 'learnpress' ) . $icon_move . '</span>';
-			} else {
-				echo '<span class="' . $classListItem . '" data-name="c_level" data-value="' . $_GET['c_level'] . '">' . $_GET['c_level'] . $icon_move . '</span>';
+				$label = __( 'All Levels', 'learnpress' );
 			}
+
+			echo sprintf(
+				'<span class="%s" data-name="c_level" data-value="%s">%s%s</span>',
+				esc_attr( $classListItem ),
+				esc_attr( $label ),
+				$level,
+				$icon_move
+			);
 		}
 
-		if ( ! empty( $_GET['c_authors'] ) ) {
-			$authors = explode( ',', $_GET['c_authors'] );
+		$authors_str = LP_Request::get_param( 'c_authors', '' );
+		if ( ! empty( $authors ) ) {
+			$authors = explode( ',', $authors_str );
+			$authors = array_map( 'absint', $authors );
 			foreach ( $authors as $author ) {
 				$user = get_userdata( $author );
-				echo '<span class="' . $classListItem . '" data-name="c_authors" data-value="' . $_GET['c_authors'] . '">' . $user->display_name . $icon_move . '</span>';
+				echo sprintf(
+					'<span class="%s" data-name="c_authors" data-value="%s">%s%s</span>',
+					esc_attr( $classListItem ),
+					esc_attr( $author ),
+					$user->display_name,
+					$icon_move
+				);
 			}
 		}
 	}
