@@ -32,7 +32,6 @@ class LP_Settings_OpenAi extends LP_Abstract_Settings_Page {
 	public function get_settings( $section = '', $tab = '' ) {
 		return Config::instance()->get( 'open-ai', 'settings' );
 	}
-
 }
 
 return new LP_Settings_OpenAi();

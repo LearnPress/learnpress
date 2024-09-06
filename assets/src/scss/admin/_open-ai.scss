@@ -1,0 +1,155 @@
+#lp-ai-course-title-modal {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.5);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	visibility: hidden;
+	opacity: 0;
+	z-index: 9999;
+	transition: opacity 0.3s ease, visibility 0.3s ease;
+
+	&.active {
+		visibility: visible;
+		opacity: 1;
+	}
+
+	.modal-content {
+		background-color: #fff;
+		padding: 20px;
+		border-radius: 8px;
+		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+		width: 90%;
+		max-width: 1200px;
+		max-height: 85vh;
+		overflow: auto;
+		position: relative;
+
+		header.modal-header {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			margin-bottom: 15px;
+
+			.title {
+				font-size: 24px;
+				font-weight: 800;
+			}
+
+			.close-btn {
+				font-size: 24px;
+				cursor: pointer;
+				color: #333;
+				background: none;
+				border: none;
+			}
+		}
+
+		.content {
+			display: flex;
+			align-items: start;
+			justify-content: space-between;
+			font-size: 16px;
+
+			.ai-field {
+				flex-basis: 40%;
+
+				div {
+					margin-bottom: 10px;
+
+					label {
+						display: block;
+						font-weight: 500;
+						margin-bottom: 4px;
+					}
+
+					textarea {
+						width: 100%;
+					}
+
+					&.output {
+						display: flex;
+						align-items: center;
+						justify-content: space-between;
+
+						button {
+							margin-top: 4px;
+						}
+					}
+				}
+			}
+
+			.ai-output {
+				flex-basis: 60%;
+				margin-left: 24px;
+				padding: 0 15px;
+
+				header {
+					display: flex;
+					align-items: start;
+					justify-content: space-between;
+
+					.output-title {
+						font-weight: 600;
+						font-size: 18px;
+					}
+
+					.toggle-prompt{
+						display: none;
+
+						&.display{
+							display: block;
+						}
+					}
+				}
+			}
+
+			.ai-output {
+				background-color: #f8f9fa;
+				padding: 8px;
+				font-size: 16px;
+
+				.prompt-output.active {
+					background-color: #F3F4F6;
+					margin-top: 10px;
+
+					div.title {
+						font-weight: 500;
+					}
+				}
+
+				.course-title-output {
+					margin-top: 10px;
+
+					.course-title-item {
+						background-color: #D0D3D8;
+					}
+				}
+
+				p {
+					font-size: 16px;
+				}
+
+				.prompt-output {
+					padding: 8px;
+					display: none;
+
+					&.active {
+						display: block;
+					}
+				}
+
+				.course-title-output {
+					.course-title-item {
+						padding: 8px;
+						margin-bottom: 10px;
+					}
+				}
+			}
+		}
+	}
+}

@@ -483,6 +483,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			include_once 'inc/admin/class-lp-admin.php';
 			// include_once 'inc/admin/settings/abstract-settings-page.php';
+
+			include_once 'inc/admin/class-lp-admin-open-ai.php';
 		}
 
 		/**
@@ -945,3 +947,4 @@ function LP() {
  * Create new instance of LearnPress and put it to global
  */
 $GLOBALS['LearnPress'] = LearnPress::instance();
+

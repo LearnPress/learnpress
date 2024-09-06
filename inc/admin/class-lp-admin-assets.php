@@ -321,6 +321,16 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					0,
 					1
 				),
+				'lp-open-ai-admin'                  => new LP_Asset_Key(
+					self::url( 'js/dist/admin/course/open-ai' . self::$_min_assets . '.js' ),
+					array(
+						'wp-url',
+						'wp-api-fetch'
+					),
+					array(),
+					0,
+					1
+				),
 				'lp-admin-notices'                  => new LP_Asset_Key(
 					self::url( 'js/dist/admin/admin-notices' . self::$_min_assets . '.js' ),
 					[],

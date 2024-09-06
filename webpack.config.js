@@ -21,6 +21,7 @@ module.exports = {
 		'./assets/js/dist/admin/editor/question': './assets/src/apps/js/admin/editor/question.js',
 		'./assets/js/dist/admin/pages/tools': './assets/src/apps/js/admin/pages/tools.js',
 		'./assets/js/dist/admin/pages/setup': './assets/src/apps/js/admin/pages/setup.js',
+		'./assets/js/dist/admin/course/open-ai': './assets/src/apps/js/admin/course/open-ai.js',
 		//'./assets/js/dist/admin/pages/statistic': './assets/src/apps/js/admin/pages/statistic.js',
 		'./assets/js/dist/admin/admin-statistic': './assets/src/js/admin/admin-statistic.js',
 		// './assets/js/dist/admin/pages/sync-data': './assets/src/apps/js/admin/pages/sync-data.js',

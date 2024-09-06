@@ -1,0 +1,28 @@
+<?php
+return apply_filters( 'lp-open-ai-tone-options', array(
+		'Analytical'     => esc_html__( 'Analytical', 'learnpress' ),
+		'Argumentative'  => esc_html__( 'Argumentative', 'learnpress' ),
+		'Casual'         => esc_html__( 'Casual', 'learnpress' ),
+		'Conversational' => esc_html__( 'Conversational', 'learnpress' ),
+		'Creative'       => esc_html__( 'Creative', 'learnpress' ),
+		'Descriptive'    => esc_html__( 'Descriptive', 'learnpress' ),
+		'Emotional'      => esc_html__( 'Emotional', 'learnpress' ),
+		'Empathetic'     => esc_html__( 'Empathetic', 'learnpress' ),
+		'Expository'     => esc_html__( 'Expository', 'learnpress' ),
+		'Factual'        => esc_html__( 'Factual', 'learnpress' ),
+		'Formal'         => esc_html__( 'Formal', 'learnpress' ),
+		'Friendly'       => esc_html__( 'Friendly', 'learnpress' ),
+		'Humorous'       => esc_html__( 'Humorous', 'learnpress' ),
+		'Informal'       => esc_html__( 'Informal', 'learnpress' ),
+		'Journalese'     => esc_html__( 'Journalese', 'learnpress' ),
+		'Narrative'      => esc_html__( 'Narrative', 'learnpress' ),
+		'Objective'      => esc_html__( 'Objective', 'learnpress' ),
+		'Opinionated'    => esc_html__( 'Opinionated', 'learnpress' ),
+		'Persuasive'     => esc_html__( 'Persuasive', 'learnpress' ),
+		'Poetic'         => esc_html__( 'Poetic', 'learnpress' ),
+		'Satirical'      => esc_html__( 'Satirical', 'learnpress' ),
+		'Story-telling'  => esc_html__( 'Story-telling', 'learnpress' ),
+		'Subjective'     => esc_html__( 'Subjective', 'learnpress' ),
+		'Technical'      => esc_html__( 'Technical', 'learnpress' ),
+	)
+);
