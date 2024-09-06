@@ -99,8 +99,9 @@
 							name: response.page.post_title,
 							positions: response.positions,
 						} );
-						$select.val( response.page.ID ).trigger( 'focus' );
-						$select.val( response.page.ID ).trigger( 'change' );
+						/*$select.val( response.page.ID ).trigger( 'focus' );
+						$select.val( response.page.ID ).trigger( 'change' );*/
+						window.location.reload();
 						$form.addClass( 'hide-if-js' );
 					} else if ( response.error ) {
 						alert( response.error );
