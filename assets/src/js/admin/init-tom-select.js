@@ -95,6 +95,10 @@ const initTomSelect = ( tomSelectEl, customOptions = {}, customParams = {} ) => 
 		return;
 	}
 
+	if ( tomSelectEl.classList.contains( 'loaded' ) ) {
+		return;
+	}
+
 	const defaultIds = tomSelectEl.dataset?.saved ? JSON.parse( tomSelectEl.dataset.saved ) : 0;
 	const dataStruct = tomSelectEl?.dataset?.struct ? JSON.parse( tomSelectEl.dataset.struct ) : '';
 
@@ -228,16 +232,11 @@ const searchUserOnListPost = () => {
 	createSelectUserHtml();
 };
 
-const defaultInitTomSelect = ( registered = [] ) => {
-	const tomSelectEls = Array.prototype.slice.call( document.querySelectorAll( 'select.lp-tom-select' ) );
+const initElsTomSelect = () => {
+	const tomSelectEls = document.querySelectorAll( 'select.lp-tom-select:not(.loaded)' );
 
 	if ( tomSelectEls.length ) {
-		tomSelectEls.map( ( tomSelectEl ) => {
-			if ( registered.length ) {
-				if ( registered.includes( tomSelectEl ) ) {
-					return;
-				}
-			}
+		tomSelectEls.forEach( ( tomSelectEl ) => {
 			initTomSelect( tomSelectEl );
 		} );
 	}
@@ -246,5 +245,5 @@ const defaultInitTomSelect = ( registered = [] ) => {
 export {
 	initTomSelect,
 	searchUserOnListPost,
-	defaultInitTomSelect,
+	initElsTomSelect,
 };

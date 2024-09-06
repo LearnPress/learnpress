@@ -1,4 +1,5 @@
-import { defaultInitTomSelect, searchUserOnListPost } from './init-tom-select.js';
+import { initElsTomSelect, searchUserOnListPost } from './init-tom-select.js';
+import { AdminUtilsFunctions, Api, Utils } from './utils-admin.js';
 
 ( function( $ ) {
 	/**
@@ -246,24 +247,13 @@ document.addEventListener( 'click', ( e ) => {
 document.addEventListener( 'DOMContentLoaded', () => {
 	searchUserOnListPost();
 
-	let registered = [];
+	// Sure that the TomSelect is loaded if listen can't find elements.
+	initElsTomSelect();
+} );
 
-	const widgetListEl = document.querySelector( '#widget-list' );
-	if ( widgetListEl ) {
-		const tomSelectWidgetEl = widgetListEl.querySelector( 'select.lp-tom-select' );
-
-		if ( tomSelectWidgetEl ) {
-			registered = [ tomSelectWidgetEl, ... registered ];
-		}
+// Listen element select created on DOM.
+Utils.listenElementCreated( ( node ) => {
+	if ( node.tagName === 'SELECT' && node.classList.contains( 'lp-tom-select' ) ) {
+		initElsTomSelect();
 	}
-
-	defaultInitTomSelect( registered );
-
-	document.addEventListener( 'loadInitTomSelect', ( e ) => {
-		if ( e?.detail?.registered ) {
-			registered = [ e?.detail?.registered, ...registered ];
-		}
-
-		defaultInitTomSelect( registered );
-	} );
 } );

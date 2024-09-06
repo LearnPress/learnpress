@@ -120,7 +120,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 			0,
 			0,
 			'',
-			[ 'strategy' => 'defer' ]
+			[ 'strategy' => 'async' ]
 		);
 		$lp_admin_js->exclude_screen(
 			[

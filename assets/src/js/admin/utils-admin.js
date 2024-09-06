@@ -14,13 +14,19 @@ const AdminUtilsFunctions = {
 			return;
 		}
 
-		let optionDefault = {
+		const optionDefault = {
 			plugins: {
 				remove_button: {
 					title: 'Remove this item',
 				},
 			},
-			load( keySearch, callbackTom ) {
+			onInitialize() {
+				elTomSelect.classList.add( 'loaded' );
+			},
+		};
+
+		if ( fetchAPI ) {
+			optionDefault.load = ( keySearch, callbackTom ) => {
 				const selectedOptions = Array.from( elTomSelect.selectedOptions );
 				const selectedValues = selectedOptions.map( ( option ) => option.value );
 				dataSend.id_not_in = selectedValues.join( ',' );
@@ -30,24 +36,6 @@ const AdminUtilsFunctions = {
 					dataSend,
 					AdminUtilsFunctions.callBackTomSelectSearchAPI( callbackTom, callBackHandleData )
 				);
-			},
-		};
-
-		if ( fetchAPI ) {
-			optionDefault = {
-				options: [],
-				plugins: {
-					remove_button: {
-						title: 'Remove this item',
-					},
-				},
-				load( keySearch, callbackTom ) {
-					fetchAPI(
-						keySearch,
-						dataSend,
-						AdminUtilsFunctions.callBackTomSelectSearchAPI( callbackTom, callBackHandleData )
-					);
-				},
 			};
 		}
 
