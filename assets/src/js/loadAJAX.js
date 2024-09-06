@@ -2,10 +2,10 @@
  * Load all you need via AJAX
  *
  * @since 4.2.5.7
- * @version 1.0.2
+ * @version 1.0.3
  */
 
-import { lpAddQueryArgs, lpFetchAPI } from './utils.js';
+import { lpAddQueryArgs, lpFetchAPI, listenElementCreated } from './utils.js';
 import API from './api.js';
 
 // Handle general parameter in the Frontend and Backend
@@ -51,9 +51,9 @@ const lpAJAX = ( () => {
 			lpFetchAPI( url, option, callBack );
 		},
 		getElements: () => {
-			//console.log( 'getElements' );
 			// Finds all elements with the class '.lp-load-ajax-element'
 			const elements = document.querySelectorAll( '.lp-load-ajax-element:not(.loaded)' );
+			//console.log( 'getElements', elements );
 			if ( elements.length ) {
 				elements.forEach( ( element ) => {
 					//console.log( 'Element handing', element );
@@ -95,9 +95,17 @@ const lpAJAX = ( () => {
 	};
 } );
 
+window.lpAJAXG = lpAJAX();
+
+// Listen element created
+listenElementCreated( ( node ) => {
+	if ( node.classList.contains( 'lp-load-ajax-element' ) ) {
+		window.lpAJAXG.getElements();
+	}
+} );
+
 // Case 1: file JS loaded, find all elements with the class '.lp-load-ajax-element' not have class 'loaded'
 if ( 'undefined' === typeof window.lpAJAXG ) {
-	window.lpAJAXG = lpAJAX();
 	window.lpAJAXG.getElements();
 }
 
