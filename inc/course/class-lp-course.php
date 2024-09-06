@@ -491,8 +491,12 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		 * @return void
 		 * @since 4.2.3.3
 		 * @version 1.0.1
+		 * @deprecated 4.2.7.1
 		 */
 		public static function handle_params_for_query_courses( LP_Course_Filter &$filter, array $param = [] ) {
+			//_deprecated_function( __METHOD__, '4.2.7.1', 'Courses::handle_params_for_query_courses' );
+			//return $filter;
+
 			$filter->page       = absint( $param['paged'] ?? 1 );
 			$filter->post_title = LP_Helper::sanitize_params_submitted( trim( $param['c_search'] ?? '' ) );
 
@@ -580,8 +584,12 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		 * @author tungnx
 		 * @version 1.0.0
 		 * @sicne 4.1.5
+		 * @deprecated 4.2.7.1
 		 */
 		public static function get_courses( LP_Course_Filter $filter, int &$total_rows = 0 ) {
+			//_deprecated_function( __METHOD__, '4.2.7.1', 'Courses::get_courses' );
+			//return [];
+
 			$lp_course_db = LP_Course_DB::getInstance();
 
 			try {
@@ -1032,7 +1040,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		 */
 		public function get_tags(): array {
 			// Todo: set cache.
-			$tags = get_the_terms( $this->get_id(), LP_COURSE_TAXONOMY_TAG);
+			$tags = get_the_terms( $this->get_id(), LP_COURSE_TAXONOMY_TAG );
 			if ( ! $tags ) {
 				$tags = array();
 			}

@@ -99,8 +99,6 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 
 			/**
 			 * Clean cache courses
-			 *
-			 * @see LP_Course::get_courses() where set cache
 			 */
 			$keys_cache = LP_Courses_Cache::instance()->get_cache( LP_Courses_Cache::$keys );
 			if ( $keys_cache ) {

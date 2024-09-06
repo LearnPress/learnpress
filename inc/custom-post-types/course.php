@@ -519,9 +519,9 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					$post = get_post( $post_id );
 				}
 
-				if ( $post->post_status === 'auto-draft' ) {
+				/*if ( $post->post_status === 'auto-draft' ) {
 					return;
-				}
+				}*/
 
 				$courseModel = CourseModel::find( $post_id, true );
 				if ( ! $courseModel ) {

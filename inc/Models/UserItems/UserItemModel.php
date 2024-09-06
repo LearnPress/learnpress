@@ -346,6 +346,10 @@ class UserItemModel {
 		return apply_filters( 'learnPress/user-item/expiration-time', $expire, $duration, $this );
 	}
 
+	public function delete() {
+
+	}
+
 	/**
 	 * Clean caches.
 	 *

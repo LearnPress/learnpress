@@ -106,6 +106,16 @@ class Courses {
 			$filter->post_authors = $author_ids;
 		}
 
+		// Find by status
+		$post_status = LP_Helper::sanitize_params_submitted( $param['c_status'] ?? '' );
+		if ( ! empty( $post_status ) ) {
+			if ( 'all' !== $post_status ) {
+				$filter->post_status = explode( ',', $post_status );
+			}
+		} else {
+			$filter->post_status = [ 'publish' ];
+		}
+
 		/**
 		 * Sort by
 		 * 1. on_sale

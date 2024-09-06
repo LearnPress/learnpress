@@ -86,7 +86,7 @@ class LP_Post_Type_Filter extends LP_Filter {
 	/**
 	 * @var string[]
 	 */
-	public $post_status = array( 'publish' );
+	public $post_status = [];
 	/**
 	 * @var int
 	 */
