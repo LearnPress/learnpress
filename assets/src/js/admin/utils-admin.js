@@ -20,6 +20,17 @@ const AdminUtilsFunctions = {
 					title: 'Remove this item',
 				},
 			},
+			load( keySearch, callbackTom ) {
+				const selectedOptions = Array.from( elTomSelect.selectedOptions );
+				const selectedValues = selectedOptions.map( ( option ) => option.value );
+				dataSend.id_not_in = selectedValues.join( ',' );
+
+				fetchAPI(
+					keySearch,
+					dataSend,
+					AdminUtilsFunctions.callBackTomSelectSearchAPI( callbackTom, callBackHandleData )
+				);
+			},
 		};
 
 		if ( fetchAPI ) {

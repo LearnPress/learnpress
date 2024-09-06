@@ -504,11 +504,11 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 * Save course post
 		 *
 		 * @param int $post_id
-		 * @param WP_Post $post
+		 * @param WP_Post|null $post
 		 * @param bool $is_update
 		 *
 		 * @since 4.2.6.9
-		 * @version 1.0.0
+		 * @version 1.0.1
 		 */
 		public function save_post( int $post_id, WP_Post $post = null, bool $is_update = false ) {
 			try {
@@ -519,9 +519,9 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					$post = get_post( $post_id );
 				}
 
-				if ( $post->post_status === 'auto-draft' ) {
+				/*if ( $post->post_status === 'auto-draft' ) {
 					return;
-				}
+				}*/
 
 				$courseModel = CourseModel::find( $post_id, true );
 				if ( ! $courseModel ) {
@@ -534,7 +534,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				$old_now     = array_merge( $old_obj, $new_obj );
 				$courseModel = new CourseModel( $old_now );
 
-				// Get all meta data of course
+				// Get all metadata of course
 				if ( $is_update && empty( $wp_screen ) ) {
 					$coursePost = new CoursePostModel( $courseModel );
 					$coursePost->get_all_metadata();

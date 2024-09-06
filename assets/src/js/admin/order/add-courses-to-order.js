@@ -11,7 +11,7 @@ const addCoursesToOrder = () => {
 	const idOrderDetails = '#learn-press-order';
 	let dataSend = {
 		search: '',
-		not_ids: '',
+		id_not_in: '',
 		paged: 1,
 	};
 	const courseIdsNewSelected = [];
@@ -33,14 +33,14 @@ const addCoursesToOrder = () => {
 	 * @param paged
 	 */
 	const fetchCoursesAPI = ( keySearch = '', course_ids_exclude = [], paged = 1 ) => {
-		let not_ids = '';
+		let id_not_in = '';
 		if ( course_ids_exclude.length > 0 ) {
-			not_ids = course_ids_exclude.join( ',' );
+			id_not_in = course_ids_exclude.join( ',' );
 		}
 
 		dataSend = {
 			search: keySearch,
-			not_ids,
+			id_not_in,
 			paged,
 		};
 
@@ -243,7 +243,6 @@ const addCoursesToOrder = () => {
 	 * Display list courses when search done.
 	 *
 	 * @param courses
-	 * @return string
 	 */
 	const renderSearchResult = ( courses ) => {
 		let html = '';
@@ -267,9 +266,8 @@ const addCoursesToOrder = () => {
 	/**
 	 * Render pagination.
 	 *
-	 * @param  currentPage
-	 * @param  maxPage
-	 * @return {string}
+	 * @param currentPage
+	 * @param maxPage
 	 */
 	const renderPagination = ( currentPage, maxPage ) => {
 		currentPage = parseInt( currentPage );
@@ -378,7 +376,7 @@ const addCoursesToOrder = () => {
 			if ( target.closest( idModalSearchItems ) ) {
 				e.preventDefault();
 				const paged = target.getAttribute( 'data-page' );
-				fetchCoursesAPI( dataSend.search, dataSend.not_ids, paged );
+				fetchCoursesAPI( dataSend.search, dataSend.id_not_in, paged );
 			}
 		}
 
