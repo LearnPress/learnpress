@@ -358,26 +358,46 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 	public function search_courses( WP_REST_Request $request ): LP_REST_Response {
 		$response = new LP_REST_Response();
 		try {
-			$params              = $request->get_params();
-			$ids_str             = LP_Helper::sanitize_params_submitted( $params['ids'] ?? '' );
-			$not_ids_str         = LP_Helper::sanitize_params_submitted( $params['not_ids'] ?? '' );
+			$params  = $request->get_params();
+			$ids_str = LP_Helper::sanitize_params_submitted( $params['ids'] ?? '' );
+			//$not_ids_str         = LP_Helper::sanitize_params_submitted( $params['not_ids'] ?? '' );
+			$not_ids_str         = LP_Helper::sanitize_params_submitted( $params['id_not_in'] ?? '' );
+			$current_ids         = LP_Helper::sanitize_params_submitted( $params['current_ids'] ?? [] );
 			$total_rows          = 0;
 			$filter              = new LP_Course_Filter();
 			$filter->limit       = 20;
 			$filter->only_fields = [ 'ID', 'post_title' ];
+			$filter->post_status = [ 'publish' ];
 			$filter->post_title  = LP_Helper::sanitize_params_submitted( $params['search'] ?? '' );
 			$filter->page        = LP_Helper::sanitize_params_submitted( $params['paged'] ?? 1, 'int' );
+
 			if ( ! empty( $ids_str ) ) {
 				$filter->post_ids = explode( ',', $ids_str );
 			}
+
 			if ( ! empty( $not_ids_str ) ) {
 				$not_ids         = explode( ',', $not_ids_str );
 				$not_ids         = array_map( 'absint', $not_ids );
 				$not_ids         = implode( ',', $not_ids );
 				$filter->where[] = "AND ID NOT IN ({$not_ids})";
 			}
-			$courses                     = Courses::get_courses( $filter, $total_rows );
-			$response->data->courses     = $courses;
+
+			// Get all courses.
+			$courses = Courses::get_courses( $filter, $total_rows );
+
+			// Get selected courses.
+			$courses_current = [];
+			if ( ! empty( $current_ids ) ) {
+				$current_ids                     = array_map( 'absint', $current_ids );
+				$filter_current_ids              = new LP_Course_Filter();
+				$filter_current_ids->limit       = -1;
+				$filter_current_ids->only_fields = [ 'ID', 'post_title' ];
+				$filter->post_status             = [ 'publish' ];
+				$filter_current_ids->post_ids    = $current_ids;
+				$courses_current                 = Courses::get_courses( $filter_current_ids );
+			}
+
+			$response->data->courses     = $courses + $courses_current;
 			$response->data->total_pages = LP_Database::get_total_pages( $filter->limit, $total_rows );
 			$response->status            = 'success';
 		} catch ( Throwable $e ) {

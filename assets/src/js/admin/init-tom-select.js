@@ -9,8 +9,6 @@ import { AdminUtilsFunctions, Api, Utils } from './utils-admin.js';
  * @param     fetchAPI
  * @param     customOptions
  * @param {*} callBack
- *
- * @return []
  */
 const handleResponse = ( response, tomSelectEl, dataStruct, fetchAPI, customOptions = {}, callBack ) => {
 	if ( ! response || ! tomSelectEl || ! dataStruct || ! fetchAPI || ! callBack ) {
