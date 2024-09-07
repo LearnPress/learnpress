@@ -306,7 +306,7 @@ class LP_Assets extends LP_Abstract_Assets {
 					[ 'utils' ],
 					[ LP_PAGE_COURSES ],
 					0,
-					1,
+					0,
 					'',
 					[ 'strategy' => 'async' ]
 				),

@@ -432,12 +432,21 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		}
 
 		$params['return_type']   = 'json';
-		$params['c_only_fields'] = empty( $params['c_only_fields'] ) ? '' : explode( ',', $params['c_only_fields'] );
+		//$params['c_only_fields'] = empty( $params['c_only_fields'] ) ? '' : explode( ',', $params['c_only_fields'] );
 		$params['term_id']       = empty( $params['category'] ) || 'all' === $params['category'] ? '' : implode( ',', $params['category'] );
 
 		return $params;
 	}
 
+	/**
+	 * Get courses.
+	 *
+	 * @param WP_REST_Request $request
+	 *
+	 * @return WP_REST_Response|LP_REST_Response
+	 * @since 4.2.6.9
+	 * @version 1.0.1
+	 */
 	public function get_courses( WP_REST_Request $request ) {
 		$res         = new LP_REST_Response();
 		$courses     = [];
@@ -447,9 +456,6 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			$filter = new LP_Course_Filter();
 			$params = $request->get_params();
 			$params = $this->convert_params_query_courses( $params );
-			if ( ! empty( $params['c_only_fields'] ) ) {
-				$filter->only_fields = $params['c_only_fields'];
-			}
 
 			Courses::handle_params_for_query_courses( $filter, $params );
 			$key_cache             = 'api/' . md5( json_encode( $params ) );
@@ -533,13 +539,12 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		foreach ( $courses as $courseObj ) {
 			$course = CourseModel::find( $courseObj->ID, true );
 			if ( empty( $course ) ) {
-				// For course not save on table learnpress_courses but still can use object has course ID
-				$course = new CourseModel( $courseObj );
+				continue;
 			}
 
 			$courseObjPrepare             = new stdClass();
-			$courseObjPrepare->id         = (int) $courseObj->ID;
-			$courseObjPrepare->name       = $courseObj->post_title;
+			$courseObjPrepare->id         = (int) $courseObj->ID ?? 0;
+			$courseObjPrepare->name       = $course->get_title();
 			$courseObjPrepare->image      = $course->get_image_url();
 			$author                       = $course->get_author_model();
 			$courseObjPrepare->instructor = ! empty( $author ) ? $this->get_author_info( $author ) : [];

@@ -96,6 +96,7 @@ const lpAJAX = ( () => {
 } );
 
 window.lpAJAXG = lpAJAX();
+window.lpAJAXG.getElements();
 
 // Listen element created
 listenElementCreated( ( node ) => {
@@ -103,11 +104,6 @@ listenElementCreated( ( node ) => {
 		window.lpAJAXG.getElements();
 	}
 } );
-
-// Case 1: file JS loaded, find all elements with the class '.lp-load-ajax-element' not have class 'loaded'
-if ( 'undefined' === typeof window.lpAJAXG ) {
-	window.lpAJAXG.getElements();
-}
 
 // Case 2: readystatechange, find all elements with the class '.lp-load-ajax-element' not have class 'loaded'
 document.addEventListener( 'readystatechange', ( event ) => {
