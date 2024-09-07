@@ -1,11 +1,11 @@
 /**
- * Fetch API.
+ * Utils functions
  *
  * @param url
  * @param data
  * @param functions
  * @since 4.2.5.1
- * @version 1.0.1
+ * @version 1.0.2
  */
 const lpFetchAPI = ( url, data = {}, functions = {} ) => {
 	if ( 'function' === typeof functions.before ) {
@@ -97,6 +97,34 @@ const listenElementCreated = ( callback ) => {
 	// End.
 };
 
+/**
+ * Listen element created.
+ *
+ * @param selector
+ * @param callback
+ * @since 4.2.7.1
+ */
+const lpOnElementReady = ( selector, callback ) => {
+	const element = document.querySelector( selector );
+	if ( element ) {
+		callback( element );
+		return;
+	}
+
+	const observer = new MutationObserver( ( mutations, obs ) => {
+		const element = document.querySelector( selector );
+		if ( element ) {
+			obs.disconnect();
+			callback( element );
+		}
+	} );
+
+	observer.observe( document.documentElement, {
+		childList: true,
+		subtree: true,
+	} );
+};
+
 // Parse JSON from string with content include LP_AJAX_START.
 const lpAjaxParseJsonOld = ( data ) => {
 	if ( typeof data !== 'string' ) {
@@ -118,4 +146,4 @@ const lpAjaxParseJsonOld = ( data ) => {
 	return data;
 };
 
-export { lpFetchAPI, lpAddQueryArgs, lpGetCurrentURLNoParam, listenElementViewed, listenElementCreated, lpAjaxParseJsonOld };
+export { lpFetchAPI, lpAddQueryArgs, lpGetCurrentURLNoParam, listenElementViewed, listenElementCreated, lpOnElementReady, lpAjaxParseJsonOld };

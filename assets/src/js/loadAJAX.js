@@ -5,7 +5,7 @@
  * @version 1.0.3
  */
 
-import { lpAddQueryArgs, lpFetchAPI, listenElementCreated } from './utils.js';
+import { lpAddQueryArgs, lpFetchAPI, listenElementCreated, lpOnElementReady } from './utils.js';
 import API from './api.js';
 
 // Handle general parameter in the Frontend and Backend
@@ -53,7 +53,7 @@ const lpAJAX = ( () => {
 		getElements: () => {
 			// Finds all elements with the class '.lp-load-ajax-element'
 			const elements = document.querySelectorAll( '.lp-load-ajax-element:not(.loaded)' );
-			//console.log( 'getElements', elements );
+			console.log( 'getElements', elements );
 			if ( elements.length ) {
 				elements.forEach( ( element ) => {
 					//console.log( 'Element handing', element );
@@ -101,18 +101,26 @@ window.lpAJAXG.getElements();
 // Listen element created
 listenElementCreated( ( node ) => {
 	if ( node.classList.contains( 'lp-load-ajax-element' ) ) {
+		console.log( 'Element created', node );
 		window.lpAJAXG.getElements();
 	}
 } );
 
+// Listen element ready
+lpOnElementReady( '.lp-load-ajax-element', ( element ) => {
+	console.log( 'Element ready', element );
+	window.lpAJAXG.getElements();
+} );
+
 // Case 2: readystatechange, find all elements with the class '.lp-load-ajax-element' not have class 'loaded'
 document.addEventListener( 'readystatechange', ( event ) => {
-	//console.log( 'readystatechange' );
+	console.log( 'readystatechange' );
 	window.lpAJAXG.getElements();
 } );
 
 // Case 3: DOMContentLoaded, find all elements with the class '.lp-load-ajax-element' not have class 'loaded'
 document.addEventListener( 'DOMContentLoaded', () => {
+	console.log( 'DOMContentLoaded' );
 	window.lpAJAXG.getElements();
 } );
 
