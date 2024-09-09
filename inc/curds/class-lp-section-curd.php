@@ -40,7 +40,7 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		try {
 			$section = $this->parse( $section_origin );
 			//$section                   = stripslashes_deep( $section );
-			$last_section_order_number = LP_Section_DB::getInstance()->get_last_number_order( $section['section_course_id'] );
+			$last_section_order_number = LP_Section_DB::getInstance()->get_last_number_order( $this->course_id );
 			$section_order_new         = $last_section_order_number + 1;
 			$insert_data               = apply_filters(
 				'lp/section/data-insert',
@@ -336,10 +336,11 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			$item = array_merge(
 				$item,
 				array(
-					'id'      => $post->ID,
-					'title'   => $post->post_title,
-					'type'    => $post->post_type,
-					'preview' => get_post_meta( $post->ID, '_lp_preview', true ) == 'yes',
+					'id'         => $post->ID,
+					'title'      => $post->post_title,
+					'type'       => $post->post_type,
+					'preview'    => get_post_meta( $post->ID, '_lp_preview', true ) == 'yes',
+					'item_order' => $key,
 				)
 			);
 
@@ -542,12 +543,14 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			)
 		);
 
-		wp_update_post(
-			array(
-				'ID'         => $item['id'],
-				'post_title' => $item['title'],
-			)
-		);
+		if ( ! empty( $item['title'] ) ) {
+			wp_update_post(
+				array(
+					'ID'         => $item['id'],
+					'post_title' => $item['title'],
+				)
+			);
+		}
 
 		if ( isset( $item['preview'] ) && $item['preview'] ) {
 			update_post_meta( $item['id'], '_lp_preview', 'yes' );
