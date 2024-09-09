@@ -409,4 +409,11 @@ class LP_Section_DB extends LP_Database {
 
 		return $number_order;
 	}
+
+	public function update( LP_Section_Filter $filter ) {
+		$filter->collection = $this->tb_lp_sections;
+		$this->update_execute( $filter );
+
+		return true;
+	}
 }
