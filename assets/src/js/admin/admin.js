@@ -242,6 +242,8 @@ const showHideOptionsDependency = ( e, target ) => {
 document.addEventListener( 'click', ( e ) => {
 	const target = e.target;
 	showHideOptionsDependency( e, target );
+	// For case click add on Widgets of WordPress.
+	initElsTomSelect();
 } );
 
 document.addEventListener( 'DOMContentLoaded', () => {
@@ -252,8 +254,8 @@ document.addEventListener( 'DOMContentLoaded', () => {
 } );
 
 // Listen element select created on DOM.
-Utils.listenElementCreated( ( node ) => {
-	if ( node.tagName === 'SELECT' && node.classList.contains( 'lp-tom-select' ) ) {
-		initElsTomSelect();
-	}
+Utils.lpOnElementReady( 'select.lp-tom-select', ( e ) => {
+	initElsTomSelect();
 } );
+
+window.lpFindTomSelect = initElsTomSelect;

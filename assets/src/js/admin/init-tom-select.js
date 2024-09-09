@@ -237,6 +237,10 @@ const initElsTomSelect = () => {
 
 	if ( tomSelectEls.length ) {
 		tomSelectEls.forEach( ( tomSelectEl ) => {
+			// Not build elements tom-select in Widget left classic of WordPress.
+			if ( tomSelectEl.closest( '.widget-liquid-left' ) ) {
+				return;
+			}
 			initTomSelect( tomSelectEl );
 		} );
 	}

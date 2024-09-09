@@ -402,16 +402,33 @@ class LP_Widget extends WP_Widget {
 					break;
 
 				case 'autocomplete':
+					$data_struct = [
+						'urlApi'      => get_rest_url( null, 'lp/v1/admin/tools/search-course' ),
+						'dataType'    => 'courses',
+						'keyGetValue' => [
+							'value'      => 'ID',
+							'text'       => '{{post_title}} (#{{ID}})',
+							'key_render' => [
+								'post_title' => 'post_title',
+								'ID'         => 'ID',
+							],
+						],
+						'setting'     => [
+							'placeholder' => esc_html__( 'Choose Course', 'learnpress' ),
+						],
+					];
 					?>
 					<p>
-						<label
-							for="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>"><?php echo wp_kses_post( $setting['label'] ); ?></label>
-						<select class="widefat lp-widget_select_course"
+						<label for="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>">
+							<?php echo wp_kses_post( $setting['label'] ); ?>
+						</label>
+						<select class="lp-tom-select"
 								id="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>"
 								name="<?php echo esc_attr( $this->get_field_name( $key ) ); ?>"
 								data-rest-url="<?php echo get_rest_url(); ?>"
 								data-post-type="<?php echo esc_attr( $setting['post_type'] ?? LP_COURSE_CPT ); ?>"
 								data-saved = "<?php echo esc_attr( $value ?? '' ); ?>"
+								data-struct = "<?php echo htmlentities2( json_encode( $data_struct ) ); ?>"
 								style="width: 300px;">
 							<?php if ( ! empty( $value ) ) : ?>
 								<option value="<?php echo esc_attr( $value ); ?>"

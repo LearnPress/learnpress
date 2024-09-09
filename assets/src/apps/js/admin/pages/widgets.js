@@ -1,6 +1,3 @@
-import { initTomSelect } from '../../../../js/admin/init-tom-select';
-import { Api } from '../../../../js/admin/utils-admin';
-
 const $ = jQuery;
 
 function formatCourse( repo ) {
@@ -15,7 +12,7 @@ function formatCourseSelection( repo ) {
 	return repo.title.rendered || repo.text;
 }
 
-function autocompleteWidget( widget = null ) {
+/*function autocompleteWidget( widget = null ) {
 	const searchs = $( '.lp-widget_select_course' );
 	const wpRestUrl = searchs.data( 'rest-url' );
 	const postType = searchs.data( 'post_type' ) || 'lp_course';
@@ -74,20 +71,20 @@ function autocompleteWidget( widget = null ) {
 			templateSelection: formatCourseSelection, // omitted for brevity, see the source of this page
 		} );
 	}
-}
+}*/
 
 document.addEventListener( 'DOMContentLoaded', function( event ) {
 	if ( document.querySelector( '#widgets-editor' ) ) {
 		$( document ).on( 'widget-added', function( event, widget ) {
-			autocompleteWidget( widget );
+			//autocompleteWidget( widget );
 		} );
 	} else {
 		$( document ).on( 'learnpress/widgets/select', function() {
-			autocompleteWidget();
+			//autocompleteWidget();
 			sortItem();
 		} );
 
-		autocompleteWidget();
+		//autocompleteWidget();
 	}
 } );
 
