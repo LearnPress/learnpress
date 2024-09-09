@@ -3,18 +3,17 @@
  */
 const gulp = require( 'gulp' );
 const cache = require( 'gulp-cache' );
-const lineec = require( 'gulp-line-ending-corrector' );
-const notify = require( 'gulp-notify' );
+//const lineec = require( 'gulp-line-ending-corrector' );
+//const notify = require( 'gulp-notify' );
+const notifier = require( 'node-notifier' );
 const rename = require( 'gulp-rename' );
 const sass = require( 'gulp-sass' )( require( 'sass' ) );
 const replace = require( 'gulp-replace' );
 const uglify = require( 'gulp-uglify-es' ).default;
 const zip = require( 'gulp-vinyl-zip' );
 const plumber = require( 'gulp-plumber' );
-const sourcemaps = require( 'gulp-sourcemaps' );
 const uglifycss = require( 'gulp-uglifycss' );
 const del = require( 'del' );
-const beep = require( 'beepbeep' );
 const readFile = require( 'read-file' );
 const wpPot = require( 'gulp-wp-pot' );
 const rtlcss = require( 'gulp-rtlcss' );
@@ -74,10 +73,9 @@ const releasesFiles = [
 	'!languages/learnpress-js.pot',
 ];
 
-const errorHandler = ( r ) => {
-	notify.onError( '\n\n❌  ==> ERROR: <%= error.message %>\n' )( r );
-
-	beep();
+const errorHandler = ( err ) => {
+	console.error( 'Error:', err.message );
+	this.emit( 'end' );
 };
 
 // Clear cache.
@@ -92,7 +90,7 @@ gulp.task( 'styles', () => {
 		// .pipe( sourcemaps.init() )
 		.pipe( sass.sync().on( 'error', sass.logError ) )
 		// .pipe( sourcemaps.write( './' ) )
-		.pipe( lineec() )
+		//.pipe( lineec() )
 		.pipe( gulp.dest( 'assets/css' ) )
 		.pipe( rtlcss() )
 		.pipe( rename( { suffix: '-rtl' } ) )
@@ -110,7 +108,7 @@ gulp.task( 'mincss', () => {
 		.src( [ 'assets/css/**/*.css', '!assets/css/**/*.min.css' ] )
 		.pipe( rename( { suffix: '.min' } ) )
 		.pipe( uglifycss() )
-		.pipe( lineec() )
+		//.pipe( lineec() )
 		.pipe( gulp.dest( 'assets/css' ) );
 } );
 
@@ -142,7 +140,7 @@ gulp.task( 'minJsAdmin', () => {
 			} )
 		)
 		.pipe( uglify() )
-		.pipe( lineec() )
+		//.pipe( lineec() )
 		.pipe( gulp.dest( 'assets/js/admin' ) );
 } );
 gulp.task( 'minJsFrontend', () => {
@@ -154,7 +152,7 @@ gulp.task( 'minJsFrontend', () => {
 			} )
 		)
 		.pipe( uglify() )
-		.pipe( lineec() )
+		//.pipe( lineec() )
 		.pipe( gulp.dest( 'assets/js/frontend' ) );
 } );
 
@@ -190,12 +188,15 @@ gulp.task( 'zipReleases', () => {
 gulp.task( 'noticeReleases', () => {
 	const version = getCurrentVer();
 
-	return gulp.src( './' ).pipe(
-		notify( {
-			message: 'LearnPress version ' + version + ' build successfully!',
-			onLast: true,
-		} )
-	);
+	return gulp.src( './' )
+		//.pipe( gulp.dest( './' ) )
+		.on( 'end', function() {
+			notifier.notify( {
+				title: 'LearnPress',
+				message: 'LearnPress version ' + version + ' build successfully!',
+				sound: 'Bottle',
+			} );
+		} );
 } );
 
 gulp.task( 'makepot', function() {

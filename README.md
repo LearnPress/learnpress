@@ -147,7 +147,7 @@ https://www.transifex.com/projects/p/learnpress/
 <a href="http://docs.thimpress.com/learnpress" target="_blank">Documentation</a> is available in ThimPress site.
 
 ## For Developer.
-# Note: node use is version 16
+# Note: node use is version 17 or higher.
 
 1. <code>git clone https://github.com/LearnPress/learnpress.git</code>
 
@@ -162,3 +162,5 @@ https://www.transifex.com/projects/p/learnpress/
 6. <code>composer install</code> *Install autoload and required library.*
 
 7. <code>gulp watch</code> *For listener change file scss.*
+
+8. <code>npm run release</code> *Release.*
