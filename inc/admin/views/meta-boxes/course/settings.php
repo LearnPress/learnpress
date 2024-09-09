@@ -45,6 +45,17 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 				'high'
 			);
 		}
+
+		if ( ! $is_enable_offline_course ) {
+			add_meta_box(
+				'course-editor-refactor',
+				esc_html__( 'Curriculum demo', 'learnpress' ),
+				array( $this, 'admin_editor_refactor' ),
+				$this->post_type,
+				'normal',
+				'high'
+			);
+		}
 	}
 
 	public function metabox( $post_id ) {
@@ -665,6 +676,10 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 	 */
 	public function admin_editor() {
 		learn_press_admin_view( 'course/editor' );
+	}
+
+	public function admin_editor_refactor() {
+		learn_press_admin_view( 'course/edtior-refactor' );
 	}
 
 	/*public function save( $post_id ) {

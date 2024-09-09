@@ -19,6 +19,16 @@ if ( 'undefined' !== typeof lpDataAdmin ) {
 		apiAssignUserCourse: lpDataAdmin.lp_rest_url + 'lp/v1/admin/tools/assign-user-course',
 		apiUnAssignUserCourse: lpDataAdmin.lp_rest_url + 'lp/v1/admin/tools/unassign-user-course',
 		apiAJAX: lpDataAdmin.lp_rest_url + 'lp/v1/load_content_via_ajax/',
+		apiCurriculumHTML: lpDataAdmin.lp_rest_url + 'lp/v1/admin/edit/course/html-curriculum',
+		apiUpdateSection: lpDataAdmin.lp_rest_url + 'lp/v1/admin/edit/course/update-section',
+		apiDeleteSection: lpDataAdmin.lp_rest_url + 'lp/v1/admin/edit/course/delete-section',
+		apiAddSection: lpDataAdmin.lp_rest_url + 'lp/v1/admin/edit/course/add-section',
+		apiUpdateSectionOrder: lpDataAdmin.lp_rest_url + 'lp/v1/admin/edit/course/update-order-section',
+		apiUpdateSectionItem: lpDataAdmin.lp_rest_url + 'lp/v1/admin/edit/course/update-section-item',
+		apiRemoveItemInSection: lpDataAdmin.lp_rest_url + 'lp/v1/admin/edit/course/remove-item-in-section',
+		apiDeleteSectionItem: lpDataAdmin.lp_rest_url + 'lp/v1/admin/edit/course/delete-section-item',
+		apiAddNewSectionItem: lpDataAdmin.lp_rest_url + 'lp/v1/admin/edit/course/add-new-section-item',
+		apiUpdateSectionItemOrder: lpDataAdmin.lp_rest_url + 'lp/v1/admin/edit/course/update-order-section-item',
 	};
 }
 
