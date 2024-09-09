@@ -17,6 +17,23 @@ if ( class_exists( 'LP_Section_Filter' ) ) {
 }
 
 class LP_Section_Filter extends LP_Filter {
+	const COL_SECTION_ID          = 'section_id';
+	const COL_SECTION_NAME        = 'section_name';
+	const COL_SECTION_COURSE_ID   = 'section_course_id';
+	const COL_SECTION_ORDER       = 'section_order';
+	const COL_SECTION_DESCRIPTION = 'section_description';
+
+	/**
+	 * @var string[] all fields of table
+	 */
+	public $all_fields = [
+		self::COL_SECTION_ID,
+		self::COL_SECTION_NAME,
+		self::COL_SECTION_COURSE_ID,
+		self::COL_SECTION_ORDER,
+		self::COL_SECTION_DESCRIPTION,
+	];
+
 	/**
 	 * @var int
 	 */
