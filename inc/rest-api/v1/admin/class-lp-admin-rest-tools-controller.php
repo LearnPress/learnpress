@@ -362,7 +362,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 			$ids_str = LP_Helper::sanitize_params_submitted( $params['ids'] ?? '' );
 			//$not_ids_str         = LP_Helper::sanitize_params_submitted( $params['not_ids'] ?? '' );
 			$not_ids_str         = LP_Helper::sanitize_params_submitted( $params['id_not_in'] ?? '' );
-			$current_ids         = LP_Helper::sanitize_params_submitted( $params['current_ids'] ?? [] );
+			$current_ids         = (array) LP_Helper::sanitize_params_submitted( $params['current_ids'] ?? [] );
 			$total_rows          = 0;
 			$filter              = new LP_Course_Filter();
 			$filter->limit       = 20;
