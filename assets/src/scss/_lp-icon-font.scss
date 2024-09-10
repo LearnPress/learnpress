@@ -1,12 +1,13 @@
 @font-face {
 	font-family: 'lp-icon';
-	src: url('../src/css/vendor/fonts/lp-icon/lp-icon.ttf?v=vhxwe9') format('truetype'),
-	url('../src/css/vendor/fonts/lp-icon/lp-icon.woff2?v=vhxwe9') format('woff2'),
-	url('../src/css/vendor/fonts/lp-icon/lp-icon.svg?v=vhxwe9#lp-icon') format('svg');
+	src: url('../src/css/vendor/fonts/lp-icon/lp-icon.ttf?v=vhxwf') format('truetype'),
+	url('../src/css/vendor/fonts/lp-icon/lp-icon.woff2?v=vhxwf') format('woff2'),
+	url('../src/css/vendor/fonts/lp-icon/lp-icon.svg?v=vhxwf#lp-icon') format('svg');
 	font-weight: normal;
 	font-style: normal;
 	font-display: block;
 }
+
 [class^="lp-icon-"], [class*=" lp-icon-"] {
 	/* use !important to prevent issues with browser extensions that change fonts */
 	font-family: 'lp-icon' !important;
@@ -42,6 +43,7 @@
 }
 .lp-icon-star:before {
 	content: "\f005";
+	color: #ffb606;
 }
 .lp-icon-star-o:before {
 	content: "\f006";
@@ -129,6 +131,12 @@
 }
 .lp-icon-question-circle:before {
 	content: "\f059";
+}
+.lp-icon-arrow-left:before {
+	content: "\f060";
+}
+.lp-icon-arrow-right:before {
+	content: "\f061";
 }
 .lp-icon-expand:before {
 	content: "\f065";
@@ -378,6 +386,9 @@
 }
 .lp-icon-circle-thin:before {
 	content: "\f1db";
+}
+.lp-icon-share-alt:before {
+	content: "\f1e0";
 }
 .lp-icon-user-secret:before {
 	content: "\f21b";
