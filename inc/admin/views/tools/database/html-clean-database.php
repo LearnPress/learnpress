@@ -51,16 +51,16 @@ $clean_tables = array( 'learnpress_sessions' );
 		<?php
 		$i = 0;
 		foreach ( $clean_tables as $clean_table ) :
-			$i++;
+			++$i;
 			$rows = $lp_db_sessions->count_row_db_sessions();
 			?>
 			<div class="progressbar__item step-<?php echo esc_attr( $i ); ?>" data-total="<?php echo esc_attr( $rows ); ?>">
 				<div class="progressbar__container">
 					<div class="progressbar__content">
-						<h4><?php echo sprintf('%s: %s', esc_html__( 'Table name', 'learnpress' ), $clean_table ); ?></h4>
+						<h4><?php echo sprintf( '%s: %s', esc_html__( 'Table name', 'learnpress' ), $clean_table ); ?></h4>
 						<div class="progressbar__indexs">
 							<span class="progressbar__rows">
-								<?php echo esc_html( '0 / ' . $rows . ' expire' ); ?>
+								<?php echo sprintf( '0 / %d %s', $rows, __( 'expire', 'learnpress' ) ); ?>
 							</span>
 							<span class="progressbar__percent">( 0% )</span>
 						</div>
