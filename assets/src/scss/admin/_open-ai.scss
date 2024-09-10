@@ -1,4 +1,4 @@
-#lp-ai-course-title-modal {
+.ai-modal {
 	position: fixed;
 	top: 0;
 	left: 0;
@@ -58,7 +58,7 @@
 			.ai-field {
 				flex-basis: 40%;
 
-				div {
+				> div {
 					margin-bottom: 10px;
 
 					label {
@@ -73,12 +73,8 @@
 
 					&.output {
 						display: flex;
-						align-items: center;
+						align-items: flex-end;
 						justify-content: space-between;
-
-						button {
-							margin-top: 4px;
-						}
 					}
 				}
 			}
@@ -93,15 +89,15 @@
 					align-items: start;
 					justify-content: space-between;
 
-					.output-title {
+					.output-title, .output-des {
 						font-weight: 600;
 						font-size: 18px;
 					}
 
-					.toggle-prompt{
+					.toggle-prompt {
 						display: none;
 
-						&.display{
+						&.display {
 							display: block;
 						}
 					}
@@ -122,11 +118,21 @@
 					}
 				}
 
-				.course-title-output {
+				.course-title-output, .course-des-output {
 					margin-top: 10px;
 
-					.course-title-item {
+					.course-title-item, .course-des-item {
 						background-color: #D0D3D8;
+						padding: 8px;
+						margin-bottom: 10px;
+
+						.ai-result {
+							margin-bottom: 10px;
+						}
+
+						p {
+							word-break: break-word;
+						}
 					}
 				}
 
@@ -142,14 +148,25 @@
 						display: block;
 					}
 				}
-
-				.course-title-output {
-					.course-title-item {
-						padding: 8px;
-						margin-bottom: 10px;
-					}
-				}
 			}
 		}
 	}
+
+	.plugin-clear_button.form-select .clear-button, .plugin-clear_button.single .clear-button {
+		right: 2px;
+		padding: 2px 6px;
+	}
+}
+
+#ai-course-fi-field-logo-input{
+	display: none;
+}
+
+#ai-course-fi-field-logo-preview img{
+	max-width: 100%;
+	height: auto;
+}
+
+#ai-course-fi-field-logo-error{
+	color: red;
 }

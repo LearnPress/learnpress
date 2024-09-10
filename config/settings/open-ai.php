@@ -56,9 +56,7 @@ return apply_filters(
 						'gpt-4o-mini'            => esc_html__( 'GPT 4o Mini', 'learnpress' ),
 						'gpt-4'                  => esc_html__( 'GPT 4', 'learnpress' ),
 						'gpt-3.5-turbo'          => esc_html__( 'GPT 3.5 Turbo', 'learnpress' ),
-						'gpt-3.5-turbo-instruct' => esc_html__( 'GPT 3.5 Turbo Instruct', 'learnpress' ),
-						'babbage-002'            => esc_html__( 'Babbage 002', 'learnpress' ),
-						'davinci-002'            => esc_html__( 'Davinci 002', 'learnpress' ),
+						'gpt-3.5-turbo-instruct' => esc_html__( 'GPT 3.5 Turbo Instruct', 'learnpress' )
 					),
 				],
 				[
