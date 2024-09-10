@@ -156,19 +156,26 @@ class SkinCoursesBase extends LPSkinBase {
 			'paged'            => $paged,
 			'courses_per_page' => $courses_per_page,
 		];
+
 		$section_top = [
-			'wrapper'         => [ 'text_html' => '<div class="learn-press-elms-courses-top">' ],
-			'el_result_count' => [ 'text_html' => $show_el_result_count ? $listCoursesTemplate->html_courses_page_result( $data_rs ) : '' ],
-			'el_sorting'      => [ 'text_html' => $show_el_sorting ? $listCoursesTemplate->html_order_by( $courses_order_by ) : '' ],
-			'close_wrapper'   => [ 'text_html' => '</div>' ],
+			'wrapper'         => '<div class="learn-press-elms-courses-top">',
+			'el_result_count' => $show_el_result_count ? $listCoursesTemplate->html_courses_page_result( $data_rs ) : '',
+			'el_sorting'      => $show_el_sorting ? $listCoursesTemplate->html_order_by( $courses_order_by ) : '',
+			'close_wrapper'   => '</div>',
 		];
-		Template::instance()->print_sections( $section_top );
-		echo '<ul class="learn-press-courses lp-list-courses-no-css ' . $skin . '">';
+		echo Template::combine_components( $section_top );
+
+		$html_lis = '';
 		foreach ( $courses as $courseObj ) {
 			$course = learn_press_get_course( $courseObj->ID );
-			echo static::render_course( $course, $settings );
+			$html_lis .= static::render_course( $course, $settings );
 		}
-		echo '</ul>';
+		$section_list = [
+			'wrapper' => sprintf( '<ul class="learn-press-courses lp-list-courses-no-css %s">', esc_attr( $skin ) ),
+			'list'    => $html_lis,
+			'wrapper_end' => '</ul>',
+		];
+		echo Template::combine_components( $section_list );
 
 		$data_pagination = [
 			'total_pages' => $total_pages,
