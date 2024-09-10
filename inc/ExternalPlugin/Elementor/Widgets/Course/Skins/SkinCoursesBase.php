@@ -181,7 +181,7 @@ class SkinCoursesBase extends LPSkinBase {
 			'total_pages' => $total_pages,
 			'type'        => $pagination_type,
 			'base'        => add_query_arg( 'paged', '%#%', $settings['url_current'] ?? '' ),
-			'paged'       => $settings['paged'] ?? 1,
+			'paged'       => (int) ( $settings['paged'] ?? 1 ),
 		];
 		echo $listCoursesTemplate->html_pagination( $data_pagination );
 

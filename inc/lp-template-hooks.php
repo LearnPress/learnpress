@@ -57,13 +57,6 @@ add_action(
 
 /**
  * Course buttons
- *
- * @see learn_press_course_purchase_button
- * @see learn_press_course_enroll_button
- * @see learn_press_course_retake_button
- * @see learn_press_course_continue_button
- * @see learn_press_course_finish_button
- * @see learn_press_course_external_button
  */
 learn_press_add_course_buttons();
 
