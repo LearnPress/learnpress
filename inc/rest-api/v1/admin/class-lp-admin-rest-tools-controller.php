@@ -397,7 +397,16 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 				$courses_current                 = Courses::get_courses( $filter_current_ids );
 			}
 
-			$response->data->courses     = array_merge( $courses_current, $courses );
+			$check_ids    = [];
+			$courses_rs   = [];
+			$courses_data = array_merge( $courses_current, $courses );
+			foreach ( $courses_data as $course ) {
+				if ( ! in_array( $course->ID, $check_ids ) ) {
+					$courses_rs[] = $course;
+					$check_ids[]  = $course->ID;
+				}
+			}
+			$response->data->courses     = $courses_rs;
 			$response->data->total_pages = LP_Database::get_total_pages( $filter->limit, $total_rows );
 			$response->status            = 'success';
 		} catch ( Throwable $e ) {
