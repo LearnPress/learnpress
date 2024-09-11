@@ -626,8 +626,9 @@ class LP_User extends LP_Abstract_User {
 	 * @return bool|WP_Error|LP_User_Item_Quiz
 	 *
 	 * @throws Exception
+	 * @deprecated 4.2.7.2
 	 */
-	public function retake_quiz( int $quiz_id, int $course_id, bool $wp_error = false ) {
+	/*public function retake_quiz( int $quiz_id, int $course_id, bool $wp_error = false ) {
 		$return = false;
 
 		try {
@@ -694,7 +695,7 @@ class LP_User extends LP_Abstract_User {
 		}
 
 		return $return;
-	}
+	}*/
 
 	/**
 	 * Get quiz's user learning or completed

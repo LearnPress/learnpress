@@ -806,7 +806,7 @@ if ( ! function_exists( 'learn_press_pre_get_avatar_callback' ) ) {
 				return $avatar;
 			}
 
-			return $user->get_profile_picture( '', $size['height'] ?? 32 );
+			return $user->get_profile_picture();
 		} catch ( Throwable $e ) {
 			error_log( $e->getMessage() );
 			return $avatar;
@@ -1087,18 +1087,15 @@ function learn_press_update_user_profile_change_password( $wp_error = false ) {
 function learn_press_get_avatar_thumb_size() {
 	$option = LP_Settings::get_option(
 		'avatar_dimensions',
-		array(
-			'width'  => 250,
-			'height' => 250,
-		)
+		[ 'width' => 250, 'height' => 250, ]
 	);
 
 	if ( ! isset( $option['width'] ) || ! isset( $option['height'] ) ) {
-		$option = array(
-			'width'  => 250,
-			'height' => 250,
-		);
+		$option = [ 'width' => 250, 'height' => 250, ];
 	}
+
+	// For option get_avatar_url
+	$option['size'] = $option['width'];
 
 	return $option;
 }
@@ -1560,93 +1557,6 @@ function learn_press_user_start_quiz( $quiz_id, $user_id = 0, $course_id = 0, $w
 }
 
 /**
- * Function retake quiz.
- *
- * @param [type]  $quiz_id
- * @param integer $user_id
- * @param integer $course_id
- * @param boolean $wp_error
- * @deprecated 4.2.5
- *
- * @return void
- */
-function learn_press_user_retake_quiz( $quiz_id, $user_id = 0, $course_id = 0, $wp_error = false ) {
-	if ( ! $user_id ) {
-		$user_id = get_current_user_id();
-	}
-
-	if ( ! $course_id ) {
-		return new WP_Error( 'invalid_course_id', esc_html__( 'Invalid Course ID.', 'learnpress' ) );
-	}
-
-	global $wpdb;
-
-	$query = $wpdb->prepare(
-		"
-	    SELECT user_item_id, item_id id, item_type type
-	    FROM {$wpdb->learnpress_user_items}
-	    WHERE user_item_id = (SELECT max(user_item_id)
-	    FROM {$wpdb->learnpress_user_items}
-	    WHERE user_id = %d AND item_id = %d AND status IN ('enrolled', 'in-progress'))
-		",
-		$user_id,
-		$course_id
-	);
-
-	$parent = $wpdb->get_row( $query );
-
-	if ( ! $parent ) {
-		return new WP_Error( 'invalid_user_item', esc_html__( 'Invalid Quiz', 'learnpress' ) );
-	}
-
-	$data = learn_press_get_user_item(
-		array(
-			'item_id'   => $quiz_id,
-			'user_id'   => $user_id,
-			'parent_id' => $parent ? absint( $parent->user_item_id ) : 0,
-			'ref_type'  => $parent ? $parent->type : LP_COURSE_CPT,
-			'ref_id'    => $parent ? $parent->id : '',
-		)
-	);
-
-	$user_item = new LP_User_Item_Quiz( $data );
-
-	$ratake_count = get_post_meta( $quiz_id, '_lp_retake_count', true );
-
-	if ( $ratake_count > 0 ) {
-		$user_item->update_retake_count();
-	}
-
-	// Create new result in table learnpress_user_item_results.
-	LP_User_Items_Result_DB::instance()->insert( $data->user_item_id );
-
-	// Remove user_item_meta.
-	learn_press_delete_user_item_meta( $data->user_item_id, '_lp_question_checked' );
-
-	$user_item->set_status( LP_ITEM_STARTED )
-				->set_start_time( time() ) // Error Retake when change timezone - Nhamdv
-				->set_end_time()
-				->set_graduation( LP_COURSE_GRADUATION_IN_PROGRESS )
-				->update();
-
-	// Reset first cache
-	//$user_item->get_status( 'status', true );
-
-	// Error Retake when change timezone - Nhamdv
-	//  learn_press_update_user_item_field(
-	//      array(
-	//          'start_time' => current_time( 'mysql', true ),
-	//      ),
-	//      array(
-	//          'user_item_id' => $data->user_item_id,
-	//      )
-	//  );
-
-	return $user_item;
-}
-
-
-/**
  * Prepares list of questions for rest api.
  *
  * @param int[] $question_ids
@@ -2093,5 +2003,4 @@ function learnpress_get_count_by_user( $user_id = '', $post_type = 'lp_course' )
 		'publish' => count( $public ),
 		'pending' => count( $pending ),
 	);
-
 }
