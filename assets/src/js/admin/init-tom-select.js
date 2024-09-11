@@ -32,8 +32,6 @@ const handleResponse = ( response, tomSelectEl, dataStruct, fetchAPI, customOpti
 	const defaultIds = tomSelectEl.dataset?.saved ? JSON.parse( tomSelectEl.dataset.saved ) : 0;
 	let options = [];
 
-	console.log( 'Data', response.data[ dataStruct.dataType ] );
-
 	// Format response data set option tom-select
 	if ( response.data[ dataStruct.dataType ].length > 0 ) {
 		options = response.data[ dataStruct.dataType ].map( ( item ) => ( {
@@ -61,8 +59,6 @@ const handleResponse = ( response, tomSelectEl, dataStruct, fetchAPI, customOpti
 		...customOptions,
 		options,
 	};
-
-	console.log( 'Options before handle', settingOption );
 
 	if ( null != tomSelectEl.tomSelectInstance ) {
 		tomSelectEl.tomSelectInstance.addOptions( options );
