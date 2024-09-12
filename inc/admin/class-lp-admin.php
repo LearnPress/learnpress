@@ -853,6 +853,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 							if ( $new_slug ) {
 								$post_slug = $new_slug;
 							}
+							$post_slug = urldecode( $post_slug );
 
 							$slug_arr   = explode( '/', $link_item_edit_slug );
 							$count_slug = count( $slug_arr );
