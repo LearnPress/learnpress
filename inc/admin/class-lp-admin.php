@@ -844,8 +844,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 					if ( $course_id_of_item ) {
 						$course = learn_press_get_course( $course_id_of_item );
 						if ( $course ) {
-							$link_item           = $course->get_item_link( $post->ID );
-							$link_item           = LP_Helper::handle_lp_permalink_structure( $link_item, get_post( $course_id_of_item ) );
+							$link_item           = urldecode( $course->get_item_link( $post->ID ) );
 							$post_slug           = $post->post_name;
 							$link_item_edit_slug = preg_replace( '/' . $post_slug . '$/', '', $link_item );
 

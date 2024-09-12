@@ -652,7 +652,7 @@ class LP_Helper {
 			}
 
 			$find[]    = '%course_category%';
-			$replace[] = $course_category;
+			$replace[] = urldecode( $course_category );
 		}
 
 		return apply_filters(
