@@ -21,7 +21,17 @@ const AdminUtilsFunctions = {
 				},
 			},
 			onInitialize() {
+			},
+			onItemAdd( e ) {
+				// Get list without current item.
+				if ( fetchAPI ) {
+					const selectedOptions = Array.from( elTomSelect.selectedOptions );
+					const selectedValues = selectedOptions.map( ( option ) => option.value );
+					selectedValues.push( e );
+					dataSend.id_not_in = selectedValues.join( ',' );
 
+					fetchAPI( '', dataSend, callBackHandleData );
+				}
 			},
 		};
 
