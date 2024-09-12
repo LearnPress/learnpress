@@ -549,59 +549,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		}
 
 		/**
-		 * Mark question that user has checked.
-		 *
-		 * @param int $question_id
-		 * @param int $quiz_id
-		 * @param int $course_id
-		 *
-		 * @return WP_Error|mixed
-		 * @since 3.0.0
-		 * @deprecated 4.2.5
-		 */
-		public function hint( $question_id, $quiz_id, $course_id ) {
-			_deprecated_function( __FUNCTION__, '4.2.5' );
-			return false;
-			$course = learn_press_get_course( $course_id );
-			if ( ! $course ) {
-				return false;
-			}
-
-			if ( ! $course->has_item( $quiz_id ) ) {
-				return false;
-			}
-
-			/**
-			 * @var $quiz LP_Quiz
-			 */
-			$quiz = $course->get_item( $quiz_id );
-			if ( ! $quiz instanceof LP_Course_Item_Quiz ) {
-				return false;
-			}
-
-			if ( ! $quiz->has_question( $question_id ) ) {
-				return false;
-			}
-
-			$quiz_data = $this->get_item_data( $quiz_id, $course_id );
-			$remain    = $quiz_data->hint( $question_id );
-			if ( false === $remain ) {
-				return new WP_Error( 1001, __( 'You can not hint at the question.', 'learnpress' ) );
-			}
-
-			return $remain;
-		}
-
-		public function get_quiz_last_results( $quiz_id ) {
-			$results = $this->get_course_info( $quiz_id );
-			if ( $results ) {
-				$results = reset( $results );
-			}
-
-			return apply_filters( 'learn_press_user_quiz_last_results', $results, $quiz_id, $this );
-		}
-
-		/**
 		 * Check if user has at least one role.
 		 *
 		 * @param array|string $roles
@@ -635,28 +582,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			return $is;
 		}
 
-		/**
-		 *
-		 * Check what the user can do
-		 *
-		 * @param $role
-		 *
-		 * @return mixed
-		 * @throws Exception
-		 */
-		public function can( $role ) {
-			_deprecated_function( __FUNCTION__, '3.0.8' );
-			$args = func_get_args();
-			unset( $args[0] );
-			$method   = 'can_' . preg_replace( '!-!', '_', $role );
-			$callback = array( $this, $method );
-			if ( is_callable( $callback ) ) {
-				return call_user_func_array( $callback, $args );
-			} else {
-				throw new Exception( sprintf( __( 'The role %s for the user doesn\'t exist', 'learnpress' ), $role ) );
-			}
-		}
-
 		public function can_edit_item( $item_id, $course_id = 0 ) {
 			$return = $this->is_admin();
 
@@ -670,22 +595,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			}
 
 			return apply_filters( 'learn_press_user_can_edit_item', $return, $item_id, $course_id, $this->get_id() );
-		}
-
-		/**
-		 * Check if user can finish course by getting current progress
-		 * and compares with course passing condition.
-		 *
-		 * @param int $course_id
-		 *
-		 * @return bool
-		 * @editor tungnx
-		 * @modify 4.1.3
-		 */
-		public function can_finish_course( int $course_id ) {
-			_deprecated_function( __FUNCTION__, '4.1.3', 'is_course_finished' );
-
-			return true;
 		}
 
 		/**
@@ -792,20 +701,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 */
 		public function is_author_of( $post_id ) {
 			return absint( get_post_field( 'post_author', $post_id ) ) === $this->get_id();
-		}
-
-		public function has( $role ) {
-			_deprecated_function( __FUNCTION__, '3.0.8' );
-
-			$args = func_get_args();
-			unset( $args[0] );
-			$method   = 'has_' . preg_replace( '!-!', '_', $role );
-			$callback = array( $this, $method );
-			if ( is_callable( $callback ) ) {
-				return call_user_func_array( $callback, $args );
-			} else {
-				throw new Exception( sprintf( __( 'The role %s for the user doesn\'t exist', 'learnpress' ), $role ) );
-			}
 		}
 
 		public function get( $role ) {
@@ -1041,29 +936,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		}
 
 		/**
-		 * Get the remaining time of a course for the user.
-		 *
-		 * @param int $course_id
-		 *
-		 * @return bool|int|string
-		 * @deprecated 4.1.7.3
-		 */
-		public function get_course_remaining_time( $course_id ) {
-			_deprecated_function( __FUNCTION__, '4.1.7.3' );
-			/*$course = learn_press_get_course( $course_id );
-			$remain = false;
-
-			if ( $course && $course->get_id() ) {
-				$course_data = $this->get_course_data( $course_id, true );
-				if ( $course_data ) {
-					$remain = $course_data->is_exceeded();
-				}
-			}
-
-			return $remain > 0 ? learn_press_seconds_to_weeks( $remain ) : false;*/
-		}
-
-		/**
 		 * Get the order that contains the course.
 		 *
 		 * @param int $course_id
@@ -1107,58 +979,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		}
 
 		/**
-		 * @param      $question_id
-		 * @param null $quiz_id
-		 *
-		 * @return bool
-		 */
-		public function get_answer_results( $question_id, $quiz_id = null ) {
-
-			_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '3.0.0' );
-
-			$data = false;
-			if ( ! $quiz_id ) {
-				$quiz_id = $this->get_quiz_by_question( $question_id );
-			}
-			if ( $quiz_id ) {
-				$question = LP_Question::get_question( $question_id );
-
-				if ( $question ) {
-					$quiz_results = $this->get_quiz_results( $quiz_id );
-					if ( ! empty( $quiz_results->question_answers ) ) {
-						$question_answer = array_key_exists(
-							$question_id,
-							$quiz_results->question_answers
-						) ? $quiz_results->question_answers[ $question_id ] : null;
-						$data            = $question->check( $question_answer );
-					}
-				}
-			}
-
-			return $data;
-		}
-
-		/**
-		 * @param      $question_id
-		 * @param null $quiz_id
-		 *
-		 * @return bool
-		 */
-		public function is_answered_question( $question_id, $quiz_id = null ) {
-			if ( empty( $this->answered_questions ) ) {
-				$this->answered_questions = array();
-			}
-			if ( ! $quiz_id ) {
-				$quiz_id = $this->get_quiz_by_question( $question_id );
-			}
-
-			$results  = $this->get_quiz_results( $quiz_id );
-			$answered = ! empty( $results->question_answers ) ? $results->question_answers : array();
-
-			return $answered ? array_key_exists( $question_id, $answered ) : false;
-		}
-
-		/**
 		 * @return array
 		 */
 		public function get_roles() {
@@ -1180,23 +1000,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			$quiz_data = $this->get_item_data( $quiz_id, $course_id );
 
 			return $quiz_data ? $quiz_data->has_checked_question( $question_id ) : false;
-		}
-
-		/**
-		 * @param     $question_id
-		 * @param     $quiz_id
-		 * @param int $course_id
-		 *
-		 * @return bool
-		 */
-		public function has_hinted_answer( $question_id, $quiz_id, $course_id = 0 ) {
-			if ( ! $course_id ) {
-				$course_id = get_the_ID();
-			}
-
-			$quiz_data = $this->get_item_data( $quiz_id, $course_id );
-
-			return $quiz_data ? $quiz_data->has_hinted_question( $question_id ) : false;
 		}
 
 		/**
