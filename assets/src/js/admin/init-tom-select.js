@@ -97,9 +97,9 @@ const initTomSelect = ( tomSelectEl, customOptions = {}, customParams = {} ) => 
 
 	if ( tomSelectEl.classList.contains( 'loaded' ) ) {
 		return;
-	} else {
-		tomSelectEl.classList.add( 'loaded' );
 	}
+
+	tomSelectEl.classList.add( 'loaded' );
 
 	const defaultIds = tomSelectEl.dataset?.saved ? JSON.parse( tomSelectEl.dataset.saved ) : 0;
 	const dataStruct = tomSelectEl?.dataset?.struct ? JSON.parse( tomSelectEl.dataset.struct ) : '';
@@ -166,6 +166,9 @@ const initTomSelect = ( tomSelectEl, customOptions = {}, customParams = {} ) => 
 		},
 	};
 
+	// Fetch data for first load tom-select
+	// Get ids selected, and show list without ids selected with limit.
+	customParams.id_not_in = defaultIds.join( ',' );
 	fetchFunction( '', customParams, callBackApi );
 };
 
