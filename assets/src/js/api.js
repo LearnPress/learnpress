@@ -30,6 +30,7 @@ if ( 'undefined' !== typeof lpDataAdmin ) {
 		apiDeleteSectionItem: lpDataAdmin.lp_rest_url + 'lp/v1/admin/edit/course/delete-section-item',
 		apiAddNewSectionItem: lpDataAdmin.lp_rest_url + 'lp/v1/admin/edit/course/add-new-section-item',
 		apiUpdateSectionItemOrder: lpDataAdmin.lp_rest_url + 'lp/v1/admin/edit/course/update-order-section-item',
+		apiSearchItems: lpDataAdmin.lp_rest_url + 'lp/v1/admin/edit/course/search-items',
 	};
 }
 
