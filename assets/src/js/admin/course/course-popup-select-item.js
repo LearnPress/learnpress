@@ -12,11 +12,38 @@ const attachPaginationListeners = ( el, handler ) => {
 	el.addEventListener( 'click', handler ); // Gắn handler mới
 };
 
+const updateTotalItemSection = ( el, value, elRemove ) => {
+	if ( ! el ) {
+		return;
+	}
+
+	let changeValue = 0;
+	if ( value ) {
+		changeValue = value;
+	}
+
+	if ( elRemove ) {
+		const countEl = elRemove.querySelector( '.section-item-counts span' );
+		const contentRemove = countEl.textContent;
+		const numberRemove = parseInt( contentRemove );
+		changeValue = -numberRemove;
+	}
+
+	const sectionItemCounts = el.querySelector( '.section-item-counts span' );
+	const content = sectionItemCounts.textContent;
+	const number = parseInt( content );
+	const words = content.replace( /[0-9]/g, '' ).trim();
+	const total = number + changeValue;
+	const result = total + ' ' + words;
+	sectionItemCounts.textContent = result;
+};
+
 const popupModalSelectItemEl = document.querySelector( '#lp-modal-choose-items-refactor' );
 const courseId = getCourseId();
 const listAddedEl = popupModalSelectItemEl.querySelector( '.list-added-items' );
 const API_SEARCH_ITEMS_URL = lplistAPI.admin.apiSearchItems;
 let currentAbortController = null;
+const tabs = Array.prototype.slice.call( popupModalSelectItemEl.querySelectorAll( '.tabs .tab' ) );
 
 const handleTabClick = ( tabs, tab, popupModalSelectItemEl, courseId ) => {
 	const itemType = tab.dataset.type ?? '';
@@ -93,7 +120,6 @@ const handlePagination = ( paginationEl, paginationHtml ) => {
 		}
 		attachPaginationListeners( nextEl, ( e ) => {
 			e.preventDefault();
-			console.log( 'running' );
 			handlePageChange( currentPage + 1 );
 		} );
 	}
@@ -131,7 +157,6 @@ const resetPopup = () => {
 	popupModalSelectItemEl.classList.remove( 'show', 'loading' );
 	const searchInputEl = popupModalSelectItemEl.querySelector( '.search input' );
 	const listItemEl = popupModalSelectItemEl.querySelector( '.list-items' );
-	const tabs = Array.prototype.slice.call( popupModalSelectItemEl.querySelectorAll( '.tabs .tab' ) );
 	const selectedTotalEl = popupModalSelectItemEl.querySelector( '.footer .total-selected' );
 	const addSelectedEl = popupModalSelectItemEl.querySelector( '.footer .checkout' );
 	const editSelectedBtnEl = popupModalSelectItemEl.querySelector( '.edit-selected' );
@@ -316,6 +341,9 @@ const updateSectionApi = ( data, listUiSortableEl ) => {
 	if ( ! data || ! popupModalSelectItemEl ) {
 		return;
 	}
+	const sectionId = popupModalSelectItemEl.dataset.selectId ?? '';
+	const selectEl = document.querySelector( `.section[data-section-id="${ sectionId }"]` );
+	const courseEditorEl = document.querySelector( '#course-editor-refactor' );
 
 	const url = lplistAPI.admin.apiUpdateSectionItemOrder;
 	const method = 'POST';
@@ -335,6 +363,11 @@ const updateSectionApi = ( data, listUiSortableEl ) => {
 				itemEls.map( ( itemEl ) => {
 					listUiSortableEl.insertAdjacentHTML( 'beforeend', itemEl );
 				} );
+
+				if ( selectEl && courseEditorEl ) {
+					updateTotalItemSection( selectEl, itemEls.length );
+					updateTotalItemSection( courseEditorEl, itemEls.length );
+				}
 			}
 		},
 		error: ( err ) => {
@@ -346,25 +379,8 @@ const updateSectionApi = ( data, listUiSortableEl ) => {
 	} );
 };
 
-const popupSelectItem = ( selectEl ) => {
-	const selectId = selectEl.dataset?.sectionId ?? '';
-	if ( ! popupModalSelectItemEl || ! selectId ) {
-		return;
-	}
-
-	popupModalSelectItemEl.dataset.selectId = selectId;
-
-	const tabs = Array.prototype.slice.call( popupModalSelectItemEl.querySelectorAll( '.tabs .tab' ) );
-
+const handleEventPopup = () => {
 	if ( tabs.length > 0 ) {
-		const itemType = tabs[ 0 ].dataset.type ?? '';
-		popupModalSelectItemEl.dataset.type = itemType;
-		const data = {
-			courseId,
-			itemType,
-		};
-
-		getSectionItem( data, popupModalSelectItemEl );
 		tabs.map( ( tab ) => {
 			attachPaginationListeners( tab, ( e ) => {
 				e.preventDefault();
@@ -408,10 +424,15 @@ const popupSelectItem = ( selectEl ) => {
 
 	const addSelectedEl = popupModalSelectItemEl.querySelector( '.footer .checkout' );
 	if ( addSelectedEl && listAddedEl ) {
-		const listUiSortableEl = selectEl.querySelector( '.ui-sortable' );
-
 		addSelectedEl.addEventListener( 'click', ( e ) => {
 			e.preventDefault();
+			e.stopPropagation();
+			const sectionId = popupModalSelectItemEl.dataset.selectId ?? '';
+			if ( ! sectionId ) {
+				return;
+			}
+			const selectEl = document.querySelector( `.section[data-section-id="${ sectionId }"]` );
+			const listUiSortableEl = selectEl.querySelector( '.ui-sortable' );
 			const sectionItemEls = Array.prototype.slice.call( selectEl.querySelectorAll( '.section-list-items .ui-sortable	.section-item' ) );
 			const currentItemEl = sectionItemEls.map( ( sectionItemEl ) => {
 				const data = {
@@ -434,7 +455,7 @@ const popupSelectItem = ( selectEl ) => {
 			const data = {
 				items: dataUpdateItem,
 				courseId,
-				sectionId: selectId,
+				sectionId,
 				itemAddNew: selectedAddItem,
 			};
 			updateSectionApi( data, listUiSortableEl );
@@ -442,4 +463,24 @@ const popupSelectItem = ( selectEl ) => {
 	}
 };
 
-export { popupSelectItem };
+const popupSelectItem = ( selectEl ) => {
+	const selectId = selectEl.dataset?.sectionId ?? '';
+	if ( ! popupModalSelectItemEl || ! selectId ) {
+		return;
+	}
+
+	popupModalSelectItemEl.dataset.selectId = selectId;
+
+	if ( tabs.length > 0 ) {
+		const itemType = tabs[ 0 ].dataset.type ?? '';
+		popupModalSelectItemEl.dataset.type = itemType;
+		const data = {
+			courseId,
+			itemType,
+		};
+
+		getSectionItem( data, popupModalSelectItemEl );
+	}
+};
+
+export { popupSelectItem, handleEventPopup };
