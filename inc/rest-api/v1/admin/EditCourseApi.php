@@ -201,6 +201,7 @@ class EditCourseApi extends LP_Abstract_REST_Controller {
 
 			$section = new LP_Section_CURD( $course_id );
 			$section->update_sections_order( $section_ids );
+			$this->clear_cache_course( $course_id );
 			$response->status = 'success';
 		} catch ( Exception $e ) {
 			$response->message = $e->getMessage();
