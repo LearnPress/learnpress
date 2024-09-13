@@ -1,7 +1,7 @@
 import { Sortable } from 'sortablejs';
 import { lpFetchAPI } from '../../utils';
 import lplistAPI from '../../api';
-import { popupSelectItem } from './course-popup-select-item';
+import { handleEventPopup, popupSelectItem } from './course-popup-select-item';
 
 function delay( ms ) {
 	return new Promise( ( resolve ) => setTimeout( resolve, ms ) );
@@ -714,4 +714,5 @@ document.addEventListener( 'DOMContentLoaded', () => {
 	collapseSectionsEvent( courseEditorEl );
 	addNewSection( courseEditorEl );
 	sortableSection( courseEditorEl );
+	handleEventPopup();
 } );

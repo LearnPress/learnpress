@@ -28,6 +28,7 @@
 	}
 }
 
+#admin-editor-lp_course-refactor,
 #admin-editor-lp_course {
 
 	.lp-course-curriculum {
@@ -270,6 +271,15 @@
 
 			.section-collapse {
 				overflow: hidden;
+				transition: all 0.25s ease-out;
+			}
+
+			.section-collapse.close {
+				display: none;
+			}
+
+			.section-collapse.open {
+				display: block;
 			}
 
 			.section-content {
@@ -752,7 +762,8 @@
 /**
  * Modal choose items.
  */
-#lp-modal-choose-items {
+#lp-modal-choose-items,
+#lp-modal-choose-items-refactor {
 	display: none;
 	position: fixed;
 	z-index: -1;
