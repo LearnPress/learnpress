@@ -1,18 +1,50 @@
 import { Sortable } from 'sortablejs';
 import { lpFetchAPI } from '../../utils';
 import lplistAPI from '../../api';
+import { popupSelectItem } from './course-popup-select-item';
 
 function delay( ms ) {
 	return new Promise( ( resolve ) => setTimeout( resolve, ms ) );
 }
 
+const getCourseId = () => {
+	const urlParams = new URLSearchParams( window.location.search );
+	const courseId = urlParams.get( 'post' ) ?? 0;
+	return courseId;
+};
+
+const updateTotalItemSection = ( el, value, elRemove ) => {
+	if ( ! el ) {
+		return;
+	}
+
+	let changeValue = 0;
+	if ( value ) {
+		changeValue = value;
+	}
+
+	if ( elRemove ) {
+		const countEl = elRemove.querySelector( '.section-item-counts span' );
+		const contentRemove = countEl.textContent;
+		const numberRemove = parseInt( contentRemove );
+		changeValue = -numberRemove;
+	}
+
+	const sectionItemCounts = el.querySelector( '.section-item-counts span' );
+	const content = sectionItemCounts.textContent;
+	const number = parseInt( content );
+	const words = content.replace( /[0-9]/g, '' ).trim();
+	const total = number + changeValue;
+	const result = total + ' ' + words;
+	sectionItemCounts.textContent = result;
+};
+
 // Add html with js
-const addSectionsWithDelay = async ( html ) => {
+const addSectionsWithDelay = async ( html, courseEditorEl ) => {
 	if ( ! html.length ) {
 		return;
 	}
 
-	const courseEditorEl = document.querySelector( '#course-editor-refactor' );
 	if ( ! courseEditorEl ) {
 		return;
 	}
@@ -25,10 +57,14 @@ const addSectionsWithDelay = async ( html ) => {
 	for ( const sectionHtml of html ) {
 		addNewSectionEl.insertAdjacentHTML( 'beforebegin', sectionHtml );
 		const newSection = addNewSectionEl.previousElementSibling;
-		updateSingleSection( newSection );
+		if ( ! newSection ) {
+			return;
+		}
+
+		updateSingleSection( newSection, courseEditorEl );
 		singleCollapseEvent( newSection, courseEditorEl );
-		updateSingleSectionItem( newSection );
-		sortableItemEvent( newSection );
+		updateSingleSectionItem( newSection, courseEditorEl );
+		sortableItemEvent( newSection, courseEditorEl );
 		await delay( 100 );
 	}
 };
@@ -76,12 +112,13 @@ const updateSectionApi = ( data ) => {
 };
 
 // Handle Delete section with api
-const deleteSectionApi = ( data, sectionEl ) => {
+const deleteSectionApi = ( data, sectionEl, courseEditorEl ) => {
 	const url = lplistAPI.admin.apiDeleteSection;
 	const method = 'DELETE';
 	const callBack = {
 		success: ( response ) => {
 			if ( sectionEl ) {
+				updateTotalItemSection( courseEditorEl, '', sectionEl );
 				sectionEl.remove();
 			}
 		},
@@ -117,7 +154,7 @@ const updateSectionItemApi = ( data ) => {
 	apiRequest( url, method, data );
 };
 
-const addNewItemApi = ( data, newSectionItemInputEl, sectionEl ) => {
+const addNewItemApi = ( data, newSectionItemInputEl, sectionEl, courseEditorEl ) => {
 	const url = lplistAPI.admin.apiAddNewSectionItem;
 	const method = 'POST';
 	const callBack = {
@@ -127,14 +164,8 @@ const addNewItemApi = ( data, newSectionItemInputEl, sectionEl ) => {
 			}
 
 			const html = response?.data?.html ?? '';
-			const total = response?.data?.total;
 			if ( ! sectionEl || ! html ) {
 				return;
-			}
-
-			const countEl = sectionEl.querySelector( '.section-item-counts span' );
-			if ( countEl && total ) {
-				countEl.innerHTML = total;
 			}
 
 			const listUiEl = sectionEl.querySelector( '.ui-sortable' );
@@ -144,14 +175,17 @@ const addNewItemApi = ( data, newSectionItemInputEl, sectionEl ) => {
 
 			listUiEl.insertAdjacentHTML( 'beforeend', html );
 			const sectionItemEl = listUiEl.lastElementChild;
-			handleEventSectionItem( sectionItemEl );
+			const sectionId = sectionEl?.dataset?.sectionId ?? 0;
+			handleEventSectionItem( sectionItemEl, sectionId, sectionEl, courseEditorEl );
+			updateTotalItemSection( sectionEl, 1 );
+			updateTotalItemSection( courseEditorEl, 1 );
 		},
 	};
 
 	apiRequest( url, method, data, callBack );
 };
 
-const removeItemInSectionApi = ( data, itemRemoveEl ) => {
+const removeItemInSectionApi = ( data, itemRemoveEl, sectionEl, courseEditorEl ) => {
 	const url = lplistAPI.admin.apiRemoveItemInSection;
 	const method = 'DELETE';
 	const callBack = {
@@ -159,19 +193,27 @@ const removeItemInSectionApi = ( data, itemRemoveEl ) => {
 			if ( itemRemoveEl ) {
 				itemRemoveEl.remove();
 			}
+			if ( sectionEl ) {
+				updateTotalItemSection( sectionEl, -1 );
+				updateTotalItemSection( courseEditorEl, -1 );
+			}
 		},
 	};
 
 	apiRequest( url, method, data, callBack );
 };
 
-const deleteItemApi = ( data, itemRemoveEl ) => {
+const deleteItemApi = ( data, itemRemoveEl, sectionEl, courseEditorEl ) => {
 	const url = lplistAPI.admin.apiDeleteSectionItem;
 	const method = 'DELETE';
 	const callBack = {
 		completed: () => {
 			if ( itemRemoveEl ) {
 				itemRemoveEl.remove();
+			}
+			if ( sectionEl && courseEditorEl ) {
+				updateTotalItemSection( sectionEl, -1 );
+				updateTotalItemSection( courseEditorEl, -1 );
 			}
 		},
 	};
@@ -184,7 +226,7 @@ const updateOrderSectionItemApi = ( data ) => {
 	apiRequest( url, method, data );
 };
 
-const handleEventSectionItem = ( sectionItemEl, sectionId ) => {
+const handleEventSectionItem = ( sectionItemEl, sectionId, sectionEl, courseEditorEl ) => {
 	const inputItem = sectionItemEl.querySelector( '.title input' );
 	const itemId = sectionItemEl.dataset.itemId ?? null;
 	const itemOrder = sectionItemEl.dataset.itemOrder ?? null;
@@ -192,6 +234,7 @@ const handleEventSectionItem = ( sectionItemEl, sectionId ) => {
 	const previewIconEl = previewEl?.querySelector( '.lp-btn-icon' );
 	const removeItemInSectionEl = sectionItemEl.querySelector( '.delete-in-course' );
 	const deleteItemEl = sectionItemEl.querySelector( '.delete-permanently' );
+	const courseId = getCourseId();
 
 	if ( inputItem ) {
 		let previousValue = inputItem.value;
@@ -202,6 +245,7 @@ const handleEventSectionItem = ( sectionItemEl, sectionId ) => {
 				const data = {
 					itemId,
 					title: currentValue,
+					courseId,
 				};
 				updateSectionItemApi( data );
 			}
@@ -217,6 +261,7 @@ const handleEventSectionItem = ( sectionItemEl, sectionId ) => {
 				const data = {
 					itemId,
 					preview,
+					courseId,
 				};
 				updateSectionItemApi( data );
 			} else {
@@ -226,6 +271,7 @@ const handleEventSectionItem = ( sectionItemEl, sectionId ) => {
 				const data = {
 					itemId,
 					preview,
+					courseId,
 				};
 				updateSectionItemApi( data );
 			}
@@ -238,8 +284,9 @@ const handleEventSectionItem = ( sectionItemEl, sectionId ) => {
 				const data = {
 					itemId,
 					sectionId,
+					courseId,
 				};
-				removeItemInSectionApi( data, sectionItemEl );
+				removeItemInSectionApi( data, sectionItemEl, sectionEl, courseEditorEl );
 			}
 		} );
 	}
@@ -250,8 +297,9 @@ const handleEventSectionItem = ( sectionItemEl, sectionId ) => {
 				const data = {
 					itemId,
 					sectionId,
+					courseId,
 				};
-				deleteItemApi( data, sectionItemEl );
+				deleteItemApi( data, sectionItemEl, sectionEl, courseEditorEl );
 			}
 		} );
 	}
@@ -274,19 +322,17 @@ const addNewSection = ( courseEditorEl ) => {
 		return;
 	}
 
+	const courseId = getCourseId();
 	const previousValue = input.value;
 	input.addEventListener( 'blur', function() {
 		const currentValue = input.value;
 		if ( previousValue !== currentValue ) {
 			input.value = '';
-
-			const urlParams = new URLSearchParams( window.location.search );
-			const courseId = urlParams.get( 'post' );
 			const data = {
 				title: currentValue,
 				courseId,
 			};
-			addSectionApi( data );
+			addSectionApi( data, courseEditorEl );
 		}
 	} );
 };
@@ -375,15 +421,17 @@ const collapseSectionsEvent = ( courseEditorEl ) => {
 	}
 };
 
-const actionSection = ( sectionEl ) => {
+const actionSection = ( sectionEl, courseEditorEl ) => {
 	if ( ! sectionEl ) {
 		return;
 	}
 
-	const btnSelectEl = sectionEl.querySelector( '.section-actions .button' );
+	const courseId = getCourseId();
+
+	const btnSelectEl = sectionEl.querySelector( '.section-actions .select-items' );
 	if ( btnSelectEl ) {
 		btnSelectEl.addEventListener( 'click', () => {
-
+			popupSelectItem( sectionEl );
 		} );
 	}
 
@@ -407,13 +455,14 @@ const actionSection = ( sectionEl ) => {
 			const sectionId = sectionEl.dataset.sectionId;
 			const data = {
 				sectionId,
+				courseId,
 			};
-			deleteSectionApi( data, sectionEl );
+			deleteSectionApi( data, sectionEl, courseEditorEl );
 		} );
 	}
 };
 
-const updateSingleSectionItem = ( sectionEl ) => {
+const updateSingleSectionItem = ( sectionEl, courseEditorEl ) => {
 	if ( ! sectionEl ) {
 		return;
 	}
@@ -444,8 +493,7 @@ const updateSingleSectionItem = ( sectionEl ) => {
 				if ( previousValue !== currentValue ) {
 					previousValue = currentValue;
 					const selectedValue = newSectionItemEl.querySelector( '.type.current input' )?.value ?? '';
-					const urlParams = new URLSearchParams( window.location.search );
-					const courseId = urlParams.get( 'post' );
+					const courseId = getCourseId();
 					const data = {
 						sectionId,
 						item: {
@@ -454,7 +502,7 @@ const updateSingleSectionItem = ( sectionEl ) => {
 						},
 						courseId,
 					};
-					addNewItemApi( data, newSectionItemInputEl, sectionEl );
+					addNewItemApi( data, newSectionItemInputEl, sectionEl, courseEditorEl );
 				}
 			} );
 		}
@@ -466,16 +514,18 @@ const updateSingleSectionItem = ( sectionEl ) => {
 	}
 
 	sectionItemEls.map( ( sectionItemEl ) => {
-		handleEventSectionItem( sectionItemEl, sectionId );
+		handleEventSectionItem( sectionItemEl, sectionId, sectionEl, courseEditorEl );
 	} );
 };
 
-const updateSingleSection = ( sectionEl ) => {
+const updateSingleSection = ( sectionEl, courseEditorEl ) => {
 	if ( ! sectionEl ) {
 		return;
 	}
 
-	actionSection( sectionEl );
+	const courseId = getCourseId();
+
+	actionSection( sectionEl, courseEditorEl );
 	const titleSection = sectionEl.querySelector( '.section-head input' );
 	if ( titleSection ) {
 		let previousValue = titleSection.value;
@@ -488,6 +538,7 @@ const updateSingleSection = ( sectionEl ) => {
 				const data = {
 					title: currentValue,
 					sectionId,
+					courseId,
 				};
 				updateSectionApi( data );
 			}
@@ -506,6 +557,7 @@ const updateSingleSection = ( sectionEl ) => {
 				const data = {
 					desc: currentValue,
 					sectionId,
+					courseId,
 				};
 				updateSectionApi( data );
 			}
@@ -524,8 +576,7 @@ const sortableItemEvent = ( sectionEl ) => {
 		return;
 	}
 
-	const urlParams = new URLSearchParams( window.location.search );
-	const courseId = urlParams.get( 'post' );
+	const courseId = getCourseId();
 	const sectionId = sectionEl.dataset.sectionId ?? null;
 
 	new Sortable( sortableEl, {
@@ -559,9 +610,11 @@ const sortableItemEvent = ( sectionEl ) => {
 			const dataRemove = {
 				itemId: itemIdRemove,
 				sectionId: changeSectionId,
+				courseId,
 			};
-			removeItemInSectionApi( dataRemove );
+			removeItemInSectionApi( dataRemove, '', sectionEl );
 			updateOrderSectionItemApi( dataSort );
+			updateTotalItemSection( sectionEl, -1 );
 		},
 		onUpdate( evt ) {
 			const sectionItemEls = Array.prototype.slice.call( sortableEl.querySelectorAll( ':scope > .section-item' ) );
@@ -600,6 +653,7 @@ const sortableItemEvent = ( sectionEl ) => {
 				courseId,
 			};
 			updateOrderSectionItemApi( data );
+			updateTotalItemSection( sectionEl, 1 );
 		},
 	} );
 };
@@ -614,6 +668,7 @@ const sortableSection = ( courseEditorEl ) => {
 	if ( ! sortableEl ) {
 		return;
 	}
+	const courseId = getCourseId();
 
 	new Sortable( sortableEl, {
 		multiDrag: true,
@@ -626,9 +681,6 @@ const sortableSection = ( courseEditorEl ) => {
 				return sectionEl.dataset.sectionId ?? null;
 			} );
 
-			const urlParams = new URLSearchParams( window.location.search );
-			const courseId = urlParams.get( 'post' );
-
 			const data = {
 				sectionIds,
 				courseId,
@@ -639,14 +691,13 @@ const sortableSection = ( courseEditorEl ) => {
 	} );
 };
 
-const getHtmlCurriculum = () => {
-	const urlParams = new URLSearchParams( window.location.search );
-	const courseId = urlParams.get( 'post' );
+const getHtmlCurriculum = ( courseEditorEl ) => {
+	const courseId = getCourseId();
 	const url = lplistAPI.admin.apiCurriculumHTML + '/' + courseId;
 	const callBack = {
 		success: ( response ) => {
 			const html = response.data.html ?? [];
-			addSectionsWithDelay( html );
+			addSectionsWithDelay( html, courseEditorEl );
 		},
 	};
 
@@ -659,7 +710,7 @@ document.addEventListener( 'DOMContentLoaded', () => {
 		return;
 	}
 
-	getHtmlCurriculum();
+	getHtmlCurriculum( courseEditorEl );
 	collapseSectionsEvent( courseEditorEl );
 	addNewSection( courseEditorEl );
 	sortableSection( courseEditorEl );
