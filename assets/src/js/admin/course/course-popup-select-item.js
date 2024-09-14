@@ -479,7 +479,7 @@ const handleEventPopup = () => {
 			if ( event.key === 'Enter' ) {
 				event.preventDefault();
 				const currentValue = searchEl.value;
-				if ( previousValue !== currentValue ) {
+				if ( previousValue !== currentValue && currentValue !== '' ) {
 					previousValue = currentValue;
 					const itemType = popupModalSelectItemEl.dataset.type ?? '';
 					const data = {
@@ -493,7 +493,7 @@ const handleEventPopup = () => {
 		} );
 		searchEl.addEventListener( 'blur', function() {
 			const currentValue = searchEl.value;
-			if ( previousValue !== currentValue ) {
+			if ( previousValue !== currentValue && currentValue !== '' ) {
 				previousValue = currentValue;
 				const itemType = popupModalSelectItemEl.dataset.type ?? '';
 				const data = {

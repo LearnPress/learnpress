@@ -240,7 +240,7 @@ const handleEventSectionItem = ( sectionItemEl, sectionId, sectionEl, courseEdit
 		let previousValue = inputItem.value;
 		inputItem.addEventListener( 'blur', function() {
 			const currentValue = inputItem.value;
-			if ( previousValue !== currentValue ) {
+			if ( previousValue !== currentValue && currentValue !== '' ) {
 				previousValue = currentValue;
 				const data = {
 					itemId,
@@ -324,9 +324,23 @@ const addNewSection = ( courseEditorEl ) => {
 
 	const courseId = getCourseId();
 	const previousValue = input.value;
+	input.addEventListener( 'keydown', function( event ) {
+		if ( event.key === 'Enter' ) {
+			event.preventDefault();
+			const currentValue = input.value;
+			if ( previousValue !== currentValue && currentValue !== '' ) {
+				input.value = '';
+				const data = {
+					title: currentValue,
+					courseId,
+				};
+				addSectionApi( data, courseEditorEl );
+			}
+		}
+	} );
 	input.addEventListener( 'blur', function() {
 		const currentValue = input.value;
-		if ( previousValue !== currentValue ) {
+		if ( previousValue !== currentValue && currentValue !== '' ) {
 			input.value = '';
 			const data = {
 				title: currentValue,
@@ -466,9 +480,29 @@ const updateSingleSectionItem = ( sectionEl, courseEditorEl ) => {
 		const newSectionItemInputEl = newSectionItemEl.querySelector( '.title input' );
 		if ( newSectionItemInputEl ) {
 			let previousValue = newSectionItemInputEl?.value;
+			newSectionItemInputEl.addEventListener( 'keydown', function( event ) {
+				if ( event.key === 'Enter' ) {
+					event.preventDefault();
+					const currentValue = newSectionItemInputEl.value;
+					if ( previousValue !== currentValue && currentValue !== '' ) {
+						previousValue = currentValue;
+						const selectedValue = newSectionItemEl.querySelector( '.type.current input' )?.value ?? '';
+						const courseId = getCourseId();
+						const data = {
+							sectionId,
+							item: {
+								title: currentValue,
+								type: selectedValue,
+							},
+							courseId,
+						};
+						addNewItemApi( data, newSectionItemInputEl, sectionEl, courseEditorEl );
+					}
+				}
+			} );
 			newSectionItemInputEl.addEventListener( 'blur', function() {
 				const currentValue = newSectionItemInputEl.value;
-				if ( previousValue !== currentValue ) {
+				if ( previousValue !== currentValue && currentValue !== '' ) {
 					previousValue = currentValue;
 					const selectedValue = newSectionItemEl.querySelector( '.type.current input' )?.value ?? '';
 					const courseId = getCourseId();
@@ -509,7 +543,7 @@ const updateSingleSection = ( sectionEl, courseEditorEl ) => {
 		let previousValue = titleSection.value;
 		titleSection.addEventListener( 'blur', function() {
 			const currentValue = titleSection.value;
-			if ( previousValue !== currentValue ) {
+			if ( previousValue !== currentValue && currentValue !== '' ) {
 				previousValue = currentValue;
 				const sectionId = sectionEl?.dataset?.sectionId ?? 0;
 
@@ -528,7 +562,7 @@ const updateSingleSection = ( sectionEl, courseEditorEl ) => {
 		let previousValue = descSection.value;
 		descSection.addEventListener( 'blur', function() {
 			const currentValue = descSection.value;
-			if ( previousValue !== currentValue ) {
+			if ( previousValue !== currentValue && currentValue !== '' ) {
 				previousValue = currentValue;
 				const sectionId = sectionEl.dataset.sectionId;
 
@@ -685,7 +719,6 @@ const getHtmlCurriculum = ( courseEditorEl ) => {
 function saveSectionState( courseEditorEl ) {
 	const courseId = getCourseId();
 	const sections = courseEditorEl.querySelectorAll( '.curriculum-sections > .section' );
-	console.log( sections );
 	const sectionStatesStorage = JSON.parse( localStorage.getItem( 'lpSectionStates' ) ) || {};
 	const sectionStates = {};
 	sections.forEach( ( section ) => {
