@@ -23,7 +23,7 @@ $types = learn_press_course_get_support_item_types();
 					<button class="button previous"><?php esc_html_e( 'Previous', 'learnpress' ); ?></button>
 					<button class="button next"><?php esc_html_e( 'Next', 'learnpress' ); ?></button>
 					<button class="button last">»</button>
-					<span class="index">6 / 6</span>
+					<span class="index"></span>
 				</form>
 			</div>
 			<div class="lp-added-items-preview">
