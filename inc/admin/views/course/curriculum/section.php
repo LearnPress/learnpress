@@ -20,7 +20,7 @@ $items         = $data['items'];
 $types         = learn_press_course_get_support_item_types();
 ?>
 
-<div data-section-order="<?php echo esc_attr( $section_order ); ?>" data-section-id="<?php echo esc_attr( $section_id ); ?>" class="section close">
+<div data-section-order="<?php echo esc_attr( $section_order ); ?>" data-section-id="<?php echo esc_attr( $section_id ); ?>" class="section">
 	<div class="section-head">
 		<span class="movable lp-sortable-handle ui-sortable-handle"></span>
 		<input type="text" title="title" value="<?php echo esc_attr( $title ); ?>" placeholder="Create a new section" class="title-input">
@@ -29,9 +29,9 @@ $types         = learn_press_course_get_support_item_types();
 				<?php echo sprintf( '%s %s', $count_item, esc_html__( 'Items', 'learnpress' ) ); ?>
 			</span>
 		</div>
-		<div class="actions"><span class="collapse close"></span></div>
+		<div class="actions"><span class="collapse"></span></div>
 	</div>
-	<div class="section-collapse close">
+	<div class="section-collapse">
 		<div class="section-content">
 			<div class="details">
 				<input type="text" title="description" value="<?php echo esc_attr( $desc ); ?>" placeholder="Section description..." class="description-input no-submit">
