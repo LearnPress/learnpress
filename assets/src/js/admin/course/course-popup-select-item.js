@@ -10,8 +10,8 @@ const tabs = Array.prototype.slice.call( popupModalSelectItemEl?.querySelectorAl
 let currentAbortController = null;
 
 const attachPaginationListeners = ( el, handler ) => {
-	el.removeEventListener( 'click', handler ); // Gỡ bỏ handler cũ
-	el.addEventListener( 'click', handler ); // Gắn handler mới
+	el.removeEventListener( 'click', handler );
+	el.addEventListener( 'click', handler );
 };
 
 const updateTotalItemSection = ( el, value, elRemove ) => {
@@ -311,7 +311,7 @@ const getSectionItem = ( data ) => {
 	const paginationEl = popupModalSelectItemEl.querySelector( '.pagination' );
 
 	if ( currentAbortController ) {
-		currentAbortController.abort(); // Hủy request cũ
+		currentAbortController.abort();
 	}
 
 	currentAbortController = new AbortController();
@@ -469,6 +469,40 @@ const handleEventPopup = () => {
 				itemAddNew: selectedAddItem,
 			};
 			updateSectionApi( data, listUiSortableEl );
+		} );
+	}
+
+	const searchEl = popupModalSelectItemEl.querySelector( '.search input' );
+	if ( searchEl ) {
+		let previousValue = searchEl.value;
+		searchEl.addEventListener( 'keydown', function( event ) {
+			if ( event.key === 'Enter' ) {
+				event.preventDefault();
+				const currentValue = searchEl.value;
+				if ( previousValue !== currentValue ) {
+					previousValue = currentValue;
+					const itemType = popupModalSelectItemEl.dataset.type ?? '';
+					const data = {
+						query: currentValue,
+						courseId,
+						itemType,
+					};
+					getSectionItem( data );
+				}
+			}
+		} );
+		searchEl.addEventListener( 'blur', function() {
+			const currentValue = searchEl.value;
+			if ( previousValue !== currentValue ) {
+				previousValue = currentValue;
+				const itemType = popupModalSelectItemEl.dataset.type ?? '';
+				const data = {
+					query: currentValue,
+					courseId,
+					itemType,
+				};
+				getSectionItem( data );
+			}
 		} );
 	}
 };
