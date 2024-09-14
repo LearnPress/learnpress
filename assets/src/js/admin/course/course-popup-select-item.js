@@ -1,7 +1,9 @@
 import lplistAPI from '../../api';
 import { lpFetchAPI } from '../../utils';
 
+const courseEditorEl = document.querySelector( '#course-editor-refactor' );
 const popupModalSelectItemEl = document.querySelector( '#lp-modal-choose-items-refactor' );
+const chooseItemsEl = courseEditorEl.querySelector( '.lp-choose-items' );
 const urlParams = new URLSearchParams( window.location.search );
 const courseId = urlParams.get( 'post' ) ?? 0;
 const listAddedEl = popupModalSelectItemEl?.querySelector( '.list-added-items' );
@@ -212,6 +214,10 @@ const resetPopup = () => {
 	if ( currentAbortController ) {
 		currentAbortController.abort();
 	}
+
+	if ( chooseItemsEl ) {
+		chooseItemsEl.classList.remove( 'show-preview' );
+	}
 };
 
 const renderPopup = ( popupModalSelectItemEl, itemsHtml, paginationHtml ) => {
@@ -293,6 +299,7 @@ const updateTotalSelected = () => {
 	const addSelectedEl = popupModalSelectItemEl.querySelector( '.footer .checkout' );
 	const editSelectedBtnEl = popupModalSelectItemEl.querySelector( '.edit-selected' );
 	const selectedTotalEl = popupModalSelectItemEl.querySelector( '.footer .total-selected' );
+	const selectedHeaderTotalEl = popupModalSelectItemEl.querySelector( '.header .total-selected' );
 	if ( selectedTotalEl ) {
 		if ( itemSelectedEls.length > 0 ) {
 			selectedTotalEl.innerText = `(${ itemSelectedEls.length })`;
@@ -305,6 +312,14 @@ const updateTotalSelected = () => {
 			if ( backBtnEl && backBtnEl.style.display === 'none' ) {
 				editSelectedBtnEl.disabled = true;
 			}
+		}
+	}
+
+	if ( selectedHeaderTotalEl ) {
+		if ( itemSelectedEls.length > 0 ) {
+			selectedHeaderTotalEl.innerText = `(${ itemSelectedEls.length })`;
+		} else {
+			selectedHeaderTotalEl.innerText = '';
 		}
 	}
 };
@@ -430,8 +445,15 @@ const handleEventPopup = () => {
 				if ( selectedTotalEl && selectedTotalEl.innerText === '' ) {
 					editSelectedBtnEl.disabled = true;
 				}
+
+				if ( chooseItemsEl ) {
+					chooseItemsEl.classList.remove( 'show-preview' );
+				}
 			} else {
 				listAddedEl.classList.add( 'show' );
+				if ( chooseItemsEl ) {
+					chooseItemsEl.classList.add( 'show-preview' );
+				}
 				contentEditEl.style.display = 'none';
 				contentBackEl.style.display = 'inline-block';
 			}

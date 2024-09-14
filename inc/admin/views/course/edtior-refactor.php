@@ -8,8 +8,8 @@
 
 use LearnPress\Models\CourseModel;
 
-$course_id  = get_the_ID();
-$course     = CourseModel::find( $course_id, true );
+$course_id = get_the_ID();
+$course    = CourseModel::find( $course_id, true );
 if ( empty( $course ) ) {
 	return;
 }

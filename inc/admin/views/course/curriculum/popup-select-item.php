@@ -5,6 +5,12 @@ $types = learn_press_course_get_support_item_types();
 <div id="lp-modal-choose-items-refactor" class="">
 	<div class="lp-choose-items">
 		<div class="header">
+			<div class="preview-title">
+				<span class="show">
+					<?php esc_html_e( 'Selected items', 'learnpress' ); ?>
+				</span>
+				<div class="total-selected"></div>
+			</div>
 			<ul class="tabs">
 				<?php $key = 0; ?>
 				<?php foreach ( $types as $value => $title ) : ?>
