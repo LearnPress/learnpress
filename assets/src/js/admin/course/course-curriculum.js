@@ -128,14 +128,14 @@ const deleteSectionApi = ( data, sectionEl, courseEditorEl ) => {
 };
 
 // Handle Add section with api
-const addSectionApi = ( data ) => {
+const addSectionApi = ( data, courseEditorEl ) => {
 	const url = lplistAPI.admin.apiAddSection;
 	const method = 'POST';
 
 	const callBack = {
 		success: ( response ) => {
 			const html = response.data.html ?? [];
-			addSectionsWithDelay( html );
+			addSectionsWithDelay( html, courseEditorEl );
 		},
 	};
 
