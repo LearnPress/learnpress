@@ -60,7 +60,7 @@ const addSectionsWithDelay = async ( html, courseEditorEl ) => {
 		if ( ! newSection ) {
 			return;
 		}
-
+		restoreSectionState( newSection, courseEditorEl );
 		updateSingleSection( newSection, courseEditorEl );
 		singleCollapseEvent( newSection, courseEditorEl );
 		updateSingleSectionItem( newSection, courseEditorEl );
@@ -339,25 +339,24 @@ const addNewSection = ( courseEditorEl ) => {
 
 const singleCollapseEvent = ( sectionEl, courseEditorEl ) => {
 	const collapse = sectionEl.querySelector( '.collapse' );
-	const sectionCollapseEl = sectionEl.querySelector( '.section-collapse' );
 	const collapseSectionsEl = courseEditorEl.querySelector( '.collapse-sections' );
 
 	if ( collapse ) {
 		collapse.addEventListener( 'click', () => {
-			sectionEl.classList.toggle( 'close' );
-			sectionEl.classList.toggle( 'open' );
-			collapse.classList.toggle( 'close' );
-			collapse.classList.toggle( 'open' );
-
-			if ( sectionCollapseEl ) {
-				sectionCollapseEl.classList.toggle( 'close' );
-				sectionCollapseEl.classList.toggle( 'open' );
+			if ( sectionEl.classList.contains( 'close' ) ) {
+				sectionEl.classList.add( 'open' );
+				sectionEl.classList.remove( 'close' );
+			} else {
+				sectionEl.classList.add( 'close' );
+				sectionEl.classList.remove( 'open' );
 			}
+
+			saveSectionState( courseEditorEl );
 			if ( ! collapseSectionsEl ) {
 				return;
 			}
 
-			const notAllClose = courseEditorEl.querySelector( '.section.open' );
+			const notAllClose = courseEditorEl.querySelector( '.curriculum-sections > .section.open' );
 
 			if ( notAllClose ) {
 				collapseSectionsEl.classList.remove( 'close' );
@@ -375,7 +374,7 @@ const collapseSectionsEvent = ( courseEditorEl ) => {
 
 	if ( collapseSectionsEl ) {
 		collapseSectionsEl.addEventListener( 'click', () => {
-			const sectionEls = Array.prototype.slice.call( courseEditorEl.querySelectorAll( '.section' ) );
+			const sectionEls = Array.prototype.slice.call( courseEditorEl.querySelectorAll( '.curriculum-sections > .section' ) );
 			if ( collapseSectionsEl.classList.contains( 'close' ) ) {
 				collapseSectionsEl.classList.add( 'open' );
 				collapseSectionsEl.classList.remove( 'close' );
@@ -383,40 +382,19 @@ const collapseSectionsEvent = ( courseEditorEl ) => {
 					sectionEls.map( ( sectionEl ) => {
 						sectionEl.classList.add( 'open' );
 						sectionEl.classList.remove( 'close' );
-						const collapse = sectionEl.querySelector( '.collapse' );
-						const sectionCollapseEl = sectionEl.querySelector( '.section-collapse' );
-
-						if ( ! collapse || ! sectionCollapseEl ) {
-							return;
-						}
-
-						collapse.classList.add( 'open' );
-						collapse.classList.remove( 'close' );
-						sectionCollapseEl.classList.add( 'open' );
-						sectionCollapseEl.classList.remove( 'close' );
 					} );
 				}
-			} else if ( collapseSectionsEl.classList.contains( 'open' ) ) {
+			} else {
 				collapseSectionsEl.classList.add( 'close' );
 				collapseSectionsEl.classList.remove( 'open' );
 				if ( sectionEls.length ) {
 					sectionEls.map( ( sectionEl ) => {
 						sectionEl.classList.add( 'close' );
 						sectionEl.classList.remove( 'open' );
-						const collapse = sectionEl.querySelector( '.collapse' );
-						const sectionCollapseEl = sectionEl.querySelector( '.section-collapse' );
-
-						if ( ! collapse || ! sectionCollapseEl ) {
-							return;
-						}
-
-						collapse.classList.add( 'close' );
-						collapse.classList.remove( 'open' );
-						sectionCollapseEl.classList.add( 'close' );
-						sectionCollapseEl.classList.remove( 'open' );
 					} );
 				}
 			}
+			saveSectionState( courseEditorEl );
 		} );
 	}
 };
@@ -703,6 +681,44 @@ const getHtmlCurriculum = ( courseEditorEl ) => {
 
 	lpFetchAPI( url, {}, callBack );
 };
+
+function saveSectionState( courseEditorEl ) {
+	const courseId = getCourseId();
+	const sections = courseEditorEl.querySelectorAll( '.curriculum-sections > .section' );
+	console.log( sections );
+	const sectionStatesStorage = JSON.parse( localStorage.getItem( 'lpSectionStates' ) ) || {};
+	const sectionStates = {};
+	sections.forEach( ( section ) => {
+		const sectionId = section.getAttribute( 'data-section-id' );
+		const isOpen = section.classList.contains( 'open' );
+		sectionStates[ sectionId ] = isOpen;
+	} );
+
+	sectionStatesStorage[ courseId ] = sectionStates;
+	localStorage.setItem( 'lpSectionStates', JSON.stringify( sectionStatesStorage ) );
+}
+
+function restoreSectionState( newSection, courseEditorEl ) {
+	const courseId = getCourseId();
+	const sectionStatesStorage = JSON.parse( localStorage.getItem( 'lpSectionStates' ) ) || {};
+	const sectionStates = sectionStatesStorage[ courseId ];
+
+	if ( ! sectionStates ) {
+		newSection.classList.add( 'close' );
+		return;
+	}
+
+	const sectionId = newSection.getAttribute( 'data-section-id' );
+	if ( ! sectionStates[ sectionId ] ) {
+		newSection.classList.add( 'close' );
+		return;
+	}
+
+	const collapseSectionsEl = courseEditorEl.querySelector( '.collapse-sections' );
+	collapseSectionsEl.classList.add( 'open' );
+	collapseSectionsEl.classList.remove( 'close' );
+	newSection.classList.add( 'open' );
+}
 
 document.addEventListener( 'DOMContentLoaded', () => {
 	const courseEditorEl = document.querySelector( '#course-editor-refactor' );
