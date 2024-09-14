@@ -127,6 +127,10 @@
 	}
 }
 
+.lp-course-buttons:empty{
+	display: none;
+}
+
 .course-sidebar-preview {
 	.course-price {
 		text-align: center;
