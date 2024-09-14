@@ -1,11 +1,13 @@
 import lplistAPI from '../../api';
 import { lpFetchAPI } from '../../utils';
 
-const getCourseId = () => {
-	const urlParams = new URLSearchParams( window.location.search );
-	const courseId = urlParams.get( 'post' ) ?? 0;
-	return courseId;
-};
+const popupModalSelectItemEl = document.querySelector( '#lp-modal-choose-items-refactor' );
+const urlParams = new URLSearchParams( window.location.search );
+const courseId = urlParams.get( 'post' ) ?? 0;
+const listAddedEl = popupModalSelectItemEl?.querySelector( '.list-added-items' );
+const API_SEARCH_ITEMS_URL = lplistAPI.admin.apiSearchItems;
+const tabs = Array.prototype.slice.call( popupModalSelectItemEl?.querySelectorAll( '.tabs .tab' ) );
+let currentAbortController = null;
 
 const attachPaginationListeners = ( el, handler ) => {
 	el.removeEventListener( 'click', handler ); // Gỡ bỏ handler cũ
@@ -38,16 +40,8 @@ const updateTotalItemSection = ( el, value, elRemove ) => {
 	sectionItemCounts.textContent = result;
 };
 
-const popupModalSelectItemEl = document.querySelector( '#lp-modal-choose-items-refactor' );
-const courseId = getCourseId();
-const listAddedEl = popupModalSelectItemEl.querySelector( '.list-added-items' );
-const API_SEARCH_ITEMS_URL = lplistAPI.admin.apiSearchItems;
-let currentAbortController = null;
-const tabs = Array.prototype.slice.call( popupModalSelectItemEl.querySelectorAll( '.tabs .tab' ) );
-
-const handleTabClick = ( tabs, tab, popupModalSelectItemEl, courseId ) => {
+const handleTabClick = ( tabs, tab, courseId ) => {
 	const itemType = tab.dataset.type ?? '';
-	// console.log( popupModalSelectItemEl.dataset.type );
 	if ( ! itemType ) {
 		return;
 	}
@@ -160,6 +154,9 @@ const resetPopup = () => {
 	const selectedTotalEl = popupModalSelectItemEl.querySelector( '.footer .total-selected' );
 	const addSelectedEl = popupModalSelectItemEl.querySelector( '.footer .checkout' );
 	const editSelectedBtnEl = popupModalSelectItemEl.querySelector( '.edit-selected' );
+	const editSelectedBtnShowEl = editSelectedBtnEl.querySelector( '.show' );
+	const editSelectedBtnBackEl = editSelectedBtnEl.querySelector( '.back' );
+	const listAddedPreviewEl = popupModalSelectItemEl.querySelector( '.lp-added-items-preview' );
 
 	if ( listItemEl ) {
 		listItemEl.innerText = '';
@@ -199,6 +196,18 @@ const resetPopup = () => {
 
 	if ( editSelectedBtnEl ) {
 		editSelectedBtnEl.disabled = true;
+	}
+
+	if ( listAddedPreviewEl ) {
+		listAddedPreviewEl.classList.remove( 'show' );
+	}
+
+	if ( editSelectedBtnShowEl ) {
+		editSelectedBtnShowEl.style.display = 'inline-block';
+	}
+
+	if ( editSelectedBtnBackEl ) {
+		editSelectedBtnBackEl.style.display = 'none';
 	}
 
 	if ( currentAbortController ) {
@@ -255,6 +264,7 @@ const renderPopup = ( popupModalSelectItemEl, itemsHtml, paginationHtml ) => {
 							inputCheckEl.checked = false;
 						}
 						listAddedEl.removeChild( cloneEl );
+						updateTotalSelected();
 					} );
 				} else {
 					const itemToRemove = listAddedEl.querySelector( `[data-id="${ idItem }"]` );
@@ -384,7 +394,7 @@ const handleEventPopup = () => {
 		tabs.map( ( tab ) => {
 			attachPaginationListeners( tab, ( e ) => {
 				e.preventDefault();
-				handleTabClick( tabs, tab, popupModalSelectItemEl, courseId );
+				handleTabClick( tabs, tab, courseId );
 			} );
 		} );
 	}
