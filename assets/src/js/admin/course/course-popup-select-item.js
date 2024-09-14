@@ -66,7 +66,12 @@ const handlePageChange = ( page ) => {
 	if ( ! itemType ) {
 		return;
 	}
-	const data = { courseId, itemType, page };
+	let query = '';
+	const searchEl = popupModalSelectItemEl.querySelector( '.search input' );
+	if ( searchEl ) {
+		query = searchEl.value;
+	}
+	const data = { courseId, itemType, page, query };
 	getSectionItem( data, popupModalSelectItemEl );
 };
 
@@ -96,13 +101,7 @@ const handlePagination = ( paginationEl, paginationHtml ) => {
 		}
 		lastEl.addEventListener( 'click', ( e ) => {
 			e.preventDefault();
-			const data = {
-				courseId,
-				itemType,
-				page: total,
-			};
-
-			getSectionItem( data, popupModalSelectItemEl );
+			handlePageChange( total );
 		} );
 	}
 
@@ -302,7 +301,10 @@ const updateTotalSelected = () => {
 		} else {
 			selectedTotalEl.innerText = '';
 			addSelectedEl.disabled = true;
-			editSelectedBtnEl.disabled = true;
+			const backBtnEl = editSelectedBtnEl.querySelector( '.back' );
+			if ( backBtnEl && backBtnEl.style.display === 'none' ) {
+				editSelectedBtnEl.disabled = true;
+			}
 		}
 	}
 };
@@ -417,6 +419,7 @@ const handleEventPopup = () => {
 
 		const contentEditEl = editSelectedBtnEl.querySelector( '.show' );
 		const contentBackEl = editSelectedBtnEl.querySelector( '.back' );
+		const selectedTotalEl = popupModalSelectItemEl.querySelector( '.footer .total-selected' );
 
 		editSelectedBtnEl.addEventListener( 'click', ( e ) => {
 			e.preventDefault();
@@ -424,6 +427,9 @@ const handleEventPopup = () => {
 				listAddedEl.classList.remove( 'show' );
 				contentEditEl.style.display = 'inline-block';
 				contentBackEl.style.display = 'none';
+				if ( selectedTotalEl && selectedTotalEl.innerText === '' ) {
+					editSelectedBtnEl.disabled = true;
+				}
 			} else {
 				listAddedEl.classList.add( 'show' );
 				contentEditEl.style.display = 'none';

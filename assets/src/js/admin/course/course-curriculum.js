@@ -238,6 +238,21 @@ const handleEventSectionItem = ( sectionItemEl, sectionId, sectionEl, courseEdit
 
 	if ( inputItem ) {
 		let previousValue = inputItem.value;
+		inputItem.addEventListener( 'keydown', function( event ) {
+			if ( event.key === 'Enter' ) {
+				event.preventDefault();
+				const currentValue = inputItem.value;
+				if ( previousValue !== currentValue && currentValue !== '' ) {
+					previousValue = currentValue;
+					const data = {
+						itemId,
+						title: currentValue,
+						courseId,
+					};
+					updateSectionItemApi( data );
+				}
+			}
+		} );
 		inputItem.addEventListener( 'blur', function() {
 			const currentValue = inputItem.value;
 			if ( previousValue !== currentValue && currentValue !== '' ) {
@@ -541,6 +556,23 @@ const updateSingleSection = ( sectionEl, courseEditorEl ) => {
 	const titleSection = sectionEl.querySelector( '.section-head input' );
 	if ( titleSection ) {
 		let previousValue = titleSection.value;
+		titleSection.addEventListener( 'keydown', function( event ) {
+			if ( event.key === 'Enter' ) {
+				event.preventDefault();
+				const currentValue = titleSection.value;
+				if ( previousValue !== currentValue && currentValue !== '' ) {
+					previousValue = currentValue;
+					const sectionId = sectionEl?.dataset?.sectionId ?? 0;
+
+					const data = {
+						title: currentValue,
+						sectionId,
+						courseId,
+					};
+					updateSectionApi( data );
+				}
+			}
+		} );
 		titleSection.addEventListener( 'blur', function() {
 			const currentValue = titleSection.value;
 			if ( previousValue !== currentValue && currentValue !== '' ) {
@@ -560,6 +592,24 @@ const updateSingleSection = ( sectionEl, courseEditorEl ) => {
 	const descSection = sectionEl.querySelector( '.details input' );
 	if ( descSection ) {
 		let previousValue = descSection.value;
+		descSection.addEventListener( 'keydown', function( event ) {
+			if ( event.key === 'Enter' ) {
+				event.preventDefault();
+				const currentValue = descSection.value;
+				if ( previousValue !== currentValue && currentValue !== '' ) {
+					previousValue = currentValue;
+					const sectionId = sectionEl.dataset.sectionId;
+
+					const data = {
+						desc: currentValue,
+						sectionId,
+						courseId,
+					};
+					updateSectionApi( data );
+				}
+			}
+		} );
+
 		descSection.addEventListener( 'blur', function() {
 			const currentValue = descSection.value;
 			if ( previousValue !== currentValue && currentValue !== '' ) {
