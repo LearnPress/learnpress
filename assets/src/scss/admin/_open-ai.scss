@@ -115,7 +115,12 @@
 
 					div.title {
 						font-weight: 500;
+						margin-bottom: 4px;
 					}
+				}
+
+				.ai-result {
+					margin-bottom: 10px;
 				}
 
 				.course-title-output, .course-des-output {
@@ -125,10 +130,6 @@
 						background-color: #D0D3D8;
 						padding: 8px;
 						margin-bottom: 10px;
-
-						.ai-result {
-							margin-bottom: 10px;
-						}
 
 						p {
 							word-break: break-word;
@@ -156,17 +157,30 @@
 		right: 2px;
 		padding: 2px 6px;
 	}
+
+	img{
+		max-width: 300px;
+		height: auto;
+		width: 100%;
+	}
 }
 
-#ai-course-fi-field-logo-input{
+#ai-course-fi-field-logo-input, #ai-course-fi-field-mask-input {
 	display: none;
 }
 
-#ai-course-fi-field-logo-preview img{
-	max-width: 100%;
-	height: auto;
+#ai-course-fi-field-logo-error, #ai-course-fi-field-mask-error {
+	color: red;
 }
 
-#ai-course-fi-field-logo-error{
-	color: red;
+#lp-ai-fi-button{
+	padding: 0 12px 12px;
+}
+
+#ai-course-remove-fi-field-logo, #ai-course-remove-fi-field-mask{
+	display: none;
+
+	&.enabled{
+		display: inline;
+	}
 }
