@@ -364,6 +364,7 @@ const generate = () => {
 						</div>
 						<div class="action">
 							<button class="ai-save-image button">` + __('Save image', 'learnpress') + `</button>
+						</div>
 					</div>`;
 				});
 				courseFeatureImageOutputNode.innerHTML = courseFeatureImage;
