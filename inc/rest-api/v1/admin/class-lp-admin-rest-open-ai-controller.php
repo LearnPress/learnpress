@@ -1,7 +1,6 @@
 <?php
 
 use LearnPress\Helpers\OpenAi;
-use Orhanerday\OpenAi\OpenAi as LibOpenAi;
 
 class LP_REST_Admin_OpenAI_Controller extends LP_Abstract_REST_Controller {
 	/**
@@ -226,7 +225,7 @@ class LP_REST_Admin_OpenAI_Controller extends LP_Abstract_REST_Controller {
 			'timeout' => 60,
 			'headers' => array(
 				'Content-Type'  => 'application/json',
-				'Authorization' => 'Bearer '.$this->secret_key,
+				'Authorization' => 'Bearer ' . $this->secret_key,
 			),
 			'body'    => json_encode( $body ),
 		);
@@ -297,9 +296,35 @@ class LP_REST_Admin_OpenAI_Controller extends LP_Abstract_REST_Controller {
 			'model'           => 'dall-e-2'
 		);
 
-		$open_ai = new LibOpenAi( $this->secret_key );
-		$result  = $open_ai->imageEdit( $args );
-		$result  = json_decode( $result, true );
+		$curl_info = [
+			CURLOPT_URL            => $this->edit_image_url,
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_ENCODING       => '',
+			CURLOPT_MAXREDIRS      => 10,
+			CURLOPT_TIMEOUT        => 60,
+			CURLOPT_FOLLOWLOCATION => true,
+			CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_1_1,
+			CURLOPT_CUSTOMREQUEST  => 'POST',
+			CURLOPT_POSTFIELDS     => $args,
+			CURLOPT_HTTPHEADER     => array(
+				'Authorization: Bearer ' . $this->secret_key,
+				'Content-Type: multipart/form-data'
+			),
+		];
+
+		$curl = curl_init();
+
+		curl_setopt_array( $curl, $curl_info );
+		$response  = curl_exec( $curl );
+		$http_code = curl_getinfo( $curl, CURLINFO_HTTP_CODE );
+
+
+		curl_close( $curl );
+
+		if ( ! $response ) {
+			$this->error( curl_error( $curl ), $http_code );
+		}
+		$result = json_decode( $response, true );
 
 		$data['content'] = $result['data'];
 		if ( empty( $params['prompt'] ) ) {

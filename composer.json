@@ -32,8 +32,5 @@
 		"allow-plugins": {
 			"dealerdirect/phpcodesniffer-composer-installer": true
 		}
-	},
-	"require": {
-		"orhanerday/open-ai": "^5.2"
 	}
 }
