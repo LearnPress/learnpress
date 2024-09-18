@@ -46,7 +46,7 @@ class LP_REST_Admin_OpenAI_Controller extends LP_Abstract_REST_Controller {
 	 */
 	public function register_routes() {
 		$this->routes = array(
-			'generate-text'         => array(
+			'generate-text'        => array(
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'generate_text' ),
@@ -201,10 +201,10 @@ class LP_REST_Admin_OpenAI_Controller extends LP_Abstract_REST_Controller {
 
 		$generate_prompt = OpenAi::get_course_image_create_prompt( $params );
 
-		if ( $params['prompt'] ) {
-			$prompt = $params['prompt'];
-		} else {
+		if ( empty( $params['prompt'] ) ) {
 			$prompt = $generate_prompt['prompt'];
+		} else {
+			$prompt = $params['prompt'];
 		}
 
 		if ( empty( $prompt ) ) {
@@ -212,7 +212,7 @@ class LP_REST_Admin_OpenAI_Controller extends LP_Abstract_REST_Controller {
 		}
 
 		$model = LP_Settings::instance()->get( 'open_ai_image_model_type' );
-		$args  = array(
+		$body  = array(
 			'prompt'          => $prompt,
 			'n'               => $params['outputs'] ? intval( $params['outputs'] ) : 1,
 			'size'            => $params['size'] ?? '1024x1024',
@@ -221,18 +221,33 @@ class LP_REST_Admin_OpenAI_Controller extends LP_Abstract_REST_Controller {
 			'model'           => $model,
 		);
 
-		$open_ai = new LibOpenAi( $this->secret_key );
-		$result  = $open_ai->image( $args );
+		$args = array(
+			'method'  => 'POST',
+			'timeout' => 60,
+			'headers' => array(
+				'Content-Type'  => 'application/json',
+				'Authorization' => 'Bearer '.$this->secret_key,
+			),
+			'body'    => json_encode( $body ),
+		);
 
+		$response = wp_remote_request( $this->create_image_url, $args );
+
+		if ( is_wp_error( $response ) ) {
+			return $this->error( $response->get_error_message(), $response->get_error_codes() );
+		}
+
+		$result = wp_remote_retrieve_body( $response );
 		$result = json_decode( $result, true );
 
-		$data['content'] = $result['data'];
+		$data['content'] = $result['data'] ?? array();
 		if ( empty( $params['prompt'] ) ) {
 			$data ['prompt'] = $generate_prompt['prompt_html'];
 		}
 
 		return $this->success( esc_html__( 'Generate course feature image successfully!', 'learnpress' ), $data );
 	}
+
 
 	/**
 	 * @param WP_REST_Request $request
@@ -378,7 +393,7 @@ class LP_REST_Admin_OpenAI_Controller extends LP_Abstract_REST_Controller {
 		}
 
 		$data ['content'] = $content;
-		$success_text = sprintf(__('Generate %s successfully!', 'learnpress'), str_replace('-', ' ', $params['type']));
+		$success_text     = sprintf( __( 'Generate %s successfully!', 'learnpress' ), str_replace( '-', ' ', $params['type'] ) );
 
 		return $this->success( $success_text, $data );
 	}
