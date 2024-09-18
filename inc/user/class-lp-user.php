@@ -317,7 +317,7 @@ class LP_User extends LP_Abstract_User {
 			if ( $is_no_required_enroll && ! is_user_logged_in() ) {
 				$output->code = 'course_is_no_required_enroll_not_login';
 				throw new Exception(
-					esc_html__( 'Enrollment in the course is not mandatory. You can access materials for learning or to take quizzes now.', 'learnpress' )
+					esc_html__( 'Enrollment in the course is not mandatory. You can access course for learning now.', 'learnpress' )
 				);
 			}
 

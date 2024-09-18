@@ -39,7 +39,7 @@ if ( ! class_exists( 'LP_Email' ) ) {
 		 *
 		 * @var string
 		 */
-		public $enabled;
+		//public $enabled;
 
 		/**
 		 * Description for the email.
