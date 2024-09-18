@@ -84,7 +84,7 @@ class LP_User_Factory {
 	 * @version 1.0.2
 	 */
 	protected static function _update_user_item_order_pending( $order, $old_status, $new_status ) {
-		$items            = $order->get_items();
+		$items            = $order->get_all_items();
 		$lp_order_db      = LP_Order_DB::getInstance();
 		$lp_user_items_db = LP_User_Items_DB::getInstance();
 
@@ -100,8 +100,8 @@ class LP_User_Factory {
 			$user = learn_press_get_user( $user_id );
 
 			foreach ( $items as $item ) {
-				if ( isset( $item['course_id'] ) ) {
-					$course_id = $item['course_id'];
+				if ( isset( $item['item_id'] ) && LP_COURSE_CPT === $item['item_type'] ) {
+					$course_id = $item['item_id'];
 
 					// Check this order is the latest by user and course_id
 					$last_order_id = $lp_order_db->get_last_lp_order_id_of_user_course( $user_id, $course_id );
@@ -112,6 +112,10 @@ class LP_User_Factory {
 					$lp_user_items_db->delete_user_items_old( $user_id, $course_id );
 				} else {
 					// For buy other item type (not course)
+					// For case item is Certificate, when update code of Certificate, should remove this code
+					if ( $item['item_type'] === 'lp_cert' ) {
+						$item['_lp_cert_id'] = $item['item_id'];
+					}
 					do_action( 'lp/order-pending/update/user-item', $item, $order, $user );
 				}
 			}
@@ -133,7 +137,7 @@ class LP_User_Factory {
 	 */
 	protected static function _update_user_item_order_completed( LP_Order $order, string $old_status, string $new_status ) {
 		$lp_order_db = LP_Order_DB::getInstance();
-		$items       = $order->get_items();
+		$items       = $order->get_all_items();
 		if ( ! $items ) {
 			return;
 		}
@@ -142,8 +146,8 @@ class LP_User_Factory {
 			$user = learn_press_get_user( $user_id );
 
 			foreach ( $items as $item ) {
-				if ( isset( $item['course_id'] ) && LP_COURSE_CPT === get_post_type( $item['course_id'] ) ) {
-					$course_id = $item['course_id'];
+				if ( isset( $item['item_id'] ) && LP_COURSE_CPT === $item['item_type'] ) {
+					$course_id = $item['item_id'];
 
 					// Check this order is the latest by user and course_id
 					$last_order_id = $lp_order_db->get_last_lp_order_id_of_user_course( $user->get_id(), $course_id );
@@ -158,6 +162,10 @@ class LP_User_Factory {
 					}
 				} else {
 					// For buy other item type (not course)
+					// For case item is Certificate, when update code of Certificate, should remove this code
+					if ( $item['item_type'] === 'lp_cert' ) {
+						$item['_lp_cert_id'] = $item['item_id'];
+					}
 					do_action( 'lp/order-completed/update/user-item', $item, $order, $user );
 				}
 			}
@@ -175,7 +183,7 @@ class LP_User_Factory {
 		$lp_user_items_db = LP_User_Items_DB::getInstance();
 
 		try {
-			$course_id   = $item['course_id'] ?? 0;
+			$course_id   = $item['course_id'] ?? $item['item_id'] ?? 0;
 			$course      = learn_press_get_course( $course_id );
 			$courseModel = CourseModel::find( $course_id, true );
 			if ( ! $courseModel ) {
@@ -287,7 +295,11 @@ class LP_User_Factory {
 	 */
 	protected static function handle_item_manual_order_completed( LP_Order $order, LP_User $user, $item ) {
 		try {
-			$course      = learn_press_get_course( $item['course_id'] );
+			$course      = CourseModel::find( $item['course_id'] ?? $item['item_id'] ?? 0 );
+			if ( ! $course ) {
+				return;
+			}
+
 			$auto_enroll = LP_Settings::is_auto_start_course();
 
 			if ( $user instanceof LP_User_Guest ) {
@@ -308,13 +320,13 @@ class LP_User_Factory {
 				$user_item_data['status'] = LP_COURSE_PURCHASED;
 			}
 
-			$user_item_data = apply_filters( 'learnpress/lp_order/item/handle_item_manual_order_completed', $user_item_data, $order, $user, $course, $item );
+			//$user_item_data = apply_filters( 'learnpress/lp_order/item/handle_item_manual_order_completed', $user_item_data, $order, $user, $course, $item );
 
 			// Delete lp_user_items old
 			LP_User_Items_DB::getInstance()->delete_user_items_old( $user->get_id(), $course->get_id() );
 			// End
 
-			if ( isset( $user_item_data['status'] ) ) {
+			if ( ! empty( $user_item_data['status'] ) ) {
 				$user_item_new = new LP_User_Item_Course( $user_item_data );
 				$result        = $user_item_new->update();
 

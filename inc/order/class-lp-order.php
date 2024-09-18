@@ -464,7 +464,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		}*/
 
 		/**
-		 * Get items of the order
+		 * Get items of the order only to show.
 		 *
 		 * @return mixed
 		 */
@@ -472,6 +472,30 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			$items = $this->_curd->read_items( $this );
 
 			return apply_filters( 'learn-press/order-items', $items );
+		}
+
+		/**
+		 * Get all items of the order.
+		 * Only use for add/remove items to learn (learn_press_user_items) table.
+		 * Where call this function, must be careful, must set_time_limit( 0 );.
+		 *
+		 * @return array|object|stdClass[]|null
+		 * @version 1.0.0
+		 * @since 4.2.7.2
+		 */
+		public function get_all_items() {
+			global $wpdb;
+			$lp_order_items = LP_Database::getInstance();
+			$table_order_items = $lp_order_items->tb_lp_order_items;
+
+			$query = $wpdb->prepare(
+				"SELECT item_id, item_type
+				From $table_order_items
+				WHERE order_id = %d",
+				$this->get_id(),
+			);
+
+			return $wpdb->get_results( $query, ARRAY_A );
 		}
 
 		/**
