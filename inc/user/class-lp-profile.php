@@ -496,7 +496,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			$redirect = apply_filters( 'learn-press/profile-updated-redirect', $redirect, $action );
 
 			if ( $redirect ) {
-				wp_redirect( $redirect );
+				wp_safe_redirect( $redirect );
 				exit;
 			}
 
