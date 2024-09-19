@@ -51,9 +51,16 @@ $config = Config::instance();
 						?>
 					</select>
 				</div>
+
+				<div class="paragraph-number">
+					<label
+						for="ai-course-des-field-paragraph-number"><?php esc_html_e( 'Paragraph Number', 'learnpress' ); ?></label>
+					<input id="ai-course-des-field-paragraph-number" type="number" min="1" step="1" value="2">
+				</div>
+
 				<div class="language">
 					<label
-						for="ai-course-des-field-language"><?php esc_html_e( 'Output Language', 'learnpress' ); ?></label>
+						for="ai-course-des-field-language"><?php esc_html_e( 'Output language', 'learnpress' ); ?></label>
 					<?php
 					$lang_options = $config->get( 'languages', 'open-ai' );
 					?>
@@ -68,6 +75,7 @@ $config = Config::instance();
 						?>
 					</select>
 				</div>
+
 				<div class="output">
 					<div class="outputs">
 						<label

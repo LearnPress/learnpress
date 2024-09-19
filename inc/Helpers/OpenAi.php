@@ -194,10 +194,12 @@ class OpenAi {
 		}
 
 		$title    = $params['title'] ?? '';
+		$description    = $params['description'] ?? '';
 		$icon    = $params['icon'] ?? '';
 
 		$prompt = 'Create a wordpress feature image for course directly based on the following:\n';
-		$prompt .= 'Title: ' . $title . '\n';
+		$prompt .= 'Course title: ' . $title . '\n';
+		$prompt .= 'Description: ' . str_replace(['<p>', '</p>'], ["\n", ''], $description). '\n';
 		$prompt .= 'Style: ' . $style . '\n';
 		$prompt .= 'Image Icon: ' . $icon . '\n';
 
@@ -229,7 +231,7 @@ class OpenAi {
 
 
 		$prompt = 'Edit a wordpress feature image for course directly based on the following:\n';
-		$prompt .= 'Title: ' . $title . '\n';
+		$prompt .= 'Course title: ' . $title . '\n';
 		$prompt .= 'Style: ' . $style . '\n';
 		$prompt .= 'Image Icon: ' . $icon . '\n';
 
@@ -264,16 +266,21 @@ class OpenAi {
 			$tone = implode( ', ', $params['tone'] );
 		}
 
+		$title    = $params['title'] ?? 1;
+		$paragraph_number    = $params['paragraph_number'] ?? 1;
+
 		$language = '';
 
 		if ( isset( $params['lang'] ) && is_array( $params['lang'] ) && count( $params['lang'] ) ) {
 			$language = implode( ', ', $params['lang'] );
 		}
 
-		$prompt = 'Create a course description with 2 paragraphs to copy to wordpress editor content tag directly based on the following:\n';
+		$prompt = 'Create a course description directly based on the following:\n';
+		$prompt .= 'Course title: ' . $title . '\n';
 		$prompt .= 'Topic: ' . $topic . '\n';
 		$prompt .= 'Audience: ' . $audience . '\n';
 		$prompt .= 'Tone: ' . $tone . '\n';
+		$prompt .= 'Paragraph number: ' . $paragraph_number . '\n';
 		$prompt .= 'Language: ' . $language . '\n';
 		$prompt .= 'Please provide only the course description without any additional explanation or details, and do not include quotation marks.';
 
@@ -282,6 +289,43 @@ class OpenAi {
 		$prompt_html .= $prompt;
 		$prompt_html .= '</textarea>\n';
 		$prompt_html .= '<button id="lp-re-generate-course-des" class="button">Generate with prompt</button>';
+
+
+		$data['prompt']      = $prompt;
+		$data['prompt_html'] = $prompt_html;
+
+		return $data;
+	}
+
+	public static function get_course_curriculum_prompt($params) {
+		$title    = $params['title'] ?? '';
+		$description    = $params['description'] ?? '';
+		$section_number    = $params['section_number'] ?? 1;
+		$less_per_section    = $params['less_per_section'] ?? 1;
+		$level    = $params['level'] ?? 'All levels';
+		$topic    = $params['topic'] ?? '';
+
+		$language = '';
+
+		if ( isset( $params['lang'] ) && is_array( $params['lang'] ) && count( $params['lang'] ) ) {
+			$language = implode( ', ', $params['lang'] );
+		}
+
+		$prompt = 'Create a course curriculum based on the following:\n';
+		$prompt .= 'Course title: ' . $title . '\n';
+		$prompt .= 'Description: ' . $description . '\n';
+		$prompt .= 'Section number: ' . $section_number . '\n';
+		$prompt .= 'Lesson per section: ' . $less_per_section . '\n';
+		$prompt .= 'Level: ' . $level . '\n';
+		$prompt .= 'Specific key topics: ' . $topic . '\n';
+		$prompt .= 'Language: ' . $language . '\n';
+		$prompt .= 'Content return : JSON structure only in this exact format:{"sections":[{"section_title": "Section Name","lessons": [{"lesson_title": "Lesson Title 1"},{"lesson_title": "Lesson Title 2"}]}]}\n';
+		$prompt .= 'Make sure to provide only '.$section_number.' sections with exactly '.$less_per_section.' lessons each, and no additional data or formatting.\n';
+		$prompt_html = '<div class="title"><strong>Prompt:</strong></div>';
+		$prompt_html .= '<textarea style="width: 100%" rows="5">';
+		$prompt_html .= $prompt;
+		$prompt_html .= '</textarea>\n';
+		$prompt_html .= '<button id="lp-re-generate-curriculum" class="button">'.__('Generate with prompt', 'learnpress').'</button>';
 
 
 		$data['prompt']      = $prompt;
@@ -426,10 +470,14 @@ class OpenAi {
 	/**
 	 * @param $params
 	 *
-	 * @return array|string
+	 * @return array|string[]
 	 */
 	public static function get_completions_prompt($params){
-		$prompt = '';
+		$prompt = array(
+			'prompt' => '',
+			'prompt_html' =>''
+		);
+
 		if( empty($params['type']) ){
 			return $prompt;
 		}
@@ -440,6 +488,9 @@ class OpenAi {
 				break;
 			case 'course-description':
 				$prompt = self::get_course_des_prompt($params);
+				break;
+			case 'course-curriculum':
+				$prompt = self::get_course_curriculum_prompt($params);
 				break;
 			case 'lesson-title':
 				$prompt = self::get_lesson_title_prompt($params);

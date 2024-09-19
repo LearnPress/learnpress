@@ -57,7 +57,6 @@
 
 			.ai-field {
 				flex-basis: 40%;
-
 				> div {
 					margin-bottom: 10px;
 
@@ -163,6 +162,33 @@
 		height: auto;
 		width: 100%;
 	}
+
+	.course-curriculum-item{
+		margin-bottom: 10px;
+		padding-bottom: 10px;
+		border-bottom: 1px dashed #ccc;
+
+		&:last-child{
+			border-bottom: none;
+		}
+
+		.section{
+			.section-title {
+				font-weight: 600;
+			}
+
+			.section-content {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+			}
+
+			.lesson-title {
+				margin-left: 10px;
+			}
+		}
+	}
+
 }
 
 #ai-course-fi-field-logo-input, #ai-course-fi-field-mask-input {
@@ -188,3 +214,5 @@
 .course-create-fi-item, .course-edit-fi-item {
 	margin-bottom: 10px;
 }
+
+

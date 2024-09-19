@@ -58,7 +58,7 @@ $config = Config::instance();
 					</div>
 					<div class="language">
 						<label
-							for="ai-quiz-title-field-language"><?php esc_html_e( 'Output Language', 'learnpress' ); ?></label>
+							for="ai-quiz-title-field-language"><?php esc_html_e( 'Output language', 'learnpress' ); ?></label>
 						<?php
 						$lang_options = $config->get( 'languages', 'open-ai' );
 						?>

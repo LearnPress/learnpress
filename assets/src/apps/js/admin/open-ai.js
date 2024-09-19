@@ -2,6 +2,7 @@ import courseTitle from './open-ai/course/title';
 import courseDes from './open-ai/course/description';
 import createFeatureImage from './open-ai/course/create-feature-image';
 import editFeatureImage from './open-ai/course/edit-feature-image';
+import curriculum from './open-ai/course/curriculum';
 
 import lessonTitle from './open-ai/lesson/title';
 import lessonDes from './open-ai/lesson/description';
@@ -17,6 +18,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 	courseDes();
 	createFeatureImage();
 	editFeatureImage();
+	curriculum();
 
 	lessonTitle();
 	lessonDes();

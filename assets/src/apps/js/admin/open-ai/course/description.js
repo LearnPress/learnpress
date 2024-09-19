@@ -248,8 +248,10 @@ const generate = () => {
 		// const goalNode = contentNode.querySelector( '#ai-course-des-field-goal' );
 		const audienceNode = contentNode.querySelector('#ai-course-des-field-audience');
 		const toneNode = contentNode.querySelector('#ai-course-des-field-tone');
+		const paragraphNumberNode = contentNode.querySelector('#ai-course-des-field-paragraph-number');
 		const langNode = contentNode.querySelector('#ai-course-des-field-language');
 		const outputsNode = contentNode.querySelector('#ai-course-des-field-outputs');
+		const courseTitleNode = document.querySelector('#titlewrap input');
 
 		const data = {
 			type: 'course-description',
@@ -257,8 +259,10 @@ const generate = () => {
 			// goal: goalNode.value,
 			audience: Array.from(audienceNode.selectedOptions).map((option) => option.value),
 			tone: Array.from(toneNode.selectedOptions).map((option) => option.value),
+			paragraph_number: paragraphNumberNode.value,
 			lang: Array.from(langNode.selectedOptions).map((option) => option.value),
 			outputs: outputsNode.value,
+			title: courseTitleNode ? courseTitleNode.value: '',
 		};
 
 		if (target.getAttribute('id') === 'lp-re-generate-course-des') {

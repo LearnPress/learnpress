@@ -48,6 +48,7 @@ class LP_Admin_Open_Ai {
 			$template->get_admin_template( 'open-ai/course-des-modal', compact('data') );
 			$template->get_admin_template( 'open-ai/create-feature-image-modal', compact('data') );
 			$template->get_admin_template( 'open-ai/edit-feature-image-modal', compact('data') );
+			$template->get_admin_template( 'open-ai/curriculum-modal', compact('data') );
 		}
 
 		if ( Page::is_admin_single_lesson_page() ) {

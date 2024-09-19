@@ -6,12 +6,21 @@
  */
 
 learn_press_admin_view( 'course/sections' );
+$lp_settings = LP_Settings::instance();
 ?>
 
 <script type="text/x-template" id="tmpl-lp-course-curriculum">
 	<div class="lp-course-curriculum">
 		<div class="heading">
 			<h4><?php esc_html_e( 'Details', 'learnpress' ); ?> <span :class="['status', status]"></span></h4>
+			<?php
+			if ( $lp_settings->get( 'enable_open_ai' ) === 'yes' ) {
+				?>
+				<button type="button" class="button"
+						id="lp-edit-ai-curriculum"><?php esc_html_e( 'Create with AI', 'learnpress' ); ?></button>
+				<?php
+			}
+			?>
 			<div class="section-item-counts"><span>{{countAllItems()}}</span></div>
 			<span class="collapse-sections" @click="toggle" :class="isOpen ? 'open' : 'close'"></span>
 		</div>

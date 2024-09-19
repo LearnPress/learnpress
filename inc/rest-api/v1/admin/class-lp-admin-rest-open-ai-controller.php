@@ -266,10 +266,10 @@ class LP_REST_Admin_OpenAI_Controller extends LP_Abstract_REST_Controller {
 
 		$generate_prompt = OpenAi::get_course_image_edit_prompt( $params );
 
-		if ( $params['prompt'] ) {
-			$prompt = $params['prompt'];
-		} else {
+		if ( empty($params['prompt']) ) {
 			$prompt = $generate_prompt['prompt'];
+		} else {
+			$prompt = $params['prompt'];
 		}
 
 		if ( empty( $prompt ) ) {
@@ -343,10 +343,10 @@ class LP_REST_Admin_OpenAI_Controller extends LP_Abstract_REST_Controller {
 		$params          = $request->get_params();
 		$generate_prompt = OpenAi::get_completions_prompt( $params );
 
-		if ( $params['prompt'] ) {
-			$prompt = $params['prompt'];
-		} else {
+		if ( empty($params['prompt']) ) {
 			$prompt = $generate_prompt['prompt'];
+		} else {
+			$prompt = $params['prompt'];
 		}
 
 		$args = array(
@@ -387,7 +387,7 @@ class LP_REST_Admin_OpenAI_Controller extends LP_Abstract_REST_Controller {
 				'Content-Type'  => 'application/json',
 			),
 			'body'    => json_encode( $args ),
-			'timeout' => 60,
+			'timeout' => 3600,
 		) );
 
 		if ( is_wp_error( $response ) ) {
@@ -395,6 +395,7 @@ class LP_REST_Admin_OpenAI_Controller extends LP_Abstract_REST_Controller {
 		}
 
 		$body   = wp_remote_retrieve_body( $response );
+
 		$result = json_decode( $body, true );
 
 		$data = array();
@@ -404,11 +405,20 @@ class LP_REST_Admin_OpenAI_Controller extends LP_Abstract_REST_Controller {
 			$choices = $result['choices'];
 			if ( is_array( $choices ) ) {
 				foreach ( $choices as $choice ) {
+					$text_content  = '';
 					if ( isset( $choice['message']['content'] ) ) {
-						$content[] = $choice['message']['content'];
+						$text_content = $choice['message']['content'];
 					} elseif ( isset( $choice['text'] ) ) {
-						$content[] = $choice['text'];
+						$text_content = $choice['text'];
 					}
+
+					if(isset($params['data_return']) && $params['data_return'] === 'json'){
+						$text_content = preg_replace('/^```json\s*|\s*```$/m', '', $text_content);
+						$text_content = trim($text_content);
+						$text_content = json_decode($text_content, true);
+					}
+
+					$content[] = $text_content;
 				}
 			}
 		}
@@ -416,6 +426,8 @@ class LP_REST_Admin_OpenAI_Controller extends LP_Abstract_REST_Controller {
 		if ( empty( $params['prompt'] ) ) {
 			$data ['prompt'] = $generate_prompt['prompt_html'];
 		}
+
+
 
 		$data ['content'] = $content;
 		$success_text     = sprintf( __( 'Generate %s successfully!', 'learnpress' ), str_replace( '-', ' ', $params['type'] ) );

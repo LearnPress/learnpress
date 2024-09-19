@@ -292,7 +292,7 @@ const generate = () => {
 			audience: Array.from(audienceNode.selectedOptions).map((option) => option.value),
 			tone: Array.from(toneNode.selectedOptions).map((option) => option.value),
 			lang: Array.from(langNode.selectedOptions).map((option) => option.value),
-			outputs: outputsNode.value,
+			outputs: outputsNode.value ? outputsNode.value : 1,
 		};
 
 		if (target.getAttribute('id') === 'lp-re-generate-course-title') {

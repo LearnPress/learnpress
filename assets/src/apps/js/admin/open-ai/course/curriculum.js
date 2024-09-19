@@ -1,8 +1,8 @@
 let modal;
 const {__} = wp.i18n;
 
-const createFeaturImage = () => {
-	modal = document.querySelector('#lp-ai-course-create-fi-modal');
+const curriculum = () => {
+	modal = document.querySelector('#lp-ai-curriculum-modal');
 	if (!modal) {
 		return;
 	}
@@ -10,11 +10,10 @@ const createFeaturImage = () => {
 	openModal();
 	closeModal();
 	generate();
-	saveImage();
-	setFeatureImage();
+	setCurriculum();
 };
 
-const saveImage = () => {
+const setCurriculum = () => {
 	document.addEventListener('click', function (event) {
 		const target = event.target;
 
@@ -22,14 +21,14 @@ const saveImage = () => {
 			return;
 		}
 
-		if (!target.closest('.course-create-fi-item')) {
+		if (!target.closest('.curriculum-item')) {
 			return;
 		}
 
 		const actionNode = target.closest('.action');
 		target.disabled = true;
 		const data = {
-			image_data: target.closest('.course-create-fi-item').querySelector('.ai-result img').src
+			image_data: target.closest('.curriculum-item').querySelector('.ai-result img').src
 		};
 
 		wp.apiFetch({
@@ -55,23 +54,12 @@ const saveImage = () => {
 	});
 };
 
-const setFeatureImage = () => {
-	document.addEventListener('click', function (event) {
-		const target = event.target;
-
-		if (!target.classList.contains('ai-set-feature-image')) {
-			return;
-		}
-
-		document.querySelector('#set-post-thumbnail').click();
-	});
-}
 
 const openModal = () => {
 	document.addEventListener('click', function (event) {
 		const target = event.target;
 
-		if (target.id !== 'lp-edit-ai-course-create-fi') {
+		if (target.id !== 'lp-edit-ai-curriculum') {
 			return;
 		}
 
@@ -84,10 +72,13 @@ const closeModal = () => {
 	let isMouseDownOnTarget = false
 
 	const handleClose = () => {
-		const openModalBtn = document.querySelector('#lp-edit-ai-course-create-fi');
+		const openModalBtn = document.querySelector('#lp-edit-ai-curriculum');
 
 		modal.classList.remove('active');
-		openModalBtn.disabled = false;
+
+		if (openModalBtn) {
+			openModalBtn.disabled = false;
+		}
 	};
 
 	document.addEventListener('mousedown', function (event) {
@@ -114,7 +105,7 @@ const closeModal = () => {
 			return;
 		}
 		if (isMouseDownOnTarget) {
-			if (target.classList.contains('close-btn') && target.closest('#lp-ai-course-create-fi-modal')) {
+			if (target.classList.contains('close-btn') && target.closest('#lp-ai-curriculum-modal')) {
 				handleClose();
 			}
 
@@ -126,11 +117,11 @@ const closeModal = () => {
 	});
 
 	const changeMouseDownOnTarget = (target, value) => {
-		if (target.id === 'lp-edit-ai-course-create-fi') {
+		if (target.id === 'lp-edit-ai-curriculum') {
 			return;
 		}
 
-		if (target.classList.contains('close-btn') && target.closest('#lp-ai-course-create-fi-modal')) {
+		if (target.classList.contains('close-btn') && target.closest('#lp-ai-curriculum-modal')) {
 			isMouseDownOnTarget = value;
 		}
 
@@ -144,11 +135,11 @@ const generate = () => {
 	document.addEventListener('click', function (event) {
 		const target = event.target;
 
-		if (!['lp-generate-course-create-fi-btn', 'lp-re-generate-course-create-fi'].includes(target.getAttribute('id'))) {
+		if (!['lp-generate-curriculum-btn', 'lp-re-generate-curriculum'].includes(target.getAttribute('id'))) {
 			return;
 		}
 
-		const modal = target.closest('#lp-ai-course-create-fi-modal');
+		const modal = target.closest('#lp-ai-curriculum-modal');
 
 		if (!modal) {
 			return;
@@ -156,7 +147,7 @@ const generate = () => {
 
 		const togglePromptBtnNode = modal.querySelector('.toggle-prompt');
 		const promptOutputNode = modal.querySelector('.prompt-output');
-		const courseFiOutputNode = modal.querySelector('.course-create-fi-output');
+		const curriculumOutputNode = modal.querySelector('.curriculum-output');
 
 		const contentNode = modal.querySelector('.content');
 		const promptTextArea = promptOutputNode.querySelector('textarea');
@@ -167,62 +158,99 @@ const generate = () => {
 			togglePromptBtnNode.classList.remove('active', 'display');
 			togglePromptBtnNode.innerHTML = __('Display prompt', 'learnpress');
 			promptOutputNode.classList.remove('active');
-			courseFiOutputNode.innerHTML = '';
+			curriculumOutputNode.innerHTML = '';
 			contentNode.style.opacity = 0.6;
 		})();
 
-		const styleNode = contentNode.querySelector('#ai-course-create-fi-field-style');
-		const iconNode = contentNode.querySelector('#ai-course-create-fi-field-icon');
-		const qualityNode = contentNode.querySelector('#ai-course-create-fi-field-quality');
-		const sizeNode = contentNode.querySelector('#ai-course-create-fi-field-size');
-		const outputsNode = contentNode.querySelector('#ai-course-create-fi-field-outputs');
+		const sectionNumberNode = contentNode.querySelector('#ai-curriculum-field-section-numbers');
+		const lessPerSectionNode = contentNode.querySelector('#ai-curriculum-field-less-per-section');
+		const levelNode = contentNode.querySelector('#ai-curriculum-field-level');
+		const topicNode = contentNode.querySelector('#ai-curriculum-field-topic');
+		const languageNode = contentNode.querySelector('#ai-curriculum-field-language');
+		const outputsNode = contentNode.querySelector('#ai-curriculum-field-outputs');
 		const courseTitleNode = document.querySelector('#titlewrap input');
 		const editor = tinyMCE.get('content');
 
 		let data = {
-			style: Array.from(styleNode.selectedOptions).map((option) => option.value),
-			icon: iconNode.value,
-			size: sizeNode.value,
-			quality: qualityNode.value,
+			type: 'course-curriculum',
+			section_number: sectionNumberNode.value,
+			less_per_section: lessPerSectionNode.value,
+			level: levelNode.value,
+			topic: topicNode.value,
+			lang: languageNode.value,
 			outputs: outputsNode ? outputsNode.value : 1,
-			title: courseTitleNode ? courseTitleNode.value: '',
+			title: courseTitleNode ? courseTitleNode.value : '',
+			data_return: 'json',
 		};
-		if (target.getAttribute('id') === 'lp-re-generate-course-create-fi') {
-			data.prompt = promptTextArea ? promptTextArea.value : '';
-		}		``
 
-		if(!!editor){
+		if (!!editor) {
 			data.description = editor.getContent()
 		}
 
-		wp.apiFetch({
-			path: '/lp/v1/open-ai/create-feature-image', method: 'POST', data,
-		}).then((res) => {
-			if (res.status === 'error' && res.msg) {
-				// eslint-disable-next-line no-alert
-				window.alert(res.msg);
-			}
+		if (target.getAttribute('id') === 'lp-re-generate-curriculum') {
+			data.prompt = promptTextArea ? promptTextArea.value : '';
+		}
 
+		wp.apiFetch({
+			path: '/lp/v1/open-ai/generate-text', method: 'POST', data,
+		}).then((res) => {
 			if (res.data.prompt) {
 				promptOutputNode.innerHTML = res.data.prompt.replace(/\\n/g, '\n');
 			}
 
 			if (res.data.content) {
-				let courseFeatureImage = '';
-				[...res.data.content].map((content) => {
-					const dataBase64 = content.b64_json;
-					const src = `data:image/png;base64,${dataBase64}`;
-					courseFeatureImage += `
-					<div class="course-create-fi-item">
+				let curriculumContent = '';
+				const curriculums = res.data.content;
+
+				for (let i = 0; i < curriculums.length; i++) { // loop curriculum
+					let sectionContent = '';
+					const curriculum = curriculums[i];
+
+					if (!curriculum) {
+						continue;
+					}
+
+					const sections = curriculum?.sections || [];
+					for (let j = 0; j < sections.length; j++) {
+						const section = sections[j];
+						if (!section) {
+							continue;
+						}
+
+						const lessons = section?.lessons || [];
+						let lessonTitle = '';
+
+						lessons.map(lesson => {
+							lessonTitle += `
+								<li class="lesson-title">${lesson.lesson_title}</li>
+							`;
+						});
+
+						sectionContent += `
+						<div class="section">
+							<div class="section-title">${section.section_title}</div>
+							<div class="section-content">
+								<ul class="lesson">
+									${lessonTitle}
+								</ul>
+								<button class="apply-section button">` + __('Apply section', 'learnpress') + `</button>
+							</div>
+						</div>
+						`;
+					}
+
+					curriculumContent += `
+					<div class="course-curriculum-item">
 						<div class="ai-result">
-							<img src="${src}" alt="">
+							${sectionContent}
 						</div>
 						<div class="action">
-							<button class="ai-save-image button">` + __('Save image', 'learnpress') + `</button>
+							<button class="apply-curriculum button">` + __('Apply curriculum', 'learnpress') + `</button>
 						</div>
 					</div>`;
-				});
-				courseFiOutputNode.innerHTML = courseFeatureImage;
+				}
+
+				curriculumOutputNode.innerHTML = curriculumContent;
 			}
 		}).catch((err) => {
 			console.log(err);
@@ -237,4 +265,4 @@ const generate = () => {
 	});
 };
 
-export default createFeaturImage;
+export default curriculum;
