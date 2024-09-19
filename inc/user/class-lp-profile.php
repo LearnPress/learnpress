@@ -1023,7 +1023,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		public static function instance( $user_id = 0 ) {
 			$is_page_profile = LP_Page_Controller::page_is( 'profile' );
 
-			if ( $is_page_profile ) {
+			if ( $is_page_profile && empty( $user_id ) ) {
 				if ( empty( self::$_instance ) ) {
 					$user_name = get_query_var( 'user' );
 					if ( ! empty( $user_name ) ) {
