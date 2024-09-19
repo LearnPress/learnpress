@@ -1090,12 +1090,14 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 		return learn_press_get_user_extra_profile_info( $user_id );
 	}
 
-	public function get_profile_avatar( $user_id ) {
+	/**
+	 * @since 4.1.4
+	 * @version 1.0.1
+	 */
+	public function get_profile_avatar( $user_id ): string {
 		$user = learn_press_get_user( $user_id );
 
-		$avatar = $user->get_upload_profile_src();
-
-		return ! empty( $avatar ) ? $avatar : '';
+		return $user->get_profile_avatar_url();
 	}
 
 	/**

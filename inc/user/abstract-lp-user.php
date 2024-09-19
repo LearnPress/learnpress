@@ -1028,8 +1028,28 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 *
 		 * @return string
 		 */
-		public function get_upload_profile_src( $size = '' ) {
-			return LP_Profile::instance( $this->get_id() )->get_upload_profile_src( $size );
+		public function get_upload_profile_src() {
+			return LP_Profile::instance( $this->get_id() )->get_upload_profile_src();
+		}
+
+		/**
+		 * Get profile avatar url
+		 *
+		 * @return string
+		 * @since 4.2.7.2
+		 * @version 1.0.0
+		 */
+		public function get_profile_avatar_url(): string {
+			$avatar_url = $this->get_upload_profile_src();
+			if ( empty( $avatar_url ) ) {
+				$args = learn_press_get_avatar_thumb_size();
+				$avatar_url = get_avatar_url( $this->get_id(), $args );
+				if ( empty( $avatar_url ) ) {
+					$avatar_url = LP_PLUGIN_URL . 'assets/images/avatar-default.png';
+				}
+			}
+
+			return $avatar_url;
 		}
 
 		/**
