@@ -14,38 +14,38 @@ $answer_range   = LP_Install_Sample_Data::$answer_range;
 ?>
 
 <div class="lp-install-sample">
-	<h2><?php esc_html_e( 'Install Sample Data', 'learnpress' ); ?></h2>
+	<h2><?php _e( 'Install Sample Data', 'learnpress' ); ?></h2>
 	<p><?php _e( 'Create a <strong>Sample course</strong> with lessons and quizzes. The content will be filled with <strong>Lorem</strong> text.', 'learnpress' ); ?></p>
 	<fieldset class="lp-install-sample__options hide-if-js">
-		<legend><?php esc_html_e( 'Options', 'learnpress' ); ?></legend>
+		<legend><?php _e( 'Options', 'learnpress' ); ?></legend>
 
 		<ul>
 			<li>
-				<p><?php esc_html_e( 'Course name', 'learnpress' ); ?></p>
+				<p><?php _e( 'Course name', 'learnpress' ); ?></p>
 				<input type="text" class="widefat" name="custom-name" value="" placeholder="<?php esc_attr_e( 'Sample course', 'learnpress' ); ?>">
 			</li>
 			<li>
-				<p><?php esc_html_e( 'Random number of sections in range', 'learnpress' ); ?></p>
+				<p><?php _e( 'Random number of sections in range', 'learnpress' ); ?></p>
 				<input type="number" size="3" value="<?php echo esc_attr( $section_range[0] ); ?>" min="1" max="20" name="section-range[]">
 				<input type="number" size="3" value="<?php echo esc_attr( $section_range[1] ); ?>" min="1" max="20" name="section-range[]">
 			</li>
 			<li>
-				<p><?php esc_html_e( 'Random number of items in range (each section)', 'learnpress' ); ?></p>
+				<p><?php _e( 'Random number of items in range (each section)', 'learnpress' ); ?></p>
 				<input type="number" size="3" value="<?php echo esc_attr( $item_range[0] ); ?>" min="1" max="50" name="item-range[]">
 				<input type="number" size="3" value="<?php echo esc_attr( $item_range[1] ); ?>" min="1" max="50" name="item-range[]">
 			</li>
 			<li>
-				<p><?php esc_html_e( 'Random number of questions in range (each quiz)', 'learnpress' ); ?></p>
+				<p><?php _e( 'Random number of questions in range (each quiz)', 'learnpress' ); ?></p>
 				<input type="number" size="3" value="<?php echo esc_attr( $question_range[0] ); ?>" min="1" max="50" name="question-range[]">
 				<input type="number" size="3" value="<?php echo esc_attr( $question_range[1] ); ?>" min="1" max="50" name="question-range[]">
 			</li>
 			<li>
-				<p><?php esc_html_e( 'Random number of answers in range (each question)', 'learnpress' ); ?></p>
+				<p><?php _e( 'Random number of answers in range (each question)', 'learnpress' ); ?></p>
 				<input type="number" size="3" value="<?php echo esc_attr( $answer_range[0] ); ?>" min="1" max="10" name="answer-range[]">
 				<input type="number" size="3" value="<?php echo esc_attr( $answer_range[1] ); ?>" min="1" max="10" name="answer-range[]">
 			</li>
 			<li>
-				<p><?php esc_html_e( 'Course price', 'learnpress' ); ?></p>
+				<p><?php _e( 'Course price', 'learnpress' ); ?></p>
 				<input type="number" size="3" value="" min="0" name="course-price">
 			</li>
 		</ul>

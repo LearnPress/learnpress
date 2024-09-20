@@ -431,9 +431,9 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			$params['sort_by'] = 'on_sale';
 		}
 
-		$params['return_type']   = 'json';
+		$params['return_type'] = 'json';
 		//$params['c_only_fields'] = empty( $params['c_only_fields'] ) ? '' : explode( ',', $params['c_only_fields'] );
-		$params['term_id']       = empty( $params['category'] ) || 'all' === $params['category'] ? '' : implode( ',', $params['category'] );
+		$params['term_id'] = empty( $params['category'] ) || 'all' === $params['category'] ? '' : implode( ',', $params['category'] );
 
 		return $params;
 	}
@@ -484,10 +484,10 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 				$lp_user_items_db = LP_User_Items_DB::getInstance();
 				$filter->fields[] = 'ui.user_item_id, ui.user_id, ui.item_id, ui.start_time, ui.end_time, ui.item_type, ui.graduation, ui.status';
 				$filter->join[]   = "LEFT JOIN $lp_user_items_db->tb_lp_user_items AS ui ON p.ID = ui.item_id";
-				$filter->where[]  = $lp_user_items_db->wpdb->prepare( "AND ui.user_id = %s", $user_id );
-				$filter->where[]  = $lp_user_items_db->wpdb->prepare( "AND ui.item_type = %s", LP_COURSE_CPT );
+				$filter->where[]  = $lp_user_items_db->wpdb->prepare( 'AND ui.user_id = %s', $user_id );
+				$filter->where[]  = $lp_user_items_db->wpdb->prepare( 'AND ui.item_type = %s', LP_COURSE_CPT );
 				if ( ! empty( $params['course_filter'] ) ) {
-					$filter->where[] = $lp_user_items_db->wpdb->prepare( "AND ui.graduation = %s", $params['course_filter'] );
+					$filter->where[] = $lp_user_items_db->wpdb->prepare( 'AND ui.graduation = %s', $params['course_filter'] );
 				}
 			} else {
 				// Check cache with case not learned
@@ -544,7 +544,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 
 			$courseObjPrepare             = new stdClass();
 			$courseObjPrepare->id         = (int) $courseObj->ID ?? 0;
-			$courseObjPrepare->name       = $course->get_title();
+			$courseObjPrepare->name       = html_entity_decode( $course->get_title() );
 			$courseObjPrepare->image      = $course->get_image_url();
 			$author                       = $course->get_author_model();
 			$courseObjPrepare->instructor = ! empty( $author ) ? $this->get_author_info( $author ) : [];
@@ -577,7 +577,6 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			$courseObjPrepare->rating                           = $this->get_course_rating( $courseObj->ID );
 			$courseObjPrepare->meta_data                        = new stdClass();
 			$courseObjPrepare->meta_data->_lp_passing_condition = $course->get_meta_value_by_key( CoursePostModel::META_KEY_PASSING_CONDITION );
-
 
 			// Add more fields
 			if ( ! empty( $params['learned'] ) ) {
@@ -983,7 +982,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		$output['avatar']      = $instructor->get_upload_profile_src();
 		$output['id']          = $instructor->get_id();
 		$output['name']        = $instructor->get_display_name();
-		$output['description'] = $instructor->get_description();
+		$output['description'] = $instructor->get_data( 'description', '' );
 		$output['social']      = $extra_info;
 
 		return $output;
