@@ -46,6 +46,7 @@ if ( ! function_exists( 'learn_press_get_course_tabs' ) ) {
 	 * Return an array of tabs display in single course page.
 	 *
 	 * @return array
+	 * @throws Exception
 	 */
 	function learn_press_get_course_tabs() {
 		$course = learn_press_get_course();
@@ -90,6 +91,7 @@ if ( ! function_exists( 'learn_press_get_course_tabs' ) ) {
 		$can_show_tab_material = false;
 		if ( $course->is_no_required_enroll()
 			|| $user->has_enrolled_or_finished( $course->get_id() )
+			|| $user->has_purchased_course( $course->get_id() )
 			|| $user->is_instructor() || $user->is_admin() ) {
 			$can_show_tab_material = true;
 		}

@@ -9,16 +9,16 @@ LP.Hook.addAction( 'lp-compatible-builder', () => {
 
 	if ( typeof elementorFrontend !== 'undefined' ) {
 		[ ...document.querySelectorAll( '#popup-content' ) ][ 0 ].addEventListener( 'scroll', () => {
-			Waypoint.refreshAll();
+			//Waypoint.refreshAll();
 			window.dispatchEvent( new Event( 'resize' ) );
 		} );
 	}
 
-	if ( typeof vc_js !== 'undefined' && typeof VcWaypoint !== 'undefined' ) {
+	/*if ( typeof vc_js !== 'undefined' && typeof VcWaypoint !== 'undefined' ) {
 		[ ...document.querySelectorAll( '#popup-content' ) ][ 0 ].addEventListener( 'scroll', () => {
 			VcWaypoint.refreshAll();
 		} );
-	}
+	}*/
 } );
 
 LP.Hook.addAction( 'lp-quiz-compatible-builder', () => {
