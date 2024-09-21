@@ -343,12 +343,7 @@ const generate = () => {
 		wp.apiFetch({
 			path: '/lp/v1/open-ai/edit-feature-image', method: 'POST', data,
 		}).then((res) => {
-			if (res.status === 'error' && res.msg) {
-				// eslint-disable-next-line no-alert
-				window.alert(res.msg);
-			}
-
-			if (res.data.prompt) {
+			if (res.data.prompt && !data.prompt ) {
 				promptOutputNode.innerHTML = res.data.prompt.replace(/\\n/g, '\n');
 			}
 
@@ -368,6 +363,10 @@ const generate = () => {
 					</div>`;
 				});
 				courseFeatureImageOutputNode.innerHTML = courseFeatureImage;
+			}
+
+			if (res.msg && res.status === 'error') {
+				courseFeatureImageOutputNode.innerHTML = `<div class="error"> ${res.msg} </div>`;
 			}
 		}).catch((err) => {
 			console.log(err);

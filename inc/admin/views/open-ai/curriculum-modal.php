@@ -64,11 +64,11 @@ $config = Config::instance();
 				</div>
 
 				<div class="output">
-					<div class="outputs">
-						<label
-							for="ai-curriculum-field-outputs"><?php esc_html_e( 'Outputs', 'learnpress' ); ?></label>
-						<input id="ai-curriculum-field-outputs" type="number" min="1" step="1">
-					</div>
+<!--					<div class="outputs">-->
+<!--						<label-->
+<!--							for="ai-curriculum-field-outputs">--><?php //esc_html_e( 'Outputs', 'learnpress' ); ?><!--</label>-->
+<!--						<input id="ai-curriculum-field-outputs" type="number" min="1" step="1">-->
+<!--					</div>-->
 					<button type="button"
 							class="button"
 							id="lp-generate-curriculum-btn"><?php esc_html_e( 'Generate', 'learnpress' ); ?></button>

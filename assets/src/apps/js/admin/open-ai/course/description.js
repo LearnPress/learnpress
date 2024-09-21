@@ -262,7 +262,7 @@ const generate = () => {
 			paragraph_number: paragraphNumberNode.value,
 			lang: Array.from(langNode.selectedOptions).map((option) => option.value),
 			outputs: outputsNode.value,
-			title: courseTitleNode ? courseTitleNode.value: '',
+			title: courseTitleNode ? courseTitleNode.value : '',
 		};
 
 		if (target.getAttribute('id') === 'lp-re-generate-course-des') {
@@ -271,15 +271,16 @@ const generate = () => {
 		wp.apiFetch({
 			path: '/lp/v1/open-ai/generate-text', method: 'POST', data,
 		}).then((res) => {
-			if (res.data.prompt) {
+			if (res.data.prompt && !data.prompt ) {
 				promptOutputNode.innerHTML = res.data.prompt.replace(/\\n/g, '\n');
 			}
 
-			if (res.data.content) {
-				let des = '';
-				[...res.data.content].map((content) => {
-					content = convertNewlinesToParagraphs(content);
-					des += `
+			if (res.status === 'success') {
+				if (res.data.content) {
+					let des = '';
+					[...res.data.content].map((content) => {
+						content = convertNewlinesToParagraphs(content);
+						des += `
 					<div class="course-des-item">
 						<div class="ai-result">
 							${content}
@@ -289,8 +290,13 @@ const generate = () => {
 							<button class="apply button">` + __('Apply', 'learnpress') + `</button>
 						</div>
 					</div>`;
-				});
-				desOutputNode.innerHTML = des;
+					});
+					desOutputNode.innerHTML = des;
+				}
+			}
+
+			if (res.msg && res.status === 'error') {
+				desOutputNode.innerHTML = `<div class="error"> ${res.msg} </div>`;
 			}
 		}).catch((err) => {
 			console.log(err);

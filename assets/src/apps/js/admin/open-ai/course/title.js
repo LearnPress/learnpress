@@ -302,14 +302,15 @@ const generate = () => {
 		wp.apiFetch({
 			path: '/lp/v1/open-ai/generate-text', method: 'POST', data,
 		}).then((res) => {
-			if (res.data.prompt) {
+			if (res.data.prompt && !data.prompt ) {
 				promptOutputNode.innerHTML = res.data.prompt.replace(/\\n/g, '\n');
 			}
 
-			if (res.data.content) {
-				let titleContent = '';
-				[...res.data.content].map((content) => {
-					titleContent += `
+			if (res.status === 'success') {
+				if (res.data.content) {
+					let titleContent = '';
+					[...res.data.content].map((content) => {
+						titleContent += `
 					<div class="course-title-item">
 						<div class="ai-result">
 							${content}
@@ -319,8 +320,13 @@ const generate = () => {
 							<button class="apply button">` + __('Apply', 'learnpress') + `</button>
 						</div>
 					</div>`;
-				});
-				titleOutputNode.innerHTML = titleContent;
+					});
+					titleOutputNode.innerHTML = titleContent;
+				}
+			}
+
+			if (res.msg && res.status === 'error') {
+				titleOutputNode.innerHTML = `<div class="error"> ${res.msg} </div>`;
 			}
 		}).catch((err) => {
 			console.log(err);

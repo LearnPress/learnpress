@@ -125,7 +125,7 @@ return apply_filters(
 				[
 					'title'             => __( 'Max Token', 'learnpress' ),
 					'id'                => 'open_ai_max_token',
-					'default'           => 200,
+					'default'           => 2000,
 					'type'              => 'number',
 					'custom_attributes' => array(
 						'min'  => 1,

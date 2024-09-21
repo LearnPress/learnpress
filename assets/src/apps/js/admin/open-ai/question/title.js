@@ -279,7 +279,7 @@ const generate = () => {
 		wp.apiFetch({
 			path: '/lp/v1/open-ai/generate-text', method: 'POST', data,
 		}).then((res) => {
-			if (res.data.prompt) {
+			if (res.data.prompt && !data.prompt ) {
 				promptOutputNode.innerHTML = res.data.prompt.replace(/\\n/g, '\n');
 			}
 
@@ -298,6 +298,10 @@ const generate = () => {
 					</div>`;
 				});
 				titleOutputNode.innerHTML = titleContent;
+			}
+
+			if (res.msg && res.status === 'error') {
+				titleOutputNode.innerHTML = `<div class="error"> ${res.msg} </div>`;
 			}
 		}).catch((err) => {
 			console.log(err);

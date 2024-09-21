@@ -10,48 +10,11 @@ const curriculum = () => {
 	openModal();
 	closeModal();
 	generate();
-	setCurriculum();
+	applySection();
 };
 
-const setCurriculum = () => {
-	document.addEventListener('click', function (event) {
-		const target = event.target;
+const applySection = () => {
 
-		if (!target.classList.contains('ai-save-image')) {
-			return;
-		}
-
-		if (!target.closest('.curriculum-item')) {
-			return;
-		}
-
-		const actionNode = target.closest('.action');
-		target.disabled = true;
-		const data = {
-			image_data: target.closest('.curriculum-item').querySelector('.ai-result img').src
-		};
-
-		wp.apiFetch({
-			path: '/lp/v1/open-ai/save-feature-image', method: 'POST', data,
-		}).then((res) => {
-			if (res.status === 'error' && res.msg) {
-				// eslint-disable-next-line no-alert
-				window.alert(res.msg);
-			}
-
-			target.remove();
-			if (res.data.id) {
-				actionNode.innerHTML = `<button class="ai-set-feature-image button">` + __('Set featured image', 'learnpress') + `</button>`
-			}
-		}).catch((err) => {
-			console.log(err);
-		}).finally(() => {
-			//After generate
-			(() => {
-				target.disabled = false;
-			})();
-		});
-	});
 };
 
 
@@ -194,7 +157,7 @@ const generate = () => {
 		wp.apiFetch({
 			path: '/lp/v1/open-ai/generate-text', method: 'POST', data,
 		}).then((res) => {
-			if (res.data.prompt) {
+			if (res.data.prompt && !data.prompt ) {
 				promptOutputNode.innerHTML = res.data.prompt.replace(/\\n/g, '\n');
 			}
 
@@ -251,6 +214,10 @@ const generate = () => {
 				}
 
 				curriculumOutputNode.innerHTML = curriculumContent;
+			}
+
+			if (res.msg && res.status === 'error') {
+				curriculumOutputNode.innerHTML = `<div class="error"> ${res.msg} </div>`;
 			}
 		}).catch((err) => {
 			console.log(err);

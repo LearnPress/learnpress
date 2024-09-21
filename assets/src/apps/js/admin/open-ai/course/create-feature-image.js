@@ -198,12 +198,7 @@ const generate = () => {
 		wp.apiFetch({
 			path: '/lp/v1/open-ai/create-feature-image', method: 'POST', data,
 		}).then((res) => {
-			if (res.status === 'error' && res.msg) {
-				// eslint-disable-next-line no-alert
-				window.alert(res.msg);
-			}
-
-			if (res.data.prompt) {
+			if (res.data.prompt && !data.prompt ) {
 				promptOutputNode.innerHTML = res.data.prompt.replace(/\\n/g, '\n');
 			}
 
@@ -223,6 +218,10 @@ const generate = () => {
 					</div>`;
 				});
 				courseFiOutputNode.innerHTML = courseFeatureImage;
+			}
+
+			if (res.status === 'error' && res.msg) {
+				courseFiOutputNode.innerHTML = `<div class="error"> ${res.msg} </div>`;
 			}
 		}).catch((err) => {
 			console.log(err);

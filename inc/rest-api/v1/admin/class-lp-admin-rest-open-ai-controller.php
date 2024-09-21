@@ -197,7 +197,7 @@ class LP_REST_Admin_OpenAI_Controller extends LP_Abstract_REST_Controller {
 	 */
 	public function create_course_feature_image( WP_REST_Request $request ) {
 		$params = $request->get_params();
-
+		$data = array();
 		$generate_prompt = OpenAi::get_course_image_create_prompt( $params );
 
 		if ( empty( $params['prompt'] ) ) {
@@ -206,8 +206,12 @@ class LP_REST_Admin_OpenAI_Controller extends LP_Abstract_REST_Controller {
 			$prompt = $params['prompt'];
 		}
 
+		if ( empty( $params['prompt'] ) ) {
+			$data ['prompt'] = $generate_prompt['prompt_html'];
+		}
+
 		if ( empty( $prompt ) ) {
-			return $this->error( __( 'Invalid prompt', 'learnpress' ), 400 );
+			return $this->error( __( 'Invalid prompt', 'learnpress' ), 400, $data );
 		}
 
 		$model = LP_Settings::instance()->get( 'open_ai_image_model_type' );
@@ -222,7 +226,7 @@ class LP_REST_Admin_OpenAI_Controller extends LP_Abstract_REST_Controller {
 
 		$args = array(
 			'method'  => 'POST',
-			'timeout' => 60,
+			'timeout' => 3600,
 			'headers' => array(
 				'Content-Type'  => 'application/json',
 				'Authorization' => 'Bearer ' . $this->secret_key,
@@ -233,16 +237,18 @@ class LP_REST_Admin_OpenAI_Controller extends LP_Abstract_REST_Controller {
 		$response = wp_remote_request( $this->create_image_url, $args );
 
 		if ( is_wp_error( $response ) ) {
-			return $this->error( $response->get_error_message(), $response->get_error_codes() );
+			return $this->error( $response->get_error_message(), $response->get_error_codes() , $data);
 		}
 
 		$result = wp_remote_retrieve_body( $response );
 		$result = json_decode( $result, true );
 
-		$data['content'] = $result['data'] ?? array();
-		if ( empty( $params['prompt'] ) ) {
-			$data ['prompt'] = $generate_prompt['prompt_html'];
+
+		if ( isset( $result['error'] ) ) {
+			return $this->error( $result['error']['message'], $result['error']['code'], $data );
 		}
+
+		$data['content'] = $result['data'] ?? array();
 
 		return $this->success( esc_html__( 'Generate course feature image successfully!', 'learnpress' ), $data );
 	}
@@ -255,25 +261,30 @@ class LP_REST_Admin_OpenAI_Controller extends LP_Abstract_REST_Controller {
 	 */
 	public function edit_course_feature_image( WP_REST_Request $request ) {
 		$params = $request->get_params();
+		$data   = array();
 
 		if ( empty( $params['logo'] ) ) {
-			return $this->error( __( 'Invalid logo', 'learnpress' ), 400 );
+			return $this->error( __( 'Invalid logo', 'learnpress' ), 400, $data );
 		}
 
 		if ( empty( $params['mask'] ) ) {
-			return $this->error( __( 'Invalid mask', 'learnpress' ), 400 );
+			return $this->error( __( 'Invalid mask', 'learnpress' ), 400, $data );
 		}
 
 		$generate_prompt = OpenAi::get_course_image_edit_prompt( $params );
 
-		if ( empty($params['prompt']) ) {
+		if ( empty( $params['prompt'] ) ) {
 			$prompt = $generate_prompt['prompt'];
 		} else {
 			$prompt = $params['prompt'];
 		}
 
+		if ( empty( $params['prompt'] ) ) {
+			$data ['prompt'] = $generate_prompt['prompt_html'];
+		}
+
 		if ( empty( $prompt ) ) {
-			return $this->error( __( 'Invalid prompt', 'learnpress' ), 400 );
+			return $this->error( __( 'Invalid prompt', 'learnpress' ), 400, $data );
 		}
 
 		$logo_parts     = explode( ',', $params['logo'] );
@@ -301,7 +312,7 @@ class LP_REST_Admin_OpenAI_Controller extends LP_Abstract_REST_Controller {
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_ENCODING       => '',
 			CURLOPT_MAXREDIRS      => 10,
-			CURLOPT_TIMEOUT        => 60,
+			CURLOPT_TIMEOUT        => 3600,
 			CURLOPT_FOLLOWLOCATION => true,
 			CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_1_1,
 			CURLOPT_CUSTOMREQUEST  => 'POST',
@@ -322,14 +333,11 @@ class LP_REST_Admin_OpenAI_Controller extends LP_Abstract_REST_Controller {
 		curl_close( $curl );
 
 		if ( ! $response ) {
-			$this->error( curl_error( $curl ), $http_code );
+			$this->error( curl_error( $curl ), $http_code, $data );
 		}
 		$result = json_decode( $response, true );
 
 		$data['content'] = $result['data'];
-		if ( empty( $params['prompt'] ) ) {
-			$data ['prompt'] = $generate_prompt['prompt_html'];
-		}
 
 		return $this->success( esc_html__( 'Generate course feature image successfully!', 'learnpress' ), $data );
 	}
@@ -342,21 +350,30 @@ class LP_REST_Admin_OpenAI_Controller extends LP_Abstract_REST_Controller {
 	public function generate_text( WP_REST_Request $request ) {
 		$params          = $request->get_params();
 		$generate_prompt = OpenAi::get_completions_prompt( $params );
+		$data            = array();
 
-		if ( empty($params['prompt']) ) {
+		if ( empty( $params['prompt'] ) ) {
 			$prompt = $generate_prompt['prompt'];
 		} else {
 			$prompt = $params['prompt'];
+		}
+
+		if ( empty( $params['prompt'] ) ) {
+			$data ['prompt'] = $generate_prompt['prompt_html'];
 		}
 
 		$args = array(
 			'model'             => $this->text_model_type,
 			'frequency_penalty' => floatval( $this->frequency_penalty ),
 			'presence_penalty'  => floatval( $this->presence_penalty ),
-			'max_tokens'        => intval( $this->max_token ),
 			'n'                 => $params['outputs'] ? intval( $params['outputs'] ) : 1,
 			'temperature'       => floatval( $this->creativity_level )
 		);
+
+		//Max tokens
+		if ( ! empty( $this->max_token ) ) {
+			$args['max_tokens'] = intval( $this->max_token );
+		}
 
 		if ( in_array( $this->text_model_type, array(
 			'chatgpt-4o-latest',
@@ -368,6 +385,10 @@ class LP_REST_Admin_OpenAI_Controller extends LP_Abstract_REST_Controller {
 			$this->text_model_type_url = 'https://api.openai.com/v1/chat/completions';
 			$args['messages']          = array(
 				array(
+					"role"    => "system",
+					"content" => "You are an AI assistant specialized in education and course design."
+				),
+				array(
 					"role"    => "user",
 					"content" => $prompt
 				)
@@ -378,7 +399,7 @@ class LP_REST_Admin_OpenAI_Controller extends LP_Abstract_REST_Controller {
 			$this->text_model_type_url = 'https://api.openai.com/v1/completions';
 			$args['prompt']            = $prompt;
 		} else {
-			return $this->error( esc_html__( 'Invalid model', 'learnpress' ), 400 );
+			return $this->error( esc_html__( 'Invalid model', 'learnpress' ), 400, $data );
 		}
 
 		$response = wp_remote_post( $this->text_model_type_url, array(
@@ -391,43 +412,39 @@ class LP_REST_Admin_OpenAI_Controller extends LP_Abstract_REST_Controller {
 		) );
 
 		if ( is_wp_error( $response ) ) {
-			return $this->error( $response->get_error_message(), $response->get_error_code() );
+			return $this->error( $response->get_error_message(), $response->get_error_code(), $data );
 		}
 
-		$body   = wp_remote_retrieve_body( $response );
+		$body = wp_remote_retrieve_body( $response );
 
 		$result = json_decode( $body, true );
 
-		$data = array();
+		if ( isset( $result['error'] ) ) {
+			return $this->error( $result['error']['message'], $result['error']['code'], $data );
+		}
 
 		$content = array();
 		if ( isset( $result['choices'] ) ) {
 			$choices = $result['choices'];
 			if ( is_array( $choices ) ) {
 				foreach ( $choices as $choice ) {
-					$text_content  = '';
+					$text_content = '';
 					if ( isset( $choice['message']['content'] ) ) {
 						$text_content = $choice['message']['content'];
 					} elseif ( isset( $choice['text'] ) ) {
 						$text_content = $choice['text'];
 					}
 
-					if(isset($params['data_return']) && $params['data_return'] === 'json'){
-						$text_content = preg_replace('/^```json\s*|\s*```$/m', '', $text_content);
-						$text_content = trim($text_content);
-						$text_content = json_decode($text_content, true);
+					if ( isset( $params['data_return'] ) && $params['data_return'] === 'json' ) {
+						$text_content = preg_replace( '/^```json\s*|\s*```$/m', '', $text_content );
+						$text_content = trim( $text_content );
+						$text_content = json_decode( $text_content, true );
 					}
 
 					$content[] = $text_content;
 				}
 			}
 		}
-
-		if ( empty( $params['prompt'] ) ) {
-			$data ['prompt'] = $generate_prompt['prompt_html'];
-		}
-
-
 
 		$data ['content'] = $content;
 		$success_text     = sprintf( __( 'Generate %s successfully!', 'learnpress' ), str_replace( '-', ' ', $params['type'] ) );
@@ -438,15 +455,17 @@ class LP_REST_Admin_OpenAI_Controller extends LP_Abstract_REST_Controller {
 	/**
 	 * @param string $msg
 	 * @param $status_code
+	 * @param $data
 	 *
 	 * @return WP_REST_Response
 	 */
-	public function error( string $msg = '', $status_code = 404 ) {
+	public function error( string $msg = '', $status_code = 404, array $data = [] ) {
 		return new WP_REST_Response(
 			array(
 				'status'      => 'error',
 				'msg'         => $msg,
 				'status_code' => $status_code,
+				'data'        => $data
 			),
 		//            $status_code
 		);
