@@ -220,6 +220,18 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		}
 
 		/**
+		 * Admin editor
+		 *
+		 * @since 3.3.0
+		 *
+		 * @return bool|string
+		 */
+		public function admin_editor_refactor() {
+
+			echo learn_press_admin_view_content( 'quiz/editor-refactor' );
+		}
+
+		/**
 		 * Add columns to admin manage quiz page
 		 *
 		 * @param  array $columns
@@ -462,6 +474,12 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 				'quiz-editor'   => array(
 					'title'    => esc_html__( 'Questions', 'learnpress' ),
 					'callback' => array( $this, 'admin_editor' ),
+					'context'  => 'normal',
+					'priority' => 'high',
+				),
+				'quiz-editor-refactor'   => array(
+					'title'    => esc_html__( 'Questions Refactor', 'learnpress' ),
+					'callback' => array( $this, 'admin_editor_refactor' ),
 					'context'  => 'normal',
 					'priority' => 'high',
 				),

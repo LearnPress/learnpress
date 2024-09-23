@@ -2,11 +2,8 @@
  * Quiz admin editor.
  */
 #quiz-editor {
-
 	.inside {
-
 		.rwmb-custom_html-wrapper {
-
 			> .rwmb-label {
 				display: none;
 			}
@@ -19,13 +16,13 @@
 }
 
 #quiz-editor {
-
 	.inside {
 		margin: 0;
 		padding: 0;
 	}
 }
 
+#admin-editor-lp_quiz-refactor,
 #admin-editor-lp_quiz {
 	margin: 0;
 	padding: 0;
@@ -87,9 +84,9 @@
 			border-collapse: collapse;
 			color: #777;
 
-			.fill_in_blanks{
-				.question-settings{
-					@media (max-width: 1560px ) {
+			.fill_in_blanks {
+				.question-settings {
+					@media (max-width: 1560px) {
 						flex-direction: column;
 					}
 				}
@@ -102,8 +99,7 @@
 				align-items: center;
 
 				&.question-settings {
-
-					@media (max-width: 1024px ) {
+					@media (max-width: 1024px) {
 						flex-direction: column;
 					}
 				}
@@ -116,7 +112,9 @@
 				& > .sort {
 					position: relative;
 					color: #999;
-					cursor: url("../../images/openhand.cur") 7 5, default;
+					cursor:
+						url("../../images/openhand.cur") 7 5,
+						default;
 					flex: 0 0 15px;
 
 					.svg-icon {
@@ -138,7 +136,7 @@
 					text-align: left;
 					flex: 0 0 25px;
 
-					&::after {
+					&:not(:empty)::after {
 						content: ".";
 					}
 				}
@@ -157,7 +155,7 @@
 					flex: 0 0 auto;
 					align-items: center;
 
-					>a {
+					> a {
 						display: inline-flex;
 						width: 100%;
 						padding: 0 10px;
@@ -219,7 +217,6 @@
 					}
 
 					&:hover {
-
 						ul {
 							visibility: visible;
 							opacity: 1;
@@ -237,14 +234,12 @@
 				}
 
 				&:hover {
-
 					& > .sort {
 						visibility: visible;
 					}
 				}
 
 				.actions {
-
 					.lp-box-data-actions {
 						text-align: right !important;
 					}
@@ -256,13 +251,11 @@
 				border-bottom: 1px solid #ddd;
 
 				.table-row {
-
 					& > * {
 						font-weight: bold;
 					}
 
 					& > .order {
-
 						&::after {
 							content: "";
 						}
@@ -275,11 +268,8 @@
 			}
 
 			.main {
-
 				.question-actions {
-
 					.name {
-
 						input {
 							width: 100%;
 							padding: 0;
@@ -304,7 +294,6 @@
 					}
 
 					.quiz-question-data {
-
 						table.lp-list-options {
 							border: 1px solid #ddd;
 
@@ -343,7 +332,6 @@
 							}
 
 							tbody {
-
 								tr {
 									border: 1px solid #ddd;
 									background: #f4fcff;
@@ -360,8 +348,10 @@
 
 										&.sort {
 											width: 12px;
-											cursor: url("../../images/openhand.cur") 7 5, default;
-
+											cursor:
+												url("../../images/openhand.cur")
+													7 5,
+												default;
 										}
 
 										&.answer-text {
@@ -380,15 +370,12 @@
 									}
 
 									&:hover {
-
 										.svg-icon {
 											visibility: visible;
 										}
 
 										.sort {
-
 											&:hover {
-
 												.svg-icon {
 													fill: #0085ba;
 												}
@@ -419,9 +406,7 @@
 									}
 
 									&.empty-option {
-
 										.sort {
-
 											i {
 												display: none;
 											}
@@ -457,7 +442,6 @@
 								}
 
 								.answer-text {
-
 									input {
 										width: 100%;
 										padding: 0;
@@ -476,7 +460,6 @@
 			}
 
 			.main {
-
 				.question-item {
 					border-bottom: 1px solid #ddd;
 					background: #f4fcff;
@@ -501,7 +484,6 @@
 						position: relative;
 
 						.question-actions {
-
 							.sort {
 								visibility: visible;
 
@@ -535,7 +517,6 @@
 					}
 
 					&.empty-question {
-
 						.question-settings {
 							display: none;
 						}
@@ -546,9 +527,7 @@
 					}
 
 					.question-actions {
-
 						.name {
-
 							input {
 								width: 100%;
 								padding: 0;
@@ -577,14 +556,12 @@
 								justify-content: end;
 
 								> div {
-
 									a {
 										visibility: hidden;
 									}
 								}
 
 								.lp-toolbar-btn {
-
 									.lp-btn-icon {
 										position: absolute;
 										z-index: 2;
@@ -622,14 +599,12 @@
 									line-height: 2.625rem;
 
 									&.open {
-
 										&::after {
 											content: "\f343";
 										}
 									}
 
 									&.close {
-
 										&::after {
 											content: "\f347";
 										}
@@ -639,11 +614,8 @@
 						}
 
 						&:hover {
-
 							.lp-toolbar-buttons {
-
 								> div {
-
 									a {
 										visibility: visible;
 									}
@@ -665,14 +637,12 @@
 								padding: 0;
 
 								.lp-quiz-editor {
-
 									&__detail {
-
 										&-field {
 											margin: 0;
 											padding: 20px;
 
-											&:nth-child(2n+1) {
+											&:nth-child(2n + 1) {
 												background: #f4fcff;
 											}
 										}
@@ -716,7 +686,6 @@
 						}
 
 						&.closed {
-
 							.quiz-question-options {
 								width: 38px;
 							}
@@ -732,7 +701,6 @@
 								}
 
 								.toggle {
-
 									&::after {
 										content: "\f132";
 									}
@@ -742,9 +710,7 @@
 					}
 
 					&.sorting_choice {
-
 						.quiz-question-data table.lp-list-options {
-
 							.answer-correct {
 								display: none !important;
 							}
@@ -785,6 +751,8 @@
 					}
 
 					.add-new-question {
+						display: flex;
+						justify-content: space-between;
 						padding: 8px 10px 8px 5px;
 
 						.title {
@@ -792,42 +760,39 @@
 							position: relative;
 							min-width: 500px;
 
-							form {
+							input {
+								width: 100%;
+								margin: 0;
+								padding: 6px 0;
+								border: 0;
+								background: transparent;
+								font-size: 1.2em;
+								line-height: 1.125rem;
 
-								input {
-									width: 100%;
-									margin: 0;
-									padding: 6px 0;
-									border: 0;
-									background: transparent;
-									font-size: 1.2em;
-									line-height: 1.125rem;
+								@include box-shadow(none);
 
-									@include box-shadow(none);
+								&:focus {
+									color: #32373c;
+								}
 
-									&:focus {
-										color: #32373c;
-									}
-
-									&::placeholder {
-										display: inline-block;
-									}
+								&::placeholder {
+									display: inline-block;
 								}
 							}
 						}
 
 						.add-new {
-							display: inline;
+							display: inline-block;
 							position: relative;
 
 							ul.question-types {
 								display: none;
 								position: absolute;
 								z-index: 9999999;
-								top: 100%;
-								right: -2px;
-								width: 200px;
-								margin: 6px;
+								top: calc(100% - 1px);
+								right: 0;
+								width: 100%;
+								margin: 0;
 								border: 1px solid #999;
 								background-color: #fff;
 
@@ -858,29 +823,32 @@
 							}
 
 							button {
-
 								&:hover {
-
 									& + .question-types {
 										display: block;
 									}
 								}
 
 								& + .question-types {
-
 									&:hover {
 										display: block;
 									}
 								}
 
-								&[disabled="disabled"] {
-
+								&[disabled] {
 									&:hover {
-
 										& + .question-types {
 											display: none;
 										}
 									}
+								}
+
+								&::after {
+									margin-left: 5px;
+									font-family: Dashicons;
+									font-size: 0.875rem;
+									line-height: 1.875rem;
+									content: "\f347";
 								}
 							}
 						}
@@ -890,8 +858,19 @@
 						}
 
 						button {
-							height: 30px;
-							box-shadow: 0 1px 0 #ccc !important;
+							display: inline-flex;
+							height: 32px;
+							padding: 0 16px;
+							border: 1px solid #999;
+							border-radius: 2px;
+							color: #666;
+							background: #ffffff;
+							line-height: 2rem;
+							text-decoration: none;
+							align-items: center;
+							cursor: pointer;
+							user-select: none;
+							position: relative;
 						}
 					}
 				}
