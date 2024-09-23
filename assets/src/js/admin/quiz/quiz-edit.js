@@ -10,8 +10,10 @@ document.addEventListener( 'DOMContentLoaded', () => {
 
 	const questionEls = Array.from( quizEditorEl.querySelectorAll( '.question-item' ) );
 
-	if ( ! questionEls.length ) {
-		return;
+	if ( questionEls.length ) {
+		questionEls.forEach( ( questionEl ) => {
+			handleActionQuestion( questionEl, quizEditorEl );
+		} );
 	}
 
 	const quizId = getQuizId();
@@ -102,9 +104,6 @@ document.addEventListener( 'DOMContentLoaded', () => {
 			} );
 		}
 	}
-	questionEls.forEach( ( questionEl ) => {
-		handleActionQuestion( questionEl, quizEditorEl );
-	} );
 
 	sortableQuestion( quizEditorEl );
 	handleEventPopup();
