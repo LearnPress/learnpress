@@ -307,6 +307,18 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 			echo ob_get_clean();
 		}
 
+		public function admin_editor_refactor() {
+			$question = LP_Question::get_question();
+
+			//if ( $question->is_support( 'answer-options' ) ) {
+			echo learn_press_admin_view_content( 'question/editor-refactor' );
+			//}
+
+			ob_start();
+			do_action( 'learn-press/question-admin-editor-refactor', $question );
+			echo ob_get_clean();
+		}
+
 		/**
 		 * Add columns to admin manage question page
 		 *
@@ -487,17 +499,23 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 
 		public function meta_boxes() {
 			return array(
-				'question_assigned' => array(
+				'question_assigned'        => array(
 					'title'    => esc_html__( 'Assigned', 'learnpress' ),
-					'callback' => function( $post ) {
+					'callback' => function ( $post ) {
 						learn_press_admin_view( 'meta-boxes/quiz/assigned.php' );
 					},
 					'context'  => 'side',
 					'priority' => 'high',
 				),
-				'question-editor'   => array(
+				'question-editor'          => array(
 					'title'    => esc_html__( 'Answer Options', 'learnpress' ),
 					'callback' => array( $this, 'admin_editor' ),
+					'context'  => 'normal',
+					'priority' => 'high',
+				),
+				'question-editor-refactor' => array(
+					'title'    => esc_html__( 'Answer Options Demo', 'learnpress' ),
+					'callback' => array( $this, 'admin_editor_refactor' ),
 					'context'  => 'normal',
 					'priority' => 'high',
 				),

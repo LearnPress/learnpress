@@ -752,6 +752,7 @@
 /**
  * Modal choose items.
  */
+#lp-modal-choose-items-refactor,
 #lp-modal-choose-items {
 	display: none;
 	position: fixed;
@@ -1003,6 +1004,7 @@ body {
 
 @media screen and (max-width: 900px) {
 
+	#admin-editor-lp_quiz-refactor,
 	#admin-editor-lp_quiz {
 
 		.lp-box-data-content {

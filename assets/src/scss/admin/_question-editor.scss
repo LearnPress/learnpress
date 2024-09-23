@@ -27,7 +27,8 @@
 	}
 }
 
-#admin-editor-lp_question {
+#admin-editor-lp_question,
+.js-admin-editor-lp_question {
 	margin: 0;
 	padding: 0;
 	border: none;
@@ -35,6 +36,24 @@
 
 	form {
 		margin: 0;
+	}
+
+	.status {
+		visibility: hidden;
+		position: relative;
+		margin-left: 5px;
+		font-family: Dashicons;
+		font-size: 1.25rem;
+
+		&::before {
+			content: "\f463";
+		}
+
+		&.loading {
+			display: inline-block;
+			visibility: visible;
+			animation: rotation 2s infinite linear;
+		}
 	}
 
 	.lp-box-data-head {
@@ -46,7 +65,6 @@
 		.heading {
 			margin: 0;
 			padding: 0;
-			flex: 1;
 		}
 
 		.lp-question-editor {
