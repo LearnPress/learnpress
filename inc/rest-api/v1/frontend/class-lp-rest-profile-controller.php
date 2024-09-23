@@ -67,6 +67,15 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 					},
 				),
 			),
+			'upload-cover-image'   => array(
+				array(
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => array( $this, 'upload_cover_image' ),
+					'permission_callback' => function () {
+						return get_current_user_id() ? true : false;
+					},
+				),
+			),
 		);
 
 		parent::register_routes();
@@ -485,5 +494,63 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 		}
 
 		return $response;
+	}
+
+	public function upload_cover_image( WP_REST_Request $request ) {
+		$files    = $request->get_file_params();
+		$response = new LP_REST_Response();
+
+		try {
+			$user_id = get_current_user_id();
+
+			if ( ! $user_id ) {
+				throw new Exception( __( 'User not found', 'learnpress' ) );
+			}
+			if ( empty( $files ) || empty( $files['image'] ) ) {
+				throw new Exception( __( 'File not found', 'learnpress' ) );
+			}
+			$cover_image_file = $files['image'];
+
+			$upload_dir     = learn_press_user_profile_picture_upload_dir( true );
+			$cover_dir_path = $upload_dir['path'] . DIRECTORY_SEPARATOR . 'cover-image';
+			$target_dir     = LP_WP_Filesystem::instance()->is_dir( $cover_dir_path );
+
+			if ( ! $target_dir ) {
+				wp_mkdir_p( $cover_dir_path );
+			}
+
+			if ( ! LP_WP_Filesystem::instance()->is_writable( $cover_dir_path ) ) {
+				throw new Exception( __( 'The upload directory is not writable', 'learnpress' ) );
+			}
+
+			// Delete old image if exists
+			$path_img = get_user_meta( $user_id, '_lp_profile_cover_image', true );
+
+			if ( $path_img ) {
+				$path = $upload_dir['basedir'] . '/' . $path_img;
+
+				if ( file_exists( $path ) ) {
+					LP_WP_Filesystem::instance()->unlink( $path );
+				}
+			}
+			$file_name         = md5( $user_id . microtime( true ) ) . '.png';
+			$file_img_cer_blob = LP_WP_Filesystem::instance()->file_get_contents( $cover_image_file['tmp_name'] );
+
+			$put_content = LP_WP_Filesystem::instance()->put_contents( $cover_dir_path . DIRECTORY_SEPARATOR . $file_name, $file_img_cer_blob, FS_CHMOD_FILE );
+
+			if ( ! $put_content ) {
+				throw new Exception( __( 'Cannot write the file', 'learnpress' ) );
+			}
+			$upload_subdir = $upload_dir['subdir'] . DIRECTORY_SEPARATOR . 'cover-image';
+			update_user_meta( $user_id, '_lp_profile_cover_image', $upload_subdir . DIRECTORY_SEPARATOR . $file_name );
+			do_action( 'learnpress/rest/frontend/profile/upload_cover_image', $user_id );
+
+			$response->status     = 'success';
+			$response->message    = __( 'Cover image is updated', 'learnpress' );
+		} catch ( \Throwable $th ) {
+			$response->message = $th->getMessage();
+		}
+
+		return rest_ensure_response( $response );
 	}
 }

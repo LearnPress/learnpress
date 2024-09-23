@@ -97,7 +97,6 @@ module.exports = {
 		// WP_NO_EXTERNALS global variable controls whether scripts' assets get
 		// generated, and the default externals set.
 		! process.env.WP_NO_EXTERNALS && new DependencyExtractionWebpackPlugin(),
-
 		/*new MergeIntoSingleFilePlugin( {
 			files: {
 				'assets/js/vendor/plugins.all.js': [
@@ -118,4 +117,23 @@ module.exports = {
 			library: 'LP',
 		} ),
 	].filter( Boolean ),
+	resolve: {
+		// Add `.ts` and `.tsx` as a resolvable extension.
+		extensions: [ '.ts', '.tsx', '.js', '.css', '.scss' ],
+	},
+	module: {
+		rules: [
+			{
+				test: /\.(js|jsx)$/,
+				exclude: /node_modules/,
+				use: {
+					loader: 'babel-loader',
+				},
+			},
+			{
+				test: /\.css$/i,
+				use: [ 'style-loader', 'css-loader' ],
+			},
+		],
+	},
 };

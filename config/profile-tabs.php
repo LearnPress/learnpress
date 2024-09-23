@@ -65,6 +65,13 @@ $default_settings = array(
 				'priority' => 20,
 				'icon'     => '<i class="lp-icon-user-circle"></i>',
 			),
+			'cover-image'            => array(
+				'title'    => esc_html__( 'Cover Image', 'learnpress' ),
+				'callback' => false,
+				'slug'     => $settings->get( 'profile_endpoints.settings-cover-image', 'cover-image' ),
+				'priority' => 21,
+				'icon'     => '<i class="lp-icon-file-picture"></i>',
+			),
 			'change-password'   => array(
 				'title'    => esc_html__( 'Password', 'learnpress' ),
 				'slug'     => $settings->get( 'profile_endpoints.settings-change-password', 'change-password' ),
