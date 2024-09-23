@@ -258,4 +258,8 @@ Utils.lpOnElementReady( 'select.lp-tom-select', ( e ) => {
 	initElsTomSelect();
 } );
 
+Utils.lpOnElementReady( '#posts-filter', ( e ) => {
+	searchUserOnListPost();
+} );
+
 window.lpFindTomSelect = initElsTomSelect;

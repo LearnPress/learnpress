@@ -195,6 +195,11 @@ const searchUserOnListPost = () => {
 		return;
 	}
 
+	const selectNew = elSearchPost.querySelector( 'select#author' );
+	if ( selectNew ) {
+		return;
+	}
+
 	const createSelectUserHtml = () => {
 		let defaultId = '';
 		const authorIdFilter = lpDataAdmin.urlParams.author;
