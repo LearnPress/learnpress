@@ -29,8 +29,7 @@ $types          = LP_Question::get_types();
 			<div class="main ui-sortable">
 				<?php
 				foreach ( $question_ids as $index => $id ) :
-					$title     = get_the_title( $id );
-					$edit_link = get_edit_post_link( $id );
+					$title = get_the_title( $id );
 					learn_press_admin_view(
 						'quiz/question-item',
 						[

@@ -1,7 +1,6 @@
 import lplistAPI from '../../api';
 import { lpFetchAPI } from '../../utils';
-import { getQuestionId, singleQuestion } from '../question/eventHandlers';
-import { handleActionQuestion, renderQuestion } from './quiz-edit';
+import { renderQuestion, updateTotalItem } from './eventHandlers';
 
 const popupModalSelectItemEl = document.querySelector( '#lp-modal-choose-items-refactor' );
 const chooseItemsEl = popupModalSelectItemEl.querySelector( '.lp-choose-items' );
@@ -14,32 +13,6 @@ let currentAbortController = null;
 const attachPaginationListeners = ( el, handler ) => {
 	el.removeEventListener( 'click', handler );
 	el.addEventListener( 'click', handler );
-};
-
-const updateTotalItemSection = ( el, value, elRemove ) => {
-	if ( ! el ) {
-		return;
-	}
-
-	let changeValue = 0;
-	if ( value ) {
-		changeValue = value;
-	}
-
-	if ( elRemove ) {
-		const countEl = elRemove.querySelector( '.section-item-counts span' );
-		const contentRemove = countEl.textContent;
-		const numberRemove = parseInt( contentRemove );
-		changeValue = -numberRemove;
-	}
-
-	const sectionItemCounts = el.querySelector( '.section-item-counts span' );
-	const content = sectionItemCounts.textContent;
-	const number = parseInt( content );
-	const words = content.replace( /[0-9]/g, '' ).trim();
-	const total = number + changeValue;
-	const result = total + ' ' + words;
-	sectionItemCounts.textContent = result;
 };
 
 const handlePageChange = ( page ) => {
@@ -367,7 +340,7 @@ const addQuestionToQuizApi = ( data, listUiSortableEl ) => {
 				} );
 
 				if ( quizEditorEl ) {
-					updateTotalItemSection( quizEditorEl, itemEls.length );
+					updateTotalItem( quizEditorEl, itemEls.length );
 					resetQuestionOrder( quizEditorEl );
 				}
 			}
@@ -456,7 +429,7 @@ const handleEventPopup = () => {
 			if ( event.key === 'Enter' ) {
 				event.preventDefault();
 				const currentValue = searchEl.value;
-				if ( previousValue !== currentValue && currentValue !== '' ) {
+				if ( previousValue !== currentValue ) {
 					previousValue = currentValue;
 					const data = {
 						query: currentValue,

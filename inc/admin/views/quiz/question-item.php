@@ -15,9 +15,10 @@ $data = wp_parse_args(
 	]
 );
 
-$id    = $data['id'];
-$title = $data['title'];
-$order = $data['order'];
+$id        = $data['id'];
+$title     = $data['title'];
+$order     = $data['order'];
+$edit_link = get_edit_post_link( $id );
 ?>
 
 <div data-question-id="<?php echo esc_attr( $id ); ?>" data-question-order="<?php echo esc_attr( $index ); ?>" class="question-item multi_choice">
