@@ -11,10 +11,8 @@ document.addEventListener( 'DOMContentLoaded', function( event ) {
 	recoverOrder();
 	CourseList();
 	profileCoverImage();
-	// console.log('123');
 } );
 
 if ( document.getElementById( 'learnpress-avatar-upload' ) ) {
 	wp.element.render( <Avatar />, document.getElementById( 'learnpress-avatar-upload' ) );
 }
-// alert('run');
