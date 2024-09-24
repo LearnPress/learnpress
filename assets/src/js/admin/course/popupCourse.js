@@ -3,12 +3,12 @@ import { lpFetchAPI } from '../../utils';
 
 const courseEditorEl = document.querySelector( '#course-editor-refactor' );
 const popupModalSelectItemEl = document.querySelector( '#lp-modal-choose-items-refactor' );
-const chooseItemsEl = courseEditorEl.querySelector( '.lp-choose-items' );
+const chooseItemsEl = courseEditorEl?.querySelector( '.lp-choose-items' );
 const urlParams = new URLSearchParams( window.location.search );
-const courseId = urlParams.get( 'post' ) ?? 0;
+const courseId = urlParams?.get( 'post' ) ?? 0;
 const listAddedEl = popupModalSelectItemEl?.querySelector( '.list-added-items' );
 const API_SEARCH_ITEMS_URL = lplistAPI.admin.apiSearchItems;
-const tabs = Array.prototype.slice.call( popupModalSelectItemEl?.querySelectorAll( '.tabs .tab' ) );
+const tabs = Array.from( popupModalSelectItemEl?.querySelectorAll( '.tabs .tab' ) ?? {} );
 let currentAbortController = null;
 
 const attachPaginationListeners = ( el, handler ) => {
@@ -77,9 +77,19 @@ const handlePageChange = ( page ) => {
 	getSectionItem( data, popupModalSelectItemEl );
 };
 
+const updateButtonState = ( el, condition = false, page ) => {
+	if ( el ) {
+		el.disabled = ! condition;
+		attachPaginationListeners( el, ( e ) => {
+			e.preventDefault();
+			handlePageChange( page );
+		} );
+	}
+};
+
 const handlePagination = ( paginationEl, paginationHtml ) => {
 	const itemType = popupModalSelectItemEl?.dataset?.type ?? '';
-	if ( ! itemType || ! popupModalSelectItemEl ) {
+	if ( ! itemType || ! popupModalSelectItemEl || ! paginationEl ) {
 		return;
 	}
 	paginationEl.style.display = 'block';
@@ -95,53 +105,10 @@ const handlePagination = ( paginationEl, paginationHtml ) => {
 		indexEl.innerText = `${ currentPage }/${ total } `;
 	}
 
-	if ( lastEl ) {
-		if ( currentPage < total ) {
-			lastEl.disabled = false;
-		} else {
-			lastEl.disabled = true;
-		}
-		lastEl.addEventListener( 'click', ( e ) => {
-			e.preventDefault();
-			handlePageChange( total );
-		} );
-	}
-
-	if ( nextEl ) {
-		if ( currentPage < total ) {
-			nextEl.disabled = false;
-		} else {
-			nextEl.disabled = true;
-		}
-		attachPaginationListeners( nextEl, ( e ) => {
-			e.preventDefault();
-			handlePageChange( currentPage + 1 );
-		} );
-	}
-
-	if ( firstEl ) {
-		if ( currentPage > 1 ) {
-			firstEl.disabled = false;
-		} else {
-			firstEl.disabled = true;
-		}
-		attachPaginationListeners( firstEl, ( e ) => {
-			e.preventDefault();
-			handlePageChange( 1 );
-		} );
-	}
-
-	if ( prevEl ) {
-		if ( currentPage > 1 ) {
-			prevEl.disabled = false;
-		} else {
-			prevEl.disabled = true;
-		}
-		attachPaginationListeners( prevEl, ( e ) => {
-			e.preventDefault();
-			handlePageChange( currentPage - 1 );
-		} );
-	}
+	updateButtonState( nextEl, currentPage < total, currentPage + 1 );
+	updateButtonState( firstEl, currentPage > 1, 1 );
+	updateButtonState( lastEl, currentPage < total, total );
+	updateButtonState( prevEl, currentPage > 1, currentPage - 1 );
 };
 
 const resetPopup = () => {
@@ -233,10 +200,10 @@ const renderPopup = ( popupModalSelectItemEl, itemsHtml, paginationHtml ) => {
 	listItemEl.innerText = '';
 	listItemEl.insertAdjacentHTML( 'beforeend', itemsHtml );
 
-	const listResultItemEls = Array.prototype.slice.call( listItemEl.querySelectorAll( '.lp-result-item' ) );
+	const listResultItemEls = Array.from( listItemEl.querySelectorAll( '.lp-result-item' ) );
 
 	if ( listResultItemEls.length > 0 ) {
-		const itemAddedEls = Array.prototype.slice.call( listAddedEl.querySelectorAll( '.lp-result-item' ) );
+		const itemAddedEls = Array.from( listAddedEl.querySelectorAll( '.lp-result-item' ) );
 		const addedIds = itemAddedEls.map( ( itemAddedEl ) => {
 			return itemAddedEl?.dataset?.id ?? '';
 		} );
@@ -295,7 +262,7 @@ const updateTotalSelected = () => {
 		return;
 	}
 
-	const itemSelectedEls = Array.prototype.slice.call( listAddedEl.querySelectorAll( '.lp-result-item' ) );
+	const itemSelectedEls = Array.from( listAddedEl.querySelectorAll( '.lp-result-item' ) );
 	const addSelectedEl = popupModalSelectItemEl.querySelector( '.footer .checkout' );
 	const editSelectedBtnEl = popupModalSelectItemEl.querySelector( '.edit-selected' );
 	const selectedTotalEl = popupModalSelectItemEl.querySelector( '.footer .total-selected' );
@@ -471,7 +438,7 @@ const handleEventPopup = () => {
 			}
 			const selectEl = document.querySelector( `.section[data-section-id="${ sectionId }"]` );
 			const listUiSortableEl = selectEl.querySelector( '.ui-sortable' );
-			const sectionItemEls = Array.prototype.slice.call( selectEl.querySelectorAll( '.section-list-items .ui-sortable	.section-item' ) );
+			const sectionItemEls = Array.from( selectEl.querySelectorAll( '.section-list-items .ui-sortable	.section-item' ) );
 			const currentItemEl = sectionItemEls.map( ( sectionItemEl ) => {
 				const data = {
 					id: sectionItemEl.dataset.itemId ?? null,
@@ -479,7 +446,7 @@ const handleEventPopup = () => {
 				};
 				return data;
 			} );
-			const sectionItemAddedEls = Array.prototype.slice.call( listAddedEl.querySelectorAll( '.lp-result-item' ) );
+			const sectionItemAddedEls = Array.from( listAddedEl.querySelectorAll( '.lp-result-item' ) );
 			const selectedAddItem = sectionItemAddedEls.map( ( sectionItemAddedEl ) => {
 				const data = {
 					id: sectionItemAddedEl.dataset.id ?? null,
