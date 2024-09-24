@@ -52,17 +52,21 @@ class SingleCourseTemplate {
 	/**
 	 * Get short description course.
 	 *
-	 * @param LP_Course $course
+	 * @param LP_Course|CourseModel $course
 	 * @param int $number_words
 	 *
 	 * @return string
 	 */
-	public function html_short_description( LP_Course $course, int $number_words = 0 ): string {
+	public function html_short_description( $course, int $number_words = 0 ): string {
 		$html_wrapper = [
 			'<p class="course-short-description">' => '</p>',
 		];
 
-		$short_description = $course->get_data( 'excerpt' );
+		if ( $course instanceof LP_Course ) {
+			$course = CourseModel::find( $course->get_id(), true );
+		}
+
+		$short_description = $course->get_short_description();
 		if ( empty( $short_description ) || $number_words === 0 ) {
 			return '';
 		}
@@ -138,13 +142,21 @@ class SingleCourseTemplate {
 	/**
 	 * Get display tags course.
 	 *
-	 * @param LP_Course $course
+	 * @param LP_Course|CourseModel $course
 	 *
 	 * @return string
 	 * @since 4.2.6
 	 * @version 1.0.0
 	 */
-	public function html_tags( LP_Course $course ): string {
+	public function html_tags( $course ): string {
+		if ( $course instanceof LP_Course ) {
+			$course = CourseModel::find( $course->get_id(), true );
+		}
+
+		if ( empty( $course ) ) {
+			return '';
+		}
+
 		$html_wrapper = [
 			'<div class="course-tags">' => '</div>',
 		];
@@ -204,14 +216,14 @@ class SingleCourseTemplate {
 	/**
 	 * Get display instructor course.
 	 *
-	 * @param LP_Course $course
+	 * @param CourseModel $course
 	 * @param bool $with_avatar
 	 *
 	 * @return string
 	 * @since 4.2.5.8
 	 * @version 1.0.0
 	 */
-	public function html_instructor( LP_Course $course, bool $with_avatar = false ): string {
+	public function html_instructor( $course, bool $with_avatar = false ): string {
 		$content = '';
 
 		try {
@@ -219,7 +231,24 @@ class SingleCourseTemplate {
 				'<span class="course-instructor">' => '</span>',
 			];
 
-			$content = $course->get_instructor_html( $with_avatar );
+			$instructor = $course->get_author_model();
+			if ( ! $instructor ) {
+				return '';
+			}
+
+			$singleInstructorTemplate = SingleInstructorTemplate::instance();
+
+			$content = apply_filters(
+				'learn-press/course/instructor-html',
+				sprintf(
+					'<a href="%s">%s %s</a>',
+					$instructor->get_url_instructor(),
+					$with_avatar ? $instructor->get_profile_picture() : '',
+					$singleInstructorTemplate->html_display_name( $instructor )
+				),
+				$instructor,
+				$singleInstructorTemplate
+			);
 			$content = Template::instance()->nest_elements( $html_wrapper, $content );
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
