@@ -1,6 +1,6 @@
 import { defaultInitTomSelect, searchUserOnListPost } from './init-tom-select.js';
-import './question/edit.js';
-import './quiz/quiz-edit.js';
+import './question/editQuestion.js';
+import './quiz/editQuiz.js';
 
 ( function( $ ) {
 	/**

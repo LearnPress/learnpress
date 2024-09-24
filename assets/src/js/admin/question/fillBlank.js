@@ -5,7 +5,7 @@ import { getQuestionId } from './eventHandlers';
 
 let currentAbortController = null;
 
-const apiRequest = ( url, method = 'POST', data, callbacks = {}, questionEditEl ) => {
+const apiRequest = async ( url, method = 'POST', data, callbacks = {}, questionEditEl ) => {
 	if ( ! url ) {
 		return;
 	}
@@ -32,8 +32,8 @@ const apiRequest = ( url, method = 'POST', data, callbacks = {}, questionEditEl 
 	}
 
 	updateStatus( 'loading', questionEditEl );
-	const { success, error, completed } = callbacks;
-	lpFetchAPI( url, params, {
+	const { success = () => {}, error = () => {}, completed = () => {} } = callbacks;
+	await lpFetchAPI( url, params, {
 		success,
 		error,
 		completed: () => {
@@ -121,41 +121,39 @@ const isTextSelectedInElement = ( element ) => {
 		const range = selection.getRangeAt( 0 );
 
 		if ( element.contains( range.startContainer ) || element.contains( range.endContainer ) ) {
-			setTimeout( () => {
-				const newSelection = window.getSelection();
-				const selectedText = newSelection.toString().trim();
+			const newSelection = window.getSelection();
+			const selectedText = newSelection.toString().trim();
 
-				if ( newSelection.isCollapsed || selectedText.length === 0 ) {
+			if ( newSelection.isCollapsed || selectedText.length === 0 ) {
+				resolve( false );
+				return;
+			}
+
+			const fragment = range.cloneContents();
+			const hasBoldTag = fragment.querySelector( 'b' );
+
+			if ( hasBoldTag ) {
+				resolve( false );
+				return;
+			}
+
+			let node = range.startContainer;
+			while ( node ) {
+				if ( node.nodeType === Node.ELEMENT_NODE && node.tagName === 'B' ) {
 					resolve( false );
 					return;
 				}
-
-				const fragment = range.cloneContents();
-				const hasBoldTag = fragment.querySelector( 'b' );
-
-				if ( hasBoldTag ) {
+				node = node.parentNode;
+			}
+			node = range.endContainer;
+			while ( node ) {
+				if ( node.nodeType === Node.ELEMENT_NODE && node.tagName === 'B' ) {
 					resolve( false );
 					return;
 				}
-
-				let node = range.startContainer;
-				while ( node ) {
-					if ( node.nodeType === Node.ELEMENT_NODE && node.tagName === 'B' ) {
-						resolve( false );
-						return;
-					}
-					node = node.parentNode;
-				}
-				node = range.endContainer;
-				while ( node ) {
-					if ( node.nodeType === Node.ELEMENT_NODE && node.tagName === 'B' ) {
-						resolve( false );
-						return;
-					}
-					node = node.parentNode;
-				}
-				resolve( true );
-			}, 0 );
+				node = node.parentNode;
+			}
+			resolve( true );
 		} else {
 			resolve( false );
 		}

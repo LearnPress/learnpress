@@ -1,6 +1,7 @@
 import { Sortable } from 'sortablejs';
 import { getQuestionId, singleQuestion } from '../question/eventHandlers';
 import { changeQuestionTitleApi, removeQuestionApi, deleteQuestionApi, duplicateQuestionApi, addNewQuestionApi, sortQuestionApi } from './apiRequests';
+import { popupSelectItem } from './popupQuiz';
 
 const getQuizId = () => {
 	const urlParams = new URLSearchParams( window.location.search );
@@ -178,6 +179,60 @@ const updateTotalItem = ( el, value, elRemove ) => {
 	sectionItemCounts.textContent = result;
 };
 
+const addNewQuestion = ( quizEditorEl ) => {
+	if ( ! quizEditorEl ) {
+		return;
+	}
+
+	const quizId = getQuizId();
+	const addNewQuestionEl = quizEditorEl.querySelector( '.add-new-question' );
+	if ( addNewQuestionEl ) {
+		const inputAddNewEl = addNewQuestionEl.querySelector( '.title input' );
+		const addNewBtnEl = addNewQuestionEl.querySelector( '.add-new button' );
+		if ( inputAddNewEl && addNewBtnEl ) {
+			inputAddNewEl.addEventListener( 'keyup', ( e ) => {
+				const currentValue = inputAddNewEl.value;
+				if ( currentValue === '' ) {
+					addNewBtnEl.disabled = true;
+					return;
+				}
+				addNewBtnEl.disabled = false;
+			} );
+
+			const questionTypeEls = Array.from( addNewQuestionEl.querySelectorAll( '.question-types li a' ) );
+			if ( questionTypeEls.length ) {
+				questionTypeEls.forEach( ( questionTypeEl ) => {
+					questionTypeEl.addEventListener( 'click', ( e ) => {
+						e.preventDefault();
+						if ( ! inputAddNewEl.value ) {
+							addNewBtnEl.disabled = true;
+							return;
+						}
+
+						const questionType = questionTypeEl.dataset.type;
+						const data = {
+							quizId,
+							questionTitle: inputAddNewEl.value,
+							questionType,
+						};
+						addNewQuestionApi( data, quizEditorEl );
+						inputAddNewEl.value = '';
+						addNewBtnEl.disabled = true;
+					} );
+				} );
+			}
+		}
+
+		const selectItemEl = addNewQuestionEl.querySelector( '.select-item button' );
+		if ( selectItemEl ) {
+			selectItemEl.addEventListener( 'click', ( e ) => {
+				e.preventDefault();
+				popupSelectItem();
+			} );
+		}
+	}
+};
+
 const sortableQuestion = ( el ) => {
 	if ( ! el ) {
 		return;
@@ -209,4 +264,47 @@ const sortableQuestion = ( el ) => {
 		},
 	} );
 };
-export { getQuizId, handleActionQuestion, renderQuestion, updateTotalItem, sortableQuestion };
+
+const collapseQuestion = ( quizEditorEl ) => {
+	const collapseQuestionsEl = quizEditorEl.querySelector( '.collapse-list-questions' );
+	const questionEls = Array.from( quizEditorEl.querySelectorAll( '.question-item' ) );
+
+	if ( collapseQuestionsEl ) {
+		collapseQuestionsEl.addEventListener( 'click', () => {
+			if ( collapseQuestionsEl.classList.contains( 'dashicons-arrow-down' ) ) {
+				collapseQuestionsEl.classList.remove( 'dashicons-arrow-down' );
+				collapseQuestionsEl.classList.add( 'dashicons-arrow-up' );
+				if ( questionEls.length ) {
+					questionEls.forEach( ( questionEl ) => {
+						const toggleOpenEl = questionEl.querySelector( '.lp-btn-toggle' );
+						const questionSettingEl = questionEl.querySelector( '.question-settings' );
+						if ( ! toggleOpenEl || ! questionSettingEl ) {
+							return;
+						}
+
+						toggleOpenEl.classList.remove( 'close' );
+						toggleOpenEl.classList.add( 'open' );
+						questionSettingEl.classList.add( 'table-row' );
+						questionSettingEl.classList.remove( 'hide-if-js' );
+					} );
+				}
+			} else {
+				collapseQuestionsEl.classList.add( 'dashicons-arrow-down' );
+				collapseQuestionsEl.classList.remove( 'dashicons-arrow-up' );
+				questionEls.forEach( ( questionEl ) => {
+					const toggleOpenEl = questionEl.querySelector( '.lp-btn-toggle' );
+					const questionSettingEl = questionEl.querySelector( '.question-settings' );
+					if ( ! toggleOpenEl || ! questionSettingEl ) {
+						return;
+					}
+
+					toggleOpenEl.classList.add( 'close' );
+					questionSettingEl.classList.add( 'hide-if-js' );
+					toggleOpenEl.classList.remove( 'open' );
+					questionSettingEl.classList.remove( 'table-row' );
+				} );
+			}
+		} );
+	}
+};
+export { getQuizId, handleActionQuestion, renderQuestion, updateTotalItem, addNewQuestion, collapseQuestion, sortableQuestion };
