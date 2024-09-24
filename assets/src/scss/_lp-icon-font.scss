@@ -126,9 +126,6 @@
 .lp-icon-chevron-right:before {
 	content: "\f054";
 }
-.lp-icon-check-circle:before {
-	content: "\f058";
-}
 .lp-icon-question-circle:before {
 	content: "\f059";
 }
@@ -495,7 +492,7 @@
 .lp-icon-map-marker:before {
 	content: "\e91b";
 }
-.lp-icon-lines:before {
+.lp-icon-check-circle:before {
 	content: "\e904";
 }
 .lp-icon-dropbox:before {
@@ -503,4 +500,7 @@
 }
 .lp-icon-box:before {
 	content: "\e906";
+}
+.lp-icon-close-circle:before {
+	content: "\e907";
 }
