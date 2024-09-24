@@ -111,6 +111,7 @@ class ListCoursesTemplate {
 			[
 				'wrapper'       => [ 'text_html' => '<div class="lp-courses-bar">' ],
 				'search'        => [ 'text_html' => $listCoursesTemplate->html_search_form( $settings ) ],
+				'order_by'      => [ 'text_html' => $listCoursesTemplate->html_order_by() ],
 				'switch_layout' => [ 'text_html' => $listCoursesTemplate->switch_layout() ],
 				'close_wrapper' => [ 'text_html' => '</div>' ],
 			],
@@ -191,7 +192,8 @@ class ListCoursesTemplate {
 			);
 
 			$top_wrapper = [
-				'<div class="course-wrap-thumbnail">' => '</div>',
+//				'<div class="course-wrap-thumbnail">' => '</div>',
+
 				'<div class="course-thumbnail">'      => '</div>',
 			];
 			$img         = sprintf( '<a href="%s">%s</a>', $course->get_permalink(), $singleCourseTemplate->html_image( $course ) );
@@ -244,18 +246,14 @@ class ListCoursesTemplate {
 			$section_bottom_end = apply_filters(
 				'learn-press/list-courses/layout/item/section/bottom/end',
 				[
-					'wrapper'       => [ 'text_html' => '<div class="course-info">' ],
 					'short_des'     => [ 'text_html' => $singleCourseTemplate->html_short_description( $course, 15 ) ],
-					'clearfix'      => [ 'text_html' => '<div class="clearfix"></div>' ],
-					'course-footer' => [
-						'course-footer-start' => '<div class="course-footer">',
-						'price'               => $singleCourseTemplate->html_price( $course ),
-						'btn_read_more'       => sprintf(
+					'wrapper'       => [ 'text_html' => '<div class="course-info">' ],
+					'price'         => [ 'text_html' => $singleCourseTemplate->html_price( $course ) ],
+					'btn_read_more' => [
+						'text_html' => sprintf(
 							'<div class="course-readmore"><a href="%s">%s</a></div>',
-							$course->get_permalink(),
-							__( 'Read more', 'learnpress' )
-						),
-						'course-footer-end'   => '</div>',
+							$course->get_permalink(), __( 'Read more', 'learnpress' )
+						)
 					],
 					'close_wrapper' => [ 'text_html' => '</div>' ],
 				],
@@ -274,8 +272,6 @@ class ListCoursesTemplate {
 				'learn-press/list-courses/layout/item/section/bottom',
 				[
 					'wrapper'       => [ 'text_html' => '<div class="course-content">' ],
-					'category'      => [ 'text_html' => str_replace( ',', '', $singleCourseTemplate->html_categories( $course ) ) ],
-					'instructor'    => [ 'text_html' => $singleCourseTemplate->html_instructor( $course ) ],
 					'title'         => [
 						'text_html' => sprintf(
 							'<a class="course-permalink" href="%s">%s</a>',
@@ -283,8 +279,10 @@ class ListCoursesTemplate {
 							$singleCourseTemplate->html_title( $course )
 						),
 					],
+					'instructor'    => [ 'text_html' => $singleCourseTemplate->html_instructor( $course ) ],
+					'category'      => [ 'text_html' => $singleCourseTemplate->html_categories( $course ) ],
 					'meta'          => [ 'text_html' => $html_meta ],
-					'separator'     => [ 'text_html' => '<div class="separator"></div>' ],
+					//					'separator'     => [ 'text_html' => '<div class="separator"></div>' ],
 					'info'          => [ 'text_html' => $html_bottom_end ],
 					'close_wrapper' => [ 'text_html' => '</div>' ],
 				],
@@ -456,7 +454,7 @@ class ListCoursesTemplate {
 				$content = sprintf( esc_html__( 'Showing %1$s of %2$s results', 'learnpress' ), $from_to, $total_rows );
 			}
 
-			$html = '<span class="courses-page-result">' . $content . '</span>';
+			$html = $content ? '<span class="courses-page-result">' . $content . '</span>' : '';
 		} catch ( Throwable $e ) {
 			error_log( $e->getMessage() );
 		}
