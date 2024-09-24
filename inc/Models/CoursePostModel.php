@@ -42,7 +42,7 @@ class CoursePostModel extends PostModel {
 	const META_KEY_ALLOW_COURSE_REPURCHASE  = '_lp_allow_course_repurchase';
 	const META_KEY_COURSE_REPURCHASE_OPTION = '_lp_course_repurchase_option';
 	const META_KEY_LEVEL                    = '_lp_level';
-	const META_KEY_STUDENTS                 = '_lp_students';
+	const META_KEY_STUDENTS                 = '_lp_students'; // Fake students key
 	const META_KEY_MAX_STUDENTS             = '_lp_max_students';
 	const META_KEY_RETAKE_COUNT             = '_lp_retake_count';
 	const META_KEY_HAS_FINISH               = '_lp_has_finish';

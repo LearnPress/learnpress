@@ -78,6 +78,7 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 			unset( $courseModel->sections_items );
 			unset( $courseModel->meta_data->_lp_final_quiz );
 			unset( $courseModel->categories );
+			unset( $courseModel->tags );
 			unset( $courseModel->image_url );
 			$courseModel->get_author_model();
 			$courseModel->get_first_item_id();
@@ -85,6 +86,7 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 			$courseModel->get_section_items();
 			$courseModel->get_final_quiz();
 			$courseModel->get_categories();
+			$courseModel->get_tags();
 			$courseModel->get_image_url();
 			$courseModel->save();
 

@@ -310,6 +310,24 @@ class PostModel {
 	}
 
 	/**
+	 * Get tags of course.
+	 *
+	 * @return array|WP_Term[]
+	 * @version 1.0.0
+	 * @since 4.2.7.2
+	 */
+	public function get_tags(): array {
+		// Todo: set cache.
+		$wpPost     = new WP_Post( $this );
+		$tags = get_the_terms( $wpPost, LP_COURSE_TAXONOMY_TAG );
+		if ( ! $tags ) {
+			$tags = array();
+		}
+
+		return $tags;
+	}
+
+	/**
 	 * Get permalink of post
 	 *
 	 * @return string
@@ -332,6 +350,17 @@ class PostModel {
 		$content = get_the_content( null, false, $this );
 		$content = apply_filters( 'the_content', $content );
 		$content = str_replace( ']]>', ']]&gt;', $content );
+
+		return $content;
+	}
+
+	/**
+	 * Get excerpt of WP
+	 *
+	 * @return string
+	 */
+	public function get_the_excerpt(): string {
+		$content = get_the_excerpt( $this );
 
 		return $content;
 	}
