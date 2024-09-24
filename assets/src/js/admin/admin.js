@@ -1,5 +1,5 @@
 import { defaultInitTomSelect, searchUserOnListPost } from './init-tom-select.js';
-import './course/course-curriculum.js';
+import './course/editCourse.js';
 
 ( function( $ ) {
 	/**
