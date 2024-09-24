@@ -1,7 +1,6 @@
 import { Sortable } from 'sortablejs';
-import { lpFetchAPI } from '../../utils';
-import lplistAPI from '../../api';
-import { handleEventPopup, popupSelectItem } from './course-popup-select-item';
+import { getCourseApi, updateOrderSectionItemApi, deleteItemApi, removeItemInSectionApi, addNewItemApi, updateSectionItemApi, updateOrderSectionApi, addSectionApi, deleteSectionApi, updateSectionApi } from './apiRequests';
+import { popupSelectItem } from './popupCourse';
 
 function delay( ms ) {
 	return new Promise( ( resolve ) => setTimeout( resolve, ms ) );
@@ -39,7 +38,6 @@ const updateTotalItemSection = ( el, value, elRemove ) => {
 	sectionItemCounts.textContent = result;
 };
 
-// Add html with js
 const addSectionsWithDelay = async ( html, courseEditorEl ) => {
 	if ( ! html.length ) {
 		return;
@@ -75,155 +73,6 @@ const updateStatus = ( status ) => {
 		statusEl.classList.remove( 'loading', 'success' );
 		statusEl.classList.add( status );
 	}
-};
-
-const apiRequest = ( url, method = 'POST', data, callbacks = {} ) => {
-	if ( ! data || ! url ) {
-		return;
-	}
-
-	const params = {
-		headers: {
-			'Content-Type': 'application/json',
-			'X-WP-Nonce': lpDataAdmin.nonce,
-		},
-		method,
-		body: JSON.stringify( data ),
-	};
-	const { success, error, completed } = callbacks;
-	updateStatus( 'loading' );
-	lpFetchAPI( url, params, {
-		success,
-		error,
-		completed: () => {
-			if ( completed ) {
-				completed();
-			}
-			updateStatus( 'success' );
-		},
-	} );
-};
-
-// Handle Update section with api
-const updateSectionApi = ( data ) => {
-	const url = lplistAPI.admin.apiUpdateSection;
-	const method = 'PUT';
-	apiRequest( url, method, data );
-};
-
-// Handle Delete section with api
-const deleteSectionApi = ( data, sectionEl, courseEditorEl ) => {
-	const url = lplistAPI.admin.apiDeleteSection;
-	const method = 'DELETE';
-	const callBack = {
-		success: ( response ) => {
-			if ( sectionEl ) {
-				updateTotalItemSection( courseEditorEl, '', sectionEl );
-				sectionEl.remove();
-			}
-		},
-	};
-
-	apiRequest( url, method, data, callBack );
-};
-
-// Handle Add section with api
-const addSectionApi = ( data, courseEditorEl ) => {
-	const url = lplistAPI.admin.apiAddSection;
-	const method = 'POST';
-
-	const callBack = {
-		success: ( response ) => {
-			const html = response.data.html ?? [];
-			addSectionsWithDelay( html, courseEditorEl );
-		},
-	};
-
-	apiRequest( url, method, data, callBack );
-};
-
-const updateOrderSectionApi = ( data ) => {
-	const url = lplistAPI.admin.apiUpdateSectionOrder;
-	const method = 'POST';
-	apiRequest( url, method, data );
-};
-
-const updateSectionItemApi = ( data ) => {
-	const url = lplistAPI.admin.apiUpdateSectionItem;
-	const method = 'PUT';
-	apiRequest( url, method, data );
-};
-
-const addNewItemApi = ( data, newSectionItemInputEl, sectionEl, courseEditorEl ) => {
-	const url = lplistAPI.admin.apiAddNewSectionItem;
-	const method = 'POST';
-	const callBack = {
-		success: ( response ) => {
-			if ( newSectionItemInputEl ) {
-				newSectionItemInputEl.value = '';
-			}
-
-			const html = response?.data?.html ?? '';
-			if ( ! sectionEl || ! html ) {
-				return;
-			}
-
-			const listUiEl = sectionEl.querySelector( '.ui-sortable' );
-			if ( ! listUiEl ) {
-				return;
-			}
-
-			listUiEl.insertAdjacentHTML( 'beforeend', html );
-			const sectionItemEl = listUiEl.lastElementChild;
-			const sectionId = sectionEl?.dataset?.sectionId ?? 0;
-			handleEventSectionItem( sectionItemEl, sectionId, sectionEl, courseEditorEl );
-			updateTotalItemSection( sectionEl, 1 );
-			updateTotalItemSection( courseEditorEl, 1 );
-		},
-	};
-
-	apiRequest( url, method, data, callBack );
-};
-
-const removeItemInSectionApi = ( data, itemRemoveEl, sectionEl, courseEditorEl ) => {
-	const url = lplistAPI.admin.apiRemoveItemInSection;
-	const method = 'DELETE';
-	const callBack = {
-		completed: () => {
-			if ( itemRemoveEl ) {
-				itemRemoveEl.remove();
-			}
-			if ( sectionEl ) {
-				updateTotalItemSection( sectionEl, -1 );
-				updateTotalItemSection( courseEditorEl, -1 );
-			}
-		},
-	};
-
-	apiRequest( url, method, data, callBack );
-};
-
-const deleteItemApi = ( data, itemRemoveEl, sectionEl, courseEditorEl ) => {
-	const url = lplistAPI.admin.apiDeleteSectionItem;
-	const method = 'DELETE';
-	const callBack = {
-		completed: () => {
-			if ( itemRemoveEl ) {
-				itemRemoveEl.remove();
-			}
-			if ( sectionEl && courseEditorEl ) {
-				updateTotalItemSection( sectionEl, -1 );
-				updateTotalItemSection( courseEditorEl, -1 );
-			}
-		},
-	};
-	apiRequest( url, method, data, callBack );
-};
-
-const updateOrderSectionItemApi = ( data ) => {
-	const url = lplistAPI.admin.apiUpdateSectionItemOrder;
-	const method = 'POST';
-	apiRequest( url, method, data );
 };
 
 const handleEventSectionItem = ( sectionItemEl, sectionId, sectionEl, courseEditorEl ) => {
@@ -753,19 +602,6 @@ const sortableSection = ( courseEditorEl ) => {
 	} );
 };
 
-const getHtmlCurriculum = ( courseEditorEl ) => {
-	const courseId = getCourseId();
-	const url = lplistAPI.admin.apiCurriculumHTML + '/' + courseId;
-	const callBack = {
-		success: ( response ) => {
-			const html = response.data.html ?? [];
-			addSectionsWithDelay( html, courseEditorEl );
-		},
-	};
-
-	lpFetchAPI( url, {}, callBack );
-};
-
 function saveSectionState( courseEditorEl ) {
 	const courseId = getCourseId();
 	const sections = courseEditorEl.querySelectorAll( '.curriculum-sections > .section' );
@@ -803,15 +639,4 @@ function restoreSectionState( newSection, courseEditorEl ) {
 	newSection.classList.add( 'open' );
 }
 
-document.addEventListener( 'DOMContentLoaded', () => {
-	const courseEditorEl = document.querySelector( '#course-editor-refactor' );
-	if ( ! courseEditorEl ) {
-		return;
-	}
-
-	getHtmlCurriculum( courseEditorEl );
-	collapseSectionsEvent( courseEditorEl );
-	addNewSection( courseEditorEl );
-	sortableSection( courseEditorEl );
-	handleEventPopup();
-} );
+export { getCourseId, updateTotalItemSection, addSectionsWithDelay, updateStatus, handleEventSectionItem, addNewSection, singleCollapseEvent, collapseSectionsEvent, actionSection, updateSingleSection, sortableItemEvent, sortableSection, saveSectionState, restoreSectionState };
