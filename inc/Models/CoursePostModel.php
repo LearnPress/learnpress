@@ -30,31 +30,35 @@ class CoursePostModel extends PostModel {
 	/**
 	 * Const meta key
 	 */
-	const META_KEY_PRICE = '_lp_price';
-	const META_KEY_REGULAR_PRICE = '_lp_regular_price';
-	const META_KEY_SALE_PRICE = '_lp_sale_price';
-	const META_KEY_SALE_START = '_lp_sale_start';
-	const META_KEY_SALE_END = '_lp_sale_end';
-	const META_KEY_PASSING_CONDITION = '_lp_passing_condition';
-	const META_KEY_DURATION = '_lp_duration';
-	const META_KEY_BLOCK_EXPIRE_DURATION = '_lp_block_expire_duration';
-	const META_KEY_BLOCK_FINISH = '_lp_block_finished';
-	const META_KEY_ALLOW_COURSE_REPURCHASE = '_lp_allow_course_repurchase';
+	const META_KEY_PRICE                    = '_lp_price';
+	const META_KEY_REGULAR_PRICE            = '_lp_regular_price';
+	const META_KEY_SALE_PRICE               = '_lp_sale_price';
+	const META_KEY_SALE_START               = '_lp_sale_start';
+	const META_KEY_SALE_END                 = '_lp_sale_end';
+	const META_KEY_PASSING_CONDITION        = '_lp_passing_condition';
+	const META_KEY_DURATION                 = '_lp_duration';
+	const META_KEY_BLOCK_EXPIRE_DURATION    = '_lp_block_expire_duration';
+	const META_KEY_BLOCK_FINISH             = '_lp_block_finished';
+	const META_KEY_ALLOW_COURSE_REPURCHASE  = '_lp_allow_course_repurchase';
 	const META_KEY_COURSE_REPURCHASE_OPTION = '_lp_course_repurchase_option';
-	const META_KEY_LEVEL = '_lp_level';
-	const META_KEY_STUDENTS = '_lp_students';
-	const META_KEY_MAX_STUDENTS = '_lp_max_students';
-	const META_KEY_RETAKE_COUNT = '_lp_retake_count';
-	const META_KEY_HAS_FINISH = '_lp_has_finish';
-	const META_KEY_FEATURED = '_lp_featured';
-	const META_KEY_FEATURED_REVIEW = '_lp_featured_review';
-	const META_KEY_EXTERNAL_LINK_BY_COURSE = '_lp_external_link_buy_course';
-	const META_KEY_IS_SALE = '_lp_course_is_sale';
-	const META_KEY_NO_REQUIRED_ENROLL = '_lp_no_required_enroll';
-	const META_KEY_OFFLINE_COURSE = '_lp_offline_course';
-	const META_KEY_ADDRESS = '_lp_address';
-	const META_KEY_DELIVER = '_lp_deliver_type';
-	const META_KEY_OFFLINE_LESSON_COUNT = '_lp_offline_lesson_count';
+	const META_KEY_LEVEL                    = '_lp_level';
+	const META_KEY_STUDENTS                 = '_lp_students';
+	const META_KEY_MAX_STUDENTS             = '_lp_max_students';
+	const META_KEY_RETAKE_COUNT             = '_lp_retake_count';
+	const META_KEY_HAS_FINISH               = '_lp_has_finish';
+	const META_KEY_FEATURED                 = '_lp_featured';
+	const META_KEY_FEATURED_REVIEW          = '_lp_featured_review';
+	const META_KEY_EXTERNAL_LINK_BY_COURSE  = '_lp_external_link_buy_course';
+	const META_KEY_IS_SALE                  = '_lp_course_is_sale';
+	const META_KEY_NO_REQUIRED_ENROLL       = '_lp_no_required_enroll';
+	const META_KEY_OFFLINE_COURSE           = '_lp_offline_course';
+	const META_KEY_ADDRESS                  = '_lp_address';
+	const META_KEY_DELIVER                  = '_lp_deliver_type';
+	const META_KEY_OFFLINE_LESSON_COUNT     = '_lp_offline_lesson_count';
+	const META_KEY_REQUIREMENTS             = '_lp_requirements';
+	const META_KEY_TARGET                   = '_lp_target_audiences';
+	const META_KEY_FEATURES                 = '_lp_key_features';
+	const META_KEY_FAQS                     = '_lp_faqs';
 
 	/**
 	 * Get the price of course.
@@ -173,7 +177,7 @@ class CoursePostModel extends PostModel {
 			}
 
 			$price_html .= sprintf( '<span class="free">%s</span>', esc_html__( 'Free', 'learnpress' ) );
-			$price_html = apply_filters( 'learn_press_course_price_html_free', $price_html, $this );
+			$price_html  = apply_filters( 'learn_press_course_price_html_free', $price_html, $this );
 		} elseif ( $this->get_meta_value_by_key( self::META_KEY_NO_REQUIRED_ENROLL, 'no' ) === 'yes' ) {
 			$price_html .= '';
 		} else {
@@ -182,7 +186,7 @@ class CoursePostModel extends PostModel {
 			}
 
 			$price_html .= sprintf( '<span class="price">%s</span>', learn_press_format_price( $this->get_price(), true ) );
-			$price_html = apply_filters( 'learn_press_course_price_html', $price_html, $this->has_sale_price(), $this->get_id() );
+			$price_html  = apply_filters( 'learn_press_course_price_html', $price_html, $this->has_sale_price(), $this->get_id() );
 		}
 
 		return sprintf( '<span class="course-item-price">%s</span>', $price_html );

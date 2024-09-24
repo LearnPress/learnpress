@@ -13,10 +13,13 @@ use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\CoursePostModel;
+use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
 use LP_Course;
 use LP_Datetime;
+use LP_Material_Files_DB;
+use LP_Settings;
 use Throwable;
 
 class SingleCourseTemplate {
@@ -263,7 +266,7 @@ class SingleCourseTemplate {
 			}
 
 			$price_html .= sprintf( '<span class="free">%s</span>', esc_html__( 'Free', 'learnpress' ) );
-			$price_html = apply_filters( 'learn_press_course_price_html_free', $price_html, $this );
+			$price_html  = apply_filters( 'learn_press_course_price_html_free', $price_html, $this );
 		} elseif ( $course->has_no_enroll_requirement() ) {
 			$price_html .= '';
 		} else {
@@ -272,7 +275,7 @@ class SingleCourseTemplate {
 			}
 
 			$price_html .= sprintf( '<span class="price">%s</span>', learn_press_format_price( $course->get_price(), true ) );
-			$price_html = apply_filters( 'learn_press_course_price_html', $price_html, $course->has_sale_price(), $course->get_id() );
+			$price_html  = apply_filters( 'learn_press_course_price_html', $price_html, $course->has_sale_price(), $course->get_id() );
 		}
 
 		// @since 4.2.7
@@ -572,8 +575,10 @@ class SingleCourseTemplate {
 		$user         = learn_press_get_current_user();
 		$can_purchase = $user->can_purchase_course( $course->get_id() );
 		if ( is_wp_error( $can_purchase ) ) {
-			if ( in_array( $can_purchase->get_error_code(),
-				[ 'order_processing', 'course_out_of_stock', 'course_is_no_required_enroll_not_login' ] ) ) {
+			if ( in_array(
+				$can_purchase->get_error_code(),
+				[ 'order_processing', 'course_out_of_stock', 'course_is_no_required_enroll_not_login' ]
+			) ) {
 				Template::print_message( $can_purchase->get_error_message(), 'warning' );
 			}
 
@@ -633,6 +638,300 @@ class SingleCourseTemplate {
 				dynamic_sidebar( 'course-sidebar' );
 				$html = Template::instance()->nest_elements( $html_wrapper, ob_get_clean() );
 			}
+		} catch ( Throwable $e ) {
+			error_log( $e->getMessage() );
+		}
+
+		return $html;
+	}
+
+	/**
+	 * HTML meta faqs
+	 *
+	 * @param CourseModel $course
+	 *
+	 * @return string
+	 */
+	public function html_faqs( CourseModel $course ): string {
+		$html = '';
+
+		try {
+			$faqs = $course->get_meta_value_by_key( CoursePostModel::META_KEY_FAQS, [] );
+			if ( empty( $faqs ) ) {
+				return '';
+			}
+
+			foreach ( $faqs as $faq ) {
+				$title       = $faq[0];
+				$description = $faq[1];
+				if ( empty( $title ) || empty( $description ) ) {
+					continue;
+				}
+
+				$key          = uniqid();
+				$section_item = [
+					'input_checkbox'    => sprintf(
+						'<input type="checkbox" name="course-faqs-box-ratio" id="course-faqs-box-ratio-%s">',
+						$key
+					),
+					'wrapper'           => '<div class="course-faqs-box">',
+					'title'             => sprintf(
+						'<label class="course-faqs-box__title" for="course-faqs-box-ratio-%s">%s</label>',
+						$key,
+						$title
+					),
+					'content'           => '<div class="course-faqs-box__content">',
+					'content_inner'     => '<div class="course-faqs-box__content-inner">',
+					'content_main'      => wp_kses_post( $description ),
+					'content_inner_end' => '</div>',
+					'content_end'       => '</div>',
+					'wrapper_end'       => '</div>',
+				];
+				$html        .= Template::combine_components( $section_item );
+			}
+
+			$section = apply_filters(
+				'learn-press/course/html-faqs',
+				[
+					'wrapper'     => '<div class="course-faqs">',
+					'title'       => sprintf( '<h3 class="course-faqs__title">%s</h3>', __( 'FAQs', 'learnpress' ) ),
+					'content'     => $html,
+					'wrapper_end' => '</div>',
+				],
+				$course
+			);
+			$html    = Template::combine_components( $section );
+		} catch ( Throwable $e ) {
+			error_log( $e->getMessage() );
+		}
+
+		return $html;
+	}
+
+	/**
+	 * HTML struct course box extra
+	 *
+	 * @param CourseModel $course
+	 * @param $title
+	 * @param string $html_list
+	 *
+	 * @return string
+	 * @since 4.2.7.2
+	 * @version 1.0.0
+	 */
+	public function html_course_box_extra( CourseModel $course, $title, string $html_list ): string {
+		if ( empty( $html_list ) ) {
+			return '';
+		}
+
+		$section = apply_filters(
+			'learn-press/course/html-course-box-extra',
+			[
+				'wrapper'           => '<div class="course-extra-box">',
+				'title'             => sprintf( '<h3 class="course-extra-box__title">%s</h3>', $title ),
+				'content'           => '<div class="course-extra-box__content">',
+				'content_inner'     => '<div class="course-extra-box__content-inner">',
+				'list'              => $html_list,
+				'content_inner_end' => '</div>',
+				'content_end'       => '</div>',
+				'wrapper_end'       => '</div>',
+			],
+			$course
+		);
+
+		return Template::combine_components( $section );
+	}
+
+	/**
+	 * HTML meta requirements
+	 *
+	 * @param CourseModel $course
+	 *
+	 * @return string
+	 * @since 4.2.7.2
+	 * @version 1.0.0
+	 */
+	public function html_requirements( CourseModel $course ): string {
+		$html = '';
+
+		try {
+			$requirements = $course->get_meta_value_by_key( CoursePostModel::META_KEY_REQUIREMENTS, [] );
+			if ( empty( $requirements ) ) {
+				return '';
+			}
+
+			$html_lis = '';
+			foreach ( $requirements as $requirement ) {
+				$html_lis .= sprintf( '<li>%s</li>', $requirement );
+			}
+
+			$section_list = [
+				'wrapper'     => '<ul>',
+				'content'     => $html_lis,
+				'wrapper_end' => '</ul>',
+			];
+
+			$html    = $this->html_course_box_extra(
+				$course,
+				__( 'Requirements', 'learnpress' ),
+				Template::combine_components( $section_list )
+			);
+			$section = [
+				'wrapper'     => '<div class="course-requirements">',
+				'content'     => $html,
+				'wrapper_end' => '</div>',
+			];
+			$html    = Template::combine_components( $section );
+		} catch ( Throwable $e ) {
+			error_log( $e->getMessage() );
+		}
+
+		return $html;
+	}
+
+	/**
+	 * HTML meta features
+	 *
+	 * @param CourseModel $course
+	 *
+	 * @return string
+	 * @since 4.2.7.2
+	 * @version 1.0.0
+	 */
+	public function html_features( CourseModel $course ): string {
+		$html = '';
+
+		try {
+			$features = $course->get_meta_value_by_key( CoursePostModel::META_KEY_FEATURES, [] );
+			if ( empty( $features ) ) {
+				return '';
+			}
+
+			$html_lis = '';
+			foreach ( $features as $feature ) {
+				$html_lis .= sprintf( '<li>%s</li>', $feature );
+			}
+
+			$section_list = [
+				'wrapper'     => '<ul>',
+				'content'     => $html_lis,
+				'wrapper_end' => '</ul>',
+			];
+
+			$html = $this->html_course_box_extra(
+				$course,
+				__( 'Features', 'learnpress' ),
+				Template::combine_components( $section_list )
+			);
+
+			$section = [
+				'wrapper'     => '<div class="course-features">',
+				'content'     => $html,
+				'wrapper_end' => '</div>',
+			];
+			$html    = Template::combine_components( $section );
+		} catch ( Throwable $e ) {
+			error_log( $e->getMessage() );
+		}
+
+		return $html;
+	}
+
+	/**
+	 * HTML meta target
+	 *
+	 * @param CourseModel $course
+	 *
+	 * @return string
+	 * @since 4.2.7.2
+	 * @version 1.0.0
+	 */
+	public function html_target( CourseModel $course ): string {
+		$html = '';
+
+		try {
+			$targets = $course->get_meta_value_by_key( CoursePostModel::META_KEY_TARGET, [] );
+			if ( empty( $targets ) ) {
+				return '';
+			}
+
+			$html_lis = '';
+			foreach ( $targets as $target ) {
+				$html_lis .= sprintf( '<li>%s</li>', $target );
+			}
+
+			$section_list = [
+				'wrapper'     => '<ul>',
+				'content'     => $html_lis,
+				'wrapper_end' => '</ul>',
+			];
+
+			$html    = $this->html_course_box_extra(
+				$course,
+				__( 'Target audiences', 'learnpress' ),
+				Template::combine_components( $section_list )
+			);
+			$section = [
+				'wrapper'     => '<div class="course-target">',
+				'content'     => $html,
+				'wrapper_end' => '</div>',
+			];
+			$html    = Template::combine_components( $section );
+		} catch ( Throwable $e ) {
+			error_log( $e->getMessage() );
+		}
+
+		return $html;
+	}
+
+	/**
+	 * HTML material
+	 *
+	 * @param CourseModel $course
+	 * @param UserModel|null $user
+	 *
+	 * @return string
+	 * @since 4.2.7.2
+	 * @version 1.0.0
+	 */
+	public function html_material( CourseModel $course, UserModel $user = null ): string {
+		$html = '';
+		if ( ! $user ) {
+			$user = UserModel::find( get_current_user_id() );
+			if ( ! $user ) {
+				return $html;
+			}
+		}
+
+		$userCourse = UserCourseModel::find( $user->get_id(), $course->get_id(), true );
+
+		try {
+			$can_show = false;
+			if ( $course->has_no_enroll_requirement()
+				|| ( $userCourse && $userCourse->has_enrolled_or_finished() )
+				|| ( $userCourse && $userCourse->has_purchased() )
+				|| user_can( $user->get_id(), LP_TEACHER_ROLE ) || user_can( $user->get_id(), ADMIN_ROLE ) ) {
+				$can_show = true;
+			}
+
+			$file_per_page = LP_Settings::get_option( 'material_file_per_page', - 1 );
+			$count_files   = LP_Material_Files_DB::getInstance()->get_total( $course->get_id() );
+			if ( ! $can_show || $file_per_page == 0 || $count_files <= 0 ) {
+				return $html;
+			}
+
+			ob_start();
+			do_action( 'learn-press/course-material/layout', [] );
+			$html_content = ob_get_clean();
+
+			$section = [
+				'wrapper'     => '<div class="course-material">',
+				'title'       => sprintf( '<h3 class="course-material__title">%s</h3>', __( 'Course Material', 'learnpress' ) ),
+				'content'     => $html_content,
+				'wrapper_end' => '</div>',
+			];
+
+			$html = Template::combine_components( $section );
 		} catch ( Throwable $e ) {
 			error_log( $e->getMessage() );
 		}

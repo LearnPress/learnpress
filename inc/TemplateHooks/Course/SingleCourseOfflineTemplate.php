@@ -3,7 +3,7 @@
  * Template hooks Single Course Offline.
  *
  * @since 4.2.7
- * @version 1.0.0
+ * @version 1.0.1
  */
 
 namespace LearnPress\TemplateHooks\Course;
@@ -90,7 +90,7 @@ class SingleCourseOfflineTemplate {
 					'<div class="instructor-item-meta">%s</div>',
 					$singleInstructorTemplate->html_count_courses( $author )
 				),
-				'wrapper_end'    => '</div>'
+				'wrapper_end'    => '</div>',
 			];
 			$html_instructor_meta    = Template::combine_components( $section_instructor_meta );
 
@@ -103,7 +103,9 @@ class SingleCourseOfflineTemplate {
 					'description' => $singleInstructorTemplate->html_description( $author ),
 					'social'      => $singleInstructorTemplate->html_social( $author ),
 					'wrapper_end' => '</div>',
-				], $course, $user
+				],
+				$course,
+				$user
 			);
 			$html_instructor_right    = Template::combine_components( $section_instructor_right );
 			$section_instructor       = apply_filters(
@@ -115,8 +117,10 @@ class SingleCourseOfflineTemplate {
 					'image'            => $html_instructor_image,
 					'instructor_right' => $html_instructor_right,
 					'wrapper_info_end' => '</div>',
-					'wrapper_end'      => '</div>'
-				], $course, $user
+					'wrapper_end'      => '</div>',
+				],
+				$course,
+				$user
 			);
 			$html_instructor          = Template::combine_components( $section_instructor );
 		}
@@ -140,7 +144,7 @@ class SingleCourseOfflineTemplate {
 		$html_info_one    = Template::combine_components( $section_info_one );
 
 		$html_wrapper_section_left = [
-			'<div class="lp-single-offline-course__left">' => '</div>'
+			'<div class="lp-single-offline-course__left">' => '</div>',
 		];
 		$section_left              = apply_filters(
 			'learn-press/single-course/offline/section-left',
@@ -150,6 +154,7 @@ class SingleCourseOfflineTemplate {
 				'info_one'    => $html_info_one,
 				'image'       => $this->singleCourseTemplate->html_image( $course ),
 				'description' => $this->singleCourseTemplate->html_description( $course ),
+				'box-extra'   => $this->html_box_extra( $course ),
 				'instructor'  => $html_instructor,
 			],
 			$course,
@@ -164,23 +169,23 @@ class SingleCourseOfflineTemplate {
 		$data_info_meta = [
 			'price'        => [
 				'label' => sprintf( '<span class="currency">%s</span> %s', learn_press_get_currency_symbol(), __( 'Price', 'learnpress' ) ),
-				'value' => $this->singleCourseTemplate->html_price( $course )
+				'value' => $this->singleCourseTemplate->html_price( $course ),
 			],
 			'deliver_type' => [
 				'label' => sprintf( '<span class="lp-icon-bookmark-o"></span> %s', __( 'Delivery type', 'learnpress' ) ),
-				'value' => $this->singleCourseTemplate->html_deliver_type( $course )
+				'value' => $this->singleCourseTemplate->html_deliver_type( $course ),
 			],
 			'capacity'     => [
 				'label' => sprintf( '<span class="lp-icon-students"></span> %s', __( 'Capacity', 'learnpress' ) ),
-				'value' => $this->singleCourseTemplate->html_capacity( $course )
+				'value' => $this->singleCourseTemplate->html_capacity( $course ),
 			],
 			'level'        => [
 				'label' => sprintf( '<span class="lp-icon-signal"></span> %s', __( 'Level', 'learnpress' ) ),
-				'value' => $this->singleCourseTemplate->html_level( $course )
+				'value' => $this->singleCourseTemplate->html_level( $course ),
 			],
 			'duration'     => [
 				'label' => sprintf( '<span class="lp-icon-clock-o"></span> %s', __( 'Duration', 'learnpress' ) ),
-				'value' => $this->singleCourseTemplate->html_duration( $course )
+				'value' => $this->singleCourseTemplate->html_duration( $course ),
 			],
 		];
 
@@ -188,7 +193,7 @@ class SingleCourseOfflineTemplate {
 		if ( ! empty( $html_lesson ) ) {
 			$data_info_meta['lessons'] = [
 				'label' => sprintf( '<span class="lp-icon-copy"></span> %s', __( 'Lessons', 'learnpress' ) ),
-				'value' => $html_lesson
+				'value' => $html_lesson,
 			];
 		}
 
@@ -196,9 +201,9 @@ class SingleCourseOfflineTemplate {
 
 		$html_info_two_items = '';
 		foreach ( $data_info_meta as $info_meta ) {
-			$label               = $info_meta['label'];
-			$value               = $info_meta['value'];
-			$html_info_two_item  = sprintf(
+			$label                = $info_meta['label'];
+			$value                = $info_meta['value'];
+			$html_info_two_item   = sprintf(
 				'<div class="info-meta-item">
 					<span class="info-meta-left">%s</span>
 					<span class="info-meta-right">%s</span>
@@ -289,5 +294,32 @@ class SingleCourseOfflineTemplate {
 		);
 
 		return $html;
+	}
+
+	/**
+	 * Box extra
+	 *
+	 * @param CourseModel $course
+	 *
+	 * @return string
+	 * @since 4.2.7.2
+	 * @version 1.0.0
+	 */
+	public function html_box_extra( CourseModel $course ): string {
+		$section = apply_filters(
+			'learn-press/single-course/offline/section-box-extra',
+			[
+				'wrapper'      => '<div class="course-box-extra-info">',
+				'material'     => $this->singleCourseTemplate->html_material( $course ),
+				'faqs'         => $this->singleCourseTemplate->html_faqs( $course ),
+				'requirements' => $this->singleCourseTemplate->html_requirements( $course ),
+				'features'     => $this->singleCourseTemplate->html_features( $course ),
+				'target'       => $this->singleCourseTemplate->html_target( $course ),
+				'wrapper_end'  => '</div>',
+			],
+			$course
+		);
+
+		return Template::combine_components( $section );
 	}
 }

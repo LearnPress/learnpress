@@ -28,5 +28,4 @@ defined( 'ABSPATH' ) || exit();
 
 	do_action( 'learn-press/after-course-buttons' );
 	?>
-
 </div>
