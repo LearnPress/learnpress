@@ -391,7 +391,8 @@ const removeAllBlank = ( questionEditEl ) => {
 
 	removeAllBlankEl.addEventListener( 'click', ( e ) => {
 		e.preventDefault();
-		const isConfirmed = confirm( 'Bạn có chắc chắn muốn tiếp tục không?' );
+		const textConfirmed = removeAllBlankEl.dataset.confirmed ?? '';
+		const isConfirmed = confirm( textConfirmed );
 		if ( ! isConfirmed ) {
 			return;
 		}
@@ -426,7 +427,8 @@ const clearContent = ( questionEditEl ) => {
 
 	clearEl.addEventListener( 'click', ( e ) => {
 		e.preventDefault();
-		const isConfirmed = confirm( 'Bạn có chắc chắn muốn tiếp tục không?' );
+		const textConfirmed = clearEl.dataset.confirmed ?? '';
+		const isConfirmed = confirm( textConfirmed );
 		if ( ! isConfirmed ) {
 			return;
 		}
