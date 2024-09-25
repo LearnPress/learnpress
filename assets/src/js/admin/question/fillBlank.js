@@ -461,6 +461,7 @@ const removeBlank = ( id, questionEditEl ) => {
 	blankEl.replaceWith( textNode );
 	renderBlank( questionEditEl );
 	changeTitleAnswerApi( questionEditEl );
+	checkDisableAllAction( questionEditEl );
 };
 
 function removeAllExceptFibBlankWithDisplayNone( parentElement ) {
