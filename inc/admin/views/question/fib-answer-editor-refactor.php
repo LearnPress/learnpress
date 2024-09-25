@@ -51,24 +51,6 @@ function format_fib_data( $content ) {
 
 $answers     = $data['answers'][0];
 $html_title  = format_fib_data( $answers['title'] );
-$comparisons = [
-	[
-		'value'       => 'equal',
-		'label'       => esc_html( 'Equal', 'learnpress' ),
-		'description' => __( 'Match two words are equality.', 'learnpress' ),
-	],
-	[
-		'value'       => 'range',
-		'label'       => esc_html( 'Range', 'learnpress' ),
-		'description' => __( 'Match any number in a range. Use <code>100, 200</code> to match any value from 100 to 200.', 'learnpress' ),
-	],
-	[
-		'value'       => 'any',
-		'label'       => esc_html( 'Any', 'learnpress' ),
-		'description' => __( 'Match any value in a set of words. Use <code>fill, blank, or question</code> to match any value in the set.', 'learnpress' ),
-	],
-];
-
 ?>
 <div contenteditable="true" class="content-editable" data-is-true="<?php echo esc_attr( $answers['is_true'] ); ?>" data-value="<?php echo esc_attr( $answers['value'] ); ?>" data-order="<?php echo esc_attr( $answers['order'] ); ?>" data-answer-id="<?php echo esc_attr( $answers['question_answer_id'] ); ?>">
 	<?php echo ( $html_title ); ?>

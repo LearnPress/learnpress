@@ -1,3 +1,23 @@
+<?php
+$comparisons = [
+	[
+		'value'       => 'equal',
+		'label'       => esc_html( 'Equal', 'learnpress' ),
+		'description' => __( 'Match two words are equality.', 'learnpress' ),
+	],
+	[
+		'value'       => 'range',
+		'label'       => esc_html( 'Range', 'learnpress' ),
+		'description' => __( 'Match any number in a range. Use <code>100, 200</code> to match any value from 100 to 200.', 'learnpress' ),
+	],
+	[
+		'value'       => 'any',
+		'label'       => esc_html( 'Any', 'learnpress' ),
+		'description' => __( 'Match any value in a set of words. Use <code>fill, blank, or question</code> to match any value in the set.', 'learnpress' ),
+	],
+];
+?>
+
 <tbody class="fib-blank" style="display:none;">
 	<tr>
 		<td class="blank-position" width="50"></td>
