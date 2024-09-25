@@ -103,6 +103,8 @@ const handleActionQuestion = ( questionEl, quizEditorEl ) => {
 				collapseQuestionsEl.classList.remove( 'dashicons-arrow-up' );
 				collapseQuestionsEl.classList.add( 'dashicons-arrow-down' );
 			}
+
+			saveQuestionState( quizEditorEl );
 		} );
 	}
 
@@ -311,7 +313,57 @@ const collapseQuestion = ( quizEditorEl ) => {
 					questionSettingEl.classList.remove( 'table-row' );
 				} );
 			}
+			saveQuestionState( quizEditorEl );
 		} );
 	}
 };
-export { getQuizId, handleActionQuestion, renderQuestion, updateTotalItem, addNewQuestion, collapseQuestion, sortableQuestion };
+
+function saveQuestionState( quizEditorEl ) {
+	if ( ! quizEditorEl ) {
+		return;
+	}
+
+	const quizId = getQuizId();
+	const questions = quizEditorEl.querySelectorAll( '.ui-sortable > .question-item' );
+	const questionStatesStorage = JSON.parse( localStorage.getItem( 'lpQuestionStates' ) ) || {};
+	const questionStates = {};
+	questions.forEach( ( question ) => {
+		const questionId = question.getAttribute( 'data-question-id' );
+		const isOpen = question.querySelector( '.lp-btn-toggle.open' ) ? true : false;
+		questionStates[ questionId ] = isOpen;
+	} );
+
+	questionStatesStorage[ quizId ] = questionStates;
+	localStorage.setItem( 'lpQuestionStates', JSON.stringify( questionStatesStorage ) );
+}
+
+function restoreSectionState( quizEditorEl ) {
+	const quizId = getQuizId();
+	const questionStatesStorage = JSON.parse( localStorage.getItem( 'lpQuestionStates' ) ) || {};
+	const questionStates = questionStatesStorage[ quizId ];
+	console.log( 'running' );
+	if ( ! questionStates ) {
+		return;
+	}
+
+	const questions = quizEditorEl.querySelectorAll( '.ui-sortable > .question-item' );
+
+	questions.forEach( ( question ) => {
+		const questionId = question.getAttribute( 'data-question-id' );
+		if ( ! questionStates[ questionId ] ) {
+			return;
+		}
+
+		const toggleOpenEl = question.querySelector( '.lp-btn-toggle' );
+		const questionSettingEl = question.querySelector( '.question-settings' );
+		const collapseQuestionsEl = quizEditorEl.querySelector( '.collapse-list-questions' );
+		toggleOpenEl.classList.remove( 'close' );
+		toggleOpenEl.classList.add( 'open' );
+		questionSettingEl.classList.add( 'table-row' );
+		questionSettingEl.classList.remove( 'hide-if-js' );
+		collapseQuestionsEl.classList.remove( 'dashicons-arrow-down' );
+		collapseQuestionsEl.classList.add( 'dashicons-arrow-up' );
+	} );
+}
+
+export { getQuizId, handleActionQuestion, renderQuestion, updateTotalItem, addNewQuestion, collapseQuestion, sortableQuestion, saveQuestionState, restoreSectionState };

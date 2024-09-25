@@ -1,5 +1,5 @@
 import { handleEventPopup } from './popupQuiz';
-import { addNewQuestion, collapseQuestion, handleActionQuestion, sortableQuestion } from './eventHandlers';
+import { addNewQuestion, collapseQuestion, handleActionQuestion, restoreSectionState, sortableQuestion } from './eventHandlers';
 
 document.addEventListener( 'DOMContentLoaded', () => {
 	const quizEditorEl = document.querySelector( '#admin-editor-lp_quiz-refactor' );
@@ -19,4 +19,5 @@ document.addEventListener( 'DOMContentLoaded', () => {
 	addNewQuestion( quizEditorEl );
 	sortableQuestion( quizEditorEl );
 	handleEventPopup();
+	restoreSectionState( quizEditorEl );
 } );
