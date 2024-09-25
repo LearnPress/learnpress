@@ -34,8 +34,9 @@ $edit_link = get_edit_post_link( $id );
 				<div data-content-tip="Edit an item" class="lp-toolbar-btn lp-title-attr-tip ready"><a href="<?php echo esc_attr( $edit_link ); ?>" target="_blank" class="lp-btn-icon dashicons dashicons-edit"></a></div>
 				<div class="lp-toolbar-btn lp-btn-remove lp-toolbar-btn-dropdown"><a class="lp-btn-icon dashicons dashicons-trash"></a>
 					<ul>
+					
 						<li><a class="remove"><?php esc_html_e( 'Removed from the quiz', 'learnpress' ); ?></a></li>
-						<li><a class="delete"><?php esc_html_e( 'Move to trash', 'learnpress' ); ?></a></li>
+						<li><a class="delete" data-confirmed="<?php esc_html_e( 'Do you want to move the question to the trash?', 'learnpress' ); ?>"><?php esc_html_e( 'Move to trash', 'learnpress' ); ?></a></li>
 					</ul>
 				</div>
 				<span class="lp-toolbar-btn lp-btn-toggle close"></span>

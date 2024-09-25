@@ -38,6 +38,7 @@ const handleActionQuestion = ( questionEl, quizEditorEl ) => {
 			removeQuestionApi( data, quizEditorEl );
 			questionEl.remove();
 			updateTotalItem( quizEditorEl, -1 );
+			resetQuestionOrder( quizEditorEl );
 		} );
 	}
 
@@ -45,6 +46,11 @@ const handleActionQuestion = ( questionEl, quizEditorEl ) => {
 	if ( deleteEl ) {
 		deleteEl.addEventListener( 'click', ( e ) => {
 			e.preventDefault();
+			const textConfirmed = deleteEl.dataset.confirmed ?? '';
+			const isConfirmed = confirm( textConfirmed );
+			if ( ! isConfirmed ) {
+				return;
+			}
 			const data = {
 				quizId,
 				questionId,
@@ -52,6 +58,7 @@ const handleActionQuestion = ( questionEl, quizEditorEl ) => {
 			deleteQuestionApi( data, quizEditorEl );
 			questionEl.remove();
 			updateTotalItem( quizEditorEl, -1 );
+			resetQuestionOrder( quizEditorEl );
 		} );
 	}
 
