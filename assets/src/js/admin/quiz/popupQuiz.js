@@ -3,9 +3,9 @@ import { lpFetchAPI } from '../../utils';
 import { renderQuestion, updateTotalItem } from './eventHandlers';
 
 const popupModalSelectItemEl = document.querySelector( '#lp-modal-choose-items-refactor' );
-const chooseItemsEl = popupModalSelectItemEl.querySelector( '.lp-choose-items' );
+const chooseItemsEl = popupModalSelectItemEl?.querySelector( '.lp-choose-items' );
 const urlParams = new URLSearchParams( window.location.search );
-const quizId = urlParams.get( 'post' ) ?? 0;
+const quizId = urlParams?.get( 'post' ) ?? 0;
 const listAddedEl = popupModalSelectItemEl?.querySelector( '.list-added-items' );
 const API_SEARCH_ITEMS_URL = lplistAPI.admin.apiSearchQuestionItems;
 let currentAbortController = null;
@@ -25,10 +25,21 @@ const handlePageChange = ( page ) => {
 	getQuestionItem( data, popupModalSelectItemEl );
 };
 
+const updateButtonState = ( el, condition = false, page ) => {
+	if ( el ) {
+		el.disabled = ! condition;
+		attachPaginationListeners( el, ( e ) => {
+			e.preventDefault();
+			handlePageChange( page );
+		} );
+	}
+};
+
 const handlePagination = ( paginationEl, paginationHtml ) => {
-	if ( ! popupModalSelectItemEl ) {
+	if ( ! popupModalSelectItemEl || ! paginationEl || ! paginationHtml ) {
 		return;
 	}
+
 	paginationEl.style.display = 'block';
 	const currentPage = paginationHtml.current ?? 1;
 	const total = paginationHtml.total ?? 1;
@@ -42,53 +53,10 @@ const handlePagination = ( paginationEl, paginationHtml ) => {
 		indexEl.innerText = `${ currentPage }/${ total } `;
 	}
 
-	if ( lastEl ) {
-		if ( currentPage < total ) {
-			lastEl.disabled = false;
-		} else {
-			lastEl.disabled = true;
-		}
-		lastEl.addEventListener( 'click', ( e ) => {
-			e.preventDefault();
-			handlePageChange( total );
-		} );
-	}
-
-	if ( nextEl ) {
-		if ( currentPage < total ) {
-			nextEl.disabled = false;
-		} else {
-			nextEl.disabled = true;
-		}
-		attachPaginationListeners( nextEl, ( e ) => {
-			e.preventDefault();
-			handlePageChange( currentPage + 1 );
-		} );
-	}
-
-	if ( firstEl ) {
-		if ( currentPage > 1 ) {
-			firstEl.disabled = false;
-		} else {
-			firstEl.disabled = true;
-		}
-		attachPaginationListeners( firstEl, ( e ) => {
-			e.preventDefault();
-			handlePageChange( 1 );
-		} );
-	}
-
-	if ( prevEl ) {
-		if ( currentPage > 1 ) {
-			prevEl.disabled = false;
-		} else {
-			prevEl.disabled = true;
-		}
-		attachPaginationListeners( prevEl, ( e ) => {
-			e.preventDefault();
-			handlePageChange( currentPage - 1 );
-		} );
-	}
+	updateButtonState( nextEl, currentPage < total, currentPage + 1 );
+	updateButtonState( firstEl, currentPage > 1, 1 );
+	updateButtonState( lastEl, currentPage < total, total );
+	updateButtonState( prevEl, currentPage > 1, currentPage - 1 );
 };
 
 const resetPopup = () => {
@@ -168,10 +136,10 @@ const renderPopup = ( popupModalSelectItemEl, itemsHtml, paginationHtml ) => {
 	listItemEl.innerText = '';
 	listItemEl.insertAdjacentHTML( 'beforeend', itemsHtml );
 
-	const listResultItemEls = Array.prototype.slice.call( listItemEl.querySelectorAll( '.lp-result-item' ) );
+	const listResultItemEls = Array.from( listItemEl.querySelectorAll( '.lp-result-item' ) );
 
 	if ( listResultItemEls.length > 0 ) {
-		const itemAddedEls = Array.prototype.slice.call( listAddedEl.querySelectorAll( '.lp-result-item' ) );
+		const itemAddedEls = Array.from( listAddedEl.querySelectorAll( '.lp-result-item' ) );
 		const addedIds = itemAddedEls.map( ( itemAddedEl ) => {
 			return itemAddedEl?.dataset?.id ?? '';
 		} );
@@ -230,7 +198,7 @@ const updateTotalSelected = () => {
 		return;
 	}
 
-	const itemSelectedEls = Array.prototype.slice.call( listAddedEl.querySelectorAll( '.lp-result-item' ) );
+	const itemSelectedEls = Array.from( listAddedEl.querySelectorAll( '.lp-result-item' ) );
 	const addSelectedEl = popupModalSelectItemEl.querySelector( '.footer .checkout' );
 	const editSelectedBtnEl = popupModalSelectItemEl.querySelector( '.edit-selected' );
 	const selectedTotalEl = popupModalSelectItemEl.querySelector( '.footer .total-selected' );
@@ -405,7 +373,7 @@ const handleEventPopup = () => {
 			e.stopPropagation();
 			const quizEditEl = document.querySelector( '#admin-editor-lp_quiz-refactor' );
 			const listUiSortableEl = quizEditEl.querySelector( '.lp-list-questions .ui-sortable' );
-			const sectionItemAddedEls = Array.prototype.slice.call( listAddedEl.querySelectorAll( '.lp-result-item' ) );
+			const sectionItemAddedEls = Array.from( listAddedEl.querySelectorAll( '.lp-result-item' ) );
 			const selectedAddItem = sectionItemAddedEls.map( ( sectionItemAddedEl ) => {
 				const data = {
 					id: sectionItemAddedEl.dataset.id ?? null,

@@ -54,7 +54,7 @@ apply_filters( 'learn-press/question-setting', $data_setting )
 						<form><input type="text" value="<?php echo esc_attr( $answer['title'] ) ?? ''; ?>"></form>
 					</td>
 					<td class="answer-correct lp-answer-check">
-						<input type="<?php echo esc_attr( $data_setting[ $data['type']['key'] ]['input'] ); ?>" <?php empty( $answer['is_true'] ) ? '' : esc_html_e( 'checked' ); ?> name="answer_question[<?php echo esc_attr( $data['id'] ); ?>]" value="<?php echo esc_attr( $answer['value'] ); ?>">
+						<input type="<?php echo esc_attr( $data_setting[ $data['type']['key'] ]['input'] ); ?>" <?php $answer['is_true'] === 'yes' ? esc_html_e( 'checked' ) : ''; ?> name="answer_question[<?php echo esc_attr( $data['id'] ); ?>]" value="<?php echo esc_attr( $answer['value'] ); ?>">
 					</td>
 					<td class="actions lp-toolbar-buttons">
 						<div class="lp-toolbar-btn lp-btn-remove remove-answer">
