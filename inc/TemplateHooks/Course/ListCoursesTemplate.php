@@ -189,13 +189,27 @@ class ListCoursesTemplate {
 			];
 
 			// HTML meta section.
-			$meta_data      = [
-				'duration' => $singleCourseTemplate->html_duration( $course ),
-				'level'    => $singleCourseTemplate->html_level( $course ),
-				'lesson'   => $singleCourseTemplate->html_count_item( $course, LP_LESSON_CPT ),
-				'quiz'     => $singleCourseTemplate->html_count_item( $course, LP_QUIZ_CPT ),
-				'student'  => $singleCourseTemplate->html_count_student( $course ),
-			];
+			$meta_data      = apply_filters(
+				'learn-press/layout/list-courses/item/meta-data',
+				[
+					'duration' => $singleCourseTemplate->html_duration( $course ),
+					'level'    => $singleCourseTemplate->html_level( $course ),
+					'lesson'   => $singleCourseTemplate->html_count_item( $course, LP_LESSON_CPT ),
+					'quiz'     => $singleCourseTemplate->html_count_item( $course, LP_QUIZ_CPT ),
+					'student'  => $singleCourseTemplate->html_count_student( $course ),
+				],
+				$course,
+				$settings
+			);
+
+			if ( $course->is_offline() ) {
+				$singleCourseOfflineTemplate = SingleCourseOfflineTemplate::instance();
+				unset( $meta_data['quiz'] );
+				if ( ! empty( $meta_data['lesson'] ) ) {
+					$meta_data['lesson'] = $singleCourseOfflineTemplate->html_lesson_info( $course );
+				}
+			}
+
 			$html_meta_data = '';
 			if ( ! empty( $meta_data ) ) {
 				foreach ( $meta_data as $k => $v ) {
