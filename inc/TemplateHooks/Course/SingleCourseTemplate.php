@@ -722,7 +722,7 @@ class SingleCourseTemplate {
 			$section = apply_filters(
 				'learn-press/course/html-faqs',
 				[
-					'wrapper'     => '<div class="course-faqs">',
+					'wrapper'     => '<div class="course-faqs course-tab-panel-faqs">',
 					'title'       => sprintf( '<h3 class="course-faqs__title">%s</h3>', __( 'FAQs', 'learnpress' ) ),
 					'content'     => $html,
 					'wrapper_end' => '</div>',
