@@ -2,6 +2,7 @@
 import { lpFetchAPI } from '../../utils';
 import lplistAPI from '../../api';
 import { getCourseId, updateTotalItemSection, addSectionsWithDelay, updateStatus, handleEventSectionItem } from './eventHandlers';
+import { resetPopup } from '../popupSelectedItem';
 
 const apiRequest = ( url, method = 'POST', data, callbacks = {} ) => {
 	if ( ! url ) {
@@ -166,4 +167,42 @@ const getCourseApi = ( courseEditorEl ) => {
 	apiRequest( url, 'GET', '', callBack );
 };
 
-export { getCourseApi, updateOrderSectionItemApi, deleteItemApi, removeItemInSectionApi, addNewItemApi, updateSectionItemApi, updateOrderSectionApi, addSectionApi, deleteSectionApi, updateSectionApi };
+const updateSectionWithPopupApi = ( data, listUiSortableEl, popupModalSelectItemEl ) => {
+	if ( ! data || ! listUiSortableEl || ! popupModalSelectItemEl ) {
+		return;
+	}
+
+	const sectionId = popupModalSelectItemEl.dataset.id ?? '';
+	const selectEl = document.querySelector( `.section[data-section-id="${ sectionId }"]` );
+	const courseEditorEl = document.querySelector( '#course-editor-refactor' );
+
+	const url = lplistAPI.admin.apiUpdateSectionItemOrder;
+	const method = 'POST';
+	const callback = {
+		success: ( response ) => {
+			const itemEls = response?.data?.html ?? [];
+			if ( itemEls.length && listUiSortableEl ) {
+				itemEls.map( ( itemEl ) => {
+					listUiSortableEl.insertAdjacentHTML( 'beforeend', itemEl );
+					const sectionItemEl = listUiSortableEl.lastElementChild;
+					const sectionId = listUiSortableEl?.dataset?.sectionId ?? 0;
+					handleEventSectionItem( sectionItemEl, sectionId, selectEl, courseEditorEl );
+				} );
+
+				if ( selectEl && courseEditorEl ) {
+					updateTotalItemSection( selectEl, itemEls.length );
+					updateTotalItemSection( courseEditorEl, itemEls.length );
+				}
+			}
+		},
+		error: ( err ) => {
+			// console.log( err );
+		},
+		completed: () => {
+			resetPopup( popupModalSelectItemEl );
+		},
+	};
+	apiRequest( url, method, data, callback );
+};
+
+export { getCourseApi, updateOrderSectionItemApi, deleteItemApi, removeItemInSectionApi, addNewItemApi, updateSectionItemApi, updateOrderSectionApi, addSectionApi, deleteSectionApi, updateSectionApi, updateSectionWithPopupApi };
