@@ -124,13 +124,18 @@ class ListCoursesTemplate {
 			[
 				'wrapper'       => '<div class="lp-courses-bar">',
 				'search'        => $listCoursesTemplate->html_search_form( $settings ),
-				'order_by'      => $listCoursesTemplate->html_order_by(),
+				'order_by'      => $listCoursesTemplate->html_order_by( $settings['order_by'] ?? 'post_date' ),
 				'switch_layout' => $listCoursesTemplate->switch_layout(),
 				'wrapper_end'   => '</div>',
 			],
 			$courses,
 			$settings
 		);
+
+		// For old themes use old hook.
+		$section_top = self::fix_theme_cb_hook_courses( $section_top, $courses, $settings );
+		//$section= self::fix_theme_el_hook_old_render_courses( $section, $courses, $settings );
+		// End.
 
 		// Pagination html
 		$data_pagination_type = LP_Settings::get_option( 'course_pagination_type', 'number' );
@@ -268,26 +273,8 @@ class ListCoursesTemplate {
 			];
 
 			// For old themes use old hook.
-			$section_wrapper_theme_old = apply_filters(
-				'learn-press/list-courses/layout/item/wrapper',
-				[],
-				$course,
-				$settings
-			);
-
-			if ( ! empty( $section_wrapper_theme_old ) ) {
-				$i = 0;
-				foreach ( $section_wrapper_theme_old as $k => $v ) {
-					if ( $i === 0 ) {
-						$section['wrapper_li'] = $k;
-					} elseif ( $i === 1 ) {
-						$section['wrapper_div'] = $k;
-						break;
-					}
-
-					++$i;
-				}
-			}
+			$section= self::fix_theme_cb_course_old( $section, $course, $settings );
+			$section= self::fix_theme_el_use_hook_new( $section, $course, $settings );
 			// End.
 
 			$html_item = Template::combine_components( $section );
@@ -726,6 +713,115 @@ class ListCoursesTemplate {
 		);
 
 		return Template::instance()->nest_elements( $html_wrapper, $content );
+	}
+
+	/************************** Hook old *****************************/
+
+	/**
+	 * Fix theme course-builder use old hook.
+	 *
+	 * @param array $section
+	 *
+	 * @return array
+	 */
+	public static function fix_theme_cb_hook_courses( $section, $courses, $settings ) {
+		$theme_name = wp_get_theme()->get( 'Name' );
+		if ( 'Course Builder' !== $theme_name ) {
+			return $section;
+		}
+
+		$section_top = apply_filters(
+			'learn-press/list-courses/layout/section/top',
+			[],
+			$courses,
+			$settings
+		);
+
+		$section_new = [];
+		if ( ! empty( $section_top ) ) {
+			foreach ( $section_top as $k => $v ) {
+				$section_new[ $k ] = $v['text_html'] ?? '';
+			}
+		}
+
+		return $section_new;
+	}
+
+	/**
+	 * Fix theme course-builder use old hook.
+	 *
+	 * @param array $section
+	 *
+	 * @return array
+	 */
+	public static function fix_theme_cb_course_old( $section, $course, $settings ) {
+		$theme_name = wp_get_theme()->get( 'Name' );
+		if ( 'Course Builder' !== $theme_name ) {
+			return $section;
+		}
+
+		$wrapper = apply_filters(
+			'learn-press/list-courses/layout/item/wrapper',
+			[],
+			$course,
+			$settings
+		);
+		if ( ! empty( $wrapper ) ) {
+			$i = 0;
+			foreach ( $wrapper as $k => $v ) {
+				if ( $i === 0 ) {
+					$section['wrapper_li'] = $k;
+				} elseif ( $i === 1 ) {
+					$section['wrapper_div'] = $k;
+					break;
+				}
+
+				++$i;
+			}
+		}
+
+		$section_item = apply_filters(
+			'learn-press/list-courses/layout/item/section',
+			[],
+			$course,
+			$settings
+		);
+		if ( ! empty( $section_item ) ) {
+			$section['top']    = $section_item['thim_top']['text_html'] ?? '';
+		}
+
+		$section_bottom = apply_filters(
+			'learn-press/list-courses/layout/item/section/bottom',
+			[],
+			$course,
+			$settings
+		);
+		$section_bottom_new = [];
+		if ( ! empty( $section_bottom ) ) {
+			foreach ( $section_bottom as $k => $v ) {
+				$section_bottom_new[ $k ] = $v['text_html'] ?? '';
+			}
+		}
+
+		$section['bottom'] = Template::combine_components( $section_bottom_new );
+
+		return $section;
+	}
+
+	/**
+	 * Fix theme elearning use old hook.
+	 *
+	 * @param $section
+	 *
+	 * @return mixed
+	 */
+	public static function fix_theme_el_use_hook_new( $section, $course, $settings ) {
+		$theme_name = wp_get_theme()->get( 'Name' );
+		if ( 'eLearningWP' !== $theme_name ) {
+			return $section;
+		}
+
+		return $section;
 	}
 
 	/**
