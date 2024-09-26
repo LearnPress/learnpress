@@ -1,6 +1,7 @@
 import { Sortable } from 'sortablejs';
-import { getCourseApi, updateOrderSectionItemApi, deleteItemApi, removeItemInSectionApi, addNewItemApi, updateSectionItemApi, updateOrderSectionApi, addSectionApi, deleteSectionApi, updateSectionApi } from './apiRequests';
-import { popupSelectItem } from './popupCourse';
+import { getCourseApi, updateOrderSectionItemApi, deleteItemApi, removeItemInSectionApi, addNewItemApi, updateSectionItemApi, updateOrderSectionApi, addSectionApi, deleteSectionApi, updateSectionApi, updateSectionWithPopupApi } from './apiRequests';
+import { popupSelectItem } from '../popupSelectedItem';
+import lplistAPI from '../../api';
 
 function delay( ms ) {
 	return new Promise( ( resolve ) => setTimeout( resolve, ms ) );
@@ -287,7 +288,9 @@ const actionSection = ( sectionEl, courseEditorEl ) => {
 	const btnSelectEl = sectionEl.querySelector( '.section-actions .select-items' );
 	if ( btnSelectEl ) {
 		btnSelectEl.addEventListener( 'click', () => {
-			popupSelectItem( sectionEl );
+			const selectId = sectionEl.dataset?.sectionId ?? '';
+			const API_SEARCH_ITEMS_URL = lplistAPI.admin.apiSearchItems;
+			popupSelectItem( selectId, API_SEARCH_ITEMS_URL );
 		} );
 	}
 
@@ -639,4 +642,41 @@ function restoreSectionState( newSection, courseEditorEl ) {
 	newSection.classList.add( 'open' );
 }
 
-export { getCourseId, updateTotalItemSection, addSectionsWithDelay, updateStatus, handleEventSectionItem, addNewSection, singleCollapseEvent, collapseSectionsEvent, actionSection, updateSingleSection, sortableItemEvent, sortableSection, saveSectionState, restoreSectionState };
+const handleUpdateItem = () => {
+	const popupModalSelectItemEl = document.querySelector( '#lp-modal-choose-items-refactor' );
+	const listAddedEl = popupModalSelectItemEl?.querySelector( '.list-added-items' );
+	const sectionId = popupModalSelectItemEl?.dataset?.id ?? '';
+	if ( ! sectionId ) {
+		return;
+	}
+	const selectEl = document.querySelector( `.section[data-section-id="${ sectionId }"]` );
+	const listUiSortableEl = selectEl.querySelector( '.ui-sortable' );
+	const sectionItemEls = Array.from( selectEl.querySelectorAll( '.section-list-items .ui-sortable	.section-item' ) );
+	const currentItemEl = sectionItemEls.map( ( sectionItemEl ) => {
+		const data = {
+			id: sectionItemEl.dataset.itemId ?? null,
+			type: sectionItemEl.dataset.itemType ?? null,
+		};
+		return data;
+	} );
+	const sectionItemAddedEls = Array.from( listAddedEl.querySelectorAll( '.lp-result-item' ) );
+	const selectedAddItem = sectionItemAddedEls.map( ( sectionItemAddedEl ) => {
+		const data = {
+			id: sectionItemAddedEl.dataset.id ?? null,
+			type: sectionItemAddedEl.dataset.type ?? null,
+			title: sectionItemAddedEl.dataset.text ?? null,
+		};
+		return data;
+	} );
+
+	const dataUpdateItem = currentItemEl.concat( selectedAddItem );
+	const data = {
+		items: dataUpdateItem,
+		courseId: getCourseId(),
+		sectionId,
+		itemAddNew: selectedAddItem,
+	};
+	updateSectionWithPopupApi( data, listUiSortableEl, popupModalSelectItemEl );
+};
+
+export { getCourseId, updateTotalItemSection, addSectionsWithDelay, updateStatus, handleEventSectionItem, addNewSection, singleCollapseEvent, collapseSectionsEvent, actionSection, updateSingleSection, sortableItemEvent, sortableSection, saveSectionState, restoreSectionState, handleUpdateItem };
