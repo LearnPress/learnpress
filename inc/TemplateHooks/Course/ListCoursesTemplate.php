@@ -273,8 +273,7 @@ class ListCoursesTemplate {
 			];
 
 			// For old themes use old hook.
-			$section= self::fix_theme_cb_course_old( $section, $course, $settings );
-			$section= self::fix_theme_el_use_hook_new( $section, $course, $settings );
+			$section= self::fix_theme_course_old( $section, $course, $settings );
 			// End.
 
 			$html_item = Template::combine_components( $section );
@@ -725,10 +724,10 @@ class ListCoursesTemplate {
 	 * @return array
 	 */
 	public static function fix_theme_cb_hook_courses( $section, $courses, $settings ) {
-		$theme_name = wp_get_theme()->get( 'Name' );
+		/*$theme_name = wp_get_theme()->get( 'Name' );
 		if ( 'Course Builder' !== $theme_name ) {
 			return $section;
-		}
+		}*/
 
 		$section_top = apply_filters(
 			'learn-press/list-courses/layout/section/top',
@@ -754,11 +753,13 @@ class ListCoursesTemplate {
 	 *
 	 * @return array
 	 */
-	public static function fix_theme_cb_course_old( $section, $course, $settings ) {
-		$theme_name = wp_get_theme()->get( 'Name' );
+	public static function fix_theme_course_old( $section, $course, $settings ) {
+		/*$theme_name = wp_get_theme()->get( 'Name' );
 		if ( 'Course Builder' !== $theme_name ) {
 			return $section;
-		}
+		}*/
+
+		$course = learn_press_get_course( $course->get_id() );
 
 		$wrapper = apply_filters(
 			'learn-press/list-courses/layout/item/wrapper',
@@ -771,8 +772,10 @@ class ListCoursesTemplate {
 			foreach ( $wrapper as $k => $v ) {
 				if ( $i === 0 ) {
 					$section['wrapper_li'] = $k;
+					$section['wrapper_li_end'] = $v;
 				} elseif ( $i === 1 ) {
 					$section['wrapper_div'] = $k;
+					$section['wrapper_div_end'] = $v;
 					break;
 				}
 
@@ -804,22 +807,6 @@ class ListCoursesTemplate {
 		}
 
 		$section['bottom'] = Template::combine_components( $section_bottom_new );
-
-		return $section;
-	}
-
-	/**
-	 * Fix theme elearning use old hook.
-	 *
-	 * @param $section
-	 *
-	 * @return mixed
-	 */
-	public static function fix_theme_el_use_hook_new( $section, $course, $settings ) {
-		$theme_name = wp_get_theme()->get( 'Name' );
-		if ( 'eLearningWP' !== $theme_name ) {
-			return $section;
-		}
 
 		return $section;
 	}
