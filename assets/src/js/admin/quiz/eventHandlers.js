@@ -343,7 +343,6 @@ function restoreSectionState( quizEditorEl ) {
 	const quizId = getQuizId();
 	const questionStatesStorage = JSON.parse( localStorage.getItem( 'lpQuestionStates' ) ) || {};
 	const questionStates = questionStatesStorage[ quizId ];
-	console.log( 'running' );
 	if ( ! questionStates ) {
 		return;
 	}
