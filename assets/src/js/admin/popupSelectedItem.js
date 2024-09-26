@@ -1,13 +1,11 @@
-import lplistAPI from '../../api';
-import { lpFetchAPI } from '../../utils';
-import { renderQuestion, updateTotalItem } from './eventHandlers';
+import { lpFetchAPI } from '../utils';
 
 const popupModalSelectItemEl = document.querySelector( '#lp-modal-choose-items-refactor' );
 const chooseItemsEl = popupModalSelectItemEl?.querySelector( '.lp-choose-items' );
 const urlParams = new URLSearchParams( window.location.search );
-const quizId = urlParams?.get( 'post' ) ?? 0;
+const postId = urlParams?.get( 'post' ) ?? 0;
 const listAddedEl = popupModalSelectItemEl?.querySelector( '.list-added-items' );
-const API_SEARCH_ITEMS_URL = lplistAPI.admin.apiSearchQuestionItems;
+const tabs = Array.from( popupModalSelectItemEl?.querySelectorAll( '.tabs .tab' ) ?? {} );
 let currentAbortController = null;
 
 const attachPaginationListeners = ( el, handler ) => {
@@ -15,28 +13,59 @@ const attachPaginationListeners = ( el, handler ) => {
 	el.addEventListener( 'click', handler );
 };
 
-const handlePageChange = ( page ) => {
+const handleTabClick = ( tabs, tab, urlGetItem ) => {
+	const itemType = tab.dataset.type ?? '';
+	if ( ! itemType || ! urlGetItem ) {
+		return;
+	}
+
+	if ( popupModalSelectItemEl.dataset.type === itemType ) {
+		return;
+	}
+
+	popupModalSelectItemEl.dataset.type = itemType;
+	tabs.forEach( ( tab ) => {
+		tab.classList.remove( 'active' );
+		tab.classList.add( 'inactive' );
+	} );
+
+	tab.classList.remove( 'inactive' );
+	tab.classList.add( 'active' );
+	const data = {
+		id: postId,
+		itemType,
+	};
+	getItem( data, urlGetItem );
+	return itemType;
+};
+
+const handlePageChange = ( page, urlGetItem ) => {
+	const itemType = popupModalSelectItemEl.dataset.type ?? '';
+	if ( ! itemType ) {
+		return;
+	}
 	let query = '';
-	const searchEl = popupModalSelectItemEl.querySelector( '.search input' );
+	const searchEl = popupModalSelectItemEl.querySelector( '.modal-search-input' );
 	if ( searchEl ) {
 		query = searchEl.value;
 	}
-	const data = { quizId, page, query };
-	getQuestionItem( data, popupModalSelectItemEl );
+	const data = { id: postId, itemType, page, query };
+	getItem( data, urlGetItem );
 };
 
-const updateButtonState = ( el, condition = false, page ) => {
+const updateButtonState = ( el, condition = false, page, url ) => {
 	if ( el ) {
 		el.disabled = ! condition;
 		attachPaginationListeners( el, ( e ) => {
 			e.preventDefault();
-			handlePageChange( page );
+			handlePageChange( page, url );
 		} );
 	}
 };
 
-const handlePagination = ( paginationEl, paginationHtml ) => {
-	if ( ! popupModalSelectItemEl || ! paginationEl || ! paginationHtml ) {
+const handlePagination = ( paginationEl, paginationHtml, url ) => {
+	const itemType = popupModalSelectItemEl?.dataset?.type ?? '';
+	if ( ! itemType || ! popupModalSelectItemEl || ! paginationEl ) {
 		return;
 	}
 
@@ -53,10 +82,10 @@ const handlePagination = ( paginationEl, paginationHtml ) => {
 		indexEl.innerText = `${ currentPage }/${ total } `;
 	}
 
-	updateButtonState( nextEl, currentPage < total, currentPage + 1 );
-	updateButtonState( firstEl, currentPage > 1, 1 );
-	updateButtonState( lastEl, currentPage < total, total );
-	updateButtonState( prevEl, currentPage > 1, currentPage - 1 );
+	updateButtonState( nextEl, currentPage < total, currentPage + 1, url );
+	updateButtonState( firstEl, currentPage > 1, 1, url );
+	updateButtonState( lastEl, currentPage < total, total, url );
+	updateButtonState( prevEl, currentPage > 1, currentPage - 1, url );
 };
 
 const resetPopup = () => {
@@ -88,6 +117,18 @@ const resetPopup = () => {
 
 	if ( searchInputEl ) {
 		searchInputEl.value = '';
+	}
+
+	if ( tabs.length > 0 ) {
+		tabs.forEach( ( tab, index ) => {
+			if ( index === 0 ) {
+				tab.classList.remove( 'inactive' );
+				tab.classList.add( 'active' );
+			} else {
+				tab.classList.remove( 'active' );
+				tab.classList.add( 'inactive' );
+			}
+		} );
 	}
 
 	if ( addSelectedEl ) {
@@ -123,7 +164,7 @@ const resetPopup = () => {
 	}
 };
 
-const renderPopup = ( popupModalSelectItemEl, itemsHtml, paginationHtml ) => {
+const renderPopup = ( popupModalSelectItemEl, itemsHtml, paginationHtml, url ) => {
 	if ( ! popupModalSelectItemEl || ! itemsHtml ) {
 		return;
 	}
@@ -188,7 +229,7 @@ const renderPopup = ( popupModalSelectItemEl, itemsHtml, paginationHtml ) => {
 
 	if ( paginationEl ) {
 		if ( paginationHtml ) {
-			handlePagination( paginationEl, paginationHtml );
+			handlePagination( paginationEl, paginationHtml, url );
 		}
 	}
 };
@@ -227,22 +268,11 @@ const updateTotalSelected = () => {
 	}
 };
 
-const resetQuestionOrder = ( el ) => {
-	const questionItemEls = Array.from( el.querySelectorAll( '.ui-sortable > .question-item' ) );
-	if ( ! questionItemEls.length ) {
+const getItem = ( data, url ) => {
+	if ( ! url ) {
 		return;
 	}
 
-	questionItemEls.forEach( ( questionItemEl, index ) => {
-		const oderEl = questionItemEl.querySelector( '.question-actions .order' );
-		if ( ! oderEl ) {
-			return;
-		}
-		oderEl.innerText = index + 1;
-	} );
-};
-
-const getQuestionItem = ( data ) => {
 	const paginationEl = popupModalSelectItemEl.querySelector( '.pagination' );
 
 	if ( currentAbortController ) {
@@ -267,11 +297,11 @@ const getQuestionItem = ( data ) => {
 	};
 
 	popupModalSelectItemEl.classList.add( 'show', 'loading' );
-	lpFetchAPI( API_SEARCH_ITEMS_URL, params, {
+	lpFetchAPI( url, params, {
 		success: ( response ) => {
 			const itemHtml = response.data?.html?.items ?? '';
 			const paginationHtml = response.data?.html?.pagination ?? '';
-			renderPopup( popupModalSelectItemEl, itemHtml, paginationHtml );
+			renderPopup( popupModalSelectItemEl, itemHtml, paginationHtml, url );
 			popupModalSelectItemEl.classList.remove( 'loading' );
 		},
 		error: ( err ) => {
@@ -282,47 +312,16 @@ const getQuestionItem = ( data ) => {
 	} );
 };
 
-const addQuestionToQuizApi = ( data, listUiSortableEl ) => {
-	if ( ! data || ! popupModalSelectItemEl ) {
-		return;
+const handleEventPopup = ( handleUpdateItem, urlGetItem ) => {
+	if ( tabs.length > 0 ) {
+		tabs.map( ( tab ) => {
+			attachPaginationListeners( tab, ( e ) => {
+				e.preventDefault();
+				handleTabClick( tabs, tab, urlGetItem );
+			} );
+		} );
 	}
-	const quizEditorEl = document.querySelector( '#admin-editor-lp_quiz-refactor' );
 
-	const url = lplistAPI.admin.apiAddQuestionsToQuiz;
-	const method = 'POST';
-	const params = {
-		headers: {
-			'Content-Type': 'application/json',
-			'X-WP-Nonce': lpDataAdmin.nonce,
-		},
-		method,
-		body: JSON.stringify( data ),
-	};
-
-	lpFetchAPI( url, params, {
-		success: ( response ) => {
-			const itemEls = response?.data?.html ?? [];
-			if ( itemEls.length && listUiSortableEl ) {
-				itemEls.map( ( itemEl ) => {
-					renderQuestion( itemEl, quizEditorEl );
-				} );
-
-				if ( quizEditorEl ) {
-					updateTotalItem( quizEditorEl, itemEls.length );
-					resetQuestionOrder( quizEditorEl );
-				}
-			}
-		},
-		error: ( err ) => {
-			// console.log( err );
-		},
-		completed: () => {
-			resetPopup( popupModalSelectItemEl );
-		},
-	} );
-};
-
-const handleEventPopup = () => {
 	const closeEl = popupModalSelectItemEl.querySelector( '.header .close' );
 	if ( popupModalSelectItemEl ) {
 		closeEl.addEventListener( 'click', ( e ) => {
@@ -371,22 +370,9 @@ const handleEventPopup = () => {
 		addSelectedEl.addEventListener( 'click', ( e ) => {
 			e.preventDefault();
 			e.stopPropagation();
-			const quizEditEl = document.querySelector( '#admin-editor-lp_quiz-refactor' );
-			const listUiSortableEl = quizEditEl.querySelector( '.lp-list-questions .ui-sortable' );
-			const sectionItemAddedEls = Array.from( listAddedEl.querySelectorAll( '.lp-result-item' ) );
-			const selectedAddItem = sectionItemAddedEls.map( ( sectionItemAddedEl ) => {
-				const data = {
-					id: sectionItemAddedEl.dataset.id ?? null,
-					title: sectionItemAddedEl.dataset.text ?? null,
-				};
-				return data;
-			} );
-
-			const data = {
-				quizId,
-				items: selectedAddItem,
-			};
-			addQuestionToQuizApi( data, listUiSortableEl );
+			if ( handleUpdateItem ) {
+				handleUpdateItem();
+			}
 		} );
 	}
 
@@ -399,11 +385,13 @@ const handleEventPopup = () => {
 				const currentValue = searchEl.value;
 				if ( previousValue !== currentValue ) {
 					previousValue = currentValue;
+					const itemType = popupModalSelectItemEl.dataset.type ?? '';
 					const data = {
 						query: currentValue,
-						quizId,
+						id: postId,
+						itemType,
 					};
-					getQuestionItem( data );
+					getItem( data, urlGetItem );
 				}
 			}
 		} );
@@ -411,25 +399,35 @@ const handleEventPopup = () => {
 			const currentValue = searchEl.value;
 			if ( previousValue !== currentValue ) {
 				previousValue = currentValue;
+				const itemType = popupModalSelectItemEl.dataset.type ?? '';
 				const data = {
 					query: currentValue,
-					quizId,
+					id: postId,
+					itemType,
 				};
-				getQuestionItem( data );
+				getItem( data, urlGetItem );
 			}
 		} );
 	}
 };
 
-const popupSelectItem = () => {
-	if ( ! popupModalSelectItemEl ) {
+const popupSelectItem = ( id, urlGetItem ) => {
+	if ( ! popupModalSelectItemEl || ! id ) {
 		return;
 	}
 
-	const data = {
-		quizId,
-	};
-	getQuestionItem( data );
+	popupModalSelectItemEl.dataset.id = id;
+
+	if ( tabs.length > 0 ) {
+		const itemType = tabs[ 0 ].dataset.type ?? '';
+		popupModalSelectItemEl.dataset.type = itemType;
+		const data = {
+			id: postId,
+			itemType,
+		};
+
+		getItem( data, urlGetItem );
+	}
 };
 
-export { popupSelectItem, handleEventPopup };
+export { popupSelectItem, handleEventPopup, resetPopup };

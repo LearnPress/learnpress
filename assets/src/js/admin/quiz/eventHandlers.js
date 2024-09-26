@@ -1,7 +1,8 @@
 import { Sortable } from 'sortablejs';
 import { getQuestionId, singleQuestion } from '../question/eventHandlers';
-import { changeQuestionTitleApi, removeQuestionApi, deleteQuestionApi, duplicateQuestionApi, addNewQuestionApi, sortQuestionApi } from './apiRequests';
-import { popupSelectItem } from './popupQuiz';
+import { changeQuestionTitleApi, removeQuestionApi, deleteQuestionApi, duplicateQuestionApi, addNewQuestionApi, sortQuestionApi, addQuestionToQuizApi } from './apiRequests';
+import { popupSelectItem } from '../popupSelectedItem';
+import lplistAPI from '../../api';
 
 const getQuizId = () => {
 	const urlParams = new URLSearchParams( window.location.search );
@@ -236,7 +237,8 @@ const addNewQuestion = ( quizEditorEl ) => {
 		if ( selectItemEl ) {
 			selectItemEl.addEventListener( 'click', ( e ) => {
 				e.preventDefault();
-				popupSelectItem();
+				const API_SEARCH_ITEMS_URL = lplistAPI.admin.apiSearchQuestionItems;
+				popupSelectItem( quizId, API_SEARCH_ITEMS_URL );
 			} );
 		}
 	}
@@ -366,4 +368,25 @@ function restoreSectionState( quizEditorEl ) {
 	} );
 }
 
-export { getQuizId, handleActionQuestion, renderQuestion, updateTotalItem, addNewQuestion, collapseQuestion, sortableQuestion, saveQuestionState, restoreSectionState };
+const handleUpdateItem = () => {
+	const popupModalSelectItemEl = document.querySelector( '#lp-modal-choose-items-refactor' );
+	const quizEditEl = document.querySelector( '#admin-editor-lp_quiz-refactor' );
+	const listUiSortableEl = quizEditEl.querySelector( '.lp-list-questions .ui-sortable' );
+	const listAddedEl = popupModalSelectItemEl?.querySelector( '.list-added-items' );
+	const sectionItemAddedEls = Array.from( listAddedEl.querySelectorAll( '.lp-result-item' ) );
+	const selectedAddItem = sectionItemAddedEls.map( ( sectionItemAddedEl ) => {
+		const data = {
+			id: sectionItemAddedEl.dataset.id ?? null,
+			title: sectionItemAddedEl.dataset.text ?? null,
+		};
+		return data;
+	} );
+
+	const data = {
+		quizId: getQuizId(),
+		items: selectedAddItem,
+	};
+	addQuestionToQuizApi( data, listUiSortableEl, popupModalSelectItemEl );
+};
+
+export { getQuizId, handleActionQuestion, renderQuestion, updateTotalItem, addNewQuestion, collapseQuestion, sortableQuestion, saveQuestionState, restoreSectionState, resetQuestionOrder, handleUpdateItem };

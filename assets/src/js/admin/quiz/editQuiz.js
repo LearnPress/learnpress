@@ -1,5 +1,6 @@
-import { handleEventPopup } from './popupQuiz';
-import { addNewQuestion, collapseQuestion, handleActionQuestion, restoreSectionState, sortableQuestion } from './eventHandlers';
+import lplistAPI from '../../api';
+import { handleEventPopup } from '../popupSelectedItem';
+import { addNewQuestion, collapseQuestion, handleActionQuestion, handleUpdateItem, restoreSectionState, sortableQuestion } from './eventHandlers';
 
 document.addEventListener( 'DOMContentLoaded', () => {
 	const quizEditorEl = document.querySelector( '#admin-editor-lp_quiz-refactor' );
@@ -18,6 +19,7 @@ document.addEventListener( 'DOMContentLoaded', () => {
 	collapseQuestion( quizEditorEl );
 	addNewQuestion( quizEditorEl );
 	sortableQuestion( quizEditorEl );
-	handleEventPopup();
+	const API_SEARCH_ITEMS_URL = lplistAPI.admin.apiSearchQuestionItems;
+	handleEventPopup( handleUpdateItem, API_SEARCH_ITEMS_URL );
 	restoreSectionState( quizEditorEl );
 } );

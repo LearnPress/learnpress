@@ -2,7 +2,8 @@
 import lplistAPI from '../../api';
 import { updateStatus } from '../question/apiRequests';
 import { lpFetchAPI } from '../../utils';
-import { renderQuestion } from './eventHandlers';
+import { renderQuestion, resetQuestionOrder, updateTotalItem } from './eventHandlers';
+import { resetPopup } from '../popupSelectedItem';
 
 const apiRequest = ( url, method = 'POST', data, callbacks = {}, el ) => {
 	if ( ! url ) {
@@ -88,4 +89,36 @@ const sortQuestionApi = ( data, el ) => {
 	apiRequest( URL, 'POST', data, {}, el );
 };
 
-export { apiRequest, changeQuestionTitleApi, removeQuestionApi, deleteQuestionApi, duplicateQuestionApi, addNewQuestionApi, sortQuestionApi };
+const addQuestionToQuizApi = ( data, listUiSortableEl, popupModalSelectItemEl ) => {
+	if ( ! data || ! popupModalSelectItemEl ) {
+		return;
+	}
+
+	const quizEditorEl = document.querySelector( '#admin-editor-lp_quiz-refactor' );
+
+	const URL = lplistAPI.admin.apiAddQuestionsToQuiz;
+	const callback = {
+		success: ( response ) => {
+			const itemEls = response?.data?.html ?? [];
+			if ( itemEls.length && listUiSortableEl ) {
+				itemEls.map( ( itemEl ) => {
+					renderQuestion( itemEl, quizEditorEl );
+				} );
+
+				if ( quizEditorEl ) {
+					updateTotalItem( quizEditorEl, itemEls.length );
+					resetQuestionOrder( quizEditorEl );
+				}
+			}
+		},
+		error: ( err ) => {
+		// console.log( err );
+		},
+		completed: () => {
+			resetPopup( popupModalSelectItemEl );
+		},
+	};
+	apiRequest( URL, 'POST', data, callback, quizEditorEl );
+};
+
+export { apiRequest, changeQuestionTitleApi, removeQuestionApi, deleteQuestionApi, duplicateQuestionApi, addNewQuestionApi, sortQuestionApi, addQuestionToQuizApi };

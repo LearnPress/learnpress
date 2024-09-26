@@ -289,7 +289,7 @@ class EditQuizApi extends LP_Abstract_REST_Controller {
 	public function search_question_items( WP_REST_Request $request ) {
 		$response = new LP_REST_Response();
 		$params   = $request->get_params();
-		$quiz_id  = $params['quizId'] ?? '';
+		$quiz_id  = $params['id'] ?? '';
 		$query    = $params['query'] ?? '';
 		$page     = $params['page'] ?? 1;
 		$exclude  = $params['exclude'] ?? '';
