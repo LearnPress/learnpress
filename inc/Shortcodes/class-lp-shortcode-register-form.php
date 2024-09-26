@@ -32,7 +32,7 @@ if ( ! class_exists( 'LP_Shortcode_Register_Form' ) ) {
 		 * @return string
 		 */
 		public function output() {
-
+			wp_enqueue_style( 'learnpress' );
 			if ( is_user_logged_in() ) {
 				$user   = learn_press_get_current_user();
 				$output = sprintf( __( 'Your are logged in as %1$s. <a href="%2$s">Log out</a>?', 'learnpress' ), $user->get_display_name(), wp_logout_url() );
