@@ -75,4 +75,14 @@ $types          = LP_Question::get_types();
 	</div>
 </div>
 
-<?php learn_press_admin_view( 'quiz/popup-select-item' ); ?>
+<?php
+$types = [
+	'question' => esc_html__( 'Questions', 'learnpress' ),
+];
+
+learn_press_admin_view(
+	'popup-select-item',
+	[
+		'types' => $types,
+	]
+); ?>

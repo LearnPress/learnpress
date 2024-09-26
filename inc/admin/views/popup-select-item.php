@@ -1,10 +1,20 @@
 <?php
 /**
- * Admin Quiz Popup Select Question: Editor template.
+ * Admin Select Item: Editor template.
  *
  * @since 4.2.7
  * @author VuxMinhThanh
  */
+
+$data = wp_parse_args(
+	$args,
+	[
+		'types' => [],
+	]
+);
+
+$types = $data['types'];
+
 ?>
 <div id="lp-modal-choose-items-refactor" class="">
 	<div class="lp-choose-items">
@@ -16,9 +26,11 @@
 				<div class="total-selected"></div>
 			</div>
 			<ul class="tabs">
-					<li data-type="<?php echo esc_attr( 'question' ); ?>" class="tab active">
-						<a href="#"><?php esc_html_e( 'Questions', 'learnpress' ); ?></a>
-					</li>
+				<?php $key = 0; ?>
+				<?php foreach ( $types as $value => $title ) : ?>
+					<li data-type="<?php echo esc_attr( $value ); ?>" class="tab <?php $key === 0 ? esc_attr_e( 'active' ) : esc_attr_e( 'inactive' ); ?>"><a href="#"><?php echo esc_html( $title ); ?></a></li>
+					<?php ++$key; ?>
+				<?php endforeach; ?>
 			</ul> <div class="close"><span title="Close" class="dashicons dashicons-no-alt"></span></div>
 		</div>
 		<div class="main">
