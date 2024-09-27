@@ -741,9 +741,11 @@ class ListCoursesTemplate {
 			foreach ( $section_top as $k => $v ) {
 				$section_new[ $k ] = $v['text_html'] ?? '';
 			}
+
+			return $section_new;
 		}
 
-		return $section_new;
+		return $section;
 	}
 
 	/**
@@ -804,9 +806,9 @@ class ListCoursesTemplate {
 			foreach ( $section_bottom as $k => $v ) {
 				$section_bottom_new[ $k ] = $v['text_html'] ?? '';
 			}
-		}
 
-		$section['bottom'] = Template::combine_components( $section_bottom_new );
+			$section['bottom'] = Template::combine_components( $section_bottom_new );
+		}
 
 		return $section;
 	}
