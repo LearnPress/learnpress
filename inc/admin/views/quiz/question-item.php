@@ -21,7 +21,7 @@ $order     = $data['order'];
 $edit_link = get_edit_post_link( $id );
 ?>
 
-<div data-question-id="<?php echo esc_attr( $id ); ?>" data-question-order="<?php echo esc_attr( $index ); ?>" class="question-item multi_choice">
+<div data-question-id="<?php echo esc_attr( $id ); ?>" data-question-order="<?php echo esc_attr( $order ); ?>" class="question-item multi_choice">
 	<div class="question-actions table-row">
 		<div class="sort lp-sortable-handle ui-sortable-handle">
 			<?php learn_press_admin_view( 'svg-icon' ); ?>
