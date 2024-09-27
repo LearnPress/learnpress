@@ -42,4 +42,12 @@ $total_item = $course->get_total_items()->count_items ?? 0;
 	</div>
 </div>
 
-<?php learn_press_admin_view( 'course/curriculum/popup-select-item' ); ?>
+<?php
+$types = learn_press_course_get_support_item_types();
+?>
+<?php learn_press_admin_view(
+	'popup-select-item',
+	[
+		'types' => $types,
+	]
+); ?>
