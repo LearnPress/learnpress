@@ -376,6 +376,12 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 			}
 
 			$answer_options = $question->get_data( 'answer_options' );
+			if ( ! empty( $answer_options ) ) {
+				foreach ( $answer_options as $key => $answer ) {
+					$this->delete_answer( $question_id, $answer['question_answer_id'] );
+				}
+			}
+
 			update_post_meta( $question_id, '_lp_type', $new_type );
 			$question->set_type( $new_type );
 
@@ -912,6 +918,13 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 
 			do_action( 'learn-press/before-clear-question', $question_id );
 
+			$question = LP_Question::get_question( $question_id );
+			$answers  = $question->get_data( 'answer_options' ) ?? [];
+			if ( ! empty( $answers ) ) {
+				foreach ( $answers as $key => $answer ) {
+					$this->delete_answer( $question_id, $answer['question_answer_id'] );
+				}
+			}
 			global $wpdb;
 			$wpdb->delete( $wpdb->learnpress_question_answers, array( 'question_id' => $question_id ) );
 

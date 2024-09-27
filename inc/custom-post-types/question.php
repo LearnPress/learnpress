@@ -256,7 +256,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		 *
 		 * @since 3.0.0
 		 */
-		public function before_delete_question( int $question_id = 0 ) {
+		public function before_delete( int $question_id = 0 ) {
 			$curd = new LP_Question_CURD();
 
 			$curd->delete( $question_id );
