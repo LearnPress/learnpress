@@ -528,7 +528,6 @@ const sortableItemEvent = ( sectionEl ) => {
 			};
 			removeItemInSectionApi( dataRemove, '', sectionEl );
 			updateOrderSectionItemApi( dataSort );
-			updateTotalItemSection( sectionEl, -1 );
 		},
 		onUpdate( evt ) {
 			const sectionItemEls = Array.prototype.slice.call( sortableEl.querySelectorAll( ':scope > .section-item' ) );
