@@ -240,7 +240,7 @@ class LP_Datetime {
 	 * @param string $duration_type
 	 *
 	 * @return string
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 * @since 4.2.3.5
 	 */
 	public static function get_string_plural_duration( float $duration_number, string $duration_type = '' ): string {
@@ -249,6 +249,12 @@ class LP_Datetime {
 		}
 
 		switch ( strtolower( $duration_type ) ) {
+			case 'second':
+				$duration_str = sprintf(
+					_n( '%s Second', '%s Seconds', $duration_number, 'learnpress' ),
+					$duration_number
+				);
+				break;
 			case 'minute':
 				$duration_str = sprintf(
 					_n( '%s Minute', '%s Minutes', $duration_number, 'learnpress' ),

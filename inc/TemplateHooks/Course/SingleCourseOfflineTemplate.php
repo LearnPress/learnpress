@@ -143,12 +143,11 @@ class SingleCourseOfflineTemplate {
 		);
 		$html_info_one    = Template::combine_components( $section_info_one );
 
-		$html_wrapper_section_left = [
-			'<div class="lp-single-offline-course__left">' => '</div>',
-		];
-		$section_left              = apply_filters(
+		// Section left
+		$section_left = apply_filters(
 			'learn-press/single-course/offline/section-left',
 			[
+				'wrapper'     => '<div class="lp-single-offline-course__left">',
 				'breadcrumb'  => $html_breadcrumb,
 				'title'       => $this->singleCourseTemplate->html_title( $course, 'h1' ),
 				'info_one'    => $html_info_one,
@@ -156,15 +155,13 @@ class SingleCourseOfflineTemplate {
 				'description' => $this->singleCourseTemplate->html_description( $course ),
 				'box-extra'   => $this->html_box_extra( $course ),
 				'instructor'  => $html_instructor,
+				'wrapper_end' => '</div>',
 			],
 			$course,
 			$user
 		);
-		$html_section_left         = Template::combine_components( $section_left );
-		$html_section_left         = Template::instance()->nest_elements( $html_wrapper_section_left, $html_section_left );
 
 		// Section right
-
 		// Info two
 		$data_info_meta = [
 			'price'        => [
@@ -198,20 +195,21 @@ class SingleCourseOfflineTemplate {
 		}
 
 		$data_info_meta = apply_filters( 'learn-press/single-course/offline/info-meta', $data_info_meta, $course, $user );
-
-		$html_info_two_items = '';
-		foreach ( $data_info_meta as $info_meta ) {
-			$label                = $info_meta['label'];
-			$value                = $info_meta['value'];
-			$html_info_two_item   = sprintf(
-				'<div class="info-meta-item">
-					<span class="info-meta-left">%s</span>
-					<span class="info-meta-right">%s</span>
-				</div>',
-				$label,
-				$value
-			);
-			$html_info_two_items .= $html_info_two_item;
+		$html_info_meta = '';
+		if ( ! empty( $data_info_meta ) ) {
+			foreach ( $data_info_meta as $info_meta ) {
+				$label              = $info_meta['label'];
+				$value              = $info_meta['value'];
+				$html_info_two_item = sprintf(
+					'<div class="info-meta-item">
+						<span class="info-meta-left">%s</span>
+						<span class="info-meta-right">%s</span>
+					</div>',
+					$label,
+					$value
+				);
+				$html_info_meta    .= $html_info_two_item;
+			}
 		}
 
 		$section_buttons = apply_filters(
@@ -231,7 +229,7 @@ class SingleCourseOfflineTemplate {
 			'learn-press/single-course/offline/section-right/info-meta',
 			[
 				'wrapper'     => '<div class="info-metas">',
-				'items'       => $html_info_two_items,
+				'meta'        => $html_info_meta,
 				'buttons'     => $html_buttons,
 				'wrapper_end' => '</div>',
 			],
@@ -240,7 +238,7 @@ class SingleCourseOfflineTemplate {
 		);
 		$html_info_two    = Template::combine_components( $section_info_two );
 		// End info two
-		$section_right      = apply_filters(
+		$section_right = apply_filters(
 			'learn-press/single-course/offline/section-right',
 			[
 				'wrapper'         => '<div class="lp-single-offline-course__right">',
@@ -252,7 +250,6 @@ class SingleCourseOfflineTemplate {
 			$course,
 			$user
 		);
-		$html_section_right = Template::combine_components( $section_right );
 		// End section right
 
 		// Related courses
@@ -264,8 +261,8 @@ class SingleCourseOfflineTemplate {
 		$sections = [
 			'wrapper'          => '<div class="lp-single-offline-course">',
 			'wrapper_main'     => '<div class="lp-single-offline-course-main">',
-			'section_left'     => $html_section_left,
-			'section_right'    => $html_section_right,
+			'section_left'     => Template::combine_components( $section_left ),
+			'section_right'    => Template::combine_components( $section_right ),
 			'wrapper_main_end' => '</div>',
 			'related_courses'  => $html_courses_related,
 			'wrapper_end'      => '</div>',

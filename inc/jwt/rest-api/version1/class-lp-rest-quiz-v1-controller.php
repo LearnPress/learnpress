@@ -392,7 +392,7 @@ class LP_Jwt_Quiz_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 		$user = learn_press_get_current_user();
 
 		if ( ! $user || ! $id ) {
-			return falase;
+			return false;
 		}
 
 		$course_id = $this->get_course_by_item_id( $id );
