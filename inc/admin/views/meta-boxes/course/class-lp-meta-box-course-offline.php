@@ -72,12 +72,13 @@ class LP_Meta_Box_Course_Offline {
 		}
 
 		$fields_hide = [
-			'_lp_block_expire_duration',
-			'_lp_block_finished',
-			'_lp_allow_course_repurchase',
-			'_lp_course_repurchase_option',
-			'_lp_retake_count',
-			'_lp_has_finish',
+			CoursePostModel::META_KEY_BLOCK_EXPIRE_DURATION,
+			CoursePostModel::META_KEY_BLOCK_FINISH,
+			CoursePostModel::META_KEY_ALLOW_COURSE_REPURCHASE,
+			CoursePostModel::META_KEY_COURSE_REPURCHASE_OPTION,
+			CoursePostModel::META_KEY_RETAKE_COUNT,
+			CoursePostModel::META_KEY_HAS_FINISH,
+			CoursePostModel::META_KEY_STUDENTS,
 		];
 
 		foreach ( $fields_hide as $field_hide ) {
