@@ -105,8 +105,8 @@ class UserModel {
 	/**
 	 * Get course by ID
 	 *
-	 * @param int $course_id
-	 * @param bool $no_cache
+	 * @param int $user_id
+	 * @param bool $check_cache
 	 *
 	 * @return false|static
 	 */

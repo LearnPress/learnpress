@@ -127,21 +127,18 @@ class SingleCourseOfflineTemplate {
 		// End instructor
 
 		// Info one
+		$html_address     = $this->singleCourseTemplate->html_address( $course );
 		$section_info_one = apply_filters(
 			'lean-press/single-course/offline/info-bar',
 			[
 				'wrapper'     => '<div class="lp-single-course-offline-info-one">',
 				'author'      => sprintf( '<div class="item-meta">%s</div>', $html_author ),
-				'address'     => sprintf(
-					'<div class="item-meta">%s</div>',
-					$this->singleCourseTemplate->html_address( $course )
-				),
+				'address'     => ! empty( $html_address ) ? sprintf( '<div class="item-meta">%s</div>', $html_address ) : '',
 				'wrapper_end' => '</div>',
 			],
 			$course,
 			$user
 		);
-		$html_info_one    = Template::combine_components( $section_info_one );
 
 		// Section left
 		$section_left = apply_filters(
@@ -150,7 +147,7 @@ class SingleCourseOfflineTemplate {
 				'wrapper'     => '<div class="lp-single-offline-course__left">',
 				'breadcrumb'  => $html_breadcrumb,
 				'title'       => $this->singleCourseTemplate->html_title( $course, 'h1' ),
-				'info_one'    => $html_info_one,
+				'info_one'    => Template::combine_components( $section_info_one ),
 				'image'       => $this->singleCourseTemplate->html_image( $course ),
 				'description' => $this->singleCourseTemplate->html_description( $course ),
 				'box-extra'   => $this->html_box_extra( $course ),
@@ -278,7 +275,7 @@ class SingleCourseOfflineTemplate {
 	 *
 	 * @return string
 	 */
-	public function html_lesson_info( CourseModel $course ): string {
+	public function html_lesson_info( CourseModel $course, $show_label = false ): string {
 		$lesson_count = $course->get_meta_value_by_key( CoursePostModel::META_KEY_OFFLINE_LESSON_COUNT, 10 );
 
 		if ( ! $lesson_count ) {
@@ -286,8 +283,9 @@ class SingleCourseOfflineTemplate {
 		}
 
 		$html = sprintf(
-			'<span class="lesson-count">%s</span>',
-			$lesson_count
+			'<span class="lesson-count">%s%s</span>',
+			$lesson_count,
+			$show_label ? ' ' . __( 'lessons', 'learnpress' ) : ''
 		);
 
 		return $html;

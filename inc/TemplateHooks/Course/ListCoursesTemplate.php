@@ -209,8 +209,9 @@ class ListCoursesTemplate {
 			if ( $course->is_offline() ) {
 				$singleCourseOfflineTemplate = SingleCourseOfflineTemplate::instance();
 				unset( $meta_data['quiz'] );
+				unset( $meta_data['student'] );
 				if ( ! empty( $meta_data['lesson'] ) ) {
-					$meta_data['lesson'] = $singleCourseOfflineTemplate->html_lesson_info( $course );
+					$meta_data['lesson'] = $singleCourseOfflineTemplate->html_lesson_info( $course, true );
 				}
 			}
 
