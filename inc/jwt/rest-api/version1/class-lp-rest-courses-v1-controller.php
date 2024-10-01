@@ -553,7 +553,11 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			$duration_arr                 = explode( ' ', $duration );
 			$duration_number              = floatval( $duration_arr[0] ?? 0 );
 			$duration_type                = $duration_arr[1] ?? '';
-			$duration_str                 = LP_Datetime::get_string_plural_duration( $duration_number, $duration_type );
+			if ( empty( $duration_number ) ) {
+				$duration_str = __( 'Lifetime', 'learnpress' );
+			} else {
+				$duration_str    = LP_Datetime::get_string_plural_duration( $duration_number, $duration_type );
+			}
 			$courseObjPrepare->duration   = $duration_str;
 			$course_categories            = $course->get_categories();
 			// Add key id, for old app.
