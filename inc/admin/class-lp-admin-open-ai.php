@@ -42,13 +42,18 @@ class LP_Admin_Open_Ai {
 	public function create_modals() {
 		$template = Template::instance();
 		$data = array();
-
+		global $post;
 		if (  Page::is_admin_single_course_page() ) {
+			$data['course-id'] = $post ? $post->ID: '';
+
 			$template->get_admin_template( 'open-ai/course-title-modal', compact('data') );
 			$template->get_admin_template( 'open-ai/course-des-modal', compact('data') );
 			$template->get_admin_template( 'open-ai/create-feature-image-modal', compact('data') );
 			$template->get_admin_template( 'open-ai/edit-feature-image-modal', compact('data') );
 			$template->get_admin_template( 'open-ai/curriculum-modal', compact('data') );
+
+			//Quiz
+			$template->get_admin_template( 'open-ai/curriculum-quiz-modal', compact('data') );
 		}
 
 		if ( Page::is_admin_single_lesson_page() ) {
@@ -57,8 +62,11 @@ class LP_Admin_Open_Ai {
 		}
 
 		if ( Page::is_admin_single_quiz_page() ) {
+			$data['quiz-id'] = $post ? $post->ID: '';
+
 			$template->get_admin_template( 'open-ai/quiz-title-modal', compact('data') );
 			$template->get_admin_template( 'open-ai/quiz-des-modal', compact('data') );
+			$template->get_admin_template( 'open-ai/quiz-question-modal', compact('data') );
 		}
 
 		if ( Page::is_admin_single_question_page() ) {

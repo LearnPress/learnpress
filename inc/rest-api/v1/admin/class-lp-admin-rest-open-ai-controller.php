@@ -1,6 +1,7 @@
 <?php
 
 use LearnPress\Helpers\OpenAi;
+use LearnPress\Models\CourseModel;
 
 class LP_REST_Admin_OpenAI_Controller extends LP_Abstract_REST_Controller {
 	/**
@@ -73,6 +74,27 @@ class LP_REST_Admin_OpenAI_Controller extends LP_Abstract_REST_Controller {
 					'permission_callback' => array( $this, 'check_admin_permission' ),
 				),
 			),
+			'apply-section'        => array(
+				array(
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => array( $this, 'apply_section' ),
+					'permission_callback' => array( $this, 'check_admin_permission' ),
+				),
+			),
+			'add-question'         => array(
+				array(
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => array( $this, 'add_question' ),
+					'permission_callback' => array( $this, 'check_admin_permission' ),
+				),
+			),
+			'curriculum-quiz'      => array(
+				array(
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => array( $this, 'curriculum_quiz' ),
+					'permission_callback' => array( $this, 'check_admin_permission' ),
+				),
+			),
 		);
 
 		parent::register_routes();
@@ -83,6 +105,434 @@ class LP_REST_Admin_OpenAI_Controller extends LP_Abstract_REST_Controller {
 	 */
 	public function check_admin_permission() {
 		return LP_Abstract_API::check_admin_permission();
+	}
+
+	/**
+	 * @param WP_REST_Request $request
+	 *
+	 * @return WP_REST_Response
+	 */
+	public function curriculum_quiz( WP_REST_Request $request ) {
+		global $wpdb;
+
+		try {
+			$wpdb->query( 'START TRANSACTION' );
+			$params = $request->get_params();
+
+			$course_id     = $params['course_id'] ?? '';
+			$section_id    = $params['section_id'] ?? '';
+			$section_order = $params['section_order'] ?? '';
+			$quiz_title    = $params['title'] ?? '';
+			$quiz_title    = trim( $quiz_title );
+			$course        = CourseModel::find( $course_id, true );
+
+			if ( empty( $course_id ) ) {
+				return $this->error( __( 'Course id is required', 'learnpress' ), 400 );
+			}
+
+
+			$filters             = new LP_Section_Items_Filter();
+			$filters->section_id = $section_id;
+			$query_results       = LP_Section_DB::getInstance()->get_section_items_by_section_id( $filters );
+			$total               = $query_results['results']['total'] ?? 0;
+
+			$quiz_args = array(
+				'post_type'   => LP_QUIZ_CPT,
+				'post_status' => 'publish',
+				'post_title'  => $quiz_title
+			);
+			require_once( ABSPATH . 'wp-admin/includes/post.php' );
+
+			$existing_quizzes = post_exists( $quiz_title, '', '', LP_QUIZ_CPT, 'publish' );
+
+			$quiz_obj = new StdClass();
+			if ( $existing_quizzes ) {
+				$quiz_id = $existing_quizzes;
+				$quiz    = [
+					'id'      => $existing_quizzes,
+					'order'   => $total + 1,
+					'type'    => LP_QUIZ_CPT,
+					'title'   => $quiz_title,
+					'preview' => ''
+				];
+			} else {
+				$quiz_args['post_content'] = '';
+
+				$quiz_id = wp_insert_post( $quiz_args );
+
+				if ( empty( $quiz_id ) ) {
+					return $this->error( __( 'Can not insert quiz', 'learnpress' ), 400 );
+				}
+
+				if ( is_wp_error( $quiz_id ) ) {
+					return $this->error( $quiz_id->get_error_message(), $quiz_id->get_error_code() );
+				}
+
+				$quiz = [
+					'id'      => $quiz_id,
+					'order'   => $total + 1,
+					'type'    => LP_QUIZ_CPT,
+					'title'   => $quiz_title,
+					'preview' => ''
+				];
+			}
+
+			foreach ( $quiz as $quiz_key => $value ) {
+				$quiz_obj->$quiz_key = $value;
+			}
+
+			include_once LP_PLUGIN_PATH . 'inc/admin/class-lp-admin.php';
+			learn_press_course_insert_section_item(
+				array(
+					'section_id' => $section_id,
+					'item_id'    => $quiz_id,
+					'item_order' => $total + 1,
+					'item_type'  => LP_QUIZ_CPT,
+				)
+			);
+
+			$course->sections_items[ $section_order ]->items[] = $quiz_obj;
+
+			//Total items
+			$total_item              = $course->total_items;
+			$total_item->count_items = $total_item->count_items + 1;
+			$total_item->lp_quiz     = $total_item->lp_quiz + 1;
+
+			$course->total_items = $total_item;
+
+			$course->save();
+
+
+			$wpdb->query( 'COMMIT' );
+
+			return $this->success( esc_html__( 'Apply quiz successfully!', 'learnpress' ) );
+		} catch ( Exception $error ) {
+			$wpdb->query( 'ROLLBACK' );
+
+			return $this->error( $error->getMessage(), $error->getCode() );
+		}
+	}
+
+	/**
+	 * @param WP_REST_Request $request
+	 *
+	 * @return mixed
+	 */
+	public function add_question( WP_REST_Request $request ) {
+		global $wpdb;
+
+		try {
+			$wpdb->query( 'START TRANSACTION' );
+			$params = $request->get_params();
+
+			$quiz_id = $params['quiz_id'] ?? '';
+
+			if ( empty( $quiz_id ) ) {
+				return $this->error( __( 'Quiz id is required', 'learnpress' ), 400 );
+			}
+
+			$questions = $params['questions'] ?? array();
+			foreach ( $questions as $question ) {
+
+				$question_type = $question['question_type'];
+
+				$title = $question['question_title'];
+
+				require_once( ABSPATH . 'wp-admin/includes/post.php' );
+				$existing_questions = post_exists( $title, '', '', LP_QUESTION_CPT, 'publish' );
+
+				if ( $existing_questions ) {
+					$question_id = $existing_questions;
+				} else {
+					$question_id = wp_insert_post( array(
+						'post_title'   => $title,
+						'post_content' => '',
+						'post_type'    => LP_QUESTION_CPT,
+						'post_status'  => 'publish',
+					) );
+
+					if ( empty( $question_id ) ) {
+						return $this->error( __( 'Can not insert question', 'learnpress' ), 400 );
+					}
+
+					if ( is_wp_error( $question_id ) ) {
+						return $this->error( $question_id->get_error_message(), $question_id->get_error_code() );
+					}
+
+					update_post_meta( $question_id, '_lp_type', $question_type );
+
+					if ( isset( $question['points'] ) ) {
+						update_post_meta( $question_id, '_lp_mark', $question['points'] );
+					}
+					if ( isset( $question['hint'] ) ) {
+						update_post_meta( $question_id, '_lp_hint', $question['hint'] );
+					}
+					if ( isset( $question['explanation'] ) ) {
+						update_post_meta( $question_id, '_lp_explanation', $question['explanation'] );
+					}
+
+					if ( $question_type === 'fill_in_blanks' ) {
+						$title  = $question['question_content'];
+						$answer = $question['answer'];
+
+						$parts = explode( '___', $title );
+
+						$title_result = $parts[0];
+						$answer_count = count( $answer );
+						$blanks       = array();
+						for ( $i = 0; $i < $answer_count; $i ++ ) {
+							$unique_id    = learn_press_random_value();
+							$title_result .= '[fib fill="' . $answer[ $i ] . '" id="' . $unique_id . '"]';
+							if ( isset( $parts[ $i + 1 ] ) ) {
+								$title_result .= $parts[ $i + 1 ];
+							}
+
+							$blanks[ $unique_id ] = array(
+								'fill'       => $answer[ $i ],
+								'id'         => $unique_id,
+								'comparison' => '',
+								'match_case' => 0,
+								'index'      => $i + 1,
+								'open'       => ''
+							);
+						}
+
+						$id = $wpdb->insert(
+							$wpdb->learnpress_question_answers,
+							array(
+								'question_id' => $question_id,
+								'title'       => $title_result,
+								'is_true'     => 'yes',
+								'order'       => 1,
+							),
+							array(
+								'%d',
+								'%s',
+								'%s',
+								'%d'
+							)
+						);
+
+						$wpdb->insert(
+							$wpdb->learnpress_question_answermeta,
+							array(
+								'learnpress_question_answer_id' => $id,
+								'meta_key'   => '_blanks',
+								'meta_value' => serialize($blanks),
+							),
+							array( '%d', '%s', '%s' )
+						);
+					} else {
+						$options = $question['options'];
+						$answer  = $question['answer'];
+						foreach ( $options as $order => $option ) {
+							$is_true = '';
+							if ( is_array( $answer ) && in_array( $option, $answer ) ) {
+								$is_true = 'yes';
+							}
+
+							if ( is_string( $answer ) && $option === $answer ) {
+								$is_true = 'yes';
+							}
+							$wpdb->insert(
+								$wpdb->learnpress_question_answers,
+								array(
+									'question_id' => $question_id,
+									'title'       => $option,
+									'value'       => learn_press_random_value(),
+									'is_true'     => $is_true,
+									'order'       => $order,
+								),
+								array(
+									'%d',
+									'%s',
+									'%s',
+									'%s',
+									'%s',
+								)
+							);
+						}
+					}
+				}
+
+				$query = $wpdb->prepare(
+					"
+				SELECT max(question_order)
+				FROM {$wpdb->prefix}learnpress_quiz_questions
+				WHERE quiz_id = %d
+				",
+					$quiz_id
+				);
+
+				$order = $wpdb->get_var( $query );
+
+				if ( $order ) {
+					$order ++;
+				} else {
+					$order = 1;
+				}
+
+				$inserted = $wpdb->insert(
+					$wpdb->prefix . 'learnpress_quiz_questions',
+					array(
+						'quiz_id'        => $quiz_id,
+						'question_id'    => $question_id,
+						'question_order' => $order,
+					),
+					array( '%d', '%d', '%d' )
+				);
+			}
+
+			$wpdb->query( 'COMMIT' );
+
+			return $this->success( esc_html__( 'Add question successfully!', 'learnpress' ) );
+		} catch ( Exception $error ) {
+			$wpdb->query( 'ROLLBACK' );
+
+			return $this->error( $error->getMessage(), $error->getCode() );
+		}
+	}
+
+	/**
+	 * @param WP_REST_Request $request
+	 *
+	 * @return WP_REST_Response
+	 */
+	public function apply_section( WP_REST_Request $request ) {
+		global $wpdb;
+
+		try {
+			$wpdb->query( 'START TRANSACTION' );
+			$params = $request->get_params();
+
+			$course_id = $params['course_id'] ?? '';
+
+			if ( empty( $course_id ) ) {
+				return $this->error( __( 'Course id is required', 'learnpress' ), 400 );
+			}
+
+			$sections = $params['sections'] ?? array();
+
+			foreach ( $sections as $section ) {
+				$section_title = $section['section_title'] ?? '';
+				if ( empty( $section_title ) ) {
+					return $this->error( __( 'Section title is required', 'learnpress' ), 400 );
+				}
+
+				$lessons     = $section['lessons'] ?? array();
+				$lesson_args = array(
+					'post_type'   => LP_LESSON_CPT,
+					'post_status' => 'publish',
+				);
+
+				$lesson_data = array();
+				$course      = CourseModel::find( $course_id, true );
+
+				foreach ( $lessons as $key => $lesson_title ) {
+					$lesson_args['post_title'] = $lesson_title;
+					require_once( ABSPATH . 'wp-admin/includes/post.php' );
+					$existing_lessons = post_exists( $lesson_title, '', '', LP_LESSON_CPT, 'publish' );
+
+					$lesson_obj = new StdClass();
+					if ( $existing_lessons ) {
+						$lesson = [
+							'id'      => $existing_lessons,
+							'order'   => $key,
+							'type'    => LP_LESSON_CPT,
+							'title'   => $lesson_title,
+							'preview' => ''
+						];
+					} else {
+						$lesson_args['post_content'] = '';
+						$lesson_id                   = wp_insert_post( $lesson_args );
+
+						if ( empty( $lesson_id ) ) {
+							return $this->error( __( 'Can not insert lesson', 'learnpress' ), 400 );
+						}
+
+						if ( is_wp_error( $lesson_id ) ) {
+							return $this->error( $lesson_id->get_error_message(), $lesson_id->get_error_code() );
+						}
+
+						$lesson = [
+							'id'      => $lesson_id,
+							'order'   => $key,
+							'type'    => LP_LESSON_CPT,
+							'title'   => $lesson_title,
+							'preview' => ''
+						];
+					}
+
+					foreach ( $lesson as $lesson_key => $value ) {
+						$lesson_obj->$lesson_key = $value;
+					}
+
+					$lesson_data[] = $lesson_obj;
+				}
+
+
+				$sections_items = array();
+				if ( $course->sections_items ) {
+					$sections_items = $course->sections_items;
+				}
+
+				$total_section_items             = count( $sections_items );
+				$item_order                      = $total_section_items + 1;
+				$new_section_item                = new StdClass();
+				$new_section_item->id            = $item_order;
+				$new_section_item->section_id    = $item_order;
+				$new_section_item->order         = $item_order;
+				$new_section_item->section_order = $item_order;
+				$new_section_item->title         = $section_title;
+				$new_section_item->section_name  = $section_title;
+				$new_section_item->description   = '';
+				$new_section_item->items         = $lesson_data;
+
+				//Section items
+				$course->sections_items[] = $new_section_item;
+
+				//Total items
+				$total_item = $course->total_items;
+
+				$total_item->count_items = $total_item->count_items + count( $lesson_data );
+				$total_item->lp_lesson   = $total_item->lp_lesson + count( $lesson_data );
+
+				$course->total_items = $total_item;
+
+				$course->save();
+				include_once LP_PLUGIN_PATH . 'inc/admin/class-lp-admin.php';
+				$section_id = learn_press_course_insert_section( array(
+						'section_name'        => $section_title,
+						'section_course_id'   => $course_id,
+						'section_order'       => $item_order,
+						'section_description' => '',
+					)
+				);
+
+				if ( empty( $section_id ) ) {
+					throw new Exception( __( 'Can not insert section', 'learnpress' ) );
+				}
+
+				foreach ( $lesson_data as $lesson_data_item ) {
+					learn_press_course_insert_section_item(
+						array(
+							'section_id' => $section_id,
+							'item_id'    => $lesson_data_item->id,
+							'item_order' => $lesson_data_item->order,
+							'item_type'  => LP_LESSON_CPT,
+						)
+					);
+				}
+			}
+
+			$wpdb->query( 'COMMIT' );
+
+			return $this->success( esc_html__( 'Apply section successfully!', 'learnpress' ) );
+		} catch ( Exception $error ) {
+			$wpdb->query( 'ROLLBACK' );
+
+			return $this->error( $error->getMessage(), $error->getCode() );
+		}
 	}
 
 	/**
@@ -196,8 +646,8 @@ class LP_REST_Admin_OpenAI_Controller extends LP_Abstract_REST_Controller {
 	 * @return WP_REST_Response
 	 */
 	public function create_course_feature_image( WP_REST_Request $request ) {
-		$params = $request->get_params();
-		$data = array();
+		$params          = $request->get_params();
+		$data            = array();
 		$generate_prompt = OpenAi::get_course_image_create_prompt( $params );
 
 		if ( empty( $params['prompt'] ) ) {
@@ -237,7 +687,7 @@ class LP_REST_Admin_OpenAI_Controller extends LP_Abstract_REST_Controller {
 		$response = wp_remote_request( $this->create_image_url, $args );
 
 		if ( is_wp_error( $response ) ) {
-			return $this->error( $response->get_error_message(), $response->get_error_codes() , $data);
+			return $this->error( $response->get_error_message(), $response->get_error_codes(), $data );
 		}
 
 		$result = wp_remote_retrieve_body( $response );
@@ -252,7 +702,6 @@ class LP_REST_Admin_OpenAI_Controller extends LP_Abstract_REST_Controller {
 
 		return $this->success( esc_html__( 'Generate course feature image successfully!', 'learnpress' ), $data );
 	}
-
 
 	/**
 	 * @param WP_REST_Request $request
@@ -436,9 +885,13 @@ class LP_REST_Admin_OpenAI_Controller extends LP_Abstract_REST_Controller {
 					}
 
 					if ( isset( $params['data_return'] ) && $params['data_return'] === 'json' ) {
-						$text_content = preg_replace( '/^```json\s*|\s*```$/m', '', $text_content );
-						$text_content = trim( $text_content );
-						$text_content = json_decode( $text_content, true );
+						$json_text_content = preg_replace( '/^```json\s*|\s*```$/m', '', $text_content );
+						$json_text_content = trim( $json_text_content );
+						$text_content      = json_decode( $json_text_content, true );
+
+						if ( json_last_error() ) {
+							return $this->error( esc_html__( 'Invalid json: ' . $json_text_content, 'learnpress' ), 400, $data );
+						}
 					}
 
 					$content[] = $text_content;

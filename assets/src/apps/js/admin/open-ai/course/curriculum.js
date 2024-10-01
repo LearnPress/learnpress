@@ -11,10 +11,118 @@ const curriculum = () => {
 	closeModal();
 	generate();
 	applySection();
+	applyAllSections();
 };
 
-const applySection = () => {
+const applyAllSections = () =>{
+	document.addEventListener('click', function (event) {
+		const target = event.target;
+		if (!target.classList.contains('apply-all-sections')) {
+			return;
+		}
 
+		const modal = target.closest('#lp-ai-curriculum-modal');
+		if (!modal) {
+			return;
+		}
+
+		let data = {
+			course_id: modal.getAttribute('data-course-id'),
+		};
+
+		const allSectionNode  = modal.querySelectorAll('.section');
+		let sections = [];
+
+		[...allSectionNode].map((sectionNode) => {
+			const sectionTitleNode = sectionNode.querySelector('.section-title');
+			const lessonNodes = sectionNode.querySelectorAll('.lesson .lesson-title');
+
+			sections = [...sections, {
+				section_title: sectionTitleNode.innerHTML,
+				lessons: Array.from(lessonNodes).map(lesson => lesson.innerHTML.trim())
+			}]
+		})
+
+		data = {...data, sections};
+
+		target.disabled = true;
+		wp.apiFetch({
+			path: '/lp/v1/open-ai/apply-section', method: 'POST', data,
+		}).then((res) => {
+			if (res.status === 'error' && res.msg) {
+				// eslint-disable-next-line no-alert
+				window.alert(res.msg);
+			}
+
+			if (res.status === 'success' && res.msg) {
+				// eslint-disable-next-line no-alert
+				window.alert(res.msg);
+				window.location.reload();
+			}
+
+		}).catch((err) => {
+			console.log(err);
+		}).finally(() => {
+			//After generate
+			(() => {
+				target.disabled = false;
+			})();
+		});
+	});
+}
+
+const applySection = () => {
+	document.addEventListener('click', function (event) {
+		const target = event.target;
+		if (!target.classList.contains('apply-section')) {
+			return;
+		}
+
+		const modal = target.closest('#lp-ai-curriculum-modal');
+		if (!modal) {
+			return;
+		}
+
+		const sectionNode = target.closest('.section');
+
+		const sectionTitleNode = sectionNode.querySelector('.section-title');
+		const lessonNodes = sectionNode.querySelectorAll('.lesson .lesson-title');
+
+		const data = {
+			course_id: modal.getAttribute('data-course-id'),
+			sections: [
+				{
+					section_title: sectionTitleNode.innerHTML,
+					lessons: Array.from(lessonNodes).map(lesson => lesson.innerHTML.trim())
+				}
+			]
+		};
+
+
+		target.disabled = true;
+		wp.apiFetch({
+			path: '/lp/v1/open-ai/apply-section', method: 'POST', data,
+		}).then((res) => {
+			if (res.status === 'error' && res.msg) {
+				// eslint-disable-next-line no-alert
+				window.alert(res.msg);
+			}
+
+			if (res.status === 'success' && res.msg) {
+				// eslint-disable-next-line no-alert
+				window.alert(res.msg);
+				window.location.reload();
+			}
+
+		}).catch((err) => {
+			console.log(err);
+		}).finally(() => {
+			//After generate
+			(() => {
+				target.disabled = false;
+			})();
+		});
+	});
 };
 
 
@@ -28,12 +136,11 @@ const openModal = () => {
 
 		modal.classList.add('active');
 		target.disabled = false;
+		document.querySelector('body').style.overflow = 'hidden';
 	});
 };
 
 const closeModal = () => {
-	let isMouseDownOnTarget = false
-
 	const handleClose = () => {
 		const openModalBtn = document.querySelector('#lp-edit-ai-curriculum');
 
@@ -42,56 +149,20 @@ const closeModal = () => {
 		if (openModalBtn) {
 			openModalBtn.disabled = false;
 		}
+
+		document.querySelector('body').style.overflow = 'visible';
 	};
 
-	document.addEventListener('mousedown', function (event) {
+	document.addEventListener('click', function(event) {
 		const target = event.target;
-
-		if (!(target instanceof Element)) {
-			return;
-		}
-
-		changeMouseDownOnTarget(target, true);
-	});
-
-	document.addEventListener('mouseleave', function (event) {
-		const target = event.target;
-		if (!(target instanceof Element)) {
-			return;
-		}
-		changeMouseDownOnTarget(target, false);
-	});
-
-	document.addEventListener('mouseup', function (event) {
-		const target = event.target;
-		if (!(target instanceof Element)) {
-			return;
-		}
-		if (isMouseDownOnTarget) {
-			if (target.classList.contains('close-btn') && target.closest('#lp-ai-curriculum-modal')) {
-				handleClose();
-			}
-
-			if (!target.classList.contains('modal-content') && !target.closest('.modal-content')) {
-				handleClose();
-			}
-		}
-		isMouseDownOnTarget = false;
-	});
-
-	const changeMouseDownOnTarget = (target, value) => {
-		if (target.id === 'lp-edit-ai-curriculum') {
-			return;
-		}
-
 		if (target.classList.contains('close-btn') && target.closest('#lp-ai-curriculum-modal')) {
-			isMouseDownOnTarget = value;
+			handleClose();
 		}
 
-		if (!target.classList.contains('modal-content') && !target.closest('.modal-content')) {
-			isMouseDownOnTarget = value
+		if(target.classList.contains('ai-overlay')){
+			handleClose();
 		}
-	}
+	});
 };
 
 const generate = () => {
@@ -157,7 +228,7 @@ const generate = () => {
 		wp.apiFetch({
 			path: '/lp/v1/open-ai/generate-text', method: 'POST', data,
 		}).then((res) => {
-			if (res.data.prompt && !data.prompt ) {
+			if (res.data.prompt && !data.prompt) {
 				promptOutputNode.innerHTML = res.data.prompt.replace(/\\n/g, '\n');
 			}
 
@@ -208,7 +279,7 @@ const generate = () => {
 							${sectionContent}
 						</div>
 						<div class="action">
-							<button class="apply-curriculum button">` + __('Apply curriculum', 'learnpress') + `</button>
+							<button class="apply-all-sections button">` + __('Apply all', 'learnpress') + `</button>
 						</div>
 					</div>`;
 				}

@@ -1,13 +1,20 @@
 <?php
+
 use LearnPress\Helpers\Config;
 
 $config = Config::instance();
 
+if ( ! isset( $data ) ) {
+	return;
+}
+$course_id = $data['course-id'] ?? '';
 ?>
-<div id="lp-ai-curriculum-modal" class="ai-modal">
+<div id="lp-ai-curriculum-modal" class="ai-modal" data-course-id="<?php echo esc_attr( $course_id ); ?>">
+	<div class="ai-overlay"></div>
 	<div class="modal-content">
 		<header class="modal-header">
-			<div class="title"><?php esc_html_e( 'Create Course Curriculum - Introduction LearnPress - LMS Plugin', 'learnpress' ); ?></div>
+			<div
+				class="title"><?php esc_html_e( 'Create Course Curriculum - Introduction LearnPress - LMS Plugin', 'learnpress' ); ?></div>
 			<div class="close-btn">&times;</div>
 		</header>
 		<div class="content">
@@ -30,7 +37,7 @@ $config = Config::instance();
 					?>
 					<select id="ai-curriculum-field-level" class="lp-tom-select">
 						<?php
-						foreach ( $level_options as $level_option  ) {
+						foreach ( $level_options as $level_option ) {
 							?>
 							<option
 								value="<?php echo esc_attr( $level_option ); ?>"><?php echo esc_html( $level_option ); ?></option>
@@ -64,11 +71,12 @@ $config = Config::instance();
 				</div>
 
 				<div class="output">
-<!--					<div class="outputs">-->
-<!--						<label-->
-<!--							for="ai-curriculum-field-outputs">--><?php //esc_html_e( 'Outputs', 'learnpress' ); ?><!--</label>-->
-<!--						<input id="ai-curriculum-field-outputs" type="number" min="1" step="1">-->
-<!--					</div>-->
+					<!--					<div class="outputs">-->
+					<!--						<label-->
+					<!--							for="ai-curriculum-field-outputs">-->
+					<?php //esc_html_e( 'Outputs', 'learnpress' ); ?><!--</label>-->
+					<!--						<input id="ai-curriculum-field-outputs" type="number" min="1" step="1">-->
+					<!--					</div>-->
 					<button type="button"
 							class="button"
 							id="lp-generate-curriculum-btn"><?php esc_html_e( 'Generate', 'learnpress' ); ?></button>

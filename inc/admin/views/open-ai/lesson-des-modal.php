@@ -4,6 +4,7 @@ use LearnPress\Helpers\Config;
 $config = Config::instance();
 ?>
 <div id="lp-ai-lesson-des-modal" class="ai-modal">
+	<div class="ai-overlay"></div>
 	<div class="modal-content">
 		<header class="modal-header">
 			<div class="title"><?php esc_html_e( 'Create Lesson Description', 'learnpress' ); ?></div>

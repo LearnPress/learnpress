@@ -5,6 +5,7 @@ $config = Config::instance();
 ?>
 
 <div id="lp-ai-course-edit-fi-modal" class="ai-modal">
+	<div class="ai-overlay"></div>
 	<div class="modal-content">
 		<header class="modal-header">
 			<div class="title"><?php esc_html_e( 'Edit Feature Image', 'learnpress' ); ?></div>

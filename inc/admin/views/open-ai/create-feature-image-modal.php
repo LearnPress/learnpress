@@ -7,6 +7,7 @@ $model      = $lp_setting->get( 'open_ai_image_model_type' );
 ?>
 
 <div id="lp-ai-course-create-fi-modal" class="ai-modal">
+	<div class="ai-overlay"></div>
 	<div class="modal-content">
 		<header class="modal-header">
 			<div class="title"><?php esc_html_e( 'Create Feature Image', 'learnpress' ); ?></div>

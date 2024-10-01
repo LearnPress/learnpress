@@ -193,19 +193,19 @@ class OpenAi {
 			$style = implode( ', ', $params['style'] );
 		}
 
-		$title    = $params['title'] ?? '';
-		$description    = $params['description'] ?? '';
-		$icon    = $params['icon'] ?? '';
+		$title       = $params['title'] ?? '';
+		$description = $params['description'] ?? '';
+		$icon        = $params['icon'] ?? '';
 
 		$prompt = 'Create a wordpress feature image for course directly based on the following:\n';
 		$prompt .= 'Course title: ' . $title . '\n';
-		$prompt .= 'Description: ' . str_replace(['<p>', '</p>'], ["\n", ''], $description). '\n';
+		$prompt .= 'Description: ' . str_replace( [ '<p>', '</p>' ], [ "\n", '' ], $description ) . '\n';
 		$prompt .= 'Style: ' . $style . '\n';
 		$prompt .= 'Image Icon: ' . $icon . '\n';
 
 		$prompt_html = '<div class="title"><strong>Prompt:</strong></div>';
 		$prompt_html .= '<textarea style="width: 100%" rows="5">';
-		$prompt_html .=  $prompt;
+		$prompt_html .= $prompt;
 		$prompt_html .= '</textarea>\n';
 		$prompt_html .= '<button id="lp-re-generate-course-create-fi" class="button">Generate with prompt</button>';
 
@@ -226,8 +226,8 @@ class OpenAi {
 			$style = implode( ', ', $params['style'] );
 		}
 
-		$title    = $params['title'] ?? '';
-		$icon    = $params['icon'] ?? '';
+		$title = $params['title'] ?? '';
+		$icon  = $params['icon'] ?? '';
 
 
 		$prompt = 'Edit a wordpress feature image for course directly based on the following:\n';
@@ -237,7 +237,7 @@ class OpenAi {
 
 		$prompt_html = '<div class="title"><strong>Prompt:</strong></div>';
 		$prompt_html .= '<textarea style="width: 100%" rows="5">';
-		$prompt_html .=  $prompt;
+		$prompt_html .= $prompt;
 		$prompt_html .= '</textarea>\n';
 		$prompt_html .= '<button id="lp-re-generate-course-edit-fi" class="button">Generate with prompt</button>';
 
@@ -266,8 +266,8 @@ class OpenAi {
 			$tone = implode( ', ', $params['tone'] );
 		}
 
-		$title    = $params['title'] ?? 1;
-		$paragraph_number    = $params['paragraph_number'] ?? 1;
+		$title            = $params['title'] ?? 1;
+		$paragraph_number = $params['paragraph_number'] ?? 1;
 
 		$language = '';
 
@@ -297,13 +297,13 @@ class OpenAi {
 		return $data;
 	}
 
-	public static function get_course_curriculum_prompt($params) {
-		$title    = $params['title'] ?? '';
-		$description    = $params['description'] ?? '';
-		$section_number    = $params['section_number'] ?? 1;
-		$less_per_section    = $params['less_per_section'] ?? 1;
-		$level    = $params['level'] ?? 'All levels';
-		$topic    = $params['topic'] ?? '';
+	public static function get_course_curriculum_prompt( $params ) {
+		$title            = $params['title'] ?? '';
+		$description      = $params['description'] ?? '';
+		$section_number   = $params['section_number'] ?? 1;
+		$less_per_section = $params['less_per_section'] ?? 1;
+		$level            = $params['level'] ?? 'All levels';
+		$topic            = $params['topic'] ?? '';
 
 		$language = '';
 
@@ -311,21 +311,21 @@ class OpenAi {
 			$language = implode( ', ', $params['lang'] );
 		}
 
-		$prompt = 'Create a course curriculum based on the following:\n';
-		$prompt .= 'Course title: ' . $title . '\n';
-		$prompt .= 'Description: ' . $description . '\n';
-		$prompt .= 'Section number: ' . $section_number . '\n';
-		$prompt .= 'Lesson per section: ' . $less_per_section . '\n';
-		$prompt .= 'Level: ' . $level . '\n';
-		$prompt .= 'Specific key topics: ' . $topic . '\n';
-		$prompt .= 'Language: ' . $language . '\n';
-		$prompt .= 'Content return : JSON structure only in this exact format:{"sections":[{"section_title": "Section Name","lessons": [{"lesson_title": "Lesson Title 1"},{"lesson_title": "Lesson Title 2"}]}]}\n';
-		$prompt .= 'Make sure to provide only '.$section_number.' sections with exactly '.$less_per_section.' lessons each, and no additional data or formatting.\n';
+		$prompt      = 'Create a course curriculum based on the following:\n';
+		$prompt      .= 'Course title: ' . $title . '\n';
+		$prompt      .= 'Description: ' . $description . '\n';
+		$prompt      .= 'Section number: ' . $section_number . '\n';
+		$prompt      .= 'Lesson per section: ' . $less_per_section . '\n';
+		$prompt      .= 'Level: ' . $level . '\n';
+		$prompt      .= 'Specific key topics: ' . $topic . '\n';
+		$prompt      .= 'Language: ' . $language . '\n';
+		$prompt      .= 'Content return : JSON structure only in this exact format like this example:{"sections":[{"section_title": "Section Name","lessons": [{"lesson_title": "Lesson Title 1"},{"lesson_title": "Lesson Title 2"}]}]}\n';
+		$prompt      .= 'Make sure to provide only ' . $section_number . ' sections with exactly ' . $less_per_section . ' lessons each, and no additional data or formatting.\n';
 		$prompt_html = '<div class="title"><strong>Prompt:</strong></div>';
 		$prompt_html .= '<textarea style="width: 100%" rows="5">';
 		$prompt_html .= $prompt;
 		$prompt_html .= '</textarea>\n';
-		$prompt_html .= '<button id="lp-re-generate-curriculum" class="button">'.__('Generate with prompt', 'learnpress').'</button>';
+		$prompt_html .= '<button id="lp-re-generate-curriculum" class="button">' . __( 'Generate with prompt', 'learnpress' ) . '</button>';
 
 
 		$data['prompt']      = $prompt;
@@ -339,8 +339,54 @@ class OpenAi {
 	 *
 	 * @return array
 	 */
-	public static function get_lesson_des_prompt( $params ) {
+	public static function get_curriculum_quiz_prompt( $params ) {
 		$topic    = $params['topic'] ?? '';
+		$goal     = $params['goal'] ?? '';
+		$audience = '';
+
+		if ( isset( $params['audience'] ) && is_array( $params['audience'] ) && count( $params['audience'] ) ) {
+			$audience = implode( ', ', $params['audience'] );
+		}
+
+		$tone = '';
+
+		if ( isset( $params['tone'] ) && is_array( $params['tone'] ) && count( $params['tone'] ) ) {
+			$tone = implode( ', ', $params['tone'] );
+		}
+
+		$language = '';
+
+		if ( isset( $params['lang'] ) && is_array( $params['lang'] ) && count( $params['lang'] ) ) {
+			$language = implode( ', ', $params['lang'] );
+		}
+
+		$prompt = 'Create a quiz title directly based on the following:\n';
+		$prompt .= 'Topic: ' . $topic . '\n';
+		$prompt .= 'Goal: ' . $goal . '\n';
+		$prompt .= 'Audience: ' . $audience . '\n';
+		$prompt .= 'Tone: ' . $tone . '\n';
+		$prompt .= 'Language: ' . $language . '\n';
+		$prompt .= 'Please provide only the quiz title without any additional explanation or details, and do not include quotation marks.';
+
+		$prompt_html = '<div class="title"><strong>Prompt:</strong></div>';
+		$prompt_html .= '<textarea rows="5" style="width: 100%">';
+		$prompt_html .= $prompt;
+		$prompt_html .= '</textarea>\n';
+		$prompt_html .= '<button id="lp-re-generate-course-title" class="button">Generate with prompt</button>';
+
+		$data['prompt']      = $prompt;
+		$data['prompt_html'] = $prompt_html;
+
+		return $data;
+	}
+
+	/**
+	 * @param $params
+	 *
+	 * @return array
+	 */
+	public static function get_lesson_des_prompt( $params ) {
+		$topic = $params['topic'] ?? '';
 //		$goal     = $params['goal'] ?? '';
 		$audience = '';
 
@@ -428,6 +474,88 @@ class OpenAi {
 	 *
 	 * @return array
 	 */
+	public static function get_quiz_question_prompt( $params ) {
+		$title       = $params['title'] ?? '';
+		$description = $params['description'] ?? '';
+		$topic       = $params['topic'] ?? '';
+		$goal        = $params['goal'] ?? '';
+		$number      = $params['number'] ?? 1;
+
+		$audience = '';
+
+		if ( isset( $params['audience'] ) && is_array( $params['audience'] ) && count( $params['audience'] ) ) {
+			$audience = implode( ', ', $params['audience'] );
+		}
+
+		$tone = '';
+
+		if ( isset( $params['tone'] ) && is_array( $params['tone'] ) && count( $params['tone'] ) ) {
+			$tone = implode( ', ', $params['tone'] );
+		}
+
+		$question_type = '';
+
+		if ( isset( $params['question_type'] ) && is_array( $params['question_type'] ) && count( $params['question_type'] ) ) {
+			foreach ( $params['question_type'] as $key => $value ) {
+				if ( $key ) {
+					$question_type .= ', ';
+				}
+				$question_type .= $value['type'] ?? '';
+			}
+		} else {
+			$question_type = 'single_choice, multi_choice, true_or_false, fill_in_blanks';
+		}
+
+		$language = '';
+
+		if ( isset( $params['lang'] ) && is_array( $params['lang'] ) && count( $params['lang'] ) ) {
+			$language = implode( ', ', $params['lang'] );
+		}
+
+		$prompt      = 'Create a quiz question based on the following:\n';
+		$prompt      .= 'Quiz title: ' . $title . '\n';
+		$prompt      .= 'Description: ' . $description . '\n';
+		$prompt      .= 'Topic: ' . $topic . '\n';
+		$prompt      .= 'Goal: ' . $goal . '\n';
+		$prompt      .= 'Audience: ' . $audience . '\n';
+		$prompt      .= 'Tone: ' . $tone . '\n';
+		$prompt      .= 'Question Type: ' . $question_type . '\n';
+		$prompt      .= 'Question number: ' . $number . '\n';
+		$prompt      .= 'Language: ' . $language . '\n';
+		$prompt      .= 'Content return : JSON structure like this example, with "questions" being an array that contains the number of' .
+		                'elements equal to ' . $number . ':\n';
+		$prompt      .= '{"questions":[{"question_type":"single_choice","question_title":"What property is' .
+		                'used to change the text color of an element in CSS?","options":["font-color","text-color","color","background-color"],' .
+		                '"answer":"color","points":1},{"question_type":"multi_choice",' .
+		                '"question_title":"Which of the following properties are used to control the spacing between elements in CSS?",' .
+		                '"options":["margin","padding","border","width","line-height"],"answer":["margin","padding","line-height"]' .
+		                '},{"question_type":"true_or_false","question_title":' .
+		                '"The z-index property in CSS controls the vertical stacking order of elements?","options":["True","False"],' .
+		                '"answer":"True"},{"question_type":"fill_in_blanks",' .
+		                '"question_title":"Fill in the blanks' .
+		                '"question_content":"The CSS properties used to control the font size and font style of text' .
+		                'are ___ and ___.","answer":["font-size","font-style"]' .
+		                '}]}\n';
+		$prompt      .= 'The single choice and multi choices can have 1,2,3 or more options. Ensure that the "questions" array' .
+		                'contains exactly "Question number" elements. Please give the correct choice answers.';
+		$prompt_html = '<div class="title"><strong>Prompt:</strong></div>';
+		$prompt_html .= '<textarea style="width: 100%" rows="5">';
+		$prompt_html .= $prompt;
+		$prompt_html .= '</textarea>\n';
+		$prompt_html .= '<button id="lp-re-generate-quiz-question" class="button">' . __( 'Generate with prompt', 'learnpress' ) . '</button>';
+
+
+		$data['prompt']      = $prompt;
+		$data['prompt_html'] = $prompt_html;
+
+		return $data;
+	}
+
+	/**
+	 * @param $params
+	 *
+	 * @return array
+	 */
 	public static function get_question_des_prompt( $params ) {
 		$topic    = $params['topic'] ?? '';
 		$audience = '';
@@ -472,43 +600,49 @@ class OpenAi {
 	 *
 	 * @return array|string[]
 	 */
-	public static function get_completions_prompt($params){
+	public static function get_completions_prompt( $params ) {
 		$prompt = array(
-			'prompt' => '',
-			'prompt_html' =>''
+			'prompt'      => '',
+			'prompt_html' => ''
 		);
 
-		if( empty($params['type']) ){
+		if ( empty( $params['type'] ) ) {
 			return $prompt;
 		}
 
-		switch ($params['type']) {
+		switch ( $params['type'] ) {
 			case 'course-title':
-				$prompt = self::get_course_title_prompt($params);
+				$prompt = self::get_course_title_prompt( $params );
 				break;
 			case 'course-description':
-				$prompt = self::get_course_des_prompt($params);
+				$prompt = self::get_course_des_prompt( $params );
 				break;
 			case 'course-curriculum':
-				$prompt = self::get_course_curriculum_prompt($params);
+				$prompt = self::get_course_curriculum_prompt( $params );
+				break;
+			case 'curriculum-quiz':
+				$prompt = self::get_curriculum_quiz_prompt( $params );
 				break;
 			case 'lesson-title':
-				$prompt = self::get_lesson_title_prompt($params);
+				$prompt = self::get_lesson_title_prompt( $params );
 				break;
 			case 'lesson-description':
-				$prompt = self::get_lesson_des_prompt($params);
+				$prompt = self::get_lesson_des_prompt( $params );
 				break;
 			case 'quiz-title':
-				$prompt = self::get_quiz_title_prompt($params);
+				$prompt = self::get_quiz_title_prompt( $params );
 				break;
 			case 'quiz-description':
-				$prompt = self::get_quiz_des_prompt($params);
+				$prompt = self::get_quiz_des_prompt( $params );
+				break;
+			case 'quiz-question':
+				$prompt = self::get_quiz_question_prompt( $params );
 				break;
 			case 'question-title':
-				$prompt = self::get_question_title_prompt($params);
+				$prompt = self::get_question_title_prompt( $params );
 				break;
 			case 'question-description':
-				$prompt = self::get_question_des_prompt($params);
+				$prompt = self::get_question_des_prompt( $params );
 				break;
 			default:
 		}

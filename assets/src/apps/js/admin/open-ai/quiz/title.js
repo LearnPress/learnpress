@@ -161,6 +161,8 @@ const openModal = () => {
 
 		modal.classList.add('active');
 		target.disabled = true;
+
+		document.querySelector('body').style.overflow = 'hidden';
 	});
 };
 
@@ -172,56 +174,20 @@ const closeModal = () => {
 
 		modal.classList.remove('active');
 		openModalBtn.disabled = false;
+
+		document.querySelector('body').style.overflow = 'visible';
 	};
 
-	document.addEventListener('mousedown', function (event) {
+	document.addEventListener('click', function(event) {
 		const target = event.target;
-
-		if (!(target instanceof Element)) {
-			return;
-		}
-
-		changeMouseDownOnTarget(target, true);
-	});
-
-	document.addEventListener('mouseleave', function (event) {
-		const target = event.target;
-		if (!(target instanceof Element)) {
-			return;
-		}
-		changeMouseDownOnTarget(target, false);
-	});
-
-	document.addEventListener('mouseup', function (event) {
-		const target = event.target;
-		if (!(target instanceof Element)) {
-			return;
-		}
-		if (isMouseDownOnTarget) {
-			if (target.classList.contains('close-btn') && target.closest('#lp-ai-quiz-title-modal')) {
-				handleClose();
-			}
-
-			if (!target.classList.contains('modal-content') && !target.closest('.modal-content')) {
-				handleClose();
-			}
-		}
-		isMouseDownOnTarget = false;
-	});
-
-	const changeMouseDownOnTarget = (target, value) => {
-		if (target.id === 'lp-edit-ai-quiz-title') {
-			return;
-		}
-
 		if (target.classList.contains('close-btn') && target.closest('#lp-ai-quiz-title-modal')) {
-			isMouseDownOnTarget = value;
+			handleClose();
 		}
 
-		if (!target.classList.contains('modal-content') && !target.closest('.modal-content')) {
-			isMouseDownOnTarget = value
+		if(target.classList.contains('ai-overlay')){
+			handleClose();
 		}
-	}
+	});
 };
 
 const generate = () => {

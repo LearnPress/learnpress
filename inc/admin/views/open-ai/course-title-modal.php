@@ -5,6 +5,7 @@ $config = Config::instance();
 
 ?>
 <div id="lp-ai-course-title-modal" class="ai-modal">
+	<div class="ai-overlay"></div>
 	<div class="modal-content">
 		<header class="modal-header">
 			<div class="title"><?php esc_html_e( 'Create Course Title', 'learnpress' ); ?></div>

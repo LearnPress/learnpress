@@ -1,23 +1,21 @@
 let modal;
 const {__} = wp.i18n;
+let activeOpenModalBtn;
+let sectionId = null;
+let sectionOrder = null;
 
-const description = () => {
-	modal = document.querySelector('#lp-ai-lesson-des-modal');
+const curriculumQuiz = () => {
+	modal = document.querySelector('#lp-ai-curriculum-quiz-modal');
 
 	if (!modal) {
 		return;
 	}
-	addDesBtn();
+
 	openModal();
 	closeModal();
 	generate();
 	copyText();
 	applyText();
-};
-
-const addDesBtn = () => {
-	document.querySelector('body.post-type-lp_lesson #wp-content-media-buttons').insertAdjacentHTML('beforeend', `
-	<button type="button" class="button" id="lp-edit-ai-lesson-des">` + __('Edit with AI', 'learnpress') + `</button>`);
 };
 
 const copyText = () => {
@@ -28,21 +26,21 @@ const copyText = () => {
 			return;
 		}
 
-		const modal = target.closest('#lp-ai-lesson-des-modal');
+		const modal = target.closest('#lp-ai-curriculum-quiz-modal');
 
 		if (!modal) {
 			return;
 		}
 
-		const descriptionItem = target.closest('.lesson-des-item');
+		const titleItem = target.closest('.curriculum-quiz-item');
 
-		if (!descriptionItem) {
+		if (!titleItem) {
 			return;
 		}
 
-		let text = descriptionItem.querySelector('div.ai-result').innerHTML;
+		let text = titleItem.querySelector('div.ai-result').innerHTML;
 		text = text.trim();
-		text = convertParagraphsToNewlines(text);
+
 		if (window.isSecureContext && navigator.clipboard) {
 			target.disabled = true;
 			navigator.clipboard.writeText(text)
@@ -70,54 +68,49 @@ const applyText = () => {
 			return;
 		}
 
-		const modal = target.closest('#lp-ai-lesson-des-modal');
+		const modal = target.closest('#lp-ai-curriculum-quiz-modal');
 
 		if (!modal) {
 			return;
 		}
 
-		const descriptionItem = target.closest('.lesson-des-item');
+		const quizItem = target.closest('.curriculum-quiz-item');
 
-		if (!descriptionItem) {
+		if (!quizItem) {
 			return;
 		}
 
-		const editor = tinyMCE.get('content');
+		const data = {
+			course_id: modal.getAttribute('data-course-id'),
+			section_id:sectionId,
+			section_order:sectionOrder,
+			title:quizItem.querySelector('.ai-result').innerHTML,
+		};
 
-		if (!editor) {
-			return;
-		}
-
-		let text = descriptionItem.querySelector('div.ai-result').innerHTML;
-		text = text.trim();
-
-		editor.setContent(convertNewlinesToParagraphs(text));
-		target.innerHTML = __('Applied', 'learnpress');
 		target.disabled = true;
-		setTimeout(() => {
-			target.innerHTML = __('Apply', 'learnpress');
-			target.disabled = false;
-		}, 1000);
+		wp.apiFetch({
+			path: '/lp/v1/open-ai/curriculum-quiz', method: 'POST', data,
+		}).then((res) => {
+			if (res.status === 'error' && res.msg) {
+				// eslint-disable-next-line no-alert
+				window.alert(res.msg);
+			}
+
+			if (res.status === 'success' && res.msg) {
+				// eslint-disable-next-line no-alert
+				window.alert(res.msg);
+				window.location.reload();
+			}
+
+		}).catch((err) => {
+			console.log(err);
+		}).finally(() => {
+			//After generate
+			(() => {
+				target.disabled = false;
+			})();
+		});
 	});
-};
-
-const convertNewlinesToParagraphs = (text) => {
-	let result = text
-		.replace(/\n+/g, '</p><p>')
-		.trim();
-
-	if (result) {
-		result = '<p>' + result + '</p>';
-	}
-
-	return result;
-};
-
-const convertParagraphsToNewlines = (htmlString) => {
-	return htmlString
-		.replace(/<\/p>/g, '\n\n')
-		.replace(/<p>/g, '')
-		.trim();
 };
 
 const unsecuredCopyToClipboard = (target, text) => {
@@ -140,38 +133,45 @@ const unsecuredCopyToClipboard = (target, text) => {
 	document.body.removeChild(textArea);
 };
 
+
 const openModal = () => {
 	document.addEventListener('click', function (event) {
 		const target = event.target;
-
-		if (target.id !== 'lp-edit-ai-lesson-des') {
+		if (!target.classList.contains('lp-edit-ai-curriculum-quiz')) {
 			return;
 		}
 
 		modal.classList.add('active');
-		target.disabled = false;
-
+		target.disabled = true;
+		activeOpenModalBtn = target;
+		const section  = target.closest('.section');
+		sectionId = section.getAttribute('data-section-id');
+		sectionOrder = section.getAttribute('data-section-order');
 		document.querySelector('body').style.overflow = 'hidden';
 	});
 };
 
 const closeModal = () => {
+	let isMouseDownOnTarget = false
+
 	const handleClose = () => {
-		const openModalBtn = document.querySelector('#lp-edit-ai-lesson-des');
+		// const openModalBtn = document.querySelector('.lp-edit-ai-curriculum-quiz.active');
 
 		modal.classList.remove('active');
-		openModalBtn.disabled = false;
+		if(activeOpenModalBtn){
+			activeOpenModalBtn.disabled = false;
+		}
 
 		document.querySelector('body').style.overflow = 'visible';
 	};
 
-	document.addEventListener('click', function (event) {
+	document.addEventListener('click', function(event) {
 		const target = event.target;
-		if (target.classList.contains('close-btn') && target.closest('#lp-ai-lesson-des-modal')) {
+		if (target.classList.contains('close-btn') && target.closest('#lp-ai-curriculum-quiz-modal')) {
 			handleClose();
 		}
 
-		if (target.classList.contains('ai-overlay')) {
+		if(target.classList.contains('ai-overlay')){
 			handleClose();
 		}
 	});
@@ -180,11 +180,11 @@ const closeModal = () => {
 const generate = () => {
 	document.addEventListener('click', function (event) {
 		const target = event.target;
-		if (!['lp-generate-lesson-des-btn', 'lp-re-generate-lesson-des'].includes(target.getAttribute('id'))) {
+		if (!['lp-generate-curriculum-quiz-btn', 'lp-re-generate-curriculum-quiz'].includes(target.getAttribute('id'))) {
 			return;
 		}
 
-		const modal = target.closest('#lp-ai-lesson-des-modal');
+		const modal = target.closest('#lp-ai-curriculum-quiz-modal');
 
 		if (!modal) {
 			return;
@@ -192,8 +192,7 @@ const generate = () => {
 
 		const togglePromptBtnNode = modal.querySelector('.toggle-prompt');
 		const promptOutputNode = modal.querySelector('.prompt-output');
-
-		const desOutputNode = modal.querySelector('.lesson-des-output');
+		const titleOutputNode = modal.querySelector('.curriculum-quiz-output');
 
 		const contentNode = modal.querySelector('.content');
 		const promptTextArea = promptOutputNode.querySelector('textarea');
@@ -204,43 +203,44 @@ const generate = () => {
 			togglePromptBtnNode.classList.remove('active', 'display');
 			togglePromptBtnNode.innerHTML = __('Display prompt', 'learnpress');
 			promptOutputNode.classList.remove('active');
-			desOutputNode.innerHTML = '';
+			titleOutputNode.innerHTML = '';
 			contentNode.style.opacity = 0.6;
 		})();
 
-		const topicNode = contentNode.querySelector('#ai-lesson-des-field-topic');
-		// const goalNode = contentNode.querySelector( '#ai-lesson-des-field-goal' );
-		const audienceNode = contentNode.querySelector('#ai-lesson-des-field-audience');
-		const toneNode = contentNode.querySelector('#ai-lesson-des-field-tone');
-		const langNode = contentNode.querySelector('#ai-lesson-des-field-language');
-		const outputsNode = contentNode.querySelector('#ai-lesson-des-field-outputs');
+		const topicNode = contentNode.querySelector('#ai-curriculum-quiz-field-topic');
+		const goalNode = contentNode.querySelector('#ai-curriculum-quiz-field-goal');
+		const audienceNode = contentNode.querySelector('#ai-curriculum-quiz-field-audience');
+		const toneNode = contentNode.querySelector('#ai-curriculum-quiz-field-tone');
+		const langNode = contentNode.querySelector('#ai-curriculum-quiz-field-language');
+		const outputsNode = contentNode.querySelector('#ai-curriculum-quiz-field-outputs');
 
-		const data = {
-			type: 'lesson-description',
+
+		let data = {
+			type: 'curriculum-quiz',
 			topic: topicNode.value,
-			// goal: goalNode.value,
+			goal: goalNode.value,
 			audience: Array.from(audienceNode.selectedOptions).map((option) => option.value),
 			tone: Array.from(toneNode.selectedOptions).map((option) => option.value),
 			lang: Array.from(langNode.selectedOptions).map((option) => option.value),
 			outputs: outputsNode.value,
 		};
 
-		if (target.getAttribute('id') === 'lp-re-generate-lesson-des') {
+		if (target.getAttribute('id') === 'lp-re-generate-curriculum-quiz') {
 			data.prompt = promptTextArea ? promptTextArea.value : '';
 		}
+
 		wp.apiFetch({
 			path: '/lp/v1/open-ai/generate-text', method: 'POST', data,
 		}).then((res) => {
-			if (res.data.prompt && !data.prompt) {
+			if (res.data.prompt && !data.prompt ) {
 				promptOutputNode.innerHTML = res.data.prompt.replace(/\\n/g, '\n');
 			}
 
 			if (res.data.content) {
-				let des = '';
+				let titleContent = '';
 				[...res.data.content].map((content) => {
-					content = convertNewlinesToParagraphs(content);
-					des += `
-					<div class="lesson-des-item">
+					titleContent += `
+					<div class="curriculum-quiz-item">
 						<div class="ai-result">
 							${content}
 						</div>
@@ -250,12 +250,12 @@ const generate = () => {
 						</div>
 					</div>`;
 				});
-				desOutputNode.innerHTML = des;
-			}
-			if (res.msg && res.status === 'error') {
-				desOutputNode.innerHTML = `<div class="error"> ${res.msg} </div>`;
+				titleOutputNode.innerHTML = titleContent;
 			}
 
+			if (res.msg && res.status === 'error') {
+				titleOutputNode.innerHTML = `<div class="error"> ${res.msg} </div>`;
+			}
 		}).catch((err) => {
 			console.log(err);
 		}).finally(() => {
@@ -269,4 +269,4 @@ const generate = () => {
 	});
 };
 
-export default description;
+export default curriculumQuiz;
