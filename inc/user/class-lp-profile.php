@@ -892,7 +892,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 *
 		 * @return string
 		 */
-		public function get_profile_picture( $type = '', $size = 96 ): string {
+		public function get_profile_picture($src_only = false, $type = '', $size = 96 ): string {
 			$avatar = '';
 
 			try {
@@ -915,18 +915,24 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 					}
 				}
 
-				$avatar = apply_filters(
-					'learn-press/user-profile/avatar',
-					sprintf(
-						'<img alt="%s" class="avatar" src="%s" height="%d" width="%d">',
-						esc_attr__( 'User Avatar', 'learnpress' ),
+				if ( $src_only ) {
+					$avatar = $avatar_url;
+				}
+
+				else {
+					$avatar = apply_filters(
+						'learn-press/user-profile/avatar',
+						sprintf(
+							'<img alt="%s" class="avatar" src="%s" height="%d" width="%d">',
+							esc_attr__( 'User Avatar', 'learnpress' ),
+							$avatar_url,
+							$args['width'] ?? 96,
+							$args['height'] ?? 96
+						),
 						$avatar_url,
-						$args['width'] ?? 96,
-						$args['height'] ?? 96
-					),
-					$avatar_url,
-					$args
-				);
+						$args
+					);
+				}
 			} catch ( Throwable $e ) {
 				error_log( $e->getMessage() );
 			}
