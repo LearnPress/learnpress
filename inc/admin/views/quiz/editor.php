@@ -9,6 +9,7 @@
 learn_press_admin_view( 'quiz/questions' );
 learn_press_admin_view( 'quiz/modal-choose-items' );
 learn_press_admin_view( 'quiz/question-fib-editor' );
+$lp_settings = LP_Settings::instance();
 ?>
 
 <div id="admin-editor-lp_quiz" xxxx="5">
@@ -33,6 +34,14 @@ learn_press_admin_view( 'quiz/question-fib-editor' );
 		<div v-if="heartbeat">
 			<div class="lp-box-data-head heading">
 				<h3><?php echo esc_html__( 'Details', 'learnpress' ); ?><span class="status"></span></h3>
+				<?php
+				if ( $lp_settings->get( 'enable_open_ai' ) === 'yes' ) {
+					?>
+					<button type="button" class="button"
+							id="lp-edit-ai-quiz-question"><?php esc_html_e( 'Create with AI', 'learnpress' ); ?></button>
+					<?php
+				}
+				?>
 				<div class="section-item-counts">
 					<span>{{textCountQuestions()}}</span>
 				</div>

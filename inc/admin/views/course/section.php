@@ -7,6 +7,7 @@
 
 learn_press_admin_view( 'course/section-item' );
 learn_press_admin_view( 'course/new-section-item' );
+$lp_settings = LP_Settings::instance();
 ?>
 
 <script type="text/x-template" id="tmpl-lp-section">
@@ -43,7 +44,13 @@ learn_press_admin_view( 'course/new-section-item' );
 
 			<div class="section-actions" v-if="!disableCurriculum">
 				<button type="button" class="button button-secondary" @click="openModal"><?php esc_html_e( 'Select items', 'learnpress' ); ?></button>
-
+				<?php
+				if ( $lp_settings->get( 'enable_open_ai' ) === 'yes' ) {
+					?>
+					<button type="button" class="button lp-edit-ai-curriculum-quiz"><?php esc_html_e('Create quiz with AI', 'learnpress');?></button>
+					<?php
+				}
+				?>
 				<div class="remove" :class="{confirm: confirm}">
 					<span class="icon" @click="removing"><?php esc_html_e( 'Delete', 'learnpress' ); ?></span>
 					<div class="confirm" @click="remove"><?php esc_html_e( 'Are you sure?', 'learnpress' ); ?></div>
