@@ -9,11 +9,12 @@
 use LearnPress\Models\CourseModel;
 
 $course_id = get_the_ID();
-$course    = CourseModel::find( $course_id, true );
-if ( empty( $course ) ) {
-	return;
+
+$course     = CourseModel::find( $course_id, true );
+$total_item = 0;
+if ( ! empty( $course ) ) {
+	$total_item = $course->get_total_items()->count_items;
 }
-$total_item = $course->get_total_items()->count_items ?? 0;
 ?>
 
 <div id="admin-editor-lp_course-refactor">
