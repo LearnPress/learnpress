@@ -5,10 +5,11 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  4.0.11
+ * @version  4.0.12
  */
 
 use LearnPress\Helpers\Template;
+use LearnPress\Models\CourseModel;
 use LearnPress\TemplateHooks\Course\ListCoursesTemplate;
 
 defined( 'ABSPATH' ) || exit();
@@ -31,7 +32,7 @@ if ( ! isset( $user ) || ! isset( $course_ids ) || ! isset( $current_page ) || !
 		}
 
 		foreach ( $course_ids as $id ) {
-			$course = learn_press_get_course( $id );
+			$course = CourseModel::find( $id, true );
 			if ( ! $course ) {
 				continue;
 			}

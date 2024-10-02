@@ -35,7 +35,7 @@ class CourseAddressDynamicElementor extends Tag {
 				return;
 			}
 
-			$course = CourseModel::find( $course->get_id() );
+			$course = CourseModel::find( $course->get_id(), true );
 			if ( ! $course ) {
 				return;
 			}

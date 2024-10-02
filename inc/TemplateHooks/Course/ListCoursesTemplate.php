@@ -14,6 +14,7 @@ use LearnPress\Models\CourseModel;
 use LearnPress\Models\Courses;
 use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\TemplateHooks\TemplateAJAX;
+use LP_Course;
 use LP_Course_Filter;
 use LP_Database;
 use LP_Settings;
@@ -80,7 +81,7 @@ class ListCoursesTemplate {
 	 *
 	 * @return stdClass { content: string_html }
 	 * @since 4.2.5.7
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 */
 	public static function render_courses( array $settings = [] ): stdClass {
 		$filter = new LP_Course_Filter();
@@ -105,7 +106,7 @@ class ListCoursesTemplate {
 			echo sprintf( '<p class="learn-press-message success">%s!</p>', __( 'No courses found', 'learnpress' ) );
 		} else {
 			foreach ( $courses as $courseObj ) {
-				$course = CourseModel::find( $courseObj->ID );
+				$course = CourseModel::find( $courseObj->ID, true );
 				echo static::render_course( $course, $settings );
 			}
 		}
@@ -172,14 +173,17 @@ class ListCoursesTemplate {
 	/**
 	 * Render single item course
 	 *
-	 * @param CourseModel $course
+	 * @param CourseModel|LP_Course $course
 	 * @param array $settings
 	 *
 	 * @return string
 	 * @since 4.2.5.8
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 */
-	public static function render_course( CourseModel $course, array $settings = [] ): string {
+	public static function render_course( $course, array $settings = [] ): string {
+		if ( ! $course instanceof CourseModel ) {
+			$course = CourseModel::find( $course->get_id(), true );
+		}
 		$singleCourseTemplate = SingleCourseTemplate::instance();
 
 		try {

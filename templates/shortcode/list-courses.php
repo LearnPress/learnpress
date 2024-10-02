@@ -4,9 +4,10 @@
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 4.0.1
+ * @version 4.0.2
  */
 
+use LearnPress\Models\CourseModel;
 use LearnPress\TemplateHooks\Course\ListCoursesTemplate;
 
 defined( 'ABSPATH' ) || exit;
@@ -30,7 +31,7 @@ if ( ! isset( $query ) ) {
 			echo '<ul class="learn-press-courses" data-layout="grid">';
 
 			foreach ( $posts as $post ) {
-				$course = learn_press_get_course( $post->ID );
+				$course = CourseModel::find( $post->ID, true );
 				if ( ! $course ) {
 					continue;
 				}

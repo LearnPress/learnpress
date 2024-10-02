@@ -291,11 +291,11 @@ class LP_User_Factory {
 	 *
 	 * @author tungnx
 	 * @since 4.1.3
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	protected static function handle_item_manual_order_completed( LP_Order $order, LP_User $user, $item ) {
 		try {
-			$course      = CourseModel::find( $item['course_id'] ?? $item['item_id'] ?? 0 );
+			$course      = CourseModel::find( $item['course_id'] ?? $item['item_id'] ?? 0, true );
 			if ( ! $course ) {
 				return;
 			}

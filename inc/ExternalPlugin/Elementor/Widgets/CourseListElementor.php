@@ -11,6 +11,7 @@ namespace LearnPress\ExternalPlugin\Elementor\Widgets;
 use LearnPress\ExternalPlugin\Elementor\LPElementorWidgetBase;
 use LearnPress\Helpers\Config;
 use LearnPress\Helpers\Template;
+use LearnPress\Models\CourseModel;
 use LearnPress\Models\Courses;
 use LearnPress\TemplateHooks\Course\ListCoursesTemplate;
 use LP_Course;
@@ -83,7 +84,7 @@ class CourseListElementor extends LPElementorWidgetBase {
 					}
 
 					foreach ( $courses as $courseObj ) {
-						$course = learn_press_get_course( $courseObj->ID );
+						$course = CourseModel::find( $courseObj->ID, true );
 						if ( ! $course ) {
 							continue;
 						}
