@@ -150,7 +150,11 @@ class SingleCourseOfflineTemplate {
 				'info_one'    => Template::combine_components( $section_info_one ),
 				'image'       => $this->singleCourseTemplate->html_image( $course ),
 				'description' => $this->singleCourseTemplate->html_description( $course ),
-				'box-extra'   => $this->html_box_extra( $course ),
+				'requirements' => $this->singleCourseTemplate->html_requirements( $course ),
+				'features'     => $this->singleCourseTemplate->html_features( $course ),
+				'target'       => $this->singleCourseTemplate->html_target( $course ),
+				'material'     => $this->singleCourseTemplate->html_material( $course ),
+				'faqs'         => $this->singleCourseTemplate->html_faqs( $course ),
 				'instructor'  => $html_instructor,
 				'wrapper_end' => '</div>',
 			],
@@ -272,10 +276,11 @@ class SingleCourseOfflineTemplate {
 	 * Html lesson info
 	 *
 	 * @param CourseModel $course
+	 * @param bool $show_label
 	 *
 	 * @return string
 	 */
-	public function html_lesson_info( CourseModel $course, $show_label = false ): string {
+	public function html_lesson_info( CourseModel $course, bool $show_label = false ): string {
 		$lesson_count = $course->get_meta_value_by_key( CoursePostModel::META_KEY_OFFLINE_LESSON_COUNT, 10 );
 
 		if ( ! $lesson_count ) {
@@ -289,32 +294,5 @@ class SingleCourseOfflineTemplate {
 		);
 
 		return $html;
-	}
-
-	/**
-	 * Box extra
-	 *
-	 * @param CourseModel $course
-	 *
-	 * @return string
-	 * @since 4.2.7.2
-	 * @version 1.0.0
-	 */
-	public function html_box_extra( CourseModel $course ): string {
-		$section = apply_filters(
-			'learn-press/single-course/offline/section-box-extra',
-			[
-				'wrapper'      => '<div class="course-box-extra-info">',
-				'material'     => $this->singleCourseTemplate->html_material( $course ),
-				'faqs'         => $this->singleCourseTemplate->html_faqs( $course ),
-				'requirements' => $this->singleCourseTemplate->html_requirements( $course ),
-				'features'     => $this->singleCourseTemplate->html_features( $course ),
-				'target'       => $this->singleCourseTemplate->html_target( $course ),
-				'wrapper_end'  => '</div>',
-			],
-			$course
-		);
-
-		return Template::combine_components( $section );
 	}
 }
