@@ -86,10 +86,7 @@ class SingleCourseTemplate {
 	 * @return string
 	 */
 	public function html_description( $course ): string {
-		$content      = '';
-		$html_wrapper = [
-			'<p class="course-description">' => '</p>',
-		];
+		$content = '';
 
 		if ( $course instanceof LP_Course ) {
 			$content = $course->get_data( 'description' );
@@ -97,7 +94,17 @@ class SingleCourseTemplate {
 			$content = $course->get_description();
 		}
 
-		return Template::instance()->nest_elements( $html_wrapper, $content );
+		$section = apply_filters(
+			'learn-press/course/html-description',
+			[
+				'wrapper'     => '<div class="lp-course-description">',
+				'content'     => $content,
+				'wrapper_end' => '</div>',
+			],
+			$course
+		);
+
+		return Template::combine_components( $section );
 	}
 
 	/**
@@ -146,7 +153,7 @@ class SingleCourseTemplate {
 	 *
 	 * @return string
 	 * @since 4.2.6
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function html_tags( $course ): string {
 		if ( $course instanceof LP_Course ) {
@@ -156,10 +163,6 @@ class SingleCourseTemplate {
 		if ( empty( $course ) ) {
 			return '';
 		}
-
-		$html_wrapper = [
-			'<div class="course-tags">' => '</div>',
-		];
 
 		$tags = $course->get_tags();
 		if ( empty( $tags ) ) {
@@ -177,7 +180,19 @@ class SingleCourseTemplate {
 
 		$content = implode( ', ', $cat_names );
 
-		return Template::instance()->nest_elements( $html_wrapper, $content );
+		$section = apply_filters(
+			'learn-press/course/html-tags',
+			[
+				'wrapper'     => '<div class="course-tags">',
+				'content'     => $content,
+				'wrapper_end' => '</div>',
+			],
+			$course,
+			$tags,
+			$cat_names
+		);
+
+		return Template::combine_components( $section );
 	}
 
 	/**
@@ -499,7 +514,7 @@ class SingleCourseTemplate {
 			if ( empty( $duration_number ) ) {
 				$duration_str = __( 'Lifetime', 'learnpress' );
 			} else {
-				$duration_str    = LP_Datetime::get_string_plural_duration( $duration_number, $duration_type );
+				$duration_str = LP_Datetime::get_string_plural_duration( $duration_number, $duration_type );
 			}
 
 			$html_wrapper = [

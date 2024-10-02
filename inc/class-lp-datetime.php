@@ -294,9 +294,9 @@ class LP_Datetime {
 		$is_utc      = (int) $wp_timezone !== 0;
 
 		if ( $is_utc ) {
-			$wp_timezone = sprintf( '%s %s', __( 'Timezone: UTC', 'wp-hotel-booking' ), $wp_timezone );
+			$wp_timezone = sprintf( '%s %s', __( 'Timezone: UTC', 'learnpress' ), $wp_timezone );
 		} else {
-			$wp_timezone = sprintf( '%s %s', __( 'Timezone:', 'wp-hotel-booking' ), $wp_timezone );
+			$wp_timezone = sprintf( '%s %s', __( 'Timezone:', 'learnpress' ), $wp_timezone );
 		}
 
 		return $wp_timezone;
