@@ -340,8 +340,12 @@ class OpenAi {
 	 * @return array
 	 */
 	public static function get_curriculum_quiz_prompt( $params ) {
-		$topic    = $params['topic'] ?? '';
-		$goal     = $params['goal'] ?? '';
+		$course_title       = $params['course_title'] ?? '';
+		$topic       = $params['topic'] ?? '';
+		$goal        = $params['goal'] ?? '';
+		$quiz_num      = $params['quiz_num'] ?? 1;
+		$question_per_quiz_number = $params['question_per_quiz_number'] ?? 1;
+
 		$audience = '';
 
 		if ( isset( $params['audience'] ) && is_array( $params['audience'] ) && count( $params['audience'] ) ) {
@@ -354,25 +358,46 @@ class OpenAi {
 			$tone = implode( ', ', $params['tone'] );
 		}
 
+		$question_type = '';
+
+		if ( isset( $params['question_type'] ) && is_array( $params['question_type'] ) && count( $params['question_type'] ) ) {
+			foreach ( $params['question_type'] as $key => $value ) {
+				if ( $key ) {
+					$question_type .= ', ';
+				}
+				$question_type .= $value['type'] ?? '';
+			}
+		} else {
+			$question_type = 'single_choice, multi_choice, true_or_false, fill_in_blanks';
+		}
+
 		$language = '';
 
 		if ( isset( $params['lang'] ) && is_array( $params['lang'] ) && count( $params['lang'] ) ) {
 			$language = implode( ', ', $params['lang'] );
 		}
 
-		$prompt = 'Create a quiz title directly based on the following:\n';
-		$prompt .= 'Topic: ' . $topic . '\n';
-		$prompt .= 'Goal: ' . $goal . '\n';
-		$prompt .= 'Audience: ' . $audience . '\n';
-		$prompt .= 'Tone: ' . $tone . '\n';
-		$prompt .= 'Language: ' . $language . '\n';
-		$prompt .= 'Please provide only the quiz title without any additional explanation or details, and do not include quotation marks.';
-
+		$prompt      = 'Create quizzes and questions based on the following:\n';
+		$prompt      .= 'Course title: ' . $course_title . '\n';
+		$prompt      .= 'Topic: ' . $topic . '\n';
+		$prompt      .= 'Goal: ' . $goal . '\n';
+		$prompt      .= 'Audience: ' . $audience . '\n';
+		$prompt      .= 'Tone: ' . $tone . '\n';
+		$prompt      .= 'Question Type: ' . $question_type . '\n';
+		$prompt      .= 'Quiz number: ' . $quiz_num . '\n';
+		$prompt      .= 'Question per quiz number: ' . $question_per_quiz_number . '\n';
+		$prompt      .= 'Language: ' . $language . '\n';
+		$prompt      .= 'Content return : JSON structure like this example, with an array that contains the number of' .
+		                'elements equal to ' . $quiz_num . 'and "questions" being an array that contains the number of' .
+		                'elements equal to:\n';
+		$prompt      .= '[{"quiz_title":"What is this","questions":[{"question_type":"single_choice","question_title":"How old?","options":["a","b","c","d"],"answer":"a","description":"","points":1},{"question_type":"multi_choice","question_title":"How many?","options":["a","b","c","d","e"],"answer":["a","b","e"],"description":"","points":3},{"question_type":"true_or_false","question_title":"How do?","options":["True","False"],"answer":"True","description":""},{"question_type":"fill_in_blanks","question_title":"Is this?","question_content":"The CSS properties used to control the font size and font style of text are ___ and ___.?","answer":["a","b"],"description":""}]},{"quiz_title":"How about?","questions":[{"question_type":"single_choice","question_title":"Which?","options":["a","b","c","d"],"answer":"a","description":"","points":1}]}]';
+		$prompt      .= 'The single choice and multi choices can have 1,2,3 or more options. Ensure that the result is array contains exactly "Quiz number" elements" and questions" array contains exactly "Question per quiz number" elements. Please give the correct choice answers.';
 		$prompt_html = '<div class="title"><strong>Prompt:</strong></div>';
-		$prompt_html .= '<textarea rows="5" style="width: 100%">';
+		$prompt_html .= '<textarea style="width: 100%" rows="5">';
 		$prompt_html .= $prompt;
 		$prompt_html .= '</textarea>\n';
-		$prompt_html .= '<button id="lp-re-generate-course-title" class="button">Generate with prompt</button>';
+		$prompt_html .= '<button id="lp-re-generate-curriculum-quiz" class="button">' . __( 'Generate with prompt', 'learnpress' ) . '</button>';
+
 
 		$data['prompt']      = $prompt;
 		$data['prompt_html'] = $prompt_html;

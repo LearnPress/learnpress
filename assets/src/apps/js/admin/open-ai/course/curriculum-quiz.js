@@ -1,8 +1,7 @@
 let modal;
 const {__} = wp.i18n;
 let activeOpenModalBtn;
-let sectionId = null;
-let sectionOrder = null;
+let quizData = [];
 
 const curriculumQuiz = () => {
 	modal = document.querySelector('#lp-ai-curriculum-quiz-modal');
@@ -14,8 +13,98 @@ const curriculumQuiz = () => {
 	openModal();
 	closeModal();
 	generate();
-	copyText();
-	applyText();
+	addQuiz();
+	addAllQuizzes();
+};
+
+const addAllQuizzes = () => {
+	document.addEventListener('click', function (event) {
+		const target = event.target;
+		if (!target.classList.contains('add-all-questions')) {
+			return;
+		}
+
+		const modal = target.closest('#lp-ai-quiz-question-modal');
+		if (!modal) {
+			return;
+		}
+
+		const data = {
+			quiz_id: modal.getAttribute('data-quiz-id'),
+			questions: questionData,
+		};
+
+		target.disabled = true;
+		wp.apiFetch({
+			path: '/lp/v1/open-ai/add-question', method: 'POST', data,
+		}).then((res) => {
+			if (res.status === 'error' && res.msg) {
+				// eslint-disable-next-line no-alert
+				window.alert(res.msg);
+			}
+
+			if (res.status === 'success' && res.msg) {
+				// eslint-disable-next-line no-alert
+				window.alert(res.msg);
+				window.location.reload();
+			}
+
+		}).catch((err) => {
+			console.log(err);
+		}).finally(() => {
+			//After generate
+			(() => {
+				target.disabled = false;
+			})();
+		});
+	});
+}
+
+const addQuiz = () => {
+	document.addEventListener('click', function (event) {
+		const target = event.target;
+		if (!target.classList.contains('add-question')) {
+			return;
+		}
+
+		const modal = target.closest('#lp-ai-quiz-question-modal');
+		if (!modal) {
+			return;
+		}
+
+
+		const questionNode = target.closest('.question')
+		const order = questionNode.getAttribute('data-order');
+		const questions = questionData[order] || {};
+		const data = {
+			quiz_id: modal.getAttribute('data-quiz-id'),
+			questions: [questions],
+		};
+
+		target.disabled = true;
+		wp.apiFetch({
+			path: '/lp/v1/open-ai/add-question', method: 'POST', data,
+		}).then((res) => {
+			if (res.status === 'error' && res.msg) {
+				// eslint-disable-next-line no-alert
+				window.alert(res.msg);
+			}
+
+			if (res.status === 'success' && res.msg) {
+				// eslint-disable-next-line no-alert
+				window.alert(res.msg);
+				window.location.reload();
+			}
+
+		}).catch((err) => {
+			console.log(err);
+		}).finally(() => {
+			//After generate
+			(() => {
+				target.disabled = false;
+			})();
+		});
+	});
 };
 
 const copyText = () => {
@@ -82,9 +171,9 @@ const applyText = () => {
 
 		const data = {
 			course_id: modal.getAttribute('data-course-id'),
-			section_id:sectionId,
-			section_order:sectionOrder,
-			title:quizItem.querySelector('.ai-result').innerHTML,
+			section_id: sectionId,
+			section_order: sectionOrder,
+			title: quizItem.querySelector('.ai-result').innerHTML,
 		};
 
 		target.disabled = true;
@@ -144,7 +233,7 @@ const openModal = () => {
 		modal.classList.add('active');
 		target.disabled = true;
 		activeOpenModalBtn = target;
-		const section  = target.closest('.section');
+		const section = target.closest('.section');
 		sectionId = section.getAttribute('data-section-id');
 		sectionOrder = section.getAttribute('data-section-order');
 		document.querySelector('body').style.overflow = 'hidden';
@@ -158,20 +247,20 @@ const closeModal = () => {
 		// const openModalBtn = document.querySelector('.lp-edit-ai-curriculum-quiz.active');
 
 		modal.classList.remove('active');
-		if(activeOpenModalBtn){
+		if (activeOpenModalBtn) {
 			activeOpenModalBtn.disabled = false;
 		}
 
 		document.querySelector('body').style.overflow = 'visible';
 	};
 
-	document.addEventListener('click', function(event) {
+	document.addEventListener('click', function (event) {
 		const target = event.target;
 		if (target.classList.contains('close-btn') && target.closest('#lp-ai-curriculum-quiz-modal')) {
 			handleClose();
 		}
 
-		if(target.classList.contains('ai-overlay')){
+		if (target.classList.contains('ai-overlay')) {
 			handleClose();
 		}
 	});
@@ -192,7 +281,7 @@ const generate = () => {
 
 		const togglePromptBtnNode = modal.querySelector('.toggle-prompt');
 		const promptOutputNode = modal.querySelector('.prompt-output');
-		const titleOutputNode = modal.querySelector('.curriculum-quiz-output');
+		const curriculumQuizOutputNode = modal.querySelector('.curriculum-quiz-output');
 
 		const contentNode = modal.querySelector('.content');
 		const promptTextArea = promptOutputNode.querySelector('textarea');
@@ -203,7 +292,7 @@ const generate = () => {
 			togglePromptBtnNode.classList.remove('active', 'display');
 			togglePromptBtnNode.innerHTML = __('Display prompt', 'learnpress');
 			promptOutputNode.classList.remove('active');
-			titleOutputNode.innerHTML = '';
+			curriculumQuizOutputNode.innerHTML = '';
 			contentNode.style.opacity = 0.6;
 		})();
 
@@ -211,9 +300,10 @@ const generate = () => {
 		const goalNode = contentNode.querySelector('#ai-curriculum-quiz-field-goal');
 		const audienceNode = contentNode.querySelector('#ai-curriculum-quiz-field-audience');
 		const toneNode = contentNode.querySelector('#ai-curriculum-quiz-field-tone');
+		const quizNumNode = contentNode.querySelector('#ai-curriculum-quiz-field-quiz-numbers');
+		const questionPerQuizNumNode = contentNode.querySelector('#ai-curriculum-quiz-field-question-numbers');
 		const langNode = contentNode.querySelector('#ai-curriculum-quiz-field-language');
-		const outputsNode = contentNode.querySelector('#ai-curriculum-quiz-field-outputs');
-
+		const courseTitleNode = document.querySelector('#titlewrap input');
 
 		let data = {
 			type: 'curriculum-quiz',
@@ -222,7 +312,10 @@ const generate = () => {
 			audience: Array.from(audienceNode.selectedOptions).map((option) => option.value),
 			tone: Array.from(toneNode.selectedOptions).map((option) => option.value),
 			lang: Array.from(langNode.selectedOptions).map((option) => option.value),
-			outputs: outputsNode.value,
+			quiz_num: quizNumNode.value,
+			question_per_quiz_number: questionPerQuizNumNode.value,
+			course_title: courseTitleNode ? courseTitleNode.value : '',
+			data_return: 'json',
 		};
 
 		if (target.getAttribute('id') === 'lp-re-generate-curriculum-quiz') {
@@ -232,29 +325,82 @@ const generate = () => {
 		wp.apiFetch({
 			path: '/lp/v1/open-ai/generate-text', method: 'POST', data,
 		}).then((res) => {
-			if (res.data.prompt && !data.prompt ) {
+			if (res.data.prompt && !data.prompt) {
 				promptOutputNode.innerHTML = res.data.prompt.replace(/\\n/g, '\n');
 			}
 
 			if (res.data.content) {
-				let titleContent = '';
-				[...res.data.content].map((content) => {
-					titleContent += `
-					<div class="curriculum-quiz-item">
+				let quizQuestionContent = '';
+				const quizQuestions = res.data.content;
+
+				for (let i = 0; i < quizQuestions.length; i++) { // loop quiz questions
+					const quizzes = quizQuestions[i];
+					quizData = [];
+					quizData = [...quizzes];
+
+					for (let j = 0; j < quizzes.length; j++) {
+						const quiz = quizzes[j];
+
+						if (!quiz) {
+							continue;
+						}
+
+						const questions = quiz?.questions || [];
+						quizQuestionContent += `
+						<div class="quiz" data-order ="${j}">
+							<div class="quiz-title">
+								<div><b>`+__('Quiz title:', 'learnpress')+`</b> </div>
+								<div>${quiz.quiz_title}</div>
+							</div>`;
+							for (let k = 0; k < questions.length; k++) {
+								const question = questions[k];
+								if (!question) {
+									continue;
+								}
+								quizQuestionContent += `
+								<div class="quiz-question">
+									<div><b>`+__('Questions:', 'learnpress')+`</b> </div>
+									<div class="question" data-question-type="${question.question_type}">`;
+										switch (question.question_type) {
+											case 'single_choice':
+												quizQuestionContent += generateSingleChoice(question);
+												break;
+											case 'multi_choice':
+												quizQuestionContent += generateMultiChoice(question);
+												break;
+											case 'true_or_false':
+												quizQuestionContent += generateTrueOrFalse(question);
+												break;
+											case 'fill_in_blanks':
+												quizQuestionContent += generateFillInBlanks(question);
+												break;
+											default:
+												break;
+										}
+							}
+						quizQuestionContent +=
+									`</div>
+								</div>
+							<button class="add-quiz button">` + __('Add quiz', 'learnpress') + `</button>
+						</div>`;
+					}
+
+					quizQuestionContent += `
+					<div class="course-curriculum-quiz-item">
 						<div class="ai-result">
-							${content}
+							${quizQuestionContent}
 						</div>
 						<div class="action">
-							<button class="copy button">` + __('Copy', 'learnpress') + `</button>
-							<button class="apply button">` + __('Apply', 'learnpress') + `</button>
+							<button class="add-all-questions button">` + __('Add all quizzes', 'learnpress') + `</button>
 						</div>
 					</div>`;
-				});
-				titleOutputNode.innerHTML = titleContent;
+				}
+
+				curriculumQuizOutputNode.innerHTML = quizQuestionContent;
 			}
 
 			if (res.msg && res.status === 'error') {
-				titleOutputNode.innerHTML = `<div class="error"> ${res.msg} </div>`;
+				curriculumQuizOutputNode.innerHTML = `<div class="error"> ${res.msg} </div>`;
 			}
 		}).catch((err) => {
 			console.log(err);
@@ -268,5 +414,139 @@ const generate = () => {
 		});
 	});
 };
+
+const generateSingleChoice = (question) => {
+	let options = question.options || []
+	let optionHTML = '';
+	options.map((option) => {
+		optionHTML += `<li>${option}</li>`;
+	});
+
+	return `
+	<ul class="question-list-item">
+		<li class="question-title">
+		  <div class="title">` + __('Title', 'learnpress') + `</div>
+		  <div class="value">${question.question_title}</div>
+		</li>
+		<li class="question-type">
+		 <div class="title">` + __('Type', 'learnpress') + `</div>
+		  <div class="value">` + __('Single Choice', 'learnpress') + `</div>
+		</li>
+		<li class="question-options">
+		 <div class="title">` + __('Options', 'learnpress') + `</div>
+		 <ul class="value">
+			${optionHTML}
+		</ul>
+		</li>
+		<li class="question-answer">
+		 <div class="title">` + __('Answer', 'learnpress') + `</div>
+		 <div class="value">${question.answer}</div>
+		</li>
+	</ul>`;
+}
+
+const generateMultiChoice = (question) => {
+	let options = question.options || []
+	let optionHTML = '';
+	options.map((option) => {
+		optionHTML += `<li>${option}</li>`;
+	});
+
+	let answer = question.answer;
+	let answerHTML = ''
+	if (answer.length) {
+		answer.map((el) => {
+			answerHTML += `<li>${el}</li>`;
+		});
+	}
+	return `
+	<ul class="question-list-item">
+		<li class="question-title">
+		  <div class="title">` + __('Title', 'learnpress') + `</div>
+		  <div class="value">${question.question_title}</div>
+		</li>
+		<li class="question-type">
+		 <div class="title">` + __('Type', 'learnpress') + `</div>
+		  <div class="value">` + __('Multiple Choice', 'learnpress') + `</div>
+		</li>
+		<li class="question-options">
+		 <div class="title">` + __('Options', 'learnpress') + `</div>
+		 <ul class="value">
+			${optionHTML}
+		</ul>
+		</li>
+		<li class="question-answer">
+		 <div class="title">` + __('Answer', 'learnpress') + `</div>
+		 <ul class="value">${answerHTML}</ul>
+		</li>
+	</ul>`;
+}
+
+const generateTrueOrFalse = (question) => {
+	let options = question.options || []
+	let optionHTML = '';
+	options.map((option) => {
+		optionHTML += `<li>${option}</li>`;
+	});
+
+	return `
+	<ul class="question-list-item">
+		<li class="question-title">
+		  <div class="title">` + __('Title', 'learnpress') + `</div>
+		  <div class="value">${question.question_title}</div>
+		</li>
+		<li class="question-type">
+		 <div class="title">` + __('Type', 'learnpress') + `</div>
+		  <div class="value">` + __('True or False', 'learnpress') + `</div>
+		</li>
+		<li class="question-options">
+		 <div class="title">` + __('Options', 'learnpress') + `</div>
+		 <ul class="value">
+			${optionHTML}
+		</ul>
+		</li>
+		<li class="question-answer">
+		 <div class="title">` + __('Answer', 'learnpress') + `</div>
+		 <div class="value">${question.answer}</div>
+		</li>
+	</ul>`;
+}
+
+const generateFillInBlanks = (question) => {
+	let options = question.options || []
+	let optionHTML = '';
+	options.map((option) => {
+		optionHTML += `<li>${option}</li>`;
+	});
+
+	let answer = question.answer;
+	let answerHTML = ''
+	if (answer.length) {
+		answer.map((el) => {
+			answerHTML += `<li>${el}</li>`;
+		});
+	}
+	return `
+		<ul class="question-list-item">
+			<li class="question-title">
+			  <div class="title">` + __('Title', 'learnpress') + `</div>
+			  <div class="value">${question.question_title}</div>
+			</li>
+			<li class="question-type">
+			 <div class="title">` + __('Type', 'learnpress') + `</div>
+			  <div class="value">` + __('Fill in Blanks', 'learnpress') + `</div>
+			</li>
+			<li class="question-content">
+			 <div class="title">` + __('Content', 'learnpress') + `</div>
+			 <div class="value">
+				${question.question_content}
+			</div>
+			</li>
+			<li class="question-answer">
+			 <div class="title">` + __('Answer', 'learnpress') + `</div>
+			 <div class="value">${question.answer}</div>
+			</li>
+		</ul>`;
+}
 
 export default curriculumQuiz;

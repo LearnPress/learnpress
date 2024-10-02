@@ -12,7 +12,7 @@ $course_id = $data['course-id'] ?? '';
 		<div class="ai-overlay"></div>
 		<div class="modal-content">
 			<header class="modal-header">
-				<div class="title"><?php esc_html_e( 'Create Quiz Title', 'learnpress' ); ?></div>
+				<div class="title"><?php esc_html_e( 'Create Quiz', 'learnpress' ); ?></div>
 				<div class="close-btn">&times;</div>
 			</header>
 			<div class="content">
@@ -21,13 +21,13 @@ $course_id = $data['course-id'] ?? '';
 						<label
 							for="ai-curriculum-quiz-field-topic"><?php esc_html_e( 'Describe what your quiz is about', 'learnpress' ); ?></label>
 						<textarea id="ai-curriculum-quiz-field-topic" rows="3"
-						          placeholder="<?php esc_attr_e( 'e.g.A quiz to teach how to use LearnPress', 'learnpress' ); ?>"></textarea>
+								  placeholder="<?php esc_attr_e( 'e.g.A quiz to teach how to use LearnPress', 'learnpress' ); ?>"></textarea>
 					</div>
 					<div class="goal">
 						<label
 							for="ai-curriculum-quiz-field-goal"><?php esc_html_e( 'Describe the main goals of your quiz', 'learnpress' ); ?></label>
 						<textarea id="ai-curriculum-quiz-field-goal" rows="3"
-						          placeholder="<?php esc_attr_e( 'e.g.A quiz to teach how to use LearnPress', 'learnpress' ); ?>"></textarea>
+								  placeholder="<?php esc_attr_e( 'e.g.A quiz to teach how to use LearnPress', 'learnpress' ); ?>"></textarea>
 					</div>
 					<div class="audience">
 						<label
@@ -62,6 +62,35 @@ $course_id = $data['course-id'] ?? '';
 							?>
 						</select>
 					</div>
+					<div class="type">
+						<label for="ai-curriculum-quiz-field-type"><?php esc_html_e( 'Question type', 'learnpress' ); ?></label>
+						<?php
+						$type_options = learn_press_get_question_type_support();
+						?>
+						<select id="ai-curriculum-quiz-field-type" class="lp-tom-select" multiple>
+							<?php
+							foreach ( $type_options as $value_attr => $type_option ) {
+								$label = explode('_', $value_attr);
+								$label = array_map('ucfirst', $label);
+								$label =  implode(' ', $label);
+								?>
+								<option
+									value="<?php echo esc_attr( $value_attr ); ?>"><?php echo esc_html( $label ); ?></option>
+								<?php
+							}
+							?>
+						</select>
+					</div>
+					<div class="quiz-numbers">
+						<label
+							for="ai-curriculum-quiz-field-quiz-numbers"><?php esc_html_e( 'Quiz number', 'learnpress' ); ?></label>
+						<input id="ai-curriculum-quiz-field-quiz-numbers" type="number" min="1" step="1" value="2">
+					</div>
+					<div class="question-numbers">
+						<label
+							for="ai-curriculum-quiz-field-question-numbers"><?php esc_html_e( 'Question number per quiz', 'learnpress' ); ?></label>
+						<input id="ai-curriculum-quiz-field-question-numbers" type="number" min="1" step="1" value="2">
+					</div>
 					<div class="language">
 						<label
 							for="ai-curriculum-quiz-field-language"><?php esc_html_e( 'Output language', 'learnpress' ); ?></label>
@@ -80,21 +109,16 @@ $course_id = $data['course-id'] ?? '';
 						</select>
 					</div>
 					<div class="output">
-						<div class="outputs">
-							<label
-								for="ai-curriculum-quiz-field-outputs"><?php esc_html_e( 'Outputs', 'learnpress' ); ?></label>
-							<input id="ai-curriculum-quiz-field-outputs" type="number" min="1" step="1">
-						</div>
 						<button type="button"
-						        class="button"
-						        id="lp-generate-curriculum-quiz-btn"><?php esc_html_e( 'Generate', 'learnpress' ); ?></button>
+								class="button"
+								id="lp-generate-curriculum-quiz-btn"><?php esc_html_e( 'Generate', 'learnpress' ); ?></button>
 					</div>
 				</div>
 				<div class="ai-output">
 					<header class="header">
 						<div class="output-title"><?php esc_html_e( 'Output', 'learnpress' ); ?></div>
 						<button type="button"
-						        class="toggle-prompt button"><?php esc_html_e( 'Display prompt', 'learnpress' ); ?></button>
+								class="toggle-prompt button"><?php esc_html_e( 'Display prompt', 'learnpress' ); ?></button>
 					</header>
 					<div class="prompt-output">
 					</div>
