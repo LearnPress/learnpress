@@ -679,7 +679,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 	}
 
 	public function admin_editor_refactor() {
-		learn_press_admin_view( 'course/edtior-refactor' );
+		learn_press_admin_view( 'course/editor-refactor' );
 	}
 
 	/*public function save( $post_id ) {
