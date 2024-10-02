@@ -313,6 +313,10 @@ const getItem = ( data, url ) => {
 };
 
 const handleEventPopup = ( handleUpdateItem, urlGetItem ) => {
+	if ( ! popupModalSelectItemEl ) {
+		return;
+	}
+
 	if ( tabs.length > 0 ) {
 		tabs.map( ( tab ) => {
 			attachPaginationListeners( tab, ( e ) => {
@@ -322,8 +326,8 @@ const handleEventPopup = ( handleUpdateItem, urlGetItem ) => {
 		} );
 	}
 
-	const closeEl = popupModalSelectItemEl.querySelector( '.header .close' );
-	if ( popupModalSelectItemEl ) {
+	const closeEl = popupModalSelectItemEl?.querySelector( '.header .close' );
+	if ( closeEl ) {
 		closeEl.addEventListener( 'click', ( e ) => {
 			e.preventDefault();
 			resetPopup( popupModalSelectItemEl );

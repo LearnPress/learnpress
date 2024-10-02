@@ -9,7 +9,10 @@ function delay( ms ) {
 
 const getCourseId = () => {
 	const urlParams = new URLSearchParams( window.location.search );
-	const courseId = urlParams.get( 'post' ) ?? 0;
+	let courseId = urlParams.get( 'post' ) ?? 0;
+	if ( ! courseId ) {
+		courseId = document.querySelector( 'input#post_ID' ).value;
+	}
 	return courseId;
 };
 
