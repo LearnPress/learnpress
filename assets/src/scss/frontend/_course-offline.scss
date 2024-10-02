@@ -317,6 +317,41 @@
             padding: 4px 8px;
         }
     }
+
+    .course-tab-panel-faqs {
+        padding-top: 30px;
+    }
+
+    .course-box-extra-info {
+        margin-bottom: 30px;
+
+        .course-extra-box {
+            margin-bottom: 16px;
+        }
+
+        .course-faqs__title {
+            margin: 0 0 30px 0;
+        }
+    }
+
+    .lp-co-instructors {
+        list-style: none;
+        margin: 0 0 30px 0;
+        padding: 0;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 30px;
+
+        .lp-co-instructor {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+
+            img {
+                max-width: 100px;
+            }
+        }
+    }
 }
 @media ( max-width: 1024px ) {
     .lp-single-offline-course {
@@ -349,6 +384,10 @@
 
         .lp-list-courses-related .course-item {
             flex: 0 0 100%;
+        }
+
+        .lp-co-instructors {
+            grid-template-columns: repeat(1, 1fr);
         }
     }
 }
