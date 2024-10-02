@@ -72,6 +72,13 @@ $types         = learn_press_course_get_support_item_types();
 						<?php endforeach; ?>
 					</div>
 					<div class="title"><input type="text" placeholder="Create a new lesson"></div>
+					<div class="action">
+						<div class="button button-secondary btn-add-lesson mr-2">
+							<span>
+								<?php esc_html_e( 'Add lesson', 'learnpress' ); ?>
+							</span>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>

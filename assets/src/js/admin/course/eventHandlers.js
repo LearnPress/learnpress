@@ -348,44 +348,25 @@ const updateSingleSectionItem = ( sectionEl, courseEditorEl ) => {
 		} );
 
 		const newSectionItemInputEl = newSectionItemEl.querySelector( '.title input' );
-		if ( newSectionItemInputEl ) {
-			let previousValue = newSectionItemInputEl?.value;
-			newSectionItemInputEl.addEventListener( 'keydown', function( event ) {
-				if ( event.key === 'Enter' ) {
-					event.preventDefault();
-					const currentValue = newSectionItemInputEl.value;
-					if ( previousValue !== currentValue && currentValue !== '' ) {
-						previousValue = currentValue;
-						const selectedValue = newSectionItemEl.querySelector( '.type.current input' )?.value ?? '';
-						const courseId = getCourseId();
-						const data = {
-							sectionId,
-							item: {
-								title: currentValue,
-								type: selectedValue,
-							},
-							courseId,
-						};
-						addNewItemApi( data, newSectionItemInputEl, sectionEl, courseEditorEl );
-					}
+		const btnAddLesson = newSectionItemEl.querySelector( '.btn-add-lesson' );
+		if ( btnAddLesson && newSectionItemInputEl ) {
+			btnAddLesson.addEventListener( 'click', ( e ) => {
+				e.preventDefault();
+				if ( ! newSectionItemInputEl.value ) {
+					return;
 				}
-			} );
-			newSectionItemInputEl.addEventListener( 'blur', function() {
-				const currentValue = newSectionItemInputEl.value;
-				if ( previousValue !== currentValue && currentValue !== '' ) {
-					previousValue = currentValue;
-					const selectedValue = newSectionItemEl.querySelector( '.type.current input' )?.value ?? '';
-					const courseId = getCourseId();
-					const data = {
-						sectionId,
-						item: {
-							title: currentValue,
-							type: selectedValue,
-						},
-						courseId,
-					};
-					addNewItemApi( data, newSectionItemInputEl, sectionEl, courseEditorEl );
-				}
+
+				const selectedValue = newSectionItemEl.querySelector( '.type.current input' )?.value ?? '';
+				const courseId = getCourseId();
+				const data = {
+					sectionId,
+					item: {
+						title: newSectionItemInputEl.value,
+						type: selectedValue,
+					},
+					courseId,
+				};
+				addNewItemApi( data, newSectionItemInputEl, sectionEl, courseEditorEl );
 			} );
 		}
 	}
