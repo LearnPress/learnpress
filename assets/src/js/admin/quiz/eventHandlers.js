@@ -6,7 +6,10 @@ import lplistAPI from '../../api';
 
 const getQuizId = () => {
 	const urlParams = new URLSearchParams( window.location.search );
-	const quizId = urlParams.get( 'post' );
+	let quizId = urlParams.get( 'post' );
+	if ( ! quizId ) {
+		quizId = document.querySelector( 'input#post_ID' ).value;
+	}
 	return quizId;
 };
 
