@@ -351,6 +351,11 @@
                 max-width: 100px;
             }
         }
+
+        .instructor-display-name {
+			font-size: 1em;
+			text-transform: capitalize;
+		}
     }
 }
 @media ( max-width: 1024px ) {
