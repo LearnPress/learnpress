@@ -333,30 +333,6 @@
     .course-requirements {
         margin-top: 30px;
     }
-
-    .lp-co-instructors {
-        list-style: none;
-        margin: 0 0 30px 0;
-        padding: 0;
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 30px;
-
-        .lp-co-instructor {
-            display: flex;
-            gap: 30px;
-            align-items: center;
-
-            img {
-                max-width: 100px;
-            }
-        }
-
-        .instructor-display-name {
-			font-size: 1em;
-			text-transform: capitalize;
-		}
-    }
 }
 @media ( max-width: 1024px ) {
     .lp-single-offline-course {
@@ -389,10 +365,6 @@
 
         .lp-list-courses-related .course-item {
             flex: 0 0 100%;
-        }
-
-        .lp-co-instructors {
-            grid-template-columns: repeat(1, 1fr);
         }
     }
 }
