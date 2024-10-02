@@ -2,7 +2,7 @@
 
 /**
  * Class Quiz Post Model
- * To replace class LP_Question old
+ * To replace class LP_Quiz old
  *
  * @package LearnPress/Classes
  * @version 1.0.0
@@ -53,7 +53,6 @@ class QuizPostModel extends PostModel {
 	public function get_question_ids() {
 		try {
 			if ( empty( $this->question_ids ) ) {
-				var_dump( 'runinng' );
 				$db                       = LP_Quiz_DB::getInstance();
 				$filter                   = new LP_Filter();
 				$filter->only_fields      = [ 'question_id' ];
