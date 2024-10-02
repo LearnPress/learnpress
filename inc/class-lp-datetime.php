@@ -174,9 +174,9 @@ class LP_Datetime {
 				$day_remain  = $diff->d - $week * 7;
 				$format_date = sprintf(
 					'%d %s, %d %s', $week,
-					_n( 'week', 'weeks', $week ),
+					_n( 'week', 'weeks', $week, 'learnpress' ),
 					$day_remain,
-					_n( 'day', 'days', $day_remain )
+					_n( 'day', 'days', $day_remain, 'learnpress' )
 				);
 				break;
 			}
@@ -244,10 +244,6 @@ class LP_Datetime {
 	 * @since 4.2.3.5
 	 */
 	public static function get_string_plural_duration( float $duration_number, string $duration_type = '' ): string {
-		if ( $duration_number == 0 ) {
-			return esc_html__( 'Lifetime', 'learnpress' );
-		}
-
 		switch ( strtolower( $duration_type ) ) {
 			case 'second':
 				$duration_str = sprintf(
@@ -280,7 +276,7 @@ class LP_Datetime {
 				);
 				break;
 			default:
-				$duration_str = $duration_number;
+				$duration_str = $duration_number . ' ' . $duration_type;
 		}
 
 		return $duration_str;

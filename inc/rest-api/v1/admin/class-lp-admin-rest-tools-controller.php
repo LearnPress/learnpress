@@ -431,9 +431,9 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 		try {
 			@set_time_limit( 0 );
 			$params        = $request->get_params();
-			$search_string = sanitize_text_field( $params['search'] ?? '' );
-			$current_ids   = sanitize_text_field( $params['current_ids'] ?? '' );
-			$number        = sanitize_text_field( $params['number'] ?? 20 );
+			$search_string = LP_Helper::sanitize_params_submitted( $params['search'] ?? '' );
+			$current_ids   = LP_Helper::sanitize_params_submitted( $params['current_ids'] ?? '' );
+			$number        = LP_Helper::sanitize_params_submitted( $params['number'] ?? 20 );
 			$args_get_user = array(
 				'search_columns' => array(
 					'user_login',
@@ -462,7 +462,11 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 			$users_selected = [];
 			$total_selected = 0;
 			if ( ! empty( $current_ids ) ) {
-				$current_ids_array     = explode( ',', $current_ids );
+				if ( ! is_array( $current_ids ) ) {
+					$current_ids_array = explode( ',', $current_ids );
+				} else {
+					$current_ids_array = $current_ids;
+				}
 				$args_get_user_current = array(
 					'include' => $current_ids_array,
 					'fields'  => array( 'ID', 'display_name', 'user_login', 'user_email' ),
