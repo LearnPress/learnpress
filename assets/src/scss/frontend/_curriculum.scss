@@ -167,7 +167,8 @@
 	div.lp-list-co-instructor {
 		display: grid;
 		grid-template-columns: repeat(2, 1fr);
-		gap: 40px;
+		gap: 30px;
+		margin-top: 30px;
 
 		&__item {
 			display: flex;
