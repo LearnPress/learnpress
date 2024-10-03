@@ -1,32 +1,15 @@
-body {
-
-	div.entry-content > {
-
-		div.learnpress {
-			--responsive--aligndefault-width: 100%;
-			max-width: var(--lp-content-width, 100%);
-		}
-	}
-
-	.entry-content {
-		&.has-global-padding {
-			padding-left: 0;
-			padding-right: 0;
-		}
-	}
-}
-
 .lp-user-profile {
-	position: relative;
-	background: #fff;
+	.lp-profile-left {
+		min-width: 120px;
+		max-width: 120px;
+	}
 
 	.lp-user-profile-avatar {
-
-		img {
+  		img {
 			position: relative;
 			width: 100%;
 			height: auto;
-			border-radius: unset;
+			border-radius: 50%;
 			display: block;
 		}
 	}
@@ -42,7 +25,6 @@ body {
 		background: white;
 		gap: 10px;
 		padding: 20px 0;
-		border-top: 1px solid #eaeaea;
 
 		a {
 			display: inline-flex;
@@ -61,103 +43,21 @@ body {
 		}
 	}
 
-	.wrapper-profile-header {
-		color: #fff;
-		background: var(--lp-secondary-color);
-		position: relative;
-
-		@media (max-width: 990px) {
-
-			.lp-profile-content-area {
-				min-height: inherit;
-				padding: 50px 15px;
-			}
-
-			.lp-profile-left {
-				float: left;
-				position: static;
-			}
-
-			.lp-profile-right {
-				float: right;
-				width: calc(100% - 270px);
-				margin-left: 0;
-			}
-		}
-
-		@media (max-width: 768px) {
-
-			.lp-profile-left {
-				width: 220px;
-			}
-
-			.lp-profile-right {
-				width: calc(100% - 220px);
-			}
-
-			.lp-user-profile-socials {
-
-				a {
-					width: 36px;
-					height: 36px;
-					margin: 0 5px;
-					line-height: 2.25rem;
-				}
-			}
-		}
-
-		@media (max-width: 500px) {
-
-			.lp-profile-left {
-				float: none;
-				margin: 0 auto;
-			}
-
-			.lp-profile-right {
-				width: 100%;
-				padding-top: 30px;
-				text-align: center;
-			}
-		}
-
-		&::before {
-			right: 100%;
-			left: auto;
-		}
-
-		&::after {
-			left: 100%;
-			right: auto;
-		}
-	}
 
 	.lp-profile-content-area {
 		position: relative;
-		padding: 16px;
-		display: flex;
+ 		display: flex;
 		align-items: center;
-		@media (max-width: 650px) {
-			flex-direction: column;
-			.lp-profile-right {
-				text-align: center;
-				width: 100%;
-				padding: 24px 0 0;
-			}
-		}
-	}
+		gap: $spacing-base-4x;
+		justify-content: space-between;
 
-	.lp-profile-left {
-		min-width: 270px;
-		max-width: 270px;
-		@media (max-width: 520px) {
-			min-width: 100%;
-		}
 	}
-
 	.lp-profile-right {
-		padding-right: 15px;
-		padding-left: 35px;
+		flex:1
 	}
+
+
+
 
 	.lp-profile-username {
 		padding-bottom: 10px;
@@ -728,57 +628,6 @@ body {
 	}
 }
 
-.wrap-fullwidth {
-
-	//a,
-	//button,
-	//input,
-	//textarea {
-	//
-	//	&:focus {
-	//		border: 0;
-	//		outline: 0;
-	//	}
-	//}
-	//
-	//a:hover {
-	//	text-decoration: none;
-	//}
-	//
-	//p {
-	//	word-break: break-word;
-	//
-	//	&:last-child {
-	//		margin-bottom: 0;
-	//	}
-	//}
-
-	//label {
-	//	display: block;
-	//	margin: 0;
-	//	outline: none;
-	//}
-
-	//img {
-	//	max-width: 100%;
-	//	height: auto;
-	//}
-
-	//form {
-	//	margin: 0;
-	//}
-
-	//.col-full {
-	//	box-sizing: border-box;
-	//	max-width: 100%;
-	//	padding: 0;
-	//
-	//	.woocommerce-breadcrumb {
-	//		display: none;
-	//	}
-	//}
-}
-
 .dashboard-statistic__row {
 	display: flex;
 	gap: 8px;
@@ -890,12 +739,6 @@ body {
 
 }
 
-//.profile-basic-information,
-//form[name="profile-change-password"] {
-//
-//
-//}
-
 .learn-press-form {
 	.form-fields {
 		.form-field {
@@ -1001,44 +844,6 @@ body {
 		margin: 0;
 	}
 }
-
-//
-//#learn-press-profile-basic-information {
-//
-//	//.form-fields {
-//	//
-//	//	&::after {
-//	//		display: block;
-//	//		clear: both;
-//	//		content: "";
-//	//	}
-//	//
-//	//	@media (max-width: 767px) {
-//	//		margin: 0;
-//	//	}
-//	//}
-//
-//	button[type="submit"] {
-//		//padding: 0 15px;
-//		//height: 40px;
-//		//line-height: 2.5rem;
-//		//border: 0;
-//		//display: inline-flex;
-//		//align-items: center;
-//		//justify-content: center;
-//		background-color: var(--lp-primary-color);
-//		color: white;
-//		//font-size: 1rem;
-//		//font-weight: 400;
-//		//@include transition(.3s);
-//		//@include border-radius(3px);
-//
-//		&:hover {
-//			opacity: .5;
-//			background-color: var(--lp-primary-color);
-//		}
-//	}
-//}
 
 .recover-order {
 

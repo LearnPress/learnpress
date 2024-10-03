@@ -372,9 +372,10 @@ add_action( 'learn-press/user-profile/private', LearnPress::instance()->template
 
 add_action( 'learn-press/user-profile-account', LearnPress::instance()->template( 'profile' )->text( ' <div class="lp-profile-left">', 'user-profile-account-left-open' ), 5 );
 add_action( 'learn-press/user-profile-account', LearnPress::instance()->template( 'profile' )->func( 'avatar' ), 10 );
-add_action( 'learn-press/user-profile-account', LearnPress::instance()->template( 'profile' )->func( 'socials' ), 10 );
+
 add_action( 'learn-press/user-profile-account', LearnPress::instance()->template( 'profile' )->text( ' </div>', 'user-profile-account-left-close' ), 15 );
 add_action( 'learn-press/user-profile-account', LearnPress::instance()->template( 'profile' )->func( 'header' ), 20 );
+add_action( 'learn-press/user-profile-account', LearnPress::instance()->template( 'profile' )->func( 'socials' ), 25 );
 
 add_action( 'learn-press/user-profile-tabs', LearnPress::instance()->template( 'profile' )->func( 'tabs' ), 10 );
 

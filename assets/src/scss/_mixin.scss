@@ -214,3 +214,11 @@
 	-o-animation: $args;
 	animation: $args;
 }
+
+@mixin input(){
+	border: 1px solid $border-color;
+	border-radius: $border-radius-global;
+ 	padding: $spacing-base-2x $spacing-base-4x;
+	height: inherit;
+	font-size: inherit;
+}

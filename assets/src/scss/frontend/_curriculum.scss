@@ -162,7 +162,7 @@
 	}
 }
 
-.course-summary {
+.course-summary-content {
 
 	div.lp-list-co-instructor {
 		display: grid;
@@ -1363,12 +1363,15 @@ body.course-item-popup {
 			width: 300px;
 		}
 		@media (max-width: 768px) {
-			margin-right: 0%;
-		}
-
-		.course-curriculum {
-			@media (max-width: 768px) {
+			margin-right: 0;
+			.course-curriculum {
 				width: 200px;
+			}
+			.items-progress, .course-progress {
+				float: none;
+				width: 100%;
+				margin-right: 0;
+				margin-bottom: 20px;
 			}
 		}
 
@@ -1377,17 +1380,7 @@ body.course-item-popup {
 				width: 40px;
 			}
 		}
-
-		.items-progress,
-		.course-progress {
-			@media (max-width: 768px) {
-				float: none;
-				width: 100%;
-				margin-right: 0%;
-				margin-bottom: 20px;
-			}
-		}
-	}
+  	}
 
 	#content-item-nav {
 		@media (max-width: 1300px) {

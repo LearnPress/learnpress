@@ -1,8 +1,8 @@
 @font-face {
 	font-family: 'lp-icon';
-	src: url('../src/css/vendor/fonts/lp-icon/lp-icon.ttf?v=vhxwf') format('truetype'),
-	url('../src/css/vendor/fonts/lp-icon/lp-icon.woff2?v=vhxwf') format('woff2'),
-	url('../src/css/vendor/fonts/lp-icon/lp-icon.svg?v=vhxwf#lp-icon') format('svg');
+	src: url('../src/css/vendor/fonts/lp-icon/lp-icon.ttf?v=sg0x54') format('truetype'),
+	url('../src/css/vendor/fonts/lp-icon/lp-icon.woff2?v=sg0x54') format('woff2'),
+	url('../src/css/vendor/fonts/lp-icon/lp-icon.svg?v=sg0x54#lp-icon') format('svg');
 	font-weight: normal;
 	font-style: normal;
 	font-display: block;
@@ -114,6 +114,12 @@
 .lp-icon-bookmark:before {
 	content: "\f02e";
 }
+.lp-icon-edit:before {
+	content: "\f044";
+}
+.lp-icon-pencil-square-o:before {
+	content: "\f044";
+}
 .lp-icon-check-square-o:before {
 	content: "\f046";
 }
@@ -125,6 +131,9 @@
 }
 .lp-icon-chevron-right:before {
 	content: "\f054";
+}
+.lp-icon-check-circle:before {
+	content: "\f058";
 }
 .lp-icon-question-circle:before {
 	content: "\f059";
@@ -143,6 +152,9 @@
 }
 .lp-icon-exclamation-circle:before {
 	content: "\f06a";
+}
+.lp-icon-gift:before {
+	content: "\f06b";
 }
 .lp-icon-eye:before {
 	content: "\f06e";
@@ -227,6 +239,9 @@
 }
 .lp-icon-certificate:before {
 	content: "\f0a3";
+}
+.lp-icon-briefcase:before {
+	content: "\f0b1";
 }
 .lp-icon-arrows-alt:before {
 	content: "\f0b2";
@@ -387,6 +402,9 @@
 .lp-icon-share-alt:before {
 	content: "\f1e0";
 }
+.lp-icon-pie-chart:before {
+	content: "\f200";
+}
 .lp-icon-user-secret:before {
 	content: "\f21b";
 }
@@ -483,24 +501,27 @@
 .lp-icon-ebook:before {
 	content: "\e919";
 }
+.lp-icon-co-instructor:before {
+	content: "\e904";
+}
+.lp-icon-close-circle:before {
+	content: "\e907";
+}
+.lp-icon-layers:before {
+	content: "\e91a";
+}
 .lp-icon-book-open:before {
 	content: "\f518";
 }
 .lp-icon-pinterest-p:before {
 	content: "\f231";
 }
-.lp-icon-map-marker:before {
-	content: "\e91b";
-}
-.lp-icon-check-circle:before {
-	content: "\e904";
-}
 .lp-icon-dropbox:before {
 	content: "\e905";
 }
+.lp-icon-map-marker:before {
+	content: "\e91b";
+}
 .lp-icon-box:before {
 	content: "\e906";
-}
-.lp-icon-close-circle:before {
-	content: "\e907";
 }

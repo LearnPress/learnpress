@@ -12,6 +12,6 @@
 defined( 'ABSPATH' ) || exit();
 ?>
 
-<div class="course-content course-summary-content">
+<div id="learn-press-course" class="course-content course-summary-content">
 	<?php do_action( 'learn-press/course-content-summary' ); ?>
 </div>
