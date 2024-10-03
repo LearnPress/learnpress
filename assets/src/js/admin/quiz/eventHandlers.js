@@ -1,5 +1,5 @@
 import { Sortable } from 'sortablejs';
-import { getQuestionId, singleQuestion } from '../question/eventHandlers';
+import { getQuestionId, singleQuestion, singleQuestionOption } from '../question/eventHandlers';
 import { changeQuestionTitleApi, removeQuestionApi, deleteQuestionApi, duplicateQuestionApi, addNewQuestionApi, sortQuestionApi, addQuestionToQuizApi } from './apiRequests';
 import { popupSelectItem } from '../popupSelectedItem';
 import lplistAPI from '../../api';
@@ -164,6 +164,9 @@ const renderQuestion = ( html, el ) => {
 	handleActionQuestion( newElement, el );
 	const questionId = getQuestionId( newElement );
 	singleQuestion( newElement, questionId );
+
+	const questionOptionEl = newElement.querySelector( '.js-question-options' );
+	singleQuestionOption( questionOptionEl, questionId );
 };
 
 const updateTotalItem = ( el, value, elRemove ) => {

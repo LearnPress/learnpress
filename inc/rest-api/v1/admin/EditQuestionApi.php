@@ -28,6 +28,13 @@ class EditQuestionApi extends LP_Abstract_REST_Controller {
 					'permission_callback' => '',
 				),
 			),
+			'get-question-option'                  => array(
+				array(
+					'methods'             => WP_REST_Server::ALLMETHODS,
+					'callback'            => array( $this, 'get_question_option' ),
+					'permission_callback' => '',
+				),
+			),
 			'change-question-type'                 => array(
 				array(
 					'methods'             => WP_REST_Server::ALLMETHODS,
@@ -60,6 +67,13 @@ class EditQuestionApi extends LP_Abstract_REST_Controller {
 				array(
 					'methods'             => WP_REST_Server::ALLMETHODS,
 					'callback'            => array( $this, 'change_correct' ),
+					'permission_callback' => '',
+				),
+			),
+			'change-option'                   => array(
+				array(
+					'methods'             => WP_REST_Server::ALLMETHODS,
+					'callback'            => array( $this, 'change_option' ),
 					'permission_callback' => '',
 				),
 			),
@@ -116,6 +130,41 @@ class EditQuestionApi extends LP_Abstract_REST_Controller {
 				$question_data
 			);
 			$response->data->html[] = ob_get_clean();
+			$response->status       = 'success';
+		} catch ( Exception $e ) {
+			$response->message = $e->getMessage();
+		}
+
+		return $response;
+	}
+
+	public function get_question_option( WP_REST_Request $request ) {
+		$response    = new LP_REST_Response();
+		$params      = $request->get_params();
+		$question_id = $params['questionId'] ?? 0;
+
+		try {
+			if ( empty( $question_id ) ) {
+				throw new Exception( esc_html__( 'No Question Id available!', 'learnpress' ) );
+			}
+
+			if ( get_post_type( $question_id ) !== LP_QUESTION_CPT ) {
+				throw new Exception( esc_html__( 'Post is not a question post type!', 'learnpress' ) );
+			}
+
+			$question               = LP_Question::get_question( $question_id );
+			$post                   = get_post( $question_id );
+			$mark                   = $question->get_mark() ?? 1;
+			$hint                   = $question->get_hint() ?? '';
+			$explanation            = $question->get_explanation() ?? '';
+			$description            = $post->post_content ?? '';
+			$option                 = [
+				'description' => $description,
+				'points'      => $mark,
+				'hint'        => $hint,
+				'explanation' => $explanation,
+			];
+			$response->data->option = $option;
 			$response->status       = 'success';
 		} catch ( Exception $e ) {
 			$response->message = $e->getMessage();
@@ -310,6 +359,50 @@ class EditQuestionApi extends LP_Abstract_REST_Controller {
 			$question_curd->change_correct_answer( $question, $answer );
 			$response->status = 'success';
 
+		} catch ( Exception $e ) {
+			$response->message = $e->getMessage();
+		}
+
+		return $response;
+	}
+
+	public function change_option( WP_REST_Request $request ) {
+		$response    = new LP_REST_Response();
+		$params      = $request->get_params();
+		$question_id = $params['questionId'] ?? '';
+		$description = $params['description'] ?? '';
+		$mark        = $params['mark'] ?? '';
+		$hint        = $params['hint'] ?? '';
+		$explanation = $params['explanation'] ?? '';
+
+		try {
+			if ( empty( $question_id ) ) {
+				throw new Exception( esc_html__( 'No Question Id available!', 'learnpress' ) );
+			}
+
+			$question = LP_Question::get_question( $question_id );
+			if ( empty( $question ) ) {
+				throw new Exception( esc_html__( 'No Question Found!', 'learnpress' ) );
+			}
+
+			if ( ! empty( $description ) ) {
+				wp_update_post(
+					array(
+						'ID'           => $question_id,
+						'post_content' => $description,
+					)
+				);
+			}
+			if ( ! empty( $mark ) ) {
+				update_post_meta( $question_id, '_lp_mark', $mark );
+			}
+			if ( ! empty( $hint ) ) {
+				update_post_meta( $question_id, '_lp_hint', $hint );
+			}
+			if ( ! empty( $explanation ) ) {
+				update_post_meta( $question_id, '_lp_explanation', $explanation );
+			}
+			$response->status = 'success';
 		} catch ( Exception $e ) {
 			$response->message = $e->getMessage();
 		}

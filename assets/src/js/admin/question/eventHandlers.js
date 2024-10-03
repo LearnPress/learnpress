@@ -1,4 +1,4 @@
-import { getHtmlQuestionApi, changeQuestionTypeApi, changeTitleAnswerApi, addNewAnswerApi, changeCorrectAnswerApi, removeAnswerApi, sortAnswerApi } from './apiRequests';
+import { getHtmlQuestionApi, changeQuestionTypeApi, changeTitleAnswerApi, addNewAnswerApi, changeCorrectAnswerApi, removeAnswerApi, sortAnswerApi, getQuestionOptionApi, changeOptionApi } from './apiRequests';
 import { Sortable } from 'sortablejs';
 
 const getParentElByTagName = ( tag, el ) => {
@@ -73,6 +73,10 @@ const renderQuestion = async ( questionEditEl, questionId ) => {
 	await getHtmlQuestionApi( questionEditEl, questionId );
 };
 
+const renderQuestionOption = async ( questionEditEl, questionId ) => {
+	await getQuestionOptionApi( questionEditEl, questionId );
+};
+
 const changeQuestionType = ( questionEditEl ) => {
 	if ( ! questionEditEl ) {
 		return;
@@ -111,6 +115,133 @@ const changeQuestionType = ( questionEditEl ) => {
 			}
 		} );
 	} );
+};
+
+const handleChangeQuestionOption = ( el, questionId ) => {
+	const descEl = el.querySelector( '.question-description' );
+	const pointEl = el.querySelector( '.question-points' );
+	const hintEl = el.querySelector( '.question-hint' );
+	const explanationEl = el.querySelector( '.question-explanation' );
+
+	if ( descEl ) {
+		let previousValue = descEl.value;
+		descEl.addEventListener( 'keydown', function( event ) {
+			if ( event.key === 'Enter' ) {
+				event.preventDefault();
+				const currentValue = descEl.value;
+				if ( previousValue !== currentValue && currentValue !== '' ) {
+					previousValue = currentValue;
+					const data = {
+						questionId,
+						description: currentValue,
+					};
+					changeOptionApi( data, el );
+				}
+			}
+		} );
+
+		descEl.addEventListener( 'blur', () => {
+			const currentValue = descEl.value;
+			if ( previousValue !== currentValue && currentValue !== '' ) {
+				previousValue = currentValue;
+				const data = {
+					questionId,
+					description: currentValue,
+				};
+				changeOptionApi( data, el );
+			}
+		} );
+	}
+
+	if ( pointEl ) {
+		let previousValue = pointEl.value;
+		pointEl.addEventListener( 'keydown', function( event ) {
+			if ( event.key === 'Enter' ) {
+				event.preventDefault();
+				const currentValue = pointEl.value;
+				if ( previousValue !== currentValue && currentValue !== '' ) {
+					previousValue = currentValue;
+					const data = {
+						questionId,
+						description: currentValue,
+					};
+					changeOptionApi( data, el );
+				}
+			}
+		} );
+
+		pointEl.addEventListener( 'blur', () => {
+			const currentValue = pointEl.value;
+			if ( previousValue !== currentValue && currentValue !== '' ) {
+				previousValue = currentValue;
+				const data = {
+					questionId,
+					mark: currentValue,
+				};
+				changeOptionApi( data, el );
+			}
+		} );
+	}
+
+	if ( hintEl ) {
+		let previousValue = hintEl.value;
+		hintEl.addEventListener( 'keydown', function( event ) {
+			if ( event.key === 'Enter' ) {
+				event.preventDefault();
+				const currentValue = hintEl.value;
+				if ( previousValue !== currentValue && currentValue !== '' ) {
+					previousValue = currentValue;
+					const data = {
+						questionId,
+						description: currentValue,
+					};
+					changeOptionApi( data, el );
+				}
+			}
+		} );
+
+		hintEl.addEventListener( 'blur', () => {
+			const currentValue = hintEl.value;
+			if ( previousValue !== currentValue && currentValue !== '' ) {
+				previousValue = currentValue;
+				const data = {
+					questionId,
+					hint: currentValue,
+				};
+				changeOptionApi( data, el );
+			}
+		} );
+	}
+
+	if ( explanationEl ) {
+		let previousValue = explanationEl.value;
+		explanationEl.addEventListener( 'keydown', function( event ) {
+			if ( event.key === 'Enter' ) {
+				event.preventDefault();
+				const currentValue = explanationEl.value;
+				if ( previousValue !== currentValue && currentValue !== '' ) {
+					previousValue = currentValue;
+					const data = {
+						questionId,
+						description: currentValue,
+					};
+					changeOptionApi( data, el );
+				}
+			}
+		} );
+
+		explanationEl.addEventListener( 'blur', () => {
+			const currentValue = explanationEl.value;
+			if ( previousValue !== currentValue && currentValue !== '' ) {
+				previousValue = currentValue;
+				const data = {
+					questionId,
+					explanation: currentValue,
+				};
+				changeOptionApi( data, el );
+			}
+		} );
+	}
 };
 
 const changeTitleAnswer = ( questionEditEl ) => {
@@ -284,4 +415,9 @@ const singleQuestion = async ( questionEditEl, questionId ) => {
 	changeQuestionType( questionEditEl );
 };
 
-export { renderQuestion, changeQuestionType, changeTitleAnswer, changeCorrectAnswer, addNewAnswer, deleteAnswer, sortableAnswer, getQuestionId, checkHiddenRemoveAnswer, singleQuestion };
+const singleQuestionOption = async ( questionOptionEl, questionId ) => {
+	await renderQuestionOption( questionOptionEl, questionId );
+	handleChangeQuestionOption( questionOptionEl, questionId );
+};
+
+export { renderQuestion, changeQuestionType, changeTitleAnswer, changeCorrectAnswer, addNewAnswer, deleteAnswer, sortableAnswer, getQuestionId, checkHiddenRemoveAnswer, singleQuestion, singleQuestionOption };

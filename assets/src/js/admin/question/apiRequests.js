@@ -40,6 +40,52 @@ const renderContent = ( el, html ) => {
 	changeContentAnswer( el );
 };
 
+const renderOption = ( el, option ) => {
+	if ( ! option || ! el ) {
+		return;
+	}
+
+	const placeholderEl = el.querySelector( '.lp-place-holder' );
+	const descEl = el.querySelector( '.question-description' );
+	const pointEl = el.querySelector( '.question-points' );
+	const hintEl = el.querySelector( '.question-hint' );
+	const explanationEl = el.querySelector( '.question-explanation' );
+	const contentEl = el.querySelector( '.postbox' );
+	const toggleEl = el.querySelector( '.toggle' );
+	const hndleEl = el.querySelector( '.hndle' );
+
+	if ( placeholderEl ) {
+		placeholderEl.remove();
+	}
+
+	if ( toggleEl ) {
+		toggleEl.addEventListener( 'click', ( e ) => {
+			e.preventDefault();
+			el.classList.toggle( 'closed' );
+		} );
+	}
+
+	if ( contentEl ) {
+		contentEl.style.display = 'block';
+	}
+
+	if ( descEl ) {
+		descEl.value = option.description;
+	}
+
+	if ( pointEl ) {
+		pointEl.value = option.points;
+	}
+
+	if ( hintEl ) {
+		hintEl.value = option.hint;
+	}
+
+	if ( explanationEl ) {
+		explanationEl.value = option.explanation;
+	}
+};
+
 const apiRequest = ( url, method = 'POST', data, callbacks = {}, questionEditEl, questionId ) => {
 	if ( ! url ) {
 		return;
@@ -111,6 +157,30 @@ const getHtmlQuestionApi = ( questionEditEl, questionId ) => {
 	} );
 };
 
+const getQuestionOptionApi = ( questionOptionEl, questionId ) => {
+	return new Promise( ( resolve, reject ) => {
+		const URL = lplistAPI.admin.apiGetQuestionOption;
+		const callBack = {
+			success: ( response ) => {
+				const option = response.data.option;
+				if ( option ) {
+					renderOption( questionOptionEl, option );
+				}
+				resolve();
+			},
+			error: ( error ) => {
+				reject( error );
+			},
+		};
+
+		const data = {
+			questionId,
+		};
+
+		apiRequest( URL, 'POST', data, callBack, questionOptionEl );
+	} );
+};
+
 const changeQuestionTypeApi = ( data, questionEditEl, questionId ) => {
 	const URL = lplistAPI.admin.apiChangeQuestionType;
 	const callBack = {
@@ -127,9 +197,13 @@ const changeQuestionTypeApi = ( data, questionEditEl, questionId ) => {
 	apiRequest( URL, 'POST', data, callBack, questionEditEl, questionId );
 };
 
+const changeOptionApi = ( data, questionEditEl, questionId ) => {
+	const URL = lplistAPI.admin.apiChangeOption;
+	apiRequest( URL, 'POST', data, {}, questionEditEl, questionId );
+};
+
 const changeTitleAnswerApi = ( data, questionEditEl ) => {
 	const URL = lplistAPI.admin.apiUpdateAnswerTitle;
-
 	apiRequest( URL, 'POST', data, {}, questionEditEl );
 };
 
@@ -164,4 +238,4 @@ const sortAnswerApi = ( data, questionEditEl ) => {
 	apiRequest( URL, 'POST', data, {}, questionEditEl );
 };
 
-export { getHtmlQuestionApi, changeQuestionTypeApi, changeTitleAnswerApi, addNewAnswerApi, changeCorrectAnswerApi, removeAnswerApi, sortAnswerApi, updateStatus };
+export { getHtmlQuestionApi, changeQuestionTypeApi, changeTitleAnswerApi, addNewAnswerApi, changeCorrectAnswerApi, removeAnswerApi, sortAnswerApi, updateStatus, getQuestionOptionApi, changeOptionApi };

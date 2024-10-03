@@ -34,7 +34,8 @@ if ( 'undefined' !== typeof lpDataAdmin ) {
 		apiAddNewQuestion: lpDataAdmin.lp_rest_url + 'lp/v1/admin/edit/quiz/add-new-question',
 		apiSearchQuestionItems: lpDataAdmin.lp_rest_url + 'lp/v1/admin/edit/quiz/search-question-items',
 		apiAddQuestionsToQuiz: lpDataAdmin.lp_rest_url + 'lp/v1/admin/edit/quiz/add-questions-to-quiz',
-
+		apiGetQuestionOption: lpDataAdmin.lp_rest_url + 'lp/v1/admin/edit/question/get-question-option',
+		apiChangeOption: lpDataAdmin.lp_rest_url + 'lp/v1/admin/edit/question/change-option',
 	};
 }
 

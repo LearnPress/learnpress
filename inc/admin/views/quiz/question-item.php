@@ -51,6 +51,13 @@ $edit_link = get_edit_post_link( $id );
 				'id' => $id,
 			]
 		);
+
+		learn_press_admin_view(
+			'quiz/question-option',
+			[
+				'id' => $id,
+			]
+		);
 		?>
 	</div>
 </div>

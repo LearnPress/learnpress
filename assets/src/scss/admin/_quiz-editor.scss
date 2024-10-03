@@ -99,9 +99,7 @@
 				align-items: center;
 
 				&.question-settings {
-					@media (max-width: 1024px) {
-						flex-direction: column;
-					}
+					flex-direction: column;
 				}
 
 				& > * {
@@ -685,25 +683,20 @@
 							}
 						}
 
-						&.closed {
-							.quiz-question-options {
-								width: 38px;
-							}
-
+						.quiz-question-options.closed {
 							.postbox {
 								min-width: 34px;
 								height: 34px;
 								line-height: 2.625rem;
-								text-align: center;
-
-								.hndle {
-									display: none;
-								}
 
 								.toggle {
 									&::after {
 										content: "\f132";
 									}
+								}
+
+								.inside {
+									display: none;
 								}
 							}
 						}
