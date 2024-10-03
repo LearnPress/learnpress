@@ -129,7 +129,7 @@ const handleChangeQuestionOption = ( el, questionId ) => {
 			if ( event.key === 'Enter' ) {
 				event.preventDefault();
 				const currentValue = descEl.value;
-				if ( previousValue !== currentValue && currentValue !== '' ) {
+				if ( previousValue !== currentValue ) {
 					previousValue = currentValue;
 					const data = {
 						questionId,
@@ -142,7 +142,7 @@ const handleChangeQuestionOption = ( el, questionId ) => {
 
 		descEl.addEventListener( 'blur', () => {
 			const currentValue = descEl.value;
-			if ( previousValue !== currentValue && currentValue !== '' ) {
+			if ( previousValue !== currentValue ) {
 				previousValue = currentValue;
 				const data = {
 					questionId,
@@ -159,7 +159,7 @@ const handleChangeQuestionOption = ( el, questionId ) => {
 			if ( event.key === 'Enter' ) {
 				event.preventDefault();
 				const currentValue = pointEl.value;
-				if ( previousValue !== currentValue && currentValue !== '' ) {
+				if ( previousValue !== currentValue ) {
 					previousValue = currentValue;
 					const data = {
 						questionId,
@@ -172,7 +172,7 @@ const handleChangeQuestionOption = ( el, questionId ) => {
 
 		pointEl.addEventListener( 'blur', () => {
 			const currentValue = pointEl.value;
-			if ( previousValue !== currentValue && currentValue !== '' ) {
+			if ( previousValue !== currentValue ) {
 				previousValue = currentValue;
 				const data = {
 					questionId,
@@ -189,7 +189,7 @@ const handleChangeQuestionOption = ( el, questionId ) => {
 			if ( event.key === 'Enter' ) {
 				event.preventDefault();
 				const currentValue = hintEl.value;
-				if ( previousValue !== currentValue && currentValue !== '' ) {
+				if ( previousValue !== currentValue ) {
 					previousValue = currentValue;
 					const data = {
 						questionId,
@@ -202,7 +202,7 @@ const handleChangeQuestionOption = ( el, questionId ) => {
 
 		hintEl.addEventListener( 'blur', () => {
 			const currentValue = hintEl.value;
-			if ( previousValue !== currentValue && currentValue !== '' ) {
+			if ( previousValue !== currentValue ) {
 				previousValue = currentValue;
 				const data = {
 					questionId,
@@ -219,7 +219,7 @@ const handleChangeQuestionOption = ( el, questionId ) => {
 			if ( event.key === 'Enter' ) {
 				event.preventDefault();
 				const currentValue = explanationEl.value;
-				if ( previousValue !== currentValue && currentValue !== '' ) {
+				if ( previousValue !== currentValue ) {
 					previousValue = currentValue;
 					const data = {
 						questionId,
@@ -232,7 +232,7 @@ const handleChangeQuestionOption = ( el, questionId ) => {
 
 		explanationEl.addEventListener( 'blur', () => {
 			const currentValue = explanationEl.value;
-			if ( previousValue !== currentValue && currentValue !== '' ) {
+			if ( previousValue !== currentValue ) {
 				previousValue = currentValue;
 				const data = {
 					questionId,

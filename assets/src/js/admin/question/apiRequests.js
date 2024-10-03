@@ -52,7 +52,6 @@ const renderOption = ( el, option ) => {
 	const explanationEl = el.querySelector( '.question-explanation' );
 	const contentEl = el.querySelector( '.postbox' );
 	const toggleEl = el.querySelector( '.toggle' );
-	const hndleEl = el.querySelector( '.hndle' );
 
 	if ( placeholderEl ) {
 		placeholderEl.remove();
