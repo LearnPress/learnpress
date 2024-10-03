@@ -132,6 +132,8 @@ class LP_Widget extends WP_Widget {
 			wp_enqueue_script( 'lp-course-filter' );
 		}
 
+		do_action( 'learn-press/widget/before', $this, $args, $instance );
+
 		if ( empty( $instance['show_in_rest'] ) ) {
 			$this->widget_in_rest = false;
 		}
