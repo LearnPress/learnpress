@@ -422,20 +422,19 @@
 		padding: 0;
 		margin-bottom: $spacing-base-3x;
 		//font-size: $font-size-small;
-		gap: $spacing-base-3x;
+		gap: $spacing-base-4x;
 		flex-wrap: wrap;
 		row-gap: $spacing-base-2x;
 
 		.meta-item {
 			text-transform: capitalize;
-
+			display: flex;
+			gap: $spacing-base-2x;
 			&::before {
-				margin-right: $spacing-base;
-				color: var(--lp-primary-color);
+ 				color: var(--lp-primary-color);
 				font-family: 'lp-icon';
 			}
-
-			& > div {
+ 			& > div {
 				display: inline-block;
 			}
 		}
@@ -459,6 +458,10 @@
 		.meta-item-student::before {
 			content: "\f501";
 		}
+
+		.meta-item-address::before{
+			content: "\e91b";
+		}
 	}
 
 	.course-content {
@@ -478,16 +481,7 @@
 				}
 			}
 		}
-		.course-address{
-			display: block;
-			margin-bottom: $spacing-base-3x;
-			&::before {
-				margin-right: $spacing-base;
-				color: var(--lp-primary-color);
-				content: "\e91b";
-				font-family: 'lp-icon';
-			}
-		}
+
 	}
 
 	&[data-layout="list"] {
