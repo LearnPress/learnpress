@@ -217,6 +217,12 @@ class ListCoursesTemplate {
 				if ( ! empty( $meta_data['lesson'] ) ) {
 					$meta_data['lesson'] = $singleCourseOfflineTemplate->html_lesson_info( $course, true );
 				}
+
+				// Add address for offline course.
+				$html_address = $singleCourseTemplate->html_address( $course );
+				if ( ! empty( $html_address ) ) {
+					$meta_data['address'] = $singleCourseTemplate->html_address( $course );
+				}
 			}
 
 			$html_meta_data = '';
@@ -267,20 +273,6 @@ class ListCoursesTemplate {
 				$course,
 				$settings
 			);
-
-			// Add address for offline course.
-			if ( $course->is_offline() ) {
-				$html_address = $singleCourseTemplate->html_address( $course );
-				if ( ! empty( $html_address ) ) {
-					$section_bottom = Template::insert_value_to_position_array(
-						$section_bottom,
-						'after',
-						'meta',
-						'address',
-						sprintf( '<div>%s</div>', $singleCourseTemplate->html_address( $course ) )
-					);
-				}
-			}
 
 			$section = [
 				'wrapper_li'      => '<li class="course">',
