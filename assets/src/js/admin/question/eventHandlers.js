@@ -39,11 +39,14 @@ const getAnswerId = ( el ) => {
 
 const checkHiddenRemoveAnswer = ( questionEditEl ) => {
 	const answerEls = Array.from( questionEditEl.querySelectorAll( '.answer-option' ) );
+	let remove = true;
 	if ( ! answerEls.length ) {
-		return;
+		return remove;
 	}
 
 	if ( answerEls.length < 3 ) {
+		remove = false;
+
 		answerEls.forEach( ( answerEl ) => {
 			const removeEl = answerEl.querySelector( '.lp-btn-remove' );
 			if ( ! removeEl ) {
@@ -67,6 +70,22 @@ const checkHiddenRemoveAnswer = ( questionEditEl ) => {
 			}
 		} );
 	}
+
+	return remove;
+};
+
+const checkBeforeChangeCorrect = ( els ) => {
+	let changeCorrect = false;
+	if ( ! els || ! els.length ) {
+		return;
+	}
+	els.forEach( ( el ) => {
+		const answerCorrectEl = el.querySelector( '.lp-answer-check input' );
+		if ( answerCorrectEl.checked ) {
+			changeCorrect = true;
+		}
+	} );
+	return changeCorrect;
 };
 
 const renderQuestion = async ( questionEditEl, questionId ) => {
@@ -315,6 +334,11 @@ const changeCorrectAnswer = ( questionEditEl ) => {
 	answerOptionEls.forEach( ( answerOptionEl ) => {
 		const answerCorrectEl = answerOptionEl.querySelector( '.lp-answer-check input' );
 		answerCorrectEl.addEventListener( 'click', () => {
+			if ( ! answerCorrectEl.checked && ! checkBeforeChangeCorrect( answerOptionEls ) ) {
+				answerCorrectEl.checked = true;
+				return;
+			}
+
 			const checked = answerCorrectEl.checked ? 'yes' : 'no';
 			const answerId = getAnswerId( answerCorrectEl );
 			const data = {
@@ -361,6 +385,9 @@ const deleteAnswer = ( questionEditEl ) => {
 		deleteEls.forEach( ( deleteEl ) => {
 			deleteEl.addEventListener( 'click', ( e ) => {
 				e.preventDefault();
+				if ( ! checkHiddenRemoveAnswer( questionEditEl ) ) {
+					return;
+				}
 				const answerEl = getParentElByTagName( 'tr', deleteEl );
 				const questionId = getQuestionId( questionEditEl );
 				const answerId = getAnswerId( deleteEl );
