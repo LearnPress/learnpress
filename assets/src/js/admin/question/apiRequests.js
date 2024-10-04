@@ -60,7 +60,7 @@ const renderOption = ( el, option ) => {
 	if ( toggleEl ) {
 		toggleEl.addEventListener( 'click', ( e ) => {
 			e.preventDefault();
-			el.classList.toggle( 'closed' );
+			contentEl.classList.toggle( 'closed' );
 		} );
 	}
 

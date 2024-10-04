@@ -682,10 +682,9 @@
 							}
 						}
 
-						.quiz-question-options.closed {
-							.postbox {
+						.quiz-question-options {
+							.postbox.closed {
 								min-width: 34px;
-								height: 34px;
 								line-height: 2.625rem;
 
 								.toggle {
