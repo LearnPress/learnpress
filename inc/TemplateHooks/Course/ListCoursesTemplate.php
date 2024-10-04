@@ -266,7 +266,6 @@ class ListCoursesTemplate {
 					'instructor'  => $singleCourseTemplate->html_instructor( $course ),
 					'category'    => str_replace( ',', '', $singleCourseTemplate->html_categories( $course ) ),
 					'meta'        => sprintf( '<div class="course-wrap-meta">%s</div>', $html_meta_data ),
-					'separator'   => '<div class="separator"></div>',
 					'info'        => Template::combine_components( $section_bottom_end ),
 					'wrapper_end' => '</div>',
 				],
