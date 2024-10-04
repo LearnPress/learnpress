@@ -107,6 +107,8 @@ abstract class LP_Abstract_Assets {
 			// For version addon.
 			if ( ! LP_Debug::is_debug() && ! empty( $script->_version ) ) {
 				self::$_version_assets = $script->_version;
+			} elseif ( LP_Debug::is_debug() ) {
+				self::$_version_assets = time();
 			} else {
 				self::$_version_assets = LEARNPRESS_VERSION;
 			}
@@ -158,6 +160,8 @@ abstract class LP_Abstract_Assets {
 				// For version addon.
 				if ( ! LP_Debug::is_debug() && ! empty( $style->_version ) ) {
 					self::$_version_assets = $style->_version;
+				} elseif ( LP_Debug::is_debug() ) {
+					self::$_version_assets = time();
 				} else {
 					self::$_version_assets = LEARNPRESS_VERSION;
 				}
