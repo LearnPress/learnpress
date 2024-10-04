@@ -153,6 +153,21 @@ body {
 			}
 		}
 	}
+
+	div.entry-content > {
+
+		div.learnpress {
+			--responsive--aligndefault-width: 100%;
+			max-width: var(--lp-content-width, 100%);
+		}
+	}
+
+	.entry-content {
+		&.has-global-padding {
+			padding-left: 0;
+			padding-right: 0;
+		}
+	}
 }
 
 @media screen and (min-width: 61.5625em) {
