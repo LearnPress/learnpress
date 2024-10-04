@@ -478,6 +478,16 @@
 				}
 			}
 		}
+		.course-address{
+			display: block;
+			margin-bottom: $spacing-base-3x;
+			&::before {
+				margin-right: $spacing-base;
+				color: var(--lp-primary-color);
+				content: "\e91b";
+				font-family: 'lp-icon';
+			}
+		}
 	}
 
 	&[data-layout="list"] {
