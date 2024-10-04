@@ -123,10 +123,6 @@ class SingleCourseTemplate {
 			return '';
 		}
 
-		$html_wrapper = [
-			'<div class="course-categories">' => '</div>',
-		];
-
 		$cats = $course->get_categories();
 		if ( empty( $cats ) ) {
 			return '';
@@ -143,7 +139,19 @@ class SingleCourseTemplate {
 
 		$content = implode( ', ', $cat_names );
 
-		return Template::instance()->nest_elements( $html_wrapper, $content );
+		$section = apply_filters(
+			'learn-press/course/html-categories',
+			[
+				'wrapper'     => '<div class="course-categories">',
+				'content'     => $content,
+				'wrapper_end' => '</div>',
+			],
+			$course,
+			$cats,
+			$cat_names
+		);
+
+		return Template::combine_components( $section );
 	}
 
 	/**
@@ -236,16 +244,12 @@ class SingleCourseTemplate {
 	 *
 	 * @return string
 	 * @since 4.2.5.8
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function html_instructor( $course, bool $with_avatar = false ): string {
 		$content = '';
 
 		try {
-			$html_wrapper = [
-				'<span class="course-instructor">' => '</span>',
-			];
-
 			$instructor = $course->get_author_model();
 			if ( ! $instructor ) {
 				return '';
@@ -253,18 +257,26 @@ class SingleCourseTemplate {
 
 			$singleInstructorTemplate = SingleInstructorTemplate::instance();
 
-			$content = apply_filters(
-				'learn-press/course/instructor-html',
-				sprintf(
-					'<a href="%s">%s %s</a>',
-					$instructor->get_url_instructor(),
-					$with_avatar ? $instructor->get_profile_picture() : '',
-					$singleInstructorTemplate->html_display_name( $instructor )
-				),
-				$instructor,
-				$singleInstructorTemplate
+			$link_instructor = sprintf(
+				'<a href="%s">%s %s</a>',
+				$instructor->get_url_instructor(),
+				$with_avatar ? $instructor->get_profile_picture() : '',
+				$singleInstructorTemplate->html_display_name( $instructor )
 			);
-			$content = Template::instance()->nest_elements( $html_wrapper, $content );
+
+			$section = apply_filters(
+				'learn-press/course/instructor-html',
+				[
+					'wrapper'     => '<div class="course-instructor">',
+					'content'     => $link_instructor,
+					'wrapper_end' => '</div>',
+				],
+				$course,
+				$instructor,
+				$with_avatar
+			);
+
+			$content = Template::combine_components( $section );
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}

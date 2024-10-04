@@ -254,6 +254,14 @@ class ListCoursesTemplate {
 			);
 
 			// HTML bottom section.
+			$html_categories = $singleCourseTemplate->html_categories( $course );
+			if ( ! empty( $html_categories ) ) {
+				$html_categories = sprintf(
+					'<div style="display: inline-block">%s %s</div>',
+					sprintf( '<label>%s</label>', __( 'in', 'learnpress' ) ),
+					$html_categories
+				);
+			}
 			$section_bottom = apply_filters(
 				'learn-press/layout/list-courses/item/section/bottom',
 				[
@@ -263,8 +271,12 @@ class ListCoursesTemplate {
 						$course->get_permalink(),
 						$singleCourseTemplate->html_title( $course )
 					),
-					'instructor'  => $singleCourseTemplate->html_instructor( $course ),
-					'category'    => str_replace( ',', '', $singleCourseTemplate->html_categories( $course ) ),
+					'instructor'  => sprintf(
+						'<div style="display: inline-block">%s %s</div>',
+						sprintf( '<label>%s</label>', __( 'by', 'learnpress' ) ),
+						$singleCourseTemplate->html_instructor( $course )
+					),
+					'category'    => $html_categories,
 					'meta'        => sprintf( '<div class="course-wrap-meta">%s</div>', $html_meta_data ),
 					'info'        => Template::combine_components( $section_bottom_end ),
 					'wrapper_end' => '</div>',
