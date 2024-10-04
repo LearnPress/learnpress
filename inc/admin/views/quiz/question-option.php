@@ -13,20 +13,9 @@ $question_id = $data['id'];
 <div class="quiz-question-options js-question-options closed" data-question-id="<?php echo esc_attr( $question_id ); ?>">
 	<div class="lp-place-holder">
 		<div class="line-heading"></div>
-
-		<div class="line-sm"></div>
-		<div class="line-xs"></div>
-
-		<div class="line-df"></div>
-		<div class="line-lgx"></div>
-		<div class="line-lg"></div>
-
-		<div class="line-df"></div>
-		<div class="line-lg"></div>
-		<div class="line-lgx"></div>
 	</div>
 	<div class="postbox" style="display:none;">
-		<h2 class="hndle">
+		<h2 class="lp-box-data-head lp-row hndle">
 			<span><?php esc_html_e( 'Question Option', 'learnpress' ); ?></span>
 			<div class="status success"></div>
 		</h2>
