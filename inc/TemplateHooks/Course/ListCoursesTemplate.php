@@ -270,13 +270,16 @@ class ListCoursesTemplate {
 
 			// Add address for offline course.
 			if ( $course->is_offline() ) {
-				$section_bottom = Template::insert_value_to_position_array(
-					$section_bottom,
-					'after',
-					'meta',
-					'address',
-					sprintf( '%s',$singleCourseTemplate->html_address( $course ) )
-				);
+				$html_address = $singleCourseTemplate->html_address( $course );
+				if ( ! empty( $html_address ) ) {
+					$section_bottom = Template::insert_value_to_position_array(
+						$section_bottom,
+						'after',
+						'meta',
+						'address',
+						sprintf( '<div>%s</div>', $singleCourseTemplate->html_address( $course ) )
+					);
+				}
 			}
 
 			$section = [

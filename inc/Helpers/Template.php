@@ -288,7 +288,7 @@ class Template {
 				$new_array[ $k ] = $v;
 			}
 			if ( $key_compare === $k ) {
-				$new_array[ $key ] .= $value;
+				$new_array[ $key ] = $value;
 			}
 			if ( $position === 'before' ) {
 				$new_array[ $k ] = $v;
