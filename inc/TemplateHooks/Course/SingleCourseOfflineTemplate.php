@@ -217,7 +217,7 @@ class SingleCourseOfflineTemplate {
 			'learn-press/single-course/offline/section-right/info-meta/buttons',
 			[
 				'wrapper'     => '<div class="course-buttons">',
-				'btn_contact' => $this->singleCourseTemplate->html_btn_external( $course ),
+				'btn_contact' => $this->singleCourseTemplate->html_btn_external( $course, $user ),
 				'btn_buy'     => $this->singleCourseTemplate->html_btn_purchase_course( $course, $user ),
 				'wrapper_end' => '</div>',
 			],

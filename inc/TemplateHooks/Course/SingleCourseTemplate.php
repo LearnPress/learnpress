@@ -593,27 +593,45 @@ class SingleCourseTemplate {
 	 * Get button external
 	 *
 	 * @param CourseModel $course
+	 * @param UserModel|false $user
 	 *
 	 * @return string
+	 * @since 4.2.7
+	 * @version 1.0.1
 	 */
-	public function html_btn_external( CourseModel $course ): string {
+	public function html_btn_external( CourseModel $course, $user ): string {
 		$external_link = $course->get_meta_value_by_key( CoursePostModel::META_KEY_EXTERNAL_LINK_BY_COURSE, '' );
 		if ( empty( $external_link ) ) {
 			return '';
 		}
 
-		$content = sprintf( '<a href="%s" class="lp-button course-btn-extra">%s</a>', $external_link, __( 'Contact To Request', 'learnpress' ) );
+		// Check user has enrolled, finished or purchased course
+		if ( $user instanceof UserModel ) {
+			$userCourse = UserCourseModel::find( $user->get_id(), $course->get_id(), true );
+			if ( $userCourse && ( $userCourse->has_enrolled_or_finished() || $userCourse->has_purchased() ) ) {
+				return '';
+			}
+		}
 
-		return apply_filters( 'learn-press/course/html-address', $content );
+		$content = sprintf(
+			'<a href="%s" class="lp-button course-btn-extra">%s</a>',
+			esc_url_raw( $external_link ),
+			__( 'Contact To Request', 'learnpress' )
+		);
+
+		return apply_filters( 'learn-press/course/html-address', $content, $course, $user );
 	}
 
 	/**
+	 * HTML button purchase course
+	 *
 	 * @param CourseModel $course
 	 * @param false|UserModel $user
 	 *
 	 * @return string
 	 */
 	public function html_btn_purchase_course( CourseModel $course, $user ) {
+		$html_btn = '';
 		$can_show = true;
 
 		if ( $course->is_free() ) {
@@ -627,7 +645,9 @@ class SingleCourseTemplate {
 				$can_purchase->get_error_code(),
 				[ 'order_processing', 'course_out_of_stock', 'course_is_no_required_enroll_not_login' ]
 			) ) {
+				ob_start();
 				Template::print_message( $can_purchase->get_error_message(), 'warning' );
+				$html_btn = ob_get_clean();
 			}
 
 			$can_show = false;
@@ -636,7 +656,7 @@ class SingleCourseTemplate {
 		// Hook since 4.1.3
 		$can_show = apply_filters( 'learnpress/course/template/button-purchase/can-show', $can_show, $user, $course );
 		if ( ! $can_show ) {
-			return '';
+			return $html_btn;
 		}
 
 		$args_load_tmpl = array(
@@ -658,9 +678,6 @@ class SingleCourseTemplate {
 			$args_load_tmpl['default_path']
 		);
 		$html_btn = ob_get_clean();
-
-		//$html_btn = sprintf( '<button class="lp-button button button-purchase-course">%s</button>', __( 'Buy Now', 'learnpress' ) );
-
 		return $html_btn;
 	}
 
