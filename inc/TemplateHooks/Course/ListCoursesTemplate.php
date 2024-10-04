@@ -192,8 +192,8 @@ class ListCoursesTemplate {
 			// HTML top section, show image.
 			$section_top = [
 				'wrapper'     => '<div class="course-thumbnail">',
-				'img'           => sprintf( '<a href="%s">%s</a>', $course->get_permalink(), $singleCourseTemplate->html_image( $course ) ),
-				'wrapper_end'   => '</div>',
+				'img'         => sprintf( '<a href="%s">%s</a>', $course->get_permalink(), $singleCourseTemplate->html_image( $course ) ),
+				'wrapper_end' => '</div>',
 			];
 
 			// HTML meta section.
@@ -268,6 +268,17 @@ class ListCoursesTemplate {
 				$settings
 			);
 
+			// Add address for offline course.
+			if ( $course->is_offline() ) {
+				$section_bottom = Template::insert_value_to_position_array(
+					$section_bottom,
+					'after',
+					'meta',
+					'address',
+					sprintf( '%s',$singleCourseTemplate->html_address( $course ) )
+				);
+			}
+
 			$section = [
 				'wrapper_li'      => '<li class="course">',
 				'wrapper_div'     => sprintf( '<div class="course-item" data-id="%s">', esc_attr( $course->get_id() ) ),
@@ -278,7 +289,7 @@ class ListCoursesTemplate {
 			];
 
 			// For old themes use old hook.
-			$section= self::fix_theme_course_old( $section, $course, $settings );
+			$section = self::fix_theme_course_old( $section, $course, $settings );
 			// End.
 
 			$html_item = Template::combine_components( $section );
@@ -778,10 +789,10 @@ class ListCoursesTemplate {
 			$i = 0;
 			foreach ( $wrapper as $k => $v ) {
 				if ( $i === 0 ) {
-					$section['wrapper_li'] = $k;
+					$section['wrapper_li']     = $k;
 					$section['wrapper_li_end'] = $v;
 				} elseif ( $i === 1 ) {
-					$section['wrapper_div'] = $k;
+					$section['wrapper_div']     = $k;
 					$section['wrapper_div_end'] = $v;
 					break;
 				}
@@ -797,10 +808,10 @@ class ListCoursesTemplate {
 			$settings
 		);
 		if ( ! empty( $section_item ) ) {
-			$section['top']    = $section_item['thim_top']['text_html'] ?? '';
+			$section['top'] = $section_item['thim_top']['text_html'] ?? '';
 		}
 
-		$section_bottom = apply_filters(
+		$section_bottom     = apply_filters(
 			'learn-press/list-courses/layout/item/section/bottom',
 			[],
 			$course,

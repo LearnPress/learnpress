@@ -562,7 +562,7 @@ class SingleCourseTemplate {
 	}
 
 	/**
-	 * Get address of course
+	 * Get html address of course offline
 	 *
 	 * @param CourseModel $course
 	 *

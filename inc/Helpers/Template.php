@@ -16,7 +16,6 @@ class Template {
 	protected $include;
 
 	protected function __construct() {
-
 	}
 
 	/**
@@ -269,6 +268,37 @@ class Template {
 	}
 
 	/**
+	 * Insert new key to a position of array
+	 *
+	 * @param $old_array
+	 * @param $position
+	 * @param $key_compare
+	 * @param $key
+	 * @param $value
+	 *
+	 * @return array
+	 * @since 4.2.7.2
+	 * @version 1.0.0
+	 */
+	public static function insert_value_to_position_array( $old_array, $position, $key_compare, $key, $value ): array {
+		$new_array = [];
+
+		foreach ( $old_array as $k => $v ) {
+			if ( $position === 'after' ) {
+				$new_array[ $k ] = $v;
+			}
+			if ( $key_compare === $k ) {
+				$new_array[ $key ] .= $value;
+			}
+			if ( $position === 'before' ) {
+				$new_array[ $k ] = $v;
+			}
+		}
+
+		return $new_array;
+	}
+
+	/**
 	 * Print message
 	 *
 	 * @param string $message
@@ -281,10 +311,9 @@ class Template {
 	public static function print_message( string $message, string $status = 'success' ) {
 		$customer_message = [
 			'content' => $message,
-			'status'  => $status
+			'status'  => $status,
 		];
 
 		Template::instance()->get_frontend_template( 'global/lp-message.php', compact( 'customer_message' ) );
 	}
 }
-

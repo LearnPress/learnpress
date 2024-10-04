@@ -258,6 +258,13 @@
 		.separator {
 			display: none;
 		}
+
+		.course-address::before {
+			content: "\e91b";
+			font-family: 'lp-icon';
+			color: var(--lp-primary-color);
+			margin-right: 4px;
+		}
 	}
 
 	.course-wrap-thumbnail {
