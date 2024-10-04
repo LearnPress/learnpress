@@ -15,7 +15,7 @@ $question_id = $data['id'];
 		<div class="line-heading"></div>
 	</div>
 	<div class="postbox closed" style="display:none;">
-		<h2 class="lp-box-data-head lp-row hndle">
+		<h2 class="lp-box-data-head lp-row quiz-question-options__header">
 			<span><?php esc_html_e( 'Question Option', 'learnpress' ); ?></span>
 			<div class="status success"></div>
 		</h2>

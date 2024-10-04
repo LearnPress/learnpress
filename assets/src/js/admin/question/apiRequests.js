@@ -52,6 +52,7 @@ const renderOption = ( el, option ) => {
 	const explanationEl = el.querySelector( '.question-explanation' );
 	const contentEl = el.querySelector( '.postbox' );
 	const toggleEl = el.querySelector( '.toggle' );
+	const headerEl = el.querySelector( '.quiz-question-options__header' );
 
 	if ( placeholderEl ) {
 		placeholderEl.remove();
@@ -59,6 +60,13 @@ const renderOption = ( el, option ) => {
 
 	if ( toggleEl ) {
 		toggleEl.addEventListener( 'click', ( e ) => {
+			e.preventDefault();
+			contentEl.classList.toggle( 'closed' );
+		} );
+	}
+
+	if ( headerEl ) {
+		headerEl.addEventListener( 'click', ( e ) => {
 			e.preventDefault();
 			contentEl.classList.toggle( 'closed' );
 		} );
