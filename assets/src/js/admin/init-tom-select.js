@@ -168,9 +168,17 @@ const initTomSelect = ( tomSelectEl, customOptions = {}, customParams = {} ) => 
 
 	// Fetch data for first load tom-select
 	// Get ids selected, and show list without ids selected with limit.
+	let idNotIn = [];
 	if ( typeof defaultIds === 'object' ) {
-		customParams.id_not_in = defaultIds.join( ',' );
+		idNotIn = Object.entries( defaultIds ).map( ( [ key, value ] ) => ( { key, value } ) );
 	}
+
+	if ( dataSendApi?.id_not_in ) {
+		idNotIn = [ ...idNotIn, ...dataSendApi.id_not_in ];
+	}
+
+	customParams.id_not_in = idNotIn.join( ',' );
+
 	fetchFunction( '', customParams, callBackApi );
 };
 

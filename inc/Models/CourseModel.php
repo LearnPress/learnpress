@@ -669,6 +669,19 @@ class CourseModel {
 	}
 
 	/**
+	 * Check course is in stock
+	 *
+	 * @return bool
+	 * @since 4.2.7.2
+	 * @version 1.0.0
+	 */
+	public function is_allow_repurchase():bool {
+		$enable = $this->get_meta_value_by_key( CoursePostModel::META_KEY_ALLOW_COURSE_REPURCHASE, 'no' );
+
+		return 'yes' === $enable;
+	}
+
+	/**
 	 * Get external link
 	 *
 	 * @return string

@@ -383,6 +383,28 @@ class UserCourseModel extends UserItemModel {
 	}
 
 	/**
+	 * Get graduation of course.
+	 *
+	 * @return string
+	 * @since 4.2.7.2
+	 * @version 1.0.0
+	 */
+	public function get_graduation(): string {
+		return $this->graduation;
+	}
+
+	/**
+	 * Check course is passed or not.
+	 *
+	 * @return bool
+	 * @since 4.2.7.2
+	 * @version 1.0.0
+	 */
+	public function is_passed(): bool {
+		return $this->graduation === LP_COURSE_GRADUATION_PASSED;
+	}
+
+	/**
 	 * Evaluate course result by lessons.
 	 *
 	 * @param $count_items_completed
