@@ -230,9 +230,7 @@ class ListCoursesTemplate {
 				foreach ( $meta_data as $k => $v ) {
 					$html_meta_data .= sprintf( '<div class="meta-item meta-item-%s">%s</div>', $k, $v );
 				}
-			}
 
-			if ( ! empty( $html_meta_data ) ) {
 				$html_meta_data = sprintf( '<div class="course-wrap-meta">%s</div>', $html_meta_data );
 			}
 
