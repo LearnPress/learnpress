@@ -232,6 +232,10 @@ class ListCoursesTemplate {
 				}
 			}
 
+			if ( ! empty( $html_meta_data ) ) {
+				$html_meta_data = sprintf( '<div class="course-wrap-meta">%s</div>', $html_meta_data );
+			}
+
 			// HTML bottom section end.
 			$section_bottom_end = apply_filters(
 				'learn-press/layout/list-courses/item/section/bottom/end',
@@ -265,21 +269,23 @@ class ListCoursesTemplate {
 			$section_bottom = apply_filters(
 				'learn-press/layout/list-courses/item/section/bottom',
 				[
-					'wrapper'     => '<div class="course-content">',
-					'title'       => sprintf(
+					'wrapper'                     => '<div class="course-content">',
+					'title'                       => sprintf(
 						'<a class="course-permalink" href="%s">%s</a>',
 						$course->get_permalink(),
 						$singleCourseTemplate->html_title( $course )
 					),
-					'instructor'  => sprintf(
+					'wrapper_instructor_cate'     => '<div class="course-instructor-category">',
+					'instructor'                  => sprintf(
 						'<div class="wrap-course-meta">%s %s</div>',
 						sprintf( '<label>%s</label>', __( 'by', 'learnpress' ) ),
 						$singleCourseTemplate->html_instructor( $course )
 					),
-					'category'    => $html_categories,
-					'meta'        => sprintf( '<div class="course-wrap-meta">%s</div>', $html_meta_data ),
-					'info'        => Template::combine_components( $section_bottom_end ),
-					'wrapper_end' => '</div>',
+					'category'                    => $html_categories,
+					'wrapper_instructor_cate_end' => '</div>',
+					'meta'                        => $html_meta_data,
+					'info'                        => Template::combine_components( $section_bottom_end ),
+					'wrapper_end'                 => '</div>',
 				],
 				$course,
 				$settings

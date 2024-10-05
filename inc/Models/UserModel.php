@@ -198,6 +198,21 @@ class UserModel {
 	}
 
 	/**
+	 * Set meta value by key.
+	 *
+	 * @param string $key
+	 * @param $value
+	 *
+	 * @return void
+	 * @since 4.2.7.2
+	 * @version 1.0.0
+	 */
+	public function set_meta_value_by_key( string $key, $value ) {
+		$this->meta_data->{$key} = $value;
+		update_user_meta( $this->ID, $key, $value );
+	}
+
+	/**
 	 * Get upload profile src.
 	 *
 	 * @return string
