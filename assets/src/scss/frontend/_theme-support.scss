@@ -234,3 +234,64 @@ body.twentyseventeen.learnpress-page {
 		}
 	}
 }
+
+// Fix for theme EduPress
+.edu-press:not(.nofixcss){
+	.course-instructor-category{
+		>div:nth-child(2){
+			label{
+				display: none;
+			}
+			a{
+				font-size: 1rem;
+			}
+		}
+		.course-categories a{
+			font-weight: normal;
+		}
+	}
+	.lp-archive-courses .lp-content-area{
+		.learn-press-courses[data-layout=grid]{
+			.course-categories{
+				position: absolute;
+			}
+			.course-content .course-instructor{
+				display: inline;
+			}
+			.course-info{
+				>*{
+					display: revert;
+				}
+				border-top: 1px solid rgba(153, 153, 153, 0.2);
+				margin-left: -20px;
+				margin-right: -20px;
+				padding-left: 20px;
+				padding-right: 20px;
+				padding-top: 20px;
+				.course-readmore{
+					width: auto;
+					a{
+						padding: 0;
+					}
+				}
+			}
+		}
+
+	}
+	.lp-archive-courses .lp-courses-bar .search-courses{
+		input{
+			height: unset;
+			padding: 10px 20px;
+		}
+		button{
+			background-image: none!important;
+			i{
+				display: block;
+			}
+		}
+	}
+
+	.learn-press-courses .course-content .course-readmore a{
+		border: none;
+	}
+}
