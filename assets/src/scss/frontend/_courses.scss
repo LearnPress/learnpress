@@ -171,7 +171,7 @@
 			padding-right: $spacing-base-2x;
 		}
 
-		.course-categories, .course-tags {
+		 .course-tags {
 			display: inline-block;
  		}
 
@@ -417,6 +417,19 @@
 		gap: $spacing-base-2x;
 	}
 
+	.wrap-course-meta, .wrap-course-instructor {
+		display: inline;
+		label{
+			font-size: inherit;
+			font-weight: inherit;
+		}
+		div a{
+			font-weight: 600;
+		}
+		> * {
+			display: inline;
+		}
+	}
 	.course-wrap-meta {
 		display: flex;
 		padding: 0;

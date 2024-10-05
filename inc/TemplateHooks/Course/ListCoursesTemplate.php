@@ -257,7 +257,7 @@ class ListCoursesTemplate {
 			$html_categories = $singleCourseTemplate->html_categories( $course );
 			if ( ! empty( $html_categories ) ) {
 				$html_categories = sprintf(
-					'<div style="display: inline-block">%s %s</div>',
+					'<div class="wrap-course-instructor">%s %s</div>',
 					sprintf( '<label>%s</label>', __( 'in', 'learnpress' ) ),
 					$html_categories
 				);
@@ -272,7 +272,7 @@ class ListCoursesTemplate {
 						$singleCourseTemplate->html_title( $course )
 					),
 					'instructor'  => sprintf(
-						'<div style="display: inline-block">%s %s</div>',
+						'<div class="wrap-course-meta">%s %s</div>',
 						sprintf( '<label>%s</label>', __( 'by', 'learnpress' ) ),
 						$singleCourseTemplate->html_instructor( $course )
 					),
