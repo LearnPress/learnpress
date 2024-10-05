@@ -262,21 +262,26 @@ body.twentyseventeen.learnpress-page {
 				>*{
 					display: revert;
 				}
-				border-top: 1px solid rgba(153, 153, 153, 0.2);
-				margin-left: -20px;
-				margin-right: -20px;
-				padding-left: 20px;
-				padding-right: 20px;
-				padding-top: 20px;
+
 				.course-readmore{
 					width: auto;
 					a{
 						padding: 0;
+						&:hover{
+							background: transparent;
+							color: var(--thim-body_primary_color);
+						}
 					}
 				}
 			}
 		}
-
+		.course-info{
+			border-top: 1px solid rgba(153, 153, 153, 0.2);
+			padding-top: 20px;
+		}
+		.learn-press-courses[data-layout=list] .course-info{
+			margin-top: 50px;
+		}
 	}
 	.lp-archive-courses .lp-courses-bar .search-courses{
 		input{
