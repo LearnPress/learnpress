@@ -510,9 +510,13 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 				throw new Exception( __( 'File not found', 'learnpress' ) );
 			}
 			$cover_image_file = $files['image'];
+			$cover_image_type = wp_check_filetype( $cover_image_file['name'] );
 
+			if ( $cover_image_file['type'] !== 'image/png' || $cover_image_type['ext'] !== 'png' ) {
+				throw Exception( __( 'File type is not allowed', 'learnpress' ) );
+			}
 			$upload_dir     = learn_press_user_profile_picture_upload_dir( true );
-			$cover_dir_path = $upload_dir['path'] . DIRECTORY_SEPARATOR . 'cover-image';
+			$cover_dir_path = $upload_dir['path'] . '/' . 'cover-image/';
 			$target_dir     = LP_WP_Filesystem::instance()->is_dir( $cover_dir_path );
 
 			if ( ! $target_dir ) {
@@ -524,10 +528,10 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 			}
 
 			// Delete old image if exists
-			$path_img = get_user_meta( $user_id, '_lp_profile_cover_image', true );
+			$image_path = get_user_meta( $user_id, '_lp_profile_cover_image', true );
 
-			if ( $path_img ) {
-				$path = $upload_dir['basedir'] . '/' . $path_img;
+			if ( $image_path ) {
+				$path = $upload_dir['basedir'] . '/' . $image_path;
 
 				if ( file_exists( $path ) ) {
 					LP_WP_Filesystem::instance()->unlink( $path );
@@ -536,17 +540,18 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 			$file_name         = md5( $user_id . microtime( true ) ) . '.png';
 			$file_img_cer_blob = LP_WP_Filesystem::instance()->file_get_contents( $cover_image_file['tmp_name'] );
 
-			$put_content = LP_WP_Filesystem::instance()->put_contents( $cover_dir_path . DIRECTORY_SEPARATOR . $file_name, $file_img_cer_blob, FS_CHMOD_FILE );
+			$put_content = LP_WP_Filesystem::instance()->put_contents( $cover_dir_path . '/' . $file_name, $file_img_cer_blob, FS_CHMOD_FILE );
 
 			if ( ! $put_content ) {
 				throw new Exception( __( 'Cannot write the file', 'learnpress' ) );
 			}
-			$upload_subdir = $upload_dir['subdir'] . DIRECTORY_SEPARATOR . 'cover-image';
-			update_user_meta( $user_id, '_lp_profile_cover_image', $upload_subdir . DIRECTORY_SEPARATOR . $file_name );
+			$upload_subdir = $upload_dir['subdir'] . '/' . 'cover-image/';
+			update_user_meta( $user_id, '_lp_profile_cover_image', $upload_subdir . $file_name );
 			do_action( 'learnpress/rest/frontend/profile/upload_cover_image', $user_id );
 
-			$response->status     = 'success';
-			$response->message    = __( 'Cover image is updated', 'learnpress' );
+			$response->status  = 'success';
+			$response->message = __( 'Cover image is updated', 'learnpress' );
+			$response->file    = $cover_image_file;
 		} catch ( \Throwable $th ) {
 			$response->message = $th->getMessage();
 		}

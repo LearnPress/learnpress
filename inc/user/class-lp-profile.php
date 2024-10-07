@@ -254,7 +254,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			 * Check if user not Admin/Instructor, will be hide tab Courses.
 			 */
 			if ( $user_of_profile instanceof LP_User
-			     && ! in_array( $user_of_profile->get_data( 'role' ), [ ADMIN_ROLE, LP_TEACHER_ROLE ] ) ) {
+				&& ! in_array( $user_of_profile->get_data( 'role' ), [ ADMIN_ROLE, LP_TEACHER_ROLE ] ) ) {
 				unset( $tabs['courses'] );
 			}
 
@@ -882,6 +882,36 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			}
 
 			return apply_filters( 'learn-press/profile/get-upload-profile-src', $uploaded_profile_src, $user->get_id() );
+		}
+
+		/**
+		 * Get profile cover image
+		 * @return string image url if exist
+		 */
+		public function get_cover_image_src() {
+			$user = $this->get_user();
+			if ( ! $user ) {
+				return '';
+			}
+			$cover_image_src = '';
+			$image_path      = get_user_meta( $user->get_id(), '_lp_profile_cover_image', true );
+
+			if ( $image_path ) {
+				// Check if hase slug / at the beginning of the path, if not, add it.
+				$slash      = substr( $image_path, 0, 1 ) === '/' ? '' : '/';
+				$image_path = $slash . $image_path;
+				// End check.
+				$upload    = learn_press_user_profile_picture_upload_dir();
+				$file_path = $upload['basedir'] . $image_path;
+
+				if ( file_exists( $file_path ) ) {
+					$cover_image_src = $upload['baseurl'] . $image_path;
+				} else {
+					$cover_image_src = '';
+				}
+			}
+
+			return apply_filters( 'learn-press/profile/get-profile-cover-image-src', $cover_image_src, $user->get_id() );
 		}
 
 		/**

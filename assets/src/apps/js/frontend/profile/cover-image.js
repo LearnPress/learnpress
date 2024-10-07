@@ -19,9 +19,16 @@ const profileCoverImage = () => {
 		} else if ( target.id == btnSaveID ) {
 			if ( undefined !== cropper ) {
 				const canvas = cropper.getCroppedCanvas({});
+				let coverWrapper = document.querySelector( '.wrapper-profile-header' );
+				if ( coverWrapper ) {
+					coverWrapper.style.backgroundImage = `url(${canvas.toDataURL('image/png')})`;
+					coverWrapper.style.backgroundRepeat = 'no-repeat';
+					coverWrapper.style.backgroundPosition = 'center';
+					coverWrapper.style.backgroundSize = 'cover';
+				}
 				canvas.toBlob((blob) => {
 					const formData = new FormData();
-					formData.append( 'image', blob );
+					formData.append( 'image', blob,'cover.png' );
 					uploadRequest( formData );
 				}, 'image/png');
 			}
@@ -33,6 +40,10 @@ const profileCoverImage = () => {
 			let inputFile = eleWrapper.querySelector( `#${inputFileID}` );
 			const file = inputFile.files[ 0 ];
 			if ( ! file ) {
+				return;
+			}
+			const allowType = ['image/png', 'image/jpeg', 'image/webp'];
+			if ( allowType.indexOf(file.type) < 0 ) {
 				return;
 			}
 			const reader = new FileReader(),
@@ -52,10 +63,12 @@ const profileCoverImage = () => {
 		        });
 		    };
 		    reader.readAsDataURL(file);
-		    console.log( cropper );
 		}
 	} );
 	const uploadRequest = ( formData ) => {
+		let btnSave = eleWrapper.querySelector( `#${btnSaveID}` );
+		btnSave.classList.add( 'loading' );
+		btnSave.disabled = true;
 		fetch(`${lpData.lp_rest_url}lp/v1/profile/upload-cover-image`, {
 		        method: 'POST',
 		        headers: {
@@ -68,8 +81,8 @@ const profileCoverImage = () => {
 		        if (res.status == 'error') {
 		           throw new Error(res.message);
 		        }
-		        console.log( res );
-		    }).finally(() => {}).catch(err => console.log(err));
+		        window.location.href = window.location.href;
+		    }).finally(() => { btnSave.classList.remove( 'loading' ); btnSave.disabled = false; }).catch(err => console.log(err));
 	}
 }
 export default profileCoverImage;
