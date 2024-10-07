@@ -16,6 +16,7 @@ use LearnPress\ExternalPlugin\Elementor\Widgets\Course\Dynamic\CourseCountStuden
 use LearnPress\ExternalPlugin\Elementor\Widgets\Course\Dynamic\CourseDeliverTypeDynamicElementor;
 use LearnPress\ExternalPlugin\Elementor\Widgets\Course\Dynamic\CourseDurationDynamicElementor;
 use LearnPress\ExternalPlugin\Elementor\Widgets\Course\Dynamic\CourseLevelDynamicElementor;
+use LearnPress\ExternalPlugin\Elementor\Widgets\Course\Dynamic\CourseOfflineCountLessonDynamicElementor;
 use LearnPress\ExternalPlugin\Elementor\Widgets\Course\ListCoursesByPageElementor;
 use LearnPress\ExternalPlugin\Elementor\Widgets\Course\Sections\CoursePriceElementor;
 use LearnPress\ExternalPlugin\Elementor\Widgets\Course\FilterCourseElementor;
@@ -54,25 +55,26 @@ return [
 			//'list-courses-by-page'      => ListCoursesByPageElementor::class,
 			// Single Course
 			'course-price'              => CoursePriceElementor::class,
-			//'filter-course'				=> FilterCourseElementor::class
+			//'filter-course'               => FilterCourseElementor::class
 		]
 	),
 	'dynamic'  => apply_filters(
 		'lp/elementor/dynamic',
 		[
-			'course-count-student'  => CourseCountStudentDynamicElementor::class,
-			'course-count-lesson'   => CourseCountLessonDynamicElementor::class,
-			'course-count-quiz'     => CourseCountQuizDynamicElementor::class,
-			'course-count-level'    => CourseLevelDynamicElementor::class,
-			'course-count-duration' => CourseDurationDynamicElementor::class,
-			'course-author-name'    => CourseAuthorNameElementor::class,
-			'course-author-avatar'  => CourseAuthorAvatarElementor::class,
-			'course-author-url'     => CourseAuthorUrlElementor::class,
-			'count-student-courses' => CountStudentDynamicElementor::class,
-			'course-courses-free'   => CountCoursesFreeDynamicElementor::class,
-			'course-deliver-type'   => CourseDeliverTypeDynamicElementor::class,
-			'course-capacity'       => CourseCapacityDynamicElementor::class,
-			'course-address'       => CourseAddressDynamicElementor::class,
+			'course-count-student'        => CourseCountStudentDynamicElementor::class,
+			'course-count-lesson'         => CourseCountLessonDynamicElementor::class,
+			'course-offline-count-lesson' => CourseOfflineCountLessonDynamicElementor::class,
+			'course-count-quiz'           => CourseCountQuizDynamicElementor::class,
+			'course-count-level'          => CourseLevelDynamicElementor::class,
+			'course-count-duration'       => CourseDurationDynamicElementor::class,
+			'course-author-name'          => CourseAuthorNameElementor::class,
+			'course-author-avatar'        => CourseAuthorAvatarElementor::class,
+			'course-author-url'           => CourseAuthorUrlElementor::class,
+			'count-student-courses'       => CountStudentDynamicElementor::class,
+			'course-courses-free'         => CountCoursesFreeDynamicElementor::class,
+			'course-deliver-type'         => CourseDeliverTypeDynamicElementor::class,
+			'course-capacity'             => CourseCapacityDynamicElementor::class,
+			'course-address'              => CourseAddressDynamicElementor::class,
 		]
 	),
 	'loadAjax' => apply_filters(
