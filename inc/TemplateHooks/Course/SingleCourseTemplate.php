@@ -848,16 +848,17 @@ class SingleCourseTemplate {
 				'wrapper_end' => '</ul>',
 			];
 
-			$html    = $this->html_course_box_extra(
+			$section = apply_filters(
+				'learn-press/course/html-requirements',
+				[
+					'wrapper'     => '<div class="course-requirements">',
+					'title'       => sprintf( '<h3 class="course-requirements__title">%s</h3>', __( 'Requirements', 'learnpress' ) ),
+					'content'     => Template::combine_components( $section_list ),
+					'wrapper_end' => '</div>',
+				],
 				$course,
-				__( 'Requirements', 'learnpress' ),
-				Template::combine_components( $section_list )
+				$requirements
 			);
-			$section = [
-				'wrapper'     => '<div class="course-requirements">',
-				'content'     => $html,
-				'wrapper_end' => '</div>',
-			];
 			$html    = Template::combine_components( $section );
 		} catch ( Throwable $e ) {
 			error_log( $e->getMessage() );
@@ -895,17 +896,17 @@ class SingleCourseTemplate {
 				'wrapper_end' => '</ul>',
 			];
 
-			$html = $this->html_course_box_extra(
+			$section = apply_filters(
+				'learn-press/course/html-features',
+				[
+					'wrapper'     => '<div class="course-features">',
+					'title'       => sprintf( '<h3 class="course-features__title">%s</h3>', __( 'Features', 'learnpress' ) ),
+					'content'     => Template::combine_components( $section_list ),
+					'wrapper_end' => '</div>',
+				],
 				$course,
-				__( 'Features', 'learnpress' ),
-				Template::combine_components( $section_list )
+				$features
 			);
-
-			$section = [
-				'wrapper'     => '<div class="course-features">',
-				'content'     => $html,
-				'wrapper_end' => '</div>',
-			];
 			$html    = Template::combine_components( $section );
 		} catch ( Throwable $e ) {
 			error_log( $e->getMessage() );
@@ -943,16 +944,17 @@ class SingleCourseTemplate {
 				'wrapper_end' => '</ul>',
 			];
 
-			$html    = $this->html_course_box_extra(
+			$section = apply_filters(
+				'learn-press/course/html-target',
+				[
+					'wrapper'     => '<div class="course-target">',
+					'title'       => sprintf( '<h3 class="course-target__title">%s</h3>', __( 'Target audiences', 'learnpress' ) ),
+					'content'     => Template::combine_components( $section_list ),
+					'wrapper_end' => '</div>',
+				],
 				$course,
-				__( 'Target audiences', 'learnpress' ),
-				Template::combine_components( $section_list )
+				$targets
 			);
-			$section = [
-				'wrapper'     => '<div class="course-target">',
-				'content'     => $html,
-				'wrapper_end' => '</div>',
-			];
 			$html    = Template::combine_components( $section );
 		} catch ( Throwable $e ) {
 			error_log( $e->getMessage() );

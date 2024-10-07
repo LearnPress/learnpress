@@ -150,9 +150,9 @@ class SingleCourseOfflineTemplate {
 				'info_one'     => Template::combine_components( $section_info_one ),
 				'image'        => $this->singleCourseTemplate->html_image( $course ),
 				'description'  => $this->singleCourseTemplate->html_description( $course ),
-				'requirements' => $this->singleCourseTemplate->html_requirements( $course ),
 				'features'     => $this->singleCourseTemplate->html_features( $course ),
 				'target'       => $this->singleCourseTemplate->html_target( $course ),
+				'requirements' => $this->singleCourseTemplate->html_requirements( $course ),
 				'material'     => $this->singleCourseTemplate->html_material( $course ),
 				'faqs'         => $this->singleCourseTemplate->html_faqs( $course ),
 				'instructor'   => $html_instructor,
@@ -290,7 +290,7 @@ class SingleCourseOfflineTemplate {
 		$html = sprintf(
 			'<span class="lesson-count">%s%s</span>',
 			$lesson_count,
-			$show_label ? ' ' . __( 'lessons', 'learnpress' ) : ''
+			$show_label ? sprintf( ' <label>%s</label>', __( 'lessons', 'learnpress' ) ) : ''
 		);
 
 		return $html;
