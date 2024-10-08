@@ -288,9 +288,9 @@ class SingleCourseOfflineTemplate {
 		}
 
 		$html = sprintf(
-			'<span class="lesson-count">%s%s</span>',
+			'<span class="course-count-lesson">%s %s</span>',
 			$lesson_count,
-			$show_label ? sprintf( ' <label>%s</label>', __( 'lessons', 'learnpress' ) ) : ''
+			$show_label ? __( 'lessons', 'learnpress' ) : ''
 		);
 
 		return $html;
