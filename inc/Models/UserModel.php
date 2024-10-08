@@ -67,6 +67,7 @@ class UserModel {
 	public $image_url = '';
 
 	const META_KEY_IMAGE = '_lp_profile_picture';
+	const META_KEY_COVER_IMAGE = '_lp_profile_cover_image';
 
 	/**
 	 * If data get from database, map to object.
@@ -237,6 +238,31 @@ class UserModel {
 		}
 
 		return $this->image_url;
+	}
+
+	/**
+	 * Get upload cover image src.
+	 *
+	 * @return string
+	 * @since 4.2.7.2
+	 * @version 1.0.0
+	 */
+	public function get_cover_image_url(): string {
+		$cover_image = $this->get_meta_value_by_key( self::META_KEY_COVER_IMAGE, '' );
+		if ( ! isset( $cover_image ) ) {
+			// Check if hase slug / at the beginning of the path, if not add it.
+			$slash       = substr( $cover_image, 0, 1 ) === '/' ? '' : '/';
+			$cover_image = $slash . $cover_image;
+			// End check.
+			$upload    = learn_press_user_profile_picture_upload_dir();
+			$file_path = $upload['basedir'] . $cover_image;
+
+			if ( file_exists( $file_path ) ) {
+				return $upload['baseurl'] . $cover_image;
+			}
+		}
+
+		return '';
 	}
 
 	/**

@@ -1,6 +1,7 @@
 <?php
 
 use LearnPress\Helpers\Template;
+use LearnPress\Models\UserModel;
 
 class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 	public function __construct() {
@@ -72,7 +73,7 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'upload_cover_image' ),
 					'permission_callback' => function () {
-						return get_current_user_id() ? true : false;
+						return get_current_user_id();
 					},
 				),
 			),
@@ -162,7 +163,7 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 			$file_base64 = str_replace( 'data:image/jpeg;base64,', '', $file_base64 );
 			$file_base64 = base64_decode( $file_base64 );
 
-			$put_content = LP_WP_Filesystem::instance()->put_contents( $upload_dir['path'] . '/' . $file_name, $file_base64, FS_CHMOD_FILE );
+			$put_content = LP_WP_Filesystem::instance()->put_contents( $upload_dir['path'] . '/' . $file_name, $file_base64 );
 
 			if ( ! $put_content ) {
 				throw new Exception( __( 'Cannot write the file', 'learnpress' ) );
@@ -496,26 +497,45 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 		return $response;
 	}
 
+	/**
+	 * API upload cover image profile.
+	 *
+	 * @param WP_REST_Request $request
+	 *
+	 * @return WP_Error|WP_HTTP_Response|WP_REST_Response
+	 * @since 4.2.7.2
+	 * @version 1.0.0
+	 */
 	public function upload_cover_image( WP_REST_Request $request ) {
 		$files    = $request->get_file_params();
 		$response = new LP_REST_Response();
 
 		try {
 			$user_id = get_current_user_id();
-
 			if ( ! $user_id ) {
-				throw new Exception( __( 'User not found', 'learnpress' ) );
+				throw new Exception( __( 'User is invalid!', 'learnpress' ) );
 			}
-			if ( empty( $files ) || empty( $files['image'] ) ) {
-				throw new Exception( __( 'File not found', 'learnpress' ) );
-			}
-			$cover_image_file = $files['image'];
-			$cover_image_type = wp_check_filetype( $cover_image_file['name'] );
 
-			if ( $cover_image_file['type'] !== 'image/png' || $cover_image_type['ext'] !== 'png' ) {
-				throw Exception( __( 'File type is not allowed', 'learnpress' ) );
+			$user = UserModel::find( $user_id, true );
+			if ( ! $user ) {
+				throw new Exception( __( 'User is invalid!', 'learnpress' ) );
 			}
-			$upload_dir     = learn_press_user_profile_picture_upload_dir( true );
+
+			if ( empty( $files ) || empty( $files['image'] ) ) {
+				throw new Exception( __( 'File is invalid!', 'learnpress' ) );
+			}
+
+			$cover_image_file = $files['image'];
+			$cover_image_name = $cover_image_file['name'];
+			$check_type       = wp_check_filetype( $cover_image_name );
+
+			// Only allow image type
+			$image_types_allow = [ 'image/jpeg', 'image/png', 'image/webp' ];
+			if ( ! $check_type['type'] || ! in_array( $check_type['type'], $image_types_allow ) ) {
+				throw new Exception( __( 'File type is not allowed', 'learnpress' ) );
+			}
+
+			$upload_dir     = learn_press_user_profile_picture_upload_dir();
 			$cover_dir_path = $upload_dir['path'] . '/' . 'cover-image/';
 			$target_dir     = LP_WP_Filesystem::instance()->is_dir( $cover_dir_path );
 
@@ -528,8 +548,7 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 			}
 
 			// Delete old image if exists
-			$image_path = get_user_meta( $user_id, '_lp_profile_cover_image', true );
-
+			$image_path = $user->get_meta_value_by_key( UserModel::META_KEY_COVER_IMAGE, '' );
 			if ( $image_path ) {
 				$path = $upload_dir['basedir'] . '/' . $image_path;
 
@@ -537,22 +556,26 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 					LP_WP_Filesystem::instance()->unlink( $path );
 				}
 			}
-			$file_name         = md5( $user_id . microtime( true ) ) . '.png';
+
+			$file_name         = md5( $user_id . microtime( true ) ) . '.' . $check_type['ext'];
 			$file_img_cer_blob = LP_WP_Filesystem::instance()->file_get_contents( $cover_image_file['tmp_name'] );
-
-			$put_content = LP_WP_Filesystem::instance()->put_contents( $cover_dir_path . '/' . $file_name, $file_img_cer_blob, FS_CHMOD_FILE );
-
+			$put_content       = LP_WP_Filesystem::instance()->put_contents(
+				$cover_dir_path . '/' . $file_name,
+				$file_img_cer_blob
+			);
 			if ( ! $put_content ) {
 				throw new Exception( __( 'Cannot write the file', 'learnpress' ) );
 			}
+
 			$upload_subdir = $upload_dir['subdir'] . '/' . 'cover-image/';
-			update_user_meta( $user_id, '_lp_profile_cover_image', $upload_subdir . $file_name );
+			$path_save     = $upload_subdir . $file_name;
+			$user->set_meta_value_by_key( UserModel::META_KEY_COVER_IMAGE, $path_save );
 			do_action( 'learnpress/rest/frontend/profile/upload_cover_image', $user_id );
 
-			$response->status  = 'success';
-			$response->message = __( 'Cover image is updated', 'learnpress' );
-			$response->file    = $cover_image_file;
-		} catch ( \Throwable $th ) {
+			$response->status     = 'success';
+			$response->message    = __( 'Cover image is updated', 'learnpress' );
+			$response->data->file = $cover_image_file;
+		} catch ( Throwable $th ) {
 			$response->message = $th->getMessage();
 		}
 
