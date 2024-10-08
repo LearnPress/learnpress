@@ -71,7 +71,7 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 			'upload-cover-image'   => array(
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
-					'callback'            => array( $this, 'upload_cover_image' ),
+					'callback'            => array( $this, 'handle_cover_image' ),
 					'permission_callback' => function () {
 						return get_current_user_id();
 					},
@@ -502,13 +502,15 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 	 *
 	 * @param WP_REST_Request $request
 	 *
-	 * @return WP_Error|WP_HTTP_Response|WP_REST_Response
+	 * @return LP_REST_Response
 	 * @since 4.2.7.2
 	 * @version 1.0.0
 	 */
-	public function upload_cover_image( WP_REST_Request $request ) {
-		$files    = $request->get_file_params();
-		$response = new LP_REST_Response();
+	public function handle_cover_image( WP_REST_Request $request ): LP_REST_Response {
+		$files      = $request->get_file_params();
+		$action     = $request->get_param( 'action' );
+		$response   = new LP_REST_Response();
+		$upload_dir = learn_press_user_profile_picture_upload_dir();
 
 		try {
 			$user_id = get_current_user_id();
@@ -519,6 +521,14 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 			$user = UserModel::find( $user_id, true );
 			if ( ! $user ) {
 				throw new Exception( __( 'User is invalid!', 'learnpress' ) );
+			}
+
+			if ( $action === 'remove' ) {
+				$user->delete_cover_image();
+
+				$response->status  = 'success';
+				$response->message = __( 'Cover image has been removed successfully', 'learnpress' );
+				return $response;
 			}
 
 			if ( empty( $files ) || empty( $files['image'] ) ) {
@@ -535,10 +545,8 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 				throw new Exception( __( 'File type is not allowed', 'learnpress' ) );
 			}
 
-			$upload_dir     = learn_press_user_profile_picture_upload_dir();
 			$cover_dir_path = $upload_dir['path'] . '/' . 'cover-image/';
 			$target_dir     = LP_WP_Filesystem::instance()->is_dir( $cover_dir_path );
-
 			if ( ! $target_dir ) {
 				wp_mkdir_p( $cover_dir_path );
 			}
@@ -548,14 +556,7 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 			}
 
 			// Delete old image if exists
-			$image_path = $user->get_meta_value_by_key( UserModel::META_KEY_COVER_IMAGE, '' );
-			if ( $image_path ) {
-				$path = $upload_dir['basedir'] . '/' . $image_path;
-
-				if ( file_exists( $path ) ) {
-					LP_WP_Filesystem::instance()->unlink( $path );
-				}
-			}
+			$user->delete_cover_image();
 
 			$file_name         = md5( $user_id . microtime( true ) ) . '.' . $check_type['ext'];
 			$file_img_cer_blob = LP_WP_Filesystem::instance()->file_get_contents( $cover_image_file['tmp_name'] );
@@ -569,7 +570,7 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 
 			$upload_subdir = $upload_dir['subdir'] . '/' . 'cover-image/';
 			$path_save     = $upload_subdir . $file_name;
-			$user->set_meta_value_by_key( UserModel::META_KEY_COVER_IMAGE, $path_save );
+			$user->set_cover_image_url( $path_save );
 			do_action( 'learnpress/rest/frontend/profile/upload_cover_image', $user_id );
 
 			$response->status     = 'success';
@@ -579,6 +580,6 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 			$response->message = $th->getMessage();
 		}
 
-		return rest_ensure_response( $response );
+		return $response;
 	}
 }

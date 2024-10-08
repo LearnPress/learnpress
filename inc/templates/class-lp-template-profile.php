@@ -1,6 +1,8 @@
 <?php
 
 use LearnPress\Helpers\Template;
+use LearnPress\Models\UserModel;
+use LearnPress\TemplateHooks\Profile\ProfileTemplate;
 
 /**
  * Class LP_Profile_Template
@@ -165,6 +167,27 @@ class LP_Template_Profile extends LP_Abstract_Template {
 				'args_query_user_courses_statistic'
 			)
 		);
+	}
+
+	/**
+	 * Display tab cover image
+	 *
+	 * @return void
+	 * @since 4.2.7.2
+	 * @version 1.0.0
+	 */
+	public static function tab_cover_image() {
+		if ( ! LP_Profile::instance()->current_user_can( 'view-tab-cover-image' ) ) {
+			return;
+		}
+
+		$user = LP_Profile::instance()->get_user();
+		$userModel = UserModel::find( $user->get_id() );
+		if ( ! $userModel ) {
+			return;
+		}
+
+		echo ProfileTemplate::instance()->html_upload_cover_image( $userModel );
 	}
 
 	/**

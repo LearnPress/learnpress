@@ -65,9 +65,9 @@ $default_settings = array(
 				'priority' => 20,
 				'icon'     => '<i class="lp-icon-user-circle"></i>',
 			),
-			'cover-image'            => array(
+			'cover-image'       => array(
 				'title'    => esc_html__( 'Cover Image', 'learnpress' ),
-				'callback' => false,
+				'callback' => array( LP_Template_Profile::class, 'tab_cover_image' ),
 				'slug'     => $settings->get( 'profile_endpoints.settings-cover-image', 'cover-image' ),
 				'priority' => 21,
 				'icon'     => '<i class="lp-icon-file-picture"></i>',

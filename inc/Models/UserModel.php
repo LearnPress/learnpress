@@ -20,6 +20,7 @@ use LP_User_Filter;
 
 use LP_User_Items_DB;
 use LP_User_Items_Filter;
+use LP_WP_Filesystem;
 use stdClass;
 use Throwable;
 use WP_Error;
@@ -234,6 +235,8 @@ class UserModel {
 
 			if ( file_exists( $file_path ) ) {
 				$this->image_url = $upload['baseurl'] . $profile_picture;
+			} else { // For remote url.
+				$this->image_url = $profile_picture;
 			}
 		}
 
@@ -249,7 +252,7 @@ class UserModel {
 	 */
 	public function get_cover_image_url(): string {
 		$cover_image = $this->get_meta_value_by_key( self::META_KEY_COVER_IMAGE, '' );
-		if ( ! isset( $cover_image ) ) {
+		if ( ! empty( $cover_image ) ) {
 			// Check if hase slug / at the beginning of the path, if not add it.
 			$slash       = substr( $cover_image, 0, 1 ) === '/' ? '' : '/';
 			$cover_image = $slash . $cover_image;
@@ -259,10 +262,49 @@ class UserModel {
 
 			if ( file_exists( $file_path ) ) {
 				return $upload['baseurl'] . $cover_image;
+			} else { // For remote url.
+				return $cover_image;
 			}
 		}
 
 		return '';
+	}
+
+	/**
+	 * Set cover image url.
+	 *
+	 * @param string $url
+	 *
+	 * @return void
+	 * @since 4.2.7.2
+	 * @version 1.0.0
+	 */
+	public function set_cover_image_url( string $url ) {
+		$this->set_meta_value_by_key( self::META_KEY_COVER_IMAGE, $url );
+	}
+
+	/**
+	 * Delete cover image.
+	 *
+	 * @return void
+	 * @since 4.2.7.2
+	 * @version 1.0.0
+	 */
+	public function delete_cover_image() {
+		$upload_dir = learn_press_user_profile_picture_upload_dir();
+
+		// Delete old image if exists
+		$image_path = $this->get_meta_value_by_key( UserModel::META_KEY_COVER_IMAGE, '' );
+		if ( $image_path ) {
+			$path = $upload_dir['basedir'] . '/' . $image_path;
+
+			if ( file_exists( $path ) ) {
+				LP_WP_Filesystem::instance()->unlink( $path );
+			}
+		}
+
+		// Save empty string to database.
+		$this->set_cover_image_url( '' );
 	}
 
 	/**
