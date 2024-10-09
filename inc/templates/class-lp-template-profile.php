@@ -27,6 +27,11 @@ class LP_Template_Profile extends LP_Abstract_Template {
 			return;
 		}
 
+		$user      = $profile->get_user();
+		$userModel = UserModel::find( $user->get_id(), true );
+		// Display cover image
+		echo ProfileTemplate::instance()->html_cover_image( $userModel );
+		// Display Sidebar
 		learn_press_get_template( 'profile/sidebar.php' );
 	}
 
@@ -181,7 +186,7 @@ class LP_Template_Profile extends LP_Abstract_Template {
 			return;
 		}
 
-		$user = LP_Profile::instance()->get_user();
+		$user      = LP_Profile::instance()->get_user();
 		$userModel = UserModel::find( $user->get_id() );
 		if ( ! $userModel ) {
 			return;

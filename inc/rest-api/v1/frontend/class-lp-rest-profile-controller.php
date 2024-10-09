@@ -68,7 +68,7 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 					},
 				),
 			),
-			'upload-cover-image'   => array(
+			'cover-image'   => array(
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'handle_cover_image' ),
@@ -528,6 +528,7 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 
 				$response->status  = 'success';
 				$response->message = __( 'Cover image has been removed successfully', 'learnpress' );
+				$response->data->action = $action;
 				return $response;
 			}
 
@@ -571,11 +572,13 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 			$upload_subdir = $upload_dir['subdir'] . '/' . 'cover-image/';
 			$path_save     = $upload_subdir . $file_name;
 			$user->set_cover_image_url( $path_save );
+
 			do_action( 'learnpress/rest/frontend/profile/upload_cover_image', $user_id );
 
 			$response->status     = 'success';
 			$response->message    = __( 'Cover image is updated', 'learnpress' );
-			$response->data->file = $cover_image_file;
+			$response->data->url = $user->get_cover_image_url();
+			$response->data->action = $action;
 		} catch ( Throwable $th ) {
 			$response->message = $th->getMessage();
 		}

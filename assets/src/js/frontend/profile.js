@@ -5,12 +5,13 @@ import Avatar from './profile/avatar';
 import CourseList from './profile/course-list';
 import profileCoverImage from './profile/cover-image';
 
+profileCoverImage();
+
 document.addEventListener( 'DOMContentLoaded', function( event ) {
 	courseTab();
 	courseStatistics();
 	recoverOrder();
 	CourseList();
-	profileCoverImage();
 } );
 
 if ( document.getElementById( 'learnpress-avatar-upload' ) ) {

@@ -27,6 +27,7 @@ if ( 'undefined' !== typeof lpData ) {
 		apiWidgets: lpData.lp_rest_url + 'lp/v1/widgets/api',
 		apiCourses: lpData.lp_rest_url + 'lp/v1/courses/archive-course',
 		apiAJAX: lpData.lp_rest_url + 'lp/v1/load_content_via_ajax/',
+		apiProfileCoverImage: lpData.lp_rest_url + 'lp/v1/profile/cover-image',
 	};
 }
 
