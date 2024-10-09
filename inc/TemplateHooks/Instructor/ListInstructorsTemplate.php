@@ -167,7 +167,7 @@ class ListInstructorsTemplate {
 			$singleInstructorTemplate = SingleInstructorTemplate::instance();
 
 			$html_total_courses = sprintf(
-				'<div class="instructor-count-courses"><span class="lp-ico lp-icon-courses"></span> %s</div>',
+				'<div class="instructor-count-courses"><span class="lp-ico lp-icon-book-open"></span> %s</div>',
 				$singleInstructorTemplate->html_count_courses( $instructor )
 			);
 
