@@ -375,13 +375,6 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				return;
 			}
 
-			$answer_options = $question->get_data( 'answer_options' );
-			if ( ! empty( $answer_options ) ) {
-				foreach ( $answer_options as $key => $answer ) {
-					$this->delete_answer( $question_id, $answer['question_answer_id'] );
-				}
-			}
-
 			update_post_meta( $question_id, '_lp_type', $new_type );
 			$question->set_type( $new_type );
 
@@ -394,7 +387,9 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				if ( $old_type == 'multi_choice' && $new_type == 'single_choice' ) {
 					$func = '_convert_answers_multi_choice_to_single_choice';
 				} elseif ( ( $old_type == 'multi_choice' || $old_type == 'single_choice' ) && 'true_or_false' == $new_type ) {
-					$func = '_convert_answers_to_true_or_false';
+					// $func = '_convert_answers_to_true_or_false';
+					$func = '_convert_default_answers';
+
 				} else {
 					// for rest, clear answer data and create default
 					$func = '_convert_default_answers';
