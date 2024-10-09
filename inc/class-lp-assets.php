@@ -148,6 +148,7 @@ class LP_Assets extends LP_Abstract_Assets {
 					'duration'    => 3000,
 					'close'       => 1,
 					'stopOnFocus' => 1,
+					'classPrefix' => 'lp-toast'
 				],
 			]
 		);

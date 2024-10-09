@@ -51,6 +51,21 @@ a {
 	}
 }
 
+.lp-button {
+	&.loading {
+		pointer-events: none;
+		opacity: 0.8;
+
+		&::before {
+			display: inline-block;
+			font-family: 'lp-icon';
+			content: "\f110";
+			animation: lp-rotating 1s linear infinite;
+			margin-right: 5px;
+		}
+	}
+}
+
 //label{
 //	font-size: 0.694rem;
 //}

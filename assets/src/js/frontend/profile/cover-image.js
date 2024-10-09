@@ -13,6 +13,35 @@ import 'toastify-js/src/toastify.css';
 
 const profileCoverImage = () => {
 	let cropper;
+	let elBtnSave, elBtnRemove, elBtnChoose, elBtnCancel,
+		elImagePreview, elCoverImageBackground, elImageEmpty, formCoverImage,
+		elInputFile, elAction;
+	const className = {
+		formCoverImage: 'lp-user-cover-image',
+		BtnChooseCoverImage: 'lp-btn-choose-cover-image',
+		BtnSaveCoverImage: 'lp-btn-save-cover-image',
+		BtnRemoveCoverImage: 'lp-btn-remove-cover-image',
+		BtnCancelCoverImage: 'lp-btn-cancel-cover-image',
+		CoverImagePreview: 'lp-cover-image-preview',
+		CoverImageEmpty: 'lp-cover-image-empty',
+		CoverImageBackground: 'lp-user-cover-image_background',
+		InputFile: 'lp-cover-image-file',
+	};
+
+	/**
+	 * Get elements to use.
+	 */
+	const getElements = () => {
+		elBtnSave = formCoverImage.querySelector( `.${ className.BtnSaveCoverImage }` );
+		elBtnChoose = formCoverImage.querySelector( `.${ className.BtnChooseCoverImage }` );
+		elBtnRemove = formCoverImage.querySelector( `.${ className.BtnRemoveCoverImage }` );
+		elBtnCancel = formCoverImage.querySelector( `.${ className.BtnCancelCoverImage }` );
+		elImagePreview = formCoverImage.querySelector( `.${ className.CoverImagePreview }` );
+		elCoverImageBackground = document.querySelector( `.${ className.CoverImageBackground }` );
+		elImageEmpty = formCoverImage.querySelector( `.${ className.CoverImageEmpty }` );
+		elAction = formCoverImage.querySelector( 'input[name=action]' );
+		elInputFile = formCoverImage.querySelector( 'input[name=lp-cover-image-file]' );
+	};
 
 	const fetchAPI = ( formData ) => {
 		const callBack = {
@@ -21,58 +50,45 @@ const profileCoverImage = () => {
 
 				Toastify( {
 					text: message,
-					//backgroundColor: 'linear-gradient(to right, #00b09b, #96c93d)',
 					gravity: lpData.toast.gravity, // `top` or `bottom`
 					position: lpData.toast.position, // `left`, `center` or `right`
-					className: status,
+					className: `${ lpData.toast.classPrefix } ${ status }`,
 					close: lpData.toast.close == 1,
 					stopOnFocus: lpData.toast.stopOnFocus == 1,
 					duration: lpData.toast.duration,
 				} ).showToast();
 
-				const elBtnSave = document.querySelector( '.lp-btn-save-cover-image' );
-				const elImagePreview = document.querySelector( '.lp-cover-image-preview' );
-
 				if ( 'remove' === data.action ) {
-					console.log( 'remove' );
-					const elBtnRemove = document.querySelector( '.lp-btn-remove-cover-image' );
-					const elBtnChoose = document.querySelector( '.lp-btn-choose-cover-image' );
-
-					const elImageEmpty = document.querySelector( '.lp-cover-image-empty' );
-					const elCoverImageBackground = document.querySelector( '.lp-user-cover-image_background' );
-
-					if ( elBtnRemove ) {
-						elBtnRemove.style.display = 'none';
-					}
-					if ( elBtnChoose ) {
-						elBtnChoose.style.display = 'none';
-					}
-					if ( elImagePreview ) {
-						elImagePreview.style.display = 'none';
-						elImagePreview.src = '';
-					}
-					if ( elImageEmpty ) {
-						elImageEmpty.style.display = 'flex';
-					}
+					elBtnRemove.style.display = 'none';
+					elBtnChoose.style.display = 'none';
+					elImagePreview.src = '';
+					elImagePreview.style.display = 'none';
+					elImageEmpty.style.display = 'flex';
 					if ( elCoverImageBackground ) {
 						elCoverImageBackground.style.backgroundImage = 'none';
 						elCoverImageBackground.style.height = '0';
 					}
-				} else if ( elImagePreview ) {
+				} else if ( 'upload' === data.action ) {
 					elImagePreview.style.display = 'block';
 					elImagePreview.src = data.url;
 					cropper.destroy();
 				}
 
-				if ( elBtnSave ) {
-					elBtnSave.style.display = 'none';
-				}
+				elBtnSave.style.display = 'none';
 			},
 			error: ( error ) => {
 				console.log( error );
 			},
 			completed: () => {
-				//console.log( 'completed' );
+				if ( elBtnRemove ) {
+					elBtnRemove.classList.remove( 'loading' );
+				}
+				if ( elBtnSave ) {
+					elBtnSave.classList.remove( 'loading' );
+				}
+				if ( elImagePreview.src.length > 0 ) {
+					elBtnRemove.style.display = 'block';
+				}
 			},
 		};
 
@@ -92,82 +108,81 @@ const profileCoverImage = () => {
 	document.addEventListener( 'click', ( e ) => {
 		const target = e.target;
 
-		const formCoverImage = target.closest( '.lp-user-cover-image' );
-		const elAction = formCoverImage.querySelector( 'input[name=action]' );
-		if ( formCoverImage ) {
-			const elInputFile = formCoverImage.querySelector( 'input[name=lp-cover-image-file]' );
-			if ( target.classList.contains( 'lp-btn-choose-cover-image' ) ) {
-				e.preventDefault();
-				elInputFile.click();
+		formCoverImage = target.closest( '.lp-user-cover-image' );
+		if ( ! formCoverImage ) {
+			return;
+		}
+
+		getElements();
+		if ( target.classList.contains( className.BtnChooseCoverImage ) ) {
+			e.preventDefault();
+			elInputFile.click();
+		}
+		if ( target.classList.contains( className.BtnSaveCoverImage ) ) {
+			target.classList.add( 'loading' );
+		}
+		if ( target.classList.contains( className.BtnCancelCoverImage ) ) {
+			e.preventDefault();
+			cropper.destroy();
+		}
+		if ( target.classList.contains( className.BtnRemoveCoverImage ) ) {
+			e.preventDefault();
+			target.classList.add( 'loading' );
+			if ( cropper ) {
+				cropper.destroy();
+				cropper = undefined;
 			}
-			if ( target.classList.contains( 'lp-btn-remove-cover-image' ) ) {
-				e.preventDefault();
-				if ( cropper ) {
-					cropper.destroy();
-					cropper = undefined;
-				}
-				elAction.value = 'remove';
-				const elBtnSave = formCoverImage.querySelector( '.lp-btn-save-cover-image' );
-				elBtnSave.click();
-			}
-			if ( target.classList.contains( 'lp-cover-image-empty' ) ) {
-				e.preventDefault();
-				elInputFile.click();
-			}
+			elAction.value = 'remove';
+			elBtnSave.click();
+		}
+		if ( target.classList.contains( className.CoverImageEmpty ) ) {
+			e.preventDefault();
+			elInputFile.click();
 		}
 	} );
 	document.addEventListener( 'change', ( e ) => {
 		const target = e.target;
 
-		const formCoverImage = target.closest( '.lp-user-cover-image' );
-		if ( formCoverImage ) {
-			const elInputFile = formCoverImage.querySelector( 'input[name=lp-cover-image-file]' );
-			if ( target.classList.contains( 'lp-cover-image-file' ) ) {
-				e.preventDefault();
-				const file = elInputFile.files[ 0 ];
-				const reader = new FileReader();
-				const elImagePreview = formCoverImage.querySelector( '.lp-cover-image-preview' );
-				const elImageEmpty = formCoverImage.querySelector( '.lp-cover-image-empty' );
-				const elBtnRemove = formCoverImage.querySelector( '.lp-btn-remove-cover-image' );
-				const elAction = formCoverImage.querySelector( 'input[name=action]' );
-				elImagePreview.style.display = 'block';
-				elImageEmpty.style.display = 'none';
-				elBtnRemove.style.display = 'block';
-				elAction.value = 'upload';
-
-				reader.onload = function( e ) {
-					elImagePreview.src = e.target.result;
-					// Destroy previous cropper instance if any
-					if ( cropper ) {
-						cropper.destroy();
-					}
-					// Initialize cropper
-					cropper = new Cropper( elImagePreview, {
-						aspectRatio: 5.16,
-						viewMode: 1,
-						zoomOnWheel: false,
-					} );
-				};
-				reader.readAsDataURL( file );
-
-				const elBtnSave = formCoverImage.querySelector( '.lp-btn-save-cover-image' );
-				const elBtnChoose = formCoverImage.querySelector( '.lp-btn-choose-cover-image' );
-				elBtnSave.style.display = 'block';
-				elBtnChoose.style.display = 'block';
+		if ( target.classList.contains( className.InputFile ) ) {
+			e.preventDefault();
+			const file = target.files[ 0 ];
+			if ( ! file ) {
+				return;
 			}
+			const reader = new FileReader();
+			elImagePreview.style.display = 'block';
+			elImageEmpty.style.display = 'none';
+			elBtnRemove.style.display = 'block';
+			elAction.value = 'upload';
+
+			reader.onload = function( e ) {
+				elImagePreview.src = e.target.result;
+				// Destroy previous cropper instance if any
+				if ( cropper ) {
+					cropper.destroy();
+				}
+				// Initialize cropper
+				cropper = new Cropper( elImagePreview, {
+					aspectRatio: 5.16,
+					viewMode: 1,
+					zoomOnWheel: false,
+				} );
+			};
+			reader.readAsDataURL( file );
+			elBtnSave.style.display = 'block';
+			elBtnChoose.style.display = 'block';
+			elBtnRemove.style.display = 'none';
 		}
 	} );
 	document.addEventListener( 'submit', ( e ) => {
 		const target = e.target;
 
-		if ( target.classList.contains( 'lp-user-cover-image' ) ) {
+		if ( target.classList.contains( className.formCoverImage ) ) {
 			e.preventDefault();
-			const formCoverImage = target.closest( '.lp-user-cover-image' );
-			const formData = new FormData( formCoverImage );
+			const formData = new FormData( target );
 
 			if ( undefined !== cropper ) {
 				const canvas = cropper.getCroppedCanvas( {} );
-				const elCoverImageBackground = document.querySelector( '.lp-user-cover-image_background' );
 				if ( elCoverImageBackground ) {
 					elCoverImageBackground.style.backgroundImage = `url(${ canvas.toDataURL( 'image/png' ) })`;
 					elCoverImageBackground.style.backgroundRepeat = 'no-repeat';

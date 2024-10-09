@@ -98,6 +98,7 @@ class ProfileTemplate {
 					__( 'Replace', 'learnpress' )
 				),
 				'save_btn'     => '<button class="lp-button button lp-btn-save-cover-image" type="submit" style="display: none">' . __( 'Save', 'learnpress' ) . '</button>',
+				'cancel'       => '<button class="lp-button lp-btn-cancel-cover-image">' . __( 'Cancel', 'learnpress' ) . '</button>',
 				'remove'       => sprintf(
 					'<button class="lp-button button lp-btn-remove-cover-image" %s>%s</button>',
 					$hide_btn_remove,
