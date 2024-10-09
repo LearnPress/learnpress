@@ -62,19 +62,18 @@ class ProfileTemplate {
 		try {
 			$cover_image_url = $user->get_cover_image_url();
 
-			$hide_img_preview = empty( $cover_image_url ) ? 'style="display: none"' : '';
-			$hide_img_empty   = ! empty( $cover_image_url ) ? 'style="display: none"' : '';
-			$html_img_empty   = sprintf(
-				'<div class="lp-cover-image-empty" %s><span class="lp-icon-plus"></span>%s</div>',
-				$hide_img_empty,
+			$class_hide     = 'lp-hidden';
+			$html_img_empty = sprintf(
+				'<div class="lp-cover-image-empty %s"><span class="lp-icon-plus"></span>%s</div>',
+				empty( $cover_image_url ) ? '' : $class_hide,
 				__( 'upload', 'learnpress' ),
 			);
 
 			$html_img_preview = sprintf(
-				'<img class="lp-cover-image-preview" src="%s" alt="%s" %s />',
+				'<img class="lp-cover-image-preview %s" src="%s" alt="%s" />',
+				empty( $cover_image_url ) ? $class_hide : '',
 				$cover_image_url,
 				__( 'Cover image', 'learnpress' ),
-				$hide_img_preview
 			);
 
 			$section_img = [
@@ -84,24 +83,29 @@ class ProfileTemplate {
 				'wrapper_end'   => '</div>',
 			];
 
-			$hide_btn_choose = empty( $cover_image_url ) ? 'style="display: none"' : '';
-			$hide_btn_remove = empty( $cover_image_url ) ? 'style="display: none"' : '';
-
 			$section_btn = [
 				'wrapper'      => '<div class="lp-user-cover-image__buttons">',
 				'input_file'   => '<input type="file" class="lp-cover-image-file"
 									name="lp-cover-image-file" accept="image/png, image/jpeg, image/webp" hidden />',
 				'input_action' => '<input type="hidden" name="action" value="upload"  />',
 				'choose_file'  => sprintf(
-					'<button class="lp-button button lp-btn-choose-cover-image" %s>%s</button>',
-					$hide_btn_choose,
+					'<button class="lp-button lp-btn-choose-cover-image %s">%s</button>',
+					empty( $cover_image_url ) ? $class_hide : '',
 					__( 'Replace', 'learnpress' )
 				),
-				'save_btn'     => '<button class="lp-button button lp-btn-save-cover-image" type="submit" style="display: none">' . __( 'Save', 'learnpress' ) . '</button>',
-				'cancel'       => '<button class="lp-button lp-btn-cancel-cover-image">' . __( 'Cancel', 'learnpress' ) . '</button>',
+				'save_btn'     => sprintf(
+					'<button class="lp-button lp-btn-save-cover-image %s">%s</button>',
+					$class_hide,
+					__( 'Save', 'learnpress' )
+				),
+				'cancel'       => sprintf(
+					'<button class="lp-button lp-btn-cancel-cover-image %s">%s</button>',
+					$class_hide,
+					__( 'Cancel', 'learnpress' )
+				),
 				'remove'       => sprintf(
-					'<button class="lp-button button lp-btn-remove-cover-image" %s>%s</button>',
-					$hide_btn_remove,
+					'<button class="lp-button lp-btn-remove-cover-image %s">%s</button>',
+					empty( $cover_image_url ) ? $class_hide : '',
 					__( 'Remove', 'learnpress' )
 				),
 				'wrapper_end'  => '</div>',

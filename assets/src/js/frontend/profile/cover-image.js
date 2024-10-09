@@ -1,21 +1,16 @@
 import 'cropperjs/dist/cropper.css';
 import Cropper from 'cropperjs';
-import {
-	lpAddQueryArgs,
-	lpGetCurrentURLNoParam,
-	listenElementViewed,
-	listenElementCreated,
-	lpFetchAPI,
-} from '../../utils.js';
+import * as Util from '../../utils.js';
 import API from '../../api.js';
 import Toastify from 'toastify-js';
 import 'toastify-js/src/toastify.css';
 
 const profileCoverImage = () => {
+	const lpSet = new Set();
 	let cropper;
 	let elBtnSave, elBtnRemove, elBtnChoose, elBtnCancel,
 		elImagePreview, elCoverImageBackground, elImageEmpty, formCoverImage,
-		elInputFile, elAction;
+		elInputFile, elAction, imgUrlOriginal;
 	const className = {
 		formCoverImage: 'lp-user-cover-image',
 		BtnChooseCoverImage: 'lp-btn-choose-cover-image',
@@ -26,6 +21,8 @@ const profileCoverImage = () => {
 		CoverImageEmpty: 'lp-cover-image-empty',
 		CoverImageBackground: 'lp-user-cover-image_background',
 		InputFile: 'lp-cover-image-file',
+		loading: 'loading',
+		hidden: 'lp-hidden',
 	};
 
 	/**
@@ -41,6 +38,11 @@ const profileCoverImage = () => {
 		elImageEmpty = formCoverImage.querySelector( `.${ className.CoverImageEmpty }` );
 		elAction = formCoverImage.querySelector( 'input[name=action]' );
 		elInputFile = formCoverImage.querySelector( 'input[name=lp-cover-image-file]' );
+
+		if ( ! lpSet.has( 'everClick' ) ) {
+			imgUrlOriginal = elImagePreview.src;
+			lpSet.add( 'everClick' );
+		}
 	};
 
 	const fetchAPI = ( formData ) => {
@@ -59,35 +61,37 @@ const profileCoverImage = () => {
 				} ).showToast();
 
 				if ( 'remove' === data.action ) {
-					elBtnRemove.style.display = 'none';
-					elBtnChoose.style.display = 'none';
+					Util.lpShowHideEl( elBtnRemove, 0 );
+					Util.lpShowHideEl( elBtnChoose, 0 );
 					elImagePreview.src = '';
-					elImagePreview.style.display = 'none';
-					elImageEmpty.style.display = 'flex';
+					Util.lpShowHideEl( elImagePreview, 0 );
+					Util.lpShowHideEl( elImageEmpty, 1 );
 					if ( elCoverImageBackground ) {
 						elCoverImageBackground.style.backgroundImage = 'none';
 						elCoverImageBackground.style.height = '0';
 					}
 				} else if ( 'upload' === data.action ) {
-					elImagePreview.style.display = 'block';
+					Util.lpShowHideEl( elImagePreview, 1 );
 					elImagePreview.src = data.url;
+					imgUrlOriginal = data.url;
 					cropper.destroy();
 				}
 
-				elBtnSave.style.display = 'none';
+				imgUrlOriginal = elImagePreview.src;
 			},
 			error: ( error ) => {
 				console.log( error );
 			},
 			completed: () => {
-				if ( elBtnRemove ) {
-					elBtnRemove.classList.remove( 'loading' );
-				}
-				if ( elBtnSave ) {
-					elBtnSave.classList.remove( 'loading' );
-				}
-				if ( elImagePreview.src.length > 0 ) {
-					elBtnRemove.style.display = 'block';
+				Util.lpShowHideEl( elBtnSave, 0 );
+				Util.lpSetLoadingEl( elBtnSave, 0 );
+				Util.lpSetLoadingEl( elBtnRemove, 0 );
+				Util.lpShowHideEl( elBtnCancel, 0 );
+
+				if ( ! elImagePreview.src || elImagePreview.src === window.location.href ) {
+					Util.lpShowHideEl( elBtnRemove, 0 );
+				} else {
+					Util.lpShowHideEl( elBtnRemove, 1 );
 				}
 			},
 		};
@@ -101,7 +105,7 @@ const profileCoverImage = () => {
 		option.method = 'POST';
 		option.body = formData;
 
-		lpFetchAPI( url, option, callBack );
+		Util.lpFetchAPI( url, option, callBack );
 	};
 
 	// Events
@@ -119,11 +123,13 @@ const profileCoverImage = () => {
 			elInputFile.click();
 		}
 		if ( target.classList.contains( className.BtnSaveCoverImage ) ) {
-			target.classList.add( 'loading' );
+			Util.lpSetLoadingEl( elBtnSave, 1 );
 		}
 		if ( target.classList.contains( className.BtnCancelCoverImage ) ) {
 			e.preventDefault();
+			elImagePreview.src = imgUrlOriginal;
 			cropper.destroy();
+			Util.lpShowHideEl( elBtnSave, 0 );
 		}
 		if ( target.classList.contains( className.BtnRemoveCoverImage ) ) {
 			e.preventDefault();
@@ -149,11 +155,15 @@ const profileCoverImage = () => {
 			if ( ! file ) {
 				return;
 			}
-			const reader = new FileReader();
-			elImagePreview.style.display = 'block';
-			elImageEmpty.style.display = 'none';
-			elBtnRemove.style.display = 'block';
+
 			elAction.value = 'upload';
+			const reader = new FileReader();
+			Util.lpShowHideEl( elImagePreview, 1 );
+			Util.lpShowHideEl( elImageEmpty, 0 );
+			Util.lpShowHideEl( elBtnRemove, 0 );
+			Util.lpShowHideEl( elBtnSave, 1 );
+			Util.lpShowHideEl( elBtnChoose, 1 );
+			Util.lpShowHideEl( elBtnCancel, 1 );
 
 			reader.onload = function( e ) {
 				elImagePreview.src = e.target.result;
@@ -169,9 +179,6 @@ const profileCoverImage = () => {
 				} );
 			};
 			reader.readAsDataURL( file );
-			elBtnSave.style.display = 'block';
-			elBtnChoose.style.display = 'block';
-			elBtnRemove.style.display = 'none';
 		}
 	} );
 	document.addEventListener( 'submit', ( e ) => {

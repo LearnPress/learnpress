@@ -5,8 +5,12 @@
  * @param data
  * @param functions
  * @since 4.2.5.1
- * @version 1.0.2
+ * @version 1.0.3
  */
+const lpClassName = {
+	hidden: 'lp-hidden',
+	loading: 'loading',
+};
 const lpFetchAPI = ( url, data = {}, functions = {} ) => {
 	if ( 'function' === typeof functions.before ) {
 		functions.before();
@@ -146,4 +150,34 @@ const lpAjaxParseJsonOld = ( data ) => {
 	return data;
 };
 
-export { lpFetchAPI, lpAddQueryArgs, lpGetCurrentURLNoParam, listenElementViewed, listenElementCreated, lpOnElementReady, lpAjaxParseJsonOld };
+// status 0: hide, 1: show
+const lpShowHideEl = ( el, status = 0 ) => {
+	if ( ! el ) {
+		return;
+	}
+
+	if ( ! status ) {
+		el.classList.add( lpClassName.hidden );
+	} else {
+		el.classList.remove( lpClassName.hidden );
+	}
+};
+
+// status 0: hide, 1: show
+const lpSetLoadingEl = ( el, status ) => {
+	if ( ! el ) {
+		return;
+	}
+
+	if ( ! status ) {
+		el.classList.remove( lpClassName.loading );
+	} else {
+		el.classList.add( lpClassName.loading );
+	}
+};
+
+export {
+	lpFetchAPI, lpAddQueryArgs, lpGetCurrentURLNoParam,
+	listenElementViewed, listenElementCreated, lpOnElementReady, lpAjaxParseJsonOld,
+	lpShowHideEl, lpSetLoadingEl,
+};
