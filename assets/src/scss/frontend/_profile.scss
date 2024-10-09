@@ -1385,3 +1385,15 @@ body.learnpress {
 		margin-top: 15px;
 	}
 }
+
+.lp-user-cover-image_background{
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: cover;
+	margin-bottom: $spacing-base-6x;
+	border-radius: var( --lp-border-radius, 5px);
+	> img{
+		opacity: 0;
+		visibility: hidden;
+	}
+}

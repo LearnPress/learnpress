@@ -300,3 +300,28 @@ body.twentyseventeen.learnpress-page {
 		border: none;
 	}
 }
+
+// Fix for theme elearningwp
+.elearningwp:not(.nofixcss){
+	.lp-courses-bar .switch-layout .switch-btn{
+		border: none !important;
+		background-color: unset ! important;
+		padding: 0;
+ 	}
+}
+// fix for themee course-builder
+.course-builder:not(.nofixcss) {
+	.lp-courses-bar .search-courses button {
+		padding: 0;
+	}
+	.lp-courses-bar .courses-order-by{
+		height: unset!important;
+		padding: 16px 40px 16px 20px!important;
+		border-radius: 50px;
+	}
+	.lp-courses-bar .switch-layout .switch-btn{
+		border-radius: 10px;
+		border: none;
+		padding: 0;
+ 	}
+}

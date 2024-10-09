@@ -36,11 +36,9 @@ class ProfileTemplate {
 			$cover_image_url = $user->get_cover_image_url();
 
 			$html = sprintf(
-				'<div class="lp-user-cover-image_background" style="%s;%s;%s" data-height="%s"></div>',
-				sprintf( 'background: url(%s) no-repeat', $cover_image_url ),
-				'background-size: contain',
-				! empty( $cover_image_url ) ? 'height: 250px;' : '',
-				'250px' // Get from settings
+				'<div class="lp-user-cover-image_background" style="%s"><img src="%s"></div>',
+				sprintf( 'background-image: url(%s)', $cover_image_url ),
+				$cover_image_url
 			);
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );

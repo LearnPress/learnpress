@@ -13,7 +13,8 @@ $text-color-base: var(--lp-color-base, #333);
 $text-color-accent: var(--lp-color-accent, #666);
 $bg-color-lesson: var(--lp-bg-color-lesson, #fff);
 $border-color: var(--lp-border-color,#E2E0DB);
-
+// navigation
+$nav_width: var(--lp-pagination-size, 48px);
 //** Placeholder text color, Input options
 $input-color-placeholder: #999;
 $input-border-color: #ccc;

@@ -582,39 +582,39 @@
 				margin: 0;
 			}
 
-			.learn-press-message {
-				margin: 0;
-				padding: 10px;
-				border-bottom: 1px solid #d9e0f1;
-				border-radius: 0;
-				color: #999;
-				background: #f5f5f5;
-				font-size: 0.8em;
-
-				&::before,
-				&::after {
-					position: absolute;
-					z-index: 9999;
-					top: -16px;
-					left: 10px;
-					width: 0;
-					height: 0;
-					border: 8px solid transparent;
-					border-bottom-color: #f5f5f5;
-					background: transparent;
-					content: "";
-
-					@include border-radius(0);
-				}
-
-				&::after {
-					z-index: 9998;
-					top: -20px;
-					left: 8px;
-					border-width: 10px;
-					border-bottom-color: #d9e0f1;
-				}
-			}
+			//.learn-press-message {
+			//	margin: 0;
+			//	padding: 10px;
+			//	border-bottom: 1px solid #d9e0f1;
+			//	border-radius: 0;
+			//	color: #999;
+			//	background: #f5f5f5;
+			//	font-size: 0.8em;
+			//
+			//	&::before,
+			//	&::after {
+			//		position: absolute;
+			//		z-index: 9999;
+			//		top: -16px;
+			//		left: 10px;
+			//		width: 0;
+			//		height: 0;
+			//		border: 8px solid transparent;
+			//		border-bottom-color: #f5f5f5;
+			//		background: transparent;
+			//		content: "";
+			//
+			//		@include border-radius(0);
+			//	}
+			//
+			//	&::after {
+			//		z-index: 9998;
+			//		top: -20px;
+			//		left: 8px;
+			//		border-width: 10px;
+			//		border-bottom-color: #d9e0f1;
+			//	}
+			//}
 		}
 	}
 

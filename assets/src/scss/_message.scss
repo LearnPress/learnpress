@@ -1,27 +1,31 @@
 $msg-color: #00adff;
-$msg-success: #059601;
-$msg-error: #d85554;
-$msg-waring: #ffc107;
+$msg-success:#EBF8E5;
+$msg-error: #FEE5E5;
+$msg-waring: #FEF7E6;
 
 .learn-press-message {
 	position: relative;
 	margin: 24px auto;
 	padding: 10px 20px;
-	border-top: 5px solid $msg-color;
-	border-radius: var( --lp-border-radius);
-	background: #f5f5f5;
+	//border-top: 5px solid $msg-color;
+	border-radius: var( --lp-border-radius, 5px);
+	background-color: #E5F7FF;
+	color: #007AFF;
 	width: 100%;
  	&.error {
-		border-color: $msg-error;
+		background-color: $msg-error;
+		color: #FF3B30;
  	}
 
 	&.warning {
-		border-color: $msg-waring;
+		background-color: $msg-waring;
+		color: #FF9500;
  	}
 
 	&.success {
-		border-color: $msg-success;
- 	}
+		background-color: $msg-success;
+		color :#3AB500;
+	}
 	a {
 		text-decoration: underline;
 	}

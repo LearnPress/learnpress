@@ -1,8 +1,8 @@
 @font-face {
 	font-family: 'lp-icon';
-	src: url('../src/css/vendor/fonts/lp-icon/lp-icon.ttf?v=sg0x54') format('truetype'),
-	url('../src/css/vendor/fonts/lp-icon/lp-icon.woff2?v=sg0x54') format('woff2'),
-	url('../src/css/vendor/fonts/lp-icon/lp-icon.svg?v=sg0x54#lp-icon') format('svg');
+	src: url('../src/css/vendor/fonts/lp-icon/lp-icon.ttf?v=sg0x66') format('truetype'),
+	url('../src/css/vendor/fonts/lp-icon/lp-icon.woff2?v=sg0x66') format('woff2'),
+	url('../src/css/vendor/fonts/lp-icon/lp-icon.svg?v=sg0x66#lp-icon') format('svg');
 	font-weight: normal;
 	font-style: normal;
 	font-display: block;
@@ -393,8 +393,14 @@
 .lp-icon-file-video:before {
 	content: "\f1c8";
 }
-.lp-icon-file-code:before {
+.lp-icon-file-code .path1:before {
 	content: "\f1c9";
+	color: rgb(0, 0, 0);
+}
+.lp-icon-file-code .path2:before {
+	content: "\f1ca";
+	margin-left: -0.8571428571428571em;
+	color: rgb(28, 28, 27);
 }
 .lp-icon-circle-thin:before {
 	content: "\f1db";
@@ -509,6 +515,9 @@
 }
 .lp-icon-layers:before {
 	content: "\e91a";
+}
+.lp-icon-filter:before {
+	content: "\e91c";
 }
 .lp-icon-book-open:before {
 	content: "\f518";
