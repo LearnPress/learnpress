@@ -234,6 +234,7 @@ const addNewQuestion = ( quizEditorEl ) => {
 						addNewQuestionApi( data, quizEditorEl );
 						inputAddNewEl.value = '';
 						addNewBtnEl.disabled = true;
+						updateTotalItem( quizEditorEl, 1 );
 					} );
 				} );
 			}

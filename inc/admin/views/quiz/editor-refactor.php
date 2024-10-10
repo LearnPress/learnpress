@@ -9,8 +9,8 @@
 $quiz_id        = get_the_ID();
 $quiz           = LP_Quiz::get_quiz( $quiz_id );
 $question_ids   = $quiz->get_question_ids();
-$get_mark       = $quiz->get_mark();
-$label_question = $get_mark < 2 ? esc_html__( 'Question', 'learnpress' ) : esc_html__( 'Questions', 'learnpress' );
+$total_question = count( $question_ids ) ?? 0;
+$label_question = $total_question < 2 ? esc_html__( 'Question', 'learnpress' ) : esc_html__( 'Questions', 'learnpress' );
 $types          = LP_Question::get_types();
 ?>
 
@@ -19,7 +19,7 @@ $types          = LP_Question::get_types();
 		<h3><?php echo esc_html__( 'Details', 'learnpress' ); ?><span class="status"></span></h3>
 		<div class="section-item-counts">
 			<span>
-				<?php echo sprintf( '%s %s', $get_mark, $label_question ); ?>
+				<?php echo sprintf( '%s %s', $total_question, $label_question ); ?>
 			</span>
 		</div>
 		<span class="collapse-list-questions dashicons dashicons-arrow-down"></span>
