@@ -13,7 +13,14 @@ document.addEventListener( 'DOMContentLoaded', function( event ) {
 	recoverOrder();
 	CourseList();
 } );
-
+document.addEventListener("DOMContentLoaded", function() {
+	// Get the element with class mb-current-tab
+	const currentTabElement = document.querySelector('.mb-current-tab');
+ 	const tabsNav = document.querySelector('.learn-press-tabs__nav');
+  	currentTabElement.addEventListener('click', function() {
+ 		tabsNav.classList.toggle('open');
+	});
+});
 if ( document.getElementById( 'learnpress-avatar-upload' ) ) {
 	wp.element.render( <Avatar />, document.getElementById( 'learnpress-avatar-upload' ) );
 }

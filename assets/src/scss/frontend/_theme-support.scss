@@ -42,7 +42,7 @@
 
 .learnpress,.learnpress-profile {
 	#left-area ul, .entry-content ul, .et-l--body ul, .et-l--footer ul, .et-l--header ul {
-		padding: 0 !important;
+		padding: 0;
 		list-style: none !important;
 	}
 }
@@ -323,4 +323,7 @@ body.twentyseventeen.learnpress-page {
 		border: none;
 		padding: 0;
  	}
+}
+.learnpress-v4{
+	--lp-border-radius-avatar: 0
 }

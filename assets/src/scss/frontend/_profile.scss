@@ -1,3 +1,4 @@
+@import "user_cover_image";
 body {
 
 	div.entry-content > {
@@ -18,13 +19,21 @@ body {
 
 .lp-user-profile {
 	position: relative;
-	background: #fff;
+	//background: #fff;
+	@media (min-width: 1366px) {
+		.lp-content-area {
+			padding-right: 0;
+			padding-left: 0;
+		}
+	}
+
 
 	.lp-user-profile-avatar {
- 		img {
- 			display: block;
-			//border-radius: 50%;
+		img {
+			display: block;
+			border-radius: var(--lp-border-radius-avatar, 50%);
 			width: 100%;
+			height: auto;
 		}
 	}
 
@@ -37,7 +46,7 @@ body {
 		-ms-flex-wrap: wrap;
 		flex-wrap: wrap;
 		//background: white;
-		gap: 10px;
+		gap: 16px;
 		padding: 20px 0;
 		//border-top: 1px solid #eaeaea;
 
@@ -45,7 +54,8 @@ body {
 			display: inline-flex;
 			align-items: center;
 			justify-content: center;
-			//color: #666;
+			text-decoration: none;
+			color: $text-color-base;
 			//text-align: center;
 
 			&:hover {
@@ -135,6 +145,7 @@ body {
 		//align-items: center;
 		@media (max-width: 650px) {
 			flex-direction: column;
+			align-items: center;
 			.lp-profile-right {
 				text-align: center;
 				width: 100%;
@@ -164,6 +175,7 @@ body {
 		text-transform: capitalize;
 		color: inherit;
 	}
+
 	//
 	//.lp-profile-user-bio {
 	//	font-weight: 300;
@@ -511,28 +523,28 @@ body {
 		}
 
 		@media (max-width: 767px) {
-			.learn-press-tabs__nav {
-				display: block;
-				width: 100%;
-				border: 0;
-
-				&::after {
-					display: table;
-					clear: both;
-					content: "";
-				}
-
-			}
-
-			.learn-press-tabs__tab {
-				float: left;
-				border-right: 0;
-
-				label {
-					padding-right: 25px;
-					padding-left: 25px;
-				}
-			}
+			//.learn-press-tabs__nav {
+			//	display: block;
+			//	width: 100%;
+			//	border: 0;
+			//
+			//	&::after {
+			//		display: table;
+			//		clear: both;
+			//		content: "";
+			//	}
+			//
+			//}
+			//
+			//.learn-press-tabs__tab {
+			//	float: left;
+			//	border-right: 0;
+			//
+			//	label {
+			//		padding-right: 25px;
+			//		padding-left: 25px;
+			//	}
+			//}
 			.profile-orders {
 				overflow-x: scroll;
 			}
@@ -587,29 +599,29 @@ body {
 
 	#profile-content-settings {
 		.learn-press-tabs__nav {
-			border: 1px solid #e5e7f2;
-			flex-wrap: wrap;
-			margin: 0;
-			@media (min-width: 1024px) {
-				flex-wrap: nowrap;
-			}
+			//border: 1px solid #e5e7f2;
+			//flex-wrap: wrap;
+			//margin: 0;
+			//@media (min-width: 1024px) {
+			//	flex-wrap: nowrap;
+			//}
 
 			.learn-press-tabs__tab {
-				width: calc(100% / 3);
+				//width: calc(100% / 3);
 
-				&::after {
-					display: none;
-				}
-
-				label {
-					&::before {
-						display: none;
-					}
-				}
-
-				@media (max-width: 767px) {
-					border-right: 1px solid #e5e7f2;
-				}
+				//&::after {
+				//	display: none;
+				//}
+				//
+				//label {
+				//	&::before {
+				//		display: none;
+				//	}
+				//}
+				//
+				//@media (max-width: 767px) {
+				//	border-right: 1px solid #e5e7f2;
+				//}
 			}
 		}
 
@@ -1210,16 +1222,4 @@ body.learnpress {
 	}
 }
 
-@import "user_cover_image";
 
-.lp-user-cover-image_background{
-	background-repeat: no-repeat;
-	background-position: center;
-	background-size: cover;
-	margin-bottom: $spacing-base-6x;
-	border-radius: var( --lp-border-radius, 5px);
-	> img{
-		opacity: 0;
-		visibility: hidden;
-	}
-}

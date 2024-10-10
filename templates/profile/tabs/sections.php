@@ -36,18 +36,15 @@ $active_tab   = '';
 			continue;
 		}
 
-		$visible_tabs[] = $section_key;
-		$checked        = '';
+ 		$visible_tabs[] = $section_key;
+ 		$checked        = '';
 
 		if ( $profile->is_current_section( $section_key, $section_key ) ) {
 			$active_tab = $section_key;
-			$checked    = checked( true, true, false );
+//			$checked    = checked( true, true, false );
+			echo '<div class="mb-current-tab"><label>'.esc_html( $section_data['title'] ).'</label></div>';
 		}
 		?>
-
-		<input type="radio" name="<?php echo esc_attr( $unique_group ); ?>"
-			class="learn-press-tabs__checker" <?php echo esc_attr( $checked ); ?>
-			id="<?php echo esc_attr( $unique_group . '__' . $section_key ); ?>"/>
 	<?php } ?>
 
 	<ul class="learn-press-tabs__nav" data-tabs="<?php echo esc_attr( count( $visible_tabs ) ); ?>">
@@ -57,7 +54,7 @@ $active_tab   = '';
 				continue;
 			}
 
-			$classes = array( 'learn-press-tabs__tab', esc_attr( $section_key ) );
+			$classes = array( 'learn-press-tabs__item', esc_attr( $section_key ) );
 
 			if ( $active_tab == $section_key ) {
 				$classes[] = 'active';
@@ -68,7 +65,7 @@ $active_tab   = '';
 			?>
 
 			<li class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>">
-				<label><a href="<?php echo esc_url_raw( $section_link ); ?>"><?php echo esc_html( $section_data['title'] ); ?></a></label>
+				<a href="<?php echo esc_url_raw( $section_link ); ?>"><?php echo esc_html( $section_data['title'] ); ?></a>
 			</li>
 
 		<?php } ?>

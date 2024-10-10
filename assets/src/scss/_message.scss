@@ -30,3 +30,33 @@ $msg-waring: #FEF7E6;
 		text-decoration: underline;
 	}
 }
+// Message when upload image cover
+.lp-toast{
+	&.toastify{
+		background: $msg-success;
+		color :#3AB500;
+		border-radius: var( --lp-border-radius, 5px);
+		box-shadow: 0 0 0;
+		display: flex;
+		align-items: center;
+		.toast-close{
+			background: transparent!important;
+ 			font-size: 0;
+			padding-left: 12px;
+			&:before{
+				content: "\f00d";
+				font-family: 'lp-icon';
+				font-size: 16px;
+				color: #000;
+				line-height: 17px;
+ 			}
+			&:hover{
+				opacity: 1;
+			}
+		}
+		&.error{
+			background-color: $msg-error;
+			color: #FF3B30;
+		}
+	}
+}

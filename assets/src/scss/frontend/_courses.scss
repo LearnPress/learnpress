@@ -412,7 +412,7 @@
 
 		a {
 			font-weight: 600;
-
+			text-decoration: none;
 			&:hover {
 				color: $color-primary;
 			}
@@ -476,6 +476,7 @@
 				transition: all 0.3s;
 				display:  block;
 				background: transparent;
+				text-decoration: none;
 				&:hover {
 					background: $color-primary;
 					color: $color-white;
