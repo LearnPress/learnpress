@@ -213,9 +213,9 @@ gulp.task(
 	gulp.series(
 		'clearCache',
 		'clearJsAdmin',
-		'clearJsFrontend',
+		//'clearJsFrontend',
 		'minJsAdmin',
-		'minJsFrontend',
+		//'minJsFrontend',
 		'mincss',
 		'cleanReleases',
 		'copyReleases',

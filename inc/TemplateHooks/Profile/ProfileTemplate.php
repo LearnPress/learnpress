@@ -11,6 +11,7 @@ namespace LearnPress\TemplateHooks\Profile;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\UserModel;
+use LP_Settings;
 use Throwable;
 
 class ProfileTemplate {
@@ -49,10 +50,14 @@ class ProfileTemplate {
 						sprintf( 'background-image: url(%s);', $cover_image_url ),
 					),
 					'image'       => sprintf(
-						'<img src="%s" alt="%s" />',
+						'<img src="%s" alt="%s" loading="lazy" decoding="async" />',
 						$cover_image_url,
 						__( 'Cover image', 'learnpress' )
 					),
+					'btn-edit'    => $user->get_id() === get_current_user_id() ? sprintf(
+						'<a class="lp-btn-to-edit-cover-image">+ %s</a>',
+						__( 'edit cover image', 'learnpress' )
+					) : '',
 					'wrapper_end' => '</div>',
 				],
 				$user
@@ -79,7 +84,14 @@ class ProfileTemplate {
 		$html = '';
 
 		try {
-			$cover_image_url = $user->get_cover_image_url();
+			$cover_image_url        = $user->get_cover_image_url();
+			$cover_image_dimensions = LP_Settings::get_option(
+				'cover_image_dimensions',
+				array(
+					'width'  => 1920,
+					'height' => 250,
+				)
+			);
 
 			$class_hide = 'lp-hidden';
 
@@ -92,7 +104,11 @@ class ProfileTemplate {
 				),
 				'bottom'      => sprintf(
 					'<div class="lp-cover-image-empty__info__bottom">%s</div>',
-					__( 'Accepted file types: JPG, PNG 1920 x 250 (px)', 'learnpress' ),
+					sprintf(
+						__( 'Accepted file types: JPG, PNG %1$d x %2$d (px)', 'learnpress' ),
+						$cover_image_dimensions['width'],
+						$cover_image_dimensions['height']
+					),
 				),
 				'wrapper_end' => '</div>',
 			];
@@ -115,7 +131,7 @@ class ProfileTemplate {
 			);
 
 			$html_img_preview = sprintf(
-				'<img class="lp-cover-image-preview %s" src="%s" alt="%s" />',
+				'<img class="lp-cover-image-preview %s" src="%s" alt="%s" decoding="async" />',
 				empty( $cover_image_url ) ? $class_hide : '',
 				$cover_image_url,
 				__( 'Cover image', 'learnpress' ),

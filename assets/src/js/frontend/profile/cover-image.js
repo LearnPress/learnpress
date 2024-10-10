@@ -17,6 +17,7 @@ const profileCoverImage = () => {
 		BtnSaveCoverImage: 'lp-btn-save-cover-image',
 		BtnRemoveCoverImage: 'lp-btn-remove-cover-image',
 		BtnCancelCoverImage: 'lp-btn-cancel-cover-image',
+		BtnToEditCoverImage: 'lp-btn-to-edit-cover-image',
 		CoverImagePreview: 'lp-cover-image-preview',
 		CoverImageEmpty: 'lp-cover-image-empty',
 		CoverImageBackground: 'lp-user-cover-image_background',
@@ -111,6 +112,15 @@ const profileCoverImage = () => {
 	// Events
 	document.addEventListener( 'click', ( e ) => {
 		const target = e.target;
+
+		if ( target.classList.contains( className.BtnToEditCoverImage ) ) {
+			e.preventDefault();
+			formCoverImage = document.querySelector( `.${ className.formCoverImage }` );
+			if ( ! formCoverImage ) {
+				return;
+			}
+			formCoverImage.scrollIntoView( { behavior: 'smooth', block: 'center' } );
+		}
 
 		formCoverImage = target.closest( `.${ className.formCoverImage }` );
 		if ( ! formCoverImage ) {
