@@ -11,6 +11,7 @@ namespace LearnPress\TemplateHooks\Profile;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\UserModel;
+use LP_Profile;
 use LP_Settings;
 use Throwable;
 
@@ -39,7 +40,18 @@ class ProfileTemplate {
 		$html = '';
 
 		try {
-			$cover_image_url = $user->get_cover_image_url();
+			$cover_image_url              = $user->get_cover_image_url();
+			$profile                      = LP_Profile::instance();
+			$current_section              = LP_Profile::instance()->get_current_section();
+			$html_btn_to_edit_cover_image = '';
+			if ( $user->get_id() === get_current_user_id() ) {
+				$html_btn_to_edit_cover_image = sprintf(
+					'<a class="lp-btn-to-edit-cover-image" href="%s" data-section-correct="%d">+ %s</a>',
+					$profile->get_tab_link( 'settings', 'cover-image' ),
+					$current_section === 'cover-image' ? 1 : 0,
+					__( 'edit cover image', 'learnpress' ),
+				);
+			}
 
 			$section = apply_filters(
 				'learn-press/profile/html-cover-image',
@@ -54,10 +66,7 @@ class ProfileTemplate {
 						$cover_image_url,
 						__( 'Cover image', 'learnpress' )
 					),
-					'btn-edit'    => $user->get_id() === get_current_user_id() ? sprintf(
-						'<a class="lp-btn-to-edit-cover-image">+ %s</a>',
-						__( 'edit cover image', 'learnpress' )
-					) : '',
+					'btn-edit'    => $html_btn_to_edit_cover_image,
 					'wrapper_end' => '</div>',
 				],
 				$user

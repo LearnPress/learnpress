@@ -114,12 +114,16 @@ const profileCoverImage = () => {
 		const target = e.target;
 
 		if ( target.classList.contains( className.BtnToEditCoverImage ) ) {
-			e.preventDefault();
 			formCoverImage = document.querySelector( `.${ className.formCoverImage }` );
 			if ( ! formCoverImage ) {
 				return;
 			}
-			formCoverImage.scrollIntoView( { behavior: 'smooth', block: 'center' } );
+
+			const isCorrectSection = target.dataset.sectionCorrect == 1;
+			if ( isCorrectSection ) {
+				e.preventDefault();
+				formCoverImage.scrollIntoView( { behavior: 'smooth', block: 'center' } );
+			}
 		}
 
 		formCoverImage = target.closest( `.${ className.formCoverImage }` );
@@ -234,6 +238,18 @@ const profileCoverImage = () => {
 				}, 'image/png' );
 			} else {
 				fetchAPI( formData );
+			}
+		}
+	} );
+	document.addEventListener( 'DOMContentLoaded', ( e ) => {
+		const elBtnToEditCoverImage = document.querySelector( `.${ className.BtnToEditCoverImage }` );
+		const formCoverImage = document.querySelector( `.${ className.formCoverImage }` );
+
+		if ( elBtnToEditCoverImage && formCoverImage ) {
+			console.log( elBtnToEditCoverImage.dataset.sectionCorrect );
+			const isCorrectSection = elBtnToEditCoverImage.dataset.sectionCorrect == 1;
+			if ( isCorrectSection ) {
+				formCoverImage.scrollIntoView( { behavior: 'smooth', block: 'center' } );
 			}
 		}
 	} );

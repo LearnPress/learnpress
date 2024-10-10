@@ -485,9 +485,11 @@ class UserModel {
 	 * Get description of user.
 	 *
 	 * @return string
+	 * @since 4.2.6.9
+	 * @version 1.0.1
 	 */
 	public function get_description(): string {
-		return wpautop( $this->get_meta_value_by_key( 'description', '' ) );
+		return get_the_author_meta( $this->get_meta_value_by_key( 'description', '' ) );
 	}
 
 	/**

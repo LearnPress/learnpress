@@ -1314,7 +1314,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return string
 		 */
 		public function get_description(): string {
-			return wpautop( $this->get_data( 'description', '' ) );
+			return get_the_author_meta( $this->get_data( 'description', '' ) );
 		}
 
 		/**
