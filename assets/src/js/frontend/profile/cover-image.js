@@ -9,8 +9,8 @@ const profileCoverImage = () => {
 	const lpSet = new Set();
 	let cropper;
 	let elBtnSave, elBtnRemove, elBtnChoose, elBtnCancel,
-		elImagePreview, elCoverImageBackground, elImageEmpty, formCoverImage,
-		elInputFile, elAction, imgUrlOriginal;
+		elImagePreview, elCoverImageBackground, elImgCoverImageBackground, elImageEmpty,
+		formCoverImage, elInputFile, elAction, imgUrlOriginal;
 	const className = {
 		formCoverImage: 'lp-user-cover-image',
 		BtnChooseCoverImage: 'lp-btn-choose-cover-image',
@@ -35,6 +35,7 @@ const profileCoverImage = () => {
 		elBtnCancel = formCoverImage.querySelector( `.${ className.BtnCancelCoverImage }` );
 		elImagePreview = formCoverImage.querySelector( `.${ className.CoverImagePreview }` );
 		elCoverImageBackground = document.querySelector( `.${ className.CoverImageBackground }` );
+		elImgCoverImageBackground = elCoverImageBackground.querySelector( `img` );
 		elImageEmpty = formCoverImage.querySelector( `.${ className.CoverImageEmpty }` );
 		elAction = formCoverImage.querySelector( 'input[name=action]' );
 		elInputFile = formCoverImage.querySelector( 'input[name=lp-cover-image-file]' );
@@ -67,8 +68,7 @@ const profileCoverImage = () => {
 					Util.lpShowHideEl( elImagePreview, 0 );
 					Util.lpShowHideEl( elImageEmpty, 1 );
 					if ( elCoverImageBackground ) {
-						elCoverImageBackground.style.backgroundImage = 'none';
-						elCoverImageBackground.style.height = '0';
+						Util.lpShowHideEl( elCoverImageBackground, 0 );
 					}
 				} else if ( 'upload' === data.action ) {
 					Util.lpShowHideEl( elImagePreview, 1 );
@@ -191,10 +191,10 @@ const profileCoverImage = () => {
 			if ( undefined !== cropper ) {
 				const canvas = cropper.getCroppedCanvas( {} );
 				if ( elCoverImageBackground ) {
-					elCoverImageBackground.style.backgroundImage = `url(${ canvas.toDataURL( 'image/png' ) })`;
-					elCoverImageBackground.style.backgroundRepeat = 'no-repeat';
-					elCoverImageBackground.style.backgroundSize = 'contain';
-					elCoverImageBackground.style.height = '250px';
+					const dataUrl = canvas.toDataURL( 'image/png' );
+					elCoverImageBackground.style.backgroundImage = `url(${ dataUrl })`;
+					elImgCoverImageBackground.src = dataUrl;
+					Util.lpShowHideEl( elCoverImageBackground, 1 );
 				}
 
 				canvas.toBlob( ( blob ) => {

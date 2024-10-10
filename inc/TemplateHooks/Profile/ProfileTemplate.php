@@ -25,9 +25,14 @@ class ProfileTemplate {
 	}
 
 	/**
+	 * HTML cover image.
+	 *
 	 * @param UserModel $user
 	 *
 	 * @return string
+	 * @return string
+	 * @since 4.2.7.2
+	 * @version 1.0.0
 	 */
 	public function html_cover_image( UserModel $user ): string {
 		$html = '';
@@ -35,11 +40,25 @@ class ProfileTemplate {
 		try {
 			$cover_image_url = $user->get_cover_image_url();
 
-			$html = sprintf(
-				'<div class="lp-user-cover-image_background" style="%s"><img src="%s"></div>',
-				sprintf( 'background-image: url(%s)', $cover_image_url ),
-				$cover_image_url
+			$section = apply_filters(
+				'learn-press/profile/html-cover-image',
+				[
+					'wrapper'     => sprintf(
+						'<div class="lp-user-cover-image_background %s" style="%s">',
+						empty( $cover_image_url ) ? 'lp-hidden' : '',
+						sprintf( 'background-image: url(%s);', $cover_image_url ),
+					),
+					'image'       => sprintf(
+						'<img src="%s" alt="%s" />',
+						$cover_image_url,
+						__( 'Cover image', 'learnpress' )
+					),
+					'wrapper_end' => '</div>',
+				],
+				$user
 			);
+
+			$html = Template::combine_components( $section );
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
@@ -48,7 +67,7 @@ class ProfileTemplate {
 	}
 
 	/**
-	 * HTML upload cover image.
+	 * HTML upload edit cover image.
 	 *
 	 * @param UserModel $user
 	 *
