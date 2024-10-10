@@ -129,7 +129,13 @@ class LP_Assets extends LP_Abstract_Assets {
 	 * @return array
 	 */
 	public function localize_data_global(): array {
-		$cover_image_dimensions = LP_Settings::get_option( 'cover_image_dimensions', array( 1920, 250, 'yes' ) );
+		$cover_image_dimensions = LP_Settings::get_option(
+			'cover_image_dimensions',
+			array(
+				'width'  => 1920,
+				'height' => 250,
+			)
+		);
 		$aspectRatio            = $cover_image_dimensions['width'] / $cover_image_dimensions['height'];
 
 		return apply_filters(
