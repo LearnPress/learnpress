@@ -10,6 +10,10 @@ profileCoverImage();
 const mbCurrentTab = () => {
 	const currentTabElement = document.querySelector( '.mb-current-tab' );
 	const tabsNav = document.querySelector( '.learn-press-tabs__nav' );
+	if ( ! currentTabElement || ! tabsNav ) {
+		return;
+	}
+
 	currentTabElement.addEventListener( 'click', () => {
 		tabsNav.classList.toggle( 'open' );
 	} );

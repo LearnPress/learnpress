@@ -246,7 +246,6 @@ const profileCoverImage = () => {
 		const formCoverImage = document.querySelector( `.${ className.formCoverImage }` );
 
 		if ( elBtnToEditCoverImage && formCoverImage ) {
-			console.log( elBtnToEditCoverImage.dataset.sectionCorrect );
 			const isCorrectSection = elBtnToEditCoverImage.dataset.sectionCorrect == 1;
 			if ( isCorrectSection ) {
 				formCoverImage.scrollIntoView( { behavior: 'smooth', block: 'center' } );
