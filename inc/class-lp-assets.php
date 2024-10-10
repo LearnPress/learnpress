@@ -129,6 +129,9 @@ class LP_Assets extends LP_Abstract_Assets {
 	 * @return array
 	 */
 	public function localize_data_global(): array {
+		$cover_image_dimensions = LP_Settings::get_option( 'cover_image_dimensions', array( 1920, 250, 'yes' ) );
+		$aspectRatio            = $cover_image_dimensions['width'] / $cover_image_dimensions['height'];
+
 		return apply_filters(
 			'learn-press/frontend/localize-data-global',
 			[
@@ -148,7 +151,8 @@ class LP_Assets extends LP_Abstract_Assets {
 					'duration'    => 3000,
 					'close'       => 1,
 					'stopOnFocus' => 1,
-					'classPrefix' => 'lp-toast'
+					'classPrefix' => 'lp-toast',
+					'aspectRatio' => $aspectRatio,
 				],
 			]
 		);

@@ -38,6 +38,12 @@ return apply_filters(
 				'type'    => 'image-dimensions',
 			),
 			array(
+				'title'   => esc_html__( 'Cover Image Dimensions', 'learnpress' ),
+				'id'      => 'cover_image_dimensions',
+				'default' => array( 1920, 250, 'yes' ),
+				'type'    => 'image-dimensions',
+			),
+			array(
 				'title'   => esc_html__( 'Enable login form', 'learnpress' ),
 				'id'      => 'enable_login_profile',
 				'default' => 'no',
