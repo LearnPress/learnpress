@@ -67,7 +67,7 @@ class UserModel {
 	 */
 	public $image_url = '';
 
-	const META_KEY_IMAGE = '_lp_profile_picture';
+	const META_KEY_IMAGE       = '_lp_profile_picture';
 	const META_KEY_COVER_IMAGE = '_lp_profile_cover_image';
 
 	/**
@@ -173,7 +173,6 @@ class UserModel {
 	 * @throws Exception
 	 */
 	public function get_all_metadata() {
-
 	}
 
 	/**
@@ -418,7 +417,6 @@ class UserModel {
 	 * @return mixed|object|bool
 	 */
 	public function can_enroll_course( CourseModel $course ) {
-
 	}
 
 	/**
@@ -433,7 +431,6 @@ class UserModel {
 	 * @version 1.0.5
 	 */
 	public function can_purchase_course( int $course_id = 0 ) {
-
 	}
 
 	/**
@@ -446,7 +443,6 @@ class UserModel {
 	 * @author tungnx
 	 */
 	public function can_retake_course( CourseModel $course ) {
-
 	}
 
 	/**
@@ -489,7 +485,7 @@ class UserModel {
 	 * @version 1.0.1
 	 */
 	public function get_description(): string {
-		return get_the_author_meta( $this->get_meta_value_by_key( 'description', '' ) );
+		return get_the_author_meta( 'description', $this->get_id() );
 	}
 
 	/**

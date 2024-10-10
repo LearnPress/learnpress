@@ -83,7 +83,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			if ( $this->get_id() > 0 ) {
 				$this->load();
 			}
-
 		}
 
 		/**
@@ -1042,7 +1041,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		public function get_profile_avatar_url(): string {
 			$avatar_url = $this->get_upload_profile_src();
 			if ( empty( $avatar_url ) ) {
-				$args = learn_press_get_avatar_thumb_size();
+				$args       = learn_press_get_avatar_thumb_size();
 				$avatar_url = get_avatar_url( $this->get_id(), $args );
 				if ( empty( $avatar_url ) ) {
 					$avatar_url = LP_PLUGIN_URL . 'assets/images/avatar-default.png';
@@ -1133,32 +1132,32 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 					switch ( $k ) {
 						case 'facebook':
-//							$i = sprintf(
-//								'<i class="lp-user-ico">%s</i>',
-//								wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-facebook.svg' )
-//							);
-							$i ='<i class="lp-user-ico lp-icon-facebook"></i>';
+							//                          $i = sprintf(
+							//                              '<i class="lp-user-ico">%s</i>',
+							//                              wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-facebook.svg' )
+							//                          );
+							$i = '<i class="lp-user-ico lp-icon-facebook"></i>';
 							break;
 						case 'twitter':
-//							$i = sprintf(
-//								'<i class="lp-user-ico">%s</i>',
-//								wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-twitter.svg' )
-//							);
-							$i ='<i class="lp-user-ico lp-icon-twitter"></i>';
+							//                          $i = sprintf(
+							//                              '<i class="lp-user-ico">%s</i>',
+							//                              wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-twitter.svg' )
+							//                          );
+							$i = '<i class="lp-user-ico lp-icon-twitter"></i>';
 							break;
 						case 'linkedin':
-//							$i = sprintf(
-//								'<i class="lp-user-ico">%s</i>',
-//								wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-linkedin.svg' )
-//							);
-							$i ='<i class="lp-user-ico lp-icon-linkedin"></i>';
+							//                          $i = sprintf(
+							//                              '<i class="lp-user-ico">%s</i>',
+							//                              wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-linkedin.svg' )
+							//                          );
+							$i = '<i class="lp-user-ico lp-icon-linkedin"></i>';
 							break;
 						case 'youtube':
-//							$i = sprintf(
-//								'<i class="lp-user-ico">%s</i>',
-//								wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-youtube.svg' )
-//							);
-							$i ='<i class="lp-user-ico lp-icon-youtube-play"></i>';
+							//                          $i = sprintf(
+							//                              '<i class="lp-user-ico">%s</i>',
+							//                              wp_remote_fopen( LP_PLUGIN_URL . 'assets/images/icons/ico-youtube.svg' )
+							//                          );
+							$i = '<i class="lp-user-ico lp-icon-youtube-play"></i>';
 							break;
 						default:
 							$i = sprintf( '<i class="lp-user-ico lp-icon-%s"></i>', $k );
@@ -1189,7 +1188,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 			$user        = learn_press_get_user( $this->get_id() );
 			$user_course = $user->get_course_data( $course_id );
 
-			return  $user_course && LP_COURSE_GRADUATION_IN_PROGRESS === $user_course->get_graduation();
+			return $user_course && LP_COURSE_GRADUATION_IN_PROGRESS === $user_course->get_graduation();
 		}
 
 		/**
@@ -1314,7 +1313,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @return string
 		 */
 		public function get_description(): string {
-			return get_the_author_meta( $this->get_data( 'description', '' ) );
+			return get_the_author_meta( 'description', $this->get_id() );
 		}
 
 		/**
