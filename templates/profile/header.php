@@ -26,6 +26,7 @@ $bio = $user->get_description();
 		'learn-press/profile/header/sections',
 		array(
 			'profile/header/user-name.php',
+			'profile/socials.php',
 			'profile/header/user-bio.php',
 		),
 		$user

@@ -1,14 +1,8 @@
 .learn-press-tabs {
 	margin-bottom: $spacing-base-8x;
 	position: relative;
-	@media (min-width: 768px) {
-		.mb-current-tab{
-			display: none;
-		}
- 	}
 	.learn-press-tabs__checker {
 		display: none;
-
 	}
 
 	&__nav {
@@ -26,8 +20,6 @@
 		position: relative;
 		margin: 0;
 		list-style: none;
-		display: flex;
-		justify-content: center;
 
 		> a {
 			display: block;
@@ -45,10 +37,6 @@
 				outline: 0;
 				text-decoration: none;
 			}
-
-			//@media (max-width: 767px) {
-			//	padding: 20px 50px 14px 50px;
-			//}
 		}
 
 		&::after {
@@ -83,6 +71,13 @@
 			}
 		}
 	}
+
+	@media (min-width: 768px) {
+		.mb-current-tab{
+			display: none;
+		}
+	}
+
 	@media (max-width: 767px) {
  		.mb-current-tab label{
 			position: relative;
@@ -90,8 +85,7 @@
 			line-height: 1;
 			font-weight: 600;
 			cursor: pointer;
-			//color: $color-primary;
- 			&:after{
+  			&:after{
 				content: "\f107";
 				font-family: 'lp-icon';
 				margin-left: 12px;
@@ -103,7 +97,7 @@
 			position: absolute;
 			z-index: 9;
 			min-width: 220px;
-			background: #fff;
+			background: #fff!important; //!important fix for theme eduma
 			border: none;
 			box-shadow: 0 0 5px rgba(0,0,0,0.2);
 			&.open{

@@ -1,5 +1,5 @@
 /**
- * Style for user cover image.
+ * Style for user cover amd avatar image.
  * @since 4.2.7.2
  * @version 1.0.0
  */
@@ -12,27 +12,33 @@
 		right: 0;
 		background: #F1F2F8;
 		padding: 12px 20px;
-		border-radius: 6px 0 0 0;
-		color: #FFB608;
+		border-radius: $border-radius-global 0 0 0;
+		text-transform: capitalize;
+		cursor: pointer;
+		color: $color-primary;
+		text-decoration: none;
 	}
 }
+
 .lp-user-cover-image {
 	@media (max-width: 767px) {
 		position: relative;
 		z-index: 1;
 	}
+
 	.lp-cover-image-empty {
 		display: flex;
 		align-items: center;
 		width: 100%;
-		border: 1px dashed #E2E0DB;
-		border-radius: 6px;
+		height: 250px;
+		border: 2px dashed #E2E0DB;
+		border-radius: $border-radius-global;
 		cursor: pointer;
 		position: relative;
-		padding: 20px;
+		text-align: center;
 
 		&:hover {
-			border-color: #FFB608;
+			border-color: $color-primary;
 		}
 
 		input[type="file"] {
@@ -50,14 +56,21 @@
 			z-index: 1;
 			flex: 1;
 			position: relative;
+			padding: 0 16px;
 			line-height: 1.3;
-			//font-size: 16px;
+
 			&__top {
 				font-weight: 600;
 				display: flex;
 				align-items: center;
 				gap: 8px;
 				margin-bottom: 8px;
+				flex-direction: column;
+
+				.lp-icon-file-image {
+					font-size: 32px;
+					opacity: 0.6;
+				}
 			}
 
 			&__bottom {
@@ -68,19 +81,8 @@
 		@media (max-width: 420px) {
 			height: 200px;
 			.lp-cover-image-empty__info {
-				text-align: center;
 				padding: 0 8px;
 				font-size: 15px;
-
-				&__top {
-					flex-direction: column;
-
-					.lp-icon-file-image {
-						font-size: 32px;
-						opacity: 0.6;
-					}
-				}
-
 			}
 		}
 	}
@@ -89,5 +91,86 @@
 		display: inline-flex;
 		gap: 12px;
 		margin-top: 16px;
+	}
+}
+
+.lp-user-cover-image_background {
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: cover;
+	margin-bottom: $spacing-base-5x;
+	border-radius: var(--lp-border-radius, 5px);
+	min-height: 100px;
+
+	> img {
+		opacity: 0;
+		visibility: hidden;
+	}
+}
+
+
+.learnpress_avatar {
+
+	&__form {
+
+		label {
+			display: inline-block;
+		}
+
+		input[type="file"] {
+			display: none;
+		}
+
+		&__upload {
+			display: flex;
+			width: 200px;
+			height: 200px;
+			border: 1px dashed #ccc;
+			border-radius: 3px;
+			background-color: #fafafa;
+			font-size: 0.875em;
+			font-weight: 300;
+			font-style: italic;
+			line-height: 2.6875em;
+			text-align: center;
+			cursor: pointer;
+			align-items: center;
+			justify-content: center;
+
+			div {
+				line-height: 1.4;
+			}
+		}
+	}
+
+	&__button {
+
+		&--loading {
+
+			&::before {
+				display: inline-block;
+				margin-right: 5px;
+				font-family: 'lp-icon';
+				//font-weight: 900;
+				content: "\f110";
+
+				@include animation(lp-rotating 1s linear infinite);
+			}
+		}
+	}
+}
+
+button.learnpress_avatar__button {
+	height: 40px;
+	padding: 0 15px;
+	border: 0;
+	background: var(--lp-primary-color);
+	color: white;
+	margin-top: 15px;
+	border-radius: 3px;
+
+	+ button {
+		margin-left: 15px;
+		margin-right: 0;
 	}
 }
