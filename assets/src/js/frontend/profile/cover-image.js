@@ -112,7 +112,7 @@ const profileCoverImage = () => {
 	document.addEventListener( 'click', ( e ) => {
 		const target = e.target;
 
-		formCoverImage = target.closest( '.lp-user-cover-image' );
+		formCoverImage = target.closest( `.${ className.formCoverImage }` );
 		if ( ! formCoverImage ) {
 			return;
 		}
@@ -127,9 +127,18 @@ const profileCoverImage = () => {
 		}
 		if ( target.classList.contains( className.BtnCancelCoverImage ) ) {
 			e.preventDefault();
-			elImagePreview.src = imgUrlOriginal;
 			cropper.destroy();
+			elImagePreview.src = imgUrlOriginal;
+			if ( imgUrlOriginal === window.location.href ) {
+				Util.lpShowHideEl( elImageEmpty, 1 );
+				Util.lpShowHideEl( elBtnChoose, 0 );
+				Util.lpShowHideEl( elImagePreview, 0 );
+			} else {
+				Util.lpShowHideEl( elBtnRemove, 1 );
+			}
+
 			Util.lpShowHideEl( elBtnSave, 0 );
+			Util.lpShowHideEl( elBtnCancel, 0 );
 		}
 		if ( target.classList.contains( className.BtnRemoveCoverImage ) ) {
 			e.preventDefault();
@@ -149,6 +158,12 @@ const profileCoverImage = () => {
 	document.addEventListener( 'change', ( e ) => {
 		const target = e.target;
 
+		formCoverImage = target.closest( `.${ className.formCoverImage }` );
+		if ( ! formCoverImage ) {
+			return;
+		}
+
+		getElements();
 		if ( target.classList.contains( className.InputFile ) ) {
 			e.preventDefault();
 			const file = target.files[ 0 ];
@@ -156,8 +171,12 @@ const profileCoverImage = () => {
 				return;
 			}
 
+			const allowType = [ 'image/png', 'image/jpeg', 'image/webp' ];
+			if ( allowType.indexOf( file.type ) < 0 ) {
+				return;
+			}
+
 			elAction.value = 'upload';
-			const reader = new FileReader();
 			Util.lpShowHideEl( elImagePreview, 1 );
 			Util.lpShowHideEl( elImageEmpty, 0 );
 			Util.lpShowHideEl( elBtnRemove, 0 );
@@ -165,6 +184,7 @@ const profileCoverImage = () => {
 			Util.lpShowHideEl( elBtnChoose, 1 );
 			Util.lpShowHideEl( elBtnCancel, 1 );
 
+			const reader = new FileReader();
 			reader.onload = function( e ) {
 				elImagePreview.src = e.target.result;
 				// Destroy previous cropper instance if any

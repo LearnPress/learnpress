@@ -1210,29 +1210,7 @@ body.learnpress {
 	}
 }
 
-.lp-user-cover-image {
-	.lp-cover-image-empty {
-		display: flex;
-		width: 100%;
-		height: 250px;
-		border: 1px dashed #ccc;
-		border-radius: 3px;
-		background-color: #fafafa;
-		font-weight: 300;
-		font-style: italic;
-		line-height: 2.6875em;
-		text-align: center;
-		cursor: pointer;
-		align-items: center;
-		justify-content: center;
-	}
-
-	.lp-user-cover-image__buttons {
-		display: inline-flex;
-		gap: 5px;
-		margin-top: 15px;
-	}
-}
+@import "user_cover_image";
 
 .lp-user-cover-image_background{
 	background-repeat: no-repeat;

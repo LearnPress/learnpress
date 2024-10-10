@@ -1,0 +1,50 @@
+/**
+ * Style for user cover image.
+ * @since 4.2.7.2
+ * @version 1.0.0
+ */
+
+.lp-user-cover-image {
+	.lp-cover-image-empty {
+		display: flex;
+		width: 100%;
+		height: 250px;
+		border: 1px dashed #E2E0DB;
+		border-radius: 3px;
+		cursor: pointer;
+		position: relative;
+
+		input[type="file"] {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			opacity: 0;
+			cursor: pointer;
+			z-index: 10;
+		}
+
+		.lp-cover-image-empty__info {
+			position: absolute;
+			top: 35%;
+			left: 10px;
+			color: #333333;
+			z-index: 1;
+
+			span {
+				margin-right: 5px;
+			}
+
+			&__bottom {
+				color: #808080;
+			}
+		}
+	}
+
+	.lp-user-cover-image__buttons {
+		display: inline-flex;
+		gap: 5px;
+		margin-top: 15px;
+	}
+}

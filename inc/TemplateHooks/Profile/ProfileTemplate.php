@@ -81,11 +81,37 @@ class ProfileTemplate {
 		try {
 			$cover_image_url = $user->get_cover_image_url();
 
-			$class_hide     = 'lp-hidden';
-			$html_img_empty = sprintf(
-				'<div class="lp-cover-image-empty %s"><span class="lp-icon-plus"></span>%s</div>',
-				empty( $cover_image_url ) ? '' : $class_hide,
-				__( 'upload', 'learnpress' ),
+			$class_hide = 'lp-hidden';
+
+			$section_img_empty_info = [
+				'wrapper'     => '<div class="lp-cover-image-empty__info">',
+				'top'         => sprintf(
+					'<div class="lp-cover-image-empty__info__top">%s%s</div>',
+					'<span class="lp-icon-file-image"></span>',
+					__( 'Drag and drop or click here to choose image', 'learnpress' ),
+				),
+				'bottom'      => sprintf(
+					'<div class="lp-cover-image-empty__info__bottom">%s</div>',
+					__( 'Accepted file types: JPG, PNG 1920 x 250 (px)', 'learnpress' ),
+				),
+				'wrapper_end' => '</div>',
+			];
+			$html_img_empty         = apply_filters(
+				'learn-press/profile/html-cover-image-empty',
+				[
+					'wrapper'     => sprintf(
+						'<div class="lp-cover-image-empty %s">',
+						empty( $cover_image_url ) ? '' : $class_hide
+					),
+					'info'        => Template::combine_components( $section_img_empty_info ),
+					'input_file'  => sprintf(
+						'<input type="file" class="%s" name="lp-cover-image-file" accept="%s" />',
+						'lp-cover-image-file',
+						'image/png, image/jpeg, image/webp'
+					),
+					'wrapper_end' => '</div>',
+				],
+				$user
 			);
 
 			$html_img_preview = sprintf(
@@ -97,15 +123,13 @@ class ProfileTemplate {
 
 			$section_img = [
 				'wrapper'       => '<div class="lp-user-cover-image__display">',
-				'image_empty'   => $html_img_empty,
+				'image_empty'   => Template::combine_components( $html_img_empty ),
 				'image_preview' => $html_img_preview,
 				'wrapper_end'   => '</div>',
 			];
 
 			$section_btn = [
 				'wrapper'      => '<div class="lp-user-cover-image__buttons">',
-				'input_file'   => '<input type="file" class="lp-cover-image-file"
-									name="lp-cover-image-file" accept="image/png, image/jpeg, image/webp" hidden />',
 				'input_action' => '<input type="hidden" name="action" value="upload"  />',
 				'choose_file'  => sprintf(
 					'<button class="lp-button lp-btn-choose-cover-image %s">%s</button>',
