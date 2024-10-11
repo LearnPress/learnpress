@@ -829,6 +829,7 @@ const toggleEmails = function toggleEmails( e ) {
 		url: '',
 		data: {
 			'lp-ajax': 'update_email_status',
+			nonce: $( 'input[name=lp-settings-nonce]' ).val(),
 			status,
 		},
 		success( response ) {
