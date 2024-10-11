@@ -110,6 +110,17 @@ import resetData from './tools/reset-data';
 		$( '.lp-install-sample__options' ).toggleClass( 'hide-if-js' );
 	};
 
+	const formatValueInput = ( e ) => {
+		let value = $( e.target ).val();
+		value = value.replace( /[^0-9]/g, '' );
+
+		$( e.target ).val( value );
+
+		if ( parseInt( $( e.target ).val(), 10 ) < 0 ) {
+			$( e.target ).val( 0 );
+		}
+	};
+
 	$( function() {
 		getStepsUpgradeStatus();
 		createIndexes();
@@ -120,6 +131,10 @@ import resetData from './tools/reset-data';
 			.on( 'click', '.lp-install-sample__uninstall', uninstallSampleCourse )
 			.on( 'click', '#learn-press-clear-cache', clearHardCache )
 			.on( 'click', 'input[name="enable_hard_cache"]', toggleHardCache )
-			.on( 'click', '.lp-install-sample__toggle-options', toggleOptions );
+			.on( 'click', '.lp-install-sample__toggle-options', toggleOptions )
+			.on( 'change', 'input[name="course-price"]', formatValueInput )
+			.on( 'change', 'input[name="item-range[]"]', formatValueInput )
+			.on( 'change', 'input[name="answer-range[]"]', formatValueInput )
+			.on( 'change', 'input[name="section-range[]"]', formatValueInput );
 	} );
 }( jQuery ) );
