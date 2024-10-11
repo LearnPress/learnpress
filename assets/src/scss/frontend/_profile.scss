@@ -467,7 +467,7 @@
 					display: block;
 				}
 
-				td {
+				td,	th {
 					text-align: center;
 
 					&:first-child {
@@ -503,18 +503,13 @@
 				}
 			}
 
-			&__header {
-				th {
-					text-align: center;
-
-					&:first-child {
-						@media (max-width: 768px) {
-							display: none;
-						}
-					}
-				}
+		}
+		@media (max-width: 768px) {
+			.learn-press-course-tab__filter__content{
+				overflow-x: auto;
 			}
 		}
+
 	}
 }
 
