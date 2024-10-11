@@ -110,6 +110,22 @@ import resetData from './tools/reset-data';
 		$( '.lp-install-sample__options' ).toggleClass( 'hide-if-js' );
 	};
 
+	const formatValueInput = ( e ) => {
+		const input = $( e.target );
+		let value = input.val();
+		value = value.replace( /[^0-9]/g, '' );
+
+		input.val( value );
+
+		if ( parseInt( value, 10 ) < input.attr( 'min' ) ) {
+			input.val( input.attr( 'min' ) );
+		}
+
+		if ( parseInt( value, 10 ) > input.attr( 'max' ) ) {
+			input.val( input.attr( 'max' ) );
+		}
+	};
+
 	$( function() {
 		getStepsUpgradeStatus();
 		createIndexes();
@@ -120,6 +136,11 @@ import resetData from './tools/reset-data';
 			.on( 'click', '.lp-install-sample__uninstall', uninstallSampleCourse )
 			.on( 'click', '#learn-press-clear-cache', clearHardCache )
 			.on( 'click', 'input[name="enable_hard_cache"]', toggleHardCache )
-			.on( 'click', '.lp-install-sample__toggle-options', toggleOptions );
+			.on( 'click', '.lp-install-sample__toggle-options', toggleOptions )
+			.on( 'change', 'input[name="section-range[]"]', formatValueInput )
+			.on( 'change', 'input[name="item-range[]"]', formatValueInput )
+			.on( 'change', 'input[name="question-range[]"]', formatValueInput )
+			.on( 'change', 'input[name="answer-range[]"]', formatValueInput )
+			.on( 'change', 'input[name="course-price"]', formatValueInput );
 	} );
 }( jQuery ) );
