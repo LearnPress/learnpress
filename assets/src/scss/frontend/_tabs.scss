@@ -91,51 +91,7 @@
 		}
 	}
 
-	@media (max-width: 767px) {
-		.mb-current-tab label {
-			position: relative;
-			font-size: 1.125em;
-			line-height: 1;
-			font-weight: 600;
-			cursor: pointer;
 
-			&:after {
-				content: "\f107";
-				font-family: 'lp-icon';
-				margin-left: 12px;
-			}
-		}
-
-		&__nav {
-			display: none !important;
-			position: absolute;
-			z-index: 9;
-			min-width: 220px;
-			background: #fff !important; //!important fix for theme eduma
-			border: none;
-			box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-
-			&.open {
-				display: block !important;
-				margin-top: 4px;
-				padding: 12px !important;
-			}
-		}
-		&__item {
-			display: block;
-
-			> a {
-				text-align: left;
-				font-size: 1em;
-				font-weight: normal;
-				padding: 0 0 12px 0;
-			}
-
-			&:after {
-				display: none;
-			}
-		}
-	}
 }
 
 .learn-press-filters {

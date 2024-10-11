@@ -42,7 +42,7 @@ $active_tab   = '';
 		if ( $profile->is_current_section( $section_key, $section_key ) ) {
 			$active_tab = $section_key;
 //			$checked    = checked( true, true, false );
-			echo '<div class="mb-current-tab"><label>'.esc_html( $section_data['title'] ).'</label></div>';
+//			echo '<div class="mb-current-tab"><label>'.esc_html( $section_data['title'] ).'</label></div>';
 		}
 		?>
 	<?php } ?>

@@ -380,12 +380,6 @@
 
 	}
 
-	//ul.learn-press-courses {
-	//	.course {
-	//		margin: 0 0 40px 0;
-	//	}
-	//}
-
 	.profile-orders {
 
 		.profile-heading {
@@ -435,6 +429,7 @@
 			display: none;
 		}
 	}
+
 	@media (max-width: 650px) {
 		.lp-profile-left {
 			min-width: 100px;
@@ -566,3 +561,9 @@ div.order-recover {
 	}
 }
 
+.d-none {
+	display: none !important;
+}
+.d-inline-block{
+	display: inline-block !important;
+}

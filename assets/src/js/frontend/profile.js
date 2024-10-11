@@ -24,7 +24,7 @@ document.addEventListener( 'DOMContentLoaded', function( event ) {
 	courseStatistics();
 	recoverOrder();
 	CourseList();
-	mbCurrentTab();
+	// mbCurrentTab();
 } );
 
 if ( document.getElementById( 'learnpress-avatar-upload' ) ) {
