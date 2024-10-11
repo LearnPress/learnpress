@@ -152,6 +152,18 @@ class LP_Checkout {
 					$update_meta
 				);
 
+				if ( LP_Settings::get_option( 'instructor_registration', 'no' ) === 'yes' && isset( $_POST['become_teacher'] ) ) {
+					update_user_meta( $user_id, '_requested_become_teacher', 'yes' );
+					do_action(
+						'learn-press/become-a-teacher-sent',
+						array(
+							'bat_email'   => $default_fields['reg_email'],
+							'bat_phone'   => '',
+							'bat_message' => apply_filters( 'learnpress_become_instructor_message', esc_html__( 'I need to become an instructor', 'learnpress' ) ),
+						)
+					);
+				}
+
 				if ( is_wp_error( $user_id ) ) {
 					throw new Exception( $user_id->get_error_message() );
 				} else {
@@ -581,4 +593,3 @@ class LP_Checkout {
 		}
 	}
 }
-
