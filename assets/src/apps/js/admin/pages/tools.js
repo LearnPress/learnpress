@@ -111,13 +111,18 @@ import resetData from './tools/reset-data';
 	};
 
 	const formatValueInput = ( e ) => {
-		let value = $( e.target ).val();
+		const input = $( e.target );
+		let value = input.val();
 		value = value.replace( /[^0-9]/g, '' );
 
-		$( e.target ).val( value );
+		input.val( value );
 
-		if ( parseInt( $( e.target ).val(), 10 ) < 0 ) {
-			$( e.target ).val( 0 );
+		if ( parseInt( value, 10 ) < input.attr( 'min' ) ) {
+			input.val( input.attr( 'min' ) );
+		}
+
+		if ( parseInt( value, 10 ) > input.attr( 'max' ) ) {
+			input.val( input.attr( 'max' ) );
 		}
 	};
 
@@ -132,9 +137,10 @@ import resetData from './tools/reset-data';
 			.on( 'click', '#learn-press-clear-cache', clearHardCache )
 			.on( 'click', 'input[name="enable_hard_cache"]', toggleHardCache )
 			.on( 'click', '.lp-install-sample__toggle-options', toggleOptions )
-			.on( 'change', 'input[name="course-price"]', formatValueInput )
+			.on( 'change', 'input[name="section-range[]"]', formatValueInput )
 			.on( 'change', 'input[name="item-range[]"]', formatValueInput )
+			.on( 'change', 'input[name="question-range[]"]', formatValueInput )
 			.on( 'change', 'input[name="answer-range[]"]', formatValueInput )
-			.on( 'change', 'input[name="section-range[]"]', formatValueInput );
+			.on( 'change', 'input[name="course-price"]', formatValueInput );
 	} );
 }( jQuery ) );
