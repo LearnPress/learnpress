@@ -44,6 +44,14 @@ class ProfileTemplate {
 			$profile                      = LP_Profile::instance();
 			$current_section              = LP_Profile::instance()->get_current_section();
 			$html_btn_to_edit_cover_image = '';
+			$cover_image_dimensions = LP_Settings::get_option(
+				'cover_image_dimensions',
+				array(
+					'width'  => 1920,
+					'height' => 250,
+				)
+			);
+
 			if ( $user->get_id() === get_current_user_id() ) {
 				$html_btn_to_edit_cover_image = sprintf(
 					'<a class="lp-btn-to-edit-cover-image" href="%s" data-section-correct="%d">+ %s</a>',
@@ -62,9 +70,10 @@ class ProfileTemplate {
 						sprintf( 'background-image: url(%s);', $cover_image_url ),
 					),
 					'image'       => sprintf(
-						'<img src="%s" alt="%s" loading="lazy" decoding="async" />',
+						'<img src="%s" alt="%s" decoding="async" style="height: %s" />',
 						$cover_image_url,
-						__( 'Cover image', 'learnpress' )
+						__( 'Cover image', 'learnpress' ),
+						$cover_image_dimensions['height'] . 'px',
 					),
 					'btn-edit'    => $html_btn_to_edit_cover_image,
 					'wrapper_end' => '</div>',
