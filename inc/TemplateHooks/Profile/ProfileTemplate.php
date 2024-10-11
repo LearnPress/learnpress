@@ -47,7 +47,7 @@ class ProfileTemplate {
 			$cover_image_dimensions = LP_Settings::get_option(
 				'cover_image_dimensions',
 				array(
-					'width'  => 1920,
+					'width'  => 1290,
 					'height' => 250,
 				)
 			);
@@ -106,7 +106,7 @@ class ProfileTemplate {
 			$cover_image_dimensions = LP_Settings::get_option(
 				'cover_image_dimensions',
 				array(
-					'width'  => 1920,
+					'width'  => 1290,
 					'height' => 250,
 				)
 			);

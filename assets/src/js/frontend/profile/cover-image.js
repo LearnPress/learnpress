@@ -207,7 +207,7 @@ const profileCoverImage = () => {
 				}
 				// Initialize cropper
 				cropper = new Cropper( elImagePreview, {
-					aspectRatio: lpData.toast.aspectRatio,
+					aspectRatio: lpData.coverImageRatio,
 					viewMode: 1,
 					zoomOnWheel: false,
 				} );

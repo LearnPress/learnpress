@@ -14,10 +14,10 @@ $crop   = isset( $size['crop'] ) ? $size['crop'] : $value['default'][2];
 	<td class="forminp image_width_settings">
 		<input name="<?php echo esc_attr( $value['id'] ); ?>[width]"
 			id="<?php echo esc_attr( $value['id'] ); ?>-width" type="text"
-			size="3" value="<?php echo esc_attr( $width ); ?>" />&times;
+			size="5" value="<?php echo esc_attr( $width ); ?>" />&times;
 		<input name="<?php echo esc_attr( $value['id'] ); ?>[height]"
 			id="<?php echo esc_attr( $value['id'] ); ?>-height"
-			type="text" size="3"
+			type="text" size="5"
 			value="<?php echo esc_attr( $height ); ?>" />px
 		</td>
 </tr>

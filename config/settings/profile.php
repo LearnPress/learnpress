@@ -40,7 +40,7 @@ return apply_filters(
 			array(
 				'title'   => esc_html__( 'Cover Image Dimensions', 'learnpress' ),
 				'id'      => 'cover_image_dimensions',
-				'default' => array( 1920, 250, 'yes' ),
+				'default' => array( 1290, 250, 'yes' ),
 				'type'    => 'image-dimensions',
 			),
 			array(

@@ -98,7 +98,11 @@ class SingleCourseOfflineTemplate {
 				'lean-press/single-course/offline/section-instructor/right',
 				[
 					'wrapper'     => '<div class="lp-section-instructor">',
-					'name'        => $singleInstructorTemplate->html_display_name( $author ),
+					'name'        => sprintf(
+						'<a href="%s">%s</a>',
+						$author->get_url_instructor(),
+						$singleInstructorTemplate->html_display_name( $author )
+					),
 					'meta'        => $html_instructor_meta,
 					'description' => $singleInstructorTemplate->html_description( $author ),
 					'social'      => $singleInstructorTemplate->html_social( $author ),

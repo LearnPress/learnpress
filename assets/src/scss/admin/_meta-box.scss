@@ -704,7 +704,7 @@
 				padding: 0 0 10px;
 				border-right: 1px solid #eee;
 				background-color: #fafafa;
-				line-height: 1;
+				//line-height: 1;
 
 				li {
 					display: block;
@@ -712,13 +712,15 @@
 					margin: 0;
 					padding: 0;
 
+
 					a {
-						display: block;
+						display: flex;
+						align-items: center;
 						margin: 0;
 						padding: 10px;
 						border-bottom: 1px solid #eee;
 						box-shadow: none;
-						line-height: 1.25rem !important;
+						//line-height: 1.25rem !important;
 						text-decoration: none;
 
 						i {
@@ -726,7 +728,6 @@
 							font-weight: 400;
 							font-style: normal;
 							font-variant: normal;
-							line-height: 1;
 							text-decoration: none;
 							text-transform: none;
 
