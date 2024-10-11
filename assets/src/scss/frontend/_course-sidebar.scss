@@ -38,18 +38,6 @@
 			&:hover {
 				border-color: var(--lp-primary-color);
 			}
-			&.button-enroll-course {
-
-				&.loading {
-					&::before {
-						display: inline-block;
-						font-family: 'lp-icon';
-						//font-weight: 900;
-						content: "\f110";
-						animation: lp-rotating 1s linear infinite;
-					}
-				}
-			}
 
 			~ .lp-enroll-notice {
 				margin-top: 20px;

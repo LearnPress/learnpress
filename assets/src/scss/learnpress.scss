@@ -164,18 +164,6 @@ ul.learn-press-breadcrumb {
 		&:focus {
 			outline: 0;
 		}
-
-		&.loading {
-
-			&::before {
-				display: inline-block;
-				font-family: 'lp-icon';
-				//font-weight: 900;
-				content: "\f110";
-				animation: lp-rotating 1s linear infinite;
-				margin-right: 4px;
-			}
-		}
 	}
 
 	.rwmb-field .description {

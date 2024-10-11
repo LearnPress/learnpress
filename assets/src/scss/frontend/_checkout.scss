@@ -526,17 +526,6 @@
 				opacity: 0.5;
 				background: var(--lp-primary-color);
 			}
-
-			&.loading {
-
-				&::before {
-					display: inline-block;
-					font-family: 'lp-icon';
-					//font-weight: 900;
-					content: "\f110";
-					@include animation(lp-rotating 1s linear infinite);
-				}
-			}
 		}
 	}
 }
