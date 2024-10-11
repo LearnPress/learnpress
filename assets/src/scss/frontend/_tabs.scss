@@ -1,19 +1,53 @@
+@mixin lp_nav() {
+	display: flex;
+	flex-wrap: wrap;
+ 	padding: 0;
+	column-gap: $spacing-base-10x;
+	row-gap: $spacing-base-3x;
+	border-bottom: 2px solid $border-color;
+	list-style: none;
+}
+
+@mixin lp_nav_href() {
+	display: block;
+	margin: 0;
+	padding: 0 0 16px 0;
+	font-size: 1.125em;
+	line-height: 1;
+	font-weight: 600;
+	text-align: center;
+	text-transform: capitalize;
+	cursor: pointer;
+	color: #333;
+	text-decoration: none;
+	&:focus {
+		outline: 0;
+		text-decoration: none;
+	}
+}
+
+@mixin lp_line_active($width: 2px) {
+	position: absolute;
+	bottom: -$width;
+	top: auto;
+	left: 0;
+	width: 100%;
+	height: $width;
+	background: transparent;
+	content: "";
+}
+
 .learn-press-tabs {
 	margin-bottom: $spacing-base-8x;
 	position: relative;
+
 	.learn-press-tabs__checker {
 		display: none;
 	}
 
 	&__nav {
-		display: flex;
-		flex-wrap: wrap;
 		margin: 0;
-		padding: 0;
-		column-gap: $spacing-base-10x;
- 		row-gap: $spacing-base-3x;
-		border-bottom: 2px solid $border-color;
-		list-style: none;
+		@include lp_nav();
 	}
 
 	&__item {
@@ -22,35 +56,14 @@
 		list-style: none;
 
 		> a {
-			display: block;
-			margin: 0;
-			padding: 0 0 16px 0;
-			font-size: 1.125em;
-			line-height: 1;
-			font-weight: 600;
-			text-align: center;
-			text-transform: capitalize;
-			cursor: pointer;
-			color: #333;
-			text-decoration: none;
-			&:focus {
-				outline: 0;
-				text-decoration: none;
-			}
+			@include lp_nav_href();
 		}
 
 		&::after {
-			position: absolute;
-			bottom: -2px;
-			top: auto;
-			left: 0;
-			width: 100%;
-			height: 2px;
-			background: transparent;
-			content: "";
+			@include lp_line_active();
 		}
 
-		&.active,&:hover{
+		&.active, &:hover {
 			a {
 				color: $color-primary;
 			}
@@ -73,19 +86,20 @@
 	}
 
 	@media (min-width: 768px) {
-		.mb-current-tab{
+		.mb-current-tab {
 			display: none;
 		}
 	}
 
 	@media (max-width: 767px) {
- 		.mb-current-tab label{
+		.mb-current-tab label {
 			position: relative;
- 			font-size: 1.125em;
+			font-size: 1.125em;
 			line-height: 1;
 			font-weight: 600;
 			cursor: pointer;
-  			&:after{
+
+			&:after {
 				content: "\f107";
 				font-family: 'lp-icon';
 				margin-left: 12px;
@@ -93,28 +107,31 @@
 		}
 
 		&__nav {
-			display: none!important;
+			display: none !important;
 			position: absolute;
 			z-index: 9;
 			min-width: 220px;
-			background: #fff!important; //!important fix for theme eduma
+			background: #fff !important; //!important fix for theme eduma
 			border: none;
-			box-shadow: 0 0 5px rgba(0,0,0,0.2);
-			&.open{
-				display: block!important;
+			box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+
+			&.open {
+				display: block !important;
 				margin-top: 4px;
-				padding: 12px!important;
+				padding: 12px !important;
 			}
 		}
 		&__item {
 			display: block;
-		 	> a{
+
+			> a {
 				text-align: left;
 				font-size: 1em;
 				font-weight: normal;
 				padding: 0 0 12px 0;
 			}
-			&:after{
+
+			&:after {
 				display: none;
 			}
 		}
@@ -122,89 +139,41 @@
 }
 
 .learn-press-filters {
-	display: flex;
-	margin-bottom: 30px;
-	margin-left: 0;
-	list-style: none;
+	margin-bottom: $spacing-base-8x;
+	@include lp_nav();
 
-	> li {
+	li {
+		position: relative;
 		margin: 0;
-		font-size: 1em;
-		line-height: 1.5rem;
-		white-space: nowrap;
-		@media (max-width: 767px) {
-			margin-right: 24px;
-			margin-left: 0;
-			&:last-child {
-				margin-right: 0;
-			}
-		}
+		list-style: none;
 
-		> a,
-		> span {
-			display: inline-block;
-			font-weight: 600;
-		}
-
-		> span.count {
-			font-weight: 400;
-
-			&::before,
-			&::after {
-				display: inline-block;
-			}
-
-			&::before {
-				content: "(";
-			}
+		a, span {
+			@include lp_nav_href();
 
 			&::after {
-				content: ")";
+				@include lp_line_active();
 			}
-		}
 
-		span {
-			color: $color-primary;
-
-			& + span {
+			&.active, &:hover {
 				color: $color-primary;
 
-				&::before,
 				&::after {
-					color: $color-primary;
+					background: $color-primary;
 				}
 			}
 		}
+		// tab Quiz
+		&.active{
+			a, span{
+				color: $color-primary;
 
-		a {
-			color: #333;
-			cursor: pointer;
-
-			& + span {
-				color: #333;
-
-				&::before,
 				&::after {
-					color: #333;
+					background: $color-primary;
 				}
 			}
 		}
-
-		&::after {
-			margin: 0 25px;
-			color: #ccc;
-			content: "|";
-
-			@media (max-width: 767px) {
-				display: none;
-			}
-		}
-
-		&:last-child {
-
-			&::after {
-				display: none;
-			}
+		&:after {
+			display: none !important;
 		}
 	}
 }

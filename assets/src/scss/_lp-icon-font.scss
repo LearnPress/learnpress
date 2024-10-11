@@ -1,8 +1,8 @@
 @font-face {
 	font-family: 'lp-icon';
-	src: url('../src/css/vendor/fonts/lp-icon/lp-icon.ttf?v=sg0x66') format('truetype'),
-	url('../src/css/vendor/fonts/lp-icon/lp-icon.woff2?v=sg0x66') format('woff2'),
-	url('../src/css/vendor/fonts/lp-icon/lp-icon.svg?v=sg0x66#lp-icon') format('svg');
+	src: url('../src/css/vendor/fonts/lp-icon/lp-icon.ttf?v=yf5sth') format('truetype'),
+	url('../src/css/vendor/fonts/lp-icon/lp-icon.woff?v=yf5sth') format('woff'),
+	url('../src/css/vendor/fonts/lp-icon/lp-icon.svg?v=yf5sth#lp-icon') format('svg');
 	font-weight: normal;
 	font-style: normal;
 	font-display: block;
@@ -518,6 +518,18 @@
 }
 .lp-icon-filter:before {
 	content: "\e91c";
+}
+.lp-icon-in_progress_course:before {
+	content: "\e91d";
+}
+.lp-icon-finished_courses:before {
+	content: "\e91e";
+}
+.lp-icon-failed_courses:before {
+	content: "\e91f";
+}
+.lp-icon-passed_courses:before {
+	content: "\e920";
 }
 .lp-icon-book-open:before {
 	content: "\f518";

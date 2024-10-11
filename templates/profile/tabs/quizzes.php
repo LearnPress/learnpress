@@ -24,7 +24,7 @@ $filter->limit      = apply_filters( 'learnpress/user/quizzes/limit', 5 );
 $filter->status     = LP_Request::get_param( 'filter-status' );
 $filter->graduation = LP_Request::get_param( 'filter-graduation' );
 $query              = $user_profile->get_user_quizzes( $filter );
-$current_filter     = '';
+$current_filter     = 'all';
 
 if ( ! empty( $filter->status ) ) {
 	$current_filter = $filter->status;
@@ -33,13 +33,14 @@ if ( ! empty( $filter->status ) ) {
 }
 
 $filters = $profile->get_quizzes_filters( $current_filter );
+
 ?>
 
 <div class="learn-press-subtab-content">
 	<?php if ( $filters ) : ?>
 		<ul class="learn-press-filters">
 			<?php foreach ( $filters as $class => $link ) : ?>
-				<li class="<?php echo esc_attr( $class ); ?>">
+				<li class="<?php echo esc_attr( $class ); ?><?php echo esc_attr( $class === $current_filter ? ' active' : '' ); ?>">
 					<?php echo wp_kses_post( $link ); ?>
 				</li>
 			<?php endforeach; ?>

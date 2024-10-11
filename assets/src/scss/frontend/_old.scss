@@ -1,0 +1,47 @@
+// backup css before remove
+.learn-press-profile-course{
+
+
+	&__tab {
+ 		&__inner {
+			display: flex;
+			margin: 40px 0 0 0 !important;
+			padding: 0 !important;
+			background: #eee;
+			list-style: none !important;
+
+			> li {
+				list-style: none;
+				margin: 0 !important;
+
+				&:hover {
+					cursor: pointer;
+				}
+			}
+
+			a {
+				display: inline-block;
+				padding: 15px 30px;
+				font-weight: 600;
+				position: relative;
+
+				&.active {
+					color: var(--lp-primary-color);
+					background: #fff;
+
+					&::before {
+						content: "";
+						height: 3px;
+						width: 100%;
+						background-color: var(--lp-primary-color);
+						position: absolute;
+						top: 0;
+						left: 0;
+						right: auto;
+					}
+				}
+			}
+		}
+	}
+
+}

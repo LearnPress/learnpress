@@ -325,5 +325,8 @@ body.twentyseventeen.learnpress-page {
  	}
 }
 .learnpress-v4{
-	--lp-border-radius-avatar: 0
+	--lp-border-radius-avatar: 0;
+	.statistic-box{
+		--thim-lp-profile-bg-color: #F7F7FB;
+	}
 }
