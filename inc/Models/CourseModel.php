@@ -496,7 +496,7 @@ class CourseModel {
 				$item->type    = $sections_item->item_type;
 				$item_tmp      = LP_Course_Item::get_item( $item->id );
 				if ( $item_tmp ) {
-					$item->title   = $item_tmp->get_title();
+					$item->title   = html_entity_decode( $item_tmp->get_title() );
 					$item->preview = $item_tmp->is_preview();
 				}
 
