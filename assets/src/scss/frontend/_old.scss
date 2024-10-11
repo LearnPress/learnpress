@@ -45,3 +45,30 @@
 	}
 
 }
+
+
+
+.lp-content-area .learnpress-course-container {
+	margin: 80px -15px 0;
+	scroll-margin: 30px;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+
+	> li {
+		padding: 0 15px;
+	}
+
+	.course-wrap-meta {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;
+	}
+
+	.separator {
+		display: block;
+		border-top: 1px solid rgba(153, 153, 153, 0.2);
+		margin-left: -20px;
+		margin-right: -20px;
+	}
+}

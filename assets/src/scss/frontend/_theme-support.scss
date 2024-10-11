@@ -1,7 +1,21 @@
 /**
  * CSS for overriding some style defaults of themes
  */
+body {
+ 	div.entry-content > {
+ 		div.learnpress, div.learnpress:not(.alignwide):not(.alignfull):not(.alignleft):not(.alignright):not(.is-style-wide) {
+			--responsive--aligndefault-width: 100%;
+			max-width: var(--lp-content-width, 100%);
+		}
+	}
 
+	.entry-content {
+		&.has-global-padding {
+			padding-left: 0;
+			padding-right: 0;
+		}
+	}
+}
 // Theme Divi
 .lp-archive-courses {
 	ul, ol {
@@ -324,7 +338,14 @@ body.twentyseventeen.learnpress-page {
 		padding: 0;
  	}
 }
-.learnpress-v4{
+// fix for theme eduma
+.theme-eduma:not(.nofixcss) {
+	.learnpress #learn-press-profile.lp-user-profile .learn-press-filters {
+		padding-bottom: 0 !important;
+		overflow-y: visible;
+	}
+}
+.learnpress-v4,.learnpress-v3{
 	--lp-border-radius-avatar: 0;
 	.statistic-box{
 		--thim-lp-profile-bg-color: #F7F7FB;

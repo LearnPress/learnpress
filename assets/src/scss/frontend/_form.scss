@@ -10,69 +10,44 @@ input[type="password"] {
 .lp-list-table {
 	width: 100%;
 	margin-bottom: 20px;
-
-	th,
-	td {
-		padding: 20px;
-		border: 0 solid rgba(204, 204, 204, 0.3);
-		border-bottom-width: 1px;
+	--lp-table-bcolor: #ccc;
+ 	th, td {
+		padding: .7em 1em;
+		border: 1px solid var(--lp-table-bcolor);
 		background: #fff;
 		text-align: left;
-
-		@media (max-width: 767px) {
-			padding: 15px;
-		}
 	}
 
 	thead {
 		box-sizing: border-box;
-		border: 1px solid #e5e7f2;
-
-		tr {
-
-			th {
-				height: 60px;
-				border-bottom: none;
-				color: #333;
-				background: #f1f2f8;
-				font-size: 1.125em;
-			}
+		border: 1px solid var(--lp-table-bcolor);
+ 		th {
+ 			border-bottom: none;
+ 			background: var(--lp-thead,#f1f2f8);
+			font-size: 1.1em;
+			font-weight: 600;
 		}
 	}
 
-	tbody,
-	tfoot {
+	tbody, tfoot {
 		box-sizing: border-box;
-		border: 1px solid rgba(204, 204, 204, 0.3);
-		border-top: 0;
-
-		tr {
-
-			td,
-			th {
-				height: 62px;
-				color: #666;
-				background: #fff;
-				font-weight: 300;
-
-				a {
-					border-bottom: none;
-					color: #666;
-					text-decoration: none;
-
-					&:hover {
-						color: var(--lp-primary-color);
-					}
+		td, th {
+			background: #fff;
+ 			border: 1px solid var(--lp-table-bcolor);
+			a {
+ 				color: inherit;
+				text-decoration: none;
+ 				&:hover {
+					color: var(--lp-primary-color);
 				}
 			}
-
-			.column-status {
-
-				.result-percent {
+		}
+		tr {
+   			.column-status {
+ 				.result-percent {
 					font-weight: 500;
 				}
-
-				.lp-label {
+ 				.lp-label {
 					font-weight: 600;
 				}
 			}
@@ -84,8 +59,7 @@ input[type="password"] {
 	}
 
 	.list-table-nav {
-
-		td {
+ 		td {
 			font-size: 0.875em;
 
 			&.nav-text {
@@ -122,13 +96,15 @@ input[type="password"] {
 
 		.form-field {
 			margin: 0 0 20px 0;
-
+			& > label {
+				font-style: italic;
+			}
 			label {
 				display: block;
 				font-size: $font-size-label;
 				font-weight: $heading-font-weight;
 				margin: 0 0 10px 0;
-			}
+ 			}
 
 			input[type="text"],
 			input[type="email"],
@@ -153,6 +129,13 @@ input[type="password"] {
 			}
 
 		}
+		@media (min-width: 767px) {
+			.form-field__50 {
+				float: left;
+				width: calc(50% - 20px);
+				margin-right: 20px;
+			}
+		}
 	}
 
 	&.completed {
@@ -164,6 +147,14 @@ input[type="password"] {
 				content: "\f00c";
 			}
 		}
+	}
+
+	.form-field__clear {
+		clear: both;
+	}
+
+	p {
+		margin: 0;
 	}
 }
 

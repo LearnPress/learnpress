@@ -12,66 +12,125 @@
 		border-radius: $border-radius-global;
 		width: calc((100% - 40px) / 3);
 	}
-}
 
-.statistic-box {
-	&__icon{
-		span{
-			display: flex;
-			width: 62px;
-			height: 62px;
-			border-radius: 50%;
-			background: #00C7BE1A;
-			color: #00C7BE;
-			line-height: 62px;
-			font-size: 23px;
- 			align-items: center;
-			justify-content: center;
- 		}
-		[class^="lp-icon-"]{
-			&:before{
-				width: 1em;
+	@media (min-width: 1200px) and (max-width: 1440px) {
+		.statistic-box {
+			gap: 16px;
+			padding: 16px;
+		}
+	}
+	@media (max-width: 1200px) {
+		.statistic-box {
+			width: calc((100% - 20px) / 2);
+		}
+	}
+	@media (max-width: 768px) {
+		.statistic-box {
+			gap: 16px;
+			padding: 16px;
+		}
+	}
+	@media (max-width: 600px) {
+		gap: 8px;
+		.statistic-box {
+			width: 100%;
+			gap: 12px;
+			padding: 8px 12px;
+
+			&__text {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+
+				label {
+					margin: 0;
+				}
+
+				&__number {
+					font-size: 1.2em;
+				}
 			}
-		}
-		// Icon
- 		.lp-icon-enrolled_courses,.lp-icon-total_course{
-			&:before{
-				content: "\f518";
-			}
-		}
-		.lp-icon-in_progress_course{
-			background: #AF52DE1A;
-			color: #AF52DE;
-		}
-		.lp-icon-finished_courses{
-			background: #5856D61A;
-			color: #5856D6;
-		}
-		.lp-icon-passed_courses{
-			background: #55BE2433;
-			color: #34C759;
-		}
-		.lp-icon-failed_courses{
-			background: #FF3B301A;
-			color: #FF3B30;
-		}
-		.lp-icon-total_student{
-			background: #007AFF1A;
-			color: #007AFF;
-			&:before{
-				content: "\f501";
+
+			&__icon span {
+				--lp-width-icon: 40px;
+				font-size: 18px;
 			}
 		}
 	}
+}
+
+.statistic-box {
+	&__icon {
+		span {
+			--lp-width-icon: 60px;
+			display: flex;
+			width: var(--lp-width-icon);
+			height:  var(--lp-width-icon);
+			border-radius: 50%;
+			background: #00C7BE1A;
+			line-height: var(--lp-width-icon);
+			align-items: center;
+			justify-content: center;
+			color: #00C7BE;
+			font-size: 24px;
+		}
+
+		[class^="lp-icon-"] {
+			&:before {
+				width: 1em;
+			}
+		}
+
+		// Icon
+		.lp-icon-enrolled_courses, .lp-icon-total_course {
+			&:before {
+				content: "\f518";
+			}
+		}
+
+		.lp-icon-in_progress_course,.lp-icon-student_in_progress {
+			background: #AF52DE1A;
+			color: #AF52DE;
+		}
+
+		.lp-icon-finished_courses,.lp-icon-published_course {
+			background: #5856D61A;
+			color: #5856D6;
+		}
+
+		.lp-icon-passed_courses,.lp-icon-student_completed {
+			background: #55BE2433;
+			color: #34C759;
+		}
+
+		.lp-icon-failed_courses,.lp-icon-pending_course {
+			background: #FF3B301A;
+			color: #FF3B30;
+		}
+
+		.lp-icon-total_student {
+			background: #007AFF1A;
+			color: #007AFF;
+
+			&:before {
+				content: "\f501";
+			}
+		}
+
+	}
+
 	&__text {
 		flex: 1;
 		text-align: left;
-		label{
+
+		label {
 			display: block;
 			margin-bottom: 4px;
 			font-weight: normal;
 			line-height: 1.3;
+			font-size: $font-size-small
 		}
+
 		&__number {
 			font-size: 1.6em;
 			line-height: 1;
