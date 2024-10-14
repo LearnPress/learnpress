@@ -26,17 +26,18 @@ if ( ! isset( $user ) || ! isset( $courses_created_tab ) || ! isset( $args_query
 
 	<div class="learn-press-profile-course__tab">
 		<div class="learn-press-course-tab-created learn-press-course-tab-filters" data-tab="created">
-			<ul class="learn-press-filters">
-				<?php foreach ( $courses_created_tab as $key => $created ) : ?>
-					<li>
-						<a class="<?php echo esc_attr( $key === '' ? 'active' : '' ); ?>"
-							data-tab="<?php echo esc_attr( $key === '' ? 'all' : $key ); ?>">
-							<?php echo esc_html( $created ); ?>
-						</a>
-					</li>
-				<?php endforeach; ?>
-			</ul>
-
+			<div class="learn-press-tabs">
+				<ul class="learn-press-filters">
+					<?php foreach ( $courses_created_tab as $key => $created ) : ?>
+						<li>
+							<a class="<?php echo esc_attr( $key === '' ? 'active' : '' ); ?>"
+								data-tab="<?php echo esc_attr( $key === '' ? 'all' : $key ); ?>">
+								<?php echo esc_html( $created ); ?>
+							</a>
+						</li>
+					<?php endforeach; ?>
+				</ul>
+			</div>
 			<div class="learn-press-profile-course__progress">
 				<?php foreach ( $courses_created_tab as $key => $created ) : ?>
 					<div class="learn-press-course-tab__filter__content"

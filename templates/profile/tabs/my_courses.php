@@ -28,17 +28,18 @@ if ( ! isset( $user ) || ! isset( $courses_enrolled_tab ) ||
 
 	<div class="learn-press-profile-course__tab">
 		<div class="learn-press-course-tab-enrolled learn-press-course-tab-filters" data-tab="enrolled">
-			<ul class="learn-press-filters">
-				<?php foreach ( $courses_enrolled_tab as $key => $enrolled ) : ?>
-					<li>
-						<a class="<?php echo esc_attr( $key === $courses_enrolled_tab_active ? 'active' : '' ); ?>"
-						   data-tab="<?php echo esc_attr( $key === '' ? 'all' : $key ); ?>">
-							<?php echo esc_html( $enrolled ); ?>
-						</a>
-					</li>
-				<?php endforeach; ?>
-			</ul>
-
+			<div class="learn-press-tabs">
+				<ul class="learn-press-filters">
+					<?php foreach ( $courses_enrolled_tab as $key => $enrolled ) : ?>
+						<li>
+							<a class="<?php echo esc_attr( $key === $courses_enrolled_tab_active ? 'active' : '' ); ?>"
+							   data-tab="<?php echo esc_attr( $key === '' ? 'all' : $key ); ?>">
+								<?php echo esc_html( $enrolled ); ?>
+							</a>
+						</li>
+					<?php endforeach; ?>
+				</ul>
+			</div>
 			<div class="learn-press-profile-course__progress">
 				<?php foreach ( $courses_enrolled_tab as $key => $enrolled ) : ?>
 					<div class="learn-press-course-tab__filter__content"

@@ -4,8 +4,7 @@
  	padding: 0;
 	column-gap: $spacing-base-10x;
 	row-gap: $spacing-base-3x;
-	border-bottom: 2px solid $border-color;
-	list-style: none;
+ 	list-style: none;
 }
 
 @mixin lp_nav_href() {
@@ -40,7 +39,7 @@
 .learn-press-tabs {
 	margin-bottom: $spacing-base-8x;
 	position: relative;
-
+	border-bottom: 2px solid $border-color;
 	.learn-press-tabs__checker {
 		display: none;
 	}
@@ -90,12 +89,19 @@
 			display: none;
 		}
 	}
-
-
+	@media (max-width: 990px) {
+		overflow-x: auto;
+		&__nav,.learn-press-filters {
+			width: max-content;
+			//overflow-x: auto;
+			overflow-y: hidden;
+		}
+	}
 }
 
 .learn-press-filters {
-	margin-bottom: $spacing-base-8x;
+	//margin-bottom: $spacing-base-8x;
+	//border-bottom: 2px solid $border-color;
 	@include lp_nav();
 
 	li {
