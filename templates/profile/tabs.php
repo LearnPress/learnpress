@@ -19,7 +19,7 @@ if ( ! isset( $user ) || ! isset( $profile ) ) {
 }
 ?>
 
-<div id="profile-nav">
+<div id="profile-nav" class="profile-nav">
 
 	<?php do_action( 'learn-press/before-profile-nav', $profile ); ?>
 

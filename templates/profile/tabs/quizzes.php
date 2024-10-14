@@ -38,6 +38,7 @@ $filters = $profile->get_quizzes_filters( $current_filter );
 
 <div class="learn-press-subtab-content">
 	<?php if ( $filters ) : ?>
+	<div class="learn-press-tabs">
 		<ul class="learn-press-filters">
 			<?php foreach ( $filters as $class => $link ) : ?>
 				<li class="<?php echo esc_attr( $class ); ?><?php echo esc_attr( $class === $current_filter ? ' active' : '' ); ?>">
@@ -45,6 +46,7 @@ $filters = $profile->get_quizzes_filters( $current_filter );
 				</li>
 			<?php endforeach; ?>
 		</ul>
+	</div>
 	<?php endif; ?>
 
 	<?php if ( $query->get_items() ) : ?>
