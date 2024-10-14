@@ -45,6 +45,7 @@ if ( ! class_exists( 'LP_Shortcode_Button_Purchase' ) ) {
 		 * @return string
 		 */
 		public function output() {
+			wp_enqueue_style( 'learnpress' );
 			ob_start();
 
 			$atts = $this->_atts;

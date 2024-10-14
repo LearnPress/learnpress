@@ -64,6 +64,7 @@ if ( ! class_exists( 'LP_Shortcode_Become_A_Teacher' ) ) {
 		 * @return string
 		 */
 		public function output() {
+			wp_enqueue_style( 'learnpress' );
 			ob_start();
 
 			$message = '';

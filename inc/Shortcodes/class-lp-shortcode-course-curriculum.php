@@ -35,7 +35,7 @@ if ( ! class_exists( 'LP_Shortcode_Course_Curriculum' ) ) {
 		 * @return string
 		 */
 		public function output() {
-
+			wp_enqueue_style( 'learnpress' );
 			ob_start();
 			global $post;
 			$post = get_post( $this->_atts['id'] );
