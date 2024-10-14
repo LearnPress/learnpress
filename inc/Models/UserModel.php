@@ -358,6 +358,56 @@ class UserModel {
 	}
 
 	/**
+	 * Get profile avatar url
+	 *
+	 * @return string
+	 * @since 4.2.7.2
+	 * @version 1.0.0
+	 */
+	public function get_avatar_url(): string {
+		$avatar_url = $this->get_upload_avatar_src();
+		if ( empty( $avatar_url ) ) {
+			// Get form Gravatar.
+			$args       = learn_press_get_avatar_thumb_size();
+			$avatar_url = get_avatar_url( $this->get_id(), $args );
+			// If not exists, get default avatar.
+			if ( empty( $avatar_url ) ) {
+				$avatar_url = LP_PLUGIN_URL . 'assets/images/avatar-default.png';
+			}
+		}
+
+		return $avatar_url;
+	}
+
+	/**
+	 * Get upload avatar src.
+	 *
+	 * @return string
+	 * @since 4.2.7.2
+	 * @version 1.0.0
+	 * @move from get_upload_profile_src method on LP_Profile class
+	 */
+	public function get_upload_avatar_src(): string {
+		$uploaded_avatar_src = '';
+		$profile_picture     = $this->get_meta_value_by_key( self::META_KEY_IMAGE, '' );
+
+		if ( $profile_picture ) {
+			// Check if hase slug / at the beginning of the path, if not, add it.
+			$slash           = substr( $profile_picture, 0, 1 ) === '/' ? '' : '/';
+			$profile_picture = $slash . $profile_picture;
+			// End check.
+			$upload    = learn_press_user_profile_picture_upload_dir();
+			$file_path = $upload['basedir'] . $profile_picture;
+
+			if ( file_exists( $file_path ) ) {
+				$uploaded_avatar_src = $upload['baseurl'] . $profile_picture;
+			}
+		}
+
+		return apply_filters( 'learn-press/user/upload-avatar-src', $uploaded_avatar_src, $this );
+	}
+
+	/**
 	 * Get links socials of use on Profile page
 	 * Icon is svg
 	 *
@@ -407,42 +457,6 @@ class UserModel {
 		}
 
 		return apply_filters( 'learn-press/user-profile-socials', $socials, $this->get_id(), $this );
-	}
-
-	/**
-	 * Check user can enroll course
-	 *
-	 * @param CourseModel $course
-	 *
-	 * @return mixed|object|bool
-	 */
-	public function can_enroll_course( CourseModel $course ) {
-	}
-
-	/**
-	 * Check user can purchase course
-	 *
-	 * @param int $course_id
-	 *
-	 * @return bool|WP_Error
-	 * @author nhamdv
-	 * @editor tungnx
-	 * @since 4.0.8
-	 * @version 1.0.5
-	 */
-	public function can_purchase_course( int $course_id = 0 ) {
-	}
-
-	/**
-	 * Check user can retake course.
-	 *
-	 * @param CourseModel $course
-	 *
-	 * @return int
-	 * @since 4.0.0
-	 * @author tungnx
-	 */
-	public function can_retake_course( CourseModel $course ) {
 	}
 
 	/**

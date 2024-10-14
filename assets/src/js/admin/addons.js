@@ -272,6 +272,8 @@ document.addEventListener( 'click', ( e ) => {
 					elAddonItem.classList.add( 'activated' );
 				} else if ( action === 'deactivate' ) {
 					elAddonItem.classList.remove( 'activated' );
+				} else if ( action === 'update-purchase' ) {
+					elItemPurchase.style.display = 'none';
 				}
 			}
 
