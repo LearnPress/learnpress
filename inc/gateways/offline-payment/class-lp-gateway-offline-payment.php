@@ -18,6 +18,7 @@ if ( ! function_exists( 'LP_Gateway_Offline_Payment' ) ) {
 	 */
 	class LP_Gateway_Offline_Payment extends LP_Gateway_Abstract {
 		use Singleton;
+
 		/**
 		 * @var LP_Settings
 		 */
@@ -87,7 +88,7 @@ if ( ! function_exists( 'LP_Gateway_Offline_Payment' ) ) {
 		 * Payment form.
 		 */
 		public function get_payment_form() {
-			return LP_Settings::instance()->get( $this->id . '.description', $this->description );
+			return esc_html( LP_Settings::instance()->get( $this->id . '.description', $this->description ) );
 		}
 
 		/**
