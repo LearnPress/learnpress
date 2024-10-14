@@ -210,6 +210,21 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.2.7.2 (2024-10-1x) =
+~ Fixed: security.
+~ Fixed: set size for Gravatar user.
+~ Fixed: slug item's course use urldecode when edited.
+~ Fixed: display name courses has special character Mobile.
+~ Fixed: error save Enable/Disable all emails.
+~ Added: get_all_items method for LP_Order class, for fix case "Paid Memberships" assign more than 50 courses.
+~ Added: cover image feature on the Profile page.
+~ Tweak: handle tomSelect.
+~ Tweak: class LP_Datetime.
+~ Tweak: style page Archive Courses.
+~ Tweak: style page Profile.
+~ Tweak: layout Offline course.
+~ Update: lp icon fonts.
+
 = 4.2.7.1 (2024-09-11) =
 ~ Fixed: security.
 ~ Use TomSelect instead of Select2 on settings.
