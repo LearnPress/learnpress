@@ -273,14 +273,20 @@ p:last-child {
 			padding-top: 40px;
 		}
 		#profile-nav {
-			overflow-x: auto;
+			//overflow-x: auto;
 			border-top: 1px solid $border-color;
 		}
 		.lp-profile-nav-tabs {
 			display: flex;
 			flex-wrap: nowrap;
 			justify-content: space-around;
+			overflow-x: auto;
+			white-space: nowrap;
+ 			scroll-behavior: smooth;
 
+			//&::-webkit-scrollbar {
+			//	display: none;
+			//}
 			&::after {
 				display: none;
 			}
