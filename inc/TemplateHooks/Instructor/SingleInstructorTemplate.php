@@ -232,7 +232,7 @@ class SingleInstructorTemplate {
 	 * @return string
 	 */
 	public function render_data( LP_User $instructor, string $data_content = '' ): string {
-		return str_replace(
+		$data_render = str_replace(
 			[
 				'{{instructor_id}}',
 				'{{instructor_avatar}}',
@@ -255,6 +255,8 @@ class SingleInstructorTemplate {
 			],
 			$data_content
 		);
+
+		return apply_filters( 'learn-press/single-instructor/render-data', $data_render, $instructor, $data_content );
 	}
 
 	/**
