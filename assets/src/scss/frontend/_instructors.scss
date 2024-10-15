@@ -56,11 +56,15 @@ body {
 			border: 1px solid var(--lp-instructor-border-color);
 			padding: var(--lp-instructor-item-padding);
 			list-style: none;
+			.instructor-avatar{
+				margin-bottom: $spacing-base-3x;
+			}
 			.instructor-display-name {
 				display: block;
 				text-align: center;
-				margin: var(--lp-instructor-item-padding) 0;
+				margin-bottom: $spacing-base-3x;
 				font-size: 1.2em;
+				line-height: 1.3;
 				font-weight: bold;
 			}
 
@@ -71,6 +75,7 @@ body {
 			.instructor-info {
 				display: flex;
 				column-gap: 10px;
+				margin-bottom: $spacing-base-3x;
 				> div {
 					flex: 1;
 					text-align: right;
@@ -90,21 +95,21 @@ body {
 			}
 
 			.instructor-btn-view {
-				display: block;
-				margin: var(--lp-instructor-item-padding) auto 0;
-				text-align: center;
-				background: #D9D9D9;
+				padding: $spacing-base-2x $spacing-base-6x;
+				border-radius: $border-radius-global;
+				color: $text-color-base;
+				border: 1px solid $text-color-base;
+				transition: all 0.3s;
+				display:  block;
+				background: transparent;
 				text-decoration: none;
-				border-radius: 5px;
-				padding: 10px 0;
-				color: rgba(0, 0, 0, 0.5);
-				font-weight: 700;
-
+				text-align: center;
 				&:hover {
-					background: var(--lp-primary-color);
-					color: whitesmoke;
+					background: $color-primary;
+					color: $color-white;
+					border-color: $color-primary;
 				}
-			}
+ 			}
 		}
 
 	}

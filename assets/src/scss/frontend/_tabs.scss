@@ -43,7 +43,9 @@
 	.learn-press-tabs__checker {
 		display: none;
 	}
-
+	> ul{
+		margin: 0;
+	}
 	&__nav {
 		margin: 0;
 		@include lp_nav();

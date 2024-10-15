@@ -118,9 +118,9 @@ body {
 	padding-right: 15px;
 }
 
-body.astra {
-	--lp-bg-color-lesson: var(--ast-global-color-4);
-}
+//body.astra {
+//	--lp-bg-color-lesson: var(--ast-global-color-4);
+//}
 .ast-container{
 	--lp-cotainer-padding: 0
 }
@@ -250,7 +250,7 @@ body.twentyseventeen.learnpress-page {
 }
 
 // Fix for theme EduPress
-.edu-press:not(.nofixcss){
+.edu-press:not(.nofixcss),.theme-edu-press:not(.nofixcss){
 	.course-instructor-category{
 		>div:nth-child(2){
 			label{
@@ -313,6 +313,11 @@ body.twentyseventeen.learnpress-page {
 	.learn-press-courses .course-content .course-readmore a{
 		border: none;
 	}
+	.lp-user-profile .dashboard-statistic__row .statistic-box{
+		 background-color: var(--lb-bg-statistic-box, #F7F7FB);
+		 min-width: unset;
+		 margin-bottom: 0;
+	}
 }
 
 // Fix for theme elearningwp
@@ -346,8 +351,17 @@ body.twentyseventeen.learnpress-page {
 	}
 }
 .learnpress-v4,.learnpress-v3{
-	--lp-border-radius-avatar: 0;
-	.statistic-box{
-		--thim-lp-profile-bg-color: #F7F7FB;
+	&:not(.nofixcss){
+		--lp-border-radius-avatar: 0;
+		.statistic-box{
+			--thim-lp-profile-bg-color: #F7F7FB;
+		}
+		#learn-press-profile.lp-user-profile .learn-press-filters {
+			border: none!important;
+			margin: 0!important;
+		}
+		.lp-user-profile .lp-profile-left{
+			min-width: unset!important;
+		}
 	}
 }

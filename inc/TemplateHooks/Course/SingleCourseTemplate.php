@@ -851,8 +851,8 @@ class SingleCourseTemplate {
 			$section = apply_filters(
 				'learn-press/course/html-requirements',
 				[
-					'wrapper'     => '<div class="course-requirements">',
-					'title'       => sprintf( '<h3 class="course-requirements__title">%s</h3>', __( 'Requirements', 'learnpress' ) ),
+					'wrapper'     => '<div class="course-requirements extra-box">',
+					'title'       => sprintf( '<h3 class="extra-box__title">%s</h3>', __( 'Requirements', 'learnpress' ) ),
 					'content'     => Template::combine_components( $section_list ),
 					'wrapper_end' => '</div>',
 				],
@@ -899,8 +899,8 @@ class SingleCourseTemplate {
 			$section = apply_filters(
 				'learn-press/course/html-features',
 				[
-					'wrapper'     => '<div class="course-features">',
-					'title'       => sprintf( '<h3 class="course-features__title">%s</h3>', __( 'Features', 'learnpress' ) ),
+					'wrapper'     => '<div class="course-features extra-box">',
+					'title'       => sprintf( '<h3 class="extra-box__title">%s</h3>', __( 'Features', 'learnpress' ) ),
 					'content'     => Template::combine_components( $section_list ),
 					'wrapper_end' => '</div>',
 				],
@@ -947,8 +947,8 @@ class SingleCourseTemplate {
 			$section = apply_filters(
 				'learn-press/course/html-target',
 				[
-					'wrapper'     => '<div class="course-target">',
-					'title'       => sprintf( '<h3 class="course-target__title">%s</h3>', __( 'Target audiences', 'learnpress' ) ),
+					'wrapper'     => '<div class="course-target extra-box">',
+					'title'       => sprintf( '<h3 class="extra-box__title">%s</h3>', __( 'Target audiences', 'learnpress' ) ),
 					'content'     => Template::combine_components( $section_list ),
 					'wrapper_end' => '</div>',
 				],

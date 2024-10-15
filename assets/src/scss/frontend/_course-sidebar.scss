@@ -149,7 +149,9 @@
 			width: 100%;
 		}
 	}
-
+	.course-wishlist{
+		float: none;
+	}
 	.course-time {
 		margin-bottom: 28px;
 		padding-bottom: 8px;
@@ -157,11 +159,11 @@
 	}
 
 	.course-time-row {
-		display: flex;
+		//display: flex;
 		color: #666;
 		font-size: 1em;
 		font-weight: 300;
-		justify-content: space-between;
+		//justify-content: space-between;
 		margin-bottom: 0;
 
 		strong {
