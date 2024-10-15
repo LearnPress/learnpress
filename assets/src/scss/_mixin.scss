@@ -223,3 +223,25 @@
 	font-size: inherit;
 	line-height: 1.1;
 }
+
+@mixin profile_social() {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	text-decoration: none;
+	color: $text-color-base;
+	width: var(--lp-social-size, 40px);
+	height: var(--lp-social-size, 40px);
+	border-radius: 50%;
+	border: 1px solid $border-color;
+	font-size: 16px;
+	&:hover {
+		color: $color-white;
+		border-color: var(--lp-primary-color);
+		background: var(--lp-primary-color);
+
+		svg {
+			fill: $color-white;
+		}
+	}
+}

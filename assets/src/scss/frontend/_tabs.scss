@@ -5,6 +5,7 @@
 	column-gap: $spacing-base-10x;
 	row-gap: $spacing-base-3x;
  	list-style: none;
+	margin: 0 0 -2px 0;
 }
 
 @mixin lp_nav_href() {
@@ -27,7 +28,7 @@
 
 @mixin lp_line_active($width: 2px) {
 	position: absolute;
-	bottom: -$width;
+	bottom: 0;
 	top: auto;
 	left: 0;
 	width: 100%;
@@ -43,12 +44,8 @@
 	.learn-press-tabs__checker {
 		display: none;
 	}
-	> ul{
-		margin: 0;
-	}
-	&__nav {
-		margin: 0;
-		@include lp_nav();
+ 	&__nav {
+ 		@include lp_nav();
 	}
 
 	&__item {
@@ -86,24 +83,20 @@
 		}
 	}
 
-	@media (min-width: 768px) {
-		.mb-current-tab {
-			display: none;
-		}
-	}
 	@media (max-width: 990px) {
-		overflow-x: auto;
-		&__nav,.learn-press-filters {
-			width: max-content;
-			//overflow-x: auto;
-			overflow-y: hidden;
+ 		&__nav,.learn-press-filters {
+			overflow-x: auto;
+			white-space: nowrap;
+			flex-wrap: nowrap;
+			scroll-behavior: smooth;
+			&::-webkit-scrollbar {
+				display: none;
+			}
 		}
 	}
 }
 
 .learn-press-filters {
-	//margin-bottom: $spacing-base-8x;
-	//border-bottom: 2px solid $border-color;
 	@include lp_nav();
 
 	li {
@@ -139,5 +132,86 @@
 		&:after {
 			display: none !important;
 		}
+	}
+}
+
+// Tab in single course
+.wrapper-course-nav-tabs{
+	//margin-bottom: $spacing-base-8x;
+	position: relative;
+	border-bottom: 2px solid $border-color;
+	//overflow-x: auto;
+	//scrollbar-width: none;
+	//&::-webkit-scrollbar {
+	//	display: none;
+	//}
+}
+.learn-press-nav-tabs{
+ 	margin: 0;
+	@include lp_nav();
+	//width: max-content;
+ 	//overflow-y: hidden;
+	li{
+		position: relative;
+		margin: 0;
+		list-style: none;
+		label{
+			@include lp_nav_href();
+		}
+		&::after {
+			@include lp_line_active();
+		}
+
+		&.active, &:hover {
+			label {
+				color: $color-primary;
+			}
+
+			&::after {
+				background: $color-primary;
+			}
+		}
+	}
+}
+
+.TabsDragScroll{
+	position: relative;
+	ul{
+		max-width: 100%;
+		white-space: nowrap;
+		scroll-behavior: smooth;
+		user-select: none;
+		overflow-x: auto;
+ 		flex-wrap: nowrap;
+		&::-webkit-scrollbar {
+			display: none;
+		}
+		&.dragging {
+			scroll-behavior: unset;
+			cursor: grab;
+		}
+	}
+	.lp-icon-ellipsis-h{
+		position: absolute;
+ 		font-size: 24px;
+		padding: 0;
+ 		cursor: pointer;
+		display: none;
+		top: 0;
+		bottom: 0;
+		left: 0;
+ 		background: #fff;
+		line-height: 1;
+		&:before{
+			opacity: 0.6;
+		}
+ 	}
+	.left-btn{
+		padding-right: 12px;
+	}
+ 	.right-btn{
+		padding-left: 12px;
+ 		right: 0;
+		left: auto;
 	}
 }

@@ -70,10 +70,9 @@ class ProfileTemplate {
 						sprintf( 'background-image: url(%s);', $cover_image_url ),
 					),
 					'image'       => sprintf(
-						'<img src="%s" alt="%s" decoding="async" style="height: %s" />',
+						'<img src="%s" alt="%s" decoding="async" />',
 						$cover_image_url,
-						__( 'Cover image', 'learnpress' ),
-						$cover_image_dimensions['height'] . 'px',
+						__( 'Cover image', 'learnpress' )
 					),
 					'btn-edit'    => $html_btn_to_edit_cover_image,
 					'wrapper_end' => '</div>',

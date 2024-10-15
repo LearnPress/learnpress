@@ -46,23 +46,23 @@ if ( $lp_user && ! $lp_user instanceof LP_User_Guest ) {
 		<input type="radio" name="learn-press-course-tab-radio" id="tab-<?php echo esc_attr( $key ); ?>-input"
 			<?php checked( $active_tab === $key ); ?> value="<?php echo esc_attr( $key ); ?>"/>
 	<?php endforeach; ?>
+	<div class="wrapper-course-nav-tabs TabsDragScroll">
+ 		<ul class="learn-press-nav-tabs course-nav-tabs" data-tabs="<?php echo esc_attr( count( $tabs ) ); ?>">
+			<?php foreach ( $tabs as $key => $tab ) : ?>
+				<?php
+				$classes = array( 'course-nav course-nav-tab-' . esc_attr( $key ) );
 
-	<ul class="learn-press-nav-tabs course-nav-tabs" data-tabs="<?php echo esc_attr( count( $tabs ) ); ?>">
-		<?php foreach ( $tabs as $key => $tab ) : ?>
-			<?php
-			$classes = array( 'course-nav course-nav-tab-' . esc_attr( $key ) );
+				if ( $active_tab === $key ) {
+					$classes[] = 'active';
+				}
+				?>
 
-			if ( $active_tab === $key ) {
-				$classes[] = 'active';
-			}
-			?>
-
-			<li class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>">
-				<label for="tab-<?php echo esc_attr( $key ); ?>-input"><?php echo esc_html( $tab['title'] ); ?></label>
-			</li>
-		<?php endforeach; ?>
-
-	</ul>
+				<li class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>">
+					<label for="tab-<?php echo esc_attr( $key ); ?>-input"><?php echo esc_html( $tab['title'] ); ?></label>
+				</li>
+			<?php endforeach; ?>
+		</ul>
+	</div>
 
 	<div class="course-tab-panels">
 		<?php foreach ( $tabs as $key => $tab ) : ?>

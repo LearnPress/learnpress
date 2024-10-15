@@ -309,14 +309,25 @@ body.twentyseventeen.learnpress-page {
 			}
 		}
 	}
-
+	.lp-archive-courses .lp-content-area .lp-courses-bar .switch-layout .switch-btn{
+		opacity: 1;
+	}
 	.learn-press-courses .course-content .course-readmore a{
 		border: none;
 	}
 	.lp-user-profile .dashboard-statistic__row .statistic-box{
-		 background-color: var(--lb-bg-statistic-box, #F7F7FB);
+		 background-color: $bg-grey;
 		 min-width: unset;
 		 margin-bottom: 0;
+	}
+	.learn-press-courses .course-wrap-meta .meta-item::before{
+		font-family: "lp-icon" !important;
+		font-weight: normal !important;
+		margin: 0 !important;
+	}
+	&.single-lp_course .lp-archive-courses .learn-press-nav-tabs{
+		background: transparent;
+		border-radius: 0;
 	}
 }
 

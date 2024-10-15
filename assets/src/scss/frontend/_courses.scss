@@ -760,7 +760,7 @@
 		.switch-btn {
  			margin: 0;
 			cursor: pointer;
-			background-color: $color-white;
+			//background-color: $color-white;
 			padding: $spacing-base-2x $spacing-base-3x;
 			&::before {
 				display: inline-block;
@@ -805,7 +805,7 @@
 @for $i from 0 through 9 {
 	input[type="radio"]:nth-child(#{$i*2+1}):checked ~ .switch-btn:nth-child(#{$i*2+2}) {
  		.switch-layout &{
-			background-color: var(--bg-switch-layout,#F1F2F8);
+			background-color: $bg-grey;
 		}
 		&::before {
 			color: var(--lp-primary-color);
