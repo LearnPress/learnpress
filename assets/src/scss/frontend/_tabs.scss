@@ -1,10 +1,10 @@
 @mixin lp_nav() {
 	display: flex;
 	flex-wrap: wrap;
- 	padding: 0;
+	padding: 0;
 	column-gap: $spacing-base-10x;
 	row-gap: $spacing-base-3x;
- 	list-style: none;
+	list-style: none;
 	margin: 0 0 -2px 0;
 }
 
@@ -41,11 +41,13 @@
 	margin-bottom: $spacing-base-8x;
 	position: relative;
 	border-bottom: 2px solid $border-color;
+
 	.learn-press-tabs__checker {
 		display: none;
 	}
- 	&__nav {
- 		@include lp_nav();
+
+	&__nav {
+		@include lp_nav();
 	}
 
 	&__item {
@@ -84,11 +86,12 @@
 	}
 
 	@media (max-width: 990px) {
- 		&__nav,.learn-press-filters {
+		&__nav, .learn-press-filters {
 			overflow-x: auto;
 			white-space: nowrap;
 			flex-wrap: nowrap;
 			scroll-behavior: smooth;
+
 			&::-webkit-scrollbar {
 				display: none;
 			}
@@ -119,9 +122,10 @@
 				}
 			}
 		}
+
 		// tab Quiz
-		&.active{
-			a, span{
+		&.active {
+			a, span {
 				color: $color-primary;
 
 				&::after {
@@ -129,6 +133,7 @@
 				}
 			}
 		}
+
 		&:after {
 			display: none !important;
 		}
@@ -136,7 +141,7 @@
 }
 
 // Tab in single course
-.wrapper-course-nav-tabs{
+.wrapper-course-nav-tabs {
 	//margin-bottom: $spacing-base-8x;
 	position: relative;
 	border-bottom: 2px solid $border-color;
@@ -146,18 +151,21 @@
 	//	display: none;
 	//}
 }
-.learn-press-nav-tabs{
- 	margin: 0;
+
+.learn-press-nav-tabs {
+	margin: 0;
 	@include lp_nav();
 	//width: max-content;
- 	//overflow-y: hidden;
-	li{
+	//overflow-y: hidden;
+	li {
 		position: relative;
 		margin: 0;
 		list-style: none;
-		label{
+
+		label {
 			@include lp_nav_href();
 		}
+
 		&::after {
 			@include lp_line_active();
 		}
@@ -174,44 +182,28 @@
 	}
 }
 
-.TabsDragScroll{
+.TabsDragScroll {
 	position: relative;
-	ul{
+
+	&:hover {
+		cursor: all-scroll;
+	}
+
+	ul {
 		max-width: 100%;
 		white-space: nowrap;
 		scroll-behavior: smooth;
 		user-select: none;
 		overflow-x: auto;
- 		flex-wrap: nowrap;
+		flex-wrap: nowrap;
+
 		&::-webkit-scrollbar {
 			display: none;
 		}
+
 		&.dragging {
 			scroll-behavior: unset;
-			cursor: grab;
+			cursor: all-scroll;
 		}
-	}
-	.lp-icon-ellipsis-h{
-		position: absolute;
- 		font-size: 24px;
-		padding: 0;
- 		cursor: pointer;
-		display: none;
-		top: 0;
-		bottom: 0;
-		left: 0;
- 		background: #fff;
-		line-height: 1;
-		&:before{
-			opacity: 0.6;
-		}
- 	}
-	.left-btn{
-		padding-right: 12px;
-	}
- 	.right-btn{
-		padding-left: 12px;
- 		right: 0;
-		left: auto;
 	}
 }

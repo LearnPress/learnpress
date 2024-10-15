@@ -4,7 +4,7 @@ import lpModalOverlayCompleteItem from './show-lp-overlay-complete-item';
 import lpModalOverlay from '../utils/lp-modal-overlay';
 import courseCurriculumSkeleton from './single-curriculum/skeleton';
 import lpMaterialsLoad from './material';
-import TabsDragScroll from './single-course/scroll-tab';
+import TabsDragScroll from './tabs-scroll';
 
 export default SingleCourse;
 
