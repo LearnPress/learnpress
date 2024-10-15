@@ -165,6 +165,10 @@
 					}
 				}
 			}
+
+			label {
+				text-transform: capitalize;
+			}
 		}
 
 		&.installed {
