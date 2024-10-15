@@ -1,6 +1,6 @@
 export default function TabsDragScroll() {
 	// Selectors and DOM elements
-	const TabsDragScroll = document.querySelector('.learn-press-tabs');
+	const TabsDragScroll = document.querySelector('.TabsDragScroll');
 	if (!TabsDragScroll) return;
 
 	const tabMenu = TabsDragScroll.querySelector('ul');
