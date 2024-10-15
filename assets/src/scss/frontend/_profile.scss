@@ -112,34 +112,30 @@
 		> li {
 			position: relative;
 			margin: 0;
+			padding: 0;
 			border-top: 1px solid rgba(204, 204, 204, 0.3);
 
 			a {
-				display: block;
 				padding: 10px 20px;
 				color: inherit;
 				font-weight: 500;
-				//line-height: 3em;
 				text-decoration: none;
+				display: flex;
+				width: 100%;
+				gap: 8px;
+				line-height: 1.4;
+
+				> i {
+					margin-top: 3px;
+				}
 			}
 
 			> a {
-				padding: 12px 20px 12px 52px;
+				padding: 14px 20px;
 				position: relative;
 
 				> i {
-					position: absolute;
-					left: 20px;
-					top: 50%;
-					transform: translateY(-50%);
 					color: var(--lp-primary-color);
-					//font-size: 0.75rem;
-					@media (max-width: 560px) {
-						left: 50%;
-						top: 50%;
-						transform: translate(-50%, -50%);
-						font-size: 1rem;
-					}
 				}
 			}
 
@@ -147,25 +143,11 @@
 
 				li {
 					margin: 0;
-
-					a {
-						border-bottom: 1px solid #f9f9f9;
+ 					a {
+						border-bottom: 1px solid rgba(204, 204, 204, 0.3);
 						font-size: $font-size-small;
-
-						i {
-							margin-right: 8px;
-						}
-
 						&:hover {
 							color: var(--lp-primary-color);
-						}
-					}
-
-					&:hover {
-						> a {
-							i {
-								color: var(--lp-primary-color);
-							}
 						}
 					}
 				}
@@ -174,27 +156,25 @@
 			&.active, &:hover {
 				background: var(--lp-primary-color);
 
-				> a {
+				> a, > a i {
 					color: #fff;
 
-					i {
-						color: #fff;
-					}
 				}
 			}
 
-
-			&:last-child {
-				border-bottom-right-radius: 4px;
-				border-bottom-left-radius: 4px;
-			}
+			//&:last-child {
+			//	border-bottom-right-radius: 4px;
+			//	border-bottom-left-radius: 4px;
+			//}
 
 			&.has-child {
 				> a:after {
-					float: right;
-					opacity: 1;
 					font-family: 'lp-icon';
 					content: "\f105";
+					position: absolute;
+					right: 15px;
+					top: 50%;
+					transform: translateY(-50%);
 				}
 			}
 		}
@@ -305,16 +285,16 @@
 	}
 
 	@media (max-width: 990px) {
-		#profile-sidebar{
+		#profile-sidebar {
 			margin-top: 40px;
 		}
-		.lp-profile-content{
+		.lp-profile-content {
 			padding-top: 40px;
 		}
 		#profile-nav {
 			overflow-x: auto;
 			border-top: 1px solid rgba(204, 204, 204, 0.3);
- 		}
+		}
 		.lp-profile-nav-tabs {
 			display: flex;
 			flex-wrap: nowrap;
@@ -325,23 +305,24 @@
 			}
 
 			> li {
-				float: left;
-				border: none;
+ 				border: none;
 				border-right: 1px solid rgba(204, 204, 204, 0.3);
 				flex: 1;
-				&:last-child{
+
+				&:last-child {
 					border-right: none;
 				}
+
 				> a {
 					height: auto;
 					padding: 8px 12px 8px 12px;
-					display: flex;
 					flex-direction: column;
 					white-space: nowrap;
 					align-items: center;
 					font-size: $font-size-label;
 					line-height: 1.4;
 					gap: 4px;
+
 					> i {
 						position: static;
 						transform: translate(0);
@@ -356,11 +337,18 @@
 				&.has-child {
 					a::after {
 						display: none !important;
-						//content: "\f077";
 					}
 				}
 
+				&:after {
+					display: none;
+				}
+
 				&.active {
+					&:after, &:before {
+						display: none;
+					}
+
 					&.has-child {
 
 						ul {
@@ -393,16 +381,8 @@
 			}
 
 			li {
-
-				&:hover ul {
+				&:not(.has-child) > a::after, &:hover ul {
 					display: none !important;
-				}
-
-				&:not(.has-child) {
-
-					> a::after {
-						display: none;
-					}
 				}
 			}
 		}
@@ -420,15 +400,16 @@
 			overflow-x: scroll;
 			border-bottom: 2px solid var(--lp-border-color, #E2E0DB);
 			margin-bottom: 32px;
-			.learn-press-filters{
+
+			.learn-press-filters {
 				margin-bottom: 0;
-				border-bottom: none!important;
+				border-bottom: none !important;
 				width: max-content;
 				overflow-x: auto;
 				overflow-y: hidden;
 			}
 		}
-		.lp-course-tabs{
+		.lp-course-tabs {
 
 		}
 	}
@@ -470,7 +451,7 @@
 					display: block;
 				}
 
-				td,	th {
+				td, th {
 					text-align: center;
 
 					&:first-child {
@@ -507,8 +488,9 @@
 			}
 
 		}
+
 		@media (max-width: 768px) {
-			.learn-press-course-tab__filter__content{
+			.learn-press-course-tab__filter__content {
 				overflow-x: auto;
 			}
 		}
@@ -562,6 +544,7 @@ div.order-recover {
 .d-none {
 	display: none !important;
 }
-.d-inline-block{
+
+.d-inline-block {
 	display: inline-block !important;
 }

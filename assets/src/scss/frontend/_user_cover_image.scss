@@ -69,7 +69,12 @@
 
 				.lp-icon-file-image {
 					font-size: 32px;
-					opacity: 0.6;
+					transform: rotate(-90deg);
+					//opacity: 0.6;
+					&:before{
+						color: var(--lp-primary-color);
+						content: "\f08b";
+					}
 				}
 			}
 
@@ -173,4 +178,4 @@ button.learnpress_avatar__button {
 		margin-left: 15px;
 		margin-right: 0;
 	}
-}
+ }

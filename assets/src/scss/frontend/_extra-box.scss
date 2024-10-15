@@ -165,7 +165,7 @@ input[name="course-extra-box-ratio"] {
 
 // FAQs toggle boxe
 .course-tab-panel-faqs {
-	padding-top: 64px;
+	//padding-top: 64px;
 
 	.course-faqs-box {
 		margin-bottom: 20px;
@@ -188,8 +188,7 @@ input[name="course-extra-box-ratio"] {
 				right: 20px;
 				font-family: 'lp-icon';
  				content: "\f067";
-				//font-size: 1.2em;
- 			}
+  			}
 		}
 
 		&:last-child {
@@ -274,5 +273,13 @@ input[name="course-faqs-box-ratio"] {
 	to {
 		opacity: 1;
 		@include transform(translateY(0%));
+	}
+}
+
+// Extra info Version 2
+.extra-box,.course-faqs,.course-material{
+	&__title{
+		margin-top: 0;
+		margin-bottom: $spacing-base-3x;
 	}
 }
