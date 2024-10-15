@@ -95,7 +95,7 @@ class SingleCourseOfflineTemplate {
 			$html_instructor_meta    = Template::combine_components( $section_instructor_meta );
 
 			$section_instructor_right = apply_filters(
-				'lean-press/single-course/offline/section-instructor/right',
+				'learn-press/single-course/offline/section-instructor/right',
 				[
 					'wrapper'     => '<div class="lp-section-instructor">',
 					'name'        => sprintf(
@@ -113,7 +113,7 @@ class SingleCourseOfflineTemplate {
 			);
 			$html_instructor_right    = Template::combine_components( $section_instructor_right );
 			$section_instructor       = apply_filters(
-				'lean-press/single-course/offline/section-instructor',
+				'learn-press/single-course/offline/section-instructor',
 				[
 					'wrapper'          => '<div class="lp-section-instructor">',
 					'header'           => sprintf( '<h3>%s</h3>', __( 'Instructor', 'learnpress' ) ),
@@ -133,7 +133,7 @@ class SingleCourseOfflineTemplate {
 		// Info one
 		$html_address     = $this->singleCourseTemplate->html_address( $course );
 		$section_info_one = apply_filters(
-			'lean-press/single-course/offline/info-bar',
+			'learn-press/single-course/offline/info-bar',
 			[
 				'wrapper'     => '<div class="lp-single-course-offline-info-one">',
 				'author'      => sprintf( '<div class="item-meta">%s</div>', $html_author ),
