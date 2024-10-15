@@ -214,10 +214,6 @@ class SingleCourseTemplate {
 		$content = '';
 
 		try {
-			$html_wrapper = [
-				'<div class="course-img">' => '</div>',
-			];
-
 			if ( $course instanceof LP_Course ) {
 				$content = $course->get_image();
 			} elseif ( $course instanceof CourseModel ) {
@@ -228,7 +224,17 @@ class SingleCourseTemplate {
 				);
 			}
 
-			$content = Template::instance()->nest_elements( $html_wrapper, $content );
+			$section = apply_filters(
+				'learn-press/course/html-image',
+				[
+					'wrapper'     => '<div class="course-img">',
+					'content'     => $content,
+					'wrapper_end' => '</div>',
+				],
+				$course
+			);
+
+			$content = Template::combine_components( $section );
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
@@ -457,17 +463,24 @@ class SingleCourseTemplate {
 					$content = sprintf( '%d %s', $count_item, _n( 'H5P', 'H5Ps', $count_item, 'learnpress' ) );
 					break;
 				default:
-					$content = '';
+					$content = apply_filters( 'learn-press/single-course/i18n/count-item', $count_item, $course, $item_type );
 					break;
 			}
 		}
 
-		$item_type_class = str_replace( 'lp_', '', $item_type );
-		$html_wrapper    = [
-			'<div class="course-count-' . $item_type_class . '">' => '</div>',
-		];
+		$section = apply_filters(
+			'learn-press/single-course/html-count-item',
+			[
+				'wrapper'     => sprintf( '<div class="course-count-item %s">', $item_type ),
+				'content'     => $content,
+				'wrapper_end' => '</div>',
+			],
+			$course,
+			$item_type,
+			$count_item
+		);
 
-		return Template::instance()->nest_elements( $html_wrapper, $content );
+		return Template::combine_components( $section );
 	}
 
 	/**
