@@ -317,10 +317,6 @@ class UserModel {
 		return $this->display_name ?? '';
 	}
 
-	public function get_profile_link(): string {
-		return '';
-	}
-
 	/**
 	 * Get url instructor.
 	 *
@@ -343,20 +339,6 @@ class UserModel {
 		}
 
 		return $single_instructor_link;
-	}
-
-	/**
-	 * Get profile picture
-	 *
-	 * @param string $type
-	 * @param int $size
-	 * @param bool $src_only
-	 *
-	 * @move from LP_Abstract_User
-	 * @return string
-	 */
-	public function get_profile_picture( $type = '', $size = 96, $src_only = false ) {
-		return LP_Profile::instance( $this->get_id() )->get_profile_picture( $type, $size );
 	}
 
 	/**

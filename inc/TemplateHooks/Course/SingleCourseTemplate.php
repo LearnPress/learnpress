@@ -16,6 +16,7 @@ use LearnPress\Models\CoursePostModel;
 use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
+use LearnPress\TemplateHooks\UserTemplate;
 use LP_Course;
 use LP_Datetime;
 use LP_Material_Files_DB;
@@ -266,7 +267,7 @@ class SingleCourseTemplate {
 			$link_instructor = sprintf(
 				'<a href="%s">%s %s</a>',
 				$instructor->get_url_instructor(),
-				$with_avatar ? $instructor->get_profile_picture() : '',
+				$with_avatar ? UserTemplate::instance()->html_avatar( $instructor ) : '',
 				$singleInstructorTemplate->html_display_name( $instructor )
 			);
 
