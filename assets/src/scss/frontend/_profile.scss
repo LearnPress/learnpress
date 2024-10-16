@@ -254,6 +254,16 @@
 		margin-bottom: $spacing-base-6x;
 	}
 
+	&.guest{
+		.lp-content-area{
+			display: flex;
+			align-items: flex-start;
+			> div{
+				flex: 1;
+				width: 100%;
+			}
+		}
+	}
 	@media (min-width: 1366px) {
 		.lp-content-area {
 			padding-right: 0;
@@ -383,6 +393,11 @@
 		.lp-profile-user-bio {
 			display: none;
 		}
+		&.guest{
+			.lp-content-area{
+				flex-direction: column;
+			}
+		}
  	}
 
 	@media (max-width: 650px) {
@@ -396,6 +411,7 @@
 			font-size: 14px;
 		}
 	}
+
 }
 
 #profile-content-withdrawals {

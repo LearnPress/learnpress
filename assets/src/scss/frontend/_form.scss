@@ -116,15 +116,21 @@ input[type="password"] {
 				margin: 0 0 10px 0;
 			}
 
-			input[type="text"],
-			input[type="email"],
-			input[type="number"],
+ 			input[type="email"],
+ 			input[type="text"],
 			input[type="password"],
+			input[type="tel"],
+			input[type="url"],
+			input[type="number"],
 			textarea {
 				width: 100%;
  				border: 1px solid $border-color;
  				padding: $spacing-base-2x $spacing-base-4x;
 				@include box-sizing(border-box);
+				&:focus {
+					border-color: $color-primary;
+ 					outline: none;
+				}
 			}
 
 			.description {
@@ -134,7 +140,7 @@ input[type="password"] {
 				line-height: 1.4;
 			}
 
-			.asterisk {
+			.asterisk,.required {
 				color: #f00;
 			}
 
@@ -164,6 +170,11 @@ input[type="password"] {
 		clear: both;
 	}
 
+	form > p > label {
+		display: flex;
+		gap: 8px;
+	}
+
 	p {
 		margin: 0;
 	}
@@ -176,83 +187,21 @@ input[type="password"] {
 	margin-bottom: 60px;
 	margin-left: auto;
 	padding: 40px;
-	border: 1px solid #eee;
-	border-radius: 6px;
-	box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+	border: 1px solid $border-color;
+	border-radius: $border-radius-global;
+	box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 
 	h3 {
 		margin-bottom: 20px;
 	}
 
-	.form-fields {
-
-		.form-field {
-
-			label {
-				font-weight: 400;
-				user-select: none;
-			}
-
-			input[type="text"],
-			input[type="password"],
-			input[type="tel"],
-			input[type="url"],
-			input[type="number"] {
-				height: 42px;
-				border: 1px solid #bbb;
-				border-radius: 4px;
-				line-height: 2.625em;
-
-				&:focus {
-					border: none;
-					outline: 2px solid transparent !important;
-					outline-offset: 2px;
-					box-shadow: 0 0 0 2px #666 !important;
-				}
-			}
-		}
-
-		.form-field.required {
-			label {
-				&::after {
-					content: ' *';
-					display: inline;
-				}
-			}
-		}
-	}
-
-	form[name="learn-press-login"] {
-
-
-		> p {
-			> label {
-				color: #666;
-				cursor: pointer;
-				user-select: none;
-			}
-
-			> a {
-				color: #666;
-			}
-
-			&:last-child {
-				margin-bottom: 0;
-			}
-		}
-
-	}
-
 	button[type="submit"] {
+		padding: $spacing-base-3x $spacing-base-4x;
 		width: 100%;
-		height: 50px;
-		border-radius: 3px;
+ 		border-radius:  $border-radius-global;
 		outline: none;
 		color: #fff;
 		background: var(--lp-primary-color);
-		box-shadow: none;
-		vertical-align: middle;
-		text-decoration: none;
 	}
 }
 
