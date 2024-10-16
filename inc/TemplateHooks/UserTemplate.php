@@ -30,15 +30,20 @@ class UserTemplate {
 	 * Get display name html of instructor.
 	 *
 	 * @param LP_User|UserModel $instructor
+	 * @param string $class
 	 *
 	 * @return string
+	 * @since 4.2.7.2
+	 * @version 1.0.0
 	 */
-	public function html_display_name( $instructor ): string {
-		$html_wrapper = [
-			'<span class="instructor-display-name">' => '</span>',
+	public function html_display_name( $instructor, string $class = 'user' ): string {
+		$section = [
+			'wrapper'     => sprintf( '<div class="%s-display-name">', $class ),
+			'display_name' => $instructor->get_display_name(),
+			'wrapper_end' => '</div>',
 		];
 
-		return Template::instance()->nest_elements( $html_wrapper, $instructor->get_display_name() );
+		return Template::combine_components( $section );
 	}
 
 	/**
@@ -48,7 +53,7 @@ class UserTemplate {
 	 *
 	 * @return string
 	 */
-	public function html_social( $instructor ): string {
+	public function html_social( $instructor, string $class = 'user' ): string {
 		$content = '';
 
 		try {
@@ -98,12 +103,13 @@ class UserTemplate {
 	 *
 	 * @param UserModel $user
 	 * @param int $size_display 0 to get default learn_press_get_avatar_thumb_size()
+	 * @param string $class
 	 *
 	 * @return string
 	 * @since 4.2.7.2
 	 * @version 1.0.0
 	 */
-	public function html_avatar( UserModel $user, int $size_display = 0 ): string {
+	public function html_avatar( UserModel $user, int $size_display = 0, string $class = 'user' ): string {
 		$html = '';
 
 		try {
@@ -124,7 +130,7 @@ class UserTemplate {
 			$section = apply_filters(
 				'learn-press/user/html-avatar',
 				[
-					'wrapper'     => '<div class="instructor-avatar">',
+					'wrapper'     => sprintf( '<div class="%s-avatar">', $class ),
 					'avatar'      => $img_avatar,
 					'wrapper_end' => '</div>',
 				],

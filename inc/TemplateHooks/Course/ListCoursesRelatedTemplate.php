@@ -116,7 +116,7 @@ class ListCoursesRelatedTemplate {
 			if ( ! $course instanceof CourseModel ) {
 				continue;
 			}
-			echo static::render_course( $course, $settings );
+			echo ListCoursesTemplate::render_course( $course, $settings );
 		}
 		$html_courses = Template::instance()->nest_elements( $html_ul_courses, ob_get_clean() );
 

@@ -124,7 +124,7 @@ class SingleInstructorTemplate {
 			}
 		}
 
-		return $userTemplate->html_avatar( $instructor, $size_display );
+		return $userTemplate->html_avatar( $instructor, $size_display, 'instructor' );
 	}
 
 	/**

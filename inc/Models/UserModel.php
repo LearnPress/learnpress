@@ -118,7 +118,7 @@ class UserModel {
 		$filter_user     = new LP_User_Filter();
 		$filter_user->ID = $user_id;
 		$key_cache       = "user-model/find/id/{$user_id}";
-		$lp_course_cache = new \LP_Cache();
+		$lp_course_cache = new LP_Cache();
 
 		// Check cache
 		if ( $check_cache ) {
