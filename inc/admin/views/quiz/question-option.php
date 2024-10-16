@@ -11,6 +11,10 @@ if ( ! class_exists( 'LP_Meta_Box_Editor_Field' ) ) {
 	include_once LP_PLUGIN_PATH . 'inc/admin/views/meta-boxes/fields/editor.php';
 }
 
+if ( ! class_exists( 'LP_Meta_Box_Question' ) ) {
+	include_once LP_PLUGIN_PATH . 'inc/admin/views/meta-boxes/question/settings.php';
+}
+
 $description = new LP_Meta_Box_Editor_Field(
 	esc_html__( 'Description', 'learnpress' )
 );
