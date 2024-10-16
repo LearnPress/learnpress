@@ -1,6 +1,6 @@
 import lplistAPI from '../../api';
 import { lpFetchAPI } from '../../utils';
-import { addNewAnswer, changeCorrectAnswer, changeTitleAnswer, checkHiddenRemoveAnswer, deleteAnswer, sortableAnswer } from './eventHandlers';
+import { addNewAnswer, changeCorrectAnswer, changeTitleAnswer, checkHiddenRemoveAnswer, deleteAnswer, handleChangeQuestionOption, sortableAnswer } from './eventHandlers';
 import { changeContentAnswer, checkDisableAllAction, clearContent, insertNewBlank, removeAllBlank, renderBlank } from './fillBlank';
 
 const abortControllers = {};
@@ -40,16 +40,16 @@ const renderContent = ( el, html ) => {
 	changeContentAnswer( el );
 };
 
-const renderOption = ( el, option ) => {
-	if ( ! option || ! el ) {
+const renderOption = ( el, option, questionId ) => {
+	if ( ! option || ! el || ! questionId ) {
 		return;
 	}
 
 	const placeholderEl = el.querySelector( '.lp-place-holder' );
-	const descEl = el.querySelector( '.question-description' );
-	const pointEl = el.querySelector( '.question-points' );
-	const hintEl = el.querySelector( '.question-hint' );
-	const explanationEl = el.querySelector( '.question-explanation' );
+	const descEl = el.querySelector( '#_lp_description_' + questionId );
+	const pointEl = el.querySelector( '#_lp_mark_' + questionId );
+	const hintEl = el.querySelector( '#_lp_hint_' + questionId );
+	const explanationEl = el.querySelector( '#_lp_explanation_' + questionId );
 	const contentEl = el.querySelector( '.postbox' );
 	const toggleEl = el.querySelector( '.toggle' );
 	const headerEl = el.querySelector( '.quiz-question-options__header' );
@@ -171,7 +171,7 @@ const getQuestionOptionApi = ( questionOptionEl, questionId ) => {
 			success: ( response ) => {
 				const option = response.data.option;
 				if ( option ) {
-					renderOption( questionOptionEl, option );
+					renderOption( questionOptionEl, option, questionId );
 				}
 				resolve();
 			},

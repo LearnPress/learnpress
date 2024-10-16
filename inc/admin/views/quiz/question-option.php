@@ -7,6 +7,13 @@ $data = wp_parse_args(
 );
 
 $question_id = $data['id'];
+if ( ! class_exists( 'LP_Meta_Box_Editor_Field' ) ) {
+	include_once LP_PLUGIN_PATH . 'inc/admin/views/meta-boxes/fields/editor.php';
+}
+
+$description = new LP_Meta_Box_Editor_Field(
+	esc_html__( 'Description', 'learnpress' )
+);
 
 ?>
 
@@ -16,48 +23,24 @@ $question_id = $data['id'];
 	</div>
 	<div class="postbox closed" style="display:none;">
 		<h2 class="lp-box-data-head lp-row quiz-question-options__header">
-			<span><?php esc_html_e( 'Question Option', 'learnpress' ); ?></span>
+			<span><?php esc_html_e( 'Question Settings', 'learnpress' ); ?></span>
 			<div class="status success"></div>
 		</h2>
 		<a class="toggle"></a>
 		<div class="inside">
-			<div class="lp-quiz-editor__detail">
-				<div class="lp-quiz-editor__detail-field">
-					<div class="lp-quiz-editor__detail-label">
-						<label> <?php esc_html_e( 'Description', 'learnpress' ); ?></label>
-					</div>
-					<div class="lp-quiz-editor__detail-input">
-						<div><textarea name="" cols="60" rows="3" class="lp-quiz-editor__detail-textarea large-text question-description"></textarea></div>
-					</div>
-				</div>
-				<div class="lp-quiz-editor__detail-field">
-					<div class="lp-quiz-editor__detail-label"><label><?php esc_html_e( 'Points', 'learnpress' ); ?></label></div>
-					<div class="lp-quiz-editor__detail-input">
-						<div><input class="question-points" name="mark" type="number" min="1" step="1">
-							<p class="description"><?php esc_html_e( 'Points for choosing the correct answer.', 'learnpress' ); ?></p>
-						</div>
-					</div>
-				</div>
-				<div class="lp-quiz-editor__detail-field">
-					<div class="lp-quiz-editor__detail-label"><label><?php esc_html_e( 'Hint', 'learnpress' ); ?></label></div>
-					<div class="lp-quiz-editor__detail-input">
-						<div><textarea name="hint" cols="60" rows="3" class="rlp-quiz-editor__detail-textarea large-text question-hint"></textarea>
-							<p class="description">
-								<?php esc_html_e( "The instructions for the user to select the right answer. The text will be shown when users click the 'Hint' button.", 'learnpress' ); ?>
-							</p>
-						</div>
-					</div>
-				</div>
-				<div class="lp-quiz-editor__detail-field">
-					<div class="lp-quiz-editor__detail-label"><label><?php esc_html_e( 'Explanation', 'learnpress' ); ?></label></div>
-					<div class="lp-quiz-editor__detail-input">
-						<div><textarea name="explanation" cols="60" rows="3" class="lp-quiz-editor__detail-textarea large-text question-explanation"></textarea>
-							<p class="description">
-								<?php esc_html_e( 'The explanation will be displayed when students click the "Check Answer" button.', 'learnpress' ); ?>
-							</p>
-						</div>
-					</div>
-				</div>
+			<div class="lp-quiz-editor__detail lp-meta-box__inner lp-meta-box lp-meta-box--question">
+				<?php
+				$description->id = '_lp_description_' . $question_id;
+				$description->output( $question_id );
+
+				$metabox = new LP_Meta_Box_Question();
+				foreach ( $metabox->metabox( $question_id ) as $meta_key => $object ) {
+					if ( is_a( $object, 'LP_Meta_Box_Field' ) ) {
+						$object->id = $meta_key . '_' . $question_id;
+						$object->output( $question_id );
+					}
+				}
+				?>
 			</div>
 		</div>
 	</div>

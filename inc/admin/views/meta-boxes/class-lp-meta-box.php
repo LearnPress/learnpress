@@ -35,6 +35,7 @@ abstract class LP_Meta_Box {
 		include_once LP_PLUGIN_PATH . 'inc/admin/views/meta-boxes/fields/duration.php';
 		include_once LP_PLUGIN_PATH . 'inc/admin/views/meta-boxes/fields/checkbox.php';
 		include_once LP_PLUGIN_PATH . 'inc/admin/views/meta-boxes/fields/textarea.php';
+		include_once LP_PLUGIN_PATH . 'inc/admin/views/meta-boxes/fields/editor.php';
 		include_once LP_PLUGIN_PATH . 'inc/admin/views/meta-boxes/fields/file.php';
 		include_once LP_PLUGIN_PATH . 'inc/admin/views/meta-boxes/fields/radio.php';
 		include_once LP_PLUGIN_PATH . 'inc/admin/views/meta-boxes/fields/select.php';

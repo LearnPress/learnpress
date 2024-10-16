@@ -38,6 +38,7 @@
 		margin: 0;
 		padding: 6px 20px;
 		align-items: center;
+		font-weight: 500;
 
 		h3 {
 			padding: 0;
@@ -630,8 +631,6 @@
 							text-align: left;
 
 							.inside {
-								margin: 0;
-								padding: 0;
 
 								.lp-quiz-editor {
 									&__detail {

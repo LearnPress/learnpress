@@ -137,41 +137,10 @@ const changeQuestionType = ( questionEditEl ) => {
 };
 
 const handleChangeQuestionOption = ( el, questionId ) => {
-	const descEl = el.querySelector( '.question-description' );
-	const pointEl = el.querySelector( '.question-points' );
-	const hintEl = el.querySelector( '.question-hint' );
-	const explanationEl = el.querySelector( '.question-explanation' );
-
-	if ( descEl ) {
-		let previousValue = descEl.value;
-		descEl.addEventListener( 'keydown', function( event ) {
-			if ( event.key === 'Enter' ) {
-				event.preventDefault();
-				const currentValue = descEl.value;
-				if ( previousValue !== currentValue ) {
-					previousValue = currentValue;
-					const data = {
-						questionId,
-						description: currentValue,
-					};
-					changeOptionApi( data, el );
-				}
-			}
-		} );
-
-		descEl.addEventListener( 'blur', () => {
-			const currentValue = descEl.value;
-			if ( previousValue !== currentValue ) {
-				previousValue = currentValue;
-				const data = {
-					questionId,
-					description: currentValue,
-				};
-				changeOptionApi( data, el );
-			}
-		} );
-	}
-
+	const pointEl = el.querySelector( '#_lp_mark_' + questionId );
+	addTinyMCEEvent( el, '_lp_hint_' + questionId, 'hint', questionId );
+	addTinyMCEEvent( el, '_lp_description_' + questionId, 'description', questionId );
+	addTinyMCEEvent( el, '_lp_explanation_' + questionId, 'explanation', questionId );
 	if ( pointEl ) {
 		let previousValue = pointEl.value;
 		pointEl.addEventListener( 'keydown', function( event ) {
@@ -201,67 +170,29 @@ const handleChangeQuestionOption = ( el, questionId ) => {
 			}
 		} );
 	}
-
-	if ( hintEl ) {
-		let previousValue = hintEl.value;
-		hintEl.addEventListener( 'keydown', function( event ) {
-			if ( event.key === 'Enter' ) {
-				event.preventDefault();
-				const currentValue = hintEl.value;
-				if ( previousValue !== currentValue ) {
-					previousValue = currentValue;
-					const data = {
-						questionId,
-						description: currentValue,
-					};
-					changeOptionApi( data, el );
-				}
-			}
-		} );
-
-		hintEl.addEventListener( 'blur', () => {
-			const currentValue = hintEl.value;
-			if ( previousValue !== currentValue ) {
-				previousValue = currentValue;
-				const data = {
-					questionId,
-					hint: currentValue,
-				};
-				changeOptionApi( data, el );
-			}
-		} );
-	}
-
-	if ( explanationEl ) {
-		let previousValue = explanationEl.value;
-		explanationEl.addEventListener( 'keydown', function( event ) {
-			if ( event.key === 'Enter' ) {
-				event.preventDefault();
-				const currentValue = explanationEl.value;
-				if ( previousValue !== currentValue ) {
-					previousValue = currentValue;
-					const data = {
-						questionId,
-						description: currentValue,
-					};
-					changeOptionApi( data, el );
-				}
-			}
-		} );
-
-		explanationEl.addEventListener( 'blur', () => {
-			const currentValue = explanationEl.value;
-			if ( previousValue !== currentValue ) {
-				previousValue = currentValue;
-				const data = {
-					questionId,
-					explanation: currentValue,
-				};
-				changeOptionApi( data, el );
-			}
-		} );
-	}
 };
+
+function addTinyMCEEvent( el, editorId, typeData, questionId ) {
+	const interval = setInterval( function() {
+		const editor = tinymce.get( editorId );
+
+		if ( editor ) {
+			clearInterval( interval );
+			let previousValue = editor.getContent();
+			editor.on( 'blur', function() {
+				const currentValue = editor.getContent();
+				if ( previousValue !== currentValue ) {
+					previousValue = currentValue;
+					const data = {
+						questionId,
+						[ typeData ]: currentValue,
+					};
+					changeOptionApi( data, el );
+				}
+			} );
+		}
+	}, 100 );
+}
 
 const changeTitleAnswer = ( questionEditEl ) => {
 	const answerOptionEls = Array.from( questionEditEl.querySelectorAll( '.answer-option' ) );
@@ -447,4 +378,4 @@ const singleQuestionOption = async ( questionOptionEl, questionId ) => {
 	handleChangeQuestionOption( questionOptionEl, questionId );
 };
 
-export { renderQuestion, changeQuestionType, changeTitleAnswer, changeCorrectAnswer, addNewAnswer, deleteAnswer, sortableAnswer, getQuestionId, checkHiddenRemoveAnswer, singleQuestion, singleQuestionOption };
+export { renderQuestion, changeQuestionType, changeTitleAnswer, changeCorrectAnswer, addNewAnswer, deleteAnswer, sortableAnswer, getQuestionId, checkHiddenRemoveAnswer, singleQuestion, singleQuestionOption, handleChangeQuestionOption };
