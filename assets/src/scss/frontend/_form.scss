@@ -7,79 +7,87 @@ input[type="password"] {
 	box-shadow: unset;
 }
 
-.lp-list-table {
-	width: 100%;
-	margin-bottom: 20px;
-  	th, td {
-		padding: .7em 1em;
-		border: 1px solid $border-color;
-		background: #fff;
-		text-align: left;
-	}
 
-	thead {
-		box-sizing: border-box;
-		border: 1px solid $border-color;
- 		th {
- 			border-bottom: none;
- 			background: $bg-grey;
-			font-size: 1.1em;
-			font-weight: 600;
+.learnpress{
+	table {
+		width: 100%;
+		margin:0 auto 1em auto;
+
+		th, td {
+			padding: .7em 1em;
+			border: 1px solid $border-color;
+			background: #fff;
+			text-align: left;
 		}
-	}
 
-	tbody, tfoot {
-		box-sizing: border-box;
-		td, th {
-			//background: #fff;
- 			border: 1px solid $border-color;
-			line-height: 1.4;
-			a {
- 				color: inherit;
-				text-decoration: none;
- 				&:hover {
-					color: var(--lp-primary-color);
+		thead {
+			box-sizing: border-box;
+			border: 1px solid $border-color;
+
+			th {
+				border-bottom: none;
+				background: $bg-grey;
+				font-size: 1.1em;
+				font-weight: 600;
+			}
+		}
+
+		tbody, tfoot {
+			box-sizing: border-box;
+
+			td, th {
+				//background: #fff;
+				border: 1px solid $border-color;
+				line-height: 1.4;
+
+				a {
+					color: inherit;
+					text-decoration: none;
+
+					&:hover {
+						color: var(--lp-primary-color);
+					}
+				}
+			}
+
+			tr {
+				.column-status {
+					.result-percent {
+						font-weight: 500;
+					}
+
+					.lp-label {
+						font-weight: 600;
+					}
+				}
+
+				&:nth-child(even) td {
+					background: var(--tb-even-color, #fafafa);
 				}
 			}
 		}
-		tr {
-   			.column-status {
- 				.result-percent {
-					font-weight: 500;
+		.list-table-nav {
+			td {
+				font-size: 0.875em;
+
+				&.nav-text {
+					text-align: left;
 				}
- 				.lp-label {
-					font-weight: 600;
-				}
-			}
 
-			&:nth-child(even) td {
-				background: var(--tb-even-color,#fafafa);
-			}
-		}
-	}
-
-	.list-table-nav {
- 		td {
-			font-size: 0.875em;
-
-			&.nav-text {
-				text-align: left;
-			}
-
-			&.nav-pages {
-				text-align: right;
-
-				.learn-press-pagination {
+				&.nav-pages {
 					text-align: right;
-				}
 
-				.page-numbers {
-					margin-bottom: 0;
+					.learn-press-pagination {
+						text-align: right;
+					}
+
+					.page-numbers {
+						margin-bottom: 0;
+					}
 				}
 			}
 		}
 	}
-
 }
 
 .lp-label {
@@ -96,15 +104,17 @@ input[type="password"] {
 
 		.form-field {
 			margin: 0 0 20px 0;
+
 			& > label {
 				font-style: italic;
 			}
+
 			label {
 				display: block;
 				font-size: $font-size-label;
 				font-weight: $heading-font-weight;
 				margin: 0 0 10px 0;
- 			}
+			}
 
 			input[type="text"],
 			input[type="email"],
@@ -112,8 +122,8 @@ input[type="password"] {
 			input[type="password"],
 			textarea {
 				width: 100%;
-				padding: 8px;
-
+ 				border: 1px solid $border-color;
+ 				padding: $spacing-base-2x $spacing-base-4x;
 				@include box-sizing(border-box);
 			}
 
@@ -129,6 +139,7 @@ input[type="password"] {
 			}
 
 		}
+
 		@media (min-width: 767px) {
 			.form-field__50 {
 				float: left;

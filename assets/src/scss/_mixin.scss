@@ -222,6 +222,7 @@
 	height: inherit;
 	font-size: inherit;
 	line-height: 1.1;
+	box-shadow: none;
 }
 
 @mixin profile_social() {
@@ -245,3 +246,13 @@
 		}
 	}
 }
+
+@mixin loading(){
+	&:before{
+		display: inline-block;
+		font-family: 'lp-icon';
+		content: "\f110";
+		animation: lp-rotating 1s linear infinite;
+		margin-right: 5px;
+	}
+ }

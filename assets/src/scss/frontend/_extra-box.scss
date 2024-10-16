@@ -3,7 +3,7 @@
 
 .course-extra-box {
 	margin-bottom: $spacing-base-4x;
-	border: 1px solid rgba(204, 204, 204, 0.3);
+	border: 1px solid $border-color;
 	border-radius: $border-radius-global;
 	width: 100%;
 	&.active {
@@ -75,7 +75,7 @@
 		li {
 			margin: 0;
 			padding: $spacing-base-3x $spacing-base-5x;
-			border-bottom: 1px solid rgba(204, 204, 204, 0.3);
+			border-bottom: 1px solid $border-color;
 			//color: #666;
 			//font-weight: 300;
 

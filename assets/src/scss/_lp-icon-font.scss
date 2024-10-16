@@ -1,8 +1,8 @@
 @font-face {
 	font-family: 'lp-icon';
-	src: url('../src/css/vendor/fonts/lp-icon/lp-icon.ttf?v=yf5st3') format('truetype'),
-	url('../src/css/vendor/fonts/lp-icon/lp-icon.woff2?v=yf5st3') format('woff2'),
-	url('../src/css/vendor/fonts/lp-icon/lp-icon.svg?v=yf5st3#lp-icon') format('svg');
+	src: url('../src/css/vendor/fonts/lp-icon/lp-icon.ttf?v=wskwmq') format('truetype'),
+	url('../src/css/vendor/fonts/lp-icon/lp-icon.woff2?v=wskwmq') format('woff2'),
+	url('../src/css/vendor/fonts/lp-icon/lp-icon.svg?v=wskwmq#lp-icon') format('svg');
 	font-weight: normal;
 	font-style: normal;
 	font-display: block;
@@ -114,6 +114,9 @@
 .lp-icon-bookmark:before {
 	content: "\f02e";
 }
+.lp-icon-video-camera:before {
+	content: "\f03d";
+}
 .lp-icon-edit:before {
 	content: "\f044";
 }
@@ -182,6 +185,12 @@
 }
 .lp-icon-shopping-cart:before {
 	content: "\f07a";
+}
+.lp-icon-bar-chart:before {
+	content: "\f080";
+}
+.lp-icon-bar-chart-o:before {
+	content: "\f080";
 }
 .lp-icon-key:before {
 	content: "\f084";
@@ -399,14 +408,8 @@
 .lp-icon-file-video:before {
 	content: "\f1c8";
 }
-.lp-icon-file-code .path1:before {
+.lp-icon-file-code:before {
 	content: "\f1c9";
-	color: rgb(0, 0, 0);
-}
-.lp-icon-file-code .path2:before {
-	content: "\f1ca";
-	margin-left: -0.8571428571428571em;
-	color: rgb(28, 28, 27);
 }
 .lp-icon-circle-thin:before {
 	content: "\f1db";
@@ -416,6 +419,9 @@
 }
 .lp-icon-pie-chart:before {
 	content: "\f200";
+}
+.lp-icon-line-chart:before {
+	content: "\f201";
 }
 .lp-icon-user-secret:before {
 	content: "\f21b";
@@ -477,14 +483,8 @@
 .lp-icon-community:before {
 	content: "\e90d";
 }
-.lp-icon-online-education .path1:before {
+.lp-icon-online-education:before {
 	content: "\e90e";
-	color: rgb(28, 28, 27);
-}
-.lp-icon-online-education .path2:before {
-	content: "\e928";
-	margin-left: -1em;
-	color: rgb(0, 0, 0);
 }
 .lp-icon-concierge-bell:before {
 	content: "\e90f";
@@ -516,24 +516,8 @@
 .lp-icon-lucide:before {
 	content: "\e918";
 }
-.lp-icon-ebook .path1:before {
+.lp-icon-ebook:before {
 	content: "\e919";
-	color: rgb(28, 28, 27);
-}
-.lp-icon-ebook .path2:before {
-	content: "\e921";
-	margin-left: -1em;
-	color: rgb(51, 51, 51);
-}
-.lp-icon-ebook .path3:before {
-	content: "\e922";
-	margin-left: -1em;
-	color: rgb(28, 28, 27);
-}
-.lp-icon-ebook .path4:before {
-	content: "\e923";
-	margin-left: -1em;
-	color: rgb(28, 28, 27);
 }
 .lp-icon-co-instructor:before {
 	content: "\e904";
@@ -571,6 +555,15 @@
 .lp-icon-pending_course:before {
 	content: "\e927";
 }
+.lp-icon-list-check:before {
+	content: "\e929";
+}
+.lp-icon-icon-h5p:before {
+	content: "\e92a";
+}
+.lp-icon-comment-written:before {
+	content: "\e921";
+}
 .lp-icon-book-open:before {
 	content: "\f518";
 }
@@ -579,6 +572,9 @@
 }
 .lp-icon-dropbox:before {
 	content: "\e905";
+}
+.lp-icon-map-pin:before {
+	content: "\e91b";
 }
 .lp-icon-map-marker:before {
 	content: "\e91b";

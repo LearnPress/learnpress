@@ -5,7 +5,7 @@
 	column-gap: $spacing-base-10x;
 	row-gap: $spacing-base-3x;
 	list-style: none;
-	margin: 0 0 -2px 0;
+	margin: 0 0 -2px 0!important;
 }
 
 @mixin lp_nav_href() {
@@ -17,7 +17,7 @@
 	font-weight: 600;
 	text-align: center;
 	text-transform: capitalize;
-	cursor: pointer;
+ 	cursor: pointer;
 	color: #333;
 	text-decoration: none;
 	&:focus {

@@ -67,7 +67,7 @@
 				text-align: center;
 				cursor: pointer;
 				min-width: 1em;
-				.fa-caret-down, .lp-icon-caret-down {
+				.fa-caret-down, .lp-icon-caret-down,.lp-icon-angle-down {
 					display: none;
 				}
 			}
@@ -84,7 +84,7 @@
 
 			.section-toggle {
 
-				.fa-caret-down, .lp-icon-caret-down {
+				.fa-caret-down, .lp-icon-caret-down,.lp-icon-angle-down {
 					display: block;
 				}
 

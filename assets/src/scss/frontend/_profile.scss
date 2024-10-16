@@ -5,13 +5,9 @@
 	position: relative;
 }
 
-p:last-child {
-	margin: 0
-}
-
 .lp-user-profile {
 	position: relative;
-
+	--lp-item-padding: 60px;
 	.lp-user-profile-avatar {
 		img {
 			display: block;
@@ -69,10 +65,10 @@ p:last-child {
 	#profile-sidebar {
 		float: left;
 		width: 270px;
-		border: 1px solid rgba(0, 0, 0, 0.1);
+		border: 1px solid $border-color;
 		border-top: 0;
-		background: #fff;
-		margin-top: 60px;
+		//background: #fff;
+		margin-top: var(--lp-item-padding);
 		margin-bottom: $spacing-base-8x;
 		@media (max-width: 990px) {
 			width: 100%;
@@ -197,7 +193,7 @@ p:last-child {
 		float: right;
 		width: calc(100% - 300px);
 		margin-bottom: $spacing-base-8x;
-		padding-top: 60px;
+		padding-top: var(--lp-item-padding);
 
 		@media (max-width: 990px) {
 			width: 100%;
@@ -216,11 +212,11 @@ p:last-child {
 		.course-categories {
 			padding: 0;
 		}
-
-		.lp-button {
-			display: block;
-			margin: 0 auto;
-		}
+		//
+		//.lp-button {
+		//	display: block;
+		//	margin: 0 auto;
+		//}
 
 
 	}
@@ -266,12 +262,13 @@ p:last-child {
 	}
 
 	@media (max-width: 990px) {
-		#profile-sidebar {
-			margin-top: 40px;
-		}
-		.lp-profile-content {
-			padding-top: 40px;
-		}
+		--lp-item-padding: 40px;
+		//#profile-sidebar {
+		//	margin-top: 40px;
+		//}
+		//.lp-profile-content {
+		//	padding-top: 40px;
+		//}
 		#profile-nav {
 			//overflow-x: auto;
 			border-top: 1px solid $border-color;
@@ -376,6 +373,9 @@ p:last-child {
 	}
 
 	@media (max-width: 768px) {
+		.lp-profile-content-area{
+			align-items: center;
+		}
 		.lp-profile-right {
 			flex-direction: column;
 			align-items: flex-start;
@@ -383,23 +383,7 @@ p:last-child {
 		.lp-profile-user-bio {
 			display: none;
 		}
-		.lp-course-tabs {
-			overflow-x: scroll;
-			border-bottom: 2px solid var(--lp-border-color, #E2E0DB);
-			margin-bottom: 32px;
-
-			.learn-press-filters {
-				margin-bottom: 0;
-				border-bottom: none !important;
-				width: max-content;
-				overflow-x: auto;
-				overflow-y: hidden;
-			}
-		}
-		.lp-course-tabs {
-
-		}
-	}
+ 	}
 
 	@media (max-width: 650px) {
 		.lp-profile-left {

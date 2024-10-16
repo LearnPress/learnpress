@@ -403,6 +403,7 @@
 
 		> div > * {
 			display: inline;
+			vertical-align: middle;
 		}
 
 		label {
@@ -493,7 +494,7 @@
 		.course {
 			display: flex;
 			width: 100%;
-			border-bottom: 1px solid rgba(204, 204, 204, 0.3);
+			border-bottom: 1px solid $border-color;
 			flex-wrap: wrap;
 			justify-content: flex-end;
 			padding-bottom: 32px;
@@ -585,7 +586,7 @@
 		}
 	}
 
-	&[data-layout="grid"] {
+	&[data-layout="grid"], &.lp-courses-related {
 
 		.course {
 			padding: 0 $spacing-base-4x;

@@ -254,46 +254,46 @@
 			margin-bottom: 40px;
 		}
 
-		.lp-courses-related {
-			display: flex;
-			list-style: none;
-			flex-wrap: wrap;
-			margin: 0 -15px;
-			row-gap: 30px;
-			padding: 0;
-		}
-
-		.course-item {
-			flex: 0 0 25%;
-			padding: 0 15px;
-		}
-
-		.course-img img {
-			width: 100%;
-			display: block;
-		}
-
-		.course-content {
-			padding: 30px;
-			display: flex;
-			flex-direction: column;
-			gap: 16px;
-			border: 1px solid #e2e0db;
-			border-width: 0 1px 1px;;
-		}
-
-		.course-content-bottom,
-		.course-content-top {
-			display: flex;
-			gap: 16px;
-			align-items: center;
-			flex-wrap: wrap;
-		}
-
-		.course-level {
-			background-color: #F1F2F8;
-			padding: 4px 8px;
-		}
+		//.lp-courses-related {
+		//	display: flex;
+		//	list-style: none;
+		//	flex-wrap: wrap;
+		//	margin: 0 -15px;
+		//	row-gap: 30px;
+		//	padding: 0;
+		//}
+		//
+		//.course-item {
+		//	flex: 0 0 25%;
+		//	padding: 0 15px;
+		//}
+		//
+		//.course-img img {
+		//	width: 100%;
+		//	display: block;
+		//}
+		//
+		//.course-content {
+		//	padding: 30px;
+		//	display: flex;
+		//	flex-direction: column;
+		//	gap: 16px;
+		//	border: 1px solid #e2e0db;
+		//	border-width: 0 1px 1px;;
+		//}
+		//
+		//.course-content-bottom,
+		//.course-content-top {
+		//	display: flex;
+		//	gap: 16px;
+		//	align-items: center;
+		//	flex-wrap: wrap;
+		//}
+		//
+		//.course-level {
+		//	background-color: #F1F2F8;
+		//	padding: 4px 8px;
+		//}
 	}
 
 	//.course-tab-panel-faqs {
@@ -343,13 +343,13 @@
 	padding-left: 12px;
 }
 
-@media (max-width: 1024px) {
-	.lp-single-offline-course {
-		.lp-list-courses-related .course-item {
-			flex: 0 0 50%;
-		}
-	}
-}
+//@media (max-width: 1024px) {
+//	.lp-single-offline-course {
+//		.lp-list-courses-related .course-item {
+//			flex: 0 0 50%;
+//		}
+//	}
+//}
 
 @media (max-width: 991px) {
 	.lp-single-offline-course {
@@ -371,9 +371,9 @@
 				flex-direction: column;
 			}
 		}
-
-		.lp-list-courses-related .course-item {
-			flex: 0 0 100%;
-		}
+		//
+		//.lp-list-courses-related .course-item {
+		//	flex: 0 0 100%;
+		//}
 	}
 }

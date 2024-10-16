@@ -91,14 +91,10 @@ ul.learn-press-breadcrumb {
 
 	i {
 		margin: 0 8px;
-		//color: #666;
-		//font-size: 0.75em;
 	}
 
 	a {
-		color: inherit;;
-		//font-weight: 500;
-		//text-decoration: none;
+		color: inherit;
 	}
 }
 
@@ -107,7 +103,7 @@ ul.learn-press-breadcrumb {
 	input[type="email"],
 	input[type="number"],
 	input[type="password"], textarea {
-		border-color: $input-border-color;
+		border-color: $border-color;
 		@include border-radius($border-radius-global);
 		&:focus{
 			outline: none;
@@ -117,18 +113,14 @@ ul.learn-press-breadcrumb {
 
 	.lp-button, #lp-button {
 		padding: 12px 24px;
-		border: 1px solid $input-border-color;
+		border: 1px solid $border-color;
 		color: $text-color-base;
 		background: transparent;
 		box-shadow: unset;
 		font-family: inherit;
 		font-weight: $input-font-weight;
 		text-align: center;
-		//vertical-align: middle;
-		//text-decoration: none;
 		text-transform: capitalize;
-
-		//@include box-sizing(border-box);
 		@include border-radius($border-radius-global);
 		@include transition(all 0.25s);
 
@@ -198,43 +190,6 @@ ul.learn-press-breadcrumb {
 .form-button {
 	display: inline-block;
 }
-
-//.learn-press-pagination {
-//	padding-bottom: 20px;
-//	text-align: center;
-//
-//	.page-numbers {
-//		display: inline-block;
-//		margin: 0;
-//		padding: 0;
-//		border: 0;
-//		outline: 0;
-//		background: transparent;
-//		list-style: none;
-//
-//		> li {
-//			display: inline-block;
-//			margin: 0;
-//
-//			.page-numbers {
-//				float: unset;
-//				padding: 0 14px;
-//				color: #666;
-//				background: transparent;
-//				font-weight: 300;
-//
-//				&.current {
-//					color: var(--lp-primary-color);
-//					font-weight: 400;
-//				}
-//
-//				&:hover {
-//					color: var(--lp-primary-color);
-//				}
-//			}
-//		}
-//	}
-//}
 
 ul.list-table-nav {
 	display: flex;
@@ -310,18 +265,6 @@ ul.list-table-nav {
 		display: none;
 	}
 
-	//.course-nav {
- 	//	label {
-	//		display: flex;
-	//		align-items: center;
-	//		justify-content: center;
-	//		margin: 0;
-	//		padding: 18px 12px;
-	//		font-weight: $heading-font-weight;
-	//		text-transform: capitalize;
-	//		cursor: pointer;
-	//	}
-	//}
 }
 
 .no-event {

@@ -20,8 +20,7 @@ if ( ! wp_is_block_theme() ) {
 }
 
 ?>
-<div class="lp-content-area">
-	<div class="lp-single-course">
+	<div class="lp-content-area">
 		<?php
 		$course_id = get_the_ID();
 		if ( $course_id ) {
@@ -30,7 +29,6 @@ if ( ! wp_is_block_theme() ) {
 		}
 		?>
 	</div>
-</div>
 <?php
 /**
  * Footer for page

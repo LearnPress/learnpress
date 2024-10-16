@@ -116,7 +116,7 @@ class SingleCourseOfflineTemplate {
 				'learn-press/single-course/offline/section-instructor',
 				[
 					'wrapper'          => '<div class="lp-section-instructor">',
-					'header'           => sprintf( '<h3>%s</h3>', __( 'Instructor', 'learnpress' ) ),
+					'header'           => sprintf( '<h3 class="section-title">%s</h3>', __( 'Instructor', 'learnpress' ) ),
 					'wrapper_info'     => '<div class="lp-instructor-info">',
 					'image'            => $html_instructor_image,
 					'instructor_right' => $html_instructor_right,
@@ -264,7 +264,7 @@ class SingleCourseOfflineTemplate {
 		// End related courses
 
 		$sections = [
-			'wrapper'          => '<div class="lp-single-offline-course">',
+			'wrapper'          => '<div class="lp-single-course lp-single-offline-course">',
 			'wrapper_main'     => '<div class="lp-single-offline-course-main">',
 			'section_left'     => Template::combine_components( $section_left ),
 			'section_right'    => Template::combine_components( $section_right ),

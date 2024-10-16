@@ -17,8 +17,7 @@
 			font-size: 0.938em;
 			flex: 1;
 
-			.progress-number,
-			.progress-label {
+			.progress-number, .progress-label {
 				display: block;
 				line-height: 1;
 				text-align: center;
@@ -65,10 +64,7 @@
 		position: relative;
 		margin: 0 0 18px 0;
 		padding: 10px;
-		color: #777;
-		//background: #f5f5f5;
-		//font-size: 1.25em;
-		cursor: pointer;
+ 		cursor: pointer;
 		@include border-radius(4px);
 		@include transition(background linear 0.25s);
 
@@ -89,15 +85,13 @@
 				width: 3px;
 				background: #ddd;
 				content: "";
-
-				@include transition(background linear 0.25s);
+ 				@include transition(background linear 0.25s);
 			}
 		}
 
 		input[type="checkbox"],
 		input[type="radio"] {
-
-			@include appearance(initial);
+ 			@include appearance(initial);
 			position: relative;
 			z-index: 10;
 			width: 32px;
@@ -106,39 +100,22 @@
 			margin: 0 10px 0 3px;
 			border: 1px solid #cfcfcf;
 			background: #f9fafc;
-
-			@include border-radius(4px);
-
-			&:focus {
-				outline: none;
-			}
-
+ 			@include border-radius(4px);
 			&::after {
 				position: absolute;
 				top: 50%;
 				left: 50%;
 				transform: translate(-50%, -50%);
-				width: auto;
-				box-sizing: content-box;
-				height: auto;
-				color: #3db748;
-				font-family: 'lp-icon';
-				//font-weight: 900;
-				font-size: 16px;
-				opacity: 0;
-				content: "\f00c";
-				background: none;
-				border: none;
+ 			}
+			&:focus {
+				outline: none;
 			}
 
-			&:checked {
-
+ 			&:checked {
 				~ .option-title {
-
 					.option-title-content {
 						position: relative;
 					}
-
 					&::before {
 						background: #00adff;
 					}
@@ -151,15 +128,25 @@
 			}
 
 		}
+
 		input[type="checkbox"]{
 			&::after {
 				margin-top: 0;
-
+ 			}
+			&::after {
+				width: auto;
+				box-sizing: content-box;
+				height: auto;
+				color: #3db748;
+				font-family: 'lp-icon';
+ 				font-size: 16px;
+				opacity: 0;
+				content: "\f00c";
+				background: none;
+				border: none;
 			}
 			&:checked {
 				&::after {
-					//width: auto;
-					//height: auto;
  					border: none;
 				}
 			}
@@ -171,6 +158,15 @@
 			&::before {
 				border-radius: 50%;
 			}
+			&:checked {
+				&::after {
+					content: "";
+					width: 10px;
+					height: 10px;
+					border-radius: 10px;
+					background: #00adff;
+				}
+			}
 		}
 
 		.option-title {
@@ -180,58 +176,16 @@
 		&:hover {
 			background: #e1f5ff;
 		}
-
-		&.answer-correct {
-			background: #e1f5ff;
-
-			input[type="radio"]:checked,
-			input[type="checkbox"]:checked {
-
-				~ .option-title {
-
-					&::before {
-						background: #e1f5ff;
-					}
+ 		&.answered-wrong {
+ 			input[type="checkbox"] {
+  				&::after {
+					 color: #f00;
 				}
 			}
-		}
-
-		&.answered-correct {
-
-			input[type="radio"]:checked,
-			input[type="checkbox"]:checked {
-
-				~ .option-title {
-
-					&::before {
-						background: #00adff;
-					}
-				}
+			input[type="radio"]::after{
+				background:#f00 ;
 			}
-		}
-
-		&.answered-wrong {
-
-			input[type="radio"],
-			input[type="checkbox"] {
-
-				&::before,
-				&::after {
-					border-color: #f00;
-				}
-			}
-
-			input[type="radio"]:checked,
-			input[type="checkbox"]:checked {
-
-				~ .option-title {
-
-					&::before {
-						background: #f00;
-					}
-				}
-			}
-		}
+ 		}
 	}
 }
 
@@ -266,22 +220,17 @@ button[data-counter] {
 
 	.result-message {
 		margin-bottom: 30px;
-		padding: 10px 0 !important;
+		padding: 10px 0;
 		color: #fff;
 		background: #f02425;
-		font-size: 1rem;
-		line-height: 1.375em;
-		font-weight: 400;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		@include border-radius(4px);
-
+		@include border-radius($border-radius-global);
+		gap: 8px;
 		&::after {
-			margin-left: 10px;
-			font-family: 'lp-icon';
-			//font-weight: 900;
-			content: "\f00d";
+ 			font-family: 'lp-icon';
+ 			content: "\f00d";
 		}
 	}
 
@@ -295,8 +244,8 @@ button[data-counter] {
 
 		.result-achieved {
 			padding-bottom: 7px;
-			border-bottom: 1px solid #999;
-			color: #333;
+			border-bottom: 1px solid $border-color;
+			//color: #333;
 			font-size: 1.75em;
 			font-weight: 500;
 			line-height: 1;
@@ -340,10 +289,9 @@ button[data-counter] {
 			display: flex;
 			margin: 0;
 			+ li {
-				border-top: 1px dashed #ccc;
+				border-top: 1px dashed  $border-color;
 			}
-			span,
-			p {
+			span, p {
 				margin: 0;
 				flex: 1;
 			}
@@ -980,9 +928,6 @@ button[data-counter] {
 
 	.answer-option {
 		padding: 0;
-		//_border: 2px solid #d9e0f1;
-		//background: #fff;
-
 		input[type="radio"],
 		input[type="checkbox"] {
 			position: absolute;
@@ -1028,20 +973,10 @@ button[data-counter] {
 			width: 100%;
 			margin: 0;
 			padding: 10px 10px 10px 60px;
-			border: 1px solid #ccc;
+			border: 1px solid $border-color;
 			color: #666;
 			font-weight: normal;
-			//background: #fff;
-			//font-size: 1em;
- 			//line-height: 1.625em;
-
 			@include border-radius(4px);
-
-			//&::after {
-			//	display: inline-block;
-			//	visibility: hidden !important;
-			//	content: ".";
-			//}
 
 			&:hover {
 				background: #f9f9f9;
@@ -1074,8 +1009,7 @@ button[data-counter] {
 		display: block;
 		margin-top: 0;
 		margin-bottom: 18px;
-		color: #333;
-		font-size: 1.125em;
+ 		font-size: 1.125em;
 		font-weight: 500;
 
 		.edit-link {
@@ -1087,9 +1021,6 @@ button[data-counter] {
 
 	.question-content {
 		margin-bottom: 30px;
-		//color: #666;
-		//font-weight: 300;
-
 		img {
 			width: 100%;
 			max-width: 100%;
@@ -1188,7 +1119,7 @@ button[data-counter] {
 				margin: 0 10px;
 				padding: 0 10px;
 				border: none;
-				border-bottom: 1px dashed #ddd;
+				border-bottom: 1px dashed $border-color;
 				text-align: center;
 				white-space: nowrap;
 
@@ -1240,3 +1171,32 @@ button[data-counter] {
 	}
 }
 
+.quiz-attempts {
+	.attempts-heading {
+		margin-bottom: 15px;
+	}
+	table {
+		th, td {
+			text-align: center;
+		}
+	}
+	//table {
+	//	border-spacing: 0;
+	//	border-left: 1px solid $border-color;
+	//	border-top: 1px solid $border-color;
+	//	width: 100%;
+	//
+	//	tr {
+	//		th, td {
+	//			border-right: 1px solid $border-color;
+	//			border-bottom: 1px solid $border-color;
+	//			padding: 5px 15px;
+	//			text-align: center;
+	//		}
+	//
+	//		th {
+	//			font-weight: 500;
+	//		}
+	//	}
+	//}
+}

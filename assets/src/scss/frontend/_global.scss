@@ -5,6 +5,8 @@
 * @version 1.0.0
 */
 @import "../mixin.scss";
+@import "../variables.scss";
+
 * {
 	box-sizing: border-box;
 	margin: 0;
@@ -37,11 +39,23 @@ a {
 	text-decoration: none;
 }
 
+p {
+	margin-bottom: 1em;
+
+	&:last-child {
+		margin: 0
+	}
+}
+
 .lp-content-area {
-	max-width: var(--lp-container-max-width)!important;
+	max-width: var(--lp-container-max-width) !important;
 	margin: 0 auto;
 	padding-right: var(--lp-cotainer-padding);
 	padding-left: var(--lp-cotainer-padding);
+
+	&.learn-press-message {
+		margin-bottom: 24px;
+	}
 }
 
 .lp-ico {
@@ -52,28 +66,16 @@ a {
 }
 
 .lp-button {
+	border: 1px solid $border-color;
+	border-radius: $border-radius-global;
+	padding: $spacing-base-2x $spacing-base-4x;
 	&.loading {
 		pointer-events: none;
 		opacity: 0.8;
-
-		&::before {
-			display: inline-block;
-			font-family: 'lp-icon';
-			content: "\f110";
-			animation: lp-rotating 1s linear infinite;
-			margin-right: 5px;
-		}
+		@include loading();
 	}
 }
 
 .lp-hidden {
 	display: none !important;
 }
-
-//label{
-//	font-size: 0.694rem;
-//}
-//span{
-//	font-size: 0.833rem;
-//}
-

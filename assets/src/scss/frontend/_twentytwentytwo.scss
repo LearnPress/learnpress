@@ -27,9 +27,9 @@
 	}
 }
 
-.learnpress.twentytwentyone {
+.learnpress.twentytwentyone,.learnpress.theme-twentytwentyone {
 	--lp-font-size-base: 0.925em;
-
+	//--lp-border-color: #8f8f8f;
 	.lp-archive-courses a:focus {
 		background: transparent !important;
 		text-decoration: none !important;;
@@ -43,7 +43,7 @@
 }
 
 @media (max-width: 1199px) {
-	.learnpress.twentytwentytwo {
+	.learnpress.twentytwentytwo,.learnpress.theme-twentytwentyone {
 		.wp-site-blocks .wp-block-template-part {
 			padding-left: 15px;
 			padding-right: 15px;

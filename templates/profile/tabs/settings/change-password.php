@@ -56,6 +56,6 @@ if ( ! isset( $section ) ) {
 		<input type="hidden" name="save-profile-password" value="<?php echo wp_create_nonce( 'learn-press-save-profile-password' ); ?>">
 	</p>
 
-	<button type="submit" name="submit" id="submit"><?php esc_html_e( 'Save changes', 'learnpress' ); ?></button>
+	<button class="lp-button" type="submit" name="submit" id="submit"><?php esc_html_e( 'Save changes', 'learnpress' ); ?></button>
 
 </form>

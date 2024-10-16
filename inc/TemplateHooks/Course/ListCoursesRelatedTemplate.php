@@ -107,7 +107,7 @@ class ListCoursesRelatedTemplate {
 
 		// Handle layout
 		$html_ul_courses = [
-			'<ul class="lp-courses-related">' => '</ul>',
+			'<ul class="lp-courses-related learn-press-courses">' => '</ul>',
 		];
 
 		ob_start();
@@ -123,7 +123,7 @@ class ListCoursesRelatedTemplate {
 		$sections         = apply_filters(
 			'learn-press/list-courses/related/sections',
 			[
-				'header'  => sprintf( '<h3>%s</h3>', __( 'You might be interested in' ) ),
+				'header'  => sprintf( '<h3 class="section-title">%s</h3>', __( 'You might be interested in', 'learnpress' ) ),
 				'courses' => $html_courses,
 			],
 			$course, $courses, $settings

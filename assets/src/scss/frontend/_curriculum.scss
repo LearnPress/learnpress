@@ -465,34 +465,17 @@ ul.learn-press-nav-tabs {
 		align-items: center;
 
 		button {
-			display: inline-flex;
 			margin-top: 10px;
-			margin-right: auto;
-			margin-left: auto;
-			padding: 10px 20px;
-			border: 1px solid #ccc;
-			border-radius: 4px;
-			outline: none;
-			color: #222;
-			background: #f7f7f7;
+			border: 1px solid $border-color;
+			border-radius: $border-radius-global;
+			padding: $spacing-base-2x $spacing-base-4x;
 			box-shadow: none;
-			font-weight: 500;
-			justify-content: center;
-			align-items: center;
-			cursor: pointer;
-			font-family: sans-serif;
+			outline: none;
 		}
 
 		&.loading {
 			button {
-				&::before {
-					display: inline-block;
-					margin-right: 5px;
-					font-family: 'lp-icon';
-					//font-weight: 900;
-					content: "\f110";
-					@include animation(lp-rotating 1s linear infinite);
-				}
+				@include loading();
 			}
 		}
 	}
@@ -641,10 +624,6 @@ ul.learn-press-nav-tabs {
 		//font-size: 0.8em;
 		transition: padding-left linear 0.15s;
 
-		//@media (max-width: 767px) {
-		//	padding: 0 $spacing-base-4x;
-		//}
-
 		& > span {
 			display: flex;
 			width: 28px;
@@ -719,21 +698,22 @@ ul.learn-press-nav-tabs {
 			//vertical-align: middle;
 		}
 
-		//.item-icon {
-		//
-		//	&::before {
-		//		font-size: 1.125em;
-		//	}
-		//
-		//	&.icon-lock {
-		//		float: right;
-		//		margin-top: 15px;
-		//	}
-		//}
 
 		&.course-item-lp_quiz {
 			.section-item-link::before {
 				content: "\f059";
+			}
+		}
+
+		&.course-item-lp_assignment {
+			.section-item-link::before {
+				content: "\e929" !important;
+			}
+		}
+
+		&.course-item.course-item-lp_h5p {
+			.section-item-link::before {
+				content: "\e92a" !important;
 			}
 		}
 
@@ -848,35 +828,18 @@ ul.learn-press-nav-tabs {
 		}
 	}
 
-	.curriculum-more {
-		&__button {
-			display: flex;
-			width: 100%;
-			margin-top: 20px;
-			margin-bottom: 20px;
-			padding: 10px 0;
-			border: none;
-			outline: none;
-			color: #fff;
-			background: #333;
-			box-shadow: none;
-			justify-content: center;
-			align-items: center;
-			cursor: pointer;
-			font-family: sans-serif;
+	.curriculum-more__button {
+		border: 1px solid $border-color;
+		border-radius: $border-radius-global;
+		padding: $spacing-base-2x $spacing-base-4x;
+		box-shadow: none;
+		outline: none;
+		width: 100%;
+		margin-top: 20px;
+		margin-bottom: 20px;
 
-			&.loading {
-
-				&::before {
-					display: inline-block;
-					margin-right: 5px;
-					font-family: 'lp-icon';
-					//font-weight: 900;
-					content: "\f110";
-
-					@include animation(lp-rotating 1s linear infinite);
-				}
-			}
+		&.loading {
+			@include loading();
 		}
 	}
 }

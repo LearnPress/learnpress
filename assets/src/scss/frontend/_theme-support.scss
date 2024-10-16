@@ -42,16 +42,22 @@ body {
 		padding: 2px 0 2px 20px
 	}
 
-	thead, tr {
-		th {
-			padding: 9px 24px
-		}
-	}
-
-	tr td {
-		border-top: 1px solid #eee;
-		padding: 6px 24px
-	}
+	//thead, tr {
+	//	th {
+	//		padding: 9px 24px
+	//	}
+	//}
+	//table{
+	//	width: 100%;
+	//}
+	//th, td {
+	//	padding: .7em 1em;
+	//	border: 1px solid $border-color;
+	//}
+	//tr td {
+	//	border-top: 1px solid $border-color;
+	//	padding: 6px 24px
+	//}
 }
 
 .learnpress,.learnpress-profile {
@@ -375,4 +381,8 @@ body.twentyseventeen.learnpress-page {
 			min-width: unset!important;
 		}
 	}
+}
+
+.assignments .lp-icon-file-alt:before{
+	content: "\e929";
 }

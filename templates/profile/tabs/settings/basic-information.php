@@ -101,6 +101,6 @@ $user = $profile->get_user();
 		<input type="hidden" name="save-profile-basic-information" value="<?php echo wp_create_nonce( 'learn-press-save-profile-basic-information' ); ?>"/>
 	</p>
 
-	<button type="submit" name="submit"><?php esc_html_e( 'Save changes', 'learnpress' ); ?></button>
+	<button class="lp-button" type="submit" name="submit"><?php esc_html_e( 'Save changes', 'learnpress' ); ?></button>
 
 </form>

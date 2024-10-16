@@ -159,15 +159,7 @@
 	&__button {
 
 		&--loading {
-
-			&::before {
-				display: inline-block;
-				margin-right: 5px;
-				font-family: 'lp-icon';
- 				content: "\f110";
-
-				@include animation(lp-rotating 1s linear infinite);
-			}
+ 			@include loading();
 		}
 	}
 }
