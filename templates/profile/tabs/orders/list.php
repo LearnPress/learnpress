@@ -69,7 +69,7 @@ if ( ! $query_orders->get_items() ) {
 
 	<tfoot>
 		<tr class="list-table-nav">
-			<td colspan="2" class="nav-text"><?php echo esc_html( $query_orders->get_offset_text() ); ?></td>
+			<td colspan="3" class="nav-text"><?php echo esc_html( $query_orders->get_offset_text() ); ?></td>
 			<td colspan="2" class="nav-pages"><?php $query_orders->get_nav_numbers( true ); ?></td>
 		</tr>
 	</tfoot>

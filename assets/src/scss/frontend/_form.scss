@@ -12,7 +12,8 @@ input[type="password"] {
 	table {
 		width: 100%;
 		margin:0 auto 1em auto;
-
+		border-spacing: 0;
+		border-collapse: collapse;
 		th, td {
 			padding: .7em 1em;
 			border: 1px solid $border-color;
