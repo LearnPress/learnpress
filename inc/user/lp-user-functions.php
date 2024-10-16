@@ -1,4 +1,7 @@
 <?php
+
+use LearnPress\Models\UserModel;
+
 /**
  * Common functions to process actions about user
  *
@@ -766,13 +769,15 @@ if ( ! function_exists( 'learn_press_pre_get_avatar_callback' ) ) {
 	 *
 	 * @param string $avatar
 	 * @param string $id_or_email
-	 * @param array  $size
+	 * @param array $args
 	 *
 	 * @return string
+	 * @since 1.0.0
+	 * @version 1.0.2
 	 */
-	function learn_press_pre_get_avatar_callback( $avatar, $id_or_email = '', $size = array() ) {
+	function learn_press_pre_get_avatar_callback( $avatar, $id_or_email = '', $args = array() ) {
 		try {
-			if ( ( isset( $size['gravatar'] ) && $size['gravatar'] ) || ( $size['default'] && $size['force_default'] ) ) {
+			if ( ( isset( $args['gravatar'] ) && $args['gravatar'] ) || ( $args['default'] && $args['force_default'] ) ) {
 				return $avatar;
 			}
 
@@ -801,19 +806,38 @@ if ( ! function_exists( 'learn_press_pre_get_avatar_callback' ) ) {
 				return $avatar;
 			}
 
-			$user = learn_press_get_user( $user_id );
+			$user = UserModel::find( $user_id, true );
 			if ( ! $user ) {
 				return $avatar;
 			}
 
-			return $user->get_profile_picture();
+			$class = array( 'avatar', 'avatar-' . (int) $args['size'], 'photo' );
+			if ( $args['class'] ) {
+				if ( is_array( $args['class'] ) ) {
+					$class = array_merge( $class, $args['class'] );
+				} else {
+					$class[] = $args['class'];
+				}
+			}
+
+			$avatar_url = $user->get_avatar_url();
+			$html_img   = sprintf(
+				"<img src='%s' srcset='%s' class='%s' height='%d' width='%d' decoding='async'/>",
+				esc_url( $avatar_url ),
+				esc_url( $avatar_url ) . ' 2x',
+				esc_attr( implode( ' ', $class ) ),
+				(int) $args['height'],
+				(int) $args['width']
+			);
+
+			return $html_img;
 		} catch ( Throwable $e ) {
 			error_log( $e->getMessage() );
 			return $avatar;
 		}
 	}
 }
-add_filter( 'pre_get_avatar', 'learn_press_pre_get_avatar_callback', 1, 5 );
+add_filter( 'pre_get_avatar', 'learn_press_pre_get_avatar_callback', 999, 3 );
 
 
 function learn_press_user_profile_picture_upload_dir( $width_user = true ) {
@@ -1087,11 +1111,17 @@ function learn_press_update_user_profile_change_password( $wp_error = false ) {
 function learn_press_get_avatar_thumb_size() {
 	$option = LP_Settings::get_option(
 		'avatar_dimensions',
-		[ 'width' => 250, 'height' => 250, ]
+		[
+			'width'  => 250,
+			'height' => 250,
+		]
 	);
 
 	if ( ! isset( $option['width'] ) || ! isset( $option['height'] ) ) {
-		$option = [ 'width' => 250, 'height' => 250, ];
+		$option = [
+			'width'  => 250,
+			'height' => 250,
+		];
 	}
 
 	// For option get_avatar_url
@@ -1565,7 +1595,7 @@ function learn_press_user_start_quiz( $quiz_id, $user_id = 0, $course_id = 0, $w
  * @return array
  * @since 3.3.0
  */
-function learn_press_rest_prepare_user_questions( array $question_ids = array(), array $args = array() ) : array {
+function learn_press_rest_prepare_user_questions( array $question_ids = array(), array $args = array() ): array {
 	if ( is_numeric( $args ) ) {
 
 	} else {
@@ -1609,7 +1639,7 @@ function learn_press_rest_prepare_user_questions( array $question_ids = array(),
 				$hasExplanation = ! ! $theExplanation;
 			}
 
-			 $mark = $question->get_mark() ? $question->get_mark() : 1;
+			$mark = $question->get_mark() ? $question->get_mark() : 1;
 
 			$questionData = array(
 				'object' => $question,
