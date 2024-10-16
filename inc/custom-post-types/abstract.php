@@ -8,6 +8,9 @@
  * @version 1.0
  */
 
+use LearnPress\Models\UserModel;
+use LearnPress\TemplateHooks\UserTemplate;
+
 defined( 'ABSPATH' ) || exit();
 
 abstract class LP_Abstract_Post_Type {
@@ -406,13 +409,28 @@ abstract class LP_Abstract_Post_Type {
 	public function column_instructor( $post_id = 0 ) {
 		global $post;
 
+		$user_id = get_the_author_meta( 'ID' );
+		if ( ! $user_id ) {
+			return;
+		}
+
+		$user = UserModel::find( $user_id, true );
+		if ( ! $user ) {
+			return;
+		}
+
 		$args = array(
 			'post_type' => $post->post_type,
-			'author'    => get_the_author_meta( 'ID' ),
+			'author'    => $user_id,
 		);
 
 		$author_link = esc_url_raw( add_query_arg( $args, 'edit.php' ) );
-		echo sprintf( '<span class="post-author">%s<a href="%s">%s</a></span>', get_avatar( get_the_author_meta( 'ID' ), 32 ), $author_link, get_the_author() );
+		echo sprintf(
+			'<span class="post-author">%s<a href="%s">%s</a></span>',
+			UserTemplate::instance()->html_avatar( $user, 32 ),
+			$author_link,
+			get_the_author()
+		);
 	}
 
 	public function get_post_type() {

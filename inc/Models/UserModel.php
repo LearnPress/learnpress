@@ -11,6 +11,7 @@ namespace LearnPress\Models;
 
 use Exception;
 use LearnPress\Models\UserItems\UserCourseModel;
+use LP_Cache;
 use LP_Course_DB;
 use LP_Course_Filter;
 use LP_Profile;
@@ -67,6 +68,7 @@ class UserModel {
 	 */
 	public $image_url = '';
 
+	// Meta keys
 	const META_KEY_IMAGE       = '_lp_profile_picture';
 	const META_KEY_COVER_IMAGE = '_lp_profile_cover_image';
 
@@ -359,6 +361,9 @@ class UserModel {
 
 	/**
 	 * Get profile avatar url
+	 * 1. Get upload avatar src
+	 * 2. If not exists, get form Gravatar
+	 * 3. If not exists, get default image
 	 *
 	 * @return string
 	 * @since 4.2.7.2
@@ -482,6 +487,9 @@ class UserModel {
 	 */
 	public function clean_caches() {
 		// Clear cache.
+		$key_cache       = "user-model/find/id/{$this->get_id()}";
+		$lp_course_cache = new LP_Cache();
+		$lp_course_cache->clear( $key_cache );
 	}
 
 	/**

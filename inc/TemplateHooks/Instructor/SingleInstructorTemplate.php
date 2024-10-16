@@ -8,11 +8,13 @@
 
 namespace LearnPress\TemplateHooks\Instructor;
 
+use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\Courses;
 use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
+use LearnPress\TemplateHooks\UserTemplate;
 use LP_Course;
 use LP_Course_Filter;
 use LP_User;
@@ -20,17 +22,9 @@ use Throwable;
 use WP_Query;
 
 class SingleInstructorTemplate {
-	public static function instance() {
-		static $instance = null;
+	use Singleton;
 
-		if ( is_null( $instance ) ) {
-			$instance = new self();
-		}
-
-		return $instance;
-	}
-
-	protected function __construct() {
+	public function init() {
 		add_action( 'learn-press/single-instructor/layout', [ $this, 'sections' ] );
 		//add_action( 'wp_head', [ $this, 'add_internal_style_to_head' ] );
 	}
@@ -110,23 +104,27 @@ class SingleInstructorTemplate {
 	 * Get html avatar of instructor.
 	 *
 	 * @param LP_User|UserModel $instructor
+	 * @param int $size_display 0 to get default learn_press_get_avatar_thumb_size()
 	 *
 	 * @return string
+	 * @since 4.2.3
+	 * @version 1.0.1
 	 */
-	public function html_avatar( $instructor ): string {
-		$content = '';
-
-		try {
-			$html_wrapper = [
-				'<div class="instructor-avatar">' => '</div>',
-			];
-
-			$content = Template::instance()->nest_elements( $html_wrapper, $instructor->get_profile_picture() );
-		} catch ( Throwable $e ) {
-			error_log( __METHOD__ . ': ' . $e->getMessage() );
+	public function html_avatar( $instructor, int $size_display = 0 ): string {
+		$userTemplate = UserTemplate::instance();
+		$html = '';
+		if ( ! $instructor ) {
+			return $html;
 		}
 
-		return $content;
+		if ( $instructor instanceof LP_User ) {
+			$instructor = UserModel::find( $instructor->get_id() );
+			if ( ! $instructor ) {
+				return $html;
+			}
+		}
+
+		return $userTemplate->html_avatar( $instructor, $size_display );
 	}
 
 	/**
@@ -502,7 +500,7 @@ class SingleInstructorTemplate {
 			// List courses
 			$ul_courses = '';
 			foreach ( $courses as $course_obj ) {
-				$course     = LP_Course::get_course( $course_obj->ID );
+				$course      = LP_Course::get_course( $course_obj->ID );
 				$ul_courses .= $this->course_item( $course );
 			}
 			$content = Template::instance()->nest_elements( $html_ul_wrapper, $ul_courses );
