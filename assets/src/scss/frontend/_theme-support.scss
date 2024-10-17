@@ -41,23 +41,6 @@ body {
 	ol ol {
 		padding: 2px 0 2px 20px
 	}
-
-	//thead, tr {
-	//	th {
-	//		padding: 9px 24px
-	//	}
-	//}
-	//table{
-	//	width: 100%;
-	//}
-	//th, td {
-	//	padding: .7em 1em;
-	//	border: 1px solid $border-color;
-	//}
-	//tr td {
-	//	border-top: 1px solid $border-color;
-	//	padding: 6px 24px
-	//}
 }
 
 .learnpress,.learnpress-profile {
@@ -66,11 +49,6 @@ body {
 		list-style: none !important;
 	}
 }
-//body.theme-divi{
-//	--lp-cotainer-padding:0;
-//}
-// Theme Avada
-
 
 // Theme DT the7
 .learnpress.dt-the7 {
@@ -130,6 +108,7 @@ body {
 .ast-container{
 	--lp-cotainer-padding: 0
 }
+
 // Twenty Sixteen
 body {
 	&.learnpress-page {
@@ -338,15 +317,22 @@ body.twentyseventeen.learnpress-page {
 }
 
 // Fix for theme elearningwp
-.elearningwp:not(.nofixcss){
+.theme-elearningwp:not(.nofixcss){
 	.lp-courses-bar .switch-layout .switch-btn{
 		border: none !important;
 		background-color: unset ! important;
 		padding: 0;
  	}
+	.lp-content-area.learn-press-message{
+		padding: 10px 15px;
+	}
+	//.lp-user-profile{
+	//	--lp-item-padding: 20px
+	//}
 }
+
 // fix for themee course-builder
-.course-builder:not(.nofixcss) {
+.theme-course-builder:not(.nofixcss) {
 	.lp-courses-bar .search-courses button {
 		padding: 0;
 	}
@@ -354,13 +340,14 @@ body.twentyseventeen.learnpress-page {
 		height: unset!important;
 		padding: 8px 35px 8px 15px !important;
 	}
+
 	.lp-courses-bar .switch-layout .switch-btn{
-		border-radius: 10px;
+		border-radius: 5px;
 		border: none;
 		padding: 0;
  	}
 }
-// fix for theme eduma
+ // fix for theme eduma
 .theme-eduma:not(.nofixcss) {
 	.learnpress #learn-press-profile.lp-user-profile .learn-press-filters {
 		padding-bottom: 0 !important;
@@ -375,14 +362,38 @@ body.twentyseventeen.learnpress-page {
 		}
 		#learn-press-profile.lp-user-profile .learn-press-filters {
 			border: none!important;
-			margin: 0!important;
+			margin: 0 0 0 -2px 0 !important;
 		}
 		.lp-user-profile .lp-profile-left{
 			min-width: unset!important;
+			position: static!important;
+		}
+		//#learn-press-profile.lp-user-profile.no-bio-user #profile-sidebar{
+		//	margin-top: 0!important;
+		//}
+		#learn-press-profile .wrapper-profile-header{
+			//margin-bottom: 30px!important;
+			.lp-profile-content-area{
+				min-height: unset;
+				padding-left: 0;
+				display: flex;
+			}
+			.lp-profile-left{
+				border: none!important;
+				img{
+					border-radius: 50%;
+				}
+			}
 		}
 	}
 }
 
 .assignments .lp-icon-file-alt:before{
 	content: "\e929";
+}
+
+.theme-ivy-school:not(.nofixcss){
+	.lp-user-profile .lp-user-profile-avatar img{
+		border-radius: 0;
+	}
 }

@@ -8,7 +8,8 @@
 		background: $bg-grey;
 		text-align: center;
 		display: flex;
-		gap: 20px;
+		flex-wrap: wrap;
+ 		gap: 20px;
 		border-radius: $border-radius-global;
 		width: calc((100% - 40px) / 3);
 	}
