@@ -353,6 +353,10 @@ body.twentyseventeen.learnpress-page {
 		padding-bottom: 0 !important;
 		overflow-y: visible;
 	}
+	#learn-press-profile .wrapper-profile-header .lp-profile-content-area{
+			flex-direction: column;
+	}
+
 }
 .learnpress-v4,.learnpress-v3{
 	&:not(.nofixcss){
