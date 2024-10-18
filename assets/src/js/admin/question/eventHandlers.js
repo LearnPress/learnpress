@@ -173,11 +173,44 @@ const handleChangeQuestionOption = ( el, questionId ) => {
 };
 
 function addTinyMCEEvent( el, editorId, typeData, questionId ) {
+	const textareaEl = document.getElementById( editorId );
+	if ( ! textareaEl ) {
+		return;
+	}
+
+	tinymce.init( {
+		selector: '#' + editorId,
+		plugins: 'wordpress wpautoresize lists link paste fullscreen colorpicker textcolor charmap hr',
+		toolbar1: 'formatselect bold italic bullist numlist blockquote alignleft aligncenter alignright link wp_more fullscreen toolbar wp_adv',
+		toolbar2: 'strikethrough hr forecolor pastetext clearformat removeformat charmap outdent indent undo redo wp_help',
+		menubar: false,
+		wpautop: false,
+		toolbar_sticky: true,
+		indent: false,
+		wpeditimage_disable_captions: false,
+		paste_as_text: false,
+		wp_keep_scroll_position: true,
+		resize: true,
+		wp_adv_enabled: true,
+		init_instance_callback( editor ) {
+			// console.log( 'Editor initialized successfully:', editor.id );
+		},
+		setup( editor ) {
+			editor.on( 'init', function() {
+				// console.log( 'TinyMCE editor initialized:', editor.id );
+			} );
+			editor.on( 'change', function() {
+				tinymce.triggerSave();
+			} );
+		},
+	} );
+	const content = textareaEl.value ?? '';
 	const interval = setInterval( function() {
 		const editor = tinymce.get( editorId );
 
 		if ( editor ) {
 			clearInterval( interval );
+			editor.setContent( content );
 			let previousValue = editor.getContent();
 			editor.on( 'blur', function() {
 				const currentValue = editor.getContent();
@@ -191,7 +224,7 @@ function addTinyMCEEvent( el, editorId, typeData, questionId ) {
 				}
 			} );
 		}
-	}, 100 );
+	}, 500 );
 }
 
 const changeTitleAnswer = ( questionEditEl ) => {
@@ -375,7 +408,6 @@ const singleQuestion = async ( questionEditEl, questionId ) => {
 
 const singleQuestionOption = async ( questionOptionEl, questionId ) => {
 	await renderQuestionOption( questionOptionEl, questionId );
-	handleChangeQuestionOption( questionOptionEl, questionId );
 };
 
 export { renderQuestion, changeQuestionType, changeTitleAnswer, changeCorrectAnswer, addNewAnswer, deleteAnswer, sortableAnswer, getQuestionId, checkHiddenRemoveAnswer, singleQuestion, singleQuestionOption, handleChangeQuestionOption };

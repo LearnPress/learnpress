@@ -172,6 +172,7 @@ const getQuestionOptionApi = ( questionOptionEl, questionId ) => {
 				const option = response.data.option;
 				if ( option ) {
 					renderOption( questionOptionEl, option, questionId );
+					handleChangeQuestionOption( questionOptionEl, questionId );
 				}
 				resolve();
 			},
