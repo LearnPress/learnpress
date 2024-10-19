@@ -3,11 +3,13 @@
 
 .wrapper-profile-header {
 	position: relative;
+	// border-bottom: 1px solid $border-color;
+	// padding-bottom: var(--lp-item-padding);
 }
 
 .lp-user-profile {
 	position: relative;
-	--lp-item-padding: 60px;
+	--lp-item-padding: 40px;
 	.lp-user-profile-avatar {
 		img {
 			display: block;
@@ -273,7 +275,7 @@
 	}
 
 	@media (max-width: 990px) {
-		--lp-item-padding: 40px;
+		--lp-item-padding: 30px;
 		//#profile-sidebar {
 		//	margin-top: 40px;
 		//}

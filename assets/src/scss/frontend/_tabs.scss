@@ -5,7 +5,7 @@
 	column-gap: $spacing-base-10x;
 	row-gap: $spacing-base-3x;
 	list-style: none;
-	margin: 0 0 -2px 0!important;
+	margin: 0 0 -1px 0!important;
 }
 
 @mixin lp_nav_href() {
@@ -40,7 +40,7 @@
 .learn-press-tabs {
 	margin-bottom: $spacing-base-8x;
 	position: relative;
-	border-bottom: 2px solid $border-color;
+	border-bottom: 1px solid $border-color;
 
 	.learn-press-tabs__checker {
 		display: none;
@@ -142,14 +142,8 @@
 
 // Tab in single course
 .wrapper-course-nav-tabs {
-	//margin-bottom: $spacing-base-8x;
-	position: relative;
-	border-bottom: 2px solid $border-color;
-	//overflow-x: auto;
-	//scrollbar-width: none;
-	//&::-webkit-scrollbar {
-	//	display: none;
-	//}
+ 	position: relative;
+	border-bottom: 1px solid $border-color;
 }
 
 .learn-press-nav-tabs {

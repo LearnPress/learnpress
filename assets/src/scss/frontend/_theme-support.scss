@@ -340,12 +340,25 @@ body.twentyseventeen.learnpress-page {
 		height: unset!important;
 		padding: 8px 35px 8px 15px !important;
 	}
-
+	#learn-press-profile.lp-user-profile.no-bio-user{
+		#profile-sidebar {
+			margin-top: 0!important;
+		}
+		.lp-profile-content-area{
+			align-items: center;
+		}
+	}
 	.lp-courses-bar .switch-layout .switch-btn{
 		border-radius: 5px;
 		border: none;
 		padding: 0;
  	}
+	#learn-press-profile.lp-user-profile .wrapper-profile-header{
+		padding-bottom: 30px;
+		.lp-profile-user-bio {
+			padding-bottom: 0;
+		}
+	} 
 }
  // fix for theme eduma
 .theme-eduma:not(.nofixcss) {
@@ -366,7 +379,7 @@ body.twentyseventeen.learnpress-page {
 		}
 		#learn-press-profile.lp-user-profile .learn-press-filters {
 			border: none!important;
-			margin: 0 0 0 -2px 0 !important;
+			margin: 0 0 0 -1px 0 !important;
 		}
 		.lp-user-profile .lp-profile-left{
 			min-width: unset!important;

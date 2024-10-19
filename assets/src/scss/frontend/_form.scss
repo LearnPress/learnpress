@@ -102,7 +102,19 @@ input[type="password"] {
 		margin: 0;
 		padding: 0;
 		list-style: none;
-
+		.lp-profile-content &{
+			margin: 0 -15px!important;
+			.form-field{
+				padding-left: 15px;
+				padding-right: 15px;
+			}
+			@media (min-width: 767px) {
+				.form-field__50 {
+					width: 50%;
+					float: left;
+				}
+			}
+		}
 		.form-field {
 			margin: 0 0 20px 0;
 
@@ -147,13 +159,6 @@ input[type="password"] {
 
 		}
 
-		@media (min-width: 767px) {
-			.form-field__50 {
-				float: left;
-				width: calc(50% - 20px);
-				margin-right: 20px;
-			}
-		}
 	}
 
 	&.completed {
