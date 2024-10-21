@@ -91,14 +91,17 @@ msgid "Cancel"
 msgstr ""
 
 #: assets/src/apps/js/frontend/profile/avatar.js:131
+#: assets/src/js/frontend/profile/avatar.js:131
 msgid "The file size is too large. You need to upload a file < 2MB."
 msgstr ""
 
 #: assets/src/apps/js/frontend/profile/avatar.js:133
+#: assets/src/js/frontend/profile/avatar.js:133
 msgid "The image size must be greater than or equal to %1$sx%2$spx"
 msgstr ""
 
 #: assets/src/apps/js/frontend/profile/avatar.js:146
+#: assets/src/js/frontend/profile/avatar.js:146
 msgid "Are you sure you want to remove your avatar?"
 msgstr ""
 

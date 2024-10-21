@@ -5,7 +5,7 @@ Tags: elearning, education, course, lms, learning management system
 Requires at least: 6.0
 Tested up to: 6.6.2
 Requires PHP: 7.0
-Stable tag: 4.2.7.1
+Stable tag: 4.2.7.2
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -210,7 +210,7 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
-= 4.2.7.2 (2024-10-1x) =
+= 4.2.7.2 (2024-10-21) =
 ~ Fixed: security.
 ~ Fixed: set size for Gravatar user.
 ~ Fixed: slug item's course use urldecode when edited.
