@@ -21,6 +21,7 @@
 	"scripts": {
 		"format": "phpcbf --standard=phpcs.xml --report-summary --report-source",
 		"format-a-file": "phpcbf --standard=phpcs.xml learnpress.php --report-summary --report-source",
+		"format-n-file": "phpcbf --standard=phpcs.xml learnpress.php inc/Models/CourseModel.php --report-summary --report-source",
 		"lint": "phpcs --standard=phpcs.xml",
 		"phpcs": "phpcs --standard=phpcs.xml"
 	},
