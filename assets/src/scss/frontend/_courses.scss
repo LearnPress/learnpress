@@ -81,6 +81,18 @@
  		}
 	}
 
+
+}
+
+.learn-press-courses {
+	clear: both;
+	margin: 0 calc(-1*$spacing-base-4x);
+	padding: 0 !important;
+	min-height: 300px;
+	list-style: none;
+	position: relative;
+	@include flex();
+	@include flex-wrap(wrap);
 	.course-item {
 		flex-direction: column;
 		display: flex;
@@ -113,21 +125,6 @@
 			}
 		}
 
-		// <!-- .course-content
-
-		//.course-instructor {
-		//	margin-bottom: $spacing-base-2x;
-		//	text-transform: capitalize;
-		//
-		//	a {
-		//		color: $item-preview;
-		//		text-decoration: none;
-		//
-		//		&:hover {
-		//			color: var(--lp-primary-color);
-		//		}
-		//	}
-		//}
 	}
 
 	.course-content {
@@ -146,36 +143,9 @@
 			display: none;
 		}
 
-		//.course-instructor {
-		//	padding-right: $spacing-base-2x;
-		//}
-
-		 .course-tags {
+		.course-tags {
 			display: inline-block;
- 		}
-
-		//.course-categories {
-  		//	a {
-		//		display: inline-block;
-		//		//display: none;
-		//		//margin: 0 $spacing-base-2x;
-		//		color: $text-color-base;
-		//		//color: $color-white;
-		//		text-decoration: none;
-		//		//
-		//		//&:first-child {
-		//		//	display: block;
-		//		//	margin-left: 0;
-		//		//	padding: 2px $spacing-base-3x;
-		//		//	background: var(--lp-primary-color);
-		//		//}
-		//
-		//		&:hover {
-		//			color: $color-primary;
-		//		}
-		//	}
-		//
-		//}
+		}
 
 		.course-info {
 			> span {
@@ -185,7 +155,7 @@
 			.course-price {
 				.origin-price,
 				.price {
- 					font-size: $font-size-large;
+					font-size: $font-size-large;
 					font-weight: $heading-font-weight;
 				}
 
@@ -257,7 +227,7 @@
 				opacity: 1;
 			}
 
-			 a img {
+			a img {
 				transform: scale(1.05);
 			}
 
@@ -286,7 +256,7 @@
 			height: auto;
 			transition: all 0.5s ease;
 			transform: scale(1);
- 			max-width: unset !important;
+			max-width: unset !important;
 		}
 	}
 
@@ -367,17 +337,6 @@
 			color: #3AB500;
 		}
 	}
-}
-
-.learn-press-courses {
-	clear: both;
-	margin: 0 calc(-1*$spacing-base-4x);
-	padding: 0 !important;
-	min-height: 300px;
-	list-style: none;
-	position: relative;
-	@include flex();
-	@include flex-wrap(wrap);
 
 	.course {
 		width: 25%;
