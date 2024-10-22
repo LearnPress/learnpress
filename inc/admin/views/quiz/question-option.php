@@ -22,10 +22,7 @@ $description = new LP_Meta_Box_Editor_Field(
 ?>
 
 <div class="quiz-question-options js-question-options" data-question-id="<?php echo esc_attr( $question_id ); ?>">
-	<div class="lp-place-holder">
-		<div class="line-heading"></div>
-	</div>
-	<div class="postbox closed" style="display:none;">
+	<div class="postbox closed">
 		<h2 class="lp-box-data-head lp-row quiz-question-options__header">
 			<span><?php esc_html_e( 'Question Settings', 'learnpress' ); ?></span>
 			<div class="status success"></div>

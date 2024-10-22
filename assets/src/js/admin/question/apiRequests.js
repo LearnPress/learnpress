@@ -51,25 +51,9 @@ const renderOption = ( el, option, questionId ) => {
 	const hintEl = el.querySelector( '#_lp_hint_' + questionId );
 	const explanationEl = el.querySelector( '#_lp_explanation_' + questionId );
 	const contentEl = el.querySelector( '.postbox' );
-	const toggleEl = el.querySelector( '.toggle' );
-	const headerEl = el.querySelector( '.quiz-question-options__header' );
 
 	if ( placeholderEl ) {
 		placeholderEl.remove();
-	}
-
-	if ( toggleEl ) {
-		toggleEl.addEventListener( 'click', ( e ) => {
-			e.preventDefault();
-			contentEl.classList.toggle( 'closed' );
-		} );
-	}
-
-	if ( headerEl ) {
-		headerEl.addEventListener( 'click', ( e ) => {
-			e.preventDefault();
-			contentEl.classList.toggle( 'closed' );
-		} );
 	}
 
 	if ( contentEl ) {

@@ -406,8 +406,33 @@ const singleQuestion = async ( questionEditEl, questionId ) => {
 	changeQuestionType( questionEditEl );
 };
 
-const singleQuestionOption = async ( questionOptionEl, questionId ) => {
-	await renderQuestionOption( questionOptionEl, questionId );
+const singleQuestionOption = ( questionOptionEl, questionId ) => {
+	const contentEl = questionOptionEl.querySelector( '.postbox' );
+	const toggleEl = questionOptionEl.querySelector( '.toggle' );
+	const headerEl = questionOptionEl.querySelector( '.quiz-question-options__header' );
+	if ( toggleEl ) {
+		toggleEl.addEventListener( 'click', ( e ) => {
+			e.preventDefault();
+			contentEl.classList.toggle( 'closed' );
+
+			if ( ! contentEl.classList.contains( 'loaded' ) ) {
+				contentEl.classList.add( 'loaded' );
+				renderQuestionOption( questionOptionEl, questionId );
+			}
+		} );
+	}
+
+	if ( headerEl ) {
+		headerEl.addEventListener( 'click', ( e ) => {
+			e.preventDefault();
+			contentEl.classList.toggle( 'closed' );
+
+			if ( ! contentEl.classList.contains( 'loaded' ) ) {
+				contentEl.classList.add( 'loaded' );
+				renderQuestionOption( questionOptionEl, questionId );
+			}
+		} );
+	}
 };
 
 export { renderQuestion, changeQuestionType, changeTitleAnswer, changeCorrectAnswer, addNewAnswer, deleteAnswer, sortableAnswer, getQuestionId, checkHiddenRemoveAnswer, singleQuestion, singleQuestionOption, handleChangeQuestionOption };
