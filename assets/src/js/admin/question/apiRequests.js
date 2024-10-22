@@ -50,14 +50,14 @@ const renderOption = ( el, option, questionId ) => {
 	const pointEl = el.querySelector( '#_lp_mark_' + questionId );
 	const hintEl = el.querySelector( '#_lp_hint_' + questionId );
 	const explanationEl = el.querySelector( '#_lp_explanation_' + questionId );
-	const contentEl = el.querySelector( '.postbox' );
+	const metaboxQuestionEl = el.querySelector( '.lp-meta-box--question' );
 
 	if ( placeholderEl ) {
 		placeholderEl.remove();
 	}
 
-	if ( contentEl ) {
-		contentEl.style.display = 'block';
+	if ( metaboxQuestionEl ) {
+		metaboxQuestionEl.style.display = 'block';
 	}
 
 	if ( descEl ) {

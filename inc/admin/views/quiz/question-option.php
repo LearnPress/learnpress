@@ -29,7 +29,21 @@ $description = new LP_Meta_Box_Editor_Field(
 		</h2>
 		<a class="toggle"></a>
 		<div class="inside">
-			<div class="lp-quiz-editor__detail lp-meta-box__inner lp-meta-box lp-meta-box--question">
+			<div class="lp-place-holder">
+				<div class="line-heading"></div>
+
+				<div class="line-sm"></div>
+				<div class="line-xs"></div>
+
+				<div class="line-df"></div>
+				<div class="line-lgx"></div>
+				<div class="line-lg"></div>
+
+				<div class="line-df"></div>
+				<div class="line-lg"></div>
+				<div class="line-lgx"></div>
+			</div>
+			<div class="lp-quiz-editor__detail lp-meta-box__inner lp-meta-box lp-meta-box--question" style="display:none;">
 				<?php
 				$description->id = '_lp_description_' . $question_id;
 				$description->output( $question_id );
