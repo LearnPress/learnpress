@@ -492,7 +492,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 				"SELECT item_id, item_type
 				From $table_order_items
 				WHERE order_id = %d",
-				$this->get_id(),
+				$this->get_id()
 			);
 
 			return $wpdb->get_results( $query, ARRAY_A );

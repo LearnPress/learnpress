@@ -234,6 +234,17 @@ class LP_Datetime {
 	}
 
 	/**
+	 * Get timestamp of Date in local time.
+	 * Note: timestamp before handle must timezone is GMT+0
+	 *
+	 * @return int
+	 * @since 4.2.7.3
+	 */
+	public function getTimestampLocal(): int {
+		return $this->getTimestamp() + get_option( 'gmt_offset' ) * HOUR_IN_SECONDS;
+	}
+
+	/**
 	 * Get string plural duration.
 	 *
 	 * @param float $duration_number
