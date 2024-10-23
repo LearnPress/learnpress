@@ -33,7 +33,7 @@ $args = array(
 // Fix preview course
 if ( isset( $_REQUEST['preview'] ) && ( isset( $_REQUEST['p'] ) || isset( $_REQUEST['preview_id'] ) ) ) {
 	unset( $args['name'] );
-	$args['include']     = isset( $_REQUEST['p'] ) ? [ (int) $_REQUEST['p'] ] : [ (int) $_REQUEST['preview_id'] ];
+	$args['include'] = isset( $_REQUEST['p'] ) ? [ (int) $_REQUEST['p'] ] : [ (int) $_REQUEST['preview_id'] ];
 }
 
 $posts = get_posts( $args );
