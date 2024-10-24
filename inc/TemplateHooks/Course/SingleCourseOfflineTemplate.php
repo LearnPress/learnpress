@@ -264,13 +264,13 @@ class SingleCourseOfflineTemplate {
 		// End related courses
 
 		$sections = [
-			'wrapper'          => '<div class="lp-single-course lp-single-offline-course">',
+			'wrapper'          => '<div class="lp-content-area"><div class="lp-single-course lp-single-offline-course">',
 			'wrapper_main'     => '<div class="lp-single-offline-course-main">',
 			'section_left'     => Template::combine_components( $section_left ),
 			'section_right'    => Template::combine_components( $section_right ),
 			'wrapper_main_end' => '</div>',
 			'related_courses'  => $html_courses_related,
-			'wrapper_end'      => '</div>',
+			'wrapper_end'      => '</div></div>',
 		];
 
 		echo Template::combine_components( $sections );

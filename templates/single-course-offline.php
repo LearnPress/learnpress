@@ -19,17 +19,13 @@ if ( ! wp_is_block_theme() ) {
 	do_action( 'learn-press/template-header' );
 }
 
-?>
-	<div class="lp-content-area">
-		<?php
-		$course_id = get_the_ID();
-		if ( $course_id ) {
-			$course = CourseModel::find( $course_id, true );
-			do_action( 'learn-press/single-course/offline/layout', $course );
-		}
-		?>
-	</div>
-<?php
+
+$course_id = get_the_ID();
+if ( $course_id ) {
+	$course = CourseModel::find( $course_id, true );
+	do_action( 'learn-press/single-course/offline/layout', $course );
+}
+
 /**
  * Footer for page
  */
