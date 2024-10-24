@@ -1058,8 +1058,8 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 *
 		 * @return false|string
 		 */
-		public function get_profile_picture( $type = '', $size = 96, $src_only = false ) {
-			return LP_Profile::instance( $this->get_id() )->get_profile_picture( $type, $size );
+		public function get_profile_picture( $src_only = false, $type = '', $size = 96 ) {
+			return LP_Profile::instance( $this->get_id() )->get_profile_picture( $src_only, $type, $size );
 		}
 
 		/**
