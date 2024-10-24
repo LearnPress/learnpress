@@ -263,21 +263,20 @@ class SingleCourseOfflineTemplate {
 		$html_courses_related = ob_get_clean();
 		// End related courses
 
-		$sections =
-			apply_filters(
-				'learn-press/single-course/offline/sections',
-				[
-					'wrapper_container'     => '<div class="lp-content-area">',
-					'wrapper'               => '<div class="lp-single-course lp-single-offline-course">',
-					'wrapper_main'          => '<div class="lp-single-offline-course-main">',
-					'section_left'          => Template::combine_components( $section_left ),
-					'section_right'         => Template::combine_components( $section_right ),
-					'wrapper_main_end'      => '</div>',
-					'related_courses'       => $html_courses_related,
-					'wrapper_end'           => '</div>',
-					'wrapper_container_end' => '</div>',
-				]
-			);
+		$sections = apply_filters(
+			'learn-press/single-course/offline/sections',
+			[
+				'wrapper_container'     => '<div class="lp-content-area">',
+				'wrapper'               => '<div class="lp-single-course lp-single-offline-course">',
+				'wrapper_main'          => '<div class="lp-single-offline-course-main">',
+				'section_left'          => Template::combine_components( $section_left ),
+				'section_right'         => Template::combine_components( $section_right ),
+				'wrapper_main_end'      => '</div>',
+				'related_courses'       => $html_courses_related,
+				'wrapper_end'           => '</div>',
+				'wrapper_container_end' => '</div>',
+			]
+		);
 
 		echo Template::combine_components( $sections );
 	}
