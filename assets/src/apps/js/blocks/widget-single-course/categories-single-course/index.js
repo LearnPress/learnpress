@@ -3,11 +3,18 @@
  */
 import metadata from './block.json';
 import { registerBlockType } from '@wordpress/blocks';
+import { useBlockProps } from '@wordpress/block-editor';
 
 registerBlockType( 'learnpress/categories-single-course', {
 	...metadata,
 	edit: ( props ) => {
-		return <div>{ 'List Categories Single Course' }</div>;
+		const blockProps = useBlockProps();
+
+		return (
+			<div { ...blockProps }>
+				{ 'List Categories Single Course' }
+			</div>
+		);
 	},
 	save: ( props ) => {
 		return null;

@@ -7,5 +7,14 @@
 	"description": "Renders template Description Single Course PHP templates.",
 	"textdomain": "learnpress",
 	"keywords": ["description single course", "learnpress"],
-	"usesContext": []
+	"usesContext": [],
+	"supports": {
+		"align": true,
+		"inserter": true,
+		"customClassName": true,
+		"reusable": true,
+		"reorder": true,
+		"html": false,
+		"multiple": true
+	}
 }
