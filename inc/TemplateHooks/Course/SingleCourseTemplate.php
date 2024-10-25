@@ -656,7 +656,7 @@ class SingleCourseTemplate {
 	 *
 	 * @return string
 	 */
-	public function html_btn_purchase_course( CourseModel $course, $user ) {
+	public function html_btn_purchase_course( CourseModel $course, $user ): string {
 		$html_btn = '';
 		$can_show = true;
 
@@ -705,6 +705,51 @@ class SingleCourseTemplate {
 		);
 		$html_btn = ob_get_clean();
 		return $html_btn;
+	}
+
+	/**
+	 * HTML button enroll course
+	 *
+	 * @param CourseModel $course
+	 * @param false|UserModel $user
+	 *
+	 * @return string
+	 * @since 4.2.7.3
+	 * @version 1.0.0
+	 */
+	public function html_btn_enroll_course( CourseModel $course, $user ): string {
+		$can_enroll = $course->can_enroll( $user );
+		if ( is_wp_error( $can_enroll ) ) {
+			ob_start();
+			Template::print_message( $can_enroll->get_error_message(), 'warning' );
+			$html_btn = ob_get_clean();
+		} else {
+			$html_btn = sprintf(
+				'<button class="lp-button button button-enroll-course">%s</button>',
+				__( 'Start Now', 'learnpress' )
+			);
+		}
+
+		if ( empty( $html_btn ) ) {
+			return $html_btn;
+		}
+
+		$section = apply_filters(
+			'learn-press/course/html-button-enroll',
+			[
+				'form'     => '<form name="enroll-course" class="enroll-course" method="post">',
+				'input'    => sprintf(
+					'<input type="hidden" name="enroll-course" value="%s"/>',
+					esc_attr( $course->get_id() )
+				),
+				'btn'      => $html_btn,
+				'form_end' => '</form>',
+			],
+			$course,
+			$user
+		);
+
+		return Template::combine_components( $section );
 	}
 
 	/**

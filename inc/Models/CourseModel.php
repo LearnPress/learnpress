@@ -14,6 +14,7 @@
 namespace LearnPress\Models;
 
 use Exception;
+use LearnPress\Models\UserItems\UserCourseModel;
 use LP_Course_Cache;
 use LP_Course_DB;
 use LP_Course_Item;
@@ -23,6 +24,7 @@ use LP_Datetime;
 use LP_Helper;
 use stdClass;
 use Throwable;
+use WP_Error;
 
 class CourseModel {
 	/**
@@ -369,6 +371,17 @@ class CourseModel {
 	}
 
 	/**
+	 * Check option "Block course when expire" enable.
+	 *
+	 * @return bool
+	 * @since 4.2.7.3
+	 * @version 1.0.0
+	 */
+	public function enable_block_when_expire(): bool {
+		return $this->get_meta_value_by_key( CoursePostModel::META_KEY_BLOCK_EXPIRE_DURATION, 'no' ) === 'yes';
+	}
+
+	/**
 	 * Get first item of course
 	 *
 	 * @return int
@@ -659,6 +672,7 @@ class CourseModel {
 
 	/**
 	 * Check course is in stock
+	 * True is in stock, False is out of stock
 	 *
 	 * @return mixed
 	 * @since 3.0.0
@@ -740,6 +754,97 @@ class CourseModel {
 		$total += (int) $this->get_meta_value_by_key( CoursePostModel::META_KEY_STUDENTS, 0 );
 
 		return $total;
+	}
+
+	/**
+	 * Get Duration of course
+	 * Timestamp in second
+	 *
+	 * @return int
+	 */
+	public function get_duration(): int {
+		return (int) $this->get_meta_value_by_key( CoursePostModel::META_KEY_DURATION, 0 );
+	}
+
+	/**
+	 * Check user can enroll course.
+	 * @move from can_enroll_course method of LP_User class, since 4.1.1
+	 *
+	 * @param UserModel|false $user
+	 *
+	 * @return bool|WP_Error
+	 * @since 4.2.7.3
+	 * @version 1.0.0
+	 */
+	public function can_enroll( $user ) {
+		$can_enroll = true;
+		$error_code = '';
+
+		try {
+			if ( ! in_array( $this->post_status, [ 'publish', 'private' ] ) ) {
+				$error_code = 'course_not_publish';
+				throw new Exception( __( 'The course is not public', 'learnpress' ) );
+			}
+
+			$user_id = 0;
+			if ( $user instanceof UserModel ) {
+				$user_id = $user->get_id();
+			}
+
+			$is_no_required_enroll = $this->has_no_enroll_requirement();
+			if ( ! $user && $is_no_required_enroll ) {
+				$error_code = 'course_is_no_required_enroll_not_login';
+				throw new Exception(
+					__( 'Enrollment in the course is not mandatory. You can access course for learning now.', 'learnpress' )
+				);
+			}
+
+			$userCourseModel = UserCourseModel::find( $user_id, $this->get_id(), true );
+			if ( $userCourseModel && $userCourseModel->has_enrolled() ) {
+				$error_code = 'course_is_enrolled';
+				throw new Exception( __( 'This course is already enrolled.', 'learnpress' ) );
+			}
+
+			if ( ! $this->is_in_stock() && ! $is_no_required_enroll && ! $userCourseModel ) {
+				$error_code = 'course_out_of_stock';
+				throw new Exception( __( 'The course is full of students.', 'learnpress' ) );
+			}
+
+			if ( $this->get_external_link() && ! $is_no_required_enroll
+				&& ( ! $userCourseModel || ! $userCourseModel->has_purchased() ) ) {
+				$error_code = 'course_is_external';
+				throw new Exception( __( 'The course is external', 'learnpress' ) );
+			}
+
+			if ( $userCourseModel && $userCourseModel->can_retake() ) {
+				$error_code = 'course_can_retry';
+				throw new Exception( esc_html__( 'Course can retake.', 'learnpress' ) );
+			}
+
+			if ( ! $this->is_free() && ! $is_no_required_enroll
+				&& ( ! $userCourseModel || ! $userCourseModel->has_purchased() ) ) {
+				$error_code = 'course_is_not_purchased';
+				throw new Exception( __( 'The course is not purchased.', 'learnpress' ) );
+			}
+
+			if ( $userCourseModel && $userCourseModel->has_finished() ) {
+				$error_code = 'course_is_finished';
+				throw new Exception( __( 'The course is finished.', 'learnpress' ) );
+			}
+
+			$is_blocked_course = 0 === $userCourseModel->timestamp_remaining_duration();
+			if ( $is_blocked_course ) {
+				$error_code = 'course_is_blocked';
+				throw new Exception( __( 'The course is blocked.', 'learnpress' ) );
+			}
+		} catch ( Throwable $e ) {
+			if ( empty( $error_code ) ) {
+				$error_code = 'course_can_not_enroll';
+			}
+			$can_enroll = new WP_Error( $error_code, $e->getMessage() );
+		}
+
+		return apply_filters( 'learn-press/user/can-enroll/course', $can_enroll, $this, $user );
 	}
 
 	/**

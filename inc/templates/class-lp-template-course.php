@@ -236,6 +236,14 @@ class LP_Template_Course extends LP_Abstract_Template {
 	 * @version 4.0.3
 	 */
 	public function course_enroll_button( $course = null ) {
+		// Test
+		$singleCourseTemplate = \LearnPress\TemplateHooks\Course\SingleCourseTemplate::instance();
+		$course = \LearnPress\Models\CourseModel::find( get_the_ID() );
+		$user = \LearnPress\Models\UserModel::find( get_current_user_id() );
+		echo $singleCourseTemplate->html_btn_enroll_course( $course, $user );
+		return;
+		// End test
+
 		$can_show = true;
 		$user     = learn_press_get_current_user();
 		if ( empty( $course ) ) {

@@ -11,10 +11,14 @@
 namespace LearnPress\Models\UserItems;
 
 use Exception;
+use LearnPress\Models\CourseModel;
+use LearnPress\Models\CoursePostModel;
+use LearnPress\Models\UserModel;
 use LP_Cache;
 use LP_Course;
 use LP_Course_Cache;
 use LP_Courses_Cache;
+use LP_Datetime;
 use LP_User;
 use LP_User_Items_DB;
 use LP_User_Items_Filter;
@@ -41,7 +45,7 @@ class UserCourseModel extends UserItemModel {
 	 */
 	public $user;
 	/**
-	 * @var LP_Course|null
+	 * @var CourseModel|null
 	 */
 	public $course;
 
@@ -56,11 +60,11 @@ class UserCourseModel extends UserItemModel {
 	/**
 	 * Get course model
 	 *
-	 * @return bool|LP_Course
+	 * @return bool|CourseModel
 	 */
 	public function get_course_model() {
 		if ( empty( $this->course ) ) {
-			$this->course = learn_press_get_course( $this->item_id );
+			$this->course = CourseModel::find( $this->item_id, true );
 		}
 
 		return $this->course;
@@ -236,7 +240,8 @@ class UserCourseModel extends UserItemModel {
 		);
 
 		try {
-			$course = $this->get_course_model();
+			$courseModel = $this->get_course_model();
+			$course      = learn_press_get_course( $courseModel->get_id() );
 			if ( empty( $course ) ) {
 				throw new Exception( 'Course invalid!' );
 			}
@@ -321,6 +326,116 @@ class UserCourseModel extends UserItemModel {
 		}
 
 		return $results;
+	}
+
+	/**
+	 * Check user can retake course or not.
+	 *
+	 * @move from class-lp-user.php method can_retry_course since 4.0.0
+	 * @use LP_User::can_retry_course
+	 * @return int|mixed|null
+	 * @since 4.2.7.3
+	 * @version 1.0.0
+	 */
+	public function can_retake() {
+		$flag = 0;
+
+		try {
+			$course = $this->get_course_model();
+			if ( ! $course ) {
+				return $flag;
+			}
+
+			$retake_option = (int) $course->get_meta_value_by_key( CoursePostModel::META_KEY_RETAKE_COUNT, 0 );
+			if ( $retake_option > 0 ) {
+				/**
+				 * Check course is finished
+				 * Check duration is blocked
+				 */
+				if ( ! $this->has_finished() ) {
+					if ( 0 !== $this->timestamp_remaining_duration() ) {
+						throw new Exception();
+					}
+				}
+
+				$retaken          = $this->get_retaken_count();
+				$can_retake_times = $retake_option - $retaken;
+
+				if ( $can_retake_times > 0 ) {
+					$flag = $can_retake_times;
+				}
+			}
+		} catch ( Exception $e ) {
+
+		}
+
+		return apply_filters( 'learn-press/user/course/can-retake', $flag, $this );
+	}
+
+	/**
+	 * Get retaken count of user attend course.
+	 *
+	 * @return int
+	 */
+	public function get_retaken_count(): int {
+		return (int) $this->get_meta_value_from_key( '_lp_retaken_count', 0 );
+	}
+
+	/**
+	 * Check time remaining course when enable duration expire
+	 * Value: -1 is no limit (default)
+	 * Value: 0 is block
+	 * Administrator || (is instructor && is author course) will be not block.
+	 *
+	 * @return int second
+	 * @since 4.0.0
+	 * @author tungnx
+	 * @version 1.0.1
+	 */
+	public function timestamp_remaining_duration(): int {
+		$timestamp_remaining = - 1;
+		$user                = $this->get_user_model();
+		/**
+		 * @var CourseModel $course
+		 */
+		$course = $this->get_course_model();
+		if ( ! $user || ! $course ) {
+			return $timestamp_remaining;
+		}
+
+		$author = $course->get_author_model();
+		if ( ! $author ) {
+			return $timestamp_remaining;
+		}
+
+		$user_id = $user->get_id();
+
+		if ( current_user_can( 'administrator' ) ||
+			( current_user_can( LP_TEACHER_ROLE ) && $author->get_id() === $user_id ) ) {
+			return $timestamp_remaining;
+		}
+
+		if ( 0 === $course->get_duration() ) {
+			return $timestamp_remaining;
+		}
+
+		if ( ! $course->enable_block_when_expire() ) {
+			return $timestamp_remaining;
+		}
+
+		$course_start_time_str = $this->get_meta_value_from_key( 'start_time', '' );
+		$course_start_time     = new LP_Datetime( $course_start_time_str );
+		$course_start_time     = $course_start_time->get_raw_date();
+		$duration              = $course->get_duration();
+		$timestamp_expire      = strtotime( $course_start_time . ' +' . $duration );
+		$timestamp_current     = time();
+		$timestamp_remaining   = $timestamp_expire - $timestamp_current;
+
+		if ( $timestamp_remaining < 0 ) {
+			$timestamp_remaining = 0;
+		}
+
+		return apply_filters( 'learnpress/course/block_duration_expire/timestamp_remaining', $timestamp_remaining );
 	}
 
 	/**
