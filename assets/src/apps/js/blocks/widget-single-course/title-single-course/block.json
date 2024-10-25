@@ -1,0 +1,11 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "learnpress/title-single-course",
+	"title": "Title Single Course",
+	"category": "learnpress-category",
+	"description": "Renders template Title Single Course PHP templates.",
+	"textdomain": "learnpress",
+	"keywords": ["title single course", "learnpress"],
+	"usesContext": []
+}
