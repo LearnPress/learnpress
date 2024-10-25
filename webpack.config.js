@@ -84,6 +84,7 @@ module.exports = {
 		'./assets/js/dist/blocks/description-single-course': './assets/src/apps/js/blocks/widget-single-course/description-single-course/index.js',
 		'./assets/js/dist/blocks/categories-single-course': './assets/src/apps/js/blocks/widget-single-course/categories-single-course/index.js',
 		'./assets/js/dist/blocks/tags-single-course': './assets/src/apps/js/blocks/widget-single-course/tags-single-course/index.js',
+		'./assets/js/dist/blocks/image-single-course': './assets/src/apps/js/blocks/widget-single-course/image-single-course/index.js',
 		'./assets/js/dist/blocks/single-course': './assets/src/apps/js/blocks/single-course/index.js',
 		'./assets/js/dist/blocks/item-curriculum-course': './assets/src/apps/js/blocks/item-curriculum-course/index.js',
 
