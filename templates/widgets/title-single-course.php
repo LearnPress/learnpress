@@ -1,10 +1,10 @@
 <?php
+
 if ( ! is_singular( 'lp_course' ) ) {
 	return '';
 }
 
-$title = get_the_title();
-
+$title = get_the_title() ?? '';
 ?>
 
 <?php if ( ! empty( $title ) ) : ?>
