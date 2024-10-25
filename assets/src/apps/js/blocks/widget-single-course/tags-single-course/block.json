@@ -1,0 +1,11 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "learnpress/tags-single-course",
+	"title": "Tags Single Course",
+	"category": "learnpress-category",
+	"description": "Renders template Tags Single Course PHP templates.",
+	"textdomain": "learnpress",
+	"keywords": ["tags single course", "learnpress"],
+	"usesContext": []
+}

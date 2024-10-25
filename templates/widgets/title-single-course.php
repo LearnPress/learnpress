@@ -7,6 +7,8 @@ $title = get_the_title();
 
 ?>
 
-<div id="title-single-course">
-	<?php echo esc_html( $title ); ?>
-</div>
+<?php if ( ! empty( $title ) ) : ?>
+	<div id="title-single-course">
+		<?php echo esc_html( $title ); ?>
+	</div>
+<?php endif; ?>
