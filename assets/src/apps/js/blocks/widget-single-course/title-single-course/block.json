@@ -9,9 +9,7 @@
 	"keywords": ["title single course", "learnpress"],
 	"usesContext": [],
 	"supports": {
-		"align": true,
 		"inserter": true,
-		"customClassName": true,
 		"reusable": true,
 		"reorder": true,
 		"html": false,
