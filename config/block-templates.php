@@ -5,6 +5,7 @@ require_once $blog_template_path . 'class-block-template-single-course.php';
 require_once $blog_template_path . 'class-block-template-item-curriculum-course.php';
 require_once $blog_template_path . 'class-block-template-title-single-course.php';
 require_once $blog_template_path . 'class-block-template-description-single-course.php';
+require_once $blog_template_path . 'class-block-template-categories-single-course.php';
 
 return apply_filters(
 	'learn-press/config/block-templates',
@@ -13,6 +14,7 @@ return apply_filters(
 		new Block_Template_Single_Course(),
 		new Block_Template_Title_Single_Course(),
 		new Block_Template_Description_Single_Course(),
+		new Block_Template_Categories_Single_Course(),
 		//new Block_Template_Item_Curriculum_Course(), // When handle item correct post type, uncomment this line, currently item show is post type course.
 	)
 );
