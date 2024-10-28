@@ -25,15 +25,6 @@ class LP_User_Factory {
 	 * Init hooks
 	 */
 	public static function init() {
-		//self::$_guest_transient = WEEK_IN_SECONDS;
-		//add_action( 'learn-press/user/quiz-started', array( __CLASS__, 'start_quiz' ), 10, 3 );
-		//add_action( 'learn_press_activate', array( __CLASS__, 'register_event' ), 15 );
-
-		/**
-		 * Filters into wp users manager
-		 */
-		add_filter( 'users_list_table_query_args', array( __CLASS__, 'exclude_temp_users' ) );
-
 		add_action( 'learn-press/order/status-changed', array( __CLASS__, 'update_user_items' ), 10, 3 );
 	}
 
@@ -295,7 +286,7 @@ class LP_User_Factory {
 	 */
 	protected static function handle_item_manual_order_completed( LP_Order $order, LP_User $user, $item ) {
 		try {
-			$course      = CourseModel::find( $item['course_id'] ?? $item['item_id'] ?? 0, true );
+			$course = CourseModel::find( $item['course_id'] ?? $item['item_id'] ?? 0, true );
 			if ( ! $course ) {
 				return;
 			}
@@ -345,21 +336,23 @@ class LP_User_Factory {
 	 * @param array $args
 	 *
 	 * @return mixed
+	 * @deprecated 4.2.7.3
 	 */
-	public static function exclude_temp_users( $args ) {
+	/*public static function exclude_temp_users( $args ) {
 		if ( LP_Request::get_string( 'lp-action' ) == 'pending-request' ) {
 			$args['include'] = self::get_pending_requests();
 		}
 
 		return $args;
-	}
+	}*/
 
 	/**
 	 * Get pending requests be come a Teacher.
 	 *
 	 * @return array
+	 * @deprecated 4.2.7.3
 	 */
-	public static function get_pending_requests() {
+	/*public static function get_pending_requests() {
 		global $wpdb;
 		$query = $wpdb->prepare(
 			"
@@ -373,7 +366,7 @@ class LP_User_Factory {
 		);
 
 		return $wpdb->get_col( $query );
-	}
+	}*/
 
 	/**
 	 * @deprecated 4.2.7.3
@@ -420,29 +413,29 @@ class LP_User_Factory {
 	 * @return string
 	 * @deprecated 4.2.7.3
 	 */
-//	public static function get_user_class( $the_id = 0 ) {
-//		$deleted     = in_array( $the_id, self::$_deleted_users );
-//		$exists_user = ! $deleted ? get_userdata( $the_id ) : false;
-//		if ( $exists_user ) {
-//			$class = 'LP_User';
-//		} else {
-//			if ( ! $deleted ) {
-//				self::$_deleted_users[] = $the_id;
-//				/**
-//				 * Prevent loading user does not exists in database
-//				 */
-//				$user = new LP_User_Guest( $the_id );
-//				wp_cache_add( $the_id, $user, 'users' );
-//				wp_cache_add( '', $the_id, 'userlogins' );
-//				wp_cache_add( '', $the_id, 'useremail' );
-//				wp_cache_add( '', $the_id, 'userslugs' );
-//			}
-//			$is_logged_in = function_exists( 'is_user_logged_in' ) && is_user_logged_in();
-//			$class        = $is_logged_in ? 'LP_User' : 'LP_User_Guest';
-//		}
-//
-//		return apply_filters( 'learn_press_user_class', $class );
-//	}
+	//  public static function get_user_class( $the_id = 0 ) {
+	//      $deleted     = in_array( $the_id, self::$_deleted_users );
+	//      $exists_user = ! $deleted ? get_userdata( $the_id ) : false;
+	//      if ( $exists_user ) {
+	//          $class = 'LP_User';
+	//      } else {
+	//          if ( ! $deleted ) {
+	//              self::$_deleted_users[] = $the_id;
+	//              /**
+	//               * Prevent loading user does not exists in database
+	//               */
+	//              $user = new LP_User_Guest( $the_id );
+	//              wp_cache_add( $the_id, $user, 'users' );
+	//              wp_cache_add( '', $the_id, 'userlogins' );
+	//              wp_cache_add( '', $the_id, 'useremail' );
+	//              wp_cache_add( '', $the_id, 'userslugs' );
+	//          }
+	//          $is_logged_in = function_exists( 'is_user_logged_in' ) && is_user_logged_in();
+	//          $class        = $is_logged_in ? 'LP_User' : 'LP_User_Guest';
+	//      }
+	//
+	//      return apply_filters( 'learn_press_user_class', $class );
+	//  }
 }
 
 LP_User_Factory::init();
