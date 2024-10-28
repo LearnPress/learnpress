@@ -7,6 +7,11 @@
 	"description": "Renders template Title Single Course PHP templates.",
 	"textdomain": "learnpress",
 	"keywords": ["title single course", "learnpress"],
+	"attributes": {
+		"courseId": {
+			"type": "number"
+		}
+	},
 	"usesContext": [],
 	"supports": {
 		"inserter": true,

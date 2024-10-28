@@ -1,13 +1,10 @@
 <?php
-if ( ! is_singular( 'lp_course' ) ) {
-	return '';
-}
-
-$image = get_the_post_thumbnail_url( get_the_ID(), 'full' );
+$course_id = $attributes['courseId'] ? (int) $attributes['courseId'] : get_the_ID();
+$image     = get_the_post_thumbnail_url( $course_id, 'full' );
 ?>
 
 <?php if ( ! empty( $image ) ) : ?>	
-	<div id="image-single-course">
+	<div class="image-single-course">
 		<img src="<?php echo esc_url( $image ); ?>" alt="<?php echo esc_attr__( 'image-single-course', 'learnpress' ); ?>" />
 	</div>
 <?php endif; ?>
