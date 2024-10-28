@@ -2,6 +2,7 @@
 
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\CoursePostModel;
+use LearnPress\Models\UserItems\UserCourseModel;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -38,6 +39,8 @@ class LP_User_Factory {
 	 * @Todo tungnx - should write on class LP_Order
 	 */
 	public static function update_user_items( $the_id, $old_status, $new_status ) {
+		$time_limit_default = ini_get('max_execution_time');
+		@set_time_limit( 0 );
 		$order = learn_press_get_order( $the_id );
 		if ( ! $order ) {
 			return;
@@ -58,6 +61,7 @@ class LP_User_Factory {
 		} catch ( Exception $ex ) {
 			error_log( __METHOD__ . ': ' . $ex->getMessage() );
 		}
+		@set_time_limit( $time_limit_default );
 	}
 
 	/**
@@ -168,14 +172,13 @@ class LP_User_Factory {
 	 *
 	 * @author  tungnx
 	 * @since   4.1.3
-	 * @version 1.0.4
+	 * @version 1.0.5
 	 */
 	protected static function handle_item_order_completed( LP_Order $order, LP_User $user, $item ) {
 		$lp_user_items_db = LP_User_Items_DB::getInstance();
 
 		try {
 			$course_id   = $item['course_id'] ?? $item['item_id'] ?? 0;
-			$course      = learn_press_get_course( $course_id );
 			$courseModel = CourseModel::find( $course_id, true );
 			if ( ! $courseModel ) {
 				return;
@@ -190,10 +193,7 @@ class LP_User_Factory {
 			}
 
 			/** Get the newest user_item_id of course for allow_repurchase */
-			$filter          = new LP_User_Items_Filter();
-			$filter->user_id = $user_id;
-			$filter->item_id = $course_id;
-			$user_course     = $lp_user_items_db->get_last_user_course( $filter );
+			$userCourse = UserCourseModel::find( $user_id, $course_id );
 
 			$latest_user_item_id     = 0;
 			$allow_repurchase_option = $courseModel->get_meta_value_by_key( CoursePostModel::META_KEY_COURSE_REPURCHASE_OPTION, 'reset' );
@@ -202,12 +202,12 @@ class LP_User_Factory {
 			// Data user_item for save database
 			$user_item_data = [
 				'user_id' => $user_id,
-				'item_id' => $course->get_id(),
+				'item_id' => $course_id,
 				'ref_id'  => $order->get_id(),
 			];
 
-			if ( ! $user instanceof LP_User_Guest && $user_course && isset( $user_course->user_item_id ) ) {
-				$latest_user_item_id = $user_course->user_item_id;
+			if ( $user_id && $userCourse ) {
+				$latest_user_item_id = $userCourse->get_user_item_id();
 
 				/** Get allow_repurchase_type for reset, update. Add in: rest-api/v1/frontend/class-lp-courses-controller.php: purchase_course */
 				$allow_repurchase_type = learn_press_get_user_item_meta( $latest_user_item_id, '_lp_allow_repurchase_type' );
@@ -217,8 +217,8 @@ class LP_User_Factory {
 			$is_in_stock           = $courseModel->is_in_stock();
 
 			// If > 1 time purchase same course and allow repurchase
-			if ( $course->allow_repurchase() && ! empty( $latest_user_item_id )
-				&& ! $course->is_free() && ! $is_no_required_enroll ) {
+			if ( $courseModel->enable_allow_repurchase() && ! empty( $latest_user_item_id )
+				&& ! $courseModel->is_free() && ! $is_no_required_enroll ) {
 				if ( $allow_repurchase_option !== 'popup' ) {
 					$allow_repurchase_type = $allow_repurchase_option;
 				}
@@ -245,7 +245,7 @@ class LP_User_Factory {
 				}
 
 				learn_press_delete_user_item_meta( $latest_user_item_id, '_lp_allow_repurchase_type' );
-			} elseif ( ! $course->is_free() && ! $is_no_required_enroll && $is_in_stock ) { // First purchase course
+			} elseif ( ! $courseModel->is_free() && ! $is_no_required_enroll && $is_in_stock ) { // First purchase course
 				// Set data for create user_item
 				if ( $auto_enroll ) {
 					$user_item_data['status']     = LP_COURSE_ENROLLED;
