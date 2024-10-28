@@ -480,7 +480,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * Where call this function, must be careful, must set_time_limit( 0 );.
 		 *
 		 * @return array|object|stdClass[]|null
-		 * @version 1.0.0
+		 * @version 1.0.1
 		 * @since 4.2.7.2
 		 */
 		public function get_all_items() {
@@ -489,7 +489,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			$table_order_items = $lp_order_items->tb_lp_order_items;
 
 			$query = $wpdb->prepare(
-				"SELECT item_id, item_type
+				"SELECT order_item_id, order_item_name, item_id, item_type
 				From $table_order_items
 				WHERE order_id = %d",
 				$this->get_id()

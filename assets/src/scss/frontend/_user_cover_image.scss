@@ -30,6 +30,9 @@
 }
 
 .lp-user-cover-image {
+	&__display{
+		width: 100%;
+	}
 	@media (max-width: 767px) {
 		position: relative;
 		z-index: 1;

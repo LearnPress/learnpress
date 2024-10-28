@@ -21,10 +21,6 @@ use LP_Course_JSON_DB;
 use LP_Course_JSON_Filter;
 use LP_Datetime;
 use LP_Helper;
-use LP_Post_DB;
-use LP_User;
-use LP_User_Filter;
-use ReflectionClass;
 use stdClass;
 use Throwable;
 
@@ -64,7 +60,7 @@ class CourseModel {
 	 * Because price can change by date if set schedule sale
 	 */
 	public $price_to_sort = 0;
-	public $is_sale = 0;
+	public $is_sale       = 0;
 	/**
 	 * @var string JSON Store all data a single course
 	 */
@@ -86,9 +82,9 @@ class CourseModel {
 	public $permalink = '';
 	public $categories;
 	public $tags;
-	private $price = 0; // Not save in database, must auto reload calculate
+	private $price             = 0; // Not save in database, must auto reload calculate
 	private $passing_condition = '';
-	public $post_excerpt = '';
+	public $post_excerpt       = '';
 	/**
 	 * @var int ID of first item
 	 */
@@ -192,6 +188,17 @@ class CourseModel {
 	}
 
 	/**
+	 * Get status of course
+	 *
+	 * @return string
+	 * @since 4.2.7.3
+	 * @version 1.0.0
+	 */
+	public function get_status(): string {
+		return $this->post_status;
+	}
+
+	/**
 	 * Get categories
 	 * Check has data on table learnpress_courses return
 	 * if not check get from Post
@@ -223,7 +230,7 @@ class CourseModel {
 			return $this->tags;
 		}
 
-		$post       = new PostModel( $this );
+		$post = new PostModel( $this );
 		$tags = $post->get_tags();
 
 		$this->tags = $tags;
@@ -434,9 +441,9 @@ class CourseModel {
 		// Not use array_reverse, it's make change object
 		$section_items = $this->get_section_items();
 		$found         = 0;
-		for ( $i = count( $section_items ); $i > 0; $i -- ) {
+		for ( $i = count( $section_items ); $i > 0; $i-- ) {
 			$section = $section_items[ $i - 1 ];
-			for ( $j = count( $section->items ); $j > 0; $j -- ) {
+			for ( $j = count( $section->items ); $j > 0; $j-- ) {
 				$item = $section->items[ $j - 1 ];
 				if ( learn_press_get_post_type( $item->id ) === LP_QUIZ_CPT ) {
 					$final_quiz = $item->id;
@@ -675,7 +682,7 @@ class CourseModel {
 	 * @since 4.2.7.2
 	 * @version 1.0.0
 	 */
-	public function is_allow_repurchase():bool {
+	public function is_allow_repurchase(): bool {
 		$enable = $this->get_meta_value_by_key( CoursePostModel::META_KEY_ALLOW_COURSE_REPURCHASE, 'no' );
 
 		return 'yes' === $enable;
@@ -741,7 +748,7 @@ class CourseModel {
 	 * If exists, return PostModel.
 	 *
 	 * @param LP_Course_JSON_Filter $filter
-	 * @param bool $no_cache
+	 * @param bool $check_cache
 	 *
 	 * @return CourseModel|false|static
 	 */
@@ -783,7 +790,7 @@ class CourseModel {
 	 * Get course by ID
 	 *
 	 * @param int $course_id
-	 * @param bool $no_cache
+	 * @param bool $check_cache
 	 *
 	 * @return false|CourseModel|static
 	 */
@@ -868,7 +875,7 @@ class CourseModel {
 		// Set cache single course when save done.
 		$key_cache       = "course-model/find/id/{$this->ID}";
 		$lp_course_cache = new LP_Course_Cache();
-		$lp_course_cache->clear( $this->ID );
+		$lp_course_cache->clear( $key_cache );
 		$lp_course_cache->set_cache( $key_cache, $this->ID );
 
 		return $this;
@@ -882,8 +889,13 @@ class CourseModel {
 	public function delete() {
 		$lp_course_json_db  = LP_Course_JSON_DB::getInstance();
 		$filter             = new LP_Course_JSON_Filter();
-		$filter->where[]    = $lp_course_json_db->wpdb->prepare( "AND ID = %d", $this->ID );
+		$filter->where[]    = $lp_course_json_db->wpdb->prepare( 'AND ID = %d', $this->ID );
 		$filter->collection = $lp_course_json_db->tb_lp_courses;
 		$lp_course_json_db->delete_execute( $filter );
+
+		// Clear cache
+		$key_cache       = "course-model/find/id/{$this->ID}";
+		$lp_course_cache = new LP_Course_Cache();
+		$lp_course_cache->clear( $key_cache );
 	}
 }
