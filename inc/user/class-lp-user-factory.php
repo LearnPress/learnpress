@@ -11,18 +11,6 @@ defined( 'ABSPATH' ) || exit;
  */
 class LP_User_Factory {
 	/**
-	 * @var array
-	 */
-	protected static $_users = array();
-
-	/**
-	 * @var int
-	 */
-	protected static $_guest_transient = 0;
-
-	public static $_deleted_users = array();
-
-	/**
 	 * Init hooks
 	 */
 	public static function init() {

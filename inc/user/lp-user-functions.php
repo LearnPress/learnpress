@@ -1239,23 +1239,9 @@ function learn_press_remove_user_items( $user_id, $item_id, $course_id, $include
  *
  * @return mixed|string
  */
-function learn_press_user_profile_link( $user_id = 0, $tab = null ) {
+function learn_press_user_profile_link( $user_id = 0, $tab = '' ) {
 	if ( ! $user_id ) {
 		$user_id = get_current_user_id();
-	}
-	$user    = false;
-	$deleted = in_array( $user_id, LP_User_Factory::$_deleted_users );
-	if ( ! $deleted ) {
-		if ( is_numeric( $user_id ) ) {
-			$user = get_user_by( 'id', $user_id );
-		} else {
-			$user = get_user_by( 'login', urldecode( $user_id ) );
-		}
-	} else {
-		return '';
-	}
-	if ( ! $deleted && ! $user ) {
-		LP_User_Factory::$_deleted_users[] = $user_id;
 	}
 
 	$user = learn_press_get_user( $user_id );
@@ -1269,32 +1255,21 @@ function learn_press_user_profile_link( $user_id = 0, $tab = null ) {
 		'user' => $user->get_username(),
 	);
 
-	if ( isset( $args['user'] ) ) {
-		if ( '' === $tab ) {
-			//$tab = learn_press_get_current_profile_tab();
-		}
-		if ( $tab ) {
-			$args['tab'] = $tab;
-		}
-
-		/**
-		 * If no tab is selected in profile and is current user
-		 * then no need the username in profile link.
-		 */
-		if ( ( $user_id == get_current_user_id() ) && ! isset( $args['tab'] ) ) {
-			unset( $args['user'] );
-		}
+	if ( $tab ) {
+		$args['tab'] = $tab;
 	}
 
-	/*$args         = array_map(
-		function ( $string ) {
-			return preg_replace( '/\s/', '+', $string );
-		},
-		$args
-	);*/
+	/**
+	 * If no tab is selected in profile and is current user
+	 * then no need the username in profile link.
+	 */
+	if ( ( $user_id == get_current_user_id() ) && ! isset( $args['tab'] ) ) {
+		unset( $args['user'] );
+	}
+
 	$profile_link = trailingslashit( learn_press_get_page_link( 'profile' ) );
 	if ( $profile_link ) {
-		if ( get_option( 'permalink_structure' ) /*&& learn_press_get_page_id( 'profile' )*/ ) {
+		if ( get_option( 'permalink_structure' ) ) {
 			$url = trailingslashit( $profile_link . join( '/', array_values( $args ) ) );
 		} else {
 			$url = esc_url_raw( add_query_arg( $args, $profile_link ) );
