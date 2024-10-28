@@ -1,12 +1,9 @@
 <?php
 
-$course_id = $attributes['courseId'] ? (int) $attributes['courseId'] : 0;
-$title     = get_the_title( $course_id ) ?? '';
-?>
-<?php if ( ! empty( $title ) ) : ?>
-	<div class="title-single-course">
-		<h3>
-			<?php echo esc_html( $title ); ?>
-		</h3>
-	</div>
-<?php endif; ?>
+use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
+
+$course_id            = $attributes['courseId'] ? (int) $attributes['courseId'] : 0;
+$course               = learn_press_get_course( $course_id );
+$singleCourseTemplate = SingleCourseTemplate::instance();
+
+echo $singleCourseTemplate->html_title( $course );
