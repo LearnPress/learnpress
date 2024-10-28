@@ -3,7 +3,7 @@
 use LearnPress\Models\CourseModel;
 use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
 
-$course_id            = $attributes['courseId'] ? (int) $attributes['courseId'] : 0;
+$course_id            = ! empty( $attributes['courseId'] ) ? (int) $attributes['courseId'] : get_the_ID();
 $course               = CourseModel::find( $course_id, true );
 $singleCourseTemplate = SingleCourseTemplate::instance();
 
