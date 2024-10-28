@@ -375,17 +375,21 @@ class LP_User_Factory {
 		return $wpdb->get_col( $query );
 	}
 
-	public static function get_guest_id() {
+	/**
+	 * @deprecated 4.2.7.3
+	 */
+	/*public static function get_guest_id() {
 		return 0;// empty( $_COOKIE['learn_press_user_guest_id'] ) ? false : $_COOKIE['learn_press_user_guest_id'];
-	}
+	}*/
 
 	/**
 	 * @param      $the_user
 	 * @param bool $force
 	 *
 	 * @return LP_Abstract_User
+	 * @deprecated 4.2.7.3
 	 */
-	public static function get_user( $the_user, $force = false ) {
+	/*public static function get_user( $the_user, $force = false ) {
 		$the_id = 0;
 		if ( is_numeric( $the_user ) ) {
 			$the_id = $the_user;
@@ -406,7 +410,7 @@ class LP_User_Factory {
 		}
 
 		return self::$_users[ $the_id ];
-	}
+	}*/
 
 	/**
 	 * Get class name for User Object
@@ -414,73 +418,31 @@ class LP_User_Factory {
 	 * @param int
 	 *
 	 * @return string
+	 * @deprecated 4.2.7.3
 	 */
-	public static function get_user_class( $the_id = 0 ) {
-		$deleted     = in_array( $the_id, self::$_deleted_users );
-		$exists_user = ! $deleted ? get_userdata( $the_id ) : false;
-		if ( $exists_user ) {
-			$class = 'LP_User';
-		} else {
-			if ( ! $deleted ) {
-				self::$_deleted_users[] = $the_id;
-				/**
-				 * Prevent loading user does not exists in database
-				 */
-				$user = new LP_User_Guest( $the_id );
-				wp_cache_add( $the_id, $user, 'users' );
-				wp_cache_add( '', $the_id, 'userlogins' );
-				wp_cache_add( '', $the_id, 'useremail' );
-				wp_cache_add( '', $the_id, 'userslugs' );
-			}
-			$is_logged_in = function_exists( 'is_user_logged_in' ) && is_user_logged_in();
-			$class        = $is_logged_in ? 'LP_User' : 'LP_User_Guest';
-		}
-
-		return apply_filters( 'learn_press_user_class', $class );
-	}
-
-	/**
-	 * @param int $quiz_id
-	 * @param int $course_id
-	 * @param int $user_id
-	 *
-	 * @deprecated 4.2.2.4
-	 */
-	public static function start_quiz( $quiz_id, $course_id, $user_id ) {
-		_deprecated_function( __FUNCTION__, '4.2.2.4' );
-
-		return;
-		if ( learn_press_get_user( $user_id ) ) {
-			$user = learn_press_get_user( $user_id );
-			if ( $user->get_item_data( $quiz_id, $course_id ) ) {
-				self::_update_user_item_meta( $user->get_item_data( $quiz_id, $course_id ), $quiz_id, $course_id, $user_id );
-			}
-		}
-	}
-
-	/**
-	 * @param LP_User_Item $item
-	 * @param int $quiz_id
-	 * @param int $course_id
-	 * @param int $user_id
-	 *
-	 * @deprecated 4.2.2.4
-	 */
-	private static function _update_user_item_meta( $item, $quiz_id, $course_id, $user_id ) {
-		_deprecated_function( __FUNCTION__, '4.2.2.4' );
-
-		return;
-		if ( get_user_by( 'id', $user_id ) ) {
-			return;
-		}
-
-		if ( ! $item ) {
-			return;
-		}
-
-		learn_press_add_user_item_meta( $item->get_user_item_id(), 'temp_user_id', 'yes' );
-		learn_press_add_user_item_meta( $item->get_user_item_id(), 'temp_user_time', gmdate( 'Y-m-d H:i:s', time() ) );
-	}
+//	public static function get_user_class( $the_id = 0 ) {
+//		$deleted     = in_array( $the_id, self::$_deleted_users );
+//		$exists_user = ! $deleted ? get_userdata( $the_id ) : false;
+//		if ( $exists_user ) {
+//			$class = 'LP_User';
+//		} else {
+//			if ( ! $deleted ) {
+//				self::$_deleted_users[] = $the_id;
+//				/**
+//				 * Prevent loading user does not exists in database
+//				 */
+//				$user = new LP_User_Guest( $the_id );
+//				wp_cache_add( $the_id, $user, 'users' );
+//				wp_cache_add( '', $the_id, 'userlogins' );
+//				wp_cache_add( '', $the_id, 'useremail' );
+//				wp_cache_add( '', $the_id, 'userslugs' );
+//			}
+//			$is_logged_in = function_exists( 'is_user_logged_in' ) && is_user_logged_in();
+//			$class        = $is_logged_in ? 'LP_User' : 'LP_User_Guest';
+//		}
+//
+//		return apply_filters( 'learn_press_user_class', $class );
+//	}
 }
 
 LP_User_Factory::init();
