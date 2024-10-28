@@ -3,11 +3,11 @@ $blog_template_path = LP_PLUGIN_PATH . 'inc/block-template/';
 require_once $blog_template_path . 'class-block-template-archive-course.php';
 require_once $blog_template_path . 'class-block-template-single-course.php';
 require_once $blog_template_path . 'class-block-template-item-curriculum-course.php';
-require_once $blog_template_path . 'class-block-template-title-single-course.php';
-require_once $blog_template_path . 'class-block-template-description-single-course.php';
-require_once $blog_template_path . 'class-block-template-categories-single-course.php';
-require_once $blog_template_path . 'class-block-template-tags-single-course.php';
-require_once $blog_template_path . 'class-block-template-image-single-course.php';
+require_once $blog_template_path . 'single-course/class-block-template-title-single-course.php';
+require_once $blog_template_path . 'single-course/class-block-template-description-single-course.php';
+require_once $blog_template_path . 'single-course/class-block-template-categories-single-course.php';
+require_once $blog_template_path . 'single-course/class-block-template-tags-single-course.php';
+require_once $blog_template_path . 'single-course/class-block-template-image-single-course.php';
 
 return apply_filters(
 	'learn-press/config/block-templates',

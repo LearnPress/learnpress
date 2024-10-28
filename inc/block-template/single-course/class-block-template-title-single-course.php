@@ -13,7 +13,7 @@ class Block_Template_Title_Single_Course extends Abstract_Block_Template {
 	public $title                         = 'Title Single Course (LearnPress)';
 	public $description                   = 'Title Single Course Block Template';
 	public $path_html_block_template_file = 'html/title-single-course.html';
-	public $path_template_render_default  = 'widgets/title-single-course.php';
+	public $path_template_render_default  = 'block/render/title-single-course.php';
 	public $source_js                     = LP_PLUGIN_URL . 'assets/js/dist/blocks/title-single-course.js';
 
 	public function __construct() {
