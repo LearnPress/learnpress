@@ -805,6 +805,11 @@ class CourseModel {
 				throw new Exception( __( 'This course is already enrolled.', 'learnpress' ) );
 			}
 
+			if ( $userCourseModel && $userCourseModel->has_finished() ) {
+				$error_code = 'course_is_finished';
+				throw new Exception( __( 'The course is finished.', 'learnpress' ) );
+			}
+
 			if ( ! $this->is_in_stock() && ! $is_no_required_enroll && ! $userCourseModel ) {
 				$error_code = 'course_out_of_stock';
 				throw new Exception( __( 'The course is full of students.', 'learnpress' ) );
@@ -816,26 +821,15 @@ class CourseModel {
 				throw new Exception( __( 'The course is external', 'learnpress' ) );
 			}
 
-			if ( $userCourseModel && $userCourseModel->can_retake() ) {
+			/*if ( $userCourseModel && $userCourseModel->can_retake() ) {
 				$error_code = 'course_can_retry';
 				throw new Exception( esc_html__( 'Course can retake.', 'learnpress' ) );
-			}
+			}*/
 
 			if ( ! $this->is_free() && ! $is_no_required_enroll
 				&& ( ! $userCourseModel || ! $userCourseModel->has_purchased() ) ) {
 				$error_code = 'course_is_not_purchased';
 				throw new Exception( __( 'The course is not purchased.', 'learnpress' ) );
-			}
-
-			if ( $userCourseModel && $userCourseModel->has_finished() ) {
-				$error_code = 'course_is_finished';
-				throw new Exception( __( 'The course is finished.', 'learnpress' ) );
-			}
-
-			$is_blocked_course = 0 === $userCourseModel->timestamp_remaining_duration();
-			if ( $is_blocked_course ) {
-				$error_code = 'course_is_blocked';
-				throw new Exception( __( 'The course is blocked.', 'learnpress' ) );
 			}
 		} catch ( Throwable $e ) {
 			if ( empty( $error_code ) ) {

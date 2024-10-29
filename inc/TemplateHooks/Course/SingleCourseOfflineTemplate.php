@@ -223,6 +223,7 @@ class SingleCourseOfflineTemplate {
 				'wrapper'     => '<div class="course-buttons">',
 				'btn_contact' => $this->singleCourseTemplate->html_btn_external( $course, $user ),
 				'btn_buy'     => $this->singleCourseTemplate->html_btn_purchase_course( $course, $user ),
+				'btn_enroll'  => $this->singleCourseTemplate->html_btn_enroll_course( $course, $user ),
 				'wrapper_end' => '</div>',
 			],
 			$course,

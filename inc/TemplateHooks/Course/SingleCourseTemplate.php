@@ -718,11 +718,18 @@ class SingleCourseTemplate {
 	 * @version 1.0.0
 	 */
 	public function html_btn_enroll_course( CourseModel $course, $user ): string {
+		$html_btn   = '';
 		$can_enroll = $course->can_enroll( $user );
 		if ( is_wp_error( $can_enroll ) ) {
-			ob_start();
-			Template::print_message( $can_enroll->get_error_message(), 'warning' );
-			$html_btn = ob_get_clean();
+			$is_show_message = ! in_array(
+				$can_enroll->get_error_code(),
+				[ 'course_is_enrolled', 'course_is_finished', 'course_is_not_purchased', 'course_is_external' ]
+			);
+			if ( $is_show_message ) {
+				ob_start();
+				Template::print_message( $can_enroll->get_error_message(), 'warning' );
+				$html_btn = ob_get_clean();
+			}
 		} else {
 			$html_btn = sprintf(
 				'<button class="lp-button button button-enroll-course">%s</button>',

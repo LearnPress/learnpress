@@ -162,7 +162,7 @@ class LP_User_Factory {
 	 * @since   4.1.3
 	 * @version 1.0.5
 	 */
-	protected static function handle_item_order_completed( LP_Order $order, LP_User $user, $item ) {
+	protected static function handle_item_order_completed( LP_Order $order, $user, $item ) {
 		$lp_user_items_db = LP_User_Items_DB::getInstance();
 
 		try {
@@ -272,7 +272,7 @@ class LP_User_Factory {
 	 * @since 4.1.3
 	 * @version 1.0.2
 	 */
-	protected static function handle_item_manual_order_completed( LP_Order $order, LP_User $user, $item ) {
+	protected static function handle_item_manual_order_completed( LP_Order $order, $user, $item ) {
 		try {
 			$course = CourseModel::find( $item['course_id'] ?? $item['item_id'] ?? 0, true );
 			if ( ! $course ) {
@@ -280,7 +280,6 @@ class LP_User_Factory {
 			}
 
 			$auto_enroll = LP_Settings::is_auto_start_course();
-
 			if ( $user instanceof LP_User_Guest ) {
 				return;
 			}
