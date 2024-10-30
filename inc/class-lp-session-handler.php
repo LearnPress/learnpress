@@ -383,6 +383,11 @@ class LP_Session_Handler {
 	 * @param bool $force_change
 	 */
 	public function set( string $key, $value, bool $force_change = false ) {
+		// if customer id is not set then run $this->init() once. It is necessary when this function is invoked while doing ajax. While doing ajax $this->_customer_id is always ''
+		if (strlen( $this->_customer_id ) ===0 ) {
+			$this->init();
+		}
+		
 		$this->_data[ sanitize_key( $key ) ] = maybe_serialize( $value );
 
 		if ( $force_change ) {

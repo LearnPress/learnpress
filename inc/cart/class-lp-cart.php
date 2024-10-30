@@ -203,24 +203,25 @@ class LP_Cart {
 	/**
 	 * Remove an item from cart
 	 *
-	 * @param $item_id
+	 * @param $cart_id
 	 *
 	 * @return bool
 	 */
-	public function remove_item( $item_id ) {
-		if ( isset( $this->_cart_content['items'][ $item_id ] ) ) {
+	public function remove_item( $cart_id ) {
+		
+		if ( isset( $this->_cart_content[ $cart_id ] ) ) {
+			
+			do_action( 'learn_press_remove_cart_item', $cart_id, $this );
 
-			do_action( 'learn_press_remove_cart_item', $item_id, $this );
+			unset( $this->_cart_content[$cart_id] );
 
-			unset( $this->_cart_content['items'][ $item_id ] );
-
-			do_action( 'learn_press_cart_item_removed', $item_id, $this );
+			do_action( 'learn_press_cart_item_removed', $cart_id, $this );
 
 			$this->update_session( $this->_cart_content );
 
 			return true;
 		}
-
+		
 		return false;
 	}
 
