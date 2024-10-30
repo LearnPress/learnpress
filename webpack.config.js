@@ -80,7 +80,6 @@ module.exports = {
 		'./assets/js/dist/frontend/widgets': './assets/src/js/frontend/widgets.js',
 		'./assets/js/dist/frontend/course-filter': './assets/src/js/frontend/course-filter.js',
 		'./assets/js/dist/blocks/archive-course': './assets/src/apps/js/blocks/archive-course/index.js',
-		'./assets/js/dist/blocks/widget-single-course': './assets/src/apps/js/blocks/widget-single-course/index.js',
 		'./assets/js/dist/blocks/title-single-course': './assets/src/apps/js/blocks/widget-single-course/title-single-course/index.js',
 		'./assets/js/dist/blocks/description-single-course': './assets/src/apps/js/blocks/widget-single-course/description-single-course/index.js',
 		'./assets/js/dist/blocks/categories-single-course': './assets/src/apps/js/blocks/widget-single-course/categories-single-course/index.js',
