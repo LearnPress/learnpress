@@ -1,24 +1,28 @@
 import { __ } from '@wordpress/i18n';
 import { useBlockProps } from '@wordpress/block-editor';
-import { Placeholder } from '@wordpress/components';
 
 export const edit = ( props ) => {
 	const blockProps = useBlockProps();
+	const updateCourseId = ( e ) => {
+		if ( ! e.target.value ) {
+			props.setAttributes( { courseId: '' } );
+		}
+
+		if ( Number( e.target.value ) ) {
+			props.setAttributes( { courseId: Number( e.target.value ) } );
+		}
+	};
 
 	return (
 		<div { ...blockProps }>
-			<Placeholder
-				label={ __( 'Archive Course ádsda', 'learnpress' ) }
-			>
-				<div>
-					{
-						__(
-							'This is an editor placeholder for the Archive Course page. Content will render content of list courses. Should be not remove it',
-							'realpress'
-						)
-					}
-				</div>
-			</Placeholder>
+			<strong>
+				{ 'Image Single Course' }
+			</strong>
+			<br />
+			<span>
+				{ 'Course ID' }
+			</span>
+			<input value={ props.attributes.courseId } onChange={ updateCourseId } placeholder="Get current post"></input>
 		</div>
 	);
 };

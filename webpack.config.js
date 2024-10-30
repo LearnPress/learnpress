@@ -80,11 +80,13 @@ module.exports = {
 		'./assets/js/dist/frontend/widgets': './assets/src/js/frontend/widgets.js',
 		'./assets/js/dist/frontend/course-filter': './assets/src/js/frontend/course-filter.js',
 		'./assets/js/dist/blocks/archive-course': './assets/src/apps/js/blocks/archive-course/index.js',
+		'./assets/js/dist/blocks/widget-single-course': './assets/src/apps/js/blocks/widget-single-course/index.js',
 		'./assets/js/dist/blocks/title-single-course': './assets/src/apps/js/blocks/widget-single-course/title-single-course/index.js',
 		'./assets/js/dist/blocks/description-single-course': './assets/src/apps/js/blocks/widget-single-course/description-single-course/index.js',
 		'./assets/js/dist/blocks/categories-single-course': './assets/src/apps/js/blocks/widget-single-course/categories-single-course/index.js',
 		'./assets/js/dist/blocks/tags-single-course': './assets/src/apps/js/blocks/widget-single-course/tags-single-course/index.js',
 		'./assets/js/dist/blocks/image-single-course': './assets/src/apps/js/blocks/widget-single-course/image-single-course/index.js',
+		'./assets/js/dist/blocks/instructor-single-course': './assets/src/apps/js/blocks/widget-single-course/instructor-single-course/index.js',
 		'./assets/js/dist/blocks/single-course': './assets/src/apps/js/blocks/single-course/index.js',
 		'./assets/js/dist/blocks/item-curriculum-course': './assets/src/apps/js/blocks/item-curriculum-course/index.js',
 

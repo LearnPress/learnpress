@@ -25,7 +25,7 @@ class Block_Template_Description_Single_Course extends Abstract_Block_Template {
 		wp_enqueue_script(
 			'my-block-script',
 			plugins_url( 'block.js', __FILE__ ),
-			array( 'wp-blocks', 'wp-editor', 'wp-element', 'wp-components', 'wp-i18n', 'wp-block-editor' ) // Đảm bảo wp-block-editor có trong danh sách phụ thuộc
+			array( 'wp-blocks', 'wp-editor', 'wp-element', 'wp-components', 'wp-i18n', 'wp-block-editor' )
 		);
 	}
 }

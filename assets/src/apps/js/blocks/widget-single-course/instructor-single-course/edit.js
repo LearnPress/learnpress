@@ -16,7 +16,7 @@ export const edit = ( props ) => {
 	return (
 		<div { ...blockProps }>
 			<strong>
-				{ 'List Categories Single Course' }
+				{ 'Instructor Single Course' }
 			</strong>
 			<br />
 			<span>

@@ -1,39 +1,13 @@
 /**
  * Register block archive property.
  */
+import { edit } from './edit';
+import { save } from './save';
 import metadata from './block.json';
 import { registerBlockType } from '@wordpress/blocks';
-import { useBlockProps } from '@wordpress/block-editor';
 
 registerBlockType( 'learnpress/description-single-course', {
 	...metadata,
-	edit: ( props ) => {
-		const blockProps = useBlockProps();
-		const updateCourseId = ( e ) => {
-			if ( ! e.target.value ) {
-				props.setAttributes( { courseId: '' } );
-			}
-
-			if ( Number( e.target.value ) ) {
-				props.setAttributes( { courseId: Number( e.target.value ) } );
-			}
-		};
-
-		return (
-			<div { ...blockProps }>
-				<strong>
-					{ 'Description Single Course' }
-
-				</strong>
-				<br />
-				<span>
-					{ 'Course ID' }
-				</span>
-				<input value={ props.attributes.courseId } onChange={ updateCourseId } placeholder="Get current post"></input>
-			</div>
-		);
-	},
-	save: ( props ) => {
-		return null;
-	},
+	edit,
+	save,
 } );
