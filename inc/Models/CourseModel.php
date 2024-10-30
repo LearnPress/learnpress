@@ -856,10 +856,94 @@ class CourseModel {
 			} elseif ( ! $output->check && $output->message ) {
 				$can_enroll = new WP_Error( 'error_custom', $output->message );
 			}
-			//_deprecated_function( 'The learn-press/user/can-purchase-course filter', '4.2.7.3', 'learn-press/user/can-enroll/course' );
+			//_deprecated_function( 'The learn-press/user/can-enroll-course filter', '4.2.7.3', 'learn-press/user/can-enroll/course' );
 		}
 
 		return apply_filters( 'learn-press/user/can-enroll/course', $can_enroll, $this, $user );
+	}
+
+	/**
+	 * Check user can purchase course.
+	 * @move from can_purchase_course method of LP_User class, since 4.0.8
+	 * @use LP_User::can_purchase_course
+	 *
+	 * @param UserModel|false $user
+	 *
+	 * @return bool|WP_Error
+	 * @since 4.2.7.3
+	 * @version 1.0.0
+	 */
+	public function can_purchase( $user ) {
+		$can_purchase = true;
+		$error_code   = '';
+
+		$user_id = 0;
+		if ( $user instanceof UserModel ) {
+			$user_id = $user->get_id();
+		}
+
+		try {
+			if ( ! in_array( $this->post_status, [ 'publish', 'private' ] ) ) {
+				$error_code = 'course_not_publish';
+				throw new Exception( __( 'The course is not public', 'learnpress' ) );
+			}
+
+			if ( $this->is_free() ) {
+				$error_code = 'course_is_free';
+				throw new Exception( __( 'The course is free.', 'learnpress' ) );
+			}
+
+			$is_no_required_enroll = $this->has_no_enroll_requirement();
+			if ( ! $user && $is_no_required_enroll ) {
+				$error_code = 'course_is_no_required_enroll_not_login';
+				throw new Exception(
+					__( 'Enrollment in the course is not mandatory. You can access course for learning now.', 'learnpress' )
+				);
+			}
+
+			$userCourseModel = UserCourseModel::find( $user_id, $this->get_id(), true );
+
+			// If the order contains course is processing
+			$order = $userCourseModel && $userCourseModel->ref_id ? learn_press_get_order( $userCourseModel->ref_id ) : false;
+			if ( $order && $order->get_status() === LP_ORDER_PROCESSING ) {
+				$error_code = 'order_processing';
+				throw new Exception( __( 'Your order is waiting for processing', 'learnpress' ) );
+			}
+
+			if ( $userCourseModel && $userCourseModel->has_purchased() ) {
+				$error_code = 'course_purchased';
+				throw new Exception( __( 'Course is purchased', 'learnpress' ) );
+			}
+
+			if ( $this->enable_allow_repurchase() ) {
+				if ( $userCourseModel && $userCourseModel->has_enrolled()
+					&& $userCourseModel->timestamp_remaining_duration() > 0 ) {
+					$error_code = 'course_is_enrolled';
+					throw new Exception( 'Course is enrolled' );
+				}
+			} else {
+				if ( $userCourseModel && $userCourseModel->has_enrolled_or_finished() ) {
+					$error_code = 'course_is_enrolled_or_finished';
+					throw new Exception( __( 'Course is enrolled or finished', 'learnpress' ) );
+				}
+			}
+		} catch ( Throwable $e ) {
+			if ( empty( $error_code ) ) {
+				$error_code = 'course_can_not_purchase';
+			}
+			$can_purchase = new WP_Error( $error_code, $e->getMessage() );
+		}
+
+		// Hook old
+		if ( has_filter( 'learn-press/user/can-purchase-course' ) ) {
+			$can_purchase = apply_filters( 'learn-press/user/can-purchase-course', $can_purchase, $user_id, $this->get_id() );
+			if ( $can_purchase === false ) {
+				$can_purchase = new WP_Error( '', '' );
+			}
+			//_deprecated_function( 'The learn-press/user/can-purchase-course filter', '4.2.7.3', 'learn-press/user/can-purchase/course' );
+		}
+
+		return apply_filters( 'learn-press/user/can-purchase/course', $can_purchase, $this, $user );
 	}
 
 	/**

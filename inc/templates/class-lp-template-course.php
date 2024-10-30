@@ -173,6 +173,14 @@ class LP_Template_Course extends LP_Abstract_Template {
 	 * @version 4.0.2
 	 */
 	public function course_purchase_button( $course = null ) {
+		// Test
+		$singleCourseTemplate = \LearnPress\TemplateHooks\Course\SingleCourseTemplate::instance();
+		$course               = \LearnPress\Models\CourseModel::find( get_the_ID() );
+		$user                 = \LearnPress\Models\UserModel::find( get_current_user_id() );
+		echo $singleCourseTemplate->html_btn_purchase_course( $course, $user );
+		return;
+		// End test
+
 		$can_show = true;
 		if ( empty( $course ) ) {
 			$course = learn_press_get_course();
@@ -194,8 +202,10 @@ class LP_Template_Course extends LP_Abstract_Template {
 
 		$can_purchase = $user->can_purchase_course( $course->get_id() );
 		if ( is_wp_error( $can_purchase ) ) {
-			if ( in_array( $can_purchase->get_error_code(),
-				[ 'order_processing', 'course_out_of_stock', 'course_is_no_required_enroll_not_login' ] ) ) {
+			if ( in_array(
+				$can_purchase->get_error_code(),
+				[ 'order_processing', 'course_out_of_stock', 'course_is_no_required_enroll_not_login' ]
+			) ) {
 				Template::print_message( $can_purchase->get_error_message(), 'warning' );
 			}
 
@@ -238,8 +248,8 @@ class LP_Template_Course extends LP_Abstract_Template {
 	public function course_enroll_button( $course = null ) {
 		// Test
 		$singleCourseTemplate = \LearnPress\TemplateHooks\Course\SingleCourseTemplate::instance();
-		$course = \LearnPress\Models\CourseModel::find( get_the_ID() );
-		$user = \LearnPress\Models\UserModel::find( get_current_user_id() );
+		$course               = \LearnPress\Models\CourseModel::find( get_the_ID() );
+		$user                 = \LearnPress\Models\UserModel::find( get_current_user_id() );
 		echo $singleCourseTemplate->html_btn_enroll_course( $course, $user );
 		return;
 		// End test
@@ -580,7 +590,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 		}
 		?>
 		<div class="learnpress-course-curriculum" data-section="<?php echo esc_attr( $section_id ?? '' ); ?>"
-			 data-id="<?php echo esc_attr( $item_id ?? '' ); ?>">
+			data-id="<?php echo esc_attr( $item_id ?? '' ); ?>">
 			<?php lp_skeleton_animation_html( 10 ); ?>
 		</div>
 		<?php

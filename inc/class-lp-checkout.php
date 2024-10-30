@@ -321,7 +321,7 @@ class LP_Checkout {
 	/**
 	 * Guest checkout is enable?
 	 *
-	 * @return mixed
+	 * @return bool
 	 * @since 3.0.0
 	 */
 	public function is_enable_guest_checkout() {
