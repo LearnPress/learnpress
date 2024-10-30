@@ -780,15 +780,15 @@ class CourseModel {
 		$can_enroll = true;
 		$error_code = '';
 
+		$user_id = 0;
+		if ( $user instanceof UserModel ) {
+			$user_id = $user->get_id();
+		}
+
 		try {
 			if ( ! in_array( $this->post_status, [ 'publish', 'private' ] ) ) {
 				$error_code = 'course_not_publish';
 				throw new Exception( __( 'The course is not public', 'learnpress' ) );
-			}
-
-			$user_id = 0;
-			if ( $user instanceof UserModel ) {
-				$user_id = $user->get_id();
 			}
 
 			$is_no_required_enroll = $this->has_no_enroll_requirement();
@@ -836,6 +836,27 @@ class CourseModel {
 				$error_code = 'course_can_not_enroll';
 			}
 			$can_enroll = new WP_Error( $error_code, $e->getMessage() );
+		}
+
+		// Hook old
+		if ( has_filter( 'learn-press/user/can-enroll-course' ) ) {
+			$output          = new stdClass();
+			$output->check   = true;
+			$output->message = '';
+			if ( $can_enroll instanceof WP_Error ) {
+				$output->check   = false;
+				$output->message = $can_enroll->get_error_message();
+			}
+
+			$course_old = learn_press_get_course( $this->get_id() );
+			$user_old   = learn_press_get_user( $user_id );
+			$output     = apply_filters( 'learn-press/user/can-enroll-course', $output, $course_old, false, $user_old );
+			if ( $output === false ) {
+				$can_enroll = new WP_Error( '', '' );
+			} elseif ( ! $output->check && $output->message ) {
+				$can_enroll = new WP_Error( 'error_custom', $output->message );
+			}
+			//_deprecated_function( 'The learn-press/user/can-purchase-course filter', '4.2.7.3', 'learn-press/user/can-enroll/course' );
 		}
 
 		return apply_filters( 'learn-press/user/can-enroll/course', $can_enroll, $this, $user );
