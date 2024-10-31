@@ -120,7 +120,8 @@ class LP_Template_Course extends LP_Abstract_Template {
 	public function quiz_meta_final( $item ) {
 		$course = $item->get_course();
 
-		if ( ! $course || ! $course->is_final_quiz( $item->get_id() ) ) {
+		if ( ! $course || ! $course->is_final_quiz( $item->get_id() )
+			|| $course->get_evaluation_type() != 'evaluate_final_quiz' ) {
 			return;
 		}
 
