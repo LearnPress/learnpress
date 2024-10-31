@@ -660,14 +660,22 @@ class SingleCourseTemplate {
 	 * @version 1.0.1
 	 */
 	public function html_btn_purchase_course( CourseModel $course, $user ): string {
-		$html_btn   = '';
+		$html_btn     = '';
 		$can_purchase = $course->can_purchase( $user );
 		if ( is_wp_error( $can_purchase ) ) {
 			$error_code_not_show = apply_filters(
 				'learn-press/course/html-button-purchase/not-show-message',
-				[ '', 'course_purchased', 'course_is_enrolled_or_finished' ]
+				[
+					'course_purchased',
+					'course_is_enrolled_or_finished',
+					'course_not_publish',
+					'course_is_free',
+					'course_is_enrolled',
+					'course_is_no_required_enroll',
+				]
 			);
-			if ( ! in_array( $can_purchase->get_error_code(), $error_code_not_show ) ) {
+			if ( ! in_array( $can_purchase->get_error_code(), $error_code_not_show )
+				&& ! empty( $can_purchase->get_error_message() ) ) {
 				ob_start();
 				Template::print_message( $can_purchase->get_error_message(), 'warning' );
 				$html_btn = ob_get_clean();
@@ -731,9 +739,15 @@ class SingleCourseTemplate {
 		if ( is_wp_error( $can_enroll ) ) {
 			$error_code_not_show = apply_filters(
 				'learn-press/course/html-button-enroll/not-show-message',
-				[ 'course_is_enrolled', 'course_is_finished', 'course_is_not_purchased', 'course_is_external', '' ]
+				[
+					'course_is_enrolled',
+					'course_is_finished',
+					'course_is_not_purchased',
+					'course_is_external',
+				]
 			);
-			if ( ! in_array( $can_enroll->get_error_code(), $error_code_not_show ) ) {
+			if ( ! in_array( $can_enroll->get_error_code(), $error_code_not_show )
+				&& ! empty( $can_enroll->get_error_message() ) ) {
 				ob_start();
 				Template::print_message( $can_enroll->get_error_message(), 'warning' );
 				$html_btn = ob_get_clean();

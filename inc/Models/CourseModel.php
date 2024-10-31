@@ -894,8 +894,8 @@ class CourseModel {
 			}
 
 			$is_no_required_enroll = $this->has_no_enroll_requirement();
-			if ( ! $user && $is_no_required_enroll ) {
-				$error_code = 'course_is_no_required_enroll_not_login';
+			if ( $is_no_required_enroll ) {
+				$error_code = 'course_is_no_required_enroll';
 				throw new Exception(
 					__( 'Enrollment in the course is not mandatory. You can access course for learning now.', 'learnpress' )
 				);
