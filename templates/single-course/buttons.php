@@ -6,7 +6,7 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  3.0.0
+ * @version  3.0.1
  */
 
 /**
@@ -21,7 +21,7 @@ defined( 'ABSPATH' ) || exit();
 
 	/**
 	 * @see LP_Template_Course::course_purchase_button - 10
-	 * @see LP_Template_Course::course_enroll_button - 10
+	 * @see LP_Template_Course::course_enroll_button - 5
 	 * @see learn_press_course_retake_button - 10
 	 */
 	do_action( 'learn-press/course-buttons' );
