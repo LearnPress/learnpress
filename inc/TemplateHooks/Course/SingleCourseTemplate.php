@@ -1032,6 +1032,36 @@ class SingleCourseTemplate {
 		return $html;
 	}
 
+		/**
+	 * HTML struct course box extra
+	 *
+	 * @param CourseModel $course
+	 * @param $title
+	 * @param string $html_list
+	 *
+	 * @return string
+	 * @since 4.2.7.2
+	 * @version 1.0.0
+	 */
+	public function html_tabs( CourseModel $course ): string {
+
+		$html_tabs = '';
+		ob_start();
+		$html_tabs = learn_press_course_tabs();
+		ob_get_clean();
+		$tabs = apply_filters(
+			'learn-press/course/html-course-box-extra',
+			[
+				'wrapper'     => '<div class="course-extra-box">',
+				'tabs'        => $html_tabs,
+				'wrapper_end' => '</div>',
+			],
+			$html_tabs
+		);
+
+		return Template::combine_components( $tabs );
+	}
+
 	/**
 	 * Render string to data content
 	 *
