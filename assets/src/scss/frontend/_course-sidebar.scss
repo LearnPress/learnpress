@@ -38,20 +38,6 @@
 			&:hover {
 				border-color: var(--lp-primary-color);
 			}
-
-			~ .lp-enroll-notice {
-				margin-top: 20px;
-				padding: 20px;
-				border: 2px solid $msg-success;
-				border-radius: 9px;
-				font-size: 0.93em;
-				line-height: 1.4;
-
-				&.error {
-					border-color: $msg-error;
-				}
-			}
-
 		}
 
 	}

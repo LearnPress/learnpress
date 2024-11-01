@@ -184,7 +184,7 @@ class LP_User_Factory {
 			$userCourse = UserCourseModel::find( $user_id, $course_id );
 
 			$latest_user_item_id     = 0;
-			$allow_repurchase_option = $courseModel->get_meta_value_by_key( CoursePostModel::META_KEY_COURSE_REPURCHASE_OPTION, 'reset' );
+			$allow_repurchase_option = $courseModel->get_type_repurchase();
 			$allow_repurchase_type   = '';
 
 			// Data user_item for save database

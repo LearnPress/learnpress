@@ -768,7 +768,7 @@ class SingleCourseTemplate {
 			}
 		} else {
 			$html_btn = sprintf(
-				'<button type="button" class="lp-button button button-enroll-course">%s</button>',
+				'<button type="submit" class="lp-button button-enroll-course">%s</button>',
 				__( 'Start Now', 'learnpress' )
 			);
 		}
