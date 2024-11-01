@@ -27,7 +27,7 @@ class LP_User_Factory {
 	 * @Todo tungnx - should write on class LP_Order
 	 */
 	public static function update_user_items( $the_id, $old_status, $new_status ) {
-		$time_limit_default = ini_get('max_execution_time');
+		$time_limit_default = ini_get( 'max_execution_time' );
 		@set_time_limit( 0 );
 		$order = learn_press_get_order( $the_id );
 		if ( ! $order ) {

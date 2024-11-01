@@ -959,7 +959,7 @@ class CourseModel {
 
 			if ( $this->enable_allow_repurchase() ) {
 				if ( $userCourseModel && $userCourseModel->has_enrolled()
-					&& $userCourseModel->timestamp_remaining_duration() > 0 ) {
+					&& $userCourseModel->timestamp_remaining_duration() !== 0 ) {
 					$error_code = 'course_is_enrolled';
 					throw new Exception( 'Course is enrolled' );
 				}
