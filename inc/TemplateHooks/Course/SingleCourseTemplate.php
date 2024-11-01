@@ -1041,13 +1041,14 @@ class SingleCourseTemplate {
 	 * @since 4.2.7.2
 	 * @version 1.0.0
 	 */
-	public function html_tabs( CourseModel $course ): string {
+	public function html_tabs( CourseModel $course, $html_tabs ): string {
+		if ( empty( $html_tabs ) ) {
+			ob_start();
+			learn_press_course_tabs();
+			$html_tabs = ob_get_clean();
+		}
 
-		$html_tabs = '';
-		ob_start();
-		learn_press_course_tabs();
-		$html_tabs = ob_get_clean();
-		$tabs      = apply_filters(
+		$tabs = apply_filters(
 			'learn-press/course/html-tabs',
 			[
 				'wrapper'     => '<div class="tabs-single-course">',
