@@ -1033,11 +1033,9 @@ class SingleCourseTemplate {
 	}
 
 		/**
-	 * HTML struct course box extra
+	 * HTML struct tabs
 	 *
 	 * @param CourseModel $course
-	 * @param $title
-	 * @param string $html_list
 	 *
 	 * @return string
 	 * @since 4.2.7.2
