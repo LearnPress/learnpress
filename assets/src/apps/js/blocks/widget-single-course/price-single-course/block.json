@@ -1,0 +1,23 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "learnpress/price-single-course",
+	"title": "Price Single Course",
+	"category": "learnpress-category",
+	"description": "Renders template Price Single Course PHP templates.",
+	"textdomain": "learnpress",
+	"keywords": ["price single course", "learnpress"],
+	"attributes": {
+		"courseId": {
+			"type": "number"
+		}
+	},
+	"usesContext": [],
+	"supports": {
+		"inserter": true,
+		"reusable": true,
+		"reorder": true,
+		"html": false,
+		"multiple": true
+	}
+}

@@ -1048,7 +1048,7 @@ class SingleCourseTemplate {
 		learn_press_course_tabs();
 		$html_tabs = ob_get_clean();
 		$tabs      = apply_filters(
-			'learn-press/course/html-course-box-extra',
+			'learn-press/course/html-tabs',
 			[
 				'wrapper'     => '<div class="tabs-single-course">',
 				'tabs'        => $html_tabs,
