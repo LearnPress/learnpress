@@ -40,8 +40,7 @@ $posts = get_posts( $args );
 $post  = $posts[0] ?? 0;
 
 if ( $post instanceof WP_Post ) {
-
-	if ( $post->post_status !== 'public' && ( ! current_user_can( 'administrator' ) || ! get_current_user_id() === $post->post_author ) ) {
+	if ( $post->post_status !== 'publish' && ( ! current_user_can( 'administrator' ) || ! get_current_user_id() === $post->post_author ) ) {
 		$template_404 = get_query_template( '404' );
 		if ( $template_404 ) {
 			include $template_404;
