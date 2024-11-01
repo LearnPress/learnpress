@@ -1052,7 +1052,7 @@ class SingleCourseTemplate {
 		$tabs      = apply_filters(
 			'learn-press/course/html-course-box-extra',
 			[
-				'wrapper'     => '<div class="course-extra-box">',
+				'wrapper'     => '<div class="tabs-single-course">',
 				'tabs'        => $html_tabs,
 				'wrapper_end' => '</div>',
 			],
