@@ -116,6 +116,43 @@ class UserItemModel {
 	}
 
 	/**
+	 * Get start time
+	 *
+	 * @return string
+	 */
+	public function get_start_time(): string {
+		return $this->start_time;
+	}
+
+	/**
+	 * Get end time
+	 *
+	 * @return string
+	 */
+	public function get_end_time(): string {
+		return $this->end_time;
+	}
+
+	/**
+	 * Get status
+	 *
+	 * @return string
+	 */
+	public function get_status(): string {
+		return $this->status;
+	}
+
+	/**
+	 * Get graduation
+	 *
+	 * @return string
+	 */
+	public function get_graduation(): string {
+		return $this->graduation;
+	}
+
+
+	/**
 	 * Get user item id
 	 *
 	 * @return int

@@ -22,6 +22,7 @@ use LP_Course_JSON_DB;
 use LP_Course_JSON_Filter;
 use LP_Datetime;
 use LP_Helper;
+use LP_Settings;
 use stdClass;
 use Throwable;
 use WP_Error;
@@ -387,7 +388,7 @@ class CourseModel {
 	 * @return int
 	 */
 	public function get_first_item_id(): int {
-		if ( ! empty( $this->first_item_id ) ) {
+		if ( isset( $this->first_item_id ) ) {
 			return $this->first_item_id;
 		}
 
@@ -690,7 +691,7 @@ class CourseModel {
 	}
 
 	/**
-	 * Check course is in stock
+	 * Check course is enable repurchase
 	 *
 	 * @return bool
 	 * @since 4.2.7.2
@@ -703,6 +704,17 @@ class CourseModel {
 	}
 
 	/**
+	 * Type repurchase
+	 *
+	 * @return string
+	 * @since 4.2.7.3
+	 * @version 1.0.0
+	 */
+	public function get_type_repurchase(): string {
+		return $this->get_meta_value_by_key( CoursePostModel::META_KEY_COURSE_REPURCHASE_OPTION, 'reset' );
+	}
+
+	/**
 	 * Get external link
 	 *
 	 * @return string
@@ -711,6 +723,36 @@ class CourseModel {
 		return esc_url_raw(
 			$this->get_meta_value_by_key( CoursePostModel::META_KEY_EXTERNAL_LINK_BY_COURSE, '' )
 		);
+	}
+
+	/**
+	 * Get item's link
+	 * @move from LP_Abstract_Course
+	 *
+	 * @param int $item_id
+	 *
+	 * @since 3.0.0
+	 * @version 1.0.1
+	 * @return string
+	 */
+	public function get_item_link( int $item_id ): string {
+		$item_type        = get_post_type( $item_id );
+		$course_permalink = trailingslashit( $this->get_permalink() );
+		$item_slug        = get_post_field( 'post_name', $item_id );
+
+		$slug_prefixes = apply_filters(
+			'learn-press/course/custom-item-prefixes',
+			array(
+				LP_QUIZ_CPT   => sanitize_title_with_dashes( LP_Settings::get_option( 'quiz_slug', 'quizzes' ) ),
+				LP_LESSON_CPT => sanitize_title_with_dashes( LP_Settings::get_option( 'lesson_slug', 'lessons' ) ),
+			),
+			$this->get_id()
+		);
+
+		$slug_prefix = trailingslashit( $slug_prefixes[ $item_type ] ?? '' );
+		$item_link   = trailingslashit( $course_permalink . $slug_prefix . $item_slug );
+
+		return apply_filters( 'learn-press/course/item-link', $item_link, $item_id, $this );
 	}
 
 	/**
@@ -762,8 +804,8 @@ class CourseModel {
 	 *
 	 * @return int
 	 */
-	public function get_duration(): int {
-		return (int) $this->get_meta_value_by_key( CoursePostModel::META_KEY_DURATION, 0 );
+	public function get_duration(): string {
+		return $this->get_meta_value_by_key( CoursePostModel::META_KEY_DURATION, '0' );
 	}
 
 	/**

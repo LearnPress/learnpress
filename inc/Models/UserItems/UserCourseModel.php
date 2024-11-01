@@ -415,7 +415,7 @@ class UserCourseModel extends UserItemModel {
 			return $timestamp_remaining;
 		}
 
-		if ( 0 === $course->get_duration() ) {
+		if ( 0 === (int) $course->get_duration() ) {
 			return $timestamp_remaining;
 		}
 
@@ -423,7 +423,7 @@ class UserCourseModel extends UserItemModel {
 			return $timestamp_remaining;
 		}
 
-		$course_start_time_str = $this->get_meta_value_from_key( 'start_time', '' );
+		$course_start_time_str = $this->get_start_time();
 		$course_start_time     = new LP_Datetime( $course_start_time_str );
 		$course_start_time     = $course_start_time->get_raw_date();
 		$duration              = $course->get_duration();
