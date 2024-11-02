@@ -151,7 +151,7 @@ class LP_Assets extends LP_Abstract_Assets {
 				'urlParams'         => lp_archive_skeleton_get_args(),
 				'lp_version'        => LearnPress::instance()->version,
 				'lp_rest_load_ajax' => get_rest_url( null, 'lp/v1/load_content_via_ajax/' ),
-				'coverImageRatio' => $aspectRatio,
+				'coverImageRatio'   => $aspectRatio,
 				'toast'             => [
 					'gravity'     => 'bottom',
 					'position'    => 'center',
@@ -160,6 +160,7 @@ class LP_Assets extends LP_Abstract_Assets {
 					'stopOnFocus' => 1,
 					'classPrefix' => 'lp-toast',
 				],
+				'i18n'              => [],
 			]
 		);
 	}
