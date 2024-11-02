@@ -86,8 +86,7 @@ class LP_User_Factory {
 				if ( isset( $item['item_id'] ) && LP_COURSE_CPT === $item['item_type'] ) {
 					$course_id = $item['item_id'];
 
-					// Check this order is the latest by user and course_id
-					//$last_order_id = $lp_order_db->get_last_lp_order_id_of_user_course( $user_id, $course_id );
+					// Check course is learning is sample order_id with order which is changing status
 					$userCourse = UserCourseModel::find( $user_id, $course_id, true );
 					if ( $userCourse && $userCourse->ref_id != $order->get_id() ) {
 						continue;
@@ -133,9 +132,9 @@ class LP_User_Factory {
 				if ( isset( $item['item_id'] ) && LP_COURSE_CPT === $item['item_type'] ) {
 					$course_id = $item['item_id'];
 
-					// Check this order is the latest by user and course_id
+					// Check order_id of user_item current must < new order_id
 					$userCourse = UserCourseModel::find( $user_id, $course_id, true );
-					if ( $userCourse && $userCourse->ref_id != $order->get_id() ) {
+					if ( $userCourse && $userCourse->ref_id > $order->get_id() ) {
 						continue;
 					}
 
@@ -167,8 +166,10 @@ class LP_User_Factory {
 		$lp_user_items_db = LP_User_Items_DB::getInstance();
 
 		try {
-			$course_id   = intval( $item['course_id'] ?? $item['item_id'] ?? 0 );
-			$courseModel = CourseModel::find( $course_id, true );
+			// False for create new user_item, True for update user_item
+			$is_update_user_item = false;
+			$course_id           = intval( $item['course_id'] ?? $item['item_id'] ?? 0 );
+			$courseModel         = CourseModel::find( $course_id, true );
 			if ( ! $courseModel ) {
 				return;
 			}
@@ -190,9 +191,11 @@ class LP_User_Factory {
 
 			// Data user_item for save database
 			$user_item_data = [
-				'user_id' => $user_id,
-				'item_id' => $course_id,
-				'ref_id'  => $order->get_id(),
+				'user_id'    => $user_id,
+				'item_id'    => $course_id,
+				'ref_id'     => $order->get_id(),
+				'start_time' => gmdate( LP_Datetime::$format, time() ),
+				'graduation' => LP_COURSE_GRADUATION_IN_PROGRESS,
 			];
 
 			if ( $user_id && $userCourse ) {
@@ -220,35 +223,30 @@ class LP_User_Factory {
 				 * where user_item_id = $latest_user_item_id
 				 */
 				if ( $allow_repurchase_type === 'keep' ) {
+					$is_update_user_item        = true;
 					$keep_progress_items_course = true;
 					// Set data for update user item
 					$user_item_data['user_item_id'] = $latest_user_item_id;
-					$user_item_data['start_time']   = time();
 					$user_item_data['end_time']     = null;
 					$user_item_data['status']       = LP_COURSE_ENROLLED;
-					$user_item_data['graduation']   = LP_COURSE_GRADUATION_IN_PROGRESS;
 
 					do_action( 'lp/allow_repurchase_options/continue/db/update', $user_item_data, $latest_user_item_id );
 				} elseif ( $allow_repurchase_type === 'reset' ) {
-					$user_item_data['start_time'] = time();
-					$user_item_data['end_time']   = null;
-					$user_item_data['status']     = LP_COURSE_ENROLLED;
-					$user_item_data['graduation'] = LP_COURSE_GRADUATION_IN_PROGRESS;
+					$user_item_data['end_time'] = null;
+					$user_item_data['status']   = LP_COURSE_ENROLLED;
 				}
 
 				learn_press_delete_user_item_meta( $latest_user_item_id, '_lp_allow_repurchase_type' );
 			} elseif ( ! $courseModel->is_free() && ! $is_no_required_enroll && $is_in_stock ) { // First purchase course
 				// Set data for create user_item
 				if ( $auto_enroll ) {
-					$user_item_data['status']     = LP_COURSE_ENROLLED;
-					$user_item_data['graduation'] = LP_COURSE_GRADUATION_IN_PROGRESS;
+					$user_item_data['status'] = LP_COURSE_ENROLLED;
 				} else {
 					$user_item_data['status'] = LP_COURSE_PURCHASED;
 				}
 			} elseif ( $user_id && ( $is_in_stock || $is_no_required_enroll ) ) { // Enroll course free or No enroll requirement.
 				// Set data for create user_item
-				$user_item_data['status']     = LP_COURSE_ENROLLED;
-				$user_item_data['graduation'] = LP_COURSE_GRADUATION_IN_PROGRESS;
+				$user_item_data['status'] = LP_COURSE_ENROLLED;
 			} else {
 				return;
 			}
@@ -258,10 +256,20 @@ class LP_User_Factory {
 				$lp_user_items_db->delete_user_items_old( $user_id, $course_id );
 			}
 
-			$user_item_new_or_update = new LP_User_Item_Course( $user_item_data );
-			$result                  = $user_item_new_or_update->update();
+			/*$user_item_new_or_update = new LP_User_Item_Course( $user_item_data );
+			$result                  = $user_item_new_or_update->update();*/
+			if ( $is_update_user_item ) {
+				$userCourse->status     = $user_item_data['status'];
+				$userCourse->graduation = $user_item_data['graduation'];
+				$userCourse->start_time = $user_item_data['start_time'];
+				$userCourse->end_time   = null;
+				$userCourse->save();
+			} else {
+				$userCourseNew = new UserCourseModel( $user_item_data );
+				$userCourseNew->save();
+			}
 
-			if ( $result && isset( $user_item_data['status'] ) && LP_COURSE_ENROLLED == $user_item_data['status'] ) {
+			if ( isset( $user_item_data['status'] ) && LP_COURSE_ENROLLED == $user_item_data['status'] ) {
 				do_action( 'learnpress/user/course-enrolled', $order->get_id(), $user_item_data['item_id'], $user_item_data['user_id'] );
 			}
 		} catch ( Throwable $e ) {
