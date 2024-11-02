@@ -14,11 +14,21 @@ export const edit = ( props ) => {
 							type='number'
                             onChange={ ( value ) => props.setAttributes( { courseId: value ? value : '' } ) }
                         />
+						 <TextControl
+                            label="Title"
+                            value={ props.attributes.title }
+                            onChange={ ( value ) => props.setAttributes( { title: value ? value : '' } ) }
+                        />
+						 <TextControl
+                            label="Meta Key"
+                            value={ props.attributes.metaKey }
+                            onChange={ ( value ) => props.setAttributes( { metaKey: value ? value : '' } ) }
+                        />
                     </PanelBody>
             </InspectorControls>
 			<div { ...blockProps }>
 				<strong>
-					{ 'Feature Review Single Course' }
+					{ 'Box Extra Single Course' }
 				</strong>
 			</div>
 		</>
