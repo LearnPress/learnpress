@@ -87,8 +87,9 @@ class LP_User_Factory {
 					$course_id = $item['item_id'];
 
 					// Check this order is the latest by user and course_id
-					$last_order_id = $lp_order_db->get_last_lp_order_id_of_user_course( $user_id, $course_id );
-					if ( $last_order_id && $last_order_id != $order->get_id() ) {
+					//$last_order_id = $lp_order_db->get_last_lp_order_id_of_user_course( $user_id, $course_id );
+					$userCourse = UserCourseModel::find( $user_id, $course_id, true );
+					if ( $userCourse && $userCourse->ref_id != $order->get_id() ) {
 						continue;
 					}
 
@@ -133,8 +134,8 @@ class LP_User_Factory {
 					$course_id = $item['item_id'];
 
 					// Check this order is the latest by user and course_id
-					$last_order_id = $lp_order_db->get_last_lp_order_id_of_user_course( $user->get_id(), $course_id );
-					if ( $last_order_id && $last_order_id != $order->get_id() ) {
+					$userCourse = UserCourseModel::find( $user_id, $course_id, true );
+					if ( $userCourse && $userCourse->ref_id != $order->get_id() ) {
 						continue;
 					}
 
@@ -166,7 +167,7 @@ class LP_User_Factory {
 		$lp_user_items_db = LP_User_Items_DB::getInstance();
 
 		try {
-			$course_id   = $item['course_id'] ?? $item['item_id'] ?? 0;
+			$course_id   = intval( $item['course_id'] ?? $item['item_id'] ?? 0 );
 			$courseModel = CourseModel::find( $course_id, true );
 			if ( ! $courseModel ) {
 				return;
@@ -181,7 +182,7 @@ class LP_User_Factory {
 			}
 
 			/** Get the newest user_item_id of course for allow_repurchase */
-			$userCourse = UserCourseModel::find( $user_id, $course_id );
+			$userCourse = UserCourseModel::find( $user_id, $course_id, true );
 
 			$latest_user_item_id     = 0;
 			$allow_repurchase_option = $courseModel->get_type_repurchase();
@@ -209,6 +210,9 @@ class LP_User_Factory {
 				&& ! $courseModel->is_free() && ! $is_no_required_enroll ) {
 				if ( $allow_repurchase_option !== 'popup' ) {
 					$allow_repurchase_type = $allow_repurchase_option;
+				} elseif ( empty( $allow_repurchase_type ) ) {
+					// For case course set repurchase Popup but buy via Upsell, PMS, Woo can't set allow_repurchase_type
+					$allow_repurchase_type = 'keep';
 				}
 
 				/**
