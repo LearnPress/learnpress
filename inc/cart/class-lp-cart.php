@@ -156,8 +156,8 @@ class LP_Cart {
 			switch ( $item_type ) {
 				case LP_COURSE_CPT:
 					$course = CourseModel::find( $item_id, true );
-					if ( $course && ! $course->is_in_stock() && ! $course->has_no_enroll_requirement() ) {
-						throw new Exception( __( 'Sorry! The number of enrolled students has reached its limit', 'learnpress' ) );
+					if ( ! $course ) {
+						throw new Exception( __( 'Course is not exists!', 'learnpress' ) );
 					}
 
 					//$item_data['data'] = $course;
@@ -193,7 +193,7 @@ class LP_Cart {
 			return $cart_id;
 		} catch ( Exception $e ) {
 			if ( $e->getMessage() ) {
-				learn_press_add_message( $e->getMessage(), 'error' );
+
 			}
 
 			return false;

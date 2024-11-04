@@ -92,7 +92,7 @@ function learn_press_clear_cart_after_payment() {
  * @return mixed
  * @deprecated 4.2.0
  */
-function learn_press_custom_checkout_cart( $cart ) {
+/*function learn_press_custom_checkout_cart( $cart ) {
 	if ( empty( $_REQUEST['single-item'] ) ) {
 		return $cart;
 	}
@@ -106,5 +106,5 @@ function learn_press_custom_checkout_cart( $cart ) {
 	}
 
 	return $cart;
-}
+}*/
 //add_filter( 'learn_press_checkout_cart', 'learn_press_custom_checkout_cart' );
