@@ -1041,7 +1041,7 @@ class SingleCourseTemplate {
 	 * @since 4.2.7.2
 	 * @version 1.0.0
 	 */
-	public function html_tabs( CourseModel $course, $html_tabs ): string {
+	public function html_tabs( CourseModel $course, $html_tabs = '' ): string {
 		if ( empty( $html_tabs ) ) {
 			ob_start();
 			learn_press_course_tabs();
