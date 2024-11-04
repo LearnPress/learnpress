@@ -957,6 +957,16 @@ class CourseModel {
 				throw new Exception( __( 'Course is purchased', 'learnpress' ) );
 			}
 
+			if ( ! $this->is_in_stock() && ! $userCourseModel ) {
+				$error_code = 'course_out_of_stock';
+				throw new Exception( __( 'The course is full of students.', 'learnpress' ) );
+			}
+
+			if ( $userCourseModel && $userCourseModel->can_retake() ) {
+				$error_code = 'course_can_retake';
+				throw new Exception( esc_html__( 'Course can retake.', 'learnpress' ) );
+			}
+
 			if ( $this->enable_allow_repurchase() ) {
 				if ( $userCourseModel && $userCourseModel->has_enrolled()
 					&& $userCourseModel->timestamp_remaining_duration() !== 0 ) {
