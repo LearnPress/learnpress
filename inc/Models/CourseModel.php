@@ -962,6 +962,12 @@ class CourseModel {
 				throw new Exception( __( 'The course is full of students.', 'learnpress' ) );
 			}
 
+			if ( $this->get_external_link()
+				&& ( ! $userCourseModel || ! $userCourseModel->has_purchased() ) ) {
+				$error_code = 'course_is_external';
+				throw new Exception( __( 'The course is external', 'learnpress' ) );
+			}
+
 			if ( $userCourseModel && $userCourseModel->can_retake() ) {
 				$error_code = 'course_can_retake';
 				throw new Exception( esc_html__( 'Course can retake.', 'learnpress' ) );
