@@ -92,7 +92,10 @@ class LP_User_Factory {
 						continue;
 					}
 
-					$lp_user_items_db->delete_user_items_old( $user_id, $course_id );
+					// Only change status of user_item to cancel, not delete user_item and user_item_results.
+					$userCourse->status = LP_COURSE_BLOCKED;
+					$userCourse->save();
+					//$lp_user_items_db->delete_user_items_old( $user_id, $course_id );
 				} else {
 					// For buy other item type (not course)
 					// For case item is Certificate, when update code of Certificate, should remove this code
