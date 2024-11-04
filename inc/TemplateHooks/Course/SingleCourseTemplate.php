@@ -673,7 +673,8 @@ class SingleCourseTemplate {
 					'course_is_enrolled',
 					'course_is_no_required_enroll',
 					'course_can_retake',
-					'course_is_external'
+					'course_is_external',
+					'course_out_of_stock',
 				]
 			);
 			if ( ! in_array( $can_purchase->get_error_code(), $error_code_not_show )

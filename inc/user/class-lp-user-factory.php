@@ -64,7 +64,7 @@ class LP_User_Factory {
 	 * @author Nhamdv <email@email.com>
 	 * @editor tungnx
 	 * @modify 4.1.4
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 */
 	protected static function _update_user_item_order_pending( $order, $old_status, $new_status ) {
 		$items            = $order->get_all_items();
@@ -262,6 +262,7 @@ class LP_User_Factory {
 			/*$user_item_new_or_update = new LP_User_Item_Course( $user_item_data );
 			$result                  = $user_item_new_or_update->update();*/
 			if ( $is_update_user_item ) {
+				$userCourse->ref_id     = $order->get_id();
 				$userCourse->status     = $user_item_data['status'];
 				$userCourse->graduation = $user_item_data['graduation'];
 				$userCourse->start_time = $user_item_data['start_time'];
