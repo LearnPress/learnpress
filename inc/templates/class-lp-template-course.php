@@ -1,7 +1,9 @@
 <?php
 
 use LearnPress\Helpers\Template;
+use LearnPress\Models\CourseModel;
 use LearnPress\Models\UserItems\UserCourseModel;
+use LearnPress\Models\UserModel;
 
 /**
  * Class LP_Course_Template
@@ -382,9 +384,8 @@ class LP_Template_Course extends LP_Abstract_Template {
 	 * Show template "continue" button con single course
 	 *
 	 * @throws Exception
-	 * @editor tungnx
 	 * @modify 4.1.3.1
-	 * @version 4.0.2
+	 * @version 4.0.3
 	 * @since  4.0.0
 	 */
 	public function course_continue_button( $course = null ) {
@@ -394,26 +395,30 @@ class LP_Template_Course extends LP_Abstract_Template {
 			$course = learn_press_get_course();
 		}
 
+		$courseModel = CourseModel::find( $course->get_id(), true );
+		$user_id = $user->get_id();
+
 		try {
 			if ( ! $user || ! $course ) {
 				throw new Exception( 'User or Course not exists!' );
 			}
 
-			if ( ! $user->has_enrolled_course( $course->get_id() ) ) {
-				throw new Exception( 'User has not enrolled course' );
+			$userCourseModel = UserCourseModel::find( $user_id, $courseModel->get_id() );
+			if ( ! $userCourseModel || ! $userCourseModel->has_enrolled() ) {
+				throw new Exception( 'User not enrolled course' );
 			}
 
-			if ( $user->has_finished_course( $course->get_id() ) ) {
-				throw new Exception( 'The user has completed the course.' );
+			if ( $userCourseModel->has_finished() ) {
+				throw new Exception( 'User has finished course' );
 			}
 
 			// Course has no items
-			if ( empty( $course->count_items() ) ) {
+			if ( empty( $courseModel->get_total_items() ) ) {
 				throw new Exception( 'Course no any item' );
 			}
 
 			// Do not display continue button if course is block duration
-			if ( $user->can_view_content_course( $course->get_id() )->key === LP_BLOCK_COURSE_DURATION_EXPIRE ) {
+			if ( $userCourseModel->timestamp_remaining_duration() === 0 ) {
 				throw new Exception( 'Course is blocked' );
 			}
 		} catch ( Throwable $e ) {
@@ -819,12 +824,11 @@ class LP_Template_Course extends LP_Abstract_Template {
 	 * Template show count items
 	 *
 	 * @since 4.0.0
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 * @editor tungnx
 	 */
 	public function count_object() {
-		$course = learn_press_get_course();
-
+		$course = CourseModel::find( get_the_ID(), true );
 		if ( ! $course ) {
 			return;
 		}
