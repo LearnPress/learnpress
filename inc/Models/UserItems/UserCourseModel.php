@@ -45,7 +45,7 @@ class UserCourseModel extends UserItemModel {
 	 */
 	public $user;
 	/**
-	 * @var CourseModel|null
+	 * @var CourseModel|false
 	 */
 	public $course;
 
@@ -692,7 +692,7 @@ class UserCourseModel extends UserItemModel {
 		if ( $count_mark_questions_receiver && $total_mark_questions ) {
 			$evaluate['result'] = $count_mark_questions_receiver * 100 / $total_mark_questions;
 
-			$passing_condition = floatval( $this->course->get_passing_condition() );
+			$passing_condition = $this->course->get_passing_condition();
 			if ( $evaluate['result'] >= $passing_condition ) {
 				$evaluate['pass'] = 1;
 			}

@@ -440,6 +440,17 @@ class CourseModel {
 	}
 
 	/**
+	 * Get course passing condition value.
+	 *
+	 * @return float
+	 * @since 4.2.7.3
+	 * @version 1.0.0
+	 */
+	public function get_passing_condition(): float {
+		return (float) $this->get_meta_value_by_key( CoursePostModel::META_KEY_PASSING_CONDITION, 80 );
+	}
+
+	/**
 	 * Get final quiz id
 	 *
 	 * @return int
@@ -491,7 +502,7 @@ class CourseModel {
 	 *
 	 * @return array
 	 * @since 4.1.6.9
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 * @author tungnx
 	 */
 	public function get_sections_and_items_course_from_db_and_sort(): array {
@@ -509,13 +520,16 @@ class CourseModel {
 			$section_current        = 0;
 
 			foreach ( $sections_items_results as $index => $sections_item ) {
-				$section_new   = $sections_item->section_id;
-				$section_order = $sections_item->section_order;
-				$item          = new stdClass();
-				$item->id      = $sections_item->item_id;
-				$item->order   = $sections_item->item_order;
-				$item->type    = $sections_item->item_type;
-				$item_tmp      = LP_Course_Item::get_item( $item->id );
+				$section_new      = $sections_item->section_id;
+				$section_order    = $sections_item->section_order;
+				$item             = new stdClass();
+				$item->id         = $sections_item->item_id;
+				$item->item_id    = $sections_item->item_id;
+				$item->order      = $sections_item->item_order;
+				$item->item_order = $sections_item->item_order;
+				$item->type       = $sections_item->item_type;
+				$item->item_type  = $sections_item->item_type;
+				$item_tmp         = LP_Course_Item::get_item( $item->id );
 				if ( $item_tmp ) {
 					$item->title   = html_entity_decode( $item_tmp->get_title() );
 					$item->preview = $item_tmp->is_preview();
@@ -796,6 +810,26 @@ class CourseModel {
 		$total += (int) $this->get_meta_value_by_key( CoursePostModel::META_KEY_STUDENTS, 0 );
 
 		return $total;
+	}
+
+	/**
+	 * Count total items in Course
+	 *
+	 * @param $item_type
+	 *
+	 * @return int
+	 * @since 4.2.7.3
+	 * @version 1.0.0
+	 */
+	public function count_items( $item_type ) {
+		$count = 0;
+
+		$total_items = $this->get_total_items();
+		if ( isset( $total_items->{$item_type} ) ) {
+			return $total_items->{$item_type};
+		}
+
+		return $count;
 	}
 
 	/**
