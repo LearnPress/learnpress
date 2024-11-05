@@ -7,6 +7,7 @@
  * @version 4.0.1
  */
 
+use LearnPress\Models\CourseModel;
 use LearnPress\Models\CoursePostModel;
 
 defined( 'ABSPATH' ) || exit();
@@ -354,11 +355,28 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		 * @param bool $include_preview
 		 * @author tungnx
 		 * @since 4.1.4.1
-		 * @version 1.0.0
+		 * @version 1.0.1
 		 * @return int
 		 */
 		public function count_items( string $type = '', bool $include_preview = true ): int {
 			$course_id = $this->get_id();
+			$courseModel = CourseModel::find( $course_id, true );
+			if ( ! $courseModel ) {
+				return 0;
+			}
+
+			$total_items = $courseModel->get_total_items();
+			if ( ! $total_items ) {
+				return 0;
+			}
+
+			if ( ! empty( $type ) ) {
+				if ( isset( $total_items->{$type} ) ) {
+					return $total_items->{$type};
+				}
+			} else {
+				return $total_items->count_items;
+			}
 
 			// Get cache
 			$lp_course_cache = LP_Course_Cache::instance();
