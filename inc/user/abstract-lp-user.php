@@ -1091,7 +1091,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 							$i = '<i class="lp-icon-google-plus"></i>';
 							break;
 						case 'youtube':
-							$i = '<i class="lp-icon-youtube"></i>';
+							$i = '<i class="lp-icon-youtube-play"></i>';
 							break;
 						case 'linkedin':
 							$i = '<i class="lp-icon-linkedin"></i>';
