@@ -10,6 +10,7 @@ use LearnPress\Models\CourseModel;
 use LearnPress\Models\CoursePostModel;
 use LearnPress\Models\Courses;
 use LearnPress\Models\UserItems\UserCourseModel;
+use LearnPress\Models\UserItems\UserItemModel;
 use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\Course\ListCoursesTemplate;
 
@@ -622,9 +623,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 	 *
 	 * @return LP_REST_Response
 	 * @since 4.1.4
-	 * @version 1.0.3
-	 * @author minhpd
-	 * @editor tungnx
+	 * @version 1.0.4
 	 */
 	public function continue_course( WP_REST_Request $request ): LP_REST_Response {
 		$params         = $request->get_params();
@@ -637,15 +636,23 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 			$course_id  = absint( $params['courseId'] ?? 0 );
 			$user_id    = absint( $params['userId'] ?? 0 );
 
-			$user   = learn_press_get_user( $user_id );
-			$course = learn_press_get_course( $course_id );
-
+			$user   = UserModel::find( $user_id, true );
+			$course = CourseModel::find( $course_id, true );
 			if ( ! $course ) {
 				throw new Exception( __( 'Invalid course', 'learnpress' ) );
 			}
 
-			$sections_items = $course->get_full_sections_and_items_course();
-			$total_items    = $course->count_items();
+			if ( ! $user ) {
+				return $response;
+			}
+
+			$userCourseModel = UserCourseModel::find( $user_id, $course_id, true );
+			if ( ! $userCourseModel ) {
+				throw new Exception( __( 'Invalid user course', 'learnpress' ) );
+			}
+
+			$sections_items = $course->get_section_items();
+			$total_items    = $course->get_total_items();
 
 			if ( ! empty( $total_items ) ) {
 				foreach ( $sections_items as $section_items ) {
@@ -654,15 +661,11 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 					}
 
 					foreach ( $section_items->items as $item ) {
-						$item_now_condition = apply_filters(
-							'lp/course/item-continue/condition',
-							! $user->has_completed_item( $item->id, $course_id ),
-							$item,
-							$course,
-							$user
-						);
+						$item_id   = $item->id ?? $item->item_id;
+						$item_type = $item->type ?? $item->item_type;
 
-						if ( $item_now_condition && ! empty( get_post( $item->id ) ) ) {
+						$userItemModel = UserItemModel::find_user_item( $user_id, $item_id, $item_type );
+						if ( ! $userItemModel || $userItemModel->get_status() !== LP_ITEM_COMPLETED ) {
 							$item_link  = $course->get_item_link( $item->id );
 							$flag_found = true;
 							break;

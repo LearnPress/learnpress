@@ -365,8 +365,7 @@ const accordionExtraTab = () => {
 
 const courseContinue = () => {
 	const formContinue = document.querySelectorAll( 'form.continue-course' );
-
-	if ( formContinue != null && lpGlobalSettings.user_id > 0 ) {
+	if ( formContinue.length && lpData.user_id > 0 ) {
 		const getResponse = async ( ele ) => {
 			const response = await wp.apiFetch( {
 				path: 'lp/v1/courses/continue-course',

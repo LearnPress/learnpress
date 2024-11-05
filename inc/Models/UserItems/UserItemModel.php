@@ -236,6 +236,27 @@ class UserItemModel {
 	}
 
 	/**
+	 * Find User Item by user_id, item_id, item_type.
+	 *
+	 * @param int $user_id
+	 * @param int $item_id
+	 * @param string $item_type
+	 * @param bool $check_cache
+	 *
+	 * @return false|UserItemModel|static
+	 * @since 4.2.7.3
+	 * @version 1.0.0
+	 */
+	public static function find_user_item( int $user_id, int $item_id, string $item_type, bool $check_cache = false ) {
+		$filter            = new LP_User_Items_Filter();
+		$filter->user_id   = $user_id;
+		$filter->item_id   = $item_id;
+		$filter->item_type = $item_type;
+
+		return static::get_user_item_model_from_db( $filter );
+	}
+
+	/**
 	 * Get user item metadata from object meta_data or database by user_item_id, meta_key.
 	 *
 	 * @param string $key
