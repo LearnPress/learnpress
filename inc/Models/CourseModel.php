@@ -440,6 +440,17 @@ class CourseModel {
 	}
 
 	/**
+	 * Get course Evaluation type.
+	 *
+	 * @return string
+	 * @since 4.2.7.3
+	 * @version 1.0.0
+	 */
+	public function get_evaluation_type(): string {
+		return (float) $this->get_meta_value_by_key( CoursePostModel::META_KEY_Evaluation_TYPE, 'evaluate_lesson' );
+	}
+
+	/**
 	 * Get course passing condition value.
 	 *
 	 * @return float
@@ -482,7 +493,7 @@ class CourseModel {
 			}
 		}
 
-		$evaluation_type = $this->meta_data->_lp_course_result ?? '';
+		$evaluation_type = $this->get_evaluation_type();
 		if ( $evaluation_type === 'evaluate_final_quiz' ) {
 			if ( isset( $final_quiz ) ) {
 				update_post_meta( $this->ID, $key, $final_quiz );
@@ -668,6 +679,16 @@ class CourseModel {
 		return $this->get_no_enroll_requirement() === 'yes';
 	}
 
+	/**
+	 * Get value from meta data by key
+	 *
+	 * @param string $key
+	 * @param mixed $default
+	 *
+	 * @return false|mixed
+	 * @since 4.2.6.9
+	 * @version 1.0.0
+	 */
 	public function get_meta_value_by_key( string $key, $default = false ) {
 		if ( ! empty( $this->meta_data ) && isset( $this->meta_data->{$key} ) ) {
 			$value = $this->meta_data->{$key};
