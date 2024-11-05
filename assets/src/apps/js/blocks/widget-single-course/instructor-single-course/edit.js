@@ -7,15 +7,15 @@ export const edit = ( props ) => {
 	return (
 		<>
 			<InspectorControls>
-                    <PanelBody title="Custom Settings">
-                        <TextControl
-                            label="Course ID"
-                            value={ props.attributes.courseId }
-							type='number'
-                            onChange={ ( value ) => props.setAttributes( { courseId: value ? value : '' } ) }
-                        />
-                    </PanelBody>
-            </InspectorControls>
+				<PanelBody title="Custom Settings">
+					<TextControl
+						label="Course ID"
+						value={ props.attributes.courseId }
+						type="number"
+						onChange={ ( value ) => props.setAttributes( { courseId: value ? value : '' } ) }
+					/>
+				</PanelBody>
+			</InspectorControls>
 			<div { ...blockProps }>
 				<strong>
 					{ 'Instructor Single Course' }

@@ -1032,7 +1032,7 @@ class SingleCourseTemplate {
 		return $html;
 	}
 
-		/**
+	/**
 	 * HTML struct tabs
 	 *
 	 * @param CourseModel $course

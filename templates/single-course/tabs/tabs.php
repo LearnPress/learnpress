@@ -47,7 +47,7 @@ if ( $lp_user && ! $lp_user instanceof LP_User_Guest ) {
 			<?php checked( $active_tab === $key ); ?> value="<?php echo esc_attr( $key ); ?>"/>
 	<?php endforeach; ?>
 	<div class="wrapper-course-nav-tabs TabsDragScroll">
- 		<ul class="learn-press-nav-tabs course-nav-tabs" data-tabs="<?php echo esc_attr( count( $tabs ) ); ?>">
+		<ul class="learn-press-nav-tabs course-nav-tabs" data-tabs="<?php echo esc_attr( count( $tabs ) ); ?>">
 			<?php foreach ( $tabs as $key => $tab ) : ?>
 				<?php
 				$classes = array( 'course-nav course-nav-tab-' . esc_attr( $key ) );
