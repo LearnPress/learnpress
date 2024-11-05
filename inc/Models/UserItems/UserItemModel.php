@@ -268,7 +268,7 @@ class UserItemModel {
 
 		// Check object meta_data has value of key.
 		if ( $this->meta_data instanceof stdClass
-		     && property_exists( $this->meta_data, $key ) ) {
+			&& property_exists( $this->meta_data, $key ) ) {
 			$user_item_metadata = $this->meta_data->{$key};
 		} else { // Get from DB
 			$filter                          = new LP_User_Item_Meta_Filter();
@@ -332,14 +332,16 @@ class UserItemModel {
 
 		// Check if exists user_item_id.
 		if ( empty( $this->get_user_item_id() ) ) { // Insert data.
-			if ( empty( $data['user_id'] ) ) {
-				throw new Exception( 'User ID is require.' );
-			}
 			if ( empty( $data['item_id'] ) ) {
 				throw new Exception( 'Item ID is require.' );
 			}
 			if ( empty( $data['item_type'] ) ) {
 				throw new Exception( 'Item Type is require.' );
+			}
+
+			// Guest can buy course if enable guest checkout.
+			if ( empty( $data['user_id'] ) && LP_COURSE_CPT !== $data['item_type'] ) {
+				throw new Exception( 'User ID is require.' );
 			}
 
 			$user_item_id_new = $lp_user_item_db->insert_data( $data );
@@ -405,7 +407,6 @@ class UserItemModel {
 	}
 
 	public function delete() {
-
 	}
 
 	/**

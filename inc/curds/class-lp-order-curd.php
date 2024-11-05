@@ -5,6 +5,8 @@
  * @since 3.0.0
  */
 
+use LearnPress\Models\UserItems\UserCourseModel;
+
 defined( 'ABSPATH' ) || exit();
 
 class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
@@ -82,7 +84,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			//'post_title'    => $order->get_order_number(),
 			'post_date'     => $order->get_order_date( 'edit' )->toSql(),
 			'post_date_gmt' => $order->get_order_date( 'edit' )->toSql( false ),
-			'post_status' => $status,
+			'post_status'   => $status,
 			//'post_parent'   => $order->get_parent_id(),
 		);
 		$post_data = apply_filters( 'learn-press/order/update-data', $post_data, $order->get_id() );
@@ -171,7 +173,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @return mixed
 	 */
 	/*
-	 old function - comment by tungnx
+	old function - comment by tungnx
 	public function read_items( $order ) {
 		global $wpdb;
 		$screen = function_exists('get_current_screen')? get_current_screen():null;
@@ -338,7 +340,6 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	}
 
 	public function getTotalItem() {
-
 	}
 
 	public function get_item_meta( &$item ) {
@@ -347,7 +348,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			foreach ( $metas as $k => $v ) {
 				$item[ preg_replace( '!^_!', '', $k ) ] = LP_Helper::maybe_unserialize( $v[0] );
 			}
-		};
+		}
 	}
 
 	public function delete( &$object ) {
@@ -536,11 +537,11 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 			// Validations
 			if ( ! $order ) {
-				throw new Exception( esc_html__( 'Invalid order.', 'learnpress' ) );
+				throw new Exception( esc_html__( 'Invalid Order key.', 'learnpress' ) );
 			}
 
 			if ( ! $order->is_guest() ) {
-				throw new Exception( esc_html__( 'Order is already assigned.', 'learnpress' ) );
+				throw new Exception( esc_html__( 'Order key is already assigned.', 'learnpress' ) );
 			}
 
 			$user = learn_press_get_user( $user_id );
@@ -559,11 +560,15 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 			// Update user_id of lp_user_item
 			if ( $order->is_completed() ) {
-				$lp_user_items_db = LP_User_Items_DB::getInstance();
-				$filter           = new LP_User_Items_Filter();
-				$filter->user_id  = $user_id;
-				$filter->ref_id   = $order->get_id();
-				$lp_user_items_db->update_user_id_by_order( $filter );
+				$filter          = new LP_User_Items_Filter();
+				$filter->ref_id  = $order->get_id();
+				$userCourseModel = UserCourseModel::get_user_item_model_from_db( $filter );
+
+				if ( $userCourseModel ) {
+					$userCourseModel->user_id    = $user_id;
+					$userCourseModel->start_time = gmdate( LP_Datetime::$format, time() );
+					$userCourseModel->save();
+				}
 			}
 
 			// Trigger action

@@ -92,6 +92,10 @@ class LP_User_Factory {
 						continue;
 					}
 
+					if ( ! $userCourse ) {
+						return;
+					}
+
 					// Only change status of user_item to cancel, not delete user_item and user_item_results.
 					$userCourse->status = LP_COURSE_BLOCKED;
 					$userCourse->save();
