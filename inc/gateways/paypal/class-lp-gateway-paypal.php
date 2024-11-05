@@ -123,6 +123,9 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				if ( $this->settings->get( 'use_paypal_rest', 'yes' ) === 'yes' ) {
 					$this->client_id     = $this->settings->get( 'app_client_id' );
 					$this->client_secret = $this->settings->get( 'app_client_secret' );
+					if ( $this->settings->get( 'use_paypal_button', 'yes' ) === 'yes' ) {
+						add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_assets' ] );
+					}
 				}
 			}
 
@@ -235,15 +238,21 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			$paypal_payment_url = '';
 
 			$order = new LP_Order( $order_id );
+			$result['result']   = 'success';
 			if ( $this->settings->get( 'use_paypal_rest', 'yes' ) === 'no' ) {
 				$paypal_args        = $this->get_paypal_args( $order );
 				$paypal_payment_url = $this->paypal_url . '?' . http_build_query( $paypal_args );
 			} else {
 				$data_token         = $this->get_access_token();
-				$paypal_payment_url = $this->create_payment_url( $order, $data_token );
+				if ( $this->settings->get( 'use_paypal_button', 'yes' ) === 'yes' ) {
+					$result['result'] = 'processing';
+					$order_params     = $this->get_order_params( $order, $data_token );
+					$result['paypal'] = $order_params;
+				} else {
+					$paypal_payment_url = $this->create_payment_url( $order, $data_token );
+				}
 			}
-
-			$result['result']   = 'success';
+			
 			$result['redirect'] = $paypal_payment_url;
 
 			return $result;
@@ -392,6 +401,34 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 */
 		public function create_payment_url( LP_Order $order, $data_token ): string {
 			$checkout_url = '';
+			$result = $this->get_order_params( $order, $data_token );
+			foreach ( $result->links as $link ) {
+				if ( $link->rel === 'payer-action' ) {
+					$checkout_url = $link->href;
+					break;
+				}
+			}
+
+			if ( empty( $checkout_url ) ) {
+				throw new Exception( __( 'Invalid Paypal checkout url', 'learnpress' ) );
+			}
+
+			return $checkout_url;
+		}
+
+		/**
+		 * Create Order PayPal and get checkout url
+		 *
+		 * @param LP_Order $order
+		 * @param object $data_token { scope, access_token, token_type, app_id, expires_in, nonce }
+		 *
+		 * @return string
+		 * @throws Exception
+		 * @since 4.2.7
+		 * @version 1.0.0
+		 */
+		public function get_order_params( LP_Order $order, $data_token	) : object {
+
 			$params       = $this->get_order_args( $order );
 
 			if ( ! isset( $data_token->access_token ) || ! isset( $data_token->token_type ) ) {
@@ -418,19 +455,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			if ( empty( $result->links ) ) {
 				throw new Exception( __( 'Invalid Paypal checkout url', 'learnpress' ) );
 			}
-
-			foreach ( $result->links as $link ) {
-				if ( $link->rel === 'payer-action' ) {
-					$checkout_url = $link->href;
-					break;
-				}
-			}
-
-			if ( empty( $checkout_url ) ) {
-				throw new Exception( __( 'Invalid Paypal checkout url', 'learnpress' ) );
-			}
-
-			return $checkout_url;
+			return $result;
 		}
 
 		/**
@@ -480,6 +505,30 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 */
 		public function get_settings(): array {
 			return Config::instance()->get( $this->id, 'settings/gateway' );
+		}
+		/**
+		 * paypal payment form html
+		 */
+		public function get_payment_form() {
+			$content = '';
+			if ( $this->settings->get( 'use_paypal_rest', 'yes' ) === 'yes' &&  $this->settings->get( 'use_paypal_button', 'yes' ) === 'yes' ) {
+				$content .= '<div id="lp-paypal-button-container"></div>';
+			}
+			return $content;
+		}
+
+		public function enqueue_assets() {
+			if (  LP_Page_Controller::is_page_checkout() ) {
+				wp_enqueue_script( 'lp-paypal-button',
+					plugins_url( '/assets/js/dist/frontend/checkout/paypal-button.js', LP_PLUGIN_FILE ),
+					['lp-checkout'],
+					'',
+					[ 'strategy' => 'async' ]
+				);
+				wp_localize_script( 'lp-paypal-button', 'lpPaypalButtonConfig', [
+					'client_id' => $this->client_id,
+				] );
+			}
 		}
 	}
 }

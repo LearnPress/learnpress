@@ -43,6 +43,23 @@ return apply_filters(
 			'desc'    => esc_html__( '(Recommendations)', 'learnpress' ),
 		),
 		array(
+			'title'   => esc_html__( 'Use PayPal Button', 'learnpress' ),
+			'id'      => '[use_paypal_button]',
+			'default' => 'no',
+			'type'    => 'checkbox',
+			'desc'    => esc_html__( 'Generate payment button on checkout page, pay without redirect to paypal.', 'learnpress' ),
+			'visibility' => array(
+				'state'       => 'show',
+				'conditional' => array(
+					array(
+						'field'   => '[use_paypal_rest]',
+						'compare' => '=',
+						'value'   => 'yes',
+					),
+				),
+			),
+		),
+		array(
 			'title' => esc_html__( 'Client ID', 'learnpress' ),
 			'id'    => '[app_client_id]',
 			'type'  => 'text',
