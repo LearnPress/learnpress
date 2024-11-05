@@ -10,8 +10,8 @@ use LearnPress\Models\CourseModel;
 class Block_Template_Feature_Review_Single_Course extends Abstract_Block_Template {
 	public $slug                          = 'feature-review-single-lp_course';
 	public $name                          = 'learnpress/feature-review-single-course';
-	public $title                         = 'Feature_Review Course (LearnPress)';
-	public $description                   = 'Feature_Review Course Block Template';
+	public $title                         = 'Feature Review Course (LearnPress)';
+	public $description                   = 'Feature Review Course Block Template';
 	public $path_html_block_template_file = 'html/feature-review-single-course.html';
 	public $path_template_render_default  = 'block/render/feature-review-single-course.php';
 	public $source_js                     = LP_PLUGIN_URL . 'assets/js/dist/blocks/feature-review-single-course.js';
