@@ -409,6 +409,7 @@ class LP_User_Items_DB extends LP_Database {
 			$filter->user_id,
 			$filter->item_id,
 			LP_COURSE_CPT,
+			$filter->ref_id,
 		);
 		$result              = $lp_user_items_cache->get_user_item( $key_cache );
 		if ( false !== $result ) {

@@ -86,20 +86,27 @@ class LP_User_Factory {
 				if ( isset( $item['item_id'] ) && LP_COURSE_CPT === $item['item_type'] ) {
 					$course_id = $item['item_id'];
 
-					// Check course is learning is sample order_id with order which is changing status
-					$userCourse = UserCourseModel::find( $user_id, $course_id, true );
-					if ( $userCourse && $userCourse->ref_id != $order->get_id() ) {
-						continue;
-					}
+					if ( $user_id ) {
+						$userCourse = UserCourseModel::find( $user_id, $course_id, true );
+						// Check course is learning is sample order_id with order which is changing status
+						if ( ! $userCourse || $userCourse->ref_id != $order->get_id() ) {
+							continue;
+						}
 
-					if ( ! $userCourse ) {
-						return;
-					}
+						// Only change status of user_item to cancel, not delete user_item and user_item_results.
+						$userCourse->status = LP_USER_COURSE_CANCEL;
+						$userCourse->save();
+						//$lp_user_items_db->delete_user_items_old( $user_id, $course_id );
+					} else {
+						$userCourseGuest = self::get_user_course_guest( $course_id, $order->get_user_email() );
+						// Check course is learning is sample order_id with order which is changing status
+						if ( ! $userCourseGuest || $userCourseGuest->ref_id != $order->get_id() ) {
+							continue;
+						}
 
-					// Only change status of user_item to cancel, not delete user_item and user_item_results.
-					$userCourse->status = LP_COURSE_BLOCKED;
-					$userCourse->save();
-					//$lp_user_items_db->delete_user_items_old( $user_id, $course_id );
+						$userCourseGuest->status = LP_USER_COURSE_CANCEL;
+						$userCourseGuest->save();
+					}
 				} else {
 					// For buy other item type (not course)
 					// For case item is Certificate, when update code of Certificate, should remove this code
@@ -123,7 +130,7 @@ class LP_User_Factory {
 	 * @throws Exception
 	 * @editor tungnx
 	 * @modify 4.1.2
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 */
 	protected static function _update_user_item_order_completed( LP_Order $order, string $old_status, string $new_status ) {
 		$lp_order_db = LP_Order_DB::getInstance();
@@ -141,8 +148,13 @@ class LP_User_Factory {
 
 					// Check order_id of user_item current must < new order_id
 					$userCourse = UserCourseModel::find( $user_id, $course_id, true );
-					if ( $userCourse && $userCourse->ref_id > $order->get_id() ) {
+					if ( $user_id && $userCourse && $userCourse->ref_id > $order->get_id() ) {
 						continue;
+					} elseif ( ! $user_id ) {
+						$userCourseGuest = self::get_user_course_guest( $course_id, $order->get_user_email() );
+						if ( $userCourseGuest && $userCourseGuest->ref_id > $order->get_id() ) {
+							continue;
+						}
 					}
 
 					if ( $order->is_manual() ) {
@@ -260,7 +272,15 @@ class LP_User_Factory {
 
 			// Delete items old
 			if ( ! $keep_progress_items_course ) {
-				$lp_user_items_db->delete_user_items_old( $user_id, $course_id );
+				// Check if user is guest.
+				if ( ! $user_id ) {
+					$userGuestCourse = self::get_user_course_guest( $course_id, $order->get_user_email() );
+					if ( $userGuestCourse ) {
+						$userGuestCourse->delete();
+					}
+				} else {
+					$lp_user_items_db->delete_user_items_old( $user_id, $course_id );
+				}
 			}
 
 			/*$user_item_new_or_update = new LP_User_Item_Course( $user_item_data );
@@ -335,6 +355,30 @@ class LP_User_Factory {
 		} catch ( Throwable $e ) {
 			error_log( __FUNCTION__ . ': ' . $e->getMessage() );
 		}
+	}
+
+	/**
+	 * Get user_course of user Guest
+	 *
+	 * @param $course_id
+	 * @param $email_guest
+	 *
+	 * @return UserCourseModel|false
+	 * @throws Exception
+	 * @since 4.2.7.3
+	 * @version 1.0.0
+	 */
+	public static function get_user_course_guest( $course_id, $email_guest ) {
+		$lp_user_items_db        = LP_User_Items_DB::getInstance();
+		$filter                  = new LP_User_Items_Filter();
+		$filter->user_id         = 0;
+		$filter->item_id         = $course_id;
+		$filter->join[]          = "INNER JOIN {$lp_user_items_db->tb_postmeta} pm ON pm.post_id = ref_id";
+		$filter->join[]          = "INNER JOIN {$lp_user_items_db->tb_postmeta} pm2 ON pm2.post_id = ref_id";
+		$filter->where[]         = "AND pm.meta_key = '_checkout_email'";
+		$filter->where[]         = $lp_user_items_db->wpdb->prepare( 'AND pm2.meta_value = %s', $email_guest );
+
+		return UserCourseModel::get_user_item_model_from_db( $filter );
 	}
 
 	/**

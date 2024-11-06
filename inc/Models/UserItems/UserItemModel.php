@@ -207,11 +207,10 @@ class UserItemModel {
 	 * If exists, return UserItemModel.
 	 *
 	 * @param LP_User_Items_Filter $filter
-	 * @param bool $no_cache
 	 *
 	 * @return UserItemModel|false|static
 	 */
-	public static function get_user_item_model_from_db( LP_User_Items_Filter $filter, bool $check_cache = false ) {
+	public static function get_user_item_model_from_db( LP_User_Items_Filter $filter ) {
 		$lp_user_item_db = LP_User_Items_DB::getInstance();
 		$user_item_model = false;
 
@@ -406,7 +405,21 @@ class UserItemModel {
 		return apply_filters( 'learnPress/user-item/expiration-time', $expire, $duration, $this );
 	}
 
+	/**
+	 * Delete user item.
+	 *
+	 * @throws Exception
+	 * @since 4.2.7.3
+	 * @version 1.0.0
+	 */
 	public function delete() {
+		$lp_user_item_db  = LP_User_Items_DB::getInstance();
+		$filter             = new LP_User_Items_Filter();
+		$filter->where[]    = $lp_user_item_db->wpdb->prepare( 'AND user_item_id = %d', $this->get_user_item_id() );
+		$filter->collection = $lp_user_item_db->tb_lp_user_items;
+		$lp_user_item_db->delete_execute( $filter );
+
+		$this->clean_caches();
 	}
 
 	/**
@@ -422,6 +435,7 @@ class UserItemModel {
 				$this->user_id,
 				$this->item_id,
 				$this->item_type,
+				$this->ref_id,
 			]
 		);
 	}

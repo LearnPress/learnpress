@@ -1273,7 +1273,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @return bool
 		 */
 		public function is_completed(): bool {
-			return $this->get_status() === 'completed';
+			return $this->get_status() === LP_ORDER_COMPLETED;
 		}
 
 		/**

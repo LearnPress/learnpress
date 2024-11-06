@@ -76,12 +76,12 @@ const LP_BLOCK_COURSE_DURATION_EXPIRE = 'block_course_duration_expire';
 const LP_BLOCK_COURSE_PURCHASE        = 'block_course_purchased';
 
 // Status user item course.
-const LP_COURSE_ENROLLED  = 'enrolled';
-const LP_COURSE_FINISHED  = 'finished';
-const LP_COURSE_PURCHASED = 'purchased';
-const LP_COURSE_BLOCKED   = 'blocked'; // When Order change complete to another status
-const LP_ITEM_COMPLETED   = 'completed';
-const LP_ITEM_STARTED     = 'started';
+const LP_COURSE_ENROLLED    = 'enrolled';
+const LP_COURSE_FINISHED    = 'finished';
+const LP_COURSE_PURCHASED   = 'purchased';
+const LP_USER_COURSE_CANCEL = 'cancel'; // When Order change complete to another status
+const LP_ITEM_COMPLETED     = 'completed';
+const LP_ITEM_STARTED       = 'started';
 
 // Status LP Order to compare.
 const LP_ORDER_COMPLETED  = 'completed';
