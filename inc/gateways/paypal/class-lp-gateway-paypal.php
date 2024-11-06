@@ -79,7 +79,14 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 * @var null
 		 */
 		protected $client_secret = null;
-
+		/**
+		 * @var null
+		 */
+		public $rest_namespace = null;
+		/**
+		 * @var null
+		 */
+		public $rest_base = null;
 		/**
 		 * LP_Gateway_Paypal constructor.
 		 */
@@ -124,9 +131,13 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 					$this->client_id     = $this->settings->get( 'app_client_id' );
 					$this->client_secret = $this->settings->get( 'app_client_secret' );
 					if ( $this->settings->get( 'use_paypal_button', 'yes' ) === 'yes' ) {
-						add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_assets' ] );
+						add_filter( 'learnpress/frontend/localize_script', [ $this, 'add_checkout_params' ] );
 					}
 				}
+				$this->rest_namespace = 'lp/v1';
+				$this->rest_base = 'paypal-checkout';
+				add_action( 'rest_api_init', [ $this, 'register_rest_route' ] );
+
 			}
 
 			add_filter(
@@ -150,6 +161,35 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 */
 		public function paypal_available( bool $available ): bool {
 			return $available;
+		}
+		/**
+		 * Register rest route
+		 *
+		 * @return void
+		 */
+		public function register_rest_route() {
+			register_rest_route(
+				$this->rest_namespace,
+				$this->rest_base . '/order',
+				array(
+					array(
+						'methods'             => WP_REST_Server::CREATABLE,
+						'callback'            => array( $this, 'update_order_from_js_sdk' ),
+						// 'permission_callback' => array( $this, 'ct_check_permission' ),
+						'permission_callback' => '__return_true',
+					),
+				)
+			);
+		}
+		/**
+		 * add paypalClientId to lpCheckoutSettings 
+		 *
+		 * @param array $localize_script
+		 * @return array
+		 */
+		public function add_checkout_params( $localize_script ) {
+			$localize_script['lp-checkout']['paypalClientId'] = $this->client_id;
+			return $localize_script;
 		}
 
 		/**
@@ -516,19 +556,37 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			}
 			return $content;
 		}
-
-		public function enqueue_assets() {
-			if (  LP_Page_Controller::is_page_checkout() ) {
-				wp_enqueue_script( 'lp-paypal-button',
-					plugins_url( '/assets/js/dist/frontend/checkout/paypal-button.js', LP_PLUGIN_FILE ),
-					['lp-checkout'],
-					'',
-					[ 'strategy' => 'async' ]
-				);
-				wp_localize_script( 'lp-paypal-button', 'lpPaypalButtonConfig', [
-					'client_id' => $this->client_id,
-				] );
+		/**
+		 * update LP order when pay by checkout button
+		 *
+		 * @param WP_REST_Request $request
+		 * @return WP_REST_Response $response
+		 */
+		public function update_order_from_js_sdk( WP_REST_Request $request ) : WP_REST_Response {
+			$response = new LP_REST_Response();
+			try	{
+				$params = $request->get_params();
+				$params = LP_Helper::sanitize_params_submitted( $params );
+				if ( ! $params['orderID'] ) {
+					throw new Exception( __( 'Paypal order id is required', 'learnpress' ) );
+				}
+				if ( ! $params['lpOrderID'] ) {
+					throw new Exception( __( 'LP order id is required', 'learnpress' ) );
+				}
+				$order_id = $params['lpOrderID'];
+				$lp_order = learn_press_get_order( $order_id );
+				if ( ! $lp_order ) {
+					throw new Exception( __( 'Invalid LP order', 'learnpress' ) );
+				}
+				$lp_order->update_status( LP_ORDER_COMPLETED );
+				$redirect_url = $this->get_return_url( $lp_order );
+				$response->status  = 'success';
+				$response->message = __( 'Payment complete', 'learnpress' );
+				$response->data->redirect_url = $redirect_url;
+			} catch( Throwable $e ) {
+				$response->message = $e->getMessage();
 			}
+			return rest_ensure_response( $response );
 		}
 	}
 }

@@ -3,7 +3,7 @@
  */
 
 import { lpAddQueryArgs, lpFetchAPI, lpAjaxParseJsonOld } from '../utils.js';
-
+import payPalCheckoutButton from './checkout/paypal-button';
 // Events
 document.addEventListener( 'submit', ( e ) => {
 	window.lpCheckout.submit( e );
@@ -14,7 +14,9 @@ document.addEventListener( 'change', ( e ) => {
 document.addEventListener( 'keyup', ( e ) => {
 	window.lpCheckout.checkEmailGuest( e );
 } );
-
+document.addEventListener( 'DOMContentLoaded', ( e ) => {
+	payPalCheckoutButton();
+} );
 window.lpCheckout = {
 	idFormCheckout: 'learn-press-checkout-form',
 	idBtnPlaceOrder: 'learn-press-checkout-place-order',
