@@ -435,7 +435,6 @@ class UserItemModel {
 				$this->user_id,
 				$this->item_id,
 				$this->item_type,
-				$this->ref_id,
 			]
 		);
 	}
