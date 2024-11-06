@@ -661,7 +661,10 @@ class SingleCourseTemplate {
 		$can_show = true;
 
 		if ( $course->is_free() ) {
-			return '';
+			ob_start();
+			learn_press_get_template( 'single-course/buttons/enroll.php', array( 'course' => $course ) );
+			$html_btn = ob_get_clean();
+			return $html_btn;
 		}
 
 		$user         = learn_press_get_current_user();
