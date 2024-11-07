@@ -70,7 +70,7 @@ export default function Avatar() {
 					canvas.height = height;
 					const ctx = canvas.getContext( '2d' );
 					ctx.drawImage( img, 0, 0, width, height );
-					resolve( canvas.toDataURL( 'image/jpeg' ) );
+					resolve( canvas.toDataURL( 'image/png' ) );
 				}
 
 				resolve( base64 );
@@ -333,5 +333,5 @@ async function getCroppedImg(
 	ctx.putImageData( data, 0, 0 );
 
 	// As Base64 string
-	return canvas.toDataURL( 'image/jpeg' );
+	return canvas.toDataURL( 'image/png' );
 }
