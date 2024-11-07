@@ -17,6 +17,7 @@ require_once $blog_template_path . 'single-course/class-block-template-level-sin
 require_once $blog_template_path . 'single-course/class-block-template-count-item-single-course.php';
 require_once $blog_template_path . 'single-course/class-block-template-student-single-course.php';
 require_once $blog_template_path . 'single-course/class-block-template-btn-purchase-single-course.php';
+require_once $blog_template_path . 'single-course/class-block-template-duration-single-course.php';
 
 return apply_filters(
 	'learn-press/config/block-templates',
@@ -37,6 +38,7 @@ return apply_filters(
 		new Block_Template_Student_Single_Course(),
 		new Block_Template_Count_Item_Single_Course(),
 		new Block_Template_Btn_Purchase_Single_Course(),
+		new Block_Template_Duration_Single_Course(),
 		//new Block_Template_Item_Curriculum_Course(), // When handle item correct post type, uncomment this line, currently item show is post type course.
 	)
 );
