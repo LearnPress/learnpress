@@ -913,7 +913,7 @@ class CourseModel {
 
 				}
 			} else {
-				if ( ! empty( $this->get_external_link() ) && ! $userCourseModel ) {
+				if ( ! empty( $this->get_external_link() ) && ! $userCourseModel && ! $this->is_offline() ) {
 					$error_code = 'course_is_external';
 					throw new Exception( __( 'The course is external', 'learnpress' ) );
 				}
@@ -994,6 +994,7 @@ class CourseModel {
 		try {
 			$can_enroll = $this->can_enroll( $user );
 			if ( $can_enroll instanceof WP_Error ) {
+				error_log( $can_enroll->get_error_code() );
 				$error_code_return = [
 					'course_is_not_purchased_not_login',
 					'course_is_not_purchased',
