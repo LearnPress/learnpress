@@ -144,23 +144,26 @@ class LP_Template_Course extends LP_Abstract_Template {
 	}
 
 	/**
-	 * Display price or free of course, not button.
+	 * Display price or free of course, not button, it is label.
 	 *
 	 * @return void
 	 * @since 4.0.0
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 */
 	public function course_pricing() {
 		$course = learn_press_get_course();
 		$user   = learn_press_get_current_user();
 
-		// Check if user not attend course will show.
-		$user_course = $user->get_course_attend( $course->get_id() );
-		if ( $user_course instanceof UserCourseModel ) {
-			if ( $user_course->status === LP_COURSE_ENROLLED ) {
-				return;
-			} elseif ( $user->can_purchase_course( $course->get_id() ) instanceof WP_Error ) {
-				return;
+		$courseModel     = CourseModel::find( $course->get_id() );
+		$can_purchase    = $courseModel->can_purchase( UserModel::find( $user->get_id() ) );
+		$userCourseModel = UserCourseModel::find( $user->get_id(), $course->get_id() );
+		if ( get_current_user_id() ) {
+			if ( $userCourseModel ) {
+				if ( $userCourseModel->has_enrolled() ) {
+					return;
+				} elseif ( $can_purchase instanceof WP_Error ) {
+					return;
+				}
 			}
 		}
 
@@ -397,7 +400,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 		}
 
 		$courseModel = CourseModel::find( $course->get_id(), true );
-		$user_id = $user->get_id();
+		$user_id     = $user->get_id();
 
 		try {
 			if ( ! $user || ! $course ) {
