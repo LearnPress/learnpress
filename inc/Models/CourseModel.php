@@ -892,6 +892,19 @@ class CourseModel {
 			$enable_no_required_enroll = $this->has_no_enroll_requirement();
 			$out_of_stock              = ! $this->is_in_stock();
 
+			// Case user can retake course.
+			if ( $userCourseModel && $userCourseModel->can_retake() ) {
+				$error_code = 'course_can_retry';
+				throw new Exception( esc_html__( 'Course can retake.', 'learnpress' ) );
+			}
+
+			// Case course is out of stock, show message when user is not login or user_item not exits
+			if ( $out_of_stock &&
+				( ! $user || ! $userCourseModel || ! $userCourseModel->has_enrolled_or_finished() ) ) {
+				$error_code = 'course_out_of_stock';
+				throw new Exception( __( 'The course is full of students.', 'learnpress' ) );
+			}
+
 			// Case user is logged in and user_item exists
 			if ( $userCourseModel && $user ) {
 				if ( $userCourseModel->has_enrolled() ) {
@@ -927,18 +940,6 @@ class CourseModel {
 						throw new Exception( __( 'The course is not purchased.', 'learnpress' ) );
 					}
 				}
-			}
-
-			// Case course is out of stock, show message when user is not login or user_item not exits
-			if ( $out_of_stock && ( ! $user || ! $userCourseModel ) ) {
-				$error_code = 'course_out_of_stock';
-				throw new Exception( __( 'The course is full of students.', 'learnpress' ) );
-			}
-
-			// Case user can retake course.
-			if ( $userCourseModel && $userCourseModel->can_retake() ) {
-				$error_code = 'course_can_retry';
-				throw new Exception( esc_html__( 'Course can retake.', 'learnpress' ) );
 			}
 		} catch ( Throwable $e ) {
 			if ( empty( $error_code ) ) {
@@ -994,7 +995,6 @@ class CourseModel {
 		try {
 			$can_enroll = $this->can_enroll( $user );
 			if ( $can_enroll instanceof WP_Error ) {
-				error_log( $can_enroll->get_error_code() );
 				$error_code_return = [
 					'course_is_not_purchased_not_login',
 					'course_is_not_purchased',
