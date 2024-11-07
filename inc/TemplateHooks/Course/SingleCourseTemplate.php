@@ -663,22 +663,12 @@ class SingleCourseTemplate {
 		$html_btn     = '';
 		$can_purchase = $course->can_purchase( $user );
 		if ( is_wp_error( $can_purchase ) ) {
-			$error_code_not_show = apply_filters(
-				'learn-press/course/html-button-purchase/not-show-message',
-				[
-					'course_purchased',
-					'course_is_enrolled_or_finished',
-					'course_not_publish',
-					'course_is_free',
-					'course_is_enrolled',
-					'course_is_no_required_enroll',
-					'course_can_retake',
-					'course_is_external',
-					'course_out_of_stock',
-				]
+			$error_code_show = apply_filters(
+				'learn-press/course/html-button-purchase/show-messages',
+				[]
 			);
-			if ( ! in_array( $can_purchase->get_error_code(), $error_code_not_show )
-				&& ! empty( $can_purchase->get_error_message() ) && ! empty( $can_purchase->get_error_code() ) ) {
+			if ( in_array( $can_purchase->get_error_code(), $error_code_show )
+				&& ! empty( $can_purchase->get_error_message() ) ) {
 				ob_start();
 				Template::print_message( $can_purchase->get_error_message(), 'warning' );
 				$html_btn = ob_get_clean();
@@ -754,17 +744,12 @@ class SingleCourseTemplate {
 		$html_btn   = '';
 		$can_enroll = $course->can_enroll( $user );
 		if ( is_wp_error( $can_enroll ) ) {
-			$error_code_not_show = apply_filters(
-				'learn-press/course/html-button-enroll/not-show-message',
-				[
-					'course_is_enrolled',
-					'course_is_finished',
-					'course_is_not_purchased',
-					'course_is_external',
-				]
+			$error_code_show = apply_filters(
+				'learn-press/course/html-button-enroll/show-messages',
+				[ 'course_is_no_required_enroll_not_login', 'course_out_of_stock' ]
 			);
-			if ( ! in_array( $can_enroll->get_error_code(), $error_code_not_show )
-				&& ! empty( $can_enroll->get_error_message() ) && ! empty( $can_enroll->get_error_code() ) ) {
+			if ( in_array( $can_enroll->get_error_code(), $error_code_show )
+				&& ! empty( $can_enroll->get_error_message() ) ) {
 				ob_start();
 				Template::print_message( $can_enroll->get_error_message(), 'warning' );
 				$html_btn = ob_get_clean();

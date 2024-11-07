@@ -4,6 +4,7 @@ use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\Models\UserModel;
+use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
 
 /**
  * Class LP_Course_Template
@@ -177,9 +178,9 @@ class LP_Template_Course extends LP_Abstract_Template {
 	 */
 	public function course_purchase_button( $course = null ) {
 		// Test
-		$singleCourseTemplate = \LearnPress\TemplateHooks\Course\SingleCourseTemplate::instance();
-		$course               = \LearnPress\Models\CourseModel::find( get_the_ID() );
-		$user                 = \LearnPress\Models\UserModel::find( get_current_user_id() );
+		$singleCourseTemplate = SingleCourseTemplate::instance();
+		$course               = CourseModel::find( get_the_ID() );
+		$user                 = UserModel::find( get_current_user_id() );
 		echo $singleCourseTemplate->html_btn_purchase_course( $course, $user );
 		return;
 		// End test
@@ -250,9 +251,9 @@ class LP_Template_Course extends LP_Abstract_Template {
 	 */
 	public function course_enroll_button( $course = null ) {
 		// Test
-		$singleCourseTemplate = \LearnPress\TemplateHooks\Course\SingleCourseTemplate::instance();
-		$course               = \LearnPress\Models\CourseModel::find( get_the_ID() );
-		$user                 = \LearnPress\Models\UserModel::find( get_current_user_id() );
+		$singleCourseTemplate = SingleCourseTemplate::instance();
+		$course               = CourseModel::find( get_the_ID() );
+		$user                 = UserModel::find( get_current_user_id() );
 		echo $singleCourseTemplate->html_btn_enroll_course( $course, $user );
 		return;
 		// End test
