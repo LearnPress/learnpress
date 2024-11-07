@@ -30,9 +30,10 @@ input, button, select, textarea {
 	outline: none;
 }
 
-html {
+// Comment because it error, can't run position: sticky
+/*html {
 	overflow-x: hidden;
-}
+}*/
 
 a {
 	@include transition(.3s);
