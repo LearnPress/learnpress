@@ -180,14 +180,10 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 			);
 
 			$user_id = get_current_user_id();
-			$user = UserModel::find( $user_id, true );
-			if ( ! $user_id ) {
-				return $defaults;
-			}
+			$user    = UserModel::find( $user_id, true );
 
-			$is_free            = $course->is_free();
-			$userCourseModel = UserCourseModel::find( $user_id, $course_id );
-			$enrolled           = $userCourseModel && $userCourseModel->has_enrolled_or_finished();
+			$userCourseModel    = UserCourseModel::find( $user_id, $course_id );
+			$enrolled           = $user && $userCourseModel && $userCourseModel->has_enrolled_or_finished();
 			$no_required_enroll = $course->has_no_enroll_requirement();
 
 			$post_format = $this->get_format();
@@ -209,8 +205,8 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 				$defaults[] = 'item-locked';
 			} else {
 				$userItemModel = UserItemModel::find_user_item( $user_id, $item_id, get_post_type( $item_id ) );
-				$item_status = $userItemModel ? $userItemModel->get_status() : '';
-				$item_grade  = $userItemModel ? $userItemModel->get_graduation() : '';
+				$item_status   = $userItemModel ? $userItemModel->get_status() : '';
+				$item_grade    = $userItemModel ? $userItemModel->get_graduation() : '';
 
 				if ( $item_status ) {
 					$defaults[] = 'has-status';
