@@ -104,13 +104,13 @@ class SingleInstructorTemplate {
 	 * Get html avatar of instructor.
 	 *
 	 * @param LP_User|UserModel $instructor
-	 * @param int $size_display 0 to get default learn_press_get_avatar_thumb_size()
+	 * @param array $size_display ['width' => 100, 'height' => 100]
 	 *
 	 * @return string
 	 * @since 4.2.3
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
-	public function html_avatar( $instructor, int $size_display = 0 ): string {
+	public function html_avatar( $instructor, array $size_display = [] ): string {
 		$userTemplate = UserTemplate::instance();
 		$html = '';
 		if ( ! $instructor ) {

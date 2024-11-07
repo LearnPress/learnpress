@@ -102,18 +102,18 @@ class UserTemplate {
 	 * Get html avatar of instructor.
 	 *
 	 * @param UserModel $user
-	 * @param int $size_display 0 to get default learn_press_get_avatar_thumb_size()
+	 * @param array $size_display [ 'width' => 100, 'height' => 100 ]
 	 * @param string $class
 	 *
 	 * @return string
 	 * @since 4.2.7.2
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
-	public function html_avatar( UserModel $user, int $size_display = 0, string $class = 'user' ): string {
+	public function html_avatar( UserModel $user, array $size_display = [], string $class = 'user' ): string {
 		$html = '';
 
 		try {
-			if ( 0 === $size_display ) {
+			if ( empty( $size_display ) ) {
 				$size_display = learn_press_get_avatar_thumb_size();
 			}
 
@@ -125,7 +125,7 @@ class UserTemplate {
 
 			$avatar_url = $user->get_avatar_url();
 			$img_avatar = sprintf(
-				'<img alt="%s" class="avatar" src="%s" height="%d" width="%d" decoding="async">',
+				'<img alt="%s" class="avatar" src="%s" width="%d" height="%d" decoding="async" />',
 				esc_attr__( 'User Avatar', 'learnpress' ),
 				$avatar_url,
 				$width,
