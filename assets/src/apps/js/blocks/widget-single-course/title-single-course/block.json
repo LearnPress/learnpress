@@ -10,6 +10,9 @@
 	"attributes": {
 		"courseId": {
 			"type": "number"
+		},
+		"tag": {
+			"type": "string"
 		}
 	},
 	"usesContext": [],
