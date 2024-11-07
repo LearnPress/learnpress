@@ -167,6 +167,11 @@ class LP_User_Factory {
 					// For case item is Certificate, when update code of Certificate, should remove this code
 					if ( $item['item_type'] === 'lp_cert' ) {
 						$item['_lp_cert_id'] = $item['item_id'];
+						// Fixed for old Certificate <= v4.1.2
+						$item['_lp_course_id_of_cert'] = learn_press_get_order_item_meta(
+							$item['order_item_id'],
+							'_lp_course_id_of_cert'
+						);
 					}
 					do_action( 'lp/order-completed/update/user-item', $item, $order, $user );
 				}
@@ -369,14 +374,14 @@ class LP_User_Factory {
 	 * @version 1.0.0
 	 */
 	public static function get_user_course_guest( $course_id, $email_guest ) {
-		$lp_user_items_db        = LP_User_Items_DB::getInstance();
-		$filter                  = new LP_User_Items_Filter();
-		$filter->user_id         = 0;
-		$filter->item_id         = $course_id;
-		$filter->join[]          = "INNER JOIN {$lp_user_items_db->tb_postmeta} pm ON pm.post_id = ref_id";
-		$filter->join[]          = "INNER JOIN {$lp_user_items_db->tb_postmeta} pm2 ON pm2.post_id = ref_id";
-		$filter->where[]         = "AND pm.meta_key = '_checkout_email'";
-		$filter->where[]         = $lp_user_items_db->wpdb->prepare( 'AND pm2.meta_value = %s', $email_guest );
+		$lp_user_items_db = LP_User_Items_DB::getInstance();
+		$filter           = new LP_User_Items_Filter();
+		$filter->user_id  = 0;
+		$filter->item_id  = $course_id;
+		$filter->join[]   = "INNER JOIN {$lp_user_items_db->tb_postmeta} pm ON pm.post_id = ref_id";
+		$filter->join[]   = "INNER JOIN {$lp_user_items_db->tb_postmeta} pm2 ON pm2.post_id = ref_id";
+		$filter->where[]  = "AND pm.meta_key = '_checkout_email'";
+		$filter->where[]  = $lp_user_items_db->wpdb->prepare( 'AND pm2.meta_value = %s', $email_guest );
 
 		return UserCourseModel::get_user_item_model_from_db( $filter );
 	}
