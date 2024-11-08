@@ -31,7 +31,7 @@ class CourseOfflineAddressDynamicElementor extends Tag {
 		$singleCourseOfflineTemplate = SingleCourseOfflineTemplate::instance();
 
 		try {
-			$course = $this->get_course();
+			$course = $this->get_course_model();
 			if ( ! $course ) {
 				return;
 			}

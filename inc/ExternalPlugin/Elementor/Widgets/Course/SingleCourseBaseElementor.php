@@ -11,6 +11,7 @@
 namespace LearnPress\ExternalPlugin\Elementor\Widgets\Course;
 
 use LearnPress\ExternalPlugin\Elementor\LPElementor;
+use LearnPress\Models\CourseModel;
 use LP_Course;
 
 trait SingleCourseBaseElementor {
@@ -71,6 +72,7 @@ trait SingleCourseBaseElementor {
 	 * Get course
 	 *
 	 * @return bool|LP_Course|mixed
+	 * @deprecated 4.2.7.3
 	 */
 	public function get_course() {
 		$id = get_the_ID();
@@ -79,5 +81,21 @@ trait SingleCourseBaseElementor {
 		}
 
 		return learn_press_get_course( $id );
+	}
+
+	/**
+	 * Get course
+	 *
+	 * @return false|CourseModel
+	 * @since 4.2.7.3
+	 * @version 1.0.0
+	 */
+	public function get_course_model() {
+		$id = get_the_ID();
+		if ( ! $id ) {
+			return false;
+		}
+
+		return CourseModel::find( $id, true );
 	}
 }

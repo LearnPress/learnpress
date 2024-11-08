@@ -32,12 +32,12 @@ class CourseAuthorNameElementor extends Tag {
 		$singleInstructorTemplate = SingleInstructorTemplate::instance();
 
 		try {
-			$course = $this->get_course();
+			$course = $this->get_course_model();
 			if ( ! $course ) {
 				return;
 			}
 
-			$author = $course->get_author();
+			$author = $course->get_author_model();
 			if ( ! $author ) {
 				return;
 			}

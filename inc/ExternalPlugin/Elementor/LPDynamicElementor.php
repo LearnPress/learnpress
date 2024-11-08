@@ -9,6 +9,7 @@
 namespace LearnPress\ExternalPlugin\Elementor;
 
 use Elementor\Modules\DynamicTags\Module;
+use LearnPress\Models\CourseModel;
 use LP_Course;
 
 defined( 'ABSPATH' ) || exit;
@@ -39,6 +40,7 @@ trait LPDynamicElementor {
 	 * Get course
 	 *
 	 * @return bool|LP_Course|mixed
+	 * @deprecated 4.2.7.3
 	 */
 	public function get_course() {
 		$id = get_the_ID();
@@ -47,5 +49,21 @@ trait LPDynamicElementor {
 		}
 
 		return learn_press_get_course( $id );
+	}
+
+	/**
+	 * Get course
+	 *
+	 * @return false|CourseModel
+	 * @since 4.2.7.3
+	 * @version 1.0.0
+	 */
+	public function get_course_model() {
+		$id = get_the_ID();
+		if ( ! $id ) {
+			return false;
+		}
+
+		return CourseModel::find( $id, true );
 	}
 }

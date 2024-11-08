@@ -37,10 +37,15 @@ class CourseCountLessonDynamicElementor extends Tag {
 		$singleCourseTemplate = SingleCourseTemplate::instance();
 
 		try {
-			$course = $this->get_course();
+			$course = $this->get_course_model();
 			if ( ! $course ) {
 				return;
 			}
+
+			if ( $course->is_offline() ) {
+				return;
+			}
+
 			echo $singleCourseTemplate->html_count_item( $course, LP_LESSON_CPT );
 		} catch ( \Throwable $e ) {
 			error_log( $e->getMessage() );
