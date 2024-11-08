@@ -47,10 +47,9 @@ if ( $post instanceof WP_Post ) {
 		if ( $template_404 ) {
 			include $template_404;
 		}
-		return;
+	} else {
+		learn_press_get_template( 'content-single-course' );
 	}
-
-	learn_press_get_template( 'content-single-course' );
 }
 /*while ( have_posts() ) {
 	the_post();
