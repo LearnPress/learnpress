@@ -5,7 +5,6 @@
  */
 
 use LearnPress\ExternalPlugin\Elementor\Widgets\BecomeATeacherElementor;
-use LearnPress\ExternalPlugin\Elementor\Widgets\Course\Dynamic\CourseAddressDynamicElementor;
 use LearnPress\ExternalPlugin\Elementor\Widgets\Course\Dynamic\CourseAuthorNameElementor;
 use LearnPress\ExternalPlugin\Elementor\Widgets\Course\Dynamic\CourseAuthorAvatarElementor;
 use LearnPress\ExternalPlugin\Elementor\Widgets\Course\Dynamic\CourseAuthorUrlElementor;
@@ -13,9 +12,10 @@ use LearnPress\ExternalPlugin\Elementor\Widgets\Course\Dynamic\CourseCapacityDyn
 use LearnPress\ExternalPlugin\Elementor\Widgets\Course\Dynamic\CourseCountLessonDynamicElementor;
 use LearnPress\ExternalPlugin\Elementor\Widgets\Course\Dynamic\CourseCountQuizDynamicElementor;
 use LearnPress\ExternalPlugin\Elementor\Widgets\Course\Dynamic\CourseCountStudentDynamicElementor;
-use LearnPress\ExternalPlugin\Elementor\Widgets\Course\Dynamic\CourseDeliverTypeDynamicElementor;
 use LearnPress\ExternalPlugin\Elementor\Widgets\Course\Dynamic\CourseDurationDynamicElementor;
 use LearnPress\ExternalPlugin\Elementor\Widgets\Course\Dynamic\CourseLevelDynamicElementor;
+use LearnPress\ExternalPlugin\Elementor\Widgets\Course\Dynamic\CourseOfflineDeliverTypeDynamicElementor;
+use LearnPress\ExternalPlugin\Elementor\Widgets\Course\Dynamic\CourseOfflineAddressDynamicElementor;
 use LearnPress\ExternalPlugin\Elementor\Widgets\Course\Dynamic\CourseOfflineCountLessonDynamicElementor;
 use LearnPress\ExternalPlugin\Elementor\Widgets\Course\ListCoursesByPageElementor;
 use LearnPress\ExternalPlugin\Elementor\Widgets\Course\Sections\CoursePriceElementor;
@@ -64,6 +64,8 @@ return [
 			'course-count-student'        => CourseCountStudentDynamicElementor::class,
 			'course-count-lesson'         => CourseCountLessonDynamicElementor::class,
 			'course-offline-count-lesson' => CourseOfflineCountLessonDynamicElementor::class,
+			'course-deliver-type'         => CourseOfflineDeliverTypeDynamicElementor::class,
+			'course-address'              => CourseOfflineAddressDynamicElementor::class,
 			'course-count-quiz'           => CourseCountQuizDynamicElementor::class,
 			'course-count-level'          => CourseLevelDynamicElementor::class,
 			'course-count-duration'       => CourseDurationDynamicElementor::class,
@@ -72,9 +74,7 @@ return [
 			'course-author-url'           => CourseAuthorUrlElementor::class,
 			'count-student-courses'       => CountStudentDynamicElementor::class,
 			'course-courses-free'         => CountCoursesFreeDynamicElementor::class,
-			'course-deliver-type'         => CourseDeliverTypeDynamicElementor::class,
 			'course-capacity'             => CourseCapacityDynamicElementor::class,
-			'course-address'              => CourseAddressDynamicElementor::class,
 		]
 	),
 	'loadAjax' => apply_filters(

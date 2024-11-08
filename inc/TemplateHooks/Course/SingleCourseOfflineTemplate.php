@@ -131,7 +131,7 @@ class SingleCourseOfflineTemplate {
 		// End instructor
 
 		// Info one
-		$html_address     = $this->singleCourseTemplate->html_address( $course );
+		$html_address     = $this->html_address( $course );
 		$section_info_one = apply_filters(
 			'learn-press/single-course/offline/info-bar',
 			[
@@ -175,7 +175,7 @@ class SingleCourseOfflineTemplate {
 			],
 			'deliver_type' => [
 				'label' => sprintf( '<span class="lp-icon-bookmark-o"></span> %s', __( 'Delivery type', 'learnpress' ) ),
-				'value' => $this->singleCourseTemplate->html_deliver_type( $course ),
+				'value' => $this->html_deliver_type( $course ),
 			],
 			'capacity'     => [
 				'label' => sprintf( '<span class="lp-icon-students"></span> %s', __( 'Capacity', 'learnpress' ) ),
@@ -291,6 +291,10 @@ class SingleCourseOfflineTemplate {
 	 * @return string
 	 */
 	public function html_lesson_info( CourseModel $course, bool $show_label = false ): string {
+		if ( ! $course->is_offline() ) {
+			return '';
+		}
+
 		$lesson_count = $course->get_meta_value_by_key( CoursePostModel::META_KEY_OFFLINE_LESSON_COUNT, 10 );
 
 		if ( ! $lesson_count ) {
@@ -304,5 +308,66 @@ class SingleCourseOfflineTemplate {
 		);
 
 		return $html;
+	}
+
+	/**
+	 * Get html address of course offline
+	 *
+	 * @param CourseModel $course
+	 *
+	 * @return string
+	 * @since 4.2.7.3
+	 * @version 1.0.0
+	 */
+	public function html_address( CourseModel $course ): string {
+		$content = '';
+
+		try {
+			if ( ! $course->is_offline() ) {
+				return $content;
+			}
+
+			$address = $course->get_meta_value_by_key( CoursePostModel::META_KEY_ADDRESS, '' );
+			if ( empty( $address ) ) {
+				return $content;
+			}
+
+			$html_wrapper = [
+				'<span class="course-address">' => '</span>',
+			];
+			$content      = Template::instance()->nest_elements( $html_wrapper, $address );
+			apply_filters( 'learn-press/single-course/html-address', $content, $course );
+		} catch ( Throwable $e ) {
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
+		}
+
+		return $content;
+	}
+
+	/**
+	 * Get deliver type
+	 *
+	 * @param CourseModel $course
+	 *
+	 * @return string
+	 * @since 4.2.7.3
+	 * @version 1.0.0
+	 */
+	public function html_deliver_type( CourseModel $course ): string {
+		$content = '';
+
+		if ( ! $course->is_offline() ) {
+			return $content;
+		}
+
+		$html_wrapper = [
+			'<span class="course-deliver-type">' => '</span>',
+		];
+
+		$deliver_type_options = Config::instance()->get( 'course-deliver-type' );
+		$key                  = $course->get_meta_value_by_key( CoursePostModel::META_KEY_DELIVER, 'private_1_1' );
+		$content              = $deliver_type_options[ $key ] ?? '';
+
+		return Template::instance()->nest_elements( $html_wrapper, $content );
 	}
 }

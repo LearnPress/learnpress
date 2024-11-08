@@ -178,7 +178,7 @@ class ListCoursesTemplate {
 	 *
 	 * @return string
 	 * @since 4.2.5.8
-	 * @version 1.0.3
+	 * @version 1.0.4
 	 */
 	public static function render_course( $course, array $settings = [] ): string {
 		if ( ! $course instanceof CourseModel ) {
@@ -219,9 +219,9 @@ class ListCoursesTemplate {
 				}
 
 				// Add address for offline course.
-				$html_address = $singleCourseTemplate->html_address( $course );
+				$html_address = $singleCourseOfflineTemplate->html_address( $course );
 				if ( ! empty( $html_address ) ) {
-					$meta_data['address'] = $singleCourseTemplate->html_address( $course );
+					$meta_data['address'] = $singleCourseOfflineTemplate->html_address( $course );
 				}
 			}
 

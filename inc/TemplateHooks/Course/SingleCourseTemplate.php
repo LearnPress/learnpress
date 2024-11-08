@@ -353,8 +353,10 @@ class SingleCourseTemplate {
 	 * @param CourseModel $course
 	 *
 	 * @return string
+	 * @deprecated 4.2.7.3 Move to SingleCourseOfflineTemplate
 	 */
 	public function html_deliver_type( CourseModel $course ): string {
+		return '';
 		$content = '';
 
 		$html_wrapper = [
@@ -594,8 +596,10 @@ class SingleCourseTemplate {
 	 * @param CourseModel $course
 	 *
 	 * @return string
+	 * @deprecated 4.2.7.3 Move to SingleCourseOfflineTemplate
 	 */
 	public function html_address( CourseModel $course ): string {
+		return '';
 		$content = '';
 
 		try {
