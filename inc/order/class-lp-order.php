@@ -10,6 +10,9 @@
 /**
  * Prevent loading this file directly
  */
+
+use LearnPress\Models\UserModel;
+
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Order' ) ) {
@@ -485,7 +488,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 */
 		public function get_all_items() {
 			global $wpdb;
-			$lp_order_items = LP_Database::getInstance();
+			$lp_order_items    = LP_Database::getInstance();
 			$table_order_items = $lp_order_items->tb_lp_order_items;
 
 			$query = $wpdb->prepare(
@@ -1082,11 +1085,18 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @return string
 		 * @editor tungnx
 		 * @modify 4.1.3
+		 * @version 1.0.2
 		 */
 		public function get_user_email( int $user_id = 0 ): string {
-			$user = learn_press_get_user( $user_id );
-			if ( $user && ! $user instanceof LP_User_Guest ) {
+			$email = '';
+			$user  = UserModel::find( $user_id, true );
+			if ( $user instanceof UserModel ) {
 				$email = $user->get_email();
+			} elseif ( (int) $this->get_user_id() > 0 ) {
+				$user = UserModel::find( $user_id, true );
+				if ( $user instanceof UserModel ) {
+					$email = $user->get_email();
+				}
 			} else {
 				$email = $this->get_checkout_email();
 			}
@@ -1201,7 +1211,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 				$new_status = $new_status_post;
 			}
 
-			$order_id   = $this->get_id();
+			$order_id = $this->get_id();
 
 			if ( $new_status !== $old_status ) {
 				do_action( 'learn-press/order/status-' . $new_status, $order_id, $old_status );

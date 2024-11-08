@@ -6,7 +6,7 @@
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 3.0.1
+ * @version 3.0.2
  * @editor tungnx
  * @modify 4.1.3
  */
@@ -47,7 +47,7 @@ if ( $order->is_manual() ) {
 		$email_content = $order->get_user_email( $user_ids );
 	}
 } else {
-	$email_content = $order->get_user_email( $order->get_user_id() );
+	$email_content = $order->get_user_email();
 }
 ?>
 

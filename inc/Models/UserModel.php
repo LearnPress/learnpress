@@ -493,6 +493,28 @@ class UserModel {
 	}
 
 	/**
+	 * Get email of user.
+	 *
+	 * @return string
+	 * @since 4.2.7.4
+	 * @version 1.0.0
+	 */
+	public function get_email(): string {
+		return $this->user_email ?? '';
+	}
+
+	/**
+	 * Get username of user.
+	 *
+	 * @return string
+	 * @since 4.2.7.4
+	 * @version 1.0.0
+	 */
+	public function get_username(): string {
+		return $this->user_login ?? '';
+	}
+
+	/**
 	 * Get statistic info of instructor user
 	 *
 	 * @param array $params
