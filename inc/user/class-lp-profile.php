@@ -2,6 +2,7 @@
 
 use LearnPress\Helpers\Config;
 use LearnPress\Models\Courses;
+use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\TemplateHooks\Profile\ProfileOrdersTemplate;
 
 defined( 'ABSPATH' ) || exit;
@@ -700,8 +701,11 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				case 'own':
 					//$query = $this->_curd->query_own_courses( $this->get_user_data( 'id' ), $args );
 					$filter = new LP_Course_Filter();
+					if ( empty( $args['status'] ) ) {
+						$args['status'] = [ 'publish', 'pending', 'private' ];
+					}
 					Courses::handle_params_for_query_courses( $filter, $args );
-					$filter->fields      = array( 'ID' );
+					$filter->fields      = [ 'ID' ];
 					$filter->post_author = $this->get_user_data( 'id' );
 					$filter->post_status = ! empty( $args['status'] ) ? $args['status'] : array(
 						'publish',
