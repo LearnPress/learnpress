@@ -12,6 +12,9 @@ export default async function payPalCheckoutButton() {
     checkButtonContainer();
     let paypal, lpCheckoutForm;
     try {
+        if ( lpCheckoutSettings.paypalClientId === undefined ) {
+            return;
+        }
         paypal = await loadScript({ clientId: lpCheckoutSettings.paypalClientId });
     } catch (error) {
         console.error("failed to load the PayPal JS SDK script", error);
