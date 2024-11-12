@@ -3,7 +3,7 @@
 	"apiVersion": 2,
 	"name": "learnpress/box-extra-single-course",
 	"title": "Box Extra Single Course",
-	"category": "learnpress-category",
+	"category": "lp-single-course-category",
 	"description": "Renders template Box Extra Single Course PHP templates.",
 	"textdomain": "learnpress",
 	"keywords": ["box extra single course", "learnpress"],

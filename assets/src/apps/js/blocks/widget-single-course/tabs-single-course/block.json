@@ -3,7 +3,7 @@
 	"apiVersion": 2,
 	"name": "learnpress/tabs-single-course",
 	"title": "Tabs Single Course",
-	"category": "learnpress-category",
+	"category": "lp-single-course-category",
 	"description": "Renders template Tabs Single Course PHP templates.",
 	"textdomain": "learnpress",
 	"keywords": ["tabs single course", "learnpress"],

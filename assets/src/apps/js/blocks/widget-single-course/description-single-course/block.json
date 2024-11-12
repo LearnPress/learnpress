@@ -3,7 +3,7 @@
 	"apiVersion": 2,
 	"name": "learnpress/description-single-course",
 	"title": "Description Single Course",
-	"category": "learnpress-category",
+	"category": "lp-single-course-category",
 	"description": "Renders template Description Single Course PHP templates.",
 	"textdomain": "learnpress",
 	"keywords": ["description single course", "learnpress"],

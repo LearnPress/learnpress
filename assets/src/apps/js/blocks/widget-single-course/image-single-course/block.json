@@ -3,7 +3,7 @@
 	"apiVersion": 2,
 	"name": "learnpress/image-single-course",
 	"title": "Image Single Course",
-	"category": "learnpress-category",
+	"category": "lp-single-course-category",
 	"description": "Renders template Image Single Course PHP templates.",
 	"textdomain": "learnpress",
 	"keywords": ["image single course", "learnpress"],

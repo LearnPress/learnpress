@@ -12,7 +12,7 @@ class Block_Template_Instructor_Single_Course extends Abstract_Block_Template {
 	public $name                          = 'learnpress/instructor-single-course';
 	public $title                         = 'Instructor Single Course (LearnPress)';
 	public $description                   = 'Instructor Single Course Block Template';
-	public $path_html_block_template_file = 'html/instructor-single-course.html';
+	public $path_html_block_template_file = 'html/single-course/instructor-single-course.html';
 	public $path_template_render_default  = 'block/render/instructor-single-course.php';
 	public $source_js                     = LP_PLUGIN_URL . 'assets/js/dist/blocks/instructor-single-course.js';
 

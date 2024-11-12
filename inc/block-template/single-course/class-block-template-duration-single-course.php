@@ -12,7 +12,7 @@ class Block_Template_Duration_Single_Course extends Abstract_Block_Template {
 	public $name                          = 'learnpress/duration-single-course';
 	public $title                         = 'Duration Course (LearnPress)';
 	public $description                   = 'Duration Course Block Template';
-	public $path_html_block_template_file = 'html/duration-single-course.html';
+	public $path_html_block_template_file = 'html/single-course/duration-single-course.html';
 	public $path_template_render_default  = 'block/render/duration-single-course.php';
 	public $source_js                     = LP_PLUGIN_URL . 'assets/js/dist/blocks/duration-single-course.js';
 

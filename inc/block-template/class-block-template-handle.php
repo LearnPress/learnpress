@@ -182,6 +182,13 @@ class Block_Template_Handle {
 			'icon'  => null,
 		);
 
+		$lp_category_single_course_block = array(
+			'slug'  => 'lp-single-course-category',
+			'title' => __( 'Category Single Course', 'learnpress' ),
+			'icon'  => null,
+		);
+
+		array_unshift( $block_categories, $lp_category_single_course_block );
 		array_unshift( $block_categories, $lp_category_block );
 
 		return $block_categories;

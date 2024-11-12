@@ -12,7 +12,7 @@ class Block_Template_Student_Single_Course extends Abstract_Block_Template {
 	public $name                          = 'learnpress/student-single-course';
 	public $title                         = 'Student Course (LearnPress)';
 	public $description                   = 'Student Course Block Template';
-	public $path_html_block_template_file = 'html/student-single-course.html';
+	public $path_html_block_template_file = 'html/single-course/student-single-course.html';
 	public $path_template_render_default  = 'block/render/student-single-course.php';
 	public $source_js                     = LP_PLUGIN_URL . 'assets/js/dist/blocks/student-single-course.js';
 

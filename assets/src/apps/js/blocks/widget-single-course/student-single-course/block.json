@@ -3,7 +3,7 @@
 	"apiVersion": 2,
 	"name": "learnpress/student-single-course",
 	"title": "Student Single Course",
-	"category": "learnpress-category",
+	"category": "lp-single-course-category",
 	"description": "Renders template Student Single Course PHP templates.",
 	"textdomain": "learnpress",
 	"keywords": ["student single course", "learnpress"],

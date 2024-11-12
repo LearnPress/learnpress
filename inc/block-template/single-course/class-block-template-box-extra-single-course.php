@@ -12,7 +12,7 @@ class Block_Template_Box_Extra_Single_Course extends Abstract_Block_Template {
 	public $name                          = 'learnpress/box-extra-single-course';
 	public $title                         = 'Box Extra Course (LearnPress)';
 	public $description                   = 'Box Extra Course Block Template';
-	public $path_html_block_template_file = 'html/box-extra-single-course.html';
+	public $path_html_block_template_file = 'html/single-course/box-extra-single-course.html';
 	public $path_template_render_default  = 'block/render/box-extra-single-course.php';
 	public $source_js                     = LP_PLUGIN_URL . 'assets/js/dist/blocks/box-extra-single-course.js';
 

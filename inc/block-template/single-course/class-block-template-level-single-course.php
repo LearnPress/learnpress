@@ -12,7 +12,7 @@ class Block_Template_Level_Single_Course extends Abstract_Block_Template {
 	public $name                          = 'learnpress/level-single-course';
 	public $title                         = 'Level Course (LearnPress)';
 	public $description                   = 'Level Course Block Template';
-	public $path_html_block_template_file = 'html/level-single-course.html';
+	public $path_html_block_template_file = 'html/single-course/level-single-course.html';
 	public $path_template_render_default  = 'block/render/level-single-course.php';
 	public $source_js                     = LP_PLUGIN_URL . 'assets/js/dist/blocks/level-single-course.js';
 

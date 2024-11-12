@@ -3,7 +3,7 @@
 	"apiVersion": 2,
 	"name": "learnpress/price-single-course",
 	"title": "Price Single Course",
-	"category": "learnpress-category",
+	"category": "lp-single-course-category",
 	"description": "Renders template Price Single Course PHP templates.",
 	"textdomain": "learnpress",
 	"keywords": ["price single course", "learnpress"],

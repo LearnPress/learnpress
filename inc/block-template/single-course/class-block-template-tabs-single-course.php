@@ -12,7 +12,7 @@ class Block_Template_Tabs_Single_Course extends Abstract_Block_Template {
 	public $name                          = 'learnpress/tabs-single-course';
 	public $title                         = 'Tabs Single Course (LearnPress)';
 	public $description                   = 'Tabs Single Course Block Template';
-	public $path_html_block_template_file = 'html/tabs-single-course.html';
+	public $path_html_block_template_file = 'html/single-course/tabs-single-course.html';
 	public $path_template_render_default  = 'block/render/tabs-single-course.php';
 	public $source_js                     = LP_PLUGIN_URL . 'assets/js/dist/blocks/tabs-single-course.js';
 

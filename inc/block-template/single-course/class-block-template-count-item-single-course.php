@@ -12,7 +12,7 @@ class Block_Template_Count_Item_Single_Course extends Abstract_Block_Template {
 	public $name                          = 'learnpress/count-item-single-course';
 	public $title                         = 'Count Item Course (LearnPress)';
 	public $description                   = 'Count Item Course Block Template';
-	public $path_html_block_template_file = 'html/count-item-single-course.html';
+	public $path_html_block_template_file = 'html/single-course/count-item-single-course.html';
 	public $path_template_render_default  = 'block/render/count-item-single-course.php';
 	public $source_js                     = LP_PLUGIN_URL . 'assets/js/dist/blocks/count-item-single-course.js';
 

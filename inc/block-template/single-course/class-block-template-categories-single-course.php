@@ -12,7 +12,7 @@ class Block_Template_Categories_Single_Course extends Abstract_Block_Template {
 	public $name                          = 'learnpress/categories-single-course';
 	public $title                         = 'List Categories Single Course (LearnPress)';
 	public $description                   = 'List Categories Single Course Block Template';
-	public $path_html_block_template_file = 'html/categories-single-course.html';
+	public $path_html_block_template_file = 'html/single-course/categories-single-course.html';
 	public $path_template_render_default  = 'block/render/categories-single-course.php';
 	public $source_js                     = LP_PLUGIN_URL . 'assets/js/dist/blocks/categories-single-course.js';
 
