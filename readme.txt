@@ -5,7 +5,7 @@ Tags: elearning, education, course, lms, learning management system
 Requires at least: 6.0
 Tested up to: 6.6.2
 Requires PHP: 7.0
-Stable tag: 4.2.7.2
+Stable tag: 4.2.7.3
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -209,6 +209,17 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.
 
 == Changelog ==
+
+= 4.2.7.3 (2024-11-12) =
+~ Fixed: error course private admin/author can't see on the frontend.
+~ Fixed: only show label "Final" of Quiz when choose "Evaluate via results of the final quiz".
+~ Fixed: send mail enroll for user Guest not exists user.
+~ Tweak: enroll/purchase course buttons.
+~ Tweak: condition can enroll/purchase course.
+~ Tweak: API enroll/purchase course.
+~ Tweak: when order completed.
+~ Tweak: set upload Avatar to PNG, instead of JPG.
+~ Deprecated: hooks learn-press/user/can-enroll-course, learn-press/user/can-purchase-course. Replace to learn-press/user/can-enroll/course, learn-press/user/can-purchase/course.
 
 = 4.2.7.2 (2024-10-21) =
 ~ Fixed: security.
