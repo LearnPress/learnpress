@@ -67,7 +67,7 @@ class UserItemModel {
 	 *
 	 * @var string (passed, failed, in-progress...)
 	 */
-	public $graduation = '';
+	public $graduation = null;
 	/**
 	 * Ref id (Order, course ...)
 	 *
@@ -121,7 +121,7 @@ class UserItemModel {
 	 * @return string
 	 */
 	public function get_start_time(): string {
-		return $this->start_time;
+		return is_null( $this->start_time ) ? '' : $this->start_time;
 	}
 
 	/**
@@ -130,7 +130,7 @@ class UserItemModel {
 	 * @return string
 	 */
 	public function get_end_time(): string {
-		return $this->end_time;
+		return is_null( $this->end_time ) ? '' : $this->end_time;
 	}
 
 	/**
@@ -148,7 +148,7 @@ class UserItemModel {
 	 * @return string
 	 */
 	public function get_graduation(): string {
-		return $this->graduation;
+		return is_null( $this->graduation ) ? '' : $this->graduation;
 	}
 
 
@@ -368,12 +368,12 @@ class UserItemModel {
 	public function get_total_timestamp_completed(): int {
 		$time_interval = 0;
 
-		if ( empty( $this->start_time ) || empty( $this->end_time ) ) {
+		if ( empty( $this->get_start_time() ) || empty( $this->get_end_time() ) ) {
 			return $time_interval;
 		}
 
-		$start = new LP_Datetime( $this->start_time );
-		$end   = new LP_Datetime( $this->end_time );
+		$start = new LP_Datetime( $this->get_start_time() );
+		$end   = new LP_Datetime( $this->get_end_time() );
 
 		return $end->getTimestamp() - $start->getTimestamp();
 	}
@@ -413,7 +413,7 @@ class UserItemModel {
 	 * @version 1.0.0
 	 */
 	public function delete() {
-		$lp_user_item_db  = LP_User_Items_DB::getInstance();
+		$lp_user_item_db    = LP_User_Items_DB::getInstance();
 		$filter             = new LP_User_Items_Filter();
 		$filter->where[]    = $lp_user_item_db->wpdb->prepare( 'AND user_item_id = %d', $this->get_user_item_id() );
 		$filter->collection = $lp_user_item_db->tb_lp_user_items;
