@@ -620,9 +620,15 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 					//'orderby'        => 'post__in',
 					'fields'         => 'ids',
 					'meta_query'     => array(
+						'relation' => 'OR',
 						array(
 							'key'     => '_user_id',
 							'value'   => $this->get_user_data( 'id' ),
+							'compare' => '=',
+						),
+						array(
+							'key'     => '_user_id',
+							'value'   => '"' . $this->get_user_data( 'id' ) . '"',
 							'compare' => 'LIKE',
 						),
 					),
