@@ -3,7 +3,7 @@
  * Class LP_Elementor_Widgets
  *
  * @since 4.2.3
- * @version 1.0.0
+ * @version 1.0.1
  */
 
 namespace LearnPress\ExternalPlugin\Elementor;
@@ -24,8 +24,12 @@ class LPElementorControls {
 	 *
 	 * @return string[]
 	 */
-	private static function add_start_section( string $id, string $label,
-		string $tab = Controls_Manager::TAB_CONTENT, array $args = [] ): array {
+	private static function add_start_section(
+		string $id,
+		string $label,
+		string $tab = Controls_Manager::TAB_CONTENT,
+		array $args = []
+	): array {
 		return [
 			'method' => 'start_controls_section',
 			'id'     => $id,
@@ -46,17 +50,24 @@ class LPElementorControls {
 	 * @param string $label_section
 	 * @param string $tab
 	 * @param array $fields_inner
+	 * @param array $args_section
 	 *
 	 * @return string[]
 	 */
-	public static function add_fields_in_section( string $id_section, string $label_section,
-		string $tab = Controls_Manager::TAB_CONTENT, array $fields_inner = [] ): array {
+	public static function add_fields_in_section(
+		string $id_section,
+		string $label_section,
+		string $tab = Controls_Manager::TAB_CONTENT,
+		array $fields_inner = [],
+		array $args_section = []
+	): array {
 		return array_merge(
 			[
 				"section_$id_section" => LPElementorControls::add_start_section(
 					"section_$id_section",
 					$label_section,
-					$tab
+					$tab,
+					$args_section
 				),
 			],
 			$fields_inner,
@@ -125,8 +136,13 @@ class LPElementorControls {
 	 *
 	 * @return string[]
 	 */
-	public static function add_control_type( string $id, string $label, $default = '',
-		string $control_type = Controls_Manager::TEXT, array $args = [] ): array {
+	public static function add_control_type(
+		string $id,
+		string $label,
+		$default = '',
+		string $control_type = Controls_Manager::TEXT,
+		array $args = []
+	): array {
 		return [
 			'method' => 'add_control',
 			'id'     => $id,
@@ -153,8 +169,13 @@ class LPElementorControls {
 	 *
 	 * @return array
 	 */
-	public static function add_responsive_control_type( string $id, string $label, $default = '',
-		string $control_type = Controls_Manager::CHOOSE, array $args = [] ): array {
+	public static function add_responsive_control_type(
+		string $id,
+		string $label,
+		$default = '',
+		string $control_type = Controls_Manager::CHOOSE,
+		array $args = []
+	): array {
 		return [
 			'method' => 'add_responsive_control',
 			'id'     => $id,
@@ -180,8 +201,13 @@ class LPElementorControls {
 	 *
 	 * @return string[]
 	 */
-	public static function add_control_type_select( string $id, string $label, array $options,
-		$default, array $args = [] ): array {
+	public static function add_control_type_select(
+		string $id,
+		string $label,
+		array $options,
+		$default,
+		array $args = []
+	): array {
 		return self::add_control_type(
 			$id,
 			$label,
@@ -207,8 +233,13 @@ class LPElementorControls {
 	 *
 	 * @return string[]
 	 */
-	public static function add_control_type_switcher( string $id, string $label, array $selectors = [],
-		string $default = 'no', array $args = [] ): array {
+	public static function add_control_type_switcher(
+		string $id,
+		string $label,
+		array $selectors = [],
+		string $default = 'no',
+		array $args = []
+	): array {
 		return self::add_control_type(
 			$id,
 			$label,
@@ -254,8 +285,13 @@ class LPElementorControls {
 	 *
 	 * @return string[]
 	 */
-	public static function add_control_type_slider( string $id, string $label, float $default = 0,
-		string $unit = 'px', array $args = [] ): array {
+	public static function add_control_type_slider(
+		string $id,
+		string $label,
+		float $default = 0,
+		string $unit = 'px',
+		array $args = []
+	): array {
 		return self::add_control_type(
 			$id,
 			$label,
@@ -314,8 +350,12 @@ class LPElementorControls {
 	 *
 	 * @return array
 	 */
-	private static function add_group_style_controls( array $fields, string $prefix_name,
-		array $include = [], array $exclude = [] ): array {
+	private static function add_group_style_controls(
+		array $fields,
+		string $prefix_name,
+		array $include = [],
+		array $exclude = []
+	): array {
 
 		if ( ! empty( $include ) ) {
 			$fields = array_merge( $fields, $include );
@@ -341,8 +381,12 @@ class LPElementorControls {
 	 *
 	 * @return array
 	 */
-	public static function add_controls_style_text( string $prefix_name, string $selector,
-		array $include = [], array $exclude = [] ): array {
+	public static function add_controls_style_text(
+		string $prefix_name,
+		string $selector,
+		array $include = [],
+		array $exclude = []
+	): array {
 		$fields = [
 			"{$prefix_name}_text_display"          => self::add_control_type(
 				"{$prefix_name}_text_display",
@@ -435,8 +479,12 @@ class LPElementorControls {
 	 *
 	 * @return array
 	 */
-	public static function add_controls_style_button( string $prefix_name, string $selector,
-		array $include = [], array $exclude = [] ): array {
+	public static function add_controls_style_button(
+		string $prefix_name,
+		string $selector,
+		array $include = [],
+		array $exclude = []
+	): array {
 
 		$fields = self::add_controls_style_text( $prefix_name, $selector, $include, $exclude );
 		$fields = array_merge(
@@ -454,7 +502,7 @@ class LPElementorControls {
 					Controls_Manager::DIMENSIONS,
 					[
 						'size_units' => [ 'px', '%', 'custom' ],
-						'selectors' => [
+						'selectors'  => [
 							"{{WRAPPER}} $selector" => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 						],
 					]
@@ -475,8 +523,12 @@ class LPElementorControls {
 	 *
 	 * @return array
 	 */
-	public static function add_controls_style_image( string $prefix_name, string $selector,
-		array $include = [], array $exclude = [] ): array {
+	public static function add_controls_style_image(
+		string $prefix_name,
+		string $selector,
+		array $include = [],
+		array $exclude = []
+	): array {
 
 		$fields = [
 			"{$prefix_name}_img_show"          => self::add_control_type(
@@ -527,7 +579,7 @@ class LPElementorControls {
 				Controls_Manager::DIMENSIONS,
 				[
 					'size_units' => [ 'px', '%', 'custom' ],
-					'selectors' => [
+					'selectors'  => [
 						"{{WRAPPER}} $selector" => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 					],
 				]
