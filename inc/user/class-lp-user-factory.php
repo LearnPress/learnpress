@@ -184,7 +184,7 @@ class LP_User_Factory {
 	 *
 	 * @author  tungnx
 	 * @since   4.1.3
-	 * @version 1.0.5
+	 * @version 1.0.6
 	 */
 	protected static function handle_item_order_completed( LP_Order $order, $user, $item ) {
 		$lp_user_items_db = LP_User_Items_DB::getInstance();
@@ -270,6 +270,9 @@ class LP_User_Factory {
 				}
 			} elseif ( $user_id && ( $is_in_stock || $is_no_required_enroll ) ) { // Enroll course free or No enroll requirement.
 				// Set data for create user_item
+				$user_item_data['status'] = LP_COURSE_ENROLLED;
+			} elseif ( LP_Checkout::instance()->is_enable_guest_checkout()
+				&& $auto_enroll && ( $is_in_stock || $is_no_required_enroll ) ) {
 				$user_item_data['status'] = LP_COURSE_ENROLLED;
 			} else {
 				return;

@@ -560,14 +560,17 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 			// Update user_id of lp_user_item
 			if ( $order->is_completed() ) {
-				$filter          = new LP_User_Items_Filter();
-				$filter->ref_id  = $order->get_id();
-				$userCourseModel = UserCourseModel::get_user_item_model_from_db( $filter );
-
-				if ( $userCourseModel ) {
-					$userCourseModel->user_id    = $user_id;
-					$userCourseModel->start_time = gmdate( LP_Datetime::$format, time() );
-					$userCourseModel->save();
+				$user_item_db   = LP_User_Items_DB::getInstance();
+				$filter         = new LP_User_Items_Filter();
+				$filter->ref_id = $order->get_id();
+				$filter->limit  = -1;
+				$userItemModels = $user_item_db->get_user_items( $filter );
+				if ( ! empty( $userItemModels ) ) {
+					foreach ( $userItemModels as $userItemModelObj ) {
+						$userItemModel          = new UserCourseModel( $userItemModelObj );
+						$userItemModel->user_id = $user_id;
+						$userItemModel->save();
+					}
 				}
 			}
 
