@@ -2,6 +2,7 @@ $msg-color: #00adff;
 $msg-success:#EBF8E5;
 $msg-error: #FEE5E5;
 $msg-waring: #FEF7E6;
+$msg-info: #007AFF1A;
 
 .learn-press-message {
 	position: relative;
@@ -26,6 +27,12 @@ $msg-waring: #FEF7E6;
 		background-color: $msg-success;
 		color :#3AB500;
 	}
+
+	&.info {
+		background-color: $msg-info;
+		color :#007AFF;
+	}
+
 	a {
 		text-decoration: underline;
 	}
