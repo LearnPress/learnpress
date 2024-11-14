@@ -13,7 +13,7 @@ module.exports = {
 	entry: {
 		'./assets/js/dist/admin/admin': './assets/src/js/admin/admin.js',
 		'./assets/js/dist/admin/learnpress': './assets/src/js/admin/learnpress.js',
-		'./assets/js/dist/admin/admin-notices': './assets/src/apps/js/admin/admin-notices.js',
+		'./assets/js/dist/admin/admin-notices': './assets/src/js/admin/admin-notices.js',
 		'./assets/js/dist/admin/admin-order': './assets/src/js/admin/admin-order.js',
 		'./assets/js/dist/admin/admin-tools': './assets/src/js/admin/admin-tools.js',
 		'./assets/js/dist/admin/editor/course': './assets/src/apps/js/admin/editor/course.js',
