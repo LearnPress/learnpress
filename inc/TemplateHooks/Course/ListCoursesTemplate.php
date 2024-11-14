@@ -190,11 +190,16 @@ class ListCoursesTemplate {
 			// New layout course item.
 
 			// HTML top section, show image.
-			$section_top = [
-				'wrapper'     => '<div class="course-thumbnail">',
-				'img'         => sprintf( '<a href="%s">%s</a>', $course->get_permalink(), $singleCourseTemplate->html_image( $course ) ),
-				'wrapper_end' => '</div>',
-			];
+			$section_top = apply_filters(
+				'learn-press/layout/list-courses/item/section-top',
+				[
+					'wrapper'     => '<div class="course-thumbnail">',
+					'img'         => sprintf( '<a href="%s">%s</a>', $course->get_permalink(), $singleCourseTemplate->html_image( $course ) ),
+					'wrapper_end' => '</div>',
+				],
+				$course,
+				$settings
+			);
 
 			// HTML meta section.
 			$meta_data = apply_filters(
@@ -289,14 +294,19 @@ class ListCoursesTemplate {
 				$settings
 			);
 
-			$section = [
-				'wrapper_li'      => '<li class="course">',
-				'wrapper_div'     => sprintf( '<div class="course-item" data-id="%s">', esc_attr( $course->get_id() ) ),
-				'top'             => Template::combine_components( $section_top ),
-				'bottom'          => Template::combine_components( $section_bottom ),
-				'wrapper_div_end' => '</div>',
-				'wrapper_li_end'  => '</li>',
-			];
+			$section = apply_filters(
+				'learn-press/layout/list-courses/item-li',
+				[
+					'wrapper_li'      => '<li class="course">',
+					'wrapper_div'     => sprintf( '<div class="course-item" data-id="%s">', esc_attr( $course->get_id() ) ),
+					'top'             => Template::combine_components( $section_top ),
+					'bottom'          => Template::combine_components( $section_bottom ),
+					'wrapper_div_end' => '</div>',
+					'wrapper_li_end'  => '</li>',
+				],
+				$course,
+				$settings
+			);
 
 			// For old themes use old hook.
 			$section = self::fix_theme_course_old( $section, $course, $settings );
