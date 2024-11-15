@@ -438,6 +438,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			// Block Templates
 			include_once 'inc/block-template/class-abstract-block-template.php';
+			include_once 'inc/block-template/class-abstract-block-template-single-course.php';
 			include_once 'inc/block-template/class-block-template-handle.php';
 
 			// API
