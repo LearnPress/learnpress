@@ -267,7 +267,7 @@ class LP_REST_Admin_Statistics_Controller extends LP_Abstract_REST_Controller {
 		}
 		foreach ( $data as $row ) {
 			$chart_data['labels'][] = $row->x_data_label;
-			$chart_data['data'][]   = (float) number_format( $row->x_data, 2 );
+			$chart_data['data'][]   = (float) $row->x_data;
 		}
 		// $chart_data['line_label'] = __( 'Completed orders', 'learnpress' );
 
