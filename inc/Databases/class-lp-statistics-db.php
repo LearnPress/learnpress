@@ -408,7 +408,7 @@ class LP_Statistics_DB extends LP_Database {
 		$filter->order_by        = $time_field;
 		$filter->order           = 'asc';
 		$filter->run_query_count = false;
-		set_transient( 'get_net_sales_data_filter', $filter, $expiration = 3600 );
+		
 		$result                  = $this->execute( $filter );
 		// error_log( $this->check_execute_has_error() );
 		return $result;
