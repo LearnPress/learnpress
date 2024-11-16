@@ -1,7 +1,4 @@
 <?php
-
-use LearnPress\Models\CourseModel;
-
 /**
  * Class Block_Template_Btn_Purchase_Single_Course
  *

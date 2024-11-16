@@ -1,7 +1,6 @@
 <?php
-
 /**
- * Class Block_Template_Single_Course
+ * Class Block_Template_Image_Single_Course
  *
  * Handle register, render block template
  */

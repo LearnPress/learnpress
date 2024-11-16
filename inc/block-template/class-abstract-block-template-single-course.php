@@ -4,7 +4,7 @@ use LearnPress\Models\CourseModel;
 use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
 
 /**
- * Class Block_Template_Single_Course
+ * Class Abstract_Block_Template_Widget_Single_Course
  *
  * Handle register, render block template
  */
@@ -45,7 +45,7 @@ class Abstract_Block_Template_Widget_Single_Course extends Abstract_Block_Templa
 	public function enqueue_block_assets() {
 		wp_enqueue_script(
 			'my-block-script',
-			'',
+			plugins_url( 'block.js', __FILE__ ),
 			array( 'wp-blocks', 'wp-editor', 'wp-element', 'wp-components', 'wp-i18n', 'wp-block-editor' )
 		);
 	}

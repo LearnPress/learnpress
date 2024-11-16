@@ -3,7 +3,7 @@
 use LearnPress\Models\CourseModel;
 
 /**
- * Class Block_Template_Single_Course
+ * Class Block_Template_Box_Extra_Single_Course
  *
  * Handle register, render block template
  */
@@ -35,10 +35,10 @@ class Block_Template_Box_Extra_Single_Course extends Abstract_Block_Template_Wid
 				<?php endforeach; ?>
 			</ul>
 			<?php
-			$attributes['html_list'] = ob_get_clean();
+			$attributes['list'] = ob_get_clean();
 		endif;
 
-		$order = [ 'courseId', 'title', 'html_list' ];
+		$order = [ 'courseId', 'title', 'list' ];
 		foreach ( $order as $key ) {
 			$sortedAttributes[ $key ] = isset( $attributes[ $key ] ) ? $attributes[ $key ] : '';
 		}

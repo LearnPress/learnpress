@@ -1,9 +1,6 @@
 <?php
-
-use LearnPress\Models\CourseModel;
-
 /**
- * Class Block_Template_Single_Course
+ * Class Block_Template_Student_Single_Course
  *
  * Handle register, render block template
  */
