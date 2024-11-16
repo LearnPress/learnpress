@@ -793,6 +793,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 			if ( ! $materials ) {
 				return;
 			}
+
 			echo wp_kses_post( do_shortcode( '[learn_press_course_materials]' ) );
 		} catch ( Throwable $e ) {
 			error_log( $e->getMessage() );
