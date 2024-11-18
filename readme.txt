@@ -66,6 +66,12 @@ With the course you've created, you can share it, manage it, watch statistic abo
 **Sell course**
 LearnPress is free but it still allows you to sell your courses with many billing methods supported such as PayPal, WooCommerce, Stripe, etc.
 
+**Offline course features**
+LearnPress comes with extensive offline course features. If offline courses are active, some online course features like Curriculum, End Button, Retake Course, Content Blocking, and Repurchase will be disabled by default.
+Instead, LearnPress adds offline course-specific features, including a custom course details page with information like Delivery Type, Location, Schedule, Start Date, and more.
+These features are perfect for educators, training centers, and institutions offering blended learning or complete offline programmes, providing proper management.
+With LearnPress offline course features, you also have an easily customizable in built page for offline courses that comes with a responsive and search engine friendly modern UI/UX, that is designed specifically to attract and retain local learners.
+
 **Communicate with your students**
 BuddyPress makes it easier for you to communicate with your students or instructors via the WordPress forum. Studying, making friends and having fun.
 
