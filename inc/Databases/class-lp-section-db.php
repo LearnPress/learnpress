@@ -395,4 +395,3 @@ class LP_Section_DB extends LP_Database {
 		return $number_order;
 	}
 }
-

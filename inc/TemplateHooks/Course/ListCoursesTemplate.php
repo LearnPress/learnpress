@@ -103,7 +103,7 @@ class ListCoursesTemplate {
 		// HTML section courses.
 		ob_start();
 		if ( empty( $courses ) ) {
-			echo sprintf( '<p class="learn-press-message success">%s!</p>', __( 'No courses found', 'learnpress' ) );
+			Template::print_message( __( 'No courses found', 'learnpress' ), 'info' );
 		} else {
 			foreach ( $courses as $courseObj ) {
 				$course = CourseModel::find( $courseObj->ID, true );
@@ -507,13 +507,13 @@ class ListCoursesTemplate {
 	/**
 	 * Order by
 	 *
-	 * @param string $default
+	 * @param string $default_value
 	 *
 	 * @return string
 	 * @since 4.2.3.2
 	 * @version 1.0.1
 	 */
-	public function html_order_by( string $default = 'post_date' ): string {
+	public function html_order_by( string $default_value = 'post_date' ): string {
 		$html_wrapper = [
 			'<div class="courses-order-by-wrapper">' => '</div>',
 		];
@@ -532,7 +532,7 @@ class ListCoursesTemplate {
 
 		$content = '<select name="order_by" class="courses-order-by">';
 		foreach ( $values as $k => $v ) {
-			$content .= '<option value="' . $k . '" ' . selected( $default, $k, false ) . '>' . $v . '</option>';
+			$content .= '<option value="' . $k . '" ' . selected( $default_value, $k, false ) . '>' . $v . '</option>';
 		}
 		$content .= '</select>';
 
@@ -544,7 +544,7 @@ class ListCoursesTemplate {
 		ob_start();
 		?>
 		<form class="search-courses" method="get"
-				action="<?php echo esc_url_raw( learn_press_get_page_link( 'courses' ) ); ?>">
+			action="<?php echo esc_url_raw( learn_press_get_page_link( 'courses' ) ); ?>">
 			<input type="search" placeholder="<?php esc_attr_e( 'Search courses...', 'learnpress' ); ?>"
 					name="c_search"
 					value="<?php echo esc_attr( $s ); ?>">
