@@ -21,6 +21,7 @@ use LP_Course;
 use LP_Datetime;
 use LP_Material_Files_DB;
 use LP_Settings;
+use LP_Template_General;
 use Throwable;
 
 class SingleCourseTemplate {
@@ -834,6 +835,15 @@ class SingleCourseTemplate {
 		);
 
 		return Template::combine_components( $section );
+	}
+
+	public function html_breadcrumb( CourseModel $course ) {
+		ob_start();
+		$template = new LP_Template_General();
+		$template->breadcrumb();
+		$html_breadcrumb = ob_get_clean();
+		apply_filters( 'learn-press/course/breadcrumb', $html_breadcrumb, $html_breadcrumb );
+		return $html_breadcrumb;
 	}
 
 	/**

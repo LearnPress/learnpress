@@ -95,6 +95,7 @@ module.exports = {
 		'./assets/js/dist/blocks/btn-purchase-single-course': './assets/src/apps/js/blocks/widget-single-course/btn-purchase-single-course/index.js',
 		'./assets/js/dist/blocks/duration-single-course': './assets/src/apps/js/blocks/widget-single-course/duration-single-course/index.js',
 		'./assets/js/dist/blocks/box-extra-single-course': './assets/src/apps/js/blocks/widget-single-course/box-extra-single-course/index.js',
+		'./assets/js/dist/blocks/breadcrumb': './assets/src/apps/js/blocks/widget-single-course/breadcrumb/index.js',
 		'./assets/js/dist/blocks/single-course': './assets/src/apps/js/blocks/single-course/index.js',
 		'./assets/js/dist/blocks/item-curriculum-course': './assets/src/apps/js/blocks/item-curriculum-course/index.js',
 
