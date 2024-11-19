@@ -413,10 +413,7 @@ class SingleCourseTemplate {
 		}
 
 		$count_student = $course->get_total_user_enrolled_or_purchased();
-		$fake_student  = $course->get_meta_value_by_key( CoursePostModel::META_KEY_STUDENTS );
-		if ( $fake_student ) {
-			$count_student += $fake_student;
-		}
+		$count_student += $course->get_fake_students();
 		$content      = sprintf( '%d %s', $count_student, _n( 'Student', 'Students', $count_student, 'learnpress' ) );
 		$html_wrapper = [
 			'<div class="course-count-student">' => '</div>',

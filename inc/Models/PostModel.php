@@ -261,15 +261,16 @@ class PostModel {
 	 *
 	 * @param string $key
 	 * @param mixed $default
+	 * @param bool $single
 	 *
 	 * @return false|mixed
 	 */
-	public function get_meta_value_by_key( string $key, $default = false ) {
+	public function get_meta_value_by_key( string $key, $default = false, bool $single = true ) {
 		if ( $this->meta_data instanceof stdClass && isset( $this->meta_data->{$key} ) ) {
 			return $this->meta_data->{$key};
 		}
 
-		$value = get_post_meta( $this->ID, $key, true );
+		$value = get_post_meta( $this->ID, $key, $single );
 		if ( empty( $value ) ) {
 			$value = $default;
 		}

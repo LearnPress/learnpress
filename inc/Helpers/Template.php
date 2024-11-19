@@ -306,14 +306,19 @@ class Template {
 	 *
 	 * @return void
 	 * @since 4.2.6.9.3
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public static function print_message( string $message, string $status = 'success' ) {
-		$customer_message = [
-			'content' => $message,
-			'status'  => $status,
+		if ( empty( $message ) ) {
+			return;
+		}
+
+		$section = [
+			'wrapper'     => sprintf( '<div class="learn-press-message %s">', esc_attr( $status ) ),
+			'content'     => wp_kses_post( $message ),
+			'wrapper_end' => '</div>',
 		];
 
-		Template::instance()->get_frontend_template( 'global/lp-message.php', compact( 'customer_message' ) );
+		echo Template::combine_components( $section );
 	}
 }

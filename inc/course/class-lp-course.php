@@ -252,11 +252,14 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		 * @author tungnx
 		 * @since 4.0.0
 		 * @modify 4.1.3
-		 * @version 1.0.1
+		 * @version 1.0.2
 		 * @return int
 		 */
 		public function get_first_item_id(): int {
 			$course_id = $this->get_id();
+
+			$courseModel = CourseModel::find( $course_id, true );
+			return $courseModel->get_first_item_id();
 
 			try {
 				// Get cache
@@ -308,6 +311,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		 * @author tungnx
 		 * @version 1.0.0
 		 * @return LP_Course_Extra_Info_Fast_Query_Model
+		 * @deprecated 4.2.7.4
 		 */
 		public function get_info_extra_for_fast_query(): LP_Course_Extra_Info_Fast_Query_Model {
 			$extra_info = new LP_Course_Extra_Info_Fast_Query_Model();
@@ -379,6 +383,8 @@ if ( ! class_exists( 'LP_Course' ) ) {
 			} else {
 				return $total_items->count_items ?? 0;
 			}
+
+			return 0;
 
 			// Get cache
 			$lp_course_cache = LP_Course_Cache::instance();
@@ -710,7 +716,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 		 *
 		 * @return array
 		 * @since 4.1.6.9
-		 * @version 1.0.0
+		 * @version 1.0.1
 		 * @author tungnx
 		 */
 		public function get_full_sections_and_items_course() {
@@ -718,6 +724,9 @@ if ( ! class_exists( 'LP_Course' ) ) {
 			$course_id      = $this->get_id();
 
 			try {
+				$courseModel = CourseModel::find( $course_id, true );
+				return $courseModel->get_section_items();
+
 				// Get cache
 				$lp_course_cache = LP_Course_Cache::instance();
 				$key_cache       = "$course_id/sections_items";

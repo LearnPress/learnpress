@@ -683,13 +683,13 @@ class CourseModel {
 	 * Get value from meta data by key
 	 *
 	 * @param string $key
-	 * @param mixed $default
+	 * @param mixed|false $default_value
 	 *
 	 * @return false|mixed
 	 * @since 4.2.6.9
 	 * @version 1.0.0
 	 */
-	public function get_meta_value_by_key( string $key, $default = false ) {
+	public function get_meta_value_by_key( string $key, $default_value = false ) {
 		if ( ! empty( $this->meta_data ) && isset( $this->meta_data->{$key} ) ) {
 			$value = $this->meta_data->{$key};
 		} else {
@@ -698,7 +698,7 @@ class CourseModel {
 		}
 
 		if ( empty( $value ) ) {
-			$value = $default;
+			$value = $default_value;
 		}
 
 		$this->meta_data->{$key} = $value;
@@ -819,6 +819,15 @@ class CourseModel {
 	}
 
 	/**
+	 * Get fake students.
+	 *
+	 * @return int
+	 */
+	public function get_fake_students(): int {
+		return (int) $this->get_meta_value_by_key( CoursePostModel::META_KEY_STUDENTS, 0 );
+	}
+
+	/**
 	 * Count number of students enrolled course.
 	 * Check global settings `enrolled_students_number`
 	 * and add the fake value if both are set.
@@ -828,7 +837,7 @@ class CourseModel {
 	 */
 	public function count_students(): int {
 		$total  = $this->get_total_user_enrolled_or_purchased();
-		$total += (int) $this->get_meta_value_by_key( CoursePostModel::META_KEY_STUDENTS, 0 );
+		$total += $this->get_fake_students();
 
 		return $total;
 	}

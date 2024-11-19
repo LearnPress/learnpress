@@ -90,7 +90,7 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 			$courseModel->get_image_url();
 			$courseModel->save();
 
-			$this->save_extra_info();
+			//$this->save_extra_info();
 			$this->clean_data_invalid();
 			$this->review_post_author();
 
