@@ -921,13 +921,29 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 		 */
 		$prepared_args = apply_filters( 'rest_user_query', $prepared_args, $request );
 
-		$query = new WP_User_Query( $prepared_args );
+		$users                      = array();
+		$lp_cache                   = new LP_Cache();
+		$key_cache_list_instructors = 'lp_get_instructors';
 
-		$users = array();
+		// Check cache with cache get instructors.
+		if ( isset( $prepared_args['role__in'] ) ) {
+			$users       = $lp_cache->get_cache( $key_cache_list_instructors );
+			$total_users = $lp_cache->get_cache( $key_cache_list_instructors . '/total' );
+		}
 
-		foreach ( $query->results as $user ) {
-			$data    = $this->prepare_item_for_response( $user, $request );
-			$users[] = $this->prepare_response_for_collection( $data );
+		if ( $users === false ) {
+			$query        = new WP_User_Query( $prepared_args );
+			$users_result = $query->get_results();
+			$total_users  = $query->get_total();
+
+			foreach ( $users_result as $user ) {
+				$data    = $this->prepare_item_for_response( $user, $request );
+				$users[] = $this->prepare_response_for_collection( $data );
+			}
+
+			// Set cache with cache get instructors.
+			$lp_cache->set_cache( $key_cache_list_instructors, $users );
+			$lp_cache->set_cache( $key_cache_list_instructors . '/total', $total_users );
 		}
 
 		$response = rest_ensure_response( $users );
@@ -937,8 +953,6 @@ class LP_Jwt_Users_V1_Controller extends LP_REST_Jwt_Controller {
 		$page     = ceil( ( ( (int) $prepared_args['offset'] ) / $per_page ) + 1 );
 
 		$prepared_args['fields'] = 'ID';
-
-		$total_users = $query->get_total();
 
 		if ( $total_users < 1 ) {
 			// Out-of-bounds, run the query again without LIMIT for total count.
