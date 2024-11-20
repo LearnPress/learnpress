@@ -489,7 +489,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 			return array(
 				'question_assigned' => array(
 					'title'    => esc_html__( 'Assigned', 'learnpress' ),
-					'callback' => function( $post ) {
+					'callback' => function ( $post ) {
 						learn_press_admin_view( 'meta-boxes/quiz/assigned.php' );
 					},
 					'context'  => 'side',
