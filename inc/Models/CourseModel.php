@@ -1225,4 +1225,21 @@ class CourseModel {
 		$lp_course_cache = new LP_Course_Cache();
 		$lp_course_cache->clear( $key_cache );
 	}
+
+	/**
+	 * Return course's items support.
+	 * To replace learn_press_course_get_support_item_types()
+	 * Should add hook on addons before use this function.
+	 *
+	 * @return array
+	 * @since 4.2.7.4
+	 */
+	public static function item_types_support(): array {
+		$item_types = [
+			LP_LESSON_CPT => __( 'Lesson', 'learnpress' ),
+			LP_QUIZ_CPT   => __( 'Quiz', 'learnpress' ),
+		];
+
+		return apply_filters( 'learn-press/course/item-types-support', $item_types );
+	}
 }
