@@ -156,11 +156,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			}*/
 
 			try {
-				if ( self::$_instance ) {
-					return;
-				}
-				self::$_instance = $this;
-
 				// Update for case compare version of LP if LEARNPRESS_VERSION undefined
 				if ( is_admin() ) {
 					update_option( 'learnpress_version', $this->version );
@@ -174,6 +169,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 				// Include files .
 				$this->includes();
+
+				// Load template hooks here, before theme add hooks remove.
+				include_once 'inc/lp-template-hooks.php';
 
 				// hooks .
 				$this->init_hooks();
@@ -650,6 +648,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * @version 1.0.4
 		 */
 		public function plugins_loaded() {
+			error_log('11111');
 			try {
 				$this->load_plugin_text_domain();
 				do_action( 'learnpress/hook/before-addons-call-hook-learnpress-ready' );
@@ -671,8 +670,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				}
 
 				$this->init();
-
-				include_once 'inc/lp-template-hooks.php';
 
 				new LP_Gateways();
 
