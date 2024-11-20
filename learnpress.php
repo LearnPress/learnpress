@@ -17,6 +17,7 @@
 use LearnPress\ExternalPlugin\Elementor\LPElementor;
 use LearnPress\ExternalPlugin\YoastSeo\LPYoastSeo;
 use LearnPress\Shortcodes\Course\FilterCourseShortcode;
+
 //use LearnPress\Shortcodes\Course\ListCourseRecentShortcode;
 use LearnPress\Shortcodes\ListInstructorsShortcode;
 use LearnPress\Shortcodes\SingleInstructorShortcode;
@@ -245,7 +246,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * @return void
 		 */
 		private function include_files_global() {
-			include_once 'inc/class-lp-multi-language.php';
+			//include_once 'inc/class-lp-multi-language.php';
 
 			// Filter query .
 			include_once 'inc/Filters/class-lp-filter.php';
@@ -460,7 +461,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			include_once 'inc/gateways/class-lp-gateway-abstract.php';
 			include_once 'inc/gateways/class-lp-gateways.php';
-			new LP_Gateways();
 		}
 
 		/**
@@ -519,7 +519,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			//add_action( 'wp_loaded', array( $this, 'wp_loaded' ), 20 );
 			//add_action( 'after_setup_theme', array( $this, 'setup_theme' ) );
-			add_action( 'plugins_loaded', array( $this, 'plugins_loaded' ), - 10 );
+			add_action( 'init', array( $this, 'plugins_loaded' ), - 10 );
 			add_action(
 				'plugin_loaded',
 				function ( $plugin ) {
@@ -611,19 +611,20 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * @since 3.0.0
 		 * @deprecated 4.2.2
 		 */
-		public function wp_loaded() {
+		/*public function wp_loaded() {
 			_deprecated_function( __METHOD__, '4.2.2' );
 			if ( $this->is_request( 'frontend' ) ) {
 				$this->gateways = LP_Gateways::instance()->get_available_payment_gateways();
 			}
-		}
+		}*/
 
 		/**
 		 * Setup courses thumbnail.
 		 *
 		 * @since 3.0.0
+		 * @deprecated 4.1.7.1
 		 */
-		public function setup_theme() {
+		/*public function setup_theme() {
 			if ( ! current_theme_supports( 'post-thumbnails' ) ) {
 				add_theme_support( 'post-thumbnails' );
 			}
@@ -640,16 +641,17 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			$size = array_values( (array) $size );
 
 			add_image_size( 'course_thumbnail', $size[0], $size[1], true );
-		}
+		}*/
 
 		/**
-		 * Trigger Learnpress loaded actions.
+		 * Trigger LearnPress loaded actions.
 		 *
 		 * @since 3.0.0
-		 * @version 1.0.3
+		 * @version 1.0.4
 		 */
 		public function plugins_loaded() {
 			try {
+				$this->load_plugin_text_domain();
 				do_action( 'learnpress/hook/before-addons-call-hook-learnpress-ready' );
 
 				// Polylang
@@ -671,6 +673,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				$this->init();
 
 				include_once 'inc/lp-template-hooks.php';
+
+				new LP_Gateways();
 
 				/**
 				 * Check version addons valid version require.
@@ -726,6 +730,24 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			} catch ( Throwable $e ) {
 				error_log( __METHOD__ . ': ' . $e->getMessage() );
 			}
+		}
+
+		/**
+		 * Handle load text domain for LearnPress.
+		 *
+		 * @since 4.2.7.4
+		 */
+		public function load_plugin_text_domain() {
+			$locale = determine_locale();
+
+			/**
+			 * Filter to adjust the LearnPress locale to use for translations.
+			 */
+			$locale = apply_filters( 'plugin_locale', $locale, 'learnpress' );
+
+			unload_textdomain( LP_TEXT_DOMAIN );
+			load_textdomain( LP_TEXT_DOMAIN, WP_LANG_DIR . '/learnpress/learnpress-' . $locale . '.mo' );
+			load_plugin_textdomain( LP_TEXT_DOMAIN, false, LP_PLUGIN_FOLDER_NAME . '/languages' );
 		}
 
 		/**

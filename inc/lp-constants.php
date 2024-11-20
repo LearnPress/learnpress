@@ -22,7 +22,7 @@ define( 'LP_TEXT_DOMAIN', $plugin_info['TextDomain'] );
 // Plugin paths and urls.
 define( 'LP_PLUGIN_PATH', plugin_dir_path( LP_PLUGIN_FILE ) );
 define( 'LP_PLUGIN_BASENAME', plugin_basename( LP_PLUGIN_FILE ) );
-define( 'LP_PLUGIN_FOLDER_NAME', str_replace( array( '/', basename( LP_PLUGIN_FILE ) ), '', LP_PLUGIN_BASENAME ) );
+define( 'LP_PLUGIN_FOLDER_NAME', dirname( LP_PLUGIN_BASENAME ) );
 const LP_TEMPLATE_PATH = LP_PLUGIN_PATH . 'templates/';
 define( 'LP_PLUGIN_URL', trailingslashit( plugins_url( '/', LP_PLUGIN_FILE ) ) );
 const LP_JS_URL  = LP_PLUGIN_URL . 'assets/js/';
