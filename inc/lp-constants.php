@@ -3,8 +3,13 @@
  * Define common constants used by LearnPress
  */
 require_once ABSPATH . 'wp-admin/includes/plugin.php';
-$upload_dir  = wp_upload_dir();
-$plugin_info = get_plugin_data( LP_PLUGIN_FILE );
+$upload_dir = wp_upload_dir();
+
+$default_headers = array(
+	'Version'    => 'Version',
+	'TextDomain' => 'Text Domain',
+);
+$plugin_info     = get_file_data( LP_PLUGIN_FILE, $default_headers, 'plugin' );
 
 // version.
 define( 'LEARNPRESS_VERSION', $plugin_info['Version'] );
