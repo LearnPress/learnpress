@@ -150,7 +150,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		/**
 		 * LearnPress constructor.
 		 */
-		public function __construct() {
+		private function __construct() {
 			/*if ( isset( $_POST['action'] ) && 'heartbeat' === $_POST['action'] ) {
 				return;
 			}*/
@@ -169,9 +169,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 				// Include files .
 				$this->includes();
-
-				// Load template hooks here, before theme add hooks remove.
-				include_once 'inc/lp-template-hooks.php';
 
 				// hooks .
 				$this->init_hooks();
@@ -648,7 +645,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * @version 1.0.4
 		 */
 		public function plugins_loaded() {
-			error_log('11111');
 			try {
 				$this->load_plugin_text_domain();
 				do_action( 'learnpress/hook/before-addons-call-hook-learnpress-ready' );
@@ -964,3 +960,7 @@ function LP() {
  * Create new instance of LearnPress and put it to global
  */
 $GLOBALS['LearnPress'] = LearnPress::instance();
+
+// Load template hooks here, before theme add hooks remove.
+// Load here because this file call LearnPress::instance(), loop call.
+require_once 'inc/lp-template-hooks.php';
