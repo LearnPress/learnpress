@@ -78,14 +78,33 @@ class UserCourseModel extends UserItemModel {
 	 * @param bool $check_cache
 	 *
 	 * @return false|UserItemModel|static
+	 * @since 4.2.7
+	 * @version 1.0.1
 	 */
 	public static function find( int $user_id, int $course_id, bool $check_cache = false ) {
 		$filter            = new LP_User_Items_Filter();
 		$filter->user_id   = $user_id;
 		$filter->item_id   = $course_id;
 		$filter->item_type = LP_COURSE_CPT;
+		$key_cache         = "userCourseModel/find/{$user_id}/{$course_id}/{$filter->item_type}";
+		$lpUserCourseCache = new LP_Cache();
 
-		return static::get_user_item_model_from_db( $filter );
+		// Check cache
+		if ( $check_cache ) {
+			$userCourseModel = $lpUserCourseCache->get_cache( $key_cache );
+			if ( $userCourseModel instanceof UserCourseModel ) {
+				return $userCourseModel;
+			}
+		}
+
+		$userCourseModel = static::get_user_item_model_from_db( $filter );
+
+		// Set cache
+		if ( $userCourseModel instanceof UserCourseModel ) {
+			$lpUserCourseCache->set_cache( $key_cache, $userCourseModel );
+		}
+
+		return $userCourseModel;
 	}
 
 	/**
