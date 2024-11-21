@@ -187,7 +187,7 @@ class LP_Template_Profile extends LP_Abstract_Template {
 		}
 
 		$user      = LP_Profile::instance()->get_user();
-		$userModel = UserModel::find( $user->get_id() );
+		$userModel = UserModel::find( $user->get_id(), true );
 		if ( ! $userModel ) {
 			return;
 		}

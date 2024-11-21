@@ -1098,7 +1098,7 @@ class SingleCourseTemplate {
 	public function html_material( CourseModel $course, UserModel $user = null ): string {
 		$html = '';
 		if ( ! $user ) {
-			$user = UserModel::find( get_current_user_id() );
+			$user = UserModel::find( get_current_user_id(), true );
 			if ( ! $user ) {
 				return $html;
 			}

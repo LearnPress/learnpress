@@ -154,8 +154,8 @@ class LP_Template_Course extends LP_Abstract_Template {
 		$course = learn_press_get_course();
 		$user   = learn_press_get_current_user();
 
-		$courseModel     = CourseModel::find( $course->get_id() );
-		$can_purchase    = $courseModel->can_purchase( UserModel::find( $user->get_id() ) );
+		$courseModel     = CourseModel::find( $course->get_id(), true );
+		$can_purchase    = $courseModel->can_purchase( UserModel::find( $user->get_id(), true ) );
 		$userCourseModel = UserCourseModel::find( $user->get_id(), $course->get_id() );
 		if ( get_current_user_id() ) {
 			if ( $userCourseModel ) {
@@ -182,8 +182,8 @@ class LP_Template_Course extends LP_Abstract_Template {
 	public function course_purchase_button( $course = null ) {
 		// Test
 		$singleCourseTemplate = SingleCourseTemplate::instance();
-		$course               = CourseModel::find( get_the_ID() );
-		$user                 = UserModel::find( get_current_user_id() );
+		$course               = CourseModel::find( get_the_ID(), true );
+		$user                 = UserModel::find( get_current_user_id(), true );
 		echo $singleCourseTemplate->html_btn_purchase_course( $course, $user );
 		return;
 		// End test
@@ -255,8 +255,8 @@ class LP_Template_Course extends LP_Abstract_Template {
 	public function course_enroll_button( $course = null ) {
 		// Test
 		$singleCourseTemplate = SingleCourseTemplate::instance();
-		$course               = CourseModel::find( get_the_ID() );
-		$user                 = UserModel::find( get_current_user_id() );
+		$course               = CourseModel::find( get_the_ID(), true );
+		$user                 = UserModel::find( get_current_user_id(), true );
 		echo $singleCourseTemplate->html_btn_enroll_course( $course, $user );
 		return;
 		// End test

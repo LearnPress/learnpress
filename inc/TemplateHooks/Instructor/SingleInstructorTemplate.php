@@ -118,7 +118,7 @@ class SingleInstructorTemplate {
 		}
 
 		if ( $instructor instanceof LP_User ) {
-			$instructor = UserModel::find( $instructor->get_id() );
+			$instructor = UserModel::find( $instructor->get_id(), true );
 			if ( ! $instructor ) {
 				return $html;
 			}
