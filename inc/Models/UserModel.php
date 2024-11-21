@@ -145,16 +145,17 @@ class UserModel {
 	 * If exists, return CoursePostModel.
 	 *
 	 * @param LP_User_Filter $filter
-	 * @param bool $no_cache
 	 *
 	 * @return UserModel|false|static
+	 * @since 4.2.6.9
+	 * @version 1.0.1
 	 */
-	public static function get_user_model_from_db( LP_User_Filter $filter, bool $check_cache = false ) {
+	public static function get_user_model_from_db( LP_User_Filter $filter ) {
 		$lp_user_db = LP_User_DB::instance();
 		$user_model = false;
 
 		try {
-			$filter->only_fields = [ 'ID', 'user_nicename', 'user_email', 'display_name' ];
+			$filter->only_fields = [ 'ID', 'user_nicename', 'user_login', 'user_email', 'display_name' ];
 			$lp_user_db->get_query_single_row( $filter );
 			$query_single_row = $lp_user_db->get_users( $filter );
 			$user_rs          = $lp_user_db->wpdb->get_row( $query_single_row );
@@ -181,18 +182,18 @@ class UserModel {
 	 * Get meta value by key.
 	 *
 	 * @param string $key
-	 * @param mixed $default
+	 * @param mixed $default_value
 	 *
 	 * @return false|mixed
 	 */
-	public function get_meta_value_by_key( string $key, $default = false ) {
+	public function get_meta_value_by_key( string $key, $default_value = false ) {
 		if ( $this->meta_data instanceof stdClass && isset( $this->meta_data->{$key} ) ) {
 			return $this->meta_data->{$key};
 		}
 
 		$value = get_user_meta( $this->ID, $key, true );
 		if ( empty( $value ) ) {
-			$value = $default;
+			$value = $default_value;
 		}
 
 		$this->meta_data->{$key} = $value;

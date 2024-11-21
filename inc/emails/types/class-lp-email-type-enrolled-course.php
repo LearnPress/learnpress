@@ -79,13 +79,13 @@ class LP_Email_Type_Enrolled_Course extends LP_Email {
 
 			$user = UserModel::find( $user_id, true );
 
-			$filter = new LP_User_Items_Filter();
-			$filter->user_id = $user_id;
-			$filter->item_id = $course_id;
+			$filter            = new LP_User_Items_Filter();
+			$filter->user_id   = $user_id;
+			$filter->item_id   = $course_id;
 			$filter->item_type = LP_COURSE_CPT;
-			$filter->ref_type = LP_ORDER_CPT;
-			$filter->ref_id = $order_id;
-			$userCourse = UserCourseModel::get_user_item_model_from_db( $filter );
+			$filter->ref_type  = LP_ORDER_CPT;
+			$filter->ref_id    = $order_id;
+			$userCourse        = UserCourseModel::get_user_item_model_from_db( $filter );
 
 			if ( LP_COURSE_ENROLLED != $userCourse->status ) {
 				throw new Exception( 'User not enrolled course' );
@@ -107,15 +107,15 @@ class LP_Email_Type_Enrolled_Course extends LP_Email {
 	 * @since 4.1.1
 	 */
 	protected function set_data_content() {
-		$username = '';
-		$user_id = 0;
+		$username          = '';
+		$user_id           = 0;
 		$user_display_name = '';
 		if ( ! $this->_user ) {
 			$user_email = $this->_order->get_user_email();
 		} else {
-			$user_id = $this->_user->get_id();
-			$username = $this->_user->get_username();
-			$user_email = $this->_user->get_email();
+			$user_id           = $this->_user->get_id();
+			$username          = $this->_user->get_username();
+			$user_email        = $this->_user->get_email();
 			$user_display_name = $this->_user->get_display_name();
 		}
 
