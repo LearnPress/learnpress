@@ -10,6 +10,10 @@
 .lp-user-profile {
 	position: relative;
 	--lp-item-padding: 40px;
+	img{
+		max-width: 100%;
+		height: auto;
+	}
 	.lp-user-profile-avatar {
 		img {
 			display: block;
