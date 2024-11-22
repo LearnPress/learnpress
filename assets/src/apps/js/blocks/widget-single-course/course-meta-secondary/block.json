@@ -1,0 +1,19 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "learnpress/course-meta-secondary",
+	"title": "Course Meta Secondary",
+	"category": "lp-single-course-category",
+	"description": "Renders Layout Course Meta Secondary PHP templates.",
+	"textdomain": "learnpress",
+	"keywords": ["layout meta secondary course", "learnpress"],
+	"usesContext": [],
+	"supports": {
+		"inserter": true,
+		"reusable": true,
+		"reorder": true,
+		"html": false,
+		"multiple": true,
+		"wrapper": false
+	}
+}

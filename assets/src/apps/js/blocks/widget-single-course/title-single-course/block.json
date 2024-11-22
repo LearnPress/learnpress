@@ -12,7 +12,8 @@
 			"type": "number"
 		},
 		"tag": {
-			"type": "string"
+			"type": "string",
+			"default": "span"
 		}
 	},
 	"usesContext": [],
@@ -21,6 +22,7 @@
 		"reusable": true,
 		"reorder": true,
 		"html": false,
-		"multiple": true
+		"multiple": true,
+		"customClassName": true
 	}
 }

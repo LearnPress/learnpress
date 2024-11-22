@@ -23,9 +23,9 @@ export const edit = ( props ) => {
 				</PanelBody>
 			</InspectorControls>
 			<div { ...blockProps }>
-				<strong>
-					{ 'Title Single Course' }
-				</strong>
+				<h3>
+					{ 'Title' }
+				</h3>
 			</div>
 		</>
 	);

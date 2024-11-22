@@ -1,4 +1,3 @@
-import { __ } from '@wordpress/i18n';
 import { useBlockProps } from '@wordpress/block-editor';
 import { InspectorControls } from '@wordpress/block-editor';
 import { PanelBody, TextControl } from '@wordpress/components';
@@ -19,7 +18,20 @@ export const edit = ( props ) => {
 			</InspectorControls>
 			<div { ...blockProps }>
 				<strong>
-					{ 'Feature Review Single Course' }
+					{ 'Featured Review' }
+					<div className="featured-review__stars">
+						<i className="lp-icon-star"></i>
+						<i className="lp-icon-star"></i>
+						<i className="lp-icon-star"></i>
+						<i className="lp-icon-star"></i>
+						<i className="lp-icon-star"></i>
+					</div>
+					<div className="featured-review__content">
+						<div className="line"></div>
+						<div className="line"></div>
+						<div className="line"></div>
+						<div className="line"></div>
+					</div>
 				</strong>
 			</div>
 		</>

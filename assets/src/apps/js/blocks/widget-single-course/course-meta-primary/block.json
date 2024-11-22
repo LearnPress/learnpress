@@ -1,0 +1,19 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "learnpress/course-meta-primary",
+	"title": "Course Meta Primary",
+	"category": "lp-single-course-category",
+	"description": "Renders Layout Course Meta Primary PHP templates.",
+	"textdomain": "learnpress",
+	"keywords": ["layout meta primary course", "learnpress"],
+	"usesContext": [],
+	"supports": {
+		"inserter": true,
+		"reusable": true,
+		"reorder": true,
+		"html": false,
+		"multiple": true,
+		"wrapper": false
+	}
+}

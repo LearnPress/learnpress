@@ -1,6 +1,7 @@
 <?php
 
 use LearnPress\Helpers\Config;
+use LearnPress\Helpers\Template;
 
 /**
  * Class Block_Template_Handle
@@ -27,6 +28,7 @@ class Block_Template_Handle {
 		add_action( 'init', array( $this, 'register_tag_block' ) );
 		// Register block category
 		add_filter( 'block_categories_all', array( $this, 'add_block_category' ), 10, 2 );
+		add_action( 'init', array( $this, 'register_block_templates' ) );
 	}
 
 	/**
@@ -192,6 +194,23 @@ class Block_Template_Handle {
 		array_unshift( $block_categories, $lp_category_block );
 
 		return $block_categories;
+	}
+
+	public function register_block_templates() {
+		if ( version_compare( get_bloginfo( 'version' ), '6.7', '>=' ) ) {
+			ob_start();
+			Template::instance()->get_frontend_template( 'block/render/single-course/single-course.php' );
+			$content = ob_get_clean();
+			register_block_template(
+				'learnpress//single-course',
+				[
+					'title'       => __( 'Single Course', 'LearnPress' ),
+					'description' => __( 'Template LearnPress Single Course', 'LearnPress' ),
+					'content'     => $content,
+					'post_types'  => [ 'lp_course' ],
+				]
+			);
+		}
 	}
 }
 

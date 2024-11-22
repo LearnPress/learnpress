@@ -20,6 +20,16 @@ require_once $blog_template_path . 'single-course/class-block-template-btn-purch
 require_once $blog_template_path . 'single-course/class-block-template-duration-single-course.php';
 require_once $blog_template_path . 'single-course/class-block-template-breadcrumb.php';
 
+//Layout single course
+require_once $blog_template_path . 'single-course/layout/class-block-layout-archive-course.php';
+require_once $blog_template_path . 'single-course/layout/class-block-layout-content-area.php';
+require_once $blog_template_path . 'single-course/layout/class-block-layout-content-left.php';
+require_once $blog_template_path . 'single-course/layout/class-block-layout-course-summary.php';
+require_once $blog_template_path . 'single-course/layout/class-block-layout-detail-info.php';
+require_once $blog_template_path . 'single-course/layout/class-block-layout-meta-primary.php';
+require_once $blog_template_path . 'single-course/layout/class-block-layout-meta-secondary.php';
+require_once $blog_template_path . 'single-course/layout/class-block-layout-sidebar.php';
+
 return apply_filters(
 	'learn-press/config/block-templates',
 	array(
@@ -41,6 +51,14 @@ return apply_filters(
 		new Block_Template_Btn_Purchase_Single_Course(),
 		new Block_Template_Duration_Single_Course(),
 		new Block_Template_Breadcrumb(),
+		new Block_Layout_Archive_Course(),
+		new Block_Layout_Content_Area(),
+		new Block_Layout_Content_Left(),
+		new Block_Layout_Course_Summary(),
+		new Block_Layout_Detail_Info(),
+		new Block_Layout_Meta_Primary(),
+		new Block_Layout_Meta_Secondary(),
+		new Block_Layout_Sidebar(),
 		//new Block_Template_Item_Curriculum_Course(), // When handle item correct post type, uncomment this line, currently item show is post type course.
 	)
 );

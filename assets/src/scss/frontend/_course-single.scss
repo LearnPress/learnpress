@@ -1,5 +1,4 @@
 .lp-archive-courses {
-
 	.course-detail-info {
 		padding: $spacing-base-7x 0 $spacing-base-5x 0;
 		color: $color-white;
@@ -15,7 +14,8 @@
 			padding-bottom: $spacing-base-6x;
 		}
 
-		&::before, &::after {
+		&::before,
+		&::after {
 			content: "";
 			width: 50%;
 			height: 100%;
@@ -45,13 +45,13 @@
 			&::before {
 				margin-right: $spacing-base-2x;
 				color: var(--lp-primary-color);
-				font-family: 'lp-icon';
+				font-family: "lp-icon";
 			}
 
 			.meta-item__image {
 				margin-right: $spacing-base-2x;
 				flex: 0 0 46px;
- 				img {
+				img {
 					overflow: hidden;
 					position: relative;
 					width: 46px;
@@ -83,7 +83,6 @@
 		}
 
 		.meta-item__value {
-
 			label {
 				margin: 0;
 				color: var(--lp-color-accent-1);
@@ -128,7 +127,6 @@
 		}
 
 		.meta-item-review {
-
 			.meta-item__value {
 				display: flex;
 				flex-direction: column;
@@ -141,7 +139,114 @@
 			}
 		}
 
+		& .course-instructor {
+			display: flex;
+			flex: 1;
+			align-items: center;
 
+			& a {
+				display: flex;
+				align-items: center;
+				color: var(--lp-color-white, #fff);
+				text-transform: capitalize;
+				text-decoration: none;
+				font-weight: bold;
+			}
+
+			& .instructor-avatar {
+				margin-right: $spacing-base-2x;
+				flex: 0 0 46px;
+				img {
+					overflow: hidden;
+					position: relative;
+					width: 46px;
+					height: 46px;
+					border-radius: 50%;
+					display: block;
+				}
+			}
+		}
+
+		& .course-categories {
+			display: flex;
+			flex: 1;
+			align-items: center;
+
+			&::before {
+				color: var(--lp-primary-color);
+				font-family: "lp-icon";
+				margin-right: $spacing-base-2x;
+				font-size: 2.25em;
+				line-height: 1;
+				content: "\f097";
+			}
+
+			& a {
+				color: var(--lp-color-white, #fff);
+				text-transform: capitalize;
+				text-decoration: none;
+			}
+		}
+
+		& .course-count-student {
+			display: flex;
+			text-transform: capitalize;
+			align-items: center;
+			&::before {
+				content: "\f501";
+				margin-right: $spacing-base-2x;
+				color: var(--lp-primary-color);
+				font-family: "lp-icon";
+			}
+		}
+
+		& > .course-duration {
+			display: flex;
+			text-transform: capitalize;
+			align-items: center;
+			&::before {
+				content: "\f017";
+				margin-right: $spacing-base-2x;
+				color: var(--lp-primary-color);
+				font-family: "lp-icon";
+			}
+		}
+
+		& .course-level {
+			display: flex;
+			text-transform: capitalize;
+			align-items: center;
+			&::before {
+				content: "\f012";
+				margin-right: $spacing-base-2x;
+				color: var(--lp-primary-color);
+				font-family: "lp-icon";
+			}
+		}
+
+		& .course-count-item.lp_quiz {
+			display: flex;
+			text-transform: capitalize;
+			align-items: center;
+			&::before {
+				content: "\f12e";
+				margin-right: $spacing-base-2x;
+				color: var(--lp-primary-color);
+				font-family: "lp-icon";
+			}
+		}
+
+		& .course-count-item.lp_lesson {
+			display: flex;
+			text-transform: capitalize;
+			align-items: center;
+			&::before {
+				content: "\f0c5";
+				margin-right: $spacing-base-2x;
+				color: var(--lp-primary-color);
+				font-family: "lp-icon";
+			}
+		}
 	}
 
 	.course-meta-primary {
@@ -218,7 +323,7 @@
 			}
 
 			&::before {
-				font-family: 'lp-icon';
+				font-family: "lp-icon";
 				font-size: 1em;
 				//font-weight: 900;
 				content: "\f004";
@@ -245,7 +350,6 @@
 				}
 			}
 		}
-
 	}
 
 	.courses-btn-load-more {
@@ -254,7 +358,7 @@
 		gap: 5px;
 	}
 
-	.course-wishlist:before{
-		font-family: 'lp-icon';
+	.course-wishlist:before {
+		font-family: "lp-icon";
 	}
 }

@@ -5,9 +5,9 @@ export const edit = ( props ) => {
 	return (
 		<>
 			<div { ...blockProps }>
-				<strong>
-					{ 'Breadcrumb' }
-				</strong>
+				<span>
+					{ 'Breadcrumbs / Navigation / Path' }
+				</span>
 			</div>
 		</>
 	);

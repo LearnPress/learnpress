@@ -1,0 +1,19 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "learnpress/lp-content-area",
+	"title": "Content Area",
+	"category": "lp-single-course-category",
+	"description": "Renders Layout Content Area PHP templates.",
+	"textdomain": "learnpress",
+	"keywords": ["layout content area course", "learnpress"],
+	"usesContext": [],
+	"supports": {
+		"inserter": true,
+		"reusable": true,
+		"reorder": true,
+		"html": false,
+		"multiple": true,
+		"wrapper": false
+	}
+}

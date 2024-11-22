@@ -39,7 +39,12 @@ class SingleCourseTemplate {
 	 * @return string
 	 */
 	public function html_title( $course, string $tag_html = 'span' ): string {
-		$tag_html     = sanitize_key( $tag_html );
+		$tag_html = sanitize_key( $tag_html );
+
+		if ( empty( $tag_html ) ) {
+			$tag_html = 'span';
+		}
+
 		$html_wrapper = apply_filters(
 			'learn-press/single-course/html-title',
 			[
@@ -127,7 +132,19 @@ class SingleCourseTemplate {
 
 		$cats = $course->get_categories();
 		if ( empty( $cats ) ) {
-			return '';
+			$content = esc_html__( 'Uncategorized', 'learnpress' );
+			$section = apply_filters(
+				'learn-press/course/html-categories',
+				[
+					'wrapper'     => '<div class="course-categories">',
+					'content'     => $content,
+					'wrapper_end' => '</div>',
+				],
+				$course,
+				[],
+				[ 'Uncategorized' ]
+			);
+			return Template::combine_components( $section );
 		}
 
 		$cat_names = [];

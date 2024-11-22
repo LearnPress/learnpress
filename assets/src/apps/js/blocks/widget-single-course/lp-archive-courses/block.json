@@ -1,0 +1,19 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "learnpress/lp-archive-courses",
+	"title": "Archive Course",
+	"category": "lp-single-course-category",
+	"description": "Renders Layout Archive Course PHP templates.",
+	"textdomain": "learnpress",
+	"keywords": ["layout archive course", "learnpress"],
+	"usesContext": [],
+	"supports": {
+		"inserter": true,
+		"reusable": true,
+		"reorder": true,
+		"html": false,
+		"multiple": true,
+		"wrapper": false
+	}
+}

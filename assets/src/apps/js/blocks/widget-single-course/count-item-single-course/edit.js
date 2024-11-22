@@ -28,9 +28,9 @@ export const edit = ( props ) => {
 				</PanelBody>
 			</InspectorControls>
 			<div { ...blockProps }>
-				<strong>
-					{ 'Count Item Single Course' }
-				</strong>
+				<span>
+					{ '0 ' + props.attributes.itemType }
+				</span>
 			</div>
 		</>
 	);

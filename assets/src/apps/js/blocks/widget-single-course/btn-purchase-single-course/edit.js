@@ -18,9 +18,11 @@ export const edit = ( props ) => {
 				</PanelBody>
 			</InspectorControls>
 			<div { ...blockProps }>
-				<strong>
-					{ 'Button Purchase Single Course' }
-				</strong>
+				<div className="button">
+					<span>
+						{ 'Buy' }
+					</span>
+				</div>
 			</div>
 		</>
 	);
