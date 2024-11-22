@@ -102,7 +102,7 @@ class LP_User_Items_DB extends LP_Database {
 	 * @return array|null|int|string
 	 * @throws Exception
 	 * @since 4.1.6.9
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 */
 	public function get_user_items( LP_User_Items_Filter $filter, int &$total_rows = 0 ) {
 		$filter->fields = array_merge( $filter->all_fields, $filter->fields );
@@ -142,6 +142,10 @@ class LP_User_Items_DB extends LP_Database {
 
 		if ( ! empty( $filter->item_id ) ) {
 			$filter->where[] = $this->wpdb->prepare( 'AND ui.item_id = %s', $filter->item_id );
+		}
+
+		if ( ! empty( $filter->status ) ) {
+			$filter->where[] = $this->wpdb->prepare( 'AND ui.status = %s', $filter->status );
 		}
 
 		if ( ! empty( $filter->graduation ) ) {
