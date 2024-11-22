@@ -286,7 +286,7 @@ class SingleCourseTemplate {
 			$link_instructor = sprintf(
 				'<a href="%s">%s %s</a>',
 				$instructor->get_url_instructor(),
-				$with_avatar ? UserTemplate::instance()->html_avatar( $instructor, 0, 'instructor' ) : '',
+				$with_avatar ? UserTemplate::instance()->html_avatar( $instructor, [], 'instructor' ) : '',
 				$singleInstructorTemplate->html_display_name( $instructor )
 			);
 
