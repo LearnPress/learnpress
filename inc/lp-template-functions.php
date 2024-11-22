@@ -18,6 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @see LP_Template_Course::button_retry()
  * @see LP_Template_Course::course_continue_button()
  * @see LP_Template_Course::course_external_button()
+ * @see LP_Template_Course::course_enroll_button
  */
 if ( ! function_exists( 'learn_press_add_course_buttons' ) ) {
 	function learn_press_add_course_buttons() {
@@ -366,7 +367,8 @@ if ( ! function_exists( 'learn_press_single_document_title_parts' ) ) {
 	}
 }
 
-if ( ! function_exists( 'learn_press_course_item_class' ) ) {
+// @deprecated 4.2.7.3
+/*if ( ! function_exists( 'learn_press_course_item_class' ) ) {
 	function learn_press_course_item_class( $item_id, $course_id = 0, $class = null ) {
 		switch ( get_post_type( $item_id ) ) {
 			case 'lp_lesson':
@@ -377,136 +379,138 @@ if ( ! function_exists( 'learn_press_course_item_class' ) ) {
 				break;
 		}
 	}
-}
+}*/
 
-if ( ! function_exists( 'learn_press_course_lesson_class' ) ) {
-	/**
-	 * The class of lesson in course curriculum
-	 *
-	 * @param int          $lesson_id
-	 * @param int          $course_id
-	 * @param array|string $class
-	 * @param boolean      $echo
-	 *
-	 * @return mixed
-	 */
-	function learn_press_course_lesson_class( $lesson_id = null, $course_id = 0, $class = null, $echo = true ) {
-		$user = learn_press_get_current_user();
+// @deprecated 4.2.7.3
+//if ( ! function_exists( 'learn_press_course_lesson_class' ) ) {
+//  /**
+//   * The class of lesson in course curriculum
+//   *
+//   * @param int          $lesson_id
+//   * @param int          $course_id
+//   * @param array|string $class
+//   * @param boolean      $echo
+//   *
+//   * @return mixed
+//   */
+//  function learn_press_course_lesson_class( $lesson_id = null, $course_id = 0, $class = null, $echo = true ) {
+//      $user = learn_press_get_current_user();
+//
+//      if ( ! $course_id ) {
+//          $course_id = get_the_ID();
+//      }
+//
+//      $course = learn_press_get_course( $course_id );
+//      if ( ! $course ) {
+//          return '';
+//      }
+//
+//      if ( is_string( $class ) && $class ) {
+//          $class = preg_split( '!\s+!', $class );
+//      } else {
+//          $class = array();
+//      }
+//
+//      $classes = array(
+//          'course-lesson course-item course-item-' . $lesson_id,
+//      );
+//
+//      $user   = learn_press_get_current_user();
+//      $status = $user->get_item_status( $lesson_id );
+//
+//      if ( $status ) {
+//          $classes[] = "item-has-status item-{$status}";
+//      }
+//
+//      if ( $lesson_id && $course->is_current_item( $lesson_id ) ) {
+//          $classes[] = 'item-current';
+//      }
+//
+//      if ( learn_press_is_course() ) {
+//          if ( $course->is_free() ) {
+//              $classes[] = 'free-item';
+//          }
+//      }
+//
+//      $lesson = LP_Lesson::get_lesson( $lesson_id );
+//
+//      if ( $lesson && $lesson->is_preview() ) {
+//          $classes[] = 'preview-item';
+//      }
+//
+//      $classes = array_unique( array_merge( $classes, $class ) );
+//
+//      if ( $echo ) {
+//          echo 'class="' . implode( ' ', $classes ) . '"';
+//      }
+//
+//      return $classes;
+//  }
+//}
 
-		if ( ! $course_id ) {
-			$course_id = get_the_ID();
-		}
-
-		$course = learn_press_get_course( $course_id );
-		if ( ! $course ) {
-			return '';
-		}
-
-		if ( is_string( $class ) && $class ) {
-			$class = preg_split( '!\s+!', $class );
-		} else {
-			$class = array();
-		}
-
-		$classes = array(
-			'course-lesson course-item course-item-' . $lesson_id,
-		);
-
-		$user   = learn_press_get_current_user();
-		$status = $user->get_item_status( $lesson_id );
-
-		if ( $status ) {
-			$classes[] = "item-has-status item-{$status}";
-		}
-
-		if ( $lesson_id && $course->is_current_item( $lesson_id ) ) {
-			$classes[] = 'item-current';
-		}
-
-		if ( learn_press_is_course() ) {
-			if ( $course->is_free() ) {
-				$classes[] = 'free-item';
-			}
-		}
-
-		$lesson = LP_Lesson::get_lesson( $lesson_id );
-
-		if ( $lesson && $lesson->is_preview() ) {
-			$classes[] = 'preview-item';
-		}
-
-		$classes = array_unique( array_merge( $classes, $class ) );
-
-		if ( $echo ) {
-			echo 'class="' . implode( ' ', $classes ) . '"';
-		}
-
-		return $classes;
-	}
-}
-
-if ( ! function_exists( 'learn_press_course_quiz_class' ) ) {
-	/**
-	 * The class of lesson in course curriculum
-	 *
-	 * @param int          $quiz_id
-	 * @param int          $course_id
-	 * @param string|array $class
-	 * @param boolean      $echo
-	 *
-	 * @return mixed
-	 */
-	function learn_press_course_quiz_class( $quiz_id = null, $course_id = 0, $class = null, $echo = true ) {
-		$user = learn_press_get_current_user();
-
-		if ( ! $course_id ) {
-			$course_id = get_the_ID();
-		}
-
-		if ( is_string( $class ) && $class ) {
-			$class = preg_split( '!\s+!', $class );
-		} else {
-			$class = array();
-		}
-
-		$course = learn_press_get_course( $course_id );
-
-		if ( ! $course ) {
-			return '';
-		}
-
-		$classes = array(
-			'course-quiz course-item course-item-' . $quiz_id,
-		);
-
-		$status = $user->get_item_status( $quiz_id );
-
-		if ( $status ) {
-			$classes[] = "item-has-status item-{$status}";
-		}
-
-		if ( $quiz_id && $course->is_current_item( $quiz_id ) ) {
-			$classes[] = 'item-current';
-		}
-
-		/*
-		if ( $user->can_view_item( $quiz_id, $course_id )->flag ) {
-			$classes[] = 'viewable';
-		}*/
-
-		if ( $course->is_final_quiz( $quiz_id ) ) {
-			$classes[] = 'final-quiz';
-		}
-
-		$classes = array_unique( array_merge( $classes, $class ) );
-
-		if ( $echo ) {
-			echo 'class="' . implode( ' ', $classes ) . '"';
-		}
-
-		return $classes;
-	}
-}
+// @deprecated 4.2.7.3
+//if ( ! function_exists( 'learn_press_course_quiz_class' ) ) {
+//  /**
+//   * The class of lesson in course curriculum
+//   *
+//   * @param int          $quiz_id
+//   * @param int          $course_id
+//   * @param string|array $class
+//   * @param boolean      $echo
+//   *
+//   * @return mixed
+//   */
+//  function learn_press_course_quiz_class( $quiz_id = null, $course_id = 0, $class = null, $echo = true ) {
+//      $user = learn_press_get_current_user();
+//
+//      if ( ! $course_id ) {
+//          $course_id = get_the_ID();
+//      }
+//
+//      if ( is_string( $class ) && $class ) {
+//          $class = preg_split( '!\s+!', $class );
+//      } else {
+//          $class = array();
+//      }
+//
+//      $course = learn_press_get_course( $course_id );
+//
+//      if ( ! $course ) {
+//          return '';
+//      }
+//
+//      $classes = array(
+//          'course-quiz course-item course-item-' . $quiz_id,
+//      );
+//
+//      $status = $user->get_item_status( $quiz_id );
+//
+//      if ( $status ) {
+//          $classes[] = "item-has-status item-{$status}";
+//      }
+//
+//      if ( $quiz_id && $course->is_current_item( $quiz_id ) ) {
+//          $classes[] = 'item-current';
+//      }
+//
+//      /*
+//      if ( $user->can_view_item( $quiz_id, $course_id )->flag ) {
+//          $classes[] = 'viewable';
+//      }*/
+//
+//      if ( $course->get_evaluation_type() == 'evaluate_final_quiz' && $course->is_final_quiz( $quiz_id ) ) {
+//          $classes[] = 'final-quiz';
+//      }
+//
+//      $classes = array_unique( array_merge( $classes, $class ) );
+//
+//      if ( $echo ) {
+//          echo 'class="' . implode( ' ', $classes ) . '"';
+//      }
+//
+//      return $classes;
+//  }
+//}
 
 if ( ! function_exists( 'learn_press_course_class' ) ) {
 	/**

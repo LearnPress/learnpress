@@ -77,6 +77,8 @@ function learn_press_get_course( $the_course = 0 ) {
 /**
  * Get type of items are supported in course curriculum (post types).
  * Default: [lp_lesson, lp_quiz]
+ * When all addon use hook 'learn-press/course/item-types-support', will deprecate this function
+ * @use CourseMoel::item_types_support
  *
  * @return mixed
  * @since 3.0.0
@@ -130,7 +132,10 @@ function learn_press_get_item_courses( $item ) {
 	return $wpdb->get_results( $query );
 }
 
-function _learn_press_usort_terms_by_ID( $terms ) {
+/**
+ * @deprecated 4.2.7.4
+ */
+/*function _learn_press_usort_terms_by_ID( $terms ) {
 	$version = get_bloginfo( 'version' );
 	if ( version_compare( $version, '4.7', '>=' ) ) {
 		$terms = wp_list_sort( $terms, 'term_id' );
@@ -139,7 +144,7 @@ function _learn_press_usort_terms_by_ID( $terms ) {
 	}
 
 	return $terms;
-}
+}*/
 
 /*function learn_press_course_post_type_link( $permalink, $post ) {
 	if ( $post->post_type !== 'lp_course' ) {
@@ -229,13 +234,16 @@ function learn_press_item_meta_format( $item, $nonce = '' ) {
 	}
 }
 
-function learn_press_course_item_format_exclude( $format, $item ) {
+/**
+ * @deprecated 4.2.7.4
+ */
+/*function learn_press_course_item_format_exclude( $format, $item ) {
 	if ( learn_press_get_post_type( $item ) != LP_LESSON_CPT || ( $format == 'standard' ) ) {
 		$format = false;
 	}
 
 	return $format;
-}
+}*/
 
 /**
  * Get curriculum of a course
@@ -244,13 +252,13 @@ function learn_press_course_item_format_exclude( $format, $item ) {
  *
  * @return mixed
  * @version 1.0
- *
+ * @deprecated 4.2.7.4
  */
-function learn_press_get_course_curriculum( $course_id ) {
+/*function learn_press_get_course_curriculum( $course_id ) {
 	$course = learn_press_get_course( $course_id );
 
 	return $course->get_curriculum();
-}
+}*/
 
 /**
  * Verify course access
@@ -262,14 +270,14 @@ function learn_press_get_course_curriculum( $course_id ) {
  * @deprecated 4.1.3
  * @editor tungnx
  */
-function learn_press_is_enrolled_course( $course_id = null, $user_id = null ) {
+/*function learn_press_is_enrolled_course( $course_id = null, $user_id = null ) {
 	_deprecated_function( __FUNCTION__, '4.1.3' );
 	if ( $course = learn_press_get_course( $course_id ) && $user = learn_press_get_user( $user_id ) ) {
 		return $user->has_enrolled_course( $course_id );
 	}
 
 	return false;
-}
+}*/
 
 /**
  * Detect if a course is free or not
@@ -277,14 +285,15 @@ function learn_press_is_enrolled_course( $course_id = null, $user_id = null ) {
  * @param null $course_id
  *
  * @return bool
+ * @deprecated 4.2.7.4
  */
-function learn_press_is_free_course( $course_id = null ) {
+/*function learn_press_is_free_course( $course_id = null ) {
 	if ( ! $course_id ) {
 		$course_id = get_the_ID();
 	}
 
 	return learn_press_get_course( $course_id )->is_free();
-}
+}*/
 
 /**
  * get current status of user's course
@@ -294,9 +303,9 @@ function learn_press_is_free_course( $course_id = null ) {
  *
  * @return  string
  * @author  Tunn
- *
+ * @deprecated 4.2.7.4
  */
-function learn_press_get_user_course_status( $user_id = null, $course_id = null ) {
+/*function learn_press_get_user_course_status( $user_id = null, $course_id = null ) {
 	$course = learn_press_get_course( $course_id );
 	$user   = learn_press_get_user( $user_id );
 
@@ -305,7 +314,7 @@ function learn_press_get_user_course_status( $user_id = null, $course_id = null 
 	}
 
 	return false;
-}
+}*/
 
 /**
  * Wrap function can-view-item of user object.
@@ -319,12 +328,12 @@ function learn_press_get_user_course_status( $user_id = null, $course_id = null 
  *
  */
 //function learn_press_can_view_item( $item_id, $course_id = 0, $user_id = 0 ) {
-//	if ( ! $user_id ) {
-//		$user_id = get_current_user_id();
-//	}
-//	$user = learn_press_get_user( $user_id );
+//  if ( ! $user_id ) {
+//      $user_id = get_current_user_id();
+//  }
+//  $user = learn_press_get_user( $user_id );
 //
-//	return $user->can_view_item( $item_id, $course_id );
+//  return $user->can_view_item( $item_id, $course_id );
 //}
 
 /**
@@ -334,15 +343,15 @@ function learn_press_get_user_course_status( $user_id = null, $course_id = null 
  *
  * @return boolean
  * @since 0.9.5
- *
+ * @deprecated 4.2.7.4
  */
-function learn_press_course_enroll_required( $course_id = null ) {
+/*function learn_press_course_enroll_required( $course_id = null ) {
 	$course_id = learn_press_get_course_id( $course_id );
 
 	$required = ( 'yes' == get_post_meta( $course_id, '_lpr_course_enrolled_require', true ) );
 
 	return apply_filters( 'learn_press_course_enroll_required', $required, $course_id );
-}
+}*/
 
 function learn_press_get_all_courses( $args = array() ) {
 	$term    = '';
@@ -362,7 +371,10 @@ function learn_press_get_all_courses( $args = array() ) {
 	return apply_filters( 'learn_press_get_courses', $posts, $args );
 }
 
-function learn_press_search_post_excerpt( $where = '' ) {
+/**
+ * @deprecated 4.2.7.4
+ */
+/*function learn_press_search_post_excerpt( $where = '' ) {
 	global $wp_the_query, $wpdb;
 
 	if ( empty( $wp_the_query->query_vars['s'] ) ) {
@@ -376,7 +388,7 @@ function learn_press_search_post_excerpt( $where = '' ) {
 	);
 
 	return $where;
-}
+}*/
 
 // add_filter( 'posts_where', 'learn_press_search_post_excerpt' );
 
@@ -391,17 +403,15 @@ function learn_press_get_course_user( $course_id = null ) {
 /**
  * Get item types support in course curriculum.
  *
- * @param bool $keys
- *
- * @return mixed|null
+ * @return array
  */
-function learn_press_course_get_support_item_types( $keys = false ) {
-	$types = array();
-	if ( ! empty( $GLOBALS['learn_press_course_support_item_types'] ) ) {
-		$types = $GLOBALS['learn_press_course_support_item_types'];
-	}
+function learn_press_course_get_support_item_types() {
+	$types = [
+		LP_LESSON_CPT => __( 'Lesson', 'learnpress' ),
+		LP_QUIZ_CPT   => __( 'Quiz', 'learnpress' ),
+	];
 
-	return apply_filters( 'learn-press/course-support-items', $keys ? array_keys( $types ) : $types, $keys );
+	return apply_filters( 'learn-press/course-support-items', $types, false );
 }
 
 /**
@@ -409,8 +419,9 @@ function learn_press_course_get_support_item_types( $keys = false ) {
  *
  * @param string $post_type - Usually is post type
  * @param string $label - Name show for user
+ * @deprecated 4.2.7.4
  */
-function learn_press_course_add_support_item_type( $post_type, $label = '' ) {
+/*function learn_press_course_add_support_item_type( $post_type, $label = '' ) {
 	if ( empty( $GLOBALS['learn_press_course_support_item_types'] ) ) {
 		$GLOBALS['learn_press_course_support_item_types'] = array();
 	}
@@ -421,7 +432,7 @@ function learn_press_course_add_support_item_type( $post_type, $label = '' ) {
 	} elseif ( func_num_args() == 2 ) {
 		$GLOBALS['learn_press_course_support_item_types'][ func_get_arg( 0 ) ] = func_get_arg( 1 );
 	}
-}
+}*/
 
 /**
  * Check if course is support an item's type.
@@ -445,12 +456,15 @@ function learn_press_is_support_course_item_type( $type ) {
 	return $support;
 }
 
-learn_press_course_add_support_item_type(
+/**
+ * @deprecated 4.2.7.4
+ */
+/*learn_press_course_add_support_item_type(
 	array(
 		'lp_lesson' => __( 'Lesson', 'learnpress' ),
 		'lp_quiz'   => __( 'Quiz', 'learnpress' ),
 	)
-);
+);*/
 
 function learn_press_add_course_item_feature( $type, $feature ) {
 	$features = array();
@@ -505,7 +519,7 @@ function learn_press_get_course_permalink( $course_id = 0 ) {
  *
  * @return string
  * @since 3.0.0
- *
+ * Addon Assignment 4.1.1 still use
  */
 function learn_press_get_course_item_permalink( int $course_id = 0, int $item_id = 0 ): string {
 	$course = learn_press_get_course( $course_id );
@@ -524,7 +538,10 @@ function learn_press_get_the_course() {
 	return learn_press_get_course();
 }
 
-function learn_press_get_user_question_answer( $args = '' ) {
+/**
+ * @deprecated 4.2.7.4
+ */
+/*function learn_press_get_user_question_answer( $args = '' ) {
 	$args     = wp_parse_args(
 		$args,
 		array(
@@ -553,17 +570,23 @@ function learn_press_get_user_question_answer( $args = '' ) {
 	}
 
 	return $answered;
-}
+}*/
 
-function need_to_updating() {
+/**
+ * @deprecated 4.2.7.4
+ */
+/*function need_to_updating() {
 	ob_start();
 	learn_press_display_message( 'This function need to updating' );
 
 	return ob_get_clean();
-}
+}*/
 
-/* filter section item single course */
-function learn_press_get_course_sections() {
+/**
+ * filter section item single course
+ * @deprecated 4.2.7.4
+ */
+/*function learn_press_get_course_sections() {
 	return apply_filters(
 		'learn_press_get_course_sections',
 		array(
@@ -571,21 +594,27 @@ function learn_press_get_course_sections() {
 			'lp_quiz',
 		)
 	);
-}
+}*/
 
-function lean_press_get_course_sections() {
+/**
+ * @deprecated 4.2.7.4
+ */
+/*function lean_press_get_course_sections() {
 	_deprecated_function( __FUNCTION__, '2.1', 'learn_press_get_course_sections' );
 
 	return learn_press_get_course_sections();
-}
+}*/
 
-if ( ! function_exists( 'learn_press_get_course_item_url' ) ) {
+/**
+ * @deprecated 4.2.7.4
+ */
+/*if ( ! function_exists( 'learn_press_get_course_item_url' ) ) {
 	function learn_press_get_course_item_url( $course_id = null, $item_id = null ) {
 		$course = learn_press_get_course( $course_id );
 
 		return $course ? $course->get_item_link( $item_id ) : false;
 	}
-}
+}*/
 
 /**
  * Add filter to WP comment form of lesson or quiz to output ID of current course.
@@ -707,31 +736,6 @@ add_action( 'comment_post', 'learn_press_force_refresh_course', 1000, 2 );*/
 	}
 }*/
 
-if ( ! function_exists( 'learn_press_edit_item_link' ) ) {
-	/**
-	 * Displaying course items navigation
-	 *
-	 * @param null $item_id
-	 * @param null $course_id
-	 * @param bool $content_only
-	 */
-	function learn_press_edit_item_link( $item_id = null, $course_id = null, $content_only = false ) {
-		$user = learn_press_get_current_user();
-		if ( $user->can_edit_item( $item_id, $course_id ) ) : ?>
-			<p class="edit-course-item-link">
-				<a href="<?php echo get_edit_post_link( $item_id ); ?>">
-									<?php
-									_e(
-										'Edit this item',
-										'learnpress'
-									);
-									?>
-						</a>
-			</p>
-			<?php
-		endif;
-	}
-}
 /**
  * Get course id of an item by id
  *
@@ -856,16 +860,15 @@ if ( ! function_exists( 'learn_press_get_item_course_id' ) ) {
  *
  */
 function learn_press_get_preview_url( $post_id ) {
-	return
-		esc_url_raw(
-			add_query_arg(
-				array(
-					'lp-preview' => $post_id,
-					'_wpnonce'   => wp_create_nonce( 'lp-preview' ),
-				),
-				trailingslashit( get_home_url() )
-			)
-		);
+	return esc_url_raw(
+		add_query_arg(
+			array(
+				'lp-preview' => $post_id,
+				'_wpnonce'   => wp_create_nonce( 'lp-preview' ),
+			),
+			trailingslashit( get_home_url() )
+		)
+	);
 }
 
 if ( ! function_exists( 'learn_press_course_item_type_link' ) ) {
@@ -955,7 +958,10 @@ function learn_press_course_grade_html( string $grade = '', bool $echo = true ) 
 	return $html;
 }
 
-function learn_press_get_course_results_tooltip( $course_id ) {
+/**
+ * @deprecated 4.2.7.4
+ */
+/*function learn_press_get_course_results_tooltip( $course_id ) {
 	$metabox = LP_Course_Post_Type::assessment_meta_box();
 	$options = $metabox['fields'][0]['options'];
 	$cr      = get_post_meta( $course_id, '_lp_course_result', true );
@@ -967,7 +973,7 @@ function learn_press_get_course_results_tooltip( $course_id ) {
 	}
 
 	return $tooltip;
-}
+}*/
 
 function learn_press_course_passing_condition( $value, $format, $course_id ) {
 	$course    = learn_press_get_course( $course_id );
@@ -988,11 +994,14 @@ function learn_press_course_passing_condition( $value, $format, $course_id ) {
 
 add_filter( 'learn-press/course-passing-condition', 'learn_press_course_passing_condition', 10, 3 );
 
+/**
+ * @deprecated 4.2.7.4
+ */
 function learn_press_remove_query_var_enrolled_course( $redirect ) {
 	return esc_url_raw( remove_query_arg( 'enroll-course', $redirect ) );
 }
 
-add_filter( 'learn-press/enroll-course-redirect', 'learn_press_remove_query_var_enrolled_course' );
+//add_filter( 'learn-press/enroll-course-redirect', 'learn_press_remove_query_var_enrolled_course' );
 
 /**
  * Mark the user to know if they have just logged in

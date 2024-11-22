@@ -346,7 +346,7 @@ class LP_User extends LP_Abstract_User {
 	 * @author nhamdv
 	 * @editor tungnx
 	 * @since 4.0.8
-	 * @version 1.0.5
+	 * @version 1.0.6
 	 */
 	public function can_purchase_course( int $course_id = 0 ) {
 		$can_purchase = true;
@@ -405,6 +405,10 @@ class LP_User extends LP_Abstract_User {
 			}
 		} catch ( Throwable $e ) {
 			$can_purchase = new WP_Error( $code_err, $e->getMessage() );
+		}
+
+		if ( $can_purchase instanceof WP_Error ) {
+			$can_purchase = false;
 		}
 
 		return apply_filters( 'learn-press/user/can-purchase-course', $can_purchase, $this->get_id(), $course_id );

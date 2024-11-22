@@ -275,6 +275,14 @@ class LP_Checkout {
 			}
 		}
 
+		if ( $this->is_enable_guest_checkout() && $this->get_checkout_email() ) {
+			$order->set_checkout_email( $this->get_checkout_email() );
+			// Check email exists on the user will get user_id to set
+			if ( ! $user_id ) {
+				$user_id = $this->checkout_email_exists();
+			}
+		}
+
 		$order->set_customer_note( $this->order_comment );
 		$order->set_status( LP_ORDER_PENDING );
 		$order->set_total( $cart_total->total );
@@ -286,10 +294,6 @@ class LP_Checkout {
 		if ( $this->payment_method instanceof LP_Gateway_Abstract ) {
 			$order->set_data( 'payment_method', $this->payment_method->get_id() );
 			$order->set_data( 'payment_method_title', $this->payment_method->get_title() );
-		}
-
-		if ( $this->is_enable_guest_checkout() && $this->get_checkout_email() ) {
-			$order->set_checkout_email( $this->get_checkout_email() );
 		}
 
 		$order_id = $order->save();
@@ -321,7 +325,7 @@ class LP_Checkout {
 	/**
 	 * Guest checkout is enable?
 	 *
-	 * @return mixed
+	 * @return bool
 	 * @since 3.0.0
 	 */
 	public function is_enable_guest_checkout() {

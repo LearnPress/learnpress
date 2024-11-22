@@ -1,35 +1,38 @@
 <?xml version="1.0"?>
 <ruleset name="LearnPress ruleset">
     <description>LearnPress rules for PHP_CodeSniffer</description>
-
+<!--	<config name="installed_paths" value="vendor/wp-coding-standards/wpcs,vendor/phpcsstandards/phpcsutils"/>-->
     <arg value="ps"/>
     <arg name="extensions" value="php"/>
 
-    <file>./inc/</file>
-    <file>./templates/</file>
+	<file>./inc</file>
+	<file>./templates</file>
+	<file>./config</file>
     <file>learnpress.php</file>
 
-    <exclude-pattern>./inc/admin/includes/class-markdown-parse.php</exclude-pattern>
-    <exclude-pattern>*/inc/libraries/*</exclude-pattern>
-    <exclude-pattern type="relative">vendor</exclude-pattern>
-    <exclude-pattern type="relative">node_modules</exclude-pattern>
-    <exclude-pattern type="relative">tests</exclude-pattern>
-    <exclude-pattern type="relative">assets</exclude-pattern>
+	<exclude-pattern>*/inc/libraries/*</exclude-pattern>
+	<exclude-pattern>vendor/*</exclude-pattern>
+	<exclude-pattern>node_modules/*</exclude-pattern>
+	<exclude-pattern>tests/*</exclude-pattern>
+	<exclude-pattern>package.json</exclude-pattern>
+	<exclude-pattern>assets/*</exclude-pattern>
+	<exclude-pattern>languages/*</exclude-pattern>
+	<exclude-pattern>release/*</exclude-pattern>
 
     <rule ref="WordPress-Core">
-        <exclude name="WordPress.PHP.YodaConditions.NotYoda"/>
-        <exclude name="WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar"/>
-        <exclude name="WordPress.NamingConventions.ValidHookName.UseUnderscores"/>
-        <exclude name="WordPress.WP.I18n.MissingTranslatorsComment"/>
-        <exclude name="Generic.Commenting.DocComment.MissingShort"/>
-        <exclude name="WordPress.Files.FileName.NotHyphenatedLowercase"/>
-        <exclude name="WordPress.Files.FileName.InvalidClassFileName"/>
-        <exclude name="WordPress.PHP.StrictComparisons.LooseComparison"/>
-        <exclude name="WordPress.PHP.StrictInArray.MissingTrueStrict"/>
-        <exclude name="WordPress.PHP.RestrictedPHPFunctions.date_date"/>
-        <exclude name="Generic.Files.LineEndings.InvalidEOLChar"/>
-        <exclude name="WordPress.NamingConventions.ValidVariableName.VariableNotSnakeCase"/>
-        <exclude name="WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid"/>
-		<exclude name="Universal.Arrays.DisallowShortArraySyntax"/>
+		<exclude name="Universal.Arrays.DisallowShortArraySyntax" />
+		<exclude name="Universal.Operators.StrictComparisons.LooseNotEqual" />
+		<exclude name="Universal.Operators.StrictComparisons.LooseEqual" />
+		<exclude name="WordPress.NamingConventions.ValidHookName.UseUnderscores" />
+		<exclude name="WordPress.WP.I18n.MissingTranslatorsComment" />
+		<exclude name="WordPress.PHP.YodaConditions.NotYoda" />
+		<exclude name="WordPress.PHP.StrictInArray.MissingTrueStrict" />
+		<exclude name="WordPress.NamingConventions.ValidVariableName.VariableNotSnakeCase" />
+		<exclude name="WordPress.NamingConventions.ValidHookName.NotLowercase" />
+		<!-- When need check security query mysql use default of WordPress, need open -->
+		<exclude name="WordPress.DB.PreparedSQL.NotPrepared" />
+		<exclude name="WordPress.DB.PreparedSQL.InterpolatedNotPrepared" />
+		<exclude name="Generic.WhiteSpace.IncrementDecrementSpacing.SpaceAfterIncrement" />
+		<exclude name="WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase" />
     </rule>
 </ruleset>

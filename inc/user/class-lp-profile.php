@@ -2,6 +2,7 @@
 
 use LearnPress\Helpers\Config;
 use LearnPress\Models\Courses;
+use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\TemplateHooks\Profile\ProfileOrdersTemplate;
 
 defined( 'ABSPATH' ) || exit;
@@ -583,7 +584,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				'pagination' => '',
 			);
 
-			$query_args = array();
+			/*$query_args = array();
 
 			if ( is_array( $args ) ) {
 				foreach ( array( 'status', 'group_by_order' ) as $k ) {
@@ -591,67 +592,76 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 						$query_args[ $k ] = $args[ $k ];
 					}
 				}
-			}
+			}*/
 
-			if ( empty( $query_args['status'] ) ) {
+			/*if ( empty( $query_args['status'] ) ) {
 				$query_args['status'] = 'completed processing cancelled pending';
+			}*/
+
+			$default_args = array(
+				'paged' => 1,
+				'limit' => 10,
+			);
+
+			if ( $this->get_current_tab() === 'orders' && isset( $wp_query->query_vars['view_id'] ) ) {
+				$default_args['paged'] = $wp_query->query_vars['view_id'];
 			}
 
-			$order_ids = $this->get_user_orders( $query_args );
+			$args   = wp_parse_args( $args, $default_args );
+			$offset = isset( $args['limit'] ) && $args['limit'] > 0 && $args['paged'] ? ( $args['paged'] - 1 ) * $args['limit'] : 0;
 
-			if ( $order_ids ) {
-				$default_args = array(
-					'paged' => 1,
-					'limit' => 10,
-				);
+			$query_order = new WP_Query(
+				array(
+					'post_type'      => LP_ORDER_CPT,
+					'posts_per_page' => $args['limit'],
+					'offset'         => $offset,
+					'post_status'    => [ LP_ORDER_COMPLETED_DB, LP_ORDER_PENDING_DB, LP_ORDER_PROCESSING_DB, LP_ORDER_CANCELLED_DB ],
+					//'post__in'       => array_keys( $order_ids ),
+					//'orderby'        => 'post__in',
+					'fields'         => 'ids',
+					'meta_query'     => array(
+						'relation' => 'OR',
+						array(
+							'key'     => '_user_id',
+							'value'   => $this->get_user_data( 'id' ),
+							'compare' => '=',
+						),
+						array(
+							'key'     => '_user_id',
+							'value'   => '"' . $this->get_user_data( 'id' ) . '"',
+							'compare' => 'LIKE',
+						),
+					),
+				)
+			);
 
-				if ( $this->get_current_tab() === 'orders' && isset( $wp_query->query_vars['view_id'] ) ) {
-					$default_args['paged'] = $wp_query->query_vars['view_id'];
-				}
+			if ( $query_order->have_posts() ) {
+				$orders = ( isset( $args['fields'] ) && 'ids' === $args['fields'] ) ? $query_order->posts : array_filter( array_map( 'learn_press_get_order', $query_order->posts ) );
 
-				$args   = wp_parse_args( $args, $default_args );
-				$offset = isset( $args['limit'] ) && $args['limit'] > 0 && $args['paged'] ? ( $args['paged'] - 1 ) * $args['limit'] : 0;
-
-				$query_order = new WP_Query(
+				$query['orders']     = $orders;
+				$query['total']      = $query_order->found_posts;
+				$query['num_pages']  = $query_order->max_num_pages;
+				$query['pagination'] = learn_press_paging_nav(
 					array(
-						'post_type'      => LP_ORDER_CPT,
-						'posts_per_page' => $args['limit'],
-						'offset'         => $offset,
-						'post_status'    => 'any',
-						'post__in'       => array_keys( $order_ids ),
-						'orderby'        => 'post__in',
-						'fields'         => 'ids',
+						'num_pages' => $query['num_pages'],
+						'base'      => learn_press_user_profile_link( $this->get_user_data( 'id' ), LP_Settings::instance()->get( 'profile_endpoints.orders' ) ),
+						'format'    => $GLOBALS['wp_rewrite']->using_permalinks() ? user_trailingslashit( '%#%', '' ) : '?paged=%#%',
+						'echo'      => false,
+						'paged'     => $args['paged'],
 					)
 				);
 
-				if ( $query_order->have_posts() ) {
-					$orders = ( isset( $args['fields'] ) && 'ids' === $args['fields'] ) ? $query_order->posts : array_filter( array_map( 'learn_press_get_order', $query_order->posts ) );
-
-					$query['orders']     = $orders;
-					$query['total']      = $query_order->found_posts;
-					$query['num_pages']  = $query_order->max_num_pages;
-					$query['pagination'] = learn_press_paging_nav(
-						array(
-							'num_pages' => $query['num_pages'],
-							'base'      => learn_press_user_profile_link( $this->get_user_data( 'id' ), LP_Settings::instance()->get( 'profile_endpoints.orders' ) ),
-							'format'    => $GLOBALS['wp_rewrite']->using_permalinks() ? user_trailingslashit( '%#%', '' ) : '?paged=%#%',
-							'echo'      => false,
-							'paged'     => $args['paged'],
-						)
-					);
-
-					$query = new LP_Query_List_Table(
-						array(
-							'total' => $query_order->found_posts,
-							'paged' => $args['paged'],
-							'limit' => $args['limit'],
-							'pages' => $query['num_pages'],
-							'items' => $orders,
-						)
-					);
-				}
+				$query = new LP_Query_List_Table(
+					array(
+						'total' => $query_order->found_posts,
+						'paged' => $args['paged'],
+						'limit' => $args['limit'],
+						'pages' => $query['num_pages'],
+						'items' => $orders,
+					)
+				);
 			} else {
-				$query = new LP_Query_List_Table( $query );
+				$query = new LP_Query_List_Table( [] );
 			}
 
 			return $query;
@@ -700,8 +710,11 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				case 'own':
 					//$query = $this->_curd->query_own_courses( $this->get_user_data( 'id' ), $args );
 					$filter = new LP_Course_Filter();
+					if ( empty( $args['status'] ) ) {
+						$args['status'] = [ 'publish', 'pending', 'private' ];
+					}
 					Courses::handle_params_for_query_courses( $filter, $args );
-					$filter->fields      = array( 'ID' );
+					$filter->fields      = [ 'ID' ];
 					$filter->post_author = $this->get_user_data( 'id' );
 					$filter->post_status = ! empty( $args['status'] ) ? $args['status'] : array(
 						'publish',
@@ -948,7 +961,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				$avatar = apply_filters(
 					'learn-press/user-profile/avatar',
 					sprintf(
-						'<img alt="%s" class="avatar" src="%s" height="%d" width="%d">',
+						'<img alt="%s" class="avatar" src="%s" width="%d" height="%d" />',
 						esc_attr__( 'User Avatar', 'learnpress' ),
 						$avatar_url,
 						$args['width'] ?? 96,

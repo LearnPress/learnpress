@@ -7,6 +7,11 @@
  * @version 3.0.0
  */
 
+use LearnPress\Models\CourseModel;
+use LearnPress\Models\UserItems\UserCourseModel;
+use LearnPress\Models\UserItems\UserItemModel;
+use LearnPress\Models\UserModel;
+
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Course_Item' ) ) {
@@ -150,60 +155,17 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 		/**
 		 * Get class of item.
 		 *
-		 * @param string $more
-		 * @param int    $user_id
-		 *
-		 * @return array
-		 * @deprecated 4.2.3
-		 */
-		public function get_class( $more = '', $user_id = 0 ) {
-			_deprecated_function( __METHOD__, '4.2.3', 'LP_Course_Item::get_class_v2' );
-			return;
-			$course_id = get_the_ID();
-
-			if ( empty( $GLOBALS['get_class'] ) ) {
-				$GLOBALS['get_class'] = 0;
-			}
-
-			$user_id = $user_id ? $user_id : get_current_user_id();
-			$t       = microtime( true );
-			$classes = LP_Object_Cache::get( 'item-' . $user_id . '-' . $this->get_id(), 'learn-press/post-classes' );
-
-			if ( false === $classes ) {
-				$curd      = new LP_User_Item_CURD();
-				$all_items = $curd->parse_items_classes( $course_id, $user_id, $more );
-
-				$classes = ! empty( $all_items[ $this->get_id() ] ) ? $all_items[ $this->get_id() ] : $defaults = array(
-					'course-item',
-					'course-item-' . $this->get_item_type(),
-					'course-item-' . $this->get_id(),
-				);
-			}
-
-			$GLOBALS['get_class'] += microtime( true ) - $t;
-
-			return apply_filters(
-				'learn-press/course-item-class-cached',
-				$classes,
-				$this->get_item_type(),
-				$this->get_id(),
-				$course_id
-			);
-		}
-
-		/**
-		 * Get class of item.
-		 *
 		 * @param $course_id
 		 * @param $item_id
 		 * @param $can_view_item
 		 * @param $more
 		 *
 		 * @return array|mixed|null
+		 * @since 4.1.4.2
+		 * @version 1.0.1
 		 */
 		public function get_class_v2( $course_id, $item_id, $can_view_item, $more = array() ) {
-			$course = learn_press_get_course( $course_id );
-
+			$course = CourseModel::find( $course_id, true );
 			if ( ! $course ) {
 				return $more;
 			}
@@ -217,14 +179,12 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 				(array) $more
 			);
 
-			$user = learn_press_get_current_user();
-			if ( ! $user ) {
-				return $defaults;
-			}
+			$user_id = get_current_user_id();
+			$user    = UserModel::find( $user_id, true );
 
-			$is_free            = $course->is_free();
-			$enrolled           = $user->has_enrolled_or_finished( $course_id );
-			$no_required_enroll = $course->is_no_required_enroll();
+			$userCourseModel    = UserCourseModel::find( $user_id, $course_id );
+			$enrolled           = $user && $userCourseModel && $userCourseModel->has_enrolled_or_finished();
+			$no_required_enroll = $course->has_no_enroll_requirement();
 
 			$post_format = $this->get_format();
 			if ( 'standard' !== $post_format && $post_format ) {
@@ -244,8 +204,9 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 			} elseif ( ! $can_view_item->flag ) {
 				$defaults[] = 'item-locked';
 			} else {
-				$item_status = $user->get_item_status( $item_id, $course_id );
-				$item_grade  = $user->get_item_grade( $item_id, $course_id );
+				$userItemModel = UserItemModel::find_user_item( $user_id, $item_id, get_post_type( $item_id ) );
+				$item_status   = $userItemModel ? $userItemModel->get_status() : '';
+				$item_grade    = $userItemModel ? $userItemModel->get_graduation() : '';
 
 				if ( $item_status ) {
 					$defaults[] = 'has-status';

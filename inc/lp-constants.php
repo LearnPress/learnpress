@@ -2,9 +2,14 @@
 /**
  * Define common constants used by LearnPress
  */
-include_once ABSPATH . 'wp-admin/includes/plugin.php';
-$upload_dir  = wp_upload_dir();
-$plugin_info = get_plugin_data( LP_PLUGIN_FILE );
+require_once ABSPATH . 'wp-admin/includes/plugin.php';
+$upload_dir = wp_upload_dir();
+
+$default_headers = array(
+	'Version'    => 'Version',
+	'TextDomain' => 'Text Domain',
+);
+$plugin_info     = get_file_data( LP_PLUGIN_FILE, $default_headers, 'plugin' );
 
 // version.
 define( 'LEARNPRESS_VERSION', $plugin_info['Version'] );
@@ -12,12 +17,12 @@ const LP_KEY_DB_VERSION = 'learnpress_db_version';
 /**
  * @since 4.2.6.5
  */
-define( "LP_TEXT_DOMAIN", $plugin_info['TextDomain'] );
+define( 'LP_TEXT_DOMAIN', $plugin_info['TextDomain'] );
 
 // Plugin paths and urls.
 define( 'LP_PLUGIN_PATH', plugin_dir_path( LP_PLUGIN_FILE ) );
 define( 'LP_PLUGIN_BASENAME', plugin_basename( LP_PLUGIN_FILE ) );
-define( 'LP_PLUGIN_FOLDER_NAME', str_replace( array( '/', basename( LP_PLUGIN_FILE ) ), '', LP_PLUGIN_BASENAME ) );
+define( 'LP_PLUGIN_FOLDER_NAME', dirname( LP_PLUGIN_BASENAME ) );
 const LP_TEMPLATE_PATH = LP_PLUGIN_PATH . 'templates/';
 define( 'LP_PLUGIN_URL', trailingslashit( plugins_url( '/', LP_PLUGIN_FILE ) ) );
 const LP_JS_URL  = LP_PLUGIN_URL . 'assets/js/';
@@ -76,11 +81,12 @@ const LP_BLOCK_COURSE_DURATION_EXPIRE = 'block_course_duration_expire';
 const LP_BLOCK_COURSE_PURCHASE        = 'block_course_purchased';
 
 // Status user item course.
-const LP_COURSE_ENROLLED  = 'enrolled';
-const LP_COURSE_FINISHED  = 'finished';
-const LP_COURSE_PURCHASED = 'purchased';
-const LP_ITEM_COMPLETED   = 'completed';
-const LP_ITEM_STARTED     = 'started';
+const LP_COURSE_ENROLLED    = 'enrolled';
+const LP_COURSE_FINISHED    = 'finished';
+const LP_COURSE_PURCHASED   = 'purchased';
+const LP_USER_COURSE_CANCEL = 'cancel'; // When Order change complete to another status
+const LP_ITEM_COMPLETED     = 'completed';
+const LP_ITEM_STARTED       = 'started';
 
 // Status LP Order to compare.
 const LP_ORDER_COMPLETED  = 'completed';

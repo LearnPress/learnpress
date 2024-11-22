@@ -103,7 +103,7 @@ class ListCoursesTemplate {
 		// HTML section courses.
 		ob_start();
 		if ( empty( $courses ) ) {
-			echo sprintf( '<p class="learn-press-message success">%s!</p>', __( 'No courses found', 'learnpress' ) );
+			Template::print_message( __( 'No courses found', 'learnpress' ), 'info' );
 		} else {
 			foreach ( $courses as $courseObj ) {
 				$course = CourseModel::find( $courseObj->ID, true );
@@ -178,7 +178,7 @@ class ListCoursesTemplate {
 	 *
 	 * @return string
 	 * @since 4.2.5.8
-	 * @version 1.0.3
+	 * @version 1.0.4
 	 */
 	public static function render_course( $course, array $settings = [] ): string {
 		if ( ! $course instanceof CourseModel ) {
@@ -190,11 +190,16 @@ class ListCoursesTemplate {
 			// New layout course item.
 
 			// HTML top section, show image.
-			$section_top = [
-				'wrapper'     => '<div class="course-thumbnail">',
-				'img'         => sprintf( '<a href="%s">%s</a>', $course->get_permalink(), $singleCourseTemplate->html_image( $course ) ),
-				'wrapper_end' => '</div>',
-			];
+			$section_top = apply_filters(
+				'learn-press/layout/list-courses/item/section-top',
+				[
+					'wrapper'     => '<div class="course-thumbnail">',
+					'img'         => sprintf( '<a href="%s">%s</a>', $course->get_permalink(), $singleCourseTemplate->html_image( $course ) ),
+					'wrapper_end' => '</div>',
+				],
+				$course,
+				$settings
+			);
 
 			// HTML meta section.
 			$meta_data = apply_filters(
@@ -219,9 +224,9 @@ class ListCoursesTemplate {
 				}
 
 				// Add address for offline course.
-				$html_address = $singleCourseTemplate->html_address( $course );
+				$html_address = $singleCourseOfflineTemplate->html_address( $course );
 				if ( ! empty( $html_address ) ) {
-					$meta_data['address'] = $singleCourseTemplate->html_address( $course );
+					$meta_data['address'] = $singleCourseOfflineTemplate->html_address( $course );
 				}
 			}
 
@@ -289,14 +294,19 @@ class ListCoursesTemplate {
 				$settings
 			);
 
-			$section = [
-				'wrapper_li'      => '<li class="course">',
-				'wrapper_div'     => sprintf( '<div class="course-item" data-id="%s">', esc_attr( $course->get_id() ) ),
-				'top'             => Template::combine_components( $section_top ),
-				'bottom'          => Template::combine_components( $section_bottom ),
-				'wrapper_div_end' => '</div>',
-				'wrapper_li_end'  => '</li>',
-			];
+			$section = apply_filters(
+				'learn-press/layout/list-courses/item-li',
+				[
+					'wrapper_li'      => '<li class="course">',
+					'wrapper_div'     => sprintf( '<div class="course-item" data-id="%s">', esc_attr( $course->get_id() ) ),
+					'top'             => Template::combine_components( $section_top ),
+					'bottom'          => Template::combine_components( $section_bottom ),
+					'wrapper_div_end' => '</div>',
+					'wrapper_li_end'  => '</li>',
+				],
+				$course,
+				$settings
+			);
 
 			// For old themes use old hook.
 			$section = self::fix_theme_course_old( $section, $course, $settings );
@@ -497,13 +507,13 @@ class ListCoursesTemplate {
 	/**
 	 * Order by
 	 *
-	 * @param string $default
+	 * @param string $default_value
 	 *
 	 * @return string
 	 * @since 4.2.3.2
 	 * @version 1.0.1
 	 */
-	public function html_order_by( string $default = 'post_date' ): string {
+	public function html_order_by( string $default_value = 'post_date' ): string {
 		$html_wrapper = [
 			'<div class="courses-order-by-wrapper">' => '</div>',
 		];
@@ -522,7 +532,7 @@ class ListCoursesTemplate {
 
 		$content = '<select name="order_by" class="courses-order-by">';
 		foreach ( $values as $k => $v ) {
-			$content .= '<option value="' . $k . '" ' . selected( $default, $k, false ) . '>' . $v . '</option>';
+			$content .= '<option value="' . $k . '" ' . selected( $default_value, $k, false ) . '>' . $v . '</option>';
 		}
 		$content .= '</select>';
 
@@ -534,7 +544,7 @@ class ListCoursesTemplate {
 		ob_start();
 		?>
 		<form class="search-courses" method="get"
-				action="<?php echo esc_url_raw( learn_press_get_page_link( 'courses' ) ); ?>">
+			action="<?php echo esc_url_raw( learn_press_get_page_link( 'courses' ) ); ?>">
 			<input type="search" placeholder="<?php esc_attr_e( 'Search courses...', 'learnpress' ); ?>"
 					name="c_search"
 					value="<?php echo esc_attr( $s ); ?>">

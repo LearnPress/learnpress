@@ -8,6 +8,7 @@ if ( ! class_exists( 'LP_Multi_Language' ) ) {
 	 * @author  ThimPress
 	 * @package LearnPress/Clases
 	 * @version 1.0
+	 * @deprecated 4.2.7.4
 	 */
 	class LP_Multi_Language {
 		public static function init() {
@@ -47,7 +48,6 @@ if ( ! class_exists( 'LP_Multi_Language' ) ) {
 			$mo = WP_CONTENT_DIR . "/plugins/{$plugin_folder}/languages/{$plugin_folder}-{$locale}.mo";
 			load_textdomain( $text_domain, $mo );
 			load_plugin_textdomain( $text_domain, false, plugin_basename( $path ) . '/' . $language_folder );
-
 		}
 	}
 }
@@ -65,6 +65,5 @@ if ( ! function_exists( 'learn_press_load_plugin_text_domain' ) ) {
 	function learn_press_load_plugin_text_domain( $path, $text_domain = '', $language_folder = '' ) {
 
 		LP_Multi_Language::load_plugin_text_domain( $path, $text_domain, $language_folder );
-
 	}
 }

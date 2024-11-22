@@ -667,10 +667,10 @@ if(!class_exists('Emogrifier')) {
 		 */
 		private function matchClassAttributes( array $match ) {
 			return ( strlen( $match[1] ) ? $match[1] : '*' ) . '[contains(concat(" ",@class," "),concat(" ","' .
-			implode(
-				'"," "))][contains(concat(" ",@class," "),concat(" ","',
-				explode( '.', substr( $match[2], 1 ) )
-			) . '"," "))]';
+				implode(
+					'"," "))][contains(concat(" ",@class," "),concat(" ","',
+					explode( '.', substr( $match[2], 1 ) )
+				) . '"," "))]';
 		}
 
 		/**

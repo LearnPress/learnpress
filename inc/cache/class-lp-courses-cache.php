@@ -21,11 +21,11 @@ class LP_Courses_Cache extends LP_Cache {
 	/**
 	 * @var string Save list keys cached to clear
 	 */
-	public static $keys = 'keys';
-	const KEYS_QUERY_COURSES = 'keys/query_courses';
-	const KEYS_QUERY_COURSES_APP = 'keys/query_courses/app';
-	const KEYS_QUERY_TOTAL_COURSES = 'keys/query_courses/total';
-	const KEYS_COUNT_COURSES_FREE = 'keys/count_courses_free';
+	public static $keys              = 'keys';
+	const KEYS_QUERY_COURSES         = 'keys/query_courses';
+	const KEYS_QUERY_COURSES_APP     = 'keys/query_courses/app';
+	const KEYS_QUERY_TOTAL_COURSES   = 'keys/query_courses/total';
+	const KEYS_COUNT_COURSES_FREE    = 'keys/count_courses_free';
 	const KEYS_COUNT_STUDENT_COURSES = 'keys/count_student_courses';
 
 	/**

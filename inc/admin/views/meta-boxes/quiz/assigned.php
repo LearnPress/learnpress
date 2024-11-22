@@ -1,11 +1,12 @@
 <?php
 /**
  * Admin View: Question assigned Meta box
+ *
+ * @version 1.0.1
  */
 
-/**
- * Prevent loading this file directly
- */
+use LearnPress\Models\CourseModel;
+
 defined( 'ABSPATH' ) || exit();
 
 global $post;
@@ -19,7 +20,13 @@ $quiz = $curd->get_quiz( $post->ID );
 
 		<?php if ( $courses ) : ?>
 			<ul class="parent-courses">
-				<?php foreach ( $courses as $course ) : ?>
+				<?php
+				foreach ( $courses as $course ) :
+					$courseModel = CourseModel::find( $course->ID, true );
+					if ( ! $courseModel ) {
+						continue;
+					}
+					?>
 					<li>
 						<strong>
 							<a href="<?php echo get_edit_post_link( $course->ID ); ?>" target="_blank"><?php echo get_the_title( $course->ID ); ?></a>
@@ -34,7 +41,7 @@ $quiz = $curd->get_quiz( $post->ID );
 										<?php echo get_the_title( $quiz->ID ); ?></a>
 								</strong>
 								&#8212;
-								<a href="<?php echo learn_press_get_course_item_permalink( $course->ID, $quiz->ID ); ?>" target="_blank"><?php esc_html_e( 'View', 'learnpress' ); ?></a>
+								<a href="<?php echo $courseModel->get_item_link( $quiz->ID ); ?>" target="_blank"><?php esc_html_e( 'View', 'learnpress' ); ?></a>
 							</li>
 						</ul>
 					</li>

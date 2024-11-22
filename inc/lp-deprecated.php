@@ -207,6 +207,7 @@ if ( ! function_exists( 'learn_press_single_quiz_sidebar_buttons' ) ) {
 
 // Show filters for students list
 // Wait addon student list v4.0.3 update will remove it
+// @deprecated 4.2.7.4
 function learn_press_get_students_list_filter() {
 	$filter = array(
 		'all'         => esc_html__( 'All', 'learnpress' ),

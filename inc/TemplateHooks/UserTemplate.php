@@ -38,9 +38,9 @@ class UserTemplate {
 	 */
 	public function html_display_name( $instructor, string $class = 'user' ): string {
 		$section = [
-			'wrapper'     => sprintf( '<div class="%s-display-name">', $class ),
+			'wrapper'      => sprintf( '<div class="%s-display-name">', $class ),
 			'display_name' => $instructor->get_display_name(),
-			'wrapper_end' => '</div>',
+			'wrapper_end'  => '</div>',
 		];
 
 		return Template::combine_components( $section );
@@ -102,29 +102,34 @@ class UserTemplate {
 	 * Get html avatar of instructor.
 	 *
 	 * @param UserModel $user
-	 * @param int $size_display 0 to get default learn_press_get_avatar_thumb_size()
+	 * @param array $size_display [ 'width' => 100, 'height' => 100 ]
 	 * @param string $class
 	 *
 	 * @return string
 	 * @since 4.2.7.2
-	 * @version 1.0.0
+	 * @version 1.0.2
 	 */
-	public function html_avatar( UserModel $user, int $size_display = 0, string $class = 'user' ): string {
+	public function html_avatar( UserModel $user, array $size_display = [], string $class = 'user' ): string {
 		$html = '';
 
 		try {
-			if ( 0 === $size_display ) {
-				$args         = learn_press_get_avatar_thumb_size();
-				$size_display = $args['width'];
+			if ( empty( $size_display ) ) {
+				$size_display = learn_press_get_avatar_thumb_size();
+			}
+
+			$width = $height = $size_display;
+			if ( is_array( $size_display ) ) {
+				$width  = $size_display['width'];
+				$height = $size_display['height'];
 			}
 
 			$avatar_url = $user->get_avatar_url();
 			$img_avatar = sprintf(
-				'<img alt="%s" class="avatar" src="%s" height="%d" width="%d" decoding="async">',
+				'<img alt="%s" class="avatar" src="%s" width="%d" height="%d" decoding="async" />',
 				esc_attr__( 'User Avatar', 'learnpress' ),
 				$avatar_url,
-				$size_display,
-				$size_display
+				$width,
+				$height
 			);
 
 			$section = apply_filters(

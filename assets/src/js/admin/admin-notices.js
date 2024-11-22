@@ -2,15 +2,16 @@
  * Script handle admin notices.
  *
  * @since 4.1.7.3.2
- * @version 1.0.1
+ * @version 1.0.2
  */
-import adminAPI from './api';
+import { lpOnElementReady } from '../utils.js';
+import API from '../api.js';
 let elLPAdminNotices = null;
-let elBtnDismiss;
 let dataHtml = null;
 const queryString = window.location.search;
 const urlParams = new URLSearchParams( queryString );
 const tab = urlParams.get( 'tab' );
+
 const notifyAddonsNewVersion = () => {
 	try {
 		const elAdminMenu = document.querySelector( '#adminmenu' );
@@ -54,7 +55,7 @@ const callAdminNotices = ( set = '' ) => {
 	let params = tab ? `?tab=${ tab }` : '';
 	params += set ? ( tab ? '&' : '?' ) + `${ set }` : '';
 
-	fetch( adminAPI.apiAdminNotice + params, {
+	fetch( API.admin.apiAdminNotice + params, {
 		method: 'POST',
 		headers: {
 			'X-WP-Nonce': lpGlobalSettings.nonce,
@@ -69,8 +70,13 @@ const callAdminNotices = ( set = '' ) => {
 			if ( 'Dismissed!' !== message ) {
 				dataHtml = data.content;
 
-				if ( dataHtml.length === 0 && elLPAdminNotices ) {
+				if ( dataHtml.length === 0 ) {
 					elLPAdminNotices.style.display = 'none';
+				} else {
+					elLPAdminNotices.innerHTML = dataHtml;
+					elLPAdminNotices.style.display = 'block';
+					// Handle notify addons new version.
+					notifyAddonsNewVersion();
 				}
 			}
 		} else {
@@ -80,29 +86,11 @@ const callAdminNotices = ( set = '' ) => {
 		console.log( err );
 	} );
 };
-callAdminNotices();
 
-/*** DOMContentLoaded ***/
-document.addEventListener( 'DOMContentLoaded', () => {
+// Listen element ready
+lpOnElementReady( '.lp-admin-notices', () => {
 	elLPAdminNotices = document.querySelector( '.lp-admin-notices' );
-	elBtnDismiss = document.querySelector( '.btn-lp-notice-dismiss' );
-
-	if ( ! elLPAdminNotices ) {
-		return;
-	}
-
-	const interval = setInterval( () => {
-		if ( dataHtml !== null ) {
-			if ( dataHtml.length > 0 ) {
-				elLPAdminNotices.innerHTML = dataHtml;
-				elLPAdminNotices.style.display = 'block';
-				// Handle notify addons new version.
-				notifyAddonsNewVersion();
-			}
-
-			clearInterval( interval );
-		}
-	}, 1 );
+	callAdminNotices();
 } );
 
 /*** Events ***/

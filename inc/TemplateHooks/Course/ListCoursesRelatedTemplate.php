@@ -60,7 +60,7 @@ class ListCoursesRelatedTemplate {
 
 		$args = [
 			'course_id' => $course->get_id(),
-			'limit'     => $limit
+			'limit'     => $limit,
 		];
 
 		$content = TemplateAJAX::load_content_via_ajax( $args, $callback );
@@ -126,7 +126,9 @@ class ListCoursesRelatedTemplate {
 				'header'  => sprintf( '<h3 class="section-title">%s</h3>', __( 'You might be interested in', 'learnpress' ) ),
 				'courses' => $html_courses,
 			],
-			$course, $courses, $settings
+			$course,
+			$courses,
+			$settings
 		);
 		$content->content = Template::combine_components( $sections );
 
@@ -136,7 +138,7 @@ class ListCoursesRelatedTemplate {
 	/**
 	 * Render single item course
 	 *
-	 * @param LP_Course $course
+	 * @param CourseModel $course
 	 * @param array $settings
 	 *
 	 * @return string
@@ -153,7 +155,6 @@ class ListCoursesRelatedTemplate {
 			];
 			$img         = sprintf( '<a href="%s">%s</a>', $course->get_permalink(), $singleCourseTemplate->html_image( $course ) );
 			$html_top    = Template::instance()->nest_elements( $top_wrapper, $img );
-
 
 			// Section main top
 			$section_main_top = [
@@ -197,7 +198,7 @@ class ListCoursesRelatedTemplate {
 					'wrapper_start' => sprintf( '<li class="course-item" data-id="%s">', esc_attr( $course->get_id() ) ),
 					'top'           => $html_top,
 					'bottom'        => $html_section_main,
-					'wrapper_end'   => '</li>'
+					'wrapper_end'   => '</li>',
 				],
 				$course,
 				$settings

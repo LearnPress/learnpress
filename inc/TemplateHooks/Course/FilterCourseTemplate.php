@@ -162,9 +162,9 @@ class FilterCourseTemplate {
 			);
 
 			$this->check_param_url_has_lang( $data );
-			$value   = LP_Request::get_param( 'c_search' );
-			$value   = isset( $data['params_url'] ) ? ( $data['params_url']['c_search'] ?? $value ) : $value;
-			$content = sprintf(
+			$value    = LP_Request::get_param( 'c_search' );
+			$value    = isset( $data['params_url'] ) ? ( $data['params_url']['c_search'] ?? $value ) : $value;
+			$content  = sprintf(
 				'<input type="text" name="c_search" placeholder="%s" value="%s" class="%s" data-search-suggest="%d">',
 				__( 'Search Course', 'learnpress' ),
 				$value,
@@ -172,9 +172,9 @@ class FilterCourseTemplate {
 				$data['search_suggestion'] ?? 1
 			);
 			$content .= '<span class="lp-loading-circle lp-loading-no-css hide"></span>';
-			$content = Template::instance()->nest_elements( $html_wrapper, $content );
+			$content  = Template::instance()->nest_elements( $html_wrapper, $content );
 			$content .= '<div class="lp-course-filter-search-result"></div>';
-			$content = $this->html_item( esc_html__( 'Search', 'learnpress' ), $content );
+			$content  = $this->html_item( esc_html__( 'Search', 'learnpress' ), $content );
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
@@ -300,7 +300,7 @@ class FilterCourseTemplate {
 
 				if ( ! empty( $category_current ) ) {
 					$parent_cat_id = $category_current_id;
-					$content       .= $this->html_field_category( $category_current->term_id, $category_current->name, $data );
+					$content      .= $this->html_field_category( $category_current->term_id, $category_current->name, $data );
 				}
 			}
 
@@ -393,7 +393,8 @@ class FilterCourseTemplate {
 		$checked = in_array( $category_id, $args['data_selected'] ?? [] ) && empty( $disabled ) ? 'checked' : '';
 		$input   = sprintf(
 			'<input name="term_id" type="checkbox" value="%s" %s %s>',
-			esc_attr( $category_id ), esc_attr( $checked ),
+			esc_attr( $category_id ),
+			esc_attr( $checked ),
 			$disabled
 		);
 		$label   = sprintf( '<label for="">%s</label>', wp_kses_post( $category_name ) );
@@ -692,11 +693,10 @@ class FilterCourseTemplate {
 
 		// Check has in category page.
 		if ( isset( $params_url['page_term_id_current'] ) &&
-		     empty( $params_url['term_id'] ) ) {
+			empty( $params_url['term_id'] ) ) {
 			$filter->term_ids[] = $params_url['page_term_id_current'];
-		} // Check has in tag page.
-		elseif ( isset( $params_url['page_tag_id_current'] ) &&
-		         empty( $params_url['tag_id'] ) ) {
+		} elseif ( isset( $params_url['page_tag_id_current'] )
+			&& empty( $params_url['tag_id'] ) ) {
 			$filter->tag_ids[] = $params_url['page_tag_id_current'];
 		}
 	}

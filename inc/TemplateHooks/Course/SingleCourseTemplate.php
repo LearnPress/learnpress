@@ -17,6 +17,7 @@ use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
 use LearnPress\TemplateHooks\UserTemplate;
+use LP_Checkout;
 use LP_Course;
 use LP_Datetime;
 use LP_Material_Files_DB;
@@ -370,8 +371,10 @@ class SingleCourseTemplate {
 	 * @param CourseModel $course
 	 *
 	 * @return string
+	 * @deprecated 4.2.7.3 Move to SingleCourseOfflineTemplate
 	 */
 	public function html_deliver_type( CourseModel $course ): string {
+		return '';
 		$content = '';
 
 		$html_wrapper = [
@@ -428,10 +431,7 @@ class SingleCourseTemplate {
 		}
 
 		$count_student = $course->get_total_user_enrolled_or_purchased();
-		$fake_student  = $course->get_meta_value_by_key( CoursePostModel::META_KEY_STUDENTS );
-		if ( $fake_student ) {
-			$count_student += $fake_student;
-		}
+		$count_student += $course->get_fake_students();
 		$content      = sprintf( '%d %s', $count_student, _n( 'Student', 'Students', $count_student, 'learnpress' ) );
 		$html_wrapper = [
 			'<div class="course-count-student">' => '</div>',
@@ -611,8 +611,10 @@ class SingleCourseTemplate {
 	 * @param CourseModel $course
 	 *
 	 * @return string
+	 * @deprecated 4.2.7.3 Move to SingleCourseOfflineTemplate
 	 */
 	public function html_address( CourseModel $course ): string {
+		return '';
 		$content = '';
 
 		try {
@@ -673,59 +675,162 @@ class SingleCourseTemplate {
 	 * @param false|UserModel $user
 	 *
 	 * @return string
+	 * @since 4.2.7.2
+	 * @version 1.0.1
 	 */
-	public function html_btn_purchase_course( CourseModel $course, $user ) {
-		$html_btn = '';
-		$can_show = true;
-
-		if ( $course->is_free() ) {
-			ob_start();
-			learn_press_get_template( 'single-course/buttons/enroll.php', array( 'course' => $course ) );
-			$html_btn = ob_get_clean();
-			return $html_btn;
-		}
-
-		$user         = learn_press_get_current_user();
-		$can_purchase = $user->can_purchase_course( $course->get_id() );
+	public function html_btn_purchase_course( CourseModel $course, $user ): string {
+		$html_btn     = '';
+		$can_purchase = $course->can_purchase( $user );
 		if ( is_wp_error( $can_purchase ) ) {
-			if ( in_array(
-				$can_purchase->get_error_code(),
-				[ 'order_processing', 'course_out_of_stock', 'course_is_no_required_enroll_not_login' ]
-			) ) {
+			$error_code_show = apply_filters(
+				'learn-press/course/html-button-purchase/show-messages',
+				[]
+			);
+			if ( in_array( $can_purchase->get_error_code(), $error_code_show )
+				&& ! empty( $can_purchase->get_error_message() ) ) {
 				ob_start();
 				Template::print_message( $can_purchase->get_error_message(), 'warning' );
 				$html_btn = ob_get_clean();
 			}
-
-			$can_show = false;
+		} else {
+			$html_btn = sprintf(
+				'<button class="lp-button button button-purchase-course">%s</button>',
+				__( 'Buy Now', 'learnpress' )
+			);
 		}
 
-		// Hook since 4.1.3
-		$can_show = apply_filters( 'learnpress/course/template/button-purchase/can-show', $can_show, $user, $course );
-		if ( ! $can_show ) {
+		if ( empty( $html_btn ) ) {
 			return $html_btn;
 		}
 
-		$args_load_tmpl = array(
-			'template_name' => 'single-course/buttons/purchase.php',
-			'template_path' => '',
-			'default_path'  => '',
+		$class_guest_checkout = LP_Checkout::instance()->is_enable_guest_checkout() ? 'guest_checkout' : '';
+
+		// Hook action old
+		$html_hook_old = '';
+		if ( has_action( 'learn-press/after-purchase-button' ) ) {
+			ob_start();
+			do_action( 'learn-press/after-purchase-button' );
+			$html_hook_old = ob_get_clean();
+		}
+
+		if ( has_filter( 'learnpress/course/template/button-purchase/can-show' ) ) {
+			$user_id = 0;
+			if ( $user instanceof UserModel ) {
+				$user_id = $user->get_id();
+			}
+			$user_old   = learn_press_get_user( $user_id );
+			$course_old = learn_press_get_course( $course->get_id() );
+			$can_show   = apply_filters( 'learnpress/course/template/button-purchase/can-show', true, $user_old, $course_old );
+			if ( ! $can_show ) {
+				return '';
+			}
+		}
+		// End hook action old
+
+		$section = apply_filters(
+			'learn-press/course/html-button-purchase',
+			[
+				'form'     => sprintf(
+					'<form name="purchase-course" class="purchase-course %s" method="post">',
+					esc_attr( $class_guest_checkout )
+				),
+				'input'    => sprintf(
+					'<input type="hidden" name="purchase-course" value="%d"/>',
+					esc_attr( $course->get_id() )
+				),
+				'btn'      => $html_btn,
+				'hook_old' => $html_hook_old,
+				'form_end' => '</form>',
+			],
+			$course,
+			$user
 		);
 
-		$args_load_tmpl = apply_filters( 'learn-press/tmpl-button-purchase-course', $args_load_tmpl, $course );
+		return Template::combine_components( $section );
+	}
 
-		ob_start();
-		learn_press_get_template(
-			$args_load_tmpl['template_name'],
-			array(
-				'user'   => $user,
-				'course' => $course,
-			),
-			$args_load_tmpl['template_path'],
-			$args_load_tmpl['default_path']
+	/**
+	 * HTML button enroll course
+	 *
+	 * @param CourseModel $course
+	 * @param false|UserModel $user
+	 *
+	 * @return string
+	 * @since 4.2.7.3
+	 * @version 1.0.0
+	 */
+	public function html_btn_enroll_course( CourseModel $course, $user ): string {
+		$html_btn   = '';
+		$can_enroll = $course->can_enroll( $user );
+		if ( is_wp_error( $can_enroll ) ) {
+			$error_code_show = apply_filters(
+				'learn-press/course/html-button-enroll/show-messages',
+				[ 'course_is_no_required_enroll_not_login', 'course_out_of_stock' ]
+			);
+			if ( in_array( $can_enroll->get_error_code(), $error_code_show )
+				&& ! empty( $can_enroll->get_error_message() ) ) {
+				ob_start();
+				Template::print_message( $can_enroll->get_error_message(), 'warning' );
+				$html_btn = ob_get_clean();
+			}
+		} else {
+			$html_btn = sprintf(
+				'<button type="submit" class="lp-button button-enroll-course">%s</button>',
+				__( 'Start Now', 'learnpress' )
+			);
+		}
+
+		if ( empty( $html_btn ) ) {
+			return $html_btn;
+		}
+
+		// Hook old
+		$html_hook_before_old = '';
+		if ( has_action( 'learn-press/before-enroll-button' ) ) {
+			ob_start();
+			do_action( 'learn-press/before-enroll-button' );
+			$html_hook_before_old = ob_get_clean();
+		}
+
+		$html_hook_after_old = '';
+		if ( has_action( 'learn-press/after-enroll-button' ) ) {
+			ob_start();
+			do_action( 'learn-press/after-enroll-button' );
+			$html_hook_after_old = ob_get_clean();
+		}
+
+		if ( has_filter( 'learnpress/course/template/button-enroll/can-show' ) ) {
+			$user_id = 0;
+			if ( $user instanceof UserModel ) {
+				$user_id = $user->get_id();
+			}
+			$user_old   = learn_press_get_user( $user_id );
+			$course_old = learn_press_get_course( $course->get_id() );
+			$can_show   = apply_filters( 'learnpress/course/template/button-enroll/can-show', true, $user_old, $course_old );
+			if ( ! $can_show ) {
+				return '';
+			}
+		}
+		// End hook old
+
+		$section = apply_filters(
+			'learn-press/course/html-button-enroll',
+			[
+				'form'            => '<form name="enroll-course" class="enroll-course" method="post">',
+				'hook_before_old' => $html_hook_before_old,
+				'input'           => sprintf(
+					'<input type="hidden" name="enroll-course" value="%s"/>',
+					esc_attr( $course->get_id() )
+				),
+				'btn'             => $html_btn,
+				'hook_after_old'  => $html_hook_after_old,
+				'form_end'        => '</form>',
+			],
+			$course,
+			$user
 		);
-		$html_btn = ob_get_clean();
-		return $html_btn;
+
+		return Template::combine_components( $section );
 	}
 
 	/**
@@ -1020,7 +1125,7 @@ class SingleCourseTemplate {
 	public function html_material( CourseModel $course, UserModel $user = null ): string {
 		$html = '';
 		if ( ! $user ) {
-			$user = UserModel::find( get_current_user_id() );
+			$user = UserModel::find( get_current_user_id(), true );
 			if ( ! $user ) {
 				return $html;
 			}

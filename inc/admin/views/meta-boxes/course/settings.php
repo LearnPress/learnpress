@@ -267,9 +267,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 				CoursePostModel::META_KEY_OFFLINE_COURSE       => new LP_Meta_Box_Checkbox_Field(
 					esc_html__( 'Enable offline course', 'learnpress' ),
 					esc_html__(
-						'When you enable the offline course feature, the system will disable certain online course functions,
-						such as curriculum, finish button, re-take course, block content, repurchase.
-						After checking the checkbox, make sure to click the "Update" button to apply the changes successfully.',
+						'When you enable the offline course feature, the system will disable certain online course functions, such as curriculum, finish button, re-take course, block content, repurchase. After checking the checkbox, make sure to click the "Update" button to apply the changes successfully.',
 						'learnpress'
 					),
 					'no'

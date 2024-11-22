@@ -67,7 +67,7 @@ class UserItemModel {
 	 *
 	 * @var string (passed, failed, in-progress...)
 	 */
-	public $graduation = '';
+	public $graduation = null;
 	/**
 	 * Ref id (Order, course ...)
 	 *
@@ -114,6 +114,43 @@ class UserItemModel {
 			$this->get_user_model();
 		}
 	}
+
+	/**
+	 * Get start time
+	 *
+	 * @return string
+	 */
+	public function get_start_time(): string {
+		return is_null( $this->start_time ) ? '' : $this->start_time;
+	}
+
+	/**
+	 * Get end time
+	 *
+	 * @return string
+	 */
+	public function get_end_time(): string {
+		return is_null( $this->end_time ) ? '' : $this->end_time;
+	}
+
+	/**
+	 * Get status
+	 *
+	 * @return string
+	 */
+	public function get_status(): string {
+		return $this->status;
+	}
+
+	/**
+	 * Get graduation
+	 *
+	 * @return string
+	 */
+	public function get_graduation(): string {
+		return is_null( $this->graduation ) ? '' : $this->graduation;
+	}
+
 
 	/**
 	 * Get user item id
@@ -170,11 +207,10 @@ class UserItemModel {
 	 * If exists, return UserItemModel.
 	 *
 	 * @param LP_User_Items_Filter $filter
-	 * @param bool $no_cache
 	 *
 	 * @return UserItemModel|false|static
 	 */
-	public static function get_user_item_model_from_db( LP_User_Items_Filter $filter, bool $check_cache = false ) {
+	public static function get_user_item_model_from_db( LP_User_Items_Filter $filter ) {
 		$lp_user_item_db = LP_User_Items_DB::getInstance();
 		$user_item_model = false;
 
@@ -199,6 +235,27 @@ class UserItemModel {
 	}
 
 	/**
+	 * Find User Item by user_id, item_id, item_type.
+	 *
+	 * @param int $user_id
+	 * @param int $item_id
+	 * @param string $item_type
+	 * @param bool $check_cache
+	 *
+	 * @return false|UserItemModel|static
+	 * @since 4.2.7.3
+	 * @version 1.0.0
+	 */
+	public static function find_user_item( int $user_id, int $item_id, string $item_type, bool $check_cache = false ) {
+		$filter            = new LP_User_Items_Filter();
+		$filter->user_id   = $user_id;
+		$filter->item_id   = $item_id;
+		$filter->item_type = $item_type;
+
+		return static::get_user_item_model_from_db( $filter );
+	}
+
+	/**
 	 * Get user item metadata from object meta_data or database by user_item_id, meta_key.
 	 *
 	 * @param string $key
@@ -210,7 +267,7 @@ class UserItemModel {
 
 		// Check object meta_data has value of key.
 		if ( $this->meta_data instanceof stdClass
-		     && property_exists( $this->meta_data, $key ) ) {
+			&& property_exists( $this->meta_data, $key ) ) {
 			$user_item_metadata = $this->meta_data->{$key};
 		} else { // Get from DB
 			$filter                          = new LP_User_Item_Meta_Filter();
@@ -274,14 +331,16 @@ class UserItemModel {
 
 		// Check if exists user_item_id.
 		if ( empty( $this->get_user_item_id() ) ) { // Insert data.
-			if ( empty( $data['user_id'] ) ) {
-				throw new Exception( 'User ID is require.' );
-			}
 			if ( empty( $data['item_id'] ) ) {
 				throw new Exception( 'Item ID is require.' );
 			}
 			if ( empty( $data['item_type'] ) ) {
 				throw new Exception( 'Item Type is require.' );
+			}
+
+			// Guest can buy course if enable guest checkout.
+			if ( empty( $data['user_id'] ) && LP_COURSE_CPT !== $data['item_type'] ) {
+				throw new Exception( 'User ID is require.' );
 			}
 
 			$user_item_id_new = $lp_user_item_db->insert_data( $data );
@@ -309,12 +368,12 @@ class UserItemModel {
 	public function get_total_timestamp_completed(): int {
 		$time_interval = 0;
 
-		if ( empty( $this->start_time ) || empty( $this->end_time ) ) {
+		if ( empty( $this->get_start_time() ) || empty( $this->get_end_time() ) ) {
 			return $time_interval;
 		}
 
-		$start = new LP_Datetime( $this->start_time );
-		$end   = new LP_Datetime( $this->end_time );
+		$start = new LP_Datetime( $this->get_start_time() );
+		$end   = new LP_Datetime( $this->get_end_time() );
 
 		return $end->getTimestamp() - $start->getTimestamp();
 	}
@@ -346,8 +405,21 @@ class UserItemModel {
 		return apply_filters( 'learnPress/user-item/expiration-time', $expire, $duration, $this );
 	}
 
+	/**
+	 * Delete user item.
+	 *
+	 * @throws Exception
+	 * @since 4.2.7.3
+	 * @version 1.0.0
+	 */
 	public function delete() {
+		$lp_user_item_db    = LP_User_Items_DB::getInstance();
+		$filter             = new LP_User_Items_Filter();
+		$filter->where[]    = $lp_user_item_db->wpdb->prepare( 'AND user_item_id = %d', $this->get_user_item_id() );
+		$filter->collection = $lp_user_item_db->tb_lp_user_items;
+		$lp_user_item_db->delete_execute( $filter );
 
+		$this->clean_caches();
 	}
 
 	/**

@@ -3,9 +3,9 @@ Contributors: thimpress, tungnx89, nhamdv, nguyenlammanh, tunnhn, phonglq.foobla
 Donate link:
 Tags: elearning, education, course, lms, learning management system
 Requires at least: 6.0
-Tested up to: 6.6.2
+Tested up to: 6.7
 Requires PHP: 7.0
-Stable tag: 4.2.7.2
+Stable tag: 4.2.7.3
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -65,6 +65,12 @@ With the course you've created, you can share it, manage it, watch statistic abo
 
 **Sell course**
 LearnPress is free but it still allows you to sell your courses with many billing methods supported such as PayPal, WooCommerce, Stripe, etc.
+
+**Offline course features**
+LearnPress comes with extensive offline course features. If offline courses are active, some online course features like Curriculum, End Button, Retake Course, Content Blocking, and Repurchase will be disabled by default.
+Instead, LearnPress adds offline course-specific features, including a custom course details page with information like Delivery Type, Location, Schedule, Start Date, and more.
+These features are perfect for educators, training centers, and institutions offering blended learning or complete offline programmes, providing proper management.
+With LearnPress offline course features, you also have an easily customizable in built page for offline courses that comes with a responsive and search engine friendly modern UI/UX, that is designed specifically to attract and retain local learners.
 
 **Communicate with your students**
 BuddyPress makes it easier for you to communicate with your students or instructors via the WordPress forum. Studying, making friends and having fun.
@@ -209,6 +215,17 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.
 
 == Changelog ==
+
+= 4.2.7.3 (2024-11-12) =
+~ Fixed: error course private admin/author can't see on the frontend.
+~ Fixed: only show label "Final" of Quiz when choose "Evaluate via results of the final quiz".
+~ Fixed: send mail enroll for user Guest not exists user.
+~ Tweak: enroll/purchase course buttons.
+~ Tweak: condition can enroll/purchase course.
+~ Tweak: API enroll/purchase course.
+~ Tweak: when order completed.
+~ Tweak: set upload Avatar to PNG, instead of JPG.
+~ Deprecated: hooks learn-press/user/can-enroll-course, learn-press/user/can-purchase-course. Replace to learn-press/user/can-enroll/course, learn-press/user/can-purchase/course.
 
 = 4.2.7.2 (2024-10-21) =
 ~ Fixed: security.

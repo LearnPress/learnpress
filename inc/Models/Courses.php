@@ -78,9 +78,9 @@ class Courses {
 		// Get Columns
 		$fields_str = LP_Helper::sanitize_params_submitted( urldecode( $param['c_fields'] ?? '' ) );
 		if ( ! empty( $fields_str ) ) {
-			$fields         = explode( ',', $fields_str );
+			$fields = explode( ',', $fields_str );
 			foreach ( $fields as $key => $field ) {
-				$fields[ $key ] = LP_Database::getInstance()->wpdb->prepare( '%i', $field );;
+				$fields[ $key ] = LP_Database::getInstance()->wpdb->prepare( '%i', $field );
 			}
 			$filter->fields = $fields;
 		}
@@ -88,9 +88,9 @@ class Courses {
 		// Get only columns
 		$fields_only_str = LP_Helper::sanitize_params_submitted( urldecode( $param['c_only_fields'] ?? '' ) );
 		if ( ! empty( $fields_only_str ) ) {
-			$fields_only         = explode( ',', $fields_only_str );
+			$fields_only = explode( ',', $fields_only_str );
 			foreach ( $fields_only as $key => $field ) {
-				$fields_only[ $key ] = LP_Database::getInstance()->wpdb->prepare( '%i', $field );;
+				$fields_only[ $key ] = LP_Database::getInstance()->wpdb->prepare( '%i', $field );
 			}
 			$filter->only_fields = $fields_only;
 		}

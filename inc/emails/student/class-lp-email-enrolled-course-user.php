@@ -5,7 +5,7 @@
  * @author  ThimPress
  * @package Learnpress/Classes
  * @extends LP_Email
- * @version 3.0.0
+ * @version 3.0.1
  */
 
 /**
@@ -48,8 +48,15 @@ if ( ! class_exists( 'LP_Email_Enrolled_Course_User' ) ) {
 				return;
 			}
 
+			$user_email = '';
+			if ( $this->_user ) {
+				$user_email = $this->_user->get_email();
+			} else {
+				$user_email = $this->_order->get_user_email();
+			}
+
 			$this->set_data_content();
-			$this->set_receive( $this->_user->get_email() );
+			$this->set_receive( $user_email );
 			$this->send_email();
 		}
 	}

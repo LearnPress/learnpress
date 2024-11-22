@@ -5,19 +5,20 @@
  * Dynamic course level elementor.
  *
  * @since 4.2.3.5
- * @version 1.0.0
+ * @version 1.0.1
  */
 
 namespace LearnPress\ExternalPlugin\Elementor\Widgets\Course\Dynamic;
 use Elementor\Core\DynamicTags\Tag;
 use LearnPress\ExternalPlugin\Elementor\LPDynamicElementor;
 use LearnPress\Models\CourseModel;
+use LearnPress\TemplateHooks\Course\SingleCourseOfflineTemplate;
 use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
 use Throwable;
 
 defined( 'ABSPATH' ) || exit;
 
-class CourseAddressDynamicElementor extends Tag {
+class CourseOfflineAddressDynamicElementor extends Tag {
 	use LPDynamicElementor;
 
 	public function __construct( array $data = [] ) {
@@ -27,10 +28,10 @@ class CourseAddressDynamicElementor extends Tag {
 	}
 
 	public function render() {
-		$singleCourseTemplate = SingleCourseTemplate::instance();
+		$singleCourseOfflineTemplate = SingleCourseOfflineTemplate::instance();
 
 		try {
-			$course = $this->get_course();
+			$course = $this->get_course_model();
 			if ( ! $course ) {
 				return;
 			}
@@ -40,7 +41,7 @@ class CourseAddressDynamicElementor extends Tag {
 				return;
 			}
 
-			echo $singleCourseTemplate->html_address( $course );
+			echo $singleCourseOfflineTemplate->html_address( $course );
 		} catch ( Throwable $e ) {
 			error_log( $e->getMessage() );
 		}

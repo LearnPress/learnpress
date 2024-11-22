@@ -57,7 +57,7 @@ class ProfileTemplate {
 					'<a class="lp-btn-to-edit-cover-image" href="%s" data-section-correct="%d">+ %s</a>',
 					$profile->get_tab_link( 'settings', 'cover-image' ),
 					$current_section === 'cover-image' ? 1 : 0,
-					__( 'edit cover image', 'learnpress' ),
+					__( 'edit cover image', 'learnpress' )
 				);
 			}
 
@@ -67,7 +67,7 @@ class ProfileTemplate {
 					'wrapper'     => sprintf(
 						'<div class="lp-user-cover-image_background %s" style="%s">',
 						empty( $cover_image_url ) ? 'lp-hidden' : '',
-						sprintf( 'background-image: url(%s);', $cover_image_url ),
+						sprintf( 'background-image: url(%s);', $cover_image_url )
 					),
 					'image'       => sprintf(
 						'<img src="%s" alt="%s" decoding="async" />',
@@ -117,7 +117,7 @@ class ProfileTemplate {
 				'top'         => sprintf(
 					'<div class="lp-cover-image-empty__info__top">%s%s</div>',
 					'<span class="lp-icon-file-image"></span>',
-					__( 'Drag and drop or click here to choose image', 'learnpress' ),
+					__( 'Drag and drop or click here to choose image', 'learnpress' )
 				),
 				'bottom'      => sprintf(
 					'<div class="lp-cover-image-empty__info__bottom">%s</div>',
@@ -125,7 +125,7 @@ class ProfileTemplate {
 						__( 'Accepted file types: JPG, PNG %1$d x %2$d (px)', 'learnpress' ),
 						$cover_image_dimensions['width'],
 						$cover_image_dimensions['height']
-					),
+					)
 				),
 				'wrapper_end' => '</div>',
 			];
@@ -151,7 +151,7 @@ class ProfileTemplate {
 				'<img class="lp-cover-image-preview %s" src="%s" alt="%s" decoding="async" />',
 				empty( $cover_image_url ) ? $class_hide : '',
 				$cover_image_url,
-				__( 'Cover image', 'learnpress' ),
+				__( 'Cover image', 'learnpress' )
 			);
 
 			$section_img = [

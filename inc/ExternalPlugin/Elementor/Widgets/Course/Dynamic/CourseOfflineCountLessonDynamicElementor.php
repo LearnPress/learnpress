@@ -38,7 +38,7 @@ class CourseOfflineCountLessonDynamicElementor extends Tag {
 		$singleCourseTemplate = SingleCourseOfflineTemplate::instance();
 
 		try {
-			$course = CourseModel::find( get_the_ID() );
+			$course = $this->get_course_model();
 			if ( ! $course ) {
 				return;
 			}

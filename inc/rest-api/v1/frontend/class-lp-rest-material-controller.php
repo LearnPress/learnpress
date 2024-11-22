@@ -99,7 +99,7 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 	 * @since 4.2.2
 	 */
 	public function save_post_materials( WP_REST_Request $request ) {
-		$response = new LP_REST_Response();
+		$response       = new LP_REST_Response();
 		$response->data = [];
 
 		try {
@@ -169,8 +169,8 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 					$file_info = wp_check_filetype( $file_name );
 					$file_type = $file_info['ext'] ?? '';
 					if ( empty( $file_info['ext'] )
-					     || false === $this->material_check_file_extention( $file_info['ext'] )
-					     || ! in_array( $file_info['type'], get_allowed_mime_types() ) ) {
+						|| false === $this->material_check_file_extention( $file_info['ext'] )
+						|| ! in_array( $file_info['type'], get_allowed_mime_types() ) ) {
 						$error_messages .= sprintf( esc_html__( 'File %s type is invalid!', 'learnpress' ), $label );
 						continue;
 					}
@@ -233,7 +233,7 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 				}
 
 				$success_messages .= __( 'Other files is upload successfully.', 'learnpress' );
-				$response->data[] = [
+				$response->data[]  = [
 					'file_name' => $label,
 					'method'    => ucfirst( $method ),
 					'file_id'   => $insert,
@@ -248,7 +248,7 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 			if ( ! empty( $success_messages ) ) {
 				$response->status = 'success';
 				if ( empty( $error_messages ) ) {
-					$success_messages = __( 'Files upload successfully.', 'learnpress' );;
+					$success_messages = __( 'Files upload successfully.', 'learnpress' );
 				}
 				$response->message .= $success_messages;
 			}
@@ -380,11 +380,12 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 	}
 
 	/**
+	 * @param  [type] $request [description]
+	 *
+	 * @return [type]          [description]
 	 * @version 1.0.0
 	 * @since 4.2.2
 	 * [get_material description]
-	 * @param  [type] $request [description]
-	 * @return [type]          [description]
 	 */
 	public function get_material( $request ) {
 		$response = new LP_REST_Response();
@@ -439,11 +440,12 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 	}
 
 	/**
+	 * @param  [type] $request [description]
+	 *
+	 * @return [json]          [return message]
 	 * @version 1.0.0
 	 * @since 4.2.2
 	 * [delete_material delete a material when a delete request is send]
-	 * @param  [type] $request [description]
-	 * @return [json]          [return message]
 	 */
 	public function delete_material( $request ) {
 		$response = new LP_REST_Response();
@@ -494,5 +496,4 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 
 		return $permission;
 	}
-
 }

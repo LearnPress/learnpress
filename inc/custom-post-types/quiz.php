@@ -211,7 +211,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 *
 		 * @since 3.3.0
 		 *
-		 * @return bool|string
+		 * @return void
 		 */
 		public function admin_editor() {
 			$quiz = LP_Quiz::get_quiz();
@@ -446,14 +446,14 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 * @since 3.0.0
 		 */
 		// public static function quiz_assigned() {
-		// 	learn_press_admin_view( 'meta-boxes/course/assigned.php' );
+		//  learn_press_admin_view( 'meta-boxes/course/assigned.php' );
 		// }
 
 		public function meta_boxes() {
 			return array(
 				'quiz_assigned' => array(
 					'title'    => esc_html__( 'Assigned', 'learnpress' ),
-					'callback' => function( $post ) {
+					'callback' => function ( $post ) {
 						learn_press_admin_view( 'meta-boxes/course/assigned.php' );
 					},
 					'context'  => 'side',

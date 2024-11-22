@@ -7,6 +7,8 @@
  * @version  4.0.2
  */
 
+use LearnPress\Helpers\Template;
+
 defined( 'ABSPATH' ) || exit();
 
 if ( ! LP_Profile::instance()->current_user_can( 'view-tab-quizzes' ) ) {
@@ -117,6 +119,6 @@ $filters = $profile->get_quizzes_filters( $current_filter );
 		</table>
 
 	<?php else : ?>
-		<?php learn_press_display_message( esc_html__( 'No quizzes!', 'learnpress' ) ); ?>
+		<?php Template::print_message( esc_html__( 'No quizzes!', 'learnpress' ), 'info' ); ?>
 	<?php endif; ?>
 </div>

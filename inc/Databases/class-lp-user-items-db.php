@@ -408,7 +408,7 @@ class LP_User_Items_DB extends LP_Database {
 		$key_cache           = array(
 			$filter->user_id,
 			$filter->item_id,
-			LP_COURSE_CPT,
+			LP_COURSE_CPT
 		);
 		$result              = $lp_user_items_cache->get_user_item( $key_cache );
 		if ( false !== $result ) {
@@ -838,49 +838,22 @@ class LP_User_Items_DB extends LP_Database {
 	 * @param int $total_rows
 	 *
 	 * @author tungnx
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 * @since 4.1.5
 	 * @return null|array|string|int
 	 * @throws Exception
 	 */
 	public function get_user_courses( LP_User_Items_Filter $filter, int &$total_rows = 0 ) {
-		$default_fields = $filter->all_fields;
-		$filter->fields = array_merge( $default_fields, $filter->fields );
+		$filter->collection_alias = 'ui';
 
-		if ( empty( $filter->collection ) ) {
-			$filter->collection = $this->tb_lp_user_items;
-		}
-
-		if ( empty( $filter->collection_alias ) ) {
-			$filter->collection_alias = 'ui';
-		}
-
-		// Join to table posts check course exists
+		// Get courses publish, private
 		$filter->join[] = "INNER JOIN {$this->tb_posts} AS p ON p.ID = $filter->collection_alias.item_id";
-
-		// Get courses publish
-		$filter->where[] = $this->wpdb->prepare( 'AND p.post_status = %s', 'publish' );
-
-		$filter->where[] = $this->wpdb->prepare( "AND $filter->collection_alias.item_type = %s", LP_COURSE_CPT );
-
-		// Status
-		if ( $filter->status ) {
-			$filter->where[] = $this->wpdb->prepare( "AND $filter->collection_alias.status = %s", $filter->status );
-		}
-
-		// Graduation
-		if ( $filter->graduation ) {
-			$filter->where[] = $this->wpdb->prepare( "AND $filter->collection_alias.graduation = %s", $filter->graduation );
-		}
-
-		// User
-		if ( $filter->user_id ) {
-			$filter->where[] = $this->wpdb->prepare( "AND $filter->collection_alias.user_id = %d", $filter->user_id );
-		}
+		$filter->where[] = $this->wpdb->prepare( 'AND ( p.post_status = %s OR p.post_status = %s )', 'publish', 'private' );
+		$filter->item_type = LP_COURSE_CPT;
 
 		$filter = apply_filters( 'lp/user/course/query/filter', $filter );
 
-		return $this->execute( $filter, $total_rows );
+		return $this->get_user_items( $filter, $total_rows );
 	}
 
 	/**

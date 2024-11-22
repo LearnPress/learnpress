@@ -69,7 +69,16 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			LP_Forms_Handler::process_become_teacher();
 		}
 
+		/**
+		 * Recover order
+		 *
+		 * @since 4.0.0
+		 * @version 4.0.1
+		 * @return void
+		 */
 		public static function recover_order() {
+			$response = new LP_REST_Response();
+
 			if ( ! LP_Request::verify_nonce( 'recover-order' ) ) {
 				return;
 			}
@@ -78,31 +87,19 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			$user_id   = get_current_user_id();
 			$order_key = LP_Request::get_string( 'order-key' );
 			$order     = $factory->recover( $order_key, $user_id );
-			$result    = array( 'result' => 'success' );
 
 			if ( is_wp_error( $order ) ) {
-				$result['message'] = $order->get_error_message();
-				$result['result']  = 'error';
+				$response->message = $order->get_error_message();
 			} else {
-				$result['message']  = sprintf(
+				$response->status   = 'success';
+				$response->message  = sprintf(
 					__( 'The order %s has been successfully recovered.', 'learnpress' ),
 					$order_key
 				);
-				$result['redirect'] = $order->get_view_order_url();
+				$response->data->redirect = $order->get_view_order_url();
 			}
 
-			$result = apply_filters( 'learn-press/order/recover-result', $result, $order_key, $user_id );
-
-			learn_press_maybe_send_json( $result );
-
-			if ( ! empty( $result['message'] ) ) {
-				learn_press_add_message( $result['message'] );
-			}
-
-			if ( ! empty( $result['redirect'] ) ) {
-				wp_redirect( $result['redirect'] );
-				exit();
-			}
+			wp_send_json( $response );
 		}
 
 		public static function checkout_user_email_exists() {

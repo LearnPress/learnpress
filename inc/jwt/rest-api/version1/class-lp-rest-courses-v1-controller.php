@@ -548,7 +548,6 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			$courseObjPrepare->image      = $course->get_image_url();
 			$author                       = $course->get_author_model();
 			$courseObjPrepare->instructor = ! empty( $author ) ? $this->get_author_info( $author ) : [];
-			$courseObjPrepare->duration   = $course->get_meta_value_by_key( CoursePostModel::META_KEY_DURATION, '' );
 			$duration                     = $course->get_meta_value_by_key( CoursePostModel::META_KEY_DURATION, '' );
 			$duration_arr                 = explode( ' ', $duration );
 			$duration_number              = floatval( $duration_arr[0] ?? 0 );
@@ -556,10 +555,10 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			if ( empty( $duration_number ) ) {
 				$duration_str = __( 'Lifetime', 'learnpress' );
 			} else {
-				$duration_str    = LP_Datetime::get_string_plural_duration( $duration_number, $duration_type );
+				$duration_str = LP_Datetime::get_string_plural_duration( $duration_number, $duration_type );
 			}
-			$courseObjPrepare->duration   = $duration_str;
-			$course_categories            = $course->get_categories();
+			$courseObjPrepare->duration = $duration_str;
+			$course_categories          = $course->get_categories();
 			// Add key id, for old app.
 			foreach ( $course_categories as $k => $category ) {
 				$category->id            = $category->term_id;

@@ -777,13 +777,21 @@
  *  End Archive courses page.
  */
 
-.lp_allow_repuchase_select {
+.lp_allow_repurchase_select {
 	padding: 20px;
 	background: #f7f7f7;
 
 	> ul {
 		padding: 0;
 		list-style: none;
+
+		li {
+			label {
+				display: flex;
+				align-items: center;
+				gap: 10px;
+			}
+		}
 	}
 
 	> a {

@@ -158,9 +158,9 @@ class LP_REST_Profile_Controller extends LP_Abstract_REST_Controller {
 				}
 			}
 
-			$file_name = md5( $user_id . microtime( true ) ) . '.jpeg';
+			$file_name = md5( $user_id . microtime( true ) ) . '.png';
 
-			$file_base64 = str_replace( 'data:image/jpeg;base64,', '', $file_base64 );
+			$file_base64 = str_replace( 'data:image/png;base64,', '', $file_base64 );
 			$file_base64 = base64_decode( $file_base64 );
 
 			$put_content = LP_WP_Filesystem::instance()->put_contents( $upload_dir['path'] . '/' . $file_name, $file_base64 );

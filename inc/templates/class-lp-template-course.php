@@ -1,7 +1,10 @@
 <?php
 
 use LearnPress\Helpers\Template;
+use LearnPress\Models\CourseModel;
 use LearnPress\Models\UserItems\UserCourseModel;
+use LearnPress\Models\UserModel;
+use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
 
 /**
  * Class LP_Course_Template
@@ -120,7 +123,8 @@ class LP_Template_Course extends LP_Abstract_Template {
 	public function quiz_meta_final( $item ) {
 		$course = $item->get_course();
 
-		if ( ! $course || ! $course->is_final_quiz( $item->get_id() ) ) {
+		if ( ! $course || ! $course->is_final_quiz( $item->get_id() )
+			|| $course->get_evaluation_type() != 'evaluate_final_quiz' ) {
 			return;
 		}
 
@@ -140,23 +144,26 @@ class LP_Template_Course extends LP_Abstract_Template {
 	}
 
 	/**
-	 * Display price or free of course, not button.
+	 * Display price or free of course, not button, it is label.
 	 *
 	 * @return void
 	 * @since 4.0.0
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 */
 	public function course_pricing() {
 		$course = learn_press_get_course();
 		$user   = learn_press_get_current_user();
 
-		// Check if user not attend course will show.
-		$user_course = $user->get_course_attend( $course->get_id() );
-		if ( $user_course instanceof UserCourseModel ) {
-			if ( $user_course->status === LP_COURSE_ENROLLED ) {
-				return;
-			} elseif ( $user->can_purchase_course( $course->get_id() ) instanceof WP_Error ) {
-				return;
+		$courseModel     = CourseModel::find( $course->get_id(), true );
+		$can_purchase    = $courseModel->can_purchase( UserModel::find( $user->get_id(), true ) );
+		$userCourseModel = UserCourseModel::find( $user->get_id(), $course->get_id() );
+		if ( get_current_user_id() ) {
+			if ( $userCourseModel ) {
+				if ( $userCourseModel->has_enrolled() ) {
+					return;
+				} elseif ( $can_purchase instanceof WP_Error ) {
+					return;
+				}
 			}
 		}
 
@@ -173,6 +180,14 @@ class LP_Template_Course extends LP_Abstract_Template {
 	 * @version 4.0.2
 	 */
 	public function course_purchase_button( $course = null ) {
+		// Test
+		$singleCourseTemplate = SingleCourseTemplate::instance();
+		$course               = CourseModel::find( get_the_ID(), true );
+		$user                 = UserModel::find( get_current_user_id(), true );
+		echo $singleCourseTemplate->html_btn_purchase_course( $course, $user );
+		return;
+		// End test
+
 		$can_show = true;
 		if ( empty( $course ) ) {
 			$course = learn_press_get_course();
@@ -194,8 +209,10 @@ class LP_Template_Course extends LP_Abstract_Template {
 
 		$can_purchase = $user->can_purchase_course( $course->get_id() );
 		if ( is_wp_error( $can_purchase ) ) {
-			if ( in_array( $can_purchase->get_error_code(),
-				[ 'order_processing', 'course_out_of_stock', 'course_is_no_required_enroll_not_login' ] ) ) {
+			if ( in_array(
+				$can_purchase->get_error_code(),
+				[ 'order_processing', 'course_out_of_stock', 'course_is_no_required_enroll_not_login' ]
+			) ) {
 				Template::print_message( $can_purchase->get_error_message(), 'warning' );
 			}
 
@@ -236,6 +253,14 @@ class LP_Template_Course extends LP_Abstract_Template {
 	 * @version 4.0.3
 	 */
 	public function course_enroll_button( $course = null ) {
+		// Test
+		$singleCourseTemplate = SingleCourseTemplate::instance();
+		$course               = CourseModel::find( get_the_ID(), true );
+		$user                 = UserModel::find( get_current_user_id(), true );
+		echo $singleCourseTemplate->html_btn_enroll_course( $course, $user );
+		return;
+		// End test
+
 		$can_show = true;
 		$user     = learn_press_get_current_user();
 		if ( empty( $course ) ) {
@@ -363,9 +388,8 @@ class LP_Template_Course extends LP_Abstract_Template {
 	 * Show template "continue" button con single course
 	 *
 	 * @throws Exception
-	 * @editor tungnx
 	 * @modify 4.1.3.1
-	 * @version 4.0.2
+	 * @version 4.0.3
 	 * @since  4.0.0
 	 */
 	public function course_continue_button( $course = null ) {
@@ -375,26 +399,30 @@ class LP_Template_Course extends LP_Abstract_Template {
 			$course = learn_press_get_course();
 		}
 
+		$courseModel = CourseModel::find( $course->get_id(), true );
+		$user_id     = $user->get_id();
+
 		try {
 			if ( ! $user || ! $course ) {
 				throw new Exception( 'User or Course not exists!' );
 			}
 
-			if ( ! $user->has_enrolled_course( $course->get_id() ) ) {
-				throw new Exception( 'User has not enrolled course' );
+			$userCourseModel = UserCourseModel::find( $user_id, $courseModel->get_id() );
+			if ( ! $userCourseModel || ! $userCourseModel->has_enrolled() ) {
+				throw new Exception( 'User not enrolled course' );
 			}
 
-			if ( $user->has_finished_course( $course->get_id() ) ) {
-				throw new Exception( 'The user has completed the course.' );
+			if ( $userCourseModel->has_finished() ) {
+				throw new Exception( 'User has finished course' );
 			}
 
 			// Course has no items
-			if ( empty( $course->count_items() ) ) {
+			if ( empty( $courseModel->get_total_items() ) ) {
 				throw new Exception( 'Course no any item' );
 			}
 
 			// Do not display continue button if course is block duration
-			if ( $user->can_view_content_course( $course->get_id() )->key === LP_BLOCK_COURSE_DURATION_EXPIRE ) {
+			if ( $userCourseModel->timestamp_remaining_duration() === 0 ) {
 				throw new Exception( 'Course is blocked' );
 			}
 		} catch ( Throwable $e ) {
@@ -572,7 +600,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 		}
 		?>
 		<div class="learnpress-course-curriculum" data-section="<?php echo esc_attr( $section_id ?? '' ); ?>"
-			 data-id="<?php echo esc_attr( $item_id ?? '' ); ?>">
+			data-id="<?php echo esc_attr( $item_id ?? '' ); ?>">
 			<?php lp_skeleton_animation_html( 10 ); ?>
 		</div>
 		<?php
@@ -765,6 +793,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 			if ( ! $materials ) {
 				return;
 			}
+
 			echo wp_kses_post( do_shortcode( '[learn_press_course_materials]' ) );
 		} catch ( Throwable $e ) {
 			error_log( $e->getMessage() );
@@ -800,12 +829,11 @@ class LP_Template_Course extends LP_Abstract_Template {
 	 * Template show count items
 	 *
 	 * @since 4.0.0
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 * @editor tungnx
 	 */
 	public function count_object() {
-		$course = learn_press_get_course();
-
+		$course = CourseModel::find( get_the_ID(), true );
 		if ( ! $course ) {
 			return;
 		}

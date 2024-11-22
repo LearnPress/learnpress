@@ -30,12 +30,7 @@ class CourseCapacityDynamicElementor extends Tag {
 		$singleCourseTemplate = SingleCourseTemplate::instance();
 
 		try {
-			$course = $this->get_course();
-			if ( ! $course ) {
-				return;
-			}
-
-			$course = CourseModel::find( $course->get_id(), true );
+			$course = $this->get_course_model();
 			if ( ! $course ) {
 				return;
 			}

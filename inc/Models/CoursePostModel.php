@@ -35,6 +35,7 @@ class CoursePostModel extends PostModel {
 	const META_KEY_SALE_PRICE               = '_lp_sale_price';
 	const META_KEY_SALE_START               = '_lp_sale_start';
 	const META_KEY_SALE_END                 = '_lp_sale_end';
+	const META_KEY_Evaluation_TYPE          = '_lp_course_result';
 	const META_KEY_PASSING_CONDITION        = '_lp_passing_condition';
 	const META_KEY_DURATION                 = '_lp_duration';
 	const META_KEY_BLOCK_EXPIRE_DURATION    = '_lp_block_expire_duration';

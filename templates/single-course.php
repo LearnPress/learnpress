@@ -4,7 +4,7 @@
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 4.0.0
+ * @version 4.0.1
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -27,20 +27,29 @@ $args = array(
 	'name'        => get_query_var( LP_COURSE_CPT ),
 	'post_type'   => LP_COURSE_CPT,
 	'numberposts' => 1,
+	'post_status' => 'any',
 );
 
 // Fix preview course
-if ( isset( $_REQUEST['preview'] ) && isset( $_REQUEST['p'] ) ) {
+if ( isset( $_REQUEST['preview'] ) &&
+	( isset( $_REQUEST['p'] ) || isset( $_REQUEST['preview_id'] ) ) ) {
 	unset( $args['name'] );
-	$args['include']     = [ (int) $_REQUEST['p'] ];
-	$args['post_status'] = 'any';
+	$args['include'] = isset( $_REQUEST['p'] ) ? [ (int) $_REQUEST['p'] ] : [ (int) $_REQUEST['preview_id'] ];
 }
 
 $posts = get_posts( $args );
 $post  = $posts[0] ?? 0;
 
 if ( $post instanceof WP_Post ) {
-	learn_press_get_template( 'content-single-course' );
+	if ( $post->post_status !== 'publish'
+		&& ( ! current_user_can( ADMIN_ROLE ) && get_current_user_id() != $post->post_author ) ) {
+		$template_404 = get_query_template( '404' );
+		if ( $template_404 ) {
+			include $template_404;
+		}
+	} else {
+		learn_press_get_template( 'content-single-course' );
+	}
 }
 /*while ( have_posts() ) {
 	the_post();

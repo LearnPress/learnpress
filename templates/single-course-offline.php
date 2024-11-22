@@ -5,7 +5,7 @@
  * @author  ThimPress
  * @package LearnPress/Templates
  * @version 4.2.7
- * @version 1.0.0
+ * @version 1.0.1
  */
 
 use LearnPress\Models\CourseModel;
@@ -18,7 +18,6 @@ defined( 'ABSPATH' ) || exit;
 if ( ! wp_is_block_theme() ) {
 	do_action( 'learn-press/template-header' );
 }
-
 
 $course_id = get_the_ID();
 if ( $course_id ) {

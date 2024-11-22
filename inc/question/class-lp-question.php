@@ -849,8 +849,9 @@ if ( ! class_exists( 'LP_Question' ) ) {
 		 * @param      $answer
 		 * @param      $quiz_id
 		 * @param null    $user_id
+		 * @deprecated 4.2.7.3
 		 */
-		public function save_user_answer( $answer, $quiz_id, $user_id = null ) {
+		/*public function save_user_answer( $answer, $quiz_id, $user_id = null ) {
 			if ( $user_id ) {
 				$user = LP_User_Factory::get_user( $user_id );
 			} else {
@@ -871,7 +872,7 @@ if ( ! class_exists( 'LP_Question' ) ) {
 
 				// learn_press_update_user_quiz_meta( $progress->history_id, 'question_answers', $question_answers );
 			}
-		}
+		}*/
 
 		/**
 		 * Allow check question answer, default disable for True or False and Single choice, override by Multiple choice question.
