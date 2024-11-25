@@ -1,18 +1,4 @@
-.wp-block-learnpress-lp-archive-courses {
-	@font-face {
-		font-family: "lp-icon";
-		src:
-			url("../src/css/vendor/fonts/lp-icon/lp-icon.ttf?v=wskwmq")
-				format("truetype"),
-			url("../src/css/vendor/fonts/lp-icon/lp-icon.woff2?v=wskwmq")
-				format("woff2"),
-			url("../src/css/vendor/fonts/lp-icon/lp-icon.svg?v=wskwmq#lp-icon")
-				format("svg");
-		font-weight: normal;
-		font-style: normal;
-		font-display: block;
-	}
-
+.wp-block-learnpress-lp-single-course {
 	h3 {
 		margin: 10px 0;
 	}
@@ -125,6 +111,19 @@
 	}
 
 	.wp-block-learnpress-course-summary-sidebar {
+	}
+
+	.wp-block-learnpress-instructor-single-course {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+
+		.avatar {
+			width: 40px;
+			height: 40px;
+			border-radius: 100%;
+			background-color: #ccc;
+		}
 	}
 
 	.wp-block-learnpress-image-single-course {

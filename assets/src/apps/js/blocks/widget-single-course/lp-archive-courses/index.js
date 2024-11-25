@@ -6,7 +6,7 @@ import { save } from './save';
 import metadata from './block.json';
 import { registerBlockType } from '@wordpress/blocks';
 
-registerBlockType( 'learnpress/lp-archive-courses', {
+registerBlockType( 'learnpress/lp-single-course', {
 	...metadata,
 	edit,
 	save,

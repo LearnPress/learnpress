@@ -7,7 +7,7 @@ use LearnPress\Models\CourseModel;
  */
 class Block_Layout_Archive_Course extends Abstract_Block_Layout {
 	public $slug                          = 'lp-archive-courses';
-	public $name                          = 'learnpress/lp-archive-courses';
+	public $name                          = 'learnpress/lp-single-course';
 	public $title                         = 'Archive Course (LearnPress)';
 	public $description                   = 'Layout Archive Course Block';
 	public $path_html_block_template_file = 'html/lp-archive-courses.html';

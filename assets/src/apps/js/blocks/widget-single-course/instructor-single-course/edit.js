@@ -23,9 +23,10 @@ export const edit = ( props ) => {
 				</PanelBody>
 			</InspectorControls>
 			<div { ...blockProps }>
-				<span>
+				{ props.attributes.avatar ? <div className="avatar"></div> : '' }
+				<strong>
 					{ 'Instructor' }
-				</span>
+				</strong>
 			</div>
 		</>
 	);
