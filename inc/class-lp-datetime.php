@@ -196,6 +196,7 @@ class LP_Datetime {
 							);
 							break;
 						default:
+							$format_date = $v;
 							break;
 					}
 				}
