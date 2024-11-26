@@ -271,7 +271,7 @@ class UserItemModel {
 			$filter->ref_type = $ref_type;
 			$key_cache       .= "/{$ref_type}";
 		}
-		$lpUserItemCache = new LP_Cache();
+		$lpUserItemCache = new LP_User_Items_Cache();
 
 		// Check cache
 		if ( $check_cache ) {
@@ -348,7 +348,7 @@ class UserItemModel {
 	 * @return UserItemModel
 	 * @throws Exception
 	 * @since 4.2.5
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function save(): UserItemModel {
 		$lp_user_item_db  = LP_User_Items_DB::getInstance();
@@ -388,7 +388,21 @@ class UserItemModel {
 			$this->set_user_item_id( $user_item_id_new );
 		}
 
-		$this->clean_caches();
+		// Set caches.
+		$lp_user_items_cache = new LP_User_Items_Cache();
+		$lp_user_items_cache->set_user_item(
+			[
+				$this->user_id,
+				$this->item_id,
+				$this->item_type,
+			]
+		);
+
+		$key_cache_user_item = "userItemModel/find/{$this->user_id}/{$this->item_id}/{$this->item_type}";
+		$lp_user_items_cache->set_cache( $key_cache_user_item, $this );
+
+		$key_cache_user_item_ref = "userItemModel/find/{$this->user_id}/{$this->item_id}/{$this->item_type}/{$this->ref_id}/{$this->ref_type}";
+		$lp_user_items_cache->set_cache( $key_cache_user_item_ref, $this );
 
 		return $this;
 	}
@@ -462,7 +476,7 @@ class UserItemModel {
 	 */
 	public function clean_caches() {
 		// Clear cache user item.
-		$lp_user_items_cache = new LP_User_Items_Cache( true );
+		$lp_user_items_cache = new LP_User_Items_Cache();
 		$lp_user_items_cache->clean_user_item(
 			[
 				$this->user_id,

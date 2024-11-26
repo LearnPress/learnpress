@@ -464,7 +464,7 @@ if ( ! class_exists( 'LP_Course' ) ) {
 				$lp_courses_cache->clear_cache_on_group( LP_Courses_Cache::KEYS_COUNT_STUDENT_COURSES );
 				$lp_course_cache->clear_cache_on_group( LP_Courses_Cache::KEYS_COUNT_COURSES_FREE );
 				// Clear cache user course.
-				$lp_user_items_cache = new LP_User_Items_Cache( true );
+				$lp_user_items_cache = new LP_User_Items_Cache();
 				$lp_user_items_cache->clean_user_items_by_course( $this->get_id() );
 			} catch ( Throwable $e ) {
 				error_log( __FUNCTION__ . ':' . $e->getMessage() );
