@@ -513,15 +513,13 @@ class CourseModel {
 	 *
 	 * @return array
 	 * @since 4.1.6.9
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 * @author tungnx
 	 */
 	public function get_sections_and_items_course_from_db_and_sort(): array {
-		$sections_items  = [];
-		$course_id       = $this->get_id();
-		$lp_course_db    = LP_Course_DB::getInstance();
-		$lp_course_cache = LP_Course_Cache::instance();
-		$key_cache       = "$course_id/sections_items";
+		$sections_items = [];
+		$course_id      = $this->get_id();
+		$lp_course_db   = LP_Course_DB::getInstance();
 
 		try {
 			$sections_results       = $lp_course_db->get_sections( $course_id );
@@ -610,8 +608,6 @@ class CourseModel {
 					return $section1->order - $section2->order;
 				}
 			);
-
-			$lp_course_cache->set_cache( $key_cache, $sections_items );
 		} catch ( Throwable $e ) {
 			error_log( $e->getMessage() );
 		}
@@ -851,7 +847,7 @@ class CourseModel {
 	 * @since 4.2.7.3
 	 * @version 1.0.0
 	 */
-	public function count_items( $item_type ) {
+	public function count_items( $item_type ): int {
 		$count = 0;
 
 		$total_items = $this->get_total_items();
@@ -1124,7 +1120,7 @@ class CourseModel {
 	public static function find( int $course_id, bool $check_cache = false ) {
 		$filter_course     = new LP_Course_JSON_Filter();
 		$filter_course->ID = $course_id;
-		$key_cache         = "course-model/find/id/{$course_id}";
+		$key_cache         = "courseModel/find/id/{$course_id}";
 		$lp_course_cache   = new LP_Course_Cache();
 
 		// Check cache
@@ -1170,6 +1166,8 @@ class CourseModel {
 	 * Save course data to table learnpress_courses.
 	 *
 	 * @throws Exception
+	 * @since 4.2.6.9
+	 * @version 1.0.1
 	 */
 	public function save(): CourseModel {
 		$lp_course_json_db = LP_Course_JSON_DB::getInstance();
@@ -1200,9 +1198,8 @@ class CourseModel {
 		}
 
 		// Set cache single course when save done.
-		$key_cache       = "course-model/find/id/{$this->ID}";
+		$key_cache       = "courseModel/find/id/{$this->ID}";
 		$lp_course_cache = new LP_Course_Cache();
-		$lp_course_cache->clear( $key_cache );
 		$lp_course_cache->set_cache( $key_cache, $this->ID );
 
 		return $this;
@@ -1221,7 +1218,18 @@ class CourseModel {
 		$lp_course_json_db->delete_execute( $filter );
 
 		// Clear cache
-		$key_cache       = "course-model/find/id/{$this->ID}";
+		$this->clean_caches();
+	}
+
+	/**
+	 * Clean caches
+	 *
+	 * @since 4.2.7.4
+	 * @version 1.0.0
+	 * @return void
+	 */
+	public function clean_caches() {
+		$key_cache       = "courseModel/find/id/{$this->ID}";
 		$lp_course_cache = new LP_Course_Cache();
 		$lp_course_cache->clear( $key_cache );
 	}
