@@ -693,4 +693,28 @@ class LP_Helper {
 		}
 		wp_print_inline_script_tag( $script, $tag_args );
 	}
+
+	/**
+	 * Get translation of value
+	 *
+	 * @param string $value
+	 *
+	 * @return string
+	 * @since 4.2.7.4
+	 * @version 1.0.0
+	 */
+	public static function get_i18n_of_value( string $value ): string {
+		switch ( $value ) {
+			case 'failed':
+				$i18n = esc_html__( 'Failed', 'learnpress' );
+				break;
+			case 'in-progress':
+				$i18n = esc_html__( 'In Progress', 'learnpress' );
+				break;
+			default:
+				$i18n = $value;
+		}
+
+		return apply_filters( 'learn-press/i18n/value', $i18n, $value );
+	}
 }
