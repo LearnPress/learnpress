@@ -204,7 +204,14 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 			} elseif ( ! $can_view_item->flag ) {
 				$defaults[] = 'item-locked';
 			} else {
-				$userItemModel = UserItemModel::find_user_item( $user_id, $item_id, get_post_type( $item_id ) );
+				$userItemModel = UserItemModel::find_user_item(
+					$user_id,
+					$item_id,
+					get_post_type( $item_id ),
+					$course_id,
+					LP_COURSE_CPT,
+					true
+				);
 				$item_status   = $userItemModel ? $userItemModel->get_status() : '';
 				$item_grade    = $userItemModel ? $userItemModel->get_graduation() : '';
 

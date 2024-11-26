@@ -15,6 +15,8 @@ use Exception;
 use LearnPress\Models\CoursePostModel;
 use LearnPress\Models\PostModel;
 use LearnPress\Models\UserItemMeta\UserItemMetaModel;
+use LearnPressAssignment\Models\UserAssignmentModel;
+use LP_Cache;
 use LP_Datetime;
 use LP_User;
 use LP_User_Guest;
@@ -240,19 +242,52 @@ class UserItemModel {
 	 * @param int $user_id
 	 * @param int $item_id
 	 * @param string $item_type
+	 * @param int $ref_id
+	 * @param string $ref_type
 	 * @param bool $check_cache
 	 *
 	 * @return false|UserItemModel|static
 	 * @since 4.2.7.3
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
-	public static function find_user_item( int $user_id, int $item_id, string $item_type, bool $check_cache = false ) {
+	public static function find_user_item(
+		int $user_id,
+		int $item_id,
+		string $item_type,
+		int $ref_id = 0,
+		string $ref_type = '',
+		bool $check_cache = false
+	) {
+		$key_cache         = "userItemModel/find/{$user_id}/{$item_id}/{$item_type}";
 		$filter            = new LP_User_Items_Filter();
 		$filter->user_id   = $user_id;
 		$filter->item_id   = $item_id;
 		$filter->item_type = $item_type;
+		if ( ! empty( $ref_id ) ) {
+			$filter->ref_id = $ref_id;
+			$key_cache     .= "/{$ref_id}";
+		}
+		if ( ! empty( $ref_type ) ) {
+			$filter->ref_type = $ref_type;
+			$key_cache       .= "/{$ref_type}";
+		}
+		$lpUserItemCache = new LP_Cache();
 
-		return static::get_user_item_model_from_db( $filter );
+		// Check cache
+		if ( $check_cache ) {
+			$userItemModel = $lpUserItemCache->get_cache( $key_cache );
+			if ( $userItemModel instanceof UserItemModel ) {
+				return $userItemModel;
+			}
+		}
+
+		$userItemModel = static::get_user_item_model_from_db( $filter );
+		// Set cache
+		if ( $userItemModel instanceof UserItemModel ) {
+			$lpUserItemCache->set_cache( $key_cache, $userItemModel );
+		}
+
+		return $userItemModel;
 	}
 
 	/**
@@ -261,22 +296,14 @@ class UserItemModel {
 	 * @param string $key
 	 *
 	 * @return false|UserItemMetaModel
+	 * @since 4.2.5
+	 * @version 1.0.1
 	 */
 	public function get_meta_model_from_key( string $key ) {
-		$user_item_metadata = false;
-
-		// Check object meta_data has value of key.
-		if ( $this->meta_data instanceof stdClass
-			&& property_exists( $this->meta_data, $key ) ) {
-			$user_item_metadata = $this->meta_data->{$key};
-		} else { // Get from DB
-			$filter                          = new LP_User_Item_Meta_Filter();
-			$filter->meta_key                = $key;
-			$filter->learnpress_user_item_id = $this->get_user_item_id();
-			$user_item_metadata              = UserItemMetaModel::get_user_item_meta_model_from_db( $filter );
-		}
-
-		return $user_item_metadata;
+		$filter                          = new LP_User_Item_Meta_Filter();
+		$filter->meta_key                = $key;
+		$filter->learnpress_user_item_id = $this->get_user_item_id();
+		return UserItemMetaModel::get_user_item_meta_model_from_db( $filter );
 	}
 
 	/**
@@ -286,9 +313,15 @@ class UserItemModel {
 	 * @param bool $get_extra
 	 *
 	 * @return false|string
+	 * @since 4.2.5
+	 * @version 1.0.1
 	 */
 	public function get_meta_value_from_key( string $key, bool $get_extra = false ) {
 		$data = false;
+
+		if ( $this->meta_data instanceof stdClass && isset( $this->meta_data->{$key} ) ) {
+			return $this->meta_data->{$key};
+		}
 
 		$user_item_metadata = $this->get_meta_model_from_key( $key );
 		if ( $user_item_metadata instanceof UserItemMetaModel ) {
@@ -437,5 +470,11 @@ class UserItemModel {
 				$this->item_type,
 			]
 		);
+
+		$key_cache_user_item = "userItemModel/find/{$this->user_id}/{$this->item_id}/{$this->item_type}";
+		$lp_user_items_cache->clear( $key_cache_user_item );
+
+		$key_cache_user_item_ref = "userItemModel/find/{$this->user_id}/{$this->item_id}/{$this->item_type}/{$this->ref_id}/{$this->ref_type}";
+		$lp_user_items_cache->clear( $key_cache_user_item_ref );
 	}
 }

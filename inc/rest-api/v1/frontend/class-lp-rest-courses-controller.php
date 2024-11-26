@@ -664,7 +664,14 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 						$item_id   = $item->id ?? $item->item_id;
 						$item_type = $item->type ?? $item->item_type;
 
-						$userItemModel = UserItemModel::find_user_item( $user_id, $item_id, $item_type );
+						$userItemModel = UserItemModel::find_user_item(
+							$user_id,
+							$item_id,
+							$item_type,
+							$course_id,
+							LP_COURSE_CPT,
+							true
+						);
 						if ( ! $userItemModel || $userItemModel->get_status() !== LP_ITEM_COMPLETED ) {
 							$item_link  = $course->get_item_link( $item->id );
 							$flag_found = true;
