@@ -117,7 +117,7 @@ class UserModel {
 	public static function find( int $user_id, bool $check_cache = false ) {
 		$filter_user     = new LP_User_Filter();
 		$filter_user->ID = $user_id;
-		$key_cache       = "user-model/find/id/{$user_id}";
+		$key_cache       = "userModel/find/id/{$user_id}";
 		$lp_course_cache = new LP_Cache();
 
 		// Check cache
@@ -458,7 +458,10 @@ class UserModel {
 	 * @version 1.0.0
 	 */
 	public function save(): UserModel {
-		$this->clean_caches();
+		// Update cache
+		$key_cache       = "userModel/find/id/{$this->get_id()}";
+		$lp_course_cache = new LP_Cache();
+		$lp_course_cache->set_cache( $key_cache, $this );
 
 		return $this;
 	}
@@ -470,7 +473,7 @@ class UserModel {
 	 */
 	public function clean_caches() {
 		// Clear cache.
-		$key_cache       = "user-model/find/id/{$this->get_id()}";
+		$key_cache       = "userModel/find/id/{$this->get_id()}";
 		$lp_course_cache = new LP_Cache();
 		$lp_course_cache->clear( $key_cache );
 	}
