@@ -96,7 +96,7 @@ module.exports = {
 		'./assets/js/dist/blocks/duration-single-course': './assets/src/apps/js/blocks/widget-single-course/duration-single-course/index.js',
 		'./assets/js/dist/blocks/box-extra-single-course': './assets/src/apps/js/blocks/widget-single-course/box-extra-single-course/index.js',
 		'./assets/js/dist/blocks/breadcrumb': './assets/src/apps/js/blocks/widget-single-course/breadcrumb/index.js',
-		'./assets/js/dist/blocks/lp-archive-courses': './assets/src/apps/js/blocks/widget-single-course/lp-archive-courses/index.js',
+		'./assets/js/dist/blocks/lp-single-course': './assets/src/apps/js/blocks/widget-single-course/lp-single-course/index.js',
 		'./assets/js/dist/blocks/course-summary': './assets/src/apps/js/blocks/widget-single-course/course-summary/index.js',
 		'./assets/js/dist/blocks/course-detail-info': './assets/src/apps/js/blocks/widget-single-course/course-detail-info/index.js',
 		'./assets/js/dist/blocks/course-meta-primary': './assets/src/apps/js/blocks/widget-single-course/course-meta-primary/index.js',
