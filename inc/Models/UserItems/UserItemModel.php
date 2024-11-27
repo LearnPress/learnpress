@@ -388,21 +388,8 @@ class UserItemModel {
 			$this->set_user_item_id( $user_item_id_new );
 		}
 
-		// Set caches.
-		$lp_user_items_cache = new LP_User_Items_Cache();
-		$lp_user_items_cache->set_user_item(
-			[
-				$this->user_id,
-				$this->item_id,
-				$this->item_type,
-			]
-		);
-
-		$key_cache_user_item = "userItemModel/find/{$this->user_id}/{$this->item_id}/{$this->item_type}";
-		$lp_user_items_cache->set_cache( $key_cache_user_item, $this );
-
-		$key_cache_user_item_ref = "userItemModel/find/{$this->user_id}/{$this->item_id}/{$this->item_type}/{$this->ref_id}/{$this->ref_type}";
-		$lp_user_items_cache->set_cache( $key_cache_user_item_ref, $this );
+		// Clear caches.
+		$this->clean_caches();
 
 		return $this;
 	}

@@ -408,17 +408,6 @@ class LP_User_Items_DB extends LP_Database {
 	 * @throws Exception
 	 */
 	public function get_last_user_course( LP_User_Items_Filter $filter, bool $force_cache = false ) {
-		$lp_user_items_cache = new LP_User_Items_Cache();
-		$key_cache           = array(
-			$filter->user_id,
-			$filter->item_id,
-			LP_COURSE_CPT,
-		);
-		$result              = $lp_user_items_cache->get_user_item( $key_cache );
-		if ( false !== $result ) {
-			return json_decode( $result );
-		}
-
 		$query = $this->wpdb->prepare(
 			"SELECT user_item_id, user_id, item_id, item_type, status, graduation, ref_id, ref_type, start_time, end_time
 			FROM $this->tb_lp_user_items
@@ -436,8 +425,6 @@ class LP_User_Items_DB extends LP_Database {
 		$result = $this->wpdb->get_row( $query );
 
 		$this->check_execute_has_error();
-		// Set cache
-		$lp_user_items_cache->set_user_item( $key_cache, json_encode( $result ) );
 
 		return $result;
 	}

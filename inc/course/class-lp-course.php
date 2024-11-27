@@ -385,40 +385,6 @@ if ( ! class_exists( 'LP_Course' ) ) {
 			}
 
 			return 0;
-
-			// Get cache
-			$lp_course_cache = LP_Course_Cache::instance();
-			$key_cache       = "$course_id/total_items";
-			$total_items     = $lp_course_cache->get_cache( $key_cache );
-			$count_items     = 0;
-
-			if ( ! $total_items ) {
-				$extra_info = $this->get_info_extra_for_fast_query();
-
-				if ( ! $extra_info->total_items ) {
-					$total_items             = LP_Course_DB::getInstance()->get_total_items( $course_id );
-					$extra_info->total_items = $total_items;
-
-					// Save post meta
-					$this->set_info_extra_for_fast_query( $extra_info );
-				} else {
-					$total_items = $extra_info->total_items;
-				}
-
-				$lp_course_cache->set_cache( $key_cache, $total_items );
-			}
-
-			if ( ! empty( $total_items ) ) {
-				if ( ! empty( $type ) ) {
-					if ( isset( $total_items->{$type} ) ) {
-						$count_items = $total_items->{$type};
-					}
-				} else {
-					$count_items = $total_items->count_items;
-				}
-			}
-
-			return apply_filters( 'learn-press/course/count-items', intval( $count_items ), $course_id );
 		}
 
 		/**

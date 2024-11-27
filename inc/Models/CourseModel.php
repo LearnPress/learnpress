@@ -1197,10 +1197,8 @@ class CourseModel {
 			$lp_course_json_db->update_data( $data );
 		}
 
-		// Set cache single course when save done.
-		$key_cache       = "courseModel/find/id/{$this->ID}";
-		$lp_course_cache = new LP_Course_Cache();
-		$lp_course_cache->set_cache( $key_cache, $this->ID );
+		// Clear cache
+		$this->clean_caches();
 
 		return $this;
 	}
