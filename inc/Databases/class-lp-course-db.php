@@ -363,33 +363,27 @@ class LP_Course_DB extends LP_Database {
 	 *
 	 * @return null|object
 	 * @throws Exception
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 * @author tungnx
 	 * @since 4.1.4.1
 	 */
 	public function get_total_items( int $course_id = 0 ) {
-		// Get cache
-		$lp_course_cache = LP_Course_Cache::instance();
-		$key_cache       = "$course_id/total_items";
-		$total_items     = $lp_course_cache->get_cache( $key_cache );
+		$item_types       = learn_press_get_course_item_types();
+		$count_item_types = count( $item_types );
+		$i                = 0;
 
-		if ( ! $total_items ) {
-			$item_types       = learn_press_get_course_item_types();
-			$count_item_types = count( $item_types );
-			$i                = 0;
+		$query_count = $this->wpdb->prepare( 'SUM(s.section_course_id = %d) AS count_items,', $course_id );
 
-			$query_count = $this->wpdb->prepare( 'SUM(s.section_course_id = %d) AS count_items,', $course_id );
-
-			foreach ( $item_types as $item_type ) {
-				++ $i;
-				if ( $i == $count_item_types ) {
-					$query_count .= $this->wpdb->prepare( 'SUM(s.section_course_id = %d AND si.item_type = %s) AS %s', $course_id, $item_type, $item_type );
-				} else {
-					$query_count .= $this->wpdb->prepare( 'SUM(s.section_course_id = %d AND si.item_type = %s) AS %s,', $course_id, $item_type, $item_type );
-				}
+		foreach ( $item_types as $item_type ) {
+			++ $i;
+			if ( $i == $count_item_types ) {
+				$query_count .= $this->wpdb->prepare( 'SUM(s.section_course_id = %d AND si.item_type = %s) AS %s', $course_id, $item_type, $item_type );
+			} else {
+				$query_count .= $this->wpdb->prepare( 'SUM(s.section_course_id = %d AND si.item_type = %s) AS %s,', $course_id, $item_type, $item_type );
 			}
+		}
 
-			$query = "
+		$query = "
 			SELECT $query_count
 			FROM $this->tb_lp_section_items si
 			INNER JOIN $this->tb_lp_sections s ON s.section_id = si.section_id
@@ -397,13 +391,9 @@ class LP_Course_DB extends LP_Database {
 			AND p.post_status = 'publish'
 			";
 
-			$total_items = $this->wpdb->get_row( $query );
+		$total_items = $this->wpdb->get_row( $query );
 
-			$this->check_execute_has_error();
-
-			// Set cache
-			$lp_course_cache->set_cache( $key_cache, $total_items );
-		}
+		$this->check_execute_has_error();
 
 		return $total_items;
 	}

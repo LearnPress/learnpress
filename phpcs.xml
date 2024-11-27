@@ -34,5 +34,6 @@
 		<exclude name="WordPress.DB.PreparedSQL.InterpolatedNotPrepared" />
 		<exclude name="Generic.WhiteSpace.IncrementDecrementSpacing.SpaceAfterIncrement" />
 		<exclude name="WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase" />
+		<exclude name="WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid" />
     </rule>
 </ruleset>

@@ -111,6 +111,10 @@ const LP_ORDER_CREATED_VIA_MANUAL = 'manual';
 const LP_COURSE_GRADUATION_IN_PROGRESS = 'in-progress';
 const LP_COURSE_GRADUATION_PASSED      = 'passed';
 const LP_COURSE_GRADUATION_FAILED      = 'failed';
+// @since 4.2.7.4
+const LP_GRADUATION_IN_PROGRESS = 'in-progress';
+const LP_GRADUATION_PASSED      = 'passed';
+const LP_GRADUATION_FAILED      = 'failed';
 
 // Enable lazy-load animation placeholder.
 const LP_LAZY_LOAD_ANIMATION = true;

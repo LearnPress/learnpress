@@ -9,13 +9,15 @@
  * @version  4.0.1
  */
 
+use LearnPress\Helpers\Template;
+
 defined( 'ABSPATH' ) || exit();
 
 $profile = LP_Profile::instance();
 
 $query_orders = $profile->query_orders( array( 'fields' => 'ids' ) );
 if ( ! $query_orders->get_items() ) {
-	learn_press_display_message( __( 'No orders!', 'learnpress' ) );
+	Template::print_message( __( 'No orders!', 'learnpress' ), 'info' );
 	return;
 }
 ?>

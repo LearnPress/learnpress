@@ -207,7 +207,7 @@ class LP_Request {
 	}
 
 	public static function verify_nonce( $action, $nonce = '' ) {
-		return wp_verify_nonce( $nonce ? $nonce : self::get_string( "{$action}-nonce" ), $action );
+		return wp_verify_nonce( $nonce ? $nonce : self::get_param( "{$action}-nonce" ), $action );
 	}
 
 	public static function parse_action( $action ) {
@@ -303,6 +303,7 @@ class LP_Request {
 	 * @param string $env
 	 *
 	 * @return int
+	 * @deprecated
 	 */
 	public static function get_int( $var, $default = false, $env = 'request' ) {
 		return self::get( $var, $default, 'int', $env );
@@ -342,6 +343,7 @@ class LP_Request {
 	 * @param string $env
 	 *
 	 * @return string
+	 * @deprecated 4.2.7.4
 	 */
 	public static function get_string( $var, $default = false, $env = 'request' ) {
 		return self::get( $var, $default, 'string', $env );

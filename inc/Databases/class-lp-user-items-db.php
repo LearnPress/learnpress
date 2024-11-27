@@ -102,7 +102,7 @@ class LP_User_Items_DB extends LP_Database {
 	 * @return array|null|int|string
 	 * @throws Exception
 	 * @since 4.1.6.9
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 */
 	public function get_user_items( LP_User_Items_Filter $filter, int &$total_rows = 0 ) {
 		$filter->fields = array_merge( $filter->all_fields, $filter->fields );
@@ -142,6 +142,10 @@ class LP_User_Items_DB extends LP_Database {
 
 		if ( ! empty( $filter->item_id ) ) {
 			$filter->where[] = $this->wpdb->prepare( 'AND ui.item_id = %s', $filter->item_id );
+		}
+
+		if ( ! empty( $filter->status ) ) {
+			$filter->where[] = $this->wpdb->prepare( 'AND ui.status = %s', $filter->status );
 		}
 
 		if ( ! empty( $filter->graduation ) ) {
@@ -404,17 +408,6 @@ class LP_User_Items_DB extends LP_Database {
 	 * @throws Exception
 	 */
 	public function get_last_user_course( LP_User_Items_Filter $filter, bool $force_cache = false ) {
-		$lp_user_items_cache = new LP_User_Items_Cache( true );
-		$key_cache           = array(
-			$filter->user_id,
-			$filter->item_id,
-			LP_COURSE_CPT
-		);
-		$result              = $lp_user_items_cache->get_user_item( $key_cache );
-		if ( false !== $result ) {
-			return json_decode( $result );
-		}
-
 		$query = $this->wpdb->prepare(
 			"SELECT user_item_id, user_id, item_id, item_type, status, graduation, ref_id, ref_type, start_time, end_time
 			FROM $this->tb_lp_user_items
@@ -432,8 +425,6 @@ class LP_User_Items_DB extends LP_Database {
 		$result = $this->wpdb->get_row( $query );
 
 		$this->check_execute_has_error();
-		// Set cache
-		$lp_user_items_cache->set_user_item( $key_cache, json_encode( $result ) );
 
 		return $result;
 	}
@@ -700,7 +691,7 @@ class LP_User_Items_DB extends LP_Database {
 			$lp_courses_cache = new LP_Courses_Cache( true );
 			$lp_courses_cache->clear_cache_on_group( LP_Courses_Cache::KEYS_COUNT_STUDENT_COURSES );
 			// Clear cache user course.
-			$lp_user_items_cache = new LP_User_Items_Cache( true );
+			$lp_user_items_cache = new LP_User_Items_Cache();
 			$lp_user_items_cache->clean_user_item(
 				[
 					$user_id,
@@ -847,8 +838,8 @@ class LP_User_Items_DB extends LP_Database {
 		$filter->collection_alias = 'ui';
 
 		// Get courses publish, private
-		$filter->join[] = "INNER JOIN {$this->tb_posts} AS p ON p.ID = $filter->collection_alias.item_id";
-		$filter->where[] = $this->wpdb->prepare( 'AND ( p.post_status = %s OR p.post_status = %s )', 'publish', 'private' );
+		$filter->join[]    = "INNER JOIN {$this->tb_posts} AS p ON p.ID = $filter->collection_alias.item_id";
+		$filter->where[]   = $this->wpdb->prepare( 'AND ( p.post_status = %s OR p.post_status = %s )', 'publish', 'private' );
 		$filter->item_type = LP_COURSE_CPT;
 
 		$filter = apply_filters( 'lp/user/course/query/filter', $filter );

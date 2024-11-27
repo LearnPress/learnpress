@@ -508,7 +508,7 @@ function learn_press_update_user_item_field( array $fields = [], $where = false,
 			$lp_courses_cache->clear_cache_on_group( LP_Courses_Cache::KEYS_COUNT_STUDENT_COURSES );
 		}
 		// Clear cache user item.
-		$lp_user_items_cache = new LP_User_Items_Cache( true );
+		$lp_user_items_cache = new LP_User_Items_Cache();
 		$lp_user_items_cache->clean_user_item(
 			[
 				$updated_item->user_id,

@@ -144,11 +144,17 @@ class LP_Datetime {
 	 *
 	 * @return string
 	 * @since 4.0.3
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public static function format_human_time_diff( DateTime $date_start, DateTime $date_end ): string {
 		$diff = $date_end->diff( $date_start );
 		$week = floor( $diff->d / 7 );
+
+		$i18n_week   = self::get_string_plural_duration( $week, 'week' );
+		$i18n_day    = self::get_string_plural_duration( $diff->d, 'day' );
+		$i18n_hour   = self::get_string_plural_duration( $diff->h, 'hour' );
+		$i18n_minute = self::get_string_plural_duration( $diff->i, 'minute' );
+		$i18n_second = self::get_string_plural_duration( $diff->s, 'second' );
 
 		$format_date = '';
 		$string      = array(
@@ -158,7 +164,7 @@ class LP_Datetime {
 			'd' => '%d days, %h hours',
 			'h' => '%h hours, %i minutes',
 			'i' => '%i minutes, %s seconds',
-			's' => '%s seconds',
+			's' => $i18n_second,
 		);
 
 		foreach ( $string as $k => $v ) {
@@ -167,16 +173,40 @@ class LP_Datetime {
 					$date        = new LP_Datetime( $date_end->getTimestamp() );
 					$format_date = $date->format( LP_Datetime::I18N_FORMAT_HAS_TIME );
 				} else {
-					$format_date = $diff->format( $v );
+					switch ( $k ) {
+						case 'd':
+							$format_date = sprintf(
+								'%1$s, %2$s',
+								$i18n_day,
+								$i18n_hour
+							);
+							break;
+						case 'h':
+							$format_date = sprintf(
+								'%1$s, %2$s',
+								$i18n_hour,
+								$i18n_minute
+							);
+							break;
+						case 'i':
+							$format_date = sprintf(
+								'%1$s, %2$s',
+								$i18n_minute,
+								$i18n_second
+							);
+							break;
+						default:
+							$format_date = $v;
+							break;
+					}
 				}
 				break;
 			} elseif ( 'w' === $k && $week > 0 ) {
 				$day_remain  = $diff->d - $week * 7;
 				$format_date = sprintf(
-					'%d %s, %d %s', $week,
-					_n( 'week', 'weeks', $week, 'learnpress' ),
-					$day_remain,
-					_n( 'day', 'days', $day_remain, 'learnpress' )
+					'%1$s, %2$s',
+					$i18n_week,
+					self::get_string_plural_duration( $day_remain, 'day' )
 				);
 				break;
 			}
@@ -184,7 +214,10 @@ class LP_Datetime {
 
 		return apply_filters(
 			'learn-press/datetime/format_human_time_diff',
-			$format_date, $diff, $date_start, $date_end
+			$format_date,
+			$diff,
+			$date_start,
+			$date_end
 		);
 	}
 
@@ -251,7 +284,7 @@ class LP_Datetime {
 	 * @param string $duration_type
 	 *
 	 * @return string
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 * @since 4.2.3.5
 	 */
 	public static function get_string_plural_duration( float $duration_number, string $duration_type = '' ): string {
@@ -290,7 +323,7 @@ class LP_Datetime {
 				$duration_str = $duration_number . ' ' . $duration_type;
 		}
 
-		return $duration_str;
+		return apply_filters( 'learn-press/i18n/plural_duration', $duration_str, $duration_number, $duration_type );
 	}
 
 	/**
