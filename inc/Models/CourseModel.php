@@ -1244,8 +1244,8 @@ class CourseModel {
 	 */
 	public static function item_types_support(): array {
 		$item_types = [
-			LP_LESSON_CPT => __( 'Lesson', 'learnpress' ),
-			LP_QUIZ_CPT   => __( 'Quiz', 'learnpress' ),
+			LP_LESSON_CPT,
+			LP_QUIZ_CPT,
 		];
 
 		return apply_filters( 'learn-press/course/item-types-support', $item_types );

@@ -303,6 +303,7 @@ class LP_Request {
 	 * @param string $env
 	 *
 	 * @return int
+	 * @deprecated
 	 */
 	public static function get_int( $var, $default = false, $env = 'request' ) {
 		return self::get( $var, $default, 'int', $env );

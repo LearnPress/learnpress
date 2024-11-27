@@ -717,4 +717,65 @@ class LP_Helper {
 
 		return apply_filters( 'learn-press/i18n/value', $i18n, $value );
 	}
+
+	/**
+	 * Get translation string single/plural
+	 *
+	 * @param float $number
+	 * @param string $string_value
+	 * @param bool $include_number
+	 *
+	 * @return string
+	 * @since 4.2.7.4
+	 * @version 1.0.0
+	 */
+	public static function get_i18n_string_plural( float $number, string $string_value = '', bool $include_number = true ): string {
+		switch ( $string_value ) {
+			case LP_COURSE_CPT:
+				$plural = sprintf(
+					_n( 'Course', 'Courses', $number, 'learnpress' ),
+					$number
+				);
+				break;
+			case LP_LESSON_CPT:
+				$plural = sprintf(
+					_n( 'Lesson', 'Lessons', $number, 'learnpress' ),
+					$number
+				);
+				break;
+			case LP_QUIZ_CPT:
+				$plural = sprintf(
+					_n( 'Quiz', 'Quizzes', $number, 'learnpress' ),
+					$number
+				);
+				break;
+			case LP_QUESTION_CPT:
+				$plural = sprintf(
+					_n( 'Question', 'Questions', $number, 'learnpress' ),
+					$number
+				);
+				break;
+			case 'lp_assignment':
+				$plural = sprintf(
+					_n( 'Assignment', 'Assignments', $number, 'learnpress' ),
+					$number
+				);
+				break;
+			case 'lp_h5p':
+				$plural = sprintf(
+					_n( 'H5P', 'H5Ps', $number, 'learnpress' ),
+					$number
+				);
+				break;
+			default:
+				$plural = $string_value;
+				break;
+		}
+
+		if ( $include_number ) {
+			$plural = sprintf( '%s %s', $number, $plural );
+		}
+
+		return apply_filters( 'learn-press/i18n/plural', $plural, $number, $string_value, $include_number );
+	}
 }

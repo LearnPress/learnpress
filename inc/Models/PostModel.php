@@ -260,19 +260,19 @@ class PostModel {
 	 * Get meta value by key.
 	 *
 	 * @param string $key
-	 * @param mixed $default
+	 * @param mixed $default_value
 	 * @param bool $single
 	 *
 	 * @return false|mixed
 	 */
-	public function get_meta_value_by_key( string $key, $default = false, bool $single = true ) {
+	public function get_meta_value_by_key( string $key, $default_value = false, bool $single = true ) {
 		if ( $this->meta_data instanceof stdClass && isset( $this->meta_data->{$key} ) ) {
 			return $this->meta_data->{$key};
 		}
 
 		$value = get_post_meta( $this->ID, $key, $single );
 		if ( empty( $value ) ) {
-			$value = $default;
+			$value = $default_value;
 		}
 
 		$this->meta_data->{$key} = $value;
@@ -289,6 +289,7 @@ class PostModel {
 	 * @return void
 	 */
 	public function save_meta_value_by_key( string $key, $value ) {
+		$this->meta_data->{$key} = $value;
 		update_post_meta( $this->ID, $key, $value );
 	}
 
@@ -319,8 +320,8 @@ class PostModel {
 	 */
 	public function get_tags(): array {
 		// Todo: set cache.
-		$wpPost     = new WP_Post( $this );
-		$tags = get_the_terms( $wpPost, LP_COURSE_TAXONOMY_TAG );
+		$wpPost = new WP_Post( $this );
+		$tags   = get_the_terms( $wpPost, LP_COURSE_TAXONOMY_TAG );
 		if ( ! $tags ) {
 			$tags = array();
 		}
@@ -373,5 +374,16 @@ class PostModel {
 	 */
 	public function get_the_title(): string {
 		return get_the_title( $this );
+	}
+
+	/**
+	 * Get edit link of post
+	 *
+	 * @return string|null
+	 * @since 4.2.7.4
+	 * @version 1.0.0
+	 */
+	public function get_edit_link() {
+		return get_edit_post_link( $this->get_id() );
 	}
 }

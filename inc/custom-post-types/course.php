@@ -430,8 +430,10 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		/**
 		 * Print content for custom column
 		 *
-		 * @param string
-		 * @param int
+		 * @param string $column
+		 * @param int $post_id
+		 *
+		 * @throws Exception
 		 */
 		public function columns_content( $column, $post_id = 0 ) {
 			global $post;
@@ -451,7 +453,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					if ( $number_sections ) {
 						$output     = sprintf( _n( '<strong>%d</strong> section', '<strong>%d</strong> sections', $number_sections, 'learnpress' ), $number_sections );
 						$html_items = array();
-						$post_types = get_post_types( null, 'objects' );
+						//$post_types = get_post_types( null, 'objects' );
 
 						foreach ( learn_press_get_course_item_types() as $item_type ) {
 							$count_item = $course->count_items( $item_type );
@@ -460,10 +462,19 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 								continue;
 							}
 
-							$post_type_object = $post_types[ $item_type ];
+							/*$post_type_object = $post_types[ $item_type ];
 							$singular_name    = $post_type_object->labels->singular_name;
 							$plural_name      = $post_type_object->label;
-							$html_items[]     = sprintf( _n( '<strong>%d</strong> ' . $singular_name, '<strong>%d</strong> ' . $plural_name, $count_item, 'learnpress' ), $count_item );
+							if ( $count_item > 1 || $count_item == 0 ) {
+								$label_item = $plural_name;
+							} else {
+								$label_item = $singular_name;
+							}*/
+							$html_items[] = sprintf(
+								'<strong>%1$d</strong> %2$s',
+								$count_item,
+								LP_Helper::get_i18n_string_plural( $count_item, $item_type, false )
+							);
 						}
 
 						$html_items = apply_filters( 'learn-press/course-count-items', $html_items );
@@ -603,12 +614,12 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			$sale_price    = $courseObj->get_sale_price();
 			if ( (float) $regular_price < 0 ) {
 				$courseObj->meta_data->{CoursePostModel::META_KEY_REGULAR_PRICE} = '';
-				$regular_price                                                   = $courseObj->get_regular_price();
+				$regular_price = $courseObj->get_regular_price();
 			}
 
 			if ( $sale_price !== '' && (float) $sale_price > (float) $regular_price ) {
 				$courseObj->meta_data->{CoursePostModel::META_KEY_SALE_PRICE} = '';
-				$sale_price                                                   = $courseObj->get_sale_price();
+				$sale_price = $courseObj->get_sale_price();
 			}
 
 			// Save sale regular price and sale price to table postmeta
