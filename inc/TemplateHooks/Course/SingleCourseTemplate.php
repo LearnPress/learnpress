@@ -430,10 +430,10 @@ class SingleCourseTemplate {
 			return '';
 		}
 
-		$count_student = $course->get_total_user_enrolled_or_purchased();
+		$count_student  = $course->get_total_user_enrolled_or_purchased();
 		$count_student += $course->get_fake_students();
-		$content      = sprintf( '%d %s', $count_student, _n( 'Student', 'Students', $count_student, 'learnpress' ) );
-		$html_wrapper = [
+		$content        = sprintf( '%d %s', $count_student, _n( 'Student', 'Students', $count_student, 'learnpress' ) );
+		$html_wrapper   = [
 			'<div class="course-count-student">' => '</div>',
 		];
 
@@ -681,6 +681,14 @@ class SingleCourseTemplate {
 	public function html_btn_purchase_course( CourseModel $course, $user ): string {
 		$html_btn     = '';
 		$can_purchase = $course->can_purchase( $user );
+
+		if ( $course->is_free() ) {
+			ob_start();
+			learn_press_get_template( 'single-course/buttons/enroll.php', array( 'course' => $course ) );
+			$html_btn = ob_get_clean();
+			return $html_btn;
+		}
+
 		if ( is_wp_error( $can_purchase ) ) {
 			$error_code_show = apply_filters(
 				'learn-press/course/html-button-purchase/show-messages',
@@ -1194,6 +1202,105 @@ class SingleCourseTemplate {
 		);
 
 		return Template::combine_components( $tabs );
+	}
+
+	/**
+	 * Animation placholder in user-progress file.
+	 * Content will show in class-rest-lazy-load-controller file.
+	 * HTML struct tabs
+	 *
+	 * @param CourseModel $course
+	 *
+	 * @return string
+	 * @since 4.2.7.2
+	 * @version 1.0.0
+	 */
+	public function html_progress( CourseModel $course ) {
+		$html_progress = '';
+
+		if ( ! is_user_logged_in() ) {
+			return $html_progress;
+		}
+
+		$user = learn_press_get_current_user();
+
+		if ( ! $course ) {
+			return $html_progress;
+		}
+
+		if ( ! $user->has_enrolled_or_finished( $course->get_id() ) ) {
+			return $html_progress;
+		}
+
+		if ( LP_LAZY_LOAD_ANIMATION ) {
+			ob_start();
+			echo '<div class="lp-course-progress-wrapper">';
+			echo lp_skeleton_animation_html( 3 );
+			echo '</div>';
+			$html_progress = ob_get_clean();
+		} else {
+			$course_data = $user->get_course_data( $course->get_id() );
+			if ( ! $course_data ) {
+				return $html_progress;
+			}
+
+			$course_results = $course_data->calculate_course_results();
+
+			ob_start();
+			learn_press_get_template(
+				'single-course/sidebar/user-progress',
+				compact( 'user', 'course', 'course_data', 'course_results' )
+			);
+			$html_progress = ob_get_clean();
+		}
+
+		return $html_progress;
+	}
+
+		/**
+	 * Show info time handle of user
+	 *
+	 * @throws Exception
+	 */
+	public function html_time( CourseModel $course ) {
+		$html_time = '';
+		$user      = learn_press_get_current_user();
+		if ( ! $user ) {
+			return $html_time;
+		}
+
+		if ( ! $user->has_enrolled_or_finished( $course->get_id() ) ) {
+			return $html_time;
+		}
+
+		/**
+		 * @var LP_User_Item_Course
+		 */
+		$user_course = $user->get_course_data( $course->get_id() );
+
+		if ( ! $user_course ) {
+			return $html_time;
+		}
+
+		$status          = $user_course->get_status();
+		$start_time      = $user_course->get_start_time();
+		$end_time        = $user_course->get_end_time();
+		$expiration_time = $user_course->get_expiration_time();
+		$data            = [
+			'status'          => $status,
+			'start_time'      => $start_time,
+			'end_time'        => $end_time,
+			'expiration_time' => $expiration_time,
+		];
+
+		ob_start();
+		learn_press_get_template(
+			'single-course/sidebar/user-time',
+			compact( 'data' )
+		);
+		$html_time = ob_get_clean();
+
+		return $html_time;
 	}
 
 	/**

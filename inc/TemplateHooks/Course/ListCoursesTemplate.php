@@ -74,6 +74,41 @@ class ListCoursesTemplate {
 		echo Template::instance()->nest_elements( $html_wrapper, $content );
 	}
 
+	public function html_list_courses( array $settings = [] ) {
+		$filter = new LP_Course_Filter();
+		Courses::handle_params_for_query_courses( $filter, $settings );
+		// Check is in category page.
+		if ( ! empty( $settings['page_term_id_current'] ) && empty( $settings['term_id'] ) ) {
+			$filter->term_ids[] = $settings['page_term_id_current'];
+		} // Check is in tag page.
+		elseif ( ! empty( $settings['page_tag_id_current'] ) && empty( $settings['tag_id'] ) ) {
+			$filter->tag_ids[] = $settings['page_tag_id_current'];
+		}
+		$total_rows = 0;
+		$courses    = Courses::get_courses( $filter, $total_rows );
+		$skin       = $settings['skin'] ?? learn_press_get_courses_layout();
+
+		// HTML section courses.
+		ob_start();
+		if ( empty( $courses ) ) {
+			Template::print_message( __( 'No courses found', 'learnpress' ), 'info' );
+		} else {
+			foreach ( $courses as $courseObj ) {
+				$course = CourseModel::find( $courseObj->ID, true );
+				echo static::render_course( $course, $settings );
+			}
+		}
+		$html_courses = ob_get_clean();
+
+		$section_courses = [
+			'wrapper'     => sprintf( '<ul class="learn-press-courses lp-list-courses-no-css %1$s" data-layout="%1$s">', $skin ),
+			'courses'     => $html_courses,
+			'wrapper_end' => '</ul>',
+		];
+
+		return Template::combine_components( $section_courses );
+	}
+
 	/**
 	 * Render template list courses with settings param.
 	 *

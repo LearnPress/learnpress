@@ -104,6 +104,12 @@ module.exports = {
 		'./assets/js/dist/blocks/lp-content-area': './assets/src/apps/js/blocks/widget-single-course/lp-content-area/index.js',
 		'./assets/js/dist/blocks/content-left': './assets/src/apps/js/blocks/widget-single-course/content-left/index.js',
 		'./assets/js/dist/blocks/course-summary-sidebar': './assets/src/apps/js/blocks/widget-single-course/course-summary-sidebar/index.js',
+		'./assets/js/dist/blocks/search-archive-course': './assets/src/apps/js/blocks/widget-archive-course/search/index.js',
+		'./assets/js/dist/blocks/order-by-archive-course': './assets/src/apps/js/blocks/widget-archive-course/order-by/index.js',
+		'./assets/js/dist/blocks/switch-layout-archive-course': './assets/src/apps/js/blocks/widget-archive-course/switch-layout/index.js',
+		'./assets/js/dist/blocks/list-course-archive-course': './assets/src/apps/js/blocks/widget-archive-course/list-course/index.js',
+		'./assets/js/dist/blocks/pagination-archive-course': './assets/src/apps/js/blocks/widget-archive-course/pagination/index.js',
+		'./assets/js/dist/blocks/target-archive-course': './assets/src/apps/js/blocks/widget-archive-course/target/index.js',
 		'./assets/js/dist/blocks/single-course': './assets/src/apps/js/blocks/single-course/index.js',
 		'./assets/js/dist/blocks/item-curriculum-course': './assets/src/apps/js/blocks/item-curriculum-course/index.js',
 

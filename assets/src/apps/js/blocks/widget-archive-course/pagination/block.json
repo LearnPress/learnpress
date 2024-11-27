@@ -1,0 +1,18 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "learnpress/pagination-archive-course",
+	"title": "Pagination",
+	"category": "lp-archive-course-category",
+	"description": "Renders Template Pagination Archive Course PHP templates.",
+	"textdomain": "learnpress",
+	"keywords": ["pagination archive course", "learnpress"],
+	"usesContext": [],
+	"supports": {
+		"inserter": true,
+		"reusable": true,
+		"reorder": true,
+		"html": false,
+		"multiple": true
+	}
+}

@@ -1,0 +1,19 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "learnpress/target-archive-course",
+	"title": "Target",
+	"category": "lp-archive-course-category",
+	"description": "Renders Layout Target PHP templates.",
+	"textdomain": "learnpress",
+	"keywords": ["layout target course", "learnpress"],
+	"usesContext": [],
+	"supports": {
+		"inserter": true,
+		"reusable": true,
+		"reorder": true,
+		"html": false,
+		"multiple": true,
+		"wrapper": false
+	}
+}

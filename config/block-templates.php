@@ -3,6 +3,8 @@ $blog_template_path = LP_PLUGIN_PATH . 'inc/block-template/';
 require_once $blog_template_path . 'class-block-template-archive-course.php';
 require_once $blog_template_path . 'class-block-template-single-course.php';
 require_once $blog_template_path . 'class-block-template-item-curriculum-course.php';
+
+// Single Course
 require_once $blog_template_path . 'single-course/class-block-template-title-single-course.php';
 require_once $blog_template_path . 'single-course/class-block-template-description-single-course.php';
 require_once $blog_template_path . 'single-course/class-block-template-categories-single-course.php';
@@ -19,6 +21,14 @@ require_once $blog_template_path . 'single-course/class-block-template-student-s
 require_once $blog_template_path . 'single-course/class-block-template-btn-purchase-single-course.php';
 require_once $blog_template_path . 'single-course/class-block-template-duration-single-course.php';
 require_once $blog_template_path . 'single-course/class-block-template-breadcrumb.php';
+
+// Archive course
+require_once $blog_template_path . 'archive-course/class-block-template-search-archive-courses.php';
+require_once $blog_template_path . 'archive-course/class-block-template-order-by-archive-courses.php';
+require_once $blog_template_path . 'archive-course/class-block-template-switch-layout-archive-courses.php';
+require_once $blog_template_path . 'archive-course/class-block-template-list-course-archive-courses.php';
+require_once $blog_template_path . 'archive-course/class-block-template-pagination-archive-courses.php';
+require_once $blog_template_path . 'archive-course/layout/class-block-layout-target.php';
 
 //Layout single course
 require_once $blog_template_path . 'single-course/layout/class-block-layout-archive-course.php';
@@ -59,6 +69,12 @@ return apply_filters(
 		new Block_Layout_Meta_Primary(),
 		new Block_Layout_Meta_Secondary(),
 		new Block_Layout_Sidebar(),
+		new Block_Template_Search_Archive_Courses(),
+		new Block_Template_Order_By_Archive_Courses(),
+		new Block_Template_Switch_Layout_Archive_Courses(),
+		new Block_Template_List_Course_Archive_Courses(),
+		new Block_Template_Pagination_Archive_Courses(),
+		new Block_Layout_Target_Archive_Course(),
 		//new Block_Template_Item_Curriculum_Course(), // When handle item correct post type, uncomment this line, currently item show is post type course.
 	)
 );

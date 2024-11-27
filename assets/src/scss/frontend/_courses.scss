@@ -651,6 +651,7 @@
  	gap: $spacing-base-3x;
 	margin-bottom: $spacing-base-8x;
 	flex-wrap: wrap;
+	align-items: unset;
 
 	.courses-order-by{
 		@include input();
