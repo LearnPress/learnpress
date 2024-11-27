@@ -158,7 +158,10 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			try {
 				// Update for case compare version of LP if LEARNPRESS_VERSION undefined
 				if ( is_admin() ) {
-					update_option( 'learnpress_version', $this->version );
+					$learn_press_version = get_option( 'learnpress_version', '' );
+					if ( $learn_press_version !== $this->version ) {
+						update_option( 'learnpress_version', $this->version );
+					}
 				}
 
 				// Define constant .

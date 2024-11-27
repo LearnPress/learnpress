@@ -216,6 +216,17 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.2.7.4 (2024-11-28) =
+~ Fixed: image cover profile with theme Twenty Five.
+~ Tweak order show material on the item lesson.
+~ Tweak load text domain compatible with WP 6.7 and later.
+~ Tweak: format_human_time_diff.
+~ Tweak: UserItemModel, UserCourseModel, UserModel, CourseModel  classes.
+~ Deprecated: get_info_extra_for_fast_query method.
+~ Deprecated: _learn_press_usort_terms_by_ID, learn_press_course_item_format_exclude, learn_press_get_course_curriculum, learn_press_is_enrolled_course, learn_press_get_user_course_statuslearn_press_is_free_course, learn_press_course_enroll_required, learn_press_search_post_excerpt, learn_press_course_add_support_item_type, learn_press_course_add_support_item_type, learn_press_get_user_question_answer, need_to_updating, learn_press_get_course_sections, lean_press_get_course_sections, learn_press_get_course_item_url, learn_press_edit_item_link, learn_press_get_course_results_tooltip.
+~ Set cache get instructors API for App.
+~ Added: get_i18n_string_plural method on the class LP_Helper.
+
 = 4.2.7.3 (2024-11-12) =
 ~ Fixed: error course private admin/author can't see on the frontend.
 ~ Fixed: only show label "Final" of Quiz when choose "Evaluate via results of the final quiz".
