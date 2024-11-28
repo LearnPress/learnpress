@@ -16,9 +16,9 @@ export default function lpMaterialsLoad() {
 	};
 	const getResponse = async ( ele, page = 1 ) => {
 		// let itemID = 0;
-		const itemID = parseInt( ele.dataset.courseId),
+		const courseID = parseInt( ele.dataset.courseId),
 			  lessonID = parseInt( ele.dataset.itemId ),
-		      isLesson = lessonID == 0 ? 0 : 1;
+		      itemID   = lessonID == 0 ? courseID : lessonID;
 		const elementMaterial = ele.querySelector( '.course-material-table' );
 		const loadMoreBtn = document.querySelector( '.lp-loadmore-material' );
 		const elListItems = document.querySelector( '.lp-list-material' );
@@ -26,8 +26,6 @@ export default function lpMaterialsLoad() {
 			const response = await apiFetch( {
 				path: addQueryArgs( `lp/v1/material/item-materials/${ itemID }`, {
 					page:page,
-					isLesson:isLesson,
-					lessonID:lessonID
 				} ),
 				method: 'GET',
 			} );

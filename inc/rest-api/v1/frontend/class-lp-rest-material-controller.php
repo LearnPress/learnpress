@@ -275,32 +275,8 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 			if ( ! $item_id ) {
 				throw new Exception( esc_html__( 'Invalid course identifier', 'learnpress' ) );
 			}
-			$current_user    = learn_press_get_current_user();
-			$current_user_id = $current_user->get_id();
-			if ( ! $is_admin ) {
-				$is_lesson = $params['isLesson'] ?? 0;
-				$lesson_id = $params['lessonID'] ?? 0;
-				if ( $is_lesson && empty( $lesson_id ) ) {
-					throw new Exception( esc_html__( 'Invalid lesson identifier', 'learnpress' ) );
-				}
-
-				$course_id               = (int) $item_id;
-				$can_view_content_course = $current_user->can_view_content_course( $course_id );
-				$can_view                = $can_view_content_course;
-				// $can_view = false;
-				if ( $is_lesson ) {
-					$can_view = $current_user->can_view_item( absint( $lesson_id ), $can_view_content_course );
-					$item_id  = (int) $lesson_id;
-				}
-				if ( ! $can_view->flag ) {
-					$error_message = $can_view->message ?? __( 'You do not have permission to view those materials', 'learnpress' );
-					throw new Exception( $error_message );
-				}
-			} else {
-				if ( ! current_user_can( 'edit_post', $item_id ) ) {
-					throw new Exception( __( 'You do not have permission to view those materials', 'learnpress' ) );
-				}
-			}
+			
+			$this->check_can_get_materials( $item_id, $is_admin );
 
 			$material_init  = LP_Material_Files_DB::getInstance();
 			$page           = absint( $params['page'] ?? 1 );
@@ -461,6 +437,41 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 		}
 
 		return rest_ensure_response( $response );
+	}
+	/**
+	 * Check permission to get material by course/lesson
+	 * @param  int     $item_id  course/lesson id
+	 * @param  boolean $is_admin is wp-admin
+	 */
+	public function check_can_get_materials( int $item_id, $is_admin = false ) {
+		$current_user    = learn_press_get_current_user();
+		$current_user_id = $current_user->get_id();
+		if ( ! $is_admin ) {
+			$item_type = get_post_field( 'post_type', $item_id );
+			if ( $item_type === LP_LESSON_CPT ) {
+				$section_id = LP_Lesson_DB::getInstance()->get_section_by_lesson_id( $item_id );
+				if ( empty( $section_id ) ) {
+					throw new Exception( __( 'Cannot get section.', 'learnpress' ) );
+				}
+				$course_id = LP_Section_DB::getInstance()->get_course_id_by_section( $section_id );
+				if ( empty( $course_id ) ) {
+					throw new Exception( __( 'Cannot get course', 'learnpress' ) );
+				}
+				$can_view_content_course = $current_user->can_view_content_course( $course_id );
+				$can_view                = $current_user->can_view_item( absint( $item_id ), $can_view_content_course );
+			} else {
+				// Course
+				$can_view = $current_user->can_view_content_course( $item_id );
+			}
+			if ( ! $can_view->flag ) {
+				$error_message = $can_view->message ?? __( 'You do not have permission to view those materials', 'learnpress' );
+				throw new Exception( $error_message );
+			}
+		} else {
+			if ( ! current_user_can( 'edit_post', $item_id ) ) {
+				throw new Exception( __( 'You do not have permission to view those materials', 'learnpress' ) );
+			}
+		}
 	}
 
 	/**
