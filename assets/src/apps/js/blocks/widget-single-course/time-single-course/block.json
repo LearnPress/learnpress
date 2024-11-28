@@ -1,0 +1,23 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "learnpress/time-single-course",
+	"title": "Time Single Course",
+	"category": "lp-single-course-category",
+	"description": "Renders template Time Single Course PHP templates.",
+	"textdomain": "learnpress",
+	"keywords": ["time single course", "learnpress"],
+	"usesContext": [],
+	"attributes": {
+		"courseId": {
+			"type": "number"
+		}
+	},
+	"supports": {
+		"inserter": true,
+		"reusable": true,
+		"reorder": true,
+		"html": false,
+		"multiple": true
+	}
+}

@@ -10,7 +10,7 @@ class Block_Template_Btn_Purchase_Single_Course extends Abstract_Block_Template_
 	public $title                         = 'Button Purchase Course (LearnPress)';
 	public $description                   = 'Button Purchase Course Block Template';
 	public $path_html_block_template_file = 'html/single-course/btn-purchase-single-course.html';
-	public $single_course_func            = 'html_btn_purchase_course';
+	public $single_course_func            = 'html_btn';
 	public $source_js                     = LP_PLUGIN_URL . 'assets/js/dist/blocks/btn-purchase-single-course.js';
 
 	public function render_content_block_template( array $attributes ) {
