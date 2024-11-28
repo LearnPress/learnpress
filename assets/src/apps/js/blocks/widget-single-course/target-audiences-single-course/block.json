@@ -1,21 +1,15 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 2,
-	"name": "learnpress/box-extra-single-course",
-	"title": "Box Extra Single Course",
+	"name": "learnpress/target-audiences-single-course",
+	"title": "Target audiences Single Course",
 	"category": "lp-single-course-category",
-	"description": "Renders template Box Extra Single Course PHP templates.",
+	"description": "Renders template Box Extra Target audiences Single Course PHP templates.",
 	"textdomain": "learnpress",
-	"keywords": ["box extra single course", "learnpress"],
+	"keywords": ["box extra target audiences single course", "learnpress"],
 	"attributes": {
 		"courseId": {
 			"type": "number"
-		},
-		"title": {
-			"type": "string"
-		},
-		"metaKey": {
-			"type": "string"
 		}
 	},
 	"usesContext": [],

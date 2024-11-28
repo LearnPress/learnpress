@@ -681,14 +681,6 @@ class SingleCourseTemplate {
 	public function html_btn_purchase_course( CourseModel $course, $user ): string {
 		$html_btn     = '';
 		$can_purchase = $course->can_purchase( $user );
-
-		if ( $course->is_free() ) {
-			ob_start();
-			learn_press_get_template( 'single-course/buttons/enroll.php', array( 'course' => $course ) );
-			$html_btn = ob_get_clean();
-			return $html_btn;
-		}
-
 		if ( is_wp_error( $can_purchase ) ) {
 			$error_code_show = apply_filters(
 				'learn-press/course/html-button-purchase/show-messages',

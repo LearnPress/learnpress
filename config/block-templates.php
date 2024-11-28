@@ -14,13 +14,16 @@ require_once $blog_template_path . 'single-course/class-block-template-instructo
 require_once $blog_template_path . 'single-course/class-block-template-tabs-single-course.php';
 require_once $blog_template_path . 'single-course/class-block-template-price-single-course.php';
 require_once $blog_template_path . 'single-course/class-block-template-feature-review-single-course.php';
-require_once $blog_template_path . 'single-course/class-block-template-box-extra-single-course.php';
 require_once $blog_template_path . 'single-course/class-block-template-level-single-course.php';
-require_once $blog_template_path . 'single-course/class-block-template-count-item-single-course.php';
 require_once $blog_template_path . 'single-course/class-block-template-student-single-course.php';
 require_once $blog_template_path . 'single-course/class-block-template-btn-purchase-single-course.php';
 require_once $blog_template_path . 'single-course/class-block-template-duration-single-course.php';
 require_once $blog_template_path . 'single-course/class-block-template-breadcrumb.php';
+require_once $blog_template_path . 'single-course/class-block-template-requirements-single-course.php';
+require_once $blog_template_path . 'single-course/class-block-template-features-single-course.php';
+require_once $blog_template_path . 'single-course/class-block-template-target-audiences-single-course.php';
+require_once $blog_template_path . 'single-course/class-block-template-lesson-single-course.php';
+require_once $blog_template_path . 'single-course/class-block-template-quiz-single-course.php';
 
 // Archive course
 require_once $blog_template_path . 'archive-course/class-block-template-search-archive-courses.php';
@@ -54,10 +57,13 @@ return apply_filters(
 		new Block_Template_Tabs_Single_Course(),
 		new Block_Template_Price_Single_Course(),
 		new Block_Template_Feature_Review_Single_Course(),
-		new Block_Template_Box_Extra_Single_Course(),
+		new Block_Template_Requirements_Single_Course(),
+		new Block_Template_Features_Single_Course(),
+		new Block_Template_Target_Audiences_Single_Course(),
+		new Block_Template_Lesson_Single_Course(),
+		new Block_Template_Quiz_Single_Course(),
 		new Block_Template_Level_Single_Course(),
 		new Block_Template_Student_Single_Course(),
-		new Block_Template_Count_Item_Single_Course(),
 		new Block_Template_Btn_Purchase_Single_Course(),
 		new Block_Template_Duration_Single_Course(),
 		new Block_Template_Breadcrumb(),

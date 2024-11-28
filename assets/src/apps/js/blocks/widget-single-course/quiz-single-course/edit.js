@@ -15,11 +15,6 @@ export const edit = ( props ) => {
 						type="number"
 						onChange={ ( value ) => props.setAttributes( { courseId: value ? value : '' } ) }
 					/>
-					<TextControl
-						label="Item Type"
-						value={ props.attributes.itemType }
-						onChange={ ( value ) => props.setAttributes( { itemType: value ? value : '' } ) }
-					/>
 					<ToggleControl
 						label="Show Only Number"
 						checked={ props.attributes.showOnlyNumber ? true : false }
@@ -29,7 +24,7 @@ export const edit = ( props ) => {
 			</InspectorControls>
 			<div { ...blockProps }>
 				<span>
-					{ '0 ' + props.attributes.itemType }
+					{ '0 Quiz' }
 				</span>
 			</div>
 		</>

@@ -1,0 +1,26 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "learnpress/quiz-single-course",
+	"title": "Quiz Single Course",
+	"category": "lp-single-course-category",
+	"description": "Renders template Quiz Single Course PHP templates.",
+	"textdomain": "learnpress",
+	"keywords": ["quiz single course", "learnpress"],
+	"attributes": {
+		"courseId": {
+			"type": "number"
+		},
+		"showOnlyNumber": {
+			"type": "boolean"
+		}
+	},
+	"usesContext": [],
+	"supports": {
+		"inserter": true,
+		"reusable": true,
+		"reorder": true,
+		"html": false,
+		"multiple": true
+	}
+}
