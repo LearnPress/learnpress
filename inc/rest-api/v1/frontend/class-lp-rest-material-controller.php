@@ -1,6 +1,7 @@
 <?php
 
 use LearnPress\Helpers\Template;
+use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\TemplateHooks\Course\CourseMaterialTemplate;
 
 /**
@@ -33,7 +34,7 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'save_post_materials' ),
-					'permission_callback' => array( $this, 'check_user_permission' ),
+					'permission_callback' => array( $this, 'check_user_can_edit_material' ),
 					'args'                => array(
 						'data' => array(
 							'description'       => esc_html__( 'Data of material', 'learnpress' ),
@@ -55,7 +56,7 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 				array(
 					'methods'             => WP_REST_Server::EDITABLE,
 					'callback'            => array( $this, 'update_material_orders' ),
-					'permission_callback' => array( $this, 'check_user_permission' ),
+					'permission_callback' => array( $this, 'check_user_can_edit_material' ),
 					'args'                => array(
 						'sort_arr' => array(
 							'description'       => esc_html__( 'Material orders', 'learnpress' ),
@@ -76,7 +77,7 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 				array(
 					'methods'             => WP_REST_Server::DELETABLE,
 					'callback'            => array( $this, 'delete_material' ),
-					'permission_callback' => array( $this, 'check_user_permission' ),
+					'permission_callback' => array( $this, 'check_user_can_edit_material' ),
 				),
 				array(
 					'methods'             => WP_REST_Server::READABLE,
@@ -265,7 +266,7 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 	 * @param WP_REST_Request $request
 	 *
 	 * @return LP_REST_Response
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 * @since 4.2.2
 	 */
 	public function get_materials_by_item( WP_REST_Request $request ): LP_REST_Response {
@@ -276,6 +277,25 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 			$item_id = $params['item_id'] ?? 0;
 			if ( ! $item_id ) {
 				throw new Exception( esc_html__( 'Invalid course or lesson identifier', 'learnpress' ) );
+			}
+
+			$post            = get_post( $item_id );
+			$author_id       = get_post_field( 'post_author', $item_id );
+			$current_user_id = get_current_user_id();
+
+			// Check permission
+			if ( ! current_user_can( ADMIN_ROLE ) && ( current_user_can( ADMIN_ROLE ) && $author_id != $current_user_id ) ) {
+				// Check user is enrolled, finish course
+				if ( $post->post_type === LP_COURSE_CPT ) {
+					$userCourseModel = UserCourseModel::find( $current_user_id, $item_id, true );
+					if ( ! $userCourseModel || ! in_array( $userCourseModel->get_status(), [ LP_COURSE_ENROLLED, LP_COURSE_FINISHED ] ) ) {
+						throw new Exception( esc_html__( 'You do not have permission to view those materials', 'learnpress' ) );
+					}
+				} elseif ( $post->post_type === LP_LESSON_CPT ) { //Todo: need submit course_id to easy check.
+
+				} else {
+					throw new Exception( esc_html__( 'You do not have permission to view those materials', 'learnpress' ) );
+				}
 			}
 
 			$is_admin       = $params['is_admin'] ?? false;
@@ -485,7 +505,7 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 	 * @version 1.0.1
 	 * @since 4.2.2
 	 */
-	public function check_user_permission( $request ): bool {
+	public function check_user_can_edit_material( $request ): bool {
 		$permission      = false;
 		$item_id         = $request['item_id'] ?? $request->get_param( 'item_id' );
 		$author          = get_post_field( 'post_author', $item_id );
