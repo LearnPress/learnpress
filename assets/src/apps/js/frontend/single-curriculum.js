@@ -16,7 +16,7 @@ document.addEventListener( 'DOMContentLoaded', function( event ) {
 	LP.Hook.doAction( 'course-ready' );
 	lpModalOverlayCompleteItem.init();
 
-	lpMaterialsLoad( true );
+	lpMaterialsLoad();
 	//courseCurriculumSkeleton();
 	//init();
 } );

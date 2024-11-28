@@ -3,6 +3,7 @@
 use LearnPress\Helpers\Template;
 use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\TemplateHooks\Course\CourseMaterialTemplate;
+use LearnPress\Models\CourseModel;
 
 /**
  * Class LP_Rest_Material_Controller
@@ -78,11 +79,6 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 					'methods'             => WP_REST_Server::DELETABLE,
 					'callback'            => array( $this, 'delete_material' ),
 					'permission_callback' => array( $this, 'check_user_can_edit_material' ),
-				),
-				array(
-					'methods'             => WP_REST_Server::READABLE,
-					'callback'            => array( $this, 'get_material' ),
-					'permission_callback' => '__return_true',
 				),
 			),
 		);
@@ -273,37 +269,39 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 		$response = new LP_REST_Response();
 
 		try {
-			$params  = $request->get_params();
-			$item_id = $params['item_id'] ?? 0;
+			$params   = $request->get_params();
+			$item_id  = $params['item_id'] ?? 0;
+			$is_admin = $params['is_admin'] ?? false;
 			if ( ! $item_id ) {
-				throw new Exception( esc_html__( 'Invalid course or lesson identifier', 'learnpress' ) );
+				throw new Exception( esc_html__( 'Invalid course identifier', 'learnpress' ) );
 			}
-
-			$post            = get_post( $item_id );
-			$author_id       = get_post_field( 'post_author', $item_id );
-			$current_user_id = get_current_user_id();
-
-			// Check permission
-			if ( ! current_user_can( ADMIN_ROLE ) && ( current_user_can( ADMIN_ROLE ) && $author_id != $current_user_id ) ) {
-				$can_view = true;
-				// Check user is enrolled, finish course
-				if ( $post->post_type === LP_COURSE_CPT ) {
-					$userCourseModel = UserCourseModel::find( $current_user_id, $item_id, true );
-					if ( ! $userCourseModel || ! in_array( $userCourseModel->get_status(), [ LP_COURSE_ENROLLED, LP_COURSE_FINISHED ] ) ) {
-						$can_view = false;
-					}
-				} elseif ( $post->post_type === LP_LESSON_CPT ) { //Todo: need submit course_id to easy check.
-
-				} else {
-
+			$current_user    = learn_press_get_current_user();
+			$current_user_id = $current_user->get_id();
+			if ( ! $is_admin ) {
+				$is_lesson = $params['isLesson'] ?? 0;
+				$lesson_id = $params['lessonID'] ?? 0;
+				if ( $is_lesson && empty( $lesson_id ) ) {
+					throw new Exception( esc_html__( 'Invalid lesson identifier', 'learnpress' ) );
 				}
 
-				if ( ! $can_view ) {
-					throw new Exception( esc_html__( 'You do not have permission to view those materials', 'learnpress' ) );
+				$course_id               = (int) $item_id;
+				$can_view_content_course = $current_user->can_view_content_course( $course_id );
+				$can_view                = $can_view_content_course;
+				// $can_view = false;
+				if ( $is_lesson ) {
+					$can_view = $current_user->can_view_item( absint( $lesson_id ), $can_view_content_course );
+					$item_id  = (int) $lesson_id;
+				}
+				if ( ! $can_view->flag ) {
+					$error_message = $can_view->message ?? __( 'You do not have permission to view those materials', 'learnpress' );
+					throw new Exception( $error_message );
+				}
+			} else {
+				if ( ! current_user_can( 'edit_post', $item_id ) ) {
+					throw new Exception( __( 'You do not have permission to view those materials', 'learnpress' ) );
 				}
 			}
 
-			$is_admin       = $params['is_admin'] ?? false;
 			$material_init  = LP_Material_Files_DB::getInstance();
 			$page           = absint( $params['page'] ?? 1 );
 			$per_page       = $params['per_page'] ?? (int) LP_Settings::get_option( 'material_file_per_page', - 1 );
@@ -404,42 +402,6 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 		return in_array( $ext, $allow_file_type ) ? $ext : false;
 	}
 
-	/**
-	 * @param  [type] $request [description]
-	 *
-	 * @return [type]          [description]
-	 * @version 1.0.0
-	 * @since 4.2.2
-	 * [get_material description]
-	 */
-	public function get_material( $request ) {
-		$response = new LP_REST_Response();
-		try {
-			$id = $request['file_id'];
-			if ( ! $id ) {
-				throw new Exception( esc_html__( 'Invalid identifier', 'learnpress' ) );
-			}
-			$material_init = LP_Material_Files_DB::getInstance();
-			$file          = $material_init->get_material( $id );
-			if ( $file ) {
-				if ( $file->method == 'upload' ) {
-					$file->file_path = wp_upload_dir()['baseurl'] . $file->file_path;
-				}
-				$response_data = $file;
-				$message       = esc_html__( 'Get file successfully.', 'learnpress' );
-			} else {
-				$response_data = [];
-				$message       = esc_html__( 'The file is not exist', 'learnpress' );
-			}
-			$response->message = $message;
-			$response->data    = $response_data;
-			$response->status  = 200;
-		} catch ( Throwable $th ) {
-			$response->message = $th->getMessage();
-		}
-
-		return rest_ensure_response( $response );
-	}
 
 	public function update_material_orders( $request ) {
 		$response = new LP_REST_Response();
