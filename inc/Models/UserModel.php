@@ -458,10 +458,8 @@ class UserModel {
 	 * @version 1.0.0
 	 */
 	public function save(): UserModel {
-		// Update cache
-		$key_cache       = "userModel/find/id/{$this->get_id()}";
-		$lp_course_cache = new LP_Cache();
-		$lp_course_cache->set_cache( $key_cache, $this );
+		// Clear caches.
+		$this->clean_caches();
 
 		return $this;
 	}
