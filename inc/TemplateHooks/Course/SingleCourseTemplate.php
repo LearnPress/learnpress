@@ -342,6 +342,11 @@ class SingleCourseTemplate {
 			return $price_html;
 		}
 
+		$user = learn_press_get_current_user();
+		if ( ! empty( $user ) && $user->has_enrolled_or_finished( $course->get_id() ) ) {
+			return $price_html;
+		}
+
 		if ( $course->is_free() ) {
 			if ( '' != $course->get_sale_price() ) {
 				$price_html .= $this->html_regular_price( $course );
@@ -584,6 +589,12 @@ class SingleCourseTemplate {
 		if ( empty( $feature_review ) ) {
 			return '';
 		}
+
+		$user = learn_press_get_current_user();
+		if ( $user && $user->has_enrolled_or_finished( $course->get_id() ) ) {
+			return '';
+		}
+
 		ob_start();
 		?>
 		<div class="course-featured-review">
@@ -831,6 +842,110 @@ class SingleCourseTemplate {
 		);
 
 		return Template::combine_components( $section );
+	}
+
+	/**
+	 * HTML button continue
+	 *
+	 * @param CourseModel $course
+	 * @param UserCourseModel $user
+	 *
+	 * @return string
+	 * @since 4.2.7.4
+	 * @version 1.0.0
+	 */
+	public function html_btn_continue( CourseModel $course, UserCourseModel $user ): string {
+		$html_continue = '';
+		$can_show      = true;
+		if ( empty( $user ) || empty( $course ) ) {
+			return $html_continue;
+		}
+
+		if ( ! $user || ! $user->has_enrolled() ) {
+			return $html_continue;
+		}
+
+		if ( $user->has_finished() ) {
+			return $html_continue;
+		}
+
+		// Course has no items
+		if ( empty( $course->get_total_items() ) ) {
+			return $html_continue;
+		}
+
+		// Do not display continue button if course is block duration
+		if ( $user->timestamp_remaining_duration() === 0 ) {
+			return $html_continue;
+		}
+
+		$can_show = apply_filters( 'learnpress/course/template/button-continue/can-show', $can_show, $user, $course );
+		if ( ! $can_show ) {
+			return $html_continue;
+		}
+
+		$args = array(
+			'user'   => $user,
+			'course' => $course,
+		);
+
+		ob_start();
+		learn_press_get_template( 'single-course/buttons/continue.php', $args );
+		$html_continue = ob_get_clean();
+
+		$section = apply_filters(
+			'learn-press/course/html-faqs',
+			[
+				'wrapper'     => '<div class="lp-course-buttons">',
+				'content'     => $html_continue,
+				'wrapper_end' => '</div>',
+			],
+			$course
+		);
+
+		$html = Template::combine_components( $section );
+		return $html;
+	}
+
+	/**
+	 * HTML button
+	 *
+	 * @param CourseModel $course
+	 * @param UserCourseModel|UserModel|false $user
+	 *
+	 * @return string
+	 * @since 4.2.7.4
+	 * @version 1.0.0
+	 */
+	public function html_btn( CourseModel $course, $user ): string {
+		$html_btn = '';
+
+		if ( empty( $user ) ) {
+			$user_id = get_current_user_id();
+			$user    = UserCourseModel::find( $user_id, $course->get_id(), true );
+		}
+
+		if ( $user instanceof UserModel ) {
+			$user = UserCourseModel::find( $user->get_id(), $course->get_id(), true );
+		}
+
+		$html_btn = $this->html_btn_continue( $course, $user );
+
+		if ( empty( $html_btn ) ) {
+			$external_link = $course->get_meta_value_by_key( CoursePostModel::META_KEY_EXTERNAL_LINK_BY_COURSE, '' );
+			if ( ! empty( $external_link ) ) {
+				$html_btn = $this->html_btn_external( $course, $user );
+				return $html_btn;
+			}
+			if ( $course->is_free() ) {
+				$html_btn = $this->html_btn_enroll_course( $course, $user );
+				return $html_btn;
+			} else {
+				$html_btn = $this->html_btn_purchase_course( $course, $user );
+			}
+		}
+
+		return $html_btn;
 	}
 
 	/**
