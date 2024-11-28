@@ -285,15 +285,20 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 
 			// Check permission
 			if ( ! current_user_can( ADMIN_ROLE ) && ( current_user_can( ADMIN_ROLE ) && $author_id != $current_user_id ) ) {
+				$can_view = true;
 				// Check user is enrolled, finish course
 				if ( $post->post_type === LP_COURSE_CPT ) {
 					$userCourseModel = UserCourseModel::find( $current_user_id, $item_id, true );
 					if ( ! $userCourseModel || ! in_array( $userCourseModel->get_status(), [ LP_COURSE_ENROLLED, LP_COURSE_FINISHED ] ) ) {
-						throw new Exception( esc_html__( 'You do not have permission to view those materials', 'learnpress' ) );
+						$can_view = false;
 					}
 				} elseif ( $post->post_type === LP_LESSON_CPT ) { //Todo: need submit course_id to easy check.
 
 				} else {
+
+				}
+
+				if ( ! $can_view ) {
 					throw new Exception( esc_html__( 'You do not have permission to view those materials', 'learnpress' ) );
 				}
 			}
