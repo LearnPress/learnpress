@@ -1,8 +1,6 @@
-<!-- wp:template-part {"slug":"header","theme":"twentytwentytwo","area":"header"} /-->
+<!-- wp:template-part {"slug":"header","tagName":"header"} /-->
 
-<!-- wp:learnpress/single-course /-->
-
-<!-- wp:learnpress/lp-archive-courses -->
+<!-- wp:learnpress/lp-single-course -->
 <!-- wp:learnpress/breadcrumb /-->
 
 <!-- wp:learnpress/course-summary -->
@@ -20,9 +18,9 @@
 
 <!-- wp:learnpress/level-single-course /-->
 
-<!-- wp:learnpress/count-item-single-course {"itemType":"lp_lesson"} /-->
+<!-- wp:learnpress/lesson-single-course /-->
 
-<!-- wp:learnpress/count-item-single-course {"itemType":"lp_quiz"} /-->
+<!-- wp:learnpress/quiz-single-course /-->
 
 <!-- wp:learnpress/student-single-course /-->
 <!-- /wp:learnpress/course-meta-secondary -->
@@ -32,11 +30,11 @@
 <!-- wp:learnpress/content-left {"className":"wp-block-learnpress-content-left"} -->
 <!-- wp:learnpress/tabs-single-course /-->
 
-<!-- wp:learnpress/box-extra-single-course {"title":"Requirements","metaKey":"requirements"} /-->
+<!-- wp:learnpress/requirements-single-course /-->
 
-<!-- wp:learnpress/box-extra-single-course {"title":"Features","metaKey":"key_features"} /-->
+<!-- wp:learnpress/features-single-course /-->
 
-<!-- wp:learnpress/box-extra-single-course {"title":"Target audiences","metaKey":"target_audiences"} /-->
+<!-- wp:learnpress/target-audiences-single-course /-->
 <!-- /wp:learnpress/content-left -->
 
 <!-- wp:learnpress/course-summary-sidebar {"className":"wp-block-learnpress-course-summary-sidebar"} -->
@@ -46,10 +44,14 @@
 
 <!-- wp:learnpress/btn-purchase-single-course /-->
 
+<!-- wp:learnpress/time-single-course /-->
+
+<!-- wp:learnpress/progress-single-course /-->
+
 <!-- wp:learnpress/feature-review-single-course /-->
 <!-- /wp:learnpress/course-summary-sidebar -->
 <!-- /wp:learnpress/lp-content-area -->
 <!-- /wp:learnpress/course-summary -->
-<!-- /wp:learnpress/lp-archive-courses -->
+<!-- /wp:learnpress/lp-single-course -->
 
-<!-- wp:template-part {"slug":"footer","theme":"twentytwentytwo","area":"footer"} /-->
+<!-- wp:template-part {"slug":"footer","tagName":"footer"} /-->
