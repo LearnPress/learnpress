@@ -911,7 +911,7 @@ class SingleCourseTemplate {
 	 * HTML button
 	 *
 	 * @param CourseModel $course
-	 * @param UserCourseModel|UserModel|false $user
+	 * @param UserModel|false $user
 	 *
 	 * @return string
 	 * @since 4.2.7.4
@@ -921,15 +921,16 @@ class SingleCourseTemplate {
 		$html_btn = '';
 
 		if ( empty( $user ) ) {
-			$user_id = get_current_user_id();
-			$user    = UserCourseModel::find( $user_id, $course->get_id(), true );
+			$user = UserModel::find( get_current_user_id(), true );
 		}
 
 		if ( $user instanceof UserModel ) {
-			$user = UserCourseModel::find( $user->get_id(), $course->get_id(), true );
+			$UserCourseModel = UserCourseModel::find( $user->get_id(), $course->get_id(), true );
 		}
 
-		$html_btn = $this->html_btn_continue( $course, $user );
+		if ( ! empty( $user ) && ! empty( $UserCourseModel ) ) {
+			$html_btn = $this->html_btn_continue( $course, $UserCourseModel );
+		}
 
 		if ( empty( $html_btn ) ) {
 			$external_link = $course->get_meta_value_by_key( CoursePostModel::META_KEY_EXTERNAL_LINK_BY_COURSE, '' );
@@ -937,9 +938,9 @@ class SingleCourseTemplate {
 				$html_btn = $this->html_btn_external( $course, $user );
 				return $html_btn;
 			}
+
 			if ( $course->is_free() ) {
 				$html_btn = $this->html_btn_enroll_course( $course, $user );
-				return $html_btn;
 			} else {
 				$html_btn = $this->html_btn_purchase_course( $course, $user );
 			}
