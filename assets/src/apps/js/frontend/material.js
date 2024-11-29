@@ -28,7 +28,7 @@ export default function lpMaterialsLoad() {
 					lessonId:lessonId,
 					page:page,
 				} ),
-				method: 'GET',
+				method: 'POST',
 			} );
 			const { data, status, message } = response;
 

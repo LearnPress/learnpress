@@ -83,7 +83,7 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 			),
 			'of-item'                           => array(
 				array(
-					'methods'             => WP_REST_Server::READABLE,
+					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'of_item_material' ),
 					'permission_callback' => '__return_true',
 				),
