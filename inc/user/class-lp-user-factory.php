@@ -27,8 +27,7 @@ class LP_User_Factory {
 	 * @Todo tungnx - should write on class LP_Order
 	 */
 	public static function update_user_items( $the_id, $old_status, $new_status ) {
-		$time_limit_default = ini_get( 'max_execution_time' );
-		@set_time_limit( 0 );
+		ini_set( 'max_execution_time', HOUR_IN_SECONDS );
 		$order = learn_press_get_order( $the_id );
 		if ( ! $order ) {
 			return;
@@ -49,7 +48,7 @@ class LP_User_Factory {
 		} catch ( Exception $ex ) {
 			error_log( __METHOD__ . ': ' . $ex->getMessage() );
 		}
-		@set_time_limit( $time_limit_default );
+		ini_set( 'max_execution_time', LearnPress::$time_limit_default_of_sever );
 	}
 
 	/**

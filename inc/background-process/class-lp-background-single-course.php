@@ -34,8 +34,8 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 		 * @see LP_Course_Post_Type::save_post()
 		 */
 		protected function handle() {
+			ini_set( 'max_execution_time', HOUR_IN_SECONDS );
 			try {
-				@set_time_limit( 0 );
 				$handle_name = LP_Request::get_param( 'handle_name', '', 'key', 'post' );
 				$course_id   = intval( $_POST['course_id'] ?? 0 );
 				if ( empty( $handle_name ) || ! $course_id ) {
@@ -58,6 +58,7 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 			} catch ( Throwable $e ) {
 				error_log( $e->getMessage() );
 			}
+			ini_set( 'max_execution_time', LearnPress::$time_limit_default_of_sever );
 		}
 
 		/**
@@ -72,7 +73,6 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 
 			$courseModel = $this->lp_course;
 			// Unset value of keys for calculate again
-			unset( $courseModel->author );
 			unset( $courseModel->first_item_id );
 			unset( $courseModel->total_items );
 			unset( $courseModel->sections_items );

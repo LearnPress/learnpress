@@ -475,11 +475,13 @@ class LP_Checkout {
 	 * @throws Exception
 	 */
 	public function process_checkout() {
-		try {
-			if ( function_exists( 'set_time_limit' ) ) {
-				@set_time_limit( 0 ); // @codingStandardsIgnoreLine
-			}
+		ini_set( 'max_execution_time', HOUR_IN_SECONDS );
+		$result = array(
+			'result'   => 'fail',
+			'messages' => '',
+		);
 
+		try {
 			$lp_session = LearnPress::instance()->session;
 
 			do_action( 'learn-press/before-checkout' );
@@ -532,9 +534,8 @@ class LP_Checkout {
 							$result = apply_filters( 'learn-press/payment-successful-result', $result, $order_id );
 						}
 
-						if ( learn_press_is_ajax() ) {
-							learn_press_send_json( $result );
-						} else {
+						if ( ! learn_press_is_ajax() ) {
+							ini_set( 'max_execution_time', LearnPress::$time_limit_default_of_sever );
 							wp_redirect( $result['redirect'] );
 							exit;
 						}
@@ -567,9 +568,8 @@ class LP_Checkout {
 							'redirect' => $redirect,
 						);
 
-						if ( learn_press_is_ajax() ) {
-							learn_press_send_json( $result );
-						} else {
+						if ( ! learn_press_is_ajax() ) {
+							ini_set( 'max_execution_time', LearnPress::$time_limit_default_of_sever );
 							wp_redirect( $result['redirect'] );
 							exit;
 						}
@@ -577,12 +577,10 @@ class LP_Checkout {
 				}
 			}
 		} catch ( Throwable $e ) {
-			$result = array(
-				'result'   => 'fail',
-				'messages' => $e->getMessage(),
-			);
-			learn_press_send_json( $result );
+			$result['messages'] = $e->getMessage();
 		}
+
+		ini_set( 'max_execution_time', LearnPress::$time_limit_default_of_sever );
+		learn_press_send_json( $result );
 	}
 }
-
