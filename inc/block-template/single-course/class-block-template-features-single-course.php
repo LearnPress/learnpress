@@ -23,6 +23,10 @@ class Block_Template_Features_Single_Course extends Abstract_Block_Template_Widg
 		$items               = $course->get_meta_value_by_key( '_lp_key_features' );
 		$attributes['title'] = 'Features';
 
+		if ( ! empty( $items ) && is_string( ( $items ) ) ) {
+			$items = unserialize( $items );
+		}
+
 		if ( ! empty( $items ) && is_array( $items ) ) :
 			ob_start();
 			?>

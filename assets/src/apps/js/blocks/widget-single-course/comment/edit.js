@@ -5,9 +5,11 @@ export const edit = ( props ) => {
 	return (
 		<>
 			<div { ...blockProps }>
-				<span>
-					{ 'Comment' }
-				</span>
+				<div style={ { margin: '15px 0' } }>
+					<strong>
+						{ 'Comment' }
+					</strong>
+				</div>
 			</div>
 		</>
 	);

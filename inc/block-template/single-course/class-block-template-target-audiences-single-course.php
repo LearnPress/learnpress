@@ -23,6 +23,10 @@ class Block_Template_Target_Audiences_Single_Course extends Abstract_Block_Templ
 		$items               = $course->get_meta_value_by_key( '_lp_target_audiences' );
 		$attributes['title'] = 'Target audiences';
 
+		if ( ! empty( $items ) && is_string( ( $items ) ) ) {
+			$items = unserialize( $items );
+		}
+
 		if ( ! empty( $items ) && is_array( $items ) ) :
 			ob_start();
 			?>
