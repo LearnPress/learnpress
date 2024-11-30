@@ -37,6 +37,7 @@ use LearnPress\TemplateHooks\Profile\ProfileOrderTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileStudentStatisticsTemplate;
 use LearnPress\TemplateHooks\Course\CourseMaterialTemplate;
 use LearnPress\Widgets\LPRegisterWidget;
+use LP_Addon_Co_Instructor\Hook;
 
 defined( 'ABSPATH' ) || exit();
 
@@ -744,12 +745,16 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				 * When 2 addons update to new version, will remove this code.
 				 */
 				if ( class_exists( 'LP_Addon_Announcements_Preload' ) ) {
-					$addon_announcement = LP_Addon_Announcements_Preload::$addon;
-					$addon_announcement->emails_setting();
+					if ( version_compare( LP_ADDON_ANNOUNCEMENTS_VER, '4.0.6', '<=' ) ) {
+						$addon_announcement = LP_Addon_Announcements_Preload::$addon;
+						$addon_announcement->emails_setting();
+					}
 				}
 				if ( class_exists( 'LP_Addon_Assignment_Preload' ) ) {
-					$addon_assignment = LP_Addon_Assignment_Preload::$addon;
-					$addon_assignment->emails_setting();
+					if ( version_compare( LP_ADDON_ASSIGNMENT_VER, '4.1.1', '<=' ) ) {
+						$addon_assignment = LP_Addon_Assignment_Preload::$addon;
+						$addon_assignment->emails_setting();
+					}
 				}
 			} catch ( Throwable $e ) {
 				error_log( __METHOD__ . ': ' . $e->getMessage() );
