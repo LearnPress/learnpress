@@ -16,6 +16,7 @@
 
 use LearnPress\ExternalPlugin\Elementor\LPElementor;
 use LearnPress\ExternalPlugin\YoastSeo\LPYoastSeo;
+use LearnPress\Models\UserModel;
 use LearnPress\Shortcodes\Course\FilterCourseShortcode;
 
 //use LearnPress\Shortcodes\Course\ListCourseRecentShortcode;
@@ -147,6 +148,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 		public $gateways = null;
 
+		public static $time_limit_default_of_sever = 0;
+
 		/**
 		 * LearnPress constructor.
 		 */
@@ -156,6 +159,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			}*/
 
 			try {
+				self::$time_limit_default_of_sever = ini_get( 'max_execution_time' );
+
 				// Update for case compare version of LP if LEARNPRESS_VERSION undefined
 				if ( is_admin() ) {
 					$learn_press_version = get_option( 'learnpress_version', '' );
@@ -563,6 +568,15 @@ if ( ! class_exists( 'LearnPress' ) ) {
 					}
 				}
 			);
+
+			// Clear cache UserModel when save user.
+			add_action(
+				'wp_update_user',
+				function ( $user_id ) {
+					$user = UserModel::find( $user_id, true );
+					$user->clean_caches();
+				}
+			);
 		}
 
 		/**
@@ -723,6 +737,20 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 				// let third parties know that we're ready .
 				do_action( 'learn-press/ready' );
+
+				/**
+				 * Fixed temporary for emails of Announcement v4.0.6, Assignment v4.1.1 addons.
+				 * @since 4.2.7.4
+				 * When 2 addons update to new version, will remove this code.
+				 */
+				if ( class_exists( 'LP_Addon_Announcements_Preload' ) ) {
+					$addon_announcement = LP_Addon_Announcements_Preload::$addon;
+					$addon_announcement->emails_setting();
+				}
+				if ( class_exists( 'LP_Addon_Assignment_Preload' ) ) {
+					$addon_assignment = LP_Addon_Assignment_Preload::$addon;
+					$addon_assignment->emails_setting();
+				}
 			} catch ( Throwable $e ) {
 				error_log( __METHOD__ . ': ' . $e->getMessage() );
 			}
