@@ -81,6 +81,13 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 					'permission_callback' => array( $this, 'check_user_can_edit_material' ),
 				),
 			),
+			'of-item'                           => array(
+				array(
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => array( $this, 'of_item_material' ),
+					'permission_callback' => '__return_true',
+				),
+			),
 		);
 
 		parent::register_routes();
@@ -257,7 +264,7 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 	}
 
 	/**
-	 * Get list files of a course or a lesson
+	 * Get list files of a course or a lesson (use in wp-admin)
 	 *
 	 * @param WP_REST_Request $request
 	 *
@@ -275,32 +282,20 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 			if ( ! $item_id ) {
 				throw new Exception( esc_html__( 'Invalid course identifier', 'learnpress' ) );
 			}
-			
-			$this->check_can_get_materials( $item_id, $is_admin );
-
-			$material_init  = LP_Material_Files_DB::getInstance();
+			if ( ! current_user_can( 'edit_post', $item_id ) ) {
+				throw new Exception( __( 'You do not have permission to get those materials', 'learnpress' ) );
+			}
+			$material_db    = LP_Material_Files_DB::getInstance();
 			$page           = absint( $params['page'] ?? 1 );
 			$per_page       = $params['per_page'] ?? (int) LP_Settings::get_option( 'material_file_per_page', - 1 );
 			$offset         = ( $per_page > 0 && $page > 1 ) ? $per_page * ( $page - 1 ) : 0;
-			$total          = $material_init->get_total( $item_id );
+			$total          = $material_db->get_total( $item_id );
 			$pages          = $per_page > 0 ? ceil( $total / $per_page ) : 0;
-			$item_materials = $material_init->get_material_by_item_id( $item_id, $per_page, $offset, $is_admin );
+			$item_materials = $material_db->get_material_by_item_id( $item_id, $per_page, $offset, true );
 
 			if ( $item_materials ) {
-				if ( $is_admin ) {
-					$response->data->items = $item_materials;
-				} else {
-					$response->data->load_more = $page < $pages && $per_page > 0;
-					ob_start();
-					$material_template = CourseMaterialTemplate::instance();
-					foreach ( $item_materials as $m ) {
-						$m->current_item_id = $item_id;
-						echo $material_template->material_item( $m );
-					}
-					$response->data->items = ob_get_clean();
-				}
-
-				$response->message = esc_html__( 'Successfully', 'learnpress' );
+				$response->data->items = $item_materials;
+				$response->message     = esc_html__( 'Successfully', 'learnpress' );
 			} else {
 				$response->message = esc_html__( 'Empty material!', 'learnpress' );
 			}
@@ -379,14 +374,14 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 	}
 
 
-	public function update_material_orders( $request ) {
+	public function update_material_orders( WP_REST_Request $request ) {
 		$response = new LP_REST_Response();
 		try {
-			$item_id       = $request['item_id'];
-			$sort_arr      = $request->get_param( 'sort_arr' );
-			$sort_arr      = json_decode( wp_unslash( $sort_arr ), true );
-			$material_init = LP_Material_Files_DB::getInstance();
-			$update_sort   = $material_init->update_material_orders( $sort_arr, $item_id );
+			$item_id     = $request['item_id'];
+			$sort_arr    = $request->get_param( 'sort_arr' );
+			$sort_arr    = json_decode( wp_unslash( $sort_arr ), true );
+			$material_db = LP_Material_Files_DB::getInstance();
+			$update_sort = $material_db->update_material_orders( $sort_arr, $item_id );
 			if ( $update_sort ) {
 				$response->status  = 200;
 				$response->message = esc_html__( 'Updated.', 'learnpress' );
@@ -410,7 +405,7 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 	 * @since 4.2.2
 	 * [delete_material delete a material when a delete request is send]
 	 */
-	public function delete_material( $request ) {
+	public function delete_material( WP_REST_Request $request ) {
 		$response = new LP_REST_Response();
 		try {
 			$id = $request['file_id'];
@@ -418,9 +413,9 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 				throw new Exception( esc_html__( 'Invalid file identifier', 'learnpress' ) );
 			}
 			// DB Init
-			$material_init = LP_Material_Files_DB::getInstance();
+			$material_db = LP_Material_Files_DB::getInstance();
 			// Delete record
-			$delete = $material_init->delete_material( $id );
+			$delete = $material_db->delete_material( $id );
 			if ( $delete ) {
 				$message = esc_html__( 'File is deleted.', 'learnpress' );
 				$deleted = true;
@@ -439,39 +434,65 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 		return rest_ensure_response( $response );
 	}
 	/**
-	 * Check permission to get material by course/lesson
-	 * @param  int     $item_id  course/lesson id
-	 * @param  boolean $is_admin is wp-admin
+	 * [check_can_get_materials description]
+	 * @param  int|integer $course_id course id
+	 * @param  int|integer $lesson_id lesson id
 	 */
-	public function check_can_get_materials( int $item_id, $is_admin = false ) {
-		$current_user    = learn_press_get_current_user();
-		$current_user_id = $current_user->get_id();
-		if ( ! $is_admin ) {
-			$item_type = get_post_field( 'post_type', $item_id );
-			if ( $item_type === LP_LESSON_CPT ) {
-				$section_id = LP_Lesson_DB::getInstance()->get_section_by_lesson_id( $item_id );
-				if ( empty( $section_id ) ) {
-					throw new Exception( __( 'Cannot get section.', 'learnpress' ) );
-				}
-				$course_id = LP_Section_DB::getInstance()->get_course_id_by_section( $section_id );
-				if ( empty( $course_id ) ) {
-					throw new Exception( __( 'Cannot get course', 'learnpress' ) );
-				}
-				$can_view_content_course = $current_user->can_view_content_course( $course_id );
-				$can_view                = $current_user->can_view_item( absint( $item_id ), $can_view_content_course );
-			} else {
-				// Course
-				$can_view = $current_user->can_view_content_course( $item_id );
-			}
-			if ( ! $can_view->flag ) {
-				$error_message = $can_view->message ?? __( 'You do not have permission to view those materials', 'learnpress' );
-				throw new Exception( $error_message );
-			}
+	public function check_can_get_materials( int $course_id = 0, int $lesson_id = 0 ) {
+		$current_user = learn_press_get_current_user();
+		if ( $lesson_id && get_post_field( 'post_type', $lesson_id ) === LP_LESSON_CPT ) {
+			$can_view_content_course = $current_user->can_view_content_course( $course_id );
+			$can_view                = $current_user->can_view_item( absint( $lesson_id ), $can_view_content_course );
 		} else {
-			if ( ! current_user_can( 'edit_post', $item_id ) ) {
-				throw new Exception( __( 'You do not have permission to view those materials', 'learnpress' ) );
-			}
+			$can_view = $current_user->can_view_content_course( $course_id );
 		}
+		if ( ! $can_view->flag ) {
+			$error_message = $can_view->message ?? __( 'You do not have permission to view those materials', 'learnpress' );
+			throw new Exception( $error_message );
+		}
+	}
+	/**
+	 * get material file of course or lesson ( show in LP course/lesson page )
+	 * @param  WP_REST_Request $request
+	 * @return WP_REST_Response  $response
+	 */
+	public function of_item_material( WP_REST_Request $request ) {
+		$response = new LP_REST_Response();
+		try {
+			$params    = $request->get_params();
+			$course_id = (int) $params['courseId'] ?? 0;
+			$lesson_id = (int) $params['lessonId'] ?? 0;
+			if ( ! $course_id ) {
+				throw new Exception( __( 'Invalid course', 'learnpress' ) );
+			}
+			$this->check_can_get_materials( $course_id, $lesson_id );
+			$item_id        = $lesson_id !== 0 ? $lesson_id : $course_id;
+			$material_db    = LP_Material_Files_DB::getInstance();
+			$page           = absint( $params['page'] ?? 1 );
+			$per_page       = $params['per_page'] ?? (int) LP_Settings::get_option( 'material_file_per_page', - 1 );
+			$offset         = ( $per_page > 0 && $page > 1 ) ? $per_page * ( $page - 1 ) : 0;
+			$total          = $material_db->get_total( $item_id );
+			$pages          = $per_page > 0 ? ceil( $total / $per_page ) : 0;
+			$item_materials = $material_db->get_material_by_item_id( $item_id, $per_page, $offset, false );
+			if ( $item_materials ) {
+				$response->data->load_more = $page < $pages && $per_page > 0;
+				ob_start();
+				$material_template = CourseMaterialTemplate::instance();
+				foreach ( $item_materials as $m ) {
+					$m->current_item_id = $item_id;
+					echo $material_template->material_item( $m );
+				}
+				$response->data->items = ob_get_clean();
+				$response->message     = esc_html__( 'Successfully', 'learnpress' );
+			} else {
+				$response->message = esc_html__( 'Empty material!', 'learnpress' );
+			}
+
+			$response->status = 'success';
+		} catch ( Throwable $e ) {
+			$response->message = $e->getMessage();
+		}
+		return rest_ensure_response( $response );
 	}
 
 	/**
@@ -492,6 +513,6 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 			$permission = true;
 		}
 
-		return $permission;
+		return apply_filters( 'learnpress/rest-material/can-edit-material', $permission );
 	}
 }
