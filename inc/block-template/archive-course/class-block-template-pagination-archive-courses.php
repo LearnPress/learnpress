@@ -25,10 +25,12 @@ class Block_Template_Pagination_Archive_Courses extends Abstract_Block_Template_
 		);
 		Courses::handle_params_for_query_courses( $filter, $settings );
 		Courses::get_courses( $filter, $total_rows );
-		$total_pages          = 0;
-		$total_pages          = LP_Database::get_total_pages( $filter->limit, $total_rows );
-		$data_pagination_type = LP_Settings::get_option( 'course_pagination_type', 'number' );
-		if ( empty( $settings['courses_load_ajax'] ) ) {
+		$total_pages           = 0;
+		$total_pages           = LP_Database::get_total_pages( $filter->limit, $total_rows );
+		$data_pagination_type  = LP_Settings::get_option( 'course_pagination_type', 'number' );
+		$enableAjaxLoadCourses = LP_Settings::get_option( 'courses_load_ajax', 'yes' );
+
+		if ( ! $enableAjaxLoadCourses ) {
 			$data_pagination_type = 'number';
 		}
 

@@ -101,6 +101,7 @@ module.exports = {
 		'./assets/js/dist/blocks/time-single-course': './assets/src/apps/js/blocks/widget-single-course/time-single-course/index.js',
 		'./assets/js/dist/blocks/progress-single-course': './assets/src/apps/js/blocks/widget-single-course/progress-single-course/index.js',
 		'./assets/js/dist/blocks/breadcrumb': './assets/src/apps/js/blocks/widget-single-course/breadcrumb/index.js',
+		'./assets/js/dist/blocks/comment': './assets/src/apps/js/blocks/widget-single-course/comment/index.js',
 		'./assets/js/dist/blocks/lp-single-course': './assets/src/apps/js/blocks/widget-single-course/lp-single-course/index.js',
 		'./assets/js/dist/blocks/course-summary': './assets/src/apps/js/blocks/widget-single-course/course-summary/index.js',
 		'./assets/js/dist/blocks/course-detail-info': './assets/src/apps/js/blocks/widget-single-course/course-detail-info/index.js',

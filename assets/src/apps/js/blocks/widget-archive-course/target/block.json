@@ -8,6 +8,12 @@
 	"textdomain": "learnpress",
 	"keywords": ["layout target course", "learnpress"],
 	"usesContext": [],
+	"attributes": {
+		"custom": {
+			"type": "boolean",
+			"default": false
+		}
+	},
 	"supports": {
 		"inserter": true,
 		"reusable": true,
