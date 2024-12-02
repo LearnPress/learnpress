@@ -323,6 +323,18 @@ class LP_Page_Controller {
 		}
 
 		/**
+		 * Use for case not load course via send params, use global instead.
+		 * Not recommended for use
+		 * This method is only purpose instead get_the_ID(), on file item of course.
+		 * When all file write by standard callback send param courseModel, this method will be removed.
+		 *
+		 * @return false|CourseModel
+		 * @since 4.2.7.4
+		 */
+		global $lpCourseModel;
+		$lpCourseModel = CourseModel::find( $course->get_id(), true );
+
+		/**
 		 * @deprecated v4.1.6.1 LearnPress::instance()->global['course'], $GLOBALS['course']
 		 * Some theme still use: global $course; LearnPress::instance()->global['course']
 		 */

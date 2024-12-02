@@ -1,7 +1,7 @@
 import { addQueryArgs } from '@wordpress/url';
 import apiFetch from '@wordpress/api-fetch';
 
-export default function lpMaterialsLoad( is_curriculum = false ) {
+export default function lpMaterialsLoad() {
 	// console.log('loaded');
 	const Sekeleton = () => {
 		const elementSkeleton = document.querySelector( '.lp-material-skeleton' );
@@ -15,26 +15,20 @@ export default function lpMaterialsLoad( is_curriculum = false ) {
 		getResponse( elementSkeleton );
 	};
 	const getResponse = async ( ele, page = 1 ) => {
-		let itemID = 0;
-		if ( is_curriculum ) {
-			const elCurriculum = document.querySelector( '.learnpress-course-curriculum' );
-			if ( ! elCurriculum ) {
-				return;
-			}
-			const itemId = elCurriculum.dataset.id;
-			itemID = itemId || 0;
-		} else {
-			itemID = lpGlobalSettings.post_id;
-		}
+		// let itemID = 0;
+		const courseId = parseInt( ele.dataset.courseId),
+			  lessonId = parseInt( ele.dataset.itemId );
 		const elementMaterial = ele.querySelector( '.course-material-table' );
 		const loadMoreBtn = document.querySelector( '.lp-loadmore-material' );
 		const elListItems = document.querySelector( '.lp-list-material' );
 		try {
 			const response = await apiFetch( {
-				path: addQueryArgs( `lp/v1/material/item-materials/${ itemID }`, {
-					page,
+				path: addQueryArgs( `lp/v1/material/of-item/`, {
+					courseId:courseId,
+					lessonId:lessonId,
+					page:page,
 				} ),
-				method: 'GET',
+				method: 'POST',
 			} );
 			const { data, status, message } = response;
 

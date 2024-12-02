@@ -42,10 +42,6 @@ class PostModel {
 	 */
 	public $post_author = 0;
 	/**
-	 * @var UserModel author model
-	 */
-	public $author;
-	/**
 	 * @var string post date
 	 */
 	public $post_date = null;
@@ -116,19 +112,13 @@ class PostModel {
 	 * @return false|UserModel
 	 */
 	public function get_author_model() {
-		if ( ! empty( $this->author ) ) {
-			return $this->author;
-		}
-
-		if ( empty( $this->post_author ) ) {
+		if ( ! empty( $this->post_author ) ) {
 			$author_id = $this->post_author;
 		} else {
 			$author_id = get_post_field( 'post_author', $this );
 		}
 
-		$this->author = UserModel::find( $author_id, true );
-
-		return $this->author;
+		return UserModel::find( $author_id, true );
 	}
 
 	/**

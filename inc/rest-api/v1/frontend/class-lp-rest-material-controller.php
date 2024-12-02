@@ -1,7 +1,9 @@
 <?php
 
 use LearnPress\Helpers\Template;
+use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\TemplateHooks\Course\CourseMaterialTemplate;
+use LearnPress\Models\CourseModel;
 
 /**
  * Class LP_Rest_Material_Controller
@@ -33,7 +35,7 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'save_post_materials' ),
-					'permission_callback' => array( $this, 'check_user_permission' ),
+					'permission_callback' => array( $this, 'check_user_can_edit_material' ),
 					'args'                => array(
 						'data' => array(
 							'description'       => esc_html__( 'Data of material', 'learnpress' ),
@@ -55,7 +57,7 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 				array(
 					'methods'             => WP_REST_Server::EDITABLE,
 					'callback'            => array( $this, 'update_material_orders' ),
-					'permission_callback' => array( $this, 'check_user_permission' ),
+					'permission_callback' => array( $this, 'check_user_can_edit_material' ),
 					'args'                => array(
 						'sort_arr' => array(
 							'description'       => esc_html__( 'Material orders', 'learnpress' ),
@@ -76,11 +78,13 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 				array(
 					'methods'             => WP_REST_Server::DELETABLE,
 					'callback'            => array( $this, 'delete_material' ),
-					'permission_callback' => array( $this, 'check_user_permission' ),
+					'permission_callback' => array( $this, 'check_user_can_edit_material' ),
 				),
+			),
+			'of-item'                           => array(
 				array(
-					'methods'             => WP_REST_Server::READABLE,
-					'callback'            => array( $this, 'get_material' ),
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => array( $this, 'of_item_material' ),
 					'permission_callback' => '__return_true',
 				),
 			),
@@ -260,48 +264,38 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 	}
 
 	/**
-	 * Get list files of a course or a lesson
+	 * Get list files of a course or a lesson (use in wp-admin)
 	 *
 	 * @param WP_REST_Request $request
 	 *
 	 * @return LP_REST_Response
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 * @since 4.2.2
 	 */
 	public function get_materials_by_item( WP_REST_Request $request ): LP_REST_Response {
 		$response = new LP_REST_Response();
 
 		try {
-			$params  = $request->get_params();
-			$item_id = $params['item_id'] ?? 0;
+			$params   = $request->get_params();
+			$item_id  = $params['item_id'] ?? 0;
+			$is_admin = $params['is_admin'] ?? false;
 			if ( ! $item_id ) {
-				throw new Exception( esc_html__( 'Invalid course or lesson identifier', 'learnpress' ) );
+				throw new Exception( esc_html__( 'Invalid course identifier', 'learnpress' ) );
 			}
-
-			$is_admin       = $params['is_admin'] ?? false;
-			$material_init  = LP_Material_Files_DB::getInstance();
+			if ( ! current_user_can( 'edit_post', $item_id ) ) {
+				throw new Exception( __( 'You do not have permission to get those materials', 'learnpress' ) );
+			}
+			$material_db    = LP_Material_Files_DB::getInstance();
 			$page           = absint( $params['page'] ?? 1 );
 			$per_page       = $params['per_page'] ?? (int) LP_Settings::get_option( 'material_file_per_page', - 1 );
 			$offset         = ( $per_page > 0 && $page > 1 ) ? $per_page * ( $page - 1 ) : 0;
-			$total          = $material_init->get_total( $item_id );
+			$total          = $material_db->get_total( $item_id );
 			$pages          = $per_page > 0 ? ceil( $total / $per_page ) : 0;
-			$item_materials = $material_init->get_material_by_item_id( $item_id, $per_page, $offset, $is_admin );
+			$item_materials = $material_db->get_material_by_item_id( $item_id, $per_page, $offset, true );
 
 			if ( $item_materials ) {
-				if ( $is_admin ) {
-					$response->data->items = $item_materials;
-				} else {
-					$response->data->load_more = $page < $pages && $per_page > 0;
-					ob_start();
-					$material_template = CourseMaterialTemplate::instance();
-					foreach ( $item_materials as $m ) {
-						$m->current_item_id = $item_id;
-						echo $material_template->material_item( $m );
-					}
-					$response->data->items = ob_get_clean();
-				}
-
-				$response->message = esc_html__( 'Successfully', 'learnpress' );
+				$response->data->items = $item_materials;
+				$response->message     = esc_html__( 'Successfully', 'learnpress' );
 			} else {
 				$response->message = esc_html__( 'Empty material!', 'learnpress' );
 			}
@@ -379,51 +373,15 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 		return in_array( $ext, $allow_file_type ) ? $ext : false;
 	}
 
-	/**
-	 * @param  [type] $request [description]
-	 *
-	 * @return [type]          [description]
-	 * @version 1.0.0
-	 * @since 4.2.2
-	 * [get_material description]
-	 */
-	public function get_material( $request ) {
+
+	public function update_material_orders( WP_REST_Request $request ) {
 		$response = new LP_REST_Response();
 		try {
-			$id = $request['file_id'];
-			if ( ! $id ) {
-				throw new Exception( esc_html__( 'Invalid identifier', 'learnpress' ) );
-			}
-			$material_init = LP_Material_Files_DB::getInstance();
-			$file          = $material_init->get_material( $id );
-			if ( $file ) {
-				if ( $file->method == 'upload' ) {
-					$file->file_path = wp_upload_dir()['baseurl'] . $file->file_path;
-				}
-				$response_data = $file;
-				$message       = esc_html__( 'Get file successfully.', 'learnpress' );
-			} else {
-				$response_data = [];
-				$message       = esc_html__( 'The file is not exist', 'learnpress' );
-			}
-			$response->message = $message;
-			$response->data    = $response_data;
-			$response->status  = 200;
-		} catch ( Throwable $th ) {
-			$response->message = $th->getMessage();
-		}
-
-		return rest_ensure_response( $response );
-	}
-
-	public function update_material_orders( $request ) {
-		$response = new LP_REST_Response();
-		try {
-			$item_id       = $request['item_id'];
-			$sort_arr      = $request->get_param( 'sort_arr' );
-			$sort_arr      = json_decode( wp_unslash( $sort_arr ), true );
-			$material_init = LP_Material_Files_DB::getInstance();
-			$update_sort   = $material_init->update_material_orders( $sort_arr, $item_id );
+			$item_id     = $request['item_id'];
+			$sort_arr    = $request->get_param( 'sort_arr' );
+			$sort_arr    = json_decode( wp_unslash( $sort_arr ), true );
+			$material_db = LP_Material_Files_DB::getInstance();
+			$update_sort = $material_db->update_material_orders( $sort_arr, $item_id );
 			if ( $update_sort ) {
 				$response->status  = 200;
 				$response->message = esc_html__( 'Updated.', 'learnpress' );
@@ -447,7 +405,7 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 	 * @since 4.2.2
 	 * [delete_material delete a material when a delete request is send]
 	 */
-	public function delete_material( $request ) {
+	public function delete_material( WP_REST_Request $request ) {
 		$response = new LP_REST_Response();
 		try {
 			$id = $request['file_id'];
@@ -455,9 +413,9 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 				throw new Exception( esc_html__( 'Invalid file identifier', 'learnpress' ) );
 			}
 			// DB Init
-			$material_init = LP_Material_Files_DB::getInstance();
+			$material_db = LP_Material_Files_DB::getInstance();
 			// Delete record
-			$delete = $material_init->delete_material( $id );
+			$delete = $material_db->delete_material( $id );
 			if ( $delete ) {
 				$message = esc_html__( 'File is deleted.', 'learnpress' );
 				$deleted = true;
@@ -475,6 +433,67 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 
 		return rest_ensure_response( $response );
 	}
+	/**
+	 * [check_can_get_materials description]
+	 * @param  int|integer $course_id course id
+	 * @param  int|integer $lesson_id lesson id
+	 */
+	public function check_can_get_materials( int $course_id = 0, int $lesson_id = 0 ) {
+		$current_user = learn_press_get_current_user();
+		if ( $lesson_id && get_post_field( 'post_type', $lesson_id ) === LP_LESSON_CPT ) {
+			$can_view_content_course = $current_user->can_view_content_course( $course_id );
+			$can_view                = $current_user->can_view_item( absint( $lesson_id ), $can_view_content_course );
+		} else {
+			$can_view = $current_user->can_view_content_course( $course_id );
+		}
+		if ( ! $can_view->flag ) {
+			$error_message = $can_view->message ?? __( 'You do not have permission to view those materials', 'learnpress' );
+			throw new Exception( $error_message );
+		}
+	}
+	/**
+	 * get material file of course or lesson ( show in LP course/lesson page )
+	 * @param  WP_REST_Request $request
+	 * @return WP_REST_Response  $response
+	 */
+	public function of_item_material( WP_REST_Request $request ) {
+		$response = new LP_REST_Response();
+		try {
+			$params    = $request->get_params();
+			$course_id = (int) $params['courseId'] ?? 0;
+			$lesson_id = (int) $params['lessonId'] ?? 0;
+			if ( ! $course_id ) {
+				throw new Exception( __( 'Invalid course', 'learnpress' ) );
+			}
+			$this->check_can_get_materials( $course_id, $lesson_id );
+			$item_id        = $lesson_id !== 0 ? $lesson_id : $course_id;
+			$material_db    = LP_Material_Files_DB::getInstance();
+			$page           = absint( $params['page'] ?? 1 );
+			$per_page       = $params['per_page'] ?? (int) LP_Settings::get_option( 'material_file_per_page', - 1 );
+			$offset         = ( $per_page > 0 && $page > 1 ) ? $per_page * ( $page - 1 ) : 0;
+			$total          = $material_db->get_total( $item_id );
+			$pages          = $per_page > 0 ? ceil( $total / $per_page ) : 0;
+			$item_materials = $material_db->get_material_by_item_id( $item_id, $per_page, $offset, false );
+			if ( $item_materials ) {
+				$response->data->load_more = $page < $pages && $per_page > 0;
+				ob_start();
+				$material_template = CourseMaterialTemplate::instance();
+				foreach ( $item_materials as $m ) {
+					$m->current_item_id = $item_id;
+					echo $material_template->material_item( $m );
+				}
+				$response->data->items = ob_get_clean();
+				$response->message     = esc_html__( 'Successfully', 'learnpress' );
+			} else {
+				$response->message = esc_html__( 'Empty material!', 'learnpress' );
+			}
+
+			$response->status = 'success';
+		} catch ( Throwable $e ) {
+			$response->message = $e->getMessage();
+		}
+		return rest_ensure_response( $response );
+	}
 
 	/**
 	 * Check user permission
@@ -485,7 +504,7 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 	 * @version 1.0.1
 	 * @since 4.2.2
 	 */
-	public function check_user_permission( $request ): bool {
+	public function check_user_can_edit_material( $request ): bool {
 		$permission      = false;
 		$item_id         = $request['item_id'] ?? $request->get_param( 'item_id' );
 		$author          = get_post_field( 'post_author', $item_id );
@@ -494,6 +513,6 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 			$permission = true;
 		}
 
-		return $permission;
+		return apply_filters( 'learnpress/rest-material/can-edit-material', $permission );
 	}
 }

@@ -112,7 +112,7 @@ class SingleInstructorTemplate {
 	 */
 	public function html_avatar( $instructor, array $size_display = [] ): string {
 		$userTemplate = UserTemplate::instance();
-		$html = '';
+		$html         = '';
 		if ( ! $instructor ) {
 			return $html;
 		}

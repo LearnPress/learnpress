@@ -8,6 +8,7 @@
 namespace LearnPress\TemplateHooks\Course;
 
 use LearnPress\Helpers\Template;
+use LP_Global;
 use LP_WP_Filesystem;
 use LP_Settings;
 use Throwable;
@@ -37,8 +38,15 @@ class CourseMaterialTemplate {
 				],
 				$data
 			);
+
+			$item    = LP_Global::course_item();
+			$item_id = 0;
+			if ( $item ) {
+				$item_id = $item->get_id();
+			}
 			?>
-			<div class="lp-material-skeleton">
+			<div class="lp-material-skeleton" data-course-id="<?php echo esc_attr( get_the_ID() ); ?>"
+				data-item-id="<?php echo esc_attr( $item_id ); ?>">
 				<?php do_action( 'learn-press/course-material/before' ); ?>
 				<?php lp_skeleton_animation_html( 5, 100 ); ?>
 				<table class="course-material-table" >

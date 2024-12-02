@@ -356,9 +356,10 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 	 * @version 1.0.1
 	 */
 	public function search_courses( WP_REST_Request $request ): LP_REST_Response {
+		ini_set( 'max_execution_time', HOUR_IN_SECONDS );
+
 		$response = new LP_REST_Response();
 		try {
-			@set_time_limit( 0 );
 			$params  = $request->get_params();
 			$ids_str = LP_Helper::sanitize_params_submitted( $params['ids'] ?? '' );
 			//$not_ids_str         = LP_Helper::sanitize_params_submitted( $params['not_ids'] ?? '' );
@@ -414,6 +415,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 
+		ini_set( 'max_execution_time', LearnPress::$time_limit_default_of_sever );
 		return $response;
 	}
 
@@ -427,9 +429,10 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 	 * @version 1.0.2
 	 */
 	public function search_users( WP_REST_Request $request ): LP_REST_Response {
+		ini_set( 'max_execution_time', HOUR_IN_SECONDS );
+
 		$response = new LP_REST_Response();
 		try {
-			@set_time_limit( 0 );
 			$params        = $request->get_params();
 			$search_string = LP_Helper::sanitize_params_submitted( $params['search'] ?? '' );
 			$current_ids   = LP_Helper::sanitize_params_submitted( $params['current_ids'] ?? '' );
@@ -493,6 +496,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 
+		ini_set( 'max_execution_time', LearnPress::$time_limit_default_of_sever );
 		return $response;
 	}
 
