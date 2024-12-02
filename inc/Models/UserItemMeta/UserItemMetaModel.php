@@ -5,7 +5,7 @@
  * To replace class LP_User_Item
  *
  * @package LearnPress/Classes
- * @version 1.0.0
+ * @version 1.0.1
  * @since 4.2.5
  */
 
@@ -172,6 +172,21 @@ class UserItemMetaModel {
 		$this->clean_caches();
 
 		return $this;
+	}
+
+	/**
+	 * Delete user_item_meta
+	 *
+	 * @param mixed $meta_value
+	 * @param bool $delete_all
+	 *
+	 * @return void
+	 * @since 4.2.7.4
+	 */
+	public function delete( $meta_value = '', bool $delete_all = false ) {
+		learn_press_delete_user_item_meta( $this->learnpress_user_item_id, $this->meta_key, $meta_value, $delete_all );
+
+		$this->clean_caches();
 	}
 
 	/**

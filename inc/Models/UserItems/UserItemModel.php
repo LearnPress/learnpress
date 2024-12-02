@@ -5,7 +5,7 @@
  * To replace class LP_User_Item
  *
  * @package LearnPress/Classes
- * @version 1.0.0
+ * @version 1.0.1
  * @since 4.2.5
  */
 
@@ -114,6 +114,10 @@ class UserItemModel {
 		if ( $data ) {
 			$this->map_to_object( $data );
 			$this->get_user_model();
+		}
+
+		if ( ! $this->meta_data instanceof stdClass ) {
+			$this->meta_data = new stdClass();
 		}
 	}
 
@@ -284,6 +288,10 @@ class UserItemModel {
 		$userItemModel = static::get_user_item_model_from_db( $filter );
 		// Set cache
 		if ( $userItemModel instanceof UserItemModel ) {
+			if ( ! $userItemModel->meta_data instanceof stdClass ) {
+				$userItemModel->meta_data = new stdClass();
+			}
+
 			$lpUserItemCache->set_cache( $key_cache, $userItemModel );
 		}
 
@@ -328,16 +336,64 @@ class UserItemModel {
 			if ( ! $this->meta_data instanceof stdClass ) {
 				$this->meta_data = new stdClass();
 			}
-			$this->meta_data->{$key} = $user_item_metadata;
 
 			if ( $get_extra ) {
 				$data = $user_item_metadata->extra_value;
 			} else {
 				$data = $user_item_metadata->meta_value;
 			}
+
+			$this->meta_data->{$key} = $data;
 		}
 
 		return $data;
+	}
+
+	/**
+	 * Update meta value for key.
+	 *
+	 * @param string $key
+	 * @param mixed $value
+	 * @param bool $is_extra
+	 *
+	 * @return void
+	 * @since 4.2.7.4
+	 * @version 1.0.0
+	 */
+	public function set_meta_value_for_key( string $key, $value, bool $is_extra = false ) {
+		if ( ! $this->meta_data instanceof stdClass ) {
+			$this->meta_data = new stdClass();
+		}
+
+		$this->meta_data->{$key} = $value;
+		$lp_db                   = LP_User_Items_DB::getInstance();
+		if ( $is_extra ) {
+			if ( is_object( $value ) || is_array( $value ) ) {
+				$value = json_encode( $value );
+			}
+			$lp_db->update_extra_value( $this->get_user_item_id(), $key, $value );
+		} else {
+			learn_press_update_user_item_meta( $this->get_user_item_id(), $key, $value );
+		}
+
+		//$this->clean_caches();
+	}
+
+	/**
+	 * Delete meta from key.
+	 * @param string $key
+	 *
+	 * @return void
+	 * @since 4.2.7.4
+	 * @version 1.0.0
+	 */
+	public function delete_meta( string $key ) {
+		$user_item_metadata = $this->get_meta_model_from_key( $key );
+		if ( $user_item_metadata instanceof UserItemMetaModel ) {
+			$user_item_metadata->delete();
+			$this->meta_data->{$key} = null;
+			$this->clean_caches();
+		}
 	}
 
 	/**

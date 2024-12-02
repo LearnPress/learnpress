@@ -103,13 +103,13 @@ class UserTemplate {
 	 *
 	 * @param UserModel $user
 	 * @param array $size_display [ 'width' => 100, 'height' => 100 ]
-	 * @param string $class
+	 * @param string $class_name
 	 *
 	 * @return string
 	 * @since 4.2.7.2
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 */
-	public function html_avatar( UserModel $user, array $size_display = [], string $class = 'user' ): string {
+	public function html_avatar( UserModel $user, array $size_display = [], string $class_name = 'user' ): string {
 		$html = '';
 
 		try {
@@ -117,7 +117,8 @@ class UserTemplate {
 				$size_display = learn_press_get_avatar_thumb_size();
 			}
 
-			$width = $height = $size_display;
+			$width  = $size_display;
+			$height = $size_display;
 			if ( is_array( $size_display ) ) {
 				$width  = $size_display['width'];
 				$height = $size_display['height'];
@@ -135,7 +136,7 @@ class UserTemplate {
 			$section = apply_filters(
 				'learn-press/user/html-avatar',
 				[
-					'wrapper'     => sprintf( '<div class="%s-avatar">', $class ),
+					'wrapper'     => sprintf( '<div class="%s-avatar">', $class_name ),
 					'avatar'      => $img_avatar,
 					'wrapper_end' => '</div>',
 				],

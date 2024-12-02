@@ -7,7 +7,7 @@
  * Another fields for query list courses faster
  *
  * @package LearnPress/Classes
- * @version 1.0.1
+ * @version 1.0.2
  * @since 4.2.6.9
  */
 
@@ -73,10 +73,6 @@ class CourseModel {
 	 */
 	public $lang = null;
 	/********** Field not on table **********/
-	/**
-	 * @var UserModel author model
-	 */
-	public $author;
 	/**
 	 * @var stdClass all meta data
 	 */
@@ -180,14 +176,8 @@ class CourseModel {
 	 * @return UserModel|false
 	 */
 	public function get_author_model() {
-		if ( isset( $this->author ) ) {
-			return $this->author;
-		}
-
-		$post         = new CoursePostModel( $this );
-		$this->author = $post->get_author_model();
-
-		return $this->author;
+		$post = new CoursePostModel( $this );
+		return $post->get_author_model();
 	}
 
 	/**
@@ -1098,9 +1088,7 @@ class CourseModel {
 				$course_model = new static( $course_obj );
 				//$course_model->json         = $course_rs->json;
 				$course_model->post_content = $course_rs->post_content;
-				if ( $course_model->author instanceof stdClass ) {
-					$course_model->author = new UserModel( $course_model->author );
-				}
+				$course_model->get_author_model();
 			}
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
