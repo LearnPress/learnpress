@@ -9,7 +9,7 @@ export const edit = ( props ) => {
 				<PanelBody title="Custom Settings">
 					<ToggleControl
 						label="Custom Layout"
-						help={ 'You need to turn off ajax loading and turn on the custom layout if you want to customize the course layout.' }
+						help={ 'When enabled, loading AJAX Courses will be disabled.' }
 						checked={ props.attributes.custom ? true : false }
 						onChange={ ( value ) => props.setAttributes( { custom: value ? value : '' } ) }
 					/>
