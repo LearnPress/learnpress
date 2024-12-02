@@ -23,6 +23,7 @@
 		<exclude name="Universal.Arrays.DisallowShortArraySyntax" />
 		<exclude name="Universal.Operators.StrictComparisons.LooseNotEqual" />
 		<exclude name="Universal.Operators.StrictComparisons.LooseEqual" />
+		<exclude name="Generic.WhiteSpace.IncrementDecrementSpacing.SpaceAfterIncrement" />
 		<exclude name="WordPress.NamingConventions.ValidHookName.UseUnderscores" />
 		<exclude name="WordPress.WP.I18n.MissingTranslatorsComment" />
 		<exclude name="WordPress.PHP.YodaConditions.NotYoda" />
@@ -32,8 +33,9 @@
 		<!-- When need check security query mysql use default of WordPress, need open -->
 		<exclude name="WordPress.DB.PreparedSQL.NotPrepared" />
 		<exclude name="WordPress.DB.PreparedSQL.InterpolatedNotPrepared" />
-		<exclude name="Generic.WhiteSpace.IncrementDecrementSpacing.SpaceAfterIncrement" />
 		<exclude name="WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase" />
 		<exclude name="WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid" />
+		<exclude name="WordPress.Files.FileName.InvalidClassFileName" />
+		<exclude name="WordPress.Files.FileName.NotHyphenatedLowercase" />
     </rule>
 </ruleset>
