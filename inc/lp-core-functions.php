@@ -3206,6 +3206,31 @@ function lp_item_course_class( $class = array() ) {
 
 
 /**
+ * @return array|null
+ * @since 4.2.7.3
+ */
+function find_block_by_name( array $blocks, string $targetBlockName ) {
+	if ( empty( $blocks ) || empty( $targetBlockName ) ) {
+		return null;
+	}
+
+	foreach ( $blocks as $block ) {
+		if ( isset( $block['blockName'] ) && $block['blockName'] === $targetBlockName ) {
+			return $block['attrs'] ?? null;
+		}
+
+		if ( ! empty( $block['innerBlocks'] ) ) {
+			$result = find_block_by_name( $block['innerBlocks'], $targetBlockName );
+			if ( $result ) {
+				return $result;
+			}
+		}
+	}
+
+	return null;
+}
+
+/**
  * Disable auto update
  *
  * @param $update

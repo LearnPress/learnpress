@@ -1,7 +1,6 @@
 <?php
 
 use LearnPress\TemplateHooks\TemplateAJAX;
-use LearnPress\Helpers\Template;
 
 $content  = $inner_content;
 $callback = [

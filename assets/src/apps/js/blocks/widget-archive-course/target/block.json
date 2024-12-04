@@ -12,6 +12,14 @@
 		"custom": {
 			"type": "boolean",
 			"default": false
+		},
+		"load": {
+			"type": "boolean",
+			"default": false
+		},
+		"pagination": {
+			"type": "string",
+			"default": "number"
 		}
 	},
 	"supports": {
