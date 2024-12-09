@@ -20,6 +20,7 @@ use LearnPress\TemplateHooks\UserTemplate;
 use LP_Checkout;
 use LP_Course;
 use LP_Datetime;
+use LP_Global;
 use LP_Material_Files_DB;
 use LP_Settings;
 use LP_Template_General;
@@ -1417,6 +1418,33 @@ class SingleCourseTemplate {
 			comments_template();
 			remove_filter( 'deprecated_file_trigger_error', '__return_false' );
 		}
+	}
+
+	/**
+	 * Show content item curriculum course
+	 *
+	 *
+	 * @return string
+	 * @since 4.2.7.2
+	 * @version 1.0.0
+	 */
+	public function html_content_item() {
+		if ( ! is_singular( LP_COURSE_CPT ) ) {
+			return;
+		}
+
+		if ( ! learn_press_is_course() || ! is_single() ) {
+			return;
+		}
+
+		global $post;
+		setup_postdata( $post );
+		$course_item = LP_Global::course_item();
+		if ( ! $course_item ) {
+			return;
+		}
+
+		return Template::instance()->get_frontend_template( 'content-single-item.php' );
 	}
 
 	/**

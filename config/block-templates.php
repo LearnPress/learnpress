@@ -2,7 +2,6 @@
 $blog_template_path = LP_PLUGIN_PATH . 'inc/block-template/';
 require_once $blog_template_path . 'class-block-template-archive-course.php';
 require_once $blog_template_path . 'class-block-template-single-course.php';
-require_once $blog_template_path . 'class-block-template-item-curriculum-course.php';
 
 // Single Course
 require_once $blog_template_path . 'single-course/class-block-template-title-single-course.php';
@@ -27,6 +26,7 @@ require_once $blog_template_path . 'single-course/class-block-template-lesson-si
 require_once $blog_template_path . 'single-course/class-block-template-quiz-single-course.php';
 require_once $blog_template_path . 'single-course/class-block-template-time-single-course.php';
 require_once $blog_template_path . 'single-course/class-block-template-progress-single-course.php';
+require_once $blog_template_path . 'single-course/class-block-template-item-curriculum-course.php';
 
 // Archive course
 require_once $blog_template_path . 'archive-course/class-block-template-search-archive-courses.php';
@@ -87,6 +87,6 @@ return apply_filters(
 		new Block_Template_List_Course_Archive_Courses(),
 		new Block_Template_Pagination_Archive_Courses(),
 		new Block_Layout_Target_Archive_Course(),
-		//new Block_Template_Item_Curriculum_Course(), // When handle item correct post type, uncomment this line, currently item show is post type course.
+		new Block_Template_Item_Curriculum_Course(),
 	)
 );

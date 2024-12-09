@@ -117,7 +117,7 @@ module.exports = {
 		'./assets/js/dist/blocks/pagination-archive-course': './assets/src/apps/js/blocks/widget-archive-course/pagination/index.js',
 		'./assets/js/dist/blocks/target-archive-course': './assets/src/apps/js/blocks/widget-archive-course/target/index.js',
 		'./assets/js/dist/blocks/single-course': './assets/src/apps/js/blocks/single-course/index.js',
-		'./assets/js/dist/blocks/item-curriculum-course': './assets/src/apps/js/blocks/item-curriculum-course/index.js',
+		'./assets/js/dist/blocks/item-curriculum-course': './assets/src/apps/js/blocks/widget-single-course/item-curriculum-course/index.js',
 
 		// Elementor
 		'./assets/js/dist/elementor/courses': './assets/src/js/elementor/courses.js',
