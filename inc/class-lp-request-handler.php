@@ -176,7 +176,7 @@ class LP_Request {
 			define( 'LP_DOING_AJAX', true );
 		}
 
-		LP_Gateways::instance()->get_available_payment_gateways();
+		//LP_Gateways::instance()->get_available_payment_gateways();
 
 		if ( has_filter( 'learn-press/ajax/verify-none/' . $action ) ) {
 			if ( ! self::verify_nonce( $action ) ) {
