@@ -3,7 +3,7 @@
 	"apiVersion": 2,
 	"name": "learnpress/breadcrumb",
 	"title": "Breadcrumb",
-	"category": "lp-single-course-category",
+	"category": "learnpress-category",
 	"description": "Renders Breadcrumb PHP Template.",
 	"textdomain": "learnpress",
 	"keywords": ["breadcrumb", "learnpress"],
