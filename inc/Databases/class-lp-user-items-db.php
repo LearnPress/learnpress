@@ -794,7 +794,7 @@ class LP_User_Items_DB extends LP_Database {
 		}
 
 		$query = $this->wpdb->prepare(
-			"SELECT * FROM $this->tb_lp_user_items
+			"SELECT SQL_CALC_FOUND_ROWS * FROM $this->tb_lp_user_items
 			WHERE user_item_id IN (
 				SELECT DISTINCT MAX(user_item_id)
 				FROM $this->tb_lp_user_items

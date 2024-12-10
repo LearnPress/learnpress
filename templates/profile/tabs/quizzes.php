@@ -22,11 +22,16 @@ $user_profile = learn_press_get_user( $profile->get_user_data( 'id' ) );
 
 $filter             = new LP_User_Items_Filter();
 $filter->user_id    = $user_profile->get_id();
-$filter->limit      = apply_filters( 'learnpress/user/quizzes/limit', 5 );
+$filter->limit      = apply_filters( 'learnpress/user/quizzes/limit', 10 );
 $filter->status     = LP_Request::get_param( 'filter-status' );
 $filter->graduation = LP_Request::get_param( 'filter-graduation' );
-$query              = $user_profile->get_user_quizzes( $filter );
-$current_filter     = 'all';
+
+if ( ! empty( $wp->query_vars['view_id'] ) ) {
+	$filter->page = $wp->query_vars['view_id'];
+}
+
+$query          = $user_profile->get_user_quizzes( $filter );
+$current_filter = 'all';
 
 if ( ! empty( $filter->status ) ) {
 	$current_filter = $filter->status;
