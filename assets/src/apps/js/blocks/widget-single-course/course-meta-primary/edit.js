@@ -4,8 +4,13 @@ export const edit = ( props ) => {
 	const blockProps = useBlockProps();
 	return (
 		<>
-			<div { ...blockProps }>
-				<InnerBlocks />
+			<div { ...blockProps } style={ { display: 'flex', flexWrap: 'wrap' } }>
+				<div style={ { width: '50%' } }>
+					<strong>{ 'Instructor' }</strong>
+				</div>
+				<div>
+					<strong>{ 'Category' }</strong>
+				</div>
 			</div>
 		</>
 	);

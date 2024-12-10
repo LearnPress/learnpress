@@ -4,6 +4,7 @@
 	if ( ! empty( $inner_content ) ) {
 		echo $inner_content;
 	}
+	do_action( 'learn-press/course-meta-primary-left' );
 	?>
 	</div>
 </div>

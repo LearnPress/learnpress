@@ -9,11 +9,10 @@
 	"keywords": ["layout meta primary course", "learnpress"],
 	"usesContext": [],
 	"supports": {
-		"inserter": true,
-		"reusable": true,
+		"reusable": false,
 		"reorder": true,
 		"html": false,
-		"multiple": true,
+		"multiple": false,
 		"wrapper": false
 	}
 }
