@@ -1,7 +1,6 @@
-import { InnerBlocks, useInnerBlocksProps } from '@wordpress/block-editor';
-
+import { useBlockProps } from '@wordpress/block-editor';
 export const edit = ( props ) => {
-	const blockProps = useInnerBlocksProps();
+	const blockProps = useBlockProps();
 	return (
 		<>
 			<div { ...blockProps }>
