@@ -12,6 +12,11 @@
 /**
  * Prevent loading this file directly
  */
+
+use LearnPress\Models\CourseModel;
+use LearnPress\Models\UserModel;
+use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
+
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Shortcode_Button_Course' ) ) {
@@ -59,25 +64,26 @@ if ( ! class_exists( 'LP_Shortcode_Button_Course' ) ) {
 			}
 
 			try {
-				$course = learn_press_get_course( $course_id );
-				if ( ! $course ) {
+				$singleCourseTemplate = SingleCourseTemplate::instance();
+				$courseModel          = CourseModel::find( $course_id, true );
+				if ( ! $courseModel ) {
 					return '';
 				}
+
+				$userModel = UserModel::find( get_current_user_id(), true );
 
 				// Load js button course.
 				wp_enqueue_script( 'lp-single-course' );
 
-				if ( $course->is_free() ) {
-					add_filter( 'learn-press/enroll-course-button-text', array( $this, 'button_text_enroll' ) );
-				} elseif ( $course->get_external_link() ) {
-					add_filter( 'learn-press/course-external-link-text', array( $this, 'button_text_external_link' ) );
-				} elseif ( $course->is_no_required_enroll() ) {
-
+				if ( $courseModel->is_free() ) {
+					echo $singleCourseTemplate->html_btn_enroll_course( $courseModel, $userModel );
+				} elseif ( ! empty( $courseModel->get_external_link() ) ) {
+					echo $singleCourseTemplate->html_btn_external( $courseModel, $userModel );
+				} elseif ( $courseModel->has_no_enroll_requirement() ) {
+					printf( '<a href="%s">%s</a>', $courseModel->get_permalink(), __( 'Learn now', 'learnpress' ) );
 				} else {
-					add_filter( 'learn-press/purchase-course-button-text', array( $this, 'button_text_purchase' ) );
+					echo $singleCourseTemplate->html_btn_purchase_course( $courseModel, $userModel );
 				}
-
-				do_action( 'learn-press/course-buttons', $course );
 			} catch ( Throwable $e ) {
 				error_log( $e->getMessage() );
 			}
