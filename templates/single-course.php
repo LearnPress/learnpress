@@ -48,6 +48,9 @@ if ( $post instanceof WP_Post ) {
 			include $template_404;
 		}
 	} else {
+		// hook from @since 4.2.7.5
+		do_action( 'learn-press/single-course/layout' );
+
 		learn_press_get_template( 'content-single-course' );
 	}
 }
