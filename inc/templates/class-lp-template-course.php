@@ -181,9 +181,10 @@ class LP_Template_Course extends LP_Abstract_Template {
 	 */
 	public function course_purchase_button( $course = null ) {
 		// Test
+		$course_id            = empty( $course ) ? get_the_ID() : $course->get_id();
 		$singleCourseTemplate = SingleCourseTemplate::instance();
-		$course               = CourseModel::find( get_the_ID(), true );
-		$user                 = UserModel::find( get_current_user_id(), true );
+		$course               = CourseModel::find( $course_id );
+		$user                 = UserModel::find( get_current_user_id() );
 		echo $singleCourseTemplate->html_btn_purchase_course( $course, $user );
 		return;
 		// End test
@@ -254,9 +255,10 @@ class LP_Template_Course extends LP_Abstract_Template {
 	 */
 	public function course_enroll_button( $course = null ) {
 		// Test
+		$course_id            = empty( $course ) ? get_the_ID() : $course->get_id();
 		$singleCourseTemplate = SingleCourseTemplate::instance();
-		$course               = CourseModel::find( get_the_ID(), true );
-		$user                 = UserModel::find( get_current_user_id(), true );
+		$course               = CourseModel::find( $course_id );
+		$user                 = UserModel::find( get_current_user_id() );
 		echo $singleCourseTemplate->html_btn_enroll_course( $course, $user );
 		return;
 		// End test
