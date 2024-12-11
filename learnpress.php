@@ -27,6 +27,7 @@ use LearnPress\TemplateHooks\Course\FilterCourseTemplate;
 use LearnPress\TemplateHooks\Course\ListCoursesRelatedTemplate;
 use LearnPress\TemplateHooks\Course\ListCoursesTemplate;
 use LearnPress\TemplateHooks\Course\SingleCourseOfflineTemplate;
+use LearnPress\TemplateHooks\Course\SingleCourseModelTemplate;
 use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
 use LearnPress\TemplateHooks\Instructor\ListInstructorsTemplate;
 use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
@@ -305,6 +306,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			ListInstructorsTemplate::instance();
 			SingleCourseTemplate::instance();
 			SingleCourseOfflineTemplate::instance();
+			SingleCourseModelTemplate::instance();
 			SingleInstructorTemplate::instance();
 			ProfileInstructorStatisticsTemplate::instance();
 			ProfileStudentStatisticsTemplate::instance();
