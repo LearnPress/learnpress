@@ -193,7 +193,9 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 
 			if ( $no_required_enroll ) {
 				$defaults[] = 'item-free';
-			} elseif ( ! $enrolled ) {
+			}
+
+			if ( ! $enrolled ) {
 				$defaults['item-locked'] = 'item-locked';
 
 				if ( $this->is_preview() ) {
