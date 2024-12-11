@@ -1,12 +1,12 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 2,
-	"name": "learnpress/target-archive-course",
-	"title": "Target",
+	"name": "learnpress/group-courses-archive-course",
+	"title": "Group Courses",
 	"category": "lp-archive-course-category",
-	"description": "Renders Layout Target PHP templates.",
+	"description": "Renders Layout Group Courses PHP templates.",
 	"textdomain": "learnpress",
-	"keywords": ["layout target course", "learnpress"],
+	"keywords": ["layout group course", "learnpress"],
 	"usesContext": [],
 	"attributes": {
 		"custom": {

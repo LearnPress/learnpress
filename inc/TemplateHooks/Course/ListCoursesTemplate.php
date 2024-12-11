@@ -74,7 +74,7 @@ class ListCoursesTemplate {
 		echo Template::instance()->nest_elements( $html_wrapper, $content );
 	}
 
-	public function html_list_courses( array $settings = [] ) {
+	public function html_list_courses( array $settings = [], $data_pagination = [] ) {
 		$filter = new LP_Course_Filter();
 		Courses::handle_params_for_query_courses( $filter, $settings );
 		// Check is in category page.
@@ -99,11 +99,14 @@ class ListCoursesTemplate {
 			}
 		}
 		$html_courses = ob_get_clean();
-
+		ob_start();
+		echo static::instance()->html_pagination( $data_pagination );
+		$html_pagination = ob_get_clean();
 		$section_courses = [
 			'wrapper'     => sprintf( '<ul class="learn-press-courses lp-list-courses-no-css %1$s" data-layout="%1$s">', $skin ),
 			'courses'     => $html_courses,
 			'wrapper_end' => '</ul>',
+			'pagination'  => $html_pagination,
 		];
 
 		return Template::combine_components( $section_courses );

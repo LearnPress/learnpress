@@ -1,17 +1,17 @@
 <?php
 /**
- * Class Block_Layout_Target_Archive_Course
+ * Class Block_Layout_Group_Courses_Archive_Course
  *
  * Handle register, render block layout
  */
-class Block_Layout_Target_Archive_Course extends Abstract_Block_Layout {
-	public $slug                          = 'target-archive-course';
-	public $name                          = 'learnpress/target-archive-course';
-	public $title                         = 'Course Target (LearnPress)';
-	public $description                   = 'Layout Course Target Block';
-	public $path_html_block_template_file = 'html/target-archive-course.html';
-	public $path_template_render_default  = 'block/render/archive-course/target-archive-course.php';
-	public $source_js                     = LP_PLUGIN_URL . 'assets/js/dist/blocks/target-archive-course.js';
+class Block_Layout_Group_Courses_Archive_Course extends Abstract_Block_Layout {
+	public $slug                          = 'group-courses-archive-course';
+	public $name                          = 'learnpress/group-courses-archive-course';
+	public $title                         = 'Group Courses (LearnPress)';
+	public $description                   = 'Layout Group Courses Block';
+	public $path_html_block_template_file = 'html/group-courses-archive-course.html';
+	public $path_template_render_default  = 'block/render/archive-course/group-courses-archive-course.php';
+	public $source_js                     = LP_PLUGIN_URL . 'assets/js/dist/blocks/group-courses-archive-course.js';
 
 	public function __construct() {
 		add_action( 'save_post', [ $this, 'save_wp_template' ], 10, 2 );
@@ -24,10 +24,10 @@ class Block_Layout_Target_Archive_Course extends Abstract_Block_Layout {
 			return;
 		}
 		$content = $post->post_content;
-		if ( has_block( 'learnpress/target-archive-course', $content ) ) {
+		if ( has_block( 'learnpress/group-courses-archive-course', $content ) ) {
 			$blocks = parse_blocks( $content );
 
-			$attributes = find_block_by_name( $blocks, 'learnpress/target-archive-course' );
+			$attributes = find_block_by_name( $blocks, 'learnpress/group-courses-archive-course' );
 			if ( empty( $attributes ) || ! is_array( $attributes ) ) {
 				return;
 			}
