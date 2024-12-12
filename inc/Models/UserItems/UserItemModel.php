@@ -20,6 +20,7 @@ use LP_Cache;
 use LP_Datetime;
 use LP_User;
 use LP_User_Guest;
+use LP_User_Item_Meta_DB;
 use LP_User_Item_Meta_Filter;
 use LP_User_Items_Cache;
 use LP_User_Items_DB;
@@ -269,11 +270,11 @@ class UserItemModel {
 		$filter->item_type = $item_type;
 		if ( ! empty( $ref_id ) ) {
 			$filter->ref_id = $ref_id;
-			$key_cache     .= "/{$ref_id}";
+			$key_cache      .= "/{$ref_id}";
 		}
 		if ( ! empty( $ref_type ) ) {
 			$filter->ref_type = $ref_type;
-			$key_cache       .= "/{$ref_type}";
+			$key_cache        .= "/{$ref_type}";
 		}
 		$lpUserItemCache = new LP_User_Items_Cache();
 
@@ -311,6 +312,7 @@ class UserItemModel {
 		$filter                          = new LP_User_Item_Meta_Filter();
 		$filter->meta_key                = $key;
 		$filter->learnpress_user_item_id = $this->get_user_item_id();
+
 		return UserItemMetaModel::get_user_item_meta_model_from_db( $filter );
 	}
 
@@ -318,15 +320,14 @@ class UserItemModel {
 	 * Get metadata from key
 	 *
 	 * @param string $key
+	 * @param mixed $default_value
 	 * @param bool $get_extra
 	 *
 	 * @return false|string
 	 * @since 4.2.5
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
-	public function get_meta_value_from_key( string $key, bool $get_extra = false ) {
-		$data = false;
-
+	public function get_meta_value_from_key( string $key, $default_value = false, bool $get_extra = false ) {
 		if ( $this->meta_data instanceof stdClass && isset( $this->meta_data->{$key} ) ) {
 			return $this->meta_data->{$key};
 		}
@@ -344,6 +345,8 @@ class UserItemModel {
 			}
 
 			$this->meta_data->{$key} = $data;
+		} else {
+			$data = $default_value;
 		}
 
 		return $data;
@@ -381,6 +384,7 @@ class UserItemModel {
 
 	/**
 	 * Delete meta from key.
+	 *
 	 * @param string $key
 	 *
 	 * @return void
@@ -500,9 +504,18 @@ class UserItemModel {
 	 *
 	 * @throws Exception
 	 * @since 4.2.7.3
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function delete() {
+		//Delete meta data of user item.
+		$lp_user_item_meta_db = LP_User_Item_Meta_DB::getInstance();
+		$filter               = new LP_User_Item_Meta_Filter();
+		$filter->where[]      = $lp_user_item_meta_db->wpdb->prepare( 'AND learnpress_user_item_id = %d', $this->get_user_item_id() );
+		$filter->collection   = $lp_user_item_meta_db->tb_lp_user_itemmeta;
+		$lp_user_item_meta_db->delete_execute( $filter );
+		$this->meta_data = null;
+
+		// Delete user item.
 		$lp_user_item_db    = LP_User_Items_DB::getInstance();
 		$filter             = new LP_User_Items_Filter();
 		$filter->where[]    = $lp_user_item_db->wpdb->prepare( 'AND user_item_id = %d', $this->get_user_item_id() );
