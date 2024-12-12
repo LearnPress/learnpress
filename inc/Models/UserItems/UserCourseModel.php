@@ -26,6 +26,7 @@ use LP_User_Items_Result_DB;
 use stdClass;
 use Thim_Cache_DB;
 use Throwable;
+use WP_Error;
 
 class UserCourseModel extends UserItemModel {
 	/**
@@ -245,7 +246,7 @@ class UserCourseModel extends UserItemModel {
 	 *
 	 * @move from class-lp-user-item-course.php
 	 * @since 4.1.4
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public function calculate_course_results( bool $force_cache = false ) {
 		$items   = array();
@@ -260,12 +261,11 @@ class UserCourseModel extends UserItemModel {
 
 		try {
 			$courseModel = $this->get_course_model();
-			$course      = learn_press_get_course( $courseModel->get_id() );
-			if ( empty( $course ) ) {
+			if ( ! $courseModel instanceof CourseModel ) {
 				throw new Exception( 'Course invalid!' );
 			}
 
-			$key_first_cache = 'calculate_course/' . $this->user_id . '/' . $course->get_id();
+			$key_first_cache = 'calculate_course/' . $this->user_id . '/' . $courseModel->get_id();
 			$results_cache   = LP_Cache::cache_load_first( 'get', $key_first_cache );
 			if ( false !== $results_cache && ! $force_cache ) {
 				return $results_cache;
@@ -281,19 +281,19 @@ class UserCourseModel extends UserItemModel {
 				return $results;
 			}
 
-			$count_items           = $course->count_items();
+			$count_items           = $courseModel->get_total_items();
 			$count_items_completed = $this->count_items_completed();
 
-			$evaluate_type = $course->get_data( 'course_result', 'evaluate_lesson' );
+			$evaluate_type = $courseModel->get_meta_value_by_key( CoursePostModel::META_KEY_Evaluation_TYPE, 'evaluate_lesson' );
 			switch ( $evaluate_type ) {
 				case 'evaluate_lesson':
-					$results_evaluate = $this->evaluate_course_by_lesson( $count_items_completed, $course->count_items( LP_LESSON_CPT ) );
+					$results_evaluate = $this->evaluate_course_by_lesson( $count_items_completed, $courseModel->count_items( LP_LESSON_CPT ) );
 					break;
 				case 'evaluate_final_quiz':
 					$results_evaluate = $this->evaluate_course_by_final_quiz();
 					break;
 				case 'evaluate_quiz':
-					$results_evaluate = $this->evaluate_course_by_quizzes_passed( $count_items_completed, $course->count_items( LP_QUIZ_CPT ) );
+					$results_evaluate = $this->evaluate_course_by_quizzes_passed( $count_items_completed, $courseModel->count_items( LP_QUIZ_CPT ) );
 					break;
 				case 'evaluate_questions':
 				case 'evaluate_mark':
@@ -322,7 +322,7 @@ class UserCourseModel extends UserItemModel {
 				$items[ $item_type_key ] = array(
 					'completed' => $count_items_completed->{$item_type . '_status_completed'} ?? 0,
 					'passed'    => $count_items_completed->{$item_type . '_graduation_passed'} ?? 0,
-					'total'     => $course->count_items( $item_type ),
+					'total'     => $courseModel->count_items( $item_type ),
 				);
 			}
 
@@ -791,5 +791,55 @@ class UserCourseModel extends UserItemModel {
 		}
 
 		return $evaluate;
+	}
+
+	protected function count_item_completed() {
+	}
+
+	/**
+	 * Check user can finish course or not.
+	 *
+	 * @return bool|WP_Error
+	 * @throws Exception
+	 *
+	 * @since 4.2.7.5
+	 * @version 1.0.0
+	 */
+	public function can_finish() {
+		$can_finish = true;
+
+		try {
+			$courseModel = $this->get_course_model();
+			if ( ! $courseModel ) {
+				throw new Exception( __( 'Course not exists!', 'learnpress' ) );
+			}
+
+			if ( $this->has_finished() ) {
+				throw new Exception( __( 'Course is finished!', 'learnpress' ) );
+			}
+
+			if ( ! $this->has_enrolled() ) {
+				throw new Exception( __( 'Course is not enroll!', 'learnpress' ) );
+			}
+
+			$course_results = $this->calculate_course_results();
+
+			$graduation = $this->get_graduation();
+			if ( $graduation !== LP_GRADUATION_PASSED ) {
+				$allow_finish_when_all_item_completed = $courseModel->get_meta_value_by_key( CoursePostModel::META_KEY_HAS_FINISH, 'yes' );
+				if ( $allow_finish_when_all_item_completed ) {
+					$course_total_items_obj = $courseModel->get_total_items();
+					if ( $course_total_items_obj && $course_results['completed_items'] < $course_total_items_obj->count_items ) {
+						throw new Exception( __( 'You must complete all items in course', 'learnpress' ) );
+					}
+				} else {
+					throw new Exception( __( 'You must passed course', 'learnpress' ) );
+				}
+			}
+		} catch ( Throwable $e ) {
+			$can_finish = new WP_Error( 'lp_user_course_can_finish_err', $e->getMessage() );
+		}
+
+		return $can_finish;
 	}
 }
