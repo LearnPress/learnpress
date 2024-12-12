@@ -144,7 +144,7 @@ class LP_Datetime {
 	 *
 	 * @return string
 	 * @since 4.0.3
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 */
 	public static function format_human_time_diff( DateTime $date_start, DateTime $date_end ): string {
 		$diff = $date_end->diff( $date_start );
@@ -176,23 +176,23 @@ class LP_Datetime {
 					switch ( $k ) {
 						case 'd':
 							$format_date = sprintf(
-								'%1$s, %2$s',
+								'%1$s%2$s',
 								$i18n_day,
-								$i18n_hour
+								$diff->h > 0 ? ', ' . $i18n_hour : ''
 							);
 							break;
 						case 'h':
 							$format_date = sprintf(
-								'%1$s, %2$s',
+								'%1$s%2$s',
 								$i18n_hour,
-								$i18n_minute
+								$diff->i > 0 ? ', ' . $i18n_minute : ''
 							);
 							break;
 						case 'i':
 							$format_date = sprintf(
-								'%1$s, %2$s',
+								'%1$s%2$s',
 								$i18n_minute,
-								$i18n_second
+								$diff->s > 0 ? ', ' . $i18n_second : ''
 							);
 							break;
 						default:
@@ -204,9 +204,9 @@ class LP_Datetime {
 			} elseif ( 'w' === $k && $week > 0 ) {
 				$day_remain  = $diff->d - $week * 7;
 				$format_date = sprintf(
-					'%1$s, %2$s',
+					'%1$s%2$s',
 					$i18n_week,
-					self::get_string_plural_duration( $day_remain, 'day' )
+					$day_remain > 0 ? ', ' . self::get_string_plural_duration( $day_remain, 'day' ) : ''
 				);
 				break;
 			}
