@@ -246,13 +246,17 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			array(
 				'title' => '',
 				'type'  => '',
+				'content'  => '',
+				'status'  => 'publish',
 			),
 			$item
 		);
 
 		$args = array(
-			'title'  => $item['title'],
-			'author' => $author_id,
+			'title'   => $item['title'],
+			'author'  => $author_id,
+			'content' => $item['content'],
+			'status'  => $item['status'],
 		);
 
 		if ( ! empty( $item['id'] ) ) {
