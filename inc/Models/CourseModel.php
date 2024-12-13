@@ -862,7 +862,7 @@ class CourseModel {
 	 *
 	 * @return bool|WP_Error
 	 * @since 4.2.7.3
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function can_enroll( $user ) {
 		$can_enroll = true;
@@ -917,7 +917,9 @@ class CourseModel {
 
 				}
 			} else {
-				if ( ! empty( $this->get_external_link() ) && ! $userCourseModel && ! $this->is_offline() ) {
+				if ( ! empty( $this->get_external_link() )
+					&& ( ! $userCourseModel || $userCourseModel->get_status() === LP_USER_COURSE_CANCEL )
+					&& ! $this->is_offline() ) {
 					$error_code = 'course_is_external';
 					throw new Exception( __( 'The course is external', 'learnpress' ) );
 				}
