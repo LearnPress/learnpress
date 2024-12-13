@@ -772,7 +772,6 @@ class UserCourseModel extends UserItemModel {
 	 * Check user can finish course or not.
 	 *
 	 * @return bool|WP_Error
-	 * @throws Exception
 	 *
 	 * @since 4.2.7.5
 	 * @version 1.0.0
