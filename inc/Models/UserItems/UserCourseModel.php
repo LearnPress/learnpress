@@ -17,6 +17,7 @@ use LearnPress\Models\UserModel;
 use LP_Cache;
 use LP_Course;
 use LP_Course_Cache;
+use LP_Course_Item;
 use LP_Courses_Cache;
 use LP_Datetime;
 use LP_User;
@@ -41,14 +42,6 @@ class UserCourseModel extends UserItemModel {
 	 * @var string
 	 */
 	public $ref_type = LP_ORDER_CPT;
-	/**
-	 * @var LP_User|null
-	 */
-	public $user;
-	/**
-	 * @var CourseModel|false
-	 */
-	public $course;
 
 	public function __construct( $data = null ) {
 		parent::__construct( $data );
@@ -64,11 +57,7 @@ class UserCourseModel extends UserItemModel {
 	 * @return bool|CourseModel
 	 */
 	public function get_course_model() {
-		if ( empty( $this->course ) ) {
-			$this->course = CourseModel::find( $this->item_id, true );
-		}
-
-		return $this->course;
+		return CourseModel::find( $this->item_id, true );
 	}
 
 	/**
@@ -216,17 +205,6 @@ class UserCourseModel extends UserItemModel {
 	 */
 	public function has_finished(): bool {
 		return $this->status === LP_COURSE_FINISHED;
-	}
-
-	public function clean_caches() {
-		parent::clean_caches();
-		// Clear cache total students enrolled of a course.
-		$lp_course_cache = new LP_Course_Cache( true );
-		$lp_course_cache->clean_total_students_enrolled( $this->item_id );
-		$lp_course_cache->clean_total_students_enrolled_or_purchased( $this->item_id );
-		// Clear cache count students of many course
-		$lp_courses_cache = new LP_Courses_Cache( true );
-		$lp_courses_cache->clear_cache_on_group( LP_Courses_Cache::KEYS_COUNT_STUDENT_COURSES );
 	}
 
 	/**
@@ -561,7 +539,7 @@ class UserCourseModel extends UserItemModel {
 			$evaluate['result'] = $count_items_completed * 100 / $total_item_lesson;
 		}
 
-		$passing_condition = $this->course->get_passing_condition();
+		$passing_condition = $this->get_course_model()->get_passing_condition();
 		if ( $evaluate['result'] >= $passing_condition ) {
 			$evaluate['pass'] = 1;
 		}
@@ -583,8 +561,7 @@ class UserCourseModel extends UserItemModel {
 		);
 
 		try {
-			$quiz_final_id = get_post_meta( $this->get_course_id(), '_lp_final_quiz', true );
-
+			$quiz_final_id = get_post_meta( $this->get_course_model()->get_id(), '_lp_final_quiz', true );
 			if ( ! $quiz_final_id ) {
 				throw new Exception( '' );
 			}
@@ -652,7 +629,7 @@ class UserCourseModel extends UserItemModel {
 		if ( $total_item_quizzes && $count_items_completed ) {
 			$evaluate['result'] = $count_items_completed * 100 / $total_item_quizzes;
 
-			$passing_condition = $this->course->get_passing_condition();
+			$passing_condition = $this->get_course_model()->get_passing_condition();
 			if ( $evaluate['result'] >= $passing_condition ) {
 				$evaluate['pass'] = 1;
 			}
@@ -683,7 +660,7 @@ class UserCourseModel extends UserItemModel {
 		if ( $total_questions && $count_questions_correct ) {
 			$evaluate['result'] = $count_questions_correct * 100 / $total_questions;
 
-			$passing_condition = $this->course->get_passing_condition();
+			$passing_condition = $this->get_course_model()->get_passing_condition();
 			if ( $evaluate['result'] >= $passing_condition ) {
 				$evaluate['pass'] = 1;
 			}
@@ -711,7 +688,7 @@ class UserCourseModel extends UserItemModel {
 		if ( $count_mark_questions_receiver && $total_mark_questions ) {
 			$evaluate['result'] = $count_mark_questions_receiver * 100 / $total_mark_questions;
 
-			$passing_condition = $this->course->get_passing_condition();
+			$passing_condition = $this->get_course_model()->get_passing_condition();
 			if ( $evaluate['result'] >= $passing_condition ) {
 				$evaluate['pass'] = 1;
 			}
@@ -723,7 +700,7 @@ class UserCourseModel extends UserItemModel {
 	 *
 	 * @author tungnx
 	 * @since 4.1.4.1
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	protected function evaluate_course_by_question( string $evaluate_type ): array {
 		$lp_user_items_db = LP_User_Items_DB::getInstance();
@@ -746,22 +723,17 @@ class UserCourseModel extends UserItemModel {
 			$lp_quizzes                     = $lp_user_items_db->get_user_course_items_by_item_type( $filter_get_quiz_ids );
 
 			// Get total questions, mark
-			// Todo: Tungnx - save (questions, mark) total when save quiz, course, if not query again
-			$course = $this->course;
-			if ( is_int( $course ) ) {
-				$course = learn_press_get_course( $course );
-			}
+			$course = $this->get_course_model();
 
 			$total_questions     = 0;
 			$total_mark_question = 0;
 
 			// Get all items' course
-			$sections_items = $course->get_full_sections_and_items_course();
+			$sections_items = $course->get_section_items();
 
 			foreach ( $sections_items as $section_items ) {
 				foreach ( $section_items->items as $item ) {
-					$itemObj = $course->get_item( $item->id );
-
+					$itemObj = LP_Course_Item::get_item( $item->id );
 					if ( ! $itemObj instanceof LP_Course_Item ) {
 						continue;
 					}
@@ -841,5 +813,28 @@ class UserCourseModel extends UserItemModel {
 		}
 
 		return $can_finish;
+	}
+
+	/**
+	 * Clean caches.
+	 *
+	 * @return void
+	 *
+	 * @since 4.2.5.4
+	 * @version 1.0.0
+	 */
+	public function clean_caches() {
+		$key_cache         = "userCourseModel/find/{$this->user_id}/{$this->ref_id}/{$this->item_type}";
+		$lpUserCourseCache = new LP_Cache();
+		$lpUserCourseCache->clear( $key_cache );
+
+		parent::clean_caches();
+		// Clear cache total students enrolled of a course.
+		$lp_course_cache = new LP_Course_Cache( true );
+		$lp_course_cache->clean_total_students_enrolled( $this->item_id );
+		$lp_course_cache->clean_total_students_enrolled_or_purchased( $this->item_id );
+		// Clear cache count students of many course
+		$lp_courses_cache = new LP_Courses_Cache( true );
+		$lp_courses_cache->clear_cache_on_group( LP_Courses_Cache::KEYS_COUNT_STUDENT_COURSES );
 	}
 }

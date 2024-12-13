@@ -699,6 +699,9 @@ class LP_User_Items_DB extends LP_Database {
 					LP_COURSE_CPT,
 				]
 			);
+			$key_cache         = "userCourseModel/find/{$user_id}/{$course_id}/" . LP_COURSE_CPT;
+			$lpUserCourseCache = new LP_Cache();
+			$lpUserCourseCache->clear( $key_cache );
 
 			do_action( 'learn-press/user-item-old/delete', $user_id, $course_id );
 		} catch ( Throwable $e ) {
