@@ -412,10 +412,10 @@ class SingleCourseTemplate {
 			return '';
 		}
 
-		$count_student = $course->get_total_user_enrolled_or_purchased();
+		$count_student  = $course->get_total_user_enrolled_or_purchased();
 		$count_student += $course->get_fake_students();
-		$content      = sprintf( '%d %s', $count_student, _n( 'Student', 'Students', $count_student, 'learnpress' ) );
-		$html_wrapper = [
+		$content        = sprintf( '%d %s', $count_student, _n( 'Student', 'Students', $count_student, 'learnpress' ) );
+		$html_wrapper   = [
 			'<div class="course-count-student">' => '</div>',
 		];
 
@@ -682,7 +682,12 @@ class SingleCourseTemplate {
 		}
 
 		if ( empty( $html_btn ) ) {
-			return $html_btn;
+			return apply_filters(
+				'learn-press/course/html-button-purchase/empty',
+				$html_btn,
+				$course,
+				$user
+			);
 		}
 
 		$class_guest_checkout = LP_Checkout::instance()->is_enable_guest_checkout() ? 'guest_checkout' : '';

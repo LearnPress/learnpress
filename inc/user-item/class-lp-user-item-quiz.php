@@ -192,7 +192,7 @@ class LP_User_Item_Quiz extends LP_User_Item {
 	 * @param string $prop
 	 * @param bool   $force - Optional. Force to refresh cache.
 	 *
-	 *   Clear cache on
+	 * Clear cache on
 	 * @see LP_REST_Users_Controller::start_quiz() | retake quiz
 	 *
 	 * @return LP_Quiz_Results|bool|mixed
