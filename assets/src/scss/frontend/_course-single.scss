@@ -444,4 +444,13 @@
 			margin: 0 0 40px 0;
 		}
 	}
+
+	.course-detail-info {
+		&__inner {
+			max-width: var(--lp-container-max-width);
+			margin: 0 auto;
+			padding-right: var(--lp-cotainer-padding);
+			padding-left: var(--lp-cotainer-padding);
+		}
+	}
 }
