@@ -11,6 +11,8 @@ namespace LearnPress\TemplateHooks\Course;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
+use LearnPress\Models\UserItems\UserCourseModel;
+use LearnPress\TemplateHooks\UserItem\UserCourseTemplate;
 use LearnPress\Models\CoursePostModel;
 use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
@@ -19,21 +21,21 @@ use LP_Course;
 class SingleCourseModelTemplate {
 	use Singleton;
 
-    /**
+	/**
 	 * @var SingleCourseTemplate
 	 */
 	public $singleCourseTemplate;
 
 	public function init() {
 		$this->singleCourseTemplate = SingleCourseTemplate::instance();
-        
+
 		add_action(
 			'learn-press/single-course/model/layout',
 			[ $this, 'course_model_layout' ]
 		);
 	}
 
-    /**
+	/**
 	 * Single course layout model
 	 *
 	 * @param $course
@@ -52,7 +54,7 @@ class SingleCourseModelTemplate {
 		do_action( 'learn-press/single-course/courses-related/layout', $course, 4 );
 		$html_courses_related = ob_get_clean();
 
-        $sections = apply_filters(
+		$sections = apply_filters(
 			'learn-press/single-course/model/sections',
 			[
 				'wrapper'               => '<div class="lp-single-course">',
@@ -69,59 +71,59 @@ class SingleCourseModelTemplate {
 		);
 
 		echo Template::combine_components( $sections );
-    }
+	}
 
-    public function header_sections( $course, $user ): string {
+	public function header_sections( $course, $user ): string {
 
-        ob_start();
+		ob_start();
 		learn_press_breadcrumb();
 		$html_breadcrumb = ob_get_clean();
 
-        $html_categories = $this->singleCourseTemplate->html_categories( $course );
-        if ( ! empty( $html_categories ) ) {
-            $html_categories = sprintf(
-                '<div>%s %s</div>',
-                sprintf( '<label>%s</label>', __( 'in', 'learnpress' ) ),
-                $html_categories
-            );
-        }
+		$html_categories = $this->singleCourseTemplate->html_categories( $course );
+		if ( ! empty( $html_categories ) ) {
+			$html_categories = sprintf(
+				'<div>%s %s</div>',
+				sprintf( '<label>%s</label>', __( 'in', 'learnpress' ) ),
+				$html_categories
+			);
+		}
 
-        $html_instructor = $this->singleCourseTemplate->html_instructor( $course );
+		$html_instructor = $this->singleCourseTemplate->html_instructor( $course );
 
 		$section_info_one = apply_filters(
 			'learn-press/single-course/model/header/info-meta',
 			[
 				'wrapper'     => '<div class="lp-single-course-info-one">',
-				'last_update' => sprintf( '<div class="item-meta">%s: %s</div>', esc_html__( 'Last updated', 'learnpress' ), esc_attr( get_post_modified_time( get_option( 'date_format' ), true ))),
+				'last_update' => sprintf( '<div class="item-meta">%s: %s</div>', esc_html__( 'Last updated', 'learnpress' ), esc_attr( get_post_modified_time( get_option( 'date_format' ), true ) ) ),
 				'wrapper_end' => '</div>',
 			],
 			$course,
 			$user
 		);
 
-        $header_sections =  apply_filters(
+		$header_sections = apply_filters(
 			'learn-press/single-course/model/header/sections',
 			[
-                'wrapper_header'        => '<div class="lp-single-course__header">',
-				'wrapper_container'     => '<div class="lp-single-course__header__inner">',
-                'breadcrumb'            => $html_breadcrumb,
-                'title'                 => $this->singleCourseTemplate->html_title( $course, 'h1' ),
-                'wrapper_instructor_cate'     => '<div class="course-instructor-category">',
-                'instructor'                  => sprintf(
-                    '<div>%s %s</div>',
-                    sprintf( '<label>%s</label>', __( 'by', 'learnpress' ) ),
-                    $html_instructor
-                ),
-                'category'                    => $html_categories,
-                'wrapper_instructor_cate_end' => '</div>',
-				'info_one'     => Template::combine_components( $section_info_one ),
-				'wrapper_container_end' => '</div>',
-                'wrapper_header_end'    => '</div>',
-            ],
-        );
+				'wrapper_header'              => '<div class="lp-single-course__header">',
+				'wrapper_container'           => '<div class="lp-single-course__header__inner">',
+				'breadcrumb'                  => $html_breadcrumb,
+				'title'                       => $this->singleCourseTemplate->html_title( $course, 'h1' ),
+				'wrapper_instructor_cate'     => '<div class="course-instructor-category">',
+				'instructor'                  => sprintf(
+					'<div>%s %s</div>',
+					sprintf( '<label>%s</label>', __( 'by', 'learnpress' ) ),
+					$html_instructor
+				),
+				'category'                    => $html_categories,
+				'wrapper_instructor_cate_end' => '</div>',
+				'info_one'                    => Template::combine_components( $section_info_one ),
+				'wrapper_container_end'       => '</div>',
+				'wrapper_header_end'          => '</div>',
+			],
+		);
 
-        return Template::combine_components( $header_sections );
-    }
+		return Template::combine_components( $header_sections );
+	}
 
 	public function section_left( $course, $user ): string {
 
@@ -187,10 +189,10 @@ class SingleCourseModelTemplate {
 		}
 		// End instructor
 
-		$section_left =  apply_filters(
+		$section_left = apply_filters(
 			'learn-press/single-course/model/section_left',
 			[
-				'wrapper'     => '<div class="lp-single-course-main__left">',
+				'wrapper'      => '<div class="lp-single-course-main__left">',
 				'description'  => $this->singleCourseTemplate->html_description( $course ),
 				'features'     => $this->singleCourseTemplate->html_features( $course ),
 				'target'       => $this->singleCourseTemplate->html_target( $course ),
@@ -199,7 +201,7 @@ class SingleCourseModelTemplate {
 				'material'     => $this->singleCourseTemplate->html_material( $course ),
 				'faqs'         => $this->singleCourseTemplate->html_faqs( $course ),
 				'instructor'   => $html_instructor,
-				'wrapper_end' => '</div>',
+				'wrapper_end'  => '</div>',
 			],
 			$course,
 			$user
@@ -209,25 +211,24 @@ class SingleCourseModelTemplate {
 	}
 
 	public function section_right( $course, $user ): string {
-
 		$data_info_meta = [
-			'student'     => [
+			'student'  => [
 				'label' => sprintf( '<i class="lp-icon-user-graduate"></i>%s:', __( 'Student', 'learnpress' ) ),
 				'value' => $this->singleCourseTemplate->html_count_student( $course ),
 			],
-			'lesson'     => [
+			'lesson'   => [
 				'label' => sprintf( '<i class="lp-icon-file-o"></i>%s:', __( 'Lesson', 'learnpress' ) ),
 				'value' => $this->singleCourseTemplate->html_count_item( $course, LP_LESSON_CPT ),
 			],
-			'duration'     => [
+			'duration' => [
 				'label' => sprintf( '<i class="lp-icon-clock-o"></i>%s:', __( 'Duration', 'learnpress' ) ),
 				'value' => $this->singleCourseTemplate->html_duration( $course ),
 			],
-			'quiz'        => [
+			'quiz'     => [
 				'label' => sprintf( '<i class="lp-icon-puzzle-piece"></i>%s:', __( 'Quiz', 'learnpress' ) ),
 				'value' => $this->singleCourseTemplate->html_count_item( $course, LP_QUIZ_CPT ),
 			],
-			'level'        => [
+			'level'    => [
 				'label' => sprintf( '<i class="lp-icon-signal"></i>%s:', __( 'Level', 'learnpress' ) ),
 				'value' => $this->singleCourseTemplate->html_level( $course ),
 			],
@@ -262,37 +263,49 @@ class SingleCourseModelTemplate {
 			$user
 		);
 
+		$userCourseModel         = UserCourseModel::find( get_current_user_id(), $course->get_id(), true );
+		$userCourseTemplate      = UserCourseTemplate::instance();
+		$btn_continue_and_finish = [];
+
+		if ( $userCourseModel instanceof UserCourseModel ) {
+			$btn_continue_and_finish = [
+				'btn_continue' => $userCourseTemplate->html_btn_continue( $userCourseModel ),
+				'btn_finish'   => $userCourseTemplate->html_btn_finish( $userCourseModel ),
+			];
+		}
+
 		$section_buttons = apply_filters(
 			'learn-press/single-course/model/section-right/info-meta/buttons',
 			[
-				'wrapper'     => '<div class="course-buttons">',
-				'btn_contact' => $this->singleCourseTemplate->html_btn_external( $course, $user ),
-				'btn_buy'     => $this->singleCourseTemplate->html_btn_purchase_course( $course, $user ),
-				'btn_enroll'  => $this->singleCourseTemplate->html_btn_enroll_course( $course, $user ),
-				'wrapper_end' => '</div>',
+				'wrapper'                 => '<div class="course-buttons">',
+				'btn_contact'             => $this->singleCourseTemplate->html_btn_external( $course, $user ),
+				'btn_buy'                 => $this->singleCourseTemplate->html_btn_purchase_course( $course, $user ),
+				'btn_enroll'              => $this->singleCourseTemplate->html_btn_enroll_course( $course, $user ),
+				'btn_continue_and_finish' => Template::combine_components( $btn_continue_and_finish ),
+				'wrapper_end'             => '</div>',
 			],
 			$course,
 			$user
 		);
 
-		$section_right =  apply_filters(
+		$section_right = apply_filters(
 			'learn-press/single-course/model/section_right',
 			[
-				'wrapper'     		=> '<div class="lp-single-course-main__right">',
+				'wrapper'           => '<div class="lp-single-course-main__right">',
 				'wrapper_inner'     => '<div class="lp-single-course-main__right__inner">',
-				'image'        		=> $this->singleCourseTemplate->html_image( $course ),
-				'price'				=> $this->singleCourseTemplate->html_price( $course ),
+				'image'             => $this->singleCourseTemplate->html_image( $course ),
+				'price'             => $this->singleCourseTemplate->html_price( $course ),
 				'info_two'          => Template::combine_components( $section_info_two ),
 				'buttons'           => Template::combine_components( $section_buttons ),
 				'featured_review'   => $this->singleCourseTemplate->html_feature_review( $course ),
-				'sidebar'         	=> $this->singleCourseTemplate->html_sidebar( $course ),
+				'sidebar'           => $this->singleCourseTemplate->html_sidebar( $course ),
 				'wrapper_inner_end' => '</div>',
-				'wrapper_end' 		=> '</div>',
+				'wrapper_end'       => '</div>',
 			],
 			$course,
 			$user
 		);
-		
+
 		return Template::combine_components( $section_right );
 	}
 }
