@@ -14,6 +14,7 @@ use LearnPress\Models\CourseModel;
 use LearnPress\Models\CoursePostModel;
 use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
+use LP_Course;
 
 class SingleCourseModelTemplate {
 	use Singleton;
@@ -194,6 +195,7 @@ class SingleCourseModelTemplate {
 				'features'     => $this->singleCourseTemplate->html_features( $course ),
 				'target'       => $this->singleCourseTemplate->html_target( $course ),
 				'requirements' => $this->singleCourseTemplate->html_requirements( $course ),
+				//'curriculum'   => $this->html_curriculum( $course, $user ),
 				'material'     => $this->singleCourseTemplate->html_material( $course ),
 				'faqs'         => $this->singleCourseTemplate->html_faqs( $course ),
 				'instructor'   => $html_instructor,
@@ -210,23 +212,23 @@ class SingleCourseModelTemplate {
 
 		$data_info_meta = [
 			'student'     => [
-				'label' => sprintf( '<i class="lp-icon-user-graduate"></i>%s', __( 'Student', 'learnpress' ) ),
+				'label' => sprintf( '<i class="lp-icon-user-graduate"></i>%s:', __( 'Student', 'learnpress' ) ),
 				'value' => $this->singleCourseTemplate->html_count_student( $course ),
 			],
 			'lesson'     => [
-				'label' => sprintf( '<i class="lp-icon-file-o"></i>%s', __( 'Lesson', 'learnpress' ) ),
+				'label' => sprintf( '<i class="lp-icon-file-o"></i>%s:', __( 'Lesson', 'learnpress' ) ),
 				'value' => $this->singleCourseTemplate->html_count_item( $course, LP_LESSON_CPT ),
 			],
 			'duration'     => [
-				'label' => sprintf( '<i class="lp-icon-clock-o"></i>%s', __( 'Duration', 'learnpress' ) ),
+				'label' => sprintf( '<i class="lp-icon-clock-o"></i>%s:', __( 'Duration', 'learnpress' ) ),
 				'value' => $this->singleCourseTemplate->html_duration( $course ),
 			],
 			'quiz'        => [
-				'label' => sprintf( '<i class="lp-icon-puzzle-piece"></i>%s', __( 'Quiz', 'learnpress' ) ),
+				'label' => sprintf( '<i class="lp-icon-puzzle-piece"></i>%s:', __( 'Quiz', 'learnpress' ) ),
 				'value' => $this->singleCourseTemplate->html_count_item( $course, LP_QUIZ_CPT ),
 			],
 			'level'        => [
-				'label' => sprintf( '<i class="lp-icon-signal"></i>%s', __( 'Level', 'learnpress' ) ),
+				'label' => sprintf( '<i class="lp-icon-signal"></i>%s:', __( 'Level', 'learnpress' ) ),
 				'value' => $this->singleCourseTemplate->html_level( $course ),
 			],
 		];
@@ -282,6 +284,7 @@ class SingleCourseModelTemplate {
 				'price'				=> $this->singleCourseTemplate->html_price( $course ),
 				'info_two'          => Template::combine_components( $section_info_two ),
 				'buttons'           => Template::combine_components( $section_buttons ),
+				'featured_review'   => $this->singleCourseTemplate->html_feature_review( $course ),
 				'sidebar'         	=> $this->singleCourseTemplate->html_sidebar( $course ),
 				'wrapper_inner_end' => '</div>',
 				'wrapper_end' 		=> '</div>',
