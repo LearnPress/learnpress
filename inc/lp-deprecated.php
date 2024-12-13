@@ -851,7 +851,7 @@ if ( ! function_exists( 'learn_press_breadcrumb' ) ) {
 			apply_filters(
 				'learn_press_breadcrumb_defaults',
 				array(
-					'delimiter'   => '&nbsp;&#47;&nbsp;',
+					'delimiter'   => '<li class="breadcrumb-delimiter">&nbsp;&#47;&nbsp;</li>',
 					'wrap_before' => '<nav class="learn-press-breadcrumb">',
 					'wrap_after'  => '</nav>',
 					'before'      => '',

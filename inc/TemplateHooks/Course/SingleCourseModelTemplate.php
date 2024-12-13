@@ -34,7 +34,7 @@ class SingleCourseModelTemplate {
 	}
 
     /**
-	 * Single course layout
+	 * Single course layout model
 	 *
 	 * @param $course
 	 *
