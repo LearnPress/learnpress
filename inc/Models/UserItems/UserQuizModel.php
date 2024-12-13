@@ -217,6 +217,9 @@ class UserQuizModel extends UserItemModel {
 	 *
 	 * @throws Exception
 	 * return bool|WP_Error
+	 *
+	 * @since 4.2.5
+	 * @version 1.0.1
 	 */
 	public function check_can_start() {
 		$can_start = true;
@@ -236,30 +239,48 @@ class UserQuizModel extends UserItemModel {
 			$can_start = new WP_Error( 'course_invalid', __( 'Course is invalid.', 'learnpress' ) );
 		}
 
+		$userQuizModel = UserQuizModel::find_user_item(
+			$this->user_id,
+			$this->item_id,
+			$this->item_type,
+			$this->ref_id,
+			$this->ref_type,
+			true
+		);
+		if ( $userQuizModel instanceof UserQuizModel ) {
+			$can_start = new WP_Error( 'started_quiz', __( 'You have already started the quiz.', 'learnpress' ) );
+		}
+
 		// Check user, course of quiz is enrolled.
-		$user_course       = $this->user->get_course_attend( $this->ref_id );
-		$this->user_course = $user_course;
-		if ( ! $user_course instanceof UserCourseModel
-			|| $user_course->graduation !== LP_COURSE_GRADUATION_IN_PROGRESS ) {
+		$userCourseModel = UserCourseModel::find( $this->user_id, $this->course->get_id(), true );
+		if ( ! $userCourseModel instanceof UserCourseModel
+			|| $userCourseModel->graduation !== LP_GRADUATION_IN_PROGRESS ) {
 			$can_start = new WP_Error( 'not_errol_course', __( 'Please enroll in the course before starting the quiz.', 'learnpress' ) );
-		} elseif ( $user_course->status === LP_COURSE_FINISHED ) {
+		} elseif ( $userCourseModel->status === LP_COURSE_FINISHED ) {
 			$can_start = new WP_Error( 'finished_course', __( 'You have already finished the course of this quiz.', 'learnpress' ) );
 		} else {
 			// Set Parent id for user quiz to save DB.
-			$this->parent_id = $this->user_course->get_user_item_id();
+			$this->parent_id = $userCourseModel->get_user_item_id();
+		}
 
-			// Check if user has already started or completed quiz
-			$user_quiz = $this->user_course->get_item_attend( $this->item_id, $this->item_type );
-			if ( $user_quiz instanceof UserQuizModel ) {
-				$can_start = new WP_Error( 'started_quiz', __( 'You have already started or completed the quiz.', 'learnpress' ) );
+		// Hook old.
+		if ( has_filter( 'learn-press/can-start-quiz' ) ) {
+			try {
+				$can_start = apply_filters(
+					'learn-press/can-start-quiz',
+					$can_start, $userQuizModel->item_id,
+					$userQuizModel->ref_id,
+					$userQuizModel->user_id
+				);
+			} catch ( Throwable $e ) {
+				$can_start = new WP_Error( 'can_not_start_quiz', $e->getMessage() );
 			}
 		}
 
 		// Hook can start quiz
 		return apply_filters(
-			'learn-press/can-start-quiz',
+			'learn-press/user/can-start-quiz',
 			$can_start,
-			$user_course,
 			$this
 		);
 	}
@@ -308,7 +329,7 @@ class UserQuizModel extends UserItemModel {
 		// Check retaken count.
 		$retake_config = get_post_meta( $this->item_id, '_lp_retake_count', true );
 		if ( $retake_config !== '-1' ) {
-			$number_retaken = absint( $this->get_meta_value_from_key( UserQuizMetaModel::KEY_RETAKEN_COUNT ) );
+			$number_retaken = absint( $this->get_meta_value_from_key( UserQuizMetaModel::KEY_RETAKEN_COUNT, 0 ) );
 			if ( $number_retaken >= $retake_config ) {
 				$can_retake = new WP_Error( 'exceed_retaken_count', __( 'You have exceeded the number of retakes.', 'learnpress' ) );
 			}
