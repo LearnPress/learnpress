@@ -286,10 +286,24 @@ class LP_Query {
 	 *
 	 * @return mixed|array
 	 * @since 4.2.2
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 * @see get_option() hook in this function.
 	 */
 	public function update_option_rewrite_rules( $wp_rules ) {
+		// Check it is called from WP_Rewrite class
+		$debug_backtrace = debug_backtrace();
+		if ( ! isset( $debug_backtrace[4] )
+			|| ! isset( $debug_backtrace[4]['class'] )
+			|| $debug_backtrace[4]['class'] != WP_Rewrite::class ) {
+			return $wp_rules;
+		}
+
+		static $handled = false;
+		if ( $handled ) {
+			return $wp_rules;
+		}
+		$handled = true;
+
 		if ( ! is_array( $wp_rules ) ) {
 			return $wp_rules;
 		}
