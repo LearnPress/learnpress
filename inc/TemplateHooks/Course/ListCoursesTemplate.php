@@ -74,7 +74,7 @@ class ListCoursesTemplate {
 		echo Template::instance()->nest_elements( $html_wrapper, $content );
 	}
 
-	public function html_list_courses( array $settings = [], $data_pagination = [] ) {
+	public static function html_list_courses( array $settings = [], $data_pagination = [], $template = '' ) {
 		$filter = new LP_Course_Filter();
 		Courses::handle_params_for_query_courses( $filter, $settings );
 		// Check is in category page.
@@ -93,9 +93,16 @@ class ListCoursesTemplate {
 		if ( empty( $courses ) ) {
 			Template::print_message( __( 'No courses found', 'learnpress' ), 'info' );
 		} else {
-			foreach ( $courses as $courseObj ) {
-				$course = CourseModel::find( $courseObj->ID, true );
-				echo static::render_course( $course, $settings );
+			if ( empty( $template ) ) {
+				foreach ( $courses as $courseObj ) {
+					$course = CourseModel::find( $courseObj->ID, true );
+					echo static::render_course( $course, $settings );
+				}
+			} else {
+				foreach ( $courses as $courseObj ) {
+					$course = CourseModel::find( $courseObj->ID, true );
+					echo static::render_course( $course, $settings, $template );
+				}
 			}
 		}
 		$html_courses = ob_get_clean();
@@ -218,7 +225,7 @@ class ListCoursesTemplate {
 	 * @since 4.2.5.8
 	 * @version 1.0.4
 	 */
-	public static function render_course( $course, array $settings = [] ): string {
+	public static function render_course( $course, array $settings = [], string $template = '' ): string {
 		if ( ! $course instanceof CourseModel ) {
 			$course = CourseModel::find( $course->get_id(), true );
 		}
@@ -307,15 +314,17 @@ class ListCoursesTemplate {
 					$html_categories
 				);
 			}
+
+			$html_title     = sprintf(
+				'<a class="course-permalink" href="%s">%s</a>',
+				$course->get_permalink(),
+				$singleCourseTemplate->html_title( $course )
+			);
 			$section_bottom = apply_filters(
 				'learn-press/layout/list-courses/item/section/bottom',
 				[
 					'wrapper'                     => '<div class="course-content">',
-					'title'                       => sprintf(
-						'<a class="course-permalink" href="%s">%s</a>',
-						$course->get_permalink(),
-						$singleCourseTemplate->html_title( $course )
-					),
+					'title'                       => $html_title,
 					'wrapper_instructor_cate'     => '<div class="course-instructor-category">',
 					'instructor'                  => sprintf(
 						'<div>%s %s</div>',
@@ -332,19 +341,84 @@ class ListCoursesTemplate {
 				$settings
 			);
 
-			$section = apply_filters(
-				'learn-press/layout/list-courses/item-li',
-				[
-					'wrapper_li'      => '<li class="course">',
-					'wrapper_div'     => sprintf( '<div class="course-item" data-id="%s">', esc_attr( $course->get_id() ) ),
-					'top'             => Template::combine_components( $section_top ),
-					'bottom'          => Template::combine_components( $section_bottom ),
-					'wrapper_div_end' => '</div>',
-					'wrapper_li_end'  => '</li>',
-				],
-				$course,
-				$settings
-			);
+			if ( empty( $template ) ) {
+				$section = apply_filters(
+					'learn-press/layout/list-courses/item-li',
+					[
+						'wrapper_li'      => '<li class="course">',
+						'wrapper_div'     => sprintf( '<div class="course-item" data-id="%s">', esc_attr( $course->get_id() ) ),
+						'top'             => Template::combine_components( $section_top ),
+						'bottom'          => Template::combine_components( $section_bottom ),
+						'wrapper_div_end' => '</div>',
+						'wrapper_li_end'  => '</li>',
+					],
+					$course,
+					$settings
+				);
+			} else {
+				// HTML bottom section end.
+				$info_course = apply_filters(
+					'learn-press/layout/list-courses/item/section/info',
+					[
+						'wrapper'       => '<div class="course-info">',
+						//'clearfix'          => '<div class="clearfix"></div>',
+						//'course_footer'     => '<div class="course-footer">',
+						'price'         => $singleCourseTemplate->html_price( $course ),
+						'btn_read_more' => sprintf(
+							'<div class="course-readmore"><a href="%s">%s</a></div>',
+							$course->get_permalink(),
+							__( 'Read more', 'learnpress' )
+						),
+						//'course_footer_end' => '</div>',
+						'wrapper_end'   => '</div>',
+					],
+					$course,
+					$settings
+				);
+
+				$instructor_category = [
+					'wrapper_instructor_cate'     => '<div class="course-instructor-category">',
+					'instructor'                  => sprintf(
+						'<div>%s %s</div>',
+						sprintf( '<label>%s</label>', __( 'by', 'learnpress' ) ),
+						$singleCourseTemplate->html_instructor( $course )
+					),
+					'category'                    => $html_categories,
+					'wrapper_instructor_cate_end' => '</div>',
+				];
+
+				$html_course = str_replace(
+					[
+						'{{media-course}}',
+						'{{title-course}}',
+						'{{instructor-category-course}}',
+						'{{meta-course}}',
+						'{{info-course}}',
+					],
+					[
+						Template::combine_components( $section_top ),
+						$html_title,
+						Template::combine_components( $instructor_category ),
+						$html_meta_data,
+						Template::combine_components( $info_course ),
+					],
+					$template
+				);
+
+				$section = apply_filters(
+					'learn-press/layout/list-courses/item-li-template',
+					[
+						'wrapper_li'      => '<li class="course">',
+						'wrapper_div'     => sprintf( '<div class="course-item" data-id="%s">', esc_attr( $course->get_id() ) ),
+						'course'          => $html_course,
+						'wrapper_div_end' => '</div>',
+						'wrapper_li_end'  => '</li>',
+					],
+					$html_course,
+					$course,
+					$settings
+				);
+			}
 
 			// For old themes use old hook.
 			$section = self::fix_theme_course_old( $section, $course, $settings );
