@@ -32,7 +32,7 @@ if ( ! class_exists( 'LP_Shortcode_Button_Course' ) ) {
 			parent::__construct( $atts );
 			$this->_atts = shortcode_atts(
 				array(
-					'id'            => 0,
+					'id' => 0,
 				),
 				$this->_atts
 			);
