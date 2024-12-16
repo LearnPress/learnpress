@@ -137,12 +137,12 @@ class SingleCourseClassicTemplate {
 		$content_left = apply_filters(
 			'learn-press/single-course/classic/content-left/sections',
 			[
-				'wrapper'     => '<div class="entry-content-left">',
-				'course_tabs' => $this->html_course_tabs( $course, $user ),
+				'wrapper'      => '<div class="entry-content-left">',
+				'course_tabs'  => $this->html_course_tabs( $course, $user ),
 				'features'     => $this->singleCourseTemplate->html_features( $course ),
 				'target'       => $this->singleCourseTemplate->html_target( $course ),
 				'requirements' => $this->singleCourseTemplate->html_requirements( $course ),
-				'wrapper_end' => '</div>',
+				'wrapper_end'  => '</div>',
 			]
 		);
 

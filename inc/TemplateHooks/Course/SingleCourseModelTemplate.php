@@ -297,6 +297,7 @@ class SingleCourseModelTemplate {
 				'price'             => $this->singleCourseTemplate->html_price( $course ),
 				'info_two'          => Template::combine_components( $section_info_two ),
 				'buttons'           => Template::combine_components( $section_buttons ),
+				'share'             => $this->html_share( $course ),
 				'featured_review'   => $this->singleCourseTemplate->html_feature_review( $course ),
 				'sidebar'           => $this->singleCourseTemplate->html_sidebar( $course ),
 				'wrapper_inner_end' => '</div>',
@@ -307,5 +308,44 @@ class SingleCourseModelTemplate {
 		);
 
 		return Template::combine_components( $section_right );
+	}
+
+	public function html_share( $course ): string {
+
+		$social_media = apply_filters(
+			'learn-press/single-course/social-share',
+			[]
+		);
+
+		$clipboard = [
+			'wrapper'     => '<div class="clipboard-post">',
+			'input'       => sprintf( '<input class="clipboard-value" type="text" value="%s">', get_permalink() ),
+			'button'      => sprintf(
+				'<button class="btn-clipboard" data-copied="%s">%s<span class="tooltip">%s</span></button>',
+				esc_html__( 'Copied!', 'thim-elementor-kit' ),
+				esc_html__( 'Copy', 'thim-elementor-kit' ),
+				esc_html__( 'Copy to Clipboard', 'thim-elementor-kit' )
+			),
+			'wrapper_end' => '</div>',
+		];
+
+		$section_share = apply_filters(
+			'learn-press/single-course/social-share/sections',
+			[
+				'wrapper'                   => '<div class="social-swapper social-share-toggle">',
+				'toggle'                    => '<div class="share-toggle-icon">',
+				'toggle_icon'               => sprintf( '<i class="lp-icon-share-alt"></i><label class="share-label">%s</label>', __( 'Share', 'learnpress' ) ),
+				'toggle_end'                => '</div>',
+				'wrapper_content'           => '<div class="wrapper-content-widget">',
+				'wrapper_content_inner'     => '<div class="content-widget-social-share">',
+				'social'                    => Template::combine_components( $social_media ),
+				'clipboard'                 => Template::combine_components( $clipboard ),
+				'wrapper_content_inner_end' => '</div>',
+				'wrapper_content_end'       => '</div>',
+				'wrapper_end'               => '</div>',
+			]
+		);
+
+		return Template::combine_components( $section_share );
 	}
 }
