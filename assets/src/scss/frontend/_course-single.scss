@@ -455,12 +455,15 @@
 
 		.course-meta {
 			gap: 16px;
+			flex-wrap: wrap;
 		}
 
-		.course-meta__pull-left {
-			width: calc(100% - 340px);
-			max-width: 100%;
-			margin: 0;
+		@media (min-width: 769px) {
+			.course-meta__pull-left {
+				width: calc(100% - 340px);
+				max-width: 100%;
+				margin: 0;
+			}
 		}
 	}
 	.course-tabs {
