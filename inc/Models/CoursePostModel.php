@@ -35,7 +35,7 @@ class CoursePostModel extends PostModel {
 	const META_KEY_SALE_PRICE               = '_lp_sale_price';
 	const META_KEY_SALE_START               = '_lp_sale_start';
 	const META_KEY_SALE_END                 = '_lp_sale_end';
-	const META_KEY_Evaluation_TYPE          = '_lp_course_result';
+	const META_KEY_EVALUATION_TYPE          = '_lp_course_result';
 	const META_KEY_PASSING_CONDITION        = '_lp_passing_condition';
 	const META_KEY_DURATION                 = '_lp_duration';
 	const META_KEY_BLOCK_EXPIRE_DURATION    = '_lp_block_expire_duration';
@@ -60,6 +60,8 @@ class CoursePostModel extends PostModel {
 	const META_KEY_TARGET                   = '_lp_target_audiences';
 	const META_KEY_FEATURES                 = '_lp_key_features';
 	const META_KEY_FAQS                     = '_lp_faqs';
+	const META_KEY_PRICE_PREFIX             = '_lp_price_prefix';
+	const META_KEY_PRICE_SUFFIX             = '_lp_price_suffix';
 
 	/**
 	 * Get the price of course.
@@ -159,52 +161,6 @@ class CoursePostModel extends PostModel {
 	 */
 	public function is_free(): bool {
 		return apply_filters( 'learnPress/course/is-free', $this->get_price() == 0, $this );
-	}
-
-	/**
-	 * Get html course price
-	 *
-	 * @return string
-	 * @since 4.1.5
-	 * @version 1.0.1
-	 * @author tungnx
-	 */
-	public function get_price_html(): string {
-		$price_html = '';
-
-		if ( $this->is_free() ) {
-			if ( is_float( $this->get_sale_price() ) ) {
-				$price_html .= sprintf( '<span class="origin-price">%s</span>', $this->get_regular_price_html() );
-			}
-
-			$price_html .= sprintf( '<span class="free">%s</span>', esc_html__( 'Free', 'learnpress' ) );
-			$price_html  = apply_filters( 'learn_press_course_price_html_free', $price_html, $this );
-		} elseif ( $this->get_meta_value_by_key( self::META_KEY_NO_REQUIRED_ENROLL, 'no' ) === 'yes' ) {
-			$price_html .= '';
-		} else {
-			if ( $this->has_sale_price() ) {
-				$price_html .= sprintf( '<span class="origin-price">%s</span>', $this->get_regular_price_html() );
-			}
-
-			$price_html .= sprintf( '<span class="price">%s</span>', learn_press_format_price( $this->get_price(), true ) );
-			$price_html  = apply_filters( 'learn_press_course_price_html', $price_html, $this->has_sale_price(), $this->get_id() );
-		}
-
-		return sprintf( '<span class="course-item-price">%s</span>', $price_html );
-	}
-
-	/**
-	 * Get the regular price format of course.
-	 *
-	 * @return mixed
-	 * @version 1.0.0
-	 * @author tungnx
-	 * @since 4.1.5
-	 */
-	public function get_regular_price_html() {
-		$price = learn_press_format_price( $this->get_regular_price(), true );
-
-		return apply_filters( 'learnPress/course/regular-price', $price, $this );
 	}
 
 	/**

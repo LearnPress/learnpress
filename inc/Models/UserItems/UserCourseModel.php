@@ -262,7 +262,7 @@ class UserCourseModel extends UserItemModel {
 			$count_items           = $courseModel->get_total_items();
 			$count_items_completed = $this->count_items_completed();
 
-			$evaluate_type = $courseModel->get_meta_value_by_key( CoursePostModel::META_KEY_Evaluation_TYPE, 'evaluate_lesson' );
+			$evaluate_type = $courseModel->get_meta_value_by_key( CoursePostModel::META_KEY_EVALUATION_TYPE, 'evaluate_lesson' );
 			switch ( $evaluate_type ) {
 				case 'evaluate_lesson':
 					$results_evaluate = $this->evaluate_course_by_lesson( $count_items_completed, $courseModel->count_items( LP_LESSON_CPT ) );
