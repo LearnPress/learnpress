@@ -295,6 +295,7 @@ class SingleCourseModelTemplate {
 				'wrapper_inner'     => '<div class="lp-single-course-main__right__inner">',
 				'image'             => $this->singleCourseTemplate->html_image( $course ),
 				'price'             => $this->singleCourseTemplate->html_price( $course ),
+				//'sale_discount'		=> $this->singleCourseTemplate->html_sale_discount( $course ), to do
 				'info_two'          => Template::combine_components( $section_info_two ),
 				'buttons'           => Template::combine_components( $section_buttons ),
 				'share'             => $this->html_share( $course ),
