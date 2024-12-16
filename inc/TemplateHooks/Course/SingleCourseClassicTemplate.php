@@ -272,6 +272,7 @@ class SingleCourseClassicTemplate {
 				'overview'   => esc_html__( 'Overview', 'learnpress' ),
 				'curriculum' => esc_html__( 'Curriculum', 'learnpress' ),
 				'instructor' => esc_html__( 'Instructor', 'learnpress' ),
+				'materials'  => esc_html__( 'Materials', 'learnpress' ),
 				'faqs'       => esc_html__( 'FAQs', 'learnpress' ),
 			]
 		);
