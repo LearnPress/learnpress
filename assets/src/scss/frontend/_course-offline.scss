@@ -319,7 +319,10 @@
 	gap: 30px;
 	margin-top: 30px;
 	margin-bottom: 30px;
-	flex-wrap: wrap;
+
+	@media (max-width: 600px) {
+		flex-wrap: wrap;
+	}
 
 	.instructor-display-name {
 		font-size: 1.4rem;

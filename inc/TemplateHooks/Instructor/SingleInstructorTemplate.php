@@ -14,6 +14,8 @@ use LearnPress\Models\CourseModel;
 use LearnPress\Models\Courses;
 use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
+use LearnPress\TemplateHooks\Profile\ProfileTemplate;
+use LearnPress\TemplateHooks\Course\ListCoursesTemplate;
 use LearnPress\TemplateHooks\UserTemplate;
 use LP_Course;
 use LP_Course_Filter;
@@ -28,10 +30,6 @@ class SingleInstructorTemplate {
 		add_action( 'learn-press/single-instructor/layout', [ $this, 'sections' ] );
 		//add_action( 'wp_head', [ $this, 'add_internal_style_to_head' ] );
 	}
-
-	/*public function add_internal_style_to_head() {
-		echo '<style id="123123" type="text/css">body{background: red !important;}</style>';
-	}*/
 
 	/**
 	 * Get display name html of instructor.
@@ -284,27 +282,20 @@ class SingleInstructorTemplate {
 				return;
 			}
 
-			$html_wrapper = apply_filters(
-				'learn-press/single-instructor/sections/wrapper',
+			$sections = apply_filters(
+				'learn-press/single-instructor/sections',
 				[
-					'<article class="lp-content-area">'  => '</article>',
-					'<div class="lp-single-instructor">' => '</div>',
-				],
-				$instructor
-			);
-			$sections     = apply_filters(
-				'learn-press/single-instructor/sections/wrapper',
-				[
-					'info'    => [ 'text_html' => $this->info( $instructor ) ],
-					'courses' => [ 'text_html' => $this->section_list_courses( $instructor ) ],
+					'wrapper'           => '<div class="lp-content-area">',
+					'wrapper_inner'     => '<div class="lp-single-instructor">',
+					'info'              => $this->info( $instructor ),
+					'courses'           => $this->section_list_courses( $instructor ),
+					'wrapper_inner_end' => '</div>',
+					'wrapper_end'       => '</div>',
 				],
 				$instructor
 			);
 
-			ob_start();
-			Template::instance()->print_sections( $sections, compact( 'instructor' ) );
-			$content = ob_get_clean();
-			echo Template::instance()->nest_elements( $html_wrapper, $content );
+			echo Template::combine_components( $sections );
 		} catch ( Throwable $e ) {
 			ob_end_clean();
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
@@ -344,136 +335,98 @@ class SingleInstructorTemplate {
 	 * @return false|string
 	 */
 	public function info( LP_User $instructor ): string {
-		$content = '';
 
-		try {
-			$html_wrapper = apply_filters(
-				'learn-press/single-instructor/info/wrapper',
-				[
-					'<div class="lp-single-instructor__info">' => '</div>',
-				],
-				$instructor
-			);
+		$html_cover = '';
 
-			$sections = apply_filters(
-				'learn-press/single-instructor/info/sections',
-				[
-					'image'      => [ 'text_html' => $this->html_avatar( $instructor ) ],
-					'info_right' => [ 'text_html' => $this->info_right( $instructor ) ],
-				],
-				$instructor
-			);
+		ob_start();
+			$userModel = UserModel::find( $instructor->get_id(), true );
+			// Display cover image
+			echo ProfileTemplate::instance()->html_cover_image( $userModel );
+		$html_cover = ob_get_clean();
 
-			ob_start();
-			Template::instance()->print_sections( $sections, compact( 'instructor' ) );
-			$content = ob_get_clean();
-			$content = Template::instance()->nest_elements( $html_wrapper, $content );
-		} catch ( Throwable $e ) {
-			ob_end_clean();
-			error_log( __METHOD__ . ': ' . $e->getMessage() );
-		}
-
-		return $content;
-	}
-
-	public function info_right( LP_User $instructor ): string {
-		$content = '';
-
-		try {
-			$html_wrapper = apply_filters(
-				'learn-press/single-instructor/info-right/wrapper',
-				[
-					'<div class="lp-single-instructor__info__right">' => '</div>',
-				],
-				$instructor
-			);
-
-			$count_course = sprintf(
-				'<div class="wrapper-instructor-total-courses">%s%s</div>',
-				'<span class="lp-ico lp-icon-courses"></span> ',
-				$this->html_count_courses( $instructor )
-			);
-
-			$count_student = sprintf(
-				'<div class="wrapper-instructor-total-students">%s%s</div>',
-				'<span class="lp-ico lp-icon-students"></span> ',
-				$this->html_count_students( $instructor )
-			);
-
-			$sections = apply_filters(
-				'learn-press/single-instructor/info-right/sections',
-				[
-					'title'         => [ 'text_html' => "<h2>{$this->html_display_name( $instructor )}</h2>" ],
-					'social'        => [ 'text_html' => $this->html_social( $instructor ) ],
-					'description'   => [ 'text_html' => $this->html_description( $instructor ) ],
-					'count_course'  => [ 'text_html' => $count_course ],
-					'count_student' => [ 'text_html' => $count_student ],
-				],
-				$instructor
-			);
-
-			ob_start();
-			Template::instance()->print_sections( $sections, compact( 'instructor' ) );
-			$content = ob_get_clean();
-			$content = Template::instance()->nest_elements( $html_wrapper, $content );
-		} catch ( Throwable $e ) {
-			ob_end_clean();
-			error_log( __METHOD__ . ': ' . $e->getMessage() );
-		}
-
-		return $content;
-	}
-
-	public function section_list_courses( LP_User $instructor ): string {
-		$content      = '';
-		$html_wrapper = [
-			'<div class="instructor-courses">' => '</div>',
-		];
-
-		try {
-			// Get option load courses of Instructor via ajax
-			$load_ajax = false;
-
-			// Query courses of instructor
-			if ( ! $load_ajax ) {
-				$filter = new LP_Course_Filter();
-				Courses::handle_params_for_query_courses( $filter, [] );
-				$filter->post_author = $instructor->get_id();
-				$filter->limit       = \LP_Settings::get_option( 'archive_course_limit', 20 );
-				$filter->page        = $GLOBALS['wp_query']->get( 'paged', 1 ) ? $GLOBALS['wp_query']->get( 'paged', 1 ) : 1;
-				// $filter              = apply_filters( 'lp/single-instructor/courses/query/filter', $filter, [] );
-
-				$total_courses = 0;
-				$courses       = Courses::get_courses( $filter, $total_courses );
-
-				$sections = apply_filters(
-					'learn-press/single-instructor/courses/sections',
-					[
-						'courses'    => [ 'text_html' => $this->list_courses( $instructor, $courses ) ],
-						'pagination' => [ 'text_html' => $this->courses_pagination( $filter->page, $filter->limit, $total_courses ) ],
-					],
-					$courses,
-					$instructor
-				);
-
-				ob_start();
-				Template::instance()->print_sections( $sections, compact( 'instructor', 'courses' ) );
-				$content = ob_get_clean();
-			} else {
-				ob_end_clean();
-				$html_wrapper['<ul class="ul-instructor-courses">'] = '</ul>';
-			}
-		} catch ( Throwable $e ) {
-			error_log( __METHOD__ . ': ' . $e->getMessage() );
-		}
-
-		$html_wrapper = apply_filters(
-			'learn-press/single-instructor/courses/wrapper',
-			$html_wrapper,
+		$sections = apply_filters(
+			'learn-press/single-instructor/info/sections',
+			[
+				'wrapper'             => '<div class="lp-single-instructor__info">',
+				'cover_img'           => $html_cover,
+				'wrapper_content'     => '<div class="lp-single-instructor__info__wrapper">',
+				'image'               => $this->html_avatar( $instructor ),
+				'info_right'          => $this->info_right( $instructor ),
+				'wrapper_content_end' => '</div>',
+				'wrapper_end'         => '</div>',
+			],
 			$instructor
 		);
 
-		return Template::instance()->nest_elements( $html_wrapper, $content );
+		return Template::combine_components( $sections );
+	}
+
+	public function info_right( LP_User $instructor ): string {
+
+		$section_instructor_meta = [
+			'wrapper'        => '<div class="lp-instructor-meta">',
+			'count_courses'  => sprintf(
+				'<div class="instructor-item-meta"><i class="lp-icon-file"></i>%s</div>',
+				$this->html_count_courses( $instructor )
+			),
+			'count_students' => sprintf(
+				'<div class="instructor-item-meta"><i class="lp-icon-user-graduate"></i>%s</div>',
+				$this->html_count_students( $instructor )
+			),
+			'wrapper_end'    => '</div>',
+		];
+
+		$sections = apply_filters(
+			'learn-press/single-instructor/info-right/sections',
+			[
+				'wrapper'             => '<div class="lp-single-instructor__info__right">',
+				'wrapper_content'     => '<div class="lp-single-instructor__info__right__content">',
+				'title'               => sprintf( '<h2>%s</h2>', $this->html_display_name( $instructor ) ) ,
+				'meta'                => Template::combine_components( $section_instructor_meta ),
+				'description'         => $this->html_description( $instructor ),
+				'wrapper_content_end' => '</div>',
+				'social'              => $this->html_social( $instructor ),
+				'wrapper_end'         => '</div>',
+			],
+			$instructor
+		);
+
+		return Template::combine_components( $sections );
+	}
+
+	public function section_list_courses( LP_User $instructor ): string {
+		$content = '';
+
+		try {
+			// Query courses of instructor
+			$filter = new LP_Course_Filter();
+			Courses::handle_params_for_query_courses( $filter, [] );
+			$filter->post_author = $instructor->get_id();
+			$filter->limit       = \LP_Settings::get_option( 'archive_course_limit', 20 );
+			$filter->page        = $GLOBALS['wp_query']->get( 'paged', 1 ) ? $GLOBALS['wp_query']->get( 'paged', 1 ) : 1;
+			// $filter              = apply_filters( 'lp/single-instructor/courses/query/filter', $filter, [] );
+
+			$total_courses = 0;
+			$courses       = Courses::get_courses( $filter, $total_courses );
+
+			$sections = apply_filters(
+				'learn-press/single-instructor/courses/sections',
+				[
+					'wrapper'     => '<div class="instructor-courses learn-press-courses">',
+					'courses'     => $this->list_courses( $instructor, $courses ),
+					'pagination'  => $this->courses_pagination( $filter->page, $filter->limit, $total_courses ),
+					'wrapper_end' => '</div>',
+				],
+				$courses,
+				$instructor
+			);
+
+			$content = Template::combine_components( $sections );
+		} catch ( Throwable $e ) {
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
+		}
+
+		return $content;
 	}
 
 	/**
@@ -488,89 +441,26 @@ class SingleInstructorTemplate {
 		$content = '';
 
 		try {
-			$html_ul_wrapper = apply_filters(
-				'learn-press/single-instructor/ul-courses/wrapper',
+			// List courses
+			ob_start();
+			foreach ( $courses as $course_obj ) {
+				$course = LP_Course::get_course( $course_obj->ID );
+				echo ListCoursesTemplate::render_course( $course );
+			}
+			$html_ul_wrapper = ob_get_clean();
+
+			$sections = apply_filters(
+				'learn-press/single-instructor/courses/sections',
 				[
-					'<ul class="ul-instructor-courses">' => '</ul>',
+					'wrapper'     => '<ul class="ul-instructor-courses">',
+					'list_course' => $html_ul_wrapper,
+					'wrapper_end' => '</ul>',
 				],
 				$courses,
 				$instructor
 			);
 
-			// List courses
-			$ul_courses = '';
-			foreach ( $courses as $course_obj ) {
-				$course      = LP_Course::get_course( $course_obj->ID );
-				$ul_courses .= $this->course_item( $course );
-			}
-			$content = Template::instance()->nest_elements( $html_ul_wrapper, $ul_courses );
-		} catch ( Throwable $e ) {
-			error_log( __METHOD__ . ': ' . $e->getMessage() );
-		}
-
-		return $content;
-	}
-
-	/**
-	 * Display item course.
-	 *
-	 * @param LP_Course $course
-	 *
-	 * @return void
-	 */
-	public function course_item( LP_Course $course ): string {
-		$content      = '';
-		$html_wrapper = apply_filters(
-			'learn-press/single-instructor/course_items/wrapper',
-			[
-				'<li class="item-course">' => '</li>',
-			],
-			$course
-		);
-
-		try {
-			$singleCourseTemplate = SingleCourseTemplate::instance();
-			ob_start();
-			$html_img              = sprintf(
-				'<a href="%s">%s</a>',
-				$course->get_permalink(),
-				$singleCourseTemplate->html_image( $course )
-			);
-			$html_title            = sprintf(
-				'<h2><a href="%s">%s</a></h2>',
-				$course->get_permalink(),
-				$singleCourseTemplate->html_title( $course )
-			);
-			$html_price_categories = sprintf(
-				'<div class="price-categories">%s %s</div>',
-				$course->get_course_price_html(),
-				$singleCourseTemplate->html_categories( $course )
-			);
-
-			$count_lesson  = $course->count_items( LP_LESSON_CPT );
-			$count_student = $course->get_total_user_enrolled_or_purchased();
-			$ico_lesson    = '<span class="course-ico lp-icon-file"></span>';
-			$ico_student   = '<span class="course-ico lp-icon-students"></span>';
-			$html_count    = sprintf(
-				'<div class="course-count">%s %s</div>',
-				sprintf( '<div class="course-count-lesson">%s %d %s</div>', $ico_lesson, $count_lesson, _n( 'Lesson', 'Lessons', $count_lesson, 'learnpress' ) ),
-				sprintf( '<div class="course-count-student">%s %d %s</div>', $ico_student, $count_student, _n( 'Student', 'Students', $count_student, 'learnpress' ) )
-			);
-
-			$sections = apply_filters(
-				'learn-press/single-instructor/course_items/sections',
-				[
-					'img'              => [ 'text_html' => $html_img ],
-					'price-categories' => [ 'text_html' => $html_price_categories ],
-					'title'            => [ 'text_html' => $html_title ],
-					'count'            => [ 'text_html' => $html_count ],
-				],
-				$course,
-				$singleCourseTemplate
-			);
-			Template::instance()->print_sections( $sections, compact( 'course' ) );
-			$content = ob_get_clean();
-			$content = Template::instance()->nest_elements( $html_wrapper, $content );
+			$content = Template::combine_components( $sections );
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
