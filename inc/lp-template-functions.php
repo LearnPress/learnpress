@@ -1521,7 +1521,7 @@ function lp_course_level() {
 	return apply_filters(
 		'lp/template/function/course/level',
 		array(
-			''             => esc_html__( 'All levels', 'learnpress' ),
+			'all'          => esc_html__( 'All levels', 'learnpress' ),
 			'beginner'     => esc_html__( 'Beginner', 'learnpress' ),
 			'intermediate' => esc_html__( 'Intermediate', 'learnpress' ),
 			'expert'       => esc_html__( 'Expert', 'learnpress' ),

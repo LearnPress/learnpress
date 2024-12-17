@@ -517,7 +517,7 @@ class SingleCourseTemplate {
 
 			$level  = $course->get_meta_value_by_key( CoursePostModel::META_KEY_LEVEL, '' );
 			$levels = lp_course_level();
-			$level  = $levels[ $level ] ?? $levels[''];
+			$level  = $levels[ $level ] ?? $levels['all'];
 
 			$html_wrapper = [
 				'<span class="course-level">' => '</span>',

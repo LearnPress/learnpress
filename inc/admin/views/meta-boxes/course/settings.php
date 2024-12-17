@@ -173,7 +173,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 				'_lp_level'                    => new LP_Meta_Box_Select_Field(
 					esc_html__( 'Level', 'learnpress' ),
 					esc_html__( 'Choose a difficulty level.', 'learnpress' ),
-					'',
+					'all',
 					array(
 						'options' => lp_course_level(),
 					)
