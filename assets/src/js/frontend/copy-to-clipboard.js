@@ -4,6 +4,7 @@ export default function CopyToClipboard() {
 	LPClick( '.social-share-toggle', '.share-toggle-icon', '.content-widget-social-share' );
 
 	var copyTextareaBtn = document.querySelector( '.btn-clipboard' );
+	console.log('ádasdasdasd');
 	if (copyTextareaBtn) {
 		copyTextareaBtn.addEventListener( 'click', function( event ) {
 			var copyTextarea = document.querySelector( '.clipboard-value' );
