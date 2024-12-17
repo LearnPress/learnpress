@@ -218,7 +218,8 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
-= 4.2.7.5 (2024-12-16) =
+= 4.2.7.5 (2024-12-17) =
+~ Added: option Price prefix, Price suffix for course.
 ~ Fixed: shortcode [learn_press_button_course].
 ~ Fixed: error status item's course, case option course set "no require enroll" (user enrolled).
 ~ Fixed: error lose tab on Profile when install SiteOrigin plugin.
