@@ -38,6 +38,7 @@ require_once $blog_template_path . 'archive-course/class-block-template-info-cou
 require_once $blog_template_path . 'archive-course/class-block-template-instructor-category-archive-courses.php';
 require_once $blog_template_path . 'archive-course/class-block-template-meta-course-archive-courses.php';
 require_once $blog_template_path . 'archive-course/class-block-template-title-course-archive-courses.php';
+require_once $blog_template_path . 'archive-course/class-block-template-media-course-archive-courses.php';
 require_once $blog_template_path . 'archive-course/layout/class-block-layout-group-courses.php';
 
 //Layout single course
@@ -95,6 +96,7 @@ return apply_filters(
 		new Block_Template_Instructor_Category_Archive_Courses(),
 		new Block_Template_Meta_Course_Archive_Courses(),
 		new Block_Template_Title_Course_Archive_Courses(),
+		new Block_Template_Media_Course_Archive_Courses(),
 		new Block_Template_Item_Curriculum_Course(),
 	)
 );

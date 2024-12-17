@@ -17,7 +17,7 @@ $total_pages           = LP_Database::get_total_pages( $filter->limit, $total_ro
 $data_pagination_type  = LP_Settings::get_option( 'course_pagination_type', 'number' );
 $enableAjaxLoadCourses = LP_Settings::get_option( 'courses_load_ajax', 'yes' );
 
-if ( ! $enableAjaxLoadCourses ) {
+if ( $enableAjaxLoadCourses === 'no' ) {
 	$data_pagination_type = 'number';
 }
 
