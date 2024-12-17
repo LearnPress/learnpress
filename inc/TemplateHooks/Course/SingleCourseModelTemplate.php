@@ -313,11 +313,49 @@ class SingleCourseModelTemplate {
 
 	public function html_share( $course ): string {
 
+		$list_socials = [
+			'facebook'  => esc_html__( 'Facebook', 'learnpress' ),
+			'twitter'   => esc_html__( 'Twitter', 'learnpress' ),
+			'pinterest' => esc_html__( 'Pinterest', 'learnpress' ),
+			'linkedin'  => esc_html__( 'Linkedin', 'learnpress' ),
+		];
+
+		ob_start();
+		if ( $list_socials ) {
+			foreach ( $list_socials as $key => $social ) {
+				switch ( $key ) {
+					case 'facebook':
+						$link_share = 'https://www.facebook.com/sharer.php?u=' . urlencode( get_permalink() );
+						$icon = '<i class="lp-icon-facebook"></i>';
+						break;
+					case'twitter':
+						$link_share = 'https://twitter.com/share?url=' . urlencode( get_permalink() ) . '&amp;text=' . rawurlencode( esc_attr( get_the_title() ) );
+						$icon = '<i class="lp-icon-twitter"></i>';
+						break;
+					case'pinterest':
+						$link_share = 'http://pinterest.com/pin/create/button/?url=' . urlencode( get_permalink() ) . '&amp;description=' . rawurlencode( esc_attr( get_the_excerpt() ) ) . '&amp;media=' . urlencode( wp_get_attachment_url( get_post_thumbnail_id() ) ) . ' onclick="window.open(this.href); return false;"';
+						$icon = '<i class="lp-icon-pinterest-p"></i>';
+						break;
+					case'linkedin':
+						$link_share = 'https://www.linkedin.com/shareArticle?mini=true&url=' . urlencode( get_permalink() ) . '&title=' . rawurlencode( esc_attr( get_the_title() ) ) . '&summary=&source=' . rawurlencode( esc_attr( get_the_excerpt() ) );
+						$icon = '<i class="lp-icon-linkedin"></i>';
+						break;
+				}
+				echo sprintf('<li><a target="_blank" href="%s" title="%s">%s<span>%s</span></a></li>', $link_share, $social, $icon, $social);
+			}
+		}
+
+		$html_social = ob_get_clean();
+
 		$social_media = apply_filters(
 			'learn-press/single-course/social-share',
-			[]
+			[
+				'wrapper'     => '<ul class="thim-social-media">',
+				'content'	  => $html_social,		 	 
+				'wrapper_end' => '</ul>',
+			]
 		);
-
+		
 		$clipboard = [
 			'wrapper'     => '<div class="clipboard-post">',
 			'input'       => sprintf( '<input class="clipboard-value" type="text" value="%s">', get_permalink() ),
@@ -339,8 +377,8 @@ class SingleCourseModelTemplate {
 				'toggle_end'                => '</div>',
 				'wrapper_content'           => '<div class="wrapper-content-widget">',
 				'wrapper_content_inner'     => '<div class="content-widget-social-share">',
-				'social'                    => Template::combine_components( $social_media ),
 				'clipboard'                 => Template::combine_components( $clipboard ),
+				'social'                    => Template::combine_components( $social_media ),
 				'wrapper_content_inner_end' => '</div>',
 				'wrapper_content_end'       => '</div>',
 				'wrapper_end'               => '</div>',

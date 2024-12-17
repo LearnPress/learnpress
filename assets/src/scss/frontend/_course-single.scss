@@ -324,8 +324,10 @@
 		display: flex;
 		column-gap: 60px;
 		row-gap: 30px;
+		flex-wrap: wrap;
 
 		&__left {
+			width: 100%;
 			@media (min-width: 992px) {
 				width: calc(100% - 440px);
 			}
@@ -346,6 +348,7 @@
 		}
 
 		&__right {
+			width: 100%;
 			@media (min-width: 992px) {
 				width: 380px;
 				margin-top: -280px;
@@ -440,36 +443,62 @@
 
 			.social-share-toggle {
 				position: relative;
-				text-align: right;
 			
 				.share-toggle-icon {
-					text-align: right;
 					cursor: pointer;
-					display: inline-block;
+					display: flex;
+					align-items: center;
+					gap: 8px;
+
+					.share-label {
+						margin: 0;
+					}
 				}
 			
 				.content-widget-social-share {
-					padding: 24px 16px;
+					padding: 20px;
 					background: #fff;
 					box-shadow: 0 1px 16px 0 rgba(0, 0, 0, 0.12);
 			
-					.title-share {
-						padding-bottom: 16px;
-						margin-bottom: 16px;
-					}
-			
 					.thim-social-media {
 						display: inline-flex;
+						padding: 0;
+						gap: 12px;
 			
 						> li {
 							text-align: center;
 							list-style: none;
-			
-							> a {
-								display: block;
-								text-align: center;
-								margin: 0 auto;
+							
+							span {
+								display: none;
 							}
+
+							i {
+								width: 40px;
+								height: 40px;
+								display: inline-flex;
+								align-items: center;
+								justify-content: center;
+								border: 1px solid $border-color;
+								border-radius: 50%;
+
+								&:hover {
+									background-color: $color-primary;
+									border-color: $color-primary;
+									color: $color-white;
+								}
+							}
+						}
+					}
+
+					.clipboard-post {
+						display: flex;
+						justify-content: space-between;
+						margin-bottom: 20px;
+						gap: 12px;
+
+						@media (max-width: 600px) {
+							flex-wrap: wrap;
 						}
 					}
 			
@@ -512,27 +541,13 @@
 								display: block;
 							}
 						}
-			
-						//&.active {
-						//	&:active,
-						//	&:focus {
-						//		outline: none;
-						//		&:after {
-						//			content: "Copied!";
-						//		}
-						//	}
-						//}
 					}
 			
 					.clipboard-value {
-						border: 0;
-						padding: 0;
-						color: inherit;
-						background: transparent !important;
-						box-shadow: none;
-			
-						&:focus {
-							outline: none;
+						border: 1px solid $border-color;
+
+						@media (max-width: 600px) {
+							width: 100%;
 						}
 					}
 				}
