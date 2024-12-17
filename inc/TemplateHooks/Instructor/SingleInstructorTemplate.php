@@ -39,11 +39,13 @@ class SingleInstructorTemplate {
 	 * @return string
 	 */
 	public function html_display_name( $instructor ): string {
-		$html_wrapper = [
-			'<span class="instructor-display-name">' => '</span>',
+		$sections = [
+			'wrapper'     => '<span class="instructor-display-name">',
+			'content'     => $instructor->get_display_name(),
+			'wrapper_end' => '</span>',
 		];
 
-		return Template::instance()->nest_elements( $html_wrapper, $instructor->get_display_name() );
+		return Template::combine_components( $sections );
 	}
 
 	/**
@@ -57,18 +59,21 @@ class SingleInstructorTemplate {
 		$content = '';
 
 		try {
-			$html_wrapper = [
-				'<div class="instructor-social">' => '</div>',
-			];
-			$socials      = $instructor->get_profile_social( $instructor->get_id() );
+			$socials = $instructor->get_profile_social( $instructor->get_id() );
 			ob_start();
 			foreach ( $socials as $k => $social ) {
 				echo $social;
 			}
 			$content = ob_get_clean();
-			$content = Template::instance()->nest_elements( $html_wrapper, $content );
+
+			$sections = [
+				'wrapper'     => '<div class="instructor-social">',
+				'content'     => $content,
+				'wrapper_end' => '</div>',
+			];
+
+			$content = Template::combine_components( $sections );
 		} catch ( Throwable $e ) {
-			ob_end_clean();
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 
@@ -86,11 +91,13 @@ class SingleInstructorTemplate {
 		$content = '';
 
 		try {
-			$html_wrapper = [
-				'<div class="instructor-description">' => '</div>',
+			$sections = [
+				'wrapper'     => '<div class="instructor-description">',
+				'content'     => $instructor->get_description(),
+				'wrapper_end' => '</div>',
 			];
 
-			$content = Template::instance()->nest_elements( $html_wrapper, $instructor->get_description() );
+			$content = Template::combine_components( $sections );
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
@@ -138,20 +145,19 @@ class SingleInstructorTemplate {
 		$content = '';
 
 		try {
-			$html_wrapper = [
-				'<span class="instructor-total-courses">' => '</span>',
-			];
-
 			$instructor_statistic = $instructor->get_instructor_statistic();
 
-			$content = Template::instance()->nest_elements(
-				$html_wrapper,
-				sprintf(
+			$sections = [
+				'wrapper'     => '<span class="instructor-total-students">',
+				'content'     => sprintf(
 					'%d %s',
 					$instructor_statistic['published_course'],
 					_n( 'Course', 'Courses', $instructor_statistic['published_course'], 'learnpress' )
-				)
-			);
+				),
+				'wrapper_end' => '</span>',
+			];
+
+			$content = Template::combine_components( $sections );
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
@@ -172,21 +178,19 @@ class SingleInstructorTemplate {
 		$content = '';
 
 		try {
-			$html_wrapper = [
-				'<span class="instructor-total-students">' => '</span>',
-			];
-
 			$instructor_statistic = $instructor->get_instructor_statistic();
 
-			$content = Template::instance()->nest_elements( $html_wrapper, $instructor_statistic['total_student'] );
-			$content = Template::instance()->nest_elements(
-				$html_wrapper,
-				sprintf(
+			$sections = [
+				'wrapper'     => '<span class="instructor-total-students">',
+				'content'     => sprintf(
 					'%d %s',
 					$instructor_statistic['total_student'],
 					_n( 'Student', 'Students', $instructor_statistic['total_student'], 'learnpress' )
-				)
-			);
+				),
+				'wrapper_end' => '</span>',
+			];
+
+			$content = Template::combine_components( $sections );
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
