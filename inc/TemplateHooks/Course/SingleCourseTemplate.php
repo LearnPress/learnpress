@@ -358,6 +358,7 @@ class SingleCourseTemplate {
 
 		// @since 4.2.7
 		$price_html = sprintf( '<span class="course-price"><span class="course-item-price">%s</span></span>', $price_html );
+
 		return apply_filters( 'learn-press/course/html-price', $price_html, $course );
 	}
 
@@ -515,7 +516,11 @@ class SingleCourseTemplate {
 				$course = CourseModel::find( $course->get_id(), true );
 			}
 
-			$level  = $course->get_meta_value_by_key( CoursePostModel::META_KEY_LEVEL, '' );
+			$level = $course->get_meta_value_by_key( CoursePostModel::META_KEY_LEVEL, '' );
+			if ( empty( $level ) ) {
+				$level = 'all';
+			}
+
 			$levels = lp_course_level();
 			$level  = $levels[ $level ] ?? $levels['all'];
 
