@@ -2,7 +2,7 @@
 /**
  * Template for display message notification addons purchased need extend.
  *
- * @version 1.0.0
+ * @version 1.0.1
  * @since 4.2.5.9
  */
 
@@ -25,9 +25,10 @@ if ( empty( $data['dismiss'] ) ) {
 		}
 		?>
 		<p>
-			<?php echo sprintf(
+			<?php
+			echo sprintf(
 				'<strong>%s %s</strong>',
-				__( 'You have a LearnPress add-ons license that needs to be extended.', 'learnpress' ),
+				__( 'You have LearnPress Add-on licenses that need to be extended.', 'learnpress' ),
 				sprintf(
 					'<a style="color: #E64B50" href="%s">%s</a>',
 					admin_url( 'admin.php?page=learn-press-addons&tab=license' ),
