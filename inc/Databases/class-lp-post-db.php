@@ -47,7 +47,7 @@ class LP_Post_DB extends LP_Database {
 
 		// Find ID
 		if ( isset( $filter->ID ) ) {
-			$filter->where[]    = $this->wpdb->prepare( "AND $ca.ID = %d", $filter->ID );
+			$filter->where[] = $this->wpdb->prepare( "AND $ca.ID = %d", $filter->ID );
 		}
 
 		// Status
@@ -101,4 +101,3 @@ class LP_Post_DB extends LP_Database {
 		return $this->execute( $filter, $total_rows );
 	}
 }
-

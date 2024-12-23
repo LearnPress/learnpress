@@ -1,67 +1,79 @@
 <?php
 /**
  * Template for printing js code used for Quiz.
+ * Call from hook 'learn-press/content-item-summary/lp_quiz'
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 4.0.0
+ * @version 4.0.1
  */
+
+use LearnPress\Models\CourseModel;
+use LearnPress\Models\QuizPostModel;
+use LearnPress\Models\UserItems\UserQuizModel;
+use LearnPress\Models\UserModel;
 
 defined( 'ABSPATH' ) || exit;
 
-$user   = learn_press_get_current_user();
-$course = learn_press_get_course();
-if ( ! $course ) {
+global $lpCourseModel;
+$courseModel = $lpCourseModel;
+if ( ! $courseModel instanceof CourseModel ) {
 	return;
 }
+
+$userModel = UserModel::find( get_current_user_id(), true );
 
 $quiz = LP_Global::course_item_quiz();
 if ( ! $quiz ) {
 	return;
 }
 
-$total_question      = $quiz->count_questions();
+$quizPostModel = QuizPostModel::find( $quiz->get_id(), true );
+if ( ! $quizPostModel instanceof QuizPostModel ) {
+	return;
+}
+
+$total_question      = $quizPostModel->count_questions();
 $questions           = array();
 $show_check          = $quiz->get_instant_check();
 $show_correct_review = $quiz->get_show_correct_review();
 $question_ids        = $quiz->get_question_ids();
 $user_js             = array();
 
-
-$user_course       = $user->get_course_attend( $course->get_id() );
-$user_quiz         = $user_course ? $user_course->get_item_attend( $quiz->get_id(), LP_QUIZ_CPT ) : false;
 $answered          = array();
 $status            = '';
 $checked_questions = array();
 
 $crypto_js_aes = false;
-$editable      = $user->is_admin() || get_post_field( $user->is_author_of( $course->get_id() ) );
-$max_retrying  = learn_press_get_quiz_max_retrying( $quiz->get_id(), $course->get_id() );
+$user          = learn_press_get_current_user();
+$editable      = $user->is_admin() || get_post_field( $user->is_author_of( $courseModel->get_id() ) );
+$max_retrying  = learn_press_get_quiz_max_retrying( $quiz->get_id(), $courseModel->get_id() );
 $quiz_results  = null;
 
-if ( $user_quiz ) {
-	$status            = $user_quiz->get_status();
-	$quiz_results      = $user_quiz->get_result();
-	$checked_questions = $user_quiz->get_checked_questions();
-
-	$user_js = array(
-		'status'            => $status,
-		'attempts'          => $user_quiz->get_attempts(),
-		'checked_questions' => $checked_questions,
-		'start_time'        => $user_quiz->start_time,
-		'retaken'           => $user_quiz->get_retaken_count(),
+if ( $userModel ) {
+	$userQuizModel = UserQuizModel::find_user_item(
+		$userModel->get_id(),
+		$quiz->get_id(),
+		LP_QUIZ_CPT,
+		$courseModel->get_id(),
+		LP_COURSE_CPT,
+		true
 	);
 
-	try {
-		$time_remaining = $user_quiz->get_timestamp_remaining();
-	} catch ( Exception $e ) {
-		$time_remaining = 0;
-	}
-	$user_js['total_time'] = $time_remaining;
+	if ( $userQuizModel instanceof UserQuizModel ) {
+		$status       = $userQuizModel->get_status();
+		$quiz_results = $userQuizModel->get_result();
+		$user_js      = array(
+			'status'            => $status,
+			'attempts'          => $userQuizModel->get_history(),
+			'checked_questions' => $userQuizModel->get_checked_questions(),
+			'start_time'        => $userQuizModel->get_start_time(),
+			'retaken'           => $userQuizModel->get_retaken_count(),
+			'total_time'        => $userQuizModel->get_time_remaining(),
+			'results'           => $quiz_results,
+		);
 
-	if ( $quiz_results ) {
-		$user_js['results'] = $quiz_results;
-		$answered           = $quiz_results['questions'];
+		$answered = $quiz_results['questions'];
 	}
 } else {
 	// Display quiz content.
@@ -85,7 +97,7 @@ $questions = learn_press_rest_prepare_user_questions(
 $duration = $quiz->get_duration();
 
 $js = array(
-	'course_id'              => $course->get_id(),
+	'course_id'              => $courseModel->get_id(),
 	'nonce'                  => wp_create_nonce( sprintf( 'user-quiz-%d', get_current_user_id() ) ),
 	'id'                     => $quiz->get_id(),
 	'title'                  => $quiz->get_title(),
@@ -118,11 +130,12 @@ $js = array(
 	'quiz_description'       => $quiz->get_content(),
 );
 
-LP_Helper::print_inline_script_tag( 'lp_quiz_js_data', [ 'data' => $js ] );
-
 $js = array_merge( $js, $user_js );
 
-if ( $total_question || $user_quiz ) :
+// To show data debug.
+LP_Helper::print_inline_script_tag( 'lp_quiz_js_data', [ 'data' => $js ] );
+
+if ( $total_question ) {
 	?>
 	<div id="learn-press-quiz-app"></div>
 
@@ -138,10 +151,7 @@ if ( $total_question || $user_quiz ) :
 			}
 		} );
 	</script>
-
 	<?php
-else :
+} else {
 	esc_html_e( 'You haven\'t any question!', 'learnpress' );
-	?>
-
-<?php endif; ?>
+}

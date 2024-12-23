@@ -714,11 +714,11 @@ class LP_Template_Course extends LP_Abstract_Template {
 	/**
 	 * @deprecated 4.1.7.2
 	 */
-	public function item_quiz_content() {
+	/*public function item_quiz_content() {
 		$item = LP_Global::course_item();
 
 		learn_press_get_template( 'content-quiz/js.php' );
-	}
+	}*/
 
 	/**
 	 * @deprecated 4.1.7.2
