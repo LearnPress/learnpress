@@ -3,6 +3,7 @@
 	"apiVersion": 2,
 	"name": "learnpress/switch-layout-archive-course",
 	"title": "Switch Layout",
+	"icon": "layout",
 	"category": "lp-archive-course-category",
 	"description": "Renders Template Switch Layout Archive Course PHP templates.",
 	"textdomain": "learnpress",
@@ -14,5 +15,8 @@
 		"reorder": true,
 		"html": false,
 		"multiple": true
-	}
+	},
+	"ancestor": [
+		"learnpress/lp-archive-course"
+	]
 }

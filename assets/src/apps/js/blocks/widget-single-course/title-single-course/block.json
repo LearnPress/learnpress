@@ -4,6 +4,7 @@
 	"name": "learnpress/title-single-course",
 	"title": "Title Single Course",
 	"category": "lp-single-course-category",
+	"icon": "heading",
 	"description": "Renders template Title Single Course PHP templates.",
 	"textdomain": "learnpress",
 	"keywords": ["title single course", "learnpress"],
@@ -24,5 +25,8 @@
 		"html": false,
 		"multiple": true,
 		"customClassName": true
-	}
+	},
+	"ancestor": [
+		"learnpress/lp-single-course"
+	]
 }

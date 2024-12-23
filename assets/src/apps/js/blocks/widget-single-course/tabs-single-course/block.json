@@ -4,6 +4,7 @@
 	"name": "learnpress/tabs-single-course",
 	"title": "Tabs Single Course",
 	"category": "lp-single-course-category",
+	"icon": "table-row-after",
 	"description": "Renders template Tabs Single Course PHP templates.",
 	"textdomain": "learnpress",
 	"keywords": ["tabs single course", "learnpress"],
@@ -14,5 +15,6 @@
 		"reorder": true,
 		"html": false,
 		"multiple": true
-	}
+	},
+	"ancestor": ["learnpress/lp-single-course"]
 }

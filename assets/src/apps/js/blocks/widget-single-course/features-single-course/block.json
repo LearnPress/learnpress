@@ -4,6 +4,7 @@
 	"name": "learnpress/features-single-course",
 	"title": "Features Single Course",
 	"category": "lp-single-course-category",
+	"icon": "index-card",
 	"description": "Renders template Box Extra Features Single Course PHP templates.",
 	"textdomain": "learnpress",
 	"keywords": ["box extra features single course", "learnpress"],
@@ -19,5 +20,6 @@
 		"reorder": true,
 		"html": false,
 		"multiple": true
-	}
+	},
+	"ancestor": ["learnpress/lp-single-course"]
 }

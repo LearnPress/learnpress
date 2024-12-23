@@ -1,19 +1,21 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 2,
-	"name": "learnpress/order-by-archive-course",
-	"title": "Order By",
+	"name": "learnpress/template-course-archive-course",
+	"title": "Template Course",
 	"category": "lp-archive-course-category",
-	"description": "Renders Template Order By Archive Course PHP templates.",
+	"icon": "layout",
+	"description": "Renders Template Course Archive Course PHP templates.",
 	"textdomain": "learnpress",
-	"keywords": ["order by archive course", "learnpress"],
+	"keywords": ["template archive course", "learnpress"],
 	"usesContext": [],
 	"supports": {
 		"inserter": true,
 		"reusable": true,
 		"reorder": true,
 		"html": false,
-		"multiple": true
+		"multiple": false,
+		"wrapper": false
 	},
 	"ancestor": [
 		"learnpress/lp-archive-course"

@@ -19,5 +19,8 @@
 		"reorder": true,
 		"html": false,
 		"multiple": true
-	}
+	},
+	"ancestor": [
+		"learnpress/lp-single-course"
+	]
 }

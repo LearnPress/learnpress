@@ -3,6 +3,7 @@
 	"apiVersion": 2,
 	"name": "learnpress/search-archive-course",
 	"title": "Search",
+	"icon": "search",
 	"category": "lp-archive-course-category",
 	"description": "Renders Template Search Archive Course PHP templates.",
 	"textdomain": "learnpress",
@@ -14,5 +15,8 @@
 		"reorder": true,
 		"html": false,
 		"multiple": true
-	}
+	},
+	"ancestor": [
+		"learnpress/lp-archive-course"
+	]
 }

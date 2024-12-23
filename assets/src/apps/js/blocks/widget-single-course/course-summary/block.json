@@ -15,5 +15,8 @@
 		"html": false,
 		"multiple": true,
 		"wrapper": false
-	}
+	},
+	"ancestor": [
+		"learnpress/lp-single-course"
+	]
 }

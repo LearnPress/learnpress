@@ -1,36 +1,26 @@
 <?php
 
-use LearnPress\Models\Courses;
-use LearnPress\TemplateHooks\Course\ListCoursesTemplate;
-$settings = [];
-$settings = array_merge(
-	$settings,
-	lp_archive_skeleton_get_args()
-);
+use LearnPress\TemplateHooks\TemplateAJAX;
 
-$filter     = new LP_Course_Filter();
-$total_rows = 0;
-Courses::handle_params_for_query_courses( $filter, $settings );
-Courses::get_courses( $filter, $total_rows );
-$total_pages           = 0;
-$total_pages           = LP_Database::get_total_pages( $filter->limit, $total_rows );
-$data_pagination_type  = LP_Settings::get_option( 'course_pagination_type', 'number' );
-$enableAjaxLoadCourses = LP_Settings::get_option( 'courses_load_ajax', 'yes' );
-
-if ( $enableAjaxLoadCourses === 'no' ) {
-	$data_pagination_type = 'number';
-}
-
-$data_pagination = [
-	'total_pages' => $total_pages,
-	'type'        => $data_pagination_type,
-	'base'        => add_query_arg( 'paged', '%#%', $settings['url_current'] ?? '' ),
-	'paged'       => $settings['paged'] ?? 1,
+$content  = $inner_content;
+$callback = [
+	'class'  => 'LearnPress\\TemplateHooks\\Course\\ListCoursesTemplate',
+	'method' => 'render_courses',
 ];
 
+$custom = $attributes['custom'] ?? false;
+
+if ( ! $custom ) {
+	$args                          = lp_archive_skeleton_get_args();
+	$args['courses_load_ajax']     = LP_Settings_Courses::is_ajax_load_courses() ? 1 : 0;
+	$args['courses_first_no_ajax'] = LP_Settings_Courses::is_no_load_ajax_first_courses() ? 1 : 0;
+	$content                       = TemplateAJAX::load_content_via_ajax( $args, $callback );
+}
 ?>
 <div class="lp-list-courses-default">
 	<?php
-	echo ListCoursesTemplate::html_list_courses( $settings, $data_pagination, $inner_content );
+	if ( ! empty( $content ) ) :
+		echo $content;
+	endif;
 	?>
 </div>

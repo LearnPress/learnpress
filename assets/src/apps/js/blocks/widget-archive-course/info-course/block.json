@@ -4,6 +4,7 @@
 	"name": "learnpress/info-course-archive-course",
 	"title": "Info Course",
 	"category": "lp-archive-course-category",
+	"icon": "button",
 	"description": "Renders Template Info Course Archive Course PHP templates.",
 	"textdomain": "learnpress",
 	"keywords": ["info archive course", "learnpress"],
@@ -16,8 +17,6 @@
 		"multiple": true
 	},
 	"ancestor": [
-		"learnpress/archive-lp_course",
-		"learnpress/group-courses-archive-course",
-		"learnpress/list-course-archive-course"
+		"learnpress/lp-archive-course"
 	]
 }

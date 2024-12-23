@@ -5,10 +5,8 @@ export const edit = ( props ) => {
 	return (
 		<>
 			<div { ...blockProps }>
-				<span>
-					<strong>
-						{ 'Title' }
-					</strong>
+				<span style={ { lineHeight: '1.3', fontSize: '1.5em' } }>
+					{ 'Title' }
 				</span>
 			</div>
 		</>

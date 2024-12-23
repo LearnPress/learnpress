@@ -5,7 +5,7 @@ use LearnPress\Models\CourseModel;
  *
  * Handle register, render block layout
  */
-class Block_Layout_Archive_Course extends Abstract_Block_Layout {
+class Block_Layout_Single_Course extends Abstract_Block_Layout {
 	public $slug                          = 'lp-single-course';
 	public $name                          = 'learnpress/lp-single-course';
 	public $title                         = 'Single Course (LearnPress)';

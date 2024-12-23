@@ -5,11 +5,9 @@ export const edit = ( props ) => {
 	return (
 		<>
 			<div { ...blockProps }>
-				<span>
-					<strong>
-						{ 'Meta' }
-					</strong>
-				</span>
+				<div>
+					<strong>{ 'Meta course' }</strong>
+				</div>
 			</div>
 		</>
 	);

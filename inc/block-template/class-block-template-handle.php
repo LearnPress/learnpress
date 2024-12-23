@@ -204,20 +204,34 @@ class Block_Template_Handle {
 	}
 
 	public function register_block_templates() {
-		if ( version_compare( get_bloginfo( 'version' ), '6.7', '>=' ) ) {
-			ob_start();
-			Template::instance()->get_frontend_template( 'block/render/single-course/single-course.php' );
-			$content = ob_get_clean();
-			register_block_template(
-				'learnpress//single-course',
-				[
-					'title'       => __( 'Single Course', 'LearnPress' ),
-					'description' => __( 'Template LearnPress Single Course', 'LearnPress' ),
-					'content'     => $content,
-					'post_types'  => [ 'lp_course' ],
-				]
-			);
+		if ( version_compare( get_bloginfo( 'version' ), '6.7', '<' ) ) {
+			return;
 		}
+
+		ob_start();
+		Template::instance()->get_frontend_template( 'block/html/single-lp_course.html' );
+		$content_single_course = ob_get_clean();
+		register_block_template(
+			'learnpress//single-course',
+			[
+				'title'       => __( 'Single Course', 'LearnPress' ),
+				'description' => __( 'Template LearnPress Single Course', 'LearnPress' ),
+				'content'     => $content_single_course,
+				'post_types'  => [ 'lp_course' ],
+			]
+		);
+
+		ob_start();
+		Template::instance()->get_frontend_template( 'block/html/archive-lp_course.html' );
+		$content_archive_course = ob_get_clean();
+		register_block_template(
+			'learnpress//archive-course',
+			[
+				'title'       => __( 'Archive Course', 'LearnPress' ),
+				'description' => __( 'Template LearnPress Archive Course', 'LearnPress' ),
+				'content'     => $content_archive_course,
+			]
+		);
 	}
 }
 

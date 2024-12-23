@@ -4,6 +4,7 @@
 	"name": "learnpress/image-single-course",
 	"title": "Image Single Course",
 	"category": "lp-single-course-category",
+	"icon": "format-image",
 	"description": "Renders template Image Single Course PHP templates.",
 	"textdomain": "learnpress",
 	"keywords": ["image single course", "learnpress"],
@@ -19,5 +20,8 @@
 		"reorder": true,
 		"html": false,
 		"multiple": true
-	}
+	},
+	"ancestor": [
+		"learnpress/lp-single-course"
+	]
 }

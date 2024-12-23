@@ -4,6 +4,7 @@
 	"name": "learnpress/requirements-single-course",
 	"title": "Requirements Single Course",
 	"category": "lp-single-course-category",
+	"icon": "index-card",
 	"description": "Renders template Box Extra Requirements Single Course PHP templates.",
 	"textdomain": "learnpress",
 	"keywords": ["box extra requirements single course", "learnpress"],
@@ -19,5 +20,8 @@
 		"reorder": true,
 		"html": false,
 		"multiple": true
-	}
+	},
+	"ancestor": [
+		"learnpress/lp-single-course"
+	]
 }

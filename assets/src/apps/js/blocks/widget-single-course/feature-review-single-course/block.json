@@ -3,6 +3,7 @@
 	"apiVersion": 2,
 	"name": "learnpress/feature-review-single-course",
 	"title": "Feature Review Single Course",
+	"icon": "star-filled",
 	"category": "lp-single-course-category",
 	"description": "Renders template Feature Review Single Course PHP templates.",
 	"textdomain": "learnpress",
@@ -19,5 +20,8 @@
 		"reorder": true,
 		"html": false,
 		"multiple": true
-	}
+	},
+	"ancestor": [
+		"learnpress/lp-single-course"
+	]
 }

@@ -4,6 +4,7 @@
 	"name": "learnpress/comment",
 	"title": "Comment",
 	"category": "lp-single-course-category",
+	"icon": "format-chat",
 	"description": "Renders Comment PHP Template.",
 	"textdomain": "learnpress",
 	"keywords": ["comment", "learnpress"],
@@ -14,5 +15,8 @@
 		"reorder": true,
 		"html": false,
 		"multiple": true
-	}
+	},
+	"ancestor": [
+		"learnpress/lp-single-course"
+	]
 }

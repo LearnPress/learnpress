@@ -5,11 +5,15 @@ export const edit = ( props ) => {
 	return (
 		<>
 			<div { ...blockProps }>
-				<span>
-					<strong>
-						{ 'Instructor Category' }
-					</strong>
-				</span>
+				<div className="course-instructor-category">
+					<div className="instructor">
+						{ 'by ' }
+						<strong>{ 'Instructor' }</strong>
+					</div>
+					<div className="category">
+						{ 'in Category' }
+					</div>
+				</div>
 			</div>
 		</>
 	);

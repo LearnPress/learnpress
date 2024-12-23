@@ -4,6 +4,7 @@
 	"name": "learnpress/lp-single-course",
 	"title": "Single Course",
 	"category": "lp-single-course-category",
+	"icon": "archive",
 	"description": "Renders Layout Single Course PHP templates.",
 	"textdomain": "learnpress",
 	"keywords": ["layout single course", "learnpress"],

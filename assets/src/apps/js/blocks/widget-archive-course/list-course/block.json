@@ -2,18 +2,36 @@
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 2,
 	"name": "learnpress/list-course-archive-course",
-	"title": "List Course",
+	"title": "List Courses",
 	"category": "lp-archive-course-category",
-	"description": "Renders Template List Course Archive Course PHP templates.",
+	"icon": "admin-page",
+	"description": "Renders Layout Group Courses PHP templates.",
 	"textdomain": "learnpress",
-	"keywords": ["list archive course", "learnpress"],
+	"keywords": ["layout group course", "learnpress"],
 	"usesContext": [],
+	"attributes": {
+		"custom": {
+			"type": "boolean",
+			"default": false
+		},
+		"load": {
+			"type": "boolean",
+			"default": false
+		},
+		"pagination": {
+			"type": "string",
+			"default": "number"
+		}
+	},
 	"supports": {
 		"inserter": true,
 		"reusable": true,
 		"reorder": true,
 		"html": false,
-		"multiple": false,
+		"multiple": true,
 		"wrapper": false
-	}
+	},
+	"ancestor": [
+		"learnpress/lp-archive-course"
+	]
 }

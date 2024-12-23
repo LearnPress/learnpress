@@ -4,6 +4,7 @@
 	"name": "learnpress/target-audiences-single-course",
 	"title": "Target audiences Single Course",
 	"category": "lp-single-course-category",
+	"icon": "index-card",
 	"description": "Renders template Box Extra Target audiences Single Course PHP templates.",
 	"textdomain": "learnpress",
 	"keywords": ["box extra target audiences single course", "learnpress"],
@@ -19,5 +20,8 @@
 		"reorder": true,
 		"html": false,
 		"multiple": true
-	}
+	},
+	"ancestor": [
+		"learnpress/lp-single-course"
+	]
 }
