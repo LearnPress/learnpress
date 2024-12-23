@@ -122,6 +122,7 @@ class UserItemBaseTemplate {
 			}
 
 			$content = Template::instance()->nest_elements( $html_wrapper, $expire_date_str );
+			$content = apply_filters( 'learn-press/user-item/html-expire-date-time', $content, $user_item, $has_time );
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
