@@ -6,6 +6,13 @@
 .lp-user-cover-image_background {
 	position: relative;
 
+	&:hover {
+		.lp-btn-to-edit-cover-image {
+			opacity: 1;
+			visibility: visible;
+		}
+	}
+
 	.lp-btn-to-edit-cover-image {
 		position: absolute;
 		bottom: 0;
@@ -17,9 +24,14 @@
 		cursor: pointer;
 		color: $color-primary;
 		text-decoration: none;
+		opacity: 0;
+		visibility: hidden;
+
 		@media (max-width: 767px) {
 			font-size: 0;
 			padding: 4px 12px;
+			opacity: 1;
+			visibility: visible;
 			&:before{
 				font-family: 'lp-icon';
 				content: "\f044";
