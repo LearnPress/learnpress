@@ -16,6 +16,7 @@ use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
 use LP_Course;
 use LP_Course_Filter;
+use LP_Profile;
 use LP_User;
 use Throwable;
 use WP_Query;
@@ -35,7 +36,7 @@ class UserTemplate {
 	 *
 	 * @return string
 	 * @since 4.2.7.2
-	 * @version 1.0.3
+	 * @version 1.0.4
 	 */
 	public function html_avatar( UserModel $user, array $size_display = [], string $class_name = 'user' ): string {
 		$html = '';
@@ -45,6 +46,7 @@ class UserTemplate {
 				$size_display = learn_press_get_avatar_thumb_size();
 			}
 
+			$profile = LP_Profile::instance( $user->get_id() );
 			$width  = $size_display;
 			$height = $size_display;
 			if ( is_array( $size_display ) ) {
@@ -61,11 +63,22 @@ class UserTemplate {
 				$height
 			);
 
+			$html_btn_to_edit_avatar = '';
+			if ( $user->get_id() === get_current_user_id() ) {
+				$html_btn_to_edit_avatar = sprintf(
+					'<a class="lp-btn-to-edit-avatar" href="%s" data-section-correct="%d" target="_blank">+ %s</a>',
+					$profile->get_tab_link( 'settings', 'avatar' ),
+					'avatar',
+					__( 'edit avatar', 'learnpress' )
+				);
+			}
+
 			$section = apply_filters(
 				'learn-press/user/html-avatar',
 				[
 					'wrapper'     => sprintf( '<div class="%s-avatar">', $class_name ),
 					'avatar'      => $img_avatar,
+					'btn_to_edit' => $html_btn_to_edit_avatar,
 					'wrapper_end' => '</div>',
 				],
 				$user

@@ -336,22 +336,13 @@ class SingleInstructorTemplate {
 	 * @return false|string
 	 */
 	public function info( UserModel $instructor ): string {
-
-		$html_cover = '';
-
-		ob_start();
-		$userModel = UserModel::find( $instructor->get_id(), true );
-		// Display cover image
-		echo ProfileTemplate::instance()->html_cover_image( $userModel );
-		$html_cover = ob_get_clean();
-
 		$sections = apply_filters(
 			'learn-press/single-instructor/info/sections',
 			[
 				'wrapper'             => '<div class="lp-single-instructor__info">',
-				'cover_img'           => $html_cover,
+				'cover_img'           => ProfileTemplate::instance()->html_cover_image( $instructor ),
 				'wrapper_content'     => '<div class="lp-single-instructor__info__wrapper">',
-				'image'               => $this->html_avatar( $instructor ),
+				'avatar'              => $this->html_avatar( $instructor ),
 				'info_right'          => $this->info_right( $instructor ),
 				'wrapper_content_end' => '</div>',
 				'wrapper_end'         => '</div>',
@@ -382,7 +373,7 @@ class SingleInstructorTemplate {
 			[
 				'wrapper'             => '<div class="lp-single-instructor__info__right">',
 				'wrapper_content'     => '<div class="lp-single-instructor__info__right__content">',
-				'title'               => sprintf( '<h2>%s</h2>', $this->html_display_name( $instructor ) ) ,
+				'title'               => sprintf( '<h2>%s</h2>', $this->html_display_name( $instructor ) ),
 				'meta'                => Template::combine_components( $section_instructor_meta ),
 				'description'         => $this->html_description( $instructor ),
 				'wrapper_content_end' => '</div>',
@@ -445,7 +436,7 @@ class SingleInstructorTemplate {
 			// List courses
 			ob_start();
 			foreach ( $courses as $course_obj ) {
-				$course = LP_Course::get_course( $course_obj->ID );
+				$course = CourseModel::find( $course_obj->ID, true );
 				echo ListCoursesTemplate::render_course( $course );
 			}
 			$html_ul_wrapper = ob_get_clean();
