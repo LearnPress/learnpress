@@ -296,7 +296,6 @@ class SingleInstructorTemplate {
 
 			echo Template::combine_components( $sections );
 		} catch ( Throwable $e ) {
-			ob_end_clean();
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 	}
