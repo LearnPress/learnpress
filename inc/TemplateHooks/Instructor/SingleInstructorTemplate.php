@@ -148,7 +148,7 @@ class SingleInstructorTemplate {
 			$instructor_statistic = $instructor->get_instructor_statistic();
 
 			$sections = [
-				'wrapper'     => '<span class="instructor-total-students">',
+				'wrapper'     => '<span class="instructor-total-courses">',
 				'content'     => sprintf(
 					'%d %s',
 					$instructor_statistic['published_course'],
@@ -370,7 +370,7 @@ class SingleInstructorTemplate {
 		$section_instructor_meta = [
 			'wrapper'        => '<div class="lp-instructor-meta">',
 			'count_courses'  => sprintf(
-				'<div class="instructor-item-meta"><i class="lp-icon-file"></i>%s</div>',
+				'<div class="instructor-item-meta"><i class="lp-icon-courses"></i>%s</div>',
 				$this->html_count_courses( $instructor )
 			),
 			'count_students' => sprintf(
