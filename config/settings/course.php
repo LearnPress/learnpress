@@ -60,12 +60,12 @@ return apply_filters(
 					'css'               => 'min-width: 50px; width: 50px;',
 				),
 				array(
-					'title'             => esc_html__( 'Include courses in subcategory', 'learnpress' ),
-					'desc'              => esc_html__( 'Show all courses within the subcategory that have not been chosen in the parent category.', 'learnpress' ),
-					'id'                => 'get_courses_of_subcategory',
-					'default'           => 'no',
-					'type'              => 'checkbox',
-					'css'               => 'min-width: 50px; width: 50px;',
+					'title'   => esc_html__( 'Include courses in subcategory', 'learnpress' ),
+					'desc'    => esc_html__( 'Show all courses within the subcategory that have not been chosen in the parent category.', 'learnpress' ),
+					'id'      => 'get_courses_of_subcategory',
+					'default' => 'no',
+					'type'    => 'checkbox',
+					'css'     => 'min-width: 50px; width: 50px;',
 				),
 				array(
 					'title'   => esc_html__( 'Loading ajax Courses', 'learnpress' ),

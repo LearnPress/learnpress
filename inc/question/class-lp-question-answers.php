@@ -259,7 +259,10 @@ if ( ! class_exists( 'LP_Question_Answers' ) ) {
 			LP_Helper::shuffle_assoc( $this->_answers );
 		}
 
-		public function get_class( $more = '' ) {
+		/**
+		 * @deprecated 4.2.7.6
+		 */
+		/*public function get_class( $more = '' ) {
 			$classes = array( 'answer-options' );
 			if ( $more && is_string( $more ) ) {
 				$more = explode( ' ', $more );
@@ -276,7 +279,7 @@ if ( ! class_exists( 'LP_Question_Answers' ) ) {
 			$classes = LP_Helper::sanitize_array( $classes );
 
 			return apply_filters( 'learn-press/question/answer-options/classes', $classes, $this );
-		}
+		}*/
 
 		/**
 		 * Return an answer from a position.
@@ -301,10 +304,10 @@ if ( ! class_exists( 'LP_Question_Answers' ) ) {
 		 * @param string $more
 		 * @deprecated 4.1.7.3
 		 */
-		public function answers_class( $more = '' ) {
+		/*public function answers_class( $more = '' ) {
 			$classes = $this->get_class( $more );
 			echo 'class="' . join( ' ', $classes ) . '"';
-		}
+		}*/
 	}
 }
 
@@ -384,50 +387,51 @@ if ( ! class_exists( 'LP_Question_Answer_Option' ) ) {
 		 * @param string $more
 		 *
 		 * @return array
+		 * @deprecated 4.2.7.6
 		 */
-		public function get_class( $more = '' ) {
-			$classes = array( 'answer-option' );
-			if ( $more && is_string( $more ) ) {
-				$more = explode( ' ', $more );
-			}
-
-			if ( $more && is_array( $more ) ) {
-				$classes = array_merge( $classes, $more );
-			}
-			$is_checked = $this->is_checked();
-			$is_true    = $this->is_true();
-
-			if ( $this->get_question()->show_correct_answers() === 'yes' ) {
-
-				if ( $is_true ) {
-					$classes[] = 'answer-correct';
-				}
-
-				if ( $is_checked ) {
-					$classes[] = 'answer-selected';
-				}
-
-				if ( $is_checked && $is_true ) {
-					$classes[] = 'answered-correct';
-				} elseif ( $is_checked && ! $is_true ) {
-					$classes[] = 'answered-wrong';
-				} elseif ( ! $is_checked && $is_true ) {
-					$classes[] = 'answered-wrong';
-				}
-			}
-			/*elseif ( learn_press_is_review_questions() ) {
-				if ( $is_checked && $is_true ) {
-					$classes[] = 'answered-correct';
-				} elseif ( $is_checked && ! $is_true ) {
-					$classes[] = 'answered-wrong';
-				}
-			}*/
-
-			// sanitize unwanted classes
-			$classes = LP_Helper::sanitize_array( $classes );
-
-			return apply_filters( 'learn-press/question/answer-option/classes', $classes, $this );
-		}
+//		public function get_class( $more = '' ) {
+//			$classes = array( 'answer-option' );
+//			if ( $more && is_string( $more ) ) {
+//				$more = explode( ' ', $more );
+//			}
+//
+//			if ( $more && is_array( $more ) ) {
+//				$classes = array_merge( $classes, $more );
+//			}
+//			$is_checked = $this->is_checked();
+//			$is_true    = $this->is_true();
+//
+//			if ( $this->get_question()->show_correct_answers() === 'yes' ) {
+//
+//				if ( $is_true ) {
+//					$classes[] = 'answer-correct';
+//				}
+//
+//				if ( $is_checked ) {
+//					$classes[] = 'answer-selected';
+//				}
+//
+//				if ( $is_checked && $is_true ) {
+//					$classes[] = 'answered-correct';
+//				} elseif ( $is_checked && ! $is_true ) {
+//					$classes[] = 'answered-wrong';
+//				} elseif ( ! $is_checked && $is_true ) {
+//					$classes[] = 'answered-wrong';
+//				}
+//			}
+//			/*elseif ( learn_press_is_review_questions() ) {
+//				if ( $is_checked && $is_true ) {
+//					$classes[] = 'answered-correct';
+//				} elseif ( $is_checked && ! $is_true ) {
+//					$classes[] = 'answered-wrong';
+//				}
+//			}*/
+//
+//			// sanitize unwanted classes
+//			$classes = LP_Helper::sanitize_array( $classes );
+//
+//			return apply_filters( 'learn-press/question/answer-option/classes', $classes, $this );
+//		}
 
 		/**
 		 * @param bool $echo
@@ -492,10 +496,11 @@ if ( ! class_exists( 'LP_Question_Answer_Option' ) ) {
 		 * Print class attribute
 		 *
 		 * @param string $more
+		 * @deprecated 4.2.7.6
 		 */
-		public function option_class( $more = '' ) {
+		/*public function option_class( $more = '' ) {
 			echo 'class="' . join( ' ', $this->get_class( $more ) ) . '"';
-		}
+		}*/
 
 		public function get_data() {
 			return $this->_data;

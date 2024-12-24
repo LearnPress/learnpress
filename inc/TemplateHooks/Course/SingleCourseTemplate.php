@@ -338,12 +338,27 @@ class SingleCourseTemplate {
 				$price_html .= $this->html_regular_price( $course );
 			}
 
-			$price_html .= sprintf( '<span class="price">%s</span>', learn_press_format_price( $course->get_price(), true ) );
-			$price_html  = apply_filters( 'learn_press_course_price_html', $price_html, $course->has_sale_price(), $course->get_id() );
+			$price_html .= sprintf(
+				'<span class="price">%s</span>',
+				learn_press_format_price( $course->get_price(), true )
+			);
+			$price_html  = sprintf(
+				'%1$s %2$s %3$s',
+				$this->html_price_prefix( $course ),
+				$price_html,
+				$this->html_price_suffix( $course )
+			);
+			$price_html  = apply_filters(
+				'learn_press_course_price_html',
+				$price_html,
+				$course->has_sale_price(),
+				$course->get_id()
+			);
 		}
 
 		// @since 4.2.7
 		$price_html = sprintf( '<span class="course-price"><span class="course-item-price">%s</span></span>', $price_html );
+
 		return apply_filters( 'learn-press/course/html-price', $price_html, $course );
 	}
 
@@ -501,9 +516,13 @@ class SingleCourseTemplate {
 				$course = CourseModel::find( $course->get_id(), true );
 			}
 
-			$level  = $course->get_meta_value_by_key( CoursePostModel::META_KEY_LEVEL, '' );
+			$level = $course->get_meta_value_by_key( CoursePostModel::META_KEY_LEVEL, '' );
+			if ( empty( $level ) ) {
+				$level = 'all';
+			}
+
 			$levels = lp_course_level();
-			$level  = $levels[ $level ] ?? $levels[''];
+			$level  = $levels[ $level ] ?? $levels['all'];
 
 			$html_wrapper = [
 				'<span class="course-level">' => '</span>',
@@ -1140,6 +1159,58 @@ class SingleCourseTemplate {
 			$html = Template::combine_components( $section );
 		} catch ( Throwable $e ) {
 			error_log( $e->getMessage() );
+		}
+
+		return $html;
+	}
+
+	/**
+	 * Get html level course.
+	 *
+	 * @param LP_Course|CourseModel $course
+	 *
+	 * @return string
+	 * @since 4.2.7.5
+	 * @version 1.0.0
+	 */
+	public function html_price_prefix( $course ): string {
+		$html = '';
+
+		try {
+			$price_prefix_str = $course->get_meta_value_by_key( CoursePostModel::META_KEY_PRICE_PREFIX, '' );
+			if ( empty( $price_prefix_str ) ) {
+				return $html;
+			}
+
+			$html = sprintf( '<span class="course-price-prefix">%s</span>', $price_prefix_str );
+		} catch ( Throwable $e ) {
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
+		}
+
+		return $html;
+	}
+
+	/**
+	 * Get html level course.
+	 *
+	 * @param LP_Course|CourseModel $course
+	 *
+	 * @return string
+	 * @since 4.2.7.5
+	 * @version 1.0.0
+	 */
+	public function html_price_suffix( $course ): string {
+		$html = '';
+
+		try {
+			$price_suffix_str = $course->get_meta_value_by_key( CoursePostModel::META_KEY_PRICE_SUFFIX, '' );
+			if ( empty( $price_suffix_str ) ) {
+				return $html;
+			}
+
+			$html = sprintf( '<span class="course-price-suffix">%s</span>', $price_suffix_str );
+		} catch ( Throwable $e ) {
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 
 		return $html;

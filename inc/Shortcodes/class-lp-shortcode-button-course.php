@@ -5,14 +5,9 @@
  * @author   ThimPress
  * @category Shortcodes
  * @package  Learnpress/Shortcodes
- * @version  3.0.1
+ * @version  3.0.2
  * @extends  LP_Abstract_Shortcode
  */
-
-/**
- * Prevent loading this file directly
- */
-
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
@@ -37,10 +32,7 @@ if ( ! class_exists( 'LP_Shortcode_Button_Course' ) ) {
 			parent::__construct( $atts );
 			$this->_atts = shortcode_atts(
 				array(
-					'id'            => 0,
-					'enroll_text'   => '',
-					'purchase_text' => '',
-					'btn_label'     => '',
+					'id' => 0,
 				),
 				$this->_atts
 			);
@@ -97,6 +89,7 @@ if ( ! class_exists( 'LP_Shortcode_Button_Course' ) ) {
 		 * @param string $text
 		 *
 		 * @return string
+		 * @deprecated 4.2.7.5
 		 */
 		public function button_text_purchase( string $text ): string {
 			if ( $this->_atts['purchase_text'] ) {
@@ -114,6 +107,7 @@ if ( ! class_exists( 'LP_Shortcode_Button_Course' ) ) {
 		 * @param string $text
 		 *
 		 * @return string
+		 * @deprecated 4.2.7.5
 		 */
 		public function button_text_enroll( string $text ): string {
 			if ( $this->_atts['enroll_text'] ) {

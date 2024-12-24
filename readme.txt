@@ -5,7 +5,7 @@ Tags: elearning, education, course, lms, learning management system
 Requires at least: 6.0
 Tested up to: 6.7.1
 Requires PHP: 7.0
-Stable tag: 4.2.7.4
+Stable tag: 4.2.7.5
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -218,6 +218,13 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.2.7.5 (2024-12-17) =
+~ Added: option Price prefix, Price suffix for course.
+~ Fixed: shortcode [learn_press_button_course].
+~ Fixed: error status item's course, case option course set "no require enroll" (user enrolled).
+~ Fixed: error lose tab on Profile when install SiteOrigin plugin.
+~ Updated: library TomSelect, ChartJS to the latest.
+
 = 4.2.7.4 (2024-12-03) =
 ~ Fixed: image cover profile with theme Twenty Five.
 ~ Fixed: error some sites not show notes(Waring) on the Admin Dashboard.
@@ -271,36 +278,5 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Fixed: error create new section not send section_order.
 ~ Fixed: case search LP orders by user.
 ~ Fixed: error sort by total on list orders.
-
-= 4.2.6.9.4 (2024-08-07) =
-~ Fixed: security.
-
-= 4.2.6.9.3 (2024-08-02) =
-~ Tweak: added courses to LP Order manual.
-~ Tweak: list orders status trash.
-~ Tweak: message out of stock, no enroll requirement.
-~ Fixed: material lesson display with case no enroll requirement.
-~ Fixed: error not show email on Order detail when buy with Guest.
-~ Fixed: error can't remove empty fields on "Extra Information" options.
-~ Fixed: error clean break row (\n) on "Featured review" option.
-~ Fixed: query Statistics by role.
-~ Fixed: error max student when user bought.
-~ Fixed: case no enroll requirement with course price.
-~ Remove: jquery-ui-timepicker-addon jquery library.
-
-= 4.2.6.9.2 (2024-07-25) =
-~ Fixed: error lose section when update section of course.
-
-= 4.2.6.9.1 (2024-07-24) =
-~ Fixed: error check paths override of theme.
-
-= 4.2.6.9 (2024-07-24) =
-~ Fixed: security.
-~ Optimize courses.
-~ Create table learnpress_courses from posts to query faster.
-~ Tweak: choose users when create manual LP Order.
-~ Tweak: filed search instructor on list courses, orders, lessons, quizzes,...
-~ Tweak: get options list author via API when edit courses (make edit load screen edit courses faster).
-~ Fixed: show tab material with course no require enroll.
 
 <a href="https://raw.githubusercontent.com/LearnPress/learnpress/develop/changelog.txt" target="_blank">See changelog for all versions.</a>

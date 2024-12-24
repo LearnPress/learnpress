@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Class LP_User_Items_DB
  *
  * @since 3.2.8.6
- * @version 1.0.3
+ * @version 1.0.4
  * @author tungnx
  */
 class LP_User_Items_DB extends LP_Database {
@@ -102,7 +102,7 @@ class LP_User_Items_DB extends LP_Database {
 	 * @return array|null|int|string
 	 * @throws Exception
 	 * @since 4.1.6.9
-	 * @version 1.0.3
+	 * @version 1.0.4
 	 */
 	public function get_user_items( LP_User_Items_Filter $filter, int &$total_rows = 0 ) {
 		$filter->fields = array_merge( $filter->all_fields, $filter->fields );
@@ -125,6 +125,12 @@ class LP_User_Items_DB extends LP_Database {
 
 		if ( ! empty( $filter->user_item_id ) ) {
 			$filter->where[] = $this->wpdb->prepare( 'AND ui.user_item_id = %d', $filter->user_item_id );
+		}
+
+		// Get by user_item_ids
+		if ( ! empty( $filter->user_item_ids ) ) {
+			$user_item_ids_format = LP_Helper::db_format_array( $filter->user_item_ids );
+			$filter->where[]      = $this->wpdb->prepare( 'AND ui.user_item_id IN (' . $user_item_ids_format . ')', $filter->user_item_ids );
 		}
 
 		if ( $filter->user_id !== false ) {
@@ -699,6 +705,7 @@ class LP_User_Items_DB extends LP_Database {
 					LP_COURSE_CPT,
 				]
 			);
+			// Clear userCourseModel cache.
 			$key_cache         = "userCourseModel/find/{$user_id}/{$course_id}/" . LP_COURSE_CPT;
 			$lpUserCourseCache = new LP_Cache();
 			$lpUserCourseCache->clear( $key_cache );

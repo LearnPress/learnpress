@@ -437,7 +437,7 @@ class CourseModel {
 	 * @version 1.0.0
 	 */
 	public function get_evaluation_type(): string {
-		return (float) $this->get_meta_value_by_key( CoursePostModel::META_KEY_Evaluation_TYPE, 'evaluate_lesson' );
+		return (float) $this->get_meta_value_by_key( CoursePostModel::META_KEY_EVALUATION_TYPE, 'evaluate_lesson' );
 	}
 
 	/**
@@ -1059,26 +1059,16 @@ class CourseModel {
 	 * If exists, return PostModel.
 	 *
 	 * @param LP_Course_JSON_Filter $filter
-	 * @param bool $check_cache
 	 *
 	 * @return CourseModel|false|static
+	 * @since 4.2.6.9
+	 * @version 1.0.2
 	 */
-	public static function get_item_model_from_db( LP_Course_JSON_Filter $filter, bool $check_cache = false ) {
+	public static function get_item_model_from_db( LP_Course_JSON_Filter $filter ) {
 		$course_model = false;
 
 		try {
 			$filter->only_fields = [ 'json', 'post_content' ];
-			// Load cache
-			if ( $check_cache ) {
-
-				$key_cache       = "course-model/{$filter->ID}/" . md5( json_encode( $filter ) );
-				$lp_course_cache = new LP_Course_Cache();
-				$course_model    = $lp_course_cache->get_cache( $key_cache );
-
-				if ( $course_model instanceof CourseModel ) {
-					return $course_model;
-				}
-			}
 
 			$course_rs = self::get_course_from_db( $filter );
 			if ( $course_rs instanceof stdClass && isset( $course_rs->json ) ) {

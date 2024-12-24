@@ -11,6 +11,9 @@
 
 defined( 'ABSPATH' ) || exit();
 
+/**
+ * @var LP_Gateway_Abstract $gateway
+ */
 if ( ! isset( $gateway ) ) {
 	return;
 }

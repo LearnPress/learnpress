@@ -266,7 +266,7 @@ if ( ! class_exists( 'LP_Meta_Box_Helper' ) ) {
 
 			if ( $description && in_array( $value['type'], array( 'textarea', 'radio' ), true ) ) {
 				$description = '<p style="margin-top:0">' . wp_kses_post( $description ) . '</p>';
-			} elseif ( $description && in_array( $value['type'], array( 'checkbox' ), true ) ) {
+			} elseif ( $description && in_array( $value['type'], array( 'checkbox', 'yes-no' ), true ) ) {
 				$description = wp_kses_post( $description );
 			} elseif ( $description ) {
 				$description = '<p class="description">' . wp_kses_post( $description ) . '</p>';

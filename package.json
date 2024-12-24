@@ -4,14 +4,15 @@
 	"description": "[![Stories in Ready](https://badge.waffle.io/LearnPress/LearnPress.svg?label=ready&title=Ready)](http://waffle.io/LearnPress/LearnPress)",
 	"main": "index.js",
 	"scripts": {
-		"dev": "cross-env  wp-scripts start",
-		"build": "cross-env  wp-scripts build",
-		"format-js": "cross-env  wp-scripts format ./assets/src",
-		"dev-build": "cross-env  npm run build && gulp styles && npm run dev",
-		"release": "npm run build && npm run makepot && gulp styles && gulp release",
+		"start": "cross-env NODE_OPTIONS=--openssl-legacy-provider wp-scripts start",
+		"build": "cross-env NODE_OPTIONS=--openssl-legacy-provider wp-scripts build",
+		"format-js": "cross-env NODE_OPTIONS=--openssl-legacy-provider wp-scripts format ./assets/src",
+		"dev-build": "cross-env NODE_OPTIONS=--openssl-legacy-provider npm run build && gulp styles && npm run dev",
 		"makepot:js": "wp-babel-makepot \"./assets/src/**/*.{js,jsx,ts,tsx}\" --ignore \"**/node_modules/**,**/test/**,**/*.d.ts\" --base \"./\" --dir \"./languages/strings\" --output \"./languages/learnpress-js.pot\"",
 		"makepot:cli": "wp i18n make-pot . languages/learnpress.pot --skip-audit --merge=languages/learnpress-js.pot --exclude=\"test,releases,build,dist,node_modules,vendor,wordpress\"",
-		"makepot": "npm rum makepot:js && npm run makepot:cli && gulp updatePot"
+		"makepot": "npm rum makepot:js && npm run makepot:cli && gulp updatePot",
+		"build-makepot-zip": "npm run build && npm run makepot && gulp styles && gulp release",
+		"release": "node build-release.js"
 	},
 	"repository": {
 		"type": "git",
@@ -67,7 +68,7 @@
 		"cropperjs": "1.6.2",
 		"style-loader": "3.3.4",
 		"file-loader": "6.2.0",
-		"mini-css-extract-plugin": "2.9.1",
+		"mini-css-extract-plugin": "2.9.2",
 		"toastify-js": "1.12.0"
 	}
 }

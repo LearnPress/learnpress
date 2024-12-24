@@ -1,5 +1,6 @@
 <?php
 
+use LearnPress\Models\UserItems\UserItemModel;
 use LearnPress\Models\UserModel;
 
 /**
@@ -516,6 +517,16 @@ function learn_press_update_user_item_field( array $fields = [], $where = false,
 				$updated_item->item_type,
 			]
 		);
+		// Clear cache userItemModel
+		$userItemModel = UserItemModel::find_user_item(
+			$updated_item->user_id,
+			$updated_item->item_id,
+			$updated_item->item_type,
+			$updated_item->ref_id,
+			$updated_item->ref_type,
+			true
+		);
+		$userItemModel->clean_caches();
 	}
 
 	do_action( 'learn-press/updated-user-item-field', $updated_item );

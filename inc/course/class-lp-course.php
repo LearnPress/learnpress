@@ -462,6 +462,17 @@ if ( ! class_exists( 'LP_Course' ) ) {
 				// Delete on tb lp_user_items
 				$filter_delete                = new LP_User_Items_Filter();
 				$filter_delete->user_item_ids = $user_item_ids_concat;
+				$user_items_rs                = $lp_user_items_db->get_user_items( $filter_delete );
+
+				// For each to clear cache
+				foreach ( $user_items_rs as $user_item ) {
+					$lp_user_items_cache = new LP_User_Items_Cache();
+					$key_one             = "userItemModel/find/{$user_item->user_id}/{$user_item->item_id}/{$user_item->item_type}";
+					$key_two             = "userItemModel/find/{$user_item->user_id}/{$user_item->item_id}/{$user_item->item_type}/{$user_item->ref_id}/{$user_item->ref_type}";
+					$lp_user_items_cache->clear( $key_one );
+					$lp_user_items_cache->clear( $key_two );
+				}
+
 				$lp_user_items_db->remove_user_item_ids( $filter_delete );
 
 				// Delete user_itemmeta
