@@ -300,4 +300,46 @@ body {
 			}
 		}
 	}
+
+	.instructor-avatar {
+		position: relative;
+
+		&:hover {
+			.lp-btn-to-edit-avatar {
+				opacity: 1;
+				visibility: visible;
+			}
+		}
+
+		.lp-btn-to-edit-avatar {
+			position: absolute;
+			bottom: 0;
+			right: 0;
+			left: auto;
+			width: 36px;
+			height: 36px;
+			font-size: 0;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			opacity: 0;
+			visibility: hidden;
+			cursor: pointer;
+			background-color: var(--lp-white-grey, #F7F7FB);
+			border-radius: 50%;
+
+			@media (max-width: 767px) {
+				opacity: 1;
+				visibility: visible;
+			}
+
+			&::before {
+				content: "\f044";
+				font-size: 1.5rem;
+				font-family: "lp-icon";
+				font-weight: normal;
+				color: var(--lp-primary-color);
+			}
+		}
+	}
 }
