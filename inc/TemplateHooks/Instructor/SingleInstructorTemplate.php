@@ -278,7 +278,7 @@ class SingleInstructorTemplate {
 
 		try {
 			if ( isset( $data['instructor_id'] ) ) {
-				$instructor_id = $data['instructor_id'];
+				$instructor_id = (int) $data['instructor_id'];
 				$instructor    = UserModel::find( $instructor_id, true );
 			} else {
 				$instructor = $this->detect_instructor_by_page();

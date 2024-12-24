@@ -47,8 +47,8 @@ class UserTemplate {
 			}
 
 			$profile = LP_Profile::instance( $user->get_id() );
-			$width  = $size_display;
-			$height = $size_display;
+			$width   = $size_display;
+			$height  = $size_display;
 			if ( is_array( $size_display ) ) {
 				$width  = $size_display['width'];
 				$height = $size_display['height'];

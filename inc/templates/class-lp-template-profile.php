@@ -2,7 +2,9 @@
 
 use LearnPress\Helpers\Template;
 use LearnPress\Models\UserModel;
+use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileTemplate;
+use LearnPress\TemplateHooks\UserTemplate;
 
 /**
  * Class LP_Profile_Template
@@ -60,8 +62,23 @@ class LP_Template_Profile extends LP_Abstract_Template {
 		learn_press_get_template( 'profile/content.php', compact( 'user', 'profile_tab', 'tab_key', 'profile' ) );
 	}
 
+	/**
+	 * Display avatar
+	 *
+	 * @since 3.x.x
+	 * @version 1.0.1
+	 * @return void
+	 */
 	public function avatar() {
-		learn_press_get_template( 'profile/avatar.php' );
+		$lp_profile = LP_Profile::instance();
+		$user = $lp_profile->get_user();
+		$userModel = UserModel::find( $user->get_id(), true );
+		if ( ! $userModel instanceof UserModel ) {
+			return;
+		}
+
+		echo UserTemplate::instance()->html_avatar( $userModel );
+		//learn_press_get_template( 'profile/avatar.php' );
 	}
 
 	public function socials() {
