@@ -402,12 +402,24 @@ class SingleInstructorTemplate {
 
 			$total_courses = 0;
 			$courses       = Courses::get_courses( $filter, $total_courses );
+			if ( ! empty( $courses ) ) {
+				$html_courses = $this->list_courses( $instructor, $courses );
+			} else {
+				$html_courses = Template::print_message(
+					sprintf(
+						__( '%s does not have any courses', 'learnpress' ),
+						$instructor->get_display_name()
+					),
+					'info',
+					false
+				);
+			}
 
 			$sections = apply_filters(
 				'learn-press/single-instructor/courses/sections',
 				[
 					'wrapper'     => '<div class="instructor-courses learn-press-courses">',
-					'courses'     => $this->list_courses( $instructor, $courses ),
+					'courses'     => $html_courses,
 					'pagination'  => $this->courses_pagination( $filter->page, $filter->limit, $total_courses ),
 					'wrapper_end' => '</div>',
 				],
