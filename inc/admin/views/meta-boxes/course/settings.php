@@ -347,7 +347,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 							'min'  => '0',
 							'step' => '0.01',
 						),
-						'style'             => 'width: 100px;',
+						'style'             => 'width: 150px;',
 						'class'             => 'lp_meta_box_regular_price',
 						'dependency'        => [
 							'name'       => '_lp_no_required_enroll',
@@ -365,7 +365,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 							'min'  => '0',
 							'step' => '0.01',
 						),
-						'style'             => 'width: 100px;',
+						'style'             => 'width: 150px;',
 						'class'             => 'lp_meta_box_sale_price',
 						'dependency'        => [
 							'name'       => '_lp_no_required_enroll',

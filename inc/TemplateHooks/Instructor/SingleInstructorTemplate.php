@@ -268,21 +268,16 @@ class SingleInstructorTemplate {
 	 */
 	public function sections( array $data = [] ) {
 		wp_enqueue_style( 'lp-instructor' );
-		/**
-		 * @var WP_Query $wp_query
-		 */
-		global $wp_query;
-		$instructor = false;
 
 		try {
 			if ( isset( $data['instructor_id'] ) ) {
 				$instructor_id = $data['instructor_id'];
-				$instructor    = learn_press_get_user( $instructor_id );
+				$instructor    = UserModel::find( $instructor_id, true );
 			} else {
 				$instructor = $this->detect_instructor_by_page();
 			}
 
-			if ( ! $instructor || ! $instructor->can_create_course() ) {
+			if ( ! $instructor || ! $instructor->is_instructor() ) {
 				return;
 			}
 
@@ -309,7 +304,9 @@ class SingleInstructorTemplate {
 	/**
 	 * Detected single instructor Page.
 	 *
-	 * @return false|LP_User
+	 * @return false|UserModel
+	 * @since 4.2.3.4
+	 * @version 1.0.1
 	 */
 	public function detect_instructor_by_page() {
 		$instructor = false;
@@ -320,32 +317,32 @@ class SingleInstructorTemplate {
 				if ( $instructor_name && 'page' !== $instructor_name ) {
 					$user = get_user_by( 'slug', $instructor_name );
 					if ( $user ) {
-						$instructor = learn_press_get_user( $user->ID );
+						$instructor = UserModel::find( $user->ID, true );
 					}
 				} else {
-					$instructor = learn_press_get_user( get_current_user_id() );
+					$instructor = UserModel::find( get_current_user_id(), true );
 				}
 			}
 		} catch ( Throwable $e ) {
-
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 
 		return $instructor;
 	}
 
 	/**
-	 * @param LP_User $instructor
+	 * @param UserModel $instructor
 	 *
 	 * @return false|string
 	 */
-	public function info( LP_User $instructor ): string {
+	public function info( UserModel $instructor ): string {
 
 		$html_cover = '';
 
 		ob_start();
-			$userModel = UserModel::find( $instructor->get_id(), true );
-			// Display cover image
-			echo ProfileTemplate::instance()->html_cover_image( $userModel );
+		$userModel = UserModel::find( $instructor->get_id(), true );
+		// Display cover image
+		echo ProfileTemplate::instance()->html_cover_image( $userModel );
 		$html_cover = ob_get_clean();
 
 		$sections = apply_filters(
@@ -365,7 +362,7 @@ class SingleInstructorTemplate {
 		return Template::combine_components( $sections );
 	}
 
-	public function info_right( LP_User $instructor ): string {
+	public function info_right( UserModel $instructor ): string {
 
 		$section_instructor_meta = [
 			'wrapper'        => '<div class="lp-instructor-meta">',
@@ -398,7 +395,7 @@ class SingleInstructorTemplate {
 		return Template::combine_components( $sections );
 	}
 
-	public function section_list_courses( LP_User $instructor ): string {
+	public function section_list_courses( UserModel $instructor ): string {
 		$content = '';
 
 		try {

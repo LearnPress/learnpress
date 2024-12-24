@@ -582,4 +582,15 @@ class UserModel {
 
 		return apply_filters( 'lp/profile/instructor/statistic', $statistic, $this );
 	}
+
+	/**
+	 * Check user is instructor or not.
+	 *
+	 * @return bool
+	 * @since 4.2.7.6
+	 * @version 1.0.0
+	 */
+	public function is_instructor(): bool {
+		return user_can( $this->get_id(), LP_TEACHER_ROLE ) || user_can( $this->get_id(), 'administrator' );
+	}
 }
