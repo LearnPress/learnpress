@@ -50,8 +50,8 @@ class SingleInstructorBaseElementor extends LPElementorWidgetBase {
 		 */
 		$instructor = SingleInstructorTemplate::instance()->detect_instructor_by_page();
 		if ( ! $instructor instanceof UserModel ) {
-			$instructor_id = $settings['instructor_id'] ?? 0;
-			$instructor = UserModel::find( $instructor_id, true );
+			$instructor_id = (int) $settings['instructor_id'] ?? 0;
+			$instructor    = UserModel::find( $instructor_id, true );
 		}
 
 		if ( ! $instructor ) {

@@ -86,11 +86,18 @@ class SingleInstructorTemplate {
 	 * @param LP_User|UserModel $instructor
 	 *
 	 * @return string
+	 * @since 4.2.3.4
+	 * @version 1.0.0
 	 */
 	public function html_description( $instructor ): string {
 		$content = '';
 
 		try {
+			$description = $instructor->get_description();
+			if ( empty( $description ) ) {
+				return $content;
+			}
+
 			$sections = [
 				'wrapper'     => '<div class="instructor-description">',
 				'content'     => $instructor->get_description(),
