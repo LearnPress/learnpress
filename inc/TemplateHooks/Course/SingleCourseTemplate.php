@@ -264,11 +264,12 @@ class SingleCourseTemplate {
 			}
 
 			$singleInstructorTemplate = SingleInstructorTemplate::instance();
+			$userTemplate = new UserTemplate( 'instructor' );
 
 			$link_instructor = sprintf(
 				'<a href="%s">%s %s</a>',
 				$instructor->get_url_instructor(),
-				$with_avatar ? UserTemplate::instance()->html_avatar( $instructor, [], 'instructor' ) : '',
+				$with_avatar ? $userTemplate->html_avatar( $instructor ) : '',
 				$singleInstructorTemplate->html_display_name( $instructor )
 			);
 
@@ -1219,13 +1220,13 @@ class SingleCourseTemplate {
 	/**
 	 * Render string to data content
 	 *
-	 * @param LP_Course $course
+	 * @param CourseModel $course
 	 * @param string $data_content
 	 *
 	 * @return string
 	 */
-	public function render_data( LP_Course $course, string $data_content = '' ): string {
-		$author_of_course         = $course->get_author();
+	public function render_data( CourseModel $course, string $data_content = '' ): string {
+		$author_of_course         = $course->get_author_model();
 		$singleInstructorTemplate = SingleInstructorTemplate::instance();
 
 		// render count items

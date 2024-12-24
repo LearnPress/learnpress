@@ -22,9 +22,10 @@ use Throwable;
 use WP_Query;
 
 class UserTemplate {
-	use Singleton;
+	public $class_name;
 
-	public function init() {
+	public function __construct( $class_name = 'user' ) {
+		$this->class_name = $class_name;
 	}
 
 	/**
@@ -38,7 +39,7 @@ class UserTemplate {
 	 * @since 4.2.7.2
 	 * @version 1.0.4
 	 */
-	public function html_avatar( UserModel $user, array $size_display = [], string $class_name = 'user' ): string {
+	public function html_avatar( UserModel $user, array $size_display = [] ): string {
 		$html = '';
 
 		try {
@@ -46,8 +47,8 @@ class UserTemplate {
 				$size_display = learn_press_get_avatar_thumb_size();
 			}
 
-			$width   = $size_display;
-			$height  = $size_display;
+			$width  = $size_display;
+			$height = $size_display;
 			if ( is_array( $size_display ) ) {
 				$width  = $size_display['width'];
 				$height = $size_display['height'];
@@ -65,7 +66,7 @@ class UserTemplate {
 			$section = apply_filters(
 				'learn-press/user/html-avatar',
 				[
-					'wrapper'     => sprintf( '<div class="%s-avatar">', $class_name ),
+					'wrapper'     => sprintf( '<div class="%s-avatar">', $this->class_name ),
 					'avatar'      => $img_avatar,
 					'wrapper_end' => '</div>',
 				],
@@ -92,7 +93,7 @@ class UserTemplate {
 	 * @since 4.2.7.6
 	 * @version 1.0.0
 	 */
-	public function html_avatar_edit( UserModel $user, array $size_display = [], string $class_name = 'user' ): string {
+	public function html_avatar_edit( UserModel $user, array $size_display = [] ): string {
 		$html = '';
 
 		try {
@@ -131,7 +132,7 @@ class UserTemplate {
 			$section = apply_filters(
 				'learn-press/user/html-avatar-edit',
 				[
-					'wrapper'     => sprintf( '<div class="%s-avatar">', $class_name ),
+					'wrapper'     => sprintf( '<div class="%s-avatar">', $this->class_name ),
 					'avatar'      => $img_avatar,
 					'btn_edit'    => $html_btn_to_edit_avatar,
 					'wrapper_end' => '</div>',

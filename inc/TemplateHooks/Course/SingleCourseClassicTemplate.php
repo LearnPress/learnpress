@@ -210,17 +210,17 @@ class SingleCourseClassicTemplate {
 		$html_instructor = apply_filters(
 			'learn-press/course/instructor-html',
 			[
-				'wrapper'            => '<div class="meta-item meta-item-instructor">',
-				'avartar_instructor' => sprintf( '<div class="meta-item__image">%s</div>', UserTemplate::instance()->html_avatar( $instructor, [], 'instructor' ) ),
-				'instructor'         => '<div class="meta-item__value">',
-				'label'              => sprintf( '<label>%s</label>', esc_html__( 'Instructor', 'learnpress' ) ),
-				'name'               => sprintf(
+				'wrapper'           => '<div class="meta-item meta-item-instructor">',
+				'avatar_instructor' => sprintf( '<div class="meta-item__image">%s</div>', SingleInstructorTemplate::instance()->html_avatar( $instructor, [] ) ),
+				'instructor'        => '<div class="meta-item__value">',
+				'label'             => sprintf( '<label>%s</label>', esc_html__( 'Instructor', 'learnpress' ) ),
+				'name'              => sprintf(
 					'<div><a href="%s">%s</a></div>',
 					$instructor->get_url_instructor(),
 					$singleInstructorTemplate->html_display_name( $instructor )
 				),
-				'instructor_end'     => '</div>',
-				'wrapper_end'        => '</div>',
+				'instructor_end'    => '</div>',
+				'wrapper_end'       => '</div>',
 			],
 			$course,
 			$instructor,
@@ -302,7 +302,7 @@ class SingleCourseClassicTemplate {
 		if ( $tabs ) {
 			ob_start();
 			foreach ( $tabs as $key => $tab ) {
-				echo '<input type="radio" name="learn-press-course-tab-radio" id="tab-' . esc_attr( $key ) . '-input" 
+				echo '<input type="radio" name="learn-press-course-tab-radio" id="tab-' . esc_attr( $key ) . '-input"
 					' . ( $active_tab === $key ? 'checked ' : '' ) . 'value="' . esc_attr( $key ) . '"/>';
 			}
 			$html_input = ob_get_clean();
@@ -316,7 +316,7 @@ class SingleCourseClassicTemplate {
 				}
 
 				echo '<li class="' . esc_attr( implode( ' ', $classes ) ) . '">';
-					echo '<label for="tab-' . esc_attr( $key ) . '-input">' . esc_html( $tab ) . '</label>';
+				echo '<label for="tab-' . esc_attr( $key ) . '-input">' . esc_html( $tab ) . '</label>';
 				echo '</li>';
 			}
 			$html_tabs_nav = ob_get_clean();

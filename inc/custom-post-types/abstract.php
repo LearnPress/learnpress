@@ -424,10 +424,11 @@ abstract class LP_Abstract_Post_Type {
 			'author'    => $user_id,
 		);
 
-		$author_link = esc_url_raw( add_query_arg( $args, 'edit.php' ) );
+		$author_link  = esc_url_raw( add_query_arg( $args, 'edit.php' ) );
+		$userTemplate = new UserTemplate();
 		echo sprintf(
 			'<span class="post-author">%s<a href="%s">%s</a></span>',
-			UserTemplate::instance()->html_avatar(
+			$userTemplate->html_avatar(
 				$user,
 				[
 					'width'  => 32,

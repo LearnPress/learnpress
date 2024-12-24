@@ -25,7 +25,10 @@ use Throwable;
 class SingleInstructorTemplate {
 	use Singleton;
 
+	public static $userTemplate;
+
 	public function init() {
+		self::$userTemplate = new UserTemplate( 'instructor' );
 		add_action( 'learn-press/single-instructor/layout', [ $this, 'sections' ] );
 		//add_action( 'wp_head', [ $this, 'add_internal_style_to_head' ] );
 	}
@@ -120,7 +123,7 @@ class SingleInstructorTemplate {
 	 * @version 1.0.2
 	 */
 	public function html_avatar( $instructor, array $size_display = [] ): string {
-		$userTemplate = UserTemplate::instance();
+		$userTemplate = self::$userTemplate;
 		$html         = '';
 		if ( ! $instructor ) {
 			return $html;
@@ -133,7 +136,7 @@ class SingleInstructorTemplate {
 			}
 		}
 
-		return $userTemplate->html_avatar( $instructor, $size_display, 'instructor' );
+		return $userTemplate->html_avatar( $instructor, $size_display );
 	}
 
 	/**
@@ -345,7 +348,7 @@ class SingleInstructorTemplate {
 				'wrapper'             => '<div class="lp-single-instructor__info">',
 				'cover_img'           => ProfileTemplate::instance()->html_cover_image( $instructor ),
 				'wrapper_content'     => '<div class="lp-single-instructor__info__wrapper">',
-				'avatar'              => UserTemplate::instance()->html_avatar_edit( $instructor, [], 'instructor' ),
+				'avatar'              => self::$userTemplate->html_avatar_edit( $instructor, [], 'instructor' ),
 				'info_right'          => $this->info_right( $instructor ),
 				'wrapper_content_end' => '</div>',
 				'wrapper_end'         => '</div>',
