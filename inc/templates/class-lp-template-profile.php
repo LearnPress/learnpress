@@ -77,7 +77,7 @@ class LP_Template_Profile extends LP_Abstract_Template {
 			return;
 		}
 
-		echo UserTemplate::instance()->html_avatar( $userModel );
+		echo UserTemplate::instance()->html_avatar_edit( $userModel );
 		//learn_press_get_template( 'profile/avatar.php' );
 	}
 

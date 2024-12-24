@@ -339,32 +339,13 @@ class SingleInstructorTemplate {
 	 * @return false|string
 	 */
 	public function info( UserModel $instructor ): string {
-		$profile = LP_Profile::instance( $instructor->get_id() );
-		$html_btn_to_edit_avatar = '';
-		if ( $instructor->get_id() === get_current_user_id() ) {
-			$html_btn_to_edit_avatar = sprintf(
-				'<a class="lp-btn-to-edit-avatar" href="%s" data-section-correct="%d" title="%s">+ %s</a>',
-				$profile->get_tab_link( 'settings', 'avatar' ),
-				'avatar',
-				esc_attr__( 'Edit avatar', 'learnpress' ),
-				__( 'edit avatar', 'learnpress' )
-			);
-		}
-
-		$html_avatar = [
-			'start' => '<div class="lp-single-instructor__info__avatar">',
-			'avatar' => $this->html_avatar( $instructor ),
-			'btn_edit' => $html_btn_to_edit_avatar,
-			'end'   => '</div>',
-		];
-
 		$sections = apply_filters(
 			'learn-press/single-instructor/info/sections',
 			[
 				'wrapper'             => '<div class="lp-single-instructor__info">',
 				'cover_img'           => ProfileTemplate::instance()->html_cover_image( $instructor ),
 				'wrapper_content'     => '<div class="lp-single-instructor__info__wrapper">',
-				'avatar'              => Template::combine_components( $html_avatar ),
+				'avatar'              => UserTemplate::instance()->html_avatar_edit( $instructor, [], 'instructor' ),
 				'info_right'          => $this->info_right( $instructor ),
 				'wrapper_content_end' => '</div>',
 				'wrapper_end'         => '</div>',
