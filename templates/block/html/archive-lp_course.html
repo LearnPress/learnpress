@@ -1,4 +1,6 @@
 <!-- wp:template-part {"slug":"header","tagName":"header"} /-->
+
+<!-- wp:learnpress/lp-archive-course -->
 <!-- wp:group {"className":"lp-archive-courses","layout":{"type":"default"}} -->
 <div class="wp-block-group lp-archive-courses">
 	<!-- wp:learnpress/breadcrumb /-->
@@ -7,13 +9,13 @@
 	<div class="wp-block-group lp-content-area">
 		<!-- wp:group {"tagName":"header","className":"learn-press-courses-header","layout":{"type":"default"}} -->
 		<header class="wp-block-group learn-press-courses-header">
-			<!-- wp:heading {"level":1} -->
+			<!-- wp:heading {"level":1,"className":"wp-block-heading"} -->
 			<h1 class="wp-block-heading">All Courses</h1>
 			<!-- /wp:heading -->
 		</header>
 		<!-- /wp:group -->
 
-		<!-- wp:learnpress/group-courses-archive-course -->
+		<!-- wp:learnpress/list-course-archive-course {"custom":true} -->
 		<!-- wp:group {"className":"lp-courses-bar","layout":{"type":"flex","flexWrap":"nowrap"}} -->
 		<div class="wp-block-group lp-courses-bar">
 			<!-- wp:learnpress/search-archive-course /-->
@@ -24,11 +26,31 @@
 		</div>
 		<!-- /wp:group -->
 
-		<!-- wp:learnpress/template-course-archive-course /-->
+		<!-- wp:learnpress/template-course-archive-course -->
+		<!-- wp:learnpress/media-course-archive-course -->
+		{{media-course}}
+		<!-- /wp:learnpress/media-course-archive-course -->
 
-		<!-- /wp:learnpress/group-courses-archive-course -->
+		<!-- wp:learnpress/title-course-archive-course -->
+		{{title-course}}
+		<!-- /wp:learnpress/title-course-archive-course -->
+
+		<!-- wp:learnpress/instructor-category-course-archive-course -->
+		{{instructor-category-course}}
+		<!-- /wp:learnpress/instructor-category-course-archive-course -->
+
+		<!-- wp:learnpress/meta-course-archive-course -->
+		{{meta-course}}
+		<!-- /wp:learnpress/meta-course-archive-course -->
+
+		<!-- wp:learnpress/info-course-archive-course -->
+		{{info-course}}
+		<!-- /wp:learnpress/info-course-archive-course -->
+		<!-- /wp:learnpress/template-course-archive-course -->
+		<!-- /wp:learnpress/list-course-archive-course -->
 	</div>
 	<!-- /wp:group -->
 </div>
 <!-- /wp:group -->
+<!-- /wp:learnpress/lp-archive-course -->
 <!-- wp:template-part {"slug":"footer", "tagName":"footer"} /-->
