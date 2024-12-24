@@ -3,12 +3,13 @@
  * Template hooks List Instructors.
  *
  * @since 4.2.3
- * @version 1.0.0
+ * @version 1.0.1
  */
 
 namespace LearnPress\TemplateHooks\Instructor;
 
 use LearnPress\Helpers\Template;
+use LearnPress\Models\UserModel;
 use LP_Assets;
 use LP_Helper;
 use LP_Page_Controller;
@@ -103,11 +104,11 @@ class ListInstructorsTemplate {
 	/**
 	 * Get instructor item.
 	 *
-	 * @param LP_User $instructor
+	 * @param UserModel $instructor
 	 *
 	 * @return false|string
 	 */
-	public function instructor_item( LP_User $instructor ) {
+	public function instructor_item( $instructor ) {
 		$content      = '';
 		$html_wrapper = apply_filters(
 			'learn-press/list-instructors/instructor_item/wrapper',
@@ -146,13 +147,13 @@ class ListInstructorsTemplate {
 	/**
 	 * Get instructor info: total courses, total students.
 	 *
-	 * @param LP_User $instructor
+	 * @param UserModel $instructor
 	 *
 	 * @return false|string
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 * @since 4.2.3
 	 */
-	public function instructor_item_info( LP_User $instructor ) {
+	public function instructor_item_info( $instructor ) {
 		$content      = '';
 		$html_wrapper = apply_filters(
 			'learn-press/list-instructors/instructor_item/info/wrapper',
