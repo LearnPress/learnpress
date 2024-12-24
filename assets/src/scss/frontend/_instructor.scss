@@ -69,14 +69,16 @@ body {
 		&__right {
 			flex: 1;
 			display: flex;
-			flex-direction: column;;
+			flex-direction: column;
 			gap: 8px;
 
 			&__content {
 				display: flex;
 				align-items: center;
 				justify-content: space-between;
-				gap: 20px;
+				column-gap: 20px;
+				row-gap: 8px;
+				flex-wrap: wrap;
 			}
 
 			.instructor-description:empty {
@@ -112,6 +114,7 @@ body {
 			.lp-instructor-meta {
 				display: flex;
 				column-gap: 20px;
+				row-gap: 8px;
 
 				.instructor-item-meta {
 					display: inline-flex;
