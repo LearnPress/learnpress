@@ -3,7 +3,7 @@
  * Template hooks Single Instructor.
  *
  * @since 4.2.3
- * @version 1.0.0
+ * @version 1.0.1
  */
 
 namespace LearnPress\TemplateHooks\Instructor;
@@ -13,15 +13,13 @@ use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\Courses;
 use LearnPress\Models\UserModel;
-use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileTemplate;
 use LearnPress\TemplateHooks\Course\ListCoursesTemplate;
 use LearnPress\TemplateHooks\UserTemplate;
-use LP_Course;
 use LP_Course_Filter;
+use LP_Settings;
 use LP_User;
 use Throwable;
-use WP_Query;
 
 class SingleInstructorTemplate {
 	use Singleton;
@@ -60,15 +58,13 @@ class SingleInstructorTemplate {
 
 		try {
 			$socials = $instructor->get_profile_social( $instructor->get_id() );
-			ob_start();
-			foreach ( $socials as $k => $social ) {
-				echo $social;
+			if ( empty( $socials ) ) {
+				return $content;
 			}
-			$content = ob_get_clean();
 
 			$sections = [
 				'wrapper'     => '<div class="instructor-social">',
-				'content'     => $content,
+				'content'     => Template::combine_components( $socials ),
 				'wrapper_end' => '</div>',
 			];
 
@@ -400,7 +396,7 @@ class SingleInstructorTemplate {
 			$filter = new LP_Course_Filter();
 			Courses::handle_params_for_query_courses( $filter, [] );
 			$filter->post_author = $instructor->get_id();
-			$filter->limit       = \LP_Settings::get_option( 'archive_course_limit', 20 );
+			$filter->limit       = LP_Settings::get_option( 'archive_course_limit', 20 );
 			$filter->page        = $GLOBALS['wp_query']->get( 'paged', 1 ) ? $GLOBALS['wp_query']->get( 'paged', 1 ) : 1;
 			// $filter              = apply_filters( 'lp/single-instructor/courses/query/filter', $filter, [] );
 
@@ -447,16 +443,11 @@ class SingleInstructorTemplate {
 			}
 			$html_ul_wrapper = ob_get_clean();
 
-			$sections = apply_filters(
-				'learn-press/single-instructor/courses/sections',
-				[
-					'wrapper'     => '<ul class="ul-instructor-courses">',
-					'list_course' => $html_ul_wrapper,
-					'wrapper_end' => '</ul>',
-				],
-				$courses,
-				$instructor
-			);
+			$sections = [
+				'wrapper'     => '<ul class="ul-instructor-courses">',
+				'list_course' => $html_ul_wrapper,
+				'wrapper_end' => '</ul>',
+			];
 
 			$content = Template::combine_components( $sections );
 		} catch ( Throwable $e ) {
