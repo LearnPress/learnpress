@@ -63,23 +63,11 @@ class UserTemplate {
 				$height
 			);
 
-			$html_btn_to_edit_avatar = '';
-			if ( $user->get_id() === get_current_user_id() ) {
-				$html_btn_to_edit_avatar = sprintf(
-					'<a class="lp-btn-to-edit-avatar" href="%s" data-section-correct="%d" title="%s">+ %s</a>',
-					$profile->get_tab_link( 'settings', 'avatar' ),
-					'avatar',
-					esc_attr__( 'Edit avatar', 'learnpress' ),
-					__( 'edit avatar', 'learnpress' )
-				);
-			}
-
 			$section = apply_filters(
 				'learn-press/user/html-avatar',
 				[
 					'wrapper'     => sprintf( '<div class="%s-avatar">', $class_name ),
 					'avatar'      => $img_avatar,
-					'btn_to_edit' => $html_btn_to_edit_avatar,
 					'wrapper_end' => '</div>',
 				],
 				$user
