@@ -63,6 +63,10 @@ body {
 			img {
 				max-width: 120px;
 				border-radius: 50%;
+
+				@media (max-width: 767px) {
+					max-width: 100px;
+				}
 			}
 		}
 
@@ -332,6 +336,7 @@ body {
 
 			@media (max-width: 767px) {
 				opacity: 1;
+				top: 60px;
 				visibility: visible;
 			}
 
