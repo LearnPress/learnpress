@@ -380,10 +380,10 @@ class SingleInstructorTemplate {
 				'wrapper'             => '<div class="lp-single-instructor__info__right">',
 				'wrapper_content'     => '<div class="lp-single-instructor__info__right__content">',
 				'title'               => sprintf( '<h2>%s</h2>', $this->html_display_name( $instructor ) ),
+				'social'              => $this->html_social( $instructor ),
+				'wrapper_content_end' => '</div>',
 				'meta'                => Template::combine_components( $section_instructor_meta ),
 				'description'         => $this->html_description( $instructor ),
-				'wrapper_content_end' => '</div>',
-				'social'              => $this->html_social( $instructor ),
 				'wrapper_end'         => '</div>',
 			],
 			$instructor

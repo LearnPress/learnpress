@@ -56,7 +56,6 @@ body {
 
 		&__wrapper {
 			display: flex;
-			align-items: center;
 			gap: 24px;
 		}
 
@@ -70,14 +69,14 @@ body {
 		&__right {
 			flex: 1;
 			display: flex;
-			align-items: center;
-			justify-content: space-between;
-			gap: 20px;
+			flex-direction: column;;
+			gap: 8px;
 
 			&__content {
 				display: flex;
-				flex-direction: column;
-				row-gap: 8px;
+				align-items: center;
+				justify-content: space-between;
+				gap: 20px;
 			}
 
 			.instructor-description:empty {
@@ -313,7 +312,7 @@ body {
 
 		.lp-btn-to-edit-avatar {
 			position: absolute;
-			bottom: 0;
+			top: 80px;
 			right: 0;
 			left: auto;
 			width: 36px;
