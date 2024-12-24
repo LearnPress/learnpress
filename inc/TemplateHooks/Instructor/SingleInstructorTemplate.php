@@ -435,17 +435,16 @@ class SingleInstructorTemplate {
 		$content = '';
 
 		try {
-			// List courses
-			ob_start();
+			// Li list courses
+			$html_li_item_course = '';
 			foreach ( $courses as $course_obj ) {
-				$course = CourseModel::find( $course_obj->ID, true );
-				echo ListCoursesTemplate::render_course( $course );
+				$course               = CourseModel::find( $course_obj->ID, true );
+				$html_li_item_course .= ListCoursesTemplate::render_course( $course );
 			}
-			$html_ul_wrapper = ob_get_clean();
 
 			$sections = [
 				'wrapper'     => '<ul class="ul-instructor-courses">',
-				'list_course' => $html_ul_wrapper,
+				'list_course' => $html_li_item_course,
 				'wrapper_end' => '</ul>',
 			];
 
