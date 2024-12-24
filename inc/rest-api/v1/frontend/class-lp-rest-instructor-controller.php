@@ -1,6 +1,7 @@
 <?php
 
 use LearnPress\Helpers\Template;
+use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\Instructor\ListInstructorsTemplate;
 
 /**
@@ -83,7 +84,7 @@ class LP_REST_Instructor_Controller extends LP_Abstract_REST_Controller {
 				 */
 				$instructors_template = ListInstructorsTemplate::instance();
 				foreach ( $instructors as $instructor_obj ) {
-					$instructor = learn_press_get_user( $instructor_obj->ID );
+					$instructor = UserModel::find( $instructor_obj->ID, true );
 					echo $instructors_template->instructor_item( $instructor );
 				}
 

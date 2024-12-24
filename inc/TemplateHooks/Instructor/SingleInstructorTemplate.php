@@ -208,13 +208,13 @@ class SingleInstructorTemplate {
 	/**
 	 * Get button view instructor.
 	 *
-	 * @param LP_User $instructor
+	 * @param LP_User|UserModel|false $instructor
 	 *
 	 * @return string
 	 * @version 1.0.0
 	 * @since 4.2.3
 	 */
-	public function html_button_view( LP_User $instructor ): string {
+	public function html_button_view( $instructor ): string {
 		$btn_view = '';
 
 		try {
