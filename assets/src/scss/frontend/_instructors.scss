@@ -56,6 +56,7 @@ body {
 			border: 1px solid var(--lp-instructor-border-color);
 			padding: var(--lp-instructor-item-padding);
 			list-style: none;
+			border-radius: $border-radius-global;
 			.instructor-avatar{
 				margin-bottom: $spacing-base-3x;
 			}
@@ -70,15 +71,17 @@ body {
 
 			.instructor-avatar img {
 				width: 100%;
+				border-radius: $border-radius-global;
 			}
 
 			.instructor-info {
 				display: flex;
-				column-gap: 10px;
+				column-gap: 16px;
 				margin-bottom: $spacing-base-3x;
+				flex-wrap: wrap;
+				row-gap: 8px;
+				justify-content: center;
 				> div {
-					flex: 1;
-					text-align: right;
 					display: flex;
 					align-items: center;
 					column-gap: 10px;
@@ -87,10 +90,10 @@ body {
 						display: inline-flex;
 						white-space: nowrap;
 					}
-				}
 
-				.instructor-count-students {
-					justify-content: right;
+					.lp-ico {
+						color: $color-primary;
+					}
 				}
 			}
 

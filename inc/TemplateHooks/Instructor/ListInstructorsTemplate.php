@@ -123,7 +123,11 @@ class ListInstructorsTemplate {
 				'learn-press/list-instructors/instructor_item/sections',
 				[
 					'img'      => $singleInstructorTemplate->html_avatar( $instructor ),
-					'name'     => $singleInstructorTemplate->html_display_name( $instructor ),
+					'name'     => sprintf(
+						'<a class="instructor-name" href="%s">%s</a>',
+						$instructor->get_url_instructor(),
+						$singleInstructorTemplate->html_display_name( $instructor )
+					),
 					'info'     => $this->instructor_item_info( $instructor ),
 					'btn_view' => $singleInstructorTemplate->html_button_view( $instructor ),
 				],
