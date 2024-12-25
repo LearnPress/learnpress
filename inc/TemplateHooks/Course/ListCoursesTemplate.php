@@ -97,9 +97,11 @@ class ListCoursesTemplate {
 		$courses                      = Courses::get_courses( $filter, $total_rows );
 		$total_pages                  = LP_Database::get_total_pages( $filter->limit, $total_rows );
 		$settings['total_pages']      = $total_pages;
+		$settings['total_rows']       = $total_rows;
 		$settings['courses_per_page'] = $filter->limit;
 		$skin                         = $settings['skin'] ?? learn_press_get_courses_layout();
 		$paged                        = $settings['paged'] ?? 1;
+		$settings['paged']            = $paged;
 		$listCoursesTemplate          = self::instance();
 
 		// HTML section courses.
@@ -498,7 +500,7 @@ class ListCoursesTemplate {
 
 		$content = '<ul class="courses-layouts-display-list">';
 		foreach ( $layouts as $k => $v ) {
-			$active   = ( $data['courses_layout_default'] ?? '' ) === $k ? 'active' : '';
+			$active  = ( $data['courses_layout_default'] ?? '' ) === $k ? 'active' : '';
 			$content .= '<li class="courses-layout ' . $active . '" data-layout="' . $k . '">' . $v . '</li>';
 		}
 		$content .= '</ul>';
@@ -546,10 +548,10 @@ class ListCoursesTemplate {
 		ob_start();
 		?>
 		<form class="search-courses" method="get"
-			action="<?php echo esc_url_raw( learn_press_get_page_link( 'courses' ) ); ?>">
+			  action="<?php echo esc_url_raw( learn_press_get_page_link( 'courses' ) ); ?>">
 			<input type="search" placeholder="<?php esc_attr_e( 'Search courses...', 'learnpress' ); ?>"
-					name="c_search"
-					value="<?php echo esc_attr( $s ); ?>">
+				   name="c_search"
+				   value="<?php echo esc_attr( $s ); ?>">
 			<button type="submit" name="lp-btn-search-courses"><i class="lp-icon-search"></i></button>
 		</form>
 		<?php
@@ -564,11 +566,11 @@ class ListCoursesTemplate {
 		<div class="switch-layout">
 			<?php foreach ( $layouts as $layout => $value ) : ?>
 				<input type="radio" name="lp-switch-layout-btn"
-						value="<?php echo esc_attr( $layout ); ?>"
-						id="lp-switch-layout-btn-<?php echo esc_attr( $layout ); ?>" <?php checked( $layout, $active ); ?>>
+					   value="<?php echo esc_attr( $layout ); ?>"
+					   id="lp-switch-layout-btn-<?php echo esc_attr( $layout ); ?>" <?php checked( $layout, $active ); ?>>
 				<label class="switch-btn <?php echo esc_attr( $layout ); ?>"
-						title="<?php echo sprintf( esc_attr__( 'Switch to %s', 'learnpress' ), $value ); ?>"
-						for="lp-switch-layout-btn-<?php echo esc_attr( $layout ); ?>"></label>
+					   title="<?php echo sprintf( esc_attr__( 'Switch to %s', 'learnpress' ), $value ); ?>"
+					   for="lp-switch-layout-btn-<?php echo esc_attr( $layout ); ?>"></label>
 			<?php endforeach; ?>
 		</div>
 		<?php
@@ -604,7 +606,7 @@ class ListCoursesTemplate {
 					continue;
 				}
 
-				$section_item      = apply_filters(
+				$section_item     = apply_filters(
 					'learn-press/course-suggest/item/sections',
 					[
 						'wrapper'      => '<li class="item-course-suggest">',
@@ -819,7 +821,7 @@ class ListCoursesTemplate {
 					break;
 				}
 
-				++$i;
+				++ $i;
 			}
 		}
 
