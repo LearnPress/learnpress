@@ -8,7 +8,6 @@
 
 namespace LearnPress\TemplateHooks\Instructor;
 
-use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\Courses;
@@ -17,126 +16,28 @@ use LearnPress\TemplateHooks\Profile\ProfileTemplate;
 use LearnPress\TemplateHooks\Course\ListCoursesTemplate;
 use LearnPress\TemplateHooks\UserTemplate;
 use LP_Course_Filter;
-use LP_Profile;
 use LP_Settings;
 use LP_User;
 use Throwable;
 
-class SingleInstructorTemplate {
-	use Singleton;
+class SingleInstructorTemplate extends UserTemplate {
+	public static function instance() {
+		static $instance = null;
+		if ( is_null( $instance ) ) {
+			$instance = new self();
+		}
 
-	public static $userTemplate;
+		return $instance;
+	}
+
+	public function __construct( $class_name = 'instructor' ) {
+		parent::__construct( $class_name );
+		$this->init();
+	}
 
 	public function init() {
-		self::$userTemplate = new UserTemplate( 'instructor' );
 		add_action( 'learn-press/single-instructor/layout', [ $this, 'sections' ] );
 		//add_action( 'wp_head', [ $this, 'add_internal_style_to_head' ] );
-	}
-
-	/**
-	 * Get display name html of instructor.
-	 *
-	 * @param LP_User|UserModel $instructor
-	 *
-	 * @return string
-	 */
-	public function html_display_name( $instructor ): string {
-		$sections = [
-			'wrapper'     => '<span class="instructor-display-name">',
-			'content'     => $instructor->get_display_name(),
-			'wrapper_end' => '</span>',
-		];
-
-		return Template::combine_components( $sections );
-	}
-
-	/**
-	 * Get html social of instructor.
-	 *
-	 * @param LP_User|UserModel $instructor
-	 *
-	 * @return string
-	 */
-	public function html_social( $instructor ): string {
-		$content = '';
-
-		try {
-			$socials = $instructor->get_profile_social( $instructor->get_id() );
-			if ( empty( $socials ) ) {
-				return $content;
-			}
-
-			$sections = [
-				'wrapper'     => '<div class="instructor-social">',
-				'content'     => Template::combine_components( $socials ),
-				'wrapper_end' => '</div>',
-			];
-
-			$content = Template::combine_components( $sections );
-		} catch ( Throwable $e ) {
-			error_log( __METHOD__ . ': ' . $e->getMessage() );
-		}
-
-		return $content;
-	}
-
-	/**
-	 * Get html description of instructor.
-	 *
-	 * @param LP_User|UserModel $instructor
-	 *
-	 * @return string
-	 * @since 4.2.3.4
-	 * @version 1.0.0
-	 */
-	public function html_description( $instructor ): string {
-		$content = '';
-
-		try {
-			$description = $instructor->get_description();
-			if ( empty( $description ) ) {
-				return $content;
-			}
-
-			$sections = [
-				'wrapper'     => '<div class="instructor-description">',
-				'content'     => $instructor->get_description(),
-				'wrapper_end' => '</div>',
-			];
-
-			$content = Template::combine_components( $sections );
-		} catch ( Throwable $e ) {
-			error_log( __METHOD__ . ': ' . $e->getMessage() );
-		}
-
-		return $content;
-	}
-
-	/**
-	 * Get html avatar of instructor.
-	 *
-	 * @param LP_User|UserModel $instructor
-	 * @param array $size_display ['width' => 100, 'height' => 100]
-	 *
-	 * @return string
-	 * @since 4.2.3
-	 * @version 1.0.2
-	 */
-	public function html_avatar( $instructor, array $size_display = [] ): string {
-		$userTemplate = self::$userTemplate;
-		$html         = '';
-		if ( ! $instructor ) {
-			return $html;
-		}
-
-		if ( $instructor instanceof LP_User ) {
-			$instructor = UserModel::find( $instructor->get_id(), true );
-			if ( ! $instructor ) {
-				return $html;
-			}
-		}
-
-		return $userTemplate->html_avatar( $instructor, $size_display );
 	}
 
 	/**
@@ -233,12 +134,16 @@ class SingleInstructorTemplate {
 	/**
 	 * Render string to data content
 	 *
-	 * @param LP_User $instructor
+	 * @param UserModel $instructor
 	 * @param string $data_content
 	 *
 	 * @return string
 	 */
-	public function render_data( LP_User $instructor, string $data_content = '' ): string {
+	public function render_data( $instructor, string $data_content = '' ): string {
+		if ( $instructor instanceof LP_User ) {
+			$instructor = UserModel::find( $instructor->get_id(), true );
+		}
+
 		$data_render = str_replace(
 			[
 				'{{instructor_id}}',
@@ -348,7 +253,7 @@ class SingleInstructorTemplate {
 				'wrapper'             => '<div class="lp-single-instructor__info">',
 				'cover_img'           => ProfileTemplate::instance()->html_cover_image( $instructor ),
 				'wrapper_content'     => '<div class="lp-single-instructor__info__wrapper">',
-				'avatar'              => self::$userTemplate->html_avatar_edit( $instructor, [], 'instructor' ),
+				'avatar'              => $this->html_avatar_edit( $instructor ),
 				'info_right'          => $this->info_right( $instructor ),
 				'wrapper_content_end' => '</div>',
 				'wrapper_end'         => '</div>',

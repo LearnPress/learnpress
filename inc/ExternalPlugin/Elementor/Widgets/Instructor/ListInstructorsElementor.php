@@ -11,6 +11,7 @@ namespace LearnPress\ExternalPlugin\Elementor\Widgets\Instructor;
 use LearnPress\ExternalPlugin\Elementor\LPElementorWidgetBase;
 use LearnPress\Helpers\Config;
 use LearnPress\Helpers\Template;
+use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
 use WP_User_Query;
 
@@ -87,31 +88,37 @@ class ListInstructorsElementor extends LPElementorWidgetBase {
 			$singleInstructorTemplate = SingleInstructorTemplate::instance();
 			echo '<ul class="list-instructors">';
 			foreach ( $instructors as $instructor_id ) {
-				$instructor = learn_press_get_user( $instructor_id );
+				$instructor = UserModel::find( $instructor_id, true );
 				if ( ! $instructor ) {
 					continue;
 				}
 				?>
 				<li class="item-instructor">
-					<?php echo $singleInstructorTemplate->render_data(
+					<?php
+					echo $singleInstructorTemplate->render_data(
 						$instructor,
 						wp_kses_post( html_entity_decode( $item_layout['layout_html'] ) )
-					); ?>
+					);
+					?>
 				</li>
 				<?php
 			}
 			echo '</ul>';
 			$content = ob_get_clean();
 
-			$html_wrap = [
-				'<div class="' . ( 'elementor-repeater-item-' . esc_attr__( $item_layout['_id'] ?? '' ) ) . '">' => '</div>',
+			$section = [
+				'wrapper'     => sprintf(
+					'<div class="%s">',
+					'elementor-repeater-item-' . esc_attr( $item_layout['_id'] ?? '' )
+				),
+				'content'     => $content,
+				'wrapper_end' => '</div>',
 			];
-			echo Template::instance()->nest_elements( $html_wrap, $content );
+
+			echo Template::combine_components( $section );
 			// End show list instructors
 		} catch ( \Throwable $e ) {
 			echo $e->getMessage();
 		}
 	}
-
-
 }

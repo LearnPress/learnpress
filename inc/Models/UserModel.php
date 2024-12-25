@@ -399,16 +399,14 @@ class UserModel {
 	 * Get links socials of use on Profile page
 	 * Icon is svg
 	 *
-	 * @param int $user_id
-	 *
 	 * @move from LP_Abstract_User
 	 * @return array
 	 * @since 4.2.3
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
-	public function get_profile_social( int $user_id = 0 ): array {
+	public function get_profile_social(): array {
 		$socials    = array();
-		$extra_info = learn_press_get_user_extra_profile_info( $user_id );
+		$extra_info = learn_press_get_user_extra_profile_info( $this->get_id() );
 
 		if ( $extra_info ) {
 			foreach ( $extra_info as $k => $v ) {

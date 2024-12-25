@@ -3,23 +3,15 @@
  * Template hooks User.
  *
  * @since 4.2.7.2
- * @version 1.0.0
+ * @version 1.0.1
  */
 
 namespace LearnPress\TemplateHooks;
 
-use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
-use LearnPress\Models\CourseModel;
-use LearnPress\Models\Courses;
 use LearnPress\Models\UserModel;
-use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
-use LP_Course;
-use LP_Course_Filter;
 use LP_Profile;
-use LP_User;
 use Throwable;
-use WP_Query;
 
 class UserTemplate {
 	public $class_name;
@@ -29,11 +21,63 @@ class UserTemplate {
 	}
 
 	/**
-	 * Get html avatar of instructor.
+	 * Get display name html of user.
+	 *
+	 * @param UserModel $userModel
+	 *
+	 * @return string
+	 */
+	public function html_display_name( UserModel $userModel ): string {
+		$sections = [
+			'wrapper'     => sprintf( '<span class="%s-display-name">', $this->class_name ),
+			'content'     => $userModel->get_display_name(),
+			'wrapper_end' => '</span>',
+		];
+
+		return Template::combine_components( $sections );
+	}
+
+	/**
+	 * Get html description of instructor.
+	 *
+	 * @param UserModel $userModel
+	 *
+	 * @return string
+	 * @since 4.2.3.4
+	 * @version 1.0.0
+	 */
+	public function html_description( $userModel ): string {
+		$content = '';
+
+		try {
+			$description = $userModel->get_description();
+			if ( empty( $description ) ) {
+				return $content;
+			}
+
+			$sections = apply_filters(
+				'learn-press/user/html-description',
+				[
+					'wrapper'     => sprintf( '<div class="%s-description">', $this->class_name ),
+					'content'     => $description,
+					'wrapper_end' => '</div>',
+				],
+				$userModel
+			);
+
+			$content = Template::combine_components( $sections );
+		} catch ( Throwable $e ) {
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
+		}
+
+		return $content;
+	}
+
+	/**
+	 * Get html avatar of user.
 	 *
 	 * @param UserModel $user
 	 * @param array $size_display [ 'width' => 100, 'height' => 100 ]
-	 * @param string $class_name
 	 *
 	 * @return string
 	 * @since 4.2.7.2
@@ -87,7 +131,6 @@ class UserTemplate {
 	 *
 	 * @param UserModel $user
 	 * @param array $size_display [ 'width' => 100, 'height' => 100 ]
-	 * @param string $class_name
 	 *
 	 * @return string
 	 * @since 4.2.7.6
@@ -146,5 +189,35 @@ class UserTemplate {
 		}
 
 		return $html;
+	}
+
+	/**
+	 * Get html social of instructor.
+	 *
+	 * @param UserModel $userModel
+	 *
+	 * @return string
+	 */
+	public function html_social( $userModel ): string {
+		$content = '';
+
+		try {
+			$socials = $userModel->get_profile_social();
+			if ( empty( $socials ) ) {
+				return $content;
+			}
+
+			$sections = [
+				'wrapper'     => sprintf( '<div class="%s-social">', $this->class_name ),
+				'content'     => Template::combine_components( $socials ),
+				'wrapper_end' => '</div>',
+			];
+
+			$content = Template::combine_components( $sections );
+		} catch ( Throwable $e ) {
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
+		}
+
+		return $content;
 	}
 }
