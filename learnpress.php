@@ -168,6 +168,11 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				if ( is_admin() ) {
 					$learn_press_version = get_option( 'learnpress_version', '' );
 					if ( $learn_press_version !== $this->version ) {
+						if ( empty( $learn_press_version ) ) { // Case user install new
+							// Set using modern layout for new installation.
+							update_option( 'learn_press_layout_single_course', 'modern' );
+						}
+
 						update_option( 'learnpress_version', $this->version );
 					}
 				}
