@@ -81,7 +81,7 @@ class ListCoursesTemplate {
 	 *
 	 * @return stdClass { content: string_html }
 	 * @since 4.2.5.7
-	 * @version 1.0.3
+	 * @version 1.0.4
 	 */
 	public static function render_courses( array $settings = [] ): stdClass {
 		$filter = new LP_Course_Filter();
@@ -93,12 +93,14 @@ class ListCoursesTemplate {
 		elseif ( ! empty( $settings['page_tag_id_current'] ) && empty( $settings['tag_id'] ) ) {
 			$filter->tag_ids[] = $settings['page_tag_id_current'];
 		}
-		$total_rows          = 0;
-		$courses             = Courses::get_courses( $filter, $total_rows );
-		$total_pages         = LP_Database::get_total_pages( $filter->limit, $total_rows );
-		$skin                = $settings['skin'] ?? learn_press_get_courses_layout();
-		$paged               = $settings['paged'] ?? 1;
-		$listCoursesTemplate = self::instance();
+		$total_rows                   = 0;
+		$courses                      = Courses::get_courses( $filter, $total_rows );
+		$total_pages                  = LP_Database::get_total_pages( $filter->limit, $total_rows );
+		$settings['total_pages']      = $total_pages;
+		$settings['courses_per_page'] = $filter->limit;
+		$skin                         = $settings['skin'] ?? learn_press_get_courses_layout();
+		$paged                        = $settings['paged'] ?? 1;
+		$listCoursesTemplate          = self::instance();
 
 		// HTML section courses.
 		ob_start();
