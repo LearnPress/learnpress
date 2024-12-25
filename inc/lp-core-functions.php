@@ -336,19 +336,6 @@ function learn_press_get_current_url() {
 }
 
 /**
- * Compares an url with current URL user is viewing
- *
- * @param string $url
- *
- * @return bool
- */
-function learn_press_is_current_url( $url ) {
-	$current_url = learn_press_get_current_url();
-
-	return ( $current_url && $url ) && strcmp( $current_url, learn_press_sanitize_url( $url ) ) == 0;
-}
-
-/**
  * Remove unneeded characters in an URL
  *
  * @param string $url
@@ -364,7 +351,7 @@ function learn_press_sanitize_url( $url, $trailingslashit = true ) {
 		$url              = $matches[1] . $url_without_http;
 
 		return ( $trailingslashit &&
-				 strpos( $url, '?' ) === false ) ? trailingslashit( $url ) : untrailingslashit( $url );
+				strpos( $url, '?' ) === false ) ? trailingslashit( $url ) : untrailingslashit( $url );
 	}
 
 	return $url;
@@ -660,7 +647,7 @@ if ( ! function_exists( 'learn_press_paging_nav' ) ) {
 		if ( $links ) {
 			?>
 			<div class="<?php echo esc_attr( $args['wrapper_class'] ); ?>">
-				<?php echo  wp_kses_post( $links ); ?>
+				<?php echo wp_kses_post( $links ); ?>
 			</div>
 			<?php
 		}
@@ -693,7 +680,7 @@ function learn_press_get_num_pages( $total, $limit = 10 ) {
 	$pages = absint( $total / $limit );
 
 	if ( $total % $limit != 0 ) {
-		$pages ++;
+		++$pages;
 	}
 
 	return $pages;
@@ -1501,59 +1488,6 @@ function _learn_press_translate_user_roles( $translations, $text, $context, $dom
 
 add_filter( 'gettext_with_context', '_learn_press_translate_user_roles', 10, 4 );
 
-/**
- * Modifies the statement $where to make the search works correct
- *
- * @param string
- *
- * @return string
- * @deprecated 4.1.7.2
- */
-//function learn_press_posts_where_statement_search( $where ) {
-//	// gets the global query var object
-//	global $wp_query, $wpdb;
-//
-//	/**
-//	 * Need to wrap this block into () in order to make it works correctly when filter by specific post type => maybe a bug :)
-//	 * from => ( wp_2_posts.post_status = 'publish' OR wp_2_posts.post_status = 'private') OR wp_2_terms.name LIKE '%s%'
-//	 * to => ( ( wp_2_posts.post_status = 'publish' OR wp_2_posts.post_status = 'private') OR wp_2_terms.name LIKE '%s%' )
-//	 */
-//	$a = preg_match( '!(' . $wpdb->posts . '.post_status)!', $where );
-//	$b = preg_match( '!(OR\s+' . $wpdb->terms . '.name LIKE \'%' . $wp_query->get( 's' ) . '%\')!', $where );
-//
-//	if ( $a && $b ) {
-//		// append ( to the start of the block
-//		$where = preg_replace( '!(' . $wpdb->posts . '.post_status)!', '( $1', $where, 1 );
-//
-//		// append ) to the end of the block
-//		$where = preg_replace(
-//			'!(OR\s+' . $wpdb->terms . '.name LIKE \'%' . $wp_query->get( 's' ) . '%\')!',
-//			'$1 )',
-//			$where
-//		);
-//	}
-//	remove_filter( 'posts_where', 'learn_press_posts_where_statement_search', 99 );
-//
-//	return $where;
-//}
-
-/**
- * Filter post type for search function
- * Only search lpr_course if see the param ref=course in request
- *
- * @param WP_Query $q
- * @deprecated 4.1.7.2
- */
-/*function learn_press_filter_search( $q ) {
-	if ( $q->is_main_query() && $q->is_search() && ( ! empty( $_REQUEST['ref'] ) && sanitize_text_field( $_REQUEST['ref'] ) == 'course' ) ) {
-		$q->set( 'post_type', 'lp_course' );
-
-		add_filter( 'posts_where', 'learn_press_posts_where_statement_search', 99 );
-		remove_filter( 'pre_get_posts', 'learn_press_filter_search', 99 );
-	}
-}*/
-//add_filter( 'pre_get_posts', 'learn_press_filter_search', 99 );
-
 if ( ! function_exists( 'learn_press_send_json' ) ) {
 	function learn_press_send_json( $data ) {
 		echo '<-- LP_AJAX_START -->';
@@ -1724,17 +1658,13 @@ if ( ! function_exists( 'learn_press_is_course_tag' ) ) {
 }
 
 if ( ! function_exists( 'learn_press_is_course' ) ) {
-	function learn_press_is_course() {
-		/**
-		 * @var WP_Query $wp_query
-		 */
-		global $wp_query;
-
-		if ( $wp_query->get_queried_object() ) {
+	function learn_press_is_course(): bool {
+		try {
 			return is_singular( array( LP_COURSE_CPT ) );
-		} else {
-			return false;
+		} catch ( Throwable $e ) {
 		}
+
+		return false;
 	}
 }
 
@@ -1901,49 +1831,6 @@ function learn_press_get_endpoint_url( $name, $value, $url ) {
 
 	return apply_filters( 'learn_press_get_endpoint_url', esc_url_raw( $url ), $name, $value, $url );
 }
-
-/**
- * Add all endpoints from settings to the pages.
- * @deprecated 4.2.3
- * @use LP_Query::add_rewrite_endpoints instead
- */
-//function learn_press_add_endpoints() {
-//	// Must LP_Profile::instance call on init, because it will add action hook to save data on Profile page
-//	// If rewrite save data on Profile page, can remove it.
-//	//LP_Profile::instance( get_current_user_id() );
-//
-//	$settings = LP_Settings::instance();
-//
-//	$endpoints = $settings->get_checkout_endpoints();
-//	if ( $endpoints ) {
-//		foreach ( $endpoints as $endpoint => $value ) {
-//			LearnPress::instance()->query_vars[ $endpoint ] = $value;
-//			add_rewrite_endpoint( $value, EP_PAGES );
-//		}
-//	}
-//
-//	$endpoints = $settings->get_profile_endpoints();
-//	if ( $endpoints ) {
-//		foreach ( $endpoints as $endpoint => $value ) {
-//			LearnPress::instance()->query_vars[ $endpoint ] = $value;
-//			add_rewrite_endpoint( $value, EP_PAGES );
-//		}
-//	}
-//
-//	$endpoints = $settings->get( 'quiz_endpoints' );
-//	if ( $endpoints ) {
-//		foreach ( $endpoints as $endpoint => $value ) {
-//			$endpoint                                       = preg_replace( '!_!', '-', $endpoint );
-//			LearnPress::instance()->query_vars[ $endpoint ] = $value;
-//			add_rewrite_endpoint(
-//				$value, /*EP_ROOT | */
-//				EP_PAGES
-//			);
-//		}
-//	}
-//}
-
-//add_action( 'init', 'learn_press_add_endpoints' );
 
 /**
  * @deprecated 4.2.3
@@ -3271,7 +3158,7 @@ function lp_add_shortcode_profile() {
  */
 add_filter(
 	'elementor/theme/get_location_templates/template_id',
-	function( $theme_template_id ) {
+	function ( $theme_template_id ) {
 		$elementor_template_type = get_post_meta( $theme_template_id, '_elementor_template_type', true );
 
 		if ( in_array( $elementor_template_type, array( 'archive' ) ) ) {
