@@ -88,7 +88,7 @@ class ListInstructorsTemplate {
 			$skeleton = ob_get_clean();
 
 			$sections = apply_filters(
-				'learn-press/list-instructors/sections/wrapper',
+				'learn-press/list-instructors/sections',
 				[
 					'wrapper'           => '<div class="lp-content-area">',
 					'wrapper_inner'     => '<div class="lp-list-instructors">',
@@ -111,9 +111,9 @@ class ListInstructorsTemplate {
 	 *
 	 * @param UserModel $instructor
 	 *
-	 * @return false|string
+	 * @return string
 	 */
-	public function instructor_item( $instructor ) {
+	public function instructor_item( UserModel $instructor ): string {
 		$content = '';
 
 		try {
@@ -146,7 +146,6 @@ class ListInstructorsTemplate {
 			);
 
 			$content = Template::combine_components( $sections );
-
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
@@ -159,11 +158,11 @@ class ListInstructorsTemplate {
 	 *
 	 * @param UserModel $instructor
 	 *
-	 * @return false|string
+	 * @return string
 	 * @version 1.0.1
 	 * @since 4.2.3
 	 */
-	public function instructor_item_info( $instructor ) {
+	public function instructor_item_info( UserModel $instructor ): string {
 		$content = '';
 
 		try {
@@ -200,7 +199,6 @@ class ListInstructorsTemplate {
 			);
 
 			$content = Template::combine_components( $sections );
-
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}

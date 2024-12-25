@@ -11,6 +11,7 @@ namespace LearnPress\TemplateHooks;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\UserModel;
 use LP_Profile;
+use LP_User;
 use Throwable;
 
 class UserTemplate {
@@ -23,11 +24,19 @@ class UserTemplate {
 	/**
 	 * Get display name html of user.
 	 *
-	 * @param UserModel $userModel
+	 * @param UserModel|LP_User $userModel
 	 *
 	 * @return string
 	 */
-	public function html_display_name( UserModel $userModel ): string {
+	public function html_display_name( $userModel ): string {
+		if ( $userModel instanceof LP_User ) {
+			$userModel = UserModel::find( $userModel->get_id(), true );
+		}
+
+		if ( ! $userModel ) {
+			return '';
+		}
+
 		$sections = [
 			'wrapper'     => sprintf( '<span class="%s-display-name">', $this->class_name ),
 			'content'     => $userModel->get_display_name(),
@@ -40,7 +49,7 @@ class UserTemplate {
 	/**
 	 * Get html description of instructor.
 	 *
-	 * @param UserModel $userModel
+	 * @param UserModel|LP_User $userModel
 	 *
 	 * @return string
 	 * @since 4.2.3.4
@@ -50,6 +59,14 @@ class UserTemplate {
 		$content = '';
 
 		try {
+			if ( $userModel instanceof LP_User ) {
+				$userModel = UserModel::find( $userModel->get_id(), true );
+			}
+
+			if ( ! $userModel ) {
+				return $content;
+			}
+
 			$description = $userModel->get_description();
 			if ( empty( $description ) ) {
 				return $content;
@@ -87,6 +104,14 @@ class UserTemplate {
 		$html = '';
 
 		try {
+			if ( $user instanceof LP_User ) {
+				$user = UserModel::find( $user->get_id(), true );
+			}
+
+			if ( ! $user ) {
+				return '';
+			}
+
 			if ( empty( $size_display ) ) {
 				$size_display = learn_press_get_avatar_thumb_size();
 			}
@@ -140,6 +165,14 @@ class UserTemplate {
 		$html = '';
 
 		try {
+			if ( $user instanceof LP_User ) {
+				$user = UserModel::find( $user->get_id(), true );
+			}
+
+			if ( ! $user ) {
+				return '';
+			}
+
 			if ( empty( $size_display ) ) {
 				$size_display = learn_press_get_avatar_thumb_size();
 			}
@@ -194,7 +227,7 @@ class UserTemplate {
 	/**
 	 * Get html social of instructor.
 	 *
-	 * @param UserModel $userModel
+	 * @param UserModel|LP_User $userModel
 	 *
 	 * @return string
 	 */
@@ -202,6 +235,14 @@ class UserTemplate {
 		$content = '';
 
 		try {
+			if ( $userModel instanceof LP_User ) {
+				$userModel = UserModel::find( $userModel->get_id(), true );
+			}
+
+			if ( ! $userModel ) {
+				return '';
+			}
+
 			$socials = $userModel->get_profile_social();
 			if ( empty( $socials ) ) {
 				return $content;
