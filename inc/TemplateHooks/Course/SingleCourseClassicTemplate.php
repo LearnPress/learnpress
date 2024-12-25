@@ -21,31 +21,24 @@ class SingleCourseClassicTemplate {
 	use Singleton;
 
 	/**
-	 * @var SingleCourseTemplate
+	 * @var SingleCourseTemplate $singleCourseTemplate
 	 */
 	public $singleCourseTemplate;
 
 	public function init() {
 		$this->singleCourseTemplate = SingleCourseTemplate::instance();
 
-		add_action(
-			'learn-press/single-course/classic/layout',
-			[ $this, 'course_classic_layout' ]
-		);
+		add_action( 'learn-press/single-course/layout/classic', [ $this, 'section' ] );
 	}
 
 	/**
 	 * Single course layout classic
 	 *
-	 * @param $course
+	 * @param CourseModel $course
 	 *
 	 * @return void
 	 */
-	public function course_classic_layout( $course ) {
-		if ( ! $course instanceof CourseModel ) {
-			return;
-		}
-
+	public function section( CourseModel $course ) {
 		$user = UserModel::find( get_current_user_id(), true );
 
 		ob_start();

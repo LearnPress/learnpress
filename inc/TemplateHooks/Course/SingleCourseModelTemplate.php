@@ -30,7 +30,7 @@ class SingleCourseModelTemplate {
 		$this->singleCourseTemplate = SingleCourseTemplate::instance();
 
 		add_action(
-			'learn-press/single-course/model/layout',
+			'learn-press/single-course/layout',
 			[ $this, 'course_model_layout' ]
 		);
 	}
@@ -351,11 +351,11 @@ class SingleCourseModelTemplate {
 			'learn-press/single-course/social-share',
 			[
 				'wrapper'     => '<ul class="thim-social-media">',
-				'content'	  => $html_social,		 	 
+				'content'	  => $html_social,
 				'wrapper_end' => '</ul>',
 			]
 		);
-		
+
 		$clipboard = [
 			'wrapper'     => '<div class="clipboard-post">',
 			'input'       => sprintf( '<input class="clipboard-value" type="text" value="%s">', get_permalink() ),

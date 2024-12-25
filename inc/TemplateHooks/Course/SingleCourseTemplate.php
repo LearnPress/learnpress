@@ -3,7 +3,7 @@
  * Template hooks Single Course.
  *
  * @since 4.2.3
- * @version 1.0.3
+ * @version 1.0.4
  */
 
 namespace LearnPress\TemplateHooks\Course;
@@ -264,7 +264,7 @@ class SingleCourseTemplate {
 			}
 
 			$singleInstructorTemplate = SingleInstructorTemplate::instance();
-			$userTemplate = new UserTemplate( 'instructor' );
+			$userTemplate             = new UserTemplate( 'instructor' );
 
 			$link_instructor = sprintf(
 				'<a href="%s">%s %s</a>',
@@ -361,29 +361,6 @@ class SingleCourseTemplate {
 		$price_html = sprintf( '<span class="course-price"><span class="course-item-price">%s</span></span>', $price_html );
 
 		return apply_filters( 'learn-press/course/html-price', $price_html, $course );
-	}
-
-	/**
-	 * Get deliver type
-	 *
-	 * @param CourseModel $course
-	 *
-	 * @return string
-	 * @deprecated 4.2.7.3 Move to SingleCourseOfflineTemplate
-	 */
-	public function html_deliver_type( CourseModel $course ): string {
-		return '';
-		$content = '';
-
-		$html_wrapper = [
-			'<span class="course-deliver-type">' => '</span>',
-		];
-
-		$deliver_type_options = Config::instance()->get( 'course-deliver-type' );
-		$key                  = $course->get_meta_value_by_key( CoursePostModel::META_KEY_DELIVER, 'private_1_1' );
-		$content              = $deliver_type_options[ $key ] ?? '';
-
-		return Template::instance()->nest_elements( $html_wrapper, $content );
 	}
 
 	/**
@@ -605,36 +582,6 @@ class SingleCourseTemplate {
 		</div>
 		<?php
 		return ob_get_clean();
-	}
-
-	/**
-	 * Get html address of course offline
-	 *
-	 * @param CourseModel $course
-	 *
-	 * @return string
-	 * @deprecated 4.2.7.3 Move to SingleCourseOfflineTemplate
-	 */
-	public function html_address( CourseModel $course ): string {
-		return '';
-		$content = '';
-
-		try {
-			$address = $course->get_meta_value_by_key( CoursePostModel::META_KEY_ADDRESS, '' );
-			if ( empty( $address ) ) {
-				return $content;
-			}
-
-			$html_wrapper = [
-				'<span class="course-address">' => '</span>',
-			];
-			$content      = Template::instance()->nest_elements( $html_wrapper, $address );
-			apply_filters( 'learn-press/single-course/html-address', $content, $course );
-		} catch ( Throwable $e ) {
-			error_log( __METHOD__ . ': ' . $e->getMessage() );
-		}
-
-		return $content;
 	}
 
 	/**
