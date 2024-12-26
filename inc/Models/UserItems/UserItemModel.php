@@ -98,6 +98,14 @@ class UserItemModel {
 	 */
 	public $meta_data;
 
+	// Constants
+	const STATUS_COMPLETED   = 'completed';
+	const STATUS_FINISHED    = 'finished';
+	const STATUS_ENROLLED    = 'enrolled';
+	const STATUS_IN_PROGRESS = 'in-progress';
+	const GRADUATION_PASSED  = 'passed';
+	const GRADUATION_FAILED  = 'failed';
+
 	/**
 	 * If data get from database, map to object.
 	 * Else create new object to save data to database.

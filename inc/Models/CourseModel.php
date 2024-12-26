@@ -7,7 +7,7 @@
  * Another fields for query list courses faster
  *
  * @package LearnPress/Classes
- * @version 1.0.2
+ * @version 1.0.3
  * @since 4.2.6.9
  */
 
@@ -411,6 +411,19 @@ class CourseModel {
 		}
 
 		return $this->total_items;
+	}
+
+	/**
+	 * Get total sections of course
+	 *
+	 * @return int
+	 * @since 4.2.7.6
+	 * @version 1.0.0
+	 */
+	public function get_total_sections(): int {
+		$section_items = $this->get_section_items();
+
+		return count( $section_items );
 	}
 
 	/**
@@ -1076,29 +1089,10 @@ class CourseModel {
 					$item = call_user_func( [ $findClassModel, 'find' ], $item_id, true );
 				}
 			} elseif ( class_exists( $findClassPostModel ) ) {
-				$item = call_user_func( [ $findClassPostModel, 'find' ], $item_id );
+				$item = call_user_func( [ $findClassPostModel, 'find' ], $item_id, true );
 			}
 
-			switch ( $item_type ) {
-				case LP_QUIZ_CPT:
-					$item = QuizPostModel::find( $item_id, true );
-					break;
-				default:
-					$class_name = apply_filters(
-						'learn-press/course/item-model',
-						$item_id,
-						$item_type
-					);
-
-					if ( class_exists( $class_name ) ) {
-						if ( is_callable( [ $class_name, 'find' ] ) ) {
-							$item = call_user_func( [ $class_name, 'find' ], $item_id, true );
-						}
-					}
-
-					break;
-			}
-
+			// If not defined class, get post default
 			if ( ! $item ) {
 				$item = get_post( $item_id );
 			}
@@ -1271,12 +1265,18 @@ class CourseModel {
 	 *
 	 * @return array
 	 * @since 4.2.7.4
+	 * @version 1.0.1
 	 */
 	public static function item_types_support(): array {
 		$item_types = [
 			LP_LESSON_CPT,
 			LP_QUIZ_CPT,
 		];
+
+		// Hook old
+		if ( has_filter( 'learn-press/course-item-type' ) ) {
+			$item_types = apply_filters( 'learn-press/course-item-type', $item_types );
+		}
 
 		return apply_filters( 'learn-press/course/item-types-support', $item_types );
 	}

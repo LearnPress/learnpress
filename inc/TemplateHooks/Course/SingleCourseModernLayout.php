@@ -13,12 +13,10 @@ use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\TemplateHooks\UserItem\UserCourseTemplate;
-use LearnPress\Models\CoursePostModel;
 use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
-use LP_Course;
 
-class SingleCourseModelTemplate {
+class SingleCourseModernLayout {
 	use Singleton;
 
 	/**
@@ -120,6 +118,8 @@ class SingleCourseModelTemplate {
 				'wrapper_container_end'       => '</div>',
 				'wrapper_header_end'          => '</div>',
 			],
+			$course,
+			$user
 		);
 
 		return Template::combine_components( $header_sections );
@@ -197,7 +197,7 @@ class SingleCourseModelTemplate {
 				'features'     => $this->singleCourseTemplate->html_features( $course ),
 				'target'       => $this->singleCourseTemplate->html_target( $course ),
 				'requirements' => $this->singleCourseTemplate->html_requirements( $course ),
-				//'curriculum'   => $this->html_curriculum( $course, $user ),
+				'curriculum'   => $this->singleCourseTemplate->html_curriculum( $course, $user ),
 				'material'     => $this->singleCourseTemplate->html_material( $course ),
 				'faqs'         => $this->singleCourseTemplate->html_faqs( $course ),
 				'instructor'   => $html_instructor,
@@ -263,7 +263,11 @@ class SingleCourseModelTemplate {
 			$user
 		);
 
-		$userCourseModel         = UserCourseModel::find( get_current_user_id(), $course->get_id(), true );
+		$user_id = 0;
+		if ( $user instanceof UserModel ) {
+			$user_id = $user->get_id();
+		}
+		$userCourseModel         = UserCourseModel::find( $user_id, $course->get_id(), true );
 		$userCourseTemplate      = UserCourseTemplate::instance();
 		$btn_continue_and_finish = [];
 
@@ -295,7 +299,7 @@ class SingleCourseModelTemplate {
 				'wrapper_inner'     => '<div class="lp-single-course-main__right__inner">',
 				'image'             => $this->singleCourseTemplate->html_image( $course ),
 				'price'             => $this->singleCourseTemplate->html_price( $course ),
-				//'sale_discount'		=> $this->singleCourseTemplate->html_sale_discount( $course ), to do
+				//'sale_discount'       => $this->singleCourseTemplate->html_sale_discount( $course ), to do
 				'info_two'          => Template::combine_components( $section_info_two ),
 				'buttons'           => Template::combine_components( $section_buttons ),
 				'share'             => $this->html_share( $course ),
@@ -326,22 +330,26 @@ class SingleCourseModelTemplate {
 				switch ( $key ) {
 					case 'facebook':
 						$link_share = 'https://www.facebook.com/sharer.php?u=' . urlencode( get_permalink() );
-						$icon = '<i class="lp-icon-facebook"></i>';
+						$icon       = '<i class="lp-icon-facebook"></i>';
 						break;
-					case'twitter':
+					case 'twitter':
 						$link_share = 'https://twitter.com/share?url=' . urlencode( get_permalink() ) . '&amp;text=' . rawurlencode( esc_attr( get_the_title() ) );
-						$icon = '<i class="lp-icon-twitter"></i>';
+						$icon       = '<i class="lp-icon-twitter"></i>';
 						break;
-					case'pinterest':
-						$link_share = 'http://pinterest.com/pin/create/button/?url=' . urlencode( get_permalink() ) . '&amp;description=' . rawurlencode( esc_attr( get_the_excerpt() ) ) . '&amp;media=' . urlencode( wp_get_attachment_url( get_post_thumbnail_id() ) ) . ' onclick="window.open(this.href); return false;"';
-						$icon = '<i class="lp-icon-pinterest-p"></i>';
+					case 'pinterest':
+						$link_share = 'https://pinterest.com/pin/create/button/?url=' . urlencode( get_permalink() ) . '&amp;description=' . rawurlencode( esc_attr( get_the_excerpt() ) ) . '&amp;media=' . urlencode( wp_get_attachment_url( get_post_thumbnail_id() ) ) . ' onclick="window.open(this.href); return false;"';
+						$icon       = '<i class="lp-icon-pinterest-p"></i>';
 						break;
-					case'linkedin':
+					case 'linkedin':
 						$link_share = 'https://www.linkedin.com/shareArticle?mini=true&url=' . urlencode( get_permalink() ) . '&title=' . rawurlencode( esc_attr( get_the_title() ) ) . '&summary=&source=' . rawurlencode( esc_attr( get_the_excerpt() ) );
-						$icon = '<i class="lp-icon-linkedin"></i>';
+						$icon       = '<i class="lp-icon-linkedin"></i>';
+						break;
+					default:
+						$link_share = '';
+						$icon       = '';
 						break;
 				}
-				echo sprintf('<li><a target="_blank" href="%s" title="%s">%s<span>%s</span></a></li>', $link_share, $social, $icon, $social);
+				echo sprintf( '<li><a target="_blank" href="%s" title="%s">%s<span>%s</span></a></li>', $link_share, $social, $icon, $social );
 			}
 		}
 
@@ -351,7 +359,7 @@ class SingleCourseModelTemplate {
 			'learn-press/single-course/social-share',
 			[
 				'wrapper'     => '<ul class="thim-social-media">',
-				'content'	  => $html_social,
+				'content'     => $html_social,
 				'wrapper_end' => '</ul>',
 			]
 		);

@@ -14,14 +14,17 @@ use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\CoursePostModel;
 use LearnPress\Models\UserItems\UserCourseModel;
+use LearnPress\Models\UserItems\UserItemModel;
 use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
 use LearnPress\TemplateHooks\UserTemplate;
 use LP_Checkout;
 use LP_Course;
+use LP_Course_Item;
 use LP_Datetime;
 use LP_Material_Files_DB;
 use LP_Settings;
+use stdClass;
 use Throwable;
 
 class SingleCourseTemplate {
@@ -217,14 +220,18 @@ class SingleCourseTemplate {
 
 		try {
 			if ( $course instanceof LP_Course ) {
-				$content = $course->get_image();
-			} elseif ( $course instanceof CourseModel ) {
-				$content = sprintf(
-					'<img src="%s" alt="%s">',
-					esc_url_raw( $course->get_image_url() ),
-					_x( 'course thumbnail', 'no course thumbnail', 'learnpress' )
-				);
+				$course = CourseModel::find( $course->get_id(), true );
 			}
+
+			if ( ! $course instanceof CourseModel ) {
+				return '';
+			}
+
+			$content = sprintf(
+				'<img src="%s" alt="%s">',
+				esc_url_raw( $course->get_image_url() ),
+				_x( 'course thumbnail', 'no course thumbnail', 'learnpress' )
+			);
 
 			$section = apply_filters(
 				'learn-press/course/html-image',
@@ -637,9 +644,7 @@ class SingleCourseTemplate {
 			);
 			if ( in_array( $can_purchase->get_error_code(), $error_code_show )
 				&& ! empty( $can_purchase->get_error_message() ) ) {
-				ob_start();
-				Template::print_message( $can_purchase->get_error_message(), 'warning' );
-				$html_btn = ob_get_clean();
+				$html_btn = Template::print_message( $can_purchase->get_error_message(), 'warning', false );
 			}
 		} else {
 			$html_btn = sprintf(
@@ -723,9 +728,7 @@ class SingleCourseTemplate {
 			);
 			if ( in_array( $can_enroll->get_error_code(), $error_code_show )
 				&& ! empty( $can_enroll->get_error_message() ) ) {
-				ob_start();
-				Template::print_message( $can_enroll->get_error_message(), 'warning' );
-				$html_btn = ob_get_clean();
+				$html_btn = Template::print_message( $can_enroll->get_error_message(), 'warning', false );
 			}
 		} else {
 			$html_btn = sprintf(
@@ -1160,6 +1163,294 @@ class SingleCourseTemplate {
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
+
+		return $html;
+	}
+
+	/**
+	 * Get HTML curriculum of course.
+	 *
+	 * @param CourseModel $course
+	 * @param UserModel|false $user
+	 *
+	 * @return string
+	 * @since 4.2.7.6
+	 * @version 1.0.0
+	 */
+	public function html_curriculum( CourseModel $course, $user ): string {
+		$html = '';
+
+		try {
+
+			$section_items = $course->get_section_items();
+			$html          = Template::print_message( esc_html__( 'Course has not any items.', 'learnpress' ), 'info', false );
+			if ( empty( $section_items ) ) {
+				return $html;
+			}
+
+			$li_section_items = '';
+			foreach ( $section_items as $section_item ) {
+				$li_section_items .= $this->render_html_section_item( $course, $user, $section_item );
+			}
+
+			$section = [
+				'wrapper'                   => '<div class="lp-course-curriculum">',
+				'curriculum_info'           => '<div class="course-curriculum-info-wrapper">',
+				'curriculum_info_left'      => '<ul class="course-curriculum-info">',
+				'count_sections'            => sprintf(
+					'<li class="course-count-section">%s</li>',
+					sprintf(
+						_n( '%d Section', '%d Sections', $course->get_total_sections(), 'learnpress' ),
+						$course->get_total_sections()
+					)
+				),
+				'count_lesson'              => sprintf(
+					'<li class="course-count-section">%s</li>',
+					sprintf(
+						_n( '%d Lesson', '%d Lessons', $course->count_items( LP_LESSON_CPT ), 'learnpress' ),
+						$course->get_total_sections()
+					)
+				),
+				'duration'                  => sprintf(
+					'<li class="course-duration">%s</li>',
+					$this->html_duration( $course )
+				),
+				'curriculum_info_left_end'  => '</ul>',
+				'curriculum_info_right'     => '<div class="course-curriculum-info-right">',
+				'expand_all'                => sprintf(
+					'<span class="course-curriculum-expand-all">%s</span>',
+					esc_html__( 'Expand all', 'learnpress' )
+				),
+				'curriculum_info_right_end' => '</div>',
+				'curriculum_info_end'       => '</div>',
+				'curriculum'                => '<div class="course-curriculum">',
+				'sections'                  => '<ul class="course-sections">',
+				'li_section_items'          => $li_section_items,
+				'sections_end'              => '</ul>',
+				'curriculum_end'            => '</div>',
+				'wrapper_end'               => '</div>',
+			];
+
+			$html = Template::combine_components( $section );
+		} catch ( Throwable $e ) {
+
+		}
+
+		return $html;
+	}
+
+	/**
+	 * Render HTML section item
+	 *
+	 * @param CourseModel $course
+	 * @param UserModel|false $user
+	 * @param $section_item object {section_id, section_name, section_description, items[{item_id, item_order, item_type, title, preview}]}
+	 *
+	 * @return string
+	 * @since 4.2.7.6
+	 * @version 1.0.0
+	 */
+	public function render_html_section_item( CourseModel $course, $user, $section_item ): string {
+		if ( ! $section_item instanceof stdClass ) {
+			return '';
+		}
+
+		$section_id          = $section_item->section_id ?? 0;
+		$section_name        = $section_item->section_name ?? '';
+		$section_description = $section_item->section_description ?? '';
+		$items               = $section_item->items ?? [];
+
+		$section_header = [
+			'start'       => '<div class="course-section-header">',
+			'info'        => '<div class="course-section-info">',
+			'title'       => sprintf( '<div class="course-section-title">%s</div>', wp_kses_post( $section_name ) ),
+			'description' => sprintf( '<div class="course-section-description">%s</div>', wp_kses_post( $section_description ) ),
+			'info_end'    => '</div>',
+			'toggle'      => '<span class="section-toggle">
+				<i class="lp-icon-caret-down"></i>
+				<i class="lp-icon-caret-up"></i>
+			</span>',
+			'end'         => '</div>',
+		];
+
+		$li_items = '';
+		foreach ( $items as $item ) {
+			$li_items .= $this->render_html_course_item( $course, $user, $item );
+		}
+		$section_items = [
+			'start'    => '<ul class="course-section-items">',
+			'li_items' => $li_items,
+			'end'      => '</ul>',
+		];
+
+		$section_item = apply_filters(
+			'learn-press/course/html-curriculum-item',
+			[
+				'start'  => sprintf( '<li class="course-section" data-section-id="%s">', $section_id ),
+				'header' => Template::combine_components( $section_header ),
+				'items'  => Template::combine_components( $section_items ),
+				'end'    => '</li>',
+			],
+			$course,
+			$user,
+			$section_item
+		);
+
+		return Template::combine_components( $section_item );
+	}
+
+	/**
+	 * @param CourseModel $course
+	 * @param UserModel|false $user
+	 * @param $item
+	 *
+	 * @return string
+	 * @since 4.2.7.6
+	 * @version 1.0.0
+	 */
+	public function render_html_course_item( CourseModel $course, $user, $item ): string {
+		$html = '';
+
+		if ( ! $item instanceof stdClass ) {
+			return $html;
+		}
+
+		$item_id     = $item->item_id ?? 0;
+		$item_order  = $item->item_order ?? 0;
+		$item_type   = $item->item_type ?? '';
+		$title       = $item->title ?? '';
+		$has_preview = $item->preview ?? '';
+
+		//LP_Course_Item::get_item( $item_id, $course->get_id() );
+		$itemModel = $course->get_item_model( $item_id, $item_type );
+		if ( empty( $itemModel ) ) {
+			return $html;
+		}
+
+		$link_item = $course->get_item_link( $item_id );
+
+		$item_duration      = '';
+		$html_item_duration = '';
+		if ( is_callable( [ $itemModel, 'get_duration' ] ) ) {
+			$item_duration = $itemModel->get_duration();
+		} else {
+			$item_duration = get_post_meta( $item_id, '_lp_duration', true );
+		}
+
+		$duration_arr    = explode( ' ', $item_duration );
+		$duration_number = floatval( $duration_arr[0] ?? 0 );
+		$duration_type   = $duration_arr[1] ?? '';
+
+		$item_duration_plural = esc_html__( 'Unlimited', 'learnpress' );
+		if ( $duration_number > 0 ) {
+			$item_duration_plural = LP_Datetime::get_string_plural_duration( $duration_number, $duration_type );
+		}
+		$html_item_duration = sprintf(
+			'<span class="course-item-ico duration">%s</span>',
+			$item_duration_plural
+		);
+
+		$user_item_flag = '';
+		if ( $user instanceof UserModel ) {
+			$userCourse = UserCourseModel::find( $user->get_id(), $course->get_id(), true );
+			if ( $userCourse ) {
+				// Check status of item's course
+				$userCourseItem = $userCourse->get_item_attend( $item_id );
+				if ( ! $userCourseItem instanceof UserItemModel ) {
+					$user_item_flag = UserItemModel::STATUS_IN_PROGRESS;
+				} else {
+					$user_item_flag       = $userCourseItem->get_status();
+					$user_item_graduation = $userCourseItem->get_graduation();
+					if ( ! empty( $user_item_graduation ) ) {
+						$user_item_flag = $user_item_graduation;
+					}
+				}
+			}
+		}
+
+		if ( empty( $user_item_flag ) ) {
+			$html_item_status = sprintf(
+				'<span class="course-item-ico status-locked">%s</span>',
+				esc_html__( 'Locked', 'learnpress' )
+			);
+			if ( $has_preview ) {
+				$html_item_status = sprintf(
+					'<span class="course-item-ico status-preview">%s</span>',
+					esc_html__( 'Preview', 'learnpress' )
+				);
+			}
+		} else {
+			switch ( $user_item_flag ) {
+				case UserItemModel::GRADUATION_PASSED:
+					$html_item_status = sprintf(
+						'<span class="course-item-ico graduation-passed">%s</span>',
+						esc_html__( 'Passed', 'learnpress' )
+					);
+					break;
+				case UserItemModel::GRADUATION_FAILED:
+					$html_item_status = sprintf(
+						'<span class="course-item-ico graduation-failed">%s</span>',
+						esc_html__( 'Failed', 'learnpress' )
+					);
+					break;
+				case UserItemModel::STATUS_COMPLETED:
+					$html_item_status = sprintf(
+						'<span class="course-item-ico status-completed">%s</span>',
+						esc_html__( 'Completed', 'learnpress' )
+					);
+					break;
+				case 'started':
+					$html_item_status = sprintf(
+						'<span class="course-item-ico status-started">%s</span>',
+						esc_html__( 'Started', 'learnpress' )
+					);
+					break;
+				case 'locked':
+				default:
+					$html_item_status = sprintf(
+						'<span class="course-item-ico status-locked">%s</span>',
+						esc_html__( 'Locked', 'learnpress' )
+					);
+					break;
+			}
+
+			$html_item_status = apply_filters(
+				'learn-press/course/html-curriculum-item/status',
+				$html_item_status,
+				$user_item_flag,
+				$user,
+				$course,
+				$itemModel
+			);
+		}
+
+		$section_item = [
+			'start'          => sprintf(
+				'<li class="course-item" data-item-id="%s" data-item-order="%s" data-item-type="%s">',
+				$item_id,
+				$item_order,
+				$item_type
+			),
+			'link'           => sprintf(
+				'<a href="%s" class="course-item-link">',
+				esc_url_raw( $link_item )
+			),
+			'item_left'      => '<div class="course-item-left">',
+			'icon'           => sprintf(
+				'<span class="course-item-ico %s"></span>',
+				esc_attr( $item_type )
+			),
+			'title'          => sprintf( '<div class="course-item-title">%s</div>', wp_kses_post( $title ) ),
+			'item_left_end'  => '</div>',
+			'item_right'     => '<div class="course-item-right">',
+			'duration'       => $html_item_duration,
+			'status'         => $html_item_status,
+			'item_right_end' => '</div>',
+			'link_end'       => '</a>',
+			'end'            => '</li>',
+		];
+
+		$html = Template::combine_components( $section_item );
 
 		return $html;
 	}

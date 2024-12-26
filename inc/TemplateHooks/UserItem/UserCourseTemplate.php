@@ -12,6 +12,15 @@ use LearnPress\Helpers\Template;
 use LearnPress\Models\UserItems\UserCourseModel;
 
 class UserCourseTemplate extends UserItemBaseTemplate {
+	public static function instance() {
+		static $instance = null;
+		if ( is_null( $instance ) ) {
+			$instance = new self();
+		}
+
+		return $instance;
+	}
+
 	/**
 	 * HTML button continue course.
 	 *

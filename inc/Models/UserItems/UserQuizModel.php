@@ -44,10 +44,6 @@ class UserQuizModel extends UserItemModel {
 
 	public function __construct( $data = null ) {
 		parent::__construct( $data );
-
-		if ( $data ) {
-			$this->get_quiz_post_model();
-		}
 	}
 
 	/**

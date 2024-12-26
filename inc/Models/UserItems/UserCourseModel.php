@@ -4,7 +4,7 @@
  * Class UserItemModel
  *
  * @package LearnPress/Classes
- * @version 1.0.0
+ * @version 1.0.1
  * @since 4.2.5
  */
 
@@ -13,19 +13,18 @@ namespace LearnPress\Models\UserItems;
 use Exception;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\CoursePostModel;
-use LearnPress\Models\UserModel;
+use LearnPress\Models\QuizPostModel;
 use LP_Cache;
-use LP_Course;
 use LP_Course_Cache;
 use LP_Course_Item;
 use LP_Courses_Cache;
 use LP_Datetime;
 use LP_User;
+use LP_User_Item_Course;
 use LP_User_Items_DB;
 use LP_User_Items_Filter;
 use LP_User_Items_Result_DB;
 use stdClass;
-use Thim_Cache_DB;
 use Throwable;
 use WP_Error;
 
@@ -108,14 +107,21 @@ class UserCourseModel extends UserItemModel {
 		$item = false;
 
 		try {
-			$filter            = new LP_User_Items_Filter();
-			$filter->parent_id = $this->get_user_item_id();
-			$filter->item_id   = $item_id;
-			$filter->item_type = $item_type;
-			$filter->ref_type  = $this->item_type;
-			$filter->ref_id    = $this->item_id;
-			$filter->user_id   = $this->user_id;
-			$item              = UserItemModel::get_user_item_model_from_db( $filter );
+//			$filter            = new LP_User_Items_Filter();
+//			$filter->parent_id = $this->get_user_item_id();
+//			$filter->item_id   = $item_id;
+//			$filter->item_type = $item_type;
+//			$filter->ref_type  = $this->item_type;
+//			$filter->ref_id    = $this->item_id;
+//			$filter->user_id   = $this->user_id;
+			$item              = UserItemModel::find_user_item(
+				$this->user_id,
+				$item_id,
+				$item_type,
+				$this->item_id,
+				$this->item_type,
+				true
+			);
 
 			if ( $item ) {
 				switch ( $item_type ) {
@@ -123,7 +129,6 @@ class UserCourseModel extends UserItemModel {
 						$item = new UserQuizModel( $item );
 						break;
 					default:
-						$item = new UserItemModel( $item );
 						break;
 				}
 
@@ -224,7 +229,7 @@ class UserCourseModel extends UserItemModel {
 	 *
 	 * @move from class-lp-user-item-course.php
 	 * @since 4.1.4
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 */
 	public function calculate_course_results( bool $force_cache = false ) {
 		$items   = array();
@@ -278,7 +283,13 @@ class UserCourseModel extends UserItemModel {
 					$results_evaluate = $this->evaluate_course_by_question( $evaluate_type );
 					break;
 				default:
-					$results_evaluate = apply_filters( 'learn-press/evaluate_passed_conditions', $results, $evaluate_type, $this );
+					// Old Hook
+					if ( has_filter( 'learn-press/evaluate_passed_conditions' ) ) {
+						$user_course_old = new LP_User_Item_Course( $this );
+						$results         = apply_filters( 'learn-press/evaluate_passed_conditions', $results, $evaluate_type, $user_course_old );
+					}
+
+					$results_evaluate = apply_filters( 'learn-press/evaluate/calculate', $results, $evaluate_type, $this );
 					break;
 			}
 
@@ -293,7 +304,7 @@ class UserCourseModel extends UserItemModel {
 
 			$completed_items = intval( $count_items_completed->count_status ?? 0 );
 
-			$item_types = learn_press_get_course_item_types();
+			$item_types = CourseModel::item_types_support();
 			foreach ( $item_types as $item_type ) {
 				$item_type_key = str_replace( 'lp_', '', $item_type );
 
@@ -449,18 +460,8 @@ class UserCourseModel extends UserItemModel {
 		$count_items_completed = new stdClass();
 
 		try {
-			$course = learn_press_get_course( $this->item_id );
-			if ( ! $course ) {
-				throw new Exception( 'Course is invalid!' );
-			}
-
-			$user_course = $this->get_last_user_course();
-			if ( ! $user_course ) {
-				throw new Exception( 'User course is invalid!' );
-			}
-
 			$filter_count             = new LP_User_Items_Filter();
-			$filter_count->parent_id  = $user_course->user_item_id;
+			$filter_count->parent_id  = $this->get_user_item_id();
 			$filter_count->item_id    = $this->item_id;
 			$filter_count->user_id    = $this->user_id;
 			$filter_count->status     = LP_ITEM_COMPLETED;
@@ -471,27 +472,6 @@ class UserCourseModel extends UserItemModel {
 		}
 
 		return $count_items_completed;
-	}
-
-	/**
-	 * Get child item ids by type item
-	 *
-	 * @return object|null
-	 */
-	public function get_last_user_course() {
-		$lp_user_items_db = LP_User_Items_DB::getInstance();
-		$user_course      = null;
-
-		try {
-			$filter_user_course          = new LP_User_Items_Filter();
-			$filter_user_course->item_id = $this->item_id;
-			$filter_user_course->user_id = $this->user_id;
-			$user_course                 = $lp_user_items_db->get_last_user_course( $filter_user_course );
-		} catch ( Throwable $e ) {
-			error_log( __FUNCTION__ . ':' . $e->getMessage() );
-		}
-
-		return $user_course;
 	}
 
 	/**
@@ -561,30 +541,27 @@ class UserCourseModel extends UserItemModel {
 		);
 
 		try {
-			$quiz_final_id = get_post_meta( $this->get_course_model()->get_id(), '_lp_final_quiz', true );
+			$courseModel = $this->get_course_model();
+			if ( ! $courseModel ) {
+				return $evaluate;
+			}
+
+			$quiz_final_id = $courseModel->get_meta_value_by_key( CoursePostModel::META_KEY_FINAL_QUIZ, 0 );
 			if ( ! $quiz_final_id ) {
-				throw new Exception( '' );
+				return $evaluate;
 			}
 
-			$quiz_final = learn_press_get_quiz( $quiz_final_id );
-
-			if ( ! $quiz_final ) {
-				throw new Exception( 'Quiz final invalid' );
-			}
-
-			$user_course = $this->get_last_user_course();
-
-			if ( ! $user_course ) {
-				throw new Exception( 'User course not exists' );
+			$quizPostModel = QuizPostModel::find( $quiz_final_id, true );
+			if ( ! $quizPostModel ) {
+				return $evaluate;
 			}
 
 			$filter             = new LP_User_Items_Filter();
 			$filter->query_type = 'get_row';
-			$filter->parent_id  = $user_course->user_item_id;
+			$filter->parent_id  = $this->get_user_item_id();
 			$filter->item_type  = LP_QUIZ_CPT;
 			$filter->item_id    = $quiz_final_id;
 			$user_quiz          = $lp_user_items_db->get_user_course_items_by_item_type( $filter );
-
 			if ( ! $user_quiz ) {
 				throw new Exception();
 			}
@@ -599,7 +576,7 @@ class UserCourseModel extends UserItemModel {
 					$evaluate['result'] = $quiz_result['result'];
 				}
 
-				$passing_condition = floatval( $quiz_final->get_data( 'passing_grade', 0 ) );
+				$passing_condition = $quizPostModel->get_passing_grade();
 				if ( $evaluate['result'] >= $passing_condition ) {
 					$evaluate['pass'] = 1;
 				}
@@ -700,7 +677,7 @@ class UserCourseModel extends UserItemModel {
 	 *
 	 * @author tungnx
 	 * @since 4.1.4.1
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	protected function evaluate_course_by_question( string $evaluate_type ): array {
 		$lp_user_items_db = LP_User_Items_DB::getInstance();
@@ -710,15 +687,9 @@ class UserCourseModel extends UserItemModel {
 		);
 
 		try {
-			$user_course = $this->get_last_user_course();
-
-			if ( ! $user_course ) {
-				throw new Exception( 'User course not exists!' );
-			}
-
 			// get quiz_ids
 			$filter_get_quiz_ids            = new LP_User_Items_Filter();
-			$filter_get_quiz_ids->parent_id = $user_course->user_item_id;
+			$filter_get_quiz_ids->parent_id = $this->get_user_item_id();
 			$filter_get_quiz_ids->item_type = LP_QUIZ_CPT;
 			$lp_quizzes                     = $lp_user_items_db->get_user_course_items_by_item_type( $filter_get_quiz_ids );
 
