@@ -303,7 +303,7 @@ class Template {
 	 *
 	 * @param string $message
 	 * @param string $status 'success', 'warning', 'error, 'info'
-	 * @param bool $print_mess since 4.2.7.6
+	 * @param bool $has_print since 4.2.7.6, true for print, false for return
 	 *
 	 * @return void|string
 	 * @since 4.2.6.9.3

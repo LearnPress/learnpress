@@ -424,7 +424,7 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 				}
 			}
 
-			return apply_filters( 'learn-press/get-course-item', $item, $item_type, $item_id );
+			return $item;
 		}
 
 		/**

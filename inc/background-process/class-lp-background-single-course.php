@@ -114,6 +114,8 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 			$lp_courses_cache = new LP_Courses_Cache( true );
 			$lp_courses_cache->clear_cache_on_group( LP_Courses_Cache::KEYS_COUNT_COURSES_FREE );
 			// End
+
+			$lp_courses_cache->clear_cache_on_group( LP_Courses_Cache::KEYS_QUERY_COURSES_APP );
 		}
 
 		/**
@@ -191,12 +193,12 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 			$sale_price    = $courseObj->get_sale_price();
 			if ( (float) $regular_price < 0 ) {
 				$courseObj->meta_data->{CoursePostModel::META_KEY_REGULAR_PRICE} = '';
-				$regular_price                                                   = $courseObj->get_regular_price();
+				$regular_price = $courseObj->get_regular_price();
 			}
 
 			if ( (float) $sale_price > (float) $regular_price ) {
 				$courseObj->meta_data->{CoursePostModel::META_KEY_SALE_PRICE} = '';
-				$sale_price                                                   = $courseObj->get_sale_price();
+				$sale_price = $courseObj->get_sale_price();
 			}
 
 			// Save sale regular price and sale price to table postmeta

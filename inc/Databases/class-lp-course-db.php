@@ -6,6 +6,8 @@
  * @since 3.2.7.5
  */
 
+use LearnPress\Models\CourseModel;
+
 defined( 'ABSPATH' ) || exit();
 
 class LP_Course_DB extends LP_Database {
@@ -368,7 +370,7 @@ class LP_Course_DB extends LP_Database {
 	 * @since 4.1.4.1
 	 */
 	public function get_total_items( int $course_id = 0 ) {
-		$item_types       = learn_press_get_course_item_types();
+		$item_types       = CourseModel::item_types_support();
 		$count_item_types = count( $item_types );
 		$i                = 0;
 

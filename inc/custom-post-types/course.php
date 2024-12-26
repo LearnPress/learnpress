@@ -37,7 +37,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			add_action( 'init', array( $this, 'register_taxonomy' ) );
 			add_filter( 'posts_where_paged', array( $this, '_posts_where_paged_course_items' ), 10 );
 			add_filter( 'posts_join_paged', array( $this, '_posts_join_paged_course_items' ), 10 );
-			add_action( 'clean_post_cache', [ $this, 'clear_cache' ] );
 		}
 
 		/**
@@ -638,16 +637,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			// Set price to sort on lists.
 			$courseObj->price_to_sort = $courseObj->get_price();
 			$coursePost->save_meta_value_by_key( CoursePostModel::META_KEY_PRICE, $courseObj->price_to_sort );
-		}
-
-		/**
-		 * Clear cache courses
-		 *
-		 * @return void
-		 */
-		public function clear_cache() {
-			$lp_cache_course = new LP_Courses_Cache( true );
-			$lp_cache_course->clear_cache_on_group( LP_Courses_Cache::KEYS_QUERY_COURSES_APP );
 		}
 
 		/**

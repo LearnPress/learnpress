@@ -44,6 +44,24 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 		}
 
 		/**
+		 * Handle when save post.
+		 *
+		 * @param int $post_id
+		 * @param WP_Post|null $post
+		 * @param bool $is_update
+		 *
+		 * @return void
+		 * @since 4.2.7.6
+		 * @version 1.0.0
+		 */
+		public function save_post( int $post_id, WP_Post $post = null, bool $is_update = false ) {
+			// Clear cache
+			$lpCache = new LP_Cache();
+			$lpCache->clear( "lessonPostModel/find/{$post_id}" );
+			$lpCache->clear( "lessonModel/find/{$post_id}" );
+		}
+
+		/**
 		 * Filter items unassigned.
 		 *
 		 * @param string $where
@@ -191,7 +209,6 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 					'with_front'   => false,
 				),
 			);
-
 		}
 
 		/**

@@ -480,16 +480,24 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		}
 
 		/**
-		 * Save Post type Quiz
+		 * Handle when save post.
 		 *
-		 * @author tungnx
+		 * @param int $post_id
+		 * @param WP_Post|null $post
+		 * @param bool $is_update
+		 *
+		 * @return void
+		 * @since 4.2.7.6
 		 * @version 1.0.0
-		 * @since 4.0.0
 		 */
-		public function save( int $post_id, WP_Post $post ) {
-			$lp_quiz_cache = LP_Quiz_Cache::instance();
+		public function save_post( int $post_id, WP_Post $post = null, bool $is_update = false ) {
+			// Clear cache get quiz by id
+			$lpCache = new LP_Cache();
+			$lpCache->clear( "quizPostModel/find/{$post_id}" );
+			$lpCache->clear( "quizModel/find/{$post_id}" );
 
 			// Clear cache get question_ids of quiz
+			$lp_quiz_cache = LP_Quiz_Cache::instance();
 			$lp_quiz_cache->clear( "$post_id/question_ids" );
 		}
 	}
