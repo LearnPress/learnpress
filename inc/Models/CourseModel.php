@@ -22,6 +22,7 @@ use LP_Course_JSON_DB;
 use LP_Course_JSON_Filter;
 use LP_Datetime;
 use LP_Helper;
+use LP_Lesson;
 use LP_Settings;
 use stdClass;
 use Throwable;
@@ -152,13 +153,15 @@ class CourseModel {
 	 *
 	 * @return string
 	 * @throws Exception
+	 * @since 4.2.6.9
+	 * @version 1.0.1
 	 */
 	public function get_image_url(): string {
 		$image_url = '';
 
-		if ( ! empty( $this->image_url ) ) {
+		/*if ( ! empty( $this->image_url ) ) {
 			return $this->image_url;
-		}
+		}*/
 
 		$post      = new CoursePostModel( $this );
 		$image_url = $post->get_image_url();
@@ -503,10 +506,10 @@ class CourseModel {
 	 *
 	 * @return array
 	 * @since 4.1.6.9
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 * @author tungnx
 	 */
-	public function get_sections_and_items_course_from_db_and_sort(): array {
+	private function get_sections_and_items_course_from_db_and_sort(): array {
 		$sections_items = [];
 		$course_id      = $this->get_id();
 		$lp_course_db   = LP_Course_DB::getInstance();
@@ -1051,6 +1054,59 @@ class CourseModel {
 		}
 
 		return apply_filters( 'learn-press/user/can-purchase/course', $can_purchase, $this, $user );
+	}
+
+	/**
+	 * Get item model assigned to this course
+	 *
+	 * @return mixed|false|null
+	 * @since v4.2.7.6
+	 * @version 1.0.0
+	 */
+	public function get_item_model( int $item_id, string $item_type ) {
+		try {
+			$item = false;
+
+			$type               = str_replace( 'lp_', '', $item_type );
+			$findClassPostModel = ucfirst( $type ) . 'PostModel';
+			$findClassModel     = ucfirst( $type ) . 'Model'; // For feature, lesson, quiz, question has new table unique.
+
+			if ( class_exists( $findClassModel ) ) {
+				if ( is_callable( [ $findClassModel, 'find' ] ) ) {
+					$item = call_user_func( [ $findClassModel, 'find' ], $item_id, true );
+				}
+			} elseif ( class_exists( $findClassPostModel ) ) {
+				$item = call_user_func( [ $findClassPostModel, 'find' ], $item_id );
+			}
+
+			switch ( $item_type ) {
+				case LP_QUIZ_CPT:
+					$item = QuizPostModel::find( $item_id, true );
+					break;
+				default:
+					$class_name = apply_filters(
+						'learn-press/course/item-model',
+						$item_id,
+						$item_type
+					);
+
+					if ( class_exists( $class_name ) ) {
+						if ( is_callable( [ $class_name, 'find' ] ) ) {
+							$item = call_user_func( [ $class_name, 'find' ], $item_id, true );
+						}
+					}
+
+					break;
+			}
+
+			if ( ! $item ) {
+				$item = get_post( $item_id );
+			}
+		} catch ( Exception $e ) {
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
+		}
+
+		return $item;
 	}
 
 	/**
