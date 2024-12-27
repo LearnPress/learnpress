@@ -1301,14 +1301,14 @@ class SingleCourseTemplate {
 
 	/**
 	 * @param CourseModel $courseModel
-	 * @param UserModel|false $user
+	 * @param UserModel|false $userModel
 	 * @param $item
 	 *
 	 * @return string
 	 * @since 4.2.7.6
 	 * @version 1.0.0
 	 */
-	public function render_html_course_item( CourseModel $courseModel, $user, $item ): string {
+	public function render_html_course_item( CourseModel $courseModel, $userModel, $item ): string {
 		$html = '';
 
 		if ( ! $item instanceof stdClass ) {
@@ -1352,19 +1352,24 @@ class SingleCourseTemplate {
 
 		$user_item_status_ico_flag = 'locked';
 		$user_attended_course      = false;
-		if ( $user instanceof UserModel ) {
-			$userCourse = UserCourseModel::find( $user->get_id(), $courseModel->get_id(), true );
-			if ( $userCourse ) {
+		if ( $userModel instanceof UserModel ) {
+			$userCourseModel = UserCourseModel::find( $userModel->get_id(), $courseModel->get_id(), true );
+			if ( $userCourseModel ) {
 				$user_attended_course = true;
-				// Check status of item's course
-				$userCourseItem = $userCourse->get_item_attend( $item_id, $item_type );
-				if ( ! $userCourseItem instanceof UserItemModel ) {
-					$user_item_status_ico_flag = UserItemModel::GRADUATION_IN_PROGRESS;
+
+				if ( $userCourseModel->get_time_remaining() === 0 ) {
+					$user_item_status_ico_flag = 'expired';
 				} else {
-					$user_item_status_ico_flag = $userCourseItem->get_status();
-					$user_item_graduation      = $userCourseItem->get_graduation();
-					if ( ! empty( $user_item_graduation ) ) {
-						$user_item_status_ico_flag = $user_item_graduation;
+					// Check status of item's course
+					$userCourseItem = $userCourseModel->get_item_attend( $item_id, $item_type );
+					if ( ! $userCourseItem instanceof UserItemModel ) {
+						$user_item_status_ico_flag = UserItemModel::GRADUATION_IN_PROGRESS;
+					} else {
+						$user_item_status_ico_flag = $userCourseItem->get_status();
+						$user_item_graduation      = $userCourseItem->get_graduation();
+						if ( ! empty( $user_item_graduation ) ) {
+							$user_item_status_ico_flag = $user_item_graduation;
+						}
 					}
 				}
 			}

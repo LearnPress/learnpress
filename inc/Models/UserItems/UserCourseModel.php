@@ -394,6 +394,7 @@ class UserCourseModel extends UserItemModel {
 	 * @since 4.0.0
 	 * @author tungnx
 	 * @version 1.0.1
+	 * @depecated 4.2.7.6, instead of get_time_remaining
 	 */
 	public function timestamp_remaining_duration(): int {
 		$timestamp_remaining = - 1;
@@ -433,6 +434,58 @@ class UserCourseModel extends UserItemModel {
 		$timestamp_expire      = strtotime( $course_start_time . ' +' . $duration );
 		$timestamp_current     = time();
 		$timestamp_remaining   = $timestamp_expire - $timestamp_current;
+
+		if ( $timestamp_remaining < 0 ) {
+			$timestamp_remaining = 0;
+		}
+
+		return apply_filters( 'learnpress/course/block_duration_expire/timestamp_remaining', $timestamp_remaining );
+	}
+
+	/**
+	 * Check time remaining course when enable duration expire
+	 * Value: -1 is no limit (default)
+	 * Value: 0 is block
+	 * Administrator || (is instructor && is author course) will be not block.
+	 *
+	 * @return int second
+	 * @since 4.2.7.6
+	 * @version 1.0.0
+	 */
+	public function get_time_remaining(): int {
+		$timestamp_remaining = - 1;
+		$userModel           = $this->get_user_model();
+		$courseModel         = $this->get_course_model();
+		if ( ! $userModel || ! $courseModel ) {
+			return $timestamp_remaining;
+		}
+
+		$author = $courseModel->get_author_model();
+		if ( ! $author ) {
+			return $timestamp_remaining;
+		}
+
+		$user_id = $userModel->get_id();
+		$user_wp = new \WP_User( $userModel );
+		if ( user_can( $user_wp, ADMIN_ROLE ) ||
+			( user_can( $user_wp, LP_TEACHER_ROLE ) && $author->get_id() === $user_id ) ) {
+			return $timestamp_remaining;
+		}
+
+		if ( 0 === (int) $courseModel->get_duration() ) {
+			return $timestamp_remaining;
+		}
+
+		if ( ! $courseModel->enable_block_when_expire() ) {
+			return $timestamp_remaining;
+		}
+
+		$course_start_time   = new LP_Datetime( $this->get_start_time() );
+		$course_start_time   = $course_start_time->get_raw_date();
+		$duration            = $courseModel->get_duration();
+		$timestamp_expire    = strtotime( $course_start_time . ' +' . $duration );
+		$timestamp_current   = time();
+		$timestamp_remaining = $timestamp_expire - $timestamp_current;
 
 		if ( $timestamp_remaining < 0 ) {
 			$timestamp_remaining = 0;
