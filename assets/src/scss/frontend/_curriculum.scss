@@ -1101,3 +1101,65 @@ body.course-item-popup {
 
 	}
 }
+
+// modern
+.lp-course-curriculum {
+	ul {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	.course-curriculum-info {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 20px;
+
+		&__left {
+			display: flex;
+			align-items: center;
+			flex-wrap: wrap;
+			column-gap: 20px;
+			row-gap: 8px;
+		}
+	}
+
+	.course-curriculum {
+		.course-section {
+			margin-bottom: 8px;
+			border: 1px solid $border-color;
+			border-radius: $border-radius-global;
+			
+			&:last-child {
+				margin-bottom: 0;
+			}
+
+			.course-section-header {
+				background-color: $bg-grey;
+				padding: 20px;
+				column-gap: 20px;
+				display: flex;
+				justify-content: space-between;
+			}
+
+			&-title {
+				font-weight: bold;
+			}
+
+			.course-item {
+				background-color: transparent;
+				border-bottom: 1px solid $border-color;
+				padding: 12px 20px;
+
+				&:last-child {
+					border-bottom: none;
+				}
+
+				&-left {
+
+				}
+			}
+		}
+	}
+}
