@@ -97,24 +97,20 @@ class UserCourseModel extends UserItemModel {
 	}
 
 	/**
-	 * Get user_items is child of user course.
+	 * Get user_item is child of user course.
 	 *
 	 * @param int $item_id
 	 * @param string $item_type
-	 * @return false|UserItemModel
+	 *
+	 * @return false|UserItemModel|UserQuizModel|mixed
+	 * @since 4.2.5
+	 * @version 1.0.1
 	 */
 	public function get_item_attend( int $item_id, string $item_type = '' ) {
 		$item = false;
 
 		try {
-//			$filter            = new LP_User_Items_Filter();
-//			$filter->parent_id = $this->get_user_item_id();
-//			$filter->item_id   = $item_id;
-//			$filter->item_type = $item_type;
-//			$filter->ref_type  = $this->item_type;
-//			$filter->ref_id    = $this->item_id;
-//			$filter->user_id   = $this->user_id;
-			$item              = UserItemModel::find_user_item(
+			$item = UserItemModel::find_user_item(
 				$this->user_id,
 				$item_id,
 				$item_type,
@@ -129,13 +125,12 @@ class UserCourseModel extends UserItemModel {
 						$item = new UserQuizModel( $item );
 						break;
 					default:
+						$item = apply_filters( 'learn-press/userCourseModel/get-item-attend', $item, $this, $item_id, $item_type );
 						break;
 				}
-
-				$item = apply_filters( 'learn-press/user-course-has-item-attend', $item, $item_type, $this );
 			}
 		} catch ( Throwable $e ) {
-			error_log( $e->getMessage() );
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 
 		return $item;

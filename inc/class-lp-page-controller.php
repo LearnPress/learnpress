@@ -450,6 +450,9 @@ class LP_Page_Controller {
 				$page_template = 'single-course-layout-classic.php';
 			}
 
+			// Old single course layout.
+			//$page_template = 'single-course.php';
+
 			global $post;
 			setup_postdata( $post );
 

@@ -1233,7 +1233,7 @@ class SingleCourseTemplate {
 
 			$html = Template::combine_components( $section );
 		} catch ( Throwable $e ) {
-
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 
 		return $html;
@@ -1300,7 +1300,7 @@ class SingleCourseTemplate {
 	}
 
 	/**
-	 * @param CourseModel $course
+	 * @param CourseModel $courseModel
 	 * @param UserModel|false $user
 	 * @param $item
 	 *
@@ -1308,7 +1308,7 @@ class SingleCourseTemplate {
 	 * @since 4.2.7.6
 	 * @version 1.0.0
 	 */
-	public function render_html_course_item( CourseModel $course, $user, $item ): string {
+	public function render_html_course_item( CourseModel $courseModel, $user, $item ): string {
 		$html = '';
 
 		if ( ! $item instanceof stdClass ) {
@@ -1322,12 +1322,12 @@ class SingleCourseTemplate {
 		$has_preview = $item->preview ?? '';
 
 		//LP_Course_Item::get_item( $item_id, $course->get_id() );
-		$itemModel = $course->get_item_model( $item_id, $item_type );
+		$itemModel = $courseModel->get_item_model( $item_id, $item_type );
 		if ( empty( $itemModel ) ) {
 			return $html;
 		}
 
-		$link_item = $course->get_item_link( $item_id );
+		$link_item = $courseModel->get_item_link( $item_id );
 
 		$item_duration      = '';
 		$html_item_duration = '';
@@ -1350,79 +1350,38 @@ class SingleCourseTemplate {
 			$item_duration_plural
 		);
 
-		$user_item_flag = '';
+		$user_item_status_ico_flag = 'locked';
+		$user_attended_course      = false;
 		if ( $user instanceof UserModel ) {
-			$userCourse = UserCourseModel::find( $user->get_id(), $course->get_id(), true );
+			$userCourse = UserCourseModel::find( $user->get_id(), $courseModel->get_id(), true );
 			if ( $userCourse ) {
+				$user_attended_course = true;
 				// Check status of item's course
-				$userCourseItem = $userCourse->get_item_attend( $item_id );
+				$userCourseItem = $userCourse->get_item_attend( $item_id, $item_type );
 				if ( ! $userCourseItem instanceof UserItemModel ) {
-					$user_item_flag = UserItemModel::STATUS_IN_PROGRESS;
+					$user_item_status_ico_flag = UserItemModel::GRADUATION_IN_PROGRESS;
 				} else {
-					$user_item_flag       = $userCourseItem->get_status();
-					$user_item_graduation = $userCourseItem->get_graduation();
+					$user_item_status_ico_flag = $userCourseItem->get_status();
+					$user_item_graduation      = $userCourseItem->get_graduation();
 					if ( ! empty( $user_item_graduation ) ) {
-						$user_item_flag = $user_item_graduation;
+						$user_item_status_ico_flag = $user_item_graduation;
 					}
 				}
 			}
 		}
 
-		if ( empty( $user_item_flag ) ) {
-			$html_item_status = sprintf(
-				'<span class="course-item-ico status-locked">%s</span>',
-				esc_html__( 'Locked', 'learnpress' )
-			);
-			if ( $has_preview ) {
-				$html_item_status = sprintf(
-					'<span class="course-item-ico status-preview">%s</span>',
-					esc_html__( 'Preview', 'learnpress' )
-				);
-			}
-		} else {
-			switch ( $user_item_flag ) {
-				case UserItemModel::GRADUATION_PASSED:
-					$html_item_status = sprintf(
-						'<span class="course-item-ico graduation-passed">%s</span>',
-						esc_html__( 'Passed', 'learnpress' )
-					);
-					break;
-				case UserItemModel::GRADUATION_FAILED:
-					$html_item_status = sprintf(
-						'<span class="course-item-ico graduation-failed">%s</span>',
-						esc_html__( 'Failed', 'learnpress' )
-					);
-					break;
-				case UserItemModel::STATUS_COMPLETED:
-					$html_item_status = sprintf(
-						'<span class="course-item-ico status-completed">%s</span>',
-						esc_html__( 'Completed', 'learnpress' )
-					);
-					break;
-				case 'started':
-					$html_item_status = sprintf(
-						'<span class="course-item-ico status-started">%s</span>',
-						esc_html__( 'Started', 'learnpress' )
-					);
-					break;
-				case 'locked':
-				default:
-					$html_item_status = sprintf(
-						'<span class="course-item-ico status-locked">%s</span>',
-						esc_html__( 'Locked', 'learnpress' )
-					);
-					break;
-			}
-
-			$html_item_status = apply_filters(
-				'learn-press/course/html-curriculum-item/status',
-				$html_item_status,
-				$user_item_flag,
-				$user,
-				$course,
-				$itemModel
-			);
+		if ( $has_preview && ! $user_attended_course ) {
+			$user_item_status_ico_flag = 'preview';
 		}
+
+		if ( $courseModel->has_no_enroll_requirement() ) {
+			$user_item_status_ico_flag = UserItemModel::GRADUATION_IN_PROGRESS;
+		}
+
+		$html_item_status = sprintf(
+			'<span class="course-item-ico %1$s">%1$s</span>',
+			$user_item_status_ico_flag
+		);
 
 		$section_item = [
 			'start'          => sprintf(
