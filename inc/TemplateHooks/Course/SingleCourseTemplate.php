@@ -1219,7 +1219,7 @@ class SingleCourseTemplate {
 				'curriculum_info_right'     => '<div class="course-curriculum-info-right">',
 				'expand_all'                => sprintf(
 					'<span class="course-curriculum-expand-all">%s</span>',
-					esc_html__( 'Expand all', 'learnpress' )
+					esc_html__( 'Expand all sections', 'learnpress' )
 				),
 				'curriculum_info_right_end' => '</div>',
 				'curriculum_info_end'       => '</div>',
