@@ -358,7 +358,7 @@ class SingleCourseModernLayout {
 		$social_media = apply_filters(
 			'learn-press/single-course/social-share',
 			[
-				'wrapper'     => '<ul class="thim-social-media">',
+				'wrapper'     => '<ul class="lp-social-media">',
 				'content'     => $html_social,
 				'wrapper_end' => '</ul>',
 			]
@@ -369,9 +369,9 @@ class SingleCourseModernLayout {
 			'input'       => sprintf( '<input class="clipboard-value" type="text" value="%s">', get_permalink() ),
 			'button'      => sprintf(
 				'<button class="btn-clipboard" data-copied="%s">%s<span class="tooltip">%s</span></button>',
-				esc_html__( 'Copied!', 'thim-elementor-kit' ),
-				esc_html__( 'Copy', 'thim-elementor-kit' ),
-				esc_html__( 'Copy to Clipboard', 'thim-elementor-kit' )
+				esc_html__( 'Copied!', 'learnpress' ),
+				esc_html__( 'Copy', 'learnpress' ),
+				esc_html__( 'Copy to Clipboard', 'learnpress' )
 			),
 			'wrapper_end' => '</div>',
 		];
