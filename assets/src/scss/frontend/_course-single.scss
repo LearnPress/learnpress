@@ -345,6 +345,46 @@
 			.course-material__title {
 				margin: 0 0 20px 0;
 			}
+
+			.course-features,
+			.course-target,
+			.course-requirements {
+				ul {
+					margin: 0 0 0 20px;
+				}
+			}
+
+			.instructor-social {
+				display: inline-flex;
+				padding: 0;
+				gap: 12px;
+				margin: 16px 0 0 0;
+	
+				> a {
+					text-align: center;
+					list-style: none;
+					
+					span {
+						display: none;
+					}
+
+					i {
+						width: 40px;
+						height: 40px;
+						display: inline-flex;
+						align-items: center;
+						justify-content: center;
+						border: 1px solid $border-color;
+						border-radius: 50%;
+
+						&:hover {
+							background-color: $color-primary;
+							border-color: $color-primary;
+							color: $color-white;
+						}
+					}
+				}
+			}
 		}
 
 		&__right {
@@ -459,96 +499,96 @@
 					padding: 20px;
 					background: #fff;
 					box-shadow: 0 1px 16px 0 rgba(0, 0, 0, 0.12);
-			
-					.thim-social-media {
-						display: inline-flex;
-						padding: 0;
-						gap: 12px;
-			
-						> li {
-							text-align: center;
-							list-style: none;
-							
-							span {
-								display: none;
-							}
+				}
 
-							i {
-								width: 40px;
-								height: 40px;
-								display: inline-flex;
-								align-items: center;
-								justify-content: center;
-								border: 1px solid $border-color;
-								border-radius: 50%;
-
-								&:hover {
-									background-color: $color-primary;
-									border-color: $color-primary;
-									color: $color-white;
-								}
-							}
-						}
-					}
-
-					.clipboard-post {
-						display: flex;
-						justify-content: space-between;
-						margin-bottom: 20px;
-						gap: 12px;
-
-						@media (max-width: 600px) {
-							flex-wrap: wrap;
-						}
-					}
-			
-					.btn-clipboard {
-						position: relative;
-			
-						.tooltip {
+				.lp-social-media {
+					display: inline-flex;
+					padding: 0;
+					gap: 12px;
+		
+					> li {
+						text-align: center;
+						list-style: none;
+						
+						span {
 							display: none;
+						}
+
+						i {
+							width: 40px;
+							height: 40px;
+							display: inline-flex;
+							align-items: center;
+							justify-content: center;
+							border: 1px solid $border-color;
+							border-radius: 50%;
+
+							&:hover {
+								background-color: $color-primary;
+								border-color: $color-primary;
+								color: $color-white;
+							}
+						}
+					}
+				}
+
+				.clipboard-post {
+					display: flex;
+					justify-content: space-between;
+					margin-bottom: 20px;
+					gap: 12px;
+
+					@media (max-width: 600px) {
+						flex-wrap: wrap;
+					}
+				}
+		
+				.btn-clipboard {
+					position: relative;
+		
+					.tooltip {
+						display: none;
+						position: absolute;
+						z-index: 2;
+						left: 50%;
+						right: auto;
+						bottom: 100%;
+						transform: translateX(-50%);
+						width: max-content;
+						color: #fff;
+						font-size: 0.825em;
+						padding: 5px 10px;
+						background: rgba(0, 0, 0, 0.72);
+						border-radius: 3px;
+						margin-bottom: 10px;
+		
+						&:before {
+							content: "";
 							position: absolute;
 							z-index: 2;
 							left: 50%;
-							right: auto;
-							bottom: 100%;
-							transform: translateX(-50%);
-							width: max-content;
-							color: #fff;
-							font-size: 0.825em;
-							padding: 5px 10px;
-							background: rgba(0, 0, 0, 0.72);
-							border-radius: 3px;
-							margin-bottom: 10px;
-			
-							&:before {
-								content: "";
-								position: absolute;
-								z-index: 2;
-								left: 50%;
-								bottom: -5px;
-								margin-left: -3px;
-								border-left: 5px solid transparent;
-								border-right: 5px solid transparent;
-								border-top: 5px solid rgba(0, 0, 0, 0.72);
-							}
-						}
-			
-						&:hover {
-							background-color: #eee;
-			
-							.tooltip {
-								display: block;
-							}
+							bottom: -5px;
+							margin-left: -3px;
+							border-left: 5px solid transparent;
+							border-right: 5px solid transparent;
+							border-top: 5px solid rgba(0, 0, 0, 0.72);
 						}
 					}
-			
-					.clipboard-value {
-						border: 1px solid $border-color;
-
-						@media (max-width: 600px) {
-							width: 100%;
+		
+					&:hover {
+						background-color: #eee;
+		
+						.tooltip {
+							display: block;
 						}
+					}
+				}
+		
+				.clipboard-value {
+					border: 1px solid $border-color;
+
+					@media (max-width: 600px) {
+						width: 100%;
 					}
 				}
 			
