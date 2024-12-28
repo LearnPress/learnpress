@@ -509,6 +509,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 		/**
 		 * Main instance of LearnPress.
+		 * Must load on "init" hook of WordPress.
 		 * 1. Load text domain.
 		 * 2. Handle lp ajax.
 		 *

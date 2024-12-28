@@ -90,7 +90,8 @@ class LP_Addon {
 		$this->_define_constants();
 		$this->_includes();
 		remove_action( 'plugins_loaded', array( 'LP_Addon_Announcements', 'instance' ) );
-		add_action( 'init', array( $this, 'init' ) );
+		//add_action( 'init', array( $this, 'init' ) );
+		$this->init();
 	}
 
 	/**
