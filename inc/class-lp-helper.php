@@ -585,7 +585,7 @@ class LP_Helper {
 	public static function json_decode( string $str, $associative = null ) {
 		$obj = json_decode( $str, $associative );
 		if ( json_last_error() !== JSON_ERROR_NONE ) {
-			throw new Exception( json_last_error_msg() );
+			throw new Exception( 'JSON decode: ' . json_last_error_msg() );
 		}
 
 		return $obj;

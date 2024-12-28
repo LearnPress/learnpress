@@ -465,12 +465,12 @@ class UserCourseModel extends UserItemModel {
 			return $timestamp_remaining;
 		}
 
-		$user_id = $userModel->get_id();
+		/*$user_id = $userModel->get_id();
 		$user_wp = new \WP_User( $userModel );
 		if ( user_can( $user_wp, ADMIN_ROLE ) ||
 			( user_can( $user_wp, LP_TEACHER_ROLE ) && $author->get_id() === $user_id ) ) {
 			return $timestamp_remaining;
-		}
+		}*/
 
 		if ( 0 === (int) $courseModel->get_duration() ) {
 			return $timestamp_remaining;

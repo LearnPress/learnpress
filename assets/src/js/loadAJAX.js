@@ -89,6 +89,26 @@ const lpAJAX = ( () => {
 					};
 
 					window.lpAJAXG.fetchAPI( url, dataSend, callBack );
+
+					// Test
+					const urlAjax = lpData.lpAjaxUrl;
+					const formData = new FormData();
+					//formData.append( 'action', 'lp_load_content_via_ajax' );
+					formData.append( 'nonce', lpData.nonce );
+					formData.append( 'lp-load-ajax', 'load_content_via_ajax' );
+					formData.append( 'data', JSON.stringify( dataObj ) );
+					const dataSendX = {
+						method: 'POST',
+						headers: {},
+						body: formData,
+					};
+
+					if ( 0 !== parseInt( lpData.user_id ) ) {
+						dataSendX.headers[ 'X-WP-Nonce' ] = lpSettings.nonce;
+					}
+
+					lpFetchAPI( urlAjax, dataSendX, callBack );
+					// End test.
 				} );
 			}
 		},
