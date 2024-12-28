@@ -19,7 +19,7 @@ return apply_filters(
 		array(
 			'title'   => __( 'Enable', 'learnpress' ),
 			'id'      => '[enable]',
-			'default' => 'no',
+			'default' => 'yes',
 			'type'    => 'checkbox',
 		),
 		array(
