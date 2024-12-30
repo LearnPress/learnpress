@@ -6,7 +6,7 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  4.0.1
+ * @version  4.0.2
  */
 
 defined( 'ABSPATH' ) || exit();
@@ -34,11 +34,11 @@ $icon = $gateway->get_icon();
 	<?php
 	$payment_form = $gateway->get_payment_form();
 	$style        = $gateway->is_selected ? 'display: block' : 'display: none';
-	if ( $payment_form ) :
+	if ( ! empty( $payment_form ) ) :
 		?>
 		<div class="payment-method-form payment_method_<?php echo esc_attr( $gateway->id ); ?>"
 			style="<?php echo esc_attr( $style ); ?>">
-			<?php learn_press_echo_vuejs_write_on_php( $payment_form ); ?>
+			<?php echo $payment_form; ?>
 		</div>
 	<?php endif; ?>
 </li>

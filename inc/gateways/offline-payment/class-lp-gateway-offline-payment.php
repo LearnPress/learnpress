@@ -88,7 +88,7 @@ if ( ! function_exists( 'LP_Gateway_Offline_Payment' ) ) {
 		 * Payment form.
 		 */
 		public function get_payment_form() {
-			return esc_html( LP_Settings::instance()->get( $this->id . '.description', $this->description ) );
+			return wp_kses_post( LP_Settings::instance()->get( $this->id . '.description', $this->description ) );
 		}
 
 		/**
