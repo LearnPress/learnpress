@@ -8,7 +8,6 @@
 
 namespace LearnPress\Ajax;
 
-use Elementor\Thim_Ekit_Widget_Archive_Course;
 use Exception;
 use LP_Helper;
 use LP_REST_Response;

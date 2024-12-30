@@ -208,7 +208,7 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 					'hierarchical' => true,
 					'with_front'   => false,
 				),
-				'exclude_from_search' => false,
+				'exclude_from_search' => true,
 			);
 		}
 

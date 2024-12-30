@@ -41,6 +41,32 @@ class LP_Page_Controller {
 		} else {
 			//add_filter( 'post_type_archive_link', [ $this, 'link_archive_course' ], 10, 2 );
 			add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ), - 1 );
+			// For debug mysql query post of WP.
+			/*add_filter(
+				'posts_request',
+				function ( $request, $q ) {
+					LP_Debug::var_dump( $request );
+					return $request;
+				},
+				10,
+				2
+			);*/
+			/*add_filter(
+				'posts_clauses_request',
+				function ( $clauses, $wp_query ) {
+					if ( ! $wp_query->is_search() ) {
+						return $clauses;
+					}
+
+					$lp_db             = LP_Database::getInstance();
+					$clauses['where'] .= sprintf( " OR ( post_type = '%s' AND meta_key = '_lp_preview' AND meta_value = 'yes')", LP_LESSON_CPT );
+					$clauses['join']  .= ' INNER JOIN ' . $lp_db->tb_postmeta . ' ON post_id = wp_posts.ID ';
+
+					return $clauses;
+				},
+				10,
+				2
+			);*/
 			// For return result query course to cache.
 			//add_action( 'posts_pre_query', [ $this, 'posts_pre_query' ], 10, 2 );
 			add_filter( 'template_include', array( $this, 'template_loader' ), 10 );
@@ -758,19 +784,6 @@ class LP_Page_Controller {
 
 			// Exclude item not assign
 			if ( $q->is_search() ) {
-				// Exclude item not assign any course
-				$course_item_types = learn_press_get_course_item_types();
-				$list_ids_exclude  = array();
-
-				foreach ( $course_item_types as $item_type ) {
-					$filter            = new LP_Post_Type_Filter();
-					$filter->post_type = $item_type;
-					$exclude_item      = LP_Course_DB::getInstance()->get_item_ids_unassigned( $filter );
-					$exclude_item      = LP_Course_DB::get_values_by_key( $exclude_item );
-
-					$list_ids_exclude = array_merge( $list_ids_exclude, $exclude_item );
-				}
-
 				return $q;
 			}
 
