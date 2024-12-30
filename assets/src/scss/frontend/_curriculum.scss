@@ -1113,52 +1113,162 @@ body.course-item-popup {
 	.course-curriculum-info {
 		display: flex;
 		justify-content: space-between;
-		align-items: center;
+		gap: 20px;
 		margin-bottom: 20px;
 
 		&__left {
 			display: flex;
 			align-items: center;
 			flex-wrap: wrap;
-			column-gap: 20px;
-			row-gap: 8px;
+			gap: 8px;
+
+			li {
+				display: inline-flex;
+				align-items: center;
+				gap: 8px;
+
+				&::after {
+					content: '';
+					width: 4px;
+					height: 4px;
+					background-color: $border-color;
+					display: inline-block;
+				}
+
+				&:last-child {
+					&::after {
+						content: none;
+					}
+				}
+			}
+		}
+
+		&__right {
+			font-weight: bold;
+			text-align: right;
+			text-transform: capitalize;
 		}
 	}
 
-	.course-curriculum {
-		.course-section {
-			margin-bottom: 8px;
-			border: 1px solid $border-color;
-			border-radius: $border-radius-global;
-			
+	.course-section {
+		margin-bottom: 8px;
+		border: 1px solid $border-color;
+		border-radius: $border-radius-global;
+		
+		&:last-child {
+			margin-bottom: 0;
+		}
+
+		.course-section-header {
+			background-color: $bg-grey;
+			padding: 20px;
+			column-gap: 20px;
+			display: flex;
+			justify-content: space-between;
+		}
+
+		&__title {
+			font-weight: bold;
+			font-size: $font-size-large;
+			margin: 0 0 8px 0;
+		}
+
+		.section-toggle {
+			display: flex;
+			justify-content: center;
+		}
+
+		.course-item {
+			background-color: transparent;
+			border-bottom: 1px solid $border-color;
+			padding: 12px 20px;
+
 			&:last-child {
-				margin-bottom: 0;
+				border-bottom: none;
 			}
 
-			.course-section-header {
-				background-color: $bg-grey;
-				padding: 20px;
-				column-gap: 20px;
+			&__link {
 				display: flex;
 				justify-content: space-between;
+				width: 100%;
+				column-gap: 20px;
+				row-gap: 8;
+				flex-wrap: wrap;
 			}
 
-			&-title {
-				font-weight: bold;
+			&__left {
+				display: flex;
+				column-gap: 16px;
+				row-gap: 8px;
+				align-items: center;
+
+				&:hover {
+					color: $color-primary;
+				}
 			}
 
-			.course-item {
-				background-color: transparent;
-				border-bottom: 1px solid $border-color;
-				padding: 12px 20px;
+			&__right {
+				display: flex;
+				column-gap: 12px;
+				row-gap: 8px;
+				align-items: center;
+			}
+		}
 
-				&:last-child {
-					border-bottom: none;
-				}
+		.course-item-ico {
+			&::before {
+				content: '';
+				display: inline-block;
+				font-family: "lp-icon";
+				font-weight: normal;
+				font-size: $font-size-large;
+			}
 
-				&-left {
+			&.lp_lesson::before {
+				content: "\f15b";
+			}
 
-				}
+			&.lp_quiz::before {
+				content: "\f12e";
+			}
+
+			&.lp_assignment::before {
+				content: "\e929";
+			} 
+
+			&.preview::before {
+				content: "\f06e";
+				color: $input-color-placeholder;
+			}
+
+			&.locked::before {
+				content: "\f023";
+				color: $input-color-placeholder;
+			}
+
+			&.passed::before {
+				content: "\f00c";
+				color: #3bb54a;
+			}
+
+			&.in-progress::before {
+				content: "\f00c";
+				color: $input-color-placeholder;
+			}
+
+			&.failed::before {
+				content: "\f00d";
+				color: #f02425;
+			} 
+
+			&.started::before {
+				content: "\f00c";
+				color: $input-color-placeholder;
+			}
+
+			&.doing::before {
+				content: "\e921";
+				color: $input-color-placeholder;
 			}
 		}
 	}
