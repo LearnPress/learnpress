@@ -81,7 +81,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 			$args = apply_filters(
 				'lp_quiz_post_type_args',
 				array(
-					'labels'             => array(
+					'labels'              => array(
 						'name'               => esc_html__( 'Quizzes', 'learnpress' ),
 						'menu_name'          => esc_html__( 'Quizzes', 'learnpress' ),
 						'singular_name'      => esc_html__( 'Quiz', 'learnpress' ),
@@ -95,27 +95,28 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 						'not_found'          => sprintf( __( 'You haven\'t had any quizzes yet. Click <a href="%s">Add new</a> to start', 'learnpress' ), admin_url( 'post-new.php?post_type=lp_quiz' ) ),
 						'not_found_in_trash' => esc_html__( 'There was no quiz found in the trash', 'learnpress' ),
 					),
-					'public'             => true,
-					'publicly_queryable' => true,
-					'show_ui'            => true,
-					'has_archive'        => false,
-					'capability_type'    => LP_LESSON_CPT,
-					'map_meta_cap'       => true,
-					'show_in_menu'       => 'learn_press',
-					'show_in_rest'       => true,
-					'show_in_admin_bar'  => true,
-					'show_in_nav_menus'  => true,
-					'supports'           => array(
+					'public'              => true,
+					'publicly_queryable'  => true,
+					'show_ui'             => true,
+					'has_archive'         => false,
+					'capability_type'     => LP_LESSON_CPT,
+					'map_meta_cap'        => true,
+					'show_in_menu'        => 'learn_press',
+					'show_in_rest'        => true,
+					'show_in_admin_bar'   => true,
+					'show_in_nav_menus'   => true,
+					'supports'            => array(
 						'title',
 						'editor',
 						'revisions',
 					),
-					'hierarchical'       => true,
-					'rewrite'            => array(
+					'hierarchical'        => true,
+					'rewrite'             => array(
 						'slug'         => 'quizzes',
 						'hierarchical' => true,
 						'with_front'   => false,
 					),
+					'exclude_from_search' => true,
 				)
 			);
 

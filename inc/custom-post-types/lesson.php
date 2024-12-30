@@ -170,7 +170,7 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 		public function args_register_post_type(): array {
 
 			return array(
-				'labels'             => array(
+				'labels'              => array(
 					'name'               => esc_html__( 'Lessons', 'learnpress' ),
 					'menu_name'          => esc_html__( 'Lessons', 'learnpress' ),
 					'singular_name'      => esc_html__( 'Lesson', 'learnpress' ),
@@ -184,30 +184,31 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 					'not_found'          => esc_html__( 'No lesson found', 'learnpress' ),
 					'not_found_in_trash' => esc_html__( 'There was no lesson found in the trash', 'learnpress' ),
 				),
-				'public'             => true,
-				'query_var'          => true,
-				'taxonomies'         => array( 'lesson_tag' ),
-				'publicly_queryable' => true,
-				'show_ui'            => true,
-				'has_archive'        => false,
-				'capability_type'    => LP_LESSON_CPT,
-				'map_meta_cap'       => true,
-				'show_in_menu'       => 'learn_press',
-				'show_in_admin_bar'  => true,
-				'show_in_nav_menus'  => true,
-				'show_in_rest'       => learn_press_user_maybe_is_a_teacher(),
-				'supports'           => array(
+				'public'              => true,
+				'query_var'           => true,
+				'taxonomies'          => array( 'lesson_tag' ),
+				'publicly_queryable'  => true,
+				'show_ui'             => true,
+				'has_archive'         => false,
+				'capability_type'     => LP_LESSON_CPT,
+				'map_meta_cap'        => true,
+				'show_in_menu'        => 'learn_press',
+				'show_in_admin_bar'   => true,
+				'show_in_nav_menus'   => true,
+				'show_in_rest'        => learn_press_user_maybe_is_a_teacher(),
+				'supports'            => array(
 					'title',
 					'editor',
 					'revisions',
 					'comments',
 				),
-				'hierarchical'       => true,
-				'rewrite'            => array(
+				'hierarchical'        => true,
+				'rewrite'             => array(
 					'slug'         => 'lessons',
 					'hierarchical' => true,
 					'with_front'   => false,
 				),
+				'exclude_from_search' => false,
 			);
 		}
 
@@ -302,15 +303,6 @@ if ( ! class_exists( 'LP_Lesson_Post_Type' ) ) {
 			$columns['author']        = 'author';
 
 			return $columns;
-		}
-
-		/**
-		 * Add admin params.
-		 *
-		 * @return array
-		 */
-		public function admin_params() {
-			return array( 'notice_empty_lesson' => '' );
 		}
 
 		/**
