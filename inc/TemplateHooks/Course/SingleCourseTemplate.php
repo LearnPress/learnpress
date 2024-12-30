@@ -1370,6 +1370,10 @@ class SingleCourseTemplate {
 						if ( ! empty( $user_item_graduation ) ) {
 							$user_item_status_ico_flag = $user_item_graduation;
 						}
+
+						if ( empty( $user_item_status_ico_flag ) ) {
+							$user_item_status_ico_flag = UserItemModel::GRADUATION_IN_PROGRESS;
+						}
 					}
 				}
 			}
