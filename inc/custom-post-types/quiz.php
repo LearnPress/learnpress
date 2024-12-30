@@ -7,6 +7,8 @@
  * @version 4.0.0
  */
 
+use LearnPress\Models\QuizPostModel;
+
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
@@ -264,7 +266,10 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 * @param int    $post_id
 		 */
 		public function columns_content( $name, $post_id = 0 ) {
-			global $post;
+			$quizPostModel = QuizPostModel::find( $post_id, true );
+			if ( ! $quizPostModel ) {
+				return;
+			}
 
 			switch ( $name ) {
 				case 'instructor':
@@ -274,48 +279,27 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 					$this->_get_item_course( $post_id );
 					break;
 				case 'num_of_question':
-					if ( property_exists( $post, 'question_count' ) ) {
-						$count = $post->question_count;
-					} else {
-						$quiz  = LP_Quiz::get_quiz( $post_id );
-						$count = $quiz->count_questions();
-					}
+					$count = $quizPostModel->count_questions();
 
 					printf(
-						'<span class="lp-label-counter' . ( ! $count ? ' disabled' : '' ) . '" title="%s">%s</span>',
-						( $count ) ? sprintf( _n( '%d question', '%d questions', $count, 'learnpress' ), $count ) : __( 'This quiz has no questions', 'learnpress' ),
+						'<span class="lp-label-counter %s" title="%s">%s</span>',
+						! $count ? 'disabled' : '',
+						$count ?
+							sprintf( _n( '%d question', '%d questions', $count, 'learnpress' ), $count ) :
+							__( 'This quiz has no questions', 'learnpress' ),
 						$count
 					);
 					break;
 				case 'duration':
-					$duration_str = get_post_meta( $post_id, '_lp_duration', true );
-					$duration     = (int) $duration_str;
+					$duration_str  = $quizPostModel->get_duration();
+					$duration_arr  = explode( ' ', $duration_str );
+					$duration      = $duration_arr[0];
+					$duration_type = $duration_arr[1];
 
 					if ( $duration > 0 ) {
-						$duration_str    .= 's';
-						$duration_str_arr = explode( ' ', $duration_str );
-						$type_time        = '';
-
-						if ( is_array( $duration_str_arr ) && ! empty( $duration_str_arr ) && count( $duration_str_arr ) >= 2 ) {
-							switch ( $duration_str_arr[1] ) {
-								case 'hours':
-									$type_time = __( 'hours', 'learnpress' );
-									break;
-								case 'minutes':
-									$type_time = __( 'minutes', 'learnpress' );
-									break;
-								case 'days':
-									$type_time = __( 'days', 'learnpress' );
-									break;
-								case 'weeks':
-									$type_time = __( 'weeks', 'learnpress' );
-									break;
-							}
-
-							$duration_str = sprintf( '%1$s %2$s', $duration_str_arr[0], $type_time );
-						}
+						$duration_str = LP_Datetime::get_string_plural_duration( $duration, $duration_type );
 					} else {
-						$duration_str = '--';
+						$duration_str = __( 'Unlimited', 'learnpress' );
 					}
 
 					echo esc_html( $duration_str );

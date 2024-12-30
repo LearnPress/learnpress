@@ -407,12 +407,8 @@ abstract class LP_Abstract_Post_Type {
 	}
 
 	public function column_instructor( $post_id = 0 ) {
-		global $post;
-
-		$user_id = get_the_author_meta( 'ID' );
-		if ( ! $user_id ) {
-			return;
-		}
+		$post    = get_post( $post_id );
+		$user_id = $post->post_author;
 
 		$user = UserModel::find( $user_id, true );
 		if ( ! $user ) {
