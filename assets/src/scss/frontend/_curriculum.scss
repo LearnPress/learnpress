@@ -1212,6 +1212,12 @@ body.course-item-popup {
 				column-gap: 12px;
 				row-gap: 8px;
 				align-items: center;
+
+				.course-item-ico {
+					width: 24px;
+					display: flex;
+					justify-content: center;
+				}
 			}
 		}
 
