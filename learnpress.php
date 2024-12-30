@@ -14,7 +14,7 @@
  * @package LearnPress
  */
 
-use LearnPress\Ajax\AjaxBase;
+use LearnPress\Ajax\LoadContentViaAjax;
 use LearnPress\ExternalPlugin\Elementor\LPElementor;
 use LearnPress\ExternalPlugin\YoastSeo\LPYoastSeo;
 use LearnPress\Models\UserModel;
@@ -137,6 +137,14 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 				// Must handle in hook init of WordPress, when loaded plugins, theme, user.
 				add_action( 'init', [ $this, 'lp_main_handle' ], - 1000 );
+
+				add_action(
+					'init',
+					function () {
+						// Handle lp ajax.
+						LoadContentViaAjax::catch_lp_ajax();
+					}
+				);
 
 				// hooks .
 				$this->init_hooks();
@@ -520,8 +528,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		public function lp_main_handle() {
 			// Load text domain.
 			$this->load_plugin_text_domain();
-			// Handle lp ajax.
-			AjaxBase::instance();
 
 			// Polylang
 			if ( defined( 'POLYLANG_VERSION' ) ) {
