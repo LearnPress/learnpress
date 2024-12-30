@@ -1195,6 +1195,7 @@ class SingleCourseTemplate {
 
 			$section = [
 				'wrapper'                   => '<div class="lp-course-curriculum">',
+				'title'						=>  sprintf( '<h3 class="lp-course-curriculum__title">%s</h3>', esc_html__( 'Curriculum', 'learnpress' ) ),
 				'curriculum_info'           => '<div class="course-curriculum-info">',
 				'curriculum_info_left'      => '<ul class="course-curriculum-info__left">',
 				'count_sections'            => sprintf(
