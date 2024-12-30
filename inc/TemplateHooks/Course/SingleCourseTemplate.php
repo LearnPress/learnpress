@@ -1347,7 +1347,7 @@ class SingleCourseTemplate {
 			$item_duration_plural = LP_Datetime::get_string_plural_duration( $duration_number, $duration_type );
 		}
 		$html_item_duration = sprintf(
-			'<span class="course-item-ico duration">%s</span>',
+			'<span class="duration">%s</span>',
 			$item_duration_plural
 		);
 
