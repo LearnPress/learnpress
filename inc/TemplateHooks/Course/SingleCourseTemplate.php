@@ -1195,8 +1195,9 @@ class SingleCourseTemplate {
 
 			$section = [
 				'wrapper'                   => '<div class="lp-course-curriculum">',
-				'curriculum_info'           => '<div class="course-curriculum-info-wrapper">',
-				'curriculum_info_left'      => '<ul class="course-curriculum-info">',
+				'title'						=>  sprintf( '<h3 class="lp-course-curriculum__title">%s</h3>', esc_html__( 'Curriculum', 'learnpress' ) ),
+				'curriculum_info'           => '<div class="course-curriculum-info">',
+				'curriculum_info_left'      => '<ul class="course-curriculum-info__left">',
 				'count_sections'            => sprintf(
 					'<li class="course-count-section">%s</li>',
 					sprintf(
@@ -1205,7 +1206,7 @@ class SingleCourseTemplate {
 					)
 				),
 				'count_lesson'              => sprintf(
-					'<li class="course-count-section">%s</li>',
+					'<li class="course-count-lesson">%s</li>',
 					sprintf(
 						_n( '%d Lesson', '%d Lessons', $course->count_items( LP_LESSON_CPT ), 'learnpress' ),
 						$course->get_total_sections()
@@ -1216,7 +1217,7 @@ class SingleCourseTemplate {
 					$this->html_duration( $course )
 				),
 				'curriculum_info_left_end'  => '</ul>',
-				'curriculum_info_right'     => '<div class="course-curriculum-info-right">',
+				'curriculum_info_right'     => '<div class="course-curriculum-info__right">',
 				'expand_all'                => sprintf(
 					'<span class="course-curriculum-expand-all">%s</span>',
 					esc_html__( 'Expand all sections', 'learnpress' )
@@ -1263,12 +1264,12 @@ class SingleCourseTemplate {
 		$section_header = [
 			'start'       => '<div class="course-section-header">',
 			'info'        => '<div class="course-section-info">',
-			'title'       => sprintf( '<div class="course-section-title">%s</div>', wp_kses_post( $section_name ) ),
-			'description' => sprintf( '<div class="course-section-description">%s</div>', wp_kses_post( $section_description ) ),
+			'title'       => sprintf( '<div class="course-section__title">%s</div>', wp_kses_post( $section_name ) ),
+			'description' => sprintf( '<div class="course-section__description">%s</div>', wp_kses_post( $section_description ) ),
 			'info_end'    => '</div>',
 			'toggle'      => '<span class="section-toggle">
-				<i class="lp-icon-caret-down"></i>
-				<i class="lp-icon-caret-up"></i>
+				<i class="lp-icon-angle-down"></i>
+				<i class="lp-icon-angle-up"></i>
 			</span>',
 			'end'         => '</div>',
 		];
@@ -1278,7 +1279,7 @@ class SingleCourseTemplate {
 			$li_items .= $this->render_html_course_item( $course, $user, $item );
 		}
 		$section_items = [
-			'start'    => '<ul class="course-section-items">',
+			'start'    => '<ul class="course-section__items">',
 			'li_items' => $li_items,
 			'end'      => '</ul>',
 		];
@@ -1341,7 +1342,7 @@ class SingleCourseTemplate {
 		$duration_number = floatval( $duration_arr[0] ?? 0 );
 		$duration_type   = $duration_arr[1] ?? '';
 
-		$item_duration_plural = esc_html__( 'Unlimited', 'learnpress' );
+		$item_duration_plural = '';
 		if ( $duration_number > 0 ) {
 			$item_duration_plural = LP_Datetime::get_string_plural_duration( $duration_number, $duration_type );
 		}
@@ -1388,7 +1389,7 @@ class SingleCourseTemplate {
 		}
 
 		$html_item_status = sprintf(
-			'<span class="course-item-ico %1$s">%1$s</span>',
+			'<span class="course-item-ico %1$s"></span>',
 			$user_item_status_ico_flag
 		);
 
@@ -1400,17 +1401,17 @@ class SingleCourseTemplate {
 				$item_type
 			),
 			'link'           => sprintf(
-				'<a href="%s" class="course-item-link">',
+				'<a href="%s" class="course-item__link">',
 				esc_url_raw( $link_item )
 			),
-			'item_left'      => '<div class="course-item-left">',
+			'item_left'      => '<div class="course-item__left">',
 			'icon'           => sprintf(
 				'<span class="course-item-ico %s"></span>',
 				esc_attr( $item_type )
 			),
 			'title'          => sprintf( '<div class="course-item-title">%s</div>', wp_kses_post( $title ) ),
 			'item_left_end'  => '</div>',
-			'item_right'     => '<div class="course-item-right">',
+			'item_right'     => '<div class="course-item__right">',
 			'duration'       => $html_item_duration,
 			'status'         => $html_item_status,
 			'item_right_end' => '</div>',

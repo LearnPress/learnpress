@@ -342,8 +342,10 @@
 
 			.extra-box__title, 
 			.course-faqs__title, 
-			.course-material__title {
+			.course-material__title,
+			.lp-course-curriculum__title {
 				margin: 0 0 20px 0;
+				font-weight: bold;
 			}
 
 			.course-features,
@@ -351,6 +353,7 @@
 			.course-requirements {
 				ul {
 					margin: 0 0 0 20px;
+					padding: 0;
 				}
 			}
 
