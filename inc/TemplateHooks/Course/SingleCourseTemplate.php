@@ -1209,7 +1209,7 @@ class SingleCourseTemplate {
 					'<li class="course-count-lesson">%s</li>',
 					sprintf(
 						_n( '%d Lesson', '%d Lessons', $course->count_items( LP_LESSON_CPT ), 'learnpress' ),
-						$course->get_total_sections()
+						$course->count_items( LP_LESSON_CPT )
 					)
 				),
 				'duration'                  => sprintf(
