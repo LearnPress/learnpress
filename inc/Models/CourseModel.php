@@ -82,7 +82,7 @@ class CourseModel {
 	public $permalink = '';
 	public $categories;
 	public $tags;
-	private $price             = 0; // Not save in database, must auto reload calculate
+	private $price; // Not save in database, must auto reload calculate
 	private $passing_condition = '';
 	public $post_excerpt       = '';
 	/**
@@ -240,9 +240,9 @@ class CourseModel {
 	 * @return float
 	 */
 	public function get_price(): float {
-		if ( ! empty( $this->price ) ) {
+		/*if ( ! empty( $this->price ) ) {
 			return $this->price;
-		}
+		}*/
 
 		if ( $this->has_sale_price() ) {
 			$price = $this->get_sale_price();

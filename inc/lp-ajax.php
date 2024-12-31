@@ -1,6 +1,8 @@
 <?php
 /**
  * LP Ajax Process Execution
+ *
+ * @since 4.2.7.6
  */
 define( 'LP_AJAX', true );
 

@@ -114,7 +114,7 @@ window.lpCoursesList = ( () => {
 				},
 			};
 
-			window.lpAJAXG.fetchAPI( API.frontend.apiAJAX, dataSend, callBack );
+			window.lpAJAXG.fetchAJAX( dataSend, callBack );
 		},
 		LoadMore: ( e, target ) => {
 			const btnLoadMore = target.closest( `.${ classLoadMore + ':not(.disabled)' }` );
@@ -176,7 +176,7 @@ window.lpCoursesList = ( () => {
 				},
 			};
 
-			window.lpAJAXG.fetchAPI( API.frontend.apiAJAX, dataSend, callBack );
+			window.lpAJAXG.fetchAJAX( dataSend, callBack );
 		},
 		LoadInfinite: () => {
 			// When see element, will call API to load more items.
@@ -233,7 +233,7 @@ window.lpCoursesList = ( () => {
 					},
 				};
 
-				window.lpAJAXG.fetchAPI( API.frontend.apiAJAX, dataSend, callBack );
+				window.lpAJAXG.fetchAJAX( dataSend, callBack );
 			};
 
 			// Listen el courses load infinite have just created.
@@ -301,7 +301,7 @@ window.lpCoursesList = ( () => {
 				},
 			};
 
-			window.lpAJAXG.fetchAPI( API.frontend.apiAJAX, dataSend, callBack );
+			window.lpAJAXG.fetchAJAX( dataSend, callBack );
 		},
 		onChangeTypeLayout: ( e, target ) => {
 			if ( 'lp-switch-layout-btn' !== target.getAttribute( 'name' ) ) {
@@ -365,7 +365,7 @@ window.lpCoursesList = ( () => {
 						},
 					};
 
-					window.lpAJAXG.fetchAPI( API.frontend.apiAJAX, dataSend, callBack );
+					window.lpAJAXG.fetchAJAX( dataSend, callBack );
 				}, 800 );
 			}
 		},

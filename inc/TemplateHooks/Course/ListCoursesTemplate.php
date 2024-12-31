@@ -59,6 +59,7 @@ class ListCoursesTemplate {
 		];
 
 		$args                          = lp_archive_skeleton_get_args();
+		$args['id_url']                = 'list-courses-default';
 		$args['courses_load_ajax']     = LP_Settings_Courses::is_ajax_load_courses() ? 1 : 0;
 		$args['courses_first_no_ajax'] = LP_Settings_Courses::is_no_load_ajax_first_courses() ? 1 : 0;
 

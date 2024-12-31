@@ -372,7 +372,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					[],
 					0,
 					0,
-					'1.0.2',
+					'1.0.4',
 					[ 'strategy' => 'async' ]
 				),
 			)

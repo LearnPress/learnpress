@@ -218,6 +218,10 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.2.7.6 (2025-01-10) =
+~ Fixed: security.
+~ Allow: display html content on Offline Payment.
+
 = 4.2.7.5 (2024-12-17) =
 ~ Added: option Price prefix, Price suffix for course.
 ~ Fixed: shortcode [learn_press_button_course].

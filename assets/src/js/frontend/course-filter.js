@@ -321,7 +321,7 @@ window.lpCourseFilter = {
 				},
 			};
 
-			window.lpAJAXG.fetchAPI( urlFetch, dataSend, callBack );
+			window.lpAJAXG.fetchAJAX( dataSend, callBack );
 		} else {
 			const courseUrl = lpData.urlParams.page_term_url || lpData.courses_url || '';
 			const url = new URL( courseUrl );

@@ -2,7 +2,7 @@
  * Load all you need via AJAX
  *
  * @since 4.2.5.7
- * @version 1.0.3
+ * @version 1.0.4
  */
 
 import { lpAddQueryArgs, lpFetchAPI, listenElementCreated, lpOnElementReady } from './utils.js';
@@ -50,6 +50,29 @@ const lpAJAX = ( () => {
 
 			lpFetchAPI( url, option, callBack );
 		},
+		fetchAJAX: ( params, callBack ) => {
+			// Call via ajax.
+			let urlAjax = lpData.lpAjaxUrl;
+			if ( params.args.id_url ) {
+				urlAjax = lpAddQueryArgs( urlAjax, { id_url: params.args.id_url } );
+			}
+
+			const formData = new FormData();
+			formData.append( 'nonce', lpData.nonce );
+			formData.append( 'lp-load-ajax', 'load_content_via_ajax' );
+			formData.append( 'data', JSON.stringify( params ) );
+			const dataSend = {
+				method: 'POST',
+				headers: {},
+				body: formData,
+			};
+
+			if ( 0 !== parseInt( lpData.user_id ) ) {
+				dataSend.headers[ 'X-WP-Nonce' ] = lpSettings.nonce;
+			}
+
+			lpFetchAPI( urlAjax, dataSend, callBack );
+		},
 		getElements: () => {
 			// Finds all elements with the class '.lp-load-ajax-element'
 			const elements = document.querySelectorAll( '.lp-load-ajax-element:not(.loaded)' );
@@ -88,27 +111,11 @@ const lpAJAX = ( () => {
 						},
 					};
 
-					window.lpAJAXG.fetchAPI( url, dataSend, callBack );
+					// Call via API
+					//window.lpAJAXG.fetchAPI( url, dataSend, callBack );
 
-					// Test
-					const urlAjax = lpData.lpAjaxUrl;
-					const formData = new FormData();
-					//formData.append( 'action', 'lp_load_content_via_ajax' );
-					formData.append( 'nonce', lpData.nonce );
-					formData.append( 'lp-load-ajax', 'load_content_via_ajax' );
-					formData.append( 'data', JSON.stringify( dataObj ) );
-					const dataSendX = {
-						method: 'POST',
-						headers: {},
-						body: formData,
-					};
-
-					if ( 0 !== parseInt( lpData.user_id ) ) {
-						dataSendX.headers[ 'X-WP-Nonce' ] = lpSettings.nonce;
-					}
-
-					lpFetchAPI( urlAjax, dataSendX, callBack );
-					// End test.
+					// Call via AJAX
+					window.lpAJAXG.fetchAJAX( dataSend, callBack );
 				} );
 			}
 		},
