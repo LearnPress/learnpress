@@ -1,0 +1,22 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "learnpress/profile-background-image",
+	"title": "Profile background image",
+	"category": "lp-profile-category",
+	"icon": "format-image",
+	"description": "Renders Template Profile Background Image PHP templates.",
+	"textdomain": "learnpress",
+	"keywords": ["image profile background course", "learnpress"],
+	"usesContext": [],
+	"supports": {
+		"inserter": true,
+		"reusable": true,
+		"reorder": true,
+		"html": false,
+		"multiple": true
+	},
+	"ancestor": [
+		"learnpress/lp-profile"
+	]
+}

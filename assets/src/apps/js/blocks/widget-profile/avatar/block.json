@@ -1,0 +1,22 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "learnpress/profile-avatar",
+	"title": "Profile Avatar",
+	"category": "lp-profile-category",
+	"icon": "format-image",
+	"description": "Renders Template Profile Avatar PHP templates.",
+	"textdomain": "learnpress",
+	"keywords": ["profile avatar course", "learnpress"],
+	"usesContext": [],
+	"supports": {
+		"inserter": true,
+		"reusable": true,
+		"reorder": true,
+		"html": false,
+		"multiple": true
+	},
+	"ancestor": [
+		"learnpress/lp-profile"
+	]
+}

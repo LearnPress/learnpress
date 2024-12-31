@@ -3,7 +3,7 @@
 	"apiVersion": 2,
 	"name": "learnpress/lp-archive-course",
 	"title": "Archive Course",
-	"category": "lp-archive-course-category",
+	"category": "learnpress-category",
 	"description": "Renders Template Archive Course PHP templates.",
 	"textdomain": "learnpress",
 	"keywords": ["layout archive course", "learnpress"],

@@ -15,7 +15,6 @@ registerBlockType( 'learnpress/feature-review-single-course', {
 				viewBox="0 0 24 24"
 				width="24"
 				height="24"
-				context="list-view"
 				className="wc-block-editor-components-block-icon"
 				aria-hidden="true"
 				focusable="false"

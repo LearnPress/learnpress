@@ -15,7 +15,6 @@ registerBlockType( 'learnpress/title-course-archive-course', {
 				xmlns="http://www.w3.org/2000/svg"
 				width="24"
 				height="24"
-				context="list-view"
 				className="wc-block-editor-components-block-icon"
 				aria-hidden="true"
 				focusable="false"

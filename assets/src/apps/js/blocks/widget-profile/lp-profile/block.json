@@ -1,0 +1,19 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "learnpress/lp-profile",
+	"title": "Profile",
+	"category": "learnpress-category",
+	"icon": "format-image",
+	"description": "Renders Template Profile PHP templates.",
+	"textdomain": "learnpress",
+	"keywords": ["learnpress profile course", "learnpress"],
+	"usesContext": [],
+	"supports": {
+		"inserter": true,
+		"reusable": true,
+		"reorder": true,
+		"html": false,
+		"multiple": true
+	}
+}

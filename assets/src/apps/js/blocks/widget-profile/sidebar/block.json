@@ -1,0 +1,22 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "learnpress/profile-sidebar",
+	"title": "Profile sidebar",
+	"category": "lp-profile-category",
+	"icon": "format-image",
+	"description": "Renders Template Profile Sidebar PHP templates.",
+	"textdomain": "learnpress",
+	"keywords": ["sidebar profile course", "learnpress"],
+	"usesContext": [],
+	"supports": {
+		"inserter": true,
+		"reusable": true,
+		"reorder": true,
+		"html": false,
+		"multiple": true
+	},
+	"ancestor": [
+		"learnpress/lp-profile"
+	]
+}

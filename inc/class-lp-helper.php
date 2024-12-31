@@ -5,6 +5,8 @@
  */
 defined( 'ABSPATH' ) || exit;
 
+use LearnPress\Helpers\Template;
+
 class LP_Helper {
 
 	/**
@@ -281,7 +283,10 @@ class LP_Helper {
 			} elseif ( preg_match( '#^learn_press_instructors_page_id.*#', $key_option ) ) {
 				$args['post_content'] = '<!-- wp:shortcode -->[learn_press_instructors]<!-- /wp:shortcode -->';
 			} elseif ( preg_match( '#^learn_press_profile_page_id.*#', $key_option ) ) {
-				$args['post_content'] = '<!-- wp:shortcode -->[learn_press_profile]<!-- /wp:shortcode -->';
+				ob_start();
+				Template::instance()->get_frontend_template( 'block/html/page-profile.html' );
+				$html_profile         = ob_get_clean();
+				$args['post_content'] = $html_profile;
 			}
 
 			$args = array_merge(

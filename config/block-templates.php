@@ -41,6 +41,7 @@ require_once $blog_template_path . 'archive-course/class-block-template-meta-cou
 require_once $blog_template_path . 'archive-course/class-block-template-title-course-archive-courses.php';
 require_once $blog_template_path . 'archive-course/class-block-template-media-course-archive-courses.php';
 require_once $blog_template_path . 'archive-course/layout/class-block-layout-archive-course.php';
+require_once $blog_template_path . 'archive-course/layout/class-block-layout-sidebar-archive-course.php';
 
 //Layout single course
 require_once $blog_template_path . 'single-course/layout/class-block-layout-single-course.php';
@@ -51,6 +52,14 @@ require_once $blog_template_path . 'single-course/layout/class-block-layout-deta
 require_once $blog_template_path . 'single-course/layout/class-block-layout-meta-primary.php';
 require_once $blog_template_path . 'single-course/layout/class-block-layout-meta-secondary.php';
 require_once $blog_template_path . 'single-course/layout/class-block-layout-sidebar.php';
+
+//Profile
+require_once $blog_template_path . 'profile/class-block-template-profile.php';
+require_once $blog_template_path . 'profile/class-block-template-profile-sidebar.php';
+require_once $blog_template_path . 'profile/class-block-template-profile-content.php';
+require_once $blog_template_path . 'profile/class-block-template-profile-background-image.php';
+require_once $blog_template_path . 'profile/class-block-template-profile-avatar.php';
+require_once $blog_template_path . 'profile/class-block-template-profile-username.php';
 
 return apply_filters(
 	'learn-press/config/block-templates',
@@ -92,6 +101,7 @@ return apply_filters(
 		new Block_Template_Order_By_Archive_Courses(),
 		new Block_Template_Switch_Layout_Archive_Courses(),
 		new Block_Layout_Template_Course_Archive_Courses(),
+		new Block_Layout_Sidebar_Archive_Course(),
 		new Block_Layout_List_Course_Archive_Courses(),
 		new Block_Template_Pagination_Archive_Courses(),
 		new Block_Template_Info_Course_Archive_Courses(),
@@ -99,6 +109,12 @@ return apply_filters(
 		new Block_Template_Meta_Course_Archive_Courses(),
 		new Block_Template_Title_Course_Archive_Courses(),
 		new Block_Template_Media_Course_Archive_Courses(),
+		new Block_Template_Profile(),
+		new Block_Template_Profile_Avatar(),
+		new Block_Template_Profile_Sidebar(),
+		new Block_Template_Profile_Username(),
+		new Block_Template_Profile_Content(),
+		new Block_Template_Profile_Background_Image(),
 		new Block_Template_Item_Curriculum_Course(),
 	)
 );

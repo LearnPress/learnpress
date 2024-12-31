@@ -1,4 +1,7 @@
 <?php
+
+use LearnPress\Helpers\Template;
+
 /**
  * LearnPress Core Functions
  * Define common functions for both front-end and back-end
@@ -364,7 +367,7 @@ function learn_press_sanitize_url( $url, $trailingslashit = true ) {
 		$url              = $matches[1] . $url_without_http;
 
 		return ( $trailingslashit &&
-				 strpos( $url, '?' ) === false ) ? trailingslashit( $url ) : untrailingslashit( $url );
+				strpos( $url, '?' ) === false ) ? trailingslashit( $url ) : untrailingslashit( $url );
 	}
 
 	return $url;
@@ -660,7 +663,7 @@ if ( ! function_exists( 'learn_press_paging_nav' ) ) {
 		if ( $links ) {
 			?>
 			<div class="<?php echo esc_attr( $args['wrapper_class'] ); ?>">
-				<?php echo  wp_kses_post( $links ); ?>
+				<?php echo wp_kses_post( $links ); ?>
 			</div>
 			<?php
 		}
@@ -693,7 +696,7 @@ function learn_press_get_num_pages( $total, $limit = 10 ) {
 	$pages = absint( $total / $limit );
 
 	if ( $total % $limit != 0 ) {
-		$pages ++;
+		++$pages;
 	}
 
 	return $pages;
@@ -1510,31 +1513,31 @@ add_filter( 'gettext_with_context', '_learn_press_translate_user_roles', 10, 4 )
  * @deprecated 4.1.7.2
  */
 //function learn_press_posts_where_statement_search( $where ) {
-//	// gets the global query var object
-//	global $wp_query, $wpdb;
+//  // gets the global query var object
+//  global $wp_query, $wpdb;
 //
-//	/**
-//	 * Need to wrap this block into () in order to make it works correctly when filter by specific post type => maybe a bug :)
-//	 * from => ( wp_2_posts.post_status = 'publish' OR wp_2_posts.post_status = 'private') OR wp_2_terms.name LIKE '%s%'
-//	 * to => ( ( wp_2_posts.post_status = 'publish' OR wp_2_posts.post_status = 'private') OR wp_2_terms.name LIKE '%s%' )
-//	 */
-//	$a = preg_match( '!(' . $wpdb->posts . '.post_status)!', $where );
-//	$b = preg_match( '!(OR\s+' . $wpdb->terms . '.name LIKE \'%' . $wp_query->get( 's' ) . '%\')!', $where );
+//  /**
+//   * Need to wrap this block into () in order to make it works correctly when filter by specific post type => maybe a bug :)
+//   * from => ( wp_2_posts.post_status = 'publish' OR wp_2_posts.post_status = 'private') OR wp_2_terms.name LIKE '%s%'
+//   * to => ( ( wp_2_posts.post_status = 'publish' OR wp_2_posts.post_status = 'private') OR wp_2_terms.name LIKE '%s%' )
+//   */
+//  $a = preg_match( '!(' . $wpdb->posts . '.post_status)!', $where );
+//  $b = preg_match( '!(OR\s+' . $wpdb->terms . '.name LIKE \'%' . $wp_query->get( 's' ) . '%\')!', $where );
 //
-//	if ( $a && $b ) {
-//		// append ( to the start of the block
-//		$where = preg_replace( '!(' . $wpdb->posts . '.post_status)!', '( $1', $where, 1 );
+//  if ( $a && $b ) {
+//      // append ( to the start of the block
+//      $where = preg_replace( '!(' . $wpdb->posts . '.post_status)!', '( $1', $where, 1 );
 //
-//		// append ) to the end of the block
-//		$where = preg_replace(
-//			'!(OR\s+' . $wpdb->terms . '.name LIKE \'%' . $wp_query->get( 's' ) . '%\')!',
-//			'$1 )',
-//			$where
-//		);
-//	}
-//	remove_filter( 'posts_where', 'learn_press_posts_where_statement_search', 99 );
+//      // append ) to the end of the block
+//      $where = preg_replace(
+//          '!(OR\s+' . $wpdb->terms . '.name LIKE \'%' . $wp_query->get( 's' ) . '%\')!',
+//          '$1 )',
+//          $where
+//      );
+//  }
+//  remove_filter( 'posts_where', 'learn_press_posts_where_statement_search', 99 );
 //
-//	return $where;
+//  return $where;
 //}
 
 /**
@@ -1908,39 +1911,39 @@ function learn_press_get_endpoint_url( $name, $value, $url ) {
  * @use LP_Query::add_rewrite_endpoints instead
  */
 //function learn_press_add_endpoints() {
-//	// Must LP_Profile::instance call on init, because it will add action hook to save data on Profile page
-//	// If rewrite save data on Profile page, can remove it.
-//	//LP_Profile::instance( get_current_user_id() );
+//  // Must LP_Profile::instance call on init, because it will add action hook to save data on Profile page
+//  // If rewrite save data on Profile page, can remove it.
+//  //LP_Profile::instance( get_current_user_id() );
 //
-//	$settings = LP_Settings::instance();
+//  $settings = LP_Settings::instance();
 //
-//	$endpoints = $settings->get_checkout_endpoints();
-//	if ( $endpoints ) {
-//		foreach ( $endpoints as $endpoint => $value ) {
-//			LearnPress::instance()->query_vars[ $endpoint ] = $value;
-//			add_rewrite_endpoint( $value, EP_PAGES );
-//		}
-//	}
+//  $endpoints = $settings->get_checkout_endpoints();
+//  if ( $endpoints ) {
+//      foreach ( $endpoints as $endpoint => $value ) {
+//          LearnPress::instance()->query_vars[ $endpoint ] = $value;
+//          add_rewrite_endpoint( $value, EP_PAGES );
+//      }
+//  }
 //
-//	$endpoints = $settings->get_profile_endpoints();
-//	if ( $endpoints ) {
-//		foreach ( $endpoints as $endpoint => $value ) {
-//			LearnPress::instance()->query_vars[ $endpoint ] = $value;
-//			add_rewrite_endpoint( $value, EP_PAGES );
-//		}
-//	}
+//  $endpoints = $settings->get_profile_endpoints();
+//  if ( $endpoints ) {
+//      foreach ( $endpoints as $endpoint => $value ) {
+//          LearnPress::instance()->query_vars[ $endpoint ] = $value;
+//          add_rewrite_endpoint( $value, EP_PAGES );
+//      }
+//  }
 //
-//	$endpoints = $settings->get( 'quiz_endpoints' );
-//	if ( $endpoints ) {
-//		foreach ( $endpoints as $endpoint => $value ) {
-//			$endpoint                                       = preg_replace( '!_!', '-', $endpoint );
-//			LearnPress::instance()->query_vars[ $endpoint ] = $value;
-//			add_rewrite_endpoint(
-//				$value, /*EP_ROOT | */
-//				EP_PAGES
-//			);
-//		}
-//	}
+//  $endpoints = $settings->get( 'quiz_endpoints' );
+//  if ( $endpoints ) {
+//      foreach ( $endpoints as $endpoint => $value ) {
+//          $endpoint                                       = preg_replace( '!_!', '-', $endpoint );
+//          LearnPress::instance()->query_vars[ $endpoint ] = $value;
+//          add_rewrite_endpoint(
+//              $value, /*EP_ROOT | */
+//              EP_PAGES
+//          );
+//      }
+//  }
 //}
 
 //add_action( 'init', 'learn_press_add_endpoints' );
@@ -3268,22 +3271,26 @@ add_action(
 	}
 );
 
-// If profile content don't have shortcode profile.
+// Convert profile content if content has profile shortcode.
 /**
- * @deprecated 4.2.2.4
+ *  4.2.7.4
  */
 function lp_add_shortcode_profile() {
 	global $post;
 
 	if ( LP_Page_Controller::is_page_profile() && is_object( $post ) ) {
-		if ( ! has_shortcode( $post->post_content, 'learn_press_profile' ) ) {
-			$post->post_content .= '<!-- wp:shortcode -->[learn_press_profile]<!-- /wp:shortcode -->';
+		if ( has_shortcode( $post->post_content, 'learn_press_profile' ) ) {
+			$old_shortcode_html = '<!-- wp:shortcode -->[learn_press_profile]<!-- /wp:shortcode -->';
+			ob_start();
+			Template::instance()->get_frontend_template( 'block/html/page-profile.html' );
+			$html_profile       = ob_get_clean();
+			$post->post_content = str_replace( $old_shortcode_html, $html_profile, $post->post_content );
 			wp_update_post( $post );
 		}
 	}
 }
 
-//add_action( 'template_redirect', 'lp_add_shortcode_profile' );
+add_action( 'template_redirect', 'lp_add_shortcode_profile' );
 
 /**
  * If Elementor Pro set Theme builder type "Archive", will not show content on page "Archive course"
@@ -3296,7 +3303,7 @@ function lp_add_shortcode_profile() {
  */
 add_filter(
 	'elementor/theme/get_location_templates/template_id',
-	function( $theme_template_id ) {
+	function ( $theme_template_id ) {
 		$elementor_template_type = get_post_meta( $theme_template_id, '_elementor_template_type', true );
 
 		if ( in_array( $elementor_template_type, array( 'archive' ) ) ) {

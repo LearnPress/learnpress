@@ -15,7 +15,6 @@ registerBlockType( 'learnpress/course-detail-info', {
 				viewBox="0 0 24 24"
 				width="24"
 				height="24"
-				context="list-view"
 				aria-hidden="true"
 				focusable="false"
 			>

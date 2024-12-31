@@ -22,6 +22,6 @@
 		"multiple": true
 	},
 	"ancestor": [
-		"learnpress/lp-single-course"
+		"learnpress/course-summary-sidebar"
 	]
 }

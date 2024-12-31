@@ -20,6 +20,9 @@ class Block_Template_Requirements_Single_Course extends Abstract_Block_Template_
 		$attributes['title'] = ! empty( $attributes['title'] ) ? esc_html( $attributes['title'], 'learnpress' ) : esc_html( 'Title', 'learnpress' );
 		$course_id           = ! empty( $attributes['courseId'] ) ? (int) $attributes['courseId'] : get_the_ID();
 		$course              = CourseModel::find( $course_id, true );
+		if ( ! $course ) {
+			return;
+		}
 		$items               = $course->get_meta_value_by_key( '_lp_requirements' );
 		$attributes['title'] = 'Requirements';
 
