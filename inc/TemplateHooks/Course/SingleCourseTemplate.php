@@ -1195,7 +1195,7 @@ class SingleCourseTemplate {
 
 			$section = [
 				'wrapper'                   => '<div class="lp-course-curriculum">',
-				'title'						=>  sprintf( '<h3 class="lp-course-curriculum__title">%s</h3>', esc_html__( 'Curriculum', 'learnpress' ) ),
+				'title'                     => sprintf( '<h3 class="lp-course-curriculum__title">%s</h3>', esc_html__( 'Curriculum', 'learnpress' ) ),
 				'curriculum_info'           => '<div class="course-curriculum-info">',
 				'curriculum_info_left'      => '<ul class="course-curriculum-info__left">',
 				'count_sections'            => sprintf(
@@ -1355,7 +1355,8 @@ class SingleCourseTemplate {
 		$user_attended_course      = false;
 		if ( $userModel instanceof UserModel ) {
 			$userCourseModel = UserCourseModel::find( $userModel->get_id(), $courseModel->get_id(), true );
-			if ( $userCourseModel ) {
+			if ( $userCourseModel
+				&& $userCourseModel->get_status() !== UserItemModel::STATUS_CANCEL ) {
 				$user_attended_course = true;
 
 				if ( $userCourseModel->get_time_remaining() === 0 ) {

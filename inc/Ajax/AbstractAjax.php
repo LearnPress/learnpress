@@ -15,7 +15,7 @@ abstract class AbstractAjax {
 	public static function catch_lp_ajax() {
 		if ( ! empty( $_REQUEST['lp-load-ajax'] ) ) {
 			$action = $_REQUEST['lp-load-ajax'];
-			$nonce  = $_REQUEST['nonce'];
+			$nonce  = $_REQUEST['nonce'] ?? '';
 			if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
 				wp_die( 'Invalid request!', 400 );
 			}
