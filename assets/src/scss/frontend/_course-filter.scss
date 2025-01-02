@@ -43,6 +43,15 @@
 				//font-size: 0.875rem;
 				color: #999;
 			}
+
+			a {
+				position: absolute;
+				right: 0;
+				top: 0;
+				bottom: 0;
+				left: 0;
+				z-index: 1;
+			}
 		}
 		.lp-course-filter-search-field{
 			position: relative;
