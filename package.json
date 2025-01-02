@@ -4,8 +4,8 @@
 	"description": "[![Stories in Ready](https://badge.waffle.io/LearnPress/LearnPress.svg?label=ready&title=Ready)](http://waffle.io/LearnPress/LearnPress)",
 	"main": "index.js",
 	"scripts": {
-		"start": "cross-env NODE_OPTIONS=--openssl-legacy-provider wp-scripts start",
-		"build": "cross-env NODE_OPTIONS=--openssl-legacy-provider wp-scripts build",
+		"start": "cross-env  wp-scripts start",
+		"build": "cross-env  wp-scripts build",
 		"format-js": "cross-env  wp-scripts format ./assets/src",
 		"dev-build": "cross-env  npm run build && gulp styles && npm run dev",
 		"makepot:js": "wp-babel-makepot \"./assets/src/**/*.{js,jsx,ts,tsx}\" --ignore \"**/node_modules/**,**/test/**,**/*.d.ts\" --base \"./\" --dir \"./languages/strings\" --output \"./languages/learnpress-js.pot\"",

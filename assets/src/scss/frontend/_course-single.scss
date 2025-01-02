@@ -326,6 +326,10 @@
 		row-gap: 30px;
 		flex-wrap: wrap;
 
+		@media (max-width: 991px) {
+			flex-direction: column-reverse;
+		}
+
 		&__left {
 			width: 100%;
 			@media (min-width: 992px) {
