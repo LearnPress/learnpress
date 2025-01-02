@@ -1,73 +1,73 @@
-function LPClick( element, iconBtn, inner ) {
-	const wrapper = document.querySelector( element ),
-		clickBtn = wrapper && wrapper.querySelector( iconBtn ),
-		class_open = element.replace( '.', '' ) + '__open',
-		closeElement = wrapper && wrapper.querySelector( element + '__close' );
+function LPClick(element, iconBtn, inner) {
+    const wrappers = document.querySelectorAll(element);
+    
+    if (!wrappers.length) {
+        return;
+    }
 
-	if (! wrapper) {
-		return;
-	}
+    wrappers.forEach((wrapper) => {
+        const clickBtn = wrapper.querySelector(iconBtn);
+        const class_open = element.replace('.', '') + '__open';
+        const closeElement = wrapper.querySelector(element + '__close');
 
-	const isOpenElement = () => {
-		return wrapper.classList.contains( class_open );
-	};
+        const isOpenElement = () => wrapper.classList.contains(class_open);
 
-	const showElement = () => {
-		if (isOpenElement()) {
-			return;
-		}
+        const showElement = () => {
+            if (!isOpenElement()) {
+                wrapper.classList.add(class_open);
+            }
+        };
 
-		wrapper.classList.add( class_open );
-	};
+        const hideElement = () => {
+            if (isOpenElement()) {
+                wrapper.classList.remove(class_open);
+            }
+        };
 
-	const hideElement = () => {
-		if (! isOpenElement()) {
-			return;
-		}
+        const toggleElement = () => {
+            if (isOpenElement()) {
+                hideElement();
+            } else {
+                showElement();
+            }
+        };
 
-		wrapper.classList.remove( class_open );
-	};
+        const onKeyDown = (e) => {
+            if (e.keyCode === 27) {
+                hideElement();
+            }
+        };
 
-	const toggleElement = () => {
-		if (isOpenElement()) {
-			hideElement();
-		} else {
-			showElement();
-		}
-	};
+        if (clickBtn) {
+            clickBtn.onclick = function (e) {
+                e.preventDefault();
+                toggleElement();
+            };
+        }
 
-	const onKeyDown = ( e ) => {
-		if (e.keyCode === 27) {
-			hideElement();
-		}
-	};
-	clickBtn.onclick = function( e ) {
-		e.preventDefault();
-		toggleElement();
-	};
+        document.addEventListener('click', (e) => {
+            if (!isOpenElement()) {
+                return;
+            }
 
-	document.addEventListener( 'click', ( e ) => {
-		if (! isOpenElement()) {
-			return;
-		}
+            const target = e.target;
 
-		const target = e.target;
+            if (target.closest(inner) || target.closest(iconBtn)) {
+                return;
+            }
 
-		if (target.closest( inner ) || target.closest( iconBtn )) {
-			return;
-		}
+            hideElement();
+        });
 
-		hideElement();
-	} );
+        if (closeElement) {
+            closeElement.addEventListener('click', (e) => {
+                e.preventDefault();
+                hideElement();
+            });
+        }
 
-	// Click close button.
-	closeElement && closeElement.addEventListener( 'click', ( e ) => {
-		e.preventDefault();
-
-		hideElement();
-	} );
-
-	document.addEventListener( 'keydown', onKeyDown, false ); // click ESC button will hide popup
+        document.addEventListener('keydown', onKeyDown, false);
+    });
 }
 
 export default function CopyToClipboard() {
