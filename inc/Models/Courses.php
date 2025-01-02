@@ -144,7 +144,7 @@ class Courses {
 		// Sort by level
 		$levels_str = LP_Helper::sanitize_params_submitted( urldecode( $param['c_level'] ?? '' ) );
 		if ( ! empty( $levels_str ) ) {
-			$levels_str     = str_replace( 'all', '', $levels_str );
+			//$levels_str     = str_replace( 'all', '', $levels_str );
 			$levels         = explode( ',', $levels_str );
 			$filter->levels = $levels;
 		}

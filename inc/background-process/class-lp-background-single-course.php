@@ -97,7 +97,7 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 			// Old hook, addon wpml and assignment is using
 			do_action( 'lp/background/course/save', learn_press_get_course( $this->lp_course->get_id() ), $this->data );
 			// New hook from v4.2.6.9
-			do_action( 'learnPress/background/course/save', $this->lp_course, $this->data );
+			do_action( 'learnPress/background/course/save', $courseModel, $this->data );
 
 			/**
 			 * Clean cache courses

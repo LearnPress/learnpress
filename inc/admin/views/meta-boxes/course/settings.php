@@ -129,7 +129,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 				'_lp_duration'                 => new LP_Meta_Box_Duration_Field(
 					esc_html__( 'Duration', 'learnpress' ),
 					esc_html__( 'Set to 0 for the lifetime access.', 'learnpress' ),
-					'10',
+					'10 week',
 					array(
 						'default_time'      => 'week',
 						'custom_attributes' => array(

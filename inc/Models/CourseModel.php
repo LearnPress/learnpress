@@ -250,7 +250,8 @@ class CourseModel {
 			$price = $this->get_regular_price();
 		}
 
-		$this->price = (float) $price;
+		$this->price                                        = (float) $price;
+		$this->meta_data->{CoursePostModel::META_KEY_PRICE} = (float) $price;
 
 		return apply_filters( 'learnPress/course/price', (float) $price, $this->get_id() );
 	}
