@@ -1,91 +1,94 @@
-function LPClick(element, iconBtn, inner) {
-    const wrappers = document.querySelectorAll(element);
-    
-    if (!wrappers.length) {
-        return;
-    }
+function LPClick( element, iconBtn, inner ) {
+	const wrappers = document.querySelectorAll( element );
 
-    wrappers.forEach((wrapper) => {
-        const clickBtn = wrapper.querySelector(iconBtn);
-        const class_open = element.replace('.', '') + '__open';
-        const closeElement = wrapper.querySelector(element + '__close');
+	if ( ! wrappers.length ) {
+		return;
+	}
 
-        const isOpenElement = () => wrapper.classList.contains(class_open);
+	wrappers.forEach( ( wrapper ) => {
+		const clickBtn = wrapper.querySelector( iconBtn );
+		const class_open = element.replace( '.', '' ) + '__open';
+		const closeElement = wrapper.querySelector( element + '__close' );
 
-        const showElement = () => {
-            if (!isOpenElement()) {
-                wrapper.classList.add(class_open);
-            }
-        };
+		const isOpenElement = () => wrapper.classList.contains( class_open );
 
-        const hideElement = () => {
-            if (isOpenElement()) {
-                wrapper.classList.remove(class_open);
-            }
-        };
+		const showElement = () => {
+			if ( ! isOpenElement() ) {
+				wrapper.classList.add( class_open );
+			}
+		};
 
-        const toggleElement = () => {
-            if (isOpenElement()) {
-                hideElement();
-            } else {
-                showElement();
-            }
-        };
+		const hideElement = () => {
+			if ( isOpenElement() ) {
+				wrapper.classList.remove( class_open );
+			}
+		};
 
-        const onKeyDown = (e) => {
-            if (e.keyCode === 27) {
-                hideElement();
-            }
-        };
+		const toggleElement = () => {
+			if ( isOpenElement() ) {
+				hideElement();
+			} else {
+				showElement();
+			}
+		};
 
-        if (clickBtn) {
-            clickBtn.onclick = function (e) {
-                e.preventDefault();
-                toggleElement();
-            };
-        }
+		const onKeyDown = ( e ) => {
+			if ( e.keyCode === 27 ) {
+				hideElement();
+			}
+		};
 
-        document.addEventListener('click', (e) => {
-            if (!isOpenElement()) {
-                return;
-            }
+		if ( clickBtn ) {
+			clickBtn.onclick = function ( e ) {
+				e.preventDefault();
+				toggleElement();
+			};
+		}
 
-            const target = e.target;
+		document.addEventListener( 'click', ( e ) => {
+			if ( ! isOpenElement() ) {
+				return;
+			}
 
-            if (target.closest(inner) || target.closest(iconBtn)) {
-                return;
-            }
+			const target = e.target;
 
-            hideElement();
-        });
+			if ( target.closest( inner ) || target.closest( iconBtn ) ) {
+				return;
+			}
 
-        if (closeElement) {
-            closeElement.addEventListener('click', (e) => {
-                e.preventDefault();
-                hideElement();
-            });
-        }
+			hideElement();
+		} );
 
-        document.addEventListener('keydown', onKeyDown, false);
-    });
+		if ( closeElement ) {
+			closeElement.addEventListener( 'click', ( e ) => {
+				e.preventDefault();
+				hideElement();
+			} );
+		}
+
+		document.addEventListener( 'keydown', onKeyDown, false );
+	} );
 }
 
 export default function CopyToClipboard() {
-	LPClick( '.social-share-toggle', '.share-toggle-icon', '.content-widget-social-share' );
+	LPClick(
+		'.social-share-toggle',
+		'.share-toggle-icon',
+		'.content-widget-social-share'
+	);
 
 	var copyTextareaBtn = document.querySelector( '.btn-clipboard' );
-	if (copyTextareaBtn) {
-		copyTextareaBtn.addEventListener( 'click', function( event ) {
+	if ( copyTextareaBtn ) {
+		copyTextareaBtn.addEventListener( 'click', function ( event ) {
 			var copyTextarea = document.querySelector( '.clipboard-value' );
 			copyTextarea.focus();
 			copyTextarea.select();
 			try {
 				var successful = document.execCommand( 'copy' );
 				var msg = copyTextareaBtn.getAttribute( 'data-copied' );
-				copyTextareaBtn.innerHTML = msg + '<span class="tooltip">' + msg + '</span>';
-			} catch (err) {
-
-			}
+				copyTextareaBtn.innerHTML =
+					msg + '<span class="tooltip">' + msg + '</span>';
+			} catch ( err ) {}
 		} );
 	}
 }
