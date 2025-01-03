@@ -7,6 +7,16 @@ export const edit = ( props ) => {
 		<>
 			<InspectorControls>
 				<PanelBody title="Custom Settings">
+					<SelectControl
+						label="Layout"
+						value={ props.attributes.layout ?? 'list' }
+						options={ [
+							{ label: 'List', value: 'list' },
+							{ label: 'Grid', value: 'grid' },
+						] }
+						onChange={ ( value ) => props.setAttributes( { layout: value ? value : 'list' } ) }
+					/>
+
 					<ToggleControl
 						label="Custom Layout"
 						help={ 'When enabled, loading AJAX Courses will be disabled.' }
@@ -34,7 +44,9 @@ export const edit = ( props ) => {
 				</PanelBody>
 			</InspectorControls>
 			<div { ...blockProps }>
-				<InnerBlocks />
+				<div className={ 'list-course ' + props.attributes.layout }>
+					<InnerBlocks />
+				</div>
 			</div>
 		</>
 	);

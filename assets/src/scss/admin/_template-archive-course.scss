@@ -99,10 +99,10 @@
 	flex: 1;
 }
 
-.wp-block-learnpress-list-course-archive-course {
+.wp-block-learnpress-template-course-archive-course {
 	width: 100%;
 
-	.list-course {
+	.template-course {
 		margin-top: 20px;
 		display: flex;
 		gap: 20px;
@@ -197,6 +197,57 @@
 	}
 }
 
+.wp-block-learnpress-list-course-archive-course {
+	width: 100%;
+
+	.list-course.list {
+		.template-course {
+			display: flex;
+			width: 100%;
+			border-bottom: 1px solid var(--lp-border-color, #e2e0db);
+			flex-wrap: wrap;
+			justify-content: flex-end;
+			padding-bottom: 32px;
+		}
+		.course-item .block-editor-block-list__layout {
+			width: 100%;
+			border: unset;
+
+			.wp-block-learnpress-media-course-archive-course {
+				background: #ccc;
+				aspect-ratio: 16 / 9;
+				border-radius: 5px;
+				width: 35%;
+				margin-right: 20px;
+				float: left;
+			}
+
+			.wp-block-learnpress-info-course-archive-course {
+				width: calc(65% - 20px);
+				float: inline-end;
+
+				.course-info {
+					width: 100%;
+					display: flex;
+					justify-content: space-between;
+					align-items: center;
+				}
+			}
+
+			.wp-block-learnpress-meta-course-archive-course {
+				margin-left: calc(35% + 20px);
+			}
+		}
+
+		.wp-block-learnpress-meta-course-archive-course,
+		.wp-block-learnpress-title-course-archive-course,
+		.wp-block-learnpress-instructor-category-course-archive-course {
+			width: calc(65% - 20px);
+			float: inline-end;
+		}
+	}
+}
+
 .wp-block-learnpress-pagination-archive-course {
 	width: 100%;
 
@@ -215,7 +266,7 @@
 
 			li {
 				display: inline-block;
-				float: unset;
+				float: none;
 				padding: 0 12px;
 				color: #666;
 				text-decoration: none;

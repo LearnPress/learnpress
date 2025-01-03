@@ -705,24 +705,28 @@ class FilterCourseTemplate {
 	 * @return string
 	 */
 	public function add_or_update_current_url_params( $params ) {
-		$current_url = wp_get_referer();
+		$scheme      = ( isset( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] === 'on' ) ? 'https' : 'http';
+		$host        = $_SERVER['HTTP_HOST'];
+		$uri         = $_SERVER['REQUEST_URI'];
+		$current_url = $scheme . '://' . $host . $uri;
 		$parsed_url  = parse_url( $current_url );
 		$query       = isset( $parsed_url['query'] ) ? $parsed_url['query'] : '';
 		parse_str( $query, $query_params );
+
 		foreach ( $params as $key => $value ) {
-			if ( $key === 'c_review_star' ) {
-				$query_params[ $key ] = $value;
-				continue;
-			}
-			if ( isset( $query_params[ $key ] ) ) {
+			$new_values = explode( ',', $value );
+			if ( isset( $query_params[ $key ] ) && ! empty( $query_params[ $key ] ) ) {
 				$existing_values = explode( ',', $query_params[ $key ] );
-				$new_values      = explode( ',', $value );
-				if ( in_array( $value, $existing_values ) ) {
-					$merged_values = array_diff( $existing_values, $new_values );
+				if ( $key === 'c_review_star' ) {
+					$query_params[ $key ] = $value;
 				} else {
-					$merged_values = array_unique( array_merge( $existing_values, $new_values ) );
+					if ( in_array( $new_values[0], $existing_values ) ) {
+						$merged_values = array_diff( $existing_values, $new_values );
+					} else {
+						$merged_values = array_unique( array_merge( $existing_values, $new_values ) );
+					}
+					$query_params[ $key ] = implode( ',', $merged_values );
 				}
-				$query_params[ $key ] = implode( ',', $merged_values );
 			} else {
 				$query_params[ $key ] = $value;
 			}
@@ -734,6 +738,7 @@ class FilterCourseTemplate {
 					( isset( $parsed_url['path'] ) ? $parsed_url['path'] : '' ) .
 					'?' . $new_query .
 					( isset( $parsed_url['fragment'] ) ? '#' . $parsed_url['fragment'] : '' );
+
 		return $new_url;
 	}
 

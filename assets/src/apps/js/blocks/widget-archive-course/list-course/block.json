@@ -21,6 +21,10 @@
 		"pagination": {
 			"type": "string",
 			"default": "number"
+		},
+		"layout": {
+			"type": "string",
+			"default": "list"
 		}
 	},
 	"supports": {

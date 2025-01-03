@@ -168,11 +168,11 @@ class ListCoursesTemplate {
 		$section_top = apply_filters(
 			'learn-press/layout/list-courses/section/top',
 			[
-				'wrapper'       => '<div class="lp-courses-bar">',
-				'search'        => $listCoursesTemplate->html_search_form( $settings ),
-				'order_by'      => $listCoursesTemplate->html_order_by( $settings['order_by'] ?? 'post_date' ),
-				'switch_layout' => $listCoursesTemplate->switch_layout(),
-				'wrapper_end'   => '</div>',
+				'wrapper'     => '<div class="lp-courses-bar">',
+				'search'      => $listCoursesTemplate->html_search_form( $settings ),
+				'order_by'    => $listCoursesTemplate->html_order_by( $settings['order_by'] ?? 'post_date' ),
+				// 'switch_layout' => $listCoursesTemplate->switch_layout(),
+				'wrapper_end' => '</div>',
 			],
 			$courses,
 			$settings
@@ -323,7 +323,6 @@ class ListCoursesTemplate {
 			$section_bottom = apply_filters(
 				'learn-press/layout/list-courses/item/section/bottom',
 				[
-					'wrapper'                     => '<div class="course-content">',
 					'title'                       => $html_title,
 					'wrapper_instructor_cate'     => '<div class="course-instructor-category">',
 					'instructor'                  => sprintf(
@@ -335,7 +334,6 @@ class ListCoursesTemplate {
 					'wrapper_instructor_cate_end' => '</div>',
 					'meta'                        => $html_meta_data,
 					'info'                        => Template::combine_components( $section_bottom_end ),
-					'wrapper_end'                 => '</div>',
 				],
 				$course,
 				$settings

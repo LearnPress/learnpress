@@ -28,7 +28,7 @@ export const edit = ( props ) => {
 	return (
 		<>
 			<div { ...blockProps }>
-				<div className="list-course">
+				<div className="template-course">
 					{ renderInnerBlocks() }
 				</div>
 			</div>

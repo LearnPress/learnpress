@@ -68,10 +68,6 @@ export const edit = ( props ) => {
 													'learnpress/order-by-archive-course',
 													{},
 												],
-												[
-													'learnpress/switch-layout-archive-course',
-													{},
-												],
 											],
 										],
 										[
