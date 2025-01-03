@@ -430,10 +430,10 @@ class LP_Assets extends LP_Abstract_Assets {
 	 * @return void
 	 */
 	public function load_styles_on_head() {
-		$max_width         = LP_Settings::get_option( 'width_container', '1290px' );
+		$max_width         = esc_html( LP_Settings::get_option( 'width_container', '1290px' ) );
 		$padding_container = apply_filters( 'learn-press/container-padding-width', '1rem' );
-		$primary_color     = LP_Settings::get_option( 'primary_color' );
-		$secondary_color   = LP_Settings::get_option( 'secondary_color' );
+		$primary_color     = esc_html( LP_Settings::get_option( 'primary_color' ) );
+		$secondary_color   = esc_html( LP_Settings::get_option( 'secondary_color' ) );
 		?>
 		<style id="learn-press-custom-css">
 			:root {

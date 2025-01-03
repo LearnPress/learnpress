@@ -507,10 +507,14 @@ function learn_press_format_price( $price = 0, $currency = '' ): string {
 
 	$before = $after = '';
 
-	$currency            = is_string( $currency ) && '' !== $currency ? $currency : learn_press_get_currency_symbol();
-	$thousands_separator = LP_Settings::get_option( 'thousands_separator', ',' );
-	$number_of_decimals  = LP_Settings::get_option( 'number_of_decimals', 2 );
-	$decimals_separator  = LP_Settings::get_option( 'decimals_separator', '.' );
+	$currency            = esc_html(
+		is_string( $currency ) && '' !== $currency
+			? $currency
+			: learn_press_get_currency_symbol()
+	);
+	$thousands_separator = esc_html( LP_Settings::get_option( 'thousands_separator', ',' ) );
+	$number_of_decimals  = esc_html( LP_Settings::get_option( 'number_of_decimals', 2 ) );
+	$decimals_separator  = esc_html( LP_Settings::get_option( 'decimals_separator', '.' ) );
 
 	switch ( LP_Settings::get_option( 'currency_pos' ) ) {
 		default:

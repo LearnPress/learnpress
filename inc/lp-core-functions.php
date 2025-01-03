@@ -1092,10 +1092,10 @@ function learn_press_currencies() {
  *
  * @return string
  */
-function learn_press_get_currency() {
-	$currency = apply_filters( 'learn_press_currency', LP_Settings::instance()->get( 'currency', 'USD' ) );
+function learn_press_get_currency(): string {
+	$currency = LP_Settings::instance()->get( 'currency', 'USD' );
 
-	return apply_filters( 'learn-press/currency', $currency );
+	return esc_html( apply_filters( 'learn-press/currency', $currency ) );
 }
 
 /**

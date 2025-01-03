@@ -30,12 +30,6 @@ return apply_filters(
 			'desc'    => __( 'Auto complete the order for testing purpose.' ),
 		),
 		array(
-			'title'   => __( 'Title', 'learnpress' ),
-			'id'      => '[title]',
-			'default' => $lp_gateway_offline_payment->title,
-			'type'    => 'text',
-		),
-		array(
 			'title'   => __( 'Instruction', 'learnpress' ),
 			'id'      => '[description]',
 			'default' => $lp_gateway_offline_payment->description,
