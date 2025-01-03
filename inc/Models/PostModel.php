@@ -110,6 +110,8 @@ class PostModel {
 	 * Get user model
 	 *
 	 * @return false|UserModel
+	 * @since 4.2.6.9
+	 * @version 1.0.1
 	 */
 	public function get_author_model() {
 		if ( ! empty( $this->post_author ) ) {
@@ -145,11 +147,11 @@ class PostModel {
 	 * If exists, return PostModel.
 	 *
 	 * @param LP_Course_Filter $filter
-	 * @param bool $check_cache
 	 *
 	 * @return PostModel|false|static
+	 * @version 1.0.1
 	 */
-	public static function get_item_model_from_db( LP_Post_Type_Filter $filter, bool $check_cache = false ) {
+	public static function get_item_model_from_db( LP_Post_Type_Filter $filter ) {
 		$lp_post_db = LP_Post_DB::getInstance();
 		$post_model = false;
 

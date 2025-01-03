@@ -7,6 +7,8 @@
  * @version 4.0.0
  */
 
+use LearnPress\Models\CourseModel;
+use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
 use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
 
 defined( 'ABSPATH' ) || exit();
@@ -449,7 +451,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 *
 		 * @return int
 		 */
-		public function get_fake_students() : int {
+		public function get_fake_students(): int {
 			return absint( $this->get_data( 'fake_students', 0 ) );
 		}
 
@@ -658,7 +660,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		 *
 		 * @author tungnx
 		 * @since 4.1.5
-		 * @version 1.0.1
+		 * @version 1.0.2
 		 * @return string
 		 */
 		public function get_course_price_html(): string {
@@ -678,8 +680,16 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 					$price_html .= sprintf( '<span class="origin-price">%s</span>', $this->get_regular_price_html() );
 				}
 
-				$price_html .= sprintf( '<span class="price">%s</span>', learn_press_format_price( $this->get_price(), true ) );
-				$price_html  = apply_filters( 'learn_press_course_price_html', $price_html, $this->has_sale_price(), $this->get_id() );
+				$price_html          .= sprintf( '<span class="price">%s</span>', learn_press_format_price( $this->get_price(), true ) );
+				$course               = CourseModel::find( $this->get_id(), true );
+				$singleCourseTemplate = SingleCourseTemplate::instance();
+				$price_html           = sprintf(
+					'%1$s %2$s %3$s',
+					$singleCourseTemplate->html_price_prefix( $course ),
+					$price_html,
+					$singleCourseTemplate->html_price_suffix( $course )
+				);
+				$price_html           = apply_filters( 'learn_press_course_price_html', $price_html, $this->has_sale_price(), $this->get_id() );
 			}
 
 			return sprintf( '<span class="course-item-price">%s</span>', $price_html );
@@ -1203,7 +1213,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 					$pos_tmp = $pos;
 
 					while ( $pos_tmp < $max ) {
-						$pos_tmp ++;
+						++$pos_tmp;
 
 						if ( ! $viewable ) {
 							$next_id = $item_ids[ $pos_tmp ];
@@ -1215,7 +1225,7 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 					$pos_tmp = $pos;
 
 					while ( $pos_tmp > 0 ) {
-						$pos_tmp --;
+						--$pos_tmp;
 
 						if ( ! $viewable ) {
 							$prev_id = $item_ids[ $pos_tmp ];
@@ -1266,7 +1276,6 @@ if ( ! function_exists( 'LP_Abstract_Course' ) ) {
 		}
 
 		public function get_prev_item_html( $args = null ) {
-
 		}
 
 		public function get_preview_items() {

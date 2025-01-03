@@ -227,7 +227,7 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 			$show_correct_review = $quiz->get_show_correct_review();
 			$question_ids        = $quiz->get_question_ids();
 			$status              = $user_quiz->get_status();
-			$time_remaining      = $user_quiz->get_timestamp_remaining();
+			$time_remaining      = $user_quiz->get_time_remaining();
 
 			$questions = learn_press_rest_prepare_user_questions(
 				$question_ids,

@@ -16,6 +16,7 @@ class Buttons extends Component {
 
 			if ( 'no' === confirm( __( 'Are you sure you want to retake the quiz?', 'learnpress' ), this.startQuiz ) ) {
 				! isOpen() && btn && btn.removeAttribute( 'disabled' );
+				btn.classList.remove( 'loading' );
 				return;
 			}
 		}

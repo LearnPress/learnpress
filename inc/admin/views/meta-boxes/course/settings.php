@@ -111,11 +111,11 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 	}
 
 	public function general( $post_id ) {
-		$course                 = CourseModel::find( $post_id, true );
-		$repurchase_option_desc = sprintf( '1. %s', __( 'Reset course progress: The course progress and results of student will be removed.' ) );
+		$course                  = CourseModel::find( $post_id, true );
+		$repurchase_option_desc  = sprintf( '1. %s', __( 'Reset course progress: The course progress and results of student will be removed.' ) );
 		$repurchase_option_desc .= '<br/>' . sprintf( '2. %s', __( 'Keep course progress: The course progress and results of student will remain.' ) );
 		$repurchase_option_desc .= '<br/>' . sprintf( '3. %s', __( 'Open popup: The student can decide whether their course progress will be reset with the confirm popup.' ) );
-		$max_students_desc      = esc_html__( 'The maximum number of students that can join a course. Set 0 for unlimited.', 'learnpress' );
+		$max_students_desc       = esc_html__( 'The maximum number of students that can join a course. Set 0 for unlimited.', 'learnpress' );
 		$max_students_desc      .= '<br/>' . esc_html__( 'Not apply for case "No enroll requirement".', 'learnpress' );
 
 		$is_enable_allow_course_repurchase = false;
@@ -165,7 +165,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 						),
 						'dependency' => [
 							'name'       => '_lp_allow_course_repurchase',
-							'is_disable' => ! $is_enable_allow_course_repurchase
+							'is_disable' => ! $is_enable_allow_course_repurchase,
 						],
 						//'show'    => array( '_lp_allow_course_repurchase', '=', 'yes' ), // use 'show' or 'hide'
 					)
@@ -173,7 +173,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 				'_lp_level'                    => new LP_Meta_Box_Select_Field(
 					esc_html__( 'Level', 'learnpress' ),
 					esc_html__( 'Choose a difficulty level.', 'learnpress' ),
-					'',
+					'all',
 					array(
 						'options' => lp_course_level(),
 					)
@@ -264,7 +264,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 		return apply_filters(
 			'lp/course/meta-box/fields/offline',
 			array(
-				CoursePostModel::META_KEY_OFFLINE_COURSE       => new LP_Meta_Box_Checkbox_Field(
+				CoursePostModel::META_KEY_OFFLINE_COURSE => new LP_Meta_Box_Checkbox_Field(
 					esc_html__( 'Enable offline course', 'learnpress' ),
 					esc_html__(
 						'When you enable the offline course feature, the system will disable certain online course functions, such as curriculum, finish button, re-take course, block content, repurchase. After checking the checkbox, make sure to click the "Update" button to apply the changes successfully.',
@@ -284,11 +284,11 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 						),
 						'dependency'        => [
 							'name'       => '_lp_offline_course',
-							'is_disable' => ! $is_offline_course
+							'is_disable' => ! $is_offline_course,
 						],
 					]
 				),
-				CoursePostModel::META_KEY_DELIVER              => new LP_Meta_Box_Select_Field(
+				CoursePostModel::META_KEY_DELIVER        => new LP_Meta_Box_Select_Field(
 					esc_html__( 'Delivery Type', 'learnpress' ),
 					esc_html__( 'How your content is conveyed to students.', 'learnpress' ),
 					'private_1_1',
@@ -296,18 +296,18 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 						'options'    => Config::instance()->get( 'course-deliver-type' ),
 						'dependency' => [
 							'name'       => '_lp_offline_course',
-							'is_disable' => ! $is_offline_course
+							'is_disable' => ! $is_offline_course,
 						],
 					]
 				),
-				CoursePostModel::META_KEY_ADDRESS              => new LP_Meta_Box_Text_Field(
+				CoursePostModel::META_KEY_ADDRESS        => new LP_Meta_Box_Text_Field(
 					esc_html__( 'Address', 'learnpress' ),
 					esc_html__( 'You can enter the physical address of your class or specify the meeting method (e.g., Zoom, Google Meet, etc.).', 'learnpress' ),
 					'',
 					[
 						'dependency' => [
 							'name'       => '_lp_offline_course',
-							'is_disable' => ! $is_offline_course
+							'is_disable' => ! $is_offline_course,
 						],
 					]
 				),
@@ -347,11 +347,11 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 							'min'  => '0',
 							'step' => '0.01',
 						),
-						'style'             => 'width: 70px;',
+						'style'             => 'width: 100px;',
 						'class'             => 'lp_meta_box_regular_price',
 						'dependency'        => [
 							'name'       => '_lp_no_required_enroll',
-							'is_disable' => $is_enable_no_required_enroll
+							'is_disable' => $is_enable_no_required_enroll,
 						],
 					)
 				),
@@ -365,11 +365,11 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 							'min'  => '0',
 							'step' => '0.01',
 						),
-						'style'             => 'width: 70px;',
+						'style'             => 'width: 100px;',
 						'class'             => 'lp_meta_box_sale_price',
 						'dependency'        => [
 							'name'       => '_lp_no_required_enroll',
-							'is_disable' => $is_enable_no_required_enroll
+							'is_disable' => $is_enable_no_required_enroll,
 						],
 					)
 				),
@@ -382,7 +382,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 						'placeholder'   => _x( 'From&hellip;', 'placeholder', 'learnpress' ),
 						'dependency'    => [
 							'name'       => '_lp_no_required_enroll',
-							'is_disable' => $is_enable_no_required_enroll
+							'is_disable' => $is_enable_no_required_enroll,
 						],
 					)
 				),
@@ -396,9 +396,19 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 						'cancel'        => true,
 						'dependency'    => [
 							'name'       => '_lp_no_required_enroll',
-							'is_disable' => $is_enable_no_required_enroll
+							'is_disable' => $is_enable_no_required_enroll,
 						],
 					)
+				),
+				'_lp_price_prefix'       => new LP_Meta_Box_Text_Field(
+					esc_html__( 'Price prefix', 'learnpress' ),
+					esc_html__( 'Show additional information placed before the price such as: Only, From, Up to...', 'learnpress' ),
+					''
+				),
+				'_lp_price_suffix'       => new LP_Meta_Box_Text_Field(
+					esc_html__( 'Price Suffix', 'learnpress' ),
+					esc_html__( 'Show additional information placed after the price such as: Included Tax, Per Hour, (Per Week)...', 'learnpress' ),
+					''
 				),
 				'_lp_no_required_enroll' => new LP_Meta_Box_Checkbox_Field(
 					esc_html__( 'There is no enrollment requirement', 'learnpress' ),
@@ -625,7 +635,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 							?>
 							<?php if ( isset( $tab_content['content'] ) ) { ?>
 								<div id="<?php echo esc_attr( $tab_content['target'] ); ?>"
-									 class="lp-meta-box-course-panels">
+									class="lp-meta-box-course-panels">
 									<?php
 									do_action( 'learnpress/course-settings/before-' . $key );
 

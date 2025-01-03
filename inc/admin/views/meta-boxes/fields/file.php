@@ -56,9 +56,9 @@ class LP_Meta_Box_File_Field extends LP_Meta_Box_Field {
 		<label for="' . esc_attr( $field['id'] ) . '">' . wp_kses_post( $field['label'] ) . '</label>';
 
 		echo '<div id="' . esc_attr( $field['id'] ) . '" class="lp-meta-box__file ' . esc_attr( $field['class'] ) . '" data-mime="' . $field['mime_type'] . '" data-multil="' . $field['multil'] . '" style="' . esc_attr( $field['style'] ) . '" ' . implode(
-				' ',
-				$custom_attributes
-			) . '>';
+			' ',
+			$custom_attributes
+		) . '>';
 		echo '<ul class="lp-meta-box__file_list">';
 
 		$value = (array) $field['value'];
@@ -71,13 +71,8 @@ class LP_Meta_Box_File_Field extends LP_Meta_Box_Field {
 					$check_file = wp_check_filetype( $url );
 
 					echo '<li class="lp-meta-box__file_list-item image" data-attachment_id="' . $attachment_id . '">';
-
-					if ( in_array( $check_file['ext'], array( 'jpg', 'jpeg', 'png', 'gif', 'bmp', 'tif' ), true ) ) {
-						echo wp_get_attachment_image( $attachment_id, 'thumbnail' );
-					} else {
-						echo '<img class="is_file" src="' . wp_mime_type_icon( $check_file['type'] ) . '" />';
-						echo '<span>' . wp_basename( get_attached_file( $attachment_id ) ) . '</span>';
-					}
+					echo sprintf( '<img class="is_file" src="%s" />', wp_mime_type_icon( $check_file['type'] ) );
+					echo sprintf( '<span>%s</span>', wp_basename( get_attached_file( $attachment_id ) ) );
 					echo '<ul class="actions"><li><a href="#" class="delete"></a></li></ul>';
 					echo '</li>';
 				}

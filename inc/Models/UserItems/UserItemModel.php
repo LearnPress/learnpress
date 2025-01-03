@@ -5,7 +5,7 @@
  * To replace class LP_User_Item
  *
  * @package LearnPress/Classes
- * @version 1.0.1
+ * @version 1.0.2
  * @since 4.2.5
  */
 
@@ -15,11 +15,9 @@ use Exception;
 use LearnPress\Models\CoursePostModel;
 use LearnPress\Models\PostModel;
 use LearnPress\Models\UserItemMeta\UserItemMetaModel;
-use LearnPressAssignment\Models\UserAssignmentModel;
-use LP_Cache;
+use LearnPress\Models\UserModel;
 use LP_Datetime;
-use LP_User;
-use LP_User_Guest;
+use LP_User_Item_Meta_DB;
 use LP_User_Item_Meta_Filter;
 use LP_User_Items_Cache;
 use LP_User_Items_DB;
@@ -92,10 +90,6 @@ class UserItemModel {
 	 * @var null|PostModel|CoursePostModel
 	 */
 	public $item;
-	/**
-	 * @var LP_User|null
-	 */
-	public $user;
 	/**
 	 * List UserItemMetaModel
 	 * object {meta_key: {meta_id, learnpress_user_item_id, meta_key, meta_value, extra_value}}
@@ -179,14 +173,12 @@ class UserItemModel {
 	/**
 	 * Get user model
 	 *
-	 * @return false|LP_User|LP_User_Guest
+	 * @return false|UserModel
+	 * @since 4.2.6
+	 * @version 1.0.1
 	 */
 	public function get_user_model() {
-		if ( empty( $this->user ) ) {
-			$this->user = learn_press_get_user( $this->user_id );
-		}
-
-		return $this->user;
+		return UserModel::find( $this->user_id, true );
 	}
 
 	/**
@@ -230,8 +222,7 @@ class UserItemModel {
 			$query_single_row = $lp_user_item_db->get_user_items( $filter );
 			$user_item_rs     = $lp_user_item_db->wpdb->get_row( $query_single_row );
 			if ( $user_item_rs instanceof stdClass ) {
-				$user_item_model       = new static( $user_item_rs );
-				$user_item_model->user = $user_item_model->get_user_model();
+				$user_item_model = new static( $user_item_rs );
 			}
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
@@ -311,6 +302,7 @@ class UserItemModel {
 		$filter                          = new LP_User_Item_Meta_Filter();
 		$filter->meta_key                = $key;
 		$filter->learnpress_user_item_id = $this->get_user_item_id();
+
 		return UserItemMetaModel::get_user_item_meta_model_from_db( $filter );
 	}
 
@@ -318,17 +310,16 @@ class UserItemModel {
 	 * Get metadata from key
 	 *
 	 * @param string $key
+	 * @param mixed $default_value
 	 * @param bool $get_extra
 	 *
 	 * @return false|string
 	 * @since 4.2.5
-	 * @version 1.0.1
+	 * @version 1.0.3
 	 */
-	public function get_meta_value_from_key( string $key, bool $get_extra = false ) {
-		$data = false;
-
+	public function get_meta_value_from_key( string $key, $default_value = false, bool $get_extra = false ) {
 		if ( $this->meta_data instanceof stdClass && isset( $this->meta_data->{$key} ) ) {
-			return $this->meta_data->{$key};
+			return maybe_unserialize( $this->meta_data->{$key} );
 		}
 
 		$user_item_metadata = $this->get_meta_model_from_key( $key );
@@ -343,7 +334,9 @@ class UserItemModel {
 				$data = $user_item_metadata->meta_value;
 			}
 
-			$this->meta_data->{$key} = $data;
+			$this->meta_data->{$key} = maybe_unserialize( $data );
+		} else {
+			$data = $default_value;
 		}
 
 		return $data;
@@ -381,6 +374,7 @@ class UserItemModel {
 
 	/**
 	 * Delete meta from key.
+	 *
 	 * @param string $key
 	 *
 	 * @return void
@@ -500,9 +494,18 @@ class UserItemModel {
 	 *
 	 * @throws Exception
 	 * @since 4.2.7.3
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function delete() {
+		//Delete meta data of user item.
+		$lp_user_item_meta_db = LP_User_Item_Meta_DB::getInstance();
+		$filter               = new LP_User_Item_Meta_Filter();
+		$filter->where[]      = $lp_user_item_meta_db->wpdb->prepare( 'AND learnpress_user_item_id = %d', $this->get_user_item_id() );
+		$filter->collection   = $lp_user_item_meta_db->tb_lp_user_itemmeta;
+		$lp_user_item_meta_db->delete_execute( $filter );
+		$this->meta_data = null;
+
+		// Delete user item.
 		$lp_user_item_db    = LP_User_Items_DB::getInstance();
 		$filter             = new LP_User_Items_Filter();
 		$filter->where[]    = $lp_user_item_db->wpdb->prepare( 'AND user_item_id = %d', $this->get_user_item_id() );

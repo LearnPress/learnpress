@@ -174,10 +174,12 @@ ul.learn-press-breadcrumb {
 /**
  * Forms
  */
-.retake-course,
-.enroll-course,
-.purchase-course {
-	display: inline-block;
+form.retake-course,
+form.enroll-course,
+form.purchase-course {
+	display: inline-flex;
+	flex-direction: column;
+	gap: 10px;
 }
 
 /* */

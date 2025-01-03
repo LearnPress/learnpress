@@ -437,7 +437,7 @@ class CourseModel {
 	 * @version 1.0.0
 	 */
 	public function get_evaluation_type(): string {
-		return (float) $this->get_meta_value_by_key( CoursePostModel::META_KEY_Evaluation_TYPE, 'evaluate_lesson' );
+		return (float) $this->get_meta_value_by_key( CoursePostModel::META_KEY_EVALUATION_TYPE, 'evaluate_lesson' );
 	}
 
 	/**
@@ -673,18 +673,14 @@ class CourseModel {
 	 *
 	 * @return false|mixed
 	 * @since 4.2.6.9
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function get_meta_value_by_key( string $key, $default_value = false ) {
-		if ( ! empty( $this->meta_data ) && isset( $this->meta_data->{$key} ) ) {
-			$value = $this->meta_data->{$key};
+		if ( $this->meta_data instanceof stdClass && isset( $this->meta_data->{$key} ) ) {
+			$value = maybe_unserialize( $this->meta_data->{$key} );
 		} else {
 			$coursePost = new CoursePostModel( $this );
-			$value      = $coursePost->get_meta_value_by_key( $key );
-		}
-
-		if ( empty( $value ) ) {
-			$value = $default_value;
+			$value      = $coursePost->get_meta_value_by_key( $key, $default_value );
 		}
 
 		$this->meta_data->{$key} = $value;
@@ -866,7 +862,7 @@ class CourseModel {
 	 *
 	 * @return bool|WP_Error
 	 * @since 4.2.7.3
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function can_enroll( $user ) {
 		$can_enroll = true;
@@ -921,7 +917,9 @@ class CourseModel {
 
 				}
 			} else {
-				if ( ! empty( $this->get_external_link() ) && ! $userCourseModel && ! $this->is_offline() ) {
+				if ( ! empty( $this->get_external_link() )
+					&& ( ! $userCourseModel || $userCourseModel->get_status() === LP_USER_COURSE_CANCEL )
+					&& ! $this->is_offline() ) {
 					$error_code = 'course_is_external';
 					throw new Exception( __( 'The course is external', 'learnpress' ) );
 				}
@@ -1061,26 +1059,16 @@ class CourseModel {
 	 * If exists, return PostModel.
 	 *
 	 * @param LP_Course_JSON_Filter $filter
-	 * @param bool $check_cache
 	 *
 	 * @return CourseModel|false|static
+	 * @since 4.2.6.9
+	 * @version 1.0.2
 	 */
-	public static function get_item_model_from_db( LP_Course_JSON_Filter $filter, bool $check_cache = false ) {
+	public static function get_item_model_from_db( LP_Course_JSON_Filter $filter ) {
 		$course_model = false;
 
 		try {
 			$filter->only_fields = [ 'json', 'post_content' ];
-			// Load cache
-			if ( $check_cache ) {
-
-				$key_cache       = "course-model/{$filter->ID}/" . md5( json_encode( $filter ) );
-				$lp_course_cache = new LP_Course_Cache();
-				$course_model    = $lp_course_cache->get_cache( $key_cache );
-
-				if ( $course_model instanceof CourseModel ) {
-					return $course_model;
-				}
-			}
 
 			$course_rs = self::get_course_from_db( $filter );
 			if ( $course_rs instanceof stdClass && isset( $course_rs->json ) ) {

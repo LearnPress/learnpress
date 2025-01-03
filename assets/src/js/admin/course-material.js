@@ -12,7 +12,7 @@ document.addEventListener( 'DOMContentLoaded', function() {
 	const getResponse = async ( ele, postID ) => {
 		const elementMaterial = document.querySelector( '.lp-material--table tbody' );
 		try {
-			const url = `${ lpDataAdmin.lp_rest_url }lp/v1/material/item-materials/${ postID }?is_admin=1&per_page=-1`;
+			const url = `${ lpDataAdmin.lp_rest_url }lp/v1/material/item-materials/${ postID }`;
 			fetch( url, {
 				method: 'GET',
 				headers: {

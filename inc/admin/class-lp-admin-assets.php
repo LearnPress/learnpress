@@ -64,6 +64,14 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				],
 				'current_screen'           => $screen ? $screen->id : '',
 				'show_search_author_field' => empty( $html_search_author_field ) ? 0 : $html_search_author_field,
+				'toast'                    => [
+					'gravity'     => 'bottom',
+					'position'    => 'center',
+					'duration'    => 3000,
+					'close'       => 1,
+					'stopOnFocus' => 1,
+					'classPrefix' => 'lp-toast',
+				],
 			]
 		);
 	}
@@ -469,12 +477,12 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 		global $post, $pagenow;
 
 		if ( empty( $post ) || ( get_post_type() !== LP_COURSE_CPT ) || ! in_array(
-				$pagenow,
-				array(
-					'post.php',
-					'post-new.php',
-				)
-			) ) {
+			$pagenow,
+			array(
+				'post.php',
+				'post-new.php',
+			)
+		) ) {
 			return [];
 		}
 

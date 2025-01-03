@@ -15,19 +15,19 @@ export default function lpMaterialsLoad() {
 		getResponse( elementSkeleton );
 	};
 	const getResponse = async ( ele, page = 1 ) => {
-		// let itemID = 0;
-		const courseId = parseInt( ele.dataset.courseId),
-			  lessonId = parseInt( ele.dataset.itemId );
+		const course_id = parseInt( ele.dataset.courseId ),
+			  item_id = parseInt( ele.dataset.itemId );
 		const elementMaterial = ele.querySelector( '.course-material-table' );
 		const loadMoreBtn = document.querySelector( '.lp-loadmore-material' );
 		const elListItems = document.querySelector( '.lp-list-material' );
 		try {
 			const response = await apiFetch( {
-				path: addQueryArgs( `lp/v1/material/of-item/`, {
-					courseId:courseId,
-					lessonId:lessonId,
-					page:page,
-				} ),
+				path: `lp/v1/material/by-item`,
+				data: {
+					course_id,
+					item_id,
+					page,
+				},
 				method: 'POST',
 			} );
 			const { data, status, message } = response;

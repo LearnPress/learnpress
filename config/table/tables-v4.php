@@ -4,7 +4,7 @@
  *
  * @version 4
  * @since 4.1.6.4
- * @version 1.0.0
+ * @version 1.0.1
  */
 
 $lp_db = LP_Database::getInstance();
@@ -192,11 +192,10 @@ return array(
 	",
 	$lp_db->tb_thim_cache             => "
 		CREATE TABLE IF NOT EXISTS {$lp_db->tb_thim_cache} (
-			key_cache VARCHAR (191) NOT NULL UNIQUE,
+			key_cache VARCHAR (100) NOT NULL UNIQUE,
 			value LONGTEXT NOT NULL,
-			expiration VARCHAR (191),
+			expiration VARCHAR (50),
 			PRIMARY KEY (key_cache)
 		) $collate;
 	",
 );
-

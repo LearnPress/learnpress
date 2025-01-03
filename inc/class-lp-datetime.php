@@ -144,12 +144,14 @@ class LP_Datetime {
 	 *
 	 * @return string
 	 * @since 4.0.3
-	 * @version 1.0.2
+	 * @version 1.0.4
 	 */
 	public static function format_human_time_diff( DateTime $date_start, DateTime $date_end ): string {
 		$diff = $date_end->diff( $date_start );
 		$week = floor( $diff->d / 7 );
 
+		$i18n_year   = self::get_string_plural_duration( $diff->y, 'year' );
+		$i18n_month  = self::get_string_plural_duration( $diff->m, 'month' );
 		$i18n_week   = self::get_string_plural_duration( $week, 'week' );
 		$i18n_day    = self::get_string_plural_duration( $diff->d, 'day' );
 		$i18n_hour   = self::get_string_plural_duration( $diff->h, 'hour' );
@@ -169,44 +171,52 @@ class LP_Datetime {
 
 		foreach ( $string as $k => $v ) {
 			if ( isset( $diff->{$k} ) && $diff->{$k} > 0 ) {
-				if ( in_array( $k, array( 'y', 'm' ) ) ) {
-					$date        = new LP_Datetime( $date_end->getTimestamp() );
-					$format_date = $date->format( LP_Datetime::I18N_FORMAT_HAS_TIME );
-				} else {
-					switch ( $k ) {
-						case 'd':
-							$format_date = sprintf(
-								'%1$s, %2$s',
-								$i18n_day,
-								$i18n_hour
-							);
-							break;
-						case 'h':
-							$format_date = sprintf(
-								'%1$s, %2$s',
-								$i18n_hour,
-								$i18n_minute
-							);
-							break;
-						case 'i':
-							$format_date = sprintf(
-								'%1$s, %2$s',
-								$i18n_minute,
-								$i18n_second
-							);
-							break;
-						default:
-							$format_date = $v;
-							break;
-					}
+				switch ( $k ) {
+					case 'y':
+						$format_date = sprintf(
+							'%1$s%2$s',
+							$i18n_year,
+							$diff->m > 0 ? ', ' . $i18n_month : ''
+						);
+						break;
+					case 'm':
+						$format_date = sprintf(
+							'%1$s%2$s',
+							$i18n_month,
+							$diff->d > 0 ? ', ' . $i18n_day : ''
+						);
+						break;
+					case 'd':
+						$format_date = sprintf(
+							'%1$s%2$s',
+							$i18n_day,
+							$diff->h > 0 ? ', ' . $i18n_hour : ''
+						);
+						break;
+					case 'h':
+						$format_date = sprintf(
+							'%1$s%2$s',
+							$i18n_hour,
+							$diff->i > 0 ? ', ' . $i18n_minute : ''
+						);
+						break;
+					case 'i':
+						$format_date = sprintf(
+							'%1$s%2$s',
+							$i18n_minute,
+							$diff->s > 0 ? ', ' . $i18n_second : ''
+						);
+						break;
+					default:
+						$format_date = $v;
+						break;
 				}
-				break;
 			} elseif ( 'w' === $k && $week > 0 ) {
 				$day_remain  = $diff->d - $week * 7;
 				$format_date = sprintf(
-					'%1$s, %2$s',
+					'%1$s%2$s',
 					$i18n_week,
-					self::get_string_plural_duration( $day_remain, 'day' )
+					$day_remain > 0 ? ', ' . self::get_string_plural_duration( $day_remain, 'day' ) : ''
 				);
 				break;
 			}
@@ -284,7 +294,7 @@ class LP_Datetime {
 	 * @param string $duration_type
 	 *
 	 * @return string
-	 * @version 1.0.3
+	 * @version 1.0.4
 	 * @since 4.2.3.5
 	 */
 	public static function get_string_plural_duration( float $duration_number, string $duration_type = '' ): string {
@@ -316,6 +326,18 @@ class LP_Datetime {
 			case 'week':
 				$duration_str = sprintf(
 					_n( '%s Week', '%s Weeks', $duration_number, 'learnpress' ),
+					$duration_number
+				);
+				break;
+			case 'month':
+				$duration_str = sprintf(
+					_n( '%s Month', '%s Months', $duration_number, 'learnpress' ),
+					$duration_number
+				);
+				break;
+			case 'year':
+				$duration_str = sprintf(
+					_n( '%s Year', '%s Years', $duration_number, 'learnpress' ),
 					$duration_number
 				);
 				break;

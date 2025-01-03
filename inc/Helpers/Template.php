@@ -302,7 +302,7 @@ class Template {
 	 * Print message
 	 *
 	 * @param string $message
-	 * @param string $status
+	 * @param string $status 'success', 'warning', 'error, 'info'
 	 *
 	 * @return void
 	 * @since 4.2.6.9.3
