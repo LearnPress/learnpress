@@ -24,7 +24,6 @@ export const edit = ( props ) => {
 						[
 							'core/group',
 							{
-								className: 'lp-content-area',
 								layout: { type: 'default' },
 							},
 							[
