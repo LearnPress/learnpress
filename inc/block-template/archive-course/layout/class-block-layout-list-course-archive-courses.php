@@ -35,6 +35,9 @@ class Block_Layout_List_Course_Archive_Courses extends Abstract_Block_Layout {
 			$pagination = $attributes['pagination'] ?? 'number';
 			$load_Ajax  = $attributes['load'] ? 'yes' : 'no';
 			$custom     = $attributes['custom'] ?? '';
+			$layout     = $attributes['layout'] ?? 'list';
+
+			LP_Settings::update_option( 'archive_courses_layout', $layout );
 			if ( ! $custom ) {
 				LP_Settings::update_option( 'courses_load_ajax', 'yes' );
 				LP_Settings::update_option( 'courses_first_no_ajax', $load_Ajax );
