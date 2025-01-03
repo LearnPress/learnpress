@@ -1,5 +1,5 @@
 import API from '../api';
-import { lpAddQueryArgs, lpFetchAPI, lpGetCurrentURLNoParam } from '../utils';
+import { lpAddQueryArgs, lpFetchAPI, lpGetCurrentURLNoParam } from '../utils.js';
 
 const classCourseFilter = 'lp-form-course-filter';
 const classProcessing = 'processing';
@@ -322,6 +322,11 @@ window.lpCourseFilter = {
 			};
 
 			window.lpAJAXG.fetchAJAX( dataSend, callBack );
+
+			// Scroll to archive element
+			if ( window.outerHeight < 991 ) {
+				elListCourseTarget.scrollIntoView( { behavior: 'smooth' } );
+			}
 		} else {
 			const courseUrl = lpData.urlParams.page_term_url || lpData.courses_url || '';
 			const url = new URL( courseUrl );
@@ -393,9 +398,12 @@ window.lpCourseFilter = {
 				}
 
 				// Filter courses
-				const form = elField.closest( `.${ classCourseFilter }` );
-				const btnSubmit = form.querySelector( '.course-filter-submit' );
-				btnSubmit.click();
+				// Check on mobile will not filter when click field
+				if ( window.outerHeight > 991 ) {
+					const form = elField.closest( `.${ classCourseFilter }` );
+					const btnSubmit = form.querySelector( '.course-filter-submit' );
+					btnSubmit.click();
+				}
 			}
 		} else {
 			elField.querySelector( 'input' ).click();

@@ -50,9 +50,9 @@ const lpAJAX = ( () => {
 
 			lpFetchAPI( url, option, callBack );
 		},
-		fetchAJAX: ( params, callBack ) => {
+		fetchAJAX: ( params, callBack, urlAjax = '' ) => {
 			// Call via ajax.
-			let urlAjax = lpData.lpAjaxUrl;
+			urlAjax = urlAjax || lpData.lpAjaxUrl;
 			if ( params.args.id_url ) {
 				urlAjax = lpAddQueryArgs( urlAjax, { id_url: params.args.id_url } );
 			}
