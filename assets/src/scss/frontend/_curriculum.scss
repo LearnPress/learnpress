@@ -1150,11 +1150,35 @@ body.course-item-popup {
 		}
 	}
 
+	.course-toggle-all-sections {
+		cursor: pointer;
+	}
+
 	.course-section {
 		margin-bottom: 8px;
 		border: 1px solid $border-color;
 		border-radius: $border-radius-global;
-		
+		cursor: pointer;
+
+		&.lp-collapse {
+			.course-section__items {
+				display: none;
+				animation: ease-in-out;
+			}
+
+			.lp-icon-angle-up {
+				display: none;
+			}
+
+			.lp-icon-angle-down {
+				display: block;
+			}
+		}
+
+		.lp-icon-angle-down {
+			display: none;
+		}
+
 		&:last-child {
 			margin-bottom: 0;
 		}
@@ -1239,7 +1263,7 @@ body.course-item-popup {
 
 			&.lp_assignment::before {
 				content: "\e929";
-			} 
+			}
 
 			&.preview::before {
 				content: "\f06e";
@@ -1264,7 +1288,7 @@ body.course-item-popup {
 			&.failed::before {
 				content: "\f00d";
 				color: #f02425;
-			} 
+			}
 
 			&.started::before {
 				content: "\f00c";

@@ -269,6 +269,15 @@ class LP_Assets extends LP_Abstract_Assets {
 					'',
 					[ 'strategy' => 'defer' ]
 				),
+				'lp-curriculum'        => new LP_Asset_Key(
+					self::url( 'js/dist/frontend/curriculum' . self::$_min_assets . '.js' ),
+					[],
+					array( LP_PAGE_SINGLE_COURSE_CURRICULUM, LP_PAGE_SINGLE_COURSE ),
+					0,
+					0,
+					'',
+					[ 'strategy' => 'defer' ]
+				),
 				'lp-quiz'              => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/quiz' . self::$_min_assets . '.js' ),
 					array_merge(
