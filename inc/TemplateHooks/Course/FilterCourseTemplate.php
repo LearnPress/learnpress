@@ -582,7 +582,7 @@ class FilterCourseTemplate {
 	 *
 	 * @return string
 	 * @since 4.2.3.2
-	 * @version 1.0.3
+	 * @version 1.0.4
 	 */
 	public function html_level( array $data = [] ): string {
 		$content = '';
@@ -610,7 +610,11 @@ class FilterCourseTemplate {
 				$filter->only_fields = [ 'DISTINCT(ID)' ];
 				$filter->query_count = true;
 				$filter->levels      = [ $key ];
-				$total_courses       = 0;
+				if ( $key === 'all' ) {
+					$filter->levels[] = '';
+				}
+
+				$total_courses = 0;
 				Courses::get_courses( $filter, $total_courses );
 
 				$disabled = $total_courses > 0 ? '' : 'disabled';
