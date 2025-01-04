@@ -5,7 +5,7 @@
  * @since 4.2.7.6
  */
 
-import { lpShowHideEl } from '../utils.js';
+import { lpShowHideEl, lpOnElementReady } from '../utils.js';
 
 // Events
 document.addEventListener( 'click', ( e ) => {
@@ -52,14 +52,19 @@ const toggleSectionAll = ( elToggleAllSections ) => {
 
 const toggleSection = ( elSection ) => {
 	const elCurriculum = elSection.closest( '.lp-course-curriculum' );
-	const elSections = elCurriculum.querySelectorAll( '.course-section' );
-	const elExpand = elCurriculum.querySelector( '.course-toggle-all-sections' );
-	const elCollapse = elCurriculum.querySelector( '.course-toggle-all-sections.lp-collapse' );
 
 	// Toggle section
 	elSection.classList.toggle( 'lp-collapse' );
 
-	// Check if all sections are collapsed
+	// Check all sections collapsed
+	checkAllSectionsCollapsed( elCurriculum );
+};
+
+const checkAllSectionsCollapsed = ( elCurriculum ) => {
+	const elSections = elCurriculum.querySelectorAll( '.course-section' );
+	const elExpand = elCurriculum.querySelector( '.course-toggle-all-sections' );
+	const elCollapse = elCurriculum.querySelector( '.course-toggle-all-sections.lp-collapse' );
+
 	let isAllCollapsed = false;
 	elSections.forEach( ( el ) => {
 		if ( el.classList.contains( 'lp-collapse' ) ) {
@@ -74,6 +79,8 @@ const toggleSection = ( elSection ) => {
 		lpShowHideEl( elExpand, 0 );
 		lpShowHideEl( elCollapse, 1 );
 	}
-	// End check if all sections are collapsed
 };
 
+lpOnElementReady( '.lp-course-curriculum', ( elCurriculum ) => {
+	checkAllSectionsCollapsed( elCurriculum );
+} );

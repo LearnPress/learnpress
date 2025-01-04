@@ -1291,7 +1291,7 @@ class SingleCourseTemplate {
 		$section_item = apply_filters(
 			'learn-press/course/html-curriculum-item',
 			[
-				'start'  => sprintf( '<li class="course-section lp-collapse" data-section-id="%s">', $section_id ),
+				'start'  => sprintf( '<li class="course-section" data-section-id="%s">', $section_id ),
 				'header' => Template::combine_components( $section_header ),
 				'items'  => Template::combine_components( $section_items ),
 				'end'    => '</li>',
