@@ -138,6 +138,18 @@ return apply_filters(
 					'id'    => 'lp_metabox_curriculum_setting',
 				),
 				array(
+					'title'   => esc_html__( 'Sections view', 'learnpress' ),
+					'id'      => 'section_view',
+					'default' => 'expand_first_section',
+					'type'    => 'select',
+					'options' => array(
+						'expand_first_section' => esc_html__( 'Expand first section', 'learnpress' ),
+						'expand_all'           => esc_html__( 'Expand all', 'learnpress' ),
+						'collapse_all'         => esc_html__( 'Collapse all', 'learnpress' ),
+					),
+					'desc'    => esc_html__( 'Section view', 'learnpress' ),
+				),
+				array(
 					'title'   => esc_html__( 'Section Per Page', 'learnpress' ),
 					'id'      => 'section_per_page',
 					'default' => -1,
