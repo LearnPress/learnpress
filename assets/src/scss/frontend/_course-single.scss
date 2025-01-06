@@ -271,6 +271,11 @@
 			padding-top: 40px;
 			padding-bottom: 40px;
 
+			@media (max-width: 767px) {
+				padding-top: 20px;
+				padding-bottom: 20px;
+			}
+
 			> * {
 				@media (min-width: 992px) {
 					width: calc(100% - 440px);
@@ -289,6 +294,10 @@
 
 		.course-title {
 			margin: 0 0 24px 0;
+
+			@media (max-width: 767px) {
+				margin: 0 0 16px 0;
+			}
 		}
 
 		.course-instructor-category {
@@ -297,6 +306,10 @@
 			gap: 4px;
 			flex-wrap: wrap;
 			margin-bottom: 40px;
+
+			@media (max-width: 767px) {
+				margin-bottom: 20px;
+			}
 	
 			> div > * {
 				display: inline;
@@ -339,6 +352,10 @@
 			> div {
 				margin-bottom: 40px;
 
+				@media (max-width: 767px) {
+					margin-bottom: 20px;
+				}
+
 				&:last-child {
 					margin-bottom: 0;
 				}
@@ -350,6 +367,10 @@
 			.lp-course-curriculum__title {
 				margin: 0 0 20px 0;
 				font-weight: bold;
+
+				@media (max-width: 767px) {
+					margin: 0 0 16px 0;
+				}
 			}
 
 			.course-features,
@@ -421,6 +442,10 @@
 			.info-metas {
 				margin-bottom: 30px;
 
+				@media (max-width: 767px) {
+					margin-bottom: 20px;
+				}
+
 				.info-meta-item {
 					display: flex;
 					gap: 4px;
@@ -458,6 +483,10 @@
 				margin-bottom: 30px;
 				font-size: $font-size-large;
 				font-weight: $heading-font-weight;
+
+				@media (max-width: 767px) {
+					margin-bottom: 20px;
+				}
 
 				.free {
 					color: #3AB500;
@@ -544,10 +573,6 @@
 					justify-content: space-between;
 					margin-bottom: 20px;
 					gap: 12px;
-
-					@media (max-width: 600px) {
-						flex-wrap: wrap;
-					}
 				}
 		
 				.btn-clipboard {
