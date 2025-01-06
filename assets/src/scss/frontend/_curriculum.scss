@@ -1201,6 +1201,12 @@ body.course-item-popup {
 		.section-toggle {
 			display: flex;
 			justify-content: center;
+
+			i {
+				font-size: 24px;
+				width: 24px;
+				text-align: center;
+			}
 		}
 
 		.course-item {
