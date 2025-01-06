@@ -11,8 +11,13 @@ import { lpShowHideEl, lpOnElementReady } from '../utils.js';
 document.addEventListener( 'click', ( e ) => {
 	const target = e.target;
 
-	const elSection = target.closest( '.course-section' );
-	if ( elSection ) {
+	const elSectionHeader = target.closest( '.course-section-header' );
+	if ( elSectionHeader ) {
+		const elSection = elSectionHeader.closest( '.course-section' );
+		if ( ! elSection ) {
+			return;
+		}
+
 		e.preventDefault();
 		toggleSection( elSection );
 	}
