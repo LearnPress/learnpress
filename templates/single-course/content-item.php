@@ -46,7 +46,10 @@ $can_view_content_item   = $user->can_view_item( $course_item->get_id(), $can_vi
 			} else {
 				learn_press_get_template(
 					'single-course/content-protected.php',
-					array( 'can_view_item' => $can_view_content_item )
+					array(
+						'can_view_item' => $can_view_content_item,
+						'course'        => $course,
+					)
 				);
 			}
 
