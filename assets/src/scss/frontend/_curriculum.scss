@@ -1159,6 +1159,7 @@ body.course-item-popup {
 		border: 1px solid $border-color;
 		border-radius: $border-radius-global;
 		cursor: pointer;
+		overflow: hidden;
 
 		&.lp-collapse {
 			.course-section__items {
