@@ -79,7 +79,7 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 		}
 
 		$this->settings = LP_Settings::instance()->get_group( $this->id, '' );
-		$this->enabled  = $this->settings->get( 'enable' );
+		$this->enabled  = $this->settings->get( 'enable', 'no' );
 
 		add_filter( 'learn-press/admin/get-settings/admin-options-' . $this->id, array( $this, 'get_settings' ) );
 	}

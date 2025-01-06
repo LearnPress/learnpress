@@ -90,6 +90,9 @@ class PostModel {
 	 */
 	public $filter;
 
+	const STATUS_PUBLISH = 'publish';
+	const STATUS_TRASH   = 'trash';
+
 	/**
 	 * If data get from database, map to object.
 	 * Else create new object to save data to database.
@@ -207,15 +210,39 @@ class PostModel {
 	 *
 	 * If user_item_id is empty, insert new data, else update data.
 	 *
-	 * @return static
 	 * @throws Exception
 	 * @since 4.2.5
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function save() {
-		$this->clean_caches();
+		$data = [];
+		foreach ( get_object_vars( $this ) as $property => $value ) {
+			$data[ $property ] = $value;
+		}
 
-		return $this;
+		$filter              = new LP_Post_Type_Filter();
+		$filter->ID          = $this->ID;
+		$filter->only_fields = [ 'ID' ];
+		$post_rs             = self::get_item_model_from_db( $filter );
+		// Check if exists course id.
+		if ( empty( $post_rs ) ) { // Insert data.
+			$post_id = wp_insert_post( $data, true );
+		} else { // Update data.
+			$post_id = wp_update_post( $data, true );
+		}
+
+		if ( is_wp_error( $post_id ) ) {
+			throw new Exception( $post_id->get_error_message() );
+		} else {
+			$this->ID = $post_id;
+		}
+
+		$post = get_post( $this->ID );
+		foreach ( get_object_vars( $post ) as $property => $value ) {
+			$this->{$property} = $value;
+		}
+
+		$this->clean_caches();
 	}
 
 	/**
