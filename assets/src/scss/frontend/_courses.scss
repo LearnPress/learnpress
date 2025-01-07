@@ -648,6 +648,24 @@
 		}
 	}
 
+	&.profile-courses-list[data-layout="grid"] {
+		.course-permalink {
+			padding: 12px 12px 0;
+		}
+
+		.course-instructor-category {
+			padding: 0 12px;
+		}
+
+		.course-wrap-meta {
+			padding: 0 12px;
+		}
+
+		.course-info {
+			padding: 0 12px 20px;
+		}
+	}
+
 	.lp-archive-course-skeleton {
 		position: absolute;
 		height: 100%;
