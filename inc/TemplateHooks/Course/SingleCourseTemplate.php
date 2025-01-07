@@ -1260,16 +1260,23 @@ class SingleCourseTemplate {
 			return '';
 		}
 
-		$section_id          = $section_item->section_id ?? 0;
-		$section_name        = $section_item->section_name ?? '';
-		$section_description = $section_item->section_description ?? '';
-		$items               = $section_item->items ?? [];
+		$section_id               = $section_item->section_id ?? 0;
+		$section_name             = $section_item->section_name ?? '';
+		$section_description      = $section_item->section_description ?? '';
+		$items                    = $section_item->items ?? [];
+		$html_section_description = '';
+		if ( ! empty( $section_description ) ) {
+			$html_section_description = sprintf(
+				'<div class="course-section__description">%s</div>',
+				wp_kses_post( $section_description )
+			);
+		}
 
 		$section_header = [
 			'start'       => '<div class="course-section-header">',
 			'info'        => '<div class="course-section-info">',
 			'title'       => sprintf( '<div class="course-section__title">%s</div>', wp_kses_post( $section_name ) ),
-			'description' => sprintf( '<div class="course-section__description">%s</div>', wp_kses_post( $section_description ) ),
+			'description' => $html_section_description,
 			'info_end'    => '</div>',
 			'toggle'      => '<span class="section-toggle">
 				<i class="lp-icon-angle-down"></i>
