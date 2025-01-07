@@ -1332,7 +1332,7 @@ class SingleCourseTemplate {
 			return $html;
 		}
 
-		$link_item = $courseModel->get_item_link( $item_id );
+		$link_item = $courseModel->get_item_link( $item_id, $item_type );
 
 		$item_duration      = '';
 		$html_item_duration = '';

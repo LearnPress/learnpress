@@ -28,6 +28,7 @@ class UserCourseTemplate extends UserItemBaseTemplate {
 	 *
 	 * @return string
 	 * @since 4.2.7.5
+	 * @version 1.0.0
 	 */
 	public function html_btn_continue( UserCourseModel $userCourseModel ): string {
 		$html = '';
@@ -41,19 +42,29 @@ class UserCourseTemplate extends UserItemBaseTemplate {
 			return $html;
 		}
 
-		$section = apply_filters(
+		$courseModel       = $userCourseModel->get_course_model();
+		$itemModelContinue = $userCourseModel->get_item_continue();
+		$link_continue     = '';
+		if ( empty( $itemModelContinue ) ) {
+			$link_continue = $courseModel->get_permalink();
+		} else {
+			$link_continue = $courseModel->get_item_link( $itemModelContinue->ID );
+		}
+
+		$html = apply_filters(
 			'learn-press/user/course/html-button-continue',
-			[
-				'btn' => sprintf(
-					'<a href="%s">%s</a>',
-					'#',
-					sprintf( '<button class="lp-button course-btn-continue">%s</button>', esc_html__( 'Continue', 'learnpress' ) )
-				),
-			],
+			sprintf(
+				'<a href="%s">%s</a>',
+				esc_url_raw( $link_continue ),
+				sprintf(
+					'<button class="lp-button course-btn-continue">%s</button>',
+					esc_html__( 'Continue', 'learnpress' )
+				)
+			),
 			$userCourseModel
 		);
 
-		return Template::combine_components( $section );
+		return $html;
 	}
 
 	/**

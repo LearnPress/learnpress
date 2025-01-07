@@ -764,13 +764,16 @@ class CourseModel {
 	 * @move from LP_Abstract_Course
 	 *
 	 * @param int $item_id
+	 * @param string $item_type
 	 *
-	 * @since 3.0.0
-	 * @version 1.0.1
 	 * @return string
+	 * @since 3.0.0
+	 * @version 1.0.2
 	 */
-	public function get_item_link( int $item_id ): string {
-		$item_type        = get_post_type( $item_id );
+	public function get_item_link( int $item_id, string $item_type = '' ): string {
+		if ( empty( $item_type ) ) {
+			$item_type = get_post_type( $item_id );
+		}
 		$course_permalink = trailingslashit( $this->get_permalink() );
 		$item_slug        = get_post_field( 'post_name', $item_id );
 
@@ -1073,7 +1076,7 @@ class CourseModel {
 	/**
 	 * Get item model assigned to this course
 	 *
-	 * @return mixed|false|null
+	 * @return mixed|false|null|WP_Post
 	 * @since v4.2.7.6
 	 * @version 1.0.0
 	 */
@@ -1081,16 +1084,17 @@ class CourseModel {
 		try {
 			$item = false;
 
-			$type               = str_replace( 'lp_', '', $item_type );
-			$findClassPostModel = ucfirst( $type ) . 'PostModel';
-			$findClassModel     = ucfirst( $type ) . 'Model'; // For feature, lesson, quiz, question has new table unique.
-
-			if ( class_exists( $findClassModel ) ) {
-				if ( is_callable( [ $findClassModel, 'find' ] ) ) {
-					$item = call_user_func( [ $findClassModel, 'find' ], $item_id, true );
-				}
-			} elseif ( class_exists( $findClassPostModel ) ) {
-				$item = call_user_func( [ $findClassPostModel, 'find' ], $item_id, true );
+			switch ( $item_type ) {
+				case LP_LESSON_CPT:
+					break;
+				case LP_QUIZ_CPT:
+					$item = QuizPostModel::find( $item_id, true );
+					break;
+				case LP_QUESTION_CPT:
+					break;
+				default:
+					$item = apply_filters( 'learn-press/course/get-item-model', $item, $item_id, $item_type, $this );
+					break;
 			}
 
 			// If not defined class, get post default

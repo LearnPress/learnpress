@@ -137,6 +137,60 @@ class UserCourseModel extends UserItemModel {
 	}
 
 	/**
+	 * Get item continue to learn.
+	 *
+	 * @return mixed|null
+	 * @since 4.2.7.6
+	 * @version 1.0.0
+	 */
+	public function get_item_continue() {
+		if ( isset( $this->meta_data->item_continue ) ) {
+			return $this->meta_data->item_continue;
+		}
+
+		$itemModel = null;
+
+		try {
+			$courseModel   = $this->get_course_model();
+			$totalItemsObj = $courseModel->get_total_items();
+			if ( empty( $totalItemsObj ) || ! isset( $totalItemsObj->count_items ) ) {
+				return $itemModel;
+			}
+
+			$sections_items = $courseModel->get_section_items();
+			foreach ( $sections_items as $section_items ) {
+				if ( $itemModel ) {
+					break;
+				}
+
+				foreach ( $section_items->items as $item ) {
+					$item_id   = $item->id ?? $item->item_id;
+					$item_type = $item->type ?? $item->item_type;
+
+					$userItemModel = UserItemModel::find_user_item(
+						$this->user_id,
+						$item_id,
+						$item_type,
+						$courseModel->get_id(),
+						LP_COURSE_CPT,
+						true
+					);
+					if ( ! $userItemModel || $userItemModel->get_status() !== LP_ITEM_COMPLETED ) {
+						$itemModel = $courseModel->get_item_model( $item_id, $item_type );
+						break;
+					}
+				}
+			}
+
+			$this->meta_data->item_continue = $itemModel;
+		} catch ( Throwable $e ) {
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
+		}
+
+		return $itemModel;
+	}
+
+	/**
 	 * Count students.
 	 *
 	 * @param LP_User_Items_Filter $filter
