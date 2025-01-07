@@ -1195,12 +1195,21 @@ body.course-item-popup {
 		&__title {
 			font-weight: bold;
 			font-size: $font-size-large;
-			margin: 0 0 8px 0;
+		}
+
+		&__description {
+			margin: 8px 0 0 0;
 		}
 
 		.section-toggle {
 			display: flex;
 			justify-content: center;
+
+			i {
+				font-size: 24px;
+				width: 24px;
+				text-align: center;
+			}
 		}
 
 		.course-item {
@@ -1217,7 +1226,7 @@ body.course-item-popup {
 				justify-content: space-between;
 				width: 100%;
 				column-gap: 20px;
-				row-gap: 8;
+				row-gap: 8px;
 				flex-wrap: wrap;
 			}
 
