@@ -108,14 +108,6 @@ class FilterCourseTemplate {
 	 */
 	public function html_item( string $title = '', string $content = '' ): string {
 		try {
-			ob_start();
-			$html_wrapper = apply_filters(
-				'learn-press/filter-courses/item/wrapper',
-				[
-					'<div class="lp-form-course-filter__item">' => '</div>',
-
-				]
-			);
 			$title_html   = sprintf(
 				'<div class="lp-form-course-filter__title">%s</div>',
 				$title
@@ -125,16 +117,25 @@ class FilterCourseTemplate {
 				$content
 			);
 			$sections     = apply_filters(
-				'learn-press/filter-courses/item/sections',
+				'lp/filter-courses/item/sections',
 				[
-					'title'   => [ 'text_html' => $title_html ],
-					'content' => [ 'text_html' => $content_html ],
+					'title'   => $title_html,
+					'content' => $content_html,
 				],
 				$title,
 				$content
 			);
-			Template::instance()->print_sections( $sections );
-			$content = Template::instance()->nest_elements( $html_wrapper, ob_get_clean() );
+
+			$wrapper = apply_filters(
+				'lp/filter-courses/item/wrapper',
+				[
+					'wrapper'     => '<div class="lp-form-course-filter__item">',
+					'content'	  => Template::combine_components( $sections ),
+					'wrapper_end' => '</div>',
+				]
+			);
+
+			$content = Template::combine_components( $wrapper );
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
@@ -153,14 +154,6 @@ class FilterCourseTemplate {
 		$content = '';
 
 		try {
-			$html_wrapper = apply_filters(
-				'learn-press/filter-courses/sections/search/wrapper',
-				[
-					'<div class="lp-course-filter-search-field">' => '</div>',
-				],
-				$data
-			);
-
 			$this->check_param_url_has_lang( $data );
 			$value    = LP_Request::get_param( 'c_search' );
 			$value    = isset( $data['params_url'] ) ? ( $data['params_url']['c_search'] ?? $value ) : $value;
@@ -172,9 +165,29 @@ class FilterCourseTemplate {
 				$data['search_suggestion'] ?? 1
 			);
 			$content .= '<span class="lp-loading-circle lp-loading-no-css hide"></span>';
-			$content  = Template::instance()->nest_elements( $html_wrapper, $content );
-			$content .= '<div class="lp-course-filter-search-result"></div>';
-			$content  = $this->html_item( esc_html__( 'Search', 'learnpress' ), $content );
+
+			$sections = [
+				'wrapper'     => '<div class="lp-course-filter-search-field">',
+				'content'     => $content,
+				'wrapper_end' => '</div>',
+				'result'	  => '<div class="lp-course-filter-search-result"></div>',
+			];
+
+			$content = Template::combine_components( $sections );
+
+			$content = $this->html_item( esc_html__( 'Search', 'learnpress' ), $content );
+
+			$wrapper = apply_filters(
+				'lp/filter-courses/sections/search/wrapper',
+				[
+					'wrapper'     => '<div class="lp-course-filter-search">',
+					'content'	  => $content,
+					'wrapper_end' => '</div>',
+				],
+				$data
+			);
+
+			$content = Template::combine_components( $wrapper );
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
@@ -231,10 +244,6 @@ class FilterCourseTemplate {
 			);
 
 			foreach ( $fields as $key => $field ) {
-				$html_wrapper = [
-					'<div class="lp-course-filter__field">' => '</div>',
-				];
-
 				$value    = "on_{$key}";
 				$disabled = $field['count'] > 0 ? '' : 'disabled';
 				if ( ! empty( $disabled ) && $hide_count_zero ) {
@@ -251,19 +260,23 @@ class FilterCourseTemplate {
 				$count   = sprintf( '<span class="count">%s</span>', esc_html( $field['count'] ) );
 
 				$sections = apply_filters(
-					'learn-press/filter-courses/price/sections',
+					'lp/filter-courses/price/sections',
 					[
-						'input' => [ 'text_html' => $input ],
-						'label' => [ 'text_html' => $label ],
-						'count' => [ 'text_html' => $count ],
+						'input' => $input,
+						'label' => $label,
+						'count' => $count,
 					],
 					$field,
 					$data
 				);
 
-				ob_start();
-				Template::instance()->print_sections( $sections );
-				$content .= Template::instance()->nest_elements( $html_wrapper, ob_get_clean() );
+				$wrapper = [
+					'wrapper'     => '<div class="lp-course-filter__field">',
+					'content'	  => Template::combine_components( $sections ),
+					'wrapper_end' => '</div>',
+				];
+
+				$content .= Template::combine_components( $wrapper );
 			}
 
 			$content = $this->html_item( esc_html__( 'Price', 'learnpress' ), $content );
@@ -311,11 +324,19 @@ class FilterCourseTemplate {
 			$this->html_struct_categories( $data );
 			$content .= ob_get_clean();
 
-			$html_wrapper = [
-				'<div class="lp-course-filter-category">' => '</div>',
-			];
-			$content      = $this->html_item( esc_html__( 'Categories', 'learnpress' ), $content );
-			$content      = Template::instance()->nest_elements( $html_wrapper, $content );
+			$content = $this->html_item( esc_html__( 'Categories', 'learnpress' ), $content );
+
+			$wrapper = apply_filters(
+				'lp/filter-courses/sections/category/wrapper',
+				[
+					'wrapper'     => '<div class="lp-course-filter-category">',
+					'content'	  => $content,
+					'wrapper_end' => '</div>',
+				],
+				$data
+			);
+
+			$content = Template::combine_components( $wrapper );
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
@@ -401,13 +422,13 @@ class FilterCourseTemplate {
 		$count   = sprintf( '<span class="count">%s</span>', esc_html( $count_courses ) );
 
 		$sections = apply_filters(
-			'learn-press/filter-courses/course-category/sections',
+			'lp/filter-courses/course-category/sections',
 			[
-				'start' => [ 'text_html' => '<div class="lp-course-filter__field">' ],
-				'input' => [ 'text_html' => $input ],
-				'label' => [ 'text_html' => $label ],
-				'count' => [ 'text_html' => $count ],
-				'end'   => [ 'text_html' => '</div>' ],
+				'start' => '<div class="lp-course-filter__field">',
+				'input' => $input,
+				'label' => $label,
+				'count' => $count,
+				'end'   => '</div>',
 			],
 			$category_id,
 			$category_name,
@@ -415,7 +436,7 @@ class FilterCourseTemplate {
 		);
 
 		ob_start();
-		Template::instance()->print_sections( $sections );
+		echo Template::combine_components( $sections );
 
 		return ob_get_clean();
 	}
@@ -457,10 +478,6 @@ class FilterCourseTemplate {
 			}
 
 			foreach ( $terms as $term ) {
-				$html_wrapper = [
-					'<div class="lp-course-filter__field">' => '</div>',
-				];
-
 				$value               = $term->term_id;
 				$filter              = new LP_Course_Filter();
 				$filter->query_count = true;
@@ -479,19 +496,23 @@ class FilterCourseTemplate {
 				$count   = sprintf( '<span class="count">%s</span>', esc_html( $count_courses ) );
 
 				$sections = apply_filters(
-					'learn-press/filter-courses/course-tag/sections',
+					'lp/filter-courses/course-tag/sections',
 					[
-						'input' => [ 'text_html' => $input ],
-						'label' => [ 'text_html' => $label ],
-						'count' => [ 'text_html' => $count ],
+						'input' => $input,
+						'label' => $label,
+						'count' => $count,
 					],
 					$term,
 					$data
 				);
 
-				ob_start();
-				Template::instance()->print_sections( $sections );
-				$content .= Template::instance()->nest_elements( $html_wrapper, ob_get_clean() );
+				$wrapper = [
+					'wrapper'     => '<div class="lp-course-filter__field">',
+					'content'	  => Template::combine_components( $sections ),
+					'wrapper_end' => '</div>',
+				];
+
+				$content .= Template::combine_components( $wrapper );
 			}
 
 			$content = $this->html_item( esc_html__( 'Tags', 'learnpress' ), $content );
@@ -528,9 +549,6 @@ class FilterCourseTemplate {
 			);
 
 			foreach ( $instructors as $instructor ) {
-				$html_wrapper               = [
-					'<div class="lp-course-filter__field">' => '</div>',
-				];
 				$total_course_of_instructor = 0;
 
 				$filter              = new LP_Course_Filter();
@@ -551,20 +569,24 @@ class FilterCourseTemplate {
 				$count   = sprintf( '<span class="count">%s</span>', esc_html( $total_course_of_instructor ) );
 
 				$sections = apply_filters(
-					'learn-press/filter-courses/author/sections',
+					'lp/filter-courses/author/sections',
 					[
-						'input' => [ 'text_html' => $input ],
-						'label' => [ 'text_html' => $label ],
-						'count' => [ 'text_html' => $count ],
+						'input' => $input,
+						'label' => $label,
+						'count' => $count,
 					],
 					$instructor,
 					$total_course_of_instructor,
 					$data
 				);
 
-				ob_start();
-				Template::instance()->print_sections( $sections );
-				$content .= Template::instance()->nest_elements( $html_wrapper, ob_get_clean() );
+				$wrapper = [
+					'wrapper'     => '<div class="lp-course-filter__field">',
+					'content'	  => Template::combine_components( $sections ),
+					'wrapper_end' => '</div>',
+				];
+
+				$content .= Template::combine_components( $wrapper );
 			}
 
 			$content = $this->html_item( esc_html__( 'Author', 'learnpress' ), $content );
@@ -596,10 +618,6 @@ class FilterCourseTemplate {
 			$hide_count_zero = $data['hide_count_zero'] ?? 1;
 
 			foreach ( $fields as $key => $field ) {
-				$html_wrapper = [
-					'<div class="lp-course-filter__field">' => '</div>',
-				];
-
 				$value = $key;
 				if ( empty( $key ) ) {
 					$value = 'all';
@@ -632,20 +650,24 @@ class FilterCourseTemplate {
 				$count   = sprintf( '<span class="count">%s</span>', esc_html( $total_courses ) );
 
 				$sections = apply_filters(
-					'learn-press/filter-courses/levels/sections',
+					'lp/filter-courses/levels/sections',
 					[
-						'input' => [ 'text_html' => $input ],
-						'label' => [ 'text_html' => $label ],
-						'count' => [ 'text_html' => $count ],
+						'input' => $input,
+						'label' => $label,
+						'count' => $count,
 					],
 					$field,
 					$value,
 					$data
 				);
 
-				ob_start();
-				Template::instance()->print_sections( $sections );
-				$content .= Template::instance()->nest_elements( $html_wrapper, ob_get_clean() );
+				$wrapper = [
+					'wrapper'     => '<div class="lp-course-filter__field">',
+					'content'	  => Template::combine_components( $sections ),
+					'wrapper_end' => '</div>',
+				];
+
+				$content .= Template::combine_components( $wrapper );
 			}
 
 			$content = $this->html_item( esc_html__( 'Levels', 'learnpress' ), $content );
