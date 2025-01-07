@@ -66,13 +66,6 @@ class FilterCourseTemplate {
 				$data['fields'][] = 'btn_submit';
 			}
 
-			$html_wrapper = apply_filters(
-				'learn-press/filter-courses/sections/wrapper',
-				[
-					'<form class="lp-form-course-filter">' => '</form>',
-				],
-				$data
-			);
 			$sections     = [];
 			foreach ( $data['fields'] as $field ) {
 				if ( is_callable( [ $this, 'html_' . $field ] ) ) {
@@ -91,7 +84,19 @@ class FilterCourseTemplate {
 
 			ob_start();
 			Template::instance()->print_sections( $sections );
-			echo Template::instance()->nest_elements( $html_wrapper, ob_get_clean() );
+			$html_sections = ob_get_clean();
+
+			$wrapper = apply_filters(
+				'lp/filter-courses/sections/wrapper',
+				[
+					'wrapper'     => '<form class="lp-form-course-filter">',
+					'sections'    => $html_sections,
+					'wrapper_end' => '</form>',
+				],
+				$data
+			);
+
+			echo Template::combine_components( $wrapper );
 		} catch ( Throwable $e ) {
 			ob_end_clean();
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
