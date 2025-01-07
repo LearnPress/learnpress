@@ -1389,7 +1389,7 @@ class SingleCourseTemplate {
 			$user_item_status_ico_flag = 'preview';
 		}
 
-		if ( $courseModel->has_no_enroll_requirement() ) {
+		if ( $courseModel->has_no_enroll_requirement() && ! $user_attended_course ) {
 			$user_item_status_ico_flag = UserItemModel::GRADUATION_IN_PROGRESS;
 		}
 
