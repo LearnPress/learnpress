@@ -1195,7 +1195,10 @@ body.course-item-popup {
 		&__title {
 			font-weight: bold;
 			font-size: $font-size-large;
-			margin: 0 0 8px 0;
+		}
+
+		&__description {
+			margin: 8px 0 0 0;
 		}
 
 		.section-toggle {
