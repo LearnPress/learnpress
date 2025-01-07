@@ -25,6 +25,7 @@ export const edit = ( props ) => {
 							'core/group',
 							{
 								layout: { type: 'default' },
+								className: 'lp-archive-courses',
 							},
 							[
 								[
