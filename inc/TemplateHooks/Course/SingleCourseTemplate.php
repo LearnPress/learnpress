@@ -1287,7 +1287,7 @@ class SingleCourseTemplate {
 
 		$li_items = '';
 		foreach ( $items as $item ) {
-			$li_items .= $this->render_html_course_item( $course, $user, $item );
+			$li_items .= $this->render_html_course_item( $course, $user, $item, $section_item );
 		}
 		$section_items = [
 			'start'    => '<ul class="course-section__items">',
@@ -1320,7 +1320,7 @@ class SingleCourseTemplate {
 	 * @since 4.2.7.6
 	 * @version 1.0.0
 	 */
-	public function render_html_course_item( CourseModel $courseModel, $userModel, $item ): string {
+	public function render_html_course_item( CourseModel $courseModel, $userModel, $item, $section_item ): string {
 		$html = '';
 
 		if ( ! $item instanceof stdClass ) {
@@ -1420,6 +1420,11 @@ class SingleCourseTemplate {
 			'icon'           => sprintf(
 				'<span class="course-item-ico %s"></span>',
 				esc_attr( $item_type )
+			),
+			'item_order'     => sprintf(
+				'<span class="course-item-order lp-hidden">%s.%s</span>',
+				(int) $section_item->section_order + 1,
+				(int) $item->item_order + 1
 			),
 			'title'          => sprintf( '<div class="course-item-title">%s</div>', wp_kses_post( $title ) ),
 			'item_left_end'  => '</div>',
