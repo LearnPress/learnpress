@@ -1423,8 +1423,8 @@ class SingleCourseTemplate {
 			),
 			'item_order'     => sprintf(
 				'<span class="course-item-order lp-hidden">%s.%s</span>',
-				(int) $section_item->section_order + 1,
-				(int) $item->item_order + 1
+				$section_item->section_order,
+				$item->item_order
 			),
 			'title'          => sprintf( '<div class="course-item-title">%s</div>', wp_kses_post( $title ) ),
 			'item_left_end'  => '</div>',
