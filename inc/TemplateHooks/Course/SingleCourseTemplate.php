@@ -17,6 +17,7 @@ use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\Models\UserItems\UserItemModel;
 use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
+use LearnPress\TemplateHooks\TemplateAJAX;
 use LearnPress\TemplateHooks\UserTemplate;
 use LP_Checkout;
 use LP_Course;
@@ -31,6 +32,20 @@ class SingleCourseTemplate {
 	use Singleton;
 
 	public function init() {
+		add_filter( 'lp/rest/ajax/allow_callback', [ $this, 'allow_callback' ] );
+	}
+
+	/**
+	 * Allow callback for AJAX.
+	 * @use self::render_html_comments
+	 * @param array $callbacks
+	 *
+	 * @return array
+	 */
+	public function allow_callback( array $callbacks ): array {
+		$callbacks[] = get_class( $this ) . ':render_html_comments';
+
+		return $callbacks;
 	}
 
 	/**
@@ -1166,6 +1181,77 @@ class SingleCourseTemplate {
 		}
 
 		return $html;
+	}
+
+	/**
+	 * GET HTML comment default of WP
+	 *
+	 * @param CourseModel $courseModel
+	 *
+	 * @return string
+	 * @since 4.2.7.6
+	 * @version 1.0.0
+	 */
+	public function html_comment( CourseModel $courseModel ): string {
+		$args     = [
+			'id_url'    => 'course-comments',
+			'course_id' => $courseModel->get_id(),
+		];
+		$callBack = [
+			'class'  => __CLASS__,
+			'method' => 'render_html_comments',
+		];
+		$html     = TemplateAJAX::load_content_via_ajax( $args, $callBack );
+
+		$section_comment = apply_filters(
+			'learn-press/single-course/html-comment',
+			[
+				'wrapper'     => '<div class="lp-course-comment">',
+				'content'     => $html,
+				'wrapper_end' => '</div>',
+			]
+		);
+
+		return Template::combine_components( $section_comment );
+	}
+
+	/**
+	 * Render HTML comments of course.
+	 *
+	 * @param array $data ['course_id']
+	 *
+	 * @return stdClass
+	 * @since 4.2.7.6
+	 * @version 1.0.0
+	 */
+	public static function render_html_comments( array $data ): stdClass {
+		$response          = new stdClass();
+		$response->content = '';
+
+		try {
+			$course_id = $data['course_id'] ?? 0;
+			if ( empty( $course_id ) ) {
+				return $response;
+			}
+
+			global $withcomments, $post;
+
+			$post = get_post( $course_id );
+			if ( $post->comment_status !== 'open' ) {
+				return $response;
+			} else {
+				$withcomments = true;
+			}
+
+			ob_start();
+			comments_template();
+			$html              = ob_get_clean();
+			$response->content = $html;
+		} catch ( Throwable $e ) {
+			$response->content = Template::print_message( $e->getMessage(), 'error', false );
+		}
+
+		return $response;
 	}
 
 	/**

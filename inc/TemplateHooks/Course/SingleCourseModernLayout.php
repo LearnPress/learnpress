@@ -92,12 +92,20 @@ class SingleCourseModernLayout {
 			'learn-press/single-course/model/header/info-meta',
 			[
 				'wrapper'     => '<div class="lp-single-course-info-one">',
+				'author'      => '',
 				'last_update' => sprintf( '<div class="item-meta">%s: %s</div>', esc_html__( 'Last updated', 'learnpress' ), esc_attr( get_post_modified_time( get_option( 'date_format' ), true ) ) ),
 				'wrapper_end' => '</div>',
 			],
 			$course,
 			$user
 		);
+
+		/*$section_info_one = apply_filters(
+			'learn-press/single-course/offline/info-bar',
+			$section_info_one,
+			$course,
+			$user
+		);*/
 
 		$header_sections = apply_filters(
 			'learn-press/single-course/model/header/sections',
@@ -189,6 +197,10 @@ class SingleCourseModernLayout {
 		}
 		// End instructor
 
+		/*ob_start();
+		do_action('lp-addon-students-list/students-list/layout', $course);
+		$html_students = ob_get_clean();*/
+
 		$section_left = apply_filters(
 			'learn-press/single-course/model/section_left',
 			[
@@ -201,11 +213,15 @@ class SingleCourseModernLayout {
 				'material'     => $this->singleCourseTemplate->html_material( $course, $user ),
 				'faqs'         => $this->singleCourseTemplate->html_faqs( $course ),
 				'instructor'   => $html_instructor,
+				'comment'      => $this->singleCourseTemplate->html_comment( $course ),
 				'wrapper_end'  => '</div>',
 			],
 			$course,
 			$user
 		);
+
+		// Do not use this hook, this hook only for handle hook without update from Addon, when handle on Addon, will remove this hook
+		$section_left = apply_filters( 'learn-press/single-course/offline/section-left', $section_left, $course, $user );
 
 		return Template::combine_components( $section_left );
 	}
