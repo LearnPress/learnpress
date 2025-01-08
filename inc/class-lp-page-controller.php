@@ -466,7 +466,13 @@ class LP_Page_Controller {
 		if ( self::is_page_single_course() ) {
 			$page_template = 'single-course-layout.php';
 			// Check condition to load single course layout classic or modern.
-			$is_override_single_course   = Template::check_template_is_override( 'single-course.php' );
+			$is_override_single_course   = Template::check_template_is_override( 'single-course.php' )
+			|| Template::check_template_is_override( 'content-course.php' )
+			|| Template::check_template_is_override( 'content-single-course.php' )
+			|| Template::check_template_is_override( 'loop/single-course/loop-section.php' )
+			|| Template::check_template_is_override( 'single-course/loop-section.php' )
+			|| Template::check_template_is_override( 'single-course/tabs/curriculum.php' )
+			|| Template::check_template_is_override( 'single-course/tabs/curriculum-v2.php' );
 			$option_single_course_layout = LP_Settings::get_option( 'layout_single_course', '' );
 
 			if ( $is_override_single_course ) { // Old file template
