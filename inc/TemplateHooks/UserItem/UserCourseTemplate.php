@@ -28,7 +28,7 @@ class UserCourseTemplate extends UserItemBaseTemplate {
 	 *
 	 * @return string
 	 * @since 4.2.7.5
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function html_btn_continue( UserCourseModel $userCourseModel ): string {
 		$html = '';
@@ -42,29 +42,33 @@ class UserCourseTemplate extends UserItemBaseTemplate {
 			return $html;
 		}
 
-		$courseModel       = $userCourseModel->get_course_model();
+		$courseModel = $userCourseModel->get_course_model();
+		if ( ! $courseModel ) {
+			return $html;
+		}
+
+		$total_items = $courseModel->count_items();
+		if ( empty( $total_items ) ) {
+			return $html;
+		}
+
 		$itemModelContinue = $userCourseModel->get_item_continue();
-		$link_continue     = '';
 		if ( empty( $itemModelContinue ) ) {
 			$link_continue = $courseModel->get_permalink();
 		} else {
 			$link_continue = $courseModel->get_item_link( $itemModelContinue->ID );
 		}
 
-		$html = apply_filters(
-			'learn-press/user/course/html-button-continue',
+		$html = sprintf(
+			'<a href="%s">%s</a>',
+			esc_url_raw( $link_continue ),
 			sprintf(
-				'<a href="%s">%s</a>',
-				esc_url_raw( $link_continue ),
-				sprintf(
-					'<button class="lp-button course-btn-continue">%s</button>',
-					esc_html__( 'Continue', 'learnpress' )
-				)
-			),
-			$userCourseModel
+				'<button class="lp-button course-btn-continue">%s</button>',
+				esc_html__( 'Continue', 'learnpress' )
+			)
 		);
 
-		return $html;
+		return apply_filters( 'learn-press/user/course/html-button-continue', $html, $userCourseModel );
 	}
 
 	/**

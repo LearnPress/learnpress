@@ -846,18 +846,21 @@ class CourseModel {
 
 	/**
 	 * Count total items in Course
+	 * item_type empty will return all items if exists.
 	 *
-	 * @param $item_type
+	 * @param string $item_type
 	 *
 	 * @return int
 	 * @since 4.2.7.3
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
-	public function count_items( $item_type ): int {
+	public function count_items( string $item_type = '' ): int {
 		$count = 0;
 
 		$total_items = $this->get_total_items();
-		if ( isset( $total_items->{$item_type} ) ) {
+		if ( empty( $item_type ) ) {
+			$count = $total_items->count_items ?? 0;
+		} elseif ( isset( $total_items->{$item_type} ) ) {
 			return $total_items->{$item_type};
 		}
 
@@ -1086,6 +1089,7 @@ class CourseModel {
 
 			switch ( $item_type ) {
 				case LP_LESSON_CPT:
+					$item = LessonPostModel::find( $item_id, true );
 					break;
 				case LP_QUIZ_CPT:
 					$item = QuizPostModel::find( $item_id, true );

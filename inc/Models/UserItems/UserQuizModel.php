@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Class UserItemModel
+ * Class UserQuizModel
  *
  * @package LearnPress/Classes
  * @version 1.0.1
