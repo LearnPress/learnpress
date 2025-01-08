@@ -330,6 +330,45 @@
 			}
 	
 		}
+
+		.lp-single-course-info-one {
+			display: flex;
+			column-gap: 20px;
+			row-gap: 8px;
+			flex-wrap: wrap;
+
+			.star-info {
+				display: inline-flex;
+				align-items: center;
+				gap: 4px;
+				padding-right: 20px;
+				position: relative;
+
+				&::after {
+					content: '';
+					right: 0;
+					left: auto;
+					width: 1px;
+					height: 20px;
+					position: absolute;
+					background-color: $border-color;
+				}
+
+				@media (max-width: 500px) {
+					padding-right: 0;
+
+					&::after {
+						content: none;
+					}
+				}
+			}
+
+			.ico-star,
+			.lp-review-svg-star {
+				display: inline-flex;
+				align-items: center;
+			}
+		}
 	}
 
 	.lp-single-course-main {
@@ -365,9 +404,13 @@
 			.extra-box__title, 
 			.course-faqs__title, 
 			.course-material__title,
-			.lp-course-curriculum__title {
+			.lp-course-curriculum__title,
+			.comment-reply-title,
+			.section-title,
+			.item-title {
 				margin: 0 0 20px 0;
 				font-weight: bold;
+				font-size: $font-size-h3;
 
 				@media (max-width: 767px) {
 					margin: 0 0 16px 0;
@@ -413,6 +456,12 @@
 						}
 					}
 				}
+			}
+
+			.comments-area {
+				width: 100%;
+				max-width: 100%;
+				margin: 0;
 			}
 		}
 
