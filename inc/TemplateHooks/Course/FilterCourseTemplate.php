@@ -66,10 +66,10 @@ class FilterCourseTemplate {
 				$data['fields'][] = 'btn_submit';
 			}
 
-			$sections     = [];
+			$sections = [];
 			foreach ( $data['fields'] as $field ) {
 				if ( is_callable( [ $this, 'html_' . $field ] ) ) {
-					$sections[ $field ] = [ 'text_html' => $this->{'html_' . $field}( $data ) ];
+					$sections[ $field ] = $this->{'html_' . $field}( $data );
 				} else { // For custom field.
 					do_action_ref_array(
 						'learn-press/filter-courses/sections/field/html',
@@ -83,7 +83,7 @@ class FilterCourseTemplate {
 			}
 
 			ob_start();
-			Template::instance()->print_sections( $sections );
+			echo Template::combine_components( $sections );
 			$html_sections = ob_get_clean();
 
 			$wrapper = apply_filters(
@@ -135,7 +135,7 @@ class FilterCourseTemplate {
 				'lp/filter-courses/item/wrapper',
 				[
 					'wrapper'     => '<div class="lp-form-course-filter__item">',
-					'content'	  => Template::combine_components( $sections ),
+					'content'     => Template::combine_components( $sections ),
 					'wrapper_end' => '</div>',
 				]
 			);
@@ -175,7 +175,7 @@ class FilterCourseTemplate {
 				'wrapper'     => '<div class="lp-course-filter-search-field">',
 				'content'     => $content,
 				'wrapper_end' => '</div>',
-				'result'	  => '<div class="lp-course-filter-search-result"></div>',
+				'result'      => '<div class="lp-course-filter-search-result"></div>',
 			];
 
 			$content = Template::combine_components( $sections );
@@ -186,7 +186,7 @@ class FilterCourseTemplate {
 				'lp/filter-courses/sections/search/wrapper',
 				[
 					'wrapper'     => '<div class="lp-course-filter-search">',
-					'content'	  => $content,
+					'content'     => $content,
 					'wrapper_end' => '</div>',
 				],
 				$data
@@ -277,7 +277,7 @@ class FilterCourseTemplate {
 
 				$wrapper = [
 					'wrapper'     => '<div class="lp-course-filter__field">',
-					'content'	  => Template::combine_components( $sections ),
+					'content'     => Template::combine_components( $sections ),
 					'wrapper_end' => '</div>',
 				];
 
@@ -335,7 +335,7 @@ class FilterCourseTemplate {
 				'lp/filter-courses/sections/category/wrapper',
 				[
 					'wrapper'     => '<div class="lp-course-filter-category">',
-					'content'	  => $content,
+					'content'     => $content,
 					'wrapper_end' => '</div>',
 				],
 				$data
@@ -513,7 +513,7 @@ class FilterCourseTemplate {
 
 				$wrapper = [
 					'wrapper'     => '<div class="lp-course-filter__field">',
-					'content'	  => Template::combine_components( $sections ),
+					'content'     => Template::combine_components( $sections ),
 					'wrapper_end' => '</div>',
 				];
 
@@ -587,7 +587,7 @@ class FilterCourseTemplate {
 
 				$wrapper = [
 					'wrapper'     => '<div class="lp-course-filter__field">',
-					'content'	  => Template::combine_components( $sections ),
+					'content'     => Template::combine_components( $sections ),
 					'wrapper_end' => '</div>',
 				];
 
@@ -668,7 +668,7 @@ class FilterCourseTemplate {
 
 				$wrapper = [
 					'wrapper'     => '<div class="lp-course-filter__field">',
-					'content'	  => Template::combine_components( $sections ),
+					'content'     => Template::combine_components( $sections ),
 					'wrapper_end' => '</div>',
 				];
 
