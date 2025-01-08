@@ -15,7 +15,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				'recover-order',
 				'request-become-a-teacher:nonce',
 				'checkout:nopriv',
-				'complete-lesson',
+				//'complete-lesson',
 				'finish-course', // finish_course.
 				'external-link:nopriv',
 			);
@@ -184,6 +184,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 
 		/**
 		 * Complete lesson
+		 * @deprecated 4.2.7.6
 		 */
 		public static function complete_lesson() {
 			$response = array(

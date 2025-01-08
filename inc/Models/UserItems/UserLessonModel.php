@@ -18,13 +18,13 @@ use WP_Error;
 
 class UserLessonModel extends UserItemModel {
 	/**
-	 * Item type Course
+	 * Item type Lesson
 	 *
 	 * @var string Item type
 	 */
 	public $item_type = LP_LESSON_CPT;
 	/**
-	 * Ref type Order
+	 * Ref type Course
 	 *
 	 * @var string
 	 */
