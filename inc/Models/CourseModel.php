@@ -1077,6 +1077,25 @@ class CourseModel {
 	}
 
 	/**
+	 * Check user is author or co-in of course.
+	 *
+	 * @param UserModel $userModel
+	 *
+	 * @return bool
+	 * @since 4.2.7.6
+	 * @version 1.0.0
+	 */
+	public function check_user_is_author( UserModel $userModel ): bool {
+		$is_author = false;
+
+		if ( $userModel->get_id() === $this->post_author ) {
+			$is_author = true;
+		}
+
+		return apply_filters( 'learn-press/course/is-author', $is_author, $this, $userModel );
+	}
+
+	/**
 	 * Get item model assigned to this course
 	 *
 	 * @return mixed|false|null|WP_Post

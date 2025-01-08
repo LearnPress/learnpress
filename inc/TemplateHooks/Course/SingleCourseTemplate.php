@@ -1063,35 +1063,36 @@ class SingleCourseTemplate {
 	/**
 	 * HTML material
 	 *
-	 * @param CourseModel $course
-	 * @param UserModel|null $user
+	 * @param CourseModel $courseModel
+	 * @param UserModel|false $userModel
 	 *
 	 * @return string
 	 * @since 4.2.7.2
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
-	public function html_material( CourseModel $course, UserModel $user = null ): string {
+	public function html_material( CourseModel $courseModel, $userModel = false ): string {
 		$html = '';
-		if ( ! $user ) {
-			$user = UserModel::find( get_current_user_id(), true );
-			if ( ! $user ) {
-				return $html;
-			}
-		}
-
-		$userCourse = UserCourseModel::find( $user->get_id(), $course->get_id(), true );
 
 		try {
 			$can_show = false;
-			if ( $course->has_no_enroll_requirement()
-				|| ( $userCourse && $userCourse->has_enrolled_or_finished() )
-				|| ( $userCourse && $userCourse->has_purchased() )
-				|| user_can( $user->get_id(), LP_TEACHER_ROLE ) || user_can( $user->get_id(), ADMIN_ROLE ) ) {
+
+			if ( $userModel instanceof UserModel ) {
+				$userCourse = UserCourseModel::find( $userModel->get_id(), $courseModel->get_id(), true );
+				if ( $userCourse &&
+					( $userCourse->has_enrolled_or_finished()
+						|| $userCourse->has_purchased() ) ) {
+					$can_show = true;
+				} elseif ( $userCourse
+					&& ( $courseModel->check_user_is_author( $userModel )
+					|| user_can( $courseModel->get_id(), ADMIN_ROLE ) ) ) {
+					$can_show = true;
+				}
+			} elseif ( $courseModel->has_no_enroll_requirement() ) {
 				$can_show = true;
 			}
 
 			$file_per_page = LP_Settings::get_option( 'material_file_per_page', - 1 );
-			$count_files   = LP_Material_Files_DB::getInstance()->get_total( $course->get_id() );
+			$count_files   = LP_Material_Files_DB::getInstance()->get_total( $courseModel->get_id() );
 			if ( ! $can_show || $file_per_page == 0 || $count_files <= 0 ) {
 				return $html;
 			}
@@ -1109,7 +1110,7 @@ class SingleCourseTemplate {
 
 			$html = Template::combine_components( $section );
 		} catch ( Throwable $e ) {
-			error_log( $e->getMessage() );
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 
 		return $html;
@@ -1396,7 +1397,8 @@ class SingleCourseTemplate {
 			$user_item_status_ico_flag = 'preview';
 		}
 
-		if ( $courseModel->has_no_enroll_requirement() && ! $user_attended_course ) {
+		if ( $courseModel->has_no_enroll_requirement()
+			&& ! $user_attended_course && ! $userModel ) {
 			$user_item_status_ico_flag = UserItemModel::GRADUATION_IN_PROGRESS;
 		}
 

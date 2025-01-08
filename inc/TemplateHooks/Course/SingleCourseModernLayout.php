@@ -198,7 +198,7 @@ class SingleCourseModernLayout {
 				'target'       => $this->singleCourseTemplate->html_target( $course ),
 				'requirements' => $this->singleCourseTemplate->html_requirements( $course ),
 				'curriculum'   => $this->singleCourseTemplate->html_curriculum( $course, $user ),
-				'material'     => $this->singleCourseTemplate->html_material( $course ),
+				'material'     => $this->singleCourseTemplate->html_material( $course, $user ),
 				'faqs'         => $this->singleCourseTemplate->html_faqs( $course ),
 				'instructor'   => $html_instructor,
 				'wrapper_end'  => '</div>',

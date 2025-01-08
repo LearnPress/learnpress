@@ -901,6 +901,8 @@ class UserCourseModel extends UserItemModel {
 	 * Check can impact item.
 	 *
 	 * @return bool|WP_Error
+	 * @since 4.2.7.6
+	 * @version 1.0.0
 	 */
 	public function can_impact_item() {
 		$can_impact_item = true;
