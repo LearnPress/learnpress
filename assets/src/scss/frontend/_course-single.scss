@@ -333,7 +333,7 @@
 	}
 
 	.lp-single-course-main {
-		padding: 40px 0;
+		padding: 40px 0 80px;
 		display: flex;
 		column-gap: 60px;
 		row-gap: 30px;
@@ -341,6 +341,7 @@
 
 		@media (max-width: 991px) {
 			flex-direction: column-reverse;
+			padding: 40px 0;
 		}
 
 		&__left {
@@ -514,6 +515,10 @@
 						background-color: var(--lp-secondary-color);
 						border-color: var(--lp-secondary-color);
 					}
+				}
+
+				.learn-press-message {
+					margin: 0;
 				}
 			}
 
@@ -749,6 +754,7 @@
 				opacity: 0.6;
 				font-size: $font-size-small;
 				margin-right: 4px;
+				font-weight: normal;
 			}
 		}
 	}

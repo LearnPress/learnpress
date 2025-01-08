@@ -82,15 +82,11 @@ class FilterCourseTemplate {
 				}
 			}
 
-			ob_start();
-			echo Template::combine_components( $sections );
-			$html_sections = ob_get_clean();
-
 			$wrapper = apply_filters(
 				'lp/filter-courses/sections/wrapper',
 				[
 					'wrapper'     => '<form class="lp-form-course-filter">',
-					'sections'    => $html_sections,
+					'sections'    => Template::combine_components( $sections ),
 					'wrapper_end' => '</form>',
 				],
 				$data
@@ -98,7 +94,6 @@ class FilterCourseTemplate {
 
 			echo Template::combine_components( $wrapper );
 		} catch ( Throwable $e ) {
-			ob_end_clean();
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 	}
@@ -440,10 +435,7 @@ class FilterCourseTemplate {
 			$args
 		);
 
-		ob_start();
-		echo Template::combine_components( $sections );
-
-		return ob_get_clean();
+		return Template::combine_components( $sections );
 	}
 
 	/**
