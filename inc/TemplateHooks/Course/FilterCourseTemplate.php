@@ -94,7 +94,6 @@ class FilterCourseTemplate {
 
 			echo Template::combine_components( $wrapper );
 		} catch ( Throwable $e ) {
-			ob_end_clean();
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 	}
@@ -436,10 +435,7 @@ class FilterCourseTemplate {
 			$args
 		);
 
-		ob_start();
-		echo Template::combine_components( $sections );
-
-		return ob_get_clean();
+		return Template::combine_components( $sections );
 	}
 
 	/**
