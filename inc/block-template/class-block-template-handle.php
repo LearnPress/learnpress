@@ -202,9 +202,16 @@ class Block_Template_Handle {
 			'icon'  => null,
 		);
 
+		$lp_category_instructor_block = array(
+			'slug'  => 'lp-instructor-category',
+			'title' => __( 'Category Instructor', 'learnpress' ),
+			'icon'  => null,
+		);
+
 		array_unshift( $block_categories, $lp_category_archive_course_block );
 		array_unshift( $block_categories, $lp_category_single_course_block );
 		array_unshift( $block_categories, $lp_category_profile_block );
+		array_unshift( $block_categories, $lp_category_instructor_block );
 		array_unshift( $block_categories, $lp_category_block );
 
 		return $block_categories;

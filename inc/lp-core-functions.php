@@ -3288,6 +3288,27 @@ function lp_add_shortcode_profile() {
 
 // add_action( 'template_redirect', 'lp_add_shortcode_profile' );
 
+// Convert instructor content if content has instructor shortcode.
+/**
+ * @since 4.2.7.4
+ */
+function lp_add_template_profile() {
+	global $post;
+
+	if ( LP_Page_Controller::is_page_instructor() && is_object( $post ) ) {
+		if ( has_shortcode( $post->post_content, 'learn_press_single_instructor' ) ) {
+			$old_shortcode_html = '<!-- wp:shortcode -->[learn_press_single_instructor]<!-- /wp:shortcode -->';
+			ob_start();
+			Template::instance()->get_frontend_template( 'block/html/page-instructor.html' );
+			$html_instructor    = ob_get_clean();
+			$post->post_content = str_replace( $old_shortcode_html, $html_instructor, $post->post_content );
+			wp_update_post( $post );
+		}
+	}
+}
+
+add_action( 'template_redirect', 'lp_add_template_profile' );
+
 /**
  * If Elementor Pro set Theme builder type "Archive", will not show content on page "Archive course"
  *

@@ -25,7 +25,7 @@ class SingleInstructorShortcode extends AbstractShortcode {
 				$attrs = [];
 			}
 			ob_start();
-			do_action( 'learn-press/single-instructor/layout', $attrs );
+			// do_action( 'learn-press/single-instructor/layout', $attrs );
 			$content = ob_get_clean();
 		} catch ( \Throwable $e ) {
 			ob_end_clean();

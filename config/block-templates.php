@@ -60,6 +60,16 @@ require_once $blog_template_path . 'profile/class-block-template-profile-backgro
 require_once $blog_template_path . 'profile/class-block-template-profile-avatar.php';
 require_once $blog_template_path . 'profile/class-block-template-profile-username.php';
 
+//Instructor
+require_once $blog_template_path . 'instructor/class-block-template-instructor-avatar.php';
+require_once $blog_template_path . 'instructor/class-block-template-instructor-description.php';
+require_once $blog_template_path . 'instructor/class-block-template-instructor-display-name.php';
+require_once $blog_template_path . 'instructor/class-block-template-instructor-social.php';
+require_once $blog_template_path . 'instructor/class-block-template-instructor-total-courses.php';
+require_once $blog_template_path . 'instructor/class-block-template-instructor-total-students.php';
+require_once $blog_template_path . 'instructor/class-block-template-instructor-courses.php';
+require_once $blog_template_path . 'instructor/class-block-template-instructor.php';
+
 return apply_filters(
 	'learn-press/config/block-templates',
 	array(
@@ -113,6 +123,14 @@ return apply_filters(
 		new Block_Template_Profile_Username(),
 		new Block_Template_Profile_Content(),
 		new Block_Template_Profile_Background_Image(),
+		new Block_Template_Instructor_Avatar(),
+		new Block_Template_Instructor_Description(),
+		new Block_Template_Instructor_Display_Name(),
+		new Block_Template_Instructor_Social(),
+		new Block_Template_Instructor_Total_Courses(),
+		new Block_Template_Instructor_Total_Students(),
+		new Block_Template_Instructor_Courses(),
+		new Block_Template_Instructor(),
 		new Block_Template_Item_Curriculum_Course(),
 	)
 );

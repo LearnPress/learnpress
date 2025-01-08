@@ -1,0 +1,22 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "learnpress/instructor-total-courses",
+	"title": "Instructor Total Courses",
+	"category": "lp-instructor-category",
+	"icon": "format-image",
+	"description": "Renders Template Instructor Total Courses PHP templates.",
+	"textdomain": "learnpress",
+	"keywords": ["instructor total courses course", "learnpress"],
+	"usesContext": [],
+	"supports": {
+		"inserter": true,
+		"reusable": true,
+		"reorder": true,
+		"html": false,
+		"multiple": true
+	},
+	"ancestor": [
+		"learnpress/lp-instructor"
+	]
+}

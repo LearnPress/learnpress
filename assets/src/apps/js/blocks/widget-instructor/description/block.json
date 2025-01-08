@@ -1,0 +1,22 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "learnpress/instructor-description",
+	"title": "Instructor Description",
+	"category": "lp-instructor-category",
+	"icon": "format-image",
+	"description": "Renders Template Instructor Description PHP templates.",
+	"textdomain": "learnpress",
+	"keywords": ["instructor description course", "learnpress"],
+	"usesContext": [],
+	"supports": {
+		"inserter": true,
+		"reusable": true,
+		"reorder": true,
+		"html": false,
+		"multiple": true
+	},
+	"ancestor": [
+		"learnpress/lp-instructor"
+	]
+}
