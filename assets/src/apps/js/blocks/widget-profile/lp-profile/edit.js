@@ -36,9 +36,7 @@ export const edit = ( props ) => {
 
 	return (
 		<>
-			<div { ...blockProps }>
-				{ <InnerBlocks /*  template={ TEMPLATE } */ /> }
-			</div>
+			<div { ...blockProps }>{ <InnerBlocks template={ TEMPLATE } /> }</div>
 		</>
 	);
 };

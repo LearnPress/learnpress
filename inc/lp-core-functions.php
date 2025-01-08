@@ -3271,26 +3271,22 @@ add_action(
 	}
 );
 
-// Convert profile content if content has profile shortcode.
+// If profile content don't have shortcode profile.
 /**
- *  4.2.7.4
+ * @deprecated 4.2.2.4
  */
 function lp_add_shortcode_profile() {
 	global $post;
 
 	if ( LP_Page_Controller::is_page_profile() && is_object( $post ) ) {
-		if ( has_shortcode( $post->post_content, 'learn_press_profile' ) ) {
-			$old_shortcode_html = '<!-- wp:shortcode -->[learn_press_profile]<!-- /wp:shortcode -->';
-			ob_start();
-			Template::instance()->get_frontend_template( 'block/html/page-profile.html' );
-			$html_profile       = ob_get_clean();
-			$post->post_content = str_replace( $old_shortcode_html, $html_profile, $post->post_content );
+		if ( ! has_shortcode( $post->post_content, 'learn_press_profile' ) ) {
+			$post->post_content .= '<!-- wp:shortcode -->[learn_press_profile]<!-- /wp:shortcode -->';
 			wp_update_post( $post );
 		}
 	}
 }
 
-add_action( 'template_redirect', 'lp_add_shortcode_profile' );
+// add_action( 'template_redirect', 'lp_add_shortcode_profile' );
 
 /**
  * If Elementor Pro set Theme builder type "Archive", will not show content on page "Archive course"

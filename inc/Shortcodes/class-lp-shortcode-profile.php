@@ -100,7 +100,7 @@ if ( ! class_exists( 'LP_Shortcode_Profile' ) ) {
 					learn_press_show_message();
 				} else {
 					learn_press_show_message();
-					// Template::instance()->get_frontend_template( 'pages/profile.php', compact( 'profile' ) );
+					Template::instance()->get_frontend_template( 'pages/profile.php', compact( 'profile' ) );
 				}
 
 				$output = ob_get_clean();
