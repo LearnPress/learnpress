@@ -14,6 +14,7 @@
  * @package LearnPress
  */
 
+use LearnPress\Ajax\LessonAjax;
 use LearnPress\Ajax\LoadContentViaAjax;
 use LearnPress\ExternalPlugin\Elementor\LPElementor;
 use LearnPress\ExternalPlugin\YoastSeo\LPYoastSeo;
@@ -143,6 +144,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 					function () {
 						// Handle lp ajax.
 						LoadContentViaAjax::catch_lp_ajax();
+						LessonAjax::catch_lp_ajax();
 					}
 				);
 

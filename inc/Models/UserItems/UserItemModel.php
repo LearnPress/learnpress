@@ -252,7 +252,7 @@ class UserItemModel {
 	 *
 	 * @return false|UserItemModel|static
 	 * @since 4.2.7.3
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public static function find_user_item(
 		int $user_id,
@@ -281,7 +281,7 @@ class UserItemModel {
 		if ( $check_cache ) {
 			$userItemModel = $lpUserItemCache->get_cache( $key_cache );
 			if ( $userItemModel instanceof UserItemModel ) {
-				return $userItemModel;
+				return new static( $userItemModel );
 			}
 		}
 

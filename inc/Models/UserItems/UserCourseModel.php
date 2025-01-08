@@ -121,6 +121,9 @@ class UserCourseModel extends UserItemModel {
 
 			if ( $item ) {
 				switch ( $item_type ) {
+					case LP_LESSON_CPT:
+						$item = new UserLessonModel( $item );
+						break;
 					case LP_QUIZ_CPT:
 						$item = new UserQuizModel( $item );
 						break;
@@ -152,11 +155,13 @@ class UserCourseModel extends UserItemModel {
 
 		try {
 			$courseModel   = $this->get_course_model();
-			$totalItemsObj = $courseModel->get_total_items();
-			if ( empty( $totalItemsObj ) || ! isset( $totalItemsObj->count_items ) ) {
+			$totalItemsObj = $courseModel->count_items();
+			if ( empty( $totalItemsObj ) ) {
 				return $itemModel;
 			}
 
+			$item_id        = 0;
+			$item_type      = '';
 			$sections_items = $courseModel->get_section_items();
 			foreach ( $sections_items as $section_items ) {
 				if ( $itemModel ) {
@@ -180,6 +185,11 @@ class UserCourseModel extends UserItemModel {
 						break;
 					}
 				}
+			}
+
+			// For all items are completed
+			if ( empty( $itemModel ) && ! empty( $item_id ) && ! empty( $item_type ) ) {
+				$itemModel = $courseModel->get_item_model( $item_id, $item_type );
 			}
 
 			$this->meta_data->item_continue = $itemModel;
@@ -885,6 +895,30 @@ class UserCourseModel extends UserItemModel {
 		}
 
 		return $can_finish;
+	}
+
+	/**
+	 * Check can impact item.
+	 *
+	 * @return bool|WP_Error
+	 */
+	public function can_impact_item() {
+		$can_impact_item = true;
+
+		$status = $this->get_status();
+		if ( $status === UserItemModel::STATUS_CANCEL ) {
+			$can_impact_item = new WP_Error( 'user_not_enroll_course', __( 'You have not enroll this course!', 'learnpress' ) );
+		}
+
+		if ( $status === UserItemModel::STATUS_FINISHED ) {
+			$can_impact_item = new WP_Error( 'user_finished_course', __( 'You have finished this course!', 'learnpress' ) );
+		}
+
+		if ( $this->get_time_remaining() === 0 ) {
+			$can_impact_item = new WP_Error( 'course_is_blocked', __( 'Course was blocked!', 'learnpress' ) );
+		}
+
+		return apply_filters( 'learn-press/user-course/can-impact-item', $can_impact_item, $this );
 	}
 
 	/**

@@ -17,6 +17,3 @@ header( 'X-Robots-Tag: noindex' );
 
 send_nosniff_header();
 nocache_headers();
-
-// Default status.
-wp_die( '0' );
