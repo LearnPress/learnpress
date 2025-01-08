@@ -333,7 +333,7 @@
 	}
 
 	.lp-single-course-main {
-		padding: 40px 0;
+		padding: 40px 0 80px;
 		display: flex;
 		column-gap: 60px;
 		row-gap: 30px;
@@ -341,6 +341,7 @@
 
 		@media (max-width: 991px) {
 			flex-direction: column-reverse;
+			padding: 40px 0;
 		}
 
 		&__left {
