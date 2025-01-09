@@ -179,5 +179,5 @@ const lpSetLoadingEl = ( el, status ) => {
 export {
 	lpFetchAPI, lpAddQueryArgs, lpGetCurrentURLNoParam,
 	listenElementViewed, listenElementCreated, lpOnElementReady, lpAjaxParseJsonOld,
-	lpShowHideEl, lpSetLoadingEl,
+	lpShowHideEl, lpSetLoadingEl, lpClassName,
 };

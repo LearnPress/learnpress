@@ -6,7 +6,13 @@
  */
 
 import API from '../api';
-import { lpAddQueryArgs, lpGetCurrentURLNoParam, listenElementViewed, listenElementCreated } from '../utils.js';
+import {
+	lpAddQueryArgs,
+	lpGetCurrentURLNoParam,
+	listenElementViewed,
+	listenElementCreated,
+	lpOnElementReady,
+} from '../utils.js';
 
 if ( 'undefined' === typeof lpData ) {
 	console.log( 'lpData is undefined' );
@@ -35,6 +41,13 @@ document.addEventListener( 'submit', function( e ) {
 	const target = e.target;
 
 	//window.lpCourseList.searchCourse( e, target );
+} );
+
+lpOnElementReady( '.course-filter-btn-mobile', function( el ) {
+	const widgetCourseFilter = document.querySelector( '.widget_course_filter' );
+	if ( ! widgetCourseFilter ) {
+		el.remove();
+	}
 } );
 
 let timeOutSearch;

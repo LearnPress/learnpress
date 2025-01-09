@@ -1,5 +1,5 @@
 import API from '../api';
-import { lpAddQueryArgs, lpFetchAPI, lpGetCurrentURLNoParam } from '../utils.js';
+import { lpAddQueryArgs, lpFetchAPI, lpGetCurrentURLNoParam, lpClassName } from '../utils.js';
 
 const classCourseFilter = 'lp-form-course-filter';
 const classProcessing = 'processing';
@@ -29,6 +29,9 @@ document.addEventListener( 'click', function( e ) {
 
 	// Click field
 	window.lpCourseFilter.triggerInputChoice( target );
+
+	// Click btn filter mobile
+	window.lpCourseFilter.clickBtnFilterMobile( target );
 } );
 
 // Search course suggest
@@ -389,10 +392,15 @@ window.lpCourseFilter = {
 		}
 
 		const fieldsSelected = form.querySelectorAll( 'input:checked' );
-		const count = `(${ fieldsSelected.length })`;
-		elCountFieldsSelected.innerHTML = count;
 
-		return count;
+		let countStr = '';
+		if ( fieldsSelected.length ) {
+			countStr = `(${ fieldsSelected.length })`;
+		}
+
+		elCountFieldsSelected.innerHTML = countStr;
+
+		return countStr;
 	},
 	triggerInputChoice: ( target ) => {
 		const elField = target.closest( `.lp-course-filter__field` );
@@ -430,5 +438,14 @@ window.lpCourseFilter = {
 
 		// Set count fields selected
 		window.lpCourseFilter.countFieldsSelected( elForm );
+	},
+	clickBtnFilterMobile: ( target ) => {
+		const elBtnFilterMobile = target.closest( '.course-filter-btn-mobile' );
+		if ( ! elBtnFilterMobile ) {
+			return;
+		}
+
+		const widgetCourseFilter = document.querySelector( '.widget_course_filter' );
+		widgetCourseFilter.classList.toggle( lpClassName.hidden );
 	},
 };
