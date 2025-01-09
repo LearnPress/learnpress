@@ -866,6 +866,8 @@
     }
 
 	.show-lp-course-filter-mobile {
+		overflow: hidden;
+
 		.widget_course_filter {
 			transform: none;
 			opacity: 1;
