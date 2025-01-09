@@ -1317,7 +1317,7 @@ class SingleCourseTemplate {
 				'curriculum_info_right'     => '<div class="course-curriculum-info__right">',
 				'expand_all'                => sprintf(
 					'<span class="course-toggle-all-sections">%s</span>',
-					esc_html__( 'Expand all sections', 'learnpress' )
+					esc_html__( 'Expanse all sections', 'learnpress' )
 				),
 				'collapse_all'              => sprintf(
 					'<span class="course-toggle-all-sections lp-collapse lp-hidden">%s</span>',
@@ -1360,6 +1360,7 @@ class SingleCourseTemplate {
 		$section_id               = $section_item->section_id ?? 0;
 		$section_name             = $section_item->section_name ?? '';
 		$section_description      = $section_item->section_description ?? '';
+		$section_order            = $section_item->section_order ?? 1;
 		$items                    = $section_item->items ?? [];
 		$html_section_description = '';
 		if ( ! empty( $section_description ) ) {
@@ -1392,10 +1393,24 @@ class SingleCourseTemplate {
 			'end'      => '</ul>',
 		];
 
+		$Curriculum_display_setting = LP_Settings::get_option( 'curriculum_display', 'expand_first_section' );
+		$class_section_toggle       = '';
+		if ( $Curriculum_display_setting === 'collapse_all' ) {
+			$class_section_toggle = 'lp-collapse';
+		}
+
+		if ( $section_order > 1 ) {
+			$class_section_toggle = 'lp-collapse';
+		}
+
 		$section_item = apply_filters(
 			'learn-press/course/html-curriculum-item',
 			[
-				'start'  => sprintf( '<li class="course-section" data-section-id="%s">', $section_id ),
+				'start'  => sprintf(
+					'<li class="course-section %s" data-section-id="%s">',
+					$class_section_toggle,
+					$section_id
+				),
 				'header' => Template::combine_components( $section_header ),
 				'items'  => Template::combine_components( $section_items ),
 				'end'    => '</li>',
@@ -1411,7 +1426,8 @@ class SingleCourseTemplate {
 	/**
 	 * @param CourseModel $courseModel
 	 * @param UserModel|false $userModel
-	 * @param $item
+	 * @param $item stdClass {item_id, item_order, item_type, title, preview}
+	 * @param $section_item stdClass {section_id, section_name, section_description, items[{item_id, item_order, item_type, title, preview}]}
 	 *
 	 * @return string
 	 * @since 4.2.7.6
