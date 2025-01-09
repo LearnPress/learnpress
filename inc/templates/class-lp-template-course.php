@@ -1006,11 +1006,12 @@ class LP_Template_Course extends LP_Abstract_Template {
 			return;
 		}
 
-		$user = learn_press_get_current_user();
-
-		// if ( ! $user->is_admin() && ! $user->has_course_status( $course->get_id(), array( 'enrolled', 'finished' ) ) ) {
-		// return;
-		// }
+		$user                 = learn_press_get_current_user();
+		$user_can_view_course = $user->can_view_content_course( $course->get_id() );
+		$user_can_view_item   = $user->can_view_item( $item->get_id(), $user_can_view_course );
+		if ( ! $user_can_view_item->flag ) {
+			return;
+		}
 
 		if ( $item->setup_postdata() ) {
 
