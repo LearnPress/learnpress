@@ -152,7 +152,6 @@ class CourseModel {
 	 * if not check get from Post
 	 *
 	 * @return string
-	 * @throws Exception
 	 * @since 4.2.6.9
 	 * @version 1.0.1
 	 */

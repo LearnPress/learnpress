@@ -57,7 +57,7 @@ class SingleCourseTemplate {
 	 * @return string
 	 */
 	public function html_title( $course, string $tag_html = 'span' ): string {
-		$tag_html     = sanitize_key( $tag_html );
+		$tag_html     = esc_attr( sanitize_key( $tag_html ) );
 		$html_wrapper = apply_filters(
 			'learn-press/single-course/html-title',
 			[
