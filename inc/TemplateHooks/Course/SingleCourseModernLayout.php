@@ -100,12 +100,15 @@ class SingleCourseModernLayout {
 			$user
 		);
 
-		/*$section_info_one = apply_filters(
-			'learn-press/single-course/offline/info-bar',
-			$section_info_one,
-			$course,
-			$user
-		);*/
+		if ( ! has_filter( 'learn-press/single-course/model/header/info-meta' ) ) {
+			// Do not use this hook, this hook only for handle hook without update from Addon, when handle on Addon, will remove this hook
+			$section_info_one = apply_filters(
+				'learn-press/single-course/offline/info-bar',
+				$section_info_one,
+				$course,
+				$user
+			);
+		}
 
 		$header_sections = apply_filters(
 			'learn-press/single-course/model/header/sections',
@@ -193,7 +196,13 @@ class SingleCourseModernLayout {
 				$course,
 				$user
 			);
-			$html_instructor          = Template::combine_components( $section_instructor );
+
+			if ( ! has_filter( 'learn-press/single-course/model/section-instructor' ) ) {
+				// Do not use this hook, this hook only for handle hook without update from Addon, when handle on Addon, will remove this hook
+				$section_instructor = apply_filters( 'learn-press/single-course/offline/section-instructor', $section_instructor, $course, $user );
+			}
+
+			$html_instructor = Template::combine_components( $section_instructor );
 		}
 		// End instructor
 
@@ -213,15 +222,17 @@ class SingleCourseModernLayout {
 				'material'     => $this->singleCourseTemplate->html_material( $course, $user ),
 				'faqs'         => $this->singleCourseTemplate->html_faqs( $course ),
 				'instructor'   => $html_instructor,
-				'comment'      => $this->singleCourseTemplate->html_comment( $course ),
+				'comment'      => $this->singleCourseTemplate->html_comment( $course, $user ),
 				'wrapper_end'  => '</div>',
 			],
 			$course,
 			$user
 		);
 
-		// Do not use this hook, this hook only for handle hook without update from Addon, when handle on Addon, will remove this hook
-		$section_left = apply_filters( 'learn-press/single-course/offline/section-left', $section_left, $course, $user );
+		if ( ! has_filter( 'learn-press/single-course/model/section_left' ) ) {
+			// Do not use this hook, this hook only for handle hook without update from Addon, when handle on Addon, will remove this hook
+			$section_left = apply_filters( 'learn-press/single-course/offline/section-left', $section_left, $course, $user );
+		}
 
 		return Template::combine_components( $section_left );
 	}

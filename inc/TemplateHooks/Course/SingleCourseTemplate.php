@@ -1187,15 +1187,17 @@ class SingleCourseTemplate {
 	 * GET HTML comment default of WP
 	 *
 	 * @param CourseModel $courseModel
+	 * @param false|UserModel $userModel
 	 *
 	 * @return string
 	 * @since 4.2.7.6
 	 * @version 1.0.0
 	 */
-	public function html_comment( CourseModel $courseModel ): string {
+	public function html_comment( CourseModel $courseModel, $userModel = false ): string {
 		$args     = [
 			'id_url'    => 'course-comments',
 			'course_id' => $courseModel->get_id(),
+			'user_id'   => $userModel instanceof UserModel ? $userModel->get_id() : 0,
 		];
 		$callBack = [
 			'class'  => __CLASS__,
@@ -1230,6 +1232,7 @@ class SingleCourseTemplate {
 
 		try {
 			$course_id = $data['course_id'] ?? 0;
+			$user_id   = $data['user_id'] ?? 0;
 			if ( empty( $course_id ) ) {
 				return $response;
 			}
@@ -1242,6 +1245,13 @@ class SingleCourseTemplate {
 			} else {
 				$withcomments = true;
 			}
+
+			$withcomments = apply_filters(
+				'learn-press/single-course/render-html-comment/is-show',
+				$withcomments,
+				$post,
+				$user_id
+			);
 
 			ob_start();
 			comments_template();
