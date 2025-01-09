@@ -807,6 +807,9 @@
 		background-color: #222;
 	}
 }
+.lp-form-course-filter__close {
+	display: none;
+}
 
 @media (max-width: 768px) { 
 	.widget_course_filter {
@@ -868,7 +871,7 @@
 			opacity: 1;
 			visibility: visible;
 		}
-		
+
 		.lp-archive-courses-sidebar::after {
 			position: fixed;
 			top: 0;
@@ -882,6 +885,19 @@
 			z-index: 99999;
 		}
 	} 
+
+	.lp-form-course-filter__close {
+		display: flex;
+		position: fixed;
+		right: 0;
+		top: 0;
+		left: auto;
+		background-color: #fff;
+		padding: 20px;
+		align-items: center;
+		justify-content: center;
+		gap: 4px;
+	}
 }
 
 @media (max-width: 500px) {

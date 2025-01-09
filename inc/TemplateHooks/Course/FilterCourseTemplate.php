@@ -87,6 +87,10 @@ class FilterCourseTemplate {
 				[
 					'wrapper'     => '<form class="lp-form-course-filter">',
 					'sections'    => Template::combine_components( $sections ),
+					'close'       => sprintf(
+						'<div class="lp-form-course-filter__close">%s<i class="lp-icon-close"></i></div>',
+						esc_html__( 'Close', 'learnpress' )
+					),
 					'wrapper_end' => '</form>',
 				],
 				$data
