@@ -43,6 +43,9 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 * Register course post type.
 		 */
 		public function args_register_post_type(): array {
+			// Support Quick Edit multiple courses change author
+			add_post_type_support( LP_COURSE_CPT, 'author' );
+
 			$settings         = LP_Settings::instance();
 			$labels           = array(
 				'name'               => _x( 'Courses', 'Post Type General Name', 'learnpress' ),
@@ -59,7 +62,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				'not_found'          => sprintf( __( 'You have not had any courses yet. Click <a href="%s">Add new</a> to start', 'learnpress' ), admin_url( 'post-new.php?post_type=lp_course' ) ),
 				'not_found_in_trash' => __( 'There was no course found in the trash', 'learnpress' ),
 			);
-			$course_base      = LP_Settings::get_option( 'course_base' );
+			$course_base      = LP_Settings::get_option( 'course_base', 'courses' );
 			$course_permalink = empty( $course_base ) ? 'courses' : $course_base;
 
 			// Set to $has_archive return link to courses page, is_archive will check is true
@@ -579,6 +582,15 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 							$value_saved                         = $option->save( $courseModel->ID );
 							$courseModel->meta_data->{$meta_key} = $value_saved;
 						}
+					}
+				}
+
+				// For case bulk edit multiple courses change author
+				$bulk_edit = LP_Request::get_param( 'bulk_edit', false );
+				if ( ! empty( $bulk_edit ) ) {
+					$post_author = LP_Request::get_param( 'post_author', 0, 'int' );
+					if ( $post_author ) {
+						$courseModel->post_author = $post_author;
 					}
 				}
 
