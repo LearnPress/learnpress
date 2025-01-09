@@ -480,6 +480,8 @@ class LP_Page_Controller {
 			} elseif ( empty( $option_single_course_layout )
 				|| $option_single_course_layout === 'classic' ) {
 				$page_template = 'single-course-layout-classic.php';
+				// Set temporary old single course layout.
+				$page_template = 'single-course.php';
 			}
 
 			// Old single course layout.

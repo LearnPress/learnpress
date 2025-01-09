@@ -196,7 +196,7 @@ window.lpCourseFilter = {
 			},
 			completed: () => {
 				const timeOutDone = setInterval( () => {
-					if ( ! elListCourseTarget.classList.contains( classProcessing ) ) {
+					if ( elListCourseTarget && ! elListCourseTarget.classList.contains( classProcessing ) ) {
 						clearInterval( timeOutDone );
 						elLoadingChange.style.display = 'none';
 						parent.classList.remove( classProcessing );
@@ -266,6 +266,7 @@ window.lpCourseFilter = {
 			if ( elListCourseTarget.classList.contains( classProcessing ) ) {
 				return;
 			}
+
 			elListCourseTarget.classList.add( classProcessing );
 			const elLPTarget = elListCourseTarget.querySelector( '.lp-target' );
 			const dataObj = JSON.parse( elLPTarget.dataset.send );
