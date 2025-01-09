@@ -811,7 +811,7 @@
 	display: none;
 }
 
-@media (max-width: 768px) { 
+@media (max-width: 768px) {
 	.widget_course_filter {
         position: fixed !important;
         right: 0;
@@ -863,9 +863,9 @@
 				justify-content: center;
             }
         }
-    } 
+    }
 
-	.show-lp-course-filter {
+	.show-lp-course-filter-mobile {
 		.widget_course_filter {
 			transform: none;
 			opacity: 1;
@@ -884,7 +884,7 @@
 			transition: opacity .5s, width .1s .5s, height .1s .5s;
 			z-index: 99999;
 		}
-	} 
+	}
 
 	.lp-form-course-filter__close {
 		display: flex;

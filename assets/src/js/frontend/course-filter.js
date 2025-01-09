@@ -3,6 +3,7 @@ import { lpAddQueryArgs, lpFetchAPI, lpGetCurrentURLNoParam } from '../utils.js'
 
 const classCourseFilter = 'lp-form-course-filter';
 const classProcessing = 'processing';
+const classShowCourseFilterMobile = 'show-lp-course-filter-mobile';
 
 // Events
 // Submit form filter
@@ -22,6 +23,12 @@ document.addEventListener( 'click', function( e ) {
 	if ( target.classList.contains( 'course-filter-reset' ) ) {
 		e.preventDefault();
 		window.lpCourseFilter.reset( target );
+	}
+
+	if ( target.closest( '.lp-form-course-filter__close' ) ) {
+		e.preventDefault();
+		const body = document.querySelector( 'body' );
+		body.classList.remove( `${ classShowCourseFilterMobile }` );
 	}
 
 	// Show/hide search suggest result
@@ -333,6 +340,10 @@ window.lpCourseFilter = {
 			// Scroll to archive element
 			if ( window.outerHeight < 991 ) {
 				elListCourseTarget.scrollIntoView( { behavior: 'smooth' } );
+
+				// Hide widget course filter
+				const body = document.querySelector( 'body' );
+				body.classList.remove( `${ classShowCourseFilterMobile }` );
 			}
 		} else {
 			const courseUrl = lpData.urlParams.page_term_url || lpData.courses_url || '';
@@ -446,6 +457,6 @@ window.lpCourseFilter = {
 		}
 
 		const body = document.querySelector( 'body' );
-		body.classList.toggle( 'show-lp-course-filter' );
+		body.classList.toggle( `${ classShowCourseFilterMobile }` );
 	},
 };
