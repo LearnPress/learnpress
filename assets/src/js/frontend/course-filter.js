@@ -1,5 +1,5 @@
 import API from '../api';
-import { lpAddQueryArgs, lpFetchAPI, lpGetCurrentURLNoParam, lpClassName } from '../utils.js';
+import { lpAddQueryArgs, lpFetchAPI, lpGetCurrentURLNoParam } from '../utils.js';
 
 const classCourseFilter = 'lp-form-course-filter';
 const classProcessing = 'processing';
@@ -445,7 +445,7 @@ window.lpCourseFilter = {
 			return;
 		}
 
-		const widgetCourseFilter = document.querySelector( '.widget_course_filter' );
-		widgetCourseFilter.classList.toggle( lpClassName.hidden );
+		const body = document.querySelector( 'body' );
+		body.classList.toggle( 'show-lp-course-filter' );
 	},
 };
