@@ -291,6 +291,9 @@ window.lpCourseFilter = {
 			}
 			// End.
 
+			// Set count fields selected
+			dataSend.args.count_fields_selected = window.lpCourseFilter.countFieldsSelected( form );
+
 			dataSend.args.paged = 1;
 			elLPTarget.dataset.send = JSON.stringify( dataSend );
 
@@ -378,11 +381,26 @@ window.lpCourseFilter = {
 			elResult.style.display = 'block';
 		}
 	},
+	countFieldsSelected: ( form ) => {
+		const elCountFieldsSelected = document.querySelector( '.course-filter-count-fields-selected' );
+
+		if ( ! elCountFieldsSelected ) {
+			return;
+		}
+
+		const fieldsSelected = form.querySelectorAll( 'input:checked' );
+		const count = `(${ fieldsSelected.length })`;
+		elCountFieldsSelected.innerHTML = count;
+
+		return count;
+	},
 	triggerInputChoice: ( target ) => {
 		const elField = target.closest( `.lp-course-filter__field` );
 		if ( ! elField ) {
 			return;
 		}
+
+		const elForm = elField.closest( `.${ classCourseFilter }` );
 
 		if ( target.tagName === 'INPUT' ) {
 			const elOptionWidget = elField.closest( 'div[data-widget]' );
@@ -409,5 +427,8 @@ window.lpCourseFilter = {
 		} else {
 			elField.querySelector( 'input' ).click();
 		}
+
+		// Set count fields selected
+		window.lpCourseFilter.countFieldsSelected( elForm );
 	},
 };

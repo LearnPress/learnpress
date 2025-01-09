@@ -100,7 +100,7 @@ class ListCoursesTemplate {
 		$settings['total_pages']      = $total_pages;
 		$settings['total_rows']       = $total_rows;
 		$settings['courses_per_page'] = $filter->limit;
-		$skin                         = $settings['skin'] ?? learn_press_get_courses_layout();
+		$skin                         = $settings['skin'] ?? ( wp_is_mobile() ? 'grid' : learn_press_get_courses_layout() );
 		$paged                        = $settings['paged'] ?? 1;
 		$settings['paged']            = $paged;
 		$listCoursesTemplate          = self::instance();
@@ -123,15 +123,20 @@ class ListCoursesTemplate {
 		];
 
 		// HTML section top.
-		ob_start();
+		$html_btn_filter_courses_mobile = '';
+		if ( wp_is_mobile() ) {
+			$html_btn_filter_courses_mobile = FilterCourseTemplate::instance()->html_btn_filter_mobile( $settings );
+		}
+
 		$section_top = apply_filters(
 			'learn-press/layout/list-courses/section/top',
 			[
-				'wrapper'       => '<div class="lp-courses-bar">',
-				'search'        => $listCoursesTemplate->html_search_form( $settings ),
-				'order_by'      => $listCoursesTemplate->html_order_by( $settings['order_by'] ?? 'post_date' ),
-				'switch_layout' => $listCoursesTemplate->switch_layout(),
-				'wrapper_end'   => '</div>',
+				'wrapper'                   => '<div class="lp-courses-bar">',
+				'search'                    => $listCoursesTemplate->html_search_form( $settings ),
+				'order_by'                  => $listCoursesTemplate->html_order_by( $settings['order_by'] ?? 'post_date' ),
+				'switch_layout'             => $listCoursesTemplate->switch_layout(),
+				'btn_filter_courses_mobile' => $html_btn_filter_courses_mobile,
+				'wrapper_end'               => '</div>',
 			],
 			$courses,
 			$settings
@@ -548,7 +553,7 @@ class ListCoursesTemplate {
 		ob_start();
 		?>
 		<form class="search-courses" method="get"
-				action="<?php echo esc_url_raw( learn_press_get_page_link( 'courses' ) ); ?>">
+			action="<?php echo esc_url_raw( learn_press_get_page_link( 'courses' ) ); ?>">
 			<input type="search" placeholder="<?php esc_attr_e( 'Search courses...', 'learnpress' ); ?>"
 					name="c_search"
 					value="<?php echo esc_attr( $s ); ?>">
@@ -558,23 +563,42 @@ class ListCoursesTemplate {
 		return ob_get_clean();
 	}
 
-	public function switch_layout() {
+	/**
+	 * Html switch layout.
+	 *
+	 * @return string
+	 */
+	public function switch_layout(): string {
 		$layouts = learn_press_courses_layouts();
 		$active  = learn_press_get_courses_layout();
-		ob_start();
-		?>
-		<div class="switch-layout">
-			<?php foreach ( $layouts as $layout => $value ) : ?>
-				<input type="radio" name="lp-switch-layout-btn"
-						value="<?php echo esc_attr( $layout ); ?>"
-						id="lp-switch-layout-btn-<?php echo esc_attr( $layout ); ?>" <?php checked( $layout, $active ); ?>>
-				<label class="switch-btn <?php echo esc_attr( $layout ); ?>"
-						title="<?php echo sprintf( esc_attr__( 'Switch to %s', 'learnpress' ), $value ); ?>"
-						for="lp-switch-layout-btn-<?php echo esc_attr( $layout ); ?>"></label>
-			<?php endforeach; ?>
-		</div>
-		<?php
-		return ob_get_clean();
+		if ( wp_is_mobile() ) {
+			return '';
+		}
+
+		$html_layouts = '';
+		foreach ( $layouts as $layout => $value ) {
+			$html_layouts .= sprintf(
+				'<input type="radio" name="lp-switch-layout-btn" value="%s" id="lp-switch-layout-btn-%s" %s>
+				<label class="switch-btn %s" title="%s" for="lp-switch-layout-btn-%s"></label>',
+				esc_attr( $layout ),
+				esc_attr( $layout ),
+				checked( $layout, $active, false ),
+				esc_attr( $layout ),
+				sprintf( esc_attr__( 'Switch to %s', 'learnpress' ), $value ),
+				esc_attr( $layout )
+			);
+		}
+
+		$section = apply_filters(
+			'learn-press/layout/list-courses/section/switch-layout',
+			[
+				'wrapper'     => '<div class="switch-layout">',
+				'layouts'     => $html_layouts,
+				'wrapper_end' => '</div>',
+			]
+		);
+
+		return Template::combine_components( $section );
 	}
 
 	/**

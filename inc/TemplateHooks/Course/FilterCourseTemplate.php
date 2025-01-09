@@ -32,7 +32,7 @@ class FilterCourseTemplate {
 	 * @param array $data
 	 *
 	 * @return void
-	 * @uses self::html_category()
+	 * @uses self::html_category
 	 *
 	 * @since 4.2.3.2
 	 * @version 1.0.1
@@ -701,6 +701,34 @@ class FilterCourseTemplate {
 			'<button class="course-filter-reset">%s</button>',
 			esc_html__( 'Reset', 'learnpress' )
 		);
+	}
+
+	/**
+	 * Get html button reset filter.
+	 *
+	 * @param array $data
+	 *
+	 * @return string
+	 * @since 4.2.7.6
+	 * @version 1.0.0
+	 */
+	public function html_btn_filter_mobile( array $data = [] ): string {
+		$count = $data['count_fields_selected'] ?? '';
+		if ( $count === '(0)' ) {
+			$count = '';
+		}
+
+		$section = [
+			'wrapper'               => '<div class="course-filter-btn-mobile">',
+			'icon'                  => '<span class="lp-icon lp-icon-filter"></span>',
+			'count_fields_selected' => sprintf(
+				'<span class="course-filter-count-fields-selected">%s</span>',
+				$count
+			),
+			'wrapper_end'           => '</div>',
+		];
+
+		return Template::combine_components( $section );
 	}
 
 	/**
