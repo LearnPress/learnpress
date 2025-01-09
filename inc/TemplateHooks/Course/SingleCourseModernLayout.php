@@ -244,7 +244,7 @@ class SingleCourseModernLayout {
 
 		if ( ! has_filter( 'learn-press/single-course/modern/section_left' ) ) {
 			// Do not use this hook, this hook only for handle hook without update from Addon, when handle on Addon, will remove this hook
-			$section_left = apply_filters( 'learn-press/single-course/offline/section-left', $section, $course, $user );
+			$section = apply_filters( 'learn-press/single-course/offline/section-left', $section, $course, $user );
 		}
 
 		return Template::combine_components( $section );
@@ -452,7 +452,7 @@ class SingleCourseModernLayout {
 			'wrapper_end' => '</div>',
 		];
 
-		$section_share = apply_filters(
+		$section = apply_filters(
 			'learn-press/single-course/social-share/sections',
 			[
 				'wrapper'                   => '<div class="social-swapper social-share-toggle">',
@@ -469,6 +469,6 @@ class SingleCourseModernLayout {
 			]
 		);
 
-		return Template::combine_components( $section_share );
+		return Template::combine_components( $section );
 	}
 }
