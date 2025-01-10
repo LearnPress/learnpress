@@ -338,7 +338,7 @@ window.lpCourseFilter = {
 			window.lpAJAXG.fetchAJAX( dataSend, callBack );
 
 			// Scroll to archive element
-			if ( window.outerHeight < 991 ) {
+			if ( window.outerWidth < 991 ) {
 				elListCourseTarget.scrollIntoView( { behavior: 'smooth' } );
 
 				// Hide widget course filter
