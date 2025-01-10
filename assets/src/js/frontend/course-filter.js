@@ -437,7 +437,7 @@ window.lpCourseFilter = {
 
 				// Filter courses
 				// Check on mobile will not filter when click field
-				if ( window.outerHeight > 991 ) {
+				if ( window.outerWidth > 991 ) {
 					const form = elField.closest( `.${ classCourseFilter }` );
 					const btnSubmit = form.querySelector( '.course-filter-submit' );
 					btnSubmit.click();
