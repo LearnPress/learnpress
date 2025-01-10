@@ -847,21 +847,8 @@
             display: flex;
             gap: 16px;
 			align-items: center;
-
-            &::before {
-                content: "\f060";
-                font-family: "lp-icon";
-                font-weight: normal;
-                width: 37px;
-                height: 37px;
-                display: inline-block;
-                background-color: #F1F2F8;
-                font-size: 1rem;
-                border-radius: 50%;
-                display: inline-flex;
-				align-items: center;
-				justify-content: center;
-            }
+			font-size: $font-size-h4;
+			padding-left: 50px;
         }
     }
 
@@ -886,19 +873,38 @@
 			transition: opacity .5s, width .1s .5s, height .1s .5s;
 			z-index: 99999;
 		}
+
+		.learnpress-widget-wrapper {
+			position: unset;
+		}
 	}
 
 	.lp-form-course-filter__close {
 		display: flex;
-		position: fixed;
+		position: absolute;
 		right: 0;
-		top: 0;
-		left: auto;
-		background-color: #fff;
-		padding: 20px;
+		top: 20px;
+		left: 0;
 		align-items: center;
 		justify-content: center;
 		gap: 4px;
+		width: 100%;
+		padding: 0 20px;
+
+		&::before {
+			content: "\f060";
+			font-family: "lp-icon";
+			font-weight: normal;
+			width: 37px;
+			height: 37px;
+			background-color: #F1F2F8;
+			font-size: 1rem;
+			border-radius: 50%;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			margin-right: auto;
+		}
 	}
 }
 
