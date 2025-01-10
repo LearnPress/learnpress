@@ -1269,7 +1269,9 @@ class SingleCourseTemplate {
 			);
 
 			ob_start();
+			add_filter( 'deprecated_file_trigger_error', '__return_false' );
 			comments_template();
+			remove_filter( 'deprecated_file_trigger_error', '__return_false' );
 			$html              = ob_get_clean();
 			$response->content = $html;
 		} catch ( Throwable $e ) {

@@ -1199,6 +1199,16 @@ function learn_press_comments_template_query_args( $comment_args ) {
 
 	return $comment_args;
 }
+add_filter( 'comments_template_query_args', 'learn_press_comments_template_query_args' );
+
+function learn_press_comment_form_logged_in( $html_login ) {
+	if ( get_post_type() == LP_COURSE_CPT || get_post_type() == LP_LESSON_CPT ) {
+		$html_login = '';
+	}
+
+	return $html_login;
+}
+add_filter( 'comment_form_logged_in', 'learn_press_comment_form_logged_in' );
 
 if ( ! function_exists( 'learn_press_filter_get_comments_number' ) ) {
 	function learn_press_filter_get_comments_number( $count, $post_id = 0 ) {
@@ -1231,6 +1241,7 @@ if ( ! function_exists( 'learn_press_filter_get_comments_number' ) ) {
 
 		return $count;
 	}
+	//add_filter( 'get_comments_number', 'learn_press_filter_get_comments_number' );
 }
 
 /**
