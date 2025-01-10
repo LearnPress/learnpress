@@ -1268,6 +1268,8 @@ class SingleCourseTemplate {
 				$user_id
 			);
 
+			//$post->comment_count = 0;
+
 			ob_start();
 			add_filter( 'deprecated_file_trigger_error', '__return_false' );
 			comments_template();

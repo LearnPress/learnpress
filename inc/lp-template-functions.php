@@ -1210,39 +1210,33 @@ function learn_press_comment_form_logged_in( $html_login ) {
 }
 add_filter( 'comment_form_logged_in', 'learn_press_comment_form_logged_in' );
 
-if ( ! function_exists( 'learn_press_filter_get_comments_number' ) ) {
-	function learn_press_filter_get_comments_number( $count, $post_id = 0 ) {
-		global $wpdb;
+function learn_press_filter_get_comments_number( $count, $post_id = 0 ) {
+	global $wpdb;
 
-		if ( ! $post_id ) {
-			$post_id = learn_press_get_course_id();
-		}
-
+	if ( ! $post_id ) {
+		$post_id = get_the_ID();
 		if ( ! $post_id ) {
 			return $count;
 		}
-
-		if ( get_post_type( $post_id ) == LP_COURSE_CPT ) {
-			$sql = $wpdb->prepare(
-				' SELECT count(*) '
-				. " FROM {$wpdb->comments} "
-				. ' WHERE comment_post_ID = %d '
-				. ' AND comment_approved = 1 '
-				. ' AND comment_type != %s ',
-				$post_id,
-				'review'
-			);
-
-			$count = $wpdb->get_var( $sql );
-
-			// @since 3.0.0
-			$count = apply_filters( 'learn-press/course-comments-number', $count, $post_id );
-		}
-
-		return $count;
 	}
-	//add_filter( 'get_comments_number', 'learn_press_filter_get_comments_number' );
+
+	if ( get_post_type( $post_id ) == LP_COURSE_CPT ) {
+		$sql = $wpdb->prepare(
+			' SELECT count(*) '
+			. " FROM {$wpdb->comments} "
+			. ' WHERE comment_post_ID = %d '
+			. ' AND comment_approved = 1 '
+			. ' AND comment_type != %s ',
+			$post_id,
+			'review'
+		);
+
+		$count = $wpdb->get_var( $sql );
+	}
+
+	return $count;
 }
+add_filter( 'get_comments_number', 'learn_press_filter_get_comments_number' );
 
 /**
  * Add custom classes to body tag class name
