@@ -95,6 +95,15 @@
 			margin-top: 16px;
 		}
 
+		.course-features,
+		.course-target,
+		.course-requirements {
+			ul {
+				margin: 0 0 0 20px;
+				padding: 0;
+			}
+		}
+
 		.instructor-social {
 			display: flex;
 			gap: 8px;
