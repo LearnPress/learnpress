@@ -257,17 +257,21 @@
 			display: flex;
 			position: absolute;
 			right: 0;
-			top: 20px;
-			left: 0;
+			top: 0;
+			left: auto;
 			align-items: center;
 			justify-content: center;
 			gap: 4px;
 			font-size: 0;
-			padding: 0 20px;
+			padding: 20px;
 
 			i {
 				font-size: 1rem;
 			}
 		}
+	}
+
+	.learnpress-widget-wrapper {
+		position: unset;
 	}
 }
