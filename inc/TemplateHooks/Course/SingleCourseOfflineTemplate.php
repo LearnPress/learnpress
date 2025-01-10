@@ -175,11 +175,13 @@ class SingleCourseOfflineTemplate {
 		$section_right = apply_filters(
 			'learn-press/single-course/offline/section-right',
 			[
-				'wrapper'         => '<div class="lp-single-offline-course__right">',
-				'info_main'       => wp_is_mobile() ? '' : $html_info_main,
-				'featured_review' => wp_is_mobile() ? '' : $this->singleCourseTemplate->html_feature_review( $course ),
-				'sidebar'         => $this->singleCourseTemplate->html_sidebar( $course ),
-				'wrapper_end'     => '</div>',
+				'wrapper'         	=> '<div class="lp-single-offline-course__right">',
+				'wrapper_inner'   	=> '<div class="lp-single-offline-course__right__sticky">',
+				'info_main'       	=> wp_is_mobile() ? '' : $html_info_main,
+				'featured_review' 	=> wp_is_mobile() ? '' : $this->singleCourseTemplate->html_feature_review( $course ),
+				'sidebar'           => $this->singleCourseTemplate->html_sidebar( $course ),
+				'wrapper_inner_end' => '</div>',
+				'wrapper_end'       => '</div>',
 			],
 			$course,
 			$user
