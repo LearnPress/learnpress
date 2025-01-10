@@ -4,6 +4,7 @@ import { lpAddQueryArgs, lpFetchAPI, lpGetCurrentURLNoParam } from '../utils.js'
 const classCourseFilter = 'lp-form-course-filter';
 const classProcessing = 'processing';
 const classShowCourseFilterMobile = 'show-lp-course-filter-mobile';
+const withHandleForMobile = 991;
 
 // Events
 // Submit form filter
@@ -39,6 +40,16 @@ document.addEventListener( 'click', function( e ) {
 
 	// Click btn filter mobile
 	window.lpCourseFilter.clickBtnFilterMobile( target );
+
+	// Out click courses filter.
+	if ( ! target.closest( `.${ classCourseFilter }` ) &&
+		! target.closest( '.course-filter-btn-mobile' ) ) {
+		const body = document.querySelector( 'body' );
+		if ( window.outerWidth <= withHandleForMobile &&
+			body.classList.contains( `${ classShowCourseFilterMobile }` ) ) {
+			body.classList.remove( `${ classShowCourseFilterMobile }` );
+		}
+	}
 } );
 
 // Search course suggest
@@ -338,7 +349,7 @@ window.lpCourseFilter = {
 			window.lpAJAXG.fetchAJAX( dataSend, callBack );
 
 			// Scroll to archive element
-			if ( window.outerWidth < 991 ) {
+			if ( window.outerWidth <= withHandleForMobile ) {
 				elListCourseTarget.scrollIntoView( { behavior: 'smooth' } );
 
 				// Hide widget course filter
@@ -437,7 +448,7 @@ window.lpCourseFilter = {
 
 				// Filter courses
 				// Check on mobile will not filter when click field
-				if ( window.outerWidth > 991 ) {
+				if ( window.outerWidth > withHandleForMobile ) {
 					const form = elField.closest( `.${ classCourseFilter }` );
 					const btnSubmit = form.querySelector( '.course-filter-submit' );
 					btnSubmit.click();
