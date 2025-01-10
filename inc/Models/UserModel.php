@@ -350,13 +350,14 @@ class UserModel {
 	 *
 	 * @return string
 	 * @since 4.2.7.2
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function get_avatar_url(): string {
 		$avatar_url = $this->get_upload_avatar_src();
 		if ( empty( $avatar_url ) ) {
 			// Get form Gravatar.
 			$args       = learn_press_get_avatar_thumb_size();
+			$args       = apply_filters( 'learn-press/gravatar/args', $args );
 			$avatar_url = get_avatar_url( $this->get_id(), $args );
 			// If not exists, get default avatar.
 			if ( empty( $avatar_url ) ) {
