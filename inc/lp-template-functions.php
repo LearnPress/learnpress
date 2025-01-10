@@ -1210,6 +1210,15 @@ function learn_press_comment_form_logged_in( $html_login ) {
 }
 add_filter( 'comment_form_logged_in', 'learn_press_comment_form_logged_in' );
 
+function learn_press_comment_form_defaults( $defaults ) {
+	if ( get_post_type() == LP_COURSE_CPT || get_post_type() == LP_LESSON_CPT ) {
+		$defaults['comment_notes_before'] = '';
+	}
+
+	return $defaults;
+}
+add_filter( 'comment_form_defaults', 'learn_press_comment_form_defaults' );
+
 function learn_press_filter_get_comments_number( $count, $post_id = 0 ) {
 	global $wpdb;
 
