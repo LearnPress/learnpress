@@ -577,33 +577,48 @@ class SingleCourseTemplate {
 	 * Get feature review
 	 *
 	 * @param CourseModel $course
+	 * @param UserModel|false $userModel
 	 *
 	 * @return string
+	 * @since 4.2.7
+	 * @version 1.0.1
 	 */
-	public function html_feature_review( CourseModel $course ): string {
+	public function html_feature_review( CourseModel $course, $userModel = false ): string {
 		$feature_review = $course->get_meta_value_by_key( CoursePostModel::META_KEY_FEATURED_REVIEW, '' );
 		if ( empty( $feature_review ) ) {
 			return '';
 		}
-		ob_start();
-		?>
-		<div class="course-featured-review">
-			<div class="featured-review__title">
-				<?php echo esc_html__( 'Featured Review', 'learnpress' ); ?>
-			</div>
-			<div class="featured-review__stars">
-				<i class="lp-icon-star"></i>
-				<i class="lp-icon-star"></i>
-				<i class="lp-icon-star"></i>
-				<i class="lp-icon-star"></i>
-				<i class="lp-icon-star"></i>
-			</div>
-			<div class="featured-review__content">
-				<?php echo wp_kses_post( wpautop( $feature_review ) ); ?>
-			</div>
-		</div>
-		<?php
-		return ob_get_clean();
+
+		if ( $userModel instanceof UserModel ) {
+			$userCourseModel = UserCourseModel::find( $userModel->get_id(), $course->get_id(), true );
+			if ( $userCourseModel ) {
+				return '';
+			}
+		}
+
+		$stars = '';
+		foreach ( range( 1, 5 ) as $star ) {
+			$stars .= '<i class="lp-icon-star"></i>';
+		}
+
+		$section = [
+			'wrapper'     => '<div class="course-featured-review">',
+			'title'       => sprintf(
+				'<div class="featured-review__title">%s</div>',
+				esc_html__( 'Featured Review', 'learnpress' )
+			),
+			'stars'       => sprintf(
+				'<div class="featured-review__stars">%s</div>',
+				$stars
+			),
+			'content'     => sprintf(
+				'<div class="featured-review__content">%s</div>',
+				wp_kses_post( wpautop( $feature_review ) )
+			),
+			'wrapper_end' => '</div>',
+		];
+
+		return Template::combine_components( $section );
 	}
 
 	/**

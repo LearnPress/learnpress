@@ -172,7 +172,7 @@ class SingleCourseClassicTemplate {
 				'image'             => $this->singleCourseTemplate->html_image( $course ),
 				'price'             => $this->singleCourseTemplate->html_price( $course ),
 				'buttons'           => Template::combine_components( $section_buttons ),
-				'featured_review'   => $this->singleCourseTemplate->html_feature_review( $course ),
+				'featured_review'   => $this->singleCourseTemplate->html_feature_review( $course, $user ),
 				'sidebar'           => $this->singleCourseTemplate->html_sidebar( $course ),
 				'wrapper_inner_end' => '</div>',
 				'wrapper_end'       => '</div>',

@@ -352,7 +352,7 @@ class SingleCourseModernLayout {
 				'metas'             => Template::combine_components( $section_info_meta ),
 				'buttons'           => Template::combine_components( $section_buttons ),
 				'share'             => $this->html_share( $course ),
-				'featured_review'   => $this->singleCourseTemplate->html_feature_review( $course ),
+				'featured_review'   => $this->singleCourseTemplate->html_feature_review( $course, $user ),
 				'sidebar'           => wp_is_mobile() ? '' : $this->singleCourseTemplate->html_sidebar( $course ),
 				'wrapper_inner_end' => '</div>',
 				'wrapper_end'       => '</div>',

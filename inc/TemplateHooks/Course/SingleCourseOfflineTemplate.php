@@ -157,7 +157,7 @@ class SingleCourseOfflineTemplate {
 				'info_one'               => Template::combine_components( $section_info_one ),
 				'image'                  => $this->singleCourseTemplate->html_image( $course ),
 				'info_main_mobile'       => wp_is_mobile() ? $html_info_main : '',
-				'featured_review_mobile' => wp_is_mobile() ? $this->singleCourseTemplate->html_feature_review( $course ) : '',
+				'featured_review_mobile' => wp_is_mobile() ? $this->singleCourseTemplate->html_feature_review( $course, $user ) : '',
 				'description'            => $this->singleCourseTemplate->html_description( $course ),
 				'features'               => $this->singleCourseTemplate->html_features( $course ),
 				'target'                 => $this->singleCourseTemplate->html_target( $course ),
@@ -175,10 +175,10 @@ class SingleCourseOfflineTemplate {
 		$section_right = apply_filters(
 			'learn-press/single-course/offline/section-right',
 			[
-				'wrapper'         	=> '<div class="lp-single-offline-course__right">',
-				'wrapper_inner'   	=> '<div class="lp-single-offline-course__right__sticky">',
-				'info_main'       	=> wp_is_mobile() ? '' : $html_info_main,
-				'featured_review' 	=> wp_is_mobile() ? '' : $this->singleCourseTemplate->html_feature_review( $course ),
+				'wrapper'           => '<div class="lp-single-offline-course__right">',
+				'wrapper_inner'     => '<div class="lp-single-offline-course__right__sticky">',
+				'info_main'         => wp_is_mobile() ? '' : $html_info_main,
+				'featured_review'   => wp_is_mobile() ? '' : $this->singleCourseTemplate->html_feature_review( $course, $user ),
 				'sidebar'           => $this->singleCourseTemplate->html_sidebar( $course ),
 				'wrapper_inner_end' => '</div>',
 				'wrapper_end'       => '</div>',
