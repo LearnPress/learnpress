@@ -421,7 +421,7 @@ class LP_Install_Sample_Data {
 	 * @return int
 	 */
 	protected function create_section( $name, $course_id ) {
-		static $order = 0;
+		static $order = 1;
 
 		global $wpdb;
 
