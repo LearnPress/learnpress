@@ -146,12 +146,23 @@
 
 	&__right {
 		width: 30%;
+		position: relative;
 
-		.info-metas,
+		&__sticky {
+			position: sticky;
+			top: 0;
+		}
+	}
+
+	.info-metas,
 		.course-featured-review {
 			border: 1px solid #E2E0DB;
 			padding: 30px;
 			margin-bottom: 60px;
+
+			@media (max-width: 767px) {
+				margin-bottom: 30px;
+			}
 			//border-radius: 8px;
 
 			.info-meta-item {
@@ -248,7 +259,6 @@
 			order: 3;
 			color: var(--lp-primary-color);
 		}
-	}
 
 	.lp-list-courses-related {
 		h3 {
