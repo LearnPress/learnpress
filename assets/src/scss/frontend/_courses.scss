@@ -562,9 +562,6 @@
 		.course-item {
 			border: 1px solid $border-color;
 			border-radius: $border-radius-global;
-			&:hover {
-				box-shadow: 0 15px 20px 0 rgba(0, 0, 0, 0.2);
-			}
 		}
 
 		.course-wrap-meta {
