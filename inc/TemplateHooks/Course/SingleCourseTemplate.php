@@ -1485,11 +1485,9 @@ class SingleCourseTemplate {
 		$duration_number = floatval( $duration_arr[0] ?? 0 );
 		$duration_type   = $duration_arr[1] ?? '';
 
-		$item_duration_plural = '';
 		if ( $duration_number > 0 ) {
 			$item_duration_plural = LP_Datetime::get_string_plural_duration( $duration_number, $duration_type );
-		}
-		if ( $item_duration_plural != '' ) {
+
 			$html_item_duration = sprintf(
 				'<span class="duration">%s</span>',
 				$item_duration_plural
