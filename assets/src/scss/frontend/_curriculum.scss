@@ -1226,8 +1226,11 @@ body.course-item-popup {
 				justify-content: space-between;
 				width: 100%;
 				column-gap: 20px;
-				row-gap: 8px;
-				flex-wrap: wrap;
+				position: relative;
+
+				@media (max-width: 767px) {
+					flex-wrap: wrap;
+				}
 			}
 
 			&__left {
@@ -1235,6 +1238,11 @@ body.course-item-popup {
 				column-gap: 16px;
 				row-gap: 8px;
 				align-items: center;
+				flex-basis: 78%;
+
+				@media (max-width: 767px) {
+					flex-basis: 100%;
+				}
 
 				&:hover {
 					color: $color-primary;
@@ -1246,11 +1254,32 @@ body.course-item-popup {
 				column-gap: 12px;
 				row-gap: 8px;
 				align-items: center;
+				flex-basis: 22%;
+				justify-content: flex-end;
+
+				@media (max-width: 767px) {
+					flex-basis: 100%;
+					justify-content: flex-start;
+				}
 
 				.course-item-ico {
 					width: 24px;
 					display: flex;
 					justify-content: center;
+
+					@media (max-width: 767px) {
+						position: absolute;
+						right: 0;
+						top: 0;
+					}
+				}
+
+				.duration {
+					@media (max-width: 767px) {
+						display: block;
+						margin-top: 8px;
+						margin-left: 30px;
+					}
 				}
 			}
 		}
