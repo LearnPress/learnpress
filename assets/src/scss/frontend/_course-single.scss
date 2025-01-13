@@ -831,6 +831,11 @@
 			padding: 12px 20px;
 			outline: none;
 			border: 1px solid var(--lp-border-color, #E2E0DB);
+			border-radius: var(--lp-border-radius, 5px);
+		}
+
+		input[type=submit] {
+			border-radius: var(--lp-border-radius, 5px);
 		}
 	}
 
