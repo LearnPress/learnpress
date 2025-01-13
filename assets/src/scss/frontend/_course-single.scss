@@ -322,7 +322,7 @@
 			}
 	
 			a {
-				font-weight: 600;
+				font-weight: $link-font-weight;
 				text-decoration: none;
 				&:hover {
 					color: $color-primary;
@@ -637,6 +637,7 @@
 	
 			.btn-clipboard {
 				position: relative;
+				padding: 12px 20px;
 	
 				.tooltip {
 					display: none;
@@ -678,6 +679,7 @@
 	
 			.clipboard-value {
 				border: 1px solid $border-color;
+				padding: 12px 20px;
 
 				@media (max-width: 600px) {
 					width: 100%;
@@ -811,5 +813,28 @@
 				font-weight: normal;
 			}
 		}
+	}
+	.comment-form {
+		.comment-form-url,
+		.comment-form-email,
+		.comment-form-author,
+		.comment-form-comment {
+			display: flex;
+			flex-direction: column;
+			gap: 1rem;
+		}
+
+		input[type="url"],
+		input[type="text"],
+		input[type="email"],
+		textarea {
+			padding: 12px 20px;
+			outline: none;
+			border: 1px solid var(--lp-border-color, #E2E0DB);
+		}
+	}
+
+	button {
+		font-size: 1em;
 	}
 }

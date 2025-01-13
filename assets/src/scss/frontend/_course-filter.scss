@@ -72,6 +72,10 @@
 			overflow-y: auto;
 			padding: 0;
 
+			&:empty {
+				border: none;
+			}
+
 			.lp-courses-suggest-list{
 				padding: 0 10px;
 				.item-course-suggest{
