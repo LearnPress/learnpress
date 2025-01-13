@@ -63,6 +63,7 @@ body {
 			img {
 				max-width: 120px;
 				border-radius: 50%;
+				height: auto;
 
 				@media (max-width: 767px) {
 					max-width: 100px;
@@ -207,6 +208,11 @@ body {
 		.course-thumbnail{
 			border-radius:$border-radius-global $border-radius-global 0 0;
 			overflow: hidden;
+
+			img {
+				width: 100%;
+				height: auto;
+			}
 		}
 
 		.course-wrap-meta {
