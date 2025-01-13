@@ -227,7 +227,7 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Fixed: security.
 ~ Optimize: speed load list courses.
 ~ Added: option choose "Layout single course (Modern/Classic)".
-~ Added: Curriculum display (currently apply for layout Modern).
+~ Added: option "Curriculum display" (currently apply for layout Modern).
 ~ Added: new Modern layout for Single Course.
 ~ Added: exclude from search via ?s= for lesson, quiz, order.
 ~ Refactor code handle Quiz.
