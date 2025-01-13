@@ -147,7 +147,7 @@ return apply_filters(
 						'expand_all'           => esc_html__( 'Expanse all sections', 'learnpress' ),
 						'collapse_all'         => esc_html__( 'Collapse all sections', 'learnpress' ),
 					),
-					'desc'    => '',
+					'desc'    => 'Currently, apply for the Modern single course layout only.',
 				),
 				array(
 					'title'   => esc_html__( 'Section Per Page', 'learnpress' ),

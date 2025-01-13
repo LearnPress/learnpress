@@ -51,6 +51,8 @@ class Block_Template_Single_Course extends Abstract_Block_Template {
 			} elseif ( empty( $option_single_course_layout )
 				|| $option_single_course_layout === 'classic' ) {
 				$page_template = 'single-course-layout-classic.php';
+				// Set temporary old single course layout.
+				$page_template = 'single-course.php';
 			}
 
 			// Old single course layout.
