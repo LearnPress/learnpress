@@ -378,6 +378,10 @@
 		row-gap: 30px;
 		flex-wrap: wrap;
 
+		@media (max-width: 1500px) {
+			column-gap: 30px;
+		}
+
 		@media (max-width: 991px) {
 			flex-direction: column-reverse;
 			padding: 40px 0;
@@ -385,8 +389,13 @@
 
 		&__left {
 			width: 100%;
-			@media (min-width: 992px) {
+
+			@media (min-width: 1501px) {
 				width: calc(100% - 440px);
+			}
+
+			@media (min-width: 992px) {
+				width: calc(100% - 410px);
 			}
 
 			> div {

@@ -1489,10 +1489,12 @@ class SingleCourseTemplate {
 		if ( $duration_number > 0 ) {
 			$item_duration_plural = LP_Datetime::get_string_plural_duration( $duration_number, $duration_type );
 		}
-		$html_item_duration = sprintf(
-			'<span class="duration">%s</span>',
-			$item_duration_plural
-		);
+		if ( $item_duration_plural != '' ) {
+			$html_item_duration = sprintf(
+				'<span class="duration">%s</span>',
+				$item_duration_plural
+			);
+		}
 
 		$user_item_status_ico_flag = 'locked';
 		$user_attended_course      = false;
