@@ -1238,14 +1238,15 @@ body.course-item-popup {
 				column-gap: 16px;
 				row-gap: 8px;
 				align-items: center;
-				flex-basis: 78%;
-
-				@media (max-width: 767px) {
-					flex-basis: 100%;
-				}
 
 				&:hover {
 					color: $color-primary;
+				}
+
+				@media (max-width: 767px) {
+					.course-item-title {
+						padding-right: 30px;
+					}
 				}
 			}
 
@@ -1254,11 +1255,11 @@ body.course-item-popup {
 				column-gap: 12px;
 				row-gap: 8px;
 				align-items: center;
-				flex-basis: 22%;
+				flex: none;
 				justify-content: flex-end;
 
 				@media (max-width: 767px) {
-					flex-basis: 100%;
+					width: 100%;
 					justify-content: flex-start;
 				}
 
