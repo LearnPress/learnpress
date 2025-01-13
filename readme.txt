@@ -15,7 +15,7 @@ A WordPress LMS Plugin to create WordPress Learning Management System. Turn your
 
 LearnPress is a comprehensive *WordPress LMS Plugin* for WordPress. This is one of the best WordPress LMS Plugins which can be used to easily create & sell courses online. You can create a course curriculum with lessons & quizzes included which is managed with an easy-to-use interface for users. With our newest features, you can also sell your in-person classes and workshops using online payment gateways. Having this WordPress LMS Plugin, now you have a chance to quickly and easily create education, online school, online-course, offline-course websites with no coding knowledge required.
 
-<a href="https://edupress.thimpress.com" target="_blank">Live Demo</a> | <a href="https://docs.thimpress.com/learnpress/?utm_source=WPORG&utm_medium=LP&utm_campaign=Content" target="_blank">Documentation</a> | <a href="https://thimpress.com/forums/forum/learnpress-plugin/?utm_source=WPORG&utm_medium=LP&utm_campaign=Content" target="_blank">Support</a>
+<a href="https://edupress.thimpress.com" target="_blank">Live Demo</a> | <a href="https://docs.thimpress.com/learnpress/?utm_source=WPORG&utm_medium=LP&utm_campaign=Content" target="_blank">Documentation</a> | <a href="https://help.thimpress.com" target="_blank">Support</a>
 <a href="https://thimpress.com/product/education-wordpress-starter-theme-for-learnpress/?utm_source=WPORG&utm_medium=LP&utm_campaign=Content">Free LearnPress Theme</a>
 <a href="https://1.envato.market/G5Ook" target="_blank">Premium LearnPress Themes</a>
 <a href="https://thimpress.com/eduma-mobile-app/?utm_source=WPORG&utm_medium=LP&utm_campaign=Content" target="_blank">LearnPress Mobile App</a>
@@ -223,9 +223,19 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
-= 4.2.7.6 (2025-01-10) =
+= 4.2.7.6 (2025-01-15) =
 ~ Fixed: security.
+~ Optimize: speed load list courses.
+~ Added: option choose "Layout single course (Modern/Classic)".
+~ Added: Curriculum display (currently apply for layout Modern).
+~ Added: new Modern layout for Single Course.
+~ Added: exclude from search via ?s= for lesson, quiz, order.
+~ Refactor code handle Quiz.
+~ Tweak: layout Single Instructor (change struct layout, display cover image, link edit if exists).
+~ Tweak: courses filter for mobile.
+~ Tweak: layout course offline for mobile.
 ~ Allow: display html content on Offline Payment.
+~ Allow: change multiple instructors via Bulk Edit.
 
 = 4.2.7.5 (2024-12-17) =
 ~ Added: option Price prefix, Price suffix for course.
