@@ -409,7 +409,6 @@
 			.section-title,
 			.item-title {
 				margin: 0 0 20px 0;
-				font-weight: bold;
 				font-size: $font-size-h3;
 
 				@media (max-width: 767px) {
@@ -737,6 +736,7 @@
 
 		.section-title {
 			margin: 0 0 40px 0;
+			font-size: $font-size-h3;
 		}
 	}
 
