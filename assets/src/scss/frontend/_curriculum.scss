@@ -1144,7 +1144,7 @@ body.course-item-popup {
 		}
 
 		&__right {
-			font-weight: bold;
+			font-weight: $link-font-weight;
 			text-align: right;
 			text-transform: capitalize;
 		}

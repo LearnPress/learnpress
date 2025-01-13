@@ -153,10 +153,10 @@
 			}
 
 			.course-price {
-				.origin-price,
+				.free,
 				.price {
 					font-size: $font-size-large;
-					font-weight: $heading-font-weight;
+					font-weight: $link-font-weight;
 				}
 
 				.origin-price {
@@ -356,7 +356,7 @@
 	.course-instructor-category {
 		display: flex;
 		padding: 0;
-		gap: $spacing-base-3x;
+		gap: $spacing-base;
 		flex-wrap: wrap;
 		margin-bottom: $spacing-base-3x;
 

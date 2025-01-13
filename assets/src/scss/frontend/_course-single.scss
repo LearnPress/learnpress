@@ -491,12 +491,6 @@
 		}
 
 		.info-metas {
-			margin-bottom: 30px;
-
-			@media (max-width: 767px) {
-				margin-bottom: 20px;
-			}
-
 			.info-meta-item {
 				display: flex;
 				gap: 4px;
@@ -526,18 +520,15 @@
 
 			img {
 				max-width: 100%;
+				display: block;
 			}
 		}
 
 		.course-price {
 			display: block;
-			margin-bottom: 30px;
+			margin-bottom: 20px;
 			font-size: $font-size-large;
-			font-weight: $heading-font-weight;
-
-			@media (max-width: 767px) {
-				margin-bottom: 20px;
-			}
+			font-weight: $link-font-weight;
 
 			.free {
 				color: #3AB500;
@@ -738,6 +729,12 @@
 	}
 
 	.lp-list-courses-related {
+		margin: 0 0 40px 0;
+
+		@media (max-width: 767px) {
+			margin: 0 0 20px 0;
+		}
+
 		.section-title {
 			margin: 0 0 40px 0;
 		}
