@@ -32,7 +32,7 @@ if ( ! is_user_logged_in() ) {
 			'<a class="lp-link-enroll" href="%s">%s</a>',
 			$course->get_permalink(),
 			__( 'enroll', 'learnpress' )
-		) : ''
+		) : __( 'enroll', 'learnpress' )
 	);
 } else {
 	$message = $can_view_item->message;
