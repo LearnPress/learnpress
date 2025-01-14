@@ -1412,14 +1412,14 @@ class SingleCourseTemplate {
 			'end'      => '</ul>',
 		];
 
-		$Curriculum_display_setting = LP_Settings::get_option( 'curriculum_display', 'expand_first_section' );
+		$curriculum_display_setting = LP_Settings::get_option( 'curriculum_display', 'expand_first_section' );
 		$class_section_toggle       = '';
-		if ( $Curriculum_display_setting === 'collapse_all' ) {
+		if ( $curriculum_display_setting === 'collapse_all' ) {
 			$class_section_toggle = 'lp-collapse';
-		}
-
-		if ( $section_order > 1 ) {
-			$class_section_toggle = 'lp-collapse';
+		} elseif ( $curriculum_display_setting === 'expand_first_section' ) {
+			if ( $section_order > 1 ) {
+				$class_section_toggle = 'lp-collapse';
+			}
 		}
 
 		$section_item = apply_filters(
@@ -1557,7 +1557,7 @@ class SingleCourseTemplate {
 			'item_order'     => sprintf(
 				'<span class="course-item-order lp-hidden">%s.%s</span>',
 				$section_item->section_order,
-				$item->item_order
+				$item_order
 			),
 			'title'          => sprintf( '<div class="course-item-title">%s</div>', wp_kses_post( $title ) ),
 			'item_left_end'  => '</div>',
