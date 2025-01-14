@@ -376,6 +376,17 @@ class CourseModel {
 	}
 
 	/**
+	 * Check option "Block course when finished" enable.
+	 *
+	 * @return bool
+	 * @since 4.2.7.6
+	 * @version 1.0.0
+	 */
+	public function enable_block_when_finished(): bool {
+		return $this->get_meta_value_by_key( CoursePostModel::META_KEY_BLOCK_FINISH, 'no' ) === 'yes';
+	}
+
+	/**
 	 * Get first item of course
 	 *
 	 * @return int

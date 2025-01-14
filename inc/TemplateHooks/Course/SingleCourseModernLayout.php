@@ -52,6 +52,11 @@ class SingleCourseModernLayout {
 		do_action( 'learn-press/single-course/courses-related/layout', $course, 4 );
 		$html_courses_related = ob_get_clean();
 
+		// Global message
+		ob_start();
+		learn_press_show_message();
+		$global_message = ob_get_clean();
+
 		$sections = apply_filters(
 			'learn-press/single-course/modern/sections',
 			[
@@ -59,6 +64,7 @@ class SingleCourseModernLayout {
 				'section_header'        => $this->header_sections( $course, $user ),
 				'wrapper_container'     => '<div class="lp-content-area">',
 				'wrapper_main'          => '<div class="lp-single-course-main">',
+				'global_message'        => $global_message,
 				'section_left'          => $this->section_left( $course, $user ),
 				'section_right'         => $this->section_right( $course, $user ),
 				'wrapper_main_end'      => '</div>',
@@ -325,6 +331,7 @@ class SingleCourseModernLayout {
 			$btn_continue_and_finish = [
 				'btn_continue' => $userCourseTemplate->html_btn_continue( $userCourseModel ),
 				'btn_finish'   => $userCourseTemplate->html_btn_finish( $userCourseModel ),
+				'btn_retake'   => $userCourseTemplate->html_btn_retake( $userCourseModel ),
 			];
 		}
 

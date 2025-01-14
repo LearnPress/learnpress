@@ -9,7 +9,9 @@
 namespace LearnPress\TemplateHooks\UserItem;
 
 use LearnPress\Helpers\Template;
+use LearnPress\Models\CourseModel;
 use LearnPress\Models\UserItems\UserCourseModel;
+use LearnPress\Models\UserModel;
 
 class UserCourseTemplate extends UserItemBaseTemplate {
 	public static function instance() {
@@ -101,7 +103,7 @@ class UserCourseTemplate extends UserItemBaseTemplate {
 				),
 				'input'    => sprintf(
 					'<input type="hidden" name="course-id" value="%d"/>',
-					esc_attr( $userCourseModel->ref_id )
+					esc_attr( $userCourseModel->item_id )
 				),
 				'nonce'    => sprintf(
 					'<input type="hidden" name="finish-course-nonce" value="%s"/>',
@@ -114,6 +116,49 @@ class UserCourseTemplate extends UserItemBaseTemplate {
 				'lpajax'   => '<input type="hidden" name="lp-ajax" value="finish-course"/>',
 				'noajax'   => '<input type="hidden" name="noajax" value="yes"/>',
 				'form_end' => '</form>',
+			],
+			$userCourseModel
+		);
+
+		return Template::combine_components( $section );
+	}
+
+	/**
+	 * HTML button retake course
+	 *
+	 * @param UserCourseModel $userCourseModel
+	 *
+	 * @return string
+	 * @since 4.2.7.6
+	 * @version 1.0.0
+	 */
+	public function html_btn_retake( UserCourseModel $userCourseModel ): string {
+		$retake_remaining = $userCourseModel->can_retake();
+
+		if ( $retake_remaining === 0 ) {
+			return '';
+		}
+
+		$html_btn = sprintf(
+			'<button type="submit" class="lp-button button-retake-course">%s (%d)</button>',
+			__( 'Retake course', 'learnpress' ),
+			$retake_remaining
+		);
+
+		$section = apply_filters(
+			'learn-press/course/html-button-retake',
+			[
+				'form'         => sprintf(
+					'<form name="lp-form-retake-course" class="lp-form-retake-course" method="post" data-confirm="%s">',
+					esc_html__( 'Do you want to retake the course', 'learnpress' )
+				),
+				'input'        => sprintf(
+					'<input type="hidden" name="retake-course" value="%d"/>',
+					esc_attr( $userCourseModel->item_id )
+				),
+				'btn'          => $html_btn,
+				'lp-ajax-mess' => '<div class="lp-ajax-message"></div>',
+				'form_end'     => '</form>',
 			],
 			$userCourseModel
 		);

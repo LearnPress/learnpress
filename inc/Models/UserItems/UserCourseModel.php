@@ -21,6 +21,7 @@ use LP_Courses_Cache;
 use LP_Datetime;
 use LP_User;
 use LP_User_Item_Course;
+use LP_User_Items_Cache;
 use LP_User_Items_DB;
 use LP_User_Items_Filter;
 use LP_User_Items_Result_DB;
@@ -41,6 +42,11 @@ class UserCourseModel extends UserItemModel {
 	 * @var string
 	 */
 	public $ref_type = LP_ORDER_CPT;
+
+	/**
+	 * Constant key meta
+	 */
+	const META_KEY_RETAKEN_COUNT = '_lp_retaken_count';
 
 	public function __construct( $data = null ) {
 		parent::__construct( $data );
@@ -323,7 +329,7 @@ class UserCourseModel extends UserItemModel {
 				return $results;
 			}
 
-			$count_items           = $courseModel->get_total_items();
+			$count_items           = $courseModel->count_items();
 			$count_items_completed = $this->count_items_completed();
 
 			$evaluate_type = $courseModel->get_meta_value_by_key( CoursePostModel::META_KEY_EVALUATION_TYPE, 'evaluate_lesson' );
@@ -445,7 +451,7 @@ class UserCourseModel extends UserItemModel {
 	 * @return int
 	 */
 	public function get_retaken_count(): int {
-		return (int) $this->get_meta_value_from_key( '_lp_retaken_count', 0 );
+		return (int) $this->get_meta_value_from_key( self::META_KEY_RETAKEN_COUNT, 0 );
 	}
 
 	/**
@@ -606,6 +612,17 @@ class UserCourseModel extends UserItemModel {
 	 */
 	public function is_passed(): bool {
 		return $this->graduation === LP_COURSE_GRADUATION_PASSED;
+	}
+
+	/**
+	 * Check course is canceled or not.
+	 *
+	 * @return bool
+	 * @since 4.2.7.6
+	 * @version 1.0.0
+	 */
+	public function has_canceled(): bool {
+		return $this->status === self::STATUS_CANCEL;
 	}
 
 	/**
@@ -868,19 +885,17 @@ class UserCourseModel extends UserItemModel {
 				throw new Exception( __( 'Course not exists!', 'learnpress' ) );
 			}
 
-			if ( $this->has_finished() ) {
-				throw new Exception( __( 'Course is finished!', 'learnpress' ) );
-			}
-
-			if ( ! $this->has_enrolled() ) {
-				throw new Exception( __( 'Course is not enroll!', 'learnpress' ) );
+			$can_impact_item = $this->can_impact_item();
+			if ( $can_impact_item instanceof WP_Error ) {
+				throw new Exception( $can_impact_item->get_error_message() );
 			}
 
 			$course_results = $this->calculate_course_results();
-
-			$graduation = $this->get_graduation();
-			if ( $graduation !== LP_GRADUATION_PASSED ) {
-				$allow_finish_when_all_item_completed = $courseModel->get_meta_value_by_key( CoursePostModel::META_KEY_HAS_FINISH, 'yes' );
+			if ( empty( $course_results['pass'] ) ) {
+				$allow_finish_when_all_item_completed = $courseModel->get_meta_value_by_key(
+					CoursePostModel::META_KEY_HAS_FINISH,
+					'yes'
+				);
 				if ( $allow_finish_when_all_item_completed ) {
 					$course_total_items_obj = $courseModel->get_total_items();
 					if ( $course_total_items_obj && $course_results['completed_items'] < $course_total_items_obj->count_items ) {
@@ -894,7 +909,80 @@ class UserCourseModel extends UserItemModel {
 			$can_finish = new WP_Error( 'lp_user_course_can_finish_err', $e->getMessage() );
 		}
 
-		return $can_finish;
+		return apply_filters( 'learn-press/user-course/can-finish', $can_finish, $this );
+	}
+
+	/**
+	 * Handle finish course.
+	 *
+	 * @throws Exception
+	 * @version 1.0.0
+	 * @since 4.2.7.6
+	 */
+	public function handle_finish() {
+		$can_finish = $this->can_finish();
+		if ( is_wp_error( $can_finish ) ) {
+			throw new Exception( $can_finish->get_error_message() );
+		}
+
+		$course_results   = $this->calculate_course_results();
+		$this->graduation = $course_results['pass'] ? LP_COURSE_GRADUATION_PASSED : LP_COURSE_GRADUATION_FAILED;
+		$this->status     = LP_COURSE_FINISHED;
+		$this->save();
+
+		// Save result for course
+		LP_User_Items_Result_DB::instance()->update( $this->get_user_item_id(), wp_json_encode( $course_results ) );
+
+		// Hook old
+		if ( has_filter( 'learn-press/user-course/finish' ) ) {
+			do_action( 'learn-press/user-course-finished', $this->ref_id, $this->user_id, null );
+		}
+
+		do_action( 'learn-press/user-course/finish', $this );
+	}
+
+	/**
+	 * Handle retake course
+	 *
+	 * @throws Exception
+	 * @since 4.2.7.6
+	 * @version 1.0.0
+	 */
+	public function handle_retake() {
+		$remaining_retake = $this->can_retake();
+		if ( $remaining_retake === 0 ) {
+			throw new Exception( __( 'You can not retake this course!', 'learnpress' ) );
+		}
+
+		$this->status     = self::STATUS_ENROLLED;
+		$this->graduation = self::GRADUATION_IN_PROGRESS;
+		$this->start_time = gmdate( LP_Datetime::$format, time() );
+		$this->end_time   = null;
+		$this->set_meta_value_for_key( self::META_KEY_RETAKEN_COUNT, $this->get_retaken_count() + 1 );
+		$this->save();
+
+		$courseModel = $this->get_course_model();
+
+		if ( $courseModel->count_items() > 0 ) {
+			// Remove items' course user learned.
+			$filter_remove            = new LP_User_Items_Filter();
+			$filter_remove->parent_id = $this->get_user_item_id();
+			$filter_remove->user_id   = $this->user_id;
+			$filter_remove->limit     = - 1;
+			LP_User_Items_DB::getInstance()->remove_items_of_user_course( $filter_remove );
+
+			// Clean cache items.
+			foreach ( $courseModel->get_section_items() as $section_items ) {
+				foreach ( $section_items->items as $item ) {
+					$key_cache       = "userItemModel/find/{$this->user_id}/{$item->id}/{$item->type}/{$this->item_id}/" . LP_COURSE_CPT;
+					$lpUserItemCache = new LP_User_Items_Cache();
+					$lpUserItemCache->clear( $key_cache );
+				}
+			}
+		}
+
+		// Create new result in table learnpress_user_item_results.
+		LP_User_Items_Result_DB::instance()->insert( $this->get_user_item_id() );
 	}
 
 	/**
@@ -908,16 +996,16 @@ class UserCourseModel extends UserItemModel {
 		$can_impact_item = true;
 
 		$status = $this->get_status();
-		if ( $status === UserItemModel::STATUS_CANCEL ) {
+		if ( $this->has_canceled() || ! $this->has_enrolled() ) {
 			$can_impact_item = new WP_Error( 'user_not_enroll_course', __( 'You have not enroll this course!', 'learnpress' ) );
 		}
 
-		if ( $status === UserItemModel::STATUS_FINISHED ) {
+		if ( $this->has_finished() ) {
 			$can_impact_item = new WP_Error( 'user_finished_course', __( 'You have finished this course!', 'learnpress' ) );
 		}
 
 		if ( $this->get_time_remaining() === 0 ) {
-			$can_impact_item = new WP_Error( 'course_is_blocked', __( 'Course was blocked!', 'learnpress' ) );
+			$can_impact_item = new WP_Error( 'course_is_blocked', __( 'Course was blocked by expire!', 'learnpress' ) );
 		}
 
 		return apply_filters( 'learn-press/user-course/can-impact-item', $can_impact_item, $this );
@@ -929,10 +1017,10 @@ class UserCourseModel extends UserItemModel {
 	 * @return void
 	 *
 	 * @since 4.2.5.4
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function clean_caches() {
-		$key_cache         = "userCourseModel/find/{$this->user_id}/{$this->ref_id}/{$this->item_type}";
+		$key_cache         = "userCourseModel/find/{$this->user_id}/{$this->item_id}/{$this->item_type}";
 		$lpUserCourseCache = new LP_Cache();
 		$lpUserCourseCache->clear( $key_cache );
 

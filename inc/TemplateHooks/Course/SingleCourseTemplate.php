@@ -1502,23 +1502,28 @@ class SingleCourseTemplate {
 				&& $userCourseModel->get_status() !== UserItemModel::STATUS_CANCEL ) {
 				$user_attended_course = true;
 
-				if ( $userCourseModel->get_time_remaining() === 0 ) {
-					$user_item_status_ico_flag = 'expired';
+				// Check status of item's course
+				$userCourseItem = $userCourseModel->get_item_attend( $item_id, $item_type );
+				if ( ! $userCourseItem instanceof UserItemModel ) {
+					$user_item_status_ico_flag = UserItemModel::GRADUATION_IN_PROGRESS;
 				} else {
-					// Check status of item's course
-					$userCourseItem = $userCourseModel->get_item_attend( $item_id, $item_type );
-					if ( ! $userCourseItem instanceof UserItemModel ) {
-						$user_item_status_ico_flag = UserItemModel::GRADUATION_IN_PROGRESS;
-					} else {
-						$user_item_status_ico_flag = $userCourseItem->get_status();
-						$user_item_graduation      = $userCourseItem->get_graduation();
-						if ( ! empty( $user_item_graduation ) ) {
-							$user_item_status_ico_flag = $user_item_graduation;
-						}
+					$user_item_status_ico_flag = $userCourseItem->get_status();
+					$user_item_graduation      = $userCourseItem->get_graduation();
+					if ( ! empty( $user_item_graduation ) ) {
+						$user_item_status_ico_flag = $user_item_graduation;
+					}
 
-						if ( empty( $user_item_status_ico_flag ) ) {
-							$user_item_status_ico_flag = UserItemModel::GRADUATION_IN_PROGRESS;
-						}
+					if ( empty( $user_item_status_ico_flag ) ) {
+						$user_item_status_ico_flag = UserItemModel::GRADUATION_IN_PROGRESS;
+					}
+				}
+
+				if ( $user_item_status_ico_flag === UserItemModel::GRADUATION_IN_PROGRESS ) {
+					if ( $userCourseModel->get_time_remaining() === 0 ) {
+						$user_item_status_ico_flag = 'locked';
+					} elseif ( $userCourseModel->get_status() === UserItemModel::STATUS_FINISHED
+						&& $courseModel->enable_block_when_finished() ) {
+						$user_item_status_ico_flag = 'locked';
 					}
 				}
 			}

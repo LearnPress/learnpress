@@ -504,52 +504,32 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				throw new Exception( __( 'Invalid params', 'learnpress' ) );
 			}
 
-			$course = learn_press_get_course( $course_id );
-
-			if ( ! $course ) {
+			$courseModel = CourseModel::find( $course_id, true );
+			if ( ! $courseModel ) {
 				throw new Exception( __( 'Invalid course', 'learnpress' ) );
 			}
 
-			$user = learn_press_get_current_user();
-
-			// if ( ! is_user_logged_in() ) {
-			// throw new Exception( esc_html__( 'Please login!', 'learnpress' ) );
-			// }
-
-			$can_retry = $user->can_retry_course( $course_id );
-
-			if ( ! $can_retry ) {
-				throw new Exception( __( 'You can\'t retry the course', 'learnpress' ) );
+			$userModel = UserModel::find( get_current_user_id(), true );
+			if ( ! $userModel ) {
+				throw new Exception( __( 'Invalid user', 'learnpress' ) );
 			}
 
-			$user_course_data = $user->get_course_data( $course_id );
-			if ( ! $user_course_data ) {
-				throw new Exception( __( 'Invalid course data of user', 'learnpress' ) );
+			$userCourseModel = UserCourseModel::find( $userModel->get_id(), $courseModel->get_id(), true );
+			if ( ! $userCourseModel ) {
+				throw new Exception( __( 'Invalid user course', 'learnpress' ) );
 			}
 
-			// Up retaken.
-			$user_course_data->increase_retake_count();
-
-			// Set status, start_time, end_time of course to enrol.
-			$user_course_data->set_status( LP_COURSE_ENROLLED )
-							->set_start_time( time() )
-							->set_end_time()
-							->set_graduation( LP_COURSE_GRADUATION_IN_PROGRESS )
-							->update();
-
-			// Remove items' course user learned.
-			$filter_remove            = new LP_User_Items_Filter();
-			$filter_remove->parent_id = $user_course_data->get_user_item_id();
-			$filter_remove->user_id   = $user_course_data->get_user_id();
-			$filter_remove->limit     = - 1;
-			LP_User_Items_DB::getInstance()->remove_items_of_user_course( $filter_remove );
-
-			// Create new result in table learnpress_user_item_results.
-			LP_User_Items_Result_DB::instance()->insert( $user_course_data->get_user_item_id() );
+			$userCourseModel->handle_retake();
+			$item_continue = $userCourseModel->get_item_continue();
+			if ( $item_continue ) {
+				$link_continue = $courseModel->get_item_link( $item_continue->ID );
+			} else {
+				$link_continue = $courseModel->get_permalink();
+			}
 
 			$response->status             = 'success';
 			$response->message            = esc_html__( 'Now you can begin this course', 'learnpress' );
-			$response->data->url_redirect = $course->get_redirect_url_after_enroll();
+			$response->data->url_redirect = $link_continue;
 		} catch ( Exception $e ) {
 			$response->message = $e->getMessage();
 		}
