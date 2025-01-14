@@ -547,6 +547,14 @@
 				opacity: 0.6;
 				font-size: $font-size-small;
 				margin-right: 4px;
+				font-weight: normal;
+			}
+
+			.course-price-prefix, 
+			.course-price-suffix {
+				font-size: $font-size-small;
+				opacity: 0.6;
+				font-weight: normal;
 			}
 		}
 
@@ -554,7 +562,7 @@
 			display: flex;
 			flex-direction: column;
 			gap: 8px;
-			
+
 			form, .lp-button {
 				width: 100%;
 			}
