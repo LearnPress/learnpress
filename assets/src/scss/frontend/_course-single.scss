@@ -390,12 +390,12 @@
 		&__left {
 			width: 100%;
 
-			@media (min-width: 1501px) {
-				width: calc(100% - 440px);
-			}
-
 			@media (min-width: 992px) {
 				width: calc(100% - 410px);
+			}
+
+			@media (min-width: 1501px) {
+				width: calc(100% - 440px);
 			}
 
 			> div {
@@ -551,6 +551,10 @@
 		}
 
 		.course-buttons {
+			display: flex;
+			flex-direction: column;
+			gap: 8px;
+			
 			form, .lp-button {
 				width: 100%;
 			}
