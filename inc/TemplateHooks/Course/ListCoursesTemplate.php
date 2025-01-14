@@ -84,6 +84,15 @@ class ListCoursesTemplate {
 		elseif ( ! empty( $settings['page_tag_id_current'] ) && empty( $settings['tag_id'] ) ) {
 			$filter->tag_ids[] = $settings['page_tag_id_current'];
 		}
+
+		if ( ! empty( $settings['limit'] ) ) {
+			$filter->limit = $settings['limit'];
+		}
+
+		if ( ! empty( $settings['order_by'] ) ) {
+			$filter->order_by = $settings['order_by'];
+		}
+
 		$total_rows = 0;
 		$courses    = Courses::get_courses( $filter, $total_rows );
 		$skin       = $settings['skin'] ?? learn_press_get_courses_layout();
@@ -188,6 +197,11 @@ class ListCoursesTemplate {
 		if ( empty( $settings['courses_load_ajax'] ) ) {
 			$data_pagination_type = 'number';
 		}
+
+		if ( ! empty( $settings['data_pagination_type'] ) ) {
+			$data_pagination_type = $settings['data_pagination_type'];
+		}
+
 		$data_pagination = [
 			'total_pages' => $total_pages,
 			'type'        => $data_pagination_type,

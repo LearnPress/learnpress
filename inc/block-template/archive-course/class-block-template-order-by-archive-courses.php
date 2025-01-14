@@ -14,14 +14,10 @@ class Block_Template_Order_By_Archive_Courses extends Abstract_Block_Template_Wi
 	public $source_js                     = LP_PLUGIN_URL . 'assets/js/dist/blocks/order-by-archive-course.js';
 
 	public function render_content_block_template( array $attributes ) {
-		$settings = [];
-		$settings = array_merge(
-			$settings,
-			lp_archive_skeleton_get_args()
-		);
-
-		$attributes['order_by'] = $settings['order_by'] ?? 'post_date';
-
+		$order_by_current = isset( $_GET['order_by'] ) ? sanitize_text_field( $_GET['order_by'] ) : '';
+		if ( ! empty( $order_by_current ) ) {
+			$attributes = [ 'orderBy' => $order_by_current ];
+		}
 		return parent::render_content_block_template( $attributes );
 	}
 }

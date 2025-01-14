@@ -9,6 +9,20 @@
 	"textdomain": "learnpress",
 	"keywords": ["template archive course", "learnpress"],
 	"usesContext": [],
+	"attributes": {
+		"layout": {
+			"type": "string",
+			"default": "list"
+		},
+		"perPage": {
+			"type": "number",
+			"default": 8
+		},
+		"orderBy" : {
+			"type": "string",
+			"default": "post_date"
+		}
+	},
 	"supports": {
 		"inserter": true,
 		"reusable": true,
@@ -18,6 +32,6 @@
 		"wrapper": false
 	},
 	"ancestor": [
-		"learnpress/lp-archive-course"
+		"learnpress/list-course-archive-course"
 	]
 }

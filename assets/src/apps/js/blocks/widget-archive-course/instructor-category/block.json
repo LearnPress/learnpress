@@ -17,6 +17,6 @@
 		"multiple": true
 	},
 	"ancestor": [
-		"learnpress/lp-archive-course"
+		"learnpress/template-course-archive-course"
 	]
 }

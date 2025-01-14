@@ -8,6 +8,12 @@
 	"textdomain": "learnpress",
 	"keywords": ["order by archive course", "learnpress"],
 	"usesContext": [],
+	"attributes": {
+		"orderBy" : {
+			"type": "string",
+			"default": "post_date"
+		}
+	},
 	"supports": {
 		"inserter": true,
 		"reusable": true,

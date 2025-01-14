@@ -1,4 +1,4 @@
-import { InnerBlocks, useBlockProps, InspectorControls } from '@wordpress/block-editor';
+import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
 
 export const edit = ( props ) => {
 	const blockProps = useBlockProps();
@@ -15,11 +15,8 @@ export const edit = ( props ) => {
 		for ( let i = 0; i < 3; i++ ) {
 			blocks.push(
 				<div className="course-item" key={ i }>
-					<InnerBlocks
-						template={ template }
-						templateLock={ false }
-					/>
-				</div>
+					<InnerBlocks template={ template } templateLock={ false } />
+				</div>,
 			);
 		}
 		return blocks;
@@ -28,9 +25,7 @@ export const edit = ( props ) => {
 	return (
 		<>
 			<div { ...blockProps }>
-				<div className="template-course">
-					{ renderInnerBlocks() }
-				</div>
+				<div className="template-course">{ renderInnerBlocks() }</div>
 			</div>
 		</>
 	);
