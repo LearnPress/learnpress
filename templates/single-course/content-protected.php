@@ -11,7 +11,7 @@
 
 defined( 'ABSPATH' ) || exit();
 
-if ( ! isset( $can_view_item ) || $can_view_item->flag || ! isset( $course ) ) {
+if ( ! isset( $can_view_item ) || $can_view_item->flag ) {
 	return;
 }
 
@@ -28,11 +28,11 @@ if ( ! is_user_logged_in() ) {
 			learn_press_get_login_url( LP_Helper::getUrlCurrent() ),
 			__( 'login', 'learnpress' )
 		),
-		sprintf(
+		isset( $course ) ? sprintf(
 			'<a class="lp-link-enroll" href="%s">%s</a>',
 			$course->get_permalink(),
 			__( 'enroll', 'learnpress' )
-		)
+		) : ''
 	);
 } else {
 	$message = $can_view_item->message;
