@@ -70,6 +70,10 @@ require_once $blog_template_path . 'instructor/class-block-template-instructor-t
 require_once $blog_template_path . 'instructor/class-block-template-instructor-courses.php';
 require_once $blog_template_path . 'instructor/class-block-template-instructor.php';
 
+//Taxonomy
+require_once $blog_template_path . 'class-block-template-taxonomy-course.php';
+require_once $blog_template_path . 'class-block-template-tag-course.php';
+
 return apply_filters(
 	'learn-press/config/block-templates',
 	array(
@@ -131,6 +135,8 @@ return apply_filters(
 		new Block_Template_Instructor_Total_Students(),
 		new Block_Template_Instructor_Courses(),
 		new Block_Template_Instructor(),
+		new Block_Template_Taxonomy_Course(),
+		new Block_Template_Tag_Course(),
 		new Block_Template_Item_Curriculum_Course(),
 	)
 );

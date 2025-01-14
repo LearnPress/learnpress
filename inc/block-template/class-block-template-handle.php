@@ -228,8 +228,8 @@ class Block_Template_Handle {
 		register_block_template(
 			'learnpress//single-course',
 			[
-				'title'       => __( 'Single Course', 'LearnPress' ),
-				'description' => __( 'Template LearnPress Single Course', 'LearnPress' ),
+				'title'       => __( 'Single Course', 'learnpress' ),
+				'description' => __( 'Template LearnPress Single Course', 'learnpress' ),
 				'content'     => $content_single_course,
 				'post_types'  => [ 'lp_course' ],
 			]
@@ -241,8 +241,8 @@ class Block_Template_Handle {
 		register_block_template(
 			'learnpress//archive-course',
 			[
-				'title'       => __( 'Archive Course', 'LearnPress' ),
-				'description' => __( 'Template LearnPress Archive Course', 'LearnPress' ),
+				'title'       => __( 'Archive Course', 'learnpress' ),
+				'description' => __( 'Template LearnPress Archive Course ', 'learnpress' ),
 				'content'     => $content_archive_course,
 			]
 		);
