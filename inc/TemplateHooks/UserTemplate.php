@@ -53,7 +53,7 @@ class UserTemplate {
 	 *
 	 * @return string
 	 * @since 4.2.3.4
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function html_description( $userModel ): string {
 		$content = '';
@@ -76,7 +76,7 @@ class UserTemplate {
 				'learn-press/user/html-description',
 				[
 					'wrapper'     => sprintf( '<div class="%s-description">', $this->class_name ),
-					'content'     => $description,
+					'content'     => wpautop( wp_kses_post( $description ) ),
 					'wrapper_end' => '</div>',
 				],
 				$userModel
