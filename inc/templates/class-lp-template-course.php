@@ -156,7 +156,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 
 		$courseModel     = CourseModel::find( $course->get_id(), true );
 		$can_purchase    = $courseModel->can_purchase( UserModel::find( $user->get_id(), true ) );
-		$userCourseModel = UserCourseModel::find( $user->get_id(), $course->get_id() );
+		$userCourseModel = UserCourseModel::find( $user->get_id(), $course->get_id(), true );
 		if ( get_current_user_id() ) {
 			if ( $userCourseModel ) {
 				if ( $userCourseModel->has_enrolled() ) {
@@ -407,7 +407,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 				throw new Exception( 'User or Course not exists!' );
 			}
 
-			$userCourseModel = UserCourseModel::find( $user_id, $courseModel->get_id() );
+			$userCourseModel = UserCourseModel::find( $user_id, $courseModel->get_id(), true );
 			if ( ! $userCourseModel || ! $userCourseModel->has_enrolled() ) {
 				throw new Exception( 'User not enrolled course' );
 			}

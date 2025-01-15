@@ -182,7 +182,7 @@ if ( ! class_exists( 'LP_Course_Item' ) ) {
 			$user_id = get_current_user_id();
 			$user    = UserModel::find( $user_id, true );
 
-			$userCourseModel    = UserCourseModel::find( $user_id, $course_id );
+			$userCourseModel    = UserCourseModel::find( $user_id, $course_id, true );
 			$enrolled           = $user && $userCourseModel && $userCourseModel->has_enrolled_or_finished();
 			$no_required_enroll = $course->has_no_enroll_requirement();
 
