@@ -9,9 +9,8 @@
 namespace LearnPress\TemplateHooks\UserItem;
 
 use LearnPress\Helpers\Template;
-use LearnPress\Models\CourseModel;
 use LearnPress\Models\UserItems\UserCourseModel;
-use LearnPress\Models\UserModel;
+use WP_Error;
 
 class UserCourseTemplate extends UserItemBaseTemplate {
 	public static function instance() {
@@ -35,12 +34,7 @@ class UserCourseTemplate extends UserItemBaseTemplate {
 	public function html_btn_continue( UserCourseModel $userCourseModel ): string {
 		$html = '';
 
-		if ( in_array( $userCourseModel->get_status(), [ LP_COURSE_FINISHED, LP_USER_COURSE_CANCEL ] ) ) {
-			return $html;
-		}
-
-		// Course is locked.
-		if ( $userCourseModel->timestamp_remaining_duration() === 0 ) {
+		if ( $userCourseModel->can_impact_item() instanceof WP_Error ) {
 			return $html;
 		}
 
