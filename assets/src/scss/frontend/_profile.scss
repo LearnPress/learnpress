@@ -328,7 +328,7 @@
 		.lp-profile-nav-tabs {
 			display: flex;
 			flex-wrap: nowrap;
-			justify-content: space-around;
+			justify-content: flex-start;
 			overflow-x: auto;
 			white-space: nowrap;
  			scroll-behavior: smooth;
