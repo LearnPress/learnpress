@@ -3,21 +3,40 @@
 use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
 use LearnPress\TemplateHooks\TemplateAJAX;
 
-$content  = $inner_content;
-$callback = [
-	'class'  => 'LearnPress\\TemplateHooks\\Course\\ListCoursesTemplate',
-	'method' => 'render_courses',
-];
-
-$order_by         = $attributes['orderBy'] ?? 'post_date';
-$course_per_page  = $attributes['perPage'] ?? '8';
-$order_by_current = isset( $_GET['order_by'] ) ? sanitize_text_field( $_GET['order_by'] ) : $order_by;
-$layout           = $attributes['layout'] ?? 'list';
-$pagination       = $attributes['pagination'] ?? 'number';
-$custom           = $attributes['custom'] ?? false;
+$content = $inner_content;
+$custom  = $attributes['custom'] ?? false;
 
 if ( ! $custom ) {
-	$args                          = lp_archive_skeleton_get_args();
+	$args = lp_archive_skeleton_get_args();
+
+	$callback = [
+		'class'  => 'LearnPress\\TemplateHooks\\Course\\ListCoursesTemplate',
+		'method' => 'render_courses',
+	];
+
+	$order_by         = $attributes['orderBy'] ?? 'post_date';
+	$course_per_page  = $attributes['perPage'] ?? '8';
+	$order_by_current = isset( $_GET['order_by'] ) ? sanitize_text_field( $_GET['order_by'] ) : $order_by;
+	$layout           = $attributes['layout'] ?? 'list';
+	$pagination       = $attributes['pagination'] ?? 'number';
+	$category         = $attributes['category'] ?? '';
+	$tag              = $attributes['tag'] ?? '';
+	if ( ! empty( $category ) ) {
+		$category_id = get_term_by( 'slug', $category, 'course_category' )->term_id;
+	}
+
+	if ( ! empty( $tag ) ) {
+		$tag_id = get_term_by( 'slug', $tag, 'course_tag' )->term_id;
+	}
+
+	if ( ! empty( $category_id ) ) {
+		$args['page_term_id_current'] = $category_id;
+	}
+
+	if ( ! empty( $tag_id ) ) {
+		$args['page_tag_id_current'] = $tag_id;
+	}
+
 	$args['order_by']              = $order_by_current;
 	$args['skin']                  = $layout;
 	$args['limit']                 = $course_per_page;

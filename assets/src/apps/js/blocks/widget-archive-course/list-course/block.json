@@ -30,9 +30,17 @@
 			"type": "number",
 			"default": 8
 		},
-		"orderBy" : {
+		"orderBy": {
 			"type": "string",
 			"default": "post_date"
+		},
+		"category": {
+			"type": "string",
+			"default": ""
+		},
+		"tag": {
+			"type": "string",
+			"default": ""
 		}
 	},
 	"supports": {
@@ -43,8 +51,5 @@
 		"multiple": true,
 		"wrapper": false
 	},
-	"ancestor": [
-		"learnpress/lp-archive-course",
-		"learnpress/lp-instructor"
-	]
+	"ancestor": ["learnpress/lp-archive-course", "learnpress/lp-instructor"]
 }

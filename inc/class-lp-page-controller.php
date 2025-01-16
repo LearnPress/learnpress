@@ -67,13 +67,16 @@ class LP_Page_Controller {
 			// Active menu
 			add_filter( 'wp_nav_menu_objects', [ $this, 'menu_active' ], 10, 1 );
 			// Canonical
-			add_filter( 'get_canonical_url', function ( $canonical_url ) {
-				if ( LP_Page_Controller::is_page_instructor() ) {
-					$canonical_url = LP_Helper::getUrlCurrent();
-				}
+			add_filter(
+				'get_canonical_url',
+				function ( $canonical_url ) {
+					if ( LP_Page_Controller::is_page_instructor() ) {
+						$canonical_url = LP_Helper::getUrlCurrent();
+					}
 
-				return $canonical_url;
-			} );
+					return $canonical_url;
+				}
+			);
 		}
 	}
 
@@ -464,7 +467,7 @@ class LP_Page_Controller {
 	 */
 	private function get_page_template() {
 		$page_template = '';
-		$object = get_queried_object();
+		$object        = get_queried_object();
 
 		if ( is_singular( LP_COURSE_CPT ) ) {
 			$page_template = 'single-course.php';
@@ -629,6 +632,10 @@ class LP_Page_Controller {
 						LP_Settings_Courses::get_type_pagination() != 'number' &&
 						! LP_Settings::theme_no_support_load_courses_ajax() ) {
 						$q->set( 'paged', 1 );
+					}
+
+					if ( current_theme_supports( 'editor-styles' ) ) {
+						$limit = 1;
 					}
 
 					$q->set( 'posts_per_page', $limit );
@@ -820,12 +827,15 @@ class LP_Page_Controller {
 	 * @since  3.2.7.5
 	 */
 	public function set_link_item_course_default_wp_to_page_404( $q ) {
-		$post_type_apply_404 = apply_filters( 'lp/page-controller/', array(
-			LP_LESSON_CPT,
-			LP_QUIZ_CPT,
-			LP_QUESTION_CPT,
-			'lp_assignment'
-		) );
+		$post_type_apply_404 = apply_filters(
+			'lp/page-controller/',
+			array(
+				LP_LESSON_CPT,
+				LP_QUIZ_CPT,
+				LP_QUESTION_CPT,
+				'lp_assignment',
+			)
+		);
 
 		if ( ! isset( $q->query_vars['post_type'] ) || ! in_array( $q->query_vars['post_type'], $post_type_apply_404 ) ) {
 			return $q;

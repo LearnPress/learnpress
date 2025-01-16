@@ -39,17 +39,46 @@ export const edit = ( props ) => {
 	const updateOrderByChildBlocks = ( newOrderBy ) => {
 		const traverseBlocks = ( blocks ) => {
 			blocks.forEach( ( block ) => {
-				if ( block.name === 'learnpress/template-course-archive-course' ) {
-					updateBlockAttributes( block.clientId, { orderBy: newOrderBy } );
-				} else if ( block.name === 'learnpress/order-by-archive-course' ) {
-					updateBlockAttributes( block.clientId, { orderBy: newOrderBy } );
-				} else if ( block.name === 'core/group' || block.innerBlocks.length > 0 ) {
+				if (
+					block.name === 'learnpress/template-course-archive-course'
+				) {
+					updateBlockAttributes( block.clientId, {
+						orderBy: newOrderBy,
+					} );
+				} else if (
+					block.name === 'learnpress/order-by-archive-course'
+				) {
+					updateBlockAttributes( block.clientId, {
+						orderBy: newOrderBy,
+					} );
+				} else if (
+					block.name === 'core/group' ||
+					block.innerBlocks.length > 0
+				) {
 					traverseBlocks( block.innerBlocks );
 				}
 			} );
 		};
 
 		traverseBlocks( childBlocks );
+	};
+
+	const updateCategoryChildBlocks = ( newCategory ) => {
+		childBlocks.forEach( ( block ) => {
+			if ( block.name === 'learnpress/template-course-archive-course' ) {
+				updateBlockAttributes( block.clientId, {
+					category: newCategory,
+				} );
+			}
+		} );
+	};
+
+	const updateTagChildBlocks = ( newTag ) => {
+		childBlocks.forEach( ( block ) => {
+			if ( block.name === 'learnpress/template-course-archive-course' ) {
+				updateBlockAttributes( block.clientId, { tag: newTag } );
+			}
+		} );
 	};
 
 	const paginationData = [
@@ -159,6 +188,29 @@ export const edit = ( props ) => {
 
 							updateOrderByChildBlocks( value );
 						} }
+					/>
+
+					<TextControl
+						label="Category"
+						onChange={ ( value ) => {
+							props.setAttributes( {
+								category: value ? value : '',
+							} );
+
+							updateCategoryChildBlocks( value ? value : '' );
+						} }
+						value={ props.attributes.category ?? '' }
+					/>
+
+					<TextControl
+						label={ 'Tag' }
+						onChange={ ( value ) => {
+							props.setAttributes( {
+								tag: value ? value : '',
+							} );
+							updateTagChildBlocks( value ? value : '' );
+						} }
+						value={ props.attributes.tag ?? '' }
 					/>
 				</PanelBody>
 			</InspectorControls>

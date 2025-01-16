@@ -23,6 +23,26 @@ $settings['skin']     = $layout;
 $settings['limit']    = $limit;
 $filter->limit        = $limit;
 $data_pagination_type = 'number';
+$category             = $attributes['category'] ?? '';
+$tag                  = $attributes['tag'] ?? '';
+
+if ( ! empty( $category ) ) {
+	$category_id = get_term_by( 'slug', $category, 'course_category' )->term_id ?? '';
+}
+
+if ( ! empty( $tag ) ) {
+	$tag_id = get_term_by( 'slug', $tag, 'course_tag' )->term_id ?? '';
+}
+
+if ( ! empty( $category_id ) ) {
+	$settings['page_term_id_current'] = $category_id;
+	$settings['term_id']              = $category_id;
+}
+
+if ( ! empty( $tag_id ) ) {
+	$settings['page_tag_id_current'] = $tag_id;
+	$settings['tag_id']              = $tag_id;
+}
 
 if ( LP_Page_Controller::is_page_instructor() ) {
 	$instructor = SingleInstructorTemplate::instance()->detect_instructor_by_page();
@@ -33,6 +53,7 @@ if ( LP_Page_Controller::is_page_instructor() ) {
 
 	$author_id             = $instructor->get_id();
 	$settings['c_authors'] = $author_id;
+	$filter->post_author   = $author_id;
 }
 
 Courses::handle_params_for_query_courses( $filter, $settings );

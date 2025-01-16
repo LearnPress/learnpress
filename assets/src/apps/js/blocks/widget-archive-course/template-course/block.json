@@ -18,9 +18,17 @@
 			"type": "number",
 			"default": 8
 		},
-		"orderBy" : {
+		"orderBy": {
 			"type": "string",
 			"default": "post_date"
+		},
+		"category": {
+			"type": "string",
+			"default": ""
+		},
+		"tag": {
+			"type": "string",
+			"default": ""
 		}
 	},
 	"supports": {
@@ -31,7 +39,5 @@
 		"multiple": false,
 		"wrapper": false
 	},
-	"ancestor": [
-		"learnpress/list-course-archive-course"
-	]
+	"ancestor": ["learnpress/list-course-archive-course"]
 }
