@@ -604,12 +604,16 @@ ul.learn-press-nav-tabs {
 			padding: 0;
 
 			&::before {
-				color: #fff;
-				padding: 3px 8px;
-				font-size: $font-size-label;
-				background: #00adff;
-				@include border-radius(3px);
-				content: attr(data-preview);
+				//color: #fff;
+				//padding: 3px 8px;
+				//font-size: $font-size-label;
+				//background: #00adff;
+				//@include border-radius(3px);
+				//content: attr(data-preview);
+
+				font-family: 'lp-icon';
+				content: "\f06e";
+				color: #999;
 			}
 		}
 	}
