@@ -1226,7 +1226,7 @@ body.course-item-popup {
 				width: 100%;
 				column-gap: 20px;
 				position: relative;
-
+				align-items: flex-start;
 				@media (max-width: 767px) {
 					flex-wrap: wrap;
 				}
@@ -1236,7 +1236,7 @@ body.course-item-popup {
 				display: flex;
 				column-gap: 16px;
 				row-gap: 8px;
-				align-items: center;
+				align-items: flex-start;
 
 				&:hover {
 					color: $color-primary;
@@ -1303,7 +1303,9 @@ body.course-item-popup {
 			&.lp_assignment::before {
 				content: "\e929";
 			}
-
+			&.lp_h5p::before {
+				content: "\e92a";
+			}
 			&.preview::before {
 				content: "\f06e";
 				color: $input-color-placeholder;
