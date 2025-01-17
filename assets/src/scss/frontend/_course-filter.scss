@@ -32,17 +32,19 @@
 				}
 			}
 			label{
-				color: #333;
-				padding: 0;
+				//color: #333;
+				//padding: 0;
 				margin: 0;
 				text-transform: capitalize;
+				line-height: inherit;
+				flex: 1;
 			}
 			.count{
-				position: absolute;
-				right: 0;
-				top: 0;
+				//position: absolute;
+				//right: 0;
+				//top: 0;
 				//font-size: 0.875rem;
-				color: #999;
+				color: $input-color-placeholder;
 			}
 		}
 		.lp-course-filter-search-field{
@@ -126,7 +128,7 @@
 			padding: 12px 24px;
 			text-transform: capitalize;
 			width: calc(50%  - 4px);
-			border: 1px solid rgba(204, 204, 204, 0.3);
+			border: 1px solid $input-border-color;
 			border-radius: 4px;
 			background-color: var(--lp-button-background-color);
 			color: var(--lp-button-color);
@@ -148,7 +150,7 @@
 
 	.lp-form-course-filter__item{
 		margin-bottom: 12px;
-		border-bottom: 1px solid #eee;
+		border-bottom: 1px solid $input-border-color;
 		padding-bottom: 12px;
 
 		.lp-cate-parent {
