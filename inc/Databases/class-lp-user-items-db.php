@@ -1,5 +1,6 @@
 <?php
 
+use LearnPress\Models\CourseModel;
 use LearnPress\Models\UserItems\UserItemModel;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -754,7 +755,7 @@ class LP_User_Items_DB extends LP_Database {
 	 * @return null|object
 	 */
 	public function count_items_of_course_with_status( LP_User_Items_Filter $filter ) {
-		$item_types       = learn_press_get_course_item_types();
+		$item_types       = CourseModel::item_types_support();
 		$count_item_types = count( $item_types );
 		$i                = 0;
 

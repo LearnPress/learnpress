@@ -457,7 +457,8 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						$html_items = array();
 						//$post_types = get_post_types( null, 'objects' );
 
-						foreach ( learn_press_get_course_item_types() as $item_type ) {
+						$course_item_types = CourseModel::item_types_support();
+						foreach ( $course_item_types as $item_type ) {
 							$count_item = $course->count_items( $item_type );
 
 							if ( ! $count_item ) {
