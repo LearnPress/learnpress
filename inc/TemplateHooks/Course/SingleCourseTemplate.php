@@ -13,6 +13,7 @@ use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\CoursePostModel;
+use LearnPress\Models\QuizPostModel;
 use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\Models\UserItems\UserItemModel;
 use LearnPress\Models\UserModel;
@@ -1494,6 +1495,22 @@ class SingleCourseTemplate {
 			);
 		}
 
+		// Count question of quiz
+		$html_item_count_questions = '';
+		if ( $item_type === LP_QUIZ_CPT ) {
+			$quizPostModel = QuizPostModel::find( $item_id, true );
+			if ( $quizPostModel instanceof QuizPostModel ) {
+				$question_count      = $quizPostModel->count_questions();
+				$html_item_duration .= sprintf(
+					'<span class="question-count">%s</span>',
+					sprintf(
+						_n( '%d Question', '%d Questions', $question_count, 'learnpress' ),
+						$question_count
+					)
+				);
+			}
+		}
+
 		$user_item_status_ico_flag = 'locked';
 		$user_attended_course      = false;
 		if ( $userModel instanceof UserModel ) {
@@ -1567,6 +1584,7 @@ class SingleCourseTemplate {
 			'title'          => sprintf( '<div class="course-item-title">%s</div>', wp_kses_post( $title ) ),
 			'item_left_end'  => '</div>',
 			'item_right'     => '<div class="course-item__right">',
+			'question_count' => $html_item_count_questions,
 			'duration'       => $html_item_duration,
 			'status'         => $html_item_status,
 			'item_right_end' => '</div>',
