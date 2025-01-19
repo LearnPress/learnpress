@@ -268,7 +268,11 @@ class SingleCourseModernLayout {
 	 * @return string
 	 */
 	public function section_right( $course, $user ): string {
-		$userCourseModel = UserCourseModel::find( $user->get_id(), $course->get_id(), true );
+		$user_id = 0;
+		if ( $user instanceof UserModel ) {
+			$user_id = $user->get_id();
+		}
+		$userCourseModel = UserCourseModel::find( $user_id, $course->get_id(), true );
 
 		$data_info_meta = [
 			'student'  => [
@@ -370,7 +374,7 @@ class SingleCourseModernLayout {
 			$section_info_learning = [
 				'wrapper'               => '<div class="info-learning">',
 				'graduation'            => $html_graduation,
-				//'progress'    => $userCourseTemplate->html_progress( $userCourseModel ),
+				'progress'              => $userCourseTemplate->html_progress( $userCourseModel ),
 				'start_date'            => sprintf(
 					'<div>%s: %s</div>',
 					__( 'Start date', 'learnpress' ),

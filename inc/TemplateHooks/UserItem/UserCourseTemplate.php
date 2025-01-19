@@ -196,8 +196,38 @@ class UserCourseTemplate extends UserItemBaseTemplate {
 		return apply_filters( 'learn-press/user/course/html-count-items-completed', $html, $userCourseModel );
 	}
 
-	public function html_progress() {
+	public function html_progress( UserCourseModel $userCourseModel ) {
 		$html = '';
+
+		$courseModel       = $userCourseModel->get_course_model();
+		$calculate         = $userCourseModel->calculate_course_results();
+		$passing_condition = $courseModel->get_passing_condition();
+
+		$section = [
+			'wrapper'         => '<div class="course-progress">',
+			'number-progress' => sprintf(
+				'<div class="course-progress__label">%s %s</div>',
+				esc_html__( 'Course passing progress:', 'learnpress' ),
+				sprintf(
+					'<span class="course-progress__number">
+							<span class="number">%s<span class="percentage">%s</span></span>
+						</span>',
+					$calculate['result'],
+					'%'
+				)
+			),
+			'line-progress'   => sprintf(
+				'<div class="course-progress__line">
+							<div class="course-progress__line__active" style="width: %s%%"></div>
+							<div class="course-progress__line__point" style="left: %s%%"></div>
+					</div>',
+				$calculate['result'],
+				$passing_condition
+			),
+			'wrapper_end'     => '</div>',
+		];
+
+		$html = Template::combine_components( $section );
 
 		return apply_filters( 'learn-press/user/course/html-progress', $html );
 	}

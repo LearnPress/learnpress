@@ -876,3 +876,41 @@
 		font-size: 1em;
 	}
 }
+
+.info-learning {
+	.course-progress {
+		&__line{
+			width: 100%;
+			background: #ccc;
+			height: 5px;
+			border-radius: 5px;
+			position: relative;
+
+			&__active {
+				background: var(--lp-primary-color);
+				height: 100%;
+				border-radius: 5px;
+				position: absolute;
+				top: 0;
+				left: 0;
+			}
+
+			&__active {
+				background: var(--lp-primary-color);
+				height: 100%;
+				border-radius: 5px;
+				position: absolute;
+				top: 0;
+				left: 0;
+			}
+
+			&__point {
+				position: absolute;
+				top: 0;
+				width: 2px;
+				height: 100%;
+				background: var(--lp-secondary-color);
+			}
+		}
+	}
+}
