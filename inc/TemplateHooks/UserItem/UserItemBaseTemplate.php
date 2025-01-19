@@ -144,4 +144,42 @@ class UserItemBaseTemplate {
 
 		return $html;
 	}
+
+	/**
+	 * Get html graduation of user item.
+	 * @param UserItemModel $userItemModel
+	 *
+	 * @return void
+	 * @since 4.2.7.6
+	 * @version 1.0.0
+	 */
+	public function html_graduation( UserItemModel $userItemModel ): string {
+		$html = '';
+
+		$graduation = $userItemModel->get_graduation();
+		if ( empty( $graduation ) ) {
+			return $html;
+		}
+
+		$label = '';
+		switch ( $graduation ) {
+			case UserItemModel::GRADUATION_PASSED:
+				$label = __( 'Passed', 'learnpress' );
+				break;
+			case UserItemModel::GRADUATION_FAILED:
+				$label = __( 'Failed', 'learnpress' );
+				break;
+			default:
+				break;
+		}
+
+		$html = sprintf(
+			'<div class="lp-user-item graduation %s">%s%s</div>',
+			$graduation,
+			sprintf( '<span class="lp-icon lp-icon-%s"></span>', $graduation ),
+			$label
+		);
+
+		return apply_filters( 'learn-press/user-item-model/html-graduation', $html, $userItemModel );
+	}
 }

@@ -928,6 +928,7 @@ class UserCourseModel extends UserItemModel {
 		$course_results   = $this->calculate_course_results();
 		$this->graduation = $course_results['pass'] ? LP_COURSE_GRADUATION_PASSED : LP_COURSE_GRADUATION_FAILED;
 		$this->status     = LP_COURSE_FINISHED;
+		$this->end_time   = gmdate( LP_Datetime::$format, time() );
 		$this->save();
 
 		// Save result for course

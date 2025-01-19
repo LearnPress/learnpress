@@ -9,7 +9,9 @@
 namespace LearnPress\TemplateHooks\UserItem;
 
 use LearnPress\Helpers\Template;
+use LearnPress\Models\CourseModel;
 use LearnPress\Models\UserItems\UserCourseModel;
+use LP_Helper;
 use WP_Error;
 
 class UserCourseTemplate extends UserItemBaseTemplate {
@@ -158,5 +160,45 @@ class UserCourseTemplate extends UserItemBaseTemplate {
 		);
 
 		return Template::combine_components( $section );
+	}
+
+	/**
+	 * HTML count items completed of Course.
+	 *
+	 * @return mixed|string|null
+	 * @since 4.2.7.6
+	 * @version 1.0.0
+	 */
+	public function html_count_items_completed( UserCourseModel $userCourseModel ): string {
+		$html = '';
+
+		$courseModel           = $userCourseModel->get_course_model();
+		$item_types            = CourseModel::item_types_support();
+		$count_items_completed = $userCourseModel->count_items_completed();
+		foreach ( $item_types as $item_type ) {
+			$count_item           = $courseModel->count_items( $item_type );
+			$count_item_completed = $count_items_completed->{$item_type . '_status_completed'} ?? '';
+			if ( empty( $count_item_completed ) ) {
+				continue;
+			}
+
+			$html .= sprintf(
+				'<div class="item-completed"><span>%s</span><span>%s</span></div>',
+				sprintf(
+					'%s %s: ',
+					LP_Helper::get_i18n_string_plural( $count_item, $item_type, false ),
+					__( 'completed', 'learnpress' )
+				),
+				sprintf( '%d/%d', $count_item_completed, $count_item )
+			);
+		}
+
+		return apply_filters( 'learn-press/user/course/html-count-items-completed', $html, $userCourseModel );
+	}
+
+	public function html_progress() {
+		$html = '';
+
+		return apply_filters( 'learn-press/user/course/html-progress', $html );
 	}
 }

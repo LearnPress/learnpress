@@ -1316,6 +1316,9 @@ class CourseModel {
 			$item_types = apply_filters( 'learn-press/course-item-type', $item_types );
 		}
 
-		return apply_filters( 'learn-press/course/item-types-support', $item_types );
+		$item_types = apply_filters( 'learn-press/course/item-types-support', $item_types );
+
+		// set types unique
+		return array_unique( $item_types );
 	}
 }

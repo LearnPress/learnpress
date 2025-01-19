@@ -12,6 +12,7 @@ use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\UserItems\UserCourseModel;
+use LearnPress\Models\UserItems\UserItemModel;
 use LearnPress\TemplateHooks\UserItem\UserCourseTemplate;
 use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
@@ -267,6 +268,8 @@ class SingleCourseModernLayout {
 	 * @return string
 	 */
 	public function section_right( $course, $user ): string {
+		$userCourseModel = UserCourseModel::find( $user->get_id(), $course->get_id(), true );
+
 		$data_info_meta = [
 			'student'  => [
 				'label' => sprintf( '<i class="lp-icon-user-graduate"></i>%s:', __( 'Student', 'learnpress' ) ),
@@ -324,7 +327,6 @@ class SingleCourseModernLayout {
 			$user_id = $user->get_id();
 		}
 
-		$userCourseModel         = UserCourseModel::find( $user_id, $course->get_id(), true );
 		$userCourseTemplate      = UserCourseTemplate::instance();
 		$btn_continue_and_finish = [];
 		if ( $userCourseModel instanceof UserCourseModel ) {
@@ -349,13 +351,52 @@ class SingleCourseModernLayout {
 			$user
 		);
 
+		// Info learning
+		$html_info_learning = '';
+		if ( $userCourseModel instanceof UserCourseModel
+			&& $userCourseModel->get_status() !== UserItemModel::STATUS_CANCEL ) {
+
+			$html_end_date   = '';
+			$html_graduation = '';
+			if ( $userCourseModel->get_status() === UserItemModel::STATUS_FINISHED ) {
+				$html_end_date   = sprintf(
+					'<div>%s: %s</div>',
+					__( 'End date', 'learnpress' ),
+					$userCourseTemplate->html_end_date_time( $userCourseModel, false )
+				);
+				$html_graduation = $userCourseTemplate->html_graduation( $userCourseModel );
+			}
+
+			$section_info_learning = [
+				'wrapper'               => '<div class="info-learning">',
+				'graduation'            => $html_graduation,
+				//'progress'    => $userCourseTemplate->html_progress( $userCourseModel ),
+				'start_date'            => sprintf(
+					'<div>%s: %s</div>',
+					__( 'Start date', 'learnpress' ),
+					$userCourseTemplate->html_start_date_time( $userCourseModel, false )
+				),
+				'end_date'              => $html_end_date,
+				'count_items_completed' => $userCourseTemplate->html_count_items_completed( $userCourseModel ),
+				'wrapper_end'           => '</div>',
+			];
+			$html_info_learning    = Template::combine_components( $section_info_learning );
+		}
+
+		$html_price = '';
+		if ( ! $userCourseModel
+			|| $userCourseModel->get_status() === UserItemModel::STATUS_CANCEL ) {
+			$html_price = $this->singleCourseTemplate->html_price( $course );
+		}
+
 		$section = apply_filters(
 			'learn-press/single-course/modern/section_right',
 			[
 				'wrapper'           => '<div class="lp-single-course-main__right">',
 				'wrapper_inner'     => '<div class="lp-single-course-main__right__inner">',
 				'image'             => $this->singleCourseTemplate->html_image( $course ),
-				'price'             => $this->singleCourseTemplate->html_price( $course ),
+				'price'             => $html_price,
+				'info_learning'     => $html_info_learning,
 				//'sale_discount'       => $this->singleCourseTemplate->html_sale_discount( $course ), to do
 				'metas'             => Template::combine_components( $section_info_meta ),
 				'buttons'           => Template::combine_components( $section_buttons ),
