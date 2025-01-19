@@ -13,6 +13,19 @@ if ( empty( $layout_single_course_default ) ) {
 	$layout_single_course_default = 'classic';
 }
 
+// Temporary hide fields for the Modern layout.
+add_filter(
+	'learn-press/course-settings-fields/curriculum',
+	function ( $fields ) use ( $layout_single_course_default ) {
+		if ( $layout_single_course_default === 'modern' ) {
+			unset( $fields[2] );
+			unset( $fields[3] );
+		}
+
+		return $fields;
+	}
+);
+
 return apply_filters(
 	'learn-press/courses-settings-fields',
 	array_merge(
