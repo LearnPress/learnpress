@@ -17,10 +17,10 @@
 			.learn-press-courses[data-layout=grid] {
 				li {
 					width: 33.33%;
-					@media (max-width: 1440px) {
+					@media (max-width: 1200px) {
 						width: 50%;
 					}
-					@media (max-width: 768px) {
+					@media (max-width: 600px) {
 						width: 100%;
 					}
 				}
