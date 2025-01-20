@@ -122,12 +122,6 @@ class ListCoursesTemplate {
 			'wrapper_end' => '</ul>',
 		];
 
-		// HTML section top.
-		$html_btn_filter_courses_mobile = '';
-		if ( wp_is_mobile() ) {
-			$html_btn_filter_courses_mobile = FilterCourseTemplate::instance()->html_btn_filter_mobile( $settings );
-		}
-
 		$section_top = apply_filters(
 			'learn-press/layout/list-courses/section/top',
 			[
@@ -135,7 +129,7 @@ class ListCoursesTemplate {
 				'search'                    => $listCoursesTemplate->html_search_form( $settings ),
 				'order_by'                  => $listCoursesTemplate->html_order_by( $settings['order_by'] ?? 'post_date' ),
 				'switch_layout'             => $listCoursesTemplate->switch_layout(),
-				'btn_filter_courses_mobile' => $html_btn_filter_courses_mobile,
+				'btn_filter_courses_mobile' => FilterCourseTemplate::instance()->html_btn_filter_mobile( $settings ),
 				'wrapper_end'               => '</div>',
 			],
 			$courses,
@@ -571,9 +565,6 @@ class ListCoursesTemplate {
 	public function switch_layout(): string {
 		$layouts = learn_press_courses_layouts();
 		$active  = learn_press_get_courses_layout();
-		if ( wp_is_mobile() ) {
-			return '';
-		}
 
 		$html_layouts = '';
 		foreach ( $layouts as $layout => $value ) {

@@ -728,6 +728,10 @@
 		align-items: center;
 		justify-content: center;
 
+		@media (max-width: 768px) {
+			display: none;
+		}
+
 		input[type="radio"] {
 			display: none;
 		}
@@ -773,6 +777,10 @@
 	.course-filter-btn-mobile {
 		display: inline-flex;
 		align-items: center;
+
+		@media (min-width: 769px) {
+			display: none;
+		}
 	}
 
 	@media (max-width: 767px) {
