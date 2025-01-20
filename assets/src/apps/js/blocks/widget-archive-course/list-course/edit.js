@@ -8,10 +8,21 @@ import {
 	ToggleControl,
 	SelectControl,
 	TextControl,
+	__experimentalToolsPanel as ToolsPanel,
+	__experimentalToolsPanelItem as ToolsPanelItem,
+	__experimentalToggleGroupControl as ToggleGroupControl,
+	__experimentalToggleGroupControlOption as ToggleGroupControlOption,
 } from '@wordpress/components';
 import { useSelect, useDispatch } from '@wordpress/data';
 
 export const edit = ( props ) => {
+	const resetAllTaxonomy = () => {
+		props.setAttributes( {
+			category: '',
+			tag: '',
+		} );
+	};
+
 	const blockProps = useBlockProps();
 	const { updateBlockAttributes } = useDispatch( 'core/block-editor' );
 	const { clientId } = props;
@@ -105,7 +116,22 @@ export const edit = ( props ) => {
 	return (
 		<>
 			<InspectorControls>
-				<PanelBody title="Custom Settings">
+				<PanelBody title="Settings">
+					<ToggleGroupControl
+						label={ 'Layout' }
+						value={ props.attributes.layout ?? 'list' }
+						onChange={ ( value ) => {
+							props.setAttributes( {
+								layout: value ? value : 'list',
+							} );
+							updateLayoutChildBlocks( value );
+						} }
+						isBlock={ true }
+					>
+						<ToggleGroupControlOption value="list" label={ 'List' } />
+						<ToggleGroupControlOption value="grid" label={ 'Grid' } />
+					</ToggleGroupControl>
+
 					<TextControl
 						label="Course Per Page"
 						type="number"
@@ -122,15 +148,15 @@ export const edit = ( props ) => {
 					/>
 
 					<SelectControl
-						label="Layout"
-						value={ props.attributes.layout ?? 'list' }
-						options={ layoutData }
+						label="Order By Default"
+						value={ props.attributes.orderBy ?? 'post_date' }
+						options={ orderByData }
 						onChange={ ( value ) => {
 							props.setAttributes( {
-								layout: value ? value : 'list',
+								orderBy: value ? value : 'post_date',
 							} );
 
-							updateLayoutChildBlocks( value );
+							updateOrderByChildBlocks( value );
 						} }
 					/>
 
@@ -176,47 +202,45 @@ export const edit = ( props ) => {
 					) : (
 						''
 					) }
-
-					<SelectControl
-						label="Order By Default"
-						value={ props.attributes.orderBy ?? 'post_date' }
-						options={ orderByData }
-						onChange={ ( value ) => {
-							props.setAttributes( {
-								orderBy: value ? value : 'post_date',
-							} );
-
-							updateOrderByChildBlocks( value );
-						} }
-					/>
-
-					<TextControl
-						label="Category"
-						onChange={ ( value ) => {
-							props.setAttributes( {
-								category: value ? value : '',
-							} );
-
-							updateCategoryChildBlocks( value ? value : '' );
-						} }
-						value={ props.attributes.category ?? '' }
-					/>
-
-					<TextControl
-						label={ 'Tag' }
-						onChange={ ( value ) => {
-							props.setAttributes( {
-								tag: value ? value : '',
-							} );
-							updateTagChildBlocks( value ? value : '' );
-						} }
-						value={ props.attributes.tag ?? '' }
-					/>
 				</PanelBody>
+				<ToolsPanel label={ 'Filter' } resetAll={ resetAllTaxonomy }>
+					<ToolsPanelItem
+						label={ 'Taxonomy' }
+						onSelect={ () => resetAllTaxonomy() }
+						hasValue={ () =>
+							!! props.attributes.category ||
+							!! props.attributes.tag
+						}
+						onDeselect={ () => resetAllTaxonomy() }
+					>
+
+						<TextControl
+							label={ 'Category' }
+							onChange={ ( value ) => {
+								props.setAttributes( {
+									category: value ? value : '',
+								} );
+								updateCategoryChildBlocks( value ? value : '' );
+							} }
+							value={ props.attributes.category ?? '' }
+						/>
+
+						<TextControl
+							label={ 'Tag' }
+							onChange={ ( value ) => {
+								props.setAttributes( {
+									tag: value ? value : '',
+								} );
+								updateTagChildBlocks( value ? value : '' );
+							} }
+							value={ props.attributes.tag ?? '' }
+						/>
+					</ToolsPanelItem>
+				</ToolsPanel>
 			</InspectorControls>
 			<div { ...blockProps }>
 				<div className={ 'list-course ' + props.attributes.layout }>
-					<InnerBlocks key={ props.attributes.orderBy } />
+					<InnerBlocks />
 				</div>
 			</div>
 		</>
