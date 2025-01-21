@@ -261,6 +261,15 @@ class PostModel {
 		return (int) $this->ID;
 	}
 
+	/**
+	 * Get image url of post.
+	 *
+	 * @param string|int[] $size
+	 *
+	 * @return string
+	 * @since 4.2.6.9
+	 * @version 1.0.1
+	 */
 	public function get_image_url( $size = 'post-thumbnail' ): string {
 		$image_url = '';
 

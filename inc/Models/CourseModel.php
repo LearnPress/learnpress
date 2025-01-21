@@ -78,7 +78,7 @@ class CourseModel {
 	 * @var stdClass all meta data
 	 */
 	public $meta_data = null;
-	public $image_url = '';
+	public $image_url = null;
 	public $permalink = '';
 	public $categories;
 	public $tags;
@@ -151,19 +151,19 @@ class CourseModel {
 	 * Get image url
 	 * if not check get from Post
 	 *
+	 * @param string|int[] $size
+	 *
 	 * @return string
 	 * @since 4.2.6.9
 	 * @version 1.0.1
 	 */
-	public function get_image_url(): string {
-		$image_url = '';
-
-		/*if ( ! empty( $this->image_url ) ) {
+	public function get_image_url( $size = 'post-thumbnail' ): string {
+		if ( isset( $this->image_url ) ) {
 			return $this->image_url;
-		}*/
+		}
 
 		$post      = new CoursePostModel( $this );
-		$image_url = $post->get_image_url();
+		$image_url = $post->get_image_url( $size );
 
 		$this->image_url = $image_url;
 
