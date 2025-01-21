@@ -507,10 +507,14 @@ function learn_press_format_price( $price = 0, $currency = '' ): string {
 
 	$before = $after = '';
 
-	$currency            = is_string( $currency ) && '' !== $currency ? $currency : learn_press_get_currency_symbol();
-	$thousands_separator = LP_Settings::get_option( 'thousands_separator', ',' );
-	$number_of_decimals  = LP_Settings::get_option( 'number_of_decimals', 2 );
-	$decimals_separator  = LP_Settings::get_option( 'decimals_separator', '.' );
+	$currency            = esc_html(
+		is_string( $currency ) && '' !== $currency
+			? $currency
+			: learn_press_get_currency_symbol()
+	);
+	$thousands_separator = esc_html( LP_Settings::get_option( 'thousands_separator', ',' ) );
+	$number_of_decimals  = esc_html( LP_Settings::get_option( 'number_of_decimals', 2 ) );
+	$decimals_separator  = esc_html( LP_Settings::get_option( 'decimals_separator', '.' ) );
 
 	switch ( LP_Settings::get_option( 'currency_pos' ) ) {
 		default:
@@ -690,7 +694,7 @@ function learn_press_get_register_order_statuses() {
 		'show_in_admin_status_list' => true,
 		'label_count'               => _n_noop( 'Failed <span class="count">(%s)</span>', 'Failed <span class="count">(%s)</span>', 'learnpress' ),
 	);
-	$order_statues['trash']     = array(
+	$order_statues['trash']         = array(
 		'label'                     => _x( 'Trash', 'Order status', 'learnpress' ),
 		'public'                    => false,
 		'exclude_from_search'       => false,
@@ -737,7 +741,7 @@ if ( ! function_exists( 'learn_press_cancel_order_process' ) ) {
 	 */
 	function learn_press_cancel_order_process() {
 		if ( empty( $_REQUEST['cancel-order'] ) || empty( $_REQUEST['lp-nonce'] ) ||
-		     ! wp_verify_nonce( $_REQUEST['lp-nonce'], 'cancel-order' ) || is_admin() ) {
+			! wp_verify_nonce( $_REQUEST['lp-nonce'], 'cancel-order' ) || is_admin() ) {
 			return;
 		}
 

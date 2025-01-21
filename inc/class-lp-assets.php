@@ -152,6 +152,7 @@ class LP_Assets extends LP_Abstract_Assets {
 				'lp_version'        => LearnPress::instance()->version,
 				'lp_rest_load_ajax' => get_rest_url( null, 'lp/v1/load_content_via_ajax/' ),
 				'ajaxUrl'           => admin_url( 'admin-ajax.php' ),
+				'lpAjaxUrl'         => LP_Settings::url_handle_lp_ajax(),
 				'coverImageRatio'   => $aspectRatio,
 				'toast'             => [
 					'gravity'     => 'bottom',
@@ -265,6 +266,15 @@ class LP_Assets extends LP_Abstract_Assets {
 					array( LP_PAGE_SINGLE_COURSE_CURRICULUM ),
 					0,
 					1,
+					'',
+					[ 'strategy' => 'defer' ]
+				),
+				'lp-curriculum'        => new LP_Asset_Key(
+					self::url( 'js/dist/frontend/curriculum' . self::$_min_assets . '.js' ),
+					[],
+					array( LP_PAGE_SINGLE_COURSE_CURRICULUM, LP_PAGE_SINGLE_COURSE ),
+					0,
+					0,
 					'',
 					[ 'strategy' => 'defer' ]
 				),
@@ -429,10 +439,10 @@ class LP_Assets extends LP_Abstract_Assets {
 	 * @return void
 	 */
 	public function load_styles_on_head() {
-		$max_width         = LP_Settings::get_option( 'width_container', '1290px' );
+		$max_width         = esc_html( LP_Settings::get_option( 'width_container', '1290px' ) );
 		$padding_container = apply_filters( 'learn-press/container-padding-width', '1rem' );
-		$primary_color     = LP_Settings::get_option( 'primary_color' );
-		$secondary_color   = LP_Settings::get_option( 'secondary_color' );
+		$primary_color     = esc_html( LP_Settings::get_option( 'primary_color' ) );
+		$secondary_color   = esc_html( LP_Settings::get_option( 'secondary_color' ) );
 		?>
 		<style id="learn-press-custom-css">
 			:root {
