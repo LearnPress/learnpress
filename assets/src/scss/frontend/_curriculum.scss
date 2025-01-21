@@ -1234,6 +1234,12 @@ body.course-item-popup {
 				align-items: flex-start;
 			}
 
+			&__info {
+				display: flex;
+				column-gap: 12px;
+				row-gap: 8px;
+			}
+
 			&__content {
 				display: flex;
 				justify-content: space-between;
@@ -1259,20 +1265,14 @@ body.course-item-popup {
 				row-gap: 8px;
 				align-items: center;
 				flex: none;
-				justify-content: flex-end;
-				margin-left: auto;
 
 				@media (max-width: 1024px) {
 					width: 100%;
 					order: 3;
-					justify-content: flex-start;
 				}
 			}
 
 			&__status {
-				display: flex;
-    			justify-content: flex-end;
-
 				.course-item-ico {
 					width: 24px;
 					display: flex;
