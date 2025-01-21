@@ -1571,32 +1571,36 @@ class SingleCourseTemplate {
 		}
 
 		$section_item = [
-			'start'          => sprintf(
+			'start'            => sprintf(
 				'<li class="course-item" data-item-id="%s" data-item-order="%s" data-item-type="%s">',
 				$item_id,
 				$item_order,
 				$item_type
 			),
-			'link'           => sprintf(
+			'link'             => sprintf(
 				'<a href="%s" class="course-item__link">',
 				esc_url_raw( $link_item )
 			),
-			'item_left'      => '<div class="course-item__left">',
-			'icon'           => sprintf(
+			'item_info'        => '<div class="course-item__info">',
+			'icon'             => sprintf(
 				'<span class="course-item-ico %s"></span>',
 				esc_attr( $item_type )
 			),
-			'item_order'     => sprintf(
+			'item_order'       => sprintf(
 				'<span class="course-item-order lp-hidden">%s.%s</span>',
 				$section_item->section_order,
 				$item_order
 			),
-			'title'          => sprintf( '<div class="course-item-title">%s</div>', wp_kses_post( $title ) ),
-			'item_left_end'  => '</div>',
-			'item_right'     => Template::combine_components( $html_item_right ),
-			'status'         => $html_item_status,
-			'link_end'       => '</a>',
-			'end'            => '</li>',
+			'item_info_end'    => '</div>',
+			'item_content'     => '<div class="course-item__content">',
+			'item_left'        => '<div class="course-item__left">',
+			'title'            => sprintf( '<div class="course-item-title">%s</div>', wp_kses_post( $title ) ),
+			'item_left_end'    => '</div>',
+			'item_right'       => Template::combine_components( $html_item_right ),
+			'item_content_end' => '</div>',
+			'status'           => $html_item_status,
+			'link_end'         => '</a>',
+			'end'              => '</li>',
 		];
 
 		$html = Template::combine_components( $section_item );
