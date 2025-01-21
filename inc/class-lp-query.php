@@ -18,6 +18,10 @@ class LP_Query {
 			return;
 		}
 
+		if ( is_admin() ) {
+			return;
+		}
+
 		add_action( 'init', array( $this, 'add_rewrite_tags' ), 1000 );
 		add_action( 'init', array( $this, 'add_rewrite_endpoints' ) );
 		add_filter( 'option_rewrite_rules', [ $this, 'update_option_rewrite_rules' ], 1 );
@@ -286,23 +290,31 @@ class LP_Query {
 	 *
 	 * @return mixed|array
 	 * @since 4.2.2
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 * @see get_option() hook in this function.
 	 */
 	public function update_option_rewrite_rules( $wp_rules ) {
 		// Check it is called from WP_Rewrite class
 		$debug_backtrace = debug_backtrace();
-		if ( ! isset( $debug_backtrace[4] )
-			|| ! isset( $debug_backtrace[4]['class'] )
-			|| $debug_backtrace[4]['class'] != WP_Rewrite::class ) {
+
+		// Find call from WP_Rewrite class
+		$found = false;
+		foreach ( $debug_backtrace as $trace ) {
+			if ( isset( $trace['class'] ) && $trace['class'] == WP_Rewrite::class ) {
+				$found = true;
+				break;
+			}
+		}
+
+		if ( ! $found ) {
 			return $wp_rules;
 		}
 
-		static $handled = false;
+		/*static $handled = false;
 		if ( $handled ) {
 			return $wp_rules;
 		}
-		$handled = true;
+		$handled = true;*/
 
 		if ( ! is_array( $wp_rules ) ) {
 			return $wp_rules;
