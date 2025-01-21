@@ -373,6 +373,7 @@ class SingleCourseModernLayout {
 
 			$section_info_learning = [
 				'wrapper'               => '<div class="info-learning">',
+				'message_lock'          => $userCourseTemplate->html_message_lock( $userCourseModel ),
 				'graduation'            => $html_graduation,
 				'progress'              => $userCourseTemplate->html_progress( $userCourseModel ),
 				'start_date'            => sprintf(

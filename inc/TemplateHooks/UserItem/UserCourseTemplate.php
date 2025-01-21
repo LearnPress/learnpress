@@ -196,6 +196,13 @@ class UserCourseTemplate extends UserItemBaseTemplate {
 		return apply_filters( 'learn-press/user/course/html-count-items-completed', $html, $userCourseModel );
 	}
 
+	/**
+	 * HTMl progress course.
+	 *
+	 * @param UserCourseModel $userCourseModel
+	 *
+	 * @return mixed|null
+	 */
 	public function html_progress( UserCourseModel $userCourseModel ) {
 		$html = '';
 
@@ -229,6 +236,33 @@ class UserCourseTemplate extends UserItemBaseTemplate {
 
 		$html = Template::combine_components( $section );
 
-		return apply_filters( 'learn-press/user/course/html-progress', $html );
+		return apply_filters( 'learn-press/user/course/html-progress', $html, $userCourseModel );
+	}
+
+	/**
+	 * HTMl progress course.
+	 *
+	 * @param UserCourseModel $userCourseModel
+	 *
+	 * @return mixed|null
+	 * @since 4.2.7.6
+	 * @version 1.0.0
+	 */
+	public function html_message_lock( UserCourseModel $userCourseModel ): string {
+		$html = '';
+
+		$courseModel = $userCourseModel->get_course_model();
+
+		if ( $courseModel->enable_block_when_finished() && $userCourseModel->is_finished() ) {
+			$message = __( 'This course is finished.', 'learnpress' );
+		} elseif ( $courseModel->enable_block_when_expire() && $userCourseModel->timestamp_remaining_duration() === 0 ) {
+			$message = __( 'This course is expired.', 'learnpress' );
+		} else {
+			return $html;
+		}
+
+		$html = Template::print_message( $message, 'warning', false );
+
+		return apply_filters( 'learn-press/user/course/html-message-lock', $html, $userCourseModel );
 	}
 }
