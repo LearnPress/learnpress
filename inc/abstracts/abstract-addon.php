@@ -103,7 +103,14 @@ class LP_Addon {
 				'_plugin_links',
 			)
 		);
-		$this->_init_hooks();
+
+		// Run init hooks after learn-press/ready run on hook 'init', priority -1000
+		add_action(
+			'init',
+			function () {
+				$this->_init_hooks();
+			}
+		);
 	}
 
 	/**
@@ -148,6 +155,9 @@ class LP_Addon {
 
 	/**
 	 * Init add-on hooks.
+	 *
+	 * @depecated 4.2.7.6
+	 * Need remove this function, don't use on the addons news to controls hook.
 	 */
 	protected function _init_hooks() {
 	}
