@@ -18,6 +18,10 @@ class LP_Query {
 			return;
 		}
 
+		if ( is_admin() ) {
+			return;
+		}
+
 		add_action( 'init', array( $this, 'add_rewrite_tags' ), 1000 );
 		add_action( 'init', array( $this, 'add_rewrite_endpoints' ) );
 		add_filter( 'option_rewrite_rules', [ $this, 'update_option_rewrite_rules' ], 1 );
@@ -306,11 +310,11 @@ class LP_Query {
 			return $wp_rules;
 		}
 
-		static $handled = false;
+		/*static $handled = false;
 		if ( $handled ) {
 			return $wp_rules;
 		}
-		$handled = true;
+		$handled = true;*/
 
 		if ( ! is_array( $wp_rules ) ) {
 			return $wp_rules;
