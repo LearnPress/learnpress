@@ -1556,9 +1556,19 @@ class SingleCourseTemplate {
 		}
 
 		$html_item_status = sprintf(
-			'<span class="course-item-ico %1$s"></span>',
+			'<div class="course-item__status"><span class="course-item-ico %1$s"></span></div>',
 			$user_item_status_ico_flag
 		);
+
+		$html_item_right = [];
+		if ( $html_item_count_questions != '' ||  $html_item_duration != '' ) {
+			$html_item_right = [
+				'item_right'     => '<div class="course-item__right">',
+				'question_count' => $html_item_count_questions,
+				'duration'       => $html_item_duration,
+				'item_right_end' => '</div>',
+			];
+		}
 
 		$section_item = [
 			'start'          => sprintf(
@@ -1583,11 +1593,8 @@ class SingleCourseTemplate {
 			),
 			'title'          => sprintf( '<div class="course-item-title">%s</div>', wp_kses_post( $title ) ),
 			'item_left_end'  => '</div>',
-			'item_right'     => '<div class="course-item__right">',
-			'question_count' => $html_item_count_questions,
-			'duration'       => $html_item_duration,
+			'item_right'     => Template::combine_components( $html_item_right ),
 			'status'         => $html_item_status,
-			'item_right_end' => '</div>',
 			'link_end'       => '</a>',
 			'end'            => '</li>',
 		];

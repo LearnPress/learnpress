@@ -1228,28 +1228,28 @@ body.course-item-popup {
 				display: flex;
 				justify-content: space-between;
 				width: 100%;
-				column-gap: 20px;
+				column-gap: 12px;
+    			row-gap: 8px;
 				position: relative;
 				align-items: flex-start;
-				@media (max-width: 767px) {
+
+				@media (max-width: 1024px) {
 					flex-wrap: wrap;
 				}
 			}
 
 			&__left {
 				display: flex;
-				column-gap: 16px;
+				column-gap: 12px;
 				row-gap: 8px;
 				align-items: flex-start;
+				
+				@media (max-width: 1024px) {
+					flex-basis: calc(90% - 6px);
+				}
 
 				&:hover {
 					color: $color-primary;
-				}
-
-				@media (max-width: 767px) {
-					.course-item-title {
-						padding-right: 30px;
-					}
 				}
 			}
 
@@ -1260,30 +1260,28 @@ body.course-item-popup {
 				align-items: center;
 				flex: none;
 				justify-content: flex-end;
+				margin-left: auto;
 
-				@media (max-width: 767px) {
+				@media (max-width: 1024px) {
 					width: 100%;
+					order: 3;
 					justify-content: flex-start;
+					padding-left: 30px;
+				}
+			}
+
+			&__status {
+				display: flex;
+    			justify-content: flex-end;
+
+				@media (max-width: 1024px) {
+					flex-basis: calc(10% - 6px);
 				}
 
 				.course-item-ico {
 					width: 24px;
 					display: flex;
 					justify-content: center;
-
-					@media (max-width: 767px) {
-						position: absolute;
-						right: 0;
-						top: 0;
-					}
-				}
-
-				.duration {
-					@media (max-width: 767px) {
-						display: block;
-						margin-top: 8px;
-						margin-left: 30px;
-					}
 				}
 			}
 		}
