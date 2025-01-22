@@ -52,13 +52,13 @@ const lpAJAX = ( () => {
 		},
 		fetchAJAX: ( params, callBack, urlAjax = '' ) => {
 			// Call via ajax.
-			urlAjax = urlAjax || lpData.lpAjaxUrl;
+			urlAjax = urlAjax || lpSettings.lpAjaxUrl;
 			if ( params.args.id_url ) {
 				urlAjax = lpAddQueryArgs( urlAjax, { id_url: params.args.id_url } );
 			}
 
 			const formData = new FormData();
-			formData.append( 'nonce', lpData.nonce );
+			formData.append( 'nonce', lpSettings.nonce );
 			formData.append( 'lp-load-ajax', 'load_content_via_ajax' );
 			formData.append( 'data', JSON.stringify( params ) );
 			const dataSend = {
@@ -67,7 +67,7 @@ const lpAJAX = ( () => {
 				body: formData,
 			};
 
-			if ( 0 !== parseInt( lpData.user_id ) ) {
+			if ( 0 !== parseInt( lpSettings.user_id ) ) {
 				dataSend.headers[ 'X-WP-Nonce' ] = lpSettings.nonce;
 			}
 
