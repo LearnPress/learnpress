@@ -1246,7 +1246,7 @@ body.course-item-popup {
 				column-gap: 12px;
 				row-gap: 8px;
 				align-items: baseline;
-				margin-right: auto;
+				flex: 1;
 
 				@media (max-width: 1024px) {
 					flex-wrap: wrap;
