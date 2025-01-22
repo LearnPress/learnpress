@@ -1561,7 +1561,7 @@ class SingleCourseTemplate {
 		);
 
 		$html_item_right = [];
-		if ( $html_item_count_questions != '' ||  $html_item_duration != '' ) {
+		if ( $html_item_count_questions != '' || $html_item_duration != '' ) {
 			$html_item_right = [
 				'item_right'     => '<div class="course-item__right">',
 				'question_count' => $html_item_count_questions,
