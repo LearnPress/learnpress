@@ -1238,6 +1238,10 @@ body.course-item-popup {
 				display: flex;
 				column-gap: 12px;
 				row-gap: 8px;
+
+				.course-item-ico {
+					min-width: 20px;
+				}
 			}
 
 			&__content {
