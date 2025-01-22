@@ -471,6 +471,17 @@ class LP_Settings {
 			)
 		);
 	}
+
+	/**
+	 * Return url lp-ajax.php
+	 *
+	 * @return string
+	 * @since 4.2.7.6
+	 * @version 1.0.0
+	 */
+	public static function url_handle_lp_ajax(): string {
+		return LP_PLUGIN_URL . 'inc/lp-ajax.php';
+	}
 }
 
 LP_Settings::instance();
