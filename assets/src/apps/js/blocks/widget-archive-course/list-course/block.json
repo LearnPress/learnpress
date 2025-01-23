@@ -12,7 +12,7 @@
 	"attributes": {
 		"ajax": {
 			"type": "boolean",
-			"default": true
+			"default": false
 		},
 		"load": {
 			"type": "boolean",

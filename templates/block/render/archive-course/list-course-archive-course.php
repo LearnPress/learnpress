@@ -4,8 +4,8 @@ use LearnPress\TemplateHooks\Course\ListCoursesTemplate;
 use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
 use LearnPress\TemplateHooks\TemplateAJAX;
 
-$load_ajax        = $attributes['ajax'] ? $attributes['ajax'] : true;
-$load_ajax_first  = $attributes['load'] ? $attributes['load'] : true;
+$load_ajax        = $attributes['ajax'] ? $attributes['ajax'] : false;
+$load_ajax_first  = $attributes['load'] ? $attributes['load'] : false;
 $order_by         = $attributes['orderBy'] ?? 'post_date';
 $course_per_page  = $attributes['perPage'] ?? '8';
 $order_by_current = isset( $_GET['order_by'] ) ? sanitize_text_field( $_GET['order_by'] ) : $order_by;
