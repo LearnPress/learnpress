@@ -169,9 +169,9 @@ export const edit = ( props ) => {
 					/>
 
 					<ToggleControl
-						label="Load Ajax Layout"
+						label="Loading Ajax Courses"
 						help={
-							'When enabled, loading AJAX Courses will be disabled.'
+							'On/Off loading ajax courses'
 						}
 						checked={ props.attributes.ajax ? true : false }
 						onChange={ ( value ) => {
