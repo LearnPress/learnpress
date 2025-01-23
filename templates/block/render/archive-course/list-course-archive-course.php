@@ -59,7 +59,7 @@ $template_course  = array_map( 'trim', $matches[1] );
 $args['html']     = $inner_content;
 $args['template'] = $template_course[0] ? $template_course[0] : '';
 
-if ( $load_ajax && $load_ajax_first ) {
+if ( ! $load_ajax || $load_ajax && $load_ajax_first ) {
 	$content_obj                     = ListCoursesTemplate::render_courses( $args );
 	$args['html_no_load_ajax_first'] = $content_obj->content;
 }
