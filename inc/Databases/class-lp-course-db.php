@@ -681,7 +681,7 @@ class LP_Course_DB extends LP_Database {
 	 *
 	 * @return  LP_Course_Filter
 	 * @throws Exception
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 * @since 4.1.6
 	 * @author minhpd
 	 */
@@ -715,6 +715,7 @@ class LP_Course_DB extends LP_Database {
 			LP_COURSE_FINISHED
 		);
 		$filter_user_course->group_by            = 'p.ID';
+		$filter_user_course->order_by            = '';
 		$filter_user_course->return_string_query = true;
 		$query_user_course                       = LP_Course_DB::getInstance()->get_courses( $filter_user_course );
 
@@ -736,6 +737,7 @@ class LP_Course_DB extends LP_Database {
 		}
 		$filter_course_not_attend->where[] = 'AND p.ID NOT IN(' . $query_user_course_for_not_in . ')';
 
+		$filter_course_not_attend->order_by            = '';
 		$filter_course_not_attend->return_string_query = true;
 		$query_course_not_attend                       = LP_Course_DB::getInstance()->get_courses( $filter_course_not_attend );
 
