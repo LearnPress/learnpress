@@ -339,19 +339,6 @@ function learn_press_get_current_url() {
 }
 
 /**
- * Compares an url with current URL user is viewing
- *
- * @param string $url
- *
- * @return bool
- */
-function learn_press_is_current_url( $url ) {
-	$current_url = learn_press_get_current_url();
-
-	return ( $current_url && $url ) && strcmp( $current_url, learn_press_sanitize_url( $url ) ) == 0;
-}
-
-/**
  * Remove unneeded characters in an URL
  *
  * @param string $url
@@ -367,7 +354,7 @@ function learn_press_sanitize_url( $url, $trailingslashit = true ) {
 		$url              = $matches[1] . $url_without_http;
 
 		return ( $trailingslashit &&
-				strpos( $url, '?' ) === false ) ? trailingslashit( $url ) : untrailingslashit( $url );
+				 strpos( $url, '?' ) === false ) ? trailingslashit( $url ) : untrailingslashit( $url );
 	}
 
 	return $url;
@@ -1108,10 +1095,10 @@ function learn_press_currencies() {
  *
  * @return string
  */
-function learn_press_get_currency() {
-	$currency = apply_filters( 'learn_press_currency', LP_Settings::instance()->get( 'currency', 'USD' ) );
+function learn_press_get_currency(): string {
+	$currency = LP_Settings::instance()->get( 'currency', 'USD' );
 
-	return apply_filters( 'learn-press/currency', $currency );
+	return esc_html( apply_filters( 'learn-press/currency', $currency ) );
 }
 
 /**
@@ -1513,31 +1500,31 @@ add_filter( 'gettext_with_context', '_learn_press_translate_user_roles', 10, 4 )
  * @deprecated 4.1.7.2
  */
 //function learn_press_posts_where_statement_search( $where ) {
-//  // gets the global query var object
-//  global $wp_query, $wpdb;
+//	// gets the global query var object
+//	global $wp_query, $wpdb;
 //
-//  /**
-//   * Need to wrap this block into () in order to make it works correctly when filter by specific post type => maybe a bug :)
-//   * from => ( wp_2_posts.post_status = 'publish' OR wp_2_posts.post_status = 'private') OR wp_2_terms.name LIKE '%s%'
-//   * to => ( ( wp_2_posts.post_status = 'publish' OR wp_2_posts.post_status = 'private') OR wp_2_terms.name LIKE '%s%' )
-//   */
-//  $a = preg_match( '!(' . $wpdb->posts . '.post_status)!', $where );
-//  $b = preg_match( '!(OR\s+' . $wpdb->terms . '.name LIKE \'%' . $wp_query->get( 's' ) . '%\')!', $where );
+//	/**
+//	 * Need to wrap this block into () in order to make it works correctly when filter by specific post type => maybe a bug :)
+//	 * from => ( wp_2_posts.post_status = 'publish' OR wp_2_posts.post_status = 'private') OR wp_2_terms.name LIKE '%s%'
+//	 * to => ( ( wp_2_posts.post_status = 'publish' OR wp_2_posts.post_status = 'private') OR wp_2_terms.name LIKE '%s%' )
+//	 */
+//	$a = preg_match( '!(' . $wpdb->posts . '.post_status)!', $where );
+//	$b = preg_match( '!(OR\s+' . $wpdb->terms . '.name LIKE \'%' . $wp_query->get( 's' ) . '%\')!', $where );
 //
-//  if ( $a && $b ) {
-//      // append ( to the start of the block
-//      $where = preg_replace( '!(' . $wpdb->posts . '.post_status)!', '( $1', $where, 1 );
+//	if ( $a && $b ) {
+//		// append ( to the start of the block
+//		$where = preg_replace( '!(' . $wpdb->posts . '.post_status)!', '( $1', $where, 1 );
 //
-//      // append ) to the end of the block
-//      $where = preg_replace(
-//          '!(OR\s+' . $wpdb->terms . '.name LIKE \'%' . $wp_query->get( 's' ) . '%\')!',
-//          '$1 )',
-//          $where
-//      );
-//  }
-//  remove_filter( 'posts_where', 'learn_press_posts_where_statement_search', 99 );
+//		// append ) to the end of the block
+//		$where = preg_replace(
+//			'!(OR\s+' . $wpdb->terms . '.name LIKE \'%' . $wp_query->get( 's' ) . '%\')!',
+//			'$1 )',
+//			$where
+//		);
+//	}
+//	remove_filter( 'posts_where', 'learn_press_posts_where_statement_search', 99 );
 //
-//  return $where;
+//	return $where;
 //}
 
 /**
@@ -1727,17 +1714,13 @@ if ( ! function_exists( 'learn_press_is_course_tag' ) ) {
 }
 
 if ( ! function_exists( 'learn_press_is_course' ) ) {
-	function learn_press_is_course() {
-		/**
-		 * @var WP_Query $wp_query
-		 */
-		global $wp_query;
-
-		if ( $wp_query->get_queried_object() ) {
+	function learn_press_is_course(): bool {
+		try {
 			return is_singular( array( LP_COURSE_CPT ) );
-		} else {
-			return false;
+		} catch ( Throwable $e ) {
 		}
+
+		return false;
 	}
 }
 
@@ -1911,39 +1894,39 @@ function learn_press_get_endpoint_url( $name, $value, $url ) {
  * @use LP_Query::add_rewrite_endpoints instead
  */
 //function learn_press_add_endpoints() {
-//  // Must LP_Profile::instance call on init, because it will add action hook to save data on Profile page
-//  // If rewrite save data on Profile page, can remove it.
-//  //LP_Profile::instance( get_current_user_id() );
+//	// Must LP_Profile::instance call on init, because it will add action hook to save data on Profile page
+//	// If rewrite save data on Profile page, can remove it.
+//	//LP_Profile::instance( get_current_user_id() );
 //
-//  $settings = LP_Settings::instance();
+//	$settings = LP_Settings::instance();
 //
-//  $endpoints = $settings->get_checkout_endpoints();
-//  if ( $endpoints ) {
-//      foreach ( $endpoints as $endpoint => $value ) {
-//          LearnPress::instance()->query_vars[ $endpoint ] = $value;
-//          add_rewrite_endpoint( $value, EP_PAGES );
-//      }
-//  }
+//	$endpoints = $settings->get_checkout_endpoints();
+//	if ( $endpoints ) {
+//		foreach ( $endpoints as $endpoint => $value ) {
+//			LearnPress::instance()->query_vars[ $endpoint ] = $value;
+//			add_rewrite_endpoint( $value, EP_PAGES );
+//		}
+//	}
 //
-//  $endpoints = $settings->get_profile_endpoints();
-//  if ( $endpoints ) {
-//      foreach ( $endpoints as $endpoint => $value ) {
-//          LearnPress::instance()->query_vars[ $endpoint ] = $value;
-//          add_rewrite_endpoint( $value, EP_PAGES );
-//      }
-//  }
+//	$endpoints = $settings->get_profile_endpoints();
+//	if ( $endpoints ) {
+//		foreach ( $endpoints as $endpoint => $value ) {
+//			LearnPress::instance()->query_vars[ $endpoint ] = $value;
+//			add_rewrite_endpoint( $value, EP_PAGES );
+//		}
+//	}
 //
-//  $endpoints = $settings->get( 'quiz_endpoints' );
-//  if ( $endpoints ) {
-//      foreach ( $endpoints as $endpoint => $value ) {
-//          $endpoint                                       = preg_replace( '!_!', '-', $endpoint );
-//          LearnPress::instance()->query_vars[ $endpoint ] = $value;
-//          add_rewrite_endpoint(
-//              $value, /*EP_ROOT | */
-//              EP_PAGES
-//          );
-//      }
-//  }
+//	$endpoints = $settings->get( 'quiz_endpoints' );
+//	if ( $endpoints ) {
+//		foreach ( $endpoints as $endpoint => $value ) {
+//			$endpoint                                       = preg_replace( '!_!', '-', $endpoint );
+//			LearnPress::instance()->query_vars[ $endpoint ] = $value;
+//			add_rewrite_endpoint(
+//				$value, /*EP_ROOT | */
+//				EP_PAGES
+//			);
+//		}
+//	}
 //}
 
 //add_action( 'init', 'learn_press_add_endpoints' );
@@ -3039,9 +3022,9 @@ function learn_press_cookie_get( $name, $namespace = 'LP' ) {
 function learn_press_course_evaluation_methods( $postid, $return = '', $final_quizz_passing = '' ) {
 	$course_tip     = '<span class="learn-press-tip">%s</span>';
 	$final_quiz_btn = '<a href="#" class="lp-metabox-get-final-quiz" data-postid="' . $postid . '" data-loading="' . esc_attr__(
-		'Loading...',
-		'learnpress'
-	) . '">' . esc_html__( 'Get A Passing Grade', 'learnpress' ) . '</a>';
+			'Loading...',
+			'learnpress'
+		) . '">' . esc_html__( 'Get A Passing Grade', 'learnpress' ) . '</a>';
 
 	$course_desc = array(
 		'evaluate_lesson'     => sprintf(
@@ -3076,25 +3059,25 @@ function learn_press_course_evaluation_methods( $postid, $return = '', $final_qu
 		'learnpress/course-evaluation/methods',
 		array(
 			'evaluate_lesson'     => __(
-				'Evaluate via lessons',
-				'learnpress'
-			) . learn_press_quick_tip( $course_desc['evaluate_lesson'], false ),
+					'Evaluate via lessons',
+					'learnpress'
+				) . learn_press_quick_tip( $course_desc['evaluate_lesson'], false ),
 			'evaluate_final_quiz' => __( 'Evaluate via results of the final quiz', 'learnpress' ) . sprintf(
-				$course_tip,
-				$course_desc['evaluate_final_quiz']
-			) . $final_quiz_btn . $final_quizz_passing,
+					$course_tip,
+					$course_desc['evaluate_final_quiz']
+				) . $final_quiz_btn . $final_quizz_passing,
 			'evaluate_quiz'       => __( 'Evaluate via passed quizzes', 'learnpress' ) . sprintf(
-				$course_tip,
-				$course_desc['evaluate_quiz']
-			),
+					$course_tip,
+					$course_desc['evaluate_quiz']
+				),
 			'evaluate_questions'  => __( 'Evaluate via questions', 'learnpress' ) . sprintf(
-				$course_tip,
-				$course_desc['evaluate_questions']
-			),
+					$course_tip,
+					$course_desc['evaluate_questions']
+				),
 			'evaluate_mark'       => __( 'Evaluate via mark', 'learnpress' ) . sprintf(
-				$course_tip,
-				$course_desc['evaluate_mark']
-			),
+					$course_tip,
+					$course_desc['evaluate_mark']
+				),
 		)
 	);
 

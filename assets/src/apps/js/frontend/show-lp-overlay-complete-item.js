@@ -23,7 +23,12 @@ const lpModalOverlayCompleteItem = {
 
 				lpModalOverlay.elLPOverlay.show();
 				lpModalOverlay.setTitleModal( form.dataset.title );
-				lpModalOverlay.setContentModal( '<div class="pd-2em">' + form.dataset.confirm + '</div>' );
+				// ESC html
+				const div = document.createElement( 'div' );
+				div.appendChild( document.createTextNode( form.dataset.confirm ) );
+				const contentModal = div.innerHTML;
+				// End ESC html
+				lpModalOverlay.setContentModal( '<div class="pd-2em">' + contentModal + '</div>' );
 				lpModalOverlay.callBackYes = () => {
 					form.submit();
 				};

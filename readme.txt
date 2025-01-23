@@ -5,7 +5,7 @@ Tags: elearning, education, course, lms, learning management system
 Requires at least: 6.0
 Tested up to: 6.7.1
 Requires PHP: 7.0
-Stable tag: 4.2.7.5
+Stable tag: 4.2.7.5.1
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -207,16 +207,25 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Screenshots ==
 
-1. Curriculum - Drag and Drop lesson or quiz.
-2. Lesson content.
-3. Quiz preview.
-4. General settings.
-5. Quiz settings.
-6. Email settings.
-7. Demo course page.
-8. Add-ons of LearnPress.
+1. Course Layout: A visually engaging way to explore your courses. Easily scan multiple courses by filters and sorts, with vibrant images, brief descriptions and CTA button
+2. Online Course Detail: Clean & thoughtfully structured layout features a dynamic course overview, detailed sections, curriculum, instructor information and more to help make decision quicker
+3. In-person Course Detail: Promote and sell your in-person courses with linear presentation, customizable CTA buttons and smooth check-out process
+4. Payment Methods: By free LearnPress plugin, you can sell your course at no cost using our default payment methods and easily enhance your options by adding premium payment gateways as needed
+5. Learning Experience: Dive into engaging lessons, interactive media rich & streamlined text-focused content and keep track on your progress from start to finish
+6. Quiz: Challenge your learners with dynamic format quizzes having instant feedback to reinforce learning while keeping learners motivated
+7. Assignment: Put your knowledge to the test with hands-on assignment
+8. Certificate: Provide professional and customizable certificate to showcase your student's achievement .jpg
+9. Dashboard: Stay organized with a personalized overview of your progress, quiz & assignment achievement, and completed courses
+10. Upsell: Offer different pricing strategies to help you monetize your course more effectively
+11. Mobile Responsive: Immersive learning experience anywhere, anytime on multiple devices
+12. Create Course: Simple, efficient and quick way to build your course and share your knowledge to the world
+13. Add-ons: Unlock endless possibilities with our add-ons from additional payment gateways to more managing course options. Tailor to your needs and easily scale as your site grow
 
 == Changelog ==
+
+= 4.2.7.5.1 (2025-01-22) =
+~ Fixed: security.
+~ Fixed: minor bugs.
 
 = 4.2.7.5 (2024-12-17) =
 ~ Added: option Price prefix, Price suffix for course.
