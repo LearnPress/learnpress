@@ -14,7 +14,7 @@ class Block_Layout_List_Course_Archive_Courses extends Abstract_Block_Layout {
 	public $source_js                     = LP_PLUGIN_URL . 'assets/js/dist/blocks/list-course-archive-course.js';
 
 	public function __construct() {
-		add_action( 'save_post', [ $this, 'save_wp_template' ], 10, 2 );
+		// add_action( 'save_post', [ $this, 'save_wp_template' ], 10, 2 );
 		parent::__construct();
 	}
 

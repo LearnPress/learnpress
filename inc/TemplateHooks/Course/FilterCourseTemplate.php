@@ -253,9 +253,9 @@ class FilterCourseTemplate {
 				$count   = sprintf( '<span class="count">%s</span>', esc_html( $field['count'] ) );
 
 				$href = '';
-				if ( ! LP_Settings_Courses::is_ajax_load_courses() ) {
-					$href = sprintf( '<a href="%s"></a>', esc_url( $url ) );
-				}
+				// if ( ! LP_Settings_Courses::is_ajax_load_courses() ) {
+				// 	$href = sprintf( '<a href="%s"></a>', esc_url( $url ) );
+				// }
 				$sections = apply_filters(
 					'learn-press/filter-courses/price/sections',
 					[
@@ -409,9 +409,9 @@ class FilterCourseTemplate {
 
 		$url  = $this->add_or_update_current_url_params( [ 'term_id' => $category_id ] );
 		$href = '';
-		if ( ! LP_Settings_Courses::is_ajax_load_courses() ) {
-			$href = sprintf( '<a href="%s"></a>', esc_url( $url ) );
-		}
+		// if ( ! LP_Settings_Courses::is_ajax_load_courses() ) {
+		// 	$href = sprintf( '<a href="%s"></a>', esc_url( $url ) );
+		// }
 		$sections = apply_filters(
 			'learn-press/filter-courses/course-category/sections',
 			[
@@ -493,9 +493,9 @@ class FilterCourseTemplate {
 
 				$url  = $this->add_or_update_current_url_params( [ 'tag_id' => $value ] );
 				$href = '';
-				if ( ! LP_Settings_Courses::is_ajax_load_courses() ) {
-					$href = sprintf( '<a href="%s"></a>', esc_url( $url ) );
-				}
+				// if ( ! LP_Settings_Courses::is_ajax_load_courses() ) {
+				// 	$href = sprintf( '<a href="%s"></a>', esc_url( $url ) );
+				// }
 				$sections = apply_filters(
 					'learn-press/filter-courses/course-tag/sections',
 					[
@@ -571,9 +571,9 @@ class FilterCourseTemplate {
 
 				$url  = $this->add_or_update_current_url_params( [ 'c_authors' => $value ] );
 				$href = '';
-				if ( ! LP_Settings_Courses::is_ajax_load_courses() ) {
-					$href = sprintf( '<a href="%s"></a>', esc_url( $url ) );
-				}
+				// if ( ! LP_Settings_Courses::is_ajax_load_courses() ) {
+				// 	$href = sprintf( '<a href="%s"></a>', esc_url( $url ) );
+				// }
 				$sections = apply_filters(
 					'learn-press/filter-courses/author/sections',
 					[
@@ -654,9 +654,9 @@ class FilterCourseTemplate {
 				$count   = sprintf( '<span class="count">%s</span>', esc_html( $total_courses ) );
 
 				$href = '';
-				if ( ! LP_Settings_Courses::is_ajax_load_courses() ) {
-					$href = sprintf( '<a href="%s"></a>', esc_url( $url ) );
-				}
+				// if ( ! LP_Settings_Courses::is_ajax_load_courses() ) {
+				// 	$href = sprintf( '<a href="%s"></a>', esc_url( $url ) );
+				// }
 				$sections = apply_filters(
 					'learn-press/filter-courses/levels/sections',
 					[
@@ -733,12 +733,12 @@ class FilterCourseTemplate {
 		}
 
 		$new_query = http_build_query( $query_params );
-		$new_url   = ( isset( $parsed_url['scheme'] ) ? $parsed_url['scheme'] . '://' : '' ) .
+
+		$new_url = ( isset( $parsed_url['scheme'] ) ? $parsed_url['scheme'] . '://' : '' ) .
 					( isset( $parsed_url['host'] ) ? $parsed_url['host'] : '' ) .
-					( isset( $parsed_url['path'] ) ? $parsed_url['path'] : '' ) .
+					( isset( $parsed_url['path'] ) ? preg_replace( '/\/page\/\d+\/?$/', '', $parsed_url['path'] ) : '' ) .
 					'?' . $new_query .
 					( isset( $parsed_url['fragment'] ) ? '#' . $parsed_url['fragment'] : '' );
-
 		return $new_url;
 	}
 
@@ -754,13 +754,13 @@ class FilterCourseTemplate {
 		$parsed_url  = parse_url( $current_url );
 		$origin_url  = ( isset( $parsed_url['scheme'] ) ? $parsed_url['scheme'] . '://' : '' ) .
 		( isset( $parsed_url['host'] ) ? $parsed_url['host'] : '' ) .
-		( isset( $parsed_url['path'] ) ? $parsed_url['path'] : '' ) .
+		( isset( $parsed_url['path'] ) ? preg_replace( '/\/page\/\d+\/?$/', '', $parsed_url['path'] ) : '' ) .
 		( isset( $parsed_url['fragment'] ) ? '#' . $parsed_url['fragment'] : '' );
 
 		$html = esc_html__( 'Reset', 'learnpress' );
-		if ( ! LP_Settings_Courses::is_ajax_load_courses() ) {
-			$html = sprintf( '<a href="%s">%s</a>', esc_url( $origin_url ), esc_html__( 'Reset', 'learnpress' ) );
-		}
+		// if ( ! LP_Settings_Courses::is_ajax_load_courses() ) {
+		// 	$html = sprintf( '<a href="%s">%s</a>', esc_url( $origin_url ), esc_html__( 'Reset', 'learnpress' ) );
+		// }
 
 		return sprintf(
 			'<button class="course-filter-reset">%s</button>',

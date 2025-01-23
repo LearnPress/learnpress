@@ -161,7 +161,7 @@ class ListCoursesTemplate {
 		} else {
 			foreach ( $courses as $courseObj ) {
 				$course = CourseModel::find( $courseObj->ID, true );
-				echo static::render_course( $course, $settings );
+				echo static::render_course( $course, $settings, $settings['template'] );
 			}
 		}
 		$html_courses = ob_get_clean();
@@ -221,8 +221,17 @@ class ListCoursesTemplate {
 			$settings
 		);
 
-		$content              = new stdClass();
-		$content->content     = Template::combine_components( $section );
+		$content = new stdClass();
+
+		if ( ! empty( $settings['html'] ) ) {
+			$pattern          = '/{{template-course}}.*?{{end-template-course}}/s';
+			$output           = preg_replace( $pattern, $html_courses, $settings['html'] );
+			$content->content = $output;
+		} else {
+			$content->content = Template::combine_components( $section );
+		}
+		$content->content = Template::combine_components( $section );
+
 		$content->total_pages = $total_pages;
 		$content->paged       = $paged;
 

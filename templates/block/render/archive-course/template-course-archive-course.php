@@ -56,6 +56,20 @@ if ( LP_Page_Controller::is_page_instructor() ) {
 	$filter->post_author   = $author_id;
 }
 
+if ( learn_press_is_course_category() || learn_press_is_course_tag() ) {
+	$cat = get_queried_object();
+
+	if ( learn_press_is_course_category() ) {
+		$settings['page_term_id_current'] = $cat->term_id;
+		$settings['term_id']              = $cat->term_id;
+	} elseif ( learn_press_is_course_tag() ) {
+		$settings['page_tag_id_current'] = $cat->term_id;
+		$settings['tag_id']              = $cat->term_id;
+	}
+
+	$settings['page_term_url'] = get_term_link( $cat );
+}
+
 Courses::handle_params_for_query_courses( $filter, $settings );
 Courses::get_courses( $filter, $total_rows );
 $total_pages = 0;

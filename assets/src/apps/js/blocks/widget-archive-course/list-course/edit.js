@@ -47,6 +47,13 @@ export const edit = ( props ) => {
 		} );
 	};
 
+	const updateAjaxChildBlocks = ( newAjax ) => {
+		childBlocks.forEach( ( block ) => {
+			if ( block.name === 'learnpress/template-course-archive-course' ) {
+				updateBlockAttributes( block.clientId, { ajax: newAjax } );
+			}
+		} );
+	};
 	const updateOrderByChildBlocks = ( newOrderBy ) => {
 		const traverseBlocks = ( blocks ) => {
 			blocks.forEach( ( block ) => {
@@ -135,6 +142,7 @@ export const edit = ( props ) => {
 					<TextControl
 						label="Course Per Page"
 						type="number"
+						min="1"
 						onChange={ ( value ) => {
 							props.setAttributes( {
 								perPage: value ? parseInt( value, 10 ) : 8,
@@ -161,26 +169,27 @@ export const edit = ( props ) => {
 					/>
 
 					<ToggleControl
-						label="Custom Layout"
+						label="Load Ajax Layout"
 						help={
 							'When enabled, loading AJAX Courses will be disabled.'
 						}
-						checked={ props.attributes.custom ? true : false }
-						onChange={ ( value ) =>
-							props.setAttributes( { custom: value ? value : '' } )
-						}
+						checked={ props.attributes.ajax ? true : false }
+						onChange={ ( value ) => {
+							props.setAttributes( { ajax: value ? true : false } );
+							updateAjaxChildBlocks( value ? false : false );
+						} }
 					/>
 
-					{ ! props.attributes.custom ? (
+					{ props.attributes.ajax ? (
 						<ToggleControl
-							label="Load Ajax"
+							label="Do not run Ajax when reloading"
 							help={
-								'Do not apply AJAX when reloading the Course Archive page.'
+								'Ajax is only applied when selecting pagination, filtering, searching, and sorting.'
 							}
 							checked={ props.attributes.load ? true : false }
 							onChange={ ( value ) =>
 								props.setAttributes( {
-									load: value ? value : '',
+									load: value ? true : false,
 								} )
 							}
 						/>
@@ -188,7 +197,7 @@ export const edit = ( props ) => {
 						''
 					) }
 
-					{ ! props.attributes.custom ? (
+					{ props.attributes.ajax ? (
 						<SelectControl
 							label="Pagination"
 							value={ props.attributes.pagination ?? 'number' }

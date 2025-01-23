@@ -10,6 +10,10 @@
 	"keywords": ["template archive course", "learnpress"],
 	"usesContext": [],
 	"attributes": {
+		"ajax": {
+			"type": "boolean",
+			"default": true
+		},
 		"layout": {
 			"type": "string",
 			"default": "list"

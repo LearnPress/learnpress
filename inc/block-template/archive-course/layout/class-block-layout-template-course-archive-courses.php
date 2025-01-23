@@ -20,10 +20,16 @@ class Block_Layout_Template_Course_Archive_Courses extends Abstract_Block_Layout
 		$content = '';
 
 		try {
-			ob_start();
-			$template = $this->path_template_render_default;
-			Template::instance()->get_frontend_template( $template, compact( 'attributes', 'inner_content' ) );
-			$content = ob_get_clean();
+			// if ( $attributes['ajax'] ) {
+				ob_start();
+				echo sprintf( '{{template-course}}%s{{end-template-course}}', $inner_content );
+				$content = ob_get_clean();
+			// } else {
+			//  ob_start();
+			//  $template = $this->path_template_render_default;
+			//  Template::instance()->get_frontend_template( $template, compact( 'attributes', 'inner_content' ) );
+			//  $content = ob_get_clean();
+			// }
 		} catch ( Throwable $e ) {
 			ob_end_clean();
 		}

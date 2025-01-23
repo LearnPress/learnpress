@@ -10,9 +10,9 @@
 	"keywords": ["layout group course", "learnpress"],
 	"usesContext": [],
 	"attributes": {
-		"custom": {
+		"ajax": {
 			"type": "boolean",
-			"default": false
+			"default": true
 		},
 		"load": {
 			"type": "boolean",
