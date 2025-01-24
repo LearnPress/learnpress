@@ -226,7 +226,7 @@ class ListCoursesTemplate {
 		if ( ! empty( $settings['html'] ) ) {
 			$pattern                     = '/{{template-course}}.*?{{end-template-course}}/s';
 			$html_content_output_pattern = Template::combine_components( $section_courses );
-			$output                      = preg_replace( $pattern, $html_content_output_pattern, $settings['html'] );
+			$output                      = preg_replace( $pattern, $html_content_output_pattern . $html_pagination, $settings['html'] );
 			$content->content            = $output;
 		} else {
 			$content->content = Template::combine_components( $section );
