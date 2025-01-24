@@ -2,9 +2,7 @@
 Contributors: thimpress, tungnx89, nhamdv, nguyenlammanh, tunnhn, phonglq.foobla, thongta, kendy73, leehld
 Donate link:
 Tags: elearning, education, course, lms, learning management system
-Requires at least: 6.0
 Tested up to: 6.7.1
-Requires PHP: 7.0
 Stable tag: 4.2.7.5
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html

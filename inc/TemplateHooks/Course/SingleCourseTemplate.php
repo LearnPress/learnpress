@@ -134,45 +134,56 @@ class SingleCourseTemplate {
 	 * @param LP_Course|CourseModel $course
 	 *
 	 * @return string
+	 * @since 4.2.6
+	 * @version 1.0.2
 	 */
 	public function html_categories( $course ): string {
-		if ( $course instanceof LP_Course ) {
-			$course = CourseModel::find( $course->get_id(), true );
-		}
+		$html = '';
 
-		if ( empty( $course ) ) {
-			return '';
-		}
+		try {
+			if ( $course instanceof LP_Course ) {
+				$course = CourseModel::find( $course->get_id(), true );
+			}
 
-		$cats = $course->get_categories();
-		if ( empty( $cats ) ) {
-			return '';
-		}
+			if ( empty( $course ) ) {
+				return '';
+			}
 
-		$cat_names = [];
-		array_map(
-			function ( $cat ) use ( &$cat_names ) {
-				$term        = sprintf( '<a href="%s">%s</a>', get_term_link( $cat->term_id ), $cat->name );
+			$cats = $course->get_categories();
+			if ( empty( $cats ) ) {
+				return '';
+			}
+
+			$cat_names = [];
+			foreach ( $cats as $cat ) {
+				$term        = sprintf(
+					'<a href="%s">%s</a>',
+					get_term_link( $cat ),
+					$cat->name
+				);
 				$cat_names[] = $term;
-			},
-			$cats
-		);
+			}
 
-		$content = implode( ', ', $cat_names );
+			$content = implode( ', ', $cat_names );
 
-		$section = apply_filters(
-			'learn-press/course/html-categories',
-			[
-				'wrapper'     => '<div class="course-categories">',
-				'content'     => $content,
-				'wrapper_end' => '</div>',
-			],
-			$course,
-			$cats,
-			$cat_names
-		);
+			$section = apply_filters(
+				'learn-press/course/html-categories',
+				[
+					'wrapper'     => '<div class="course-categories">',
+					'content'     => $content,
+					'wrapper_end' => '</div>',
+				],
+				$course,
+				$cats,
+				$cat_names
+			);
 
-		return Template::combine_components( $section );
+			$html = Template::combine_components( $section );
+		} catch ( Throwable $e ) {
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
+		}
+
+		return $html;
 	}
 
 	/**
@@ -182,46 +193,55 @@ class SingleCourseTemplate {
 	 *
 	 * @return string
 	 * @since 4.2.6
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public function html_tags( $course ): string {
-		if ( $course instanceof LP_Course ) {
-			$course = CourseModel::find( $course->get_id(), true );
-		}
+		$html = '';
 
-		if ( empty( $course ) ) {
-			return '';
-		}
+		try {
+			if ( $course instanceof LP_Course ) {
+				$course = CourseModel::find( $course->get_id(), true );
+			}
 
-		$tags = $course->get_tags();
-		if ( empty( $tags ) ) {
-			return '';
-		}
+			if ( empty( $course ) ) {
+				return '';
+			}
 
-		$cat_names = [];
-		array_map(
-			function ( $cat ) use ( &$cat_names ) {
-				$term        = sprintf( '<a href="%s">%s</a>', get_term_link( $cat->term_id ), $cat->name );
+			$tags = $course->get_tags();
+			if ( empty( $tags ) ) {
+				return '';
+			}
+
+			$cat_names = [];
+			foreach ( $cats as $cat ) {
+				$term        = sprintf(
+					'<a href="%s">%s</a>',
+					get_term_link( $cat ),
+					$cat->name
+				);
 				$cat_names[] = $term;
-			},
-			$tags
-		);
+			}
 
-		$content = implode( ', ', $cat_names );
+			$content = implode( ', ', $cat_names );
 
-		$section = apply_filters(
-			'learn-press/course/html-tags',
-			[
-				'wrapper'     => '<div class="course-tags">',
-				'content'     => $content,
-				'wrapper_end' => '</div>',
-			],
-			$course,
-			$tags,
-			$cat_names
-		);
+			$section = apply_filters(
+				'learn-press/course/html-tags',
+				[
+					'wrapper'     => '<div class="course-tags">',
+					'content'     => $content,
+					'wrapper_end' => '</div>',
+				],
+				$course,
+				$tags,
+				$cat_names
+			);
 
-		return Template::combine_components( $section );
+			$html = Template::combine_components( $section );
+		} catch ( Throwable $e ) {
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
+		}
+
+		return $html;
 	}
 
 	/**

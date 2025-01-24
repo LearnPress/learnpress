@@ -17,6 +17,8 @@ use LearnPress\TemplateHooks\UserItem\UserCourseTemplate;
 use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
 use LearnPress\TemplateHooks\UserTemplate;
 
+defined( 'ABSPATH' ) || exit();
+
 class SingleCourseClassicTemplate {
 	use Singleton;
 

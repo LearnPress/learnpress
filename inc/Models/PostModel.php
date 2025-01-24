@@ -27,8 +27,11 @@ use LP_User_Guest;
 
 use stdClass;
 use Throwable;
+use WP_Error;
 use WP_Post;
 use WP_Term;
+
+defined( 'ABSPATH' ) || exit();
 
 class PostModel {
 	/**
@@ -325,14 +328,14 @@ class PostModel {
 	 * Get categories of course.
 	 *
 	 * @return array|WP_Term[]
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 * @since 4.2.3
 	 */
 	public function get_categories(): array {
 		// Todo: set cache.
 		$wpPost     = new WP_Post( $this );
 		$categories = get_the_terms( $wpPost, LP_COURSE_CATEGORY_TAX );
-		if ( ! $categories ) {
+		if ( ! $categories || $categories instanceof WP_Error ) {
 			$categories = array();
 		}
 
@@ -343,14 +346,14 @@ class PostModel {
 	 * Get tags of course.
 	 *
 	 * @return array|WP_Term[]
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 * @since 4.2.7.2
 	 */
 	public function get_tags(): array {
 		// Todo: set cache.
 		$wpPost = new WP_Post( $this );
 		$tags   = get_the_terms( $wpPost, LP_COURSE_TAXONOMY_TAG );
-		if ( ! $tags ) {
+		if ( ! $tags || $tags instanceof WP_Error ) {
 			$tags = array();
 		}
 
