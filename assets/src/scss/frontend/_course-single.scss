@@ -14,29 +14,33 @@
 			font-weight: $heading-font-weight;
 			font-size: $font-size-h2;
 			padding-bottom: $spacing-base-6x;
-			@media (min-width: 769px) {
+
+		}
+		@media (min-width: 769px) {
+			.course-title,.course-meta-secondary {
 				padding-right: 300px;
+			}
+			&::before, &::after {
+				content: "";
+				width: 50%;
+				height: 100%;
+				background: var(--lp-secondary-color);
+				position: absolute;
+				top: 0;
+			}
+
+			&::before {
+				right: 100%;
+				left: auto;
+			}
+
+			&::after {
+				left: 100%;
+				right: auto;
 			}
 		}
 
-		&::before, &::after {
-			content: "";
-			width: 50%;
-			height: 100%;
-			background: var(--lp-secondary-color);
-			position: absolute;
-			top: 0;
-		}
 
-		&::before {
-			right: 100%;
-			left: auto;
-		}
-
-		&::after {
-			left: 100%;
-			right: auto;
-		}
 		.course-meta-secondary{
 			margin-bottom: 0;
 		}
