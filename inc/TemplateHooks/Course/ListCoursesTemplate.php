@@ -224,13 +224,13 @@ class ListCoursesTemplate {
 		$content = new stdClass();
 
 		if ( ! empty( $settings['html'] ) ) {
-			$pattern          = '/{{template-course}}.*?{{end-template-course}}/s';
-			$output           = preg_replace( $pattern, $html_courses, $settings['html'] );
-			$content->content = $output;
+			$pattern                     = '/{{template-course}}.*?{{end-template-course}}/s';
+			$html_content_output_pattern = Template::combine_components( $section_courses );
+			$output                      = preg_replace( $pattern, $html_content_output_pattern, $settings['html'] );
+			$content->content            = $output;
 		} else {
 			$content->content = Template::combine_components( $section );
 		}
-		$content->content = Template::combine_components( $section );
 
 		$content->total_pages = $total_pages;
 		$content->paged       = $paged;
