@@ -84,7 +84,7 @@ class LP_Modal_Search_Users {
 		$this->_query_args = apply_filters( 'learn-press/modal-search-users/args', $args, $context, $context_id );
 
 		// The Query
-		$this->_query = new WP_User_Query( $args );
+		$this->_query = new WP_User_Query( $this->_query_args );
 		$this->_items = array();
 
 		$results = $this->_query->get_results();
