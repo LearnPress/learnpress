@@ -358,7 +358,8 @@ class SingleCourseModernLayout {
 		// Info learning
 		$html_info_learning = '';
 		if ( $userCourseModel instanceof UserCourseModel
-			&& $userCourseModel->get_status() !== UserItemModel::STATUS_CANCEL ) {
+			&& $userCourseModel->get_status() !== UserItemModel::STATUS_CANCEL
+			&& $userCourseModel->get_status() !== UserCourseModel::STATUS_PURCHASED ) {
 
 			$html_end_date   = '';
 			$html_graduation = '';

@@ -43,6 +43,9 @@ class UserCourseModel extends UserItemModel {
 	 */
 	public $ref_type = LP_ORDER_CPT;
 
+	// Constants status
+	const STATUS_PURCHASED = 'purchased';
+
 	/**
 	 * Constant key meta
 	 */

@@ -134,7 +134,7 @@ class SingleInstructorTemplate extends UserTemplate {
 	/**
 	 * Render string to data content
 	 *
-	 * @param UserModel $instructor
+	 * @param UserModel|LP_User $instructor
 	 * @param string $data_content
 	 *
 	 * @return string
