@@ -212,17 +212,17 @@ class SingleCourseTemplate {
 				return '';
 			}
 
-			$cat_names = [];
-			foreach ( $cats as $cat ) {
+			$tag_names = [];
+			foreach ( $tags as $tag ) {
 				$term        = sprintf(
 					'<a href="%s">%s</a>',
-					get_term_link( $cat ),
-					$cat->name
+					get_term_link( $tag ),
+					$tag->name
 				);
-				$cat_names[] = $term;
+				$tag_names[] = $term;
 			}
 
-			$content = implode( ', ', $cat_names );
+			$content = implode( ', ', $tag_names );
 
 			$section = apply_filters(
 				'learn-press/course/html-tags',
@@ -233,7 +233,7 @@ class SingleCourseTemplate {
 				],
 				$course,
 				$tags,
-				$cat_names
+				$tag_names
 			);
 
 			$html = Template::combine_components( $section );
@@ -1536,7 +1536,8 @@ class SingleCourseTemplate {
 		if ( $userModel instanceof UserModel ) {
 			$userCourseModel = UserCourseModel::find( $userModel->get_id(), $courseModel->get_id(), true );
 			if ( $userCourseModel
-				&& $userCourseModel->get_status() !== UserItemModel::STATUS_CANCEL ) {
+				&& $userCourseModel->get_status() !== UserItemModel::STATUS_CANCEL
+				&& $userCourseModel->get_status() !== UserCourseModel::STATUS_PURCHASED ) {
 				$user_attended_course = true;
 
 				// Check status of item's course
