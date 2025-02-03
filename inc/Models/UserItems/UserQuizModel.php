@@ -253,7 +253,7 @@ class UserQuizModel extends UserItemModel {
 		// Check user, course of quiz is enrolled.
 		$userCourseModel = $this->get_user_course_model();
 		if ( ! $userCourseModel instanceof UserCourseModel
-			|| $userCourseModel->graduation !== LP_GRADUATION_IN_PROGRESS ) {
+			|| $userCourseModel->status !== LP_COURSE_ENROLLED ) {
 			$can_start = new WP_Error( 'not_errol_course', __( 'Please enroll in the course before starting the quiz.', 'learnpress' ) );
 		} elseif ( $userCourseModel->status === LP_COURSE_FINISHED ) {
 			$can_start = new WP_Error( 'finished_course', __( 'You have already finished the course of this quiz.', 'learnpress' ) );
