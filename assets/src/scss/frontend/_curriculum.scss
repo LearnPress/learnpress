@@ -393,6 +393,10 @@ ul.learn-press-nav-tabs {
 	#tab-curriculum {
 		display: block;
 	}
+
+	.course-curriculum ul.curriculum-sections {
+		z-index: 9;
+	}
 }
 
 .course-curriculum {
