@@ -38,7 +38,7 @@ if ( ! empty( $tag_id ) ) {
 $args['order_by']              = $order_by_current;
 $args['skin']                  = $layout;
 $args['limit']                 = $course_per_page;
-$args['data_pagination_type']  = $pagination;
+$args['data_pagination_type']  = $load_ajax ? $pagination : 'number';
 $args['courses_load_ajax']     = $load_ajax ? 1 : 0;
 $args['courses_first_no_ajax'] = $load_ajax_first ? 1 : 0;
 
