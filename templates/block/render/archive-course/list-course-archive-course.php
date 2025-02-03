@@ -4,35 +4,35 @@ use LearnPress\TemplateHooks\Course\ListCoursesTemplate;
 use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
 use LearnPress\TemplateHooks\TemplateAJAX;
 
-$load_ajax        = $attributes['ajax'] ? $attributes['ajax'] : false;
-$load_ajax_first  = $attributes['load'] ? $attributes['load'] : false;
+$load_ajax        = $attributes['ajax'] ?? false;
+$load_ajax_first  = $attributes['load'] ?? false;
 $order_by         = $attributes['orderBy'] ?? 'post_date';
 $course_per_page  = $attributes['perPage'] ?? '8';
-$order_by_current = isset( $_GET['order_by'] ) ? sanitize_text_field( $_GET['order_by'] ) : $order_by;
+$order_by_current = sanitize_text_field( $_GET['order_by'] ?? $order_by );
 $layout           = $attributes['layout'] ?? 'list';
 $pagination       = $attributes['pagination'] ?? 'number';
 $category         = $attributes['category'] ?? '';
 $tag              = $attributes['tag'] ?? '';
 $callback         = [
-	'class'  => 'LearnPress\\TemplateHooks\\Course\\ListCoursesTemplate',
+	'class'  => ListCoursesTemplate::class,
 	'method' => 'render_courses',
 ];
 
 $args = lp_archive_skeleton_get_args();
 if ( ! empty( $category ) ) {
-	$category_id = get_term_by( 'slug', $category, 'course_category' )->term_id;
+	$category_id = get_term_by( 'slug', $category, 'course_category' )->term_id ?? null;
+
+	if ( $category_id ) {
+		$args['page_term_id_current'] = $category_id;
+	}
 }
 
 if ( ! empty( $tag ) ) {
-	$tag_id = get_term_by( 'slug', $tag, 'course_tag' )->term_id;
-}
+	$tag_id = get_term_by( 'slug', $tag, 'course_tag' )->term_id ?? null;
 
-if ( ! empty( $category_id ) ) {
-	$args['page_term_id_current'] = $category_id;
-}
-
-if ( ! empty( $tag_id ) ) {
-	$args['page_tag_id_current'] = $tag_id;
+	if ( $tag_id ) {
+		$args['page_tag_id_current'] = $tag_id;
+	}
 }
 
 $args['order_by']              = $order_by_current;
