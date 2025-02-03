@@ -170,12 +170,13 @@ export const edit = ( props ) => {
 
 					<ToggleControl
 						label="Loading Ajax Courses"
-						help={
-							'On/Off loading ajax courses'
-						}
+						help={ 'On/Off loading ajax courses' }
 						checked={ props.attributes.ajax ? true : false }
 						onChange={ ( value ) => {
 							props.setAttributes( { ajax: value ? true : false } );
+							if ( ! value ) {
+								props.setAttributes( { pagination: 'number' } );
+							}
 							updateAjaxChildBlocks( value ? false : false );
 						} }
 					/>
@@ -222,7 +223,6 @@ export const edit = ( props ) => {
 						}
 						onDeselect={ () => resetAllTaxonomy() }
 					>
-
 						<TextControl
 							label={ 'Category' }
 							onChange={ ( value ) => {
@@ -248,7 +248,14 @@ export const edit = ( props ) => {
 				</ToolsPanel>
 			</InspectorControls>
 			<div { ...blockProps }>
-				<div className={ 'list-course ' + props.attributes.layout }>
+				<div
+					className={
+						'list-course ' +
+						props.attributes.layout +
+						' ' +
+						props.attributes.pagination
+					}
+				>
 					<InnerBlocks />
 				</div>
 			</div>
