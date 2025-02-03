@@ -18,10 +18,6 @@ class LP_Query {
 			return;
 		}
 
-		if ( is_admin() ) {
-			return;
-		}
-
 		add_action( 'init', array( $this, 'add_rewrite_tags' ), 1000 );
 		add_action( 'init', array( $this, 'add_rewrite_endpoints' ) );
 		add_filter( 'option_rewrite_rules', [ $this, 'update_option_rewrite_rules' ], 1 );
@@ -100,6 +96,9 @@ class LP_Query {
 				);
 			}
 		}
+
+		// Code temporary to fix 404 of order receiver page
+		flush_rewrite_rules();
 	}
 
 	/**
