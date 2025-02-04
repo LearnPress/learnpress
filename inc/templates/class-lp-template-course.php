@@ -589,14 +589,23 @@ class LP_Template_Course extends LP_Abstract_Template {
 	 *
 	 * @since 4.1.6
 	 * @since 4.2.5.5 remove code load old template user for course curriculum load page instead of via AJAX.
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public function course_curriculum() {
+		/**
+		 * @var CourseModel $lpCourseModel
+		 */
+		global $lpCourseModel;
 		$course_item = LP_Global::course_item();
 
 		if ( $course_item ) { // Check if current item is viewable
-			$item_id    = $course_item->get_id();
-			$section_id = LP_Section_DB::getInstance()->get_section_id_by_item_id( absint( $item_id ) );
+			$course_id = 0;
+			if ( $lpCourseModel ) {
+				$course_id = $lpCourseModel->get_id();
+			}
+
+			$item_id    = (int) $course_item->get_id();
+			$section_id = LP_Section_DB::getInstance()->get_section_id_by_item_id( $item_id, $course_id );
 		}
 		?>
 		<div class="learnpress-course-curriculum" data-section="<?php echo esc_attr( $section_id ?? '' ); ?>"
