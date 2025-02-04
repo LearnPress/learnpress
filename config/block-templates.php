@@ -115,7 +115,7 @@ return apply_filters(
 		new Block_Layout_Template_Course_Archive_Courses(),
 		new Block_Layout_Sidebar_Archive_Course(),
 		new Block_Layout_List_Course_Archive_Courses(),
-		new Block_Template_Pagination_Archive_Courses(),
+		// new Block_Template_Pagination_Archive_Courses(),
 		new Block_Template_Info_Course_Archive_Courses(),
 		new Block_Template_Instructor_Category_Archive_Courses(),
 		new Block_Template_Meta_Course_Archive_Courses(),
