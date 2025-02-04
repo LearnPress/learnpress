@@ -130,7 +130,7 @@ class LP_Page_Controller {
 	 */
 	public function post_type_link( $post_link, $post ) {
 		// Set item's course permalink
-		$course_item_types = learn_press_get_course_item_types();
+		$course_item_types = CourseModel::item_types_support();
 		$item_id           = $post->ID;
 
 		// Link item course on search page of WP.
