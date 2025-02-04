@@ -316,7 +316,7 @@ class UserQuizModel extends UserItemModel {
 			|| $userCourseModel->get_graduation() !== LP_COURSE_GRADUATION_IN_PROGRESS ) {
 			$can_retake = new WP_Error(
 				'not_errol_course',
-				__( 'Please enroll in the course before starting the quiz.', 'clearness' )
+				__( 'Please enroll in the course before starting the quiz.', 'learnpress' )
 			);
 		} elseif ( $userCourseModel->get_status() === LP_COURSE_FINISHED ) {
 			$can_retake = new WP_Error(
