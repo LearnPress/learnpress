@@ -8,11 +8,6 @@
 	"textdomain": "learnpress",
 	"keywords": ["tags single course", "learnpress"],
 	"usesContext": [],
-	"attributes": {
-		"courseId": {
-			"type": "number"
-		}
-	},
 	"supports": {
 		"inserter": true,
 		"reusable": true,

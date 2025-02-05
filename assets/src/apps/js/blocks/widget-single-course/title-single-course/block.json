@@ -9,9 +9,6 @@
 	"textdomain": "learnpress",
 	"keywords": ["title single course", "learnpress"],
 	"attributes": {
-		"courseId": {
-			"type": "number"
-		},
 		"tag": {
 			"type": "string",
 			"default": "span"

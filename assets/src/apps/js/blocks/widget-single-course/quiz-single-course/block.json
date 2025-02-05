@@ -8,9 +8,6 @@
 	"textdomain": "learnpress",
 	"keywords": ["quiz single course", "learnpress"],
 	"attributes": {
-		"courseId": {
-			"type": "number"
-		},
 		"showOnlyNumber": {
 			"type": "boolean"
 		}

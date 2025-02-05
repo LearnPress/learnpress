@@ -8,11 +8,6 @@
 	"description": "Renders template Box Extra Features Single Course PHP templates.",
 	"textdomain": "learnpress",
 	"keywords": ["box extra features single course", "learnpress"],
-	"attributes": {
-		"courseId": {
-			"type": "number"
-		}
-	},
 	"usesContext": [],
 	"supports": {
 		"inserter": true,

@@ -8,11 +8,6 @@
 	"description": "Renders template Price Single Course PHP templates.",
 	"textdomain": "learnpress",
 	"keywords": ["price single course", "learnpress"],
-	"attributes": {
-		"courseId": {
-			"type": "number"
-		}
-	},
 	"usesContext": [],
 	"supports": {
 		"inserter": true,

@@ -7,11 +7,6 @@
 	"description": "Renders template Duration Single Course PHP templates.",
 	"textdomain": "learnpress",
 	"keywords": ["duration single course", "learnpress"],
-	"attributes": {
-		"courseId": {
-			"type": "number"
-		}
-	},
 	"usesContext": [],
 	"supports": {
 		"inserter": true,

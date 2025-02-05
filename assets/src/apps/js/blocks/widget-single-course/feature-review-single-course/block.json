@@ -8,11 +8,6 @@
 	"description": "Renders template Feature Review Single Course PHP templates.",
 	"textdomain": "learnpress",
 	"keywords": ["feature review single course", "learnpress"],
-	"attributes": {
-		"courseId": {
-			"type": "number"
-		}
-	},
 	"usesContext": [],
 	"supports": {
 		"inserter": true,
