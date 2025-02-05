@@ -39,6 +39,8 @@ class LP_Template_Course extends LP_Abstract_Template {
 	}
 
 	public function course_buttons() {
+		global $lp_user;
+		$lp_user = learn_press_get_current_user();
 		learn_press_get_template( 'single-course/buttons' );
 	}
 
