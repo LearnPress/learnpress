@@ -141,6 +141,55 @@
 				opacity: 1;
 			}
 		}
+
+		.course-permalink {
+			display: block;
+			border: none;
+			text-decoration: none;
+			color: inherit;
+			line-height: 1.3;
+		}
+
+		.course-review {
+			display: none;
+		}
+
+		.course-tags {
+			display: inline-block;
+		}
+
+		.course-info {
+			> span {
+				display: block;
+			}
+
+			.course-price {
+				.origin-price,
+				.price {
+					font-size: $font-size-large;
+					font-weight: $heading-font-weight;
+				}
+
+				.origin-price {
+					margin-right: $spacing-base-2x;
+					opacity: 0.8;
+					font-size: $font-size-small;
+					text-decoration: line-through;
+				}
+			}
+		}
+
+		.course-short-description {
+			display: -webkit-box;
+			overflow: hidden;
+			margin-bottom: $spacing-base-4x;
+			-webkit-line-clamp: 2;
+			-webkit-box-orient: vertical;
+		}
+
+		.separator {
+			display: none;
+		}
 	}
 
 	.course-content {
