@@ -23,6 +23,59 @@ export const edit = ( props ) => {
 		} );
 	};
 
+	const TEMPLATE = [
+		[
+			'core/group',
+			{
+				className: 'lp-courses-bar',
+				layout: {
+					type: 'flex',
+					flexWrap: 'nowrap',
+				},
+			},
+			[
+				[ 'learnpress/search-archive-course', {} ],
+				[ 'learnpress/order-by-archive-course', {} ],
+			],
+		],
+		[
+			'learnpress/template-course-archive-course',
+			{},
+			[
+				[
+					'learnpress/media-course-archive-course',
+					{
+						content: '{{media-course}}',
+					},
+				],
+				[
+					'learnpress/title-course-archive-course',
+					{
+						content: '{{title-course}}',
+					},
+				],
+				[
+					'learnpress/instructor-category-course-archive-course',
+					{
+						content: '{{instructor-category-course}}',
+					},
+				],
+				[
+					'learnpress/meta-course-archive-course',
+					{
+						content: '{{meta-course}}',
+					},
+				],
+				[
+					'learnpress/info-course-archive-course',
+					{
+						content: '{{info-course}}',
+					},
+				],
+			],
+		],
+	];
+
 	const blockProps = useBlockProps();
 	const { updateBlockAttributes } = useDispatch( 'core/block-editor' );
 	const { clientId } = props;
@@ -256,7 +309,7 @@ export const edit = ( props ) => {
 						props.attributes.pagination
 					}
 				>
-					<InnerBlocks />
+					<InnerBlocks template={ TEMPLATE } />
 				</div>
 			</div>
 		</>
