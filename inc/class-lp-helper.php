@@ -612,15 +612,18 @@ class LP_Helper {
 			'%post_id%',
 		);
 
-		$replace = array(
-			date_i18n( 'Y', strtotime( $post->post_date ) ),
-			date_i18n( 'm', strtotime( $post->post_date ) ),
-			date_i18n( 'd', strtotime( $post->post_date ) ),
-			date_i18n( 'H', strtotime( $post->post_date ) ),
-			date_i18n( 'i', strtotime( $post->post_date ) ),
-			date_i18n( 's', strtotime( $post->post_date ) ),
-			$post->ID,
-		);
+		$replace = [];
+		if ( ! empty( $post->post_date ) ) {
+			$replace = array(
+				date_i18n( 'Y', strtotime( $post->post_date ) ),
+				date_i18n( 'm', strtotime( $post->post_date ) ),
+				date_i18n( 'd', strtotime( $post->post_date ) ),
+				date_i18n( 'H', strtotime( $post->post_date ) ),
+				date_i18n( 'i', strtotime( $post->post_date ) ),
+				date_i18n( 's', strtotime( $post->post_date ) ),
+				$post->ID,
+			);
+		}
 
 		if ( strpos( $post_link, '%course_category%' ) && get_post_type( $post ) === LP_COURSE_CPT ) {
 			// Get the custom taxonomy terms in use by this post
