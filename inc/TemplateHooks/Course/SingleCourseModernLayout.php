@@ -355,6 +355,23 @@ class SingleCourseModernLayout {
 			$user
 		);
 
+		// Fixed temporary for certificate, before which addon update new hook
+		if ( ! has_filter( 'learn-press/single-course/modern/section-right/buttons' ) ) {
+			ob_start();
+			global $lp_user;
+			$lp_user = learn_press_get_current_user();
+			do_action( 'learn-press/course-buttons' );
+			$n = ob_get_clean();
+
+			$section_buttons = Template::insert_value_to_position_array(
+				$section_buttons,
+				'before',
+				'wrapper_end',
+				'btn_certificate',
+				$n
+			);
+		}
+
 		// Info learning
 		$html_info_learning = '';
 		if ( $userCourseModel instanceof UserCourseModel
