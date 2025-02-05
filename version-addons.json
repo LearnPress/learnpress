@@ -411,7 +411,7 @@
   "learnpress-woo-payment": {
     "name": "WooCommerce Add-On for LearnPress",
     "basename": "learnpress-woo-payment/learnpress-woo-payment.php",
-    "version": "4.1.5",
+    "version": "4.1.6",
     "require_lp": "4.2.7.3",
     "description": "Easy to connect WooCommerce to your LMS website, easy to sell your courses online with no obstacle.",
     "image": "https://plugins.thimpress.com/downloads/images/lp-woocommerce.png",
