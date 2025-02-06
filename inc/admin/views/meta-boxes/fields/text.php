@@ -91,7 +91,7 @@ class LP_Meta_Box_Text_Field extends LP_Meta_Box_Field {
 
 	public function save( $post_id ) {
 		$type_input = $this->extra['type_input'] ?? 'text';
-		$meta_value = LP_Request::get_param( $this->id, $this->default ?? '' );
+		$meta_value = LP_Request::get_param( $this->id, $this->default ?? '', 'text', 'post' );
 
 		if ( $meta_value !== '' && $type_input === 'number' ) {
 			$meta_value = (float) $meta_value;

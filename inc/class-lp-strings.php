@@ -1,6 +1,7 @@
 <?php
 /**
  * Class LP_Strings
+ * @deprecated
  */
 class LP_Strings {
 

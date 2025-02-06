@@ -3,41 +3,40 @@
  * Template hooks User Item Base.
  *
  * @since 4.2.3.5
- * @version 1.0.0
+ * @version 1.0.1
  */
+
 namespace LearnPress\TemplateHooks\UserItem;
 
-use LearnPress\Helpers\Singleton;
-use LearnPress\Helpers\Template;
+use LearnPress\Models\UserItems\UserItemModel;
 use LP_Datetime;
 use LP_User_Item;
 use Throwable;
 
 class UserItemBaseTemplate {
-	use Singleton;
-
-	public function init() {
-
-	}
-
 	/**
-	 * Get html start time html of user item.
+	 * Get html start time of user item.
 	 *
-	 * @param LP_User_Item $user_item
+	 * @param UserItemModel|LP_User_Item $user_item
 	 * @param bool $has_time
+	 *
 	 * @return string
 	 * @since 4.2.3.5
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
-	public function html_start_date_time( LP_User_Item $user_item, bool $has_time = true ): string {
-		$content = '';
+	public function html_start_date_time( $user_item, bool $has_time = true ): string {
+		$html = '';
 
 		try {
-			$html_wrapper = [
-				'<span class="lp-user-item start-date-time">' => '</span>',
-			];
+			if ( $user_item instanceof LP_User_Item ) {
+				$userItemModel = new UserItemModel( $user_item->get_data() );
+			} elseif ( $user_item instanceof UserItemModel ) {
+				$userItemModel = $user_item;
+			} else {
+				return $html;
+			}
 
-			$start_time_from_db = $user_item->get_data( LP_User_Item::KEY_DATA_START_TIME );
+			$start_time_from_db = $userItemModel->get_start_time();
 			if ( empty( $start_time_from_db ) ) {
 				$start_date_str = ' - ';
 			} else {
@@ -49,32 +48,37 @@ class UserItemBaseTemplate {
 				}
 			}
 
-			$content = Template::instance()->nest_elements( $html_wrapper, $start_date_str );
+			$html = sprintf( '<span class="lp-user-item start-date-time">%s</span>', $start_date_str );
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 
-		return $content;
+		return $html;
 	}
 
 	/**
-	 * Get html end time html of user item.
+	 * Get html end time of user item.
 	 *
-	 * @param LP_User_Item $user_item
+	 * @param UserItemModel|LP_User_Item $user_item
 	 * @param bool $has_time
+	 *
 	 * @return string
 	 * @since 4.2.3.5
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
-	public function html_end_date_time( LP_User_Item $user_item, bool $has_time = true ): string {
-		$content = '';
+	public function html_end_date_time( $user_item, bool $has_time = true ): string {
+		$html = '';
 
 		try {
-			$html_wrapper = [
-				'<span class="lp-user-item end-date-time">' => '</span>',
-			];
+			if ( $user_item instanceof LP_User_Item ) {
+				$userItemModel = new UserItemModel( $user_item->get_data() );
+			} elseif ( $user_item instanceof UserItemModel ) {
+				$userItemModel = $user_item;
+			} else {
+				return $html;
+			}
 
-			$end_time_from_db = $user_item->get_data( LP_User_Item::KEY_DATA_END_TIME );
+			$end_time_from_db = $userItemModel->get_end_time();
 			if ( empty( $end_time_from_db ) ) {
 				$end_date_str = ' - ';
 			} else {
@@ -85,32 +89,38 @@ class UserItemBaseTemplate {
 					$end_date_str = $end_date->format( LP_Datetime::I18N_FORMAT );
 				}
 			}
-			$content = Template::instance()->nest_elements( $html_wrapper, $end_date_str );
+
+			$html = sprintf( '<span class="lp-user-item end-date-time">%s</span>', $end_date_str );
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 
-		return $content;
+		return $html;
 	}
 
 	/**
-	 * Get html expire time html of user item.
+	 * Get html expire time of user item.
 	 *
-	 * @param LP_User_Item $user_item
+	 * @param UserItemModel|LP_User_Item $user_item
 	 * @param bool $has_time
+	 *
 	 * @return string
 	 * @since 4.2.3.5
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
-	public function html_expire_date_time( LP_User_Item $user_item, bool $has_time = true ): string {
-		$content = '';
+	public function html_expire_date_time( $user_item, bool $has_time = true ): string {
+		$html = '';
 
 		try {
-			$html_wrapper = [
-				'<span class="lp-user-item expire-date-time">' => '</span>',
-			];
+			if ( $user_item instanceof LP_User_Item ) {
+				$userItemModel = new UserItemModel( $user_item->get_data() );
+			} elseif ( $user_item instanceof UserItemModel ) {
+				$userItemModel = $user_item;
+			} else {
+				return $html;
+			}
 
-			$expire_date = $user_item->get_expiration_time();
+			$expire_date = $userItemModel->get_expiration_time();
 			if ( empty( $expire_date ) ) {
 				$expire_date_str = __( 'Never', 'learnpress' );
 			} else {
@@ -121,12 +131,55 @@ class UserItemBaseTemplate {
 				}
 			}
 
-			$content = Template::instance()->nest_elements( $html_wrapper, $expire_date_str );
-			$content = apply_filters( 'learn-press/user-item/html-expire-date-time', $content, $user_item, $has_time );
+			$html = sprintf( '<span class="lp-user-item expire-date-time">%s</span>', $expire_date_str );
+			// Hook old
+			if ( has_filter( 'learn-press/user-item/html-expire-date-time' ) ) {
+				$html = apply_filters( 'learn-press/user-item/html-expire-date-time', $html, $user_item, $has_time );
+			}
+
+			$html = apply_filters( 'learn-press/user-item-model/html-expire-date-time', $html, $userItemModel, $has_time );
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 
-		return $content;
+		return $html;
+	}
+
+	/**
+	 * Get html graduation of user item.
+	 * @param UserItemModel $userItemModel
+	 *
+	 * @return void
+	 * @since 4.2.7.6
+	 * @version 1.0.0
+	 */
+	public function html_graduation( UserItemModel $userItemModel ): string {
+		$html = '';
+
+		$graduation = $userItemModel->get_graduation();
+		if ( empty( $graduation ) ) {
+			return $html;
+		}
+
+		$label = '';
+		switch ( $graduation ) {
+			case UserItemModel::GRADUATION_PASSED:
+				$label = __( 'Passed', 'learnpress' );
+				break;
+			case UserItemModel::GRADUATION_FAILED:
+				$label = __( 'Failed', 'learnpress' );
+				break;
+			default:
+				break;
+		}
+
+		$html = sprintf(
+			'<div class="lp-user-item graduation %s">%s%s</div>',
+			$graduation,
+			sprintf( '<span class="lp-icon lp-icon-%s"></span>', $graduation ),
+			$label
+		);
+
+		return apply_filters( 'learn-press/user-item-model/html-graduation', $html, $userItemModel );
 	}
 }

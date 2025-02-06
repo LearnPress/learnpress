@@ -263,29 +263,21 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		}
 
 		/**
-		 * Add default answer when save new question action.
+		 * Handle when save post.
 		 *
-		 * @param int     $post_id
-		 * @param WP_Post $post
-		 * @since 3.0.0
+		 * @param int $post_id
+		 * @param WP_Post|null $post
+		 * @param bool $is_update
+		 *
+		 * @return void
+		 * @since 4.2.7.6
+		 * @version 1.0.0
 		 */
-		public function save( int $post_id, WP_Post $post ) {
-			/*$question_id = $post_id;
-
-			$question_type = LP_Helper::sanitize_params_submitted( $_REQUEST['question-type'] ?? '' );
-
-			if ( empty( $question_type ) ) {
-				$types         = array_keys( LP_Question::get_types() );
-				$question_type = reset( $types );
-			}
-
-			update_post_meta( $question_id, '_lp_type', $question_type );
-
-			$question = LP_Question::get_question( $question_id );
-
-			if ( $question->is_support( 'answer-options' ) ) {
-				$question->create_default_answers();
-			}*/
+		public function save_post( int $post_id, WP_Post $post = null, bool $is_update = false ) {
+			// Clear cache get question by id
+			$lpCache = new LP_Cache();
+			$lpCache->clear( "questionPostModel/find/{$post_id}" );
+			$lpCache->clear( "questionModel/find/{$post_id}" );
 		}
 
 		/**
@@ -526,9 +518,4 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 	}
 
 	$question_post_type = LP_Question_Post_Type::instance();
-
-	// Todo: Nhamdv see to rewrite
-	// $question_post_type
-	// ->add_meta_box( 'lesson_assigned', esc_html__( 'Assigned', 'learnpress' ), 'question_assigned', 'side', 'high' )
-	// ->add_meta_box( 'question-editor', esc_html__( 'Answer Options', 'learnpress' ), 'admin_editor', 'normal', 'high', 1 );
 }

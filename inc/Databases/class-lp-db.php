@@ -592,7 +592,7 @@ class LP_Database {
 	 * @return array|object|null|int|string
 	 * @throws Exception
 	 * @author tungnx
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 * @since 4.1.6
 	 */
 	public function execute( LP_Filter $filter, int &$total_rows = 0 ) {
@@ -637,7 +637,7 @@ class LP_Database {
 
 		// Order by
 		$ORDER_BY = '';
-		if ( ! $filter->return_string_query && $filter->order_by ) {
+		if ( $filter->order_by ) {
 			$filter->order = strtoupper( $filter->order );
 			if ( ! in_array( $filter->order, [ 'DESC', 'ASC' ] ) ) {
 				$filter->order = 'DESC';

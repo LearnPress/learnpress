@@ -130,6 +130,9 @@ class SingleCourseOfflineTemplate {
 		}
 		// End instructor
 
+		// Info main.
+		$html_info_main = $this->render_html_info_main( $course, $user );
+
 		// Info one
 		$html_address     = $this->html_address( $course );
 		$section_info_one = apply_filters(
@@ -148,110 +151,37 @@ class SingleCourseOfflineTemplate {
 		$section_left = apply_filters(
 			'learn-press/single-course/offline/section-left',
 			[
-				'wrapper'      => '<div class="lp-single-offline-course__left">',
-				'breadcrumb'   => $html_breadcrumb,
-				'title'        => $this->singleCourseTemplate->html_title( $course, 'h1' ),
-				'info_one'     => Template::combine_components( $section_info_one ),
-				'image'        => $this->singleCourseTemplate->html_image( $course ),
-				'description'  => $this->singleCourseTemplate->html_description( $course ),
-				'features'     => $this->singleCourseTemplate->html_features( $course ),
-				'target'       => $this->singleCourseTemplate->html_target( $course ),
-				'requirements' => $this->singleCourseTemplate->html_requirements( $course ),
-				'material'     => $this->singleCourseTemplate->html_material( $course ),
-				'faqs'         => $this->singleCourseTemplate->html_faqs( $course ),
-				'instructor'   => $html_instructor,
-				'wrapper_end'  => '</div>',
+				'wrapper'                => '<div class="lp-single-offline-course__left">',
+				'breadcrumb'             => $html_breadcrumb,
+				'title'                  => $this->singleCourseTemplate->html_title( $course, 'h1' ),
+				'info_one'               => Template::combine_components( $section_info_one ),
+				'image'                  => $this->singleCourseTemplate->html_image( $course ),
+				'info_main_mobile'       => wp_is_mobile() ? $html_info_main : '',
+				'description'            => $this->singleCourseTemplate->html_description( $course ),
+				'features'               => $this->singleCourseTemplate->html_features( $course ),
+				'target'                 => $this->singleCourseTemplate->html_target( $course ),
+				'requirements'           => $this->singleCourseTemplate->html_requirements( $course ),
+				'material'               => $this->singleCourseTemplate->html_material( $course ),
+				'faqs'                   => $this->singleCourseTemplate->html_faqs( $course ),
+				'instructor'             => $html_instructor,
+				'featured_review_mobile' => wp_is_mobile() ? $this->singleCourseTemplate->html_feature_review( $course, $user ) : '',
+				'wrapper_end'            => '</div>',
 			],
 			$course,
 			$user
 		);
 
 		// Section right
-		// Info two
-		$data_info_meta = [
-			'price'        => [
-				'label' => sprintf( '<span class="currency">%s</span> %s', learn_press_get_currency_symbol(), __( 'Price', 'learnpress' ) ),
-				'value' => $this->singleCourseTemplate->html_price( $course ),
-			],
-			'deliver_type' => [
-				'label' => sprintf( '<span class="lp-icon-bookmark-o"></span> %s', __( 'Delivery type', 'learnpress' ) ),
-				'value' => $this->html_deliver_type( $course ),
-			],
-			'capacity'     => [
-				'label' => sprintf( '<span class="lp-icon-students"></span> %s', __( 'Capacity', 'learnpress' ) ),
-				'value' => $this->singleCourseTemplate->html_capacity( $course ),
-			],
-			'level'        => [
-				'label' => sprintf( '<span class="lp-icon-signal"></span> %s', __( 'Level', 'learnpress' ) ),
-				'value' => $this->singleCourseTemplate->html_level( $course ),
-			],
-			'duration'     => [
-				'label' => sprintf( '<span class="lp-icon-clock-o"></span> %s', __( 'Duration', 'learnpress' ) ),
-				'value' => $this->singleCourseTemplate->html_duration( $course ),
-			],
-		];
-
-		$html_lesson = $this->html_lesson_info( $course );
-		if ( ! empty( $html_lesson ) ) {
-			$data_info_meta['lessons'] = [
-				'label' => sprintf( '<span class="lp-icon-copy"></span> %s', __( 'Lessons', 'learnpress' ) ),
-				'value' => $html_lesson,
-			];
-		}
-
-		$data_info_meta = apply_filters( 'learn-press/single-course/offline/info-meta', $data_info_meta, $course, $user );
-		$html_info_meta = '';
-		if ( ! empty( $data_info_meta ) ) {
-			foreach ( $data_info_meta as $info_meta ) {
-				$label              = $info_meta['label'];
-				$value              = $info_meta['value'];
-				$html_info_two_item = sprintf(
-					'<div class="info-meta-item">
-						<span class="info-meta-left">%s</span>
-						<span class="info-meta-right">%s</span>
-					</div>',
-					$label,
-					$value
-				);
-				$html_info_meta    .= $html_info_two_item;
-			}
-		}
-
-		$section_buttons = apply_filters(
-			'learn-press/single-course/offline/section-right/info-meta/buttons',
-			[
-				'wrapper'     => '<div class="course-buttons">',
-				'btn_contact' => $this->singleCourseTemplate->html_btn_external( $course, $user ),
-				'btn_buy'     => $this->singleCourseTemplate->html_btn_purchase_course( $course, $user ),
-				'btn_enroll'  => $this->singleCourseTemplate->html_btn_enroll_course( $course, $user ),
-				'wrapper_end' => '</div>',
-			],
-			$course,
-			$user
-		);
-		$html_buttons    = Template::combine_components( $section_buttons );
-
-		$section_info_two = apply_filters(
-			'learn-press/single-course/offline/section-right/info-meta',
-			[
-				'wrapper'     => '<div class="info-metas">',
-				'meta'        => $html_info_meta,
-				'buttons'     => $html_buttons,
-				'wrapper_end' => '</div>',
-			],
-			$course,
-			$user
-		);
-		$html_info_two    = Template::combine_components( $section_info_two );
-		// End info two
 		$section_right = apply_filters(
 			'learn-press/single-course/offline/section-right',
 			[
-				'wrapper'         => '<div class="lp-single-offline-course__right">',
-				'info_two'        => $html_info_two,
-				'featured_review' => $this->singleCourseTemplate->html_feature_review( $course ),
-				'sidebar'         => $this->singleCourseTemplate->html_sidebar( $course ),
-				'wrapper_end'     => '</div>',
+				'wrapper'           => '<div class="lp-single-offline-course__right">',
+				'wrapper_inner'     => '<div class="lp-single-offline-course__right__sticky">',
+				'info_main'         => wp_is_mobile() ? '' : $html_info_main,
+				'featured_review'   => wp_is_mobile() ? '' : $this->singleCourseTemplate->html_feature_review( $course, $user ),
+				'sidebar'           => $this->singleCourseTemplate->html_sidebar( $course ),
+				'wrapper_inner_end' => '</div>',
+				'wrapper_end'       => '</div>',
 			],
 			$course,
 			$user
@@ -280,6 +210,98 @@ class SingleCourseOfflineTemplate {
 		);
 
 		echo Template::combine_components( $sections );
+	}
+
+	/**
+	 * Render html info main
+	 * Price, deliver type, capacity, level, duration, lessons
+	 * Buttons: Contact, Buy, Enroll
+	 *
+	 * @param CourseModel $courseModel
+	 * @param UserModel|false $userModel
+	 *
+	 * @return string
+	 * @since 4.2.7.6
+	 * @version 1.0.0
+	 */
+	public function render_html_info_main( CourseModel $courseModel, $userModel ): string {
+		// Info two
+		$data_info_meta = [
+			'price'        => [
+				'label' => sprintf( '<span class="currency">%s</span> %s', learn_press_get_currency_symbol(), __( 'Price', 'learnpress' ) ),
+				'value' => $this->singleCourseTemplate->html_price( $courseModel ),
+			],
+			'deliver_type' => [
+				'label' => sprintf( '<span class="lp-icon-bookmark-o"></span> %s', __( 'Delivery type', 'learnpress' ) ),
+				'value' => $this->html_deliver_type( $courseModel ),
+			],
+			'capacity'     => [
+				'label' => sprintf( '<span class="lp-icon-students"></span> %s', __( 'Capacity', 'learnpress' ) ),
+				'value' => $this->singleCourseTemplate->html_capacity( $courseModel ),
+			],
+			'level'        => [
+				'label' => sprintf( '<span class="lp-icon-signal"></span> %s', __( 'Level', 'learnpress' ) ),
+				'value' => $this->singleCourseTemplate->html_level( $courseModel ),
+			],
+			'duration'     => [
+				'label' => sprintf( '<span class="lp-icon-clock-o"></span> %s', __( 'Duration', 'learnpress' ) ),
+				'value' => $this->singleCourseTemplate->html_duration( $courseModel ),
+			],
+		];
+
+		$html_lesson = $this->html_lesson_info( $courseModel );
+		if ( ! empty( $html_lesson ) ) {
+			$data_info_meta['lessons'] = [
+				'label' => sprintf( '<span class="lp-icon-copy"></span> %s', __( 'Lessons', 'learnpress' ) ),
+				'value' => $html_lesson,
+			];
+		}
+
+		$data_info_meta = apply_filters( 'learn-press/single-course/offline/info-meta', $data_info_meta, $courseModel, $userModel );
+		$html_info_meta = '';
+		if ( ! empty( $data_info_meta ) ) {
+			foreach ( $data_info_meta as $info_meta ) {
+				$label              = $info_meta['label'];
+				$value              = $info_meta['value'];
+				$html_info_two_item = sprintf(
+					'<div class="info-meta-item">
+						<span class="info-meta-left">%s</span>
+						<span class="info-meta-right">%s</span>
+					</div>',
+					$label,
+					$value
+				);
+				$html_info_meta    .= $html_info_two_item;
+			}
+		}
+
+		$section_buttons = apply_filters(
+			'learn-press/single-course/offline/section-right/info-meta/buttons',
+			[
+				'wrapper'     => '<div class="course-buttons">',
+				'btn_contact' => $this->singleCourseTemplate->html_btn_external( $courseModel, $userModel ),
+				'btn_buy'     => $this->singleCourseTemplate->html_btn_purchase_course( $courseModel, $userModel ),
+				'btn_enroll'  => $this->singleCourseTemplate->html_btn_enroll_course( $courseModel, $userModel ),
+				'wrapper_end' => '</div>',
+			],
+			$courseModel,
+			$userModel
+		);
+		$html_buttons    = Template::combine_components( $section_buttons );
+
+		$section = apply_filters(
+			'learn-press/single-course/offline/section-right/info-meta',
+			[
+				'wrapper'     => '<div class="info-metas">',
+				'meta'        => $html_info_meta,
+				'buttons'     => $html_buttons,
+				'wrapper_end' => '</div>',
+			],
+			$courseModel,
+			$userModel
+		);
+
+		return Template::combine_components( $section );
 	}
 
 	/**

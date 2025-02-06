@@ -34,17 +34,17 @@ class ProfileTemplate {
 	 * @return string
 	 * @return string
 	 * @since 4.2.7.2
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function html_cover_image( UserModel $user ): string {
 		$html = '';
 
 		try {
 			$cover_image_url              = $user->get_cover_image_url();
-			$profile                      = LP_Profile::instance();
-			$current_section              = LP_Profile::instance()->get_current_section();
+			$profile                      = LP_Profile::instance( $user->get_id() );
+			$current_section              = $profile->get_current_section();
 			$html_btn_to_edit_cover_image = '';
-			$cover_image_dimensions = LP_Settings::get_option(
+			$cover_image_dimensions       = LP_Settings::get_option(
 				'cover_image_dimensions',
 				array(
 					'width'  => 1290,

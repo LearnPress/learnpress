@@ -1,5 +1,8 @@
 <?php
 
+use LearnPress\Models\CourseModel;
+use LearnPress\Models\UserItems\UserItemModel;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
@@ -371,7 +374,7 @@ class LP_User_Items_DB extends LP_Database {
 	 *
 	 * @author tungnx
 	 * @since 4.1.5
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 * @return object|null
 	 * @throws Exception
 	 */
@@ -387,6 +390,7 @@ class LP_User_Items_DB extends LP_Database {
 			$filter_user_attend_courses                      = new LP_User_Items_Filter();
 			$filter_user_attend_courses->only_fields         = array( 'MAX(ui.user_item_id) AS user_item_id' );
 			$filter_user_attend_courses->where[]             = $this->wpdb->prepare( 'AND ui.user_id = %s', $filter->user_id );
+			$filter_user_attend_courses->where[]             = $this->wpdb->prepare( 'AND ui.status != %s', UserItemModel::STATUS_CANCEL );
 			$filter_user_attend_courses->group_by            = 'ui.item_id';
 			$filter_user_attend_courses->return_string_query = true;
 			$query_get_course_attend                         = $this->get_user_courses( $filter_user_attend_courses );
@@ -751,7 +755,7 @@ class LP_User_Items_DB extends LP_Database {
 	 * @return null|object
 	 */
 	public function count_items_of_course_with_status( LP_User_Items_Filter $filter ) {
-		$item_types       = learn_press_get_course_item_types();
+		$item_types       = CourseModel::item_types_support();
 		$count_item_types = count( $item_types );
 		$i                = 0;
 

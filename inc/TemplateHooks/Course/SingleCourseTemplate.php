@@ -3,7 +3,7 @@
  * Template hooks Single Course.
  *
  * @since 4.2.3
- * @version 1.0.3
+ * @version 1.0.4
  */
 
 namespace LearnPress\TemplateHooks\Course;
@@ -13,21 +13,40 @@ use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\CoursePostModel;
+use LearnPress\Models\QuizPostModel;
 use LearnPress\Models\UserItems\UserCourseModel;
+use LearnPress\Models\UserItems\UserItemModel;
 use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
+use LearnPress\TemplateHooks\TemplateAJAX;
 use LearnPress\TemplateHooks\UserTemplate;
 use LP_Checkout;
 use LP_Course;
+use LP_Course_Item;
 use LP_Datetime;
 use LP_Material_Files_DB;
 use LP_Settings;
+use stdClass;
 use Throwable;
 
 class SingleCourseTemplate {
 	use Singleton;
 
 	public function init() {
+		add_filter( 'lp/rest/ajax/allow_callback', [ $this, 'allow_callback' ] );
+	}
+
+	/**
+	 * Allow callback for AJAX.
+	 * @use self::render_html_comments
+	 * @param array $callbacks
+	 *
+	 * @return array
+	 */
+	public function allow_callback( array $callbacks ): array {
+		$callbacks[] = get_class( $this ) . ':render_html_comments';
+
+		return $callbacks;
 	}
 
 	/**
@@ -39,7 +58,7 @@ class SingleCourseTemplate {
 	 * @return string
 	 */
 	public function html_title( $course, string $tag_html = 'span' ): string {
-		$tag_html     = sanitize_key( $tag_html );
+		$tag_html     = esc_attr( sanitize_key( $tag_html ) );
 		$html_wrapper = apply_filters(
 			'learn-press/single-course/html-title',
 			[
@@ -115,45 +134,56 @@ class SingleCourseTemplate {
 	 * @param LP_Course|CourseModel $course
 	 *
 	 * @return string
+	 * @since 4.2.6
+	 * @version 1.0.2
 	 */
 	public function html_categories( $course ): string {
-		if ( $course instanceof LP_Course ) {
-			$course = CourseModel::find( $course->get_id(), true );
-		}
+		$html = '';
 
-		if ( empty( $course ) ) {
-			return '';
-		}
+		try {
+			if ( $course instanceof LP_Course ) {
+				$course = CourseModel::find( $course->get_id(), true );
+			}
 
-		$cats = $course->get_categories();
-		if ( empty( $cats ) ) {
-			return '';
-		}
+			if ( empty( $course ) ) {
+				return '';
+			}
 
-		$cat_names = [];
-		array_map(
-			function ( $cat ) use ( &$cat_names ) {
-				$term        = sprintf( '<a href="%s">%s</a>', get_term_link( $cat->term_id ), $cat->name );
+			$cats = $course->get_categories();
+			if ( empty( $cats ) ) {
+				return '';
+			}
+
+			$cat_names = [];
+			foreach ( $cats as $cat ) {
+				$term        = sprintf(
+					'<a href="%s">%s</a>',
+					get_term_link( $cat ),
+					$cat->name
+				);
 				$cat_names[] = $term;
-			},
-			$cats
-		);
+			}
 
-		$content = implode( ', ', $cat_names );
+			$content = implode( ', ', $cat_names );
 
-		$section = apply_filters(
-			'learn-press/course/html-categories',
-			[
-				'wrapper'     => '<div class="course-categories">',
-				'content'     => $content,
-				'wrapper_end' => '</div>',
-			],
-			$course,
-			$cats,
-			$cat_names
-		);
+			$section = apply_filters(
+				'learn-press/course/html-categories',
+				[
+					'wrapper'     => '<div class="course-categories">',
+					'content'     => $content,
+					'wrapper_end' => '</div>',
+				],
+				$course,
+				$cats,
+				$cat_names
+			);
 
-		return Template::combine_components( $section );
+			$html = Template::combine_components( $section );
+		} catch ( Throwable $e ) {
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
+		}
+
+		return $html;
 	}
 
 	/**
@@ -163,46 +193,55 @@ class SingleCourseTemplate {
 	 *
 	 * @return string
 	 * @since 4.2.6
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public function html_tags( $course ): string {
-		if ( $course instanceof LP_Course ) {
-			$course = CourseModel::find( $course->get_id(), true );
+		$html = '';
+
+		try {
+			if ( $course instanceof LP_Course ) {
+				$course = CourseModel::find( $course->get_id(), true );
+			}
+
+			if ( empty( $course ) ) {
+				return '';
+			}
+
+			$tags = $course->get_tags();
+			if ( empty( $tags ) ) {
+				return '';
+			}
+
+			$tag_names = [];
+			foreach ( $tags as $tag ) {
+				$term        = sprintf(
+					'<a href="%s">%s</a>',
+					get_term_link( $tag ),
+					$tag->name
+				);
+				$tag_names[] = $term;
+			}
+
+			$content = implode( ', ', $tag_names );
+
+			$section = apply_filters(
+				'learn-press/course/html-tags',
+				[
+					'wrapper'     => '<div class="course-tags">',
+					'content'     => $content,
+					'wrapper_end' => '</div>',
+				],
+				$course,
+				$tags,
+				$tag_names
+			);
+
+			$html = Template::combine_components( $section );
+		} catch ( Throwable $e ) {
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 
-		if ( empty( $course ) ) {
-			return '';
-		}
-
-		$tags = $course->get_tags();
-		if ( empty( $tags ) ) {
-			return '';
-		}
-
-		$cat_names = [];
-		array_map(
-			function ( $cat ) use ( &$cat_names ) {
-				$term        = sprintf( '<a href="%s">%s</a>', get_term_link( $cat->term_id ), $cat->name );
-				$cat_names[] = $term;
-			},
-			$tags
-		);
-
-		$content = implode( ', ', $cat_names );
-
-		$section = apply_filters(
-			'learn-press/course/html-tags',
-			[
-				'wrapper'     => '<div class="course-tags">',
-				'content'     => $content,
-				'wrapper_end' => '</div>',
-			],
-			$course,
-			$tags,
-			$cat_names
-		);
-
-		return Template::combine_components( $section );
+		return $html;
 	}
 
 	/**
@@ -217,14 +256,18 @@ class SingleCourseTemplate {
 
 		try {
 			if ( $course instanceof LP_Course ) {
-				$content = $course->get_image();
-			} elseif ( $course instanceof CourseModel ) {
-				$content = sprintf(
-					'<img src="%s" alt="%s">',
-					esc_url_raw( $course->get_image_url() ),
-					_x( 'course thumbnail', 'no course thumbnail', 'learnpress' )
-				);
+				$course = CourseModel::find( $course->get_id(), true );
 			}
+
+			if ( ! $course instanceof CourseModel ) {
+				return '';
+			}
+
+			$content = sprintf(
+				'<img src="%s" alt="%s">',
+				esc_url_raw( $course->get_image_url() ),
+				_x( 'course thumbnail', 'no course thumbnail', 'learnpress' )
+			);
 
 			$section = apply_filters(
 				'learn-press/course/html-image',
@@ -264,11 +307,12 @@ class SingleCourseTemplate {
 			}
 
 			$singleInstructorTemplate = SingleInstructorTemplate::instance();
+			$userTemplate             = new UserTemplate( 'instructor' );
 
 			$link_instructor = sprintf(
 				'<a href="%s">%s %s</a>',
 				$instructor->get_url_instructor(),
-				$with_avatar ? UserTemplate::instance()->html_avatar( $instructor, [], 'instructor' ) : '',
+				$with_avatar ? $userTemplate->html_avatar( $instructor ) : '',
 				$singleInstructorTemplate->html_display_name( $instructor )
 			);
 
@@ -360,29 +404,6 @@ class SingleCourseTemplate {
 		$price_html = sprintf( '<span class="course-price"><span class="course-item-price">%s</span></span>', $price_html );
 
 		return apply_filters( 'learn-press/course/html-price', $price_html, $course );
-	}
-
-	/**
-	 * Get deliver type
-	 *
-	 * @param CourseModel $course
-	 *
-	 * @return string
-	 * @deprecated 4.2.7.3 Move to SingleCourseOfflineTemplate
-	 */
-	public function html_deliver_type( CourseModel $course ): string {
-		return '';
-		$content = '';
-
-		$html_wrapper = [
-			'<span class="course-deliver-type">' => '</span>',
-		];
-
-		$deliver_type_options = Config::instance()->get( 'course-deliver-type' );
-		$key                  = $course->get_meta_value_by_key( CoursePostModel::META_KEY_DELIVER, 'private_1_1' );
-		$content              = $deliver_type_options[ $key ] ?? '';
-
-		return Template::instance()->nest_elements( $html_wrapper, $content );
 	}
 
 	/**
@@ -577,84 +598,69 @@ class SingleCourseTemplate {
 	 * Get feature review
 	 *
 	 * @param CourseModel $course
-	 *
-	 * @return string
-	 */
-	public function html_feature_review( CourseModel $course ): string {
-		$feature_review = $course->get_meta_value_by_key( CoursePostModel::META_KEY_FEATURED_REVIEW, '' );
-		if ( empty( $feature_review ) ) {
-			return '';
-		}
-		ob_start();
-		?>
-		<div class="course-featured-review">
-			<div class="featured-review__title">
-				<?php echo esc_html__( 'Featured Review', 'learnpress' ); ?>
-			</div>
-			<div class="featured-review__stars">
-				<i class="lp-icon-star"></i>
-				<i class="lp-icon-star"></i>
-				<i class="lp-icon-star"></i>
-				<i class="lp-icon-star"></i>
-				<i class="lp-icon-star"></i>
-			</div>
-			<div class="featured-review__content">
-				<?php echo wp_kses_post( wpautop( $feature_review ) ); ?>
-			</div>
-		</div>
-		<?php
-		return ob_get_clean();
-	}
-
-	/**
-	 * Get html address of course offline
-	 *
-	 * @param CourseModel $course
-	 *
-	 * @return string
-	 * @deprecated 4.2.7.3 Move to SingleCourseOfflineTemplate
-	 */
-	public function html_address( CourseModel $course ): string {
-		return '';
-		$content = '';
-
-		try {
-			$address = $course->get_meta_value_by_key( CoursePostModel::META_KEY_ADDRESS, '' );
-			if ( empty( $address ) ) {
-				return $content;
-			}
-
-			$html_wrapper = [
-				'<span class="course-address">' => '</span>',
-			];
-			$content      = Template::instance()->nest_elements( $html_wrapper, $address );
-			apply_filters( 'learn-press/single-course/html-address', $content, $course );
-		} catch ( Throwable $e ) {
-			error_log( __METHOD__ . ': ' . $e->getMessage() );
-		}
-
-		return $content;
-	}
-
-	/**
-	 * Get button external
-	 *
-	 * @param CourseModel $course
-	 * @param UserModel|false $user
+	 * @param UserModel|false $userModel
 	 *
 	 * @return string
 	 * @since 4.2.7
 	 * @version 1.0.1
 	 */
-	public function html_btn_external( CourseModel $course, $user ): string {
-		$external_link = $course->get_meta_value_by_key( CoursePostModel::META_KEY_EXTERNAL_LINK_BY_COURSE, '' );
+	public function html_feature_review( CourseModel $course, $userModel = false ): string {
+		$feature_review = $course->get_meta_value_by_key( CoursePostModel::META_KEY_FEATURED_REVIEW, '' );
+		if ( empty( $feature_review ) ) {
+			return '';
+		}
+
+		if ( $userModel instanceof UserModel ) {
+			$userCourseModel = UserCourseModel::find( $userModel->get_id(), $course->get_id(), true );
+			if ( $userCourseModel ) {
+				return '';
+			}
+		}
+
+		$stars = '';
+		foreach ( range( 1, 5 ) as $star ) {
+			$stars .= '<i class="lp-icon-star"></i>';
+		}
+
+		$section = [
+			'wrapper'     => '<div class="course-featured-review">',
+			'title'       => sprintf(
+				'<div class="featured-review__title">%s</div>',
+				esc_html__( 'Featured Review', 'learnpress' )
+			),
+			'stars'       => sprintf(
+				'<div class="featured-review__stars">%s</div>',
+				$stars
+			),
+			'content'     => sprintf(
+				'<div class="featured-review__content">%s</div>',
+				wp_kses_post( wpautop( $feature_review ) )
+			),
+			'wrapper_end' => '</div>',
+		];
+
+		return Template::combine_components( $section );
+	}
+
+	/**
+	 * Get button external
+	 *
+	 * @param CourseModel $courseModel
+	 * @param UserModel|false $userModel
+	 *
+	 * @return string
+	 * @since 4.2.7
+	 * @version 1.0.1
+	 */
+	public function html_btn_external( CourseModel $courseModel, $userModel ): string {
+		$external_link = $courseModel->get_meta_value_by_key( CoursePostModel::META_KEY_EXTERNAL_LINK_BY_COURSE, '' );
 		if ( empty( $external_link ) ) {
 			return '';
 		}
 
 		// Check user has enrolled, finished or purchased course
-		if ( $user instanceof UserModel ) {
-			$userCourse = UserCourseModel::find( $user->get_id(), $course->get_id(), true );
+		if ( $userModel instanceof UserModel ) {
+			$userCourse = UserCourseModel::find( $userModel->get_id(), $courseModel->get_id(), true );
 			if ( $userCourse && ( $userCourse->has_enrolled_or_finished() || $userCourse->has_purchased() ) ) {
 				return '';
 			}
@@ -666,22 +672,22 @@ class SingleCourseTemplate {
 			__( 'Contact To Request', 'learnpress' )
 		);
 
-		return apply_filters( 'learn-press/course/html-address', $content, $course, $user );
+		return apply_filters( 'learn-press/course/html-address', $content, $courseModel, $userModel );
 	}
 
 	/**
 	 * HTML button purchase course
 	 *
-	 * @param CourseModel $course
-	 * @param false|UserModel $user
+	 * @param CourseModel $courseModel
+	 * @param false|UserModel $userModel
 	 *
 	 * @return string
 	 * @since 4.2.7.2
 	 * @version 1.0.1
 	 */
-	public function html_btn_purchase_course( CourseModel $course, $user ): string {
+	public function html_btn_purchase_course( CourseModel $courseModel, $userModel ): string {
 		$html_btn     = '';
-		$can_purchase = $course->can_purchase( $user );
+		$can_purchase = $courseModel->can_purchase( $userModel );
 		if ( is_wp_error( $can_purchase ) ) {
 			$error_code_show = apply_filters(
 				'learn-press/course/html-button-purchase/show-messages',
@@ -689,9 +695,7 @@ class SingleCourseTemplate {
 			);
 			if ( in_array( $can_purchase->get_error_code(), $error_code_show )
 				&& ! empty( $can_purchase->get_error_message() ) ) {
-				ob_start();
-				Template::print_message( $can_purchase->get_error_message(), 'warning' );
-				$html_btn = ob_get_clean();
+				$html_btn = Template::print_message( $can_purchase->get_error_message(), 'warning', false );
 			}
 		} else {
 			$html_btn = sprintf(
@@ -704,8 +708,8 @@ class SingleCourseTemplate {
 			return apply_filters(
 				'learn-press/course/html-button-purchase/empty',
 				$html_btn,
-				$course,
-				$user
+				$courseModel,
+				$userModel
 			);
 		}
 
@@ -721,11 +725,11 @@ class SingleCourseTemplate {
 
 		if ( has_filter( 'learnpress/course/template/button-purchase/can-show' ) ) {
 			$user_id = 0;
-			if ( $user instanceof UserModel ) {
-				$user_id = $user->get_id();
+			if ( $userModel instanceof UserModel ) {
+				$user_id = $userModel->get_id();
 			}
 			$user_old   = learn_press_get_user( $user_id );
-			$course_old = learn_press_get_course( $course->get_id() );
+			$course_old = learn_press_get_course( $courseModel->get_id() );
 			$can_show   = apply_filters( 'learnpress/course/template/button-purchase/can-show', true, $user_old, $course_old );
 			if ( ! $can_show ) {
 				return '';
@@ -742,14 +746,14 @@ class SingleCourseTemplate {
 				),
 				'input'    => sprintf(
 					'<input type="hidden" name="purchase-course" value="%d"/>',
-					esc_attr( $course->get_id() )
+					esc_attr( $courseModel->get_id() )
 				),
 				'btn'      => $html_btn,
 				'hook_old' => $html_hook_old,
 				'form_end' => '</form>',
 			],
-			$course,
-			$user
+			$courseModel,
+			$userModel
 		);
 
 		return Template::combine_components( $section );
@@ -758,16 +762,16 @@ class SingleCourseTemplate {
 	/**
 	 * HTML button enroll course
 	 *
-	 * @param CourseModel $course
-	 * @param false|UserModel $user
+	 * @param CourseModel $courseModel
+	 * @param false|UserModel $userModel
 	 *
 	 * @return string
 	 * @since 4.2.7.3
 	 * @version 1.0.0
 	 */
-	public function html_btn_enroll_course( CourseModel $course, $user ): string {
+	public function html_btn_enroll_course( CourseModel $courseModel, $userModel ): string {
 		$html_btn   = '';
-		$can_enroll = $course->can_enroll( $user );
+		$can_enroll = $courseModel->can_enroll( $userModel );
 		if ( is_wp_error( $can_enroll ) ) {
 			$error_code_show = apply_filters(
 				'learn-press/course/html-button-enroll/show-messages',
@@ -775,9 +779,7 @@ class SingleCourseTemplate {
 			);
 			if ( in_array( $can_enroll->get_error_code(), $error_code_show )
 				&& ! empty( $can_enroll->get_error_message() ) ) {
-				ob_start();
-				Template::print_message( $can_enroll->get_error_message(), 'warning' );
-				$html_btn = ob_get_clean();
+				$html_btn = Template::print_message( $can_enroll->get_error_message(), 'warning', false );
 			}
 		} else {
 			$html_btn = sprintf(
@@ -807,11 +809,11 @@ class SingleCourseTemplate {
 
 		if ( has_filter( 'learnpress/course/template/button-enroll/can-show' ) ) {
 			$user_id = 0;
-			if ( $user instanceof UserModel ) {
-				$user_id = $user->get_id();
+			if ( $userModel instanceof UserModel ) {
+				$user_id = $userModel->get_id();
 			}
 			$user_old   = learn_press_get_user( $user_id );
-			$course_old = learn_press_get_course( $course->get_id() );
+			$course_old = learn_press_get_course( $courseModel->get_id() );
 			$can_show   = apply_filters( 'learnpress/course/template/button-enroll/can-show', true, $user_old, $course_old );
 			if ( ! $can_show ) {
 				return '';
@@ -826,14 +828,14 @@ class SingleCourseTemplate {
 				'hook_before_old' => $html_hook_before_old,
 				'input'           => sprintf(
 					'<input type="hidden" name="enroll-course" value="%s"/>',
-					esc_attr( $course->get_id() )
+					esc_attr( $courseModel->get_id() )
 				),
 				'btn'             => $html_btn,
 				'hook_after_old'  => $html_hook_after_old,
 				'form_end'        => '</form>',
 			],
-			$course,
-			$user
+			$courseModel,
+			$userModel
 		);
 
 		return Template::combine_components( $section );
@@ -842,13 +844,13 @@ class SingleCourseTemplate {
 	/**
 	 * Sidebar
 	 *
-	 * @param CourseModel $course
+	 * @param CourseModel $courseModel
 	 *
 	 * @return void
 	 * @version 1.0.0
 	 * @since 4.2.7
 	 */
-	public function html_sidebar( CourseModel $course ): string {
+	public function html_sidebar( CourseModel $courseModel ): string {
 		$html = '';
 
 		try {
@@ -871,15 +873,15 @@ class SingleCourseTemplate {
 	/**
 	 * HTML meta faqs
 	 *
-	 * @param CourseModel $course
+	 * @param CourseModel $courseModel
 	 *
 	 * @return string
 	 */
-	public function html_faqs( CourseModel $course ): string {
+	public function html_faqs( CourseModel $courseModel ): string {
 		$html = '';
 
 		try {
-			$faqs = $course->get_meta_value_by_key( CoursePostModel::META_KEY_FAQS, [] );
+			$faqs = $courseModel->get_meta_value_by_key( CoursePostModel::META_KEY_FAQS, [] );
 			if ( empty( $faqs ) ) {
 				return '';
 			}
@@ -921,7 +923,7 @@ class SingleCourseTemplate {
 					'content'     => $html,
 					'wrapper_end' => '</div>',
 				],
-				$course
+				$courseModel
 			);
 			$html    = Template::combine_components( $section );
 		} catch ( Throwable $e ) {
@@ -934,7 +936,7 @@ class SingleCourseTemplate {
 	/**
 	 * HTML struct course box extra
 	 *
-	 * @param CourseModel $course
+	 * @param CourseModel $courseModel
 	 * @param $title
 	 * @param string $html_list
 	 *
@@ -942,7 +944,7 @@ class SingleCourseTemplate {
 	 * @since 4.2.7.2
 	 * @version 1.0.0
 	 */
-	public function html_course_box_extra( CourseModel $course, $title, string $html_list ): string {
+	public function html_course_box_extra( CourseModel $courseModel, $title, string $html_list ): string {
 		if ( empty( $html_list ) ) {
 			return '';
 		}
@@ -959,7 +961,7 @@ class SingleCourseTemplate {
 				'content_end'       => '</div>',
 				'wrapper_end'       => '</div>',
 			],
-			$course
+			$courseModel
 		);
 
 		return Template::combine_components( $section );
@@ -968,17 +970,17 @@ class SingleCourseTemplate {
 	/**
 	 * HTML meta requirements
 	 *
-	 * @param CourseModel $course
+	 * @param CourseModel $courseModel
 	 *
 	 * @return string
 	 * @since 4.2.7.2
 	 * @version 1.0.0
 	 */
-	public function html_requirements( CourseModel $course ): string {
+	public function html_requirements( CourseModel $courseModel ): string {
 		$html = '';
 
 		try {
-			$requirements = $course->get_meta_value_by_key( CoursePostModel::META_KEY_REQUIREMENTS, [] );
+			$requirements = $courseModel->get_meta_value_by_key( CoursePostModel::META_KEY_REQUIREMENTS, [] );
 			if ( empty( $requirements ) ) {
 				return '';
 			}
@@ -1002,7 +1004,7 @@ class SingleCourseTemplate {
 					'content'     => Template::combine_components( $section_list ),
 					'wrapper_end' => '</div>',
 				],
-				$course,
+				$courseModel,
 				$requirements
 			);
 			$html    = Template::combine_components( $section );
@@ -1016,17 +1018,17 @@ class SingleCourseTemplate {
 	/**
 	 * HTML meta features
 	 *
-	 * @param CourseModel $course
+	 * @param CourseModel $courseModel
 	 *
 	 * @return string
 	 * @since 4.2.7.2
 	 * @version 1.0.0
 	 */
-	public function html_features( CourseModel $course ): string {
+	public function html_features( CourseModel $courseModel ): string {
 		$html = '';
 
 		try {
-			$features = $course->get_meta_value_by_key( CoursePostModel::META_KEY_FEATURES, [] );
+			$features = $courseModel->get_meta_value_by_key( CoursePostModel::META_KEY_FEATURES, [] );
 			if ( empty( $features ) ) {
 				return '';
 			}
@@ -1050,7 +1052,7 @@ class SingleCourseTemplate {
 					'content'     => Template::combine_components( $section_list ),
 					'wrapper_end' => '</div>',
 				],
-				$course,
+				$courseModel,
 				$features
 			);
 			$html    = Template::combine_components( $section );
@@ -1064,17 +1066,17 @@ class SingleCourseTemplate {
 	/**
 	 * HTML meta target
 	 *
-	 * @param CourseModel $course
+	 * @param CourseModel $courseModel
 	 *
 	 * @return string
 	 * @since 4.2.7.2
 	 * @version 1.0.0
 	 */
-	public function html_target( CourseModel $course ): string {
+	public function html_target( CourseModel $courseModel ): string {
 		$html = '';
 
 		try {
-			$targets = $course->get_meta_value_by_key( CoursePostModel::META_KEY_TARGET, [] );
+			$targets = $courseModel->get_meta_value_by_key( CoursePostModel::META_KEY_TARGET, [] );
 			if ( empty( $targets ) ) {
 				return '';
 			}
@@ -1098,7 +1100,7 @@ class SingleCourseTemplate {
 					'content'     => Template::combine_components( $section_list ),
 					'wrapper_end' => '</div>',
 				],
-				$course,
+				$courseModel,
 				$targets
 			);
 			$html    = Template::combine_components( $section );
@@ -1112,35 +1114,36 @@ class SingleCourseTemplate {
 	/**
 	 * HTML material
 	 *
-	 * @param CourseModel $course
-	 * @param UserModel|null $user
+	 * @param CourseModel $courseModel
+	 * @param UserModel|false $userModel
 	 *
 	 * @return string
 	 * @since 4.2.7.2
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
-	public function html_material( CourseModel $course, UserModel $user = null ): string {
+	public function html_material( CourseModel $courseModel, $userModel = false ): string {
 		$html = '';
-		if ( ! $user ) {
-			$user = UserModel::find( get_current_user_id(), true );
-			if ( ! $user ) {
-				return $html;
-			}
-		}
-
-		$userCourse = UserCourseModel::find( $user->get_id(), $course->get_id(), true );
 
 		try {
 			$can_show = false;
-			if ( $course->has_no_enroll_requirement()
-				|| ( $userCourse && $userCourse->has_enrolled_or_finished() )
-				|| ( $userCourse && $userCourse->has_purchased() )
-				|| user_can( $user->get_id(), LP_TEACHER_ROLE ) || user_can( $user->get_id(), ADMIN_ROLE ) ) {
+
+			if ( $userModel instanceof UserModel ) {
+				$userCourse = UserCourseModel::find( $userModel->get_id(), $courseModel->get_id(), true );
+				if ( $userCourse &&
+					( $userCourse->has_enrolled_or_finished()
+						|| $userCourse->has_purchased() ) ) {
+					$can_show = true;
+				} elseif ( $userCourse
+					&& ( $courseModel->check_user_is_author( $userModel )
+					|| user_can( $courseModel->get_id(), ADMIN_ROLE ) ) ) {
+					$can_show = true;
+				}
+			} elseif ( $courseModel->has_no_enroll_requirement() ) {
 				$can_show = true;
 			}
 
 			$file_per_page = LP_Settings::get_option( 'material_file_per_page', - 1 );
-			$count_files   = LP_Material_Files_DB::getInstance()->get_total( $course->get_id() );
+			$count_files   = LP_Material_Files_DB::getInstance()->get_total( $courseModel->get_id() );
 			if ( ! $can_show || $file_per_page == 0 || $count_files <= 0 ) {
 				return $html;
 			}
@@ -1158,7 +1161,7 @@ class SingleCourseTemplate {
 
 			$html = Template::combine_components( $section );
 		} catch ( Throwable $e ) {
-			error_log( $e->getMessage() );
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 
 		return $html;
@@ -1171,12 +1174,19 @@ class SingleCourseTemplate {
 	 *
 	 * @return string
 	 * @since 4.2.7.5
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function html_price_prefix( $course ): string {
 		$html = '';
 
 		try {
+			if ( $course instanceof LP_Course ) {
+				$course = CourseModel::find( $course->get_id(), true );
+				if ( ! $course instanceof CourseModel ) {
+					return $html;
+				}
+			}
+
 			$price_prefix_str = $course->get_meta_value_by_key( CoursePostModel::META_KEY_PRICE_PREFIX, '' );
 			if ( empty( $price_prefix_str ) ) {
 				return $html;
@@ -1217,15 +1227,447 @@ class SingleCourseTemplate {
 	}
 
 	/**
+	 * GET HTML comment default of WP
+	 *
+	 * @param CourseModel $courseModel
+	 * @param false|UserModel $userModel
+	 *
+	 * @return string
+	 * @since 4.2.7.6
+	 * @version 1.0.0
+	 */
+	public function html_comment( CourseModel $courseModel, $userModel = false ): string {
+		$args     = [
+			'id_url'    => 'course-comments',
+			'course_id' => $courseModel->get_id(),
+			'user_id'   => $userModel instanceof UserModel ? $userModel->get_id() : 0,
+		];
+		$callBack = [
+			'class'  => __CLASS__,
+			'method' => 'render_html_comments',
+		];
+		$html     = TemplateAJAX::load_content_via_ajax( $args, $callBack );
+
+		$section_comment = apply_filters(
+			'learn-press/single-course/html-comment',
+			[
+				'wrapper'     => '<div class="lp-course-comment">',
+				'content'     => $html,
+				'wrapper_end' => '</div>',
+			]
+		);
+
+		return Template::combine_components( $section_comment );
+	}
+
+	/**
+	 * Render HTML comments of course.
+	 *
+	 * @param array $data ['course_id']
+	 *
+	 * @return stdClass
+	 * @since 4.2.7.6
+	 * @version 1.0.0
+	 */
+	public static function render_html_comments( array $data ): stdClass {
+		$response          = new stdClass();
+		$response->content = '';
+
+		try {
+			$course_id = $data['course_id'] ?? 0;
+			$user_id   = $data['user_id'] ?? 0;
+			if ( empty( $course_id ) ) {
+				return $response;
+			}
+
+			global $withcomments, $post;
+
+			$post = get_post( $course_id );
+			if ( $post->comment_status !== 'open' ) {
+				return $response;
+			} else {
+				$withcomments = true;
+			}
+
+			$withcomments = apply_filters(
+				'learn-press/single-course/render-html-comment/is-show',
+				$withcomments,
+				$post,
+				$user_id
+			);
+
+			//$post->comment_count = 0;
+
+			ob_start();
+			add_filter( 'deprecated_file_trigger_error', '__return_false' );
+			comments_template();
+			remove_filter( 'deprecated_file_trigger_error', '__return_false' );
+			$html              = ob_get_clean();
+			$response->content = $html;
+		} catch ( Throwable $e ) {
+			$response->content = Template::print_message( $e->getMessage(), 'error', false );
+		}
+
+		return $response;
+	}
+
+	/**
+	 * Get HTML curriculum of course.
+	 *
+	 * @param CourseModel $courseModel
+	 * @param UserModel|false $userModel
+	 *
+	 * @return string
+	 * @since 4.2.7.6
+	 * @version 1.0.0
+	 */
+	public function html_curriculum( CourseModel $courseModel, $userModel ): string {
+		$html = '';
+
+		try {
+
+			$section_items = $courseModel->get_section_items();
+			$html          = Template::print_message( esc_html__( 'Course has not any items.', 'learnpress' ), 'info', false );
+			if ( empty( $section_items ) ) {
+				return $html;
+			}
+
+			$li_section_items = '';
+			foreach ( $section_items as $section_item ) {
+				$li_section_items .= $this->render_html_section_item( $courseModel, $userModel, $section_item );
+			}
+
+			$section = apply_filters(
+				'learn-press/course/html-curriculum',
+				[
+					'wrapper'                   => '<div class="lp-course-curriculum">',
+					'title'                     => sprintf(
+						'<h3 class="lp-course-curriculum__title">%s</h3>',
+						esc_html__( 'Curriculum', 'learnpress' )
+					),
+					'curriculum_info'           => '<div class="course-curriculum-info">',
+					'curriculum_info_left'      => '<ul class="course-curriculum-info__left">',
+					'count_sections'            => sprintf(
+						'<li class="course-count-section">%s</li>',
+						sprintf(
+							_n( '%d Section', '%d Sections', $courseModel->get_total_sections(), 'learnpress' ),
+							$courseModel->get_total_sections()
+						)
+					),
+					'count_lesson'              => sprintf(
+						'<li class="course-count-lesson">%s</li>',
+						sprintf(
+							_n( '%d Lesson', '%d Lessons', $courseModel->count_items( LP_LESSON_CPT ), 'learnpress' ),
+							$courseModel->count_items( LP_LESSON_CPT )
+						)
+					),
+					'duration'                  => sprintf(
+						'<li class="course-duration">%s</li>',
+						$this->html_duration( $courseModel )
+					),
+					'curriculum_info_left_end'  => '</ul>',
+					'curriculum_info_right'     => '<div class="course-curriculum-info__right">',
+					'expand_all'                => sprintf(
+						'<span class="course-toggle-all-sections">%s</span>',
+						esc_html__( 'Expanse all sections', 'learnpress' )
+					),
+					'collapse_all'              => sprintf(
+						'<span class="course-toggle-all-sections lp-collapse lp-hidden">%s</span>',
+						esc_html__( 'Collapse all sections', 'learnpress' )
+					),
+					'curriculum_info_right_end' => '</div>',
+					'curriculum_info_end'       => '</div>',
+					'curriculum'                => '<div class="course-curriculum">',
+					'sections'                  => '<ul class="course-sections">',
+					'li_section_items'          => $li_section_items,
+					'sections_end'              => '</ul>',
+					'curriculum_end'            => '</div>',
+					'wrapper_end'               => '</div>',
+				],
+				$courseModel,
+				$courseModel
+			);
+
+			$html = Template::combine_components( $section );
+		} catch ( Throwable $e ) {
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
+		}
+
+		return $html;
+	}
+
+	/**
+	 * Render HTML section item
+	 *
+	 * @param CourseModel $courseModel
+	 * @param UserModel|false $userModel
+	 * @param $section_item object {section_id, section_name, section_description, items[{item_id, item_order, item_type, title, preview}]}
+	 *
+	 * @return string
+	 * @since 4.2.7.6
+	 * @version 1.0.0
+	 */
+	public function render_html_section_item( CourseModel $courseModel, $userModel, $section_item ): string {
+		if ( ! $section_item instanceof stdClass ) {
+			return '';
+		}
+
+		$section_id               = $section_item->section_id ?? 0;
+		$section_name             = $section_item->section_name ?? '';
+		$section_description      = $section_item->section_description ?? '';
+		$section_order            = $section_item->section_order ?? 1;
+		$items                    = $section_item->items ?? [];
+		$html_section_description = '';
+		if ( ! empty( $section_description ) ) {
+			$html_section_description = sprintf(
+				'<div class="course-section__description">%s</div>',
+				wp_kses_post( $section_description )
+			);
+		}
+
+		$section_header = [
+			'start'       => '<div class="course-section-header">',
+			'info'        => '<div class="course-section-info">',
+			'title'       => sprintf( '<div class="course-section__title">%s</div>', wp_kses_post( $section_name ) ),
+			'description' => $html_section_description,
+			'info_end'    => '</div>',
+			'toggle'      => '<span class="section-toggle">
+				<i class="lp-icon-angle-down"></i>
+				<i class="lp-icon-angle-up"></i>
+			</span>',
+			'end'         => '</div>',
+		];
+
+		$li_items = '';
+		foreach ( $items as $item ) {
+			$li_items .= $this->render_html_course_item( $courseModel, $userModel, $item, $section_item );
+		}
+		$section_items = [
+			'start'    => '<ul class="course-section__items">',
+			'li_items' => $li_items,
+			'end'      => '</ul>',
+		];
+
+		$curriculum_display_setting = LP_Settings::get_option( 'curriculum_display', 'expand_first_section' );
+		$class_section_toggle       = '';
+		if ( $curriculum_display_setting === 'collapse_all' ) {
+			$class_section_toggle = 'lp-collapse';
+		} elseif ( $curriculum_display_setting === 'expand_first_section' ) {
+			if ( $section_order > 1 ) {
+				$class_section_toggle = 'lp-collapse';
+			}
+		}
+
+		$section_item = apply_filters(
+			'learn-press/course/html-section-item',
+			[
+				'start'  => sprintf(
+					'<li class="course-section %s" data-section-id="%s">',
+					$class_section_toggle,
+					$section_id
+				),
+				'header' => Template::combine_components( $section_header ),
+				'items'  => Template::combine_components( $section_items ),
+				'end'    => '</li>',
+			],
+			$courseModel,
+			$userModel,
+			$section_item
+		);
+
+		return Template::combine_components( $section_item );
+	}
+
+	/**
+	 * @param CourseModel $courseModel
+	 * @param UserModel|false $userModel
+	 * @param $item stdClass {item_id, item_order, item_type, title, preview}
+	 * @param $section_item stdClass {section_id, section_name, section_description, items[{item_id, item_order, item_type, title, preview}]}
+	 *
+	 * @return string
+	 * @since 4.2.7.6
+	 * @version 1.0.0
+	 */
+	public function render_html_course_item( CourseModel $courseModel, $userModel, $item, $section_item ): string {
+		$html = '';
+
+		if ( ! $item instanceof stdClass ) {
+			return $html;
+		}
+
+		$item_id     = $item->item_id ?? 0;
+		$item_order  = $item->item_order ?? 0;
+		$item_type   = $item->item_type ?? '';
+		$title       = $item->title ?? '';
+		$has_preview = $item->preview ?? '';
+
+		//LP_Course_Item::get_item( $item_id, $course->get_id() );
+		$itemModel = $courseModel->get_item_model( $item_id, $item_type );
+		if ( empty( $itemModel ) ) {
+			return $html;
+		}
+
+		$link_item = $courseModel->get_item_link( $item_id, $item_type );
+
+		$item_duration      = '';
+		$html_item_duration = '';
+		if ( is_callable( [ $itemModel, 'get_duration' ] ) ) {
+			$item_duration = $itemModel->get_duration();
+		} else {
+			$item_duration = get_post_meta( $item_id, '_lp_duration', true );
+		}
+
+		$duration_arr    = explode( ' ', $item_duration );
+		$duration_number = floatval( $duration_arr[0] ?? 0 );
+		$duration_type   = $duration_arr[1] ?? '';
+
+		if ( $duration_number > 0 ) {
+			$item_duration_plural = LP_Datetime::get_string_plural_duration( $duration_number, $duration_type );
+
+			$html_item_duration = sprintf(
+				'<span class="duration">%s</span>',
+				$item_duration_plural
+			);
+		}
+
+		// Count question of quiz
+		$html_item_count_questions = '';
+		if ( $item_type === LP_QUIZ_CPT ) {
+			$quizPostModel = QuizPostModel::find( $item_id, true );
+			if ( $quizPostModel instanceof QuizPostModel ) {
+				$question_count      = $quizPostModel->count_questions();
+				$html_item_duration .= sprintf(
+					'<span class="question-count">%s</span>',
+					sprintf(
+						_n( '%d Question', '%d Questions', $question_count, 'learnpress' ),
+						$question_count
+					)
+				);
+			}
+		}
+
+		$user_item_status_ico_flag = 'locked';
+		$user_attended_course      = false;
+		if ( $userModel instanceof UserModel ) {
+			$userCourseModel = UserCourseModel::find( $userModel->get_id(), $courseModel->get_id(), true );
+			if ( $userCourseModel
+				&& $userCourseModel->get_status() !== UserItemModel::STATUS_CANCEL
+				&& $userCourseModel->get_status() !== UserCourseModel::STATUS_PURCHASED ) {
+				$user_attended_course = true;
+
+				// Check status of item's course
+				$userCourseItem = $userCourseModel->get_item_attend( $item_id, $item_type );
+				if ( ! $userCourseItem instanceof UserItemModel ) {
+					$user_item_status_ico_flag = UserItemModel::GRADUATION_IN_PROGRESS;
+				} else {
+					$user_item_status_ico_flag = $userCourseItem->get_status();
+					$user_item_graduation      = $userCourseItem->get_graduation();
+					if ( ! empty( $user_item_graduation ) ) {
+						$user_item_status_ico_flag = $user_item_graduation;
+					}
+
+					if ( empty( $user_item_status_ico_flag ) ) {
+						$user_item_status_ico_flag = UserItemModel::GRADUATION_IN_PROGRESS;
+					}
+				}
+
+				if ( $user_item_status_ico_flag === UserItemModel::GRADUATION_IN_PROGRESS ) {
+					if ( $userCourseModel->get_time_remaining() === 0 ) {
+						$user_item_status_ico_flag = 'locked';
+					} elseif ( $userCourseModel->get_status() === UserItemModel::STATUS_FINISHED
+						&& $courseModel->enable_block_when_finished() ) {
+						$user_item_status_ico_flag = 'locked';
+					}
+				}
+			}
+		}
+
+		if ( $has_preview && ! $user_attended_course ) {
+			$user_item_status_ico_flag = 'preview';
+		}
+
+		if ( $courseModel->has_no_enroll_requirement()
+			&& ! $user_attended_course && ! $userModel ) {
+			$user_item_status_ico_flag = UserItemModel::GRADUATION_IN_PROGRESS;
+		}
+
+		$user_item_status_ico_flag = apply_filters(
+			'learn-press/course/item/status-ico-flag',
+			$user_item_status_ico_flag,
+			$courseModel,
+			$userModel,
+			$item,
+			$section_item
+		);
+
+		$html_item_status = sprintf(
+			'<div class="course-item__status"><span class="course-item-ico %1$s"></span></div>',
+			$user_item_status_ico_flag
+		);
+
+		$html_item_right = [];
+		if ( $html_item_count_questions != '' || $html_item_duration != '' ) {
+			$html_item_right = [
+				'item_right'     => '<div class="course-item__right">',
+				'question_count' => $html_item_count_questions,
+				'duration'       => $html_item_duration,
+				'item_right_end' => '</div>',
+			];
+		}
+
+		$section_item = apply_filters(
+			'learn-press/course/html-course-item',
+			[
+				'start'            => sprintf(
+					'<li class="course-item" data-item-id="%s" data-item-order="%s" data-item-type="%s">',
+					$item_id,
+					$item_order,
+					$item_type
+				),
+				'link'             => sprintf(
+					'<a href="%s" class="course-item__link">',
+					esc_url_raw( $link_item )
+				),
+				'item_info'        => '<div class="course-item__info">',
+				'icon'             => sprintf(
+					'<span class="course-item-ico %s"></span>',
+					esc_attr( $item_type )
+				),
+				'item_order'       => sprintf(
+					'<span class="course-item-order lp-hidden">%s.%s</span>',
+					$section_item->section_order,
+					$item_order
+				),
+				'item_info_end'    => '</div>',
+				'item_content'     => '<div class="course-item__content">',
+				'item_left'        => '<div class="course-item__left">',
+				'title'            => sprintf( '<div class="course-item-title">%s</div>', wp_kses_post( $title ) ),
+				'item_left_end'    => '</div>',
+				'item_right'       => Template::combine_components( $html_item_right ),
+				'item_content_end' => '</div>',
+				'status'           => $html_item_status,
+				'link_end'         => '</a>',
+				'end'              => '</li>',
+			],
+			$courseModel,
+			$userModel,
+			$item,
+			$section_item
+		);
+
+		return Template::combine_components( $section_item );
+	}
+
+	/**
 	 * Render string to data content
 	 *
-	 * @param LP_Course $course
+	 * @param CourseModel $course
 	 * @param string $data_content
 	 *
 	 * @return string
 	 */
-	public function render_data( LP_Course $course, string $data_content = '' ): string {
-		$author_of_course         = $course->get_author();
+	public function render_data( CourseModel $course, string $data_content = '' ): string {
+		$author_of_course         = $course->get_author_model();
 		$singleInstructorTemplate = SingleInstructorTemplate::instance();
 
 		// render count items

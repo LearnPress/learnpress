@@ -56,6 +56,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				'lp_version'               => LP()->version,
 				'lp_rest_url'              => get_rest_url(),
 				'lp_rest_load_ajax'        => get_rest_url( null, 'lp/v1/load_content_via_ajax/' ),
+				'lpAjaxUrl'                => LP_Settings::url_handle_lp_ajax(),
 				'nonce'                    => wp_create_nonce( 'wp_rest' ),
 				'courses_url'              => learn_press_get_page_link( 'courses' ),
 				'urlParams'                => lp_archive_skeleton_get_args(),
@@ -372,7 +373,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					[],
 					0,
 					0,
-					'1.0.2',
+					'1.0.4',
 					[ 'strategy' => 'async' ]
 				),
 			)

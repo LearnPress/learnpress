@@ -5,42 +5,42 @@
 return apply_filters(
 	'learn-press/widget/course-filter/settings',
 	array(
-		'title'             => array(
+		'title'                     => array(
 			'label' => esc_html__( 'Title', 'learnpress' ),
 			'type'  => 'text',
 			'std'   => esc_html__( 'Course Filter', 'learnpress' ),
 		),
-		'number_level_category'      => array(
+		'number_level_category'     => array(
 			'label' => __( 'Level of category to display on Frontend', 'learnpress' ),
 			'type'  => 'number',
 			'std'   => 2,
 			'min'   => 1,
 		),
-		'class_list_courses_target'      => array(
+		'class_list_courses_target' => array(
 			'label' => __( 'Class of list courses want to filter', 'learnpress' ),
 			'type'  => 'text',
 			'std'   => '.lp-list-courses-default',
 		),
-		'show_in_rest'      => array(
+		'show_in_rest'              => array(
 			'label' => __( 'Load widget via REST', 'learnpress' ),
 			'type'  => 'checkbox',
 			'std'   => 1,
 		),
-		'hide_count_zero'   => array(
+		'hide_count_zero'           => array(
 			'label' => __( 'Hide field has count is zero', 'learnpress' ),
 			'type'  => 'checkbox',
 			'std'   => 1,
 		),
-		'search_suggestion' => array(
+		'search_suggestion'         => array(
 			'label' => __( 'Enable Keyword Search Suggestion', 'learnpress' ),
 			'type'  => 'checkbox',
 			'std'   => 1,
 		),
-		'fields_order'      => array(
+		'fields_order'              => array(
 			'label' => '',
 			'type'  => 'hidden',
 		),
-		'fields'            => array(
+		'fields'                    => array(
 			'label'   => __( 'Fields', 'learnpress' ),
 			'type'    => 'sortable-checkbox',
 			'options' => array(

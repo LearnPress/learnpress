@@ -3,6 +3,7 @@
 use LearnPress\Helpers\Config;
 use LearnPress\Models\Courses;
 use LearnPress\Models\UserItems\UserCourseModel;
+use LearnPress\Models\UserItems\UserItemModel;
 use LearnPress\TemplateHooks\Profile\ProfileOrdersTemplate;
 
 defined( 'ABSPATH' ) || exit;
@@ -689,6 +690,10 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 					$status              = $args['status'] ?? '';
 					if ( $status != LP_COURSE_FINISHED ) {
 						$filter->graduation = $status;
+						$filter->where[]    = $lp_user_items_db->wpdb->prepare(
+							"AND ui.status != '%s'",
+							UserItemModel::STATUS_CANCEL
+						);
 					} else {
 						$filter->status = $status;
 					}

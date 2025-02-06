@@ -62,6 +62,8 @@ class CoursePostModel extends PostModel {
 	const META_KEY_FAQS                     = '_lp_faqs';
 	const META_KEY_PRICE_PREFIX             = '_lp_price_prefix';
 	const META_KEY_PRICE_SUFFIX             = '_lp_price_suffix';
+	const META_KEY_FINAL_QUIZ               = '_lp_final_quiz';
+	const META_KEY_SAMPLE_DATA              = '_lp_sample_data';
 
 	/**
 	 * Get the price of course.

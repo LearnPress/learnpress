@@ -8,6 +8,23 @@ $des_option_redirect_finish_course = wp_sprintf(
 	esc_html__( 'The site will be redirected to the URL added after clicking the finish course button.', 'learnpress' ),
 	esc_html__( 'Set blank, the site will be redirected to the single course page', 'learnpress' )
 );
+$layout_single_course_default      = LP_Settings::get_option( 'layout_single_course', '' );
+if ( empty( $layout_single_course_default ) ) {
+	$layout_single_course_default = 'classic';
+}
+
+// Temporary hide fields for the Modern layout.
+add_filter(
+	'learn-press/course-settings-fields/curriculum',
+	function ( $fields ) use ( $layout_single_course_default ) {
+		if ( $layout_single_course_default === 'modern' ) {
+			unset( $fields[2] );
+			unset( $fields[3] );
+		}
+
+		return $fields;
+	}
+);
 
 return apply_filters(
 	'learn-press/courses-settings-fields',
@@ -18,6 +35,17 @@ return apply_filters(
 				array(
 					'title' => esc_html__( 'General', 'learnpress' ),
 					'type'  => 'title',
+				),
+				array(
+					'title'   => esc_html__( 'Layout single course', 'learnpress' ),
+					'desc'    => esc_html__( 'Layout default display for single course.', 'learnpress' ),
+					'id'      => 'layout_single_course',
+					'default' => $layout_single_course_default,
+					'type'    => 'select',
+					'options' => array(
+						'modern'  => esc_html__( 'Modern', 'learnpress' ),
+						'classic' => esc_html__( 'Classic', 'learnpress' ),
+					),
 				),
 				array(
 					'title'   => esc_html__( 'Review courses', 'learnpress' ),
@@ -121,6 +149,18 @@ return apply_filters(
 					'type'  => 'title',
 					'title' => esc_html__( 'Curriculum Settings', 'learnpress' ),
 					'id'    => 'lp_metabox_curriculum_setting',
+				),
+				array(
+					'title'   => esc_html__( 'Curriculum display', 'learnpress' ),
+					'id'      => 'curriculum_display',
+					'default' => 'expand_first_section',
+					'type'    => 'select',
+					'options' => array(
+						'expand_first_section' => esc_html__( 'Expanse first section', 'learnpress' ),
+						'expand_all'           => esc_html__( 'Expanse all sections', 'learnpress' ),
+						'collapse_all'         => esc_html__( 'Collapse all sections', 'learnpress' ),
+					),
+					'desc'    => 'Currently, apply for the Modern single course layout only.',
 				),
 				array(
 					'title'   => esc_html__( 'Section Per Page', 'learnpress' ),

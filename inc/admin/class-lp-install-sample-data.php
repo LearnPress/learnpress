@@ -54,7 +54,7 @@ class LP_Install_Sample_Data {
 			'lp-uninstall-sample-data',
 		);
 
-		if ( ! in_array( LP_Request::get( 'page' ), $actions ) ) {
+		if ( ! in_array( LP_Request::get_param( 'page' ), $actions ) ) {
 			return;
 		}
 
@@ -91,6 +91,14 @@ class LP_Install_Sample_Data {
 			return;
 		}
 
+		if ( ! current_user_can( ADMIN_ROLE ) ) {
+			return;
+		}
+
+		ini_set( 'max_execution_time', 0 );
+
+		$data = [];
+
 		$dummy_text       = LP_WP_Filesystem::instance()->file_get_contents( LP_PLUGIN_PATH . '/dummy-data/dummy-text.txt' );
 		$this->dummy_text = preg_split( '!\s!', $dummy_text );
 
@@ -114,24 +122,11 @@ class LP_Install_Sample_Data {
 			self::$answer_range = $answer_range;
 		}
 
+		$data['price'] = LP_Request::get_param( 'course-price', 0, 'float' );
+		$data['name']  = LP_Request::get_param( 'custom-name' );
+
 		try {
-			@ini_set( 'memory_limit', '2G' );
-
-			global $wp_filter;
-
-			$keys        = array_keys( $wp_filter );
-			$ignore_keys = array( 'sanitize_title' );
-
-			foreach ( $keys as $key ) {
-				if ( in_array( $key, $ignore_keys ) ) {
-					continue;
-				}
-
-				unset( $wp_filter[ $key ] );
-			}
-
-			$name      = LP_Request::get_param( 'custom-name' );
-			$course_id = $this->create_course( $name );
+			$course_id = $this->create_course( $data );
 
 			if ( ! $course_id ) {
 				throw new Exception( 'Create course failed.' );
@@ -139,27 +134,17 @@ class LP_Install_Sample_Data {
 
 			$this->create_sections( $course_id );
 
-			$price = LP_Request::get_param( 'course-price', 0, 'float' );
-			if ( $price ) {
-				update_post_meta( $course_id, '_lp_regular_price', $price );
-			}
-
-			/**
-			 * Save info course in background.
-			 */
-			$coursePostModel = new CoursePostModel( get_post( $course_id ) );
-			$coursePostModel->get_all_metadata();
-			$courseModelNew = new CourseModel( $coursePostModel );
-			$courseModelNew->get_price();
-			$courseModelNew->save();
-			$bg = LP_Background_Single_Course::instance();
-			$bg->data(
-				array(
-					'handle_name' => 'save_post',
-					'course_id'   => $course_id,
-					'data'        => [],
-				)
-			)->dispatch();
+			$courseModel = CourseModel::find( $course_id, true );
+			// Unset value of keys for calculate again
+			unset( $courseModel->first_item_id );
+			unset( $courseModel->total_items );
+			unset( $courseModel->sections_items );
+			unset( $courseModel->meta_data->_lp_final_quiz );
+			$courseModel->get_first_item_id();
+			$courseModel->get_total_items();
+			$courseModel->get_section_items();
+			$courseModel->get_final_quiz();
+			$courseModel->save();
 
 			$link_course = get_the_permalink( $course_id );
 			$link_course = LP_Helper::handle_lp_permalink_structure( $link_course, get_post( $course_id ) );
@@ -179,6 +164,8 @@ class LP_Install_Sample_Data {
 			echo '</div>';
 		}
 
+		ini_set( 'max_execution_time', LearnPress::$time_limit_default_of_sever );
+
 		die();
 	}
 
@@ -186,11 +173,9 @@ class LP_Install_Sample_Data {
 	 * Un-install
 	 */
 	public function uninstall() {
-		if ( ! wp_verify_nonce( LP_Request::get_string( '_wpnonce' ), 'uninstall-sample-course' ) ) {
+		if ( ! wp_verify_nonce( LP_Request::get_param( '_wpnonce' ), 'uninstall-sample-course' ) ) {
 			return;
 		}
-
-		global $wpdb;
 
 		$posts = $this->get_sample_posts();
 		try {
@@ -355,33 +340,28 @@ class LP_Install_Sample_Data {
 	/**
 	 * Create course.
 	 *
-	 * @param string $name
+	 * @param array $data
 	 *
 	 * @return int|WP_Error
 	 */
-	protected function create_course( $name = '' ) {
+	protected function create_course( array $data ) {
+		$title = $data['name'] ?? '';
 
-		$data = array(
-			'post_title'   => strlen( $name ) ? $name : __( 'Sample course', 'learnpress' ),
+		$data_insert = array(
+			'post_title'   => ! empty( $title ) ? $title : __( 'Sample course', 'learnpress' ),
 			'post_type'    => LP_COURSE_CPT,
 			'post_status'  => 'publish',
 			'post_content' => $this->generate_content( 25, 40, 5 ),
 		);
 
-		$course_id = wp_insert_post( $data );
+		$course_id = wp_insert_post( $data_insert );
 
 		if ( $course_id ) {
-			$metas = array(
-				'_lp_duration'          => '10 week',
-				'_lp_max_students'      => '0',
-				'_lp_students'          => '0',
-				'_lp_retake_count'      => '0',
-				'_lp_featured'          => 'no',
-				'_lp_has_finish'        => 'yes',
-				'_lp_course_result'     => 'evaluate_lesson',
-				'_lp_passing_condition' => '80',
-				'_lp_sample_data'       => 'yes',
-			);
+			$metas = [
+				CoursePostModel::META_KEY_DURATION    => '10 week',
+				CoursePostModel::META_KEY_SAMPLE_DATA => 'yes',
+				CoursePostModel::META_KEY_LEVEL       => 'all',
+			];
 			foreach ( $metas as $key => $value ) {
 				update_post_meta( $course_id, $key, $value );
 			}
@@ -441,7 +421,7 @@ class LP_Install_Sample_Data {
 	 * @return int
 	 */
 	protected function create_section( $name, $course_id ) {
-		static $order = 0;
+		static $order = 1;
 
 		global $wpdb;
 

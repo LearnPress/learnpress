@@ -8,6 +8,7 @@ import TabsDragScroll from './tabs-scroll';
 import { lpSetLoadingEl } from '../../../js/utils.js';
 import Toastify from 'toastify-js';
 import 'toastify-js/src/toastify.css';
+import LPCopyToClipboard from '../../../js/frontend/copy-to-clipboard.js';
 
 export default SingleCourse;
 
@@ -412,6 +413,7 @@ document.addEventListener( 'DOMContentLoaded', function() {
 	lpMaterialsLoad();
 	//courseCurriculumSkeleton();
 	TabsDragScroll();
+	LPCopyToClipboard();
 } );
 
 const detectedElCurriculum = setInterval( function() {

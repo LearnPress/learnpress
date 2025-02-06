@@ -1,5 +1,6 @@
 <?php
 
+use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\Courses;
 
@@ -40,11 +41,36 @@ class LP_Page_Controller {
 		} else {
 			//add_filter( 'post_type_archive_link', [ $this, 'link_archive_course' ], 10, 2 );
 			add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ), - 1 );
+			// For debug mysql query post of WP.
+			/*add_filter(
+				'posts_request',
+				function ( $request, $q ) {
+					LP_Debug::var_dump( $request );
+					return $request;
+				},
+				10,
+				2
+			);*/
+			/*add_filter(
+				'posts_clauses_request',
+				function ( $clauses, $wp_query ) {
+					if ( ! $wp_query->is_search() ) {
+						return $clauses;
+					}
+
+					$lp_db             = LP_Database::getInstance();
+					$clauses['where'] .= sprintf( " OR ( post_type = '%s' AND meta_key = '_lp_preview' AND meta_value = 'yes')", LP_LESSON_CPT );
+					$clauses['join']  .= ' INNER JOIN ' . $lp_db->tb_postmeta . ' ON post_id = wp_posts.ID ';
+
+					return $clauses;
+				},
+				10,
+				2
+			);*/
 			// For return result query course to cache.
 			//add_action( 'posts_pre_query', [ $this, 'posts_pre_query' ], 10, 2 );
 			add_filter( 'template_include', array( $this, 'template_loader' ), 10 );
 			add_filter( 'template_include', array( $this, 'check_pages' ), 30 );
-			//add_filter( 'template_include', array( $this, 'auto_shortcode' ), 50 );
 
 			add_filter( 'the_post', array( $this, 'setup_data_for_item_course' ) );
 			add_filter( 'request', array( $this, 'remove_course_post_format' ), 1 );
@@ -67,13 +93,16 @@ class LP_Page_Controller {
 			// Active menu
 			add_filter( 'wp_nav_menu_objects', [ $this, 'menu_active' ], 10, 1 );
 			// Canonical
-			add_filter( 'get_canonical_url', function ( $canonical_url ) {
-				if ( LP_Page_Controller::is_page_instructor() ) {
-					$canonical_url = LP_Helper::getUrlCurrent();
-				}
+			add_filter(
+				'get_canonical_url',
+				function ( $canonical_url ) {
+					if ( LP_Page_Controller::is_page_instructor() ) {
+						$canonical_url = LP_Helper::getUrlCurrent();
+					}
 
-				return $canonical_url;
-			} );
+					return $canonical_url;
+				}
+			);
 		}
 	}
 
@@ -101,7 +130,7 @@ class LP_Page_Controller {
 	 */
 	public function post_type_link( $post_link, $post ) {
 		// Set item's course permalink
-		$course_item_types = learn_press_get_course_item_types();
+		$course_item_types = CourseModel::item_types_support();
 		$item_id           = $post->ID;
 
 		// Link item course on search page of WP.
@@ -258,40 +287,6 @@ class LP_Page_Controller {
 	}
 
 	/**
-	 * Auto inserting a registered shortcode to a specific page
-	 * if that page is viewing in single mode.
-	 *
-	 * @param string $template
-	 *
-	 * @return string;
-	 * @since 3.3.0
-	 * @deprecated 4.2.3
-	 */
-	public function auto_shortcode( $template ) {
-		_deprecated_function( __METHOD__, '4.2.3' );
-		global $post;
-		$the_post = $post;
-		if ( $the_post && is_page( $the_post->ID ) ) {
-
-			// Filter here to insert the shortcode
-			$auto_shortcodes = apply_filters( 'learn-press/auto-shortcode-pages', array() );
-
-			if ( ! empty( $auto_shortcodes[ $the_post->ID ] ) ) {
-				$shortcode_tag = $auto_shortcodes[ $the_post->ID ];
-
-				preg_match( '/\[' . $shortcode_tag . '\s?(.*)\]/', $the_post->post_content, $results );
-
-				if ( empty( $results ) ) {
-					$content                = $the_post->post_content . "[$shortcode_tag]";
-					$the_post->post_content = $content;
-				}
-			}
-		}
-
-		return $template;
-	}
-
-	/**
 	 * Load data for item of course
 	 *
 	 * @param $post
@@ -404,6 +399,7 @@ class LP_Page_Controller {
 
 	/**
 	 * @return bool
+	 * @deprecated v4.2.7.6
 	 */
 	protected function _is_archive() {
 		return learn_press_is_courses() || learn_press_is_course_tag() || learn_press_is_course_category() || learn_press_is_search() || learn_press_is_course_tax();
@@ -411,6 +407,7 @@ class LP_Page_Controller {
 
 	/**
 	 * @return bool
+	 * @deprecated v4.2.7.6
 	 */
 	protected function _is_single() {
 		return learn_press_is_course() && is_single();
@@ -464,23 +461,42 @@ class LP_Page_Controller {
 	 */
 	private function get_page_template() {
 		$page_template = '';
-		$object = get_queried_object();
+		$object        = get_queried_object();
 
-		if ( is_singular( LP_COURSE_CPT ) ) {
-			$page_template = 'single-course.php';
+		if ( self::is_page_single_course() ) {
+			$page_template = 'single-course-layout.php';
+			// Check condition to load single course layout classic or modern.
+			$is_override_single_course   = Template::check_template_is_override( 'single-course.php' )
+			|| Template::check_template_is_override( 'content-course.php' )
+			|| Template::check_template_is_override( 'content-single-course.php' )
+			|| Template::check_template_is_override( 'loop/single-course/loop-section.php' )
+			|| Template::check_template_is_override( 'single-course/loop-section.php' )
+			|| Template::check_template_is_override( 'single-course/tabs/curriculum.php' )
+			|| Template::check_template_is_override( 'single-course/tabs/curriculum-v2.php' );
+			$option_single_course_layout = LP_Settings::get_option( 'layout_single_course', '' );
 
-			if ( $this->_is_single() ) {
-				global $post;
-				setup_postdata( $post );
+			if ( $is_override_single_course ) { // Old file template
+				$page_template = 'single-course.php';
+			} elseif ( empty( $option_single_course_layout )
+				|| $option_single_course_layout === 'classic' ) {
+				$page_template = 'single-course-layout-classic.php';
+				// Set temporary old single course layout.
+				$page_template = 'single-course.php';
+			}
 
-				$course_item = LP_Global::course_item();
-				if ( $course_item ) {
-					$page_template = 'content-single-item.php';
-				} elseif ( $object ) {
-					$course = CourseModel::find( $object->ID, true );
-					if ( $course && $course->is_offline() ) {
-						$page_template = 'single-course-offline.php';
-					}
+			// Old single course layout.
+			//$page_template = 'single-course.php';
+
+			global $post;
+			setup_postdata( $post );
+
+			$course_item = LP_Global::course_item();
+			if ( $course_item ) {
+				$page_template = 'content-single-item.php';
+			} elseif ( $object ) {
+				$course = CourseModel::find( $object->ID, true );
+				if ( $course && $course->is_offline() ) {
+					$page_template = 'single-course-offline.php';
 				}
 			}
 		} elseif ( learn_press_is_course_taxonomy() ) {
@@ -776,19 +792,6 @@ class LP_Page_Controller {
 
 			// Exclude item not assign
 			if ( $q->is_search() ) {
-				// Exclude item not assign any course
-				$course_item_types = learn_press_get_course_item_types();
-				$list_ids_exclude  = array();
-
-				foreach ( $course_item_types as $item_type ) {
-					$filter            = new LP_Post_Type_Filter();
-					$filter->post_type = $item_type;
-					$exclude_item      = LP_Course_DB::getInstance()->get_item_ids_unassigned( $filter );
-					$exclude_item      = LP_Course_DB::get_values_by_key( $exclude_item );
-
-					$list_ids_exclude = array_merge( $list_ids_exclude, $exclude_item );
-				}
-
 				return $q;
 			}
 
@@ -820,12 +823,15 @@ class LP_Page_Controller {
 	 * @since  3.2.7.5
 	 */
 	public function set_link_item_course_default_wp_to_page_404( $q ) {
-		$post_type_apply_404 = apply_filters( 'lp/page-controller/', array(
-			LP_LESSON_CPT,
-			LP_QUIZ_CPT,
-			LP_QUESTION_CPT,
-			'lp_assignment'
-		) );
+		$post_type_apply_404 = apply_filters(
+			'lp/page-controller/',
+			array(
+				LP_LESSON_CPT,
+				LP_QUIZ_CPT,
+				LP_QUESTION_CPT,
+				'lp_assignment',
+			)
+		);
 
 		if ( ! isset( $q->query_vars['post_type'] ) || ! in_array( $q->query_vars['post_type'], $post_type_apply_404 ) ) {
 			return $q;
@@ -952,6 +958,28 @@ class LP_Page_Controller {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Check is page is single course
+	 *
+	 * @since 4.2.7.6
+	 * @version 1.0.0
+	 * @return bool
+	 */
+	public static function is_page_single_course(): bool {
+		static $flag;
+		if ( ! is_null( $flag ) ) {
+			return $flag;
+		}
+
+		try {
+			$flag = is_singular( LP_COURSE_CPT );
+		} catch ( Throwable $e ) {
+			$flag = false;
+		}
+
+		return $flag;
 	}
 
 	/**

@@ -545,7 +545,7 @@ function learn_press_setup_user() {
 	$GLOBALS['lp_user'] = learn_press_get_current_user();
 }
 
-add_action( 'init', 'learn_press_setup_user', 1000 );
+//add_action( 'init', 'learn_press_setup_user', 1000 );
 
 /**
  * Display a message immediately with out push into queue
@@ -1199,39 +1199,53 @@ function learn_press_comments_template_query_args( $comment_args ) {
 
 	return $comment_args;
 }
+add_filter( 'comments_template_query_args', 'learn_press_comments_template_query_args' );
 
-if ( ! function_exists( 'learn_press_filter_get_comments_number' ) ) {
-	function learn_press_filter_get_comments_number( $count, $post_id = 0 ) {
-		global $wpdb;
+function learn_press_comment_form_logged_in( $html_login ) {
+	if ( get_post_type() == LP_COURSE_CPT || get_post_type() == LP_LESSON_CPT ) {
+		$html_login = '';
+	}
 
-		if ( ! $post_id ) {
-			$post_id = learn_press_get_course_id();
-		}
+	return $html_login;
+}
+add_filter( 'comment_form_logged_in', 'learn_press_comment_form_logged_in' );
 
+function learn_press_comment_form_defaults( $defaults ) {
+	if ( get_post_type() == LP_COURSE_CPT || get_post_type() == LP_LESSON_CPT ) {
+		$defaults['comment_notes_before'] = '';
+	}
+
+	return $defaults;
+}
+add_filter( 'comment_form_defaults', 'learn_press_comment_form_defaults' );
+
+function learn_press_filter_get_comments_number( $count, $post_id = 0 ) {
+	global $wpdb;
+
+	if ( ! $post_id ) {
+		$post_id = get_the_ID();
 		if ( ! $post_id ) {
 			return $count;
 		}
-
-		if ( get_post_type( $post_id ) == LP_COURSE_CPT ) {
-			$sql = $wpdb->prepare(
-				' SELECT count(*) '
-				. " FROM {$wpdb->comments} "
-				. ' WHERE comment_post_ID = %d '
-				. ' AND comment_approved = 1 '
-				. ' AND comment_type != %s ',
-				$post_id,
-				'review'
-			);
-
-			$count = $wpdb->get_var( $sql );
-
-			// @since 3.0.0
-			$count = apply_filters( 'learn-press/course-comments-number', $count, $post_id );
-		}
-
-		return $count;
 	}
+
+	if ( get_post_type( $post_id ) == LP_COURSE_CPT ) {
+		$sql = $wpdb->prepare(
+			' SELECT count(*) '
+			. " FROM {$wpdb->comments} "
+			. ' WHERE comment_post_ID = %d '
+			. ' AND comment_approved = 1 '
+			. ' AND comment_type != %s ',
+			$post_id,
+			'review'
+		);
+
+		$count = $wpdb->get_var( $sql );
+	}
+
+	return $count;
 }
+add_filter( 'get_comments_number', 'learn_press_filter_get_comments_number' );
 
 /**
  * Add custom classes to body tag class name

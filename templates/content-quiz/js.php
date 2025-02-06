@@ -49,6 +49,7 @@ $user          = learn_press_get_current_user();
 $editable      = $user->is_admin() || get_post_field( $user->is_author_of( $courseModel->get_id() ) );
 $max_retrying  = learn_press_get_quiz_max_retrying( $quiz->get_id(), $courseModel->get_id() );
 $quiz_results  = null;
+$userQuizModel = null;
 
 if ( $userModel ) {
 	$userQuizModel = UserQuizModel::find_user_item(
@@ -75,7 +76,9 @@ if ( $userModel ) {
 
 		$answered = $quiz_results['questions'];
 	}
-} else {
+}
+
+if ( ! $userQuizModel ) {
 	// Display quiz content.
 	echo '<div class="quiz-content">';
 	learn_press_echo_vuejs_write_on_php( $quiz->get_content() );

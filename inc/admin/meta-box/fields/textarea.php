@@ -8,8 +8,6 @@
 		</label>
 	</th>
 	<td class="forminp forminp-<?php echo esc_attr( sanitize_title( $value['type'] ) ); ?>">
-	<?php echo wp_kses_post( $description ); ?>
-
 		<textarea
 			name="<?php echo esc_attr( $value['id'] ); ?>"
 			id="<?php echo esc_attr( $value['id'] ); ?>"
@@ -18,5 +16,6 @@
 			placeholder="<?php echo esc_attr( $value['placeholder'] ); ?>"
 			<?php echo implode( ' ', $custom_attributes ); ?>
 			><?php echo wp_kses_post( $option_value ); ?></textarea>
+		<?php echo wp_kses_post( $description ); ?>
 	</td>
 </tr>

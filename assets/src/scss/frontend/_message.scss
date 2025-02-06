@@ -30,6 +30,31 @@
 	}
 }
 
+.lp-icon-passed {
+	margin-right: 5px;
+
+	&::before {
+		color: #059601;
+		font-family: 'lp-icon';
+		content: "\f058";
+	}
+}
+
+.lp-user-item {
+	&.graduation {
+		padding: 10px;
+
+		&.passed {
+			background-color: #EBF8E5;
+			color: #3AB500;
+		}
+		&.failed {
+			background-color: #FDECEC;
+			color: #D85554;
+		}
+	}
+}
+
 .course-graduation {
 
 	span {

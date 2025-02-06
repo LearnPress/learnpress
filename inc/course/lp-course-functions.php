@@ -78,13 +78,14 @@ function learn_press_get_course( $the_course = 0 ) {
  * Get type of items are supported in course curriculum (post types).
  * Default: [lp_lesson, lp_quiz]
  * When all addon use hook 'learn-press/course/item-types-support', will deprecate this function
- * @use CourseMoel::item_types_support
+ * @use CourseModel::item_types_support
  *
  * @return mixed
  * @since 3.0.0
  * @editor tungnx
  * @version  1.0.1
  * @return array
+ * @deprecated
  */
 function learn_press_get_course_item_types( bool $return_only_value = true ): array {
 	return apply_filters(

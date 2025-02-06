@@ -6,7 +6,7 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  4.0.3
+ * @version  4.0.5
  */
 
 defined( 'ABSPATH' ) || exit();
@@ -19,7 +19,11 @@ if ( $item->is_preview() && ! $user->has_enrolled_course( $course->get_id() ) ) 
 	return;
 }
 
-$message_confirm_complete_item = sprintf( '%s "%s"?', __( 'Do you want to complete the lesson', 'learnpress' ), $item->get_title() );
+$message_confirm_complete_item = sprintf(
+	'%s "%s"?',
+	__( 'Do you want to complete the lesson', 'learnpress' ),
+	$item->get_title()
+);
 $completed                     = $user->has_completed_item( $item->get_id(), $course->get_id() );
 
 if ( $completed ) :
@@ -43,23 +47,25 @@ if ( $completed ) :
 	<?php
 else :
 	$item_id_next = $course->get_next_item();
+	/**
+	 * @use LessonAjax::user_complete_lesson
+	 */
 	?>
 	<form method="post" name="learn-press-form-complete-lesson"
+		action="<?php echo add_query_arg( [ 'complete-lesson' => '' ], LP_Settings::url_handle_lp_ajax() ); ?>"
 		class="learn-press-form form-button <?php echo esc_attr( $completed ) ? 'completed' : ''; ?>"
 		data-title="<?php echo esc_attr( __( 'Complete lesson', 'learnpress' ) ); ?>"
 		data-confirm="<?php echo esc_attr( $message_confirm_complete_item ); ?>">
 
 		<?php do_action( 'learn-press/lesson/before-complete-button' ); ?>
 
-		<input type="hidden" name="id" value="<?php echo esc_attr( $item->get_id() ); ?>"/>
+		<input type="hidden" name="lesson_id" value="<?php echo esc_attr( $item->get_id() ); ?>"/>
 		<input type="hidden" name="course_id" value="<?php echo esc_attr( $course->get_id() ); ?>"/>
-		<input type="hidden" name="complete-lesson-nonce"
-			value="<?php echo esc_attr( wp_create_nonce( 'lesson-complete' ) ); ?>"/>
-		<input type="hidden" name="type" value="lp_lesson"/>
-		<input type="hidden" name="item_id_next" value="<?php echo esc_attr( $item_id_next ); ?>"/>
-		<input type="hidden" name="lp-ajax" value="complete-lesson"/>
-		<input type="hidden" name="noajax" value="yes"/>
-		<button class="lp-button button button-complete-item button-complete-lesson lp-btn-complete-item">
+		<input type="hidden" name="nonce"
+			value="<?php echo wp_create_nonce( 'wp_rest' ); ?>"/>
+		<input type="hidden" name="lp-load-ajax" value="user_complete_lesson"/>
+		<button class="lp-button button-complete-lesson lp-btn-complete-item"
+			type="submit">
 			<?php echo esc_html__( 'Complete', 'learnpress' ); ?>
 		</button>
 

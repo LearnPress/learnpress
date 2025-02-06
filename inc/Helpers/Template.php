@@ -22,13 +22,13 @@ class Template {
 	 * Set 1 for include file, 0 for not
 	 * Set 1 for separate template is block, 0 for not | use "wp_is_block_theme" function
 	 *
-	 * @param bool $include
+	 * @param bool $has_include
 	 *
 	 * @return self
 	 */
-	public static function instance( bool $include = true ): Template {
+	public static function instance( bool $has_include = true ): Template {
 		$self          = new self();
-		$self->include = $include;
+		$self->include = $has_include;
 
 		return $self;
 	}
@@ -303,14 +303,19 @@ class Template {
 	 *
 	 * @param string $message
 	 * @param string $status 'success', 'warning', 'error, 'info'
+	 * @param bool $has_print since 4.2.7.6, true for print, false for return
 	 *
-	 * @return void
+	 * @return void|string
 	 * @since 4.2.6.9.3
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
-	public static function print_message( string $message, string $status = 'success' ) {
+	public static function print_message( string $message, string $status = 'success', bool $has_print = true ) {
 		if ( empty( $message ) ) {
-			return;
+			if ( $has_print ) {
+				return;
+			} else {
+				return '';
+			}
 		}
 
 		$section = [
@@ -319,6 +324,10 @@ class Template {
 			'wrapper_end' => '</div>',
 		];
 
-		echo Template::combine_components( $section );
+		if ( $has_print ) {
+			echo Template::combine_components( $section );
+		} else {
+			return Template::combine_components( $section );
+		}
 	}
 }

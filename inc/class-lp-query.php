@@ -100,6 +100,11 @@ class LP_Query {
 				);
 			}
 		}
+
+		// Code temporary to fix 404 of order receiver page
+		if ( LP_Page_Controller::is_page_checkout() ) {
+			flush_rewrite_rules();
+		}
 	}
 
 	/**

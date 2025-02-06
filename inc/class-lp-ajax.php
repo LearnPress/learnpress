@@ -1,6 +1,10 @@
 <?php
 
 use LearnPress\Helpers\Template;
+use LearnPress\Models\CourseModel;
+use LearnPress\Models\UserItems\UserCourseModel;
+use LearnPress\Models\UserItems\UserItemModel;
+use LearnPress\Models\UserModel;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -15,7 +19,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 				'recover-order',
 				'request-become-a-teacher:nonce',
 				'checkout:nopriv',
-				'complete-lesson',
+				//'complete-lesson',
 				'finish-course', // finish_course.
 				'external-link:nopriv',
 			);
@@ -91,8 +95,8 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			if ( is_wp_error( $order ) ) {
 				$response->message = $order->get_error_message();
 			} else {
-				$response->status   = 'success';
-				$response->message  = sprintf(
+				$response->status         = 'success';
+				$response->message        = sprintf(
 					__( 'The order %s has been successfully recovered.', 'learnpress' ),
 					$order_key
 				);
@@ -144,46 +148,54 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 		 * TODO: should move this function to api - tungnx
 		 */
 		public static function finish_course() {
-			$nonce     = LP_Request::get_string( 'finish-course-nonce' );
-			$course_id = LP_Request::get_int( 'course-id' );
-			$course    = learn_press_get_course( $course_id );
-			$user      = learn_press_get_current_user();
+			$link_redirect = '';
+			$message_data  = [
+				'status'  => 'error',
+				'content' => '',
+			];
 
-			$nonce_action = sprintf( 'finish-course-%d-%d', $course_id, $user->get_id() );
+			try {
+				$nonce       = LP_Request::get_param( 'finish-course-nonce', '', 'text', 'post' );
+				$course_id   = LP_Request::get_param( 'course-id', 0, 'int', 'post' );
+				$courseModel = CourseModel::find( $course_id, true );
+				$user_id     = get_current_user_id();
+				$userModel   = UserModel::find( $user_id, true );
 
-			if ( ! $user->get_id() || ! $course || ! wp_verify_nonce( $nonce, $nonce_action ) ) {
-				wp_die( __( 'Access denied!', 'learnpress' ) );
+				$nonce_action = sprintf( 'finish-course-%d-%d', $course_id, $user_id );
+				if ( ! $courseModel || ! $userModel || ! wp_verify_nonce( $nonce, $nonce_action ) ) {
+					throw new Exception( __( 'Request is invalid!', 'learnpress' ) );
+				}
+
+				$userCourseModel = UserCourseModel::find( $user_id, $course_id, true );
+				if ( ! $userCourseModel instanceof UserCourseModel ) {
+					throw new Exception( __( 'You have not enrolled in this course.', 'learnpress' ) );
+				}
+
+				$can_finish = $userCourseModel->can_finish();
+				if ( is_wp_error( $can_finish ) ) {
+					throw new Exception( $can_finish->get_error_message() );
+				}
+
+				$userCourseModel->handle_finish();
+				$lp_redirect             = LP_Settings::get_option( 'course_finish_redirect' );
+				$link_redirect           = ! empty( $lp_redirect ) ? $lp_redirect : $courseModel->get_permalink();
+				$link_redirect           = esc_url_raw( $link_redirect );
+				$message_data['status']  = 'success';
+				$message_data['content'] = __( 'Course has been finished successfully.', 'learnpress' );
+			} catch ( Throwable $e ) {
+				$message_data['content'] = $e->getMessage();
 			}
 
-			$finished    = $user->finish_course( $course_id );
-			$lp_redirect = LP_Settings::get_option( 'course_finish_redirect' );
-			$redirect    = ! empty( $lp_redirect ) ? $lp_redirect : get_the_permalink( $course_id );
-
-			$response = array(
-				'redirect' => apply_filters(
-					'learn-press/finish-course-redirect',
-					$redirect,
-					$course_id
-				),
-			);
-
-			if ( $finished ) {
-				learn_press_update_user_item_meta( $finished, 'finishing_type', 'click' );
-				$response['result'] = 'success';
-			} else {
-				$response['result'] = 'error';
-			}
-
-			learn_press_maybe_send_json( $response );
-
-			if ( ! empty( $response['redirect'] ) ) {
-				wp_redirect( $response['redirect'] );
-				exit();
+			learn_press_set_message( $message_data );
+			if ( ! empty( $link_redirect ) ) {
+				wp_redirect( $link_redirect );
+				die();
 			}
 		}
 
 		/**
 		 * Complete lesson
+		 * @deprecated 4.2.7.6
 		 */
 		public static function complete_lesson() {
 			$response = array(

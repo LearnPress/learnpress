@@ -84,8 +84,6 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 * LP_Gateway_Paypal constructor.
 		 */
 		public function __construct() {
-			$this->id = 'paypal';
-
 			$this->method_title       = esc_html__( 'PayPal', 'learnpress' );
 			$this->method_description = esc_html__( 'Make a payment via Paypal.', 'learnpress' );
 			$this->icon               = LP_PLUGIN_URL . 'assets/images/paypal-logo-preview.png';
