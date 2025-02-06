@@ -2,8 +2,8 @@
 Contributors: thimpress, tungnx89, nhamdv, nguyenlammanh, tunnhn, phonglq.foobla, thongta, kendy73, leehld
 Donate link:
 Tags: elearning, education, course, lms, learning management system
-Tested up to: 6.7.1
-Stable tag: 4.2.7.5
+Tested up to: 6.7
+Stable tag: 4.2.7.6
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -221,8 +221,10 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
-= 4.2.7.6 (2025-01-15) =
+= 4.2.7.6 (2025-02-05) =
 ~ Fixed: security.
+~ Fixed: error 404-Page Order received after checkout.
+~ Fixed: error 404-Page Profile sub-page.
 ~ Optimize: speed load list courses.
 ~ Added: option choose "Layout single course (Modern/Classic)".
 ~ Added: option "Curriculum display" (currently apply for layout Modern).
