@@ -2,9 +2,9 @@
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 2,
 	"name": "learnpress/lesson-single-course",
-	"title": "Lesson Single Course",
+	"title": "Lesson Course",
 	"category": "lp-single-course-category",
-	"description": "Renders template Lesson Single Course PHP templates.",
+	"description": "Renders template Lesson Course PHP templates.",
 	"textdomain": "learnpress",
 	"keywords": ["lesson single course", "learnpress"],
 	"attributes": {

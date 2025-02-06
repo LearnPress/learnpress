@@ -8,7 +8,7 @@ export const edit = ( props ) => {
 		<>
 			<div { ...blockProps }>
 				<strong>
-					{ 'Tags Single Course' }
+					{ 'Tags Course' }
 				</strong>
 			</div>
 		</>

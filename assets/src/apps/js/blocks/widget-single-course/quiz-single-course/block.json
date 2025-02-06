@@ -2,9 +2,9 @@
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 2,
 	"name": "learnpress/quiz-single-course",
-	"title": "Quiz Single Course",
+	"title": "Quiz Course",
 	"category": "lp-single-course-category",
-	"description": "Renders template Quiz Single Course PHP templates.",
+	"description": "Renders template Quiz Course PHP templates.",
 	"textdomain": "learnpress",
 	"keywords": ["quiz single course", "learnpress"],
 	"attributes": {
