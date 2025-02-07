@@ -4,6 +4,7 @@
 .lp-archive-courses {
 	width: 100%;
 	scroll-margin: 30px;
+	//font-size: $font-size-base;
 
 	.lp-content-area {
 		&.has-sidebar {
@@ -16,10 +17,10 @@
 			.learn-press-courses[data-layout="grid"] {
 				li {
 					width: 33.33%;
-					@media (max-width: 1440px) {
+					@media (max-width: 1200px) {
 						width: 50%;
 					}
-					@media (max-width: 768px) {
+					@media (max-width: 600px) {
 						width: 100%;
 					}
 				}
@@ -95,6 +96,7 @@
 		//float: left;
 		//padding-top: 4px;
 		margin-bottom: $spacing-base-4x;
+
 		h1 {
 			margin: 0;
 			font-size: $font-size-h2;
@@ -111,6 +113,7 @@
 	position: relative;
 	@include flex();
 	@include flex-wrap(wrap);
+
 	.course-item {
 		flex-direction: column;
 		display: flex;
@@ -218,10 +221,10 @@
 			}
 
 			.course-price {
-				.origin-price,
+				.free,
 				.price {
 					font-size: $font-size-large;
-					font-weight: $heading-font-weight;
+					font-weight: $link-font-weight;
 				}
 
 				.origin-price {
@@ -250,6 +253,7 @@
 		overflow: hidden;
 		position: relative;
 		border-radius: $border-radius-global;
+
 		.lp-badge {
 			&.featured {
 				position: absolute;
@@ -327,7 +331,8 @@
 		margin: 0 0 $spacing-base-3x 0;
 		padding: 0;
 		display: block;
-
+		font-size: $font-size-h4;
+		font-weight: $link-font-weight;
 		&:hover {
 			color: var(--lp-primary-color);
 		}
@@ -417,7 +422,7 @@
 	.course-instructor-category {
 		display: flex;
 		padding: 0;
-		gap: $spacing-base-3x;
+		gap: $spacing-base;
 		flex-wrap: wrap;
 		margin-bottom: $spacing-base-3x;
 
@@ -441,13 +446,15 @@
 		}
 
 		a {
-			font-weight: 600;
+			font-weight: $link-font-weight;
 			text-decoration: none;
+
 			&:hover {
 				color: $color-primary;
 			}
 		}
 	}
+
 	.course-wrap-meta {
 		display: flex;
 		padding: 0;
@@ -461,10 +468,12 @@
 			text-transform: capitalize;
 			display: flex;
 			gap: $spacing-base-2x;
+
 			&::before {
 				color: var(--lp-primary-color);
-				font-family: "lp-icon";
+				font-family: 'lp-icon';
 			}
+
 			& > div {
 				display: inline-block;
 			}
@@ -495,6 +504,7 @@
 		}
 	}
 
+<<<<<<< HEAD
 	.course-readmore {
 		a {
 			padding: $spacing-base-2x $spacing-base-6x;
@@ -509,6 +519,25 @@
 				background: $color-primary;
 				color: $color-white;
 				border-color: $color-primary;
+=======
+	.course-content {
+		.course-readmore {
+			a {
+				padding: $spacing-base-2x $spacing-base-6x;
+				border-radius: $border-radius-global;
+				color: $text-color-base;
+				border: 1px solid $text-color-base;
+				transition: all 0.3s;
+				display: block;
+				background: transparent;
+				text-decoration: none;
+
+				&:hover {
+					background: $color-primary;
+					color: $color-white;
+					border-color: $color-primary;
+				}
+>>>>>>> origin/develop
 			}
 		}
 	}
@@ -647,9 +676,6 @@
 		.course-item {
 			border: 1px solid $border-color;
 			border-radius: $border-radius-global;
-			&:hover {
-				box-shadow: 0 15px 20px 0 rgba(0, 0, 0, 0.2);
-			}
 		}
 
 		.course-wrap-meta {
@@ -663,6 +689,7 @@
 		.course-info {
 			padding: $spacing-base-5x;
 			flex-grow: 1;
+<<<<<<< HEAD
 			flex-direction: column;
 			align-items: flex-start;
 			gap: $spacing-base-3x;
@@ -670,6 +697,36 @@
 				width: 100%;
 				text-align: center;
 			}
+=======
+
+			.course-info {
+				flex-direction: column;
+				align-items: flex-start;
+				gap: $spacing-base-3x;
+
+				.course-readmore {
+					width: 100%;
+					text-align: center;
+				}
+			}
+
+			//.course-title {
+			//	font-size: $font-size-h4;
+			//}
+
+			.course-excerpt, .course-short-description {
+				display: none;
+			}
+
+			//
+			//.separator {
+			//	display: block;
+			//	border-top: 1px solid rgba(153, 153, 153, 0.2);
+			//	margin-left: -20px;
+			//	margin-right: -20px;
+			//}
+
+>>>>>>> origin/develop
 		}
 		.course-title {
 			font-size: $font-size-h4;
@@ -691,6 +748,10 @@
 			margin-left: 15px;
 			margin-right: 15px;
 		}
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/develop
 		.course-thumbnail {
 			border-radius: $border-radius-global $border-radius-global 0 0;
 		}
@@ -769,27 +830,46 @@
 		-webkit-appearance: none;
 		appearance: none;
 		line-height: 1.1;
+<<<<<<< HEAD
 		.woocommerce-js & {
 			background-position-x: calc(100% - 10px);
 		}
+=======
+
+		.woocommerce-js & {
+			background-position-x: calc(100% - 10px);
+		}
+
+>>>>>>> origin/develop
 		&:focus {
 			border-color: var(--lp-primary-color);
 			outline: 0;
 		}
 	}
+<<<<<<< HEAD
 	> * {
 		display: flex;
+=======
+
+	> * {
+		display: flex
+>>>>>>> origin/develop
 	}
 
 	.search-courses {
 		flex: 1;
+<<<<<<< HEAD
 
+=======
+		margin-bottom: 0;
+>>>>>>> origin/develop
 		input {
 			width: 100%;
 			max-width: 240px;
 			margin: 0 4px 0 0;
 			@include input();
 			@include placeholder-color($input-color-placeholder);
+
 			&:focus {
 				border-color: var(--lp-primary-color);
 				outline: 0;
@@ -799,10 +879,15 @@
 		button {
 			@include input();
 			box-shadow: 0 0 0;
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/develop
 			i {
 				font-size: 1.2em;
 				line-height: 1.2;
 			}
+
 			&:focus {
 				outline: 0;
 			}
@@ -819,6 +904,10 @@
 		align-items: center;
 		justify-content: center;
 
+		@media (max-width: 768px) {
+			display: none;
+		}
+
 		input[type="radio"] {
 			display: none;
 		}
@@ -828,11 +917,16 @@
 			cursor: pointer;
 			//background-color: $color-white;
 			padding: $spacing-base-2x $spacing-base-3x;
+
 			&::before {
 				display: inline-block;
 				margin: 6px;
 				color: $text-color-base;
+<<<<<<< HEAD
 				font-family: "lp-icon";
+=======
+				font-family: 'lp-icon';
+>>>>>>> origin/develop
 				line-height: 1.2;
 				width: 1em;
 			}
@@ -841,6 +935,10 @@
 				border-radius: $border-radius-global 0 0 $border-radius-global;
 				border: 1px solid $border-color;
 				border-right: none;
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/develop
 				&::before {
 					content: "\f009";
 				}
@@ -851,15 +949,30 @@
 				border-radius: 0 $border-radius-global $border-radius-global 0;
 				border: 1px solid $border-color;
 				border-left: none;
+
 				&::before {
 					content: "\f03a";
 				}
 			}
 		}
 	}
+
+	.course-filter-btn-mobile {
+		display: inline-flex;
+		align-items: center;
+
+		@media (min-width: 769px) {
+			display: none;
+		}
+	}
+
 	@media (max-width: 767px) {
 		.search-courses {
 			width: 100%;
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/develop
 			input {
 				min-width: 240px;
 				max-width: unset;
@@ -869,11 +982,16 @@
 }
 
 @for $i from 0 through 9 {
+<<<<<<< HEAD
 	input[type="radio"]:nth-child(#{$i*2 + 1}):checked
 		~ .switch-btn:nth-child(#{$i*2 + 2}) {
+=======
+	input[type="radio"]:nth-child(#{$i*2+1}):checked ~ .switch-btn:nth-child(#{$i*2+2}) {
+>>>>>>> origin/develop
 		.switch-layout & {
 			background-color: $bg-grey;
 		}
+
 		&::before {
 			color: var(--lp-primary-color);
 		}

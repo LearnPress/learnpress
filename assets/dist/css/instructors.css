@@ -1,0 +1,295 @@
+/**
+* Style for instructor page
+*/
+:root {
+  --lp-cotainer-max-with: var(--lp-container-max-width);
+}
+
+.wp-block-group {
+  --lp-container-max-width: var(--wp--style--global--wide-size);
+}
+
+/**
+* Styles for all page of LP
+*
+* @since 4.2.3
+* @version 1.0.0
+*/
+/**
+ * Mixin
+ */
+@-webkit-keyframes rotating4 {
+  from {
+    -webkit-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes rotating4 {
+  from {
+    -ms-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  to {
+    -ms-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@-webkit-keyframes animation4 {
+  from {
+    left: -40%;
+    width: 40%;
+  }
+  to {
+    left: 100%;
+    width: 10%;
+  }
+}
+@keyframes animation4 {
+  from {
+    left: -40%;
+    width: 40%;
+  }
+  to {
+    left: 100%;
+    width: 10%;
+  }
+}
+/**
+* Style for instructor page
+*/
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/*  start reset css */
+body {
+  background: #fff;
+}
+body.learnpress-page {
+  overflow-x: hidden;
+}
+
+button {
+  cursor: pointer;
+}
+
+input, button, select, textarea {
+  outline: none;
+}
+
+/*html {
+	overflow-x: hidden;
+}*/
+a {
+  -webkit-transition: 0.3s;
+  -moz-transition: 0.3s;
+  -ms-transition: 0.3s;
+  -o-transition: 0.3s;
+  transition: 0.3s;
+  text-decoration: none;
+}
+
+p {
+  margin-bottom: 1em;
+}
+p:last-child {
+  margin: 0;
+}
+
+.lp-content-area {
+  max-width: var(--lp-container-max-width) !important;
+  margin: 0 auto;
+  padding-right: var(--lp-cotainer-padding);
+  padding-left: var(--lp-cotainer-padding);
+}
+.lp-content-area.learn-press-message {
+  margin-bottom: 24px;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.lp-ico svg {
+  width: 20px;
+  height: 20px;
+}
+
+.lp-button {
+  border: 1px solid var(--lp-border-color, #E2E0DB);
+  border-radius: var(--lp-border-radius, 5px);
+  padding: 8px 16px;
+}
+.lp-button.loading {
+  pointer-events: none;
+  opacity: 0.8;
+}
+.lp-button.loading:before {
+  display: inline-block;
+  font-family: "lp-icon";
+  content: "\f110";
+  animation: lp-rotating 1s linear infinite;
+  margin-right: 5px;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  vertical-align: middle;
+  margin-top: -2px;
+}
+
+.lp-hidden {
+  display: none !important;
+}
+
+/**
+* Style for instructor page
+*/
+/**
+* Styles for all page of LP
+*
+* @since 4.2.3
+* @version 1.0.0
+*/
+/**
+ * Instructors page.
+ *
+ * @since 4.2.3
+ * @version 1.0.0
+ */
+body .entry-content.has-global-padding {
+  padding-left: 0;
+  padding-right: 0;
+}
+body .wp-site-blocks {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.learnpress-v4 .lp-content-area {
+  --lp-container-max-width: inherit;
+  --lp-cotainer-padding: 0;
+}
+.learnpress-v4 .lp-single-course .lp-content-area {
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+.lp-list-instructors {
+  --lp-instructor-item-padding: 20px;
+  --lp-instructor-border-color: #c3c4c7;
+  --lp-instructor-minmax-column: 250px;
+}
+.lp-list-instructors .ul-list-instructors {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--lp-instructor-minmax-column), 1fr));
+  gap: 30px;
+  padding: 0 !important;
+  margin: 0 0 30px 0;
+  list-style: none;
+}
+.lp-list-instructors .ul-list-instructors > ul.lp-skeleton-animation {
+  grid-column: span 4;
+}
+.lp-list-instructors .ul-list-instructors li.no-instructor {
+  grid-column: span 4;
+}
+.lp-list-instructors .ul-list-instructors li.item-instructor {
+  border: 1px solid var(--lp-instructor-border-color);
+  padding: var(--lp-instructor-item-padding);
+  list-style: none;
+  border-radius: var(--lp-border-radius, 5px);
+}
+.lp-list-instructors .ul-list-instructors li.item-instructor .instructor-avatar {
+  margin-bottom: 12px;
+}
+.lp-list-instructors .ul-list-instructors li.item-instructor .instructor-display-name {
+  display: block;
+  margin-bottom: 12px;
+  font-size: 1.2em;
+  line-height: 1.3;
+  font-weight: bold;
+}
+.lp-list-instructors .ul-list-instructors li.item-instructor .instructor-avatar img {
+  width: 100%;
+  border-radius: var(--lp-border-radius, 5px);
+}
+.lp-list-instructors .ul-list-instructors li.item-instructor .instructor-info {
+  display: flex;
+  column-gap: 16px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  row-gap: 8px;
+}
+.lp-list-instructors .ul-list-instructors li.item-instructor .instructor-info > div {
+  display: flex;
+  align-items: center;
+  column-gap: 10px;
+}
+.lp-list-instructors .ul-list-instructors li.item-instructor .instructor-info > div span {
+  display: inline-flex;
+  white-space: nowrap;
+}
+.lp-list-instructors .ul-list-instructors li.item-instructor .instructor-info > div .lp-ico {
+  color: var(--lp-primary-color);
+}
+.lp-list-instructors .ul-list-instructors li.item-instructor .instructor-btn-view {
+  padding: 8px 24px;
+  border-radius: var(--lp-border-radius, 5px);
+  color: var(--lp-color-base, #333);
+  border: 1px solid var(--lp-color-base, #333);
+  transition: all 0.3s;
+  display: block;
+  background: transparent;
+  text-decoration: none;
+  text-align: center;
+}
+.lp-list-instructors .ul-list-instructors li.item-instructor .instructor-btn-view:hover {
+  background: var(--lp-primary-color);
+  color: var(--lp-color-white, #fff);
+  border-color: var(--lp-primary-color);
+}
+
+.learn-press-pagination {
+  margin: 20px 0;
+  text-align: center;
+}
+.learn-press-pagination .page-numbers {
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  list-style: none;
+}
+.learn-press-pagination .page-numbers > li {
+  display: inline-block;
+  margin: 0;
+}
+.learn-press-pagination .page-numbers > li .page-numbers {
+  float: unset;
+  padding: 0 12px;
+  color: #666;
+  text-decoration: none;
+}
+.learn-press-pagination .page-numbers > li .page-numbers.current {
+  color: var(--lp-primary-color);
+  font-weight: 400;
+}
+.learn-press-pagination .page-numbers > li .page-numbers:hover {
+  color: var(--lp-primary-color);
+}

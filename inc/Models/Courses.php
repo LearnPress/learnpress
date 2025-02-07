@@ -68,7 +68,7 @@ class Courses {
 	 * @param LP_Course_Filter $filter
 	 *
 	 * @return void
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 * @since 4.2.3.3 move from class LP_Course
 	 */
 	public static function handle_params_for_query_courses( LP_Course_Filter &$filter, array $param = [] ) {
@@ -144,8 +144,10 @@ class Courses {
 		// Sort by level
 		$levels_str = LP_Helper::sanitize_params_submitted( urldecode( $param['c_level'] ?? '' ) );
 		if ( ! empty( $levels_str ) ) {
-			$levels_str     = str_replace( 'all', '', $levels_str );
-			$levels         = explode( ',', $levels_str );
+			$levels = explode( ',', $levels_str );
+			if ( in_array( 'all', $levels ) ) {
+				$levels[] = '';
+			}
 			$filter->levels = $levels;
 		}
 

@@ -300,6 +300,7 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		$all_items = array_merge( $current_items, $items );
 		$result    = array();
 		foreach ( $all_items as $key => $item ) {
+			$key = $key + 1;
 			if ( ! isset( $item['id'] ) || ! isset( $item['type'] ) ) {
 				continue;
 			}

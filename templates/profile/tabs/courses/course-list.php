@@ -5,9 +5,11 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  4.0.12
+ * @version  4.0.13
  */
 
+use LearnPress\Models\CourseModel;
+use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
 use LearnPress\TemplateHooks\UserItem\UserCourseTemplate;
 
@@ -36,33 +38,35 @@ $singleCourseTemplate = SingleCourseTemplate::instance();
 	<tbody>
 		<?php
 		foreach ( $course_ids as $id ) {
-			$course = learn_press_get_course( $id );
-			if ( ! $course ) {
+			$courseModel = CourseModel::find( $id, true );
+			if ( ! $courseModel ) {
 				continue;
 			}
 
-			$course_data = $user->get_course_data( $id );
-			if ( ! $course_data ) {
+			$userCourseModel = UserCourseModel::find( $user->get_id(), $id, true );
+			if ( ! $userCourseModel ) {
 				continue;
 			}
-			$course_result = $course_data->get_result();
+
+			$course_result = $userCourseModel->calculate_course_results();
 			?>
 			<tr class="lp_profile_course_progress__item">
 				<td>
-					<a href="<?php echo $course->get_permalink(); ?>" title="<?php echo $course->get_title(); ?>">
-						<?php echo wp_kses_post( $singleCourseTemplate->html_image( $course ) ); ?>
+					<a href="<?php echo $courseModel->get_permalink(); ?>" title="<?php echo $courseModel->get_title(); ?>">
+						<?php echo wp_kses_post( $singleCourseTemplate->html_image( $courseModel ) ); ?>
 					</a>
 				</td>
 				<td>
-					<a href="<?php echo $course->get_permalink(); ?>"
-					   title="<?php echo $course->get_title() ?>"><?php echo wp_kses_post( $singleCourseTemplate->html_title( $course ) ); ?>
+					<a href="<?php echo $courseModel->get_permalink(); ?>"
+						title="<?php echo $courseModel->get_title(); ?>">
+						<?php echo wp_kses_post( $singleCourseTemplate->html_title( $courseModel ) ); ?>
 					</a>
 				</td>
 				<td><?php echo esc_html( $course_result['result'] ); ?>%</td>
 				<td>
-					<?php echo $userCourseTemplate->html_expire_date_time( $course_data ); ?>
+					<?php echo $userCourseTemplate->html_expire_date_time( $userCourseModel ); ?>
 				</td>
-				<td><?php echo $userCourseTemplate->html_end_date_time( $course_data ); ?></td>
+				<td><?php echo $userCourseTemplate->html_end_date_time( $userCourseModel ); ?></td>
 			</tr>
 			<?php
 		}

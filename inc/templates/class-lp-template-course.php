@@ -39,6 +39,8 @@ class LP_Template_Course extends LP_Abstract_Template {
 	}
 
 	public function course_buttons() {
+		global $lp_user;
+		$lp_user = learn_press_get_current_user();
 		learn_press_get_template( 'single-course/buttons' );
 	}
 
@@ -156,7 +158,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 
 		$courseModel     = CourseModel::find( $course->get_id(), true );
 		$can_purchase    = $courseModel->can_purchase( UserModel::find( $user->get_id(), true ) );
-		$userCourseModel = UserCourseModel::find( $user->get_id(), $course->get_id() );
+		$userCourseModel = UserCourseModel::find( $user->get_id(), $course->get_id(), true );
 		if ( get_current_user_id() ) {
 			if ( $userCourseModel ) {
 				if ( $userCourseModel->has_enrolled() ) {
@@ -407,7 +409,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 				throw new Exception( 'User or Course not exists!' );
 			}
 
-			$userCourseModel = UserCourseModel::find( $user_id, $courseModel->get_id() );
+			$userCourseModel = UserCourseModel::find( $user_id, $courseModel->get_id(), true );
 			if ( ! $userCourseModel || ! $userCourseModel->has_enrolled() ) {
 				throw new Exception( 'User not enrolled course' );
 			}
@@ -589,14 +591,23 @@ class LP_Template_Course extends LP_Abstract_Template {
 	 *
 	 * @since 4.1.6
 	 * @since 4.2.5.5 remove code load old template user for course curriculum load page instead of via AJAX.
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public function course_curriculum() {
+		/**
+		 * @var CourseModel $lpCourseModel
+		 */
+		global $lpCourseModel;
 		$course_item = LP_Global::course_item();
 
 		if ( $course_item ) { // Check if current item is viewable
-			$item_id    = $course_item->get_id();
-			$section_id = LP_Section_DB::getInstance()->get_section_id_by_item_id( absint( $item_id ) );
+			$course_id = 0;
+			if ( $lpCourseModel ) {
+				$course_id = $lpCourseModel->get_id();
+			}
+
+			$item_id    = (int) $course_item->get_id();
+			$section_id = LP_Section_DB::getInstance()->get_section_id_by_item_id( $item_id, $course_id );
 		}
 		?>
 		<div class="learnpress-course-curriculum" data-section="<?php echo esc_attr( $section_id ?? '' ); ?>"
@@ -1006,11 +1017,12 @@ class LP_Template_Course extends LP_Abstract_Template {
 			return;
 		}
 
-		$user = learn_press_get_current_user();
-
-		// if ( ! $user->is_admin() && ! $user->has_course_status( $course->get_id(), array( 'enrolled', 'finished' ) ) ) {
-		// return;
-		// }
+		$user                 = learn_press_get_current_user();
+		$user_can_view_course = $user->can_view_content_course( $course->get_id() );
+		$user_can_view_item   = $user->can_view_item( $item->get_id(), $user_can_view_course );
+		if ( ! $user_can_view_item->flag ) {
+			return;
+		}
 
 		if ( $item->setup_postdata() ) {
 

@@ -46,6 +46,13 @@ function widgetRestAPI() {
 				if ( elSkeleton ) {
 					elSkeleton.remove();
 				}
+
+				// Set temporary count course fields filter selected
+				const classCourseFilter = 'lp-form-course-filter';
+				const courseFilter = document.querySelector( `.${ classCourseFilter }` );
+				if ( courseFilter ) {
+					window.lpCourseFilter.countFieldsSelected( courseFilter );
+				}
 			},
 		};
 

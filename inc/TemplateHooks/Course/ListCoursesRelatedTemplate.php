@@ -35,7 +35,14 @@ class ListCoursesRelatedTemplate {
 		add_filter( 'lp/rest/ajax/allow_callback', [ $this, 'allow_callback' ] );
 	}
 
-	public function allow_callback( $callbacks ) {
+	/**
+	 * Allow callback for AJAX.
+	 * @use self::render_courses
+	 * @param array $callbacks
+	 *
+	 * @return array
+	 */
+	public function allow_callback( array $callbacks ): array {
 		$callbacks[] = get_class( $this ) . ':render_courses';
 
 		return $callbacks;
@@ -57,8 +64,8 @@ class ListCoursesRelatedTemplate {
 			'class'  => get_class( $this ),
 			'method' => 'render_courses',
 		];
-
-		$args = [
+		$args     = [
+			'id_url'    => 'course-related',
 			'course_id' => $course->get_id(),
 			'limit'     => $limit,
 		];

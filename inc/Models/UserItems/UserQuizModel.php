@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Class UserItemModel
+ * Class UserQuizModel
  *
  * @package LearnPress/Classes
  * @version 1.0.1
@@ -44,10 +44,6 @@ class UserQuizModel extends UserItemModel {
 
 	public function __construct( $data = null ) {
 		parent::__construct( $data );
-
-		if ( $data ) {
-			$this->get_quiz_post_model();
-		}
 	}
 
 	/**
@@ -257,7 +253,7 @@ class UserQuizModel extends UserItemModel {
 		// Check user, course of quiz is enrolled.
 		$userCourseModel = $this->get_user_course_model();
 		if ( ! $userCourseModel instanceof UserCourseModel
-			|| $userCourseModel->graduation !== LP_GRADUATION_IN_PROGRESS ) {
+			|| $userCourseModel->status !== LP_COURSE_ENROLLED ) {
 			$can_start = new WP_Error( 'not_errol_course', __( 'Please enroll in the course before starting the quiz.', 'learnpress' ) );
 		} elseif ( $userCourseModel->status === LP_COURSE_FINISHED ) {
 			$can_start = new WP_Error( 'finished_course', __( 'You have already finished the course of this quiz.', 'learnpress' ) );
@@ -320,7 +316,7 @@ class UserQuizModel extends UserItemModel {
 			|| $userCourseModel->get_graduation() !== LP_COURSE_GRADUATION_IN_PROGRESS ) {
 			$can_retake = new WP_Error(
 				'not_errol_course',
-				__( 'Please enroll in the course before starting the quiz.', 'clearness' )
+				__( 'Please enroll in the course before starting the quiz.', 'learnpress' )
 			);
 		} elseif ( $userCourseModel->get_status() === LP_COURSE_FINISHED ) {
 			$can_retake = new WP_Error(

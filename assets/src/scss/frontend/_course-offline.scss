@@ -34,6 +34,7 @@
 			font-size: var(--lp-font-size-base);
 			align-items: center;
 			margin-bottom: 8px;
+			padding: 0;
 			li{
 				list-style: none;
 				padding: 0;
@@ -94,6 +95,15 @@
 			margin-top: 16px;
 		}
 
+		.course-features,
+		.course-target,
+		.course-requirements {
+			ul {
+				margin: 0 0 0 20px;
+				padding: 0;
+			}
+		}
+
 		.instructor-social {
 			display: flex;
 			gap: 8px;
@@ -145,12 +155,23 @@
 
 	&__right {
 		width: 30%;
+		position: relative;
 
-		.info-metas,
+		&__sticky {
+			position: sticky;
+			top: 0;
+		}
+	}
+
+	.info-metas,
 		.course-featured-review {
 			border: 1px solid #E2E0DB;
 			padding: 30px;
 			margin-bottom: 60px;
+
+			@media (max-width: 767px) {
+				margin-bottom: 30px;
+			}
 			//border-radius: 8px;
 
 			.info-meta-item {
@@ -179,7 +200,7 @@
 			}
 		}
 
-		form.purchase-course {
+		form.purchase-course, form.enroll-course, form.retake-course {
 			width: 100%;
 		}
 
@@ -247,7 +268,6 @@
 			order: 3;
 			color: var(--lp-primary-color);
 		}
-	}
 
 	.lp-list-courses-related {
 		h3 {
@@ -319,17 +339,28 @@
 	margin-top: 30px;
 	margin-bottom: 30px;
 
+	@media (max-width: 600px) {
+		flex-wrap: wrap;
+	}
+
 	.instructor-display-name {
 		font-size: 1.4rem;
 	}
 	.lp-instructor-meta {
 		margin-top: 16px;
 	}
+	.instructor-description {
+		margin-top: 16px;
+	}
+
+	img {
+		border-radius: $border-radius-global;
+	}
 
 }
 
 .instructor-display-name {
-	font-weight: bold;
+	font-weight: $link-font-weight;
 }
 
 .instructor-item-meta {

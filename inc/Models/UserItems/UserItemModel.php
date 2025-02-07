@@ -98,6 +98,15 @@ class UserItemModel {
 	 */
 	public $meta_data;
 
+	// Constants
+	const STATUS_COMPLETED       = 'completed';
+	const STATUS_FINISHED        = 'finished';
+	const STATUS_ENROLLED        = 'enrolled';
+	const STATUS_CANCEL          = 'cancel';
+	const GRADUATION_IN_PROGRESS = 'in-progress';
+	const GRADUATION_PASSED      = 'passed';
+	const GRADUATION_FAILED      = 'failed';
+
 	/**
 	 * If data get from database, map to object.
 	 * Else create new object to save data to database.
@@ -243,7 +252,7 @@ class UserItemModel {
 	 *
 	 * @return false|UserItemModel|static
 	 * @since 4.2.7.3
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public static function find_user_item(
 		int $user_id,
@@ -272,7 +281,7 @@ class UserItemModel {
 		if ( $check_cache ) {
 			$userItemModel = $lpUserItemCache->get_cache( $key_cache );
 			if ( $userItemModel instanceof UserItemModel ) {
-				return $userItemModel;
+				return new static( $userItemModel );
 			}
 		}
 

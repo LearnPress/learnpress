@@ -7,8 +7,6 @@
  * @version 4.0.1
  */
 
-use LearnPress\Models\CourseModel;
-
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -50,11 +48,6 @@ if ( $post instanceof WP_Post ) {
 			include $template_404;
 		}
 	} else {
-		$courseModel = CourseModel::find( $post->ID, true );
-
-		// hook from @since 4.2.7.5
-		do_action( 'learn-press/single-course/layout', $courseModel );
-
 		learn_press_get_template( 'content-single-course' );
 	}
 }

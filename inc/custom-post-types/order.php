@@ -211,10 +211,10 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		 */
 		public function posts_where_paged( $where ) {
 			// Code temporary, when release about 1 week, will remove it.
-			$lp_filter_post = new LP_Post_Type_Filter();
-			$lp_filter_post->post_type = LP_ORDER_CPT;
+			$lp_filter_post              = new LP_Post_Type_Filter();
+			$lp_filter_post->post_type   = LP_ORDER_CPT;
 			$lp_filter_post->post_status = [ 'lp-trash' ];
-			$orders_trash = LP_Post_DB::getInstance()->get_posts( $lp_filter_post );
+			$orders_trash                = LP_Post_DB::getInstance()->get_posts( $lp_filter_post );
 			if ( $orders_trash ) {
 				foreach ( $orders_trash as $order_trash ) {
 					$order = learn_press_get_order( $order_trash->ID );
@@ -229,14 +229,13 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			global $wpdb, $wp_query;
 			$lp_db = LP_Database::getInstance();
 			if ( is_admin() && $this->is_page_list_posts_on_backend() ) {
-				$where = " ";
+				$where  = ' ';
 				$where .= $wpdb->prepare( " AND {$lp_db->tb_posts}.post_type = %s", LP_ORDER_CPT );
 			}
 
 			// Search by keyword
 			if ( ! empty( $wp_query->get( 's' ) ) ) {
 				$s = $wp_query->get( 's' );
-
 
 				// Check search LP Order ID with format #000[ID] or 000[ID]
 				$pattern = '/^#\d+$/';
@@ -252,18 +251,18 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				$s = trim( $s );
 
 				$where .= $wpdb->prepare( " AND {$lp_db->tb_posts}.ID = %d", $s );
-				$where .= $wpdb->prepare( " OR lpori.order_item_name like %s", '%' . $wpdb->esc_like( $s ) . '%' );
+				$where .= $wpdb->prepare( ' OR lpori.order_item_name like %s', '%' . $wpdb->esc_like( $s ) . '%' );
 			}
 
 			// Search by author id
 			if ( ! empty( $wp_query->get( 'author' ) ) ) {
 				$user_id = absint( $wp_query->get( 'author' ) );
 				//$where   .= $wpdb->prepare( ' AND uu.ID like %s ', $user_id );
-				$where   .= " AND ( pm1.meta_value like '%\"$user_id\"%' OR pm1.meta_value = $user_id ) ";
+				$where .= " AND ( pm1.meta_value like '%\"$user_id\"%' OR pm1.meta_value = $user_id ) ";
 			}
 
 			if ( ! empty( $wp_query->get( 'm' ) ) ) {
-				$month = $wp_query->get( 'm' );
+				$month  = $wp_query->get( 'm' );
 				$where .= " AND YEAR({$lp_db->tb_posts}.post_date)=" . substr( $month, 0, 4 );
 				if ( strlen( $month ) > 5 ) {
 					$where .= " AND MONTH({$lp_db->tb_posts}.post_date)=" . substr( $month, 4, 2 );
@@ -350,8 +349,8 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		 * @return mixed
 		 */
 		public function sortable_columns( $columns ) {
-			$columns['order_date']    = 'date';
-			$columns['order_total']   = 'order_total';
+			$columns['order_date']  = 'date';
+			$columns['order_total'] = 'order_total';
 
 			return $columns;
 		}
@@ -591,7 +590,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		 */
 		public function args_register_post_type(): array {
 			return array(
-				'labels'             => array(
+				'labels'              => array(
 					'name'               => __( 'Orders', 'learnpress' ),
 					'menu_name'          => __( 'Orders', 'learnpress' ),
 					'singular_name'      => __( 'Order', 'learnpress' ),
@@ -605,24 +604,25 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					'not_found'          => __( 'No order found', 'learnpress' ),
 					'not_found_in_trash' => __( 'There was no order found in the trash', 'learnpress' ),
 				),
-				'public'             => false,
-				'show_ui'            => true,
-				'show_in_nav_menus'  => false,
-				'show_in_admin_bar'  => false,
-				'publicly_queryable' => false,
-				'show_in_menu'       => 'learn_press',
-				'map_meta_cap'       => true,
-				'capability_type'    => LP_ORDER_CPT,
-				'hierarchical'       => true,
-				'rewrite'            => array(
+				'public'              => false,
+				'show_ui'             => true,
+				'show_in_nav_menus'   => false,
+				'show_in_admin_bar'   => false,
+				'publicly_queryable'  => false,
+				'show_in_menu'        => 'learn_press',
+				'map_meta_cap'        => true,
+				'capability_type'     => LP_ORDER_CPT,
+				'hierarchical'        => true,
+				'rewrite'             => array(
 					'slug'         => LP_ORDER_CPT,
 					'hierarchical' => true,
 					'with_front'   => true,
 				),
-				'supports'           => array(
+				'supports'            => array(
 					'title',
 					'custom-fields',
 				),
+				'exclude_from_search' => true,
 			);
 		}
 

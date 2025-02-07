@@ -1,5 +1,5 @@
 /**
- * Quizz Content.
+ * Quiz Content.
  * Edit: Use React hook.
  *
  * @author nhamdv - ThimPress

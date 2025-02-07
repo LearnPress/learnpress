@@ -89,8 +89,28 @@ class LP_Addon {
 		$this->plugin_folder_name = str_replace( array( '/', $this->plugin_base_name ), '', $this->plugin_base );
 		$this->_define_constants();
 		$this->_includes();
-		remove_action( 'plugins_loaded', array( 'LP_Addon_Announcements', 'instance' ) );
-		add_action( 'init', array( $this, 'init' ) );
+		$this->load_text_domain();
+		add_action(
+			'init',
+			function () {
+				$this->_enqueue_assets();
+			}
+		);
+		add_filter(
+			"plugin_action_links_$this->plugin_base",
+			array(
+				$this,
+				'_plugin_links',
+			)
+		);
+
+		// Run init hooks after learn-press/ready run on hook 'init', priority -1000
+		add_action(
+			'init',
+			function () {
+				$this->_init_hooks();
+			}
+		);
 	}
 
 	/**
@@ -122,61 +142,33 @@ class LP_Addon {
 	}
 
 	/**
-	 * Init
-	 */
-	public function init() {
-		$this->load_text_domain();
-
-		add_filter(
-			"plugin_action_links_$this->plugin_base",
-			array(
-				$this,
-				'_plugin_links',
-			)
-		);
-
-		$this->_init_hooks();
-		$this->_enqueue_assets();
-	}
-
-	/**
 	 * Define add-on constants.
 	 */
 	protected function _define_constants() {
-
 	}
 
 	/**
 	 * Includes add-on files.
 	 */
 	protected function _includes() {
-
 	}
 
 	/**
 	 * Init add-on hooks.
+	 *
+	 * @deprecated 4.2.7.6
+	 * Need remove this function, don't use on the addons news to controls hook.
 	 */
 	protected function _init_hooks() {
-
 	}
 
 	/**
 	 * Enqueue scripts.
+	 * @deprecated 4.2.7.6
+	 *
+	 * Need remove this function, use on the addons: wishlist, my-cred
 	 */
 	protected function _enqueue_assets() {
-
-	}
-
-	/**
-	 * Get plugin slug from plugin file.
-	 *
-	 * @return bool|string
-	 * @deprecated 4.2.0
-	 */
-	public function get_plugin_slug() {
-		_deprecated_function( __METHOD__, '4.2.0' );
-
-		return $this->plugin_base;
 	}
 
 	/**
@@ -267,7 +259,7 @@ class LP_Addon {
 			<p>
 				<?php
 				printf(
-					wp_kses_post( __( '<strong>LearnPress version %s require %s</strong> version %s or higher', 'learnpress' ) ),
+					wp_kses_post( __( '<strong>LearnPress version %1$s require %2$s</strong> version %3$s or higher', 'learnpress' ) ),
 					esc_html( LEARNPRESS_VERSION ),
 					esc_html( $this->get_name() ),
 					esc_html( $this->lp_require_addon_version )
@@ -287,10 +279,12 @@ class LP_Addon {
 			<p>
 				<?php
 				printf(
-					wp_kses_post( __(
-						'<strong>%1$s</strong> add-on version %2$s requires <strong>LearnPress</strong> version %3$s or higher %4$s',
-						'learnpress'
-					) ),
+					wp_kses_post(
+						__(
+							'<strong>%1$s</strong> add-on version %2$s requires <strong>LearnPress</strong> version %3$s or higher %4$s',
+							'learnpress'
+						)
+					),
 					esc_html( $this->get_name() ),
 					esc_html( $this->version ),
 					esc_html( $this->require_version ),
@@ -414,25 +408,6 @@ class LP_Addon {
 	}
 
 	/**
-	 * Get template path.
-	 *
-	 * @return string
-	 * @deprecated 4.2.0
-	 */
-	public function get_template_path() {
-		_deprecated_function( __FUNCTION__, '4.2.0', 'LP_Addon::get_template' );
-		if ( empty( $this->_template_path ) ) {
-			$this->_template_path = learn_press_template_path() . '/addons/' . preg_replace(
-				'!^learnpress-!',
-				'',
-				$this->plugin_folder_name
-			);
-		}
-
-		return $this->_template_path;
-	}
-
-	/**
 	 * Get content template of addon.
 	 *
 	 * @param string $template_name
@@ -493,24 +468,6 @@ class LP_Addon {
 	}
 
 	/**
-	 * Locate template of addon in theme or inside itself.
-	 *
-	 * @param string $template_name
-	 *
-	 * @return string
-	 * @deprecated 4.2.0
-	 */
-	public function locate_template( $template_name ) {
-		_deprecated_function( __FUNCTION__, '4.2.0', 'LP_Addon::get_template' );
-
-		return learn_press_locate_template(
-			$template_name,
-			$this->get_template_path(),
-			dirname( $this->plugin_file ) . '/templates/'
-		);
-	}
-
-	/**
 	 * Output content of admin view file.
 	 *
 	 * @param string $view
@@ -521,24 +478,6 @@ class LP_Addon {
 	public function admin_view( $view, $args = array() ) {
 		$args['plugin_file'] = $this->plugin_file;
 		learn_press_admin_view( $view, $args );
-	}
-
-	/**
-	 * Get content of admin view file.
-	 *
-	 * @param string $view
-	 * @param array $args
-	 *
-	 * @return string
-	 * @since x.x.x
-	 * @deprecated 4.2.1
-	 */
-	public function admin_view_content( $view, $args = array() ) {
-		_deprecated_function( __FUNCTION__, '4.2.1', 'LP_Addon::get_admin_template' );
-		ob_start();
-		$this->admin_view( $view, $args );
-
-		return ob_get_clean();
 	}
 
 	/**
@@ -581,5 +520,3 @@ class LP_Addon {
 		return $backtrace[2]['args'][0];
 	}
 }
-
-//add_action( 'admin_notices', array( 'LP_Addon', 'admin_errors' ) );

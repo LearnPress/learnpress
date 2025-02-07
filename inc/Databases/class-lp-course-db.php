@@ -6,6 +6,8 @@
  * @since 3.2.7.5
  */
 
+use LearnPress\Models\CourseModel;
+
 defined( 'ABSPATH' ) || exit();
 
 class LP_Course_DB extends LP_Database {
@@ -368,7 +370,7 @@ class LP_Course_DB extends LP_Database {
 	 * @since 4.1.4.1
 	 */
 	public function get_total_items( int $course_id = 0 ) {
-		$item_types       = learn_press_get_course_item_types();
+		$item_types       = CourseModel::item_types_support();
 		$count_item_types = count( $item_types );
 		$i                = 0;
 
@@ -679,7 +681,7 @@ class LP_Course_DB extends LP_Database {
 	 *
 	 * @return  LP_Course_Filter
 	 * @throws Exception
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 * @since 4.1.6
 	 * @author minhpd
 	 */
@@ -713,6 +715,7 @@ class LP_Course_DB extends LP_Database {
 			LP_COURSE_FINISHED
 		);
 		$filter_user_course->group_by            = 'p.ID';
+		$filter_user_course->order_by            = '';
 		$filter_user_course->return_string_query = true;
 		$query_user_course                       = LP_Course_DB::getInstance()->get_courses( $filter_user_course );
 
@@ -734,6 +737,7 @@ class LP_Course_DB extends LP_Database {
 		}
 		$filter_course_not_attend->where[] = 'AND p.ID NOT IN(' . $query_user_course_for_not_in . ')';
 
+		$filter_course_not_attend->order_by            = '';
 		$filter_course_not_attend->return_string_query = true;
 		$query_course_not_attend                       = LP_Course_DB::getInstance()->get_courses( $filter_course_not_attend );
 

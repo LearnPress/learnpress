@@ -28,4 +28,3 @@ abstract class AbstractShortcode {
 	 */
 	abstract public function render( $attrs ): string;
 }
-

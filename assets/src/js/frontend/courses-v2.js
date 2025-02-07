@@ -6,7 +6,13 @@
  */
 
 import API from '../api';
-import { lpAddQueryArgs, lpGetCurrentURLNoParam, listenElementViewed, listenElementCreated } from '../utils.js';
+import {
+	lpAddQueryArgs,
+	lpGetCurrentURLNoParam,
+	listenElementViewed,
+	listenElementCreated,
+	lpOnElementReady,
+} from '../utils.js';
 
 if ( 'undefined' === typeof lpData ) {
 	console.log( 'lpData is undefined' );
@@ -35,6 +41,13 @@ document.addEventListener( 'submit', function( e ) {
 	const target = e.target;
 
 	//window.lpCourseList.searchCourse( e, target );
+} );
+
+lpOnElementReady( '.course-filter-btn-mobile', function( el ) {
+	const widgetCourseFilter = document.querySelector( '.widget_course_filter' );
+	if ( ! widgetCourseFilter ) {
+		el.remove();
+	}
 } );
 
 let timeOutSearch;
@@ -114,7 +127,7 @@ window.lpCoursesList = ( () => {
 				},
 			};
 
-			window.lpAJAXG.fetchAPI( API.frontend.apiAJAX, dataSend, callBack );
+			window.lpAJAXG.fetchAJAX( dataSend, callBack );
 		},
 		LoadMore: ( e, target ) => {
 			const btnLoadMore = target.closest( `.${ classLoadMore + ':not(.disabled)' }` );
@@ -176,7 +189,7 @@ window.lpCoursesList = ( () => {
 				},
 			};
 
-			window.lpAJAXG.fetchAPI( API.frontend.apiAJAX, dataSend, callBack );
+			window.lpAJAXG.fetchAJAX( dataSend, callBack );
 		},
 		LoadInfinite: () => {
 			// When see element, will call API to load more items.
@@ -233,7 +246,7 @@ window.lpCoursesList = ( () => {
 					},
 				};
 
-				window.lpAJAXG.fetchAPI( API.frontend.apiAJAX, dataSend, callBack );
+				window.lpAJAXG.fetchAJAX( dataSend, callBack );
 			};
 
 			// Listen el courses load infinite have just created.
@@ -301,7 +314,7 @@ window.lpCoursesList = ( () => {
 				},
 			};
 
-			window.lpAJAXG.fetchAPI( API.frontend.apiAJAX, dataSend, callBack );
+			window.lpAJAXG.fetchAJAX( dataSend, callBack );
 		},
 		onChangeTypeLayout: ( e, target ) => {
 			if ( 'lp-switch-layout-btn' !== target.getAttribute( 'name' ) ) {
@@ -365,7 +378,7 @@ window.lpCoursesList = ( () => {
 						},
 					};
 
-					window.lpAJAXG.fetchAPI( API.frontend.apiAJAX, dataSend, callBack );
+					window.lpAJAXG.fetchAJAX( dataSend, callBack );
 				}, 800 );
 			}
 		},

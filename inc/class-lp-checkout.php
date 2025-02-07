@@ -477,8 +477,8 @@ class LP_Checkout {
 	public function process_checkout() {
 		ini_set( 'max_execution_time', HOUR_IN_SECONDS );
 		$result = array(
-			'result'   => 'fail',
-			'messages' => '',
+			'result'  => 'fail',
+			'message' => '',
 		);
 
 		try {
@@ -577,7 +577,7 @@ class LP_Checkout {
 				}
 			}
 		} catch ( Throwable $e ) {
-			$result['messages'] = $e->getMessage();
+			$result['message'] = $e->getMessage();
 		}
 
 		ini_set( 'max_execution_time', LearnPress::$time_limit_default_of_sever );

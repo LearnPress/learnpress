@@ -44,6 +44,53 @@
 	.lp-profile-left {
 		min-width: 120px;
 		max-width: 120px;
+ 
+		.user-avatar {
+			position: relative;
+
+			img {
+				border-radius: 50%;
+			}
+
+			&:hover {
+				.lp-btn-to-edit-avatar {
+					opacity: 1;
+					visibility: visible;
+				}
+			}
+
+			.lp-btn-to-edit-avatar {
+				position: absolute;
+				top: 80px;
+				right: 0;
+				left: auto;
+				width: 36px;
+				height: 36px;
+				font-size: 0;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				opacity: 0;
+				visibility: hidden;
+				cursor: pointer;
+				background-color: var(--lp-white-grey, #F7F7FB);
+				border-radius: 50%;
+
+				@media (max-width: 767px) {
+					opacity: 1;
+					top: 60px;
+					visibility: visible;
+				}
+
+				&::before {
+					content: "\f044";
+					font-size: 1.5rem;
+					font-family: "lp-icon";
+					font-weight: normal;
+					color: var(--lp-primary-color);
+				}
+			}
+		}
 	}
 
 	.lp-profile-right {
@@ -281,7 +328,7 @@
 		.lp-profile-nav-tabs {
 			display: flex;
 			flex-wrap: nowrap;
-			justify-content: space-around;
+			justify-content: flex-start;
 			overflow-x: auto;
 			white-space: nowrap;
  			scroll-behavior: smooth;

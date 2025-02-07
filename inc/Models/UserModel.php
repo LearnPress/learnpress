@@ -350,13 +350,14 @@ class UserModel {
 	 *
 	 * @return string
 	 * @since 4.2.7.2
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function get_avatar_url(): string {
 		$avatar_url = $this->get_upload_avatar_src();
 		if ( empty( $avatar_url ) ) {
 			// Get form Gravatar.
 			$args       = learn_press_get_avatar_thumb_size();
+			$args       = apply_filters( 'learn-press/gravatar/args', $args );
 			$avatar_url = get_avatar_url( $this->get_id(), $args );
 			// If not exists, get default avatar.
 			if ( empty( $avatar_url ) ) {
@@ -399,16 +400,14 @@ class UserModel {
 	 * Get links socials of use on Profile page
 	 * Icon is svg
 	 *
-	 * @param int $user_id
-	 *
 	 * @move from LP_Abstract_User
 	 * @return array
 	 * @since 4.2.3
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
-	public function get_profile_social( int $user_id = 0 ): array {
+	public function get_profile_social(): array {
 		$socials    = array();
-		$extra_info = learn_press_get_user_extra_profile_info( $user_id );
+		$extra_info = learn_press_get_user_extra_profile_info( $this->get_id() );
 
 		if ( $extra_info ) {
 			foreach ( $extra_info as $k => $v ) {
@@ -581,5 +580,16 @@ class UserModel {
 		}
 
 		return apply_filters( 'lp/profile/instructor/statistic', $statistic, $this );
+	}
+
+	/**
+	 * Check user is instructor or not.
+	 *
+	 * @return bool
+	 * @since 4.2.7.6
+	 * @version 1.0.0
+	 */
+	public function is_instructor(): bool {
+		return user_can( $this->get_id(), LP_TEACHER_ROLE ) || user_can( $this->get_id(), 'administrator' );
 	}
 }

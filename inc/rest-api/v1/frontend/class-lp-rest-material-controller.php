@@ -506,7 +506,7 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 
 			$response->status = 'success';
 		} catch ( Throwable $e ) {
-			$response->message = $e->getMessage();
+			$response->message = Template::print_message( $e->getMessage(), 'warning', false );
 		}
 
 		return rest_ensure_response( $response );

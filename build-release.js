@@ -12,6 +12,7 @@ console.log('Starting build...');
 const buildJS = spawn('npm', ['run', 'start'], {
 	stdio: 'inherit',
 	shell: true,
+	env: { ...process.env, NODE_OPTIONS: '--openssl-legacy-provider' }
 });
 
 buildJS.on('exit', () => {
@@ -22,7 +23,8 @@ buildJS.on('spawn', () => {
 	// Run command: npm run build-makepot-zip
 	const releaseProcess = spawn('npm', ['run', 'build-makepot-zip'], {
 		stdio: 'inherit',
-		shell: true
+		shell: true,
+		env: { ...process.env, NODE_OPTIONS: '--openssl-legacy-provider' }
 	});
 
 	releaseProcess.on('exit', (code) => {

@@ -1,8 +1,6 @@
 @font-face {
 	font-family: 'lp-icon';
-	src: url('../src/css/vendor/fonts/lp-icon/lp-icon.ttf?v=bz7zxt') format('truetype'),
-	url('../src/css/vendor/fonts/lp-icon/lp-icon.woff2?v=bz7zxt') format('woff2'),
-	url('../src/css/vendor/fonts/lp-icon/lp-icon.svg?v=bz7zxt#lp-icon') format('svg');
+	src: url('../src/css/vendor/fonts/lp-icon/lp-icon.woff2?v=bz7zxt') format('woff2');
 	font-weight: normal;
 	font-style: normal;
 	font-display: block;
@@ -17,7 +15,7 @@
 	font-variant: normal;
 	text-transform: none;
 	line-height: 1;
- 	/* Better Font Rendering =========== */
+	/* Better Font Rendering =========== */
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 }
@@ -25,574 +23,764 @@
 .lp-icon-plus:before {
 	content: "\f067";
 }
+
 .lp-icon-question:before {
 	content: "\f128";
 }
+
 .lp-icon-minus:before {
 	content: "\f068";
 }
+
 .lp-icon-search:before {
 	content: "\f002";
 }
+
 .lp-icon-envelope-o:before {
 	content: "\f003";
 }
+
 .lp-icon-heart:before {
 	content: "\f004";
 }
+
 .lp-icon-star:before {
 	content: "\f005";
 	color: #ffb606;
 }
+
 .lp-icon-star-o:before {
 	content: "\f006";
 }
+
 .lp-icon-user:before {
 	content: "\f007";
 }
+
 .lp-icon-th-large:before {
 	content: "\f009";
 }
+
 .lp-icon-th:before {
 	content: "\f00a";
 }
+
 .lp-icon-th-list:before {
 	content: "\f00b";
 }
+
 .lp-icon-check:before {
 	content: "\f00c";
 }
+
 .lp-icon-close:before {
 	content: "\f00d";
 }
+
 .lp-icon-remove:before {
 	content: "\f00d";
 }
+
 .lp-icon-times:before {
 	content: "\f00d";
 }
+
 .lp-icon-signal:before {
 	content: "\f012";
 }
+
 .lp-icon-cog:before {
 	content: "\f013";
 }
+
 .lp-icon-gear:before {
 	content: "\f013";
 }
+
 .lp-icon-trash-o:before {
 	content: "\f014";
 }
+
 .lp-icon-home:before {
 	content: "\f015";
 }
+
 .lp-icon-file-o:before {
 	content: "\f016";
 }
+
 .lp-icon-clock-o:before {
 	content: "\f017";
 }
+
 .lp-icon-download:before {
 	content: "\f019";
 }
+
 .lp-icon-play-circle-o:before {
 	content: "\f01d";
 }
+
 .lp-icon-refresh:before {
 	content: "\f021";
 }
+
 .lp-icon-lock:before {
 	content: "\f023";
 }
+
 .lp-icon-flag:before {
 	content: "\f024";
 }
+
 .lp-icon-book:before {
 	content: "\f02d";
 }
+
 .lp-icon-bookmark:before {
 	content: "\f02e";
 }
+
 .lp-icon-video-camera:before {
 	content: "\f03d";
 }
+
 .lp-icon-edit:before {
 	content: "\f044";
 }
+
 .lp-icon-pencil-square-o:before {
 	content: "\f044";
 }
+
 .lp-icon-check-square-o:before {
 	content: "\f046";
 }
+
 .lp-icon-arrows:before {
 	content: "\f047";
 }
+
 .lp-icon-chevron-left:before {
 	content: "\f053";
 }
+
 .lp-icon-chevron-right:before {
 	content: "\f054";
 }
+
 .lp-icon-check-circle:before {
 	content: "\f058";
 }
+
 .lp-icon-question-circle:before {
 	content: "\f059";
 }
+
 .lp-icon-arrow-left:before {
 	content: "\f060";
 }
+
 .lp-icon-arrow-right:before {
 	content: "\f061";
 }
+
 .lp-icon-expand:before {
 	content: "\f065";
 }
+
 .lp-icon-compress:before {
 	content: "\f066";
 }
+
 .lp-icon-exclamation-circle:before {
 	content: "\f06a";
 }
+
 .lp-icon-gift:before {
 	content: "\f06b";
 }
+
 .lp-icon-eye:before {
 	content: "\f06e";
 }
+
 .lp-icon-eye-slash:before {
 	content: "\f070";
 }
+
 .lp-icon-exclamation-triangle:before {
 	content: "\f071";
 }
+
 .lp-icon-warning:before {
 	content: "\f071";
 }
+
 .lp-icon-calendar:before {
 	content: "\f073";
 }
+
 .lp-icon-comment:before {
 	content: "\f075";
 }
+
 .lp-icon-chevron-up:before {
 	content: "\f077";
 }
+
 .lp-icon-chevron-down:before {
 	content: "\f078";
 }
+
 .lp-icon-shopping-cart:before {
 	content: "\f07a";
 }
+
 .lp-icon-bar-chart:before {
 	content: "\f080";
 }
+
 .lp-icon-bar-chart-o:before {
 	content: "\f080";
 }
+
 .lp-icon-key:before {
 	content: "\f084";
 }
+
 .lp-icon-cogs:before {
 	content: "\f085";
 }
+
 .lp-icon-gears:before {
 	content: "\f085";
 }
+
 .lp-icon-thumbs-o-up:before {
 	content: "\f087";
 }
+
 .lp-icon-thumbs-o-down:before {
 	content: "\f088";
 }
+
 .lp-icon-heart-o:before {
 	content: "\f08a";
 }
+
 .lp-icon-sign-out:before {
 	content: "\f08b";
 }
+
 .lp-icon-linkedin-square:before {
 	content: "\f08c";
 }
+
 .lp-icon-sign-in:before {
 	content: "\f090";
 }
+
 .lp-icon-phone:before {
 	content: "\f095";
 }
+
 .lp-icon-square-o:before {
 	content: "\f096";
 }
+
 .lp-icon-bookmark-o:before {
 	content: "\f097";
 }
+
 .lp-icon-twitter:before {
 	content: "\f099";
 }
+
 .lp-icon-facebook:before {
 	content: "\f09a";
 }
+
 .lp-icon-facebook-f:before {
 	content: "\f09a";
 }
+
 .lp-icon-unlock:before {
 	content: "\f09c";
 }
+
 .lp-icon-bullhorn:before {
 	content: "\f0a1";
 }
+
 .lp-icon-bell-o:before {
 	content: "\f0a2";
 }
+
 .lp-icon-certificate:before {
 	content: "\f0a3";
 }
+
 .lp-icon-briefcase:before {
 	content: "\f0b1";
 }
+
 .lp-icon-arrows-alt:before {
 	content: "\f0b2";
 }
+
 .lp-icon-copy:before {
 	content: "\f0c5";
 }
+
 .lp-icon-files-o:before {
 	content: "\f0c5";
 }
+
 .lp-icon-pinterest-square:before {
 	content: "\f0d3";
 }
+
 .lp-icon-google-plus-square:before {
 	content: "\f0d4";
 }
+
 .lp-icon-google-plus:before {
 	content: "\f0d5";
 }
+
 .lp-icon-money-bill-alt:before {
 	content: "\f0d6";
 }
+
 .lp-icon-caret-down:before {
 	content: "\f0d7";
 }
+
 .lp-icon-caret-up:before {
 	content: "\f0d8";
 }
+
 .lp-icon-caret-left:before {
 	content: "\f0d9";
 }
+
 .lp-icon-caret-right:before {
 	content: "\f0da";
 }
+
 .lp-icon-linkedin:before {
 	content: "\f0e1";
 }
+
 .lp-icon-comment-o:before {
 	content: "\f0e5";
 }
+
 .lp-icon-file-text-o:before {
 	content: "\f0f6";
 }
+
 .lp-icon-angle-double-left:before {
 	content: "\f100";
 }
+
 .lp-icon-angle-double-right:before {
 	content: "\f101";
 }
+
 .lp-icon-angle-double-up:before {
 	content: "\f102";
 }
+
 .lp-icon-angle-double-down:before {
 	content: "\f103";
 }
+
 .lp-icon-angle-left:before {
 	content: "\f104";
 }
+
 .lp-icon-angle-right:before {
 	content: "\f105";
 }
+
 .lp-icon-angle-up:before {
 	content: "\f106";
 }
+
 .lp-icon-angle-down:before {
 	content: "\f107";
 }
+
 .lp-icon-desktop:before {
 	content: "\f108";
 }
+
 .lp-icon-mobile:before {
 	content: "\f10b";
 }
+
 .lp-icon-mobile-phone:before {
 	content: "\f10b";
 }
+
 .lp-icon-circle-o:before {
 	content: "\f10c";
 }
+
 .lp-icon-spinner:before {
 	content: "\f110";
 }
+
 .lp-icon-code:before {
 	content: "\f121";
 }
+
 .lp-icon-puzzle-piece:before {
 	content: "\f12e";
 }
+
 .lp-icon-calendar-o:before {
 	content: "\f133";
 }
+
 .lp-icon-ellipsis-h:before {
 	content: "\f141";
 }
+
 .lp-icon-ellipsis-v:before {
 	content: "\f142";
 }
+
 .lp-icon-file:before {
 	content: "\f15b";
 }
+
 .lp-icon-file-alt:before {
 	content: "\f15c";
 }
+
 .lp-icon-youtube-play:before {
 	content: "\f16a";
 }
+
 .lp-icon-instagram:before {
 	content: "\f16d";
 }
+
 .lp-icon-dot-circle-o:before {
 	content: "\f192";
 }
+
 .lp-icon-graduation-cap:before {
 	content: "\f19d";
 }
+
 .lp-icon-mortar-board:before {
 	content: "\f19d";
 }
+
 .lp-icon-google:before {
 	content: "\f1a0";
 }
+
 .lp-icon-language:before {
 	content: "\f1ab";
 }
+
 .lp-icon-database:before {
 	content: "\f1c0";
 }
+
 .lp-icon-file-pdf:before {
 	content: "\f1c1";
 }
+
 .lp-icon-file-word:before {
 	content: "\f1c2";
 }
+
 .lp-icon-file-excel:before {
 	content: "\f1c3";
 }
+
 .lp-icon-file-powerpoint:before {
 	content: "\f1c4";
 }
+
 .lp-icon-file-image:before {
 	content: "\f1c5";
 }
+
 .lp-icon-file-photo:before {
 	content: "\f1c5";
 }
+
 .lp-icon-file-picture:before {
 	content: "\f1c5";
 }
+
 .lp-icon-file-archive:before {
 	content: "\f1c6";
 }
+
 .lp-icon-file-zip:before {
 	content: "\f1c6";
 }
+
 .lp-icon-file-audio:before {
 	content: "\f1c7";
 }
+
 .lp-icon-file-sound:before {
 	content: "\f1c7";
 }
+
 .lp-icon-file-movie:before {
 	content: "\f1c8";
 }
+
 .lp-icon-file-video:before {
 	content: "\f1c8";
 }
+
 .lp-icon-file-code:before {
 	content: "\f1c9";
 }
+
 .lp-icon-circle-thin:before {
 	content: "\f1db";
 }
+
 .lp-icon-share-alt:before {
 	content: "\f1e0";
 }
+
 .lp-icon-pie-chart:before {
 	content: "\f200";
 }
+
 .lp-icon-line-chart:before {
 	content: "\f201";
 }
+
 .lp-icon-user-secret:before {
 	content: "\f21b";
 }
+
 .lp-icon-television:before {
 	content: "\f26c";
 }
+
 .lp-icon-tv:before {
 	content: "\f26c";
 }
+
 .lp-icon-question-circle-o:before {
 	content: "\f29c";
 }
+
 .lp-icon-google-plus-circle:before {
 	content: "\f2b3";
 }
+
 .lp-icon-google-plus-official:before {
 	content: "\f2b3";
 }
+
 .lp-icon-user-circle:before {
 	content: "\f2bd";
 }
+
 .lp-icon-user-graduate:before {
 	content: "\f501";
 }
+
 .lp-icon-user-edit:before {
 	content: "\f4ff";
 }
+
 .lp-icon-my-courses:before {
 	content: "\e900";
 }
+
 .lp-icon-clock:before {
 	content: "\e901";
 }
+
 .lp-icon-stopwatch:before {
 	content: "\f2f2";
 }
+
 .lp-icon-file-download:before {
 	content: "\f56d";
 }
+
 .lp-icon-list:before {
 	content: "\f03a";
 }
+
 .lp-icon-students:before {
 	content: "\e902";
 }
+
 .lp-icon-courses:before {
 	content: "\e903";
 }
+
 .lp-icon-tiktok-alt:before {
 	content: "\e908";
 }
+
 .lp-icon-alarm-clock:before {
 	content: "\e909";
 }
+
 .lp-icon-art-and-design:before {
 	content: "\e90a";
 }
+
 .lp-icon-best-customer-experience:before {
 	content: "\e90b";
 }
+
 .lp-icon-certificate-o:before {
 	content: "\e90c";
 }
+
 .lp-icon-community:before {
 	content: "\e90d";
 }
+
 .lp-icon-online-education:before {
 	content: "\e90e";
 }
+
 .lp-icon-concierge-bell:before {
 	content: "\e90f";
 }
+
 .lp-icon-target:before {
 	content: "\e910";
 }
+
 .lp-icon-content-marketing:before {
 	content: "\e911";
 }
+
 .lp-icon-dollar-sign:before {
 	content: "\e912";
 }
+
 .lp-icon-website:before {
 	content: "\e913";
 }
+
 .lp-icon-worldwide-security:before {
 	content: "\e914";
 }
+
 .lp-icon-educational-programs:before {
 	content: "\e915";
 }
+
 .lp-icon-online-class:before {
 	content: "\e916";
 }
+
 .lp-icon-monitor:before {
 	content: "\e917";
 }
+
 .lp-icon-lucide:before {
 	content: "\e918";
 }
+
 .lp-icon-ebook:before {
 	content: "\e919";
 }
+
 .lp-icon-co-instructor:before {
 	content: "\e904";
 }
+
 .lp-icon-close-circle:before {
 	content: "\e907";
 }
+
 .lp-icon-layers:before {
 	content: "\e91a";
 }
+
 .lp-icon-filter:before {
 	content: "\e91c";
 }
+
 .lp-icon-in_progress_course:before {
 	content: "\e91d";
 }
+
 .lp-icon-finished_courses:before {
 	content: "\e91e";
 }
+
 .lp-icon-failed_courses:before {
 	content: "\e91f";
 }
+
 .lp-icon-passed_courses:before {
 	content: "\e920";
 }
+
 .lp-icon-student_in_progress:before {
 	content: "\e924";
 }
+
 .lp-icon-student_completed:before {
 	content: "\e925";
 }
+
 .lp-icon-published_course:before {
 	content: "\e926";
 }
+
 .lp-icon-pending_course:before {
 	content: "\e927";
 }
+
 .lp-icon-list-check:before {
 	content: "\e929";
 }
+
 .lp-icon-icon-h5p:before {
 	content: "\e92a";
 }
+
 .lp-icon-comment-written:before {
 	content: "\e921";
 }
+
 .lp-icon-book-open:before {
 	content: "\f518";
 }
+
 .lp-icon-pinterest-p:before {
 	content: "\f231";
 }
+
 .lp-icon-dropbox:before {
 	content: "\e905";
 }
+
 .lp-icon-map-pin:before {
 	content: "\e91b";
 }
+
 .lp-icon-map-marker:before {
 	content: "\e91b";
 }
+
 .lp-icon-box:before {
 	content: "\e906";
 }

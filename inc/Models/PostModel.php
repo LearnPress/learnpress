@@ -27,8 +27,11 @@ use LP_User_Guest;
 
 use stdClass;
 use Throwable;
+use WP_Error;
 use WP_Post;
 use WP_Term;
+
+defined( 'ABSPATH' ) || exit();
 
 class PostModel {
 	/**
@@ -89,6 +92,9 @@ class PostModel {
 	 * @var string only for set same property with class WP_Post
 	 */
 	public $filter;
+
+	const STATUS_PUBLISH = 'publish';
+	const STATUS_TRASH   = 'trash';
 
 	/**
 	 * If data get from database, map to object.
@@ -207,15 +213,39 @@ class PostModel {
 	 *
 	 * If user_item_id is empty, insert new data, else update data.
 	 *
-	 * @return static
 	 * @throws Exception
 	 * @since 4.2.5
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function save() {
-		$this->clean_caches();
+		$data = [];
+		foreach ( get_object_vars( $this ) as $property => $value ) {
+			$data[ $property ] = $value;
+		}
 
-		return $this;
+		$filter              = new LP_Post_Type_Filter();
+		$filter->ID          = $this->ID;
+		$filter->only_fields = [ 'ID' ];
+		$post_rs             = self::get_item_model_from_db( $filter );
+		// Check if exists course id.
+		if ( empty( $post_rs ) ) { // Insert data.
+			$post_id = wp_insert_post( $data, true );
+		} else { // Update data.
+			$post_id = wp_update_post( $data, true );
+		}
+
+		if ( is_wp_error( $post_id ) ) {
+			throw new Exception( $post_id->get_error_message() );
+		} else {
+			$this->ID = $post_id;
+		}
+
+		$post = get_post( $this->ID );
+		foreach ( get_object_vars( $post ) as $property => $value ) {
+			$this->{$property} = $value;
+		}
+
+		$this->clean_caches();
 	}
 
 	/**
@@ -234,6 +264,15 @@ class PostModel {
 		return (int) $this->ID;
 	}
 
+	/**
+	 * Get image url of post.
+	 *
+	 * @param string|int[] $size
+	 *
+	 * @return string
+	 * @since 4.2.6.9
+	 * @version 1.0.1
+	 */
 	public function get_image_url( $size = 'post-thumbnail' ): string {
 		$image_url = '';
 
@@ -289,14 +328,14 @@ class PostModel {
 	 * Get categories of course.
 	 *
 	 * @return array|WP_Term[]
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 * @since 4.2.3
 	 */
 	public function get_categories(): array {
 		// Todo: set cache.
 		$wpPost     = new WP_Post( $this );
 		$categories = get_the_terms( $wpPost, LP_COURSE_CATEGORY_TAX );
-		if ( ! $categories ) {
+		if ( ! $categories || $categories instanceof WP_Error ) {
 			$categories = array();
 		}
 
@@ -307,14 +346,14 @@ class PostModel {
 	 * Get tags of course.
 	 *
 	 * @return array|WP_Term[]
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 * @since 4.2.7.2
 	 */
 	public function get_tags(): array {
 		// Todo: set cache.
 		$wpPost = new WP_Post( $this );
 		$tags   = get_the_terms( $wpPost, LP_COURSE_TAXONOMY_TAG );
-		if ( ! $tags ) {
+		if ( ! $tags || $tags instanceof WP_Error ) {
 			$tags = array();
 		}
 

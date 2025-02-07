@@ -45,35 +45,7 @@ if ( ! function_exists( 'LP_Gateway_Offline_Payment' ) ) {
 			// Get settings
 			$this->title       = $this->settings->get( 'title', $this->method_title );
 			$this->description = $this->settings->get( 'description', $this->method_description );
-
-			if ( did_action( 'learn_press/offline-payment-add-on/loaded' ) ) {
-				return;
-			}
-
-			/*add_filter(
-				'learn-press/payment-gateway/' . $this->id . '/available',
-				array(
-					$this,
-					'offline_payment_available',
-				)
-			);*/
-
-			do_action( 'learn_press/offline-payment-add-on/loaded' );
-		}
-
-		/**
-		 * Check gateway available.
-		 *
-		 * @return bool
-		 */
-		public function offline_payment_available(): bool {
-			_deprecated_function( __FUNCTION__, '4.2.3.5' );
-			return LP_Settings::instance()->get( "{$this->id}.enable", 'no' ) === 'yes';
-		}
-
-		protected function _get( $name ) {
-			_deprecated_function( __FUNCTION__, '4.2.3.5' );
-			return LP_Settings::instance()->get( $this->id . '.' . $name );
+			$this->enabled     = $this->settings->get( 'enable', 'yes' );
 		}
 
 		/**
@@ -88,7 +60,7 @@ if ( ! function_exists( 'LP_Gateway_Offline_Payment' ) ) {
 		 * Payment form.
 		 */
 		public function get_payment_form() {
-			return esc_html( LP_Settings::instance()->get( $this->id . '.description', $this->description ) );
+			return wp_kses_post( LP_Settings::instance()->get( $this->id . '.description', $this->description ) );
 		}
 
 		/**
@@ -104,7 +76,7 @@ if ( ! function_exists( 'LP_Gateway_Offline_Payment' ) ) {
 			$order = learn_press_get_order( $order_id );
 
 			// Mark as processing (payment won't be taken until delivery)
-			$default_status = 'processing';
+			$default_status = LP_ORDER_PROCESSING;
 
 			/**
 			 * If sandbox mode is turn on then the order

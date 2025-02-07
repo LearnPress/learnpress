@@ -7,6 +7,8 @@
  * @version 4.0.0
  */
 
+use LearnPress\Models\QuizPostModel;
+
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
@@ -81,7 +83,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 			$args = apply_filters(
 				'lp_quiz_post_type_args',
 				array(
-					'labels'             => array(
+					'labels'              => array(
 						'name'               => esc_html__( 'Quizzes', 'learnpress' ),
 						'menu_name'          => esc_html__( 'Quizzes', 'learnpress' ),
 						'singular_name'      => esc_html__( 'Quiz', 'learnpress' ),
@@ -95,27 +97,28 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 						'not_found'          => sprintf( __( 'You haven\'t had any quizzes yet. Click <a href="%s">Add new</a> to start', 'learnpress' ), admin_url( 'post-new.php?post_type=lp_quiz' ) ),
 						'not_found_in_trash' => esc_html__( 'There was no quiz found in the trash', 'learnpress' ),
 					),
-					'public'             => true,
-					'publicly_queryable' => true,
-					'show_ui'            => true,
-					'has_archive'        => false,
-					'capability_type'    => LP_LESSON_CPT,
-					'map_meta_cap'       => true,
-					'show_in_menu'       => 'learn_press',
-					'show_in_rest'       => true,
-					'show_in_admin_bar'  => true,
-					'show_in_nav_menus'  => true,
-					'supports'           => array(
+					'public'              => true,
+					'publicly_queryable'  => true,
+					'show_ui'             => true,
+					'has_archive'         => false,
+					'capability_type'     => LP_LESSON_CPT,
+					'map_meta_cap'        => true,
+					'show_in_menu'        => 'learn_press',
+					'show_in_rest'        => true,
+					'show_in_admin_bar'   => true,
+					'show_in_nav_menus'   => true,
+					'supports'            => array(
 						'title',
 						'editor',
 						'revisions',
 					),
-					'hierarchical'       => true,
-					'rewrite'            => array(
+					'hierarchical'        => true,
+					'rewrite'             => array(
 						'slug'         => 'quizzes',
 						'hierarchical' => true,
 						'with_front'   => false,
 					),
+					'exclude_from_search' => true,
 				)
 			);
 
@@ -263,7 +266,10 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 * @param int    $post_id
 		 */
 		public function columns_content( $name, $post_id = 0 ) {
-			global $post;
+			$quizPostModel = QuizPostModel::find( $post_id, true );
+			if ( ! $quizPostModel ) {
+				return;
+			}
 
 			switch ( $name ) {
 				case 'instructor':
@@ -273,48 +279,27 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 					$this->_get_item_course( $post_id );
 					break;
 				case 'num_of_question':
-					if ( property_exists( $post, 'question_count' ) ) {
-						$count = $post->question_count;
-					} else {
-						$quiz  = LP_Quiz::get_quiz( $post_id );
-						$count = $quiz->count_questions();
-					}
+					$count = $quizPostModel->count_questions();
 
 					printf(
-						'<span class="lp-label-counter' . ( ! $count ? ' disabled' : '' ) . '" title="%s">%s</span>',
-						( $count ) ? sprintf( _n( '%d question', '%d questions', $count, 'learnpress' ), $count ) : __( 'This quiz has no questions', 'learnpress' ),
+						'<span class="lp-label-counter %s" title="%s">%s</span>',
+						! $count ? 'disabled' : '',
+						$count ?
+							sprintf( _n( '%d question', '%d questions', $count, 'learnpress' ), $count ) :
+							__( 'This quiz has no questions', 'learnpress' ),
 						$count
 					);
 					break;
 				case 'duration':
-					$duration_str = get_post_meta( $post_id, '_lp_duration', true );
-					$duration     = (int) $duration_str;
+					$duration_str  = $quizPostModel->get_duration();
+					$duration_arr  = explode( ' ', $duration_str );
+					$duration      = $duration_arr[0];
+					$duration_type = $duration_arr[1];
 
 					if ( $duration > 0 ) {
-						$duration_str    .= 's';
-						$duration_str_arr = explode( ' ', $duration_str );
-						$type_time        = '';
-
-						if ( is_array( $duration_str_arr ) && ! empty( $duration_str_arr ) && count( $duration_str_arr ) >= 2 ) {
-							switch ( $duration_str_arr[1] ) {
-								case 'hours':
-									$type_time = __( 'hours', 'learnpress' );
-									break;
-								case 'minutes':
-									$type_time = __( 'minutes', 'learnpress' );
-									break;
-								case 'days':
-									$type_time = __( 'days', 'learnpress' );
-									break;
-								case 'weeks':
-									$type_time = __( 'weeks', 'learnpress' );
-									break;
-							}
-
-							$duration_str = sprintf( '%1$s %2$s', $duration_str_arr[0], $type_time );
-						}
+						$duration_str = LP_Datetime::get_string_plural_duration( $duration, $duration_type );
 					} else {
-						$duration_str = '--';
+						$duration_str = __( 'Unlimited', 'learnpress' );
 					}
 
 					echo esc_html( $duration_str );
@@ -480,16 +465,24 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		}
 
 		/**
-		 * Save Post type Quiz
+		 * Handle when save post.
 		 *
-		 * @author tungnx
+		 * @param int $post_id
+		 * @param WP_Post|null $post
+		 * @param bool $is_update
+		 *
+		 * @return void
+		 * @since 4.2.7.6
 		 * @version 1.0.0
-		 * @since 4.0.0
 		 */
-		public function save( int $post_id, WP_Post $post ) {
-			$lp_quiz_cache = LP_Quiz_Cache::instance();
+		public function save_post( int $post_id, WP_Post $post = null, bool $is_update = false ) {
+			// Clear cache get quiz by id
+			$lpCache = new LP_Cache();
+			$lpCache->clear( "quizPostModel/find/{$post_id}" );
+			$lpCache->clear( "quizModel/find/{$post_id}" );
 
 			// Clear cache get question_ids of quiz
+			$lp_quiz_cache = LP_Quiz_Cache::instance();
 			$lp_quiz_cache->clear( "$post_id/question_ids" );
 		}
 	}

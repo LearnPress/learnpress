@@ -81,9 +81,9 @@ window.lpCheckout = {
 		const callBack = {
 			success: ( response ) => {
 				response = lpAjaxParseJsonOld( response );
-				const { messages, result } = response;
+				const { message, result } = response;
 				if ( 'success' !== result ) {
-					window.lpCheckout.showErrors( formCheckout, 'error', messages );
+					window.lpCheckout.showErrors( formCheckout, 'error', message );
 				} else {
 					window.location.href = response.redirect;
 				}

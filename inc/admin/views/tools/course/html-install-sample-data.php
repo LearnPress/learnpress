@@ -5,6 +5,8 @@
  * @version 3.0.0
  */
 
+use LearnPress\Models\CoursePostModel;
+
 defined( 'ABSPATH' ) or die();
 
 $section_range  = LP_Install_Sample_Data::$section_range;
@@ -46,7 +48,8 @@ $answer_range   = LP_Install_Sample_Data::$answer_range;
 			</li>
 			<li>
 				<p><?php _e( 'Course price', 'learnpress' ); ?></p>
-				<input type="number" size="3" value="" min="0" name="course-price">
+				<input type="number" size="3" value="" min="0" name="<?php echo CoursePostModel::META_KEY_REGULAR_PRICE; ?>">
+				<input type="hidden" value="all" name="<?php echo CoursePostModel::META_KEY_LEVEL; ?>">
 			</li>
 		</ul>
 	</fieldset>

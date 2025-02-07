@@ -2,7 +2,9 @@
 
 use LearnPress\Helpers\Template;
 use LearnPress\Models\UserModel;
+use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileTemplate;
+use LearnPress\TemplateHooks\UserTemplate;
 
 /**
  * Class LP_Profile_Template
@@ -23,7 +25,7 @@ class LP_Template_Profile extends LP_Abstract_Template {
 		}
 
 		if ( $profile->get_user_current()->is_guest()
-		     && 'yes' !== LP_Profile::get_option_publish_profile() ) {
+			&& 'yes' !== LP_Profile::get_option_publish_profile() ) {
 			return;
 		}
 
@@ -60,8 +62,24 @@ class LP_Template_Profile extends LP_Abstract_Template {
 		learn_press_get_template( 'profile/content.php', compact( 'user', 'profile_tab', 'tab_key', 'profile' ) );
 	}
 
+	/**
+	 * Display avatar
+	 *
+	 * @return void
+	 * @version 1.0.1
+	 * @since 3.x.x
+	 */
 	public function avatar() {
-		learn_press_get_template( 'profile/avatar.php' );
+		$lp_profile = LP_Profile::instance();
+		$user       = $lp_profile->get_user();
+		$userModel  = UserModel::find( $user->get_id(), true );
+		if ( ! $userModel instanceof UserModel ) {
+			return;
+		}
+
+		$userTemplate = new UserTemplate();
+		echo $userTemplate->html_avatar_edit( $userModel );
+		//learn_press_get_template( 'profile/avatar.php' );
 	}
 
 	public function socials() {
@@ -195,69 +213,6 @@ class LP_Template_Profile extends LP_Abstract_Template {
 		echo ProfileTemplate::instance()->html_upload_cover_image( $userModel );
 	}
 
-	/**
-	 * @deprecated 4.2.6.2
-	 */
-	public function dashboard_featured_courses() {
-		_deprecated_function( __METHOD__, '4.2.6.2' );
-		die;
-		$profile_privacy = $this->get_user()->get_extra_data(
-			'profile_privacy',
-			array(
-				'courses' => 'no',
-				'quizzes' => 'no',
-			)
-		);
-
-		if ( $this->get_user()->get_id() !== get_current_user_id() && 'yes' !== $profile_privacy['courses'] ) {
-			return;
-		}
-
-		$user  = $this->get_user();
-		$query = new LP_Course_Query(
-			array(
-				'paginate' => true,
-				'featured' => 'yes',
-				'return'   => 'ids',
-				'author'   => $user->get_id(),
-			)
-		);
-
-		$data = $query->get_courses();
-
-		learn_press_get_template( 'profile/dashboard/featured-courses', (array) $data );
-	}
-
-	/**
-	 * @deprecated 4.2.6.2
-	 */
-	public function dashboard_latest_courses() {
-		_deprecated_function( __METHOD__, '4.2.6.2' );
-		die;
-		$profile_privacy = $this->get_user()->get_extra_data(
-			'profile_privacy',
-			array(
-				'courses' => 'no',
-				'quizzes' => 'no',
-			)
-		);
-
-		if ( $this->get_user()->get_id() !== get_current_user_id() && 'yes' !== $profile_privacy['courses'] ) {
-			return;
-		}
-
-		$user  = $this->get_user();
-		$query = new LP_Course_Query(
-			array(
-				'paginate' => true,
-				'return'   => 'ids',
-				'author'   => $user->get_id(),
-			)
-		);
-
-		learn_press_get_template( 'profile/dashboard/latest-courses', (array) $query->get_courses() );
-	}
-
 	public function order_details() {
 		$profile = LP_Profile::instance();
 		$order   = $profile->get_view_order();
@@ -336,18 +291,6 @@ class LP_Template_Profile extends LP_Abstract_Template {
 		}
 
 		learn_press_get_template( 'global/form-register.php' );
-	}
-
-	/**
-	 * @return bool|LP_User|mixed
-	 * @deprecated 4.2.6.4
-	 */
-	protected function get_user() {
-		_deprecated_function( __METHOD__, '4.2.6.4' );
-
-		return false;
-
-		return LP_Profile::instance()->get_user();
 	}
 }
 

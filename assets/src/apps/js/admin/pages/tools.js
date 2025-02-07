@@ -27,6 +27,7 @@ import resetData from './tools/reset-data';
 		isRunning = true;
 
 		$.ajax( {
+			method: 'POST',
 			url: $button.attr( 'href' ),
 			data: $( '.lp-install-sample__options' ).serializeJSON(),
 			success( response ) {

@@ -3,12 +3,13 @@
  * Template hooks List Instructors.
  *
  * @since 4.2.3
- * @version 1.0.0
+ * @version 1.0.1
  */
 
 namespace LearnPress\TemplateHooks\Instructor;
 
 use LearnPress\Helpers\Template;
+use LearnPress\Models\UserModel;
 use LP_Assets;
 use LP_Helper;
 use LP_Page_Controller;
@@ -77,25 +78,30 @@ class ListInstructorsTemplate {
 		 */
 		global $wp_query;
 
-		ob_start();
 		try {
-			$html_wrapper = apply_filters(
-				'learn-press/list-instructors/sections/wrapper',
-				[
-					'<article class="lp-content-area">' => '</article>',
-					'<div class="lp-list-instructors">' => '</div>',
-				],
-				$data
-			);
+			ob_start();
 			?>
 			<ul class="ul-list-instructors">
 				<?php lp_skeleton_animation_html( 10 ); ?>
 			</ul>
 			<?php
-			$content = ob_get_clean();
-			echo Template::instance()->nest_elements( $html_wrapper, $content );
+			$skeleton = ob_get_clean();
+
+			$sections = apply_filters(
+				'learn-press/list-instructors/sections',
+				[
+					'wrapper'           => '<div class="lp-content-area">',
+					'wrapper_inner'     => '<div class="lp-list-instructors">',
+					'skeleton'          => $skeleton,
+					'wrapper_inner_end' => '</div>',
+					'wrapper_end'       => '</div>',
+				],
+				$data
+			);
+
+			echo Template::combine_components( $sections );
+
 		} catch ( Throwable $e ) {
-			ob_end_clean();
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 	}
@@ -103,40 +109,44 @@ class ListInstructorsTemplate {
 	/**
 	 * Get instructor item.
 	 *
-	 * @param LP_User $instructor
+	 * @param UserModel $instructor
 	 *
-	 * @return false|string
+	 * @return string
 	 */
-	public function instructor_item( LP_User $instructor ) {
-		$content      = '';
-		$html_wrapper = apply_filters(
-			'learn-press/list-instructors/instructor_item/wrapper',
-			[
-				'<li class="item-instructor">' => '</li>',
-			],
-			$instructor
-		);
+	public function instructor_item( UserModel $instructor ): string {
+		$content = '';
 
-		ob_start();
 		try {
 			$singleInstructorTemplate = SingleInstructorTemplate::instance();
 
-			$sections = apply_filters(
+			$items = apply_filters(
 				'learn-press/list-instructors/instructor_item/sections',
 				[
-					'img'      => [ 'text_html' => $singleInstructorTemplate->html_avatar( $instructor ) ],
-					'name'     => [ 'text_html' => $singleInstructorTemplate->html_display_name( $instructor ) ],
-					'info'     => [ 'text_html' => $this->instructor_item_info( $instructor ) ],
-					'btn_view' => [ 'text_html' => $singleInstructorTemplate->html_button_view( $instructor ) ],
+					'img'      => $singleInstructorTemplate->html_avatar( $instructor ),
+					'name'     => sprintf(
+						'<a class="instructor-name" href="%s">%s</a>',
+						$instructor->get_url_instructor(),
+						$singleInstructorTemplate->html_display_name( $instructor )
+					),
+					'info'     => $this->instructor_item_info( $instructor ),
+					'btn_view' => $singleInstructorTemplate->html_button_view( $instructor ),
 				],
 				$instructor,
 				$singleInstructorTemplate
 			);
-			Template::instance()->print_sections( $sections, compact( 'instructor' ) );
-			$content = ob_get_clean();
-			$content = Template::instance()->nest_elements( $html_wrapper, $content );
+
+			$sections = apply_filters(
+				'learn-press/list-instructors/instructor_item/wrapper',
+				[
+					'wrapper'     => '<li class="item-instructor">',
+					'content'     => Template::combine_components( $items ),
+					'wrapper_end' => '</li>',
+				],
+				$instructor
+			);
+
+			$content = Template::combine_components( $sections );
 		} catch ( Throwable $e ) {
-			ob_end_clean();
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 
@@ -146,23 +156,15 @@ class ListInstructorsTemplate {
 	/**
 	 * Get instructor info: total courses, total students.
 	 *
-	 * @param LP_User $instructor
+	 * @param UserModel $instructor
 	 *
-	 * @return false|string
-	 * @version 1.0.0
+	 * @return string
+	 * @version 1.0.1
 	 * @since 4.2.3
 	 */
-	public function instructor_item_info( LP_User $instructor ) {
-		$content      = '';
-		$html_wrapper = apply_filters(
-			'learn-press/list-instructors/instructor_item/info/wrapper',
-			[
-				'<div class="instructor-info">' => '</div>',
-			],
-			$instructor
-		);
+	public function instructor_item_info( UserModel $instructor ): string {
+		$content = '';
 
-		ob_start();
 		try {
 			$singleInstructorTemplate = SingleInstructorTemplate::instance();
 
@@ -173,23 +175,31 @@ class ListInstructorsTemplate {
 
 			$html_total_students = sprintf(
 				'<div class="instructor-count-students"><span class="lp-ico lp-icon-students"></span> %s</div>',
- 				$singleInstructorTemplate->html_count_students( $instructor )
+				$singleInstructorTemplate->html_count_students( $instructor )
 			);
 
-			$sections = apply_filters(
+			$items = apply_filters(
 				'learn-press/list-instructors/instructor_item/info/sections',
 				[
-					'total_courses'  => [ 'text_html' => $html_total_courses ],
-					'total_students' => [ 'text_html' => $html_total_students ],
+					'total_courses'  => $html_total_courses,
+					'total_students' => $html_total_students,
 				],
 				$instructor,
 				$singleInstructorTemplate
 			);
-			Template::instance()->print_sections( $sections, compact( 'instructor' ) );
-			$content = ob_get_clean();
-			$content = Template::instance()->nest_elements( $html_wrapper, $content );
+
+			$sections = apply_filters(
+				'learn-press/list-instructors/instructor_item/wrapper',
+				[
+					'wrapper'     => '<div class="instructor-info">',
+					'content'     => Template::combine_components( $items ),
+					'wrapper_end' => '</div>',
+				],
+				$instructor
+			);
+
+			$content = Template::combine_components( $sections );
 		} catch ( Throwable $e ) {
-			ob_end_clean();
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 

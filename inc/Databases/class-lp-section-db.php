@@ -337,9 +337,9 @@ class LP_Section_DB extends LP_Database {
 	 * @return int
 	 * @throws Exception
 	 * @since 4.1.4.2
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
-	public function get_course_id_by_section( int $section_id ) : int {
+	public function get_course_id_by_section( int $section_id ): int {
 		$filter                      = new LP_Section_Filter();
 		$filter->only_fields         = [ 'section_course_id' ];
 		$filter->section_ids         = [ $section_id ];
@@ -354,14 +354,29 @@ class LP_Section_DB extends LP_Database {
 		return $course_id;
 	}
 
-	public function get_section_id_by_item_id( $item_id ) {
+	public function get_section_id_by_item_id( $item_id, $course_id = 0 ) {
 		global $wpdb;
 
 		if ( empty( $item_id ) ) {
 			return false;
 		}
 
-		$section_id = $wpdb->get_var( $wpdb->prepare( "SELECT section_id FROM {$wpdb->learnpress_section_items} WHERE item_id = %d ORDER BY section_id DESC LIMIT 1", $item_id ) );
+		$inner_join = '';
+		if ( ! empty( $course_id ) ) {
+			$inner_join  = "INNER JOIN {$wpdb->learnpress_sections} AS s ON s.section_id = si.section_id";
+			$inner_join .= $wpdb->prepare( ' AND s.section_course_id = %d ', $course_id );
+		}
+
+		$query_str = $wpdb->prepare(
+			"SELECT si.section_id
+			FROM {$wpdb->learnpress_section_items} AS si
+			$inner_join
+			WHERE si.item_id = %d
+			LIMIT 1",
+			$item_id
+		);
+
+		$section_id = $wpdb->get_var( $query_str );
 
 		if ( $section_id ) {
 			return absint( $section_id );

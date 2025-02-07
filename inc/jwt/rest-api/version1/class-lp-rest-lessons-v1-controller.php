@@ -1,4 +1,10 @@
 <?php
+
+use LearnPress\Models\CourseModel;
+use LearnPress\Models\LessonPostModel;
+use LearnPress\Models\UserItems\UserLessonModel;
+use LearnPress\Models\UserModel;
+
 class LP_Jwt_Lessons_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 	protected $namespace = 'learnpress/v1';
 
@@ -191,39 +197,47 @@ class LP_Jwt_Lessons_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 	}
 
 	public function finish_lesson( $request ) {
-		$response       = new LP_REST_Response();
-		$response->data = new stdClass();
+		$response = new LP_REST_Response();
 
 		try {
 			$id = isset( $request['id'] ) ? absint( $request['id'] ) : '';
-
 			if ( empty( $id ) ) {
 				throw new Exception( esc_html__( 'Error: No lesson available!.', 'learnpress' ) );
 			}
 
-			$course_id = $this->get_course_by_item_id( $id );
+			$lessonModel = LessonPostModel::find( $id, true );
+			if ( ! $lessonModel ) {
+				throw new Exception( esc_html__( 'Error: Lesson is invalid!', 'learnpress' ) );
+			}
 
+			$course_id = $this->get_course_by_item_id( $id );
 			if ( empty( $course_id ) ) {
 				throw new Exception( esc_html__( 'Error: This lesson is not assigned in the Course.', 'learnpress' ) );
 			}
 
-			$course = learn_press_get_course( $course_id );
-			$user   = learn_press_get_current_user();
+			$courseModel = CourseModel::find( $course_id, true );
+			$userModel   = UserModel::find( get_current_user_id(), true );
 
-			if ( empty( $course ) || empty( $user ) ) {
+			if ( empty( $courseModel ) || empty( $userModel ) ) {
 				throw new Exception( esc_html__( 'Error: No Course or User available.', 'learnpress' ) );
 			}
 
-			$result = $user->complete_lesson( $id, $course_id );
-
-			if ( is_wp_error( $result ) ) {
-				throw new Exception( $result->get_error_message() ?? esc_html__( 'Error: Cannot complete the Lesson', 'learnpress' ) );
+			$userLessonModel = UserLessonModel::find_user_item(
+				get_current_user_id(),
+				$id,
+				$lessonModel->post_type,
+				$course_id,
+				LP_COURSE_CPT,
+				true
+			);
+			if ( ! $userLessonModel instanceof UserLessonModel ) {
+				throw new Exception( __( 'You have not started lesson', 'learnpress' ) );
 			}
 
+			$userLessonModel->set_complete();
 			$response->status  = 'success';
 			$response->message = esc_html__( 'Congrats! You have completed the lesson successfully', 'learnpress' );
-		} catch ( \Throwable $th ) {
-			$response->status  = 'error';
+		} catch ( Throwable $th ) {
 			$response->message = $th->getMessage();
 		}
 
@@ -602,5 +616,4 @@ class LP_Jwt_Lessons_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 
 		return $response;
 	}
-
 }

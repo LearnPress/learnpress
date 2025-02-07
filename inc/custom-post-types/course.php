@@ -37,13 +37,15 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			add_action( 'init', array( $this, 'register_taxonomy' ) );
 			add_filter( 'posts_where_paged', array( $this, '_posts_where_paged_course_items' ), 10 );
 			add_filter( 'posts_join_paged', array( $this, '_posts_join_paged_course_items' ), 10 );
-			add_action( 'clean_post_cache', [ $this, 'clear_cache' ] );
 		}
 
 		/**
 		 * Register course post type.
 		 */
 		public function args_register_post_type(): array {
+			// Support Quick Edit multiple courses change author
+			add_post_type_support( LP_COURSE_CPT, 'author' );
+
 			$settings         = LP_Settings::instance();
 			$labels           = array(
 				'name'               => _x( 'Courses', 'Post Type General Name', 'learnpress' ),
@@ -60,7 +62,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				'not_found'          => sprintf( __( 'You have not had any courses yet. Click <a href="%s">Add new</a> to start', 'learnpress' ), admin_url( 'post-new.php?post_type=lp_course' ) ),
 				'not_found_in_trash' => __( 'There was no course found in the trash', 'learnpress' ),
 			);
-			$course_base      = LP_Settings::get_option( 'course_base' );
+			$course_base      = LP_Settings::get_option( 'course_base', 'courses' );
 			$course_permalink = empty( $course_base ) ? 'courses' : $course_base;
 
 			// Set to $has_archive return link to courses page, is_archive will check is true
@@ -455,7 +457,8 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						$html_items = array();
 						//$post_types = get_post_types( null, 'objects' );
 
-						foreach ( learn_press_get_course_item_types() as $item_type ) {
+						$course_item_types = CourseModel::item_types_support();
+						foreach ( $course_item_types as $item_type ) {
 							$count_item = $course->count_items( $item_type );
 
 							if ( ! $count_item ) {
@@ -583,6 +586,15 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					}
 				}
 
+				// For case bulk edit multiple courses change author
+				$bulk_edit = LP_Request::get_param( 'bulk_edit', false );
+				if ( ! empty( $bulk_edit ) ) {
+					$post_author = LP_Request::get_param( 'post_author', 0, 'int' );
+					if ( $post_author ) {
+						$courseModel->post_author = $post_author;
+					}
+				}
+
 				$this->save_price( $courseModel );
 				$courseModel->save();
 				// End save to table learnpress_courses
@@ -638,16 +650,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			// Set price to sort on lists.
 			$courseObj->price_to_sort = $courseObj->get_price();
 			$coursePost->save_meta_value_by_key( CoursePostModel::META_KEY_PRICE, $courseObj->price_to_sort );
-		}
-
-		/**
-		 * Clear cache courses
-		 *
-		 * @return void
-		 */
-		public function clear_cache() {
-			$lp_cache_course = new LP_Courses_Cache( true );
-			$lp_cache_course->clear_cache_on_group( LP_Courses_Cache::KEYS_QUERY_COURSES_APP );
 		}
 
 		/**
