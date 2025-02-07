@@ -380,26 +380,6 @@ class ListCoursesTemplate {
 					$settings
 				);
 			} else {
-				// HTML bottom section end.
-				$info_course = apply_filters(
-					'learn-press/layout/list-courses/item/section/info',
-					[
-						'wrapper'       => '<div class="course-info">',
-						//'clearfix'          => '<div class="clearfix"></div>',
-						//'course_footer'     => '<div class="course-footer">',
-						'price'         => $singleCourseTemplate->html_price( $course ),
-						'btn_read_more' => sprintf(
-							'<div class="course-readmore"><a href="%s">%s</a></div>',
-							$course->get_permalink(),
-							__( 'Read more', 'learnpress' )
-						),
-						//'course_footer_end' => '</div>',
-						'wrapper_end'   => '</div>',
-					],
-					$course,
-					$settings
-				);
-
 				$html_instructor = [
 					'instructor' => sprintf(
 						'<div>%s %s</div>',
@@ -423,7 +403,6 @@ class ListCoursesTemplate {
 						'{{category-course}}',
 						'{{instructor-course}}',
 						'{{meta-course}}',
-						'{{info-course}}',
 						'{{button-course}}',
 						'{{price-course}}',
 					],
@@ -433,7 +412,6 @@ class ListCoursesTemplate {
 						$html_categories,
 						Template::combine_components( $html_instructor ),
 						$html_meta_data,
-						Template::combine_components( $info_course ),
 						Template::combine_components( $html_button ),
 						$singleCourseTemplate->html_price( $course ),
 					],

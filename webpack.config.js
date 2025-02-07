@@ -122,7 +122,6 @@ module.exports = {
 		'./assets/js/dist/blocks/media-course-archive-course': './assets/src/apps/js/blocks/widget-archive-course/media-course/index.js',
 		'./assets/js/dist/blocks/instructor-archive-course': './assets/src/apps/js/blocks/widget-archive-course/instructor/index.js',
 		'./assets/js/dist/blocks/category-archive-course': './assets/src/apps/js/blocks/widget-archive-course/category/index.js',
-		'./assets/js/dist/blocks/info-course-archive-course': './assets/src/apps/js/blocks/widget-archive-course/info-course/index.js',
 		'./assets/js/dist/blocks/button-course-archive-course': './assets/src/apps/js/blocks/widget-archive-course/button-course/index.js',
 		'./assets/js/dist/blocks/price-course-archive-course': './assets/src/apps/js/blocks/widget-archive-course/price-course/index.js',
 		'./assets/js/dist/blocks/lp-archive-course': './assets/src/apps/js/blocks/widget-archive-course/lp-archive-course/index.js',
