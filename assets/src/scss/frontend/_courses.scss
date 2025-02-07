@@ -162,6 +162,20 @@
 		}
 
 		.course-info {
+			.course-price {
+				margin-left: 0 !important;
+				margin-right: 0 !important;
+			}
+
+			> div {
+				margin-left: 0 !important;
+				margin-right: 0 !important;
+			}
+	
+			> div:last-child {
+				margin-top: 0;
+			}
+
 			> span {
 				display: block;
 			}
@@ -504,7 +518,6 @@
 		}
 	}
 
-<<<<<<< HEAD
 	.course-readmore {
 		a {
 			padding: $spacing-base-2x $spacing-base-6x;
@@ -519,7 +532,10 @@
 				background: $color-primary;
 				color: $color-white;
 				border-color: $color-primary;
-=======
+			}
+		}
+	}
+
 	.course-content {
 		.course-readmore {
 			a {
@@ -537,7 +553,6 @@
 					color: $color-white;
 					border-color: $color-primary;
 				}
->>>>>>> origin/develop
 			}
 		}
 	}
@@ -689,7 +704,6 @@
 		.course-info {
 			padding: $spacing-base-5x;
 			flex-grow: 1;
-<<<<<<< HEAD
 			flex-direction: column;
 			align-items: flex-start;
 			gap: $spacing-base-3x;
@@ -697,7 +711,6 @@
 				width: 100%;
 				text-align: center;
 			}
-=======
 
 			.course-info {
 				flex-direction: column;
@@ -726,7 +739,6 @@
 			//	margin-right: -20px;
 			//}
 
->>>>>>> origin/develop
 		}
 		.course-title {
 			font-size: $font-size-h4;
@@ -748,10 +760,6 @@
 			margin-left: 15px;
 			margin-right: 15px;
 		}
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/develop
 		.course-thumbnail {
 			border-radius: $border-radius-global $border-radius-global 0 0;
 		}
@@ -830,39 +838,24 @@
 		-webkit-appearance: none;
 		appearance: none;
 		line-height: 1.1;
-<<<<<<< HEAD
-		.woocommerce-js & {
-			background-position-x: calc(100% - 10px);
-		}
-=======
 
 		.woocommerce-js & {
 			background-position-x: calc(100% - 10px);
 		}
 
->>>>>>> origin/develop
 		&:focus {
 			border-color: var(--lp-primary-color);
 			outline: 0;
 		}
 	}
-<<<<<<< HEAD
-	> * {
-		display: flex;
-=======
 
 	> * {
 		display: flex
->>>>>>> origin/develop
 	}
 
 	.search-courses {
 		flex: 1;
-<<<<<<< HEAD
-
-=======
 		margin-bottom: 0;
->>>>>>> origin/develop
 		input {
 			width: 100%;
 			max-width: 240px;
@@ -879,10 +872,6 @@
 		button {
 			@include input();
 			box-shadow: 0 0 0;
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/develop
 			i {
 				font-size: 1.2em;
 				line-height: 1.2;
@@ -922,11 +911,7 @@
 				display: inline-block;
 				margin: 6px;
 				color: $text-color-base;
-<<<<<<< HEAD
-				font-family: "lp-icon";
-=======
 				font-family: 'lp-icon';
->>>>>>> origin/develop
 				line-height: 1.2;
 				width: 1em;
 			}
@@ -935,10 +920,6 @@
 				border-radius: $border-radius-global 0 0 $border-radius-global;
 				border: 1px solid $border-color;
 				border-right: none;
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/develop
 				&::before {
 					content: "\f009";
 				}
@@ -969,10 +950,6 @@
 	@media (max-width: 767px) {
 		.search-courses {
 			width: 100%;
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/develop
 			input {
 				min-width: 240px;
 				max-width: unset;
@@ -982,12 +959,7 @@
 }
 
 @for $i from 0 through 9 {
-<<<<<<< HEAD
-	input[type="radio"]:nth-child(#{$i*2 + 1}):checked
-		~ .switch-btn:nth-child(#{$i*2 + 2}) {
-=======
 	input[type="radio"]:nth-child(#{$i*2+1}):checked ~ .switch-btn:nth-child(#{$i*2+2}) {
->>>>>>> origin/develop
 		.switch-layout & {
 			background-color: $bg-grey;
 		}
