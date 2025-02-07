@@ -35,6 +35,8 @@ require_once $blog_template_path . 'archive-course/layout/class-block-layout-tem
 require_once $blog_template_path . 'archive-course/layout/class-block-layout-list-course-archive-courses.php';
 require_once $blog_template_path . 'archive-course/class-block-template-pagination-archive-courses.php';
 require_once $blog_template_path . 'archive-course/class-block-template-info-course-archive-courses.php';
+require_once $blog_template_path . 'archive-course/class-block-template-button-course-archive-courses.php';
+require_once $blog_template_path . 'archive-course/class-block-template-price-course-archive-courses.php';
 require_once $blog_template_path . 'archive-course/class-block-template-category-archive-courses.php';
 require_once $blog_template_path . 'archive-course/class-block-template-instructor-archive-courses.php';
 require_once $blog_template_path . 'archive-course/class-block-template-meta-course-archive-courses.php';
@@ -118,6 +120,8 @@ return apply_filters(
 		new Block_Layout_List_Course_Archive_Courses(),
 		// new Block_Template_Pagination_Archive_Courses(),
 		new Block_Template_Info_Course_Archive_Courses(),
+		new Block_Template_Button_Course_Archive_Courses(),
+		new Block_Template_Price_Course_Archive_Courses(),
 		new Block_Template_Category_Archive_Courses(),
 		new Block_Template_Instructor_Archive_Courses(),
 		new Block_Template_Meta_Course_Archive_Courses(),

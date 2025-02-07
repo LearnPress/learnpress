@@ -408,6 +408,14 @@ class ListCoursesTemplate {
 					),
 				];
 
+				$html_button = [
+					'btn_read_more' => sprintf(
+						'<div class="course-readmore"><a href="%s">%s</a></div>',
+						$course->get_permalink(),
+						__( 'Read more', 'learnpress' )
+					),
+				];
+
 				$html_course = str_replace(
 					[
 						'{{media-course}}',
@@ -416,6 +424,8 @@ class ListCoursesTemplate {
 						'{{instructor-course}}',
 						'{{meta-course}}',
 						'{{info-course}}',
+						'{{button-course}}',
+						'{{price-course}}',
 					],
 					[
 						Template::combine_components( $section_top ),
@@ -424,6 +434,8 @@ class ListCoursesTemplate {
 						Template::combine_components( $html_instructor ),
 						$html_meta_data,
 						Template::combine_components( $info_course ),
+						Template::combine_components( $html_button ),
+						$singleCourseTemplate->html_price( $course ),
 					],
 					$template
 				);

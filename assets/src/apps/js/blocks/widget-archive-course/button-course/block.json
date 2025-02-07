@@ -1,0 +1,22 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "learnpress/button-course-archive-course",
+	"title": "Button Course",
+	"category": "lp-archive-course-category",
+	"icon": "button",
+	"description": "Renders Template Button Course Archive Course PHP templates.",
+	"textdomain": "learnpress",
+	"keywords": ["button archive course", "learnpress"],
+	"usesContext": [],
+	"supports": {
+		"inserter": true,
+		"reusable": true,
+		"reorder": true,
+		"html": false,
+		"multiple": true
+	},
+	"ancestor": [
+		"learnpress/template-course-archive-course"
+	]
+}

@@ -1,0 +1,22 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "learnpress/price-course-archive-course",
+	"title": "Price Course",
+	"category": "lp-archive-course-category",
+	"icon": "button",
+	"description": "Renders Template Info Course Archive Course PHP templates.",
+	"textdomain": "learnpress",
+	"keywords": ["price archive course", "learnpress"],
+	"usesContext": [],
+	"supports": {
+		"inserter": true,
+		"reusable": true,
+		"reorder": true,
+		"html": false,
+		"multiple": true
+	},
+	"ancestor": [
+		"learnpress/template-course-archive-course"
+	]
+}
