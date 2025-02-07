@@ -421,6 +421,15 @@
 		flex-wrap: wrap;
 		margin-bottom: $spacing-base-3x;
 
+		> div {
+			margin-left: 0 !important;
+			margin-right: 0 !important;
+		}
+
+		> div:last-child {
+			margin-top: 0;
+		}
+
 		> div > * {
 			display: inline;
 			vertical-align: middle;

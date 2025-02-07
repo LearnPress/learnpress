@@ -397,29 +397,28 @@ class ListCoursesTemplate {
 					$settings
 				);
 
-				$instructor_category = [
-					'wrapper_instructor_cate'     => '<div class="course-instructor-category">',
-					'instructor'                  => sprintf(
+				$html_instructor = [
+					'instructor' => sprintf(
 						'<div>%s %s</div>',
 						sprintf( '<label>%s</label>', __( 'by', 'learnpress' ) ),
 						$singleCourseTemplate->html_instructor( $course )
 					),
-					'category'                    => $html_categories,
-					'wrapper_instructor_cate_end' => '</div>',
 				];
 
 				$html_course = str_replace(
 					[
 						'{{media-course}}',
 						'{{title-course}}',
-						'{{instructor-category-course}}',
+						'{{category-course}}',
+						'{{instructor-course}}',
 						'{{meta-course}}',
 						'{{info-course}}',
 					],
 					[
 						Template::combine_components( $section_top ),
 						$html_title,
-						Template::combine_components( $instructor_category ),
+						$html_categories,
+						Template::combine_components( $html_instructor ),
 						$html_meta_data,
 						Template::combine_components( $info_course ),
 					],

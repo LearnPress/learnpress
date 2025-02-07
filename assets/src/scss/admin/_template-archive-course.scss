@@ -241,9 +241,11 @@
 
 		.wp-block-learnpress-meta-course-archive-course,
 		.wp-block-learnpress-title-course-archive-course,
-		.wp-block-learnpress-instructor-category-course-archive-course {
+		.wp-block-learnpress-instructor-course-archive-course,
+		.wp-block-learnpress-category-course-archive-course {
 			width: calc(65% - 20px);
 			float: inline-end;
+			margin-top: 0;
 		}
 	}
 

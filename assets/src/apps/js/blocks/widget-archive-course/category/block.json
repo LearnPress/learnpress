@@ -1,0 +1,22 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "learnpress/category-course-archive-course",
+	"title": "Category Course",
+	"category": "lp-archive-course-category",
+	"icon": "tag",
+	"description": "Renders Template Category Course Archive Course PHP templates.",
+	"textdomain": "learnpress",
+	"keywords": ["category archive course", "learnpress"],
+	"usesContext": [],
+	"supports": {
+		"inserter": true,
+		"reusable": true,
+		"reorder": true,
+		"html": false,
+		"multiple": true
+	},
+	"ancestor": [
+		"learnpress/template-course-archive-course"
+	]
+}
