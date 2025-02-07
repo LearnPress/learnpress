@@ -477,10 +477,10 @@ class LP_Settings {
 	 *
 	 * @return string
 	 * @since 4.2.7.6
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public static function url_handle_lp_ajax(): string {
-		return LP_PLUGIN_URL . 'inc/lp-ajax.php';
+		return home_url( 'lp-ajax-handle' );
 	}
 }
 

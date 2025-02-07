@@ -170,6 +170,11 @@ class LP_Query {
 					'index.php?page_id=' . $single_instructor_page_id . '&is_single_instructor=1&paged=$matches[2]',
 			];
 
+			// For handle request lp-ajax
+			$rules['lp-ajax'][] = [
+				'^lp-ajax-handle/?$' => 'index.php',
+			];
+
 			$rules = apply_filters( 'learn-press/rewrite/rules', $rules );
 		} catch ( Throwable $e ) {
 			error_log( $e->getMessage() );

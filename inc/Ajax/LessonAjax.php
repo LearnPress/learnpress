@@ -76,6 +76,7 @@ class LessonAjax extends AbstractAjax {
 
 		learn_press_set_message( $message_data );
 
-		wp_redirect( $link_continue );
+		wp_safe_redirect( $link_continue );
+		die();
 	}
 }

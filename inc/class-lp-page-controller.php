@@ -36,6 +36,12 @@ class LP_Page_Controller {
 		// Set link course, item course.
 		add_filter( 'post_type_link', array( $this, 'post_type_link' ), 10, 2 );
 
+		if ( LP_Page_Controller::is_page_lp_ajax() ) {
+			if ( ! isset( $_REQUEST['lp-load-ajax'] ) ) {
+				wp_die( 'Invalid request!', 400 );
+			}
+		}
+
 		if ( is_admin() ) {
 
 		} else {
@@ -104,6 +110,42 @@ class LP_Page_Controller {
 				}
 			);
 		}
+
+		// Disable create sitemap for items type of Course.
+		add_filter(
+			'wp_sitemaps_post_types',
+			function ( $post_types ) {
+				$item_types   = CourseModel::item_types_support();
+				$item_types[] = LP_QUESTION_CPT;
+				foreach ( $item_types as $item_type ) {
+					if ( isset( $post_types[ $item_type ] ) ) {
+						unset( $post_types[ $item_type ] );
+					}
+				}
+
+				return $post_types;
+			}
+		);
+
+		/**
+		 * Disable create sitemap for YoastSEO, Rank Math, but can affect to all logic, ex: it makes link edit of items course lose.
+		 *
+		 * @var WP_Post_Type $post_type
+		 */
+		/*add_filter(
+			'is_post_type_viewable',
+			function ( $is_viewable, $post_type ) {
+				$item_types   = CourseModel::item_types_support();
+				$item_types[] = LP_QUESTION_CPT;
+				if ( in_array( $post_type->name, $item_types ) ) {
+					$is_viewable = false;
+				}
+
+				return $is_viewable;
+			},
+			10,
+			2
+		);*/
 	}
 
 	/**
@@ -421,6 +463,12 @@ class LP_Page_Controller {
 	 * @return bool|string
 	 */
 	public function template_loader( $template ) {
+		if ( LP_Page_Controller::is_page_lp_ajax() ) {
+			if ( ! isset( $_REQUEST['lp-load-ajax'] ) ) {
+				wp_die( 'Invalid request!', 400 );
+			}
+		}
+
 		if ( wp_is_block_theme() ) {
 			return $template;
 		}
@@ -1089,6 +1137,22 @@ class LP_Page_Controller {
 		return self::page_is( 'become_a_teacher' );
 	}
 
+	/**
+	 * Check page is LP Ajax
+	 *
+	 * @return bool
+	 * @since 4.2.7.7
+	 */
+	public static function is_page_lp_ajax(): bool {
+		// If pages of LP set to homepage will return false
+		$pattern = '/lp-ajax-handle/';
+		if ( preg_match( $pattern, LP_Helper::getUrlCurrent() ) ) {
+			return true;
+		}
+
+		return false;
+	}
+
 	public static function instance() {
 		if ( ! self::$_instance ) {
 			self::$_instance = new self();
@@ -1228,5 +1292,3 @@ class LP_Page_Controller {
 		status_header( 404 );
 	}
 }
-
-return LP_Page_Controller::instance();
