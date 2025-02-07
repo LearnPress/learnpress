@@ -1416,14 +1416,6 @@ class SingleCourseTemplate {
 		return $html_time;
 	}
 
-	public function html_comment( CourseModel $course ) {
-		if ( comments_open() || get_comments_number() ) {
-			add_filter( 'deprecated_file_trigger_error', '__return_false' );
-			comments_template();
-			remove_filter( 'deprecated_file_trigger_error', '__return_false' );
-		}
-	}
-
 	/**
 	 * Show content item curriculum course
 	 *
