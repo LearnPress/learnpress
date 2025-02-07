@@ -28,14 +28,14 @@ class LP_REST_Addon_Controller extends LP_Abstract_REST_Controller {
 
 	public function register_routes() {
 		$this->routes = array(
-			'all'    => array(
+			'all'      => array(
 				array(
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'list_addons' ),
 					'permission_callback' => [ $this, 'permission_callback' ],
 				),
 			),
-			'action' => array(
+			'action-n' => array(
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'action' ),
@@ -66,7 +66,7 @@ class LP_REST_Addon_Controller extends LP_Abstract_REST_Controller {
 		try {
 			$params   = $request->get_params();
 			$lp_addon = LP_Manager_Addons::instance();
-			$res      = wp_remote_get( $lp_addon->url_list_addons, [ 'timeout' => 30, ] );
+			$res      = wp_remote_get( $lp_addon->url_list_addons, [ 'timeout' => 30 ] );
 			if ( is_wp_error( $res ) ) {
 				throw new Exception( $res->get_error_message() );
 			}
@@ -157,7 +157,9 @@ class LP_REST_Addon_Controller extends LP_Abstract_REST_Controller {
 			switch ( $action ) {
 				case 'install':
 				case 'update':
-					$link_download = $path_file = $package = '';
+					$link_download = '';
+					$path_file     = '';
+					$package       = '';
 
 					if ( $addon['is_org'] ) {
 						$link_download = "{$this->lp_addons->link_org}{$addon['slug']}.{$addon['version']}.zip";
