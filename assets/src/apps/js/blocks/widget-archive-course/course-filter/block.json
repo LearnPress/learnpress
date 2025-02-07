@@ -1,13 +1,13 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 2,
-	"name": "learnpress/sidebar-archive-course",
-	"title": "Sidebar",
+	"name": "learnpress/course-filter",
+	"title": "Course Filter",
 	"category": "lp-archive-course-category",
 	"icon": "admin-page",
-	"description": "Renders Layout Sidebar PHP templates.",
+	"description": "Renders Layout Course Filter PHP templates.",
 	"textdomain": "learnpress",
-	"keywords": ["layout sidebar course", "learnpress"],
+	"keywords": ["layout filter course", "learnpress"],
 	"usesContext": [],
 	"supports": {
 		"inserter": true,
