@@ -118,7 +118,6 @@ module.exports = {
 		'./assets/js/dist/blocks/course-filter': './assets/src/apps/js/blocks/widget-archive-course/course-filter/index.js',
 		// './assets/js/dist/blocks/pagination-archive-course': './assets/src/apps/js/blocks/widget-archive-course/pagination/index.js',
 		'./assets/js/dist/blocks/title-course-archive-course': './assets/src/apps/js/blocks/widget-archive-course/title-course/index.js',
-		'./assets/js/dist/blocks/meta-course-archive-course': './assets/src/apps/js/blocks/widget-archive-course/meta-course/index.js',
 		'./assets/js/dist/blocks/duration-course-archive-course': './assets/src/apps/js/blocks/widget-archive-course/duration-course/index.js',
 		'./assets/js/dist/blocks/level-course-archive-course': './assets/src/apps/js/blocks/widget-archive-course/level-course/index.js',
 		'./assets/js/dist/blocks/lesson-course-archive-course': './assets/src/apps/js/blocks/widget-archive-course/lesson-course/index.js',
