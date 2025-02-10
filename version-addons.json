@@ -318,6 +318,21 @@
     "setting": "",
     "order": 0
   },
+  "learnpress-qpay": {
+    "name": "LearnPress - QPay",
+    "basename": "learnpress-qpay/learnpress-qpay.php",
+    "version": "4.0.0",
+    "require_lp": "4.2.7.7",
+    "description": "Accept payments with bank transfers, mobile money designed specifically for Mongolian customers, and QR codes.",
+    "image": "https://thimpress.com/wp-content/uploads/2025/02/QPAY-BANNER-1200x628-1.jpg",
+    "link": "https://wordpress.org/plugins/learnpress-prerequisites-courses/advanced/",
+    "link_doc": "https://docs.thimpress.com/qpay-add-on-for-learnpress/",
+    "is_free": 0,
+    "author": "",
+    "is_org": 0,
+    "setting": "",
+    "order": 0
+  },
   "learnpress-random-quiz": {
     "name": "Random Quiz Add-On for LearnPress",
     "basename": "learnpress-random-quiz/learnpress-random-quiz.php",
