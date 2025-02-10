@@ -1319,15 +1319,18 @@ class SingleCourseTemplate {
 	 *
 	 * @return string
 	 * @since 4.2.7.6
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function html_curriculum( CourseModel $courseModel, $userModel ): string {
 		$html = '';
 
 		try {
-
 			$section_items = $courseModel->get_section_items();
-			$html          = Template::print_message( esc_html__( 'Course has not any items.', 'learnpress' ), 'info', false );
+			$html          = Template::print_message(
+				esc_html__( 'There are no items in the curriculum yet.', 'learnpress' ),
+				'info',
+				false
+			);
 			if ( empty( $section_items ) ) {
 				return $html;
 			}
