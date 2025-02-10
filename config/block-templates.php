@@ -39,6 +39,11 @@ require_once $blog_template_path . 'archive-course/class-block-template-price-co
 require_once $blog_template_path . 'archive-course/class-block-template-category-archive-courses.php';
 require_once $blog_template_path . 'archive-course/class-block-template-instructor-archive-courses.php';
 require_once $blog_template_path . 'archive-course/class-block-template-meta-course-archive-courses.php';
+require_once $blog_template_path . 'archive-course/class-block-template-duration-course-archive-courses.php';
+require_once $blog_template_path . 'archive-course/class-block-template-level-course-archive-courses.php';
+require_once $blog_template_path . 'archive-course/class-block-template-lesson-course-archive-courses.php';
+require_once $blog_template_path . 'archive-course/class-block-template-quiz-course-archive-courses.php';
+require_once $blog_template_path . 'archive-course/class-block-template-student-course-archive-courses.php';
 require_once $blog_template_path . 'archive-course/class-block-template-title-course-archive-courses.php';
 require_once $blog_template_path . 'archive-course/class-block-template-media-course-archive-courses.php';
 require_once $blog_template_path . 'archive-course/layout/class-block-layout-archive-course.php';
@@ -123,6 +128,11 @@ return apply_filters(
 		new Block_Template_Category_Archive_Courses(),
 		new Block_Template_Instructor_Archive_Courses(),
 		new Block_Template_Meta_Course_Archive_Courses(),
+		new Block_Template_Duration_Course_Archive_Courses(),
+		new Block_Template_Level_Course_Archive_Courses(),
+		new Block_Template_Lesson_Course_Archive_Courses(),
+		new Block_Template_Quiz_Course_Archive_Courses(),
+		new Block_Template_Student_Course_Archive_Courses(),
 		new Block_Template_Title_Course_Archive_Courses(),
 		new Block_Template_Media_Course_Archive_Courses(),
 		new Block_Template_Profile(),

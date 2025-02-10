@@ -479,6 +479,9 @@
 		row-gap: $spacing-base-2x;
 
 		.meta-item {
+			margin: 0;
+			margin-left: 0 !important;
+			margin-right: 0 !important;
 			text-transform: capitalize;
 			display: flex;
 			gap: $spacing-base-2x;

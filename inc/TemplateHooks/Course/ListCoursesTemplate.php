@@ -396,6 +396,12 @@ class ListCoursesTemplate {
 					),
 				];
 
+				$html_duration = sprintf( '<div class="meta-item meta-item-%s">%s</div>', 'duration', $singleCourseTemplate->html_duration( $course ) );
+				$html_level    = sprintf( '<div class="meta-item meta-item-%s">%s</div>', 'level', $singleCourseTemplate->html_level( $course ) );
+				$html_lesson   = sprintf( '<div class="meta-item meta-item-%s">%s</div>', 'lesson', $singleCourseTemplate->html_count_item( $course, LP_LESSON_CPT ) );
+				$html_quiz     = sprintf( '<div class="meta-item meta-item-%s">%s</div>', 'quiz', $singleCourseTemplate->html_count_item( $course, LP_QUIZ_CPT ) );
+				$html_student  = sprintf( '<div class="meta-item meta-item-%s">%s</div>', 'student', $singleCourseTemplate->html_count_student( $course ) );
+
 				$html_course = str_replace(
 					[
 						'{{media-course}}',
@@ -403,6 +409,11 @@ class ListCoursesTemplate {
 						'{{category-course}}',
 						'{{instructor-course}}',
 						'{{meta-course}}',
+						'{{duration-course}}',
+						'{{level-course}}',
+						'{{lesson-course}}',
+						'{{quiz-course}}',
+						'{{student-course}}',
 						'{{button-course}}',
 						'{{price-course}}',
 					],
@@ -412,6 +423,11 @@ class ListCoursesTemplate {
 						$html_categories,
 						Template::combine_components( $html_instructor ),
 						$html_meta_data,
+						$html_duration,
+						$html_level,
+						$html_lesson,
+						$html_quiz,
+						$html_student,
 						Template::combine_components( $html_button ),
 						$singleCourseTemplate->html_price( $course ),
 					],
