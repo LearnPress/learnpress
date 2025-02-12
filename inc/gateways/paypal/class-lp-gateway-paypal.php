@@ -5,7 +5,7 @@
  * @author  ThimPress
  * @package LearnPress/Classes
  * @since   3.0.0
- * @version 3.0.2
+ * @version 3.0.3
  */
 
 use LearnPress\Helpers\Config;
@@ -91,14 +91,9 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 			$this->title       = esc_html__( 'PayPal', 'learnpress' );
 			$this->description = esc_html__( 'Pay with PayPal', 'learnpress' );
 
-			// get settings
-			$this->settings = LP_Settings::instance()->get_group( 'paypal', '' );
-
-			$this->enabled = $this->settings->get( 'enable', 'no' );
+			parent::__construct();
 
 			$this->init();
-
-			parent::__construct();
 		}
 
 		/**
@@ -117,34 +112,15 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 					$this->paypal_email       = $this->settings->get( 'paypal_sandbox_email' );
 					$this->api_url            = $this->api_sandbox_url; //use for PayPal rest api
 				}
-				// Use Paypal rest api
-				if ( $this->settings->get( 'use_paypal_rest', 'yes' ) === 'yes' ) {
-					$this->client_id     = $this->settings->get( 'app_client_id' );
-					$this->client_secret = $this->settings->get( 'app_client_secret' );
-				}
+
+				// Use PayPal rest api
+				$this->client_id     = $this->settings->get( 'app_client_id' );
+				$this->client_secret = $this->settings->get( 'app_client_secret' );
+			} else {
+				return;
 			}
 
-			add_filter(
-				'learn-press/payment-gateway/' . $this->id . '/available',
-				[
-					$this,
-					'paypal_available',
-				],
-				10,
-				2
-			);
-			add_action( 'init', array( $this, 'check_webhook_callback' ) );
-		}
-
-		/**
-		 * Check payment gateway available.
-		 *
-		 * @param bool $available
-		 *
-		 * @return bool
-		 */
-		public function paypal_available( bool $available ): bool {
-			return $available;
+			$this->check_webhook_callback();
 		}
 
 		/**
@@ -152,39 +128,16 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 */
 		public function check_webhook_callback() {
 			try {
-				$paypal = LP_Gateway_Paypal::instance();
-				if ( $paypal->settings->get( 'use_paypal_rest', 'yes' ) === 'no' ) {
-					// Paypal payment done
-					if ( ! isset( $_GET['paypal_notify'] ) ) {
-						return;
-					}
-
-					if ( ! isset( $_POST['ipn_track_id'] ) ) {
-						return;
-					}
-
-					$verify = $paypal->validate_ipn();
-
-					if ( $verify ) {
-						if ( isset( $_POST['custom'] ) ) {
-							$data_order = LP_Helper::json_decode( LP_Helper::sanitize_params_submitted( $_POST['custom'] ) );
-							$order_id   = $data_order->order_id;
-							$lp_order   = learn_press_get_order( $order_id );
-							$lp_order->update_status( LP_ORDER_COMPLETED );
-						}
-					}
-				} else {
-					if ( ! isset( $_GET['paypay_express_checkout'] ) ) {
-						return;
-					}
-
-					$paypal_order_id = LP_Request::get_param( 'token' );
-					if ( empty( $paypal_order_id ) ) {
-						return;
-					}
-
-					$this->capture_payment_for_order( $paypal_order_id );
+				if ( ! isset( $_GET['paypay_express_checkout'] ) ) {
+					return;
 				}
+
+				$paypal_order_id = LP_Request::get_param( 'token' );
+				if ( empty( $paypal_order_id ) ) {
+					return;
+				}
+
+				$this->capture_payment_for_order( $paypal_order_id );
 			} catch ( Throwable $e ) {
 				error_log( $e->getMessage() );
 			}
@@ -230,16 +183,9 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 		 * @throws Exception
 		 */
 		public function process_payment( $order_id = 0 ): array {
-			$paypal_payment_url = '';
-
-			$order = new LP_Order( $order_id );
-			if ( $this->settings->get( 'use_paypal_rest', 'yes' ) === 'no' ) {
-				$paypal_args        = $this->get_paypal_args( $order );
-				$paypal_payment_url = $this->paypal_url . '?' . http_build_query( $paypal_args );
-			} else {
-				$data_token         = $this->get_access_token();
-				$paypal_payment_url = $this->create_payment_url( $order, $data_token );
-			}
+			$order              = new LP_Order( $order_id );
+			$data_token         = $this->get_access_token();
+			$paypal_payment_url = $this->create_payment_url( $order, $data_token );
 
 			$result['result']   = 'success';
 			$result['redirect'] = $paypal_payment_url;
