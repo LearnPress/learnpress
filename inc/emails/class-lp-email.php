@@ -6,7 +6,7 @@
  * @category Widgets
  * @package  Learnpress/Email
  * @since 3.0.0
- * @version  3.0.2
+ * @version  3.0.3
  */
 
 /**
@@ -102,21 +102,21 @@ if ( ! class_exists( 'LP_Email' ) ) {
 		 *
 		 * @var string
 		 */
-		public $subject;
+		public $subject = '';
 
 		/**
 		 * Default heading for the email content.
 		 *
 		 * @var string
 		 */
-		public $default_heading;
+		public $default_heading = '';
 
 		/**
 		 * Default subject for the email.
 		 *
 		 * @var string
 		 */
-		public $default_subject;
+		public $default_subject = '';
 
 		/**
 		 * Default content for the email.
@@ -263,11 +263,6 @@ if ( ! class_exists( 'LP_Email' ) ) {
 		public $variables = array();
 
 		/**
-		 * @var array|null
-		 */
-		//public $basic_variables = array();
-
-		/**
 		 * @var null
 		 */
 		public $general_variables = [];
@@ -337,9 +332,9 @@ if ( ! class_exists( 'LP_Email' ) ) {
 			/**
 			 * Init general options
 			 */
-			$this->heading    = $this->settings->get( 'heading', $this->default_heading );
-			$this->subject    = $this->settings->get( 'subject', $this->default_subject );
-			$this->enable     = $this->settings->get( 'enable', 'no' ) === 'yes';
+			$this->heading = $this->settings->get( 'heading', $this->default_heading );
+			$this->subject = $this->settings->get( 'subject', $this->default_subject );
+			$this->enable  = $this->settings->get( 'enable', 'no' ) === 'yes';
 
 			/*if ( $this->settings->get( 'email_content.format' ) ) {
 				$this->email_format = ( $this->settings->get( 'email_content.format' ) == 'plain_text' ) ? 'plain' : 'html';
@@ -359,7 +354,6 @@ if ( ! class_exists( 'LP_Email' ) ) {
 				'{{site_url}}',
 				'{{site_title}}',
 				'{{login_url}}',
-				'{{email_heading}}',
 				'{{site_admin_email}}',
 				'{{site_admin_name}}',
 				'{{header}}',
@@ -694,10 +688,13 @@ if ( ! class_exists( 'LP_Email' ) ) {
 		 * @return string
 		 */
 		public function apply_style_inline( $content ) {
-			if ( in_array( $this->get_content_format(), array(
+			if ( in_array(
+				$this->get_content_format(),
+				array(
 					'text/html',
-					'multipart/alternative'
-				) ) && class_exists( 'DOMDocument' ) ) {
+					'multipart/alternative',
+				)
+			) && class_exists( 'DOMDocument' ) ) {
 
 				// get CSS styles
 				ob_start();
@@ -1066,7 +1063,6 @@ if ( ! class_exists( 'LP_Email' ) ) {
 		 *
 		 */
 		public function handle( array $params ) {
-
 		}
 	}
 }
