@@ -919,7 +919,7 @@ class UserCourseModel extends UserItemModel {
 	 * Handle finish course.
 	 *
 	 * @throws Exception
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 * @since 4.2.7.6
 	 */
 	public function handle_finish() {
@@ -937,12 +937,8 @@ class UserCourseModel extends UserItemModel {
 		// Save result for course
 		LP_User_Items_Result_DB::instance()->update( $this->get_user_item_id(), wp_json_encode( $course_results ) );
 
-		// Hook old
-		if ( has_filter( 'learn-press/user-course/finish' ) ) {
-			do_action( 'learn-press/user-course-finished', $this->ref_id, $this->user_id, null );
-		}
-
-		do_action( 'learn-press/user-course/finish', $this );
+		do_action( 'learn-press/user-course-finished', $this->ref_id, $this->user_id, $this->get_user_item_id() );
+		do_action( 'learn-press/user-course/finished', $this );
 	}
 
 	/**
