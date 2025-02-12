@@ -13,25 +13,14 @@ use LearnPress\Models\UserModel;
  */
 class LP_Email_Type_Finished_Course extends LP_Email {
 	/**
-	 * Course ID
-	 *
-	 * @var int
+	 * @var CourseModel
 	 */
-	public $course_id = 0;
+	public $courseModel;
 
 	/**
-	 * User ID
-	 *
-	 * @var int
+	 * @var UserModel
 	 */
-	public $user_id = 0;
-
-	/**
-	 * User Item ID
-	 *
-	 * @var int
-	 */
-	public $user_item_id = 0;
+	public $userModel;
 
 	/**
 	 * LP_Email_Type_Finished_Course constructor.
@@ -71,13 +60,21 @@ class LP_Email_Type_Finished_Course extends LP_Email {
 			return false;
 		}
 
-		if ( count( $params ) < 3 ) {
+		if ( count( $params ) < 2 ) {
 			return false;
 		}
 
-		$this->course_id    = $params[0];
-		$this->user_id      = $params[1];
-		$this->user_item_id = $params[2];
+		$course_id = $params[0];
+		$user_id   = $params[1];
+
+		$courseModel = CourseModel::find( $course_id, true );
+		$userModel   = UserModel::find( $user_id, true );
+		if ( ! $courseModel || ! $userModel ) {
+			return false;
+		}
+
+		$this->courseModel = $courseModel;
+		$this->userModel   = $userModel;
 
 		return true;
 	}
@@ -122,9 +119,10 @@ class LP_Email_Type_Finished_Course extends LP_Email {
 	 * @version 1.0.1
 	 */
 	public function set_data_content() {
-		$courseModel = CourseModel::find( $this->course_id, true );
-		$userModel   = UserModel::find( $this->user_id, true );
-		if ( ! $courseModel || ! $userModel ) {
+		$courseModel = $this->courseModel;
+		$userModel   = $this->userModel;
+		if ( ! $courseModel instanceof CourseModel
+			|| ! $userModel instanceof UserModel ) {
 			return;
 		}
 
@@ -138,10 +136,10 @@ class LP_Email_Type_Finished_Course extends LP_Email {
 		$this->variables = apply_filters(
 			'lp/email/type-finished-course/variables-mapper',
 			[
-				'{{course_id}}'             => $this->course_id,
+				'{{course_id}}'             => $courseModel->get_id(),
 				'{{course_name}}'           => $courseModel->get_title(),
 				'{{course_url}}'            => $courseModel->get_permalink(),
-				'{{user_id}}'               => $this->user_id,
+				'{{user_id}}'               => $userModel->get_id(),
 				'{{user_name}}'             => $userModel->get_username(),
 				'{{user_display_name}}'     => $userModel->get_display_name(),
 				'{{user_email}}'            => $userModel->get_email(),
