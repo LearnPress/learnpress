@@ -95,7 +95,7 @@ class LP_Email_Type_Finished_Course extends LP_Email {
 
 		$this->set_data_content();
 		if ( $this instanceof LP_Email_Finished_Course_Instructor ) {
-			$courseModel = CourseModel::find( $this->course_id, true );
+			$courseModel = $this->courseModel;
 			if ( $courseModel instanceof CourseModel ) {
 				$authorModel = $courseModel->get_author_model();
 				if ( $authorModel instanceof UserModel && ! empty( $authorModel->get_email() ) ) {
@@ -103,7 +103,7 @@ class LP_Email_Type_Finished_Course extends LP_Email {
 				}
 			}
 		} elseif ( $this instanceof LP_Email_Finished_Course_User ) {
-			$userModel = UserModel::find( $this->user_id, true );
+			$userModel = $this->userModel;
 			if ( $userModel instanceof UserModel && ! empty( $userModel->get_email() ) ) {
 				$this->set_receive( $userModel->get_email() );
 			}
