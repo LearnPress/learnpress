@@ -20,7 +20,7 @@ class Block_Template_Instructor_Courses extends Abstract_Block_Template {
 		try {
 			$instructor = SingleInstructorTemplate::instance()->detect_instructor_by_page();
 
-			if ( ! $instructor || ! $instructor->can_create_course() ) {
+			if ( ! $instructor || ! $instructor->is_instructor() ) {
 				return;
 			}
 			ob_start();

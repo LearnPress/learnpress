@@ -45,7 +45,7 @@ $args['courses_first_no_ajax'] = $load_ajax_first ? 1 : 0;
 if ( LP_Page_Controller::is_page_instructor() ) {
 	$instructor = SingleInstructorTemplate::instance()->detect_instructor_by_page();
 
-	if ( ! $instructor || ! $instructor->can_create_course() ) {
+	if ( ! $instructor || ! $instructor->is_instructor() ) {
 		return;
 	}
 
