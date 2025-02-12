@@ -937,7 +937,7 @@ class UserCourseModel extends UserItemModel {
 		// Save result for course
 		LP_User_Items_Result_DB::instance()->update( $this->get_user_item_id(), wp_json_encode( $course_results ) );
 
-		do_action( 'learn-press/user-course-finished', $this->ref_id, $this->user_id, $this->get_user_item_id() );
+		do_action( 'learn-press/user-course-finished', $this->item_id, $this->user_id, $this->get_user_item_id() );
 		do_action( 'learn-press/user-course/finished', $this );
 	}
 
