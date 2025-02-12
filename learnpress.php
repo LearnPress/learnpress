@@ -4,11 +4,7 @@
  * Plugin URI: http://thimpress.com/learnpress
  * Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
  * Author: ThimPress
-<<<<<<< HEAD
- * Version: 4.2.7.5.1
-=======
  * Version: 4.2.7.6
->>>>>>> origin/single_course_model
  * Author URI: http://thimpress.com
  * Requires at least: 6.0
  * Requires PHP: 7.0
@@ -696,6 +692,13 @@ if ( ! class_exists( 'LearnPress' ) ) {
 					$user->clean_caches();
 				}
 			);
+
+			function disable_gutenberg_block_css() {
+				// wp_dequeue_style( 'wp-block-library' ); // Tắt CSS core của Gutenberg
+				// wp_dequeue_style( 'wp-block-library-theme' ); // Tắt CSS theme của Gutenberg
+				// wp_dequeue_style( 'global-styles' ); // Tắt Global Styles nếu có
+			}
+			// add_action( 'wp_enqueue_scripts', 'disable_gutenberg_block_css', 100 );
 		}
 
 		/**
