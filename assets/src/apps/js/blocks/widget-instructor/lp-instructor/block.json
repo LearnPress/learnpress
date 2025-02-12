@@ -2,7 +2,7 @@
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 2,
 	"name": "learnpress/lp-instructor",
-	"title": "Instructor",
+	"title": "Instructor Template",
 	"category": "learnpress-category",
 	"icon": "format-image",
 	"description": "Renders Template Instructor PHP templates.",

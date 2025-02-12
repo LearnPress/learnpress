@@ -1,4 +1,8 @@
 <?php
+
+use LearnPress\Models\CourseModel;
+use LearnPress\TemplateHooks\Course\SingleCourseClassicTemplate;
+
 /**
  * Class Block_Template_Instructor_Single_Course
  *
@@ -14,12 +18,12 @@ class Block_Template_Instructor_Single_Course extends Abstract_Block_Template_Wi
 	public $source_js                     = LP_PLUGIN_URL . 'assets/js/dist/blocks/instructor-single-course.js';
 
 	public function render_content_block_template( array $attributes ) {
-		$order = [ 'courseId', 'avatar' ];
+		$course                      = CourseModel::find( get_the_ID(), true );
+		$singleCourseClassicTemplate = SingleCourseClassicTemplate::instance();
+		ob_start();
+		echo $singleCourseClassicTemplate->html_instructor( $course );
+		$content = ob_get_clean();
 
-		foreach ( $order as $key ) {
-			$sortedAttributes[ $key ] = isset( $attributes[ $key ] ) ? $attributes[ $key ] : '';
-		}
-
-		return parent::render_content_block_template( $sortedAttributes );
+		return $content;
 	}
 }
