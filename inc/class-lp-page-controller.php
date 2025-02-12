@@ -76,7 +76,7 @@ class LP_Page_Controller {
 			// For return result query course to cache.
 			//add_action( 'posts_pre_query', [ $this, 'posts_pre_query' ], 10, 2 );
 			add_filter( 'template_include', array( $this, 'template_loader' ), 10 );
-			add_filter( 'template_include', array( $this, 'check_pages' ), 30 );
+			add_filter( 'template_include', array( $this, 'logout' ), 30 );
 
 			add_filter( 'the_post', array( $this, 'setup_data_for_item_course' ) );
 			add_filter( 'request', array( $this, 'remove_course_post_format' ), 1 );
@@ -307,22 +307,17 @@ class LP_Page_Controller {
 		return $desc;
 	}
 
-	public function check_pages( $template ) {
-		if ( learn_press_is_checkout() ) {
-			$available_gateways = LP_Gateways::instance()->get_available_payment_gateways();
+	/**
+	 * Handle logout
+	 */
+	public function logout( $template ) {
+		global $wp_query;
 
-			if ( ! $available_gateways ) {
-				learn_press_add_message( __( 'No payment method is available.', 'learnpress' ), 'error' );
-			}
-		} else {
-			global $wp_query;
+		$logout_slug = learn_press_profile_logout_slug();
 
-			$logout_slug = learn_press_profile_logout_slug();
-
-			if ( $logout_slug && ( $wp_query->get( 'view' ) === $logout_slug ) ) {
-				wp_safe_redirect( str_replace( '&amp;', '&', wp_logout_url( learn_press_get_page_link( 'profile' ) ) ) );
-				exit;
-			}
+		if ( $logout_slug && ( $wp_query->get( 'view' ) === $logout_slug ) ) {
+			wp_safe_redirect( str_replace( '&amp;', '&', wp_logout_url( learn_press_get_page_link( 'profile' ) ) ) );
+			exit;
 		}
 
 		return $template;
