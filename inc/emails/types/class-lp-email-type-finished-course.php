@@ -13,10 +13,17 @@ use LearnPress\Models\UserModel;
  */
 class LP_Email_Type_Finished_Course extends LP_Email {
 	/**
+	 * @var int $course_id
+	 */
+	public $course_id = 0;
+	/**
+	 * @var int $course_id
+	 */
+	public $user_id = 0;
+	/**
 	 * @var CourseModel
 	 */
 	public $courseModel;
-
 	/**
 	 * @var UserModel
 	 */
@@ -73,6 +80,8 @@ class LP_Email_Type_Finished_Course extends LP_Email {
 			return false;
 		}
 
+		$this->course_id   = $course_id;
+		$this->user_id     = $user_id;
 		$this->courseModel = $courseModel;
 		$this->userModel   = $userModel;
 
