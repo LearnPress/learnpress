@@ -4,7 +4,7 @@
  *
  * @author  ThimPress
  * @package LearnPress/Classes
- * @version 3.0.0
+ * @version 3.0.1
  */
 
 use LearnPress\Models\CourseModel;
@@ -59,7 +59,10 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				'edit_item'          => __( 'Edit Course', 'learnpress' ),
 				'update_item'        => __( 'Update Course', 'learnpress' ),
 				'search_items'       => __( 'Search Courses', 'learnpress' ),
-				'not_found'          => sprintf( __( 'You have not had any courses yet. Click <a href="%s">Add new</a> to start', 'learnpress' ), admin_url( 'post-new.php?post_type=lp_course' ) ),
+				'not_found'          => sprintf(
+					__( 'You have not had any courses yet. Click <a href="%s">Add new</a> to start', 'learnpress' ),
+					admin_url( 'post-new.php?post_type=lp_course' )
+				),
 				'not_found_in_trash' => __( 'There was no course found in the trash', 'learnpress' ),
 			);
 			$course_base      = LP_Settings::get_option( 'course_base', 'courses' );
@@ -593,6 +596,8 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					if ( $post_author ) {
 						$courseModel->post_author = $post_author;
 					}
+				} elseif ( ! empty( $_REQUEST['post_author'] ) ) {
+					$courseModel->post_author = LP_Request::get_param( 'post_author', 0, 'int' );
 				}
 
 				$this->save_price( $courseModel );
