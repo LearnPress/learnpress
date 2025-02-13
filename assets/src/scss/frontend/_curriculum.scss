@@ -975,7 +975,7 @@ body {
 	.course-meta__pull-right {
 		display: flex;
 		flex-wrap: wrap;
-		gap: 50px;
+		gap: 12px 50px;
 		@media (max-width: 767px) {
 			display: grid;
 			grid-template-columns: repeat(3, 1fr);
@@ -989,6 +989,9 @@ body {
 	&.course-meta-primary {
 		.course-meta__pull-left {
 			gap: 16px;
+			margin-left: 0 !important;
+			margin-right: 0 !important;
+
 			@media (max-width: 767px) {
 				grid-template-columns:  repeat(2, 1fr);
 			}
@@ -1026,6 +1029,8 @@ body {
 
 	.course-meta__pull-left {
 		flex: 1;
+		margin-left: 0 !important;
+		margin-right: 0 !important;
 	}
 
 	.course-meta__pull-right {

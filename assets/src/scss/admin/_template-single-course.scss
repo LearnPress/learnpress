@@ -28,12 +28,14 @@
 		}
 	}
 
-	.wp-block-learnpress-lp-content-area {
-		.block-editor-block-list__layout:has(.course-content-left) {
-			display: grid;
-			grid-template-columns: 2fr 1fr;
-			gap: 40px;
-		}
+	.lp-entry-content:has(.course-summary-sidebar) {
+		display: grid;
+		grid-template-columns: 2fr 1fr;
+		gap: 40px;
+	}
+
+	.course-summary-sidebar {
+		margin-block-start: 0;
 	}
 
 	.course-content-left {
@@ -183,6 +185,21 @@
 			height: 8px;
 			margin-top: 10px;
 			border-radius: 0 4px 4px 0;
+		}
+	}
+
+	.course-meta__pull-left {
+		margin-top: 0;
+		margin-left: 0 !important;
+		margin-right: 0 !important;
+		display: flex;
+		gap: 16px;
+
+		> div {
+			margin-top: 0;
+			margin-left: 0 !important;
+			margin-right: 0 !important;
+			flex: 1;
 		}
 	}
 }

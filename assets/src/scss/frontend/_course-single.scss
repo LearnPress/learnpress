@@ -13,13 +13,14 @@
 			font-weight: $heading-font-weight;
 			font-size: $font-size-h2;
 			padding-bottom: $spacing-base-6x;
-
 		}
 		@media (min-width: 769px) {
-			.course-title,.course-meta-secondary {
+			.course-title,
+			.course-meta-secondary {
 				padding-right: 300px;
 			}
-			&::before, &::after {
+			&::before,
+			&::after {
 				content: "";
 				width: 50%;
 				height: 100%;
@@ -49,7 +50,7 @@
 			top: 0;
 		}
 
-		.course-meta-secondary{
+		.course-meta-secondary {
 			margin-bottom: 0;
 		}
 	}
@@ -128,6 +129,9 @@
 
 		.meta-item-categories {
 			align-items: center;
+			margin-top: 0;
+			margin-left: 0 !important;
+			margin-right: 0 !important;
 
 			&::before {
 				margin-right: $spacing-base-2x;
@@ -208,6 +212,9 @@
 		}
 
 		& .course-count-student {
+			margin-top: 0;
+			margin-left: 0 !important;
+			margin-right: 0 !important;
 			display: flex;
 			text-transform: capitalize;
 			align-items: center;
@@ -220,6 +227,9 @@
 		}
 
 		& > .course-duration {
+			margin-top: 0;
+			margin-left: 0 !important;
+			margin-right: 0 !important;
 			display: flex;
 			text-transform: capitalize;
 			align-items: center;
@@ -232,6 +242,9 @@
 		}
 
 		& .course-level {
+			margin-top: 0;
+			margin-left: 0 !important;
+			margin-right: 0 !important;
 			display: flex;
 			text-transform: capitalize;
 			align-items: center;
@@ -244,6 +257,9 @@
 		}
 
 		& .course-count-item.lp_quiz {
+			margin-top: 0;
+			margin-left: 0 !important;
+			margin-right: 0 !important;
 			display: flex;
 			text-transform: capitalize;
 			align-items: center;
@@ -256,6 +272,9 @@
 		}
 
 		& .course-count-item.lp_lesson {
+			margin-top: 0;
+			margin-left: 0 !important;
+			margin-right: 0 !important;
 			display: flex;
 			text-transform: capitalize;
 			align-items: center;
@@ -297,6 +316,10 @@
 		@media (max-width: 768px) {
 			flex-direction: column;
 		}
+	}
+
+	.course-summary.wp-block-group {
+		max-width: unset;
 	}
 
 	.course-summary-sidebar {
@@ -380,12 +403,29 @@
 	.course-wishlist:before {
 		font-family: "lp-icon";
 	}
+
+	.wp-block-group:has(.learn-press-breadcrumb) {
+		margin: 0 auto;
+	}
+
+	.wp-block-group,
+	.is-layout-constrained
+		> :where(:not(.alignleft):not(.alignright):not(.alignfull)) {
+		max-width: var(--lp-container-max-width);
+	}
+
+	.lp-content-area {
+		max-width: var(--lp-container-max-width) !important;
+		margin: 0 auto;
+		padding-right: var(--lp-cotainer-padding);
+		padding-left: var(--lp-cotainer-padding);
+	}
 }
 // layout Modern
 .lp-single-course {
 	//font-size: $font-size-base;
 	&__header {
-		background-color: #F1F2F8;
+		background-color: #f1f2f8;
 
 		&__inner {
 			max-width: var(--lp-container-max-width);
@@ -456,7 +496,6 @@
 					color: $color-primary;
 				}
 			}
-
 		}
 
 		.lp-single-course-info-one {
@@ -473,7 +512,7 @@
 				position: relative;
 
 				&::after {
-					content: '';
+					content: "";
 					right: 0;
 					left: auto;
 					width: 1px;
@@ -667,7 +706,7 @@
 			font-weight: $link-font-weight;
 
 			.free {
-				color: #3AB500;
+				color: #3ab500;
 			}
 
 			.origin-price {
@@ -691,7 +730,8 @@
 			flex-direction: column;
 			gap: 8px;
 
-			form, .lp-button {
+			form,
+			.lp-button {
 				width: 100%;
 			}
 
@@ -952,7 +992,7 @@
 			font-weight: $heading-font-weight;
 
 			.free {
-				color: #3AB500;
+				color: #3ab500;
 			}
 
 			.origin-price {
@@ -981,11 +1021,11 @@
 		textarea {
 			padding: 12px 20px;
 			outline: none;
-			border: 1px solid var(--lp-border-color, #E2E0DB);
+			border: 1px solid var(--lp-border-color, #e2e0db);
 			border-radius: var(--lp-border-radius, 5px);
 		}
 
-		input[type=submit] {
+		input[type="submit"] {
 			border-radius: var(--lp-border-radius, 5px);
 		}
 	}
@@ -997,7 +1037,7 @@
 
 .info-learning {
 	.course-progress {
-		&__line{
+		&__line {
 			width: 100%;
 			background: #ccc;
 			height: 5px;

@@ -692,13 +692,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 					$user->clean_caches();
 				}
 			);
-
-			function disable_gutenberg_block_css() {
-				// wp_dequeue_style( 'wp-block-library' ); // Tắt CSS core của Gutenberg
-				// wp_dequeue_style( 'wp-block-library-theme' ); // Tắt CSS theme của Gutenberg
-				// wp_dequeue_style( 'global-styles' ); // Tắt Global Styles nếu có
-			}
-			// add_action( 'wp_enqueue_scripts', 'disable_gutenberg_block_css', 100 );
 		}
 
 		/**
