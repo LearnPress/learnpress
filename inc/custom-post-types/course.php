@@ -536,6 +536,14 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					}
 				} elseif ( ! empty( $_REQUEST['post_author'] ) ) {
 					$courseModel->post_author = LP_Request::get_param( 'post_author', 0, 'int' );
+					// Save author to post table
+					$lp_db                     = LP_Database::getInstance();
+					$filter_update             = new LP_Post_Type_Filter();
+					$filter_update->collection = $lp_db->tb_posts;
+					$filter_update->set[]      = "post_author = {$courseModel->post_author}";
+					$filter_update->where[]    = $lp_db->wpdb->prepare( 'AND ID = %d', $courseModel->ID );
+					$lp_db->update_execute( $filter_update );
+					clean_post_cache( $post->ID );
 				}
 
 				$this->save_price( $courseModel );
