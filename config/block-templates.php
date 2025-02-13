@@ -45,6 +45,7 @@ require_once $blog_template_path . 'archive-course/class-block-template-quiz-cou
 require_once $blog_template_path . 'archive-course/class-block-template-student-course-archive-courses.php';
 require_once $blog_template_path . 'archive-course/class-block-template-title-course-archive-courses.php';
 require_once $blog_template_path . 'archive-course/class-block-template-media-course-archive-courses.php';
+require_once $blog_template_path . 'archive-course/class-block-template-description-course-archive-courses.php';
 require_once $blog_template_path . 'archive-course/layout/class-block-layout-archive-course.php';
 require_once $blog_template_path . 'archive-course/layout/class-block-layout-course-filter.php';
 
@@ -109,13 +110,13 @@ return apply_filters(
 		new Block_Template_Comment(),
 		new Block_Layout_Single_Course(),
 		new Block_Layout_Archive_Course(),
-		new Block_Layout_Content_Area(),
-		new Block_Layout_Content_Left(),
-		new Block_Layout_Course_Summary(),
-		new Block_Layout_Detail_Info(),
-		new Block_Layout_Meta_Primary(),
-		new Block_Layout_Meta_Secondary(),
-		new Block_Layout_Sidebar(),
+		// new Block_Layout_Content_Area(),
+		// new Block_Layout_Content_Left(),
+		// new Block_Layout_Course_Summary(),
+		// new Block_Layout_Detail_Info(),
+		// new Block_Layout_Meta_Primary(),
+		// new Block_Layout_Meta_Secondary(),
+		// new Block_Layout_Sidebar(),
 		new Block_Template_Search_Archive_Courses(),
 		new Block_Template_Order_By_Archive_Courses(),
 		new Block_Layout_Template_Course_Archive_Courses(),
@@ -133,6 +134,7 @@ return apply_filters(
 		new Block_Template_Student_Course_Archive_Courses(),
 		new Block_Template_Title_Course_Archive_Courses(),
 		new Block_Template_Media_Course_Archive_Courses(),
+		new Block_Template_Description_Course_Archive_Courses(),
 		new Block_Template_Profile(),
 		new Block_Template_Profile_Avatar(),
 		new Block_Template_Profile_Sidebar(),

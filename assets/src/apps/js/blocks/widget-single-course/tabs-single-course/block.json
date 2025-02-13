@@ -16,5 +16,5 @@
 		"html": false,
 		"multiple": true
 	},
-	"ancestor": ["learnpress/content-left"]
+	"ancestor": ["learnpress/lp-single-course"]
 }

@@ -16,6 +16,6 @@
 		"multiple": true
 	},
 	"ancestor": [
-		"learnpress/course-meta-secondary"
+		"learnpress/lp-single-course"
 	]
 }
