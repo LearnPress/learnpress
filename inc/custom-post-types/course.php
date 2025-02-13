@@ -326,57 +326,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		}
 
 		/**
-		 * Use when enable Gutenberg.
-		 *
-		 * @return void
-		 */
-		/*public function admin_editor() {
-			$course = LP_Course::get_course();
-
-			learn_press_admin_view( 'course/editor' );
-		}*/
-
-		/**
-		 * Delete all sections in a course and reset auto increment
-		 */
-		private function _reset_sections() {
-			global $wpdb, $post;
-
-			$wpdb->query(
-				$wpdb->prepare(
-					"
-					DELETE FROM si
-					USING {$wpdb->learnpress_section_items} si
-					INNER JOIN {$wpdb->learnpress_sections} s ON s.section_id = si.section_id
-					INNER JOIN {$wpdb->posts} p ON p.ID = s.section_course_id
-					WHERE p.ID = %d
-				",
-					$post->ID
-				)
-			);
-			$wpdb->query(
-				"
-				ALTER TABLE {$wpdb->learnpress_section_items} AUTO_INCREMENT = 1
-			"
-			);
-
-			$wpdb->query(
-				$wpdb->prepare(
-					"
-					DELETE FROM {$wpdb->learnpress_sections}
-					WHERE section_course_id = %d
-				",
-					$post->ID
-				)
-			);
-			$wpdb->query(
-				"
-				ALTER TABLE {$wpdb->learnpress_sections} AUTO_INCREMENT = 1
-			"
-			);
-		}
-
-		/**
 		 * Add columns to admin manage course page
 		 *
 		 * @param array $columns
@@ -505,17 +454,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					break;
 			}
 		}
-
-		/*public function meta_boxes() {
-			return array(
-				'course-editor' => array(
-					'title'    => esc_html__( 'Curriculum', 'learnpress' ),
-					'callback' => array( $this, 'admin_editor' ),
-					'context'  => 'normal',
-					'priority' => 'high',
-				),
-			);
-		}*/
 
 		/**
 		 * Save course post
