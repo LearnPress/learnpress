@@ -1,0 +1,22 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "learnpress/description-course-archive-course",
+	"title": "Description Course",
+	"category": "lp-archive-course-category",
+	"icon": "tag",
+	"description": "Renders Template Description Course Archive Course PHP templates.",
+	"textdomain": "learnpress",
+	"keywords": ["description archive course", "learnpress"],
+	"usesContext": [],
+	"supports": {
+		"inserter": true,
+		"reusable": true,
+		"reorder": true,
+		"html": false,
+		"multiple": true
+	},
+	"ancestor": [
+		"learnpress/template-course-archive-course"
+	]
+}
