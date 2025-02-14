@@ -491,6 +491,7 @@ class LP_Checkout {
 								]
 							);
 							$result['redirect'] = LP_Page_Controller::get_link_page( 'checkout', [], true );
+							$result['message']  = $can_purchase->get_error_message();
 							learn_press_send_json( $result );
 						}
 					} else {
@@ -504,6 +505,7 @@ class LP_Checkout {
 								]
 							);
 							$result['redirect'] = LP_Page_Controller::get_link_page( 'checkout', [], true );
+							$result['message']  = $can_enroll->get_error_message();
 							learn_press_send_json( $result );
 						}
 					}
