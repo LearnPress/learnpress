@@ -1148,6 +1148,31 @@ class LP_Page_Controller {
 		return false;
 	}
 
+	/**
+	 * Get link page by name
+	 *
+	 * @param string $page_name
+	 * @param array $args
+	 * @param bool $no_cache
+	 *
+	 * @return string
+	 * @since  4.2.7.8
+	 * @version 1.0.0
+	 */
+	public static function get_link_page( string $page_name, array $args = [], bool $no_cache = false ): string {
+		$page_link = learn_press_get_page_link( $page_name );
+
+		if ( ! empty( $args ) ) {
+			$page_link = add_query_arg( $args, $page_link );
+		}
+
+		if ( $no_cache ) {
+			$page_link = LP_Helper::get_link_no_cache( $page_link );
+		}
+
+		return $page_link;
+	}
+
 	public static function instance() {
 		if ( ! self::$_instance ) {
 			self::$_instance = new self();
