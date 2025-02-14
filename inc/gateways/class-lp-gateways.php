@@ -82,6 +82,15 @@ class LP_Gateways {
 			} else {
 				$gateways = $this->payment_gateways;
 			}
+
+			// Case new array $gateways not have all gateways
+			foreach ( $this->payment_gateways as $gateway ) {
+				if ( isset( $gateways[ $gateway->id ] ) ) {
+					continue;
+				}
+
+				$gateways[ $gateway->id ] = $gateway;
+			}
 		}
 
 		return $gateways;
