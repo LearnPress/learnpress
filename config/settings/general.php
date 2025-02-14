@@ -148,6 +148,13 @@ return apply_filters(
 			'type'    => 'checkbox',
 		),
 		array(
+			'title'   => esc_html__( 'Store guest buy course on SESSION', 'learnpress' ),
+			'desc'    => esc_html__( 'Enable the option, data user not login buy/enroll course will store on $_SESSION instead of $_COOKIE, by some reason Cookie always change, so can not identifier user', 'learnpress' ),
+			'id'      => 'store_in_session',
+			'default' => 'no',
+			'type'    => 'checkbox',
+		),
+		array(
 			'type' => 'sectionend',
 		),
 	)

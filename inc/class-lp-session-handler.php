@@ -61,24 +61,39 @@ class LP_Session_Handler {
 	 *
 	 * @return self
 	 * @since 3.0.0
-	 * @version 4.0.1
+	 * @version 4.0.2
 	 * @modify Tungnx
 	 */
 	protected function init(): LP_Session_Handler {
 		$expire_time_for_guest = 2 * DAY_IN_SECONDS;
 		$expire_time_for_user  = 6 * DAY_IN_SECONDS;
 
+		if ( ! session_id() ) {
+			session_start();
+		}
+
 		// Set data for user Guest.
 		if ( ! is_user_logged_in() ) { // Generate data and set cookie for guest
-			$cookie = $this->get_cookie_data();
-			// If cookie exists, set data from cookie for guest
-			if ( empty( $cookie ) ) {
-				// Create new cookie and session for user Guest.
-				$this->set_session_expiration( $expire_time_for_guest );
-				$this->_customer_id = apply_filters( 'lp/cookie/guest-id', 'g-' . uniqid() );
-				$this->set_customer_session_cookie();
-			} else {
-				$this->_customer_id = $cookie;
+			if ( LP_Settings::is_store_data_in_php_session() ) { // Store data in $_SESSION
+				$customer_id = $_SESSION['lp_customer_id'] ?? '';
+				if ( empty( $customer_id ) ) {
+					// Create new session for user Guest.
+					$customer_id                = 'g-' . uniqid();
+					$_SESSION['lp_customer_id'] = $customer_id;
+				}
+
+				$this->_customer_id = $customer_id;
+			} else { // Store data in COOKIE
+				$cookie = $this->get_cookie_data();
+				// If cookie exists, set data from cookie for guest
+				if ( empty( $cookie ) ) {
+					// Create new cookie and session for user Guest.
+					$this->set_session_expiration( $expire_time_for_guest );
+					$this->_customer_id = apply_filters( 'lp/cookie/guest-id', 'g-' . uniqid() );
+					$this->set_customer_session_cookie();
+				} else {
+					$this->_customer_id = $cookie;
+				}
 			}
 		} else { // Set data for user logged.
 			$this->set_session_expiration( $expire_time_for_user );
@@ -138,15 +153,6 @@ class LP_Session_Handler {
 		}
 
 		return $this;
-	}
-
-	/**
-	 * Check has session.
-	 *
-	 * @return bool
-	 */
-	public function has_session(): bool {
-		return isset( $_COOKIE[ $this->_cookie ] ) || is_user_logged_in();
 	}
 
 	/**
@@ -225,8 +231,6 @@ class LP_Session_Handler {
 					[ '%s', '%s', '%d' ],
 					[ '%s' ]
 				);
-				// Clear cache.
-				LP_Session_Cache::instance()->clear( $this->_customer_id );
 			} else {
 				// Insert
 				$lp_session_db->wpdb->insert(
@@ -235,6 +239,9 @@ class LP_Session_Handler {
 					[ '%s', '%s', '%d' ]
 				);
 			}
+
+			// Clear cache.
+			LP_Session_Cache::instance()->clear( $this->_customer_id );
 
 			$res = true;
 		} catch ( Throwable $e ) {

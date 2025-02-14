@@ -354,6 +354,15 @@ class LP_Settings {
 	}
 
 	/**
+	 * Check enable option "Store data in $_SESSION PHP" instead of $_COOKIE
+	 *
+	 * @return bool
+	 */
+	public static function is_store_data_in_php_session(): bool {
+		return self::get_option( 'store_in_session', 'no' ) === 'yes';
+	}
+
+	/**
 	 * Check table learnpress_files is created
 	 * @return boolean
 	 */
