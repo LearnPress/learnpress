@@ -27,6 +27,8 @@ require_once $blog_template_path . 'single-course/class-block-template-quiz-sing
 require_once $blog_template_path . 'single-course/class-block-template-time-single-course.php';
 require_once $blog_template_path . 'single-course/class-block-template-progress-single-course.php';
 require_once $blog_template_path . 'single-course/class-block-template-item-curriculum-course.php';
+require_once $blog_template_path . 'single-course/class-block-template-curriculum-single-course.php';
+require_once $blog_template_path . 'single-course/class-block-template-related-course.php';
 
 // Archive course
 require_once $blog_template_path . 'archive-course/class-block-template-search-archive-courses.php';
@@ -104,6 +106,8 @@ return apply_filters(
 		new Block_Template_Student_Single_Course(),
 		new Block_Template_Btn_Purchase_Single_Course(),
 		new Block_Template_Duration_Single_Course(),
+		new Block_Template_Curriculum_Single_Course(),
+		new Block_Template_Related_Course(),
 		new Block_Template_Progress_Single_Course(),
 		new Block_Template_Time_Single_Course(),
 		new Block_Template_Breadcrumb(),

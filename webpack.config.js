@@ -97,6 +97,8 @@ module.exports = {
 		'./assets/js/dist/blocks/btn-purchase-single-course': './assets/src/apps/js/blocks/widget-single-course/btn-purchase-single-course/index.js',
 		'./assets/js/dist/blocks/duration-single-course': './assets/src/apps/js/blocks/widget-single-course/duration-single-course/index.js',
 		'./assets/js/dist/blocks/requirements-single-course': './assets/src/apps/js/blocks/widget-single-course/requirements-single-course/index.js',
+		'./assets/js/dist/blocks/curriculum-single-course': './assets/src/apps/js/blocks/widget-single-course/curriculum-single-course/index.js',
+		'./assets/js/dist/blocks/related-course': './assets/src/apps/js/blocks/widget-single-course/related-course/index.js',
 		'./assets/js/dist/blocks/features-single-course': './assets/src/apps/js/blocks/widget-single-course/features-single-course/index.js',
 		'./assets/js/dist/blocks/target-audiences-single-course': './assets/src/apps/js/blocks/widget-single-course/target-audiences-single-course/index.js',
 		'./assets/js/dist/blocks/time-single-course': './assets/src/apps/js/blocks/widget-single-course/time-single-course/index.js',
