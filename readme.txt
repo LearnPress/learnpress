@@ -223,7 +223,7 @@ https://www.transifex.com/projects/p/learnpress/
 
 = 4.2.7.8 (2025-02-17) =
 ~ Fixed: send email when user finished course.
-~ Fixed: error PayPal payment can't verify transition.
+~ Fixed: error PayPal payment can't verify transaction.
 ~ Fixed: error change author when edit course.
 ~ Tweak: Guest buy/enroll course, login via checkout.
 ~ Tweak: course section, question CURD.
