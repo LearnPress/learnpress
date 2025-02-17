@@ -3,7 +3,7 @@ Contributors: thimpress, tungnx89, nhamdv, nguyenlammanh, tunnhn, phonglq.foobla
 Donate link:
 Tags: elearning, education, course, lms, learning management system
 Tested up to: 6.7
-Stable tag: 4.2.7.7
+Stable tag: 4.2.7.8
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -220,6 +220,13 @@ https://www.transifex.com/projects/p/learnpress/
 13. Add-ons: Unlock endless possibilities with our add-ons from additional payment gateways to more managing course options. Tailor to your needs and easily scale as your site grow
 
 == Changelog ==
+
+= 4.2.7.8 (2025-02-17) =
+~ Fixed: send email when user finished course.
+~ Fixed: error PayPal payment can't verify transition.
+~ Fixed: error change author when edit course.
+~ Tweak: Guest buy/enroll course, login via checkout.
+~ Tweak: course section, question CURD.
 
 = 4.2.7.7 (2025-02-08) =
 ~ Fixed: some hosting error 403 when load list courses, complete lesson request.

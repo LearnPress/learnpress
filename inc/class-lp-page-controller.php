@@ -458,11 +458,6 @@ class LP_Page_Controller {
 	 * @return bool|string
 	 */
 	public function template_loader( $template ) {
-		if ( LP_Page_Controller::is_page_lp_ajax() ) {
-			if ( ! isset( $_REQUEST['lp-load-ajax'] ) ) {
-				wp_die( 'Invalid request!', 400 );
-			}
-		}
 
 		if ( wp_is_block_theme() ) {
 			return $template;
