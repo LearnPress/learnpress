@@ -359,8 +359,17 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 				throw new Exception( $result->error_description );
 			}
 
-			if ( empty( $result->links ) ) {
-				throw new Exception( __( 'Invalid Paypal checkout url', 'learnpress' ) );
+			/**
+			 * Error response
+			 *
+			 * https://developer.paypal.com/api/rest/reference/orders/v2/errors/
+			 */
+			if ( isset( $result->name ) && isset( $result->details[0] ) ) {
+				throw new Exception( $result->details[0]->description );
+			}
+
+			if ( empty( $result->id ) ) {
+				throw new Exception( __( 'Invalid Paypal checkout', 'learnpress' ) );
 			}
 
 			foreach ( $result->links as $link ) {
