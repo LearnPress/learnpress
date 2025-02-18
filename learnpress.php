@@ -567,7 +567,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			// Email hook notify
 			include_once 'inc/emails/class-lp-email-hooks.php';
 
-			//LP_Gateways::instance();
+			// Init gateways, to load all payment gateways, catch callback.
+			LP_Gateways::instance();
 
 			if ( is_admin() ) {
 				$this->check_addons_version_valid();

@@ -30,7 +30,7 @@ class LP_Gateways {
 	/**
 	 * LP_Gateways constructor.
 	 */
-	public function __construct() {
+	private function __construct() {
 		$this->init();
 	}
 
@@ -63,12 +63,10 @@ class LP_Gateways {
 	/**
 	 * Get all registered payments.
 	 *
-	 * @param boolean $with_order If true sort payments with the order saved in admin
-	 *
 	 * @return array
 	 * @version 4.0.2
 	 */
-	public function get_gateways( $with_order = false ) {
+	public function get_gateways(): array {
 		$gateways               = array();
 		$order_payment_gateways = get_option( 'learn_press_payment_order' );
 
