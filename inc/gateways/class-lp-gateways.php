@@ -52,7 +52,9 @@ class LP_Gateways {
 				foreach ( $gateways as $k => $gateway ) {
 					if ( is_string( $gateway ) && class_exists( $gateway ) ) {
 						$gateway = new $gateway();
+					}
 
+					if ($gateway instanceof LP_Gateway_Abstract) {
 						$this->payment_gateways[ $k ] = $gateway;
 					}
 				}
