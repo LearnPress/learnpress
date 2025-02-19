@@ -66,7 +66,10 @@ class LessonAjax extends AbstractAjax {
 			}
 
 			$message_data['status']  = 'success';
-			$message_data['content'] = sprintf( __( 'Congrats! You have completed "%s".', 'learnpress' ), $lessonModel->get_the_title() );
+			$message_data['content'] = sprintf(
+				__( 'Congrats! You have completed "%s".', 'learnpress' ),
+				$lessonModel->get_the_title()
+			);
 		} catch ( Throwable $e ) {
 			$message_data['content'] = $e->getMessage();
 			if ( isset( $courseModel ) && isset( $lessonModel ) ) {

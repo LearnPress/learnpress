@@ -4,7 +4,7 @@
  * Class UserLessonModel
  *
  * @package LearnPress/Classes
- * @version 1.0.0
+ * @version 1.0.1
  * @since 4.2.7.6
  */
 
@@ -71,6 +71,8 @@ class UserLessonModel extends UserItemModel {
 	 * Complete lesson
 	 *
 	 * @throws Exception
+	 * @version 1.0.1
+	 * @since 4.2.7.6
 	 */
 	public function set_complete() {
 		if ( $this->get_status() === self::STATUS_COMPLETED ) {
@@ -91,5 +93,8 @@ class UserLessonModel extends UserItemModel {
 		$this->end_time   = gmdate( LP_Datetime::$format, time() );
 		$this->graduation = self::GRADUATION_PASSED;
 		$this->save();
+
+		do_action( 'learn-press/user-completed-lesson', $this->item_id, $this->ref_id, $this->user_id );
+		do_action( 'learn-press/user-lesson/completed', $this );
 	}
 }
