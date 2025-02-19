@@ -1194,7 +1194,7 @@ body.course-item-popup {
 		.course-section-header {
 			background-color: $bg-grey;
 			padding: 20px;
-			column-gap: 20px;
+			column-gap: 12px;
 			display: flex;
 			justify-content: space-between;
 		}
@@ -1213,10 +1213,21 @@ body.course-item-popup {
 			justify-content: center;
 
 			i {
-				font-size: 24px;
-				width: 24px;
+				font-size: 20px;
+				min-width: 16px;
 				text-align: center;
 			}
+		}
+
+		.course-section-info {
+			margin-left: 0;
+			margin-right: auto;
+		}
+
+		.section-count-items {
+			min-width: 24px;
+    		display: flex;
+    		justify-content: center;
 		}
 
 		.course-item {
@@ -1244,7 +1255,7 @@ body.course-item-popup {
 				row-gap: 8px;
 
 				.course-item-ico {
-					min-width: 20px;
+					min-width: 16px;
 				}
 			}
 
