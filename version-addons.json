@@ -488,6 +488,21 @@
     "is_org": 0,
     "order": 0
   },
+  "learnpress-payu-payment": {
+    "name": "PayU addon for Learnpress",
+    "basename": "learnpress-payu-payment/learnpress-payu-payment.php",
+    "version": "4.0.0",
+    "require_lp": "4.2.7.7",
+    "description": "Multiple Payment Channels: Receive payments via a variety of channels that are suited for both domestic and international customers, including Credit and Debit Cards, Net Banking, Unified Payments Interface (UPI), Digital Wallets, Buy Now, Pay Later (BNPL). And much more!",
+    "image": "https://thimpress.com/wp-content/uploads/2025/02/Icon_payu.png",
+    "link": "https://thimpress.com/product/payu-addon-for-learnpress/",
+    "link_doc": "https://docs.thimpress.com/payu-add-on-for-learnpress",
+    "setting": "wp-admin/admin.php?page=learn-press-settings&tab=payments&section=instamojo",
+    "is_free": 0,
+    "author": "",
+    "is_org": 0,
+    "order": 0
+  },
   "learnpress-mobile-app": {
     "name": "LearnPress - Mobile App",
     "basename": "learnpress-mobile-app/learnpress-mobile-app.php",
