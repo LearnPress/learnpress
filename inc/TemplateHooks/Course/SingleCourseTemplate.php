@@ -3,16 +3,17 @@
  * Template hooks Single Course.
  *
  * @since 4.2.3
- * @version 1.0.4
+ * @version 1.0.5
  */
 
 namespace LearnPress\TemplateHooks\Course;
 
-use LearnPress\Helpers\Config;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\CoursePostModel;
+use LearnPress\Models\LessonPostModel;
+use LearnPress\Models\PostModel;
 use LearnPress\Models\QuizPostModel;
 use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\Models\UserItems\UserItemModel;
@@ -20,6 +21,7 @@ use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
 use LearnPress\TemplateHooks\TemplateAJAX;
 use LearnPress\TemplateHooks\UserTemplate;
+use LearnPressAssignment\Models\AssignmentPostModel;
 use LP_Checkout;
 use LP_Course;
 use LP_Course_Item;
@@ -31,6 +33,11 @@ use Throwable;
 
 class SingleCourseTemplate {
 	use Singleton;
+
+	/**
+	 * @var false|LessonPostModel|QuizPostModel|PostModel|mixed $currentItemModel
+	 */
+	public $currentItemModel = false;
 
 	public function init() {
 		add_filter( 'lp/rest/ajax/allow_callback', [ $this, 'allow_callback' ] );
@@ -1316,15 +1323,35 @@ class SingleCourseTemplate {
 	 *
 	 * @param CourseModel $courseModel
 	 * @param UserModel|false $userModel
+	 * @param LessonPostModel|QuizPostModel|PostModel|mixed $itemModelCurrent
 	 *
 	 * @return string
 	 * @since 4.2.7.6
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
-	public function html_curriculum( CourseModel $courseModel, $userModel ): string {
+	public function html_curriculum( CourseModel $courseModel, $userModel, $itemModelCurrent = false ): string {
 		$html = '';
 
 		try {
+			// Get current item viewing
+			/**
+			 * @var $lp_course_item LP_Course_Item
+			 * @var $post \WP_Post
+			 */
+			global $lp_course_item, $post;
+			/**
+			 * @var $itemModelCurrent LessonPostModel|QuizPostModel|AssignmentPostModel|PostModel...
+			 */
+			$itemModelCurrent = $courseModel->get_item_model( $post->ID, $post->post_type );
+			if ( $lp_course_item ) {
+				$itemModelCurrent = $courseModel->get_item_model( $lp_course_item->get_id(), $lp_course_item->get_item_type() );
+			}
+
+			if ( $itemModelCurrent ) {
+				$this->currentItemModel = $itemModelCurrent;
+			}
+			// End get current item viewing
+
 			$section_items = $courseModel->get_section_items();
 			$html          = Template::print_message(
 				esc_html__( 'There are no items in the curriculum yet.', 'learnpress' ),
@@ -1457,11 +1484,19 @@ class SingleCourseTemplate {
 
 		$curriculum_display_setting = LP_Settings::get_option( 'curriculum_display', 'expand_first_section' );
 		$class_section_toggle       = '';
-		if ( $curriculum_display_setting === 'collapse_all' ) {
-			$class_section_toggle = 'lp-collapse';
-		} elseif ( $curriculum_display_setting === 'expand_first_section' ) {
-			if ( $section_order > 1 ) {
+
+		if ( $this->currentItemModel ) {
+			$current_section = (int) ( $_GET['section_id'] ?? 0 );
+			if ( $current_section != $section_id ) {
 				$class_section_toggle = 'lp-collapse';
+			}
+		} else {
+			if ( $curriculum_display_setting === 'collapse_all' ) {
+				$class_section_toggle = 'lp-collapse';
+			} elseif ( $curriculum_display_setting === 'expand_first_section' ) {
+				if ( $section_order > 1 ) {
+					$class_section_toggle = 'lp-collapse';
+				}
 			}
 		}
 
@@ -1493,7 +1528,7 @@ class SingleCourseTemplate {
 	 *
 	 * @return string
 	 * @since 4.2.7.6
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function render_html_course_item( CourseModel $courseModel, $userModel, $item, $section_item ): string {
 		$html = '';
@@ -1502,11 +1537,18 @@ class SingleCourseTemplate {
 			return $html;
 		}
 
-		$item_id     = $item->item_id ?? 0;
-		$item_order  = $item->item_order ?? 0;
-		$item_type   = $item->item_type ?? '';
-		$title       = $item->title ?? '';
-		$has_preview = $item->preview ?? '';
+		$item_id       = (int) ( $item->item_id ?? 0 );
+		$item_order    = $item->item_order ?? 0;
+		$item_type     = $item->item_type ?? '';
+		$title         = $item->title ?? '';
+		$has_preview   = $item->preview ?? '';
+		$class_current = '';
+		if ( $this->currentItemModel ) {
+			$current_item_id = $this->currentItemModel->get_id();
+			if ( $current_item_id == $item->item_id ) {
+				$class_current = 'current';
+			}
+		}
 
 		//LP_Course_Item::get_item( $item_id, $course->get_id() );
 		$itemModel = $courseModel->get_item_model( $item_id, $item_type );
@@ -1515,6 +1557,7 @@ class SingleCourseTemplate {
 		}
 
 		$link_item = $courseModel->get_item_link( $item_id, $item_type );
+		$link_item = add_query_arg( 'section_id', $section_item->section_id, $link_item );
 
 		$item_duration      = '';
 		$html_item_duration = '';
@@ -1626,7 +1669,8 @@ class SingleCourseTemplate {
 			'learn-press/course/html-course-item',
 			[
 				'start'            => sprintf(
-					'<li class="course-item" data-item-id="%s" data-item-order="%s" data-item-type="%s">',
+					'<li class="course-item %s" data-item-id="%s" data-item-order="%s" data-item-type="%s">',
+					$class_current,
 					$item_id,
 					$item_order,
 					$item_type
