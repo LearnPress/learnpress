@@ -598,6 +598,30 @@ class LP_Template_Course extends LP_Abstract_Template {
 		 * @var CourseModel $lpCourseModel
 		 */
 		global $lpCourseModel;
+		$courseModel = CourseModel::find( get_the_ID(), true );
+		if ( $lpCourseModel instanceof CourseModel ) {
+			$courseModel = $lpCourseModel;
+		}
+
+		$course_item = LP_Global::course_item();
+		$userModel   = UserModel::find( get_current_user_id(), true );
+
+		$singleCourseTemplate = SingleCourseTemplate::instance();
+		echo $singleCourseTemplate->html_curriculum( $courseModel, $userModel );
+	}
+
+	/**
+	 * Display course curriculum.
+	 *
+	 * @since 4.1.6
+	 * @since 4.2.5.5 remove code load old template user for course curriculum load page instead of via AJAX.
+	 * @version 1.0.2
+	 */
+	public function course_curriculum_bk() {
+		/**
+		 * @var CourseModel $lpCourseModel
+		 */
+		global $lpCourseModel;
 		$course_item = LP_Global::course_item();
 
 		if ( $course_item ) { // Check if current item is viewable

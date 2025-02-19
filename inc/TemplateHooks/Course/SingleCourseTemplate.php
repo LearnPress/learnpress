@@ -1408,7 +1408,7 @@ class SingleCourseTemplate {
 	 *
 	 * @return string
 	 * @since 4.2.7.6
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function render_html_section_item( CourseModel $courseModel, $userModel, $section_item ): string {
 		if ( ! $section_item instanceof stdClass ) {
@@ -1430,14 +1430,18 @@ class SingleCourseTemplate {
 
 		$section_header = [
 			'start'       => '<div class="course-section-header">',
+			'toggle'      => '<div class="section-toggle">
+				<i class="lp-icon-angle-down"></i>
+				<i class="lp-icon-angle-up"></i>
+			</div>',
 			'info'        => '<div class="course-section-info">',
 			'title'       => sprintf( '<div class="course-section__title">%s</div>', wp_kses_post( $section_name ) ),
 			'description' => $html_section_description,
 			'info_end'    => '</div>',
-			'toggle'      => '<span class="section-toggle">
-				<i class="lp-icon-angle-down"></i>
-				<i class="lp-icon-angle-up"></i>
-			</span>',
+			'count_items' => sprintf(
+				'<div class="section-count-items">%d</div>',
+				count( $items )
+			),
 			'end'         => '</div>',
 		];
 
