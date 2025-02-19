@@ -1079,7 +1079,14 @@ class SingleCourseTemplate {
 		return Template::combine_components( $section );
 	}
 
-	public function html_breadcrumb( CourseModel $course ) {
+	/**
+	 * HTML breadcrumb
+	 *
+	 * @return string
+	 * @since 4.2.7.2
+	 * @version 1.0.0
+	 */
+	public function html_breadcrumb() {
 		ob_start();
 		$template = new LP_Template_General();
 		$template->breadcrumb();
@@ -1370,7 +1377,7 @@ class SingleCourseTemplate {
 		return $html_progress;
 	}
 
-		/**
+	/**
 	 * Show info time handle of user
 	 *
 	 * @throws Exception

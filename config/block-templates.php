@@ -10,6 +10,7 @@ require_once $blog_template_path . 'single-course/class-block-template-categorie
 require_once $blog_template_path . 'single-course/class-block-template-tags-single-course.php';
 require_once $blog_template_path . 'single-course/class-block-template-image-single-course.php';
 require_once $blog_template_path . 'single-course/class-block-template-instructor-single-course.php';
+require_once $blog_template_path . 'single-course/class-block-template-instructor-section-single-course.php';
 require_once $blog_template_path . 'single-course/class-block-template-tabs-single-course.php';
 require_once $blog_template_path . 'single-course/class-block-template-price-single-course.php';
 require_once $blog_template_path . 'single-course/class-block-template-feature-review-single-course.php';
@@ -19,6 +20,8 @@ require_once $blog_template_path . 'single-course/class-block-template-btn-purch
 require_once $blog_template_path . 'single-course/class-block-template-duration-single-course.php';
 require_once $blog_template_path . 'single-course/class-block-template-breadcrumb.php';
 require_once $blog_template_path . 'single-course/class-block-template-comment.php';
+require_once $blog_template_path . 'single-course/class-block-template-share-course.php';
+require_once $blog_template_path . 'single-course/class-block-template-info-one-course.php';
 require_once $blog_template_path . 'single-course/class-block-template-requirements-single-course.php';
 require_once $blog_template_path . 'single-course/class-block-template-features-single-course.php';
 require_once $blog_template_path . 'single-course/class-block-template-target-audiences-single-course.php';
@@ -53,13 +56,13 @@ require_once $blog_template_path . 'archive-course/layout/class-block-layout-cou
 
 //Layout single course
 require_once $blog_template_path . 'single-course/layout/class-block-layout-single-course.php';
-require_once $blog_template_path . 'single-course/layout/class-block-layout-content-area.php';
-require_once $blog_template_path . 'single-course/layout/class-block-layout-content-left.php';
-require_once $blog_template_path . 'single-course/layout/class-block-layout-course-summary.php';
-require_once $blog_template_path . 'single-course/layout/class-block-layout-detail-info.php';
-require_once $blog_template_path . 'single-course/layout/class-block-layout-meta-primary.php';
-require_once $blog_template_path . 'single-course/layout/class-block-layout-meta-secondary.php';
-require_once $blog_template_path . 'single-course/layout/class-block-layout-sidebar.php';
+// require_once $blog_template_path . 'single-course/layout/class-block-layout-content-area.php';
+// require_once $blog_template_path . 'single-course/layout/class-block-layout-content-left.php';
+// require_once $blog_template_path . 'single-course/layout/class-block-layout-course-summary.php';
+// require_once $blog_template_path . 'single-course/layout/class-block-layout-detail-info.php';
+// require_once $blog_template_path . 'single-course/layout/class-block-layout-meta-primary.php';
+// require_once $blog_template_path . 'single-course/layout/class-block-layout-meta-secondary.php';
+// require_once $blog_template_path . 'single-course/layout/class-block-layout-sidebar.php';
 
 //Profile
 require_once $blog_template_path . 'profile/class-block-template-profile.php';
@@ -94,6 +97,7 @@ return apply_filters(
 		new Block_Template_Tags_Single_Course(),
 		new Block_Template_Image_Single_Course(),
 		new Block_Template_Instructor_Single_Course(),
+		new Block_Template_Instructor_Section_Single_Course(),
 		new Block_Template_Tabs_Single_Course(),
 		new Block_Template_Price_Single_Course(),
 		new Block_Template_Feature_Review_Single_Course(),
@@ -112,6 +116,8 @@ return apply_filters(
 		new Block_Template_Time_Single_Course(),
 		new Block_Template_Breadcrumb(),
 		new Block_Template_Comment(),
+		new Block_Template_Info_One_Course(),
+		new Block_Template_Share_Course(),
 		new Block_Layout_Single_Course(),
 		new Block_Layout_Archive_Course(),
 		// new Block_Layout_Content_Area(),
