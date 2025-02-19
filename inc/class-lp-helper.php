@@ -605,7 +605,7 @@ class LP_Helper {
 
 		$find    = [];
 		$replace = [];
-		if ( ! empty( $post->post_date ) ) {
+		if ( ! empty( $post->post_date_gmt ) ) {
 			$find = array(
 				'%year%',
 				'%monthnum%',
@@ -616,7 +616,7 @@ class LP_Helper {
 				'%post_id%',
 			);
 
-			$time = strtotime( $post->post_date );
+			$time = strtotime( $post->post_date_gmt );
 
 			$replace = array(
 				date_i18n( 'Y', $time ),
