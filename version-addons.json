@@ -504,12 +504,12 @@
     "order": 0
   },
   "learnpress-paystack-payment": {
-    "name": "PayU addon for Learnpress",
+    "name": "Paystack Addon For Learnpress",
     "basename": "learnpress-paystack-payment/learnpress-paystack-payment.php",
     "version": "4.0.0",
     "require_lp": "4.2.7.7",
     "description": "Many Payment Options: Payment can be done using a Visa, Mastercard, Verve, USSD, mobile money, bank transfer, POS and more.",
-    "image": "https://thimpress.com/wp-content/uploads/2025/02/Icon_payu.png",
+    "image": "https://thimpress.com/wp-content/uploads/2025/01/PAYSTACK-BANNER-To.jpg",
     "link": "https://thimpress.com/product/paystack-addon-for-learnpress/",
     "link_doc": "https://docs.thimpress.com/paystack-gateway-add-on-for-learnpress/",
     "setting": "",
