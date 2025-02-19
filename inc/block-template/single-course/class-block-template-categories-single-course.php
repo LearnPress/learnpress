@@ -2,6 +2,7 @@
 
 use LearnPress\Models\CourseModel;
 use LearnPress\TemplateHooks\Course\SingleCourseClassicTemplate;
+use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
 
 /**
  * Class Block_Template_Categories_Single_Course
@@ -20,9 +21,22 @@ class Block_Template_Categories_Single_Course extends Abstract_Block_Template_Wi
 	public function render_content_block_template( array $attributes ) {
 		$course                      = CourseModel::find( get_the_ID(), true );
 		$singleCourseClassicTemplate = SingleCourseClassicTemplate::instance();
-		ob_start();
-		echo $singleCourseClassicTemplate->html_category( $course );
-		$content = ob_get_clean();
+
+		$layout_single_course = LP_Settings::get_option( 'layout_single_course', 'classic' );
+		if ( $layout_single_course === 'modern' ) {
+			$html_categories = SingleCourseTemplate::instance()->html_categories( $course );
+			if ( ! empty( $html_categories ) ) {
+				$content = sprintf(
+					'<div>%s %s</div>',
+					sprintf( '<label>%s</label>', __( 'in', 'learnpress' ) ),
+					$html_categories
+				);
+			}
+		} else {
+			ob_start();
+			echo $singleCourseClassicTemplate->html_category( $course );
+			$content = ob_get_clean();
+		}
 
 		return $content;
 	}
