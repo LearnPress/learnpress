@@ -596,31 +596,35 @@ class LP_Helper {
 	 *
 	 * @return string
 	 * @since 4.2.2
+	 * @version 1.0.3
 	 */
 	public static function handle_lp_permalink_structure( $post_link, $post ) {
 		if ( false === strpos( $post_link, '%' ) ) {
 			return $post_link;
 		}
 
-		$find = array(
-			'%year%',
-			'%monthnum%',
-			'%day%',
-			'%hour%',
-			'%minute%',
-			'%second%',
-			'%post_id%',
-		);
-
+		$find    = [];
 		$replace = [];
 		if ( ! empty( $post->post_date ) ) {
+			$find = array(
+				'%year%',
+				'%monthnum%',
+				'%day%',
+				'%hour%',
+				'%minute%',
+				'%second%',
+				'%post_id%',
+			);
+
+			$time = strtotime( $post->post_date );
+
 			$replace = array(
-				date_i18n( 'Y', strtotime( $post->post_date ) ),
-				date_i18n( 'm', strtotime( $post->post_date ) ),
-				date_i18n( 'd', strtotime( $post->post_date ) ),
-				date_i18n( 'H', strtotime( $post->post_date ) ),
-				date_i18n( 'i', strtotime( $post->post_date ) ),
-				date_i18n( 's', strtotime( $post->post_date ) ),
+				date_i18n( 'Y', $time ),
+				date_i18n( 'm', $time ),
+				date_i18n( 'd', $time ),
+				date_i18n( 'H', $time ),
+				date_i18n( 'i', $time ),
+				date_i18n( 's', $time ),
 				$post->ID,
 			);
 		}
