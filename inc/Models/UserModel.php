@@ -312,10 +312,20 @@ class UserModel {
 	/**
 	 * Get display name
 	 *
+	 * Hook from function get_the_author_meta of WP
+	 *
+	 * @uses get_the_author_meta
 	 * @return string
+	 * @version 1.0.1
+	 * @since 4.2.7
 	 */
 	public function get_display_name(): string {
-		return $this->display_name ?? '';
+		return apply_filters(
+			'get_the_author_display_name',
+			$this->display_name,
+			$this->get_id(),
+			$this->get_id()
+		);
 	}
 
 	/**
