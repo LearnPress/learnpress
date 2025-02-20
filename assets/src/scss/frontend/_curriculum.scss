@@ -397,6 +397,28 @@ ul.learn-press-nav-tabs {
 	.course-curriculum ul.curriculum-sections {
 		z-index: 9;
 	}
+
+	.lp-course-curriculum {
+
+		&__title,
+		.course-curriculum-info {
+			display: none;
+		}
+
+		ul {
+			padding: 0;
+
+			li {
+				list-style: none;
+				padding: 0;
+			}
+		}
+
+		.course-item__content,
+		.course-item__right {
+			flex-wrap: wrap;
+		}
+	}
 }
 
 .course-curriculum {
