@@ -9,6 +9,32 @@
 	"textdomain": "learnpress",
 	"keywords": ["layout filter course", "learnpress"],
 	"usesContext": [],
+	"attributes": {
+		"title": {
+			"type": "string",
+			"default": "Course Filter"
+		},
+		"numberLevelCategory": {
+			"type": "number",
+			"default": 0
+		},
+		"classListCoursesTarget": {
+			"type": "string",
+			"default": ".lp-list-courses-default"
+		},
+		"showInRest": {
+			"type": "boolean",
+			"default": true
+		},
+		"hideCountZero": {
+			"type": "boolean",
+			"default": true
+		},
+		"searchSuggestion": {
+			"type": "boolean",
+			"default": true
+		}
+	},
 	"supports": {
 		"inserter": true,
 		"reusable": true,
@@ -17,7 +43,5 @@
 		"multiple": true,
 		"wrapper": false
 	},
-	"ancestor": [
-		"learnpress/lp-archive-course"
-	]
+	"ancestor": ["learnpress/lp-archive-course"]
 }

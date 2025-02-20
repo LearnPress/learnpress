@@ -6,13 +6,13 @@ wp_enqueue_script( 'lp-course-filter' );
 wp_enqueue_script( 'lp-widgets' );
 
 $class                     = 'learnpress-widget-wrapper';
-$show_in_rest              = 0;
-$title                     = 'Course Filter';
+$show_in_rest              = $attributes['showInRest'] === false ? 0 : 1;
+$title                     = $attributes['title'] ?? 'Course Filter';
 $content                   = '';
-$number_level_category     = 2;
-$search_suggestion         = 1;
-$hide_count_zero           = 1;
-$class_list_courses_target = '.lp-list-courses-default';
+$number_level_category     = $attributes['numberLevelCategory'] ?? 0;
+$search_suggestion         = $attributes['searchSuggestion'] === false ? 0 : 1;
+$hide_count_zero           = $attributes['hideCountZero'] === false ? 0 : 1;
+$class_list_courses_target = $attributes['classListCoursesTarget'] ?? '.lp-list-courses-default';
 
 $instance = [
 	'title'                     => $title,
