@@ -422,6 +422,9 @@ ul.learn-press-nav-tabs {
 }
 
 .course-curriculum {
+	.course-sections li.course-section {
+		list-style: none;
+	}
 
 	ul.curriculum-sections {
 		position: relative;
