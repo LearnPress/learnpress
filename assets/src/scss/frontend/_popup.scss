@@ -524,7 +524,9 @@
 			--lp-border-radius: 0;
 			border-left: none;
 		}
-		.lp-course-curriculum__title,.course-curriculum-info{
+		.lp-course-curriculum__title,
+		.course-curriculum-info,
+		.course-section__description {
 			display: none;
 		}
 		.course-item {
