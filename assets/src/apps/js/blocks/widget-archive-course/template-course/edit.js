@@ -5,9 +5,58 @@ export const edit = ( props ) => {
 	const template = [
 		[ 'learnpress/media-course-archive-course', {} ],
 		[ 'learnpress/title-course-archive-course', {} ],
-		[ 'learnpress/instructor-category-course-archive-course', {} ],
-		[ 'learnpress/meta-course-archive-course', {} ],
-		[ 'learnpress/info-course-archive-course', {} ],
+		[
+			'core/group',
+			{
+				metadata: {
+					name: 'Category Instructor',
+				},
+				className: 'course-instructor-category',
+				layout: {
+					type: 'constrained',
+				},
+			},
+			[
+				[ 'learnpress/instructor-course-archive-course', {} ],
+				[ 'learnpress/category-course-archive-course', {} ],
+			],
+		],
+		[
+			'core/group',
+			{
+				metadata: {
+					name: 'Meta Course',
+				},
+				className: 'course-wrap-meta',
+				layout: {
+					type: 'constrained',
+				},
+			},
+			[
+				[ 'learnpress/level-course-archive-course', {} ],
+				[ 'learnpress/duration-course-archive-course', {} ],
+				[ 'learnpress/lesson-course-archive-course', {} ],
+				[ 'learnpress/quiz-course-archive-course', {} ],
+				[ 'learnpress/student-course-archive-course', {} ],
+			],
+		],
+		[ 'learnpress/description-course-archive-course', {} ],
+		[
+			'core/group',
+			{
+				metadata: {
+					name: 'Course Info',
+				},
+				className: 'course-info',
+				layout: {
+					type: 'constrained',
+				},
+			},
+			[
+				[ 'learnpress/price-course-archive-course', {} ],
+				[ 'learnpress/button-course-archive-course', {} ],
+			],
+		],
 	];
 
 	const renderInnerBlocks = () => {

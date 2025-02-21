@@ -27,6 +27,9 @@ export const edit = ( props ) => {
 		[
 			'core/group',
 			{
+				metadata: {
+					name: 'Course Bar',
+				},
 				className: 'lp-courses-bar',
 				layout: {
 					type: 'flex',
@@ -40,37 +43,61 @@ export const edit = ( props ) => {
 		],
 		[
 			'learnpress/template-course-archive-course',
-			{},
+			{ ajax: false },
 			[
+				[ 'learnpress/media-course-archive-course', {} ],
+				[ 'learnpress/title-course-archive-course', {} ],
 				[
-					'learnpress/media-course-archive-course',
+					'core/group',
 					{
-						content: '{{media-course}}',
+						metadata: {
+							name: 'Category Instructor',
+						},
+						className: 'course-instructor-category',
+						layout: {
+							type: 'constrained',
+						},
 					},
+					[
+						[ 'learnpress/instructor-course-archive-course', {} ],
+						[ 'learnpress/category-course-archive-course', {} ],
+					],
 				],
 				[
-					'learnpress/title-course-archive-course',
+					'core/group',
 					{
-						content: '{{title-course}}',
+						metadata: {
+							name: 'Meta Course',
+						},
+						className: 'course-wrap-meta',
+						layout: {
+							type: 'constrained',
+						},
 					},
+					[
+						[ 'learnpress/level-course-archive-course', {} ],
+						[ 'learnpress/duration-course-archive-course', {} ],
+						[ 'learnpress/lesson-course-archive-course', {} ],
+						[ 'learnpress/quiz-course-archive-course', {} ],
+						[ 'learnpress/student-course-archive-course', {} ],
+					],
 				],
+				[ 'learnpress/description-course-archive-course', {} ],
 				[
-					'learnpress/instructor-category-course-archive-course',
+					'core/group',
 					{
-						content: '{{instructor-category-course}}',
+						metadata: {
+							name: 'Course Info',
+						},
+						className: 'course-info',
+						layout: {
+							type: 'constrained',
+						},
 					},
-				],
-				[
-					'learnpress/meta-course-archive-course',
-					{
-						content: '{{meta-course}}',
-					},
-				],
-				[
-					'learnpress/info-course-archive-course',
-					{
-						content: '{{info-course}}',
-					},
+					[
+						[ 'learnpress/price-course-archive-course', {} ],
+						[ 'learnpress/button-course-archive-course', {} ],
+					],
 				],
 			],
 		],
