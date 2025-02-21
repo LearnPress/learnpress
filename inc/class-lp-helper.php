@@ -293,7 +293,8 @@ class LP_Helper {
 	 * @since 4.1.6.6
 	 */
 	public static function isRestApiLP(): bool {
-		return strpos( self::getUrlCurrent(), '/wp-json/lp/' ) || strpos( self::getUrlCurrent(), '/wp-json/learnpress/' );
+		$restPrefix = '/' . rest_get_url_prefix();
+		return strpos( self::getUrlCurrent(), $restPrefix . '/lp/' ) || strpos( self::getUrlCurrent(), $restPrefix . '/learnpress/' );
 	}
 
 	/**
