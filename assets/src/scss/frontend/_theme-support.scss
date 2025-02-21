@@ -432,11 +432,17 @@ body.twentyseventeen.learnpress-page {
 		--lp-white-grey: transparent;
 		--lp-border-radius: 0;
 		 --lp-primary-color: var(--thim-body-primary-color, inherit);
+		padding-top: 20px;
+		
 		.course-section {
 			border-width: 0 0 1px 0;
 			&:last-child{
 				border-width: 0;
 			}
+		}
+
+		&__title {
+			display: none;
 		}
 
 		.course-section-header {
