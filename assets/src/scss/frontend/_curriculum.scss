@@ -405,18 +405,20 @@ ul.learn-press-nav-tabs {
 			display: none;
 		}
 
-		ul {
-			padding: 0;
-
-			li {
-				list-style: none;
-				padding: 0;
-			}
+		.course-section {
+			border-radius: 0;
 		}
 
 		.course-item__content,
 		.course-item__right {
 			flex-wrap: wrap;
+		}
+
+		.course-item.current {
+			.course-item__content,
+			.course-item__info {
+				color: $color-primary;
+			}
 		}
 	}
 }
@@ -1136,10 +1138,13 @@ body.course-item-popup {
 
 // modern
 .lp-course-curriculum {
-	ul {
-		list-style: none;
-		margin: 0;
-		padding: 0;
+	.course-curriculum,
+	.course-curriculum-info {
+		ul {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+		}
 	}
 
 	.course-curriculum-info {

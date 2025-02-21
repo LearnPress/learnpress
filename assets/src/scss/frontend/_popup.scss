@@ -505,10 +505,6 @@
 			content: "";
 		}
 
-		&.current {
-			background: $bg-grey;
-		}
-
 		&.has-status.failed {
 			.trans {
 				color: #f02425;
