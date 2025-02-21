@@ -265,8 +265,12 @@
 		gap: 5px;
 	}
 
-	.course-wishlist:before{
+	.course-wishlist:before {
 		font-family: 'lp-icon';
+	}
+
+	.lp-course-curriculum ul {
+		padding: 0
 	}
 }
 // layout Modern

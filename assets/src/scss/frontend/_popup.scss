@@ -518,6 +518,29 @@
 		}
 
 	}
+	// Since 4.2.7.9
+	.lp-course-curriculum{
+		.course-section{
+			--lp-border-radius: 0;
+			border-left: none;
+		}
+		.lp-course-curriculum__title,.course-curriculum-info{
+			display: none;
+		}
+		.course-item {
+			&.current:before{
+				background: $color-primary;
+			}
+			&__content {
+				flex-direction: column;
+				row-gap: 4px;
+			}
+			&__right{
+				font-size: $font-size-small;
+
+			}
+		}
+	}
 }
 
 #popup-content {
