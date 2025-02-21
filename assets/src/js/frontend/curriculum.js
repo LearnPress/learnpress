@@ -86,6 +86,24 @@ const checkAllSectionsCollapsed = ( elCurriculum ) => {
 	}
 };
 
+// Search item of course by text
+const searchItemCourse = () => {
+
+};
+
+// Scroll to item viewing
+const scrollToItemViewing = ( elCurriculum ) => {
+	const elItemCurrent = elCurriculum.querySelector( 'li.current' );
+	if ( ! elItemCurrent ) {
+		return;
+	}
+
+	elItemCurrent.scrollIntoView( {
+		behavior: 'smooth',
+	} );
+};
+
 lpOnElementReady( '.lp-course-curriculum', ( elCurriculum ) => {
 	checkAllSectionsCollapsed( elCurriculum );
+	scrollToItemViewing( elCurriculum );
 } );
