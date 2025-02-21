@@ -310,7 +310,7 @@ if ( ! class_exists( 'LP_Gateway_Paypal' ) ) {
 					'paypal' => [
 						'experience_context' => [
 							'payment_method_preference' => 'UNRESTRICTED',
-							'brand_name'                => get_bloginfo(),
+							'brand_name'                => get_bloginfo() ? get_bloginfo() : 'LearnPress',
 							'landing_page'              => 'LOGIN',
 							'user_action'               => 'PAY_NOW',
 							'return_url'                => $return_url,

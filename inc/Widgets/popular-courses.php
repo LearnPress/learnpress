@@ -98,7 +98,7 @@ if ( ! class_exists( 'LP_Widget_Popular_Courses' ) ) {
 					)
 				);
 			} catch ( Throwable $e ) {
-				LP_Debug::error_log( $e->getMessage() );
+				LP_Debug::error_log( $e );
 			}
 
 			return $data;
