@@ -61,30 +61,24 @@ class LP_Session_Handler {
 	 *
 	 * @return self
 	 * @since 3.0.0
-	 * @version 4.0.2
+	 * @version 4.0.3
 	 * @modify Tungnx
 	 */
 	protected function init(): LP_Session_Handler {
-		$expire_time_for_guest = 2 * DAY_IN_SECONDS;
+		$expire_time_for_guest = DAY_IN_SECONDS;
 		$expire_time_for_user  = 6 * DAY_IN_SECONDS;
 
 		// Set data for user Guest.
 		if ( ! is_user_logged_in() ) { // Generate data and set cookie for guest
-			if ( LP_Settings::is_store_data_in_php_session() ) { // Store data in $_SESSION
-				$customer_id = $_SESSION['lp_customer_id'] ?? '';
-				if ( empty( $customer_id ) ) {
-					// Create new session for user Guest.
-					$customer_id                = 'g-' . uniqid();
-					$_SESSION['lp_customer_id'] = $customer_id;
-				}
+			$this->set_session_expiration( $expire_time_for_guest );
 
-				$this->_customer_id = $customer_id;
+			if ( LP_Settings::is_store_ip_customer() ) {
+				$this->_customer_id = LP_Helper::get_client_ip();
 			} else { // Store data in COOKIE
 				$cookie = $this->get_cookie_data();
 				// If cookie exists, set data from cookie for guest
 				if ( empty( $cookie ) ) {
 					// Create new cookie and session for user Guest.
-					$this->set_session_expiration( $expire_time_for_guest );
 					$this->_customer_id = apply_filters( 'lp/cookie/guest-id', 'g-' . uniqid() );
 					$this->set_customer_session_cookie();
 				} else {

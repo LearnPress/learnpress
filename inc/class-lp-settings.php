@@ -358,8 +358,8 @@ class LP_Settings {
 	 *
 	 * @return bool
 	 */
-	public static function is_store_data_in_php_session(): bool {
-		return self::get_option( 'store_in_session', 'no' ) === 'yes';
+	public static function is_store_ip_customer(): bool {
+		return self::get_option( 'store_ip_customer_session', 'no' ) === 'yes';
 	}
 
 	/**

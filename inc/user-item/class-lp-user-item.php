@@ -344,7 +344,7 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 
 			$this->set_data( $field, $got_status );
 		} catch ( Throwable $e ) {
-			LP_Debug::error_log( __FUNCTION__ . ':' . $e->getMessage() );
+			LP_Debug::error_log( $e );
 		}
 
 		return $got_status;

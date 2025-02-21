@@ -148,9 +148,9 @@ return apply_filters(
 			'type'    => 'checkbox',
 		),
 		array(
-			'title'   => esc_html__( 'Store guest buy course on SESSION', 'learnpress' ),
-			'desc'    => esc_html__( 'Enable the option, data user not login buy/enroll course will store on $_SESSION instead of $_COOKIE, by some reason Cookie always change, so can not identifier user', 'learnpress' ),
-			'id'      => 'store_in_session',
+			'title'   => esc_html__( 'Store IP Guest to handle checkout', 'learnpress' ),
+			'desc'    => esc_html__( 'Enable the option, IP of client is identifier user instead $_COOKIE', 'learnpress' ),
+			'id'      => 'store_ip_customer_session',
 			'default' => 'no',
 			'type'    => 'checkbox',
 		),
