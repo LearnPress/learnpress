@@ -32,6 +32,7 @@
 				.course-wrap-meta,
 				.course-instructor-category {
 					padding: 0 20px;
+					width: 100%;
 				}
 
 				.course-permalink {
@@ -439,6 +440,8 @@
 		gap: $spacing-base;
 		flex-wrap: wrap;
 		margin-bottom: $spacing-base-3x;
+		width: calc(65% - 20px);
+		float: inline-end;
 
 		> div {
 			margin-left: 0 !important;
@@ -477,6 +480,8 @@
 		gap: $spacing-base-5x;
 		flex-wrap: wrap;
 		row-gap: $spacing-base-2x;
+		float: inline-end;
+		width: calc(65% - 20px);
 
 		.meta-item {
 			margin: 0;
