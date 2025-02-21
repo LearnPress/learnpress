@@ -62,20 +62,6 @@ class LP_Helper {
 	}
 
 	/**
-	 * Sanitize array by removing empty and/or duplicating values.
-	 *
-	 * @param array $array
-	 *
-	 * @return array
-	 */
-	public static function sanitize_array( $array ) {
-		$array = array_filter( $array );
-		$array = array_unique( $array );
-
-		return $array;
-	}
-
-	/**
 	 * MD5 an array.
 	 *
 	 * @param array $array
@@ -94,41 +80,11 @@ class LP_Helper {
 	 *
 	 * @param array|int $ids
 	 *
-	 * @Todo: tungnx - need to review code
+	 * @Todo: tungnx - need to review code - addon h5p v4.0.3 still use
 	 * @deprecated 4.1.6.9
 	 */
 	public static function cache_posts( $ids ) {
 		//_deprecated_function( __FUNCTION__, '4.1.6.9' );
-	}
-
-	/**
-	 * Sort an array by a field.
-	 * Having some issue with default PHP usort function.
-	 *
-	 * @param array $array .
-	 * @param string $field .
-	 * @param int $default .
-	 */
-	public static function sort_by_priority( &$array, $field = 'priority', $default = 10 ) {
-		foreach ( $array as $k => $item ) {
-			if ( ! array_key_exists( $field, $item ) ) {
-				$array[ $k ][ $field ] = $default;
-			}
-		}
-
-		$priority = array_unique( wp_list_pluck( $array, $field ) );
-		sort( $priority );
-		$priority = array_fill_keys( $priority, array() );
-
-		foreach ( $array as $k => $item ) {
-			$priority[ $item[ $field ] ][] = $item;
-		}
-
-		$sorted = array();
-		foreach ( $priority as $item ) {
-			$sorted = array_merge( $sorted, $item );
-		}
-		$array = $sorted;
 	}
 
 	/**
@@ -313,107 +269,6 @@ class LP_Helper {
 	}
 
 	/**
-	 * Wrap function ksort of PHP itself and support recursive.
-	 *
-	 * @param array $array
-	 * @param int $sort_flags
-	 *
-	 * @return bool
-	 * @since 3.3.0
-	 */
-	public static function ksort( &$array, $sort_flags = SORT_REGULAR ) {
-		if ( ! is_array( $array ) ) {
-			return false;
-		}
-
-		ksort( $array, $sort_flags );
-
-		foreach ( $array as &$arr ) {
-			self::ksort( $arr, $sort_flags );
-		}
-
-		return true;
-	}
-
-	/**
-	 * Return new array/object with the keys exists in list of props.
-	 *
-	 * @param array|string $props
-	 * @param array|object $obj
-	 *
-	 * @return array|object
-	 * @deprecated 4.2.5.3
-	 */
-	public function pick( $props, $obj ) {
-		_deprecated_function( __METHOD__, '4.2.5.3' );
-
-		return [];
-		$is_array  = is_array( $obj );
-		$new_array = array();
-		settype( $props, 'array' );
-
-		foreach ( $props as $prop ) {
-			if ( $is_array && array_key_exists( $prop, $obj ) ) {
-				$new_array[ $prop ] = $obj[ $prop ];
-			} elseif ( ! $is_array && property_exists( $obj, $prop ) ) {
-				$new_array[ $prop ] = $obj->{$prop};
-			}
-		}
-
-		return $is_array ? $new_array : (object) $new_array;
-	}
-
-	public static function list_pluck( $list, $field, $index_key = null ) {
-		$newlist = array();
-
-		if ( ! $index_key ) {
-			/*
-			 * This is simple. Could at some point wrap array_column()
-			 * if we knew we had an array of arrays.
-			 */
-			foreach ( $list as $key => $value ) {
-				if ( is_callable( array( $value, $field ) ) ) {
-					$newlist[ $key ] = call_user_func( array( $value, $field ) );
-				} elseif ( is_object( $value ) ) {
-					$newlist[ $key ] = $value->$field;
-				} else {
-					$newlist[ $key ] = $value[ $field ];
-				}
-			}
-
-			return $newlist;
-		}
-
-		/*
-		 * When index_key is not set for a particular item, push the value
-		 * to the end of the stack. This is how array_column() behaves.
-		 */
-		foreach ( $list as $value ) {
-			if ( is_callable( array( $value, $field ) ) ) {
-				if ( isset( $value->$index_key ) ) {
-					$newlist[ $value->$index_key ] = call_user_func( array( $value, $field ) );
-				} else {
-					$newlist[] = call_user_func( array( $value, $field ) );
-				}
-			} elseif ( is_object( $value ) ) {
-				if ( isset( $value->$index_key ) ) {
-					$newlist[ $value->$index_key ] = $value->$field;
-				} else {
-					$newlist[] = $value->$field;
-				}
-			} else {
-				if ( isset( $value[ $index_key ] ) ) {
-					$newlist[ $value[ $index_key ] ] = $value[ $field ];
-				} else {
-					$newlist[] = $value[ $field ];
-				}
-			}
-		}
-
-		return $newlist;
-	}
-
-	/**
 	 * Get the current url
 	 *
 	 * @return string
@@ -486,40 +341,6 @@ class LP_Helper {
 		}
 
 		return $value;
-	}
-
-	/**
-	 * Wrap function $wpdb->prepare(...) to support arguments as
-	 * array.
-	 *
-	 * @param string $query
-	 * @param array|mixed $args
-	 *
-	 * @return string
-	 * @example
-	 *
-	 * $this->prepare($sql, $one, $two, array($three, $four, $file))
-	 * => $wpdb->prepare($sql, $one, $two, $three, $four, $file)
-	 */
-	public static function prepare( $query, $args ) {
-		_deprecated_function( __METHOD__, '4.2.5.3' );
-
-		return '';
-		global $wpdb;
-
-		$args = func_get_args();
-		array_shift( $args );
-		$new_args = array();
-
-		foreach ( $args as $arg ) {
-			if ( is_array( $arg ) ) {
-				$new_args = array_merge( $new_args, $arg );
-			} else {
-				$new_args[] = $arg;
-			}
-		}
-
-		return $wpdb->prepare( $query, $new_args );
 	}
 
 	public static function db_format_array( array $arr, string $format = '%d' ): string {
@@ -702,30 +523,6 @@ class LP_Helper {
 	}
 
 	/**
-	 * Get translation of value
-	 *
-	 * @param string $value
-	 *
-	 * @return string
-	 * @since 4.2.7.4
-	 * @version 1.0.0
-	 */
-	public static function get_i18n_of_value( string $value ): string {
-		switch ( $value ) {
-			case 'failed':
-				$i18n = esc_html__( 'Failed', 'learnpress' );
-				break;
-			case 'in-progress':
-				$i18n = esc_html__( 'In Progress', 'learnpress' );
-				break;
-			default:
-				$i18n = $value;
-		}
-
-		return apply_filters( 'learn-press/i18n/value', $i18n, $value );
-	}
-
-	/**
 	 * Get translation string single/plural
 	 *
 	 * @param float $number
@@ -784,5 +581,34 @@ class LP_Helper {
 		}
 
 		return apply_filters( 'learn-press/i18n/plural', $plural, $number, $string_value, $include_number );
+	}
+
+	/**
+	 * Get client ip address
+	 *
+	 * @return mixed|string
+	 * @since 4.2.7.9
+	 * @version 1.0.0
+	 */
+	public static function get_client_ip(): string {
+		$ipaddress = 'ip-unknown';
+		if ( isset( $_SERVER['HTTP_CLIENT_IP'] ) ) {
+			$ipaddress = $_SERVER['HTTP_CLIENT_IP'];
+		} elseif ( isset( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) {
+			$ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
+		} elseif ( isset( $_SERVER['HTTP_X_FORWARDED'] ) ) {
+			$ipaddress = $_SERVER['HTTP_X_FORWARDED'];
+		} elseif ( isset( $_SERVER['HTTP_FORWARDED_FOR'] ) ) {
+			$ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
+		} elseif ( isset( $_SERVER['HTTP_FORWARDED'] ) ) {
+			$ipaddress = $_SERVER['HTTP_FORWARDED'];
+		} elseif ( isset( $_SERVER['REMOTE_ADDR'] ) ) {
+			$ipaddress = $_SERVER['REMOTE_ADDR'];
+		}
+
+		$ipaddress = (string) $ipaddress;
+		$ipaddress = 'gip-' . $ipaddress;
+
+		return $ipaddress;
 	}
 }
