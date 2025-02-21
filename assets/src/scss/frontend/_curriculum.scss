@@ -407,6 +407,10 @@ ul.learn-press-nav-tabs {
 
 		.course-section {
 			border-radius: 0;
+
+			&__description {
+				display: none;
+			}
 		}
 
 		.course-item__content,
