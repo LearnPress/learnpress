@@ -527,75 +527,79 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 *
 		 * @return void
 		 * @version 4.2.7.6
-		 * @version 1.0.0
+		 * @version 1.0.1
 		 */
 		public function lp_main_handle() {
-			// Load text domain.
-			$this->load_plugin_text_domain();
+			try {
+				// Load text domain.
+				$this->load_plugin_text_domain();
 
-			// Polylang
-			if ( defined( 'POLYLANG_VERSION' ) ) {
-				include_once 'inc/ExternalPlugin/Polylang/class-lp-polylang.php';
-				LP_Polylang::instance();
-			}
-
-			// For plugin Elementor
-			if ( defined( 'ELEMENTOR_VERSION' ) ) {
-				LPElementor::instance();
-			}
-
-			// For plugin WPSEO
-			if ( defined( 'WPSEO_FILE' ) ) {
-				LPYoastSeo::instance();
-			}
-
-			// For plugin RankMath
-			if ( defined( 'RANK_MATH_VERSION' ) ) {
-				LPRankMath::instance();
-			}
-
-			$this->api       = new LP_Core_API();
-			$this->admin_api = new LP_Admin_Core_API();
-			$this->get_session();
-			$this->settings = $this->settings();
-			if ( $this->is_request( 'frontend' ) ) {
-				$this->get_cart();
-			}
-
-			// Init emails
-			LP_Emails::instance();
-			// Email hook notify
-			include_once 'inc/emails/class-lp-email-hooks.php';
-
-			if ( is_admin() ) {
-				$this->check_addons_version_valid();
-			}
-
-			// let third parties know that we're ready .
-			do_action( 'learn-press/ready' );
-
-			/**
-			 * Init gateways, to load all payment gateways, catch callback.
-			 * Must be call after learn-press/ready to register hook of addon.
-			 */
-			LP_Gateways::instance();
-
-			/**
-			 * Fixed temporary for emails of Announcement v4.0.6, Assignment v4.1.1 addons.
-			 * @since 4.2.7.4
-			 * When 2 addons update to new version, will remove this code.
-			 */
-			if ( class_exists( 'LP_Addon_Announcements_Preload' ) ) {
-				if ( version_compare( LP_ADDON_ANNOUNCEMENTS_VER, '4.0.6', '<=' ) ) {
-					$addon_announcement = LP_Addon_Announcements_Preload::$addon;
-					$addon_announcement->emails_setting();
+				// Polylang
+				if ( defined( 'POLYLANG_VERSION' ) ) {
+					include_once 'inc/ExternalPlugin/Polylang/class-lp-polylang.php';
+					LP_Polylang::instance();
 				}
-			}
-			if ( class_exists( 'LP_Addon_Assignment_Preload' ) ) {
-				if ( version_compare( LP_ADDON_ASSIGNMENT_VER, '4.1.1', '<=' ) ) {
-					$addon_assignment = LP_Addon_Assignment_Preload::$addon;
-					$addon_assignment->emails_setting();
+
+				// For plugin Elementor
+				if ( defined( 'ELEMENTOR_VERSION' ) ) {
+					LPElementor::instance();
 				}
+
+				// For plugin WPSEO
+				if ( defined( 'WPSEO_FILE' ) ) {
+					LPYoastSeo::instance();
+				}
+
+				// For plugin RankMath
+				if ( defined( 'RANK_MATH_VERSION' ) ) {
+					LPRankMath::instance();
+				}
+
+				$this->api       = new LP_Core_API();
+				$this->admin_api = new LP_Admin_Core_API();
+				$this->get_session();
+				$this->settings = $this->settings();
+				if ( $this->is_request( 'frontend' ) ) {
+					$this->get_cart();
+				}
+
+				// Init emails
+				LP_Emails::instance();
+				// Email hook notify
+				include_once 'inc/emails/class-lp-email-hooks.php';
+
+				if ( is_admin() ) {
+					$this->check_addons_version_valid();
+				}
+
+				// let third parties know that we're ready .
+				do_action( 'learn-press/ready' );
+
+				/**
+				 * Init gateways, to load all payment gateways, catch callback.
+				 * Must be call after learn-press/ready to register hook of addon.
+				 */
+				LP_Gateways::instance();
+
+				/**
+				 * Fixed temporary for emails of Announcement v4.0.6, Assignment v4.1.1 addons.
+				 * @since 4.2.7.4
+				 * When 2 addons update to new version, will remove this code.
+				 */
+				if ( class_exists( 'LP_Addon_Announcements_Preload' ) ) {
+					if ( version_compare( LP_ADDON_ANNOUNCEMENTS_VER, '4.0.6', '<=' ) ) {
+						$addon_announcement = LP_Addon_Announcements_Preload::$addon;
+						$addon_announcement->emails_setting();
+					}
+				}
+				if ( class_exists( 'LP_Addon_Assignment_Preload' ) ) {
+					if ( version_compare( LP_ADDON_ASSIGNMENT_VER, '4.1.1', '<=' ) ) {
+						$addon_assignment = LP_Addon_Assignment_Preload::$addon;
+						$addon_assignment->emails_setting();
+					}
+				}
+			} catch ( Throwable $e ) {
+				LP_Debug::error_log( $e );
 			}
 		}
 

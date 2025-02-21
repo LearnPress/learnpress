@@ -68,10 +68,6 @@ class LP_Session_Handler {
 		$expire_time_for_guest = DAY_IN_SECONDS;
 		$expire_time_for_user  = 6 * DAY_IN_SECONDS;
 
-		if ( ! session_id() ) {
-			session_start();
-		}
-
 		// Set data for user Guest.
 		if ( ! is_user_logged_in() ) { // Generate data and set cookie for guest
 			$this->set_session_expiration( $expire_time_for_guest );

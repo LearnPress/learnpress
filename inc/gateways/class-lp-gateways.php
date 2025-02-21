@@ -54,6 +54,8 @@ class LP_Gateways {
 						$gateway = new $gateway();
 
 						$this->payment_gateways[ $k ] = $gateway;
+					} elseif ( $gateway instanceof LP_Gateway_Abstract ) {
+						$this->payment_gateways[ $gateway->id ] = $gateway;
 					}
 				}
 			}
