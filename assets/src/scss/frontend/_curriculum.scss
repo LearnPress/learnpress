@@ -1234,6 +1234,7 @@ body.course-item-popup {
 			padding: 20px;
 			column-gap: 12px;
 			display: flex;
+			align-items: baseline;
 			justify-content: space-between;
 		}
 
@@ -1251,7 +1252,7 @@ body.course-item-popup {
 			justify-content: center;
 
 			i {
-				font-size: 20px;
+				font-size: $font-size-large;
 				min-width: 16px;
 				text-align: center;
 			}
