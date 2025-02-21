@@ -259,7 +259,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * @return void
 		 */
 		private function include_files_global() {
-			//include_once 'inc/class-lp-multi-language.php';
 
 			// Filter query .
 			include_once 'inc/Filters/class-lp-filter.php';
