@@ -327,7 +327,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 					$cart->empty_cart();
 				}
 
-				$cart_id = $cart->add_to_cart( $course_id, 1, array() );
+				$cart_id = $cart->add_to_cart( $course_id );
 				if ( ! $cart_id ) {
 					throw new Exception( esc_html__( 'Error: The course cannot be added to the cart.', 'learnpress' ) );
 				}
