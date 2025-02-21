@@ -1293,6 +1293,7 @@ body.course-item-popup {
 				align-items: center;
 				flex: none;
 				color: $text-color-meta;
+				flex-wrap: wrap;
 				@media (max-width: 1024px) {
 					width: 100%;
 					order: 3;
