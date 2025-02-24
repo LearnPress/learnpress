@@ -468,31 +468,28 @@ body.twentyseventeen.learnpress-page {
 			color: $color-primary;
 		}
 	}
-	&.eduma{
-		.lp-course-curriculum {
-			.course-item-order.lp-hidden{
-				display: inline-block!important;
-			}
-			.course-item__link{
-				column-gap: 8px;
-			}
-			.course-section{
-				margin-bottom: 0;
-			}
-			.course-section-header{
-				padding: 12px 0 12px 0;
-			}
-			.course-section__title{
-				font-size: 1.1em;
-				text-transform: uppercase;
-			}
-			.section-toggle, .section-count-items{
-				color: $color-primary;
-			}
-		}
-		.elementor-element .lp-course-curriculum {
-			.course-item-order.lp-hidden{
-				display: none!important;
+	&.eduma {
+		.course-summary {
+			.lp-course-curriculum {
+				.course-item-order.lp-hidden{
+					display: inline-block!important;
+				}
+				.course-item__link{
+					column-gap: 8px;
+				}
+				.course-section{
+					margin-bottom: 0;
+				}
+				.course-section-header{
+					padding: 12px 0 12px 0;
+				}
+				.course-section__title{
+					font-size: 1.1em;
+					text-transform: uppercase;
+				}
+				.section-toggle, .section-count-items{
+					color: $color-primary;
+				}
 			}
 		}
 		#popup-sidebar{
