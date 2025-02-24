@@ -216,7 +216,8 @@ $keys_purchase             = LP_Settings::get_option( LP_Manager_Addons::instanc
 						<div class="purchase-install">
 							<label>
 								<?php _e( 'Purchase Code', 'learnpress' ); ?>
-								<input type="text" class="enter-purchase-code" placeholder="<?php esc_attr_e( 'Enter Purchase Code', 'learnpress' ); ?>"
+								<input type="text" class="enter-purchase-code"
+										placeholder="<?php esc_attr_e( 'Enter Purchase Code', 'learnpress' ); ?>"
 										value="<?php echo $purchase_code ?? ''; ?>">
 							</label>
 							<button class="btn-addon-action" data-action="install">
