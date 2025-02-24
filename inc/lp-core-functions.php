@@ -2923,9 +2923,9 @@ function learn_press_cookie_get( $name, $namespace = 'LP' ) {
 function learn_press_course_evaluation_methods( $postid, $return = '', $final_quizz_passing = '' ) {
 	$course_tip     = '<span class="learn-press-tip">%s</span>';
 	$final_quiz_btn = '<a href="#" class="lp-metabox-get-final-quiz" data-postid="' . $postid . '" data-loading="' . esc_attr__(
-		'Loading...',
-		'learnpress'
-	) . '">' . esc_html__( 'Get A Passing Grade', 'learnpress' ) . '</a>';
+			'Loading...',
+			'learnpress'
+		) . '">' . esc_html__( 'Get A Passing Grade', 'learnpress' ) . '</a>';
 
 	$course_desc = array(
 		'evaluate_lesson'     => sprintf(
@@ -2960,25 +2960,25 @@ function learn_press_course_evaluation_methods( $postid, $return = '', $final_qu
 		'learnpress/course-evaluation/methods',
 		array(
 			'evaluate_lesson'     => __(
-				'Evaluate via lessons',
-				'learnpress'
-			) . learn_press_quick_tip( $course_desc['evaluate_lesson'], false ),
+					'Evaluate via lessons',
+					'learnpress'
+				) . learn_press_quick_tip( $course_desc['evaluate_lesson'], false ),
 			'evaluate_final_quiz' => __( 'Evaluate via results of the final quiz', 'learnpress' ) . sprintf(
-				$course_tip,
-				$course_desc['evaluate_final_quiz']
-			) . $final_quiz_btn . $final_quizz_passing,
+					$course_tip,
+					$course_desc['evaluate_final_quiz']
+				) . $final_quiz_btn . $final_quizz_passing,
 			'evaluate_quiz'       => __( 'Evaluate via passed quizzes', 'learnpress' ) . sprintf(
-				$course_tip,
-				$course_desc['evaluate_quiz']
-			),
+					$course_tip,
+					$course_desc['evaluate_quiz']
+				),
 			'evaluate_questions'  => __( 'Evaluate via questions', 'learnpress' ) . sprintf(
-				$course_tip,
-				$course_desc['evaluate_questions']
-			),
+					$course_tip,
+					$course_desc['evaluate_questions']
+				),
 			'evaluate_mark'       => __( 'Evaluate via mark', 'learnpress' ) . sprintf(
-				$course_tip,
-				$course_desc['evaluate_mark']
-			),
+					$course_tip,
+					$course_desc['evaluate_mark']
+				),
 		)
 	);
 

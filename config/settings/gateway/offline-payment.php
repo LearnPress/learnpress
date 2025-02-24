@@ -27,7 +27,7 @@ return apply_filters(
 			'id'      => '[sandbox]',
 			'default' => 'no',
 			'type'    => 'checkbox',
-			'desc'    => __( 'Auto complete the order for testing purpose.' ),
+			'desc'    => __( 'Auto complete the order for testing purpose.', 'learnpress' ),
 		),
 		array(
 			'title'   => __( 'Instruction', 'learnpress' ),

@@ -248,6 +248,10 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Allow: display html content on Offline Payment.
 ~ Allow: change multiple instructors via Bulk Edit.
 
+= 4.2.7.5.1 (2025-01-22) =
+~ Fixed: security.
+~ Fixed: minor bugs.
+
 = 4.2.7.5 (2024-12-17) =
 ~ Added: option Price prefix, Price suffix for course.
 ~ Fixed: shortcode [learn_press_button_course].
