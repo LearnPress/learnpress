@@ -747,17 +747,20 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * Handle load text domain for LearnPress.
 		 *
 		 * @since 4.2.7.4
+		 * @version 1.0.1
 		 */
 		public function load_plugin_text_domain() {
-			$locale = determine_locale();
-
-			/**
-			 * Filter to adjust the LearnPress locale to use for translations.
-			 */
+			/*$locale = determine_locale();
 			$locale = apply_filters( 'plugin_locale', $locale, 'learnpress' );
 
-			unload_textdomain( LP_TEXT_DOMAIN );
-			load_textdomain( LP_TEXT_DOMAIN, WP_LANG_DIR . '/learnpress/learnpress-' . $locale . '.mo' );
+			$plugin_translation_path = WP_LANG_DIR . '/plugins/learnpress-' . $locale . '.mo';
+			$custom_translation_path = WP_LANG_DIR . '/learnpress/learnpress-' . $locale . '.mo';
+			if ( is_readable( $custom_translation_path ) ) {
+				unload_textdomain( LP_TEXT_DOMAIN );
+				load_textdomain( LP_TEXT_DOMAIN, $custom_translation_path );
+				load_textdomain( LP_TEXT_DOMAIN, $plugin_translation_path );
+			}*/
+
 			load_plugin_textdomain( LP_TEXT_DOMAIN, false, LP_PLUGIN_FOLDER_NAME . '/languages' );
 		}
 
