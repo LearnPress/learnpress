@@ -950,6 +950,27 @@ body {
 	}
 
 }
+@media screen and (max-width: 600px) {
+	#popup-sidebar {
+		flex-basis: 100vw;
+
+		.course-curriculum {
+			width: 100vw;
+		}
+
+		.search-course button {
+			right: 32px;
+		}
+	}
+
+	#popup-header {
+		left: calc(100vw - 32px);
+	}
+
+	#popup-footer {
+		left: 100vw;
+	}
+}
 
 .content-item-wrap {
 	width: 792px;
