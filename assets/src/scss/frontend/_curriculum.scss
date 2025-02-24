@@ -1295,6 +1295,7 @@ body.course-item-popup {
 				color: $text-color-meta;
 				flex-wrap: wrap;
 				flex-direction: row-reverse;
+				justify-content: flex-end;
 				@media (max-width: 1024px) {
 					width: 100%;
 					order: 3;
