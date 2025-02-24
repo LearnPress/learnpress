@@ -223,7 +223,7 @@ https://www.transifex.com/projects/p/learnpress/
 
 = 4.2.7.9 (2025-02-24) =
 ~ Fixed: error 404 single course with struct permalink is "%course_category%".
-~ Show error response from PayPal if exists.
+~ Show error message response from PayPal if exists.
 ~ Tweak: UserModel class, get_display_name method, with case translate.
 ~ Added: hook "learn-press/user-lesson/completed" when completed lesson.
 ~ Added: option Store IP Guest to handle checkout with case can't read $_COOKIE from server.
