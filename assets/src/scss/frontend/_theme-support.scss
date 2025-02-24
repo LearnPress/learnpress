@@ -490,6 +490,11 @@ body.twentyseventeen.learnpress-page {
 				color: $color-primary;
 			}
 		}
+		.elementor-element .lp-course-curriculum {
+			.course-item-order.lp-hidden{
+				display: none!important;
+			}
+		}
 		#popup-sidebar{
 			.course-section-header{
 				padding-left: 16px;
