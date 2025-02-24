@@ -112,10 +112,31 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 
 	public function general( $post_id ) {
 		$course                  = CourseModel::find( $post_id, true );
-		$repurchase_option_desc  = sprintf( '1. %s', __( 'Reset course progress: The course progress and results of student will be removed.' ) );
-		$repurchase_option_desc .= '<br/>' . sprintf( '2. %s', __( 'Keep course progress: The course progress and results of student will remain.' ) );
-		$repurchase_option_desc .= '<br/>' . sprintf( '3. %s', __( 'Open popup: The student can decide whether their course progress will be reset with the confirm popup.' ) );
-		$max_students_desc       = esc_html__( 'The maximum number of students that can join a course. Set 0 for unlimited.', 'learnpress' );
+		$repurchase_option_desc  = sprintf(
+			'1. %s',
+			__(
+				'Reset course progress: The course progress and results of student will be removed.',
+				'learnpress'
+			)
+		);
+		$repurchase_option_desc .= '<br/>' . sprintf(
+			'2. %s',
+			__(
+				'Keep course progress: The course progress and results of student will remain.',
+				'learnpress'
+			)
+		);
+		$repurchase_option_desc .= '<br/>' . sprintf(
+			'3. %s',
+			__(
+				'Open popup: The student can decide whether their course progress will be reset with the confirm popup.',
+				'learnpress'
+			)
+		);
+		$max_students_desc       = esc_html__(
+			'The maximum number of students that can join a course. Set 0 for unlimited.',
+			'learnpress'
+		);
 		$max_students_desc      .= '<br/>' . esc_html__( 'Not apply for case "No enroll requirement".', 'learnpress' );
 
 		$is_enable_allow_course_repurchase = false;

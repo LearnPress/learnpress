@@ -3,7 +3,7 @@ Contributors: thimpress, tungnx89, nhamdv, nguyenlammanh, tunnhn, phonglq.foobla
 Donate link:
 Tags: elearning, education, course, lms, learning management system
 Tested up to: 6.7
-Stable tag: 4.2.7.8
+Stable tag: 4.2.7.9
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -30,7 +30,7 @@ Highly recommended by LearnPress users, we are pleased to introduce you to our b
 
 ###Online LMS & Education WordPress Themes###
 
-Take a look at **[Premium Online LMS & Education WordPress Themes](https://1.envato.market/AoKx3D)** that are developed to work perfectly with LearnPress LMS WordPress Plugin. These incredible WordPress Themes are the best for your Online LMS & Education websites using LearnPress with the clean and modern design. From more than 50 demos, you can easily chose the most suitable one which fits your purpose and customize it as your style.
+Take a look at **[Premium Online LMS & Education WordPress Themes](https://1.envato.market/AoKx3D)** that are developed to work perfectly with LearnPress LMS WordPress Plugin. These incredible WordPress Themes are the best for your Online LMS & Education websites using LearnPress with the clean and modern design. From more than 50 demos, you can easily choose the most suitable one which fits your purpose and customize it as your style.
 
 - [Create a WordPress Udemy with Eduma](https://eduma.thimpress.com/demo-udemy/?utm_source=WPORG&utm_medium=LP&utm_campaign=Content)
 - [Create a WordPress Coursera with Eduma](https://eduma.thimpress.com/demo-coursera/?utm_source=WPORG&utm_medium=LP&utm_campaign=Content)
@@ -64,7 +64,7 @@ You can also export and import your courses to another website using LearnPress.
 With the course you've created, you can share it, manage it, watch statistic about the number of students, trends, etc.
 
 **Sell course**
-LearnPress is free but it still allows you to sell your courses with many billing methods supported such as PayPal, WooCommerce, Stripe, etc.
+LearnPress is free, but it still allows you to sell your courses with many billing methods supported such as PayPal, WooCommerce, Stripe, etc.
 
 **Offline course features**
 LearnPress comes with extensive offline course features. If offline courses are active, some online course features like Curriculum, End Button, Retake Course, Content Blocking, and Repurchase will be disabled by default.
@@ -79,7 +79,7 @@ BuddyPress makes it easier for you to communicate with your students or instruct
 Add-ons are used to provide extra features for LearnPress and you can also write your own add-on for more purposes.
 
 **LearnPress is free and always will be**
-Education should be free and we want you to bring it to as many people as you can. Therefore, we create LearnPress as a tool for you to create online course and share it. We'll continue to develop it as long as we can and make it better and better.
+Education should be free, and we want you to bring it to as many people as you can. Therefore, we create LearnPress as a tool for you to create online course and share it. We'll continue to develop it as long as we can and make it better and better.
 
 **LearnPress is actively developed**
 We are developing and improving LearnPress day by day and bringing you more new features cos we want LearnPress to become the **best WordPress LMS plugin**.
@@ -221,6 +221,16 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.2.7.9 (2025-02-24) =
+~ Fixed: error 404 single course with struct permalink is "%course_category%".
+~ Show error message response from PayPal if exists.
+~ Tweak: UserModel class, get_display_name method, with case translate.
+~ Added: hook "learn-press/user-lesson/completed" when completed lesson.
+~ Added: option Store IP Guest to handle checkout with case can't read $_COOKIE from server.
+~ LP_Gateways: tweak init method, allow load gateway instanceof LP_Gateway_Abstract.
+~ Update some text missing text domain.
+~ Tweak: isRestApiLP method REST prefix.
+
 = 4.2.7.8 (2025-02-17) =
 ~ Fixed: send email when user finished course.
 ~ Fixed: error PayPal payment can't verify transaction.
@@ -247,6 +257,10 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Tweak: layout course offline for mobile.
 ~ Allow: display html content on Offline Payment.
 ~ Allow: change multiple instructors via Bulk Edit.
+
+= 4.2.7.5.1 (2025-01-22) =
+~ Fixed: security.
+~ Fixed: minor bugs.
 
 = 4.2.7.5 (2024-12-17) =
 ~ Added: option Price prefix, Price suffix for course.
