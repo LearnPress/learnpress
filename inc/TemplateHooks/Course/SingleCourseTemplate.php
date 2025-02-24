@@ -1500,6 +1500,14 @@ class SingleCourseTemplate {
 			}
 		}
 
+		$class_section_toggle = apply_filters(
+			'learn-press/course/html-section-item/class-section-toggle',
+			$class_section_toggle,
+			$courseModel,
+			$userModel,
+			$section_item
+		);
+
 		$section_item = apply_filters(
 			'learn-press/course/html-section-item',
 			[
