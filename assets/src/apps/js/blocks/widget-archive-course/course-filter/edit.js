@@ -25,10 +25,10 @@ export const edit = ( props ) => {
 							props.setAttributes( {
 								numberLevelCategory: value
 									? parseInt( value, 10 )
-									: 0,
+									: 1,
 							} );
 						} }
-						value={ props.attributes.numberLevelCategory ?? 0 }
+						value={ props.attributes.numberLevelCategory ?? 1 }
 					/>
 
 					<TextControl

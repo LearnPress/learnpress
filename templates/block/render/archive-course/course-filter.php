@@ -9,7 +9,7 @@ $class                     = 'learnpress-widget-wrapper';
 $show_in_rest              = $attributes['showInRest'] === false ? 0 : 1;
 $title                     = $attributes['title'] ?? 'Course Filter';
 $content                   = '';
-$number_level_category     = $attributes['numberLevelCategory'] ?? 0;
+$number_level_category     = $attributes['numberLevelCategory'] ?? 1;
 $search_suggestion         = $attributes['searchSuggestion'] === false ? 0 : 1;
 $hide_count_zero           = $attributes['hideCountZero'] === false ? 0 : 1;
 $class_list_courses_target = $attributes['classListCoursesTarget'] ?? '.lp-list-courses-default';
