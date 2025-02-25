@@ -5,6 +5,14 @@ use LearnPress\TemplateHooks\Course\FilterCourseTemplate;
 wp_enqueue_script( 'lp-course-filter' );
 wp_enqueue_script( 'lp-widgets' );
 
+$allowed_fields = [ 'search', 'author', 'level', 'price', 'category', 'tag' ];
+apply_filters( 'learnpress/course-filter/allowed-filter', $allowed_fields );
+
+$fields = preg_split( '/\s+/', trim( $inner_content ) );
+$fields = array_values( array_intersect( $fields, $allowed_fields ) );
+array_push( $fields, 'btn_submit', 'btn_reset' );
+apply_filters( 'learnpress/course-filter/fields', $fields );
+
 $class                     = 'learnpress-widget-wrapper';
 $show_in_rest              = $attributes['showInRest'] === false ? 0 : 1;
 $title                     = $attributes['title'] ?? 'Course Filter';
@@ -21,8 +29,7 @@ $instance = [
 	'show_in_rest'              => $show_in_rest,
 	'hide_count_zero'           => $hide_count_zero,
 	'search_suggestion'         => $search_suggestion,
-	'fields_order'              => 'search,author,level,price,category,tag,course_review,btn_submit,btn_reset',
-	'fields'                    => [ 'search', 'author', 'level', 'price', 'category', 'tag', 'course_review', 'btn_submit', 'btn_reset' ],
+	'fields'                    => $fields,
 ];
 
 $data = [
