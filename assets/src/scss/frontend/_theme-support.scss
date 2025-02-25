@@ -495,6 +495,9 @@ body.twentyseventeen.learnpress-page {
 				.course-item-order.lp-hidden{
 					display: none !important;
 				}
+				.course-item__link{
+					column-gap: 12px;
+				}
 			}
 		}
 		#popup-sidebar{
