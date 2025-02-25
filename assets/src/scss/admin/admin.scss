@@ -27,11 +27,20 @@
 @import "statistics";
 @import "material_file";
 
+@import "template-single-course";
+@import "template-archive-course";
+@import "template-page-profile";
+@import "template-page-instructor";
+
 @font-face {
-	font-family: 'lp-icon';
-	src: url('../../src/css/vendor/fonts/lp-icon/lp-icon.ttf?v3eoq3') format('truetype'),
-	url('../../src/css/vendor/fonts/lp-icon//lp-icon.woff?v3eoq4') format('woff'),
-	url('../../src/css/vendor/fonts/lp-icon//lp-icon.svg?v3eoq4#lp-icon') format('svg');
+	font-family: "lp-icon";
+	src:
+		url("../../src/css/vendor/fonts/lp-icon/lp-icon.ttf?v3eoq3")
+			format("truetype"),
+		url("../../src/css/vendor/fonts/lp-icon//lp-icon.woff?v3eoq4")
+			format("woff"),
+		url("../../src/css/vendor/fonts/lp-icon//lp-icon.svg?v3eoq4#lp-icon")
+			format("svg");
 	font-weight: normal;
 	font-style: normal;
 	font-display: block;
@@ -39,16 +48,13 @@
 }
 
 .button {
-
 	&.disabled {
 		pointer-events: none;
 	}
 }
 
 .learnpress {
-
 	.postbox {
-
 		.rwmb-meta-box {
 			margin-top: 10px;
 		}
@@ -58,7 +64,6 @@
 	#field-_lp_target_audiences,
 	#field-_lp_key_features,
 	#field-_lp_faqs {
-
 		.rwmb-text-list-clone,
 		.rwmb-text-list-advanced-clone {
 			clear: none;
@@ -115,16 +120,13 @@
 		}
 
 		.rwmb-text-list-clone {
-
 			&:focus-within {
 				border-color: #0085ba;
 			}
 		}
 
 		.rwmb-text-list-advanced-clone {
-
 			.rwmb-text-list {
-
 				&:focus {
 					border-color: #0085ba;
 				}
@@ -133,7 +135,6 @@
 	}
 
 	#field-_lp_faqs {
-
 		.rwmb-text-list-advanced-clone {
 			position: relative;
 			padding: 0 0 16px 0;
@@ -166,7 +167,8 @@
 	}
 }
 
-.lp-notice, .learn-press-notice {
+.lp-notice,
+.learn-press-notice {
 	position: relative;
 	padding: 12px;
 	margin: 0;
@@ -246,7 +248,6 @@
 	background: rebeccapurple;
 
 	&.do-updating {
-
 		&::before {
 			display: inline-block;
 			float: left;
@@ -262,9 +263,7 @@
 }
 
 #adminmenu {
-
 	.update-plugins {
-
 		&.lp-plugins-count {
 			padding: 0 5px;
 		}
@@ -272,7 +271,6 @@
 }
 
 .search-box {
-
 	input[name="post-search-author"],
 	.select2-container {
 		min-width: 200px;
@@ -286,14 +284,12 @@
 }
 
 .learnpress {
-
 	.actions {
 		margin: 0;
 	}
 }
 
 #learn-press-syncs {
-
 	li {
 		position: relative;
 
@@ -307,7 +303,6 @@
 		}
 
 		&.syncing {
-
 			&::after {
 				content: "\f463";
 
@@ -316,7 +311,6 @@
 		}
 
 		&.synced {
-
 			&::after {
 				color: #2773aa;
 				content: "\f147";
@@ -339,7 +333,6 @@
 }
 
 #learn-press-updater {
-
 	.updater-progress {
 		position: relative;
 		margin: 0 2px;
@@ -373,7 +366,6 @@
 				}
 
 				&:last-child {
-
 					&::after {
 						_display: block;
 					}
@@ -424,7 +416,6 @@
 				background: #5bc4f9;
 
 				&:not(.completed) {
-
 					&::after {
 						position: absolute;
 						height: 5px;
@@ -452,16 +443,13 @@
 }
 
 .select2 {
-
 	.select2-search {
-
 		&.select2-search--inline {
 			margin-bottom: 0;
 		}
 	}
 
 	.select2-selection {
-
 		.select2-selection__choice {
 			margin-top: 4px;
 			margin-bottom: 0;
@@ -473,12 +461,14 @@
 	}
 }
 
-.list-pages-wrapper .select2-container--default .select2-selection--single .select2-selection__clear {
+.list-pages-wrapper
+	.select2-container--default
+	.select2-selection--single
+	.select2-selection__clear {
 	margin: 0;
 }
 
 .edit-post-layout__metaboxes {
-
 	.rwmb-label > label {
 		color: #666;
 		font-size: small;
@@ -487,9 +477,7 @@
 }
 
 body {
-
 	&.post-type-lp_question {
-
 		#button-new-question {
 			display: inline-block;
 			position: relative;
@@ -541,7 +529,6 @@ body {
 			}
 
 			&:hover {
-
 				div {
 					display: block;
 				}
@@ -579,17 +566,13 @@ body {
 }
 
 .lp-admin-profile-courses {
-
 	.column-course {
-
 	}
 
 	.column-start-date {
-
 	}
 
 	.column-end-date {
-
 	}
 
 	.column-results {
@@ -597,7 +580,6 @@ body {
 	}
 
 	.course-results-progress {
-
 		.lp-progress-row {
 			margin: 0 0 20px 0;
 		}
@@ -689,4 +671,3 @@ body {
 		}
 	}
 }
-

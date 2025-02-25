@@ -1,0 +1,21 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "learnpress/level-course-archive-course",
+	"title": "Level Course",
+	"category": "lp-archive-course-category",
+	"description": "Renders template Level Course PHP templates.",
+	"textdomain": "learnpress",
+	"keywords": ["level archive course", "learnpress"],
+	"usesContext": [],
+	"supports": {
+		"inserter": true,
+		"reusable": true,
+		"reorder": true,
+		"html": false,
+		"multiple": true
+	},
+	"ancestor": [
+		"learnpress/template-course-archive-course"
+	]
+}

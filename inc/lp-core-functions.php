@@ -1,4 +1,7 @@
 <?php
+
+use LearnPress\Helpers\Template;
+
 /**
  * LearnPress Core Functions
  * Define common functions for both front-end and back-end
@@ -3093,6 +3096,31 @@ function lp_item_course_class( $class = array() ) {
 
 
 /**
+ * @return array|null
+ * @since 4.2.7.3
+ */
+function find_block_by_name( array $blocks, string $targetBlockName ) {
+	if ( empty( $blocks ) || empty( $targetBlockName ) ) {
+		return null;
+	}
+
+	foreach ( $blocks as $block ) {
+		if ( isset( $block['blockName'] ) && $block['blockName'] === $targetBlockName ) {
+			return $block['attrs'] ?? null;
+		}
+
+		if ( ! empty( $block['innerBlocks'] ) ) {
+			$result = find_block_by_name( $block['innerBlocks'], $targetBlockName );
+			if ( $result ) {
+				return $result;
+			}
+		}
+	}
+
+	return null;
+}
+
+/**
  * Disable auto update
  *
  * @param $update
@@ -3145,7 +3173,28 @@ function lp_add_shortcode_profile() {
 	}
 }
 
-//add_action( 'template_redirect', 'lp_add_shortcode_profile' );
+// add_action( 'template_redirect', 'lp_add_shortcode_profile' );
+
+// Convert instructor content if content has instructor shortcode.
+/**
+ * @since 4.2.7.4
+ */
+function lp_add_template_profile() {
+	global $post;
+
+	if ( LP_Page_Controller::is_page_instructor() && is_object( $post ) ) {
+		if ( has_shortcode( $post->post_content, 'learn_press_single_instructor' ) ) {
+			$old_shortcode_html = '<!-- wp:shortcode -->[learn_press_single_instructor]<!-- /wp:shortcode -->';
+			ob_start();
+			Template::instance()->get_frontend_template( 'block/html/page-instructor.html' );
+			$html_instructor    = ob_get_clean();
+			$post->post_content = str_replace( $old_shortcode_html, $html_instructor, $post->post_content );
+			wp_update_post( $post );
+		}
+	}
+}
+
+add_action( 'template_redirect', 'lp_add_template_profile' );
 
 /**
  * If Elementor Pro set Theme builder type "Archive", will not show content on page "Archive course"

@@ -685,6 +685,10 @@ class LP_Page_Controller {
 						$q->set( 'paged', 1 );
 					}
 
+					if ( current_theme_supports( 'editor-styles' ) ) {
+						$limit = 1;
+					}
+
 					$q->set( 'posts_per_page', $limit );
 					// $q->set( 'cache_results', true ); // it default true
 

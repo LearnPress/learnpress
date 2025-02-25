@@ -1,0 +1,21 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "learnpress/info-one-course",
+	"title": "Info One Course",
+	"category": "lp-single-course-category",
+	"description": "Renders template Info One Course PHP templates.",
+	"textdomain": "learnpress",
+	"keywords": ["info one single course", "learnpress"],
+	"usesContext": [],
+	"supports": {
+		"inserter": true,
+		"reusable": true,
+		"reorder": true,
+		"html": false,
+		"multiple": true
+	},
+	"ancestor": [
+		"learnpress/lp-single-course"
+	]
+}

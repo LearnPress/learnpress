@@ -5,6 +5,7 @@ module.exports = {
 	extends: [ 'plugin:@wordpress/eslint-plugin/recommended-with-formatting' ],
 	rules: {
 		indent: [ 'error', 'tab' ],
+		'linebreak-style': [ 'error', 'windows' ],
 		'space-in-parens': [ 'error', 'always' ],
 		camelcase: 0,
 		'no-undef': 0,

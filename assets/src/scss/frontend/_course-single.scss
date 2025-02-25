@@ -1,6 +1,5 @@
 // layout classic
 .lp-archive-courses {
-
 	.course-detail-info {
 		padding: $spacing-base-7x 0 $spacing-base-6x 0;
 		color: $color-white;
@@ -14,13 +13,14 @@
 			font-weight: $heading-font-weight;
 			font-size: $font-size-h2;
 			padding-bottom: $spacing-base-6x;
-
 		}
 		@media (min-width: 769px) {
-			.course-title,.course-meta-secondary {
+			.course-title,
+			.course-meta-secondary {
 				padding-right: 300px;
 			}
-			&::before, &::after {
+			&::before,
+			&::after {
 				content: "";
 				width: 50%;
 				height: 100%;
@@ -40,8 +40,17 @@
 			}
 		}
 
+		&::before,
+		&::after {
+			content: "";
+			width: 50%;
+			height: 100%;
+			background: var(--lp-secondary-color);
+			position: absolute;
+			top: 0;
+		}
 
-		.course-meta-secondary{
+		.course-meta-secondary {
 			margin-bottom: 0;
 		}
 	}
@@ -56,13 +65,13 @@
 			&::before {
 				margin-right: $spacing-base-2x;
 				color: var(--lp-primary-color);
-				font-family: 'lp-icon';
+				font-family: "lp-icon";
 			}
 
 			.meta-item__image {
 				margin-right: $spacing-base-2x;
 				flex: 0 0 46px;
- 				img {
+				img {
 					overflow: hidden;
 					position: relative;
 					width: 46px;
@@ -94,7 +103,6 @@
 		}
 
 		.meta-item__value {
-
 			label {
 				margin: 0;
 				color: var(--lp-color-accent-1);
@@ -121,6 +129,9 @@
 
 		.meta-item-categories {
 			align-items: center;
+			margin-top: 0;
+			margin-left: 0 !important;
+			margin-right: 0 !important;
 
 			&::before {
 				margin-right: $spacing-base-2x;
@@ -139,7 +150,6 @@
 		}
 
 		.meta-item-review {
-
 			.meta-item__value {
 				display: flex;
 				flex-direction: column;
@@ -152,7 +162,129 @@
 			}
 		}
 
+		& .course-instructor {
+			display: flex;
+			flex: 1;
+			align-items: center;
 
+			& a {
+				display: flex;
+				align-items: center;
+				color: var(--lp-color-white, #fff);
+				text-transform: capitalize;
+				text-decoration: none;
+				font-weight: bold;
+			}
+
+			& .instructor-avatar {
+				margin-right: $spacing-base-2x;
+				flex: 0 0 46px;
+				img {
+					overflow: hidden;
+					position: relative;
+					width: 46px;
+					height: 46px;
+					border-radius: 50%;
+					display: block;
+				}
+			}
+		}
+
+		& .course-categories {
+			display: flex;
+			flex: 1;
+			align-items: center;
+
+			&::before {
+				color: var(--lp-primary-color);
+				font-family: "lp-icon";
+				margin-right: $spacing-base-2x;
+				font-size: 2.25em;
+				line-height: 1;
+				content: "\f097";
+			}
+
+			& a {
+				color: var(--lp-color-white, #fff);
+				text-transform: capitalize;
+				text-decoration: none;
+			}
+		}
+
+		& .course-count-student {
+			margin-top: 0;
+			margin-left: 0 !important;
+			margin-right: 0 !important;
+			display: flex;
+			text-transform: capitalize;
+			align-items: center;
+			&::before {
+				content: "\f501";
+				margin-right: $spacing-base-2x;
+				color: var(--lp-primary-color);
+				font-family: "lp-icon";
+			}
+		}
+
+		& > .course-duration {
+			margin-top: 0;
+			margin-left: 0 !important;
+			margin-right: 0 !important;
+			display: flex;
+			text-transform: capitalize;
+			align-items: center;
+			&::before {
+				content: "\f017";
+				margin-right: $spacing-base-2x;
+				color: var(--lp-primary-color);
+				font-family: "lp-icon";
+			}
+		}
+
+		& .course-level {
+			margin-top: 0;
+			margin-left: 0 !important;
+			margin-right: 0 !important;
+			display: flex;
+			text-transform: capitalize;
+			align-items: center;
+			&::before {
+				content: "\f012";
+				margin-right: $spacing-base-2x;
+				color: var(--lp-primary-color);
+				font-family: "lp-icon";
+			}
+		}
+
+		& .course-count-item.lp_quiz {
+			margin-top: 0;
+			margin-left: 0 !important;
+			margin-right: 0 !important;
+			display: flex;
+			text-transform: capitalize;
+			align-items: center;
+			&::before {
+				content: "\f12e";
+				margin-right: $spacing-base-2x;
+				color: var(--lp-primary-color);
+				font-family: "lp-icon";
+			}
+		}
+
+		& .course-count-item.lp_lesson {
+			margin-top: 0;
+			margin-left: 0 !important;
+			margin-right: 0 !important;
+			display: flex;
+			text-transform: capitalize;
+			align-items: center;
+			&::before {
+				content: "\f0c5";
+				margin-right: $spacing-base-2x;
+				color: var(--lp-primary-color);
+				font-family: "lp-icon";
+			}
+		}
 	}
 
 	.course-meta-primary {
@@ -184,6 +316,10 @@
 		@media (max-width: 768px) {
 			flex-direction: column;
 		}
+	}
+
+	.course-summary.wp-block-group {
+		max-width: unset;
 	}
 
 	.course-summary-sidebar {
@@ -229,7 +365,7 @@
 			}
 
 			&::before {
-				font-family: 'lp-icon';
+				font-family: "lp-icon";
 				font-size: 1em;
 				//font-weight: 900;
 				content: "\f004";
@@ -256,7 +392,6 @@
 				}
 			}
 		}
-
 	}
 
 	.courses-btn-load-more {
@@ -265,15 +400,32 @@
 		gap: 5px;
 	}
 
-	.course-wishlist:before{
-		font-family: 'lp-icon';
+	.course-wishlist:before {
+		font-family: "lp-icon";
+	}
+
+	.wp-block-group:has(.learn-press-breadcrumb) {
+		margin: 0 auto;
+	}
+
+	.wp-block-group,
+	.is-layout-constrained
+		> :where(:not(.alignleft):not(.alignright):not(.alignfull)) {
+		max-width: var(--lp-container-max-width);
+	}
+
+	.lp-content-area {
+		max-width: var(--lp-container-max-width) !important;
+		margin: 0 auto;
+		padding-right: var(--lp-cotainer-padding);
+		padding-left: var(--lp-cotainer-padding);
 	}
 }
 // layout Modern
 .lp-single-course {
 	//font-size: $font-size-base;
 	&__header {
-		background-color: #F1F2F8;
+		background-color: #f1f2f8;
 
 		&__inner {
 			max-width: var(--lp-container-max-width);
@@ -344,7 +496,6 @@
 					color: $color-primary;
 				}
 			}
-
 		}
 
 		.lp-single-course-info-one {
@@ -361,7 +512,7 @@
 				position: relative;
 
 				&::after {
-					content: '';
+					content: "";
 					right: 0;
 					left: auto;
 					width: 1px;
@@ -555,7 +706,7 @@
 			font-weight: $link-font-weight;
 
 			.free {
-				color: #3AB500;
+				color: #3ab500;
 			}
 
 			.origin-price {
@@ -579,7 +730,8 @@
 			flex-direction: column;
 			gap: 8px;
 
-			form, .lp-button {
+			form,
+			.lp-button {
 				width: 100%;
 			}
 
@@ -840,7 +992,7 @@
 			font-weight: $heading-font-weight;
 
 			.free {
-				color: #3AB500;
+				color: #3ab500;
 			}
 
 			.origin-price {
@@ -869,11 +1021,11 @@
 		textarea {
 			padding: 12px 20px;
 			outline: none;
-			border: 1px solid var(--lp-border-color, #E2E0DB);
+			border: 1px solid var(--lp-border-color, #e2e0db);
 			border-radius: var(--lp-border-radius, 5px);
 		}
 
-		input[type=submit] {
+		input[type="submit"] {
 			border-radius: var(--lp-border-radius, 5px);
 		}
 	}
@@ -885,7 +1037,7 @@
 
 .info-learning {
 	.course-progress {
-		&__line{
+		&__line {
 			width: 100%;
 			background: #ccc;
 			height: 5px;

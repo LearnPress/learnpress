@@ -1,0 +1,57 @@
+<!-- wp:learnpress/lp-instructor -->
+<!-- wp:group {"className":"lp-single-instructor__info","layout":{"type":"default"}} -->
+<div class="wp-block-group lp-single-instructor__info">
+	<!-- wp:learnpress/instructor-avatar /-->
+
+	<!-- wp:group {"className":"lp-single-instructor__info__right","layout":{"type":"default"}} -->
+	<div class="wp-block-group lp-single-instructor__info__right">
+		<!-- wp:learnpress/instructor-display-name /-->
+
+		<!-- wp:learnpress/instructor-social /-->
+
+		<!-- wp:learnpress/instructor-description /-->
+
+		<!-- wp:learnpress/instructor-total-courses /-->
+
+		<!-- wp:learnpress/instructor-total-students /-->
+	</div>
+	<!-- /wp:group -->
+</div>
+<!-- /wp:group -->
+
+<!-- wp:group {"className":"lp-archive-courses","layout":{"type":"default"}} -->
+<div class="wp-block-group lp-archive-courses">
+	<!-- wp:group {"className":"lp-content-area has-sidebar","layout":{"type":"flex","orientation":"horizontal","flexWrap":"nowrap","verticalAlignment":"top","justifyContent":"left"}} -->
+	<div class="wp-block-group lp-content-area has-sidebar">
+		<!-- wp:group {"className":"lp-archive-courses","layout":{"type":"default"}} -->
+		<div class="wp-block-group lp-archive-courses">
+			<!-- wp:learnpress/list-course-archive-course {"ajax":true,"perPage":4} -->
+			<!-- wp:learnpress/template-course-archive-course {"ajax":false,"perPage":4} -->
+			<!-- wp:learnpress/media-course-archive-course -->
+			{{media-course}}
+			<!-- /wp:learnpress/media-course-archive-course -->
+
+			<!-- wp:learnpress/title-course-archive-course -->
+			{{title-course}}
+			<!-- /wp:learnpress/title-course-archive-course -->
+
+			<!-- wp:learnpress/instructor-category-course-archive-course -->
+			{{instructor-category-course}}
+			<!-- /wp:learnpress/instructor-category-course-archive-course -->
+
+			<!-- wp:learnpress/meta-course-archive-course -->
+			{{meta-course}}
+			<!-- /wp:learnpress/meta-course-archive-course -->
+
+			<!-- wp:learnpress/info-course-archive-course -->
+			{{info-course}}
+			<!-- /wp:learnpress/info-course-archive-course -->
+			<!-- /wp:learnpress/template-course-archive-course -->
+			<!-- /wp:learnpress/list-course-archive-course -->
+		</div>
+		<!-- /wp:group -->
+	</div>
+	<!-- /wp:group -->
+</div>
+<!-- /wp:group -->
+<!-- /wp:learnpress/lp-instructor -->

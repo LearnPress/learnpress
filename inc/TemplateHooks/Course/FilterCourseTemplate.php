@@ -17,6 +17,7 @@ use LP_Course;
 use LP_Course_Filter;
 use LP_Request;
 use Throwable;
+use LP_Settings_Courses;
 
 class FilterCourseTemplate {
 	use Singleton;
@@ -254,6 +255,7 @@ class FilterCourseTemplate {
 					continue;
 				}
 				$checked = in_array( $value, $data_selected ) && empty( $disabled ) ? 'checked' : '';
+				$url     = $this->add_or_update_current_url_params( [ 'sort_by' => $value ] );
 				$input   = sprintf(
 					'<input name="sort_by" type="checkbox" value="%1$s" %2$s %3$s>',
 					esc_attr( $value ),
@@ -263,6 +265,10 @@ class FilterCourseTemplate {
 				$label   = sprintf( '<label for="">%s</label>', wp_kses_post( $field['label'] ) );
 				$count   = sprintf( '<span class="count">%s</span>', esc_html( $field['count'] ) );
 
+				$href = '';
+				// if ( ! LP_Settings_Courses::is_ajax_load_courses() ) {
+				// 	$href = sprintf( '<a href="%s"></a>', esc_url( $url ) );
+				// }
 				$sections = apply_filters(
 					'lp/filter-courses/price/sections',
 					[
@@ -425,6 +431,11 @@ class FilterCourseTemplate {
 		$label   = sprintf( '<label for="">%s</label>', wp_kses_post( $category_name ) );
 		$count   = sprintf( '<span class="count">%s</span>', esc_html( $count_courses ) );
 
+		$url  = $this->add_or_update_current_url_params( [ 'term_id' => $category_id ] );
+		$href = '';
+		// if ( ! LP_Settings_Courses::is_ajax_load_courses() ) {
+		// 	$href = sprintf( '<a href="%s"></a>', esc_url( $url ) );
+		// }
 		$sections = apply_filters(
 			'lp/filter-courses/course-category/sections',
 			[
@@ -496,6 +507,11 @@ class FilterCourseTemplate {
 				$label   = sprintf( '<label for="">%s</label>', wp_kses_post( $term->name ) );
 				$count   = sprintf( '<span class="count">%s</span>', esc_html( $count_courses ) );
 
+				$url  = $this->add_or_update_current_url_params( [ 'tag_id' => $value ] );
+				$href = '';
+				// if ( ! LP_Settings_Courses::is_ajax_load_courses() ) {
+				// 	$href = sprintf( '<a href="%s"></a>', esc_url( $url ) );
+				// }
 				$sections = apply_filters(
 					'lp/filter-courses/course-tag/sections',
 					[
@@ -569,6 +585,11 @@ class FilterCourseTemplate {
 				$label   = sprintf( '<label for="">%s</label>', esc_html( $instructor->display_name ) );
 				$count   = sprintf( '<span class="count">%s</span>', esc_html( $total_course_of_instructor ) );
 
+				$url  = $this->add_or_update_current_url_params( [ 'c_authors' => $value ] );
+				$href = '';
+				// if ( ! LP_Settings_Courses::is_ajax_load_courses() ) {
+				// 	$href = sprintf( '<a href="%s"></a>', esc_url( $url ) );
+				// }
 				$sections = apply_filters(
 					'lp/filter-courses/author/sections',
 					[
@@ -641,6 +662,7 @@ class FilterCourseTemplate {
 					continue;
 				}
 				$checked = in_array( $value, $data_selected ) && empty( $disabled ) ? 'checked' : '';
+				$url     = $this->add_or_update_current_url_params( [ 'c_level' => $value ] );
 				$input   = sprintf(
 					'<input name="c_level" type="checkbox" value="%1$s" %2$s %3$s>',
 					esc_attr( $value ),
@@ -650,6 +672,10 @@ class FilterCourseTemplate {
 				$label   = sprintf( '<label for="">%s</label>', esc_html( $field ) );
 				$count   = sprintf( '<span class="count">%s</span>', esc_html( $total_courses ) );
 
+				$href = '';
+				// if ( ! LP_Settings_Courses::is_ajax_load_courses() ) {
+				// 	$href = sprintf( '<a href="%s"></a>', esc_url( $url ) );
+				// }
 				$sections = apply_filters(
 					'lp/filter-courses/levels/sections',
 					[
@@ -694,6 +720,51 @@ class FilterCourseTemplate {
 	}
 
 	/**
+	 * Get params url and add or update current url.
+	 *
+	 * @param array $data
+	 *
+	 * @return string
+	 */
+	public function add_or_update_current_url_params( $params ) {
+		$scheme      = ( isset( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] === 'on' ) ? 'https' : 'http';
+		$host        = $_SERVER['HTTP_HOST'];
+		$uri         = $_SERVER['REQUEST_URI'];
+		$current_url = $scheme . '://' . $host . $uri;
+		$parsed_url  = parse_url( $current_url );
+		$query       = isset( $parsed_url['query'] ) ? $parsed_url['query'] : '';
+		parse_str( $query, $query_params );
+
+		foreach ( $params as $key => $value ) {
+			$new_values = explode( ',', $value );
+			if ( isset( $query_params[ $key ] ) && ! empty( $query_params[ $key ] ) ) {
+				$existing_values = explode( ',', $query_params[ $key ] );
+				if ( $key === 'c_review_star' ) {
+					$query_params[ $key ] = $value;
+				} else {
+					if ( in_array( $new_values[0], $existing_values ) ) {
+						$merged_values = array_diff( $existing_values, $new_values );
+					} else {
+						$merged_values = array_unique( array_merge( $existing_values, $new_values ) );
+					}
+					$query_params[ $key ] = implode( ',', $merged_values );
+				}
+			} else {
+				$query_params[ $key ] = $value;
+			}
+		}
+
+		$new_query = http_build_query( $query_params );
+
+		$new_url = ( isset( $parsed_url['scheme'] ) ? $parsed_url['scheme'] . '://' : '' ) .
+					( isset( $parsed_url['host'] ) ? $parsed_url['host'] : '' ) .
+					( isset( $parsed_url['path'] ) ? preg_replace( '/\/page\/\d+\/?$/', '', $parsed_url['path'] ) : '' ) .
+					'?' . $new_query .
+					( isset( $parsed_url['fragment'] ) ? '#' . $parsed_url['fragment'] : '' );
+		return $new_url;
+	}
+
+	/**
 	 * Get html button reset filter.
 	 *
 	 * @param array $data
@@ -701,9 +772,21 @@ class FilterCourseTemplate {
 	 * @return string
 	 */
 	public function html_btn_reset( array $data = [] ): string {
+		$current_url = wp_get_referer();
+		$parsed_url  = parse_url( $current_url );
+		$origin_url  = ( isset( $parsed_url['scheme'] ) ? $parsed_url['scheme'] . '://' : '' ) .
+		( isset( $parsed_url['host'] ) ? $parsed_url['host'] : '' ) .
+		( isset( $parsed_url['path'] ) ? preg_replace( '/\/page\/\d+\/?$/', '', $parsed_url['path'] ) : '' ) .
+		( isset( $parsed_url['fragment'] ) ? '#' . $parsed_url['fragment'] : '' );
+
+		$html = esc_html__( 'Reset', 'learnpress' );
+		// if ( ! LP_Settings_Courses::is_ajax_load_courses() ) {
+		// 	$html = sprintf( '<a href="%s">%s</a>', esc_url( $origin_url ), esc_html__( 'Reset', 'learnpress' ) );
+		// }
+
 		return sprintf(
 			'<button class="course-filter-reset">%s</button>',
-			esc_html__( 'Reset', 'learnpress' )
+			$html
 		);
 	}
 

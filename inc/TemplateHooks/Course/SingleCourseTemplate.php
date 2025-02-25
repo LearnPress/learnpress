@@ -24,8 +24,10 @@ use LP_Checkout;
 use LP_Course;
 use LP_Course_Item;
 use LP_Datetime;
+use LP_Global;
 use LP_Material_Files_DB;
 use LP_Settings;
+use LP_Template_General;
 use stdClass;
 use Throwable;
 
@@ -365,6 +367,11 @@ class SingleCourseTemplate {
 		}
 
 		if ( ! $course ) {
+			return $price_html;
+		}
+
+		$user = learn_press_get_current_user();
+		if ( ! empty( $user ) && $user->has_enrolled_or_finished( $course->get_id() ) ) {
 			return $price_html;
 		}
 
@@ -842,6 +849,111 @@ class SingleCourseTemplate {
 	}
 
 	/**
+	 * HTML button continue
+	 *
+	 * @param CourseModel $course
+	 * @param UserCourseModel $user
+	 *
+	 * @return string
+	 * @since 4.2.7.4
+	 * @version 1.0.0
+	 */
+	public function html_btn_continue( CourseModel $course, UserCourseModel $user ): string {
+		$html_continue = '';
+		$can_show      = true;
+		if ( empty( $user ) || empty( $course ) ) {
+			return $html_continue;
+		}
+
+		if ( ! $user || ! $user->has_enrolled() ) {
+			return $html_continue;
+		}
+
+		if ( $user->has_finished() ) {
+			return $html_continue;
+		}
+
+		// Course has no items
+		if ( empty( $course->get_total_items() ) ) {
+			return $html_continue;
+		}
+
+		// Do not display continue button if course is block duration
+		if ( $user->timestamp_remaining_duration() === 0 ) {
+			return $html_continue;
+		}
+
+		$can_show = apply_filters( 'learnpress/course/template/button-continue/can-show', $can_show, $user, $course );
+		if ( ! $can_show ) {
+			return $html_continue;
+		}
+
+		$args = array(
+			'user'   => $user,
+			'course' => $course,
+		);
+
+		ob_start();
+		learn_press_get_template( 'single-course/buttons/continue.php', $args );
+		$html_continue = ob_get_clean();
+
+		$section = apply_filters(
+			'learn-press/course/html-faqs',
+			[
+				'wrapper'     => '<div class="lp-course-buttons">',
+				'content'     => $html_continue,
+				'wrapper_end' => '</div>',
+			],
+			$course
+		);
+
+		$html = Template::combine_components( $section );
+		return $html;
+	}
+
+	/**
+	 * HTML button
+	 *
+	 * @param CourseModel $course
+	 * @param UserModel|false $user
+	 *
+	 * @return string
+	 * @since 4.2.7.4
+	 * @version 1.0.0
+	 */
+	public function html_btn( CourseModel $course, $user ): string {
+		$html_btn = '';
+
+		if ( empty( $user ) ) {
+			$user = UserModel::find( get_current_user_id(), true );
+		}
+
+		if ( $user instanceof UserModel ) {
+			$UserCourseModel = UserCourseModel::find( $user->get_id(), $course->get_id(), true );
+		}
+
+		if ( ! empty( $user ) && ! empty( $UserCourseModel ) ) {
+			$html_btn = $this->html_btn_continue( $course, $UserCourseModel );
+		}
+
+		if ( empty( $html_btn ) ) {
+			$external_link = $course->get_meta_value_by_key( CoursePostModel::META_KEY_EXTERNAL_LINK_BY_COURSE, '' );
+			if ( ! empty( $external_link ) ) {
+				$html_btn = $this->html_btn_external( $course, $user );
+				return $html_btn;
+			}
+
+			if ( $course->is_free() ) {
+				$html_btn = $this->html_btn_enroll_course( $course, $user );
+			} else {
+				$html_btn = $this->html_btn_purchase_course( $course, $user );
+			}
+		}
+
+		return $html_btn;
+	}
+
+	/**
 	 * Sidebar
 	 *
 	 * @param CourseModel $courseModel
@@ -965,6 +1077,22 @@ class SingleCourseTemplate {
 		);
 
 		return Template::combine_components( $section );
+	}
+
+	/**
+	 * HTML breadcrumb
+	 *
+	 * @return string
+	 * @since 4.2.7.2
+	 * @version 1.0.0
+	 */
+	public function html_breadcrumb() {
+		ob_start();
+		$template = new LP_Template_General();
+		$template->breadcrumb();
+		$html_breadcrumb = ob_get_clean();
+		apply_filters( 'learn-press/course/breadcrumb', $html_breadcrumb, $html_breadcrumb );
+		return $html_breadcrumb;
 	}
 
 	/**
@@ -1165,6 +1293,161 @@ class SingleCourseTemplate {
 		}
 
 		return $html;
+	}
+
+	/**
+	 * HTML struct tabs
+	 *
+	 * @param CourseModel $course
+	 *
+	 * @return string
+	 * @since 4.2.7.2
+	 * @version 1.0.0
+	 */
+	public function html_tabs( CourseModel $course, $html_tabs = '' ): string {
+		if ( empty( $html_tabs ) ) {
+			ob_start();
+			learn_press_course_tabs();
+			$html_tabs = ob_get_clean();
+		}
+
+		$tabs = apply_filters(
+			'learn-press/course/html-tabs',
+			[
+				'wrapper'     => '<div class="tabs-single-course">',
+				'tabs'        => $html_tabs,
+				'wrapper_end' => '</div>',
+			],
+			$html_tabs
+		);
+
+		return Template::combine_components( $tabs );
+	}
+
+	/**
+	 * Animation placholder in user-progress file.
+	 * Content will show in class-rest-lazy-load-controller file.
+	 * HTML struct tabs
+	 *
+	 * @param CourseModel $course
+	 *
+	 * @return string
+	 * @since 4.2.7.2
+	 * @version 1.0.0
+	 */
+	public function html_progress( CourseModel $course ) {
+		$html_progress = '';
+
+		if ( ! is_user_logged_in() ) {
+			return $html_progress;
+		}
+
+		$user = learn_press_get_current_user();
+
+		if ( ! $course ) {
+			return $html_progress;
+		}
+
+		if ( ! $user->has_enrolled_or_finished( $course->get_id() ) ) {
+			return $html_progress;
+		}
+
+		if ( LP_LAZY_LOAD_ANIMATION ) {
+			ob_start();
+			echo '<div class="lp-course-progress-wrapper">';
+			echo lp_skeleton_animation_html( 3 );
+			echo '</div>';
+			$html_progress = ob_get_clean();
+		} else {
+			$course_data = $user->get_course_data( $course->get_id() );
+			if ( ! $course_data ) {
+				return $html_progress;
+			}
+
+			$course_results = $course_data->calculate_course_results();
+
+			ob_start();
+			learn_press_get_template(
+				'single-course/sidebar/user-progress',
+				compact( 'user', 'course', 'course_data', 'course_results' )
+			);
+			$html_progress = ob_get_clean();
+		}
+
+		return $html_progress;
+	}
+
+	/**
+	 * Show info time handle of user
+	 *
+	 * @throws Exception
+	 */
+	public function html_time( CourseModel $course ) {
+		$html_time = '';
+		$user      = learn_press_get_current_user();
+		if ( ! $user ) {
+			return $html_time;
+		}
+
+		if ( ! $user->has_enrolled_or_finished( $course->get_id() ) ) {
+			return $html_time;
+		}
+
+		/**
+		 * @var LP_User_Item_Course
+		 */
+		$user_course = $user->get_course_data( $course->get_id() );
+
+		if ( ! $user_course ) {
+			return $html_time;
+		}
+
+		$status          = $user_course->get_status();
+		$start_time      = $user_course->get_start_time();
+		$end_time        = $user_course->get_end_time();
+		$expiration_time = $user_course->get_expiration_time();
+		$data            = [
+			'status'          => $status,
+			'start_time'      => $start_time,
+			'end_time'        => $end_time,
+			'expiration_time' => $expiration_time,
+		];
+
+		ob_start();
+		learn_press_get_template(
+			'single-course/sidebar/user-time',
+			compact( 'data' )
+		);
+		$html_time = ob_get_clean();
+
+		return $html_time;
+	}
+
+	/**
+	 * Show content item curriculum course
+	 *
+	 *
+	 * @return string
+	 * @since 4.2.7.2
+	 * @version 1.0.0
+	 */
+	public function html_content_item() {
+		if ( ! is_singular( LP_COURSE_CPT ) ) {
+			return;
+		}
+
+		if ( ! learn_press_is_course() || ! is_single() ) {
+			return;
+		}
+
+		global $post;
+		setup_postdata( $post );
+		$course_item = LP_Global::course_item();
+		if ( ! $course_item ) {
+			return;
+		}
+
+		return Template::instance()->get_frontend_template( 'content-single-item.php' );
 	}
 
 	/**

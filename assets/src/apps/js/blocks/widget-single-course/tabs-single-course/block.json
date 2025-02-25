@@ -1,0 +1,20 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "learnpress/tabs-single-course",
+	"title": "Tabs Course",
+	"category": "lp-single-course-category",
+	"icon": "table-row-after",
+	"description": "Renders template Tabs Course PHP templates.",
+	"textdomain": "learnpress",
+	"keywords": ["tabs single course", "learnpress"],
+	"usesContext": [],
+	"supports": {
+		"inserter": true,
+		"reusable": true,
+		"reorder": true,
+		"html": false,
+		"multiple": true
+	},
+	"ancestor": ["learnpress/lp-single-course"]
+}

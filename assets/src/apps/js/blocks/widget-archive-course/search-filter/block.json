@@ -1,0 +1,19 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "learnpress/search-filter-archive-course",
+	"title": "Search Filter",
+	"category": "lp-archive-course-category",
+	"description": "Renders template Search Filter PHP templates.",
+	"textdomain": "learnpress",
+	"keywords": ["search filter archive course", "learnpress"],
+	"usesContext": [],
+	"supports": {
+		"inserter": true,
+		"reusable": true,
+		"reorder": true,
+		"html": false,
+		"multiple": false
+	},
+	"ancestor": ["learnpress/course-filter"]
+}

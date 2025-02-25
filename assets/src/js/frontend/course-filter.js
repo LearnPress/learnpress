@@ -290,6 +290,9 @@ window.lpCourseFilter = {
 
 			elListCourseTarget.classList.add( classProcessing );
 			const elLPTarget = elListCourseTarget.querySelector( '.lp-target' );
+			if ( ! elLPTarget ) {
+				return;
+			}
 			const dataObj = JSON.parse( elLPTarget.dataset.send );
 			const dataSend = { ...dataObj };
 

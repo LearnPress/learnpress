@@ -1,0 +1,22 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "learnpress/feature-review-single-course",
+	"title": "Feature Review Course",
+	"icon": "star-filled",
+	"category": "lp-single-course-category",
+	"description": "Renders template Feature Review Course PHP templates.",
+	"textdomain": "learnpress",
+	"keywords": ["feature review single course", "learnpress"],
+	"usesContext": [],
+	"supports": {
+		"inserter": true,
+		"reusable": true,
+		"reorder": true,
+		"html": false,
+		"multiple": true
+	},
+	"ancestor": [
+		"learnpress/lp-single-course"
+	]
+}

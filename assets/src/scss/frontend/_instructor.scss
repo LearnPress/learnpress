@@ -49,6 +49,7 @@ body {
 		display: flex;
 		align-items: center;
 		gap: 5px;
+		margin-top: 0;
 	}
 
 	&__info {
@@ -91,6 +92,7 @@ body {
 			}
 
 			.instructor-social {
+				margin-top: 0;
 				display: flex;
 				gap: 12px;
 				font-size: $font-size-small;

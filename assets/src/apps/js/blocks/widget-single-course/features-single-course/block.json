@@ -1,0 +1,20 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "learnpress/features-single-course",
+	"title": "Features Course",
+	"category": "lp-single-course-category",
+	"icon": "index-card",
+	"description": "Renders template Box Extra Features Course PHP templates.",
+	"textdomain": "learnpress",
+	"keywords": ["box extra features single course", "learnpress"],
+	"usesContext": [],
+	"supports": {
+		"inserter": true,
+		"reusable": true,
+		"reorder": true,
+		"html": false,
+		"multiple": true
+	},
+	"ancestor": ["learnpress/lp-single-course"]
+}

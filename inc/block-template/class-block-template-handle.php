@@ -1,6 +1,7 @@
 <?php
 
 use LearnPress\Helpers\Config;
+use LearnPress\Helpers\Template;
 
 /**
  * Class Block_Template_Handle
@@ -27,6 +28,7 @@ class Block_Template_Handle {
 		add_action( 'init', array( $this, 'register_tag_block' ) );
 		// Register block category
 		add_filter( 'block_categories_all', array( $this, 'add_block_category' ), 10, 2 );
+		add_action( 'init', array( $this, 'register_block_templates' ) );
 	}
 
 	/**
@@ -182,9 +184,68 @@ class Block_Template_Handle {
 			'icon'  => null,
 		);
 
+		$lp_category_single_course_block = array(
+			'slug'  => 'lp-single-course-category',
+			'title' => __( 'Category Single Course', 'learnpress' ),
+			'icon'  => null,
+		);
+
+		$lp_category_archive_course_block = array(
+			'slug'  => 'lp-archive-course-category',
+			'title' => __( 'Category Archive Course', 'learnpress' ),
+			'icon'  => null,
+		);
+
+		$lp_category_profile_block = array(
+			'slug'  => 'lp-profile-category',
+			'title' => __( 'Category Profile', 'learnpress' ),
+			'icon'  => null,
+		);
+
+		$lp_category_instructor_block = array(
+			'slug'  => 'lp-instructor-category',
+			'title' => __( 'Category Instructor', 'learnpress' ),
+			'icon'  => null,
+		);
+
+		array_unshift( $block_categories, $lp_category_archive_course_block );
+		array_unshift( $block_categories, $lp_category_single_course_block );
+		array_unshift( $block_categories, $lp_category_profile_block );
+		array_unshift( $block_categories, $lp_category_instructor_block );
 		array_unshift( $block_categories, $lp_category_block );
 
 		return $block_categories;
+	}
+
+	public function register_block_templates() {
+		if ( version_compare( get_bloginfo( 'version' ), '6.7', '<' ) ) {
+			return;
+		}
+
+		ob_start();
+		Template::instance()->get_frontend_template( 'block/html/single-lp_course.html' );
+		$content_single_course = ob_get_clean();
+		register_block_template(
+			'learnpress//single-course',
+			[
+				'title'       => __( 'Single Course', 'learnpress' ),
+				'description' => __( 'Template LearnPress Single Course', 'learnpress' ),
+				'content'     => $content_single_course,
+				'post_types'  => [ 'lp_course' ],
+			]
+		);
+
+		ob_start();
+		Template::instance()->get_frontend_template( 'block/html/archive-lp_course.html' );
+		$content_archive_course = ob_get_clean();
+		register_block_template(
+			'learnpress//archive-course',
+			[
+				'title'       => __( 'Archive Course', 'learnpress' ),
+				'description' => __( 'Template LearnPress Archive Course ', 'learnpress' ),
+				'content'     => $content_archive_course,
+			]
+		);
 	}
 }
 

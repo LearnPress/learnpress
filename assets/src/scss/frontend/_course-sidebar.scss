@@ -1,4 +1,3 @@
-
 .course-summary-sidebar {
 	--lp-button-background-color: #28303d;
 	--lp-button-color: #d1e4dd;
@@ -8,12 +7,14 @@
 		background: #fff;
 	}
 
-	.has-global-padding{
-		padding-right:0;
-		padding-left:0;
+	.has-global-padding {
+		padding-right: 0;
+		padding-left: 0;
 	}
 
-	.lp-course-buttons {
+	.lp-course-buttons,
+	.enroll-course,
+	.purchase-course {
 		margin-bottom: 34px;
 
 		> * {
@@ -39,11 +40,14 @@
 				border-color: var(--lp-primary-color);
 			}
 		}
+	}
 
+	.enroll-course,
+	.purchase-course {
+		width: 100%;
 	}
 
 	.course-results-progress {
-
 		.items-progress,
 		.course-progress {
 			display: flex;
@@ -81,9 +85,7 @@
 		}
 	}
 
-
 	&.slide-down {
-
 		@media (min-width: 769px) {
 			.course-summary-sidebar__inner {
 				position: fixed;
@@ -101,12 +103,13 @@
 	}
 }
 
-.lp-course-buttons:empty{
+.lp-course-buttons:empty {
 	display: none;
 }
 
 .course-sidebar-preview {
 	.course-price {
+		display: block;
 		text-align: center;
 
 		.origin-price {
@@ -123,7 +126,8 @@
 		}
 	}
 
-	.media-preview {
+	.media-preview,
+	.course-img {
 		overflow: hidden;
 		position: relative;
 		margin: -20px -20px 10px;
@@ -135,7 +139,7 @@
 			width: 100%;
 		}
 	}
-	.course-wishlist{
+	.course-wishlist {
 		float: none;
 	}
 	.course-time {
@@ -164,7 +168,6 @@
 	}
 
 	> * {
-
 		&:last-child {
 			margin-bottom: 0;
 		}

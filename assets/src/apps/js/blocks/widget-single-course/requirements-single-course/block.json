@@ -1,0 +1,22 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "learnpress/requirements-single-course",
+	"title": "Requirements Course",
+	"category": "lp-single-course-category",
+	"icon": "index-card",
+	"description": "Renders template Box Extra Requirements Course PHP templates.",
+	"textdomain": "learnpress",
+	"keywords": ["box extra requirements single course", "learnpress"],
+	"usesContext": [],
+	"supports": {
+		"inserter": true,
+		"reusable": true,
+		"reorder": true,
+		"html": false,
+		"multiple": true
+	},
+	"ancestor": [
+		"learnpress/lp-single-course"
+	]
+}

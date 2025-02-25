@@ -1,0 +1,22 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "learnpress/btn-purchase-single-course",
+	"title": "Button Course",
+	"category": "lp-single-course-category",
+	"icon": "button",
+	"description": "Renders template Button Course PHP templates.",
+	"textdomain": "learnpress",
+	"keywords": ["button purchase single course", "learnpress"],
+	"usesContext": [],
+	"supports": {
+		"inserter": true,
+		"reusable": true,
+		"reorder": true,
+		"html": false,
+		"multiple": true
+	},
+	"ancestor": [
+		"learnpress/lp-single-course"
+	]
+}

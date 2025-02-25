@@ -1,0 +1,87 @@
+.wp-block-learnpress-profile-background-image {
+	.profile-background-image {
+		height: 100px;
+		width: 100%;
+		background-color: #ccc;
+		border-radius: 6px;
+		margin-bottom: 20px;
+	}
+}
+
+.wp-block-learnpress-profile-avatar {
+	.profile-avatar {
+		width: 50px;
+		height: 50px;
+		border-radius: 100%;
+		background-color: #ccc;
+	}
+}
+
+.wp-block-learnpress-profile-sidebar {
+	float: left;
+	width: 170px;
+	margin-top: 20px;
+
+	ul {
+		padding: 0;
+		list-style: none;
+		margin: 0;
+	}
+
+	.profile-sidebar {
+		width: 100%;
+		margin-bottom: 32px;
+		background: #f9f9f9;
+		border: 1px solid var(--lp-border-color, #e2e0db);
+		border-top: 0;
+	}
+
+	li {
+		margin: 0;
+		border-top: 1px solid var(--lp-border-color, #e2e0db);
+		padding: 20px 20px;
+	}
+
+	.line {
+		width: calc(100% - 20px);
+		gap: 8px;
+		line-height: 1.4;
+		padding: 10px;
+		background: #ccc;
+	}
+}
+
+.wp-block-learnpress-profile-content {
+	float: right;
+	width: calc(100% - 200px);
+	margin-bottom: 32px;
+	margin-top: 20px;
+
+	.statistic {
+		display: flex;
+		gap: 20px;
+		flex-wrap: wrap;
+	}
+
+	.box {
+		padding: 20px;
+		background: var(--lp-white-grey, #f7f7fb);
+		border-radius: var(--lp-border-radius, 5px);
+		width: calc(100% / 3 - (80px * 2 / 3));
+	}
+
+	.tabs {
+		height: 12px;
+		width: 100%;
+		background: #ccc;
+		margin-top: 20px;
+	}
+
+	.line {
+		width: 100%;
+		background: #e5e5e5;
+		height: 15px;
+		margin-top: 15px;
+		border-radius: 0 4px 4px 0;
+	}
+}

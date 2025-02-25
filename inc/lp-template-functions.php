@@ -1364,12 +1364,7 @@ function learn_press_courses_layouts() {
  * @modify 4.1.3
  */
 function learn_press_get_courses_layout() {
-	$layout = LP_Request::get_cookie( 'courses-layout' );
-
-	if ( ! $layout ) {
-		$layout = LP_Settings::get_option( 'archive_courses_layout', 'list' );
-	}
-
+	$layout = LP_Settings::get_option( 'archive_courses_layout', 'list' );
 	return $layout;
 }
 

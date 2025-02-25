@@ -1,7 +1,64 @@
 <!-- wp:template-part {"slug":"header","tagName":"header"} /-->
-<!-- wp:group -->
-<div class="wp-block-group"><!-- wp:learnpress/archive-course /--></div>
+
+<!-- wp:group {"layout":{"type":"default"}} -->
+<div class="wp-block-group">
+	<!-- wp:learnpress/lp-archive-course -->
+	<!-- wp:group {"className":"lp-archive-courses","layout":{"type":"default"}} -->
+	<div class="wp-block-group lp-archive-courses">
+		<!-- wp:learnpress/breadcrumb /-->
+
+		<!-- wp:group {"className":" lp-content-area has-sidebar","layout":{"type":"flex","orientation":"horizontal","flexWrap":"nowrap","verticalAlignment":"top","justifyContent":"left"}} -->
+		<div class="wp-block-group lp-content-area has-sidebar">
+			<!-- wp:group {"className":"lp-archive-courses","layout":{"type":"default"}} -->
+			<div class="wp-block-group lp-archive-courses">
+				<!-- wp:group {"tagName":"header","className":"learn-press-courses-header","layout":{"type":"default"}} -->
+				<header class="wp-block-group learn-press-courses-header">
+					<!-- wp:heading {"level":1,"className":"wp-block-heading"} -->
+					<h1 class="wp-block-heading">All Courses</h1>
+					<!-- /wp:heading -->
+				</header>
+				<!-- /wp:group -->
+
+				<!-- wp:learnpress/list-course-archive-course -->
+				<!-- wp:group {"className":"lp-courses-bar","layout":{"type":"flex","flexWrap":"nowrap"}} -->
+				<div class="wp-block-group lp-courses-bar">
+					<!-- wp:learnpress/search-archive-course /-->
+
+					<!-- wp:learnpress/order-by-archive-course /-->
+				</div>
+				<!-- /wp:group -->
+
+				<!-- wp:learnpress/template-course-archive-course -->
+				<!-- wp:learnpress/media-course-archive-course -->
+				{{media-course}}
+				<!-- /wp:learnpress/media-course-archive-course -->
+
+				<!-- wp:learnpress/title-course-archive-course -->
+				{{title-course}}
+				<!-- /wp:learnpress/title-course-archive-course -->
+
+				<!-- wp:learnpress/instructor-category-course-archive-course -->
+				{{instructor-category-course}}
+				<!-- /wp:learnpress/instructor-category-course-archive-course -->
+
+				<!-- wp:learnpress/meta-course-archive-course -->
+				{{meta-course}}
+				<!-- /wp:learnpress/meta-course-archive-course -->
+
+				<!-- wp:learnpress/info-course-archive-course -->
+				{{info-course}}
+				<!-- /wp:learnpress/info-course-archive-course -->
+				<!-- /wp:learnpress/template-course-archive-course -->
+				<!-- /wp:learnpress/list-course-archive-course -->
+			</div>
+			<!-- /wp:group -->
+
+			<!-- wp:learnpress/sidebar-archive-course /-->
+		</div>
+		<!-- /wp:group -->
+	</div>
+	<!-- /wp:group -->
+	<!-- /wp:learnpress/lp-archive-course -->
+</div>
 <!-- /wp:group -->
 <!-- wp:template-part {"slug":"footer", "tagName":"footer"} /-->
-
-

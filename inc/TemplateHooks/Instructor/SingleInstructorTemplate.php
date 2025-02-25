@@ -171,6 +171,26 @@ class SingleInstructorTemplate extends UserTemplate {
 		return apply_filters( 'learn-press/single-instructor/render-data', $data_render, $instructor, $data_content );
 	}
 
+	public function html_instructor( $content ): string {
+		$html = '';
+
+		try {
+			$html_wrapper = [
+				'article'        => '<article class="lp-content-area">',
+				'instructor'     => '<div class="lp-single-instructor">',
+				'content'        => $content,
+				'end_instructor' => '</div>',
+				'end_article'    => '</article>',
+			];
+
+			$html = Template::combine_components( $html_wrapper );
+		} catch ( Throwable $e ) {
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
+		}
+
+		return $html;
+	}
+
 	/**
 	 * List section of layout.
 	 *

@@ -1,0 +1,22 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "learnpress/profile-content",
+	"title": "Profile Content",
+	"category": "lp-profile-category",
+	"icon": "format-image",
+	"description": "Renders Template Profile Content PHP templates.",
+	"textdomain": "learnpress",
+	"keywords": ["content profile course", "learnpress"],
+	"usesContext": [],
+	"supports": {
+		"inserter": true,
+		"reusable": true,
+		"reorder": true,
+		"html": false,
+		"multiple": true
+	},
+	"ancestor": [
+		"learnpress/lp-profile"
+	]
+}

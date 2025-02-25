@@ -1,0 +1,21 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "learnpress/curriculum-single-course",
+	"title": "Curriculum Course",
+	"category": "lp-single-course-category",
+	"description": "Renders template Curriculum Course PHP templates.",
+	"textdomain": "learnpress",
+	"keywords": ["curriculum single course", "learnpress"],
+	"usesContext": [],
+	"supports": {
+		"inserter": true,
+		"reusable": true,
+		"reorder": true,
+		"html": false,
+		"multiple": true
+	},
+	"ancestor": [
+		"learnpress/lp-single-course"
+	]
+}

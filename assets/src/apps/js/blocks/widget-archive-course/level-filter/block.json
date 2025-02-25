@@ -1,0 +1,19 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "learnpress/level-filter-archive-course",
+	"title": "Level Filter",
+	"category": "lp-archive-course-category",
+	"description": "Renders template Level Filter PHP templates.",
+	"textdomain": "learnpress",
+	"keywords": ["level filter archive course", "learnpress"],
+	"usesContext": [],
+	"supports": {
+		"inserter": true,
+		"reusable": true,
+		"reorder": true,
+		"html": false,
+		"multiple": false
+	},
+	"ancestor": ["learnpress/course-filter"]
+}

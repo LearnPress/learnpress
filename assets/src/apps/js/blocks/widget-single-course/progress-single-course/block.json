@@ -1,0 +1,21 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "learnpress/progress-single-course",
+	"title": "Progress Course",
+	"category": "lp-single-course-category",
+	"description": "Renders template Progress Course PHP templates.",
+	"textdomain": "learnpress",
+	"keywords": ["progress single course", "learnpress"],
+	"usesContext": [],
+	"supports": {
+		"inserter": true,
+		"reusable": true,
+		"reorder": true,
+		"html": false,
+		"multiple": true
+	},
+	"ancestor": [
+		"learnpress/lp-single-course"
+	]
+}

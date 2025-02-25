@@ -1,0 +1,22 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "learnpress/content-left",
+	"title": "Content Left",
+	"category": "lp-single-course-category",
+	"description": "Renders Layout Content Left PHP templates.",
+	"textdomain": "learnpress",
+	"keywords": ["layout content left course", "learnpress"],
+	"usesContext": [],
+	"supports": {
+		"inserter": true,
+		"reusable": true,
+		"reorder": true,
+		"html": false,
+		"multiple": true,
+		"wrapper": false
+	},
+	"ancestor": [
+		"learnpress/lp-single-course"
+	]
+}

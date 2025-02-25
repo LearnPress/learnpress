@@ -1,0 +1,19 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "learnpress/price-filter-archive-course",
+	"title": "Price Filter",
+	"category": "lp-archive-course-category",
+	"description": "Renders template Price Filter PHP templates.",
+	"textdomain": "learnpress",
+	"keywords": ["price filter archive course", "learnpress"],
+	"usesContext": [],
+	"supports": {
+		"inserter": true,
+		"reusable": true,
+		"reorder": true,
+		"html": false,
+		"multiple": false
+	},
+	"ancestor": ["learnpress/course-filter"]
+}

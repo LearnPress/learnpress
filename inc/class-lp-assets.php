@@ -46,6 +46,7 @@ class LP_Assets extends LP_Abstract_Assets {
 						LP_PAGE_CHECKOUT,
 						LP_PAGE_BECOME_A_TEACHER,
 						LP_PAGE_PROFILE,
+						LP_PAGE_INSTRUCTOR,
 					),
 					0
 				),
@@ -329,7 +330,7 @@ class LP_Assets extends LP_Abstract_Assets {
 				'lp-courses-v2'        => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/courses-v2' . self::$_min_assets . '.js' ),
 					[ 'utils' ], // dependency utils of wp, because js is using wpCookies
-					[ LP_PAGE_COURSES ],
+					[ LP_PAGE_COURSES, LP_PAGE_INSTRUCTOR ],
 					0,
 					0,
 					'',

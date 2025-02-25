@@ -1,0 +1,47 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "learnpress/template-course-archive-course",
+	"title": "Template Course",
+	"category": "lp-archive-course-category",
+	"icon": "layout",
+	"description": "Renders Template Course Archive Course PHP templates.",
+	"textdomain": "learnpress",
+	"keywords": ["template archive course", "learnpress"],
+	"usesContext": [],
+	"attributes": {
+		"ajax": {
+			"type": "boolean",
+			"default": true
+		},
+		"layout": {
+			"type": "string",
+			"default": "list"
+		},
+		"perPage": {
+			"type": "number",
+			"default": 8
+		},
+		"orderBy": {
+			"type": "string",
+			"default": "post_date"
+		},
+		"category": {
+			"type": "string",
+			"default": ""
+		},
+		"tag": {
+			"type": "string",
+			"default": ""
+		}
+	},
+	"supports": {
+		"inserter": true,
+		"reusable": true,
+		"reorder": true,
+		"html": false,
+		"multiple": false,
+		"wrapper": false
+	},
+	"ancestor": ["learnpress/list-course-archive-course"]
+}
