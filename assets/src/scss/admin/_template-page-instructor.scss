@@ -38,11 +38,24 @@
 		content: "\e902";
 	}
 
-	.lp-single-instructor__info {
-		border: 1px solid #c3c4c7;
+	.lp-single-instructor__info__wrapper {
 		margin-bottom: 50px;
-		padding: 16px;
 		display: flex;
+	}
+
+	.lp-single-instructor__info__right__content {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		column-gap: 20px;
+		row-gap: 8px;
+		flex-wrap: wrap;
+	}
+
+	.lp-instructor-meta {
+		display: flex;
+		column-gap: 20px;
+		row-gap: 8px;
 	}
 
 	.lp-single-instructor__info__right {
@@ -66,6 +79,18 @@
 	}
 }
 
+.wp-block-learnpress-instructor-background {
+	width: 100%;
+
+	.instructor-background {
+		height: 100px;
+		width: 100%;
+		background-color: #ccc;
+		border-radius: 6px;
+		margin-bottom: 20px;
+	}
+}
+
 .wp-block-learnpress-instructor-social {
 	.instructor-social {
 		margin: 16px 0;
@@ -75,9 +100,18 @@
 	}
 }
 
+.wp-block-learnpress-instructor-display-name,
+.wp-block-learnpress-instructor-social {
+	margin-top: 0 !important;
+	margin-left: 0 !important;
+	margin-right: 0 !important;
+}
+
 .wp-block-learnpress-instructor-total-students,
 .wp-block-learnpress-instructor-total-courses {
 	margin-top: 0 !important;
+	margin-left: 0 !important;
+	margin-right: 0 !important;
 
 	.wrapper-instructor-total-students,
 	.wrapper-instructor-total-courses {
@@ -94,7 +128,7 @@
 		padding: 0 !important;
 		margin: 0 0 32px 0;
 		list-style: none;
-		grid-template-columns: repeat(auto-fill, minmax( 200px, 1fr));
+		grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
 
 		li {
 			background-color: #ccc;

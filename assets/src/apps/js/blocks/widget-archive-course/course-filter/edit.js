@@ -1,4 +1,8 @@
-import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
+import {
+	InnerBlocks,
+	useBlockProps,
+	InspectorControls,
+} from '@wordpress/block-editor';
 import { PanelBody, ToggleControl, TextControl } from '@wordpress/components';
 
 export const edit = ( props ) => {
@@ -56,9 +60,7 @@ export const edit = ( props ) => {
 
 					<ToggleControl
 						label="Hide field has count is zero"
-						checked={
-							props.attributes.hideCountZero ? true : false
-						}
+						checked={ props.attributes.hideCountZero ? true : false }
 						onChange={ ( value ) => {
 							props.setAttributes( {
 								hideCountZero: value ? true : false,
@@ -82,10 +84,9 @@ export const edit = ( props ) => {
 			<div { ...blockProps }>
 				<div className="filter">
 					<h3>{ props.attributes.title }</h3>
-					<div className="line"></div>
-					<div className="line"></div>
-					<div className="line"></div>
-					<div className="line"></div>
+				</div>
+				<div>
+					<InnerBlocks />
 				</div>
 			</div>
 		</>

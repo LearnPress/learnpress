@@ -1,0 +1,19 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "learnpress/author-filter-archive-course",
+	"title": "Author Filter",
+	"category": "lp-archive-course-category",
+	"description": "Renders template Author Filter PHP templates.",
+	"textdomain": "learnpress",
+	"keywords": ["author filter archive course", "learnpress"],
+	"usesContext": [],
+	"supports": {
+		"inserter": true,
+		"reusable": true,
+		"reorder": true,
+		"html": false,
+		"multiple": false
+	},
+	"ancestor": ["learnpress/course-filter"]
+}

@@ -52,7 +52,15 @@ require_once $blog_template_path . 'archive-course/class-block-template-title-co
 require_once $blog_template_path . 'archive-course/class-block-template-media-course-archive-courses.php';
 require_once $blog_template_path . 'archive-course/class-block-template-description-course-archive-courses.php';
 require_once $blog_template_path . 'archive-course/layout/class-block-layout-archive-course.php';
+
+//Course Filter
 require_once $blog_template_path . 'archive-course/layout/class-block-layout-course-filter.php';
+require_once $blog_template_path . 'archive-course/class-block-template-author-filter-archive-courses.php';
+require_once $blog_template_path . 'archive-course/class-block-template-category-filter-archive-courses.php';
+require_once $blog_template_path . 'archive-course/class-block-template-level-filter-archive-courses.php';
+require_once $blog_template_path . 'archive-course/class-block-template-price-filter-archive-courses.php';
+require_once $blog_template_path . 'archive-course/class-block-template-search-filter-archive-courses.php';
+require_once $blog_template_path . 'archive-course/class-block-template-tag-filter-archive-courses.php';
 
 //Layout single course
 require_once $blog_template_path . 'single-course/layout/class-block-layout-single-course.php';
@@ -74,6 +82,7 @@ require_once $blog_template_path . 'profile/class-block-template-profile-usernam
 
 //Instructor
 require_once $blog_template_path . 'instructor/class-block-template-instructor-avatar.php';
+require_once $blog_template_path . 'instructor/class-block-template-instructor-background.php';
 require_once $blog_template_path . 'instructor/class-block-template-instructor-description.php';
 require_once $blog_template_path . 'instructor/class-block-template-instructor-display-name.php';
 require_once $blog_template_path . 'instructor/class-block-template-instructor-social.php';
@@ -131,6 +140,12 @@ return apply_filters(
 		new Block_Template_Order_By_Archive_Courses(),
 		new Block_Layout_Template_Course_Archive_Courses(),
 		new Block_Layout_Course_Filter(),
+		new Block_Template_Search_Filter_Archive_Courses(),
+		new Block_Template_Author_Filter_Archive_Courses(),
+		new Block_Template_Level_Filter_Archive_Courses(),
+		new Block_Template_Price_Filter_Archive_Courses(),
+		new Block_Template_Category_Filter_Archive_Courses(),
+		new Block_Template_Tag_Filter_Archive_Courses(),
 		new Block_Layout_List_Course_Archive_Courses(),
 		// new Block_Template_Pagination_Archive_Courses(),
 		new Block_Template_Button_Course_Archive_Courses(),
@@ -152,6 +167,7 @@ return apply_filters(
 		new Block_Template_Profile_Content(),
 		new Block_Template_Profile_Background_Image(),
 		new Block_Template_Instructor_Avatar(),
+		new Block_Template_Instructor_Background(),
 		new Block_Template_Instructor_Description(),
 		new Block_Template_Instructor_Display_Name(),
 		new Block_Template_Instructor_Social(),
