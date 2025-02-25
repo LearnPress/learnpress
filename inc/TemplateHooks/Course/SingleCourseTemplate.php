@@ -1327,7 +1327,7 @@ class SingleCourseTemplate {
 	 *
 	 * @return string
 	 * @since 4.2.7.6
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 */
 	public function html_curriculum( CourseModel $courseModel, $userModel, $itemModelCurrent = false ): string {
 		$html = '';
@@ -1348,7 +1348,11 @@ class SingleCourseTemplate {
 			}
 
 			if ( $itemModelCurrent ) {
-				$this->currentItemModel = $itemModelCurrent;
+				$item_types = CourseModel::item_types_support();
+				// Check item type is support
+				if ( in_array( $itemModelCurrent->post_type, $item_types ) ) {
+					$this->currentItemModel = $itemModelCurrent;
+				}
 			}
 			// End get current item viewing
 
