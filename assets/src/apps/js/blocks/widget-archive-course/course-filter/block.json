@@ -18,10 +18,6 @@
 			"type": "number",
 			"default": 1
 		},
-		"classListCoursesTarget": {
-			"type": "string",
-			"default": ".lp-list-courses-default"
-		},
 		"showInRest": {
 			"type": "boolean",
 			"default": true

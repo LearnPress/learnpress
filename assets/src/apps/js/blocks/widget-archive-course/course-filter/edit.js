@@ -35,19 +35,6 @@ export const edit = ( props ) => {
 						value={ props.attributes.numberLevelCategory ?? 1 }
 					/>
 
-					<TextControl
-						label="Class of list courses want to filter"
-						onChange={ ( value ) => {
-							props.setAttributes( {
-								classListCoursesTarget: value ?? '',
-							} );
-						} }
-						value={
-							props.attributes.classListCoursesTarget ??
-							'.lp-list-courses-default'
-						}
-					/>
-
 					<ToggleControl
 						label="Load widget via REST"
 						checked={ props.attributes.showInRest ? true : false }

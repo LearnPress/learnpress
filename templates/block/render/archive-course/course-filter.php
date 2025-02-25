@@ -20,7 +20,7 @@ $content                   = '';
 $number_level_category     = $attributes['numberLevelCategory'] ?? 1;
 $search_suggestion         = $attributes['searchSuggestion'] === false ? 0 : 1;
 $hide_count_zero           = $attributes['hideCountZero'] === false ? 0 : 1;
-$class_list_courses_target = $attributes['classListCoursesTarget'] ?? '.lp-list-courses-default';
+$class_list_courses_target = '.lp-list-courses-default';
 
 $instance = [
 	'title'                     => $title,
