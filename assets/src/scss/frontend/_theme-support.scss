@@ -480,7 +480,7 @@ body.twentyseventeen.learnpress-page {
 				margin-bottom: 0;
 			}
 			.course-section-header{
-				padding: 12px 0 12px 0;
+				padding: var(--thim-ekit-padding-lesson,12px 0);
 			}
 			.course-section__title{
 				font-size: 1.1em;
