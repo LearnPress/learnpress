@@ -25,8 +25,8 @@ class GutenbergHandleMain {
 	public function init() {
 		// Register block template
 		add_action( 'init', array( $this, 'wp_hook_init' ) );
-		// Set block template need to show on frontend
-		add_filter( 'get_block_templates', array( $this, 'set_blocks_template_on_frontend' ), 10, 3 );
+		// Set block template need to show on frontend/backend
+		add_filter( 'get_block_templates', array( $this, 'set_blocks_template' ), 10, 3 );
 		// Load block template when Edit.
 		add_filter( 'pre_get_block_file_template', array( $this, 'edit_block_file_template' ), 10, 3 );
 		// Register block category
@@ -90,7 +90,7 @@ class GutenbergHandleMain {
 	}
 
 	/**
-	 * Set block template need to show on frontend
+	 * Set block template need to show on frontend/backend
 	 * 1. Get all block of LP declare.
 	 * 2. Check blocks match with type page. Ex: single course, archive course....
 	 * 3. If correct, set Block to $query_result.
@@ -101,7 +101,7 @@ class GutenbergHandleMain {
 	 *
 	 * @return array
 	 */
-	public function set_blocks_template_on_frontend( array $query_result, array $query, $template_type ): array {
+	public function set_blocks_template( array $query_result, array $query, $template_type ): array {
 		if ( $template_type === 'wp_template_part' ) { // Template not Template part
 			return $query_result;
 		}
@@ -124,11 +124,17 @@ class GutenbergHandleMain {
 			if ( empty( $query ) ) { // For Admin and rest api call to this function, so $query is empty
 				$query_result[] = $block_template;
 			} else {
-				// Check block template match with slug in query will show on frontend
+				// Check block template match with slug in query will show on Frontend
 				$slugs = $query['slug__in'] ?? array();
 				if ( in_array( $block_template->slug, $slugs ) ) {
 					$query_result[] = $block_template;
 				}
+			}
+
+			// Show on list Templates in Admin
+			// Link preview https://drive.google.com/file/d/1Gi3LjCQMD731qKBLXTTR2hLi3qjemg6Q/view?usp=sharing
+			if ( isset( $query['slug__not_in'] ) && in_array( 'home', $query['slug__not_in'] ) ) {
+				$query_result[] = $block_template;
 			}
 		}
 
