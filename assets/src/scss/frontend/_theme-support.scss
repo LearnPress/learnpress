@@ -491,9 +491,7 @@ body.twentyseventeen.learnpress-page {
 			color: $color-primary;
 		}
 
-		.course-item-order.lp-hidden {
-			display: inline-block !important;
-		}
+
 
 		.course-item__link {
 			column-gap: 8px;
@@ -525,6 +523,9 @@ body.twentyseventeen.learnpress-page {
 
 	&.eduma, &.coaching {
 		.lp-course-curriculum {
+			.course-item-order.lp-hidden {
+				display: inline-block !important;
+			}
 			.course-section__title {
 				text-transform: uppercase;
 			}
