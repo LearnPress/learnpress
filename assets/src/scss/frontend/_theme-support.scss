@@ -591,6 +591,9 @@ body.twentyseventeen.learnpress-page {
 	}
 	.course-tab-panels{
 		.lp-course-curriculum{
+			.course-sections{
+				border: none;
+			}
 			.course-section-header, .course-item{
 				padding-left: 0;
 				--lp-white-grey: trasparent;
