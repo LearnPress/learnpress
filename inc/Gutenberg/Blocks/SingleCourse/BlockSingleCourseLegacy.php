@@ -1,21 +1,24 @@
 <?php
+namespace LearnPress\Gutenberg\Blocks\SingleCourse;
 
+use LearnPress\Gutenberg\Blocks\BlockAbstract;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
+use LP_Settings;
 
 /**
  * Class Block_Template_Single_Course
  *
  * Handle register, render block template
  */
-class Block_Template_Single_Course extends Abstract_Block_Template {
+class BlockSingleCourseLegacy extends BlockAbstract {
 	public $slug                          = 'single-lp_course';
-	public $name                          = 'learnpress/single-course';
-	public $title                         = 'Single Course (LearnPress)';
-	public $description                   = 'Single Course Block Template';
-	public $path_html_block_template_file = 'html/single-lp_course.html';
+	public $name                          = 'learnpress/single-course-legacy';
+	public $title                         = 'Single Course (Legacy)';
+	public $description                   = 'Single Course Legacy Block Template';
+	public $path_html_block_template_file = 'html/single-course/single-course-legacy.html';
 	public $path_template_render_default  = 'single-course.php';
-	public $source_js                     = LP_PLUGIN_URL . 'assets/js/dist/blocks/single-course.js';
+	public $source_js                     = LP_PLUGIN_URL . 'assets/js/dist/blocks/single-course-legacy.js';
 
 	public function __construct() {
 		parent::__construct();

@@ -4,9 +4,9 @@
 import { edit } from './edit';
 import { save } from './save';
 import metadata from './block.json';
-import { registerBlockType } from '@wordpress/blocks';
+const { registerBlockType } = wp.blocks;
 
-registerBlockType( 'learnpress/archive-course', {
+registerBlockType( 'learnpress/archive-course-legacy', {
 	...metadata,
 	edit,
 	save,

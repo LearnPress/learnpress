@@ -1,12 +1,17 @@
 <?php
 
+namespace LearnPress\Gutenberg\Blocks;
+
 use LearnPress\Helpers\Template;
+use Throwable;
 
 /**
  * Abstract_Block_Template class.
  *
+ * @since 4.2.8 Convert from old class Abstract_Block_Template
+ * @version 1.0.0
  */
-abstract class Abstract_Block_Template extends \WP_Block_Template {
+abstract class BlockAbstract extends \WP_Block_Template {
 	public $theme = 'learnpress/learnpress';
 	public $type  = 'wp_template';
 	/**

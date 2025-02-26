@@ -19,6 +19,7 @@ use LearnPress\Ajax\LoadContentViaAjax;
 use LearnPress\ExternalPlugin\Elementor\LPElementor;
 use LearnPress\ExternalPlugin\RankMath\LPRankMath;
 use LearnPress\ExternalPlugin\YoastSeo\LPYoastSeo;
+use LearnPress\Gutenberg\GutenbergHandleMain;
 use LearnPress\Models\UserModel;
 use LearnPress\Shortcodes\Course\FilterCourseShortcode;
 
@@ -453,8 +454,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			include_once 'inc/cart/lp-cart-functions.php';
 
 			// Block Templates
-			include_once 'inc/block-template/class-abstract-block-template.php';
-			include_once 'inc/block-template/class-block-template-handle.php';
+			//include_once 'inc/block-template/class-abstract-block-template.php';
+			//include_once 'inc/block-template/class-block-template-handle.php';
+			GutenbergHandleMain::instance();
 
 			// API
 			include_once 'inc/abstracts/abstract-rest-api.php';
