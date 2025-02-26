@@ -619,7 +619,7 @@ class SingleCourseModernLayout {
 	 * @since 4.2.7.2
 	 * @version 1.0.0
 	 */
-	public function html_info_one( CourseModel $course, UserModel $user ): string {
+	public function html_info_one( CourseModel $course, $user ): string {
 		$section_info_one = '';
 
 		$section_info_one = apply_filters(
@@ -649,5 +649,93 @@ class SingleCourseModernLayout {
 		}
 
 		return Template::combine_components( $section_info_one );
+	}
+
+	/**
+	 * Get html button
+	 *
+	 * @param CourseModel $course
+	 * @param UserModel $user
+	 *
+	 * @return string
+	 * @since 4.2.7.2
+	 * @version 1.0.0
+	 */
+	public function html_button( CourseModel $course, $user ): string {
+		$user_id = 0;
+		if ( $user instanceof UserModel ) {
+			$user_id = $user->get_id();
+		}
+
+		$userCourseModel         = UserCourseModel::find( $user_id, $course->get_id(), true );
+		$userCourseTemplate      = UserCourseTemplate::instance();
+		$btn_continue_and_finish = [];
+		if ( $userCourseModel instanceof UserCourseModel ) {
+			$btn_continue_and_finish = [
+				'btn_continue' => $userCourseTemplate->html_btn_continue( $userCourseModel ),
+				'btn_finish'   => $userCourseTemplate->html_btn_finish( $userCourseModel ),
+				'btn_retake'   => $userCourseTemplate->html_btn_retake( $userCourseModel ),
+			];
+		}
+
+		$section_buttons = apply_filters(
+			'learn-press/single-course/modern/section-right/buttons',
+			[
+				'wrapper'      => '<div class="course-buttons">',
+				'btn_contact'  => $this->singleCourseTemplate->html_btn_external( $course, $user ),
+				'btn_buy'      => $this->singleCourseTemplate->html_btn_purchase_course( $course, $user ),
+				'btn_enroll'   => $this->singleCourseTemplate->html_btn_enroll_course( $course, $user ),
+				'btn_learning' => Template::combine_components( $btn_continue_and_finish ),
+				'wrapper_end'  => '</div>',
+			],
+			$course,
+			$user
+		);
+
+		return Template::combine_components( $section_buttons );
+	}
+
+	public function html_info_learning( CourseModel $course, $user ): string {
+		// Info learning
+		$html_info_learning = '';
+		$user_id            = 0;
+		if ( $user instanceof UserModel ) {
+			$user_id = $user->get_id();
+		}
+		$userCourseModel    = UserCourseModel::find( $user_id, $course->get_id(), true );
+		$userCourseTemplate = UserCourseTemplate::instance();
+		if ( $userCourseModel instanceof UserCourseModel
+					&& $userCourseModel->get_status() !== UserItemModel::STATUS_CANCEL
+					&& $userCourseModel->get_status() !== UserCourseModel::STATUS_PURCHASED ) {
+
+			$html_end_date   = '';
+			$html_graduation = '';
+			if ( $userCourseModel->get_status() === UserItemModel::STATUS_FINISHED ) {
+				$html_end_date   = sprintf(
+					'<div>%s: %s</div>',
+					__( 'End date', 'learnpress' ),
+					$userCourseTemplate->html_end_date_time( $userCourseModel, false )
+				);
+				$html_graduation = $userCourseTemplate->html_graduation( $userCourseModel );
+			}
+
+			$section_info_learning = [
+				'wrapper'               => '<div class="info-learning">',
+				'message_lock'          => $userCourseTemplate->html_message_lock( $userCourseModel ),
+				'graduation'            => $html_graduation,
+				'progress'              => $userCourseTemplate->html_progress( $userCourseModel ),
+				'start_date'            => sprintf(
+					'<div>%s: %s</div>',
+					__( 'Start date', 'learnpress' ),
+					$userCourseTemplate->html_start_date_time( $userCourseModel, false )
+				),
+				'end_date'              => $html_end_date,
+				'count_items_completed' => $userCourseTemplate->html_count_items_completed( $userCourseModel ),
+				'wrapper_end'           => '</div>',
+			];
+			$html_info_learning    = Template::combine_components( $section_info_learning );
+		}
+
+		return $html_info_learning;
 	}
 }

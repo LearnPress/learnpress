@@ -1,6 +1,7 @@
 <?php
 
 use LearnPress\Models\CourseModel;
+use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
 
 /**
  * Class Block_Template_Features_Single_Course
@@ -17,36 +18,48 @@ class Block_Template_Features_Single_Course extends Abstract_Block_Template_Widg
 	public $source_js                     = LP_PLUGIN_URL . 'assets/js/dist/blocks/features-single-course.js';
 
 	public function render_content_block_template( array $attributes ) {
-		$attributes['title'] = ! empty( $attributes['title'] ) ? esc_html( $attributes['title'], 'learnpress' ) : esc_html( 'Title', 'learnpress' );
-		$course_id           = ! empty( $attributes['courseId'] ) ? (int) $attributes['courseId'] : get_the_ID();
-		$course              = CourseModel::find( $course_id, true );
-		if ( ! $course ) {
-			return;
-		}
-		$items               = $course->get_meta_value_by_key( '_lp_key_features' );
-		$attributes['title'] = 'Features';
-
-		if ( ! empty( $items ) && is_string( ( $items ) ) ) {
-			$items = unserialize( $items );
-		}
-
-		if ( ! empty( $items ) && is_array( $items ) ) :
+		$content              = '';
+		$course               = CourseModel::find( get_the_ID(), true );
+		$layout_single_course = LP_Settings::get_option( 'layout_single_course', 'classic' );
+		if ( $layout_single_course === 'modern' ) {
 			ob_start();
-			?>
-			<ul>
-				<?php foreach ( $items as $item ) : ?>
-					<li><?php echo wp_kses_post( $item ); ?></li>
-				<?php endforeach; ?>
-			</ul>
-			<?php
-			$attributes['list'] = ob_get_clean();
-		endif;
+			echo SingleCourseTemplate::instance()->html_features( $course );
+			$content = ob_get_clean();
 
-		$order = [ 'courseId', 'title', 'list' ];
-		foreach ( $order as $key ) {
-			$sortedAttributes[ $key ] = isset( $attributes[ $key ] ) ? $attributes[ $key ] : '';
+			return $content;
+		} else {
+
+			$attributes['title'] = ! empty( $attributes['title'] ) ? esc_html( $attributes['title'], 'learnpress' ) : esc_html( 'Title', 'learnpress' );
+			$course_id           = ! empty( $attributes['courseId'] ) ? (int) $attributes['courseId'] : get_the_ID();
+			$course              = CourseModel::find( $course_id, true );
+			if ( ! $course ) {
+				return;
+			}
+			$items               = $course->get_meta_value_by_key( '_lp_key_features' );
+			$attributes['title'] = 'Features';
+
+			if ( ! empty( $items ) && is_string( ( $items ) ) ) {
+				$items = unserialize( $items );
+			}
+
+			if ( ! empty( $items ) && is_array( $items ) ) :
+				ob_start();
+				?>
+				<ul>
+					<?php foreach ( $items as $item ) : ?>
+						<li><?php echo wp_kses_post( $item ); ?></li>
+					<?php endforeach; ?>
+				</ul>
+				<?php
+				$attributes['list'] = ob_get_clean();
+			endif;
+
+			$order = [ 'courseId', 'title', 'list' ];
+			foreach ( $order as $key ) {
+				$sortedAttributes[ $key ] = isset( $attributes[ $key ] ) ? $attributes[ $key ] : '';
+			}
+
+			return parent::render_content_block_template( $sortedAttributes );
 		}
-
-		return parent::render_content_block_template( $sortedAttributes );
 	}
 }

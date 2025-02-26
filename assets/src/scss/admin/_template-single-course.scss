@@ -202,6 +202,16 @@
 			flex: 1;
 		}
 	}
+
+	.lp-single-course-main:has(.lp-single-course-main__right) {
+		display: grid;
+		grid-template-columns: 2fr 1fr;
+		gap: 40px;
+	}
+
+	.lp-single-course-main__right {
+		margin-top: 0;
+	}
 }
 
 .wp-block-learnpress-archive-course,

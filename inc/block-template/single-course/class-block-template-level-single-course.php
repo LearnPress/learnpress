@@ -1,4 +1,8 @@
 <?php
+
+use LearnPress\Models\CourseModel;
+use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
+
 /**
  * Class Block_Template_Level_Single_Course
  *
@@ -12,4 +16,28 @@ class Block_Template_Level_Single_Course extends Abstract_Block_Template_Widget_
 	public $path_html_block_template_file = 'html/single-course/level-single-course.html';
 	public $single_course_func            = 'html_level';
 	public $source_js                     = LP_PLUGIN_URL . 'assets/js/dist/blocks/level-single-course.js';
+
+	public function render_content_block_template( array $attributes ) {
+		$content              = '';
+		$layout_single_course = LP_Settings::get_option( 'layout_single_course', 'classic' );
+		if ( $layout_single_course === 'modern' ) {
+			$course = CourseModel::find( get_the_ID(), true );
+			$value  = SingleCourseTemplate::instance()->html_level( $course );
+			$label  = __( 'Level', 'learnpress' );
+			ob_start();
+			echo sprintf(
+				'<div class="info-meta-item">
+						<span class="info-meta-left"><i class="lp-icon-signal"></i>%s:</span>
+						<span class="info-meta-right"><div class="course-count-student">%s</div></span>
+					</div>',
+				$label,
+				$value
+			);
+
+			$content = ob_get_clean();
+			return $content;
+		} else {
+			return parent::render_content_block_template( $attributes );
+		}
+	}
 }

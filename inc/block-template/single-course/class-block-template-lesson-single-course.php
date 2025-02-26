@@ -1,4 +1,8 @@
 <?php
+
+use LearnPress\Models\CourseModel;
+use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
+
 /**
  * Class Block_Template_Lesson_Single_Course
  *
@@ -14,12 +18,30 @@ class Block_Template_Lesson_Single_Course extends Abstract_Block_Template_Widget
 	public $source_js                     = LP_PLUGIN_URL . 'assets/js/dist/blocks/lesson-single-course.js';
 
 	public function render_content_block_template( array $attributes ) {
-		$attributes['itemType'] = 'lp_lesson';
-		$order                  = [ 'courseId', 'itemType', 'showOnlyNumber' ];
-		foreach ( $order as $key ) {
-			$sortedAttributes[ $key ] = isset( $attributes[ $key ] ) ? $attributes[ $key ] : '';
+		$content              = '';
+		$layout_single_course = LP_Settings::get_option( 'layout_single_course', 'classic' );
+		if ( $layout_single_course === 'modern' ) {
+			$course = CourseModel::find( get_the_ID(), true );
+			$value  = SingleCourseTemplate::instance()->html_count_item( $course, LP_LESSON_CPT );
+			$label  = __( 'Lesson', 'learnpress' );
+			ob_start();
+			echo sprintf(
+				'<div class="info-meta-item">
+						<span class="info-meta-left"><i class="lp-icon-file-o"></i>%s:</span>
+						<span class="info-meta-right"><div class="course-count-student">%s</div></span>
+					</div>',
+				$label,
+				$value
+			);
+			$content = ob_get_clean();
+			return $content;
+		} else {
+			$attributes['itemType'] = 'lp_lesson';
+			$order                  = [ 'courseId', 'itemType', 'showOnlyNumber' ];
+			foreach ( $order as $key ) {
+				$sortedAttributes[ $key ] = isset( $attributes[ $key ] ) ? $attributes[ $key ] : '';
+			}
+			return parent::render_content_block_template( $sortedAttributes );
 		}
-
-		return parent::render_content_block_template( $sortedAttributes );
 	}
 }

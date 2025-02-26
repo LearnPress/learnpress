@@ -1,6 +1,7 @@
 <?php
 
 use LearnPress\Models\CourseModel;
+use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
 
 /**
  * Class Block_Template_Target_Audiences_Single_Course
@@ -23,30 +24,40 @@ class Block_Template_Target_Audiences_Single_Course extends Abstract_Block_Templ
 		if ( ! $course ) {
 			return;
 		}
-		$items               = $course->get_meta_value_by_key( '_lp_target_audiences' );
-		$attributes['title'] = 'Target audiences';
 
-		if ( ! empty( $items ) && is_string( ( $items ) ) ) {
-			$items = unserialize( $items );
-		}
-
-		if ( ! empty( $items ) && is_array( $items ) ) :
+		$course               = CourseModel::find( get_the_ID(), true );
+		$layout_single_course = LP_Settings::get_option( 'layout_single_course', 'classic' );
+		if ( $layout_single_course === 'modern' ) {
 			ob_start();
-			?>
-			<ul>
-				<?php foreach ( $items as $item ) : ?>
-					<li><?php echo wp_kses_post( $item ); ?></li>
-				<?php endforeach; ?>
-			</ul>
-			<?php
-			$attributes['list'] = ob_get_clean();
-		endif;
+			echo SingleCourseTemplate::instance()->html_target( $course );
+			$content = ob_get_clean();
+			return $content;
+		} else {
+			$items               = $course->get_meta_value_by_key( '_lp_target_audiences' );
+			$attributes['title'] = 'Target audiences';
 
-		$order = [ 'courseId', 'title', 'list' ];
-		foreach ( $order as $key ) {
-			$sortedAttributes[ $key ] = isset( $attributes[ $key ] ) ? $attributes[ $key ] : '';
+			if ( ! empty( $items ) && is_string( ( $items ) ) ) {
+				$items = unserialize( $items );
+			}
+
+			if ( ! empty( $items ) && is_array( $items ) ) :
+				ob_start();
+				?>
+				<ul>
+					<?php foreach ( $items as $item ) : ?>
+						<li><?php echo wp_kses_post( $item ); ?></li>
+					<?php endforeach; ?>
+				</ul>
+				<?php
+				$attributes['list'] = ob_get_clean();
+			endif;
+
+			$order = [ 'courseId', 'title', 'list' ];
+			foreach ( $order as $key ) {
+				$sortedAttributes[ $key ] = isset( $attributes[ $key ] ) ? $attributes[ $key ] : '';
+			}
+
+			return parent::render_content_block_template( $sortedAttributes );
 		}
-
-		return parent::render_content_block_template( $sortedAttributes );
 	}
 }
