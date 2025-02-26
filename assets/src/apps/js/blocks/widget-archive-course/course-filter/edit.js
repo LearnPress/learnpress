@@ -73,7 +73,17 @@ export const edit = ( props ) => {
 					<h3>{ props.attributes.title }</h3>
 				</div>
 				<div>
-					<InnerBlocks />
+					<InnerBlocks
+						allowedBlocks={ [
+							'learnpress/search-filter-archive-course',
+							'learnpress/author-filter-archive-course',
+							'learnpress/level-filter-archive-course',
+							'learnpress/price-filter-archive-course',
+							'learnpress/category-filter-archive-course',
+							'learnpress/tag-filter-archive-course',
+							'learnpress/review-filter-archive-course',
+						] }
+					/>
 				</div>
 			</div>
 		</>
