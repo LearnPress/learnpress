@@ -6,9 +6,10 @@ export const edit = ( props ) => {
 		<>
 			<div { ...blockProps }>
 				<div style={ { margin: '15px 0' } }>
-					<strong>
+					<h3>
 						{ 'Comment' }
-					</strong>
+					</h3>
+					<div className="box-comment"></div>
 				</div>
 			</div>
 		</>

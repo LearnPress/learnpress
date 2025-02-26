@@ -7,7 +7,13 @@ export const edit = ( props ) => {
 		<>
 			<div { ...blockProps }>
 				<div className="related-course">
-					<strong>{ 'Related Course' }</strong>
+					<h3>{ 'Related Course' }</h3>
+					<div className="list-course">
+						<div className="course-item"></div>
+						<div className="course-item"></div>
+						<div className="course-item"></div>
+						<div className="course-item"></div>
+					</div>
 				</div>
 			</div>
 		</>

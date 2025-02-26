@@ -7,7 +7,7 @@ export const edit = ( props ) => {
 	return (
 		<>
 			<div { ...blockProps }>
-				<p>{ 'Time Info One' }</p>
+				<p>{ 'Last updated: December 5, 2024' }</p>
 			</div>
 		</>
 	);

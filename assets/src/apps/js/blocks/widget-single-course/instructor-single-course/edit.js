@@ -6,7 +6,6 @@ export const edit = ( props ) => {
 	return (
 		<>
 			<div { ...blockProps }>
-				<div className="avatar"></div>
 				<strong>{ 'Instructor' }</strong>
 			</div>
 		</>

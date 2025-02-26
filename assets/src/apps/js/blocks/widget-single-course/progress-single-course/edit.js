@@ -7,21 +7,10 @@ export const edit = ( props ) => {
 	return (
 		<>
 			<div { ...blockProps }>
-				<div className="course-results-progress" style={ { marginBottom: '10px' } }>
-					<div className="items-progress" style={ { display: 'flex', justifyContent: 'space-between' } }>
-						<strong>{ 'Lessons completed: ' }</strong>
-						<span className="number">{ '0/1' }</span>
-					</div>
-
-					<div className="items-progress" style={ { display: 'flex', justifyContent: 'space-between' } }>
-						<strong>{ 'Quizzes finished: ' }</strong>
-						<span>{ '0/1' }</span>
-					</div>
-
-					<div className="items-progress" style={ { display: 'flex', justifyContent: 'space-between' } }>
-						<strong>{ 'Course progress: ' }</strong>
-						<span>{ '0%' }</span>
-					</div>
+				<div className="course-progress">
+					<span>{ 'Course passing progress: 0%' }</span>
+					<div className="line"></div>
+					<span>{ 'Start date: 2025' }</span>
 				</div>
 			</div>
 		</>

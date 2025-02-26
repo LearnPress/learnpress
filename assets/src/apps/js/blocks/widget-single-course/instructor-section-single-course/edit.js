@@ -7,7 +7,15 @@ export const edit = ( props ) => {
 	return (
 		<>
 			<div { ...blockProps }>
-				<span> { 'Instructor Section' } </span>
+				<h3> { 'Instructor' } </h3>
+				<div className="wrapper">
+					<div className="avatar"></div>
+					<div className="info">
+						<div className="line"></div>
+						<div className="line"></div>
+						<div className="line"></div>
+					</div>
+				</div>
 			</div>
 		</>
 	);

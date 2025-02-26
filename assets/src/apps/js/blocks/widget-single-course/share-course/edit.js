@@ -5,11 +5,7 @@ export const edit = ( props ) => {
 	return (
 		<>
 			<div { ...blockProps }>
-				<div style={ { margin: '15px 0' } }>
-					<strong>
-						{ 'Share Course' }
-					</strong>
-				</div>
+				<span>{ 'Share' }</span>
 			</div>
 		</>
 	);

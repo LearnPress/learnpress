@@ -138,18 +138,81 @@
 
 	.wp-block-learnpress-requirements-single-course,
 	.wp-block-learnpress-features-single-course,
-	.wp-block-learnpress-target-audiences-single-course {
-		padding: 10px;
-		margin-top: 20px;
-		background: rgba(181, 187, 211, 0.15);
-		font-size: 1em;
-		font-weight: 700;
-		border: 1px solid #e2e0db;
-		border-radius: 5px;
+	.wp-block-learnpress-target-audiences-single-course,
+	.wp-block-learnpress-curriculum-single-course,
+	.wp-block-learnpress-instructor-section-single-course,
+	.wp-block-learnpress-description-single-course,
+	.wp-block-learnpress-comment,
+	.wp-block-learnpress-related-course {
+		h3 {
+			margin-top: 20px;
+			font-size: calc(var(--lp-font-size-base, 1em) * 1.7);
+		}
+
+		.line {
+			width: 100%;
+			background: #e5e5e5;
+			height: 8px;
+			margin-top: 10px;
+			border-radius: 0 4px 4px 0;
+		}
 	}
 
-	.wp-block-learnpress-price-single-course {
-		text-align: center;
+	.wp-block-learnpress-instructor-section-single-course {
+		.wrapper {
+			display: grid;
+			grid-template-columns: 1fr 9fr;
+			gap: 30px;
+		}
+
+		.avatar {
+			width: 80px;
+			height: 80px;
+			border-radius: 100%;
+			background-color: #e5e5e5;
+		}
+
+		.info {
+			width: 100%;
+			margin-left: 10px;
+		}
+
+		.line {
+			height: 15px;
+		}
+	}
+
+	.wp-block-learnpress-comment {
+		.box-comment {
+			width: 100%;
+			height: 120px;
+			border: 1px solid #e5e5e5;
+			border-radius: 4px;
+		}
+	}
+
+	.wp-block-learnpress-related-course {
+		.list-course {
+			display: flex;
+			gap: 30px;
+			margin-top: 30px;
+		}
+
+		.course-item {
+			height: 333px;
+			width: 100%;
+			background: #ccc;
+			border-radius: 12px;
+		}
+	}
+
+	.wp-block-learnpress-progress-single-course {
+		.line {
+			width: 100%;
+			background: #ccc;
+			height: 5px;
+			border-radius: 5px;
+		}
 	}
 
 	.wp-block-learnpress-btn-purchase-single-course {

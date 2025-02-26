@@ -7,9 +7,10 @@ export const edit = ( props ) => {
 	return (
 		<>
 			<div { ...blockProps }>
-				<div className="curriculum-single-course">
-					<strong>{ 'Curriculum' }</strong>
-				</div>
+				<h3>{ 'Curriculum' }</h3>
+				<div className="line"></div>
+				<div className="line"></div>
+				<div className="line"></div>
 			</div>
 		</>
 	);

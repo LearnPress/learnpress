@@ -6,7 +6,10 @@ export const edit = ( props ) => {
 	return (
 		<>
 			<div { ...blockProps }>
-				<span> { 'Target audiences' } </span>
+				<h3> { 'Target audiences' } </h3>
+				<div className="line"></div>
+				<div className="line"></div>
+				<div className="line"></div>
 			</div>
 		</>
 	);
