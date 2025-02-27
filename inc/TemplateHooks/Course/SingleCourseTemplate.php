@@ -1374,6 +1374,7 @@ class SingleCourseTemplate {
 				return $html;
 			}
 
+			wp_enqueue_script( 'lp-curriculum' );
 			$li_section_items = '';
 			foreach ( $section_items as $section_item ) {
 				$li_section_items .= $this->render_html_section_item( $courseModel, $userModel, $section_item );
@@ -1577,7 +1578,6 @@ class SingleCourseTemplate {
 		}
 
 		$link_item = $courseModel->get_item_link( $item_id, $item_type );
-		$link_item = add_query_arg( 'section_id', $section_item->section_id, $link_item );
 
 		$item_duration      = '';
 		$html_item_duration = '';
