@@ -185,6 +185,17 @@ export const edit = ( props ) => {
 						[
 							'learnpress/course-filter',
 							{ numberLevelCategory: 0, showInRest: false },
+							[
+								[ 'learnpress/search-filter-archive-course', {} ],
+								[ 'learnpress/author-filter-archive-course', {} ],
+								[ 'learnpress/level-filter-archive-course', {} ],
+								[ 'learnpress/price-filter-archive-course', {} ],
+								[
+									'learnpress/category-filter-archive-course',
+									{},
+								],
+								[ 'learnpress/tag-filter-archive-course', {} ],
+							],
 						],
 					],
 				],
