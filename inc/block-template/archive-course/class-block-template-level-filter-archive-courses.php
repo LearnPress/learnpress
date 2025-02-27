@@ -1,5 +1,4 @@
 <?php
-use LearnPress\Models\Courses;
 
 /**
  * Class Block_Template_Level_Filter_Archive_Courses
