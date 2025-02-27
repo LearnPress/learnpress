@@ -14,6 +14,7 @@ require_once $blog_template_path . 'single-course/class-block-template-instructo
 require_once $blog_template_path . 'single-course/class-block-template-tabs-single-course.php';
 require_once $blog_template_path . 'single-course/class-block-template-price-single-course.php';
 require_once $blog_template_path . 'single-course/class-block-template-feature-review-single-course.php';
+require_once $blog_template_path . 'single-course/class-block-template-faqs-single-course.php';
 require_once $blog_template_path . 'single-course/class-block-template-level-single-course.php';
 require_once $blog_template_path . 'single-course/class-block-template-student-single-course.php';
 require_once $blog_template_path . 'single-course/class-block-template-btn-purchase-single-course.php';
@@ -112,6 +113,7 @@ return apply_filters(
 		new Block_Template_Feature_Review_Single_Course(),
 		new Block_Template_Requirements_Single_Course(),
 		new Block_Template_Features_Single_Course(),
+		new Block_Template_Faqs_Single_Course(),
 		new Block_Template_Target_Audiences_Single_Course(),
 		new Block_Template_Lesson_Single_Course(),
 		new Block_Template_Quiz_Single_Course(),
