@@ -19,6 +19,7 @@ class Block_Template_Categories_Single_Course extends Abstract_Block_Template_Wi
 	public $source_js                     = LP_PLUGIN_URL . 'assets/js/dist/blocks/categories-single-course.js';
 
 	public function render_content_block_template( array $attributes ) {
+		$content                     = '';
 		$course                      = CourseModel::find( get_the_ID(), true );
 		$singleCourseClassicTemplate = SingleCourseClassicTemplate::instance();
 
