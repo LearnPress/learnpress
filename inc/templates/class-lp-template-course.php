@@ -5,6 +5,7 @@ use LearnPress\Models\CourseModel;
 use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
+use LearnPress\TemplateHooks\UserItem\UserCourseTemplate;
 
 /**
  * Class LP_Course_Template
@@ -387,21 +388,17 @@ class LP_Template_Course extends LP_Abstract_Template {
 	 *
 	 * @throws Exception
 	 * @modify 4.1.3.1
-	 * @version 4.0.3
+	 * @version 4.0.4
 	 * @since  4.0.0
 	 */
-	public function course_continue_button( $course = null ) {
-		$can_show = true;
-		$user     = learn_press_get_current_user();
-		if ( empty( $course ) ) {
-			$course = learn_press_get_course();
-		}
-
-		$courseModel = CourseModel::find( $course->get_id(), true );
-		$user_id     = $user->get_id();
+	public static function course_continue_button( $args = [] ) {
+		$course_id_param = $args['course-id'] ?? 0;
+		$course_id       = ! empty( $course_id_param ) ? $course_id_param : get_the_ID();
+		$courseModel     = CourseModel::find( $course_id, true );
+		$user_id         = get_current_user_id();
 
 		try {
-			if ( ! $user || ! $course ) {
+			if ( ! $user_id || ! $courseModel ) {
 				throw new Exception( 'User or Course not exists!' );
 			}
 
@@ -423,22 +420,17 @@ class LP_Template_Course extends LP_Abstract_Template {
 			if ( $userCourseModel->timestamp_remaining_duration() === 0 ) {
 				throw new Exception( 'Course is blocked' );
 			}
+
+			$section = [
+				'start' => '<div>',
+				'link'  => UserCourseTemplate::instance()->html_btn_continue( $userCourseModel ),
+				'end'   => '</div>',
+			];
+
+			echo Template::combine_components( $section );
 		} catch ( Throwable $e ) {
-			$can_show = false;
+
 		}
-
-		$can_show = apply_filters( 'learnpress/course/template/button-continue/can-show', $can_show, $user, $course );
-
-		if ( ! $can_show ) {
-			return;
-		}
-
-		$args = array(
-			'user'   => $user,
-			'course' => $course,
-		);
-
-		learn_press_get_template( 'single-course/buttons/continue.php', $args );
 	}
 
 	public function course_finish_button( $course = null ) {
