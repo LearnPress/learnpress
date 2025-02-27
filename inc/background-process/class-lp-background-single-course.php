@@ -65,6 +65,8 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 		 * Save course via post data
 		 *
 		 * @throws Exception
+		 * @since 4.1.3
+		 * @version 1.0.2
 		 */
 		protected function save_post() {
 			if ( ! current_user_can( 'edit_lp_courses' ) ) {
@@ -87,7 +89,12 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 			$courseModel->get_final_quiz();
 			$courseModel->get_categories();
 			$courseModel->get_tags();
-			$courseModel->get_image_url();
+			$size_img_setting = LP_Settings::get_option( 'course_thumbnail_dimensions', [] );
+			$size_img_send    = [
+				$size_img_setting['width'] ?? 500,
+				$size_img_setting['height'] ?? 300,
+			];
+			$courseModel->get_image_url( $size_img_send );
 			$courseModel->save();
 
 			//$this->save_extra_info();

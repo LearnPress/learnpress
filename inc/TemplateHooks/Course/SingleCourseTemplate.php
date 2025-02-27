@@ -257,22 +257,30 @@ class SingleCourseTemplate {
 	 * @param LP_Course|CourseModel $course
 	 *
 	 * @return string
+	 * @since 4.2.3.2
+	 * @version 1.0.2
 	 */
 	public function html_image( $course ): string {
 		$content = '';
 
 		try {
+			$courseModel = $course;
 			if ( $course instanceof LP_Course ) {
-				$course = CourseModel::find( $course->get_id(), true );
+				$courseModel = CourseModel::find( $course->get_id(), true );
 			}
 
-			if ( ! $course instanceof CourseModel ) {
+			if ( ! $courseModel instanceof CourseModel ) {
 				return '';
 			}
 
-			$content = sprintf(
+			$size_img_setting = LP_Settings::get_option( 'course_thumbnail_dimensions', [] );
+			$size_img_send    = [
+				$size_img_setting['width'] ?? 500,
+				$size_img_setting['height'] ?? 300,
+			];
+			$content          = sprintf(
 				'<img src="%s" alt="%s">',
-				esc_url_raw( $course->get_image_url() ),
+				esc_url_raw( $courseModel->get_image_url( $size_img_send ) ),
 				_x( 'course thumbnail', 'no course thumbnail', 'learnpress' )
 			);
 
@@ -283,7 +291,7 @@ class SingleCourseTemplate {
 					'content'     => $content,
 					'wrapper_end' => '</div>',
 				],
-				$course
+				$courseModel
 			);
 
 			$content = Template::combine_components( $section );
