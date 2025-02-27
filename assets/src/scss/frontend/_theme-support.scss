@@ -603,42 +603,50 @@ body.twentyseventeen.learnpress-page {
 	}
 }
 // Fix for thim ekit 1.2.9.1
-.thim-ekit-dark-mode{
-	--lp-fix-bg-section-item:transparent;
-}
-.demo-marketplace{
-	.thim-ekit-tablist{
-		.lp-course-curriculum__title{
+
+.demo-marketplace, .demo-ecommerce {
+	.thim-ekit-tablist {
+		.lp-course-curriculum__title {
 			display: none;
 		}
-		.course-section-header{
+
+		.course-section-header {
 			background-color: var(--thim-breacrumb-bg-color);
 		}
-		.course-section__items{
-			background-color:var(--lp-fix-bg-section-item,#fbfbfb);
+
+		.course-section__items {
+			background-color: var(--lp-fix-bg-section-item, #F5F7F8);
 		}
- 	}
-	.style-marketplace-2 .course-section-header{
+	}
+
+	.style-marketplace-2 {
 		--thim-breacrumb-bg-color: #0f1c44;
-		.thim-ekit-light-mode &{
+		--lp-fix-bg-section-item: transparent;
+
+		.thim-ekit-light-mode & {
 			--thim-breacrumb-bg-color: #F4F4F4
 		}
 	}
 }
 
-.demo-online-learning{
-	.thim-ekit-tablist{
-		.lp-course-curriculum__title{
+.demo-ecommerce .course-section-header {
+	--thim-breacrumb-bg-color: #E1E9FD;
+}
+
+.demo-online-learning {
+	.thim-ekit-tablist {
+		.lp-course-curriculum__title {
 			display: none;
 		}
-		.course-section{
+
+		.course-section {
 			margin-bottom: 8px;
 			border: none;
 		}
-		.course-section-header{
+
+		.course-section-header {
 			background-color: #DFEFFF;
 			border-radius: 8px 8px 8px 8px;
-
 		}
 	}
 }
