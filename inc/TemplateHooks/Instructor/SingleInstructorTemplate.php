@@ -46,13 +46,17 @@ class SingleInstructorTemplate extends UserTemplate {
 	 * @param LP_User|UserModel $instructor
 	 *
 	 * @return string
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 * @since 4.2.3
 	 */
 	public function html_count_courses( $instructor ): string {
 		$content = '';
 
 		try {
+			if ( $instructor instanceof LP_User ) {
+				$instructor = UserModel::find( $instructor->get_id(), true );
+			}
+
 			$instructor_statistic = $instructor->get_instructor_statistic();
 
 			$sections = [
@@ -79,13 +83,17 @@ class SingleInstructorTemplate extends UserTemplate {
 	 * @param LP_User|UserModel $instructor
 	 *
 	 * @return string
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 * @since 4.2.3
 	 */
 	public function html_count_students( $instructor ): string {
 		$content = '';
 
 		try {
+			if ( $instructor instanceof LP_User ) {
+				$instructor = UserModel::find( $instructor->get_id(), true );
+			}
+
 			$instructor_statistic = $instructor->get_instructor_statistic();
 
 			$sections = [

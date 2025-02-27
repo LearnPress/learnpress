@@ -98,7 +98,7 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 * @param int $course_id .
 		 *
 		 * @return LP_User_Item_Course|bool
-		 * @version  3.1.3
+		 * @version  3.1.4
 		 * @editor tungnx
 		 * @modify 4.1.3
 		 */
@@ -111,20 +111,11 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					$course_id = get_the_ID();
 				}
 
-				/*if ( $this instanceof LP_User_Guest ) {
-					throw new Exception( 'User is Guest' );
-				}*/
-
-				$filter            = new LP_User_Items_Filter();
-				$filter->item_id   = $course_id;
-				$filter->item_type = LP_COURSE_CPT;
-				$filter->user_id   = $this->get_id();
-				$last_user_course  = $lp_user_items_db->get_last_user_course( $filter );
-
-				if ( $last_user_course ) {
-					$object_course_data = new LP_User_Item_Course( $last_user_course );
+				$userCourseModel = UserCourseModel::find( $this->get_id(), $course_id, true );
+				if ( $userCourseModel ) {
+					$userCourseArr      = (array) $userCourseModel;
+					$object_course_data = new LP_User_Item_Course( $userCourseArr );
 				} else {
-					$object_course_data = false;
 					/**
 					 * Todo: some themes still not check false, so still use below code.\
 					 * @editor tungnx 4.1.6.9
@@ -1135,16 +1126,16 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 					switch ( $k ) {
 						case 'facebook':
- 							$i = '<i class="lp-user-ico lp-icon-facebook"></i>';
+							$i = '<i class="lp-user-ico lp-icon-facebook"></i>';
 							break;
 						case 'twitter':
- 							$i = '<i class="lp-user-ico lp-icon-twitter"></i>';
+							$i = '<i class="lp-user-ico lp-icon-twitter"></i>';
 							break;
 						case 'linkedin':
- 							$i = '<i class="lp-user-ico lp-icon-linkedin"></i>';
+							$i = '<i class="lp-user-ico lp-icon-linkedin"></i>';
 							break;
 						case 'youtube':
- 							$i = '<i class="lp-user-ico lp-icon-youtube-play"></i>';
+							$i = '<i class="lp-user-ico lp-icon-youtube-play"></i>';
 							break;
 						default:
 							$i = sprintf( '<i class="lp-user-ico lp-icon-%s"></i>', $k );

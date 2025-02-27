@@ -313,12 +313,13 @@ class LP_Session_Handler {
 				return $session;
 			}
 
-			$filter              = new LP_Session_Filter();
-			$filter->session_key = $customer_id;
-			$filter->only_fields = [ 'session_key', 'session_value' ];
-			$filter->field_count = 'session_key';
-			$filter->limit       = 1;
-			$res                 = $lp_session_db->get_sessions( $filter );
+			$filter                  = new LP_Session_Filter();
+			$filter->session_key     = $customer_id;
+			$filter->only_fields     = [ 'session_key', 'session_value' ];
+			$filter->field_count     = 'session_key';
+			$filter->run_query_count = false;
+			$filter->limit           = 1;
+			$res                     = $lp_session_db->get_sessions( $filter );
 			if ( ! empty( $res ) ) {
 				$session = $res[0]->session_value;
 			}
