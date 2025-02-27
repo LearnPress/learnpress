@@ -1490,7 +1490,7 @@ class SingleCourseTemplate {
 		$class_section_toggle       = '';
 
 		if ( $this->currentItemModel ) {
-			$current_section = (int) ( $_GET['section_id'] ?? 0 );
+			$current_section = $courseModel->get_section_of_item( $this->currentItemModel->get_id() );
 			if ( $current_section != $section_id ) {
 				$class_section_toggle = 'lp-collapse';
 			}

@@ -459,6 +459,31 @@ class CourseModel {
 	}
 
 	/**
+	 * Get section id of item
+	 *
+	 * @param int $item_id
+	 *
+	 * @return int
+	 * @since 4.2.8
+	 * @version 1.0.0
+	 */
+	public function get_section_of_item( int $item_id ): int {
+		$section_id = 0;
+
+		$section_items = $this->get_section_items();
+		foreach ( $section_items as $section ) {
+			foreach ( $section->items as $item ) {
+				if ( (int) $item->item_id === $item_id ) {
+					$section_id = $section->id;
+					break;
+				}
+			}
+		}
+
+		return (int) $section_id;
+	}
+
+	/**
 	 * Get course Evaluation type.
 	 *
 	 * @return string
