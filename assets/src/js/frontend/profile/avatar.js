@@ -100,7 +100,7 @@ export default function Avatar() {
 			const { data, status, message } = await response;
 
 			if ( status === 'success' ) {
-				window.location.reload();
+				// window.location.reload();
 			}
 
 			setNotice( {
