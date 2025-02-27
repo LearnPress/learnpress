@@ -6,7 +6,22 @@ export const edit = ( props ) => {
 	return (
 		<>
 			<div { ...blockProps }>
-				<span>{ 'Tag course' }</span>
+				<strong>{ 'Tags' }</strong>
+				<div className="lp-course-filter__field">
+					<input type="checkbox"></input>
+					<label>{ 'Tag 1' }</label>
+					<span className="count">{ '25' }</span>
+				</div>
+				<div className="lp-course-filter__field">
+					<input type="checkbox"></input>
+					<label>{ 'Tag 2' }</label>
+					<span className="count">{ '25' }</span>
+				</div>
+				<div className="lp-course-filter__field">
+					<input type="checkbox"></input>
+					<label>{ 'Tag 3' }</label>
+					<span className="count">{ '25' }</span>
+				</div>
 			</div>
 		</>
 	);

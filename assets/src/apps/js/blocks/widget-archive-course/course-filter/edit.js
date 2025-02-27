@@ -85,6 +85,10 @@ export const edit = ( props ) => {
 						] }
 					/>
 				</div>
+				<div className="lp-course-filter__action">
+					<button>{ 'Apply' }</button>
+					<button>{ 'Reset' }</button>
+				</div>
 			</div>
 		</>
 	);

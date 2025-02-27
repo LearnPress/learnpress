@@ -6,7 +6,17 @@ export const edit = ( props ) => {
 	return (
 		<>
 			<div { ...blockProps }>
-				<span>{ 'Price course' }</span>
+				<strong>{ 'Price' }</strong>
+				<div className="lp-course-filter__field">
+					<input type="checkbox"></input>
+					<label>{ 'Free' }</label>
+					<span className="count">{ '25' }</span>
+				</div>
+				<div className="lp-course-filter__field">
+					<input type="checkbox"></input>
+					<label>{ 'Paid' }</label>
+					<span className="count">{ '25' }</span>
+				</div>
 			</div>
 		</>
 	);

@@ -14,12 +14,12 @@ array_push( $fields, 'btn_submit', 'btn_reset' );
 apply_filters( 'learnpress/course-filter/fields', $fields );
 
 $class                     = 'learnpress-widget-wrapper';
-$show_in_rest              = $attributes['showInRest'] === false ? 0 : 1;
+$show_in_rest              = isset( $attributes['showInRest'] ) ? ( $attributes['showInRest'] === false ? 0 : 1 ) : 1;
 $title                     = $attributes['title'] ?? 'Course Filter';
 $content                   = '';
 $number_level_category     = $attributes['numberLevelCategory'] ?? 1;
-$search_suggestion         = $attributes['searchSuggestion'] === false ? 0 : 1;
-$hide_count_zero           = $attributes['hideCountZero'] === false ? 0 : 1;
+$search_suggestion         = isset( $attributes['searchSuggestion'] ) ? ( $attributes['searchSuggestion'] === false ? 0 : 1 ) : 1;
+$hide_count_zero           = isset( $attributes['hideCountZero'] ) ? ( $attributes['hideCountZero'] === false ? 0 : 1 ) : 1;
 $class_list_courses_target = '.lp-list-courses-default';
 
 $instance = [
