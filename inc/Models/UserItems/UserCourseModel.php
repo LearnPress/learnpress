@@ -571,16 +571,20 @@ class UserCourseModel extends UserItemModel {
 	 * Get completed items.
 	 *
 	 * @return object
-	 * @editor tungnx
 	 * @modify 4.1.4.1
 	 * @since 4.0.0
-	 * @version 4.0.1
+	 * @version 4.0.2
 	 */
 	public function count_items_completed() {
+		static $count_result;
 		$lp_user_items_db      = LP_User_Items_DB::getInstance();
 		$count_items_completed = new stdClass();
 
 		try {
+			if ( ! is_null( $count_result ) ) {
+				return $count_result;
+			}
+
 			$filter_count             = new LP_User_Items_Filter();
 			$filter_count->parent_id  = $this->get_user_item_id();
 			$filter_count->item_id    = $this->item_id;
@@ -588,6 +592,7 @@ class UserCourseModel extends UserItemModel {
 			$filter_count->status     = LP_ITEM_COMPLETED;
 			$filter_count->graduation = LP_COURSE_GRADUATION_PASSED;
 			$count_items_completed    = $lp_user_items_db->count_items_of_course_with_status( $filter_count );
+			$count_result             = $count_items_completed;
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}

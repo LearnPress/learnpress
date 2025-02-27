@@ -273,7 +273,7 @@ class SingleCourseTemplate {
 			];
 			$content          = sprintf(
 				'<img src="%s" alt="%s">',
-				esc_url_raw( $course->get_image_url( $size_img_send ) ),
+				esc_url_raw( $courseModel->get_image_url( $size_img_send ) ),
 				_x( 'course thumbnail', 'no course thumbnail', 'learnpress' )
 			);
 
@@ -284,7 +284,7 @@ class SingleCourseTemplate {
 					'content'     => $content,
 					'wrapper_end' => '</div>',
 				],
-				$course
+				$courseModel
 			);
 
 			$content = Template::combine_components( $section );
