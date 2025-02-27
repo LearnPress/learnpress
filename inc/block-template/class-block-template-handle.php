@@ -28,7 +28,6 @@ class Block_Template_Handle {
 		add_action( 'init', array( $this, 'register_tag_block' ) );
 		// Register block category
 		add_filter( 'block_categories_all', array( $this, 'add_block_category' ), 10, 2 );
-		add_action( 'init', array( $this, 'register_block_templates' ) );
 	}
 
 	/**
@@ -90,10 +89,22 @@ class Block_Template_Handle {
 			return $query_result;
 		}
 
+		$post_type          = isset( $query['post_type'] ) ? $query['post_type'] : '';
 		$lp_block_templates = Config::instance()->get( 'block-templates' );
 
 		foreach ( $lp_block_templates as $block_template ) {
 			$new = new $block_template();
+
+			if ( ! in_array( $new->slug, [ 'archive-lp_course' ,'single-lp_course' ] ) ) {
+				continue;
+			}
+
+			if ( $post_type &&
+			isset( $new->post_types ) &&
+			! in_array( $post_type, $new->post_types, true )
+			) {
+				continue;
+			}
 
 			// Get block template if custom - save on table posts.
 			$block_custom = $this->is_custom_block_template( $template_type, $new->slug );
@@ -107,13 +118,11 @@ class Block_Template_Handle {
 				}
 			}
 
-			if ( empty( $query ) ) { // For Admin and rest api call to this function, so $query is empty
+			$fits_slug_query = ! isset( $query['slug__in'] ) || in_array( $new->slug, $query['slug__in'], true );
+			$fits_area_query = ! isset( $query['area'] ) || ( property_exists( $new, 'area' ) && $new->area === $query['area'] );
+			$should_include  = $fits_slug_query && $fits_area_query;
+			if ( $should_include ) {
 				$query_result[] = $new;
-			} else {
-				$slugs = $query['slug__in'] ?? array();
-				if ( in_array( $new->slug, $slugs ) ) {
-					$query_result[] = $new;
-				}
 			}
 		}
 
@@ -215,37 +224,6 @@ class Block_Template_Handle {
 		array_unshift( $block_categories, $lp_category_block );
 
 		return $block_categories;
-	}
-
-	public function register_block_templates() {
-		if ( version_compare( get_bloginfo( 'version' ), '6.7', '<' ) ) {
-			return;
-		}
-
-		ob_start();
-		Template::instance()->get_frontend_template( 'block/html/single-lp_course.html' );
-		$content_single_course = ob_get_clean();
-		register_block_template(
-			'learnpress//single-course',
-			[
-				'title'       => __( 'Single Course', 'learnpress' ),
-				'description' => __( 'Template LearnPress Single Course', 'learnpress' ),
-				'content'     => $content_single_course,
-				'post_types'  => [ 'lp_course' ],
-			]
-		);
-
-		ob_start();
-		Template::instance()->get_frontend_template( 'block/html/archive-lp_course.html' );
-		$content_archive_course = ob_get_clean();
-		register_block_template(
-			'learnpress//archive-course',
-			[
-				'title'       => __( 'Archive Course', 'learnpress' ),
-				'description' => __( 'Template LearnPress Archive Course ', 'learnpress' ),
-				'content'     => $content_archive_course,
-			]
-		);
 	}
 }
 
