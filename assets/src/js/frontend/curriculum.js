@@ -158,5 +158,12 @@ const scrollToItemViewing = ( elCurriculum ) => {
 
 lpOnElementReady( '.lp-course-curriculum', ( elCurriculum ) => {
 	checkAllSectionsCollapsed( elCurriculum );
-	scrollToItemViewing( elCurriculum );
+
+	// Set interval to check if item viewing is changed
+	const interval = setInterval( () => {
+		if ( document.readyState === 'complete' ) {
+			clearInterval( interval );
+			scrollToItemViewing( elCurriculum );
+		}
+	}, 1000 );
 } );
