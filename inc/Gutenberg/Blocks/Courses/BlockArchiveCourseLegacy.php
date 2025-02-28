@@ -17,6 +17,7 @@ class BlockArchiveCourseLegacy extends BlockAbstract {
 	public $path_html_block_template_file = 'html/courses/archive-course-legacy.html';
 	public $path_template_render_default  = 'archive-course.php';
 	public $source_js                     = LP_PLUGIN_URL . 'assets/js/dist/blocks/archive-course-legacy.js';
+	public $is_show_on_template_list      = true;
 
 	public function __construct() {
 		parent::__construct();

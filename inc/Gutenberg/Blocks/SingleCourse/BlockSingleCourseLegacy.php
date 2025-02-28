@@ -19,6 +19,7 @@ class BlockSingleCourseLegacy extends BlockAbstract {
 	public $path_html_block_template_file = 'html/single-course/single-course-legacy.html';
 	public $path_template_render_default  = 'single-course.php';
 	public $source_js                     = LP_PLUGIN_URL . 'assets/js/dist/blocks/single-course-legacy.js';
+	public $is_show_on_template_list      = true;
 
 	public function __construct() {
 		parent::__construct();

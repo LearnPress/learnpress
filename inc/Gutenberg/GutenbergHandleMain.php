@@ -133,7 +133,10 @@ class GutenbergHandleMain {
 
 			// Show on list Templates in Admin
 			// Link preview https://drive.google.com/file/d/1Gi3LjCQMD731qKBLXTTR2hLi3qjemg6Q/view?usp=sharing
-			if ( isset( $query['slug__not_in'] ) && in_array( 'home', $query['slug__not_in'] ) ) {
+			if ( isset( $query['slug__not_in'] )
+				&& in_array( 'home', $query['slug__not_in'] )
+				&& $block_template->is_show_on_template_list
+			) {
 				$query_result[] = $block_template;
 			}
 		}

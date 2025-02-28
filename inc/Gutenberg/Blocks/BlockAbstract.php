@@ -12,6 +12,7 @@ use Throwable;
  * @version 1.0.0
  */
 abstract class BlockAbstract extends \WP_Block_Template {
+	public $slug  = '';
 	public $theme = 'learnpress/learnpress';
 	public $type  = 'wp_template';
 	/**
@@ -33,6 +34,10 @@ abstract class BlockAbstract extends \WP_Block_Template {
 	 * @var bool|string path of the file block.json metadata.
 	 */
 	public $inner_block = false;
+	/**
+	 * @var bool set true if you want to show on Templates of Admin WP.
+	 */
+	public $is_show_on_template_list = false;
 
 	public function __construct() {
 		if ( ! wp_is_block_theme() ) {
