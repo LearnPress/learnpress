@@ -77,9 +77,11 @@ class UserCourseModel extends UserItemModel {
 	 *
 	 * @return false|UserItemModel|static
 	 * @since 4.2.7
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public static function find( int $user_id, int $course_id, bool $check_cache = false ) {
+		static $staticData = [];
+
 		$filter            = new LP_User_Items_Filter();
 		$filter->user_id   = $user_id;
 		$filter->item_id   = $course_id;
@@ -93,6 +95,10 @@ class UserCourseModel extends UserItemModel {
 			if ( $userCourseModel instanceof UserCourseModel ) {
 				return $userCourseModel;
 			}
+
+			if ( isset( $staticData[ $key_cache ] ) ) {
+				return $staticData[ $key_cache ];
+			}
 		}
 
 		$userCourseModel = static::get_user_item_model_from_db( $filter );
@@ -101,6 +107,8 @@ class UserCourseModel extends UserItemModel {
 		if ( $userCourseModel instanceof UserCourseModel ) {
 			$lpUserCourseCache->set_cache( $key_cache, $userCourseModel );
 		}
+
+		$staticData[ $key_cache ] = $userCourseModel;
 
 		return $userCourseModel;
 	}
