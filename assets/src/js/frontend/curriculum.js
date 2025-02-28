@@ -165,5 +165,5 @@ lpOnElementReady( '.lp-course-curriculum', ( elCurriculum ) => {
 			clearInterval( interval );
 			scrollToItemViewing( elCurriculum );
 		}
-	}, 1000 );
+	}, 300 );
 } );
