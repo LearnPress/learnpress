@@ -43,6 +43,18 @@ document.addEventListener( 'keyup', ( e ) => {
 		searchItemCourse( value );
 	}
 } );
+
+/**
+ * 1. Handle submit form search
+ */
+document.addEventListener( 'submit', ( e ) => {
+	const target = e.target;
+
+	// Stop enter form search
+	if ( target.closest( 'form.search-course' ) ) {
+		e.preventDefault();
+	}
+} );
 // End events
 
 const toggleSectionAll = ( elToggleAllSections ) => {
