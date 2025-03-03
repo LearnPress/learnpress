@@ -82,7 +82,8 @@ module.exports = {
 		'./assets/js/dist/frontend/course-filter': './assets/src/js/frontend/course-filter.js',
 		'./assets/js/dist/blocks/archive-course-legacy': './assets/src/apps/js/blocks/archive-course-legacy/index.js',
 		'./assets/js/dist/blocks/single-course-legacy': './assets/src/apps/js/blocks/single-course-legacy/index.js',
-		'./assets/js/dist/blocks/course-title': './assets/src/apps/js/blocks/single-course/course-title/index.js',
+		'./assets/js/dist/blocks/single-course': './assets/src/apps/js/blocks/single-course/index.js',
+		'./assets/js/dist/blocks/course-title': './assets/src/apps/js/blocks/single-course-types/course-title/index.js',
 
 		// Elementor
 		'./assets/js/dist/elementor/courses': './assets/src/js/elementor/courses.js',

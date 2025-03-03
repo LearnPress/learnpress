@@ -12,7 +12,7 @@ use LP_Settings;
  * Handle register, render block template
  */
 class BlockSingleCourseLegacy extends BlockAbstract {
-	public $slug                          = 'single-lp_course';
+	public $slug                          = 'single-lp-course-legacy';
 	public $name                          = 'learnpress/single-course-legacy';
 	public $title                         = 'Single Course (Legacy)';
 	public $description                   = 'Single Course Legacy Block Template';
