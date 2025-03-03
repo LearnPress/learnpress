@@ -221,6 +221,12 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.2.8 (2025-03-03) =
+~ Apply the new curriculum layout for a single course, screen item learning, and apply it to the Theme premium.
+~ Optimize: some duplicate query.
+~ Fixed: course protected on single course layout Modern.
+~ Fixed: continue button has character "?" when redirect to item.
+
 = 4.2.7.9 (2025-02-24) =
 ~ Fixed: error 404 single course with struct permalink is "%course_category%".
 ~ Show error message response from PayPal if exists.
