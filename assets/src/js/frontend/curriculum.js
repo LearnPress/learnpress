@@ -137,11 +137,32 @@ const normalizeVietnamese = ( str ) => {
 	return str.normalize( 'NFD' ).replace( /[\u0300-\u036f]/g, '' );
 };
 
+/**
+ * Search string on text
+ * Logic:
+ * User enter text: "11 lesson"
+ * JS will search string has word "lesson" and "11"
+ * Result: "Lesson 11: Introduction"
+ * Result: "11 lesson: Introduction"
+ *
+ * @param text
+ * @param searchTerm
+ */
 const searchText = ( text, searchTerm ) => {
 	const normalizedText = normalizeVietnamese( text.toLowerCase() );
-	const normalizedSearchTerm = normalizeVietnamese( searchTerm.toLowerCase() );
-	const regex = new RegExp( normalizedSearchTerm, 'i' );
-	return regex.test( normalizedText );
+	const searchTermArr = searchTerm.trim().split( ' ' );
+	const length = searchTermArr.length;
+
+	let found = 0;
+	searchTermArr.forEach( ( term ) => {
+		const normalizedSearchTerm = normalizeVietnamese( term.toLowerCase() );
+		const regex = new RegExp( normalizedSearchTerm, 'gi' );
+		if ( regex.test( normalizedText ) ) {
+			found++;
+		}
+	} );
+
+	return found === length;
 };
 
 // Scroll to item viewing
