@@ -99,7 +99,6 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 		 *
 		 * @return LP_User_Item_Course|bool
 		 * @version  3.1.4
-		 * @editor tungnx
 		 * @modify 4.1.3
 		 */
 		public function get_course_data( int $course_id = 0 ) {
@@ -113,8 +112,9 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 
 				$userCourseModel = UserCourseModel::find( $this->get_id(), $course_id, true );
 				if ( $userCourseModel ) {
-					$userCourseArr      = (array) $userCourseModel;
-					$object_course_data = new LP_User_Item_Course( $userCourseArr );
+					$userCourseArr                 = (array) $userCourseModel;
+					$userCourseArr['user_item_id'] = $userCourseModel->get_user_item_id();
+					$object_course_data            = new LP_User_Item_Course( $userCourseArr );
 				} else {
 					/**
 					 * Todo: some themes still not check false, so still use below code.\

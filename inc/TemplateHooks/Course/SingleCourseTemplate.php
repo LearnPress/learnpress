@@ -1633,7 +1633,7 @@ class SingleCourseTemplate {
 					$user_item_status_ico_flag = $userCourseItem->get_status();
 					$user_item_graduation      = $userCourseItem->get_graduation();
 					if ( ! empty( $user_item_graduation ) ) {
-						$user_item_status_ico_flag = $user_item_graduation;
+						$user_item_status_ico_flag = $user_item_graduation . ' completed';
 					}
 
 					if ( empty( $user_item_status_ico_flag ) ) {
