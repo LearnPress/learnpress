@@ -252,7 +252,7 @@ class SingleCourseTemplate {
 	}
 
 	/**
-	 * Get display title course.
+	 * Get display image course.
 	 *
 	 * @param LP_Course|CourseModel $course
 	 *
