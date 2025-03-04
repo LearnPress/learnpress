@@ -42,7 +42,7 @@ class LP_Thumbnail_Helper {
 		$image            = sprintf(
 			'<img src="%s" alt="%s">',
 			esc_url_raw( $image_url ),
-			$course->get_title()
+			$courseModel->get_title()
 		);
 
 		return $image;
