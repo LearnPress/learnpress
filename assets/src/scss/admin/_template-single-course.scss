@@ -118,7 +118,7 @@
 	.wp-block-learnpress-instructor-single-course {
 		display: flex;
 		align-items: center;
-		gap: 10px;
+		gap: 7px;
 
 		.avatar {
 			width: 40px;
@@ -157,6 +157,18 @@
 			margin-top: 10px;
 			border-radius: 0 4px 4px 0;
 		}
+	}
+
+	.requirements-single-course__classic,
+	.features-single-course__classic,
+	.target-audiences-single-course__classic {
+		padding: 10px;
+		margin-top: 20px;
+		background: rgba(181, 187, 211, 0.15);
+		font-size: 1em;
+		font-weight: 700;
+		border: 1px solid #e2e0db;
+		border-radius: 5px;
 	}
 
 	.wp-block-learnpress-instructor-section-single-course {

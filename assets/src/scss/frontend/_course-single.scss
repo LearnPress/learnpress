@@ -663,6 +663,13 @@
 						margin-bottom: 0;
 					}
 				}
+
+				&:has(.info-learning),
+				&:has(.course-btn-continue) {
+					.course-featured-review {
+						display: none;
+					}
+				}
 			}
 		}
 
