@@ -464,7 +464,7 @@ class CourseModel {
 	 * @version 1.0.0
 	 */
 	public function get_evaluation_type(): string {
-		return (float) $this->get_meta_value_by_key( CoursePostModel::META_KEY_EVALUATION_TYPE, 'evaluate_lesson' );
+		return $this->get_meta_value_by_key( CoursePostModel::META_KEY_EVALUATION_TYPE, 'evaluate_lesson' );
 	}
 
 	/**
