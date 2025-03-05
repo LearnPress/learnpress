@@ -7,6 +7,12 @@
 	"description": "Renders template Student Course PHP templates.",
 	"textdomain": "learnpress",
 	"keywords": ["student single course", "learnpress"],
+	"attributes": {
+		"layout": {
+			"type": "string",
+			"default": "classic"
+		}
+	},
 	"usesContext": [],
 	"supports": {
 		"inserter": true,

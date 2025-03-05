@@ -21,6 +21,12 @@ abstract class Abstract_Block_Template extends \WP_Block_Template {
 	public $path_html_block_template_file = '';
 	public $path_template_render_default  = '';
 	/**
+	 * Tracks if assets have been enqueued.
+	 *
+	 * @var boolean
+	 */
+	protected $enqueued_assets = false;
+	/**
 	 * @var string path of the file run js.
 	 */
 	public $source_js = '';
@@ -73,6 +79,16 @@ abstract class Abstract_Block_Template extends \WP_Block_Template {
 			ob_end_clean();
 		}
 
+		$this->enqueue_assets( $attributes );
+
 		return $content;
+	}
+
+	protected function enqueue_assets( $attributes ) {
+		if ( $this->enqueued_assets ) {
+			return;
+		}
+		wp_enqueue_style( 'lp-blocks-style', get_stylesheet_uri() );
+		$this->enqueued_assets = true;
 	}
 }

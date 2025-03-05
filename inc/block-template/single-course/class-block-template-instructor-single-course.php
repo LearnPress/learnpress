@@ -22,8 +22,7 @@ class Block_Template_Instructor_Single_Course extends Abstract_Block_Template_Wi
 		$course                      = CourseModel::find( get_the_ID(), true );
 		$singleCourseClassicTemplate = SingleCourseClassicTemplate::instance();
 
-		$layout_single_course = LP_Settings::get_option( 'layout_single_course', 'classic' );
-		if ( $layout_single_course === 'modern' ) {
+		if ( $attributes['layout'] === 'modern' ) {
 			$content = sprintf(
 				'<div>%s %s</div>',
 				sprintf( '<label>%s</label>', __( 'by', 'learnpress' ) ),

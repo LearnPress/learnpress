@@ -23,8 +23,7 @@ class Block_Template_Categories_Single_Course extends Abstract_Block_Template_Wi
 		$course                      = CourseModel::find( get_the_ID(), true );
 		$singleCourseClassicTemplate = SingleCourseClassicTemplate::instance();
 
-		$layout_single_course = LP_Settings::get_option( 'layout_single_course', 'classic' );
-		if ( $layout_single_course === 'modern' ) {
+		if ( $attributes['layout'] === 'modern' ) {
 			$html_categories = SingleCourseTemplate::instance()->html_categories( $course );
 			if ( ! empty( $html_categories ) ) {
 				$content = sprintf(

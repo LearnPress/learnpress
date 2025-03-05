@@ -1,11 +1,7 @@
 <?php
-use LearnPress\Models\CourseModel;
-use LearnPress\TemplateHooks\Course\SingleCourseClassicTemplate;
-use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
+$class = 'lp-archive-courses';
 
-$class                = 'lp-archive-courses';
-$layout_single_course = LP_Settings::get_option( 'layout_single_course', 'classic' );
-if ( $layout_single_course === 'modern' ) {
+if ( $attributes['style'] === 'modern' ) {
 	$class = 'lp-single-course';
 }
 ?>

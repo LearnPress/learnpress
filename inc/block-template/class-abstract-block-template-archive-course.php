@@ -32,6 +32,7 @@ class Abstract_Block_Template_Widget_Archive_Courses extends Abstract_Block_Temp
 			ob_end_clean();
 		}
 
+		$this->enqueue_assets( $attributes );
 		return $content;
 	}
 

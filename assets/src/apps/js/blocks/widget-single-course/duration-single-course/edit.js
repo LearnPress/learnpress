@@ -1,15 +1,47 @@
 import { __ } from '@wordpress/i18n';
 import { useBlockProps } from '@wordpress/block-editor';
 import { InspectorControls } from '@wordpress/block-editor';
-import { PanelBody, TextControl, ToggleControl } from '@wordpress/components';
+import {
+	PanelBody,
+	__experimentalToggleGroupControl as ToggleGroupControl,
+	__experimentalToggleGroupControlOption as ToggleGroupControlOption,
+} from '@wordpress/components';
+
 export const edit = ( props ) => {
 	const blockProps = useBlockProps();
 	return (
 		<>
+			<InspectorControls>
+				<PanelBody title="Custom Settings">
+					<ToggleGroupControl
+						label="Layout"
+						isBlock
+						value={ props.attributes.layout ?? 'classic' }
+						onChange={ ( value ) =>
+							props.setAttributes( { layout: value } )
+						}
+					>
+						<ToggleGroupControlOption
+							value="classic"
+							label="Classic"
+						/>
+						<ToggleGroupControlOption
+							value="modern"
+							label="Modern"
+						/>
+					</ToggleGroupControl>
+				</PanelBody>
+			</InspectorControls>
 			<div { ...blockProps }>
-				<span>
-					{ '0 Weeks' }
-				</span>
+				{ props.attributes.layout === 'modern' ? (
+					<>
+						<span>{ 'Duration: 68 Weeks' }</span>
+					</>
+				) : (
+					<>
+						<span> { '68 Weeks' }</span>
+					</>
+				) }
 			</div>
 		</>
 	);

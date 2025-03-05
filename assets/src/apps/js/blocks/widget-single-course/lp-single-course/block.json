@@ -8,6 +8,12 @@
 	"description": "Renders Template Single Course PHP templates.",
 	"textdomain": "learnpress",
 	"keywords": ["learnpress single course", "learnpress"],
+	"attributes": {
+		"style": {
+			"type": "string",
+			"default": "classic"
+		}
+	},
 	"usesContext": [],
 	"supports": {
 		"inserter": true,

@@ -18,9 +18,9 @@ class Block_Template_Duration_Single_Course extends Abstract_Block_Template_Widg
 	public $source_js                     = LP_PLUGIN_URL . 'assets/js/dist/blocks/duration-single-course.js';
 
 	public function render_content_block_template( array $attributes ) {
-		$content              = '';
-		$layout_single_course = LP_Settings::get_option( 'layout_single_course', 'classic' );
-		if ( $layout_single_course === 'modern' ) {
+		$content = '';
+
+		if ( $attributes['layout'] === 'modern' ) {
 			$course = CourseModel::find( get_the_ID(), true );
 			$value  = SingleCourseTemplate::instance()->html_duration( $course );
 			$label  = __( 'Duration', 'learnpress' );

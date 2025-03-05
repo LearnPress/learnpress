@@ -25,9 +25,9 @@ class Block_Template_Target_Audiences_Single_Course extends Abstract_Block_Templ
 			return;
 		}
 
-		$course               = CourseModel::find( get_the_ID(), true );
-		$layout_single_course = LP_Settings::get_option( 'layout_single_course', 'classic' );
-		if ( $layout_single_course === 'modern' ) {
+		$course = CourseModel::find( get_the_ID(), true );
+
+		if ( $attributes['layout'] === 'modern' ) {
 			ob_start();
 			echo SingleCourseTemplate::instance()->html_target( $course );
 			$content = ob_get_clean();

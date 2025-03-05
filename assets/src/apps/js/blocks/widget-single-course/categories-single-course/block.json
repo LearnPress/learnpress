@@ -8,6 +8,12 @@
 	"description": "Renders template List Categories Course PHP templates.",
 	"textdomain": "learnpress",
 	"keywords": ["category categories single course", "learnpress"],
+	"attributes": {
+		"layout": {
+			"type": "string",
+			"default": "classic"
+		}
+	},
 	"usesContext": [],
 	"supports": {
 		"inserter": true,

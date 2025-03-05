@@ -7,6 +7,12 @@
 	"description": "Renders template Level Course PHP templates.",
 	"textdomain": "learnpress",
 	"keywords": ["level single course", "learnpress"],
+	"attributes": {
+		"layout": {
+			"type": "string",
+			"default": "classic"
+		}
+	},
 	"usesContext": [],
 	"supports": {
 		"inserter": true,
@@ -15,7 +21,5 @@
 		"html": false,
 		"multiple": true
 	},
-	"ancestor": [
-		"learnpress/lp-single-course"
-	]
+	"ancestor": ["learnpress/lp-single-course"]
 }

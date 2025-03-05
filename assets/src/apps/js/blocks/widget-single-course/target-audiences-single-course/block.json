@@ -8,6 +8,12 @@
 	"description": "Renders template Box Extra Target audiences Course PHP templates.",
 	"textdomain": "learnpress",
 	"keywords": ["box extra target audiences single course", "learnpress"],
+	"attributes": {
+		"layout": {
+			"type": "string",
+			"default": "classic"
+		}
+	},
 	"usesContext": [],
 	"supports": {
 		"inserter": true,
