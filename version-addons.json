@@ -60,7 +60,7 @@
   "learnpress-bbpress": {
     "name": "LearnPress – bbPress Integration",
     "basename": "learnpress-bbpress/learnpress-bbpress.php",
-    "version": "4.0.3",
+    "version": "4.0.6",
     "require_lp": "4.2.0",
     "description": "LearnPress bbPress is an add-on for WordPress LMS – LearnPress, which brings forum to your course. Now, teacher can interact with students and students in a course can discuss with each other about the course. LearnPress bbPress simply empower course with feartures of forum.",
     "image": "https://ps.w.org/learnpress-bbpress/assets/icon-128x128.png?rev=2394951",
