@@ -227,6 +227,7 @@ https://www.transifex.com/projects/p/learnpress/
 ~ Fixed: course protected on single course layout Modern.
 ~ Fixed: continue button has character "?" when redirect to item.
 ~ Tweak: logic search item content for the course on screen item learning.
+~ Tweak: sort the newest item learning first on the screen tab "My courses" - Profile.
 
 = 4.2.7.9 (2025-02-24) =
 ~ Fixed: error 404 single course with struct permalink is "%course_category%".
