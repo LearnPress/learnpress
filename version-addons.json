@@ -16,8 +16,8 @@
   "learnpress-announcements": {
     "name": "Announcement add-on for LearnPress",
     "basename": "learnpress-announcements/learnpress-announcements.php",
-    "version": "4.0.6",
-    "require_lp": "4.2.7",
+    "version": "4.0.7",
+    "require_lp": "4.2.7.7",
     "description": "Announcement is a great way to promote your courses and update new features + contents to your courses, including email notification.",
     "image": "https://plugins.thimpress.com/downloads/images/lp-announcement.png",
     "link": "https://thimpress.com/product/announcement-add-on-for-learnpress/",
