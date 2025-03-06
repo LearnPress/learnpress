@@ -522,6 +522,11 @@ body.twentyseventeen.learnpress-page {
 			padding: var(--thim-ekit-padding-lesson, 12px 0);
 		}
 	}
+	.sc_heading + .lp-course-curriculum {
+		.lp-course-curriculum__title {
+			display: none;
+		}
+	}
 }
 
 .ivy-school {
@@ -647,6 +652,83 @@ body.twentyseventeen.learnpress-page {
 		.course-section-header {
 			background-color: #DFEFFF;
 			border-radius: 8px 8px 8px 8px;
+		}
+	}
+}
+// fix theme coaching
+.demo-life-coaching{
+	.thim-ekit-tablist .lp-course-curriculum{
+		.course-section {
+			border: none;
+		}
+
+		.course-item {
+			border: 1px solid var(--thim-border-color);
+			margin-bottom: 10px;
+			padding-left: 20px;
+			padding-right: 20px;
+		}
+	}
+}
+
+.business-consulting, .demo-business-v2, .business-coaching,.demo-healthy-coaching{
+	.lp-course-curriculum__title {
+		display: none;
+	}
+
+	.thim-ekit-tablist .lp-course-curriculum {
+		.course-section {
+			border-width: 1px;
+			margin-bottom: 15px;
+
+			&:last-child {
+				border-width: 1px;
+				margin-bottom: 0;
+			}
+		}
+		.course-section-header {
+			padding: 20px 15px 5px 15px;
+		}
+		.course-item{
+			padding-left: 15px;
+			padding-right: 15px;
+		}
+	}
+}
+
+.demo-business-v2 {
+ 	.thim-ekit-tablist .lp-course-curriculum {
+		.course-section-header {
+			background-color: var(--thim-bg-color, #f5f5f5);
+			padding: 10px 15px;
+		}
+	}
+}
+
+.business-coaching{
+ 	.thim-ekit-tablist .lp-course-curriculum{
+		.course-section-header {
+			padding: 15px 20px;
+		}
+		.course-section__items {
+			padding-left: 20px;
+			padding-right: 20px;
+		}
+		.course-item{
+			padding-left: 0;
+			padding-right: 0;
+  		}
+	}
+}
+.demo-healthy-coaching{
+	.thim-ekit-tablist .lp-course-curriculum {
+		.course-section {
+			border: none;
+			border-radius: 5px;
+		}
+		.course-section-header {
+			background: #fff;
+			padding: 10px 15px;
 		}
 	}
 }

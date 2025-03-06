@@ -29,7 +29,7 @@
 
 @font-face {
 	font-family: 'lp-icon';
-	src: url('../src/css/vendor/fonts/lp-icon/lp-icon.woff2?v=#{random(200)}') format('woff2');
+	src: url('../../src/css/vendor/fonts/lp-icon/lp-icon.woff2?v=#{random(200)}') format('woff2');
 	font-weight: normal;
 	font-style: normal;
 	font-display: block;
