@@ -3,7 +3,7 @@ Contributors: thimpress, tungnx89, nhamdv, nguyenlammanh, tunnhn, phonglq.foobla
 Donate link:
 Tags: elearning, education, course, lms, learning management system
 Tested up to: 6.7
-Stable tag: 4.2.7.9
+Stable tag: 4.2.8
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -221,13 +221,15 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
-= 4.2.8 (2025-03-03) =
-~ Apply the new curriculum layout for a single course, screen item learning, and apply it to the Theme premium.
+= 4.2.8 (2025-03-06) =
+~ Apply the new curriculum layout for a single course, screen item learning, and apply it to the premium themes.
 ~ Optimize: some duplicate query.
 ~ Fixed: course protected on single course layout Modern.
 ~ Fixed: continue button has character "?" when redirect to item.
+~ Fixed: error get option "evaluate final quiz".
 ~ Tweak: logic search item content for the course on screen item learning.
 ~ Tweak: sort the newest item learning first on the screen tab "My courses" - Profile.
+~ Tweak: crop image course by "Thumbnail dimensions".
 
 = 4.2.7.9 (2025-02-24) =
 ~ Fixed: error 404 single course with struct permalink is "%course_category%".
