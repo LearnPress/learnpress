@@ -23,16 +23,9 @@ class Block_Template_Btn_Purchase_Single_Course extends Abstract_Block_Template_
 		$content = '';
 		$course  = CourseModel::find( get_the_ID(), true );
 		$user    = UserModel::find( get_current_user_id(), true );
-
-		if ( $attributes['layout'] === 'modern' ) {
-			ob_start();
-			echo SingleCourseModernLayout::instance()->html_button( $course, $user );
-			$content = ob_get_clean();
-		} else {
-			ob_start();
-			echo SingleCourseClassicTemplate::instance()->html_button( $course, $user );
-			$content = ob_get_clean();
-		}
+		ob_start();
+		echo SingleCourseModernLayout::instance()->html_button( $course, $user );
+		$content = ob_get_clean();
 
 		return $content;
 	}

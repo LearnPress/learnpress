@@ -7,15 +7,6 @@
 	"description": "Renders template Quiz Course PHP templates.",
 	"textdomain": "learnpress",
 	"keywords": ["quiz single course", "learnpress"],
-	"attributes": {
-		"showOnlyNumber": {
-			"type": "boolean"
-		},
-		"layout": {
-			"type": "string",
-			"default": "classic"
-		}
-	},
 	"usesContext": [],
 	"supports": {
 		"inserter": true,

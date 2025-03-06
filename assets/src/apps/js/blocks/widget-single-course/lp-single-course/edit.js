@@ -1,10 +1,4 @@
 import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
-import { InspectorControls } from '@wordpress/block-editor';
-import {
-	PanelBody,
-	__experimentalToggleGroupControl as ToggleGroupControl,
-	__experimentalToggleGroupControlOption as ToggleGroupControlOption,
-} from '@wordpress/components';
 
 export const edit = ( props ) => {
 	const blockProps = useBlockProps();
@@ -166,27 +160,6 @@ export const edit = ( props ) => {
 
 	return (
 		<>
-			<InspectorControls>
-				<PanelBody title="Custom Settings">
-					<ToggleGroupControl
-						label="Style"
-						isBlock
-						value={ props.attributes.style ?? 'classic' }
-						onChange={ ( value ) =>
-							props.setAttributes( { style: value } )
-						}
-					>
-						<ToggleGroupControlOption
-							value="classic"
-							label="Classic"
-						/>
-						<ToggleGroupControlOption
-							value="modern"
-							label="Modern"
-						/>
-					</ToggleGroupControl>
-				</PanelBody>
-			</InspectorControls>
 			<div { ...blockProps }>
 				<InnerBlocks template={ TEMPLATE } />
 			</div>

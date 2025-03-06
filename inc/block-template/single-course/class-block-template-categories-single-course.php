@@ -19,23 +19,15 @@ class Block_Template_Categories_Single_Course extends Abstract_Block_Template_Wi
 	public $source_js                     = LP_PLUGIN_URL . 'assets/js/dist/blocks/categories-single-course.js';
 
 	public function render_content_block_template( array $attributes ) {
-		$content                     = '';
-		$course                      = CourseModel::find( get_the_ID(), true );
-		$singleCourseClassicTemplate = SingleCourseClassicTemplate::instance();
-
-		if ( $attributes['layout'] === 'modern' ) {
-			$html_categories = SingleCourseTemplate::instance()->html_categories( $course );
-			if ( ! empty( $html_categories ) ) {
-				$content = sprintf(
-					'<div>%s %s</div>',
-					sprintf( '<label>%s</label>', __( 'in', 'learnpress' ) ),
-					$html_categories
-				);
-			}
-		} else {
-			ob_start();
-			echo $singleCourseClassicTemplate->html_category( $course );
-			$content = ob_get_clean();
+		$content         = '';
+		$course          = CourseModel::find( get_the_ID(), true );
+		$html_categories = SingleCourseTemplate::instance()->html_categories( $course );
+		if ( ! empty( $html_categories ) ) {
+			$content = sprintf(
+				'<div>%s %s</div>',
+				sprintf( '<label>%s</label>', __( 'in', 'learnpress' ) ),
+				$html_categories
+			);
 		}
 
 		return $content;

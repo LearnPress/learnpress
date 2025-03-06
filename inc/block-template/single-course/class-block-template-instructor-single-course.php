@@ -19,20 +19,12 @@ class Block_Template_Instructor_Single_Course extends Abstract_Block_Template_Wi
 	public $source_js                     = LP_PLUGIN_URL . 'assets/js/dist/blocks/instructor-single-course.js';
 
 	public function render_content_block_template( array $attributes ) {
-		$course                      = CourseModel::find( get_the_ID(), true );
-		$singleCourseClassicTemplate = SingleCourseClassicTemplate::instance();
-
-		if ( $attributes['layout'] === 'modern' ) {
-			$content = sprintf(
-				'<div>%s %s</div>',
-				sprintf( '<label>%s</label>', __( 'by', 'learnpress' ) ),
-				SingleCourseTemplate::instance()->html_instructor( $course )
-			);
-		} else {
-			ob_start();
-			echo $singleCourseClassicTemplate->html_instructor( $course );
-			$content = ob_get_clean();
-		}
+		$course  = CourseModel::find( get_the_ID(), true );
+		$content = sprintf(
+			'<div>%s %s</div>',
+			sprintf( '<label>%s</label>', __( 'by', 'learnpress' ) ),
+			SingleCourseTemplate::instance()->html_instructor( $course )
+		);
 
 		return $content;
 	}

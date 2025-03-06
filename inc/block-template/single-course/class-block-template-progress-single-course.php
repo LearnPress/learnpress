@@ -20,16 +20,11 @@ class Block_Template_Progress_Single_Course extends Abstract_Block_Template_Widg
 
 	public function render_content_block_template( array $attributes ) {
 		$content = '';
-
-		if ( $attributes['layout'] === 'modern' ) {
-			$course = CourseModel::find( get_the_ID(), true );
-			$user   = UserModel::find( get_current_user_id(), true );
-			ob_start();
-			echo SingleCourseModernLayout::instance()->html_info_learning( $course, $user );
-			$content = ob_get_clean();
-		} else {
-			$content = parent::render_content_block_template( $attributes );
-		}
+		$course  = CourseModel::find( get_the_ID(), true );
+		$user    = UserModel::find( get_current_user_id(), true );
+		ob_start();
+		echo SingleCourseModernLayout::instance()->html_info_learning( $course, $user );
+		$content = ob_get_clean();
 
 		return $content;
 	}

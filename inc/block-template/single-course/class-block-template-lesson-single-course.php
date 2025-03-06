@@ -19,29 +19,19 @@ class Block_Template_Lesson_Single_Course extends Abstract_Block_Template_Widget
 
 	public function render_content_block_template( array $attributes ) {
 		$content = '';
-
-		if ( $attributes['layout'] === 'modern' ) {
-			$course = CourseModel::find( get_the_ID(), true );
-			$value  = SingleCourseTemplate::instance()->html_count_item( $course, LP_LESSON_CPT );
-			$label  = __( 'Lesson', 'learnpress' );
-			ob_start();
-			echo sprintf(
-				'<div class="info-meta-item">
-						<span class="info-meta-left"><i class="lp-icon-file-o"></i>%s:</span>
-						<span class="info-meta-right"><div class="course-count-student">%s</div></span>
-					</div>',
-				$label,
-				$value
-			);
-			$content = ob_get_clean();
-			return $content;
-		} else {
-			$attributes['itemType'] = 'lp_lesson';
-			$order                  = [ 'courseId', 'itemType', 'showOnlyNumber' ];
-			foreach ( $order as $key ) {
-				$sortedAttributes[ $key ] = isset( $attributes[ $key ] ) ? $attributes[ $key ] : '';
-			}
-			return parent::render_content_block_template( $sortedAttributes );
-		}
+		$course  = CourseModel::find( get_the_ID(), true );
+		$value   = SingleCourseTemplate::instance()->html_count_item( $course, LP_LESSON_CPT );
+		$label   = __( 'Lesson', 'learnpress' );
+		ob_start();
+		echo sprintf(
+			'<div class="info-meta-item">
+					<span class="info-meta-left"><i class="lp-icon-file-o"></i>%s:</span>
+					<span class="info-meta-right"><div class="course-count-student">%s</div></span>
+				</div>',
+			$label,
+			$value
+		);
+		$content = ob_get_clean();
+		return $content;
 	}
 }

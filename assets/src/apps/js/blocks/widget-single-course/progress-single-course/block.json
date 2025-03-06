@@ -7,12 +7,6 @@
 	"description": "Renders template Progress Course PHP templates.",
 	"textdomain": "learnpress",
 	"keywords": ["progress single course", "learnpress"],
-	"attributes": {
-		"layout": {
-			"type": "string",
-			"default": "classic"
-		}
-	},
 	"usesContext": [],
 	"supports": {
 		"inserter": true,

@@ -11,37 +11,8 @@ export const edit = ( props ) => {
 	const blockProps = useBlockProps();
 	return (
 		<>
-			<InspectorControls>
-				<PanelBody title="Custom Settings">
-					<ToggleGroupControl
-						label="Layout"
-						isBlock
-						value={ props.attributes.layout ?? 'classic' }
-						onChange={ ( value ) =>
-							props.setAttributes( { layout: value } )
-						}
-					>
-						<ToggleGroupControlOption
-							value="classic"
-							label="Classic"
-						/>
-						<ToggleGroupControlOption
-							value="modern"
-							label="Modern"
-						/>
-					</ToggleGroupControl>
-				</PanelBody>
-			</InspectorControls>
 			<div { ...blockProps }>
-				{ props.attributes.layout === 'modern' ? (
-					<>
-						<span>{ 'Duration: 68 Weeks' }</span>
-					</>
-				) : (
-					<>
-						<span> { '68 Weeks' }</span>
-					</>
-				) }
+				<span>{ 'Duration: 68 Weeks' }</span>
 			</div>
 		</>
 	);

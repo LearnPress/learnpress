@@ -7,12 +7,6 @@
 	"description": "Renders template Instructor Course PHP templates.",
 	"textdomain": "learnpress",
 	"keywords": ["instructor single course", "learnpress"],
-	"attributes": {
-		"layout": {
-			"type": "string",
-			"default": "classic"
-		}
-	},
 	"usesContext": [],
 	"supports": {
 		"inserter": true,

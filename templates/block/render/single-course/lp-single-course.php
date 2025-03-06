@@ -1,9 +1,6 @@
 <?php
-$class = 'lp-archive-courses';
+$class = 'lp-single-course';
 
-if ( $attributes['style'] === 'modern' ) {
-	$class = 'lp-single-course';
-}
 ?>
 <div class="<?php echo esc_attr( $class ); ?>">
 	<?php

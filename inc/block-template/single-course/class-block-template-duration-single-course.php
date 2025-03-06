@@ -19,25 +19,20 @@ class Block_Template_Duration_Single_Course extends Abstract_Block_Template_Widg
 
 	public function render_content_block_template( array $attributes ) {
 		$content = '';
+		$course  = CourseModel::find( get_the_ID(), true );
+		$value   = SingleCourseTemplate::instance()->html_duration( $course );
+		$label   = __( 'Duration', 'learnpress' );
+		ob_start();
+		echo sprintf(
+			'<div class="info-meta-item">
+					<span class="info-meta-left"><i class="lp-icon-clock-o"></i>%s:</span>
+					<span class="info-meta-right"><div class="course-count-student">%s</div></span>
+				</div>',
+			$label,
+			$value
+		);
 
-		if ( $attributes['layout'] === 'modern' ) {
-			$course = CourseModel::find( get_the_ID(), true );
-			$value  = SingleCourseTemplate::instance()->html_duration( $course );
-			$label  = __( 'Duration', 'learnpress' );
-			ob_start();
-			echo sprintf(
-				'<div class="info-meta-item">
-						<span class="info-meta-left"><i class="lp-icon-clock-o"></i>%s:</span>
-						<span class="info-meta-right"><div class="course-count-student">%s</div></span>
-					</div>',
-				$label,
-				$value
-			);
-
-			$content = ob_get_clean();
-			return $content;
-		} else {
-			return parent::render_content_block_template( $attributes );
-		}
+		$content = ob_get_clean();
+		return $content;
 	}
 }
