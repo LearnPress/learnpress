@@ -377,11 +377,15 @@
 				outline: none;
 			}
 
-			&::before {
+			i {
+				color: $text-color-accent;
+			}
+
+			/*&::before {
 				color: $text-color-accent;
 				font-family: 'lp-icon';
 				content: "\f002";
-			}
+			}*/
 
 			&.clear {
 				display: none;
