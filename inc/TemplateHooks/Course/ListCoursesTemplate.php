@@ -402,7 +402,8 @@ class ListCoursesTemplate {
 				$html_quiz     = sprintf( '<div class="meta-item meta-item-%s">%s</div>', 'quiz', $singleCourseTemplate->html_count_item( $course, LP_QUIZ_CPT ) );
 				$html_student  = sprintf( '<div class="meta-item meta-item-%s">%s</div>', 'student', $singleCourseTemplate->html_count_student( $course ) );
 
-				$html_course = str_replace(
+				$search_replace = apply_filters(
+					'learn-press/layout/list-courses/course-item/search-replace',
 					[
 						'{{media-course}}',
 						'{{title-course}}',
@@ -417,7 +418,11 @@ class ListCoursesTemplate {
 						'{{student-course}}',
 						'{{button-course}}',
 						'{{price-course}}',
-					],
+					]
+				);
+
+				$replace_value = apply_filters(
+					'learn-press/layout/list-courses/course-item/replace-value',
 					[
 						Template::combine_components( $section_top ),
 						$html_title,
@@ -433,6 +438,12 @@ class ListCoursesTemplate {
 						Template::combine_components( $html_button ),
 						$singleCourseTemplate->html_price( $course ),
 					],
+					$course
+				);
+
+				$html_course = str_replace(
+					$search_replace,
+					$replace_value,
 					$template
 				);
 

@@ -625,14 +625,11 @@ class SingleCourseModernLayout {
 		$section_info_one = apply_filters(
 			'learn-press/single-course/modern/header/info-meta',
 			[
-				'wrapper'     => '<div class="lp-single-course-info-one">',
-				'author'      => '',
 				'last_update' => sprintf(
 					'<div class="item-meta">%s: %s</div>',
 					esc_html__( 'Last updated', 'learnpress' ),
 					esc_attr( get_post_modified_time( get_option( 'date_format' ), true ) )
 				),
-				'wrapper_end' => '</div>',
 			],
 			$course,
 			$user
