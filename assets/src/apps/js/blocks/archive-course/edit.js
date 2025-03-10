@@ -14,7 +14,7 @@ export const edit = ( props ) => {
 					{
 						__(
 							'This is an editor placeholder for the Archive Course page. Content will render content of list courses. Should be not remove it',
-							'realpress'
+							'learnpress'
 						)
 					}
 				</div>
