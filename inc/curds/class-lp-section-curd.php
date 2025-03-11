@@ -244,9 +244,9 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		// $item = wp_parse_args( $item, array( 'title' => '', 'type' => '' ) );
 		$item = array_merge(
 			array(
-				'title' => '',
-				'type'  => '',
-				'content'  => '',
+				'title'   => '',
+				'type'    => '',
+				'content' => '',
 				'status'  => 'publish',
 			),
 			$item
@@ -476,15 +476,24 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @param $items array
 	 *
 	 * @return array
-	 * @since 3.0.0
+	 * @since 3.0.1
 	 */
 	public function update_section_items( $section_id, $items ) {
 		global $wpdb;
-		$current_items = $this->get_section_items( $section_id );
 
 		foreach ( $items as $index => $item ) {
+			$item_id   = 0;
+			$item_type = '';
+			if ( is_object( $item ) ) {
+				$item_id   = $item->id ?? 0;
+				$item_type = $item->post_type ?? '';
+			} elseif ( is_array( $item ) ) {
+				$item_id   = $item['id'] ?? 0;
+				$item_type = $item['type'] ?? '';
+			}
+
 			$order = $index + 1;
-			$exist = $this->item_section_exist( $section_id, $item['id'] );
+			$exist = $this->item_section_exist( $section_id, $item_id );
 
 			if ( $exist ) {
 				$wpdb->update(
@@ -492,7 +501,7 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					array( 'item_order' => $order ),
 					array(
 						'section_id' => $section_id,
-						'item_id'    => $item['id'],
+						'item_id'    => $item_id,
 					)
 				);
 			} else {
@@ -500,9 +509,9 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					$wpdb->learnpress_section_items,
 					array(
 						'section_id' => $section_id,
-						'item_id'    => $item['id'],
+						'item_id'    => $item_id,
 						'item_order' => $order,
-						'item_type'  => $item['type'],
+						'item_type'  => $item_type,
 					)
 				);
 			}
