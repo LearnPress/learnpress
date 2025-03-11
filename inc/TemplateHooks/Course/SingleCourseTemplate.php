@@ -1558,9 +1558,9 @@ class SingleCourseTemplate {
 			return $html;
 		}
 
-		$item_id       = (int) ( $item->item_id ?? 0 );
-		$item_order    = $item->item_order ?? 0;
-		$item_type     = $item->item_type ?? '';
+		$item_id       = (int) ( $item->item_id ?? $item->id ?? 0 );
+		$item_order    = $item->item_order ?? $item->order ?? 0;
+		$item_type     = $item->item_type ?? $item->type ?? '';
 		$title         = $item->title ?? '';
 		$has_preview   = $item->preview ?? '';
 		$class_current = '';
