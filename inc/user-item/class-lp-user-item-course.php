@@ -1,4 +1,8 @@
 <?php
+
+use LearnPress\Models\CourseModel;
+use LearnPress\Models\UserItems\UserCourseModel;
+
 /**
  * Class LP_User_Item_Course
  */
@@ -285,6 +289,11 @@ class LP_User_Item_Course extends LP_User_Item {
 	 * Calculate course result
 	 */
 	public function calculate_course_results( bool $force_cache = false ) {
+		$userCourseModel = UserCourseModel::find( $this->get_user_id(), $this->get_course_id(), true );
+
+		return $userCourseModel->calculate_course_results();
+
+		// Code old
 		$items   = array();
 		$results = array(
 			'count_items'     => 0,
