@@ -15,15 +15,18 @@ namespace LearnPress\Models;
 
 use Exception;
 use LearnPress\Models\UserItems\UserCourseModel;
+use LP_Admin_Editor_Course;
 use LP_Course_Cache;
 use LP_Course_DB;
 use LP_Course_Item;
 use LP_Course_JSON_DB;
 use LP_Course_JSON_Filter;
+use LP_Database;
 use LP_Datetime;
 use LP_Helper;
 use LP_Lesson;
 use LP_Post_Type_Filter;
+use LP_Section_CURD;
 use LP_Settings;
 use stdClass;
 use Throwable;
@@ -473,8 +476,9 @@ class CourseModel {
 		$section_items = $this->get_section_items();
 		foreach ( $section_items as $section ) {
 			foreach ( $section->items as $item ) {
-				if ( (int) $item->item_id === $item_id ) {
-					$section_id = $section->id;
+				$item_id_check = (int) ( $item->item_id ?? $item->id ?? 0 );
+				if ( $item_id_check === $item_id ) {
+					$section_id = $section->section_id ?? $section->id ?? 0;
 					break;
 				}
 			}
@@ -557,7 +561,7 @@ class CourseModel {
 	 *
 	 * @return array
 	 * @since 4.1.6.9
-	 * @version 1.0.3
+	 * @version 1.0.4
 	 * @author tungnx
 	 */
 	private function get_sections_and_items_course_from_db_and_sort(): array {
@@ -572,14 +576,32 @@ class CourseModel {
 			$index_items_last       = $count_items - 1;
 			$section_current        = 0;
 
+			/**
+			 * @var $section_order_plus int
+			 * @var $item_order_plus int
+			 * To fixed case: section order start from 0, item order start from 0
+			 */
+			$section_order_plus = 0;
+			$item_order_plus    = 0;
 			foreach ( $sections_items_results as $index => $sections_item ) {
-				$section_new      = $sections_item->section_id;
-				$section_order    = $sections_item->section_order;
-				$item             = new stdClass();
-				$item->id         = $sections_item->item_id;
-				$item->item_id    = $sections_item->item_id;
-				$item->order      = $sections_item->item_order;
-				$item->item_order = $sections_item->item_order;
+				$section_new   = $sections_item->section_id;
+				$section_order = (int) $sections_item->section_order;
+				if ( $index === 0 && $section_order === 0 ) {
+					$section_order_plus = 1;
+				}
+
+				$section_order += $section_order_plus;
+				$item           = new stdClass();
+				$item->id       = $sections_item->item_id;
+				$item->item_id  = $sections_item->item_id;
+				$item_order     = (int) $sections_item->item_order;
+				if ( $index === 0 && $item_order === 0 ) {
+					$item_order_plus = 1;
+				}
+
+				$item_order      += $item_order_plus;
+				$item->order      = $item_order;
+				$item->item_order = $item_order;
 				$item->type       = $sections_item->item_type;
 				$item->item_type  = $sections_item->item_type;
 				$item_tmp         = LP_Course_Item::get_item( $item->id );
@@ -605,7 +627,7 @@ class CourseModel {
 						usort(
 							$sections_items[ $section_current ]->items,
 							function ( $item1, $item2 ) {
-								return $item1->order - $item2->order;
+								return $item1->item_order - $item2->item_order;
 							}
 						);
 					}
@@ -613,13 +635,13 @@ class CourseModel {
 					$section_current = $section_new;
 				}
 
-				$sections_items[ $section_new ]->items[ $item->id ] = $item;
+				$sections_items[ $section_new ]->items[ $item->item_id ] = $item;
 
 				if ( $index_items_last === $index ) {
 					usort(
 						$sections_items[ $section_current ]->items,
 						function ( $item1, $item2 ) {
-							return $item1->order - $item2->order;
+							return $item1->item_order - $item2->item_order;
 						}
 					);
 				}
@@ -649,7 +671,7 @@ class CourseModel {
 			usort(
 				$sections_items,
 				function ( $section1, $section2 ) {
-					return $section1->order - $section2->order;
+					return $section1->section_order - $section2->section_order;
 				}
 			);
 		} catch ( Throwable $e ) {
