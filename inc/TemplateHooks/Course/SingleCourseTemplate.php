@@ -1549,7 +1549,7 @@ class SingleCourseTemplate {
 	 *
 	 * @return string
 	 * @since 4.2.7.6
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public function render_html_course_item( CourseModel $courseModel, $userModel, $item, $section_item ): string {
 		$html = '';
@@ -1566,7 +1566,7 @@ class SingleCourseTemplate {
 		$class_current = '';
 		if ( $this->currentItemModel ) {
 			$current_item_id = $this->currentItemModel->get_id();
-			if ( $current_item_id == $item->item_id ) {
+			if ( $current_item_id == $item_id ) {
 				$class_current = 'current';
 			}
 		}
