@@ -323,7 +323,10 @@ class LP_User_Item_Course extends LP_User_Item {
 			$count_items           = $course->count_items();
 			$count_items_completed = $this->count_items_completed();
 
-			$evaluate_type = $course->get_data( 'course_result', 'evaluate_lesson' );
+			$evaluate_type = get_post_meta( $course->get_id(), '_lp_course_result', true );
+			if ( ! $evaluate_type ) {
+				$evaluate_type = 'evaluate_lesson';
+			}
 			switch ( $evaluate_type ) {
 				case 'evaluate_lesson':
 					$results_evaluate = $this->evaluate_course_by_lesson( $count_items_completed, $course->count_items( LP_LESSON_CPT ) );
@@ -778,7 +781,7 @@ class LP_User_Item_Course extends LP_User_Item {
 
 					if ( $type === $item_type ) {
 						if ( $item->get_status() == 'completed' ) {
-							$completed ++;
+							++$completed;
 						}
 						$completed = apply_filters(
 							'learn-press/course-item/completed',
@@ -787,7 +790,7 @@ class LP_User_Item_Course extends LP_User_Item {
 							$item->get_status()
 						);
 						// if ( ! $item->is_preview() ) {
-						$total ++;
+						++$total;
 						// }
 					}
 				}
@@ -992,7 +995,7 @@ class LP_User_Item_Course extends LP_User_Item {
 	 */
 	public function increase_retake_count() {
 		$count = $this->get_retaken_count();
-		$count ++;
+		++$count;
 
 		return $this->update_meta( '_lp_retaken_count', $count );
 	}
@@ -1088,7 +1091,7 @@ class LP_User_Item_Course extends LP_User_Item {
 
 					if ( $type === $item_type ) {
 						if ( $item->get_status( 'graduation' ) == 'passed' ) {
-							$passed ++;
+							++$passed;
 						}
 						$passed = apply_filters(
 							'learn-press/course-item/passed',
@@ -1097,7 +1100,7 @@ class LP_User_Item_Course extends LP_User_Item {
 							$item->get_status()
 						);
 						// if ( ! $item->is_preview() ) {
-						$total ++;
+						++$total;
 						// }
 					}
 				}
