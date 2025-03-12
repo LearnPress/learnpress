@@ -828,6 +828,12 @@
 	}
 }
 
+.course-item-popup {
+	.lp-course-curriculum .course-section .course-item__content {
+		flex-direction: column;
+    	row-gap: 4px;
+	}
+}
 
 body {
 
