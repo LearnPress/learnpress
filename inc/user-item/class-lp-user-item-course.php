@@ -289,9 +289,27 @@ class LP_User_Item_Course extends LP_User_Item {
 	 * Calculate course result
 	 */
 	public function calculate_course_results( bool $force_cache = false ) {
-		$userCourseModel = UserCourseModel::find( $this->get_user_id(), $this->get_course_id(), true );
+		$results = array(
+			'count_items'     => 0,
+			'completed_items' => 0,
+			'items'           => array(),
+			'evaluate_type'   => '',
+			'pass'            => 0,
+			'result'          => 0,
+		);
 
-		return $userCourseModel->calculate_course_results();
+		try {
+			$userCourseModel = UserCourseModel::find( $this->get_user_id(), $this->get_course_id(), true );
+			if ( ! $userCourseModel instanceof UserCourseModel ) {
+				return $results;
+			}
+
+			$results = $userCourseModel->calculate_course_results();
+		} catch ( Throwable $e ) {
+			LP_Debug::error_log( $e );
+		}
+
+		return $results;
 
 		// Code old
 		$items   = array();
