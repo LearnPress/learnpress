@@ -1412,7 +1412,7 @@ class SingleCourseTemplate {
 					'curriculum_info_right'     => '<div class="course-curriculum-info__right">',
 					'expand_all'                => sprintf(
 						'<span class="course-toggle-all-sections">%s</span>',
-						esc_html__( 'Expanse all sections', 'learnpress' )
+						esc_html__( 'Expand all sections', 'learnpress' )
 					),
 					'collapse_all'              => sprintf(
 						'<span class="course-toggle-all-sections lp-collapse lp-hidden">%s</span>',
@@ -1549,7 +1549,7 @@ class SingleCourseTemplate {
 	 *
 	 * @return string
 	 * @since 4.2.7.6
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public function render_html_course_item( CourseModel $courseModel, $userModel, $item, $section_item ): string {
 		$html = '';
@@ -1558,15 +1558,15 @@ class SingleCourseTemplate {
 			return $html;
 		}
 
-		$item_id       = (int) ( $item->item_id ?? 0 );
-		$item_order    = $item->item_order ?? 0;
-		$item_type     = $item->item_type ?? '';
+		$item_id       = (int) ( $item->item_id ?? $item->id ?? 0 );
+		$item_order    = $item->item_order ?? $item->order ?? 0;
+		$item_type     = $item->item_type ?? $item->type ?? '';
 		$title         = $item->title ?? '';
 		$has_preview   = $item->preview ?? '';
 		$class_current = '';
 		if ( $this->currentItemModel ) {
 			$current_item_id = $this->currentItemModel->get_id();
-			if ( $current_item_id == $item->item_id ) {
+			if ( $current_item_id == $item_id ) {
 				$class_current = 'current';
 			}
 		}

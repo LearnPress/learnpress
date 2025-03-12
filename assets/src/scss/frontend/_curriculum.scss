@@ -1347,17 +1347,18 @@ body.course-item-popup {
 				color: $input-color-placeholder;
 			}
 
-			&.passed::before {
+			&.passed.completed::before {
 				content: "\f00c";
 				color: #3bb54a;
 			}
 
-			&.in-progress::before {
+			&.in-progress::before,
+			&.completed::before {
 				content: "\f00c";
 				color: $input-color-placeholder;
 			}
 
-			&.failed::before {
+			&.failed.completed::before {
 				content: "\f00d";
 				color: #f02425;
 			}

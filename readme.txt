@@ -3,7 +3,7 @@ Contributors: thimpress, tungnx89, nhamdv, nguyenlammanh, tunnhn, phonglq.foobla
 Donate link:
 Tags: elearning, education, course, lms, learning management system
 Tested up to: 6.7
-Stable tag: 4.2.8
+Stable tag: 4.2.8.1
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -220,6 +220,10 @@ https://www.transifex.com/projects/p/learnpress/
 13. Add-ons: Unlock endless possibilities with our add-ons from additional payment gateways to more managing course options. Tailor to your needs and easily scale as your site grow
 
 == Changelog ==
+
+= 4.2.8.1 (2025-03-12) =
+~ Hot fix: error Curriculum with old data.
+~ Update: currencies list.
 
 = 4.2.8 (2025-03-06) =
 ~ Apply the new curriculum layout for a single course, screen item learning, and apply it to the premium themes.

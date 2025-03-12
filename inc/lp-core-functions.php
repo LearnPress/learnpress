@@ -8,6 +8,8 @@
  * @version  1.0
  */
 
+use LearnPress\Helpers\Config;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -915,176 +917,22 @@ function learn_press_get_payment_currencies() {
  * Get the list of currencies with code and name.
  *
  * @return  array
- * @version 3.0.0
+ * @version 3.0.1
  *
  * @author  ThimPress
  */
 function learn_press_currencies() {
-	$currencies = array(
-		'AFN' => __( 'Afghan afghani', 'learnpress' ),
-		'ALL' => __( 'Albanian lek', 'learnpress' ),
-		'DZD' => __( 'Algerian dinar', 'learnpress' ),
-		'EUR' => __( 'Euro', 'learnpress' ),
-		'AOA' => __( 'Angolan kwanza', 'learnpress' ),
-		'XCD' => __( 'East Caribbean dollar', 'learnpress' ),
-		'ARS' => __( 'Argentine peso', 'learnpress' ),
-		'AMD' => __( 'Armenian dram', 'learnpress' ),
-		'AWG' => __( 'Aruban florin', 'learnpress' ),
-		'AUD' => __( 'Australian dollar', 'learnpress' ),
-		'AZN' => __( 'Azerbaijani manat', 'learnpress' ),
-		'BSD' => __( 'Bahamian dollar', 'learnpress' ),
-		'BHD' => __( 'Bahraini dinar', 'learnpress' ),
-		'BDT' => __( 'Bangladeshi taka', 'learnpress' ),
-		'BBD' => __( 'Barbadian dollar', 'learnpress' ),
-		'BYR' => __( 'Belarusian ruble', 'learnpress' ),
-		'BZD' => __( 'Belizean dollar', 'learnpress' ),
-		'XOF' => __( 'West African CFA franc', 'learnpress' ),
-		'BMD' => __( 'Bermudian dollar', 'learnpress' ),
-		'BTN' => __( 'Bhutanese ngultrum', 'learnpress' ),
-		'BOB' => __( 'Bolivian boliviano', 'learnpress' ),
-		'USD' => __( 'US dollar', 'learnpress' ),
-		'BAM' => __( 'Bosnia and Herzegovina convertible mark', 'learnpress' ),
-		'BWP' => __( 'Botswana pula', 'learnpress' ),
-		'BRL' => __( 'Brazilian real', 'learnpress' ),
-		'BND' => __( 'Brunei dollar', 'learnpress' ),
-		'BGN' => __( 'Bulgarian lev', 'learnpress' ),
-		'MMK' => __( 'Burmese kyat', 'learnpress' ),
-		'BIF' => __( 'Burundian franc', 'learnpress' ),
-		'KHR' => __( 'Cambodian riel', 'learnpress' ),
-		'XAF' => __( 'Central African CFA franc', 'learnpress' ),
-		'CAD' => __( 'Canadian dollar', 'learnpress' ),
-		'CVE' => __( 'Cape Verdean escudo', 'learnpress' ),
-		'KYD' => __( 'Cayman Islands dollar', 'learnpress' ),
-		'CLP' => __( 'Chilean peso', 'learnpress' ),
-		'CNY' => __( 'Chinese renminbi', 'learnpress' ),
-		'COP' => __( 'Colombian peso', 'learnpress' ),
-		'KMF' => __( 'Comorian franc', 'learnpress' ),
-		'CDF' => __( 'Congolese franc', 'learnpress' ),
-		'NZD' => __( 'New Zealand dollar', 'learnpress' ),
-		'CRC' => __( 'Costa Rican colón', 'learnpress' ),
-		'HRK' => __( 'Croatian kuna', 'learnpress' ),
-		'CUC' => __( 'Cuban peso', 'learnpress' ),
-		'ANG' => __( 'Netherlands Antilles guilder', 'learnpress' ),
-		'CZK' => __( 'Czech koruna', 'learnpress' ),
-		'DKK' => __( 'Danish krone', 'learnpress' ),
-		'DJF' => __( 'Djiboutian franc', 'learnpress' ),
-		'DOP' => __( 'Dominican peso', 'learnpress' ),
-		'EGP' => __( 'Egyptian pound', 'learnpress' ),
-		'SVC' => __( 'Salvadoran colón', 'learnpress' ),
-		'ERN' => __( 'Eritrean nakfa', 'learnpress' ),
-		'ETB' => __( 'Ethiopian birr', 'learnpress' ),
-		'FKP' => __( 'Falkland Islands pound', 'learnpress' ),
-		'FJD' => __( 'Fijian dollar', 'learnpress' ),
-		'XPF' => __( 'CFP franc', 'learnpress' ),
-		'GMD' => __( 'Gambian dalasi', 'learnpress' ),
-		'GEL' => __( 'Georgian lari', 'learnpress' ),
-		'GHS' => __( 'Ghanian cedi', 'learnpress' ),
-		'GIP' => __( 'Gibraltar pound', 'learnpress' ),
-		'GTQ' => __( 'Guatemalan quetzal', 'learnpress' ),
-		'GBP' => __( 'British pound', 'learnpress' ),
-		'GNF' => __( 'Guinean franc', 'learnpress' ),
-		'GYD' => __( 'Guyanese dollar', 'learnpress' ),
-		'HTG' => __( 'Haitian gourde', 'learnpress' ),
-		'HNL' => __( 'Honduran lempira', 'learnpress' ),
-		'HKD' => __( 'Hong Kong dollar', 'learnpress' ),
-		'HUF' => __( 'Hungarian forint', 'learnpress' ),
-		'ISK' => __( 'Icelandic króna', 'learnpress' ),
-		'INR' => __( 'Indian rupee', 'learnpress' ),
-		'IDR' => __( 'Indonesian rupiah', 'learnpress' ),
-		'IRR' => __( 'Iranian rial', 'learnpress' ),
-		'IQD' => __( 'Iraqi dinar', 'learnpress' ),
-		'ILS' => __( 'Israeli new sheqel', 'learnpress' ),
-		'JMD' => __( 'Jamaican dollar', 'learnpress' ),
-		'JPY' => __( 'Japanese yen ', 'learnpress' ),
-		'JOD' => __( 'Jordanian dinar', 'learnpress' ),
-		'KZT' => __( 'Kazakhstani tenge', 'learnpress' ),
-		'KES' => __( 'Kenyan shilling', 'learnpress' ),
-		'KPW' => __( 'North Korean won', 'learnpress' ),
-		'KWD' => __( 'Kuwaiti dinar', 'learnpress' ),
-		'KGS' => __( 'Kyrgyzstani som', 'learnpress' ),
-		'KRW' => __( 'South Korean won', 'learnpress' ),
-		'LAK' => __( 'Lao kip', 'learnpress' ),
-		'LVL' => __( 'Latvian lats', 'learnpress' ),
-		'LBP' => __( 'Lebanese pound', 'learnpress' ),
-		'LSL' => __( 'Lesotho loti', 'learnpress' ),
-		'LRD' => __( 'Liberian dollar', 'learnpress' ),
-		'LD'  => __( 'Libyan dinar', 'learnpress' ),
-		'CHF' => __( 'Swiss franc', 'learnpress' ),
-		'LTL' => __( 'Lithuanian litas', 'learnpress' ),
-		'MOP' => __( 'Macanese pataca', 'learnpress' ),
-		'MKD' => __( 'Macedonian denar', 'learnpress' ),
-		'MGA' => __( 'Malagasy ariary', 'learnpress' ),
-		'MWK' => __( 'Malawian kwacha', 'learnpress' ),
-		'MYR' => __( 'Malaysian ringgit', 'learnpress' ),
-		'MVR' => __( 'Maldivian rufiyaa', 'learnpress' ),
-		'MRO' => __( 'Mauritanian ouguiya', 'learnpress' ),
-		'MUR' => __( 'Mauritian rupee', 'learnpress' ),
-		'MXN' => __( 'Mexican peso', 'learnpress' ),
-		'MDL' => __( 'Moldovan leu', 'learnpress' ),
-		'MNT' => __( 'Mongolian tugrik', 'learnpress' ),
-		'MAD' => __( 'Moroccan dirham', 'learnpress' ),
-		'MZN' => __( 'Mozambican metical', 'learnpress' ),
-		'NAD' => __( 'Namibian dollar', 'learnpress' ),
-		'NPR' => __( 'Nepalese rupee', 'learnpress' ),
-		'NIO' => __( 'Nicaraguan córdoba', 'learnpress' ),
-		'NGN' => __( 'Nigerian naira', 'learnpress' ),
-		'NOK' => __( 'Norwegian krone', 'learnpress' ),
-		'OMR' => __( 'Omani rial', 'learnpress' ),
-		'PKR' => __( 'Pakistani rupee', 'learnpress' ),
-		'PAB' => __( 'Panamanian balboa', 'learnpress' ),
-		'PGK' => __( 'Papua New Guinea kina', 'learnpress' ),
-		'PYG' => __( 'Paraguayan guarani', 'learnpress' ),
-		'PEN' => __( 'Peruvian nuevo sol', 'learnpress' ),
-		'PHP' => __( 'Philippine peso', 'learnpress' ),
-		'PLN' => __( 'Polish zloty', 'learnpress' ),
-		'QAR' => __( 'Qatari riyal', 'learnpress' ),
-		'RON' => __( 'Romanian leu', 'learnpress' ),
-		'RUB' => __( 'Russian ruble', 'learnpress' ),
-		'RWF' => __( 'Rwandan franc', 'learnpress' ),
-		'WST' => __( 'Samoan tālā', 'learnpress' ),
-		'STD' => __( 'São Tomé and Príncipe dobra', 'learnpress' ),
-		'SAR' => __( 'Saudi riyal', 'learnpress' ),
-		'RSD' => __( 'Serbian dinar', 'learnpress' ),
-		'SCR' => __( 'Seychellois rupee', 'learnpress' ),
-		'SLL' => __( 'Sierra Leonean leone', 'learnpress' ),
-		'SGD' => __( 'Singapore dollar', 'learnpress' ),
-		'SBD' => __( 'Solomon Islands dollar', 'learnpress' ),
-		'SOS' => __( 'Somali shilling', 'learnpress' ),
-		'ZAR' => __( 'South African rand', 'learnpress' ),
-		'LKR' => __( 'Sri Lankan rupee', 'learnpress' ),
-		'SHP' => __( 'St. Helena pound', 'learnpress' ),
-		'SDG' => __( 'Sudanese pound', 'learnpress' ),
-		'SRD' => __( 'Surinamese dollar', 'learnpress' ),
-		'SZL' => __( 'Swazi lilangeni', 'learnpress' ),
-		'SEK' => __( 'Swedish krona', 'learnpress' ),
-		'SYP' => __( 'Syrian pound', 'learnpress' ),
-		'TWD' => __( 'New Taiwan dollar', 'learnpress' ),
-		'TJS' => __( 'Tajikistani somoni', 'learnpress' ),
-		'TZS' => __( 'Tanzanian shilling', 'learnpress' ),
-		'THB' => __( 'Thai baht ', 'learnpress' ),
-		'TOP' => __( 'Tongan pa’anga', 'learnpress' ),
-		'TTD' => __( 'Trinidad and Tobago dollar', 'learnpress' ),
-		'TND' => __( 'Tunisian dinar', 'learnpress' ),
-		'TRY' => __( 'Turkish lira', 'learnpress' ),
-		'TMT' => __( 'Turkmenistani manat', 'learnpress' ),
-		'UGX' => __( 'Ugandan shilling', 'learnpress' ),
-		'UAH' => __( 'Ukrainian hryvnia', 'learnpress' ),
-		'AED' => __( 'United Arab Emirates dirham', 'learnpress' ),
-		'UYU' => __( 'Uruguayan peso', 'learnpress' ),
-		'UZS' => __( 'Uzbekistani som', 'learnpress' ),
-		'VUV' => __( 'Vanuatu vatu', 'learnpress' ),
-		'VEF' => __( 'Venezuelan bolivar', 'learnpress' ),
-		'VND' => __( 'Vietnamese dong', 'learnpress' ),
-		'YER' => __( 'Yemeni rial', 'learnpress' ),
-		'ZMK' => __( 'Zambian kwacha', 'learnpress' ),
-		'ZWL' => __( 'Zimbabwean dollar', 'learnpress' ),
-		'JEP' => __( 'Jersey pound', 'learnpress' ),
-		'LYD' => __( 'Libyan dinar', 'learnpress' ),
-	);
+	return Config::instance()->get( 'currencies', 'settings' );
+}
 
-	asort( $currencies );
-
-	return apply_filters( 'learn-press/currencies', $currencies );
+/**
+ * Return list of common symbols of the currencies on the world.
+ *
+ * @return array
+ * @version 3.0.1
+ */
+function learn_press_currency_symbols() {
+	return Config::instance()->get( 'currency-symbols', 'settings' );
 }
 
 /**
@@ -1099,182 +947,6 @@ function learn_press_get_currency(): string {
 }
 
 /**
- * Return list of common symbols of the currencies on the world.
- *
- * @return array
- */
-function learn_press_currency_symbols() {
-	$symbols = array(
-		'AED' => '&#x62f;.&#x625;',
-		'AFN' => '&#x60b;',
-		'ALL' => 'L',
-		'AMD' => 'AMD',
-		'ANG' => '&fnof;',
-		'AOA' => 'Kz',
-		'ARS' => '&#36;',
-		'AUD' => '&#36;',
-		'AWG' => 'Afl.',
-		'AZN' => 'AZN',
-		'BAM' => 'KM',
-		'BBD' => '&#36;',
-		'BDT' => '&#2547;&nbsp;',
-		'BGN' => '&#1083;&#1074;.',
-		'BHD' => '.&#x62f;.&#x628;',
-		'BIF' => 'Fr',
-		'BMD' => '&#36;',
-		'BND' => '&#36;',
-		'BOB' => 'Bs.',
-		'BRL' => '&#82;&#36;',
-		'BSD' => '&#36;',
-		'BTC' => '&#3647;',
-		'BTN' => 'Nu.',
-		'BWP' => 'P',
-		'BYR' => 'Br',
-		'BYN' => 'Br',
-		'BZD' => '&#36;',
-		'CAD' => '&#36;',
-		'CDF' => 'Fr',
-		'CHF' => '&#67;&#72;&#70;',
-		'CLP' => '&#36;',
-		'CNY' => '&yen;',
-		'COP' => '&#36;',
-		'CRC' => '&#x20a1;',
-		'CUC' => '&#36;',
-		'CUP' => '&#36;',
-		'CVE' => '&#36;',
-		'CZK' => '&#75;&#269;',
-		'DJF' => 'Fr',
-		'DKK' => 'DKK',
-		'DOP' => 'RD&#36;',
-		'DZD' => '&#x62f;.&#x62c;',
-		'EGP' => 'EGP',
-		'ERN' => 'Nfk',
-		'ETB' => 'Br',
-		'EUR' => '&euro;',
-		'FJD' => '&#36;',
-		'FKP' => '&pound;',
-		'GBP' => '&pound;',
-		'GEL' => '&#x20be;',
-		'GGP' => '&pound;',
-		'GHS' => '&#x20b5;',
-		'GIP' => '&pound;',
-		'GMD' => 'D',
-		'GNF' => 'Fr',
-		'GTQ' => 'Q',
-		'GYD' => '&#36;',
-		'HKD' => '&#36;',
-		'HNL' => 'L',
-		'HRK' => 'kn',
-		'HTG' => 'G',
-		'HUF' => '&#70;&#116;',
-		'IDR' => 'Rp',
-		'ILS' => '&#8362;',
-		'IMP' => '&pound;',
-		'INR' => '&#8377;',
-		'IQD' => '&#x639;.&#x62f;',
-		'IRR' => '&#xfdfc;',
-		'IRT' => '&#x062A;&#x0648;&#x0645;&#x0627;&#x0646;',
-		'ISK' => 'kr.',
-		'JEP' => '&pound;',
-		'JMD' => '&#36;',
-		'JOD' => '&#x62f;.&#x627;',
-		'JPY' => '&yen;',
-		'KES' => 'KSh',
-		'KGS' => '&#x441;&#x43e;&#x43c;',
-		'KHR' => '&#x17db;',
-		'KMF' => 'Fr',
-		'KPW' => '&#x20a9;',
-		'KRW' => '&#8361;',
-		'KWD' => '&#x62f;.&#x643;',
-		'KYD' => '&#36;',
-		'KZT' => '&#8376;',
-		'LAK' => '&#8365;',
-		'LBP' => '&#x644;.&#x644;',
-		'LKR' => '&#xdbb;&#xdd4;',
-		'LRD' => '&#36;',
-		'LSL' => 'L',
-		'LYD' => '&#x644;.&#x62f;',
-		'MAD' => '&#x62f;.&#x645;.',
-		'MDL' => 'MDL',
-		'MGA' => 'Ar',
-		'MKD' => '&#x434;&#x435;&#x43d;',
-		'MMK' => 'Ks',
-		'MNT' => '&#x20ae;',
-		'MOP' => 'P',
-		'MRU' => 'UM',
-		'MUR' => '&#x20a8;',
-		'MVR' => '.&#x783;',
-		'MWK' => 'MK',
-		'MXN' => '&#36;',
-		'MYR' => '&#82;&#77;',
-		'MZN' => 'MT',
-		'NAD' => 'N&#36;',
-		'NGN' => '&#8358;',
-		'NIO' => 'C&#36;',
-		'NOK' => '&#107;&#114;',
-		'NPR' => '&#8360;',
-		'NZD' => '&#36;',
-		'OMR' => '&#x631;.&#x639;.',
-		'PAB' => 'B/.',
-		'PEN' => 'S/',
-		'PGK' => 'K',
-		'PHP' => '&#8369;',
-		'PKR' => '&#8360;',
-		'PLN' => '&#122;&#322;',
-		'PRB' => '&#x440;.',
-		'PYG' => '&#8370;',
-		'QAR' => '&#x631;.&#x642;',
-		'RMB' => '&yen;',
-		'RON' => 'lei',
-		'RSD' => '&#1088;&#1089;&#1076;',
-		'RUB' => '&#8381;',
-		'RWF' => 'Fr',
-		'SAR' => '&#x631;.&#x633;',
-		'SBD' => '&#36;',
-		'SCR' => '&#x20a8;',
-		'SDG' => '&#x62c;.&#x633;.',
-		'SEK' => '&#107;&#114;',
-		'SGD' => '&#36;',
-		'SHP' => '&pound;',
-		'SLL' => 'Le',
-		'SOS' => 'Sh',
-		'SRD' => '&#36;',
-		'SSP' => '&pound;',
-		'STN' => 'Db',
-		'SYP' => '&#x644;.&#x633;',
-		'SZL' => 'L',
-		'THB' => '&#3647;',
-		'TJS' => '&#x405;&#x41c;',
-		'TMT' => 'm',
-		'TND' => '&#x62f;.&#x62a;',
-		'TOP' => 'T&#36;',
-		'TRY' => '&#8378;',
-		'TTD' => '&#36;',
-		'TWD' => '&#78;&#84;&#36;',
-		'TZS' => 'Sh',
-		'UAH' => '&#8372;',
-		'UGX' => 'UGX',
-		'USD' => '&#36;',
-		'UYU' => '&#36;',
-		'UZS' => 'UZS',
-		'VEF' => 'Bs F',
-		'VES' => 'Bs.S',
-		'VND' => '&#8363;',
-		'VUV' => 'Vt',
-		'WST' => 'T',
-		'XAF' => 'CFA',
-		'XCD' => '&#36;',
-		'XOF' => 'CFA',
-		'XPF' => 'Fr',
-		'YER' => '&#xfdfc;',
-		'ZAR' => '&#82;',
-		'ZMW' => 'ZK',
-	);
-
-	return apply_filters( 'learn-press/currency-symbols', $symbols );
-}
-
-/**
  * Return currency symbol from the code.
  *
  * @param string $currency
@@ -1286,7 +958,7 @@ function learn_press_get_currency_symbol( $currency = '' ) {
 		$currency = learn_press_get_currency();
 	}
 	$symbols         = learn_press_currency_symbols();
-	$currency_symbol = isset( $symbols[ $currency ] ) ? $symbols[ $currency ] : '';
+	$currency_symbol = $symbols[ $currency ] ?? '';
 
 	$currency_symbol = apply_filters( 'learn_press_currency_symbol', $currency_symbol, $currency );
 
@@ -2921,13 +2593,14 @@ function learn_press_cookie_get( $name, $namespace = 'LP' ) {
  * @since 3.x.x
  */
 function learn_press_course_evaluation_methods( $postid, $return = '', $final_quizz_passing = '' ) {
-	$course_tip     = '<span class="learn-press-tip">%s</span>';
-	$final_quiz_btn = '<a href="#" class="lp-metabox-get-final-quiz" data-postid="' . $postid . '" data-loading="' . esc_attr__(
-			'Loading...',
-			'learnpress'
-		) . '">' . esc_html__( 'Get A Passing Grade', 'learnpress' ) . '</a>';
+	$final_quiz_btn = sprintf(
+		'<a href="#" class="lp-metabox-get-final-quiz" data-postid="%d" data-loading="%s">%s</a>',
+		$postid,
+		esc_attr__( 'Loading...', 'learnpress' ),
+		esc_html__( 'Get A Passing Grade', 'learnpress' )
+	);
 
-	$course_desc = array(
+	$evaluations_desc = array(
 		'evaluate_lesson'     => sprintf(
 			'<p>%s<br/>%s</p>',
 			__( 'Evaluate by the number of completed lessons per the total number of lessons.', 'learnpress' ),
@@ -2959,26 +2632,33 @@ function learn_press_course_evaluation_methods( $postid, $return = '', $final_qu
 	$methods = apply_filters(
 		'learnpress/course-evaluation/methods',
 		array(
-			'evaluate_lesson'     => __(
-					'Evaluate via lessons',
-					'learnpress'
-				) . learn_press_quick_tip( $course_desc['evaluate_lesson'], false ),
-			'evaluate_final_quiz' => __( 'Evaluate via results of the final quiz', 'learnpress' ) . sprintf(
-					$course_tip,
-					$course_desc['evaluate_final_quiz']
-				) . $final_quiz_btn . $final_quizz_passing,
-			'evaluate_quiz'       => __( 'Evaluate via passed quizzes', 'learnpress' ) . sprintf(
-					$course_tip,
-					$course_desc['evaluate_quiz']
-				),
-			'evaluate_questions'  => __( 'Evaluate via questions', 'learnpress' ) . sprintf(
-					$course_tip,
-					$course_desc['evaluate_questions']
-				),
-			'evaluate_mark'       => __( 'Evaluate via mark', 'learnpress' ) . sprintf(
-					$course_tip,
-					$course_desc['evaluate_mark']
-				),
+			'evaluate_lesson'     => sprintf(
+				'%s %s',
+				__( 'Evaluate via lessons', 'learnpress' ),
+				learn_press_quick_tip( $evaluations_desc['evaluate_lesson'], false )
+			),
+			'evaluate_final_quiz' => sprintf(
+				'%s %s %s %s',
+				__( 'Evaluate via results of the final quiz', 'learnpress' ),
+				learn_press_quick_tip( $evaluations_desc['evaluate_final_quiz'], false ),
+				$final_quiz_btn,
+				$final_quizz_passing
+			),
+			'evaluate_quiz'       => sprintf(
+				'%s %s',
+				__( 'Evaluate via passed quizzes', 'learnpress' ),
+				learn_press_quick_tip( $evaluations_desc['evaluate_quiz'], false )
+			),
+			'evaluate_questions'  => sprintf(
+				'%s %s',
+				__( 'Evaluate via questions', 'learnpress' ),
+				learn_press_quick_tip( $evaluations_desc['evaluate_questions'], false )
+			),
+			'evaluate_mark'       => sprintf(
+				'%s %s',
+				__( 'Evaluate via mark', 'learnpress' ),
+				learn_press_quick_tip( $evaluations_desc['evaluate_mark'], false )
+			),
 		)
 	);
 
