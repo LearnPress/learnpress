@@ -221,8 +221,8 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
-= 4.2.8.1 (2025-03-11) =
-~ Hot fix: error Curriculum with data old.
+= 4.2.8.1 (2025-03-12) =
+~ Hot fix: error Curriculum with old data.
 ~ Update: currencies list.
 
 = 4.2.8 (2025-03-06) =
