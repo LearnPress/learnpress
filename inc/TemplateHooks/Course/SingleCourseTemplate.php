@@ -1412,7 +1412,7 @@ class SingleCourseTemplate {
 					'curriculum_info_right'     => '<div class="course-curriculum-info__right">',
 					'expand_all'                => sprintf(
 						'<span class="course-toggle-all-sections">%s</span>',
-						esc_html__( 'Expanse all sections', 'learnpress' )
+						esc_html__( 'Expand all sections', 'learnpress' )
 					),
 					'collapse_all'              => sprintf(
 						'<span class="course-toggle-all-sections lp-collapse lp-hidden">%s</span>',

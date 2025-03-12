@@ -156,8 +156,8 @@ return apply_filters(
 					'default' => 'expand_first_section',
 					'type'    => 'select',
 					'options' => array(
-						'expand_first_section' => esc_html__( 'Expanse first section', 'learnpress' ),
-						'expand_all'           => esc_html__( 'Expanse all sections', 'learnpress' ),
+						'expand_first_section' => esc_html__( 'Expand first section', 'learnpress' ),
+						'expand_all'           => esc_html__( 'Expand all sections', 'learnpress' ),
 						'collapse_all'         => esc_html__( 'Collapse all sections', 'learnpress' ),
 					),
 					'desc'    => esc_html__( 'Currently, apply for the Modern single course layout only.', 'learnpress' ),
