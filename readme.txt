@@ -221,6 +221,10 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.2.8.1 (2025-03-11) =
+~ Hot fix: error Curriculum with data old.
+~ Update: currencies list.
+
 = 4.2.8 (2025-03-06) =
 ~ Apply the new curriculum layout for a single course, screen item learning, and apply it to the premium themes.
 ~ Optimize: some duplicate query.
