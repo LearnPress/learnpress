@@ -609,4 +609,64 @@ class UserModel {
 	public function is_instructor(): bool {
 		return user_can( $this->get_id(), LP_TEACHER_ROLE ) || user_can( $this->get_id(), 'administrator' );
 	}
+	/**
+	 * [get_quizzes_attend description]
+	 * @return array User's quizz items
+	 */
+	public function get_quizzes_attend( $args ) {
+		$default_args = array(
+			'paged'   => 1,
+			'type'    => 'all',
+			'perpage' => 10,
+		);
+		$args         = array_merge( $default_args, $args );
+		$user_id      = $this->get_id();
+		$user_items   = array(
+			'items'      => array(),
+			'total_page' => 0,
+			'quiz_count' => 0,
+		);
+		if ( ! $user_id ) {
+			return $user_items;
+		}
+		$lp_ui_db        = LP_User_Items_DB::getInstance();
+		$filter          = new LP_User_Items_Filter();
+		$filter->user_id = $user_id;
+		// join Course table to check course is existed
+		$filter->join  = array(
+			"INNER JOIN $lp_ui_db->tb_posts AS p ON ui.ref_id = p.id",
+		);
+		$filter->where = array(
+			$lp_ui_db->wpdb->prepare( 'AND ui.item_type=%s', LP_QUIZ_CPT ),
+			$lp_ui_db->wpdb->prepare( 'AND p.post_type=%s', LP_COURSE_CPT ),
+			$lp_ui_db->wpdb->prepare( 'AND p.post_status=%s', 'publish' ),
+		);
+		switch ( $args['type'] ) {
+			case 'completed':
+				$filter->status = LP_ITEM_COMPLETED;
+				break;
+			case 'passed':
+				$filter->graduation = LP_GRADUATION_PASSED;
+				break;
+			case 'failed':
+				$filter->graduation = LP_GRADUATION_FAILED;
+				break;
+		}
+		if ( $filter === 'completed' ) {
+			$filter->status = LP_ITEM_COMPLETED;
+		}
+
+		$filter->limit = $args['perpage'];
+		$filter->page  = $args['paged'];
+		$total_row     = 0;
+		$results       = $lp_ui_db->get_user_items( $filter, $total_row );
+		if ( ! $total_row ) {
+			return $user_items;
+		}
+		$total_page               = $lp_ui_db->get_total_pages( $args['perpage'], $total_row );
+		$user_items['items']      = $results;
+		$user_items['total_page'] = $total_page;
+		$user_items['quiz_count'] = $total_row;
+		return $user_items;
+	}
 }
