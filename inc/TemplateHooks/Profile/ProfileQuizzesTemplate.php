@@ -18,7 +18,7 @@ use Exception;
 use stdClass;
 use Throwable;
 
-final class ProfileQuizzesTemplate {
+class ProfileQuizzesTemplate {
 	public static function instance() {
 		static $instance = null;
 
@@ -104,8 +104,8 @@ final class ProfileQuizzesTemplate {
 		return $content;
 	}
 	public static function quiz_tab_header( int $user_id = 0, string $type = 'all' ): string {
-		$content = '';
-		$profile = LP_Profile::instance( $user_id );
+		$content      = '';
+		$profile      = LP_Profile::instance( $user_id );
 		$filter_types = apply_filters(
 			'learnpress/profile/quiz-tab/header/filter-types',
 			array(
@@ -122,7 +122,7 @@ final class ProfileQuizzesTemplate {
 				<ul class="learn-press-filters">
 					<?php foreach ( $filter_types as $class => $label ) : ?>
 						<li class="<?php echo esc_attr( $class ); ?><?php echo esc_attr( $class === $type ? ' active' : '' ); ?>">
-							<a aria-label="<?php echo esc_attr( $label ) ?>" href="javascript:void(0)" data-filter="<?php echo esc_attr( $class ); ?>" class="quiz-filter-type"><?php esc_html_e( $label ); ?></a>
+							<a aria-label="<?php echo esc_attr( $label ); ?>" href="javascript:void(0)" data-filter="<?php echo esc_attr( $class ); ?>" class="quiz-filter-type"><?php esc_html_e( $label ); ?></a>
 						</li>
 					<?php endforeach; ?>
 				</ul>
@@ -189,8 +189,8 @@ final class ProfileQuizzesTemplate {
 		if ( ! $userQuizModel ) {
 			return false;
 		}
-		$start_time    = new LP_Datetime( $userQuizModel->get_start_time() );
-		$sections      = apply_filters(
+		$start_time = new LP_Datetime( $userQuizModel->get_start_time() );
+		$sections   = apply_filters(
 			'learnpress/profile/quiz-table/item/sections',
 			array(
 				'<tr>',
