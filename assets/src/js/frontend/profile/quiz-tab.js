@@ -1,5 +1,4 @@
 const profileQuizTab = () => {
-	console.log( 'profileQuizTab' );
 	const quizTabWrapper = document.querySelector( '#profile-subtab-quiz-content' );
 	const lpTarget = quizTabWrapper.querySelector( '.lp-target' ),
 	loadAjaxUrl = lpData.lp_rest_load_ajax;
@@ -18,9 +17,6 @@ const profileQuizTab = () => {
 				} else {
 					paged = parseInt( target.innerText );
 				}
-				if ( elLoadingChange ) {
-					elLoadingChange.style.display = 'block';
-				}
 				dataSend.args.paged = paged;
 				lpTarget.dataset.send = JSON.stringify( dataSend );
 				getResponse();
@@ -34,8 +30,6 @@ const profileQuizTab = () => {
 						    <button type="button" class="button-go-to-page">
 						        <?xml version="1.0" encoding="UTF-8"?>
 						        <svg viewBox="0 0 24 24" width="16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-						            <!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
-						            <title>ic_fluent_arrow_enter_24_filled</title>
 						            <desc>Created with Sketch.</desc>
 						            <g id="🔍-System-Icons" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
 						                <g id="ic_fluent_arrow_enter_24_filled" fill="#212121" fill-rule="nonzero">
@@ -54,15 +48,16 @@ const profileQuizTab = () => {
 			dataSend.args.type = filterType;
 			lpTarget.dataset.send = JSON.stringify( dataSend );
 			getResponse();
-		} else if ( target.classList.contains( 'button-go-to-page' ) ) {
+		} else if ( target.classList.contains( 'button-go-to-page' ) || target.closest('.button-go-to-page') ) {
 			const inputGoToPage = target.closest( 'div' ).querySelector( 'input[name="go-to-page"]' );
 			if ( ! inputGoToPage.value ) {
 				return;
 			}
 			let currentPage = parseInt( quizTabWrapper.querySelector('.current').innerText ),
-			gotoPageValue = inputGoToPage.value;
-
-			if ( gotoPageValue == currentPage || gotoPageValue > inputGoToPage.max || gotoPageValue < inputGoToPage.min ) {
+			gotoPageValue = parseInt(inputGoToPage.value),
+			inputMax = parseInt(inputGoToPage.max),
+			inputMin = parseInt(inputGoToPage.min);
+			if ( gotoPageValue == currentPage || gotoPageValue > inputMax || gotoPageValue < inputMin ) {
 				return;
 			}
 			dataSend.args.paged = gotoPageValue;
@@ -71,6 +66,9 @@ const profileQuizTab = () => {
 		}
 	} );
 	const getResponse = () => {
+		if ( elLoadingChange ) {
+			elLoadingChange.style.display = 'block';
+		}
 		const callBack = {
 			success: ( response ) => {
 				const { status, message, data } = response;
