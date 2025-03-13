@@ -78,6 +78,13 @@ class GutenbergHandleMain {
 				continue;
 			}
 
+			// Set block maybe display when Edit.
+			$postIdEdit = $_REQUEST['postId'];
+			if ( ! empty( $block_template->templates_display )
+				&& ! in_array( $postIdEdit, $block_template->templates_display ) ) {
+				return;
+			}
+
 			// Render content block template parent
 			register_block_type(
 				$block_template->name,

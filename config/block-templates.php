@@ -7,9 +7,9 @@ use LearnPress\Gutenberg\Blocks\SingleCourse\BlockSingleCourseTemplate;
 return apply_filters(
 	'learn-press/config/block-templates',
 	array(
-		new BlockArchiveCourseLegacy(),
+		//new BlockArchiveCourseLegacy(),
 		new BlockCourseTitle(),
-		new BlockSingleCourseLegacy(),
+		//new BlockSingleCourseLegacy(),
 		new BlockSingleCourseTemplate(),
 	)
 );

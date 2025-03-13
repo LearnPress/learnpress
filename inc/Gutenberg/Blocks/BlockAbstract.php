@@ -26,6 +26,7 @@ abstract class BlockAbstract extends \WP_Block_Template {
 	public $is_custom                     = false;
 	public $path_html_block_template_file = '';
 	public $path_template_render_default  = '';
+	public $templates_display             = [];
 	/**
 	 * @var string path of the file run js.
 	 */

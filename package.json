@@ -31,6 +31,7 @@
 		"@wordpress/eslint-plugin": "^17.1.0",
 		"@wordpress/scripts": "30.11.0",
 		"@wordpress/block-editor": "14.13.0",
+		"@wordpress/editor": "14.19.0",
 		"@wordpress/blocks": "14.7.0",
 		"@wordpress/components": "29.4.0",
 		"@wordpress/icons": "10.18.0",

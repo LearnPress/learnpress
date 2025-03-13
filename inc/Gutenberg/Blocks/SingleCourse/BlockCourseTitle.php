@@ -14,6 +14,9 @@ class BlockCourseTitle extends BlockAbstract {
 	public $description = '';
 	public $content     = '<!-- wp:learnpress/course-title /-->';
 	public $source_js   = LP_PLUGIN_URL . 'assets/js/dist/blocks/course-title.js';
+	public $templates_display = [
+		'learnpress/learnpress//single-lp_course'
+	];
 
 	public function __construct() {
 		parent::__construct();
@@ -27,6 +30,28 @@ class BlockCourseTitle extends BlockAbstract {
 	 * @return false|string
 	 */
 	public function render_content_block_template( array $attributes ) {
-		return '55555';
+		$align   = $attributes['align'] ?? '';
+
+		switch ( $align ) {
+			case 'wide':
+				$align = 'alignwide';
+				break;
+			case 'full':
+				$align = 'algignfull';
+				break;
+			case 'center':
+				$align = 'aligncenter';
+				break;
+			default:
+				$align = '';
+				break;
+		}
+
+		$classes = [
+			$align,
+		];
+
+		$class_string = esc_attr( implode( ' ', $classes ) );
+		return '<div class="' . $class_string . '">55555</div>';
 	}
 }

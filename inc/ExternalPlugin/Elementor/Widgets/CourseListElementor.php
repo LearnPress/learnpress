@@ -108,7 +108,6 @@ class CourseListElementor extends LPElementorWidgetBase {
 		} catch ( \Throwable $e ) {
 			error_log( __METHOD__ . ' ' . $e->getMessage() );
 		}
-
 	}
 
 	public function get_style_depends() {

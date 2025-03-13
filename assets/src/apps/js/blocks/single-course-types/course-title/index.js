@@ -2,7 +2,7 @@
  * Register block single course.
  */
 import { registerBlockType } from '@wordpress/blocks';
-import { InnerBlocks, InspectorControls } from '@wordpress/block-editor';
+import { InnerBlocks, InspectorControls, BlockControls, AlignmentToolbar, useBlockProps } from '@wordpress/block-editor';
 
 registerBlockType( 'learnpress/course-title', {
 	$schema: 'https://schemas.wp.org/trunk/block.json',
@@ -14,28 +14,42 @@ registerBlockType( 'learnpress/course-title', {
 	textdomain: 'learnpress',
 	keywords: [ 'single course', 'learnpress' ],
 	usesContext: [],
-	ancestor: [ 'learnpress/single-course' ],
+	//ancestor: [ 'learnpress/single-course' ],
 	supports: {
-
+		align: [ 'wide', 'full' ],
+		color: true,
+		html: false,
+	},
+	attributes: {
+		type: 'string',
 	},
 	edit( props ) {
+		// eslint-disable-next-line react-hooks/rules-of-hooks
+		const blockProps = useBlockProps();
 		const { attributes, setAttributes } = props;
+		const { align } = attributes;
 
 		return (
-			<>
-				<InnerBlocks>
-					<div>Course Title</div>
-				</InnerBlocks>
-			</>
+			<div { ...blockProps }>
+				<BlockControls>
+					<AlignmentToolbar
+						value={ align }
+						onChange={ ( newAlign ) => {
+							setAttributes( { align: newAlign } );
+						} }
+					/>
+				</BlockControls>
+				<div style={ { textAlign: align } }>Course Title</div>
+			</div>
 		);
 	},
 	save( props ) {
-		const { attributes } = props;
+		const blockProps = useBlockProps.save();
 
 		return (
-			<>
+			<div { ...blockProps }>
 				<InnerBlocks.Content />
-			</>
+			</div>
 		);
 	},
 },

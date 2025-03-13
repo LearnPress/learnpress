@@ -1,50 +1,41 @@
 // In a JavaScript file (course-meta-block.js)
 import { registerBlockType } from '@wordpress/blocks';
 import { TextControl, PanelBody } from '@wordpress/components';
-import { InnerBlocks } from '@wordpress/block-editor';
+import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
 
 registerBlockType( 'learnpress/single-course', {
 	title: 'Single Course',
 	icon: 'book-alt',
 	category: 'widgets',
 	attributes: {
-		duration: {
-			type: 'string',
-			default: '',
-		},
-		level: {
-			type: 'string',
-			default: '',
-		},
-		instructor: {
-			type: 'string',
-			default: '',
-		},
+
+	},
+	supports: {
+		html: false,
 	},
 	edit( props ) {
 		const { attributes, setAttributes } = props;
+		// eslint-disable-next-line react-hooks/rules-of-hooks
+		const blockProps = useBlockProps();
+		const ALLOWED_BLOCKS = [ 'learnpress/course-title' ];
 
 		return (
-			<>
-				<InnerBlocks
+			<div { ...blockProps }>
+				<InnerBlocks allowedBlocks={ ALLOWED_BLOCKS }
 					template={ [
 						[ 'learnpress/course-title' ],
-						[ 'core/paragraph', { placeholder: 'Enter content...' } ],
-						[ 'core/image' ],
 					] }
 					templateLock={ false }
 				/>
-			</>
+			</div>
 		);
 	},
 	save( props ) {
-		const { attributes } = props;
+		const blockProps = useBlockProps.save();
 
 		return (
-			<div className="course-meta-block">
-				<p><strong>Duration:</strong> { attributes.duration }</p>
-				<p><strong>Level:</strong> { attributes.level }</p>
-				<p><strong>Instructor:</strong> { attributes.instructor }</p>
+			<div { ...blockProps }>
+				<InnerBlocks.Content />
 			</div>
 		);
 	},
