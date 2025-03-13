@@ -49,7 +49,7 @@ final class ProfileQuizzesTemplate {
 
 	public function quiz_profile_layout( $data ) {
 		$html_wrapper = array(
-			'<div class="learn-press-subtab-content">' => '</div>',
+			'<div class="learn-press-subtab-content" id="profile-subtab-quiz-content">' => '</div>',
 		);
 		$profile      = LP_Profile::instance();
 		if ( ! $profile ) {
@@ -69,7 +69,7 @@ final class ProfileQuizzesTemplate {
 		$args     = array(
 			'user_id' => $user_id,
 			'paged'   => 1,
-			'perpage' => 2,
+			'perpage' => 5,
 			'type'    => 'all',
 		);
 
@@ -97,7 +97,6 @@ final class ProfileQuizzesTemplate {
 			$content->content     = Template::combine_components( $sections );
 			$content->total_pages = $quiz_args['total_page'];
 			$content->paged       = $args['paged'];
-			set_transient( 'quiz_tab_content', $content, $expiration = 3660 );
 		} catch ( Throwable $e ) {
 			ob_end_clean();
 			error_log( __METHOD__ . '-' . $e->getMessage() );
@@ -107,15 +106,23 @@ final class ProfileQuizzesTemplate {
 	public static function quiz_tab_header( int $user_id = 0, string $type = 'all' ): string {
 		$content = '';
 		$profile = LP_Profile::instance( $user_id );
+		$filter_types = apply_filters(
+			'learnpress/profile/quiz-tab/header/filter-types',
+			array(
+				'all'       => __( 'All', 'learnpress' ),
+				'completed' => __( 'Finished', 'learnpress' ),
+				'passed'    => __( 'Passed', 'learnpress' ),
+				'failed'    => __( 'Failed', 'learnpress' ),
+			)
+		);
 		ob_start();
-		$quiz_filter = $profile->get_quizzes_filters( $type );
-		if ( $quiz_filter ) {
+		if ( $filter_types ) {
 			?>
 			<div class="learn-press-tabs">
 				<ul class="learn-press-filters">
-					<?php foreach ( $quiz_filter as $class => $link ) : ?>
+					<?php foreach ( $filter_types as $class => $label ) : ?>
 						<li class="<?php echo esc_attr( $class ); ?><?php echo esc_attr( $class === $type ? ' active' : '' ); ?>">
-							<?php echo wp_kses_post( $link ); ?>
+							<a aria-label="<?php echo esc_attr( $label ) ?>" href="javascript:void(0)" data-filter="<?php echo esc_attr( $class ); ?>" class="quiz-filter-type"><?php esc_html_e( $label ); ?></a>
 						</li>
 					<?php endforeach; ?>
 				</ul>
@@ -128,6 +135,9 @@ final class ProfileQuizzesTemplate {
 		return $content;
 	}
 	public static function quiz_tab_table( $quiz_args, $args ): string {
+		if ( $quiz_args['quiz_count'] === 0 ) {
+			return Template::print_message( esc_html__( 'No quizzes!', 'learnpress' ), 'info', false );
+		}
 		$sections = apply_filters(
 			'learnpress/profile/quiz-table/sections',
 			array(
@@ -159,7 +169,11 @@ final class ProfileQuizzesTemplate {
 	public static function table_body( $quiz_args, $args ) {
 		$content = '';
 		foreach ( $quiz_args['items'] as $item ) {
-			$content .= self::quiz_row( $item, $args );
+			$row_html = self::quiz_row( $item, $args );
+			if ( ! $row_html ) {
+				continue;
+			}
+			$content .= $row_html;
 		}
 		return $content;
 	}
@@ -172,6 +186,9 @@ final class ProfileQuizzesTemplate {
 			$item->ref_type,
 			true
 		);
+		if ( ! $userQuizModel ) {
+			return false;
+		}
 		$start_time    = new LP_Datetime( $userQuizModel->get_start_time() );
 		$sections      = apply_filters(
 			'learnpress/profile/quiz-table/item/sections',
@@ -199,7 +216,7 @@ final class ProfileQuizzesTemplate {
 	}
 	public static function table_footer( $quiz_args, $args ): string {
 		$content  = '';
-		$offset   = self::get_offset_text( $args['paged'], $args['perpage'], $quiz_args['total_page'] );
+		$offset   = self::get_offset_text( $args['paged'], $args['perpage'], $quiz_args['quiz_count'] );
 		$nav_link = $quiz_args['total_page'] < 2 ? '' : self::get_nav_numbers( $args['paged'], $quiz_args['total_page'] );
 		$sections = apply_filters(
 			'learnpress/profile/quiz-table/footer/sections',
@@ -209,7 +226,7 @@ final class ProfileQuizzesTemplate {
 				'<td colspan="2" class="nav-text">',
 				$offset,
 				'</td>',
-				'<td colspan="2" class="nav-pages">',
+				'<td colspan="2" class="nav-pages" id="quiz-tab-nav-pagination" data-total-page="' . esc_attr( $quiz_args['total_page'] ) . '">',
 				$nav_link,
 				'</td>',
 				'</tr>',
@@ -228,11 +245,11 @@ final class ProfileQuizzesTemplate {
 	 * @param  integer $total_page total page
 	 * @return array offset array
 	 */
-	public static function get_offset( int $paged, int $perpage, int $total_page ): array {
+	public static function get_offset( int $paged, int $perpage, int $quiz_count ): array {
 		$from = ( $paged - 1 ) * $perpage + 1;
 		$to   = $from + $perpage - 1;
-		$to   = min( $to, $total_page );
-		if ( $total_page < 1 ) {
+		$to   = min( $to, $quiz_count );
+		if ( $quiz_count < 1 ) {
 			$from = 0;
 		}
 
@@ -246,8 +263,8 @@ final class ProfileQuizzesTemplate {
 	 * @param  int|integer $total_page total page
 	 * @return string offset text
 	 */
-	public static function get_offset_text( int $paged = 1, int $perpage = 10, int $total_page = 1 ): string {
-		$offset = self::get_offset( $paged, $perpage, $total_page );
+	public static function get_offset_text( int $paged = 1, int $perpage = 10, int $quiz_count = 1 ): string {
+		$offset = self::get_offset( $paged, $perpage, $quiz_count );
 		$output = '';
 		$single = __( 'quiz', 'learnpress' );
 		$plural = __( 'quizzes', 'learnpress' );
@@ -258,8 +275,8 @@ final class ProfileQuizzesTemplate {
 			array(
 				$offset[0],
 				$offset[1],
-				$total_page,
-				$total_page < 2 ? $single : $plural,
+				$quiz_count,
+				$quiz_count < 2 ? $single : $plural,
 			),
 			$format
 		);

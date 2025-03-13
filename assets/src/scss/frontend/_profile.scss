@@ -261,6 +261,22 @@
 		.course-categories {
 			padding: 0;
 		}
+		#profile-subtab-quiz-content{
+			.inline-form {
+			    display: flex;
+			    align-items: center;
+			    margin-bottom: 10px;
+			    input[type="number"] {
+			        padding: 8px;
+			        border: 1px solid #ccc;
+			        width: 60px;
+			    }
+			    button {
+			        cursor: pointer;
+			        line-height: 1;
+			    }
+			}
+		}
 		//
 		//.lp-button {
 		//	display: block;
