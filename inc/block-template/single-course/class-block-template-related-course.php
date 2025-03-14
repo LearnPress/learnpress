@@ -21,11 +21,12 @@ class Block_Template_Related_Course extends Abstract_Block_Template_Widget_Singl
 
 	public function render_content_block_template( array $attributes ) {
 		$content   = '';
+		$perPage   = $attributes['perPage'] ?? 4;
 		$course_id = get_the_ID();
 		if ( $course_id ) {
 			ob_start();
 			$course = CourseModel::find( $course_id, true );
-			do_action( 'learn-press/single-course/courses-related/layout', $course, 4 );
+			do_action( 'learn-press/single-course/courses-related/layout', $course, $perPage );
 			$content = ob_get_clean();
 		}
 

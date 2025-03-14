@@ -9,10 +9,29 @@
 	"keywords": ["learnpress breadcrumb", "learnpress"],
 	"usesContext": [],
 	"supports": {
-		"inserter": true,
-		"reusable": true,
-		"reorder": true,
+		"multiple": false,
+		"align": ["wide", "full"],
 		"html": false,
-		"multiple": true
+		"typography": {
+			"fontSize": true,
+			"lineHeight": false,
+			"fontWeight": true,
+			"__experimentalFontFamily": false,
+			"__experimentalTextDecoration": false,
+			"__experimentalFontStyle": true,
+			"__experimentalFontWeight": true,
+			"__experimentalLetterSpacing": false,
+			"__experimentalTextTransform": true,
+			"__experimentalDefaultControls": { "fontSize": true }
+		},
+		"color": {
+			"text": true,
+			"link": true,
+			"background": false,
+			"__experimentalDefaultControls": {
+				"text": true,
+				"link": false
+			}
+		}
 	}
 }

@@ -41,6 +41,7 @@
 	.lp-single-instructor__info__wrapper {
 		margin-bottom: 50px;
 		display: flex;
+		gap: 30px;
 	}
 
 	.lp-single-instructor__info__right__content {
@@ -71,12 +72,11 @@
 }
 
 .wp-block-learnpress-instructor-avatar {
-	.instructor-avatar {
-		width: 150px;
-		height: 150px;
-		margin-right: 30px;
-		background-color: #ccc;
-	}
+	width: 150px;
+	height: 150px;
+    aspect-ratio: 1;
+	background-color: #ccc;
+	border-radius: 50%;
 }
 
 .wp-block-learnpress-instructor-background {

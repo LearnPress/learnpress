@@ -10,11 +10,19 @@
 	"keywords": ["instructor avatar course", "learnpress"],
 	"usesContext": [],
 	"supports": {
-		"inserter": true,
-		"reusable": true,
-		"reorder": true,
+		"multiple": false,
+		"align": ["wide", "full"],
 		"html": false,
-		"multiple": true
+		"__experimentalBorder": {
+			"color": true,
+			"radius": true,
+			"width": true,
+			"__experimentalDefaultControls": {
+				"width": false,
+				"color": false,
+				"radius": false
+			}
+		}
 	},
 	"ancestor": [
 		"learnpress/lp-instructor"

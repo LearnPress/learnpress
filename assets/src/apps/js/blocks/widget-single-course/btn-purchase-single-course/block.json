@@ -10,13 +10,39 @@
 	"keywords": ["button purchase single course", "learnpress"],
 	"usesContext": [],
 	"supports": {
-		"inserter": true,
-		"reusable": true,
-		"reorder": true,
+		"multiple": false,
+		"align": ["wide", "full"],
 		"html": false,
-		"multiple": true
+		"typography": {
+			"fontSize": true,
+			"__experimentalDefaultControls": { "fontSize": true }
+		},
+		"color": {
+			"background": true,
+			"text": true,
+			"__experimentalDefaultControls": {
+				"background": true,
+				"text": true
+			}
+		},
+		"__experimentalBorder": {
+			"color": true,
+			"radius": true,
+			"width": true,
+			"__experimentalDefaultControls": {
+				"width": false,
+				"color": false,
+				"radius": false
+			}
+		},
+		"spacing": {
+			"padding": true,
+			"content": true,
+			"__experimentalDefaultControls": {
+				"padding": false,
+				"content": true
+			}
+		}
 	},
-	"ancestor": [
-		"learnpress/lp-single-course"
-	]
+	"ancestor": ["learnpress/lp-single-course"]
 }

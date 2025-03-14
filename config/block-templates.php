@@ -28,9 +28,9 @@ require_once $blog_template_path . 'single-course/class-block-template-features-
 require_once $blog_template_path . 'single-course/class-block-template-target-audiences-single-course.php';
 require_once $blog_template_path . 'single-course/class-block-template-lesson-single-course.php';
 require_once $blog_template_path . 'single-course/class-block-template-quiz-single-course.php';
-require_once $blog_template_path . 'single-course/class-block-template-time-single-course.php';
+// require_once $blog_template_path . 'single-course/class-block-template-time-single-course.php';
 require_once $blog_template_path . 'single-course/class-block-template-progress-single-course.php';
-require_once $blog_template_path . 'single-course/class-block-template-item-curriculum-course.php';
+// require_once $blog_template_path . 'single-course/class-block-template-item-curriculum-course.php';
 require_once $blog_template_path . 'single-course/class-block-template-curriculum-single-course.php';
 require_once $blog_template_path . 'single-course/class-block-template-related-course.php';
 
@@ -104,11 +104,11 @@ return apply_filters(
 		new Block_Template_Title_Single_Course(),
 		new Block_Template_Description_Single_Course(),
 		new Block_Template_Categories_Single_Course(),
-		new Block_Template_Tags_Single_Course(),
+		// new Block_Template_Tags_Single_Course(),
 		new Block_Template_Image_Single_Course(),
 		new Block_Template_Instructor_Single_Course(),
 		new Block_Template_Instructor_Section_Single_Course(),
-		new Block_Template_Tabs_Single_Course(),
+		// new Block_Template_Tabs_Single_Course(),
 		new Block_Template_Price_Single_Course(),
 		new Block_Template_Feature_Review_Single_Course(),
 		new Block_Template_Requirements_Single_Course(),
@@ -124,7 +124,7 @@ return apply_filters(
 		new Block_Template_Curriculum_Single_Course(),
 		new Block_Template_Related_Course(),
 		new Block_Template_Progress_Single_Course(),
-		new Block_Template_Time_Single_Course(),
+		// new Block_Template_Time_Single_Course(),
 		new Block_Template_Breadcrumb(),
 		new Block_Template_Comment(),
 		new Block_Template_Info_One_Course(),
@@ -179,6 +179,6 @@ return apply_filters(
 		new Block_Template_Instructor(),
 		new Block_Template_Taxonomy_Course(),
 		new Block_Template_Tag_Course(),
-		new Block_Template_Item_Curriculum_Course(),
+		// new Block_Template_Item_Curriculum_Course(),
 	)
 );

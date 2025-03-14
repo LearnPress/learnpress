@@ -19,17 +19,37 @@ class Block_Template_Categories_Single_Course extends Abstract_Block_Template_Wi
 	public $source_js                     = LP_PLUGIN_URL . 'assets/js/dist/blocks/categories-single-course.js';
 
 	public function render_content_block_template( array $attributes ) {
+		$this->enqueue_assets( $attributes );
+		$this->inline_styles( $attributes );
+		$border_classes_and_styles = StyleAttributes::get_classes_and_styles_by_attributes( $attributes, [ 'font_size', 'font_weight', 'text_color', 'text_transform', 'margin', 'padding' ] );
+
 		$content         = '';
 		$course          = CourseModel::find( get_the_ID(), true );
 		$html_categories = SingleCourseTemplate::instance()->html_categories( $course );
 		if ( ! empty( $html_categories ) ) {
 			$content = sprintf(
-				'<div>%s %s</div>',
+				'<div class="course-categories__wrapper ' . $border_classes_and_styles['classes'] . '">%s %s</div>',
 				sprintf( '<label>%s</label>', __( 'in', 'learnpress' ) ),
 				$html_categories
 			);
 		}
 
 		return $content;
+	}
+
+	public function get_inline_style( $attributes ) {
+		$link_classes_and_styles       = StyleAttributes::get_link_color_class_and_style( $attributes );
+		$link_hover_classes_and_styles = StyleAttributes::get_link_hover_color_class_and_style( $attributes );
+		$border_classes_and_styles     = StyleAttributes::get_classes_and_styles_by_attributes( $attributes, [ 'font_size', 'font_weight', 'text_color', 'text_transform' ] );
+
+		return '.course-categories__wrapper {' . $border_classes_and_styles['styles'] . '}
+				.lp-single-course__header .course-instructor-category .course-categories a {' . $link_classes_and_styles['style'] . '}
+				.lp-single-course__header .course-instructor-category .course-categories a:hover, .lp-single-course__header .course-instructor-category .course-categories a:focus {' . $link_hover_classes_and_styles['style'] . '}
+		';
+	}
+
+	public function inline_styles( $attributes ) {
+		$styles = $this->get_inline_style( $attributes );
+		wp_add_inline_style( 'lp-blocks-style', $styles );
 	}
 }

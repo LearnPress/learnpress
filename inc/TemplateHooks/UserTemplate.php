@@ -231,7 +231,7 @@ class UserTemplate {
 	 *
 	 * @return string
 	 */
-	public function html_social( $userModel ): string {
+	public function html_social( $userModel, $setting ): string {
 		$content = '';
 
 		try {
@@ -243,7 +243,7 @@ class UserTemplate {
 				return '';
 			}
 
-			$socials = $userModel->get_profile_social();
+			$socials = $userModel->get_profile_social( $setting );
 			if ( empty( $socials ) ) {
 				return $content;
 			}

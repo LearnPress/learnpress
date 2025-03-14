@@ -34,6 +34,10 @@ body {
 	--lp-instructor-border-color: #c3c4c7;
 	--lp-instructor-minmax-column: 250px;
 
+	:where(.is-layout-flow) > * {
+		margin-block-start: 0;
+	}
+
 	h1 {
 		font-size: 1.8em;
 		font-weight: bold;

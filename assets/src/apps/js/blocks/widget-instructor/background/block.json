@@ -9,14 +9,26 @@
 	"textdomain": "learnpress",
 	"keywords": ["instructor background course", "learnpress"],
 	"usesContext": [],
+	"attributes": {
+		"position": {
+			"type": "string",
+			"default": "center"
+		},
+		"size": {
+			"type": "string",
+			"default": "cover"
+		},
+		"repeat": {
+			"type": "boolean",
+			"default": false
+		}
+	},
 	"supports": {
 		"inserter": true,
 		"reusable": true,
 		"reorder": true,
 		"html": false,
-		"multiple": true
+		"multiple": false
 	},
-	"ancestor": [
-		"learnpress/lp-instructor"
-	]
+	"ancestor": ["learnpress/lp-instructor"]
 }

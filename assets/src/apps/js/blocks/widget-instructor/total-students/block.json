@@ -8,13 +8,38 @@
 	"description": "Renders Template Instructor Total Students PHP templates.",
 	"textdomain": "learnpress",
 	"keywords": ["instructor total students course", "learnpress"],
+	"attributes": {
+		"hidden": {
+			"type": "string",
+			"default": ""
+		}
+	},
 	"usesContext": [],
 	"supports": {
-		"inserter": true,
-		"reusable": true,
-		"reorder": true,
+		"multiple": false,
+		"align": ["wide", "full"],
 		"html": false,
-		"multiple": true
+		"typography": {
+			"fontSize": true,
+			"lineHeight": false,
+			"fontWeight": true,
+			"__experimentalFontFamily": false,
+			"__experimentalTextDecoration": false,
+			"__experimentalFontStyle": false,
+			"__experimentalFontWeight": true,
+			"__experimentalLetterSpacing": false,
+			"__experimentalTextTransform": true,
+			"__experimentalDefaultControls": { "fontSize": true }
+		},
+		"color": {
+			"background": false,
+			"text": true,
+			"link": false,
+			"gradients": false,
+			"__experimentalDefaultControls": {
+				"text": true
+			}
+		}
 	},
 	"ancestor": [
 		"learnpress/lp-instructor"

@@ -15,7 +15,10 @@ class Block_Template_Instructor_Social extends Abstract_Block_Template {
 	public $source_js   = LP_PLUGIN_URL . 'assets/js/dist/blocks/instructor-social.js';
 
 	public function render_content_block_template( array $attributes ) {
-		$content = '';
+		$content             = '';
+		$setting             = [];
+		$setting['target']   = $attributes['target'] ?? false;
+		$setting['nofollow'] = $attributes['nofollow'] ?? false;
 
 		try {
 			$instructor = SingleInstructorTemplate::instance()->detect_instructor_by_page();
@@ -24,7 +27,7 @@ class Block_Template_Instructor_Social extends Abstract_Block_Template {
 				return;
 			}
 			ob_start();
-			echo SingleInstructorTemplate::instance()->html_social( $instructor );
+			echo SingleInstructorTemplate::instance()->html_social( $instructor, $setting );
 			$content = ob_get_clean();
 		} catch ( Throwable $e ) {
 			ob_end_clean();

@@ -10,11 +10,16 @@
 	"keywords": ["comment", "learnpress"],
 	"usesContext": [],
 	"supports": {
-		"inserter": true,
-		"reusable": true,
-		"reorder": true,
+		"multiple": false,
 		"html": false,
-		"multiple": true
+		"spacing": {
+			"padding": true,
+			"margin": true,
+			"__experimentalDefaultControls": {
+				"margin": false,
+				"padding": false
+			}
+		}
 	},
 	"ancestor": [
 		"learnpress/lp-single-course"

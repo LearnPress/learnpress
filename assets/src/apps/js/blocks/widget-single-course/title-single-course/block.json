@@ -16,14 +16,46 @@
 	},
 	"usesContext": [],
 	"supports": {
-		"inserter": true,
-		"reusable": true,
-		"reorder": true,
+		"multiple": false,
+		"align": ["wide", "full"],
 		"html": false,
-		"multiple": true,
-		"customClassName": true
+		"typography": {
+			"fontSize": true,
+			"lineHeight": false,
+			"fontWeight": true,
+			"textTransform" : false,
+			"__experimentalFontFamily": false,
+			"__experimentalTextDecoration": false,
+			"__experimentalFontStyle": true,
+			"__experimentalFontWeight": true,
+			"__experimentalLetterSpacing": false,
+			"__experimentalTextTransform": true,
+			"__experimentalDefaultControls": {
+				"fontSize": true,
+				"textTransform": false
+			}
+		},
+		"color": {
+			"text": true,
+			"link": false,
+			"background": false,
+			"__experimentalDefaultControls": {
+				"text": true
+			}
+		},
+		"__experimentalBorder": {
+			"color": false,
+			"radius": false,
+			"width": false
+		},
+		"spacing": {
+			"padding": true,
+			"margin": true,
+			"__experimentalDefaultControls": {
+				"margin": false,
+				"padding": false
+			}
+		}
 	},
-	"ancestor": [
-		"learnpress/lp-single-course"
-	]
+	"ancestor": ["learnpress/lp-single-course"]
 }

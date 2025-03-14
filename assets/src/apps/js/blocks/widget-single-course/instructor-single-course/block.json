@@ -9,11 +9,30 @@
 	"keywords": ["instructor single course", "learnpress"],
 	"usesContext": [],
 	"supports": {
-		"inserter": true,
-		"reusable": true,
-		"reorder": true,
+		"multiple": false,
+		"align": ["wide", "full"],
 		"html": false,
-		"multiple": true
+		"typography": {
+			"fontSize": true,
+			"lineHeight": false,
+			"fontWeight": true,
+			"__experimentalFontFamily": false,
+			"__experimentalTextDecoration": false,
+			"__experimentalFontStyle": false,
+			"__experimentalFontWeight": true,
+			"__experimentalLetterSpacing": false,
+			"__experimentalTextTransform": true,
+			"__experimentalDefaultControls": { "fontSize": true }
+		},
+		"color": {
+			"background": false,
+			"text": true,
+			"link": true,
+			"__experimentalDefaultControls": {
+				"link": false,
+				"text": true
+			}
+		}
 	},
 	"ancestor": [
 		"learnpress/lp-single-course"

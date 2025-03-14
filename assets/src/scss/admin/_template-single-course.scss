@@ -209,11 +209,12 @@
 			display: flex;
 			gap: 30px;
 			margin-top: 30px;
+			flex-wrap: wrap;
 		}
 
 		.course-item {
 			height: 333px;
-			width: 100%;
+			width: calc(25% - 30px / 4 *3);
 			background: #ccc;
 			border-radius: 12px;
 		}

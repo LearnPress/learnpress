@@ -405,10 +405,11 @@ class UserModel {
 	 * @since 4.2.3
 	 * @version 1.0.1
 	 */
-	public function get_profile_social(): array {
-		$socials    = array();
-		$extra_info = learn_press_get_user_extra_profile_info( $this->get_id() );
-
+	public function get_profile_social( $setting ): array {
+		$socials          = array();
+		$extra_info       = learn_press_get_user_extra_profile_info( $this->get_id() );
+		$setting_target   = $setting['target'] ?? false;
+		$setting_nofollow = $setting['nofollow'] ?? false;
 		if ( $extra_info ) {
 			foreach ( $extra_info as $k => $v ) {
 				if ( empty( $v ) ) {
@@ -432,14 +433,17 @@ class UserModel {
 						$i = sprintf( '<i class="lp-user-ico lp-icon-%s"></i>', $k );
 				}
 
-				$icon          = apply_filters(
+				$icon = apply_filters(
 					'learn-press/user-profile-social-icon',
 					$i,
 					$k,
 					$this->get_id(),
 					$this
 				);
-				$socials[ $k ] = sprintf( '<a href="%s">%s</a>', esc_url_raw( $v ), $icon );
+
+				$attribute_target   = $setting_target ? 'target="_blank"' : '';
+				$attribute_nofollow = $setting_nofollow ? 'rel="nofollow noopener"' : '';
+				$socials[ $k ]      = sprintf( '<a href="%s" %s %s>%s</a>', esc_url_raw( $v ), $attribute_target, $attribute_nofollow, $icon );
 			}
 		}
 

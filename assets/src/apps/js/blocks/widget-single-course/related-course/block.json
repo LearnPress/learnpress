@@ -8,6 +8,12 @@
 	"textdomain": "learnpress",
 	"keywords": ["related single course", "learnpress"],
 	"usesContext": [],
+	"attributes": {
+		"perPage": {
+			"type": "number",
+			"default": 4
+		}
+	},
 	"supports": {
 		"inserter": true,
 		"reusable": true,
@@ -15,7 +21,5 @@
 		"html": false,
 		"multiple": true
 	},
-	"ancestor": [
-		"learnpress/lp-single-course"
-	]
+	"ancestor": ["learnpress/lp-single-course"]
 }

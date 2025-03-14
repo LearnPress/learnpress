@@ -9,14 +9,22 @@
 	"textdomain": "learnpress",
 	"keywords": ["instructor social course", "learnpress"],
 	"usesContext": [],
+	"attributes": {
+		"target": {
+			"type": "boolean",
+			"default": false
+		},
+		"nofollow": {
+			"type": "boolean",
+			"default": false
+		}
+	},
 	"supports": {
 		"inserter": true,
 		"reusable": true,
 		"reorder": true,
 		"html": false,
-		"multiple": true
+		"multiple": false
 	},
-	"ancestor": [
-		"learnpress/lp-instructor"
-	]
+	"ancestor": ["learnpress/lp-instructor"]
 }

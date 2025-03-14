@@ -49,19 +49,23 @@ class SingleInstructorTemplate extends UserTemplate {
 	 * @version 1.0.0
 	 * @since 4.2.3
 	 */
-	public function html_count_courses( $instructor ): string {
+	public function html_count_courses( $instructor, $hidden = '' ): string {
 		$content = '';
 
 		try {
 			$instructor_statistic = $instructor->get_instructor_statistic();
+			$html                 = sprintf(
+				'%d %s',
+				$instructor_statistic['published_course'],
+				_n( 'Course', 'Courses', $instructor_statistic['published_course'], 'learnpress' )
+			);
+			if ( $hidden === 'text' ) {
+				$html = $instructor_statistic['published_course'];
+			}
 
 			$sections = [
 				'wrapper'     => '<span class="instructor-total-courses">',
-				'content'     => sprintf(
-					'%d %s',
-					$instructor_statistic['published_course'],
-					_n( 'Course', 'Courses', $instructor_statistic['published_course'], 'learnpress' )
-				),
+				'content'     => $html,
 				'wrapper_end' => '</span>',
 			];
 
@@ -82,19 +86,23 @@ class SingleInstructorTemplate extends UserTemplate {
 	 * @version 1.0.0
 	 * @since 4.2.3
 	 */
-	public function html_count_students( $instructor ): string {
+	public function html_count_students( $instructor, $hidden = '' ): string {
 		$content = '';
 
 		try {
 			$instructor_statistic = $instructor->get_instructor_statistic();
+			$html                 = sprintf(
+				'%d %s',
+				$instructor_statistic['total_student'],
+				_n( 'Student', 'Students', $instructor_statistic['total_student'], 'learnpress' )
+			);
+			if ( $hidden === 'text' ) {
+				$html = $instructor_statistic['total_student'];
+			}
 
 			$sections = [
 				'wrapper'     => '<span class="instructor-total-students">',
-				'content'     => sprintf(
-					'%d %s',
-					$instructor_statistic['total_student'],
-					_n( 'Student', 'Students', $instructor_statistic['total_student'], 'learnpress' )
-				),
+				'content'     => $html,
 				'wrapper_end' => '</span>',
 			];
 

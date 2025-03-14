@@ -10,11 +10,38 @@
 	"keywords": ["price single course", "learnpress"],
 	"usesContext": [],
 	"supports": {
-		"inserter": true,
-		"reusable": true,
-		"reorder": true,
+		"multiple": false,
+		"align": ["wide", "full"],
 		"html": false,
-		"multiple": true
+		"typography": {
+			"fontSize": true,
+			"lineHeight": false,
+			"fontWeight": true,
+			"__experimentalFontFamily": false,
+			"__experimentalTextDecoration": false,
+			"__experimentalFontStyle": false,
+			"__experimentalFontWeight": true,
+			"__experimentalLetterSpacing": false,
+			"__experimentalTextTransform": false,
+			"__experimentalDefaultControls": { "fontSize": false }
+		},
+		"color": {
+			"background": false,
+			"text": false,
+			"link": false,
+			"gradients": false,
+			"__experimentalDefaultControls": {
+				"text": false
+			}
+		},
+		"spacing": {
+			"padding": true,
+			"margin": true,
+			"__experimentalDefaultControls": {
+				"margin": false,
+				"padding": false
+			}
+		}
 	},
 	"ancestor": [
 		"learnpress/lp-single-course"

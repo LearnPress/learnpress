@@ -1,4 +1,6 @@
 <?php
+use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
+
 $class = 'lp-single-course';
 
 ?>
@@ -7,5 +9,6 @@ $class = 'lp-single-course';
 	if ( ! empty( $inner_content ) ) {
 		echo $inner_content;
 	}
+	echo SingleCourseTemplate::instance()->html_content_item();
 	?>
 </div>

@@ -9,13 +9,38 @@
 	"keywords": ["curriculum single course", "learnpress"],
 	"usesContext": [],
 	"supports": {
-		"inserter": true,
-		"reusable": true,
-		"reorder": true,
+		"multiple": false,
+		"align": ["wide", "full"],
 		"html": false,
-		"multiple": true
+		"typography": {
+			"fontSize": true,
+			"lineHeight": false,
+			"fontWeight": true,
+			"__experimentalFontFamily": false,
+			"__experimentalTextDecoration": false,
+			"__experimentalFontStyle": false,
+			"__experimentalFontWeight": true,
+			"__experimentalLetterSpacing": false,
+			"__experimentalTextTransform": true,
+			"__experimentalDefaultControls": { "fontSize": true }
+		},
+		"color": {
+			"background": false,
+			"text": true,
+			"link": false,
+			"gradients": false,
+			"__experimentalDefaultControls": {
+				"text": true
+			}
+		},
+		"spacing": {
+			"padding": true,
+			"margin": true,
+			"__experimentalDefaultControls": {
+				"margin": false,
+				"padding": false
+			}
+		}
 	},
-	"ancestor": [
-		"learnpress/lp-single-course"
-	]
+	"ancestor": ["learnpress/lp-single-course"]
 }
