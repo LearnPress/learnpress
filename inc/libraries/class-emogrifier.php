@@ -100,6 +100,18 @@ if(!class_exists('Emogrifier')) {
 		private $styleAttributesForNodes = array();
 
 		/**
+		 * Determines whether the <style> blocks in the HTML passed to this class should be parsed.
+		 *
+		 * If set to true, the <style> blocks will be removed from the HTML and their contents will be applied to the HTML
+		 * via inline styles.
+		 *
+		 * If set to false, the <style> blocks will be left as they are in the HTML.
+		 *
+		 * @var bool
+		 */
+		private $isStyleBlocksParsingEnabled = false;
+
+		/**
 		 * This attribute applies to the case where you want to preserve your original text encoding.
 		 *
 		 * By default, emogrifier translates your text into HTML entities for two reasons:
@@ -213,6 +225,15 @@ if(!class_exists('Emogrifier')) {
 		}
 
 		/**
+		 * Disables the parsing of <style> blocks.
+		 *
+		 * @return void
+		 */
+		public function disableStyleBlocksParsing() {
+			$this->isStyleBlocksParsingEnabled = false;
+		}
+
+		/**
 		 * Applies the CSS you submit to the HTML you submit.
 		 *
 		 * This method places the CSS inline.
@@ -255,8 +276,9 @@ if(!class_exists('Emogrifier')) {
 			// grab any existing style blocks from the html and append them to the existing CSS
 			// (these blocks should be appended so as to have precedence over conflicting styles in the existing CSS)
 			$allCss = $this->css;
-
-			$allCss .= $this->getCssFromAllStyleNodes( $xpath );
+			if ($this->isStyleBlocksParsingEnabled) {
+				$allCss .= $this->getCssFromAllStyleNodes( $xpath );
+			}
 
 			$cssParts     = $this->splitCssAndMediaQuery( $allCss );
 			self::$_media = ''; // reset
