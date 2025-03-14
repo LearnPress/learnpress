@@ -15,14 +15,18 @@ registerBlockType( 'learnpress/course-title', {
 	edit( props ) {
 		// eslint-disable-next-line react-hooks/rules-of-hooks
 		const blockProps = useBlockProps();
-		const { attributes, setAttributes } = props;
+		const { attributes, setAttributes, context } = props;
 		const { align } = attributes;
 		// eslint-disable-next-line react-hooks/rules-of-hooks
-		const posts = useSelect( ( select ) => {
-			return select( 'core' ).getEntityRecords( 'postType', 'lp_course', { per_page: 1 } );
-		}, [] );
 
-		console.log( posts );
+		let course;
+		if ( context[ 'learnpress/courseData' ] ) {
+			course = context[ 'learnpress/courseData' ];
+		}
+
+		// Test if the course is loaded
+
+		console.log( 'context', context );
 
 		return (
 			<div { ...blockProps }>
@@ -35,10 +39,10 @@ registerBlockType( 'learnpress/course-title', {
 					/>
 				</BlockControls>
 
-				{ ! posts && 'Course Title' }
-				{ posts && posts.length === 0 && 'No Posts' }
-				{ posts && posts.length > 0 && (
-					<div style={ { textAlign: align } }>{ posts[ 0 ].title.rendered }</div>
+				{ ! course && 'Course Title' }
+				{ course && 'No Course' }
+				{ course && (
+					<div style={ { textAlign: align } }>{ course.title.rendered }</div>
 				)
 				}
 

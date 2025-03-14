@@ -1,5 +1,6 @@
 <?php
 use LearnPress\Gutenberg\Blocks\Courses\BlockArchiveCourseLegacy;
+use LearnPress\Gutenberg\Blocks\SingleCourse\BlockSingleCourseItem;
 use LearnPress\Gutenberg\Blocks\SingleCourse\BlockSingleCourseLegacy;
 use LearnPress\Gutenberg\Blocks\SingleCourse\BlockCourseTitle;
 use LearnPress\Gutenberg\Blocks\SingleCourse\BlockSingleCourseTemplate;
@@ -11,5 +12,6 @@ return apply_filters(
 		new BlockCourseTitle(),
 		//new BlockSingleCourseLegacy(),
 		new BlockSingleCourseTemplate(),
+		new BlockSingleCourseItem(),
 	)
 );
