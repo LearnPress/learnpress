@@ -2,6 +2,9 @@
 namespace LearnPress\Gutenberg\Blocks\SingleCourse;
 
 use LearnPress\Gutenberg\Blocks\BlockAbstract;
+use LearnPress\Models\CourseModel;
+use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
+use Throwable;
 
 /**
  * Class Block_Template_Single_Course
@@ -29,7 +32,19 @@ class BlockSingleCourseTemplate extends BlockAbstract {
 	 *
 	 * @return false|string
 	 */
-	public function render_content_block_template( array $attributes ) {
-		echo 555;
+	public function render_content_block_template( array $attributes, $content, $block ) {
+		try {
+			$attributes['courseId'] = ! empty( $attributes['courseId'] ) ? (int) $attributes['courseId'] : get_the_ID();
+			$courseModel            = CourseModel::find( $attributes['courseId'], true );
+
+			$singleCourseTemplate = SingleCourseTemplate::instance();
+			//echo $singleCourseTemplate->html_title( $courseModel );
+			return sprintf(
+				'<div %s></div>',
+				get_block_wrapper_attributes( $attributes )
+			);
+		} catch ( Throwable $e ) {
+			\LP_Debug::error_log( $e );
+		}
 	}
 }

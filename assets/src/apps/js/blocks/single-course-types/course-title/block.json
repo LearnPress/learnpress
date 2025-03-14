@@ -1,0 +1,15 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "learnpress/course-title",
+  "title": "Course Title",
+  "category": "learnpress-category",
+  "description": "Renders template Single Course Legacy PHP templates.",
+  "textdomain": "learnpress",
+  "keywords": [ "single course", "learnpress" ],
+  "usesContext": [],
+  "supports": {
+	  "align": ["center", "full", "wide"],
+	  "color": {}
+  }
+}

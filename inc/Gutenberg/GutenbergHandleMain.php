@@ -7,6 +7,7 @@ use LearnPress\Gutenberg\Blocks\SingleCourse\BlockSingleCourseLegacy;
 use LearnPress\Helpers\Config;
 use LearnPress\Helpers\Singleton;
 use WP_Block_Template;
+use WP_Block_Type;
 use WP_Post;
 
 /**
@@ -59,10 +60,13 @@ class GutenbergHandleMain {
 			wp_register_script(
 				$block_template->name, // Block name
 				$block_template->source_js, // Block script
-				array( 'wp-blocks' ), // Dependencies
+				array(), // Dependencies
 				uniqid(), // Version,
 				[ 'strategy' => 'async' ]
 			);
+
+			// Load translations for block
+			wp_set_script_translations( $block_template->name, 'learnpress', LP_PLUGIN_PATH . '/languages' );
 
 			// Render content block template child of parent block
 			if ( $block_template->inner_block ) {
@@ -79,10 +83,10 @@ class GutenbergHandleMain {
 			}
 
 			// Set block maybe display when Edit.
-			$postIdEdit = $_REQUEST['postId'];
-			if ( ! empty( $block_template->templates_display )
+			$postIdEdit = $_REQUEST['postId'] ?? '';
+			if ( ! empty( $postIdEdit ) && ! empty( $block_template->templates_display )
 				&& ! in_array( $postIdEdit, $block_template->templates_display ) ) {
-				return;
+				continue;
 			}
 
 			// Render content block template parent

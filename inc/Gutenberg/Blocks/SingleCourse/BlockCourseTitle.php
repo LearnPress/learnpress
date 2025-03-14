@@ -2,6 +2,9 @@
 namespace LearnPress\Gutenberg\Blocks\SingleCourse;
 
 use LearnPress\Gutenberg\Blocks\BlockAbstract;
+use LearnPress\Models\CourseModel;
+use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
+use WP_Block_Type;
 
 /**
  * Class Block_Template_Single_Course
@@ -9,13 +12,13 @@ use LearnPress\Gutenberg\Blocks\BlockAbstract;
  * Handle register, render block template
  */
 class BlockCourseTitle extends BlockAbstract {
-	public $name        = 'learnpress/course-title';
-	public $title       = 'Course Title';
-	public $description = '';
-	public $content     = '<!-- wp:learnpress/course-title /-->';
-	public $source_js   = LP_PLUGIN_URL . 'assets/js/dist/blocks/course-title.js';
+	public $name              = 'learnpress/course-title';
+	public $title             = 'Course Title';
+	public $description       = '';
+	public $content           = '<!-- wp:learnpress/course-title /-->';
+	public $source_js         = LP_PLUGIN_URL . 'assets/js/dist/blocks/course-title.js';
 	public $templates_display = [
-		'learnpress/learnpress//single-lp_course'
+		'learnpress/learnpress//single-lp_course',
 	];
 
 	public function __construct() {
@@ -29,8 +32,12 @@ class BlockCourseTitle extends BlockAbstract {
 	 *
 	 * @return false|string
 	 */
-	public function render_content_block_template( array $attributes ) {
-		$align   = $attributes['align'] ?? '';
+	public function render_content_block_template( array $attributes, $content, $block ) {
+		$course_id            = ! empty( $attributes['courseId'] ) ? (int) $attributes['courseId'] : get_the_ID();
+		$courseModel          = CourseModel::find( $course_id, true );
+		$singleCourseTemplate = SingleCourseTemplate::instance();
+
+		$align = $attributes['align'] ?? '';
 
 		switch ( $align ) {
 			case 'wide':
@@ -51,7 +58,12 @@ class BlockCourseTitle extends BlockAbstract {
 			$align,
 		];
 
-		$class_string = esc_attr( implode( ' ', $classes ) );
-		return '<div class="' . $class_string . '">55555</div>';
+		$m = get_block_wrapper_attributes( $attributes );
+
+		return sprintf(
+			'<div %s>%s</div>',
+			get_block_wrapper_attributes( $attributes ),
+			$singleCourseTemplate->html_title( $courseModel )
+		);
 	}
 }

@@ -71,7 +71,7 @@ abstract class BlockAbstract extends \WP_Block_Template {
 	 *
 	 * @return false|string
 	 */
-	public function render_content_block_template( array $attributes ) {
+	public function render_content_block_template( array $attributes, $content, $block ) {
 		$content = '';
 
 		try {
