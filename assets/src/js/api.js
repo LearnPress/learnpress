@@ -12,7 +12,7 @@ if ( 'undefined' !== typeof lpDataAdmin ) {
 		apiAdminNotice: lpDataAdmin.lp_rest_url + 'lp/v1/admin/tools/admin-notices',
 		apiAdminOrderStatic: lpDataAdmin.lp_rest_url + 'lp/v1/orders/statistic',
 		apiAddons: lpDataAdmin.lp_rest_url + 'lp/v1/addon/all',
-		apiAddonAction: lpDataAdmin.lp_rest_url + 'lp/v1/addon/action',
+		apiAddonAction: lpDataAdmin.lp_rest_url + 'lp/v1/addon/action-n',
 		apiAddonsPurchase: lpDataAdmin.lp_rest_url + 'lp/v1/addon/info-addons-purchase',
 		apiSearchCourses: lpDataAdmin.lp_rest_url + 'lp/v1/admin/tools/search-course',
 		apiSearchUsers: lpDataAdmin.lp_rest_url + 'lp/v1/admin/tools/search-user',

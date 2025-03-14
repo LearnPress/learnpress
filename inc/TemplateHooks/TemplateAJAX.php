@@ -25,11 +25,11 @@ class TemplateAJAX {
 	 * When AJAX load done will innerHTML to class lp-target self.
 	 * To use this, you need add hook 'lp/rest/ajax/allow_callback' to register for security reasons.
 	 *
-	 * @param array $args [ method_request' => 'GET/POST', 'el_loading_before_show_content' => '', 'el_loading_after_content_loaded' => '',... ],
+	 * @param array $args [ method_request' => 'GET/POST',... ],
 	 * method_request: default is POST, use to set method type call to server.
-	 * html_loading_before_show_content: html loading before content call API to render.
-	 * html_loading_after_content_loaded: html loading when content rendered, and change.
-	 * html_no_load_ajax_first: if not empty, remove el_loading_before_show_content, will not load ajax first, only send data to handle AJAX via event.
+	 * param html_loading_before_show_content: html loading before content call API to render.
+	 * param html_loading_after_content_loaded: html loading when content rendered, and change.
+	 * param html_no_load_ajax_first: if not empty, remove el_loading_before_show_content, will not load ajax first, only send data to handle AJAX via event.
 	 *
 	 * @param array $callback [ 'class', 'method' ] method use to render content html
 	 *

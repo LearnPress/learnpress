@@ -16,12 +16,12 @@ return apply_filters(
 			'type'    => 'checkbox',
 			'desc'    => esc_html__( 'Enable PayPal', 'learnpress' ),
 		),
-		array(
+		/*array(
 			'title' => esc_html__( 'PayPal email', 'learnpress' ),
 			'id'    => '[paypal_email]',
 			'type'  => 'text',
 			'desc'  => esc_html__( 'The old standard will not be supported in 2023/11/30.', 'learnpress' ),
-		),
+		),*/
 		array(
 			'title'   => esc_html__( 'Sandbox mode', 'learnpress' ),
 			'id'      => '[paypal_sandbox]',
@@ -29,19 +29,19 @@ return apply_filters(
 			'type'    => 'checkbox',
 			'desc'    => esc_html__( 'Enable PayPal sandbox', 'learnpress' ),
 		),
-		array(
+		/*array(
 			'title' => esc_html__( 'Sandbox email address', 'learnpress' ),
 			'id'    => '[paypal_sandbox_email]',
 			'type'  => 'text',
 			'desc'  => esc_html__( 'The old standard will not be supported in 2023/11/30.', 'learnpress' ),
-		),
-		array(
+		),*/
+		/*array(
 			'title'   => esc_html__( 'Use PayPal REST API', 'learnpress' ),
 			'id'      => '[use_paypal_rest]',
 			'default' => 'yes',
 			'type'    => 'checkbox',
 			'desc'    => esc_html__( '(Recommendations)', 'learnpress' ),
-		),
+		),*/
 		array(
 			'title' => esc_html__( 'Client ID', 'learnpress' ),
 			'id'    => '[app_client_id]',

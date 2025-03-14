@@ -114,8 +114,8 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 	 */
 	public function user_progress( WP_REST_Request $request ): LP_REST_Response {
 		$params         = $request->get_params();
-		$course_id      = $params['courseId'] ?? false;
-		$user_id        = $params['userId'] ?? false;
+		$course_id      = intval( $params['courseId'] ?? 0 );
+		$user_id        = intval( $params['userId'] ?? 0 );
 		$response       = new LP_REST_Response();
 		$response->data = '';
 

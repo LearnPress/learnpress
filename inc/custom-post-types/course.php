@@ -4,7 +4,7 @@
  *
  * @author  ThimPress
  * @package LearnPress/Classes
- * @version 3.0.0
+ * @version 3.0.1
  */
 
 use LearnPress\Models\CourseModel;
@@ -59,7 +59,10 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				'edit_item'          => __( 'Edit Course', 'learnpress' ),
 				'update_item'        => __( 'Update Course', 'learnpress' ),
 				'search_items'       => __( 'Search Courses', 'learnpress' ),
-				'not_found'          => sprintf( __( 'You have not had any courses yet. Click <a href="%s">Add new</a> to start', 'learnpress' ), admin_url( 'post-new.php?post_type=lp_course' ) ),
+				'not_found'          => sprintf(
+					__( 'You have not had any courses yet. Click <a href="%s">Add new</a> to start', 'learnpress' ),
+					admin_url( 'post-new.php?post_type=lp_course' )
+				),
 				'not_found_in_trash' => __( 'There was no course found in the trash', 'learnpress' ),
 			);
 			$course_base      = LP_Settings::get_option( 'course_base', 'courses' );
@@ -323,57 +326,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		}
 
 		/**
-		 * Use when enable Gutenberg.
-		 *
-		 * @return void
-		 */
-		/*public function admin_editor() {
-			$course = LP_Course::get_course();
-
-			learn_press_admin_view( 'course/editor' );
-		}*/
-
-		/**
-		 * Delete all sections in a course and reset auto increment
-		 */
-		private function _reset_sections() {
-			global $wpdb, $post;
-
-			$wpdb->query(
-				$wpdb->prepare(
-					"
-					DELETE FROM si
-					USING {$wpdb->learnpress_section_items} si
-					INNER JOIN {$wpdb->learnpress_sections} s ON s.section_id = si.section_id
-					INNER JOIN {$wpdb->posts} p ON p.ID = s.section_course_id
-					WHERE p.ID = %d
-				",
-					$post->ID
-				)
-			);
-			$wpdb->query(
-				"
-				ALTER TABLE {$wpdb->learnpress_section_items} AUTO_INCREMENT = 1
-			"
-			);
-
-			$wpdb->query(
-				$wpdb->prepare(
-					"
-					DELETE FROM {$wpdb->learnpress_sections}
-					WHERE section_course_id = %d
-				",
-					$post->ID
-				)
-			);
-			$wpdb->query(
-				"
-				ALTER TABLE {$wpdb->learnpress_sections} AUTO_INCREMENT = 1
-			"
-			);
-		}
-
-		/**
 		 * Add columns to admin manage course page
 		 *
 		 * @param array $columns
@@ -503,17 +455,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			}
 		}
 
-		/*public function meta_boxes() {
-			return array(
-				'course-editor' => array(
-					'title'    => esc_html__( 'Curriculum', 'learnpress' ),
-					'callback' => array( $this, 'admin_editor' ),
-					'context'  => 'normal',
-					'priority' => 'high',
-				),
-			);
-		}*/
-
 		/**
 		 * Save course post
 		 *
@@ -593,6 +534,16 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					if ( $post_author ) {
 						$courseModel->post_author = $post_author;
 					}
+				} elseif ( ! empty( $_REQUEST['post_author'] ) ) {
+					$courseModel->post_author = LP_Request::get_param( 'post_author', 0, 'int' );
+					// Save author to post table
+					$lp_db                     = LP_Database::getInstance();
+					$filter_update             = new LP_Post_Type_Filter();
+					$filter_update->collection = $lp_db->tb_posts;
+					$filter_update->set[]      = "post_author = {$courseModel->post_author}";
+					$filter_update->where[]    = $lp_db->wpdb->prepare( 'AND ID = %d', $courseModel->ID );
+					$lp_db->update_execute( $filter_update );
+					clean_post_cache( $post->ID );
 				}
 
 				$this->save_price( $courseModel );

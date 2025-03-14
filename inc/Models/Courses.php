@@ -194,43 +194,13 @@ class Courses {
 	 *
 	 * @return object|null|string|int
 	 * @author tungnx
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 * @sicne 4.1.5
 	 */
 	public static function get_courses( LP_Course_Filter $filter, int &$total_rows = 0 ) {
 		$lp_course_db = LP_Course_DB::getInstance();
 
 		try {
-			// Sort by
-			$filter->sort_by = (array) $filter->sort_by;
-			foreach ( $filter->sort_by as $sort_by ) {
-				$filter_tmp                      = clone $filter;
-				$filter_tmp->only_fields         = array( 'DISTINCT(ID)' );
-				$filter_tmp->return_string_query = true;
-
-				switch ( $sort_by ) {
-					case 'on_sale':
-						$filter_tmp = $lp_course_db->get_courses_sort_by_sale( $filter_tmp );
-						break;
-					case 'on_free':
-						$filter_tmp = $lp_course_db->get_courses_sort_by_free( $filter_tmp );
-						break;
-					case 'on_paid':
-						$filter_tmp = $lp_course_db->get_courses_sort_by_paid( $filter_tmp );
-						break;
-					case 'on_feature':
-						$filter_tmp = $lp_course_db->get_courses_sort_by_feature( $filter_tmp );
-						break;
-					default:
-						$filter_tmp = apply_filters( 'lp/courses/filter/sort_by/' . $sort_by, $filter_tmp );
-						break;
-				}
-
-				$query_courses_str = $lp_course_db->get_courses( $filter_tmp );
-
-				$filter->where[] = "AND ID IN ({$query_courses_str})";
-			}
-
 			// Order by
 			switch ( $filter->order_by ) {
 				case 'price':
@@ -260,6 +230,36 @@ class Courses {
 				default:
 					$filter = apply_filters( 'lp/courses/filter/order_by/' . $filter->order_by, $filter );
 					break;
+			}
+
+			// Sort by
+			$filter->sort_by = (array) $filter->sort_by;
+			foreach ( $filter->sort_by as $sort_by ) {
+				$filter_tmp                      = clone $filter;
+				$filter_tmp->only_fields         = array( 'DISTINCT(ID)' );
+				$filter_tmp->return_string_query = true;
+
+				switch ( $sort_by ) {
+					case 'on_sale':
+						$filter_tmp = $lp_course_db->get_courses_sort_by_sale( $filter_tmp );
+						break;
+					case 'on_free':
+						$filter_tmp = $lp_course_db->get_courses_sort_by_free( $filter_tmp );
+						break;
+					case 'on_paid':
+						$filter_tmp = $lp_course_db->get_courses_sort_by_paid( $filter_tmp );
+						break;
+					case 'on_feature':
+						$filter_tmp = $lp_course_db->get_courses_sort_by_feature( $filter_tmp );
+						break;
+					default:
+						$filter_tmp = apply_filters( 'lp/courses/filter/sort_by/' . $sort_by, $filter_tmp );
+						break;
+				}
+
+				$query_courses_str = $lp_course_db->get_courses( $filter_tmp );
+
+				$filter->where[] = "AND ID IN ({$query_courses_str})";
 			}
 
 			// Query get results

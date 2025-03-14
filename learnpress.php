@@ -4,7 +4,7 @@
  * Plugin URI: http://thimpress.com/learnpress
  * Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
  * Author: ThimPress
- * Version: 4.2.7.6
+ * Version: 4.2.8.1
  * Author URI: http://thimpress.com
  * Requires at least: 6.0
  * Requires PHP: 7.0
@@ -17,6 +17,7 @@
 use LearnPress\Ajax\LessonAjax;
 use LearnPress\Ajax\LoadContentViaAjax;
 use LearnPress\ExternalPlugin\Elementor\LPElementor;
+use LearnPress\ExternalPlugin\RankMath\LPRankMath;
 use LearnPress\ExternalPlugin\YoastSeo\LPYoastSeo;
 use LearnPress\Models\UserModel;
 use LearnPress\Shortcodes\Course\FilterCourseShortcode;
@@ -41,7 +42,6 @@ use LearnPress\TemplateHooks\Profile\ProfileOrderTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileStudentStatisticsTemplate;
 use LearnPress\TemplateHooks\Course\CourseMaterialTemplate;
 use LearnPress\Widgets\LPRegisterWidget;
-use LP_Addon_Co_Instructor\Hook;
 
 defined( 'ABSPATH' ) || exit();
 
@@ -258,7 +258,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * @return void
 		 */
 		private function include_files_global() {
-			//include_once 'inc/class-lp-multi-language.php';
 
 			// Filter query .
 			include_once 'inc/Filters/class-lp-filter.php';
@@ -478,6 +477,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			include_once 'inc/admin/views/meta-boxes/class-lp-meta-box.php';
 
 			include_once 'inc/class-lp-page-controller.php';
+			LP_Page_Controller::instance();
 
 			include_once 'inc/gateways/class-lp-gateway-abstract.php';
 			include_once 'inc/gateways/class-lp-gateways.php';
@@ -530,66 +530,79 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 *
 		 * @return void
 		 * @version 4.2.7.6
-		 * @version 1.0.0
+		 * @version 1.0.1
 		 */
 		public function lp_main_handle() {
-			// Load text domain.
-			$this->load_plugin_text_domain();
+			try {
+				// Load text domain.
+				$this->load_plugin_text_domain();
 
-			// Polylang
-			if ( defined( 'POLYLANG_VERSION' ) ) {
-				include_once 'inc/ExternalPlugin/Polylang/class-lp-polylang.php';
-				LP_Polylang::instance();
-			}
-
-			// For plugin Elementor
-			if ( defined( 'ELEMENTOR_VERSION' ) ) {
-				LPElementor::instance();
-			}
-
-			// For plugin WPSEO
-			if ( defined( 'WPSEO_FILE' ) ) {
-				LPYoastSeo::instance();
-			}
-
-			$this->api       = new LP_Core_API();
-			$this->admin_api = new LP_Admin_Core_API();
-			$this->get_session();
-			$this->settings = $this->settings();
-			if ( $this->is_request( 'frontend' ) ) {
-				$this->get_cart();
-			}
-
-			// Init emails
-			LP_Emails::instance();
-			// Email hook notify
-			include_once 'inc/emails/class-lp-email-hooks.php';
-
-			//LP_Gateways::instance();
-
-			if ( is_admin() ) {
-				$this->check_addons_version_valid();
-			}
-
-			// let third parties know that we're ready .
-			do_action( 'learn-press/ready' );
-
-			/**
-			 * Fixed temporary for emails of Announcement v4.0.6, Assignment v4.1.1 addons.
-			 * @since 4.2.7.4
-			 * When 2 addons update to new version, will remove this code.
-			 */
-			if ( class_exists( 'LP_Addon_Announcements_Preload' ) ) {
-				if ( version_compare( LP_ADDON_ANNOUNCEMENTS_VER, '4.0.6', '<=' ) ) {
-					$addon_announcement = LP_Addon_Announcements_Preload::$addon;
-					$addon_announcement->emails_setting();
+				// Polylang
+				if ( defined( 'POLYLANG_VERSION' ) ) {
+					include_once 'inc/ExternalPlugin/Polylang/class-lp-polylang.php';
+					LP_Polylang::instance();
 				}
-			}
-			if ( class_exists( 'LP_Addon_Assignment_Preload' ) ) {
-				if ( version_compare( LP_ADDON_ASSIGNMENT_VER, '4.1.1', '<=' ) ) {
-					$addon_assignment = LP_Addon_Assignment_Preload::$addon;
-					$addon_assignment->emails_setting();
+
+				// For plugin Elementor
+				if ( defined( 'ELEMENTOR_VERSION' ) ) {
+					LPElementor::instance();
 				}
+
+				// For plugin WPSEO
+				if ( defined( 'WPSEO_FILE' ) ) {
+					LPYoastSeo::instance();
+				}
+
+				// For plugin RankMath
+				if ( defined( 'RANK_MATH_VERSION' ) ) {
+					LPRankMath::instance();
+				}
+
+				$this->api       = new LP_Core_API();
+				$this->admin_api = new LP_Admin_Core_API();
+				$this->get_session();
+				$this->settings = $this->settings();
+				if ( $this->is_request( 'frontend' ) ) {
+					$this->get_cart();
+				}
+
+				// Init emails
+				LP_Emails::instance();
+				// Email hook notify
+				include_once 'inc/emails/class-lp-email-hooks.php';
+
+				if ( is_admin() ) {
+					$this->check_addons_version_valid();
+				}
+
+				// let third parties know that we're ready .
+				do_action( 'learn-press/ready' );
+
+				/**
+				 * Init gateways, to load all payment gateways, catch callback.
+				 * Must be call after learn-press/ready to register hook of addon.
+				 */
+				LP_Gateways::instance();
+
+				/**
+				 * Fixed temporary for emails of Announcement v4.0.6, Assignment v4.1.1 addons.
+				 * @since 4.2.7.4
+				 * When 2 addons update to new version, will remove this code.
+				 */
+				if ( class_exists( 'LP_Addon_Announcements_Preload' ) ) {
+					if ( version_compare( LP_ADDON_ANNOUNCEMENTS_VER, '4.0.6', '<=' ) ) {
+						$addon_announcement = LP_Addon_Announcements_Preload::$addon;
+						$addon_announcement->emails_setting();
+					}
+				}
+				if ( class_exists( 'LP_Addon_Assignment_Preload' ) ) {
+					if ( version_compare( LP_ADDON_ASSIGNMENT_VER, '4.1.1', '<=' ) ) {
+						$addon_assignment = LP_Addon_Assignment_Preload::$addon;
+						$addon_assignment->emails_setting();
+					}
+				}
+			} catch ( Throwable $e ) {
+				LP_Debug::error_log( $e );
 			}
 		}
 
@@ -738,17 +751,20 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * Handle load text domain for LearnPress.
 		 *
 		 * @since 4.2.7.4
+		 * @version 1.0.1
 		 */
 		public function load_plugin_text_domain() {
-			$locale = determine_locale();
-
-			/**
-			 * Filter to adjust the LearnPress locale to use for translations.
-			 */
+			/*$locale = determine_locale();
 			$locale = apply_filters( 'plugin_locale', $locale, 'learnpress' );
 
-			unload_textdomain( LP_TEXT_DOMAIN );
-			load_textdomain( LP_TEXT_DOMAIN, WP_LANG_DIR . '/learnpress/learnpress-' . $locale . '.mo' );
+			$plugin_translation_path = WP_LANG_DIR . '/plugins/learnpress-' . $locale . '.mo';
+			$custom_translation_path = WP_LANG_DIR . '/learnpress/learnpress-' . $locale . '.mo';
+			if ( is_readable( $custom_translation_path ) ) {
+				unload_textdomain( LP_TEXT_DOMAIN );
+				load_textdomain( LP_TEXT_DOMAIN, $custom_translation_path );
+				load_textdomain( LP_TEXT_DOMAIN, $plugin_translation_path );
+			}*/
+
 			load_plugin_textdomain( LP_TEXT_DOMAIN, false, LP_PLUGIN_FOLDER_NAME . '/languages' );
 		}
 

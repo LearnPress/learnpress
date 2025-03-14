@@ -2,8 +2,8 @@
  * CSS for overriding some style defaults of themes
  */
 body {
- 	div.entry-content > {
- 		div.learnpress, div.learnpress:not(.alignwide):not(.alignfull):not(.alignleft):not(.alignright):not(.is-style-wide) {
+	div.entry-content > {
+		div.learnpress, div.learnpress:not(.alignwide):not(.alignfull):not(.alignleft):not(.alignright):not(.is-style-wide) {
 			--responsive--aligndefault-width: 100%;
 			max-width: var(--lp-content-width, 100%);
 		}
@@ -16,6 +16,7 @@ body {
 		}
 	}
 }
+
 // Theme Divi
 .lp-archive-courses {
 	ul, ol {
@@ -31,7 +32,7 @@ body {
 		&.course-nav-tabs {
 			list-style: none;
 			padding: 0;
- 		}
+		}
 	}
 
 	ol ul {
@@ -43,7 +44,7 @@ body {
 	}
 }
 
-.learnpress,.learnpress-profile {
+.learnpress, .learnpress-profile {
 	#left-area ul, .entry-content ul, .et-l--body ul, .et-l--footer ul, .et-l--header ul {
 		padding: 0;
 		list-style: none !important;
@@ -105,7 +106,7 @@ body {
 //body.astra {
 //	--lp-bg-color-lesson: var(--ast-global-color-4);
 //}
-.ast-container{
+.ast-container {
 	--lp-cotainer-padding: 0
 }
 
@@ -235,38 +236,45 @@ body.twentyseventeen.learnpress-page {
 }
 
 // Fix for theme EduPress
-.edu-press:not(.nofixcss),.theme-edu-press:not(.nofixcss){
-	.course-instructor-category{
-		>div:nth-child(2){
-			label{
+.edu-press:not(.nofixcss), .theme-edu-press:not(.nofixcss) {
+	.course-instructor-category {
+		> div:nth-child(2) {
+			label {
 				display: none;
 			}
-			a{
+
+			a {
 				font-size: 1rem;
 			}
 		}
-		.course-categories a{
+
+		.course-categories a {
 			font-weight: normal;
 		}
 	}
-	.lp-archive-courses .lp-content-area{
-		.learn-press-courses[data-layout=grid]{
-			.course-categories{
+
+	.lp-archive-courses .lp-content-area {
+		.learn-press-courses[data-layout=grid] {
+			.course-categories {
 				position: absolute;
 			}
-			.course-content .course-instructor{
+
+			.course-content .course-instructor {
 				display: inline;
 			}
-			.course-info{
-				>*{
+
+			.course-info {
+				> * {
 					display: revert;
 				}
 
-				.course-readmore{
+				.course-readmore {
 					width: auto;
-					a{
+
+					a {
 						padding: 0;
-						&:hover{
+
+						&:hover {
 							background: transparent;
 							color: var(--thim-body_primary_color);
 						}
@@ -274,143 +282,453 @@ body.twentyseventeen.learnpress-page {
 				}
 			}
 		}
-		.course-info{
+
+		.course-info {
 			border-top: 1px solid rgba(153, 153, 153, 0.2);
 			padding-top: 20px;
 		}
-		.learn-press-courses[data-layout=list] .course-info{
+
+		.learn-press-courses[data-layout=list] .course-info {
 			margin-top: 50px;
 		}
 	}
-	.lp-archive-courses .lp-courses-bar .search-courses{
-		input{
+
+	.lp-archive-courses .lp-courses-bar .search-courses {
+		input {
 			height: unset;
 			padding: 10px 20px;
 		}
-		button{
-			background-image: none!important;
-			i{
+
+		button {
+			background-image: none !important;
+
+			i {
 				display: block;
 			}
 		}
 	}
-	.lp-archive-courses .lp-content-area .lp-courses-bar .switch-layout .switch-btn{
+
+	.lp-archive-courses .lp-content-area .lp-courses-bar .switch-layout .switch-btn {
 		opacity: 1;
 	}
-	.learn-press-courses .course-content .course-readmore a{
+
+	.learn-press-courses .course-content .course-readmore a {
 		border: none;
 	}
-	.lp-user-profile .dashboard-statistic__row .statistic-box{
-		 background-color: $bg-grey;
-		 min-width: unset;
-		 margin-bottom: 0;
+
+	.lp-user-profile .dashboard-statistic__row .statistic-box {
+		background-color: $bg-grey;
+		min-width: unset;
+		margin-bottom: 0;
 	}
-	.learn-press-courses .course-wrap-meta .meta-item::before{
+
+	.learn-press-courses .course-wrap-meta .meta-item::before {
 		font-family: "lp-icon" !important;
 		font-weight: normal !important;
 		margin: 0 !important;
 	}
-	&.single-lp_course .lp-archive-courses .learn-press-nav-tabs{
+
+	&.single-lp_course .lp-archive-courses .learn-press-nav-tabs {
 		background: transparent;
 		border-radius: 0;
 	}
 }
 
 // Fix for theme elearningwp
-.theme-elearningwp:not(.nofixcss){
-	.lp-courses-bar .switch-layout .switch-btn{
-		border: none !important;
-		background-color: unset ! important;
-		padding: 0;
- 	}
-	.lp-content-area.learn-press-message{
-		padding: 10px 15px;
+.elearningwp {
+	&:not(.nofixcss) {
+		.lp-courses-bar .switch-layout .switch-btn {
+			border: none !important;
+			background-color: unset ! important;
+			padding: 0;
+		}
+
+		.lp-content-area.learn-press-message {
+			padding: 10px 15px;
+		}
 	}
-	//.lp-user-profile{
-	//	--lp-item-padding: 20px
-	//}
+
 }
 
 // fix for themee course-builder
-.theme-course-builder:not(.nofixcss) {
-	.lp-courses-bar .search-courses button {
-		padding: 0;
-	}
-	.lp-courses-bar .courses-order-by{
-		height: unset!important;
-		padding: 8px 35px 8px 15px !important;
-	}
-	#learn-press-profile.lp-user-profile.no-bio-user{
-		#profile-sidebar {
-			margin-top: 0!important;
+.course-builder {
+	&:not(.nofixcss) {
+		.lp-courses-bar .search-courses button {
+			padding: 0;
 		}
-		.lp-profile-content-area{
-			align-items: center;
+
+		.lp-courses-bar .courses-order-by {
+			height: unset !important;
+			padding: 8px 35px 8px 15px !important;
 		}
-	}
-	.lp-courses-bar .switch-layout .switch-btn{
-		border-radius: 5px;
-		border: none;
-		padding: 0;
- 	}
-	#learn-press-profile.lp-user-profile .wrapper-profile-header{
-		padding-bottom: 30px;
-		.lp-profile-user-bio {
-			padding-bottom: 0;
+
+		#learn-press-profile.lp-user-profile.no-bio-user {
+			#profile-sidebar {
+				margin-top: 0 !important;
+			}
+
+			.lp-profile-content-area {
+				align-items: center;
+			}
 		}
-	} 
-}
- // fix for theme eduma
-.theme-eduma:not(.nofixcss) {
-	.learnpress #learn-press-profile.lp-user-profile .learn-press-filters {
-		padding-bottom: 0 !important;
-		overflow-y: visible;
-	}
-	#learn-press-profile .wrapper-profile-header .lp-profile-content-area{
-			flex-direction: column;
+
+		.lp-courses-bar .switch-layout .switch-btn {
+			border-radius: 5px;
+			border: none;
+			padding: 0;
+		}
+
+		#learn-press-profile.lp-user-profile .wrapper-profile-header {
+			padding-bottom: 30px;
+
+			.lp-profile-user-bio {
+				padding-bottom: 0;
+			}
+		}
 	}
 
 }
-.learnpress-v4,.learnpress-v3{
-	&:not(.nofixcss){
+
+// fix for theme eduma
+
+
+.learnpress-v4, .learnpress-v3 {
+	&:not(.nofixcss) {
 		--lp-border-radius-avatar: 0;
-		.statistic-box{
+
+		.statistic-box {
 			--thim-lp-profile-bg-color: #F7F7FB;
 		}
+
 		#learn-press-profile.lp-user-profile .learn-press-filters {
-			border: none!important;
+			border: none !important;
 			margin: 0 0 0 -1px 0 !important;
 		}
-		.lp-user-profile .lp-profile-left{
-			min-width: unset!important;
-			position: static!important;
+
+		.lp-user-profile .lp-profile-left {
+			min-width: unset !important;
+			position: static !important;
 		}
+
 		//#learn-press-profile.lp-user-profile.no-bio-user #profile-sidebar{
 		//	margin-top: 0!important;
 		//}
-		#learn-press-profile .wrapper-profile-header{
+		#learn-press-profile .wrapper-profile-header {
 			//margin-bottom: 30px!important;
-			.lp-profile-content-area{
+			.lp-profile-content-area {
 				min-height: unset;
 				padding-left: 0;
 				display: flex;
 			}
-			.lp-profile-left{
-				border: none!important;
-				img{
+
+			.lp-profile-left {
+				border: none !important;
+
+				img {
 					border-radius: 50%;
 				}
 			}
 		}
 	}
+
+	// fix css curriculum for theme premium
+	.lp-course-curriculum {
+		--lp-primary-color: var(--thim-body-primary-color, inherit);
+
+		.course-section-header .course-section__title, .section-count-items {
+			font-family: var(--thim-font-title-font-family, inherit);
+		}
+
+		.course-item__link {
+			color: inherit;
+		}
+
+		.course-item-ico {
+			color: $color-primary;
+		}
+
+
+		.course-item__link {
+			column-gap: 8px;
+		}
+
+		.course-section__title {
+			font-size: 1.1em;
+		}
+
+		.section-toggle, .section-count-items {
+			color: $color-primary;
+		}
+	}
+
+	#popup-sidebar {
+		.course-section-header, .lp-course-curriculum .course-item {
+			padding-left: 16px;
+			padding-right: 16px;
+		}
+	}
 }
 
-.assignments .lp-icon-file-alt:before{
+.learnpress-v4 {
+	.lp-course-curriculum {
+		--lp-white-grey: transparent;
+		--lp-border-radius: 0;
+
+		.course-section {
+			border-width: 0 0 1px 0;
+
+			&:last-child {
+				border-width: 0;
+			}
+		}
+
+		.course-section-header {
+			padding: 0 0 8px 0;
+		}
+
+		.course-item {
+			padding-left: 0;
+			padding-right: 0;
+		}
+
+		.course-section {
+			margin-bottom: 0;
+		}
+
+		.course-section-header {
+			padding: 24px 0 24px 0;
+		}
+	}
+}
+
+.assignments .lp-icon-file-alt:before {
 	content: "\e929";
 }
 
-.theme-ivy-school:not(.nofixcss){
-	.lp-user-profile .lp-user-profile-avatar img{
-		border-radius: 0;
+.eduma {
+	&:not(.nofixcss) {
+		.learnpress #learn-press-profile.lp-user-profile .learn-press-filters {
+			padding-bottom: 0 !important;
+			overflow-y: visible;
+		}
+
+		#learn-press-profile .wrapper-profile-header .lp-profile-content-area {
+			flex-direction: column;
+		}
+	}
+
+	.lp-course-curriculum {
+		.course-section-header {
+			padding: var(--thim-ekit-padding-lesson, 12px 0);
+		}
+	}
+	.sc_heading + .lp-course-curriculum {
+		.lp-course-curriculum__title {
+			display: none;
+		}
+	}
+}
+
+.ivy-school {
+	&:not(.nofixcss) {
+		.lp-user-profile .lp-user-profile-avatar img {
+			border-radius: 0;
+		}
+	}
+
+	&.single-lp_course .course-curriculum {
+		border: none;
+	}
+
+	.lp-course-curriculum {
+		--lp-white-grey: transparent;
+		--lp-border-radius: 0;
+		--lp-primary-color: var(--thim-body-primary-color, inherit);
+
+		.course-section-header .course-section__title {
+			font-family: var(--thim-font-title-font-family, inherit);
+		}
+
+		.course-item-ico {
+			color: $color-primary;
+		}
+	}
+}
+
+.course-builder {
+	.lp-course-curriculum {
+		--lp-white-grey: #f2f2f2;
+		--lp-border-color: #e6e6e6;
+
+		.course-sections {
+			border: 1px solid var(--lp-border-color, #e6e6e6);
+			border-radius: var(--lp-border-radius, 5px);
+			overflow: hidden;
+		}
+
+		.course-section {
+			margin: 0;
+			border-radius: 0;
+			border-width: 1px 0 0 0;
+
+			&:first-child {
+				border: none;
+			}
+		}
+	}
+
+	#popup-sidebar .lp-course-curriculum {
+		--lp-border-radius: 0;
+	}
+
+	.course-tab-panels {
+		.lp-course-curriculum {
+			.course-sections {
+				border: none;
+			}
+
+			.course-section-header, .course-item {
+				padding-left: 0;
+				--lp-white-grey: trasparent;
+				padding-right: 0;
+			}
+		}
+	}
+}
+
+.eduma, .coaching {
+	.lp-course-curriculum {
+		.course-item-order.lp-hidden {
+			display: inline-block !important;
+		}
+
+		.course-section__title {
+			text-transform: uppercase;
+		}
+	}
+}
+// Fix for thim ekit 1.2.9.1
+
+.demo-marketplace, .demo-ecommerce {
+	.thim-ekit-tablist {
+		.lp-course-curriculum__title {
+			display: none;
+		}
+
+		.course-section-header {
+			background-color: var(--thim-breacrumb-bg-color);
+		}
+
+		.course-section__items {
+			background-color: var(--lp-fix-bg-section-item, #F5F7F8);
+		}
+	}
+
+	.style-marketplace-2 {
+		--thim-breacrumb-bg-color: #0f1c44;
+		--lp-fix-bg-section-item: transparent;
+
+		.thim-ekit-light-mode & {
+			--thim-breacrumb-bg-color: #F4F4F4
+		}
+	}
+}
+
+.demo-ecommerce .course-section-header {
+	--thim-breacrumb-bg-color: #E1E9FD;
+}
+
+.demo-online-learning {
+	.thim-ekit-tablist {
+		.lp-course-curriculum__title {
+			display: none;
+		}
+
+		.course-section {
+			margin-bottom: 8px;
+			border: none;
+		}
+
+		.course-section-header {
+			background-color: #DFEFFF;
+			border-radius: 8px 8px 8px 8px;
+		}
+	}
+}
+// fix theme coaching
+.demo-life-coaching{
+	.thim-ekit-tablist .lp-course-curriculum{
+		.course-section {
+			border: none;
+		}
+
+		.course-item {
+			border: 1px solid var(--thim-border-color);
+			margin-bottom: 10px;
+			padding-left: 20px;
+			padding-right: 20px;
+		}
+	}
+}
+
+.business-consulting, .demo-business-v2, .business-coaching,.demo-healthy-coaching{
+	.lp-course-curriculum__title {
+		display: none;
+	}
+
+	.thim-ekit-tablist .lp-course-curriculum {
+		.course-section {
+			border-width: 1px;
+			margin-bottom: 15px;
+
+			&:last-child {
+				border-width: 1px;
+				margin-bottom: 0;
+			}
+		}
+		.course-section-header {
+			padding: 20px 15px 5px 15px;
+		}
+		.course-item{
+			padding-left: 15px;
+			padding-right: 15px;
+		}
+	}
+}
+
+.demo-business-v2 {
+ 	.thim-ekit-tablist .lp-course-curriculum {
+		.course-section-header {
+			background-color: var(--thim-bg-color, #f5f5f5);
+			padding: 10px 15px;
+		}
+	}
+}
+
+.business-coaching{
+ 	.thim-ekit-tablist .lp-course-curriculum{
+		.course-section-header {
+			padding: 15px 20px;
+		}
+		.course-section__items {
+			padding-left: 20px;
+			padding-right: 20px;
+		}
+		.course-item{
+			padding-left: 0;
+			padding-right: 0;
+  		}
+	}
+}
+.demo-healthy-coaching{
+	.thim-ekit-tablist .lp-course-curriculum {
+		.course-section {
+			border: none;
+			border-radius: 5px;
+		}
+		.course-section-header {
+			background: #fff;
+			padding: 10px 15px;
+		}
 	}
 }

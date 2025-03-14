@@ -318,30 +318,9 @@ class LP_Addon {
 			return;
 		}
 
-		$plugin_path   = dirname( $this->plugin_file );
-		$plugin_folder = basename( $plugin_path );
-		$text_domain   = empty( $this->text_domain ) ? $plugin_folder : $this->text_domain;
-		$locale        = apply_filters( 'plugin_locale', get_locale(), $plugin_folder );
-		$domain_files  = array();
-
-		if ( is_admin() ) {
-			$domain_files[] = WP_LANG_DIR . "/$plugin_folder/$plugin_folder-admin-$locale.mo";
-			$domain_files[] = WP_LANG_DIR . "/plugins/$plugin_folder-admin-$locale.mo";
-		}
-
-		$domain_files[] = WP_CONTENT_DIR . "/plugins/$plugin_folder/languages/$plugin_folder-$locale.mo";
-		$domain_files[] = WP_LANG_DIR . "/$plugin_folder/$plugin_folder-$locale.mo";
-
-		foreach ( $domain_files as $file ) {
-			if ( ! file_exists( $file ) ) {
-				continue;
-			}
-
-			load_textdomain( $text_domain, $file );
-		}
-
+		$text_domain = empty( $this->text_domain ) ? $this->plugin_folder_name : $this->text_domain;
 		if ( $text_domain ) {
-			load_plugin_textdomain( $text_domain, false, plugin_basename( $plugin_path ) . '/languages' );
+			load_plugin_textdomain( $text_domain, false, $this->plugin_folder_name . '/languages' );
 		}
 	}
 

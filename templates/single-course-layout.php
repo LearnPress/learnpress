@@ -5,7 +5,7 @@
  * @author  ThimPress
  * @package LearnPress/Templates
  * @version 4.2.7.6
- * @version 1.0.0
+ * @version 1.0.1
  */
 
 use LearnPress\Models\CourseModel;
@@ -21,8 +21,22 @@ if ( ! wp_is_block_theme() ) {
 
 $course_id = get_the_ID();
 if ( $course_id ) {
-	$course = CourseModel::find( $course_id, true );
-	do_action( 'learn-press/single-course/layout', $course );
+	/**
+	 * If course has set password
+	 */
+	if ( post_password_required() ) {
+		echo '<div class="lp-content-area">';
+		echo get_the_password_form();
+		echo '</div>';
+		return;
+	}
+
+	$courseModel = CourseModel::find( $course_id, true );
+	if ( ! $courseModel ) {
+		return;
+	}
+
+	do_action( 'learn-press/single-course/layout', $courseModel );
 }
 
 /**

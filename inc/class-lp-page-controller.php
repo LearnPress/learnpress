@@ -36,6 +36,12 @@ class LP_Page_Controller {
 		// Set link course, item course.
 		add_filter( 'post_type_link', array( $this, 'post_type_link' ), 10, 2 );
 
+		if ( LP_Page_Controller::is_page_lp_ajax() ) {
+			if ( ! isset( $_REQUEST['lp-load-ajax'] ) ) {
+				wp_die( 'Invalid request!', 400 );
+			}
+		}
+
 		if ( is_admin() ) {
 
 		} else {
@@ -70,7 +76,7 @@ class LP_Page_Controller {
 			// For return result query course to cache.
 			//add_action( 'posts_pre_query', [ $this, 'posts_pre_query' ], 10, 2 );
 			add_filter( 'template_include', array( $this, 'template_loader' ), 10 );
-			add_filter( 'template_include', array( $this, 'check_pages' ), 30 );
+			add_filter( 'template_include', array( $this, 'logout' ), 30 );
 
 			add_filter( 'the_post', array( $this, 'setup_data_for_item_course' ) );
 			add_filter( 'request', array( $this, 'remove_course_post_format' ), 1 );
@@ -104,6 +110,42 @@ class LP_Page_Controller {
 				}
 			);
 		}
+
+		// Disable create sitemap for items type of Course.
+		add_filter(
+			'wp_sitemaps_post_types',
+			function ( $post_types ) {
+				$item_types   = CourseModel::item_types_support();
+				$item_types[] = LP_QUESTION_CPT;
+				foreach ( $item_types as $item_type ) {
+					if ( isset( $post_types[ $item_type ] ) ) {
+						unset( $post_types[ $item_type ] );
+					}
+				}
+
+				return $post_types;
+			}
+		);
+
+		/**
+		 * Disable create sitemap for YoastSEO, Rank Math, but can affect to all logic, ex: it makes link edit of items course lose.
+		 *
+		 * @var WP_Post_Type $post_type
+		 */
+		/*add_filter(
+			'is_post_type_viewable',
+			function ( $is_viewable, $post_type ) {
+				$item_types   = CourseModel::item_types_support();
+				$item_types[] = LP_QUESTION_CPT;
+				if ( in_array( $post_type->name, $item_types ) ) {
+					$is_viewable = false;
+				}
+
+				return $is_viewable;
+			},
+			10,
+			2
+		);*/
 	}
 
 	/**
@@ -265,22 +307,17 @@ class LP_Page_Controller {
 		return $desc;
 	}
 
-	public function check_pages( $template ) {
-		if ( learn_press_is_checkout() ) {
-			$available_gateways = LP_Gateways::instance()->get_available_payment_gateways();
+	/**
+	 * Handle logout
+	 */
+	public function logout( $template ) {
+		global $wp_query;
 
-			if ( ! $available_gateways ) {
-				learn_press_add_message( __( 'No payment method is available.', 'learnpress' ), 'error' );
-			}
-		} else {
-			global $wp_query;
+		$logout_slug = learn_press_profile_logout_slug();
 
-			$logout_slug = learn_press_profile_logout_slug();
-
-			if ( $logout_slug && ( $wp_query->get( 'view' ) === $logout_slug ) ) {
-				wp_safe_redirect( str_replace( '&amp;', '&', wp_logout_url( learn_press_get_page_link( 'profile' ) ) ) );
-				exit;
-			}
+		if ( $logout_slug && ( $wp_query->get( 'view' ) === $logout_slug ) ) {
+			wp_safe_redirect( str_replace( '&amp;', '&', wp_logout_url( learn_press_get_page_link( 'profile' ) ) ) );
+			exit;
 		}
 
 		return $template;
@@ -421,6 +458,7 @@ class LP_Page_Controller {
 	 * @return bool|string
 	 */
 	public function template_loader( $template ) {
+
 		if ( wp_is_block_theme() ) {
 			return $template;
 		}
@@ -1093,6 +1131,47 @@ class LP_Page_Controller {
 		return self::page_is( 'become_a_teacher' );
 	}
 
+	/**
+	 * Check page is LP Ajax
+	 *
+	 * @return bool
+	 * @since 4.2.7.7
+	 */
+	public static function is_page_lp_ajax(): bool {
+		// If pages of LP set to homepage will return false
+		$pattern = '/lp-ajax-handle/';
+		if ( preg_match( $pattern, LP_Helper::getUrlCurrent() ) ) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Get link page by name
+	 *
+	 * @param string $page_name
+	 * @param array $args
+	 * @param bool $no_cache
+	 *
+	 * @return string
+	 * @since  4.2.7.8
+	 * @version 1.0.0
+	 */
+	public static function get_link_page( string $page_name, array $args = [], bool $no_cache = false ): string {
+		$page_link = learn_press_get_page_link( $page_name );
+
+		if ( ! empty( $args ) ) {
+			$page_link = add_query_arg( $args, $page_link );
+		}
+
+		if ( $no_cache ) {
+			$page_link = LP_Helper::get_link_no_cache( $page_link );
+		}
+
+		return $page_link;
+	}
+
 	public static function instance() {
 		if ( ! self::$_instance ) {
 			self::$_instance = new self();
@@ -1232,5 +1311,3 @@ class LP_Page_Controller {
 		status_header( 404 );
 	}
 }
-
-return LP_Page_Controller::instance();

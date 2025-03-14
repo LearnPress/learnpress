@@ -85,14 +85,14 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				$question = LP_Question::get_question( $question_id, array( 'type' => $args['type'] ) );
 				$question->set_type( $args['type'] );
 
+				// add question to quiz
+				if ( ! empty( $args['quiz_id'] ) ) {
+					$quiz_curd = new LP_Quiz_CURD();
+					$quiz_curd->add_question( $args['quiz_id'], $question_id, $args['order'] );
+				}
+
 				if ( $args['create_answers'] ) {
 					$question->create_default_answers();
-
-					// add question to quiz
-					if ( ! empty( $args['quiz_id'] ) ) {
-						$quiz_curd = new LP_Quiz_CURD();
-						$quiz_curd->add_question( $args['quiz_id'], $question_id, $args['order'] );
-					}
 				}
 
 				do_action( 'learn-press/after-create-question', $question );

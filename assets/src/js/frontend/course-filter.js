@@ -453,8 +453,7 @@ window.lpCourseFilter = {
 				// Check on mobile will not filter when click field
 				if ( window.outerWidth > withHandleForMobile ) {
 					const form = elField.closest( `.${ classCourseFilter }` );
-					const btnSubmit = form.querySelector( '.course-filter-submit' );
-					btnSubmit.click();
+					window.lpCourseFilter.submit( form );
 				}
 			}
 		} else {

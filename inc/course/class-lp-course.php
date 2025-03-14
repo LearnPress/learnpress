@@ -671,15 +671,8 @@ if ( ! class_exists( 'LP_Course' ) ) {
 				$filter  = apply_filters( 'lp/courses/filter', $filter );
 				$courses = LP_Course_DB::getInstance()->get_courses( $filter, $total_rows );
 
-				//              $lp_courses_cache->set_cache( $key_cache, json_encode( $courses ) );
-				//              $lp_courses_cache->set_cache( $key_cache_total_rows, $total_rows );
-				//
-				//              /**
-				//               * Save key cache to array to clear
-				//               * @see LP_Background_Single_Course::save_post() - clear cache when save post
-				//               */
-				//              $lp_courses_cache->save_cache_keys_query_courses( $key_cache );
-				//              $lp_courses_cache->save_cache_keys( LP_Courses_Cache::KEYS_QUERY_TOTAL_COURSES, $key_cache_total_rows );
+				//$lp_courses_cache->set_cache( $key_cache, json_encode( $courses ) );
+				//$lp_courses_cache->set_cache( $key_cache_total_rows, $total_rows );
 			} catch ( Throwable $e ) {
 				$courses = [];
 				error_log( __FUNCTION__ . ': ' . $e->getMessage() );

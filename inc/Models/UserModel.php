@@ -312,10 +312,20 @@ class UserModel {
 	/**
 	 * Get display name
 	 *
+	 * Hook from function get_the_author_meta of WP
+	 *
+	 * @uses get_the_author_meta
 	 * @return string
+	 * @version 1.0.1
+	 * @since 4.2.7
 	 */
 	public function get_display_name(): string {
-		return $this->display_name ?? '';
+		return apply_filters(
+			'get_the_author_display_name',
+			$this->display_name,
+			$this->get_id(),
+			$this->get_id()
+		);
 	}
 
 	/**
@@ -526,7 +536,7 @@ class UserModel {
 	 *
 	 * @return array
 	 * @since 4.1.6
-	 * @version 1.0.1
+	 * @version 1.0.3
 	 */
 	public function get_instructor_statistic( array $params = [] ): array {
 		$statistic = array(
@@ -539,6 +549,12 @@ class UserModel {
 		);
 
 		try {
+			$key_cache_first = "instructor/{$this->get_id()}/statistic";
+			$statistic       = LP_Cache::cache_load_first( 'get', $key_cache_first );
+			if ( $statistic !== false ) {
+				return $statistic;
+			}
+
 			$user_id          = $this->get_id();
 			$lp_user_items_db = LP_User_Items_DB::getInstance();
 			$lp_course_db     = LP_Course_DB::getInstance();
@@ -579,6 +595,9 @@ class UserModel {
 			$statistic['total_student']       = $count_users_attend_courses_of_author;
 			$statistic['student_completed']   = $count_student_has_status->{LP_COURSE_FINISHED} ?? 0;
 			$statistic['student_in_progress'] = $count_student_has_status->{LP_COURSE_GRADUATION_IN_PROGRESS} ?? 0;
+
+			// Set cache first.
+			LP_Cache::cache_load_first( 'set', $key_cache_first, $statistic );
 		} catch ( Throwable $e ) {
 			error_log( __FUNCTION__ . ': ' . $e->getMessage() );
 		}

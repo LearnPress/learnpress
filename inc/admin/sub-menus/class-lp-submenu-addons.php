@@ -2,7 +2,7 @@
 /**
  * Class LP_Submenu_Addons
  *
- * @since 3.0.0
+ * @since 3.0.1
  */
 class LP_Submenu_Addons extends LP_Abstract_Submenu {
 
@@ -20,7 +20,7 @@ class LP_Submenu_Addons extends LP_Abstract_Submenu {
 	}
 
 	public function display() {
-		echo '<h1>' . __( 'LearnPress Addons' ) . '</h1>';
+		echo '<h1>' . __( 'LearnPress Addons', 'learnpress' ) . '</h1>';
 		echo '<p><strong><i>* If you use premium theme and theme include addons, you can go to tab Plugins to download/update</strong></i></p>';
 		echo sprintf(
 			'<p>* If you buy premium addon separately, you can enter purchase code( %s ) and download/update addons on here</p>',

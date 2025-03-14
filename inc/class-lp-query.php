@@ -18,10 +18,6 @@ class LP_Query {
 			return;
 		}
 
-		if ( is_admin() ) {
-			return;
-		}
-
 		add_action( 'init', array( $this, 'add_rewrite_tags' ), 1000 );
 		add_action( 'init', array( $this, 'add_rewrite_endpoints' ) );
 		add_filter( 'option_rewrite_rules', [ $this, 'update_option_rewrite_rules' ], 1 );
@@ -172,6 +168,11 @@ class LP_Query {
 			$rules['instructor']['no_name']  = [
 				"^{$instructor_slug}/?$" =>
 					'index.php?page_id=' . $single_instructor_page_id . '&is_single_instructor=1&paged=$matches[2]',
+			];
+
+			// For handle request lp-ajax
+			$rules['lp-ajax'][] = [
+				'^lp-ajax-handle/?$' => 'index.php',
 			];
 
 			$rules = apply_filters( 'learn-press/rewrite/rules', $rules );

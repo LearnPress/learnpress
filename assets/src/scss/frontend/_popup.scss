@@ -377,11 +377,15 @@
 				outline: none;
 			}
 
-			&::before {
+			i {
+				color: $text-color-accent;
+			}
+
+			/*&::before {
 				color: $text-color-accent;
 				font-family: 'lp-icon';
 				content: "\f002";
-			}
+			}*/
 
 			&.clear {
 				display: none;
@@ -505,10 +509,6 @@
 			content: "";
 		}
 
-		&.current {
-			background: $bg-grey;
-		}
-
 		&.has-status.failed {
 			.trans {
 				color: #f02425;
@@ -521,6 +521,35 @@
 			}
 		}
 
+	}
+	// Since 4.2.7.9
+	.lp-course-curriculum {
+		.course-section {
+			--lp-border-radius: 0;
+			border-left: none;
+		}
+
+		.lp-course-curriculum__title,
+		.course-curriculum-info,
+		.course-section__description {
+			display: none;
+		}
+
+		.course-item {
+			&.current:before {
+				background: $color-primary;
+			}
+
+			&__content {
+				flex-direction: column;
+				row-gap: 0;
+			}
+
+			&__right {
+				font-size: $font-size-small;
+
+			}
+		}
 	}
 }
 
@@ -799,6 +828,12 @@
 	}
 }
 
+.course-item-popup {
+	.lp-course-curriculum .course-section .course-item__content {
+		flex-direction: column;
+    	row-gap: 4px;
+	}
+}
 
 body {
 
@@ -904,10 +939,8 @@ body {
 
 	#popup-course {
 		.course-item-meta {
-
-			.item-meta {
-
-				&.count-questions,
+ 			.item-meta {
+ 				&.count-questions,
 				&.duration {
 					display: none;
 				}
@@ -929,6 +962,27 @@ body {
 	}
 
 }
+//@media screen and (max-width: 600px) {
+//	#popup-sidebar {
+//		flex-basis: 100vw;
+//
+//		.course-curriculum {
+//			width: 100vw;
+//		}
+//
+//		.search-course button {
+//			right: 32px;
+//		}
+//	}
+//
+//	#popup-header {
+//		left: calc(100vw - 32px);
+//	}
+//
+//	#popup-footer {
+//		left: 100vw;
+//	}
+//}
 
 .content-item-wrap {
 	width: 792px;

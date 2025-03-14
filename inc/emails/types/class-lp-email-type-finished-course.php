@@ -1,33 +1,33 @@
 <?php
 
+use LearnPress\Models\CourseModel;
+use LearnPress\Models\UserItems\UserCourseModel;
+use LearnPress\Models\UserModel;
+
 /**
  * Class LP_Email_Type_Finished_Course
  *
  * @editor tungnx
  * @modify 4.1.3
- * @version 3.0.1
+ * @version 3.0.2
  */
 class LP_Email_Type_Finished_Course extends LP_Email {
 	/**
-	 * Course ID
-	 *
-	 * @var int
+	 * @var int $course_id
 	 */
 	public $course_id = 0;
-
 	/**
-	 * User ID
-	 *
-	 * @var int
+	 * @var int $course_id
 	 */
 	public $user_id = 0;
-
 	/**
-	 * User Item ID
-	 *
-	 * @var int
+	 * @var CourseModel
 	 */
-	public $user_item_id = 0;
+	public $courseModel;
+	/**
+	 * @var UserModel
+	 */
+	public $userModel;
 
 	/**
 	 * LP_Email_Type_Finished_Course constructor.
@@ -67,13 +67,23 @@ class LP_Email_Type_Finished_Course extends LP_Email {
 			return false;
 		}
 
-		if ( count( $params ) < 3 ) {
+		if ( count( $params ) < 2 ) {
 			return false;
 		}
 
-		$this->course_id    = $params[0];
-		$this->user_id      = $params[1];
-		$this->user_item_id = $params[2];
+		$course_id = $params[0];
+		$user_id   = $params[1];
+
+		$courseModel = CourseModel::find( $course_id, true );
+		$userModel   = UserModel::find( $user_id, true );
+		if ( ! $courseModel || ! $userModel ) {
+			return false;
+		}
+
+		$this->course_id   = $course_id;
+		$this->user_id     = $user_id;
+		$this->courseModel = $courseModel;
+		$this->userModel   = $userModel;
 
 		return true;
 	}
@@ -85,7 +95,7 @@ class LP_Email_Type_Finished_Course extends LP_Email {
 	 * @param array $params
 	 * @throws Exception
 	 * @since 4.1.1
-	 * @author tungnx
+	 * @version 1.0.1
 	 */
 	public function handle( array $params ) {
 		if ( ! $this->check_and_set( $params ) ) {
@@ -94,16 +104,20 @@ class LP_Email_Type_Finished_Course extends LP_Email {
 
 		$this->set_data_content();
 		if ( $this instanceof LP_Email_Finished_Course_Instructor ) {
-			$instructor = learn_press_get_user( get_post_field( 'post_author', $this->course_id ) );
-			if ( $instructor && ! empty( $instructor->get_email() ) ) {
-				$this->set_receive( $instructor->get_email() );
+			$courseModel = $this->courseModel;
+			if ( $courseModel instanceof CourseModel ) {
+				$authorModel = $courseModel->get_author_model();
+				if ( $authorModel instanceof UserModel && ! empty( $authorModel->get_email() ) ) {
+					$this->set_receive( $authorModel->get_email() );
+				}
 			}
 		} elseif ( $this instanceof LP_Email_Finished_Course_User ) {
-			$user = learn_press_get_user( $this->user_id );
-			if ( $user && ! empty( $user->get_email() ) ) {
-				$this->set_receive( $user->get_email() );
+			$userModel = $this->userModel;
+			if ( $userModel instanceof UserModel && ! empty( $userModel->get_email() ) ) {
+				$this->set_receive( $userModel->get_email() );
 			}
 		}
+
 		$this->send_email();
 	}
 
@@ -111,31 +125,35 @@ class LP_Email_Type_Finished_Course extends LP_Email {
 	 * Set variables for content email.
 	 * @editor tungnx
 	 * @since 4.1.3
+	 * @version 1.0.1
 	 */
 	public function set_data_content() {
-		$course = learn_press_get_course( $this->course_id );
-		$user   = learn_press_get_user( $this->user_id );
-		if ( ! $course || ! $user ) {
+		$courseModel = $this->courseModel;
+		$userModel   = $this->userModel;
+		if ( ! $courseModel instanceof CourseModel
+			|| ! $userModel instanceof UserModel ) {
 			return;
 		}
 
-		$user_course_data = $user->get_course_data( $this->course_id );
-		if ( ! $user_course_data ) {
+		$userCourseModel = UserCourseModel::find( $userModel->get_id(), $courseModel->get_id(), true );
+		if ( ! $userCourseModel ) {
 			return;
 		}
+
+		$userCourseResult = $userCourseModel->calculate_course_results();
 
 		$this->variables = apply_filters(
 			'lp/email/type-finished-course/variables-mapper',
 			[
-				'{{course_id}}'             => $this->course_id,
-				'{{course_name}}'           => $course->get_title(),
-				'{{course_url}}'            => $course->get_permalink(),
-				'{{user_id}}'               => $this->user_id,
-				'{{user_name}}'             => $user->get_username(),
-				'{{user_display_name}}'     => $user->get_display_name(),
-				'{{user_email}}'            => $user->get_email(),
-				'{{course_grade}}'          => $user_course_data->get_graduation( 'display' ),
-				'{{course_result_percent}}' => $user_course_data->get_percent_result( 2 ),
+				'{{course_id}}'             => $courseModel->get_id(),
+				'{{course_name}}'           => $courseModel->get_title(),
+				'{{course_url}}'            => $courseModel->get_permalink(),
+				'{{user_id}}'               => $userModel->get_id(),
+				'{{user_name}}'             => $userModel->get_username(),
+				'{{user_display_name}}'     => $userModel->get_display_name(),
+				'{{user_email}}'            => $userModel->get_email(),
+				'{{course_grade}}'          => $userCourseModel->get_string_i18n( $userCourseModel->get_graduation() ),
+				'{{course_result_percent}}' => $userCourseResult['result'],
 			]
 		);
 

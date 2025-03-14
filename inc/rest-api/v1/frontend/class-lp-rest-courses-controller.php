@@ -327,7 +327,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 					$cart->empty_cart();
 				}
 
-				$cart_id = $cart->add_to_cart( $course_id, 1, array() );
+				$cart_id = $cart->add_to_cart( $course_id );
 				if ( ! $cart_id ) {
 					throw new Exception( esc_html__( 'Error: The course cannot be added to the cart.', 'learnpress' ) );
 				}
@@ -350,9 +350,10 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				$first_item_id            = $course->get_first_item_id();
 				$response->data->redirect = $first_item_id ? $course->get_item_link( $first_item_id ) : get_the_permalink( $course->get_id() );
 			} else {
+				$redirect_url = LP_Page_Controller::get_link_page( 'checkout', [], true );
 				$redirect_url = apply_filters(
 					'learnpress/rest-api/courses/enroll/redirect',
-					learn_press_get_page_link( 'checkout' ),
+					$redirect_url,
 					$course_id
 				);
 
@@ -462,9 +463,10 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				learn_press_update_user_item_meta( $userCourse->get_user_item_id(), '_lp_allow_repurchase_type', $allow_repurchase_type );
 			}
 
+			$redirect_url = LP_Page_Controller::get_link_page( 'checkout', [], true );
 			$redirect_url = apply_filters(
 				'learnpress/rest-api/courses/purchase/redirect',
-				learn_press_get_page_link( 'checkout' ),
+				$redirect_url,
 				$course_id,
 				$cart_id
 			);

@@ -1054,8 +1054,11 @@ function learn_press_admin_view( $name, $args = array(), $include_once = false, 
 if ( ! function_exists( 'learn_press_is_404' ) ) {
 	/**
 	 * Set header is 404
+	 * @deprecated 4.2.8
 	 */
 	function learn_press_is_404() {
+		_deprecated_function( __FUNCTION__, '4.2.8', 'LP_Page_Controller::set_page_404' );
+		return;
 		global $wp_query;
 		$wp_query->set_404();
 		status_header( 404 );
@@ -1065,8 +1068,12 @@ if ( ! function_exists( 'learn_press_is_404' ) ) {
 if ( ! function_exists( 'learn_press_404_page' ) ) {
 	/**
 	 * Display 404 page
+	 *
+	 * @deprecated 4.2.8
 	 */
 	function learn_press_404_page() {
+		_deprecated_function( __FUNCTION__, '4.2.8', 'LP_Page_Controller::set_page_404' );
+		return;
 		learn_press_is_404();
 	}
 }

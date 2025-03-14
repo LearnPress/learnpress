@@ -82,7 +82,7 @@ class ListCoursesRelatedTemplate {
 	 *
 	 * @return stdClass { content: string_html }
 	 * @since 4.2.7
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public static function render_courses( array $settings = [] ): stdClass {
 		$content          = new stdClass();
@@ -94,18 +94,20 @@ class ListCoursesRelatedTemplate {
 			return $content;
 		}
 
-		$course   = CourseModel::find( $course_id, true );
-		$terms    = $course->get_categories();
-		$term_ids = [];
+		$courseModelCurrent = CourseModel::find( $course_id, true );
+		$terms              = $courseModelCurrent->get_categories();
+		$term_ids           = [];
 
 		foreach ( $terms as $term ) {
 			$term_ids[] = $term->term_id ?? 0;
 			$term_ids[] = $term->parent ?? 0;
 		}
 
-		$total_rows       = 0;
-		$filter->limit    = $settings['limit'];
-		$filter->term_ids = $term_ids;
+		$total_rows          = 0;
+		$filter->limit       = $settings['limit'];
+		$filter->term_ids    = $term_ids;
+		$filter->query_count = false;
+		$filter->where[]     = LP_Database::getInstance()->wpdb->prepare( 'AND p.ID != %d', $course_id );
 
 		$courses = Courses::get_courses( $filter, $total_rows );
 		if ( empty( $courses ) ) {
@@ -119,11 +121,11 @@ class ListCoursesRelatedTemplate {
 
 		ob_start();
 		foreach ( $courses as $courseObj ) {
-			$course = CourseModel::find( $courseObj->ID, true );
-			if ( ! $course instanceof CourseModel ) {
+			$courseModel = CourseModel::find( $courseObj->ID, true );
+			if ( ! $courseModel instanceof CourseModel ) {
 				continue;
 			}
-			echo ListCoursesTemplate::render_course( $course, $settings );
+			echo ListCoursesTemplate::render_course( $courseModel, $settings );
 		}
 		$html_courses = Template::instance()->nest_elements( $html_ul_courses, ob_get_clean() );
 
@@ -133,7 +135,7 @@ class ListCoursesRelatedTemplate {
 				'header'  => sprintf( '<h3 class="section-title">%s</h3>', __( 'You might be interested in', 'learnpress' ) ),
 				'courses' => $html_courses,
 			],
-			$course,
+			$courseModelCurrent,
 			$courses,
 			$settings
 		);

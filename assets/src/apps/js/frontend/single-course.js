@@ -320,12 +320,17 @@ const courseProgress = () => {
 	}
 
 	const getResponse = async ( ele ) => {
+		let url = 'lp/v1/lazy-load/course-progress';
+		if ( lpData.urlParams.hasOwnProperty( 'lang' ) ) {
+			url += '?lang=' + lpData.urlParams.lang;
+		}
+
 		const response = await wp.apiFetch( {
-			path: 'lp/v1/lazy-load/course-progress',
+			path: url,
 			method: 'POST',
 			data: {
 				courseId: lpGlobalSettings.post_id || '',
-				userId: lpGlobalSettings.user_id || '',
+				userId: lpData.user_id || '',
 			},
 		} );
 

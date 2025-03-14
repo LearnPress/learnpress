@@ -407,7 +407,7 @@ class UserItemModel {
 	 * @return UserItemModel
 	 * @throws Exception
 	 * @since 4.2.5
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public function save(): UserItemModel {
 		$lp_user_item_db  = LP_User_Items_DB::getInstance();
@@ -419,6 +419,7 @@ class UserItemModel {
 
 		if ( ! isset( $data['start_time'] ) ) {
 			$data['start_time'] = gmdate( 'Y-m-d H:i:s', time() );
+			$this->start_time   = $data['start_time'];
 		}
 
 		// Check if exists user_item_id.
@@ -496,6 +497,43 @@ class UserItemModel {
 		}
 
 		return apply_filters( 'learnPress/user-item/expiration-time', $expire, $duration, $this );
+	}
+
+	/**
+	 * Get translate value.
+	 *
+	 * @param string $value
+	 *
+	 * @return string
+	 * @since 4.2.7.8
+	 * @version 1.0.0
+	 */
+	public function get_string_i18n( string $value ): string {
+		switch ( $value ) {
+			case self::STATUS_COMPLETED:
+				$value = __( 'Completed', 'learnpress' );
+				break;
+			case self::STATUS_FINISHED:
+				$value = __( 'Finished', 'learnpress' );
+				break;
+			case self::STATUS_ENROLLED:
+				$value = __( 'Enrolled', 'learnpress' );
+				break;
+			case self::STATUS_CANCEL:
+				$value = __( 'Cancel', 'learnpress' );
+				break;
+			case self::GRADUATION_IN_PROGRESS:
+				$value = __( 'In Progress', 'learnpress' );
+				break;
+			case self::GRADUATION_PASSED:
+				$value = __( 'Passed', 'learnpress' );
+				break;
+			case self::GRADUATION_FAILED:
+				$value = __( 'Failed', 'learnpress' );
+				break;
+		}
+
+		return $value;
 	}
 
 	/**

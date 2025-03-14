@@ -1,5 +1,7 @@
 <?php
 
+use LearnPress\Models\CourseModel;
+
 /**
  * Class LP_Thumbnail_Helper
  *
@@ -26,43 +28,22 @@ class LP_Thumbnail_Helper {
 	 * @return string
 	 */
 	public function get_course_image( $course_id, $size = 'course_thumbnail', $attr = array() ) {
-		$course = learn_press_get_course( $course_id );
-
-		if ( ! $course ) {
+		$courseModel = CourseModel::find( $course_id, true );
+		if ( ! $courseModel ) {
 			return '';
 		}
 
-		$attr  = wp_parse_args(
-			$attr,
-			array(
-				'alt'   => $course->get_title(),
-				'title' => $course->get_title(),
-			)
+		$size_img_setting = LP_Settings::get_option( 'course_thumbnail_dimensions', [] );
+		$size_img_send    = [
+			$size_img_setting['width'] ?? 500,
+			$size_img_setting['height'] ?? 300,
+		];
+		$image_url        = $courseModel->get_image_url( $size_img_send );
+		$image            = sprintf(
+			'<img src="%s" alt="%s">',
+			esc_url_raw( $image_url ),
+			$courseModel->get_title()
 		);
-		$image = '';
-
-		$thumbnail = learn_press_get_course_thumbnail_dimensions();
-		$size      = array( $thumbnail['width'], $thumbnail['height'] );
-		//$parent_id = wp_get_post_parent_id( $course_id );
-
-		if ( has_post_thumbnail( $course_id ) ) {
-			$image = get_the_post_thumbnail( $course_id, $size, $attr );
-		}
-		/*elseif ( $parent_id && has_post_thumbnail( $parent_id ) ) {
-			$image = get_the_post_thumbnail( $parent_id, $size, $attr );
-		}*/
-
-		if ( ! $image ) {
-			$image = LearnPress::instance()->image( 'no-image.png' );
-			$image = sprintf(
-				'<img src="%s" alt="%s">',
-				esc_url_raw( $image ),
-				_x( 'course thumbnail', 'no course thumbnail', 'learnpress' )
-			);
-		}
-
-		// @deprecated
-		// $image = apply_filters( 'learn_press_course_image', $image, $course_id, $size, $attr );
 
 		return $image;
 	}

@@ -656,7 +656,8 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 	 * @return bool
 	 */
 	public function check_permission(): bool {
-		$permission = current_user_can( 'administrator' );
+		$permission = current_user_can( ADMIN_ROLE );
+		$permission = apply_filters( 'learn-press/api-admin-tools/permission', $permission );
 
 		return $permission;
 	}

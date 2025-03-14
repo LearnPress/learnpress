@@ -22,7 +22,6 @@ class LP_Debug {
 	 * Constructor for the logger.
 	 */
 	protected function __construct() {
-
 	}
 
 	/**
@@ -31,7 +30,6 @@ class LP_Debug {
 	protected static $_transaction_started = false;
 
 	public function output() {
-
 	}
 
 	/**
@@ -127,14 +125,14 @@ class LP_Debug {
 	/**
 	 * Set error log
 	 *
-	 * @param string $message
+	 * @param Throwable $e
 	 *
 	 * @return void
+	 * @version 1.0.1
+	 * @since 3.0.0
 	 */
-	public static function error_log( string $message ) {
-		if ( LP_Debug::is_debug() ) {
-			error_log( $message );
-		}
+	public static function error_log( Throwable $e ) {
+		error_log( sprintf( 'MESSAGE: %s FILE: %s LINE: %s', $e->getMessage(), $e->getFile(), $e->getLine() ) );
 	}
 
 	/**

@@ -4,12 +4,12 @@
  *
  * @author Thimpress
  * @editor tungnx, nhamdv
- * @version 1.0.1
+ * @version 1.0.2
  * @since 4.0.0
  */
 class LP_Admin_Core_API extends LP_Abstract_API {
 	public function __construct() {
-		if ( ! LP_Helper::isRestApiLP() || ! current_user_can( 'administrator' ) ) {
+		if ( ! LP_Helper::isRestApiLP() ) {
 			return;
 		}
 

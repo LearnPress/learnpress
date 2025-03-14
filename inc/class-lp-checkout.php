@@ -8,6 +8,8 @@
  */
 
 use LearnPress\Helpers\Singleton;
+use LearnPress\Models\CourseModel;
+use LearnPress\Models\UserModel;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -26,10 +28,6 @@ class LP_Checkout {
 	 * @var string $payment_method_str
 	 */
 	public $payment_method_str = '';
-	/**
-	 * @var array|mixed|null|void
-	 */
-	protected $checkout_fields = array();
 	/**
 	 * @var null
 	 */
@@ -64,9 +62,6 @@ class LP_Checkout {
 	protected $checkout_action = '';
 
 	public function init() {
-		//add_filter( 'learn-press/validate-checkout-field', array( $this, 'validate_fields' ), 10, 3 );
-		add_filter( 'learn-press/validate-checkout-fields', array( $this, 'check_validate_fields' ), 10 );
-
 		if ( ! is_null( LearnPress::instance()->session ) ) {
 			$this->_checkout_email = LearnPress::instance()->session->get( 'checkout-email' );
 		}
@@ -200,9 +195,10 @@ class LP_Checkout {
 		if ( $this->_checkout_email ) {
 			return $this->_checkout_email;
 		} elseif ( is_user_logged_in() ) {
-			$user = learn_press_get_current_user( false );
-
-			return $user->get_email();
+			$userModel = UserModel::find( get_current_user_id(), true );
+			if ( $userModel instanceof UserModel ) {
+				return $userModel->get_email();
+			}
 		}
 
 		return false;
@@ -328,8 +324,11 @@ class LP_Checkout {
 	 * @return bool
 	 * @since 3.0.0
 	 */
-	public function is_enable_guest_checkout() {
-		return apply_filters( 'learn-press/checkout/enable-guest', LP_Settings::instance()->get( 'guest_checkout', 'no' ) == 'yes' );
+	public function is_enable_guest_checkout(): bool {
+		return apply_filters(
+			'learn-press/checkout/enable-guest',
+			LP_Settings::get_option( 'guest_checkout', 'no' ) === 'yes'
+		);
 	}
 
 	/**
@@ -338,8 +337,11 @@ class LP_Checkout {
 	 * @return bool
 	 * @since 3.0.0
 	 */
-	public function is_enable_login() {
-		return apply_filters( 'learn-press/checkout/enable-login', 'yes' === LP_Settings::get_option( 'enable_login_checkout', 'yes' ) );
+	public function is_enable_login(): bool {
+		return apply_filters(
+			'learn-press/checkout/enable-login',
+			'yes' === LP_Settings::get_option( 'enable_login_checkout', 'yes' )
+		);
 	}
 
 	/**
@@ -348,7 +350,7 @@ class LP_Checkout {
 	 * @return bool
 	 * @since 3.0.0
 	 */
-	public function is_enable_register() {
+	public function is_enable_register(): bool {
 		return apply_filters(
 			'learn-press/checkout/enable-register',
 			'yes' === LP_Settings::get_option( 'enable_registration_checkout', 'yes' )
@@ -359,34 +361,25 @@ class LP_Checkout {
 	/**
 	 * Process checkout from request.
 	 *
-	 * @return mixed
+	 * @return void
 	 * @throws Exception
 	 */
 	public function process_checkout_handler() {
 		if ( strtolower( $_SERVER['REQUEST_METHOD'] ) != 'post' ) {
-			return false;
+			return;
 		}
 
 		/**
 		 * Set default fields from request.
 		 */
 		$this->payment_method_str = LP_Request::get_param( 'payment_method' );
-		//$this->user_login      = LP_Request::get_param( 'username' );
-		//$this->user_pass       = LP_Request::get_param( 'password' );
-		$this->order_comment   = LP_Request::get_param( 'order_comments' );
-		$this->_checkout_email = LP_Request::get_param( 'checkout-email' );
-
-		if ( LP_Request::get_int( 'terms_conditions_field', 0 ) ) {
-			$this->checkout_fields['terms_conditions'] = LP_Request::get_string( 'terms_conditions', '' );
-		}
-
+		$this->order_comment      = LP_Request::get_param( 'order_comments' );
+		$this->_checkout_email    = LP_Request::get_param( 'checkout-email' );
 		if ( $this->_checkout_email ) {
 			LearnPress::instance()->session->set( 'checkout-email', $this->_checkout_email );
 		}
 
 		$this->process_checkout();
-
-		return true;
 	}
 
 	/**
@@ -395,29 +388,10 @@ class LP_Checkout {
 	 * Addon Upsell 4.0.1 use argument $errors
 	 * Must update to 4.0.2 to use throw Error instead.
 	 *
-	 * @return bool
 	 * @throws Exception
 	 */
 	public function validate_checkout_fields() {
 		$this->errors = array();
-		//$fields       = $this->get_checkout_fields();
-		$fields = [];
-
-		/*if ( $fields ) {
-			foreach ( $fields as $name => $field ) {
-				if ( ! is_wp_error( $field ) ) {
-					$error = apply_filters( 'learn-press/validate-checkout-field', true, $field, $name );
-				} else {
-					$error = $field;
-				}
-
-				if ( is_wp_error( $error ) ) {
-					$this->errors[ $name ] = $error;
-				} elseif ( ! $error ) {
-					$this->errors[ $name ] = new WP_Error( 'invalid_field', __( 'Invalid field', 'learnpress' ) );
-				}
-			}
-		}*/
 
 		// Check nonce
 		$nonce = LP_Request::get_param( 'learn-press-checkout-nonce' );
@@ -425,18 +399,9 @@ class LP_Checkout {
 			throw new Exception( __( 'Your session has expired.', 'learnpress' ) );
 		}
 
-		$error = apply_filters( 'learn-press/validate-checkout-fields', $this->errors, $fields, $this );
-		if ( is_wp_error( $error ) ) {
-			$this->errors[] = $error;
+		$this->check_validate_fields();
 
-			return false;
-		}
-
-		return true;
-
-		//$this->errors = apply_filters( 'learn-press/validate-checkout-fields', $this->errors, $fields, $this );
-
-		//return ! sizeof( $this->errors );
+		do_action( 'learn-press/validate-checkout-fields', $this );
 	}
 
 	/**
@@ -460,13 +425,7 @@ class LP_Checkout {
 
 				$this->payment_method->validate_fields();
 			}
-
-			/*if ( $this->payment_method ) {
-				$validate = $this->payment_method->validate_fields();
-			}*/
 		}
-
-		//return $validate;
 	}
 
 	/**
@@ -499,80 +458,108 @@ class LP_Checkout {
 				}
 			}
 
-			if ( ! $this->validate_checkout_fields() ) {
-				foreach ( $this->errors as $key => $error ) {
-					if ( is_wp_error( $error ) ) {
-						$error = $error->get_error_message();
-						throw new Exception( $error );
+			// Validate fields
+			$this->validate_checkout_fields();
+			// Validate payment method
+			$this->validate_payment();
+
+			$user_id = $this->checkout_email_exists();
+			if ( ! $user_id ) {
+				$user_id = 0;
+			}
+
+			// Check user can purchase, enrolled course
+			foreach ( $cart->get_items() as $item ) {
+				$item_type = get_post_type( $item['item_id'] );
+				if ( LP_COURSE_CPT === $item_type ) {
+					$courseModel = CourseModel::find( $item['item_id'], true );
+					if ( ! $courseModel ) {
+						throw new Exception( __( 'Course is invalid!', 'learnpress' ) );
+					}
+
+					$userModel = UserModel::find( $user_id, true );
+
+					// Check user can purchase course
+					if ( ! $courseModel->is_free() ) {
+						$can_purchase = $courseModel->can_purchase( $userModel );
+						if ( is_wp_error( $can_purchase ) ) {
+							//throw new Exception( $can_purchase->get_error_message() );
+							learn_press_set_message(
+								[
+									'status'  => 'error',
+									'content' => $can_purchase->get_error_message(),
+								]
+							);
+							$result['redirect'] = LP_Page_Controller::get_link_page( 'checkout', [], true );
+							$result['message']  = $can_purchase->get_error_message();
+							learn_press_send_json( $result );
+						}
+					} else {
+						// Check user can enroll course
+						$can_enroll = $courseModel->can_enroll( $userModel );
+						if ( is_wp_error( $can_enroll ) ) {
+							learn_press_set_message(
+								[
+									'status'  => 'error',
+									'content' => $can_enroll->get_error_message(),
+								]
+							);
+							$result['redirect'] = LP_Page_Controller::get_link_page( 'checkout', [], true );
+							$result['message']  = $can_enroll->get_error_message();
+							learn_press_send_json( $result );
+						}
+					}
+				}
+			}
+
+			// Create order if not handle done.
+			$order_id = $lp_session->get( 'order_awaiting_payment', 0 );
+			if ( ! $order_id ) {
+				$order_id = $this->create_order();
+				if ( is_wp_error( $order_id ) ) {
+					throw new Exception( $order_id->get_error_message() );
+				}
+
+				$lp_session->set( 'order_awaiting_payment', $order_id, true );
+			}
+
+			// allow Third-party hook: send email and more...
+			do_action( 'learn-press/checkout-order-processed', $order_id, $this );
+
+			if ( $this->payment_method instanceof LP_Gateway_Abstract ) {
+				// Process Payment
+				$result = $this->payment_method->process_payment( $order_id );
+				if ( isset( $result['result'] ) ) {
+					if ( 'success' === $result['result'] ) {
+						// Clear cart.
+						LearnPress::instance()->get_cart()->empty_cart();
+						$result = apply_filters( 'learn-press/payment-successful-result', $result, $order_id );
+					}
+
+					if ( ! learn_press_is_ajax() ) {
+						ini_set( 'max_execution_time', LearnPress::$time_limit_default_of_sever );
+						wp_redirect( $result['redirect'] );
+						exit;
 					}
 				}
 			} else {
+				// For case enroll a course free.
+				$order = new LP_Order( $order_id );
+				if ( $order->payment_complete() ) {
+					$redirect = $order->get_checkout_order_received_url();
 
-				$this->validate_payment();
+					// Clear cart.
+					LearnPress::instance()->get_cart()->empty_cart();
 
-				// Create order if not handle done.
-				$order_id = $lp_session->get( 'order_awaiting_payment', 0 );
-				if ( ! $order_id ) {
-					$order_id = $this->create_order();
-					if ( is_wp_error( $order_id ) ) {
-						throw new Exception( $order_id->get_error_message() );
-					}
+					$result = array(
+						'result'   => 'success',
+						'redirect' => $redirect,
+					);
 
-					$lp_session->set( 'order_awaiting_payment', $order_id, true );
-				}
-
-				// allow Third-party hook: send email and more...
-				do_action( 'learn-press/checkout-order-processed', $order_id, $this );
-
-				if ( $this->payment_method instanceof LP_Gateway_Abstract ) {
-					// Process Payment
-					$result = $this->payment_method->process_payment( $order_id );
-					if ( isset( $result['result'] ) ) {
-						if ( 'success' === $result['result'] ) {
-							// Clear cart.
-							LearnPress::instance()->get_cart()->empty_cart();
-							$result = apply_filters( 'learn-press/payment-successful-result', $result, $order_id );
-						}
-
-						if ( ! learn_press_is_ajax() ) {
-							ini_set( 'max_execution_time', LearnPress::$time_limit_default_of_sever );
-							wp_redirect( $result['redirect'] );
-							exit;
-						}
-					}
-				} else {
-					// For case enroll course free.
-					$order = new LP_Order( $order_id );
-					if ( $order->payment_complete() ) {
-						$redirect = $order->get_checkout_order_received_url();
-						if ( ! empty( $this->guest_email ) ) {
-							$course_id = get_transient( 'checkout_enroll_course_id' );
-
-							if ( ! $course_id ) {
-								if ( ! empty( $_REQUEST['enroll-course'] ) ) {
-									$course_id = absint( $_REQUEST['enroll-course'] );
-								}
-							}
-
-							if ( $course_id ) {
-								delete_transient( 'checkout_enroll_course_id' );
-								$redirect = get_the_permalink( $course_id );
-							}
-						}
-
-						// Clear cart.
-						LearnPress::instance()->get_cart()->empty_cart();
-
-						$result = array(
-							'result'   => 'success',
-							'redirect' => $redirect,
-						);
-
-						if ( ! learn_press_is_ajax() ) {
-							ini_set( 'max_execution_time', LearnPress::$time_limit_default_of_sever );
-							wp_redirect( $result['redirect'] );
-							exit;
-						}
+					if ( ! learn_press_is_ajax() ) {
+						ini_set( 'max_execution_time', LearnPress::$time_limit_default_of_sever );
+						wp_redirect( $result['redirect'] );
+						exit;
 					}
 				}
 			}

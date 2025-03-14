@@ -1,6 +1,6 @@
 <?php
 /**
- * Class LP_Background_Single_Course
+ * Class LP_Background_Thim_Cache
  *
  * Single to run not schedule, run one time and done when be call
  *

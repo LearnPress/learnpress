@@ -1,4 +1,4 @@
-<?php $gateways = LP_Gateways::instance()->get_gateways( true ); ?>
+<?php $gateways = LP_Gateways::instance()->get_gateways(); ?>
 
 <table class="learn-press-payments<?php echo sizeof( $gateways ) > 1 ? ' sortable' : ''; ?>">
 	<thead>

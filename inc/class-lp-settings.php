@@ -354,6 +354,15 @@ class LP_Settings {
 	}
 
 	/**
+	 * Check enable option "Store data in $_SESSION PHP" instead of $_COOKIE
+	 *
+	 * @return bool
+	 */
+	public static function is_store_ip_customer(): bool {
+		return self::get_option( 'store_ip_customer_session', 'no' ) === 'yes';
+	}
+
+	/**
 	 * Check table learnpress_files is created
 	 * @return boolean
 	 */
@@ -477,10 +486,10 @@ class LP_Settings {
 	 *
 	 * @return string
 	 * @since 4.2.7.6
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public static function url_handle_lp_ajax(): string {
-		return LP_PLUGIN_URL . 'inc/lp-ajax.php';
+		return home_url( 'lp-ajax-handle' );
 	}
 }
 

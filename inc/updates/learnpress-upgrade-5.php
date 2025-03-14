@@ -49,12 +49,12 @@ class LP_Upgrade_5 extends LP_Handle_Upgrade_Steps {
 					'learnpress_user_items',
 					'Optimize database courses',
 					array(
-						'sync_table_courses'  => new LP_Step(
+						'sync_table_courses' => new LP_Step(
 							'sync_table_courses',
 							'Sync table courses',
 							'This process sync post type lp_course to table learnpress_courses'
 						),
-						'finish_upgrade' => new LP_Step(
+						'finish_upgrade'     => new LP_Step(
 							'finish_upgrade',
 							'Update settings',
 							'Update settings'

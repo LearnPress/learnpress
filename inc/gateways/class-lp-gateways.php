@@ -5,7 +5,7 @@
  *
  * @author  ThimPress
  * @package LearnPress/Classes
- * @version 1.0
+ * @version 1.0.1
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -30,7 +30,7 @@ class LP_Gateways {
 	/**
 	 * LP_Gateways constructor.
 	 */
-	public function __construct() {
+	private function __construct() {
 		$this->init();
 	}
 
@@ -52,8 +52,11 @@ class LP_Gateways {
 				foreach ( $gateways as $k => $gateway ) {
 					if ( is_string( $gateway ) && class_exists( $gateway ) ) {
 						$gateway = new $gateway();
+
+						$this->payment_gateways[ $k ] = $gateway;
+					} elseif ( $gateway instanceof LP_Gateway_Abstract ) {
+						$this->payment_gateways[ $gateway->id ] = $gateway;
 					}
-					$this->payment_gateways[ $k ] = apply_filters( 'learn-press/payment-gateway/init', $gateway );
 				}
 			}
 		}
@@ -62,12 +65,10 @@ class LP_Gateways {
 	/**
 	 * Get all registered payments.
 	 *
-	 * @param boolean $with_order If true sort payments with the order saved in admin
-	 *
 	 * @return array
-	 * @version 4.0.1
+	 * @version 4.0.2
 	 */
-	public function get_gateways( $with_order = false ) {
+	public function get_gateways(): array {
 		$gateways               = array();
 		$order_payment_gateways = get_option( 'learn_press_payment_order' );
 
@@ -78,18 +79,13 @@ class LP_Gateways {
 						$gateways[ $id ] = $this->payment_gateways[ $id ];
 					}
 				}
+			} else {
+				$gateways = $this->payment_gateways;
 			}
 
+			// Case new array $gateways not have all gateways
 			foreach ( $this->payment_gateways as $gateway ) {
 				if ( isset( $gateways[ $gateway->id ] ) ) {
-					continue;
-				}
-
-				if ( is_string( $gateway ) && class_exists( $gateway ) ) {
-					$gateway = new $gateway();
-				}
-
-				if ( ! is_object( $gateway ) ) {
 					continue;
 				}
 
@@ -105,7 +101,7 @@ class LP_Gateways {
 	 *
 	 * @return mixed
 	 * @since 3.0.0
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public function get_available_payment_gateways() {
 		/**
@@ -113,7 +109,6 @@ class LP_Gateways {
 		 */
 		$gateways            = $this->get_gateways();
 		$_available_gateways = array();
-		$is_selected         = false;
 		$gateway_first       = null;
 
 		foreach ( $gateways as $slug => $gateway ) {
@@ -126,12 +121,7 @@ class LP_Gateways {
 				continue;
 			}
 
-			// Let custom addon can define how is enable/disable
-			$gateway_is_available = apply_filters(
-				'learn-press/payment-gateway/' . $slug . '/available',
-				$gateway->is_enabled(),
-				$gateway
-			);
+			$gateway_is_available = $gateway->is_enabled();
 			if ( $gateway_is_available ) {
 				$_available_gateways[ $slug ] = $gateway;
 
@@ -142,14 +132,9 @@ class LP_Gateways {
 		}
 
 		// Set default payment if there is no payment is selected
-		if ( $_available_gateways && ! $is_selected ) {
+		if ( $_available_gateways ) {
 			$gateway_first->is_selected = true;
 		}
-
-		/**
-		 * @deprecated
-		 */
-		$_available_gateways = apply_filters( 'learn_press_available_payment_gateways', $_available_gateways );
 
 		return apply_filters( 'learn-press/payment-gateways/available', $_available_gateways );
 	}
@@ -160,9 +145,9 @@ class LP_Gateways {
 	 * @deprecated 4.2.3
 	 * @uses LP_Request_Withdrawal::get_gateways() on Addon Commission <= 4.0.1
 	 */
-	public function get_availabe_gateways() {
+	/*public function get_availabe_gateways() {
 		return $this->payment_gateways;
-	}
+	}*/
 
 	/**
 	 * @param string $id
@@ -171,7 +156,7 @@ class LP_Gateways {
 	 * @since 3.0.0
 	 *
 	 */
-	public function get_gateway( $id ) {
+	public function get_gateway( string $id ) {
 		$gateways = $this->get_gateways();
 
 		if ( $gateways ) {
