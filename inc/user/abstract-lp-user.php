@@ -120,7 +120,10 @@ if ( ! class_exists( 'LP_Abstract_User' ) ) {
 					 * Todo: some themes still not check false, so still use below code.\
 					 * @editor tungnx 4.1.6.9
 					 */
-					$object_course_data = new LP_User_Item_Course( $course_id );
+					$object_course_data = new LP_User_Item_Course( array(
+						'item_id' => $course_id,
+						'user_id' => $this->get_id(),
+					) );
 				}
 			} catch ( Throwable $e ) {
 				$object_course_data = false;
