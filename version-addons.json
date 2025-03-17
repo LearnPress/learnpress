@@ -476,7 +476,7 @@
   "learnpress-razorpay-payment": {
     "name": "Razorpay Add-on for LearnPress",
     "basename": "learnpress-razorpay-payment/learnpress-razorpay-payment.php",
-    "version": "4.0.1",
+    "version": "4.0.2",
     "require_lp": "4.2.6.6",
     "description": "Razorpay is the only payments solution in India that allows businesses to accept, process and disburse payments with its product suite. It gives you access to all payment modes including credit card, debit card, netbanking, UPI and popular wallets including JioMoney, Mobikwik, Airtel Money, FreeCharge, Ola Money and PayZapp.",
     "image": "https://thimpress.com/wp-content/uploads/2023/04/Razorpay-Banner.jpg",
