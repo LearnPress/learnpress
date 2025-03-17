@@ -506,7 +506,7 @@
   "learnpress-paystack-payment": {
     "name": "Paystack Addon For Learnpress",
     "basename": "learnpress-paystack-payment/learnpress-paystack-payment.php",
-    "version": "4.0.0",
+    "version": "4.0.1",
     "require_lp": "4.2.7.7",
     "description": "Many Payment Options: Payment can be done using a Visa, Mastercard, Verve, USSD, mobile money, bank transfer, POS and more.",
     "image": "https://thimpress.com/wp-content/uploads/2025/01/icon-paystack.png",
