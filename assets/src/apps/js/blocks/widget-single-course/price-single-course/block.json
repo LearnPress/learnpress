@@ -22,16 +22,16 @@
 			"__experimentalFontStyle": false,
 			"__experimentalFontWeight": true,
 			"__experimentalLetterSpacing": false,
-			"__experimentalTextTransform": false,
+			"__experimentalTextTransform": true,
 			"__experimentalDefaultControls": { "fontSize": false }
 		},
 		"color": {
 			"background": false,
-			"text": false,
+			"text": true,
 			"link": false,
 			"gradients": false,
 			"__experimentalDefaultControls": {
-				"text": false
+				"text": true
 			}
 		},
 		"spacing": {

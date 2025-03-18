@@ -8,12 +8,45 @@
 	"textdomain": "learnpress",
 	"keywords": ["title archive course", "learnpress"],
 	"usesContext": [],
+	"attributes": {
+		"tag": {
+			"type": "string",
+			"default": "h3"
+		},
+		"isLink": {
+			"type": "boolean",
+			"default": true
+		},
+		"target": {
+			"type": "boolean",
+			"default": false
+		}
+	},
 	"supports": {
-		"inserter": true,
-		"reusable": true,
-		"reorder": true,
+		"multiple": false,
+		"align": ["wide", "full"],
 		"html": false,
-		"multiple": true
+		"typography": {
+			"fontSize": true,
+			"lineHeight": false,
+			"fontWeight": true,
+			"__experimentalFontFamily": false,
+			"__experimentalTextDecoration": false,
+			"__experimentalFontStyle": false,
+			"__experimentalFontWeight": true,
+			"__experimentalLetterSpacing": false,
+			"__experimentalTextTransform": true,
+			"__experimentalDefaultControls": { "fontSize": true }
+		},
+		"color": {
+			"background": false,
+			"text": true,
+			"link": true,
+			"gradients": false,
+			"__experimentalDefaultControls": {
+				"text": true
+			}
+		}
 	},
 	"ancestor": [
 		"learnpress/template-course-archive-course"

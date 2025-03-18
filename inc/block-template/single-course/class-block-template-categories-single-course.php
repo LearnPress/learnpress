@@ -23,13 +23,24 @@ class Block_Template_Categories_Single_Course extends Abstract_Block_Template_Wi
 		$this->inline_styles( $attributes );
 		$border_classes_and_styles = StyleAttributes::get_classes_and_styles_by_attributes( $attributes, [ 'font_size', 'font_weight', 'text_color', 'text_transform', 'margin', 'padding' ] );
 
-		$content         = '';
-		$course          = CourseModel::find( get_the_ID(), true );
-		$html_categories = SingleCourseTemplate::instance()->html_categories( $course );
+		$content   = '';
+		$course    = CourseModel::find( get_the_ID(), true );
+		$show_text = ( isset( $attributes['showText'] ) && $attributes['showText'] === false ) ? 'false' : 'true';
+		$is_link   = ( isset( $attributes['isLink'] ) && $attributes['isLink'] === false ) ? 'false' : 'true';
+		$new_tab   = ( isset( $attributes['target'] ) && $attributes['target'] === true ) ? 'true' : 'false';
+		$setting   = [
+			'is_link' => $is_link,
+			'new_tab' => $new_tab,
+		];
+		$label     = sprintf( '<label>%s</label>', __( 'in', 'learnpress' ) );
+		if ( $show_text === 'false' ) {
+			$label = '';
+		}
+		$html_categories = SingleCourseTemplate::instance()->html_categories( $course, $setting );
 		if ( ! empty( $html_categories ) ) {
 			$content = sprintf(
 				'<div class="course-categories__wrapper ' . $border_classes_and_styles['classes'] . '">%s %s</div>',
-				sprintf( '<label>%s</label>', __( 'in', 'learnpress' ) ),
+				$label,
 				$html_categories
 			);
 		}

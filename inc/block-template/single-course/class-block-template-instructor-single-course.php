@@ -23,11 +23,22 @@ class Block_Template_Instructor_Single_Course extends Abstract_Block_Template_Wi
 		$this->inline_styles( $attributes );
 		$border_classes_and_styles = StyleAttributes::get_classes_and_styles_by_attributes( $attributes, [ 'font_size', 'font_weight', 'text_color', 'text_transform', 'margin', 'padding' ] );
 
-		$course  = CourseModel::find( get_the_ID(), true );
+		$course    = CourseModel::find( get_the_ID(), true );
+		$show_text = ( isset( $attributes['showText'] ) && $attributes['showText'] === false ) ? 'false' : 'true';
+		$is_link   = ( isset( $attributes['isLink'] ) && $attributes['isLink'] === false ) ? 'false' : 'true';
+		$new_tab   = ( isset( $attributes['target'] ) && $attributes['target'] === true ) ? 'true' : 'false';
+		$setting   = [
+			'is_link' => $is_link,
+			'new_tab' => $new_tab,
+		];
+		$label     = sprintf( '<label>%s</label>', __( 'by', 'learnpress' ) );
+		if ( $show_text === 'false' ) {
+			$label = '';
+		}
 		$content = sprintf(
 			'<div class="course-instructor__wrapper ' . $border_classes_and_styles['classes'] . '">%s %s</div>',
-			sprintf( '<label>%s</label>', __( 'by', 'learnpress' ) ),
-			SingleCourseTemplate::instance()->html_instructor( $course )
+			$label,
+			SingleCourseTemplate::instance()->html_instructor( $course, false, $setting )
 		);
 
 		return $content;

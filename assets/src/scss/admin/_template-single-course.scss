@@ -3,6 +3,10 @@
 		margin: 10px 0;
 	}
 
+	a {
+		text-decoration: none;
+	}
+
 	.wp-block-learnpress-course-summary {
 	}
 
@@ -214,7 +218,7 @@
 
 		.course-item {
 			height: 333px;
-			width: calc(25% - 30px / 4 *3);
+			width: calc(25% - 30px / 4 * 3);
 			background: #ccc;
 			border-radius: 12px;
 		}

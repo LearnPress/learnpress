@@ -40,13 +40,13 @@ class Block_Template_Instructor_Background extends Abstract_Block_Template {
 
 	public function get_inline_style( $attributes ) {
 		$style = '';
-		if ( $attributes['repeat'] ) {
+		if ( isset( $attributes['repeat'] ) ) {
 			$style .= 'background-repeat: repeat;';
 		}
-		if ( $attributes['size'] ) {
+		if ( isset( $attributes['size'] ) ) {
 			$style .= sprintf( 'background-size: %s;', $attributes['size'] );
 		}
-		if ( $attributes['position'] ) {
+		if ( isset( $attributes['position'] ) ) {
 			$style .= sprintf( 'background-position: %s;', $attributes['position'] );
 		}
 		return '.lp-single-instructor__info .lp-user-cover-image_background {' . $style . '}';

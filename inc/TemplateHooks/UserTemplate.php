@@ -231,7 +231,7 @@ class UserTemplate {
 	 *
 	 * @return string
 	 */
-	public function html_social( $userModel, $setting ): string {
+	public function html_social( $userModel, $setting = [] ): string {
 		$content = '';
 
 		try {

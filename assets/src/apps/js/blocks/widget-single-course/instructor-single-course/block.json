@@ -8,6 +8,20 @@
 	"textdomain": "learnpress",
 	"keywords": ["instructor single course", "learnpress"],
 	"usesContext": [],
+	"attributes": {
+		"showText": {
+			"type": "boolean",
+			"default": true
+		},
+		"isLink": {
+			"type": "boolean",
+			"default": true
+		},
+		"target": {
+			"type": "boolean",
+			"default": false
+		}
+	},
 	"supports": {
 		"multiple": false,
 		"align": ["wide", "full"],

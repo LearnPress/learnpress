@@ -117,16 +117,11 @@
 			margin-bottom: 10px;
 		}
 
-		.course-readmore {
+		.wp-block-learnpress-button-course-archive-course {
 			text-align: center;
 			padding: 8px 24px;
 			border-radius: var(--lp-border-radius, 5px);
-			color: var(--lp-color-base, #333);
 			border: 1px solid var(--lp-color-base, #333);
-			transition: all 0.3s;
-			display: block;
-			background: transparent;
-			text-decoration: none;
 		}
 
 		.course {
@@ -181,11 +176,24 @@
 			}
 		}
 
+		.instructor-course,
+		.category-course {
+			a {
+				text-decoration: none;
+			}
+		}
+
 		.course-thumbnail {
 			background: #ccc;
 			aspect-ratio: 16 / 9;
 			border-radius: 5px;
 		}
+	}
+}
+
+.wp-block-learnpress-title-course-archive-course {
+	a {
+		text-decoration: none;
 	}
 }
 

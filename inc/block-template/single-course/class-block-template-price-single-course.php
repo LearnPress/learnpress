@@ -20,7 +20,7 @@ class Block_Template_Price_Single_Course extends Abstract_Block_Template_Widget_
 		$this->enqueue_assets( $attributes );
 		$this->inline_styles( $attributes );
 		$content                   = '';
-		$border_classes_and_styles = StyleAttributes::get_classes_and_styles_by_attributes( $attributes, [ 'font_size', 'font_weight', 'text_color', 'padding', 'margin' ] );
+		$border_classes_and_styles = StyleAttributes::get_classes_and_styles_by_attributes( $attributes, [ 'font_size', 'font_weight', 'text_color','text_transform', 'padding', 'margin' ] );
 		$attributes['courseId']    = ! empty( $attributes['courseId'] ) ? (int) $attributes['courseId'] : get_the_ID();
 		$course                    = CourseModel::find( $attributes['courseId'], true );
 		ob_start();
@@ -33,8 +33,9 @@ class Block_Template_Price_Single_Course extends Abstract_Block_Template_Widget_
 	}
 
 	public function get_inline_style( $attributes ) {
-		$border_classes_and_styles = StyleAttributes::get_classes_and_styles_by_attributes( $attributes, [ 'font_size', 'font_weight', 'text_color', 'padding', 'margin' ] );
-		return '.lp-single-course .lp-single-course-main .course-price .price {' . $border_classes_and_styles['styles'] . '}';
+		$border_classes_and_styles = StyleAttributes::get_classes_and_styles_by_attributes( $attributes, [ 'font_size', 'font_weight', 'text_color', 'text_transform', 'padding', 'margin' ] );
+		return '.lp-single-course .lp-single-course-main .course-price .price,
+		.lp-single-course .lp-single-course-main .course-price .free {' . $border_classes_and_styles['styles'] . '}';
 	}
 
 	public function inline_styles( $attributes ) {

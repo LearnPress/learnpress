@@ -380,13 +380,54 @@ class ListCoursesTemplate {
 					$settings
 				);
 			} else {
-				$html_instructor = [
-					'instructor' => sprintf(
+				preg_match_all( '/\{\{\s*([a-z-]+)\s*(.*?)\}\}/s', $template, $matches, PREG_SET_ORDER );
+				$search_replace = [];
+				$attributes_map = [];
+				$replacements   = [];
+				foreach ( $matches as $match ) {
+					$full_placeholder = $match[0];
+					$key              = $match[1];
+					$attributes_str   = isset( $match[2] ) ? trim( $match[2] ) : '';
+					$search_replace[] = $full_placeholder;
+					$replacements[]   = '{{' . $key . '}}';
+					$attributes       = [];
+					if ( $attributes_str ) {
+						preg_match_all( '/([a-z_]+)="([^"]*)"/', $attributes_str, $attr_matches, PREG_SET_ORDER );
+						foreach ( $attr_matches as $attr ) {
+							$attributes[ $attr[1] ] = $attr[2];
+						}
+					}
+					$attributes_map[ $key ] = $attributes;
+				}
+				$template = str_replace( $search_replace, $replacements, $template );
+
+				$label_instructor = sprintf( '<label>%s</label>', __( 'by', 'learnpress' ) );
+				if ( isset( $attributes_map['instructor-course']['show_text'] ) && $attributes_map['instructor-course']['show_text'] === 'false' ) {
+					$label_instructor = '';
+				}
+				$html_instructor = $singleCourseTemplate->html_instructor( $course, false, $attributes_map['instructor-course'] );
+				if ( ! empty( $html_instructor ) ) {
+					$html_instructor = [
+						'instructor' => sprintf(
+							'<div>%s %s</div>',
+							$label_instructor,
+							$html_instructor
+						),
+					];
+				}
+
+				$label_category = sprintf( '<label>%s</label>', __( 'in', 'learnpress' ) );
+				if ( isset( $attributes_map['category-course']['show_text'] ) && $attributes_map['category-course']['show_text'] === 'false' ) {
+					$label_category = '';
+				}
+				$html_categories = $singleCourseTemplate->html_categories( $course, $attributes_map['category-course'] );
+				if ( ! empty( $html_categories ) ) {
+					$html_categories = sprintf(
 						'<div>%s %s</div>',
-						sprintf( '<label>%s</label>', __( 'by', 'learnpress' ) ),
-						$singleCourseTemplate->html_instructor( $course )
-					),
-				];
+						$label_category,
+						$html_categories
+					);
+				}
 
 				$html_button = [
 					'btn_read_more' => sprintf(
@@ -395,6 +436,25 @@ class ListCoursesTemplate {
 						__( 'Read more', 'learnpress' )
 					),
 				];
+
+				$is_link      = $attributes_map['title-course']['is_link'] === 'false' ? false : true;
+				$title_target = $attributes_map['title-course']['new_tab'] === 'true' ? 'target="_blank"' : '';
+				$tag          = $attributes_map['title-course']['tag'] ? $attributes_map['title-course']['tag'] : 'h3';
+				if ( $is_link ) {
+					$html_title = sprintf(
+						'<%1$s> <a class="course-permalink" href="%2$s" %3$s>%4$s</a> </%1$s>',
+						$tag,
+						$course->get_permalink(),
+						$title_target,
+						$singleCourseTemplate->html_title( $course ),
+					);
+				} else {
+					$html_title = sprintf(
+						'<%1$s> <div class="course-permalink">%2$s</div> </%1$s>',
+						$tag,
+						$singleCourseTemplate->html_title( $course )
+					);
+				}
 
 				$html_duration = sprintf( '<div class="meta-item meta-item-%s">%s</div>', 'duration', $singleCourseTemplate->html_duration( $course ) );
 				$html_level    = sprintf( '<div class="meta-item meta-item-%s">%s</div>', 'level', $singleCourseTemplate->html_level( $course ) );
@@ -438,7 +498,8 @@ class ListCoursesTemplate {
 						Template::combine_components( $html_button ),
 						$singleCourseTemplate->html_price( $course ),
 					],
-					$course
+					$course,
+					$attributes_map
 				);
 
 				$html_course = str_replace(
