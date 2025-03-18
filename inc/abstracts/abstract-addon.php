@@ -141,6 +141,10 @@ class LP_Addon {
 		return $links;
 	}
 
+	public function plugin_links() {
+		return [];
+	}
+
 	/**
 	 * Define add-on constants.
 	 */
