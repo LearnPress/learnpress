@@ -530,12 +530,10 @@ class LP_Course_DB extends LP_Database {
 				$filter->where[] = $this->wpdb->prepare( 'AND pmct.meta_key = %s', '_lp_offline_course' );
 				$filter->where[] = $this->wpdb->prepare( 'AND pmct.meta_value = %s', 'yes' );
 			} else {
-				$test_sql = $this->wpdb->prepare(
+				$filter->where[] = $this->wpdb->prepare(
 					"AND p.ID NOT IN ( SELECT id FROM $this->tb_posts as p1 INNER JOIN $this->tb_postmeta as pmct on p1.ID = pmct.post_id WHERE pmct.meta_key = %s AND pmct.meta_value = %s )",
 					'_lp_offline_course', 'yes'
 				);
-				$filter->where[]  = $test_sql;
-				error_log( $test_sql );
 			}
 		}
 
