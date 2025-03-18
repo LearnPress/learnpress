@@ -37,6 +37,7 @@ use LearnPress\TemplateHooks\Instructor\ListInstructorsTemplate;
 use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileGeneralInfoTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileInstructorStatisticsTemplate;
+use LearnPress\TemplateHooks\Profile\ProfileQuizzesTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileOrdersTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileOrderTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileStudentStatisticsTemplate;
@@ -322,6 +323,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			ProfileOrderTemplate::instance();
 			ProfileGeneralInfoTemplate::instance();
 			FilterCourseTemplate::instance();
+			ProfileQuizzesTemplate::instance();
 
 			CourseMaterialTemplate::instance();
 

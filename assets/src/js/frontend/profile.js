@@ -5,7 +5,7 @@ import Avatar from './profile/avatar';
 import CourseList from './profile/course-list';
 import profileCoverImage from './profile/cover-image';
 import profileAvatarImage from './profile/new-avatar';
-
+import profileQuizTab from './profile/quiz-tab';
 profileCoverImage();
 const mbCurrentTab = () => {
 	const currentTabElement = document.querySelector( '.mb-current-tab' );
@@ -30,4 +30,7 @@ document.addEventListener( 'DOMContentLoaded', function( event ) {
 if ( document.getElementById( 'learnpress-avatar-upload' ) ) {
 	profileAvatarImage();
 	// wp.element.render( <Avatar />, document.getElementById( 'learnpress-avatar-upload' ) );
+}
+if( document.querySelector( '#profile-subtab-quiz-content' ) ) {
+	profileQuizTab();
 }

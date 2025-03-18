@@ -25,4 +25,8 @@ class LP_Course_Filter extends LP_Post_Type_Filter {
 	 * @var string
 	 */
 	public $taxonomy = 'course_category';
+	/**
+	 * @var string
+	 */
+	public $type = 'all';
 }

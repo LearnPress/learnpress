@@ -150,6 +150,10 @@ class Courses {
 			}
 			$filter->levels = $levels;
 		}
+		$course_type = LP_Helper::sanitize_params_submitted( urldecode( $param['c_type'] ?? '' ) );
+		if ( ! empty( $course_type ) ) {
+			$filter->type = $course_type;
+		}
 
 		// Find by category
 		$term_ids_str = LP_Helper::sanitize_params_submitted( urldecode( $param['term_id'] ?? '' ) );
