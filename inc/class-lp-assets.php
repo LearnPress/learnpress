@@ -112,10 +112,12 @@ class LP_Assets extends LP_Abstract_Assets {
 				'i18n_place_order'   => esc_html__( 'Place order', 'learnpress' ),
 			),
 			'lp-profile'  => array(
-				'text_upload'  => __( 'Upload', 'learnpress' ),
-				'text_replace' => __( 'Replace', 'learnpress' ),
-				'text_remove'  => __( 'Remove', 'learnpress' ),
-				'text_save'    => __( 'Save', 'learnpress' ),
+				'text_upload'       => __( 'Upload', 'learnpress' ),
+				'text_replace'      => __( 'Replace', 'learnpress' ),
+				'text_remove'       => __( 'Remove', 'learnpress' ),
+				'text_save'         => __( 'Save', 'learnpress' ),
+				'avatar_dimensions' => learn_press_get_avatar_thumb_size(),
+				'default_avatar'    => get_avatar_url( get_current_user_id() ),
 			),
 			'lp-quiz'     => learn_press_single_quiz_args(),
 		];
