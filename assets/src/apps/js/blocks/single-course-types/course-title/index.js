@@ -40,7 +40,6 @@ registerBlockType( 'learnpress/course-title', {
 				</BlockControls>
 
 				{ ! course && 'Course Title' }
-				{ course && 'No Course' }
 				{ course && (
 					<div style={ { textAlign: align } }>{ course.title.rendered }</div>
 				)
