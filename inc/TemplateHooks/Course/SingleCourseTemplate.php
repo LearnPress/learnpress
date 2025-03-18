@@ -1428,7 +1428,8 @@ class SingleCourseTemplate {
 					'wrapper_end'               => '</div>',
 				],
 				$courseModel,
-				$courseModel
+				$userModel,
+				$itemModelCurrent
 			);
 
 			$html = Template::combine_components( $section );
