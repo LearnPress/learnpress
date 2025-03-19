@@ -720,6 +720,7 @@ class FilterCourseTemplate {
 
 				$content .= Template::combine_components( $wrapper );
 			}
+			$content = $this->html_item( esc_html__( 'Type', 'learnpress' ), $content );
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
