@@ -2,8 +2,7 @@
 
 namespace LearnPress\Gutenberg;
 
-use LearnPress\Gutenberg\Blocks\BlockAbstract;
-use LearnPress\Gutenberg\Blocks\SingleCourse\BlockSingleCourseLegacy;
+use LearnPress\Gutenberg\Templates\BlockTemplateAbstract;
 use LearnPress\Helpers\Config;
 use LearnPress\Helpers\Singleton;
 use WP_Block_Template;
@@ -13,7 +12,7 @@ use WP_Post;
  * Class GutenbergHandleMain
  *
  * Handle register, render block template
- * @since 4.2.8 Convert from old class Block_Template_Handle
+ * @since 4.2.8.2 Convert from old class Block_Template_Handle
  * @version 1.0.0
  */
 class GutenbergHandleMain {
@@ -50,10 +49,8 @@ class GutenbergHandleMain {
 	 */
 	public function register_blocks() {
 		$block_templates = Config::instance()->get( 'block-templates' );
+		$block_templates = [];
 
-		/**
-		 * @var BlockAbstract|BlockSingleCourseLegacy $block_template
-		 */
 		foreach ( $block_templates as $block_template ) {
 			// Register script to load on the Backend Edit.
 			wp_register_script(
@@ -65,7 +62,7 @@ class GutenbergHandleMain {
 			);
 
 			// Render content block template child of parent block
-			if ( $block_template->inner_block ) {
+			if ( isset( $block_template->inner_block ) ) {
 				/**
 				 * @see Block_Title_Course::render_content_inner_block_template
 				 */
@@ -91,8 +88,8 @@ class GutenbergHandleMain {
 
 	/**
 	 * Set block template need to show on frontend/backend
-	 * 1. Get all block of LP declare.
-	 * 2. Check blocks match with type page. Ex: single course, archive course....
+	 * 1. Get all templates of LP declare.
+	 * 2. Frontend: check blocks match with type page. Ex: single course, archive course....
 	 * 3. If correct, set Block to $query_result.
 	 *
 	 * @param array $query_result Array of template objects.
@@ -106,8 +103,10 @@ class GutenbergHandleMain {
 			return $query_result;
 		}
 
+		/**
+		 * @var BlockTemplateAbstract[] $lp_block_templates
+		 */
 		$lp_block_templates = Config::instance()->get( 'block-templates' );
-
 		foreach ( $lp_block_templates as $block_template ) {
 			// Get block template if custom - save on table posts - with post_name = slug of block.
 			$block_custom = $this->is_custom_block_template( $template_type, $block_template->slug );
@@ -121,19 +120,15 @@ class GutenbergHandleMain {
 				}
 			}
 
-			if ( empty( $query ) ) { // For Admin and rest api call to this function, so $query is empty
+			// Frontend: check block template match with slug in query will display.
+			$slugs = $query['slug__in'] ?? array();
+			if ( in_array( $block_template->slug, $slugs ) ) {
 				$query_result[] = $block_template;
-			} else {
-				// Check block template match with slug in query will show on Frontend
-				$slugs = $query['slug__in'] ?? array();
-				if ( in_array( $block_template->slug, $slugs ) ) {
-					$query_result[] = $block_template;
-				}
 			}
 
-			// Show on list Templates in Admin
+			// Admin: Show on list Templates.
 			// Link preview https://drive.google.com/file/d/1Gi3LjCQMD731qKBLXTTR2hLi3qjemg6Q/view?usp=sharing
-			if ( isset( $query['slug__not_in'] ) && in_array( 'home', $query['slug__not_in'] ) ) {
+			if ( is_admin() ) {
 				$query_result[] = $block_template;
 			}
 		}
@@ -199,13 +194,24 @@ class GutenbergHandleMain {
 	 * @return array
 	 */
 	public function add_block_category( array $block_categories, $editor_context ) {
-		$lp_category_block = array(
-			'slug'  => 'learnpress-category',
-			'title' => __( 'LearnPress Category', 'learnpress' ),
-			'icon'  => null,
-		);
+		$lp_block_categories = [
+			[
+				'slug'  => 'learnpress-category',
+				'title' => __( 'LearnPress Global', 'learnpress' ),
+				'icon'  => null,
+			],
+			[
+				'slug'  => 'learnpress-course-elements',
+				'title' => __( 'LP Course Elements', 'learnpress' ),
+				'icon'  => null,
+			],
+		];
 
-		array_unshift( $block_categories, $lp_category_block );
+		foreach ( $lp_block_categories as $block_category ) {
+			if ( $block_category['slug'] === 'learnpress-category' ) {
+				array_unshift( $block_categories, $block_category );
+			}
+		}
 
 		return $block_categories;
 	}

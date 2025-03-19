@@ -1,11 +1,15 @@
 <?php
-use LearnPress\Gutenberg\Blocks\Courses\BlockArchiveCourseLegacy;
-use LearnPress\Gutenberg\Blocks\SingleCourse\BlockSingleCourseLegacy;
+/**
+ * Declare block type template
+ *
+ * @since 4.2.8.2
+ * @version 1.0.0
+ */
+use LearnPress\Gutenberg\Templates\SingleCourseBlockTemplate;
 
 return apply_filters(
 	'learn-press/config/block-templates',
 	array(
-		new BlockArchiveCourseLegacy(),
-		new BlockSingleCourseLegacy(),
+		new SingleCourseBlockTemplate(),
 	)
 );

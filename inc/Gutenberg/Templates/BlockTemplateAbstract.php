@@ -1,9 +1,9 @@
 <?php
 
-namespace LearnPress\Gutenberg\Blocks;
+namespace LearnPress\Gutenberg\Templates;
 
 use LearnPress\Helpers\Template;
-use Throwable;
+use WP_Block_Template;
 
 /**
  * Abstract_Block_Template class.
@@ -11,33 +11,24 @@ use Throwable;
  * @since 4.2.8 Convert from old class Abstract_Block_Template
  * @version 1.0.0
  */
-abstract class BlockAbstract extends \WP_Block_Template {
+abstract class BlockTemplateAbstract extends WP_Block_Template {
 	public $theme = 'learnpress/learnpress';
 	public $type  = 'wp_template';
 	/**
 	 * @var string name of the block
 	 */
-	public $name                          = '';
 	public $origin                        = 'plugin';
 	public $source                        = 'plugin'; // plugin|custom|theme, if custom save on db will be use 'custom'.
-	public $content                       = ''; // Set content will be show on edit block and the frontend.
+	public $content                       = ''; // Set content will be shown on edit block and the frontend.
 	public $has_theme_file                = true;
 	public $is_custom                     = false;
 	public $path_html_block_template_file = '';
-	public $path_template_render_default  = '';
-	/**
-	 * @var string path of the file run js.
-	 */
-	public $source_js = '';
-	/**
-	 * @var bool|string path of the file block.json metadata.
-	 */
-	public $inner_block = false;
 
 	public function __construct() {
 		if ( ! wp_is_block_theme() ) {
 			return;
 		}
+
 		$this->id      = $this->theme . '//' . $this->slug;
 		$template_file = '';
 
@@ -56,28 +47,5 @@ abstract class BlockAbstract extends \WP_Block_Template {
 				$this->content = _inject_theme_attribute_in_block_template_content( $content );
 			}
 		}
-	}
-
-	/**
-	 * Render content of block tag
-	 *
-	 * @param array $attributes | Attributes of block tag.
-	 *
-	 * @return false|string
-	 */
-	public function render_content_block_template( array $attributes ) {
-		$content = '';
-
-		try {
-			ob_start();
-			$template = $this->path_template_render_default;
-			Template::instance()->get_frontend_template( $template, compact( 'attributes' ) );
-
-			$content = ob_get_clean();
-		} catch ( Throwable $e ) {
-			ob_end_clean();
-		}
-
-		return $content;
 	}
 }
