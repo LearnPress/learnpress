@@ -53,8 +53,14 @@ class GutenbergHandleMain {
 		 * @var AbstractBlockType[] $blocks
 		 */
 		$blocks = Config::instance()->get( 'block-elements', 'gutenberg' );
-
 		foreach ( $blocks as $block_template ) {
+			// Set block maybe display when Edit on Template.
+			$postIdEdit = $_REQUEST['postId'] ?? '';
+			if ( ! empty( $postIdEdit ) && ! empty( $block_template->display_on_templates )
+				&& ! in_array( $postIdEdit, $block_template->display_on_templates ) ) {
+				continue;
+			}
+
 			// Register script to load on the Backend Edit.
 			wp_register_script(
 				$block_template->name, // Block name

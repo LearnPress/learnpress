@@ -10,7 +10,14 @@ use WP_Block_Type;
  */
 abstract class AbstractBlockType extends WP_Block_Type {
 	public $namespace = 'learnpress';
+	/**
+	 * @var string path of the file run js - Field of LP.
+	 */
 	public $source_js = '';
+	/**
+	 * @var string Screen Template want to display - Field of LP
+	 */
+	public $display_on_templates = [];
 
 	public function __construct( $args = [] ) {
 		$this->name = $this->namespace . '/' . $this->name;

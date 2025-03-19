@@ -1,4 +1,5 @@
 <?php
+
 namespace LearnPress\Gutenberg\Blocks\Legacy;
 
 use LearnPress\Gutenberg\Blocks\AbstractBlockType;
@@ -12,9 +13,9 @@ use LP_Settings;
  * Handle register, render block template
  */
 class SingleCourseBlockLegacy extends AbstractBlockType {
-	public $name = 'single-course-legacy';
-
-	public $source_js = LP_PLUGIN_URL . 'assets/js/dist/blocks/single-course-legacy.js';
+	public $name                 = 'single-course-legacy';
+	public $source_js            = LP_PLUGIN_URL . 'assets/js/dist/blocks/single-course-legacy.js';
+	public $display_on_templates = [ 'learnpress/learnpress//single-lp_course' ];
 
 	/**
 	 * Render content of block tag
