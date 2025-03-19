@@ -685,18 +685,18 @@ class FilterCourseTemplate {
 			$this->check_param_url_has_lang( $data );
 			$params_url    = $data['params_url'] ?? [];
 			$data_selected = $params_url['c_type'] ?? '';
+			$data_selected = explode( ',', $data_selected );
 			$filter_types  = apply_filters(
 				'learn-press/filter-courses/course-filter-type',
 				array(
-					'all'     => __( 'All', 'learnpress' ),
 					'online'  => __( 'Online', 'learnpress' ),
 					'offline' => __( 'Offline', 'learnpress' ),
 				)
 			);
 			foreach ( $filter_types as $key => $type ) {
-				$checked  = $data_selected === $key ? 'checked' : '';
+				$checked  = in_array( $key, $data_selected ) ? 'checked' : '';
 				$input    = sprintf(
-					'<input name="c_type" type="radio" value="%1$s" %2$s>',
+					'<input name="c_type" type="checkbox" value="%1$s" %2$s>',
 					esc_attr( $key ),
 					esc_attr( $checked )
 				);
