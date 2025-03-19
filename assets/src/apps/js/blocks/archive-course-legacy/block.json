@@ -1,14 +1,17 @@
 {
-  "$schema": "https://schemas.wp.org/trunk/block.json",
-  "apiVersion": 3,
-  "name": "learnpress/archive-course-legacy",
-  "title": "Archive Course (Legacy)",
-  "category": "learnpress-category",
-  "description": "Renders template Archive Course PHP templates.",
-  "textdomain": "learnpress",
-  "keywords": [ "archive course", "learnpress" ],
-  "usesContext": [],
-  "supports": {
-
-  }
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "learnpress/archive-course-legacy",
+	"title": "Archive Course (Legacy)",
+	"category": "learnpress-legacy",
+	"description": "Renders template Archive Course PHP templates.",
+	"textdomain": "learnpress",
+	"keywords": [
+		"archive course legacy",
+		"learnpress"
+	],
+	"usesContext": [],
+	"supports": {
+		"align": true
+	}
 }

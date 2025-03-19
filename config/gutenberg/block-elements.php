@@ -6,10 +6,12 @@
  * @version 1.0.0
  */
 use LearnPress\Gutenberg\Blocks\Legacy\SingleCourseBlockLegacy;
+use LearnPress\Gutenberg\Blocks\Legacy\ArchiveCourseBlockLegacy;
 
 return apply_filters(
 	'learn-press/config/block-elements',
 	array(
 		new SingleCourseBlockLegacy(),
+		new ArchiveCourseBlockLegacy(),
 	)
 );

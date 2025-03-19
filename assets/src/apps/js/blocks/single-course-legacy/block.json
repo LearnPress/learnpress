@@ -1,14 +1,17 @@
 {
-  "$schema": "https://schemas.wp.org/trunk/block.json",
-  "apiVersion": 3,
-  "name": "learnpress/single-course-legacy",
-  "title": "Single Course (Legacy)",
-  "category": "learnpress-legacy",
-  "description": "Renders template Single Course Legacy PHP templates.",
-  "textdomain": "learnpress",
-  "keywords": [ "single course legacy", "learnpress" ],
-  "usesContext": [],
-  "supports": {
-	  "align": true
-  }
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "learnpress/single-course-legacy",
+	"title": "Single Course (Legacy)",
+	"category": "learnpress-legacy",
+	"description": "Renders template Single Course Legacy PHP templates.",
+	"textdomain": "learnpress",
+	"keywords": [
+		"single course legacy",
+		"learnpress"
+	],
+	"usesContext": [],
+	"supports": {
+		"align": true
+	}
 }
