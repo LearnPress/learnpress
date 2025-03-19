@@ -48,10 +48,9 @@ class GutenbergHandleMain {
 	 * @return void
 	 */
 	public function register_blocks() {
-		$block_templates = Config::instance()->get( 'block-templates' );
-		$block_templates = [];
+		$blocks = Config::instance()->get( 'block-elements', 'gutenberg' );
 
-		foreach ( $block_templates as $block_template ) {
+		foreach ( $blocks as $block_template ) {
 			// Register script to load on the Backend Edit.
 			wp_register_script(
 				$block_template->name, // Block name
@@ -106,7 +105,7 @@ class GutenbergHandleMain {
 		/**
 		 * @var BlockTemplateAbstract[] $lp_block_templates
 		 */
-		$lp_block_templates = Config::instance()->get( 'block-templates' );
+		$lp_block_templates = Config::instance()->get( 'block-templates', 'gutenberg' );
 		foreach ( $lp_block_templates as $block_template ) {
 			// Get block template if custom - save on table posts - with post_name = slug of block.
 			$block_custom = $this->is_custom_block_template( $template_type, $block_template->slug );
