@@ -2,7 +2,8 @@
 
 namespace LearnPress\Gutenberg;
 
-use LearnPress\Gutenberg\Templates\BlockTemplateAbstract;
+use LearnPress\Gutenberg\Blocks\AbstractBlockType;
+use LearnPress\Gutenberg\Templates\AbstractBlockTemplate;
 use LearnPress\Helpers\Config;
 use LearnPress\Helpers\Singleton;
 use WP_Block_Template;
@@ -48,6 +49,9 @@ class GutenbergHandleMain {
 	 * @return void
 	 */
 	public function register_blocks() {
+		/**
+		 * @var AbstractBlockType[] $blocks
+		 */
 		$blocks = Config::instance()->get( 'block-elements', 'gutenberg' );
 
 		foreach ( $blocks as $block_template ) {
@@ -103,7 +107,7 @@ class GutenbergHandleMain {
 		}
 
 		/**
-		 * @var BlockTemplateAbstract[] $lp_block_templates
+		 * @var AbstractBlockTemplate[] $lp_block_templates
 		 */
 		$lp_block_templates = Config::instance()->get( 'block-templates', 'gutenberg' );
 		foreach ( $lp_block_templates as $block_template ) {
@@ -145,8 +149,10 @@ class GutenbergHandleMain {
 	 * @return WP_Block_Template|null
 	 */
 	public function edit_block_file_template( $template = null, string $id = '', string $template_type = '' ) {
-		$lp_block_templates = Config::instance()->get( 'block-templates' );
-
+		/**
+		 * @var AbstractBlockTemplate[] $template
+		 */
+		$lp_block_templates = Config::instance()->get( 'block-templates', 'gutenberg' );
 		foreach ( $lp_block_templates as $block_template ) {
 			if ( $id === $block_template->id ) {
 				$template = $block_template;
@@ -204,12 +210,15 @@ class GutenbergHandleMain {
 				'title' => __( 'LP Course Elements', 'learnpress' ),
 				'icon'  => null,
 			],
+			[
+				'slug'  => 'learnpress-legacy',
+				'title' => __( 'LearnPress Legacy', 'learnpress' ),
+				'icon'  => null,
+			],
 		];
 
 		foreach ( $lp_block_categories as $block_category ) {
-			if ( $block_category['slug'] === 'learnpress-category' ) {
-				array_unshift( $block_categories, $block_category );
-			}
+			array_unshift( $block_categories, $block_category );
 		}
 
 		return $block_categories;

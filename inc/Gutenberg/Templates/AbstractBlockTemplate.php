@@ -11,7 +11,7 @@ use WP_Block_Template;
  * @since 4.2.8 Convert from old class Abstract_Block_Template
  * @version 1.0.0
  */
-abstract class BlockTemplateAbstract extends WP_Block_Template {
+abstract class AbstractBlockTemplate extends WP_Block_Template {
 	public $theme = 'learnpress/learnpress';
 	public $type  = 'wp_template';
 	/**

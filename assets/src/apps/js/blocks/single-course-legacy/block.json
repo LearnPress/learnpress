@@ -3,12 +3,12 @@
   "apiVersion": 3,
   "name": "learnpress/single-course-legacy",
   "title": "Single Course (Legacy)",
-  "category": "learnpress-category",
+  "category": "learnpress-legacy",
   "description": "Renders template Single Course Legacy PHP templates.",
   "textdomain": "learnpress",
-  "keywords": [ "single course", "learnpress" ],
+  "keywords": [ "single course legacy", "learnpress" ],
   "usesContext": [],
   "supports": {
-
+	  "align": true
   }
 }

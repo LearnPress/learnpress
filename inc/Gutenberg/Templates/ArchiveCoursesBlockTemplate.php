@@ -6,7 +6,7 @@ namespace LearnPress\Gutenberg\Templates;
  *
  * @since 4.2.8.2
  */
-class ArchiveCoursesBlockTemplate extends BlockTemplateAbstract {
+class ArchiveCoursesBlockTemplate extends AbstractBlockTemplate {
 	public $slug                          = 'archive-lp_course';
 	public $title                         = 'Archive Courses Template';
 	public $description                   = 'Archive Course Block Template';
