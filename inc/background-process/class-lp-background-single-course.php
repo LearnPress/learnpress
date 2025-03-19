@@ -66,7 +66,7 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 		 *
 		 * @throws Exception
 		 * @since 4.1.3
-		 * @version 1.0.2
+		 * @version 1.0.3
 		 */
 		protected function save_post() {
 			if ( ! current_user_can( 'edit_lp_courses' ) ) {
@@ -85,7 +85,16 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 			$courseModel->get_author_model();
 			$courseModel->get_first_item_id();
 			$courseModel->get_total_items();
-			$courseModel->get_section_items();
+			$sections_items = $courseModel->get_section_items();
+			// Update for case data old, section_order and item_order begin = 0
+			$section_curd = new LP_Section_CURD( $courseModel->get_id() );
+			$section_ids  = LP_Database::get_values_by_key( $sections_items, 'section_id' );
+			$section_curd->update_sections_order( $section_ids );
+
+			foreach ( $sections_items as $section_items ) {
+				$section_curd->update_section_items( $section_items->section_id, $section_items->items );
+			}
+			// End
 			$courseModel->get_final_quiz();
 			$courseModel->get_categories();
 			$courseModel->get_tags();

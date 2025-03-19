@@ -308,7 +308,7 @@ class LP_Cart {
 	/**
 	 * Return subtotal of cart content
 	 *
-	 * @param LP_Course|LP_Certificate $item
+	 * @param LP_Course|LP_Certificate|CourseModel $item
 	 * @param int $quantity
 	 *
 	 * @return mixed

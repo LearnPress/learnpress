@@ -77,9 +77,11 @@ class UserCourseModel extends UserItemModel {
 	 *
 	 * @return false|UserItemModel|static
 	 * @since 4.2.7
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public static function find( int $user_id, int $course_id, bool $check_cache = false ) {
+		static $staticData = [];
+
 		$filter            = new LP_User_Items_Filter();
 		$filter->user_id   = $user_id;
 		$filter->item_id   = $course_id;
@@ -93,6 +95,10 @@ class UserCourseModel extends UserItemModel {
 			if ( $userCourseModel instanceof UserCourseModel ) {
 				return $userCourseModel;
 			}
+
+			if ( isset( $staticData[ $key_cache ] ) ) {
+				return $staticData[ $key_cache ];
+			}
 		}
 
 		$userCourseModel = static::get_user_item_model_from_db( $filter );
@@ -101,6 +107,8 @@ class UserCourseModel extends UserItemModel {
 		if ( $userCourseModel instanceof UserCourseModel ) {
 			$lpUserCourseCache->set_cache( $key_cache, $userCourseModel );
 		}
+
+		$staticData[ $key_cache ] = $userCourseModel;
 
 		return $userCourseModel;
 	}
@@ -573,16 +581,17 @@ class UserCourseModel extends UserItemModel {
 	 * @return object
 	 * @modify 4.1.4.1
 	 * @since 4.0.0
-	 * @version 4.0.2
+	 * @version 4.0.3
 	 */
 	public function count_items_completed() {
-		static $count_result;
 		$lp_user_items_db      = LP_User_Items_DB::getInstance();
 		$count_items_completed = new stdClass();
 
 		try {
-			if ( ! is_null( $count_result ) ) {
-				return $count_result;
+			$key_cache_first       = "userCourseModel/count_items_completed/{$this->user_id}/{$this->item_id}";
+			$count_items_completed = LP_Cache::cache_load_first( 'get', $key_cache_first );
+			if ( false !== $count_items_completed ) {
+				return $count_items_completed;
 			}
 
 			$filter_count             = new LP_User_Items_Filter();
@@ -592,7 +601,9 @@ class UserCourseModel extends UserItemModel {
 			$filter_count->status     = LP_ITEM_COMPLETED;
 			$filter_count->graduation = LP_COURSE_GRADUATION_PASSED;
 			$count_items_completed    = $lp_user_items_db->count_items_of_course_with_status( $filter_count );
-			$count_result             = $count_items_completed;
+
+			// Set cache first
+			LP_Cache::cache_load_first( 'set', $key_cache_first, $count_items_completed );
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}

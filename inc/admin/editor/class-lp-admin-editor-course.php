@@ -26,7 +26,6 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 	 * LP_Admin_Editor_Course constructor.
 	 */
 	public function __construct() {
-
 	}
 
 	/**
@@ -144,10 +143,10 @@ class LP_Admin_Editor_Course extends LP_Admin_Editor {
 		}
 
 		$data = array(
-			'section_id'          => $section['id'],
-			'section_name'        => $section['title'],
-			'section_description' => $section['description'],
-			'section_order'       => $section['order'],
+			'section_id'          => $section['id'] ?? $section['section_id'] ?? 0,
+			'section_name'        => $section['title'] ?? $section['section_name'] ?? '',
+			'section_description' => $section['description'] ?? $section['section_description'] ?? '',
+			'section_order'       => $section['order'] ?? $section['section_order'] ?? 0,
 			'section_course_id'   => $this->course->get_id(),
 		);
 

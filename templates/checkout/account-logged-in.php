@@ -6,7 +6,7 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  4.0.0
+ * @version  4.0.1
  */
 
 defined( 'ABSPATH' ) || exit();
@@ -20,7 +20,13 @@ global $user_identity;
 
 <div id="checkout-account-logged-in" class="lp-checkout-block left">
 	<p>
-		<?php printf( __( 'Logged in as <a href="%1$s">%2$s</a>.', 'learnpress' ), get_edit_user_link(), $user_identity ); ?>
+		<?php
+		printf(
+			__( 'Logged in as <a href="%1$s">%2$s</a>.', 'learnpress' ),
+			LP_Page_Controller::get_link_page( 'profile' ),
+			$user_identity
+		);
+		?>
 
 		<a href="<?php echo esc_url_raw( wp_logout_url( get_permalink() ) ); ?>" title="<?php esc_attr_e( 'Log out of this account', 'learnpress' ); ?>">
 			<?php esc_html_e( 'Log out &raquo;', 'learnpress' ); ?>

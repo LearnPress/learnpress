@@ -3,16 +3,17 @@
  * Template hooks Single Course.
  *
  * @since 4.2.3
- * @version 1.0.4
+ * @version 1.0.5
  */
 
 namespace LearnPress\TemplateHooks\Course;
 
-use LearnPress\Helpers\Config;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\CoursePostModel;
+use LearnPress\Models\LessonPostModel;
+use LearnPress\Models\PostModel;
 use LearnPress\Models\QuizPostModel;
 use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\Models\UserItems\UserItemModel;
@@ -20,6 +21,7 @@ use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
 use LearnPress\TemplateHooks\TemplateAJAX;
 use LearnPress\TemplateHooks\UserTemplate;
+use LearnPressAssignment\Models\AssignmentPostModel;
 use LP_Checkout;
 use LP_Course;
 use LP_Course_Item;
@@ -31,6 +33,11 @@ use Throwable;
 
 class SingleCourseTemplate {
 	use Singleton;
+
+	/**
+	 * @var false|LessonPostModel|QuizPostModel|PostModel|mixed $currentItemModel
+	 */
+	public $currentItemModel = false;
 
 	public function init() {
 		add_filter( 'lp/rest/ajax/allow_callback', [ $this, 'allow_callback' ] );
@@ -245,7 +252,7 @@ class SingleCourseTemplate {
 	}
 
 	/**
-	 * Get display title course.
+	 * Get display image course.
 	 *
 	 * @param LP_Course|CourseModel $course
 	 *
@@ -1324,15 +1331,39 @@ class SingleCourseTemplate {
 	 *
 	 * @param CourseModel $courseModel
 	 * @param UserModel|false $userModel
+	 * @param LessonPostModel|QuizPostModel|PostModel|mixed $itemModelCurrent
 	 *
 	 * @return string
 	 * @since 4.2.7.6
-	 * @version 1.0.1
+	 * @version 1.0.3
 	 */
-	public function html_curriculum( CourseModel $courseModel, $userModel ): string {
+	public function html_curriculum( CourseModel $courseModel, $userModel, $itemModelCurrent = false ): string {
 		$html = '';
 
 		try {
+			// Get current item viewing
+			/**
+			 * @var $lp_course_item LP_Course_Item
+			 * @var $post \WP_Post
+			 */
+			global $lp_course_item, $post;
+			/**
+			 * @var $itemModelCurrent LessonPostModel|QuizPostModel|AssignmentPostModel|PostModel...
+			 */
+			$itemModelCurrent = $courseModel->get_item_model( $post->ID, $post->post_type );
+			if ( $lp_course_item ) {
+				$itemModelCurrent = $courseModel->get_item_model( $lp_course_item->get_id(), $lp_course_item->get_item_type() );
+			}
+
+			if ( $itemModelCurrent ) {
+				$item_types = CourseModel::item_types_support();
+				// Check item type is support
+				if ( in_array( $itemModelCurrent->post_type, $item_types ) ) {
+					$this->currentItemModel = $itemModelCurrent;
+				}
+			}
+			// End get current item viewing
+
 			$section_items = $courseModel->get_section_items();
 			$html          = Template::print_message(
 				esc_html__( 'There are no items in the curriculum yet.', 'learnpress' ),
@@ -1343,6 +1374,7 @@ class SingleCourseTemplate {
 				return $html;
 			}
 
+			wp_enqueue_script( 'lp-curriculum' );
 			$li_section_items = '';
 			foreach ( $section_items as $section_item ) {
 				$li_section_items .= $this->render_html_section_item( $courseModel, $userModel, $section_item );
@@ -1380,7 +1412,7 @@ class SingleCourseTemplate {
 					'curriculum_info_right'     => '<div class="course-curriculum-info__right">',
 					'expand_all'                => sprintf(
 						'<span class="course-toggle-all-sections">%s</span>',
-						esc_html__( 'Expanse all sections', 'learnpress' )
+						esc_html__( 'Expand all sections', 'learnpress' )
 					),
 					'collapse_all'              => sprintf(
 						'<span class="course-toggle-all-sections lp-collapse lp-hidden">%s</span>',
@@ -1396,7 +1428,8 @@ class SingleCourseTemplate {
 					'wrapper_end'               => '</div>',
 				],
 				$courseModel,
-				$courseModel
+				$userModel,
+				$itemModelCurrent
 			);
 
 			$html = Template::combine_components( $section );
@@ -1416,7 +1449,7 @@ class SingleCourseTemplate {
 	 *
 	 * @return string
 	 * @since 4.2.7.6
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function render_html_section_item( CourseModel $courseModel, $userModel, $section_item ): string {
 		if ( ! $section_item instanceof stdClass ) {
@@ -1438,14 +1471,18 @@ class SingleCourseTemplate {
 
 		$section_header = [
 			'start'       => '<div class="course-section-header">',
+			'toggle'      => '<div class="section-toggle">
+				<i class="lp-icon-angle-down"></i>
+				<i class="lp-icon-angle-up"></i>
+			</div>',
 			'info'        => '<div class="course-section-info">',
 			'title'       => sprintf( '<div class="course-section__title">%s</div>', wp_kses_post( $section_name ) ),
 			'description' => $html_section_description,
 			'info_end'    => '</div>',
-			'toggle'      => '<span class="section-toggle">
-				<i class="lp-icon-angle-down"></i>
-				<i class="lp-icon-angle-up"></i>
-			</span>',
+			'count_items' => sprintf(
+				'<div class="section-count-items">%d</div>',
+				count( $items )
+			),
 			'end'         => '</div>',
 		];
 
@@ -1461,13 +1498,29 @@ class SingleCourseTemplate {
 
 		$curriculum_display_setting = LP_Settings::get_option( 'curriculum_display', 'expand_first_section' );
 		$class_section_toggle       = '';
-		if ( $curriculum_display_setting === 'collapse_all' ) {
-			$class_section_toggle = 'lp-collapse';
-		} elseif ( $curriculum_display_setting === 'expand_first_section' ) {
-			if ( $section_order > 1 ) {
+
+		if ( $this->currentItemModel ) {
+			$current_section = $courseModel->get_section_of_item( $this->currentItemModel->get_id() );
+			if ( $current_section != $section_id ) {
 				$class_section_toggle = 'lp-collapse';
 			}
+		} else {
+			if ( $curriculum_display_setting === 'collapse_all' ) {
+				$class_section_toggle = 'lp-collapse';
+			} elseif ( $curriculum_display_setting === 'expand_first_section' ) {
+				if ( $section_order > 1 ) {
+					$class_section_toggle = 'lp-collapse';
+				}
+			}
 		}
+
+		$class_section_toggle = apply_filters(
+			'learn-press/course/html-section-item/class-section-toggle',
+			$class_section_toggle,
+			$courseModel,
+			$userModel,
+			$section_item
+		);
 
 		$section_item = apply_filters(
 			'learn-press/course/html-section-item',
@@ -1497,7 +1550,7 @@ class SingleCourseTemplate {
 	 *
 	 * @return string
 	 * @since 4.2.7.6
-	 * @version 1.0.0
+	 * @version 1.0.2
 	 */
 	public function render_html_course_item( CourseModel $courseModel, $userModel, $item, $section_item ): string {
 		$html = '';
@@ -1506,11 +1559,18 @@ class SingleCourseTemplate {
 			return $html;
 		}
 
-		$item_id     = $item->item_id ?? 0;
-		$item_order  = $item->item_order ?? 0;
-		$item_type   = $item->item_type ?? '';
-		$title       = $item->title ?? '';
-		$has_preview = $item->preview ?? '';
+		$item_id       = (int) ( $item->item_id ?? $item->id ?? 0 );
+		$item_order    = $item->item_order ?? $item->order ?? 0;
+		$item_type     = $item->item_type ?? $item->type ?? '';
+		$title         = $item->title ?? '';
+		$has_preview   = $item->preview ?? '';
+		$class_current = '';
+		if ( $this->currentItemModel ) {
+			$current_item_id = $this->currentItemModel->get_id();
+			if ( $current_item_id == $item_id ) {
+				$class_current = 'current';
+			}
+		}
 
 		//LP_Course_Item::get_item( $item_id, $course->get_id() );
 		$itemModel = $courseModel->get_item_model( $item_id, $item_type );
@@ -1574,7 +1634,7 @@ class SingleCourseTemplate {
 					$user_item_status_ico_flag = $userCourseItem->get_status();
 					$user_item_graduation      = $userCourseItem->get_graduation();
 					if ( ! empty( $user_item_graduation ) ) {
-						$user_item_status_ico_flag = $user_item_graduation;
+						$user_item_status_ico_flag = $user_item_graduation . ' completed';
 					}
 
 					if ( empty( $user_item_status_ico_flag ) ) {
@@ -1630,7 +1690,8 @@ class SingleCourseTemplate {
 			'learn-press/course/html-course-item',
 			[
 				'start'            => sprintf(
-					'<li class="course-item" data-item-id="%s" data-item-order="%s" data-item-type="%s">',
+					'<li class="course-item %s" data-item-id="%s" data-item-order="%s" data-item-type="%s">',
+					$class_current,
 					$item_id,
 					$item_order,
 					$item_type

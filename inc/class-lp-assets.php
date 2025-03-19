@@ -276,7 +276,7 @@ class LP_Assets extends LP_Abstract_Assets {
 					0,
 					0,
 					'',
-					[ 'strategy' => 'defer' ]
+					[ 'strategy' => 'async' ]
 				),
 				'lp-quiz'              => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/quiz' . self::$_min_assets . '.js' ),

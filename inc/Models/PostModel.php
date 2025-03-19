@@ -271,13 +271,34 @@ class PostModel {
 	 *
 	 * @return string
 	 * @since 4.2.6.9
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public function get_image_url( $size = 'post-thumbnail' ): string {
 		$image_url = '';
 
 		if ( has_post_thumbnail( $this ) ) {
-			$image_url = get_the_post_thumbnail_url( $this, $size );
+			if ( is_string( $size ) ) {
+				$image_url = get_the_post_thumbnail_url( $this, $size );
+			} elseif ( is_array( $size ) && count( $size ) === 2 ) {
+				// Custom crop size for image.
+				$attachment_id = get_post_thumbnail_id( $this );
+				$file_path     = get_attached_file( $attachment_id );
+				$resized_file  = wp_get_image_editor( $file_path );
+
+				if ( ! is_wp_error( $resized_file ) ) {
+					$resized_file->resize( $size[0], $size[1], true );
+					$resized_image = $resized_file->save();
+
+					if ( ! is_wp_error( $resized_image ) ) {
+						// Build the URL for the resized image
+						$upload_dir = wp_upload_dir();
+						$base_dir   = $upload_dir['basedir'];
+						$imag_dir   = $resized_image['path'];
+						$imag_dir   = str_replace( $base_dir, '', $imag_dir );
+						$image_url  = $upload_dir['baseurl'] . $imag_dir;
+					}
+				}
+			}
 		}
 
 		if ( empty( $image_url ) ) {

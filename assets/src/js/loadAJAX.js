@@ -85,7 +85,12 @@ const lpAJAX = ( () => {
 					if ( lpSettings.urlParams.hasOwnProperty( 'lang' ) ) {
 						url = lpAddQueryArgs( url, { lang: lpSettings.urlParams.lang } );
 					}
+
 					const elTarget = element.querySelector( '.lp-target' );
+					if ( ! elTarget ) {
+						return;
+					}
+
 					const dataObj = JSON.parse( elTarget.dataset.send );
 					const dataSend = { ...dataObj };
 					const elLoadingFirst = element.querySelector( '.loading-first' );

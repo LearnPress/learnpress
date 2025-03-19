@@ -265,8 +265,12 @@
 		gap: 5px;
 	}
 
-	.course-wishlist:before{
+	.course-wishlist:before {
 		font-family: 'lp-icon';
+	}
+
+	.lp-course-curriculum ul {
+		padding: 0
 	}
 }
 // layout Modern
@@ -307,7 +311,6 @@
 		.course-title {
 			font-weight: $heading-font-weight;
 			font-size: $font-size-h2;
-			padding-bottom: $spacing-base-6x;
 			margin: 0 0 $spacing-base-6x 0;
 
 			@media (max-width: 767px) {
@@ -418,7 +421,7 @@
 				margin-bottom: 40px;
 
 				@media (max-width: 767px) {
-					margin-bottom: 20px;
+					margin-bottom: 30px;
 				}
 
 				&:last-child {

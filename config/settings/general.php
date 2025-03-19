@@ -3,7 +3,7 @@ $currencies = learn_press_currencies();
 
 foreach ( $currencies as $code => $name ) {
 	$currency_symbol     = learn_press_get_currency_symbol( $code );
-	$currencies[ $code ] = sprintf( '%s (%s)', $name, $currency_symbol );
+	$currencies[ $code ] = sprintf( '%s (%s) - %s', $name, $currency_symbol, $code );
 }
 
 $data_struct_currency = [

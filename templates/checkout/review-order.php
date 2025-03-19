@@ -6,13 +6,13 @@
  *
  * @author   ThimPress
  * @package  Learnpress/Templates
- * @version  4.0.1
+ * @version  4.0.2
  */
 
+use LearnPress\Models\CourseModel;
+use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
+
 defined( 'ABSPATH' ) || exit();
-
-// $cart = learn_press_get_checkout_cart();
-
 /**
  * @var LP_Cart $cart
  */
@@ -39,22 +39,31 @@ if ( ! isset( $cart ) || ! $cart ) {
 				foreach ( $items as $cart_item_key => $cart_item ) {
 					$cart_item = apply_filters( 'learn-press/review-order/cart-item', $cart_item );
 					$item_id   = $cart_item['item_id'];
-					$_course   = apply_filters( 'learn-press/review-order/cart-item-product', learn_press_get_course( $item_id ), $cart_item );
+					/**
+					 * @var CourseModel $courseModel
+					 */
+					$courseModel = apply_filters( 'learn-press/review-order/cart-item-product', learn_press_get_course( $item_id ), $cart_item );
+					if ( $courseModel instanceof LP_Course ) {
+						$courseModel = CourseModel::find( $courseModel->get_id(), true );
+					}
 
-					if ( $_course && 0 < $cart_item['quantity'] ) {
+					if ( $courseModel instanceof CourseModel && 0 < $cart_item['quantity'] ) {
 						?>
-						<tr class="<?php echo esc_attr( apply_filters( 'learn-press/review-order/cart-item-class', 'cart-item', $cart_item, $cart_item_key ) ); ?>">
+						<tr class="cart-item">
 							<?php
 							do_action( 'learn_press_review_order_before_cart_item', $cart_item );
 							do_action( 'learn-press/review-order/before-cart-item', $cart_item, $cart_item_key );
 							?>
 
 							<td class="course-thumbnail">
-								<?php echo wp_kses_post( $_course->get_image() ); ?>
+								<?php
+								$singleCourseTemplate = SingleCourseTemplate::instance();
+								echo wp_kses_post( $singleCourseTemplate->html_image( $courseModel ) );
+								?>
 							</td>
 							<td class="course-name">
 								<a href="<?php echo esc_url_raw( apply_filters( 'learn-press/review-order/cart-item-link', get_the_permalink( $item_id ), $cart_item ) ); ?>">
-									<?php echo wp_kses_post( apply_filters( 'learn-press/review-order/cart-item-name', $_course->get_title(), $cart_item, $cart_item_key ) ); ?>
+									<?php echo wp_kses_post( apply_filters( 'learn-press/review-order/cart-item-name', $courseModel->get_title(), $cart_item, $cart_item_key ) ); ?>
 								</a>
 
 								<?php
@@ -64,7 +73,7 @@ if ( ! isset( $cart ) || ! $cart ) {
 								?>
 							</td>
 							<td class="course-total col-number">
-								<?php echo esc_html( apply_filters( 'learn-press/review-order/cart-item-subtotal', $cart->get_item_subtotal( $_course, $cart_item['quantity'] ), $cart_item, $cart_item_key ) ); ?>
+								<?php echo esc_html( apply_filters( 'learn-press/review-order/cart-item-subtotal', $cart->get_item_subtotal( $courseModel, $cart_item['quantity'] ), $cart_item, $cart_item_key ) ); ?>
 							</td>
 
 							<?php
@@ -73,6 +82,14 @@ if ( ! isset( $cart ) || ! $cart ) {
 							?>
 						</tr>
 
+						<?php
+					} else {
+						?>
+						<tr class="cart-item">
+							<td>
+								<?php do_action( 'learn-press/checkout/cart-item' ); ?>
+							</td>
+						</tr>
 						<?php
 					}
 				}
