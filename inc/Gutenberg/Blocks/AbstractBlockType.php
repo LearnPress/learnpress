@@ -48,4 +48,10 @@ abstract class AbstractBlockType extends WP_Block_Type {
 		wp_enqueue_style( 'lp-blocks-style', get_stylesheet_uri() );
 		$this->enqueued_assets = true;
 	}
+
+	protected function get_class_hash() {
+		$hash  = bin2hex( random_bytes( 16 ) );
+		$class = 'lp-elements-' . $hash;
+		return $class;
+	}
 }
