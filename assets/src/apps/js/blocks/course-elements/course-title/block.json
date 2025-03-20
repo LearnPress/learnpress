@@ -6,15 +6,48 @@
 	"category": "learnpress-course-elements",
 	"description": "Course title.",
 	"textdomain": "learnpress",
-	"keywords": [
-		"course title",
-		"learnpress"
-	],
+	"keywords": ["course title", "learnpress"],
 	"usesContext": [],
 	"supports": {
-		"align": [
-			"wide",
-			"full"
-		]
+		"multiple": false,
+		"align": ["wide", "full"],
+		"html": false,
+		"typography": {
+			"fontSize": true,
+			"lineHeight": false,
+			"fontWeight": true,
+			"textTransform": false,
+			"__experimentalFontFamily": false,
+			"__experimentalTextDecoration": false,
+			"__experimentalFontStyle": true,
+			"__experimentalFontWeight": true,
+			"__experimentalLetterSpacing": false,
+			"__experimentalTextTransform": true,
+			"__experimentalDefaultControls": {
+				"fontSize": true,
+				"textTransform": false
+			}
+		},
+		"color": {
+			"text": true,
+			"link": false,
+			"background": false,
+			"__experimentalDefaultControls": {
+				"text": true
+			}
+		},
+		"__experimentalBorder": {
+			"color": false,
+			"radius": false,
+			"width": false
+		},
+		"spacing": {
+			"padding": true,
+			"margin": true,
+			"__experimentalDefaultControls": {
+				"margin": false,
+				"padding": false
+			}
+		}
 	}
 }

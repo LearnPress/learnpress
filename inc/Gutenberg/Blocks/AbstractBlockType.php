@@ -18,6 +18,12 @@ abstract class AbstractBlockType extends WP_Block_Type {
 	 * @var string Screen Template want to display - Field of LP
 	 */
 	public $display_on_templates = [];
+	/**
+	 * Tracks if assets have been enqueued.
+	 *
+	 * @var boolean
+	 */
+	protected $enqueued_assets = false;
 
 	public function __construct( $args = [] ) {
 		$this->name = $this->namespace . '/' . $this->name;
@@ -34,4 +40,12 @@ abstract class AbstractBlockType extends WP_Block_Type {
 	 * @return string
 	 */
 	abstract public function render_content_block_template( array $attributes, $content, $block ): string;
+
+	protected function enqueue_assets() {
+		if ( $this->enqueued_assets ) {
+			return;
+		}
+		wp_enqueue_style( 'lp-blocks-style', get_stylesheet_uri() );
+		$this->enqueued_assets = true;
+	}
 }

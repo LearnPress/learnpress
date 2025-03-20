@@ -2,6 +2,7 @@
 
 namespace LearnPress\Gutenberg\Blocks\SingleCourseElements;
 
+use LearnPress\Gutenberg\Utils\StyleAttributes;
 use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
 use LP_Debug;
 use Throwable;
@@ -31,7 +32,8 @@ class CourseTitleBlockType extends AbstractCourseBlockType {
 			if ( ! $courseModel ) {
 				return $html;
 			}
-
+			$this->enqueue_assets();
+			$this->inline_styles( $attributes );
 			$singleCourseTemplate = SingleCourseTemplate::instance();
 			$html                 = $singleCourseTemplate->html_title( $courseModel );
 		} catch ( Throwable $e ) {
@@ -39,5 +41,15 @@ class CourseTitleBlockType extends AbstractCourseBlockType {
 		}
 
 		return $html;
+	}
+
+	public function get_inline_style( $attributes ) {
+		$border_classes_and_styles = StyleAttributes::get_classes_and_styles_by_attributes( $attributes, [ 'font_size', 'font_weight', 'text_color', 'text_transform', 'padding', 'margin' ] );
+		return '.course-title {' . $border_classes_and_styles['styles'] . '}';
+	}
+
+	public function inline_styles( $attributes ) {
+		$styles = $this->get_inline_style( $attributes );
+		wp_add_inline_style( 'lp-blocks-style', $styles );
 	}
 }
