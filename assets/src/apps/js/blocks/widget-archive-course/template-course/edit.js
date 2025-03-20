@@ -61,7 +61,7 @@ export const edit = ( props ) => {
 
 	const renderInnerBlocks = () => {
 		const blocks = [];
-		for ( let i = 0; i < 3; i++ ) {
+		for ( let i = 0; i < 1; i++ ) {
 			blocks.push(
 				<div className="course-item" key={ i }>
 					<InnerBlocks template={ template } templateLock={ false } />

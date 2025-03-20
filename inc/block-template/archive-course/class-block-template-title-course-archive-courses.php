@@ -20,7 +20,8 @@ class Block_Template_Title_Course_Archive_Courses extends Abstract_Block_Templat
 		$tag     = $attributes['tag'] ?? 'h3';
 		$is_link = ( isset( $attributes['isLink'] ) && $attributes['isLink'] === false ) ? 'false' : 'true';
 		$new_tab = ( isset( $attributes['target'] ) && $attributes['target'] === true ) ? 'true' : 'false';
-		$output  = '{{title-course tag="' . $tag . '" is_link="' . $is_link . '" new_tab="' . $new_tab . '"}}';
+		$class   = $attributes['className'] ?? '';
+		$output  = '{{title-course class="' . $class . '" tag="' . $tag . '" is_link="' . $is_link . '" new_tab="' . $new_tab . '"}}';
 		return $output;
 	}
 

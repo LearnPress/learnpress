@@ -15,30 +15,35 @@ class Block_Template_Title_Single_Course extends Abstract_Block_Template_Widget_
 
 	public function render_content_block_template( array $attributes ) {
 		$this->enqueue_assets( $attributes );
-		$this->inline_styles( $attributes );
+		$lp_class_hash = 'lp-elements-' . bin2hex( random_bytes( 16 ) );
+		$this->inline_styles( $attributes, $lp_class_hash );
 		$border_classes_and_styles = StyleAttributes::get_classes_and_styles_by_attributes( $attributes, [ 'font_size', 'font_weight', 'text_color', 'text_transform', 'margin', 'padding' ] );
 
 		$order = [ 'courseId', 'tag' ];
 		foreach ( $order as $key ) {
 			$sortedAttributes[ $key ] = isset( $attributes[ $key ] ) ? $attributes[ $key ] : '';
 		}
-
+		$class = $attributes['className'] . ' ' . $lp_class_hash ?? $lp_class_hash;
 		ob_start();
 		echo sprintf(
-			'<div class="' . $border_classes_and_styles['classes'] . '">%s</div>',
+			'<div class="%s %s" style="%s">%s</div>',
+			$border_classes_and_styles['classes'],
+			$class,
+			$border_classes_and_styles['styles'],
 			parent::render_content_block_template( $sortedAttributes )
 		);
 		$content = ob_get_clean();
 		return $content;
 	}
 
-	public function get_inline_style( $attributes ) {
+	public function get_inline_style( $attributes, $hash_class ) {
 		$border_classes_and_styles = StyleAttributes::get_classes_and_styles_by_attributes( $attributes, [ 'font_size', 'font_weight', 'text_color', 'text_transform', 'padding', 'margin' ] );
-		return '.lp-single-course__header .course-title {' . $border_classes_and_styles['styles'] . '}';
+		$class_style               = '.lp-single-course__header .' . $hash_class . ' .course-title';
+		return $class_style . ' {' . $border_classes_and_styles['styles'] . '}';
 	}
 
-	public function inline_styles( $attributes ) {
-		$styles = $this->get_inline_style( $attributes );
+	public function inline_styles( $attributes, $hash_class ) {
+		$styles = $this->get_inline_style( $attributes, $hash_class );
 		wp_add_inline_style( 'lp-blocks-style', $styles );
 	}
 }

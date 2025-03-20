@@ -440,18 +440,21 @@ class ListCoursesTemplate {
 				$is_link      = $attributes_map['title-course']['is_link'] === 'false' ? false : true;
 				$title_target = $attributes_map['title-course']['new_tab'] === 'true' ? 'target="_blank"' : '';
 				$tag          = $attributes_map['title-course']['tag'] ? $attributes_map['title-course']['tag'] : 'h3';
+				$class        = $attributes_map['title-course']['class'] ? esc_attr( $attributes_map['title-course']['class'] ) : '';
 				if ( $is_link ) {
 					$html_title = sprintf(
-						'<%1$s> <a class="course-permalink" href="%2$s" %3$s>%4$s</a> </%1$s>',
+						'<%1$s class="%2$s"> <a class="course-permalink" href="%3$s" %4$s>%5$s</a> </%1$s>',
 						$tag,
+						$class,
 						$course->get_permalink(),
 						$title_target,
 						$singleCourseTemplate->html_title( $course ),
 					);
 				} else {
 					$html_title = sprintf(
-						'<%1$s> <div class="course-permalink">%2$s</div> </%1$s>',
+						'<%1$s class="%2$s"> <div class="course-permalink">%3$s</div> </%1$s>',
 						$tag,
+						$class,
 						$singleCourseTemplate->html_title( $course )
 					);
 				}
