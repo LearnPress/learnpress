@@ -2,6 +2,8 @@
 	display: flex;
 
 	input {
+		color: inherit;
+		font-weight: inherit;
 		width: 100%;
 		max-width: 240px;
 		margin: 0 4px 0 0;
@@ -15,6 +17,7 @@
 	}
 
 	button {
+		color: inherit;
 		border: 1px solid var(--lp-border-color, #e2e0db);
 		border-radius: var(--lp-border-radius, 5px);
 		padding: 8px 16px;

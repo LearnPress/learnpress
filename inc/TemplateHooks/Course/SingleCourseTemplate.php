@@ -147,7 +147,12 @@ class SingleCourseTemplate {
 	 * @version 1.0.2
 	 */
 	public function html_categories( $course, $setting = [] ): string {
-		$html = '';
+		$html            = '';
+		$default_setting = [
+			'is_link' => '',
+			'new_tab' => '',
+		];
+		$setting         = array_merge( $default_setting, $setting );
 
 		try {
 			if ( $course instanceof LP_Course ) {
@@ -322,8 +327,12 @@ class SingleCourseTemplate {
 	 * @version 1.0.1
 	 */
 	public function html_instructor( $course, bool $with_avatar = false, $setting = [] ): string {
-		$content = '';
-
+		$content         = '';
+		$default_setting = [
+			'is_link' => '',
+			'new_tab' => '',
+		];
+		$setting         = array_merge( $default_setting, $setting );
 		try {
 			$instructor = $course->get_author_model();
 			if ( ! $instructor ) {
@@ -1118,10 +1127,10 @@ class SingleCourseTemplate {
 	 * @since 4.2.7.2
 	 * @version 1.0.0
 	 */
-	public function html_breadcrumb() {
+	public function html_breadcrumb( $args = [] ) {
 		ob_start();
 		$template = new LP_Template_General();
-		$template->breadcrumb();
+		$template->breadcrumb( $args );
 		$html_breadcrumb = ob_get_clean();
 		apply_filters( 'learn-press/course/breadcrumb', $html_breadcrumb, $html_breadcrumb );
 		return $html_breadcrumb;

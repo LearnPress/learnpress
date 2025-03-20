@@ -1,27 +1,38 @@
 <?php
+use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
 /**
  * Class Block_Template_Breadcrumb
  *
  * Handle register, render block template
  */
-class Block_Template_Breadcrumb extends Abstract_Block_Template_Widget_Single_Course {
+class Block_Template_Breadcrumb extends Abstract_Block_Template {
 	public $slug                          = 'breadcrumb';
 	public $name                          = 'learnpress/breadcrumb';
 	public $title                         = 'Breadcrumb (LearnPress)';
 	public $description                   = 'Breadcrumb Block Template';
 	public $path_html_block_template_file = 'html/single-course/breadcrumb.html';
-	public $single_course_func            = 'html_breadcrumb';
 	public $source_js                     = LP_PLUGIN_URL . 'assets/js/dist/blocks/breadcrumb.js';
 
 	public function render_content_block_template( array $attributes ) {
 		$this->enqueue_assets( $attributes );
 		$this->inline_styles( $attributes );
-		$content                   = '';
+		$content   = '';
+		$args      = [];
+		$show_home = $attributes['showHome'] ?? true;
+
+		if ( ! $show_home ) {
+			$args['home'] = '';
+		} else {
+			$label = ! empty( $attributes['homeLabel'] ) ? $attributes['homeLabel'] : '';
+			if ( $label ) {
+				$args['home'] = esc_html( $label );
+			}
+		}
 		$border_classes_and_styles = StyleAttributes::get_classes_and_styles_by_attributes( $attributes, [ 'font_size', 'font_weight', 'text_color', 'text_transform' ] );
 		ob_start();
 		echo sprintf(
 			'<div class="' . $border_classes_and_styles['classes'] . '">%s</div>',
-			parent::render_content_block_template( $attributes )
+			SingleCourseTemplate::instance()->html_breadcrumb( $args )
 		);
 		$content = ob_get_clean();
 		return $content;

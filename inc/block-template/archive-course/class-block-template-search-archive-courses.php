@@ -14,13 +14,26 @@ class Block_Template_Search_Archive_Courses extends Abstract_Block_Template_Widg
 	public $source_js                     = LP_PLUGIN_URL . 'assets/js/dist/blocks/search-archive-course.js';
 
 	public function render_content_block_template( array $attributes ) {
-		$settings               = [];
-		$settings               = array_merge(
+		$this->enqueue_assets( $attributes );
+		$this->inline_styles( $attributes );
+		$data             = [];
+		$settings         = [];
+		$settings         = array_merge(
 			$settings,
 			lp_archive_skeleton_get_args()
 		);
-		$attributes['settings'] = $settings;
+		$data['settings'] = $settings;
+		return parent::render_content_block_template( $data );
+	}
 
-		return parent::render_content_block_template( $attributes );
+	public function get_inline_style( $attributes ) {
+		$border_classes_and_styles = StyleAttributes::get_classes_and_styles_by_attributes( $attributes, [ 'font_size', 'font_weight', 'text_color', 'text_transform' ] );
+		return '.lp-courses-bar .search-courses button[name="lp-btn-search-courses"],
+		.lp-courses-bar .search-courses input[name="c_search"] {' . $border_classes_and_styles['styles'] . '}';
+	}
+
+	public function inline_styles( $attributes ) {
+		$styles = $this->get_inline_style( $attributes );
+		wp_add_inline_style( 'lp-blocks-style', $styles );
 	}
 }
