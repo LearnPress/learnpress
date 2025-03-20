@@ -213,7 +213,7 @@ class GutenbergHandleMain {
 			],
 			[
 				'slug'  => 'learnpress-course-elements',
-				'title' => __( 'LP Course Elements', 'learnpress' ),
+				'title' => __( 'LearnPress Course Elements', 'learnpress' ),
 				'icon'  => null,
 			],
 			[
