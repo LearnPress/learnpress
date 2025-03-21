@@ -82,12 +82,10 @@ export const edit = ( props ) => {
 							'learnpress/category-filter-archive-course',
 							'learnpress/tag-filter-archive-course',
 							'learnpress/review-filter-archive-course',
+							'learnpress/button-submit-filter',
+							'learnpress/button-reset-filter',
 						] }
 					/>
-				</div>
-				<div className="lp-course-filter__action">
-					<button>{ 'Apply' }</button>
-					<button>{ 'Reset' }</button>
 				</div>
 			</div>
 		</>

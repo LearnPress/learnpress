@@ -38,7 +38,7 @@ class Block_Template_Title_Single_Course extends Abstract_Block_Template_Widget_
 
 	public function get_inline_style( $attributes, $hash_class ) {
 		$border_classes_and_styles = StyleAttributes::get_classes_and_styles_by_attributes( $attributes, [ 'font_size', 'font_weight', 'text_color', 'text_transform', 'padding', 'margin' ] );
-		$class_style               = '.lp-single-course__header .' . $hash_class . ' .course-title';
+		$class_style               = 'div.' . $hash_class . ' .course-title';
 		return $class_style . ' {' . $border_classes_and_styles['styles'] . '}';
 	}
 

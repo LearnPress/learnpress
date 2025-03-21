@@ -16,27 +16,29 @@ class Block_Template_Title_Course_Archive_Courses extends Abstract_Block_Templat
 
 	public function render_content_block_template( array $attributes ) {
 		$this->enqueue_assets( $attributes );
-		$this->inline_styles( $attributes );
+		$lp_class_hash = 'lp-elements-' . bin2hex( random_bytes( 16 ) );
+		$this->inline_styles( $attributes, $lp_class_hash );
 		$tag     = $attributes['tag'] ?? 'h3';
 		$is_link = ( isset( $attributes['isLink'] ) && $attributes['isLink'] === false ) ? 'false' : 'true';
 		$new_tab = ( isset( $attributes['target'] ) && $attributes['target'] === true ) ? 'true' : 'false';
-		$class   = $attributes['className'] ?? '';
+		$class   = $attributes['className'] ? $attributes['className'] . ' ' . $lp_class_hash : $lp_class_hash;
 		$output  = '{{title-course class="' . $class . '" tag="' . $tag . '" is_link="' . $is_link . '" new_tab="' . $new_tab . '"}}';
 		return $output;
 	}
 
-	public function get_inline_style( $attributes ) {
+	public function get_inline_style( $attributes, $hash_class = '' ) {
 		$link_classes_and_styles       = StyleAttributes::get_link_color_class_and_style( $attributes );
 		$link_hover_classes_and_styles = StyleAttributes::get_link_hover_color_class_and_style( $attributes );
 		$border_classes_and_styles     = StyleAttributes::get_classes_and_styles_by_attributes( $attributes, [ 'font_size', 'font_weight', 'text_color', 'text_transform' ] );
-		return '.learn-press-courses span.course-title {' . $border_classes_and_styles['styles'] . '}
-				.learn-press-courses a.course-permalink span.course-title {' . $link_classes_and_styles['style'] . '}
-				.learn-press-courses a.course-permalink span.course-title:hover, .learn-press-courses a.course-permalink span.course-title:focus {' . $link_hover_classes_and_styles['style'] . '}
+
+		return '.learn-press-courses .' . $hash_class . ' span.course-title {' . $border_classes_and_styles['styles'] . '}
+				.learn-press-courses .' . $hash_class . ' a.course-permalink span.course-title {' . $link_classes_and_styles['style'] . '}
+				.learn-press-courses .' . $hash_class . ' a.course-permalink span.course-title:hover, .learn-press-courses a.course-permalink span.course-title:focus {' . $link_hover_classes_and_styles['style'] . '}
 				';
 	}
 
-	public function inline_styles( $attributes ) {
-		$styles = $this->get_inline_style( $attributes );
+	public function inline_styles( $attributes, $hash_class = '' ) {
+		$styles = $this->get_inline_style( $attributes, $hash_class );
 		wp_add_inline_style( 'lp-blocks-style', $styles );
 	}
 }

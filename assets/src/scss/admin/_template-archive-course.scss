@@ -437,16 +437,22 @@
 	margin-top: 12px;
 }
 
-.lp-course-filter__action {
-	display: flex;
-	gap: 10px;
+.wp-block-learnpress-button-submit-filter,
+.wp-block-learnpress-button-reset-filter {
+	box-sizing: border-box;
+    text-transform: capitalize;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: white;
+    float: left;
+    text-align: center;
+    width: calc(50% - 8px);
+}
 
-	button {
-		padding: 12px 24px;
-		text-transform: capitalize;
-		width: calc(50% - 4px);
-		border: 1px solid #ccc;
-		border-radius: 4px;
-		background: white;
-	}
+.wp-block-learnpress-button-submit-filter {
+	margin-right: 4px;
+}
+
+.wp-block-learnpress-button-reset-filter {
+	margin-left: 4px;
 }

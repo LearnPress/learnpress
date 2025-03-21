@@ -128,6 +128,8 @@ module.exports = {
 		'./assets/js/dist/blocks/price-filter-archive-course': './assets/src/apps/js/blocks/widget-archive-course/price-filter/index.js',
 		'./assets/js/dist/blocks/category-filter-archive-course': './assets/src/apps/js/blocks/widget-archive-course/category-filter/index.js',
 		'./assets/js/dist/blocks/tag-filter-archive-course': './assets/src/apps/js/blocks/widget-archive-course/tag-filter/index.js',
+		'./assets/js/dist/blocks/button-submit-filter': './assets/src/apps/js/blocks/widget-archive-course/button-submit-filter/index.js',
+		'./assets/js/dist/blocks/button-reset-filter': './assets/src/apps/js/blocks/widget-archive-course/button-reset-filter/index.js',
 		// './assets/js/dist/blocks/pagination-archive-course': './assets/src/apps/js/blocks/widget-archive-course/pagination/index.js',
 		'./assets/js/dist/blocks/title-course-archive-course': './assets/src/apps/js/blocks/widget-archive-course/title-course/index.js',
 		'./assets/js/dist/blocks/duration-course-archive-course': './assets/src/apps/js/blocks/widget-archive-course/duration-course/index.js',

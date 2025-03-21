@@ -62,6 +62,8 @@ require_once $blog_template_path . 'archive-course/class-block-template-level-fi
 require_once $blog_template_path . 'archive-course/class-block-template-price-filter-archive-courses.php';
 require_once $blog_template_path . 'archive-course/class-block-template-search-filter-archive-courses.php';
 require_once $blog_template_path . 'archive-course/class-block-template-tag-filter-archive-courses.php';
+require_once $blog_template_path . 'archive-course/class-block-template-button-submit-filter-archive-courses.php';
+require_once $blog_template_path . 'archive-course/class-block-template-button-reset-filter-archive-courses.php';
 
 //Layout single course
 require_once $blog_template_path . 'single-course/layout/class-block-layout-single-course.php';
@@ -148,6 +150,8 @@ return apply_filters(
 		new Block_Template_Price_Filter_Archive_Courses(),
 		new Block_Template_Category_Filter_Archive_Courses(),
 		new Block_Template_Tag_Filter_Archive_Courses(),
+		new Block_Template_Button_Submit_Filter_Archive_Courses(),
+		new Block_Template_Button_Reset_Filter_Archive_Courses(),
 		new Block_Layout_List_Course_Archive_Courses(),
 		// new Block_Template_Pagination_Archive_Courses(),
 		new Block_Template_Button_Course_Archive_Courses(),
