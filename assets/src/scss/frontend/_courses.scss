@@ -36,7 +36,11 @@
 				}
 
 				.course-permalink {
-					padding: 20px 20px 0;
+					padding: 0 20px;
+				}
+
+				.course-title {
+					margin-bottom: 0;
 				}
 
 				.course-info {
@@ -715,8 +719,16 @@
 			border-radius: $border-radius-global;
 		}
 
-		.course-permalink {
+		.item-meta:has(.star-info) {
 			padding: 20px 20px 0;
+
+			.star-info {
+				display: flex;
+			}
+		}
+
+		.course-permalink {
+			padding: 0 20px;
 		}
 
 		.course-instructor-category {
