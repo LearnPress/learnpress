@@ -66,19 +66,19 @@ abstract class AbstractBlockType extends WP_Block_Type {
 	/**
 	 * Get supports.
 	 *
-	 * @return array
+	 * @return array|null
 	 */
-	protected function get_supports(): array {
-		return [];
+	protected function get_supports() {
+		return null;
 	}
 
 	/**
 	 * Get supports.
 	 *
-	 * @return array
+	 * @return array|null
 	 */
-	protected function get_ancestor(): array {
-		return [];
+	protected function get_ancestor() {
+		return null;
 	}
 
 	/**
