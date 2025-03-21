@@ -13,8 +13,20 @@ use Throwable;
  * Handle register, render block template
  */
 class CourseTitleBlockType extends AbstractCourseBlockType {
-	public $name      = 'course-title';
-	public $source_js = LP_PLUGIN_URL . 'assets/js/dist/blocks/course-title.js';
+	public $name            = 'course-title';
+	public $source_js       = LP_PLUGIN_URL . 'assets/js/dist/blocks/course-title.js';
+	public $path_block_json = LP_PLUGIN_PATH . 'assets/src/apps/js/blocks/course-elements/course-title';
+
+	public function get_supports(): array {
+		return [
+			'color'      => [
+				'gradients'  => true,
+				'background' => true,
+				'text'       => true,
+			],
+			'typography' => [ 'fontSize' => true ],
+		];
+	}
 
 	/**
 	 * Render content of block tag
@@ -29,6 +41,8 @@ class CourseTitleBlockType extends AbstractCourseBlockType {
 		try {
 			$courseModel = $this->get_course( $attributes );
 
+			$wrapper = get_block_wrapper_attributes();
+
 			if ( ! $courseModel ) {
 				return $html;
 			}
@@ -39,8 +53,8 @@ class CourseTitleBlockType extends AbstractCourseBlockType {
 			$singleCourseTemplate = SingleCourseTemplate::instance();
 			ob_start();
 			echo sprintf(
-				'<div class="%s">%s</div>',
-				$class,
+				'<div %s>%s</div>',
+				$wrapper,
 				$singleCourseTemplate->html_title( $courseModel ),
 			);
 			$html = ob_get_clean();

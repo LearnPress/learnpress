@@ -9,11 +9,18 @@ use WP_Block_Type;
  * Handle register, render block template
  */
 abstract class AbstractBlockType extends WP_Block_Type {
-	public $namespace = 'learnpress';
+	public $namespace   = 'learnpress';
+	public $textdomain  = 'learnpress';
+	public $api_version = 3;
 	/**
 	 * @var string path of the file run js - Field of LP.
 	 */
 	public $source_js = '';
+	/**
+	 * Metadata of block.
+	 * @var string path of the file block.js - Field of LP.
+	 */
+	public $path_block_json = '';
 	/**
 	 * @var string Screen Template want to display - Field of LP
 	 */
@@ -25,9 +32,53 @@ abstract class AbstractBlockType extends WP_Block_Type {
 	 */
 	protected $enqueued_assets = false;
 
-	public function __construct( $args = [] ) {
+	public function __construct() {
 		$this->name = $this->namespace . '/' . $this->name;
-		parent::__construct( $this->name, $args );
+		parent::__construct( $this->name );
+
+		$this->editor_script_handles = $this->get_editor_script_handles();
+		$this->render_callback       = $this->get_render_callback();
+		$this->supports              = $this->get_supports();
+		$this->attributes            = $this->get_attributes();
+		$this->ancestor              = $this->get_ancestor();
+	}
+
+	/**
+	 * Set to name block.
+	 * Or set path js handle of block.
+	 * For Backend
+	 *
+	 * @return string[]
+	 */
+	protected function get_editor_script_handles(): array {
+		return [ $this->name ];
+	}
+
+	/**
+	 * Set render callback for block.
+	 *
+	 * @return array
+	 */
+	protected function get_render_callback(): array {
+		return [ $this, 'render_content_block_template' ];
+	}
+
+	/**
+	 * Get supports.
+	 *
+	 * @return array
+	 */
+	protected function get_supports(): array {
+		return [];
+	}
+
+	/**
+	 * Get supports.
+	 *
+	 * @return array
+	 */
+	protected function get_ancestor(): array {
+		return [];
 	}
 
 	/**
@@ -35,7 +86,7 @@ abstract class AbstractBlockType extends WP_Block_Type {
 	 *
 	 * @param array $attributes | Attributes of block tag.
 	 * @param $content
-	 * @param $block
+	 * @param \WP_Block $block
 	 *
 	 * @return string
 	 */

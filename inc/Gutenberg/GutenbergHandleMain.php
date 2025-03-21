@@ -70,27 +70,24 @@ class GutenbergHandleMain {
 				[ 'strategy' => 'async' ]
 			);
 
-			// Render content block template child of parent block
-			if ( isset( $block_template->inner_block ) ) {
-				/**
-				 * @see Block_Title_Course::render_content_inner_block_template
-				 */
-				register_block_type_from_metadata(
-					$block_template->inner_block,
-					[
-						'render_callback' => [ $block_template, 'render_content_inner_block_template' ],
-					]
-				);
-				continue;
+			$args = [];
+			foreach ( get_object_vars( $block_template ) as $property => $value ) {
+				$args[ $property ] = $value;
 			}
 
-			// Render content block template parent
+			$block_type = $block_template->name;
+			/**
+			 * register_block_type_from_metadata
+			 *
+			 * For case declare path to file block.json
+			 */
+			if ( ! empty( $block_template->path_block_json ) ) {
+				$block_type = $block_template->path_block_json;
+			}
+
 			register_block_type(
-				$block_template->name,
-				[
-					'render_callback' => [ $block_template, 'render_content_block_template' ],
-					'editor_script'   => $block_template->name,
-				]
+				$block_type,
+				$args
 			);
 		}
 	}
