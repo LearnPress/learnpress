@@ -5,6 +5,8 @@
  * @since 4.2.8.2
  * @version 1.0.0
  */
+
+use LearnPress\Gutenberg\Blocks\Courses\ListCoursesBlockType;
 use LearnPress\Gutenberg\Blocks\Legacy\SingleCourseBlockLegacy;
 use LearnPress\Gutenberg\Blocks\Legacy\ArchiveCourseBlockLegacy;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseTitleBlockType;
@@ -15,5 +17,6 @@ return apply_filters(
 		new SingleCourseBlockLegacy(),
 		new ArchiveCourseBlockLegacy(),
 		new CourseTitleBlockType(),
+		new ListCoursesBlockType(),
 	)
 );
