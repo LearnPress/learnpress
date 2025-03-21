@@ -49,6 +49,5 @@
 				"padding": false
 			}
 		}
-	},
-	"ancestor": ["learnpress/single-course"]
+	}
 }

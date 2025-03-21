@@ -59,6 +59,13 @@ class GutenbergHandleMain {
 			if ( ! empty( $postIdEdit ) && ! empty( $block_template->display_on_templates )
 				&& ! in_array( $postIdEdit, $block_template->display_on_templates ) ) {
 				continue;
+			} elseif ( ! empty( $block_template->ancestor )
+				&& ! empty( $block_template->display_on_templates ) ) {
+				/**
+				 * Allow display block on template without click parent block confined via ancestor.
+				 * Must set ancestor on PHP block, not config on block.json to apply case.
+				 */
+				$block_template->ancestor = null;
 			}
 
 			// Register script to load on the Backend Edit.
