@@ -84,6 +84,20 @@ abstract class Abstract_Block_Template extends \WP_Block_Template {
 		return $content;
 	}
 
+	public function get_output( $attributes, $content ) {
+		$output                    = '';
+		$border_classes_and_styles = StyleAttributes::get_classes_and_styles_by_attributes( $attributes );
+		ob_start();
+		echo sprintf(
+			'<div class="%s" style="%s">%s</div>',
+			$border_classes_and_styles['classes'],
+			$border_classes_and_styles['styles'],
+			$content
+		);
+		$output = ob_get_clean();
+		return $output;
+	}
+
 	protected function enqueue_assets( $attributes ) {
 		if ( $this->enqueued_assets ) {
 			return;
