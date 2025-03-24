@@ -55,10 +55,14 @@ class GutenbergHandleMain {
 		$blocks = Config::instance()->get( 'block-elements', 'gutenberg' );
 		foreach ( $blocks as $block_template ) {
 			// Set block maybe display when Edit on Template.
-			$postIdEdit = $_REQUEST['postId'] ?? '';
+			$postIdEdit = $this->get_edit_post_id();
 			if ( ! empty( $postIdEdit ) && ! empty( $block_template->display_on_templates )
 				&& ! in_array( $postIdEdit, $block_template->display_on_templates ) ) {
-				continue;
+				if ( ! empty( $block_template->ancestor ) ) {
+					$block_template->display_on_templates = null;
+				} else {
+					continue;
+				}
 			} elseif ( ! empty( $block_template->ancestor )
 				&& ! empty( $block_template->display_on_templates ) ) {
 				/**
@@ -232,5 +236,28 @@ class GutenbergHandleMain {
 		}
 
 		return $block_categories;
+	}
+
+	public function get_edit_post_id() {
+		$postIdEdit = '';
+		if ( isset( $_REQUEST['postId'] ) && ! empty( $_REQUEST['postId'] ) ) {
+			$postIdEdit = $_REQUEST['postId'];
+		} elseif ( isset( $_REQUEST['post'] ) && ! empty( $_REQUEST['post'] ) ) {
+			$postIdEdit = $_REQUEST['post'];
+		} elseif ( isset( $_REQUEST['post_id'] ) && ! empty( $_REQUEST['post_id'] ) ) {
+			$postIdEdit = $_REQUEST['post_id'];
+		} elseif ( function_exists( 'get_the_ID' ) && get_the_ID() ) {
+			$postIdEdit = get_the_ID();
+		} elseif ( isset( $GLOBALS['post'] ) && ! empty( $GLOBALS['post']->ID ) ) {
+			$postIdEdit = $GLOBALS['post']->ID;
+		}
+		if ( ! is_numeric( $postIdEdit ) ) {
+			$template_post = get_page_by_path( $postIdEdit, OBJECT, 'wp_template' );
+			if ( $template_post ) {
+				$postIdEdit = $template_post->ID;
+			}
+		}
+
+		return $postIdEdit;
 	}
 }
