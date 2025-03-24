@@ -14,7 +14,6 @@ use Throwable;
  */
 class CourseTitleBlockType extends AbstractCourseBlockType {
 	public $name            = 'course-title';
-	public $source_js       = LP_PLUGIN_URL . 'assets/js/dist/blocks/course-title.js';
 	public $path_block_json = LP_PLUGIN_PATH . 'assets/src/apps/js/blocks/course-elements/course-title';
 
 	public function get_supports(): array {
@@ -24,7 +23,15 @@ class CourseTitleBlockType extends AbstractCourseBlockType {
 				'background' => true,
 				'text'       => true,
 			],
-			'typography' => [ 'fontSize' => true ],
+			'typography' => [
+				'fontSize'                 => true,
+				'__experimentalFontWeight' => true,
+				'textTransform'            => true,
+			],
+			'spacing'    => [
+				'padding' => true,
+				'margin'  => true,
+			],
 		];
 	}
 
@@ -44,24 +51,11 @@ class CourseTitleBlockType extends AbstractCourseBlockType {
 
 		try {
 			$courseModel = $this->get_course( $attributes );
-
-			$wrapper = get_block_wrapper_attributes();
-
 			if ( ! $courseModel ) {
 				return $html;
 			}
-			$class_hash = $this->get_class_hash();
-			$this->enqueue_assets();
-			$this->inline_styles( $attributes, $class_hash );
-			$class                = $attributes['className'] ? $attributes['className'] . ' ' . $class_hash : $class_hash;
 			$singleCourseTemplate = SingleCourseTemplate::instance();
-			ob_start();
-			echo sprintf(
-				'<div %s>%s</div>',
-				$wrapper,
-				$singleCourseTemplate->html_title( $courseModel ),
-			);
-			$html = ob_get_clean();
+			$html                 = $this->get_output( $singleCourseTemplate->html_title( $courseModel ) );
 		} catch ( Throwable $e ) {
 			LP_Debug::error_log( $e );
 		}

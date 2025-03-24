@@ -9,8 +9,7 @@ use Throwable;
  * Handle register, render block template
  */
 class SingleCourseBlock extends AbstractBlockType {
-	public $name      = 'single-course';
-	public $source_js = LP_PLUGIN_URL . 'assets/js/dist/blocks/single-course.js';
+	public $name = 'single-course';
 
 	/**
 	 * Render content of block tag
@@ -21,7 +20,7 @@ class SingleCourseBlock extends AbstractBlockType {
 	 */
 	public function render_content_block_template( array $attributes, $content, $block ): string {
 		$html = '';
-var_dump($content);
+
 		try {
 			ob_start();
 			echo sprintf(
