@@ -52,14 +52,14 @@ class GutenbergHandleMain {
 		/**
 		 * @var AbstractBlockType[] $blocks
 		 */
-		$blocks = Config::instance()->get( 'block-elements', 'gutenberg' );
+		$blocks     = Config::instance()->get( 'block-elements', 'gutenberg' );
+		$postIdEdit = $this->get_edit_post_id();
 		foreach ( $blocks as $block_template ) {
 			// Set block maybe display when Edit on Template.
-			$postIdEdit = $this->get_edit_post_id();
 			if ( ! empty( $postIdEdit ) && ! empty( $block_template->display_on_templates )
 				&& ! in_array( $postIdEdit, $block_template->display_on_templates ) ) {
 				if ( ! empty( $block_template->ancestor ) ) {
-					$block_template->display_on_templates = null;
+					$block_template->display_on_templates = [];
 				} else {
 					continue;
 				}
