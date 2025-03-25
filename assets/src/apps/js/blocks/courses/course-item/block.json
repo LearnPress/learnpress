@@ -1,0 +1,17 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "learnpress/course-item",
+	"title": "Course Item",
+	"category": "learnpress-category",
+	"description": "Course Item",
+	"textdomain": "learnpress",
+	"keywords": [
+		"course item",
+		"learnpress"
+	],
+	"usesContext": [],
+	"supports": {
+		"align": true
+	}
+}

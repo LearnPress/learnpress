@@ -85,6 +85,7 @@ module.exports = {
 		'./assets/js/dist/blocks/single-course': './assets/src/apps/js/blocks/single-course/index.js',
 		'./assets/js/dist/blocks/course-title': './assets/src/apps/js/blocks/course-elements/course-title/index.js',
 		'./assets/js/dist/blocks/list-courses': './assets/src/apps/js/blocks/courses/list-courses/index.js',
+		'./assets/js/dist/blocks/course-item': './assets/src/apps/js/blocks/courses/course-item/index.js',
 
 		// Elementor
 		'./assets/js/dist/elementor/courses': './assets/src/js/elementor/courses.js',
