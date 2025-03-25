@@ -37,7 +37,7 @@ abstract class AbstractBlockType extends WP_Block_Type {
 	protected $enqueued_assets = false;
 
 	public function __construct() {
-		$this->source_js = LP_PLUGIN_URL . 'assets/js/dist/blocks/' . $this->block_name . '.js';
+		$this->source_js = $this->get_source_js();
 		parent::__construct( $this->get_block_type() );
 		$this->editor_script_handles = $this->get_editor_script_handles();
 		$this->render_callback       = $this->get_render_callback();
@@ -105,6 +105,10 @@ abstract class AbstractBlockType extends WP_Block_Type {
 
 	protected function get_block_type() {
 		return $this->namespace . '/' . $this->block_name;
+	}
+
+	protected function get_source_js() {
+		return LP_PLUGIN_URL . 'assets/js/dist/blocks/' . $this->block_name . '.js';
 	}
 
 	protected function get_class_hash() {
