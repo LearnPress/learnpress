@@ -4,7 +4,7 @@ namespace LearnPress\Gutenberg\Blocks;
 use WP_Block_Type;
 
 /**
- * Class Block_Template_Single_Course
+ * Class AbstractBlockType
  *
  * Handle register, render block template
  */
@@ -12,6 +12,10 @@ abstract class AbstractBlockType extends WP_Block_Type {
 	public $namespace   = 'learnpress';
 	public $textdomain  = 'learnpress';
 	public $api_version = 3;
+	/**
+	 * @var string block name - Field of LP.
+	 */
+	public $block_name = '';
 	/**
 	 * @var string path of the file run js - Field of LP.
 	 */
@@ -33,9 +37,8 @@ abstract class AbstractBlockType extends WP_Block_Type {
 	protected $enqueued_assets = false;
 
 	public function __construct() {
-		$this->source_js = LP_PLUGIN_URL . 'assets/js/dist/blocks/' . $this->name . '.js';
-		$this->name      = $this->namespace . '/' . $this->name;
-		parent::__construct( $this->name );
+		$this->source_js = LP_PLUGIN_URL . 'assets/js/dist/blocks/' . $this->block_name . '.js';
+		parent::__construct( $this->get_block_type() );
 		$this->editor_script_handles = $this->get_editor_script_handles();
 		$this->render_callback       = $this->get_render_callback();
 		$this->supports              = $this->get_supports();
@@ -98,6 +101,10 @@ abstract class AbstractBlockType extends WP_Block_Type {
 		}
 		wp_enqueue_style( 'lp-blocks-style', get_stylesheet_uri() );
 		$this->enqueued_assets = true;
+	}
+
+	protected function get_block_type() {
+		return $this->namespace . '/' . $this->block_name;
 	}
 
 	protected function get_class_hash() {

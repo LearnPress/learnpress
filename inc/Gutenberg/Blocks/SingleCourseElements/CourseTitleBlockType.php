@@ -8,12 +8,12 @@ use LP_Debug;
 use Throwable;
 
 /**
- * Class Block_Template_Single_Course
+ * Class CourseTitleBlockType
  *
  * Handle register, render block template
  */
 class CourseTitleBlockType extends AbstractCourseBlockType {
-	public $name            = 'course-title';
+	public $block_name      = 'course-title';
 	public $path_block_json = LP_PLUGIN_PATH . 'assets/src/apps/js/blocks/course-elements/course-title';
 
 	public function get_supports(): array {

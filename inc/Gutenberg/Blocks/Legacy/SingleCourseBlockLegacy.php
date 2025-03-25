@@ -8,13 +8,12 @@ use LearnPress\Models\CourseModel;
 use LP_Settings;
 
 /**
- * Class Block_Template_Single_Course
+ * Class SingleCourseBlockLegacy
  *
  * Handle register, render block template
  */
 class SingleCourseBlockLegacy extends AbstractBlockType {
-	public $name                 = 'single-course-legacy';
-	public $source_js            = LP_PLUGIN_URL . 'assets/js/dist/blocks/single-course-legacy.js';
+	public $block_name                 = 'single-course-legacy';
 	public $display_on_templates = [ 'learnpress/learnpress//single-lp_course' ];
 
 	/**

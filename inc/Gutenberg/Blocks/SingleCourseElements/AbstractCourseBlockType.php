@@ -6,7 +6,7 @@ use LearnPress\Models\CourseModel;
 use LearnPress\Models\UserModel;
 
 /**
- * Class Block_Template_Single_Course
+ * Class AbstractCourseBlockType
  *
  * Handle register, render block template
  */
@@ -16,7 +16,6 @@ abstract class AbstractCourseBlockType extends AbstractBlockType {
 	 */
 	public $display_on_templates = [
 		'learnpress/learnpress//single-lp_course',
-		'learnpress/learnpress//archive-lp_course',
 	];
 	/**
 	 * Get course model

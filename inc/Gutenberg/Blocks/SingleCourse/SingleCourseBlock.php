@@ -9,7 +9,7 @@ use Throwable;
  * Handle register, render block template
  */
 class SingleCourseBlock extends AbstractBlockType {
-	public $name = 'single-course';
+	public $block_name = 'single-course';
 
 	/**
 	 * Render content of block tag
