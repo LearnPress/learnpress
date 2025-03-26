@@ -1,5 +1,5 @@
 /**
- * Register block archive property.
+ * Register block course instructor info.
  */
 import { edit } from './edit';
 import { save } from './save';

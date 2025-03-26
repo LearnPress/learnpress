@@ -1,5 +1,5 @@
 /**
- * Register block archive property.
+ * Register block course target audiences.
  */
 import { edit } from './edit';
 import { save } from './save';
