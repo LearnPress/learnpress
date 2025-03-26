@@ -54,8 +54,11 @@ class CourseTitleBlockType extends AbstractCourseBlockType {
 			if ( ! $courseModel ) {
 				return $html;
 			}
+			$this->get_class_hash();
+			$this->enqueue_assets();
+			$this->inline_styles( $attributes );
 			$singleCourseTemplate = SingleCourseTemplate::instance();
-			$html                 = $this->get_output( $singleCourseTemplate->html_title( $courseModel ) );
+			$html                 = $this->get_output_with_class_hash( $attributes, $singleCourseTemplate->html_title( $courseModel ) );
 		} catch ( Throwable $e ) {
 			LP_Debug::error_log( $e );
 		}
@@ -63,14 +66,14 @@ class CourseTitleBlockType extends AbstractCourseBlockType {
 		return $html;
 	}
 
-	public function get_inline_style( $attributes, $class_hash = '' ) {
-		$class_style               = '.' . $class_hash . ' .course-title';
-		$border_classes_and_styles = StyleAttributes::get_classes_and_styles_by_attributes( $attributes, [ 'font_size', 'font_weight', 'text_color', 'text_transform', 'padding', 'margin' ] );
+	public function get_inline_style( $attributes ) {
+		$class_style               = '.' . $this->class_hash . ' .course-title';
+		$border_classes_and_styles = StyleAttributes::get_classes_and_styles_by_attributes( $attributes, [ 'font_size', 'font_weight', 'text_color', 'text_transform' ] );
 		return $class_style . ' {' . $border_classes_and_styles['styles'] . '}';
 	}
 
-	public function inline_styles( $attributes, $class_hash = '' ) {
-		$styles = $this->get_inline_style( $attributes, $class_hash );
+	public function inline_styles( $attributes ) {
+		$styles = $this->get_inline_style( $attributes );
 		wp_add_inline_style( 'lp-blocks-style', $styles );
 	}
 }
