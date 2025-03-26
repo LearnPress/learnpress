@@ -311,11 +311,15 @@ class SingleCourseTemplate {
 	 *
 	 * @return string
 	 * @since 4.2.5.8
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
-	public function html_instructor( $course, bool $with_avatar = false ): string {
-		$content = '';
-
+	public function html_instructor( $course, bool $with_avatar = false, $setting = [] ): string {
+		$content         = '';
+		$default_setting = [
+			'is_link' => '',
+			'new_tab' => '',
+		];
+		$setting         = array_merge( $default_setting, $setting );
 		try {
 			$instructor = $course->get_author_model();
 			if ( ! $instructor ) {
@@ -324,13 +328,23 @@ class SingleCourseTemplate {
 
 			$singleInstructorTemplate = SingleInstructorTemplate::instance();
 			$userTemplate             = new UserTemplate( 'instructor' );
-
-			$link_instructor = sprintf(
-				'<a href="%s">%s %s</a>',
-				$instructor->get_url_instructor(),
-				$with_avatar ? $userTemplate->html_avatar( $instructor ) : '',
-				$singleInstructorTemplate->html_display_name( $instructor )
-			);
+			$is_link                  = $setting['is_link'] === 'false' ? false : true;
+			if ( $is_link ) {
+				$attribute_target = $setting['new_tab'] === 'true' ? 'target="_blank"' : '';
+				$link_instructor  = sprintf(
+					'<a href="%s" %s >%s %s</a>',
+					$instructor->get_url_instructor(),
+					$attribute_target,
+					$with_avatar ? $userTemplate->html_avatar( $instructor ) : '',
+					$singleInstructorTemplate->html_display_name( $instructor )
+				);
+			} else {
+				$link_instructor = sprintf(
+					'%s %s',
+					$with_avatar ? $userTemplate->html_avatar( $instructor ) : '',
+					$singleInstructorTemplate->html_display_name( $instructor )
+				);
+			}
 
 			$section = apply_filters(
 				'learn-press/course/instructor-html',
