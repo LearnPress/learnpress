@@ -632,4 +632,58 @@ class SingleCourseModernLayout {
 
 		return $html_instructor;
 	}
+
+	/**
+	 * Get html course info learning
+	 *
+	 * @param CourseModel $course
+	 * @param UserModel $user
+	 *
+	 * @return string
+	 * @since 4.2.8.2
+	 * @version 1.0.0
+	 */
+	public function html_info_learning( CourseModel $course, UserModel $user ): string {
+		// Info learning
+		$html_info_learning = '';
+		$user_id            = 0;
+		if ( $user instanceof UserModel ) {
+			$user_id = $user->get_id();
+		}
+		$userCourseModel    = UserCourseModel::find( $user_id, $course->get_id(), true );
+		$userCourseTemplate = UserCourseTemplate::instance();
+		if ( $userCourseModel instanceof UserCourseModel
+					&& $userCourseModel->get_status() !== UserItemModel::STATUS_CANCEL
+					&& $userCourseModel->get_status() !== UserCourseModel::STATUS_PURCHASED ) {
+
+			$html_end_date   = '';
+			$html_graduation = '';
+			if ( $userCourseModel->get_status() === UserItemModel::STATUS_FINISHED ) {
+				$html_end_date   = sprintf(
+					'<div>%s: %s</div>',
+					__( 'End date', 'learnpress' ),
+					$userCourseTemplate->html_end_date_time( $userCourseModel, false )
+				);
+				$html_graduation = $userCourseTemplate->html_graduation( $userCourseModel );
+			}
+
+			$section_info_learning = [
+				'wrapper'               => '<div class="info-learning">',
+				'message_lock'          => $userCourseTemplate->html_message_lock( $userCourseModel ),
+				'graduation'            => $html_graduation,
+				'progress'              => $userCourseTemplate->html_progress( $userCourseModel ),
+				'start_date'            => sprintf(
+					'<div>%s: %s</div>',
+					__( 'Start date', 'learnpress' ),
+					$userCourseTemplate->html_start_date_time( $userCourseModel, false )
+				),
+				'end_date'              => $html_end_date,
+				'count_items_completed' => $userCourseTemplate->html_count_items_completed( $userCourseModel ),
+				'wrapper_end'           => '</div>',
+			];
+			$html_info_learning    = Template::combine_components( $section_info_learning );
+		}
+
+		return $html_info_learning;
+	}
 }
