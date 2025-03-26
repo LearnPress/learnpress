@@ -1,0 +1,19 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "learnpress/course-image",
+	"title": "Course Image",
+	"category": "learnpress-course-elements",
+	"icon": "format-image",
+	"description": "Renders template Image Course PHP templates.",
+	"textdomain": "learnpress",
+	"keywords": ["image single course", "learnpress"],
+	"usesContext": [],
+	"supports": {
+		"inserter": true,
+		"reusable": true,
+		"reorder": true,
+		"html": false,
+		"multiple": true
+	}
+}
