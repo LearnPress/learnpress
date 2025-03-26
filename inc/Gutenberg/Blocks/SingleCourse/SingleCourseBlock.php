@@ -1,6 +1,7 @@
 <?php
 namespace LearnPress\Gutenberg\Blocks\SingleCourse;
 use LearnPress\Gutenberg\Blocks\AbstractBlockType;
+use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
 use LP_Debug;
 use Throwable;
 /**
@@ -24,8 +25,9 @@ class SingleCourseBlock extends AbstractBlockType {
 		try {
 			ob_start();
 			echo sprintf(
-				'<div class="lp-single-course"> %s </div>',
-				$content
+				'<div class="lp-single-course"> %s %s </div>',
+				$content,
+				SingleCourseTemplate::instance()->html_content_course_curriculum()
 			);
 			$html = ob_get_clean();
 		} catch ( Throwable $e ) {

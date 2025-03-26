@@ -26,6 +26,7 @@ use LP_Checkout;
 use LP_Course;
 use LP_Course_Item;
 use LP_Datetime;
+use LP_Global;
 use LP_Material_Files_DB;
 use LP_Settings;
 use stdClass;
@@ -1783,5 +1784,31 @@ class SingleCourseTemplate {
 			],
 			$data_content
 		);
+	}
+
+	/**
+	 * Show content course curriculum
+	 *
+	 * @return string
+	 * @since 4.2.8.1
+	 * @version 1.0.0
+	 */
+	public function html_content_course_curriculum() {
+		if ( ! is_singular( LP_COURSE_CPT ) ) {
+			return;
+		}
+
+		if ( ! learn_press_is_course() || ! is_single() ) {
+			return;
+		}
+
+		global $post;
+		setup_postdata( $post );
+		$course_item = LP_Global::course_item();
+		if ( ! $course_item ) {
+			return;
+		}
+
+		return Template::instance()->get_frontend_template( 'content-single-item.php' );
 	}
 }
