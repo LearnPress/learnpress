@@ -57,8 +57,6 @@ function PostTemplateBlockPreview(
 const MemoizedPostTemplateBlockPreview = memo( PostTemplateBlockPreview );
 
 const Edit = ( { clientId } ) => {
-	console.log( clientId );
-
 	const blockProps = useBlockProps();
 	const [ activeBlockContextId, setActiveBlockContextId ] = useState();
 	const { posts, blocks } = useSelect( ( select ) => {
@@ -70,12 +68,9 @@ const Edit = ( { clientId } ) => {
 		};
 	}, [ clientId ] );
 
-	console.log( posts );
-
 	const blockContexts = useMemo(
 		() =>
 			posts?.map( ( post ) => ( {
-				postType: post.type,
 				postId: post.id,
 			} ) ),
 		[ posts ]

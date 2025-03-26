@@ -1,16 +1,7 @@
 /**
  * Register block list courses.
  */
-import edit from './edit';
-import save from './save';
-import metadata from './block.json';
 import { registerBlockType, registerBlockVariation } from '@wordpress/blocks';
-
-// registerBlockType( 'learnpress/list-courses', {
-// 	...metadata,
-// 	edit,
-// 	save,
-// } );
 
 const MY_VARIATION_NAME = 'learnpress/list-courses';
 const LP_COURSE_CPT = 'lp_course';
@@ -48,8 +39,6 @@ registerBlockVariation( 'core/query', {
 			{},
 			[ [ 'learnpress/course-title' ], [ 'core/post-excerpt' ] ],
 		],
-		[ 'core/query-pagination' ],
-		[ 'core/query-no-results' ],
 	],
 }
 );
