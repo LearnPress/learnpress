@@ -93,6 +93,7 @@ module.exports = {
 		'./assets/js/dist/blocks/course-requirements': './assets/src/apps/js/blocks/course-elements/course-requirements/index.js',
 		'./assets/js/dist/blocks/course-faqs': './assets/src/apps/js/blocks/course-elements/course-faqs/index.js',
 		'./assets/js/dist/blocks/course-curriculum': './assets/src/apps/js/blocks/course-elements/course-curriculum/index.js',
+		'./assets/js/dist/blocks/course-instructor-info': './assets/src/apps/js/blocks/course-elements/course-instructor-info/index.js',
 		'./assets/js/dist/blocks/breadcrumb': './assets/src/apps/js/blocks/breadcrumb/index.js',
 		'./assets/js/dist/blocks/list-courses': './assets/src/apps/js/blocks/courses/list-courses/index.js',
 

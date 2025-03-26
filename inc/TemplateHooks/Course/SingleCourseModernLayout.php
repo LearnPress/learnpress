@@ -556,4 +556,80 @@ class SingleCourseModernLayout {
 
 		return Template::combine_components( $course_date );
 	}
+
+	/**
+	 * Get html instructor info
+	 *
+	 * @param CourseModel $course
+	 * @param UserModel $user
+	 *
+	 * @return string
+	 * @since 4.2.8.2
+	 * @version 1.0.0
+	 */
+	public function html_instructor_info( CourseModel $course, UserModel $user ): string {
+		$html_instructor          = '';
+		$singleInstructorTemplate = SingleInstructorTemplate::instance();
+		$author                   = $course->get_author_model();
+
+		if ( $author ) {
+			$html_instructor_image = sprintf(
+				'<a href="%s" title="%s">%s</a>',
+				$author->get_url_instructor(),
+				$author->get_display_name(),
+				$singleInstructorTemplate->html_avatar( $author )
+			);
+			$instructor_meta       = [
+				'wrapper'        => '<div class="lp-instructor-meta">',
+				'count_students' => sprintf(
+					'<div class="instructor-item-meta">%s</div>',
+					$singleInstructorTemplate->html_count_students( $author )
+				),
+				'count_courses'  => sprintf(
+					'<div class="instructor-item-meta">%s</div>',
+					$singleInstructorTemplate->html_count_courses( $author )
+				),
+				'wrapper_end'    => '</div>',
+			];
+			$html_instructor_meta  = Template::combine_components( $instructor_meta );
+
+			$instructor_right = apply_filters(
+				'learn-press/single-course/modern/section-instructor/right',
+				[
+					'wrapper'     => '<div class="lp-section-instructor">',
+					'name'        => sprintf(
+						'<a href="%s">%s</a>',
+						$author->get_url_instructor(),
+						$singleInstructorTemplate->html_display_name( $author )
+					),
+					'meta'        => $html_instructor_meta,
+					'description' => $singleInstructorTemplate->html_description( $author ),
+					'social'      => $singleInstructorTemplate->html_social( $author ),
+					'wrapper_end' => '</div>',
+				],
+				$course,
+				$user
+			);
+
+			$html_instructor_right = Template::combine_components( $instructor_right );
+			$instructor_info       = apply_filters(
+				'learn-press/single-course/modern/section-instructor',
+				[
+					'wrapper'          => '<div class="lp-section-instructor">',
+					'header'           => sprintf( '<h3 class="section-title">%s</h3>', __( 'Instructor', 'learnpress' ) ),
+					'wrapper_info'     => '<div class="lp-instructor-info">',
+					'image'            => $html_instructor_image,
+					'instructor_right' => $html_instructor_right,
+					'wrapper_info_end' => '</div>',
+					'wrapper_end'      => '</div>',
+				],
+				$course,
+				$user
+			);
+
+			$html_instructor = Template::combine_components( $instructor_info );
+		}
+
+		return $html_instructor;
+	}
 }
