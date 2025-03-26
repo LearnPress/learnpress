@@ -14,6 +14,7 @@ use LearnPress\Gutenberg\Blocks\SingleCourse\SingleCourseBlock;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseCategoriesBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseDateBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseDescriptionBlockType;
+use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseFeaturesBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseInstructorBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseTitleBlockType;
 
@@ -27,6 +28,7 @@ return apply_filters(
 		new CourseCategoriesBlockType(),
 		new CourseDateBlockType(),
 		new CourseDescriptionBlockType(),
+		new CourseFeaturesBlockType(),
 		new BreadCrumb(),
 		new SingleCourseBlock(),
 		new ListCoursesBlockType(),
