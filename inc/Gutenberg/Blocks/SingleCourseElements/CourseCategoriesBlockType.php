@@ -79,7 +79,7 @@ class CourseCategoriesBlockType extends AbstractCourseBlockType {
 				$label,
 				$html_categories
 			);
-			$html    = $this->get_output( $content );
+			$html    = $this->get_output_with_class_hash( $attributes, $content );
 		} catch ( Throwable $e ) {
 			LP_Debug::error_log( $e );
 		}
@@ -91,10 +91,11 @@ class CourseCategoriesBlockType extends AbstractCourseBlockType {
 		$link_classes_and_styles       = StyleAttributes::get_link_color_class_and_style( $attributes );
 		$link_hover_classes_and_styles = StyleAttributes::get_link_hover_color_class_and_style( $attributes );
 		$border_classes_and_styles     = StyleAttributes::get_classes_and_styles_by_attributes( $attributes, [ 'font_size', 'font_weight', 'text_color', 'text_transform' ] );
+		$class_style                   = '.' . $this->class_hash;
 
-		return '.course-categories__wrapper {' . $border_classes_and_styles['styles'] . '}
-				.lp-single-course__header .course-instructor-category .course-categories a {' . $link_classes_and_styles['style'] . '}
-				.lp-single-course__header .course-instructor-category .course-categories a:hover, .lp-single-course__header .course-instructor-category .course-categories a:focus {' . $link_hover_classes_and_styles['style'] . '}
+		return $class_style . ' {' . $border_classes_and_styles['styles'] . '}
+				' . $class_style . ' .course-categories a {' . $link_classes_and_styles['style'] . '}
+				' . $class_style . ' .course-categories a:hover, ' . $class_style . ' .course-categories a:focus {' . $link_hover_classes_and_styles['style'] . '}
 		';
 	}
 
