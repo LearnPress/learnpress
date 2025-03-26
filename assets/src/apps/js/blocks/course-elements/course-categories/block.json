@@ -1,0 +1,52 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "learnpress/course-categories",
+	"title": "Course Categories",
+	"category": "learnpress-course-elements",
+	"icon": "category",
+	"description": "Renders template List Categories Course PHP templates.",
+	"textdomain": "learnpress",
+	"keywords": ["category categories single course", "learnpress"],
+	"usesContext": [],
+	"attributes": {
+		"showText": {
+			"type": "boolean",
+			"default": true
+		},
+		"isLink": {
+			"type": "boolean",
+			"default": true
+		},
+		"target": {
+			"type": "boolean",
+			"default": false
+		}
+	},
+	"supports": {
+		"multiple": false,
+		"align": ["wide", "full"],
+		"html": false,
+		"typography": {
+			"fontSize": true,
+			"lineHeight": false,
+			"fontWeight": true,
+			"__experimentalFontFamily": false,
+			"__experimentalTextDecoration": false,
+			"__experimentalFontStyle": false,
+			"__experimentalFontWeight": true,
+			"__experimentalLetterSpacing": false,
+			"__experimentalTextTransform": true,
+			"__experimentalDefaultControls": { "fontSize": true }
+		},
+		"color": {
+			"background": false,
+			"text": true,
+			"link": true,
+			"__experimentalDefaultControls": {
+				"link": false,
+				"text": true
+			}
+		}
+	}
+}

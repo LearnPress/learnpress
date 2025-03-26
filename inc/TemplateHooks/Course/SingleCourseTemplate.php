@@ -137,16 +137,21 @@ class SingleCourseTemplate {
 	}
 
 	/**
-	 * Get display title course.
+	 * Get display categories course.
 	 *
 	 * @param LP_Course|CourseModel $course
 	 *
 	 * @return string
 	 * @since 4.2.6
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 */
-	public function html_categories( $course ): string {
-		$html = '';
+	public function html_categories( $course, $setting = [] ): string {
+		$html            = '';
+		$default_setting = [
+			'is_link' => '',
+			'new_tab' => '',
+		];
+		$setting         = array_merge( $default_setting, $setting );
 
 		try {
 			if ( $course instanceof LP_Course ) {
@@ -161,14 +166,21 @@ class SingleCourseTemplate {
 			if ( empty( $cats ) ) {
 				return '';
 			}
-
-			$cat_names = [];
+			$is_link          = $setting['is_link'] === 'false' ? false : true;
+			$attribute_target = $setting['new_tab'] === 'true' ? 'target="_blank"' : '';
+			$cat_names        = [];
 			foreach ( $cats as $cat ) {
-				$term        = sprintf(
-					'<a href="%s">%s</a>',
-					get_term_link( $cat ),
-					$cat->name
-				);
+				if ( $is_link ) {
+					$term = sprintf(
+						'<a href="%s" %s>%s</a>',
+						get_term_link( $cat ),
+						$attribute_target,
+						$cat->name
+					);
+				} else {
+					$term = sprintf( $cat->name );
+				}
+
 				$cat_names[] = $term;
 			}
 

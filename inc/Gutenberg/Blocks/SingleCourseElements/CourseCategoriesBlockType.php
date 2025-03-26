@@ -8,12 +8,12 @@ use LP_Debug;
 use Throwable;
 
 /**
- * Class CourseInstructorBlockType
+ * Class CourseCategoriesBlockType
  *
  * Handle register, render block template
  */
-class CourseInstructorBlockType extends AbstractCourseBlockType {
-	public $block_name = 'course-instructor';
+class CourseCategoriesBlockType extends AbstractCourseBlockType {
+	public $block_name = 'course-categories';
 
 	public function get_supports(): array {
 		return [
@@ -63,14 +63,21 @@ class CourseInstructorBlockType extends AbstractCourseBlockType {
 				'is_link' => $is_link,
 				'new_tab' => $new_tab,
 			];
-			$label     = sprintf( '<label>%s</label>', __( 'by', 'learnpress' ) );
+			$label     = sprintf( '<label>%s</label>', __( 'in', 'learnpress' ) );
 			if ( $show_text === 'false' ) {
 				$label = '';
 			}
+
+			$html_categories = SingleCourseTemplate::instance()->html_categories( $courseModel, $setting );
+
+			if ( empty( $html_categories ) ) {
+				return $html;
+			}
+
 			$content = sprintf(
 				'%s %s',
 				$label,
-				SingleCourseTemplate::instance()->html_instructor( $courseModel, false, $setting )
+				$html_categories
 			);
 			$html    = $this->get_output( $content );
 		} catch ( Throwable $e ) {
@@ -85,9 +92,9 @@ class CourseInstructorBlockType extends AbstractCourseBlockType {
 		$link_hover_classes_and_styles = StyleAttributes::get_link_hover_color_class_and_style( $attributes );
 		$border_classes_and_styles     = StyleAttributes::get_classes_and_styles_by_attributes( $attributes, [ 'font_size', 'font_weight', 'text_color', 'text_transform' ] );
 
-		return '.course-instructor__wrapper {' . $border_classes_and_styles['styles'] . '}
-				.lp-single-course__header .course-instructor-category .course-instructor a {' . $link_classes_and_styles['style'] . '}
-				.lp-single-course__header .course-instructor-category .course-instructor a:hover, .lp-single-course__header .course-instructor-category .course-instructor a:focus {' . $link_hover_classes_and_styles['style'] . '}
+		return '.course-categories__wrapper {' . $border_classes_and_styles['styles'] . '}
+				.lp-single-course__header .course-instructor-category .course-categories a {' . $link_classes_and_styles['style'] . '}
+				.lp-single-course__header .course-instructor-category .course-categories a:hover, .lp-single-course__header .course-instructor-category .course-categories a:focus {' . $link_hover_classes_and_styles['style'] . '}
 		';
 	}
 
