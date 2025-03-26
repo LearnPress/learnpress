@@ -25,6 +25,7 @@ registerBlockVariation( 'core/query', {
 				query.postType === LP_COURSE_CPT
 		);
 	},
+	category: 'learnpress-category',
 	attributes: {
 		namespace: MY_VARIATION_NAME,
 		query: {

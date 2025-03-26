@@ -4,7 +4,7 @@
 	"name": "learnpress/course-item",
 	"title": "Course Item",
 	"category": "learnpress-category",
-	"description": "Course Item",
+	"description": "Course Item Template",
 	"textdomain": "learnpress",
 	"keywords": [
 		"course item",
@@ -13,5 +13,6 @@
 	"usesContext": [],
 	"supports": {
 		"align": true
-	}
+	},
+	"ancestor": [ "learnpress/list-courses" ]
 }
