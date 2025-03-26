@@ -1,6 +1,7 @@
 <?php
 namespace LearnPress\Gutenberg\Blocks;
 
+use LearnPress\Gutenberg\Utils\StyleAttributes;
 use WP_Block_Type;
 
 /**
@@ -35,6 +36,10 @@ abstract class AbstractBlockType extends WP_Block_Type {
 	 * @var boolean
 	 */
 	protected $enqueued_assets = false;
+	/**
+	 * @var string Class hash - Field of LP
+	 */
+	protected $class_hash = '';
 
 	public function __construct() {
 		$this->source_js = $this->get_source_js();
@@ -112,9 +117,9 @@ abstract class AbstractBlockType extends WP_Block_Type {
 	}
 
 	protected function get_class_hash() {
-		$hash  = bin2hex( random_bytes( 16 ) );
-		$class = 'lp-elements-' . $hash;
-		return $class;
+		$hash             = bin2hex( random_bytes( 16 ) );
+		$timestamp        = time();
+		$this->class_hash = 'lp-elements-' . $timestamp . '-' . $hash;
 	}
 
 	protected function get_output( $content ) {
@@ -124,6 +129,24 @@ abstract class AbstractBlockType extends WP_Block_Type {
 		echo sprintf(
 			'<div %s>%s</div>',
 			$wrapper,
+			$content
+		);
+		$output = ob_get_clean();
+		return $output;
+	}
+
+	protected function get_output_with_class_hash( $attributes, $content ) {
+		$output                    = '';
+		$class_hash                = $this->class_hash ?? '';
+		$classes                   = $attributes['className'] ?? '';
+		$border_classes_and_styles = StyleAttributes::get_classes_and_styles_by_attributes( $attributes );
+		ob_start();
+		echo sprintf(
+			'<div class="%s %s %s" style="%s">%s</div>',
+			$class_hash,
+			$classes,
+			$border_classes_and_styles['classes'],
+			$border_classes_and_styles['styles'],
 			$content
 		);
 		$output = ob_get_clean();
