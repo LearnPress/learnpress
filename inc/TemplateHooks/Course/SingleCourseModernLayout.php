@@ -527,4 +527,33 @@ class SingleCourseModernLayout {
 
 		return Template::combine_components( $section );
 	}
+
+	/**
+	 * Get html info one
+	 *
+	 * @param CourseModel $course
+	 * @param UserModel $user
+	 *
+	 * @return string
+	 * @since 4.2.8.2
+	 * @version 1.0.0
+	 */
+	public function html_course_date( CourseModel $course, UserModel $user ) {
+		$course_date = '';
+
+		$course_date = apply_filters(
+			'learn-press/single-course/modern/header/info-meta',
+			[
+				'last_update' => sprintf(
+					'<div class="item-meta">%s: %s</div>',
+					esc_html__( 'Last updated', 'learnpress' ),
+					esc_attr( get_post_modified_time( get_option( 'date_format' ), true ) )
+				),
+			],
+			$course,
+			$user
+		);
+
+		return Template::combine_components( $course_date );
+	}
 }
