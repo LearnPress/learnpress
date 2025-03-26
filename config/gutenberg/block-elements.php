@@ -6,6 +6,7 @@
  * @version 1.0.0
  */
 
+use LearnPress\Gutenberg\Blocks\BreadCrumb\BreadCrumb;
 use LearnPress\Gutenberg\Blocks\Courses\ListCoursesBlockType;
 use LearnPress\Gutenberg\Blocks\Legacy\SingleCourseBlockLegacy;
 use LearnPress\Gutenberg\Blocks\Legacy\ArchiveCourseBlockLegacy;
@@ -18,6 +19,7 @@ return apply_filters(
 		new SingleCourseBlockLegacy(),
 		new ArchiveCourseBlockLegacy(),
 		new CourseTitleBlockType(),
+		new BreadCrumb(),
 		new SingleCourseBlock(),
 		new ListCoursesBlockType(),
 	)

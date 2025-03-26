@@ -1,0 +1,47 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "learnpress/breadcrumb",
+	"title": "Learnpress Breadcrumb",
+	"category": "learnpress-category",
+	"description": "Renders Learnpress Breadcrumb PHP Template.",
+	"textdomain": "learnpress",
+	"keywords": ["learnpress breadcrumb", "learnpress"],
+	"usesContext": [],
+	"attributes": {
+		"showHome": {
+			"type": "boolean",
+			"default": true
+		},
+		"homeLabel": {
+			"type": "string",
+			"default": "Home"
+		}
+	},
+	"supports": {
+		"multiple": false,
+		"align": ["wide", "full"],
+		"html": false,
+		"typography": {
+			"fontSize": true,
+			"lineHeight": false,
+			"fontWeight": true,
+			"__experimentalFontFamily": false,
+			"__experimentalTextDecoration": false,
+			"__experimentalFontStyle": true,
+			"__experimentalFontWeight": true,
+			"__experimentalLetterSpacing": false,
+			"__experimentalTextTransform": true,
+			"__experimentalDefaultControls": { "fontSize": true }
+		},
+		"color": {
+			"text": true,
+			"link": true,
+			"background": false,
+			"__experimentalDefaultControls": {
+				"text": true,
+				"link": false
+			}
+		}
+	}
+}
