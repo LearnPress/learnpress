@@ -16,6 +16,7 @@ use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseDateBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseDescriptionBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseFeaturesBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseInstructorBlockType;
+use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseRequirementsBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseTargetAudiencesBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseTitleBlockType;
 
@@ -31,6 +32,7 @@ return apply_filters(
 		new CourseDescriptionBlockType(),
 		new CourseFeaturesBlockType(),
 		new CourseTargetAudiencesBlockType(),
+		new CourseRequirementsBlockType(),
 		new BreadCrumb(),
 		new SingleCourseBlock(),
 		new ListCoursesBlockType(),
