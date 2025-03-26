@@ -7,12 +7,12 @@ use LP_Debug;
 use Throwable;
 
 /**
- * Class CourseFeaturesBlockType
+ * Class CourseTargetAudiencesBlockType
  *
  * Handle register, render block template
  */
-class CourseFeaturesBlockType extends AbstractCourseBlockType {
-	public $block_name = 'course-features';
+class CourseTargetAudiencesBlockType extends AbstractCourseBlockType {
+	public $block_name = 'course-target-audiences';
 
 	public function get_supports(): array {
 		return [
@@ -53,12 +53,12 @@ class CourseFeaturesBlockType extends AbstractCourseBlockType {
 				return $html;
 			}
 
-			$html_features = SingleCourseTemplate::instance()->html_features( $courseModel );
-			if ( empty( $html_features ) ) {
+			$html_target_audiences = SingleCourseTemplate::instance()->html_target( $courseModel );
+			if ( empty( $html_target_audiences ) ) {
 				return $html;
 			}
 
-			$html = $this->get_output( $html_features );
+			$html = $this->get_output( $html_target_audiences );
 		} catch ( Throwable $e ) {
 			LP_Debug::error_log( $e );
 		}
