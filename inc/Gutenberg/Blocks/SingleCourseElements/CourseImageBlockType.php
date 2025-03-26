@@ -12,7 +12,7 @@ use Throwable;
  *
  * Handle register, render block template
  */
-class CourseImageInfoBlockType extends AbstractCourseBlockType {
+class CourseImageBlockType extends AbstractCourseBlockType {
 	public $block_name = 'course-image';
 
 	public function get_supports(): array {

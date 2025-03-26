@@ -96,6 +96,7 @@ module.exports = {
 		'./assets/js/dist/blocks/course-instructor-info': './assets/src/apps/js/blocks/course-elements/course-instructor-info/index.js',
 		'./assets/js/dist/blocks/course-comment': './assets/src/apps/js/blocks/course-elements/course-comment/index.js',
 		'./assets/js/dist/blocks/course-image': './assets/src/apps/js/blocks/course-elements/course-image/index.js',
+		'./assets/js/dist/blocks/course-price': './assets/src/apps/js/blocks/course-elements/course-price/index.js',
 		'./assets/js/dist/blocks/breadcrumb': './assets/src/apps/js/blocks/breadcrumb/index.js',
 		'./assets/js/dist/blocks/list-courses': './assets/src/apps/js/blocks/courses/list-courses/index.js',
 
