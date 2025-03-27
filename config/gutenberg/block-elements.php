@@ -11,6 +11,7 @@ use LearnPress\Gutenberg\Blocks\Courses\ListCoursesBlockType;
 use LearnPress\Gutenberg\Blocks\Legacy\SingleCourseBlockLegacy;
 use LearnPress\Gutenberg\Blocks\Legacy\ArchiveCourseBlockLegacy;
 use LearnPress\Gutenberg\Blocks\SingleCourse\SingleCourseBlock;
+use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseButtonBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseCategoriesBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseCommentBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseCurriculumBlockType;
@@ -57,6 +58,7 @@ return apply_filters(
 		new CourseDurationBlockType(),
 		new CourseQuizBlockType(),
 		new CourseLevelBlockType(),
+		new CourseButtonBlockType(),
 		new BreadCrumb(),
 		new SingleCourseBlock(),
 		new ListCoursesBlockType(),

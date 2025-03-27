@@ -686,4 +686,48 @@ class SingleCourseModernLayout {
 
 		return $html_info_learning;
 	}
+
+	/**
+	 * Get html button
+	 *
+	 * @param CourseModel $course
+	 * @param UserModel $user
+	 *
+	 * @return string
+	 * @since 4.2.8.2
+	 * @version 1.0.0
+	 */
+	public function html_button( CourseModel $course, UserModel $user ): string {
+		$user_id = 0;
+		if ( $user instanceof UserModel ) {
+			$user_id = $user->get_id();
+		}
+
+		$userCourseModel         = UserCourseModel::find( $user_id, $course->get_id(), true );
+		$userCourseTemplate      = UserCourseTemplate::instance();
+		$btn_continue_and_finish = [];
+		if ( $userCourseModel instanceof UserCourseModel ) {
+			$btn_continue_and_finish = [
+				'btn_continue' => $userCourseTemplate->html_btn_continue( $userCourseModel ),
+				'btn_finish'   => $userCourseTemplate->html_btn_finish( $userCourseModel ),
+				'btn_retake'   => $userCourseTemplate->html_btn_retake( $userCourseModel ),
+			];
+		}
+
+		$section_buttons = apply_filters(
+			'learn-press/single-course/modern/section-right/buttons',
+			[
+				'wrapper'      => '<div class="course-buttons">',
+				'btn_contact'  => $this->singleCourseTemplate->html_btn_external( $course, $user ),
+				'btn_buy'      => $this->singleCourseTemplate->html_btn_purchase_course( $course, $user ),
+				'btn_enroll'   => $this->singleCourseTemplate->html_btn_enroll_course( $course, $user ),
+				'btn_learning' => Template::combine_components( $btn_continue_and_finish ),
+				'wrapper_end'  => '</div>',
+			],
+			$course,
+			$user
+		);
+
+		return Template::combine_components( $section_buttons );
+	}
 }
