@@ -110,6 +110,7 @@ module.exports = {
 		'./assets/js/dist/blocks/course-filter': './assets/src/apps/js/blocks/course-elements/course-filter/index.js',
 		'./assets/js/dist/blocks/course-search-filter': './assets/src/apps/js/blocks/course-elements/course-search-filter/index.js',
 		'./assets/js/dist/blocks/course-author-filter': './assets/src/apps/js/blocks/course-elements/course-author-filter/index.js',
+		'./assets/js/dist/blocks/course-level-filter': './assets/src/apps/js/blocks/course-elements/course-level-filter/index.js',
 		'./assets/js/dist/blocks/breadcrumb': './assets/src/apps/js/blocks/breadcrumb/index.js',
 		'./assets/js/dist/blocks/list-courses': './assets/src/apps/js/blocks/courses/list-courses/index.js',
 
