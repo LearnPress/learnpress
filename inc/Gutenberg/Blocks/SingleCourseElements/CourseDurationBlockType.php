@@ -7,12 +7,12 @@ use LP_Debug;
 use Throwable;
 
 /**
- * Class CourseLessonBlockType
+ * Class CourseDurationBlockType
  *
  * Handle register, render block template
  */
-class CourseLessonBlockType extends AbstractCourseBlockType {
-	public $block_name = 'course-lesson';
+class CourseDurationBlockType extends AbstractCourseBlockType {
+	public $block_name = 'course-duration';
 
 	public function get_supports(): array {
 		return [
@@ -52,22 +52,22 @@ class CourseLessonBlockType extends AbstractCourseBlockType {
 			if ( ! $courseModel ) {
 				return $html;
 			}
-			$value       = SingleCourseTemplate::instance()->html_count_item( $courseModel, LP_LESSON_CPT );
-			$label       = __( 'Lesson', 'learnpress' );
-			$html_lesson = sprintf(
+			$value         = SingleCourseTemplate::instance()->html_duration( $courseModel );
+			$label         = __( 'Duration', 'learnpress' );
+			$html_duration = sprintf(
 				'<div class="info-meta-item">
-						<span class="info-meta-left"><i class="lp-icon-file-o"></i>%s:</span>
-						<span class="info-meta-right"><div class="course-count-lesson">%s</div></span>
+						<span class="info-meta-left"><i class="lp-icon-clock-o"></i>%s:</span>
+						<span class="info-meta-right"><div class="course-count-duration">%s</div></span>
 					</div>',
 				$label,
 				$value
 			);
 
-			if ( empty( $html_lesson ) ) {
+			if ( empty( $html_duration ) ) {
 				return $html;
 			}
 
-			$html = $this->get_output( $html_lesson );
+			$html = $this->get_output( $html_duration );
 		} catch ( Throwable $e ) {
 			LP_Debug::error_log( $e );
 		}
