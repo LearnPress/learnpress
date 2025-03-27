@@ -83,6 +83,7 @@ module.exports = {
 		'./assets/js/dist/blocks/archive-course-legacy': './assets/src/apps/js/blocks/archive-course-legacy/index.js',
 		'./assets/js/dist/blocks/single-course-legacy': './assets/src/apps/js/blocks/single-course-legacy/index.js',
 		'./assets/js/dist/blocks/single-course': './assets/src/apps/js/blocks/single-course/index.js',
+		'./assets/js/dist/blocks/archive-course': './assets/src/apps/js/blocks/archive-course/index.js',
 		'./assets/js/dist/blocks/course-title': './assets/src/apps/js/blocks/course-elements/course-title/index.js',
 		'./assets/js/dist/blocks/course-instructor': './assets/src/apps/js/blocks/course-elements/course-instructor/index.js',
 		'./assets/js/dist/blocks/course-categories': './assets/src/apps/js/blocks/course-elements/course-categories/index.js',
@@ -106,6 +107,7 @@ module.exports = {
 		'./assets/js/dist/blocks/course-button': './assets/src/apps/js/blocks/course-elements/course-button/index.js',
 		'./assets/js/dist/blocks/course-share': './assets/src/apps/js/blocks/course-elements/course-share/index.js',
 		'./assets/js/dist/blocks/course-feature-review': './assets/src/apps/js/blocks/course-elements/course-feature-review/index.js',
+		'./assets/js/dist/blocks/course-filter': './assets/src/apps/js/blocks/course-elements/course-filter/index.js',
 		'./assets/js/dist/blocks/breadcrumb': './assets/src/apps/js/blocks/breadcrumb/index.js',
 		'./assets/js/dist/blocks/list-courses': './assets/src/apps/js/blocks/courses/list-courses/index.js',
 

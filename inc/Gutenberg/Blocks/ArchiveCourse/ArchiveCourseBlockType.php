@@ -1,16 +1,16 @@
 <?php
-namespace LearnPress\Gutenberg\Blocks\SingleCourse;
+namespace LearnPress\Gutenberg\Blocks\ArchiveCourse;
+
 use LearnPress\Gutenberg\Blocks\AbstractBlockType;
-use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
 use LP_Debug;
 use Throwable;
 /**
- * Class SingleCourseBlock
+ * Class ArchiveCourseBlockType
  *
  * Handle register, render block template
  */
-class SingleCourseBlock extends AbstractBlockType {
-	public $block_name = 'single-course';
+class ArchiveCourseBlockType extends AbstractBlockType {
+	public $block_name = 'archive-course';
 
 	/**
 	 * Render content of block tag
@@ -22,12 +22,14 @@ class SingleCourseBlock extends AbstractBlockType {
 	public function render_content_block_template( array $attributes, $content, $block ): string {
 		$html = '';
 
+		$class_name = $attributes['className'] ?? '';
+
 		try {
 			ob_start();
 			echo sprintf(
-				'<div class="lp-single-course"> %s %s </div>',
+				'<div class="lp-archive-courses %s"> %s </div>',
+				$class_name,
 				$content,
-				SingleCourseTemplate::instance()->html_content_course_curriculum()
 			);
 			$html = ob_get_clean();
 		} catch ( Throwable $e ) {

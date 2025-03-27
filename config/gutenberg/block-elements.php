@@ -6,11 +6,13 @@
  * @version 1.0.0
  */
 
+use LearnPress\Gutenberg\Blocks\ArchiveCourse\ArchiveCourseBlockType;
+use LearnPress\Gutenberg\Blocks\ArchiveCourseElements\CourseFilterBlockType;
 use LearnPress\Gutenberg\Blocks\BreadCrumb\BreadCrumb;
 use LearnPress\Gutenberg\Blocks\Courses\ListCoursesBlockType;
 use LearnPress\Gutenberg\Blocks\Legacy\SingleCourseBlockLegacy;
 use LearnPress\Gutenberg\Blocks\Legacy\ArchiveCourseBlockLegacy;
-use LearnPress\Gutenberg\Blocks\SingleCourse\SingleCourseBlock;
+use LearnPress\Gutenberg\Blocks\SingleCourse\SingleCourseBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseButtonBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseCategoriesBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseCommentBlockType;
@@ -63,8 +65,10 @@ return apply_filters(
 		new CourseButtonBlockType(),
 		new CourseShareBlockType(),
 		new CourseFeatureReviewBlockType(),
+		new CourseFilterBlockType(),
 		new BreadCrumb(),
-		new SingleCourseBlock(),
+		new SingleCourseBlockType(),
+		new ArchiveCourseBlockType(),
 		new ListCoursesBlockType(),
 	)
 );
