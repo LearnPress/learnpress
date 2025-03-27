@@ -101,6 +101,7 @@ module.exports = {
 		'./assets/js/dist/blocks/course-student': './assets/src/apps/js/blocks/course-elements/course-student/index.js',
 		'./assets/js/dist/blocks/course-lesson': './assets/src/apps/js/blocks/course-elements/course-lesson/index.js',
 		'./assets/js/dist/blocks/course-duration': './assets/src/apps/js/blocks/course-elements/course-duration/index.js',
+		'./assets/js/dist/blocks/course-quiz': './assets/src/apps/js/blocks/course-elements/course-quiz/index.js',
 		'./assets/js/dist/blocks/breadcrumb': './assets/src/apps/js/blocks/breadcrumb/index.js',
 		'./assets/js/dist/blocks/list-courses': './assets/src/apps/js/blocks/courses/list-courses/index.js',
 

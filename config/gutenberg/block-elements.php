@@ -25,6 +25,7 @@ use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseInstructorInfoBlockTy
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseLessonBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CoursePriceBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseProgressBlockType;
+use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseQuizBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseRequirementsBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseStudentBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseTargetAudiencesBlockType;
@@ -53,6 +54,7 @@ return apply_filters(
 		new CourseStudentBlockType(),
 		new CourseLessonBlockType(),
 		new CourseDurationBlockType(),
+		new CourseQuizBlockType(),
 		new BreadCrumb(),
 		new SingleCourseBlock(),
 		new ListCoursesBlockType(),
