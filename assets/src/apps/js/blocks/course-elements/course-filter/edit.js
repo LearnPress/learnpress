@@ -79,7 +79,7 @@ export const edit = ( props ) => {
 							'learnpress/course-author-filter',
 							'learnpress/course-level-filter',
 							'learnpress/course-price-filter',
-							'learnpress/course-category-filter',
+							'learnpress/course-categories-filter',
 							'learnpress/course-tag-filter',
 							'learnpress/course-review-filter',
 							'learnpress/button-submit-filter',

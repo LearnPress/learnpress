@@ -111,6 +111,11 @@ module.exports = {
 		'./assets/js/dist/blocks/course-search-filter': './assets/src/apps/js/blocks/course-elements/course-search-filter/index.js',
 		'./assets/js/dist/blocks/course-author-filter': './assets/src/apps/js/blocks/course-elements/course-author-filter/index.js',
 		'./assets/js/dist/blocks/course-level-filter': './assets/src/apps/js/blocks/course-elements/course-level-filter/index.js',
+		'./assets/js/dist/blocks/course-price-filter': './assets/src/apps/js/blocks/course-elements/course-price-filter/index.js',
+		'./assets/js/dist/blocks/course-categories-filter': './assets/src/apps/js/blocks/course-elements/course-categories-filter/index.js',
+		'./assets/js/dist/blocks/course-tag-filter': './assets/src/apps/js/blocks/course-elements/course-tag-filter/index.js',
+		'./assets/js/dist/blocks/button-submit-filter': './assets/src/apps/js/blocks/course-elements/button-submit-filter/index.js',
+		'./assets/js/dist/blocks/button-reset-filter': './assets/src/apps/js/blocks/course-elements/button-reset-filter/index.js',
 		'./assets/js/dist/blocks/breadcrumb': './assets/src/apps/js/blocks/breadcrumb/index.js',
 		'./assets/js/dist/blocks/list-courses': './assets/src/apps/js/blocks/courses/list-courses/index.js',
 

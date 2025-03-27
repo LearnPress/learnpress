@@ -1,0 +1,55 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "learnpress/button-submit-filter",
+	"title": "Button Submit Filter",
+	"category": "learnpress-course-elements",
+	"description": "Renders template Button Submit Filter PHP templates.",
+	"textdomain": "learnpress",
+	"keywords": ["category button submit filter course", "learnpress"],
+	"usesContext": [],
+	"supports": {
+		"multiple": false,
+		"align": ["wide", "full"],
+		"html": false,
+		"typography": {
+			"fontSize": true,
+			"lineHeight": false,
+			"fontWeight": true,
+			"__experimentalFontFamily": false,
+			"__experimentalTextDecoration": false,
+			"__experimentalFontStyle": false,
+			"__experimentalFontWeight": true,
+			"__experimentalLetterSpacing": false,
+			"__experimentalTextTransform": true,
+			"__experimentalDefaultControls": { "fontSize": true }
+		},
+		"color": {
+			"background": true,
+			"text": true,
+			"__experimentalDefaultControls": {
+				"background": true,
+				"text": true
+			}
+		},
+		"__experimentalBorder": {
+			"color": true,
+			"radius": true,
+			"width": true,
+			"__experimentalDefaultControls": {
+				"width": false,
+				"color": false,
+				"radius": false
+			}
+		},
+		"spacing": {
+			"padding": true,
+			"margin": true,
+			"__experimentalDefaultControls": {
+				"padding": false,
+				"margin": false
+			}
+		}
+	},
+	"ancestor": ["learnpress/course-filter"]
+}
