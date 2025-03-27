@@ -2,6 +2,7 @@
 
 namespace LearnPress\Gutenberg\Blocks\SingleCourseElements;
 
+use LearnPress\Gutenberg\Utils\StyleAttributes;
 use LearnPress\TemplateHooks\Course\SingleCourseModernLayout;
 use LP_Debug;
 use Throwable;
@@ -53,18 +54,33 @@ class CourseButtonBlockType extends AbstractCourseBlockType {
 			if ( ! $courseModel ) {
 				return $html;
 			}
-
 			$html_button = SingleCourseModernLayout::instance()->html_button( $courseModel, $userModel );
 
 			if ( empty( $html_button ) ) {
 				return $html;
 			}
 
-			$html = $this->get_output( $html_button );
+			$this->get_class_hash();
+			$this->enqueue_assets();
+			$this->inline_styles( $attributes );
+			$html = $this->get_output_with_class_hash( $attributes, $html_button, [ 'margin' ] );
+
 		} catch ( Throwable $e ) {
 			LP_Debug::error_log( $e );
 		}
 
 		return $html;
+	}
+
+	public function get_inline_style( $attributes ) {
+		$border_classes_and_styles = StyleAttributes::get_classes_and_styles_by_attributes( $attributes, [ 'font_size', 'padding', 'text_color','background_color', 'border_color', 'border_radius','border_width' ] );
+		$class_style               = '.lp-single-course .lp-single-course-main .lp-single-course-main__right__inner .' . $this->class_hash;
+		return $class_style . ' .course-buttons .lp-button {' . $border_classes_and_styles['styles'] . '}
+		' . $class_style . ' .has-border-color .course-buttons .lp-button { border-style: solid; }';
+	}
+
+	public function inline_styles( $attributes ) {
+		$styles = $this->get_inline_style( $attributes );
+		wp_add_inline_style( 'lp-blocks-style', $styles );
 	}
 }

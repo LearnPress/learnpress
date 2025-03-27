@@ -135,11 +135,11 @@ abstract class AbstractBlockType extends WP_Block_Type {
 		return $output;
 	}
 
-	protected function get_output_with_class_hash( $attributes, $content ) {
+	protected function get_output_with_class_hash( $attributes, $content, $properties = array(), $exclude = array() ) {
 		$output                    = '';
 		$class_hash                = $this->class_hash ?? '';
 		$classes                   = $attributes['className'] ?? '';
-		$border_classes_and_styles = StyleAttributes::get_classes_and_styles_by_attributes( $attributes );
+		$border_classes_and_styles = StyleAttributes::get_classes_and_styles_by_attributes( $attributes, $properties, $exclude );
 		ob_start();
 		echo sprintf(
 			'<div class="%s %s %s" style="%s">%s</div>',
