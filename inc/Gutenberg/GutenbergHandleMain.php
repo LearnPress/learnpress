@@ -76,7 +76,7 @@ class GutenbergHandleMain {
 			wp_register_script(
 				$block_template->name, // Block name
 				$block_template->source_js, // Block script
-				array( 'wp-blocks' ), // Dependencies
+				[], // Dependencies
 				uniqid(), // Version,
 				[ 'strategy' => 'async' ]
 			);

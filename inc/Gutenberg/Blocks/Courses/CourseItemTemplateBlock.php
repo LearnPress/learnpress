@@ -13,8 +13,8 @@ use WP_Query;
  *
  * Handle register, render block template
  */
-class CourseItemBlock extends AbstractBlockType {
-	public $name = 'course-item';
+class CourseItemTemplateBlock extends AbstractBlockType {
+	public $name = 'course-item-template';
 
 	/**
 	 * Render content of block tag

@@ -2,21 +2,18 @@ import { InnerBlocks,
 	useBlockProps,
 	BlockContextProvider,
 	useInnerBlocksProps,
+	InspectorControls,
 	// eslint-disable-next-line @wordpress/no-unsafe-wp-apis
 	__experimentalUseBlockPreview as useBlockPreview,
 	store as blockEditorStore,
 } from '@wordpress/block-editor';
 import { useSelect } from '@wordpress/data';
 import { memo, useMemo, useState, useEffect } from '@wordpress/element';
-
-const TEMPLATE = [
-	[ 'learnpress/course-title' ],
-];
+import { PanelBody, RangeControl } from '@wordpress/components';
+import { __ } from '@wordpress/i18n';
 
 function PostTemplateInnerBlocks( { classList } ) {
-	const innerBlocksProps = useInnerBlocksProps(
-		{ template: TEMPLATE }
-	);
+	const innerBlocksProps = useInnerBlocksProps();
 	return <li { ...innerBlocksProps } />;
 }
 
@@ -56,10 +53,11 @@ function PostTemplateBlockPreview(
 
 const MemoizedPostTemplateBlockPreview = memo( PostTemplateBlockPreview );
 
-const Edit = ( { clientId, context } ) => {
+const Edit = ( { clientId, context, attributes, setAttributes } ) => {
 	const blockProps = useBlockProps();
 	const [ activeBlockContextId, setActiveBlockContextId ] = useState();
 	const lpCoursesData = context.lpCoursesData ?? undefined;
+	const { columns } = attributes;
 
 	const coursesData = useMemo(
 		() => ( lpCoursesData ? lpCoursesData.data.courses : [] ),
@@ -85,8 +83,22 @@ const Edit = ( { clientId, context } ) => {
 	);
 
 	return (
-		<ul { ...blockProps }>
-			{ blockContexts &&
+		<>
+			<InspectorControls>
+				<PanelBody title={ __( 'Layout Settings' ) }>
+					<RangeControl
+						label={ __( 'Columns' ) }
+						value={ columns }
+						onChange={ ( value ) =>
+							setAttributes( { columns: value } )
+						}
+						min={ 1 }
+						max={ 12 }
+					/>
+				</PanelBody>
+			</InspectorControls>
+			<ul { ...blockProps }>
+				{ blockContexts &&
 				blockContexts.map( ( blockContext ) => (
 					<BlockContextProvider
 						key={ blockContext.postId }
@@ -114,7 +126,8 @@ const Edit = ( { clientId, context } ) => {
 						/>
 					</BlockContextProvider>
 				) ) }
-		</ul>
+			</ul>
+		</>
 	);
 };
 

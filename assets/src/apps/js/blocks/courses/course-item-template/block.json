@@ -1,18 +1,24 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
-	"name": "learnpress/course-item",
-	"title": "Course Item",
-	"category": "learnpress-category",
+	"name": "learnpress/course-item-template",
+	"title": "Course Item Template",
+	"category": "",
 	"description": "Course Item Template",
 	"textdomain": "learnpress",
 	"keywords": [
 		"course item",
 		"learnpress"
 	],
-	"usesContext": [ "lpCourseQuery", "lpCoursesData", "lpCourseData", "postTitle" ],
+	"usesContext": [ "lpCourseQuery", "lpCoursesData" ],
 	"supports": {
 		"align": true
+	},
+	"attributes": {
+		"columns": {
+			"type": "number",
+			"default": 1
+		}
 	},
 	"ancestor": [ "learnpress/list-courses" ]
 }

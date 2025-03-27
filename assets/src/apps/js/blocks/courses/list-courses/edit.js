@@ -9,9 +9,9 @@ const Edit = ( props ) => {
 	const { query, coursesData, queryID } = attributes;
 
 	const QUERY_LOOP_TEMPLATE = [
-		[ 'learnpress/course-item', { postTest: 'lp_lesson' }, [
-			[ 'core/post-excerpt' ],
+		[ 'learnpress/course-item-template', { postTest: 'lp_lesson' }, [
 			[ 'learnpress/course-title' ],
+			[ 'core/site-title' ],
 		] ],
 	];
 
@@ -23,8 +23,7 @@ const Edit = ( props ) => {
 				method: 'GET',
 			} );
 
-			const data = await response.json();
-			return data;
+			return await response.json();
 		} catch ( error ) {
 			console.error( 'Error fetching LearnPress courses:', error );
 		}

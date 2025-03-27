@@ -16,9 +16,6 @@
 		"coursesData": {
 			"type": "object"
 		},
-		"queryId": {
-			"type": "number"
-		},
 		"query": {
 			"type": "object",
 			"default": {
@@ -29,8 +26,6 @@
 		}
 	},
 	"providesContext": {
-		"queryId": "queryId",
-		"query": "query",
 		"lpCourseQuery": "query",
 		"lpCoursesData": "coursesData"
 	},
