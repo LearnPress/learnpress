@@ -134,7 +134,7 @@ export const edit = ( props ) => {
 											'learnpress/course-button',
 											{},
 										],
-										[ 'learnpress/share-course', {} ],
+										[ 'learnpress/course-share', {} ],
 										[
 											'learnpress/course-feature-review',
 											{},
