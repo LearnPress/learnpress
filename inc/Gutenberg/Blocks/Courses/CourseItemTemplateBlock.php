@@ -1,5 +1,7 @@
 <?php
+
 namespace LearnPress\Gutenberg\Blocks\Courses;
+
 use LearnPress\Gutenberg\Blocks\AbstractBlockType;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\Courses;
@@ -16,6 +18,10 @@ use WP_Query;
 class CourseItemTemplateBlock extends AbstractBlockType {
 	public $name = 'course-item-template';
 
+	public function get_attributes() {
+		return [ 'columns' ];
+	}
+
 	/**
 	 * Render content of block tag
 	 *
@@ -31,41 +37,12 @@ class CourseItemTemplateBlock extends AbstractBlockType {
 
 			$wrapper_attributes = get_block_wrapper_attributes();
 
-			$filter  = new \LP_Course_Filter();
-			$total   = 0;
-			$courses = Courses::get_courses( $filter, $total );
+			$block_instance = $block->parsed_block;
 
-			foreach ( $courses as $course ) {
-				$courseModel = CourseModel::find( $course->ID );
-				if ( ! $courseModel ) {
-					continue;
-				}
-				$block_instance = $block->parsed_block;
-
-				$post_id              = get_the_ID();
-				$post_type            = get_post_type();
-				$filter_block_context = static function ( $context ) use ( $courseModel, $post_type, $post_id ) {
-					$context['courseModel'] = $courseModel;
-					$context['postType']    = $post_type;
-					$context['postId']      = $post_id;
-					return $context;
-				};
-
-				// Use an early priority to so that other 'render_block_context' filters have access to the values.
-				add_filter( 'render_block_context', $filter_block_context, 1 );
-				// Render the inner blocks of the Post Template block with `dynamic` set to `false` to prevent calling
-				// `render_callback` and ensure that no wrapper markup is included.
-				$block_content = ( new WP_Block( $block_instance ) )->render( array( 'dynamic' => false ) );
-				remove_filter( 'render_block_context', $filter_block_context, 1 );
-
-				$post_classes = implode( ' ', get_post_class( 'wp-block-post' ) );
-
-				$content .= '<li class="' . esc_attr( $post_classes ) . '">' . $block_content . '</li>';
-
-			}
+			$content = $block->render( [ 'dynamic' => false ] );
 
 			return sprintf(
-				'<ul %1$s>%2$s</ul>',
+				'<li %1$s>%2$s</li>',
 				$wrapper_attributes,
 				$content
 			);

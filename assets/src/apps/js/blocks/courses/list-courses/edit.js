@@ -5,8 +5,8 @@ import { useState, useEffect } from '@wordpress/element';
 
 const Edit = ( props ) => {
 	const blockProps = useBlockProps();
-	const { attributes, setAttributes, clientId } = props;
-	const { query, coursesData, queryID } = attributes;
+	const { attributes, setAttributes } = props;
+	const { query, coursesData } = attributes;
 
 	const QUERY_LOOP_TEMPLATE = [
 		[ 'learnpress/course-item-template', { postTest: 'lp_lesson' }, [
@@ -50,36 +50,26 @@ const Edit = ( props ) => {
 				<PanelBody title={ __( 'Query Settings' ) }>
 					<RangeControl
 						label={ __( 'Posts per page' ) }
-						value={ query.perPage }
-						onChange={ ( perPage ) =>
-							setAttributes( { query: { ...query, perPage } } )
+						value={ query.limit }
+						onChange={ ( limit ) =>
+							setAttributes( { query: { ...query, limit } } )
 						}
 						min={ 1 }
 						max={ 100 }
 					/>
 					<SelectControl
 						label={ __( 'Order by' ) }
-						value={ query.orderBy }
+						value={ query.order_by }
 						options={ [
-							{ label: __( 'Date' ), value: 'date' },
-							{ label: __( 'Title' ), value: 'title' },
-							{ label: __( 'Modified' ), value: 'modified' },
+							{ label: __( 'Date' ), value: 'post_date' },
+							{ label: __( 'Title A-Z' ), value: 'post_title' },
+							{ label: __( 'Title Z-A' ), value: 'post_title_desc' },
+							{ label: __( 'Price high to low' ), value: 'price' },
+							{ label: __( 'Price low to high' ), value: 'price_low' },
+							{ label: __( 'Menu Order' ), value: 'menu_order' },
 						] }
-						onChange={ ( orderBy ) =>
-							setAttributes( { query: { ...query, orderBy } } )
-						}
-					/>
-					<SelectControl
-						label={ __( 'Order' ) }
-						value={ query.order }
-						options={ [
-							{ label: __( 'Descending' ), value: 'desc' },
-							{ label: __( 'Ascending' ), value: 'asc' },
-						] }
-						onChange={ ( order ) =>
-							setAttributes( {
-								query: { ...query, order },
-							} )
+						onChange={ ( order_by ) =>
+							setAttributes( { query: { ...query, order_by } } )
 						}
 					/>
 				</PanelBody>

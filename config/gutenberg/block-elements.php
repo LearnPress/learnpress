@@ -6,8 +6,8 @@
  * @version 1.0.0
  */
 
-use LearnPress\Gutenberg\Blocks\Courses\CourseItemTemplateBlock;
 use LearnPress\Gutenberg\Blocks\Courses\ListCoursesBlockType;
+use LearnPress\Gutenberg\Blocks\Courses\CourseItemTemplateBlock;
 use LearnPress\Gutenberg\Blocks\Legacy\SingleCourseBlockLegacy;
 use LearnPress\Gutenberg\Blocks\Legacy\ArchiveCourseBlockLegacy;
 use LearnPress\Gutenberg\Blocks\SingleCourse\SingleCourseBlock;

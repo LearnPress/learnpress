@@ -19,9 +19,8 @@
 		"query": {
 			"type": "object",
 			"default": {
-				"perPage": 3,
-				"order": "desc",
-				"orderBy": "date"
+				"limit": 3,
+				"order_by": "post_date"
 			}
 		}
 	},
