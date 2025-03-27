@@ -7,7 +7,7 @@ import { InnerBlocks,
 	store as blockEditorStore,
 } from '@wordpress/block-editor';
 import { useSelect } from '@wordpress/data';
-import { memo, useMemo, useState } from '@wordpress/element';
+import { memo, useMemo, useState, useEffect } from '@wordpress/element';
 
 const TEMPLATE = [
 	[ 'learnpress/course-title' ],
@@ -15,7 +15,7 @@ const TEMPLATE = [
 
 function PostTemplateInnerBlocks( { classList } ) {
 	const innerBlocksProps = useInnerBlocksProps(
-		{ template: TEMPLATE, __unstableDisableLayoutClassNames: true }
+		{ template: TEMPLATE }
 	);
 	return <li { ...innerBlocksProps } />;
 }
@@ -56,24 +56,32 @@ function PostTemplateBlockPreview(
 
 const MemoizedPostTemplateBlockPreview = memo( PostTemplateBlockPreview );
 
-const Edit = ( { clientId } ) => {
+const Edit = ( { clientId, context } ) => {
 	const blockProps = useBlockProps();
 	const [ activeBlockContextId, setActiveBlockContextId ] = useState();
-	const { posts, blocks } = useSelect( ( select ) => {
+	const lpCoursesData = context.lpCoursesData ?? undefined;
+
+	const coursesData = useMemo(
+		() => ( lpCoursesData ? lpCoursesData.data.courses : [] ),
+		[ lpCoursesData ]
+	);
+
+	const { blocks } = useSelect( ( select ) => {
 		const { getBlocks } = select( blockEditorStore );
 
 		return {
-			posts: select( 'core' ).getEntityRecords( 'postType', 'lp_course' ),
 			blocks: getBlocks( clientId ),
 		};
 	}, [ clientId ] );
 
 	const blockContexts = useMemo(
 		() =>
-			posts?.map( ( post ) => ( {
-				postId: post.id,
+			lpCoursesData?.data?.courses?.map( ( post ) => ( {
+				lpCourseData: post,
+				postId: post.ID,
+				postTitle: post.post_title,
 			} ) ),
-		[ posts ]
+		[ lpCoursesData ]
 	);
 
 	return (

@@ -10,7 +10,7 @@
 		"course item",
 		"learnpress"
 	],
-	"usesContext": [],
+	"usesContext": [ "lpCourseQuery", "lpCoursesData", "lpCourseData", "postTitle" ],
 	"supports": {
 		"align": true
 	},

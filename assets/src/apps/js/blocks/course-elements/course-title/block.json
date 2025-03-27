@@ -7,7 +7,7 @@
 	"description": "Course title.",
 	"textdomain": "learnpress",
 	"keywords": ["course title", "learnpress"],
-	"usesContext": [],
+	"usesContext": [ "lpCourseQuery", "lpCoursesData", "lpCourseData", "postTitle" ],
 	"supports": {
 		"multiple": true,
 		"align": ["wide", "full"],

@@ -4,9 +4,11 @@ namespace LearnPress\Gutenberg\Blocks\Courses;
 
 use LearnPress\Gutenberg\Blocks\AbstractBlockType;
 use LearnPress\Gutenberg\Utils\StyleAttributes;
+use LearnPress\Models\Courses;
 use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
 use LP_Debug;
 use Throwable;
+use WP_Block;
 
 /**
  * Class ListCoursesBlockType
@@ -17,7 +19,7 @@ class ListCoursesBlockType extends AbstractBlockType {
 	public $source_js       = LP_PLUGIN_URL . 'assets/js/dist/blocks/list-courses.js';
 	public $path_block_json = LP_PLUGIN_PATH . 'assets/src/apps/js/blocks/courses/list-courses';
 
-/*	public function get_supports(): array {
+	/*  public function get_supports(): array {
 		return [
 			'color'      => [
 				'gradients'  => true,
@@ -39,15 +41,19 @@ class ListCoursesBlockType extends AbstractBlockType {
 		$html = '';
 
 		try {
-
 			$wrapper = get_block_wrapper_attributes();
-			ob_start();
-			echo sprintf(
-				'<div %s>%s</div>',
+			// Get an instance of the current Post Template block.
+			$block_instance = $block->parsed_block;
+			$wp_block       = new WP_Block( $block_instance );
+			$block_content  = $wp_block->render( array( 'dynamic' => false ) );
+
+			$context = '<li>' . $block_content . '</li>';
+
+			$html = sprintf(
+				'<ul %s>%s</ul>',
 				$wrapper,
-				'List Courses'
+				$context
 			);
-			$html = ob_get_clean();
 		} catch ( Throwable $e ) {
 			LP_Debug::error_log( $e );
 		}

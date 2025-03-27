@@ -3,10 +3,13 @@ import { useBlockProps } from '@wordpress/block-editor';
 
 const Edit = ( props ) => {
 	const blockProps = useBlockProps();
+	const { attributes, setAttributes, context } = props;
+
+	const { lpCourseData } = context;
 
 	return (
 		<div { ...blockProps }>
-			<div>Course Title</div>
+			<div>{ lpCourseData?.post_title ?? __( 'Course Title', 'learnpress' ) }</div>
 		</div>
 	);
 };

@@ -35,6 +35,7 @@
 		"@wordpress/components": "29.5.1",
 		"@wordpress/icons": "10.19.1",
 		"@wordpress/data": "10.19.1",
+		"@wordpress/core-data": "7.19.2",
 		"del": "^6.1.1",
 		"gulp": "^4.0.2",
 		"gulp-cache": "^1.1.3",

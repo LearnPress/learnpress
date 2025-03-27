@@ -8,10 +8,34 @@
 	"textdomain": "learnpress",
 	"keywords": [
 		"list courses",
-		"learnpress"
+		"learnpress",
+		"query loop"
 	],
 	"usesContext": [],
+	"attributes": {
+		"coursesData": {
+			"type": "object"
+		},
+		"queryId": {
+			"type": "number"
+		},
+		"query": {
+			"type": "object",
+			"default": {
+				"perPage": 3,
+				"order": "desc",
+				"orderBy": "date"
+			}
+		}
+	},
+	"providesContext": {
+		"queryId": "queryId",
+		"query": "query",
+		"lpCourseQuery": "query",
+		"lpCoursesData": "coursesData"
+	},
 	"supports": {
-		"align": true
+		"html": false,
+		"align": ["wide", "full"]
 	}
 }
