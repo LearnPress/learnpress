@@ -57,8 +57,9 @@ class CourseTitleBlockType extends AbstractCourseBlockType {
 			$this->get_class_hash();
 			$this->enqueue_assets();
 			$this->inline_styles( $attributes );
+			$tag                  = $attributes['tag'] ?? 'h3';
 			$singleCourseTemplate = SingleCourseTemplate::instance();
-			$html                 = $this->get_output_with_class_hash( $attributes, $singleCourseTemplate->html_title( $courseModel ) );
+			$html                 = $this->get_output_with_class_hash( $attributes, $singleCourseTemplate->html_title( $courseModel, $tag ) );
 		} catch ( Throwable $e ) {
 			LP_Debug::error_log( $e );
 		}

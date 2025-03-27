@@ -7,6 +7,12 @@
 	"description": "Course title.",
 	"textdomain": "learnpress",
 	"keywords": ["course title", "learnpress"],
+	"attributes": {
+		"tag": {
+			"type": "string",
+			"default": "h3"
+		}
+	},
 	"usesContext": [],
 	"supports": {
 		"multiple": true,
