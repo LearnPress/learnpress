@@ -3,10 +3,7 @@
 namespace LearnPress\Gutenberg\Blocks\ArchiveCourseElements;
 
 use LearnPress\Gutenberg\Blocks\ArchiveCourseElements\AbstractArchiveCourseBlockType;
-use LP_Debug;
-use StyleAttributes;
-use Throwable;
-
+use LearnPress\Gutenberg\Utils\StyleAttributes;
 /**
  * Class CourseTagFilterBlockType
  *
@@ -47,14 +44,9 @@ class CourseTagFilterBlockType extends AbstractArchiveCourseBlockType {
 	 */
 	public function render_content_block_template( array $attributes, $content, $block ): string {
 		$html = '';
-
-		try {
-			$this->enqueue_assets();
-			$this->inline_styles( $attributes );
-			$html = 'tag';
-		} catch ( Throwable $e ) {
-			LP_Debug::error_log( $e );
-		}
+		$this->enqueue_assets();
+		$this->inline_styles( $attributes );
+		$html = 'tag';
 
 		return $html;
 	}
