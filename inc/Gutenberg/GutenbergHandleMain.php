@@ -240,11 +240,11 @@ class GutenbergHandleMain {
 
 	public function get_edit_post_id() {
 		$postIdEdit = '';
-		if ( isset( $_REQUEST['postId'] ) && ! empty( $_REQUEST['postId'] ) ) {
+		if ( ! empty( $_REQUEST['postId'] ) ) {
 			$postIdEdit = $_REQUEST['postId'];
-		} elseif ( isset( $_REQUEST['post'] ) && ! empty( $_REQUEST['post'] ) ) {
+		} elseif ( ! empty( $_REQUEST['post'] ) ) {
 			$postIdEdit = $_REQUEST['post'];
-		} elseif ( isset( $_REQUEST['post_id'] ) && ! empty( $_REQUEST['post_id'] ) ) {
+		} elseif ( ! empty( $_REQUEST['post_id'] ) ) {
 			$postIdEdit = $_REQUEST['post_id'];
 		} elseif ( function_exists( 'get_the_ID' ) && get_the_ID() ) {
 			$postIdEdit = get_the_ID();
