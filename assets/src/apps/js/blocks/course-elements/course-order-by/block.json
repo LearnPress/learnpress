@@ -1,0 +1,26 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "learnpress/course-order-by",
+	"title": "Course Order By",
+	"category": "learnpress-course-elements",
+	"icon": "search",
+	"description": "Renders Template Order By Course PHP templates.",
+	"textdomain": "learnpress",
+	"keywords": ["order by archive course", "learnpress"],
+	"attributes": {
+		"orderBy": {
+			"type": "string",
+			"default": "post_date"
+		}
+	},
+	"usesContext": [],
+	"supports": {
+		"inserter": true,
+		"reusable": true,
+		"reorder": true,
+		"html": false,
+		"multiple": true
+	},
+	"ancestor": ["learnpress/list-courses"]
+}

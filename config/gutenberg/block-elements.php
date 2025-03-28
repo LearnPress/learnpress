@@ -12,7 +12,9 @@ use LearnPress\Gutenberg\Blocks\ArchiveCourseElements\CourseAuthorFilterBlockTyp
 use LearnPress\Gutenberg\Blocks\ArchiveCourseElements\CourseCategoriesFilterBlockType;
 use LearnPress\Gutenberg\Blocks\ArchiveCourseElements\CourseFilterBlockType;
 use LearnPress\Gutenberg\Blocks\ArchiveCourseElements\CourseLevelFilterBlockType;
+use LearnPress\Gutenberg\Blocks\ArchiveCourseElements\CourseOrderByBlockType;
 use LearnPress\Gutenberg\Blocks\ArchiveCourseElements\CoursePriceFilterBlockType;
+use LearnPress\Gutenberg\Blocks\ArchiveCourseElements\CourseSearchBlockType;
 use LearnPress\Gutenberg\Blocks\ArchiveCourseElements\CourseSearchFilterBlockType;
 use LearnPress\Gutenberg\Blocks\ArchiveCourseElements\CourseTagFilterBlockType;
 use LearnPress\Gutenberg\Blocks\BreadCrumb\BreadCrumb;
@@ -81,6 +83,8 @@ return apply_filters(
 		new CourseButtonBlockType(),
 		new CourseShareBlockType(),
 		new CourseFeatureReviewBlockType(),
+		new CourseSearchBlockType(),
+		new CourseOrderByBlockType(),
 		new CourseFilterBlockType(),
 		new CourseSearchFilterBlockType(),
 		new CourseAuthorFilterBlockType(),
