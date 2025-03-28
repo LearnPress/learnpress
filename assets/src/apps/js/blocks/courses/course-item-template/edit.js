@@ -52,18 +52,14 @@ function PostTemplateBlockPreview(
 }
 
 const fetchLearnPressCourses = async ( courseQuery, signal ) => {
-	try {
-		const url = 'http://lp.test/wp-json/lp/v1/courses/archive-course';
-		const params = '?return_type=json';
-		const response = await fetch( url + params, {
-			method: 'GET',
-			signal,
-		} );
+	const url = 'http://lp.test/wp-json/lp/v1/courses/archive-course';
+	const params = '?return_type=json';
+	const response = await fetch( url + params, {
+		method: 'GET',
+		signal,
+	} );
 
-		return await response.json();
-	} catch ( error ) {
-		console.error( 'Error fetching LearnPress courses:', error );
-	}
+	return await response.json();
 };
 
 const MemoizedPostTemplateBlockPreview = memo( PostTemplateBlockPreview );
@@ -82,10 +78,6 @@ const Edit = ( { clientId, context, attributes, setAttributes } ) => {
 		let signal, controller;
 		const fetchCourses = async () => {
 			try {
-				if ( undefined !== controller ) {
-					controller.abort();
-				}
-
 				setLoadingAPI( 1 );
 				controller = new AbortController();
 				signal = controller.signal;
@@ -94,7 +86,9 @@ const Edit = ( { clientId, context, attributes, setAttributes } ) => {
 				setCoursesData( data );
 				setListCourses( data.data.courses );
 			} catch ( error ) {
-				console.error( 'Failed to fetch courses:', error );
+				if ( error.name !== 'AbortError' ) {
+					console.error( 'Failed to fetch courses:', error );
+				}
 			} finally {
 				setLoadingAPI( 0 );
 			}
