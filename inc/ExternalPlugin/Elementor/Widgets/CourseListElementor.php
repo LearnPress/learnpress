@@ -37,6 +37,8 @@ class CourseListElementor extends LPElementorWidgetBase {
 			$filter->limit = $settings['limit'] ?? 5;
 			$sort_int      = $settings['sort_in'] ?? '';
 
+			$filter->post_status = [ 'publish' ];
+
 			$layout = $settings['layout'] ?? 'grid';
 
 			if ( ! empty( $settings['category_ids'] ) ) {
