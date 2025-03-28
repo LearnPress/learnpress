@@ -1,0 +1,49 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "learnpress/instructor-social",
+	"title": "Instructor Social",
+	"category": "learnpress-course-elements",
+	"icon": "format-image",
+	"description": "Renders template Instructor Social PHP templates.",
+	"textdomain": "learnpress",
+	"keywords": ["instructor social single", "learnpress"],
+	"attributes": {
+		"target": {
+			"type": "boolean",
+			"default": false
+		},
+		"nofollow": {
+			"type": "boolean",
+			"default": false
+		}
+	},
+	"usesContext": [],
+	"supports": {
+		"multiple": false,
+		"align": ["wide", "full"],
+		"html": false,
+		"typography": {
+			"fontSize": true,
+			"lineHeight": false,
+			"fontWeight": true,
+			"__experimentalFontFamily": false,
+			"__experimentalTextDecoration": false,
+			"__experimentalFontStyle": false,
+			"__experimentalFontWeight": true,
+			"__experimentalLetterSpacing": false,
+			"__experimentalTextTransform": true,
+			"__experimentalDefaultControls": { "fontSize": true }
+		},
+		"color": {
+			"background": false,
+			"text": true,
+			"link": false,
+			"gradients": false,
+			"__experimentalDefaultControls": {
+				"text": true
+			}
+		}
+	},
+	"ancestor": ["learnpress/single-instructor"]
+}
