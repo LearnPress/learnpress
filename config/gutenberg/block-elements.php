@@ -18,6 +18,7 @@ use LearnPress\Gutenberg\Blocks\ArchiveCourseElements\CourseSearchFilterBlockTyp
 use LearnPress\Gutenberg\Blocks\ArchiveCourseElements\CourseTagFilterBlockType;
 use LearnPress\Gutenberg\Blocks\BreadCrumb\BreadCrumb;
 use LearnPress\Gutenberg\Blocks\Courses\ListCoursesBlockType;
+use LearnPress\Gutenberg\Blocks\Courses\CourseItemTemplateBlock;
 use LearnPress\Gutenberg\Blocks\Legacy\SingleCourseBlockLegacy;
 use LearnPress\Gutenberg\Blocks\Legacy\ArchiveCourseBlockLegacy;
 use LearnPress\Gutenberg\Blocks\SingleCourse\SingleCourseBlockType;
@@ -92,5 +93,6 @@ return apply_filters(
 		new ArchiveCourseBlockType(),
 		new SingleInstructorBlockType(),
 		new ListCoursesBlockType(),
+		new CourseItemTemplateBlock(),
 	)
 );

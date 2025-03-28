@@ -2,6 +2,7 @@
 namespace LearnPress\Gutenberg\Blocks;
 
 use LearnPress\Gutenberg\Utils\StyleAttributes;
+use WP_Block;
 use WP_Block_Type;
 
 /**
@@ -49,6 +50,7 @@ abstract class AbstractBlockType extends WP_Block_Type {
 		$this->supports              = $this->get_supports();
 		$this->attributes            = $this->get_attributes();
 		$this->ancestor              = $this->get_ancestor();
+		$this->provides_context      = $this->get_provides_context();
 	}
 
 	/**
@@ -90,11 +92,20 @@ abstract class AbstractBlockType extends WP_Block_Type {
 	}
 
 	/**
+	 * Get supports.
+	 *
+	 * @return array|null
+	 */
+	protected function get_provides_context() {
+		return null;
+	}
+
+	/**
 	 * Render content of block tag
 	 *
 	 * @param array $attributes | Attributes of block tag.
-	 * @param $content
-	 * @param \WP_Block $block
+	 * @param string $content
+	 * @param WP_Block $block
 	 *
 	 * @return string
 	 */

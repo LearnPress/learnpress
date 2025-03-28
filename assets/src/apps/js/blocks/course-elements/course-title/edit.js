@@ -3,7 +3,9 @@ import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
 import { PanelBody, SelectControl } from '@wordpress/components';
 
 const Edit = ( props ) => {
+	const { attributes, setAttributes, context } = props;
 	const blockProps = useBlockProps();
+	const { lpCourseData } = context;
 	const tag = [
 		{ label: 'h1', value: 'h1' },
 		{ label: 'h2', value: 'h2' },
@@ -28,7 +30,7 @@ const Edit = ( props ) => {
 				</PanelBody>
 			</InspectorControls>
 			<div { ...blockProps }>
-				<div>{ 'Course Title' }</div>
+				<div>{ lpCourseData?.post_title ?? __( 'Course Title', 'learnpress' ) }</div>
 			</div>
 		</>
 	);

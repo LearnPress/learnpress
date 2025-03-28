@@ -8,10 +8,24 @@
 	"textdomain": "learnpress",
 	"keywords": [
 		"list courses",
-		"learnpress"
+		"learnpress",
+		"query loop"
 	],
 	"usesContext": [],
+	"attributes": {
+		"courseQuery": {
+			"type": "object",
+			"default": {
+				"limit": 3,
+				"order_by": "post_date"
+			}
+		}
+	},
+	"providesContext": {
+		"lpCourseQuery": "courseQuery"
+	},
 	"supports": {
-		"align": true
+		"html": false,
+		"align": ["wide", "full"]
 	}
 }

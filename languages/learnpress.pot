@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the LearnPress plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: LearnPress 4.2.8\n"
+"Project-Id-Version: LearnPress 4.2.8.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/learnpress\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-03-06T05:36:32+03:00\n"
+"POT-Creation-Date: 2025-03-21T06:56:07+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.8.1\n"
 "X-Domain: learnpress\n"
@@ -83,12 +83,15 @@ msgid "Archive Course"
 msgstr ""
 
 #: assets/src/apps/js/blocks/archive-course/edit.js:15
-#: assets/src/apps/js/blocks/archive-course-legacy/edit.js:13
 msgid "This is an editor placeholder for the Archive Course page. Content will render content of list courses. Should be not remove it"
 msgstr ""
 
-#: assets/src/apps/js/blocks/archive-course-legacy/edit.js:9
+#: assets/src/apps/js/blocks/archive-course-legacy/edit.js:11
 msgid "Archive Course (Legacy)"
+msgstr ""
+
+#: assets/src/apps/js/blocks/archive-course-legacy/edit.js:15
+msgid "The block will display the full content of the course archive page. Elements on it cannot be modified!"
 msgstr ""
 
 #: assets/src/apps/js/blocks/item-curriculum-course/edit.js:13
@@ -100,13 +103,12 @@ msgid "This is an editor placeholder for the Item Curriculum Course page. Conten
 msgstr ""
 
 #: assets/src/apps/js/blocks/single-course/course-title/edit.js:7
-#: assets/src/apps/js/blocks/single-course-legacy/edit.js:7
+#: assets/src/apps/js/blocks/single-course-legacy/edit.js:11
 msgid "Single Course (Legacy)"
 msgstr ""
 
 #: assets/src/apps/js/blocks/single-course/course-title/edit.js:11
 #: assets/src/apps/js/blocks/single-course/edit.js:15
-#: assets/src/apps/js/blocks/single-course-legacy/edit.js:11
 msgid "This is an editor placeholder for the Single Course page. Content will render content of single course. Should be not remove it"
 msgstr ""
 
@@ -114,9 +116,17 @@ msgstr ""
 msgid "Single Course"
 msgstr ""
 
+#: assets/src/apps/js/blocks/single-course-legacy/edit.js:15
+msgid "Display full content of Single Course, can not edit."
+msgstr ""
+
+#: assets/src/apps/js/blocks/single-course-types/course-title/index.js:47
+msgid "test"
+msgstr ""
+
 #: assets/js/dist/frontend/quiz.min.js:41
 #: inc/class-lp-assets.php:90
-#: inc/lp-core-functions.php:2710
+#: inc/lp-core-functions.php:2382
 msgid "OK"
 msgstr ""
 
@@ -126,7 +136,7 @@ msgstr ""
 #: inc/admin/views/addons.php:246
 #: inc/admin/views/meta-boxes/fields/date.php:56
 #: inc/class-lp-assets.php:91
-#: inc/lp-core-functions.php:2711
+#: inc/lp-core-functions.php:2383
 #: inc/Models/UserItems/UserItemModel.php:523
 #: inc/order/class-lp-order.php:982
 #: inc/TemplateHooks/Profile/ProfileTemplate.php:180
@@ -288,7 +298,7 @@ msgstr ""
 
 #: assets/js/dist/frontend/quiz.min.js:165
 #: inc/course/lp-course-functions.php:939
-#: inc/lp-core-functions.php:2340
+#: inc/lp-core-functions.php:2012
 #: inc/Models/UserItems/UserItemModel.php:529
 #: inc/TemplateHooks/UserItem/UserItemBaseTemplate.php:167
 #: inc/templates/class-lp-template-profile.php:161
@@ -299,7 +309,7 @@ msgstr ""
 
 #: assets/js/dist/frontend/quiz.min.js:167
 #: inc/course/lp-course-functions.php:942
-#: inc/lp-core-functions.php:2343
+#: inc/lp-core-functions.php:2015
 #: inc/Models/UserItems/UserItemModel.php:532
 #: inc/order/class-lp-order.php:292
 #: inc/TemplateHooks/UserItem/UserItemBaseTemplate.php:170
@@ -577,7 +587,7 @@ msgstr ""
 #: config/elementor/course/list-courses-by-page.php:88
 #: config/elementor/course/list-courses-by-page.php:100
 #: inc/class-lp-assets.php:92
-#: inc/lp-core-functions.php:2712
+#: inc/lp-core-functions.php:2384
 #: templates/global/lp-modal-overlay.php:24
 msgid "Yes"
 msgstr ""
@@ -592,7 +602,7 @@ msgstr ""
 #: config/elementor/course/list-courses-by-page.php:89
 #: config/elementor/course/list-courses-by-page.php:101
 #: inc/class-lp-assets.php:93
-#: inc/lp-core-functions.php:2713
+#: inc/lp-core-functions.php:2385
 #: templates/global/lp-modal-overlay.php:23
 msgid "No"
 msgstr ""
@@ -724,7 +734,7 @@ msgstr ""
 #: config/elementor/course/filter-course-el.php:513
 #: config/elementor/course/filter-course-el.php:569
 #: config/elementor/course/filter-course-el.php:670
-#: inc/lp-core-functions.php:862
+#: inc/lp-core-functions.php:864
 msgid "Left"
 msgstr ""
 
@@ -732,7 +742,7 @@ msgstr ""
 #: config/elementor/course/filter-course-el.php:521
 #: config/elementor/course/filter-course-el.php:577
 #: config/elementor/course/filter-course-el.php:678
-#: inc/lp-core-functions.php:863
+#: inc/lp-core-functions.php:865
 msgid "Right"
 msgstr ""
 
@@ -1247,7 +1257,7 @@ msgstr ""
 #: config/settings/permalink.php:141
 #: inc/admin/sub-menus/class-lp-submenu-settings.php:18
 #: inc/admin/views/addons.php:181
-#: learnpress.php:717
+#: learnpress.php:719
 msgid "Settings"
 msgstr ""
 
@@ -1413,12 +1423,12 @@ msgid "Curriculum display"
 msgstr ""
 
 #: config/settings/course.php:159
-msgid "Expanse first section"
+msgid "Expand first section"
 msgstr ""
 
 #: config/settings/course.php:160
 #: inc/TemplateHooks/Course/SingleCourseTemplate.php:1415
-msgid "Expanse all sections"
+msgid "Expand all sections"
 msgstr ""
 
 #: config/settings/course.php:161
@@ -1508,6 +1518,658 @@ msgstr ""
 
 #: config/settings/course.php:304
 msgid "Show author Admin on list instructors."
+msgstr ""
+
+#: config/settings/currencies.php:9
+msgid "United Arab Emirates dirham"
+msgstr ""
+
+#: config/settings/currencies.php:10
+msgid "Afghan afghani"
+msgstr ""
+
+#: config/settings/currencies.php:11
+msgid "Albanian lek"
+msgstr ""
+
+#: config/settings/currencies.php:12
+msgid "Armenian dram"
+msgstr ""
+
+#: config/settings/currencies.php:13
+msgid "Netherlands Antillean guilder"
+msgstr ""
+
+#: config/settings/currencies.php:14
+msgid "Angolan kwanza"
+msgstr ""
+
+#: config/settings/currencies.php:15
+msgid "Argentine peso"
+msgstr ""
+
+#: config/settings/currencies.php:16
+msgid "Australian dollar"
+msgstr ""
+
+#: config/settings/currencies.php:17
+msgid "Aruban florin"
+msgstr ""
+
+#: config/settings/currencies.php:18
+msgid "Azerbaijani manat"
+msgstr ""
+
+#: config/settings/currencies.php:19
+msgid "Bosnia and Herzegovina convertible mark"
+msgstr ""
+
+#: config/settings/currencies.php:20
+msgid "Barbadian dollar"
+msgstr ""
+
+#: config/settings/currencies.php:21
+msgid "Bangladeshi taka"
+msgstr ""
+
+#: config/settings/currencies.php:22
+msgid "Bulgarian lev"
+msgstr ""
+
+#: config/settings/currencies.php:23
+msgid "Bahraini dinar"
+msgstr ""
+
+#: config/settings/currencies.php:24
+msgid "Burundian franc"
+msgstr ""
+
+#: config/settings/currencies.php:25
+msgid "Bermudian dollar"
+msgstr ""
+
+#: config/settings/currencies.php:26
+msgid "Brunei dollar"
+msgstr ""
+
+#: config/settings/currencies.php:27
+msgid "Bolivian boliviano"
+msgstr ""
+
+#: config/settings/currencies.php:28
+msgid "Brazilian real"
+msgstr ""
+
+#: config/settings/currencies.php:29
+msgid "Bahamian dollar"
+msgstr ""
+
+#: config/settings/currencies.php:30
+msgid "Bitcoin"
+msgstr ""
+
+#: config/settings/currencies.php:31
+msgid "Bhutanese ngultrum"
+msgstr ""
+
+#: config/settings/currencies.php:32
+msgid "Botswana pula"
+msgstr ""
+
+#: config/settings/currencies.php:33
+msgid "Belarusian ruble (old)"
+msgstr ""
+
+#: config/settings/currencies.php:34
+msgid "Belarusian ruble"
+msgstr ""
+
+#: config/settings/currencies.php:35
+msgid "Belize dollar"
+msgstr ""
+
+#: config/settings/currencies.php:36
+msgid "Canadian dollar"
+msgstr ""
+
+#: config/settings/currencies.php:37
+msgid "Congolese franc"
+msgstr ""
+
+#: config/settings/currencies.php:38
+msgid "Swiss franc"
+msgstr ""
+
+#: config/settings/currencies.php:39
+msgid "Chilean peso"
+msgstr ""
+
+#: config/settings/currencies.php:40
+msgid "Chinese yuan"
+msgstr ""
+
+#: config/settings/currencies.php:41
+msgid "Colombian peso"
+msgstr ""
+
+#: config/settings/currencies.php:42
+msgid "Costa Rican col&oacute;n"
+msgstr ""
+
+#: config/settings/currencies.php:43
+msgid "Cuban convertible peso"
+msgstr ""
+
+#: config/settings/currencies.php:44
+msgid "Cuban peso"
+msgstr ""
+
+#: config/settings/currencies.php:45
+msgid "Cape Verdean escudo"
+msgstr ""
+
+#: config/settings/currencies.php:46
+msgid "Czech koruna"
+msgstr ""
+
+#: config/settings/currencies.php:47
+msgid "Djiboutian franc"
+msgstr ""
+
+#: config/settings/currencies.php:48
+msgid "Danish krone"
+msgstr ""
+
+#: config/settings/currencies.php:49
+msgid "Dominican peso"
+msgstr ""
+
+#: config/settings/currencies.php:50
+msgid "Algerian dinar"
+msgstr ""
+
+#: config/settings/currencies.php:51
+msgid "Egyptian pound"
+msgstr ""
+
+#: config/settings/currencies.php:52
+msgid "Eritrean nakfa"
+msgstr ""
+
+#: config/settings/currencies.php:53
+msgid "Ethiopian birr"
+msgstr ""
+
+#: config/settings/currencies.php:54
+msgid "Euro"
+msgstr ""
+
+#: config/settings/currencies.php:55
+msgid "Fijian dollar"
+msgstr ""
+
+#: config/settings/currencies.php:56
+msgid "Falkland Islands pound"
+msgstr ""
+
+#: config/settings/currencies.php:57
+msgid "Pound sterling"
+msgstr ""
+
+#: config/settings/currencies.php:58
+msgid "Georgian lari"
+msgstr ""
+
+#: config/settings/currencies.php:59
+msgid "Guernsey pound"
+msgstr ""
+
+#: config/settings/currencies.php:60
+msgid "Ghana cedi"
+msgstr ""
+
+#: config/settings/currencies.php:61
+msgid "Gibraltar pound"
+msgstr ""
+
+#: config/settings/currencies.php:62
+msgid "Gambian dalasi"
+msgstr ""
+
+#: config/settings/currencies.php:63
+msgid "Guinean franc"
+msgstr ""
+
+#: config/settings/currencies.php:64
+msgid "Guatemalan quetzal"
+msgstr ""
+
+#: config/settings/currencies.php:65
+msgid "Guyanese dollar"
+msgstr ""
+
+#: config/settings/currencies.php:66
+msgid "Hong Kong dollar"
+msgstr ""
+
+#: config/settings/currencies.php:67
+msgid "Honduran lempira"
+msgstr ""
+
+#: config/settings/currencies.php:68
+msgid "Croatian kuna"
+msgstr ""
+
+#: config/settings/currencies.php:69
+msgid "Haitian gourde"
+msgstr ""
+
+#: config/settings/currencies.php:70
+msgid "Hungarian forint"
+msgstr ""
+
+#: config/settings/currencies.php:71
+msgid "Indonesian rupiah"
+msgstr ""
+
+#: config/settings/currencies.php:72
+msgid "Israeli new shekel"
+msgstr ""
+
+#: config/settings/currencies.php:73
+msgid "Manx pound"
+msgstr ""
+
+#: config/settings/currencies.php:74
+msgid "Indian rupee"
+msgstr ""
+
+#: config/settings/currencies.php:75
+msgid "Iraqi dinar"
+msgstr ""
+
+#: config/settings/currencies.php:76
+msgid "Iranian rial"
+msgstr ""
+
+#: config/settings/currencies.php:77
+msgid "Iranian toman"
+msgstr ""
+
+#: config/settings/currencies.php:78
+msgid "Icelandic kr&oacute;na"
+msgstr ""
+
+#: config/settings/currencies.php:79
+msgid "Jersey pound"
+msgstr ""
+
+#: config/settings/currencies.php:80
+msgid "Jamaican dollar"
+msgstr ""
+
+#: config/settings/currencies.php:81
+msgid "Jordanian dinar"
+msgstr ""
+
+#: config/settings/currencies.php:82
+msgid "Japanese yen"
+msgstr ""
+
+#: config/settings/currencies.php:83
+msgid "Kenyan shilling"
+msgstr ""
+
+#: config/settings/currencies.php:84
+msgid "Kyrgyzstani som"
+msgstr ""
+
+#: config/settings/currencies.php:85
+msgid "Cambodian riel"
+msgstr ""
+
+#: config/settings/currencies.php:86
+msgid "Comorian franc"
+msgstr ""
+
+#: config/settings/currencies.php:87
+msgid "North Korean won"
+msgstr ""
+
+#: config/settings/currencies.php:88
+msgid "South Korean won"
+msgstr ""
+
+#: config/settings/currencies.php:89
+msgid "Kuwaiti dinar"
+msgstr ""
+
+#: config/settings/currencies.php:90
+msgid "Cayman Islands dollar"
+msgstr ""
+
+#: config/settings/currencies.php:91
+msgid "Kazakhstani tenge"
+msgstr ""
+
+#: config/settings/currencies.php:92
+msgid "Lao kip"
+msgstr ""
+
+#: config/settings/currencies.php:93
+msgid "Lebanese pound"
+msgstr ""
+
+#: config/settings/currencies.php:94
+msgid "Sri Lankan rupee"
+msgstr ""
+
+#: config/settings/currencies.php:95
+msgid "Liberian dollar"
+msgstr ""
+
+#: config/settings/currencies.php:96
+msgid "Lesotho loti"
+msgstr ""
+
+#: config/settings/currencies.php:97
+msgid "Libyan dinar"
+msgstr ""
+
+#: config/settings/currencies.php:98
+msgid "Moroccan dirham"
+msgstr ""
+
+#: config/settings/currencies.php:99
+msgid "Moldovan leu"
+msgstr ""
+
+#: config/settings/currencies.php:100
+msgid "Malagasy ariary"
+msgstr ""
+
+#: config/settings/currencies.php:101
+msgid "Macedonian denar"
+msgstr ""
+
+#: config/settings/currencies.php:102
+msgid "Burmese kyat"
+msgstr ""
+
+#: config/settings/currencies.php:103
+msgid "Mongolian t&ouml;gr&ouml;g"
+msgstr ""
+
+#: config/settings/currencies.php:104
+msgid "Macanese pataca"
+msgstr ""
+
+#: config/settings/currencies.php:105
+msgid "Mauritanian ouguiya"
+msgstr ""
+
+#: config/settings/currencies.php:106
+msgid "Mauritian rupee"
+msgstr ""
+
+#: config/settings/currencies.php:107
+msgid "Maldivian rufiyaa"
+msgstr ""
+
+#: config/settings/currencies.php:108
+msgid "Malawian kwacha"
+msgstr ""
+
+#: config/settings/currencies.php:109
+msgid "Mexican peso"
+msgstr ""
+
+#: config/settings/currencies.php:110
+msgid "Malaysian ringgit"
+msgstr ""
+
+#: config/settings/currencies.php:111
+msgid "Mozambican metical"
+msgstr ""
+
+#: config/settings/currencies.php:112
+msgid "Namibian dollar"
+msgstr ""
+
+#: config/settings/currencies.php:113
+msgid "Nigerian naira"
+msgstr ""
+
+#: config/settings/currencies.php:114
+msgid "Nicaraguan c&oacute;rdoba"
+msgstr ""
+
+#: config/settings/currencies.php:115
+msgid "Norwegian krone"
+msgstr ""
+
+#: config/settings/currencies.php:116
+msgid "Nepalese rupee"
+msgstr ""
+
+#: config/settings/currencies.php:117
+msgid "New Zealand dollar"
+msgstr ""
+
+#: config/settings/currencies.php:118
+msgid "Omani rial"
+msgstr ""
+
+#: config/settings/currencies.php:119
+msgid "Panamanian balboa"
+msgstr ""
+
+#: config/settings/currencies.php:120
+msgid "Sol"
+msgstr ""
+
+#: config/settings/currencies.php:121
+msgid "Papua New Guinean kina"
+msgstr ""
+
+#: config/settings/currencies.php:122
+msgid "Philippine peso"
+msgstr ""
+
+#: config/settings/currencies.php:123
+msgid "Pakistani rupee"
+msgstr ""
+
+#: config/settings/currencies.php:124
+msgid "Polish z&#x142;oty"
+msgstr ""
+
+#: config/settings/currencies.php:125
+msgid "Transnistrian ruble"
+msgstr ""
+
+#: config/settings/currencies.php:126
+msgid "Paraguayan guaran&iacute;"
+msgstr ""
+
+#: config/settings/currencies.php:127
+msgid "Qatari riyal"
+msgstr ""
+
+#: config/settings/currencies.php:128
+msgid "Romanian leu"
+msgstr ""
+
+#: config/settings/currencies.php:129
+msgid "Serbian dinar"
+msgstr ""
+
+#: config/settings/currencies.php:130
+msgid "Russian ruble"
+msgstr ""
+
+#: config/settings/currencies.php:131
+msgid "Rwandan franc"
+msgstr ""
+
+#: config/settings/currencies.php:132
+msgid "Saudi riyal"
+msgstr ""
+
+#: config/settings/currencies.php:133
+msgid "Solomon Islands dollar"
+msgstr ""
+
+#: config/settings/currencies.php:134
+msgid "Seychellois rupee"
+msgstr ""
+
+#: config/settings/currencies.php:135
+msgid "Sudanese pound"
+msgstr ""
+
+#: config/settings/currencies.php:136
+msgid "Swedish krona"
+msgstr ""
+
+#: config/settings/currencies.php:137
+msgid "Singapore dollar"
+msgstr ""
+
+#: config/settings/currencies.php:138
+msgid "Saint Helena pound"
+msgstr ""
+
+#: config/settings/currencies.php:139
+msgid "Sierra Leonean leone"
+msgstr ""
+
+#: config/settings/currencies.php:140
+msgid "Somali shilling"
+msgstr ""
+
+#: config/settings/currencies.php:141
+msgid "Surinamese dollar"
+msgstr ""
+
+#: config/settings/currencies.php:142
+msgid "South Sudanese pound"
+msgstr ""
+
+#: config/settings/currencies.php:143
+msgid "S&atilde;o Tom&eacute; and Pr&iacute;ncipe dobra"
+msgstr ""
+
+#: config/settings/currencies.php:144
+msgid "Syrian pound"
+msgstr ""
+
+#: config/settings/currencies.php:145
+msgid "Swazi lilangeni"
+msgstr ""
+
+#: config/settings/currencies.php:146
+msgid "Thai baht"
+msgstr ""
+
+#: config/settings/currencies.php:147
+msgid "Tajikistani somoni"
+msgstr ""
+
+#: config/settings/currencies.php:148
+msgid "Turkmenistan manat"
+msgstr ""
+
+#: config/settings/currencies.php:149
+msgid "Tunisian dinar"
+msgstr ""
+
+#: config/settings/currencies.php:150
+msgid "Tongan pa&#x2bb;anga"
+msgstr ""
+
+#: config/settings/currencies.php:151
+msgid "Turkish lira"
+msgstr ""
+
+#: config/settings/currencies.php:152
+msgid "Trinidad and Tobago dollar"
+msgstr ""
+
+#: config/settings/currencies.php:153
+msgid "New Taiwan dollar"
+msgstr ""
+
+#: config/settings/currencies.php:154
+msgid "Tanzanian shilling"
+msgstr ""
+
+#: config/settings/currencies.php:155
+msgid "Ukrainian hryvnia"
+msgstr ""
+
+#: config/settings/currencies.php:156
+msgid "Ugandan shilling"
+msgstr ""
+
+#: config/settings/currencies.php:157
+msgid "United States (US) dollar"
+msgstr ""
+
+#: config/settings/currencies.php:158
+msgid "Uruguayan peso"
+msgstr ""
+
+#: config/settings/currencies.php:159
+msgid "Uzbekistani som"
+msgstr ""
+
+#: config/settings/currencies.php:160
+msgid "Venezuelan bol&iacute;var (2008–2018)"
+msgstr ""
+
+#: config/settings/currencies.php:161
+msgid "Venezuelan bol&iacute;var"
+msgstr ""
+
+#: config/settings/currencies.php:162
+msgid "Vietnamese &#x111;&#x1ed3;ng"
+msgstr ""
+
+#: config/settings/currencies.php:163
+msgid "Vanuatu vatu"
+msgstr ""
+
+#: config/settings/currencies.php:164
+msgid "Samoan t&#x101;l&#x101;"
+msgstr ""
+
+#: config/settings/currencies.php:165
+msgid "Central African CFA franc"
+msgstr ""
+
+#: config/settings/currencies.php:166
+msgid "East Caribbean dollar"
+msgstr ""
+
+#: config/settings/currencies.php:167
+msgid "West African CFA franc"
+msgstr ""
+
+#: config/settings/currencies.php:168
+msgid "CFP franc"
+msgstr ""
+
+#: config/settings/currencies.php:169
+msgid "Yemeni rial"
+msgstr ""
+
+#: config/settings/currencies.php:170
+msgid "South African rand"
+msgstr ""
+
+#: config/settings/currencies.php:171
+msgid "Zambian kwacha"
 msgstr ""
 
 #: config/settings/gateway/offline-payment.php:20
@@ -1867,19 +2529,19 @@ msgstr ""
 msgid "No settings available."
 msgstr ""
 
-#: inc/abstracts/abstract-addon.php:262
+#: inc/abstracts/abstract-addon.php:266
 msgid "<strong>LearnPress version %1$s require %2$s</strong> version %3$s or higher"
 msgstr ""
 
-#: inc/abstracts/abstract-addon.php:283
+#: inc/abstracts/abstract-addon.php:287
 msgid "<strong>%1$s</strong> add-on version %2$s requires <strong>LearnPress</strong> version %3$s or higher %4$s"
 msgstr ""
 
-#: inc/abstracts/abstract-addon.php:350
+#: inc/abstracts/abstract-addon.php:354
 msgid "%s plugin file does not exist."
 msgstr ""
 
-#: inc/abstracts/abstract-addon.php:369
+#: inc/abstracts/abstract-addon.php:373
 msgid "%s plugin class does not exist."
 msgstr ""
 
@@ -2247,13 +2909,13 @@ msgstr ""
 
 #: inc/admin/class-lp-modal-search-items.php:187
 #: inc/admin/class-lp-modal-search-users.php:143
-#: inc/lp-core-functions.php:637
+#: inc/lp-core-functions.php:639
 msgid "<"
 msgstr ""
 
 #: inc/admin/class-lp-modal-search-items.php:188
 #: inc/admin/class-lp-modal-search-users.php:144
-#: inc/lp-core-functions.php:638
+#: inc/lp-core-functions.php:640
 msgid ">"
 msgstr ""
 
@@ -2360,18 +3022,18 @@ msgstr ""
 msgid "PayPal"
 msgstr ""
 
-#: inc/admin/editor/class-lp-admin-editor-course.php:86
+#: inc/admin/editor/class-lp-admin-editor-course.php:85
 #: inc/curds/class-lp-course-curd.php:46
 msgid "New Course"
 msgstr ""
 
-#: inc/admin/editor/class-lp-admin-editor-course.php:239
-#: inc/admin/editor/class-lp-admin-editor-course.php:268
+#: inc/admin/editor/class-lp-admin-editor-course.php:238
+#: inc/admin/editor/class-lp-admin-editor-course.php:267
 msgid "You can not delete this item!"
 msgstr ""
 
-#: inc/admin/editor/class-lp-admin-editor-course.php:243
-#: inc/admin/editor/class-lp-admin-editor-course.php:272
+#: inc/admin/editor/class-lp-admin-editor-course.php:242
+#: inc/admin/editor/class-lp-admin-editor-course.php:271
 msgid "Invalid params!"
 msgstr ""
 
@@ -2833,7 +3495,7 @@ msgid "Reset Password"
 msgstr ""
 
 #: inc/admin/sub-menus/class-lp-submenu-addons.php:14
-#: learnpress.php:719
+#: learnpress.php:721
 msgid "Add-ons"
 msgstr ""
 
@@ -4586,10 +5248,6 @@ msgstr ""
 msgid "No item found!"
 msgstr ""
 
-#: inc/block-template/class-block-template-handle.php:181
-msgid "LearnPress Category"
-msgstr ""
-
 #: inc/cart/class-lp-cart.php:93
 msgid "Course is not exists!"
 msgstr ""
@@ -5009,7 +5667,7 @@ msgid "Unread"
 msgstr ""
 
 #: inc/course/lp-course-functions.php:945
-#: inc/lp-core-functions.php:2346
+#: inc/lp-core-functions.php:2018
 #: inc/lp-deprecated.php:214
 #: inc/Models/UserItems/UserItemModel.php:526
 #: inc/templates/class-lp-template-profile.php:159
@@ -6008,6 +6666,18 @@ msgstr ""
 msgid "Invalid Paypal checkout url"
 msgstr ""
 
+#: inc/Gutenberg/GutenbergHandleMain.php:231
+msgid "LearnPress Global"
+msgstr ""
+
+#: inc/Gutenberg/GutenbergHandleMain.php:236
+msgid "LearnPress Course Elements"
+msgstr ""
+
+#: inc/Gutenberg/GutenbergHandleMain.php:241
+msgid "LearnPress Legacy"
+msgstr ""
+
 #: inc/handle-steps/class-lp-handle-steps.php:26
 msgid "Invalid steps"
 msgstr ""
@@ -6680,7 +7350,7 @@ msgstr ""
 
 #: inc/jwt/rest-api/version1/class-lp-rest-section-items-v1-controller.php:44
 #: inc/jwt/rest-api/version1/class-lp-rest-sections-v1-controller.php:40
-#: inc/Models/CourseModel.php:939
+#: inc/Models/CourseModel.php:961
 #: inc/user/class-lp-user.php:291
 msgid "The course is not public"
 msgstr ""
@@ -6769,808 +7439,175 @@ msgstr ""
 msgid "Your password has been updated. Please log in again to continue!"
 msgstr ""
 
-#: inc/lp-core-functions.php:721
+#: inc/lp-core-functions.php:723
 msgid "Minute(s)"
 msgstr ""
 
-#: inc/lp-core-functions.php:722
+#: inc/lp-core-functions.php:724
 msgid "Hour(s)"
 msgstr ""
 
-#: inc/lp-core-functions.php:723
+#: inc/lp-core-functions.php:725
 msgid "Day(s)"
 msgstr ""
 
-#: inc/lp-core-functions.php:724
+#: inc/lp-core-functions.php:726
 msgid "Week(s)"
 msgstr ""
 
-#: inc/lp-core-functions.php:864
+#: inc/lp-core-functions.php:866
 msgid "Left with space"
 msgstr ""
 
-#: inc/lp-core-functions.php:865
+#: inc/lp-core-functions.php:867
 msgid "Right with space"
 msgstr ""
 
-#: inc/lp-core-functions.php:924
-msgid "Afghan afghani"
-msgstr ""
-
-#: inc/lp-core-functions.php:925
-msgid "Albanian lek"
-msgstr ""
-
-#: inc/lp-core-functions.php:926
-msgid "Algerian dinar"
-msgstr ""
-
-#: inc/lp-core-functions.php:927
-msgid "Euro"
-msgstr ""
-
-#: inc/lp-core-functions.php:928
-msgid "Angolan kwanza"
-msgstr ""
-
-#: inc/lp-core-functions.php:929
-msgid "East Caribbean dollar"
-msgstr ""
-
-#: inc/lp-core-functions.php:930
-msgid "Argentine peso"
-msgstr ""
-
-#: inc/lp-core-functions.php:931
-msgid "Armenian dram"
-msgstr ""
-
-#: inc/lp-core-functions.php:932
-msgid "Aruban florin"
-msgstr ""
-
-#: inc/lp-core-functions.php:933
-msgid "Australian dollar"
-msgstr ""
-
-#: inc/lp-core-functions.php:934
-msgid "Azerbaijani manat"
-msgstr ""
-
-#: inc/lp-core-functions.php:935
-msgid "Bahamian dollar"
-msgstr ""
-
-#: inc/lp-core-functions.php:936
-msgid "Bahraini dinar"
-msgstr ""
-
-#: inc/lp-core-functions.php:937
-msgid "Bangladeshi taka"
-msgstr ""
-
-#: inc/lp-core-functions.php:938
-msgid "Barbadian dollar"
-msgstr ""
-
-#: inc/lp-core-functions.php:939
-msgid "Belarusian ruble"
-msgstr ""
-
-#: inc/lp-core-functions.php:940
-msgid "Belizean dollar"
-msgstr ""
-
-#: inc/lp-core-functions.php:941
-msgid "West African CFA franc"
-msgstr ""
-
-#: inc/lp-core-functions.php:942
-msgid "Bermudian dollar"
-msgstr ""
-
-#: inc/lp-core-functions.php:943
-msgid "Bhutanese ngultrum"
-msgstr ""
-
-#: inc/lp-core-functions.php:944
-msgid "Bolivian boliviano"
-msgstr ""
-
-#: inc/lp-core-functions.php:945
-msgid "US dollar"
-msgstr ""
-
-#: inc/lp-core-functions.php:946
-msgid "Bosnia and Herzegovina convertible mark"
-msgstr ""
-
-#: inc/lp-core-functions.php:947
-msgid "Botswana pula"
-msgstr ""
-
-#: inc/lp-core-functions.php:948
-msgid "Brazilian real"
-msgstr ""
-
-#: inc/lp-core-functions.php:949
-msgid "Brunei dollar"
-msgstr ""
-
-#: inc/lp-core-functions.php:950
-msgid "Bulgarian lev"
-msgstr ""
-
-#: inc/lp-core-functions.php:951
-msgid "Burmese kyat"
-msgstr ""
-
-#: inc/lp-core-functions.php:952
-msgid "Burundian franc"
-msgstr ""
-
-#: inc/lp-core-functions.php:953
-msgid "Cambodian riel"
-msgstr ""
-
-#: inc/lp-core-functions.php:954
-msgid "Central African CFA franc"
-msgstr ""
-
-#: inc/lp-core-functions.php:955
-msgid "Canadian dollar"
-msgstr ""
-
-#: inc/lp-core-functions.php:956
-msgid "Cape Verdean escudo"
-msgstr ""
-
-#: inc/lp-core-functions.php:957
-msgid "Cayman Islands dollar"
-msgstr ""
-
-#: inc/lp-core-functions.php:958
-msgid "Chilean peso"
-msgstr ""
-
-#: inc/lp-core-functions.php:959
-msgid "Chinese renminbi"
-msgstr ""
-
-#: inc/lp-core-functions.php:960
-msgid "Colombian peso"
-msgstr ""
-
-#: inc/lp-core-functions.php:961
-msgid "Comorian franc"
-msgstr ""
-
-#: inc/lp-core-functions.php:962
-msgid "Congolese franc"
-msgstr ""
-
-#: inc/lp-core-functions.php:963
-msgid "New Zealand dollar"
-msgstr ""
-
-#: inc/lp-core-functions.php:964
-msgid "Costa Rican colón"
-msgstr ""
-
-#: inc/lp-core-functions.php:965
-msgid "Croatian kuna"
-msgstr ""
-
-#: inc/lp-core-functions.php:966
-msgid "Cuban peso"
-msgstr ""
-
-#: inc/lp-core-functions.php:967
-msgid "Netherlands Antilles guilder"
-msgstr ""
-
-#: inc/lp-core-functions.php:968
-msgid "Czech koruna"
-msgstr ""
-
-#: inc/lp-core-functions.php:969
-msgid "Danish krone"
-msgstr ""
-
-#: inc/lp-core-functions.php:970
-msgid "Djiboutian franc"
-msgstr ""
-
-#: inc/lp-core-functions.php:971
-msgid "Dominican peso"
-msgstr ""
-
-#: inc/lp-core-functions.php:972
-msgid "Egyptian pound"
-msgstr ""
-
-#: inc/lp-core-functions.php:973
-msgid "Salvadoran colón"
-msgstr ""
-
-#: inc/lp-core-functions.php:974
-msgid "Eritrean nakfa"
-msgstr ""
-
-#: inc/lp-core-functions.php:975
-msgid "Ethiopian birr"
-msgstr ""
-
-#: inc/lp-core-functions.php:976
-msgid "Falkland Islands pound"
-msgstr ""
-
-#: inc/lp-core-functions.php:977
-msgid "Fijian dollar"
-msgstr ""
-
-#: inc/lp-core-functions.php:978
-msgid "CFP franc"
-msgstr ""
-
-#: inc/lp-core-functions.php:979
-msgid "Gambian dalasi"
-msgstr ""
-
-#: inc/lp-core-functions.php:980
-msgid "Georgian lari"
-msgstr ""
-
-#: inc/lp-core-functions.php:981
-msgid "Ghanian cedi"
-msgstr ""
-
-#: inc/lp-core-functions.php:982
-msgid "Gibraltar pound"
-msgstr ""
-
-#: inc/lp-core-functions.php:983
-msgid "Guatemalan quetzal"
-msgstr ""
-
-#: inc/lp-core-functions.php:984
-msgid "British pound"
-msgstr ""
-
-#: inc/lp-core-functions.php:985
-msgid "Guinean franc"
-msgstr ""
-
-#: inc/lp-core-functions.php:986
-msgid "Guyanese dollar"
-msgstr ""
-
-#: inc/lp-core-functions.php:987
-msgid "Haitian gourde"
-msgstr ""
-
-#: inc/lp-core-functions.php:988
-msgid "Honduran lempira"
-msgstr ""
-
-#: inc/lp-core-functions.php:989
-msgid "Hong Kong dollar"
-msgstr ""
-
-#: inc/lp-core-functions.php:990
-msgid "Hungarian forint"
-msgstr ""
-
-#: inc/lp-core-functions.php:991
-msgid "Icelandic króna"
-msgstr ""
-
-#: inc/lp-core-functions.php:992
-msgid "Indian rupee"
-msgstr ""
-
-#: inc/lp-core-functions.php:993
-msgid "Indonesian rupiah"
-msgstr ""
-
-#: inc/lp-core-functions.php:994
-msgid "Iranian rial"
-msgstr ""
-
-#: inc/lp-core-functions.php:995
-msgid "Iraqi dinar"
-msgstr ""
-
-#: inc/lp-core-functions.php:996
-msgid "Israeli new sheqel"
-msgstr ""
-
-#: inc/lp-core-functions.php:997
-msgid "Jamaican dollar"
-msgstr ""
-
-#: inc/lp-core-functions.php:998
-msgid "Japanese yen "
-msgstr ""
-
-#: inc/lp-core-functions.php:999
-msgid "Jordanian dinar"
-msgstr ""
-
-#: inc/lp-core-functions.php:1000
-msgid "Kazakhstani tenge"
-msgstr ""
-
-#: inc/lp-core-functions.php:1001
-msgid "Kenyan shilling"
-msgstr ""
-
-#: inc/lp-core-functions.php:1002
-msgid "North Korean won"
-msgstr ""
-
-#: inc/lp-core-functions.php:1003
-msgid "Kuwaiti dinar"
-msgstr ""
-
-#: inc/lp-core-functions.php:1004
-msgid "Kyrgyzstani som"
-msgstr ""
-
-#: inc/lp-core-functions.php:1005
-msgid "South Korean won"
-msgstr ""
-
-#: inc/lp-core-functions.php:1006
-msgid "Lao kip"
-msgstr ""
-
-#: inc/lp-core-functions.php:1007
-msgid "Latvian lats"
-msgstr ""
-
-#: inc/lp-core-functions.php:1008
-msgid "Lebanese pound"
-msgstr ""
-
-#: inc/lp-core-functions.php:1009
-msgid "Lesotho loti"
-msgstr ""
-
-#: inc/lp-core-functions.php:1010
-msgid "Liberian dollar"
-msgstr ""
-
-#: inc/lp-core-functions.php:1011
-#: inc/lp-core-functions.php:1082
-msgid "Libyan dinar"
-msgstr ""
-
-#: inc/lp-core-functions.php:1012
-msgid "Swiss franc"
-msgstr ""
-
-#: inc/lp-core-functions.php:1013
-msgid "Lithuanian litas"
-msgstr ""
-
-#: inc/lp-core-functions.php:1014
-msgid "Macanese pataca"
-msgstr ""
-
-#: inc/lp-core-functions.php:1015
-msgid "Macedonian denar"
-msgstr ""
-
-#: inc/lp-core-functions.php:1016
-msgid "Malagasy ariary"
-msgstr ""
-
-#: inc/lp-core-functions.php:1017
-msgid "Malawian kwacha"
-msgstr ""
-
-#: inc/lp-core-functions.php:1018
-msgid "Malaysian ringgit"
-msgstr ""
-
-#: inc/lp-core-functions.php:1019
-msgid "Maldivian rufiyaa"
-msgstr ""
-
-#: inc/lp-core-functions.php:1020
-msgid "Mauritanian ouguiya"
-msgstr ""
-
-#: inc/lp-core-functions.php:1021
-msgid "Mauritian rupee"
-msgstr ""
-
-#: inc/lp-core-functions.php:1022
-msgid "Mexican peso"
-msgstr ""
-
-#: inc/lp-core-functions.php:1023
-msgid "Moldovan leu"
-msgstr ""
-
-#: inc/lp-core-functions.php:1024
-msgid "Mongolian tugrik"
-msgstr ""
-
-#: inc/lp-core-functions.php:1025
-msgid "Moroccan dirham"
-msgstr ""
-
-#: inc/lp-core-functions.php:1026
-msgid "Mozambican metical"
-msgstr ""
-
-#: inc/lp-core-functions.php:1027
-msgid "Namibian dollar"
-msgstr ""
-
-#: inc/lp-core-functions.php:1028
-msgid "Nepalese rupee"
-msgstr ""
-
-#: inc/lp-core-functions.php:1029
-msgid "Nicaraguan córdoba"
-msgstr ""
-
-#: inc/lp-core-functions.php:1030
-msgid "Nigerian naira"
-msgstr ""
-
-#: inc/lp-core-functions.php:1031
-msgid "Norwegian krone"
-msgstr ""
-
-#: inc/lp-core-functions.php:1032
-msgid "Omani rial"
-msgstr ""
-
-#: inc/lp-core-functions.php:1033
-msgid "Pakistani rupee"
-msgstr ""
-
-#: inc/lp-core-functions.php:1034
-msgid "Panamanian balboa"
-msgstr ""
-
-#: inc/lp-core-functions.php:1035
-msgid "Papua New Guinea kina"
-msgstr ""
-
-#: inc/lp-core-functions.php:1036
-msgid "Paraguayan guarani"
-msgstr ""
-
-#: inc/lp-core-functions.php:1037
-msgid "Peruvian nuevo sol"
-msgstr ""
-
-#: inc/lp-core-functions.php:1038
-msgid "Philippine peso"
-msgstr ""
-
-#: inc/lp-core-functions.php:1039
-msgid "Polish zloty"
-msgstr ""
-
-#: inc/lp-core-functions.php:1040
-msgid "Qatari riyal"
-msgstr ""
-
-#: inc/lp-core-functions.php:1041
-msgid "Romanian leu"
-msgstr ""
-
-#: inc/lp-core-functions.php:1042
-msgid "Russian ruble"
-msgstr ""
-
-#: inc/lp-core-functions.php:1043
-msgid "Rwandan franc"
-msgstr ""
-
-#: inc/lp-core-functions.php:1044
-msgid "Samoan tālā"
-msgstr ""
-
-#: inc/lp-core-functions.php:1045
-msgid "São Tomé and Príncipe dobra"
-msgstr ""
-
-#: inc/lp-core-functions.php:1046
-msgid "Saudi riyal"
-msgstr ""
-
-#: inc/lp-core-functions.php:1047
-msgid "Serbian dinar"
-msgstr ""
-
-#: inc/lp-core-functions.php:1048
-msgid "Seychellois rupee"
-msgstr ""
-
-#: inc/lp-core-functions.php:1049
-msgid "Sierra Leonean leone"
-msgstr ""
-
-#: inc/lp-core-functions.php:1050
-msgid "Singapore dollar"
-msgstr ""
-
-#: inc/lp-core-functions.php:1051
-msgid "Solomon Islands dollar"
-msgstr ""
-
-#: inc/lp-core-functions.php:1052
-msgid "Somali shilling"
-msgstr ""
-
-#: inc/lp-core-functions.php:1053
-msgid "South African rand"
-msgstr ""
-
-#: inc/lp-core-functions.php:1054
-msgid "Sri Lankan rupee"
-msgstr ""
-
-#: inc/lp-core-functions.php:1055
-msgid "St. Helena pound"
-msgstr ""
-
-#: inc/lp-core-functions.php:1056
-msgid "Sudanese pound"
-msgstr ""
-
-#: inc/lp-core-functions.php:1057
-msgid "Surinamese dollar"
-msgstr ""
-
-#: inc/lp-core-functions.php:1058
-msgid "Swazi lilangeni"
-msgstr ""
-
-#: inc/lp-core-functions.php:1059
-msgid "Swedish krona"
-msgstr ""
-
-#: inc/lp-core-functions.php:1060
-msgid "Syrian pound"
-msgstr ""
-
-#: inc/lp-core-functions.php:1061
-msgid "New Taiwan dollar"
-msgstr ""
-
-#: inc/lp-core-functions.php:1062
-msgid "Tajikistani somoni"
-msgstr ""
-
-#: inc/lp-core-functions.php:1063
-msgid "Tanzanian shilling"
-msgstr ""
-
-#: inc/lp-core-functions.php:1064
-msgid "Thai baht "
-msgstr ""
-
-#: inc/lp-core-functions.php:1065
-msgid "Tongan pa’anga"
-msgstr ""
-
-#: inc/lp-core-functions.php:1066
-msgid "Trinidad and Tobago dollar"
-msgstr ""
-
-#: inc/lp-core-functions.php:1067
-msgid "Tunisian dinar"
-msgstr ""
-
-#: inc/lp-core-functions.php:1068
-msgid "Turkish lira"
-msgstr ""
-
 #: inc/lp-core-functions.php:1069
-msgid "Turkmenistani manat"
-msgstr ""
-
-#: inc/lp-core-functions.php:1070
-msgid "Ugandan shilling"
-msgstr ""
-
-#: inc/lp-core-functions.php:1071
-msgid "Ukrainian hryvnia"
-msgstr ""
-
-#: inc/lp-core-functions.php:1072
-msgid "United Arab Emirates dirham"
-msgstr ""
-
-#: inc/lp-core-functions.php:1073
-msgid "Uruguayan peso"
-msgstr ""
-
-#: inc/lp-core-functions.php:1074
-msgid "Uzbekistani som"
-msgstr ""
-
-#: inc/lp-core-functions.php:1075
-msgid "Vanuatu vatu"
-msgstr ""
-
-#: inc/lp-core-functions.php:1076
-msgid "Venezuelan bolivar"
-msgstr ""
-
-#: inc/lp-core-functions.php:1077
-msgid "Vietnamese dong"
-msgstr ""
-
-#: inc/lp-core-functions.php:1078
-msgid "Yemeni rial"
-msgstr ""
-
-#: inc/lp-core-functions.php:1079
-msgid "Zambian kwacha"
-msgstr ""
-
-#: inc/lp-core-functions.php:1080
-msgid "Zimbabwean dollar"
-msgstr ""
-
-#: inc/lp-core-functions.php:1081
-msgid "Jersey pound"
-msgstr ""
-
-#: inc/lp-core-functions.php:1397
 #: inc/lp-template-functions.php:1512
 msgid "%s week"
 msgid_plural "%s weeks"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/lp-core-functions.php:1401
+#: inc/lp-core-functions.php:1073
 #: inc/lp-template-functions.php:1508
 msgid "%s day"
 msgid_plural "%s days"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/lp-core-functions.php:1406
+#: inc/lp-core-functions.php:1078
 #: inc/lp-template-functions.php:1503
 msgid "%s hour"
 msgid_plural "%s hours"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/lp-core-functions.php:1410
+#: inc/lp-core-functions.php:1082
 #: inc/lp-template-functions.php:1497
 msgid "%s minute"
 msgid_plural "%s minutes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/lp-core-functions.php:2140
+#: inc/lp-core-functions.php:1812
 msgid "Cart"
 msgstr ""
 
-#: inc/lp-core-functions.php:2144
+#: inc/lp-core-functions.php:1816
 msgid "Enable cart"
 msgstr ""
 
-#: inc/lp-core-functions.php:2145
+#: inc/lp-core-functions.php:1817
 msgid "Check this option to enable users to purchase multiple courses at one time."
 msgstr ""
 
-#: inc/lp-core-functions.php:2154
+#: inc/lp-core-functions.php:1826
 msgid "Add to cart redirect"
 msgstr ""
 
-#: inc/lp-core-functions.php:2155
+#: inc/lp-core-functions.php:1827
 msgid "Redirect to checkout immediately after adding the course to the cart."
 msgstr ""
 
-#: inc/lp-core-functions.php:2161
+#: inc/lp-core-functions.php:1833
 msgid "AJAX add to cart"
 msgstr ""
 
-#: inc/lp-core-functions.php:2162
+#: inc/lp-core-functions.php:1834
 msgid "Using AJAX to add the course to the cart."
 msgstr ""
 
-#: inc/lp-core-functions.php:2168
+#: inc/lp-core-functions.php:1840
 msgid "Cart page"
 msgstr ""
 
-#: inc/lp-core-functions.php:2519
+#: inc/lp-core-functions.php:2191
 msgctxt "static-page-name"
 msgid "Checkout"
 msgstr ""
 
-#: inc/lp-core-functions.php:2520
+#: inc/lp-core-functions.php:2192
 msgctxt "static-page-name"
 msgid "Courses"
 msgstr ""
 
-#: inc/lp-core-functions.php:2521
+#: inc/lp-core-functions.php:2193
 msgctxt "static-page-name"
 msgid "Profile"
 msgstr ""
 
-#: inc/lp-core-functions.php:2522
+#: inc/lp-core-functions.php:2194
 msgctxt "static-page-name"
 msgid "Become a Teacher"
 msgstr ""
 
-#: inc/lp-core-functions.php:2925
+#: inc/lp-core-functions.php:2599
 msgid "Loading..."
 msgstr ""
 
-#: inc/lp-core-functions.php:2928
+#: inc/lp-core-functions.php:2600
 msgid "Get A Passing Grade"
 msgstr ""
 
-#: inc/lp-core-functions.php:2933
+#: inc/lp-core-functions.php:2606
 msgid "Evaluate by the number of completed lessons per the total number of lessons."
 msgstr ""
 
-#: inc/lp-core-functions.php:2934
+#: inc/lp-core-functions.php:2607
 msgid "E.g: If a course has 10 lessons and a user completes 5 lessons, then the result is 5/10 (50%)."
 msgstr ""
 
-#: inc/lp-core-functions.php:2936
+#: inc/lp-core-functions.php:2609
 msgid "Evaluate by the result of the final quiz in the course. You have to add a quiz at the end of the course."
 msgstr ""
 
-#: inc/lp-core-functions.php:2942
+#: inc/lp-core-functions.php:2615
 msgid "Evaluate by the number of passed quizzes per the total number of quizzes."
 msgstr ""
 
-#: inc/lp-core-functions.php:2943
+#: inc/lp-core-functions.php:2616
 msgid "E.g: If the course has 10 quizzes and the user passes 5 quizzes, then the result is 5/10 (50%)."
 msgstr ""
 
-#: inc/lp-core-functions.php:2950
+#: inc/lp-core-functions.php:2623
 msgid "Evaluate by the number of correct answers per the total number of questions."
 msgstr ""
 
-#: inc/lp-core-functions.php:2951
+#: inc/lp-core-functions.php:2624
 msgid "E.g: If the course has 10 questions and the user corrects 5 questions, then the result is 5/10 (50%)."
 msgstr ""
 
-#: inc/lp-core-functions.php:2956
+#: inc/lp-core-functions.php:2629
 msgid "Evaluate by the number of achieved scores per the total score of the questions."
 msgstr ""
 
-#: inc/lp-core-functions.php:2962
+#: inc/lp-core-functions.php:2637
 msgid "Evaluate via lessons"
 msgstr ""
 
-#: inc/lp-core-functions.php:2966
+#: inc/lp-core-functions.php:2642
 msgid "Evaluate via results of the final quiz"
 msgstr ""
 
-#: inc/lp-core-functions.php:2970
+#: inc/lp-core-functions.php:2649
 msgid "Evaluate via passed quizzes"
 msgstr ""
 
-#: inc/lp-core-functions.php:2974
+#: inc/lp-core-functions.php:2654
 msgid "Evaluate via questions"
 msgstr ""
 
-#: inc/lp-core-functions.php:2978
+#: inc/lp-core-functions.php:2659
 msgid "Evaluate via mark"
 msgstr ""
 
-#: inc/lp-core-functions.php:3124
+#: inc/lp-core-functions.php:2804
 msgid "Heads up! Please backup before upgrading!"
 msgstr ""
 
-#: inc/lp-core-functions.php:3127
+#: inc/lp-core-functions.php:2807
 msgid "The latest update includes some substantial changes across different areas of the plugin. We highly recommend you backup your site before upgrading, and make sure you first update in a staging environment"
 msgstr ""
 
@@ -7627,80 +7664,80 @@ msgstr ""
 msgid "The LearnPress webhook process is complete"
 msgstr ""
 
-#: inc/Models/CourseModel.php:949
+#: inc/Models/CourseModel.php:971
 #: inc/user/class-lp-user.php:314
 msgid "Course can retake."
 msgstr ""
 
-#: inc/Models/CourseModel.php:956
+#: inc/Models/CourseModel.php:978
 #: inc/user/class-lp-user.php:302
 msgid "The course is full of students."
 msgstr ""
 
-#: inc/Models/CourseModel.php:963
+#: inc/Models/CourseModel.php:985
 msgid "This course is already enrolled!"
 msgstr ""
 
-#: inc/Models/CourseModel.php:966
+#: inc/Models/CourseModel.php:988
 msgid "The course is finished."
 msgstr ""
 
-#: inc/Models/CourseModel.php:974
-#: inc/Models/CourseModel.php:1072
+#: inc/Models/CourseModel.php:996
+#: inc/Models/CourseModel.php:1094
 #: inc/user/class-lp-user.php:320
 msgid "Enrollment in the course is not mandatory. You can access course for learning now."
 msgstr ""
 
-#: inc/Models/CourseModel.php:984
+#: inc/Models/CourseModel.php:1006
 #: inc/user/class-lp-user.php:309
 msgid "The course is external"
 msgstr ""
 
-#: inc/Models/CourseModel.php:990
-#: inc/Models/CourseModel.php:993
+#: inc/Models/CourseModel.php:1012
+#: inc/Models/CourseModel.php:1015
 #: inc/user/class-lp-user.php:326
 msgid "The course is not purchased."
 msgstr ""
 
-#: inc/Models/CourseModel.php:1065
+#: inc/Models/CourseModel.php:1087
 msgid "The course is free."
 msgstr ""
 
-#: inc/Models/CourseModel.php:1081
+#: inc/Models/CourseModel.php:1103
 #: inc/user/class-lp-user.php:390
 msgid "Course is purchased"
 msgstr ""
 
-#: inc/Models/CourseModel.php:1092
+#: inc/Models/CourseModel.php:1114
 #: inc/user/class-lp-user.php:403
 msgid "Course is enrolled or finished"
 msgstr ""
 
-#: inc/Models/UserItems/UserCourseModel.php:901
+#: inc/Models/UserItems/UserCourseModel.php:904
 msgid "Course not exists!"
 msgstr ""
 
-#: inc/Models/UserItems/UserCourseModel.php:918
+#: inc/Models/UserItems/UserCourseModel.php:921
 msgid "You must complete all items in course"
 msgstr ""
 
-#: inc/Models/UserItems/UserCourseModel.php:921
+#: inc/Models/UserItems/UserCourseModel.php:924
 msgid "You must passed course"
 msgstr ""
 
-#: inc/Models/UserItems/UserCourseModel.php:967
+#: inc/Models/UserItems/UserCourseModel.php:970
 msgid "You can not retake this course!"
 msgstr ""
 
-#: inc/Models/UserItems/UserCourseModel.php:1013
+#: inc/Models/UserItems/UserCourseModel.php:1016
 msgid "You have not enroll this course!"
 msgstr ""
 
-#: inc/Models/UserItems/UserCourseModel.php:1017
+#: inc/Models/UserItems/UserCourseModel.php:1020
 msgid "You have finished this course!"
 msgstr ""
 
-#: inc/Models/UserItems/UserCourseModel.php:1021
+#: inc/Models/UserItems/UserCourseModel.php:1024
 msgid "Course was blocked by expire!"
 msgstr ""
 
@@ -8663,7 +8700,7 @@ msgid_plural "%d Lessons"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/TemplateHooks/Course/SingleCourseTemplate.php:1612
+#: inc/TemplateHooks/Course/SingleCourseTemplate.php:1613
 msgid "%d Question"
 msgid_plural "%d Questions"
 msgstr[0] ""
@@ -9143,19 +9180,19 @@ msgstr ""
 msgid "Recent Courses"
 msgstr ""
 
-#: learnpress.php:718
+#: learnpress.php:720
 msgid "Documentation"
 msgstr ""
 
-#: templates/checkout/account-logged-in.php:23
+#: templates/checkout/account-logged-in.php:25
 msgid "Logged in as <a href=\"%1$s\">%2$s</a>."
 msgstr ""
 
-#: templates/checkout/account-logged-in.php:25
+#: templates/checkout/account-logged-in.php:31
 msgid "Log out of this account"
 msgstr ""
 
-#: templates/checkout/account-logged-in.php:26
+#: templates/checkout/account-logged-in.php:32
 msgid "Log out &raquo;"
 msgstr ""
 
@@ -9579,11 +9616,15 @@ msgctxt "course-item-navigation"
 msgid "Next"
 msgstr ""
 
-#: templates/single-course/content-item/popup-header.php:40
+#: templates/single-course/content-item/popup-header.php:39
 msgid "<span class=\"items-completed\">%1$s</span> of %2$d items"
 msgstr ""
 
-#: templates/single-course/content-item/popup-sidebar.php:15
+#: templates/single-course/content-item/popup-header.php:57
+msgid "Back to course"
+msgstr ""
+
+#: templates/single-course/content-item/popup-sidebar.php:16
 msgctxt "search course input placeholder"
 msgid "Search for course content"
 msgstr ""
@@ -9663,54 +9704,54 @@ msgstr ""
 msgid "Show more Sections"
 msgstr ""
 
-#: assets/src/apps/js/blocks/archive-course/block.json
+#: assets/src/apps/js/blocks/archive-course-legacy/block.json
 msgctxt "block title"
-msgid "Archive Course"
+msgid "Archive Course (Legacy)"
 msgstr ""
 
-#: assets/src/apps/js/blocks/archive-course/block.json
+#: assets/src/apps/js/blocks/archive-course-legacy/block.json
 msgctxt "block description"
 msgid "Renders template Archive Course PHP templates."
 msgstr ""
 
-#: assets/src/apps/js/blocks/archive-course/block.json
+#: assets/src/apps/js/blocks/archive-course-legacy/block.json
 msgctxt "block keyword"
-msgid "archive course"
+msgid "archive course legacy"
 msgstr ""
 
-#: assets/src/apps/js/blocks/archive-course/block.json
-#: assets/src/apps/js/blocks/item-curriculum-course/block.json
-#: assets/src/apps/js/blocks/single-course/block.json
+#: assets/src/apps/js/blocks/archive-course-legacy/block.json
+#: assets/src/apps/js/blocks/course-elements/course-title/block.json
+#: assets/src/apps/js/blocks/single-course-legacy/block.json
 msgctxt "block keyword"
 msgid "learnpress"
 msgstr ""
 
-#: assets/src/apps/js/blocks/item-curriculum-course/block.json
+#: assets/src/apps/js/blocks/course-elements/course-title/block.json
 msgctxt "block title"
-msgid "Item curriculum Course"
+msgid "Course Title"
 msgstr ""
 
-#: assets/src/apps/js/blocks/item-curriculum-course/block.json
+#: assets/src/apps/js/blocks/course-elements/course-title/block.json
 msgctxt "block description"
-msgid "Renders template Single Item Curriculum Course PHP templates."
+msgid "Course title."
 msgstr ""
 
-#: assets/src/apps/js/blocks/item-curriculum-course/block.json
+#: assets/src/apps/js/blocks/course-elements/course-title/block.json
 msgctxt "block keyword"
-msgid "item curriculum course"
+msgid "course title"
 msgstr ""
 
-#: assets/src/apps/js/blocks/single-course/block.json
+#: assets/src/apps/js/blocks/single-course-legacy/block.json
 msgctxt "block title"
-msgid "Single Course"
+msgid "Single Course (Legacy)"
 msgstr ""
 
-#: assets/src/apps/js/blocks/single-course/block.json
+#: assets/src/apps/js/blocks/single-course-legacy/block.json
 msgctxt "block description"
-msgid "Renders template Single Course PHP templates."
+msgid "Renders template Single Course Legacy PHP templates."
 msgstr ""
 
-#: assets/src/apps/js/blocks/single-course/block.json
+#: assets/src/apps/js/blocks/single-course-legacy/block.json
 msgctxt "block keyword"
-msgid "single course"
+msgid "single course legacy"
 msgstr ""

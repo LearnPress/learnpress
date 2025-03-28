@@ -3,9 +3,11 @@
 namespace LearnPress\Gutenberg\Blocks\SingleCourseElements;
 
 use LearnPress\Gutenberg\Utils\StyleAttributes;
+use LearnPress\Models\CourseModel;
 use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
 use LP_Debug;
 use Throwable;
+use WP_Block;
 
 /**
  * Class CourseTitleBlockType
@@ -50,14 +52,16 @@ class CourseTitleBlockType extends AbstractCourseBlockType {
 		$html = '';
 
 		try {
-			$courseModel = $this->get_course( $attributes );
-			if ( ! $courseModel ) {
+			$courseModel = $this->get_course( $attributes, $block );
+			if ( ! $courseModel instanceof CourseModel ) {
 				return $html;
 			}
+
 			$this->get_class_hash();
 			$this->enqueue_assets();
 			$this->inline_styles( $attributes );
-			$tag                  = $attributes['tag'] ?? 'h3';
+			$tag = $attributes['tag'] ?? 'h3';
+
 			$singleCourseTemplate = SingleCourseTemplate::instance();
 			$html                 = $this->get_output_with_class_hash( $attributes, $singleCourseTemplate->html_title( $courseModel, $tag ) );
 		} catch ( Throwable $e ) {

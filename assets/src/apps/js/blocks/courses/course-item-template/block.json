@@ -1,0 +1,24 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "learnpress/course-item-template",
+	"title": "Course Item Template",
+	"category": "",
+	"description": "Course Item Template",
+	"textdomain": "learnpress",
+	"keywords": [
+		"course item",
+		"learnpress"
+	],
+	"usesContext": [ "lpCourseQuery" ],
+	"supports": {
+		"align": true
+	},
+	"attributes": {
+		"columns": {
+			"type": "number",
+			"default": 1
+		}
+	},
+	"ancestor": [ "learnpress/list-courses" ]
+}

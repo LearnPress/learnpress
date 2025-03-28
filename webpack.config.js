@@ -121,6 +121,7 @@ module.exports = {
 		'./assets/js/dist/blocks/instructor-avatar': './assets/src/apps/js/blocks/instructor-elements/instructor-avatar/index.js',
 		'./assets/js/dist/blocks/breadcrumb': './assets/src/apps/js/blocks/breadcrumb/index.js',
 		'./assets/js/dist/blocks/list-courses': './assets/src/apps/js/blocks/courses/list-courses/index.js',
+		'./assets/js/dist/blocks/course-item-template': './assets/src/apps/js/blocks/courses/course-item-template/index.js',
 
 		// Elementor
 		'./assets/js/dist/elementor/courses': './assets/src/js/elementor/courses.js',

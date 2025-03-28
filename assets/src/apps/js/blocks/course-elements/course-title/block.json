@@ -13,7 +13,7 @@
 			"default": "h3"
 		}
 	},
-	"usesContext": [],
+	"usesContext": [ "lpCourseData" ],
 	"supports": {
 		"multiple": true,
 		"align": ["wide", "full"],
