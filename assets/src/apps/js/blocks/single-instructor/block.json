@@ -1,0 +1,20 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "learnpress/single-instructor",
+	"title": "Single Instructor",
+	"category": "learnpress-category",
+	"icon": "archive",
+	"description": "Renders Template Single Instructor PHP templates.",
+	"textdomain": "learnpress",
+	"keywords": ["learnpress single instructor", "learnpress"],
+	"usesContext": [],
+	"supports": {
+		"inserter": true,
+		"reusable": true,
+		"reorder": true,
+		"html": false,
+		"multiple": true,
+		"wrapper": false
+	}
+}

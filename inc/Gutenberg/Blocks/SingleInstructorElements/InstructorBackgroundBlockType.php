@@ -1,18 +1,20 @@
 <?php
 
-namespace LearnPress\Gutenberg\Blocks\SingleCourseElements;
+namespace LearnPress\Gutenberg\Blocks\SingleInstructorElements;
 
-use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
+use LearnPress\Gutenberg\Blocks\SingleInstructorElements\AbstractSingleInstructorBlockType;
+use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
+use LearnPress\TemplateHooks\Profile\ProfileTemplate;
 use LP_Debug;
 use Throwable;
 
 /**
- * Class CourseQuizBlockType
+ * Class InstructorBackgroundBlockType
  *
  * Handle register, render block template
  */
-class CourseQuizBlockType extends AbstractCourseBlockType {
-	public $block_name = 'course-quiz';
+class InstructorBackgroundBlockType extends AbstractSingleInstructorBlockType {
+	public $block_name = 'instructor-background';
 
 	public function get_supports(): array {
 		return [
@@ -34,7 +36,7 @@ class CourseQuizBlockType extends AbstractCourseBlockType {
 	}
 
 	public function get_ancestor() {
-		return [ 'learnpress/single-course' ];
+		return [ 'learnpress/single-instructor' ];
 	}
 
 	/**
@@ -48,26 +50,17 @@ class CourseQuizBlockType extends AbstractCourseBlockType {
 		$html = '';
 
 		try {
-			$courseModel = $this->get_course( $attributes );
-			if ( ! $courseModel ) {
-				return $html;
-			}
-			$value     = SingleCourseTemplate::instance()->html_count_item( $courseModel, LP_QUIZ_CPT );
-			$label     = __( 'Quiz', 'learnpress' );
-			$html_quiz = sprintf(
-				'<div class="info-meta-item">
-					<span class="info-meta-left"><i class="lp-icon-puzzle-piece"></i>%s:</span>
-					<span class="info-meta-right"><div class="course-count-quiz">%s</div></span>
-				</div>',
-				$label,
-				$value
-			);
-
-			if ( empty( $html_quiz ) ) {
+			$instructor = SingleInstructorTemplate::instance()->detect_instructor_by_page();
+			if ( ! $instructor || ! $instructor->is_instructor() ) {
 				return $html;
 			}
 
-			$html = $this->get_output( $html_quiz );
+			$userModel = $this->get_user();
+			ob_start();
+			echo ProfileTemplate::instance()->html_cover_image( $userModel );
+			$html_background = ob_get_clean();
+
+			$html = $this->get_output( $html_background );
 		} catch ( Throwable $e ) {
 			LP_Debug::error_log( $e );
 		}

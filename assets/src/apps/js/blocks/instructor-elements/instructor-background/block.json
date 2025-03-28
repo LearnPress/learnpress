@@ -1,0 +1,34 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "learnpress/instructor-background",
+	"title": "Instructor Background",
+	"category": "learnpress-course-elements",
+	"icon": "format-image",
+	"description": "Renders template Instructor Background PHP templates.",
+	"textdomain": "learnpress",
+	"keywords": ["instructor background single", "learnpress"],
+	"usesContext": [],
+	"attributes": {
+		"position": {
+			"type": "string",
+			"default": "center"
+		},
+		"size": {
+			"type": "string",
+			"default": "cover"
+		},
+		"repeat": {
+			"type": "boolean",
+			"default": false
+		}
+	},
+	"supports": {
+		"inserter": true,
+		"reusable": true,
+		"reorder": true,
+		"html": false,
+		"multiple": false
+	},
+	"ancestor": ["learnpress/single-instructor"]
+}

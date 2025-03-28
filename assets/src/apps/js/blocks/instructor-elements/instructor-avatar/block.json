@@ -1,0 +1,28 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "learnpress/instructor-avatar",
+	"title": "Instructor Avatar",
+	"category": "learnpress-course-elements",
+	"icon": "format-image",
+	"description": "Renders template Instructor Avatar PHP templates.",
+	"textdomain": "learnpress",
+	"keywords": ["instructor avatar single", "learnpress"],
+	"usesContext": [],
+	"supports": {
+		"multiple": false,
+		"align": ["wide", "full"],
+		"html": false,
+		"__experimentalBorder": {
+			"color": true,
+			"radius": true,
+			"width": true,
+			"__experimentalDefaultControls": {
+				"width": false,
+				"color": false,
+				"radius": false
+			}
+		}
+	},
+	"ancestor": ["learnpress/single-instructor"]
+}
