@@ -28,6 +28,10 @@ class CourseItemTemplateBlock extends AbstractBlockType {
 		];
 	}
 
+	public function get_ancestor() {
+		return [ 'learnpress/list-courses' ];
+	}
+
 	/**
 	 * Render content of block tag
 	 *

@@ -6,7 +6,7 @@ import save from './save';
 import metadata from './block.json';
 import { registerBlockType } from '@wordpress/blocks';
 
-registerBlockType( 'learnpress/course-item', {
+registerBlockType( 'learnpress/course-item-template', {
 	...metadata,
 	icon: {
 		src: (
