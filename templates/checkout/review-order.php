@@ -82,7 +82,7 @@ $singleCourseTemplate = SingleCourseTemplate::instance();
 								?>
 
 								<?php
-								if ( $cart_item['quantity'] > 0 ) {
+								if ( $cart_item['quantity'] > 1 ) {
 									echo wp_kses_post(
 										apply_filters(
 											'learn-press/review-order/cart-item-quantity',
