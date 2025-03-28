@@ -13,10 +13,7 @@
 	],
 	"usesContext": [],
 	"attributes": {
-		"coursesData": {
-			"type": "object"
-		},
-		"query": {
+		"courseQuery": {
 			"type": "object",
 			"default": {
 				"limit": 3,
@@ -25,8 +22,7 @@
 		}
 	},
 	"providesContext": {
-		"lpCourseQuery": "query",
-		"lpCoursesData": "coursesData"
+		"lpCourseQuery": "courseQuery"
 	},
 	"supports": {
 		"html": false,

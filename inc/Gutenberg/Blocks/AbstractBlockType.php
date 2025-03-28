@@ -1,6 +1,7 @@
 <?php
 namespace LearnPress\Gutenberg\Blocks;
 
+use WP_Block;
 use WP_Block_Type;
 
 /**
@@ -95,8 +96,8 @@ abstract class AbstractBlockType extends WP_Block_Type {
 	 * Render content of block tag
 	 *
 	 * @param array $attributes | Attributes of block tag.
-	 * @param $content
-	 * @param \WP_Block $block
+	 * @param string $content
+	 * @param WP_Block $block
 	 *
 	 * @return string
 	 */

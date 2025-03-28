@@ -51,18 +51,58 @@ function PostTemplateBlockPreview(
 	);
 }
 
+const fetchLearnPressCourses = async ( courseQuery, signal ) => {
+	try {
+		const url = 'http://lp.test/wp-json/lp/v1/courses/archive-course';
+		const params = '?return_type=json';
+		const response = await fetch( url + params, {
+			method: 'GET',
+			signal,
+		} );
+
+		return await response.json();
+	} catch ( error ) {
+		console.error( 'Error fetching LearnPress courses:', error );
+	}
+};
+
 const MemoizedPostTemplateBlockPreview = memo( PostTemplateBlockPreview );
 
 const Edit = ( { clientId, context, attributes, setAttributes } ) => {
 	const blockProps = useBlockProps();
 	const [ activeBlockContextId, setActiveBlockContextId ] = useState();
-	const lpCoursesData = context.lpCoursesData ?? undefined;
+	const [ coursesData, setCoursesData ] = useState();
+	const [ listCourses, setListCourses ] = useState( [] );
 	const { columns } = attributes;
 
-	const coursesData = useMemo(
-		() => ( lpCoursesData ? lpCoursesData.data.courses : [] ),
-		[ lpCoursesData ]
-	);
+	// Fetch courses when query parameters change
+	useEffect( () => {
+		const courseQuery = context.lpCourseQuery ?? {};
+		let signal, controller;
+		const fetchCourses = async () => {
+			try {
+				if ( undefined !== controller ) {
+					controller.abort();
+				}
+
+				controller = new AbortController();
+				signal = controller.signal;
+
+				const data = await fetchLearnPressCourses( courseQuery, signal );
+				setCoursesData( data );
+				setListCourses( data.data.courses );
+			} catch ( error ) {
+				console.error( 'Failed to fetch courses:', error );
+			} finally {
+			}
+		};
+
+		fetchCourses();
+
+		return () => {
+			controller.abort();
+		};
+	}, [ context.lpCourseQuery ] );
 
 	const { blocks } = useSelect( ( select ) => {
 		const { getBlocks } = select( blockEditorStore );
@@ -74,12 +114,12 @@ const Edit = ( { clientId, context, attributes, setAttributes } ) => {
 
 	const blockContexts = useMemo(
 		() =>
-			lpCoursesData?.data?.courses?.map( ( post ) => ( {
+			listCourses?.map( ( post ) => ( {
 				lpCourseData: post,
 				postId: post.ID,
 				postTitle: post.post_title,
 			} ) ),
-		[ lpCoursesData ]
+		[ listCourses ]
 	);
 
 	return (

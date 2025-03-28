@@ -4,6 +4,7 @@ namespace LearnPress\Gutenberg\Blocks\SingleCourseElements;
 use LearnPress\Gutenberg\Blocks\AbstractBlockType;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\UserModel;
+use WP_Block;
 
 /**
  * Class Block_Template_Single_Course
@@ -18,14 +19,21 @@ abstract class AbstractCourseBlockType extends AbstractBlockType {
 		'learnpress/learnpress//single-lp_course',
 		'learnpress/learnpress//archive-lp_course',
 	];
+
 	/**
 	 * Get course model
 	 *
 	 * @param $attributes
+	 * @param WP_Block $block
 	 *
 	 * @return false|CourseModel
 	 */
-	public function get_course( $attributes ) {
+	public function get_course( $attributes, WP_Block $block ) {
+		$courseModel = $block->context['courseModel'] ?? false;
+		if ( $courseModel instanceof CourseModel ) {
+			return $courseModel;
+		}
+
 		$courseId = ! empty( $attributes['courseId'] ) ? (int) $attributes['courseId'] : get_the_ID();
 		return CourseModel::find( $courseId, true );
 	}
