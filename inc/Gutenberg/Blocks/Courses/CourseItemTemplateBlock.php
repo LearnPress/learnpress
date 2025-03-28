@@ -17,7 +17,7 @@ use WP_Query;
  * Handle register, render block template
  */
 class CourseItemTemplateBlock extends AbstractBlockType {
-	public $name = 'course-item-template';
+	public $block_name = 'course-item-template';
 
 	public function get_attributes() {
 		return [
