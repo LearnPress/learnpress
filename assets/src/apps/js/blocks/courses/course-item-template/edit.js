@@ -73,6 +73,7 @@ const Edit = ( { clientId, context, attributes, setAttributes } ) => {
 	const [ activeBlockContextId, setActiveBlockContextId ] = useState();
 	const [ coursesData, setCoursesData ] = useState();
 	const [ listCourses, setListCourses ] = useState( [] );
+	const [ loadingAPI, setLoadingAPI ] = useState( 0 );
 	const { columns } = attributes;
 
 	// Fetch courses when query parameters change
@@ -85,6 +86,7 @@ const Edit = ( { clientId, context, attributes, setAttributes } ) => {
 					controller.abort();
 				}
 
+				setLoadingAPI( 1 );
 				controller = new AbortController();
 				signal = controller.signal;
 
@@ -94,6 +96,7 @@ const Edit = ( { clientId, context, attributes, setAttributes } ) => {
 			} catch ( error ) {
 				console.error( 'Failed to fetch courses:', error );
 			} finally {
+				setLoadingAPI( 0 );
 			}
 		};
 
@@ -114,13 +117,35 @@ const Edit = ( { clientId, context, attributes, setAttributes } ) => {
 
 	const blockContexts = useMemo(
 		() =>
-			listCourses?.map( ( post ) => ( {
-				lpCourseData: post,
-				postId: post.ID,
-				postTitle: post.post_title,
+			listCourses?.map( ( course ) => ( {
+				lpCourseData: course,
+				courseId: course?.ID,
 			} ) ),
 		[ listCourses ]
 	);
+
+	if ( loadingAPI ) {
+		return (
+			<ul { ...blockProps }>
+				<li>{ __( 'Courses Fetching…', 'learnpress' ) }</li>
+			</ul>
+		);
+	}
+
+	if ( listCourses.length === 0 && ! loadingAPI ) {
+		const dataDummy = [
+			{
+				ID: 1,
+				post_title: __( 'Course One', 'learnpress' ),
+			},
+			{
+				ID: 2,
+				post_title: __( 'Course two', 'learnpress' ),
+
+			},
+		];
+		setListCourses( dataDummy );
+	}
 
 	return (
 		<>
@@ -141,27 +166,27 @@ const Edit = ( { clientId, context, attributes, setAttributes } ) => {
 				{ blockContexts &&
 				blockContexts.map( ( blockContext ) => (
 					<BlockContextProvider
-						key={ blockContext.postId }
+						key={ blockContext.courseId }
 						value={ blockContext }
 					>
-						{ blockContext.postId ===
+						{ blockContext.courseId ===
 						( activeBlockContextId ||
-							blockContexts[ 0 ]?.postId ) ? (
+							blockContexts[ 0 ]?.courseId ) ? (
 								<PostTemplateInnerBlocks
 									classList={ blockContext.classList }
 								/>
 							) : null }
 						<MemoizedPostTemplateBlockPreview
 							blocks={ blocks }
-							blockContextId={ blockContext.postId }
+							blockContextId={ blockContext.courseId }
 							classList={ blockContext.classList }
 							setActiveBlockContextId={
 								setActiveBlockContextId
 							}
 							isHidden={
-								blockContext.postId ===
+								blockContext.courseId ===
 								( activeBlockContextId ||
-									blockContexts[ 0 ]?.postId )
+									blockContexts[ 0 ]?.courseId )
 							}
 						/>
 					</BlockContextProvider>
