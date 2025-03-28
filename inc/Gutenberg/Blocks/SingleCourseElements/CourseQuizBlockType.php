@@ -34,7 +34,7 @@ class CourseQuizBlockType extends AbstractCourseBlockType {
 	}
 
 	public function get_ancestor() {
-		return [ 'learnpress/single-course' ];
+		return [ 'learnpress/single-course', 'learnpress/course-item-template' ];
 	}
 
 	/**
@@ -48,7 +48,7 @@ class CourseQuizBlockType extends AbstractCourseBlockType {
 		$html = '';
 
 		try {
-			$courseModel = $this->get_course( $attributes );
+			$courseModel = $this->get_course( $attributes, $block );
 			if ( ! $courseModel ) {
 				return $html;
 			}
@@ -56,7 +56,7 @@ class CourseQuizBlockType extends AbstractCourseBlockType {
 			$label     = __( 'Quiz', 'learnpress' );
 			$html_quiz = sprintf(
 				'<div class="info-meta-item">
-					<span class="info-meta-left"><i class="lp-icon-puzzle-piece"></i>%s:</span>
+					<div class="info-meta-left"><i class="lp-icon-puzzle-piece"></i><span>%s:</span></div>
 					<span class="info-meta-right"><div class="course-count-quiz">%s</div></span>
 				</div>',
 				$label,

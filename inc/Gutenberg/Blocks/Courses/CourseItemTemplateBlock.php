@@ -39,14 +39,25 @@ class CourseItemTemplateBlock extends AbstractBlockType {
 		$html = '';
 
 		try {
-			$wrapper_attributes = get_block_wrapper_attributes();
+			$extra_attributes['class'] = 'learn-press-courses';
+			$layout                    = $attributes['layout'] ?? 'list';
+
+			$wrapper_attributes = get_block_wrapper_attributes( $extra_attributes );
 			$courseQuery        = $block->context['courseQuery'] ?? [];
 			if ( empty( $courseQuery ) ) {
 				return $html;
 			}
 
-			$filter = new LP_Course_Filter();
+			$filter   = new LP_Course_Filter();
+			$settings = lp_archive_skeleton_get_args();
+			Courses::handle_params_for_query_courses( $filter, $settings );
 			Courses::handle_params_for_query_courses( $filter, $courseQuery );
+			if ( ! empty( $settings['page_term_id_current'] ) && empty( $settings['term_id'] ) ) {
+				$filter->term_ids[] = $settings['page_term_id_current'];
+			} elseif ( ! empty( $settings['page_tag_id_current'] ) && empty( $settings['tag_id'] ) ) {
+				$filter->tag_ids[] = $settings['page_tag_id_current'];
+			}
+
 			$courses = Courses::get_courses( $filter );
 			foreach ( $courses as $course ) {
 				$courseModel = CourseModel::find( $course->ID, true );
@@ -62,12 +73,13 @@ class CourseItemTemplateBlock extends AbstractBlockType {
 				$block_content = $block_render->render( [ 'dynamic' => false ] );
 				remove_filter( 'render_block_context', $filter_block_context, 1 );
 
-				$html .= '<li>' . $block_content . '</li>';
+				$html .= '<li class="course">' . $block_content . '</li>';
 			}
 
 			return sprintf(
-				'<ul %1$s>%2$s</ul>',
+				'<ul %1$s data-layout="%2$s">%3$s</ul>',
 				$wrapper_attributes,
+				$layout,
 				$html
 			);
 		} catch ( Throwable $e ) {

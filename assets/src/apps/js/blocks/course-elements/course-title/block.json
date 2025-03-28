@@ -11,6 +11,14 @@
 		"tag": {
 			"type": "string",
 			"default": "span"
+		},
+		"isLink": {
+			"type": "boolean",
+			"default": true
+		},
+		"target": {
+			"type": "boolean",
+			"default": false
 		}
 	},
 	"usesContext": [ "lpCourseData" ],

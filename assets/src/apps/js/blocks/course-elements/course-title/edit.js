@@ -1,11 +1,11 @@
 import { __ } from '@wordpress/i18n';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
 import { RawHTML } from '@wordpress/element';
-import { PanelBody, SelectControl } from '@wordpress/components';
+import { PanelBody, SelectControl, ToggleControl } from '@wordpress/components';
 
 const Edit = ( props ) => {
 	const { attributes, setAttributes, context } = props;
-	const { tag } = attributes;
+	const { tag, isLink, target } = attributes;
 	const blockProps = useBlockProps();
 	const { lpCourseData } = context;
 	const tagOptions = [
@@ -33,6 +33,28 @@ const Edit = ( props ) => {
 							setAttributes( { tag: value } )
 						}
 					/>
+					<ToggleControl
+						label="Is Link"
+						checked={ !! isLink }
+						onChange={ ( value ) => {
+							props.setAttributes( {
+								isLink: value,
+							} );
+						} }
+					/>
+					{ props.attributes.isLink ? (
+						<ToggleControl
+							label="Open is new tab"
+							checked={ !! target }
+							onChange={ ( value ) => {
+								props.setAttributes( {
+									target: value,
+								} );
+							} }
+						/>
+					) : (
+						''
+					) }
 				</PanelBody>
 			</InspectorControls>
 			<div { ...blockProps }>

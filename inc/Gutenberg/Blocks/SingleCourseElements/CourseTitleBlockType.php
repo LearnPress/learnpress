@@ -60,10 +60,25 @@ class CourseTitleBlockType extends AbstractCourseBlockType {
 			$this->get_class_hash();
 			$this->enqueue_assets();
 			$this->inline_styles( $attributes );
-			$tag = $attributes['tag'] ?? 'h3';
-
 			$singleCourseTemplate = SingleCourseTemplate::instance();
-			$html                 = $this->get_output_with_class_hash( $attributes, $singleCourseTemplate->html_title( $courseModel, $tag ) );
+
+			$is_link      = ( isset( $attributes['isLink'] ) && $attributes['isLink'] === false ) ? false : true;
+			$new_tab      = ( isset( $attributes['target'] ) && $attributes['target'] === true ) ? true : false;
+			$title_target = $new_tab ? 'target="_blank"' : '';
+			$tag          = $attributes['tag'] ?? 'h3';
+			$html_title   = '';
+			if ( $is_link ) {
+				$html_title = sprintf(
+					'<%1$s> <a class="course-permalink" href="%2$s" %3$s>%4$s</a> </%1$s>',
+					$tag,
+					$courseModel->get_permalink(),
+					$title_target,
+					$singleCourseTemplate->html_title( $courseModel, $tag )
+				);
+			} else {
+				$html_title = $singleCourseTemplate->html_title( $courseModel, $tag );
+			}
+			$html = $this->get_output_with_class_hash( $attributes, $html_title );
 		} catch ( Throwable $e ) {
 			LP_Debug::error_log( $e );
 		}

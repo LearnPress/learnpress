@@ -35,7 +35,7 @@ class CourseButtonBlockType extends AbstractCourseBlockType {
 	}
 
 	public function get_ancestor() {
-		return [ 'learnpress/single-course' ];
+		return [ 'learnpress/single-course', 'learnpress/course-item-template' ];
 	}
 
 	/**
@@ -49,12 +49,22 @@ class CourseButtonBlockType extends AbstractCourseBlockType {
 		$html = '';
 
 		try {
-			$courseModel = $this->get_course( $attributes );
+			$courseModel = $this->get_course( $attributes, $block );
 			$userModel   = $this->get_user();
 			if ( ! $courseModel ) {
 				return $html;
 			}
-			$html_button = SingleCourseModernLayout::instance()->html_button( $courseModel, $userModel );
+
+			$html_button = '';
+			if ( ! is_singular( LP_COURSE_CPT ) ) {
+				$html_button = sprintf(
+					'<div class="course-readmore"><a href="%s">%s</a></div>',
+					$courseModel->get_permalink(),
+					__( 'Read more', 'learnpress' )
+				);
+			} else {
+				$html_button = SingleCourseModernLayout::instance()->html_button( $courseModel, $userModel );
+			}
 
 			if ( empty( $html_button ) ) {
 				return $html;

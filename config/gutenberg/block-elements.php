@@ -6,7 +6,6 @@
  * @version 1.0.0
  */
 
-use LearnPress\Gutenberg\Blocks\ArchiveCourse\ArchiveCourseBlockType;
 use LearnPress\Gutenberg\Blocks\ArchiveCourseElements\ButtonResetFilterBlockType;
 use LearnPress\Gutenberg\Blocks\ArchiveCourseElements\ButtonSubmitFilterBlockType;
 use LearnPress\Gutenberg\Blocks\ArchiveCourseElements\CourseAuthorFilterBlockType;
@@ -48,6 +47,11 @@ use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseTitleBlockType;
 use LearnPress\Gutenberg\Blocks\SingleInstructor\SingleInstructorBlockType;
 use LearnPress\Gutenberg\Blocks\SingleInstructorElements\InstructorAvatarBlockType;
 use LearnPress\Gutenberg\Blocks\SingleInstructorElements\InstructorBackgroundBlockType;
+use LearnPress\Gutenberg\Blocks\SingleInstructorElements\InstructorCourseBlockType;
+use LearnPress\Gutenberg\Blocks\SingleInstructorElements\InstructorDescriptionBlockType;
+use LearnPress\Gutenberg\Blocks\SingleInstructorElements\InstructorNameBlockType;
+use LearnPress\Gutenberg\Blocks\SingleInstructorElements\InstructorSocialBlockType;
+use LearnPress\Gutenberg\Blocks\SingleInstructorElements\InstructorStudentBlockType;
 
 return apply_filters(
 	'learn-press/config/block-elements',
@@ -88,9 +92,13 @@ return apply_filters(
 		new ButtonResetFilterBlockType(),
 		new InstructorBackgroundBlockType(),
 		new InstructorAvatarBlockType(),
+		new InstructorNameBlockType(),
+		new InstructorSocialBlockType(),
+		new InstructorCourseBlockType(),
+		new InstructorStudentBlockType(),
+		new InstructorDescriptionBlockType(),
 		new BreadCrumb(),
 		new SingleCourseBlockType(),
-		new ArchiveCourseBlockType(),
 		new SingleInstructorBlockType(),
 		new ListCoursesBlockType(),
 		new CourseItemTemplateBlock(),
