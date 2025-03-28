@@ -31,7 +31,7 @@ class LP_Assets extends LP_Abstract_Assets {
 	protected function _get_styles(): array {
 		$is_rtl = is_rtl() ? '-rtl' : '';
 
-		return apply_filters(
+		$styles = apply_filters(
 			'learn-press/frontend-default-styles',
 			array(
 				'learnpress'         => new LP_Asset_Key(
@@ -69,6 +69,14 @@ class LP_Assets extends LP_Abstract_Assets {
 				),
 			)
 		);
+
+		if ( wp_is_block_theme() ) {
+			if ( LP_Page_Controller::is_page_courses() ) {
+				unset( $styles['learnpress'] );
+			}
+		}
+
+		return $styles;
 	}
 
 	/**
