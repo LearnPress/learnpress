@@ -1,12 +1,16 @@
 import { __ } from '@wordpress/i18n';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
+import { RawHTML } from '@wordpress/element';
 import { PanelBody, SelectControl } from '@wordpress/components';
 
 const Edit = ( props ) => {
 	const { attributes, setAttributes, context } = props;
+	const { tag } = attributes;
 	const blockProps = useBlockProps();
 	const { lpCourseData } = context;
-	const tag = [
+	const tagOptions = [
+		{ label: 'span', value: 'span' },
+		{ label: 'div', value: 'div' },
 		{ label: 'h1', value: 'h1' },
 		{ label: 'h2', value: 'h2' },
 		{ label: 'h3', value: 'h3' },
@@ -14,6 +18,8 @@ const Edit = ( props ) => {
 		{ label: 'h5', value: 'h5' },
 		{ label: 'h6', value: 'h6' },
 	];
+	const courseTitle = lpCourseData?.title || __( 'Course Title', 'learnpress' );
+	const TagName = tag;
 
 	return (
 		<>
@@ -21,16 +27,20 @@ const Edit = ( props ) => {
 				<PanelBody title="Settings">
 					<SelectControl
 						label="Tag"
-						value={ props.attributes.tag }
-						options={ tag }
+						value={ tag }
+						options={ tagOptions }
 						onChange={ ( value ) =>
-							props.setAttributes( { tag: value ? value : '' } )
+							setAttributes( { tag: value } )
 						}
 					/>
 				</PanelBody>
 			</InspectorControls>
 			<div { ...blockProps }>
-				<div>{ lpCourseData?.post_title ?? __( 'Course Title', 'learnpress' ) }</div>
+				<TagName
+					dangerouslySetInnerHTML={ {
+						__html: courseTitle,
+					} }
+				/>
 			</div>
 		</>
 	);

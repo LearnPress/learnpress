@@ -1,13 +1,20 @@
 import { __ } from '@wordpress/i18n';
 import { useBlockProps } from '@wordpress/block-editor';
+import { RawHTML } from '@wordpress/element';
 
-export const edit = ( props ) => {
+const Edit = ( props ) => {
+	const { attributes, setAttributes, context } = props;
 	const blockProps = useBlockProps();
+	const { lpCourseData } = context;
+	const coursePrice = lpCourseData?.price || __( 'Course Price', 'learnpress' );
+
 	return (
 		<>
 			<div { ...blockProps }>
-				<span>{ '$5.00' }</span>
+				<RawHTML>{ coursePrice }</RawHTML>
 			</div>
 		</>
 	);
 };
+
+export default Edit;

@@ -10,7 +10,7 @@
 	"attributes": {
 		"tag": {
 			"type": "string",
-			"default": "h3"
+			"default": "span"
 		}
 	},
 	"usesContext": [ "lpCourseData" ],

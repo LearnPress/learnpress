@@ -11,6 +11,7 @@ import { useSelect } from '@wordpress/data';
 import { memo, useMemo, useState, useEffect } from '@wordpress/element';
 import { PanelBody, RangeControl } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
+import API from '../../../../../js/api.js';
 
 function PostTemplateInnerBlocks( { classList } ) {
 	const innerBlocksProps = useInnerBlocksProps();
@@ -52,7 +53,7 @@ function PostTemplateBlockPreview(
 }
 
 const fetchLearnPressCourses = async ( courseQuery, signal ) => {
-	const url = 'http://lp.test/wp-json/lp/v1/courses/archive-course';
+	const url = API.apiCourses;
 	const params = '?return_type=json';
 	const response = await fetch( url + params, {
 		method: 'GET',
