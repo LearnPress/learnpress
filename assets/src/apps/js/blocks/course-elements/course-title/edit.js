@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
-import { PanelBody, SelectControl } from '@wordpress/components';
+import { PanelBody, SelectControl, ToggleControl } from '@wordpress/components';
 
 const Edit = ( props ) => {
 	const { attributes, setAttributes, context } = props;
@@ -27,10 +27,35 @@ const Edit = ( props ) => {
 							props.setAttributes( { tag: value ? value : '' } )
 						}
 					/>
+					<ToggleControl
+						label="Is Link"
+						checked={ props.attributes.isLink ? true : false }
+						onChange={ ( value ) => {
+							props.setAttributes( {
+								isLink: value ? true : false,
+							} );
+						} }
+					/>
+					{ props.attributes.isLink ? (
+						<ToggleControl
+							label="Open is new tab"
+							checked={ props.attributes.target ? true : false }
+							onChange={ ( value ) => {
+								props.setAttributes( {
+									target: value ? true : false,
+								} );
+							} }
+						/>
+					) : (
+						''
+					) }
 				</PanelBody>
 			</InspectorControls>
 			<div { ...blockProps }>
-				<div>{ lpCourseData?.post_title ?? __( 'Course Title', 'learnpress' ) }</div>
+				<div>
+					{ lpCourseData?.post_title ??
+						__( 'Course Title', 'learnpress' ) }
+				</div>
 			</div>
 		</>
 	);

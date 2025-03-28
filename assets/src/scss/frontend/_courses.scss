@@ -795,6 +795,23 @@
 	}
 }
 
+.wp-block-learnpress-course-item-template {
+	display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    padding-bottom: 32px;
+
+	.info-meta-item {
+		display: flex;
+		gap: 8px;
+	}
+
+	.info-meta-item .info-meta-left span {
+		display: none;
+	}
+}
+
 @for $i from 0 through 9 {
 	input[type="radio"]:nth-child(#{$i*2+1}):checked ~ .switch-btn:nth-child(#{$i*2+2}) {
 		.switch-layout & {

@@ -11,9 +11,17 @@
 		"tag": {
 			"type": "string",
 			"default": "h3"
+		},
+		"isLink": {
+			"type": "boolean",
+			"default": true
+		},
+		"target": {
+			"type": "boolean",
+			"default": false
 		}
 	},
-	"usesContext": [ "lpCourseData" ],
+	"usesContext": ["lpCourseData"],
 	"supports": {
 		"multiple": true,
 		"align": ["wide", "full"],

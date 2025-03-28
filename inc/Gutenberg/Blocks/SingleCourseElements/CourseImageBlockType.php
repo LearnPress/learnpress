@@ -35,7 +35,7 @@ class CourseImageBlockType extends AbstractCourseBlockType {
 	}
 
 	public function get_ancestor() {
-		return [ 'learnpress/single-course' ];
+		return [ 'learnpress/single-course', 'learnpress/course-item-template' ];
 	}
 
 	/**
@@ -49,12 +49,17 @@ class CourseImageBlockType extends AbstractCourseBlockType {
 		$html = '';
 
 		try {
-			$courseModel = $this->get_course( $attributes );
+			$courseModel = $this->get_course( $attributes, $block );
 			if ( ! $courseModel ) {
 				return $html;
 			}
 
-			$html_image = SingleCourseTemplate::instance()->html_image( $courseModel );
+			$html_image = '';
+			if ( ! is_singular( LP_COURSE_CPT ) ) {
+				$html_image = sprintf( '<a href="%s">%s</a>', $courseModel->get_permalink(), SingleCourseTemplate::instance()->html_image( $courseModel ) );
+			} else {
+				$html_image = SingleCourseTemplate::instance()->html_image( $courseModel );
+			}
 			if ( empty( $html_image ) ) {
 				return $html;
 			}
