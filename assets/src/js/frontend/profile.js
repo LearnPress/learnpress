@@ -1,10 +1,9 @@
 import courseTab from './profile/course-tab';
 import courseStatistics from './profile/statistic';
 import recoverOrder from './profile/order-recover';
-import Avatar from './profile/avatar';
 import CourseList from './profile/course-list';
 import profileCoverImage from './profile/cover-image';
-import profileAvatarImage from './profile/new-avatar';
+import profileAvatarImage from './profile/avatar';
 
 profileCoverImage();
 const mbCurrentTab = () => {
@@ -29,5 +28,4 @@ document.addEventListener( 'DOMContentLoaded', function( event ) {
 
 if ( document.getElementById( 'learnpress-avatar-upload' ) ) {
 	profileAvatarImage();
-	// wp.element.render( <Avatar />, document.getElementById( 'learnpress-avatar-upload' ) );
 }
