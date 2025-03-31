@@ -60,7 +60,6 @@
 	"dependencies": {
 		"classnames": "^2.3.2",
 		"@paypal/paypal-js": "^7.0.3",
-		"react-easy-crop": "^4.7.4",
 		"refx": "^3.1.1",
 		"sortablejs": "^1.15.0",
 		"tom-select": "2.4.3",
