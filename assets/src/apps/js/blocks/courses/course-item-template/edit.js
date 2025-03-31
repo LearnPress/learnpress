@@ -1,4 +1,5 @@
-import { InnerBlocks,
+import {
+	InnerBlocks,
 	useBlockProps,
 	BlockContextProvider,
 	useInnerBlocksProps,
@@ -18,15 +19,13 @@ function PostTemplateInnerBlocks( { classList } ) {
 	return <li { ...innerBlocksProps } />;
 }
 
-function PostTemplateBlockPreview(
-	{
-		blocks,
-		blockContextId,
-		classList,
-		isHidden,
-		setActiveBlockContextId,
-	}
-) {
+function PostTemplateBlockPreview( {
+	blocks,
+	blockContextId,
+	classList,
+	isHidden,
+	setActiveBlockContextId,
+} ) {
 	const blockPreviewProps = useBlockPreview( {
 		blocks,
 	} );
@@ -102,13 +101,16 @@ const Edit = ( { clientId, context, attributes, setAttributes } ) => {
 		};
 	}, [ context.lpCourseQuery ] );
 
-	const { blocks } = useSelect( ( select ) => {
-		const { getBlocks } = select( blockEditorStore );
+	const { blocks } = useSelect(
+		( select ) => {
+			const { getBlocks } = select( blockEditorStore );
 
-		return {
-			blocks: getBlocks( clientId ),
-		};
-	}, [ clientId ] );
+			return {
+				blocks: getBlocks( clientId ),
+			};
+		},
+		[ clientId ],
+	);
 
 	const blockContexts = useMemo(
 		() =>
@@ -116,7 +118,7 @@ const Edit = ( { clientId, context, attributes, setAttributes } ) => {
 				lpCourseData: course,
 				courseId: course?.ID,
 			} ) ),
-		[ listCourses ]
+		[ listCourses ],
 	);
 
 	if ( loadingAPI ) {
@@ -136,7 +138,6 @@ const Edit = ( { clientId, context, attributes, setAttributes } ) => {
 			{
 				ID: 2,
 				post_title: __( 'Course two', 'learnpress' ),
-
 			},
 		];
 		setListCourses( dataDummy );
@@ -149,44 +150,74 @@ const Edit = ( { clientId, context, attributes, setAttributes } ) => {
 					<RangeControl
 						label={ __( 'Columns' ) }
 						value={ columns }
-						onChange={ ( value ) =>
-							setAttributes( { columns: value } )
-						}
-						min={ 1 }
-						max={ 12 }
+						onChange={ ( value ) => setAttributes( { columns: value } ) }
+						min={ 2 }
+						max={ 6 }
 					/>
 				</PanelBody>
 			</InspectorControls>
-			<ul { ...blockProps }>
-				{ blockContexts &&
-				blockContexts.map( ( blockContext ) => (
-					<BlockContextProvider
-						key={ blockContext.courseId }
-						value={ blockContext }
-					>
-						{ blockContext.courseId ===
-						( activeBlockContextId ||
-							blockContexts[ 0 ]?.courseId ) ? (
-								<PostTemplateInnerBlocks
-									classList={ blockContext.classList }
-								/>
-							) : null }
-						<MemoizedPostTemplateBlockPreview
-							blocks={ blocks }
-							blockContextId={ blockContext.courseId }
-							classList={ blockContext.classList }
-							setActiveBlockContextId={
-								setActiveBlockContextId
-							}
-							isHidden={
-								blockContext.courseId ===
+			<>
+				<ul { ...blockProps }>
+					{ blockContexts &&
+						blockContexts.map( ( blockContext ) => (
+							<BlockContextProvider
+								key={ blockContext.courseId }
+								value={ blockContext }
+							>
+								{ blockContext.courseId ===
 								( activeBlockContextId ||
-									blockContexts[ 0 ]?.courseId )
-							}
-						/>
-					</BlockContextProvider>
-				) ) }
-			</ul>
+									blockContexts[ 0 ]?.courseId ) ? (
+										<PostTemplateInnerBlocks
+											classList={ blockContext.classList }
+										/>
+									) : null }
+								<MemoizedPostTemplateBlockPreview
+									blocks={ blocks }
+									blockContextId={ blockContext.courseId }
+									classList={ blockContext.classList }
+									setActiveBlockContextId={
+										setActiveBlockContextId
+									}
+									isHidden={
+										blockContext.courseId ===
+										( activeBlockContextId ||
+											blockContexts[ 0 ]?.courseId )
+									}
+								/>
+							</BlockContextProvider>
+						) ) }
+				</ul>
+				<div className="gutenberg-pagination">
+					<div className="pagination-number">
+						<nav className="learn-press-pagination navigation pagination">
+							<ul className="page-numbers">
+								<li>
+									<span className="prev page-numbers">
+										<i className="lp-icon-arrow-left"></i>
+									</span>
+								</li>
+								<li>
+									<span
+										aria-current="page"
+										className="page-numbers current"
+									>
+										{ '1' }
+									</span>
+								</li>
+								<li>
+									<span className="page-numbers">{ '2' }</span>
+								</li>
+								<li>
+									<span className="page-numbers">{ '3' }</span>
+								</li>
+								<li>
+									<i className="lp-icon-arrow-right"></i>
+								</li>
+							</ul>
+						</nav>
+					</div>
+				</div>
+			</>
 		</>
 	);
 };

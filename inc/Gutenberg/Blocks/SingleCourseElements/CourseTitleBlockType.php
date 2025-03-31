@@ -87,9 +87,13 @@ class CourseTitleBlockType extends AbstractCourseBlockType {
 	}
 
 	public function get_inline_style( $attributes ) {
-		$class_style               = '.' . $this->class_hash . ' .course-title';
-		$border_classes_and_styles = StyleAttributes::get_classes_and_styles_by_attributes( $attributes, [ 'font_size', 'font_weight', 'text_color', 'text_transform' ] );
-		return $class_style . ' {' . $border_classes_and_styles['styles'] . '}';
+		$link_classes_and_styles       = StyleAttributes::get_link_color_class_and_style( $attributes );
+		$link_hover_classes_and_styles = StyleAttributes::get_link_hover_color_class_and_style( $attributes );
+		$class_style                   = '.' . $this->class_hash . ' .course-title';
+		$border_classes_and_styles     = StyleAttributes::get_classes_and_styles_by_attributes( $attributes, [ 'font_size', 'font_weight', 'text_color', 'text_transform' ] );
+		return $class_style . ' {' . $border_classes_and_styles['styles'] . '}
+		' . $class_style . '{' . $link_classes_and_styles['style'] . '}
+		.' . $this->class_hash . ' a .course-title:hover, .' . $this->class_hash . ' a .course-title:focus {' . $link_hover_classes_and_styles['style'] . '}';
 	}
 
 	public function inline_styles( $attributes ) {

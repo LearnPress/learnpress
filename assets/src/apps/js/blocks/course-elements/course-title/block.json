@@ -21,7 +21,7 @@
 			"default": false
 		}
 	},
-	"usesContext": [ "lpCourseData" ],
+	"usesContext": ["lpCourseData"],
 	"supports": {
 		"multiple": true,
 		"align": ["wide", "full"],
@@ -44,10 +44,12 @@
 		},
 		"color": {
 			"text": true,
-			"link": false,
-			"background": false,
+			"link": true,
+			"background": true,
 			"__experimentalDefaultControls": {
-				"text": true
+				"text": true,
+				"link": false,
+				"background": false
 			}
 		},
 		"__experimentalBorder": {

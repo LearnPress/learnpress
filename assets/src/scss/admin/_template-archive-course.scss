@@ -108,7 +108,7 @@
 
 .wp-block-learnpress-course-item-template {
 	width: 100%;
-    list-style: none;
+	list-style: none;
 	padding-left: 0;
 
 	.template-course {
@@ -210,7 +210,7 @@
 // 	}
 // }
 
-.wp-block-learnpress-list-course {
+.wp-block-learnpress-list-courses {
 	width: 100%;
 
 	.list-course .course-wrap-meta {
@@ -300,6 +300,13 @@
 	}
 }
 
+.lp-archive-courses {
+	.lp-content-area.has-sidebar {
+		display: flex;
+		align-items: flex-start;
+	}
+}
+
 .wp-block-learnpress-course-pagination {
 	width: 100%;
 
@@ -357,10 +364,10 @@
 		-webkit-font-smoothing: antialiased;
 	}
 
-	.pagination-number,
-	.pagination-load-more {
-		display: none;
-	}
+	// .pagination-number,
+	// .pagination-load-more {
+	// 	display: none;
+	// }
 
 	.lp-icon-arrow-left:before {
 		content: "\f060";
