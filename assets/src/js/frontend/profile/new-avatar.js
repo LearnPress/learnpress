@@ -38,9 +38,7 @@ const profileAvatarImage = () => {
 				if ( profileAvatar ) {
 					profileAvatar.src = newCropSrc;
 				}
-				// avatarPreviewImage.setAttribute( 'height', lpProfileSettings.avatar_dimensions.height );
-				// avatarPreviewImage.setAttribute( 'width', lpProfileSettings.avatar_dimensions.width );
-				// avatarPreviewImage.src = newCropSrc;
+				avatarPreviewImage.src = newCropSrc;
 				const formData = new FormData();
 				formData.append( 'file', newCropSrc );
 				uploadAvatar( formData );
