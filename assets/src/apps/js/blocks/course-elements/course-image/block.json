@@ -8,7 +8,7 @@
 	"description": "Renders template Image Course PHP templates.",
 	"textdomain": "learnpress",
 	"keywords": ["image single course", "learnpress"],
-	"usesContext": [],
+	"usesContext": ["lpCourseData"],
 	"supports": {
 		"inserter": true,
 		"reusable": true,

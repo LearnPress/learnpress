@@ -7,7 +7,7 @@
 	"description": "Renders template Lesson Course PHP templates.",
 	"textdomain": "learnpress",
 	"keywords": ["lesson single course", "learnpress"],
-	"usesContext": [],
+	"usesContext": ["lpCourseData"],
 	"supports": {
 		"multiple": false,
 		"align": ["wide", "full"],

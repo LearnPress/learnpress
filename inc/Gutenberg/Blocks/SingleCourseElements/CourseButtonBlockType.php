@@ -85,8 +85,9 @@ class CourseButtonBlockType extends AbstractCourseBlockType {
 	public function get_inline_style( $attributes ) {
 		$border_classes_and_styles = StyleAttributes::get_classes_and_styles_by_attributes( $attributes, [ 'font_size', 'padding', 'text_color','background_color', 'border_color', 'border_radius','border_width' ] );
 		$class_style               = '.lp-single-course .lp-single-course-main .lp-single-course-main__right__inner .' . $this->class_hash;
-		return $class_style . ' .course-buttons .lp-button {' . $border_classes_and_styles['styles'] . '}
-		' . $class_style . ' .has-border-color .course-buttons .lp-button { border-style: solid; }';
+		$class_button_read_more    = '.learn-press-courses .course-content .' . $this->class_hash . ' .course-readmore a';
+		return $class_button_read_more . ',' . $class_style . ' .course-buttons .lp-button {' . $border_classes_and_styles['styles'] . '}
+		' . $class_button_read_more . ',' . $class_style . ' .has-border-color .course-buttons .lp-button { border-style: solid; }';
 	}
 
 	public function inline_styles( $attributes ) {

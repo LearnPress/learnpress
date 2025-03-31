@@ -20,7 +20,6 @@ const Edit = ( props ) => {
 	];
 	const courseTitle = lpCourseData?.title || __( 'Course Title', 'learnpress' );
 	const TagName = tag;
-
 	return (
 		<>
 			<InspectorControls>
@@ -29,9 +28,7 @@ const Edit = ( props ) => {
 						label="Tag"
 						value={ tag }
 						options={ tagOptions }
-						onChange={ ( value ) =>
-							setAttributes( { tag: value } )
-						}
+						onChange={ ( value ) => setAttributes( { tag: value } ) }
 					/>
 					<ToggleControl
 						label="Is Link"
@@ -58,11 +55,21 @@ const Edit = ( props ) => {
 				</PanelBody>
 			</InspectorControls>
 			<div { ...blockProps }>
-				<TagName
-					dangerouslySetInnerHTML={ {
-						__html: courseTitle,
-					} }
-				/>
+				{ isLink ? (
+					<a>
+						<TagName
+							dangerouslySetInnerHTML={ {
+								__html: courseTitle,
+							} }
+						/>
+					</a>
+				) : (
+					<TagName
+						dangerouslySetInnerHTML={ {
+							__html: courseTitle,
+						} }
+					/>
+				) }
 			</div>
 		</>
 	);

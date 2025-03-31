@@ -1,0 +1,138 @@
+.wp-block-learnpress-lp-instructor {
+	[class^="lp-icon-"],
+	[class*=" lp-icon-"] {
+		/* use !important to prevent issues with browser extensions that change fonts */
+		font-family: "lp-icon" !important;
+		speak: never;
+		font-style: normal;
+		font-weight: normal;
+		font-variant: normal;
+		text-transform: none;
+		line-height: 1;
+		/* Better Font Rendering =========== */
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+	}
+
+	.lp-icon-twitter:before {
+		content: "\f099";
+	}
+
+	.lp-icon-facebook:before {
+		content: "\f09a";
+	}
+
+	.lp-icon-youtube-play:before {
+		content: "\f16a";
+	}
+
+	.lp-icon-linkedin:before {
+		content: "\f0e1";
+	}
+
+	.lp-icon-courses:before {
+		content: "\e903";
+	}
+
+	.lp-icon-students:before {
+		content: "\e902";
+	}
+
+	.lp-single-instructor__info__wrapper {
+		margin-bottom: 50px;
+		display: flex;
+		gap: 30px;
+	}
+
+	.lp-single-instructor__info__right__content {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		column-gap: 20px;
+		row-gap: 8px;
+		flex-wrap: wrap;
+	}
+
+	.lp-instructor-meta {
+		display: flex;
+		column-gap: 20px;
+		row-gap: 8px;
+	}
+
+	.lp-single-instructor__info__right {
+		margin-top: 0;
+		width: 100%;
+	}
+
+	h2 {
+		font-size: 1.4em;
+		font-weight: bold;
+		margin: 0;
+	}
+}
+
+.wp-block-learnpress-instructor-avatar {
+	width: 150px;
+	height: 150px;
+    aspect-ratio: 1;
+	background-color: #ccc;
+	border-radius: 50%;
+}
+
+.wp-block-learnpress-instructor-background {
+	width: 100%;
+
+	.instructor-background {
+		height: 100px;
+		width: 100%;
+		background-color: #ccc;
+		border-radius: 6px;
+		margin-bottom: 20px;
+	}
+}
+
+.wp-block-learnpress-instructor-social {
+	.instructor-social {
+		margin: 16px 0;
+		display: flex;
+		gap: 25px;
+		font-size: calc(var(--lp-font-size-base, 1em) * 1.25);
+	}
+}
+
+.wp-block-learnpress-instructor-display-name,
+.wp-block-learnpress-instructor-social {
+	margin-top: 0 !important;
+	margin-left: 0 !important;
+	margin-right: 0 !important;
+}
+
+.wp-block-learnpress-instructor-total-students,
+.wp-block-learnpress-instructor-total-courses {
+	margin-top: 0 !important;
+	margin-left: 0 !important;
+	margin-right: 0 !important;
+
+	.wrapper-instructor-total-students,
+	.wrapper-instructor-total-courses {
+		display: flex;
+		gap: 5px;
+		align-items: center;
+	}
+}
+
+.wp-block-learnpress-instructor-courses {
+	.instructor-courses ul {
+		display: grid;
+		gap: 16px;
+		padding: 0 !important;
+		margin: 0 0 32px 0;
+		list-style: none;
+		grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+
+		li {
+			background-color: #ccc;
+			height: 300px;
+		}
+	}
+}

@@ -4,6 +4,9 @@ import { PanelBody, ToggleControl } from '@wordpress/components';
 
 export const edit = ( props ) => {
 	const blockProps = useBlockProps();
+	const { attributes, setAttributes, context } = props;
+	const { lpCourseData } = context;
+	const courseCategory = lpCourseData?.category || 'Category';
 	return (
 		<>
 			<InspectorControls>
@@ -45,9 +48,17 @@ export const edit = ( props ) => {
 				<div className="category">
 					{ props.attributes.showText ? 'in ' : '' }
 					{ props.attributes.isLink ? (
-						<a>{ 'Category' }</a>
+						<a
+							dangerouslySetInnerHTML={ {
+								__html: courseCategory,
+							} }
+						></a>
 					) : (
-						'Category'
+						<div
+							dangerouslySetInnerHTML={ {
+								__html: courseCategory,
+							} }
+						></div>
 					) }
 				</div>
 			</div>

@@ -4,6 +4,10 @@ import { PanelBody, ToggleControl } from '@wordpress/components';
 
 export const edit = ( props ) => {
 	const blockProps = useBlockProps();
+	const { attributes, setAttributes, context } = props;
+	const { lpCourseData } = context;
+	const courseInstructor =
+		lpCourseData?.instructor || '<strong>Instructor</strong>';
 	return (
 		<>
 			<InspectorControls>
@@ -45,12 +49,17 @@ export const edit = ( props ) => {
 				<div className="instructor">
 					{ props.attributes.showText ? 'by ' : '' }
 					{ props.attributes.isLink ? (
-						<a>
-							{ ' ' }
-							<strong>{ 'Instructor' }</strong>{ ' ' }
-						</a>
+						<a
+							dangerouslySetInnerHTML={ {
+								__html: courseInstructor,
+							} }
+						></a>
 					) : (
-						<strong>{ 'Instructor' }</strong>
+						<div
+							dangerouslySetInnerHTML={ {
+								__html: courseInstructor,
+							} }
+						></div>
 					) }
 				</div>
 			</div>

@@ -161,6 +161,15 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				$courseItem->short_description = $singleCourseTemplate->html_short_description( $courseModel );
 				$courseItem->price             = $singleCourseTemplate->html_price( $courseModel );
 				$courseItem->title             = $singleCourseTemplate->html_title( $courseModel );
+				$courseItem->student           = $singleCourseTemplate->html_count_student( $courseModel );
+				$courseItem->lesson            = $singleCourseTemplate->html_count_item( $courseModel, LP_LESSON_CPT );
+				$courseItem->duration          = $singleCourseTemplate->html_duration( $courseModel );
+				$courseItem->quiz              = $singleCourseTemplate->html_count_item( $courseModel, LP_QUIZ_CPT );
+				$courseItem->level             = $singleCourseTemplate->html_level( $courseModel );
+				$courseItem->image             = $singleCourseTemplate->html_image( $courseModel );
+				$courseItem->instructor        = $singleCourseTemplate->html_instructor( $courseModel, false, [ 'is_link' => 'false' ] );
+				$courseItem->category          = $singleCourseTemplate->html_categories( $courseModel );
+				$courseItem->button            = sprintf( '<div class="course-readmore"><a href="%s">%s</a></div>', $courseModel->get_permalink(), __( 'Read more', 'learnpress' ) );
 
 				$courses[] = $courseItem;
 			}

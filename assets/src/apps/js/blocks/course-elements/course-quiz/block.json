@@ -7,7 +7,7 @@
 	"description": "Renders template Quiz Course PHP templates.",
 	"textdomain": "learnpress",
 	"keywords": ["quiz single course", "learnpress"],
-	"usesContext": [],
+	"usesContext": ["lpCourseData"],
 	"supports": {
 		"multiple": false,
 		"align": ["wide", "full"],
