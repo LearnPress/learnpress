@@ -251,7 +251,7 @@ class ProfileTemplate {
 			];
 
 			$section_img = [
-				'wrapper'       => '<div class="lp-user-avatar-image__display" style="width: 250px">',
+				'wrapper'       => '<div class="lp-user-avatar-image__display" style="width: 250px;height:250px">',
 				'image_empty'   => Template::combine_components( $html_img_empty ),
 				'image_preview' => $html_img_preview,
 				'wrapper_end'   => '</div>',
