@@ -60,7 +60,7 @@ $default_settings = array(
 			),
 			'avatar'            => array(
 				'title'    => esc_html__( 'Avatar', 'learnpress' ),
-				'callback' => false,
+				'callback' => [ LP_Template_Profile::class, 'tab_avatar' ],
 				'slug'     => $settings->get( 'profile_endpoints.settings-avatar', 'avatar' ),
 				'priority' => 20,
 				'icon'     => '<i class="lp-icon-user-circle"></i>',
