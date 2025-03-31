@@ -174,7 +174,7 @@ const profileAvatarImage = () => {
 	} );
 
 	Util.lpOnElementReady( '#learnpress-avatar-upload', ( e ) => {
-		e.scrollIntoView( { behavior: 'smooth' } );
+		e.scrollIntoView( { behavior: 'smooth', block: 'center' } );
 	} );
 };
 export default profileAvatarImage;

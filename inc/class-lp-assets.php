@@ -348,10 +348,7 @@ class LP_Assets extends LP_Abstract_Assets {
 				),
 				'lp-profile'           => new LP_Asset_Key(
 					self::url( 'js/dist/frontend/profile' . self::$_min_assets . '.js' ),
-					array_merge(
-						$wp_js,
-						array( 'wp-i18n', 'lp-utils' )
-					),
+					[],
 					array( LP_PAGE_PROFILE ),
 					0,
 					0,
