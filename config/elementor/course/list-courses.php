@@ -14,7 +14,7 @@ $filter              = new LP_Course_Filter();
 $filter->limit       = -1;
 $filter->only_fields = array( 'ID', 'post_title' );
 $filter->post_status = [ 'publish' ];
-$courses_obj         = Courses::get_courses( $filter );
+$courses_obj         = (array) Courses::get_courses( $filter );
 $courses             = [];
 $categories          = [];
 
