@@ -4,9 +4,9 @@ import recoverOrder from './profile/order-recover';
 import Avatar from './profile/avatar';
 import CourseList from './profile/course-list';
 import profileCoverImage from './profile/cover-image';
+import profileAvatarImage from './profile/new-avatar';
 
 profileCoverImage();
-
 const mbCurrentTab = () => {
 	const currentTabElement = document.querySelector( '.mb-current-tab' );
 	const tabsNav = document.querySelector( '.learn-press-tabs__nav' );
@@ -28,5 +28,6 @@ document.addEventListener( 'DOMContentLoaded', function( event ) {
 } );
 
 if ( document.getElementById( 'learnpress-avatar-upload' ) ) {
-	wp.element.render( <Avatar />, document.getElementById( 'learnpress-avatar-upload' ) );
+	profileAvatarImage();
+	// wp.element.render( <Avatar />, document.getElementById( 'learnpress-avatar-upload' ) );
 }
