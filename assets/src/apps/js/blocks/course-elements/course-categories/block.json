@@ -24,7 +24,7 @@
 		}
 	},
 	"supports": {
-		"multiple": false,
+		"multiple": true,
 		"align": ["wide", "full"],
 		"html": false,
 		"typography": {

@@ -10,7 +10,7 @@
 	"keywords": ["button single course", "learnpress"],
 	"usesContext": ["lpCourseData"],
 	"supports": {
-		"multiple": false,
+		"multiple": true,
 		"align": ["wide", "full"],
 		"html": false,
 		"typography": {

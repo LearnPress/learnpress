@@ -1,8 +1,9 @@
 import { __ } from '@wordpress/i18n';
 import { useBlockProps } from '@wordpress/block-editor';
 export const edit = ( props ) => {
+	const { attributes, setAttributes, context } = props;
 	const blockProps = useBlockProps();
-	const orderByValue = props.attributes.orderBy ?? 'post_date';
+	const orderByValue = context.lpCourseQuery?.order_by || 'post_date';
 	const orderByData = [
 		{ label: 'Newly published', value: 'post_date' },
 		{ label: 'Title a-z', value: 'post_title' },

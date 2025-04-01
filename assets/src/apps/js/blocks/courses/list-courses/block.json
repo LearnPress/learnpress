@@ -6,18 +6,16 @@
 	"category": "learnpress-category",
 	"description": "List courses block",
 	"textdomain": "learnpress",
-	"keywords": [
-		"list courses",
-		"learnpress",
-		"query loop"
-	],
+	"keywords": ["list courses", "learnpress", "query loop"],
 	"usesContext": [],
 	"attributes": {
 		"courseQuery": {
 			"type": "object",
 			"default": {
 				"limit": 3,
-				"order_by": "post_date"
+				"order_by": "post_date",
+				"related": false,
+				"pagination": false
 			}
 		}
 	},

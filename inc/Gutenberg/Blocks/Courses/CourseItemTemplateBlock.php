@@ -5,7 +5,9 @@ namespace LearnPress\Gutenberg\Blocks\Courses;
 use LearnPress\Gutenberg\Blocks\AbstractBlockType;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\Courses;
+use LearnPress\TemplateHooks\Course\ListCoursesTemplate;
 use LP_Course_Filter;
+use LP_Database;
 use LP_Debug;
 use Throwable;
 use WP_Block;
@@ -52,8 +54,9 @@ class CourseItemTemplateBlock extends AbstractBlockType {
 				return $html;
 			}
 
-			$filter   = new LP_Course_Filter();
-			$settings = lp_archive_skeleton_get_args();
+			$total_rows = 0;
+			$filter     = new LP_Course_Filter();
+			$settings   = lp_archive_skeleton_get_args();
 			Courses::handle_params_for_query_courses( $filter, $settings );
 			Courses::handle_params_for_query_courses( $filter, $courseQuery );
 			if ( ! empty( $settings['page_term_id_current'] ) && empty( $settings['term_id'] ) ) {
@@ -62,7 +65,24 @@ class CourseItemTemplateBlock extends AbstractBlockType {
 				$filter->tag_ids[] = $settings['page_tag_id_current'];
 			}
 
-			$courses = Courses::get_courses( $filter );
+			if ( isset( $courseQuery['related'] ) && $courseQuery['related'] ) {
+				$courseModelCurrent = CourseModel::find( get_the_ID(), true );
+				if ( ! empty( $courseModelCurrent ) ) {
+					$terms    = $courseModelCurrent->get_categories();
+					$term_ids = [];
+
+					foreach ( $terms as $term ) {
+						$term_ids[] = $term->term_id ?? 0;
+						$term_ids[] = $term->parent ?? 0;
+					}
+
+					$filter->term_ids    = $term_ids;
+					$filter->query_count = false;
+					$filter->where[]     = LP_Database::getInstance()->wpdb->prepare( 'AND p.ID != %d', get_the_ID() );
+				}
+			}
+
+			$courses = Courses::get_courses( $filter, $total_rows );
 			foreach ( $courses as $course ) {
 				$courseModel = CourseModel::find( $course->ID, true );
 
@@ -80,11 +100,27 @@ class CourseItemTemplateBlock extends AbstractBlockType {
 				$html .= '<li class="course">' . $block_content . '</li>';
 			}
 
+			$html_pagination = '';
+			if ( isset( $courseQuery['pagination'] ) && $courseQuery['pagination'] ) {
+				$total_pages             = LP_Database::get_total_pages( $filter->limit, $total_rows );
+				$settings['total_pages'] = $total_pages;
+				$settings['total_rows']  = $total_rows;
+				$data_pagination_type    = 'number';
+				$data_pagination         = [
+					'total_pages' => $total_pages,
+					'type'        => $data_pagination_type,
+					'base'        => add_query_arg( 'paged', '%#%', $settings['url_current'] ?? '' ),
+					'paged'       => $settings['paged'] ?? 1,
+				];
+				$html_pagination         = ListCoursesTemplate::instance()->html_pagination( $data_pagination );
+			}
+
 			return sprintf(
-				'<ul %1$s data-layout="%2$s">%3$s</ul>',
+				'<ul %1$s data-layout="%2$s">%3$s</ul>%4$s',
 				$wrapper_attributes,
 				$layout,
-				$html
+				$html,
+				$html_pagination
 			);
 		} catch ( Throwable $e ) {
 			LP_Debug::error_log( $e );

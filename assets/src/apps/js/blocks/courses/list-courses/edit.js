@@ -1,11 +1,15 @@
 import { __ } from '@wordpress/i18n';
-import { SelectControl, PanelBody, RangeControl } from '@wordpress/components';
+import {
+	SelectControl,
+	ToggleControl,
+	PanelBody,
+	RangeControl,
+} from '@wordpress/components';
 import {
 	useBlockProps,
 	InspectorControls,
 	InnerBlocks,
 } from '@wordpress/block-editor';
-import { useSelect, useDispatch } from '@wordpress/data';
 
 const Edit = ( props ) => {
 	const blockProps = useBlockProps();
@@ -13,34 +17,6 @@ const Edit = ( props ) => {
 	const { courseQuery } = attributes;
 
 	const QUERY_LOOP_TEMPLATE = [ [ 'learnpress/course-item-template' ] ];
-
-	const childBlocks = useSelect(
-		( select ) => select( 'core/block-editor' ).getBlocks( clientId ),
-		[ clientId ],
-	);
-	const { updateBlockAttributes } = useDispatch( 'core/block-editor' );
-	const updateOrderByChildBlocks = ( newOrderBy ) => {
-		const traverseBlocks = ( blocks ) => {
-			blocks.forEach( ( block ) => {
-				if ( block.name === 'learnpress/course-item-template' ) {
-					updateBlockAttributes( block.clientId, {
-						orderBy: newOrderBy,
-					} );
-				} else if ( block.name === 'learnpress/course-order-by' ) {
-					updateBlockAttributes( block.clientId, {
-						orderBy: newOrderBy,
-					} );
-				} else if (
-					block.name === 'core/group' ||
-					block.innerBlocks.length > 0
-				) {
-					traverseBlocks( block.innerBlocks );
-				}
-			} );
-		};
-
-		traverseBlocks( childBlocks );
-	};
 
 	const orderByData = [
 		{ label: 'Newly published', value: 'post_date' },
@@ -65,7 +41,7 @@ const Edit = ( props ) => {
 							} )
 						}
 						min={ 1 }
-						max={ 100 }
+						max={ 20 }
 					/>
 					<SelectControl
 						label={ __( 'Order by' ) }
@@ -75,8 +51,24 @@ const Edit = ( props ) => {
 							setAttributes( {
 								courseQuery: { ...courseQuery, order_by },
 							} );
-
-							updateOrderByChildBlocks( order_by );
+						} }
+					/>
+					<ToggleControl
+						label={ __( 'Related Course' ) }
+						checked={ courseQuery.related }
+						onChange={ ( related ) => {
+							setAttributes( {
+								courseQuery: { ...courseQuery, related },
+							} );
+						} }
+					/>
+					<ToggleControl
+						label={ __( 'Pagination' ) }
+						checked={ courseQuery.pagination }
+						onChange={ ( pagination ) => {
+							setAttributes( {
+								courseQuery: { ...courseQuery, pagination },
+							} );
 						} }
 					/>
 				</PanelBody>

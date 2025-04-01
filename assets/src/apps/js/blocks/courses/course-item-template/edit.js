@@ -52,14 +52,28 @@ function PostTemplateBlockPreview( {
 }
 
 const fetchLearnPressCourses = async ( courseQuery, signal ) => {
-	const url = API.apiCourses;
-	const params = '?return_type=json';
-	const response = await fetch( url + params, {
-		method: 'GET',
-		signal,
-	} );
+	try {
+		const url = API.apiCourses;
+		let params = '?return_type=json';
 
-	return await response.json();
+		if ( courseQuery ) {
+			params += `&${ new URLSearchParams( courseQuery ).toString() }`;
+		}
+
+		const response = await fetch( url + params, {
+			method: 'GET',
+			signal,
+		} );
+
+		if ( ! response.ok ) {
+			throw new Error( `HTTP error! Status: ${ response.status }` );
+		}
+
+		return await response.json();
+	} catch ( error ) {
+		console.error( 'Error fetching LearnPress courses:', error );
+		return null;
+	}
 };
 
 const MemoizedPostTemplateBlockPreview = memo( PostTemplateBlockPreview );
@@ -75,6 +89,7 @@ const Edit = ( { clientId, context, attributes, setAttributes } ) => {
 	// Fetch courses when query parameters change
 	useEffect( () => {
 		const courseQuery = context.lpCourseQuery ?? {};
+		console.log( courseQuery );
 		let signal, controller;
 		const fetchCourses = async () => {
 			try {
@@ -99,7 +114,7 @@ const Edit = ( { clientId, context, attributes, setAttributes } ) => {
 		return () => {
 			controller.abort();
 		};
-	}, [ context.lpCourseQuery ] );
+	}, [ context.lpCourseQuery?.order_by, context.lpCourseQuery?.limit ] );
 
 	const { blocks } = useSelect(
 		( select ) => {
@@ -187,36 +202,42 @@ const Edit = ( { clientId, context, attributes, setAttributes } ) => {
 							</BlockContextProvider>
 						) ) }
 				</ul>
-				<div className="gutenberg-pagination">
-					<div className="pagination-number">
-						<nav className="learn-press-pagination navigation pagination">
-							<ul className="page-numbers">
-								<li>
-									<span className="prev page-numbers">
-										<i className="lp-icon-arrow-left"></i>
-									</span>
-								</li>
-								<li>
-									<span
-										aria-current="page"
-										className="page-numbers current"
-									>
-										{ '1' }
-									</span>
-								</li>
-								<li>
-									<span className="page-numbers">{ '2' }</span>
-								</li>
-								<li>
-									<span className="page-numbers">{ '3' }</span>
-								</li>
-								<li>
-									<i className="lp-icon-arrow-right"></i>
-								</li>
-							</ul>
-						</nav>
+				{ context.lpCourseQuery?.pagination && (
+					<div className="gutenberg-pagination">
+						<div className="pagination-number">
+							<nav className="learn-press-pagination navigation pagination">
+								<ul className="page-numbers">
+									<li>
+										<span className="prev page-numbers">
+											<i className="lp-icon-arrow-left"></i>
+										</span>
+									</li>
+									<li>
+										<span
+											aria-current="page"
+											className="page-numbers current"
+										>
+											{ '1' }
+										</span>
+									</li>
+									<li>
+										<span className="page-numbers">
+											{ '2' }
+										</span>
+									</li>
+									<li>
+										<span className="page-numbers">
+											{ '3' }
+										</span>
+									</li>
+									<li>
+										<i className="lp-icon-arrow-right"></i>
+									</li>
+								</ul>
+							</nav>
+						</div>
 					</div>
-				</div>
+				) }
 			</>
 		</>
 	);

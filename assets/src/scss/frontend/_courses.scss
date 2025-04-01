@@ -811,6 +811,10 @@
 	.info-meta-item .info-meta-left span {
 		display: none;
 	}
+
+	i {
+		color: $color-primary;
+	}
 }
 
 @for $i from 0 through 9 {
