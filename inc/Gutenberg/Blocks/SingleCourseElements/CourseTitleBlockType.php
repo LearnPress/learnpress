@@ -69,8 +69,7 @@ class CourseTitleBlockType extends AbstractCourseBlockType {
 			$html_title   = '';
 			if ( $is_link ) {
 				$html_title = sprintf(
-					'<%1$s> <a class="course-permalink" href="%2$s" %3$s>%4$s</a> </%1$s>',
-					$tag,
+					'<a class="course-permalink" href="%1$s" %2$s>%3$s</a>',
 					$courseModel->get_permalink(),
 					$title_target,
 					$singleCourseTemplate->html_title( $courseModel, $tag )
