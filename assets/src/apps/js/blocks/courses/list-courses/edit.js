@@ -4,6 +4,9 @@ import {
 	ToggleControl,
 	PanelBody,
 	RangeControl,
+	TextControl,
+	__experimentalToolsPanel as ToolsPanel,
+	__experimentalToolsPanelItem as ToolsPanelItem,
 } from '@wordpress/components';
 import {
 	useBlockProps,
@@ -17,6 +20,12 @@ const Edit = ( props ) => {
 	const { courseQuery } = attributes;
 
 	const QUERY_LOOP_TEMPLATE = [ [ 'learnpress/course-item-template' ] ];
+	const resetAllTaxonomy = () => {
+		setAttributes( {
+			term_id: '',
+			tag_id: '',
+		} );
+	};
 
 	const orderByData = [
 		{ label: 'Newly published', value: 'post_date' },
@@ -72,6 +81,36 @@ const Edit = ( props ) => {
 						} }
 					/>
 				</PanelBody>
+				<ToolsPanel label={ 'Filter' } resetAll={ resetAllTaxonomy }>
+					<ToolsPanelItem
+						label={ 'Taxonomy' }
+						onSelect={ () => resetAllTaxonomy() }
+						hasValue={ () =>
+							!! courseQuery.term_id || !! courseQuery.tag_id
+						}
+						onDeselect={ () => resetAllTaxonomy() }
+					>
+						<TextControl
+							label={ 'Category' }
+							onChange={ ( term_id ) => {
+								setAttributes( {
+									courseQuery: { ...courseQuery, term_id },
+								} );
+							} }
+							value={ courseQuery.term_id ?? '' }
+						/>
+
+						<TextControl
+							label={ 'Tag' }
+							onChange={ ( tag_id ) => {
+								setAttributes( {
+									courseQuery: { ...courseQuery, tag_id },
+								} );
+							} }
+							value={ courseQuery.tag_id ?? '' }
+						/>
+					</ToolsPanelItem>
+				</ToolsPanel>
 			</InspectorControls>
 			<div { ...blockProps }>
 				<div className="post-query-wrapper">

@@ -23,8 +23,12 @@ class ListCoursesBlockType extends AbstractBlockType {
 			'courseQuery' => [
 				'type'    => 'object',
 				'default' => [
-					'limit'    => 3,
-					'order_by' => 'post_date',
+					'limit'      => 3,
+					'order_by'   => 'post_date',
+					'pagination' => false,
+					'related'    => false,
+					'tag_id'     => '',
+					'term_id'    => '',
 				],
 			],
 		];

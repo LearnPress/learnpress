@@ -15,7 +15,9 @@
 				"limit": 3,
 				"order_by": "post_date",
 				"related": false,
-				"pagination": false
+				"pagination": false,
+				"tag_id": "",
+				"term_id": ""
 			}
 		}
 	},
