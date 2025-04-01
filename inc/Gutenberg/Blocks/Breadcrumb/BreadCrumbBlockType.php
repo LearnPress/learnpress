@@ -5,6 +5,7 @@ use LearnPress\Gutenberg\Utils\StyleAttributes;
 use LP_Debug;
 use LP_Template_General;
 use Throwable;
+
 /**
  * Class BreadCrumbBlockType
  *
