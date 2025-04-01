@@ -7,11 +7,11 @@ use LP_Template_General;
 use Throwable;
 
 /**
- * Class BreadCrumbBlockType
+ * Class BreadcrumbBlockType
  *
  * Handle register, render block template
  */
-class BreadCrumbBlockType extends AbstractBlockType {
+class BreadcrumbBlockType extends AbstractBlockType {
 	public $block_name = 'breadcrumb';
 
 	/**
