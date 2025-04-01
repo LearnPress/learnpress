@@ -1,5 +1,5 @@
 <?php
-namespace LearnPress\Gutenberg\Blocks\BreadCrumb;
+namespace LearnPress\Gutenberg\Blocks\Breadcrumb;
 use LearnPress\Gutenberg\Blocks\AbstractBlockType;
 use LearnPress\Gutenberg\Utils\StyleAttributes;
 use LP_Debug;
