@@ -1,9 +1,158 @@
-<!-- wp:template-part {"slug":"header"} /-->
+<!-- wp:template-part {"slug":"header","tagName":"header"} /-->
 
-<!-- wp:group {"tagName":"main","layout":{"inherit":true,"type":"constrained"},"className":"test"} -->
-<main class="wp-block-group test">
-	<!-- wp:learnpress/course-title {"align":"wide"} /-->
-</main>
+<!-- wp:learnpress/single-course {"className":"ádasdsa"} -->
+<!-- wp:group {"metadata":{"name":"Header"},"className":"lp-single-course__header","layout":{"type":"default"}} -->
+<div class="wp-block-group lp-single-course__header">
+	<!-- wp:group {"metadata":{"name":"Inner"},"className":"lp-single-course__header__inner","layout":{"type":"default"}} -->
+	<div class="wp-block-group lp-single-course__header__inner">
+		<!-- wp:learnpress/breadcrumb /-->
+
+		<!-- wp:learnpress/course-title {"tag":"h4","isLink":false} /-->
+
+		<!-- wp:group {"metadata":{"name":"Meta Left"},"className":"course-instructor-category","layout":{"type":"flex","flexWrap":"nowrap"}} -->
+		<div class="wp-block-group course-instructor-category">
+			<!-- wp:learnpress/course-instructor /-->
+
+			<!-- wp:learnpress/course-categories /-->
+		</div>
+		<!-- /wp:group -->
+
+		<!-- wp:learnpress/course-date /-->
+	</div>
+	<!-- /wp:group -->
+</div>
 <!-- /wp:group -->
 
-<!-- wp:template-part {"slug":"footer"} /-->
+<!-- wp:group {"metadata":{"name":"Area"},"className":"lp-content-area","layout":{"type":"default"}} -->
+<div class="wp-block-group lp-content-area">
+	<!-- wp:group {"metadata":{"name":"Main"},"className":"lp-single-course-main","layout":{"type":"default"}} -->
+	<div class="wp-block-group lp-single-course-main">
+		<!-- wp:group {"metadata":{"name":"Left"},"className":"lp-single-course-main__left","layout":{"type":"default"}} -->
+		<div class="wp-block-group lp-single-course-main__left">
+			<!-- wp:learnpress/course-description /-->
+
+			<!-- wp:learnpress/course-features /-->
+
+			<!-- wp:learnpress/course-target-audiences /-->
+
+			<!-- wp:learnpress/course-requirements /-->
+
+			<!-- wp:learnpress/course-faqs /-->
+
+			<!-- wp:learnpress/course-curriculum /-->
+
+			<!-- wp:learnpress/course-instructor-info /-->
+
+			<!-- wp:learnpress/course-comment /-->
+		</div>
+		<!-- /wp:group -->
+
+		<!-- wp:group {"metadata":{"name":"Right"},"className":"lp-single-course-main__right","layout":{"type":"default"}} -->
+		<div class="wp-block-group lp-single-course-main__right">
+			<!-- wp:group {"className":"lp-single-course-main__right__inner","layout":{"type":"default"}} -->
+			<div class="wp-block-group lp-single-course-main__right__inner">
+				<!-- wp:learnpress/course-image /-->
+
+				<!-- wp:learnpress/course-price /-->
+
+				<!-- wp:learnpress/course-progress /-->
+
+				<!-- wp:group {"metadata":{"name":"Meta"},"className":"info-metas","layout":{"type":"default"}} -->
+				<div class="wp-block-group info-metas">
+					<!-- wp:learnpress/course-student /-->
+
+					<!-- wp:learnpress/course-lesson /-->
+
+					<!-- wp:learnpress/course-duration /-->
+
+					<!-- wp:learnpress/course-quiz /-->
+
+					<!-- wp:learnpress/course-level /-->
+				</div>
+				<!-- /wp:group -->
+
+				<!-- wp:learnpress/course-button /-->
+
+				<!-- wp:learnpress/course-share /-->
+
+				<!-- wp:learnpress/course-feature-review /-->
+			</div>
+			<!-- /wp:group -->
+		</div>
+		<!-- /wp:group -->
+	</div>
+	<!-- /wp:group -->
+
+	<!-- wp:group {"metadata":{"name":"Related"},"className":"lp-list-courses-related","layout":{"type":"default"}} -->
+	<div class="wp-block-group lp-list-courses-related">
+		<!-- wp:learnpress/list-courses {"courseQuery":{"limit":11,"order_by":"post_title_desc","related":true,"pagination":false}} -->
+		<div class="wp-block-learnpress-list-courses">
+			<!-- wp:heading {"level":3,"style":{"spacing":{"margin":{"bottom":"var:preset|spacing|40"}}}} -->
+			<h3
+				class="wp-block-heading"
+				style="margin-bottom: var(--wp--preset--spacing--40)"
+			>
+				Related Course
+			</h3>
+			<!-- /wp:heading -->
+
+			<!-- wp:learnpress/course-item-template -->
+			<div class="wp-block-learnpress-course-item-template">
+				<!-- wp:group {"className":"course-thumbnail","layout":{"type":"constrained"}} -->
+				<div class="wp-block-group course-thumbnail">
+					<!-- wp:learnpress/course-image /-->
+				</div>
+				<!-- /wp:group -->
+
+				<!-- wp:group {"className":"course-content","layout":{"type":"constrained"}} -->
+				<div class="wp-block-group course-content">
+					<!-- wp:learnpress/course-title {"tag":"h3"} /-->
+
+					<!-- wp:group {"className":"course-instructor-category","layout":{"type":"flex","flexWrap":"nowrap"}} -->
+					<div class="wp-block-group course-instructor-category">
+						<!-- wp:learnpress/course-instructor /-->
+
+						<!-- wp:learnpress/course-categories /-->
+					</div>
+					<!-- /wp:group -->
+
+					<!-- wp:group {"className":"course-wrap-meta","layout":{"type":"flex","flexWrap":"nowrap"}} -->
+					<div class="wp-block-group course-wrap-meta">
+						<!-- wp:learnpress/course-student /-->
+
+						<!-- wp:learnpress/course-lesson /-->
+
+						<!-- wp:learnpress/course-duration {"style":{"layout":{"selfStretch":"fit","flexSize":null}}} /-->
+
+						<!-- wp:learnpress/course-quiz /-->
+
+						<!-- wp:learnpress/course-level /-->
+					</div>
+					<!-- /wp:group -->
+
+					<!-- wp:group {"className":"course-short-description","layout":{"type":"constrained"}} -->
+					<div class="wp-block-group course-short-description">
+						<!-- wp:learnpress/course-description /-->
+					</div>
+					<!-- /wp:group -->
+
+					<!-- wp:group {"className":"course-info","layout":{"type":"flex","flexWrap":"nowrap","justifyContent":"space-between"}} -->
+					<div class="wp-block-group course-info">
+						<!-- wp:learnpress/course-price /-->
+
+						<!-- wp:learnpress/course-button /-->
+					</div>
+					<!-- /wp:group -->
+				</div>
+				<!-- /wp:group -->
+			</div>
+			<!-- /wp:learnpress/course-item-template -->
+		</div>
+		<!-- /wp:learnpress/list-courses -->
+	</div>
+	<!-- /wp:group -->
+</div>
+<!-- /wp:group -->
+<!-- /wp:learnpress/single-course -->
+
+<!-- wp:template-part {"slug":"footer","tagName":"footer"} /-->

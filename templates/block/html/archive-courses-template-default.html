@@ -1,7 +1,107 @@
 <!-- wp:template-part {"slug":"header","tagName":"header"} /-->
-<!-- wp:group -->
-<div class="wp-block-group">
-	<!-- wp:learnpress/archive-course-legacy /-->
+
+<!-- wp:group {"metadata":{"name":"Archive Courses"},"className":"lp-archive-courses","layout":{"type":"default"}} -->
+<div class="wp-block-group lp-archive-courses">
+	<!-- wp:learnpress/breadcrumb /-->
+
+	<!-- wp:group {"metadata":{"name":"Content Area"},"className":"lp-content-area has-sidebar","layout":{"type":"flex","flexWrap":"nowrap"}} -->
+	<div class="wp-block-group lp-content-area has-sidebar">
+		<!-- wp:group {"layout":{"type":"constrained"}} -->
+		<div class="wp-block-group">
+			<!-- wp:group {"metadata":{"name":"Course Header"},"layout":{"type":"default"}} -->
+			<div class="wp-block-group">
+				<!-- wp:heading -->
+				<h2 class="wp-block-heading">All Courses</h2>
+				<!-- /wp:heading -->
+			</div>
+			<!-- /wp:group -->
+
+			<!-- wp:learnpress/list-courses {"courseQuery":{"limit":5,"order_by":"post_title_desc","pagination":true}} -->
+			<div class="wp-block-learnpress-list-courses">
+				<!-- wp:group {"metadata":{"name":"Coruse Bar"},"className":"lp-courses-bar","layout":{"type":"flex","flexWrap":"nowrap","justifyContent":"space-between"}} -->
+				<div class="wp-block-group lp-courses-bar">
+					<!-- wp:learnpress/course-search /-->
+
+					<!-- wp:learnpress/course-order-by /-->
+				</div>
+				<!-- /wp:group -->
+
+				<!-- wp:learnpress/course-item-template -->
+				<div class="wp-block-learnpress-course-item-template">
+					<!-- wp:group {"className":"course-thumbnail","layout":{"type":"constrained"}} -->
+					<div class="wp-block-group course-thumbnail">
+						<!-- wp:learnpress/course-image /-->
+					</div>
+					<!-- /wp:group -->
+
+					<!-- wp:group {"className":"course-content","layout":{"type":"constrained"}} -->
+					<div class="wp-block-group course-content">
+						<!-- wp:learnpress/course-title {"tag":"h3"} /-->
+
+						<!-- wp:group {"className":"course-instructor-category","layout":{"type":"flex","flexWrap":"nowrap"}} -->
+						<div class="wp-block-group course-instructor-category">
+							<!-- wp:learnpress/course-instructor /-->
+
+							<!-- wp:learnpress/course-categories /-->
+						</div>
+						<!-- /wp:group -->
+
+						<!-- wp:group {"className":"course-wrap-meta","layout":{"type":"flex","flexWrap":"nowrap"}} -->
+						<div class="wp-block-group course-wrap-meta">
+							<!-- wp:learnpress/course-student /-->
+
+							<!-- wp:learnpress/course-lesson /-->
+
+							<!-- wp:learnpress/course-duration {"style":{"layout":{"selfStretch":"fit","flexSize":null}}} /-->
+
+							<!-- wp:learnpress/course-quiz /-->
+
+							<!-- wp:learnpress/course-level /-->
+						</div>
+						<!-- /wp:group -->
+
+						<!-- wp:group {"className":"course-short-description","layout":{"type":"constrained"}} -->
+						<div class="wp-block-group course-short-description">
+							<!-- wp:learnpress/course-description /-->
+						</div>
+						<!-- /wp:group -->
+
+						<!-- wp:group {"className":"course-info","layout":{"type":"flex","flexWrap":"nowrap","justifyContent":"space-between"}} -->
+						<div class="wp-block-group course-info">
+							<!-- wp:learnpress/course-price /-->
+
+							<!-- wp:learnpress/course-button /-->
+						</div>
+						<!-- /wp:group -->
+					</div>
+					<!-- /wp:group -->
+				</div>
+				<!-- /wp:learnpress/course-item-template -->
+			</div>
+			<!-- /wp:learnpress/list-courses -->
+		</div>
+		<!-- /wp:group -->
+
+		<!-- wp:learnpress/course-filter {"showInRest":false,"searchSuggestion":false} -->
+		<!-- wp:learnpress/course-search-filter /-->
+
+		<!-- wp:learnpress/course-author-filter /-->
+
+		<!-- wp:learnpress/course-categories-filter /-->
+
+		<!-- wp:learnpress/course-price-filter /-->
+
+		<!-- wp:learnpress/course-level-filter /-->
+
+		<!-- wp:learnpress/course-tag-filter /-->
+
+		<!-- wp:learnpress/button-submit-filter /-->
+
+		<!-- wp:learnpress/button-reset-filter /-->
+		<!-- /wp:learnpress/course-filter -->
+	</div>
+	<!-- /wp:group -->
 </div>
 <!-- /wp:group -->
+
 <!-- wp:template-part {"slug":"footer","tagName":"footer"} /-->

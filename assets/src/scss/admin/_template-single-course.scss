@@ -123,14 +123,6 @@
 		}
 	}
 
-	.wp-block-learnpress-course-image {
-		.img-single-course {
-			background: #ccc;
-			width: 100%;
-			aspect-ratio: 16 / 9;
-		}
-	}
-
 	.wp-block-learnpress-course-requirements,
 	.wp-block-learnpress-course-features,
 	.wp-block-learnpress-course-faqs,
@@ -284,6 +276,12 @@
 	.lp-single-course-main__right {
 		margin-top: 0;
 	}
+}
+
+.wp-block-learnpress-course-image {
+	background: #ccc;
+	width: 100%;
+	aspect-ratio: 16 / 9;
 }
 
 .wp-block-learnpress-breadcrumb a {
