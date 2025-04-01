@@ -4,8 +4,9 @@ import recoverOrder from './profile/order-recover';
 import CourseList from './profile/course-list';
 import profileCoverImage from './profile/cover-image';
 import profileAvatarImage from './profile/avatar';
-import profileQuizTab from './profile/quiz-tab';
+
 profileCoverImage();
+
 const mbCurrentTab = () => {
 	const currentTabElement = document.querySelector( '.mb-current-tab' );
 	const tabsNav = document.querySelector( '.learn-press-tabs__nav' );
@@ -28,7 +29,4 @@ document.addEventListener( 'DOMContentLoaded', function( event ) {
 
 if ( document.getElementById( 'learnpress-avatar-upload' ) ) {
 	profileAvatarImage();
-}
-if ( document.querySelector( '#profile-subtab-quiz-content' ) ) {
-	profileQuizTab();
 }

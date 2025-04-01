@@ -3,7 +3,7 @@
  * Template hooks List Courses.
  *
  * @since 4.2.3.2
- * @version 1.0.2
+ * @version 1.0.3
  */
 
 namespace LearnPress\TemplateHooks\Course;
@@ -46,7 +46,7 @@ class ListCoursesTemplate {
 	 *
 	 * @return void
 	 * @since 4.2.5.8
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function layout_courses() {
 		$html_wrapper = [
@@ -66,10 +66,13 @@ class ListCoursesTemplate {
 		// Load list courses via AJAX.
 		if ( LP_Settings_Courses::is_ajax_load_courses() && ! LP_Settings_Courses::is_no_load_ajax_first_courses() ) {
 			$content = TemplateAJAX::load_content_via_ajax( $args, $callback );
-		} else { // Load courses first not AJAX.
+		} elseif ( $args['courses_load_ajax'] ) { // Load courses first not AJAX.
 			$content_obj                     = static::render_courses( $args );
 			$args['html_no_load_ajax_first'] = $content_obj->content;
 			$content                         = TemplateAJAX::load_content_via_ajax( $args, $callback );
+		} else {
+			$content_obj = static::render_courses( $args );
+			$content     = $content_obj->content;
 		}
 
 		echo Template::instance()->nest_elements( $html_wrapper, $content );

@@ -3,7 +3,7 @@
 /**
  * Class UserModel
  *
- * @version 1.0.0
+ * @version 1.0.1
  * @since 4.2.6.9
  */
 
@@ -11,9 +11,12 @@ namespace LearnPress\Models;
 
 use Exception;
 use LearnPress\Models\UserItems\UserCourseModel;
+use LearnPress\Models\UserItems\UserItemModel;
+use LearnPress\Models\UserItems\UserQuizModel;
 use LP_Cache;
 use LP_Course_DB;
 use LP_Course_Filter;
+use LP_Database;
 use LP_Profile;
 use LP_User;
 use LP_User_DB;
@@ -314,8 +317,8 @@ class UserModel {
 	 *
 	 * Hook from function get_the_author_meta of WP
 	 *
-	 * @uses get_the_author_meta
 	 * @return string
+	 * @uses get_the_author_meta
 	 * @version 1.0.1
 	 * @since 4.2.7
 	 */
@@ -611,64 +614,26 @@ class UserModel {
 	public function is_instructor(): bool {
 		return user_can( $this->get_id(), LP_TEACHER_ROLE ) || user_can( $this->get_id(), 'administrator' );
 	}
-	/**
-	 * [get_quizzes_attend description]
-	 * @return array User's quizz items
-	 */
-	public function get_quizzes_attend( $args ) {
-		$default_args = array(
-			'paged'   => 1,
-			'type'    => 'all',
-			'perpage' => 10,
-		);
-		$args         = array_merge( $default_args, $args );
-		$user_id      = $this->get_id();
-		$user_items   = array(
-			'items'      => array(),
-			'total_page' => 0,
-			'quiz_count' => 0,
-		);
-		if ( ! $user_id ) {
-			return $user_items;
-		}
-		$lp_ui_db        = LP_User_Items_DB::getInstance();
-		$filter          = new LP_User_Items_Filter();
-		$filter->user_id = $user_id;
-		// join Course table to check course is existed
-		$filter->join  = array(
-			"INNER JOIN $lp_ui_db->tb_posts AS p ON ui.ref_id = p.id",
-		);
-		$filter->where = array(
-			$lp_ui_db->wpdb->prepare( 'AND ui.item_type=%s', LP_QUIZ_CPT ),
-			$lp_ui_db->wpdb->prepare( 'AND p.post_type=%s', LP_COURSE_CPT ),
-			$lp_ui_db->wpdb->prepare( 'AND p.post_status=%s', 'publish' ),
-		);
-		switch ( $args['type'] ) {
-			case 'completed':
-				$filter->status = LP_ITEM_COMPLETED;
-				break;
-			case 'passed':
-				$filter->graduation = LP_GRADUATION_PASSED;
-				break;
-			case 'failed':
-				$filter->graduation = LP_GRADUATION_FAILED;
-				break;
-		}
-		if ( $filter === 'completed' ) {
-			$filter->status = LP_ITEM_COMPLETED;
-		}
 
-		$filter->limit = $args['perpage'];
-		$filter->page  = $args['paged'];
-		$total_row     = 0;
-		$results       = $lp_ui_db->get_user_items( $filter, $total_row );
-		if ( ! $total_row ) {
-			return $user_items;
-		}
-		$total_page               = $lp_ui_db->get_total_pages( $args['perpage'], $total_row );
-		$user_items['items']      = $results;
-		$user_items['total_page'] = $total_page;
-		$user_items['quiz_count'] = $total_row;
-		return $user_items;
+	/**
+	 * Get quizzes attend of user.
+	 *
+	 * @param LP_User_Items_Filter $filter
+	 * @param int $total_rows
+	 *
+	 * @return array|int|string|null
+	 * @throws Exception
+	 * @since 4.2.8.2
+	 * @version 1.0.0
+	 */
+	public function get_quizzes_attend( LP_User_Items_Filter $filter, int &$total_rows = 0 ) {
+		$lp_db_user_items  = LP_User_Items_DB::getInstance();
+		$filter->order_by  = 'user_item_id';
+		$filter->order     = 'DESC';
+		$filter->user_id   = $this->get_id();
+		$filter->item_type = LP_QUIZ_CPT;
+		$filter->ref_type  = LP_COURSE_CPT;
+
+		return $lp_db_user_items->get_user_items( $filter, $total_rows );
 	}
 }

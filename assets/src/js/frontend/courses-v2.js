@@ -28,7 +28,6 @@ document.addEventListener( 'change', function( e ) {
 document.addEventListener( 'click', function( e ) {
 	const target = e.target;
 
-	window.lpCoursesList.clickNumberPage( e, target );
 	window.lpCoursesList.LoadMore( e, target );
 } );
 
@@ -59,76 +58,6 @@ window.lpCoursesList = ( () => {
 	const classLoading = '.lp-loading-no-css';
 	const urlCurrent = lpGetCurrentURLNoParam();
 	return {
-		clickNumberPage: ( e, target ) => {
-			const btnNumber = target.closest( '.page-numbers:not(.disabled)' );
-			if ( ! btnNumber ) {
-				return;
-			}
-
-			const elLPTarget = btnNumber.closest( `${ classLPTarget }` );
-			if ( ! elLPTarget ) {
-				return;
-			}
-
-			const dataObj = JSON.parse( elLPTarget.dataset.send );
-			const dataSend = { ...dataObj };
-			if ( ! dataSend.args.hasOwnProperty( 'paged' ) ) {
-				dataSend.args.paged = 1;
-			}
-
-			// If no load ajax, will return.
-			if ( dataSend.args.courses_load_ajax === 0 ) {
-				return;
-			}
-
-			e.preventDefault();
-
-			if ( btnNumber.classList.contains( 'prev' ) ) {
-				dataSend.args.paged--;
-			} else if ( btnNumber.classList.contains( 'next' ) ) {
-				dataSend.args.paged++;
-			} else {
-				dataSend.args.paged = btnNumber.textContent;
-			}
-
-			elLPTarget.dataset.send = JSON.stringify( dataSend );
-
-			// Set url params to reload page.
-			// Todo: need check allow set url params.
-			lpData.urlParams.paged = dataSend.args.paged;
-			window.history.pushState( {}, '', lpAddQueryArgs( urlCurrent, lpData.urlParams ) );
-			// End.
-
-			// Show loading
-			const elLoading = elLPTarget.closest( 'div:not(.lp-target)' ).querySelector( '.lp-loading-change' );
-			if ( elLoading ) {
-				elLoading.style.display = 'block';
-			}
-			// End
-
-			// Scroll to archive element
-			const elLPTargetY = elLPTarget.getBoundingClientRect().top + window.scrollY;
-			window.scrollTo( { top: elLPTargetY } );
-
-			const callBack = {
-				success: ( response ) => {
-					//console.log( 'response', response );
-					const { status, message, data } = response;
-					elLPTarget.innerHTML = data.content || '';
-				},
-				error: ( error ) => {
-					console.log( error );
-				},
-				completed: () => {
-					//console.log( 'completed' );
-					if ( elLoading ) {
-						elLoading.style.display = 'none';
-					}
-				},
-			};
-
-			window.lpAJAXG.fetchAJAX( dataSend, callBack );
-		},
 		LoadMore: ( e, target ) => {
 			const btnLoadMore = target.closest( `.${ classLoadMore + ':not(.disabled)' }` );
 			if ( ! btnLoadMore ) {
