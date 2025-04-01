@@ -94,7 +94,7 @@ class ProfileTemplate {
 	 * @param UserModel $user
 	 *
 	 * @return string
-	 * @since 4.2.7.2
+	 * @since 4.2.8.2
 	 * @version 1.0.0
 	 */
 	public function html_upload_cover_image( UserModel $user ): string {
@@ -204,6 +204,104 @@ class ProfileTemplate {
 			return '';
 		}
 
+		return $html;
+	}
+
+	/**
+	 * HTML upload avatar image.
+	 *
+	 * @param UserModel $user
+	 *
+	 * @return string
+	 * @since 4.2.8.2
+	 * @version 1.0.0
+	 */
+	public function html_upload_avatar( UserModel $user ): string {
+		$html = '';
+
+		try {
+			$class_hide       = 'lp-hidden';
+			$avatar_image_url = $user->get_upload_avatar_src();
+
+			$html_img_preview = sprintf(
+				'<img class="lp-avatar-image %s" src="%s" alt="%s" decoding="async" />',
+				empty( $avatar_image_url ) ? $class_hide : '',
+				$avatar_image_url,
+				__( 'Avatar image', 'learnpress' )
+			);
+			$html_img_empty   = [
+				'start'     => sprintf(
+					'<form class="lp_avatar__form %s">',
+					empty( $avatar_image_url ) ? '' : $class_hide
+				),
+				'label'     => '<label for="avatar-file">',
+				'div'       => '<div class="learnpress_avatar__form__upload">',
+				'upload'    => sprintf(
+					'<span>%s</span>',
+					__( 'Upload Avatar', 'learnpress' )
+				),
+				'input'     => sprintf(
+					'<input type="file" id="avatar-file" class="%s" name="lp-avatar-file" accept="%s" />',
+					'lp-avatar-file lp-hidden',
+					'image/png, image/jpeg, image/webp'
+				),
+				'div_end'   => '</div>',
+				'label_end' => '</label>',
+				'end'       => '</form>',
+			];
+
+			$section_img = [
+				'wrapper'       => '<div class="lp-user-avatar-image__display" style="width: 250px;height:250px">',
+				'image_empty'   => Template::combine_components( $html_img_empty ),
+				'image_preview' => $html_img_preview,
+				'wrapper_end'   => '</div>',
+			];
+
+			$section_btn = [
+				'wrapper'      => '<div class="lp-user-avatar__buttons">',
+				'input_action' => '<input type="hidden" name="action" value="upload"  />',
+				'choose_file'  => sprintf(
+					'<button class="lp-button lp-btn-choose-avatar %s">%s</button>',
+					empty( $avatar_image_url ) ? $class_hide : '',
+					__( 'Replace', 'learnpress' )
+				),
+				'save_btn'     => sprintf(
+					'<button class="lp-button lp-btn-save-avatar %s">%s</button>',
+					$class_hide,
+					__( 'Save', 'learnpress' )
+				),
+				'cancel'       => sprintf(
+					'<button class="lp-button lp-btn-cancel-avatar %s">%s</button>',
+					$class_hide,
+					__( 'Cancel', 'learnpress' )
+				),
+				'remove'       => sprintf(
+					'<button class="lp-button lp-btn-remove-avatar %s">%s</button>',
+					empty( $avatar_image_url ) ? $class_hide : '',
+					__( 'Remove', 'learnpress' )
+				),
+				'wrapper_end'  => '</div>',
+			];
+
+			$section = apply_filters(
+				'learn-press/profile/html-upload-avatar',
+				[
+					'wrapper'     => '<div id="learnpress-avatar-upload">',
+					'image'       => Template::combine_components( $section_img ),
+					'buttons'     => Template::combine_components( $section_btn ),
+					'wrapper_end' => '</div>',
+				],
+				$user
+			);
+
+			$html = Template::combine_components( $section );
+		} catch ( Throwable $e ) {
+			$html .= Template::print_message(
+				$e->getMessage(),
+				'error',
+				false
+			);
+		}
 		return $html;
 	}
 }

@@ -5,7 +5,7 @@
  * Register widgets
  *
  * @since 4.2.3
- * @version 1.0.1
+ * @version 1.0.2
  */
 
 namespace LearnPress\ExternalPlugin\Elementor;
@@ -15,6 +15,7 @@ use LearnPress\Helpers\Singleton;
 
 class LPElementor {
 	use Singleton;
+
 	const GROUP_DYNAMIC   = 'learnpress_dynamic';
 	const CATE_LP         = 'learnpress';
 	const CATE_COURSE     = 'learnpress_course';
@@ -46,6 +47,8 @@ class LPElementor {
 	 * @param Elements_Manager $elements_manager
 	 *
 	 * @return void
+	 * @since 4.2.3
+	 * @version 1.0.1
 	 */
 	public function register_category( Elements_Manager $elements_manager ) {
 		$categories = [
@@ -63,13 +66,21 @@ class LPElementor {
 			],
 		];
 
-		$old_categories = $elements_manager->get_categories();
+		foreach ( $categories as $key => $category ) {
+			$elements_manager->add_category(
+				$key,
+				$category
+			);
+		}
+
+		// For case priority categories of LP for El to top.
+		/*$old_categories = $elements_manager->get_categories();
 		$categories     = array_merge( $categories, $old_categories );
 
 		$set_categories = function ( $categories ) {
 			$this->categories = $categories;
 		};
-		$set_categories->call( $elements_manager, $categories );
+		$set_categories->call( $elements_manager, $categories );*/
 	}
 
 	/**
