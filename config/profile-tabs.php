@@ -8,6 +8,7 @@
 
 use LearnPress\TemplateHooks\Profile\ProfileOrdersTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileOrderTemplate;
+use LearnPress\TemplateHooks\Profile\ProfileQuizzesTemplate;
 
 $settings         = LP_Settings::instance();
 $default_settings = array(
@@ -28,7 +29,8 @@ $default_settings = array(
 	'quizzes'       => array(
 		'title'    => esc_html__( 'Quizzes', 'learnpress' ),
 		'slug'     => $settings->get( 'profile_endpoints.quizzes', 'quizzes' ),
-		'callback' => false,
+		// 'callback' => false,
+		'callback' => [ ProfileQuizzesTemplate::class, 'tab_content' ],
 		'priority' => 20,
 		'icon'     => '<i class="lp-icon-puzzle-piece"></i>',
 	),

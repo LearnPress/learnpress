@@ -619,4 +619,19 @@ class UserQuizModel extends UserItemModel {
 
 		return $history;
 	}
+	public function get_status_label( $status = '' ) {
+		$statuses = array(
+			'started'     => __( 'In Progress', 'learnpress' ),
+			'in-progress' => __( 'In Progress', 'learnpress' ),
+			'completed'   => __( 'Completed', 'learnpress' ),
+			'passed'      => __( 'Passed', 'learnpress' ),
+			'failed'      => __( 'Failed', 'learnpress' ),
+		);
+
+		if ( ! $status ) {
+			$status = $this->get_status();
+		}
+
+		return ! empty( $statuses[ $status ] ) ? $statuses[ $status ] : __( 'Not Started', 'learnpress' );
+	}
 }
