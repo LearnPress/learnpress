@@ -66,13 +66,10 @@ class ListCoursesTemplate {
 		// Load list courses via AJAX.
 		if ( LP_Settings_Courses::is_ajax_load_courses() && ! LP_Settings_Courses::is_no_load_ajax_first_courses() ) {
 			$content = TemplateAJAX::load_content_via_ajax( $args, $callback );
-		} elseif ( $args['courses_load_ajax'] ) { // Load courses first not AJAX.
+		} else { // Load courses first not AJAX, or for filter.
 			$content_obj                     = static::render_courses( $args );
 			$args['html_no_load_ajax_first'] = $content_obj->content;
 			$content                         = TemplateAJAX::load_content_via_ajax( $args, $callback );
-		} else {
-			$content_obj = static::render_courses( $args );
-			$content     = $content_obj->content;
 		}
 
 		echo Template::instance()->nest_elements( $html_wrapper, $content );
