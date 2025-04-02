@@ -82,6 +82,11 @@ class FilterCourseTemplate {
 				}
 			}
 
+			// Add button Done for mobile if not has btn submit.
+			if ( ! in_array( 'btn_submit', $data['fields'] ) ) {
+				$sections['btn_done'] = $this->html_btn_done( $data );
+			}
+
 			$wrapper = apply_filters(
 				'lp/filter-courses/sections/wrapper',
 				[
@@ -690,6 +695,20 @@ class FilterCourseTemplate {
 		return sprintf(
 			'<button type="submit" class="course-filter-submit">%s</button>',
 			esc_html__( 'Apply', 'learnpress' )
+		);
+	}
+
+	/**
+	 * Get html button Done - for mobile when not show btn submit.
+	 *
+	 * @param array $data
+	 *
+	 * @return string
+	 */
+	public function html_btn_done( array $data = [] ): string {
+		return sprintf(
+			'<button type="submit" class="course-filter-submit lp-btn-done lp-hidden">%s</button>',
+			esc_html__( 'Done', 'learnpress' )
 		);
 	}
 

@@ -1,4 +1,4 @@
-import { lpFetchAPI } from '../utils';
+import { lpFetchAPI, lpShowHideEl } from '../utils.js';
 import API from '../api';
 
 function widgetRestAPI() {
@@ -35,6 +35,15 @@ function widgetRestAPI() {
 					ele.insertAdjacentHTML( 'afterbegin', data );
 				} else if ( message ) {
 					ele.insertAdjacentHTML( 'afterbegin', `<div class="lp-ajax-message error" style="display:block">${ message }</div>` );
+				}
+
+				const elBtnDone = ele.querySelector( '.course-filter-submit.lp-btn-done' );
+				if ( elBtnDone ) {
+					if ( window.outerWidth <= 991 ) {
+						lpShowHideEl( elBtnDone, 1 );
+					} else {
+						lpShowHideEl( elBtnDone, 0 );
+					}
 				}
 			},
 			error: ( error ) => {
