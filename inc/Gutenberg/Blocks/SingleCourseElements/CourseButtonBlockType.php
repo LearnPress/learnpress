@@ -23,9 +23,9 @@ class CourseButtonBlockType extends AbstractCourseBlockType {
 				'text'       => true,
 			],
 			'typography' => [
-				'fontSize'                 => true,
-				'__experimentalFontWeight' => true,
-				'textTransform'            => true,
+				'fontSize'                    => true,
+				'__experimentalFontWeight'    => true,
+				'__experimentalTextTransform' => true,
 			],
 			'spacing'    => [
 				'padding' => true,

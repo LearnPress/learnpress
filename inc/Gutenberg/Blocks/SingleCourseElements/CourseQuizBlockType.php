@@ -22,9 +22,9 @@ class CourseQuizBlockType extends AbstractCourseBlockType {
 				'text'       => true,
 			],
 			'typography' => [
-				'fontSize'                 => true,
-				'__experimentalFontWeight' => true,
-				'textTransform'            => true,
+				'fontSize'                    => true,
+				'fontWeight'                  => true,
+				'__experimentalTextTransform' => true,
 			],
 			'spacing'    => [
 				'padding' => true,

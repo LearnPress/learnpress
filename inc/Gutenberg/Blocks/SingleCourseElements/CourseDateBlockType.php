@@ -24,7 +24,7 @@ class CourseDateBlockType extends AbstractCourseBlockType {
 			'typography' => [
 				'fontSize'                 => true,
 				'__experimentalFontWeight' => true,
-				'textTransform'            => true,
+				'__experimentalTextTransform'            => true,
 			],
 			'spacing'    => [
 				'padding' => true,

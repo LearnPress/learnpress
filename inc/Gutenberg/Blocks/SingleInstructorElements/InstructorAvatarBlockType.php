@@ -23,9 +23,9 @@ class InstructorAvatarBlockType extends AbstractSingleInstructorBlockType {
 				'text'       => true,
 			],
 			'typography'           => [
-				'fontSize'                 => true,
-				'__experimentalFontWeight' => true,
-				'textTransform'            => true,
+				'fontSize'                    => true,
+				'__experimentalFontWeight'    => true,
+				'__experimentalTextTransform' => true,
 			],
 			'__experimentalBorder' => [
 				'color'  => true,
