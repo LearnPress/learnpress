@@ -2,66 +2,74 @@
 /**
  * Class ProfileQuizzesTemplate.
  *
- * @since 4.2.8
+ * @since 4.2.8.2
  * @version 1.0.0
  */
+
 namespace LearnPress\TemplateHooks\Profile;
 
+use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
+use LearnPress\Models\UserItems\UserItemModel;
 use LearnPress\Models\UserModel;
+use LearnPress\TemplateHooks\Course\ListCoursesTemplate;
+use LearnPress\TemplateHooks\Table\TableListTemplate;
 use LearnPress\TemplateHooks\TemplateAJAX;
 use LearnPress\Models\UserItems\UserQuizModel;
+use LP_Database;
 use LP_Profile;
 use LP_Datetime;
-use LP_Page_Controller;
 use Exception;
+use LP_User_Items_Filter;
 use stdClass;
 use Throwable;
 
 class ProfileQuizzesTemplate {
-	public static function instance() {
-		static $instance = null;
+	use Singleton;
 
-		if ( is_null( $instance ) ) {
-			$instance = new self();
-		}
-
-		return $instance;
-	}
-
-	public static function tab_content() {
-		do_action( 'learn-press/profile/layout/quizzes' );
-	}
-
-	protected function __construct() {
+	public function init() {
 		add_filter( 'lp/rest/ajax/allow_callback', array( $this, 'allow_callback' ) );
-		add_action( 'learn-press/profile/layout/quizzes', array( $this, 'quiz_profile_layout' ), 2 );
 	}
 
-	public static function init() {
-		self::instance();
-	}
-
+	/**
+	 * Set up the callback for the AJAX request.
+	 *
+	 * @uses self::renderContent()
+	 * @param $callbacks
+	 *
+	 * @return mixed
+	 */
 	public function allow_callback( $callbacks ) {
 		$callbacks[] = get_class( $this ) . ':renderContent';
+
 		return $callbacks;
 	}
 
-	public function quiz_profile_layout( $data ) {
+	/**
+	 * @throws Exception
+	 */
+	public static function tab_content() {
+		self::instance()->quiz_profile_layout();
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	public function quiz_profile_layout( array $data = [] ) {
 		$html_wrapper = array(
-			'<div class="learn-press-subtab-content" id="profile-subtab-quiz-content">' => '</div>',
+			'<div class="learn-press-subtab-content">' => '</div>',
 		);
-		$profile      = LP_Profile::instance();
-		if ( ! $profile ) {
-			throw new Exception( __( 'LP Profile is not exist', 'learnpress' ) );
-		}
+
+		$profile = LP_Profile::instance();
 		if ( ! $profile->get_user() ) {
 			throw new Exception( __( 'Invalid User Profile', 'learnpress' ) );
 		}
+
 		$user_id = $profile->get_user()->get_id();
 		if ( ! $user_id ) {
 			throw new Exception( __( 'User is not exist', 'learnpress' ) );
 		}
+
 		$callback = array(
 			'class'  => get_class( $this ),
 			'method' => 'renderContent',
@@ -69,7 +77,6 @@ class ProfileQuizzesTemplate {
 		$args     = array(
 			'user_id' => $user_id,
 			'paged'   => 1,
-			'perpage' => 5,
 			'type'    => 'all',
 		);
 
@@ -77,227 +84,123 @@ class ProfileQuizzesTemplate {
 		$html    = Template::instance()->nest_elements( $html_wrapper, $content );
 		echo $html;
 	}
+
 	public static function renderContent( $args ): stdClass {
 		$content = new stdClass();
-		ob_start();
+
 		try {
-			$user = UserModel::find( $args['user_id'] );
-			if ( ! $user ) {
+			$userModel = UserModel::find( $args['user_id'], true );
+			if ( ! $userModel ) {
 				throw new Exception( __( 'Invalid User', 'learnpress' ) );
 			}
-			$quiz_args = $user->get_quizzes_attend( $args );
-			$sections  = apply_filters(
-				'learnpress/profile/quiz-tab/sections',
-				array(
-					'tab-header' => self::quiz_tab_header( $args['user_id'], $args['type'] ),
-					'tab-table'  => self::quiz_tab_table( $quiz_args, $args ),
-				)
+
+			$total_rows = 0;
+			$limit      = apply_filters(
+				'learnpress/profile/user-quizzes/limit',
+				get_option( 'posts_per_page', 10 )
 			);
-			set_transient( 'renderContent_sections', $sections, 3600 );
-			$content->content     = Template::combine_components( $sections );
-			$content->total_pages = $quiz_args['total_page'];
-			$content->paged       = $args['paged'];
-		} catch ( Throwable $e ) {
-			ob_end_clean();
-			error_log( __METHOD__ . '-' . $e->getMessage() );
-		}
-		return $content;
-	}
-	public static function quiz_tab_header( int $user_id = 0, string $type = 'all' ): string {
-		$content      = '';
-		$profile      = LP_Profile::instance( $user_id );
-		$filter_types = apply_filters(
-			'learnpress/profile/quiz-tab/header/filter-types',
-			array(
-				'all'       => __( 'All', 'learnpress' ),
-				'completed' => __( 'Finished', 'learnpress' ),
-				'passed'    => __( 'Passed', 'learnpress' ),
-				'failed'    => __( 'Failed', 'learnpress' ),
-			)
-		);
-		ob_start();
-		if ( $filter_types ) {
-			?>
-			<div class="learn-press-tabs">
-				<ul class="learn-press-filters">
-					<?php foreach ( $filter_types as $class => $label ) : ?>
-						<li class="<?php echo esc_attr( $class ); ?><?php echo esc_attr( $class === $type ? ' active' : '' ); ?>">
-							<a aria-label="<?php echo esc_attr( $label ); ?>" href="javascript:void(0)" data-filter="<?php echo esc_attr( $class ); ?>" class="quiz-filter-type"><?php esc_html_e( $label ); ?></a>
-						</li>
-					<?php endforeach; ?>
-				</ul>
-			</div>
-			<?php
-			$content = ob_get_clean();
-		} else {
-			ob_end_clean();
-		}
-		return $content;
-	}
-	public static function quiz_tab_table( $quiz_args, $args ): string {
-		if ( $quiz_args['quiz_count'] === 0 ) {
-			return Template::print_message( esc_html__( 'No quizzes!', 'learnpress' ), 'info', false );
-		}
-		$sections = apply_filters(
-			'learnpress/profile/quiz-table/sections',
-			array(
-				'start_wrap'   => '<table class="lp-list-table profile-list-quizzes profile-list-table">',
-				'table_header' => self::table_header(),
-				'table_body'   => self::table_body( $quiz_args, $args ),
-				'table_footer' => self::table_footer( $quiz_args, $args ),
-				'end_wrap'     => '</table>',
-			)
-		);
-		return Template::combine_components( $sections );
-	}
-	public static function table_header(): string {
-		$sections = apply_filters(
-			'learnpress/profile/quiz-table/footer/sections',
-			array(
-				'<thead>',
-				'<tr>',
-				'<th class="column-quiz"> ' . __( 'Quiz', 'learnpress' ) . '</th>',
-				'<th class="column-status"> ' . __( 'Result', 'learnpress' ) . '</th>',
-				'<th class="column-time-interval"> ' . __( 'Time spent', 'learnpress' ) . '</th>',
-				'<th class="column-date"> ' . __( 'Date', 'learnpress' ) . '</th>',
-				'</tr>',
-				'</thead>',
-			)
-		);
-		return Template::combine_components( $sections );
-	}
-	public static function table_body( $quiz_args, $args ) {
-		$content = '';
-		foreach ( $quiz_args['items'] as $item ) {
-			$row_html = self::quiz_row( $item, $args );
-			if ( ! $row_html ) {
-				continue;
+			$limit = 1;
+
+			$filter          = new LP_User_Items_Filter();
+			$filter->user_id = $userModel->get_id();
+			$filter->limit   = $limit;
+			$filter->page    = $args['paged'];
+
+			switch ( $args['type'] ) {
+				case UserItemModel::STATUS_COMPLETED:
+					$filter->status = LP_ITEM_COMPLETED;
+					break;
+				case UserItemModel::GRADUATION_PASSED:
+					$filter->graduation = LP_GRADUATION_PASSED;
+					break;
+				case UserItemModel::GRADUATION_FAILED:
+					$filter->graduation = LP_GRADUATION_FAILED;
+					break;
 			}
-			$content .= $row_html;
+
+			$user_quizzes = $userModel->get_quizzes_attend( $filter, $total_rows );
+			$total_pages  = LP_Database::get_total_pages( $limit, $total_rows );
+
+			$header = [
+				[
+					'title' => __( 'Quiz', 'learnpress' ),
+				],
+				[
+					'title' => __( 'Result', 'learnpress' ),
+				],
+				[
+					'title' => __( 'Time spent', 'learnpress' ),
+				],
+				[
+					'title' => __( 'Started Date', 'learnpress' ),
+				],
+			];
+			$body   = [];
+
+			foreach ( $user_quizzes as $user_quiz ) {
+				$userQuizModel = UserQuizModel::find_user_item(
+					$user_quiz->user_id,
+					$user_quiz->item_id,
+					$user_quiz->item_type,
+					$user_quiz->ref_id,
+					$user_quiz->ref_type,
+					true
+				);
+				if ( ! $userQuizModel ) {
+					continue;
+				}
+
+				$quizPostModel = $userQuizModel->get_quiz_post_model();
+				if ( ! $quizPostModel ) {
+					continue;
+				}
+
+				$item_body = [
+					$quizPostModel->get_the_title(),
+					sprintf(
+						'<span class="result-percent">%s%%</span><span class="lp-label label-%s">&nbsp;%s</span>',
+						esc_html( $userQuizModel->get_result()['result'] ),
+						esc_attr( $user_quiz->status ),
+						$userQuizModel->get_status_label( $user_quiz->graduation )
+					),
+					$userQuizModel->get_time_spend(),
+					( new LP_Datetime( $userQuizModel->get_start_time() ) )->format( LP_Datetime::I18N_FORMAT ),
+				];
+
+				$body[] = $item_body;
+			}
+
+			$section_footer = [
+				'page_result' => TableListTemplate::instance()->html_page_result(
+					[
+						'paged'      => $args['paged'],
+						'per_page'   => $limit,
+						'total_rows' => $total_rows,
+					]
+				),
+				'pagination'  => ListCoursesTemplate::instance()->html_pagination_number(
+					[
+						'total_pages' => $total_pages,
+						'paged'       => $args['paged'],
+					]
+				),
+			];
+
+			$table_args = array(
+				'header'      => $header,
+				'body'        => $body,
+				'footer'      => Template::combine_components( $section_footer ),
+				'class_table' => 'profile-list-table profile-list-quizzes',
+			);
+
+			$content->content     = TableListTemplate::instance()->html_table( $table_args );
+			$content->total_pages = $total_pages;
+			$content->paged       = $args['paged'];
+
+		} catch ( Throwable $e ) {
+			$content->content = Template::print_message( $e->getMessage(), 'error', false );
 		}
+
 		return $content;
-	}
-	public static function quiz_row( $item, $args ) {
-		$userQuizModel = UserQuizModel::find_user_item(
-			$item->user_id,
-			$item->item_id,
-			$item->item_type,
-			$item->ref_id,
-			$item->ref_type,
-			true
-		);
-		if ( ! $userQuizModel ) {
-			return false;
-		}
-		$start_time = new LP_Datetime( $userQuizModel->get_start_time() );
-		$sections   = apply_filters(
-			'learnpress/profile/quiz-table/item/sections',
-			array(
-				'<tr>',
-				'<td class="column-quiz column-quiz-' . $item->item_id . '">',
-				$userQuizModel->get_quiz_post_model()->get_the_title(),
-				'</td>',
-				'<td class="column-status">',
-				'<span class="result-percent">' . esc_html( $userQuizModel->get_result()['result'] ) . '% </span>',
-				'<span class="lp-label label-' . esc_attr( $item->status ) . '">',
-				$userQuizModel->get_status_label( $item->graduation ),
-				'</span>',
-				'</td>',
-				'<td class="column-time-interval">',
-				$userQuizModel->get_time_spend(),
-				'</td>',
-				'<td class="column-date">',
-				$start_time->format( LP_Datetime::I18N_FORMAT ),
-				'</td>',
-				'</tr>',
-			)
-		);
-		return Template::combine_components( $sections );
-	}
-	public static function table_footer( $quiz_args, $args ): string {
-		$content  = '';
-		$offset   = self::get_offset_text( $args['paged'], $args['perpage'], $quiz_args['quiz_count'] );
-		$nav_link = $quiz_args['total_page'] < 2 ? '' : self::get_nav_numbers( $args['paged'], $quiz_args['total_page'] );
-		$sections = apply_filters(
-			'learnpress/profile/quiz-table/footer/sections',
-			array(
-				'<tfoot>',
-				'<tr class="list-table-nav">',
-				'<td colspan="2" class="nav-text">',
-				$offset,
-				'</td>',
-				'<td colspan="2" class="nav-pages" id="quiz-tab-nav-pagination" data-total-page="' . esc_attr( $quiz_args['total_page'] ) . '">',
-				$nav_link,
-				'</td>',
-				'</tr>',
-				'</tfoot>',
-			),
-			$quiz_args,
-			$args
-		);
-		return Template::combine_components( $sections );
-	}
-	/**
-	 * get offset array
-	 *
-	 * @param  integer $paged      number of page
-	 * @param  integer $perpage    quiz foreach page
-	 * @param  integer $total_page total page
-	 * @return array offset array
-	 */
-	public static function get_offset( int $paged, int $perpage, int $quiz_count ): array {
-		$from = ( $paged - 1 ) * $perpage + 1;
-		$to   = $from + $perpage - 1;
-		$to   = min( $to, $quiz_count );
-		if ( $quiz_count < 1 ) {
-			$from = 0;
-		}
-
-		return array( $from, $to );
-	}
-	/**
-	 * Get offset text
-	 *
-	 * @param  int|integer $paged      number of page
-	 * @param  int|integer $perpage    quizzes per page
-	 * @param  int|integer $total_page total page
-	 * @return string offset text
-	 */
-	public static function get_offset_text( int $paged = 1, int $perpage = 10, int $quiz_count = 1 ): string {
-		$offset = self::get_offset( $paged, $perpage, $quiz_count );
-		$output = '';
-		$single = __( 'quiz', 'learnpress' );
-		$plural = __( 'quizzes', 'learnpress' );
-		$format = __( 'Displaying {{from}} to {{to}} of {{total}} {{item_name}}.', 'learnpress' );
-
-		$output = str_replace(
-			array( '{{from}}', '{{to}}', '{{total}}', '{{item_name}}' ),
-			array(
-				$offset[0],
-				$offset[1],
-				$quiz_count,
-				$quiz_count < 2 ? $single : $plural,
-			),
-			$format
-		);
-		return wp_kses_post( $output );
-	}
-	/**
-	 * get nav text
-	 *
-	 * @param  int|integer $paged      current page
-	 * @param  int|integer $total_page total page
-	 * @return string nav link html
-	 */
-	public static function get_nav_numbers( int $paged = 1, int $total_page = 1 ) {
-		return learn_press_paging_nav(
-			array(
-				'num_pages' => $total_page,
-				'paged'     => $paged,
-				'echo'      => false,
-				'format'    => '%#%/',
-				'base'      => '#',
-			)
-		);
 	}
 }

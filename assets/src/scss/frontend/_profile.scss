@@ -44,7 +44,7 @@
 	.lp-profile-left {
 		min-width: 120px;
 		max-width: 120px;
- 
+
 		.user-avatar {
 			position: relative;
 
@@ -580,5 +580,17 @@
 	ul {
 		list-style: none !important;
 		padding: 0 !important;
+	}
+}
+
+.lp-user-avatar__buttons {
+	display: inline-flex;
+	gap: 12px;
+	margin-top: 16px;
+}
+
+.lp-list-table {
+	.learn-press-pagination {
+		text-align: left;
 	}
 }

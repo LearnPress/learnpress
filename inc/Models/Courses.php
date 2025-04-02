@@ -58,7 +58,7 @@ class Courses {
 		$lp_courses_cache_keys->save_cache_keys_count_courses_free( $key_cache );
 		LP_Cache::cache_load_first( 'set', $key_cache, $count );
 
-		return $count;
+		return (int) $count;
 	}
 
 	/**

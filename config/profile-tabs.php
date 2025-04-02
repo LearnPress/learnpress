@@ -29,7 +29,6 @@ $default_settings = array(
 	'quizzes'       => array(
 		'title'    => esc_html__( 'Quizzes', 'learnpress' ),
 		'slug'     => $settings->get( 'profile_endpoints.quizzes', 'quizzes' ),
-		// 'callback' => false,
 		'callback' => [ ProfileQuizzesTemplate::class, 'tab_content' ],
 		'priority' => 20,
 		'icon'     => '<i class="lp-icon-puzzle-piece"></i>',
@@ -62,7 +61,7 @@ $default_settings = array(
 			),
 			'avatar'            => array(
 				'title'    => esc_html__( 'Avatar', 'learnpress' ),
-				'callback' => false,
+				'callback' => [ LP_Template_Profile::class, 'tab_avatar' ],
 				'slug'     => $settings->get( 'profile_endpoints.settings-avatar', 'avatar' ),
 				'priority' => 20,
 				'icon'     => '<i class="lp-icon-user-circle"></i>',

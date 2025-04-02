@@ -667,22 +667,23 @@ class LP_Course_DB extends LP_Database {
 	 *
 	 * @return int
 	 * @since 4.2.5.4
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function count_course_free( LP_Course_Filter $filter ): int {
 		$count = 0;
 
 		try {
 			$filter->only_fields = [ 'COUNT( DISTINCT(ID) )' ];
+			$filter->order_by    = ''; // Must set to empty to avoid error from param Request
 			$this->get_courses_sort_by_free( $filter );
 			$filter->return_string_query = true;
 			$query_count                 = $this->get_courses( $filter, $count );
 			$count                       = $this->wpdb->get_var( $query_count );
 		} catch ( Throwable $e ) {
-			error_log( __METHOD__ . ': ' . $e->getMessage() );
+			LP_Debug::error_log( $e );
 		}
 
-		return $count;
+		return (int) $count;
 	}
 
 	/**

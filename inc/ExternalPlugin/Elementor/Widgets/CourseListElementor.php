@@ -3,7 +3,7 @@
  * Class CourseListElementor
  *
  * @sicne 4.2.3
- * @version 1.0.1
+ * @version 1.0.2
  */
 
 namespace LearnPress\ExternalPlugin\Elementor\Widgets;
@@ -36,8 +36,7 @@ class CourseListElementor extends LPElementorWidgetBase {
 			$filter        = new \LP_Course_Filter();
 			$filter->limit = $settings['limit'] ?? 5;
 			$sort_int      = $settings['sort_in'] ?? '';
-
-			$layout = $settings['layout'] ?? 'grid';
+			$layout        = $settings['layout'] ?? 'grid';
 
 			if ( ! empty( $settings['category_ids'] ) ) {
 				$filter->term_ids = $settings['category_ids'];
@@ -65,6 +64,8 @@ class CourseListElementor extends LPElementorWidgetBase {
 					$filter->order_by = 'post_title';
 					break;
 			}
+
+			$filter->post_status = [ 'publish' ];
 
 			$courses = Courses::get_courses( $filter );
 
@@ -106,9 +107,8 @@ class CourseListElementor extends LPElementorWidgetBase {
 			</div>
 			<?php
 		} catch ( \Throwable $e ) {
-			error_log( __METHOD__ . ' ' . $e->getMessage() );
+			\LP_Debug::error_log( $e );
 		}
-
 	}
 
 	public function get_style_depends() {
