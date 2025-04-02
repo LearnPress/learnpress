@@ -49,6 +49,7 @@ class FilterCourseTemplate {
 					'tag',
 					'author',
 					'level',
+					'type',
 					'btn_submit',
 					'btn_reset',
 				];
@@ -681,6 +682,53 @@ class FilterCourseTemplate {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 
+		return $content;
+	}
+	public function html_type( array $data = [] ): string {
+		$content = '';
+		try {
+			$this->check_param_url_has_lang( $data );
+			$params_url    = $data['params_url'] ?? [];
+			$data_selected = $params_url['c_type'] ?? '';
+			$data_selected = explode( ',', $data_selected );
+			$filter_types  = apply_filters(
+				'learn-press/filter-courses/course-filter-type',
+				array(
+					'online'  => __( 'Online', 'learnpress' ),
+					'offline' => __( 'Offline', 'learnpress' ),
+				)
+			);
+			foreach ( $filter_types as $key => $type ) {
+				$checked  = in_array( $key, $data_selected ) ? 'checked' : '';
+				$input    = sprintf(
+					'<input name="c_type" type="checkbox" value="%1$s" %2$s>',
+					esc_attr( $key ),
+					esc_attr( $checked )
+				);
+				$label    = sprintf( '<label for="">%s</label>', esc_html( $type ) );
+				$sections = apply_filters(
+					'lp/filter-courses/type/sections',
+					[
+						'input' => $input,
+						'label' => $label,
+					],
+					$type,
+					$key,
+					$data
+				);
+
+				$wrapper = [
+					'wrapper'     => '<div class="lp-course-filter__field">',
+					'content'     => Template::combine_components( $sections ),
+					'wrapper_end' => '</div>',
+				];
+
+				$content .= Template::combine_components( $wrapper );
+			}
+			$content = $this->html_item( esc_html__( 'Type', 'learnpress' ), $content );
+		} catch ( Throwable $e ) {
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
+		}
 		return $content;
 	}
 

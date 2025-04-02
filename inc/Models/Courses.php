@@ -150,6 +150,15 @@ class Courses {
 			}
 			$filter->levels = $levels;
 		}
+		$course_type = LP_Helper::sanitize_params_submitted( urldecode( $param['c_type'] ?? '' ) );
+		if ( ! empty( $course_type ) ) {
+			$course_type = explode( ',', $course_type );
+			if ( in_array( 'online', $course_type ) && in_array( 'offline', $course_type ) ) {
+				$filter->type = 'all';
+			} else {
+				$filter->type = $course_type[0];
+			}
+		}
 
 		// Find by category
 		$term_ids_str = LP_Helper::sanitize_params_submitted( urldecode( $param['term_id'] ?? '' ) );
