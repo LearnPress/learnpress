@@ -35,7 +35,6 @@ if ( ! empty( $filter->status ) ) {
 }
 
 $filters = $profile->get_quizzes_filters( $current_filter );
-
 ?>
 
 <div class="learn-press-subtab-content">
@@ -50,7 +49,6 @@ $filters = $profile->get_quizzes_filters( $current_filter );
 		</ul>
 	</div>
 	<?php endif; ?>
-
 	<?php if ( $query->get_items() ) : ?>
 		<table class="lp-list-table profile-list-quizzes profile-list-table">
 			<thead>

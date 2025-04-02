@@ -44,7 +44,7 @@
 	.lp-profile-left {
 		min-width: 120px;
 		max-width: 120px;
- 
+
 		.user-avatar {
 			position: relative;
 
@@ -260,6 +260,22 @@
 
 		.course-categories {
 			padding: 0;
+		}
+		#profile-subtab-quiz-content{
+			.inline-form {
+			    display: flex;
+			    align-items: center;
+			    margin-bottom: 10px;
+			    input[type="number"] {
+			        padding: 8px;
+			        border: 1px solid #ccc;
+			        width: 60px;
+			    }
+			    button {
+			        cursor: pointer;
+			        line-height: 1;
+			    }
+			}
 		}
 		//
 		//.lp-button {
@@ -564,5 +580,17 @@
 	ul {
 		list-style: none !important;
 		padding: 0 !important;
+	}
+}
+
+.lp-user-avatar__buttons {
+	display: inline-flex;
+	gap: 12px;
+	margin-top: 16px;
+}
+
+.lp-list-table {
+	.learn-press-pagination {
+		text-align: left;
 	}
 }

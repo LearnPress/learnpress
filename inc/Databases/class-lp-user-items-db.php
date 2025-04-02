@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Class LP_User_Items_DB
  *
  * @since 3.2.8.6
- * @version 1.0.4
+ * @version 1.0.5
  * @author tungnx
  */
 class LP_User_Items_DB extends LP_Database {
@@ -790,50 +790,18 @@ class LP_User_Items_DB extends LP_Database {
 	 * Get quizzes of user
 	 *
 	 * @param LP_User_Items_Filter $filter
+	 * @param int $total_rows
 	 *
-	 * @return null|object
+	 * @return array|int|string|null
 	 * @throws Exception
+	 * @since 4.1.4.1
+	 * @version 1.0.1
 	 */
-	public function get_user_quizzes( LP_User_Items_Filter $filter ) {
-		$offset = ( absint( $filter->page ) - 1 ) * $filter->limit;
+	public function get_user_quizzes( LP_User_Items_Filter $filter, int &$total_rows = 0 ) {
+		$filter->item_type = LP_QUIZ_CPT;
+		$filter->ref_type  = LP_COURSE_CPT;
 
-		$WHERE = '';
-
-		if ( ! empty( $filter->graduation ) ) {
-			$WHERE .= $this->wpdb->prepare( 'AND graduation = %s ', $filter->graduation );
-		}
-
-		if ( ! empty( $filter->status ) ) {
-			$WHERE .= $this->wpdb->prepare( 'AND status = %s ', $filter->status );
-		}
-
-		$query = $this->wpdb->prepare(
-			"SELECT * FROM $this->tb_lp_user_items
-			WHERE user_item_id IN (
-				SELECT DISTINCT MAX(user_item_id)
-				FROM $this->tb_lp_user_items
-				WHERE user_id = %d
-				AND item_type = %s
-				AND status IN (%s, %s)
-				GROUP BY item_id
-			)
-			$WHERE
-			ORDER BY user_item_id DESC
-			LIMIT %d, %d
-			",
-			$filter->user_id,
-			LP_QUIZ_CPT,
-			LP_ITEM_STARTED,
-			LP_ITEM_COMPLETED,
-			$offset,
-			$filter->limit
-		);
-
-		$result = $this->wpdb->get_results( $query );
-
-		$this->check_execute_has_error();
-
-		return $result;
+		return $this->get_user_items( $filter, $total_rows );
 	}
 
 	/**

@@ -193,6 +193,27 @@ class LP_Template_Profile extends LP_Abstract_Template {
 	}
 
 	/**
+	 * Display tab avatar image
+	 *
+	 * @return void
+	 * @since 4.2.8.2
+	 * @version 1.0.0
+	 */
+	public static function tab_avatar() {
+		if ( ! LP_Profile::instance()->current_user_can( 'view-tab-avatar' ) ) {
+			return;
+		}
+
+		$user      = LP_Profile::instance()->get_user();
+		$userModel = UserModel::find( $user->get_id(), true );
+		if ( ! $userModel ) {
+			return;
+		}
+
+		echo ProfileTemplate::instance()->html_upload_avatar( $userModel );
+	}
+
+	/**
 	 * Display tab cover image
 	 *
 	 * @return void
