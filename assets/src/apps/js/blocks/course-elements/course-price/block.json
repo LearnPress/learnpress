@@ -8,7 +8,7 @@
 	"description": "Renders template Price Course PHP templates.",
 	"textdomain": "learnpress",
 	"keywords": ["price single course", "learnpress"],
-	"usesContext": [ "lpCourseQuery" ],
+	"usesContext": [ "lpCourseData" ],
 	"supports": {
 		"multiple": true,
 		"align": ["wide", "full"],

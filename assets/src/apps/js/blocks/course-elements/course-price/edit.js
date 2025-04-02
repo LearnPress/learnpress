@@ -5,8 +5,8 @@ import { RawHTML } from '@wordpress/element';
 const Edit = ( props ) => {
 	const { attributes, setAttributes, context } = props;
 	const blockProps = useBlockProps();
-	const { lpCourseQuery } = context;
-	const coursePrice = lpCourseQuery?.price || __( 'Course Price', 'learnpress' );
+	const { lpCourseData } = context;
+	const coursePrice = lpCourseData?.price || __( 'Course Price', 'learnpress' );
 
 	return (
 		<>
