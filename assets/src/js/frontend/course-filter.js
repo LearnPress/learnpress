@@ -1,5 +1,5 @@
 import API from '../api';
-import { lpAddQueryArgs, lpFetchAPI, lpGetCurrentURLNoParam } from '../utils.js';
+import { lpAddQueryArgs, lpFetchAPI, lpGetCurrentURLNoParam, lpShowHideEl } from '../utils.js';
 
 const classCourseFilter = 'lp-form-course-filter';
 const classProcessing = 'processing';
@@ -208,6 +208,15 @@ window.lpCourseFilter = {
 
 				if ( data && status === 'success' ) {
 					widgetForm.innerHTML = data;
+
+					const elBtnDone = widgetForm.querySelector( '.course-filter-submit.lp-btn-done' );
+					if ( elBtnDone ) {
+						if ( window.outerWidth <= 991 ) {
+							lpShowHideEl( elBtnDone, 1 );
+						} else {
+							lpShowHideEl( elBtnDone, 0 );
+						}
+					}
 				} else if ( message ) {
 					parent.insertAdjacentHTML( 'afterbegin', `<div class="lp-ajax-message error" style="display:block">${ message }</div>` );
 				}
