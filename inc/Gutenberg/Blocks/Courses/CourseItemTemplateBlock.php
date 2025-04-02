@@ -89,13 +89,15 @@ class CourseItemTemplateBlock extends AbstractBlockType {
 						$term_ids[] = $term->parent ?? 0;
 					}
 
-					$filter->term_ids    = $term_ids;
-					$filter->query_count = false;
-					$filter->where[]     = LP_Database::getInstance()->wpdb->prepare( 'AND p.ID != %d', get_the_ID() );
+					$filter->term_ids          = $term_ids;
+					$filter->query_count       = false;
+					$filter->where[]           = LP_Database::getInstance()->wpdb->prepare( 'AND p.ID != %d', get_the_ID() );
+					$courseQuery['pagination'] = false;
 				}
 			}
 
-			$courses = Courses::get_courses( $filter, $total_rows );
+			$filter->limit = $courseQuery['limit'];
+			$courses       = Courses::get_courses( $filter, $total_rows );
 			foreach ( $courses as $course ) {
 				$courseModel = CourseModel::find( $course->ID, true );
 
