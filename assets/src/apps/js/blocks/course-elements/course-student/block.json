@@ -32,6 +32,14 @@
 			"__experimentalDefaultControls": {
 				"text": true
 			}
+		},
+		"spacing": {
+			"padding": true,
+			"margin": true,
+			"__experimentalDefaultControls": {
+				"margin": false,
+				"padding": false
+			}
 		}
 	}
 }

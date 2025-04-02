@@ -14,6 +14,14 @@
 		"reusable": true,
 		"reorder": true,
 		"html": false,
-		"multiple": true
+		"multiple": true,
+		"spacing": {
+			"padding": true,
+			"margin": true,
+			"__experimentalDefaultControls": {
+				"margin": false,
+				"padding": false
+			}
+		}
 	}
 }
