@@ -68,9 +68,9 @@ return apply_filters(
 					'id'    => 'level',
 					'label' => esc_html__( 'Level', 'learnpress' ),
 				),
-				'type'      => array(
+				'type'       => array(
 					'id'    => 'type',
-					'label' => esc_html__( 'Type', 'learnpress' ),
+					'label' => esc_html__( 'Type (Online/Offline)', 'learnpress' ),
 				),
 				'btn_submit' => array(
 					'id'    => 'btn_submit',

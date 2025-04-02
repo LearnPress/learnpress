@@ -150,6 +150,8 @@ class Courses {
 			}
 			$filter->levels = $levels;
 		}
+
+		// Sort by type (oline/offline)
 		$course_type = LP_Helper::sanitize_params_submitted( urldecode( $param['c_type'] ?? '' ) );
 		if ( ! empty( $course_type ) ) {
 			$course_type = explode( ',', $course_type );

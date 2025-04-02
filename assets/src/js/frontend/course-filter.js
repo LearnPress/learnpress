@@ -218,7 +218,7 @@ window.lpCourseFilter = {
 						}
 					}
 				} else if ( message ) {
-					parent.insertAdjacentHTML( 'afterbegin', `<div class="lp-ajax-message error" style="display:block">${ message }</div>` );
+					console.error( message );
 				}
 			},
 			error: ( error ) => {
