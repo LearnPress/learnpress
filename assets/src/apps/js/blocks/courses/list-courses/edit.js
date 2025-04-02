@@ -52,65 +52,88 @@ const Edit = ( props ) => {
 						min={ 1 }
 						max={ 20 }
 					/>
-					<SelectControl
-						label={ __( 'Order by' ) }
-						value={ courseQuery.order_by }
-						options={ orderByData }
-						onChange={ ( order_by ) => {
-							setAttributes( {
-								courseQuery: { ...courseQuery, order_by },
-							} );
-						} }
-					/>
 					<ToggleControl
 						label={ __( 'Related Course' ) }
 						checked={ courseQuery.related }
 						onChange={ ( related ) => {
-							setAttributes( {
-								courseQuery: { ...courseQuery, related },
-							} );
-						} }
-					/>
-					<ToggleControl
-						label={ __( 'Pagination' ) }
-						checked={ courseQuery.pagination }
-						onChange={ ( pagination ) => {
-							setAttributes( {
-								courseQuery: { ...courseQuery, pagination },
-							} );
-						} }
-					/>
-				</PanelBody>
-				<ToolsPanel label={ 'Filter' } resetAll={ resetAllTaxonomy }>
-					<ToolsPanelItem
-						label={ 'Taxonomy' }
-						onSelect={ () => resetAllTaxonomy() }
-						hasValue={ () =>
-							!! courseQuery.term_id || !! courseQuery.tag_id
-						}
-						onDeselect={ () => resetAllTaxonomy() }
-					>
-						<TextControl
-							label={ 'Category' }
-							onChange={ ( term_id ) => {
+							if ( related ) {
 								setAttributes( {
-									courseQuery: { ...courseQuery, term_id },
+									courseQuery: {
+										...courseQuery,
+										term_id: '',
+										tag_id: '',
+										pagination: false,
+										order_by: 'post_date',
+										related,
+									},
+								} );
+							} else {
+								setAttributes( {
+									courseQuery: { ...courseQuery, related },
+								} );
+							}
+						} }
+					/>
+					{ ! courseQuery.related && (
+						<SelectControl
+							label={ __( 'Order by' ) }
+							value={ courseQuery.order_by }
+							options={ orderByData }
+							onChange={ ( order_by ) => {
+								setAttributes( {
+									courseQuery: { ...courseQuery, order_by },
 								} );
 							} }
-							value={ courseQuery.term_id ?? '' }
 						/>
+					) }
 
-						<TextControl
-							label={ 'Tag' }
-							onChange={ ( tag_id ) => {
+					{ ! courseQuery.related && (
+						<ToggleControl
+							label={ __( 'Pagination' ) }
+							checked={ courseQuery.pagination }
+							onChange={ ( pagination ) => {
 								setAttributes( {
-									courseQuery: { ...courseQuery, tag_id },
+									courseQuery: { ...courseQuery, pagination },
 								} );
 							} }
-							value={ courseQuery.tag_id ?? '' }
 						/>
-					</ToolsPanelItem>
-				</ToolsPanel>
+					) }
+				</PanelBody>
+				{ ! courseQuery.related && (
+					<ToolsPanel label={ 'Filter' } resetAll={ resetAllTaxonomy }>
+						<ToolsPanelItem
+							label={ 'Taxonomy' }
+							onSelect={ () => resetAllTaxonomy() }
+							hasValue={ () =>
+								!! courseQuery.term_id || !! courseQuery.tag_id
+							}
+							onDeselect={ () => resetAllTaxonomy() }
+						>
+							<TextControl
+								label={ 'Category' }
+								onChange={ ( term_id ) => {
+									setAttributes( {
+										courseQuery: {
+											...courseQuery,
+											term_id,
+										},
+									} );
+								} }
+								value={ courseQuery.term_id ?? '' }
+							/>
+
+							<TextControl
+								label={ 'Tag' }
+								onChange={ ( tag_id ) => {
+									setAttributes( {
+										courseQuery: { ...courseQuery, tag_id },
+									} );
+								} }
+								value={ courseQuery.tag_id ?? '' }
+							/>
+						</ToolsPanelItem>
+					</ToolsPanel>
+				) }
 			</InspectorControls>
 			<div { ...blockProps }>
 				<div className="post-query-wrapper">

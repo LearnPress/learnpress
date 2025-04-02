@@ -89,7 +89,6 @@ const Edit = ( { clientId, context, attributes, setAttributes } ) => {
 	// Fetch courses when query parameters change
 	useEffect( () => {
 		const courseQuery = context.lpCourseQuery ?? {};
-		console.log( courseQuery );
 		let signal, controller;
 		const fetchCourses = async () => {
 			try {
