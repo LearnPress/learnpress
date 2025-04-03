@@ -41,12 +41,19 @@ $singleCourseTemplate = SingleCourseTemplate::instance();
 				foreach ( $items as $cart_item_key => $cart_item ) {
 					$cart_item = apply_filters( 'learn-press/review-order/cart-item', $cart_item );
 					$item_id   = $cart_item['item_id'];
-					/**
-					 * @var CourseModel $courseModel
-					 */
-					$itemModel = apply_filters( 'learn-press/review-order/cart-item-product', learn_press_get_course( $item_id ), $cart_item );
+
+					$itemModel = apply_filters(
+						'learn-press/review-order/item',
+						CourseModel::find( $item_id, true ),
+						$cart_item
+					);
+
+					if ( has_filter( 'learn-press/review-order/cart-item-product' ) ) {
+						$itemModel = apply_filters( 'learn-press/review-order/cart-item-product', learn_press_get_course( $item_id ), $cart_item );
+					}
+
 					if ( $itemModel instanceof LP_Course ) {
-						$itemModel = CourseModel::find( $courseModel->get_id(), true );
+						$itemModel = CourseModel::find( $itemModel->get_id(), true );
 					}
 
 					if ( $itemModel && ! has_action( 'learn-press/checkout/cart-item' ) ) {
@@ -55,7 +62,7 @@ $singleCourseTemplate = SingleCourseTemplate::instance();
 							<td class="course-thumbnail">
 								<?php
 								echo $itemModel instanceof CourseModel ?
-									wp_kses_post( $singleCourseTemplate->html_image( $courseModel ) ) :
+									wp_kses_post( $singleCourseTemplate->html_image( $itemModel ) ) :
 									$itemModel->get_image()
 								?>
 							</td>
