@@ -55,7 +55,7 @@ class InstructorNameBlockType extends AbstractSingleInstructorBlockType {
 			if ( ! $instructor || ! $instructor->is_instructor() ) {
 				return $html;
 			}
-			$html_name = SingleInstructorTemplate::instance()->html_display_name( $instructor );
+			$html_name = sprintf( '<h2>%s</h2>', SingleInstructorTemplate::instance()->html_display_name( $instructor ) );
 			$html      = $this->get_output( $html_name );
 		} catch ( Throwable $e ) {
 			LP_Debug::error_log( $e );

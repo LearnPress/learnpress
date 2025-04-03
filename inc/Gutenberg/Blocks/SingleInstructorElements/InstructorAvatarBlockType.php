@@ -55,7 +55,7 @@ class InstructorAvatarBlockType extends AbstractSingleInstructorBlockType {
 			if ( ! $instructor || ! $instructor->is_instructor() ) {
 				return $html;
 			}
-			$html_avatar = SingleInstructorTemplate::instance()->html_avatar( $instructor );
+			$html_avatar = SingleInstructorTemplate::instance()->html_avatar_edit( $instructor );
 			$html        = $this->get_output( $html_avatar );
 		} catch ( Throwable $e ) {
 			LP_Debug::error_log( $e );

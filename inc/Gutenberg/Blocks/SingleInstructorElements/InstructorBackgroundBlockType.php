@@ -55,9 +55,8 @@ class InstructorBackgroundBlockType extends AbstractSingleInstructorBlockType {
 				return $html;
 			}
 
-			$userModel = $this->get_user();
 			ob_start();
-			echo ProfileTemplate::instance()->html_cover_image( $userModel );
+			echo ProfileTemplate::instance()->html_cover_image( $instructor );
 			$html_background = ob_get_clean();
 
 			$html = $this->get_output( $html_background );
