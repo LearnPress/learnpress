@@ -1,7 +1,6 @@
 import courseTab from './profile/course-tab';
 import courseStatistics from './profile/statistic';
 import recoverOrder from './profile/order-recover';
-import CourseList from './profile/course-list';
 import profileCoverImage from './profile/cover-image';
 import profileAvatarImage from './profile/avatar';
 
@@ -23,7 +22,6 @@ document.addEventListener( 'DOMContentLoaded', function( event ) {
 	courseTab();
 	courseStatistics();
 	recoverOrder();
-	CourseList();
 	// mbCurrentTab();
 } );
 

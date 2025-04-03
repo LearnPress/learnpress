@@ -99,7 +99,6 @@ class ProfileQuizzesTemplate {
 				'learnpress/profile/user-quizzes/limit',
 				get_option( 'posts_per_page', 10 )
 			);
-			$limit = 1;
 
 			$filter          = new LP_User_Items_Filter();
 			$filter->user_id = $userModel->get_id();

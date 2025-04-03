@@ -1,50 +1,64 @@
-import { addQueryArgs } from '@wordpress/url';
+import { lpAddQueryArgs, lpFetchAPI } from '../../utils.js';
 
 // Rest API load content course enrolled, created - Nhamdv.
 const courseTab = () => {
 	const elements = document.querySelectorAll( '.learn-press-course-tab__filter__content' );
 
 	const getResponse = ( ele, dataset, append = false, viewMoreEle = false ) => {
-		wp.apiFetch( {
-			path: addQueryArgs( 'lp/v1/profile/course-tab', dataset ),
-			method: 'GET',
-		} ).then( ( response ) => {
-			const skeleton = ele.querySelector( '.lp-skeleton-animation' );
-			skeleton && skeleton.remove();
+		let url = lpData.lp_rest_url + 'lp/v1/profile/course-tab';
+		url = lpAddQueryArgs( url, dataset );
 
-			if ( response.status === 'success' && response.data ) {
-				if ( append ) {
-					ele.innerHTML += response.data;
+		const callBack = {
+			success: ( response ) => {
+				const skeleton = ele.querySelector( '.lp-skeleton-animation' );
+				skeleton && skeleton.remove();
+
+				if ( response.status === 'success' && response.data ) {
+					if ( append ) {
+						ele.innerHTML += response.data;
+					} else {
+						ele.innerHTML = response.data;
+					}
+				} else if ( append ) {
+					ele.innerHTML += `<div class="lp-ajax-message" style="display:block">${ response.message && response.message }</div>`;
 				} else {
-					ele.innerHTML = response.data;
-				}
-			} else if ( append ) {
-				ele.innerHTML += `<div class="lp-ajax-message" style="display:block">${ response.message && response.message }</div>`;
-			} else {
-				ele.innerHTML = `<div class="lp-ajax-message" style="display:block">${ response.message && response.message }</div>`;
-			}
-
-			if ( viewMoreEle ) {
-				viewMoreEle.classList.remove( 'loading' );
-
-				const paged = parseInt( viewMoreEle.dataset.paged );
-				const numberPage = parseInt( viewMoreEle.dataset.number );
-
-				if ( numberPage <= paged ) {
-					viewMoreEle.remove();
+					ele.innerHTML = `<div class="lp-ajax-message" style="display:block">${ response.message && response.message }</div>`;
 				}
 
-				viewMoreEle.dataset.paged = paged + 1;
-			}
+				if ( viewMoreEle ) {
+					viewMoreEle.classList.remove( 'loading' );
 
-			viewMore( ele, dataset );
-		} ).catch( ( error ) => {
-			if ( append ) {
-				ele.innerHTML += `<div class="lp-ajax-message error" style="display:block">${ error.message && error.message }</div>`;
-			} else {
-				ele.innerHTML = `<div class="lp-ajax-message error" style="display:block">${ error.message && error.message }</div>`;
-			}
-		} );
+					const paged = parseInt( viewMoreEle.dataset.paged );
+					const numberPage = parseInt( viewMoreEle.dataset.number );
+
+					if ( numberPage <= paged ) {
+						viewMoreEle.remove();
+					}
+
+					viewMoreEle.dataset.paged = paged + 1;
+				}
+
+				viewMore( ele, dataset );
+			},
+			error: ( error ) => {
+				console.log( error );
+			},
+			completed: () => {
+
+			},
+		};
+
+		let paramsFetch = {};
+
+		if ( 0 !== parseInt( lpData.user_id ) ) {
+			paramsFetch = {
+				headers: {
+					'X-WP-Nonce': lpData.nonce,
+				},
+			};
+		}
+
+		lpFetchAPI( url, paramsFetch, callBack );
 	};
 
 	if ( 'IntersectionObserver' in window ) {
