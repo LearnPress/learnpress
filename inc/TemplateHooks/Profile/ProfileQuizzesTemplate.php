@@ -156,8 +156,14 @@ class ProfileQuizzesTemplate {
 						continue;
 					}
 
+					$courseModel = $userQuizModel->get_course_model();
+
 					$item_body = [
-						$quizPostModel->get_the_title(),
+						sprintf(
+							'<a href="%s">%s</a>',
+							esc_url( $courseModel->get_item_link( $quizPostModel->get_id() ) ),
+							esc_html( $quizPostModel->get_the_title() )
+						),
 						sprintf(
 							'<span class="result-percent">%s%%</span><span class="lp-label label-%s">&nbsp;%s</span>',
 							esc_html( $userQuizModel->get_result()['result'] ),
