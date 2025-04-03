@@ -6,6 +6,7 @@ use LearnPress\Gutenberg\Utils\StyleAttributes;
 use LearnPress\TemplateHooks\Course\SingleCourseModernLayout;
 use LP_Debug;
 use Throwable;
+use WP_Block;
 
 /**
  * Class CourseButtonBlockType
@@ -54,9 +55,13 @@ class CourseButtonBlockType extends AbstractCourseBlockType {
 			if ( ! $courseModel ) {
 				return $html;
 			}
+			$is_list_course = false;
+			if ( $block instanceof WP_Block ) {
+				$is_list_course = $block->context['is_list_course'] ?? false;
+			}
 
 			$html_button = '';
-			if ( ! is_singular( LP_COURSE_CPT ) ) {
+			if ( $is_list_course ) {
 				$html_button = sprintf(
 					'<div class="course-readmore"><a href="%s">%s</a></div>',
 					$courseModel->get_permalink(),

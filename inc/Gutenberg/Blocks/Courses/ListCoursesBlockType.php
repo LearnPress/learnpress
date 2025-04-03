@@ -49,7 +49,8 @@ class ListCoursesBlockType extends AbstractBlockType {
 			$wrapper       = get_block_wrapper_attributes();
 
 			$filter_block_context = static function ( $context ) use ( $attributes ) {
-				$context['courseQuery'] = $attributes['courseQuery'] ?? $this->get_attributes();
+				$context['is_list_course'] = true;
+				$context['courseQuery']    = $attributes['courseQuery'] ?? $this->get_attributes();
 				return $context;
 			};
 
