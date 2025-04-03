@@ -3,26 +3,15 @@ import courseStatistics from './profile/statistic';
 import recoverOrder from './profile/order-recover';
 import profileCoverImage from './profile/cover-image';
 import profileAvatarImage from './profile/avatar';
+import profileQuizTab from './profile/quiz';
 
 profileCoverImage();
-
-const mbCurrentTab = () => {
-	const currentTabElement = document.querySelector( '.mb-current-tab' );
-	const tabsNav = document.querySelector( '.learn-press-tabs__nav' );
-	if ( ! currentTabElement || ! tabsNav ) {
-		return;
-	}
-
-	currentTabElement.addEventListener( 'click', () => {
-		tabsNav.classList.toggle( 'open' );
-	} );
-};
+profileQuizTab();
+courseStatistics();
+recoverOrder();
 
 document.addEventListener( 'DOMContentLoaded', function( event ) {
 	courseTab();
-	courseStatistics();
-	recoverOrder();
-	// mbCurrentTab();
 } );
 
 if ( document.getElementById( 'learnpress-avatar-upload' ) ) {
