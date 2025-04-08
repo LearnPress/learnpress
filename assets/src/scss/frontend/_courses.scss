@@ -15,7 +15,7 @@
 				display: inherit;
 			}
 
-			.learn-press-courses[data-layout=grid] {
+			.learn-press-courses[data-layout="grid"] {
 				li {
 					width: 33.33%;
 					@media (max-width: 1200px) {
@@ -26,7 +26,6 @@
 					}
 				}
 			}
-
 		}
 
 		.lp-main-content {
@@ -42,11 +41,11 @@
 	}
 
 	&.loading {
-
 		ul.learn-press-courses {
 			position: relative;
 
-			&::before, &::after {
+			&::before,
+			&::after {
 				content: "";
 				position: absolute;
 				top: 0;
@@ -58,7 +57,12 @@
 			&::after {
 				z-index: 3;
 				background: #f3f3f3;
-				background: linear-gradient(90deg, hsla(0, 0%, 74.5%, 0.2) 25%, hsla(0, 0%, 50.6%, 0.24) 37%, hsla(0, 0%, 74.5%, 0.2) 63%);
+				background: linear-gradient(
+					90deg,
+					hsla(0, 0%, 74.5%, 0.2) 25%,
+					hsla(0, 0%, 50.6%, 0.24) 37%,
+					hsla(0, 0%, 74.5%, 0.2) 63%
+				);
 				background-size: 400% 100%;
 				list-style: none;
 				animation: lp-skeleton-loading 1.4s ease infinite;
@@ -69,7 +73,6 @@
 				opacity: 0.8%;
 				background: $color-white;
 			}
-
 		}
 	}
 
@@ -121,12 +124,10 @@
 
 		// Show heart if course is already in wishlist
 		.course-wishlist {
-
 			&.filled {
 				opacity: 1;
 			}
 		}
-
 	}
 
 	.course-content {
@@ -210,7 +211,7 @@
 			cursor: pointer;
 
 			&::before {
-				font-family: 'lp-icon';
+				font-family: "lp-icon";
 				//font-weight: 900;
 				content: "\f004";
 			}
@@ -225,7 +226,6 @@
 		}
 
 		&:hover {
-
 			&::before {
 				opacity: 1;
 			}
@@ -250,7 +250,6 @@
 			border: 0;
 			border-radius: unset;
 			line-height: unset;
-
 		}
 
 		img {
@@ -281,7 +280,6 @@
 	}
 
 	.course-summary-content {
-
 		@media (min-width: 769px) {
 			.course-info-left {
 				width: calc(100% - 340px);
@@ -293,7 +291,8 @@
 				.course-meta__pull-left {
 					.meta-item {
 						.meta-item__value {
-							span, > div {
+							span,
+							> div {
 								@media (max-width: 1024px) {
 									display: -webkit-box;
 									-webkit-line-clamp: 1;
@@ -301,7 +300,6 @@
 									overflow: hidden;
 								}
 							}
-
 						}
 					}
 				}
@@ -328,7 +326,6 @@
 					}
 				}
 			}
-
 		}
 
 		@media (max-width: 768px) {
@@ -338,7 +335,7 @@
 
 	.course-price {
 		.free {
-			color: #3AB500;
+			color: #3ab500;
 		}
 	}
 
@@ -382,7 +379,6 @@
 				color: $color-primary;
 			}
 		}
-
 	}
 
 	.course-wrap-meta {
@@ -401,7 +397,7 @@
 
 			&::before {
 				color: var(--lp-primary-color);
-				font-family: 'lp-icon';
+				font-family: "lp-icon";
 			}
 
 			& > div {
@@ -453,7 +449,6 @@
 				}
 			}
 		}
-
 	}
 
 	&[data-layout="list"] {
@@ -528,10 +523,7 @@
 				//.course-price {
 				//	float: unset;
 				//}
-
 			}
-
-
 		}
 
 		.course-thumbnail {
@@ -543,19 +535,19 @@
 		}
 
 		@media (max-width: 767px) {
-			.course-thumbnail, .course-content {
+			.course-thumbnail,
+			.course-content {
 				width: 100%;
 			}
 		}
-
 
 		.course-title {
 			font-size: $font-size-h3;
 		}
 	}
 
-	&[data-layout="grid"], &.lp-courses-related {
-
+	&[data-layout="grid"],
+	&.lp-courses-related {
 		.course {
 			padding: 0 $spacing-base-4x;
 
@@ -568,13 +560,19 @@
 			}
 		}
 
+		.wp-block-learnpress-course-item-template,
 		.course-item {
 			border: 1px solid $border-color;
 			border-radius: $border-radius-global;
 		}
 
 		.course-wrap-meta {
-			.meta-item-duration, .meta-item-level, .meta-item-quiz {
+			.wp-block-learnpress-course-duration,
+			.wp-block-learnpress-course-level,
+			.wp-block-learnpress-course-quiz,
+			.meta-item-duration,
+			.meta-item-level,
+			.meta-item-quiz {
 				display: none;
 			}
 		}
@@ -598,7 +596,8 @@
 			//	font-size: $font-size-h4;
 			//}
 
-			.course-excerpt, .course-short-description {
+			.course-excerpt,
+			.course-short-description {
 				display: none;
 			}
 
@@ -609,7 +608,6 @@
 			//	margin-left: -20px;
 			//	margin-right: -20px;
 			//}
-
 		}
 
 		.learn-press-message {
@@ -623,13 +621,11 @@
 	}
 
 	&[data-size="3"] {
-
 		.course {
 			width: 33.3333%;
 
 			@media (max-width: 767px) {
 				width: 100%;
-
 			}
 		}
 	}
@@ -637,7 +633,12 @@
 	.lp-archive-course-skeleton {
 		position: absolute;
 		height: 100%;
-		background: linear-gradient(90deg, hsla(0, 0%, 74.5%, 0.2) 25%, hsla(0, 0%, 50.6%, 0.24) 37%, hsla(0, 0%, 74.5%, 0.2) 63%);
+		background: linear-gradient(
+			90deg,
+			hsla(0, 0%, 74.5%, 0.2) 25%,
+			hsla(0, 0%, 50.6%, 0.24) 37%,
+			hsla(0, 0%, 74.5%, 0.2) 63%
+		);
 		animation: lp-skeleton-loading 1.4s ease infinite;
 		background-size: 400% 100%;
 
@@ -686,7 +687,7 @@
 	}
 
 	> * {
-		display: flex
+		display: flex;
 	}
 
 	.block-search-courses,
@@ -750,7 +751,7 @@
 				display: inline-block;
 				margin: 6px;
 				color: $text-color-base;
-				font-family: 'lp-icon';
+				font-family: "lp-icon";
 				line-height: 1.2;
 				width: 1em;
 			}
@@ -802,9 +803,12 @@
 
 .wp-block-learnpress-course-item-template {
 	display: flex;
-    width: 100%;
-    flex-wrap: wrap;
-    padding-bottom: 32px;
+	width: 100%;
+	flex-wrap: wrap;
+
+	:where(.is-layout-constrained) > * {
+		margin-block-start: 0;
+	}
 
 	.info-meta-item {
 		display: flex;
@@ -821,7 +825,8 @@
 }
 
 @for $i from 0 through 9 {
-	input[type="radio"]:nth-child(#{$i*2+1}):checked ~ .switch-btn:nth-child(#{$i*2+2}) {
+	input[type="radio"]:nth-child(#{$i*2 + 1}):checked
+		~ .switch-btn:nth-child(#{$i*2 + 2}) {
 		.switch-layout & {
 			background-color: $bg-grey;
 		}
