@@ -118,6 +118,16 @@
 		padding-left: 0;
 		list-style: none;
 		gap: 20px;
+
+		li {
+			display: flex;
+			width: calc(50% - 10px);
+			flex-wrap: wrap;
+			padding-bottom: 32px;
+			box-sizing: border-box;
+			border: 1px solid var(--lp-border-color, #e2e0db);
+			border-radius: var(--lp-border-radius, 5px);
+		}
 	}
 
 	h3 {
@@ -149,13 +159,7 @@
 	}
 
 	li {
-		display: flex;
-		width: calc(50% - 10px);
-		flex-wrap: wrap;
-		padding-bottom: 32px;
-		box-sizing: border-box;
-		border: 1px solid var(--lp-border-color, #e2e0db);
-		border-radius: var(--lp-border-radius, 5px);
+		list-style: none;
 	}
 
 	.course-content {
