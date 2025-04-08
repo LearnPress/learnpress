@@ -54,14 +54,10 @@ class CourseSearchBlockType extends AbstractArchiveCourseBlockType {
 		$html = '';
 
 		try {
-			$data             = [];
-			$settings         = [];
-			$settings         = array_merge(
-				$settings,
-				lp_archive_skeleton_get_args()
-			);
-			$data['settings'] = $settings;
-			$html             = ListCoursesTemplate::instance()->html_search_form( $data );
+			$settings          = lp_archive_skeleton_get_args();
+			$settings['class'] = 'block-search-courses';
+			$html_search       = ListCoursesTemplate::instance()->html_search_form( $settings );
+			$html              = $this->get_output( $html_search );
 		} catch ( Throwable $e ) {
 			LP_Debug::error_log( $e );
 		}

@@ -10,7 +10,11 @@ import {
 } from '@wordpress/block-editor';
 import { useSelect } from '@wordpress/data';
 import { memo, useMemo, useState, useEffect } from '@wordpress/element';
-import { PanelBody, RangeControl } from '@wordpress/components';
+import {
+	PanelBody,
+	__experimentalToggleGroupControl as ToggleGroupControl,
+	__experimentalToggleGroupControlOption as ToggleGroupControlOption,
+} from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import API from '../../../../../js/api.js';
 
@@ -161,13 +165,19 @@ const Edit = ( { clientId, context, attributes, setAttributes } ) => {
 		<>
 			<InspectorControls>
 				<PanelBody title={ __( 'Layout Settings' ) }>
-					<RangeControl
-						label={ __( 'Columns' ) }
-						value={ columns }
-						onChange={ ( value ) => setAttributes( { columns: value } ) }
-						min={ 2 }
-						max={ 6 }
-					/>
+					<ToggleGroupControl
+						label={ 'Layout' }
+						value={ attributes.layout ?? 'list' }
+						onChange={ ( value ) => {
+							setAttributes( {
+								layout: value ? value : 'list',
+							} );
+						} }
+						isBlock={ true }
+					>
+						<ToggleGroupControlOption value="list" label={ 'List' } />
+						<ToggleGroupControlOption value="grid" label={ 'Grid' } />
+					</ToggleGroupControl>
 				</PanelBody>
 			</InspectorControls>
 			<>

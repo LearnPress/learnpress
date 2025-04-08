@@ -53,12 +53,32 @@ class CourseOrderByBlockType extends AbstractArchiveCourseBlockType {
 		$html = '';
 
 		try {
-			$order_by         = $attributes['orderBy'] ?? '';
+			$order_by         = $attributes['orderBy'] ?? 'post_date';
 			$order_by_current = isset( $_GET['order_by'] ) ? sanitize_text_field( $_GET['order_by'] ) : '';
 			if ( ! empty( $order_by_current ) ) {
 				$order_by = $order_by_current;
 			}
-			$html = ListCoursesTemplate::instance()->html_order_by( $order_by );
+
+			$values = apply_filters(
+				'learn-press/courses/order-by/values',
+				[
+					'post_date'       => esc_html__( 'Newly published', 'learnpress' ),
+					'post_title'      => esc_html__( 'Title a-z', 'learnpress' ),
+					'post_title_desc' => esc_html__( 'Title z-a', 'learnpress' ),
+					'price'           => esc_html__( 'Price high to low', 'learnpress' ),
+					'price_low'       => esc_html__( 'Price low to high', 'learnpress' ),
+					'popular'         => esc_html__( 'Popular', 'learnpress' ),
+				]
+			);
+
+			$html  = '<div class="courses-order-by-wrapper">';
+			$html .= '<select name="order_by" class="block-courses-order-by">';
+			foreach ( $values as $k => $v ) {
+				$html .= '<option value="' . $k . '" ' . selected( $order_by, $k, false ) . '>' . $v . '</option>';
+			}
+			$html .= '</select>';
+			$html .= '</div>';
+			$html .= '<div class="course-filter-btn-mobile"><span class="lp-icon lp-icon-filter"></span></div>';
 		} catch ( Throwable $e ) {
 			LP_Debug::error_log( $e );
 		}

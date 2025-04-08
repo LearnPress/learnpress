@@ -31,7 +31,7 @@ class CourseFilterBlockType extends AbstractArchiveCourseBlockType {
 			$fields         = array_values( array_intersect( $fields, $allowed_fields ) );
 			apply_filters( 'learnpress/course-filter/fields', $fields );
 
-			$class                     = 'learnpress-widget-wrapper';
+			$class                     = 'learnpress-block-widget-wrapper';
 			$show_in_rest              = isset( $attributes['showInRest'] ) ? ( $attributes['showInRest'] === false ? 0 : 1 ) : 1;
 			$title                     = $attributes['title'] ?? 'Course Filter';
 			$widget_content            = '';
@@ -48,6 +48,7 @@ class CourseFilterBlockType extends AbstractArchiveCourseBlockType {
 				'hide_count_zero'           => $hide_count_zero,
 				'search_suggestion'         => $search_suggestion,
 				'fields'                    => $fields,
+				'class_wrapper_form'        => 'lp-form-block-course-filter',
 			];
 
 			$data = [
@@ -77,10 +78,12 @@ class CourseFilterBlockType extends AbstractArchiveCourseBlockType {
 
 			$html_course_filter = sprintf(
 				'<div class="lp-archive-courses-sidebar">
-					<h3 class="widget-title">%s</h3>
-					<div class="%s" data-widget="%s">
-						%s
-						<div class="lp-widget-loading-change"></div>
+					<div class="widget learnpress widget_course_filter">
+						<h3 class="widget-title">%s</h3>
+						<div class="%s" data-widget="%s">
+							%s
+							<div class="lp-widget-loading-change"></div>
+						</div>
 					</div>
 				</div>',
 				$title,

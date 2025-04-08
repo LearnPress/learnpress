@@ -5,6 +5,7 @@ const classCourseFilter = 'lp-form-course-filter';
 const classProcessing = 'processing';
 const classShowCourseFilterMobile = 'show-lp-course-filter-mobile';
 const withHandleForMobile = 991;
+const classBlockCourseFilter = 'lp-form-block-course-filter';
 
 // Events
 // Submit form filter
@@ -43,6 +44,7 @@ document.addEventListener( 'click', function( e ) {
 
 	// Out click courses filter.
 	if ( ! target.closest( `.${ classCourseFilter }` ) &&
+		! target.closest( `.${ classBlockCourseFilter }` ) &&
 		! target.closest( '.course-filter-btn-mobile' ) ) {
 		const body = document.querySelector( 'body' );
 		if ( window.outerWidth <= withHandleForMobile &&
@@ -73,7 +75,13 @@ window.lpCourseFilter = {
 		}
 
 		const keyword = inputSearch.value.trim();
-		const form = inputSearch.closest( `.${ classCourseFilter }` );
+		let form = inputSearch.closest( `.${ classCourseFilter }` );
+		const elFormBlockCourseFilter = inputSearch.closest( `.${ classBlockCourseFilter }` );
+
+		if ( ! form && elFormBlockCourseFilter ) {
+			form = elFormBlockCourseFilter;
+		}
+
 		const elLoading = form.querySelector( '.lp-loading-circle' );
 
 		if ( undefined !== timeOutSearch ) {
@@ -136,12 +144,12 @@ window.lpCourseFilter = {
 			} );
 	},
 	loadWidgetFilterREST: ( widgetForm ) => {
-		const parent = widgetForm.closest( `.learnpress-widget-wrapper:not(.${ classProcessing })` );
+		const parent = widgetForm.closest( `.learnpress-block-widget-wrapper:not(.${ classProcessing })` );
 		if ( ! parent ) {
 			return;
 		}
 		parent.classList.add( classProcessing );
-
+		console.log( 'running' );
 		const elOptionWidget = widgetForm.closest( 'div[data-widget]' );
 		let elListCourseTarget = null;
 		if ( elOptionWidget ) {
@@ -233,6 +241,7 @@ window.lpCourseFilter = {
 		let urlFetch = API.frontend.apiAJAX;
 		const formData = new FormData( form ); // Create a FormData object from the form
 		const elListCourse = document.querySelector( '.learn-press-courses' );
+		const elFormBlockCourseFilter = document.querySelector( `.${ classBlockCourseFilter }` );
 		const elOptionWidget = form.closest( 'div[data-widget]' );
 
 		let elListCourseTarget = null;
@@ -275,6 +284,12 @@ window.lpCourseFilter = {
 		} else if ( lpData.urlParams.hasOwnProperty( 'pll-current-lang' ) ) {
 			filterCourses[ 'pll-current-lang' ] = lpData.urlParams[ 'pll-current-lang' ];
 			urlFetch = lpAddQueryArgs( urlFetch, { lang: lpData.urlParams[ 'pll-current-lang' ] } );
+		}
+
+		if ( elFormBlockCourseFilter ) {
+			const currentUrl = lpGetCurrentURLNoParam();
+			window.location.href = lpAddQueryArgs( currentUrl, filterCourses );
+			return;
 		}
 
 		if ( 'undefined' !== typeof lpSettingCourses && // Old version.
@@ -367,9 +382,14 @@ window.lpCourseFilter = {
 		}
 	},
 	reset: ( btnReset ) => {
-		const form = btnReset.closest( `.${ classCourseFilter }` );
-		if ( ! form ) {
+		let form = btnReset.closest( `.${ classCourseFilter }` );
+		const elFormBlockCourseFilter = btnReset.closest( `.${ classBlockCourseFilter }` );
+		if ( ! form && ! elFormBlockCourseFilter ) {
 			return;
+		}
+
+		if ( ! form && elFormBlockCourseFilter ) {
+			form = elFormBlockCourseFilter;
 		}
 
 		const btnSubmit = form.querySelector( '.course-filter-submit' );
@@ -426,6 +446,7 @@ window.lpCourseFilter = {
 	},
 	triggerInputChoice: ( target ) => {
 		const elField = target.closest( `.lp-course-filter__field` );
+		const elFormBlockCourseFilter = target.closest( `.${ classBlockCourseFilter }` );
 		if ( ! elField ) {
 			return;
 		}
@@ -437,6 +458,10 @@ window.lpCourseFilter = {
 
 			let elListCourseTarget = null;
 			if ( elOptionWidget ) {
+				if ( elFormBlockCourseFilter ) {
+					window.lpCourseFilter.submit( elFormBlockCourseFilter );
+					return;
+				}
 				const dataWidgetObj = JSON.parse( elOptionWidget.dataset.widget );
 				const dataWidgetObjInstance = JSON.parse( dataWidgetObj.instance );
 
@@ -449,7 +474,10 @@ window.lpCourseFilter = {
 				// Filter courses
 				// Check on mobile will not filter when click field
 				if ( window.outerWidth > withHandleForMobile ) {
-					const form = elField.closest( `.${ classCourseFilter }` );
+					let form = elField.closest( `.${ classCourseFilter }` );
+					if ( ! form && elFormBlockCourseFilter ) {
+						form = elFormBlockCourseFilter;
+					}
 					window.lpCourseFilter.submit( form );
 				}
 			}

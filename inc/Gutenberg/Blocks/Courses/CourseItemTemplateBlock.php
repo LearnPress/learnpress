@@ -126,6 +126,7 @@ class CourseItemTemplateBlock extends AbstractBlockType {
 					'type'        => $data_pagination_type,
 					'base'        => add_query_arg( 'paged', '%#%', $settings['url_current'] ?? '' ),
 					'paged'       => $settings['paged'] ?? 1,
+					'wrapper'	  => ['<nav class="learnpress-block-pagination navigation pagination">' => '</nav>']
 				];
 				$html_pagination         = ListCoursesTemplate::instance()->html_pagination( $data_pagination );
 			}
