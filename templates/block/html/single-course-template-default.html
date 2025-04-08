@@ -17,7 +17,9 @@
 		</div>
 		<!-- /wp:group -->
 
-		<!-- wp:learnpress/course-date /-->
+		<!-- wp:group {"layout":{"type":"flex","flexWrap":"nowrap"}} -->
+		<div class="wp-block-group"><!-- wp:learnpress/course-date /--></div>
+		<!-- /wp:group -->
 	</div>
 	<!-- /wp:group -->
 </div>
@@ -85,7 +87,7 @@
 
 	<!-- wp:group {"metadata":{"name":"Related"},"className":"lp-list-courses-related","layout":{"type":"default"}} -->
 	<div class="wp-block-group lp-list-courses-related">
-		<!-- wp:learnpress/list-courses {"courseQuery":{"limit":11,"order_by":"post_title_desc","related":true,"pagination":false}} -->
+		<!-- wp:learnpress/list-courses {"courseQuery":{"limit":4,"order_by":"post_date","related":true,"pagination":false,"term_id":"","tag_id":""}} -->
 		<div class="wp-block-learnpress-list-courses">
 			<!-- wp:heading {"level":3,"style":{"spacing":{"margin":{"bottom":"var:preset|spacing|40"}}}} -->
 			<h3
@@ -96,7 +98,7 @@
 			</h3>
 			<!-- /wp:heading -->
 
-			<!-- wp:learnpress/course-item-template -->
+			<!-- wp:learnpress/course-item-template {"layout":"grid"} -->
 			<div class="wp-block-learnpress-course-item-template">
 				<!-- wp:group {"className":"course-thumbnail","layout":{"type":"constrained"}} -->
 				<div class="wp-block-group course-thumbnail">
