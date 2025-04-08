@@ -210,13 +210,22 @@
 		}
 	}
 
-	.grid li{
+	.grid li {
 		.wp-block-learnpress-course-quiz,
 		.wp-block-learnpress-course-level,
 		.wp-block-learnpress-course-duration,
 		.wp-block-learnpress-course-description {
 			display: none;
 		}
+	}
+}
+
+.wp-block-learnpress-course-price {
+	.course-price .origin-price {
+		margin-right: 8px;
+		opacity: 0.8;
+		font-size: calc(var(--lp-font-size-base, 1em) * 0.925);
+		text-decoration: line-through;
 	}
 }
 
