@@ -4,16 +4,9 @@ namespace LearnPress\Gutenberg\Blocks\Courses;
 
 use LearnPress\Gutenberg\Blocks\AbstractBlockType;
 use LearnPress\Models\CourseModel;
-use LearnPress\Models\Courses;
-use LearnPress\TemplateHooks\Course\ListCoursesTemplate;
-use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
-use LP_Course_Filter;
-use LP_Database;
 use LP_Debug;
-use LP_Page_Controller;
 use Throwable;
 use WP_Block;
-use WP_Query;
 
 /**
  * Class SingleCourseBlock
@@ -51,53 +44,12 @@ class CourseItemTemplateBlock extends AbstractBlockType {
 			$layout                    = $attributes['layout'] ?? 'list';
 
 			$wrapper_attributes = get_block_wrapper_attributes( $extra_attributes );
-			$courseQuery        = $block->context['courseQuery'] ?? [];
-			if ( empty( $courseQuery ) ) {
+			$courses            = $block->context['courses'] ?? [];
+			$html_pagination    = $block->context['pagination'] ?? '';
+			if ( empty( $courses ) ) {
 				return $html;
 			}
 
-			$total_rows = 0;
-			$filter     = new LP_Course_Filter();
-			$settings   = lp_archive_skeleton_get_args();
-			Courses::handle_params_for_query_courses( $filter, $courseQuery );
-			Courses::handle_params_for_query_courses( $filter, $settings );
-			if ( ! empty( $settings['page_term_id_current'] ) && empty( $settings['term_id'] ) ) {
-				$filter->term_ids[] = $settings['page_term_id_current'];
-			} elseif ( ! empty( $settings['page_tag_id_current'] ) && empty( $settings['tag_id'] ) ) {
-				$filter->tag_ids[] = $settings['page_tag_id_current'];
-			}
-
-			if ( LP_Page_Controller::is_page_instructor() ) {
-				$instructor = SingleInstructorTemplate::instance()->detect_instructor_by_page();
-
-				if ( ! $instructor || ! $instructor->is_instructor() ) {
-					return '';
-				}
-
-				$author_id           = $instructor->get_id();
-				$filter->post_author = $author_id;
-			}
-
-			if ( isset( $courseQuery['related'] ) && $courseQuery['related'] ) {
-				$courseModelCurrent = CourseModel::find( get_the_ID(), true );
-				if ( ! empty( $courseModelCurrent ) ) {
-					$terms    = $courseModelCurrent->get_categories();
-					$term_ids = [];
-
-					foreach ( $terms as $term ) {
-						$term_ids[] = $term->term_id ?? 0;
-						$term_ids[] = $term->parent ?? 0;
-					}
-
-					$filter->term_ids          = $term_ids;
-					$filter->query_count       = false;
-					$filter->where[]           = LP_Database::getInstance()->wpdb->prepare( 'AND p.ID != %d', get_the_ID() );
-					$courseQuery['pagination'] = false;
-				}
-			}
-
-			$filter->limit = $courseQuery['limit'];
-			$courses       = Courses::get_courses( $filter, $total_rows );
 			foreach ( $courses as $course ) {
 				$courseModel = CourseModel::find( $course->ID, true );
 
@@ -113,22 +65,6 @@ class CourseItemTemplateBlock extends AbstractBlockType {
 				remove_filter( 'render_block_context', $filter_block_context, 1 );
 
 				$html .= '<li class="course">' . $block_content . '</li>';
-			}
-
-			$html_pagination = '';
-			if ( isset( $courseQuery['pagination'] ) && $courseQuery['pagination'] ) {
-				$total_pages             = LP_Database::get_total_pages( $filter->limit, $total_rows );
-				$settings['total_pages'] = $total_pages;
-				$settings['total_rows']  = $total_rows;
-				$data_pagination_type    = 'number';
-				$data_pagination         = [
-					'total_pages' => $total_pages,
-					'type'        => $data_pagination_type,
-					'base'        => add_query_arg( 'paged', '%#%', $settings['url_current'] ?? '' ),
-					'paged'       => $settings['paged'] ?? 1,
-					'wrapper'	  => ['<nav class="learnpress-block-pagination navigation pagination">' => '</nav>']
-				];
-				$html_pagination         = ListCoursesTemplate::instance()->html_pagination( $data_pagination );
 			}
 
 			return sprintf(
