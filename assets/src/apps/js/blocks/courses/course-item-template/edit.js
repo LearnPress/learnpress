@@ -182,34 +182,40 @@ const Edit = ( { clientId, context, attributes, setAttributes } ) => {
 			</InspectorControls>
 			<>
 				<ul { ...blockProps }>
-					{ blockContexts &&
-						blockContexts.map( ( blockContext ) => (
-							<BlockContextProvider
-								key={ blockContext.courseId }
-								value={ blockContext }
-							>
-								{ blockContext.courseId ===
-								( activeBlockContextId ||
-									blockContexts[ 0 ]?.courseId ) ? (
-										<PostTemplateInnerBlocks
-											classList={ blockContext.classList }
-										/>
-									) : null }
-								<MemoizedPostTemplateBlockPreview
-									blocks={ blocks }
-									blockContextId={ blockContext.courseId }
-									classList={ blockContext.classList }
-									setActiveBlockContextId={
-										setActiveBlockContextId
-									}
-									isHidden={
-										blockContext.courseId ===
-										( activeBlockContextId ||
-											blockContexts[ 0 ]?.courseId )
-									}
-								/>
-							</BlockContextProvider>
-						) ) }
+					<div
+						className={
+							attributes.layout ? attributes.layout : 'list'
+						}
+					>
+						{ blockContexts &&
+							blockContexts.map( ( blockContext ) => (
+								<BlockContextProvider
+									key={ blockContext.courseId }
+									value={ blockContext }
+								>
+									{ blockContext.courseId ===
+									( activeBlockContextId ||
+										blockContexts[ 0 ]?.courseId ) ? (
+											<PostTemplateInnerBlocks
+												classList={ blockContext.classList }
+											/>
+										) : null }
+									<MemoizedPostTemplateBlockPreview
+										blocks={ blocks }
+										blockContextId={ blockContext.courseId }
+										classList={ blockContext.classList }
+										setActiveBlockContextId={
+											setActiveBlockContextId
+										}
+										isHidden={
+											blockContext.courseId ===
+											( activeBlockContextId ||
+												blockContexts[ 0 ]?.courseId )
+										}
+									/>
+								</BlockContextProvider>
+							) ) }
+					</div>
 				</ul>
 				{ context.lpCourseQuery?.pagination && (
 					<div className="gutenberg-pagination">
