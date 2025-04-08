@@ -662,6 +662,7 @@
 	margin-bottom: $spacing-base-8x;
 	flex-wrap: wrap;
 
+	.block-courses-order-by,
 	.courses-order-by {
 		@include input();
 		padding-right: 30px;
@@ -688,7 +689,9 @@
 		display: flex
 	}
 
+	.block-search-courses,
 	.search-courses {
+		display: flex;
 		flex: 1;
 		margin-bottom: 0;
 		input {
@@ -785,6 +788,7 @@
 	}
 
 	@media (max-width: 767px) {
+		.block-search-courses,
 		.search-courses {
 			width: 100%;
 
