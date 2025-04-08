@@ -578,6 +578,7 @@
 		}
 
 		.course-content {
+			width: 100%;
 			padding: $spacing-base-5x;
 			flex-grow: 1;
 
@@ -803,8 +804,8 @@
 
 .wp-block-learnpress-course-item-template {
 	display: flex;
-	width: 100%;
 	flex-wrap: wrap;
+	overflow: hidden;
 
 	:where(.is-layout-constrained) > * {
 		margin-block-start: 0;
