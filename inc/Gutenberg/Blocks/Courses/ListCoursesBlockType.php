@@ -10,6 +10,7 @@ use LearnPress\TemplateHooks\Instructor\SingleInstructorTemplate;
 use LP_Course_Filter;
 use LP_Database;
 use LP_Debug;
+use LP_Helper;
 use LP_Page_Controller;
 use Throwable;
 use WP_Block;
@@ -60,8 +61,28 @@ class ListCoursesBlockType extends AbstractBlockType {
 			$total_rows = 0;
 			$filter     = new LP_Course_Filter();
 			$settings   = lp_archive_skeleton_get_args();
-			Courses::handle_params_for_query_courses( $filter, $courseQuery );
 			Courses::handle_params_for_query_courses( $filter, $settings );
+
+			if ( ! empty( $courseQuery['order_by'] && empty( $settings['order_by'] ) ) ) {
+				$filter->order_by = $courseQuery['order_by'];
+			}
+
+			if ( ! empty( $courseQuery['term_id'] ) && empty( $settings['term_id'] ) ) {
+				$term_ids_str = LP_Helper::sanitize_params_submitted( urldecode( $courseQuery['term_id'] ?? '' ) );
+				if ( ! empty( $term_ids_str ) ) {
+					$term_ids         = explode( ',', $term_ids_str );
+					$filter->term_ids = $term_ids;
+				}
+			}
+
+			if ( ! empty( $courseQuery['tag_id'] ) && empty( $settings['tag_id'] ) ) {
+				$tag_ids_str = LP_Helper::sanitize_params_submitted( urldecode( $courseQuery['tag_id'] ?? '' ) );
+				if ( ! empty( $tag_ids_str ) ) {
+					$tag_ids         = explode( ',', $tag_ids_str );
+					$filter->tag_ids = $tag_ids;
+				}
+			}
+
 			if ( ! empty( $settings['page_term_id_current'] ) && empty( $settings['term_id'] ) ) {
 				$filter->term_ids[] = $settings['page_term_id_current'];
 			} elseif ( ! empty( $settings['page_tag_id_current'] ) && empty( $settings['tag_id'] ) ) {
@@ -120,10 +141,11 @@ class ListCoursesBlockType extends AbstractBlockType {
 				$html_pagination         = ListCoursesTemplate::instance()->html_pagination( $data_pagination );
 			}
 
-			$filter_block_context = static function ( $context ) use ( $courses, $html_pagination ) {
+			$filter_block_context = static function ( $context ) use ( $courses, $html_pagination, $filter ) {
 				$context['is_list_course'] = true;
 				$context['courses']        = $courses ?? [];
 				$context['pagination']     = $html_pagination ?? '';
+				$context['order_by']       = $filter->order_by;
 				return $context;
 			};
 

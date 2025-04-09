@@ -53,7 +53,7 @@ class CourseOrderByBlockType extends AbstractArchiveCourseBlockType {
 		$html = '';
 
 		try {
-			$order_by         = $attributes['orderBy'] ?? 'post_date';
+			$order_by         = $block->context['order_by'] ?? 'post_date';
 			$order_by_current = isset( $_GET['order_by'] ) ? sanitize_text_field( $_GET['order_by'] ) : '';
 			if ( ! empty( $order_by_current ) ) {
 				$order_by = $order_by_current;
