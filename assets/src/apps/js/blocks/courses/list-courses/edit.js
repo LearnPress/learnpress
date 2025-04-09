@@ -22,8 +22,11 @@ const Edit = ( props ) => {
 	const QUERY_LOOP_TEMPLATE = [ [ 'learnpress/course-item-template' ] ];
 	const resetAllTaxonomy = () => {
 		setAttributes( {
-			term_id: '',
-			tag_id: '',
+			courseQuery: {
+				...courseQuery,
+				term_id: '',
+				tag_id: '',
+			},
 		} );
 	};
 
