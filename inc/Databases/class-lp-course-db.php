@@ -524,15 +524,21 @@ class LP_Course_DB extends LP_Database {
 			$levels_format   = LP_Helper::db_format_array( $filter->levels, '%s' );
 			$filter->where[] = $this->wpdb->prepare( 'AND pml.meta_value IN (' . $levels_format . ')', $filter->levels );
 		}
+
+		// Course type
 		if ( ! empty( $filter->type ) && $filter->type !== 'all' ) {
 			if ( $filter->type === 'offline' ) {
-				$filter->join[]  = "INNER JOIN $this->tb_postmeta AS pmct ON p.ID = pmct.post_id";
-				$filter->where[] = $this->wpdb->prepare( 'AND pmct.meta_key = %s', '_lp_offline_course' );
-				$filter->where[] = $this->wpdb->prepare( 'AND pmct.meta_value = %s', 'yes' );
+				$filter->join[]  = "INNER JOIN $this->tb_postmeta AS pm_off ON p.ID = pm_off.post_id";
+				$filter->where[] = $this->wpdb->prepare( 'AND pm_off.meta_key = %s', '_lp_offline_course' );
+				$filter->where[] = $this->wpdb->prepare( 'AND pm_off.meta_value = %s', 'yes' );
 			} else {
 				$filter->where[] = $this->wpdb->prepare(
-					"AND p.ID NOT IN ( SELECT id FROM $this->tb_posts as p1 INNER JOIN $this->tb_postmeta as pmct on p1.ID = pmct.post_id WHERE pmct.meta_key = %s AND pmct.meta_value = %s )",
-					'_lp_offline_course', 'yes'
+					"AND p.ID NOT IN
+					( SELECT id FROM $this->tb_posts as p1
+					INNER JOIN $this->tb_postmeta as pm_ol on p1.ID = pm_ol.post_id
+					WHERE pm_ol.meta_key = %s AND pm_ol.meta_value = %s )",
+					'_lp_offline_course',
+					'yes'
 				);
 			}
 		}

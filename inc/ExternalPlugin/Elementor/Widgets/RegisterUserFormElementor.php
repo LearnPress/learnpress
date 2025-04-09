@@ -28,6 +28,7 @@ class RegisterUserFormElementor extends LPElementorWidgetBase {
 
 	public function render() {
 		try {
+			learn_press_show_message();
 			$settings = $this->get_settings_for_display();
 
 			if ( class_exists( '\Elementor\Plugin' ) && Plugin::$instance->editor->is_edit_mode() ) {

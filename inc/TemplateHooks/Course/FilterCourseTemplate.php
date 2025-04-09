@@ -684,6 +684,16 @@ class FilterCourseTemplate {
 
 		return $content;
 	}
+
+	/**
+	 * Get HTML fields type (online/offline)
+	 *
+	 * @param array $data
+	 *
+	 * @return string
+	 * @since 4.2.8.2
+	 * @version 1.0.0
+	 */
 	public function html_type( array $data = [] ): string {
 		$content = '';
 		try {
@@ -692,7 +702,7 @@ class FilterCourseTemplate {
 			$data_selected = $params_url['c_type'] ?? '';
 			$data_selected = explode( ',', $data_selected );
 			$filter_types  = apply_filters(
-				'learn-press/filter-courses/course-filter-type',
+				'learn-press/filter-courses/type/fields',
 				array(
 					'online'  => __( 'Online', 'learnpress' ),
 					'offline' => __( 'Offline', 'learnpress' ),
@@ -725,6 +735,7 @@ class FilterCourseTemplate {
 
 				$content .= Template::combine_components( $wrapper );
 			}
+
 			$content = $this->html_item( esc_html__( 'Type', 'learnpress' ), $content );
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );

@@ -34,10 +34,10 @@ class ProfileQuizzesTemplate {
 	/**
 	 * Set up the callback for the AJAX request.
 	 *
-	 * @uses self::renderContent()
 	 * @param $callbacks
 	 *
 	 * @return mixed
+	 * @uses self::renderContent()
 	 */
 	public function allow_callback( $callbacks ) {
 		$callbacks[] = get_class( $this ) . ':renderContent';
@@ -87,6 +87,7 @@ class ProfileQuizzesTemplate {
 
 	public static function renderContent( $args ): stdClass {
 		$content = new stdClass();
+		$html    = '';
 
 		try {
 			$userModel = UserModel::find( $args['user_id'], true );
@@ -99,7 +100,6 @@ class ProfileQuizzesTemplate {
 				'learnpress/profile/user-quizzes/limit',
 				get_option( 'posts_per_page', 10 )
 			);
-			$limit = 1;
 
 			$filter          = new LP_User_Items_Filter();
 			$filter->user_id = $userModel->get_id();
@@ -137,63 +137,84 @@ class ProfileQuizzesTemplate {
 			];
 			$body   = [];
 
-			foreach ( $user_quizzes as $user_quiz ) {
-				$userQuizModel = UserQuizModel::find_user_item(
-					$user_quiz->user_id,
-					$user_quiz->item_id,
-					$user_quiz->item_type,
-					$user_quiz->ref_id,
-					$user_quiz->ref_type,
-					true
-				);
-				if ( ! $userQuizModel ) {
-					continue;
+			if ( ! empty( $user_quizzes ) ) {
+				foreach ( $user_quizzes as $user_quiz ) {
+					$userQuizModel = UserQuizModel::find_user_item(
+						$user_quiz->user_id,
+						$user_quiz->item_id,
+						$user_quiz->item_type,
+						$user_quiz->ref_id,
+						$user_quiz->ref_type,
+						true
+					);
+					if ( ! $userQuizModel ) {
+						continue;
+					}
+
+					$quizPostModel = $userQuizModel->get_quiz_post_model();
+					if ( ! $quizPostModel ) {
+						continue;
+					}
+
+					$courseModel = $userQuizModel->get_course_model();
+
+					$item_body = [
+						sprintf(
+							'<a href="%s">%s</a>',
+							esc_url( $courseModel->get_item_link( $quizPostModel->get_id() ) ),
+							esc_html( $quizPostModel->get_the_title() )
+						),
+						sprintf(
+							'<span class="result-percent">%s%%</span><span class="lp-label label-%s">&nbsp;%s</span>',
+							esc_html( $userQuizModel->get_result()['result'] ),
+							esc_attr( $user_quiz->status ),
+							$userQuizModel->get_status_label( $user_quiz->graduation )
+						),
+						$userQuizModel->get_time_spend(),
+						( new LP_Datetime( $userQuizModel->get_start_time() ) )->format( LP_Datetime::I18N_FORMAT ),
+					];
+
+					$body[] = $item_body;
 				}
 
-				$quizPostModel = $userQuizModel->get_quiz_post_model();
-				if ( ! $quizPostModel ) {
-					continue;
-				}
-
-				$item_body = [
-					$quizPostModel->get_the_title(),
-					sprintf(
-						'<span class="result-percent">%s%%</span><span class="lp-label label-%s">&nbsp;%s</span>',
-						esc_html( $userQuizModel->get_result()['result'] ),
-						esc_attr( $user_quiz->status ),
-						$userQuizModel->get_status_label( $user_quiz->graduation )
+				$section_footer = [
+					'page_result' => TableListTemplate::instance()->html_page_result(
+						[
+							'paged'      => $args['paged'],
+							'per_page'   => $limit,
+							'total_rows' => $total_rows,
+						]
 					),
-					$userQuizModel->get_time_spend(),
-					( new LP_Datetime( $userQuizModel->get_start_time() ) )->format( LP_Datetime::I18N_FORMAT ),
+					'pagination'  => ListCoursesTemplate::instance()->html_pagination_number(
+						[
+							'total_pages' => $total_pages,
+							'paged'       => $args['paged'],
+						]
+					),
 				];
 
-				$body[] = $item_body;
+				$table_args = array(
+					'header'      => $header,
+					'body'        => $body,
+					'footer'      => Template::combine_components( $section_footer ),
+					'class_table' => 'profile-list-table profile-list-quizzes',
+				);
+
+				$html = TableListTemplate::instance()->html_table( $table_args );
+			} else {
+				$html = Template::print_message(
+					__( 'No quizzes found', 'learnpress' ),
+					'info',
+					false
+				);
 			}
 
-			$section_footer = [
-				'page_result' => TableListTemplate::instance()->html_page_result(
-					[
-						'paged'      => $args['paged'],
-						'per_page'   => $limit,
-						'total_rows' => $total_rows,
-					]
-				),
-				'pagination'  => ListCoursesTemplate::instance()->html_pagination_number(
-					[
-						'total_pages' => $total_pages,
-						'paged'       => $args['paged'],
-					]
-				),
+			$section = [
+				'header'  => self::instance()->html_tabs_header( $args['type'] ),
+				'content' => $html,
 			];
 
-			$table_args = array(
-				'header'      => $header,
-				'body'        => $body,
-				'footer'      => Template::combine_components( $section_footer ),
-				'class_table' => 'profile-list-table profile-list-quizzes',
-			);
-
-			$content->content     = TableListTemplate::instance()->html_table( $table_args );
+			$content->content     = Template::combine_components( $section );
 			$content->total_pages = $total_pages;
 			$content->paged       = $args['paged'];
 
@@ -202,5 +223,47 @@ class ProfileQuizzesTemplate {
 		}
 
 		return $content;
+	}
+
+	/**
+	 * Render the header for the quiz tab.
+	 *
+	 * @param string $tab_active The active tab.
+	 *
+	 * @return string.
+	 */
+	public static function html_tabs_header( string $tab_active = 'all' ): string {
+		$filter_types = apply_filters(
+			'learnpress/profile/quiz-tab/header/filter-types',
+			array(
+				'all'       => __( 'All', 'learnpress' ),
+				'completed' => __( 'Finished', 'learnpress' ),
+				'passed'    => __( 'Passed', 'learnpress' ),
+				'failed'    => __( 'Failed', 'learnpress' ),
+			)
+		);
+
+		$html_li = '';
+		foreach ( $filter_types as $type => $label ) {
+			$html_li .= sprintf(
+				'<li class="%s%s">
+					<span data-filter="%s">%s</span>
+				</li>',
+				$type,
+				$type === $tab_active ? ' active' : '',
+				esc_attr( $type ),
+				esc_attr( $label )
+			);
+		}
+
+		$section = [
+			'wrapper'     => '<div class="learn-press-tabs">',
+			'types'       => '<div class="learn-press-filters quiz-filter-types">',
+			'lis'         => $html_li,
+			'types_end'   => '</div>',
+			'wrapper_end' => '</div>',
+		];
+
+		return Template::combine_components( $section );
 	}
 }
