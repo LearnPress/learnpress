@@ -151,13 +151,31 @@ abstract class AbstractBlockType extends WP_Block_Type {
 		$class_hash                = $this->class_hash ?? '';
 		$classes                   = $attributes['className'] ?? '';
 		$border_classes_and_styles = StyleAttributes::get_classes_and_styles_by_attributes( $attributes, $properties, $exclude );
+		$class_default             = 'wp-block-' . $this->namespace . '-' . $this->block_name;
+		$class                     = $class_default ? $class_default : '';
+		$style                     = '';
+
+		if ( ! empty( $classes ) ) {
+			$class .= ' ' . $classes;
+		}
+
+		if ( ! empty( $class_hash ) ) {
+			$class .= ' ' . $class_hash;
+		}
+
+		if ( ! empty( $border_classes_and_styles['classes'] ) ) {
+			$class .= ' ' . $border_classes_and_styles['classes'];
+		}
+
+		if ( ! empty( $border_classes_and_styles['classes'] ) ) {
+			$style = sprintf( 'style="%s"', $border_classes_and_styles['styles'] );
+		}
+
 		ob_start();
 		echo sprintf(
-			'<div class="%s %s %s" style="%s">%s</div>',
-			$class_hash,
-			$classes,
-			$border_classes_and_styles['classes'],
-			$border_classes_and_styles['styles'],
+			'<div class="%s" %s>%s</div>',
+			$class,
+			$style,
 			$content
 		);
 		$output = ob_get_clean();
