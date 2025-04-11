@@ -78,7 +78,7 @@ class GutenbergHandleMain {
 				$block_template->source_js, // Block script
 				[], // Dependencies
 				uniqid(), // Version,
-				[ 'strategy' => 'async' ]
+				[ 'strategy' => 'defer' ]
 			);
 
 			$args = [];
