@@ -68,6 +68,10 @@ return apply_filters(
 					'id'    => 'level',
 					'label' => esc_html__( 'Level', 'learnpress' ),
 				),
+				'type'       => array(
+					'id'    => 'type',
+					'label' => esc_html__( 'Type (Online/Offline)', 'learnpress' ),
+				),
 				'btn_submit' => array(
 					'id'    => 'btn_submit',
 					'label' => esc_html__( 'Button Submit', 'learnpress' ),
@@ -84,6 +88,7 @@ return apply_filters(
 				'tag',
 				'author',
 				'level',
+				'type',
 				'btn_submit',
 				'btn_reset',
 			],

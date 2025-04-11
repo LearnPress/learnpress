@@ -63,9 +63,21 @@ class LP_User_Items_Filter extends LP_Filter {
 	 */
 	public $status = '';
 	/**
+	 * @var string[]
+	 *
+	 * @since 4.2.8.2
+	 */
+	public $statues = [];
+	/**
 	 * @var string
 	 */
 	public $graduation = '';
+	/**
+	 * @var string[]
+	 *
+	 * @since 4.2.8.2
+	 */
+	public $graduations = [];
 	/**
 	 * @var string
 	 */

@@ -58,7 +58,7 @@ class Courses {
 		$lp_courses_cache_keys->save_cache_keys_count_courses_free( $key_cache );
 		LP_Cache::cache_load_first( 'set', $key_cache, $count );
 
-		return $count;
+		return (int) $count;
 	}
 
 	/**
@@ -149,6 +149,17 @@ class Courses {
 				$levels[] = '';
 			}
 			$filter->levels = $levels;
+		}
+
+		// Sort by type (oline/offline)
+		$course_type = LP_Helper::sanitize_params_submitted( urldecode( $param['c_type'] ?? '' ) );
+		if ( ! empty( $course_type ) ) {
+			$course_type = explode( ',', $course_type );
+			if ( in_array( 'online', $course_type ) && in_array( 'offline', $course_type ) ) {
+				$filter->type = 'all';
+			} else {
+				$filter->type = $course_type[0];
+			}
 		}
 
 		// Find by category

@@ -333,6 +333,7 @@ if ( ! class_exists( 'LP_Order' ) ) {
 
 		/**
 		 * Set order status.
+		 * $new_status shouldn't have prefix 'lp-'
 		 *
 		 * @param string $new_status
 		 * @param string $note - Optional. Note for changing status.

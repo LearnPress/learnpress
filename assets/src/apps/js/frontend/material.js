@@ -1,4 +1,3 @@
-import { addQueryArgs } from '@wordpress/url';
 import apiFetch from '@wordpress/api-fetch';
 
 export default function lpMaterialsLoad() {

@@ -49,6 +49,7 @@ class FilterCourseTemplate {
 					'tag',
 					'author',
 					'level',
+					'type',
 					'btn_submit',
 					'btn_reset',
 				];
@@ -81,12 +82,15 @@ class FilterCourseTemplate {
 					);
 				}
 			}
+			// Add button Done for mobile if not has btn submit.
+			if ( ! in_array( 'btn_submit', $data['fields'] ) ) {
+				$sections['btn_done'] = $this->html_btn_done( $data );
+			}
 
-			$class_wrapper_form = $data['class_wrapper_form'] ?? 'lp-form-course-filter';
-			$wrapper            = apply_filters(
+			$wrapper = apply_filters(
 				'lp/filter-courses/sections/wrapper',
 				[
-					'wrapper'     => sprintf( '<form class="%s">', $class_wrapper_form ),
+					'wrapper'     => sprintf( '<form class="lp-form-course-filter">' ),
 					'sections'    => Template::combine_components( $sections ),
 					'close'       => sprintf(
 						'<div class="lp-form-course-filter__close">%s<i class="lp-icon-close"></i></div>',
@@ -681,6 +685,64 @@ class FilterCourseTemplate {
 	}
 
 	/**
+	 * Get HTML fields type (online/offline)
+	 *
+	 * @param array $data
+	 *
+	 * @return string
+	 * @since 4.2.8.2
+	 * @version 1.0.0
+	 */
+	public function html_type( array $data = [] ): string {
+		$content = '';
+		try {
+			$this->check_param_url_has_lang( $data );
+			$params_url    = $data['params_url'] ?? [];
+			$data_selected = $params_url['c_type'] ?? '';
+			$data_selected = explode( ',', $data_selected );
+			$filter_types  = apply_filters(
+				'learn-press/filter-courses/type/fields',
+				array(
+					'online'  => __( 'Online', 'learnpress' ),
+					'offline' => __( 'Offline', 'learnpress' ),
+				)
+			);
+			foreach ( $filter_types as $key => $type ) {
+				$checked  = in_array( $key, $data_selected ) ? 'checked' : '';
+				$input    = sprintf(
+					'<input name="c_type" type="checkbox" value="%1$s" %2$s>',
+					esc_attr( $key ),
+					esc_attr( $checked )
+				);
+				$label    = sprintf( '<label for="">%s</label>', esc_html( $type ) );
+				$sections = apply_filters(
+					'lp/filter-courses/type/sections',
+					[
+						'input' => $input,
+						'label' => $label,
+					],
+					$type,
+					$key,
+					$data
+				);
+
+				$wrapper = [
+					'wrapper'     => '<div class="lp-course-filter__field">',
+					'content'     => Template::combine_components( $sections ),
+					'wrapper_end' => '</div>',
+				];
+
+				$content .= Template::combine_components( $wrapper );
+			}
+
+			$content = $this->html_item( esc_html__( 'Type', 'learnpress' ), $content );
+		} catch ( Throwable $e ) {
+			error_log( __METHOD__ . ': ' . $e->getMessage() );
+		}
+		return $content;
+	}
+
+	/**
 	 * Get html button submit filter.
 	 *
 	 * @param array $data
@@ -691,6 +753,20 @@ class FilterCourseTemplate {
 		return sprintf(
 			'<button type="submit" class="course-filter-submit">%s</button>',
 			esc_html__( 'Apply', 'learnpress' )
+		);
+	}
+
+	/**
+	 * Get html button Done - for mobile when not show btn submit.
+	 *
+	 * @param array $data
+	 *
+	 * @return string
+	 */
+	public function html_btn_done( array $data = [] ): string {
+		return sprintf(
+			'<button type="submit" class="course-filter-submit lp-btn-done lp-hidden">%s</button>',
+			esc_html__( 'Done', 'learnpress' )
 		);
 	}
 

@@ -525,6 +525,24 @@ class LP_Course_DB extends LP_Database {
 			$filter->where[] = $this->wpdb->prepare( 'AND pml.meta_value IN (' . $levels_format . ')', $filter->levels );
 		}
 
+		// Course type
+		if ( ! empty( $filter->type ) && $filter->type !== 'all' ) {
+			if ( $filter->type === 'offline' ) {
+				$filter->join[]  = "INNER JOIN $this->tb_postmeta AS pm_off ON p.ID = pm_off.post_id";
+				$filter->where[] = $this->wpdb->prepare( 'AND pm_off.meta_key = %s', '_lp_offline_course' );
+				$filter->where[] = $this->wpdb->prepare( 'AND pm_off.meta_value = %s', 'yes' );
+			} else {
+				$filter->where[] = $this->wpdb->prepare(
+					"AND p.ID NOT IN
+					( SELECT id FROM $this->tb_posts as p1
+					INNER JOIN $this->tb_postmeta as pm_ol on p1.ID = pm_ol.post_id
+					WHERE pm_ol.meta_key = %s AND pm_ol.meta_value = %s )",
+					'_lp_offline_course',
+					'yes'
+				);
+			}
+		}
+
 		// course ids
 		if ( ! empty( $filter->post_ids ) ) {
 			$list_ids_format = LP_Helper::db_format_array( $filter->post_ids, '%d' );
@@ -655,22 +673,23 @@ class LP_Course_DB extends LP_Database {
 	 *
 	 * @return int
 	 * @since 4.2.5.4
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function count_course_free( LP_Course_Filter $filter ): int {
 		$count = 0;
 
 		try {
 			$filter->only_fields = [ 'COUNT( DISTINCT(ID) )' ];
+			$filter->order_by    = ''; // Must set to empty to avoid error from param Request
 			$this->get_courses_sort_by_free( $filter );
 			$filter->return_string_query = true;
 			$query_count                 = $this->get_courses( $filter, $count );
 			$count                       = $this->wpdb->get_var( $query_count );
 		} catch ( Throwable $e ) {
-			error_log( __METHOD__ . ': ' . $e->getMessage() );
+			LP_Debug::error_log( $e );
 		}
 
-		return $count;
+		return (int) $count;
 	}
 
 	/**
