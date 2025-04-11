@@ -263,9 +263,24 @@ class LP_Jwt_Lessons_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 
 		$assigned = $this->get_assigned( $id );
 
+		$course_id = 0;
 		if ( ! empty( $assigned ) && method_exists( $object, 'set_course' ) ) {
 			$course_id = $assigned['course']['id'];
 			$object->set_course( $course_id );
+		}
+
+		$userLessonModel = UserLessonModel::find_user_item(
+			get_current_user_id(),
+			$id,
+			LP_LESSON_CPT,
+			$course_id,
+			LP_COURSE_CPT,
+			true
+		);
+		$end_time        = '';
+
+		if ( $userLessonModel instanceof UserLessonModel ) {
+			$end_time = $userLessonModel->get_end_time();
 		}
 
 		foreach ( $fields as $field ) {
@@ -321,6 +336,7 @@ class LP_Jwt_Lessons_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			}
 		}
 
+		$data['end_time']  = $end_time;
 		$data['meta_data'] = $this->get_course_meta( $id );
 
 		return $data;
