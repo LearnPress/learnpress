@@ -1,0 +1,18 @@
+[class^="wp-block-learnpress"] {
+	img {
+		max-width: 100%;
+		height: auto;
+	}
+	.info-meta-item {
+		display: flex;
+		gap: 4px;
+		i {
+			color: $color-primary;
+		}
+	}
+	.info-meta-left {
+		display: flex;
+		gap: 8px;
+		align-items: center;
+	}
+}

@@ -1,0 +1,17 @@
+@import "mixin";
+@import "variables";
+@import "frontend/global";
+@import "frontend/pagination";
+@import "frontend/breacrumb";
+@import "frontend/share-social";
+@import "frontend/author-info";
+@import "frontend/extra-box";
+@import "frontend/curriculum";
+/*
+Css for Block of Gutenberg
+ */
+
+
+@import "wp-block/_block-global";
+@import "wp-block/_block-single";
+@import "wp-block/_block-archive";

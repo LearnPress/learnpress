@@ -40,7 +40,13 @@ class CourseItemTemplateBlock extends AbstractBlockType {
 		$html = '';
 
 		try {
-			$layout          = $attributes['layout'] ?? 'list';
+			$layout             = $attributes['layout'] ?? 'list';
+			$wrapper_attributes = 'learn-press-courses wp-block-learn-press-courses';
+
+			if ( $layout == 'grid' ) {
+				$wrapper_attributes .= ' lp-columns-3';
+			}
+
 			$courses         = $block->context['courses'] ?? [];
 			$html_pagination = $block->context['pagination'] ?? '';
 			if ( empty( $courses ) ) {
@@ -66,7 +72,7 @@ class CourseItemTemplateBlock extends AbstractBlockType {
 
 			return sprintf(
 				'<ul class="%1$s" data-layout="%2$s">%3$s</ul>%4$s',
-				'learn-press-courses',
+				$wrapper_attributes,
 				$layout,
 				$html,
 				$html_pagination
