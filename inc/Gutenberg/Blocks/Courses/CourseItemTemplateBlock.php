@@ -40,12 +40,9 @@ class CourseItemTemplateBlock extends AbstractBlockType {
 		$html = '';
 
 		try {
-			$extra_attributes['class'] = 'learn-press-courses';
-			$layout                    = $attributes['layout'] ?? 'list';
-
-			$wrapper_attributes = get_block_wrapper_attributes( $extra_attributes );
-			$courses            = $block->context['courses'] ?? [];
-			$html_pagination    = $block->context['pagination'] ?? '';
+			$layout          = $attributes['layout'] ?? 'list';
+			$courses         = $block->context['courses'] ?? [];
+			$html_pagination = $block->context['pagination'] ?? '';
 			if ( empty( $courses ) ) {
 				return $html;
 			}
@@ -68,8 +65,8 @@ class CourseItemTemplateBlock extends AbstractBlockType {
 			}
 
 			return sprintf(
-				'<ul %1$s data-layout="%2$s">%3$s</ul>%4$s',
-				$wrapper_attributes,
+				'<ul class="%1$s" data-layout="%2$s">%3$s</ul>%4$s',
+				'learn-press-courses',
 				$layout,
 				$html,
 				$html_pagination
