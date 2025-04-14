@@ -22,7 +22,17 @@ export const edit = ( props ) => {
 		<>
 			<div { ...blockProps }>
 				<div className="courses-order-by-wrapper">
-					<span>{ orderByLabel }</span>
+					<select name="order_by" className="block-courses-order-by">
+						<option value="post_date" selected="selected">
+							Newly published
+						</option>
+						<option value="post_title">Title a-z</option>
+						<option value="post_title_desc">Title z-a</option>
+						<option value="price">Price high to low</option>
+						<option value="price_low">Price low to high</option>
+						<option value="popular">Popular</option>
+						<option value="rating">Average Ratings</option>
+					</select>
 				</div>
 			</div>
 		</>

@@ -6,7 +6,9 @@ const Edit = ( props ) => {
 	const { attributes, setAttributes, context } = props;
 	const blockProps = useBlockProps();
 	const { lpCourseData } = context;
-	const coursePrice = lpCourseData?.price || __( 'Course Price', 'learnpress' );
+	const coursePrice =
+		lpCourseData?.price ||
+		'<span class="course-price"><span class="course-item-price"> <span class="origin-price">$5.00</span><span class="price">$4.00</span> </span></span>';
 
 	return (
 		<>

@@ -5,12 +5,10 @@ export const edit = ( props ) => {
 	return (
 		<>
 			<div { ...blockProps }>
-				<div className="course-search-wrapper">
-					<input placeholder="Search courses..."></input>
-					<button name="lp-btn-search-courses">
-						<i className="lp-icon-search"></i>
-					</button>
-				</div>
+				<form className="block-search-courses" >
+					<input type="search" placeholder="Search courses..." name="c_search" value="" />
+					<button type="submit" name="lp-btn-search-courses"><i className="lp-icon-search"></i></button>
+				</form>
 			</div>
 		</>
 	);
