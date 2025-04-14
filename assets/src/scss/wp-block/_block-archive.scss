@@ -1,0 +1,67 @@
+
+.block-courses-order-by {
+	@include order_by_course();
+}
+
+.block-search-courses {
+	@include search_courses();
+}
+
+.course-filter-btn-mobile {
+	display: inline-flex;
+	align-items: center;
+
+	@media (min-width: 769px) {
+		display: none;
+	}
+}
+
+ul.wp-block-learn-press-courses {
+	grid-gap: 1.25em;
+	display: -ms-grid;
+	display: grid;
+	list-style: none;
+	margin: 0;
+	max-width: 100%;
+	padding: 0;
+
+	&.lp-columns-3 {
+		grid-template-columns: repeat(auto-fill, minmax(max(150px, calc(33.33333% - .83333em)), 1fr));
+	}
+	.course-readmore {
+		a {
+			padding: $spacing-base-2x $spacing-base-6x;
+			border-radius: $border-radius-global;
+			color: $text-color-base;
+			border: 1px solid $text-color-base;
+			transition: all 0.3s;
+			display: block;
+			background: transparent;
+			text-decoration: none;
+
+			&:hover {
+				background: $color-primary;
+				color: $color-white;
+				border-color: $color-primary;
+			}
+		}
+	}
+}
+
+.wp-block-learnpress-course-price{
+	.course-price {
+		.free,
+		.price {
+			font-size: $font-size-large;
+			font-weight: $link-font-weight;
+		}
+
+		.origin-price {
+			margin-right: $spacing-base-2x;
+			opacity: 0.8;
+			font-size: $font-size-small;
+			text-decoration: line-through;
+		}
+	}
+}
+

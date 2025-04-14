@@ -75,7 +75,7 @@ class CourseCategoriesBlockType extends AbstractCourseBlockType {
 			}
 
 			$content = sprintf(
-				'%s %s',
+				'<div class="is-layout-flex c-gap-4">%s %s</div>',
 				$label,
 				$html_categories
 			);

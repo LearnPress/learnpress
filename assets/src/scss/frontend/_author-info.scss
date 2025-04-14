@@ -1,0 +1,42 @@
+.lp-instructor-info {
+	display: flex;
+	gap: 30px;
+	margin-top: 30px;
+	margin-bottom: 30px;
+
+	@media (max-width: 600px) {
+		flex-wrap: wrap;
+	}
+
+	.instructor-display-name {
+		font-size: 1.4rem;
+	}
+
+	.lp-instructor-meta {
+		margin-top: 16px;
+	}
+
+	.instructor-description {
+		margin-top: 16px;
+	}
+
+	img {
+		border-radius: $border-radius-global;
+	}
+
+}
+
+.instructor-display-name {
+	font-weight: $link-font-weight;
+}
+
+.instructor-item-meta {
+	display: inline-flex;
+}
+
+.instructor-total-courses {
+	display: inline-flex;
+	border-left: 1px solid #e2e0db;
+	margin-left: 12px;
+	padding-left: 12px;
+}

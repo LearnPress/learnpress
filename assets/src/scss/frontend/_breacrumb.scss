@@ -1,0 +1,27 @@
+ul.learn-press-breadcrumb {
+	max-width: var(--lp-container-max-width);
+	width: 100%;
+	margin: 0 auto;
+	padding: 1em var(--lp-cotainer-padding);
+	list-style: none;
+	font-size: $font-size-small;
+
+	li {
+		display: inline-block;
+		margin: 0;
+
+		a {
+			&:hover {
+				color: var(--lp-primary-color);
+			}
+		}
+	}
+
+	i {
+		margin: 0 8px;
+	}
+
+	a {
+		color: inherit;
+	}
+}

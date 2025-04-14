@@ -22,7 +22,9 @@
 @import "frontend/course-offline";
 @import "frontend/course-single";
 @import "frontend/course-sidebar";
+@import "frontend/author-info";
 @import "frontend/popup";
+@import "frontend/share-social";
 @import "modal";
 @import "frontend/comments";
 @import "frontend/base";
@@ -30,7 +32,7 @@
 @import "frontend/material";
 @import "frontend/twentytwentytwo";
 @import "frontend/pagination";
-
+@import "frontend/breacrumb";
 
 /*  end reset css */
 
@@ -71,105 +73,9 @@ footer {
 	}
 }
 
-ul.learn-press-breadcrumb {
-	max-width: var(--lp-container-max-width);
-	width: 100%;
-	margin: 0 auto;
-	padding: 1em var(--lp-cotainer-padding);
-	list-style: none;
-	font-size: $font-size-small;
-	li {
-		display: inline-block;
-		margin: 0;
-
-		a {
-			&:hover {
-				color: var(--lp-primary-color);
-			}
-		}
-	}
-
-	i {
-		margin: 0 8px;
-	}
-
-	a {
-		color: inherit;
-	}
-}
-
-.learnpress-page {
-	input[type="text"],
-	input[type="email"],
-	input[type="number"],
-	input[type="password"], textarea {
-		border-color: $border-color;
-		@include border-radius($border-radius-global);
-		&:focus{
-			outline: none;
-			border-color: $color-primary;
-		}
-	}
-
-	.lp-button, #lp-button {
-		padding: 12px 24px;
-		border: 1px solid $border-color;
-		color: $text-color-base;
-		background: transparent;
-		box-shadow: unset;
-		font-family: inherit;
-		font-weight: $input-font-weight;
-		text-align: center;
-		text-transform: capitalize;
-		@include border-radius($border-radius-global);
-		@include transition(all 0.25s);
-
-		&.large {
-			height: 52px;
-			padding: 18px 30px;
-			font-size: 1.1em;
-		}
-
-		&:hover {
-			border-color: var(--lp-primary-color);
-			color: #fff;
-			background: var(--lp-primary-color);
-		}
-
-		&.btn-ajax-off {
-
-			.icon {
-				display: none;
-			}
-		}
-
-		&.btn-ajax-on {
-
-			.icon {
-				display: inline-block;
-				margin-right: 5px;
-
-				@include animation(lp-rotating 1s linear infinite);
-			}
-		}
-
-		&:focus {
-			outline: 0;
-		}
-	}
-
-	.rwmb-field .description {
-		margin-top: 8px;
-		color: #999;
-		font-size: smaller;
-		font-style: italic;
-	}
-}
-
 .lp-entry-content .course-tabs {
 	margin-bottom: 40px;
 }
-
 
 /**
  * Forms
@@ -246,7 +152,6 @@ ul.list-table-nav {
 	text-decoration: line-through;
 }
 
-
 .content-item-wrap {
 
 	#comments {
@@ -258,7 +163,6 @@ ul.list-table-nav {
 		}
 	}
 }
-
 
 .course-tabs {
 
@@ -297,3 +201,4 @@ ul.list-table-nav {
 .course-price:empty {
 	display: none !important;
 }
+

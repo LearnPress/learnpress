@@ -7,10 +7,11 @@
 @import "../mixin.scss";
 @import "../variables.scss";
 
-* {
+
+*, :after, :before {
 	box-sizing: border-box;
-	margin: 0;
-	padding: 0;
+	//margin: 0;
+	//padding: 0;
 }
 
 /*  start reset css */
@@ -24,6 +25,75 @@ body {
 
 button {
 	cursor: pointer;
+}
+
+.learnpress-page {
+	input[type="text"],
+	input[type="email"],
+	input[type="number"],
+	input[type="password"], textarea {
+		border-color: $border-color;
+		@include border-radius($border-radius-global);
+
+		&:focus {
+			outline: none;
+			border-color: $color-primary;
+		}
+	}
+
+	.lp-button, #lp-button {
+		padding: 12px 24px;
+		border: 1px solid $border-color;
+		color: $text-color-base;
+		background: transparent;
+		box-shadow: unset;
+		font-family: inherit;
+		font-weight: $input-font-weight;
+		text-align: center;
+		text-transform: capitalize;
+		@include border-radius($border-radius-global);
+		@include transition(all 0.25s);
+
+		&.large {
+			height: 52px;
+			padding: 18px 30px;
+			font-size: 1.1em;
+		}
+
+		&:hover {
+			border-color: var(--lp-primary-color);
+			color: #fff;
+			background: var(--lp-primary-color);
+		}
+
+		&.btn-ajax-off {
+
+			.icon {
+				display: none;
+			}
+		}
+
+		&.btn-ajax-on {
+
+			.icon {
+				display: inline-block;
+				margin-right: 5px;
+
+				@include animation(lp-rotating 1s linear infinite);
+			}
+		}
+
+		&:focus {
+			outline: 0;
+		}
+	}
+
+	.rwmb-field .description {
+		margin-top: 8px;
+		color: #999;
+		font-size: smaller;
+		font-style: italic;
+	}
 }
 
 input, button, select, textarea {
@@ -41,7 +111,7 @@ a {
 }
 
 p {
-	margin-bottom: 1em;
+	margin-bottom: 1rem;
 
 	&:last-child {
 		margin: 0
@@ -72,6 +142,7 @@ p {
 	border: 1px solid $border-color;
 	border-radius: $border-radius-global;
 	padding: $spacing-base-2x $spacing-base-4x;
+
 	&.loading {
 		pointer-events: none;
 		opacity: 0.8;
@@ -81,4 +152,13 @@ p {
 
 .lp-hidden {
 	display: none !important;
+}
+
+.course-price {
+	.origin-price {
+		text-decoration: line-through;
+		margin-right: 4px;
+		font-size: calc(var(--lp-font-size-base, 1em) * 0.925);
+		opacity: 0.6;
+	}
 }

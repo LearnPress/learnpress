@@ -24,15 +24,7 @@
 }
 
 .lp-sidebar-toggle {
-	//&__open{
-	//	.content-item-wrap{
-	//		.quiz-buttons.align-center{
-	//			.button-left.fixed{
-	//				margin-left: 12%!important;
-	//			}
-	//		}
-	//	}
-	//}
+
 	&__close {
 		.content-item-wrap {
 			.quiz-buttons.align-center {
@@ -829,9 +821,79 @@
 }
 
 .course-item-popup {
+	#tab-curriculum {
+		display: block;
+	}
+
+	.course-curriculum ul.curriculum-sections {
+		z-index: 9;
+	}
+
 	.lp-course-curriculum .course-section .course-item__content {
 		flex-direction: column;
     	row-gap: 4px;
+	}
+}
+
+/***********/
+body.course-item-popup {
+
+	#learn-press-course-curriculum {
+		@media (max-width: 1200px) {
+			width: 300px;
+		}
+		@media (max-width: 768px) {
+			margin-right: 0%;
+		}
+
+		.course-curriculum {
+			@media (max-width: 768px) {
+				width: 200px;
+			}
+		}
+
+		.progress-bg {
+			@media (max-width: 1300px) {
+				width: 40px;
+			}
+		}
+
+		.items-progress,
+		.course-progress {
+			@media (max-width: 768px) {
+				float: none;
+				width: 100%;
+				margin-right: 0%;
+				margin-bottom: 20px;
+			}
+		}
+	}
+
+	#content-item-nav {
+		@media (max-width: 1300px) {
+			left: 300px;
+		}
+		@media (max-width: 768px) {
+			left: 200px;
+		}
+	}
+
+	.section-desc {
+		@media (max-width: 1300px) {
+			display: none;
+		}
+
+	}
+
+	&.wpadminbar {
+
+		#learn-press-content-item,
+		#learn-press-course-curriculum {
+			@media (max-width: 768px) {
+				top: 106px;
+			}
+		}
+
 	}
 }
 
@@ -962,27 +1024,6 @@ body {
 	}
 
 }
-//@media screen and (max-width: 600px) {
-//	#popup-sidebar {
-//		flex-basis: 100vw;
-//
-//		.course-curriculum {
-//			width: 100vw;
-//		}
-//
-//		.search-course button {
-//			right: 32px;
-//		}
-//	}
-//
-//	#popup-header {
-//		left: calc(100vw - 32px);
-//	}
-//
-//	#popup-footer {
-//		left: 100vw;
-//	}
-//}
 
 .content-item-wrap {
 	width: 792px;
@@ -1232,8 +1273,6 @@ body {
 		}
 	}
 }
-
-
 
 #popup-course .quiz-attempts {
 	@media (max-width: 575px) {
