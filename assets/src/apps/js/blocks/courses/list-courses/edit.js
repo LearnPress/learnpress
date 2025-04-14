@@ -139,9 +139,7 @@ const Edit = ( props ) => {
 				) }
 			</InspectorControls>
 			<div { ...blockProps }>
-				<div className="post-query-wrapper">
-					<InnerBlocks template={ QUERY_LOOP_TEMPLATE } />
-				</div>
+				<InnerBlocks template={ QUERY_LOOP_TEMPLATE } />
 			</div>
 		</>
 	);

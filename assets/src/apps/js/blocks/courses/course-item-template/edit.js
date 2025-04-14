@@ -8,6 +8,7 @@ import {
 	__experimentalUseBlockPreview as useBlockPreview,
 	store as blockEditorStore,
 } from '@wordpress/block-editor';
+import classnames from 'classnames';
 import { useSelect } from '@wordpress/data';
 import { memo, useMemo, useState, useEffect } from '@wordpress/element';
 import {
@@ -19,8 +20,14 @@ import { __ } from '@wordpress/i18n';
 import API from '../../../../../js/api.js';
 
 function PostTemplateInnerBlocks( { classList } ) {
-	const innerBlocksProps = useInnerBlocksProps();
-	return <li { ...innerBlocksProps } />;
+	const innerBlocksProps = useInnerBlocksProps( {
+		className: classnames( 'wp-block-learnpress-course-item-template' ),
+	} );
+	return <li className="course" >
+		<div
+			{ ...innerBlocksProps }
+		></div>
+	</li>;
 }
 
 function PostTemplateBlockPreview( {
@@ -44,14 +51,19 @@ function PostTemplateBlockPreview( {
 
 	return (
 		<li
-			{ ...blockPreviewProps }
+			className="course"
 			tabIndex={ 0 }
 			// eslint-disable-next-line jsx-a11y/no-noninteractive-element-to-interactive-role
 			role="button"
 			onClick={ handleOnClick }
 			onKeyPress={ handleOnClick }
 			style={ style }
-		/>
+		>
+			<div
+				{ ...blockPreviewProps }
+				className="wp-block-learnpress-course-item-template"
+			></div>
+		</li>
 	);
 }
 
@@ -83,7 +95,9 @@ const fetchLearnPressCourses = async ( courseQuery, signal ) => {
 const MemoizedPostTemplateBlockPreview = memo( PostTemplateBlockPreview );
 
 const Edit = ( { clientId, context, attributes, setAttributes } ) => {
-	const blockProps = useBlockProps();
+	const blockProps = useBlockProps( {
+		className: classnames( 'learn-press-courses' ),
+	} );
 	const [ activeBlockContextId, setActiveBlockContextId ] = useState();
 	const [ coursesData, setCoursesData ] = useState();
 	const [ listCourses, setListCourses ] = useState( [] );
@@ -181,77 +195,47 @@ const Edit = ( { clientId, context, attributes, setAttributes } ) => {
 				</PanelBody>
 			</InspectorControls>
 			<>
-				<ul { ...blockProps }>
-					<div
-						className={
-							attributes.layout ? attributes.layout : 'list'
-						}
-					>
-						{ blockContexts &&
-							blockContexts.map( ( blockContext ) => (
-								<BlockContextProvider
-									key={ blockContext.courseId }
-									value={ blockContext }
-								>
-									{ blockContext.courseId ===
-									( activeBlockContextId ||
-										blockContexts[ 0 ]?.courseId ) ? (
-											<PostTemplateInnerBlocks
-												classList={ blockContext.classList }
-											/>
-										) : null }
-									<MemoizedPostTemplateBlockPreview
-										blocks={ blocks }
-										blockContextId={ blockContext.courseId }
-										classList={ blockContext.classList }
-										setActiveBlockContextId={
-											setActiveBlockContextId
-										}
-										isHidden={
-											blockContext.courseId ===
-											( activeBlockContextId ||
-												blockContexts[ 0 ]?.courseId )
-										}
-									/>
-								</BlockContextProvider>
-							) ) }
-					</div>
+				<ul
+					{ ...blockProps }
+					data-layout={ attributes.layout ? attributes.layout : 'list' }
+				>
+					{ blockContexts &&
+						blockContexts.map( ( blockContext ) => (
+							<BlockContextProvider
+								key={ blockContext.courseId }
+								value={ blockContext }
+							>
+								{ blockContext.courseId ===
+								( activeBlockContextId ||
+									blockContexts[ 0 ]?.courseId ) ? (
+										<PostTemplateInnerBlocks
+											classList={ blockContext.classList }
+										/>
+									) : null }
+								<MemoizedPostTemplateBlockPreview
+									blocks={ blocks }
+									blockContextId={ blockContext.courseId }
+									classList={ blockContext.classList }
+									setActiveBlockContextId={
+										setActiveBlockContextId
+									}
+									isHidden={
+										blockContext.courseId ===
+										( activeBlockContextId ||
+											blockContexts[ 0 ]?.courseId )
+									}
+								/>
+							</BlockContextProvider>
+						) ) }
 				</ul>
 				{ context.lpCourseQuery?.pagination && (
-					<div className="gutenberg-pagination">
-						<div className="pagination-number">
-							<nav className="learn-press-pagination navigation pagination">
-								<ul className="page-numbers">
-									<li>
-										<span className="prev page-numbers">
-											<i className="lp-icon-arrow-left"></i>
-										</span>
-									</li>
-									<li>
-										<span
-											aria-current="page"
-											className="page-numbers current"
-										>
-											{ '1' }
-										</span>
-									</li>
-									<li>
-										<span className="page-numbers">
-											{ '2' }
-										</span>
-									</li>
-									<li>
-										<span className="page-numbers">
-											{ '3' }
-										</span>
-									</li>
-									<li>
-										<i className="lp-icon-arrow-right"></i>
-									</li>
-								</ul>
-							</nav>
-						</div>
-					</div>
+					<nav className="learnpress-block-pagination navigation pagination"><ul className="page-numbers">
+						<li><span aria-current="page" className="page-numbers current">1</span></li>
+						<li><a className="page-numbers">2</a></li>
+						<li><a className="page-numbers">3</a></li>
+						<li><a className="next page-numbers"><i className="lp-icon-arrow-right"></i></a></li>
+					</ul>
+					</nav>
 				) }
 			</>
 		</>

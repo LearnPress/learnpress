@@ -6,15 +6,17 @@ export const edit = ( props ) => {
 	const blockProps = useBlockProps();
 	const { lpCourseData } = context;
 	const courseImage =
-		lpCourseData?.image || '<div className="img-single-course"></div>';
+		lpCourseData?.image || '<div className="course-img"></div>';
 	return (
 		<>
-			<div
-				{ ...blockProps }
-				dangerouslySetInnerHTML={ {
-					__html: courseImage,
-				} }
-			></div>
+			<a>
+				<div
+					{ ...blockProps }
+					dangerouslySetInnerHTML={ {
+						__html: courseImage,
+					} }
+				></div>
+			</a>
 		</>
 	);
 };

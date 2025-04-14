@@ -10,10 +10,17 @@
 	"keywords": ["image single course", "learnpress"],
 	"usesContext": ["lpCourseData"],
 	"supports": {
-		"inserter": true,
-		"reusable": true,
-		"reorder": true,
+		"multiple": true,
 		"html": false,
-		"multiple": true
+		"__experimentalBorder": {
+			"color": true,
+			"radius": true,
+			"width": true,
+			"__experimentalDefaultControls": {
+				"width": false,
+				"color": false,
+				"radius": false
+			}
+		}
 	}
 }

@@ -155,11 +155,7 @@ class ListCoursesBlockType extends AbstractBlockType {
 			$block_content .= $block_render->render( [ 'dynamic' => false ] );
 			remove_filter( 'render_block_context', $filter_block_context, 1 );
 
-			$html = sprintf(
-				'<div %s>%s</div>',
-				$wrapper,
-				$block_content
-			);
+			$html = $block_content;
 		} catch ( Throwable $e ) {
 			LP_Debug::error_log( $e );
 		}

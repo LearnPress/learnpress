@@ -155,17 +155,62 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 					continue;
 				}
 
+				$html_count_student = sprintf(
+					'<div class="info-meta-item">
+						<span class="info-meta-left">%s</span>
+						<span class="info-meta-right">%s</span>
+					</div>',
+					sprintf( '<i class="lp-icon-user-graduate"></i>%s:', __( 'Student', 'learnpress' ) ),
+					$singleCourseTemplate->html_count_student( $courseModel )
+				);
+
+				$html_count_lesson = sprintf(
+					'<div class="info-meta-item">
+						<span class="info-meta-left">%s</span>
+						<span class="info-meta-right">%s</span>
+					</div>',
+					sprintf( '<i class="lp-icon-file-o"></i>%s:', __( 'Lesson', 'learnpress' ) ),
+					$singleCourseTemplate->html_count_item( $courseModel, LP_LESSON_CPT )
+				);
+
+				$html_count_duration = sprintf(
+					'<div class="info-meta-item">
+						<span class="info-meta-left">%s</span>
+						<span class="info-meta-right">%s</span>
+					</div>',
+					sprintf( '<i class="lp-icon-clock-o"></i>%s:', __( 'Duration', 'learnpress' ) ),
+					$singleCourseTemplate->html_duration( $courseModel )
+				);
+
+				$html_count_quiz = sprintf(
+					'<div class="info-meta-item">
+						<span class="info-meta-left">%s</span>
+						<span class="info-meta-right">%s</span>
+					</div>',
+					sprintf( '<i class="lp-icon-puzzle-piece"></i>%s:', __( 'Quiz', 'learnpress' ) ),
+					$singleCourseTemplate->html_count_item( $courseModel, LP_QUIZ_CPT )
+				);
+
+				$html_count_level = sprintf(
+					'<div class="info-meta-item">
+						<span class="info-meta-left">%s</span>
+						<span class="info-meta-right">%s</span>
+					</div>',
+					sprintf( '<i class="lp-icon-signal"></i>%s:', __( 'Level', 'learnpress' ) ),
+					$singleCourseTemplate->html_level( $courseModel )
+				);
+
 				$courseItem                    = new stdClass();
 				$courseItem->ID                = $course->ID;
 				$courseItem->description       = $singleCourseTemplate->html_description( $courseModel );
 				$courseItem->short_description = $singleCourseTemplate->html_short_description( $courseModel );
 				$courseItem->price             = $singleCourseTemplate->html_price( $courseModel );
-				$courseItem->title             = $singleCourseTemplate->html_title( $courseModel );
-				$courseItem->student           = $singleCourseTemplate->html_count_student( $courseModel );
-				$courseItem->lesson            = $singleCourseTemplate->html_count_item( $courseModel, LP_LESSON_CPT );
-				$courseItem->duration          = $singleCourseTemplate->html_duration( $courseModel );
-				$courseItem->quiz              = $singleCourseTemplate->html_count_item( $courseModel, LP_QUIZ_CPT );
-				$courseItem->level             = $singleCourseTemplate->html_level( $courseModel );
+				$courseItem->title             = $courseModel->get_title();
+				$courseItem->student           = $html_count_student;
+				$courseItem->lesson            = $html_count_lesson;
+				$courseItem->duration          = $html_count_duration;
+				$courseItem->quiz              = $html_count_quiz;
+				$courseItem->level             = $html_count_level;
 				$courseItem->image             = $singleCourseTemplate->html_image( $courseModel );
 				$courseItem->instructor        = $singleCourseTemplate->html_instructor( $courseModel, false, [ 'is_link' => 'false' ] );
 				$courseItem->category          = $singleCourseTemplate->html_categories( $courseModel );

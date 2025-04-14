@@ -45,8 +45,8 @@ export const edit = ( props ) => {
 				</PanelBody>
 			</InspectorControls>
 			<div { ...blockProps }>
-				<div className="category">
-					{ props.attributes.showText ? 'in ' : '' }
+				<label>{ props.attributes.showText ? 'in ' : '' }</label>
+				<div className="course-categories">
 					{ props.attributes.isLink ? (
 						<a
 							dangerouslySetInnerHTML={ {
