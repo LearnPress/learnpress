@@ -32,18 +32,29 @@ export const edit = ( props ) => {
 				</PanelBody>
 			</InspectorControls>
 			<div { ...blockProps }>
-				<span>
+				<ul className="learn-press-breadcrumb">
 					{ props.attributes.showHome ? (
 						<>
-							<a>{ props.attributes.homeLabel }</a>
-							{ ' / ' }
+							<li>
+								<a>{ props.attributes.homeLabel }</a>
+							</li>
+							<li className="breadcrumb-delimiter">
+								<i className="lp-icon-angle-right"></i>
+							</li>
 						</>
 					) : (
 						''
 					) }
-					<a>{ 'Navigation' }</a>
-					{ ' / Path' }
-				</span>
+					<li>
+						<a>{ 'Navigation' }</a>
+					</li>
+					<li className="breadcrumb-delimiter">
+						<i className="lp-icon-angle-right"></i>
+					</li>
+					<li>
+						<span>{ 'Path' }</span>
+					</li>
+				</ul>
 			</div>
 		</>
 	);
