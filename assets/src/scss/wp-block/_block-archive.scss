@@ -1,32 +1,4 @@
-/*
-Fix Css For Admin
- */
-.block-editor-block-list__block{
-	.block-search-courses i {
-		font-size: 1.2em;
-		line-height: 1.2;
-		font-family: "lp-icon";
-		font-style: normal;
- 		&:before {
-			content: "\f002";
-		}
-	}
-	&.learn-press-courses{
-		list-style: none;
-		margin: 0;
-		max-width: 100%;
-		padding: 0;
-		&[data-layout="grid"]{
-			grid-gap: 1.25em;
-			display: -ms-grid;
-			display: grid;
-			grid-template-columns: repeat(auto-fill, minmax(max(200px, calc(33.33333% - .83333em)), 1fr));
-		}
-	}
-}
-/*
-End
- */
+
 .block-courses-order-by {
 	@include order_by_course();
 }

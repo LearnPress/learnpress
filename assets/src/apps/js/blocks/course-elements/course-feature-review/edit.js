@@ -5,8 +5,7 @@ export const edit = ( props ) => {
 	return (
 		<>
 			<div { ...blockProps }>
-				<strong>
-					{ 'Featured Review' }
+					<div className="featured-review__title">{ 'Featured Review' }</div>
 					<div className="featured-review__stars">
 						<i className="lp-icon-star"></i>
 						<i className="lp-icon-star"></i>
@@ -15,12 +14,11 @@ export const edit = ( props ) => {
 						<i className="lp-icon-star"></i>
 					</div>
 					<div className="featured-review__content">
-						<div className="line"></div>
-						<div className="line"></div>
-						<div className="line"></div>
-						<div className="line"></div>
-					</div>
-				</strong>
+						<p>
+							{ 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua'}
+						</p>
+  					</div>
+
 			</div>
 		</>
 	);

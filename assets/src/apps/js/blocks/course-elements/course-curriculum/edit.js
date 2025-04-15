@@ -1,35 +1,32 @@
-import { __ } from '@wordpress/i18n';
-import { useBlockProps } from '@wordpress/block-editor';
+import {__} from '@wordpress/i18n';
+import {useBlockProps} from '@wordpress/block-editor';
 
-export const edit = ( props ) => {
+export const edit = (props) => {
 	const blockProps = useBlockProps();
 	return (
 		<>
-			<div { ...blockProps }>
+			<div {...blockProps}>
 				<div className="lp-course-curriculum">
 					<h3 className="lp-course-curriculum__title">
-						{ 'Curriculum' }
+						{'Curriculum'}
 					</h3>
 					<div className="course-curriculum-info">
 						<ul className="course-curriculum-info__left">
 							<li className="course-count-section">
-								{ '1 Sections' }
+								{'2 Sections'}
 							</li>
 							<li className="course-count-lesson">
-								{ '14 Lessons' }
+								{'3 Lessons'}
 							</li>
 							<li className="course-duration">
 								<span className="course-duration">
-									{ '10 Weeks' }
+									{'3 Weeks'}
 								</span>
 							</li>
 						</ul>
 						<div className="course-curriculum-info__right">
 							<span className="course-toggle-all-sections">
-								{ 'Expand all sections' }
-							</span>
-							<span className="course-toggle-all-sections lp-collapse lp-hidden">
-								{ 'Collapse all sections' }
+								{'Expand all sections'}
 							</span>
 						</div>
 					</div>
@@ -38,21 +35,79 @@ export const edit = ( props ) => {
 							<li className="course-section">
 								<div className="course-section-header">
 									<div className="section-toggle">
-										<i className="lp-icon-angle-down"></i>
 										<i className="lp-icon-angle-up"></i>
 									</div>
 									<div className="course-section-info">
 										<div className="course-section__title">
-											{ 'Section 1' }
+											{'Section 1'}
+										</div>
+									</div>
+									<div className="section-count-items">
+										{'3'}
+									</div>
+								</div>
+								<ul className="course-section__items">
+									<li className="course-item">
+										<a className="course-item__link">
+											<div className="course-item__info"><span
+												className="course-item-ico lp_lesson"></span></div>
+											<div className="course-item__content">
+												<div className="course-item__left">
+													<div className="course-item-title">{'What is LearnPress?'}</div>
+												</div>
+												<div className="course-item__right"><span
+													className="duration">{'20 Minutes'}</span></div>
+											</div>
+											<div className="course-item__status"><span
+												className="course-item-ico in-progress"></span></div>
+										</a>
+									</li>
+									<li className="course-item "><a className="course-item__link">
+										<div className="course-item__info"><span
+											className="course-item-ico lp_lesson"></span></div>
+										<div className="course-item__content">
+											<div className="course-item__left">
+												<div className="course-item-title">{'How to use LearnPress?'}</div>
+											</div>
+											<div className="course-item__right"><span
+												className="duration">{'60 Minutes'}</span></div>
+										</div>
+										<div className="course-item__status"><span
+											className="course-item-ico in-progress"></span></div>
+									</a></li>
+									<li className="course-item "><a className="course-item__link">
+										<div className="course-item__info"><span
+											className="course-item-ico lp_quiz"></span></div>
+										<div className="course-item__content">
+											<div className="course-item__left">
+												<div className="course-item-title">{'Demo the Quiz of LearnPress'}</div>
+											</div>
+											<div className="course-item__right"><span
+												className="duration">{'10 Minutes'}</span><span
+												className="question-count">{'4 Questions'}</span></div>
+										</div>
+										<div className="course-item__status"><span
+											className="course-item-ico in-progress"></span></div>
+									</a></li>
+								</ul>
+							</li>
+							<li className="course-section lp-collapse">
+								<div className="course-section-header">
+									<div className="section-toggle">
+										<i className="lp-icon-angle-down"></i>
+									</div>
+									<div className="course-section-info">
+										<div className="course-section__title">
+											{'Section 2'}
 										</div>
 										<div className="course-section__description">
 											{
-												'Dic atqui arbitratu expectare galloni dico praeposatum cupiditates iucundissime supremum omnisque naturales orestem malitiae'
+												'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua'
 											}
 										</div>
 									</div>
 									<div className="section-count-items">
-										{ '14' }
+										{'10'}
 									</div>
 								</div>
 							</li>

@@ -46,8 +46,9 @@ export const edit = ( props ) => {
 				</PanelBody>
 			</InspectorControls>
 			<div { ...blockProps }>
-				<label>{ props.attributes.showText ? 'by ' : '' }</label>
-				<div className="course-instructor">
+				<div className="is-layout-flex c-gap-4">
+					<label>{ props.attributes.showText ? 'by ' : '' }</label>
+					<div className="course-instructor">
 					{ props.attributes.isLink ? (
 						<a
 							dangerouslySetInnerHTML={ {
@@ -61,6 +62,7 @@ export const edit = ( props ) => {
 							} }
 						></div>
 					) }
+				</div>
 				</div>
 			</div>
 		</>
