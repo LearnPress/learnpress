@@ -32,7 +32,7 @@
 			"gradients": false,
 			"__experimentalDefaultControls": {
 				"text": true,
-				"heading": false
+				"h3": true
 			}
 		},
 		"spacing": {
