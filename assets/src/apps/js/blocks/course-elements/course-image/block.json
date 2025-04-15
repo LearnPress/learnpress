@@ -12,6 +12,7 @@
 	"supports": {
 		"multiple": true,
 		"html": false,
+		"shadow": true,
 		"__experimentalBorder": {
 			"color": true,
 			"radius": true,

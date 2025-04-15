@@ -200,21 +200,20 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 					$singleCourseTemplate->html_level( $courseModel )
 				);
 
-				$courseItem                    = new stdClass();
-				$courseItem->ID                = $course->ID;
-				$courseItem->description       = $singleCourseTemplate->html_description( $courseModel );
-				$courseItem->short_description = $singleCourseTemplate->html_short_description( $courseModel );
-				$courseItem->price             = $singleCourseTemplate->html_price( $courseModel );
-				$courseItem->title             = $courseModel->get_title();
-				$courseItem->student           = $html_count_student;
-				$courseItem->lesson            = $html_count_lesson;
-				$courseItem->duration          = $html_count_duration;
-				$courseItem->quiz              = $html_count_quiz;
-				$courseItem->level             = $html_count_level;
-				$courseItem->image             = $singleCourseTemplate->html_image( $courseModel );
-				$courseItem->instructor        = $singleCourseTemplate->html_instructor( $courseModel, false, [ 'is_link' => 'false' ] );
-				$courseItem->category          = $singleCourseTemplate->html_categories( $courseModel );
-				$courseItem->button            = sprintf( '<div class="course-readmore"><a >%s</a></div>', __( 'Read more', 'learnpress' ) );
+				$courseItem              = new stdClass();
+				$courseItem->ID          = $course->ID;
+				$courseItem->description = $singleCourseTemplate->html_short_description( $courseModel, 15 );
+				$courseItem->price       = $singleCourseTemplate->html_price( $courseModel );
+				$courseItem->title       = $courseModel->get_title();
+				$courseItem->student     = $html_count_student;
+				$courseItem->lesson      = $html_count_lesson;
+				$courseItem->duration    = $html_count_duration;
+				$courseItem->quiz        = $html_count_quiz;
+				$courseItem->level       = $html_count_level;
+				$courseItem->image       = $singleCourseTemplate->html_image( $courseModel );
+				$courseItem->instructor  = $singleCourseTemplate->html_instructor( $courseModel, false, [ 'is_link' => 'false' ] );
+				$courseItem->category    = $singleCourseTemplate->html_categories( $courseModel );
+				$courseItem->button      = sprintf( '<div class="course-readmore"><a >%s</a></div>', __( 'Read more', 'learnpress' ) );
 
 				$courses[] = apply_filters( 'lp/rest-api/frontend/course/archive_course/courses', $courseItem, $courseModel );
 			}

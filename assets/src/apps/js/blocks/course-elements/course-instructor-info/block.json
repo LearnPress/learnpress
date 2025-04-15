@@ -13,13 +13,27 @@
 		"multiple": false,
 		"align": ["wide", "full"],
 		"html": false,
+		"typography": {
+			"fontSize": true,
+			"lineHeight": false,
+			"fontWeight": true,
+			"__experimentalFontFamily": false,
+			"__experimentalTextDecoration": false,
+			"__experimentalFontStyle": false,
+			"__experimentalFontWeight": true,
+			"__experimentalLetterSpacing": false,
+			"__experimentalTextTransform": true,
+			"__experimentalDefaultControls": { "fontSize": true }
+		},
 		"color": {
 			"background": false,
 			"text": true,
 			"link": false,
+			"heading": true,
 			"gradients": false,
 			"__experimentalDefaultControls": {
-				"text": true
+				"text": true,
+				"heading": false
 			}
 		},
 		"spacing": {

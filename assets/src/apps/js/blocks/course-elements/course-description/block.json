@@ -9,7 +9,7 @@
 	"keywords": ["description single course", "learnpress"],
 	"usesContext": ["lpCourseData"],
 	"supports": {
-		"multiple": true,
+		"multiple": false,
 		"align": ["wide", "full"],
 		"html": false,
 		"typography": {
@@ -28,9 +28,11 @@
 			"background": false,
 			"text": true,
 			"link": false,
+			"heading": true,
 			"gradients": false,
 			"__experimentalDefaultControls": {
-				"text": true
+				"text": true,
+				"heading": false
 			}
 		},
 		"spacing": {

@@ -6,6 +6,7 @@ use LearnPress\TemplateHooks\Course\SingleCourseModernLayout;
 use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
 use LP_Debug;
 use Throwable;
+use WP_Block;
 
 /**
  * Class CourseDescriptionBlockType
@@ -21,6 +22,7 @@ class CourseDescriptionBlockType extends AbstractCourseBlockType {
 				'gradients'  => true,
 				'background' => true,
 				'text'       => true,
+				'heading'    => true,
 			],
 			'typography'           => [
 				'fontSize'                    => true,
@@ -58,7 +60,18 @@ class CourseDescriptionBlockType extends AbstractCourseBlockType {
 			if ( ! $courseModel ) {
 				return $html;
 			}
-			$description = SingleCourseTemplate::instance()->html_description( $courseModel );
+
+			$is_list_course = false;
+			if ( $block instanceof WP_Block ) {
+				$is_list_course = $block->context['is_list_course'] ?? false;
+			}
+
+			if ( $is_list_course ) {
+				$description = SingleCourseTemplate::instance()->html_short_description( $courseModel, 15 );
+			} else {
+				$description = SingleCourseTemplate::instance()->html_description( $courseModel );
+			}
+
 			if ( empty( $description ) ) {
 				return $html;
 			}

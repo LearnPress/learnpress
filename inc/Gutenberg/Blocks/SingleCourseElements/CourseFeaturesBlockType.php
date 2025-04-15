@@ -21,6 +21,7 @@ class CourseFeaturesBlockType extends AbstractCourseBlockType {
 				'gradients'  => true,
 				'background' => true,
 				'text'       => true,
+				'heading'    => true,
 			],
 			'typography'           => [
 				'fontSize'                    => true,

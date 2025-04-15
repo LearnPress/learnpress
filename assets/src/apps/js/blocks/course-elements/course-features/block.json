@@ -29,9 +29,11 @@
 			"background": false,
 			"text": true,
 			"link": false,
+			"heading": true,
 			"gradients": false,
 			"__experimentalDefaultControls": {
-				"text": true
+				"text": true,
+				"heading": false
 			}
 		},
 		"spacing": {
