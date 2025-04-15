@@ -73,7 +73,7 @@ export const edit = (props) => {
 												className="duration">{'60 Minutes'}</span></div>
 										</div>
 										<div className="course-item__status"><span
-											className="course-item-ico in-progress"></span></div>
+											className="course-item-ico preview"></span></div>
 									</a></li>
 									<li className="course-item "><a className="course-item__link">
 										<div className="course-item__info"><span
@@ -87,7 +87,7 @@ export const edit = (props) => {
 												className="question-count">{'4 Questions'}</span></div>
 										</div>
 										<div className="course-item__status"><span
-											className="course-item-ico in-progress"></span></div>
+											className="course-item-ico locked"></span></div>
 									</a></li>
 								</ul>
 							</li>
