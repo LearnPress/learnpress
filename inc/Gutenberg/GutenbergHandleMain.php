@@ -6,6 +6,7 @@ use LearnPress\Gutenberg\Blocks\AbstractBlockType;
 use LearnPress\Gutenberg\Templates\AbstractBlockTemplate;
 use LearnPress\Helpers\Config;
 use LearnPress\Helpers\Singleton;
+use LearnPress\Helpers\Template;
 use WP_Block_Template;
 use WP_Post;
 
@@ -23,7 +24,7 @@ class GutenbergHandleMain {
 	 * Hooks handle block template
 	 */
 	public function init() {
-		// Register block template
+		// Register block template and register patterns.
 		add_action( 'init', array( $this, 'wp_hook_init' ) );
 		// Set block template need to show on frontend/backend
 		add_filter( 'get_block_templates', array( $this, 'set_blocks_template' ), 10, 3 );
@@ -41,6 +42,8 @@ class GutenbergHandleMain {
 	 */
 	public function wp_hook_init() {
 		$this->register_blocks();
+		$this->add_block_pattern_categories();
+		$this->add_block_patterns();
 	}
 
 	/**
@@ -259,5 +262,25 @@ class GutenbergHandleMain {
 		}
 
 		return $postIdEdit;
+	}
+
+	public function add_block_patterns() {
+		$content_archive_course_pattern = file_get_contents( Template::instance( false )->get_frontend_template_type_block( 'patterns/archive-courses-pattern.html' ) );
+		register_block_pattern(
+			'learnpress/archive-course-pattern',
+			array(
+				'title'       => __( 'Archive Course (list)', 'learnpress' ),
+				'description' => __( 'Archive Course Learnpress', 'learnpress' ),
+				'categories'  => array( 'learnpress-patterns' ),
+				'content'     => $content_archive_course_pattern,
+			)
+		);
+	}
+
+	public function add_block_pattern_categories() {
+		register_block_pattern_category(
+			'learnpress-patterns',
+			array( 'label' => __( 'LearnPress', 'learnpress' ) )
+		);
 	}
 }
