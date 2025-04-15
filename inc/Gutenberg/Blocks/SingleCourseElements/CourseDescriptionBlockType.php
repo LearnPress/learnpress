@@ -17,19 +17,24 @@ class CourseDescriptionBlockType extends AbstractCourseBlockType {
 
 	public function get_supports(): array {
 		return [
-			'color'      => [
+			'color'                => [
 				'gradients'  => true,
 				'background' => true,
 				'text'       => true,
 			],
-			'typography' => [
+			'typography'           => [
 				'fontSize'                    => true,
 				'__experimentalFontWeight'    => true,
 				'__experimentalTextTransform' => true,
 			],
-			'spacing'    => [
+			'spacing'              => [
 				'padding' => true,
 				'margin'  => true,
+			],
+			'__experimentalBorder' => [
+				'color'  => true,
+				'radius' => true,
+				'width'  => true,
 			],
 		];
 	}

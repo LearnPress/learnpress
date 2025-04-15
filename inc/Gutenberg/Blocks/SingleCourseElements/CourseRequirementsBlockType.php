@@ -17,9 +17,24 @@ class CourseRequirementsBlockType extends AbstractCourseBlockType {
 
 	public function get_supports(): array {
 		return [
-			'spacing' => [
+			'color'                => [
+				'gradients'  => true,
+				'background' => true,
+				'text'       => true,
+			],
+			'typography'           => [
+				'fontSize'                    => true,
+				'__experimentalFontWeight'    => true,
+				'__experimentalTextTransform' => true,
+			],
+			'spacing'              => [
 				'padding' => true,
 				'margin'  => true,
+			],
+			'__experimentalBorder' => [
+				'color'  => true,
+				'radius' => true,
+				'width'  => true,
 			],
 		];
 	}
