@@ -6,8 +6,8 @@ export const edit = ( props ) => {
 		<>
 			<div { ...blockProps }>
 				<h2>
-					<span className="instructor-name">
-						{ 'Display Name' }
+					<span className="instructor-display-name">
+						{ "Instructor's name" }
 					</span>
 				</h2>
 			</div>

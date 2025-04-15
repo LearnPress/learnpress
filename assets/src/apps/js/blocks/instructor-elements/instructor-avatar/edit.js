@@ -4,7 +4,9 @@ export const edit = ( props ) => {
 	return (
 		<>
 			<div { ...blockProps }>
-				<div className="instructor-avatar"></div>
+				<div className="instructor-avatar">
+					<img src="https://placehold.co/300x300?text=Avatar+Instructor" />
+				</div>
 			</div>
 		</>
 	);
