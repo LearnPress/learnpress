@@ -9,7 +9,7 @@ export const edit = ( props ) => {
 				<div className="lp-section-instructor">
 					<h3 className="section-title">{ 'Instructor' }</h3>
 					<div className="lp-instructor-info">
-						<div className="instructor-avatar"></div>
+						<div className="instructor-avatar"><img src="https://placehold.co/160x160?text=Instructor"/></div>
 						<div className="lp-section-instructor">
 							<span className="instructor-display-name">
 								{ 'Instructor Name' }

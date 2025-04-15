@@ -6,7 +6,7 @@ $primary-color-course-item-status: #3bb54a;
 $bg-course-featured: #FF2828;
 
 //** color global
-$color-primary: var(--lp-primary-color);
+$color-primary: var(--lp-primary-color,#ffb606);
 $color-white: var(--lp-color-white, #fff);
 $color-black: var(--lp-color-black, #000);
 $text-color-base: var(--lp-color-base, #333);

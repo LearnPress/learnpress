@@ -6,7 +6,7 @@ export const edit = ( props ) => {
 	const blockProps = useBlockProps();
 	const { lpCourseData } = context;
 	const courseImage =
-		lpCourseData?.image || '<div className="course-img"></div>';
+		lpCourseData?.image || '<div className="course-img"><img src="https://placehold.co/500x300?text=Course+Image"/></div>';
 	return (
 		<>
 			<a>
