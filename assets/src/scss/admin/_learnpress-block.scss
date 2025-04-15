@@ -67,3 +67,11 @@ p-block-learnpress-course-filter {
 .wp-block-learnpress-button-reset-filter {
 	margin-left: 4px;
 }
+
+.wp-block-learnpress-course-instructor-info {
+	.instructor-avatar {
+		height: 60px;
+		background-color: #ccc;
+		aspect-ratio: 1;
+	}
+}

@@ -196,7 +196,7 @@ const Edit = ( { clientId, context, attributes, setAttributes } ) => {
 			</InspectorControls>
 			<>
 				<ul
-					{ ...blockProps }
+					className="learn-press-courses wp-block-learn-press-courses"
 					data-layout={ attributes.layout ? attributes.layout : 'list' }
 				>
 					{ blockContexts &&

@@ -7,7 +7,7 @@ export const edit = ( props ) => {
 	const { lpCourseData } = context;
 	const courseDescription =
 		lpCourseData?.description ||
-		'<h3>Description</h3> <div className="line"></div> <div className="line"></div> <div className="line"></div>';
+		'<h3>Description</h3> <div className="lp-course-description"> <p>Ullo fecit epicurus necesse manilium plebiscito intrandum facto sequamur habemus nostrane adipiscing vocatur poterit caeleste</p> <p>Beatus neget maximarum superiores dacere veriusque isto anquam congressu reprehendi</p></div>';
 	return (
 		<>
 			<div

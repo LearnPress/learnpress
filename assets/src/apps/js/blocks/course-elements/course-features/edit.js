@@ -6,10 +6,26 @@ export const edit = ( props ) => {
 	return (
 		<>
 			<div { ...blockProps }>
-				<h3> { 'Features' } </h3>
-				<div className="line"></div>
-				<div className="line"></div>
-				<div className="line"></div>
+				<div className="course-features extra-box">
+					<h3 className="extra-box__title">{ 'Features' }</h3>
+					<ul>
+						<li>
+							{
+								'Versum metuit commentatus neglegendi turpitudinis putandum pueris discipulum verso dicta hominibus ennius rhetoribus intellegunt'
+							}
+						</li>
+						<li>
+							{
+								'Repellant tubulo nihilne vester philosophis eo negat exemplis que ullo egone cupido comparatio'
+							}
+						</li>
+						<li>
+							{
+								'Saepe apparet rerum pollicetur obscurentur clamores instructus petendam accessio possit istarum descensio'
+							}
+						</li>
+					</ul>
+				</div>
 			</div>
 		</>
 	);

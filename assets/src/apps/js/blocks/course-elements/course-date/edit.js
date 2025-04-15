@@ -6,7 +6,11 @@ export const edit = ( props ) => {
 	return (
 		<>
 			<div { ...blockProps }>
-				<p>{ 'Last updated: December 5, 2024' }</p>
+				<div className="last-updated">
+					<div className="item-meta">
+						{ 'Last updated: December 5, 2024' }
+					</div>
+				</div>
 			</div>
 		</>
 	);

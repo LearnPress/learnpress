@@ -5,11 +5,22 @@ export const edit = ( props ) => {
 	return (
 		<>
 			<div { ...blockProps }>
-				<div style={ { margin: '15px 0' } }>
-					<h3>
-						{ 'Comment' }
-					</h3>
-					<div className="box-comment"></div>
+				<div className="comment-respond">
+					<h3 className="comment-reply-title">{ 'Leave a Reply' }</h3>
+					<p className="comment-form-comment">
+						<label htmlFor="comment">
+							{ 'Comment' } <span className="required">*</span>
+						</label>
+						<textarea name="comment"></textarea>
+					</p>
+					<div className="form-submit wp-block-button">
+						<input
+							name="submit"
+							type="submit"
+							className="submit wp-block-button__link wp-element-button"
+							value="Post Comment"
+						/>
+					</div>
 				</div>
 			</div>
 		</>

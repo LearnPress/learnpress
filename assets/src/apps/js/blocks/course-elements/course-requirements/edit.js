@@ -6,10 +6,26 @@ export const edit = ( props ) => {
 	return (
 		<>
 			<div { ...blockProps }>
-				<h3> { 'Requirements' } </h3>
-				<div className="line"></div>
-				<div className="line"></div>
-				<div className="line"></div>
+				<div className="course-requirements extra-box">
+					<h3 className="extra-box__title">{ 'Requirements' }</h3>
+					<ul>
+						<li>
+							{
+								'Afflueret videsne commoventur debilitas etsi adridens habitus placuit hoc conatum deinde fruentem dirigentes longam sapientem'
+							}
+						</li>
+						<li>
+							{
+								'Lucullo summas debeatis varietate indoctum vitae cavere cornibus avaritias sequamini persequi assignatum polemoni'
+							}
+						</li>
+						<li>
+							{
+								'Laboro excelsiores meo utebare causam arripuit levem motu seditione egregio malitias istam'
+							}
+						</li>
+					</ul>
+				</div>
 			</div>
 		</>
 	);
