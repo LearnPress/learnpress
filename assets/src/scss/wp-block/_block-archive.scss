@@ -1,6 +1,38 @@
-
+/*
+Fix Css For Admin
+ */
+.block-editor-block-list__block{
+	.block-search-courses i {
+		font-size: 1.2em;
+		line-height: 1.2;
+		font-family: "lp-icon";
+		font-style: normal;
+ 		&:before {
+			content: "\f002";
+		}
+	}
+	&.learn-press-courses{
+		list-style: none;
+		margin: 0;
+		max-width: 100%;
+		padding: 0;
+		&[data-layout="grid"]{
+			grid-gap: 1.25em;
+			display: -ms-grid;
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(max(200px, calc(33.33333% - .83333em)), 1fr));
+		}
+	}
+}
+/*
+End
+ */
 .block-courses-order-by {
 	@include order_by_course();
+}
+
+.course-img img{
+	display: block;
 }
 
 .block-search-courses {
@@ -17,35 +49,18 @@
 }
 
 ul.wp-block-learn-press-courses {
-	grid-gap: 1.25em;
-	display: -ms-grid;
-	display: grid;
-	list-style: none;
+ 	list-style: none;
 	margin: 0;
 	max-width: 100%;
 	padding: 0;
 
 	&.lp-columns-3 {
-		grid-template-columns: repeat(auto-fill, minmax(max(150px, calc(33.33333% - .83333em)), 1fr));
+		grid-gap: 1.25em;
+		display: -ms-grid;
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(max(200px, calc(33.33333% - .83333em)), 1fr));
 	}
-	.course-readmore {
-		a {
-			padding: $spacing-base-2x $spacing-base-6x;
-			border-radius: $border-radius-global;
-			color: $text-color-base;
-			border: 1px solid $text-color-base;
-			transition: all 0.3s;
-			display: block;
-			background: transparent;
-			text-decoration: none;
 
-			&:hover {
-				background: $color-primary;
-				color: $color-white;
-				border-color: $color-primary;
-			}
-		}
-	}
 }
 
 .wp-block-learnpress-course-price{

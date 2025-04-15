@@ -1,8 +1,6 @@
 // Import
 @import "variables";
-
 @import "mixin.scss";
-
 @import "message.scss";
 @import "ajaxload";
 @import "frontend/global";
@@ -21,6 +19,7 @@
 @import "frontend/courses";
 @import "frontend/course-offline";
 @import "frontend/course-single";
+@import "frontend/comment-area";
 @import "frontend/course-sidebar";
 @import "frontend/author-info";
 @import "frontend/popup";
