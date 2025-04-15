@@ -54,8 +54,8 @@ class CourseAuthorFilterBlockType extends AbstractArchiveCourseBlockType {
 	public function get_inline_style( $attributes ) {
 		$text_transform            = StyleAttributes::get_text_transform_class_and_style( $attributes );
 		$border_classes_and_styles = StyleAttributes::get_classes_and_styles_by_attributes( $attributes, [ 'font_size', 'font_weight', 'text_color', 'text_transform', 'padding', 'margin', 'border_width', 'border_color' ] );
-		return 'form.lp-form-course-filter .lp-form-course-filter__item:has(.lp-course-filter-search-field) {' . $border_classes_and_styles['styles'] . '}
-		form.lp-form-course-filter .lp-form-course-filter__item:has(.lp-course-filter-search-field) .lp-form-course-filter__title {' . $text_transform['style'] . '}';
+		return 'form.lp-form-course-filter .lp-form-course-filter__item:has(input[name="c_authors"]) {' . $border_classes_and_styles['styles'] . '}
+		form.lp-form-course-filter .lp-form-course-filter__item:has(input[name="c_authors"]) .lp-form-course-filter__title {' . $text_transform['style'] . '}';
 	}
 
 	public function inline_styles( $attributes ) {
