@@ -77,7 +77,7 @@ if ( ! class_exists( 'LP_Shortcodes' ) ) {
 				}
 			} elseif ( LP_Page_Controller::is_page_instructor() ) {
 				if ( ! preg_match( '/\[learn_press_single_instructor\s?(.*)/', $post->post_content ) ) {
-					$post->post_content .= '[learn_press_single_instructor]';
+					// $post->post_content .= '[learn_press_single_instructor]';
 				}
 			} elseif ( LP_Page_Controller::is_page_instructors() ) {
 				if ( ! preg_match( '/\[learn_press_instructors\s?(.*)/', $post->post_content ) ) {
