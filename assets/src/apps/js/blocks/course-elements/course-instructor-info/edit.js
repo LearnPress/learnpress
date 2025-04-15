@@ -12,16 +12,15 @@ export const edit = ( props ) => {
 						<div className="instructor-avatar"><img src="https://placehold.co/160x160?text=Instructor"/></div>
 						<div className="lp-section-instructor">
 							<span className="instructor-display-name">
-								{ 'Instructor Name' }
+								{'Instructor Name'}
 							</span>
-							<div className="instructor-description">
-								<p>
-									{
-										'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.'
-									}
-								</p>
+							<div className="lp-instructor-meta">
+								<div className="instructor-item-meta"><span className="instructor-total-students">{'2 Students'}</span>
+								</div>
+								<div className="instructor-item-meta"><span className="instructor-total-courses">{'12 Courses'}</span>
+								</div>
 							</div>
-						</div>
+ 						</div>
 					</div>
 				</div>
 			</div>

@@ -68,19 +68,10 @@
 	margin-left: 4px;
 }
 
-.wp-block-learnpress-course-instructor-info {
-	.instructor-avatar {
-		height: 160px;
-		background-color: #ccc;
-		aspect-ratio: 1;
-	}
-}
-
-.wp-block-learnpress-course-image img{
- 	display: block;
-}
-
 .block-editor-block-list__block{
+	img{
+		display: block;
+	}
 	.learn-press-courses{
 		list-style: none;
 		margin: 0;
@@ -98,6 +89,9 @@
 	}
 	.c-gap-4{
 		column-gap: 4px;
+	}
+	.lp-course-curriculum .course-section .course-item__right{
+		color: inherit;
 	}
 }
 /*
@@ -197,4 +191,7 @@ icon in admin
 
 .lp-icon-angle-down:before {
 	content: "\f107";
+}
+.lp-icon-share-alt:before {
+	content: "\f1e0";
 }
