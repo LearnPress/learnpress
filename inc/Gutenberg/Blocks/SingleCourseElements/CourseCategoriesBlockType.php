@@ -53,9 +53,7 @@ class CourseCategoriesBlockType extends AbstractCourseBlockType {
 			if ( ! $courseModel ) {
 				return $html;
 			}
-			$this->get_class_hash();
-			$this->enqueue_assets();
-			$this->inline_styles( $attributes );
+
 			$show_text = ( isset( $attributes['showText'] ) && $attributes['showText'] === false ) ? 'false' : 'true';
 			$is_link   = ( isset( $attributes['isLink'] ) && $attributes['isLink'] === false ) ? 'false' : 'true';
 			$new_tab   = ( isset( $attributes['target'] ) && $attributes['target'] === true ) ? 'true' : 'false';
@@ -79,28 +77,11 @@ class CourseCategoriesBlockType extends AbstractCourseBlockType {
 				$label,
 				$html_categories
 			);
-			$html    = $this->get_output_with_class_hash( $attributes, $content );
+			$html    = $this->get_output( $content );
 		} catch ( Throwable $e ) {
 			LP_Debug::error_log( $e );
 		}
 
 		return $html;
-	}
-
-	public function get_inline_style( $attributes ) {
-		$link_classes_and_styles       = StyleAttributes::get_link_color_class_and_style( $attributes );
-		$link_hover_classes_and_styles = StyleAttributes::get_link_hover_color_class_and_style( $attributes );
-		$border_classes_and_styles     = StyleAttributes::get_classes_and_styles_by_attributes( $attributes, [ 'font_size', 'font_weight', 'text_color', 'text_transform' ] );
-		$class_style                   = '.' . $this->class_hash;
-
-		return $class_style . ' {' . $border_classes_and_styles['styles'] . '}
-				' . $class_style . ' .course-categories a {' . $link_classes_and_styles['style'] . '}
-				' . $class_style . ' .course-categories a:hover, ' . $class_style . ' .course-categories a:focus {' . $link_hover_classes_and_styles['style'] . '}
-		';
-	}
-
-	public function inline_styles( $attributes ) {
-		$styles = $this->get_inline_style( $attributes );
-		wp_add_inline_style( 'lp-blocks-style', $styles );
 	}
 }
