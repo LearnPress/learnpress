@@ -8,16 +8,31 @@
 .c-gap-4 {
 	column-gap: 4px;
 }
-.wp-block-learnpress-course-feature-review{
-	.featured-review__title{
+
+.wp-block-learnpress-course-feature-review {
+	.featured-review__title {
 		font-weight: var(--lp-font-weight-link, 600);
 		font-size: calc(var(--lp-font-size-base, 1em) * 1.25);
 	}
 }
-.wp-block-learnpress-course-title .course-title{margin: 0}
+
+.wp-block-learnpress-course-title .course-title {
+	margin: 0
+}
+
+[class^="wp-block-learnpress"] {
+	.extra-box {
+		ul {
+			margin: 0 0 0 20px;
+			padding: 0;
+		}
+	}
+}
+
+
 @media (min-width: 992px) {
 	.lp-block-course-sidebar {
 		margin-top: -260px;
- 		margin-block-start: -260px!important;
+		margin-block-start: -260px !important;
 	}
 }

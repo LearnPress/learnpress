@@ -23,7 +23,37 @@
 	img {
 		border-radius: $border-radius-global;
 	}
+	.instructor-social {
+		display: inline-flex;
+		padding: 0;
+		gap: 12px;
+		margin: 16px 0 0 0;
 
+		> a {
+			text-align: center;
+			list-style: none;
+
+			span {
+				display: none;
+			}
+
+			i {
+				width: 40px;
+				height: 40px;
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+				border: 1px solid $border-color;
+				border-radius: 50%;
+
+				&:hover {
+					background-color: $color-primary;
+					border-color: $color-primary;
+					color: $color-white;
+				}
+			}
+		}
+	}
 }
 
 .instructor-display-name {

@@ -15,12 +15,21 @@ export const edit = ( props ) => {
 								{'Instructor Name'}
 							</span>
 							<div className="lp-instructor-meta">
-								<div className="instructor-item-meta"><span className="instructor-total-students">{'2 Students'}</span>
+								<div className="instructor-item-meta"><span
+									className="instructor-total-students">{'2 Students'}</span>
 								</div>
-								<div className="instructor-item-meta"><span className="instructor-total-courses">{'12 Courses'}</span>
+								<div className="instructor-item-meta"><span
+									className="instructor-total-courses">{'12 Courses'}</span>
 								</div>
 							</div>
- 						</div>
+							<div className="instructor-description">
+								<p>
+									{
+										'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua'
+									}
+								</p>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>

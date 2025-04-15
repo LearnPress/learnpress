@@ -31,6 +31,7 @@ ul.wp-block-learn-press-courses {
 		display: -ms-grid;
 		display: grid;
 		grid-template-columns: repeat(auto-fill, minmax(max(200px, calc(33.33333% - .83333em)), 1fr));
+		margin-bottom: 2.25em;
 	}
 
 }
