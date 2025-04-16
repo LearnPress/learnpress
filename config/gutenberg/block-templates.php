@@ -7,6 +7,8 @@
  */
 
 use LearnPress\Gutenberg\Templates\ArchiveCoursesBlockTemplate;
+use LearnPress\Gutenberg\Templates\ArchiveCoursesBlockCategoryTemplate;
+use LearnPress\Gutenberg\Templates\ArchiveCoursesBlockTagTemplate;
 use LearnPress\Gutenberg\Templates\SingleCourseBlockTemplate;
 
 return apply_filters(
@@ -14,5 +16,7 @@ return apply_filters(
 	[
 		new SingleCourseBlockTemplate(),
 		new ArchiveCoursesBlockTemplate(),
+		new ArchiveCoursesBlockCategoryTemplate(),
+		new ArchiveCoursesBlockTagTemplate(),
 	]
 );
