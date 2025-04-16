@@ -59,22 +59,11 @@ class CourseTitleBlockType extends AbstractCourseBlockType {
 
 			$singleCourseTemplate = SingleCourseTemplate::instance();
 
-			$is_link      = ( isset( $attributes['isLink'] ) && $attributes['isLink'] === false ) ? false : true;
-			$new_tab      = ( isset( $attributes['target'] ) && $attributes['target'] === true ) ? true : false;
-			$title_target = $new_tab ? 'target="_blank"' : '';
-			$tag          = $attributes['tag'] ?? 'h3';
-			$html_title   = '';
-			if ( $is_link ) {
-				$html_title = sprintf(
-					'<a class="course-permalink" href="%1$s" %2$s>%3$s</a>',
-					$courseModel->get_permalink(),
-					$title_target,
-					$singleCourseTemplate->html_title( $courseModel, $tag )
-				);
-			} else {
-				$html_title = $singleCourseTemplate->html_title( $courseModel, $tag );
-			}
-			$html = $this->get_output( $html_title );
+			$is_link    = ( isset( $attributes['isLink'] ) && $attributes['isLink'] === false ) ? false : true;
+			$target     = ( isset( $attributes['target'] ) && $attributes['target'] === true ) ? true : false;
+			$tag        = $attributes['tag'] ?? 'h3';
+			$html_title = $singleCourseTemplate->html_title( $courseModel, $tag, $is_link, $target );
+			$html       = $this->get_output( $html_title );
 		} catch ( Throwable $e ) {
 			LP_Debug::error_log( $e );
 		}

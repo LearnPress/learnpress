@@ -28,7 +28,6 @@ class CourseButtonBlockType extends AbstractCourseBlockType {
 				'__experimentalFontWeight'    => true,
 				'__experimentalTextTransform' => true,
 			],
-			'shadow'               => true,
 			'spacing'              => [
 				'padding' => true,
 				'margin'  => true,
@@ -81,12 +80,27 @@ class CourseButtonBlockType extends AbstractCourseBlockType {
 				return $html;
 			}
 
-			$html = $this->get_output( $html_button );
+			$this->get_class_hash();
+			$this->enqueue_assets();
+			$this->inline_styles( $attributes );
+			$html = $this->get_output_with_class_hash( $attributes, $html_button, [ 'margin' ] );
 
 		} catch ( Throwable $e ) {
 			LP_Debug::error_log( $e );
 		}
 
 		return $html;
+	}
+
+	public function get_inline_style( $attributes ) {
+		$border_classes_and_styles  = StyleAttributes::get_classes_and_styles_by_attributes( $attributes, [ 'font_size', 'padding', 'text_color','background_color', 'border_color', 'border_radius','border_width' ] );
+		$class_button_single_course = '.wp-block-learnpress-course-button.' . $this->class_hash . ' .course-buttons .lp-button';
+		$class_button_read_more     = '.wp-block-learnpress-course-button.' . $this->class_hash . ' .course-readmore a';
+		return $class_button_read_more . ',' . $class_button_single_course . ' {' . $border_classes_and_styles['styles'] . '}';
+	}
+
+	public function inline_styles( $attributes ) {
+		$styles = $this->get_inline_style( $attributes );
+		wp_add_inline_style( 'lp-blocks-style', $styles );
 	}
 }

@@ -5,17 +5,23 @@ export const edit = ( props ) => {
 	const blockProps = useBlockProps();
 	const { attributes, setAttributes, context } = props;
 	const { lpCourseData } = context;
-	const courseButton =
-		lpCourseData?.button ||
-		'<div className="button"> <span>Buy</span> </div>';
+	const courseButton = lpCourseData?.button || '';
 	return (
 		<>
-			<div
-				{ ...blockProps }
-				dangerouslySetInnerHTML={ {
-					__html: courseButton,
-				} }
-			></div>
+			{ lpCourseData?.button ? (
+				<div
+					{ ...blockProps }
+					dangerouslySetInnerHTML={ {
+						__html: courseButton,
+					} }
+				></div>
+			) : (
+				<div className="course-buttons">
+					<a>
+						<button { ...blockProps }>{ 'Buy' }</button>
+					</a>
+				</div>
+			) }
 		</>
 	);
 };
