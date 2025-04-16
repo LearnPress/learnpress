@@ -12,4 +12,4 @@
 defined( 'ABSPATH' ) || exit();
 ?>
 
-<h2 class="course-title"><a href="<?php the_permalink(); ?>" class="course-permalink"><?php the_title(); ?></a></h2>
+<h2 class="wap-course-title"><a href="<?php the_permalink(); ?>" class="course-permalink"><?php the_title(); ?></a></h2>
