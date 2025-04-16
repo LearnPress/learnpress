@@ -16,7 +16,7 @@ abstract class AbstractCourseBlockType extends AbstractBlockType {
 	 * @var string Screen Template want to display - Field of LP
 	 */
 	public $display_on_templates = [
-		'learnpress/learnpress/single-lp_course',
+		'learnpress/learnpress//single-lp_course',
 	];
 
 	/**

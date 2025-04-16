@@ -116,6 +116,10 @@ button.block-editor-block-list__block.wp-block-learnpress-course-button {
 	}
 }
 
+a.block-editor-block-list__block.wp-block-learnpress-course-button {
+	@include course_readmore();
+}
+
 /*
 icon in admin
  */

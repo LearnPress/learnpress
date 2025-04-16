@@ -36,9 +36,11 @@
 			}
 		},
 		"spacing": {
+			"margin": true,
 			"padding": true,
 			"content": true,
-			"__experimentalDefaultControls": {
+ 			"__experimentalDefaultControls": {
+				"margin": false,
 				"padding": false,
 				"content": true
 			}

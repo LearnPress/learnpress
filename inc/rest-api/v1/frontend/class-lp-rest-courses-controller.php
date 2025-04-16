@@ -168,7 +168,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				$courseItem->image       = $singleCourseTemplate->html_image( $courseModel );
 				$courseItem->instructor  = $singleCourseTemplate->html_instructor( $courseModel, false, [ 'is_link' => 'false' ] );
 				$courseItem->category    = $singleCourseTemplate->html_categories( $courseModel );
-				$courseItem->button      = sprintf( '<div class="course-readmore"><a >%s</a></div>', __( 'Read more', 'learnpress' ) );
+				$courseItem->button      = __( 'Read more', 'learnpress' );
 
 				$courses[] = apply_filters( 'lp/rest-api/frontend/course/archive_course/courses', $courseItem, $courseModel );
 			}
