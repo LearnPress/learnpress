@@ -2,10 +2,10 @@
 * Style for course filter
 *
 * @since 4.2.3.2
-* @version 1.0.1
+* @version 1.0.2
 */
 
-//.lp-form-block-course-filter,
+.lp-form-block-course-filter,
 .lp-form-course-filter{
 	&__title{
 		font-weight: 500;
@@ -192,6 +192,7 @@
 		visibility: hidden;
         padding: 20px;
 
+		.lp-form-block-course-filter,
         .lp-form-course-filter {
             .course-filter-submit {
                 width: 100%;

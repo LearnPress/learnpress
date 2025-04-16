@@ -87,10 +87,12 @@ class FilterCourseTemplate {
 				$sections['btn_done'] = $this->html_btn_done( $data );
 			}
 
+			$class_wrapper_form = $data['class_wrapper_form'] ?? 'lp-form-course-filter';
+
 			$wrapper = apply_filters(
 				'lp/filter-courses/sections/wrapper',
 				[
-					'wrapper'     => sprintf( '<form class="lp-form-course-filter">' ),
+					'wrapper'     => sprintf( '<form class="%s">',  $class_wrapper_form ),
 					'sections'    => Template::combine_components( $sections ),
 					'close'       => sprintf(
 						'<div class="lp-form-course-filter__close">%s<i class="lp-icon-close"></i></div>',
