@@ -52,15 +52,23 @@ class CourseLevelBlockType extends AbstractCourseBlockType {
 			if ( ! $courseModel ) {
 				return $html;
 			}
-			$value      = SingleCourseTemplate::instance()->html_level( $courseModel );
-			$label      = __( 'Level', 'learnpress' );
+
+			$hidden_label = ( isset( $attributes['showLabel'] ) && $attributes['showLabel'] === false ) ? true : false;
+			$hidden_icon  = ( isset( $attributes['showIcon'] ) && $attributes['showIcon'] === false ) ? true : false;
+			$value        = SingleCourseTemplate::instance()->html_level( $courseModel ) ?? 0;
+			$label        = $hidden_label ? '' : __( 'Level', 'learnpress' );
+			$icon         = $hidden_icon ? '' : '<i class="lp-icon-signal"></i>';
+			$html_left    = sprintf( '<div class="info-meta-left">%s<span>%s:</span></div>', $icon, $label );
+			$html_right   = sprintf( '<span class="info-meta-right"><div class="course-count-level">%s</div></span>', $value );
+
+			if ( $hidden_label && $hidden_icon ) {
+				$html_left = '';
+			}
+
 			$html_level = sprintf(
-				'<div class="info-meta-item">
-					<div class="info-meta-left"><i class="lp-icon-signal"></i><span>%s:</span></div>
-					<span class="info-meta-right"><div class="course-count-level">%s</div></span>
-				</div>',
-				$label,
-				$value
+				'<div class="info-meta-item">%s %s</div>',
+				$html_left,
+				$html_right
 			);
 
 			if ( empty( $html_level ) ) {

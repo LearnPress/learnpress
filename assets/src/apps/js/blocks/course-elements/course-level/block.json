@@ -8,6 +8,16 @@
 	"textdomain": "learnpress",
 	"keywords": ["level single course", "learnpress"],
 	"usesContext": ["lpCourseData"],
+	"attributes": {
+		"showIcon": {
+			"type": "boolean",
+			"default": true
+		},
+		"showLabel": {
+			"type": "boolean",
+			"default": true
+		}
+	},
 	"supports": {
 		"multiple": true,
 		"align": ["wide", "full"],

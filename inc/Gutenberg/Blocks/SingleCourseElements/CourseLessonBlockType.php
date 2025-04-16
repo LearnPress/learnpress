@@ -52,15 +52,23 @@ class CourseLessonBlockType extends AbstractCourseBlockType {
 			if ( ! $courseModel ) {
 				return $html;
 			}
-			$value       = SingleCourseTemplate::instance()->html_count_item( $courseModel, LP_LESSON_CPT );
-			$label       = __( 'Lesson', 'learnpress' );
+
+			$hidden_label = ( isset( $attributes['showLabel'] ) && $attributes['showLabel'] === false ) ? true : false;
+			$hidden_icon  = ( isset( $attributes['showIcon'] ) && $attributes['showIcon'] === false ) ? true : false;
+			$value        = SingleCourseTemplate::instance()->html_count_item( $courseModel, LP_LESSON_CPT ) ?? 0;
+			$label        = $hidden_label ? '' : __( 'Lesson', 'learnpress' );
+			$icon         = $hidden_icon ? '' : '<i class="lp-icon-file-o"></i>';
+			$html_left    = sprintf( '<div class="info-meta-left">%s<span>%s:</span></div>', $icon, $label );
+			$html_right   = sprintf( '<span class="info-meta-right"><div class="course-count-lesson">%s</div></span>', $value );
+
+			if ( $hidden_label && $hidden_icon ) {
+				$html_left = '';
+			}
+
 			$html_lesson = sprintf(
-				'<div class="info-meta-item">
-						<div class="info-meta-left"><i class="lp-icon-file-o"></i><span>%s:</span></div>
-						<span class="info-meta-right"><div class="course-count-lesson">%s</div></span>
-					</div>',
-				$label,
-				$value
+				'<div class="info-meta-item">%s %s</div>',
+				$html_left,
+				$html_right
 			);
 
 			if ( empty( $html_lesson ) ) {

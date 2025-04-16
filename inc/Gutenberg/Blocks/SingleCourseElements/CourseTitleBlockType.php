@@ -3,6 +3,7 @@
 namespace LearnPress\Gutenberg\Blocks\SingleCourseElements;
 
 use LearnPress\Gutenberg\Utils\StyleAttributes;
+use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
 use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
 use LP_Debug;
@@ -60,9 +61,23 @@ class CourseTitleBlockType extends AbstractCourseBlockType {
 			$singleCourseTemplate = SingleCourseTemplate::instance();
 
 			$is_link    = ( isset( $attributes['isLink'] ) && $attributes['isLink'] === false ) ? false : true;
-			$target     = ( isset( $attributes['target'] ) && $attributes['target'] === true ) ? true : false;
+			$target     = ( isset( $attributes['target'] ) && $attributes['target'] === true ) ? 'target="_blank"' : '';
 			$tag        = $attributes['tag'] ?? 'h3';
-			$html_title = $singleCourseTemplate->html_title( $courseModel, $tag, $is_link, $target );
+			$content    = apply_filters(
+				'learn-press/block-type/course-title',
+				[
+					'tag'      => sprintf( '<%s class="course-title">', $tag ),
+					'link'     => $is_link ? sprintf( '<a class="course-permalink" href="%s" %s>', $courseModel->get_permalink(), $target ) : '',
+					'title'    => $courseModel->get_title(),
+					'link_end' => $is_link ? '</a>' : '',
+					'tag_end'  => sprintf( '</%s>', $tag ),
+				],
+				$courseModel,
+				$tag,
+				$is_link,
+				$target
+			);
+			$html_title = Template::combine_components( $content );
 			$html       = $this->get_output( $html_title );
 		} catch ( Throwable $e ) {
 			LP_Debug::error_log( $e );
