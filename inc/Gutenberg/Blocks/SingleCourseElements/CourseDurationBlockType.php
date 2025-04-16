@@ -52,20 +52,14 @@ class CourseDurationBlockType extends AbstractCourseBlockType {
 			if ( ! $courseModel ) {
 				return $html;
 			}
+			$value = SingleCourseTemplate::instance()->html_duration( $courseModel ) ?? 0;
 
-			$hidden_label = ( isset( $attributes['showLabel'] ) && $attributes['showLabel'] === false ) ? true : false;
-			$hidden_icon  = ( isset( $attributes['showIcon'] ) && $attributes['showIcon'] === false ) ? true : false;
-			$value        = SingleCourseTemplate::instance()->html_duration( $courseModel ) ?? 0;
-			$label        = $hidden_label ? '' : __( 'Duration', 'learnpress' );
-			$icon         = $hidden_icon ? '' : '<i class="lp-icon-clock-o"></i>';
-			$html_left    = sprintf( '<div class="info-meta-left">%s<span>%s:</span></div>', $icon, $label );
-			$html_right   = sprintf( '<span class="info-meta-right"><div class="course-count-duration">%s</div></span>', $value );
+			$html_label = ( isset( $attributes['showIcon'] ) && $attributes['showIcon'] === false ) ? '' : '<i class="lp-icon-clock-o"></i>';
+			$html_label .= ( isset( $attributes['showLabel'] ) && $attributes['showLabel'] === false ) ? '' : __( 'Duration', 'learnpress' ) . ':';
+			$html_left = $html_label ? sprintf( '<span class="info-meta-left">%s</span>', $html_label ) : '';
+			$html_right = sprintf( '<span class="info-meta-right"><div class="course-count-duration">%s</div></span>', $value );
 
-			if ( $hidden_label && $hidden_icon ) {
-				$html_left = '';
-			}
-
-			$html_duration = sprintf(
+ 			$html_duration = sprintf(
 				'<div class="info-meta-item">%s %s</div>',
 				$html_left,
 				$html_right

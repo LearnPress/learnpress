@@ -4,57 +4,52 @@ import { PanelBody, ToggleControl } from '@wordpress/components';
 import { useState, useEffect } from '@wordpress/element';
 
 export const edit = ( props ) => {
+	const blockProps = useBlockProps();
 	const { attributes, setAttributes, context } = props;
-	const [ classLabel, setClassLabel ] = useState(
-		attributes.showLabel ? '' : 'hidden-label',
-	);
-	const [ classIcon, setClassIcon ] = useState(
-		attributes.showIcon ? '' : 'hidden-icon',
-	);
 	const { lpCourseData } = context;
-
 	const courseStudent =
 		lpCourseData?.student ||
-		'<div class="info-meta-item"><div class="info-meta-left"><i class="lp-icon-user-graduate"></i><span>Student:</span></div><span class="info-meta-right"><div class="course-count-student"><div class="course-count-student">1 Student</div></div></span></div>';
+		'<div class="course-count-student"><div class="course-count-student">3 Student</div></div>';
 
-	useEffect( () => {
-		setClassLabel( attributes.showLabel ? '' : 'hidden-label' );
-		setClassIcon( attributes.showIcon ? '' : 'hidden-icon' );
-	}, [ attributes.showLabel, attributes.showIcon ] );
-
-	const blockProps = useBlockProps( {
-		className: `${ classLabel } ${ classIcon }`.trim(),
-	} );
 	return (
 		<>
 			<InspectorControls>
 				<PanelBody title="Settings">
 					<ToggleControl
 						label="Show Label"
-						checked={ attributes.showLabel ? true : false }
-						onChange={ ( value ) => {
-							setAttributes( {
+						checked={attributes.showLabel ? true : false}
+						onChange={(value) => {
+							setAttributes({
 								showLabel: value ? true : false,
-							} );
-						} }
+							});
+						}}
 					/>
 					<ToggleControl
 						label="Show Icon"
-						checked={ attributes.showIcon ? true : false }
-						onChange={ ( value ) => {
-							setAttributes( {
+						checked={attributes.showIcon ? true : false}
+						onChange={(value) => {
+							setAttributes({
 								showIcon: value ? true : false,
-							} );
-						} }
+							});
+						}}
 					/>
 				</PanelBody>
 			</InspectorControls>
 			<div
-				{ ...blockProps }
-				dangerouslySetInnerHTML={ {
-					__html: courseStudent,
-				} }
-			></div>
+				{...blockProps}
+			>
+				<div className="info-meta-item">
+					<span className="info-meta-left">
+						{props.attributes.showIcon && (
+							<span dangerouslySetInnerHTML={{__html: '<i class="lp-icon-user-graduate"></i>'}}/>
+						)}
+						{props.attributes.showLabel ? 'Student:' : ''}
+					</span>
+					<span className="info-meta-right" dangerouslySetInnerHTML={{
+						__html: courseStudent,
+					}}></span>
+				</div>
+			</div>
 		</>
 	);
 };

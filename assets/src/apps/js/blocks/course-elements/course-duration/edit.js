@@ -4,26 +4,12 @@ import { PanelBody, ToggleControl } from '@wordpress/components';
 import { useState, useEffect } from '@wordpress/element';
 
 export const edit = ( props ) => {
+	const blockProps = useBlockProps();
 	const { attributes, setAttributes, context } = props;
-	const [ classLabel, setClassLabel ] = useState(
-		attributes.showLabel ? '' : 'hidden-label',
-	);
-	const [ classIcon, setClassIcon ] = useState(
-		attributes.showIcon ? '' : 'hidden-icon',
-	);
 	const { lpCourseData } = context;
 	const courseDuration =
 		lpCourseData?.duration ||
-		'<div class="info-meta-item"><div class="info-meta-left"><i class="lp-icon-clock-o"></i><span>Duration:</span></div><span class="info-meta-right"><div class="course-count-duration"><span class="course-duration">10 Weeks</span></div></span></div>';
-
-	useEffect( () => {
-		setClassLabel( attributes.showLabel ? '' : 'hidden-label' );
-		setClassIcon( attributes.showIcon ? '' : 'hidden-icon' );
-	}, [ attributes.showLabel, attributes.showIcon ] );
-
-	const blockProps = useBlockProps( {
-		className: `${ classLabel } ${ classIcon }`.trim(),
-	} );
+		'<div class="course-count-duration"><span class="course-duration">10 Weeks</span></div>';
 
 	return (
 		<>
@@ -51,11 +37,20 @@ export const edit = ( props ) => {
 			</InspectorControls>
 
 			<div
-				{ ...blockProps }
-				dangerouslySetInnerHTML={ {
-					__html: courseDuration,
-				} }
-			></div>
+				{...blockProps}
+			>
+				<div className="info-meta-item">
+					<span className="info-meta-left">
+						{props.attributes.showIcon && (
+							<span dangerouslySetInnerHTML={{__html: '<i class="lp-icon-clock-o"></i>'}}/>
+						)}
+						{props.attributes.showLabel ? 'Duration:' : ''}
+					</span>
+					<span className="info-meta-right" dangerouslySetInnerHTML={{
+						__html: courseDuration,
+					}}></span>
+				</div>
+			</div>
 		</>
 	);
 };
