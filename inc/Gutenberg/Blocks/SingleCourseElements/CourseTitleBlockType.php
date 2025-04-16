@@ -47,28 +47,6 @@ class CourseTitleBlockType extends AbstractCourseBlockType {
 		];
 	}
 
-	/**
-	 * Get attributes of block
-	 *
-	 * @return array
-	 */
-	public function get_attributes(): array {
-		return [
-			'tag'    => [
-				'type'    => 'string',
-				'default' => 'span',
-			],
-			'isLink' => [
-				'type'    => 'boolean',
-				'default' => true,
-			],
-			'target' => [
-				'type'    => 'boolean',
-				'default' => false,
-			],
-		];
-	}
-
 	public function get_ancestor() {
 		return [ 'learnpress/single-course', 'learnpress/course-item-template' ];
 	}
