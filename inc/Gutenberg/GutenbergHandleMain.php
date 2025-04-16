@@ -265,14 +265,24 @@ class GutenbergHandleMain {
 	}
 
 	public function add_block_patterns() {
-		$content_archive_course_pattern = file_get_contents( Template::instance( false )->get_frontend_template_type_block( 'patterns/archive-courses-pattern.html' ) );
+		$list_course_pattern = file_get_contents( Template::instance( false )->get_frontend_template_type_block( 'patterns/list-courses-pattern.html' ) );
 		register_block_pattern(
-			'learnpress/archive-course-pattern',
+			'learnpress/list-course-pattern',
 			array(
-				'title'       => __( 'Archive Course (list)', 'learnpress' ),
-				'description' => __( 'Archive Course Learnpress', 'learnpress' ),
+				'title'       => __( 'Layout List Course', 'learnpress' ),
+				'description' => __( 'List Course Learnpress', 'learnpress' ),
 				'categories'  => array( 'learnpress-patterns' ),
-				'content'     => $content_archive_course_pattern,
+				'content'     => $list_course_pattern,
+			)
+		);
+		$grid_course_pattern = file_get_contents( Template::instance( false )->get_frontend_template_type_block( 'patterns/grid-courses-pattern.html' ) );
+		register_block_pattern(
+			'learnpress/grid-course-pattern',
+			array(
+				'title'       => __( 'Layout Grid Course', 'learnpress' ),
+				'description' => __( 'List Course Learnpress - layout grid', 'learnpress' ),
+				'categories'  => array( 'learnpress-patterns' ),
+				'content'     => $grid_course_pattern,
 			)
 		);
 	}

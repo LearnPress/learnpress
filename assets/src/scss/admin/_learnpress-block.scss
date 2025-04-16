@@ -99,6 +99,9 @@
 	.lp-course-curriculum .course-section .course-item__right {
 		color: inherit;
 	}
+	&.wp-block-learnpress-course-title{
+		margin-top: 0;
+	}
 }
 
 button.block-editor-block-list__block.wp-block-learnpress-course-button {
