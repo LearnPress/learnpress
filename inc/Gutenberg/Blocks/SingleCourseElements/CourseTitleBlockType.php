@@ -52,7 +52,7 @@ class CourseTitleBlockType extends AbstractCourseBlockType {
 	 *
 	 * @return array
 	 */
-	/*public function get_attributes(): array {
+	public function get_attributes(): array {
 		return [
 			'tag'    => [
 				'type'    => 'string',
@@ -60,14 +60,14 @@ class CourseTitleBlockType extends AbstractCourseBlockType {
 			],
 			'isLink' => [
 				'type'    => 'boolean',
-				'default' => false,
+				'default' => true,
 			],
 			'target' => [
 				'type'    => 'boolean',
 				'default' => false,
 			],
 		];
-	}*/
+	}
 
 	public function get_ancestor() {
 		return [ 'learnpress/single-course', 'learnpress/course-item-template' ];
@@ -92,8 +92,8 @@ class CourseTitleBlockType extends AbstractCourseBlockType {
 			$wrapper              = get_block_wrapper_attributes();
 			$singleCourseTemplate = SingleCourseTemplate::instance();
 			$tag                  = $attributes['tag'] ?? 'h3';
-			$is_link              = ( isset( $attributes['isLink'] ) && $attributes['isLink'] ) ? false : true;
-			$target               = ( isset( $attributes['target'] ) && $attributes['target'] === true ) ? 'target="_blank"' : '';
+			$is_link              = $attributes['isLink'] ?? false;
+			$target               = $attributes['isLink'] ?? 'target="_blank"';
 
 			$html_content = $singleCourseTemplate->html_title( $courseModel );
 			if ( $is_link ) {
