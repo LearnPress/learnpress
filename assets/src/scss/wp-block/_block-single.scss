@@ -28,7 +28,31 @@
 		}
 	}
 }
+.wp-block-learnpress-course-button{
+	.course-buttons {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+	}
+	form, .lp-button {
+		width: 100%;
+	}
 
+	.lp-button {
+		background-color: $color-primary;
+		border: 1px solid $color-primary;
+		color: $color-white;
+ 		font-size: $font-size-base;
+		&:hover {
+			background-color: var(--lp-secondary-color);
+			border-color: var(--lp-secondary-color);
+		}
+	}
+
+	.learn-press-message {
+		margin: 0;
+	}
+}
 
 @media (min-width: 992px) {
 	.lp-block-course-sidebar {

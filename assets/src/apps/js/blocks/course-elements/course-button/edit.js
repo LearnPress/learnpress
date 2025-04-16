@@ -17,10 +17,8 @@ export const edit = ( props ) => {
 				></div>
 			) : (
 				<div className="course-buttons">
-					<a>
-						<button { ...blockProps }>{ 'Buy' }</button>
-					</a>
-				</div>
+					<button { ...blockProps }>{ 'Buy Now' }</button>
+ 				</div>
 			) }
 		</>
 	);

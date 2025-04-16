@@ -22,6 +22,7 @@
 	margin-bottom: 15px;
 	padding-bottom: 15px;
 	border-bottom: 1px solid #ccc;
+
 	.lp-course-filter__field {
 		position: relative;
 		display: flex;
@@ -68,32 +69,53 @@
 	margin-left: 4px;
 }
 
-.block-editor-block-list__block{
-	img{
+.block-editor-block-list__block {
+	img {
 		display: block;
 	}
-	.learn-press-courses{
+
+	.learn-press-courses {
 		list-style: none;
 		margin: 0;
 		max-width: 100%;
 		padding: 0;
-		&[data-layout="grid"]{
+
+		&[data-layout="grid"] {
 			grid-gap: 1.25em;
 			display: -ms-grid;
 			display: grid;
 			grid-template-columns: repeat(auto-fill, minmax(max(200px, calc(33.33333% - .83333em)), 1fr));
 		}
 	}
-	a{
+
+	a {
 		text-decoration: none;
 	}
-	.c-gap-4{
+
+	.c-gap-4 {
 		column-gap: 4px;
 	}
-	.lp-course-curriculum .course-section .course-item__right{
+
+	.lp-course-curriculum .course-section .course-item__right {
 		color: inherit;
 	}
 }
+
+button.block-editor-block-list__block.wp-block-learnpress-course-button {
+	background-color: var(--lp-primary-color, #ffb606);
+	border: 1px solid var(--lp-primary-color, #ffb606);
+	color: var(--lp-color-white, #fff);
+	font-size: var(--lp-font-size-base, 1em);
+	width: 100%;
+	padding: 12px 20px;
+	border-radius: 5px;
+
+	&:hover {
+		background-color: var(--lp-secondary-color, #442e66);
+		border-color: var(--lp-secondary-color, #442e66);
+	}
+}
+
 /*
 icon in admin
  */
@@ -192,6 +214,7 @@ icon in admin
 .lp-icon-angle-down:before {
 	content: "\f107";
 }
+
 .lp-icon-share-alt:before {
 	content: "\f1e0";
 }
