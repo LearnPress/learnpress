@@ -1,21 +1,32 @@
-[class^="wp-block-learnpress"],.block-editor-block-list__block {
+[class^="wp-block-learnpress"], .block-editor-block-list__block {
 	img {
 		max-width: 100%;
 		height: auto;
 	}
+
 	.info-meta-item {
 		display: flex;
 		gap: 4px;
+
 		i {
 			color: $color-primary;
 		}
 	}
+
 	.info-meta-left {
 		display: flex;
 		gap: 8px;
 		align-items: center;
 	}
- }
-.wp-block-learnpress-course-image{
+}
+
+.wp-block-learnpress-course-image {
 	overflow: hidden;
+}
+
+.wp-block-learnpress-course-instructor, .wp-block-learnpress-course-categories{
+	>div > *{
+		display: inline;
+		vertical-align: middle;
+	}
 }

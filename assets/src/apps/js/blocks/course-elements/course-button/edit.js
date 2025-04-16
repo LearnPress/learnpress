@@ -9,12 +9,14 @@ export const edit = ( props ) => {
 	return (
 		<>
 			{ lpCourseData?.button ? (
-				<div
+				<div className="course-readmore">
+				<a
 					{ ...blockProps }
 					dangerouslySetInnerHTML={ {
 						__html: courseButton,
 					} }
-				></div>
+				></a>
+				</div>
 			) : (
 				<div className="course-buttons">
 					<button { ...blockProps }>{ 'Buy Now' }</button>

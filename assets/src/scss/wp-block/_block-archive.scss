@@ -53,3 +53,8 @@ ul.wp-block-learn-press-courses {
 	}
 }
 
+.wp-block-learnpress-course-button .course-readmore{
+ 	a {
+		@include course_readmore();
+	}
+}
