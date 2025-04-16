@@ -262,13 +262,13 @@
 		}
 	}
 
-	.course-title {
+	.wap-course-title {
 		margin: 0 0 $spacing-base-3x 0;
 		padding: 0;
 		display: block;
 		font-size: $font-size-h4;
 		font-weight: $link-font-weight;
-		&:hover {
+		a:hover {
 			color: var(--lp-primary-color);
 		}
 	}

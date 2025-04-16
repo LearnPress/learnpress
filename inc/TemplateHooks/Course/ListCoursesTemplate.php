@@ -277,7 +277,7 @@ class ListCoursesTemplate {
 				[
 					'wrapper'                     => '<div class="course-content">',
 					'title'                       => sprintf(
-						'<a class="course-permalink" href="%s">%s</a>',
+						'<h3 class="wap-course-title"><a class="course-permalink" href="%s">%s</a></h3>',
 						$course->get_permalink(),
 						$singleCourseTemplate->html_title( $course )
 					),
