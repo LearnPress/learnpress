@@ -223,7 +223,7 @@ body {
 			gap: $spacing-base-5x;
 			flex-wrap: wrap;
 			row-gap: $spacing-base-2x;
-	
+
 			.meta-item {
 				text-transform: capitalize;
 				display: flex;
@@ -236,27 +236,27 @@ body {
 					display: inline-block;
 				}
 			}
-	
+
 			.meta-item-level::before {
 				content: "\f012";
 			}
-	
+
 			.meta-item-duration::before {
 				content: "\f017";
 			}
-	
+
 			.meta-item-lesson::before {
 				content: "\f15b";
 			}
-	
+
 			.meta-item-quiz::before {
 				content: "\f12e";
 			}
-	
+
 			.meta-item-student::before {
 				content: "\f501";
 			}
-	
+
 			.meta-item-address::before{
 				content: "\e91b";
 			}
@@ -275,7 +275,7 @@ body {
 			.free {
 				color: #3AB500;
 			}
-	
+
 			.origin-price {
 				text-decoration: line-through;
 				opacity: 0.6;
@@ -288,7 +288,7 @@ body {
 			margin: 0 0 $spacing-base-3x 0;
 			padding: 0;
 			display: block;
-	
+
 			&:hover {
 				color: var(--lp-primary-color);
 			}
@@ -296,19 +296,7 @@ body {
 
 		.course-readmore {
 			a {
-				padding: $spacing-base-2x $spacing-base-6x;
-				border-radius: $border-radius-global;
-				color: $text-color-base;
-				border: 1px solid $text-color-base;
-				transition: all 0.3s;
-				display:  block;
-				background: transparent;
-				text-decoration: none;
-				&:hover {
-					background: $color-primary;
-					color: $color-white;
-					border-color: $color-primary;
-				}
+				@include course_readmore();
 			}
 		}
 	}

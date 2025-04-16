@@ -73,7 +73,7 @@ class CourseInstructorBlockType extends AbstractCourseBlockType {
 			}
 
 			$content = sprintf(
-				'<div class="is-layout-flex c-gap-4">%s %s</div>',
+				'<div>%s %s</div>',
 				$label,
 				$html_instructor
 			);

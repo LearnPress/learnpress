@@ -3,12 +3,9 @@
 namespace LearnPress\Gutenberg\Blocks\SingleCourseElements;
 
 use LearnPress\Gutenberg\Utils\StyleAttributes;
-use LearnPress\Helpers\Template;
-use LearnPress\Models\CourseModel;
 use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
 use LP_Debug;
 use Throwable;
-use WP_Block;
 
 /**
  * Class CourseTitleBlockType
@@ -21,15 +18,27 @@ class CourseTitleBlockType extends AbstractCourseBlockType {
 
 	public function get_supports(): array {
 		return [
+			'align'      => [ 'wide', 'full' ],
 			'color'      => [
 				'gradients'  => true,
 				'background' => true,
 				'text'       => true,
 			],
 			'typography' => [
-				'fontSize'                    => true,
-				'__experimentalFontWeight'    => true,
-				'__experimentalTextTransform' => true,
+				'fontSize'                      => true,
+				'lineHeight'                    => false,
+				'fontWeight'                    => true,
+				'textTransform'                 => false,
+				'__experimentalFontFamily'      => false,
+				'__experimentalTextDecoration'  => false,
+				'__experimentalFontStyle'       => true,
+				'__experimentalFontWeight'      => true,
+				'__experimentalLetterSpacing'   => false,
+				'__experimentalTextTransform'   => true,
+				'__experimentalDefaultControls' => [
+					'fontSize'      => true,
+					'textTransform' => false,
+				],
 			],
 			'spacing'    => [
 				'padding' => true,
@@ -37,6 +46,28 @@ class CourseTitleBlockType extends AbstractCourseBlockType {
 			],
 		];
 	}
+
+	/**
+	 * Get attributes of block
+	 *
+	 * @return array
+	 */
+	/*public function get_attributes(): array {
+		return [
+			'tag'    => [
+				'type'    => 'string',
+				'default' => 'span',
+			],
+			'isLink' => [
+				'type'    => 'boolean',
+				'default' => false,
+			],
+			'target' => [
+				'type'    => 'boolean',
+				'default' => false,
+			],
+		];
+	}*/
 
 	public function get_ancestor() {
 		return [ 'learnpress/single-course', 'learnpress/course-item-template' ];
@@ -53,32 +84,32 @@ class CourseTitleBlockType extends AbstractCourseBlockType {
 		$html = '';
 
 		try {
-			$courseModel = $this->get_course( $attributes, $block );
-			if ( ! $courseModel instanceof CourseModel ) {
+			$courseModel = $this->get_course( $attributes );
+			if ( ! $courseModel ) {
 				return $html;
 			}
 
-			$wrapper = get_block_wrapper_attributes( array( 'class' => 'course-title' ) );
+			$wrapper              = get_block_wrapper_attributes();
+			$singleCourseTemplate = SingleCourseTemplate::instance();
+			$tag                  = $attributes['tag'] ?? 'h3';
+			$is_link              = ( isset( $attributes['isLink'] ) && $attributes['isLink'] ) ? false : true;
+			$target               = ( isset( $attributes['target'] ) && $attributes['target'] === true ) ? 'target="_blank"' : '';
 
-			$is_link    = ( isset( $attributes['isLink'] ) && $attributes['isLink'] === false ) ? false : true;
-			$target     = ( isset( $attributes['target'] ) && $attributes['target'] === true ) ? 'target="_blank"' : '';
-			$tag        = $attributes['tag'] ?? 'h3';
-			$content    = apply_filters(
-				'learn-press/block-type/course-title',
-				[
-					'tag'      => sprintf( '<%s '.$wrapper.'>', $tag ),
-					'link'     => $is_link ? sprintf( '<a class="course-permalink" href="%s" %s>', $courseModel->get_permalink(), $target ) : '',
-					'title'    => $courseModel->get_title(),
-					'link_end' => $is_link ? '</a>' : '',
-					'tag_end'  => sprintf( '</%s>', $tag ),
-				],
-				$courseModel,
-				$tag,
-				$is_link,
-				$target
+			$html_content = $singleCourseTemplate->html_title( $courseModel );
+			if ( $is_link ) {
+				$html_content = sprintf(
+					'<a class="course-permalink" href="%s" %s>%s</a>',
+					esc_url( $courseModel->get_permalink() ),
+					$target,
+					$singleCourseTemplate->html_title( $courseModel )
+				);
+			}
+
+			$html = sprintf(
+				"<$tag %s>%s</$tag>",
+				$wrapper,
+				$html_content
 			);
-			$html = Template::combine_components( $content );
-
 		} catch ( Throwable $e ) {
 			LP_Debug::error_log( $e );
 		}
