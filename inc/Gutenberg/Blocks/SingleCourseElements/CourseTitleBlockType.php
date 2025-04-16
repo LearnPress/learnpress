@@ -58,7 +58,7 @@ class CourseTitleBlockType extends AbstractCourseBlockType {
 				return $html;
 			}
 
-			$singleCourseTemplate = SingleCourseTemplate::instance();
+			$wrapper = get_block_wrapper_attributes( array( 'class' => 'course-title' ) );
 
 			$is_link    = ( isset( $attributes['isLink'] ) && $attributes['isLink'] === false ) ? false : true;
 			$target     = ( isset( $attributes['target'] ) && $attributes['target'] === true ) ? 'target="_blank"' : '';
@@ -66,7 +66,7 @@ class CourseTitleBlockType extends AbstractCourseBlockType {
 			$content    = apply_filters(
 				'learn-press/block-type/course-title',
 				[
-					'tag'      => sprintf( '<%s class="course-title">', $tag ),
+					'tag'      => sprintf( '<%s '.$wrapper.'>', $tag ),
 					'link'     => $is_link ? sprintf( '<a class="course-permalink" href="%s" %s>', $courseModel->get_permalink(), $target ) : '',
 					'title'    => $courseModel->get_title(),
 					'link_end' => $is_link ? '</a>' : '',
@@ -77,8 +77,8 @@ class CourseTitleBlockType extends AbstractCourseBlockType {
 				$is_link,
 				$target
 			);
-			$html_title = Template::combine_components( $content );
-			$html       = $this->get_output( $html_title );
+			$html = Template::combine_components( $content );
+
 		} catch ( Throwable $e ) {
 			LP_Debug::error_log( $e );
 		}
