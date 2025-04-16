@@ -53,7 +53,7 @@ class ButtonSubmitFilterBlockType extends AbstractArchiveCourseBlockType {
 
 	public function get_inline_style( $attributes ) {
 		$border_classes_and_styles = StyleAttributes::get_classes_and_styles_by_attributes( $attributes, [ 'font_size', 'font_weight', 'text_color', 'text_transform', 'padding', 'margin', 'background_color', 'border_color', 'border_radius','border_width' ] );
-		return '.lp-form-course-filter button.course-filter-submit {' . $border_classes_and_styles['styles'] . '}';
+		return '.lp-form-block-course-filter button.course-filter-submit {' . $border_classes_and_styles['styles'] . '}';
 	}
 
 	public function inline_styles( $attributes ) {

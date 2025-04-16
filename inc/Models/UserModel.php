@@ -1,4 +1,5 @@
 <?php
+namespace LearnPress\Models;
 
 /**
  * Class UserModel
@@ -6,8 +7,6 @@
  * @version 1.0.1
  * @since 4.2.6.9
  */
-
-namespace LearnPress\Models;
 
 use Exception;
 use LearnPress\Models\UserItems\UserCourseModel;
