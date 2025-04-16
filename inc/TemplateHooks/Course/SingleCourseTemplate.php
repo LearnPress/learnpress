@@ -65,27 +65,15 @@ class SingleCourseTemplate {
 	 *
 	 * @return string
 	 */
-	public function html_title( $course, string $tag_html = 'span', $isLink = false, $target = false ): string {
+	public function html_title( $course, string $tag_html = 'span' ): string {
 		$tag_html     = esc_attr( sanitize_key( $tag_html ) );
-		$attr_target  = $target ? 'target="_blank"' : '';
-		$html_wrapper = '';
-		if ( $isLink ) {
-			$html_wrapper = apply_filters(
-				'learn-press/single-course/html-title',
-				[
-					"<{$tag_html} class='course-title'> <a class='course-permalink' href='{$course->get_permalink()}' $attr_target>" => "</a> </{$tag_html}>",
-				],
-				$course
-			);
-		} else {
-			$html_wrapper = apply_filters(
-				'learn-press/single-course/html-title',
-				[
-					"<{$tag_html} class='course-title'>" => "</{$tag_html}>",
-				],
-				$course
-			);
-		}
+		$html_wrapper = apply_filters(
+			'learn-press/single-course/html-title',
+			[
+				"<{$tag_html} class='course-title'>" => "</{$tag_html}>",
+			],
+			$course
+		);
 
 		return Template::instance()->nest_elements( $html_wrapper, $course->get_title() );
 	}
