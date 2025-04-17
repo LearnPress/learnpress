@@ -53,11 +53,19 @@ class CourseLessonBlockType extends AbstractCourseBlockType {
 				return $html;
 			}
 
-			$value      = SingleCourseTemplate::instance()->html_count_item( $courseModel, LP_LESSON_CPT ) ?? 0;
-			$html_label = ( isset( $attributes['showIcon'] ) && $attributes['showIcon'] === false ) ? '' : '<i class="lp-icon-file-o"></i>';
-			$html_label .= ( isset( $attributes['showLabel'] ) && $attributes['showLabel'] === false ) ? '' : __( 'Lesson', 'learnpress' ) . ':';
-			$html_left  = $html_label ? sprintf( '<span class="info-meta-left">%s</span>', $html_label ) : '';
-			$html_right = sprintf( '<span class="info-meta-right"><div class="course-count-lesson">%s</div></span>', $value );
+			$value       = SingleCourseTemplate::instance()->html_count_item( $courseModel, LP_LESSON_CPT ) ?? 0;
+			$html_label  = $attributes['showIcon'] ?? '<i class="lp-icon-file-o"></i>';
+			$html_label .= $attributes['showLabel'] ?? __( 'Lesson', 'learnpress' ) . ':';
+
+			$html_left = $html_label ?? sprintf(
+				'<span class="info-meta-left">%s</span>',
+				$html_label
+			);
+
+			$html_right = sprintf(
+				'<span class="info-meta-right"><div class="course-count-lesson">%s</div></span>',
+				$value
+			);
 
 			$html_lesson = sprintf(
 				'<div class="info-meta-item">%s %s</div>',
