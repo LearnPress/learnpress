@@ -31,7 +31,8 @@ const Edit = ( props ) => {
 						onChange={ ( value ) => setAttributes( { tag: value } ) }
 					/>
 					<ToggleControl
-						label="Is Link"
+						// Default text of WP so not need text-domain
+						label={ __( 'Make title a link' ) }
 						checked={ !! isLink }
 						onChange={ ( value ) => {
 							props.setAttributes( {
@@ -54,25 +55,12 @@ const Edit = ( props ) => {
 					) }
 				</PanelBody>
 			</InspectorControls>
-			<div>
-				{ isLink ? (
-					<a className="course-permalink">
-						<TagName
-							className="course-title"
-							{ ...blockProps }
-							dangerouslySetInnerHTML={ {
-								__html: courseTitle,
-							} }
-						/>
-					</a>
-				) : (
-					<TagName
-						{ ...blockProps }
-						dangerouslySetInnerHTML={ {
-							__html: courseTitle,
-						} }
-					/>
-				) }
+			<div { ...blockProps }>
+				<TagName
+					dangerouslySetInnerHTML={ {
+						__html: courseTitle,
+					} }
+				/>
 			</div>
 		</>
 	);

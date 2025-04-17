@@ -47,28 +47,6 @@ class CourseTitleBlockType extends AbstractCourseBlockType {
 		];
 	}
 
-	/**
-	 * Get attributes of block
-	 *
-	 * @return array
-	 */
-	public function get_attributes(): array {
-		return [
-			'tag'    => [
-				'type'    => 'string',
-				'default' => 'span',
-			],
-			'isLink' => [
-				'type'    => 'boolean',
-				'default' => true,
-			],
-			'target' => [
-				'type'    => 'boolean',
-				'default' => false,
-			],
-		];
-	}
-
 	public function get_ancestor() {
 		return [ 'learnpress/single-course', 'learnpress/course-item-template' ];
 	}
@@ -89,7 +67,6 @@ class CourseTitleBlockType extends AbstractCourseBlockType {
 				return $html;
 			}
 
-			$wrapper              = get_block_wrapper_attributes();
 			$singleCourseTemplate = SingleCourseTemplate::instance();
 			$tag                  = $attributes['tag'] ?? 'h3';
 			$is_link              = $attributes['isLink'] ?? false;
@@ -105,11 +82,7 @@ class CourseTitleBlockType extends AbstractCourseBlockType {
 				);
 			}
 
-			$html = sprintf(
-				"<$tag %s>%s</$tag>",
-				$wrapper,
-				$html_content
-			);
+			$html = $this->get_output( $html_content, $tag );
 		} catch ( Throwable $e ) {
 			LP_Debug::error_log( $e );
 		}

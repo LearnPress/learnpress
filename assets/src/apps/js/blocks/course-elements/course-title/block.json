@@ -14,7 +14,7 @@
 		},
 		"isLink": {
 			"type": "boolean",
-			"default": true
+			"default": false
 		},
 		"target": {
 			"type": "boolean",

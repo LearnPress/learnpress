@@ -52,11 +52,11 @@ class CourseDurationBlockType extends AbstractCourseBlockType {
 			if ( ! $courseModel ) {
 				return $html;
 			}
-			$value = SingleCourseTemplate::instance()->html_duration( $courseModel ) ?? 0;
 
+			$value      = SingleCourseTemplate::instance()->html_duration( $courseModel ) ?? 0;
 			$html_label = ( isset( $attributes['showIcon'] ) && $attributes['showIcon'] === false ) ? '' : '<i class="lp-icon-clock-o"></i>';
 			$html_label .= ( isset( $attributes['showLabel'] ) && $attributes['showLabel'] === false ) ? '' : __( 'Duration', 'learnpress' ) . ':';
-			$html_left = $html_label ? sprintf( '<span class="info-meta-left">%s</span>', $html_label ) : '';
+			$html_left  = $html_label ? sprintf( '<span class="info-meta-left">%s</span>', $html_label ) : '';
 			$html_right = sprintf( '<span class="info-meta-right"><div class="course-count-duration">%s</div></span>', $value );
 
  			$html_duration = sprintf(

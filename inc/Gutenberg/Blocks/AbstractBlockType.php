@@ -133,17 +133,25 @@ abstract class AbstractBlockType extends WP_Block_Type {
 		$this->class_hash = 'lp-elements-' . $timestamp . '-' . $hash;
 	}
 
-	protected function get_output( $content ) {
-		$output  = '';
-		$wrapper = get_block_wrapper_attributes();
-		ob_start();
-		echo sprintf(
-			'<div %s>%s</div>',
+	/**
+	 * Wrap content in a block tag.
+	 * Will get the attributes, supports, classes... from the block.
+	 * The block's supports must be configured in both block.json and PHP to be consistent.
+	 * If method generate not provide enough to handle special logic, you can override this method.
+	 *
+	 * @param string $content
+	 * @param string $tag
+	 * @param array $extra_attributes
+	 *
+	 * @return string
+	 */
+	protected function get_output( string $content, string $tag = 'div', array $extra_attributes = [] ): string {
+		$wrapper = get_block_wrapper_attributes( $extra_attributes );
+		return sprintf(
+			"<$tag %s>%s</$tag>",
 			$wrapper,
 			$content
 		);
-		$output = ob_get_clean();
-		return $output;
 	}
 
 	protected function get_output_with_class_hash( $attributes, $content, $properties = array(), $exclude = array() ) {
