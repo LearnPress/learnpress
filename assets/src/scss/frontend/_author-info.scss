@@ -12,6 +12,10 @@
 		font-size: 1.4rem;
 	}
 
+	.instructor-avatar {
+		max-width: 200px;
+	}
+
 	.lp-instructor-meta {
 		margin-top: 16px;
 	}
@@ -22,7 +26,8 @@
 
 	img {
 		border-radius: $border-radius-global;
-	}
+ 	}
+
 	.instructor-social {
 		display: inline-flex;
 		padding: 0;
@@ -56,9 +61,9 @@
 	}
 }
 
-.instructor-display-name {
-	font-weight: $link-font-weight;
-}
+//.instructor-display-name {
+//	font-weight: $link-font-weight;
+//}
 
 .instructor-item-meta {
 	display: inline-flex;
@@ -66,7 +71,7 @@
 
 .instructor-total-courses {
 	display: inline-flex;
-	border-left: 1px solid #e2e0db;
+	border-left: 1px solid $border-color;
 	margin-left: 12px;
 	padding-left: 12px;
 }

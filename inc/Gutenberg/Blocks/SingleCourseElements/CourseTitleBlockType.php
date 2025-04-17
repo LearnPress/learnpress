@@ -93,7 +93,7 @@ class CourseTitleBlockType extends AbstractCourseBlockType {
 			$singleCourseTemplate = SingleCourseTemplate::instance();
 			$tag                  = $attributes['tag'] ?? 'h3';
 			$is_link              = $attributes['isLink'] ?? false;
-			$target               = $attributes['isLink'] ?? 'target="_blank"';
+			$target               = $attributes['target'] ?? 'target="_blank"';
 
 			$html_content = $singleCourseTemplate->html_title( $courseModel );
 			if ( $is_link ) {
