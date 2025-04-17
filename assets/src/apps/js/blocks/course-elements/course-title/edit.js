@@ -31,7 +31,8 @@ const Edit = ( props ) => {
 						onChange={ ( value ) => setAttributes( { tag: value } ) }
 					/>
 					<ToggleControl
-						label="Is Link"
+						// Default text of WP so not need text-domain
+						label={ __( 'Make title a link' ) }
 						checked={ !! isLink }
 						onChange={ ( value ) => {
 							props.setAttributes( {
