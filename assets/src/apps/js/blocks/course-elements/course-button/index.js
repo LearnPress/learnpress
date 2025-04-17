@@ -1,7 +1,7 @@
 /**
  * Register block course button.
  */
-import { edit } from './edit';
+import edit from './edit';
 import { save } from './save';
 import metadata from './block.json';
 import { registerBlockType } from '@wordpress/blocks';

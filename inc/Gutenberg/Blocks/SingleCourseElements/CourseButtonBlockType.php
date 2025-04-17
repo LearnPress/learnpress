@@ -18,25 +18,39 @@ class CourseButtonBlockType extends AbstractCourseBlockType {
 
 	public function get_supports(): array {
 		return [
-			'align'      => [ 'wide', 'full' ],
-			'color'                => [
-				'gradients'  => true,
-				'background' => true,
-				'text'       => true,
-			],
+			'align'                => [ 'wide', 'full' ],
+			'html'                 => false,
 			'typography'           => [
-				'fontSize'                    => true,
-				'__experimentalFontWeight'    => true,
-				'__experimentalTextTransform' => true,
+				'fontSize'                      => true,
+				'__experimentalDefaultControls' => [ 'fontSize' => true ],
 			],
-			'spacing'              => [
-				'padding' => true,
-				'margin'  => true,
+			'color'                => [
+				'background'                    => true,
+				'text'                          => true,
+				'__experimentalDefaultControls' => [
+					'background' => true,
+					'text'       => true,
+				],
 			],
 			'__experimentalBorder' => [
-				'color'  => true,
-				'radius' => true,
-				'width'  => true,
+				'color'                         => true,
+				'radius'                        => true,
+				'width'                         => true,
+				'__experimentalDefaultControls' => [
+					'width'  => false,
+					'color'  => false,
+					'radius' => false,
+				],
+			],
+			'spacing'              => [
+				'margin'                        => true,
+				'padding'                       => true,
+				'content'                       => true,
+				'__experimentalDefaultControls' => [
+					'margin'  => false,
+					'padding' => false,
+					'content' => true,
+				],
 			],
 		];
 	}
@@ -69,7 +83,7 @@ class CourseButtonBlockType extends AbstractCourseBlockType {
 			$html_button = '';
 			if ( $is_list_course ) {
 				$html_button = sprintf(
-					'<div class="course-readmore"><a href="%s">%s</a></div>',
+					'<a href="%s"><button class="">%s</button></a>',
 					$courseModel->get_permalink(),
 					__( 'Read more', 'learnpress' )
 				);
@@ -81,27 +95,26 @@ class CourseButtonBlockType extends AbstractCourseBlockType {
 				return $html;
 			}
 
-			$this->get_class_hash();
-			$this->enqueue_assets();
-			$this->inline_styles( $attributes );
-			$html = $this->get_output_with_class_hash( $attributes, $html_button, [ 'margin', 'align' ] );
+			$wrapper = get_block_wrapper_attributes();
 
+			preg_match( '#class="(.*)"#i', $wrapper, $class_wrapper_find );
+			if ( isset( $class_wrapper_find['1'] ) ) {
+				// Find class button lp to replace.
+				$pattern_btn_find = '#<button.*>.*</button>#i';
+				preg_match( $pattern_btn_find, $html_button, $lp_btn_find );
+				if ( isset( $lp_btn_find[0] ) ) {
+					preg_match( '#class="(.*)"#i', $lp_btn_find[0], $lp_btn_class_find );
+					if ( isset( $lp_btn_class_find[1] ) ) {
+						$merge_class = $class_wrapper_find[1] . ' ' . $lp_btn_class_find[1];
+						$wrapper     = str_replace( $class_wrapper_find[1], $merge_class, $wrapper );
+						$html        = str_replace( "class=\"$lp_btn_class_find[1]\"", $wrapper, $html_button );
+					}
+				}
+			}
 		} catch ( Throwable $e ) {
 			LP_Debug::error_log( $e );
 		}
 
 		return $html;
-	}
-
-	public function get_inline_style( $attributes ) {
-		$border_classes_and_styles  = StyleAttributes::get_classes_and_styles_by_attributes( $attributes, [ 'font_size', 'padding', 'text_color','background_color', 'border_color', 'border_radius','border_width' ] );
-		$class_button_single_course = '.wp-block-learnpress-course-button.' . $this->class_hash . ' .course-buttons .lp-button';
-		$class_button_read_more     = '.wp-block-learnpress-course-button.' . $this->class_hash . ' .course-readmore a';
-		return $class_button_read_more . ',' . $class_button_single_course . ' {' . $border_classes_and_styles['styles'] . '}';
-	}
-
-	public function inline_styles( $attributes ) {
-		$styles = $this->get_inline_style( $attributes );
-		wp_add_inline_style( 'lp-blocks-style', $styles );
 	}
 }

@@ -104,21 +104,6 @@
 	}
 }
 
-button.block-editor-block-list__block.wp-block-learnpress-course-button {
-	background-color: var(--lp-primary-color, #ffb606);
-	border: 1px solid var(--lp-primary-color, #ffb606);
-	color: var(--lp-color-white, #fff);
-	font-size: var(--lp-font-size-base, 1em);
-	width: 100%;
-	padding: 12px 20px;
-	border-radius: 5px;
-
-	&:hover {
-		background-color: var(--lp-secondary-color, #442e66);
-		border-color: var(--lp-secondary-color, #442e66);
-	}
-}
-
 a.block-editor-block-list__block.wp-block-learnpress-course-button {
 	@include course_readmore();
 }

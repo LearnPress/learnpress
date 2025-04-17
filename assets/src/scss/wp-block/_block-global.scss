@@ -1,3 +1,110 @@
+/**
+* Styles for all page of Block LP
+*
+* @since 4.2.3
+* @version 1.0.0
+*/
+@import "../mixin.scss";
+@import "../variables.scss";
+
+
+*, :after, :before {
+	box-sizing: border-box;
+	//margin: 0;
+	//padding: 0;
+}
+
+/*  start reset css */
+body {
+	background: #fff;
+
+	&.learnpress-page {
+		overflow-x: hidden;
+	}
+}
+
+button {
+	cursor: pointer;
+}
+
+.learnpress-page {
+	input[type="text"],
+	input[type="email"],
+	input[type="number"],
+	input[type="password"], textarea {
+		border-color: $border-color;
+		@include border-radius($border-radius-global);
+
+		&:focus {
+			outline: none;
+			border-color: $color-primary;
+		}
+	}
+
+	.rwmb-field .description {
+		margin-top: 8px;
+		color: #999;
+		font-size: smaller;
+		font-style: italic;
+	}
+}
+
+input, button, select, textarea {
+	outline: none;
+}
+
+// Comment because it error, can't run position: sticky
+/*html {
+	overflow-x: hidden;
+}*/
+
+a {
+	@include transition(.3s);
+	text-decoration: none;
+}
+
+p {
+	margin-bottom: 1rem;
+
+	&:last-child {
+		margin: 0
+	}
+}
+
+.lp-content-area {
+	max-width: var(--lp-container-max-width) !important;
+	margin: 0 auto;
+	padding-right: var(--lp-cotainer-padding);
+	padding-left: var(--lp-cotainer-padding);
+
+	&.learn-press-message {
+		margin-bottom: 24px;
+		padding-left: 15px;
+		padding-right: 15px;
+	}
+}
+
+.lp-ico {
+	svg {
+		width: 20px;
+		height: 20px;
+	}
+}
+
+.lp-hidden {
+	display: none !important;
+}
+
+.course-price {
+	.origin-price {
+		text-decoration: line-through;
+		margin-right: 4px;
+		font-size: calc(var(--lp-font-size-base, 1em) * 0.925);
+		opacity: 0.6;
+	}
+}
+
+
 [class^="wp-block-learnpress"], .block-editor-block-list__block {
 	img {
 		max-width: 100%;

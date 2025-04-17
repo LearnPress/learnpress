@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { useBlockProps } from '@wordpress/block-editor';
 
-export const edit = ( props ) => {
+const Edit = ( props ) => {
 	const blockProps = useBlockProps();
 	const { attributes, setAttributes, context } = props;
 	const { lpCourseData } = context;
@@ -10,18 +10,18 @@ export const edit = ( props ) => {
 		<>
 			{ lpCourseData?.button ? (
 				<div className="course-readmore">
-				<a
-					{ ...blockProps }
-					dangerouslySetInnerHTML={ {
-						__html: courseButton,
-					} }
-				></a>
+					<a
+						{ ...blockProps }
+						dangerouslySetInnerHTML={ {
+							__html: courseButton,
+						} }
+					></a>
 				</div>
 			) : (
-				<div className="course-buttons">
-					<button { ...blockProps }>{ 'Buy Now' }</button>
- 				</div>
+				<button { ...blockProps }>{ 'Buy Now' }</button>
 			) }
 		</>
 	);
 };
+
+export default Edit;
