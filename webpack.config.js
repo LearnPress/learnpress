@@ -104,6 +104,7 @@ module.exports = {
 		'./assets/js/dist/blocks/course-level': './assets/src/apps/js/blocks/course-elements/course-level/index.js',
 		'./assets/js/dist/blocks/course-button': './assets/src/apps/js/blocks/course-elements/course-button/index.js',
 		'./assets/js/dist/blocks/course-share': './assets/src/apps/js/blocks/course-elements/course-share/index.js',
+		'./assets/js/dist/blocks/course-item-curriculum': './assets/src/apps/js/blocks/course-elements/course-item-curriculum/index.js',
 		'./assets/js/dist/blocks/course-feature-review': './assets/src/apps/js/blocks/course-elements/course-feature-review/index.js',
 		'./assets/js/dist/blocks/course-search': './assets/src/apps/js/blocks/course-elements/course-search/index.js',
 		'./assets/js/dist/blocks/course-order-by': './assets/src/apps/js/blocks/course-elements/course-order-by/index.js',
