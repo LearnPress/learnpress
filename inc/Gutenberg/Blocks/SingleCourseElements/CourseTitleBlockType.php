@@ -62,7 +62,7 @@ class CourseTitleBlockType extends AbstractCourseBlockType {
 		$html = '';
 
 		try {
-			$courseModel = $this->get_course( $attributes );
+			$courseModel = $this->get_course( $attributes, $block );
 			if ( ! $courseModel ) {
 				return $html;
 			}
