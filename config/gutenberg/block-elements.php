@@ -102,7 +102,7 @@ return apply_filters(
 		new InstructorStudentBlockType(),
 		new InstructorDescriptionBlockType(),
 		new BreadcrumbBlockType(),
-		new SingleCourseBlockType(),
+		//new SingleCourseBlockType(),
 		new SingleInstructorBlockType(),
 		new ListCoursesBlockType(),
 		new CourseItemTemplateBlock(),

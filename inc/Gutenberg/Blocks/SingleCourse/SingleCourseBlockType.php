@@ -22,17 +22,9 @@ class SingleCourseBlockType extends AbstractBlockType {
 	public function render_content_block_template( array $attributes, $content, $block ): string {
 		$html = '';
 
-		$class_name = $attributes['className'] ?? '';
-
 		try {
-			ob_start();
-			echo sprintf(
-				'<div class="lp-single-course %s"> %s %s </div>',
-				$class_name,
-				$content,
-				SingleCourseTemplate::instance()->html_content_course_curriculum()
-			);
-			$html = ob_get_clean();
+			// Set temporary.
+			$this->get_output( $content );
 		} catch ( Throwable $e ) {
 			LP_Debug::error_log( $e );
 		}
