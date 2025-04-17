@@ -158,7 +158,7 @@ class GutenbergHandleMain {
 			$fits_area_query = ! isset( $query['area'] ) || ( property_exists( $instance, 'area' ) && $instance->area === $query['area'] );
 			$should_include  = $fits_slug_query && $fits_area_query;
 			if ( $should_include ) {
-				$query_result[] = $instance;
+				$query_result[] = $block_template;
 			}
 		}
 
