@@ -56,11 +56,7 @@ class CourseStudentBlockType extends AbstractCourseBlockType {
 			$value       = SingleCourseTemplate::instance()->html_count_student( $courseModel ) ?? 0;
 			$html_label  = $attributes['showIcon'] ?? '<i class="lp-icon-user-graduate"></i>';
 			$html_label .= $attributes['showLabel'] ?? __( 'Student', 'learnpress' ) . ':';
-
-			$html_left = $html_label ?? sprintf(
-				'<span class="info-meta-left">%s</span>',
-				$html_label
-			);
+			$html_left   = $html_label ? sprintf( '<span class="info-meta-left">%s</span>', $html_label ) : '';
 
 			$html_right = sprintf(
 				'<span class="info-meta-right"><div class="course-count-student">%s</div></span>',
