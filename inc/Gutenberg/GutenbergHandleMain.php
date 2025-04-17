@@ -57,6 +57,10 @@ class GutenbergHandleMain {
 		 */
 		$blocks     = Config::instance()->get( 'block-elements', 'gutenberg' );
 		$postIdEdit = $this->get_edit_post_id();
+		if( empty( $postIdEdit ) ) {
+			$postIdEdit = $this->get_edit_post_id_with_param();
+		}
+
 		foreach ( $blocks as $block_template ) {
 			// Set block maybe display when Edit on Template.
 			if ( ! empty( $postIdEdit ) && ! empty( $block_template->display_on_templates )
@@ -128,6 +132,15 @@ class GutenbergHandleMain {
 		 */
 		$lp_block_templates = Config::instance()->get( 'block-templates', 'gutenberg' );
 		foreach ( $lp_block_templates as $block_template ) {
+
+			$instance = new $block_template();
+			if ( isset( $query['post_type'] ) &&
+				isset( $instance->post_types ) &&
+				! in_array( $query['post_type'], $instance->post_types, true )
+				) {
+					continue;
+				}
+
 			// Get block template if custom - save on table posts - with post_name = slug of block.
 			$block_custom = $this->is_custom_block_template( $template_type, $block_template->slug );
 			if ( $block_custom ) {
@@ -141,15 +154,11 @@ class GutenbergHandleMain {
 			}
 
 			// Frontend: check block template match with slug in query will display.
-			$slugs = $query['slug__in'] ?? array();
-			if ( in_array( $block_template->slug, $slugs ) ) {
-				$query_result[] = $block_template;
-			}
-
-			// Admin: Show on list Templates.
-			// Link preview https://drive.google.com/file/d/1Gi3LjCQMD731qKBLXTTR2hLi3qjemg6Q/view?usp=sharing
-			if ( is_admin() ) {
-				$query_result[] = $block_template;
+			$fits_slug_query = ! isset( $query['slug__in'] ) || in_array( $instance->slug, $query['slug__in'], true );
+			$fits_area_query = ! isset( $query['area'] ) || ( property_exists( $instance, 'area' ) && $instance->area === $query['area'] );
+			$should_include  = $fits_slug_query && $fits_area_query;
+			if ( $should_include ) {
+				$query_result[] = $instance;
 			}
 		}
 
@@ -262,6 +271,32 @@ class GutenbergHandleMain {
 		}
 
 		return $postIdEdit;
+	}
+
+	public function get_edit_post_id_with_param()
+	{
+		if (is_admin() && isset($_GET['p'])) {
+			if (function_exists('\get_current_screen')) {
+				$screen = \get_current_screen();
+				if ($screen && (
+					$screen->base === 'site-editor' ||
+					$screen->id === 'appearance_page_gutenberg-edit-site' ||
+					strpos($screen->id, 'edit-site') !== false
+				)) {
+					$template_path = urldecode($_GET['p']);
+					$template_path = str_replace('/wp_template/', '', $template_path);
+					$template_path = trim($template_path, '/');
+					return $template_path;
+				}
+			} else {
+				$template_path = urldecode($_GET['p']);
+				$template_path = str_replace('/wp_template/', '', $template_path);
+				$template_path = trim($template_path, '/');
+				return $template_path;
+			}
+		}
+
+		return '';
 	}
 
 	public function add_block_patterns() {
