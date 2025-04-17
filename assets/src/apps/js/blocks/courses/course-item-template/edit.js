@@ -18,11 +18,17 @@ import {
 } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import API from '../../../../../js/api.js';
+const TEMPLATE_DEFAULT = [
+	[ 'learnpress/course-image' ],
+	[ 'learnpress/course-title' ],
+	[ 'learnpress/course-price' ],
+];
 
 function PostTemplateInnerBlocks( { classList } ) {
-	const innerBlocksProps = useInnerBlocksProps( {
-		className: classnames( 'wp-block-learnpress-course-item-template' ),
-	} );
+	const innerBlocksProps = useInnerBlocksProps(
+		{ className: classnames( 'wp-block-learnpress-course-item-template' ) },
+		{ template: TEMPLATE_DEFAULT }
+	);
 	return <li className="course" >
 		<div
 			{ ...innerBlocksProps }
