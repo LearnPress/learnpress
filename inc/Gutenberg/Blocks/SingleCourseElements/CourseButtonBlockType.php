@@ -18,6 +18,7 @@ class CourseButtonBlockType extends AbstractCourseBlockType {
 
 	public function get_supports(): array {
 		return [
+			'align'      => [ 'wide', 'full' ],
 			'color'                => [
 				'gradients'  => true,
 				'background' => true,
@@ -83,7 +84,7 @@ class CourseButtonBlockType extends AbstractCourseBlockType {
 			$this->get_class_hash();
 			$this->enqueue_assets();
 			$this->inline_styles( $attributes );
-			$html = $this->get_output_with_class_hash( $attributes, $html_button, [ 'margin' ] );
+			$html = $this->get_output_with_class_hash( $attributes, $html_button, [ 'margin', 'align' ] );
 
 		} catch ( Throwable $e ) {
 			LP_Debug::error_log( $e );

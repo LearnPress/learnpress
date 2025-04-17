@@ -16,6 +16,7 @@ class CourseShareBlockType extends AbstractCourseBlockType {
 
 	public function get_supports(): array {
 		return [
+			'align'      => [ 'wide', 'full' ],
 			'color'      => [
 				'gradients'  => true,
 				'background' => true,
