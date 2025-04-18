@@ -5,10 +5,16 @@ const Edit = ( props ) => {
 	const blockProps = useBlockProps();
 	const { attributes, setAttributes, context } = props;
 	const { lpCourseData } = context;
+	const courseButton = lpCourseData?.button || '';
 	return (
 		<>
-			<div className="course-buttons">
-				<button { ...blockProps }>{ __( 'Buy Now', 'learnpress' ) }</button>
+			<div className="course-readmore">
+				<a
+					{ ...blockProps }
+					dangerouslySetInnerHTML={ {
+						__html: courseButton,
+					} }
+				></a>
 			</div>
 		</>
 	);

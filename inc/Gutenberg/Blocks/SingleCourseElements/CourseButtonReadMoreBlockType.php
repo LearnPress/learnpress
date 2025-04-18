@@ -9,12 +9,12 @@ use Throwable;
 use WP_Block;
 
 /**
- * Class CourseButtonBlockType
+ * Class CourseButtonReadMoreBlockType
  *
  * Handle register, render block template
  */
-class CourseButtonBlockType extends AbstractCourseBlockType {
-	public $block_name = 'course-button';
+class CourseButtonReadMoreBlockType extends AbstractCourseBlockType {
+	public $block_name = 'course-button-read-more';
 
 	public function get_supports(): array {
 		return [
@@ -55,10 +55,6 @@ class CourseButtonBlockType extends AbstractCourseBlockType {
 		];
 	}
 
-	public function get_ancestor() {
-		return [ 'learnpress/single-course', 'learnpress/course-item-template' ];
-	}
-
 	/**
 	 * Render content of block tag
 	 *
@@ -71,12 +67,15 @@ class CourseButtonBlockType extends AbstractCourseBlockType {
 
 		try {
 			$courseModel = $this->get_course( $attributes, $block );
-			$userModel   = $this->get_user();
 			if ( ! $courseModel ) {
 				return $html;
 			}
 
-			$html_button = SingleCourseModernLayout::instance()->html_button( $courseModel, $userModel );
+			$html_button = sprintf(
+				'<a href="%s"><button class="">%s</button></a>',
+				$courseModel->get_permalink(),
+				__( 'Read more', 'learnpress' )
+			);
 
 			if ( empty( $html_button ) ) {
 				return $html;
@@ -84,15 +83,6 @@ class CourseButtonBlockType extends AbstractCourseBlockType {
 
 			$wrapper = get_block_wrapper_attributes();
 			$html    = $html_button;
-
-			// Set align to course-buttons.
-			if ( isset( $attributes['align'] ) && $attributes['align'] ) {
-				$html_button = str_replace(
-					'class="course-buttons',
-					'class="course-buttons ' . 'align' . $attributes['align'] . ' ',
-					$html_button
-				);
-			}
 
 			preg_match( '#class="(.*)"#i', $wrapper, $class_wrapper_find );
 			if ( isset( $class_wrapper_find['1'] ) ) {
