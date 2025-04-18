@@ -2,6 +2,7 @@
 
 namespace LearnPress\Gutenberg\Blocks\SingleCourseElements;
 
+use LearnPress\Helpers\Template;
 use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
 use LP_Debug;
 use Throwable;
@@ -17,25 +18,36 @@ class CourseQuizBlockType extends AbstractCourseBlockType {
 	public function get_supports(): array {
 		return [
 			'align'      => [ 'wide', 'full' ],
-			'color'      => [
-				'gradients'  => true,
-				'background' => true,
-				'text'       => true,
-			],
 			'typography' => [
-				'fontSize'                    => true,
-				'fontWeight'                  => true,
-				'__experimentalTextTransform' => true,
+				'fontSize'                      => true,
+				'lineHeight'                    => false,
+				'fontWeight'                    => true,
+				'__experimentalFontFamily'      => false,
+				'__experimentalTextDecoration'  => false,
+				'__experimentalFontStyle'       => false,
+				'__experimentalFontWeight'      => true,
+				'__experimentalLetterSpacing'   => false,
+				'__experimentalTextTransform'   => true,
+				'__experimentalDefaultControls' => [ 'fontSize' => true ],
+			],
+			'color'      => [
+				'background'                    => false,
+				'text'                          => true,
+				'link'                          => false,
+				'gradients'                     => false,
+				'__experimentalDefaultControls' => [
+					'text' => true,
+				],
 			],
 			'spacing'    => [
-				'padding' => true,
-				'margin'  => true,
+				'padding'                       => true,
+				'margin'                        => true,
+				'__experimentalDefaultControls' => [
+					'margin'  => false,
+					'padding' => false,
+				],
 			],
 		];
-	}
-
-	public function get_ancestor() {
-		return [ 'learnpress/single-course', 'learnpress/course-item-template' ];
 	}
 
 	/**
@@ -54,27 +66,28 @@ class CourseQuizBlockType extends AbstractCourseBlockType {
 				return $html;
 			}
 
-			$value       = SingleCourseTemplate::instance()->html_count_item( $courseModel, LP_QUIZ_CPT ) ?? 0;
-			$html_label  = $attributes['showIcon'] ?? '<i class="lp-icon-puzzle-piece"></i>';
-			$html_label .= $attributes['showLabel'] ?? __( 'Quiz', 'learnpress' ) . ':';
-			$html_left   = $html_label ? sprintf( '<span class="info-meta-left">%s</span>', $html_label ) : '';
+			$show_icon  = $attributes['showIcon'] ?? true;
+			$show_label = $attributes['showLabel'] ?? true;
+			$section    = [
+				'wrap'       => '<div class="info-meta-item">',
+				'info-left'  => sprintf(
+					'%s',
+					$show_icon || $show_label ?
+						sprintf(
+							'<span class="info-meta-left">%s%s</span>',
+							$show_icon ? '<i class="lp-icon-puzzle-piece"></i>' : '',
+							$show_label ? __( 'Quiz', 'learnpress' ) . ':' : ''
+						)
+						: ''
+				),
+				'info-right' => sprintf(
+					'<span class="info-meta-right">%s</span>',
+					SingleCourseTemplate::instance()->html_count_item( $courseModel, LP_QUIZ_CPT )
+				),
+				'wrap_end'   => '</div>',
+			];
 
-			$html_right = sprintf(
-				'<span class="info-meta-right"><div class="course-count-quiz">%s</div></span>',
-				$value
-			);
-
-			$html_quiz = sprintf(
-				'<div class="info-meta-item">%s %s</div>',
-				$html_left,
-				$html_right
-			);
-
-			if ( empty( $html_quiz ) ) {
-				return $html;
-			}
-
-			$html = $this->get_output( $html_quiz );
+			$html = $this->get_output( Template::combine_components( $section ) );
 		} catch ( Throwable $e ) {
 			LP_Debug::error_log( $e );
 		}

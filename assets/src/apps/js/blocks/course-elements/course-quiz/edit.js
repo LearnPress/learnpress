@@ -3,7 +3,7 @@ import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import { PanelBody, ToggleControl } from '@wordpress/components';
 import { useState, useEffect } from '@wordpress/element';
 
-export const edit = ( props ) => {
+const Edit = ( props ) => {
 	const blockProps = useBlockProps();
 	const { attributes, setAttributes, context } = props;
 	const { lpCourseData } = context;
@@ -17,39 +17,39 @@ export const edit = ( props ) => {
 				<PanelBody title="Settings">
 					<ToggleControl
 						label="Show Label"
-						checked={props.attributes.showLabel ? true : false}
-						onChange={(value) => {
-							props.setAttributes({
-								showLabel: value ? true : false,
-							});
-						}}
+						checked={ attributes.showLabel }
+						onChange={ ( value ) => {
+							setAttributes( {
+								showLabel: value,
+							} );
+						} }
 					/>
 					<ToggleControl
 						label="Show Icon"
-						checked={props.attributes.showIcon ? true : false}
-						onChange={(value) => {
-							props.setAttributes({
-								showIcon: value ? true : false,
-							});
-						}}
+						checked={ attributes.showIcon }
+						onChange={ ( value ) => {
+							setAttributes( {
+								showIcon: value,
+							} );
+						} }
 					/>
 				</PanelBody>
 			</InspectorControls>
-			<div
-				{...blockProps}
-			>
+			<div { ...blockProps }>
 				<div className="info-meta-item">
 					<span className="info-meta-left">
-						{props.attributes.showIcon && (
-							<span dangerouslySetInnerHTML={{__html: '<i class="lp-icon-puzzle-piece"></i>'}}/>
-						)}
-						{props.attributes.showLabel ? 'Quiz:' : ''}
+						{ attributes.showIcon && (
+							<span dangerouslySetInnerHTML={ { __html: '<i class="lp-icon-puzzle-piece"></i>' } } />
+						) }
+						{ attributes.showLabel ? 'Quiz:' : '' }
 					</span>
-					<span className="info-meta-right" dangerouslySetInnerHTML={{
+					<span className="info-meta-right" dangerouslySetInnerHTML={ {
 						__html: courseQuiz,
-					}}></span>
+					} }></span>
 				</div>
 			</div>
 		</>
 	);
 };
+
+export default Edit;

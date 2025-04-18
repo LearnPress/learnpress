@@ -3,11 +3,12 @@ import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import { PanelBody, ToggleControl } from '@wordpress/components';
 import { useState, useEffect } from '@wordpress/element';
 
-export const edit = ( props ) => {
+const Edit = ( props ) => {
 	const blockProps = useBlockProps();
 	const { attributes, setAttributes, context } = props;
 	const { lpCourseData } = context;
-	const courseLevel = lpCourseData?.level || '<div class="course-count-level"><span class="course-level">All levels</span></div>';
+	const courseLevel = lpCourseData?.level ||
+		'<div class="course-count-level"><span class="course-level">All levels</span></div>';
 
 	return (
 		<>
@@ -15,39 +16,39 @@ export const edit = ( props ) => {
 				<PanelBody title="Settings">
 					<ToggleControl
 						label="Show Label"
-						checked={props.attributes.showLabel ? true : false}
-						onChange={(value) => {
-							props.setAttributes({
-								showLabel: value ? true : false,
-							});
-						}}
+						checked={ attributes.showLabel }
+						onChange={ ( value ) => {
+							setAttributes( {
+								showLabel: value,
+							} );
+						} }
 					/>
 					<ToggleControl
 						label="Show Icon"
-						checked={props.attributes.showIcon ? true : false}
-						onChange={(value) => {
-							props.setAttributes({
-								showIcon: value ? true : false,
-							});
-						}}
+						checked={ attributes.showIcon }
+						onChange={ ( value ) => {
+							setAttributes( {
+								showIcon: value,
+							} );
+						} }
 					/>
 				</PanelBody>
 			</InspectorControls>
-			<div
-				{...blockProps}
-			>
+			<div { ...blockProps }>
 				<div className="info-meta-item">
 					<span className="info-meta-left">
-						{props.attributes.showIcon && (
-							<span dangerouslySetInnerHTML={{__html: '<i class="lp-icon-signal"></i>'}}/>
-						)}
-						{props.attributes.showLabel ? 'Level:' : ''}
+						{ attributes.showIcon && (
+							<span dangerouslySetInnerHTML={ { __html: '<i class="lp-icon-signal"></i>' } } />
+						) }
+						{ attributes.showLabel ? 'Level:' : '' }
 					</span>
-					<span className="info-meta-right" dangerouslySetInnerHTML={{
+					<span className="info-meta-right" dangerouslySetInnerHTML={ {
 						__html: courseLevel,
-					}}></span>
+					} }></span>
 				</div>
 			</div>
 		</>
 	);
 };
+
+export default Edit;

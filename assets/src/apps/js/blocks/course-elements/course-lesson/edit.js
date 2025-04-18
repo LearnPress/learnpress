@@ -3,11 +3,12 @@ import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import { PanelBody, ToggleControl } from '@wordpress/components';
 import { useState, useEffect } from '@wordpress/element';
 
-export const edit = ( props ) => {
+const Edit = ( props ) => {
 	const blockProps = useBlockProps();
 	const { attributes, setAttributes, context } = props;
- 	const { lpCourseData } = context;
-	const courseLesson = lpCourseData?.lesson || '<div class="course-count-lesson"><div class="course-count-item lp_lesson">5 Lessons</div></div>';
+	const { lpCourseData } = context;
+	const courseLesson = lpCourseData?.lesson ||
+		'<div class="course-count-lesson"><div class="course-count-item lp_lesson">5 Lessons</div></div>';
 
 	return (
 		<>
@@ -15,40 +16,40 @@ export const edit = ( props ) => {
 				<PanelBody title="Settings">
 					<ToggleControl
 						label="Show Label"
-						checked={ props.attributes.showLabel ? true : false }
+						checked={ attributes.showLabel }
 						onChange={ ( value ) => {
-							props.setAttributes( {
-								showLabel: value ? true : false,
+							setAttributes( {
+								showLabel: value,
 							} );
 						} }
 					/>
 					<ToggleControl
 						label="Show Icon"
-						checked={ props.attributes.showIcon ? true : false }
+						checked={ attributes.showIcon }
 						onChange={ ( value ) => {
-							props.setAttributes( {
-								showIcon: value ? true : false,
+							setAttributes( {
+								showIcon: value,
 							} );
 						} }
 					/>
 				</PanelBody>
 			</InspectorControls>
 
-			<div
-				{...blockProps}
-			>
+			<div { ...blockProps }>
 				<div className="info-meta-item">
 					<span className="info-meta-left">
-						{ props.attributes.showIcon && (
-							<span dangerouslySetInnerHTML={{ __html: '<i class="lp-icon-file-o"></i>' }} />
+						{ attributes.showIcon && (
+							<span dangerouslySetInnerHTML={ { __html: '<i class="lp-icon-file-o"></i>' } } />
 						) }
-						{props.attributes.showLabel ? 'Lesson:' : ''}
+						{ attributes.showLabel ? 'Lesson:' : '' }
 					</span>
-					<span className="info-meta-right" dangerouslySetInnerHTML={{
+					<span className="info-meta-right" dangerouslySetInnerHTML={ {
 						__html: courseLesson,
-					}}></span>
+					} }></span>
 				</div>
 			</div>
 		</>
 	);
 };
+
+export default Edit;
