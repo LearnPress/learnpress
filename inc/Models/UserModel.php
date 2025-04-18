@@ -538,20 +538,22 @@ class UserModel {
 	 * @version 1.0.4
 	 */
 	public function get_instructor_statistic( array $params = [] ): array {
-		$statistic = array(
+		
+		$statistic = [
 			'total_course'        => 0,
 			'published_course'    => 0,
 			'pending_course'      => 0,
 			'total_student'       => 0,
 			'student_completed'   => 0,
 			'student_in_progress' => 0,
-		);
+		];
 
 		try {
-			$key_cache_first = "instructor/{$this->get_id()}/statistic";
-			$statistic       = LP_Cache::cache_load_first( 'get', $key_cache_first );
-			if ( $statistic !== false ) {
-				return $statistic;
+			
+			$cache_key = "instructor/{$this->get_id()}/statistic";
+			$cache = LP_Cache::cache_load_first( 'get', $cache_key );
+			if ( $cache !== false ) {
+				return $cache;
 			}
 
 			$user_id          = $this->get_id();
@@ -596,7 +598,8 @@ class UserModel {
 			$statistic['student_in_progress'] = $count_student_has_status->{LP_COURSE_GRADUATION_IN_PROGRESS} ?? 0;
 
 			// Set cache first.
-			LP_Cache::cache_load_first( 'set', $key_cache_first, $statistic );
+			LP_Cache::cache_load_first( 'set', $cache_key, $statistic );
+			
 		} catch ( Throwable $e ) {
 			error_log( __FUNCTION__ . ': ' . $e->getMessage() );
 		}
