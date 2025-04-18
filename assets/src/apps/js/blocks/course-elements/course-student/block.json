@@ -19,9 +19,7 @@
 		}
 	},
 	"supports": {
-		"multiple": true,
 		"align": ["wide", "full"],
-		"html": false,
 		"typography": {
 			"fontSize": true,
 			"lineHeight": false,
