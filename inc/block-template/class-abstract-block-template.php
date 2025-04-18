@@ -31,6 +31,7 @@ abstract class Abstract_Block_Template extends \WP_Block_Template {
 
 	public function __construct() {
 		if ( ! wp_is_block_theme() ) {
+			$this->has_theme_file = false;
 			return;
 		}
 		$this->id      = $this->theme . '//' . $this->slug;
