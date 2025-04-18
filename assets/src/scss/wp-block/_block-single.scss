@@ -1,3 +1,6 @@
+@import "../mixin.scss";
+@import "../variables.scss";
+
 .wp-block-learnpress-breadcrumb {
 	ul.learn-press-breadcrumb {
 		padding: 0;
@@ -30,6 +33,7 @@
 }
 
 .wp-block-learnpress-course-button{
+	cursor: pointer;
 	padding: 12px 24px;
 	background-color: $color-primary;
 	border-width: 0;
@@ -37,6 +41,18 @@
 	border-color: $color-primary;
 	color: $color-white;
 	font-size: $font-size-base;
+	@include transition(all 0.25s);
+
+	&:hover {
+		background-color: var(--lp-secondary-color);
+		border-color: var(--lp-secondary-color);
+	}
+
+	&.loading {
+		pointer-events: none;
+		opacity: 0.8;
+		@include loading();
+	}
 }
 
 @media (min-width: 992px) {
