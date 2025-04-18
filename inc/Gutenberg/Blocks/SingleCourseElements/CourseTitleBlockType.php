@@ -47,10 +47,6 @@ class CourseTitleBlockType extends AbstractCourseBlockType {
 		];
 	}
 
-	public function get_ancestor() {
-		return [ 'learnpress/single-course', 'learnpress/course-item-template' ];
-	}
-
 	/**
 	 * Render content of block tag
 	 *
@@ -70,14 +66,14 @@ class CourseTitleBlockType extends AbstractCourseBlockType {
 			$singleCourseTemplate = SingleCourseTemplate::instance();
 			$tag                  = $attributes['tag'] ?? 'h3';
 			$is_link              = $attributes['isLink'] ?? false;
- 			$target               = $attributes['target'] ? 'target="_blank"' : '';
+			$target               = $attributes['target'] ?? false;
 
 			$html_content = $singleCourseTemplate->html_title( $courseModel );
 			if ( $is_link ) {
 				$html_content = sprintf(
 					'<a class="course-permalink" href="%s" %s>%s</a>',
 					esc_url( $courseModel->get_permalink() ),
-					$target,
+					$target ? 'target="_blank"' : '',
 					$singleCourseTemplate->html_title( $courseModel )
 				);
 			}

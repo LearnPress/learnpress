@@ -105,7 +105,7 @@ p {
 }
 
 
-[class^="wp-block-learnpress"], .block-editor-block-list__block {
+[class*="wp-block-learnpress"], .block-editor-block-list__block {
 	img {
 		max-width: 100%;
 		height: auto;
