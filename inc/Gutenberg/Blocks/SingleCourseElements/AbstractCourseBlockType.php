@@ -20,6 +20,14 @@ abstract class AbstractCourseBlockType extends AbstractBlockType {
 	];
 
 	/**
+	 * Show block when block parent is course item template, single course active
+	 * @return string[]
+	 */
+	public function get_ancestor() {
+		return [ 'learnpress/single-course', 'learnpress/course-item-template' ];
+	}
+
+	/**
 	 * Get course model
 	 *
 	 * @param $attributes
