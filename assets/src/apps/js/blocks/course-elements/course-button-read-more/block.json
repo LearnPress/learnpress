@@ -1,0 +1,49 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "learnpress/course-button-read-more",
+	"title": "Course Button Read More",
+	"category": "learnpress-course-elements",
+	"icon": "button",
+	"description": "Renders template Button Course Read More PHP templates.",
+	"textdomain": "learnpress",
+	"keywords": ["button read more single course", "learnpress"],
+	"usesContext": ["lpCourseData"],
+	"supports": {
+		"multiple": true,
+		"align": ["wide", "full"],
+		"html": false,
+		"typography": {
+			"fontSize": true,
+			"__experimentalDefaultControls": { "fontSize": true }
+		},
+		"color": {
+			"background": true,
+			"text": true,
+			"__experimentalDefaultControls": {
+				"background": true,
+				"text": true
+			}
+		},
+		"__experimentalBorder": {
+			"color": true,
+			"radius": true,
+			"width": true,
+			"__experimentalDefaultControls": {
+				"width": false,
+				"color": false,
+				"radius": false
+			}
+		},
+		"spacing": {
+			"margin": true,
+			"padding": true,
+			"content": true,
+ 			"__experimentalDefaultControls": {
+				"margin": false,
+				"padding": false,
+				"content": true
+			}
+		}
+	}
+}
