@@ -17,25 +17,27 @@ class CourseCategoriesBlockType extends AbstractCourseBlockType {
 
 	public function get_supports(): array {
 		return [
-			'align'                => [ 'wide', 'full' ],
-			'color'                => [
-				'gradients'  => true,
-				'background' => true,
-				'text'       => true,
+			'align'      => [ 'wide', 'full' ],
+			'typography' => [
+				'fontSize'                      => true,
+				'lineHeight'                    => false,
+				'fontWeight'                    => true,
+				'__experimentalFontFamily'      => false,
+				'__experimentalTextDecoration'  => false,
+				'__experimentalFontStyle'       => false,
+				'__experimentalFontWeight'      => true,
+				'__experimentalLetterSpacing'   => false,
+				'__experimentalTextTransform'   => true,
+				'__experimentalDefaultControls' => [ 'fontSize' => true ],
 			],
-			'typography'           => [
-				'fontSize'                    => true,
-				'__experimentalFontWeight'    => true,
-				'__experimentalTextTransform' => true,
-			],
-			'spacing'              => [
-				'padding' => true,
-				'margin'  => true,
-			],
-			'__experimentalBorder' => [
-				'color'  => true,
-				'radius' => true,
-				'width'  => true,
+			'color'      => [
+				'background'                    => false,
+				'text'                          => true,
+				'link'                          => true,
+				'__experimentalDefaultControls' => [
+					'link' => false,
+					'text' => true,
+				],
 			],
 		];
 	}

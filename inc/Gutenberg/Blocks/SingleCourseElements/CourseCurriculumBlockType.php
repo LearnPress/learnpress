@@ -18,25 +18,36 @@ class CourseCurriculumBlockType extends AbstractCourseBlockType {
 	public function get_supports(): array {
 		return [
 			'align'      => [ 'wide', 'full' ],
-			'color'                => [
-				'gradients'  => true,
-				'background' => true,
-				'text'       => true,
-				'heading'    => true,
+			'typography' => [
+				'fontSize'                      => true,
+				'lineHeight'                    => false,
+				'fontWeight'                    => true,
+				'__experimentalFontFamily'      => false,
+				'__experimentalTextDecoration'  => false,
+				'__experimentalFontStyle'       => false,
+				'__experimentalFontWeight'      => true,
+				'__experimentalLetterSpacing'   => false,
+				'__experimentalTextTransform'   => true,
+				'__experimentalDefaultControls' => [ 'fontSize' => true ],
 			],
-			'typography'           => [
-				'fontSize'                    => true,
-				'__experimentalFontWeight'    => true,
-				'__experimentalTextTransform' => true,
+			'color'      => [
+				'background'                    => false,
+				'text'                          => true,
+				'link'                          => false,
+				'heading'                       => true,
+				'gradients'                     => false,
+				'__experimentalDefaultControls' => [
+					'text' => true,
+					'h3'   => true,
+				],
 			],
-			'spacing'              => [
-				'padding' => true,
-				'margin'  => true,
-			],
-			'__experimentalBorder' => [
-				'color'  => true,
-				'radius' => true,
-				'width'  => true,
+			'spacing'    => [
+				'padding'                       => true,
+				'margin'                        => true,
+				'__experimentalDefaultControls' => [
+					'margin'  => false,
+					'padding' => false,
+				],
 			],
 		];
 	}
@@ -56,7 +67,7 @@ class CourseCurriculumBlockType extends AbstractCourseBlockType {
 		$html = '';
 
 		try {
-			$courseModel = $this->get_course( $attributes );
+			$courseModel = $this->get_course( $attributes, $block );
 			$userModel   = $this->get_user();
 			if ( ! $courseModel ) {
 				return $html;

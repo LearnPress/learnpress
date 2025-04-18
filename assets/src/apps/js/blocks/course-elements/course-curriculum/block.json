@@ -9,7 +9,6 @@
 	"keywords": ["curriculum single course", "learnpress"],
 	"usesContext": [],
 	"supports": {
-		"multiple": false,
 		"align": ["wide", "full"],
 		"html": false,
 		"typography": {

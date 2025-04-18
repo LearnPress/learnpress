@@ -1,32 +1,32 @@
-import {__} from '@wordpress/i18n';
-import {useBlockProps} from '@wordpress/block-editor';
+import { __ } from '@wordpress/i18n';
+import { useBlockProps } from '@wordpress/block-editor';
 
-export const edit = (props) => {
+const Edit = ( props ) => {
 	const blockProps = useBlockProps();
 	return (
 		<>
-			<div {...blockProps}>
+			<div { ...blockProps }>
 				<div className="lp-course-curriculum">
 					<h3 className="lp-course-curriculum__title">
-						{'Curriculum'}
+						{ 'Curriculum' }
 					</h3>
 					<div className="course-curriculum-info">
 						<ul className="course-curriculum-info__left">
 							<li className="course-count-section">
-								{'2 Sections'}
+								{ '2 Sections' }
 							</li>
 							<li className="course-count-lesson">
-								{'3 Lessons'}
+								{ '3 Lessons' }
 							</li>
 							<li className="course-duration">
 								<span className="course-duration">
-									{'3 Weeks'}
+									{ '3 Weeks' }
 								</span>
 							</li>
 						</ul>
 						<div className="course-curriculum-info__right">
 							<span className="course-toggle-all-sections">
-								{'Expand all sections'}
+								{ 'Expand all sections' }
 							</span>
 						</div>
 					</div>
@@ -39,11 +39,11 @@ export const edit = (props) => {
 									</div>
 									<div className="course-section-info">
 										<div className="course-section__title">
-											{'Section 1'}
+											{ 'Section 1' }
 										</div>
 									</div>
 									<div className="section-count-items">
-										{'3'}
+										{ '3' }
 									</div>
 								</div>
 								<ul className="course-section__items">
@@ -53,10 +53,10 @@ export const edit = (props) => {
 												className="course-item-ico lp_lesson"></span></div>
 											<div className="course-item__content">
 												<div className="course-item__left">
-													<div className="course-item-title">{'What is LearnPress?'}</div>
+													<div className="course-item-title">{ 'What is LearnPress?' }</div>
 												</div>
 												<div className="course-item__right"><span
-													className="duration">{'20 Minutes'}</span></div>
+													className="duration">{ '20 Minutes' }</span></div>
 											</div>
 											<div className="course-item__status"><span
 												className="course-item-ico in-progress"></span></div>
@@ -67,10 +67,10 @@ export const edit = (props) => {
 											className="course-item-ico lp_lesson"></span></div>
 										<div className="course-item__content">
 											<div className="course-item__left">
-												<div className="course-item-title">{'How to use LearnPress?'}</div>
+												<div className="course-item-title">{ 'How to use LearnPress?' }</div>
 											</div>
 											<div className="course-item__right"><span
-												className="duration">{'60 Minutes'}</span></div>
+												className="duration">{ '60 Minutes' }</span></div>
 										</div>
 										<div className="course-item__status"><span
 											className="course-item-ico preview"></span></div>
@@ -80,11 +80,11 @@ export const edit = (props) => {
 											className="course-item-ico lp_quiz"></span></div>
 										<div className="course-item__content">
 											<div className="course-item__left">
-												<div className="course-item-title">{'Demo the Quiz of LearnPress'}</div>
+												<div className="course-item-title">{ 'Demo the Quiz of LearnPress' }</div>
 											</div>
 											<div className="course-item__right"><span
-												className="duration">{'10 Minutes'}</span><span
-												className="question-count">{'4 Questions'}</span></div>
+												className="duration">{ '10 Minutes' }</span><span
+												className="question-count">{ '4 Questions' }</span></div>
 										</div>
 										<div className="course-item__status"><span
 											className="course-item-ico locked"></span></div>
@@ -98,7 +98,7 @@ export const edit = (props) => {
 									</div>
 									<div className="course-section-info">
 										<div className="course-section__title">
-											{'Section 2'}
+											{ 'Section 2' }
 										</div>
 										<div className="course-section__description">
 											{
@@ -107,7 +107,7 @@ export const edit = (props) => {
 										</div>
 									</div>
 									<div className="section-count-items">
-										{'10'}
+										{ '10' }
 									</div>
 								</div>
 							</li>
@@ -118,3 +118,5 @@ export const edit = (props) => {
 		</>
 	);
 };
+
+export default Edit;
