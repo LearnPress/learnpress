@@ -98,6 +98,15 @@ class CourseButtonBlockType extends AbstractCourseBlockType {
 			$wrapper = get_block_wrapper_attributes();
 			$html    = $html_button;
 
+			// Set align to course-buttons.
+			if ( isset( $attributes['align'] ) && $attributes['align'] ) {
+				$html_button = str_replace(
+					'class="course-buttons',
+					'class="course-buttons ' . 'align' . $attributes['align'] . ' ',
+					$html_button
+				);
+			}
+
 			preg_match( '#class="(.*)"#i', $wrapper, $class_wrapper_find );
 			if ( isset( $class_wrapper_find['1'] ) ) {
 				// Find class button lp to replace.
