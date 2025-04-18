@@ -96,6 +96,7 @@ class CourseButtonBlockType extends AbstractCourseBlockType {
 			}
 
 			$wrapper = get_block_wrapper_attributes();
+			$html    = $html_button;
 
 			preg_match( '#class="(.*)"#i', $wrapper, $class_wrapper_find );
 			if ( isset( $class_wrapper_find['1'] ) ) {
