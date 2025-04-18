@@ -2,7 +2,7 @@ import { __ } from '@wordpress/i18n';
 import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import { PanelBody, ToggleControl } from '@wordpress/components';
 
-export const edit = ( props ) => {
+const Edit = ( props ) => {
 	const blockProps = useBlockProps();
 	const { attributes, setAttributes, context } = props;
 	const { lpCourseData } = context;
@@ -13,29 +13,29 @@ export const edit = ( props ) => {
 				<PanelBody title="Settings">
 					<ToggleControl
 						label="Show text 'by'"
-						checked={ props.attributes.showText ? true : false }
+						checked={ attributes.showText }
 						onChange={ ( value ) => {
-							props.setAttributes( {
-								showText: value ? true : false,
+							setAttributes( {
+								showText: value,
 							} );
 						} }
 					/>
 					<ToggleControl
 						label="Is link"
-						checked={ props.attributes.isLink ? true : false }
+						checked={ attributes.isLink }
 						onChange={ ( value ) => {
-							props.setAttributes( {
-								isLink: value ? true : false,
+							setAttributes( {
+								isLink: value,
 							} );
 						} }
 					/>
-					{ props.attributes.isLink ? (
+					{ attributes.isLink ? (
 						<ToggleControl
 							label="Open is new tab"
-							checked={ props.attributes.target ? true : false }
+							checked={ attributes.target }
 							onChange={ ( value ) => {
-								props.setAttributes( {
-									target: value ? true : false,
+								setAttributes( {
+									target: value,
 								} );
 							} }
 						/>
@@ -46,24 +46,18 @@ export const edit = ( props ) => {
 			</InspectorControls>
 			<div { ...blockProps }>
 				<div className="is-layout-flex c-gap-4">
-					<label>{ props.attributes.showText ? 'in ' : '' }</label>
+					{ attributes.showText ? 'in ' : '' }
 					<div className="course-categories">
-					{ props.attributes.isLink ? (
-						<a
-							dangerouslySetInnerHTML={ {
-								__html: courseCategory,
-							} }
-						></a>
-					) : (
 						<div
 							dangerouslySetInnerHTML={ {
 								__html: courseCategory,
 							} }
 						></div>
-					) }
-				</div>
+					</div>
 				</div>
 			</div>
 		</>
 	);
 };
+
+export default Edit;

@@ -140,12 +140,13 @@ class SingleCourseTemplate {
 	 * Get display categories course.
 	 *
 	 * @param LP_Course|CourseModel $course
+	 * @param array $setting
 	 *
 	 * @return string
 	 * @since 4.2.6
 	 * @version 1.0.3
 	 */
-	public function html_categories( $course, $setting = [] ): string {
+	public function html_categories( $course, array $setting = [] ): string {
 		$html            = '';
 		$default_setting = [
 			'is_link' => '',
@@ -166,8 +167,9 @@ class SingleCourseTemplate {
 			if ( empty( $cats ) ) {
 				return '';
 			}
-			$is_link          = $setting['is_link'] === 'false' ? false : true;
-			$attribute_target = $setting['new_tab'] === 'true' ? 'target="_blank"' : '';
+
+			$is_link          = $setting['is_link'] ?? false;
+			$attribute_target = ! empty( $setting['new_tab'] ) ? 'target="_blank"' : '';
 			$cat_names        = [];
 			foreach ( $cats as $cat ) {
 				if ( $is_link ) {
@@ -178,7 +180,7 @@ class SingleCourseTemplate {
 						$cat->name
 					);
 				} else {
-					$term = sprintf( $cat->name );
+					$term = $cat->name;
 				}
 
 				$cat_names[] = $term;
