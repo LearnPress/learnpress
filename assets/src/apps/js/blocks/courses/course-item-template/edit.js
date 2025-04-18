@@ -74,28 +74,23 @@ function PostTemplateBlockPreview( {
 }
 
 const fetchLearnPressCourses = async ( courseQuery, signal ) => {
-	try {
-		const url = API.apiCourses;
-		let params = '?return_type=json';
+	const url = API.apiCourses;
+	let params = '?return_type=json';
 
-		if ( courseQuery ) {
-			params += `&${ new URLSearchParams( courseQuery ).toString() }`;
-		}
-
-		const response = await fetch( url + params, {
-			method: 'GET',
-			signal,
-		} );
-
-		if ( ! response.ok ) {
-			throw new Error( `HTTP error! Status: ${ response.status }` );
-		}
-
-		return await response.json();
-	} catch ( error ) {
-		console.error( 'Error fetching LearnPress courses:', error );
-		return null;
+	if ( courseQuery ) {
+		params += `&${ new URLSearchParams( courseQuery ).toString() }`;
 	}
+
+	const response = await fetch( url + params, {
+		method: 'GET',
+		signal,
+	} );
+
+	if ( ! response.ok ) {
+		throw new Error( `HTTP error! Status: ${ response.status }` );
+	}
+
+	return await response.json();
 };
 
 const MemoizedPostTemplateBlockPreview = memo( PostTemplateBlockPreview );
