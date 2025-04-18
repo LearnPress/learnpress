@@ -10,9 +10,7 @@
 	"keywords": ["box extra faqs single course", "learnpress"],
 	"usesContext": [],
 	"supports": {
-		"multiple": false,
 		"align": ["wide", "full"],
-		"html": false,
 		"typography": {
 			"fontSize": true,
 			"lineHeight": false,
