@@ -6,14 +6,13 @@ export const edit = ( props ) => {
 	const blockProps = useBlockProps();
 	const { attributes, setAttributes, context } = props;
 	const { lpCourseData } = context;
-	const courseInstructor =
-		lpCourseData?.instructor || '<strong>Instructor</strong>';
+	const courseInstructor = lpCourseData?.instructor || '<strong>Instructor</strong>';
 	return (
 		<>
 			<InspectorControls>
-				<PanelBody title="Settings">
+				<PanelBody title={ __( 'Settings', 'learnpress' ) }>
 					<ToggleControl
-						label="Show text 'by'"
+						label={ __( "Show text 'by'", 'learnpress' ) }
 						checked={ props.attributes.showText ? true : false }
 						onChange={ ( value ) => {
 							props.setAttributes( {
@@ -22,7 +21,7 @@ export const edit = ( props ) => {
 						} }
 					/>
 					<ToggleControl
-						label="Is link"
+						label={ __( 'Is link', 'learnpress' ) }
 						checked={ props.attributes.isLink ? true : false }
 						onChange={ ( value ) => {
 							props.setAttributes( {
@@ -32,7 +31,7 @@ export const edit = ( props ) => {
 					/>
 					{ props.attributes.isLink ? (
 						<ToggleControl
-							label="Open is new tab"
+							label={ __( 'Open is new tab', 'learnpress' ) }
 							checked={ props.attributes.target ? true : false }
 							onChange={ ( value ) => {
 								props.setAttributes( {
@@ -49,20 +48,20 @@ export const edit = ( props ) => {
 				<div className="is-layout-flex c-gap-4">
 					<label>{ props.attributes.showText ? 'by ' : '' }</label>
 					<div className="course-instructor">
-					{ props.attributes.isLink ? (
-						<a
-							dangerouslySetInnerHTML={ {
-								__html: courseInstructor,
-							} }
-						></a>
-					) : (
-						<div
-							dangerouslySetInnerHTML={ {
-								__html: courseInstructor,
-							} }
-						></div>
-					) }
-				</div>
+						{ props.attributes.isLink ? (
+							<a
+								dangerouslySetInnerHTML={ {
+									__html: courseInstructor,
+								} }
+							></a>
+						) : (
+							<div
+								dangerouslySetInnerHTML={ {
+									__html: courseInstructor,
+								} }
+							></div>
+						) }
+					</div>
 				</div>
 			</div>
 		</>

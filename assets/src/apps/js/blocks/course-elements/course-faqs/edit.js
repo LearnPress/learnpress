@@ -7,7 +7,7 @@ export const edit = ( props ) => {
 		<>
 			<div { ...blockProps }>
 				<div className="course-faqs course-tab-panel-faqs">
-					<h3 className="course-faqs__title">{ 'FAQs' }</h3>
+					<h3 className="course-faqs__title">{ __( 'FAQs', 'learnpress' ) }</h3>
 					<div className="course-faqs-box">
 						<label className="course-faqs-box__title">
 							{

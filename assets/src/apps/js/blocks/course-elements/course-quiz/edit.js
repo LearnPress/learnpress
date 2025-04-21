@@ -14,9 +14,9 @@ const Edit = ( props ) => {
 	return (
 		<>
 			<InspectorControls>
-				<PanelBody title="Settings">
+				<PanelBody title={ __( 'Settings', 'learnpress' ) }>
 					<ToggleControl
-						label="Show Label"
+						label={ __( 'Show Label', 'learnpress' ) }
 						checked={ attributes.showLabel }
 						onChange={ ( value ) => {
 							setAttributes( {
@@ -25,7 +25,7 @@ const Edit = ( props ) => {
 						} }
 					/>
 					<ToggleControl
-						label="Show Icon"
+						label={ __( 'Show Icon', 'learnpress' ) }
 						checked={ attributes.showIcon }
 						onChange={ ( value ) => {
 							setAttributes( {
@@ -39,13 +39,18 @@ const Edit = ( props ) => {
 				<div className="info-meta-item">
 					<span className="info-meta-left">
 						{ attributes.showIcon && (
-							<span dangerouslySetInnerHTML={ { __html: '<i class="lp-icon-puzzle-piece"></i>' } } />
+							<span
+								dangerouslySetInnerHTML={ { __html: '<i class="lp-icon-puzzle-piece"></i>' } }
+							/>
 						) }
 						{ attributes.showLabel ? 'Quiz:' : '' }
 					</span>
-					<span className="info-meta-right" dangerouslySetInnerHTML={ {
-						__html: courseQuiz,
-					} }></span>
+					<span
+						className="info-meta-right"
+						dangerouslySetInnerHTML={ {
+							__html: courseQuiz,
+						} }
+					></span>
 				</div>
 			</div>
 		</>

@@ -6,7 +6,7 @@ export const edit = ( props ) => {
 	return (
 		<>
 			<div { ...blockProps }>
-				<strong>{ 'Search' }</strong>
+				<strong>{ __( 'Search', 'learnpress' ) }</strong>
 				<div className="search-box"></div>
 			</div>
 		</>

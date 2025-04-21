@@ -6,7 +6,7 @@ export const edit = ( props ) => {
 	return (
 		<>
 			<div { ...blockProps }>
-				<strong>{ 'Category' }</strong>
+				<strong>{ __( 'Category', 'learnpress' ) }</strong>
 				<div className="lp-course-filter__field">
 					<input type="checkbox"></input>
 					<label>{ 'Category 1' }</label>

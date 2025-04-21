@@ -23,9 +23,9 @@ const Edit = ( props ) => {
 	return (
 		<>
 			<InspectorControls>
-				<PanelBody title="Settings">
+				<PanelBody title={ __( 'Settings', 'learnpress' ) }>
 					<SelectControl
-						label="Tag"
+						label={ __( 'Tag', 'learnpress' ) }
 						value={ tag }
 						options={ tagOptions }
 						onChange={ ( value ) => setAttributes( { tag: value } ) }
@@ -42,7 +42,7 @@ const Edit = ( props ) => {
 					/>
 					{ props.attributes.isLink ? (
 						<ToggleControl
-							label="Open is new tab"
+							label={ __( 'Open is new tab', 'learnpress' ) }
 							checked={ !! target }
 							onChange={ ( value ) => {
 								props.setAttributes( {

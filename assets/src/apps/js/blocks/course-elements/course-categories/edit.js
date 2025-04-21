@@ -10,9 +10,9 @@ const Edit = ( props ) => {
 	return (
 		<>
 			<InspectorControls>
-				<PanelBody title="Settings">
+				<PanelBody title={ __( 'Settings', 'learnpress' ) }>
 					<ToggleControl
-						label="Show text 'by'"
+						label={ __( "Show text 'by'", 'learnpress' ) }
 						checked={ attributes.showText }
 						onChange={ ( value ) => {
 							setAttributes( {
@@ -21,7 +21,7 @@ const Edit = ( props ) => {
 						} }
 					/>
 					<ToggleControl
-						label="Is link"
+						label={ __( 'Is link', 'learnpress' ) }
 						checked={ attributes.isLink }
 						onChange={ ( value ) => {
 							setAttributes( {
@@ -31,7 +31,7 @@ const Edit = ( props ) => {
 					/>
 					{ attributes.isLink ? (
 						<ToggleControl
-							label="Open is new tab"
+							label={ __( 'Open is new tab', 'learnpress' ) }
 							checked={ attributes.target }
 							onChange={ ( value ) => {
 								setAttributes( {

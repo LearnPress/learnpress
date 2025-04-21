@@ -7,15 +7,16 @@ const Edit = ( props ) => {
 	const blockProps = useBlockProps();
 	const { attributes, setAttributes, context } = props;
 	const { lpCourseData } = context;
-	const courseLesson = lpCourseData?.lesson ||
+	const courseLesson =
+		lpCourseData?.lesson ||
 		'<div class="course-count-lesson"><div class="course-count-item lp_lesson">5 Lessons</div></div>';
 
 	return (
 		<>
 			<InspectorControls>
-				<PanelBody title="Settings">
+				<PanelBody title={ __( 'Settings', 'learnpress' ) }>
 					<ToggleControl
-						label="Show Label"
+						label={ __( 'Show Label', 'learnpress' ) }
 						checked={ attributes.showLabel }
 						onChange={ ( value ) => {
 							setAttributes( {
@@ -24,7 +25,7 @@ const Edit = ( props ) => {
 						} }
 					/>
 					<ToggleControl
-						label="Show Icon"
+						label={ __( 'Show Icon', 'learnpress' ) }
 						checked={ attributes.showIcon }
 						onChange={ ( value ) => {
 							setAttributes( {
@@ -43,9 +44,12 @@ const Edit = ( props ) => {
 						) }
 						{ attributes.showLabel ? 'Lesson:' : '' }
 					</span>
-					<span className="info-meta-right" dangerouslySetInnerHTML={ {
-						__html: courseLesson,
-					} }></span>
+					<span
+						className="info-meta-right"
+						dangerouslySetInnerHTML={ {
+							__html: courseLesson,
+						} }
+					></span>
 				</div>
 			</div>
 		</>

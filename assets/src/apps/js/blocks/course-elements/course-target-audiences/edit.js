@@ -7,7 +7,7 @@ export const edit = ( props ) => {
 		<>
 			<div { ...blockProps }>
 				<div className="course-target extra-box">
-					<h3 className="extra-box__title">{ 'Target audiences' }</h3>
+					<h3 className="extra-box__title">{ __( 'Target audiences', 'learnpress' ) }</h3>
 					<ul>
 						<li>
 							{
@@ -19,11 +19,7 @@ export const edit = ( props ) => {
 								'Fuisse confirmandus materiam reges versuta improbos inconstantissime rationis antiocho stultorum sequetur dicimus emolumento video hanc'
 							}
 						</li>
-						<li>
-							{
-								'Perfecit exquisita urbe asoti discere decimum existeret lyco morbo hi'
-							}
-						</li>
+						<li>{ 'Perfecit exquisita urbe asoti discere decimum existeret lyco morbo hi' }</li>
 					</ul>
 				</div>
 			</div>

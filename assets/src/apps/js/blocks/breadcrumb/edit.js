@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
 import { PanelBody, ToggleControl, TextControl } from '@wordpress/components';
 
@@ -6,9 +7,9 @@ export const edit = ( props ) => {
 	return (
 		<>
 			<InspectorControls>
-				<PanelBody title="Settings">
+				<PanelBody title={ __( 'Settings', 'learnpress' ) }>
 					<ToggleControl
-						label="Show Home"
+						label={ __( 'Show Home', 'learnpress' ) }
 						checked={ props.attributes.showHome ? true : false }
 						onChange={ ( value ) =>
 							props.setAttributes( {
@@ -18,7 +19,7 @@ export const edit = ( props ) => {
 					/>
 					{ props.attributes.showHome ? (
 						<TextControl
-							label="Home Label"
+							label={ __( 'Home Label', 'learnpress' ) }
 							onChange={ ( value ) => {
 								props.setAttributes( {
 									homeLabel: value ?? 'Home',
@@ -46,13 +47,13 @@ export const edit = ( props ) => {
 						''
 					) }
 					<li>
-						<a>{ 'Navigation' }</a>
+						<a>{ __( 'Navigation', 'learnpress' ) }</a>
 					</li>
 					<li className="breadcrumb-delimiter">
 						<i className="lp-icon-angle-right"></i>
 					</li>
 					<li>
-						<span>{ 'Path' }</span>
+						<span>{ __( 'Path', 'learnpress' ) }</span>
 					</li>
 				</ul>
 			</div>

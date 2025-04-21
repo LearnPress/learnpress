@@ -8,11 +8,7 @@ import {
 	__experimentalToolsPanel as ToolsPanel,
 	__experimentalToolsPanelItem as ToolsPanelItem,
 } from '@wordpress/components';
-import {
-	useBlockProps,
-	InspectorControls,
-	InnerBlocks,
-} from '@wordpress/block-editor';
+import { useBlockProps, InspectorControls, InnerBlocks } from '@wordpress/block-editor';
 
 const Edit = ( props ) => {
 	const blockProps = useBlockProps();
@@ -43,7 +39,7 @@ const Edit = ( props ) => {
 	return (
 		<>
 			<InspectorControls>
-				<PanelBody title={ __( 'Query Settings' ) }>
+				<PanelBody title={ __( 'Query Settings', 'learnpress' ) }>
 					<RangeControl
 						label={ __( 'Posts per page' ) }
 						value={ courseQuery.limit }
@@ -56,7 +52,7 @@ const Edit = ( props ) => {
 						max={ 20 }
 					/>
 					<ToggleControl
-						label={ __( 'Related Course' ) }
+						label={ __( 'Related Course', 'learnpress' ) }
 						checked={ courseQuery.related }
 						onChange={ ( related ) => {
 							if ( related ) {
@@ -103,17 +99,15 @@ const Edit = ( props ) => {
 					) }
 				</PanelBody>
 				{ ! courseQuery.related && (
-					<ToolsPanel label={ 'Filter' } resetAll={ resetAllTaxonomy }>
+					<ToolsPanel label={ __( 'Filter', 'learnpress' ) } resetAll={ resetAllTaxonomy }>
 						<ToolsPanelItem
-							label={ 'Taxonomy' }
+							label={ __( 'Taxonomy', 'learnpress' ) }
 							onSelect={ () => resetAllTaxonomy() }
-							hasValue={ () =>
-								!! courseQuery.term_id || !! courseQuery.tag_id
-							}
+							hasValue={ () => !! courseQuery.term_id || !! courseQuery.tag_id }
 							onDeselect={ () => resetAllTaxonomy() }
 						>
 							<TextControl
-								label={ 'Category' }
+								label={ __( 'Category', 'learnpress' ) }
 								onChange={ ( term_id ) => {
 									setAttributes( {
 										courseQuery: {
@@ -126,7 +120,7 @@ const Edit = ( props ) => {
 							/>
 
 							<TextControl
-								label={ 'Tag' }
+								label={ __( 'Tag', 'learnpress' ) }
 								onChange={ ( tag_id ) => {
 									setAttributes( {
 										courseQuery: { ...courseQuery, tag_id },

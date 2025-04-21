@@ -4,10 +4,10 @@ export const edit = ( props ) => {
 	const blockProps = useBlockProps();
 	return (
 		<>
-			<div {...blockProps}>
+			<div { ...blockProps }>
 				<div className="is-layout-flex c-gap-4">
 					<i className="lp-icon-share-alt"></i>
-					<span>{'Share'}</span>
+					<span>{ __( 'Share', 'learnpress' ) }</span>
 				</div>
 			</div>
 		</>

@@ -5,7 +5,7 @@ export const edit = ( props ) => {
 	const blockProps = useBlockProps();
 	return (
 		<>
-			<div { ...blockProps }>{ 'Apply' }</div>
+			<div { ...blockProps }>{ __( 'Apply', 'learnpress' ) }</div>
 		</>
 	);
 };

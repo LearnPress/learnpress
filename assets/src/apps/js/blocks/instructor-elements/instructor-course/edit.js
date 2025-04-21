@@ -13,9 +13,9 @@ export const edit = ( props ) => {
 	return (
 		<>
 			<InspectorControls>
-				<PanelBody title="Settings">
+				<PanelBody title={ __( 'Settings', 'learnpress' ) }>
 					<SelectControl
-						label="Display Modes"
+						label={ __( 'Display Modes', 'learnpress' ) }
 						value={ props.attributes.hidden }
 						options={ mode }
 						onChange={ ( value ) =>
@@ -28,19 +28,17 @@ export const edit = ( props ) => {
 			</InspectorControls>
 			<div { ...blockProps }>
 				<div className="wrapper-instructor-total-courses">
-					{ props.attributes.hidden &&
-					props.attributes.hidden === 'icon' ? (
-							''
-						) : (
-							<span className="lp-ico lp-icon-courses"></span>
-						) }
+					{ props.attributes.hidden && props.attributes.hidden === 'icon' ? (
+						''
+					) : (
+						<span className="lp-ico lp-icon-courses"></span>
+					) }
 					<span className="instructor-total-courses">{ '99' }</span>
-					{ props.attributes.hidden &&
-					props.attributes.hidden === 'text' ? (
-							''
-						) : (
-							<span>{ 'Courses' }</span>
-						) }
+					{ props.attributes.hidden && props.attributes.hidden === 'text' ? (
+						''
+					) : (
+						<span>{ 'Courses' }</span>
+					) }
 				</div>
 			</div>
 		</>

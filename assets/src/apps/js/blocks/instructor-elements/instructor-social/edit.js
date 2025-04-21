@@ -7,9 +7,9 @@ export const edit = ( props ) => {
 	return (
 		<>
 			<InspectorControls>
-				<PanelBody title="Settings">
+				<PanelBody title={ __( 'Settings', 'learnpress' ) }>
 					<ToggleControl
-						label="Open links in new tab"
+						label={ __( 'Open links in new tab', 'learnpress' ) }
 						checked={ props.attributes.target ? true : false }
 						onChange={ ( value ) => {
 							props.setAttributes( {
@@ -18,7 +18,7 @@ export const edit = ( props ) => {
 						} }
 					/>
 					<ToggleControl
-						label="Add nofollow attribute"
+						label={ __( 'Add nofollow attribute', 'learnpress' ) }
 						checked={ props.attributes.nofollow ? true : false }
 						onChange={ ( value ) => {
 							props.setAttributes( {

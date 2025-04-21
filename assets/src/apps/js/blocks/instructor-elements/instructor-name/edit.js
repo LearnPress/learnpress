@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useBlockProps } from '@wordpress/block-editor';
 
 export const edit = ( props ) => {
@@ -7,7 +8,7 @@ export const edit = ( props ) => {
 			<div { ...blockProps }>
 				<h2>
 					<span className="instructor-display-name">
-						{ "Instructor's name" }
+						{ __( "Instructor's name", 'learnpress' ) }
 					</span>
 				</h2>
 			</div>

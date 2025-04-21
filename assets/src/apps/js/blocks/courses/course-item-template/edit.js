@@ -29,11 +29,11 @@ function PostTemplateInnerBlocks( { classList } ) {
 		{ className: classnames( 'wp-block-learnpress-course-item-template' ) },
 		{ template: TEMPLATE_DEFAULT }
 	);
-	return <li className="course" >
-		<div
-			{ ...innerBlocksProps }
-		></div>
-	</li>;
+	return (
+		<li className="course">
+			<div { ...innerBlocksProps }></div>
+		</li>
+	);
 }
 
 function PostTemplateBlockPreview( {
@@ -65,10 +65,7 @@ function PostTemplateBlockPreview( {
 			onKeyPress={ handleOnClick }
 			style={ style }
 		>
-			<div
-				{ ...blockPreviewProps }
-				className="wp-block-learnpress-course-item-template"
-			></div>
+			<div { ...blockPreviewProps } className="wp-block-learnpress-course-item-template"></div>
 		</li>
 	);
 }
@@ -142,7 +139,7 @@ const Edit = ( { clientId, context, attributes, setAttributes } ) => {
 				blocks: getBlocks( clientId ),
 			};
 		},
-		[ clientId ],
+		[ clientId ]
 	);
 
 	const blockContexts = useMemo(
@@ -151,7 +148,7 @@ const Edit = ( { clientId, context, attributes, setAttributes } ) => {
 				lpCourseData: course,
 				courseId: course?.ID,
 			} ) ),
-		[ listCourses ],
+		[ listCourses ]
 	);
 
 	if ( loadingAPI ) {
@@ -179,9 +176,9 @@ const Edit = ( { clientId, context, attributes, setAttributes } ) => {
 	return (
 		<>
 			<InspectorControls>
-				<PanelBody title={ __( 'Layout Settings' ) }>
+				<PanelBody title={ __( 'Layout Settings', 'learnpress' ) }>
 					<ToggleGroupControl
-						label={ 'Layout' }
+						label={ __( 'Layout', 'learnpress' ) }
 						value={ attributes.layout ?? 'list' }
 						onChange={ ( value ) => {
 							setAttributes( {
@@ -190,8 +187,8 @@ const Edit = ( { clientId, context, attributes, setAttributes } ) => {
 						} }
 						isBlock={ true }
 					>
-						<ToggleGroupControlOption value="list" label={ 'List' } />
-						<ToggleGroupControlOption value="grid" label={ 'Grid' } />
+						<ToggleGroupControlOption value="list" label={ __( 'List', 'learnpress' ) } />
+						<ToggleGroupControlOption value="grid" label={ __( 'Grid', 'learnpress' ) } />
 					</ToggleGroupControl>
 				</PanelBody>
 			</InspectorControls>
@@ -202,40 +199,44 @@ const Edit = ( { clientId, context, attributes, setAttributes } ) => {
 				>
 					{ blockContexts &&
 						blockContexts.map( ( blockContext ) => (
-							<BlockContextProvider
-								key={ blockContext.courseId }
-								value={ blockContext }
-							>
+							<BlockContextProvider key={ blockContext.courseId } value={ blockContext }>
 								{ blockContext.courseId ===
-								( activeBlockContextId ||
-									blockContexts[ 0 ]?.courseId ) ? (
-										<PostTemplateInnerBlocks
-											classList={ blockContext.classList }
-										/>
-									) : null }
+								( activeBlockContextId || blockContexts[ 0 ]?.courseId ) ? (
+									<PostTemplateInnerBlocks classList={ blockContext.classList } />
+								) : null }
 								<MemoizedPostTemplateBlockPreview
 									blocks={ blocks }
 									blockContextId={ blockContext.courseId }
 									classList={ blockContext.classList }
-									setActiveBlockContextId={
-										setActiveBlockContextId
-									}
+									setActiveBlockContextId={ setActiveBlockContextId }
 									isHidden={
 										blockContext.courseId ===
-										( activeBlockContextId ||
-											blockContexts[ 0 ]?.courseId )
+										( activeBlockContextId || blockContexts[ 0 ]?.courseId )
 									}
 								/>
 							</BlockContextProvider>
 						) ) }
 				</ul>
 				{ context.lpCourseQuery?.pagination && (
-					<nav className="learnpress-block-pagination navigation pagination"><ul className="page-numbers">
-						<li><span aria-current="page" className="page-numbers current">1</span></li>
-						<li><a className="page-numbers">2</a></li>
-						<li><a className="page-numbers">3</a></li>
-						<li><a className="next page-numbers"><i className="lp-icon-arrow-right"></i></a></li>
-					</ul>
+					<nav className="learnpress-block-pagination navigation pagination">
+						<ul className="page-numbers">
+							<li>
+								<span aria-current="page" className="page-numbers current">
+									1
+								</span>
+							</li>
+							<li>
+								<a className="page-numbers">2</a>
+							</li>
+							<li>
+								<a className="page-numbers">3</a>
+							</li>
+							<li>
+								<a className="next page-numbers">
+									<i className="lp-icon-arrow-right"></i>
+								</a>
+							</li>
+						</ul>
 					</nav>
 				) }
 			</>

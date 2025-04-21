@@ -1,8 +1,4 @@
-import {
-	InnerBlocks,
-	useBlockProps,
-	InspectorControls,
-} from '@wordpress/block-editor';
+import { InnerBlocks, useBlockProps, InspectorControls } from '@wordpress/block-editor';
 import { PanelBody, ToggleControl, TextControl } from '@wordpress/components';
 
 export const edit = ( props ) => {
@@ -10,9 +6,9 @@ export const edit = ( props ) => {
 	return (
 		<>
 			<InspectorControls>
-				<PanelBody title="Settings">
+				<PanelBody title={ __( 'Settings', 'learnpress' ) }>
 					<TextControl
-						label="Title"
+						label={ __( 'Title', 'learnpress' ) }
 						onChange={ ( value ) => {
 							props.setAttributes( {
 								title: value ?? '',
@@ -22,21 +18,19 @@ export const edit = ( props ) => {
 					/>
 
 					<TextControl
-						label="Level of category to display on Frontend"
+						label={ __( 'Level of category to display on Frontend', 'learnpress' ) }
 						type="number"
 						min="1"
 						onChange={ ( value ) => {
 							props.setAttributes( {
-								numberLevelCategory: value
-									? parseInt( value, 10 )
-									: 1,
+								numberLevelCategory: value ? parseInt( value, 10 ) : 1,
 							} );
 						} }
 						value={ props.attributes.numberLevelCategory ?? 1 }
 					/>
 
 					<ToggleControl
-						label="Load widget via REST"
+						label={ __( 'Load widget via REST', 'learnpress' ) }
 						checked={ props.attributes.showInRest ? true : false }
 						onChange={ ( value ) => {
 							props.setAttributes( {
@@ -46,7 +40,7 @@ export const edit = ( props ) => {
 					/>
 
 					<ToggleControl
-						label="Hide field has count is zero"
+						label={ __( 'Hide field has count is zero', 'learnpress' ) }
 						checked={ props.attributes.hideCountZero ? true : false }
 						onChange={ ( value ) => {
 							props.setAttributes( {
@@ -56,10 +50,8 @@ export const edit = ( props ) => {
 					/>
 
 					<ToggleControl
-						label="Enable Keyword Search Suggestion"
-						checked={
-							props.attributes.searchSuggestion ? true : false
-						}
+						label={ __( 'Enable Keyword Search Suggestion', 'learnpress' ) }
+						checked={ props.attributes.searchSuggestion ? true : false }
 						onChange={ ( value ) => {
 							props.setAttributes( {
 								searchSuggestion: value ? true : false,
