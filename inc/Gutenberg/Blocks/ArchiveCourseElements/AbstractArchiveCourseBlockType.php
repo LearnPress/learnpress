@@ -16,6 +16,8 @@ abstract class AbstractArchiveCourseBlockType extends AbstractBlockType {
 	 */
 	public $display_on_templates = [
 		'learnpress/learnpress//archive-lp_course',
+		'learnpress/learnpress//taxonomy-course_tag',
+		'learnpress/learnpress//taxonomy-course_category',
 	];
 	/**
 	 * Get course model

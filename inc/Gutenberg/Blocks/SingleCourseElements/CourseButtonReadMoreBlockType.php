@@ -55,6 +55,10 @@ class CourseButtonReadMoreBlockType extends AbstractCourseBlockType {
 		];
 	}
 
+	public function get_ancestor() {
+		return [ 'learnpress/course-item-template' ];
+	}
+
 	/**
 	 * Render content of block tag
 	 *
