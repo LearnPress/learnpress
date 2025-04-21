@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { InnerBlocks, useBlockProps, InspectorControls } from '@wordpress/block-editor';
 import { PanelBody, ToggleControl, TextControl } from '@wordpress/components';
 
