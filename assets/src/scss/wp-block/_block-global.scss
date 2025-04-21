@@ -10,78 +10,6 @@
 
 *, :after, :before {
 	box-sizing: border-box;
-	//margin: 0;
-	//padding: 0;
-}
-
-/*  start reset css */
-body {
-	background: #fff;
-
-	&.learnpress-page {
-		overflow-x: hidden;
-	}
-}
-
-button {
-	cursor: pointer;
-}
-
-.learnpress-page {
-	input[type="text"],
-	input[type="email"],
-	input[type="number"],
-	input[type="password"], textarea {
-		border-color: $border-color;
-		@include border-radius($border-radius-global);
-
-		&:focus {
-			outline: none;
-			border-color: $color-primary;
-		}
-	}
-
-	.rwmb-field .description {
-		margin-top: 8px;
-		color: #999;
-		font-size: smaller;
-		font-style: italic;
-	}
-}
-
-input, button, select, textarea {
-	outline: none;
-}
-
-// Comment because it error, can't run position: sticky
-/*html {
-	overflow-x: hidden;
-}*/
-
-a {
-	@include transition(.3s);
-	text-decoration: none;
-}
-
-p {
-	margin-bottom: 1rem;
-
-	&:last-child {
-		margin: 0
-	}
-}
-
-.lp-content-area {
-	max-width: var(--lp-container-max-width) !important;
-	margin: 0 auto;
-	padding-right: var(--lp-cotainer-padding);
-	padding-left: var(--lp-cotainer-padding);
-
-	&.learn-press-message {
-		margin-bottom: 24px;
-		padding-left: 15px;
-		padding-right: 15px;
-	}
 }
 
 .lp-ico {
@@ -125,15 +53,49 @@ p {
 		gap: 8px;
 		align-items: center;
 	}
+
+	a {
+		text-decoration: none;
+	}
 }
 
 .wp-block-learnpress-course-image {
 	overflow: hidden;
 }
 
-.wp-block-learnpress-course-instructor, .wp-block-learnpress-course-categories{
-	>div > *{
+.wp-block-learnpress-course-instructor, .wp-block-learnpress-course-categories {
+	> div > * {
 		display: inline;
 		vertical-align: middle;
+	}
+}
+
+/*
+Breadcrumb
+ */
+.wp-block-learnpress-breadcrumb {
+	ul {
+		margin: 0 auto;
+		list-style: none;
+		padding: 0;
+	}
+
+	li {
+		display: inline-block;
+		margin: 0;
+
+		a {
+			&:hover {
+				color: var(--lp-primary-color);
+			}
+		}
+	}
+
+	i {
+		margin: 0 8px;
+	}
+
+	a {
+		color: inherit;
 	}
 }

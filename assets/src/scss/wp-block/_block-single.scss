@@ -1,13 +1,6 @@
 @import "../mixin.scss";
 @import "../variables.scss";
 
-.wp-block-learnpress-breadcrumb {
-	ul.learn-press-breadcrumb {
-		padding: 0;
-		font-size: inherit;
-	}
-}
-
 .c-gap-4 {
 	column-gap: 4px;
 }
@@ -18,10 +11,6 @@
 		font-size: calc(var(--lp-font-size-base, 1em) * 1.25);
 	}
 }
-
-//.wp-block-learnpress-course-title .course-title {
-//	margin: 0
-//}
 
 [class^="wp-block-learnpress"] {
 	.extra-box {
