@@ -35,7 +35,9 @@ class CourseItemCurriculumBlockType extends AbstractCourseBlockType {
 			if ( ! $course_item ) {
 				return $html;
 			}
-			$html = Template::instance()->get_frontend_template( 'content-single-item.php' );
+			ob_start();
+			Template::instance()->get_frontend_template( 'content-single-item.php' );
+			$html = ob_get_clean();
 		} catch ( Throwable $e ) {
 			LP_Debug::error_log( $e );
 		}

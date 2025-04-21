@@ -73,11 +73,18 @@ class LP_Assets extends LP_Abstract_Assets {
 		if ( wp_is_block_theme() ) {
 			if ( LP_Page_Controller::is_page_courses() ) {
 				unset( $styles['learnpress'] );
- 			}
-			if ( LP_Page_Controller::is_page_single_course() ) {
-				unset( $styles['learnpress'] );
 			}
-			$styles['learnpress-block'] =  new LP_Asset_Key(
+
+			if ( LP_Page_Controller::is_page_single_course() ) {
+				global $post;
+				setup_postdata( $post );
+				$course_item = LP_Global::course_item();
+				if ( ! $course_item ) {
+					unset( $styles['learnpress'] );
+				}
+			}
+
+			$styles['learnpress-block'] = new LP_Asset_Key(
 				self::url( 'css/learnpress-block' . $is_rtl . self::$_min_assets . '.css' ),
 				array(),
 				array(),
@@ -519,4 +526,3 @@ function learn_press_assets() {
 }
 
 learn_press_assets();
-
