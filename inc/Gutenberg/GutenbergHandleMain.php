@@ -55,16 +55,13 @@ class GutenbergHandleMain {
 		/**
 		 * @var AbstractBlockType[] $blocks
 		 */
-		$blocks     = Config::instance()->get( 'block-elements', 'gutenberg' );
-		$postIdEdit = $this->get_edit_post_id();
-		if( empty( $postIdEdit ) ) {
-			$postIdEdit = $this->get_edit_post_id_with_param();
-		}
+		$blocks           = Config::instance()->get( 'block-elements', 'gutenberg' );
+		$template_current = $this->get_edit_template();
 
 		foreach ( $blocks as $block_template ) {
 			// Set block maybe display when Edit on Template.
-			if ( ! empty( $postIdEdit ) && ! empty( $block_template->display_on_templates )
-				&& ! in_array( $postIdEdit, $block_template->display_on_templates ) ) {
+			if ( ! empty( $template_current ) && ! empty( $block_template->display_on_templates )
+				&& ! in_array( $template_current, $block_template->display_on_templates ) ) {
 				if ( ! empty( $block_template->ancestor ) ) {
 					$block_template->display_on_templates = [];
 				} else {
@@ -139,7 +136,7 @@ class GutenbergHandleMain {
 				! in_array( $query['post_type'], $instance->post_types, true )
 				) {
 					continue;
-				}
+			}
 
 			// Get block template if custom - save on table posts - with post_name = slug of block.
 			$block_custom = $this->is_custom_block_template( $template_type, $block_template->slug );
@@ -250,53 +247,49 @@ class GutenbergHandleMain {
 		return $block_categories;
 	}
 
-	public function get_edit_post_id() {
-		$postIdEdit = '';
-		if ( ! empty( $_REQUEST['postId'] ) ) {
-			$postIdEdit = $_REQUEST['postId'];
-		} elseif ( ! empty( $_REQUEST['post'] ) ) {
-			$postIdEdit = $_REQUEST['post'];
-		} elseif ( ! empty( $_REQUEST['post_id'] ) ) {
-			$postIdEdit = $_REQUEST['post_id'];
-		} elseif ( function_exists( 'get_the_ID' ) && get_the_ID() ) {
-			$postIdEdit = get_the_ID();
-		} elseif ( isset( $GLOBALS['post'] ) && ! empty( $GLOBALS['post']->ID ) ) {
-			$postIdEdit = $GLOBALS['post']->ID;
-		}
-		if ( ! is_numeric( $postIdEdit ) ) {
-			$template_post = get_page_by_path( $postIdEdit, OBJECT, 'wp_template' );
-			if ( $template_post ) {
-				$postIdEdit = $template_post->ID;
-			}
-		}
+	public function get_edit_template() {
+		$template_current = '';
 
-		return $postIdEdit;
-	}
-
-	public function get_edit_post_id_with_param()
-	{
-		if (is_admin() && isset($_GET['p'])) {
-			if (function_exists('\get_current_screen')) {
+		if ( is_admin() && isset( $_GET['p'] ) ) {
+			if ( function_exists( '\get_current_screen' ) ) {
 				$screen = \get_current_screen();
-				if ($screen && (
+				if ( $screen && (
 					$screen->base === 'site-editor' ||
 					$screen->id === 'appearance_page_gutenberg-edit-site' ||
-					strpos($screen->id, 'edit-site') !== false
-				)) {
-					$template_path = urldecode($_GET['p']);
-					$template_path = str_replace('/wp_template/', '', $template_path);
-					$template_path = trim($template_path, '/');
-					return $template_path;
+					strpos( $screen->id, 'edit-site' ) !== false
+				) ) {
+					$template_path    = urldecode( $_GET['p'] );
+					$template_path    = str_replace( '/wp_template/', '', $template_path );
+					$template_current = trim( $template_path, '/' );
 				}
 			} else {
-				$template_path = urldecode($_GET['p']);
-				$template_path = str_replace('/wp_template/', '', $template_path);
-				$template_path = trim($template_path, '/');
-				return $template_path;
+				$template_path    = urldecode( $_GET['p'] );
+				$template_path    = str_replace( '/wp_template/', '', $template_path );
+				$template_current = trim( $template_path, '/' );
 			}
 		}
 
-		return '';
+		if ( empty( $template_current ) ) {
+			if ( ! empty( $_REQUEST['postId'] ) ) {
+				$template_current = $_REQUEST['postId'];
+			} elseif ( ! empty( $_REQUEST['post'] ) ) {
+				$template_current = $_REQUEST['post'];
+			} elseif ( ! empty( $_REQUEST['post_id'] ) ) {
+				$template_current = $_REQUEST['post_id'];
+			} elseif ( function_exists( 'get_the_ID' ) && get_the_ID() ) {
+				$template_current = get_the_ID();
+			} elseif ( isset( $GLOBALS['post'] ) && ! empty( $GLOBALS['post']->ID ) ) {
+				$template_current = $GLOBALS['post']->ID;
+			}
+			if ( ! is_numeric( $template_current ) ) {
+				$template_post = get_page_by_path( $template_current, OBJECT, 'wp_template' );
+				if ( $template_post ) {
+					$template_current = $template_post->ID;
+				}
+			}
+		}
+
+		return $template_current;
 	}
 
 	public function add_block_patterns() {
