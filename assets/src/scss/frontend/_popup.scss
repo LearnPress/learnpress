@@ -671,7 +671,7 @@
 
 #popup-footer {
 	position: fixed;
-	z-index: 99999;
+	z-index: 99;
 	right: 0;
 	bottom: 0;
 	left: 475px;
@@ -1115,7 +1115,7 @@ body {
 
 				&.fixed {
 					position: fixed;
-					z-index: 999991;
+					z-index: 999;
 					bottom: 0;
 					left: 50%;
 					width: 100%;
