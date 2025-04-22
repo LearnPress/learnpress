@@ -2,7 +2,7 @@
   "learnpress-2checkout-payment": {
     "name": "2Checkout Add-On for LearnPress",
     "basename": "learnpress-2checkout-payment/learnpress-2checkout-payment.php",
-    "version": "4.0.0",
+    "version": "4.0.2",
     "require_lp": "4.2.0",
     "description": "Provide 2Checkout payment method, more choices, more flexible, improve your LMS website conversion.",
     "image": "https://plugins.thimpress.com/downloads/images/lp-2checkout.png",
