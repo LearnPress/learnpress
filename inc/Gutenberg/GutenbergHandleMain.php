@@ -124,6 +124,8 @@ class GutenbergHandleMain {
 			return $query_result;
 		}
 
+		wp_enqueue_script( 'editor-check' );
+
 		/**
 		 * @var AbstractBlockTemplate[] $lp_block_templates
 		 */
