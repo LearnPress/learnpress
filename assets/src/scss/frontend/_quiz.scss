@@ -527,10 +527,6 @@ button[data-counter] {
 	}
 
 	.countdown {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		gap: 8px;
 		min-height: 38px;
 		color: #333;
 		font-weight: 500;
@@ -577,6 +573,10 @@ button[data-counter] {
 					stroke: #f00;
 				}
 			}
+		}
+
+		i {
+			margin: 0 5px 0 0;
 		}
 	}
 
