@@ -12,7 +12,13 @@ document.addEventListener( 'DOMContentLoaded', function () {
 			wp?.data?.select( 'core/editor' )?.getEditedPostAttribute( 'slug' ) ||
 			wp?.data?.select( 'core/editor' )?.getCurrentPostId();
 
-		if ( ! currentTemplate || currentTemplate === previousTemplate ) return;
+		if (
+			! currentTemplate ||
+			currentTemplate === previousTemplate ||
+			currentTemplate === 'home' ||
+			previousTemplate === 'home'
+		)
+			return;
 
 		if (
 			validTemplates.includes( currentTemplate ) &&
