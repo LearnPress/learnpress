@@ -677,7 +677,7 @@
 	left: 475px;
 	width: 100%;
 	max-width: 792px;
-	height: 50px;
+	height: auto;
 	margin: 0 auto;
 	border-top: 1px solid #ebebeb;
 	background: $bg-color-lesson;
@@ -1120,10 +1120,11 @@ body {
 					left: 50%;
 					width: 100%;
 					max-width: 792px;
-					height: 49px;
+					height: auto;
 					margin-left: 237px;
 					transform: translateX(-50%);
 					background: #fff;
+					padding-bottom: 10px;
 					@media (max-width: 768px) {
 						width: 100% !important;
 					}
