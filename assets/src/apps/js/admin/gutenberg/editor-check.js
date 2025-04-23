@@ -12,15 +12,10 @@ document.addEventListener( 'DOMContentLoaded', function () {
 			wp?.data?.select( 'core/editor' )?.getEditedPostAttribute( 'slug' ) ||
 			wp?.data?.select( 'core/editor' )?.getCurrentPostId();
 
-		if (
-			! currentTemplate ||
-			currentTemplate === previousTemplate ||
-			currentTemplate === 'home' ||
-			previousTemplate === 'home'
-		)
-			return;
+		if ( ! currentTemplate || currentTemplate === previousTemplate ) return;
 
 		if (
+			currentTemplate !== 'home' &&
 			validTemplates.includes( currentTemplate ) &&
 			previousTemplate &&
 			previousTemplate !== currentTemplate
@@ -29,6 +24,7 @@ document.addEventListener( 'DOMContentLoaded', function () {
 		}
 
 		if (
+			currentTemplate !== 'home' &&
 			previousTemplate &&
 			validTemplates.includes( previousTemplate ) &&
 			previousTemplate !== currentTemplate
