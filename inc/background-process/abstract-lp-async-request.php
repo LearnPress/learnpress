@@ -117,7 +117,7 @@ abstract class LP_Async_Request {
 		$this->data['_nonce'] = $this->create_async_nonce();
 
 		$args = array(
-			'timeout'   => 0.01,
+			'timeout'   => HOUR_IN_SECONDS,
 			'blocking'  => false,
 			'body'      => $this->data,
 			'cookies'   => $_COOKIE,

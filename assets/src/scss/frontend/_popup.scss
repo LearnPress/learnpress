@@ -663,13 +663,13 @@
 
 #popup-footer {
 	position: fixed;
-	z-index: 99999;
+	z-index: 99;
 	right: 0;
 	bottom: 0;
 	left: 475px;
 	width: 100%;
 	max-width: 792px;
-	height: 50px;
+	height: auto;
 	margin: 0 auto;
 	border-top: 1px solid #ebebeb;
 	background: $bg-color-lesson;
@@ -1156,15 +1156,16 @@ body {
 
 				&.fixed {
 					position: fixed;
-					z-index: 999991;
+					z-index: 999;
 					bottom: 0;
 					left: 50%;
 					width: 100%;
 					max-width: 792px;
-					height: 49px;
+					height: auto;
 					margin-left: 237px;
 					transform: translateX(-50%);
 					background: #fff;
+					padding-bottom: 10px;
 					@media (max-width: 768px) {
 						width: 100% !important;
 					}

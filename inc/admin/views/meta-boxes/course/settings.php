@@ -144,6 +144,9 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 			$is_enable_allow_course_repurchase = $course->get_meta_value_by_key( CoursePostModel::META_KEY_ALLOW_COURSE_REPURCHASE, 'no' ) === 'yes';
 		}
 
+		$fake_students_desc  = esc_html__( 'Fake students enrolled for the course.', 'learnpress' );
+		$fake_students_desc .= '<br>' . esc_html__( 'It only to display, not calculate', 'learnpress' );
+
 		return apply_filters(
 			'lp/course/meta-box/fields/general',
 			array(
@@ -201,7 +204,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 				),
 				'_lp_students'                 => new LP_Meta_Box_Text_Field(
 					esc_html__( 'Fake Students Enrolled', 'learnpress' ),
-					esc_html__( 'How many students have taken this course?', 'learnpress' ),
+					$fake_students_desc,
 					0,
 					array(
 						'type_input'        => 'number',

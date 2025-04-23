@@ -26,6 +26,7 @@ abstract class AbstractBlockTemplate extends WP_Block_Template {
 
 	public function __construct() {
 		if ( ! wp_is_block_theme() ) {
+			$this->has_theme_file = false;
 			return;
 		}
 

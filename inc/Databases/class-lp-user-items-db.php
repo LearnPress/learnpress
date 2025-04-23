@@ -836,14 +836,14 @@ class LP_User_Items_DB extends LP_Database {
 	 *
 	 * @return LP_User_Items_Filter
 	 * @since 4.1.6
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 * @throws Exception
 	 */
 	public function count_user_attend_courses_of_author( int $author_id ): LP_User_Items_Filter {
 		$filter_course                      = new LP_Course_Filter();
 		$filter_course->only_fields         = array( 'ID' );
 		$filter_course->post_author         = $author_id;
-		$filter_course->post_status         = 'publish';
+		$filter_course->post_status         = [ 'publish', 'private' ];
 		$filter_course->return_string_query = true;
 		$query_courses_str                  = LP_Course_DB::getInstance()->get_courses( $filter_course );
 

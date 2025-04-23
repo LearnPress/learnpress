@@ -534,7 +534,7 @@ class UserModel {
 	 *
 	 * @return array
 	 * @since 4.1.6
-	 * @version 1.0.3
+	 * @version 1.0.4
 	 */
 	public function get_instructor_statistic( array $params = [] ): array {
 		$statistic = array(
@@ -561,7 +561,7 @@ class UserModel {
 			$filter_course                      = new LP_Course_Filter();
 			$filter_course->only_fields         = array( 'ID' );
 			$filter_course->post_author         = $user_id;
-			$filter_course->post_status         = 'publish';
+			$filter_course->post_status         = [ 'publish', 'private' ];
 			$filter_course->return_string_query = true;
 			$query_courses_str                  = LP_Course_DB::getInstance()->get_courses( $filter_course );
 
