@@ -4,7 +4,7 @@
  * LP_Meta_Box_Duration_Attribute
  *
  * @author Nhamdv
- * @version 1.0.1
+ * @version 1.0.2
  * @since 4.0.0
  */
 class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
@@ -56,8 +56,13 @@ class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
 				'custom_attributes' => array(),
 				'tom_select'        => false,
 				'wrapper_attr'      => [],
+				'options'           => array(),
 			)
 		);
+
+		if ( isset( $field['options'] ) && ! is_array( $field['options'] ) ) {
+			$field['options'] = (array) $field['options'];
+		}
 
 		$field_attributes          = (array) $field['custom_attributes'];
 		$field_attributes['style'] = $field['style'];
@@ -103,7 +108,7 @@ class LP_Meta_Box_Select_Field extends LP_Meta_Box_Field {
 		?>
 
 		<p class="form-field <?php echo esc_attr( $field['id'] ) . '_field ' . esc_attr( $field['wrapper_class'] ); ?>"
-			<?php echo esc_attr( implode( ' ', $field['wrapper_attr'] ) ) ?>
+			<?php echo esc_attr( implode( ' ', $field['wrapper_attr'] ) ); ?>
 			<?php learn_press_echo_vuejs_write_on_php( $this->condition ? $this->condition : '' ); ?>>
 			<label for="<?php echo esc_attr( $field['id'] ); ?>">
 				<?php echo wp_kses_post( $field['label'] ); ?>
