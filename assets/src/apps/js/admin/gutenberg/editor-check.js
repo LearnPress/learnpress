@@ -16,18 +16,9 @@ document.addEventListener( 'DOMContentLoaded', function () {
 
 		if (
 			currentTemplate !== 'home' &&
-			validTemplates.includes( currentTemplate ) &&
 			previousTemplate &&
-			previousTemplate !== currentTemplate
-		) {
-			window.location.reload();
-		}
-
-		if (
-			currentTemplate !== 'home' &&
-			previousTemplate &&
-			validTemplates.includes( previousTemplate ) &&
-			previousTemplate !== currentTemplate
+			previousTemplate !== currentTemplate &&
+			( validTemplates.includes( currentTemplate ) || validTemplates.includes( previousTemplate ) )
 		) {
 			window.location.reload();
 		}
