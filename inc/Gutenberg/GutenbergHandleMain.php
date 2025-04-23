@@ -4,9 +4,11 @@ namespace LearnPress\Gutenberg;
 
 use LearnPress\Gutenberg\Blocks\AbstractBlockType;
 use LearnPress\Gutenberg\Templates\AbstractBlockTemplate;
+use LearnPress\Gutenberg\Templates\SingleCourseItemBlockTemplate;
 use LearnPress\Helpers\Config;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
+use LearnPress\Models\CourseModel;
 use WP_Block_Template;
 use WP_Post;
 
@@ -123,6 +125,29 @@ class GutenbergHandleMain {
 		if ( $template_type === 'wp_template_part' ) { // Template not Template part
 			return $query_result;
 		}
+
+		// Check is course item.
+		if ( ! is_admin() ) {
+			global $wp;
+			$vars           = $wp->query_vars;
+			$item_type      = $vars['item-type'] ?? '';
+			$lp_course_item = learn_press_get_post_by_name( $vars['course-item'] ?? '', $item_type );
+			$item_types     = CourseModel::item_types_support();
+			if ( $lp_course_item && in_array( $lp_course_item->post_type, $item_types ) ) {
+				$singleCourseItemBlockTemplate          = new SingleCourseItemBlockTemplate();
+				$block_custom                           = $this->is_custom_block_template( $template_type, $singleCourseItemBlockTemplate->slug );
+				$singleCourseItemBlockTemplate->content = traverse_and_serialize_blocks( parse_blocks( $block_custom->post_content ) );
+				/**
+				 * Set slug to single course, to compare with slug in query.
+				 * Because don't have slug 'single-lp_course_item'.
+				 * Slug 'single-lp_course_item' is for save content of block template.
+				 */
+				$singleCourseItemBlockTemplate->slug = 'single-lp_course';
+				$query_result[]                      = $singleCourseItemBlockTemplate;
+				return $query_result;
+			}
+		}
+		// End check course item.
 
 		wp_enqueue_script( 'editor-check' );
 
