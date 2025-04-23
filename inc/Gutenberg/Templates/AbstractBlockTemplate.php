@@ -20,7 +20,7 @@ abstract class AbstractBlockTemplate extends WP_Block_Template {
 	public $origin                        = 'plugin';
 	public $source                        = 'plugin'; // plugin|custom|theme, if custom save on db will be use 'custom'.
 	public $content                       = ''; // Set content will be shown on edit block and the frontend.
-	public $has_theme_file                = true;
+	public $has_theme_file                = false;
 	public $is_custom                     = false;
 	public $path_html_block_template_file = '';
 
