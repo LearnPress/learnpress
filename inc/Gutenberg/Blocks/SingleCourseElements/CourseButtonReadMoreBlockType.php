@@ -75,8 +75,14 @@ class CourseButtonReadMoreBlockType extends AbstractCourseBlockType {
 				return $html;
 			}
 
+			$classAlign = '';
+			if ( isset( $attributes['align'] ) && $attributes['align'] ) {
+				$classAlign = 'class="align' . $attributes['align'] . '" ';
+			}
+
 			$html_button = sprintf(
-				'<a href="%s"><button class="">%s</button></a>',
+				'<div %s >  <a href="%s" class="course-readmore"><button class="">%s</button></a></div>',
+				$classAlign,
 				$courseModel->get_permalink(),
 				__( 'Read more', 'learnpress' )
 			);

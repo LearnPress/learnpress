@@ -5,16 +5,21 @@ const Edit = ( props ) => {
 	const blockProps = useBlockProps();
 	const { attributes, setAttributes, context } = props;
 	const { lpCourseData } = context;
-	const courseButton = lpCourseData?.button || '';
+	const courseButton = __( 'Read more', 'learnpress' );
+
+	let classOfDiv = blockProps.className;
+	classOfDiv = classOfDiv.replaceAll( 'wp-block-learnpress-course-button-read-more', '' );
 	return (
 		<>
-			<div className="course-readmore">
-				<a
-					{ ...blockProps }
-					dangerouslySetInnerHTML={ {
-						__html: courseButton,
-					} }
-				></a>
+			<div className={ classOfDiv }>
+				<div className="course-readmore">
+					<a
+						{ ...blockProps }
+						dangerouslySetInnerHTML={ {
+							__html: courseButton,
+						} }
+					></a>
+				</div>
 			</div>
 		</>
 	);
