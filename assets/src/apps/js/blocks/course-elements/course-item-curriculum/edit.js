@@ -6,7 +6,7 @@ export const edit = ( props ) => {
 	return (
 		<div {...blockProps}>
 			<Placeholder
-				label={ __( 'Course item curriculum', 'learnpress' ) }
+				label={ __( 'Course item curriculum (Legacy)', 'learnpress' ) }
 			>
 				<div>
 					{

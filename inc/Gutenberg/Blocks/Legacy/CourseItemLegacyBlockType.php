@@ -1,18 +1,27 @@
 <?php
 
-namespace LearnPress\Gutenberg\Blocks\SingleCourseElements;
+namespace LearnPress\Gutenberg\Blocks\Legacy;
+
+use LearnPress\Gutenberg\Blocks\AbstractBlockType;
 use LearnPress\Helpers\Template;
 use LP_Global;
 use LP_Debug;
 use Throwable;
 
 /**
- * Class CourseItemCurriculumBlockType
+ * Class CourseItemLegacyBlockType
  *
  * Handle register, render block template
  */
-class CourseItemCurriculumBlockType extends AbstractCourseBlockType {
+class CourseItemLegacyBlockType extends AbstractBlockType {
 	public $block_name = 'course-item-curriculum';
+
+	/**
+	 * @var string Screen Template want to display - Field of LP
+	 */
+	public $display_on_templates = [
+		'learnpress/learnpress//single-lp_course',
+	];
 
 	public function get_ancestor() {
 		return [ 'learnpress/single-course' ];
