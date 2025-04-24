@@ -75,39 +75,14 @@ class CourseButtonReadMoreBlockType extends AbstractCourseBlockType {
 				return $html;
 			}
 
-			$classAlign = '';
-			if ( isset( $attributes['align'] ) && $attributes['align'] ) {
-				$classAlign = 'class="align' . $attributes['align'] . '" ';
-			}
-
-			$html_button = sprintf(
-				'<div %s >  <a href="%s" class="course-readmore"><button class="">%s</button></a></div>',
-				$classAlign,
+			$wrapper = get_block_wrapper_attributes();
+			$html    = sprintf(
+				'<a href="%s" %s>%s</a>',
 				$courseModel->get_permalink(),
+				$wrapper,
 				__( 'Read more', 'learnpress' )
 			);
 
-			if ( empty( $html_button ) ) {
-				return $html;
-			}
-
-			$wrapper = get_block_wrapper_attributes();
-			$html    = $html_button;
-
-			preg_match( '#class="(.*)"#i', $wrapper, $class_wrapper_find );
-			if ( isset( $class_wrapper_find['1'] ) ) {
-				// Find class button lp to replace.
-				$pattern_btn_find = '#<button.*>.*</button>#i';
-				preg_match( $pattern_btn_find, $html_button, $lp_btn_find );
-				if ( isset( $lp_btn_find[0] ) ) {
-					preg_match( '#class="(.*)"#i', $lp_btn_find[0], $lp_btn_class_find );
-					if ( isset( $lp_btn_class_find[1] ) ) {
-						$merge_class = $class_wrapper_find[1] . ' ' . $lp_btn_class_find[1];
-						$wrapper     = str_replace( $class_wrapper_find[1], $merge_class, $wrapper );
-						$html        = str_replace( "class=\"$lp_btn_class_find[1]\"", $wrapper, $html_button );
-					}
-				}
-			}
 		} catch ( Throwable $e ) {
 			LP_Debug::error_log( $e );
 		}

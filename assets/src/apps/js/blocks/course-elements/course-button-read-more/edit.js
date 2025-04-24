@@ -11,16 +11,12 @@ const Edit = ( props ) => {
 	classOfDiv = classOfDiv.replaceAll( 'wp-block-learnpress-course-button-read-more', '' );
 	return (
 		<>
-			<div className={ classOfDiv }>
-				<div className="course-readmore">
-					<a
-						{ ...blockProps }
-						dangerouslySetInnerHTML={ {
-							__html: courseButton,
-						} }
-					></a>
-				</div>
-			</div>
+			<a
+				{ ...blockProps }
+				dangerouslySetInnerHTML={ {
+					__html: courseButton,
+				} }
+			></a>
 		</>
 	);
 };

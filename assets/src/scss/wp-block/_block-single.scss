@@ -31,6 +31,8 @@
 	border-color: $color-primary;
 	color: $color-white;
 	font-size: $font-size-base;
+	text-align: center;
+	text-decoration: none;
 	@include transition(all 0.25s);
 
 	&:hover {
