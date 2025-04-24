@@ -138,9 +138,14 @@ class GutenbergHandleMain {
 			$lp_course_item = learn_press_get_post_by_name( $vars['course-item'] ?? '', $item_type );
 			$item_types     = CourseModel::item_types_support();
 			if ( $lp_course_item && in_array( $lp_course_item->post_type, $item_types ) ) {
-				$singleCourseItemBlockTemplate          = new SingleCourseItemBlockTemplate();
-				$block_custom                           = $this->is_custom_block_template( $template_type, $singleCourseItemBlockTemplate->slug );
-				$singleCourseItemBlockTemplate->content = traverse_and_serialize_blocks( parse_blocks( $block_custom->post_content ) );
+				$singleCourseItemBlockTemplate = new SingleCourseItemBlockTemplate();
+				$block_custom                  = $this->is_custom_block_template( $template_type, $singleCourseItemBlockTemplate->slug );
+				if ( $block_custom ) {
+					$singleCourseItemBlockTemplate->is_custom = true;
+					$singleCourseItemBlockTemplate->source    = 'custom';
+					$singleCourseItemBlockTemplate->content   = traverse_and_serialize_blocks( parse_blocks( $block_custom->post_content ) );
+				}
+
 				/**
 				 * Set slug to single course, to compare with slug in query.
 				 * Because don't have slug 'single-lp_course_item'.
