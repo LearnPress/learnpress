@@ -4,9 +4,9 @@ import { useBlockProps } from '@wordpress/block-editor';
 export const edit = ( props ) => {
 	const blockProps = useBlockProps();
 	return (
-		<div {...blockProps}>
+		<div { ...blockProps }>
 			<Placeholder
-				label={ __( 'Course item curriculum (Legacy)', 'learnpress' ) }
+				label={ __( 'Course item curriculum (Legacy) - Don\'t remove', 'learnpress' ) }
 			>
 				<div>
 					{
