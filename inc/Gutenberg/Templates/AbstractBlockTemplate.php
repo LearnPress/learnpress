@@ -9,7 +9,7 @@ use WP_Block_Template;
  * Abstract_Block_Template class.
  *
  * @since 4.2.8 Convert from old class Abstract_Block_Template
- * @version 1.0.0
+ * @version 1.0.1
  */
 abstract class AbstractBlockTemplate extends WP_Block_Template {
 	public $theme = 'learnpress/learnpress';
@@ -20,16 +20,11 @@ abstract class AbstractBlockTemplate extends WP_Block_Template {
 	public $origin                        = 'plugin';
 	public $source                        = 'plugin'; // plugin|custom|theme, if custom save on db will be use 'custom'.
 	public $content                       = ''; // Set content will be shown on edit block and the frontend.
-	public $has_theme_file                = false;
+	public $has_theme_file                = true;
 	public $is_custom                     = false;
 	public $path_html_block_template_file = '';
 
 	public function __construct() {
-		if ( ! wp_is_block_theme() ) {
-			$this->has_theme_file = false;
-			return;
-		}
-
 		$this->id      = $this->theme . '//' . $this->slug;
 		$template_file = '';
 

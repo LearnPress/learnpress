@@ -16,7 +16,7 @@ use WP_Post;
  * Class GutenbergHandleMain
  *
  * Handle register, render block template
- * @since 4.2.8.2 Convert from old class Block_Template_Handle
+ * @since 4.2.8.3 Convert from old class Block_Template_Handle
  * @version 1.0.0
  */
 class GutenbergHandleMain {
@@ -26,6 +26,10 @@ class GutenbergHandleMain {
 	 * Hooks handle block template
 	 */
 	public function init() {
+		if ( ! wp_is_block_theme() ) {
+			return;
+		}
+
 		// Register block template and register patterns.
 		add_action( 'init', array( $this, 'wp_hook_init' ) );
 		// Set block template need to show on frontend/backend
