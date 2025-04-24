@@ -102,6 +102,7 @@ class UserItemModel {
 	const STATUS_COMPLETED       = 'completed';
 	const STATUS_FINISHED        = 'finished';
 	const STATUS_ENROLLED        = 'enrolled';
+	const STATUS_PURCHASED       = 'purchased';
 	const STATUS_CANCEL          = 'cancel';
 	const GRADUATION_IN_PROGRESS = 'in-progress';
 	const GRADUATION_PASSED      = 'passed';

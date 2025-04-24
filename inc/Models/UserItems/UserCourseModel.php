@@ -258,7 +258,7 @@ class UserCourseModel extends UserItemModel {
 	 * @return bool
 	 */
 	public function has_enrolled_or_finished(): bool {
-		return $this->status === LP_COURSE_ENROLLED || $this->status === LP_COURSE_FINISHED;
+		return $this->has_enrolled() || $this->has_finished();
 	}
 
 	/**
@@ -267,7 +267,7 @@ class UserCourseModel extends UserItemModel {
 	 * @return bool
 	 */
 	public function has_enrolled(): bool {
-		return $this->status === LP_COURSE_ENROLLED;
+		return $this->status === UserItemModel::STATUS_ENROLLED;
 	}
 
 	/**
@@ -276,7 +276,7 @@ class UserCourseModel extends UserItemModel {
 	 * @return bool
 	 */
 	public function has_purchased(): bool {
-		return $this->status === LP_COURSE_PURCHASED;
+		return $this->status === UserItemModel::STATUS_PURCHASED;
 	}
 
 	/**
@@ -285,7 +285,7 @@ class UserCourseModel extends UserItemModel {
 	 * @return bool
 	 */
 	public function has_finished(): bool {
-		return $this->status === LP_COURSE_FINISHED;
+		return $this->status === UserItemModel::STATUS_FINISHED;
 	}
 
 	/**
@@ -294,10 +294,10 @@ class UserCourseModel extends UserItemModel {
 	 * @return bool
 	 * @move from class-lp-user-item-course.php
 	 * @since  3.0.0
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public function is_finished(): bool {
-		return $this->status === LP_COURSE_FINISHED;
+		return $this->has_finished();
 	}
 
 	/**
@@ -630,7 +630,7 @@ class UserCourseModel extends UserItemModel {
 	 * @version 1.0.0
 	 */
 	public function is_passed(): bool {
-		return $this->graduation === LP_COURSE_GRADUATION_PASSED;
+		return $this->graduation === UserItemModel::GRADUATION_PASSED;
 	}
 
 	/**

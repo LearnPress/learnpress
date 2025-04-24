@@ -162,74 +162,6 @@ class SingleCourseModernLayout {
 	 * @return string
 	 */
 	public function section_left( $course, $user ): string {
-		$singleInstructorTemplate = SingleInstructorTemplate::instance();
-		$author                   = $course->get_author_model();
-
-		// Instructor
-		$html_instructor = '';
-		if ( $author ) {
-			$html_instructor_image   = sprintf(
-				'<a href="%s" title="%s">%s</a>',
-				$author->get_url_instructor(),
-				$author->get_display_name(),
-				$singleInstructorTemplate->html_avatar( $author )
-			);
-			$section_instructor_meta = [
-				'wrapper'        => '<div class="lp-instructor-meta">',
-				'count_students' => sprintf(
-					'<div class="instructor-item-meta">%s</div>',
-					$singleInstructorTemplate->html_count_students( $author )
-				),
-				'count_courses'  => sprintf(
-					'<div class="instructor-item-meta">%s</div>',
-					$singleInstructorTemplate->html_count_courses( $author )
-				),
-				'wrapper_end'    => '</div>',
-			];
-			$html_instructor_meta    = Template::combine_components( $section_instructor_meta );
-
-			$section_instructor_right = apply_filters(
-				'learn-press/single-course/modern/section-instructor/right',
-				[
-					'wrapper'     => '<div class="lp-section-instructor">',
-					'name'        => sprintf(
-						'<a href="%s">%s</a>',
-						$author->get_url_instructor(),
-						$singleInstructorTemplate->html_display_name( $author )
-					),
-					'meta'        => $html_instructor_meta,
-					'description' => $singleInstructorTemplate->html_description( $author ),
-					'social'      => $singleInstructorTemplate->html_social( $author ),
-					'wrapper_end' => '</div>',
-				],
-				$course,
-				$user
-			);
-			$html_instructor_right    = Template::combine_components( $section_instructor_right );
-			$section_instructor       = apply_filters(
-				'learn-press/single-course/modern/section-instructor',
-				[
-					'wrapper'          => '<div class="lp-section-instructor">',
-					'header'           => sprintf( '<h3 class="section-title">%s</h3>', __( 'Instructor', 'learnpress' ) ),
-					'wrapper_info'     => '<div class="lp-instructor-info">',
-					'image'            => $html_instructor_image,
-					'instructor_right' => $html_instructor_right,
-					'wrapper_info_end' => '</div>',
-					'wrapper_end'      => '</div>',
-				],
-				$course,
-				$user
-			);
-
-			if ( ! has_filter( 'learn-press/single-course/modern/section-instructor' ) ) {
-				// Do not use this hook, this hook only for handle hook without update from Addon, when handle on Addon, will remove this hook
-				$section_instructor = apply_filters( 'learn-press/single-course/offline/section-instructor', $section_instructor, $course, $user );
-			}
-
-			$html_instructor = Template::combine_components( $section_instructor );
-		}
-		// End instructor
-
 		$section = apply_filters(
 			'learn-press/single-course/modern/section_left',
 			[
@@ -241,7 +173,7 @@ class SingleCourseModernLayout {
 				'curriculum'             => $this->singleCourseTemplate->html_curriculum( $course, $user ),
 				'material'               => $this->singleCourseTemplate->html_material( $course, $user ),
 				'faqs'                   => $this->singleCourseTemplate->html_faqs( $course ),
-				'instructor'             => $html_instructor,
+				'instructor'             => $this->html_instructor_info( $course, $user ),
 				'featured_review_mobile' => wp_is_mobile() ? $this->singleCourseTemplate->html_feature_review( $course, $user ) : '',
 				'comment'                => $this->singleCourseTemplate->html_comment( $course, $user ),
 				'sidebar_mobile'         => wp_is_mobile() ? $this->singleCourseTemplate->html_sidebar( $course ) : '',
@@ -326,69 +258,6 @@ class SingleCourseModernLayout {
 			$user
 		);
 
-		$user_id = 0;
-		if ( $user instanceof UserModel ) {
-			$user_id = $user->get_id();
-		}
-
-		$userCourseTemplate      = UserCourseTemplate::instance();
-		$btn_continue_and_finish = [];
-		if ( $userCourseModel instanceof UserCourseModel ) {
-			$btn_continue_and_finish = [
-				'btn_continue' => $userCourseTemplate->html_btn_continue( $userCourseModel ),
-				'btn_finish'   => $userCourseTemplate->html_btn_finish( $userCourseModel ),
-				'btn_retake'   => $userCourseTemplate->html_btn_retake( $userCourseModel ),
-			];
-		}
-
-		$section_buttons = apply_filters(
-			'learn-press/single-course/modern/section-right/buttons',
-			[
-				'wrapper'      => '<div class="course-buttons">',
-				'btn_contact'  => $this->singleCourseTemplate->html_btn_external( $course, $user ),
-				'btn_buy'      => $this->singleCourseTemplate->html_btn_purchase_course( $course, $user ),
-				'btn_enroll'   => $this->singleCourseTemplate->html_btn_enroll_course( $course, $user ),
-				'btn_learning' => Template::combine_components( $btn_continue_and_finish ),
-				'wrapper_end'  => '</div>',
-			],
-			$course,
-			$user
-		);
-
-		// Info learning
-		$html_info_learning = '';
-		if ( $userCourseModel instanceof UserCourseModel
-			&& $userCourseModel->get_status() !== UserItemModel::STATUS_CANCEL
-			&& $userCourseModel->get_status() !== UserCourseModel::STATUS_PURCHASED ) {
-
-			$html_end_date   = '';
-			$html_graduation = '';
-			if ( $userCourseModel->get_status() === UserItemModel::STATUS_FINISHED ) {
-				$html_end_date   = sprintf(
-					'<div>%s: %s</div>',
-					__( 'End date', 'learnpress' ),
-					$userCourseTemplate->html_end_date_time( $userCourseModel, false )
-				);
-				$html_graduation = $userCourseTemplate->html_graduation( $userCourseModel );
-			}
-
-			$section_info_learning = [
-				'wrapper'               => '<div class="info-learning">',
-				'message_lock'          => $userCourseTemplate->html_message_lock( $userCourseModel ),
-				'graduation'            => $html_graduation,
-				'progress'              => $userCourseTemplate->html_progress( $userCourseModel ),
-				'start_date'            => sprintf(
-					'<div>%s: %s</div>',
-					__( 'Start date', 'learnpress' ),
-					$userCourseTemplate->html_start_date_time( $userCourseModel, false )
-				),
-				'end_date'              => $html_end_date,
-				'count_items_completed' => $userCourseTemplate->html_count_items_completed( $userCourseModel ),
-				'wrapper_end'           => '</div>',
-			];
-			$html_info_learning    = Template::combine_components( $section_info_learning );
-		}
-
 		$html_price = '';
 		if ( ! $userCourseModel
 			|| $userCourseModel->get_status() === UserItemModel::STATUS_CANCEL ) {
@@ -402,10 +271,10 @@ class SingleCourseModernLayout {
 				'wrapper_inner'     => '<div class="lp-single-course-main__right__inner">',
 				'image'             => $this->singleCourseTemplate->html_image( $course ),
 				'price'             => $html_price,
-				'info_learning'     => $html_info_learning,
+				'info_learning'     => $this->html_info_learning( $course, $user ),
 				//'sale_discount'       => $this->singleCourseTemplate->html_sale_discount( $course ), to do
 				'metas'             => Template::combine_components( $section_info_meta ),
-				'buttons'           => Template::combine_components( $section_buttons ),
+				'buttons'           => $this->html_button( $course, $user ),
 				'share'             => $this->html_share( $course ),
 				'featured_review'   => wp_is_mobile() ? '' : $this->singleCourseTemplate->html_feature_review( $course, $user ),
 				'sidebar'           => wp_is_mobile() ? '' : $this->singleCourseTemplate->html_sidebar( $course ),
@@ -529,42 +398,13 @@ class SingleCourseModernLayout {
 	}
 
 	/**
-	 * Get html info one
-	 *
-	 * @param CourseModel $course
-	 * @param UserModel $user
-	 *
-	 * @return string
-	 * @since 4.2.8.2
-	 * @version 1.0.0
-	 */
-	public function html_course_date( CourseModel $course, $user ) {
-		$course_date = '';
-
-		$course_date = apply_filters(
-			'learn-press/single-course/modern/header/info-meta',
-			[
-				'last_update' => sprintf(
-					'<div class="item-meta">%s: %s</div>',
-					esc_html__( 'Last updated', 'learnpress' ),
-					esc_attr( get_post_modified_time( get_option( 'date_format' ), true ) )
-				),
-			],
-			$course,
-			$user
-		);
-
-		return Template::combine_components( $course_date );
-	}
-
-	/**
 	 * Get html instructor info
 	 *
 	 * @param CourseModel $course
 	 * @param UserModel $user
 	 *
 	 * @return string
-	 * @since 4.2.8.2
+	 * @since 4.2.8.3
 	 * @version 1.0.0
 	 */
 	public function html_instructor_info( CourseModel $course, $user ): string {
@@ -572,93 +412,94 @@ class SingleCourseModernLayout {
 		$singleInstructorTemplate = SingleInstructorTemplate::instance();
 		$author                   = $course->get_author_model();
 
-		if ( $author ) {
-			$html_instructor_image = sprintf(
-				'<a href="%s" title="%s">%s</a>',
-				$author->get_url_instructor(),
-				$author->get_display_name(),
-				$singleInstructorTemplate->html_avatar( $author )
-			);
-			$instructor_meta       = [
-				'wrapper'        => '<div class="lp-instructor-meta">',
-				'count_students' => sprintf(
-					'<div class="instructor-item-meta">%s</div>',
-					$singleInstructorTemplate->html_count_students( $author )
-				),
-				'count_courses'  => sprintf(
-					'<div class="instructor-item-meta">%s</div>',
-					$singleInstructorTemplate->html_count_courses( $author )
-				),
-				'wrapper_end'    => '</div>',
-			];
-			$html_instructor_meta  = Template::combine_components( $instructor_meta );
-
-			$instructor_right = apply_filters(
-				'learn-press/single-course/modern/section-instructor/right',
-				[
-					'wrapper'     => '<div class="lp-section-instructor">',
-					'name'        => sprintf(
-						'<a href="%s">%s</a>',
-						$author->get_url_instructor(),
-						$singleInstructorTemplate->html_display_name( $author )
-					),
-					'meta'        => $html_instructor_meta,
-					'description' => $singleInstructorTemplate->html_description( $author ),
-					'social'      => $singleInstructorTemplate->html_social( $author ),
-					'wrapper_end' => '</div>',
-				],
-				$course,
-				$user
-			);
-
-			$html_instructor_right = Template::combine_components( $instructor_right );
-			$instructor_info       = apply_filters(
-				'learn-press/single-course/modern/section-instructor',
-				[
-					'wrapper'          => '<div class="lp-section-instructor">',
-					'header'           => sprintf( '<h3 class="section-title">%s</h3>', __( 'Instructor', 'learnpress' ) ),
-					'wrapper_info'     => '<div class="lp-instructor-info">',
-					'image'            => $html_instructor_image,
-					'instructor_right' => $html_instructor_right,
-					'wrapper_info_end' => '</div>',
-					'wrapper_end'      => '</div>',
-				],
-				$course,
-				$user
-			);
-
-			$html_instructor = Template::combine_components( $instructor_info );
+		if ( ! $author ) {
+			return $html_instructor;
 		}
 
-		return $html_instructor;
+		$html_instructor_image    = sprintf(
+			'<a href="%s" title="%s">%s</a>',
+			$author->get_url_instructor(),
+			$author->get_display_name(),
+			$singleInstructorTemplate->html_avatar( $author )
+		);
+		$section_instructor_meta  = [
+			'wrapper'        => '<div class="lp-instructor-meta">',
+			'count_students' => sprintf(
+				'<div class="instructor-item-meta">%s</div>',
+				$singleInstructorTemplate->html_count_students( $author )
+			),
+			'count_courses'  => sprintf(
+				'<div class="instructor-item-meta">%s</div>',
+				$singleInstructorTemplate->html_count_courses( $author )
+			),
+			'wrapper_end'    => '</div>',
+		];
+		$section_instructor_right = apply_filters(
+			'learn-press/single-course/modern/section-instructor/right',
+			[
+				'wrapper'     => '<div class="lp-section-instructor">',
+				'name'        => sprintf(
+					'<a href="%s">%s</a>',
+					$author->get_url_instructor(),
+					$singleInstructorTemplate->html_display_name( $author )
+				),
+				'meta'        => Template::combine_components( $section_instructor_meta ),
+				'description' => $singleInstructorTemplate->html_description( $author ),
+				'social'      => $singleInstructorTemplate->html_social( $author ),
+				'wrapper_end' => '</div>',
+			],
+			$course,
+			$user
+		);
+		$section_instructor       = apply_filters(
+			'learn-press/single-course/modern/section-instructor',
+			[
+				'wrapper'          => '<div class="lp-section-instructor">',
+				'header'           => sprintf( '<h3 class="section-title">%s</h3>', __( 'Instructor', 'learnpress' ) ),
+				'wrapper_info'     => '<div class="lp-instructor-info">',
+				'image'            => $html_instructor_image,
+				'instructor_right' => Template::combine_components( $section_instructor_right ),
+				'wrapper_info_end' => '</div>',
+				'wrapper_end'      => '</div>',
+			],
+			$course,
+			$user
+		);
+
+		if ( ! has_filter( 'learn-press/single-course/modern/section-instructor' ) ) {
+			// Do not use this hook, this hook only for handle hook without update from Addon, when handle on Addon, will remove this hook
+			$section_instructor = apply_filters( 'learn-press/single-course/offline/section-instructor', $section_instructor, $course, $user );
+		}
+
+		return Template::combine_components( $section_instructor );
 	}
 
 	/**
 	 * Get html course info learning
 	 *
 	 * @param CourseModel $course
-	 * @param UserModel $user
+	 * @param UserModel|false $user
 	 *
 	 * @return string
-	 * @since 4.2.8.2
+	 * @since 4.2.8.3
 	 * @version 1.0.0
 	 */
-	public function html_info_learning( CourseModel $course, $user ): string {
-		// Info learning
+	public function html_info_learning( CourseModel $course, $user = false ): string {
 		$html_info_learning = '';
 		$user_id            = 0;
 		if ( $user instanceof UserModel ) {
 			$user_id = $user->get_id();
 		}
-		$userCourseModel    = UserCourseModel::find( $user_id, $course->get_id(), true );
-		$userCourseTemplate = UserCourseTemplate::instance();
-		if ( $userCourseModel instanceof UserCourseModel
-					&& $userCourseModel->get_status() !== UserItemModel::STATUS_CANCEL
-					&& $userCourseModel->get_status() !== UserCourseModel::STATUS_PURCHASED ) {
 
-			$html_end_date   = '';
-			$html_graduation = '';
-			if ( $userCourseModel->get_status() === UserItemModel::STATUS_FINISHED ) {
+		$userCourseModel = UserCourseModel::find( $user_id, $course->get_id(), true );
+		if ( $userCourseModel instanceof UserCourseModel
+			&& $userCourseModel->get_status() !== UserItemModel::STATUS_CANCEL
+			&& $userCourseModel->get_status() !== UserCourseModel::STATUS_PURCHASED ) {
+			$userCourseTemplate = UserCourseTemplate::instance();
+			$html_end_date      = '';
+			$html_graduation    = '';
+
+			if ( $userCourseModel->has_finished() ) {
 				$html_end_date   = sprintf(
 					'<div>%s: %s</div>',
 					__( 'End date', 'learnpress' ),
@@ -681,7 +522,8 @@ class SingleCourseModernLayout {
 				'count_items_completed' => $userCourseTemplate->html_count_items_completed( $userCourseModel ),
 				'wrapper_end'           => '</div>',
 			];
-			$html_info_learning    = Template::combine_components( $section_info_learning );
+
+			$html_info_learning = Template::combine_components( $section_info_learning );
 		}
 
 		return $html_info_learning;
@@ -691,22 +533,22 @@ class SingleCourseModernLayout {
 	 * Get html button
 	 *
 	 * @param CourseModel $course
-	 * @param UserModel $user
+	 * @param UserModel|false $user
 	 *
 	 * @return string
-	 * @since 4.2.8.2
+	 * @since 4.2.8.3
 	 * @version 1.0.0
 	 */
-	public function html_button( CourseModel $course, $user ): string {
+	public function html_button( CourseModel $course, $user = false ): string {
 		$user_id = 0;
 		if ( $user instanceof UserModel ) {
 			$user_id = $user->get_id();
 		}
 
 		$userCourseModel         = UserCourseModel::find( $user_id, $course->get_id(), true );
-		$userCourseTemplate      = UserCourseTemplate::instance();
 		$btn_continue_and_finish = [];
 		if ( $userCourseModel instanceof UserCourseModel ) {
+			$userCourseTemplate      = UserCourseTemplate::instance();
 			$btn_continue_and_finish = [
 				'btn_continue' => $userCourseTemplate->html_btn_continue( $userCourseModel ),
 				'btn_finish'   => $userCourseTemplate->html_btn_finish( $userCourseModel ),

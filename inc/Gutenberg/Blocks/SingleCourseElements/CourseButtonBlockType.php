@@ -77,7 +77,6 @@ class CourseButtonBlockType extends AbstractCourseBlockType {
 			}
 
 			$html_button = SingleCourseModernLayout::instance()->html_button( $courseModel, $userModel );
-
 			if ( empty( $html_button ) ) {
 				return $html;
 			}
