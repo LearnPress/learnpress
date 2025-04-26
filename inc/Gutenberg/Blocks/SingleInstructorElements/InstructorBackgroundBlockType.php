@@ -56,15 +56,31 @@ class InstructorBackgroundBlockType extends AbstractSingleInstructorBlockType {
 				return $html;
 			}
 
+			$this->enqueue_assets();
+			$this->get_class_hash();
+			$this->inline_styles( $attributes );
+
 			ob_start();
 			echo ProfileTemplate::instance()->html_cover_image( $instructor );
 			$html_background = ob_get_clean();
 
-			$html = $this->get_output( $html_background );
+			$html = $this->get_output_with_class_hash( $attributes, $html_background, );
 		} catch ( Throwable $e ) {
 			LP_Debug::error_log( $e );
 		}
 
 		return $html;
+	}
+
+	public function get_inline_style( $attributes ) {
+		$size     = isset( $attributes['size'] ) ? sprintf( 'background-size: %s;', $attributes['size'] ) : 'background-size: cover;';
+		$position = isset( $attributes['position'] ) ? sprintf( 'background-position: %s;', $attributes['position'] ) : 'background-position: center;';
+		$repeat   = isset( $attributes['repeat'] ) ? 'background-repeat: repeat;' : 'background-repeat: no-repeat;';
+		return '.' . $this->class_hash . ' .lp-user-cover-image_background {' . $size . $position . $repeat . '}';
+	}
+
+	public function inline_styles( $attributes ) {
+		$styles = $this->get_inline_style( $attributes );
+		wp_add_inline_style( 'lp-blocks-style', $styles );
 	}
 }

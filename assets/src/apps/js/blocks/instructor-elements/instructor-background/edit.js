@@ -16,7 +16,7 @@ export const edit = ( props ) => {
 		{ label: 'Auto', value: 'auto' },
 		{ label: 'Cover', value: 'cover' },
 		{ label: 'Contain', value: 'contain' },
-		{ label: 'Unset', value: 'Unset' },
+		{ label: 'Unset', value: 'unset' },
 	];
 
 	return (
@@ -58,7 +58,7 @@ export const edit = ( props ) => {
 			</InspectorControls>
 			<div { ...blockProps }>
 				<div className="lp-user-cover-image_background">
-					<img src="https://placehold.co/1280x426?text=Background" />
+					<img src="https://placehold.co/1280x285?text=Background" />
 				</div>
 			</div>
 		</>
