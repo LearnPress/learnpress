@@ -218,7 +218,7 @@ class SingleCourseClassicTemplate {
 				'wrapper_end'       => '</div>',
 			],
 			$course,
-			$instructor,
+			$instructor
 		);
 
 		return Template::combine_components( $html_instructor );
