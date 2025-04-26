@@ -53,8 +53,9 @@ class CourseOrderByBlockType extends AbstractArchiveCourseBlockType {
 		$html = '';
 
 		try {
+			$settings         = $block->context['settings'] ?? [];
 			$order_by         = $block->context['order_by'] ?? 'post_date';
-			$order_by_current = isset( $_GET['order_by'] ) ? sanitize_text_field( $_GET['order_by'] ) : '';
+			$order_by_current = isset( $settings['order_by'] ) ? sanitize_text_field( $settings['order_by'] ) : '';
 			if ( ! empty( $order_by_current ) ) {
 				$order_by = $order_by_current;
 			}
@@ -72,7 +73,7 @@ class CourseOrderByBlockType extends AbstractArchiveCourseBlockType {
 			);
 
 			$html  = '<div class="courses-order-by-wrapper">';
-			$html .= '<select name="order_by" class="block-courses-order-by">';
+			$html .= '<select name="order_by" class="courses-order-by">';
 			foreach ( $values as $k => $v ) {
 				$html .= '<option value="' . $k . '" ' . selected( $order_by, $k, false ) . '>' . $v . '</option>';
 			}

@@ -49,6 +49,7 @@ class CourseItemTemplateBlock extends AbstractBlockType {
 
 			$courses         = $block->context['courses'] ?? [];
 			$html_pagination = $block->context['pagination'] ?? '';
+			$settings        = $block->context['settings'] ?? [];
 			if ( empty( $courses ) ) {
 				return $html;
 			}
@@ -56,8 +57,9 @@ class CourseItemTemplateBlock extends AbstractBlockType {
 			foreach ( $courses as $course ) {
 				$courseModel = CourseModel::find( $course->ID, true );
 
-				$filter_block_context = static function ( $context ) use ( $courseModel ) {
+				$filter_block_context = static function ( $context ) use ( $courseModel, $settings ) {
 					$context['courseModel'] = $courseModel;
+					$context['settings']    = $settings;
 					return $context;
 				};
 

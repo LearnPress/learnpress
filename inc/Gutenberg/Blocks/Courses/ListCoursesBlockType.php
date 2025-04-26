@@ -193,11 +193,12 @@ class ListCoursesBlockType extends AbstractBlockType {
 			$html_pagination      = ListCoursesTemplate::instance()->html_pagination( $data_pagination );
 		}
 
-		$filter_block_context = static function ( $context ) use ( $courses, $html_pagination, $filter ) {
+		$filter_block_context = static function ( $context ) use ( $courses, $html_pagination, $filter, $settings ) {
 			$context['is_list_course'] = true;
 			$context['courses']        = $courses ?? [];
 			$context['pagination']     = $html_pagination ?? '';
 			$context['order_by']       = $filter->order_by;
+			$context['settings']       = $settings;
 			return $context;
 		};
 
