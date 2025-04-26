@@ -38,7 +38,7 @@ export const edit = ( props ) => {
 					{ props.attributes.hidden && props.attributes.hidden === 'text' ? (
 						''
 					) : (
-						<span>{ 'Students' }</span>
+						<span>{ ' Students' }</span>
 					) }
 				</div>
 			</div>

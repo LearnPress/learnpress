@@ -21,7 +21,7 @@ export const edit = ( props ) => {
 						} }
 					/>
 					<ToggleControl
-						label={ __( 'Is link', 'learnpress' ) }
+						label={ __( 'Make the instrucotr a link', 'learnpress' ) }
 						checked={ props.attributes.isLink ? true : false }
 						onChange={ ( value ) => {
 							props.setAttributes( {

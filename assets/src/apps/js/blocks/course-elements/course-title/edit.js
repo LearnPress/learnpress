@@ -32,7 +32,7 @@ const Edit = ( props ) => {
 					/>
 					<ToggleControl
 						// Default text of WP so not need text-domain
-						label={ __( 'Make title a link' ) }
+						label={ __( 'Make the title a link' ) }
 						checked={ !! isLink }
 						onChange={ ( value ) => {
 							props.setAttributes( {

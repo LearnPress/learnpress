@@ -2,11 +2,11 @@
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
 	"name": "learnpress/list-courses",
-	"title": "List Courses",
+	"title": "Course Listing",
 	"category": "learnpress-category",
-	"description": "List courses block",
+	"description": "Course Listing block",
 	"textdomain": "learnpress",
-	"keywords": ["list courses", "learnpress", "query loop"],
+	"keywords": [ "listing course", "learnpress", "query loop" ],
 	"usesContext": [],
 	"attributes": {
 		"courseQuery": {
@@ -26,6 +26,6 @@
 	},
 	"supports": {
 		"html": false,
-		"align": ["wide", "full"]
+		"align": [ "wide", "full" ]
 	}
 }
