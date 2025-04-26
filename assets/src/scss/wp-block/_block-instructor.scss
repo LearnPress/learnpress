@@ -1,0 +1,17 @@
+.wp-block-learnpress-instructor-social {
+	.instructor-social {
+		display: flex;
+		gap: 12px;
+		font-size: calc( var( --lp-font-size-base, 1em ) * 0.925 );
+	}
+
+	.instructor-social i {
+		width: 40px;
+		height: 40px;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		border: 1px solid var( --lp-border-color, #e2e0db );
+		border-radius: 50%;
+	}
+}
