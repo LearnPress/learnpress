@@ -22,9 +22,9 @@ export const edit = ( props ) => {
 	return (
 		<>
 			<InspectorControls>
-				<PanelBody title="Settings">
+				<PanelBody title={ __( 'Settings', 'learnpress' ) }>
 					<SelectControl
-						label="Background Position"
+						label={ __( 'Background Position', 'learnpress' ) }
 						value={ props.attributes.position }
 						options={ position }
 						onChange={ ( value ) =>
@@ -35,7 +35,7 @@ export const edit = ( props ) => {
 					/>
 
 					<SelectControl
-						label="Background Size"
+						label={ __( 'Background Size', 'learnpress' ) }
 						value={ props.attributes.size }
 						options={ size }
 						onChange={ ( value ) =>
@@ -46,7 +46,7 @@ export const edit = ( props ) => {
 					/>
 
 					<ToggleControl
-						label="Background Repeat"
+						label={ __( 'Background Repeat', 'learnpress' ) }
 						checked={ props.attributes.repeat ? true : false }
 						onChange={ ( value ) => {
 							props.setAttributes( {

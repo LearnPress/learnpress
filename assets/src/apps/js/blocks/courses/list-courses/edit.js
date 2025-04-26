@@ -75,7 +75,7 @@ const Edit = ( props ) => {
 					/>
 					{ ! courseQuery.related && (
 						<SelectControl
-							label={ __( 'Order by' ) }
+							label={ __( 'Order by', 'learnpress' ) }
 							value={ courseQuery.order_by }
 							options={ orderByData }
 							onChange={ ( order_by ) => {
@@ -88,7 +88,7 @@ const Edit = ( props ) => {
 
 					{ ! courseQuery.related && (
 						<ToggleControl
-							label={ __( 'Pagination' ) }
+							label={ __( 'Pagination', 'learnpress' ) }
 							checked={ courseQuery.pagination }
 							onChange={ ( pagination ) => {
 								setAttributes( {
