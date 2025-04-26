@@ -2,8 +2,8 @@
 Contributors: thimpress, tungnx89, nhamdv, nguyenlammanh, tunnhn, phonglq.foobla, thongta, kendy73, leehld
 Donate link:
 Tags: e-learning, education, course, lms, learning management system
-Tested up to: 6.7
-Stable tag: 4.2.8.2
+Tested up to: 6.8
+Stable tag: 4.2.8.3
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -221,6 +221,10 @@ https://www.transifex.com/projects/p/learnpress/
 13. Add-ons: Unlock endless possibilities with our add-ons from additional payment gateways to more managing course options. Tailor to your needs and easily scale as your site grow
 
 == Changelog ==
+
+= 4.2.8.3 (2025-04-26) =
+~ Provide: blocks for Gutenberg, build page Single Course, Archive Course, List Course.
+~ Compatible: with WP 6.8.
 
 = 4.2.8.2 (2025-04-03) =
 ~ Feature: add filter course by type online/offline.
