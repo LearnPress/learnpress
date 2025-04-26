@@ -58,7 +58,7 @@ export const edit = ( props ) => {
 			</InspectorControls>
 			<div { ...blockProps }>
 				<div className="lp-user-cover-image_background">
-					<img src="https://placehold.co/1280x720?text=Background" />
+					<img src="https://placehold.co/1280x426?text=Background" />
 				</div>
 			</div>
 		</>
