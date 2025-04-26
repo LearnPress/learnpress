@@ -6,11 +6,25 @@ document.addEventListener( 'DOMContentLoaded', function () {
 		'taxonomy-course_category',
 	];
 
+	const getParamP = () => {
+		const urlParams = new URLSearchParams( window.location.search );
+		return urlParams.get( 'p' )?.replace( /^\/|\/$/g, '' ) || null;
+	};
+
+	const debounce = ( func, wait ) => {
+		let timeout;
+		return ( ...args ) => {
+			clearTimeout( timeout );
+			timeout = setTimeout( () => func( ...args ), wait );
+		};
+	};
+
 	let previousTemplate = null;
 	const checkAndReload = () => {
 		const currentTemplate =
 			wp?.data?.select( 'core/editor' )?.getEditedPostAttribute( 'slug' ) ||
-			wp?.data?.select( 'core/editor' )?.getCurrentPostId();
+			wp?.data?.select( 'core/editor' )?.getCurrentPostId() ||
+			getParamP();
 
 		if ( ! currentTemplate || currentTemplate === previousTemplate ) return;
 
@@ -26,7 +40,9 @@ document.addEventListener( 'DOMContentLoaded', function () {
 		previousTemplate = currentTemplate;
 	};
 
+	const debouncedCheckAndReload = debounce( checkAndReload, 200 );
+
 	wp?.data?.subscribe( () => {
-		checkAndReload();
+		debouncedCheckAndReload();
 	} );
 } );
