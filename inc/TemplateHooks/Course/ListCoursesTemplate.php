@@ -36,6 +36,9 @@ class ListCoursesTemplate {
 	}
 
 	public function allow_callback( $callbacks ) {
+		/**
+		 * @uses self::render_courses()
+		 */
 		$callbacks[] = get_class( $this ) . ':render_courses';
 
 		return $callbacks;

@@ -42,7 +42,7 @@
 	.info-meta-item {
 		display: flex;
 		gap: 4px;
-
+		flex-wrap: wrap;
 		i {
 			color: $color-primary;
 		}

@@ -65,7 +65,7 @@
 	.btn-clipboard {
 		position: relative;
 		padding: 12px 20px;
-
+		white-space: nowrap;
 		.tooltip {
 			display: none;
 			position: absolute;
@@ -107,7 +107,7 @@
 	.clipboard-value {
 		border: 1px solid $border-color;
 		padding: 12px 20px;
-
+		flex: 1;
 		@media (max-width: 600px) {
 			width: 100%;
 		}
