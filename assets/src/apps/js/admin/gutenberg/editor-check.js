@@ -8,7 +8,8 @@ document.addEventListener( 'DOMContentLoaded', function () {
 
 	const getParamP = () => {
 		const urlParams = new URLSearchParams( window.location.search );
-		return urlParams.get( 'p' )?.replace( /^\/|\/$/g, '' ) || null;
+		const paramP = urlParams.get( 'p' )?.replace( /^\/|\/$/g, '' );
+		return paramP === 'template' ? paramP : null;
 	};
 
 	const debounce = ( func, wait ) => {
