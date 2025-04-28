@@ -47,22 +47,6 @@ class ListCoursesBlockType extends AbstractBlockType {
 		return $callbacks;
 	}
 
-	public function get_attributes() {
-		return [
-			'courseQuery' => [
-				'type'    => 'object',
-				'default' => [
-					'limit'      => 3,
-					'order_by'   => 'post_date',
-					'pagination' => false,
-					'related'    => false,
-					'tag_id'     => '',
-					'term_id'    => '',
-				],
-			],
-		];
-	}
-
 	/**
 	 * Render content of block tag
 	 *
@@ -85,8 +69,8 @@ class ListCoursesBlockType extends AbstractBlockType {
 				'<div class="lp-list-courses-default">' => '</div>',
 			];
 			$html                 = TemplateAJAX::load_content_via_ajax( $args, $callback );
-			$html                 = Template::instance()->nest_elements( $html_wrapper, $html );
-			return $html;
+
+			return Template::instance()->nest_elements( $html_wrapper, $html );
 		} catch ( Throwable $e ) {
 			LP_Debug::error_log( $e );
 		}
@@ -94,98 +78,51 @@ class ListCoursesBlockType extends AbstractBlockType {
 		return $html;
 	}
 
+	/**
+	 * Render template list courses with settings param.
+	 *
+	 * @param array $settings
+	 *
+	 * @return stdClass { content: string_html }
+	 * @since 4.2.8.4
+	 * @version 1.0.0
+	 */
 	public static function render_courses( array $settings = [] ) {
-		$html = '';
+		$content          = new stdClass();
+		$content->content = '';
 
 		$parsed_block = $settings['parsed_block'] ?? '';
 		$attributes   = $settings['attributes'] ?? [];
-
-		$content              = new stdClass();
-		$content->content     = '';
-		$content->total_pages = 1;
-		$content->paged       = 1;
-
-		// EEEEEEEE
-		$block_content = '';
-
-		$courseQuery = $attributes['courseQuery'] ?? [];
+		$courseQuery  = $attributes['courseQuery'] ?? [];
 		if ( empty( $courseQuery ) ) {
-			return $html;
+			return $content;
 		}
 
-		$total_rows = 0;
-		$filter     = new LP_Course_Filter();
+		$total_rows           = 0;
+		$filter               = new LP_Course_Filter();
+		$settings['order_by'] = $settings['order_by'] ?? $courseQuery['order_by'] ?? 'post_date';
+		$settings['limit']    = $courseQuery['limit'] ?? 10;
 		Courses::handle_params_for_query_courses( $filter, $settings );
-
-		if ( ! empty( $courseQuery['order_by'] && empty( $settings['order_by'] ) ) ) {
-			$filter->order_by = $courseQuery['order_by'];
-		}
-
-		if ( ! empty( $courseQuery['term_id'] ) && empty( $settings['term_id'] ) ) {
-			$term_ids_str = LP_Helper::sanitize_params_submitted( urldecode( $courseQuery['term_id'] ?? '' ) );
-			if ( ! empty( $term_ids_str ) ) {
-				$term_ids         = explode( ',', $term_ids_str );
-				$filter->term_ids = $term_ids;
-			}
-		}
-
-		if ( ! empty( $courseQuery['tag_id'] ) && empty( $settings['tag_id'] ) ) {
-			$tag_ids_str = LP_Helper::sanitize_params_submitted( urldecode( $courseQuery['tag_id'] ?? '' ) );
-			if ( ! empty( $tag_ids_str ) ) {
-				$tag_ids         = explode( ',', $tag_ids_str );
-				$filter->tag_ids = $tag_ids;
-			}
-		}
-
-		if ( ! empty( $settings['page_term_id_current'] ) && empty( $settings['term_id'] ) ) {
-			$filter->term_ids[] = $settings['page_term_id_current'];
-		} elseif ( ! empty( $settings['page_tag_id_current'] ) && empty( $settings['tag_id'] ) ) {
-			$filter->tag_ids[] = $settings['page_tag_id_current'];
-		}
-
-		if ( LP_Page_Controller::is_page_instructor() ) {
-			$instructor = SingleInstructorTemplate::instance()->detect_instructor_by_page();
-
-			if ( ! $instructor || ! $instructor->is_instructor() ) {
-				return '';
-			}
-
-			$author_id           = $instructor->get_id();
-			$filter->post_author = $author_id;
-		}
+		self::get_courses_of_instructor( $filter );
 
 		if ( isset( $courseQuery['related'] ) && $courseQuery['related'] ) {
-			$courseModelCurrent = CourseModel::find( get_the_ID(), true );
-			if ( ! empty( $courseModelCurrent ) ) {
-				$terms    = $courseModelCurrent->get_categories();
-				$term_ids = [];
-
-				foreach ( $terms as $term ) {
-					$term_ids[] = $term->term_id ?? 0;
-					$term_ids[] = $term->parent ?? 0;
-				}
-
-				$filter->term_ids          = $term_ids;
-				$filter->query_count       = false;
-				$filter->where[]           = LP_Database::getInstance()->wpdb->prepare( 'AND p.ID != %d', get_the_ID() );
-				$courseQuery['pagination'] = false;
-			}
+			$courseQuery['pagination'] = false;
+			self::get_courses_related( $filter );
 		}
 
-		$filter->limit = $courseQuery['limit'];
-		$courses       = Courses::get_courses( $filter, $total_rows );
-
+		$courses = Courses::get_courses( $filter, $total_rows );
 		if ( empty( $courses ) ) {
-			return $html;
+			$content->content = Template::print_message( __( 'No courses found', 'learnpress' ), 'info', false );
+			return $content;
 		}
 
 		$html_pagination = '';
 		if ( isset( $courseQuery['pagination'] ) && $courseQuery['pagination'] ) {
 			$total_pages          = LP_Database::get_total_pages( $filter->limit, $total_rows );
-			$data_pagination_type = 'number';
+			$content->total_pages = $total_pages;
 			$data_pagination      = [
 				'total_pages' => $total_pages,
-				'type'        => $data_pagination_type,
+				'type'        => $courseQuery['pagination_type'] ?? 'number',
 				'base'        => add_query_arg( 'paged', '%#%', $settings['url_current'] ?? '' ),
 				'paged'       => $settings['paged'] ?? 1,
 				'wrapper'     => [ '<nav class="learnpress-block-pagination navigation pagination">' => '</nav>' ],
@@ -197,20 +134,68 @@ class ListCoursesBlockType extends AbstractBlockType {
 			$context['is_list_course'] = true;
 			$context['courses']        = $courses ?? [];
 			$context['pagination']     = $html_pagination ?? '';
-			$context['order_by']       = $filter->order_by;
 			$context['settings']       = $settings;
 			return $context;
 		};
 
 		// Add filter with priority 1 so other filters have access to these values
 		add_filter( 'render_block_context', $filter_block_context, 1 );
-		$block_render   = new WP_Block( $parsed_block );
-		$block_content .= $block_render->render( [ 'dynamic' => false ] );
+		$block_render  = new WP_Block( $parsed_block );
+		$block_content = $block_render->render( [ 'dynamic' => false ] );
 		remove_filter( 'render_block_context', $filter_block_context, 1 );
-		// EEEEEEEEEEEEE
 
 		$content->content = $block_content;
+		$content->paged   = $settings['paged'] ?? 1;
 
 		return $content;
+	}
+
+	/**
+	 * Detect instructor by page and get courses of instructor.
+	 *
+	 * @param LP_Course_Filter $filter
+	 *
+	 * @since 4.2.8.4
+	 * @return void
+	 */
+	public static function get_courses_of_instructor( LP_Course_Filter &$filter ) {
+		if ( ! LP_Page_Controller::is_page_instructor() ) {
+			return;
+		}
+
+		$instructor = SingleInstructorTemplate::instance()->detect_instructor_by_page();
+		if ( ! $instructor || ! $instructor->is_instructor() ) {
+			return;
+		}
+
+		$author_id           = $instructor->get_id();
+		$filter->post_author = $author_id;
+	}
+
+	/**
+	 * Get courses related to current course.
+	 *
+	 * @param LP_Course_Filter $filter
+	 *
+	 * @since 4.2.8.4
+	 * @return void
+	 */
+	public static function get_courses_related( LP_Course_Filter &$filter ) {
+		$courseModelCurrent = CourseModel::find( get_the_ID(), true );
+		if ( empty( $courseModelCurrent ) ) {
+			return;
+		}
+
+		$terms    = $courseModelCurrent->get_categories();
+		$term_ids = [];
+
+		foreach ( $terms as $term ) {
+			$term_ids[] = $term->term_id ?? 0;
+			$term_ids[] = $term->parent ?? 0;
+		}
+
+		$filter->term_ids    = $term_ids;
+		$filter->query_count = false;
+		$filter->where[]     = LP_Database::getInstance()->wpdb->prepare( 'AND p.ID != %d', $courseModelCurrent->get_id() );
 	}
 }

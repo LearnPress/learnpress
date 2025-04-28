@@ -35,6 +35,11 @@ const Edit = ( props ) => {
 		{ label: 'Popular', value: 'popular' },
 		{ label: 'Average Ratings', value: 'rating' },
 	];
+	const paginationTypes = [
+		{ label: __( 'Number', 'learnpress' ), value: 'number' },
+		{ label: __( 'Load more', 'learnpress' ), value: 'load-more' },
+		{ label: __( 'Infinite Scroll', 'learnpress' ), value: 'infinite' },
+	];
 
 	return (
 		<>
@@ -93,6 +98,19 @@ const Edit = ( props ) => {
 							onChange={ ( pagination ) => {
 								setAttributes( {
 									courseQuery: { ...courseQuery, pagination },
+								} );
+							} }
+						/>
+					) }
+
+					{ courseQuery.pagination && (
+						<SelectControl
+							label={ __( 'Pagination Type', 'learnpress' ) }
+							value={ courseQuery.pagination_type }
+							options={ paginationTypes }
+							onChange={ ( pagination_type ) => {
+								setAttributes( {
+									courseQuery: { ...courseQuery, pagination_type },
 								} );
 							} }
 						/>

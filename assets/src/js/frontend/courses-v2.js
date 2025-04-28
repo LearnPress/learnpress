@@ -182,6 +182,11 @@ window.lpCoursesList = ( () => {
 			listenElementCreated( ( node ) => {
 				if ( node.classList.contains( 'courses-load-infinite-no-css' ) ) {
 					listenElementViewed( node, callBackAfterSeeItem );
+				} else if ( node.classList.contains( 'wp-block-learnpress-list-courses' ) ) { // For block Gutenberg
+					const elInfinite = node.querySelector( '.courses-load-infinite-no-css' );
+					if ( elInfinite ) {
+						listenElementViewed( elInfinite, callBackAfterSeeItem );
+					}
 				}
 			} );
 

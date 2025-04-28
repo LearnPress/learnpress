@@ -41,7 +41,7 @@ class CourseItemTemplateBlock extends AbstractBlockType {
 
 		try {
 			$layout             = $attributes['layout'] ?? 'list';
-			$wrapper_attributes = 'learn-press-courses wp-block-learn-press-courses';
+			$wrapper_attributes = 'learn-press-courses lp-list-courses-no-css wp-block-learn-press-courses';
 
 			if ( $layout == 'grid' ) {
 				$wrapper_attributes .= ' lp-columns-3';

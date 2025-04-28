@@ -12,10 +12,11 @@
 		"courseQuery": {
 			"type": "object",
 			"default": {
-				"limit": 3,
+				"limit": 10,
 				"order_by": "post_date",
 				"related": false,
 				"pagination": false,
+				"pagination_type": "number",
 				"tag_id": "",
 				"term_id": ""
 			}

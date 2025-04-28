@@ -11,11 +11,6 @@ import {
 import classnames from 'classnames';
 import { useSelect } from '@wordpress/data';
 import { memo, useMemo, useState, useEffect } from '@wordpress/element';
-import {
-	PanelBody,
-	__experimentalToggleGroupControl as ToggleGroupControl,
-	__experimentalToggleGroupControlOption as ToggleGroupControlOption,
-} from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import API from '../../../../../js/api.js';
 const TEMPLATE_DEFAULT = [
@@ -100,7 +95,10 @@ const Edit = ( { clientId, context, attributes, setAttributes } ) => {
 	const [ coursesData, setCoursesData ] = useState();
 	const [ listCourses, setListCourses ] = useState( [] );
 	const [ loadingAPI, setLoadingAPI ] = useState( 0 );
+	const [ totalPages, setTotalPages ] = useState( 1 );
 	const { columns } = attributes;
+
+	const layoutPagination = context.lpCourseQuery?.pagination_type || 'number';
 
 	// Fetch courses when query parameters change
 	useEffect( () => {
@@ -112,9 +110,15 @@ const Edit = ( { clientId, context, attributes, setAttributes } ) => {
 				controller = new AbortController();
 				signal = controller.signal;
 
-				const data = await fetchLearnPressCourses( courseQuery, signal );
-				setCoursesData( data );
-				setListCourses( data.data.courses );
+				const response = await fetchLearnPressCourses( courseQuery, signal );
+				const { data } = response;
+				const { courses, page, total, total_pages } = data;
+
+				console.log( 'courses', courses, total_pages );
+
+				setCoursesData( response );
+				setListCourses( courses );
+				setTotalPages( total_pages );
 			} catch ( error ) {
 				if ( error.name !== 'AbortError' ) {
 					console.error( 'Failed to fetch courses:', error );
@@ -173,6 +177,36 @@ const Edit = ( { clientId, context, attributes, setAttributes } ) => {
 		setListCourses( dataDummy );
 	}
 
+	function paginationTypeDisplay( type ) {
+		switch ( type ) {
+		case 'load-more':
+			return (
+				<button>Load More</button>
+			);
+		case 'infinite':
+			return (
+				<button>Infinite loading</button>
+			);
+		default:
+			return (
+				<nav className="learnpress-block-pagination navigation pagination">
+					<ul className="page-numbers">
+						<li>
+							<a className="prev page-numbers" href="?paged=1">
+								<i className="lp-icon-arrow-left"></i>
+							</a>
+						</li>
+						{ Array.from( { length: totalPages }, ( _, index ) => (
+							<li key={ index }>
+								<a className="page-numbers" href="{index}">{ index + 1 }</a>
+							</li>
+						) ) }
+					</ul>
+				</nav>
+			);
+		}
+	}
+
 	return (
 		<>
 			<ul
@@ -183,9 +217,9 @@ const Edit = ( { clientId, context, attributes, setAttributes } ) => {
 					blockContexts.map( ( blockContext ) => (
 						<BlockContextProvider key={ blockContext.courseId } value={ blockContext }>
 							{ blockContext.courseId ===
-							( activeBlockContextId || blockContexts[ 0 ]?.courseId ) ? (
-								<PostTemplateInnerBlocks classList={ blockContext.classList } />
-							) : null }
+							( activeBlockContextId || blockContexts[ 0 ]?.courseId )
+								? <PostTemplateInnerBlocks classList={ blockContext.classList } /> : null
+							}
 							<MemoizedPostTemplateBlockPreview
 								blocks={ blocks }
 								blockContextId={ blockContext.courseId }
@@ -198,28 +232,7 @@ const Edit = ( { clientId, context, attributes, setAttributes } ) => {
 						</BlockContextProvider>
 					) ) }
 			</ul>
-			{ context.lpCourseQuery?.pagination && (
-				<nav className="learnpress-block-pagination navigation pagination">
-					<ul className="page-numbers">
-						<li>
-							<span aria-current="page" className="page-numbers current">
-								1
-							</span>
-						</li>
-						<li>
-							<a className="page-numbers">2</a>
-						</li>
-						<li>
-							<a className="page-numbers">3</a>
-						</li>
-						<li>
-							<a className="next page-numbers">
-								<i className="lp-icon-arrow-right"></i>
-							</a>
-						</li>
-					</ul>
-				</nav>
-			) }
+			{ context.lpCourseQuery?.pagination && totalPages > 1 ? paginationTypeDisplay( layoutPagination ) : null }
 		</>
 	);
 };
