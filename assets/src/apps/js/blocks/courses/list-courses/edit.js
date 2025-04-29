@@ -122,7 +122,11 @@ const Edit = ( props ) => {
 							checked={ courseQuery.pagination }
 							onChange={ ( pagination ) => {
 								setAttributes( {
-									courseQuery: { ...courseQuery, pagination },
+									courseQuery: {
+										...courseQuery,
+										pagination,
+										pagination_type: ! pagination ? 'number' : courseQuery.pagination_type,
+									},
 								} );
 							} }
 						/>
