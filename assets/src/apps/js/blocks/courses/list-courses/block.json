@@ -18,7 +18,9 @@
 				"pagination": false,
 				"pagination_type": "number",
 				"tag_id": "",
-				"term_id": ""
+				"term_id": "",
+				"load_ajax": false,
+				"load_ajax_after": false
 			}
 		}
 	},

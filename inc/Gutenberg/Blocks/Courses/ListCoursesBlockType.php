@@ -61,6 +61,9 @@ class ListCoursesBlockType extends AbstractBlockType {
 			$args                 = lp_archive_skeleton_get_args();
 			$args['attributes']   = $attributes;
 			$args['parsed_block'] = $block->parsed_block;
+			$courseQuery  		  = $attributes['courseQuery'] ?? [];
+			$load_ajax		      = $courseQuery['load_ajax'] ?? false;
+			$load_ajax_after	  = $courseQuery['load_ajax_after'] ?? false;
 			$callback             = [
 				'class'  => get_class( $this ),
 				'method' => 'render_courses',
@@ -68,6 +71,12 @@ class ListCoursesBlockType extends AbstractBlockType {
 			$html_wrapper         = [
 				'<div class="lp-list-courses-default">' => '</div>',
 			];
+
+			if ( ! $load_ajax || $load_ajax && $load_ajax_after ) {
+				$content_obj                     = ListCoursesBlockType::render_courses( $args );
+				$args['html_no_load_ajax_first'] = sprintf( '<div class="lp-list-courses-default">%s</div>', $content_obj->content );
+			}
+
 			$html                 = TemplateAJAX::load_content_via_ajax( $args, $callback );
 
 			return Template::instance()->nest_elements( $html_wrapper, $html );

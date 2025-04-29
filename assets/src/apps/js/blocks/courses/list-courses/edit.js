@@ -78,6 +78,31 @@ const Edit = ( props ) => {
 							}
 						} }
 					/>
+					<ToggleControl
+						label={ __( 'Enable AJAX', 'learnpress' ) }
+						checked={ courseQuery.load_ajax }
+						onChange={ ( load_ajax ) => {
+							setAttributes( {
+								courseQuery: {
+									...courseQuery,
+									load_ajax,
+									load_ajax_after: ! load_ajax ? false : courseQuery.load_ajax_after,
+								},
+							} );
+						} }
+					/>
+					{ courseQuery.load_ajax && (
+						<ToggleControl
+							label={ __( 'Enable AJAX After Page Reload', 'learnpress' ) }
+							checked={ courseQuery.load_ajax_after }
+							onChange={ ( load_ajax_after ) => {
+								setAttributes( {
+									courseQuery: { ...courseQuery, load_ajax_after },
+								} );
+							} }
+						/>
+					) }
+
 					{ ! courseQuery.related && (
 						<SelectControl
 							label={ __( 'Order by', 'learnpress' ) }

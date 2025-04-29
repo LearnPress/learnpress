@@ -114,8 +114,6 @@ const Edit = ( { clientId, context, attributes, setAttributes } ) => {
 				const { data } = response;
 				const { courses, page, total, total_pages } = data;
 
-				console.log( 'courses', courses, total_pages );
-
 				setCoursesData( response );
 				setListCourses( courses );
 				setTotalPages( total_pages );
@@ -179,31 +177,31 @@ const Edit = ( { clientId, context, attributes, setAttributes } ) => {
 
 	function paginationTypeDisplay( type ) {
 		switch ( type ) {
-		case 'load-more':
-			return (
-				<button>Load More</button>
-			);
-		case 'infinite':
-			return (
-				<button>Infinite loading</button>
-			);
-		default:
-			return (
-				<nav className="learnpress-block-pagination navigation pagination">
-					<ul className="page-numbers">
-						<li>
-							<a className="prev page-numbers" href="?paged=1">
-								<i className="lp-icon-arrow-left"></i>
-							</a>
-						</li>
-						{ Array.from( { length: totalPages }, ( _, index ) => (
-							<li key={ index }>
-								<a className="page-numbers" href="{index}">{ index + 1 }</a>
+			case 'load-more':
+				return (
+					<button className="courses-btn-load-more">{ __( 'Load More', 'learnpress' ) }</button>
+				);
+			case 'infinite':
+				return '';
+			default:
+				return (
+					<nav className="learnpress-block-pagination navigation pagination">
+						<ul className="page-numbers">
+							<li>
+								<a className="prev page-numbers" href="?paged=1">
+									<i className="lp-icon-arrow-left"></i>
+								</a>
 							</li>
-						) ) }
-					</ul>
-				</nav>
-			);
+							{ Array.from( { length: totalPages }, ( _, index ) => (
+								<li key={ index }>
+									<a className="page-numbers" href="{index}">
+										{ index + 1 }
+									</a>
+								</li>
+							) ) }
+						</ul>
+					</nav>
+				);
 		}
 	}
 
@@ -217,9 +215,9 @@ const Edit = ( { clientId, context, attributes, setAttributes } ) => {
 					blockContexts.map( ( blockContext ) => (
 						<BlockContextProvider key={ blockContext.courseId } value={ blockContext }>
 							{ blockContext.courseId ===
-							( activeBlockContextId || blockContexts[ 0 ]?.courseId )
-								? <PostTemplateInnerBlocks classList={ blockContext.classList } /> : null
-							}
+							( activeBlockContextId || blockContexts[ 0 ]?.courseId ) ? (
+								<PostTemplateInnerBlocks classList={ blockContext.classList } />
+							) : null }
 							<MemoizedPostTemplateBlockPreview
 								blocks={ blocks }
 								blockContextId={ blockContext.courseId }
@@ -232,7 +230,9 @@ const Edit = ( { clientId, context, attributes, setAttributes } ) => {
 						</BlockContextProvider>
 					) ) }
 			</ul>
-			{ context.lpCourseQuery?.pagination && totalPages > 1 ? paginationTypeDisplay( layoutPagination ) : null }
+			{ context.lpCourseQuery?.pagination && totalPages > 1
+				? paginationTypeDisplay( layoutPagination )
+				: null }
 		</>
 	);
 };
