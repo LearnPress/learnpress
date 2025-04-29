@@ -16,7 +16,7 @@ defined( 'ABSPATH' ) || exit;
 				placeholder="<?php echo esc_attr_x( 'Search for course content', 'search course input placeholder', 'learnpress' ); ?>"
 		/>
 		<button name="submit"
-				aria-label="<?php echo esc_html_x( 'Search for course content', 'learnpress' ); ?>">
+				aria-label="<?php echo esc_attr_x( 'Search for course content', 'search course input placeholder', 'learnpress' ); ?>">
 			<i class="lp-icon-search"></i>
 		</button>
 		<button type="button" class="clear"></button>
