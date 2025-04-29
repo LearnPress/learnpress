@@ -451,10 +451,7 @@ class LP_Assets extends LP_Abstract_Assets {
 	 */
 	public function load_scripts_on_head() {
 		LP_Helper::print_inline_script_tag( 'lpData', $this->localize_data_global(), [ 'id' => 'lpData' ] );
-
-		if ( LP_Page_Controller::is_page_courses() ) {
-			LP_Helper::print_inline_script_tag( 'lpSettingCourses', $this->localize_data_courses(), [ 'id' => 'lpSettingCourses' ] );
-		}
+		LP_Helper::print_inline_script_tag( 'lpSettingCourses', $this->localize_data_courses(), [ 'id' => 'lpSettingCourses' ] );
 	}
 
 	/**

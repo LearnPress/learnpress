@@ -57,6 +57,9 @@ class ListCoursesBlockType extends AbstractBlockType {
 	public function render_content_block_template( array $attributes, $content, $block ): string {
 		$html = '';
 
+		wp_enqueue_script( 'lp-courses' );
+		wp_enqueue_script( 'lp-courses-v2' );
+
 		try {
 			$args                 = lp_archive_skeleton_get_args();
 			$args['attributes']   = $attributes;
