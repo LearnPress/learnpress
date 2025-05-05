@@ -62,11 +62,11 @@ class GutenbergHandleMain {
 		 * @var AbstractBlockType[] $blocks
 		 */
 		$blocks           = Config::instance()->get( 'block-elements', 'gutenberg' );
-		$template_current = $this->get_edit_template();
+		//$template_current = $this->get_edit_template();
 
 		foreach ( $blocks as $block_template ) {
 			// Set block maybe display when Edit on Template.
-			if ( ! empty( $template_current ) && ! empty( $block_template->display_on_templates )
+			/*if ( ! empty( $template_current ) && ! empty( $block_template->display_on_templates )
 				&& ! in_array( $template_current, $block_template->display_on_templates ) ) {
 				if ( ! empty( $block_template->ancestor ) ) {
 					$block_template->display_on_templates = [];
@@ -75,12 +75,8 @@ class GutenbergHandleMain {
 				}
 			} elseif ( ! empty( $block_template->ancestor )
 				&& ! empty( $block_template->display_on_templates ) ) {
-				/**
-				 * Allow display block on template without click parent block confined via ancestor.
-				 * Must set ancestor on PHP block, not config on block.json to apply case.
-				 */
 				$block_template->ancestor = null;
-			}
+			}*/
 
 			// Register script to load on the Backend Edit.
 			wp_register_script(

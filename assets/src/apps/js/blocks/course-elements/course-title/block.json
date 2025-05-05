@@ -7,6 +7,7 @@
 	"description": "Course title.",
 	"textdomain": "learnpress",
 	"keywords": ["course title", "learnpress"],
+	"ancestor": [ "learnpress/single-course", "learnpress/course-item-template" ],
 	"attributes": {
 		"tag": {
 			"type": "string",

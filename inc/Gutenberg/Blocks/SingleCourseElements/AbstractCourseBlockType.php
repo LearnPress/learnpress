@@ -15,17 +15,17 @@ abstract class AbstractCourseBlockType extends AbstractBlockType {
 	/**
 	 * @var string Screen Template want to display - Field of LP
 	 */
-	public $display_on_templates = [
+	/*public $display_on_templates = [
 		'learnpress/learnpress//single-lp_course',
-	];
+	];*/
 
 	/**
 	 * Show block when block parent is course item template, single course active
 	 * @return string[]
 	 */
-	public function get_ancestor() {
+	/*public function get_ancestor() {
 		return [ 'learnpress/single-course', 'learnpress/course-item-template' ];
-	}
+	}*/
 
 	/**
 	 * Get course model

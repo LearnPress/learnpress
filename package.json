@@ -33,6 +33,7 @@
 		"@wordpress/block-editor": "14.14.0",
 		"@wordpress/blocks": "14.8.0",
 		"@wordpress/components": "29.5.0",
+		"@wordpress/data": "10.19.1",
 		"@wordpress/icons": "10.19.0",
 		"@wordpress/url": "4.19.1",
 		"del": "^6.1.1",
