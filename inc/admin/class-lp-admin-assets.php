@@ -376,21 +376,25 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'1.0.4',
 					[ 'strategy' => 'async' ]
 				),
-				/*'editor-check'                      => new LP_Asset_Key(
-					self::url( 'js/dist/gutenberg/editor-check' . self::$_min_assets . '.js' ),
-					array(
-						'wp-data',
-						'wp-edit-post',
-						'wp-editor',
-					),
-					[],
-					0,
-					0,
-					'1.0.0',
-					[ 'strategy' => 'defer' ]
-				),*/
 			)
 		);
+
+		/*$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+		if ( $screen && $screen->id === 'site-editor' ) {
+			$scripts['editor-check'] = new LP_Asset_Key(
+				self::url( 'js/dist/gutenberg/editor-check' . self::$_min_assets . '.js' ),
+				array(
+					'wp-data',
+					'wp-edit-post',
+					'wp-editor',
+				),
+				[],
+				0,
+				0,
+				'1.0.0',
+				[ 'strategy' => 'defer' ]
+			);
+		}*/
 
 		return $scripts;
 	}

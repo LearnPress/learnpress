@@ -121,9 +121,7 @@ $singleCourseTemplate = SingleCourseTemplate::instance();
 					} else {
 						?>
 						<tr class="cart-item">
-							<td>
-								<?php do_action( 'learn-press/checkout/cart-item', $itemModel, $cart_item ); ?>
-							</td>
+							<?php do_action( 'learn-press/checkout/cart-item', $itemModel, $cart_item ); ?>
 						</tr>
 						<?php
 					}

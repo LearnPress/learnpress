@@ -8,6 +8,10 @@
 		flex-wrap: wrap;
 	}
 
+	.lp-section-instructor {
+		flex: 1;
+	}
+
 	.instructor-display-name {
 		font-size: 1.4rem;
 	}
@@ -18,6 +22,14 @@
 
 	.lp-instructor-meta {
 		margin-top: 16px;
+
+		.instructor-item-meta:first-child {
+			> * {
+				border: none;
+				margin-left: 0;
+				padding-left: 0;
+			}
+		}
 	}
 
 	.instructor-description {
@@ -25,8 +37,9 @@
 	}
 
 	img {
+		max-width: 100%;
 		border-radius: $border-radius-global;
- 	}
+	}
 
 	.instructor-social {
 		display: inline-flex;
