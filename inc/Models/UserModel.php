@@ -534,7 +534,7 @@ class UserModel {
 	 *
 	 * @return array
 	 * @since 4.1.6
-	 * @version 1.0.4
+	 * @version 1.0.5
 	 */
 	public function get_instructor_statistic( array $params = [] ): array {
 		$statistic = array(
@@ -548,9 +548,9 @@ class UserModel {
 
 		try {
 			$key_cache_first = "instructor/{$this->get_id()}/statistic";
-			$statistic       = LP_Cache::cache_load_first( 'get', $key_cache_first );
-			if ( $statistic !== false ) {
-				return $statistic;
+			$statistic_cache = LP_Cache::cache_load_first( 'get', $key_cache_first );
+			if ( $statistic_cache !== false ) {
+				return $statistic_cache;
 			}
 
 			$user_id          = $this->get_id();
