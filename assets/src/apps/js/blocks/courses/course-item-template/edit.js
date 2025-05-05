@@ -95,7 +95,7 @@ const Edit = ( { clientId, context, attributes, setAttributes } ) => {
 	const [ coursesData, setCoursesData ] = useState();
 	const [ listCourses, setListCourses ] = useState( [] );
 	const [ loadingAPI, setLoadingAPI ] = useState( 0 );
-	const [ totalPages, setTotalPages ] = useState( 1 );
+	// const [ totalPages, setTotalPages ] = useState( 1 );
 	const { columns } = attributes;
 
 	const layoutPagination = context.lpCourseQuery?.pagination_type || 'number';
@@ -116,7 +116,7 @@ const Edit = ( { clientId, context, attributes, setAttributes } ) => {
 
 				setCoursesData( response );
 				setListCourses( courses );
-				setTotalPages( total_pages );
+				// setTotalPages( total_pages );
 			} catch ( error ) {
 				if ( error.name !== 'AbortError' ) {
 					console.error( 'Failed to fetch courses:', error );
@@ -192,7 +192,7 @@ const Edit = ( { clientId, context, attributes, setAttributes } ) => {
 									<i className="lp-icon-arrow-left"></i>
 								</a>
 							</li>
-							{ Array.from( { length: totalPages }, ( _, index ) => (
+							{ Array.from( { length: 3 }, ( _, index ) => (
 								<li key={ index }>
 									<a className="page-numbers" href="{index}">
 										{ index + 1 }
@@ -230,9 +230,7 @@ const Edit = ( { clientId, context, attributes, setAttributes } ) => {
 						</BlockContextProvider>
 					) ) }
 			</ul>
-			{ context.lpCourseQuery?.pagination && totalPages > 1
-				? paginationTypeDisplay( layoutPagination )
-				: null }
+			{ context.lpCourseQuery?.pagination ? paginationTypeDisplay( layoutPagination ) : null }
 		</>
 	);
 };
