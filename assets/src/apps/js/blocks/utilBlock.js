@@ -26,7 +26,7 @@ const checkTemplateCanLoadBlock = ( template, block_name, metadata, callBack ) =
 		if ( getBlockType( block_name ) ) {
 			unregisterBlockType( block_name );
 
-			if ( currentPostId === template ) {
+			if ( template.includes( currentPostId ) ) {
 				metaDataNew.ancestor = null;
 				callBack( metaDataNew );
 			} else {
@@ -37,4 +37,3 @@ const checkTemplateCanLoadBlock = ( template, block_name, metadata, callBack ) =
 };
 
 export { checkTemplateCanLoadBlock };
-
