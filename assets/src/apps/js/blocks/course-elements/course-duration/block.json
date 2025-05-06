@@ -6,10 +6,10 @@
 	"category": "learnpress-course-elements",
 	"description": "Show Duration of Course.",
 	"textdomain": "learnpress",
-	"keywords": ["duration", "learnpress"],
-	"usesContext": ["lpCourseData"],
+	"keywords": [ "duration", "learnpress" ],
+	"usesContext": [ "lpCourseData" ],
 	"icon": "clock",
-	"ancestor": ["learnpress/single-course", "learnpress/course-item-template"],
+	"ancestor": [ "learnpress/single-course", "learnpress/course-item-template" ],
 	"attributes": {
 		"showIcon": {
 			"type": "boolean",
@@ -21,7 +21,7 @@
 		}
 	},
 	"supports": {
-		"align": ["wide", "full"],
+		"align": [ "wide", "full" ],
 		"html": false,
 		"typography": {
 			"fontSize": true,
