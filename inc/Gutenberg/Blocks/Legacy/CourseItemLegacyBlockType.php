@@ -17,17 +17,6 @@ class CourseItemLegacyBlockType extends AbstractBlockType {
 	public $block_name = 'course-item-curriculum';
 
 	/**
-	 * @var string Screen Template want to display - Field of LP
-	 */
-	public $display_on_templates = [
-		'learnpress/learnpress//single-lp_course',
-	];
-
-	public function get_ancestor() {
-		return [ 'learnpress/single-course' ];
-	}
-
-	/**
 	 * Render content of block tag
 	 *
 	 * @param array $attributes | Attributes of block tag.

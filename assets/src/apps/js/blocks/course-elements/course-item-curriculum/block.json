@@ -4,10 +4,11 @@
 	"name": "learnpress/course-item-curriculum",
 	"title": "Course Item Curriculum (Legacy)",
 	"category": "learnpress-course-elements",
-	"icon": "format-chat",
+	"icon": "welcome-learn-more",
 	"description": "Renders Course Item Curriculum Block PHP Template.",
 	"textdomain": "learnpress",
 	"keywords": [ "item curriculum course single", "learnpress" ],
+	"ancestor": [ "learnpress/single-course" ],
 	"usesContext": [],
 	"supports": {
 		"inserter": true,
