@@ -7,9 +7,10 @@
 	"description": "Renders template Single Course Legacy PHP templates.",
 	"textdomain": "learnpress",
 	"keywords": [
-		"single course legacy",
+		"legacy",
 		"learnpress"
 	],
+	"ancestor": [],
 	"usesContext": [],
 	"supports": {
 		"align": true

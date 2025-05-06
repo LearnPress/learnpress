@@ -13,8 +13,7 @@ use LP_Settings;
  * Handle register, render block template
  */
 class SingleCourseBlockLegacy extends AbstractBlockType {
-	public $block_name                 = 'single-course-legacy';
-	public $display_on_templates = [ 'learnpress/learnpress//single-lp_course' ];
+	public $block_name = 'single-course-legacy';
 
 	/**
 	 * Render content of block tag
