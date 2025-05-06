@@ -4,7 +4,7 @@
 	"name": "learnpress/instructor-student",
 	"title": "Instructor Student",
 	"category": "learnpress-course-elements",
-	"icon": "format-image",
+	"icon": "admin-users",
 	"description": "Renders template Instructor Student PHP templates.",
 	"textdomain": "learnpress",
 	"keywords": [ "instructor student single", "learnpress" ],
