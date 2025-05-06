@@ -4,7 +4,7 @@
 	"name": "learnpress/course-share",
 	"title": "Course Share",
 	"category": "learnpress-course-elements",
-	"icon": "format-chat",
+	"icon": "share",
 	"description": "Renders Share Course Block PHP Template.",
 	"textdomain": "learnpress",
 	"keywords": [ "share course single", "learnpress" ],
