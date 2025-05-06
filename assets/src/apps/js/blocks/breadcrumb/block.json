@@ -4,6 +4,7 @@
 	"name": "learnpress/breadcrumb",
 	"title": "Learnpress Breadcrumb",
 	"category": "learnpress-category",
+	"icon": "ellipsis",
 	"description": "Renders Learnpress Breadcrumb PHP Template.",
 	"textdomain": "learnpress",
 	"keywords": ["learnpress breadcrumb", "learnpress"],
