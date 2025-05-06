@@ -6,11 +6,12 @@
 	"category": "learnpress-course-elements",
 	"description": "Renders template Course Description PHP templates.",
 	"textdomain": "learnpress",
-	"keywords": ["description single course", "learnpress"],
-	"usesContext": ["lpCourseData"],
+	"keywords": [ "description single course", "learnpress" ],
+	"ancestor": [ "learnpress/single-course", "learnpress/course-item-template" ],
+	"usesContext": [ "lpCourseData" ],
 	"supports": {
 		"multiple": true,
-		"align": ["wide", "full"],
+		"align": [ "wide", "full" ],
 		"html": false,
 		"typography": {
 			"fontSize": true,
