@@ -91,17 +91,6 @@ const Edit = ( props ) => {
 							} );
 						} }
 					/>
-					{ courseQuery.load_ajax && (
-						<ToggleControl
-							label={ __( 'Enable AJAX After Page Reload', 'learnpress' ) }
-							checked={ courseQuery.load_ajax_after }
-							onChange={ ( load_ajax_after ) => {
-								setAttributes( {
-									courseQuery: { ...courseQuery, load_ajax_after },
-								} );
-							} }
-						/>
-					) }
 
 					{ ! courseQuery.related && (
 						<SelectControl
