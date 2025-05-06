@@ -3,11 +3,11 @@
 	"apiVersion": 3,
 	"name": "learnpress/course-filter",
 	"title": "Course Filter",
-	"category": "learnpress-course-elements",
-	"icon": "admin-page",
-	"description": "Renders Layout Course Filter PHP templates.",
+	"category": "learnpress-category",
+	"description": "Show filter fields for courses.",
 	"textdomain": "learnpress",
-	"keywords": ["layout filter course", "learnpress"],
+	"keywords": ["filter", "learnpress"],
+	"icon": "filter",
 	"usesContext": [],
 	"attributes": {
 		"title": {

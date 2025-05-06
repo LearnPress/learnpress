@@ -7,6 +7,7 @@
 	"description": "Renders template Curriculum Course PHP templates.",
 	"textdomain": "learnpress",
 	"keywords": [ "curriculum single course", "learnpress" ],
+	"icon": "list-view",
 	"ancestor": [ "learnpress/single-course" ],
 	"usesContext": [],
 	"supports": {
