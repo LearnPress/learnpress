@@ -8,7 +8,7 @@ import { unregisterBlockType, getBlockType } from '@wordpress/blocks';
 import { subscribe, select } from '@wordpress/data';
 
 let currentPostIdOld = null;
-const checkTemplatesCanLoadBlock = ( templates, block_name, metadata, callBack ) => {
+const checkTemplatesCanLoadBlock = ( templates, metadata, callBack ) => {
 	const metaDataNew = { ...metadata };
 	subscribe( () => {
 		const store = select( 'core/editor' );
@@ -23,8 +23,8 @@ const checkTemplatesCanLoadBlock = ( templates, block_name, metadata, callBack )
 		}
 
 		currentPostIdOld = currentPostId;
-		if ( getBlockType( block_name ) ) {
-			unregisterBlockType( block_name );
+		if ( getBlockType( metaDataNew.name ) ) {
+			unregisterBlockType( metaDataNew.name );
 
 			if ( templates.includes( currentPostId ) ) {
 				metaDataNew.ancestor = null;

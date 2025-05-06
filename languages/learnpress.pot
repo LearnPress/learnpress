@@ -2,16 +2,16 @@
 # This file is distributed under the same license as the LearnPress plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: LearnPress 4.2.8.3\n"
+"Project-Id-Version: LearnPress 4.2.8.4-beta.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/learnpress\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-04-26T13:27:15+03:00\n"
+"POT-Creation-Date: 2025-05-05T13:04:48+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.8.1\n"
+"X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: learnpress\n"
 
 #: assets/js/dist/admin/pages/tools.min.js:118
@@ -114,7 +114,7 @@ msgstr ""
 #: config/settings/permalink.php:141
 #: inc/admin/sub-menus/class-lp-submenu-settings.php:18
 #: inc/admin/views/addons.php:181
-#: learnpress.php:721
+#: learnpress.php:745
 msgid "Settings"
 msgstr ""
 
@@ -251,7 +251,7 @@ msgid "Course Title"
 msgstr ""
 
 #: assets/src/apps/js/blocks/course-elements/course-title/edit.js:28
-#: assets/src/apps/js/blocks/courses/list-courses/edit.js:123
+#: assets/src/apps/js/blocks/courses/list-courses/edit.js:170
 #: inc/custom-post-types/course.php:141
 #: inc/custom-post-types/question.php:184
 #: inc/custom-post-types/question.php:185
@@ -288,7 +288,7 @@ msgid "Author"
 msgstr ""
 
 #: assets/src/apps/js/blocks/course-filter/course-categories-filter/edit.js:9
-#: assets/src/apps/js/blocks/courses/list-courses/edit.js:110
+#: assets/src/apps/js/blocks/courses/list-courses/edit.js:157
 #: inc/custom-post-types/course.php:113
 #: inc/TemplateHooks/Course/SingleCourseClassicTemplate.php:249
 #: templates/single-course/meta/category.php:15
@@ -374,41 +374,77 @@ msgstr ""
 msgid "Tags"
 msgstr ""
 
-#: assets/src/apps/js/blocks/courses/course-item-template/edit.js:157
+#: assets/src/apps/js/blocks/courses/course-item-template/edit.js:159
 msgid "Courses Fetching…"
 msgstr ""
 
-#: assets/src/apps/js/blocks/courses/course-item-template/edit.js:166
+#: assets/src/apps/js/blocks/courses/course-item-template/edit.js:168
 msgid "Course One"
 msgstr ""
 
-#: assets/src/apps/js/blocks/courses/course-item-template/edit.js:170
+#: assets/src/apps/js/blocks/courses/course-item-template/edit.js:172
 msgid "Course two"
 msgstr ""
 
-#: assets/src/apps/js/blocks/courses/list-courses/edit.js:42
+#: assets/src/apps/js/blocks/courses/course-item-template/edit.js:182
+#: config/settings/course.php:121
+msgid "Load More"
+msgstr ""
+
+#: assets/src/apps/js/blocks/courses/list-courses/edit.js:39
+#: config/elementor/course/list-courses-by-page.php:171
+#: config/settings/course.php:120
+#: config/settings/profile.php:102
+msgid "Number"
+msgstr ""
+
+#: assets/src/apps/js/blocks/courses/list-courses/edit.js:40
+#: config/elementor/course/list-courses-by-page.php:172
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:343
+msgid "Load more"
+msgstr ""
+
+#: assets/src/apps/js/blocks/courses/list-courses/edit.js:41
+#: config/settings/course.php:122
+msgid "Infinite Scroll"
+msgstr ""
+
+#: assets/src/apps/js/blocks/courses/list-courses/edit.js:47
 msgid "Query Settings"
 msgstr ""
 
-#: assets/src/apps/js/blocks/courses/list-courses/edit.js:44
+#: assets/src/apps/js/blocks/courses/list-courses/edit.js:49
 msgid "Posts per page"
 msgstr ""
 
-#: assets/src/apps/js/blocks/courses/list-courses/edit.js:55
+#: assets/src/apps/js/blocks/courses/list-courses/edit.js:60
 msgid "Related Course"
 msgstr ""
 
-#: assets/src/apps/js/blocks/courses/list-courses/edit.js:78
+#: assets/src/apps/js/blocks/courses/list-courses/edit.js:82
+msgid "Enable AJAX"
+msgstr ""
+
+#: assets/src/apps/js/blocks/courses/list-courses/edit.js:96
+msgid "Enable AJAX After Page Reload"
+msgstr ""
+
+#: assets/src/apps/js/blocks/courses/list-courses/edit.js:108
 msgid "Order by"
 msgstr ""
 
-#: assets/src/apps/js/blocks/courses/list-courses/edit.js:91
+#: assets/src/apps/js/blocks/courses/list-courses/edit.js:121
 #: config/elementor/course/list-courses-by-page.php:163
 #: inc/admin/views/meta-boxes/quiz/settings.php:77
 msgid "Pagination"
 msgstr ""
 
-#: assets/src/apps/js/blocks/courses/list-courses/edit.js:102
+#: assets/src/apps/js/blocks/courses/list-courses/edit.js:137
+#: config/settings/course.php:114
+msgid "Pagination Type"
+msgstr ""
+
+#: assets/src/apps/js/blocks/courses/list-courses/edit.js:149
 #: config/elementor/course/filter-course-el.php:183
 #: inc/admin/views/statistics/courses.php:20
 #: inc/admin/views/statistics/orders.php:20
@@ -418,7 +454,7 @@ msgstr ""
 msgid "Filter"
 msgstr ""
 
-#: assets/src/apps/js/blocks/courses/list-courses/edit.js:104
+#: assets/src/apps/js/blocks/courses/list-courses/edit.js:151
 msgid "Taxonomy"
 msgstr ""
 
@@ -730,29 +766,34 @@ msgid "Are you sure you want to remove your avatar?"
 msgstr ""
 
 #. Plugin Name of the plugin
+#: learnpress.php
 #: inc/admin/class-lp-admin.php:143
 #: inc/admin/class-lp-admin.php:151
 #: inc/admin/lp-admin-functions.php:1503
 #: inc/admin/settings/class-lp-settings-emails.php:153
 #: inc/ExternalPlugin/Elementor/LPElementor.php:56
 #: inc/ExternalPlugin/Elementor/LPElementor.php:112
-#: inc/Gutenberg/GutenbergHandleMain.php:357
+#: inc/Gutenberg/GutenbergHandleMain.php:353
 msgid "LearnPress"
 msgstr ""
 
 #. Plugin URI of the plugin
+#: learnpress.php
 msgid "http://thimpress.com/learnpress"
 msgstr ""
 
 #. Description of the plugin
+#: learnpress.php
 msgid "LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes."
 msgstr ""
 
 #. Author of the plugin
+#: learnpress.php
 msgid "ThimPress"
 msgstr ""
 
 #. Author URI of the plugin
+#: learnpress.php
 msgid "http://thimpress.com"
 msgstr ""
 
@@ -1003,7 +1044,7 @@ msgid "Radius"
 msgstr ""
 
 #: config/elementor/course/filter-course-el.php:353
-#: inc/admin/class-lp-admin-assets.php:537
+#: inc/admin/class-lp-admin-assets.php:541
 #: inc/admin/views/meta-boxes/order/content-tab-preview-exports-invoice.php:66
 #: inc/admin/views/meta-boxes/order/details.php:209
 #: templates/checkout/order-received.php:70
@@ -1127,13 +1168,13 @@ msgid "Newest"
 msgstr ""
 
 #: config/elementor/course/list-courses-by-page.php:141
-#: inc/Gutenberg/Blocks/ArchiveCourseElements/CourseOrderByBlockType.php:66
+#: inc/Gutenberg/Blocks/ArchiveCourseElements/CourseOrderByBlockType.php:67
 #: inc/TemplateHooks/Course/ListCoursesTemplate.php:531
 msgid "Title a-z"
 msgstr ""
 
 #: config/elementor/course/list-courses-by-page.php:142
-#: inc/Gutenberg/Blocks/ArchiveCourseElements/CourseOrderByBlockType.php:67
+#: inc/Gutenberg/Blocks/ArchiveCourseElements/CourseOrderByBlockType.php:68
 #: inc/TemplateHooks/Course/ListCoursesTemplate.php:532
 msgid "Title z-a"
 msgstr ""
@@ -1148,7 +1189,7 @@ msgstr ""
 
 #: config/elementor/course/list-courses-by-page.php:145
 #: config/elementor/course/list-courses.php:74
-#: inc/Gutenberg/Blocks/ArchiveCourseElements/CourseOrderByBlockType.php:70
+#: inc/Gutenberg/Blocks/ArchiveCourseElements/CourseOrderByBlockType.php:71
 #: inc/TemplateHooks/Course/ListCoursesTemplate.php:535
 msgid "Popular"
 msgstr ""
@@ -1164,17 +1205,6 @@ msgstr ""
 
 #: config/elementor/course/list-courses-by-page.php:170
 msgid "Nonce"
-msgstr ""
-
-#: config/elementor/course/list-courses-by-page.php:171
-#: config/settings/course.php:120
-#: config/settings/profile.php:102
-msgid "Number"
-msgstr ""
-
-#: config/elementor/course/list-courses-by-page.php:172
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:343
-msgid "Load more"
 msgstr ""
 
 #: config/elementor/course/list-courses-by-page.php:173
@@ -1671,20 +1701,8 @@ msgstr ""
 msgid "Ajax is only applied when selecting pagination, filtering, searching, and sorting. Not applicable when reloading the Course Archive page."
 msgstr ""
 
-#: config/settings/course.php:114
-msgid "Pagination Type"
-msgstr ""
-
 #: config/settings/course.php:115
 msgid "Display the pagination type on the Course Archive page."
-msgstr ""
-
-#: config/settings/course.php:121
-msgid "Load More"
-msgstr ""
-
-#: config/settings/course.php:122
-msgid "Infinite Scroll"
 msgstr ""
 
 #: config/settings/course.php:127
@@ -2908,7 +2926,7 @@ msgstr ""
 msgid "Before taking this action, we strongly recommend you backup your site first before proceeding. If you encounter any problems, please do not hesitate to contact our support team. Are you sure to proceed with the update protocol?"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:530
+#: inc/admin/class-lp-admin-assets.php:534
 #: inc/class-lp-query-list-table.php:32
 #: inc/TemplateHooks/Table/TableListTemplate.php:138
 msgid "item"
@@ -2916,52 +2934,52 @@ msgid_plural "items"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/admin/class-lp-admin-assets.php:531
+#: inc/admin/class-lp-admin-assets.php:535
 msgid "Create a new"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:532
+#: inc/admin/class-lp-admin-assets.php:536
 #: inc/admin/views/setup/content.php:50
 #: inc/custom-post-types/quiz.php:172
 msgid "Back"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:533
+#: inc/admin/class-lp-admin-assets.php:537
 #: inc/admin/views/course/modal-choose-items.php:54
 #: inc/admin/views/quiz/modal-choose-items.php:52
 #: inc/custom-post-types/quiz.php:173
 msgid "Selected items"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:534
+#: inc/admin/class-lp-admin-assets.php:538
 msgid "Do you want to remove the \"{{ITEM_NAME}}\" item from the course?"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:535
+#: inc/admin/class-lp-admin-assets.php:539
 msgid "Do you want to move the \"{{ITEM_NAME}}\" item to the trash?"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:538
+#: inc/admin/class-lp-admin-assets.php:542
 msgid "Items"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:540
+#: inc/admin/class-lp-admin-assets.php:544
 msgid "The course sale price must be less than the regular price"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:541
+#: inc/admin/class-lp-admin-assets.php:545
 msgid "The course price must be greater than the sale price"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:542
+#: inc/admin/class-lp-admin-assets.php:546
 msgid "The sale start date must be before the sale end date"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:543
+#: inc/admin/class-lp-admin-assets.php:547
 msgid "The sale end date must be after the sale start date"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:544
+#: inc/admin/class-lp-admin-assets.php:548
 msgid "Invalid date"
 msgstr ""
 
@@ -3767,7 +3785,7 @@ msgid "Reset Password"
 msgstr ""
 
 #: inc/admin/sub-menus/class-lp-submenu-addons.php:14
-#: learnpress.php:723
+#: learnpress.php:747
 msgid "Add-ons"
 msgstr ""
 
@@ -4560,7 +4578,7 @@ msgstr ""
 #: inc/admin/views/meta-boxes/order/details.php:212
 #: inc/custom-post-types/order.php:458
 #: templates/checkout/order-received.php:117
-#: templates/checkout/review-order.php:158
+#: templates/checkout/review-order.php:156
 #: templates/emails/order-items-table.php:118
 #: templates/emails/plain/order-items-table.php:88
 #: templates/order/order-details.php:29
@@ -6909,19 +6927,24 @@ msgstr ""
 msgid "Invalid Paypal checkout url"
 msgstr ""
 
-#: inc/Gutenberg/Blocks/ArchiveCourseElements/CourseOrderByBlockType.php:65
+#: inc/Gutenberg/Blocks/ArchiveCourseElements/CourseOrderByBlockType.php:66
 #: inc/TemplateHooks/Course/ListCoursesTemplate.php:530
 msgid "Newly published"
 msgstr ""
 
-#: inc/Gutenberg/Blocks/ArchiveCourseElements/CourseOrderByBlockType.php:68
+#: inc/Gutenberg/Blocks/ArchiveCourseElements/CourseOrderByBlockType.php:69
 #: inc/TemplateHooks/Course/ListCoursesTemplate.php:533
 msgid "Price high to low"
 msgstr ""
 
-#: inc/Gutenberg/Blocks/ArchiveCourseElements/CourseOrderByBlockType.php:69
+#: inc/Gutenberg/Blocks/ArchiveCourseElements/CourseOrderByBlockType.php:70
 #: inc/TemplateHooks/Course/ListCoursesTemplate.php:534
 msgid "Price low to high"
+msgstr ""
+
+#: inc/Gutenberg/Blocks/Courses/ListCoursesBlockType.php:127
+#: inc/TemplateHooks/Course/ListCoursesTemplate.php:114
+msgid "No courses found"
 msgstr ""
 
 #: inc/Gutenberg/Blocks/SingleCourseElements/CourseCategoriesBlockType.php:72
@@ -6936,31 +6959,31 @@ msgstr ""
 msgid "by"
 msgstr ""
 
-#: inc/Gutenberg/GutenbergHandleMain.php:264
+#: inc/Gutenberg/GutenbergHandleMain.php:260
 msgid "LearnPress Global"
 msgstr ""
 
-#: inc/Gutenberg/GutenbergHandleMain.php:269
+#: inc/Gutenberg/GutenbergHandleMain.php:265
 msgid "LearnPress Course Elements"
 msgstr ""
 
-#: inc/Gutenberg/GutenbergHandleMain.php:274
+#: inc/Gutenberg/GutenbergHandleMain.php:270
 msgid "LearnPress Legacy"
 msgstr ""
 
-#: inc/Gutenberg/GutenbergHandleMain.php:336
+#: inc/Gutenberg/GutenbergHandleMain.php:332
 msgid "Layout List Course"
 msgstr ""
 
-#: inc/Gutenberg/GutenbergHandleMain.php:337
+#: inc/Gutenberg/GutenbergHandleMain.php:333
 msgid "List Course Learnpress"
 msgstr ""
 
-#: inc/Gutenberg/GutenbergHandleMain.php:346
+#: inc/Gutenberg/GutenbergHandleMain.php:342
 msgid "Layout Grid Course"
 msgstr ""
 
-#: inc/Gutenberg/GutenbergHandleMain.php:347
+#: inc/Gutenberg/GutenbergHandleMain.php:343
 msgid "List Course Learnpress - layout grid"
 msgstr ""
 
@@ -8823,10 +8846,6 @@ msgstr ""
 msgid "You might be interested in"
 msgstr ""
 
-#: inc/TemplateHooks/Course/ListCoursesTemplate.php:114
-msgid "No courses found"
-msgstr ""
-
 #: inc/TemplateHooks/Course/ListCoursesTemplate.php:555
 #: templates/courses-top-bar.php:23
 msgid "Search courses..."
@@ -9457,7 +9476,7 @@ msgstr ""
 msgid "Recent Courses"
 msgstr ""
 
-#: learnpress.php:722
+#: learnpress.php:746
 msgid "Documentation"
 msgstr ""
 
@@ -9604,7 +9623,7 @@ msgstr ""
 msgid "Your order"
 msgstr ""
 
-#: templates/checkout/review-order.php:144
+#: templates/checkout/review-order.php:142
 #: templates/order/order-details.php:108
 msgid "Subtotal"
 msgstr ""

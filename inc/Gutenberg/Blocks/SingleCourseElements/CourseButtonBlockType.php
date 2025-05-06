@@ -55,10 +55,6 @@ class CourseButtonBlockType extends AbstractCourseBlockType {
 		];
 	}
 
-	public function get_ancestor() {
-		return [ 'learnpress/single-course' ];
-	}
-
 	/**
 	 * Render content of block tag
 	 *

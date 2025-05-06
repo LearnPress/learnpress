@@ -7,11 +7,12 @@
 	"icon": "index-card",
 	"description": "Renders template Box Extra Target audiences Course PHP templates.",
 	"textdomain": "learnpress",
-	"keywords": ["box extra target audiences single course", "learnpress"],
+	"keywords": [ "box extra target audiences single course", "learnpress" ],
+	"ancestor": [ "learnpress/single-course" ],
 	"usesContext": [],
 	"supports": {
 		"multiple": false,
-		"align": ["wide", "full"],
+		"align": [ "wide", "full" ],
 		"html": false,
 		"typography": {
 			"fontSize": true,

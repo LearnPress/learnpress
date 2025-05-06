@@ -7,7 +7,8 @@
 	"icon": "category",
 	"description": "Renders template List Category Course PHP templates.",
 	"textdomain": "learnpress",
-	"keywords": ["category Category single course", "learnpress"],
+	"keywords": [ "category Category single course", "learnpress" ],
+	"ancestor": [ "learnpress/single-course", "learnpress/course-item-template" ],
 	"usesContext": [],
 	"attributes": {
 		"showText": {
@@ -25,7 +26,7 @@
 	},
 	"supports": {
 		"multiple": true,
-		"align": ["wide", "full"],
+		"align": [ "wide", "full" ],
 		"html": false,
 		"typography": {
 			"fontSize": true,

@@ -6,10 +6,11 @@
 	"category": "learnpress-course-elements",
 	"description": "Renders template Curriculum Course PHP templates.",
 	"textdomain": "learnpress",
-	"keywords": ["curriculum single course", "learnpress"],
+	"keywords": [ "curriculum single course", "learnpress" ],
+	"ancestor": [ "learnpress/single-course" ],
 	"usesContext": [],
 	"supports": {
-		"align": ["wide", "full"],
+		"align": [ "wide", "full" ],
 		"html": false,
 		"typography": {
 			"fontSize": true,

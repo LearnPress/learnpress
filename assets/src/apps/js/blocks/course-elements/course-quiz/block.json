@@ -6,10 +6,10 @@
 	"category": "learnpress-course-elements",
 	"description": "Show number quiz of course.",
 	"textdomain": "learnpress",
-	"keywords": ["quiz", "learnpress"],
+	"keywords": [ "quiz", "learnpress" ],
 	"icon": "editor-help",
-	"ancestor": ["learnpress/single-course", "learnpress/course-item-template"],
-	"usesContext": ["lpCourseData"],
+	"ancestor": [ "learnpress/single-course", "learnpress/course-item-template" ],
+	"usesContext": [ "lpCourseData" ],
 	"attributes": {
 		"showIcon": {
 			"type": "boolean",
@@ -22,7 +22,7 @@
 	},
 	"supports": {
 		"multiple": true,
-		"align": ["wide", "full"],
+		"align": [ "wide", "full" ],
 		"html": false,
 		"typography": {
 			"fontSize": true,

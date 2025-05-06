@@ -7,10 +7,11 @@
 	"icon": "index-card",
 	"description": "Renders template Box Extra Faqs Course PHP templates.",
 	"textdomain": "learnpress",
-	"keywords": ["box extra faqs single course", "learnpress"],
+	"keywords": [ "box extra faqs single course", "learnpress" ],
+	"ancestor": [ "learnpress/single-course" ],
 	"usesContext": [],
 	"supports": {
-		"align": ["wide", "full"],
+		"align": [ "wide", "full" ],
 		"typography": {
 			"fontSize": true,
 			"lineHeight": false,

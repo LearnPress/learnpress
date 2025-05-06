@@ -15,6 +15,5 @@
 		"reorder": true,
 		"html": false,
 		"multiple": true
-	},
-	"ancestor": ["learnpress/list-courses"]
+	}
 }

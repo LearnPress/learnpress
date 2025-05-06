@@ -7,10 +7,11 @@
 	"category": "learnpress-course-elements",
 	"description": "Renders template Feature Review Course PHP templates.",
 	"textdomain": "learnpress",
-	"keywords": ["feature review single course", "learnpress"],
+	"keywords": [ "feature review single course", "learnpress" ],
+	"ancestor": [ "learnpress/single-course" ],
 	"usesContext": [],
 	"supports": {
-		"align": ["wide", "full"],
+		"align": [ "wide", "full" ],
 		"typography": {
 			"fontSize": true,
 			"lineHeight": false,

@@ -7,8 +7,9 @@
 	"icon": "format-image",
 	"description": "Renders template Image Course PHP templates.",
 	"textdomain": "learnpress",
-	"keywords": ["image single course", "learnpress"],
-	"usesContext": ["lpCourseData"],
+	"keywords": [ "image single course", "learnpress" ],
+	"ancestor": [ "learnpress/single-course", "learnpress/course-item-template" ],
+	"usesContext": [ "lpCourseData" ],
 	"supports": {
 		"multiple": true,
 		"html": false,
