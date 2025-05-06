@@ -6,6 +6,7 @@
 	"category": "learnpress-legacy",
 	"description": "Renders template Archive Course PHP templates.",
 	"textdomain": "learnpress",
+	"ancestor": [],
 	"keywords": [
 		"archive course legacy",
 		"learnpress"
