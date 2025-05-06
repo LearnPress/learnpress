@@ -9,7 +9,7 @@
 	"keywords": ["count", "student", "learnpress"],
 	"icon": "admin-users",
 	"ancestor": [ "learnpress/single-course", "learnpress/course-item-template" ],
-	"usesContext": ["lpCourseData"],
+	"usesContext": [ "lpCourseData" ],
 	"attributes": {
 		"showIcon": {
 			"type": "boolean",
@@ -21,7 +21,7 @@
 		}
 	},
 	"supports": {
-		"align": ["wide", "full"],
+		"align": [ "wide", "full" ],
 		"typography": {
 			"fontSize": true,
 			"lineHeight": false,
