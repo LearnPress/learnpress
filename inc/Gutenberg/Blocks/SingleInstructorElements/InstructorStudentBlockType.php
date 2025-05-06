@@ -37,10 +37,6 @@ class InstructorStudentBlockType extends AbstractSingleInstructorBlockType {
 		];
 	}
 
-	public function get_ancestor() {
-		return [ 'learnpress/single-instructor' ];
-	}
-
 	/**
 	 * Render content of block tag
 	 *

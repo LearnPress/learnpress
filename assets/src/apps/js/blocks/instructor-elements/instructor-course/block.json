@@ -7,7 +7,8 @@
 	"icon": "format-image",
 	"description": "Renders template Instructor Course PHP templates.",
 	"textdomain": "learnpress",
-	"keywords": ["instructor course single", "learnpress"],
+	"keywords": [ "instructor course single", "learnpress" ],
+	"ancestor": [ "learnpress/single-instructor" ],
 	"attributes": {
 		"hidden": {
 			"type": "string",
@@ -17,7 +18,7 @@
 	"usesContext": [],
 	"supports": {
 		"multiple": false,
-		"align": ["wide", "full"],
+		"align": [ "wide", "full" ],
 		"html": false,
 		"typography": {
 			"fontSize": true,
@@ -40,6 +41,5 @@
 				"text": true
 			}
 		}
-	},
-	"ancestor": ["learnpress/single-instructor"]
+	}
 }

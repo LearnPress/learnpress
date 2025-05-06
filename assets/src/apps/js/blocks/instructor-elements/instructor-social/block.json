@@ -7,7 +7,8 @@
 	"icon": "format-image",
 	"description": "Renders template Instructor Social PHP templates.",
 	"textdomain": "learnpress",
-	"keywords": ["instructor social single", "learnpress"],
+	"keywords": [ "instructor social single", "learnpress" ],
+	"ancestor": [ "learnpress/single-instructor" ],
 	"attributes": {
 		"target": {
 			"type": "boolean",
@@ -21,7 +22,7 @@
 	"usesContext": [],
 	"supports": {
 		"multiple": false,
-		"align": ["wide", "full"],
+		"align": [ "wide", "full" ],
 		"html": false,
 		"typography": {
 			"fontSize": true,
@@ -44,6 +45,5 @@
 				"text": true
 			}
 		}
-	},
-	"ancestor": ["learnpress/single-instructor"]
+	}
 }

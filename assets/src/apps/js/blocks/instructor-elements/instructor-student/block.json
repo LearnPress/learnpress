@@ -7,7 +7,8 @@
 	"icon": "format-image",
 	"description": "Renders template Instructor Student PHP templates.",
 	"textdomain": "learnpress",
-	"keywords": ["instructor student single", "learnpress"],
+	"keywords": [ "instructor student single", "learnpress" ],
+	"ancestor": [ "learnpress/single-instructor" ],
 	"usesContext": [],
 	"attributes": {
 		"hidden": {
@@ -17,7 +18,7 @@
 	},
 	"supports": {
 		"multiple": false,
-		"align": ["wide", "full"],
+		"align": [ "wide", "full" ],
 		"html": false,
 		"typography": {
 			"fontSize": true,
@@ -40,6 +41,5 @@
 				"text": true
 			}
 		}
-	},
-	"ancestor": ["learnpress/single-instructor"]
+	}
 }

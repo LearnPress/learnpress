@@ -14,9 +14,9 @@ abstract class AbstractSingleInstructorBlockType extends AbstractBlockType {
 	/**
 	 * @var string Screen Template want to display - Field of LP
 	 */
-	public $display_on_templates = [
-		'lp-instructor',
-	];
+	// public $display_on_templates = [
+	// 	'lp-instructor',
+	// ];
 	/**
 	 * Get course model
 	 *

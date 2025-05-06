@@ -7,7 +7,8 @@
 	"icon": "format-image",
 	"description": "Renders template Instructor Background PHP templates.",
 	"textdomain": "learnpress",
-	"keywords": ["instructor background single", "learnpress"],
+	"keywords": [ "instructor background single", "learnpress" ],
+	"ancestor": [ "learnpress/single-instructor" ],
 	"usesContext": [],
 	"attributes": {
 		"position": {
@@ -29,6 +30,5 @@
 		"reorder": true,
 		"html": false,
 		"multiple": false
-	},
-	"ancestor": ["learnpress/single-instructor"]
+	}
 }

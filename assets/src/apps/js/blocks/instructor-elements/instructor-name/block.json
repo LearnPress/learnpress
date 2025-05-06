@@ -7,11 +7,12 @@
 	"icon": "format-image",
 	"description": "Renders template Instructor Name PHP templates.",
 	"textdomain": "learnpress",
-	"keywords": ["instructor name single", "learnpress"],
+	"keywords": [ "instructor name single", "learnpress" ],
+	"ancestor": [ "learnpress/single-instructor" ],
 	"usesContext": [],
 	"supports": {
 		"multiple": false,
-		"align": ["wide", "full"],
+		"align": [ "wide", "full" ],
 		"html": false,
 		"typography": {
 			"fontSize": true,
@@ -34,6 +35,5 @@
 				"text": true
 			}
 		}
-	},
-	"ancestor": ["learnpress/single-instructor"]
+	}
 }

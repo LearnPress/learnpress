@@ -7,11 +7,12 @@
 	"icon": "format-image",
 	"description": "Renders template Instructor Avatar PHP templates.",
 	"textdomain": "learnpress",
-	"keywords": ["instructor avatar single", "learnpress"],
+	"keywords": [ "instructor avatar single", "learnpress" ],
+	"ancestor": [ "learnpress/single-instructor" ],
 	"usesContext": [],
 	"supports": {
 		"multiple": false,
-		"align": ["wide", "full"],
+		"align": [ "wide", "full" ],
 		"html": false,
 		"__experimentalBorder": {
 			"color": true,
@@ -23,6 +24,5 @@
 				"radius": false
 			}
 		}
-	},
-	"ancestor": ["learnpress/single-instructor"]
+	}
 }
