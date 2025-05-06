@@ -9,6 +9,7 @@
 	"textdomain": "learnpress",
 	"keywords": ["sort", "learnpress"],
 	"usesContext": [ "lpCourseQuery" ],
+	"ancestor": [ "learnpress/list-courses" ],
 	"supports": {
 		"inserter": true,
 		"reusable": true,
