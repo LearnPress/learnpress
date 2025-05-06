@@ -7,11 +7,12 @@
 	"icon": "search",
 	"description": "Renders Template Search Course PHP templates.",
 	"textdomain": "learnpress",
-	"keywords": ["search archive course", "learnpress"],
+	"keywords": [ "search archive course", "learnpress" ],
+	"ancestor": [ "learnpress/list-courses" ],
 	"usesContext": [],
 	"supports": {
 		"multiple": true,
-		"align": ["wide", "full"],
+		"align": [ "wide", "full" ],
 		"html": false,
 		"typography": {
 			"fontSize": true,
@@ -34,6 +35,5 @@
 				"text": true
 			}
 		}
-	},
-	"ancestor": ["learnpress/list-courses"]
+	}
 }
