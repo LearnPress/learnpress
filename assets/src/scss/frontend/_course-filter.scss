@@ -5,68 +5,72 @@
 * @version 1.0.2
 */
 
-.lp-form-block-course-filter,
-.lp-form-course-filter{
-	&__title{
+
+.lp-form-course-filter {
+	&__title {
 		font-weight: 500;
 		margin-bottom: 12px;
 	}
-	&__content{
+
+	&__content {
 		position: relative;
 
 		.lp-course-filter__field * {
 			cursor: pointer;
 		}
 
-		.lp-course-filter__field{
+		.lp-course-filter__field {
 			position: relative;
 			display: flex;
 			align-items: center;
 			gap: 10px;
 			cursor: pointer;
-			input{
-				&:focus{
+
+			input {
+				&:focus {
 					outline: none;
 				}
+
 				&[disabled] {
 					cursor: not-allowed;
 				}
 			}
-			label{
-				//color: #333;
-				//padding: 0;
+
+			label {
 				margin: 0;
 				text-transform: capitalize;
 				line-height: inherit;
 				flex: 1;
 			}
-			.count{
-				//position: absolute;
-				//right: 0;
-				//top: 0;
-				//font-size: 0.875rem;
+
+			.count {
 				color: $input-color-placeholder;
 			}
 		}
-		.lp-course-filter-search-field{
+
+		.lp-course-filter-search-field {
 			position: relative;
 			display: flex;
 			align-items: center;
-			input{
+
+			input {
 				width: 100%;
 				line-height: 2rem;
 				border: 1px solid #eee;
 				padding: 8px;
-				&:focus{
+
+				&:focus {
 					outline: none;
 				}
 			}
+
 			.lp-loading-circle {
 				position: absolute;
 				right: 10px;
 			}
 		}
-		.lp-course-filter-search-result{
+
+		.lp-course-filter-search-result {
 			position: absolute;
 			z-index: 10;
 			background: white;
@@ -80,40 +84,47 @@
 				border: none;
 			}
 
-			.lp-courses-suggest-list{
+			.lp-courses-suggest-list {
 				padding: 0 10px;
-				.item-course-suggest{
+
+				.item-course-suggest {
 					display: flex;
 					gap: 8px;
 					padding: 10px 0;
 					align-items: center;
 					border-bottom: 1px solid #f5f5f5;
+
 					&:last-child {
 						border-bottom: none;
 					}
 				}
-				.course-img{
+
+				.course-img {
 					width: 50px;
-					img{
+
+					img {
 						width: 50px;
 						height: auto;
 						display: block;
 					}
 				}
-				a{
+
+				a {
 					font-size: 0.875em;
 					line-height: 1em;
 					display: -webkit-box;
 					-webkit-line-clamp: 3;
 					-webkit-box-orient: vertical;
 					overflow: hidden;
-					span{
+
+					span {
 						font-size: 0.875em;
 						line-height: 1em;
 					}
 				}
 			}
-			.lp-courses-suggest-info{
+
+			.lp-courses-suggest-info {
 				border-top: 1px solid #eeeeee;
 				padding: 10px;
 				background: #e8f0fe;
@@ -124,32 +135,36 @@
 		}
 	}
 
-	.course-filter{
-		&-submit, &-reset{
+	.course-filter {
+		&-submit, &-reset {
 			padding: 12px 24px;
 			text-transform: capitalize;
-			width: calc(50%  - 4px);
+			width: calc(50% - 4px);
 			border: 1px solid $input-border-color;
 			border-radius: 4px;
 			background-color: var(--lp-button-background-color);
 			color: var(--lp-button-color);
-			&:focus{
+
+			&:focus {
 				outline: none;
 			}
-			&:hover{
+
+			&:hover {
 				color: #fff;
 				background: var(--lp-primary-color);
 			}
 		}
-		&-reset{
+
+		&-reset {
 			margin-left: 4px;
 		}
-		&-submit{
+
+		&-submit {
 			margin-right: 4px;
 		}
 	}
 
-	.lp-form-course-filter__item{
+	.lp-form-course-filter__item {
 		margin-bottom: 12px;
 		border-bottom: 1px solid $input-border-color;
 		padding-bottom: 12px;
@@ -162,56 +177,62 @@
 	}
 }
 
-#learn-press-become-teacher-form .become-teacher-fields{
+#learn-press-become-teacher-form .become-teacher-fields {
 	list-style: none;
 	padding: 0;
 }
 
-.lp-form-course-filter__close {
+.lp-form-course-filter__close, .elementor-widget-container .lp-form-course-filter__close {
 	display: none;
+}
+
+.elementor-widget-container {
+	.learnpress-widget-wrapper {
+		position: unset;
+	}
 }
 
 @media (max-width: 768px) {
 	.widget_course_filter {
-        position: fixed !important;
-        right: 0;
-        top: 0;
+		position: fixed !important;
+		right: 0;
+		top: 0;
 		bottom: 0;
-        z-index: 999999;
-        width: 300px;
-        height: 100%;
-        background-color: #fff;
-        transition: 0.3s;
-        display: block;
-        overflow-y: auto;
-        border: none !important;
-        border-radius: 0 !important;
-        transform: translate3d(100%, 0, 0);
-        margin: 0;
+		z-index: 999999;
+		width: 300px;
+		height: 100%;
+		background-color: #fff;
+		transition: 0.3s;
+		display: block;
+		overflow-y: auto;
+		border: none !important;
+		border-radius: 0 !important;
+		transform: translate3d(100%, 0, 0);
+		margin: 0;
 		opacity: 0;
 		visibility: hidden;
-        padding: 20px;
+		padding: 20px;
 
 		.lp-form-block-course-filter,
-        .lp-form-course-filter {
-            .course-filter-submit {
-                width: 100%;
-                margin: 0;
-            }
+		.lp-form-course-filter {
+			.course-filter-submit {
+				width: 100%;
+				margin: 0;
+			}
 
-            .course-filter-reset {
-                width: 100%;
-                margin: 12px 0 0 0;
-            }
-        }
+			.course-filter-reset {
+				width: 100%;
+				margin: 12px 0 0 0;
+			}
+		}
 
-        .widget-title {
-            display: flex;
-            gap: 16px;
+		.widget-title {
+			display: flex;
+			gap: 16px;
 			align-items: center;
 			font-size: calc(var(--lp-font-size-base, 1em) * 1.25);
-        }
-    }
+		}
+	}
 
 	.show-lp-course-filter-mobile {
 		overflow: hidden;
@@ -240,7 +261,7 @@
 		}
 	}
 
-	.lp-form-course-filter__close {
+	.lp-form-course-filter__close, .elementor-widget-container .lp-form-course-filter__close {
 		display: flex;
 		position: absolute;
 		right: 0;
@@ -250,40 +271,18 @@
 		justify-content: center;
 		gap: 4px;
 		padding: 0 20px;
+
+		i {
+			font-size: 1rem;
+		}
 	}
 }
 
 @media (max-width: 500px) {
-    .widget_course_filter {
-        width: 100%;
+	.widget_course_filter {
+		width: 100%;
 		left: 0;
 		right: 0;
-    }
-}
-
-.elementor-widget-container {
-	.lp-form-course-filter__close {
-		display: none;
-
-		@media (max-width: 768px) {
-			display: flex;
-			position: absolute;
-			right: 0;
-			top: 0;
-			left: auto;
-			align-items: center;
-			justify-content: center;
-			gap: 4px;
-			font-size: 0;
-			padding: 20px;
-
-			i {
-				font-size: 1rem;
-			}
-		}
-	}
-
-	.learnpress-widget-wrapper {
-		position: unset;
+		max-width: calc(100% - 40px);
 	}
 }
