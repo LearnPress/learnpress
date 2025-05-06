@@ -5,9 +5,10 @@
 	"title": "Course Search",
 	"category": "learnpress-course-elements",
 	"icon": "search",
-	"description": "Renders Template Search Course PHP templates.",
+	"description": "Show Search Course.",
 	"textdomain": "learnpress",
-	"keywords": ["search archive course", "learnpress"],
+	"keywords": ["search", "learnpress"],
+	"ancestor": ["learnpress/list-courses"],
 	"usesContext": [],
 	"supports": {
 		"multiple": true,
@@ -34,6 +35,5 @@
 				"text": true
 			}
 		}
-	},
-	"ancestor": ["learnpress/list-courses"]
+	}
 }
