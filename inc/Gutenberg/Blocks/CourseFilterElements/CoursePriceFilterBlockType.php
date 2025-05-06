@@ -1,16 +1,16 @@
 <?php
 
-namespace LearnPress\Gutenberg\Blocks\CourseFilter;
+namespace LearnPress\Gutenberg\Blocks\CourseFilterElements;
 
 use LearnPress\Gutenberg\Blocks\AbstractBlockType;
 use LearnPress\Gutenberg\Utils\StyleAttributes;
 /**
- * Class CourseTagFilterBlockType
+ * Class CoursePriceFilterBlockType
  *
  * Handle register, render block template
  */
-class CourseTagFilterBlockType extends AbstractBlockType {
-	public $block_name = 'course-tag-filter';
+class CoursePriceFilterBlockType extends AbstractBlockType {
+	public $block_name = 'course-price-filter';
 
 	public function get_supports(): array {
 		return [
@@ -42,7 +42,7 @@ class CourseTagFilterBlockType extends AbstractBlockType {
 		$html = '';
 		$this->enqueue_assets();
 		$this->inline_styles( $attributes );
-		$html = 'tag';
+		$html = 'price';
 
 		return $html;
 	}
@@ -50,8 +50,8 @@ class CourseTagFilterBlockType extends AbstractBlockType {
 	public function get_inline_style( $attributes ) {
 		$text_transform            = StyleAttributes::get_text_transform_class_and_style( $attributes );
 		$border_classes_and_styles = StyleAttributes::get_classes_and_styles_by_attributes( $attributes, [ 'font_size', 'font_weight', 'text_color', 'text_transform', 'padding', 'margin', 'border_width', 'border_color' ] );
-		return 'form.lp-form-block-course-filter .lp-form-course-filter__item:has(input[name="tag_id"]) {' . $border_classes_and_styles['styles'] . '}
-		form.lp-form-block-course-filter .lp-form-course-filter__item:has(input[name="tag_id"]) label {' . $text_transform['style'] . '}';
+		return 'form.lp-form-block-course-filter .lp-form-course-filter__item:has(input[name="sort_by"]) {' . $border_classes_and_styles['styles'] . '}
+		form.lp-form-block-course-filter .lp-form-course-filter__item:has(input[name="sort_by"]) label {' . $text_transform['style'] . '}';
 	}
 
 	public function inline_styles( $attributes ) {

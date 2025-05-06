@@ -6,15 +6,15 @@
  * @version 1.0.0
  */
 
-use LearnPress\Gutenberg\Blocks\CourseFilter\ButtonResetFilterBlockType;
-use LearnPress\Gutenberg\Blocks\CourseFilter\ButtonSubmitFilterBlockType;
-use LearnPress\Gutenberg\Blocks\CourseFilter\CourseAuthorFilterBlockType;
-use LearnPress\Gutenberg\Blocks\CourseFilter\CourseCategoriesFilterBlockType;
 use LearnPress\Gutenberg\Blocks\CourseFilter\CourseFilterBlockType;
-use LearnPress\Gutenberg\Blocks\CourseFilter\CourseLevelFilterBlockType;
-use LearnPress\Gutenberg\Blocks\CourseFilter\CoursePriceFilterBlockType;
-use LearnPress\Gutenberg\Blocks\CourseFilter\CourseSearchFilterBlockType;
-use LearnPress\Gutenberg\Blocks\CourseFilter\CourseTagFilterBlockType;
+use LearnPress\Gutenberg\Blocks\CourseFilterElements\ButtonResetFilterBlockType;
+use LearnPress\Gutenberg\Blocks\CourseFilterElements\ButtonSubmitFilterBlockType;
+use LearnPress\Gutenberg\Blocks\CourseFilterElements\CourseAuthorFilterBlockType;
+use LearnPress\Gutenberg\Blocks\CourseFilterElements\CourseCategoriesFilterBlockType;
+use LearnPress\Gutenberg\Blocks\CourseFilterElements\CourseLevelFilterBlockType;
+use LearnPress\Gutenberg\Blocks\CourseFilterElements\CoursePriceFilterBlockType;
+use LearnPress\Gutenberg\Blocks\CourseFilterElements\CourseSearchFilterBlockType;
+use LearnPress\Gutenberg\Blocks\CourseFilterElements\CourseTagFilterBlockType;
 use LearnPress\Gutenberg\Blocks\Breadcrumb\BreadcrumbBlockType;
 use LearnPress\Gutenberg\Blocks\Courses\ListCoursesBlockType;
 use LearnPress\Gutenberg\Blocks\Courses\CourseItemTemplateBlock;
