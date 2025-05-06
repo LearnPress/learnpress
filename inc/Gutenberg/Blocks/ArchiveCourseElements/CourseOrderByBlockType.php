@@ -2,6 +2,7 @@
 
 namespace LearnPress\Gutenberg\Blocks\ArchiveCourseElements;
 
+use LearnPress\TemplateHooks\Course\FilterCourseTemplate;
 use LearnPress\TemplateHooks\Course\ListCoursesTemplate;
 use LP_Debug;
 use Throwable;
@@ -38,10 +39,6 @@ class CourseOrderByBlockType extends AbstractArchiveCourseBlockType {
 		];
 	}
 
-	public function get_ancestor() {
-		return [ 'learnpress/list-courses' ];
-	}
-
 	/**
 	 * Render content of block tag
 	 *
@@ -60,26 +57,10 @@ class CourseOrderByBlockType extends AbstractArchiveCourseBlockType {
 				$order_by = $order_by_current;
 			}
 
-			$values = apply_filters(
-				'learn-press/courses/order-by/values',
-				[
-					'post_date'       => esc_html__( 'Newly published', 'learnpress' ),
-					'post_title'      => esc_html__( 'Title a-z', 'learnpress' ),
-					'post_title_desc' => esc_html__( 'Title z-a', 'learnpress' ),
-					'price'           => esc_html__( 'Price high to low', 'learnpress' ),
-					'price_low'       => esc_html__( 'Price low to high', 'learnpress' ),
-					'popular'         => esc_html__( 'Popular', 'learnpress' ),
-				]
-			);
+			$listCoursesTemplate = ListCoursesTemplate::instance();
 
-			$html  = '<div class="courses-order-by-wrapper">';
-			$html .= '<select name="order_by" class="courses-order-by">';
-			foreach ( $values as $k => $v ) {
-				$html .= '<option value="' . $k . '" ' . selected( $order_by, $k, false ) . '>' . $v . '</option>';
-			}
-			$html .= '</select>';
-			$html .= '</div>';
-			$html .= '<div class="course-filter-btn-mobile"><span class="lp-icon lp-icon-filter"></span></div>';
+			$html  = $listCoursesTemplate->html_order_by( $order_by );
+			$html .= FilterCourseTemplate::instance()->html_btn_filter_mobile( $settings );
 		} catch ( Throwable $e ) {
 			LP_Debug::error_log( $e );
 		}
