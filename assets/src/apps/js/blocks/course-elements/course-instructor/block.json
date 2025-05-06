@@ -6,8 +6,9 @@
 	"category": "learnpress-course-elements",
 	"description": "Renders template Instructor Course PHP templates.",
 	"textdomain": "learnpress",
-	"keywords": ["instructor single course", "learnpress"],
-	"usesContext": ["lpCourseData"],
+	"keywords": [ "instructor single course", "learnpress" ],
+	"ancestor": [ "learnpress/single-course", "learnpress/course-item-template" ],
+	"usesContext": [ "lpCourseData" ],
 	"attributes": {
 		"showText": {
 			"type": "boolean",
@@ -24,7 +25,7 @@
 	},
 	"supports": {
 		"multiple": true,
-		"align": ["wide", "full"],
+		"align": [ "wide", "full" ],
 		"html": false,
 		"typography": {
 			"fontSize": true,
