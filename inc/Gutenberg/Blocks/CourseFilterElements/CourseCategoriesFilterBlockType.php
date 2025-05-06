@@ -1,16 +1,16 @@
 <?php
 
-namespace LearnPress\Gutenberg\Blocks\CourseFilter;
+namespace LearnPress\Gutenberg\Blocks\CourseFilterElements;
 
 use LearnPress\Gutenberg\Blocks\AbstractBlockType;
 use LearnPress\Gutenberg\Utils\StyleAttributes;
 /**
- * Class CourseSearchFilterBlockType
+ * Class CourseCategoriesFilterBlockType
  *
  * Handle register, render block template
  */
-class CourseSearchFilterBlockType extends AbstractBlockType {
-	public $block_name = 'course-search-filter';
+class CourseCategoriesFilterBlockType extends AbstractBlockType {
+	public $block_name = 'course-categories-filter';
 
 	public function get_supports(): array {
 		return [
@@ -42,7 +42,7 @@ class CourseSearchFilterBlockType extends AbstractBlockType {
 		$html = '';
 		$this->enqueue_assets();
 		$this->inline_styles( $attributes );
-		$html = 'search';
+		$html = 'category';
 
 		return $html;
 	}
@@ -50,8 +50,8 @@ class CourseSearchFilterBlockType extends AbstractBlockType {
 	public function get_inline_style( $attributes ) {
 		$text_transform            = StyleAttributes::get_text_transform_class_and_style( $attributes );
 		$border_classes_and_styles = StyleAttributes::get_classes_and_styles_by_attributes( $attributes, [ 'font_size', 'font_weight', 'text_color', 'text_transform', 'padding', 'margin', 'border_width', 'border_color' ] );
-		return 'form.lp-form-block-course-filter .lp-form-course-filter__item:has(.lp-course-filter-search-field) {' . $border_classes_and_styles['styles'] . '}
-		form.lp-form-block-course-filter .lp-form-course-filter__item:has(.lp-course-filter-search-field) .lp-form-course-filter__title {' . $text_transform['style'] . '}';
+		return 'form.lp-form-block-course-filter .lp-form-course-filter__item:has(input[name="term_id"]) {' . $border_classes_and_styles['styles'] . '}
+		form.lp-form-block-course-filter .lp-form-course-filter__item:has(input[name="term_id"]) label {' . $text_transform['style'] . '}';
 	}
 
 	public function inline_styles( $attributes ) {

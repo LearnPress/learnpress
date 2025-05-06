@@ -1,16 +1,16 @@
 <?php
 
-namespace LearnPress\Gutenberg\Blocks\CourseFilter;
+namespace LearnPress\Gutenberg\Blocks\CourseFilterElements;
 
 use LearnPress\Gutenberg\Blocks\AbstractBlockType;
 use LearnPress\Gutenberg\Utils\StyleAttributes;
 /**
- * Class CourseLevelFilterBlockType
+ * Class ButtonResetFilterBlockType
  *
  * Handle register, render block template
  */
-class CourseLevelFilterBlockType extends AbstractBlockType {
-	public $block_name = 'course-level-filter';
+class ButtonResetFilterBlockType extends AbstractBlockType {
+	public $block_name = 'button-reset-filter';
 
 	public function get_supports(): array {
 		return [
@@ -42,16 +42,14 @@ class CourseLevelFilterBlockType extends AbstractBlockType {
 		$html = '';
 		$this->enqueue_assets();
 		$this->inline_styles( $attributes );
-		$html = 'level';
+		$html = 'btn_reset';
 
 		return $html;
 	}
 
 	public function get_inline_style( $attributes ) {
-		$text_transform            = StyleAttributes::get_text_transform_class_and_style( $attributes );
-		$border_classes_and_styles = StyleAttributes::get_classes_and_styles_by_attributes( $attributes, [ 'font_size', 'font_weight', 'text_color', 'text_transform', 'padding', 'margin', 'border_width', 'border_color' ] );
-		return 'form.lp-form-block-course-filter .lp-form-course-filter__item:has(input[name="c_level"]) {' . $border_classes_and_styles['styles'] . '}
-		form.lp-form-block-course-filter .lp-form-course-filter__item:has(input[name="c_level"]) label {' . $text_transform['style'] . '}';
+		$border_classes_and_styles = StyleAttributes::get_classes_and_styles_by_attributes( $attributes, [ 'font_size', 'font_weight', 'text_color', 'text_transform', 'padding', 'margin', 'background_color', 'border_color', 'border_radius','border_width' ] );
+		return '.lp-form-block-course-filter button.course-filter-reset {' . $border_classes_and_styles['styles'] . '}';
 	}
 
 	public function inline_styles( $attributes ) {

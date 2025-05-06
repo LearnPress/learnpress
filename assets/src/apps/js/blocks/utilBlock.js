@@ -30,7 +30,10 @@ const checkTemplatesCanLoadBlock = ( templates, metadata, callBack ) => {
 				metaDataNew.ancestor = null;
 				callBack( metaDataNew );
 			} else {
-				callBack( metadata );
+				if ( ! metaDataNew.ancestor ) {
+					metaDataNew.ancestor = [];
+				}
+				callBack( metaDataNew );
 			}
 		}
 	} );
