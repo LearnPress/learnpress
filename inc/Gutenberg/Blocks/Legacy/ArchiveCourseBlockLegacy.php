@@ -14,11 +14,11 @@ use LP_Settings;
  */
 class ArchiveCourseBlockLegacy extends AbstractBlockType {
 	public $block_name           = 'archive-course-legacy';
-	public $display_on_templates = [ 
+	/*public $display_on_templates = [
 		'learnpress/learnpress//archive-lp_course',
 		'learnpress/learnpress//taxonomy-course_tag',
 		'learnpress/learnpress//taxonomy-course_category',
-	];
+	];*/
 
 	/**
 	 * Render content of block tag

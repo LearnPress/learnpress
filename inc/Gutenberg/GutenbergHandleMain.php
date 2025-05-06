@@ -256,6 +256,11 @@ class GutenbergHandleMain {
 	public function add_block_category( array $block_categories, $editor_context ) {
 		$lp_block_categories = [
 			[
+				'slug'  => 'learnpress-legacy',
+				'title' => __( 'LearnPress Legacy', 'learnpress' ),
+				'icon'  => null,
+			],
+			[
 				'slug'  => 'learnpress-category',
 				'title' => __( 'LearnPress Global', 'learnpress' ),
 				'icon'  => null,
@@ -263,11 +268,6 @@ class GutenbergHandleMain {
 			[
 				'slug'  => 'learnpress-course-elements',
 				'title' => __( 'LearnPress Course Elements', 'learnpress' ),
-				'icon'  => null,
-			],
-			[
-				'slug'  => 'learnpress-legacy',
-				'title' => __( 'LearnPress Legacy', 'learnpress' ),
 				'icon'  => null,
 			],
 		];
