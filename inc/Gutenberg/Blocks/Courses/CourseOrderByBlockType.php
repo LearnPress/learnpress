@@ -1,7 +1,8 @@
 <?php
 
-namespace LearnPress\Gutenberg\Blocks\ArchiveCourseElements;
+namespace LearnPress\Gutenberg\Blocks\Courses;
 
+use LearnPress\Gutenberg\Blocks\AbstractBlockType;
 use LearnPress\TemplateHooks\Course\FilterCourseTemplate;
 use LearnPress\TemplateHooks\Course\ListCoursesTemplate;
 use LP_Debug;
@@ -12,7 +13,7 @@ use Throwable;
  *
  * Handle register, render block template
  */
-class CourseOrderByBlockType extends AbstractArchiveCourseBlockType {
+class CourseOrderByBlockType extends AbstractBlockType {
 	public $block_name = 'course-order-by';
 
 	public function get_supports(): array {

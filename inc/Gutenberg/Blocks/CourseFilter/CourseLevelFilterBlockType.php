@@ -1,16 +1,16 @@
 <?php
 
-namespace LearnPress\Gutenberg\Blocks\ArchiveCourseElements;
+namespace LearnPress\Gutenberg\Blocks\CourseFilter;
 
-use LearnPress\Gutenberg\Blocks\ArchiveCourseElements\AbstractArchiveCourseBlockType;
+use LearnPress\Gutenberg\Blocks\AbstractBlockType;
 use LearnPress\Gutenberg\Utils\StyleAttributes;
 /**
- * Class CoursePriceFilterBlockType
+ * Class CourseLevelFilterBlockType
  *
  * Handle register, render block template
  */
-class CoursePriceFilterBlockType extends AbstractArchiveCourseBlockType {
-	public $block_name = 'course-price-filter';
+class CourseLevelFilterBlockType extends AbstractBlockType {
+	public $block_name = 'course-level-filter';
 
 	public function get_supports(): array {
 		return [
@@ -31,10 +31,6 @@ class CoursePriceFilterBlockType extends AbstractArchiveCourseBlockType {
 		];
 	}
 
-	public function get_ancestor() {
-		return [ 'learnpress/course-filter' ];
-	}
-
 	/**
 	 * Render content of block tag
 	 *
@@ -46,7 +42,7 @@ class CoursePriceFilterBlockType extends AbstractArchiveCourseBlockType {
 		$html = '';
 		$this->enqueue_assets();
 		$this->inline_styles( $attributes );
-		$html = 'price';
+		$html = 'level';
 
 		return $html;
 	}
@@ -54,8 +50,8 @@ class CoursePriceFilterBlockType extends AbstractArchiveCourseBlockType {
 	public function get_inline_style( $attributes ) {
 		$text_transform            = StyleAttributes::get_text_transform_class_and_style( $attributes );
 		$border_classes_and_styles = StyleAttributes::get_classes_and_styles_by_attributes( $attributes, [ 'font_size', 'font_weight', 'text_color', 'text_transform', 'padding', 'margin', 'border_width', 'border_color' ] );
-		return 'form.lp-form-block-course-filter .lp-form-course-filter__item:has(input[name="sort_by"]) {' . $border_classes_and_styles['styles'] . '}
-		form.lp-form-block-course-filter .lp-form-course-filter__item:has(input[name="sort_by"]) label {' . $text_transform['style'] . '}';
+		return 'form.lp-form-block-course-filter .lp-form-course-filter__item:has(input[name="c_level"]) {' . $border_classes_and_styles['styles'] . '}
+		form.lp-form-block-course-filter .lp-form-course-filter__item:has(input[name="c_level"]) label {' . $text_transform['style'] . '}';
 	}
 
 	public function inline_styles( $attributes ) {

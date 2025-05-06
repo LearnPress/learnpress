@@ -1,16 +1,16 @@
 <?php
 
-namespace LearnPress\Gutenberg\Blocks\ArchiveCourseElements;
+namespace LearnPress\Gutenberg\Blocks\CourseFilter;
 
-use LearnPress\Gutenberg\Blocks\ArchiveCourseElements\AbstractArchiveCourseBlockType;
+use LearnPress\Gutenberg\Blocks\AbstractBlockType;
 use LearnPress\Gutenberg\Utils\StyleAttributes;
 /**
- * Class CourseAuthorFilterBlockType
+ * Class ButtonSubmitFilterBlockType
  *
  * Handle register, render block template
  */
-class CourseAuthorFilterBlockType extends AbstractArchiveCourseBlockType {
-	public $block_name = 'course-author-filter';
+class ButtonSubmitFilterBlockType extends AbstractBlockType {
+	public $block_name = 'button-submit-filter';
 
 	public function get_supports(): array {
 		return [
@@ -31,10 +31,6 @@ class CourseAuthorFilterBlockType extends AbstractArchiveCourseBlockType {
 		];
 	}
 
-	public function get_ancestor() {
-		return [ 'learnpress/course-filter' ];
-	}
-
 	/**
 	 * Render content of block tag
 	 *
@@ -46,16 +42,14 @@ class CourseAuthorFilterBlockType extends AbstractArchiveCourseBlockType {
 		$html = '';
 		$this->enqueue_assets();
 		$this->inline_styles( $attributes );
-		$html = 'author';
+		$html = 'btn_submit';
 
 		return $html;
 	}
 
 	public function get_inline_style( $attributes ) {
-		$text_transform            = StyleAttributes::get_text_transform_class_and_style( $attributes );
-		$border_classes_and_styles = StyleAttributes::get_classes_and_styles_by_attributes( $attributes, [ 'font_size', 'font_weight', 'text_color', 'text_transform', 'padding', 'margin', 'border_width', 'border_color' ] );
-		return 'form.lp-form-block-course-filter .lp-form-course-filter__item:has(input[name="c_authors"]) {' . $border_classes_and_styles['styles'] . '}
-		form.lp-form-block-course-filter .lp-form-course-filter__item:has(input[name="c_authors"]) .lp-form-course-filter__title {' . $text_transform['style'] . '}';
+		$border_classes_and_styles = StyleAttributes::get_classes_and_styles_by_attributes( $attributes, [ 'font_size', 'font_weight', 'text_color', 'text_transform', 'padding', 'margin', 'background_color', 'border_color', 'border_radius','border_width' ] );
+		return '.lp-form-block-course-filter button.course-filter-submit {' . $border_classes_and_styles['styles'] . '}';
 	}
 
 	public function inline_styles( $attributes ) {

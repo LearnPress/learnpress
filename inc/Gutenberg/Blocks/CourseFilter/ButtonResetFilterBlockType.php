@@ -1,15 +1,15 @@
 <?php
 
-namespace LearnPress\Gutenberg\Blocks\ArchiveCourseElements;
+namespace LearnPress\Gutenberg\Blocks\CourseFilter;
 
-use LearnPress\Gutenberg\Blocks\ArchiveCourseElements\AbstractArchiveCourseBlockType;
+use LearnPress\Gutenberg\Blocks\AbstractBlockType;
 use LearnPress\Gutenberg\Utils\StyleAttributes;
 /**
  * Class ButtonResetFilterBlockType
  *
  * Handle register, render block template
  */
-class ButtonResetFilterBlockType extends AbstractArchiveCourseBlockType {
+class ButtonResetFilterBlockType extends AbstractBlockType {
 	public $block_name = 'button-reset-filter';
 
 	public function get_supports(): array {
@@ -29,10 +29,6 @@ class ButtonResetFilterBlockType extends AbstractArchiveCourseBlockType {
 				'margin'  => true,
 			],
 		];
-	}
-
-	public function get_ancestor() {
-		return [ 'learnpress/course-filter' ];
 	}
 
 	/**

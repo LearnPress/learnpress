@@ -1,7 +1,7 @@
 <?php
-namespace LearnPress\Gutenberg\Blocks\ArchiveCourseElements;
+namespace LearnPress\Gutenberg\Blocks\CourseFilter;
 
-use LearnPress\Gutenberg\Blocks\ArchiveCourseElements\AbstractArchiveCourseBlockType;
+use LearnPress\Gutenberg\Blocks\AbstractBlockType;
 use LearnPress\TemplateHooks\Course\FilterCourseTemplate;
 use LP_Debug;
 use Throwable;
@@ -10,7 +10,7 @@ use Throwable;
  *
  * Handle register, render block template
  */
-class CourseFilterBlockType extends AbstractArchiveCourseBlockType {
+class CourseFilterBlockType extends AbstractBlockType {
 	public $block_name = 'course-filter';
 
 	/**

@@ -1,8 +1,8 @@
 <?php
 
-namespace LearnPress\Gutenberg\Blocks\ArchiveCourseElements;
+namespace LearnPress\Gutenberg\Blocks\Courses;
 
-use LearnPress\Gutenberg\Blocks\ArchiveCourseElements\AbstractArchiveCourseBlockType;
+use LearnPress\Gutenberg\Blocks\AbstractBlockType;
 use LearnPress\TemplateHooks\Course\ListCoursesTemplate;
 use LP_Debug;
 use Throwable;
@@ -12,7 +12,7 @@ use Throwable;
  *
  * Handle register, render block template
  */
-class CourseSearchBlockType extends AbstractArchiveCourseBlockType {
+class CourseSearchBlockType extends AbstractBlockType {
 	public $block_name = 'course-search';
 
 	public function get_supports(): array {
