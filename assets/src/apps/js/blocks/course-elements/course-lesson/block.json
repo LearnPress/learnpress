@@ -2,11 +2,13 @@
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
 	"name": "learnpress/course-lesson",
-	"title": "Course Lesson",
+	"title": "Course Lesson Count",
 	"category": "learnpress-course-elements",
-	"description": "Renders template Lesson Course PHP templates.",
+	"description": "Show number lesson of course.",
 	"textdomain": "learnpress",
-	"keywords": ["lesson single course", "learnpress"],
+	"keywords": ["lesson", "count", "learnpress"],
+	"icon": "media-text",
+	"ancestor": ["learnpress/single-course", "learnpress/course-item-template"],
 	"usesContext": ["lpCourseData"],
 	"attributes": {
 		"showIcon": {

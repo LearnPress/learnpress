@@ -6,6 +6,7 @@ import { save } from './save';
 import metadata from './block.json';
 import { registerBlockType } from '@wordpress/blocks';
 import { checkTemplatesCanLoadBlock } from '../../utilBlock.js';
+import { title } from '@wordpress/icons';
 
 const block_name = 'learnpress/course-title';
 const templatesName = [ 'learnpress/learnpress//single-lp_course' ];
@@ -17,6 +18,7 @@ const templatesName = [ 'learnpress/learnpress//single-lp_course' ];
 checkTemplatesCanLoadBlock( templatesName, block_name, metadata, ( metadataNew ) => {
 	registerBlockType( block_name, {
 		...metadataNew,
+		icon: title,
 		edit,
 		save,
 	} );
@@ -25,6 +27,7 @@ checkTemplatesCanLoadBlock( templatesName, block_name, metadata, ( metadataNew )
 // Register the block with the original metadata, ancestor will be set on block.json
 registerBlockType( block_name, {
 	...metadata,
+	icon: title,
 	edit,
 	save,
 } );

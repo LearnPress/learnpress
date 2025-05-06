@@ -4,9 +4,11 @@
 	"name": "learnpress/course-level",
 	"title": "Course Level",
 	"category": "learnpress-course-elements",
-	"description": "Renders template Level Course PHP templates.",
+	"description": "Show level course.",
 	"textdomain": "learnpress",
-	"keywords": ["level single course", "learnpress"],
+	"keywords": ["level", "learnpress"],
+	"icon": "chart-bar",
+	"ancestor": ["learnpress/single-course", "learnpress/course-item-template"],
 	"usesContext": ["lpCourseData"],
 	"attributes": {
 		"showIcon": {

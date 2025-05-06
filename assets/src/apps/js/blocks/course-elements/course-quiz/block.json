@@ -2,11 +2,13 @@
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
 	"name": "learnpress/course-quiz",
-	"title": "Course Quiz",
+	"title": "Course Quiz Count",
 	"category": "learnpress-course-elements",
-	"description": "Renders template Quiz Course PHP templates.",
+	"description": "Show number quiz of course.",
 	"textdomain": "learnpress",
-	"keywords": ["quiz single course", "learnpress"],
+	"keywords": ["quiz", "learnpress"],
+	"icon": "editor-help",
+	"ancestor": ["learnpress/single-course", "learnpress/course-item-template"],
 	"usesContext": ["lpCourseData"],
 	"attributes": {
 		"showIcon": {

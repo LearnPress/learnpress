@@ -4,10 +4,12 @@
 	"name": "learnpress/course-duration",
 	"title": "Course Duration",
 	"category": "learnpress-course-elements",
-	"description": "Renders template Duration Course PHP templates.",
+	"description": "Show Duration of Course.",
 	"textdomain": "learnpress",
-	"keywords": ["duration single course", "learnpress"],
+	"keywords": ["duration", "learnpress"],
 	"usesContext": ["lpCourseData"],
+	"icon": "clock",
+	"ancestor": ["learnpress/single-course", "learnpress/course-item-template"],
 	"attributes": {
 		"showIcon": {
 			"type": "boolean",
