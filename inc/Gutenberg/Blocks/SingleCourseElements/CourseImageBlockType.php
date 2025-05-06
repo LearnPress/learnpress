@@ -41,10 +41,6 @@ class CourseImageBlockType extends AbstractCourseBlockType {
 		];
 	}
 
-	public function get_ancestor() {
-		return [ 'learnpress/single-course', 'learnpress/course-item-template' ];
-	}
-
 	/**
 	 * Render content of block tag
 	 *
