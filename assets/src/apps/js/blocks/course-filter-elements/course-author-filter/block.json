@@ -6,7 +6,8 @@
 	"category": "learnpress-course-elements",
 	"description": "Renders template Author Filter PHP templates.",
 	"textdomain": "learnpress",
-	"keywords": ["author filter archive course", "learnpress"],
+	"keywords": ["filter", "learnpress"],
+	"ancestor": ["learnpress/course-filter"],
 	"usesContext": [],
 	"supports": {
 		"multiple": false,
@@ -48,6 +49,5 @@
 				"margin": false
 			}
 		}
-	},
-	"ancestor": ["learnpress/course-filter"]
+	}
 }

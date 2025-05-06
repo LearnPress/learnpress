@@ -9,8 +9,8 @@ import { subscribe, select } from '@wordpress/data';
 
 let currentPostIdOld = null;
 const checkTemplatesCanLoadBlock = ( templates, metadata, callBack ) => {
-	const metaDataNew = { ...metadata };
 	subscribe( () => {
+		const metaDataNew = { ...metadata };
 		const store = select( 'core/editor' );
 		const currentPostId = store.getCurrentPostId();
 
