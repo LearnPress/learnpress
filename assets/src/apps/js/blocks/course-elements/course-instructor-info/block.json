@@ -7,11 +7,12 @@
 	"icon": "index-card",
 	"description": "Renders template Instructor Section PHP templates.",
 	"textdomain": "learnpress",
-	"keywords": ["instructor info single course", "learnpress"],
+	"keywords": [ "instructor info single course", "learnpress" ],
+	"ancestor": [ "learnpress/single-course" ],
 	"usesContext": [],
 	"supports": {
 		"multiple": false,
-		"align": ["wide", "full"],
+		"align": [ "wide", "full" ],
 		"html": false,
 		"typography": {
 			"fontSize": true,
