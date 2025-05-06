@@ -17,7 +17,6 @@ const templatesName = [ 'learnpress/learnpress//single-lp_course' ];
 checkTemplatesCanLoadBlock( templatesName, block_name, metadata, ( metadataNew ) => {
 	registerBlockType( block_name, {
 		...metadataNew,
-		icon: title,
 		edit,
 		save,
 	} );
