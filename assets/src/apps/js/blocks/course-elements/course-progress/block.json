@@ -6,11 +6,12 @@
 	"category": "learnpress-course-elements",
 	"description": "Renders template Progress Course PHP templates.",
 	"textdomain": "learnpress",
-	"keywords": ["progress single course", "learnpress"],
+	"keywords": [ "progress single course", "learnpress" ],
+	"ancestor": [ "learnpress/single-course" ],
 	"usesContext": [],
 	"supports": {
 		"multiple": false,
-		"align": ["wide", "full"],
+		"align": [ "wide", "full" ],
 		"html": false,
 		"typography": {
 			"fontSize": true,
