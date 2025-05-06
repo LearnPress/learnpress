@@ -7,11 +7,12 @@
 	"icon": "button",
 	"description": "Renders template Button Course Read More PHP templates.",
 	"textdomain": "learnpress",
-	"keywords": ["button read more single course", "learnpress"],
-	"usesContext": ["lpCourseData"],
+	"keywords": [ "button read more single course", "learnpress" ],
+	"ancestor": [ "learnpress/course-item-template" ],
+	"usesContext": [ "lpCourseData" ],
 	"supports": {
 		"multiple": true,
-		"align": ["wide", "full"],
+		"align": [ "wide", "full" ],
 		"html": false,
 		"typography": {
 			"fontSize": true,
@@ -39,7 +40,7 @@
 			"margin": true,
 			"padding": true,
 			"content": true,
- 			"__experimentalDefaultControls": {
+			"__experimentalDefaultControls": {
 				"margin": false,
 				"padding": false,
 				"content": true
