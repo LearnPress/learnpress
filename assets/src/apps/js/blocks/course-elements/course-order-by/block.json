@@ -7,7 +7,8 @@
 	"icon": "search",
 	"description": "Renders Template Order By Course PHP templates.",
 	"textdomain": "learnpress",
-	"keywords": ["Sorting archive course", "learnpress"],
+	"keywords": [ "Sorting archive course", "learnpress" ],
+	"ancestor": [ "learnpress/list-courses" ],
 	"usesContext": [ "lpCourseQuery" ],
 	"supports": {
 		"inserter": true,
@@ -15,6 +16,5 @@
 		"reorder": true,
 		"html": false,
 		"multiple": true
-	},
-	"ancestor": ["learnpress/list-courses"]
+	}
 }
