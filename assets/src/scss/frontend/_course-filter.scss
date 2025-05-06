@@ -199,7 +199,7 @@
 		top: 0;
 		bottom: 0;
 		z-index: 999999;
-		width: 300px;
+		width: 400px;
 		height: 100%;
 		background-color: #fff;
 		transition: 0.3s;
@@ -283,6 +283,6 @@
 		width: 100%;
 		left: 0;
 		right: 0;
-		max-width: calc(100% - 40px);
+		//max-width: calc(100% - 40px);
 	}
 }
