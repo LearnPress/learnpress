@@ -185,6 +185,27 @@ return apply_filters(
 			)
 		),
 		apply_filters(
+			'learn-press/course-settings-fields/quiz',
+			array(
+				array(
+					'type'  => 'title',
+					'title' => esc_html__( 'Quiz Settings', 'learnpress' ),
+					'id'    => 'lp_metabox_setting_quiz',
+				),
+				array(
+					'title'   => esc_html__( 'Sticky Quiz Paging', 'learnpress' ),
+					'id'      => 'navigation_position',
+					'default' => 'yes',
+					'type'    => 'checkbox',
+					'desc'    => esc_html__( 'The question\'s navigation position is sticky. If this option is disabled, the question navigation position will be below the quiz content', 'learnpress' ),
+				),
+				array(
+					'type' => 'sectionend',
+					'id'   => 'lp_metabox_setting_quiz',
+				),
+			)
+		),
+		apply_filters(
 			'learn-press/course-settings-fields/material',
 			array(
 				array(
