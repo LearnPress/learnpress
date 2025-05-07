@@ -32,6 +32,17 @@ class ListCoursesBlockType extends AbstractBlockType {
 	}
 
 	/**
+	 * Get supports of block
+	 *
+	 * @return array
+	 */
+	public function get_supports() {
+		return [
+			'align' => [ 'wide', 'full' ],
+		];
+	}
+
+	/**
 	 * Allow callback for block
 	 *
 	 * @param array $callbacks.
@@ -81,7 +92,7 @@ class ListCoursesBlockType extends AbstractBlockType {
 
 			$html = TemplateAJAX::load_content_via_ajax( $args, $callback );
 
-			return Template::instance()->nest_elements( $html_wrapper, $html );
+			return $this->get_output( Template::instance()->nest_elements( $html_wrapper, $html ) );
 		} catch ( Throwable $e ) {
 			LP_Debug::error_log( $e );
 		}
