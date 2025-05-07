@@ -173,15 +173,15 @@ class Courses {
 		// Find by category
 		$term_ids_str = LP_Helper::sanitize_params_submitted( urldecode( $param['term_id'] ?? '' ) );
 		if ( ! empty( $term_ids_str ) ) {
-			$term_ids           = explode( ',', $term_ids_str );
-			$filter->term_ids[] = $term_ids;
+			$term_ids         = explode( ',', $term_ids_str );
+			$filter->term_ids = array_merge( $filter->term_ids, $term_ids );
 		}
 
 		// Find by tag
 		$tag_ids_str = LP_Helper::sanitize_params_submitted( urldecode( $param['tag_id'] ?? '' ) );
 		if ( ! empty( $tag_ids_str ) ) {
-			$tag_ids           = explode( ',', $tag_ids_str );
-			$filter->tag_ids[] = $tag_ids;
+			$tag_ids         = explode( ',', $tag_ids_str );
+			$filter->tag_ids = array_merge( $filter->tag_ids, $tag_ids );
 		}
 
 		// Order by
