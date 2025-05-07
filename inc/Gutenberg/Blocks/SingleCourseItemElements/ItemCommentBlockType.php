@@ -53,36 +53,8 @@ class ItemCommentBlockType extends AbstractCourseItemBlockType {
 		global $lp_course_item;
 
 		try {
-			$courseModel = $this->get_course( $attributes, $block );
-			if ( ! $courseModel ) {
-				return $html;
-			}
-
 			ob_start();
-			$course = learn_press_get_course();
-			if ( ! $course ) {
-				return 'course';
-			}
-
-			$item = $lp_course_item;
-			if ( ! $item ) {
-				return 'item';
-			}
-
-			$user                 = learn_press_get_current_user();
-			$user_can_view_course = $user->can_view_content_course( $course->get_id() );
-			$user_can_view_item   = $user->can_view_item( $item->get_id(), $user_can_view_course );
-			if ( ! $user_can_view_item->flag ) {
-				return $html;
-			}
-
-			if ( $item->setup_postdata() ) {
-
-				if ( comments_open() || get_comments_number() ) {
-					learn_press_get_template( 'single-course/item-comments' );
-				}
-				$item->reset_postdata();
-			}
+			LearnPress::instance()->template( 'course' )->course_item_comments();
 			$html_comment = ob_get_clean();
 
 			$html = $this->get_output( $html_comment );
