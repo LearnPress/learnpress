@@ -114,6 +114,14 @@ class ListCoursesBlockType extends AbstractBlockType {
 		$settings['order_by'] = $settings['order_by'] ?? $courseQuery['order_by'] ?? 'post_date';
 		$settings['limit']    = $courseQuery['limit'] ?? 10;
 		Courses::handle_params_for_query_courses( $filter, $settings );
+		// Check is in category page.
+		if ( ! empty( $settings['page_term_id_current'] ) && empty( $settings['term_id'] ) ) {
+			$filter->term_ids[] = $settings['page_term_id_current'];
+		} // Check is in tag page.
+		elseif ( ! empty( $settings['page_tag_id_current'] ) && empty( $settings['tag_id'] ) ) {
+			$filter->tag_ids[] = $settings['page_tag_id_current'];
+		}
+
 		self::get_courses_of_instructor( $filter );
 
 		if ( isset( $courseQuery['related'] ) && $courseQuery['related'] ) {
