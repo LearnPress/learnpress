@@ -322,7 +322,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 					'single_instructor' => __( 'Single Instructors', 'learnpress' ),
 					'profile'           => __( 'Profile', 'learnpress' ),
 					'checkout'          => __( 'Checkout', 'learnpress' ),
-					'become_a_teacher'  => __( 'Become a Teacher', 'learnpress' ),
+					'become_a_teacher'  => __( 'Become an Instructor', 'learnpress' ),
 				);
 
 				foreach ( $all_pages as $name => $title ) {

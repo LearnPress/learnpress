@@ -270,17 +270,23 @@ class Template {
 	/**
 	 * Insert new key to a position of array
 	 *
-	 * @param $old_array
-	 * @param $position
-	 * @param $key_compare
-	 * @param $key
-	 * @param $value
+	 * @param array $old_array
+	 * @param string $position after/before
+	 * @param string $key_compare key to compare
+	 * @param string $key_add
+	 * @param string $value
 	 *
 	 * @return array
 	 * @since 4.2.7.2
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
-	public static function insert_value_to_position_array( $old_array, $position, $key_compare, $key, $value ): array {
+	public static function insert_value_to_position_array(
+		array $old_array,
+		string $position,
+		string $key_compare,
+		string $key_add,
+		string $value
+	): array {
 		$new_array = [];
 
 		foreach ( $old_array as $k => $v ) {
@@ -288,7 +294,7 @@ class Template {
 				$new_array[ $k ] = $v;
 			}
 			if ( $key_compare === $k ) {
-				$new_array[ $key ] = $value;
+				$new_array[ $key_add ] = $value;
 			}
 			if ( $position === 'before' ) {
 				$new_array[ $k ] = $v;

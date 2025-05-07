@@ -401,7 +401,7 @@ class SingleCourseModernLayout {
 	 * Get html instructor info
 	 *
 	 * @param CourseModel $course
-	 * @param UserModel $user
+	 * @param UserModel|false $user
 	 *
 	 * @return string
 	 * @since 4.2.8.3

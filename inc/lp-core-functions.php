@@ -2183,8 +2183,9 @@ function learn_press_static_page_ids() {
  * @return array
  *
  * @since 3.0.0
+ * @deprecated 4.2.8.4
  */
-function learn_press_static_pages( $name = false ) {
+/*function learn_press_static_pages( $name = false ) {
 	$pages = apply_filters(
 		'learn-press/static-pages',
 		array(
@@ -2200,7 +2201,7 @@ function learn_press_static_pages( $name = false ) {
 	}
 
 	return $pages;
-}
+}*/
 
 /**
  * Callback function for sorting to array|object by key|prop priority.

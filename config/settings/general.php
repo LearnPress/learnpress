@@ -55,14 +55,14 @@ return apply_filters(
 			'value'   => learn_press_get_page_id( 'checkout' ),
 		),
 		array(
-			'title'   => esc_html__( 'Become instructors page', 'learnpress' ),
+			'title'   => esc_html__( 'Become an instructors page', 'learnpress' ),
 			'id'      => 'become_a_teacher_page_id',
 			'default' => '',
 			'type'    => 'pages-dropdown',
 			'value'   => learn_press_get_page_id( 'become_a_teacher' ),
 		),
 		array(
-			'title'   => esc_html__( 'Terms and conditions', 'learnpress' ),
+			'title'   => esc_html__( 'Terms and conditions page', 'learnpress' ),
 			'id'      => 'term_conditions_page_id',
 			'default' => '',
 			'type'    => 'pages-dropdown',

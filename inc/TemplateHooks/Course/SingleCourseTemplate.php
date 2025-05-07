@@ -1298,7 +1298,9 @@ class SingleCourseTemplate {
 				'wrapper'     => '<div class="lp-course-comment">',
 				'content'     => $html,
 				'wrapper_end' => '</div>',
-			]
+			],
+			$courseModel,
+			$userModel
 		);
 
 		return Template::combine_components( $section_comment );
