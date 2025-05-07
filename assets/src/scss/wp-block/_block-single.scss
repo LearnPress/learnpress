@@ -1,55 +1,50 @@
-@import "../mixin.scss";
-@import "../variables.scss";
-
 .c-gap-4 {
-	column-gap: 4px;
+    column-gap: 4px;
 }
 
 .wp-block-learnpress-course-feature-review {
-	.featured-review__title {
-		font-weight: var(--lp-font-weight-link, 600);
-		font-size: calc(var(--lp-font-size-base, 1em) * 1.25);
-	}
+    .featured-review__title {
+        font-weight: var(--lp-font-weight-link, 600);
+        font-size: calc(var(--lp-font-size-base, 1em) * 1.25);
+    }
 }
 
 [class^="wp-block-learnpress"] {
-	.extra-box {
-		ul {
-			margin: 0 0 0 20px;
-			padding: 0;
-		}
-	}
+    .extra-box {
+        ul {
+            margin: 0 0 0 20px;
+            padding: 0;
+        }
+    }
 }
 
 .wp-block-learnpress-course-button-read-more,
-.wp-block-learnpress-course-button{
-	cursor: pointer;
-	padding: 12px 24px;
-	background-color: $color-primary;
-	border-width: 0;
-	border-radius: $border-radius-global;
-	border-color: $color-primary;
-	color: $color-white;
-	font-size: $font-size-base;
-	text-align: center;
-	text-decoration: none;
-	@include transition(all 0.25s);
-
-	&:hover {
-		background-color: var(--lp-secondary-color);
-		border-color: var(--lp-secondary-color);
-	}
-
-	&.loading {
-		pointer-events: none;
-		opacity: 0.8;
-		@include loading();
-	}
+.wp-block-learnpress-course-button {
+    cursor: pointer;
+    padding: 12px 24px;
+    background-color: $color-primary;
+    border-width: 0;
+    border-radius: $border-radius-global;
+    border-color: $color-primary;
+    color: $color-white;
+    font-size: $font-size-base;
+    text-align: center;
+    text-decoration: none;
+    @include transition(all 0.25s);
+    &:hover {
+        background-color: var(--lp-secondary-color);
+        border-color: var(--lp-secondary-color);
+    }
+    &.loading {
+        pointer-events: none;
+        opacity: 0.8;
+        @include loading();
+    }
 }
 
 @media (min-width: 992px) {
-	.lp-block-course-sidebar {
-		margin-top: -260px;
-		margin-block-start: -260px !important;
-	}
+    .lp-block-course-sidebar {
+        margin-top: -260px;
+        margin-block-start: -260px !important;
+    }
 }

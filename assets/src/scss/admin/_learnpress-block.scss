@@ -1,16 +1,30 @@
-.wp-block-learnpress-course-filter {
-	h3 {
-		margin-bottom: 20px;
-		margin-top: 0;
-	}
+@import "../frontend/pagination";
+@import "../frontend/share-social";
+@import "../frontend/author-info";
+@import "../frontend/extra-box";
+@import "../frontend/curriculum";
+// @import "../frontend/comment-area";
 
-	.filter {
-		.line {
-			height: 15px;
-			background: #ccc;
-			margin-bottom: 10px;
-		}
-	}
+/*
+Css for Block of Gutenberg
+ */
+
+@import "../wp-block/_block-global";
+@import "../wp-block/_block-single";
+@import "../wp-block/_block-archive";
+@import "../wp-block/_block-instructor";
+.wp-block-learnpress-course-filter {
+    h3 {
+        margin-bottom: 20px;
+        margin-top: 0;
+    }
+    .filter {
+        .line {
+            height: 15px;
+            background: #ccc;
+            margin-bottom: 10px;
+        }
+    }
 }
 
 .wp-block-learnpress-course-search-filter,
@@ -19,194 +33,188 @@
 .wp-block-learnpress-course-price-filter,
 .wp-block-learnpress-course-categories-filter,
 .wp-block-learnpress-course-tag-filter {
-	margin-bottom: 15px;
-	padding-bottom: 15px;
-	border-bottom: 1px solid #ccc;
-
-	.lp-course-filter__field {
-		position: relative;
-		display: flex;
-		align-items: center;
-		gap: 10px;
-		cursor: pointer;
-	}
-
-	label {
-		flex: 1;
-	}
-
-	span {
-		color: #999;
-	}
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #ccc;
+    .lp-course-filter__field {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+    }
+    label {
+        flex: 1;
+    }
+    span {
+        color: #999;
+    }
 }
 
 .wp-block-learnpress-course-search-filter .search-box {
-	width: 100%;
-	height: 40px;
-	border: 1px solid #ccc;
-	border-radius: 5px;
-	margin-top: 12px;
+    width: 100%;
+    height: 40px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-top: 12px;
 }
 
 .wp-block-learnpress-button-submit-filter,
 .wp-block-learnpress-button-reset-filter {
-	box-sizing: border-box;
-	text-transform: capitalize;
-	border: 1px solid #ccc;
-	border-radius: 4px;
-	background: white;
-	float: left;
-	text-align: center;
-	width: calc(50% - 8px);
-	padding: 8px 30px;
+    box-sizing: border-box;
+    text-transform: capitalize;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: white;
+    float: left;
+    text-align: center;
+    width: calc(50% - 8px);
+    padding: 8px 30px;
 }
 
 .wp-block-learnpress-button-submit-filter {
-	margin-right: 4px;
+    margin-right: 4px;
 }
 
 .wp-block-learnpress-button-reset-filter {
-	margin-left: 4px;
+    margin-left: 4px;
 }
 
 .block-editor-block-list__block {
-	img {
-		display: block;
-	}
-
-	.learn-press-courses {
-		list-style: none;
-		margin: 0;
-		max-width: 100%;
-		padding: 0;
-
-		&[data-layout="grid"] {
-			grid-gap: 1.25em;
-			display: -ms-grid;
-			display: grid;
-			grid-template-columns: repeat(auto-fill, minmax(max(200px, calc(33.33333% - .83333em)), 1fr));
-		}
-	}
-
-	a {
-		text-decoration: none;
-	}
-
-	.c-gap-4 {
-		column-gap: 4px;
-	}
-
-	.lp-course-curriculum .course-section .course-item__right {
-		color: inherit;
-	}
-	&.wp-block-learnpress-course-title{
-		margin-top: 0;
-	}
+    img {
+        display: block;
+    }
+    .learn-press-courses {
+        list-style: none;
+        margin: 0;
+        max-width: 100%;
+        padding: 0;
+        &[data-layout="grid"] {
+            grid-gap: 1.25em;
+            display: -ms-grid;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(max(200px, calc(33.33333% - .83333em)), 1fr));
+        }
+    }
+    a {
+        text-decoration: none;
+    }
+    .c-gap-4 {
+        column-gap: 4px;
+    }
+    .lp-course-curriculum .course-section .course-item__right {
+        color: inherit;
+    }
+    &.wp-block-learnpress-course-title {
+        margin-top: 0;
+    }
 }
 
 a.block-editor-block-list__block.wp-block-learnpress-course-button {
-	@include course_readmore();
+    @include course_readmore();
 }
+
 
 /*
 icon in admin
  */
-[class^="lp-icon-"], [class*=" lp-icon-"] {
-	/* use !important to prevent issues with browser extensions that change fonts */
-	font-family: 'lp-icon';
-	speak: never;
-	font-style: normal;
-	font-weight: normal;
-	font-variant: normal;
-	text-transform: none;
-	line-height: 1;
-	/* Better Font Rendering =========== */
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
+
+[class^="lp-icon-"],
+[class*=" lp-icon-"] {
+    /* use !important to prevent issues with browser extensions that change fonts */
+    font-family: 'lp-icon';
+    speak: never;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 .lp-icon-angle-right:before {
-	content: "\f105";
+    content: "\f105";
 }
 
 .lp-icon-clock-o:before {
-	content: "\f017";
+    content: "\f017";
 }
 
 .lp-icon-star:before {
-	content: "\f005";
-	color: #ffb606;
+    content: "\f005";
+    color: #ffb606;
 }
 
 .lp-icon-file-o:before {
-	content: "\f016";
+    content: "\f016";
 }
 
 .lp-icon-signal:before {
-	content: "\f012";
+    content: "\f012";
 }
 
 .lp-icon-puzzle-piece:before {
-	content: "\f12e";
+    content: "\f12e";
 }
 
 .lp-icon-search:before {
-	content: "\f002";
+    content: "\f002";
 }
 
 .lp-icon-user-graduate:before {
-	content: "\f501";
+    content: "\f501";
 }
 
 .lp-icon-arrow-right:before {
-	content: "\f061";
+    content: "\f061";
 }
 
 .lp-icon-courses:before {
-	content: "\e903";
+    content: "\e903";
 }
 
 .lp-icon-facebook:before {
-	content: "\f09a";
+    content: "\f09a";
 }
 
 .lp-icon-twitter:before {
-	content: "\f099";
+    content: "\f099";
 }
 
 .lp-icon-youtube-play:before {
-	content: "\f16a";
+    content: "\f16a";
 }
 
 .lp-icon-linkedin:before {
-	content: "\f0e1";
+    content: "\f0e1";
 }
 
 .lp-icon-students:before {
-	content: "\e902";
+    content: "\e902";
 }
 
 .lp-icon-stopwatch:before {
-	content: "\f2f2";
+    content: "\f2f2";
 }
 
-
 .lp-icon-angle-left:before {
-	content: "\f104";
+    content: "\f104";
 }
 
 .lp-icon-angle-right:before {
-	content: "\f105";
+    content: "\f105";
 }
 
 .lp-icon-angle-up:before {
-	content: "\f106";
+    content: "\f106";
 }
 
 .lp-icon-angle-down:before {
-	content: "\f107";
+    content: "\f107";
 }
 
 .lp-icon-share-alt:before {
-	content: "\f1e0";
+    content: "\f1e0";
 }
