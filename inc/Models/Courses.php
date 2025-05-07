@@ -68,7 +68,7 @@ class Courses {
 	 * @param LP_Course_Filter $filter
 	 *
 	 * @return void
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 * @since 4.2.3.3 move from class LP_Course
 	 */
 	public static function handle_params_for_query_courses( LP_Course_Filter &$filter, array $param = [] ) {
@@ -162,18 +162,26 @@ class Courses {
 			}
 		}
 
+		// Check is in category page.
+		if ( ! empty( $param['page_term_id_current'] ) && empty( $param['term_id'] ) ) {
+			$filter->term_ids[] = $param['page_term_id_current'];
+		} // Check is in tag page.
+		elseif ( ! empty( $param['page_tag_id_current'] ) && empty( $param['tag_id'] ) ) {
+			$filter->tag_ids[] = $param['page_tag_id_current'];
+		}
+
 		// Find by category
 		$term_ids_str = LP_Helper::sanitize_params_submitted( urldecode( $param['term_id'] ?? '' ) );
 		if ( ! empty( $term_ids_str ) ) {
-			$term_ids         = explode( ',', $term_ids_str );
-			$filter->term_ids = $term_ids;
+			$term_ids           = explode( ',', $term_ids_str );
+			$filter->term_ids[] = $term_ids;
 		}
 
 		// Find by tag
 		$tag_ids_str = LP_Helper::sanitize_params_submitted( urldecode( $param['tag_id'] ?? '' ) );
 		if ( ! empty( $tag_ids_str ) ) {
-			$tag_ids         = explode( ',', $tag_ids_str );
-			$filter->tag_ids = $tag_ids;
+			$tag_ids           = explode( ',', $tag_ids_str );
+			$filter->tag_ids[] = $tag_ids;
 		}
 
 		// Order by

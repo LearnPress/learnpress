@@ -90,13 +90,7 @@ class ListCoursesTemplate {
 	public static function render_courses( array $settings = [] ): stdClass {
 		$filter = new LP_Course_Filter();
 		Courses::handle_params_for_query_courses( $filter, $settings );
-		// Check is in category page.
-		if ( ! empty( $settings['page_term_id_current'] ) && empty( $settings['term_id'] ) ) {
-			$filter->term_ids[] = $settings['page_term_id_current'];
-		} // Check is in tag page.
-		elseif ( ! empty( $settings['page_tag_id_current'] ) && empty( $settings['tag_id'] ) ) {
-			$filter->tag_ids[] = $settings['page_tag_id_current'];
-		}
+
 		$total_rows                   = 0;
 		$courses                      = Courses::get_courses( $filter, $total_rows );
 		$total_pages                  = LP_Database::get_total_pages( $filter->limit, $total_rows );
