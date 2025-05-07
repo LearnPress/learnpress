@@ -128,6 +128,14 @@ module.exports = {
 		'./assets/js/dist/blocks/breadcrumb': './assets/src/apps/js/blocks/breadcrumb/index.js',
 		'./assets/js/dist/blocks/list-courses': './assets/src/apps/js/blocks/courses/list-courses/index.js',
 		'./assets/js/dist/blocks/course-item-template': './assets/src/apps/js/blocks/courses/course-item-template/index.js',
+		'./assets/js/dist/blocks/item-close': './assets/src/apps/js/blocks/single-course-item/item-close/index.js',
+		'./assets/js/dist/blocks/item-comment': './assets/src/apps/js/blocks/single-course-item/item-comment/index.js',
+		'./assets/js/dist/blocks/item-content': './assets/src/apps/js/blocks/single-course-item/item-content/index.js',
+		'./assets/js/dist/blocks/item-curriculum': './assets/src/apps/js/blocks/single-course-item/item-curriculum/index.js',
+		'./assets/js/dist/blocks/item-hidden-sidebar': './assets/src/apps/js/blocks/single-course-item/item-hidden-sidebar/index.js',
+		'./assets/js/dist/blocks/item-navigation': './assets/src/apps/js/blocks/single-course-item/item-navigation/index.js',
+		'./assets/js/dist/blocks/item-progress': './assets/src/apps/js/blocks/single-course-item/item-progress/index.js',
+		'./assets/js/dist/blocks/item-search': './assets/src/apps/js/blocks/single-course-item/item-search/index.js',
 
 		// Elementor
 		'./assets/js/dist/elementor/courses': './assets/src/js/elementor/courses.js',
