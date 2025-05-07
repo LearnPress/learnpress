@@ -7,18 +7,14 @@ const Edit = ( props ) => {
 
 	return (
 		<div { ...blockProps }>
-			<Placeholder
-				label={ __( 'Item Progress', 'learnpress' ) }
-			>
-				<div>
-					{
-						__(
-							'Display full content of Single Course, can not edit.',
-							'learnpress'
-						)
-					}
+			<div class="items-progress">
+				<span class="number">
+					<span class="items-completed">43</span> of 86 items
+				</span>
+				<div class="learn-press-progress">
+					<div class="learn-press-progress__active" data-value="50%"></div>
 				</div>
-			</Placeholder>
+			</div>
 		</div>
 	);
 };

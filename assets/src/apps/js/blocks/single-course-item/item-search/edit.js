@@ -7,18 +7,12 @@ const Edit = ( props ) => {
 
 	return (
 		<div { ...blockProps }>
-			<Placeholder
-				label={ __( 'Item Search', 'learnpress' ) }
-			>
-				<div>
-					{
-						__(
-							'Display full content of Single Course, can not edit.',
-							'learnpress'
-						)
-					}
-				</div>
-			</Placeholder>
+			<div class="search-course">
+				<input type="text" name="s" autocomplete="off" placeholder="Search for course content" />
+				<button name="submit" aria-label="Search for course content">
+					<i class="lp-icon-search"></i>
+				</button>
+			</div>
 		</div>
 	);
 };
