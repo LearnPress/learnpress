@@ -11,7 +11,7 @@ const Edit = ( props ) => {
 				<div class="content-item-scrollable">
 					<div class="content-item-wrap">
 						<div class="content-item-summary">
-							<h1 class="course-item-title lesson-title">Lesson 1</h1>
+							<h1 class="course-item-title lesson-title">Lesson 2</h1>
 
 							<div class="content-item-description lesson-description">
 								<p>

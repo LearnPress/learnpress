@@ -7,18 +7,17 @@ const Edit = ( props ) => {
 
 	return (
 		<div { ...blockProps }>
-			<Placeholder
-				label={ __( 'Item Navigation', 'learnpress' ) }
-			>
-				<div>
-					{
-						__(
-							'Display full content of Single Course, can not edit.',
-							'learnpress'
-						)
-					}
+			<div class="course-item-nav" data-nav="all">
+				<div class="prev">
+					<div class="course-item-nav__name">Lesson 1</div>
+					<a>Prev</a>
 				</div>
-			</Placeholder>
+
+				<div class="next">
+					<div class="course-item-nav__name">Lesson 3</div>
+					<a>Next</a>
+				</div>
+			</div>
 		</div>
 	);
 };

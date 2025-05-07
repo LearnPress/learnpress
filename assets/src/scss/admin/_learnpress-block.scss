@@ -330,6 +330,101 @@ a.block-editor-block-list__block.wp-block-learnpress-course-button {
 	}
 }
 
+.wp-block-learnpress-item-navigation {
+	.course-item-nav {
+		display: flex;
+		justify-content: space-between;
+
+		.prev,
+		.next {
+			display: flex;
+			line-height: 3.125em;
+			/* flex: 1;*/
+			span {
+				display: block;
+				font-weight: bold;
+			}
+
+			a {
+				display: block;
+				color: $text-color-accent;
+				color: #999;
+			}
+
+			&::before {
+				color: #999;
+				font-family: 'lp-icon';
+				//font-size: 0.75em;
+				//font-weight: 900;
+			}
+
+			&:hover {
+				a,
+				&::before {
+					color: var( --lp-primary-color );
+				}
+
+				.course-item-nav__name {
+					display: block;
+				}
+			}
+		}
+
+		.next {
+			text-align: right;
+			flex-direction: row-reverse;
+
+			&::before {
+				margin-left: 10px;
+				content: '\f0da';
+			}
+
+			&[data-nav='next'] {
+				justify-content: flex-end;
+			}
+		}
+	}
+
+	.prev {
+		&::before {
+			margin-right: 10px;
+			content: '\f0d9';
+		}
+
+		.course-item-nav__name {
+			right: auto;
+			left: -30px;
+
+			&::before {
+				right: auto;
+				left: 5px;
+			}
+
+			@media ( max-width: 1024px ) {
+				left: 15px;
+			}
+		}
+	}
+
+	.course-item-nav__name {
+		display: none;
+		position: absolute;
+		top: -20px;
+		right: -30px;
+		width: auto;
+		padding: 10px 15px;
+		color: $text-color-accent;
+		background: #ccc;
+		font-size: $font-size-small;
+		line-height: 1;
+		@media ( max-width: 1024px ) {
+			top: -25px;
+			right: 15px;
+			left: auto;
+		}
+	}
+}
+
 /*
 icon in admin
  */
