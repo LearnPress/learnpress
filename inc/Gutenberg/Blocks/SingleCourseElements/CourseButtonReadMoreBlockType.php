@@ -71,10 +71,22 @@ class CourseButtonReadMoreBlockType extends AbstractCourseBlockType {
 				return $html;
 			}
 
-			$wrapper = get_block_wrapper_attributes();
-			$html    = sprintf(
-				'<a href="%s" %s>%s</a>',
+			$text_align      = $attributes['textAlign'] ?? 'left';
+			$align_items     = $attributes['alignItems'] ?? 'top';
+			$justify_content = $attributes['justifyContent'] ?? 'center';
+			$width           = $attributes['width'] ?? '100';
+
+			$extra_attributes = [
+				'style' => 'width: 100%; text-align: ' . $text_align . ';',
+			];
+
+			$style_wrapper = 'style="display: flex; ' . 'align-items: ' . $align_items . ';' . 'justify-content: ' . $justify_content . ';' . '"';
+			$wrapper       = get_block_wrapper_attributes( $extra_attributes );
+			$html          = sprintf(
+				'<div class="course-button-read-more" %s><a href="%s" %s><button %s>%s</button></a>',
+				$style_wrapper,
 				$courseModel->get_permalink(),
+				'style=" width: ' . $width . '%;"',
 				$wrapper,
 				__( 'Read more', 'learnpress' )
 			);

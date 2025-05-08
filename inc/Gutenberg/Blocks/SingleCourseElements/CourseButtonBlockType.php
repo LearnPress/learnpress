@@ -72,10 +72,10 @@ class CourseButtonBlockType extends AbstractCourseBlockType {
 				return $html;
 			}
 
-			$textAlign      = $attributes['textAlign'] ?? 'left';
-			$verticalAlign  = $attributes['verticalAlign'] ?? 'top';
-			$justifyContent = $attributes['justifyContent'] ?? 'center';
-			$width          = $attributes['width'] ?? '100';
+			$text_align      = $attributes['textAlign'] ?? 'left';
+			$align_items     = $attributes['alignItems'] ?? 'top';
+			$justify_content = $attributes['justifyContent'] ?? 'center';
+			$width           = $attributes['width'] ?? '100';
 
 			$html_button = SingleCourseModernLayout::instance()->html_button( $courseModel, $userModel );
 			if ( empty( $html_button ) ) {
@@ -83,13 +83,13 @@ class CourseButtonBlockType extends AbstractCourseBlockType {
 			}
 
 			$extra_attributes = [
-				'style' => 'width: 100%; text-align: ' . $textAlign . ';',
+				'style' => 'width: 100%; text-align: ' . $text_align . ';',
 			];
 			$wrapper          = get_block_wrapper_attributes( $extra_attributes );
 			$html             = $html_button;
 			$html_button      = str_replace(
 				'class="course-buttons"',
-				'class="course-buttons" ' . 'style="display: flex; ' . 'vertical-align: ' . $verticalAlign . ';' . 'justify-content: ' . $justifyContent . ';' . '"',
+				'class="course-buttons" ' . 'style="display: flex; ' . 'align-items: ' . $align_items . ';' . 'justify-content: ' . $justify_content . ';' . '"',
 				$html_button
 			);
 			$html_button      = str_replace(

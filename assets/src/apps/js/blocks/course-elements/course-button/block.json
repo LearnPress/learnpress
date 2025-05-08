@@ -19,13 +19,13 @@
 			"type": "string",
 			"default": "center"
 		},
-		"verticalAlign": {
+		"alignItems": {
 			"type": "string",
 			"default": "top"
 		},
 		"width": {
 			"type": "string",
-			"default": ""
+			"default": "100"
 		}
 	},
 	"supports": {

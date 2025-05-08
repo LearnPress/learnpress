@@ -3,11 +3,6 @@ import {
 	PanelBody,
 	__experimentalToggleGroupControl as ToggleGroupControl,
 	__experimentalToggleGroupControlOption as ToggleGroupControlOption,
-	Icon,
-	Dropdown,
-	Button,
-	MenuGroup,
-	MenuItem,
 } from '@wordpress/components';
 
 import {
@@ -29,8 +24,8 @@ const Edit = ( props ) => {
 	} );
 
 	// classOfDiv to fix align.
-	let classOfDiv = blockProps.className || '';
-	classOfDiv = classOfDiv.replaceAll( 'wp-block-learnpress-course-button', '' );
+	let classOfDiv = blockProps.className;
+	classOfDiv = classOfDiv.split(' ').filter(cls => cls.startsWith('align')).join(' ');
 
 	return (
 		<>
@@ -44,18 +39,18 @@ const Edit = ( props ) => {
 					onChange={ ( newJustify ) => setAttributes( { justifyContent: newJustify } ) }
 				/>
 				<BlockVerticalAlignmentToolbar
-					value={attributes.verticalAlign}
-					onChange={(newAlign) => setAttributes({ verticalAlign: newAlign })}
+					value={ attributes.alignItems }
+					onChange={ ( newAlign ) => setAttributes( { alignItems: newAlign } ) }
 				/>
 			</BlockControls>
 			<InspectorControls>
 				<PanelBody title={ __( 'Settings', 'learnpress' ) }>
 					<ToggleGroupControl
 						label={ __( 'Width', 'learnpress' ) }
-						value={ attributes.width || '' }
+						value={ attributes.width || '100' }
 						onChange={ ( value ) => {
 							setAttributes( {
-								width: value || '',
+								width: value || '100',
 							} );
 						} }
 						isBlock={ true }
@@ -72,7 +67,7 @@ const Edit = ( props ) => {
 				style={ {
 					display: 'flex',
 					textAlign: attributes.textAlign,
-					verticalAlign: attributes.verticalAlign,
+					alignItems: attributes.alignItems,
 					justifyContent: attributes.justifyContent,
 				} }
 			>
