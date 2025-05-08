@@ -22,14 +22,9 @@
 
 	.lp-instructor-meta {
 		margin-top: 16px;
-
-		.instructor-item-meta:first-child {
-			> * {
-				border: none;
-				margin-left: 0;
-				padding-left: 0;
-			}
-		}
+		display: flex;
+		column-gap: 20px;
+		row-gap: 8px;
 	}
 
 	.instructor-description {
@@ -80,16 +75,18 @@
 
 .instructor-item-meta {
 	display: inline-flex;
-	.instructor-total-students,
-	.instructor-total-courses {
-		display: inline-flex;
-		border-left: 1px solid $border-color;
-		margin-left: 12px;
-		padding-left: 12px;
-	}
+	border-left: 1px solid $border-color;
+	//margin-left: 12px;
+	padding-left: 20px;
 }
 
-.wrapper-instructor-total-students,.wrapper-instructor-total-courses{
+.lp-instructor-meta .instructor-item-meta:first-child {
+	border: none;
+	padding-left: 0;
+	//margin-left: 0;
+}
+
+.wrapper-instructor-total-students, .wrapper-instructor-total-courses {
 	display: flex;
 	gap: 4px;
 	align-items: center;

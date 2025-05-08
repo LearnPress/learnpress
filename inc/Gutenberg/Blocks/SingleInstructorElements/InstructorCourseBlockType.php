@@ -57,9 +57,8 @@ class InstructorCourseBlockType extends AbstractSingleInstructorBlockType {
 			ob_start();
 			$html_wrapper = [
 				'wrapper'     => '<div class="wrapper-instructor-total-courses">',
-				'span'        => $hidden === 'icon' ? '' : '<span class="lp-ico lp-icon-courses">',
+				'icon'        => $hidden === 'icon' ? '' : '<i class="lp-ico lp-icon-courses"></i>',
 				'content'     => SingleInstructorTemplate::instance()->html_count_courses( $instructor, $hidden ),
-				'end_span'    => '</span>',
 				'end_wrapper' => '</div>',
 			];
 			$html_course  = Template::combine_components( $html_wrapper );
