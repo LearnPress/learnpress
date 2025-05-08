@@ -3,7 +3,7 @@ Contributors: thimpress, tungnx89, nhamdv, nguyenlammanh, tunnhn, phonglq.foobla
 Donate link:
 Tags: e-learning, education, course, lms, learning management system
 Tested up to: 6.8
-Stable tag: 4.2.8.3
+Stable tag: 4.2.8.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -221,6 +221,14 @@ https://www.transifex.com/projects/p/learnpress/
 13. Add-ons: Unlock endless possibilities with our add-ons from additional payment gateways to more managing course options. Tailor to your needs and easily scale as your site grow
 
 == Changelog ==
+
+= 4.2.8.3 (2025-05-08) =
+~ Fixed: security.
+~ Fixed: error Add Media not working on the edit lesson screen.
+~ Move setting quiz to tab course.
+~ Tweak: list course block Gutenberg.
+~ Tweak: condition check blocks load on template.
+~ Tweak: styles.
 
 = 4.2.8.3 (2025-04-26) =
 ~ Provide: blocks for Gutenberg, build page Single Course, Archive Course, List Course.
