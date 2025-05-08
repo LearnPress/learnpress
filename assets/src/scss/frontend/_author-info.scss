@@ -80,26 +80,7 @@
 
 .instructor-item-meta {
 	display: inline-flex;
-}
-
-
-.instructor-total-students,
-.instructor-total-courses {
-	display: inline-flex;
-	border-left: 1px solid $border-color;
-	margin-left: 12px;
-	padding-left: 12px;
-}
-
-.wrapper-instructor-total-courses {
-	.instructor-total-courses {
-		border-left: 0;
-		margin-left: 0;
-		padding-left: 0;
-	}
-}
-
-.wrapper-instructor-total-courses:has( .lp-icon-courses ) {
+	.instructor-total-students,
 	.instructor-total-courses {
 		display: inline-flex;
 		border-left: 1px solid $border-color;
@@ -108,19 +89,8 @@
 	}
 }
 
-.wrapper-instructor-total-students {
-	.instructor-total-students {
-		border-left: 0;
-		margin-left: 0;
-		padding-left: 0;
-	}
-}
-
-.wrapper-instructor-total-students:has( .lp-icon-students ) {
-	.instructor-total-students {
-		display: inline-flex;
-		border-left: 1px solid $border-color;
-		margin-left: 12px;
-		padding-left: 12px;
-	}
+.wrapper-instructor-total-students,.wrapper-instructor-total-courses{
+	display: flex;
+	gap: 4px;
+	align-items: center;
 }
