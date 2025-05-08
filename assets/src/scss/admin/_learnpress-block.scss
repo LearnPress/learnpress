@@ -105,8 +105,8 @@ Css for Block of Gutenberg
     .lp-course-curriculum .course-section .course-item__right {
         color: inherit;
     }
-    &.wp-block-learnpress-course-title {
-        margin-top: 0;
+    &.wp-block-learnpress-course-title > *{
+         margin-top: 0;
     }
 }
 
