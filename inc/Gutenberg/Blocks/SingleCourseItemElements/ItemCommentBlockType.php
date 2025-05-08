@@ -50,9 +50,10 @@ class ItemCommentBlockType extends AbstractCourseItemBlockType {
 	 */
 	public function render_content_block_template( array $attributes, $content, $block ): string {
 		$html = '';
-		global $lp_course_item;
-
 		try {
+			global $post;
+			setup_postdata( $post );
+
 			ob_start();
 			LearnPress::instance()->template( 'course' )->course_item_comments();
 			$html_comment = ob_get_clean();

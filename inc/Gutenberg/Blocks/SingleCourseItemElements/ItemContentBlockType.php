@@ -52,6 +52,10 @@ class ItemContentBlockType extends AbstractCourseItemBlockType {
 		$html = '';
 
 		try {
+
+			global $post;
+			setup_postdata( $post );
+
 			ob_start();
 			LearnPress::instance()->template( 'course' )->course_content_item();
 			$html_content = ob_get_clean();
