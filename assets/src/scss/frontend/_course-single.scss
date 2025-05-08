@@ -17,6 +17,7 @@
 
 		}
 		@media (min-width: 769px) {
+			overflow-x: hidden ;
 			.course-title,.course-meta-secondary {
 				padding-right: 300px;
 			}
@@ -237,7 +238,7 @@
 		}
 
 		> div {
-			overflow: hidden;
+			//overflow: hidden;
 			padding: 20px;
 			background: $color-white;
 
