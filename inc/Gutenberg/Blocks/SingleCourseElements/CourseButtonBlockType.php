@@ -72,7 +72,7 @@ class CourseButtonBlockType extends AbstractCourseBlockType {
 				return $html;
 			}
 
-			$text_align      = $attributes['textAlign'] ?? 'left';
+			$text_align      = $attributes['textAlign'] ?? 'center';
 			$align_items     = $attributes['alignItems'] ?? 'top';
 			$justify_content = $attributes['justifyContent'] ?? 'center';
 			$width           = $attributes['width'] ?? '100';
@@ -86,7 +86,6 @@ class CourseButtonBlockType extends AbstractCourseBlockType {
 				'style' => 'width: 100%; text-align: ' . $text_align . ';',
 			];
 			$wrapper          = get_block_wrapper_attributes( $extra_attributes );
-			$html             = $html_button;
 			$html_button      = str_replace(
 				'class="course-buttons"',
 				'class="course-buttons" ' . 'style="display: flex; ' . 'align-items: ' . $align_items . ';' . 'justify-content: ' . $justify_content . ';' . '"',
@@ -97,7 +96,6 @@ class CourseButtonBlockType extends AbstractCourseBlockType {
 				'<a ' . 'style=" width: ' . $width . '%;"',
 				$html_button
 			);
-
 			// Set align to course-buttons.
 			if ( isset( $attributes['align'] ) && $attributes['align'] ) {
 				$html_button = str_replace(
@@ -106,7 +104,6 @@ class CourseButtonBlockType extends AbstractCourseBlockType {
 					$html_button
 				);
 			}
-
 			preg_match( '#class="(.*)"#i', $wrapper, $class_wrapper_find );
 			if ( isset( $class_wrapper_find['1'] ) ) {
 				// Find class button lp to replace.

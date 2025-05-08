@@ -13,7 +13,7 @@
 	"attributes": {
 		"textAlign": {
 			"type": "string",
-			"default": "left"
+			"default": "center"
 		},
 		"justifyContent": {
 			"type": "string",
