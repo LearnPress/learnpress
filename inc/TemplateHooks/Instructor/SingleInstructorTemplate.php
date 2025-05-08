@@ -280,17 +280,25 @@ class SingleInstructorTemplate extends UserTemplate {
 		return Template::combine_components( $sections );
 	}
 
+	/**
+	 * HTML info right of instructor.
+	 *
+	 * @param UserModel $instructor
+	 *
+	 * @return string
+	 * @since 4.2.3.4
+	 * @version 1.0.1
+	 */
 	public function info_right( UserModel $instructor ): string {
-
 		$section_instructor_meta = [
 			'wrapper'        => '<div class="lp-instructor-meta">',
-			'count_courses'  => sprintf(
-				'<div class="instructor-item-meta"><i class="lp-icon-courses"></i>%s</div>',
-				$this->html_count_courses( $instructor )
-			),
 			'count_students' => sprintf(
 				'<div class="instructor-item-meta"><i class="lp-icon-user-graduate"></i>%s</div>',
 				$this->html_count_students( $instructor )
+			),
+			'count_courses'  => sprintf(
+				'<div class="instructor-item-meta"><i class="lp-icon-file"></i>%s</div>',
+				$this->html_count_courses( $instructor )
 			),
 			'wrapper_end'    => '</div>',
 		];
