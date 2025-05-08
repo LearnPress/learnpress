@@ -463,7 +463,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 * @param bool $is_update
 		 *
 		 * @since 4.2.6.9
-		 * @version 1.0.1
+		 * @version 1.0.2
 		 */
 		public function save_post( int $post_id, WP_Post $post = null, bool $is_update = false ) {
 			try {
@@ -531,7 +531,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				$bulk_edit = LP_Request::get_param( 'bulk_edit', false );
 				if ( ! empty( $bulk_edit ) ) {
 					$post_author = LP_Request::get_param( 'post_author', 0, 'int' );
-					if ( $post_author ) {
+					if ( $post_author != -1 ) { // -1 is for no change author
 						$courseModel->post_author = $post_author;
 					}
 				} elseif ( ! empty( $_REQUEST['post_author'] ) ) {
