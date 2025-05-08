@@ -86,16 +86,19 @@ class CourseButtonBlockType extends AbstractCourseBlockType {
 				'style' => 'width: 100%; text-align: ' . $text_align . ';',
 			];
 			$wrapper          = get_block_wrapper_attributes( $extra_attributes );
-			$html_button      = str_replace(
+
+			$html_button = sprintf(
+				'<div class="course-buttons__wrapper" %s>%s</div>',
+				'style="display: flex; ' . 'align-items: ' . $align_items . ';' . 'justify-content: ' . $justify_content . ';' . '"',
+				$html_button,
+			);
+
+			$html_button = str_replace(
 				'class="course-buttons"',
-				'class="course-buttons" ' . 'style="display: flex; ' . 'align-items: ' . $align_items . ';' . 'justify-content: ' . $justify_content . ';' . '"',
+				'class="course-buttons" ' . 'style=" width: ' . $width . '%;"',
 				$html_button
 			);
-			$html_button      = str_replace(
-				'<a',
-				'<a ' . 'style=" width: ' . $width . '%;"',
-				$html_button
-			);
+
 			// Set align to course-buttons.
 			if ( isset( $attributes['align'] ) && $attributes['align'] ) {
 				$html_button = str_replace(
