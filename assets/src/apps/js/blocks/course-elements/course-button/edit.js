@@ -19,13 +19,16 @@ const Edit = ( props ) => {
 	const blockProps = useBlockProps( {
 		style: {
 			textAlign: attributes.textAlign,
-			width: attributes.width ? `${ attributes.width }%` : undefined,
+			width: '100%',
 		},
 	} );
 
 	// classOfDiv to fix align.
 	let classOfDiv = blockProps.className;
-	classOfDiv = classOfDiv.split(' ').filter(cls => cls.startsWith('align')).join(' ');
+	classOfDiv = classOfDiv
+		.split( ' ' )
+		.filter( ( cls ) => cls.startsWith( 'align' ) )
+		.join( ' ' );
 
 	return (
 		<>
@@ -71,7 +74,13 @@ const Edit = ( props ) => {
 					justifyContent: attributes.justifyContent,
 				} }
 			>
-				<button { ...blockProps }>{ __( 'Buy Now', 'learnpress' ) }</button>
+				<a
+					style={ {
+						width: attributes.width ? `${ attributes.width }%` : undefined,
+					} }
+				>
+					<button { ...blockProps }>{ __( 'Buy Now', 'learnpress' ) }</button>
+				</a>
 			</div>
 		</>
 	);

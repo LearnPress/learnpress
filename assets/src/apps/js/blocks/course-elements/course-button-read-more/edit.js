@@ -19,7 +19,7 @@ const Edit = ( props ) => {
 	const blockProps = useBlockProps( {
 		style: {
 			textAlign: attributes.textAlign,
-			width: attributes.width ? `${ attributes.width }%` : undefined,
+			width: '100%',
 		},
 	} );
 
@@ -73,7 +73,13 @@ const Edit = ( props ) => {
 					justifyContent: attributes.justifyContent,
 				} }
 			>
-				<button { ...blockProps }>{ __( 'Read more', 'learnpress' ) }</button>
+				<a
+					style={ {
+						width: attributes.width ? `${ attributes.width }%` : undefined,
+					} }
+				>
+					<button { ...blockProps }>{ __( 'Read more', 'learnpress' ) }</button>
+				</a>
 			</div>
 		</>
 	);
