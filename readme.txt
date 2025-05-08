@@ -222,7 +222,9 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
-= 4.2.8.3 (2025-05-08) =
+= 4.2.8.5 (202x-xx-xx) =
+
+= 4.2.8.4 (2025-05-08) =
 ~ Fixed: security.
 ~ Fixed: error Add Media not working on the edit lesson screen.
 ~ Move setting quiz to tab course.

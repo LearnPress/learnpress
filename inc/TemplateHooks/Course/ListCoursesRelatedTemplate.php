@@ -82,7 +82,7 @@ class ListCoursesRelatedTemplate {
 	 *
 	 * @return stdClass { content: string_html }
 	 * @since 4.2.7
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public static function render_courses( array $settings = [] ): stdClass {
 		$content          = new stdClass();
@@ -100,13 +100,18 @@ class ListCoursesRelatedTemplate {
 
 		foreach ( $terms as $term ) {
 			$term_ids[] = $term->term_id ?? 0;
-			$term_ids[] = $term->parent ?? 0;
+
+			if ( $term->parent ) {
+				$term_ids[] = $term->parent;
+			}
 		}
 
 		$total_rows          = 0;
-		$filter->limit       = $settings['limit'];
+		$filter->only_fields = [ 'DISTINCT(ID) AS ID' ];
+		$filter->limit       = $settings['limit'] ?? 4;
 		$filter->term_ids    = $term_ids;
 		$filter->query_count = false;
+		$filter->order_by    = 'rand()';
 		$filter->where[]     = LP_Database::getInstance()->wpdb->prepare( 'AND p.ID != %d', $course_id );
 
 		$courses = Courses::get_courses( $filter, $total_rows );
