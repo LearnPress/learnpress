@@ -10,6 +10,24 @@
 	"keywords": [ "button single course", "learnpress" ],
 	"ancestor": [ "learnpress/single-course" ],
 	"usesContext": [ "lpCourseData" ],
+	"attributes": {
+		"textAlign": {
+			"type": "string",
+			"default": "left"
+		},
+		"justifyContent": {
+			"type": "string",
+			"default": "center"
+		},
+		"verticalAlign": {
+			"type": "string",
+			"default": "top"
+		},
+		"width": {
+			"type": "string",
+			"default": ""
+		}
+	},
 	"supports": {
 		"multiple": true,
 		"align": [ "wide", "full" ],

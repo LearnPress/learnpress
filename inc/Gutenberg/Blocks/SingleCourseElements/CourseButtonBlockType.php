@@ -72,13 +72,31 @@ class CourseButtonBlockType extends AbstractCourseBlockType {
 				return $html;
 			}
 
+			$textAlign      = $attributes['textAlign'] ?? 'left';
+			$verticalAlign  = $attributes['verticalAlign'] ?? 'top';
+			$justifyContent = $attributes['justifyContent'] ?? 'center';
+			$width          = $attributes['width'] ?? '100';
+
 			$html_button = SingleCourseModernLayout::instance()->html_button( $courseModel, $userModel );
 			if ( empty( $html_button ) ) {
 				return $html;
 			}
 
-			$wrapper = get_block_wrapper_attributes();
-			$html    = $html_button;
+			$extra_attributes = [
+				'style' => 'width: 100%; text-align: ' . $textAlign . ';',
+			];
+			$wrapper          = get_block_wrapper_attributes( $extra_attributes );
+			$html             = $html_button;
+			$html_button      = str_replace(
+				'class="course-buttons"',
+				'class="course-buttons" ' . 'style="display: flex; ' . 'vertical-align: ' . $verticalAlign . ';' . 'justify-content: ' . $justifyContent . ';' . '"',
+				$html_button
+			);
+			$html_button      = str_replace(
+				'<a',
+				'<a ' . 'style=" width: ' . $width . '%;"',
+				$html_button
+			);
 
 			// Set align to course-buttons.
 			if ( isset( $attributes['align'] ) && $attributes['align'] ) {
