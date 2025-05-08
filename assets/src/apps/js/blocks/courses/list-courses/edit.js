@@ -134,7 +134,7 @@ const Edit = ( props ) => {
 						/>
 					) }
 				</PanelBody>
-				{ ! courseQuery.related && (
+				{ /* { ! courseQuery.related && (
 					<ToolsPanel label={ __( 'Filter', 'learnpress' ) } resetAll={ resetAllTaxonomy }>
 						<ToolsPanelItem
 							label={ __( 'Taxonomy', 'learnpress' ) }
@@ -166,7 +166,7 @@ const Edit = ( props ) => {
 							/>
 						</ToolsPanelItem>
 					</ToolsPanel>
-				) }
+				) } */ }
 			</InspectorControls>
 			<div { ...blockProps }>
 				<InnerBlocks template={ QUERY_LOOP_TEMPLATE } />
