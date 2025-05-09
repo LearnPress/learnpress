@@ -147,12 +147,7 @@ class SingleCourseTemplate {
 	 * @version 1.0.3
 	 */
 	public function html_categories( $course, array $setting = [] ): string {
-		$html            = '';
-		$default_setting = [
-			'is_link' => true,
-			'new_tab' => false,
-		];
-		$setting         = array_merge( $default_setting, $setting );
+		$html = '';
 
 		try {
 			if ( $course instanceof LP_Course ) {
