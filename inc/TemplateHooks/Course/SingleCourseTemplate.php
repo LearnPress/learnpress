@@ -149,8 +149,8 @@ class SingleCourseTemplate {
 	public function html_categories( $course, array $setting = [] ): string {
 		$html            = '';
 		$default_setting = [
-			'is_link' => '',
-			'new_tab' => '',
+			'is_link' => true,
+			'new_tab' => false,
 		];
 		$setting         = array_merge( $default_setting, $setting );
 
@@ -168,7 +168,7 @@ class SingleCourseTemplate {
 				return '';
 			}
 
-			$is_link          = $setting['is_link'] ?? false;
+			$is_link          = $setting['is_link'] ?? true;
 			$attribute_target = ! empty( $setting['new_tab'] ) ? 'target="_blank"' : '';
 			$cat_names        = [];
 			foreach ( $cats as $cat ) {
