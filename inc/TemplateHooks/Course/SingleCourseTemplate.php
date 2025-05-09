@@ -323,12 +323,8 @@ class SingleCourseTemplate {
 	 * @version 1.0.2
 	 */
 	public function html_instructor( $course, bool $with_avatar = false, $setting = [] ): string {
-		$content         = '';
-		$default_setting = [
-			'is_link' => '',
-			'new_tab' => '',
-		];
-		$setting         = array_merge( $default_setting, $setting );
+		$content = '';
+
 		try {
 			$instructor = $course->get_author_model();
 			if ( ! $instructor ) {
@@ -337,9 +333,9 @@ class SingleCourseTemplate {
 
 			$singleInstructorTemplate = SingleInstructorTemplate::instance();
 			$userTemplate             = new UserTemplate( 'instructor' );
-			$is_link                  = $setting['is_link'] === 'false' ? false : true;
+			$is_link                  = $setting['is_link'] ?? true;
 			if ( $is_link ) {
-				$attribute_target = $setting['new_tab'] === 'true' ? 'target="_blank"' : '';
+				$attribute_target = ! empty( $setting['new_tab'] ) ? 'target="_blank"' : '';
 				$link_instructor  = sprintf(
 					'<a href="%s" %s >%s %s</a>',
 					$instructor->get_url_instructor(),

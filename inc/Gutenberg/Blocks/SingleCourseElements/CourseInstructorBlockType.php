@@ -51,15 +51,16 @@ class CourseInstructorBlockType extends AbstractCourseBlockType {
 				return $html;
 			}
 
-			$show_text = ( isset( $attributes['showText'] ) && $attributes['showText'] === false ) ? 'false' : 'true';
-			$is_link   = ( isset( $attributes['isLink'] ) && $attributes['isLink'] === false ) ? 'false' : 'true';
-			$new_tab   = ( isset( $attributes['target'] ) && $attributes['target'] === true ) ? 'true' : 'false';
+			$show_text = $attributes['showText'] ?? true;
+			$is_link   = $attributes['isLink'] ?? true;
+			$new_tab   = $attributes['target'] ?? false;
 			$setting   = [
 				'is_link' => $is_link,
 				'new_tab' => $new_tab,
 			];
 			$label     = sprintf( '<label>%s</label>', __( 'by', 'learnpress' ) );
-			if ( $show_text === 'false' ) {
+
+			if ( ! $show_text ) {
 				$label = '';
 			}
 
