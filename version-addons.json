@@ -16,8 +16,8 @@
   "learnpress-announcements": {
     "name": "Announcement add-on for LearnPress",
     "basename": "learnpress-announcements/learnpress-announcements.php",
-    "version": "4.0.7",
-    "require_lp": "4.2.7.7",
+    "version": "4.0.8.1",
+    "require_lp": "4.2.8",
     "description": "Announcement is a great way to promote your courses and update new features + contents to your courses, including email notification.",
     "image": "https://plugins.thimpress.com/downloads/images/lp-announcement.png",
     "link": "https://thimpress.com/product/announcement-add-on-for-learnpress/",
@@ -60,8 +60,8 @@
   "learnpress-bbpress": {
     "name": "LearnPress – bbPress Integration",
     "basename": "learnpress-bbpress/learnpress-bbpress.php",
-    "version": "4.0.6",
-    "require_lp": "4.2.0",
+    "version": "4.0.7",
+    "require_lp": "4.2.8",
     "description": "LearnPress bbPress is an add-on for WordPress LMS – LearnPress, which brings forum to your course. Now, teacher can interact with students and students in a course can discuss with each other about the course. LearnPress bbPress simply empower course with feartures of forum.",
     "image": "https://ps.w.org/learnpress-bbpress/assets/icon-128x128.png?rev=2394951",
     "link": "https://wordpress.org/plugins/learnpress-bbpress/",
@@ -107,7 +107,7 @@
   "learnpress-co-instructor": {
     "name": "Co-Instructors Add-On for LearnPress",
     "basename": "learnpress-co-instructor/learnpress-co-instructor.php",
-    "version": "4.0.6",
+    "version": "4.0.7",
     "require_lp": "4.2.8",
     "description": "LearnPress Prerequisites is an add-on for LearnPress allow you to set prerequisite courses for a certain course in a LearnPress site.",
     "image": "https://plugins.thimpress.com/downloads/images/lp-co-instructor.png",
@@ -273,8 +273,8 @@
   "learnpress-mycred": {
     "name": "myCRED Add-On for LearnPress",
     "basename": "learnpress-mycred/learnpress-mycred.php",
-    "version": "4.0.1",
-    "require_lp": "4.2.0",
+    "version": "4.0.2",
+    "require_lp": "4.2.8",
     "description": "Create loyalty, build store reward programs, offer community games or use as analytics, it's all up to you.",
     "image": "https://plugins.thimpress.com/downloads/images/lp-mycred.png",
     "link": "https://thimpress.com/product/mycred-add-on-for-learnpress/",
@@ -396,8 +396,8 @@
   "learnpress-students-list": {
     "name": "Student List Add-On for LearnPress",
     "basename": "learnpress-students-list/learnpress-students-list.php",
-    "version": "4.0.2",
-    "require_lp": "4.2.6",
+    "version": "4.0.3",
+    "require_lp": "4.2.8",
     "description": "Student List let people check the list of students who have signed up for the course. You can choose to enable or disable student list for each course.",
     "image": "https://plugins.thimpress.com/downloads/images/lp-students-list.png",
     "link": "https://thimpress.com/product/student-list-add-on-for-learnpress/",
