@@ -17,7 +17,7 @@ class CourseImageBlockType extends AbstractCourseBlockType {
 
 	public function get_supports(): array {
 		return [
-			'align'      => [ 'wide', 'full' ],
+			'align'                => [ 'wide', 'full' ],
 			'color'                => [
 				'gradients'  => true,
 				'background' => true,
@@ -57,8 +57,10 @@ class CourseImageBlockType extends AbstractCourseBlockType {
 				return $html;
 			}
 
-			$html_image = '';
-			if ( ! is_singular( LP_COURSE_CPT ) ) {
+			$is_list_course = $block->context['is_list_course'] ?? false;
+			$html_image     = '';
+
+			if ( $is_list_course ) {
 				$html_image = sprintf( '<a href="%s">%s</a>', $courseModel->get_permalink(), SingleCourseTemplate::instance()->html_image( $courseModel ) );
 			} else {
 				$html_image = SingleCourseTemplate::instance()->html_image( $courseModel );
