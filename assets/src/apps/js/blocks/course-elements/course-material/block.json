@@ -1,0 +1,49 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "learnpress/course-material",
+	"title": "Course Material",
+	"category": "learnpress-course-elements",
+	"icon": "download",
+	"description": "Renders template Material Course PHP templates.",
+	"textdomain": "learnpress",
+	"keywords": [ "material single course", "learnpress" ],
+	"ancestor": [ "learnpress/single-course" ],
+	"usesContext": [ "lpCourseData" ],
+	"supports": {
+		"multiple": true,
+		"align": [ "wide", "full" ],
+		"html": false,
+		"typography": {
+			"fontSize": true,
+			"lineHeight": false,
+			"fontWeight": true,
+			"__experimentalFontFamily": false,
+			"__experimentalTextDecoration": false,
+			"__experimentalFontStyle": false,
+			"__experimentalFontWeight": true,
+			"__experimentalLetterSpacing": false,
+			"__experimentalTextTransform": true,
+			"__experimentalDefaultControls": { "fontSize": false }
+		},
+		"color": {
+			"background": false,
+			"text": true,
+			"link": false,
+			"heading": true,
+			"gradients": false,
+			"__experimentalDefaultControls": {
+				"text": true,
+				"h3": true
+			}
+		},
+		"spacing": {
+			"padding": true,
+			"margin": true,
+			"__experimentalDefaultControls": {
+				"margin": false,
+				"padding": false
+			}
+		}
+	}
+}

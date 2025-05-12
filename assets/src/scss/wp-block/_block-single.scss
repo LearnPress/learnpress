@@ -1,50 +1,119 @@
 .c-gap-4 {
-    column-gap: 4px;
+	column-gap: 4px;
 }
 
 .wp-block-learnpress-course-feature-review {
-    .featured-review__title {
-        font-weight: var(--lp-font-weight-link, 600);
-        font-size: calc(var(--lp-font-size-base, 1em) * 1.25);
-    }
+	.featured-review__title {
+		font-weight: var( --lp-font-weight-link, 600 );
+		font-size: calc( var( --lp-font-size-base, 1em ) * 1.25 );
+	}
 }
 
-[class^="wp-block-learnpress"] {
-    .extra-box {
-        ul {
-            margin: 0 0 0 20px;
-            padding: 0;
-        }
-    }
+[class^='wp-block-learnpress'] {
+	.extra-box {
+		ul {
+			margin: 0 0 0 20px;
+			padding: 0;
+		}
+	}
 }
 
 .wp-block-learnpress-course-button-read-more,
 .wp-block-learnpress-course-button {
-    cursor: pointer;
-    padding: 12px 24px;
-    background-color: $color-primary;
-    border-width: 0;
-    border-radius: $border-radius-global;
-    border-color: $color-primary;
-    color: $color-white;
-    font-size: $font-size-base;
-    text-align: center;
-    text-decoration: none;
-    @include transition(all 0.25s);
-    &:hover {
-        background-color: var(--lp-secondary-color);
-        border-color: var(--lp-secondary-color);
-    }
-    &.loading {
-        pointer-events: none;
-        opacity: 0.8;
-        @include loading();
-    }
+	cursor: pointer;
+	padding: 12px 24px;
+	background-color: $color-primary;
+	border-width: 0;
+	border-radius: $border-radius-global;
+	border-color: $color-primary;
+	color: $color-white;
+	font-size: $font-size-base;
+	text-align: center;
+	text-decoration: none;
+	@include transition( all 0.25s );
+	&:hover {
+		background-color: var( --lp-secondary-color );
+		border-color: var( --lp-secondary-color );
+	}
+	&.loading {
+		pointer-events: none;
+		opacity: 0.8;
+		@include loading();
+	}
 }
 
-@media (min-width: 992px) {
-    .lp-block-course-sidebar {
-        margin-top: -260px;
-        margin-block-start: -260px !important;
-    }
+@media ( min-width: 992px ) {
+	.lp-block-course-sidebar {
+		margin-top: -260px;
+		margin-block-start: -260px !important;
+	}
+}
+
+.wp-block-learnpress-course-material {
+	.lp-button {
+		padding: 12px 24px;
+		border: 1px solid $border-color;
+		color: $text-color-base;
+		background: transparent;
+		box-shadow: unset;
+		font-family: inherit;
+		font-weight: $input-font-weight;
+		text-align: center;
+		text-transform: capitalize;
+		@include border-radius( $border-radius-global );
+		margin-top: 20px;
+		padding: 12px 24px;
+		@include transition( all 0.25s );
+	}
+
+	.course-material-table {
+		width: 100%;
+		display: table;
+		border-spacing: 0;
+		border-collapse: collapse;
+
+		tbody tr:nth-child( even ) td,
+		.learnpress table tfoot tr:nth-child( even ) td {
+			background: var( --tb-even-color, #fafafa );
+		}
+
+		thead {
+			box-sizing: border-box;
+			border: 1px solid var( --lp-border-color, #e2e0db );
+		}
+
+		th,
+		td {
+			padding: 0.7em 1em;
+			border: 1px solid var( --lp-border-color, #e2e0db );
+			background: #fff;
+		}
+
+		th {
+			border-bottom: none;
+			background: var( --lp-white-grey, #f7f7fb );
+			font-weight: 600;
+			text-align: center;
+			&:first-child {
+				text-align: left;
+			}
+		}
+
+		tr {
+			td {
+				border: 1px solid var( --lp-border-color, #e2e0db );
+				line-height: 1.4;
+				&:not( :first-child ) {
+					text-align: center;
+				}
+			}
+		}
+
+		tfoot {
+			td {
+				text-align: left;
+				font-weight: bold;
+			}
+		}
+	}
 }
