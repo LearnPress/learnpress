@@ -195,8 +195,8 @@
   "learnpress-frontend-editor": {
     "name": "Frontend Editor Add-On for LearnPress",
     "basename": "learnpress-frontend-editor/learnpress-frontend-editor.php",
-    "version": "4.0.6",
-    "require_lp": "4.2.7",
+    "version": "4.0.7",
+    "require_lp": "4.2.8",
     "description": "Frontend Editor add-on for LearnPress enable your courses to be edited from the frontend. Your instructors doesn't need to go to the WP Dashboard to create and edit courses anymore with Frontend Editor add-on.",
     "image": "https://ps.w.org/learnpress-course-review/assets/icon-128x128.png",
     "link": "https://thimpress.com/product/frontend-editor-add-on-for-learnpress/",
