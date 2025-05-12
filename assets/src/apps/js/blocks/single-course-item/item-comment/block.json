@@ -4,12 +4,10 @@
 	"name": "learnpress/item-comment",
 	"title": "Item Comment",
 	"category": "learnpress-category",
+	"icon": "admin-comments",
 	"description": "Renders template Single Course Legacy PHP templates.",
 	"textdomain": "learnpress",
-	"keywords": [
-		"item comment",
-		"learnpress"
-	],
+	"keywords": [ "item comment", "learnpress" ],
 	"usesContext": [],
 	"supports": {
 		"align": true

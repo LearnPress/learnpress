@@ -4,12 +4,10 @@
 	"name": "learnpress/item-progress",
 	"title": "Item Progress",
 	"category": "learnpress-category",
+	"icon": "chart-line",
 	"description": "Renders template Single Course Legacy PHP templates.",
 	"textdomain": "learnpress",
-	"keywords": [
-		"item progress course",
-		"learnpress"
-	],
+	"keywords": [ "item progress course", "learnpress" ],
 	"usesContext": [],
 	"supports": {
 		"align": true

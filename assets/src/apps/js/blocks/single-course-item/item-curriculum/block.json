@@ -4,12 +4,10 @@
 	"name": "learnpress/item-curriculum",
 	"title": "Item Curriculum",
 	"category": "learnpress-category",
+	"icon": "list-view",
 	"description": "Renders template Single Course Legacy PHP templates.",
 	"textdomain": "learnpress",
-	"keywords": [
-		"item curriculum course",
-		"learnpress"
-	],
+	"keywords": [ "item curriculum course", "learnpress" ],
 	"usesContext": [],
 	"supports": {
 		"align": true

@@ -4,12 +4,10 @@
 	"name": "learnpress/item-hidden-sidebar",
 	"title": "Item Hidden Sidebar",
 	"category": "learnpress-category",
+	"icon": "hidden",
 	"description": "Renders template Single Course Legacy PHP templates.",
 	"textdomain": "learnpress",
-	"keywords": [
-		"item hidden sidebar course",
-		"learnpress"
-	],
+	"keywords": [ "item hidden sidebar course", "learnpress" ],
 	"usesContext": [],
 	"supports": {
 		"align": true

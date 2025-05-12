@@ -4,6 +4,7 @@
 	"name": "learnpress/item-close",
 	"title": "Item Close",
 	"category": "learnpress-category",
+	"icon": "no-alt",
 	"description": "Renders template Single Course Legacy PHP templates.",
 	"textdomain": "learnpress",
 	"keywords": [
