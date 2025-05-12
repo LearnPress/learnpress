@@ -1000,7 +1000,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 	 */
 	public function get_author_info( $author ): array {
 		$output                = [];
-		$output['avatar']      = $author->get_image_url();
+		$output['avatar']      = $author->get_avatar_url();
 		$output['id']          = $author->get_id();
 		$output['name']        = $author->display_name;
 		$output['description'] = $author->get_description();
