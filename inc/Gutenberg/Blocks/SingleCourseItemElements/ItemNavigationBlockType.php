@@ -52,16 +52,13 @@ class ItemNavigationBlockType extends AbstractCourseItemBlockType {
 		$html = '';
 
 		try {
-			$courseModel = $this->get_course( $attributes, $block );
-			if ( ! $courseModel ) {
-				return $html;
-			}
+			global $post;
+			setup_postdata( $post );
 
 			ob_start();
-			LearnPress::instance()->template( 'course' )->func( 'popup_footer_nav' );
+			LearnPress::instance()->template( 'course' )->popup_footer_nav();
 			$html_navigation = ob_get_clean();
-			error_log( $html_navigation );
-			$html = $this->get_output( $html_navigation );
+			$html            = $this->get_output( $html_navigation );
 		} catch ( Throwable $e ) {
 			LP_Debug::error_log( $e );
 		}

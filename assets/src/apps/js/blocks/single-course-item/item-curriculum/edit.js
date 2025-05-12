@@ -10,7 +10,7 @@ const Edit = ( props ) => {
 			<div class="lp-course-curriculum">
 				<div class="course-curriculum">
 					<ul class="course-sections">
-						<li class="course-section lp-collapse">
+						<li class="course-section">
 							<div class="course-section-header">
 								<div class="section-toggle">
 									<i class="lp-icon-angle-down"></i>
