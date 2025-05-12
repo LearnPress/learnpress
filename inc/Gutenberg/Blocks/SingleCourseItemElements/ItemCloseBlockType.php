@@ -59,7 +59,7 @@ class ItemCloseBlockType extends AbstractCourseItemBlockType {
 					<i class="lp-icon-times"></i>
 				</a>',
 				esc_url_raw( $courseModel->get_permalink() ),
-				esc_attr_e( 'Back to course', 'learnpress' )
+				esc_attr__( 'Back to course', 'learnpress' )
 			);
 
 			$html = $this->get_output( $html_progress );
