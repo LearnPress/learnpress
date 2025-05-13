@@ -974,18 +974,25 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 			return [];
 		}
 
-		$output     = array();
-		$extra_info = learn_press_get_user_extra_profile_info( $course->get_id() );
-		$instructor = $course->get_instructor();
-
-		if ( ! $instructor ) {
+		if ( $course instanceof LP_Course ) {
+			$courseModel = CourseModel::find( $course->get_id(), true );
+		} elseif ( $course instanceof CourseModel ) {
+			$courseModel = $course;
+		} else {
 			return [];
 		}
 
-		$output['avatar']      = $instructor->get_upload_profile_src();
-		$output['id']          = $instructor->get_id();
-		$output['name']        = $instructor->get_display_name();
-		$output['description'] = $instructor->get_data( 'description', '' );
+		$output     = array();
+		$extra_info = learn_press_get_user_extra_profile_info( $courseModel->get_id() );
+		$author     = $course->get_author_model();
+		if ( ! $author ) {
+			return [];
+		}
+
+		$output['avatar']      = $author->get_avatar_url();
+		$output['id']          = $author->get_id();
+		$output['name']        = $author->get_display_name();
+		$output['description'] = $author->get_description();
 		$output['social']      = $extra_info;
 
 		return $output;
