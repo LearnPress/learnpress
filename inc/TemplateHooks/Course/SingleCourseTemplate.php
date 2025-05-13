@@ -1178,6 +1178,8 @@ class SingleCourseTemplate {
 				$can_show = true;
 			}
 
+			$can_show = apply_filters( 'learn-press/course-material/can-show', $can_show, $courseModel, $userModel );
+
 			$file_per_page = LP_Settings::get_option( 'material_file_per_page', - 1 );
 			$count_files   = LP_Material_Files_DB::getInstance()->get_total( $courseModel->get_id() );
 			if ( ! $can_show || $file_per_page == 0 || $count_files <= 0 ) {
