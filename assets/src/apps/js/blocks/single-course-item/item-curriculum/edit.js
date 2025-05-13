@@ -28,10 +28,7 @@ const Edit = ( props ) => {
 									data-item-order="1"
 									data-item-type="lp_lesson"
 								>
-									<a
-										href="http://lp.local/courses/zab/lessons/lesson-1-5/"
-										class="course-item__link"
-									>
+									<a class="course-item__link">
 										<div class="course-item__info">
 											<span class="course-item-ico lp_lesson"></span>
 											<span class="course-item-order lp-hidden">1.1</span>
@@ -52,10 +49,7 @@ const Edit = ( props ) => {
 									data-item-order="2"
 									data-item-type="lp_lesson"
 								>
-									<a
-										href="http://lp.local/courses/zab/lessons/lesson-2-5/"
-										class="course-item__link"
-									>
+									<a class="course-item__link">
 										<div class="course-item__info">
 											<span class="course-item-ico lp_lesson"></span>
 											<span class="course-item-order lp-hidden">1.2</span>
@@ -76,10 +70,7 @@ const Edit = ( props ) => {
 									data-item-order="3"
 									data-item-type="lp_lesson"
 								>
-									<a
-										href="http://lp.local/courses/zab/lessons/lesson-3-5/"
-										class="course-item__link"
-									>
+									<a class="course-item__link">
 										<div class="course-item__info">
 											<span class="course-item-ico lp_lesson"></span>
 											<span class="course-item-order lp-hidden">1.3</span>
@@ -100,10 +91,7 @@ const Edit = ( props ) => {
 									data-item-order="4"
 									data-item-type="lp_lesson"
 								>
-									<a
-										href="http://lp.local/courses/zab/lessons/lesson-4-5/"
-										class="course-item__link"
-									>
+									<a class="course-item__link">
 										<div class="course-item__info">
 											<span class="course-item-ico lp_lesson"></span>
 											<span class="course-item-order lp-hidden">1.4</span>
@@ -124,10 +112,7 @@ const Edit = ( props ) => {
 									data-item-order="5"
 									data-item-type="lp_lesson"
 								>
-									<a
-										href="http://lp.local/courses/zab/lessons/lesson-5-5/"
-										class="course-item__link"
-									>
+									<a class="course-item__link">
 										<div class="course-item__info">
 											<span class="course-item-ico lp_lesson"></span>
 											<span class="course-item-order lp-hidden">1.5</span>
@@ -148,10 +133,7 @@ const Edit = ( props ) => {
 									data-item-order="6"
 									data-item-type="lp_lesson"
 								>
-									<a
-										href="http://lp.local/courses/zab/lessons/lesson-6-5/"
-										class="course-item__link"
-									>
+									<a class="course-item__link">
 										<div class="course-item__info">
 											<span class="course-item-ico lp_lesson"></span>
 											<span class="course-item-order lp-hidden">1.6</span>
@@ -244,7 +226,7 @@ const Edit = ( props ) => {
 									data-item-order="10"
 									data-item-type="lp_quiz"
 								>
-									<a href="http://lp.local/courses/zab/quizzes/quiz-1-5/" class="course-item__link">
+									<a class="course-item__link">
 										<div class="course-item__info">
 											<span class="course-item-ico lp_quiz"></span>
 											<span class="course-item-order lp-hidden">1.10</span>
@@ -283,10 +265,7 @@ const Edit = ( props ) => {
 									data-item-order="1"
 									data-item-type="lp_lesson"
 								>
-									<a
-										href="http://lp.local/courses/zab/lessons/lesson-10-5/"
-										class="course-item__link"
-									>
+									<a class="course-item__link">
 										<div class="course-item__info">
 											<span class="course-item-ico lp_lesson"></span>
 											<span class="course-item-order lp-hidden">2.1</span>
@@ -307,10 +286,7 @@ const Edit = ( props ) => {
 									data-item-order="2"
 									data-item-type="lp_lesson"
 								>
-									<a
-										href="http://lp.local/courses/zab/lessons/lesson-11-5/"
-										class="course-item__link"
-									>
+									<a class="course-item__link">
 										<div class="course-item__info">
 											<span class="course-item-ico lp_lesson"></span>
 											<span class="course-item-order lp-hidden">2.2</span>
@@ -331,10 +307,7 @@ const Edit = ( props ) => {
 									data-item-order="3"
 									data-item-type="lp_lesson"
 								>
-									<a
-										href="http://lp.local/courses/zab/lessons/lesson-12-5/"
-										class="course-item__link"
-									>
+									<a class="course-item__link">
 										<div class="course-item__info">
 											<span class="course-item-ico lp_lesson"></span>
 											<span class="course-item-order lp-hidden">2.3</span>
@@ -355,10 +328,7 @@ const Edit = ( props ) => {
 									data-item-order="4"
 									data-item-type="lp_lesson"
 								>
-									<a
-										href="http://lp.local/courses/zab/lessons/lesson-13-5/"
-										class="course-item__link"
-									>
+									<a class="course-item__link">
 										<div class="course-item__info">
 											<span class="course-item-ico lp_lesson"></span>
 											<span class="course-item-order lp-hidden">2.4</span>
@@ -379,10 +349,7 @@ const Edit = ( props ) => {
 									data-item-order="5"
 									data-item-type="lp_lesson"
 								>
-									<a
-										href="http://lp.local/courses/zab/lessons/lesson-14-5/"
-										class="course-item__link"
-									>
+									<a class="course-item__link">
 										<div class="course-item__info">
 											<span class="course-item-ico lp_lesson"></span>
 											<span class="course-item-order lp-hidden">2.5</span>
@@ -403,10 +370,7 @@ const Edit = ( props ) => {
 									data-item-order="6"
 									data-item-type="lp_lesson"
 								>
-									<a
-										href="http://lp.local/courses/zab/lessons/lesson-15-5/"
-										class="course-item__link"
-									>
+									<a class="course-item__link">
 										<div class="course-item__info">
 											<span class="course-item-ico lp_lesson"></span>
 											<span class="course-item-order lp-hidden">2.6</span>
@@ -427,10 +391,7 @@ const Edit = ( props ) => {
 									data-item-order="7"
 									data-item-type="lp_lesson"
 								>
-									<a
-										href="http://lp.local/courses/zab/lessons/lesson-16-5/"
-										class="course-item__link"
-									>
+									<a class="course-item__link">
 										<div class="course-item__info">
 											<span class="course-item-ico lp_lesson"></span>
 											<span class="course-item-order lp-hidden">2.7</span>
@@ -451,10 +412,7 @@ const Edit = ( props ) => {
 									data-item-order="8"
 									data-item-type="lp_lesson"
 								>
-									<a
-										href="http://lp.local/courses/zab/lessons/lesson-17-5/"
-										class="course-item__link"
-									>
+									<a class="course-item__link">
 										<div class="course-item__info">
 											<span class="course-item-ico lp_lesson"></span>
 											<span class="course-item-order lp-hidden">2.8</span>
@@ -475,10 +433,7 @@ const Edit = ( props ) => {
 									data-item-order="9"
 									data-item-type="lp_lesson"
 								>
-									<a
-										href="http://lp.local/courses/zab/lessons/lesson-18-5/"
-										class="course-item__link"
-									>
+									<a class="course-item__link">
 										<div class="course-item__info">
 											<span class="course-item-ico lp_lesson"></span>
 											<span class="course-item-order lp-hidden">2.9</span>
@@ -499,10 +454,7 @@ const Edit = ( props ) => {
 									data-item-order="10"
 									data-item-type="lp_lesson"
 								>
-									<a
-										href="http://lp.local/courses/zab/lessons/lesson-19-5/"
-										class="course-item__link"
-									>
+									<a class="course-item__link">
 										<div class="course-item__info">
 											<span class="course-item-ico lp_lesson"></span>
 											<span class="course-item-order lp-hidden">2.10</span>
@@ -523,10 +475,7 @@ const Edit = ( props ) => {
 									data-item-order="11"
 									data-item-type="lp_lesson"
 								>
-									<a
-										href="http://lp.local/courses/zab/lessons/lesson-20-5/"
-										class="course-item__link"
-									>
+									<a class="course-item__link">
 										<div class="course-item__info">
 											<span class="course-item-ico lp_lesson"></span>
 											<span class="course-item-order lp-hidden">2.11</span>
@@ -547,10 +496,7 @@ const Edit = ( props ) => {
 									data-item-order="12"
 									data-item-type="lp_lesson"
 								>
-									<a
-										href="http://lp.local/courses/zab/lessons/lesson-21-5/"
-										class="course-item__link"
-									>
+									<a class="course-item__link">
 										<div class="course-item__info">
 											<span class="course-item-ico lp_lesson"></span>
 											<span class="course-item-order lp-hidden">2.12</span>
@@ -571,10 +517,7 @@ const Edit = ( props ) => {
 									data-item-order="13"
 									data-item-type="lp_lesson"
 								>
-									<a
-										href="http://lp.local/courses/zab/lessons/lesson-22-5/"
-										class="course-item__link"
-									>
+									<a class="course-item__link">
 										<div class="course-item__info">
 											<span class="course-item-ico lp_lesson"></span>
 											<span class="course-item-order lp-hidden">2.13</span>
@@ -595,7 +538,7 @@ const Edit = ( props ) => {
 									data-item-order="14"
 									data-item-type="lp_quiz"
 								>
-									<a href="http://lp.local/courses/zab/quizzes/quiz-2-5/" class="course-item__link">
+									<a class="course-item__link">
 										<div class="course-item__info">
 											<span class="course-item-ico lp_quiz"></span>
 											<span class="course-item-order lp-hidden">2.14</span>
@@ -634,10 +577,7 @@ const Edit = ( props ) => {
 									data-item-order="1"
 									data-item-type="lp_lesson"
 								>
-									<a
-										href="http://lp.local/courses/zab/lessons/lesson-23-5/"
-										class="course-item__link"
-									>
+									<a class="course-item__link">
 										<div class="course-item__info">
 											<span class="course-item-ico lp_lesson"></span>
 											<span class="course-item-order lp-hidden">3.1</span>
@@ -658,10 +598,7 @@ const Edit = ( props ) => {
 									data-item-order="2"
 									data-item-type="lp_lesson"
 								>
-									<a
-										href="http://lp.local/courses/zab/lessons/lesson-24-5/"
-										class="course-item__link"
-									>
+									<a class="course-item__link">
 										<div class="course-item__info">
 											<span class="course-item-ico lp_lesson"></span>
 											<span class="course-item-order lp-hidden">3.2</span>
@@ -682,10 +619,7 @@ const Edit = ( props ) => {
 									data-item-order="3"
 									data-item-type="lp_lesson"
 								>
-									<a
-										href="http://lp.local/courses/zab/lessons/lesson-25-5/"
-										class="course-item__link"
-									>
+									<a class="course-item__link">
 										<div class="course-item__info">
 											<span class="course-item-ico lp_lesson"></span>
 											<span class="course-item-order lp-hidden">3.3</span>
@@ -706,10 +640,7 @@ const Edit = ( props ) => {
 									data-item-order="4"
 									data-item-type="lp_lesson"
 								>
-									<a
-										href="http://lp.local/courses/zab/lessons/lesson-26-5/"
-										class="course-item__link"
-									>
+									<a class="course-item__link">
 										<div class="course-item__info">
 											<span class="course-item-ico lp_lesson"></span>
 											<span class="course-item-order lp-hidden">3.4</span>
@@ -730,10 +661,7 @@ const Edit = ( props ) => {
 									data-item-order="5"
 									data-item-type="lp_lesson"
 								>
-									<a
-										href="http://lp.local/courses/zab/lessons/lesson-27-5/"
-										class="course-item__link"
-									>
+									<a class="course-item__link">
 										<div class="course-item__info">
 											<span class="course-item-ico lp_lesson"></span>
 											<span class="course-item-order lp-hidden">3.5</span>
@@ -754,10 +682,7 @@ const Edit = ( props ) => {
 									data-item-order="6"
 									data-item-type="lp_lesson"
 								>
-									<a
-										href="http://lp.local/courses/zab/lessons/lesson-28-5/"
-										class="course-item__link"
-									>
+									<a class="course-item__link">
 										<div class="course-item__info">
 											<span class="course-item-ico lp_lesson"></span>
 											<span class="course-item-order lp-hidden">3.6</span>
@@ -778,10 +703,7 @@ const Edit = ( props ) => {
 									data-item-order="7"
 									data-item-type="lp_lesson"
 								>
-									<a
-										href="http://lp.local/courses/zab/lessons/lesson-29-5/"
-										class="course-item__link"
-									>
+									<a class="course-item__link">
 										<div class="course-item__info">
 											<span class="course-item-ico lp_lesson"></span>
 											<span class="course-item-order lp-hidden">3.7</span>
@@ -802,10 +724,7 @@ const Edit = ( props ) => {
 									data-item-order="8"
 									data-item-type="lp_lesson"
 								>
-									<a
-										href="http://lp.local/courses/zab/lessons/lesson-30-5/"
-										class="course-item__link"
-									>
+									<a class="course-item__link">
 										<div class="course-item__info">
 											<span class="course-item-ico lp_lesson"></span>
 											<span class="course-item-order lp-hidden">3.8</span>
@@ -826,10 +745,7 @@ const Edit = ( props ) => {
 									data-item-order="9"
 									data-item-type="lp_lesson"
 								>
-									<a
-										href="http://lp.local/courses/zab/lessons/lesson-31-5/"
-										class="course-item__link"
-									>
+									<a class="course-item__link">
 										<div class="course-item__info">
 											<span class="course-item-ico lp_lesson"></span>
 											<span class="course-item-order lp-hidden">3.9</span>
@@ -850,7 +766,7 @@ const Edit = ( props ) => {
 									data-item-order="10"
 									data-item-type="lp_quiz"
 								>
-									<a href="http://lp.local/courses/zab/quizzes/quiz-3-5/" class="course-item__link">
+									<a class="course-item__link">
 										<div class="course-item__info">
 											<span class="course-item-ico lp_quiz"></span>
 											<span class="course-item-order lp-hidden">3.10</span>
@@ -889,10 +805,7 @@ const Edit = ( props ) => {
 									data-item-order="1"
 									data-item-type="lp_lesson"
 								>
-									<a
-										href="http://lp.local/courses/zab/lessons/lesson-32-5/"
-										class="course-item__link"
-									>
+									<a class="course-item__link">
 										<div class="course-item__info">
 											<span class="course-item-ico lp_lesson"></span>
 											<span class="course-item-order lp-hidden">4.1</span>
@@ -913,10 +826,7 @@ const Edit = ( props ) => {
 									data-item-order="2"
 									data-item-type="lp_lesson"
 								>
-									<a
-										href="http://lp.local/courses/zab/lessons/lesson-33-5/"
-										class="course-item__link"
-									>
+									<a class="course-item__link">
 										<div class="course-item__info">
 											<span class="course-item-ico lp_lesson"></span>
 											<span class="course-item-order lp-hidden">4.2</span>
@@ -937,10 +847,7 @@ const Edit = ( props ) => {
 									data-item-order="3"
 									data-item-type="lp_lesson"
 								>
-									<a
-										href="http://lp.local/courses/zab/lessons/lesson-34-5/"
-										class="course-item__link"
-									>
+									<a class="course-item__link">
 										<div class="course-item__info">
 											<span class="course-item-ico lp_lesson"></span>
 											<span class="course-item-order lp-hidden">4.3</span>
@@ -961,10 +868,7 @@ const Edit = ( props ) => {
 									data-item-order="4"
 									data-item-type="lp_lesson"
 								>
-									<a
-										href="http://lp.local/courses/zab/lessons/lesson-35-5/"
-										class="course-item__link"
-									>
+									<a class="course-item__link">
 										<div class="course-item__info">
 											<span class="course-item-ico lp_lesson"></span>
 											<span class="course-item-order lp-hidden">4.4</span>
@@ -985,10 +889,7 @@ const Edit = ( props ) => {
 									data-item-order="5"
 									data-item-type="lp_lesson"
 								>
-									<a
-										href="http://lp.local/courses/zab/lessons/lesson-36-5/"
-										class="course-item__link"
-									>
+									<a class="course-item__link">
 										<div class="course-item__info">
 											<span class="course-item-ico lp_lesson"></span>
 											<span class="course-item-order lp-hidden">4.5</span>
@@ -1009,10 +910,7 @@ const Edit = ( props ) => {
 									data-item-order="6"
 									data-item-type="lp_lesson"
 								>
-									<a
-										href="http://lp.local/courses/zab/lessons/lesson-37-5/"
-										class="course-item__link"
-									>
+									<a class="course-item__link">
 										<div class="course-item__info">
 											<span class="course-item-ico lp_lesson"></span>
 											<span class="course-item-order lp-hidden">4.6</span>
@@ -1033,10 +931,7 @@ const Edit = ( props ) => {
 									data-item-order="7"
 									data-item-type="lp_lesson"
 								>
-									<a
-										href="http://lp.local/courses/zab/lessons/lesson-38-5/"
-										class="course-item__link"
-									>
+									<a class="course-item__link">
 										<div class="course-item__info">
 											<span class="course-item-ico lp_lesson"></span>
 											<span class="course-item-order lp-hidden">4.7</span>
@@ -1057,10 +952,7 @@ const Edit = ( props ) => {
 									data-item-order="8"
 									data-item-type="lp_lesson"
 								>
-									<a
-										href="http://lp.local/courses/zab/lessons/lesson-39-5/"
-										class="course-item__link"
-									>
+									<a class="course-item__link">
 										<div class="course-item__info">
 											<span class="course-item-ico lp_lesson"></span>
 											<span class="course-item-order lp-hidden">4.8</span>
@@ -1081,10 +973,7 @@ const Edit = ( props ) => {
 									data-item-order="9"
 									data-item-type="lp_lesson"
 								>
-									<a
-										href="http://lp.local/courses/zab/lessons/lesson-40-5/"
-										class="course-item__link"
-									>
+									<a class="course-item__link">
 										<div class="course-item__info">
 											<span class="course-item-ico lp_lesson"></span>
 											<span class="course-item-order lp-hidden">4.9</span>
@@ -1105,10 +994,7 @@ const Edit = ( props ) => {
 									data-item-order="10"
 									data-item-type="lp_lesson"
 								>
-									<a
-										href="http://lp.local/courses/zab/lessons/lesson-41-5/"
-										class="course-item__link"
-									>
+									<a class="course-item__link">
 										<div class="course-item__info">
 											<span class="course-item-ico lp_lesson"></span>
 											<span class="course-item-order lp-hidden">4.10</span>
@@ -1129,10 +1015,7 @@ const Edit = ( props ) => {
 									data-item-order="11"
 									data-item-type="lp_lesson"
 								>
-									<a
-										href="http://lp.local/courses/zab/lessons/lesson-42-5/"
-										class="course-item__link"
-									>
+									<a class="course-item__link">
 										<div class="course-item__info">
 											<span class="course-item-ico lp_lesson"></span>
 											<span class="course-item-order lp-hidden">4.11</span>
@@ -1153,10 +1036,7 @@ const Edit = ( props ) => {
 									data-item-order="12"
 									data-item-type="lp_lesson"
 								>
-									<a
-										href="http://lp.local/courses/zab/lessons/lesson-43-5/"
-										class="course-item__link"
-									>
+									<a class="course-item__link">
 										<div class="course-item__info">
 											<span class="course-item-ico lp_lesson"></span>
 											<span class="course-item-order lp-hidden">4.12</span>
@@ -1177,7 +1057,7 @@ const Edit = ( props ) => {
 									data-item-order="13"
 									data-item-type="lp_quiz"
 								>
-									<a href="http://lp.local/courses/zab/quizzes/quiz-4-5/" class="course-item__link">
+									<a class="course-item__link">
 										<div class="course-item__info">
 											<span class="course-item-ico lp_quiz"></span>
 											<span class="course-item-order lp-hidden">4.13</span>
