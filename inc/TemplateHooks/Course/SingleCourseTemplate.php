@@ -1154,7 +1154,7 @@ class SingleCourseTemplate {
 	 *
 	 * @return string
 	 * @since 4.2.7.2
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public function html_material( CourseModel $courseModel, $userModel = false ): string {
 		$html = '';
@@ -1163,15 +1163,16 @@ class SingleCourseTemplate {
 			$can_show = false;
 
 			if ( $userModel instanceof UserModel ) {
-				$userCourse = UserCourseModel::find( $userModel->get_id(), $courseModel->get_id(), true );
-				if ( $userCourse &&
-					( $userCourse->has_enrolled_or_finished()
-						|| $userCourse->has_purchased() ) ) {
+				if ( $courseModel->check_user_is_author( $userModel )
+					|| user_can( $courseModel->get_id(), ADMIN_ROLE ) ) {
 					$can_show = true;
-				} elseif ( $userCourse
-					&& ( $courseModel->check_user_is_author( $userModel )
-					|| user_can( $courseModel->get_id(), ADMIN_ROLE ) ) ) {
-					$can_show = true;
+				} else {
+					$userCourseModel = UserCourseModel::find( $userModel->get_id(), $courseModel->get_id(), true );
+					if ( $userCourseModel &&
+						( $userCourseModel->has_enrolled_or_finished()
+							|| $userCourseModel->has_purchased() ) ) {
+						$can_show = true;
+					}
 				}
 			} elseif ( $courseModel->has_no_enroll_requirement() ) {
 				$can_show = true;
