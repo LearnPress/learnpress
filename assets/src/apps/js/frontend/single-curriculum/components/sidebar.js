@@ -10,9 +10,19 @@ export const Sidebar = () => {
 		$( 'body' ).removeClass( 'lp-sidebar-toggle__open' );
 		$( 'body' ).removeClass( 'lp-sidebar-toggle__close' );
 
+		const wrapper = document.querySelector( '.js-block-sidebar' );
+		const computedBasis =
+			wrapper.dataset.originalFlexBasis || window.getComputedStyle( wrapper ).flexBasis;
+
+		if ( ! wrapper.dataset.originalFlexBasis && computedBasis !== '0px' ) {
+			wrapper.dataset.originalFlexBasis = computedBasis;
+		}
+
 		if ( toggle ) {
+			wrapper.style.flexBasis = '0';
 			$( 'body' ).addClass( 'lp-sidebar-toggle__close' );
 		} else {
+			wrapper.style.flexBasis = computedBasis || 'auto';
 			$( 'body' ).addClass( 'lp-sidebar-toggle__open' );
 		}
 	};
@@ -22,16 +32,23 @@ export const Sidebar = () => {
 		if ( $( window ).innerWidth() <= 768 ) {
 			elSidebarToggle.setAttribute( 'checked', 'checked' );
 		} else if ( LP.Cookies.get( 'sidebar-toggle' ) ) {
+			const wrapper = document.querySelector( '.js-block-sidebar' );
+			const computedBasis =
+				wrapper.dataset.originalFlexBasis || window.getComputedStyle( wrapper ).flexBasis;
+
+			if ( ! wrapper.dataset.originalFlexBasis && computedBasis !== '0px' ) {
+				wrapper.dataset.originalFlexBasis = computedBasis;
+			}
+			wrapper.style.flexBasis = '0';
+
 			elSidebarToggle.setAttribute( 'checked', 'checked' );
 		} else {
 			elSidebarToggle.removeAttribute( 'checked' );
 		}
 
-		document.querySelector( '#popup-course' ).addEventListener( 'click', ( e ) => {
-			if ( e.target.id === 'sidebar-toggle' ) {
-				LP.Cookies.set( 'sidebar-toggle', e.target.checked ? true : false );
-				toggleSidebar( LP.Cookies.get( 'sidebar-toggle' ) );
-			}
+		document.querySelector( '#sidebar-toggle' ).addEventListener( 'click', ( e ) => {
+			LP.Cookies.set( 'sidebar-toggle', e.target.checked ? true : false );
+			toggleSidebar( LP.Cookies.get( 'sidebar-toggle' ) );
 		} );
 	}
 	// End editor by tungnx
@@ -44,11 +61,11 @@ export const Sidebar = () => {
 		const b = $( el ).siblings( '.section-title' ).append( a );
 	} );
 
-	$( '.section' ).each( function() {
+	$( '.section' ).each( function () {
 		const $section = $( this ),
 			$toggle = $section.find( '.section-left' );
 
-		$toggle.on( 'click', function() {
+		$toggle.on( 'click', function () {
 			const isClose = $section.toggleClass( 'closed' ).hasClass( 'closed' );
 			const sections = LP.Cookies.get( 'closed-section-' + lpGlobalSettings.post_id ) || [];
 			const sectionId = parseInt( $section.data( 'section-id' ) );
@@ -67,4 +84,3 @@ export const Sidebar = () => {
 		} );
 	} );
 };
-
