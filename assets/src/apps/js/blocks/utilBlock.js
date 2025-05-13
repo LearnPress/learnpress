@@ -11,7 +11,12 @@ let currentPostIdOld = null;
 const checkTemplatesCanLoadBlock = ( templates, metadata, callBack ) => {
 	subscribe( () => {
 		const metaDataNew = { ...metadata };
-		const store = select( 'core/editor' );
+		const store = select( 'core/editor' ) || null;
+
+		if ( ! store || typeof store.getCurrentPostId !== 'function' || ! store.getCurrentPostId() ) {
+			return;
+		}
+
 		const currentPostId = store.getCurrentPostId();
 
 		if ( currentPostId === null ) {
