@@ -418,7 +418,7 @@ class LP_Helper {
 	 *
 	 * @return string
 	 * @since 4.2.2
-	 * @version 1.0.3
+	 * @version 1.0.4
 	 */
 	public static function handle_lp_permalink_structure( $post_link, $post ) {
 		if ( false === strpos( $post_link, '%' ) ) {
@@ -472,7 +472,9 @@ class LP_Helper {
 					$ancestors = get_ancestors( $category_object->term_id, 'course_category' );
 					foreach ( $ancestors as $ancestor ) {
 						$ancestor_object = get_term( $ancestor, 'course_category' );
-						$course_category = $ancestor_object->slug . '/' . $course_category;
+						if ( $ancestor_object instanceof WP_Term ) {
+							$course_category = $ancestor_object->slug . '/' . $course_category;
+						}
 					}
 				}
 			} else {
