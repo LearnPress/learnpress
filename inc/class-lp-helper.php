@@ -465,9 +465,12 @@ class LP_Helper {
 					$post
 				);
 				$category_object = get_term( $category_object, 'course_category' );
-				$course_category = $category_object->slug;
+				if ( ! $category_object instanceof WP_Term ) {
+					return $post_link;
+				}
 
-				$parent = $category_object->parent;
+				$course_category = $category_object->slug;
+				$parent          = $category_object->parent;
 				if ( $parent ) {
 					$ancestors = get_ancestors( $category_object->term_id, 'course_category' );
 					foreach ( $ancestors as $ancestor ) {
