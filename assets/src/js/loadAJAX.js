@@ -2,7 +2,7 @@
  * Load all you need via AJAX
  *
  * @since 4.2.5.7
- * @version 1.0.5
+ * @version 1.0.6
  */
 
 import { lpAddQueryArgs, lpFetchAPI, listenElementCreated, lpOnElementReady, lpGetCurrentURLNoParam } from './utils.js';
@@ -83,7 +83,6 @@ const lpAJAX = ( () => {
 			if ( elements.length ) {
 				elements.forEach( ( element ) => {
 					//console.log( 'Element handing', element );
-					element.classList.add( 'loaded' );
 					let url = urlAPI;
 					if ( lpSettings.urlParams.hasOwnProperty( 'lang' ) ) {
 						url = lpAddQueryArgs( url, { lang: lpSettings.urlParams.lang } );
@@ -112,6 +111,7 @@ const lpAJAX = ( () => {
 							console.log( error );
 						},
 						completed: () => {
+							window.lpAJAXG.getElements();
 							//console.log( 'completed' );
 							if ( elLoadingFirst ) {
 								elLoadingFirst.remove();
@@ -124,6 +124,7 @@ const lpAJAX = ( () => {
 
 					// Call via AJAX
 					window.lpAJAXG.fetchAJAX( dataSend, callBack );
+					element.classList.add( 'loaded' );
 				} );
 			}
 		},
@@ -191,6 +192,12 @@ const lpAJAX = ( () => {
 			};
 
 			window.lpAJAXG.fetchAJAX( dataSend, callBack );
+		},
+		getDataSetCurrent: ( elLPTarget ) => {
+			return JSON.parse( elLPTarget.dataset.send );
+		},
+		setDataSetCurrent: ( elLPTarget, dataSend ) => {
+			return elLPTarget.dataset.send = JSON.stringify( dataSend );
 		},
 	};
 } );
