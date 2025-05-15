@@ -10,7 +10,7 @@ import API from './api.js';
 
 // Handle general parameter in the Frontend and Backend
 const apiData = API.admin || API.frontend;
-const urlAPI = apiData?.apiAJAX || '';
+const urlAPI = apiData?.apiAJAX || lpGlobalSettings.rest + 'lp/v1/load_content_via_ajax/';
 
 let lpSettings = {};
 if ( 'undefined' !== typeof lpDataAdmin ) {
