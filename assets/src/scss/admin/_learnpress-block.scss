@@ -12,7 +12,7 @@ Css for Block of Gutenberg
 @import "../wp-block/_block-global";
 @import "../wp-block/_block-single";
 @import "../wp-block/_block-archive";
-// @import "../wp-block/_block-instructor";
+@import "../wp-block/_block-instructor";
 .wp-block-learnpress-course-filter {
     h3 {
         margin-bottom: 20px;
@@ -113,6 +113,15 @@ Css for Block of Gutenberg
 a.block-editor-block-list__block.wp-block-learnpress-course-button {
     @include course_readmore();
 }
+
+
+.wp-block-learnpress-instructor-background {
+	img {
+		opacity: 1;
+		visibility: visible;
+	}
+}
+
 
 
 /*
