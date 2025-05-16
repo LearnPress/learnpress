@@ -261,10 +261,10 @@ if ( ! function_exists( 'LP_Install' ) ) {
 					} elseif ( 'instructors' === $page ) {
 						$page_title = 'Instructors';
 						$page_slug  = $page;
-					} elseif ( 'become_a_teacher' ) {
+					} elseif ( 'become_a_teacher' === $page ) {
 						$page_title = 'Become an Instructor';
 						$page_slug  = $page;
-					} elseif ( 'term_conditions' ) {
+					} elseif ( 'term_conditions' === $page ) {
 						$page_title = 'Terms and Conditions';
 						$page_slug  = $page;
 					} else {
