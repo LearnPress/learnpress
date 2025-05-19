@@ -6,14 +6,16 @@
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 3.0.2
- * @editor tungnx
+ * @version 3.0.3
  * @modify 4.1.3
  */
 
 /**
  * Prevent loading this file directly
  */
+
+use LearnPress\Models\UserModel;
+
 defined( 'ABSPATH' ) || exit();
 /**
  * @var $order LP_Order
@@ -36,15 +38,15 @@ if ( $order->is_manual() ) {
 	if ( is_array( $user_ids ) ) {
 		$email_arr = [];
 		foreach ( $user_ids as $user_id ) {
-			$user = get_user_by( 'ID', $user_id );
-			if ( $user ) {
-				$email_arr[] = $user->user_email;
+			$userModel = UserModel::find( $user_id, true );
+			if ( $userModel ) {
+				$email_arr[] = $userModel->get_email();
 			}
 		}
 
 		$email_content = implode( ',', $email_arr );
 	} else {
-		$email_content = $order->get_user_email( $user_ids );
+		$email_content = $order->get_user_email();
 	}
 } else {
 	$email_content = $order->get_user_email();
