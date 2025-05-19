@@ -8,7 +8,10 @@ import { registerBlockType } from '@wordpress/blocks';
 import { checkTemplatesCanLoadBlock } from '../../utilBlock.js';
 import { title } from '@wordpress/icons';
 
-const templatesName = [ 'learnpress/learnpress//single-lp_course' ];
+const templatesName = [
+	'learnpress/learnpress//single-lp_course',
+	'learnpress/learnpress//single-lp_course-offline',
+];
 
 /**
  * Check if the block can load in the template editor: single-lp_course.

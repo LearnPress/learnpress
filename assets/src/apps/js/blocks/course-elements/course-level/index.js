@@ -7,7 +7,10 @@ import metadata from './block.json';
 import { registerBlockType } from '@wordpress/blocks';
 import { checkTemplatesCanLoadBlock } from '../../utilBlock.js';
 
-const templatesName = [ 'learnpress/learnpress//single-lp_course' ];
+const templatesName = [
+	'learnpress/learnpress//single-lp_course',
+	'learnpress/learnpress//single-lp_course-offline',
+];
 
 checkTemplatesCanLoadBlock( templatesName, metadata, ( metadataNew ) => {
 	registerBlockType( metadataNew.name, {
