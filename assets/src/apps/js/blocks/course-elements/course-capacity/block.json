@@ -1,0 +1,56 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "learnpress/course-capacity",
+	"title": "Course Capacity",
+	"category": "learnpress-course-elements",
+	"description": "Show number capacity of course.",
+	"textdomain": "learnpress",
+	"keywords": [ "capacity", "count", "learnpress" ],
+	"ancestor": [ "learnpress/single-course" ],
+	"usesContext": [ "lpCourseData" ],
+	"attributes": {
+		"showIcon": {
+			"type": "boolean",
+			"default": true
+		},
+		"showLabel": {
+			"type": "boolean",
+			"default": true
+		}
+	},
+	"supports": {
+		"multiple": true,
+		"align": [ "wide", "full" ],
+		"html": false,
+		"typography": {
+			"fontSize": true,
+			"lineHeight": false,
+			"fontWeight": true,
+			"__experimentalFontFamily": false,
+			"__experimentalTextDecoration": false,
+			"__experimentalFontStyle": false,
+			"__experimentalFontWeight": true,
+			"__experimentalLetterSpacing": false,
+			"__experimentalTextTransform": true,
+			"__experimentalDefaultControls": { "fontSize": true }
+		},
+		"color": {
+			"background": false,
+			"text": true,
+			"link": false,
+			"gradients": false,
+			"__experimentalDefaultControls": {
+				"text": true
+			}
+		},
+		"spacing": {
+			"padding": true,
+			"margin": true,
+			"__experimentalDefaultControls": {
+				"margin": false,
+				"padding": false
+			}
+		}
+	}
+}

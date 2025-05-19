@@ -159,7 +159,7 @@ class GutenbergHandleMain {
 		if ( ! is_admin() ) {
 			global $wp;
 			$object = get_queried_object();
-			if ( $object ) {
+			if ( $object && isset( $object->ID ) ) {
 				$courseModel = CourseModel::find( $object->ID, true );
 				if ( $courseModel && $courseModel->is_offline() ) {
 					$singleCourseOfflineBlockTemplate = new SingleCourseOfflineBlockTemplate();

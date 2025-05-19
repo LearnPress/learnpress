@@ -26,8 +26,10 @@ use LearnPress\Gutenberg\Blocks\Legacy\CourseItemLegacyBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourse\SingleCourseBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseButtonBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseButtonReadMoreBlockType;
+use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseCapacityBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseCategoriesBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseCurriculumBlockType;
+use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseDeliveryBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseDescriptionBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseDurationBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseFaqsBlockType;
@@ -38,6 +40,7 @@ use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseInstructorBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseInstructorInfoBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseLessonBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseLevelBlockType;
+use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseOfflineLessonBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CoursePriceBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseProgressBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseQuizBlockType;
@@ -62,7 +65,9 @@ return apply_filters(
 		new ArchiveCourseBlockLegacy(),
 		new CourseTitleBlockType(),
 		new CourseInstructorBlockType(),
+		new CourseCapacityBlockType(),
 		new CourseCategoriesBlockType(),
+		new CourseDeliveryBlockType(),
 		new CourseDescriptionBlockType(),
 		new CourseFeaturesBlockType(),
 		new CourseTargetAudiencesBlockType(),
@@ -76,6 +81,7 @@ return apply_filters(
 		new CourseProgressBlockType(),
 		new CourseStudentBlockType(),
 		new CourseLessonBlockType(),
+		new CourseOfflineLessonBlockType(),
 		new CourseDurationBlockType(),
 		new CourseQuizBlockType(),
 		new CourseLevelBlockType(),
