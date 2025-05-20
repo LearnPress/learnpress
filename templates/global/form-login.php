@@ -6,7 +6,7 @@
  *
  * @author  ThimPress
  * @package  Learnpress/Templates
- * @version  4.0.0
+ * @version  4.0.1
  */
 
 defined( 'ABSPATH' ) || exit();
@@ -41,7 +41,10 @@ defined( 'ABSPATH' ) || exit();
 			</label>
 		</p>
 
-		<?php do_action( 'login_form' ); ?>
+		<?php
+		do_action( 'login_form' );
+		do_action( 'login_enqueue_scripts' );
+		?>
 
 		<p>
 			<input type="hidden" name="learn-press-login-nonce" value="<?php echo wp_create_nonce( 'learn-press-login' ); ?>">
