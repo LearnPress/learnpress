@@ -1,6 +1,7 @@
 <?php
 
 use LearnPress\Helpers\Config;
+use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\CoursePostModel;
 
@@ -696,7 +697,8 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 	 * @return void
 	 */
 	public function admin_editor() {
-		learn_press_admin_view( 'course/editor' );
+		//learn_press_admin_view( 'course/editor' );
+		Template::instance()->get_admin_template( 'course/edit-curriculum' );
 	}
 
 	/*public function save( $post_id ) {

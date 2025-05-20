@@ -211,12 +211,21 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					0,
 					1
 				),
-				'learn-press-admin-course-editor'   => new LP_Asset_Key(
+				/*'learn-press-admin-course-editor'   => new LP_Asset_Key(
 					$this->url( 'js/dist/admin/editor/course' . self::$_min_assets . '.js' ),
 					array( 'vue-libs', 'lp-utils' ),
 					array( LP_COURSE_CPT ),
 					0,
 					0
+				),*/
+				'lp-admin-edit-curriculum'          => new LP_Asset_Key(
+					$this->url( 'dist/js/admin/edit-curriculum' . self::$_min_assets . '.js' ),
+					[],
+					[ LP_COURSE_CPT ],
+					0,
+					0,
+					'',
+					[ 'strategy' => 'defer' ]
 				),
 				'learn-press-admin-quiz-editor'     => new LP_Asset_Key(
 					$this->url( 'js/dist/admin/editor/quiz' . self::$_min_assets . '.js' ),

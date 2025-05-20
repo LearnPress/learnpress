@@ -17,6 +17,7 @@ module.exports = {
 		'./assets/js/dist/admin/admin-order': './assets/src/js/admin/admin-order.js',
 		'./assets/js/dist/admin/admin-tools': './assets/src/js/admin/admin-tools.js',
 		'./assets/js/dist/admin/editor/course': './assets/src/apps/js/admin/editor/course.js',
+		'./assets/dist/js/admin/edit-curriculum': './assets/src/js/admin/edit-curriculum.js',
 		'./assets/js/dist/admin/editor/quiz': './assets/src/apps/js/admin/editor/quiz.js',
 		'./assets/js/dist/admin/editor/question': './assets/src/apps/js/admin/editor/question.js',
 		'./assets/js/dist/admin/pages/tools': './assets/src/apps/js/admin/pages/tools.js',
@@ -80,6 +81,8 @@ module.exports = {
 		'./assets/js/dist/frontend/custom': './assets/src/apps/js/frontend/custom.js',
 		'./assets/js/dist/frontend/widgets': './assets/src/js/frontend/widgets.js',
 		'./assets/js/dist/frontend/course-filter': './assets/src/js/frontend/course-filter.js',
+
+		// Block Gutenberg
 		'./assets/js/dist/blocks/archive-course-legacy': './assets/src/apps/js/blocks/archive-course-legacy/index.js',
 		'./assets/js/dist/blocks/single-course-legacy': './assets/src/apps/js/blocks/single-course-legacy/index.js',
 		'./assets/js/dist/blocks/single-course': './assets/src/apps/js/blocks/single-course/index.js',
