@@ -1,5 +1,17 @@
 import { Sortable } from 'sortablejs';
-import { getCourseApi, updateOrderSectionItemApi, deleteItemApi, removeItemInSectionApi, addNewItemApi, updateSectionItemApi, updateOrderSectionApi, addSectionApi, deleteSectionApi, updateSectionApi, updateSectionWithPopupApi } from './apiRequests';
+import {
+	getCourseApi,
+	updateOrderSectionItemApi,
+	deleteItemApi,
+	removeItemInSectionApi,
+	addNewItemApi,
+	updateSectionItemApi,
+	updateOrderSectionApi,
+	addSectionApi,
+	deleteSectionApi,
+	updateSectionApi,
+	updateSectionWithPopupApi,
+} from './apiRequests';
 import { popupSelectItem } from '../popupSelectedItem';
 import lplistAPI from '../../api';
 
@@ -91,7 +103,7 @@ const handleEventSectionItem = ( sectionItemEl, sectionId, sectionEl, courseEdit
 
 	if ( inputItem ) {
 		let previousValue = inputItem.value;
-		inputItem.addEventListener( 'keydown', function( event ) {
+		inputItem.addEventListener( 'keydown', function ( event ) {
 			if ( event.key === 'Enter' ) {
 				event.preventDefault();
 				const currentValue = inputItem.value;
@@ -106,7 +118,7 @@ const handleEventSectionItem = ( sectionItemEl, sectionId, sectionEl, courseEdit
 				}
 			}
 		} );
-		inputItem.addEventListener( 'blur', function() {
+		inputItem.addEventListener( 'blur', function () {
 			const currentValue = inputItem.value;
 			if ( previousValue !== currentValue && currentValue !== '' ) {
 				previousValue = currentValue;
@@ -192,7 +204,7 @@ const addNewSection = ( courseEditorEl ) => {
 
 	const courseId = getCourseId();
 	const previousValue = input.value;
-	input.addEventListener( 'keydown', function( event ) {
+	input.addEventListener( 'keydown', function ( event ) {
 		if ( event.key === 'Enter' ) {
 			event.preventDefault();
 			const currentValue = input.value;
@@ -206,7 +218,7 @@ const addNewSection = ( courseEditorEl ) => {
 			}
 		}
 	} );
-	input.addEventListener( 'blur', function() {
+	input.addEventListener( 'blur', function () {
 		const currentValue = input.value;
 		if ( previousValue !== currentValue && currentValue !== '' ) {
 			input.value = '';
@@ -256,7 +268,9 @@ const collapseSectionsEvent = ( courseEditorEl ) => {
 
 	if ( collapseSectionsEl ) {
 		collapseSectionsEl.addEventListener( 'click', () => {
-			const sectionEls = Array.prototype.slice.call( courseEditorEl.querySelectorAll( '.curriculum-sections > .section' ) );
+			const sectionEls = Array.prototype.slice.call(
+				courseEditorEl.querySelectorAll( '.curriculum-sections > .section' )
+			);
 			if ( collapseSectionsEl.classList.contains( 'close' ) ) {
 				collapseSectionsEl.classList.add( 'open' );
 				collapseSectionsEl.classList.remove( 'close' );
@@ -341,8 +355,10 @@ const updateSingleSectionItem = ( sectionEl, courseEditorEl ) => {
 	if ( newSectionItemEl ) {
 		const radioButtons = newSectionItemEl.querySelectorAll( 'input[name="lp-section-item-type"]' );
 		radioButtons.forEach( ( radio ) => {
-			radio.addEventListener( 'change', function() {
-				newSectionItemEl.querySelectorAll( '.type' ).forEach( ( label ) => label.classList.remove( 'current' ) );
+			radio.addEventListener( 'change', function () {
+				newSectionItemEl
+					.querySelectorAll( '.type' )
+					.forEach( ( label ) => label.classList.remove( 'current' ) );
 				this.closest( 'label' ).classList.add( 'current' );
 			} );
 		} );
@@ -371,7 +387,9 @@ const updateSingleSectionItem = ( sectionEl, courseEditorEl ) => {
 		}
 	}
 
-	const sectionItemEls = Array.prototype.slice.call( listItemEl.querySelectorAll( 'li.section-item' ) );
+	const sectionItemEls = Array.prototype.slice.call(
+		listItemEl.querySelectorAll( 'li.section-item' )
+	);
 	if ( ! sectionItemEls.length ) {
 		return;
 	}
@@ -392,7 +410,7 @@ const updateSingleSection = ( sectionEl, courseEditorEl ) => {
 	const titleSection = sectionEl.querySelector( '.section-head input' );
 	if ( titleSection ) {
 		let previousValue = titleSection.value;
-		titleSection.addEventListener( 'keydown', function( event ) {
+		titleSection.addEventListener( 'keydown', function ( event ) {
 			if ( event.key === 'Enter' ) {
 				event.preventDefault();
 				const currentValue = titleSection.value;
@@ -409,7 +427,7 @@ const updateSingleSection = ( sectionEl, courseEditorEl ) => {
 				}
 			}
 		} );
-		titleSection.addEventListener( 'blur', function() {
+		titleSection.addEventListener( 'blur', function () {
 			const currentValue = titleSection.value;
 			if ( previousValue !== currentValue && currentValue !== '' ) {
 				previousValue = currentValue;
@@ -428,7 +446,7 @@ const updateSingleSection = ( sectionEl, courseEditorEl ) => {
 	const descSection = sectionEl.querySelector( '.details input' );
 	if ( descSection ) {
 		let previousValue = descSection.value;
-		descSection.addEventListener( 'keydown', function( event ) {
+		descSection.addEventListener( 'keydown', function ( event ) {
 			if ( event.key === 'Enter' ) {
 				event.preventDefault();
 				const currentValue = descSection.value;
@@ -446,7 +464,7 @@ const updateSingleSection = ( sectionEl, courseEditorEl ) => {
 			}
 		} );
 
-		descSection.addEventListener( 'blur', function() {
+		descSection.addEventListener( 'blur', function () {
 			const currentValue = descSection.value;
 			if ( previousValue !== currentValue && currentValue !== '' ) {
 				previousValue = currentValue;
@@ -490,7 +508,9 @@ const sortableItemEvent = ( sectionEl ) => {
 			}
 
 			const changeSectionId = changeSortableEl.dataset.sectionId ?? null;
-			const sectionItemEls = Array.prototype.slice.call( changeSortableEl.querySelectorAll( ':scope > .section-item' ) );
+			const sectionItemEls = Array.prototype.slice.call(
+				changeSortableEl.querySelectorAll( ':scope > .section-item' )
+			);
 			const sectionItems = sectionItemEls.map( ( sectionItemEl ) => {
 				const data = {
 					id: sectionItemEl.dataset.itemId ?? null,
@@ -514,7 +534,9 @@ const sortableItemEvent = ( sectionEl ) => {
 			updateOrderSectionItemApi( dataSort );
 		},
 		onUpdate( evt ) {
-			const sectionItemEls = Array.prototype.slice.call( sortableEl.querySelectorAll( ':scope > .section-item' ) );
+			const sectionItemEls = Array.prototype.slice.call(
+				sortableEl.querySelectorAll( ':scope > .section-item' )
+			);
 			const sectionItems = sectionItemEls.map( ( sectionItemEl ) => {
 				const data = {
 					id: sectionItemEl.dataset.itemId ?? null,
@@ -536,7 +558,9 @@ const sortableItemEvent = ( sectionEl ) => {
 			}
 
 			const changeSectionId = changeSortableEl.dataset.sectionId ?? null;
-			const sectionItemEls = Array.prototype.slice.call( changeSortableEl.querySelectorAll( ':scope > .section-item' ) );
+			const sectionItemEls = Array.prototype.slice.call(
+				changeSortableEl.querySelectorAll( ':scope > .section-item' )
+			);
 			const sectionItems = sectionItemEls.map( ( sectionItemEl ) => {
 				const data = {
 					id: sectionItemEl.dataset.itemId ?? null,
@@ -573,7 +597,9 @@ const sortableSection = ( courseEditorEl ) => {
 		handle: '.lp-sortable-handle',
 		animation: 150,
 		onUpdate( evt ) {
-			const sectionEls = Array.prototype.slice.call( sortableEl.querySelectorAll( ':scope > .section' ) );
+			const sectionEls = Array.prototype.slice.call(
+				sortableEl.querySelectorAll( ':scope > .section' )
+			);
 			const sectionIds = sectionEls.map( ( sectionEl ) => {
 				return sectionEl.dataset.sectionId ?? null;
 			} );
@@ -634,7 +660,9 @@ const handleUpdateItem = () => {
 	}
 	const selectEl = document.querySelector( `.section[data-section-id="${ sectionId }"]` );
 	const listUiSortableEl = selectEl.querySelector( '.ui-sortable' );
-	const sectionItemEls = Array.from( selectEl.querySelectorAll( '.section-list-items .ui-sortable	.section-item' ) );
+	const sectionItemEls = Array.from(
+		selectEl.querySelectorAll( '.section-list-items .ui-sortable	.section-item' )
+	);
 	const currentItemEl = sectionItemEls.map( ( sectionItemEl ) => {
 		const data = {
 			id: sectionItemEl.dataset.itemId ?? null,
@@ -662,4 +690,20 @@ const handleUpdateItem = () => {
 	updateSectionWithPopupApi( data, listUiSortableEl, popupModalSelectItemEl );
 };
 
-export { getCourseId, updateTotalItemSection, addSectionsWithDelay, updateStatus, handleEventSectionItem, addNewSection, singleCollapseEvent, collapseSectionsEvent, actionSection, updateSingleSection, sortableItemEvent, sortableSection, saveSectionState, restoreSectionState, handleUpdateItem };
+export {
+	getCourseId,
+	updateTotalItemSection,
+	addSectionsWithDelay,
+	updateStatus,
+	handleEventSectionItem,
+	addNewSection,
+	singleCollapseEvent,
+	collapseSectionsEvent,
+	actionSection,
+	updateSingleSection,
+	sortableItemEvent,
+	sortableSection,
+	saveSectionState,
+	restoreSectionState,
+	handleUpdateItem,
+};

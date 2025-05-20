@@ -264,9 +264,6 @@ document.addEventListener( 'DOMContentLoaded', () => {
 
 	// Sure that the TomSelect is loaded if listen can't find elements.
 	initElsTomSelect();
-
-	// Listen for changes in the course edit page.
-	editCourse();
 } );
 
 Utils.lpOnElementReady( '#admin-editor-lp_course-refactor', ( e ) => {
