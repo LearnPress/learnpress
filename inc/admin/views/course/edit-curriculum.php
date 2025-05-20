@@ -21,11 +21,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<span class="collapse-sections open"></span>
 			</div>
 			<div class="curriculum-sections ui-sortable">
-				<div data-section-order="0" data-section-id="12" class="section open successful">
+				<div data-section-order="0" data-section-id="12" class="section open">
 					<div class="section-head"><span class="movable lp-sortable-handle ui-sortable-handle"></span>
 						<input type="text" title="title" placeholder="Create a new section" class="title-input">
 						<div class="section-item-counts"><span>1 Item</span></div>
-						<div class="actions"><span class="collapse open"></span></div>
+						<div class="actions"><span class="collapse"></span></div>
 					</div>
 					<div class="section-collapse" style="display: block;">
 						<div class="section-content">

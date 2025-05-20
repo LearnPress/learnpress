@@ -28,6 +28,7 @@ use LearnPress\Shortcodes\Course\FilterCourseShortcode;
 use LearnPress\Shortcodes\ListInstructorsShortcode;
 use LearnPress\Shortcodes\SingleInstructorShortcode;
 use LearnPress\Shortcodes\CourseMaterialShortcode;
+use LearnPress\TemplateHooks\Course\AdminEditCurriculum;
 use LearnPress\TemplateHooks\Course\FilterCourseTemplate;
 use LearnPress\TemplateHooks\Course\ListCoursesRelatedTemplate;
 use LearnPress\TemplateHooks\Course\ListCoursesTemplate;
@@ -327,6 +328,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			FilterCourseTemplate::instance();
 			ProfileQuizzesTemplate::instance();
 
+			// Admin template hooks.
+			AdminEditCurriculum::instance();
 			CourseMaterialTemplate::instance();
 
 			// Models

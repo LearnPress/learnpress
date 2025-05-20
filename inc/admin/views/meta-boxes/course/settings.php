@@ -4,6 +4,8 @@ use LearnPress\Helpers\Config;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\CoursePostModel;
+use LearnPress\TemplateHooks\Course\AdminEditCurriculum;
+use LearnPress\TemplateHooks\TemplateAJAX;
 
 class LP_Meta_Box_Course extends LP_Meta_Box {
 	/**
@@ -698,7 +700,21 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 	 */
 	public function admin_editor() {
 		//learn_press_admin_view( 'course/editor' );
+		$course_id = intval( $_REQUEST['post'] ?? 0 );
+
+		ob_start();
 		Template::instance()->get_admin_template( 'course/edit-curriculum' );
+		$html      = ob_get_clean();
+		$args      = [
+			'course_id'               => $course_id,
+			'html_no_load_ajax_first' => $html,
+		];
+		$call_back = array(
+			'class'  => AdminEditCurriculum::class,
+			'method' => 'render_html',
+		);
+
+		echo TemplateAJAX::load_content_via_ajax( $args, $call_back );
 	}
 
 	/*public function save( $post_id ) {
