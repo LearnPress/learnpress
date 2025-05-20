@@ -1,8 +1,8 @@
 import { initElsTomSelect, searchUserOnListPost } from './init-tom-select.js';
 import { AdminUtilsFunctions, Api, Utils } from './utils-admin.js';
-import './course/editCourse.js';
+import { editCourse } from './course/editCourse.js';
 
-( function( $ ) {
+( function ( $ ) {
 	/**
 	 * Callback event for button to creating pages inside error message.
 	 *
@@ -20,7 +20,7 @@ import './course/editCourse.js';
 			dataType: 'text',
 			success: function success( res ) {
 				const $message = $button.closest( '.lp-notice' ).html( '<p>' + res + '</p>' );
-				setTimeout( function() {
+				setTimeout( function () {
 					$message.fadeOut();
 				}, 2000 );
 			},
@@ -53,11 +53,11 @@ import './course/editCourse.js';
 					],
 				} );
 
-				lpImageFrame.on( 'select', function() {
+				lpImageFrame.on( 'select', function () {
 					const selection = lpImageFrame.state().get( 'selection' );
 					let attachmentIds = imageGalleryIds.val();
 
-					selection.forEach( function( attachment ) {
+					selection.forEach( function ( attachment ) {
 						attachment = attachment.toJSON();
 
 						if ( attachment.id ) {
@@ -69,8 +69,13 @@ import './course/editCourse.js';
 							}
 
 							listImages.append(
-								'<li class="lp-meta-box__file_list-item image" data-attachment_id="' + attachment.id + '"><img class="is_file" src="' + attachment.icon +
-						'" /><span>' + attachment.filename + '</span><ul class="actions"><li><a href="#" class="delete"></a></li></ul></li>'
+								'<li class="lp-meta-box__file_list-item image" data-attachment_id="' +
+									attachment.id +
+									'"><img class="is_file" src="' +
+									attachment.icon +
+									'" /><span>' +
+									attachment.filename +
+									'</span><ul class="actions"><li><a href="#" class="delete"></a></li></ul></li>'
 							);
 						}
 					} );
@@ -102,10 +107,13 @@ import './course/editCourse.js';
 					update() {
 						let attachmentIds = '';
 
-						listImages.find( 'li.image' ).css( 'cursor', 'default' ).each( function() {
-							const attachmentId = $( this ).attr( 'data-attachment_id' );
-							attachmentIds = attachmentIds + attachmentId + ',';
-						} );
+						listImages
+							.find( 'li.image' )
+							.css( 'cursor', 'default' )
+							.each( function () {
+								const attachmentId = $( this ).attr( 'data-attachment_id' );
+								attachmentIds = attachmentIds + attachmentId + ',';
+							} );
 
 						delImage();
 
@@ -115,28 +123,33 @@ import './course/editCourse.js';
 			}
 
 			const delImage = () => {
-				$( listImages ).find( 'li.image' ).each( ( i, ele ) => {
-					const del = $( ele ).find( 'a.delete' );
+				$( listImages )
+					.find( 'li.image' )
+					.each( ( i, ele ) => {
+						const del = $( ele ).find( 'a.delete' );
 
-					del.on( 'click', function() {
-						$( ele ).remove();
+						del.on( 'click', function () {
+							$( ele ).remove();
 
-						if ( isMultil ) {
-							let attachmentIds = '';
+							if ( isMultil ) {
+								let attachmentIds = '';
 
-							$( listImages ).find( 'li.image' ).css( 'cursor', 'default' ).each( function() {
-								const attachmentId = $( this ).attr( 'data-attachment_id' );
-								attachmentIds = attachmentIds + attachmentId + ',';
-							} );
+								$( listImages )
+									.find( 'li.image' )
+									.css( 'cursor', 'default' )
+									.each( function () {
+										const attachmentId = $( this ).attr( 'data-attachment_id' );
+										attachmentIds = attachmentIds + attachmentId + ',';
+									} );
 
-							imageGalleryIds.val( attachmentIds );
-						} else {
-							imageGalleryIds.val( '' );
-						}
+								imageGalleryIds.val( attachmentIds );
+							} else {
+								imageGalleryIds.val( '' );
+							}
 
-						return false;
+							return false;
+						} );
 					} );
-				} );
 			};
 
 			delImage();
@@ -151,14 +164,16 @@ import './course/editCourse.js';
 		//$( '.learn-press-toggle-item-preview' ).on( 'change', updateItemPreview );
 		$( '.learn-press-tip' ).LP( 'QuickTip' ); //$('.learn-press-tabs').LP('AdminTab');
 
-		$( document ).on( 'click', '#learn-press-create-pages', createPages )
+		$( document )
+			.on( 'click', '#learn-press-create-pages', createPages )
 			//.on( 'click', '.lp-upgrade-notice .close-notice', hideUpgradeMessage )
 			//.on( 'click', '.plugin-action-buttons a', pluginActions )
 			//.on( 'click', '[data-remove-confirm]', preventDefault )
-			.on( 'mousedown', '.lp-sortable-handle', function( e ) {
+			.on( 'mousedown', '.lp-sortable-handle', function ( e ) {
 				$( 'html, body' ).addClass( 'lp-item-moving' );
 				$( e.target ).closest( '.lp-sortable-handle' ).css( 'cursor', 'inherit' );
-			} ).on( 'mouseup', function( e ) {
+			} )
+			.on( 'mouseup', function ( e ) {
 				$( 'html, body' ).removeClass( 'lp-item-moving' );
 				$( '.lp-sortable-handle' ).css( 'cursor', '' );
 			} );
@@ -170,9 +185,13 @@ import './course/editCourse.js';
 			if ( hash === '#_lp_passing_grade' ) {
 				const ele = document.querySelector( hash );
 
-				$( 'html, body' ).animate( {
-					scrollTop: $( hash ).offset().top,
-				}, 900, 'swing' );
+				$( 'html, body' ).animate(
+					{
+						scrollTop: $( hash ).offset().top,
+					},
+					900,
+					'swing'
+				);
 
 				ele.parentNode.style.border = '2px solid orangered';
 			}
@@ -202,7 +221,7 @@ import './course/editCourse.js';
 	};
 
 	$( document ).ready( onReady );
-}( jQuery ) );
+} )( jQuery );
 
 const showHideOptionsDependency = ( e, target ) => {
 	if ( target.tagName === 'INPUT' ) {
@@ -220,7 +239,9 @@ const showHideOptionsDependency = ( e, target ) => {
 			const elLPMetaBox = target.closest( '.lp-meta-box' );
 			const nameInput = target.name;
 
-			const elClassDependency = elLPMetaBox.querySelectorAll( `[data-dependency="${ nameInput }"]` );
+			const elClassDependency = elLPMetaBox.querySelectorAll(
+				`[data-dependency="${ nameInput }"]`
+			);
 			if ( elClassDependency ) {
 				elClassDependency.forEach( ( el ) => {
 					el.classList.toggle( 'lp-option-disabled' );
@@ -243,6 +264,13 @@ document.addEventListener( 'DOMContentLoaded', () => {
 
 	// Sure that the TomSelect is loaded if listen can't find elements.
 	initElsTomSelect();
+
+	// Listen for changes in the course edit page.
+	editCourse();
+} );
+
+Utils.lpOnElementReady( '#admin-editor-lp_course-refactor', ( e ) => {
+	editCourse();
 } );
 
 // Listen element select created on DOM.
