@@ -365,6 +365,28 @@ const updateSingleSectionItem = ( sectionEl, courseEditorEl ) => {
 
 		const newSectionItemInputEl = newSectionItemEl.querySelector( '.title input' );
 		const btnAddLesson = newSectionItemEl.querySelector( '.btn-add-lesson' );
+
+		newSectionItemInputEl.addEventListener( 'keydown', function ( event ) {
+			if ( event.key === 'Enter' ) {
+				event.preventDefault();
+				if ( ! newSectionItemInputEl.value ) {
+					return;
+				}
+				const selectedValue = newSectionItemEl.querySelector( '.type.current input' )?.value ?? '';
+				const courseId = getCourseId();
+				const data = {
+					sectionId,
+					item: {
+						title: newSectionItemInputEl.value,
+						type: selectedValue,
+					},
+					courseId,
+				};
+				addNewItemApi( data, newSectionItemInputEl, sectionEl, courseEditorEl );
+				newSectionItemInputEl.value = '';
+			}
+		} );
+
 		if ( btnAddLesson && newSectionItemInputEl ) {
 			btnAddLesson.addEventListener( 'click', ( e ) => {
 				e.preventDefault();
@@ -383,6 +405,7 @@ const updateSingleSectionItem = ( sectionEl, courseEditorEl ) => {
 					courseId,
 				};
 				addNewItemApi( data, newSectionItemInputEl, sectionEl, courseEditorEl );
+				newSectionItemInputEl.value = '';
 			} );
 		}
 	}
