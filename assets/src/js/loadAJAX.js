@@ -53,7 +53,7 @@ const lpAJAX = ( () => {
 			urlAjax = urlAjax || lpSettings.lpAjaxUrl;
 
 			// Set param id_url for identify.
-			if ( params.args.hasOwnProperty( 'id_url' ) ) {
+			if ( params.hasOwnProperty( 'args' ) && params.args.hasOwnProperty( 'id_url' ) ) {
 				urlAjax = lpAddQueryArgs( urlAjax, { id_url: params.args.id_url } );
 			}
 			// Set param lang here if exits, for detect translate

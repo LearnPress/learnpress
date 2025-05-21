@@ -222,7 +222,7 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
-= 4.2.8.5 (2025-05-20) =
+= 4.2.8.5 (2025-05-21) =
 ~ Fixed: missing user email in order summary table.
 ~ Fixed: get related courses, set distinct, random list.
 ~ Fixed: error avatar author for App API.
