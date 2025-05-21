@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<div class="section-head"><span class="movable lp-sortable-handle ui-sortable-handle"></span>
 					<input name="section-title-input" class="title-input" type="text" title="Update section title" placeholder="Create a new section">
 					<div class="section-item-counts"><span>1 Item</span></div>
-					<div class="actions"><span class="collapse"></span></div>
+					<div class="actions"><span class="collapse close"></span></div>
 				</div>
 				<div class="section-collapse" style="display: block;">
 					<div class="section-content">

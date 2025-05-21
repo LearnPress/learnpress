@@ -31,7 +31,7 @@ class LP_Section_DB extends LP_Database {
 	 * @version 1.0.1
 	 */
 	public function get_sections( LP_Section_Filter $filter, &$total_rows = 0 ) {
-		$default_fields = $this->get_cols_of_table( $this->tb_lp_sections );
+		$default_fields = $filter->all_fields;
 		$filter->fields = array_merge( $default_fields, $filter->fields );
 
 		if ( empty( $filter->collection ) ) {
@@ -408,5 +408,67 @@ class LP_Section_DB extends LP_Database {
 		$this->check_execute_has_error();
 
 		return $number_order;
+	}
+
+	/**
+	 * Insert data
+	 *
+	 * @param array $data
+	 *
+	 * @return int
+	 * @throws Exception
+	 * @version 1.0.1
+	 * @since 4.2.8.6
+	 */
+	public function insert_data( array $data ): int {
+		$filter = new LP_Section_Filter();
+
+		foreach ( $data as $col_name => $value ) {
+			if ( ! in_array( $col_name, $filter->all_fields ) ) {
+				unset( $data[ $col_name ] );
+			}
+		}
+
+		$this->wpdb->insert( $this->tb_lp_sections, $data );
+
+		$this->check_execute_has_error();
+
+		return $this->wpdb->insert_id;
+	}
+
+	/**
+	 * Update data
+	 *
+	 * @param array $data
+	 *
+	 * @return bool
+	 *
+	 * @throws Exception
+	 * @since 4.2.8.6
+	 * @version 1.0.0
+	 */
+	public function update_data( array $data ): bool {
+		if ( empty( $data['section_id'] ) ) {
+			throw new Exception( __( 'Invalid section_id!', 'learnpress' ) . ' | ' . __FUNCTION__ );
+		}
+
+		$filter             = new LP_Section_Filter();
+		$filter->collection = $this->tb_lp_sections;
+		foreach ( $data as $col_name => $value ) {
+			if ( ! in_array( $col_name, $filter->all_fields ) ) {
+				continue;
+			}
+
+			if ( is_null( $value ) ) {
+				$filter->set[] = $col_name . ' = null';
+			} else {
+				$filter->set[] = $this->wpdb->prepare( $col_name . ' = %s', $value );
+			}
+		}
+
+		$filter->where[] = $this->wpdb->prepare( 'AND section_id = %d', $data['section_id'] );
+		$this->update_execute( $filter );
+
+		return true;
 	}
 }

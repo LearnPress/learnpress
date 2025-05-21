@@ -54,9 +54,10 @@ const addSection = ( e, target ) => {
 	// Call ajax to add new section
 	const callBack = {
 		success: ( response ) => {
-			const { content, status } = response.data;
+			const { message, status } = response;
+			const { content } = response.data;
 
-			toastify.options.text = content;
+			toastify.options.text = message;
 			toastify.options.className += status;
 			toastify.showToast();
 		},
