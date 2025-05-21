@@ -164,4 +164,37 @@ class AdminEditCurriculum {
 
 		return $response;
 	}
+
+	/**
+	 * @throws Exception
+	 */
+	public static function add_item_to_section( $data ) {
+		$response   = new stdClass();
+		$course_id  = $data['course_id'] ?? 0;
+		$section_id = $data['section_id'] ?? 0;
+		$item_id    = $data['item_id'] ?? 0;
+		$item_type  = $data['item_type'] ?? '';
+		$item_title = $data['item_title'] ?? '';
+
+		$courseModel = CourseModel::find( $course_id, true );
+		if ( ! $courseModel ) {
+			throw new Exception( __( 'Course not found', 'learnpress' ) );
+		}
+
+		$courseSectionModel = CourseSectionModel::find( $section_id );
+		if ( ! $courseSectionModel ) {
+			throw new Exception( __( 'Section not found', 'learnpress' ) );
+		}
+
+		// Create new item
+		if ( empty( $item_id ) ) {
+
+		}
+
+		// Add item to section
+
+		$response->message = __( 'Section updated successfully', 'learnpress' );
+
+		return $response;
+	}
 }

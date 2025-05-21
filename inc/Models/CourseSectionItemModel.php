@@ -3,10 +3,13 @@
 namespace LearnPress\Models;
 
 use Exception;
+use LearnPress\Models\CourseSectionModel;
 use LP_Background_Single_Course;
 use LP_Cache;
 use LP_Section_DB;
 use LP_Section_Filter;
+use LP_Section_Items_DB;
+use LP_Section_Items_Filter;
 use stdClass;
 use Throwable;
 
@@ -19,37 +22,41 @@ use Throwable;
  * @version 1.0.0
  * @since 4.2.8.6
  */
-class CourseSectionModel {
+class CourseSectionItemModel {
 	/**
 	 * Auto increment, Primary key
 	 *
 	 * @var int
 	 */
-	private $section_id = 0;
+	private $section_item_id = 0;
 	/**
-	 * Title of the section
+	 * Foreign key, section_id
 	 *
 	 * @var int
 	 */
-	public $section_name = '';
+	public $section_id = '';
 	/**
-	 * Foreign key, Course ID
+	 * Foreign key, item ID (lesson, quiz, etc.)
 	 *
 	 * @var int
 	 */
-	public $section_course_id = 0;
+	public $item_id = 0;
 	/**
-	 * Order of the section
+	 * Order of the item
 	 *
 	 * @var int
 	 */
-	public $section_order = 0;
+	public $item_order = 0;
 	/**
-	 * Description of the section
+	 * Type of the item
 	 *
 	 * @var string
 	 */
-	public $section_description = '';
+	public $item_type = '';
+	/**
+	 * @var int course id
+	 */
+	public $section_course_id = 0;
 
 	/**
 	 * If data get from database, map to object.
@@ -69,9 +76,9 @@ class CourseSectionModel {
 	 *
 	 * @param array|object|mixed $data
 	 *
-	 * @return CourseSectionModel
+	 * @return CourseSectionItemModel
 	 */
-	public function map_to_object( $data ): CourseSectionModel {
+	public function map_to_object( $data ): CourseSectionItemModel {
 		foreach ( $data as $key => $value ) {
 			if ( property_exists( $this, $key ) ) {
 				$this->{$key} = $value;
@@ -93,18 +100,18 @@ class CourseSectionModel {
 	/**
 	 * Get section by course id
 	 *
-	 * @return false|CourseSectionModel
+	 * @return false|CourseSectionItemModel
 	 */
-	public static function find( int $course_id, $check_cache = true ) {
-		$filter                    = new LP_Section_Filter();
-		$filter->section_course_id = $course_id;
-		$key_cache                 = "courseSection/find/{$course_id}";
-		$lpSectionCache            = new LP_Cache();
+	public static function find( int $section_id, $check_cache = true ) {
+		$filter             = new LP_Section_Items_Filter();
+		$filter->section_id = $section_id;
+		$key_cache          = "courseSectionItem/find/{$section_id}/{$filter->item_id}/{$filter->item_type}";
+		$lpSectionCache     = new LP_Cache();
 
 		// Check cache
 		if ( $check_cache ) {
 			$courseSectionModel = $lpSectionCache->get_cache( $key_cache );
-			if ( $courseSectionModel instanceof CourseSectionModel ) {
+			if ( $courseSectionModel instanceof CourseSectionItemModel ) {
 				return $courseSectionModel;
 			}
 		}
@@ -112,7 +119,7 @@ class CourseSectionModel {
 		$courseSectionModel = static::get_item_model_from_db( $filter );
 
 		// Set cache
-		if ( $courseSectionModel instanceof CourseSectionModel ) {
+		if ( $courseSectionModel instanceof CourseSectionItemModel ) {
 			$lpSectionCache->set_cache( $key_cache, $courseSectionModel );
 		}
 
@@ -124,18 +131,18 @@ class CourseSectionModel {
 	 * If not exists, return false.
 	 * If exists, return CourseSectionModel.
 	 *
-	 * @param LP_Section_Filter $filter
+	 * @param LP_Section_Items_Filter $filter
 	 *
-	 * @return CourseSectionModel|false|static
+	 * @return CourseSectionItemModel|false|static
 	 * @version 1.0.0
 	 */
-	public static function get_item_model_from_db( LP_Section_Filter $filter ) {
-		$lp_section_db = LP_Section_DB::getInstance();
+	public static function get_item_model_from_db( LP_Section_Items_Filter $filter ) {
+		$lp_section_db = LP_Section_Items_DB::getInstance();
 		$sectionModel  = false;
 
 		try {
 			$lp_section_db->get_query_single_row( $filter );
-			$query_single_row = $lp_section_db->get_sections( $filter );
+			$query_single_row = $lp_section_db->get_section_items( $filter );
 			$section_rs       = $lp_section_db->wpdb->get_row( $query_single_row );
 
 			if ( $section_rs instanceof stdClass ) {
@@ -149,14 +156,14 @@ class CourseSectionModel {
 	}
 
 	/**
-	 * Save course data to table learnpress_sections.
+	 * Save course data to table learnpress_section_items.
 	 *
 	 * @throws Exception
 	 * @since 4.2.8.6
 	 * @version 1.0.0
 	 */
-	public function save(): CourseSectionModel {
-		$lp_section_db = LP_Section_DB::getInstance();
+	public function save(): CourseSectionItemModel {
+		$lp_section_items_db = LP_Section_items_DB::getInstance();
 
 		$data = [];
 		foreach ( get_object_vars( $this ) as $property => $value ) {
@@ -164,10 +171,10 @@ class CourseSectionModel {
 		}
 
 		if ( $data['section_id'] === 0 ) { // Insert data.
-			$section_id       = $lp_section_db->insert_data( $data );
+			$section_id       = $lp_section_items_db->insert_data( $data );
 			$this->section_id = $section_id;
 		} else { // Update data.
-			$lp_section_db->update_data( $data );
+			$lp_section_items_db->update_data( $data );
 		}
 
 		// Clear cache
@@ -182,11 +189,11 @@ class CourseSectionModel {
 	 * @throws Exception
 	 */
 	public function delete() {
-		$lp_section_db      = LP_Section_DB::getInstance();
-		$filter             = new LP_Section_Filter();
-		$filter->where[]    = $lp_section_db->wpdb->prepare( 'AND section_id = %d', $this->section_id );
-		$filter->collection = $lp_section_db->tb_lp_sections;
-		$lp_section_db->delete_execute( $filter );
+		$lp_section_items_db = LP_Section_DB::getInstance();
+		$filter              = new LP_Section_Filter();
+		$filter->where[]     = $lp_section_items_db->wpdb->prepare( 'AND section_item_id = %d', $this->section_item_id );
+		$filter->collection  = $lp_section_items_db->tb_lp_section_items;
+		$lp_section_items_db->delete_execute( $filter );
 
 		// Clear cache
 		$this->clean_caches();

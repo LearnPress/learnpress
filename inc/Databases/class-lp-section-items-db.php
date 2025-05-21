@@ -27,7 +27,7 @@ class LP_Section_Items_DB extends LP_Database {
 	 *
 	 * @return array|null|int|string
 	 * @throws Exception
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 * @since 4.1.6
 	 */
 	public function get_section_items( LP_Section_Items_Filter $filter ) {
@@ -40,6 +40,29 @@ class LP_Section_Items_DB extends LP_Database {
 
 		if ( empty( $filter->collection_alias ) ) {
 			$filter->collection_alias = 'si';
+		}
+
+		if ( ! empty( $filter->section_id ) ) {
+			$filter->where[] = $this->wpdb->prepare( 'AND si.section_id = %d', $filter->section_id );
+		}
+
+		if ( ! empty( $filter->item_id ) ) {
+			$filter->where[] = $this->wpdb->prepare( 'AND si.item_id = %d', $filter->item_id );
+		}
+
+		if ( ! empty( $filter->item_ids ) ) {
+			$filter->where[] = $this->wpdb->prepare(
+				'AND si.item_id IN(' . LP_Helper::db_format_array( $filter->item_ids, '%d' ) . ')',
+				$filter->item_ids
+			);
+		}
+
+		if ( ! empty( $filter->section_item_id ) ) {
+			$filter->where[] = $this->wpdb->prepare( 'AND si.section_item_id = %d', $filter->section_item_id );
+		}
+
+		if ( ! empty( $filter->item_type ) ) {
+			$filter->where[] = $this->wpdb->prepare( 'AND si.item_type = %s', $filter->item_type );
 		}
 
 		return $this->execute( $filter );
@@ -117,12 +140,74 @@ class LP_Section_Items_DB extends LP_Database {
 			INNER JOIN $this->tb_lp_sections AS s ON si.section_id = s.section_id
 			AND s.section_course_id = %d
 			WHERE item_id NOT IN (SELECT ID FROM $this->tb_posts WHERE post_status = 'publish')
-            ", $course_id
+            ",
+			$course_id
 		);
 
 		$this->wpdb->query( $filter_section );
 
 		$this->check_execute_has_error();
 	}
-}
 
+	/**
+	 * Insert data
+	 *
+	 * @param array $data
+	 *
+	 * @return int
+	 * @throws Exception
+	 * @version 1.0.0
+	 * @since 4.2.8.6
+	 */
+	public function insert_data( array $data ): int {
+		$filter = new LP_Section_ITems_Filter();
+
+		foreach ( $data as $col_name => $value ) {
+			if ( ! in_array( $col_name, $filter->all_fields ) ) {
+				unset( $data[ $col_name ] );
+			}
+		}
+
+		$this->wpdb->insert( $this->tb_lp_section_items, $data );
+
+		$this->check_execute_has_error();
+
+		return $this->wpdb->insert_id;
+	}
+
+	/**
+	 * Update data
+	 *
+	 * @param array $data
+	 *
+	 * @return bool
+	 *
+	 * @throws Exception
+	 * @since 4.2.8.6
+	 * @version 1.0.0
+	 */
+	public function update_data( array $data ): bool {
+		if ( empty( $data['section_item_id'] ) ) {
+			throw new Exception( __( 'Invalid section_item_id!', 'learnpress' ) . ' | ' . __FUNCTION__ );
+		}
+
+		$filter             = new LP_Section_items_Filter();
+		$filter->collection = $this->tb_lp_section_items;
+		foreach ( $data as $col_name => $value ) {
+			if ( ! in_array( $col_name, $filter->all_fields ) ) {
+				continue;
+			}
+
+			if ( is_null( $value ) ) {
+				$filter->set[] = $col_name . ' = null';
+			} else {
+				$filter->set[] = $this->wpdb->prepare( $col_name . ' = %s', $value );
+			}
+		}
+
+		$filter->where[] = $this->wpdb->prepare( 'AND section_item_id = %d', $data['section_item_id'] );
+		$this->update_execute( $filter );
+
+		return true;
+	}
+}
