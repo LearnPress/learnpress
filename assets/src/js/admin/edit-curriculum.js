@@ -9,6 +9,7 @@ import * as lpUtils from '../utils.js';
 import Toastify from 'toastify-js';
 import 'toastify-js/src/toastify.css';
 let elLPTarget;
+let elSectionCreating;
 
 const toastify = Toastify( {
 	text: '',
@@ -43,12 +44,21 @@ const addSection = ( e, target ) => {
 		return;
 	}
 
-	// Call ajax to add new section
-	console.log( 'Add new section', titleSectionValue );
+	// Add and set data for new section
+	const newSection = elSectionCreating.cloneNode( true );
+	const titleNewSection = newSection.querySelector( 'input[name="section-title-input"]' );
+	titleNewSection.value = titleSectionValue;
+	elAddNewSection.insertAdjacentElement( 'beforebegin', newSection );
+	// End
 
+	// Call ajax to add new section
 	const callBack = {
 		success: ( response ) => {
-			//console.log( 'response', response );
+			const { content, status } = response.data;
+
+			toastify.options.text = content;
+			toastify.options.className += status;
+			toastify.showToast();
 		},
 		error: ( error ) => {
 			console.log( error );
@@ -114,4 +124,5 @@ document.addEventListener( 'focus', ( e ) => {
 // Element root ready.
 lpUtils.lpOnElementReady( '#admin-editor-lp_course', ( elAdminEditor ) => {
 	elLPTarget = elAdminEditor.closest( `${ className.classLPTarget }` );
+	elSectionCreating = elAdminEditor.querySelector( '.section' );
 } );

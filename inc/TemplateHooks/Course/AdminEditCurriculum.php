@@ -12,6 +12,7 @@ use Braintree\Exception;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Models\CourseModel;
 
+use LP_Background_Single_Course;
 use LP_Section_CURD;
 use stdClass;
 use Throwable;
@@ -40,10 +41,9 @@ class AdminEditCurriculum {
 	/**
 	 * Render string to data content
 	 *
-	 * @param CourseModel $course
-	 * @param string $data_content
+	 * @param array $settings
 	 *
-	 * @return string
+	 * @return stdClass
 	 */
 	public static function render_html( array $settings ): stdClass {
 		$content          = new stdClass();
@@ -60,8 +60,7 @@ class AdminEditCurriculum {
 		if ( $content->content instanceof WP_Error ) {
 			$content->message = $content->content->get_error_message();
 		} else {
-			$content->status  = 'success';
-			$content->message = __( 'Success', 'learnpress' );
+			$content->status = 'success';
 		}
 
 		return $content;
@@ -86,9 +85,27 @@ class AdminEditCurriculum {
 			);
 			$section_curd_new->create( $data );
 
-			return 'sssss';
+			self::save_course( $course_id );
+
+			return __( 'Section added successfully', 'learnpress' );
 		} catch ( Throwable $e ) {
 			return new WP_Error( 'error', $e->getMessage() );
 		}
+	}
+
+	/**
+	 * Save course when change curriculum
+	 *
+	 * @param int $course_id
+	 */
+	public static function save_course( $course_id ) {
+		$bg = LP_Background_Single_Course::instance();
+		$bg->data(
+			array(
+				'handle_name' => 'save_post',
+				'course_id'   => $course_id,
+				'data'        => [],
+			)
+		)->dispatch();
 	}
 }

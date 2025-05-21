@@ -706,6 +706,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 		Template::instance()->get_admin_template( 'course/edit-curriculum' );
 		$html      = ob_get_clean();
 		$args      = [
+			'id_url'                  => 'edit-curriculum',
 			'course_id'               => $course_id,
 			'html_no_load_ajax_first' => $html,
 		];
