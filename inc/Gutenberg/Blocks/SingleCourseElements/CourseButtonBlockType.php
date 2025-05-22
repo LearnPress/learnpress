@@ -72,13 +72,32 @@ class CourseButtonBlockType extends AbstractCourseBlockType {
 				return $html;
 			}
 
-			$html_button = SingleCourseModernLayout::instance()->html_buttons( $courseModel, $userModel );
+			$text_align      = $attributes['textAlign'] ?? 'center';
+			$align_items     = $attributes['alignItems'] ?? 'top';
+			$justify_content = $attributes['justifyContent'] ?? 'center';
+			$width           = $attributes['width'] ?? '100';
+
+			$html_button = SingleCourseModernLayout::instance()->html_button( $courseModel, $userModel );
 			if ( empty( $html_button ) ) {
 				return $html;
 			}
 
-			$wrapper = get_block_wrapper_attributes();
-			$html    = $html_button;
+			$extra_attributes = [
+				'style' => 'width: 100%; text-align: ' . $text_align . ';',
+			];
+			$wrapper          = get_block_wrapper_attributes( $extra_attributes );
+
+			$html_button = sprintf(
+				'<div class="course-buttons__wrapper" %s>%s</div>',
+				'style="display: flex; ' . 'align-items: ' . $align_items . ';' . 'justify-content: ' . $justify_content . ';' . '"',
+				$html_button,
+			);
+
+			$html_button = str_replace(
+				'class="course-buttons"',
+				'class="course-buttons" ' . 'style=" width: ' . $width . '%;"',
+				$html_button
+			);
 
 			// Set align to course-buttons.
 			if ( isset( $attributes['align'] ) && $attributes['align'] ) {
@@ -88,7 +107,6 @@ class CourseButtonBlockType extends AbstractCourseBlockType {
 					$html_button
 				);
 			}
-
 			preg_match( '#class="(.*)"#i', $wrapper, $class_wrapper_find );
 			if ( isset( $class_wrapper_find['1'] ) ) {
 				// Find class button lp to replace.
