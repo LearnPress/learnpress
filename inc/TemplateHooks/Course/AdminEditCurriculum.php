@@ -4,10 +4,12 @@ namespace LearnPress\TemplateHooks\Course;
 
 use Exception;
 use LearnPress\Helpers\Singleton;
+use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseSectionModel;
 use LearnPress\Models\CourseModel;
 
 use LP_Section_DB;
+use LP_WP_Filesystem;
 use stdClass;
 
 /**
@@ -87,7 +89,7 @@ class AdminEditCurriculum {
 			throw new Exception( __( 'Course not found', 'learnpress' ) );
 		}
 
-		$section_title = $data['title'] ?? '';
+		$section_title = trim( $data['title'] ?? '' );
 		if ( empty( $section_title ) ) {
 			throw new Exception( __( 'Section title is required', 'learnpress' ) );
 		}
@@ -121,7 +123,7 @@ class AdminEditCurriculum {
 			throw new Exception( __( 'Course not found', 'learnpress' ) );
 		}
 
-		$courseSectionModel = CourseSectionModel::find( $section_id );
+		$courseSectionModel = CourseSectionModel::find( $section_id, $course_id );
 		if ( ! $courseSectionModel ) {
 			throw new Exception( __( 'Section not found', 'learnpress' ) );
 		}
@@ -153,7 +155,7 @@ class AdminEditCurriculum {
 			throw new Exception( __( 'Course not found', 'learnpress' ) );
 		}
 
-		$courseSectionModel = CourseSectionModel::find( $section_id );
+		$courseSectionModel = CourseSectionModel::find( $section_id, $course_id );
 		if ( ! $courseSectionModel ) {
 			throw new Exception( __( 'Section not found', 'learnpress' ) );
 		}
@@ -180,7 +182,7 @@ class AdminEditCurriculum {
 			throw new Exception( __( 'Course not found', 'learnpress' ) );
 		}
 
-		$courseSectionModel = CourseSectionModel::find( $section_id );
+		$courseSectionModel = CourseSectionModel::find( $section_id, $course_id );
 		if ( ! $courseSectionModel ) {
 			throw new Exception( __( 'Section not found', 'learnpress' ) );
 		}
@@ -196,8 +198,198 @@ class AdminEditCurriculum {
 	 * @throws Exception
 	 */
 	public static function update_item_of_section( $data ): stdClass {
-		$response   = new stdClass();
+		$response = new stdClass();
 
 		return $response;
+	}
+
+	public function html_edit_sections( $sections_items ): string {
+
+		$html_sections = '';
+		foreach ( $sections_items as $section_items ) {
+			$html_sections .= $this->html_edit_section( $section_items );
+		}
+
+		$section = [
+			'wrap'           => '<div class="curriculum-sections">',
+			'sections'       => $html_sections,
+			'section_action' => $this->html_section_actions(),
+			'wrap_end'       => '</div>',
+		];
+
+		return Template::combine_components( $section );
+	}
+
+	public function html_edit_section( $section_items ): string {
+		$total_items = count( $section_items->items ?? [] );
+
+		$html_items = '';
+		foreach ( $section_items->items as $item ) {
+			$html_items .= $this->html_section_item( $item );
+		}
+
+		$section_list_items = [
+			'wrap'             => '<div class="section-list-items">',
+			'items'            => $html_items,
+			'section-item-new' => $this->html_section_item_new(),
+			'wrap_end'         => '</div>',
+		];
+
+		$section = [
+			'wrap'                 => sprintf(
+				'<div data-section-id="%s" data-section-order="%s" class="section open">',
+				$section_items->section_id ?? 0,
+				$section_items->section_order ?? 0
+			),
+			'head'                 => '<div class="section-head">',
+			'drag'                 => '<span class="movable lp-sortable-handle"></span>',
+			'title'                => $this->html_edit_section_title( $section_items->section_name ?? '' ),
+			'total-items'          => sprintf(
+				'<div class="section-item-counts"><span>%s</span></div>',
+				sprintf( _n( '%s Item', '%s Items', $total_items, 'learnpress' ), $total_items )
+			),
+			'toggle'               => '<div class="actions"><span class="collapse close"></span></div>',
+			'head_end'             => '</div>',
+			'wrap_content'         => '<div class="section-collapse">',
+			'section-content'      => '<div class="section-content">',
+			'details'              => sprintf(
+				'<div class="details">%s</div>',
+				$this->html_edit_section_description( $section_items->section_description ?? '' )
+			),
+			'section-list-items'   => Template::combine_components( $section_list_items ),
+			'section-content-end'  => '</div>',
+			'section-item-actions' => $this->html_section_item_actions( $section_items ),
+			'wrap_content_end'     => '</div>',
+			'wrap_end'             => '</div>',
+		];
+
+		return Template::combine_components( $section );
+	}
+
+	public function html_edit_section_title( $section_name ): string {
+		return sprintf(
+			'<input name="section-title-input"
+					class="title-input"
+					type="text"
+					title="Update section title"
+					placeholder="Update section title"
+					value="%s">',
+			esc_attr( $section_name ?? '' )
+		);
+	}
+
+	public function html_edit_section_description( $section_description ): string {
+		return sprintf(
+			'<input type="text"
+				title="description"
+				placeholder="Section description..."
+				class="description-input"
+				value="%s">',
+			esc_attr( $section_description ?? '' )
+		);
+	}
+
+	public function html_section_actions() {
+		$html = '
+		<div class="add-new-section">
+				<div class="section new-section">
+					<div class="section-head">
+						<span class="creatable"></span>
+						<input name="new_section"
+								type="text"
+								title="Enter title section"
+								placeholder="Create a new section"
+								class="title-input new-section">
+						<button type="button" class="lp-btn-add-section">Add Sections</button>
+					</div>
+				</div>
+			</div>';
+
+		return $html;
+	}
+
+	public function html_section_item( $item ): string {
+		$item_id      = $item->item_id ?? 0;
+		$item_title   = $item->title ?? '';
+		$item_type    = $item->item_type ?? '';
+		$item_order   = $item->item_order ?? '';
+		$item_preview = $item->preview ?? '';
+
+		$section_action = [
+			'wrap'            => '<div class="item-actions">',
+			'div_actions'     => '<div class="actions">',
+			'preview'         => '<div data-content-tip="Enable/Disable Preview" class="action preview-item lp-title-attr-tip ready" data-id="%s"><a class="lp-btn-icon dashicons dashicons-hidden"></a></div>',
+			'edit'            => '<div data-content-tip="Edit an item" class="action edit-item lp-title-attr-tip ready" data-id="%s"><a href="%s" target="_blank" class="lp-btn-icon dashicons dashicons-edit"></a></div>',
+			'delete'          => '<div class="action delete-item"><a class="lp-btn-icon dashicons dashicons-trash"></a></div>',
+			'div_actions_end' => '</div>',
+			'wrap_end'        => '</div>',
+		];
+
+		$section = [
+			'ul'           => '<ul class="ui-sortable">',
+			'li'           => sprintf(
+				'<li data-item-id="%s" data-item-order="%d" class="section-item %s">',
+				$item_id,
+				$data['item_order'] ?? 0,
+				$item_type
+			),
+			'drag'         => sprintf(
+				'<div class="drag lp-sortable-handle">%s</div>',
+				LP_WP_Filesystem::instance()->file_get_contents( LP_PLUGIN_PATH . 'assets/images/icons/ico-drag.svg' )
+			),
+			'icon'         => '<div class="icon"></div>',
+			'title'        => sprintf(
+				'<div class="title"><input type="text" value="%s"></div>',
+				wp_kses_post( $item_title )
+			),
+			'item_actions' => Template::combine_components( $section_action ),
+			'li_end'       => '</li>',
+			'ul_end'       => '</ul>',
+		];
+
+		return Template::combine_components( $section );
+	}
+
+	public function html_section_item_actions( $item ): string {
+		$m = '
+		<div class="section-actions">
+			<button class="lp-btn-select-item-type button"
+					data-item-type="lp_lesson"
+					data-placeholder="Create a new lesson"
+					data-button-add-text="Add Lesson"
+					type="button">New Lesson
+			</button>
+			<button class="lp-btn-select-item-type button"
+					data-item-type="lp_quiz"
+					data-placeholder="Create a new quiz"
+					data-button-add-text="Add Quiz"
+					type="button">New Quiz
+			</button>
+			<button type="button" class="button button-secondary">Select items</button>
+			<div class="remove"><span class="icon">Delete</span>
+				<div class="confirm">Are you sure?</div>
+			</div>
+		</div>
+		';
+
+		return $m;
+	}
+
+	public function html_section_item_new() {
+		$m = '
+		<div class="new-section-item section-item lp-hidden">
+			<div class="drag"></div>
+			<div class="types">
+				<label class="type current"></label>
+			</div>
+			<div class="title">
+				<input name="new_item" type="text"/>
+				<button class="lp-btn-add-item button" type="button">Add Lesson</button>
+				<button class="lp-btn-add-item-cancel button" type="button">Cancel</button>
+			</div>
+		</div>
+		';
+
+		return $m;
 	}
 }

@@ -105,11 +105,12 @@ class CourseSectionModel {
 	 *
 	 * @return false|CourseSectionModel
 	 */
-	public static function find( int $section_id, $check_cache = true ) {
-		$filter             = new LP_Section_Filter();
-		$filter->section_id = $section_id;
-		$key_cache          = "courseSection/find/id/{$section_id}";
-		$lpSectionCache     = new LP_Cache();
+	public static function find( int $section_id, int $course_id, $check_cache = true ) {
+		$filter                    = new LP_Section_Filter();
+		$filter->section_id        = $section_id;
+		$filter->section_course_id = $course_id;
+		$key_cache                 = "courseSection/find/{$section_id}/{$course_id}";
+		$lpSectionCache            = new LP_Cache();
 
 		// Check cache
 		if ( $check_cache ) {
@@ -194,7 +195,7 @@ class CourseSectionModel {
 	 */
 	public function add_item( array $data ) {
 		$item_id     = $data['item_id'] ?? 0;
-		$item_type   = $data['item_type'] ?? '';
+		$item_type   = trim( $data['item_type'] ?? '' );
 		$item_title  = $data['item_title'] ?? '';
 		$courseModel = $this->get_course_model();
 		$section_id  = $this->get_section_id();
@@ -306,7 +307,7 @@ class CourseSectionModel {
 			)
 		)->dispatch();
 
-		$key_cache        = "courseSection/find/id/{$this->get_section_id()}";
+		$key_cache        = "courseSection/find/{$this->get_section_id()}/{$this->section_course_id}";
 		$key_cache_course = "courseSection/find/course/{$this->section_course_id}";
 		$lp_course_cache  = new LP_Cache();
 		$lp_course_cache->clear( $key_cache );

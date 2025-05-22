@@ -699,11 +699,16 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 	 * @return void
 	 */
 	public function admin_editor() {
-		//learn_press_admin_view( 'course/editor' );
-		$course_id = intval( $_REQUEST['post'] ?? 0 );
+		$course_id   = intval( $_REQUEST['post'] ?? 0 );
+		$courseModel = CourseModel::find( $course_id, true );
+		if ( ! $courseModel instanceof CourseModel ) {
+			return;
+		}
+
+		$sections_items = $courseModel->get_section_items();
 
 		ob_start();
-		Template::instance()->get_admin_template( 'course/edit-curriculum' );
+		Template::instance()->get_admin_template( 'course/edit-curriculum', compact( 'sections_items' ) );
 		$html      = ob_get_clean();
 		$args      = [
 			'id_url'                  => 'edit-curriculum',
