@@ -115,9 +115,10 @@ class AdminEditCurriculum {
 	 * @throws Exception
 	 */
 	public static function update_section( $data ): stdClass {
-		$response    = new stdClass();
-		$course_id   = $data['course_id'] ?? 0;
-		$section_id  = $data['section_id'] ?? 0;
+		$response   = new stdClass();
+		$course_id  = $data['course_id'] ?? 0;
+		$section_id = $data['section_id'] ?? 0;
+
 		$courseModel = CourseModel::find( $course_id, true );
 		if ( ! $courseModel ) {
 			throw new Exception( __( 'Course not found', 'learnpress' ) );
@@ -129,7 +130,7 @@ class AdminEditCurriculum {
 		}
 
 		foreach ( $data as $key => $value ) {
-			if ( property_exists( $courseSectionModel, $key ) ) {
+			if ( $key !== 'section_id' && property_exists( $courseSectionModel, $key ) ) {
 				$courseSectionModel->{$key} = $value;
 			}
 		}
@@ -242,7 +243,7 @@ class AdminEditCurriculum {
 				$section_items->section_order ?? 0
 			),
 			'head'                 => '<div class="section-head">',
-			'drag'                 => '<span class="movable lp-sortable-handle"></span>',
+			'drag'                 => '<span class="movable"></span>',
 			'title'                => $this->html_edit_section_title( $section_items->section_name ?? '' ),
 			'total-items'          => sprintf(
 				'<div class="section-item-counts"><span>%s</span></div>',
@@ -283,7 +284,7 @@ class AdminEditCurriculum {
 			'<input type="text"
 				title="description"
 				placeholder="Section description..."
-				class="description-input"
+				class="description-input section-description-input"
 				value="%s">',
 			esc_attr( $section_description ?? '' )
 		);
