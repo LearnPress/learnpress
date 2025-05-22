@@ -77,7 +77,7 @@ class CourseButtonBlockType extends AbstractCourseBlockType {
 			$justify_content = $attributes['justifyContent'] ?? 'center';
 			$width           = $attributes['width'] ?? '100';
 
-			$html_button = SingleCourseModernLayout::instance()->html_button( $courseModel, $userModel );
+			$html_button = SingleCourseModernLayout::instance()->html_buttons( $courseModel, $userModel );
 			if ( empty( $html_button ) ) {
 				return $html;
 			}
