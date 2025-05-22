@@ -2,41 +2,35 @@
 
 namespace LearnPress\Gutenberg\Blocks\SingleCourseElements;
 
-use LearnPress\TemplateHooks\Course\SingleCourseModernLayout;
+use LearnPress\Gutenberg\Utils\StyleAttributes;
 use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
 use LP_Debug;
 use Throwable;
 
 /**
- * Class CourseImageInfoBlockType
+ * Class CourseMaterialBlockType
  *
  * Handle register, render block template
  */
-class CourseImageBlockType extends AbstractCourseBlockType {
-	public $block_name = 'course-image';
+class CourseMaterialBlockType extends AbstractCourseBlockType {
+	public $block_name = 'course-material';
 
 	public function get_supports(): array {
 		return [
-			'align'                => [ 'wide', 'full' ],
-			'color'                => [
+			'align'      => [ 'wide', 'full' ],
+			'color'      => [
 				'gradients'  => true,
 				'background' => true,
 				'text'       => true,
 			],
-			'typography'           => [
+			'typography' => [
 				'fontSize'                    => true,
 				'__experimentalFontWeight'    => true,
 				'__experimentalTextTransform' => true,
 			],
-			'shadow'               => true,
-			'spacing'              => [
+			'spacing'    => [
 				'padding' => true,
 				'margin'  => true,
-			],
-			'__experimentalBorder' => [
-				'color'  => true,
-				'radius' => true,
-				'width'  => true,
 			],
 		];
 	}
@@ -53,23 +47,18 @@ class CourseImageBlockType extends AbstractCourseBlockType {
 
 		try {
 			$courseModel = $this->get_course( $attributes, $block );
+			$userModel   = $this->get_user();
 			if ( ! $courseModel ) {
 				return $html;
 			}
 
-			$is_list_course = $block->context['is_list_course'] ?? false;
-			$html_image     = '';
+			$html_material = SingleCourseTemplate::instance()->html_material( $courseModel, $userModel );
 
-			if ( $is_list_course ) {
-				$html_image = sprintf( '<a href="%s">%s</a>', $courseModel->get_permalink(), SingleCourseTemplate::instance()->html_image( $courseModel ) );
-			} else {
-				$html_image = SingleCourseTemplate::instance()->html_image( $courseModel );
-			}
-			if ( empty( $html_image ) ) {
+			if ( empty( $html_material ) ) {
 				return $html;
 			}
 
-			$html = $this->get_output( $html_image );
+			$html = $this->get_output( $html_material );
 		} catch ( Throwable $e ) {
 			LP_Debug::error_log( $e );
 		}
