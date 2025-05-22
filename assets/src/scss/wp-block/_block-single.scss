@@ -288,7 +288,7 @@
 				width: 100%;
 				height: 100%;
 				margin-left: -100%;
-				background: var( --lp-primary-color );
+				background: #ffb606;
 
 				@include border-radius( 5px );
 			}
@@ -301,7 +301,7 @@
 			width: 100%;
 			height: 100%;
 			border-radius: 3px;
-			background: var( --lp-primary-color );
+			background: #ffb606;
 
 			@include transition( 0.5s );
 		}
