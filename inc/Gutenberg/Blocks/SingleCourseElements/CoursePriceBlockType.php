@@ -2,7 +2,8 @@
 
 namespace LearnPress\Gutenberg\Blocks\SingleCourseElements;
 
-use LearnPress\TemplateHooks\Course\SingleCourseModernLayout;
+use LearnPress\Models\UserItems\UserCourseModel;
+use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
 use LP_Debug;
 use Throwable;
@@ -49,6 +50,14 @@ class CoursePriceBlockType extends AbstractCourseBlockType {
 			$courseModel = $this->get_course( $attributes, $block );
 			if ( ! $courseModel ) {
 				return $html;
+			}
+
+			$userModel = $this->get_user();
+			if ( $userModel instanceof UserModel ) {
+				$userCourseModel = UserCourseModel::find( $userModel->get_id(), $courseModel->get_id(), true );
+				if ( $userCourseModel ) {
+					return $html;
+				}
 			}
 
 			$html_price = SingleCourseTemplate::instance()->html_price( $courseModel );

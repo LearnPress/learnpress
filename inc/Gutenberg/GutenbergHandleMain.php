@@ -39,6 +39,26 @@ class GutenbergHandleMain {
 		add_filter( 'pre_get_block_file_template', array( $this, 'edit_block_file_template' ), 10, 3 );
 		// Register block category
 		add_filter( 'block_categories_all', array( $this, 'add_block_category' ), 10, 2 );
+		// Fixed case code block of WooCommerce run on screen list Order is error.
+		add_filter(
+			'current_theme_supports-block-templates',
+			function ( $flag ) {
+				if ( ! is_admin() ) {
+					return $flag;
+				}
+
+				if ( ! function_exists( 'get_current_screen' ) ) {
+					return $flag;
+				}
+
+				$wp_screen = get_current_screen();
+				if ( $wp_screen->id === 'edit-lp_order' ) {
+					$flag = false;
+				}
+
+				return $flag;
+			}
+		);
 	}
 
 	/**
@@ -178,7 +198,7 @@ class GutenbergHandleMain {
 		}
 		// End check course offline.
 
-		wp_enqueue_script( 'editor-check' );
+		// wp_enqueue_script( 'editor-check' );
 
 		/**
 		 * @var AbstractBlockTemplate[] $lp_block_templates

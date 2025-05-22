@@ -1,8 +1,11 @@
 <?php
+
+use LearnPress\Helpers\Template;
+
 /**
  * Class LP_Email_Type_Order
  *
- * @version 4.0.0
+ * @version 4.0.1
  * @editor tungnx
  * @modify 4.1.3
  */
@@ -67,6 +70,13 @@ class LP_Email_Type_Order extends LP_Email {
 			$user_id_str = implode( ',', $user_ids );
 		}
 
+		ob_start();
+		echo Template::instance()->get_frontend_template(
+			'emails/order-items-table.php',
+			compact( 'order' )
+		);
+		$html_order_items_table = ob_get_clean();
+
 		$this->variables = apply_filters(
 			'lp/email/type-order/variables-mapper',
 			[
@@ -74,12 +84,7 @@ class LP_Email_Type_Order extends LP_Email {
 				'{{order_date}}'        => date_i18n( get_option( 'date_format' ), strtotime( $order->get_order_date() ) ),
 				'{{order_user_id}}'     => $user_id_str,
 				'{{order_user_name}}'   => $order->get_user_name(),
-				'{{order_items_table}}' => learn_press_get_template_content(
-					'emails/' . ( $this->email_format == 'plain' ? 'plain/' : '' ) . 'order-items-table.php',
-					[
-						'order' => $order,
-					]
-				),
+				'{{order_items_table}}' => $html_order_items_table,
 				'{{order_detail_url}}'  => $order->get_view_order_url(),
 				'{{order_number}}'      => $order->get_order_number(),
 				'{{order_key}}'         => $order->get_order_key(),

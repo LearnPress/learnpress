@@ -1086,18 +1086,16 @@ if ( ! class_exists( 'LP_Order' ) ) {
 		 * @return string
 		 * @editor tungnx
 		 * @modify 4.1.3
-		 * @version 1.0.2
+		 * @version 1.0.3
 		 */
 		public function get_user_email( int $user_id = 0 ): string {
-			$email = '';
-			$user  = UserModel::find( $user_id, true );
-			if ( $user instanceof UserModel ) {
-				$email = $user->get_email();
-			} elseif ( (int) $this->get_user_id() > 0 ) {
-				$user = UserModel::find( $user_id, true );
-				if ( $user instanceof UserModel ) {
-					$email = $user->get_email();
-				}
+			if ( $user_id == 0 ) {
+				$user_id = (int) $this->get_user_id();
+			}
+
+			$userModel = UserModel::find( $user_id, true );
+			if ( $userModel instanceof UserModel ) {
+				$email = $userModel->get_email();
 			} else {
 				$email = $this->get_checkout_email();
 			}

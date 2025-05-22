@@ -31,6 +31,22 @@ class LP_Assets extends LP_Abstract_Assets {
 	protected function _get_styles(): array {
 		$is_rtl = is_rtl() ? '-rtl' : '';
 
+		$only_register_css_learnpress = false;
+		if ( wp_is_block_theme() ) {
+			if ( LP_Page_Controller::is_page_courses() ) {
+				$only_register_css_learnpress = true;
+			}
+
+			if ( LP_Page_Controller::is_page_single_course() ) {
+				global $post;
+				setup_postdata( $post );
+				$course_item = LP_Global::course_item();
+				if ( ! $course_item ) {
+					$only_register_css_learnpress = true;
+				}
+			}
+		}
+
 		$styles = apply_filters(
 			'learn-press/frontend-default-styles',
 			array(
@@ -47,7 +63,7 @@ class LP_Assets extends LP_Abstract_Assets {
 						LP_PAGE_BECOME_A_TEACHER,
 						LP_PAGE_PROFILE,
 					),
-					0
+					$only_register_css_learnpress
 				),
 				'lp-instructor'      => new LP_Asset_Key(
 					self::url( 'css/instructor' . $is_rtl . self::$_min_assets . '.css' ),
@@ -71,19 +87,6 @@ class LP_Assets extends LP_Abstract_Assets {
 		);
 
 		if ( wp_is_block_theme() ) {
-			if ( LP_Page_Controller::is_page_courses() ) {
-				unset( $styles['learnpress'] );
-			}
-
-			if ( LP_Page_Controller::is_page_single_course() ) {
-				global $post;
-				setup_postdata( $post );
-				$course_item = LP_Global::course_item();
-				if ( ! $course_item ) {
-					unset( $styles['learnpress'] );
-				}
-			}
-
 			$styles['learnpress-block'] = new LP_Asset_Key(
 				self::url( 'css/learnpress-block' . $is_rtl . self::$_min_assets . '.css' ),
 				array(),
