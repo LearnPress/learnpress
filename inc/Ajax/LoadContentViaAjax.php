@@ -64,8 +64,8 @@ class LoadContentViaAjax extends AbstractAjax {
 				throw new Exception( 'Error: data content invalid!' );
 			}
 
-			$response->status  = 'success';
-			$response->message = 'Success!';
+			$response->status  = $data->status ?? 'success';
+			$response->message = $data->message ?? 'Success!';
 			$response->data    = $data;
 		} catch ( Throwable $e ) {
 			$response->status  = 'error';

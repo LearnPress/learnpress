@@ -3,6 +3,9 @@
 /**
  * Class LP_Helper
  */
+
+use LearnPress\Helpers\Template;
+
 defined( 'ABSPATH' ) || exit;
 
 class LP_Helper {
@@ -232,8 +235,10 @@ class LP_Helper {
 				throw new Exception( __( 'Missing post title', 'learnpress' ) );
 			}
 
+			$single_instructor_template = file_get_contents( Template::instance( false )->get_frontend_template_type_block( 'patterns/single-instructor-pattern.html' ) );
+
 			if ( preg_match( '#^learn_press_single_instructor_page_id.*#', $key_option ) ) {
-				$args['post_content'] = '<!-- wp:shortcode -->[learn_press_single_instructor]<!-- /wp:shortcode -->';
+				$args['post_content'] = $single_instructor_template;
 			} elseif ( preg_match( '#^learn_press_instructors_page_id.*#', $key_option ) ) {
 				$args['post_content'] = '<!-- wp:shortcode -->[learn_press_instructors]<!-- /wp:shortcode -->';
 			} elseif ( preg_match( '#^learn_press_profile_page_id.*#', $key_option ) ) {
@@ -418,7 +423,7 @@ class LP_Helper {
 	 *
 	 * @return string
 	 * @since 4.2.2
-	 * @version 1.0.3
+	 * @version 1.0.4
 	 */
 	public static function handle_lp_permalink_structure( $post_link, $post ) {
 		if ( false === strpos( $post_link, '%' ) ) {
@@ -465,14 +470,19 @@ class LP_Helper {
 					$post
 				);
 				$category_object = get_term( $category_object, 'course_category' );
-				$course_category = $category_object->slug;
+				if ( ! $category_object instanceof WP_Term ) {
+					return $post_link;
+				}
 
-				$parent = $category_object->parent;
+				$course_category = $category_object->slug;
+				$parent          = $category_object->parent;
 				if ( $parent ) {
 					$ancestors = get_ancestors( $category_object->term_id, 'course_category' );
 					foreach ( $ancestors as $ancestor ) {
 						$ancestor_object = get_term( $ancestor, 'course_category' );
-						$course_category = $ancestor_object->slug . '/' . $course_category;
+						if ( $ancestor_object instanceof WP_Term ) {
+							$course_category = $ancestor_object->slug . '/' . $course_category;
+						}
 					}
 				}
 			} else {

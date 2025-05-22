@@ -369,6 +369,17 @@ class GutenbergHandleMain {
 				'content'     => $grid_course_pattern,
 			)
 		);
+
+		$single_instructor_pattern = file_get_contents( Template::instance( false )->get_frontend_template_type_block( 'patterns/single-instructor-pattern.html' ) );
+		register_block_pattern(
+			'learnpress/single-instructor-pattern',
+			array(
+				'title'       => __( 'Single Instructor', 'learnpress' ),
+				'description' => __( 'Single Instructor Learnpress', 'learnpress' ),
+				'categories'  => array( 'learnpress-patterns' ),
+				'content'     => $single_instructor_pattern,
+			)
+		);
 	}
 
 	public function add_block_pattern_categories() {
