@@ -63,7 +63,7 @@ class CourseOfflineLessonBlockType extends AbstractCourseBlockType {
 
 		try {
 			$courseModel = $this->get_course( $attributes, $block );
-			if ( ! $courseModel ) {
+			if ( ! $courseModel || ! $courseModel->is_offline() ) {
 				return $html;
 			}
 
