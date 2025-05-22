@@ -89,23 +89,23 @@ class CourseSectionItemModel {
 	}
 
 	/**
-	 * Get section id
+	 * Get section item id
 	 *
 	 * @return int
 	 */
-	public function get_section_id(): int {
-		return $this->section_id;
+	public function get_section_item_id(): int {
+		return $this->section_item_id;
 	}
 
 	/**
-	 * Get section by course id
+	 * Get section by section id
 	 *
 	 * @return false|CourseSectionItemModel
 	 */
-	public static function find( int $section_id, $check_cache = true ) {
+	public static function find_by_section( int $section_id, $check_cache = true ) {
 		$filter             = new LP_Section_Items_Filter();
 		$filter->section_id = $section_id;
-		$key_cache          = "courseSectionItem/find/{$section_id}/{$filter->item_id}/{$filter->item_type}";
+		$key_cache          = "courseSectionItem/find/section_id/{$section_id}/{$filter->item_id}/{$filter->item_type}";
 		$lpSectionCache     = new LP_Cache();
 
 		// Check cache
@@ -127,9 +127,9 @@ class CourseSectionItemModel {
 	}
 
 	/**
-	 * Get post from database.
+	 * Get data from database.
 	 * If not exists, return false.
-	 * If exists, return CourseSectionModel.
+	 * If exists, return CourseSectionItemModel.
 	 *
 	 * @param LP_Section_Items_Filter $filter
 	 *
@@ -170,9 +170,9 @@ class CourseSectionItemModel {
 			$data[ $property ] = $value;
 		}
 
-		if ( $data['section_id'] === 0 ) { // Insert data.
-			$section_id       = $lp_section_items_db->insert_data( $data );
-			$this->section_id = $section_id;
+		if ( $data['section_item_id'] === 0 ) { // Insert data.
+			$section_item_id       = $lp_section_items_db->insert_data( $data );
+			$this->section_item_id = $section_item_id;
 		} else { // Update data.
 			$lp_section_items_db->update_data( $data );
 		}
@@ -189,8 +189,8 @@ class CourseSectionItemModel {
 	 * @throws Exception
 	 */
 	public function delete() {
-		$lp_section_items_db = LP_Section_DB::getInstance();
-		$filter              = new LP_Section_Filter();
+		$lp_section_items_db = LP_Section_Items_DB::getInstance();
+		$filter              = new LP_Section_Items_Filter();
 		$filter->where[]     = $lp_section_items_db->wpdb->prepare( 'AND section_item_id = %d', $this->section_item_id );
 		$filter->collection  = $lp_section_items_db->tb_lp_section_items;
 		$lp_section_items_db->delete_execute( $filter );
@@ -216,7 +216,7 @@ class CourseSectionItemModel {
 			)
 		)->dispatch();
 
-		$key_cache       = "courseSection/find/id/{$this->get_section_id()}";
+		$key_cache       = "courseSectionItem/find/section_id/{$this->get_section_item_id()}/{$this->item_id}/{$this->item_type}";
 		$lp_course_cache = new LP_Cache();
 		$lp_course_cache->clear( $key_cache );
 	}

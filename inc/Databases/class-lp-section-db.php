@@ -28,7 +28,7 @@ class LP_Section_DB extends LP_Database {
 	 *
 	 * @throws Exception
 	 * @since 4.1.6
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public function get_sections( LP_Section_Filter $filter, &$total_rows = 0 ) {
 		$default_fields = $filter->all_fields;
@@ -44,13 +44,28 @@ class LP_Section_DB extends LP_Database {
 
 		$filter->field_count = 'st.section_id';
 
+		if ( ! empty( $filter->section_id ) ) {
+			$filter->where[] = $this->wpdb->prepare( 'AND st.section_id = %d', $filter->section_id );
+		}
+
 		if ( ! empty( $filter->section_course_id ) ) {
 			$filter->where[] = $this->wpdb->prepare( 'AND st.section_course_id = %d', $filter->section_course_id );
+		}
+
+		if ( ! empty( $filter->section_name ) ) {
+			$filter->where[] = $this->wpdb->prepare( 'AND st.section_name LIKE %s', '%' . $filter->section_name . '%' );
 		}
 
 		if ( ! empty( $filter->section_ids ) ) {
 			$section_ids_format = LP_Helper::db_format_array( $filter->section_ids, '%d' );
 			$filter->where[]    = $this->wpdb->prepare( 'AND st.section_id IN (' . $section_ids_format . ')', $filter->section_ids );
+		}
+
+		if ( ! empty( $filter->section_not_ids ) ) {
+			$filter->where[] = $this->wpdb->prepare(
+				'AND st.section_id NOT IN(' . LP_Helper::db_format_array( $filter->section_not_ids, '%d' ) . ')',
+				$filter->section_not_ids
+			);
 		}
 
 		// Default Order

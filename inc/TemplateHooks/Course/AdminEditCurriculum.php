@@ -25,7 +25,7 @@ class AdminEditCurriculum {
 
 	/**
 	 * Allow callback for AJAX.
-	 * @use self::render_html_comments
+	 * @use self::render_html
 	 *
 	 * @param array $callbacks
 	 *
@@ -166,15 +166,14 @@ class AdminEditCurriculum {
 	}
 
 	/**
+	 * Add item data to section
+	 *
 	 * @throws Exception
 	 */
-	public static function add_item_to_section( $data ) {
+	public static function add_item_to_section( $data ): stdClass {
 		$response   = new stdClass();
 		$course_id  = $data['course_id'] ?? 0;
 		$section_id = $data['section_id'] ?? 0;
-		$item_id    = $data['item_id'] ?? 0;
-		$item_type  = $data['item_type'] ?? '';
-		$item_title = $data['item_title'] ?? '';
 
 		$courseModel = CourseModel::find( $course_id, true );
 		if ( ! $courseModel ) {
@@ -186,14 +185,18 @@ class AdminEditCurriculum {
 			throw new Exception( __( 'Section not found', 'learnpress' ) );
 		}
 
-		// Create new item
-		if ( empty( $item_id ) ) {
+		$courseSectionModel->add_item( $data );
 
-		}
+		$response->message = __( 'Item added to section successfully', 'learnpress' );
 
-		// Add item to section
+		return $response;
+	}
 
-		$response->message = __( 'Section updated successfully', 'learnpress' );
+	/**
+	 * @throws Exception
+	 */
+	public static function update_item_of_section( $data ): stdClass {
+		$response   = new stdClass();
 
 		return $response;
 	}

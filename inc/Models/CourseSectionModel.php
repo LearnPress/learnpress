@@ -7,6 +7,7 @@ use LP_Background_Single_Course;
 use LP_Cache;
 use LP_Section_DB;
 use LP_Section_Filter;
+use LP_Section_Items_DB;
 use stdClass;
 use Throwable;
 
@@ -91,14 +92,52 @@ class CourseSectionModel {
 	}
 
 	/**
+	 * Get course model
+	 *
+	 * @return false|CourseModel
+	 */
+	public function get_course_model() {
+		return CourseModel::find( $this->section_course_id, true );
+	}
+
+	/**
 	 * Get section by course id
 	 *
 	 * @return false|CourseSectionModel
 	 */
-	public static function find( int $course_id, $check_cache = true ) {
+	public static function find( int $section_id, $check_cache = true ) {
+		$filter             = new LP_Section_Filter();
+		$filter->section_id = $section_id;
+		$key_cache          = "courseSection/find/id/{$section_id}";
+		$lpSectionCache     = new LP_Cache();
+
+		// Check cache
+		if ( $check_cache ) {
+			$courseSectionModel = $lpSectionCache->get_cache( $key_cache );
+			if ( $courseSectionModel instanceof CourseSectionModel ) {
+				return $courseSectionModel;
+			}
+		}
+
+		$courseSectionModel = static::get_item_model_from_db( $filter );
+
+		// Set cache
+		if ( $courseSectionModel instanceof CourseSectionModel ) {
+			$lpSectionCache->set_cache( $key_cache, $courseSectionModel );
+		}
+
+		return $courseSectionModel;
+	}
+
+	/**
+	 * Get section by course id
+	 *
+	 * @return false|CourseSectionModel
+	 */
+	public static function find_by_course( int $course_id, $check_cache = true ) {
 		$filter                    = new LP_Section_Filter();
 		$filter->section_course_id = $course_id;
-		$key_cache                 = "courseSection/find/{$course_id}";
+		$key_cache                 = "courseSection/find/course/{$course_id}";
 		$lpSectionCache            = new LP_Cache();
 
 		// Check cache
@@ -146,6 +185,64 @@ class CourseSectionModel {
 		}
 
 		return $sectionModel;
+	}
+
+	/**
+	 * Add item to section
+	 *
+	 * @throws Exception
+	 */
+	public function add_item( array $data ) {
+		$item_id     = $data['item_id'] ?? 0;
+		$item_type   = $data['item_type'] ?? '';
+		$item_title  = $data['item_title'] ?? '';
+		$courseModel = $this->get_course_model();
+		$section_id  = $this->get_section_id();
+
+		if ( ! $courseModel instanceof CourseModel ) {
+			throw new Exception( __( 'Course not found', 'learnpress' ) );
+		}
+
+		$item_types = CourseModel::item_types_support();
+		if ( ! in_array( $item_type, $item_types ) ) {
+			throw new Exception( __( 'Item type invalid', 'learnpress' ) );
+		}
+
+		// Create new item
+		if ( empty( $item_id ) ) {
+			if ( empty( $item_title ) ) {
+				throw new Exception( __( 'Item title is required', 'learnpress' ) );
+			}
+
+			// Create item
+			$post_args = [
+				'post_author' => get_current_user_id(),
+				'post_title'  => $item_title,
+				'post_type'   => $item_type,
+				'post_status' => 'publish',
+			];
+			$item_id   = wp_insert_post( $post_args );
+			if ( is_wp_error( $item_id ) ) {
+				throw new Exception( $item_id->get_error_message() );
+			}
+		} else {
+			$itemModel = $courseModel->get_item_model( $item_id, $item_type );
+			if ( ! $itemModel ) {
+				throw new Exception( __( 'Item not found', 'learnpress' ) );
+			}
+		}
+
+		// Get max item order
+		$max_order = LP_Section_Items_DB::getInstance()->get_last_number_order( $section_id );
+
+		// Add item to section
+		$courseSectionItemModel                    = new CourseSectionItemModel();
+		$courseSectionItemModel->item_id           = $item_id;
+		$courseSectionItemModel->item_type         = $item_type;
+		$courseSectionItemModel->section_id        = $section_id;
+		$courseSectionItemModel->item_order        = $max_order + 1;
+		$courseSectionItemModel->section_course_id = $this->section_course_id;
+		$courseSectionItemModel->save();
 	}
 
 	/**
@@ -209,8 +306,10 @@ class CourseSectionModel {
 			)
 		)->dispatch();
 
-		$key_cache       = "courseSection/find/id/{$this->get_section_id()}";
-		$lp_course_cache = new LP_Cache();
+		$key_cache        = "courseSection/find/id/{$this->get_section_id()}";
+		$key_cache_course = "courseSection/find/course/{$this->section_course_id}";
+		$lp_course_cache  = new LP_Cache();
 		$lp_course_cache->clear( $key_cache );
+		$lp_course_cache->clear( $key_cache_course );
 	}
 }

@@ -109,6 +109,11 @@ class LP_Section_Items_DB extends LP_Database {
 		return $result;
 	}
 
+	/**
+	 * Get last item number order on section
+	 *
+	 * @throws Exception
+	 */
 	public function get_last_number_order( int $section_id = 0 ): int {
 		$query = $this->wpdb->prepare(
 			"SELECT MAX(item_order)
