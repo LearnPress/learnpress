@@ -49,6 +49,14 @@ use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseShareBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseStudentBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseTargetAudiencesBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseTitleBlockType;
+use LearnPress\Gutenberg\Blocks\SingleCourseItemElements\ItemCloseBlockType;
+use LearnPress\Gutenberg\Blocks\SingleCourseItemElements\ItemCommentBlockType;
+use LearnPress\Gutenberg\Blocks\SingleCourseItemElements\ItemContentBlockType;
+use LearnPress\Gutenberg\Blocks\SingleCourseItemElements\ItemCurriculumBlockType;
+use LearnPress\Gutenberg\Blocks\SingleCourseItemElements\ItemHiddenSidebarBlockType;
+use LearnPress\Gutenberg\Blocks\SingleCourseItemElements\ItemNavigationBlockType;
+use LearnPress\Gutenberg\Blocks\SingleCourseItemElements\ItemProgressBlockType;
+use LearnPress\Gutenberg\Blocks\SingleCourseItemElements\ItemSearchBlockType;
 use LearnPress\Gutenberg\Blocks\SingleInstructor\SingleInstructorBlockType;
 use LearnPress\Gutenberg\Blocks\SingleInstructorElements\InstructorAvatarBlockType;
 use LearnPress\Gutenberg\Blocks\SingleInstructorElements\InstructorBackgroundBlockType;
@@ -112,5 +120,13 @@ return apply_filters(
 		new SingleInstructorBlockType(),
 		new ListCoursesBlockType(),
 		new CourseItemTemplateBlock(),
+		new ItemCloseBlockType(),
+		new ItemCommentBlockType(),
+		new ItemContentBlockType(),
+		new ItemCurriculumBlockType(),
+		new ItemHiddenSidebarBlockType(),
+		new ItemNavigationBlockType(),
+		new ItemProgressBlockType(),
+		new ItemSearchBlockType(),
 	)
 );

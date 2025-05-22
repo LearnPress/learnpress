@@ -68,6 +68,10 @@
 	left: 0;
 	background: $bg-color-lesson;
 
+	.wp-block-learnpress-item-close .back-course {
+		padding: 24px;
+	}
+
 	.back-course {
 		padding-left: 24px;
 		padding-right: 24px;

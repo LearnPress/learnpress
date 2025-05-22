@@ -61,15 +61,15 @@ Css for Block of Gutenberg
 
 .wp-block-learnpress-button-submit-filter,
 .wp-block-learnpress-button-reset-filter {
-    box-sizing: border-box;
-    text-transform: capitalize;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background: white;
-    float: left;
-    text-align: center;
-    width: calc(50% - 8px);
-    padding: 8px 30px;
+	box-sizing: border-box;
+	text-transform: capitalize;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	background: white;
+	float: left;
+	text-align: center;
+	width: calc( 50% - 8px );
+	padding: 8px 30px;
 }
 
 .wp-block-learnpress-button-submit-filter {
@@ -81,144 +81,462 @@ Css for Block of Gutenberg
 }
 
 .block-editor-block-list__block {
-    img {
-        display: block;
-    }
-    .learn-press-courses {
-        list-style: none;
-        margin: 0;
-        max-width: 100%;
-        padding: 0;
-        &[data-layout="grid"] {
-            grid-gap: 1.25em;
-            display: -ms-grid;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(max(200px, calc(33.33333% - .83333em)), 1fr));
-        }
-    }
-    a {
-        text-decoration: none;
-    }
-    .c-gap-4 {
-        column-gap: 4px;
-    }
-    .lp-course-curriculum .course-section .course-item__right {
-        color: inherit;
-    }
-    &.wp-block-learnpress-course-title > *{
-         margin-top: 0;
-    }
+	img {
+		display: block;
+	}
+
+	.learn-press-courses {
+		list-style: none;
+		margin: 0;
+		max-width: 100%;
+		padding: 0;
+
+		&[data-layout='grid'] {
+			grid-gap: 1.25em;
+			display: -ms-grid;
+			display: grid;
+			grid-template-columns: repeat(
+				auto-fill,
+				minmax( max( 200px, calc( 33.33333% - 0.83333em ) ), 1fr )
+			);
+		}
+	}
+
+	a {
+		text-decoration: none;
+	}
+
+	.c-gap-4 {
+		column-gap: 4px;
+	}
+
+	.lp-course-curriculum .course-section .course-item__right {
+		color: inherit;
+	}
+	&.wp-block-learnpress-course-title {
+		margin-top: 0;
+	}
 }
 
 a.block-editor-block-list__block.wp-block-learnpress-course-button {
     @include course_readmore();
 }
 
+.wp-block-learnpress-item-search {
+	.search-course {
+		display: flex;
+		position: relative;
+		height: $popup_header_height;
+		background: $bg-grey;
+
+		input[name='s'] {
+			display: block;
+			width: 100%;
+			margin-left: 30px;
+			border: none;
+			color: $text-color-base;
+			background: transparent;
+			box-shadow: none;
+			height: auto;
+			@include box-sizing( border-box );
+			@include placeholder-color( $input-color-placeholder );
+			@include placeholder-fontStyle( italic );
+
+			&:focus {
+				outline: 0;
+			}
+		}
+
+		button {
+			position: absolute;
+			top: 0;
+			right: 10px;
+			height: $popup_header_height;
+			padding: 0 16px;
+			border: 0;
+			background: transparent;
+			line-height: 1px;
+			box-shadow: none;
+			&:focus {
+				outline: none;
+			}
+
+			i {
+				color: $text-color-accent;
+			}
+
+			/*&::before {
+				color: $text-color-accent;
+				font-family: 'lp-icon';
+				content: "\f002";
+			}*/
+
+			&.clear {
+				display: none;
+
+				&::before {
+					content: '\f00d';
+				}
+			}
+		}
+
+		&.searching {
+			button:before {
+				display: inline-block;
+				content: '\f110';
+				animation: lp-rotating 1s linear infinite;
+			}
+		}
+	}
+}
+
+.wp-block-learnpress-item-hidden-sidebar {
+	.section-toggle {
+		justify-content: flex-end;
+		flex: 0;
+
+		i {
+			color: $text-color-accent;
+		}
+	}
+}
+
+.wp-block-learnpress-item-close .back-course {
+	padding: 24px;
+	line-height: $popup_header_height;
+	background: rgba( 255, 255, 255, 0.1 );
+	color: #fff;
+
+	&:hover {
+		background: rgba( 255, 255, 255, 0.15 );
+	}
+
+	@media ( max-width: 768px ) {
+		background: transparent;
+		opacity: 0.6;
+		padding-left: 15px;
+		padding-right: 15px;
+		&:hover {
+			background: transparent;
+			opacity: 1;
+		}
+	}
+}
+
+.wp-block-learnpress-item-hidden-sidebar {
+	#sidebar-toggle {
+		display: inline-block;
+		//position: absolute;
+		//z-index: 100;
+		//top: 198px;
+		//left: 475px;
+		width: 32px;
+		min-width: 32px;
+		line-height: $popup_header_height;
+		height: unset;
+		margin: 0;
+		background: rgba( 255, 255, 255, 0.1 );
+		color: $color-white;
+		font-size: 1.4em;
+		//box-shadow: 0 0px 20px 0 rgba(0, 0, 0, 0.15);
+		cursor: pointer;
+		transition: 0.25s;
+		-webkit-appearance: none;
+		border: none;
+		text-align: center;
+
+		&:after {
+			display: none;
+		}
+
+		&::before {
+			display: inline-block;
+			position: static;
+			margin: 0;
+			width: auto;
+			height: auto;
+			//position: absolute;
+			//top: 50%;
+			//left: 50%;
+			//color: var(--lp-primary-color);
+			font-family: 'lp-icon';
+			//font-size: 1.125em;
+			//font-weight: 900;
+			content: '\f0d9';
+			//transition: 0.25s;
+			//transform: translate(-50%, -50%);
+		}
+
+		&:focus {
+			border: 0;
+			outline: 0;
+		}
+	}
+}
+
+.wp-block-learnpress-item-progress {
+	.items-progress {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		column-gap: 10px;
+		white-space: nowrap;
+	}
+
+	.number {
+		padding-right: 10px;
+		font-size: calc( var( --lp-font-size-base, 1em ) * 0.86 );
+	}
+
+	.learn-press-progress {
+		overflow: hidden;
+		position: relative;
+		width: 80px;
+		height: 6px;
+		border-radius: 3px;
+
+		.progress-bg {
+			overflow: hidden;
+			position: relative;
+			height: 6px;
+			background: #ccc;
+			@include border-radius( 5px );
+
+			.progress-active {
+				position: absolute;
+				left: 50%;
+				width: 100%;
+				height: 100%;
+				margin-left: -100%;
+				background: var( --lp-primary-color );
+
+				@include border-radius( 5px );
+			}
+		}
+
+		.learn-press-progress__active {
+			position: absolute;
+			z-index: 1;
+			left: -100%;
+			width: 100%;
+			height: 100%;
+			border-radius: 3px;
+			background: var( --lp-primary-color );
+
+			@include transition( 0.5s );
+		}
+
+		&::before {
+			display: block;
+			position: absolute;
+			z-index: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			background: #ccc;
+			content: '';
+		}
+	}
+}
+
+.wp-block-learnpress-item-navigation {
+	.course-item-nav {
+		display: flex;
+		justify-content: space-between;
+
+		.prev,
+		.next {
+			display: flex;
+			line-height: 3.125em;
+			/* flex: 1;*/
+			span {
+				display: block;
+				font-weight: bold;
+			}
+
+			a {
+				display: block;
+				color: $text-color-accent;
+				color: #999;
+			}
+
+			&::before {
+				color: #999;
+				font-family: 'lp-icon';
+				//font-size: 0.75em;
+				//font-weight: 900;
+			}
+
+			&:hover {
+				a,
+				&::before {
+					color: var( --lp-primary-color );
+				}
+
+				.course-item-nav__name {
+					display: block;
+				}
+			}
+		}
+
+		.next {
+			text-align: right;
+			flex-direction: row-reverse;
+
+			&::before {
+				margin-left: 10px;
+				content: '\f0da';
+			}
+
+			&[data-nav='next'] {
+				justify-content: flex-end;
+			}
+		}
+	}
+
+	.prev {
+		&::before {
+			margin-right: 10px;
+			content: '\f0d9';
+		}
+
+		.course-item-nav__name {
+			right: auto;
+			left: -30px;
+
+			&::before {
+				right: auto;
+				left: 5px;
+			}
+
+			@media ( max-width: 1024px ) {
+				left: 15px;
+			}
+		}
+	}
+
+	.course-item-nav__name {
+		display: none;
+		position: absolute;
+		top: -20px;
+		right: -30px;
+		width: auto;
+		padding: 10px 15px;
+		color: $text-color-accent;
+		background: #ccc;
+		font-size: $font-size-small;
+		line-height: 1;
+		@media ( max-width: 1024px ) {
+			top: -25px;
+			right: 15px;
+			left: auto;
+		}
+	}
+}
 
 /*
 icon in admin
  */
-
-[class^="lp-icon-"],
-[class*=" lp-icon-"] {
-    /* use !important to prevent issues with browser extensions that change fonts */
-    font-family: 'lp-icon';
-    speak: never;
-    font-style: normal;
-    font-weight: normal;
-    font-variant: normal;
-    text-transform: none;
-    line-height: 1;
-    /* Better Font Rendering =========== */
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+[class^='lp-icon-'],
+[class*=' lp-icon-'] {
+	/* use !important to prevent issues with browser extensions that change fonts */
+	font-family: 'lp-icon';
+	speak: never;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+	/* Better Font Rendering =========== */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }
 
 .lp-icon-angle-right:before {
-    content: "\f105";
+	content: '\f105';
 }
 
 .lp-icon-clock-o:before {
-    content: "\f017";
+	content: '\f017';
 }
 
 .lp-icon-star:before {
-    content: "\f005";
-    color: #ffb606;
+	content: '\f005';
+	color: #ffb606;
 }
 
 .lp-icon-file-o:before {
-    content: "\f016";
+	content: '\f016';
 }
 
 .lp-icon-signal:before {
-    content: "\f012";
+	content: '\f012';
 }
 
 .lp-icon-puzzle-piece:before {
-    content: "\f12e";
+	content: '\f12e';
 }
 
 .lp-icon-search:before {
-    content: "\f002";
+	content: '\f002';
 }
 
 .lp-icon-user-graduate:before {
-    content: "\f501";
+	content: '\f501';
 }
 
 .lp-icon-arrow-right:before {
-    content: "\f061";
+	content: '\f061';
 }
 
 .lp-icon-courses:before {
-    content: "\e903";
+	content: '\e903';
 }
 
 .lp-icon-facebook:before {
-    content: "\f09a";
+	content: '\f09a';
 }
 
 .lp-icon-twitter:before {
-    content: "\f099";
+	content: '\f099';
 }
 
 .lp-icon-youtube-play:before {
-    content: "\f16a";
+	content: '\f16a';
 }
 
 .lp-icon-linkedin:before {
-    content: "\f0e1";
+	content: '\f0e1';
 }
 
 .lp-icon-students:before {
-    content: "\e902";
+	content: '\e902';
 }
 
 .lp-icon-stopwatch:before {
-    content: "\f2f2";
+	content: '\f2f2';
 }
 
 .lp-icon-angle-left:before {
-    content: "\f104";
+	content: '\f104';
 }
 
 .lp-icon-angle-right:before {
-    content: "\f105";
+	content: '\f105';
 }
 
 .lp-icon-angle-up:before {
-    content: "\f106";
+	content: '\f106';
 }
 
 .lp-icon-angle-down:before {
-    content: "\f107";
+	content: '\f107';
 }
 
 .lp-icon-share-alt:before {
-    content: "\f1e0";
+	content: '\f1e0';
 }
 
-.lp-icon-bookmark-o:before {
-    content: "\f097";
+.lp-icon-times:before {
+	content: '\f00d';
 }
