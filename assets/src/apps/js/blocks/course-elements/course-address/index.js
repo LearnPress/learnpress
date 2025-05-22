@@ -1,14 +1,14 @@
 /**
- * Register block course curriculum.
+ * Register block course instructor.
  */
 
-import edit from './edit';
+import { edit } from './edit';
 import { save } from './save';
 import metadata from './block.json';
 import { registerBlockType } from '@wordpress/blocks';
 import { checkTemplatesCanLoadBlock } from '../../utilBlock.js';
 
-const templatesName = [ 'learnpress/learnpress//single-lp_course' ];
+const templatesName = [ 'learnpress/learnpress//single-lp_course-offline' ];
 
 checkTemplatesCanLoadBlock( templatesName, metadata, ( metadataNew ) => {
 	registerBlockType( metadataNew.name, {

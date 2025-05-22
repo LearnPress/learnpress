@@ -1,0 +1,52 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "learnpress/course-address",
+	"title": "Course Address",
+	"category": "learnpress-course-elements",
+	"description": "Renders template Address Course PHP templates.",
+	"textdomain": "learnpress",
+	"keywords": [ "address", "single", "offline", "course", "learnpress" ],
+	"icon": "location",
+	"ancestor": [ "learnpress/single-course" ],
+	"usesContext": [ "lpCourseData" ],
+	"attributes": {
+		"showText": {
+			"type": "boolean",
+			"default": true
+		},
+		"isLink": {
+			"type": "boolean",
+			"default": true
+		},
+		"target": {
+			"type": "boolean",
+			"default": false
+		}
+	},
+	"supports": {
+		"multiple": true,
+		"align": [ "wide", "full" ],
+		"html": false,
+		"typography": {
+			"fontSize": true,
+			"lineHeight": false,
+			"fontWeight": true,
+			"__experimentalFontFamily": false,
+			"__experimentalTextDecoration": false,
+			"__experimentalFontStyle": false,
+			"__experimentalFontWeight": true,
+			"__experimentalLetterSpacing": false,
+			"__experimentalTextTransform": true,
+			"__experimentalDefaultControls": { "fontSize": true }
+		},
+		"color": {
+			"background": false,
+			"text": true,
+			"link": false,
+			"__experimentalDefaultControls": {
+				"text": true
+			}
+		}
+	}
+}
