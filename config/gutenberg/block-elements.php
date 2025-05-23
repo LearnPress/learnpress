@@ -24,6 +24,7 @@ use LearnPress\Gutenberg\Blocks\Legacy\SingleCourseBlockLegacy;
 use LearnPress\Gutenberg\Blocks\Legacy\ArchiveCourseBlockLegacy;
 use LearnPress\Gutenberg\Blocks\Legacy\CourseItemLegacyBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourse\SingleCourseBlockType;
+use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseAddressBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseButtonBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseButtonReadMoreBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseCapacityBlockType;
@@ -72,6 +73,7 @@ return apply_filters(
 	array(
 		new SingleCourseBlockLegacy(),
 		new ArchiveCourseBlockLegacy(),
+		new CourseAddressBlockType(),
 		new CourseTitleBlockType(),
 		new CourseInstructorBlockType(),
 		new CourseCapacityBlockType(),
