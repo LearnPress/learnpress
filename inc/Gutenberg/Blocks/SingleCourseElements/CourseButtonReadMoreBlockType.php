@@ -71,8 +71,14 @@ class CourseButtonReadMoreBlockType extends AbstractCourseBlockType {
 				return $html;
 			}
 
+			$map_align_items = [
+				'top'    => 'flex-start',
+				'center' => 'center',
+				'bottom' => 'flex-end',
+			];
+
 			$text_align      = $attributes['textAlign'] ?? 'center';
-			$align_items     = $attributes['alignItems'] ?? 'top';
+			$align_items     = isset( $attributes['alignItems'] ) ? $map_align_items[ $attributes['alignItems'] ] : 'flex-start';
 			$justify_content = $attributes['justifyContent'] ?? 'center';
 			$width           = $attributes['width'] ?? '100';
 
@@ -92,7 +98,6 @@ class CourseButtonReadMoreBlockType extends AbstractCourseBlockType {
 				__( 'Read more', 'learnpress' ),
 				__( 'Read more', 'learnpress' )
 			);
-
 		} catch ( Throwable $e ) {
 			LP_Debug::error_log( $e );
 		}
