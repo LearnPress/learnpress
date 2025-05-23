@@ -618,6 +618,14 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		 * Display notices on Backend.
 		 */
 		public function admin_notices() {
+			if ( function_exists( 'get_current_screen' ) ) {
+				$wp_screen = get_current_screen();
+				// Not run on course edit screen, it slows, can affect performance edit course.
+				if ( $wp_screen->id === LP_COURSE_CPT ) {
+					return;
+				}
+			}
+
 			// Show template file templates override.
 			$page = LP_Request::get_param( 'page' );
 			$tab  = LP_Request::get_param( 'tab' );

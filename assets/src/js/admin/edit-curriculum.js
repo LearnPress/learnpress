@@ -194,6 +194,47 @@ const updateSectionDescription = ( e, target ) => {
 	dataSend.args.section_description = sectionDesValue;
 	window.lpAJAXG.fetchAJAX( dataSend, callBack );
 };
+const updateSectionTitle = ( e, target ) => {
+	const elSectionTitleInput = target.closest( 'input[name="section-title-input"]' );
+	if ( ! elSectionTitleInput ) {
+		return;
+	}
+
+	const elSection = elSectionTitleInput.closest( '.section' );
+	const sectionId = elSection.dataset.sectionId;
+	const sectionTitleValue = elSectionTitleInput.value.trim();
+	if ( sectionTitleValue.length === 0 ) {
+		toastify.options.text = 'Please enter a title for the section.';
+		toastify.options.className += 'error';
+		toastify.showToast();
+		return;
+	}
+
+	lpUtils.lpSetLoadingEl( elStatusChange, 1 );
+
+	// Call ajax to update section title
+	const callBack = {
+		success: ( response ) => {
+			const { message, status } = response;
+			const { content } = response.data;
+
+			toastify.options.text = message;
+			toastify.options.className += status;
+			toastify.showToast();
+		},
+		error: ( error ) => {
+			console.log( error );
+		},
+		completed: () => {
+			lpUtils.lpSetLoadingEl( elStatusChange, 0 );
+		},
+	};
+
+	dataSend.args.section_id = sectionId;
+	dataSend.args.action = 'update_section';
+	dataSend.args.section_name = sectionTitleValue;
+	window.lpAJAXG.fetchAJAX( dataSend, callBack );
+};
 const toggleSection = ( e, target ) => {
 	const elBtnCollapse = target.closest( '.collapse' );
 	if ( ! elBtnCollapse ) {
@@ -323,6 +364,7 @@ document.addEventListener( 'keydown', ( e ) => {
 		addSection( e, target );
 		addItemToSection( e, target );
 		updateSectionDescription( e, target );
+		updateSectionTitle( e, target );
 
 		e.preventDefault();
 	}

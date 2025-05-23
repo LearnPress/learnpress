@@ -164,6 +164,7 @@ class AdminEditCurriculum {
 
 		LP_Section_DB::getInstance()->update_sections_position( $new_position, $course_id );
 
+		$courseModel->sections_items = null;
 		$courseModel->save();
 
 		$response->message = __( 'Section updated successfully', 'learnpress' );
