@@ -8,6 +8,7 @@ use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseSectionModel;
 use LearnPress\Models\CourseModel;
 
+use LP_Background_Single_Course;
 use LP_Section_DB;
 use LP_WP_Filesystem;
 use stdClass;
@@ -136,6 +137,34 @@ class AdminEditCurriculum {
 		}
 
 		$courseSectionModel->save();
+
+		$response->message = __( 'Section updated successfully', 'learnpress' );
+
+		return $response;
+	}
+
+	/**
+	 * Update section position
+	 * new_position => list of section id by order
+	 *
+	 * @throws Exception
+	 */
+	public static function update_section_position( $data ): stdClass {
+		$response     = new stdClass();
+		$course_id    = $data['course_id'] ?? 0;
+		$new_position = $data['new_position'] ?? [];
+		if ( ! is_array( $new_position ) ) {
+			throw new Exception( __( 'Invalid section position', 'learnpress' ) );
+		}
+
+		$courseModel = CourseModel::find( $course_id, true );
+		if ( ! $courseModel ) {
+			throw new Exception( __( 'Course not found', 'learnpress' ) );
+		}
+
+		LP_Section_DB::getInstance()->update_sections_position( $new_position, $course_id );
+
+		$courseModel->save();
 
 		$response->message = __( 'Section updated successfully', 'learnpress' );
 

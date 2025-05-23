@@ -15,6 +15,7 @@ let elSectionCreating;
 let elNewSectionItem;
 let dataSend;
 let elCurriculumSections;
+let elStatusChange;
 
 const toastify = Toastify( {
 	text: '',
@@ -23,7 +24,7 @@ const toastify = Toastify( {
 	className: `${ lpDataAdmin.toast.classPrefix }`,
 	close: lpDataAdmin.toast.close == 1,
 	stopOnFocus: lpDataAdmin.toast.stopOnFocus == 1,
-	duration: lpDataAdmin.toast.duration,
+	duration: 2000,
 } );
 
 const className = {
@@ -212,14 +213,19 @@ const toggleSection = ( e, target ) => {
 		lpUtils.lpShowHideEl( elSectionCollapse, 1 );
 	}
 };
+let timeout;
 const sortAbleRow = ( elCurriculumSections ) => {
 	new Sortable( elCurriculumSections, {
 		handle: '.movable',
 		animation: 150,
 		onEnd: ( evt ) => {
-			const elSection = evt.item;
-			const sectionId = elSection.dataset.sectionId;
-			const newPosition = evt.newIndex;
+			const elSections = elCurriculumSections.querySelectorAll( '.section' );
+			const sectionIds = [];
+
+			elSections.forEach( ( elSection, index ) => {
+				const sectionId = elSection.dataset.sectionId;
+				sectionIds.push( sectionId );
+			} );
 
 			// Call ajax to update section position
 			const callBack = {
@@ -236,13 +242,21 @@ const sortAbleRow = ( elCurriculumSections ) => {
 				},
 				completed: () => {
 					//console.log( 'completed' );
+					lpUtils.lpSetLoadingEl( elStatusChange, 0 );
 				},
 			};
 
-			dataSend.args.section_id = sectionId;
 			dataSend.args.action = 'update_section_position';
-			dataSend.args.new_position = newPosition;
-			window.lpAJAXG.fetchAJAX( dataSend, callBack );
+			dataSend.args.new_position = sectionIds;
+
+			clearTimeout( timeout );
+			timeout = setTimeout( () => {
+				lpUtils.lpSetLoadingEl( elStatusChange, 1 );
+				window.lpAJAXG.fetchAJAX( dataSend, callBack );
+			}, 1000 );
+		},
+		onMove: ( evt ) => {
+			clearTimeout( timeout );
 		},
 	} );
 
@@ -285,6 +299,17 @@ document.addEventListener( 'click', ( e ) => {
 			elNewSectionItem.remove();
 		}
 	}
+
+	// collapse section
+	if ( target.closest( '.collapse-sections' ) ) {
+		elCurriculumSections.querySelectorAll( '.section' ).forEach( ( elSection ) => {
+			if ( elSection.classList.contains( 'open' ) ) {
+				elSection.classList.remove( 'open' );
+				elSection.classList.add( 'close' );
+				lpUtils.lpShowHideEl( elSection.querySelector( '.section-collapse' ), 0 );
+			}
+		} );
+	}
 } );
 
 document.addEventListener( 'submit', ( e ) => {
@@ -315,6 +340,7 @@ lpUtils.lpOnElementReady( '#admin-editor-lp_course', ( elAdminEditor ) => {
 	elSectionCreating = elAdminEditor.querySelector( '.section' );
 	elNewSectionItem = elAdminEditor.querySelector( `.${ className.elNewSectionItem }` );
 	elCurriculumSections = elAdminEditor.querySelector( '.curriculum-sections' );
+	elStatusChange = elAdminEditor.querySelector( '.status' );
 
 	sortAbleRow( elCurriculumSections );
 } );

@@ -21,7 +21,7 @@ if ( ! isset( $sections_items ) ) {
 	<div class="lp-course-curriculum">
 		<div class="heading">
 			<h4>Details
-				<span class="status successful"></span>
+				<span class="status"></span>
 			</h4>
 			<div class="section-item-counts"><span>1 Item</span></div>
 			<span class="collapse-sections open"></span>

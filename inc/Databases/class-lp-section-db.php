@@ -486,4 +486,34 @@ class LP_Section_DB extends LP_Database {
 
 		return true;
 	}
+
+	/**
+	 * Update sections position
+	 * Update section_order of each section in course
+	 *
+	 * @throws Exception
+	 * @since 4.2.8.6
+	 * @version 1.0.0
+	 */
+	public function update_sections_position( array $section_ids, $section_course_id ) {
+		$filter             = new LP_Section_Filter();
+		$filter->collection = $this->tb_lp_sections;
+		$SET_SQL            = 'section_order = CASE';
+
+		foreach ( $section_ids as $position => $section_id ) {
+			++$position;
+			$section_id = absint( $section_id );
+			if ( empty( $section_id ) ) {
+				continue;
+			}
+
+			$SET_SQL .= $this->wpdb->prepare( ' WHEN section_id = %d THEN %d', $section_id, $position );
+		}
+
+		$SET_SQL        .= ' ELSE section_order END';
+		$filter->set[]   = $SET_SQL;
+		$filter->where[] = $this->wpdb->prepare( 'AND section_course_id = %d', $section_course_id );
+
+		$this->update_execute( $filter );
+	}
 }
