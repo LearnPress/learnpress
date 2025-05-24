@@ -32,6 +32,8 @@ const className = {
 	btnSelectItemType: 'lp-btn-select-item-type',
 	btnAddItem: 'lp-btn-add-item',
 	elNewSectionItem: 'new-section-item',
+	elItemClone: '.section-item-clone',
+	elSectionListItems: 'section-list-items',
 	elSectionDesInput: 'section-description-input',
 	LPTarget: '.lp-target',
 };
@@ -56,6 +58,7 @@ const addSection = ( e, target ) => {
 
 	// Add and set data for new section
 	const newSection = elSectionCreating.cloneNode( true );
+	newSection.classList.add( 'empty-section' );
 	const titleNewSection = newSection.querySelector( 'input[name="section-title-input"]' );
 	titleNewSection.value = titleSectionValue;
 	elAddNewSection.insertAdjacentElement( 'beforebegin', newSection );
@@ -75,7 +78,7 @@ const addSection = ( e, target ) => {
 			console.log( error );
 		},
 		completed: () => {
-			//console.log( 'completed' );
+			newSection.classList.remove( 'empty-section' );
 		},
 	};
 
@@ -131,6 +134,16 @@ const addItemToSection = ( e, target ) => {
 	const titleItemValue = elInputTitleItem.value.trim();
 	const typeItemValue = elNewSectionItem.dataset.itemType;
 
+	// Clone new section item
+	const elItemCloneEx = elSection.querySelector( `${ className.elItemClone }` );
+	const elItemClone = elItemCloneEx.cloneNode( true );
+	elItemClone.classList.remove( 'clone' );
+	lpUtils.lpShowHideEl( elItemClone, 1 );
+	elItemClone.querySelector( 'input[name="item-title-input"]' ).value = titleItemValue;
+	elItemClone.classList.add( typeItemValue );
+	elNewSectionItem.insertAdjacentElement( 'beforebegin', elItemClone );
+	elNewSectionItem.remove();
+
 	// Call ajax to add item to section
 	const callBack = {
 		success: ( response ) => {
@@ -145,7 +158,7 @@ const addItemToSection = ( e, target ) => {
 			console.log( error );
 		},
 		completed: () => {
-			//console.log( 'completed' );
+			elItemClone.classList.remove( 'empty-item' );
 		},
 	};
 
