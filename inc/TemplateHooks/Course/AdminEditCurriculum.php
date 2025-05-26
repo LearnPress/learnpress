@@ -164,6 +164,7 @@ class AdminEditCurriculum {
 
 		LP_Section_DB::getInstance()->update_sections_position( $new_position, $course_id );
 
+		$courseModel->sections_items = null;
 		$courseModel->save();
 
 		$response->message = __( 'Section updated successfully', 'learnpress' );
@@ -259,17 +260,17 @@ class AdminEditCurriculum {
 		}
 
 		$section_list_items = [
-			'wrap'             => '<div class="section-list-items">',
-			'items'            => $html_items,
-			'section-item-new' => $this->html_section_item_new(),
-			'wrap_end'         => '</div>',
+			'wrap'               => '<ul class="section-list-items">',
+			'items'              => $html_items,
+			'section-item-clone' => $this->html_section_item(),
+			'section-item-new'   => $this->html_section_item_new(),
+			'wrap_end'           => '</ul>',
 		];
 
 		$section = [
 			'wrap'                 => sprintf(
-				'<div data-section-id="%s" data-section-order="%s" class="section open">',
-				$section_items->section_id ?? 0,
-				$section_items->section_order ?? 0
+				'<div data-section-id="%s" class="section open">',
+				$section_items->section_id ?? 0
 			),
 			'head'                 => '<div class="section-head">',
 			'drag'                 => '<span class="movable"></span>',
@@ -338,11 +339,11 @@ class AdminEditCurriculum {
 		return $html;
 	}
 
-	public function html_section_item( $item ): string {
+	public function html_section_item( $item = null ): string {
+		$is_clone     = is_null( $item );
 		$item_id      = $item->item_id ?? 0;
 		$item_title   = $item->title ?? '';
 		$item_type    = $item->item_type ?? '';
-		$item_order   = $item->item_order ?? '';
 		$item_preview = $item->preview ?? '';
 
 		$section_action = [
@@ -356,25 +357,23 @@ class AdminEditCurriculum {
 		];
 
 		$section = [
-			'ul'           => '<ul class="ui-sortable">',
 			'li'           => sprintf(
-				'<li data-item-id="%s" data-item-order="%d" class="section-item %s">',
+				'<li data-item-id="%s" class="section-item %s %s">',
 				$item_id,
-				$data['item_order'] ?? 0,
-				$item_type
+				$item_type,
+				$is_clone ? 'empty-item section-item-clone lp-hidden' : ''
 			),
 			'drag'         => sprintf(
 				'<div class="drag lp-sortable-handle">%s</div>',
 				LP_WP_Filesystem::instance()->file_get_contents( LP_PLUGIN_PATH . 'assets/images/icons/ico-drag.svg' )
 			),
 			'icon'         => '<div class="icon"></div>',
-			'title'        => sprintf(
-				'<div class="title"><input type="text" value="%s"></div>',
+			'input-title'  => sprintf(
+				'<div class="title"><input name="item-title-input" type="text" value="%s"></div>',
 				wp_kses_post( $item_title )
 			),
 			'item_actions' => Template::combine_components( $section_action ),
 			'li_end'       => '</li>',
-			'ul_end'       => '</ul>',
 		];
 
 		return Template::combine_components( $section );
