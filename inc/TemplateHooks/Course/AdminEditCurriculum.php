@@ -5,11 +5,14 @@ namespace LearnPress\TemplateHooks\Course;
 use Exception;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
+use LearnPress\Models\CourseSectionItemModel;
 use LearnPress\Models\CourseSectionModel;
 use LearnPress\Models\CourseModel;
 
 use LP_Background_Single_Course;
 use LP_Section_DB;
+use LP_Section_Items_DB;
+use LP_Section_Items_Filter;
 use LP_WP_Filesystem;
 use stdClass;
 
@@ -230,6 +233,93 @@ class AdminEditCurriculum {
 	 */
 	public static function update_item_of_section( $data ): stdClass {
 		$response = new stdClass();
+
+		return $response;
+	}
+
+	/**
+	 * Update item position in section
+	 *
+	 * @throws Exception
+	 */
+	public static function update_item_section_and_position( $data ): stdClass {
+		$response               = new stdClass();
+		$course_id              = $data['course_id'] ?? 0;
+		$items_position         = $data['items_position'] ?? [];
+		$item_id_change         = $data['item_id_change'] ?? 0;
+		$section_id_new_of_item = $data['section_id_new_of_item'] ?? 0;
+		$section_id_old_of_item = $data['section_id_old_of_item'] ?? 0;
+		if ( ! is_array( $items_position ) ) {
+			throw new Exception( __( 'Invalid item position', 'learnpress' ) );
+		}
+
+		$courseModel = CourseModel::find( $course_id, true );
+		if ( ! $courseModel ) {
+			throw new Exception( __( 'Course not found', 'learnpress' ) );
+		}
+
+		// Find item of section id old
+		$filter                  = new LP_Section_items_Filter();
+		$filter->section_id      = $section_id_old_of_item;
+		$filter->item_id         = $item_id_change;
+		$filter->run_query_count = false;
+
+		$courseSectionItemModel = CourseSectionItemModel::get_item_model_from_db( $filter );
+		if ( ! $courseSectionItemModel ) {
+			throw new Exception( __( 'Item not found in section', 'learnpress' ) );
+		}
+
+		// Update section id of item
+		$courseSectionItemModel->section_id = $section_id_new_of_item;
+		$courseSectionItemModel->save();
+
+		// For each section to find item then update section id of item and position of item in the new section
+		$sections_items = $courseModel->get_section_items();
+		foreach ( $sections_items as $section_items ) {
+			$section_id = $section_items->section_id ?? 0;
+
+			if ( $section_id != $section_id_new_of_item ) {
+				continue;
+			}
+
+			// Update position of item in section
+			LP_Section_Items_DB::getInstance()->update_items_position( $items_position, $section_id_new_of_item );
+			break;
+		}
+
+		$courseModel->sections_items = null;
+		$courseModel->save();
+
+		$response->message = __( 'Item position updated successfully', 'learnpress' );
+
+		return $response;
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	public static function update_items_position( $data ): stdClass {
+		$response       = new stdClass();
+		$course_id      = $data['course_id'] ?? 0;
+		$section_id     = $data['section_id'] ?? 0;
+		$items_position = $data['items_position'] ?? [];
+
+		$courseModel = CourseModel::find( $course_id, true );
+		if ( ! $courseModel ) {
+			throw new Exception( __( 'Course not found', 'learnpress' ) );
+		}
+
+		if ( ! is_array( $items_position ) || empty( $items_position ) ) {
+			throw new Exception( __( 'Invalid item position', 'learnpress' ) );
+		}
+
+		// Update position of item in section
+		LP_Section_Items_DB::getInstance()->update_items_position( $items_position, $section_id );
+
+		$courseModel->sections_items = null;
+		$courseModel->save();
+
+		$response->message = __( 'Item position updated successfully', 'learnpress' );
 
 		return $response;
 	}

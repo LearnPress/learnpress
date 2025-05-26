@@ -315,6 +315,9 @@ const sortAbleRow = ( elCurriculumSections ) => {
 	} );
 
 	const elSectionListItems = elCurriculumSections.querySelectorAll( '.section-list-items' );
+	let itemIdChoose = 0;
+	let sectionIdChoose = 0;
+	let sectionIdEnd = 0;
 	elSectionListItems.forEach( ( elSectionListItem ) => {
 		new Sortable( elSectionListItem, {
 			handle: '.drag',
@@ -323,7 +326,67 @@ const sortAbleRow = ( elCurriculumSections ) => {
 				name: 'shared',
 			},
 			onEnd: ( evt ) => {
+				const dataSectionsItems = [];
 
+				sectionIdEnd = evt.to.closest( '.section' ).dataset.sectionId;
+
+				if ( sectionIdChoose === sectionIdEnd ) {
+					// Update items position in the same section
+					dataSend.args.action = 'update_items_position';
+					dataSend.args.section_id = sectionIdEnd;
+				} else {
+					// Update section id of item changed
+					dataSend.args.action = 'update_item_section_and_position';
+					dataSend.args.item_id_change = itemIdChoose;
+					dataSend.args.section_id_new_of_item = sectionIdEnd;
+					dataSend.args.section_id_old_of_item = sectionIdChoose;
+				}
+
+				// Send list items position
+				const section = elCurriculumSections.querySelector( `.section[data-section-id="${ sectionIdEnd }"]` );
+				const items = section.querySelectorAll( '.section-item' );
+				items.forEach( ( elItem ) => {
+					const itemId = parseInt( elItem.dataset.itemId || 0 );
+					if ( itemId === 0 ) {
+						return;
+					}
+
+					dataSectionsItems.push( itemId );
+				} );
+				dataSend.args.items_position = dataSectionsItems;
+
+				// Call ajax to update items position
+				const callBack = {
+					success: ( response ) => {
+						const { message, status } = response;
+						const { content } = response.data;
+
+						toastify.options.text = message;
+						toastify.options.className += status;
+						toastify.showToast();
+					},
+					error: ( error ) => {
+						console.log( error );
+					},
+					completed: () => {
+						//console.log( 'completed' );
+						lpUtils.lpSetLoadingEl( elStatusChange, 0 );
+					},
+				};
+
+				clearTimeout( timeout );
+				timeout = setTimeout( () => {
+					lpUtils.lpSetLoadingEl( elStatusChange, 1 );
+					window.lpAJAXG.fetchAJAX( dataSend, callBack );
+				}, 1000 );
+			},
+			onMove: ( evt ) => {
+				clearTimeout( timeout );
+			},
+			onChoose: ( evt ) => {
+				const elChooseItem = evt.item;
+				itemIdChoose = elChooseItem.dataset.itemId;
+				sectionIdChoose = elChooseItem.closest( '.section' ).dataset.sectionId;
 			},
 		} );
 	} );

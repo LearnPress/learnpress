@@ -215,4 +215,34 @@ class LP_Section_Items_DB extends LP_Database {
 
 		return true;
 	}
+
+	/**
+	 * Update items position
+	 * Update item_order of each item in section
+	 *
+	 * @throws Exception
+	 * @since 4.2.8.6
+	 * @version 1.0.0
+	 */
+	public function update_items_position( array $item_ids, $section_id ) {
+		$filter             = new LP_Section_Items_Filter();
+		$filter->collection = $this->tb_lp_section_items;
+		$SET_SQL            = 'item_order = CASE';
+
+		foreach ( $item_ids as $position => $item_id ) {
+			++$position;
+			$item_id = absint( $item_id );
+			if ( empty( $item_id ) ) {
+				continue;
+			}
+
+			$SET_SQL .= $this->wpdb->prepare( ' WHEN item_id = %d THEN %d', $item_id, $position );
+		}
+
+		$SET_SQL        .= ' ELSE item_order END';
+		$filter->set[]   = $SET_SQL;
+		$filter->where[] = $this->wpdb->prepare( 'AND section_id = %d', $section_id );
+
+		$this->update_execute( $filter );
+	}
 }

@@ -98,14 +98,14 @@ class CourseSectionItemModel {
 	}
 
 	/**
-	 * Get section by section id
+	 * Get section item by section id and item id.
 	 *
 	 * @return false|CourseSectionItemModel
 	 */
-	public static function find_by_section( int $section_id, $check_cache = true ) {
+	public static function find( int $section_id, $item_id, $check_cache = true ) {
 		$filter             = new LP_Section_Items_Filter();
 		$filter->section_id = $section_id;
-		$key_cache          = "courseSectionItem/find/section_id/{$section_id}/{$filter->item_id}/{$filter->item_type}";
+		$key_cache          = "courseSectionItem/find/{$section_id}/{$item_id}";
 		$lpSectionCache     = new LP_Cache();
 
 		// Check cache
@@ -216,7 +216,7 @@ class CourseSectionItemModel {
 			)
 		)->dispatch();
 
-		$key_cache       = "courseSectionItem/find/section_id/{$this->get_section_item_id()}/{$this->item_id}/{$this->item_type}";
+		$key_cache       = "courseSectionItem/find/{$this->section_id}/{$this->item_id}";
 		$lp_course_cache = new LP_Cache();
 		$lp_course_cache->clear( $key_cache );
 	}
