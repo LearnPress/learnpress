@@ -268,11 +268,18 @@ const toggleSection = ( e, target ) => {
 	}
 };
 let timeout;
-const sortAbleRow = ( elCurriculumSections ) => {
+const sortAbleSection = ( elCurriculumSections ) => {
+	let isUpdateSectionPosition = 0;
+
 	new Sortable( elCurriculumSections, {
 		handle: '.movable',
 		animation: 150,
 		onEnd: ( evt ) => {
+			if ( ! isUpdateSectionPosition ) {
+				// No change in section position, do nothing
+				return;
+			}
+
 			const elSections = elCurriculumSections.querySelectorAll( '.section' );
 			const sectionIds = [];
 
@@ -297,6 +304,7 @@ const sortAbleRow = ( elCurriculumSections ) => {
 				completed: () => {
 					//console.log( 'completed' );
 					lpUtils.lpSetLoadingEl( elStatusChange, 0 );
+					isUpdateSectionPosition = 0;
 				},
 			};
 
@@ -312,9 +320,14 @@ const sortAbleRow = ( elCurriculumSections ) => {
 		onMove: ( evt ) => {
 			clearTimeout( timeout );
 		},
+		onUpdate: ( evt ) => {
+			isUpdateSectionPosition = 1;
+		},
 	} );
-
+};
+const sortAbleItem = ( elCurriculumSections ) => {
 	const elSectionListItems = elCurriculumSections.querySelectorAll( '.section-list-items' );
+	let isUpdateItemPosition = 0;
 	let itemIdChoose = 0;
 	let sectionIdChoose = 0;
 	let sectionIdEnd = 0;
@@ -326,6 +339,11 @@ const sortAbleRow = ( elCurriculumSections ) => {
 				name: 'shared',
 			},
 			onEnd: ( evt ) => {
+				if ( ! isUpdateItemPosition ) {
+					// No change in item position, do nothing
+					return;
+				}
+
 				const dataSectionsItems = [];
 
 				sectionIdEnd = evt.to.closest( '.section' ).dataset.sectionId;
@@ -371,6 +389,7 @@ const sortAbleRow = ( elCurriculumSections ) => {
 					completed: () => {
 						//console.log( 'completed' );
 						lpUtils.lpSetLoadingEl( elStatusChange, 0 );
+						isUpdateItemPosition = 0;
 					},
 				};
 
@@ -387,6 +406,9 @@ const sortAbleRow = ( elCurriculumSections ) => {
 				const elChooseItem = evt.item;
 				itemIdChoose = elChooseItem.dataset.itemId;
 				sectionIdChoose = elChooseItem.closest( '.section' ).dataset.sectionId;
+			},
+			onUpdate: ( evt ) => {
+				isUpdateItemPosition = 1;
 			},
 		} );
 	} );
@@ -460,5 +482,6 @@ lpUtils.lpOnElementReady( '#admin-editor-lp_course', ( elAdminEditor ) => {
 	elCurriculumSections = elAdminEditor.querySelector( '.curriculum-sections' );
 	elStatusChange = elAdminEditor.querySelector( '.status' );
 
-	sortAbleRow( elCurriculumSections );
+	sortAbleSection( elCurriculumSections );
+	sortAbleItem( elCurriculumSections );
 } );
