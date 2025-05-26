@@ -327,7 +327,6 @@ const sortAbleSection = ( elCurriculumSections ) => {
 };
 const sortAbleItem = ( elCurriculumSections ) => {
 	const elSectionListItems = elCurriculumSections.querySelectorAll( '.section-list-items' );
-	let isUpdateItemPosition = 0;
 	let itemIdChoose = 0;
 	let sectionIdChoose = 0;
 	let sectionIdEnd = 0;
@@ -339,11 +338,6 @@ const sortAbleItem = ( elCurriculumSections ) => {
 				name: 'shared',
 			},
 			onEnd: ( evt ) => {
-				if ( ! isUpdateItemPosition ) {
-					// No change in item position, do nothing
-					return;
-				}
-
 				const dataSectionsItems = [];
 
 				sectionIdEnd = evt.to.closest( '.section' ).dataset.sectionId;
@@ -389,7 +383,6 @@ const sortAbleItem = ( elCurriculumSections ) => {
 					completed: () => {
 						//console.log( 'completed' );
 						lpUtils.lpSetLoadingEl( elStatusChange, 0 );
-						isUpdateItemPosition = 0;
 					},
 				};
 
@@ -408,7 +401,7 @@ const sortAbleItem = ( elCurriculumSections ) => {
 				sectionIdChoose = elChooseItem.closest( '.section' ).dataset.sectionId;
 			},
 			onUpdate: ( evt ) => {
-				isUpdateItemPosition = 1;
+				console.log( 'onUpdate', evt );
 			},
 		} );
 	} );
