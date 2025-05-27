@@ -62,6 +62,8 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				'urlParams'                => lp_archive_skeleton_get_args(),
 				'i18n'                     => [
 					'select_page' => esc_html__( 'Select page', 'learnpress' ),
+					'yes'         => esc_html__( 'Yes' ),
+					'cancel'      => esc_html__( 'Cancel' ),
 				],
 				'current_screen'           => $screen ? $screen->id : '',
 				'show_search_author_field' => empty( $html_search_author_field ) ? 0 : $html_search_author_field,
@@ -225,7 +227,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					0,
 					0,
 					'',
-					[ 'strategy' => 'defer' ]
+					[ 'strategy' => 'async' ]
 				),
 				'learn-press-admin-quiz-editor'     => new LP_Asset_Key(
 					$this->url( 'js/dist/admin/editor/quiz' . self::$_min_assets . '.js' ),

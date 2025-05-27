@@ -16,29 +16,29 @@
 defined( 'ABSPATH' ) || exit();
 
 class LP_Post_Type_Filter extends LP_Filter {
-	const COL_ID = 'ID';
-	const COL_POST_AUTHOR = 'post_author';
-	const COL_POST_DATE = 'post_date';
-	const COL_POST_DATE_GMT = 'post_date_gmt';
-	const COL_POST_CONTENT = 'post_content';
-	const COL_POST_TITLE = 'post_title';
-	const COL_POST_EXCERPT = 'post_excerpt';
-	const COL_POST_STATUS = 'post_status';
-	const COL_COMMENT_STATUS = 'comment_status';
-	const COL_PING_STATUS = 'ping_status';
-	const COL_POST_PASSWORD = 'post_password';
-	const COL_POST_NAME = 'post_name';
-	const COL_TO_PING = 'to_ping';
-	const COL_PINGED = 'pinged';
-	const COL_POST_MODIFIED = 'post_modified';
-	const COL_POST_MODIFIED_GMT = 'post_modified_gmt';
+	const COL_ID                    = 'ID';
+	const COL_POST_AUTHOR           = 'post_author';
+	const COL_POST_DATE             = 'post_date';
+	const COL_POST_DATE_GMT         = 'post_date_gmt';
+	const COL_POST_CONTENT          = 'post_content';
+	const COL_POST_TITLE            = 'post_title';
+	const COL_POST_EXCERPT          = 'post_excerpt';
+	const COL_POST_STATUS           = 'post_status';
+	const COL_COMMENT_STATUS        = 'comment_status';
+	const COL_PING_STATUS           = 'ping_status';
+	const COL_POST_PASSWORD         = 'post_password';
+	const COL_POST_NAME             = 'post_name';
+	const COL_TO_PING               = 'to_ping';
+	const COL_PINGED                = 'pinged';
+	const COL_POST_MODIFIED         = 'post_modified';
+	const COL_POST_MODIFIED_GMT     = 'post_modified_gmt';
 	const COL_POST_CONTENT_FILTERED = 'post_content_filtered';
-	const COL_POST_PARENT = 'post_parent';
-	const COL_GUID = 'guid';
-	const COL_MENU_ORDER = 'menu_order';
-	const COL_POST_TYPE = 'post_type';
-	const COL_POST_MIME_TYPE = 'post_mime_type';
-	const COL_COMMENT_COUNT = 'comment_count';
+	const COL_POST_PARENT           = 'post_parent';
+	const COL_GUID                  = 'guid';
+	const COL_MENU_ORDER            = 'menu_order';
+	const COL_POST_TYPE             = 'post_type';
+	const COL_POST_MIME_TYPE        = 'post_mime_type';
+	const COL_COMMENT_COUNT         = 'comment_count';
 	/**
 	 * @var string[]
 	 */
@@ -113,8 +113,5 @@ class LP_Post_Type_Filter extends LP_Filter {
 	public $taxonomy = 'category';
 
 	public function __construct() {
-
 	}
 }
-
-

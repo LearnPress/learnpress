@@ -9,6 +9,7 @@ import * as lpUtils from '../utils.js';
 import Toastify from 'toastify-js';
 import 'toastify-js/src/toastify.css';
 import Sortable from 'sortablejs';
+import SweetAlert from 'sweetalert2';
 
 let elLPTarget;
 let elSectionCreating;
@@ -29,6 +30,8 @@ const toastify = Toastify( {
 
 const className = {
 	btnNewSection: 'lp-btn-add-section',
+	elBtnDeleteSection: 'lp-btn-delete-section',
+	elBtnSelectItems: 'lp-btn-select-items',
 	btnSelectItemType: 'lp-btn-select-item-type',
 	btnAddItem: 'lp-btn-add-item',
 	elNewSectionItem: 'new-section-item',
@@ -85,6 +88,50 @@ const addSection = ( e, target ) => {
 	dataSend.args.action = 'add_section';
 	dataSend.args.title = titleSectionValue;
 	window.lpAJAXG.fetchAJAX( dataSend, callBack );
+};
+const deleteSection = ( e, target ) => {
+	const elBtnDeleteSection = target.closest( `.${ className.elBtnDeleteSection }` );
+	if ( ! elBtnDeleteSection ) {
+		return;
+	}
+
+	SweetAlert.fire( {
+		title: elBtnDeleteSection.dataset.title,
+		text: elBtnDeleteSection.dataset.content,
+		icon: 'warning',
+		showCloseButton: true,
+		showCancelButton: true,
+		cancelButtonText: lpDataAdmin.i18n.cancel,
+		confirmButtonText: lpDataAdmin.i18n.yes,
+		reverseButtons: true,
+	} ).then( ( result ) => {
+		if ( result.isConfirmed ) {
+			const elSection = elBtnDeleteSection.closest( '.section' );
+			const sectionId = elSection.dataset.sectionId;
+
+			// Call ajax to delete section
+			const callBack = {
+				success: ( response ) => {
+					const { message, status } = response;
+					const { content } = response.data;
+
+					toastify.options.text = message;
+					toastify.options.className += status;
+					toastify.showToast();
+				},
+				error: ( error ) => {
+					console.log( error );
+				},
+				completed: () => {
+					elSection.remove();
+				},
+			};
+
+			dataSend.args.action = 'delete_section';
+			dataSend.args.section_id = sectionId;
+			window.lpAJAXG.fetchAJAX( dataSend, callBack );
+		}
+	} );
 };
 /**
  * Select item type to add to section
@@ -267,6 +314,30 @@ const toggleSection = ( e, target ) => {
 		lpUtils.lpShowHideEl( elSectionCollapse, 1 );
 	}
 };
+const selectItemFromList = ( e, target ) => {
+	const elBtnSelectItems = target.closest( `.${ className.elBtnSelectItems }` );
+	if ( ! elBtnSelectItems ) {
+		return;
+	}
+
+	const elSelectItems = document.querySelector( '.lp-select-items-to-add' );
+	const elSelectItemsClone = elSelectItems.cloneNode( true );
+	lpUtils.lpShowHideEl( elSelectItemsClone, 1 );
+
+	SweetAlert.fire( {
+		html: elSelectItemsClone,
+		showConfirmButton: false,
+		showCloseButton: true,
+		width: '75%',
+		customClass: {
+			popup: 'lp-select-items-popup',
+			htmlContainer: 'lp-select-items-html-container',
+			container: 'lp-select-items-container',
+		},
+	} ).then( ( result ) => {
+
+	} );
+};
 let timeout;
 const sortAbleSection = ( elCurriculumSections ) => {
 	let isUpdateSectionPosition = 0;
@@ -400,9 +471,7 @@ const sortAbleItem = ( elCurriculumSections ) => {
 				itemIdChoose = elChooseItem.dataset.itemId;
 				sectionIdChoose = elChooseItem.closest( '.section' ).dataset.sectionId;
 			},
-			onUpdate: ( evt ) => {
-				console.log( 'onUpdate', evt );
-			},
+			onUpdate: ( evt ) => {},
 		} );
 	} );
 };
@@ -414,6 +483,12 @@ document.addEventListener( 'click', ( e ) => {
 	if ( target.classList.contains( `${ className.btnNewSection }` ) ) {
 		addSection( e, target );
 	}
+
+	// Delete section
+	deleteSection( e, target );
+
+	// Select items from list to add to section
+	selectItemFromList( e, target );
 
 	// Collapse/Expand section
 	toggleSection( e, target );

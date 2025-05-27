@@ -9,7 +9,10 @@ use LearnPress\Models\CourseSectionItemModel;
 use LearnPress\Models\CourseSectionModel;
 use LearnPress\Models\CourseModel;
 
+use LearnPress\TemplateHooks\TemplateAJAX;
 use LP_Background_Single_Course;
+use LP_Post_DB;
+use LP_Post_Type_Filter;
 use LP_Section_DB;
 use LP_Section_Items_DB;
 use LP_Section_Items_Filter;
@@ -39,6 +42,7 @@ class AdminEditCurriculum {
 	 */
 	public function allow_callback( array $callbacks ): array {
 		$callbacks[] = get_class( $this ) . ':render_html';
+		$callbacks[] = get_class( $this ) . ':render_list_items_not_assign';
 
 		return $callbacks;
 	}
@@ -336,6 +340,7 @@ class AdminEditCurriculum {
 			'sections'       => $html_sections,
 			'section_action' => $this->html_section_actions(),
 			'wrap_end'       => '</div>',
+			'select_items'   => $this->html_select_items(),
 		];
 
 		return Template::combine_components( $section );
@@ -365,6 +370,12 @@ class AdminEditCurriculum {
 			'head'                 => '<div class="section-head">',
 			'drag'                 => '<span class="movable"></span>',
 			'title'                => $this->html_edit_section_title( $section_items->section_name ?? '' ),
+			'btn-delete'           => sprintf(
+				'<button type="button" class="lp-btn-delete-section button" data-title="%s" data-content="%s">%s</button>',
+				__( 'Are you sure?', 'learnpress' ),
+				__( 'This section will be deleted. All items in this section will be kept.', 'learnpress' ),
+				__( 'Delete Section', 'learnpress' )
+			),
 			'total-items'          => sprintf(
 				'<div class="section-item-counts"><span>%s</span></div>',
 				sprintf( _n( '%s Item', '%s Items', $total_items, 'learnpress' ), $total_items )
@@ -441,7 +452,7 @@ class AdminEditCurriculum {
 			'div_actions'     => '<div class="actions">',
 			'preview'         => '<div data-content-tip="Enable/Disable Preview" class="action preview-item lp-title-attr-tip ready" data-id="%s"><a class="lp-btn-icon dashicons dashicons-hidden"></a></div>',
 			'edit'            => '<div data-content-tip="Edit an item" class="action edit-item lp-title-attr-tip ready" data-id="%s"><a href="%s" target="_blank" class="lp-btn-icon dashicons dashicons-edit"></a></div>',
-			'delete'          => '<div class="action delete-item"><a class="lp-btn-icon dashicons dashicons-trash"></a></div>',
+			'delete'          => '<div class="action delete-item"><a class="dashicons dashicons-trash"></a></div>',
 			'div_actions_end' => '</div>',
 			'wrap_end'        => '</div>',
 		];
@@ -470,28 +481,36 @@ class AdminEditCurriculum {
 	}
 
 	public function html_section_item_actions( $item ): string {
-		$m = '
-		<div class="section-actions">
-			<button class="lp-btn-select-item-type button"
-					data-item-type="lp_lesson"
-					data-placeholder="Create a new lesson"
-					data-button-add-text="Add Lesson"
-					type="button">New Lesson
-			</button>
-			<button class="lp-btn-select-item-type button"
-					data-item-type="lp_quiz"
-					data-placeholder="Create a new quiz"
-					data-button-add-text="Add Quiz"
-					type="button">New Quiz
-			</button>
-			<button type="button" class="button button-secondary">Select items</button>
-			<div class="remove"><span class="icon">Delete</span>
-				<div class="confirm">Are you sure?</div>
-			</div>
-		</div>
-		';
+		$course_item_types = CourseModel::item_types_support();
 
-		return $m;
+		$html_buttons = '';
+		foreach ( $course_item_types as $type ) {
+			$item_label = CourseModel::item_types_label( $type );
+
+			$html_buttons .= sprintf(
+				'<button class="lp-btn-select-item-type button"
+					data-item-type="%s"
+					data-placeholder="%s"
+					data-button-add-text="%s"
+					type="button">%s</button>',
+				$type,
+				sprintf( __( 'Create a new %s', 'learnpress' ), $item_label ),
+				sprintf( __( 'Add %s', 'leanpress' ), $item_label ),
+				sprintf( __( 'New %s', 'learnpress' ), $item_label )
+			);
+		}
+
+		$section = [
+			'wrap'             => '<div class="section-actions">',
+			'buttons'          => $html_buttons,
+			'btn-select-items' => sprintf(
+				'<button type="button" class="button button-primary lp-btn-select-items">%s</button>',
+				__( 'Select items', 'learnpress' )
+			),
+			'wrap_end'         => '</div>',
+		];
+
+		return Template::combine_components( $section );
 	}
 
 	public function html_section_item_new() {
@@ -510,5 +529,117 @@ class AdminEditCurriculum {
 		';
 
 		return $m;
+	}
+
+	public function html_select_items(): string {
+		$html_tabs         = '';
+		$course_item_types = CourseModel::item_types_support();
+		foreach ( $course_item_types as $type ) {
+			$item_label = CourseModel::item_types_label( $type );
+			$html_tabs .= sprintf(
+				'<li data-type="%s" class="tab"><a href="#">%s</a></li>',
+				$type,
+				$item_label
+			);
+		}
+
+		$section_header = [
+			'wrap'     => '<div class="header">',
+			'title'    => sprintf(
+				'<div class="preview-title"><span>%s</span></div>',
+				__( 'Selected items (0)', 'learnpress' )
+			),
+			'tabs'     => sprintf(
+				'<ul class="tabs">%s</ul>',
+				$html_tabs
+			),
+			'wrap_end' => '</div>',
+		];
+
+		/**
+		 * @uses self::render_list_items_not_assign
+		 */
+		$html_items = TemplateAJAX::load_content_via_ajax(
+			[
+				'id_url'    => 'list-items-not-assign',
+				'course_id' => 123,
+				'item_type' => LP_LESSON_CPT,
+				'paged'     => 1,
+			],
+			[
+				'class'  => self::class,
+				'method' => 'render_list_items_not_assign',
+			]
+		);
+
+		$section_main = [
+			'wrap'       => '<div class="main">',
+			'search'     => sprintf(
+				'<input type="text" placeholder="%s" title="search" class="modal-search-input">',
+				__( 'Type here to search for an item', 'learnpress' )
+			),
+			'list-items' => $html_items,
+			'wrap_end'   => '</div>',
+		];
+
+		$section_footer = [
+			'wrap'          => '<div class="footer">',
+			'cart'          => '<div class="cart">',
+			'checkout'      => sprintf(
+				'<button type="button" disabled="disabled" class="button button-primary checkout"><span>%s</span></button>',
+				__( 'Add', 'learnpress' )
+			),
+			'edit_selected' => sprintf(
+				'<button type="button" disabled="disabled" class="button button-secondary edit-selected">%s</button>',
+				sprintf( __( 'Selected items (%s)', 'learnpress' ), 0 )
+			),
+			'wrap_end'      => '</div></div>',
+		];
+
+		$section = [
+			'wrap'     => '<div class="lp-select-items-to-add lp-hidden">',
+			'header'   => Template::combine_components( $section_header ),
+			'main'     => Template::combine_components( $section_main ),
+			'footer'   => Template::combine_components( $section_footer ),
+			'wrap_end' => '</div>',
+		];
+
+		return Template::combine_components( $section );
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	public static function render_list_items_not_assign( $data ): stdClass {
+		$content   = new stdClass();
+		$course_id = $data['course_id'] ?? 0;
+		$item_type = $data['item_type'] ?? LP_LESSON_CPT;
+		$paged     = $data['paged'] ?? 1;
+
+		$filter              = new LP_Post_Type_Filter();
+		$filter->post_type   = $item_type;
+		$filter->post_status = 'publish';
+
+		$lp_posts_db = LP_Post_DB::getInstance();
+		$total_pages = 0;
+		$posts       = $lp_posts_db->get_posts( $filter, $total_pages );
+
+		$html_lis = '';
+		foreach ( $posts as $post ) {
+			$html_lis .= sprintf(
+				'<li class="item" data-id="%s">%s%s</li>',
+				$post->ID,
+				'<input type="checkbox" />',
+				sprintf(
+					'<span class="title">%s<strong>(#%d)</strong></span>',
+					$post->post_title,
+					$post->ID
+				)
+			);
+		}
+
+		$content->content = Template::instance()->nest_elements( [ '<ul class="list-items">' => '</ul>' ], $html_lis );
+
+		return $content;
 	}
 }

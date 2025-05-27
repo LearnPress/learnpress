@@ -790,207 +790,217 @@
 			}
 		}
 	}
+}
 
-	.lp-choose-items {
-		position: relative;
-		max-width: 800px;
-		margin: 5% auto 10% 20%;
-		border: 1px solid #ddd;
-		background-color: #fff;
-		box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
-		transition: all 200ms ease-out;
+.lp-select-items-container {
+}
 
-		&.show-preview {
+.lp-select-items-popup {
+	padding: 0 !important;
+	grid-row: 1 !important;
+}
 
-			.header {
+.lp-select-items-html-container {
+	padding: 0 !important;
+}
 
-				.preview-title {
-					display: flex;
-					align-items: center;
-				}
-			}
-		}
+.lp-select-items-to-add {
+	position: relative;
+	border: 1px solid #ddd;
+	background-color: #fff;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+	transition: all 200ms ease-out;
+	text-align: left;
+
+	&.show-preview {
 
 		.header {
-			position: relative;
-
 			.preview-title {
-				display: none;
-				position: absolute;
-				z-index: 10;
-				top: 0;
-				right: 0;
-				bottom: 0;
-				left: 0;
-				padding-left: 20px;
-				border-bottom: 1px solid #ddd;
-				background-color: #fff;
-				font-weight: 600;
-
-				h3 {
-					margin: 0;
-				}
-			}
-
-			.tabs {
-				margin: 0;
-				border-bottom: 1px solid #ddd;
-
-				.tab {
-					display: inline-block;
-					position: relative;
-					margin: 0;
-
-					&:not(:last-child)::before {
-						position: absolute;
-						top: 50%;
-						right: 0;
-						height: 44px;
-						margin-top: -22px;
-						border-right: 1px solid #ddd;
-						content: "";
-					}
-
-					&.active {
-
-						&::after {
-							display: inline-block;
-							position: absolute;
-							bottom: -6px;
-							left: 50%;
-							width: 10px;
-							height: 10px;
-							margin-left: -6px;
-							border: 1px solid #ddd;
-							border-right: 0;
-							border-bottom: 0;
-							background: #fff;
-							content: "";
-							transform: rotate(45deg);
-						}
-
-						a {
-							color: #0073aa;
-						}
-					}
-
-					a {
-						display: inline-block;
-						height: 44px;
-						padding: 0 20px;
-						color: #333;
-						font-weight: 600;
-						line-height: 2.75rem;
-						text-decoration: none;
-
-						&:focus {
-							box-shadow: none;
-						}
-					}
-				}
-			}
-
-			.close {
-				display: inline-block;
-				position: absolute;
-				z-index: 30;
-				top: 0;
-				right: 0;
-				padding: 12px;
-				font-size: 1em;
-				cursor: pointer;
+				display: flex;
+				align-items: center;
 			}
 		}
+	}
 
-		.main {
-			overflow: hidden;
-			position: relative;
-			padding: 20px;
-			border-bottom: 1px solid #ddd;
+	.header {
+		position: relative;
 
-			.section-item {
-				display: block;
-				overflow: hidden;
-				max-width: 100%;
-				white-space: nowrap;
-				text-overflow: ellipsis;
-				cursor: pointer;
-				transition: color 200ms ease-out;
-
-				&::before {
-					position: relative;
-					top: 3px;
-					font-family: Dashicons;
-				}
-			}
-
-			.search {
-				margin-bottom: 20px;
-				background: transparent;
-
-				input.modal-search-input {
-					width: 100%;
-					height: 36px;
-					padding: 0 14px;
-					font-size: 1rem;
-					line-height: 2.25rem;
-				}
-			}
-
-			.list-items {
-				overflow-y: auto;
-				position: relative;
-				min-height: 260px;
-				max-height: 460px;
-				margin: 0;
-
-				li {
-					margin: 15px 0;
-					cursor: pointer;
-				}
-			}
-
-			.pagination {
-
-				.index {
-					margin-left: 20px;
-					line-height: 1.75rem;
-				}
-			}
-		}
-
-		.lp-added-items-preview {
-			overflow: auto;
+		.preview-title {
+			display: none;
 			position: absolute;
-			z-index: 2;
+			z-index: 10;
 			top: 0;
 			right: 0;
 			bottom: 0;
 			left: 0;
-			max-height: 420px;
-			padding: 20px;
+			padding-left: 20px;
+			border-bottom: 1px solid #ddd;
 			background-color: #fff;
-			transform: translate(100%, 0);
+			font-weight: 600;
 
-			&.show {
-				transform: translate(0, 0);
+			h3 {
+				margin: 0;
 			}
+		}
 
-			.list-added-items {
+		.tabs {
+			margin: 0;
+			border-bottom: 1px solid #ddd;
 
-				li {
-					margin: 15px 0;
+			.tab {
+				display: inline-block;
+				position: relative;
+				margin: 0;
 
-					&:first-child {
-						margin: -10px 0 15px 0;
+				&:not(:last-child)::before {
+					position: absolute;
+					top: 50%;
+					right: 0;
+					height: 44px;
+					margin-top: -22px;
+					border-right: 1px solid #ddd;
+					content: "";
+				}
+
+				&.active {
+
+					&::after {
+						display: inline-block;
+						position: absolute;
+						bottom: -6px;
+						left: 50%;
+						width: 10px;
+						height: 10px;
+						margin-left: -6px;
+						border: 1px solid #ddd;
+						border-right: 0;
+						border-bottom: 0;
+						background: #fff;
+						content: "";
+						transform: rotate(45deg);
+					}
+
+					a {
+						color: #0073aa;
+					}
+				}
+
+				a {
+					display: inline-block;
+					height: 44px;
+					padding: 0 20px;
+					color: #333;
+					font-weight: 600;
+					line-height: 2.75rem;
+					text-decoration: none;
+
+					&:focus {
+						box-shadow: none;
 					}
 				}
 			}
 		}
 
-		.footer {
-			padding: 20px;
+		.close {
+			display: inline-block;
+			position: absolute;
+			z-index: 30;
+			top: 0;
+			right: 0;
+			padding: 12px;
+			font-size: 1em;
+			cursor: pointer;
 		}
+	}
+
+	.main {
+		overflow: hidden;
+		position: relative;
+		padding: 20px;
+		border-bottom: 1px solid #ddd;
+
+		.section-item {
+			display: block;
+			overflow: hidden;
+			max-width: 100%;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+			cursor: pointer;
+			transition: color 200ms ease-out;
+
+			&::before {
+				position: relative;
+				top: 3px;
+				font-family: Dashicons;
+			}
+		}
+
+		.search {
+			margin-bottom: 20px;
+			background: transparent;
+
+			input.modal-search-input {
+				width: 100%;
+				height: 36px;
+				padding: 0 14px;
+				font-size: 1rem;
+				line-height: 2.25rem;
+			}
+		}
+
+		.list-items {
+			overflow-y: auto;
+			position: relative;
+			min-height: 260px;
+			max-height: 460px;
+			margin: 0;
+
+			li {
+				margin: 15px 0;
+				cursor: pointer;
+			}
+		}
+
+		.pagination {
+
+			.index {
+				margin-left: 20px;
+				line-height: 1.75rem;
+			}
+		}
+	}
+
+	.lp-added-items-preview {
+		overflow: auto;
+		position: absolute;
+		z-index: 2;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		max-height: 420px;
+		padding: 20px;
+		background-color: #fff;
+		transform: translate(100%, 0);
+
+		&.show {
+			transform: translate(0, 0);
+		}
+
+		.list-added-items {
+
+			li {
+				margin: 15px 0;
+
+				&:first-child {
+					margin: -10px 0 15px 0;
+				}
+			}
+		}
+	}
+
+	.footer {
+		padding: 20px;
 	}
 }
 
