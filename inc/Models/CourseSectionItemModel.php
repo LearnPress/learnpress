@@ -105,6 +105,7 @@ class CourseSectionItemModel {
 	public static function find( int $section_id, $item_id, $check_cache = true ) {
 		$filter             = new LP_Section_Items_Filter();
 		$filter->section_id = $section_id;
+		$filter->item_id    = $item_id;
 		$key_cache          = "courseSectionItem/find/{$section_id}/{$item_id}";
 		$lpSectionCache     = new LP_Cache();
 

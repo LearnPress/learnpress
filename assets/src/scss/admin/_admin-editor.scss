@@ -935,17 +935,12 @@
 			}
 		}
 
-		.search {
-			margin-bottom: 20px;
-			background: transparent;
-
-			input.modal-search-input {
-				width: 100%;
-				height: 36px;
-				padding: 0 14px;
-				font-size: 1rem;
-				line-height: 2.25rem;
-			}
+		input.modal-search-input {
+			width: 100%;
+			height: 36px;
+			padding: 0 14px;
+			font-size: 1rem;
+			line-height: 2.25rem;
 		}
 
 		.list-items {
@@ -962,10 +957,24 @@
 		}
 
 		.pagination {
+			display: flex;
+			flex-wrap: wrap;
+			margin: 0;
+			align-items: center;
 
-			.index {
-				margin-left: 20px;
-				line-height: 1.75rem;
+			li {
+				margin: 0;
+				cursor: pointer;
+				padding: 10px;
+				&:first-child {
+					padding-left: 0;
+				}
+
+				a {
+					text-decoration: none;
+					display: flex;
+					align-items: center;
+				}
 			}
 		}
 	}

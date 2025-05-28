@@ -314,11 +314,15 @@ const toggleSection = ( e, target ) => {
 		lpUtils.lpShowHideEl( elSectionCollapse, 1 );
 	}
 };
-const selectItemFromList = ( e, target ) => {
+let sectionIdSelected;
+const showSelectItemFromList = ( e, target ) => {
 	const elBtnSelectItems = target.closest( `.${ className.elBtnSelectItems }` );
 	if ( ! elBtnSelectItems ) {
 		return;
 	}
+
+	const elSection = elBtnSelectItems.closest( '.section' );
+	sectionIdSelected = elSection.dataset.sectionId;
 
 	const elSelectItems = document.querySelector( '.lp-select-items-to-add' );
 	const elSelectItemsClone = elSelectItems.cloneNode( true );
@@ -328,14 +332,233 @@ const selectItemFromList = ( e, target ) => {
 		html: elSelectItemsClone,
 		showConfirmButton: false,
 		showCloseButton: true,
-		width: '75%',
+		width: '60%',
 		customClass: {
 			popup: 'lp-select-items-popup',
 			htmlContainer: 'lp-select-items-html-container',
 			container: 'lp-select-items-container',
 		},
+		willOpen: () => {
+			const tabLesson = elSelectItemsClone.querySelector( 'li[data-type="lp_lesson"]' );
+			tabLesson.click();
+		},
 	} ).then( ( result ) => {
+		if ( result.isDismissed ) {
+		}
+	} );
+};
+const selectItemsFromList = ( e, target ) => {
+	const elItemAttend = target.closest( '.lp-select-item' );
+	if ( ! elItemAttend ) {
+		return;
+	}
 
+	const elSelectItemsToAdd = elItemAttend.closest( '.lp-select-items-to-add' );
+
+	if ( target.tagName !== 'INPUT' ) {
+		const elInput = elItemAttend.querySelector( 'input' );
+		elInput.click();
+	}
+
+	const elUl = elItemAttend.closest( '.list-items' );
+	if ( ! elUl ) {
+		return;
+	}
+
+	const itemIds = [];
+	const elInputs = elUl.querySelectorAll( 'input[type="checkbox"]' );
+	elInputs.forEach( ( elInputItem ) => {
+		if ( elInputItem.checked ) {
+			itemIds.push( elInputItem.value );
+		}
+	} );
+
+	const elBtnAddItemsSelected = elSelectItemsToAdd.querySelector( '.lp-btn-add-items-selected' );
+	const elBtnCountItemsSelected = elSelectItemsToAdd.querySelector( '.lp-btn-count-items-selected' );
+	const elSpanCount = elBtnCountItemsSelected.querySelector( 'span' );
+	if ( itemIds.length !== 0 ) {
+		elBtnAddItemsSelected.disabled = false;
+		elBtnCountItemsSelected.disabled = false;
+		elSpanCount.textContent = `(${ itemIds.length })`;
+	} else {
+		elBtnAddItemsSelected.disabled = true;
+		elBtnCountItemsSelected.disabled = true;
+		elSpanCount.textContent = '';
+	}
+};
+const chooseItemType = ( e, target ) => {
+	const elTabType = target.closest( '.tab' );
+	if ( ! elTabType ) {
+		return;
+	}
+
+	const elTabs = elTabType.closest( '.tabs' );
+	if ( ! elTabs ) {
+		return;
+	}
+
+	const elSelectItemsToAdd = elTabs.closest( '.lp-select-items-to-add' );
+	const itemType = elTabType.dataset.type;
+	const elTabLis = elTabs.querySelectorAll( '.tab' );
+	elTabLis.forEach( ( elTabLi ) => {
+		if ( elTabLi.classList.contains( 'active' ) ) {
+			elTabLi.classList.remove( 'active' );
+		}
+	} );
+	elTabType.classList.add( 'active' );
+
+	const elLPTarget = elSelectItemsToAdd.querySelector( `${ className.LPTarget }` );
+
+	const dataSend = window.lpAJAXG.getDataSetCurrent( elLPTarget );
+	dataSend.args.item_type = itemType;
+	dataSend.args.paged = 1;
+
+	window.lpAJAXG.setDataSetCurrent( elLPTarget, dataSend );
+
+	// Show loading
+	window.lpAJAXG.showHideLoading( elLPTarget, 1 );
+	// End
+
+	window.lpAJAXG.fetchAJAX( dataSend, {
+		success: ( response ) => {
+			const { message, status, data } = response;
+			elLPTarget.innerHTML = data.content || '';
+		},
+		error: ( error ) => {
+			console.log( error );
+		},
+		completed: () => {
+			//console.log( 'completed' );
+			window.lpAJAXG.showHideLoading( elLPTarget, 0 );
+		},
+	} );
+};
+const addItemsSelectedToSection = ( e, target ) => {
+	const elBtnAddItems = target.closest( '.lp-btn-add-items-selected' );
+	if ( ! elBtnAddItems ) {
+		return;
+	}
+
+	const elSelectItemsToAdd = elBtnAddItems.closest( '.lp-select-items-to-add' );
+	if ( ! elSelectItemsToAdd ) {
+		return;
+	}
+
+	const items = [];
+	const elInputs = elSelectItemsToAdd.querySelectorAll( 'input[type="checkbox"]' );
+	elInputs.forEach( ( elInputItem ) => {
+		if ( elInputItem.checked ) {
+			const itemData = {
+				item_id: elInputItem.value,
+				item_type: elInputItem.dataset.type || '',
+				item_title: elInputItem.dataset.title || '',
+			};
+			items.push( itemData );
+		}
+	} );
+
+	if ( items.length === 0 ) {
+		toastify.options.text = 'Please select at least one item to add.';
+		toastify.options.className += 'error';
+		toastify.showToast();
+		return;
+	}
+
+	dataSend.args.action = 'add_items_to_section';
+	dataSend.args.items = items;
+	dataSend.args.section_id = sectionIdSelected;
+
+	// Show loading
+	window.lpAJAXG.showHideLoading( elLPTarget, 1 );
+	// End
+
+	const elSection = document.querySelector( `.section[data-section-id="${ sectionIdSelected }"]` );
+	const elItemEmpty = elSection.querySelector( '.empty-item' );
+
+	items.forEach( ( item ) => {
+		const elItemClone = elItemEmpty.cloneNode( true );
+		elItemClone.setAttribute( 'data-item-id', item.item_id );
+		const elInputTitleClone = elItemClone.querySelector( 'input[name="item-title-input"]' );
+		elInputTitleClone.value = item.item_title || '';
+		lpUtils.lpShowHideEl( elItemClone, 1 );
+		elItemEmpty.insertAdjacentElement( 'beforebegin', elItemClone );
+	} );
+
+	SweetAlert.close();
+
+	window.lpAJAXG.fetchAJAX( dataSend, {
+		success: ( response ) => {
+			const { message, status, data } = response;
+			toastify.options.text = message;
+			toastify.options.className += status;
+			toastify.showToast();
+		},
+		error: ( error ) => {
+			console.log( error );
+		},
+		completed: () => {
+			window.lpAJAXG.showHideLoading( elLPTarget, 0 );
+
+			items.forEach( ( item ) => {
+				const elItemAdded = elSection.querySelector( `.section-item[data-item-id="${ item.item_id }"]` );
+				elItemAdded.classList.remove( 'empty-item' );
+				elItemAdded.classList.add( item.item_type );
+			} );
+		},
+	} );
+};
+const deleteItemFromSection = ( e, target ) => {
+	const elBtnDeleteItem = target.closest( '.lp-btn-delete-item-from-section' );
+	if ( ! elBtnDeleteItem ) {
+		return;
+	}
+
+	const elSectionItem = elBtnDeleteItem.closest( '.section-item' );
+	if ( ! elSectionItem ) {
+		return;
+	}
+
+	const itemId = elSectionItem.dataset.itemId;
+
+	const elSection = elSectionItem.closest( '.section' );
+	const sectionId = elSection.dataset.sectionId;
+
+	SweetAlert.fire( {
+		title: elBtnDeleteItem.dataset.title,
+		text: elBtnDeleteItem.dataset.content,
+		icon: 'warning',
+		showCloseButton: true,
+		showCancelButton: true,
+		cancelButtonText: lpDataAdmin.i18n.cancel,
+		confirmButtonText: lpDataAdmin.i18n.yes,
+		reverseButtons: true,
+	} ).then( ( result ) => {
+		if ( result.isConfirmed ) {
+			elSectionItem.classList.add( 'empty-item' );
+
+			// Call ajax to delete item from section
+			const callBack = {
+				success: ( response ) => {
+					const { message, status } = response;
+					const { content } = response.data;
+
+					toastify.options.text = message;
+					toastify.options.className += status;
+					toastify.showToast();
+				},
+				error: ( error ) => {
+					console.log( error );
+				},
+				completed: () => {
+					elSectionItem.remove();
+				},
+			};
+
+			dataSend.args.action = 'delete_item_from_section';
+			dataSend.args.item_id = itemId;
+			dataSend.args.section_id = sectionId;
+			window.lpAJAXG.fetchAJAX( dataSend, callBack );
+		}
 	} );
 };
 let timeout;
@@ -488,7 +711,19 @@ document.addEventListener( 'click', ( e ) => {
 	deleteSection( e, target );
 
 	// Select items from list to add to section
-	selectItemFromList( e, target );
+	showSelectItemFromList( e, target );
+
+	// Choose item type
+	chooseItemType( e, target );
+
+	// Select items from list
+	selectItemsFromList( e, target );
+
+	// Add items selected to section
+	addItemsSelectedToSection( e, target );
+
+	// Delete item from section
+	deleteItemFromSection( e, target );
 
 	// Collapse/Expand section
 	toggleSection( e, target );

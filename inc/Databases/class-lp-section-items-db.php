@@ -42,6 +42,10 @@ class LP_Section_Items_DB extends LP_Database {
 			$filter->collection_alias = 'si';
 		}
 
+		foreach ( $filter->fields as $k => $field ) {
+			$filter->fields[ $k ] = $filter->collection_alias . '.' . $field;
+		}
+
 		if ( ! empty( $filter->section_id ) ) {
 			$filter->where[] = $this->wpdb->prepare( 'AND si.section_id = %d', $filter->section_id );
 		}

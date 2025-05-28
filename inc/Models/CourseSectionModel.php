@@ -5,9 +5,11 @@ namespace LearnPress\Models;
 use Exception;
 use LP_Background_Single_Course;
 use LP_Cache;
+use LP_Database;
 use LP_Section_DB;
 use LP_Section_Filter;
 use LP_Section_Items_DB;
+use LP_Section_Items_Filter;
 use stdClass;
 use Throwable;
 
@@ -189,12 +191,11 @@ class CourseSectionModel {
 	}
 
 	/**
-	 * Add item to section
+	 * Create item and add to section.
 	 *
 	 * @throws Exception
 	 */
-	public function add_item( array $data ) {
-		$item_id     = $data['item_id'] ?? 0;
+	public function create_item_and_add( array $data ) {
 		$item_type   = trim( $data['item_type'] ?? '' );
 		$item_title  = $data['item_title'] ?? '';
 		$courseModel = $this->get_course_model();
@@ -210,27 +211,20 @@ class CourseSectionModel {
 		}
 
 		// Create new item
-		if ( empty( $item_id ) ) {
-			if ( empty( $item_title ) ) {
-				throw new Exception( __( 'Item title is required', 'learnpress' ) );
-			}
+		if ( empty( $item_title ) ) {
+			throw new Exception( __( 'Item title is required', 'learnpress' ) );
+		}
 
-			// Create item
-			$post_args = [
-				'post_author' => get_current_user_id(),
-				'post_title'  => $item_title,
-				'post_type'   => $item_type,
-				'post_status' => 'publish',
-			];
-			$item_id   = wp_insert_post( $post_args );
-			if ( is_wp_error( $item_id ) ) {
-				throw new Exception( $item_id->get_error_message() );
-			}
-		} else {
-			$itemModel = $courseModel->get_item_model( $item_id, $item_type );
-			if ( ! $itemModel ) {
-				throw new Exception( __( 'Item not found', 'learnpress' ) );
-			}
+		// Create item
+		$post_args = [
+			'post_author' => get_current_user_id(),
+			'post_title'  => $item_title,
+			'post_type'   => $item_type,
+			'post_status' => 'publish',
+		];
+		$item_id   = wp_insert_post( $post_args );
+		if ( is_wp_error( $item_id ) ) {
+			throw new Exception( $item_id->get_error_message() );
 		}
 
 		// Get max item order
@@ -244,6 +238,53 @@ class CourseSectionModel {
 		$courseSectionItemModel->item_order        = $max_order + 1;
 		$courseSectionItemModel->section_course_id = $this->section_course_id;
 		$courseSectionItemModel->save();
+	}
+
+	/**
+	 * Add items created to section.
+	 *
+	 * @throws Exception
+	 */
+	public function add_items( array $data ) {
+		$courseModel = $this->get_course_model();
+		$section_id  = $this->get_section_id();
+
+		if ( ! $courseModel instanceof CourseModel ) {
+			throw new Exception( __( 'Course not found', 'learnpress' ) );
+		}
+
+		$items = $data['items'] ?? [];
+		foreach ( $items as $item ) {
+			$item_id   = intval( $item['item_id'] ?? 0 );
+			$item_type = $item['item_type'] ?? '';
+			if ( ! $item_id ) {
+				continue;
+			}
+
+			// Check if item already exists in course.
+			$lp_db                  = LP_Database::getInstance();
+			$filter                 = new LP_Section_Items_Filter();
+			$filter->item_id        = $item_id;
+			$filter->item_type      = $item_type;
+			$filter->join[]         = 'LEFT JOIN ' . $lp_db->tb_lp_sections . ' AS cs ON si.section_id = cs.section_id';
+			$filter->where[]        = $lp_db->wpdb->prepare( 'AND cs.section_course_id = %d', $this->section_course_id );
+			$courseSectionItemModel = CourseSectionItemModel::get_item_model_from_db( $filter );
+			if ( $courseSectionItemModel instanceof CourseSectionItemModel ) {
+				throw new Exception( __( 'Item already exists in this course', 'learnpress' ) );
+			}
+
+			// Get max item order
+			$max_order = LP_Section_Items_DB::getInstance()->get_last_number_order( $section_id );
+
+			// Add item to section
+			$courseSectionItemModel                    = new CourseSectionItemModel();
+			$courseSectionItemModel->item_id           = $item_id;
+			$courseSectionItemModel->item_type         = $item_type;
+			$courseSectionItemModel->item_order        = ++$max_order;
+			$courseSectionItemModel->section_id        = $section_id;
+			$courseSectionItemModel->section_course_id = $this->section_course_id;
+			$courseSectionItemModel->save();
+		}
 	}
 
 	/**

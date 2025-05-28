@@ -11,6 +11,7 @@ use LearnPress\Models\CourseModel;
 
 use LearnPress\TemplateHooks\TemplateAJAX;
 use LP_Background_Single_Course;
+use LP_Database;
 use LP_Post_DB;
 use LP_Post_Type_Filter;
 use LP_Section_DB;
@@ -225,7 +226,7 @@ class AdminEditCurriculum {
 			throw new Exception( __( 'Section not found', 'learnpress' ) );
 		}
 
-		$courseSectionModel->add_item( $data );
+		$courseSectionModel->create_item_and_add( $data );
 
 		$response->message = __( 'Item added to section successfully', 'learnpress' );
 
@@ -235,8 +236,58 @@ class AdminEditCurriculum {
 	/**
 	 * @throws Exception
 	 */
-	public static function update_item_of_section( $data ): stdClass {
-		$response = new stdClass();
+	public static function add_items_to_section( $data ): stdClass {
+		$response   = new stdClass();
+		$course_id  = $data['course_id'] ?? 0;
+		$section_id = $data['section_id'] ?? 0;
+
+		$courseModel = CourseModel::find( $course_id, true );
+		if ( ! $courseModel ) {
+			throw new Exception( __( 'Course not found', 'learnpress' ) );
+		}
+
+		$courseSectionModel = CourseSectionModel::find( $section_id, $course_id );
+		if ( ! $courseSectionModel ) {
+			throw new Exception( __( 'Section not found', 'learnpress' ) );
+		}
+
+		$courseSectionModel->add_items( $data );
+
+		$response->message = __( 'Items added to section successfully', 'learnpress' );
+
+		return $response;
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	public static function delete_item_from_section( $data ): stdClass {
+		$response   = new stdClass();
+		$course_id  = $data['course_id'] ?? 0;
+		$section_id = $data['section_id'] ?? 0;
+		$item_id    = $data['item_id'] ?? 0;
+
+		$courseModel = CourseModel::find( $course_id, true );
+		if ( ! $courseModel ) {
+			throw new Exception( __( 'Course not found', 'learnpress' ) );
+		}
+
+		$courseSectionModel = CourseSectionModel::find( $section_id, $course_id );
+		if ( ! $courseSectionModel ) {
+			throw new Exception( __( 'Section not found', 'learnpress' ) );
+		}
+
+		// Find item of section id
+		$courseSectionItemModel = CourseSectionItemModel::find( $section_id, $item_id );
+		if ( ! $courseSectionItemModel ) {
+			throw new Exception( __( 'Item not found in section', 'learnpress' ) );
+		}
+
+		// Delete item from section
+		$courseSectionItemModel->section_course_id = $course_id;
+		$courseSectionItemModel->delete();
+
+		$response->message = __( 'Item deleted from section successfully', 'learnpress' );
 
 		return $response;
 	}
@@ -432,7 +483,7 @@ class AdminEditCurriculum {
 								title="Enter title section"
 								placeholder="Create a new section"
 								class="title-input new-section">
-						<button type="button" class="lp-btn-add-section">Add Sections</button>
+						<button type="button" class="lp-btn-add-section button">Add Sections</button>
 					</div>
 				</div>
 			</div>';
@@ -448,13 +499,17 @@ class AdminEditCurriculum {
 		$item_preview = $item->preview ?? '';
 
 		$section_action = [
-			'wrap'            => '<div class="item-actions">',
-			'div_actions'     => '<div class="actions">',
-			'preview'         => '<div data-content-tip="Enable/Disable Preview" class="action preview-item lp-title-attr-tip ready" data-id="%s"><a class="lp-btn-icon dashicons dashicons-hidden"></a></div>',
-			'edit'            => '<div data-content-tip="Edit an item" class="action edit-item lp-title-attr-tip ready" data-id="%s"><a href="%s" target="_blank" class="lp-btn-icon dashicons dashicons-edit"></a></div>',
-			'delete'          => '<div class="action delete-item"><a class="dashicons dashicons-trash"></a></div>',
-			'div_actions_end' => '</div>',
-			'wrap_end'        => '</div>',
+			'wrap'     => '<ul class="item-actions">',
+			'preview'  => '<li data-content-tip="Enable/Disable Preview" class="action preview-item lp-title-attr-tip ready" data-id="%s"><a class="lp-btn-icon dashicons dashicons-hidden"></a></li>',
+			'edit'     => '<li data-content-tip="Edit an item" class="action edit-item lp-title-attr-tip ready" data-id="%s"><a href="%s" target="_blank" class="lp-btn-icon dashicons dashicons-edit"></a></li>',
+			'delete'   => sprintf(
+				'<li class="action lp-btn-delete-item-from-section"
+					data-title="%s" data-content="%s">%s</li>',
+				__( 'Are you sure?', 'learnpress' ),
+				__( 'This item will be deleted from this section. It not delete penalty.', 'learnpress' ),
+				'<a class="dashicons dashicons-trash"></a>'
+			),
+			'wrap_end' => '</ul>',
 		];
 
 		$section = [
@@ -536,9 +591,11 @@ class AdminEditCurriculum {
 		$course_item_types = CourseModel::item_types_support();
 		foreach ( $course_item_types as $type ) {
 			$item_label = CourseModel::item_types_label( $type );
+			$tab_active = $type === LP_LESSON_CPT ? ' active' : '';
 			$html_tabs .= sprintf(
-				'<li data-type="%s" class="tab"><a href="#">%s</a></li>',
+				'<li data-type="%s" class="tab %s"><a href="#">%s</a></li>',
 				$type,
+				$tab_active,
 				$item_label
 			);
 		}
@@ -586,12 +643,13 @@ class AdminEditCurriculum {
 			'wrap'          => '<div class="footer">',
 			'cart'          => '<div class="cart">',
 			'checkout'      => sprintf(
-				'<button type="button" disabled="disabled" class="button button-primary checkout"><span>%s</span></button>',
+				'<button type="button" disabled="disabled" class="button lp-btn-add-items-selected">%s</button>',
 				__( 'Add', 'learnpress' )
 			),
 			'edit_selected' => sprintf(
-				'<button type="button" disabled="disabled" class="button button-secondary edit-selected">%s</button>',
-				sprintf( __( 'Selected items (%s)', 'learnpress' ), 0 )
+				'<button type="button" disabled="disabled" class="button lp-btn-count-items-selected">%s %s</button>',
+				sprintf( __( 'Selected items', 'learnpress' ), 0 ),
+				'<span class="count"></span>'
 			),
 			'wrap_end'      => '</div></div>',
 		];
@@ -614,31 +672,94 @@ class AdminEditCurriculum {
 		$content   = new stdClass();
 		$course_id = $data['course_id'] ?? 0;
 		$item_type = $data['item_type'] ?? LP_LESSON_CPT;
-		$paged     = $data['paged'] ?? 1;
+		$paged     = intval( $data['paged'] ?? 1 );
 
+		$lp_db               = LP_Database::getInstance();
 		$filter              = new LP_Post_Type_Filter();
+		$filter->only_fields = [
+			'DISTINCT(p.ID)',
+			'p.post_title',
+			'p.post_type',
+		];
 		$filter->post_type   = $item_type;
 		$filter->post_status = 'publish';
+		$filter->order_by    = 'p.ID';
+		$filter->page        = $paged;
+
+		// Old logic: Get all items not assigned to any course.
+		$filter->where[] = "AND p.ID NOT IN ( SELECT item_id FROM {$lp_db->tb_lp_section_items} )";
+
+		// New logic: Get all items not assigned to the course.
+		// Code here
 
 		$lp_posts_db = LP_Post_DB::getInstance();
-		$total_pages = 0;
-		$posts       = $lp_posts_db->get_posts( $filter, $total_pages );
+		$total_rows  = 0;
+		$posts       = $lp_posts_db->get_posts( $filter, $total_rows );
+		$total_pages = LP_Database::get_total_pages( $filter->limit, $total_rows );
 
 		$html_lis = '';
-		foreach ( $posts as $post ) {
-			$html_lis .= sprintf(
-				'<li class="item" data-id="%s">%s%s</li>',
-				$post->ID,
-				'<input type="checkbox" />',
-				sprintf(
-					'<span class="title">%s<strong>(#%d)</strong></span>',
-					$post->post_title,
-					$post->ID
-				)
-			);
+		if ( empty( $posts ) ) {
+			$html_lis = __( 'No items found', 'learnpress' );
+		} else {
+			foreach ( $posts as $post ) {
+				$html_lis .= sprintf(
+					'<li class="lp-select-item">%s%s</li>',
+					sprintf(
+						'<input type="checkbox" value="%d" data-type="%s" data-title="%s" />',
+						esc_attr( $post->ID ?? 0 ),
+						esc_attr( $post->post_type ?? '' ),
+						esc_attr( $post->post_title ?? '' )
+					),
+					sprintf(
+						'<span class="title">%s<strong>(#%d)</strong></span>',
+						$post->post_title,
+						$post->ID
+					)
+				);
+			}
 		}
 
-		$content->content = Template::instance()->nest_elements( [ '<ul class="list-items">' => '</ul>' ], $html_lis );
+		$page_numbers = paginate_links(
+			apply_filters(
+				'learn_press_pagination_args',
+				array(
+					'base'      => add_query_arg( 'paged', '%#%', \LP_Helper::getUrlCurrent() ),
+					'format'    => '',
+					'add_args'  => '',
+					'current'   => max( 1, $paged ),
+					'total'     => $total_pages,
+					'prev_text' => '<i class="dashicons dashicons-arrow-left-alt"></i>',
+					'next_text' => '<i class="dashicons dashicons-arrow-right-alt"></i>',
+					'type'      => 'array',
+					'end_size'  => 3,
+					'mid_size'  => 3,
+				)
+			)
+		);
+
+		$html_li_number = '';
+		if ( ! empty( $page_numbers ) ) {
+			foreach ( $page_numbers as $page_number ) {
+				$html_li_number .= sprintf(
+					'<li>%s</li>',
+					$page_number
+				);
+			}
+		}
+		$section_pagination = [
+			'wrap'     => '<ul class="pagination">',
+			'numbers'  => $html_li_number,
+			'wrap_end' => '</ul>',
+		];
+
+		$section = [
+			'ul'         => '<ul class="list-items">',
+			'items'      => $html_lis,
+			'ul_end'     => '</ul>',
+			'pagination' => Template::combine_components( $section_pagination ),
+		];
+
+		$content->content = Template::combine_components( $section );
 
 		return $content;
 	}
