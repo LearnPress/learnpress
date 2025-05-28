@@ -339,3 +339,13 @@
 		border-color: $color-primary;
 	}
 }
+
+@mixin font_face($name, $file: "../url_file/name_fonts.woff2") {
+	@font-face {
+		font-family: $name;
+		src: url('#{$file}?v=#{random(200)}') format('woff2');
+		font-weight: normal;
+		font-style: normal;
+		font-display: block;
+	}
+}

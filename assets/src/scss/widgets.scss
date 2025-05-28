@@ -1,5 +1,8 @@
 @import "mixin";
 @import "variables";
+
+@include font_face('lp-icon','../src/css/vendor/fonts/lp-icon/lp-icon.woff2');
+
 @import "lp-icon-font";
 @import "frontend/skeleton-animation";
 @import "loading-circle-animation";
