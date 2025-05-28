@@ -225,10 +225,7 @@ window.lpCoursesList = ( () => {
 			// End.
 
 			// Show loading
-			const elLoading = elLPTarget.closest( 'div:not(.lp-target)' ).querySelector( '.lp-loading-change' );
-			if ( elLoading ) {
-				elLoading.style.display = 'block';
-			}
+			window.lpAJAXG.showHideLoading( elLPTarget, 0 );
 			// End
 
 			const callBack = {
@@ -242,9 +239,7 @@ window.lpCoursesList = ( () => {
 				},
 				completed: () => {
 					//console.log( 'completed' );
-					if ( elLoading ) {
-						elLoading.style.display = 'none';
-					}
+					window.lpAJAXG.showHideLoading( elLPTarget, 1 );
 				},
 			};
 

@@ -5,7 +5,14 @@
  * @version 1.0.6
  */
 
-import { lpAddQueryArgs, lpFetchAPI, listenElementCreated, lpOnElementReady, lpGetCurrentURLNoParam } from './utils.js';
+import {
+	lpAddQueryArgs,
+	lpFetchAPI,
+	listenElementCreated,
+	lpOnElementReady,
+	lpGetCurrentURLNoParam,
+	lpShowHideEl
+} from './utils.js';
 
 // Handle general parameter in the Frontend and Backend
 let lpSettings = {};
@@ -152,15 +159,12 @@ const lpAJAX = ( () => {
 
 			// Set url params to reload page.
 			// Todo: need check allow set url params.
-			lpData.urlParams.paged = dataSend.args.paged;
-			window.history.pushState( {}, '', lpAddQueryArgs( urlCurrent, lpData.urlParams ) );
+			lpSettings.urlParams.paged = dataSend.args.paged;
+			window.history.pushState( {}, '', lpAddQueryArgs( urlCurrent, lpSettings.urlParams ) );
 			// End.
 
 			// Show loading
-			const elLoading = elLPTarget.closest( `div:not(${ classLPTarget })` ).querySelector( '.lp-loading-change' );
-			if ( elLoading ) {
-				elLoading.style.display = 'block';
-			}
+			window.lpAJAXG.showHideLoading( elLPTarget, 1 );
 			// End
 
 			// Scroll to archive element
@@ -178,9 +182,7 @@ const lpAJAX = ( () => {
 				},
 				completed: () => {
 					//console.log( 'completed' );
-					if ( elLoading ) {
-						elLoading.style.display = 'none';
-					}
+					window.lpAJAXG.showHideLoading( elLPTarget, 0 );
 				},
 			};
 
@@ -191,6 +193,12 @@ const lpAJAX = ( () => {
 		},
 		setDataSetCurrent: ( elLPTarget, dataSend ) => {
 			return elLPTarget.dataset.send = JSON.stringify( dataSend );
+		},
+		showHideLoading: ( elLPTarget, status ) => {
+			const elLoading = elLPTarget.closest( `div:not(${ classLPTarget })` ).querySelector( '.lp-loading-change' );
+			if ( elLoading ) {
+				lpShowHideEl( elLoading, status );
+			}
 		},
 	};
 } );
