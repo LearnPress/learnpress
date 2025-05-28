@@ -94,7 +94,7 @@ class TemplateAJAX {
 
 			$el_loading_after_content_loaded = sprintf(
 				'<div class="loading-after">%s</div>',
-				$args['html_loading_after_content_loaded'] ?? '<div class="lp-loading-change"></div>'
+				$args['html_loading_after_content_loaded'] ?? '<div class="lp-loading-change lp-hidden"></div>'
 			);
 
 			$html_el_target = sprintf(

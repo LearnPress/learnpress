@@ -2,7 +2,7 @@
  * Load all you need via AJAX
  *
  * @since 4.2.5.7
- * @version 1.0.6
+ * @version 1.0.7
  */
 
 import {
