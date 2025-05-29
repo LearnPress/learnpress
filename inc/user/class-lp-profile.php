@@ -468,7 +468,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 					$return = learn_press_update_user_profile_basic_information( true );
 					break;
 				case 'password':
-					$return = learn_press_update_user_profile_change_password( true );
+					$return = learn_press_update_user_profile_change_password();
 					break;
 				case 'privacy':
 					$privacy = LP_Request::get_array( 'privacy' );
