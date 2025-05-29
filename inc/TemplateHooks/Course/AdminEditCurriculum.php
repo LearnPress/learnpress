@@ -379,6 +379,55 @@ class AdminEditCurriculum {
 		return $response;
 	}
 
+	/**
+	 * Update data of item in section
+	 *
+	 * @param array $data
+	 *
+	 * @return stdClass
+	 * @throws Exception
+	 */
+	public static function update_item( array $data ): stdClass {
+		$response   = new stdClass();
+		$course_id  = $data['course_id'] ?? 0;
+		$section_id = $data['section_id'] ?? 0;
+		$item_id    = $data['item_id'] ?? 0;
+		$item_type  = $data['item_type'] ?? '';
+		$item_title = $data['item_title'] ?? '';
+
+		if ( empty( $item_title ) ) {
+			throw new Exception( __( 'Item title is required', 'learnpress' ) );
+		}
+
+		$courseModel = CourseModel::find( $course_id, true );
+		if ( ! $courseModel ) {
+			throw new Exception( __( 'Course not found', 'learnpress' ) );
+		}
+
+		$itemModel = $courseModel->get_item_model( $item_id, $item_type );
+		if ( ! $itemModel ) {
+			throw new Exception( __( 'Item not found', 'learnpress' ) );
+		}
+
+		$rs = wp_update_post(
+			[
+				'ID'         => $itemModel->get_id(),
+				'post_title' => $item_title,
+			]
+		);
+
+		if ( is_wp_error( $rs ) ) {
+			throw new Exception( $rs->get_error_message() );
+		}
+
+		$courseModel->sections_items = null;
+		$courseModel->save();
+
+		$response->message = __( 'Item updated successfully', 'learnpress' );
+
+		return $response;
+	}
+
 	public function html_edit_sections( $sections_items ): string {
 
 		$html_sections = '';
@@ -436,8 +485,16 @@ class AdminEditCurriculum {
 			'wrap_content'         => '<div class="section-collapse">',
 			'section-content'      => '<div class="section-content">',
 			'details'              => sprintf(
-				'<div class="details">%s</div>',
-				$this->html_edit_section_description( $section_items->section_description ?? '' )
+				'<div class="details">%s%s%s</div>',
+				$this->html_edit_section_description( $section_items->section_description ?? '' ),
+				sprintf(
+					'<button type="button" class="lp-btn-update-section-description button">%s</button>',
+					__( 'Update Section', 'learnpress' )
+				),
+				sprintf(
+					'<button type="button" class="lp-btn-cancel-update-section-description button">%s</button>',
+					__( 'Cancel', 'learnpress' )
+				)
 			),
 			'section-list-items'   => Template::combine_components( $section_list_items ),
 			'section-content-end'  => '</div>',
@@ -465,7 +522,7 @@ class AdminEditCurriculum {
 		return sprintf(
 			'<input type="text"
 				title="description"
-				placeholder="Section description..."
+				placeholder="+ Add Description"
 				class="description-input section-description-input"
 				value="%s">',
 			esc_attr( $section_description ?? '' )
@@ -514,8 +571,9 @@ class AdminEditCurriculum {
 
 		$section = [
 			'li'           => sprintf(
-				'<li data-item-id="%s" class="section-item %s %s">',
+				'<li data-item-id="%s" data-item-type="%s" class="section-item %s %s">',
 				$item_id,
+				$item_type,
 				$item_type,
 				$is_clone ? 'empty-item section-item-clone lp-hidden' : ''
 			),
@@ -602,10 +660,7 @@ class AdminEditCurriculum {
 
 		$section_header = [
 			'wrap'     => '<div class="header">',
-			'title'    => sprintf(
-				'<div class="preview-title"><span>%s</span></div>',
-				__( 'Selected items (0)', 'learnpress' )
-			),
+			'count'    => '<div class="header-count-items-selected lp-hidden"></div>',
 			'tabs'     => sprintf(
 				'<ul class="tabs">%s</ul>',
 				$html_tabs
@@ -616,12 +671,16 @@ class AdminEditCurriculum {
 		/**
 		 * @uses self::render_list_items_not_assign
 		 */
-		$html_items = TemplateAJAX::load_content_via_ajax(
+		ob_start();
+		lp_skeleton_animation_html( 10 );
+		$html_loading = ob_get_clean();
+		$html_items   = TemplateAJAX::load_content_via_ajax(
 			[
-				'id_url'    => 'list-items-not-assign',
-				'course_id' => 123,
-				'item_type' => LP_LESSON_CPT,
-				'paged'     => 1,
+				'id_url'                  => 'list-items-not-assign',
+				'html_no_load_ajax_first' => $html_loading,
+				'course_id'               => 123,
+				'item_type'               => LP_LESSON_CPT,
+				'paged'                   => 1,
 			],
 			[
 				'class'  => self::class,
@@ -630,28 +689,35 @@ class AdminEditCurriculum {
 		);
 
 		$section_main = [
-			'wrap'       => '<div class="main">',
-			'search'     => sprintf(
+			'wrap'                => '<div class="main">',
+			'wrap_items'          => '<div class="list-items-wrap">',
+			'search'              => sprintf(
 				'<input type="text" placeholder="%s" title="search" class="modal-search-input">',
 				__( 'Type here to search for an item', 'learnpress' )
 			),
-			'list-items' => $html_items,
-			'wrap_end'   => '</div>',
+			'list-items'          => $html_items,
+			'wrap_items_end'      => '</div>',
+			'list-items-selected' => '<ul class="list-items-selected lp-hidden"></ul>',
+			'wrap_end'            => '</div>',
 		];
 
 		$section_footer = [
-			'wrap'          => '<div class="footer">',
-			'cart'          => '<div class="cart">',
-			'checkout'      => sprintf(
+			'wrap'                 => '<div class="footer">',
+			'cart'                 => '<div class="cart">',
+			'btn-add'              => sprintf(
 				'<button type="button" disabled="disabled" class="button lp-btn-add-items-selected">%s</button>',
 				__( 'Add', 'learnpress' )
 			),
-			'edit_selected' => sprintf(
+			'count-items-selected' => sprintf(
 				'<button type="button" disabled="disabled" class="button lp-btn-count-items-selected">%s %s</button>',
 				sprintf( __( 'Selected items', 'learnpress' ), 0 ),
 				'<span class="count"></span>'
 			),
-			'wrap_end'      => '</div></div>',
+			'btn-back'             => sprintf(
+				'<button type="button" class="button lp-btn-back-to-select-items lp-hidden">%s</button>',
+				__( 'Back', 'learnpress' )
+			),
+			'wrap_end'             => '</div></div>',
 		];
 
 		$section = [
@@ -669,10 +735,12 @@ class AdminEditCurriculum {
 	 * @throws Exception
 	 */
 	public static function render_list_items_not_assign( $data ): stdClass {
-		$content   = new stdClass();
-		$course_id = $data['course_id'] ?? 0;
-		$item_type = $data['item_type'] ?? LP_LESSON_CPT;
-		$paged     = intval( $data['paged'] ?? 1 );
+		$content                = new stdClass();
+		$course_id              = $data['course_id'] ?? 0;
+		$item_type              = $data['item_type'] ?? LP_LESSON_CPT;
+		$item_selecting         = $data['item_selecting'] ?? [];
+		$paged                  = intval( $data['paged'] ?? 1 );
+		$item_selecting_compare = new stdClass();
 
 		$lp_db               = LP_Database::getInstance();
 		$filter              = new LP_Post_Type_Filter();
@@ -699,16 +767,34 @@ class AdminEditCurriculum {
 
 		$html_lis = '';
 		if ( empty( $posts ) ) {
-			$html_lis = __( 'No items found', 'learnpress' );
+			$html_lis = sprintf( '<li>%s</li>', __( 'No items found', 'learnpress' ) );
 		} else {
+			if ( ! empty( $item_selecting ) ) {
+				foreach ( $item_selecting as $item ) {
+					if ( ! isset( $item['item_id'] ) || ! isset( $item['item_type'] ) ) {
+						continue;
+					}
+
+					$item_selecting_compare->{$item['item_id']}            = new stdClass();
+					$item_selecting_compare->{$item['item_id']}->item_type = $item['item_type'];
+				}
+			}
+
 			foreach ( $posts as $post ) {
+				$checked = '';
+
+				if ( isset( $item_selecting_compare->{$post->ID} ) ) {
+					$checked = ' checked="checked"';
+				}
+
 				$html_lis .= sprintf(
 					'<li class="lp-select-item">%s%s</li>',
 					sprintf(
-						'<input type="checkbox" value="%d" data-type="%s" data-title="%s" />',
+						'<input type="checkbox" value="%d" data-type="%s" data-title="%s" %s />',
 						esc_attr( $post->ID ?? 0 ),
 						esc_attr( $post->post_type ?? '' ),
-						esc_attr( $post->post_title ?? '' )
+						esc_attr( $post->post_title ?? '' ),
+						esc_attr( $checked )
 					),
 					sprintf(
 						'<span class="title">%s<strong>(#%d)</strong></span>',

@@ -15,6 +15,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 if ( ! isset( $sections_items ) ) {
 	$sections_items = [];
 }
+
+wp_enqueue_style( 'lp-edit-curriculum' );
 ?>
 
 <div id="admin-editor-lp_course" class="lp-admin-editor">

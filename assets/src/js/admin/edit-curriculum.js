@@ -17,6 +17,7 @@ let elNewSectionItem;
 let dataSend;
 let elCurriculumSections;
 let elStatusChange;
+let elPopupSelectItems;
 
 const toastify = Toastify( {
 	text: '',
@@ -215,6 +216,55 @@ const addItemToSection = ( e, target ) => {
 	dataSend.args.item_type = typeItemValue;
 	window.lpAJAXG.fetchAJAX( dataSend, callBack );
 };
+const updateItemTitle = ( e, target ) => {
+	const elInputItemTitle = target.closest( 'input[name="item-title-input"]' );
+	if ( ! elInputItemTitle ) {
+		return;
+	}
+
+	const elSectionItem = elInputItemTitle.closest( '.section-item' );
+	if ( ! elSectionItem ) {
+		return;
+	}
+
+	const itemId = elSectionItem.dataset.itemId;
+	const itemType = elSectionItem.dataset.itemType;
+	const itemTitleValue = elInputItemTitle.value.trim();
+	if ( itemTitleValue.length === 0 ) {
+		toastify.options.text = 'Please enter a title for the item.';
+		toastify.options.className += 'error';
+		toastify.showToast();
+		return;
+	}
+
+	lpUtils.lpSetLoadingEl( elStatusChange, 1 );
+	// Call ajax to update item title
+	const callBack = {
+		success: ( response ) => {
+			const { message, status } = response;
+			const { content } = response.data;
+
+			toastify.options.text = message;
+			toastify.options.className += status;
+			toastify.showToast();
+		},
+		error: ( error ) => {
+			console.log( error );
+		},
+		completed: () => {
+			lpUtils.lpSetLoadingEl( elStatusChange, 0 );
+		},
+	};
+
+	dataSend.args.action = 'update_item';
+	dataSend.args.item_id = itemId;
+	dataSend.args.item_type = itemType;
+	dataSend.args.item_title = itemTitleValue;
+	window.lpAJAXG.fetchAJAX( dataSend, callBack );
+};
+const changeItemTitle = ( e, target ) => {
+
+};
 const updateSectionDescription = ( e, target ) => {
 	const elSectionDesInput = target.closest( `.${ className.elSectionDesInput }` );
 	if ( ! elSectionDesInput ) {
@@ -325,11 +375,11 @@ const showSelectItemFromList = ( e, target ) => {
 	sectionIdSelected = elSection.dataset.sectionId;
 
 	const elSelectItems = document.querySelector( '.lp-select-items-to-add' );
-	const elSelectItemsClone = elSelectItems.cloneNode( true );
-	lpUtils.lpShowHideEl( elSelectItemsClone, 1 );
+	elPopupSelectItems = elSelectItems.cloneNode( true );
+	lpUtils.lpShowHideEl( elPopupSelectItems, 1 );
 
 	SweetAlert.fire( {
-		html: elSelectItemsClone,
+		html: elPopupSelectItems,
 		showConfirmButton: false,
 		showCloseButton: true,
 		width: '60%',
@@ -339,7 +389,7 @@ const showSelectItemFromList = ( e, target ) => {
 			container: 'lp-select-items-container',
 		},
 		willOpen: () => {
-			const tabLesson = elSelectItemsClone.querySelector( 'li[data-type="lp_lesson"]' );
+			const tabLesson = elPopupSelectItems.querySelector( 'li[data-type="lp_lesson"]' );
 			tabLesson.click();
 		},
 	} ).then( ( result ) => {
@@ -347,16 +397,16 @@ const showSelectItemFromList = ( e, target ) => {
 		}
 	} );
 };
+let itemsSelectedData = [];
 const selectItemsFromList = ( e, target ) => {
 	const elItemAttend = target.closest( '.lp-select-item' );
 	if ( ! elItemAttend ) {
 		return;
 	}
 
-	const elSelectItemsToAdd = elItemAttend.closest( '.lp-select-items-to-add' );
+	const elInput = elItemAttend.querySelector( 'input[type="checkbox"]' );
 
 	if ( target.tagName !== 'INPUT' ) {
-		const elInput = elItemAttend.querySelector( 'input' );
 		elInput.click();
 	}
 
@@ -365,32 +415,31 @@ const selectItemsFromList = ( e, target ) => {
 		return;
 	}
 
-	const itemIds = [];
-	const elInputs = elUl.querySelectorAll( 'input[type="checkbox"]' );
-	elInputs.forEach( ( elInputItem ) => {
-		if ( elInputItem.checked ) {
-			itemIds.push( elInputItem.value );
+	const itemSelected = {
+		item_id: elInput.value,
+		item_type: elInput.dataset.type || '',
+		item_title: elInput.dataset.title || '',
+	};
+	if ( elInput.checked ) {
+		const exists = itemsSelectedData.some( ( item ) => item.item_id === itemSelected.item_id );
+		if ( ! exists ) {
+			itemsSelectedData.push( itemSelected );
 		}
-	} );
-
-	const elBtnAddItemsSelected = elSelectItemsToAdd.querySelector( '.lp-btn-add-items-selected' );
-	const elBtnCountItemsSelected = elSelectItemsToAdd.querySelector( '.lp-btn-count-items-selected' );
-	const elSpanCount = elBtnCountItemsSelected.querySelector( 'span' );
-	if ( itemIds.length !== 0 ) {
-		elBtnAddItemsSelected.disabled = false;
-		elBtnCountItemsSelected.disabled = false;
-		elSpanCount.textContent = `(${ itemIds.length })`;
 	} else {
-		elBtnAddItemsSelected.disabled = true;
-		elBtnCountItemsSelected.disabled = true;
-		elSpanCount.textContent = '';
+		const index = itemsSelectedData.findIndex( ( item ) => item.item_id === itemSelected.item_id );
+		if ( index !== -1 ) {
+			itemsSelectedData.splice( index, 1 );
+		}
 	}
+
+	watchItemsSelectedDataChange();
 };
 const chooseItemType = ( e, target ) => {
 	const elTabType = target.closest( '.tab' );
 	if ( ! elTabType ) {
 		return;
 	}
+	e.preventDefault();
 
 	const elTabs = elTabType.closest( '.tabs' );
 	if ( ! elTabs ) {
@@ -444,20 +493,7 @@ const addItemsSelectedToSection = ( e, target ) => {
 		return;
 	}
 
-	const items = [];
-	const elInputs = elSelectItemsToAdd.querySelectorAll( 'input[type="checkbox"]' );
-	elInputs.forEach( ( elInputItem ) => {
-		if ( elInputItem.checked ) {
-			const itemData = {
-				item_id: elInputItem.value,
-				item_type: elInputItem.dataset.type || '',
-				item_title: elInputItem.dataset.title || '',
-			};
-			items.push( itemData );
-		}
-	} );
-
-	if ( items.length === 0 ) {
+	if ( itemsSelectedData.length === 0 ) {
 		toastify.options.text = 'Please select at least one item to add.';
 		toastify.options.className += 'error';
 		toastify.showToast();
@@ -465,7 +501,7 @@ const addItemsSelectedToSection = ( e, target ) => {
 	}
 
 	dataSend.args.action = 'add_items_to_section';
-	dataSend.args.items = items;
+	dataSend.args.items = itemsSelectedData;
 	dataSend.args.section_id = sectionIdSelected;
 
 	// Show loading
@@ -475,7 +511,7 @@ const addItemsSelectedToSection = ( e, target ) => {
 	const elSection = document.querySelector( `.section[data-section-id="${ sectionIdSelected }"]` );
 	const elItemEmpty = elSection.querySelector( '.empty-item' );
 
-	items.forEach( ( item ) => {
+	itemsSelectedData.forEach( ( item ) => {
 		const elItemClone = elItemEmpty.cloneNode( true );
 		elItemClone.setAttribute( 'data-item-id', item.item_id );
 		const elInputTitleClone = elItemClone.querySelector( 'input[name="item-title-input"]' );
@@ -499,11 +535,13 @@ const addItemsSelectedToSection = ( e, target ) => {
 		completed: () => {
 			window.lpAJAXG.showHideLoading( elLPTarget, 0 );
 
-			items.forEach( ( item ) => {
+			itemsSelectedData.forEach( ( item ) => {
 				const elItemAdded = elSection.querySelector( `.section-item[data-item-id="${ item.item_id }"]` );
 				elItemAdded.classList.remove( 'empty-item' );
 				elItemAdded.classList.add( item.item_type );
 			} );
+
+			itemsSelectedData = []; // Clear selected items data
 		},
 	} );
 };
@@ -558,6 +596,122 @@ const deleteItemFromSection = ( e, target ) => {
 			dataSend.args.item_id = itemId;
 			dataSend.args.section_id = sectionId;
 			window.lpAJAXG.fetchAJAX( dataSend, callBack );
+		}
+	} );
+};
+const showItemsChoice = ( e, target ) => {
+	const elBtnCountItemsSelected = target.closest( '.lp-btn-count-items-selected' );
+	if ( ! elBtnCountItemsSelected ) {
+		return;
+	}
+
+	const elParent = elBtnCountItemsSelected.closest( '.lp-select-items-to-add' );
+	const elBtnBack = elParent.querySelector( '.lp-btn-back-to-select-items' );
+	const elTabs = elParent.querySelector( '.tabs' );
+	const elListItemsWrap = elParent.querySelector( '.list-items-wrap' );
+	const elHeaderItemsSelected = elParent.querySelector( '.header-count-items-selected' );
+	const elListItemsSelected = elParent.querySelector( '.list-items-selected' );
+	elHeaderItemsSelected.innerHTML = elBtnCountItemsSelected.innerHTML;
+
+	lpUtils.lpShowHideEl( elListItemsWrap, 0 );
+	lpUtils.lpShowHideEl( elBtnCountItemsSelected, 0 );
+	lpUtils.lpShowHideEl( elTabs, 0 );
+	lpUtils.lpShowHideEl( elBtnBack, 1 );
+	lpUtils.lpShowHideEl( elHeaderItemsSelected, 1 );
+	lpUtils.lpShowHideEl( elListItemsSelected, 1 );
+
+	let htmlLis = '';
+	itemsSelectedData.forEach( ( item ) => {
+		htmlLis += `<li class="lp-remove-item-selected" data-id="${ item.item_id }" data-type="${ item.item_type }">
+						<i class="dashicons dashicons-remove"></i>
+						<span>${ item.item_title }</span>
+						<span class="item-id">(#${ item.item_id } - ${ item.item_type })</span>
+					</li>`;
+	} );
+
+	elListItemsSelected.innerHTML = htmlLis;
+};
+const backToSelectItems = ( e, target ) => {
+	const elBtnBack = target.closest( '.lp-btn-back-to-select-items' );
+	if ( ! elBtnBack ) {
+		return;
+	}
+
+	const elParent = elBtnBack.closest( '.lp-select-items-to-add' );
+	const elBtnCountItemsSelected = elParent.querySelector( '.lp-btn-count-items-selected' );
+	const elTabs = elParent.querySelector( '.tabs' );
+	const elListItemsWrap = elParent.querySelector( '.list-items-wrap' );
+	const elHeaderItemsSelected = elParent.querySelector( '.header-count-items-selected' );
+	const elListItemsSelected = elParent.querySelector( '.list-items-selected' );
+	lpUtils.lpShowHideEl( elBtnCountItemsSelected, 1 );
+	lpUtils.lpShowHideEl( elListItemsWrap, 1 );
+	lpUtils.lpShowHideEl( elTabs, 1 );
+	lpUtils.lpShowHideEl( elBtnBack, 0 );
+	lpUtils.lpShowHideEl( elHeaderItemsSelected, 0 );
+	lpUtils.lpShowHideEl( elListItemsSelected, 0 );
+};
+const removeItemSelected = ( e, target ) => {
+	const elRemoveItemSelected = target.closest( '.lp-remove-item-selected' );
+	if ( ! elRemoveItemSelected ) {
+		return;
+	}
+
+	const itemRemove = {
+		item_id: elRemoveItemSelected.dataset.id,
+		item_type: elRemoveItemSelected.dataset.type,
+	};
+	const index = itemsSelectedData.findIndex( ( item ) => item.item_id === itemRemove.item_id );
+	if ( index !== -1 ) {
+		itemsSelectedData.splice( index, 1 );
+	}
+
+	elRemoveItemSelected.remove();
+
+	watchItemsSelectedDataChange();
+};
+const watchItemsSelectedDataChange = () => {
+	if ( ! elPopupSelectItems ) {
+		return;
+	}
+
+	const elListItemsWrap = elPopupSelectItems.querySelector( '.list-items-wrap' );
+	const elTarget = elListItemsWrap.querySelector( `${ className.LPTarget }` );
+
+	// Set data for call AJAX
+	const dataSet = window.lpAJAXG.getDataSetCurrent( elTarget );
+	dataSet.args.item_selecting = itemsSelectedData;
+	window.lpAJAXG.setDataSetCurrent( elTarget, dataSet );
+
+	// Update count items selected, disable/enable buttons
+	const elBtnAddItemsSelected = elPopupSelectItems.querySelector( '.lp-btn-add-items-selected' );
+	const elBtnCountItemsSelected = elPopupSelectItems.querySelector( '.lp-btn-count-items-selected' );
+	const elSpanCount = elBtnCountItemsSelected.querySelector( 'span' );
+	const elHeaderCount = elPopupSelectItems.querySelector( '.header-count-items-selected' );
+	if ( itemsSelectedData.length !== 0 ) {
+		elBtnCountItemsSelected.disabled = false;
+		elBtnAddItemsSelected.disabled = false;
+		elSpanCount.textContent = `(${ itemsSelectedData.length })`;
+		elHeaderCount.innerHTML = elBtnCountItemsSelected.innerHTML;
+	} else {
+		elBtnCountItemsSelected.disabled = true;
+		elBtnAddItemsSelected.disabled = true;
+		elSpanCount.textContent = '';
+		elHeaderCount.textContent = '';
+	}
+
+	const elListItems = elPopupSelectItems.querySelector( '.list-items' );
+	const elInputs = elListItems.querySelectorAll( 'input[type="checkbox"]' );
+	elInputs.forEach( ( elInputItem ) => {
+		const itemSelected = {
+			item_id: elInputItem.value,
+			item_type: elInputItem.dataset.type || '',
+			item_title: elInputItem.dataset.title || '',
+		};
+		const exists = itemsSelectedData.some( ( item ) => item.item_id === itemSelected.item_id );
+		if ( exists ) {
+			elInputItem.checked = true;
+		} else {
+			elInputItem.checked = false;
 		}
 	} );
 };
@@ -725,6 +879,15 @@ document.addEventListener( 'click', ( e ) => {
 	// Delete item from section
 	deleteItemFromSection( e, target );
 
+	// Show items choice
+	showItemsChoice( e, target );
+
+	// Back to select items
+	backToSelectItems( e, target );
+
+	// Remove item selected
+	removeItemSelected( e, target );
+
 	// Collapse/Expand section
 	toggleSection( e, target );
 	// Select item type to add
@@ -766,6 +929,7 @@ document.addEventListener( 'keydown', ( e ) => {
 		addItemToSection( e, target );
 		updateSectionDescription( e, target );
 		updateSectionTitle( e, target );
+		updateItemTitle( e, target );
 
 		e.preventDefault();
 	}

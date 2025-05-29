@@ -450,6 +450,12 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					array(),
 					0
 				),
+				'lp-edit-curriculum'    => new LP_Asset_Key(
+					$this->url( 'css/edit-curriculum' . $is_rtl . self::$_min_assets . '.css' ),
+					[],
+					[],
+					1
+				),
 				'learn-press-statistic' => new LP_Asset_Key(
 					LP_CSS_URL . 'admin/statistic' . $is_rtl . self::$_min_assets . '.css',
 					array(),
