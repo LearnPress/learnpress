@@ -513,8 +513,10 @@ class AdminEditCurriculum {
 					type="text"
 					title="Update section title"
 					placeholder="Update section title"
-					value="%s">',
-			esc_attr( $section_name ?? '' )
+					value="%s"
+					data-mess-empty-title="%s">',
+			esc_attr( $section_name ?? '' ),
+			esc_attr__( 'Section title is required', 'learnpress' )
 		);
 	}
 
@@ -524,13 +526,15 @@ class AdminEditCurriculum {
 				title="description"
 				placeholder="+ Add Description"
 				class="description-input section-description-input"
+				data-mess-empty-description="%s"
 				value="%s">',
+			esc_attr__( 'Enter the description for the section', 'learnpress' ),
 			esc_attr( $section_description ?? '' )
 		);
 	}
 
 	public function html_section_actions() {
-		$html = '
+		$html = sprintf('
 		<div class="add-new-section">
 				<div class="section new-section">
 					<div class="section-head">
@@ -539,11 +543,14 @@ class AdminEditCurriculum {
 								type="text"
 								title="Enter title section"
 								placeholder="Create a new section"
+								data-mess-empty-title="%s"
 								class="title-input new-section">
 						<button type="button" class="lp-btn-add-section button">Add Sections</button>
 					</div>
 				</div>
-			</div>';
+			</div>',
+			esc_attr__( 'Section title is required', 'learnpress' )
+		);
 
 		return $html;
 	}
@@ -583,8 +590,9 @@ class AdminEditCurriculum {
 			),
 			'icon'         => '<div class="icon"></div>',
 			'input-title'  => sprintf(
-				'<div class="title"><input name="item-title-input" type="text" value="%s"></div>',
-				wp_kses_post( $item_title )
+				'<div class="title"><input name="item-title-input" type="text" value="%s" data-mess-empty-title="%s"></div>',
+				wp_kses_post( $item_title ),
+				esc_attr__( 'Item title is required', 'learnpress' )
 			),
 			'item_actions' => Template::combine_components( $section_action ),
 			'li_end'       => '</li>',
@@ -627,19 +635,19 @@ class AdminEditCurriculum {
 	}
 
 	public function html_section_item_new() {
-		$m = '
+		$m = sprintf('
 		<div class="new-section-item section-item lp-hidden">
 			<div class="drag"></div>
 			<div class="types">
 				<label class="type current"></label>
 			</div>
 			<div class="title">
-				<input name="new_item" type="text"/>
+				<input name="new_item" type="text" data-mess-empty-title="%s"/>
 				<button class="lp-btn-add-item button" type="button">Add Lesson</button>
 				<button class="lp-btn-add-item-cancel button" type="button">Cancel</button>
 			</div>
 		</div>
-		';
+		', esc_attr__( 'Item title is required', 'learnpress' ));
 
 		return $m;
 	}

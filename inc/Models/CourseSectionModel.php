@@ -334,19 +334,24 @@ class CourseSectionModel {
 	/**
 	 * Clean caches
 	 *
+	 * @return void
+	 * @throws Exception
 	 * @since 4.2.8.6
 	 * @version 1.0.0
-	 * @return void
 	 */
 	public function clean_caches() {
-		$bg = LP_Background_Single_Course::instance();
+		// Call background multiple times will not cause any problem.
+		/*$bg = LP_Background_Single_Course::instance();
 		$bg->data(
 			array(
 				'handle_name' => 'save_post',
 				'course_id'   => $this->section_course_id,
 				'data'        => [],
 			)
-		)->dispatch();
+		)->dispatch();*/
+		$courseModel                 = CourseModel::find( $this->section_course_id, true );
+		$courseModel->sections_items = null;
+		$courseModel->save();
 
 		$key_cache        = "courseSection/find/{$this->get_section_id()}/{$this->section_course_id}";
 		$key_cache_course = "courseSection/find/course/{$this->section_course_id}";

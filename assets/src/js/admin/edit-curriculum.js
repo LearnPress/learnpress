@@ -19,15 +19,15 @@ let elCurriculumSections;
 let elStatusChange;
 let elPopupSelectItems;
 
-const toastify = Toastify( {
+const argsToastify = {
 	text: '',
 	gravity: lpDataAdmin.toast.gravity, // `top` or `bottom`
 	position: lpDataAdmin.toast.position, // `left`, `center` or `right`
 	className: `${ lpDataAdmin.toast.classPrefix }`,
 	close: lpDataAdmin.toast.close == 1,
 	stopOnFocus: lpDataAdmin.toast.stopOnFocus == 1,
-	duration: 2000,
-} );
+	duration: lpDataAdmin.toast.duration,
+};
 
 const className = {
 	btnNewSection: 'lp-btn-add-section',
@@ -53,10 +53,9 @@ const addSection = ( e, target ) => {
 
 	const elInputTitleSection = elAddNewSection.querySelector( 'input[name="new_section"]' );
 	const titleSectionValue = elInputTitleSection.value.trim();
+	const message = elInputTitleSection.dataset.messEmptyTitle;
 	if ( titleSectionValue.length === 0 ) {
-		toastify.options.text = 'Please enter a title for the new section.';
-		toastify.options.className += 'error';
-		toastify.showToast();
+		showToast( message, 'error' );
 		return;
 	}
 
@@ -74,9 +73,7 @@ const addSection = ( e, target ) => {
 			const { message, status } = response;
 			const { content } = response.data;
 
-			toastify.options.text = message;
-			toastify.options.className += status;
-			toastify.showToast();
+			showToast( message, status );
 		},
 		error: ( error ) => {
 			console.log( error );
@@ -116,9 +113,7 @@ const deleteSection = ( e, target ) => {
 					const { message, status } = response;
 					const { content } = response.data;
 
-					toastify.options.text = message;
-					toastify.options.className += status;
-					toastify.showToast();
+					showToast( message, status );
 				},
 				error: ( error ) => {
 					console.log( error );
@@ -181,6 +176,12 @@ const addItemToSection = ( e, target ) => {
 	const elInputTitleItem = elNewSectionItem.querySelector( 'input[name="new_item"]' );
 	const titleItemValue = elInputTitleItem.value.trim();
 	const typeItemValue = elNewSectionItem.dataset.itemType;
+	const message = elInputTitleItem.dataset.messEmptyTitle;
+
+	if ( titleItemValue.length === 0 ) {
+		showToast( message, 'error' );
+		return;
+	}
 
 	// Clone new section item
 	const elItemCloneEx = elSection.querySelector( `${ className.elItemClone }` );
@@ -198,9 +199,11 @@ const addItemToSection = ( e, target ) => {
 			const { message, status } = response;
 			const { content } = response.data;
 
-			toastify.options.text = message;
-			toastify.options.className += status;
-			toastify.showToast();
+			showToast( message, status );
+
+			if ( status === 'error' ) {
+				elItemClone.remove();
+			}
 		},
 		error: ( error ) => {
 			console.log( error );
@@ -230,10 +233,9 @@ const updateItemTitle = ( e, target ) => {
 	const itemId = elSectionItem.dataset.itemId;
 	const itemType = elSectionItem.dataset.itemType;
 	const itemTitleValue = elInputItemTitle.value.trim();
+	const message = elInputItemTitle.dataset.messEmptyTitle;
 	if ( itemTitleValue.length === 0 ) {
-		toastify.options.text = 'Please enter a title for the item.';
-		toastify.options.className += 'error';
-		toastify.showToast();
+		showToast( message, 'error' );
 		return;
 	}
 
@@ -244,9 +246,7 @@ const updateItemTitle = ( e, target ) => {
 			const { message, status } = response;
 			const { content } = response.data;
 
-			toastify.options.text = message;
-			toastify.options.className += status;
-			toastify.showToast();
+			showToast( message, status );
 		},
 		error: ( error ) => {
 			console.log( error );
@@ -274,10 +274,9 @@ const updateSectionDescription = ( e, target ) => {
 	const elSection = elSectionDesInput.closest( '.section' );
 	const sectionId = elSection.dataset.sectionId;
 	const sectionDesValue = elSectionDesInput.value.trim();
+	const message = elSectionDesInput.dataset.messEmptyDescription;
 	if ( sectionDesValue.length === 0 ) {
-		toastify.options.text = 'Please enter a description for the section.';
-		toastify.options.className += 'error';
-		toastify.showToast();
+		showToast( message, 'error' );
 		return;
 	}
 
@@ -287,9 +286,7 @@ const updateSectionDescription = ( e, target ) => {
 			const { message, status } = response;
 			const { content } = response.data;
 
-			toastify.options.text = message;
-			toastify.options.className += status;
-			toastify.showToast();
+			showToast( message, status );
 		},
 		error: ( error ) => {
 			console.log( error );
@@ -313,10 +310,9 @@ const updateSectionTitle = ( e, target ) => {
 	const elSection = elSectionTitleInput.closest( '.section' );
 	const sectionId = elSection.dataset.sectionId;
 	const sectionTitleValue = elSectionTitleInput.value.trim();
+	const message = elSectionTitleInput.dataset.messEmptyTitle;
 	if ( sectionTitleValue.length === 0 ) {
-		toastify.options.text = 'Please enter a title for the section.';
-		toastify.options.className += 'error';
-		toastify.showToast();
+		showToast( message, 'error' );
 		return;
 	}
 
@@ -328,9 +324,7 @@ const updateSectionTitle = ( e, target ) => {
 			const { message, status } = response;
 			const { content } = response.data;
 
-			toastify.options.text = message;
-			toastify.options.className += status;
-			toastify.showToast();
+			showToast( message, status );
 		},
 		error: ( error ) => {
 			console.log( error );
@@ -494,9 +488,7 @@ const addItemsSelectedToSection = ( e, target ) => {
 	}
 
 	if ( itemsSelectedData.length === 0 ) {
-		toastify.options.text = 'Please select at least one item to add.';
-		toastify.options.className += 'error';
-		toastify.showToast();
+		showToast( 'Please select at least one item to add.', 'error' );
 		return;
 	}
 
@@ -525,9 +517,7 @@ const addItemsSelectedToSection = ( e, target ) => {
 	window.lpAJAXG.fetchAJAX( dataSend, {
 		success: ( response ) => {
 			const { message, status, data } = response;
-			toastify.options.text = message;
-			toastify.options.className += status;
-			toastify.showToast();
+			showToast( message, status );
 		},
 		error: ( error ) => {
 			console.log( error );
@@ -580,9 +570,7 @@ const deleteItemFromSection = ( e, target ) => {
 					const { message, status } = response;
 					const { content } = response.data;
 
-					toastify.options.text = message;
-					toastify.options.className += status;
-					toastify.showToast();
+					showToast( message, status );
 				},
 				error: ( error ) => {
 					console.log( error );
@@ -742,9 +730,7 @@ const sortAbleSection = ( elCurriculumSections ) => {
 					const { message, status } = response;
 					const { content } = response.data;
 
-					toastify.options.text = message;
-					toastify.options.className += status;
-					toastify.showToast();
+					showToast( message, status );
 				},
 				error: ( error ) => {
 					console.log( error );
@@ -821,9 +807,7 @@ const sortAbleItem = ( elCurriculumSections ) => {
 						const { message, status } = response;
 						const { content } = response.data;
 
-						toastify.options.text = message;
-						toastify.options.className += status;
-						toastify.showToast();
+						showToast( message, status );
 					},
 					error: ( error ) => {
 						console.log( error );
@@ -851,6 +835,14 @@ const sortAbleItem = ( elCurriculumSections ) => {
 			onUpdate: ( evt ) => {},
 		} );
 	} );
+};
+const showToast = ( message, status = 'success' ) => {
+	const toastify = new Toastify( {
+		...argsToastify,
+		text: message,
+		className: `${ lpDataAdmin.toast.classPrefix } ${ status }`,
+	} );
+	toastify.showToast();
 };
 
 // Events
