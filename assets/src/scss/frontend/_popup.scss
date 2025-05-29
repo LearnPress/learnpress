@@ -331,8 +331,10 @@
 			background: transparent;
 			box-shadow: none;
 			height: auto;
+			font-size: 1rem;
+
 			@include placeholder-color($input-color-placeholder);
- 			font-size: 1rem;
+
 			&:focus {
 				outline: 0;
 			}
