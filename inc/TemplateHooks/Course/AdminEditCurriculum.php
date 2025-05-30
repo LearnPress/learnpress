@@ -35,6 +35,7 @@ class AdminEditCurriculum {
 
 	/**
 	 * Allow callback for AJAX.
+	 * @use self::render_edit_course_curriculum
 	 * @use self::render_html
 	 *
 	 * @param array $callbacks
@@ -42,10 +43,31 @@ class AdminEditCurriculum {
 	 * @return array
 	 */
 	public function allow_callback( array $callbacks ): array {
-		$callbacks[] = get_class( $this ) . ':render_html';
+		$callbacks[] = get_class( $this ) . ':render_edit_course_curriculum';
+		$callbacks[] = get_class( $this ) . ':handle_edit_course_curriculum';
 		$callbacks[] = get_class( $this ) . ':render_list_items_not_assign';
 
 		return $callbacks;
+	}
+
+	/**
+	 * Render edit course curriculum html.
+	 *
+	 * @throws Exception
+	 */
+	public static function render_edit_course_curriculum( array $data ): stdClass {
+		$course_id   = $data['course_id'] ?? 0;
+		$courseModel = CourseModel::find( $course_id, true );
+		if ( ! $courseModel ) {
+			throw new Exception( __( 'Course not found', 'learnpress' ) );
+		}
+
+		// Get sections items
+		$sections_items   = $courseModel->get_section_items();
+		$content          = new stdClass();
+		$content->content = AdminEditCurriculum::instance()->html_edit_curriculum( $sections_items );
+
+		return $content;
 	}
 
 	/**
@@ -56,7 +78,7 @@ class AdminEditCurriculum {
 	 * @return stdClass
 	 * @throws Exception
 	 */
-	public static function render_html( array $data ): stdClass {
+	public static function handle_edit_course_curriculum( array $data ): stdClass {
 		$content          = new stdClass();
 		$content->content = '';
 
@@ -428,48 +450,91 @@ class AdminEditCurriculum {
 		return $response;
 	}
 
-	public function html_edit_sections( $sections_items ): string {
-
+	/**
+	 * HTML for edit curriculum.
+	 *
+	 * @param $sections_items
+	 *
+	 * @return string
+	 */
+	public function html_edit_curriculum( $sections_items ): string {
 		$html_sections = '';
 		foreach ( $sections_items as $section_items ) {
 			$html_sections .= $this->html_edit_section( $section_items );
 		}
 
+		$sections = [
+			'wrap'          => '<div class="curriculum-sections">',
+			'list-sections' => $html_sections,
+			'section-clone' => $this->html_edit_section(),
+			'wrap_end'      => '</div>',
+		];
+
 		$section = [
-			'wrap'           => '<div class="curriculum-sections">',
-			'sections'       => $html_sections,
-			'section_action' => $this->html_section_actions(),
-			'wrap_end'       => '</div>',
-			'select_items'   => $this->html_select_items(),
+			'wrap'                => '<div id="lp-course-edit-curriculum">',
+			'heading'             => '<div class="heading">',
+			'h4'                  => sprintf(
+				'<h4>%s</h4>',
+				__( 'Details', 'learnpress' )
+			),
+			'section-item-counts' => sprintf(
+				'<div class="section-item-counts"><span>%s</span></div>',
+				sprintf( _n( '%s Item', '%s Items', count( $sections_items ), 'learnpress' ), count( $sections_items ) )
+			),
+			'section-toggle'      =>
+				'<div class="course-toggle-all-sections lp-collapse">
+					<span class="lp-icon-angle-down"></span>
+					<span class="lp-icon-angle-up"></span>
+				</div>',
+			'heading_end'         => '</div>',
+			'sections'            => Template::combine_components( $sections ),
+			'add_new_section'     => $this->html_add_new_section(),
+			'select_items'        => $this->html_select_items(),
+			'wrap_end'            => '</div>',
 		];
 
 		return Template::combine_components( $section );
 	}
 
-	public function html_edit_section( $section_items ): string {
-		$total_items = count( $section_items->items ?? [] );
+	public function html_edit_section( $section_items = null ): string {
+		$is_clone     = is_null( $section_items );
+		$total_items  = 0;
+		$items        = [];
+		$html_items   = '';
+		$section_id   = $section_items->section_id ?? 0;
+		$section_name = $section_items->section_name ?? '';
 
-		$html_items = '';
-		foreach ( $section_items->items as $item ) {
-			$html_items .= $this->html_section_item( $item );
+		if ( ! $is_clone ) {
+			$total_items = count( $section_items->items ?? [] );
+			$items       = $section_items->items ?? [];
+
+			foreach ( $items as $item ) {
+				$html_items .= $this->html_section_item( $item );
+			}
+		} else {
+			$html_items .= $this->html_section_item();
 		}
 
 		$section_list_items = [
-			'wrap'               => '<ul class="section-list-items">',
-			'items'              => $html_items,
-			'section-item-clone' => $this->html_section_item(),
-			'section-item-new'   => $this->html_section_item_new(),
-			'wrap_end'           => '</ul>',
+			'wrap'             => '<ul class="section-list-items">',
+			'items'            => $html_items,
+			'section-item-new' => $this->html_section_item_new(),
+			'wrap_end'         => '</ul>',
 		];
 
 		$section = [
 			'wrap'                 => sprintf(
-				'<div data-section-id="%s" class="section open">',
-				$section_items->section_id ?? 0
+				'<div data-section-id="%s" class="section lp-collapse %s">',
+				$section_id,
+				$is_clone ? 'section-clone lp-hidden' : ''
 			),
 			'head'                 => '<div class="section-head">',
-			'drag'                 => '<span class="movable"></span>',
-			'title'                => $this->html_edit_section_title( $section_items->section_name ?? '' ),
+			'drag'                 => sprintf(
+				'<span class="drag">%s</span>',
+				LP_WP_Filesystem::instance()->file_get_contents( LP_PLUGIN_PATH . 'assets/images/icons/ico-drag.svg' )
+			),
+			'loading'              => '<span class="dashicons dashicons-update"></span>',
+			'title'                => $this->html_edit_section_title( $section_name ),
 			'btn-delete'           => sprintf(
 				'<button type="button" class="lp-btn-delete-section button" data-title="%s" data-content="%s">%s</button>',
 				__( 'Are you sure?', 'learnpress' ),
@@ -480,7 +545,7 @@ class AdminEditCurriculum {
 				'<div class="section-item-counts"><span>%s</span></div>',
 				sprintf( _n( '%s Item', '%s Items', $total_items, 'learnpress' ), $total_items )
 			),
-			'toggle'               => '<div class="actions"><span class="collapse close"></span></div>',
+			'toggle'               => '<div class="section-toggle"><span class="lp-icon-angle-down"></span><span class="lp-icon-angle-up"></span></div>',
 			'head_end'             => '</div>',
 			'wrap_content'         => '<div class="section-collapse">',
 			'section-content'      => '<div class="section-content">',
@@ -506,55 +571,84 @@ class AdminEditCurriculum {
 		return Template::combine_components( $section );
 	}
 
-	public function html_edit_section_title( $section_name ): string {
+	/**
+	 * HTML edit section title.
+	 *
+	 * @param string $section_name
+	 *
+	 * @return string
+	 */
+	public function html_edit_section_title( string $section_name = '' ): string {
 		return sprintf(
-			'<input name="section-title-input"
-					class="title-input"
+			'<input class="lp-section-title-input"
+				name="lp-section-title-input"
+				type="text"
+				value="%s"
+				placeholder="%s"
+				data-mess-empty-title="%s">',
+			esc_attr( $section_name ),
+			esc_attr__( 'Update section title', 'learnpress' ),
+			esc_attr__( 'Section title is required', 'learnpress' )
+		);
+	}
+
+	/**
+	 * HTML for section description input.
+	 *
+	 * @param string|null $section_description
+	 *
+	 * @return string
+	 */
+	public function html_edit_section_description( string $section_description = '' ): string {
+		return sprintf(
+			'<input class="lp-section-description-input"
+				name="lp-section-description-input"
+				type="text"
+				value="%1$s"
+				data-old="%1$s"
+				placeholder="%2$s">',
+			esc_attr( $section_description ),
+			esc_attr__( '+ Add Description', 'learnpress' )
+		);
+	}
+
+	/**
+	 * HTML add new section.
+	 *
+	 * @return string
+	 */
+	public function html_add_new_section(): string {
+		$section = [
+			'wrap'     => '<div class="add-new-section">',
+			'icon'     => '<span class="lp-icon-plus"></span>',
+			'input'    => sprintf(
+				'<input class="lp-section-new-input"
+					name="lp-section-new-input"
 					type="text"
-					title="Update section title"
-					placeholder="Update section title"
-					value="%s"
-					data-mess-empty-title="%s">',
-			esc_attr( $section_name ?? '' ),
-			esc_attr__( 'Section title is required', 'learnpress' )
-		);
+					title="%1$s"
+					placeholder="%1$s"
+					data-mess-empty-title="%2$s">',
+				esc_attr__( 'Create a new section', 'learnpress' ),
+				esc_attr__( 'Section title is required', 'learnpress' )
+			),
+			'button'   => sprintf(
+				'<button type="button" class="lp-btn-add-section button">%s</button>',
+				__( 'Add Sections', 'learnpress' )
+			),
+			'wrap_end' => '</div>',
+		];
+
+		return Template::combine_components( $section );
 	}
 
-	public function html_edit_section_description( $section_description ): string {
-		return sprintf(
-			'<input type="text"
-				title="description"
-				placeholder="+ Add Description"
-				class="description-input section-description-input"
-				data-mess-empty-description="%s"
-				value="%s">',
-			esc_attr__( 'Enter the description for the section', 'learnpress' ),
-			esc_attr( $section_description ?? '' )
-		);
-	}
-
-	public function html_section_actions() {
-		$html = sprintf('
-		<div class="add-new-section">
-				<div class="section new-section">
-					<div class="section-head">
-						<span class="creatable"></span>
-						<input name="new_section"
-								type="text"
-								title="Enter title section"
-								placeholder="Create a new section"
-								data-mess-empty-title="%s"
-								class="title-input new-section">
-						<button type="button" class="lp-btn-add-section button">Add Sections</button>
-					</div>
-				</div>
-			</div>',
-			esc_attr__( 'Section title is required', 'learnpress' )
-		);
-
-		return $html;
-	}
-
+	/**
+	 * HTML for section item.
+	 * $item is null when clone item new
+	 *
+	 * @param null|object $item
+	 *
+	 * @return string
+	 */
 	public function html_section_item( $item = null ): string {
 		$is_clone     = is_null( $item );
 		$item_id      = $item->item_id ?? 0;
@@ -585,7 +679,7 @@ class AdminEditCurriculum {
 				$is_clone ? 'empty-item section-item-clone lp-hidden' : ''
 			),
 			'drag'         => sprintf(
-				'<div class="drag lp-sortable-handle">%s</div>',
+				'<div class="drag">%s</div>',
 				LP_WP_Filesystem::instance()->file_get_contents( LP_PLUGIN_PATH . 'assets/images/icons/ico-drag.svg' )
 			),
 			'icon'         => '<div class="icon"></div>',
@@ -635,7 +729,8 @@ class AdminEditCurriculum {
 	}
 
 	public function html_section_item_new() {
-		$m = sprintf('
+		$m = sprintf(
+			'
 		<div class="new-section-item section-item lp-hidden">
 			<div class="drag"></div>
 			<div class="types">
@@ -647,7 +742,9 @@ class AdminEditCurriculum {
 				<button class="lp-btn-add-item-cancel button" type="button">Cancel</button>
 			</div>
 		</div>
-		', esc_attr__( 'Item title is required', 'learnpress' ));
+		',
+			esc_attr__( 'Item title is required', 'learnpress' )
+		);
 
 		return $m;
 	}

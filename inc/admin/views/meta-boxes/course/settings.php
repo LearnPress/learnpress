@@ -705,19 +705,15 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 			return;
 		}
 
-		$sections_items = $courseModel->get_section_items();
+		wp_enqueue_style( 'lp-edit-curriculum' );
 
-		ob_start();
-		Template::instance()->get_admin_template( 'course/edit-curriculum', compact( 'sections_items' ) );
-		$html      = ob_get_clean();
 		$args      = [
-			'id_url'                  => 'edit-curriculum',
-			'course_id'               => $course_id,
-			'html_no_load_ajax_first' => $html,
+			'id_url'    => 'edit-course-curriculum',
+			'course_id' => $course_id,
 		];
 		$call_back = array(
 			'class'  => AdminEditCurriculum::class,
-			'method' => 'render_html',
+			'method' => 'render_edit_course_curriculum',
 		);
 
 		echo TemplateAJAX::load_content_via_ajax( $args, $call_back );

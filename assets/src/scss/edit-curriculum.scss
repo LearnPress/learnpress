@@ -1,68 +1,78 @@
 @import "mixin";
 @import "message";
 
-#admin-editor-lp_course {
+#lp-course-edit-curriculum {
+	padding: 20px;
 
-	.lp-course-curriculum {
+	[class*="lp-icon-"] {
+		font-size: 1.25rem;
+	}
 
-		.heading {
-			display: flex;
-			flex-direction: row;
-			flex-wrap: nowrap;
-			position: relative;
-			padding: 8px 20px;
-			align-items: center;
-			line-height: 1;
+	.lp-icon-angle-down, .lp-icon-angle-up {
+		padding: 10px 15px;
+		color: #999;
+		cursor: pointer;
+	}
 
-			h4 {
-				margin: 0;
-				font-size: 1rem;
-			}
+	.lp-icon-angle-down:hover, .lp-icon-angle-up:hover {
+		color: #0085ba;
+	}
 
-			.collapse-sections {
-				display: flex;
-				width: 40px;
-				color: #999;
-				font-family: Dashicons;
-				font-size: 1.875rem;
-				cursor: pointer;
-				justify-content: center;
-				align-items: center;
+	input[type="text"] {
+		width: 100%;
+		border: none;
+		box-shadow: none;
+		padding: 0;
+	}
 
-				&.close::before {
-					content: "\f140";
-				}
-
-				&.open::before {
-					content: "\f142";
-				}
-			}
-
-			.status {
-				visibility: hidden;
-				position: relative;
-				top: 5px;
-				margin-left: 10px;
-				font-family: Dashicons;
-				font-size: 1.25rem;
-
-				&::before {
-					content: "\f463";
-				}
-
-				&.loading {
-					display: inline-block;
-					visibility: visible;
-					animation: rotation 2s infinite linear;
-				}
+	.course-toggle-all-sections {
+		&.lp-collapse {
+			.lp-icon-angle-up {
+				display: none;
 			}
 		}
+		&:not(.lp-collapse) {
+			.lp-icon-angle-down {
+				display: none;
+			}
+		}
+	}
 
-		.curriculum-sections {
+	.heading {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: nowrap;
+		margin-bottom: 20px;
+		align-items: center;
+		line-height: 1;
+
+		h4 {
 			margin: 0;
-			margin: 0 20px 20px 20px;
-			border: 1px solid #ddd;
+			font-size: 1rem;
 		}
+
+		.collapse-sections {
+			display: flex;
+			width: 40px;
+			color: #999;
+			font-family: Dashicons;
+			font-size: 1.875rem;
+			cursor: pointer;
+			justify-content: center;
+			align-items: center;
+
+			&.close::before {
+				content: "\f140";
+			}
+
+			&.open::before {
+				content: "\f142";
+			}
+		}
+	}
+
+	.curriculum-sections {
+		border: 1px solid #ddd;
 
 		.section {
 			margin: 0;
@@ -70,60 +80,47 @@
 			opacity: 1;
 			background: #fff;
 
-			&:first-child {
-				border-top: 0;
-			}
-
-			&.new-section {
-				margin-top: 1px;
-				border: none;
-
-				form {
-					margin: 0;
-				}
-
-				.section-head {
-					background-color: #f4fcff;
-
-					.creatable {
-						position: relative;
-						top: 1px;
-
-						&::before {
-							content: "\f132";
-						}
-					}
-				}
-			}
-
-			&.empty-section {
-				position: relative;
-
-				&::after {
-					position: absolute;
-					top: 0;
-					right: 0;
-					bottom: 0;
-					left: 0;
-					opacity: 0.5;
-					background: #fff;
-					content: "";
-				}
-
-				.section-head {
-
-					.movable::before {
-						display: inline-block;
-						color: #a2a2a2;
-						content: "\f463";
-
-						@include rotating4();
-					}
-				}
-
+			&.lp-collapse {
 				.section-collapse {
 					display: none;
 				}
+				.section-toggle {
+					.lp-icon-angle-up {
+						display: none;
+					}
+				}
+			}
+			&:not(.lp-collapse) {
+				.section-toggle {
+					.lp-icon-angle-down {
+						display: none;
+					}
+				}
+			}
+			.dashicons-update {
+				animation: rotation 2s infinite linear;
+				font-size: 1.25rem;
+				color: #0085ba;
+				display: none;
+			}
+			.drag {
+				cursor: grab;
+				color: #999;
+
+				&:active {
+					cursor: grabbing;
+				}
+			}
+			&.loading {
+				pointer-events: none;
+				opacity: 0.5 !important;
+				.dashicons-update {
+					display: inline-block;
+				}
+			}
+
+			&:first-child {
+				border-top: 0;
 			}
 
 			&:hover {
@@ -147,14 +144,19 @@
 
 			.section-head {
 				display: flex;
-				position: relative;
-				height: 42px;
 				margin: 0;
-				padding: 0;
+				padding: 5px 10px;
 				background-color: #f4fcff;
-				line-height: 2.5rem;
 				transition: background 500ms ease-out;
 				align-items: center;
+				gap: 5px;
+
+				.lp-btn-delete-section {
+					color: #E74C3C;
+					border: 1px solid #999;
+					background: white;
+					display: none;
+				}
 
 				.movable,
 				.creatable {
@@ -226,6 +228,12 @@
 						}
 					}
 				}
+
+				&:hover {
+					.lp-btn-delete-section {
+						display: inline-block;
+					}
+				}
 			}
 
 			.name {
@@ -243,18 +251,62 @@
 
 			.section-collapse {
 				overflow: hidden;
+				padding: 20px;
+				border-top: 1px solid #e5e5e5;
 			}
 
 			.section-content {
-				padding: 20px;
-				border-top: 1px solid #e5e5e5;
+				.details {
+					button {
+						display: none;
+					}
+
+					&.editing {
+						button {
+							display: inline-block;
+						}
+					}
+				}
+			}
+
+			.section-actions {
+				.remove {
+					display: none;
+					float: right;
+					height: 30px;
+					border: 1px solid #eee;
+					border-radius: 3px;
+					color: red;
+					line-height: 1.875rem;
+					cursor: pointer;
+
+					.icon {
+						padding: 0 18px;
+					}
+
+					.confirm {
+						display: none;
+						padding: 0 18px;
+					}
+
+					&.confirm {
+
+						.confirm {
+							display: inline-block;
+						}
+
+						.icon {
+							display: none;
+						}
+					}
+				}
 			}
 
 			.details {
 				margin-bottom: 20px;
 			}
 
-			.title-input {
+			.lp-input-title-section {
 				padding-left: 0;
 				border: none;
 				font-size: 1.2em;
@@ -274,415 +326,399 @@
 				}
 			}
 		}
+	}
 
-		.section-list-items {
+	.add-new-section {
+		display: flex;
+		gap: 5px;
+		padding: 5px 10px;
+		align-items: center;
+		background-color: #f4fcff;
+		border: 1px solid #ddd;
+		border-top: none;
+
+		.lp-icon-plus {
+			color: #999;
+		}
+
+		input {
 			width: 100%;
-			border-collapse: collapse;
+			border: none;
+			background: transparent;
+			outline: none;
+			padding: 0;
+		}
+	}
 
-			ul {
-				position: relative;
-				min-height: 5px;
-				margin: 0;
+	.section-list-items {
+		width: 100%;
+		border-collapse: collapse;
+
+		ul {
+			position: relative;
+			min-height: 5px;
+			margin: 0;
+		}
+
+		.section-item {
+			display: flex;
+			position: relative;
+			margin: 0;
+			border: 1px solid #eee;
+			border-bottom-width: 0;
+			background: #fff;
+			transition: background 200ms ease-out;
+			justify-content: center;
+			align-items: center;
+
+			&.editing {
+				border: 1px solid rgba(51, 51, 200, 0.87);
 			}
 
-			.section-item {
-				display: flex;
-				position: relative;
-				margin: 0;
-				border: 1px solid #eee;
-				border-bottom-width: 0;
-				background: #fff;
-				transition: background 200ms ease-out;
-				justify-content: center;
-				align-items: center;
+			&.ui-sortable-helper {
+				border-bottom: 1px solid #eee;
+			}
 
-				&.ui-sortable-helper {
-					border-bottom: 1px solid #eee;
-				}
+			&:nth-child(2n+1) {
+				background-color: #f7f7f7;
+			}
 
-				&:nth-child(2n+1) {
-					background-color: #f7f7f7;
-				}
+			&.updating {
 
-				&.updating {
-
-					&::before {
-						position: absolute;
-						z-index: 2;
-						top: 0;
-						right: 0;
-						bottom: 0;
-						left: 0;
-						content: "";
-					}
-				}
-
-				&.removing {
-					background-color: #ffeded;
-				}
-
-				.drag {
-					height: 20px;
-					padding-top: 3px;
-					padding-left: 6px;
-					cursor: url("../../images/openhand.cur") 7 5, default;
-					fill: #999;
-					flex: 0 0 18px;
-
-					&:hover {
-						fill: #0085ba;
-					}
-				}
-
-				.icon {
-					display: flex;
-					align-items: center;
-					justify-content: center;
-				}
-
-				.title {
-					margin-right: 120px;
-					margin-left: 2px;
-					flex-grow: 1;
-					flex-basis: 100%;
-
-					input {
-						color: inherit;
-					}
-				}
-
-				.item-actions {
-					display: flex;
+				&::before {
 					position: absolute;
+					z-index: 2;
 					top: 0;
-					right: 2px;
+					right: 0;
 					bottom: 0;
-					align-items: center;
-					justify-content: center;
+					left: 0;
+					content: "";
 				}
+			}
 
-				.actions {
-					margin: 0;
+			&.removing {
+				background-color: #ffeded;
+			}
 
-					> * {
-						visibility: hidden;
-						margin-right: 10px;
-					}
-
-					.edit {
-						text-decoration: none;
-					}
-
-					.remove {
-						color: #a00;
-					}
-				}
+			.drag {
+				height: 20px;
+				padding-top: 3px;
+				padding-left: 6px;
+				cursor: url("../../images/openhand.cur") 7 5, default;
+				fill: #999;
+				flex: 0 0 18px;
 
 				&:hover {
-
-					.drag {
-						visibility: visible;
-					}
-				}
-
-				&:not(.lp_lesson) {
-
-					.item-actions {
-
-						.actions {
-
-							.preview-item {
-								display: none;
-							}
-						}
-					}
+					fill: #0085ba;
 				}
 			}
 
-			.new-section-item {
+			.icon {
 				display: flex;
-				position: relative;
-				border-bottom-width: 1px;
-				transition: all 200ms ease-out;
 				align-items: center;
+				justify-content: center;
+			}
+
+			.title {
+				margin-right: 120px;
+				margin-left: 2px;
+				flex-grow: 1;
+				flex-basis: 100%;
+
+				input {
+					color: inherit;
+				}
+			}
+
+			.item-actions {
+				display: flex;
+				position: absolute;
+				top: 0;
+				right: 2px;
+				bottom: 0;
+				align-items: center;
+				justify-content: center;
+			}
+
+			.actions {
+				margin: 0;
+
+				> * {
+					visibility: hidden;
+					margin-right: 10px;
+				}
+
+				.edit {
+					text-decoration: none;
+				}
+
+				.remove {
+					color: #a00;
+				}
+			}
+
+			&:hover {
 
 				.drag {
-					display: flex;
-					width: 30px;
-					color: #999;
-					font-family: Dashicons;
-					font-size: 1rem;
-					vertical-align: middle;
-					cursor: default;
-					align-items: center;
-					justify-content: center;
-
-					&::before {
-						content: "\f132";
-					}
-				}
-
-				.title {
-					display: inline-block;
-					margin: 0;
-					flex: 1;
-				}
-
-				.types {
-					display: inline-block;
-
-					&:hover,
-					&:focus {
-						background-color: #fff;
-
-						.type {
-							display: inline-block;
-						}
-					}
-
-					.type {
-						display: inline-block;
-						padding: 8px 5px;
-						color: #ccc;
-
-						input {
-							display: none;
-						}
-
-						&.current {
-							color: #0085ba;
-						}
-
-						&::before {
-							position: relative;
-							top: 2px;
-							font-family: Dashicons;
-							font-size: 1.25rem;
-						}
-
-						&.lp_quiz {
-							padding: 8px 6px 8px 0;
-
-							&::before {
-								content: "\f469";
-							}
-						}
-
-						&.lp_lesson {
-
-							&::before {
-								content: "\f330";
-							}
-						}
-
-						&.empty-item {
-
-							&::before {
-								content: "\f463";
-							}
-						}
-					}
+					visibility: visible;
 				}
 			}
 
-			.section-item {
+			&:not(.lp_lesson) {
 
 				.item-actions {
-					text-align: right;
 
 					.actions {
 
-						.action {
-							display: inline-block;
-							position: relative;
-							width: 30px;
-							height: 30px;
-							margin: 0;
-							padding: 0;
-							text-align: center;
-							vertical-align: middle;
-							cursor: pointer;
-
-							> a {
-								width: 30px;
-								height: 30px;
-								color: #999;
-								line-height: 1.875rem;
-
-								&:hover {
-									color: #0073aa;
-								}
-							}
-
-							&.delete-item {
-
-								> a {
-
-									&:hover {
-										color: #e74c3c;
-									}
-								}
-
-								ul {
-									display: none;
-									position: absolute;
-									z-index: 9;
-									top: 100%;
-									right: 0;
-									width: 165px;
-									margin: 0;
-									border: 1px solid #999;
-									background: #fdfeff;
-									text-align: center;
-
-									li {
-										margin: 0;
-										border-bottom: 1px solid #eee;
-										text-align: right;
-
-										a {
-											display: block;
-											padding: 10px 25px;
-											color: #757575;
-											font-size: 0.75rem;
-											text-decoration: none;
-
-											&.delete-permanently {
-												color: #e74c3c;
-											}
-										}
-
-										&:hover {
-											background: #eee;
-										}
-									}
-								}
-
-								&:hover {
-
-									ul {
-										display: block;
-									}
-								}
-							}
+						.preview-item {
+							display: none;
 						}
 					}
-				}
-
-				&:hover {
-
-					.item-actions {
-
-						.actions > * {
-							visibility: visible;
-							cursor: pointer;
-						}
-					}
-				}
-
-				&.lp_quiz {
-
-					.icon::before {
-						content: "\f469";
-					}
-				}
-
-				&.lp_lesson {
-
-					.icon::before {
-						content: "\f330";
-					}
-				}
-
-				&.empty-item {
-					position: relative;
-					color: #a2a2a2;
-
-					&::after {
-						position: absolute;
-						top: 0;
-						right: 0;
-						bottom: 0;
-						left: 0;
-						opacity: 0.5;
-						background: #fff;
-						content: "";
-					}
-
-					.item-actions {
-						display: none;
-					}
-
-					.icon::before {
-						color: #a2a2a2;
-						content: "\f463";
-
-						@include rotating4();
-					}
-				}
-
-				.icon {
-					color: #0085ba;
-					font-size: 1.25rem;
-					text-align: center;
-					flex: 0 0 29px;
-
-					&::before {
-						font-family: Dashicons;
-					}
-				}
-
-				input {
-					width: 100%;
-					padding: 8px 10px 8px 0;
-					border: none;
-					color: inherit;
-					font-size: 0.875rem;
-					font-weight: 600;
 				}
 			}
 		}
 
-		.section-actions {
-			padding: 0 20px 20px 20px;
+		.new-section-item {
+			display: flex;
+			position: relative;
+			border-bottom-width: 1px;
+			transition: all 200ms ease-out;
+			align-items: center;
 
-			.remove {
-				display: none;
-				float: right;
-				height: 30px;
-				border: 1px solid #eee;
-				border-radius: 3px;
-				color: red;
-				line-height: 1.875rem;
-				cursor: pointer;
+			.drag {
+				display: flex;
+				width: 30px;
+				color: #999;
+				font-family: Dashicons;
+				font-size: 1rem;
+				vertical-align: middle;
+				cursor: default;
+				align-items: center;
+				justify-content: center;
 
-				.icon {
-					padding: 0 18px;
+				&::before {
+					content: "\f132";
 				}
+			}
 
-				.confirm {
-					display: none;
-					padding: 0 18px;
-				}
+			.title {
+				display: inline-block;
+				margin: 0;
+				flex: 1;
+			}
 
-				&.confirm {
+			.types {
+				display: inline-block;
 
-					.confirm {
+				&:hover,
+				&:focus {
+					background-color: #fff;
+
+					.type {
 						display: inline-block;
 					}
+				}
 
-					.icon {
+				.type {
+					display: inline-block;
+					padding: 8px 5px;
+					color: #ccc;
+
+					input {
 						display: none;
+					}
+
+					&.current {
+						color: #0085ba;
+					}
+
+					&::before {
+						position: relative;
+						top: 2px;
+						font-family: Dashicons;
+						font-size: 1.25rem;
+					}
+
+					&.lp_quiz {
+						padding: 8px 6px 8px 0;
+
+						&::before {
+							content: "\f469";
+						}
+					}
+
+					&.lp_lesson {
+
+						&::before {
+							content: "\f330";
+						}
+					}
+
+					&.empty-item {
+
+						&::before {
+							content: "\f463";
+						}
 					}
 				}
 			}
 		}
 
-		.ui-sortable-placeholder {
-			display: block;
-			visibility: visible !important;
-			border-color: #bdf4fe !important;
-			background: #bdf4fe !important;
+		.section-item {
+
+			.item-actions {
+				text-align: right;
+
+				.actions {
+
+					.action {
+						display: inline-block;
+						position: relative;
+						width: 30px;
+						height: 30px;
+						margin: 0;
+						padding: 0;
+						text-align: center;
+						vertical-align: middle;
+						cursor: pointer;
+
+						> a {
+							width: 30px;
+							height: 30px;
+							color: #999;
+							line-height: 1.875rem;
+
+							&:hover {
+								color: #0073aa;
+							}
+						}
+
+						&.delete-item {
+
+							> a {
+
+								&:hover {
+									color: #e74c3c;
+								}
+							}
+
+							ul {
+								display: none;
+								position: absolute;
+								z-index: 9;
+								top: 100%;
+								right: 0;
+								width: 165px;
+								margin: 0;
+								border: 1px solid #999;
+								background: #fdfeff;
+								text-align: center;
+
+								li {
+									margin: 0;
+									border-bottom: 1px solid #eee;
+									text-align: right;
+
+									a {
+										display: block;
+										padding: 10px 25px;
+										color: #757575;
+										font-size: 0.75rem;
+										text-decoration: none;
+
+										&.delete-permanently {
+											color: #e74c3c;
+										}
+									}
+
+									&:hover {
+										background: #eee;
+									}
+								}
+							}
+
+							&:hover {
+
+								ul {
+									display: block;
+								}
+							}
+						}
+					}
+				}
+			}
+
+			&:hover {
+
+				.item-actions {
+
+					.actions > * {
+						visibility: visible;
+						cursor: pointer;
+					}
+				}
+			}
+
+			&.lp_quiz {
+
+				.icon::before {
+					content: "\f469";
+				}
+			}
+
+			&.lp_lesson {
+
+				.icon::before {
+					content: "\f330";
+				}
+			}
+
+			&.empty-item {
+				position: relative;
+				color: #a2a2a2;
+
+				&::after {
+					position: absolute;
+					top: 0;
+					right: 0;
+					bottom: 0;
+					left: 0;
+					opacity: 0.5;
+					background: #fff;
+					content: "";
+				}
+
+				.item-actions {
+					display: none;
+				}
+
+				.icon::before {
+					color: #a2a2a2;
+					content: "\f463";
+
+					@include rotating4();
+				}
+			}
+
+			.icon {
+				color: #0085ba;
+				font-size: 1.25rem;
+				text-align: center;
+				flex: 0 0 29px;
+
+				&::before {
+					font-family: Dashicons;
+				}
+			}
+
+			input {
+				width: 100%;
+				padding: 8px 10px 8px 0;
+				border: none;
+				color: inherit;
+				font-size: 0.875rem;
+				font-weight: 600;
+			}
 		}
 	}
 }
