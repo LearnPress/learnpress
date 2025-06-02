@@ -12,6 +12,7 @@ import Sortable from 'sortablejs';
 import SweetAlert from 'sweetalert2';
 
 const idElEditCurriculum = '#lp-course-edit-curriculum';
+let elEditCurriculum;
 let elCurriculumSections;
 let elLPTarget;
 let elNewSectionItem;
@@ -32,7 +33,7 @@ const argsToastify = {
 const className = {
 	elCurriculumSections: '.curriculum-sections',
 	elSectionNewInput: '.lp-section-new-input',
-	elSectionClone: '.section-clone',
+	elSectionClone: 'section-clone',
 	elSectionTitleInput: '.lp-section-title-input',
 	elSectionDesInput: '.lp-section-description-input',
 	elSection: '.section',
@@ -40,13 +41,18 @@ const className = {
 	btnNewSection: 'lp-btn-add-section',
 	elBtnDeleteSection: '.lp-btn-delete-section',
 	elBtnSelectItems: 'lp-btn-select-items',
-	btnSelectItemType: 'lp-btn-select-item-type',
+	btnSelectItemType: '.lp-btn-select-item-type',
 	btnAddItem: 'lp-btn-add-item',
-	elNewSectionItem: 'new-section-item',
-	elItemClone: '.section-item-clone',
-	elSectionListItems: 'section-list-items',
+	elNewSectionItem: '.lp-new-section-item',
+	elItemClone: 'section-item-clone',
+	elItemNewInput: '.lp-item-new-input',
+	elItemTitleInput: '.lp-item-title-input',
+	elSectionItem: '.section-item',
+	elSectionListItems: '.section-list-items',
 	LPTarget: '.lp-target',
 	elCollapse: 'lp-collapse',
+	elSectionActions: '.section-actions',
+	elBtnAddItemsSelected: '.lp-btn-add-items-selected',
 };
 
 // Add new section
@@ -58,7 +64,7 @@ const addSection = ( e, target ) => {
 
 	e.preventDefault();
 
-	const elSectionClone = elCurriculumSections.querySelector( `${ className.elSectionClone }` );
+	const elSectionClone = elCurriculumSections.querySelector( `.${ className.elSectionClone }` );
 	const elSectionTitleInput = elAddNewSection.querySelector( `${ className.elSectionNewInput }` );
 	const titleSectionValue = elSectionTitleInput.value.trim();
 	const message = elSectionTitleInput.dataset.messEmptyTitle;
@@ -90,7 +96,7 @@ const addSection = ( e, target ) => {
 			console.log( error );
 		},
 		completed: () => {
-			newSection.classList.remove( 'section-clone' );
+			newSection.classList.remove( `${ className.elSectionClone }` );
 			lpUtils.lpSetLoadingEl( newSection, 0 );
 			newSection.classList.remove( `${ className.elCollapse }` );
 		},
@@ -245,8 +251,8 @@ const changeSectionDescription = ( e, target ) => {
  * @param e
  * @param target
  */
-const selectItemToAddSection = ( e, target ) => {
-	const elBtnSelectItem = target.closest( `.${ className.btnSelectItemType }` );
+const selectItemTypeToAddSection = ( e, target ) => {
+	const elBtnSelectItem = target.closest( `${ className.btnSelectItemType }` );
 	if ( ! elBtnSelectItem ) {
 		return;
 	}
@@ -257,14 +263,19 @@ const selectItemToAddSection = ( e, target ) => {
 
 	// Insert input item type to add
 	const elSection = elBtnSelectItem.closest( '.section' );
-	const elSectionItems = elSection.querySelector( '.section-list-items' );
+	const elSectionActions = elSection.querySelector( `${ className.elSectionActions }` );
+	const elNewSectionItem = elSectionActions.querySelector( `${ className.elNewSectionItem }` );
+	const elSectionItems = elSection.querySelector( `${ className.elSectionListItems }` );
 	const elNewSectionItemClone = elNewSectionItem.cloneNode( true );
+	const elNewSectionItemCloneType = elNewSectionItemClone.querySelector( '.item-type' );
+	const elNewItemInput = elNewSectionItemClone.querySelector( `${ className.elItemNewInput }` );
+
 	lpUtils.lpShowHideEl( elNewSectionItemClone, 1 );
-	elNewSectionItemClone.dataset.itemType = itemType;
-	const elLabelItemType = elNewSectionItemClone.querySelector( 'label' );
-	elLabelItemType.classList.add( itemType );
-	const elInputItemType = elNewSectionItemClone.querySelector( 'input[name="new_item"]' );
-	elInputItemType.setAttribute( 'placeholder', itemPlaceholder );
+	elNewSectionItemCloneType.classList.add( itemType );
+
+	elNewItemInput.setAttribute( 'placeholder', itemPlaceholder );
+	elNewItemInput.dataset.itemType = itemType;
+
 	const elBtnAddItem = elNewSectionItemClone.querySelector( `.${ className.btnAddItem }` );
 	elBtnAddItem.textContent = itemBtnAddText;
 	elSectionItems.insertAdjacentElement( 'beforeend', elNewSectionItemClone );
@@ -275,19 +286,19 @@ const selectItemToAddSection = ( e, target ) => {
  * @param target
  */
 const addItemToSection = ( e, target ) => {
-	const elNewSectionItem = target.closest( `.${ className.elNewSectionItem }` );
+	const elNewSectionItem = target.closest( `${ className.elNewSectionItem }` );
 	if ( ! elNewSectionItem ) {
 		return;
 	}
 
 	e.preventDefault();
 
-	const elSection = elNewSectionItem.closest( '.section' );
+	const elSection = elNewSectionItem.closest( `${ className.elSection }` );
 	const sectionId = elSection.dataset.sectionId;
-	const elInputTitleItem = elNewSectionItem.querySelector( 'input[name="new_item"]' );
-	const titleItemValue = elInputTitleItem.value.trim();
-	const typeItemValue = elNewSectionItem.dataset.itemType;
-	const message = elInputTitleItem.dataset.messEmptyTitle;
+	const elItemNewInput = elNewSectionItem.querySelector( `${ className.elItemNewInput }` );
+	const titleItemValue = elItemNewInput.value.trim();
+	const typeItemValue = elItemNewInput.dataset.itemType;
+	const message = elItemNewInput.dataset.messEmptyTitle;
 
 	if ( titleItemValue.length === 0 ) {
 		showToast( message, 'error' );
@@ -295,13 +306,15 @@ const addItemToSection = ( e, target ) => {
 	}
 
 	// Clone new section item
-	const elItemCloneEx = elSection.querySelector( `${ className.elItemClone }` );
-	const elItemClone = elItemCloneEx.cloneNode( true );
-	elItemClone.classList.remove( 'clone' );
-	lpUtils.lpShowHideEl( elItemClone, 1 );
-	elItemClone.querySelector( 'input[name="item-title-input"]' ).value = titleItemValue;
-	elItemClone.classList.add( typeItemValue );
-	elNewSectionItem.insertAdjacentElement( 'beforebegin', elItemClone );
+	const elItemClone = elSection.querySelector( `.${ className.elItemClone }` );
+	const elItemNew = elItemClone.cloneNode( true );
+	const elItemCloneInput = elItemNew.querySelector( `${ className.elItemTitleInput }` );
+
+	lpUtils.lpShowHideEl( elItemNew, 1 );
+	elItemCloneInput.value = titleItemValue;
+	elItemNew.classList.add( typeItemValue );
+	lpUtils.lpSetLoadingEl( elItemNew, 1 );
+	elItemClone.insertAdjacentElement( 'beforebegin', elItemNew );
 	elNewSectionItem.remove();
 
 	// Call ajax to add item to section
@@ -313,17 +326,20 @@ const addItemToSection = ( e, target ) => {
 			showToast( message, status );
 
 			if ( status === 'error' ) {
-				elItemClone.remove();
+				elItemNew.remove();
 			}
 		},
 		error: ( error ) => {
 			console.log( error );
 		},
 		completed: () => {
-			elItemClone.classList.remove( 'empty-item' );
+			elItemNew.classList.remove( `${ className.elItemClone }` );
+			lpUtils.lpSetLoadingEl( elItemNew, 0 );
+			updateCountItems( elSection );
 		},
 	};
 
+	dataSend.callback.method = 'handle_edit_course_curriculum';
 	dataSend.args.section_id = sectionId;
 	dataSend.args.action = 'add_item_to_section';
 	dataSend.args.item_title = titleItemValue;
@@ -495,7 +511,7 @@ const chooseItemType = ( e, target ) => {
 	} );
 };
 const addItemsSelectedToSection = ( e, target ) => {
-	const elBtnAddItems = target.closest( '.lp-btn-add-items-selected' );
+	const elBtnAddItems = target.closest( `${ className.elBtnAddItemsSelected }` );
 	if ( ! elBtnAddItems ) {
 		return;
 	}
@@ -510,6 +526,7 @@ const addItemsSelectedToSection = ( e, target ) => {
 		return;
 	}
 
+	dataSend.callback.method = 'handle_edit_course_curriculum';
 	dataSend.args.action = 'add_items_to_section';
 	dataSend.args.items = itemsSelectedData;
 	dataSend.args.section_id = sectionIdSelected;
@@ -519,15 +536,20 @@ const addItemsSelectedToSection = ( e, target ) => {
 	// End
 
 	const elSection = document.querySelector( `.section[data-section-id="${ sectionIdSelected }"]` );
-	const elItemEmpty = elSection.querySelector( '.empty-item' );
+	const elItemClone = elSection.querySelector( `.${ className.elItemClone }` );
 
 	itemsSelectedData.forEach( ( item ) => {
-		const elItemClone = elItemEmpty.cloneNode( true );
-		elItemClone.setAttribute( 'data-item-id', item.item_id );
-		const elInputTitleClone = elItemClone.querySelector( 'input[name="item-title-input"]' );
-		elInputTitleClone.value = item.item_title || '';
-		lpUtils.lpShowHideEl( elItemClone, 1 );
-		elItemEmpty.insertAdjacentElement( 'beforebegin', elItemClone );
+		const elItemNew = elItemClone.cloneNode( true );
+		const elInputTitleNew = elItemNew.querySelector( `${ className.elItemTitleInput }` );
+		const elSectionListItems = elSection.querySelector( `${ className.elSectionListItems }` );
+
+		elItemNew.dataset.itemId = item.item_id;
+		elItemNew.classList.add( item.item_type );
+		elItemNew.classList.remove( `${ className.elItemClone }` );
+		elInputTitleNew.value = item.item_title || '';
+		lpUtils.lpSetLoadingEl( elItemNew, 1 );
+		lpUtils.lpShowHideEl( elItemNew, 1 );
+		elSectionListItems.insertAdjacentElement( 'beforeend', elItemNew );
 	} );
 
 	SweetAlert.close();
@@ -536,6 +558,15 @@ const addItemsSelectedToSection = ( e, target ) => {
 		success: ( response ) => {
 			const { message, status, data } = response;
 			showToast( message, status );
+
+			if ( status === 'error' ) {
+				itemsSelectedData.forEach( ( item ) => {
+					const elItemAdded = elSection.querySelector( `.section-item[data-item-id="${ item.item_id }"]` );
+					if ( elItemAdded ) {
+						elItemAdded.remove();
+					}
+				} );
+			}
 		},
 		error: ( error ) => {
 			console.log( error );
@@ -545,11 +576,11 @@ const addItemsSelectedToSection = ( e, target ) => {
 
 			itemsSelectedData.forEach( ( item ) => {
 				const elItemAdded = elSection.querySelector( `.section-item[data-item-id="${ item.item_id }"]` );
-				elItemAdded.classList.remove( 'empty-item' );
-				elItemAdded.classList.add( item.item_type );
+				lpUtils.lpSetLoadingEl( elItemAdded, 0 );
 			} );
 
 			itemsSelectedData = []; // Clear selected items data
+			updateCountItems( elSection );
 		},
 	} );
 };
@@ -580,7 +611,7 @@ const deleteItemFromSection = ( e, target ) => {
 		reverseButtons: true,
 	} ).then( ( result ) => {
 		if ( result.isConfirmed ) {
-			elSectionItem.classList.add( 'empty-item' );
+			lpUtils.lpSetLoadingEl( elSectionItem, 1 );
 
 			// Call ajax to delete item from section
 			const callBack = {
@@ -594,10 +625,13 @@ const deleteItemFromSection = ( e, target ) => {
 					console.log( error );
 				},
 				completed: () => {
+					lpUtils.lpSetLoadingEl( elSectionItem, 0 );
 					elSectionItem.remove();
+					updateCountItems( elSection );
 				},
 			};
 
+			dataSend.callback.method = 'handle_edit_course_curriculum';
 			dataSend.args.action = 'delete_item_from_section';
 			dataSend.args.item_id = itemId;
 			dataSend.args.section_id = sectionId;
@@ -937,6 +971,19 @@ const checkAllSectionsCollapsed = ( elCurriculum ) => {
 		elToggleAllSections.classList.add( 'lp-collapse' );
 	}
 };
+const updateCountItems = ( elSection ) => {
+	elEditCurriculum = elCurriculumSections.closest( `${ idElEditCurriculum }` );
+	const elCountItemsAll = elEditCurriculum.querySelector( '.total-items' );
+	const elItemsAll = elCurriculumSections.querySelectorAll( `${ className.elSectionItem }:not(.${ className.elItemClone })` );
+	elCountItemsAll.innerHTML = elItemsAll.length;
+
+	// Count items in section
+	const elCountItems = elSection.querySelector( '.section-items-counts' );
+	const elItems = elSection.querySelectorAll( `${ className.elSectionItem }:not(.${ className.elItemClone })` );
+	elCountItems.textContent = elItems.length;
+
+	console.log( elItemsAll.length, elItems.length );
+};
 
 // Events
 document.addEventListener( 'click', ( e ) => {
@@ -980,7 +1027,7 @@ document.addEventListener( 'click', ( e ) => {
 	toggleSectionAll( e, target );
 
 	// Select item type to add
-	selectItemToAddSection( e, target );
+	selectItemTypeToAddSection( e, target );
 	// Add item to section
 	if ( target.classList.contains( `${ className.btnAddItem }` ) ) {
 		addItemToSection( e, target );
@@ -988,7 +1035,7 @@ document.addEventListener( 'click', ( e ) => {
 
 	// Cancel add item to section
 	if ( target.classList.contains( 'lp-btn-add-item-cancel' ) ) {
-		const elNewSectionItem = target.closest( `.${ className.elNewSectionItem }` );
+		const elNewSectionItem = target.closest( `${ className.elNewSectionItem }` );
 		if ( elNewSectionItem ) {
 			elNewSectionItem.remove();
 		}
@@ -1002,6 +1049,15 @@ document.addEventListener( 'click', ( e ) => {
 		const elDetail = target.closest( '.details' );
 		const elSectionDesInput = elDetail.querySelector( `${ className.elSectionDesInput }` );
 		updateSectionDescription( e, elSectionDesInput );
+	}
+
+	// Click button cancel update section description
+	if ( target.classList.contains( 'lp-btn-cancel-update-section-description' ) ) {
+		const elDetail = target.closest( '.details' );
+		const elSectionDesInput = elDetail.querySelector( `${ className.elSectionDesInput }` );
+		const oldValue = elSectionDesInput.dataset.old || '';
+		elSectionDesInput.value = oldValue; // Reset to old value
+		elDetail.classList.remove( 'editing' ); // Remove editing class
 	}
 } );
 
@@ -1040,7 +1096,6 @@ lpUtils.lpOnElementReady( `${ idElEditCurriculum }`, ( elEditCurriculum ) => {
 
 	dataSend = window.lpAJAXG.getDataSetCurrent( elLPTarget );
 
-	elNewSectionItem = elEditCurriculum.querySelector( `.${ className.elNewSectionItem }` );
 	elStatusChange = elEditCurriculum.querySelector( '.status' );
 
 	sortAbleSection();

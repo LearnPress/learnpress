@@ -45,29 +45,15 @@
 		margin-bottom: 20px;
 		align-items: center;
 		line-height: 1;
+		gap: 5px;
+
+		.total-items {
+			margin-left: auto;
+		}
 
 		h4 {
 			margin: 0;
 			font-size: 1rem;
-		}
-
-		.collapse-sections {
-			display: flex;
-			width: 40px;
-			color: #999;
-			font-family: Dashicons;
-			font-size: 1.875rem;
-			cursor: pointer;
-			justify-content: center;
-			align-items: center;
-
-			&.close::before {
-				content: "\f140";
-			}
-
-			&.open::before {
-				content: "\f142";
-			}
 		}
 	}
 
@@ -111,7 +97,7 @@
 					cursor: grabbing;
 				}
 			}
-			&.loading {
+			&.loading, .loading {
 				pointer-events: none;
 				opacity: 0.5 !important;
 				.dashicons-update {
@@ -203,29 +189,6 @@
 						&:hover {
 							color: #0085ba;
 						}
-
-						&::before {
-							display: inline-block;
-							width: 40px;
-							color: #999;
-							font-family: Dashicons;
-							font-size: 1rem;
-							line-height: 2.5rem;
-						}
-
-						&.open {
-
-							&::before {
-								content: "\f343";
-							}
-						}
-
-						&.close {
-
-							&::before {
-								content: "\f347";
-							}
-						}
 					}
 				}
 
@@ -233,6 +196,10 @@
 					.lp-btn-delete-section {
 						display: inline-block;
 					}
+				}
+
+				.section-items-counts {
+					white-space: nowrap;
 				}
 			}
 
@@ -261,6 +228,10 @@
 						display: none;
 					}
 
+					.lp-btn-update-section-description {
+						margin-right: 5px;
+					}
+
 					&.editing {
 						button {
 							display: inline-block;
@@ -270,40 +241,8 @@
 			}
 
 			.section-actions {
-				.remove {
-					display: none;
-					float: right;
-					height: 30px;
-					border: 1px solid #eee;
-					border-radius: 3px;
-					color: red;
-					line-height: 1.875rem;
-					cursor: pointer;
-
-					.icon {
-						padding: 0 18px;
-					}
-
-					.confirm {
-						display: none;
-						padding: 0 18px;
-					}
-
-					&.confirm {
-
-						.confirm {
-							display: inline-block;
-						}
-
-						.icon {
-							display: none;
-						}
-					}
-				}
-			}
-
-			.details {
-				margin-bottom: 20px;
+				display: flex;
+				gap: 5px;
 			}
 
 			.lp-input-title-section {
@@ -353,19 +292,16 @@
 	.section-list-items {
 		width: 100%;
 		border-collapse: collapse;
-
-		ul {
-			position: relative;
-			min-height: 5px;
-			margin: 0;
-		}
+		display: flex;
+		flex-direction: column;
+		gap: 15px;
 
 		.section-item {
 			display: flex;
 			position: relative;
 			margin: 0;
-			border: 1px solid #eee;
-			border-bottom-width: 0;
+			border: 1px solid #EEEEEE;
+			//border-bottom-width: 0;
 			background: #fff;
 			transition: background 200ms ease-out;
 			justify-content: center;
@@ -375,13 +311,9 @@
 				border: 1px solid rgba(51, 51, 200, 0.87);
 			}
 
-			&.ui-sortable-helper {
-				border-bottom: 1px solid #eee;
-			}
-
-			&:nth-child(2n+1) {
+			/*&:nth-child(2n+1) {
 				background-color: #f7f7f7;
-			}
+			}*/
 
 			&.updating {
 
@@ -401,15 +333,11 @@
 			}
 
 			.drag {
-				height: 20px;
-				padding-top: 3px;
-				padding-left: 6px;
-				cursor: url("../../images/openhand.cur") 7 5, default;
+				cursor: grab;
 				fill: #999;
-				flex: 0 0 18px;
 
-				&:hover {
-					fill: #0085ba;
+				svg:hover {
+					color: #0085ba;
 				}
 			}
 
@@ -417,17 +345,6 @@
 				display: flex;
 				align-items: center;
 				justify-content: center;
-			}
-
-			.title {
-				margin-right: 120px;
-				margin-left: 2px;
-				flex-grow: 1;
-				flex-basis: 100%;
-
-				input {
-					color: inherit;
-				}
 			}
 
 			.item-actions {
@@ -438,6 +355,16 @@
 				bottom: 0;
 				align-items: center;
 				justify-content: center;
+
+				li {
+					list-style: none;
+					margin: 0;
+					padding: 0;
+
+					a {
+						color: #999;
+					}
+				}
 			}
 
 			.actions {
@@ -478,87 +405,43 @@
 			}
 		}
 
-		.new-section-item {
+		.lp-new-section-item {
 			display: flex;
-			position: relative;
-			border-bottom-width: 1px;
 			transition: all 200ms ease-out;
 			align-items: center;
+			border: 1px solid #2271B1;
+			padding: 8px 10px;
+			gap: 5px;
 
-			.drag {
+			.new-item-actions {
+				width: 100%;
 				display: flex;
-				width: 30px;
-				color: #999;
-				font-family: Dashicons;
+				gap: 5px;
+
+				input {
+					width: 100%;
+					border: none;
+					background: transparent;
+					outline: none;
+					padding: 0;
+				}
+			}
+
+			.item-type {
+				padding: 0;
+				font-family: "lp-icon";
+				color: #2271B1;
 				font-size: 1rem;
-				vertical-align: middle;
-				cursor: default;
-				align-items: center;
-				justify-content: center;
 
-				&::before {
-					content: "\f132";
-				}
-			}
-
-			.title {
-				display: inline-block;
-				margin: 0;
-				flex: 1;
-			}
-
-			.types {
-				display: inline-block;
-
-				&:hover,
-				&:focus {
-					background-color: #fff;
-
-					.type {
-						display: inline-block;
-					}
-				}
-
-				.type {
-					display: inline-block;
-					padding: 8px 5px;
-					color: #ccc;
-
-					input {
-						display: none;
-					}
-
-					&.current {
-						color: #0085ba;
-					}
-
+				&.lp_quiz {
 					&::before {
-						position: relative;
-						top: 2px;
-						font-family: Dashicons;
-						font-size: 1.25rem;
+						content: "\f12e";
 					}
+				}
 
-					&.lp_quiz {
-						padding: 8px 6px 8px 0;
-
-						&::before {
-							content: "\f469";
-						}
-					}
-
-					&.lp_lesson {
-
-						&::before {
-							content: "\f330";
-						}
-					}
-
-					&.empty-item {
-
-						&::before {
-							content: "\f463";
-						}
+				&.lp_lesson {
+					&::before {
+						content: "\f15b";
 					}
 				}
 			}
@@ -670,33 +553,6 @@
 
 				.icon::before {
 					content: "\f330";
-				}
-			}
-
-			&.empty-item {
-				position: relative;
-				color: #a2a2a2;
-
-				&::after {
-					position: absolute;
-					top: 0;
-					right: 0;
-					bottom: 0;
-					left: 0;
-					opacity: 0.5;
-					background: #fff;
-					content: "";
-				}
-
-				.item-actions {
-					display: none;
-				}
-
-				.icon::before {
-					color: #a2a2a2;
-					content: "\f463";
-
-					@include rotating4();
 				}
 			}
 
