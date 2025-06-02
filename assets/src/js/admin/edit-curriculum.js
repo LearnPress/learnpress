@@ -10,6 +10,8 @@ import Toastify from 'toastify-js';
 import 'toastify-js/src/toastify.css';
 import Sortable from 'sortablejs';
 import SweetAlert from 'sweetalert2';
+import * as lpEditCurriculumShare from './edit-curriculum/share.js';
+import * as sectionEdit from './edit-curriculum/edit-section.js';
 
 const idElEditCurriculum = '#lp-course-edit-curriculum';
 let elEditCurriculum;
@@ -56,57 +58,57 @@ const className = {
 };
 
 // Add new section
-const addSection = ( e, target ) => {
-	const elAddNewSection = target.closest( '.add-new-section' );
-	if ( ! elAddNewSection ) {
-		return;
-	}
-
-	e.preventDefault();
-
-	const elSectionClone = elCurriculumSections.querySelector( `.${ className.elSectionClone }` );
-	const elSectionTitleInput = elAddNewSection.querySelector( `${ className.elSectionNewInput }` );
-	const titleSectionValue = elSectionTitleInput.value.trim();
-	const message = elSectionTitleInput.dataset.messEmptyTitle;
-	if ( titleSectionValue.length === 0 ) {
-		showToast( message, 'error' );
-		return;
-	}
-
-	elSectionTitleInput.value = ''; // Clear input after add
-
-	// Add and set data for new section
-	const newSection = elSectionClone.cloneNode( true );
-	lpUtils.lpShowHideEl( newSection, 1 );
-	lpUtils.lpSetLoadingEl( newSection, 1 );
-	const titleNewSection = newSection.querySelector( `${ className.elSectionTitleInput }` );
-	titleNewSection.value = titleSectionValue;
-	elCurriculumSections.insertAdjacentElement( 'beforeend', newSection );
-	// End
-
-	// Call ajax to add new section
-	const callBack = {
-		success: ( response ) => {
-			const { message, status } = response;
-			const { content } = response.data;
-
-			showToast( message, status );
-		},
-		error: ( error ) => {
-			console.log( error );
-		},
-		completed: () => {
-			newSection.classList.remove( `${ className.elSectionClone }` );
-			lpUtils.lpSetLoadingEl( newSection, 0 );
-			newSection.classList.remove( `${ className.elCollapse }` );
-		},
-	};
-
-	dataSend.callback.method = 'handle_edit_course_curriculum';
-	dataSend.args.action = 'add_section';
-	dataSend.args.title = titleSectionValue;
-	window.lpAJAXG.fetchAJAX( dataSend, callBack );
-};
+// const addSection = ( e, target ) => {
+// 	const elAddNewSection = target.closest( '.add-new-section' );
+// 	if ( ! elAddNewSection ) {
+// 		return;
+// 	}
+//
+// 	e.preventDefault();
+//
+// 	const elSectionClone = elCurriculumSections.querySelector( `.${ className.elSectionClone }` );
+// 	const elSectionTitleInput = elAddNewSection.querySelector( `${ className.elSectionNewInput }` );
+// 	const titleSectionValue = elSectionTitleInput.value.trim();
+// 	const message = elSectionTitleInput.dataset.messEmptyTitle;
+// 	if ( titleSectionValue.length === 0 ) {
+// 		showToast( message, 'error' );
+// 		return;
+// 	}
+//
+// 	elSectionTitleInput.value = ''; // Clear input after add
+//
+// 	// Add and set data for new section
+// 	const newSection = elSectionClone.cloneNode( true );
+// 	lpUtils.lpShowHideEl( newSection, 1 );
+// 	lpUtils.lpSetLoadingEl( newSection, 1 );
+// 	const titleNewSection = newSection.querySelector( `${ className.elSectionTitleInput }` );
+// 	titleNewSection.value = titleSectionValue;
+// 	elCurriculumSections.insertAdjacentElement( 'beforeend', newSection );
+// 	// End
+//
+// 	// Call ajax to add new section
+// 	const callBack = {
+// 		success: ( response ) => {
+// 			const { message, status } = response;
+// 			const { content } = response.data;
+//
+// 			showToast( message, status );
+// 		},
+// 		error: ( error ) => {
+// 			console.log( error );
+// 		},
+// 		completed: () => {
+// 			newSection.classList.remove( `${ className.elSectionClone }` );
+// 			lpUtils.lpSetLoadingEl( newSection, 0 );
+// 			newSection.classList.remove( `${ className.elCollapse }` );
+// 		},
+// 	};
+//
+// 	dataSend.callback.method = 'handle_edit_course_curriculum';
+// 	dataSend.args.action = 'add_section';
+// 	dataSend.args.title = titleSectionValue;
+// 	window.lpAJAXG.fetchAJAX( dataSend, callBack );
+// };
 const deleteSection = ( e, target ) => {
 	const elBtnDeleteSection = target.closest( `${ className.elBtnDeleteSection }` );
 	if ( ! elBtnDeleteSection ) {
@@ -1069,7 +1071,7 @@ document.addEventListener( 'keydown', ( e ) => {
 	const target = e.target;
 	// Event enter
 	if ( e.key === 'Enter' ) {
-		addSection( e, target );
+		sectionEdit.addSection( e, target );
 		addItemToSection( e, target );
 		updateSectionDescription( e, target );
 		updateSectionTitle( e, target );
@@ -1091,6 +1093,16 @@ document.addEventListener( 'focus', ( e ) => {
 // Element root ready.
 lpUtils.lpOnElementReady( `${ idElEditCurriculum }`, ( elEditCurriculum ) => {
 	elCurriculumSections = elEditCurriculum.querySelector( `${ className.elCurriculumSections }` );
+
+	lpEditCurriculumShare.setVariables(
+		{
+			elEditCurriculum,
+			elCurriculumSections,
+			lpUtils,
+		}
+	);
+
+
 	elLPTarget = elEditCurriculum.closest( `${ className.LPTarget }` );
 	checkAllSectionsCollapsed( elEditCurriculum );
 
