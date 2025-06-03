@@ -3,26 +3,23 @@
  */
 import * as lpUtils from '../../utils.js';
 import Toastify from 'toastify-js';
+import 'toastify-js/src/toastify.css';
 
 let elEditCurriculum;
 let elCurriculumSections;
 let elLPTarget;
 let dataSend;
+let updateCountItems;
 const className = {
 	idElEditCurriculum: '#lp-course-edit-curriculum',
 	elCurriculumSections: '.curriculum-sections',
 	elSectionNewInput: '.lp-section-new-input',
 	elSection: '.section',
+	elSectionClone: 'section-clone',
 	elToggleAllSections: '.course-toggle-all-sections',
 	elBtnSelectItems: 'lp-btn-select-items',
-	btnSelectItemType: '.lp-btn-select-item-type',
-	btnAddItem: 'lp-btn-add-item',
-	elNewSectionItem: '.lp-new-section-item',
-	elItemClone: 'section-item-clone',
-	elItemNewInput: '.lp-item-new-input',
-	elItemTitleInput: '.lp-item-title-input',
 	elSectionItem: '.section-item',
-	elSectionListItems: '.section-list-items',
+	elItemClone: 'section-item-clone',
 	LPTarget: '.lp-target',
 	elCollapse: 'lp-collapse',
 	elSectionActions: '.section-actions',
@@ -46,7 +43,7 @@ const showToast = ( message, status = 'success' ) => {
 	toastify.showToast();
 };
 const setVariables = ( variables ) => {
-	( { elEditCurriculum, elCurriculumSections, dataSend } = variables );
+	( { elEditCurriculum, elCurriculumSections, dataSend, updateCountItems } = variables );
 };
 
-export { setVariables, elEditCurriculum, elCurriculumSections, lpUtils, className, dataSend, showToast };
+export { setVariables, elEditCurriculum, elCurriculumSections, lpUtils, className, dataSend, showToast, updateCountItems };

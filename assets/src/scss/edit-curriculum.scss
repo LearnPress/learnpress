@@ -6,6 +6,7 @@
 
 	[class*="lp-icon-"] {
 		font-size: 1.25rem;
+		color: #999;
 	}
 
 	.lp-icon-angle-down, .lp-icon-angle-up {
@@ -97,11 +98,13 @@
 					cursor: grabbing;
 				}
 			}
-			&.loading, .loading {
+			&.loading {
 				pointer-events: none;
 				opacity: 0.5 !important;
-				.dashicons-update {
-					display: inline-block;
+				.section-head {
+					.dashicons-update {
+						display: inline-block;
+					}
 				}
 			}
 
@@ -220,10 +223,38 @@
 				overflow: hidden;
 				padding: 20px;
 				border-top: 1px solid #e5e5e5;
+
+				.lp-add-item-type {
+					display: flex;
+					transition: all 200ms ease-out;
+					align-items: center;
+					border: 1px solid #2271B1;
+					padding: 8px 10px;
+					gap: 5px;
+					margin-bottom: 10px;
+
+					.new-item-actions {
+						width: 100%;
+						display: flex;
+						gap: 5px;
+
+						input {
+							width: 100%;
+							border: none;
+							background: transparent;
+							outline: none;
+							padding: 0;
+						}
+					}
+				}
 			}
 
 			.section-content {
+				margin-bottom: 10px;
+
 				.section-description {
+					margin-bottom: 10px;
+
 					button {
 						display: none;
 					}
@@ -280,6 +311,31 @@
 					color: #444;
 				}
 			}
+
+			.item-ico-type {
+				padding: 0;
+				font-family: "lp-icon";
+				color: #2271B1;
+				font-size: 1rem;
+
+				&.lp_quiz {
+					&::before {
+						content: "\f12e";
+					}
+				}
+
+				&.lp_lesson {
+					&::before {
+						content: "\f15b";
+					}
+				}
+
+				&.lp_assignment {
+					&::before {
+						content: "\e929";
+					}
+				}
+			}
 		}
 	}
 
@@ -291,10 +347,6 @@
 		background-color: #f4fcff;
 		border: 1px solid #ddd;
 		border-top: none;
-
-		.lp-icon-plus {
-			color: #999;
-		}
 
 		input {
 			width: 100%;
@@ -311,20 +363,44 @@
 		display: flex;
 		flex-direction: column;
 		gap: 15px;
+		margin: 0;
 
 		.section-item {
 			display: flex;
 			position: relative;
 			margin: 0;
 			border: 1px solid #EEEEEE;
-			//border-bottom-width: 0;
+			padding: 8px 10px;
 			background: #fff;
 			transition: background 200ms ease-out;
 			justify-content: center;
 			align-items: center;
+			gap: 5px;
+
+			&.loading {
+				pointer-events: none;
+				opacity: 0.5 !important;
+				.dashicons-update {
+					display: inline-block;
+				}
+			}
+
+			&:hover {
+				border-color: #2271B1;
+			}
+
+			.lp-btn-update-item-title, .lp-btn-cancel-update-item-title {
+				display: none;
+			}
 
 			&.editing {
-				border: 1px solid rgba(51, 51, 200, 0.87);
+				.lp-btn-update-item-title, .lp-btn-cancel-update-item-title {
+					display: inline-block;
+				}
+
+				.item-actions {
+					display: none;
+				}
 			}
 
 			/*&:nth-child(2n+1) {
@@ -365,12 +441,8 @@
 
 			.item-actions {
 				display: flex;
-				position: absolute;
-				top: 0;
-				right: 2px;
 				bottom: 0;
 				align-items: center;
-				justify-content: center;
 
 				li {
 					list-style: none;
@@ -400,192 +472,36 @@
 				}
 			}
 
-			&:hover {
-
-				.drag {
-					visibility: visible;
-				}
-			}
-
 			&:not(.lp_lesson) {
-
 				.item-actions {
-
-					.actions {
-
-						.preview-item {
-							display: none;
-						}
+					.lp-btn-set-preview-item {
+						display: none;
 					}
 				}
 			}
-		}
-
-		.lp-new-section-item {
-			display: flex;
-			transition: all 200ms ease-out;
-			align-items: center;
-			border: 1px solid #2271B1;
-			padding: 8px 10px;
-			gap: 5px;
-
-			.new-item-actions {
-				width: 100%;
-				display: flex;
-				gap: 5px;
-
-				input {
-					width: 100%;
-					border: none;
-					background: transparent;
-					outline: none;
-					padding: 0;
-				}
-			}
-
-			.item-type {
-				padding: 0;
-				font-family: "lp-icon";
-				color: #2271B1;
-				font-size: 1rem;
-
-				&.lp_quiz {
-					&::before {
-						content: "\f12e";
-					}
-				}
-
-				&.lp_lesson {
-					&::before {
-						content: "\f15b";
-					}
-				}
-			}
-		}
-
-		.section-item {
 
 			.item-actions {
-				text-align: right;
-
-				.actions {
-
-					.action {
-						display: inline-block;
-						position: relative;
-						width: 30px;
-						height: 30px;
-						margin: 0;
-						padding: 0;
-						text-align: center;
-						vertical-align: middle;
-						cursor: pointer;
-
-						> a {
-							width: 30px;
-							height: 30px;
-							color: #999;
-							line-height: 1.875rem;
-
-							&:hover {
-								color: #0073aa;
-							}
-						}
-
-						&.delete-item {
-
-							> a {
-
-								&:hover {
-									color: #e74c3c;
-								}
-							}
-
-							ul {
-								display: none;
-								position: absolute;
-								z-index: 9;
-								top: 100%;
-								right: 0;
-								width: 165px;
-								margin: 0;
-								border: 1px solid #999;
-								background: #fdfeff;
-								text-align: center;
-
-								li {
-									margin: 0;
-									border-bottom: 1px solid #eee;
-									text-align: right;
-
-									a {
-										display: block;
-										padding: 10px 25px;
-										color: #757575;
-										font-size: 0.75rem;
-										text-decoration: none;
-
-										&.delete-permanently {
-											color: #e74c3c;
-										}
-									}
-
-									&:hover {
-										background: #eee;
-									}
-								}
-							}
-
-							&:hover {
-
-								ul {
-									display: block;
-								}
-							}
-						}
-					}
-				}
-			}
-
-			&:hover {
-
-				.item-actions {
-
-					.actions > * {
-						visibility: visible;
+				li {
+					&:hover {
 						cursor: pointer;
 					}
 				}
 			}
 
 			&.lp_quiz {
-
 				.icon::before {
 					content: "\f469";
 				}
 			}
 
 			&.lp_lesson {
-
 				.icon::before {
 					content: "\f330";
 				}
 			}
 
-			.icon {
-				color: #0085ba;
-				font-size: 1.25rem;
-				text-align: center;
-				flex: 0 0 29px;
-
-				&::before {
-					font-family: Dashicons;
-				}
-			}
-
 			input {
 				width: 100%;
-				padding: 8px 10px 8px 0;
 				border: none;
 				color: inherit;
 				font-size: 0.875rem;
@@ -607,7 +523,7 @@
 	padding: 0 !important;
 }
 
-.lp-select-items-to-add {
+.lp-popup-items-to-select {
 	position: relative;
 	border: 1px solid #ddd;
 	background-color: #fff;
@@ -728,22 +644,6 @@
 		padding: 20px;
 		border-bottom: 1px solid #ddd;
 
-		.section-item {
-			display: block;
-			overflow: hidden;
-			max-width: 100%;
-			white-space: nowrap;
-			text-overflow: ellipsis;
-			cursor: pointer;
-			transition: color 200ms ease-out;
-
-			&::before {
-				position: relative;
-				top: 3px;
-				font-family: Dashicons;
-			}
-		}
-
 		input.modal-search-input {
 			width: 100%;
 			height: 36px;
@@ -836,5 +736,7 @@
 
 	.footer {
 		padding: 20px;
+		display: flex;
+		gap: 5px;
 	}
 }

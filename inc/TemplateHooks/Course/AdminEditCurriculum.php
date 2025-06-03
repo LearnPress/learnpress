@@ -461,13 +461,13 @@ class AdminEditCurriculum {
 		// Get sections items
 		$sections_items = $courseModel->get_section_items();
 		foreach ( $sections_items as $section_items ) {
-			$html_sections .= $this->html_edit_section( $section_items );
+			$html_sections .= $this->html_edit_section( $courseModel, $section_items );
 		}
 
 		$sections = [
 			'wrap'          => '<div class="curriculum-sections">',
 			'list-sections' => $html_sections,
-			'section-clone' => $this->html_edit_section(),
+			'section-clone' => $this->html_edit_section( $courseModel ),
 			'wrap_end'      => '</div>',
 		];
 
@@ -492,14 +492,22 @@ class AdminEditCurriculum {
 			'heading_end'     => '</div>',
 			'sections'        => Template::combine_components( $sections ),
 			'add_new_section' => $this->html_add_new_section(),
-			'select_items'    => $this->html_select_items(),
+			'select_items'    => $this->html_popup_items_to_select_clone(),
 			'wrap_end'        => '</div>',
 		];
 
 		return Template::combine_components( $section );
 	}
 
-	public function html_edit_section( $section_items = null ): string {
+	/**
+	 * HTML for edit section.
+	 *
+	 * @param CourseModel $courseModel
+	 * @param null|object $section_items
+	 *
+	 * @return string
+	 */
+	public function html_edit_section( CourseModel $courseModel, $section_items = null ): string {
 		$is_clone     = is_null( $section_items );
 		$total_items  = 0;
 		$items        = [];
@@ -512,14 +520,14 @@ class AdminEditCurriculum {
 			$items       = $section_items->items ?? [];
 
 			foreach ( $items as $item ) {
-				$html_items .= $this->html_section_item( $item );
+				$html_items .= $this->html_section_item( $courseModel, $item );
 			}
 		}
 
 		$section_list_items = [
 			'wrap'       => '<ul class="section-list-items">',
 			'items'      => $html_items,
-			'item_clone' => $this->html_section_item(),
+			'item_clone' => $this->html_section_item( $courseModel ),
 			'wrap_end'   => '</ul>',
 		];
 
@@ -655,23 +663,32 @@ class AdminEditCurriculum {
 	 * HTML for section item.
 	 * $item is null when clone item new
 	 *
+	 * @param CourseModel $courseModel
 	 * @param null|object $item
 	 *
 	 * @return string
 	 */
-	public function html_section_item( $item = null ): string {
-		$is_clone     = is_null( $item );
-		$item_id      = $item->item_id ?? 0;
-		$item_title   = $item->title ?? '';
-		$item_type    = $item->item_type ?? '';
-		$item_preview = $item->preview ?? '';
+	public function html_section_item( CourseModel $courseModel, $item = null ): string {
+		$is_clone   = is_null( $item );
+		$item_id    = $item->item_id ?? 0;
+		$item_title = $item->title ?? '';
+		$item_type  = $item->item_type ?? '';
+		$itemModel  = $courseModel->get_item_model( $item_id, $item_type );
 
 		$section_action = [
 			'wrap'     => '<ul class="item-actions">',
-			'preview'  => '<li data-content-tip="Enable/Disable Preview" class="action preview-item lp-title-attr-tip ready" data-id="%s"><a class="lp-btn-icon dashicons dashicons-hidden"></a></li>',
-			'edit'     => '<li data-content-tip="Edit an item" class="action edit-item lp-title-attr-tip ready" data-id="%s"><a href="%s" target="_blank" class="lp-btn-icon dashicons dashicons-edit"></a></li>',
+			'preview'  => sprintf(
+				'<li title="%s" class="lp-btn-set-preview-item"><a class="dashicons %s"></a></li>',
+				__( 'Enable/Disable Preview', 'learnpress' ),
+				$itemModel && $itemModel->post_type === LP_LESSON_CPT && $itemModel->has_preview() ? 'dashicons-visibility' : 'dashicons-hidden'
+			),
+			'edit'     => sprintf(
+				'<li title="%s"><a href="%s" target="_blank" class="dashicons dashicons-edit"></a></li>',
+				__( 'Edit Item', 'learnpress' ),
+				$itemModel ? get_edit_post_link( $itemModel->ID ) : ''
+			),
 			'delete'   => sprintf(
-				'<li class="action lp-btn-delete-item-from-section"
+				'<li class="action lp-btn-delete-item"
 					data-title="%s" data-content="%s">%s</li>',
 				__( 'Are you sure?', 'learnpress' ),
 				__( 'This item will be deleted from this section. It not delete penalty.', 'learnpress' ),
@@ -692,13 +709,24 @@ class AdminEditCurriculum {
 				'<div class="drag">%s</div>',
 				LP_WP_Filesystem::instance()->file_get_contents( LP_PLUGIN_PATH . 'assets/images/icons/ico-drag.svg' )
 			),
-			'icon'         => '<div class="icon"></div>',
+			'icon'         => sprintf(
+				'<div class="item-ico-type %s"></div>',
+				esc_attr( $item_type )
+			),
 			'loading'      => '<span class="dashicons dashicons-update"></span>',
 			'input-title'  => sprintf(
-				'<input name="%1$s" class="%1$s" type="text" value="%2$s" data-mess-empty-title="%3$s">',
+				'<input name="%1$s" class="%1$s" type="text" value="%2$s" data-old="%2$s" data-mess-empty-title="%3$s">',
 				'lp-item-title-input',
 				wp_kses_post( $item_title ),
 				esc_attr__( 'Item title is required', 'learnpress' )
+			),
+			'btn-update'   => sprintf(
+				'<button type="button" class="lp-btn-update-item-title button button-primary">%s</button>',
+				__( 'Update' )
+			),
+			'btn-cancel'   => sprintf(
+				'<button type="button" class="lp-btn-cancel-update-item-title button">%s</button>',
+				__( 'Cancel' )
 			),
 			'item_actions' => Template::combine_components( $section_action ),
 			'li_end'       => '</li>',
@@ -731,10 +759,10 @@ class AdminEditCurriculum {
 			'wrap'             => '<div class="section-actions">',
 			'buttons'          => $html_buttons,
 			'btn-select-items' => sprintf(
-				'<button type="button" class="button button-primary lp-btn-select-items">%s</button>',
+				'<button type="button" class="button lp-btn-show-popup-items-to-select">%s</button>',
 				__( 'Select items', 'learnpress' )
 			),
-			'add-new-item'     => $this->html_item_new(),
+			'add-item-type'    => $this->html_add_item_type(),
 			'wrap_end'         => '</div>',
 		];
 
@@ -746,19 +774,22 @@ class AdminEditCurriculum {
 	 *
 	 * @return string
 	 */
-	public function html_item_new(): string {
+	public function html_add_item_type(): string {
 		$section = [
-			'wrap'          => '<div class="lp-new-section-item lp-hidden">',
-			'icon'          => '<div class="lp-icon-plus"></div>',
-			'item-type'     => '<div class="item-type"></div>',
+			'wrap'          => '<div class="lp-add-item-type clone lp-hidden">',
+			'icon-plus'     => '<div class="lp-icon-plus"></div>',
+			'item-ico-type' => '<div class="item-ico-type"></div>',
 			'actions'       => '<div class="new-item-actions">',
 			'input'         => sprintf(
-				'<input class="%1$s" name="%1$s" data-mess-empty-title="%2$s" type="text" placeholder=""/>',
-				'lp-item-new-input',
+				'<input class="%1$s" name="%1$s" data-mess-empty-title="%2$s" type="text"/>',
+				'lp-add-item-type-title-input',
 				esc_attr__( 'Item title is required', 'learnpress' )
 			),
-			'button_add'    => '<button class="lp-btn-add-item button" type="button">Add Lesson</button>',
-			'button_cancel' => '<button class="lp-btn-add-item-cancel button" type="button">Cancel</button>',
+			'button_add'    => '<button class="lp-btn-add-item button button-primary" type="button"></button>',
+			'button_cancel' => sprintf(
+				'<button class="lp-btn-add-item-cancel button" type="button">%s</button>',
+				__( 'Cancel' )
+			),
 			'actions_end'   => '</div>',
 			'wrap_end'      => '</div>',
 		];
@@ -766,7 +797,7 @@ class AdminEditCurriculum {
 		return Template::combine_components( $section );
 	}
 
-	public function html_select_items(): string {
+	public function html_popup_items_to_select_clone(): string {
 		$html_tabs         = '';
 		$course_item_types = CourseModel::item_types_support();
 		foreach ( $course_item_types as $type ) {
@@ -825,7 +856,6 @@ class AdminEditCurriculum {
 
 		$section_footer = [
 			'wrap'                 => '<div class="footer">',
-			'cart'                 => '<div class="cart">',
 			'btn-add'              => sprintf(
 				'<button type="button" disabled="disabled" class="button lp-btn-add-items-selected">%s</button>',
 				__( 'Add', 'learnpress' )
@@ -839,11 +869,11 @@ class AdminEditCurriculum {
 				'<button type="button" class="button lp-btn-back-to-select-items lp-hidden">%s</button>',
 				__( 'Back', 'learnpress' )
 			),
-			'wrap_end'             => '</div></div>',
+			'wrap_end'             => '</div>',
 		];
 
 		$section = [
-			'wrap'     => '<div class="lp-select-items-to-add lp-hidden">',
+			'wrap'     => '<div class="lp-popup-items-to-select-clone lp-hidden">',
 			'header'   => Template::combine_components( $section_header ),
 			'main'     => Template::combine_components( $section_main ),
 			'footer'   => Template::combine_components( $section_footer ),

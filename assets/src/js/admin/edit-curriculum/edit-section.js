@@ -23,12 +23,13 @@ let className = {
 	elSectionDesc: '.section-description',
 	elSectionToggle: '.section-toggle',
 };
+let elEditCurriculum;
 let elCurriculumSections;
 let showToast;
 let lpUtils;
 let dataSend;
 const init = () => {
-	( { elCurriculumSections, showToast, lpUtils, dataSend } = lpEditCurriculumShare );
+	( { elEditCurriculum, elCurriculumSections, showToast, lpUtils, dataSend } = lpEditCurriculumShare );
 	className = { ...lpEditCurriculumShare.className, ...className };
 };
 
@@ -236,7 +237,7 @@ const cancelSectionTitle = ( e, target ) => {
 };
 
 // Typing in description input
-const changeTitleDescription = ( e, target ) => {
+const changeTitle = ( e, target ) => {
 	const elSectionTitleInput = target.closest( `${ className.elSectionTitleInput }` );
 	if ( ! elSectionTitleInput ) {
 		return;
@@ -330,7 +331,7 @@ const cancelSectionDescription = ( e, target ) => {
 };
 
 // Typing in description input
-const changeSectionDescription = ( e, target ) => {
+const changeDescription = ( e, target ) => {
 	const elSectionDesInput = target.closest( `${ className.elSectionDesInput }` );
 	if ( ! elSectionDesInput ) {
 		return;
@@ -356,8 +357,8 @@ const toggleSection = ( e, target ) => {
 
 	const elSection = elSectionToggle.closest( `${ className.elSection }` );
 
-	const elCurriculum = elSection.closest( `${ className.elCurriculumSections }` );
-	if ( ! elCurriculum ) {
+	const elCurriculumSections = elSection.closest( `${ className.elCurriculumSections }` );
+	if ( ! elCurriculumSections ) {
 		return;
 	}
 
@@ -365,13 +366,13 @@ const toggleSection = ( e, target ) => {
 	elSection.classList.toggle( `${ className.elCollapse }` );
 
 	// Check all sections collapsed
-	checkAllSectionsCollapsed( elCurriculum );
+	checkAllSectionsCollapsed();
 };
 
 // Check if all sections are collapsed
-const checkAllSectionsCollapsed = ( elCurriculum ) => {
-	const elSections = elCurriculum.querySelectorAll( `${ className.elSection }` );
-	const elToggleAllSections = elCurriculum.querySelector( `${ className.elToggleAllSections }` );
+const checkAllSectionsCollapsed = () => {
+	const elSections = elEditCurriculum.querySelectorAll( `${ className.elSection }:not(.${ className.elSectionClone })` );
+	const elToggleAllSections = elEditCurriculum.querySelector( `${ className.elToggleAllSections }` );
 
 	let isAllExpand = true;
 	elSections.forEach( ( el ) => {
@@ -382,7 +383,7 @@ const checkAllSectionsCollapsed = ( elCurriculum ) => {
 	} );
 
 	if ( isAllExpand ) {
-		elToggleAllSections.classList.remove( 'lp-collapse' );
+		elToggleAllSections.classList.remove( `${ className.elCollapse }` );
 	} else {
 		elToggleAllSections.classList.add( `${ className.elCollapse }` );
 	}
@@ -455,8 +456,8 @@ export {
 	cancelSectionTitle,
 	updateSectionDescription,
 	cancelSectionDescription,
-	changeSectionDescription,
-	changeTitleDescription,
+	changeDescription,
+	changeTitle,
 	toggleSection,
 	sortAbleSection,
 };
