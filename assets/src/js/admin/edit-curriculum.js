@@ -12,13 +12,6 @@ import * as sectionItemEdit from './edit-curriculum/edit-section-item.js';
 
 const { className } = lpEditCurriculumShare;
 
-let elEditCurriculum;
-let elCurriculumSections;
-let elLPTarget;
-let elNewSectionItem;
-let dataSend;
-let elPopupSelectItems;
-
 // Toggle all sections
 const toggleSectionAll = ( e, target ) => {
 	const elToggleAllSections = target.closest( `${ className.elToggleAllSections }` );
@@ -48,7 +41,7 @@ const toggleSectionAll = ( e, target ) => {
 
 // Update count items in section and all sections
 const updateCountItems = ( elSection ) => {
-	elEditCurriculum = lpEditCurriculumShare.elEditCurriculum;
+	const elEditCurriculum = lpEditCurriculumShare.elEditCurriculum;
 	const elCountItemsAll = elEditCurriculum.querySelector( '.total-items' );
 	const elItemsAll = elCurriculumSections.querySelectorAll( `${ className.elSectionItem }:not(.${ className.elItemClone })` );
 	elCountItemsAll.innerHTML = elItemsAll.length;
@@ -138,10 +131,6 @@ document.addEventListener( 'click', ( e ) => {
 	}
 } );
 
-document.addEventListener( 'submit', ( e ) => {
-	const target = e.target;
-} );
-
 document.addEventListener( 'keydown', ( e ) => {
 	const target = e.target;
 	// Event enter
@@ -167,9 +156,9 @@ document.addEventListener( 'keyup', ( e ) => {
 
 // Element root ready.
 lpUtils.lpOnElementReady( `${ className.idElEditCurriculum }`, ( elEditCurriculum ) => {
-	elCurriculumSections = elEditCurriculum.querySelector( `${ className.elCurriculumSections }` );
-	elLPTarget = elEditCurriculum.closest( `${ className.LPTarget }` );
-	dataSend = window.lpAJAXG.getDataSetCurrent( elLPTarget );
+	const elCurriculumSections = elEditCurriculum.querySelector( `${ className.elCurriculumSections }` );
+	const elLPTarget = elEditCurriculum.closest( `${ className.LPTarget }` );
+	const dataSend = window.lpAJAXG.getDataSetCurrent( elLPTarget );
 
 	lpEditCurriculumShare.setVariables(
 		{
