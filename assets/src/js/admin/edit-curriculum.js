@@ -19,235 +19,8 @@ let elCurriculumSections;
 let elLPTarget;
 let elNewSectionItem;
 let dataSend;
-let elStatusChange;
 let elPopupSelectItems;
 
-const argsToastify = {
-	text: '',
-	gravity: lpDataAdmin.toast.gravity, // `top` or `bottom`
-	position: lpDataAdmin.toast.position, // `left`, `center` or `right`
-	className: `${ lpDataAdmin.toast.classPrefix }`,
-	close: lpDataAdmin.toast.close == 1,
-	stopOnFocus: lpDataAdmin.toast.stopOnFocus == 1,
-	duration: lpDataAdmin.toast.duration,
-};
-
-const className = {
-	elCurriculumSections: '.curriculum-sections',
-	elSectionNewInput: '.lp-section-new-input',
-	elSectionClone: 'section-clone',
-	elSectionTitleInput: '.lp-section-title-input',
-	elSectionDesInput: '.lp-section-description-input',
-	elSection: '.section',
-	elToggleAllSections: '.course-toggle-all-sections',
-	btnNewSection: 'lp-btn-add-section',
-	elBtnDeleteSection: '.lp-btn-delete-section',
-	elBtnSelectItems: 'lp-btn-select-items',
-	btnSelectItemType: '.lp-btn-select-item-type',
-	btnAddItem: 'lp-btn-add-item',
-	elNewSectionItem: '.lp-new-section-item',
-	elItemClone: 'section-item-clone',
-	elItemNewInput: '.lp-item-new-input',
-	elItemTitleInput: '.lp-item-title-input',
-	elSectionItem: '.section-item',
-	elSectionListItems: '.section-list-items',
-	LPTarget: '.lp-target',
-	elCollapse: 'lp-collapse',
-	elSectionActions: '.section-actions',
-	elBtnAddItemsSelected: '.lp-btn-add-items-selected',
-};
-
-// Add new section
-// const addSection = ( e, target ) => {
-// 	const elAddNewSection = target.closest( '.add-new-section' );
-// 	if ( ! elAddNewSection ) {
-// 		return;
-// 	}
-//
-// 	e.preventDefault();
-//
-// 	const elSectionClone = elCurriculumSections.querySelector( `.${ className.elSectionClone }` );
-// 	const elSectionTitleInput = elAddNewSection.querySelector( `${ className.elSectionNewInput }` );
-// 	const titleSectionValue = elSectionTitleInput.value.trim();
-// 	const message = elSectionTitleInput.dataset.messEmptyTitle;
-// 	if ( titleSectionValue.length === 0 ) {
-// 		showToast( message, 'error' );
-// 		return;
-// 	}
-//
-// 	elSectionTitleInput.value = ''; // Clear input after add
-//
-// 	// Add and set data for new section
-// 	const newSection = elSectionClone.cloneNode( true );
-// 	lpUtils.lpShowHideEl( newSection, 1 );
-// 	lpUtils.lpSetLoadingEl( newSection, 1 );
-// 	const titleNewSection = newSection.querySelector( `${ className.elSectionTitleInput }` );
-// 	titleNewSection.value = titleSectionValue;
-// 	elCurriculumSections.insertAdjacentElement( 'beforeend', newSection );
-// 	// End
-//
-// 	// Call ajax to add new section
-// 	const callBack = {
-// 		success: ( response ) => {
-// 			const { message, status } = response;
-// 			const { content } = response.data;
-//
-// 			showToast( message, status );
-// 		},
-// 		error: ( error ) => {
-// 			console.log( error );
-// 		},
-// 		completed: () => {
-// 			newSection.classList.remove( `${ className.elSectionClone }` );
-// 			lpUtils.lpSetLoadingEl( newSection, 0 );
-// 			newSection.classList.remove( `${ className.elCollapse }` );
-// 		},
-// 	};
-//
-// 	dataSend.callback.method = 'handle_edit_course_curriculum';
-// 	dataSend.args.action = 'add_section';
-// 	dataSend.args.title = titleSectionValue;
-// 	window.lpAJAXG.fetchAJAX( dataSend, callBack );
-// };
-const deleteSection = ( e, target ) => {
-	const elBtnDeleteSection = target.closest( `${ className.elBtnDeleteSection }` );
-	if ( ! elBtnDeleteSection ) {
-		return;
-	}
-
-	SweetAlert.fire( {
-		title: elBtnDeleteSection.dataset.title,
-		text: elBtnDeleteSection.dataset.content,
-		icon: 'warning',
-		showCloseButton: true,
-		showCancelButton: true,
-		cancelButtonText: lpDataAdmin.i18n.cancel,
-		confirmButtonText: lpDataAdmin.i18n.yes,
-		reverseButtons: true,
-	} ).then( ( result ) => {
-		if ( result.isConfirmed ) {
-			const elSection = elBtnDeleteSection.closest( '.section' );
-			const sectionId = elSection.dataset.sectionId;
-
-			lpUtils.lpSetLoadingEl( elSection, 1 );
-
-			// Call ajax to delete section
-			const callBack = {
-				success: ( response ) => {
-					const { message, status } = response;
-					const { content } = response.data;
-
-					showToast( message, status );
-				},
-				error: ( error ) => {
-					console.log( error );
-				},
-				completed: () => {
-					lpUtils.lpSetLoadingEl( elSection, 0 );
-					elSection.remove();
-				},
-			};
-
-			dataSend.callback.method = 'handle_edit_course_curriculum';
-			dataSend.args.action = 'delete_section';
-			dataSend.args.section_id = sectionId;
-			window.lpAJAXG.fetchAJAX( dataSend, callBack );
-		}
-	} );
-};
-const updateSectionTitle = ( e, target ) => {
-	const elSectionTitleInput = target.closest( `${ className.elSectionTitleInput }` );
-	if ( ! elSectionTitleInput ) {
-		return;
-	}
-
-	const elSection = elSectionTitleInput.closest( '.section' );
-	const sectionId = elSection.dataset.sectionId;
-	const sectionTitleValue = elSectionTitleInput.value.trim();
-	const message = elSectionTitleInput.dataset.messEmptyTitle;
-	if ( sectionTitleValue.length === 0 ) {
-		showToast( message, 'error' );
-		return;
-	}
-
-	elSectionTitleInput.blur();
-	lpUtils.lpSetLoadingEl( elSection, 1 );
-
-	// Call ajax to update section title
-	const callBack = {
-		success: ( response ) => {
-			const { message, status } = response;
-			const { content } = response.data;
-
-			showToast( message, status );
-		},
-		error: ( error ) => {
-			console.log( error );
-		},
-		completed: () => {
-			lpUtils.lpSetLoadingEl( elSection, 0 );
-		},
-	};
-
-	dataSend.callback.method = 'handle_edit_course_curriculum';
-	dataSend.args.section_id = sectionId;
-	dataSend.args.action = 'update_section';
-	dataSend.args.section_name = sectionTitleValue;
-	window.lpAJAXG.fetchAJAX( dataSend, callBack );
-};
-const updateSectionDescription = ( e, target ) => {
-	const elSectionDesInput = target.closest( `${ className.elSectionDesInput }` );
-	if ( ! elSectionDesInput ) {
-		return;
-	}
-
-	const elSection = elSectionDesInput.closest( '.section' );
-	const sectionId = elSection.dataset.sectionId;
-	const sectionDesValue = elSectionDesInput.value.trim();
-
-	lpUtils.lpSetLoadingEl( elSection, 1 );
-
-	// Call ajax to update section description
-	const callBack = {
-		success: ( response ) => {
-			const { message, status } = response;
-			const { content } = response.data;
-
-			showToast( message, status );
-		},
-		error: ( error ) => {
-			console.log( error );
-		},
-		completed: () => {
-			lpUtils.lpSetLoadingEl( elSection, 0 );
-			const elDetail = elSectionDesInput.closest( '.details' );
-			elDetail.classList.remove( 'editing' );
-			elSectionDesInput.dataset.old = sectionDesValue; // Update old value
-		},
-	};
-
-	dataSend.callback.method = 'handle_edit_course_curriculum';
-	dataSend.args.section_id = sectionId;
-	dataSend.args.action = 'update_section';
-	dataSend.args.section_description = sectionDesValue;
-	window.lpAJAXG.fetchAJAX( dataSend, callBack );
-};
-const changeSectionDescription = ( e, target ) => {
-	const elSectionDesInput = target.closest( `${ className.elSectionDesInput }` );
-	if ( ! elSectionDesInput ) {
-		return;
-	}
-
-	const elDetail = elSectionDesInput.closest( '.details' );
-	const titleSectionValue = elSectionDesInput.value.trim();
-	const titleSectionValueOld = elSectionDesInput.dataset.old || '';
-
-	if ( titleSectionValue === titleSectionValueOld ) {
-		elDetail.classList.remove( 'editing' );
-	} else {
-		elDetail.classList.add( 'editing' );
-	}
-};
 /**
  * Select item type to add to section
  * @param e
@@ -371,7 +144,7 @@ const updateItemTitle = ( e, target ) => {
 	// Un-focus input item title
 	elInputItemTitle.blur();
 	// show loading
-	lpUtils.lpSetLoadingEl( elStatusChange, 1 );
+	lpUtils.lpSetLoadingEl( elSectionItem, 1 );
 	// Call ajax to update item title
 	const callBack = {
 		success: ( response ) => {
@@ -384,7 +157,7 @@ const updateItemTitle = ( e, target ) => {
 			console.log( error );
 		},
 		completed: () => {
-			lpUtils.lpSetLoadingEl( elStatusChange, 0 );
+			lpUtils.lpSetLoadingEl( elSectionItem, 0 );
 		},
 	};
 
@@ -870,13 +643,13 @@ const sortAbleItem = () => {
 					},
 					completed: () => {
 						//console.log( 'completed' );
-						lpUtils.lpSetLoadingEl( elStatusChange, 0 );
+						lpUtils.lpSetLoadingEl( elSectionListItem, 0 );
 					},
 				};
 
 				clearTimeout( timeout );
 				timeout = setTimeout( () => {
-					lpUtils.lpSetLoadingEl( elStatusChange, 1 );
+					lpUtils.lpSetLoadingEl( elSectionListItem, 1 );
 					window.lpAJAXG.fetchAJAX( dataSend, callBack );
 				}, 1000 );
 			},
@@ -955,24 +728,7 @@ const toggleSectionAll = ( e, target ) => {
 		} );
 	}
 };
-const checkAllSectionsCollapsed = ( elCurriculum ) => {
-	const elSections = elCurriculum.querySelectorAll( `${ className.elSection }` );
-	const elToggleAllSections = elCurriculum.querySelector( `${ className.elToggleAllSections }` );
 
-	let isAllExpand = true;
-	elSections.forEach( ( el ) => {
-		if ( el.classList.contains( 'lp-collapse' ) ) {
-			isAllExpand = false;
-			return false; // Break the loop
-		}
-	} );
-
-	if ( isAllExpand ) {
-		elToggleAllSections.classList.remove( 'lp-collapse' );
-	} else {
-		elToggleAllSections.classList.add( 'lp-collapse' );
-	}
-};
 const updateCountItems = ( elSection ) => {
 	elEditCurriculum = elCurriculumSections.closest( `${ idElEditCurriculum }` );
 	const elCountItemsAll = elEditCurriculum.querySelector( '.total-items' );
@@ -991,12 +747,27 @@ const updateCountItems = ( elSection ) => {
 document.addEventListener( 'click', ( e ) => {
 	const target = e.target;
 
-	if ( target.classList.contains( `${ className.btnNewSection }` ) ) {
-		addSection( e, target );
-	}
+	// Add new section
+	sectionEdit.addSection( e, target );
+
+	// Collapse/Expand section
+	sectionEdit.toggleSection( e, target );
+
+	// Click button to update section description
+	sectionEdit.updateSectionDescription( e, target );
+
+	// Cancel update section description
+	sectionEdit.cancelSectionDescription( e, target );
 
 	// Delete section
-	deleteSection( e, target );
+	sectionEdit.deleteSection( e, target );
+
+	// Update section title
+	sectionEdit.updateSectionTitle( e, target );
+
+	// Cancel update section title
+	sectionEdit.cancelSectionTitle( e, target );
+	return;
 
 	// Select items from list to add to section
 	showSelectItemFromList( e, target );
@@ -1022,9 +793,6 @@ document.addEventListener( 'click', ( e ) => {
 	// Remove item selected
 	removeItemSelected( e, target );
 
-	// Collapse/Expand section
-	toggleSection( e, target );
-
 	// Collapse/Expand all sections
 	toggleSectionAll( e, target );
 
@@ -1045,22 +813,6 @@ document.addEventListener( 'click', ( e ) => {
 
 	// highlight section
 	highlightItem( e, target );
-
-	// Click button to update section description
-	if ( target.classList.contains( 'lp-btn-update-section-description' ) ) {
-		const elDetail = target.closest( '.details' );
-		const elSectionDesInput = elDetail.querySelector( `${ className.elSectionDesInput }` );
-		updateSectionDescription( e, elSectionDesInput );
-	}
-
-	// Click button cancel update section description
-	if ( target.classList.contains( 'lp-btn-cancel-update-section-description' ) ) {
-		const elDetail = target.closest( '.details' );
-		const elSectionDesInput = elDetail.querySelector( `${ className.elSectionDesInput }` );
-		const oldValue = elSectionDesInput.dataset.old || '';
-		elSectionDesInput.value = oldValue; // Reset to old value
-		elDetail.classList.remove( 'editing' ); // Remove editing class
-	}
 } );
 
 document.addEventListener( 'submit', ( e ) => {
@@ -1071,45 +823,43 @@ document.addEventListener( 'keydown', ( e ) => {
 	const target = e.target;
 	// Event enter
 	if ( e.key === 'Enter' ) {
+		// e.preventDefault();
 		sectionEdit.addSection( e, target );
-		addItemToSection( e, target );
-		updateSectionDescription( e, target );
-		updateSectionTitle( e, target );
-		updateItemTitle( e, target );
-
-		e.preventDefault();
+		sectionEdit.updateSectionTitle( e, target );
+		sectionEdit.updateSectionDescription( e, target );
+		// updateSectionTitle( e, target );
+		// updateItemTitle( e, target );
 	}
 } );
 
 document.addEventListener( 'keyup', ( e ) => {
 	const target = e.target;
-	changeSectionDescription( e, target );
-} );
-
-document.addEventListener( 'focus', ( e ) => {
-	console.log( 'focus', e.target );
+	sectionEdit.changeTitleDescription( e, target );
+	sectionEdit.changeSectionDescription( e, target );
 } );
 
 // Element root ready.
 lpUtils.lpOnElementReady( `${ idElEditCurriculum }`, ( elEditCurriculum ) => {
+	const { className } = lpEditCurriculumShare;
+
 	elCurriculumSections = elEditCurriculum.querySelector( `${ className.elCurriculumSections }` );
+	elLPTarget = elEditCurriculum.closest( `${ className.LPTarget }` );
+	dataSend = window.lpAJAXG.getDataSetCurrent( elLPTarget );
 
 	lpEditCurriculumShare.setVariables(
 		{
 			elEditCurriculum,
 			elCurriculumSections,
-			lpUtils,
+			elLPTarget,
+			dataSend,
 		}
 	);
 
+	// Set variables use for section edit
+	sectionEdit.init();
 
-	elLPTarget = elEditCurriculum.closest( `${ className.LPTarget }` );
-	checkAllSectionsCollapsed( elEditCurriculum );
-
-	dataSend = window.lpAJAXG.getDataSetCurrent( elLPTarget );
-
-	elStatusChange = elEditCurriculum.querySelector( '.status' );
-
-	sortAbleSection();
-	sortAbleItem();
+	// checkAllSectionsCollapsed( elEditCurriculum );
+	//
+	// sortAbleSection();
+	// sortAbleItem();
 } );

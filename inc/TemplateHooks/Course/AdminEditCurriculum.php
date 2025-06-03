@@ -535,12 +535,20 @@ class AdminEditCurriculum {
 				LP_WP_Filesystem::instance()->file_get_contents( LP_PLUGIN_PATH . 'assets/images/icons/ico-drag.svg' )
 			),
 			'loading'              => '<span class="dashicons dashicons-update"></span>',
-			'title'                => $this->html_edit_section_title( $section_name ),
+			'title'                => $this->html_input_section_title( $section_name ),
 			'btn-delete'           => sprintf(
 				'<button type="button" class="lp-btn-delete-section button" data-title="%s" data-content="%s">%s</button>',
 				__( 'Are you sure?', 'learnpress' ),
 				__( 'This section will be deleted. All items in this section will be kept.', 'learnpress' ),
 				__( 'Delete Section', 'learnpress' )
+			),
+			'btn-update'           => sprintf(
+				'<button type="button" class="lp-btn-update-section-title button">%s</button>',
+				__( 'Update' )
+			),
+			'btn-cancel'           => sprintf(
+				'<button type="button" class="lp-btn-cancel-update-section-title button">%s</button>',
+				__( 'Cancel' )
 			),
 			'count-items'          => sprintf(
 				'<div class="section-items-counts"><span>%s</span></div>',
@@ -550,16 +558,16 @@ class AdminEditCurriculum {
 			'head_end'             => '</div>',
 			'wrap_content'         => '<div class="section-collapse">',
 			'section-content'      => '<div class="section-content">',
-			'details'              => sprintf(
-				'<div class="details">%s%s%s</div>',
+			'section-description'  => sprintf(
+				'<div class="section-description">%s%s%s</div>',
 				$this->html_edit_section_description( $section_items->section_description ?? '' ),
 				sprintf(
 					'<button type="button" class="lp-btn-update-section-description button">%s</button>',
-					__( 'Update Section', 'learnpress' )
+					__( 'Update' )
 				),
 				sprintf(
 					'<button type="button" class="lp-btn-cancel-update-section-description button">%s</button>',
-					__( 'Cancel', 'learnpress' )
+					__( 'Cancel' )
 				)
 			),
 			'section-list-items'   => Template::combine_components( $section_list_items ),
@@ -573,20 +581,21 @@ class AdminEditCurriculum {
 	}
 
 	/**
-	 * HTML edit section title.
+	 * HTML input section title.
 	 *
 	 * @param string $section_name
 	 *
 	 * @return string
 	 */
-	public function html_edit_section_title( string $section_name = '' ): string {
+	public function html_input_section_title( string $section_name = '' ): string {
 		return sprintf(
 			'<input class="lp-section-title-input"
 				name="lp-section-title-input"
 				type="text"
-				value="%s"
-				placeholder="%s"
-				data-mess-empty-title="%s">',
+				value="%1$s"
+				data-old="%1$s"
+				placeholder="%2$s"
+				data-mess-empty-title="%3$s">',
 			esc_attr( $section_name ),
 			esc_attr__( 'Update section title', 'learnpress' ),
 			esc_attr__( 'Section title is required', 'learnpress' )
@@ -623,8 +632,8 @@ class AdminEditCurriculum {
 			'wrap'     => '<div class="add-new-section">',
 			'icon'     => '<span class="lp-icon-plus"></span>',
 			'input'    => sprintf(
-				'<input class="lp-section-new-input"
-					name="lp-section-new-input"
+				'<input class="lp-section-title-new-input"
+					name="lp-section-title-new-input"
 					type="text"
 					title="%1$s"
 					placeholder="%1$s"

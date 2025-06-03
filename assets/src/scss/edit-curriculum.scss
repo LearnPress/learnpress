@@ -223,7 +223,7 @@
 			}
 
 			.section-content {
-				.details {
+				.section-description {
 					button {
 						display: none;
 					}
@@ -251,6 +251,22 @@
 				font-size: 1.2em;
 				line-height: 1.875rem;
 				flex: 1;
+			}
+
+			.lp-btn-update-section-title, .lp-btn-cancel-update-section-title {
+				display: none;
+			}
+
+			&.editing {
+				.lp-btn-update-section-title, .lp-btn-cancel-update-section-title {
+					display: inline-block;
+				}
+				.lp-btn-delete-section {
+					display: none !important;
+				}
+				.section-items-counts, .section-toggle {
+					display: none;
+				}
 			}
 
 			.description-input {
