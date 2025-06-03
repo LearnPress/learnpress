@@ -13,7 +13,6 @@ import SweetAlert from 'sweetalert2';
 import * as lpEditCurriculumShare from './edit-curriculum/share.js';
 import * as sectionEdit from './edit-curriculum/edit-section.js';
 
-const idElEditCurriculum = '#lp-course-edit-curriculum';
 let elEditCurriculum;
 let elCurriculumSections;
 let elLPTarget;
@@ -531,63 +530,6 @@ const watchItemsSelectedDataChange = () => {
 	} );
 };
 let timeout;
-const sortAbleSection = () => {
-	let isUpdateSectionPosition = 0;
-
-	new Sortable( elCurriculumSections, {
-		handle: '.drag',
-		animation: 150,
-		onEnd: ( evt ) => {
-			const target = evt.item;
-			if ( ! isUpdateSectionPosition ) {
-				// No change in section position, do nothing
-				return;
-			}
-
-			const elSection = target.closest( `${ className.elSection }` );
-			const elSections = elCurriculumSections.querySelectorAll( `${ className.elSection }` );
-			const sectionIds = [];
-
-			elSections.forEach( ( elSection, index ) => {
-				const sectionId = elSection.dataset.sectionId;
-				sectionIds.push( sectionId );
-			} );
-
-			// Call ajax to update section position
-			const callBack = {
-				success: ( response ) => {
-					const { message, status } = response;
-					const { content } = response.data;
-
-					showToast( message, status );
-				},
-				error: ( error ) => {
-					showToast( error, 'error' );
-				},
-				completed: () => {
-					lpUtils.lpSetLoadingEl( elSection, 0 );
-					isUpdateSectionPosition = 0;
-				},
-			};
-
-			dataSend.callback.method = 'handle_edit_course_curriculum';
-			dataSend.args.action = 'update_section_position';
-			dataSend.args.new_position = sectionIds;
-
-			clearTimeout( timeout );
-			timeout = setTimeout( () => {
-				lpUtils.lpSetLoadingEl( elSection, 1 );
-				window.lpAJAXG.fetchAJAX( dataSend, callBack );
-			}, 1000 );
-		},
-		onMove: ( evt ) => {
-			clearTimeout( timeout );
-		},
-		onUpdate: ( evt ) => {
-			isUpdateSectionPosition = 1;
-		},
-	} );
-};
 const sortAbleItem = () => {
 	const elSectionListItems = elCurriculumSections.querySelectorAll( '.section-list-items' );
 	let itemIdChoose = 0;
@@ -675,14 +617,6 @@ const highlightItem = ( e, target ) => {
 	if ( target.closest( 'input[ name = "item-title-input" ]' ) ) {
 		target.closest( '.section-item' ).classList.add( 'editing' );
 	}
-};
-const showToast = ( message, status = 'success' ) => {
-	const toastify = new Toastify( {
-		...argsToastify,
-		text: message,
-		className: `${ lpDataAdmin.toast.classPrefix } ${ status }`,
-	} );
-	toastify.showToast();
 };
 const toggleSection = ( e, target ) => {
 	const elSectionToggle = target.closest( '.section-toggle' );
@@ -827,8 +761,6 @@ document.addEventListener( 'keydown', ( e ) => {
 		sectionEdit.addSection( e, target );
 		sectionEdit.updateSectionTitle( e, target );
 		sectionEdit.updateSectionDescription( e, target );
-		// updateSectionTitle( e, target );
-		// updateItemTitle( e, target );
 	}
 } );
 
@@ -839,9 +771,8 @@ document.addEventListener( 'keyup', ( e ) => {
 } );
 
 // Element root ready.
-lpUtils.lpOnElementReady( `${ idElEditCurriculum }`, ( elEditCurriculum ) => {
-	const { className } = lpEditCurriculumShare;
-
+const { className } = lpEditCurriculumShare;
+lpUtils.lpOnElementReady( `${ className.idElEditCurriculum }`, ( elEditCurriculum ) => {
 	elCurriculumSections = elEditCurriculum.querySelector( `${ className.elCurriculumSections }` );
 	elLPTarget = elEditCurriculum.closest( `${ className.LPTarget }` );
 	dataSend = window.lpAJAXG.getDataSetCurrent( elLPTarget );
@@ -857,9 +788,5 @@ lpUtils.lpOnElementReady( `${ idElEditCurriculum }`, ( elEditCurriculum ) => {
 
 	// Set variables use for section edit
 	sectionEdit.init();
-
-	// checkAllSectionsCollapsed( elEditCurriculum );
-	//
-	// sortAbleSection();
-	// sortAbleItem();
+	sectionEdit.sortAbleSection();
 } );

@@ -6,6 +6,7 @@
  */
 import * as lpEditCurriculumShare from './share.js';
 import SweetAlert from 'sweetalert2';
+import Sortable from 'sortablejs';
 
 let className = {
 	elDivAddNewSection: '.add-new-section',
@@ -387,6 +388,65 @@ const checkAllSectionsCollapsed = ( elCurriculum ) => {
 	}
 };
 
+const sortAbleSection = () => {
+	let isUpdateSectionPosition = 0;
+	let timeout;
+
+	new Sortable( elCurriculumSections, {
+		handle: '.drag',
+		animation: 150,
+		onEnd: ( evt ) => {
+			const target = evt.item;
+			if ( ! isUpdateSectionPosition ) {
+				// No change in section position, do nothing
+				return;
+			}
+
+			const elSection = target.closest( `${ className.elSection }` );
+			const elSections = elCurriculumSections.querySelectorAll( `${ className.elSection }` );
+			const sectionIds = [];
+
+			elSections.forEach( ( elSection, index ) => {
+				const sectionId = elSection.dataset.sectionId;
+				sectionIds.push( sectionId );
+			} );
+
+			// Call ajax to update section position
+			const callBack = {
+				success: ( response ) => {
+					const { message, status } = response;
+					const { content } = response.data;
+
+					showToast( message, status );
+				},
+				error: ( error ) => {
+					showToast( error, 'error' );
+				},
+				completed: () => {
+					lpUtils.lpSetLoadingEl( elSection, 0 );
+					isUpdateSectionPosition = 0;
+				},
+			};
+
+			dataSend.callback.method = 'handle_edit_course_curriculum';
+			dataSend.args.action = 'update_section_position';
+			dataSend.args.new_position = sectionIds;
+
+			clearTimeout( timeout );
+			timeout = setTimeout( () => {
+				lpUtils.lpSetLoadingEl( elSection, 1 );
+				window.lpAJAXG.fetchAJAX( dataSend, callBack );
+			}, 1000 );
+		},
+		onMove: ( evt ) => {
+			clearTimeout( timeout );
+		},
+		onUpdate: ( evt ) => {
+			isUpdateSectionPosition = 1;
+		},
+	} );
+};
+
 export {
 	init,
 	addSection,
@@ -398,5 +458,6 @@ export {
 	changeSectionDescription,
 	changeTitleDescription,
 	toggleSection,
+	sortAbleSection,
 };
 

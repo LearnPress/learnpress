@@ -9,6 +9,7 @@ let elCurriculumSections;
 let elLPTarget;
 let dataSend;
 const className = {
+	idElEditCurriculum: '#lp-course-edit-curriculum',
 	elCurriculumSections: '.curriculum-sections',
 	elSectionNewInput: '.lp-section-new-input',
 	elSection: '.section',
