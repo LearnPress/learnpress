@@ -43,7 +43,7 @@ const toggleSectionAll = ( e, target ) => {
 const updateCountItems = ( elSection ) => {
 	const elEditCurriculum = lpEditCurriculumShare.elEditCurriculum;
 	const elCountItemsAll = elEditCurriculum.querySelector( '.total-items' );
-	const elItemsAll = elCurriculumSections.querySelectorAll( `${ className.elSectionItem }:not(.${ className.elItemClone })` );
+	const elItemsAll = elEditCurriculum.querySelectorAll( `${ className.elSectionItem }:not(.${ className.elItemClone })` );
 	elCountItemsAll.innerHTML = elItemsAll.length;
 
 	// Count items in section
@@ -87,6 +87,8 @@ document.addEventListener( 'click', ( e ) => {
 	sectionItemEdit.addItemToSection( e, target );
 	// Show popup select items
 	sectionItemEdit.showPopupItemsToSelect( e, target );
+	// Show items selected
+	sectionItemEdit.showItemsSelected( e, target );
 	// Load items by type
 	sectionItemEdit.chooseTabItemsType( e, target );
 	// Update item title
@@ -95,6 +97,14 @@ document.addEventListener( 'click', ( e ) => {
 	sectionItemEdit.cancelUpdateTitle( e, target );
 	// Delete item from section
 	sectionItemEdit.deleteItem( e, target );
+	// Click to select items from list
+	sectionItemEdit.selectItemsFromList( e, target );
+	// Add items selected to section
+	sectionItemEdit.addItemsSelectedToSection( e, target );
+	// Back to select items
+	sectionItemEdit.backToSelectItems( e, target );
+	// Remove item selected
+	sectionItemEdit.removeItemSelected( e, target );
 	/*** End Event of Section Item ***/
 
 	// Collapse/Expand all sections

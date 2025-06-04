@@ -13,17 +13,13 @@ let updateCountItems;
 const className = {
 	idElEditCurriculum: '#lp-course-edit-curriculum',
 	elCurriculumSections: '.curriculum-sections',
-	elSectionNewInput: '.lp-section-new-input',
 	elSection: '.section',
 	elSectionClone: 'section-clone',
 	elToggleAllSections: '.course-toggle-all-sections',
-	elBtnSelectItems: 'lp-btn-select-items',
 	elSectionItem: '.section-item',
 	elItemClone: 'section-item-clone',
 	LPTarget: '.lp-target',
 	elCollapse: 'lp-collapse',
-	elSectionActions: '.section-actions',
-	elBtnAddItemsSelected: '.lp-btn-add-items-selected',
 };
 const argsToastify = {
 	text: '',

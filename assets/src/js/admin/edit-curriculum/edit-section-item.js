@@ -13,6 +13,7 @@ let className = {
 	elSectionItem: '.section-item',
 	elBtnSelectItemType: '.lp-btn-select-item-type',
 	elAddItemTypeClone: '.lp-add-item-type.clone',
+	elSectionActions: '.section-actions',
 	elAddItemType: '.lp-add-item-type',
 	elAddItemTypeTitleInput: '.lp-add-item-type-title-input',
 	elBtnAddItemCancel: '.lp-btn-add-item-cancel',
@@ -23,8 +24,18 @@ let className = {
 	elBtnCancelUpdateTitle: '.lp-btn-cancel-update-item-title',
 	elBtnDeleteItem: '.lp-btn-delete-item',
 	elBtnShowPopupItemsToSelect: '.lp-btn-show-popup-items-to-select',
-	elPopupItemsToSelectClone: 'lp-popup-items-to-select-clone',
-	elPopupItemsToSelect: 'lp-popup-items-to-select',
+	elPopupItemsToSelectClone: '.lp-popup-items-to-select.clone',
+	elPopupItemsToSelect: '.lp-popup-items-to-select',
+	elSelectItem: '.lp-select-item',
+	elListItemsWrap: '.list-items-wrap',
+	elListItems: '.list-items',
+	elBtnAddItemsSelected: '.lp-btn-add-items-selected',
+	elBtnCountItemsSelected: '.lp-btn-count-items-selected',
+	elBtnBackListItems: '.lp-btn-back-to-select-items',
+	elHeaderCountItemSelected: '.header-count-items-selected',
+	elListItemsSelected: '.list-items-selected',
+	elItemSelectedClone: '.li-item-selected.clone',
+	elItemSelected: '.li-item-selected',
 };
 let elCurriculumSections;
 let showToast;
@@ -53,13 +64,11 @@ const addItemType = ( e, target ) => {
 	// Insert input item type to add
 	const elAddItemTypeClone = elSectionActions.querySelector( `${ className.elAddItemTypeClone }` );
 	const elNewItemByType = elAddItemTypeClone.cloneNode( true );
-	const elNewItemIcoByType = elNewItemByType.querySelector( '.item-ico-type' );
 	const elAddItemTypeInput = elNewItemByType.querySelector( `${ className.elAddItemTypeTitleInput }` );
 	const elBtnAddItem = elNewItemByType.querySelector( `${ className.elBtnAddItem }` );
 
 	elNewItemByType.classList.remove( 'clone' );
 	lpUtils.lpShowHideEl( elNewItemByType, 1 );
-	elNewItemIcoByType.classList.add( itemType );
 	elAddItemTypeInput.setAttribute( 'placeholder', itemPlaceholder );
 	elAddItemTypeInput.dataset.itemType = itemType;
 	elBtnAddItem.textContent = itemBtnAddText;
@@ -103,14 +112,12 @@ const addItemToSection = ( e, target ) => {
 	const elItemClone = elSection.querySelector( `.${ className.elItemClone }` );
 	const elItemNew = elItemClone.cloneNode( true );
 	const elItemTitleInput = elItemNew.querySelector( `${ className.elItemTitleInput }` );
-	const elItemIco = elItemNew.querySelector( '.item-ico-type' );
 
 	elItemNew.classList.remove( `${ className.elItemClone }` );
 	elItemNew.classList.add( typeValue );
 	lpUtils.lpShowHideEl( elItemNew, 1 );
-	elItemTitleInput.value = titleValue;
 	lpUtils.lpSetLoadingEl( elItemNew, 1 );
-	elItemIco.classList.add( typeValue );
+	elItemTitleInput.value = titleValue;
 	elItemClone.insertAdjacentElement( 'beforebegin', elItemNew );
 	elAddItemType.remove();
 
@@ -118,7 +125,6 @@ const addItemToSection = ( e, target ) => {
 	const callBack = {
 		success: ( response ) => {
 			const { message, status } = response;
-			const { content } = response.data;
 
 			showToast( message, status );
 
@@ -127,11 +133,11 @@ const addItemToSection = ( e, target ) => {
 			}
 		},
 		error: ( error ) => {
-			console.log( error );
+			elItemNew.remove();
 		},
 		completed: () => {
 			lpUtils.lpSetLoadingEl( elItemNew, 0 );
-			//updateCountItems( elSection );
+			updateCountItems( elSection );
 		},
 	};
 
@@ -142,6 +148,7 @@ const addItemToSection = ( e, target ) => {
 	dataSend.args.item_type = typeValue;
 	window.lpAJAXG.fetchAJAX( dataSend, callBack );
 };
+// Update item title
 const updateTitle = ( e, target ) => {
 	let canHandle = false;
 
@@ -212,6 +219,7 @@ const updateTitle = ( e, target ) => {
 	dataSend.args.item_title = itemTitleValue;
 	window.lpAJAXG.fetchAJAX( dataSend, callBack );
 };
+// Cancel update item title
 const cancelUpdateTitle = ( e, target ) => {
 	const elBtnCancelUpdateTitle = target.closest( `${ className.elBtnCancelUpdateTitle }` );
 	if ( ! elBtnCancelUpdateTitle ) {
@@ -223,8 +231,10 @@ const cancelUpdateTitle = ( e, target ) => {
 	elItemTitleInput.value = elItemTitleInput.dataset.old || ''; // Reset to old value
 	elSectionItem.classList.remove( 'editing' ); // Remove editing class
 };
+
 let sectionIdSelected;
 let elPopupSelectItems;
+// Show popup items to select
 const showPopupItemsToSelect = ( e, target ) => {
 	const elBtnShowPopupItemsToSelect = target.closest( `${ className.elBtnShowPopupItemsToSelect }` );
 	if ( ! elBtnShowPopupItemsToSelect ) {
@@ -234,10 +244,9 @@ const showPopupItemsToSelect = ( e, target ) => {
 	const elSection = elBtnShowPopupItemsToSelect.closest( `${ className.elSection }` );
 	sectionIdSelected = elSection.dataset.sectionId;
 
-	const elPopupItemsToSelectClone = document.querySelector( `.${ className.elPopupItemsToSelectClone }` );
+	const elPopupItemsToSelectClone = document.querySelector( `${ className.elPopupItemsToSelectClone }` );
 	elPopupSelectItems = elPopupItemsToSelectClone.cloneNode( true );
-	elPopupSelectItems.classList.remove( className.elPopupItemsToSelectClone );
-	elPopupSelectItems.classList.add( className.elPopupItemsToSelect );
+	elPopupSelectItems.classList.remove( 'clone' );
 	lpUtils.lpShowHideEl( elPopupSelectItems, 1 );
 
 	SweetAlert.fire( {
@@ -251,6 +260,7 @@ const showPopupItemsToSelect = ( e, target ) => {
 			container: 'lp-select-items-container',
 		},
 		willOpen: () => {
+			// Trigger tab lesson to be active and call AJAX load items
 			const tabLesson = elPopupSelectItems.querySelector( 'li[data-type="lp_lesson"]' );
 			tabLesson.click();
 		},
@@ -259,20 +269,21 @@ const showPopupItemsToSelect = ( e, target ) => {
 		}
 	} );
 };
+
 let itemsSelectedData = [];
+// Select items from list
 const selectItemsFromList = ( e, target ) => {
-	const elItemAttend = target.closest( '.lp-select-item' );
+	const elItemAttend = target.closest( `${ className.elSelectItem }` );
 	if ( ! elItemAttend ) {
 		return;
 	}
 
 	const elInput = elItemAttend.querySelector( 'input[type="checkbox"]' );
-
 	if ( target.tagName !== 'INPUT' ) {
 		elInput.click();
 	}
 
-	const elUl = elItemAttend.closest( '.list-items' );
+	const elUl = elItemAttend.closest( `${ className.elListItems }` );
 	if ( ! elUl ) {
 		return;
 	}
@@ -296,6 +307,8 @@ const selectItemsFromList = ( e, target ) => {
 
 	watchItemsSelectedDataChange();
 };
+
+// Choose tab items type
 const chooseTabItemsType = ( e, target ) => {
 	const elTabType = target.closest( '.tab' );
 	if ( ! elTabType ) {
@@ -308,7 +321,7 @@ const chooseTabItemsType = ( e, target ) => {
 		return;
 	}
 
-	const elSelectItemsToAdd = elTabs.closest( `.${ className.elPopupItemsToSelect }` );
+	const elSelectItemsToAdd = elTabs.closest( `${ className.elPopupItemsToSelect }` );
 
 	const itemType = elTabType.dataset.type;
 	const elTabLis = elTabs.querySelectorAll( '.tab' );
@@ -324,8 +337,7 @@ const chooseTabItemsType = ( e, target ) => {
 	const dataSend = window.lpAJAXG.getDataSetCurrent( elLPTarget );
 	dataSend.args.item_type = itemType;
 	dataSend.args.paged = 1;
-
-	window.lpAJAXG.setDataSetCurrent( elLPTarget, dataSend );
+	dataSend.args.item_selecting = itemsSelectedData || [];
 
 	// Show loading
 	window.lpAJAXG.showHideLoading( elLPTarget, 1 );
@@ -340,24 +352,20 @@ const chooseTabItemsType = ( e, target ) => {
 			console.log( error );
 		},
 		completed: () => {
-			//console.log( 'completed' );
 			window.lpAJAXG.showHideLoading( elLPTarget, 0 );
 		},
 	} );
 };
+
+// Add items selected to section
 const addItemsSelectedToSection = ( e, target ) => {
 	const elBtnAddItems = target.closest( `${ className.elBtnAddItemsSelected }` );
 	if ( ! elBtnAddItems ) {
 		return;
 	}
 
-	const elSelectItemsToAdd = elBtnAddItems.closest( '.lp-select-items-to-add' );
-	if ( ! elSelectItemsToAdd ) {
-		return;
-	}
-
-	if ( itemsSelectedData.length === 0 ) {
-		showToast( 'Please select at least one item to add.', 'error' );
+	const elPopupItemsToSelect = elBtnAddItems.closest( `${ className.elPopupItemsToSelect }` );
+	if ( ! elPopupItemsToSelect ) {
 		return;
 	}
 
@@ -366,17 +374,12 @@ const addItemsSelectedToSection = ( e, target ) => {
 	dataSend.args.items = itemsSelectedData;
 	dataSend.args.section_id = sectionIdSelected;
 
-	// Show loading
-	window.lpAJAXG.showHideLoading( elLPTarget, 1 );
-	// End
-
 	const elSection = document.querySelector( `.section[data-section-id="${ sectionIdSelected }"]` );
 	const elItemClone = elSection.querySelector( `.${ className.elItemClone }` );
 
 	itemsSelectedData.forEach( ( item ) => {
 		const elItemNew = elItemClone.cloneNode( true );
 		const elInputTitleNew = elItemNew.querySelector( `${ className.elItemTitleInput }` );
-		const elSectionListItems = elSection.querySelector( `${ className.elSectionListItems }` );
 
 		elItemNew.dataset.itemId = item.item_id;
 		elItemNew.classList.add( item.item_type );
@@ -384,7 +387,7 @@ const addItemsSelectedToSection = ( e, target ) => {
 		elInputTitleNew.value = item.item_title || '';
 		lpUtils.lpSetLoadingEl( elItemNew, 1 );
 		lpUtils.lpShowHideEl( elItemNew, 1 );
-		elSectionListItems.insertAdjacentElement( 'beforeend', elItemNew );
+		elItemClone.insertAdjacentElement( 'beforebegin', elItemNew );
 	} );
 
 	SweetAlert.close();
@@ -407,10 +410,8 @@ const addItemsSelectedToSection = ( e, target ) => {
 			console.log( error );
 		},
 		completed: () => {
-			window.lpAJAXG.showHideLoading( elLPTarget, 0 );
-
 			itemsSelectedData.forEach( ( item ) => {
-				const elItemAdded = elSection.querySelector( `.section-item[data-item-id="${ item.item_id }"]` );
+				const elItemAdded = elSection.querySelector( `${ className.elSectionItem }[data-item-id="${ item.item_id }"]` );
 				lpUtils.lpSetLoadingEl( elItemAdded, 0 );
 			} );
 
@@ -473,18 +474,23 @@ const deleteItem = ( e, target ) => {
 		}
 	} );
 };
-const showItemsChoice = ( e, target ) => {
-	const elBtnCountItemsSelected = target.closest( '.lp-btn-count-items-selected' );
+const showItemsSelected = ( e, target ) => {
+	const elBtnCountItemsSelected = target.closest( `${ className.elBtnCountItemsSelected }` );
 	if ( ! elBtnCountItemsSelected ) {
 		return;
 	}
 
-	const elParent = elBtnCountItemsSelected.closest( '.lp-select-items-to-add' );
-	const elBtnBack = elParent.querySelector( '.lp-btn-back-to-select-items' );
+	const elParent = elBtnCountItemsSelected.closest( `${ className.elPopupItemsToSelect }` );
+	if ( ! elParent ) {
+		return;
+	}
+
+	const elBtnBack = elParent.querySelector( `${ className.elBtnBackListItems }` );
 	const elTabs = elParent.querySelector( '.tabs' );
-	const elListItemsWrap = elParent.querySelector( '.list-items-wrap' );
-	const elHeaderItemsSelected = elParent.querySelector( '.header-count-items-selected' );
-	const elListItemsSelected = elParent.querySelector( '.list-items-selected' );
+	const elListItemsWrap = elParent.querySelector( `${ className.elListItemsWrap }` );
+	const elHeaderItemsSelected = elParent.querySelector( `${ className.elHeaderCountItemSelected }` );
+	const elListItemsSelected = elParent.querySelector( `${ className.elListItemsSelected }` );
+	const elItemClone = elListItemsSelected.querySelector( `${ className.elItemSelectedClone }` );
 	elHeaderItemsSelected.innerHTML = elBtnCountItemsSelected.innerHTML;
 
 	lpUtils.lpShowHideEl( elListItemsWrap, 0 );
@@ -494,38 +500,42 @@ const showItemsChoice = ( e, target ) => {
 	lpUtils.lpShowHideEl( elHeaderItemsSelected, 1 );
 	lpUtils.lpShowHideEl( elListItemsSelected, 1 );
 
-	let htmlLis = '';
 	itemsSelectedData.forEach( ( item ) => {
-		htmlLis += `<li class="lp-remove-item-selected" data-id="${ item.item_id }" data-type="${ item.item_type }">
-						<i class="dashicons dashicons-remove"></i>
-						<span>${ item.item_title }</span>
-						<span class="item-id">(#${ item.item_id } - ${ item.item_type })</span>
-					</li>`;
-	} );
+		const elItemSelected = elItemClone.cloneNode( true );
+		elItemSelected.classList.remove( 'clone' );
+		elItemSelected.dataset.id = item.item_id;
+		elItemSelected.dataset.type = item.item_type || '';
 
-	elListItemsSelected.innerHTML = htmlLis;
+		elItemSelected.querySelector( '.item-title' ).textContent = item.item_title || '';
+		elItemSelected.querySelector( '.item-id' ).textContent = item.item_id || '';
+		elItemSelected.querySelector( '.item-type' ).textContent = item.item_type || '';
+
+		lpUtils.lpShowHideEl( elItemSelected, 1 );
+
+		elItemClone.insertAdjacentElement( 'beforebegin', elItemSelected );
+	} );
 };
 const backToSelectItems = ( e, target ) => {
-	const elBtnBack = target.closest( '.lp-btn-back-to-select-items' );
+	const elBtnBack = target.closest( `${ className.elBtnBackListItems }` );
 	if ( ! elBtnBack ) {
 		return;
 	}
 
-	const elParent = elBtnBack.closest( '.lp-select-items-to-add' );
-	const elBtnCountItemsSelected = elParent.querySelector( '.lp-btn-count-items-selected' );
+	const elParent = elBtnBack.closest( `${ className.elPopupItemsToSelect }` );
+	const elBtnCountItemsSelected = elParent.querySelector( `${ className.elBtnCountItemsSelected }` );
 	const elTabs = elParent.querySelector( '.tabs' );
-	const elListItemsWrap = elParent.querySelector( '.list-items-wrap' );
-	const elHeaderItemsSelected = elParent.querySelector( '.header-count-items-selected' );
-	const elListItemsSelected = elParent.querySelector( '.list-items-selected' );
+	const elListItemsWrap = elParent.querySelector( `${ className.elListItemsWrap }` );
+	const elHeaderCountItemSelected = elParent.querySelector( `${ className.elHeaderCountItemSelected }` );
+	const elListItemsSelected = elParent.querySelector( `${ className.elListItemsSelected }` );
 	lpUtils.lpShowHideEl( elBtnCountItemsSelected, 1 );
 	lpUtils.lpShowHideEl( elListItemsWrap, 1 );
 	lpUtils.lpShowHideEl( elTabs, 1 );
 	lpUtils.lpShowHideEl( elBtnBack, 0 );
-	lpUtils.lpShowHideEl( elHeaderItemsSelected, 0 );
+	lpUtils.lpShowHideEl( elHeaderCountItemSelected, 0 );
 	lpUtils.lpShowHideEl( elListItemsSelected, 0 );
 };
 const removeItemSelected = ( e, target ) => {
-	const elRemoveItemSelected = target.closest( '.lp-remove-item-selected' );
+	const elRemoveItemSelected = target.closest( `${ className.elItemSelected }` );
 	if ( ! elRemoveItemSelected ) {
 		return;
 	}
@@ -548,17 +558,16 @@ const watchItemsSelectedDataChange = () => {
 		return;
 	}
 
-	const elListItemsWrap = elPopupSelectItems.querySelector( '.list-items-wrap' );
+	const elListItemsWrap = elPopupSelectItems.querySelector( `${ className.elListItemsWrap }` );
 	const elTarget = elListItemsWrap.querySelector( `${ className.LPTarget }` );
 
 	// Set data for call AJAX
 	const dataSet = window.lpAJAXG.getDataSetCurrent( elTarget );
 	dataSet.args.item_selecting = itemsSelectedData;
-	window.lpAJAXG.setDataSetCurrent( elTarget, dataSet );
 
 	// Update count items selected, disable/enable buttons
-	const elBtnAddItemsSelected = elPopupSelectItems.querySelector( '.lp-btn-add-items-selected' );
-	const elBtnCountItemsSelected = elPopupSelectItems.querySelector( '.lp-btn-count-items-selected' );
+	const elBtnAddItemsSelected = elPopupSelectItems.querySelector( `${ className.elBtnAddItemsSelected }` );
+	const elBtnCountItemsSelected = elPopupSelectItems.querySelector( `${ className.elBtnCountItemsSelected }` );
 	const elSpanCount = elBtnCountItemsSelected.querySelector( 'span' );
 	const elHeaderCount = elPopupSelectItems.querySelector( '.header-count-items-selected' );
 	if ( itemsSelectedData.length !== 0 ) {
@@ -573,7 +582,7 @@ const watchItemsSelectedDataChange = () => {
 		elHeaderCount.textContent = '';
 	}
 
-	const elListItems = elPopupSelectItems.querySelector( '.list-items' );
+	const elListItems = elPopupSelectItems.querySelector( `${ className.elListItems }` );
 	const elInputs = elListItems.querySelectorAll( 'input[type="checkbox"]' );
 	elInputs.forEach( ( elInputItem ) => {
 		const itemSelected = {
@@ -582,11 +591,7 @@ const watchItemsSelectedDataChange = () => {
 			item_title: elInputItem.dataset.title || '',
 		};
 		const exists = itemsSelectedData.some( ( item ) => item.item_id === itemSelected.item_id );
-		if ( exists ) {
-			elInputItem.checked = true;
-		} else {
-			elInputItem.checked = false;
-		}
+		elInputItem.checked = exists;
 	} );
 };
 // Sortable items, can drop on multiple sections
@@ -702,5 +707,10 @@ export {
 	updateTitle,
 	cancelUpdateTitle,
 	deleteItem,
+	selectItemsFromList,
+	showItemsSelected,
+	backToSelectItems,
+	removeItemSelected,
+	addItemsSelectedToSection,
 };
 

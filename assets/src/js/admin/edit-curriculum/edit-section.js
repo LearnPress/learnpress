@@ -313,7 +313,7 @@ const updateSectionDescription = ( e, target ) => {
 	dataSend.callback.method = 'handle_edit_course_curriculum';
 	dataSend.args.section_id = sectionId;
 	dataSend.args.action = 'update_section';
-	dataSend.args.section_description = defaultMode;
+	dataSend.args.section_description = descValue;
 	window.lpAJAXG.fetchAJAX( dataSend, callBack );
 };
 

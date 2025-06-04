@@ -850,7 +850,14 @@ class AdminEditCurriculum {
 			),
 			'list-items'          => $html_items,
 			'wrap_items_end'      => '</div>',
-			'list-items-selected' => '<ul class="list-items-selected lp-hidden"></ul>',
+			'list-items-selected' => '
+				<ul class="list-items-selected lp-hidden">
+					<li class="li-item-selected clone lp-hidden" data-id="" data-type="">
+						<i class="dashicons dashicons-remove"></i>
+						<span class="item-title">item_title</span>
+						(#<span class="item-id">item_id</span> - <span class="item-type">item_type</span>)
+					</li>
+				</ul>',
 			'wrap_end'            => '</div>',
 		];
 
@@ -873,7 +880,7 @@ class AdminEditCurriculum {
 		];
 
 		$section = [
-			'wrap'     => '<div class="lp-popup-items-to-select-clone lp-hidden">',
+			'wrap'     => '<div class="lp-popup-items-to-select clone lp-hidden">',
 			'header'   => Template::combine_components( $section_header ),
 			'main'     => Template::combine_components( $section_main ),
 			'footer'   => Template::combine_components( $section_footer ),
