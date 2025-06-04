@@ -142,6 +142,8 @@ document.addEventListener( 'keyup', ( e ) => {
 	sectionEdit.changeDescription( e, target );
 	// Change item title
 	sectionItemEdit.changeTitle( e, target );
+	// Search title item to select
+	sectionItemEdit.searchTitleItemToSelect( e, target );
 } );
 
 // Element root ready.

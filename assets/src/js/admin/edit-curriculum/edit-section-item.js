@@ -320,7 +320,6 @@ const selectItemsFromList = ( e, target ) => {
 
 	watchItemsSelectedDataChange();
 };
-
 // Choose tab items type
 const chooseTabItemsType = ( e, target ) => {
 	const elTabType = target.closest( '.tab' );
@@ -335,6 +334,7 @@ const chooseTabItemsType = ( e, target ) => {
 	}
 
 	const elSelectItemsToAdd = elTabs.closest( `${ className.elPopupItemsToSelect }` );
+	const elInputSearch = elSelectItemsToAdd.querySelector( '.lp-search-title-item' );
 
 	const itemType = elTabType.dataset.type;
 	const elTabLis = elTabs.querySelectorAll( '.tab' );
@@ -344,6 +344,8 @@ const chooseTabItemsType = ( e, target ) => {
 		}
 	} );
 	elTabType.classList.add( 'active' );
+	// Reset search input
+	elInputSearch.value = '';
 
 	const elLPTarget = elSelectItemsToAdd.querySelector( `${ className.LPTarget }` );
 
@@ -369,7 +371,49 @@ const chooseTabItemsType = ( e, target ) => {
 		},
 	} );
 };
+// Search title item
+let timeSearchTitleItem;
+const searchTitleItemToSelect = ( e, target ) => {
+	const elInputSearch = target.closest( '.lp-search-title-item' );
+	if ( ! elInputSearch ) {
+		return;
+	}
 
+	const elPopupItemsToSelect = elInputSearch.closest( `${ className.elPopupItemsToSelect }` );
+	if ( ! elPopupItemsToSelect ) {
+		return;
+	}
+
+	const tabActive = elPopupItemsToSelect.querySelector( '.tab.active' );
+	const itemType = tabActive.dataset.type;
+
+	const elTarget = elPopupItemsToSelect.querySelector( `${ className.LPTarget }` );
+
+	clearTimeout( timeSearchTitleItem );
+
+	timeSearchTitleItem = setTimeout( () => {
+		const dataSet = window.lpAJAXG.getDataSetCurrent( elTarget );
+		dataSet.args.search_title = elInputSearch.value.trim();
+		dataSet.args.item_type = itemType;
+		dataSet.args.item_selecting = itemsSelectedData;
+
+		// Show loading
+		window.lpAJAXG.showHideLoading( elTarget, 1 );
+
+		window.lpAJAXG.fetchAJAX( dataSet, {
+			success: ( response ) => {
+				const { data } = response;
+				elTarget.innerHTML = data.content || '';
+			},
+			error: ( error ) => {
+				console.log( error );
+			},
+			completed: () => {
+				window.lpAJAXG.showHideLoading( elTarget, 0 );
+			},
+		} );
+	}, 1000 );
+};
 // Add items selected to section
 const addItemsSelectedToSection = ( e, target ) => {
 	const elBtnAddItems = target.closest( `${ className.elBtnAddItemsSelected }` );
@@ -397,6 +441,7 @@ const addItemsSelectedToSection = ( e, target ) => {
 		elItemNew.dataset.itemId = item.item_id;
 		elItemNew.classList.add( item.item_type );
 		elItemNew.classList.remove( 'clone' );
+		elItemNew.dataset.itemType = item.item_type;
 		elInputTitleNew.value = item.item_title || '';
 		lpUtils.lpSetLoadingEl( elItemNew, 1 );
 		lpUtils.lpShowHideEl( elItemNew, 1 );
@@ -788,6 +833,7 @@ export {
 	showItemsSelected,
 	backToSelectItems,
 	removeItemSelected,
+	searchTitleItemToSelect,
 	addItemsSelectedToSection,
 	updatePreviewItem,
 };

@@ -909,7 +909,7 @@ class AdminEditCurriculum {
 			'wrap'                => '<div class="main">',
 			'wrap_items'          => '<div class="list-items-wrap">',
 			'search'              => sprintf(
-				'<input type="text" placeholder="%s" title="search" class="modal-search-input">',
+				'<input type="text" placeholder="%s" title="search" class="lp-search-title-item">',
 				__( 'Type here to search for an item', 'learnpress' )
 			),
 			'list-items'          => $html_items,
@@ -918,8 +918,10 @@ class AdminEditCurriculum {
 				<ul class="list-items-selected lp-hidden">
 					<li class="li-item-selected clone lp-hidden" data-id="" data-type="">
 						<i class="dashicons dashicons-remove"></i>
-						<span class="item-title">item_title</span>
-						(#<span class="item-id">item_id</span> - <span class="item-type">item_type</span>)
+						<div>
+							<span class="item-title">item_title</span>
+							(#<span class="item-id">item_id</span> - <span class="item-type">item_type</span>)
+						</div>
 					</li>
 				</ul>',
 			'wrap_end'            => '</div>',
@@ -962,6 +964,7 @@ class AdminEditCurriculum {
 		$course_id              = $data['course_id'] ?? 0;
 		$item_type              = $data['item_type'] ?? LP_LESSON_CPT;
 		$item_selecting         = $data['item_selecting'] ?? [];
+		$search_title           = $data['search_title'] ?? '';
 		$paged                  = intval( $data['paged'] ?? 1 );
 		$item_selecting_compare = new stdClass();
 
@@ -976,6 +979,10 @@ class AdminEditCurriculum {
 		$filter->post_status = 'publish';
 		$filter->order_by    = 'p.ID';
 		$filter->page        = $paged;
+
+		if ( ! empty( $search_title ) ) {
+			$filter->post_title = $search_title;
+		}
 
 		// Old logic: Get all items not assigned to any course.
 		$filter->where[] = "AND p.ID NOT IN ( SELECT item_id FROM {$lp_db->tb_lp_section_items} )";

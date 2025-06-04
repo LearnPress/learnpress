@@ -22,6 +22,7 @@ let className = {
 	elBtnDeleteSection: '.lp-btn-delete-section',
 	elSectionDesc: '.section-description',
 	elSectionToggle: '.section-toggle',
+	elCountSections: '.count-sections',
 };
 let elEditCurriculum;
 let elCurriculumSections;
@@ -105,6 +106,7 @@ const addSection = ( e, target ) => {
 			newSection.classList.remove( `${ className.elCollapse }` );
 			const elSectionDesInput = newSection.querySelector( `${ className.elSectionDesInput }` );
 			elSectionDesInput.focus();
+			updateCountSections();
 		},
 	};
 
@@ -146,12 +148,13 @@ const deleteSection = ( e, target ) => {
 					showToast( message, status );
 				},
 				error: ( error ) => {
-					console.log( error );
+					showToast( error, 'error' );
 				},
 				completed: () => {
 					lpUtils.lpSetLoadingEl( elSection, 0 );
 					elSection.remove();
 					updateCountItems( elSection );
+					updateCountSections();
 				},
 			};
 
@@ -456,6 +459,15 @@ const sortAbleSection = () => {
 			isUpdateSectionPosition = 1;
 		},
 	} );
+};
+
+const updateCountSections = () => {
+	const elCountSections = elEditCurriculum.querySelector( `${ className.elCountSections }` );
+	const elSections = elCurriculumSections.querySelectorAll( `${ className.elSection }:not(.clone)` );
+	const sectionsCount = elSections.length;
+
+	elCountSections.dataset.count = sectionsCount;
+	elCountSections.querySelector( '.count' ).textContent = sectionsCount;
 };
 
 export {
