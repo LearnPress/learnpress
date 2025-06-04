@@ -603,7 +603,7 @@ class AdminEditCurriculum {
 			),
 			'head'                 => '<div class="section-head">',
 			'drag'                 => '<span class="drag lp-icon-drag"></span>',
-			'loading'              => '<span class="dashicons dashicons-update"></span>',
+			'loading'              => '<span class="lp-icon-spinner"></span>',
 			'title'                => $this->html_input_section_title( $section_name ),
 			'btn-delete'           => sprintf(
 				'<button type="button" class="lp-btn-delete-section button" data-title="%s" data-content="%s">%s</button>',
@@ -777,7 +777,7 @@ class AdminEditCurriculum {
 			),
 			'drag'         => '<span class="drag lp-icon-drag"></span>',
 			'icon'         => '<div class="item-ico-type"></div>',
-			'loading'      => '<span class="dashicons dashicons-update"></span>',
+			'loading'      => '<span class="lp-icon-spinner"></span>',
 			'input-title'  => sprintf(
 				'<input name="%1$s" class="%1$s" type="text" value="%2$s" data-old="%2$s" data-mess-empty-title="%3$s">',
 				'lp-item-title-input',

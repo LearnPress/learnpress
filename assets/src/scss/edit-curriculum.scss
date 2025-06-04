@@ -43,14 +43,6 @@ $spacing-section: 12px;
 		color: $color-active;
 	}
 
-	.dashicons-update {
-		font-family: "lp-icon";
-
-		&:before {
-			content: "\f110";
-		}
-	}
-
 	input[type="text"] {
 		width: 100%;
 		border: none;
@@ -161,7 +153,7 @@ $spacing-section: 12px;
 			}
 		}
 
-		.dashicons-update {
+		.lp-icon-spinner {
 			animation: rotation 2s infinite linear;
 			font-size: 1.25rem;
 			color: $color-active;
@@ -183,7 +175,7 @@ $spacing-section: 12px;
 			opacity: 0.5 !important;
 
 			.section-head {
-				.dashicons-update {
+				.lp-icon-spinner {
 					display: inline-block;
 				}
 			}
@@ -482,9 +474,8 @@ $spacing-section: 12px;
 			pointer-events: none;
 			opacity: 0.5 !important;
 
-			.dashicons-update {
+			.lp-icon-spinner {
 				display: inline-block;
-
 			}
 		}
 
