@@ -462,6 +462,8 @@ class AdminEditCurriculum {
 
 		// Get sections items
 		$sections_items = $courseModel->get_section_items();
+		$count_sections = count( $sections_items );
+
 		foreach ( $sections_items as $section_items ) {
 			$html_sections .= $this->html_edit_section( $courseModel, $section_items );
 		}
@@ -480,11 +482,31 @@ class AdminEditCurriculum {
 				'<h4>%s</h4>',
 				__( 'Details', 'learnpress' )
 			),
+			'count-sections'  => sprintf(
+				'<div class="count-sections" data-count="%s">%s</div>',
+				$count_sections,
+				sprintf(
+					__( '<span class="count">%1$s</span> %2$s', 'learnpress' ),
+					$count_sections,
+					sprintf(
+						'<span class="one">%s</span><span class="plural">%s</span>',
+						__( 'Section', 'learnpress' ),
+						__( 'Sections', 'learnpress' )
+					)
+				)
+			),
 			'count-items'     => sprintf(
-				'<div class="total-items" data-single="%s" data-plural="%s">%s</div>',
-				esc_attr__( 'Item', 'learnpress' ),
-				esc_attr__( 'Items', 'learnpress' ),
-				sprintf( _n( '%s Item', '%s Items', $courseModel->count_items(), 'learnpress' ), $courseModel->count_items() )
+				'<div class="total-items" data-count="%s">%s</div>',
+				$courseModel->count_items(),
+				sprintf(
+					__( '<span class="count">%1$s</span> %2$s', 'learnpress' ),
+					$courseModel->count_items(),
+					sprintf(
+						'<span class="one">%s</span><span class="plural">%s</span>',
+						__( 'Item', 'learnpress' ),
+						__( 'Items', 'learnpress' )
+					)
+				)
 			),
 			'section-toggle'  =>
 				'<div class="course-toggle-all-sections lp-collapse">
@@ -561,8 +583,17 @@ class AdminEditCurriculum {
 				__( 'Cancel' )
 			),
 			'count-items'          => sprintf(
-				'<div class="section-items-counts"><span>%s</span></div>',
-				sprintf( _n( '%s Item', '%s Items', $total_items, 'learnpress' ), $total_items )
+				'<div class="section-items-counts" data-count="%s">%s</div>',
+				$total_items,
+				sprintf(
+					__( '<span class="count">%1$s</span> %2$s', 'learnpress' ),
+					$total_items,
+					sprintf(
+						'<span class="one">%s</span><span class="plural">%s</span>',
+						__( 'Item', 'learnpress' ),
+						__( 'Items', 'learnpress' )
+					)
+				)
 			),
 			'toggle'               => '<div class="section-toggle"><span class="lp-icon-angle-down"></span><span class="lp-icon-angle-up"></span></div>',
 			'head_end'             => '</div>',

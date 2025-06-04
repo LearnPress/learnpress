@@ -48,8 +48,42 @@
 		line-height: 1;
 		gap: 5px;
 
+		.count-sections {
+			.one, .plural {
+				display: none;
+			}
+
+			&[data-count="1"] {
+				.one {
+					display: inline-block;
+				}
+			}
+
+			&:not([data-count="1"]) {
+				.plural {
+					display: inline-block;
+				}
+			}
+		}
+
 		.total-items {
 			margin-left: auto;
+
+			.one, .plural {
+				display: none;
+			}
+
+			&[data-count="1"] {
+				.one {
+					display: inline-block;
+				}
+			}
+
+			&:not([data-count="1"]) {
+				.plural {
+					display: inline-block;
+				}
+			}
 		}
 
 		h4 {
@@ -203,6 +237,22 @@
 
 				.section-items-counts {
 					white-space: nowrap;
+
+					.one, .plural {
+						display: none;
+					}
+
+					&[data-count="1"] {
+						.one {
+							display: inline-block;
+						}
+					}
+
+					&:not([data-count="1"]) {
+						.plural {
+							display: inline-block;
+						}
+					}
 				}
 			}
 

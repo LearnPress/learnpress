@@ -39,17 +39,25 @@ const toggleSectionAll = ( e, target ) => {
 	}
 };
 
-// Update count items in section and all sections
+// Update count items in each section and all sections
 const updateCountItems = ( elSection ) => {
 	const elEditCurriculum = lpEditCurriculumShare.elEditCurriculum;
 	const elCountItemsAll = elEditCurriculum.querySelector( '.total-items' );
 	const elItemsAll = elEditCurriculum.querySelectorAll( `${ className.elSectionItem }:not(.clone)` );
-	elCountItemsAll.innerHTML = elItemsAll.length;
+	const itemsAllCount = elItemsAll.length;
+
+	elCountItemsAll.dataset.count = itemsAllCount;
+	elCountItemsAll.querySelector( '.count' ).textContent = itemsAllCount;
 
 	// Count items in section
-	const elCountItems = elSection.querySelector( '.section-items-counts' );
+	const elSectionItemsCount = elSection.querySelector( '.section-items-counts' );
+
 	const elItems = elSection.querySelectorAll( `${ className.elSectionItem }:not(.clone)` );
-	elCountItems.textContent = elItems.length;
+	const itemsCount = elItems.length;
+
+	elSectionItemsCount.dataset.count = itemsCount;
+	elSectionItemsCount.querySelector( '.count' ).textContent = itemsCount;
+	// End count items in section
 };
 
 // Events
@@ -109,36 +117,6 @@ document.addEventListener( 'click', ( e ) => {
 
 	// Collapse/Expand all sections
 	toggleSectionAll( e, target );
-	return;
-
-	// Select items from list to add to section
-	showSelectItemFromList( e, target );
-
-	// Choose item type
-	chooseItemType( e, target );
-
-	// Select items from list
-	selectItemsFromList( e, target );
-
-	// Add items selected to section
-	addItemsSelectedToSection( e, target );
-
-	// Delete item from section
-	deleteItemFromSection( e, target );
-
-	// Show items choice
-	showItemsChoice( e, target );
-
-	// Back to select items
-	backToSelectItems( e, target );
-
-	// Remove item selected
-	removeItemSelected( e, target );
-
-	// Add item to section
-	if ( target.classList.contains( `${ className.btnAddItem }` ) ) {
-		addItemToSection( e, target );
-	}
 } );
 
 document.addEventListener( 'keydown', ( e ) => {

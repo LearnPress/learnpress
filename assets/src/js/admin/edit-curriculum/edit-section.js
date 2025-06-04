@@ -31,8 +31,9 @@ let showToast;
  */
 let lpUtils;
 let dataSend;
+let updateCountItems;
 const init = () => {
-	( { elEditCurriculum, elCurriculumSections, showToast, lpUtils, dataSend } = lpEditCurriculumShare );
+	( { elEditCurriculum, elCurriculumSections, showToast, lpUtils, dataSend, updateCountItems } = lpEditCurriculumShare );
 	className = { ...lpEditCurriculumShare.className, ...className };
 };
 
@@ -150,6 +151,7 @@ const deleteSection = ( e, target ) => {
 				completed: () => {
 					lpUtils.lpSetLoadingEl( elSection, 0 );
 					elSection.remove();
+					updateCountItems( elSection );
 				},
 			};
 

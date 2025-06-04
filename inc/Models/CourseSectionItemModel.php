@@ -220,6 +220,7 @@ class CourseSectionItemModel {
 		)->dispatch();*/
 		$courseModel                 = CourseModel::find( $this->section_course_id, true );
 		$courseModel->sections_items = null;
+		$courseModel->total_items    = null;
 		$courseModel->save();
 
 		$key_cache       = "courseSectionItem/find/{$this->section_id}/{$this->item_id}";
