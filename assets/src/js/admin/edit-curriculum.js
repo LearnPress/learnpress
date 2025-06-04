@@ -113,6 +113,8 @@ document.addEventListener( 'click', ( e ) => {
 	sectionItemEdit.backToSelectItems( e, target );
 	// Remove item selected
 	sectionItemEdit.removeItemSelected( e, target );
+	// Sortable items in section
+	sectionItemEdit.updatePreviewItem( e, target );
 	/*** End Event of Section Item ***/
 
 	// Collapse/Expand all sections

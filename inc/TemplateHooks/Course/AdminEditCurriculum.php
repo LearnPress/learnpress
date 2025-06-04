@@ -9,6 +9,7 @@ use LearnPress\Models\CourseSectionItemModel;
 use LearnPress\Models\CourseSectionModel;
 use LearnPress\Models\CourseModel;
 
+use LearnPress\Models\LessonPostModel;
 use LearnPress\TemplateHooks\TemplateAJAX;
 use LP_Background_Single_Course;
 use LP_Database;
@@ -451,6 +452,45 @@ class AdminEditCurriculum {
 	}
 
 	/**
+	 * Update item preview.
+	 *
+	 * @param array $data
+	 *
+	 * @return stdClass
+	 * @throws Exception
+	 */
+	public static function update_item_preview( array $data ): stdClass {
+		$response       = new stdClass();
+		$course_id      = $data['course_id'] ?? 0;
+		$item_id        = $data['item_id'] ?? 0;
+		$item_type      = $data['item_type'] ?? '';
+		$enable_preview = $data['enable_preview'] ?? 0;
+
+		$courseModel = CourseModel::find( $course_id, true );
+		if ( ! $courseModel ) {
+			throw new Exception( __( 'Course not found', 'learnpress' ) );
+		}
+
+		if ( $item_type !== LP_LESSON_CPT ) {
+			throw new Exception( __( 'Only lesson can be set preview', 'learnpress' ) );
+		}
+
+		/**
+		 * @var $itemModel LessonPostModel
+		 */
+		$itemModel = $courseModel->get_item_model( $item_id, $item_type );
+		if ( ! $itemModel ) {
+			throw new Exception( __( 'Item not found', 'learnpress' ) );
+		}
+
+		$itemModel->set_preview( $enable_preview == 1 );
+
+		$response->message = __( 'Item updated successfully', 'learnpress' );
+
+		return $response;
+	}
+
+	/**
 	 * HTML for edit curriculum.
 	 *
 	 * @param CourseModel $courseModel
@@ -708,13 +748,13 @@ class AdminEditCurriculum {
 		$section_action = [
 			'wrap'     => '<ul class="item-actions">',
 			'preview'  => sprintf(
-				'<li title="%s" class="lp-btn-set-preview-item"><a class="dashicons %s"></a></li>',
+				'<li title="%s" class="lp-btn-set-preview-item"><a class="%s"></a></li>',
 				__( 'Enable/Disable Preview', 'learnpress' ),
-				$itemModel && $itemModel->post_type === LP_LESSON_CPT && $itemModel->has_preview() ? 'dashicons-visibility' : 'dashicons-hidden'
+				$itemModel && $itemModel->post_type === LP_LESSON_CPT && $itemModel->has_preview() ? 'lp-icon-eye' : 'lp-icon-eye-slash'
 			),
 			'edit'     => sprintf(
-				'<li title="%s"><a href="%s" target="_blank" class="dashicons dashicons-edit"></a></li>',
-				__( 'Edit Item', 'learnpress' ),
+				'<li title="%s"><a href="%s" target="_blank" class="lp-icon-edit-square"></a></li>',
+				__( 'Edit item detail', 'learnpress' ),
 				$itemModel ? get_edit_post_link( $itemModel->ID ) : ''
 			),
 			'delete'   => sprintf(
@@ -722,7 +762,7 @@ class AdminEditCurriculum {
 					data-title="%s" data-content="%s">%s</li>',
 				__( 'Are you sure?', 'learnpress' ),
 				__( 'This item will be deleted from this section. It not delete penalty.', 'learnpress' ),
-				'<a class="dashicons dashicons-trash"></a>'
+				'<a class="lp-icon-trash-o"></a>'
 			),
 			'wrap_end' => '</ul>',
 		];
@@ -736,10 +776,7 @@ class AdminEditCurriculum {
 				$is_clone ? 'clone lp-hidden' : ''
 			),
 			'drag'         => '<span class="drag lp-icon-drag"></span>',
-			'icon'         => sprintf(
-				'<div class="item-ico-type %s"></div>',
-				esc_attr( $item_type )
-			),
+			'icon'         => '<div class="item-ico-type"></div>',
 			'loading'      => '<span class="dashicons dashicons-update"></span>',
 			'input-title'  => sprintf(
 				'<input name="%1$s" class="%1$s" type="text" value="%2$s" data-old="%2$s" data-mess-empty-title="%3$s">',

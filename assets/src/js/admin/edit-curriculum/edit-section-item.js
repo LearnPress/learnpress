@@ -36,6 +36,7 @@ let className = {
 	elListItemsSelected: '.list-items-selected',
 	elItemSelectedClone: '.li-item-selected.clone',
 	elItemSelected: '.li-item-selected',
+	elBtnSetPreviewItem: '.lp-btn-set-preview-item',
 };
 let elCurriculumSections;
 let showToast;
@@ -74,6 +75,7 @@ const addItemType = ( e, target ) => {
 	const elBtnAddItem = elNewItemByType.querySelector( `${ className.elBtnAddItem }` );
 
 	elNewItemByType.classList.remove( 'clone' );
+	elNewItemByType.classList.add( itemType );
 	lpUtils.lpShowHideEl( elNewItemByType, 1 );
 	elAddItemTypeInput.setAttribute( 'placeholder', itemPlaceholder );
 	elAddItemTypeInput.dataset.itemType = itemType;
@@ -611,11 +613,12 @@ const watchItemsSelectedDataChange = () => {
 const sortAbleItem = () => {
 	const elSectionListItems = elCurriculumSections.querySelectorAll( `${ className.elSectionListItems }` );
 	let itemIdChoose = 0;
+	let elSectionChoose;
 	let sectionIdChoose = 0;
 	let sectionIdEnd = 0;
 	let timeout;
-	elSectionListItems.forEach( ( elSectionListItem ) => {
-		new Sortable( elSectionListItem, {
+	elSectionListItems.forEach( ( elItem ) => {
+		new Sortable( elItem, {
 			handle: '.drag',
 			animation: 150,
 			group: {
@@ -624,8 +627,8 @@ const sortAbleItem = () => {
 			onEnd: ( evt ) => {
 				const dataSectionsItems = [];
 
-				const itemDragged = evt.item;
-				sectionIdEnd = evt.to.closest( `${ className.elSection }` ).dataset.sectionId;
+				const elItemDragged = evt.item;
+				sectionIdEnd = elItemDragged.closest( `${ className.elSection }` ).dataset.sectionId;
 
 				dataSend.callback.method = 'handle_edit_course_curriculum';
 				if ( sectionIdChoose === sectionIdEnd ) {
@@ -661,26 +664,34 @@ const sortAbleItem = () => {
 						showToast( message, status );
 					},
 					error: ( error ) => {
-						console.log( error );
+						showToast( error, 'error' );
 					},
 					completed: () => {
-						lpUtils.lpSetLoadingEl( itemDragged, 0 );
+						lpUtils.lpSetLoadingEl( elItemDragged, 0 );
+						updateCountItems( section );
+						if ( sectionIdChoose !== sectionIdEnd ) {
+							updateCountItems( elSectionChoose );
+						}
 					},
 				};
 
-				clearTimeout( timeout );
+				/*clearTimeout( timeout );
 				timeout = setTimeout( () => {
-					lpUtils.lpSetLoadingEl( itemDragged, 1 );
+					lpUtils.lpSetLoadingEl( elItemDragged, 1 );
 					window.lpAJAXG.fetchAJAX( dataSend, callBack );
-				}, 1000 );
+				}, 1000 );*/
+
+				lpUtils.lpSetLoadingEl( elItemDragged, 1 );
+				window.lpAJAXG.fetchAJAX( dataSend, callBack );
 			},
 			onMove: ( evt ) => {
-				clearTimeout( timeout );
+				//clearTimeout( timeout );
 			},
 			onChoose: ( evt ) => {
 				const elChooseItem = evt.item;
 				itemIdChoose = elChooseItem.dataset.itemId;
-				sectionIdChoose = elChooseItem.closest( `${ className.elSection }` ).dataset.sectionId;
+				elSectionChoose = elChooseItem.closest( `${ className.elSection }` );
+				sectionIdChoose = elSectionChoose.dataset.sectionId;
 			},
 			onUpdate: ( evt ) => {},
 		} );
@@ -707,6 +718,59 @@ const changeTitle = ( e, target ) => {
 		elSectionItem.classList.add( 'editing' );
 	}
 };
+// Enable/disable preview item
+const updatePreviewItem = ( e, target ) => {
+	const elBtnSetPreviewItem = target.closest( `${ className.elBtnSetPreviewItem }` );
+	if ( ! elBtnSetPreviewItem ) {
+		return;
+	}
+
+	const elSectionItem = elBtnSetPreviewItem.closest( `${ className.elSectionItem }` );
+	if ( ! elSectionItem ) {
+		return;
+	}
+
+	const icon = elBtnSetPreviewItem.querySelector( 'a' );
+
+	icon.classList.toggle( 'lp-icon-eye' );
+	icon.classList.toggle( 'lp-icon-eye-slash' );
+
+	const enablePreview = ! icon.classList.contains( 'lp-icon-eye-slash' );
+
+	const itemId = elSectionItem.dataset.itemId;
+	const itemType = elSectionItem.dataset.itemType;
+
+	lpUtils.lpSetLoadingEl( elSectionItem, 1 );
+
+	// Call ajax to update item preview
+	const callBack = {
+		success: ( response ) => {
+			const { message, status } = response;
+
+			showToast( message, status );
+
+			if ( status === 'error' ) {
+				icon.classList.toggle( 'lp-icon-eye' );
+				icon.classList.toggle( 'lp-icon-eye-slash' );
+			}
+		},
+		error: ( error ) => {
+			showToast( error, 'error' );
+			icon.classList.toggle( 'lp-icon-eye' );
+			icon.classList.toggle( 'lp-icon-eye-slash' );
+		},
+		completed: () => {
+			lpUtils.lpSetLoadingEl( elSectionItem, 0 );
+		},
+	};
+
+	dataSend.callback.method = 'handle_edit_course_curriculum';
+	dataSend.args.action = 'update_item_preview';
+	dataSend.args.item_id = itemId;
+	dataSend.args.item_type = itemType;
+	dataSend.args.enable_preview = enablePreview ? 1 : 0;
+	window.lpAJAXG.fetchAJAX( dataSend, callBack );
+};
 
 export {
 	init,
@@ -725,5 +789,6 @@ export {
 	backToSelectItems,
 	removeItemSelected,
 	addItemsSelectedToSection,
+	updatePreviewItem,
 };
 

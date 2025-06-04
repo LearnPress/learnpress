@@ -566,20 +566,28 @@ $spacing-section: 12px;
 			font-family: "lp-icon";
 			color: $color-active;
 			font-size: 1rem;
+		}
 
-			&.lp_lesson:before {
+		&.lp_lesson {
+			.item-ico-type:before {
 				content: "\f15b";
 			}
+		}
 
-			&.lp_quiz:before {
+		&.lp_quiz {
+			.item-ico-type:before {
 				content: "\f12e";
 			}
+		}
 
-			&.lp_assignment:before {
+		&.lp_assignment {
+			.item-ico-type:before {
 				content: "\e929";
 			}
+		}
 
-			&.lp_h5p:before {
+		&.lp_h5p {
+			.item-ico-type:before {
 				content: "\e92a";
 			}
 		}
