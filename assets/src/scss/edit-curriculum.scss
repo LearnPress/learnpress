@@ -1,22 +1,52 @@
 @import "mixin";
 @import "message";
 
+$bg-section: #F4FCFF;
+$border-color: #C3C4C7;
+$color-active: #2271B1;
+$color-gray: #999;
+$spacing-section: 12px;
+@mixin one_plural_number() {
+	.one, .plural {
+		display: none;
+	}
+
+	&[data-count="1"] {
+		.one {
+			display: inline-block;
+		}
+	}
+
+	&:not([data-count="1"]) {
+		.plural {
+			display: inline-block;
+		}
+	}
+}
 #lp-course-edit-curriculum {
-	padding: 20px;
+	padding: $spacing-section;
 
 	[class*="lp-icon-"] {
 		font-size: 1.25rem;
-		color: #999;
+		color: #787c82;
 	}
 
 	.lp-icon-angle-down, .lp-icon-angle-up {
-		padding: 10px 15px;
-		color: #999;
+		padding: 8px;
+		font-size: 24px;
 		cursor: pointer;
 	}
 
 	.lp-icon-angle-down:hover, .lp-icon-angle-up:hover {
-		color: #0085ba;
+		color: $color-active;
+	}
+
+	.dashicons-update {
+		font-family: "lp-icon";
+
+		&:before {
+			content: "\f110";
+		}
 	}
 
 	input[type="text"] {
@@ -26,12 +56,24 @@
 		padding: 0;
 	}
 
+	button {
+		color: $color-active;
+		border-color: $color-active;
+		background-color: #fff;
+		border-radius: 5px;
+
+		&:hover {
+			background: #f0f0f1;
+		}
+	}
+
 	.course-toggle-all-sections {
 		&.lp-collapse {
 			.lp-icon-angle-up {
 				display: none;
 			}
 		}
+
 		&:not(.lp-collapse) {
 			.lp-icon-angle-down {
 				display: none;
@@ -43,335 +85,276 @@
 		display: flex;
 		flex-direction: row;
 		flex-wrap: nowrap;
-		margin-bottom: 20px;
+		margin-bottom: 15px;
 		align-items: center;
 		line-height: 1;
 		gap: 5px;
+		padding-right: 12px;
 
-		.count-sections {
-			.one, .plural {
-				display: none;
-			}
-
-			&[data-count="1"] {
-				.one {
-					display: inline-block;
-				}
-			}
-
-			&:not([data-count="1"]) {
-				.plural {
-					display: inline-block;
-				}
-			}
+		.count-sections,.total-items {
+			@include  one_plural_number();
 		}
 
 		.total-items {
 			margin-left: auto;
-
-			.one, .plural {
-				display: none;
-			}
-
-			&[data-count="1"] {
-				.one {
-					display: inline-block;
-				}
-			}
-
-			&:not([data-count="1"]) {
-				.plural {
-					display: inline-block;
-				}
-			}
 		}
 
 		h4 {
 			margin: 0;
-			font-size: 1rem;
+			font-size: 1em;
+			font-weight: normal;
 		}
 	}
 
 	.curriculum-sections {
-		border: 1px solid #ddd;
+		border: 1px solid $border-color;
+		border-bottom: none;
 
-		.section {
-			margin: 0;
-			border-bottom: 1px solid #e5e5e5;
-			opacity: 1;
-			background: #fff;
+		.section-description {
+			margin-bottom: 10px;
 
-			&.lp-collapse {
-				.section-collapse {
-					display: none;
-				}
-				.section-toggle {
-					.lp-icon-angle-up {
-						display: none;
-					}
-				}
-			}
-			&:not(.lp-collapse) {
-				.section-toggle {
-					.lp-icon-angle-down {
-						display: none;
-					}
-				}
-			}
-			.dashicons-update {
-				animation: rotation 2s infinite linear;
-				font-size: 1.25rem;
-				color: #0085ba;
+			button {
 				display: none;
 			}
-			.drag {
-				cursor: grab;
-				color: #999;
 
-				&:active {
-					cursor: grabbing;
-				}
-			}
-			&.loading {
-				pointer-events: none;
-				opacity: 0.5 !important;
-				.section-head {
-					.dashicons-update {
-						display: inline-block;
-					}
-				}
+			.lp-btn-update-section-description {
+				margin-right: 5px;
 			}
 
-			&:first-child {
-				border-top: 0;
-			}
-
-			&:hover {
-
-				.section-actions {
-
-					.remove {
-						display: inline-block;
-					}
+			&.editing {
+				button {
+					display: inline-block;
 				}
 			}
 
 			input {
-				background-color: transparent;
-				box-shadow: none;
-
-				&:focus {
-					box-shadow: none;
-				}
-			}
-
-			.section-head {
-				display: flex;
-				margin: 0;
-				padding: 5px 10px;
-				background-color: #f4fcff;
-				transition: background 500ms ease-out;
-				align-items: center;
-				gap: 5px;
-
-				.lp-btn-delete-section {
-					color: #E74C3C;
-					border: 1px solid #999;
-					background: white;
-					display: none;
-				}
-
-				.movable,
-				.creatable {
-					display: inline-block;
-					width: 40px;
-					margin: 0;
-					color: #999;
-					font-family: Dashicons;
-					font-size: 1.25rem;
-					text-align: center;
-					vertical-align: middle;
-				}
-
-				.movable {
-					margin-right: -1px;
-					cursor: url("../../images/openhand.cur") 7 5, default;
-
-					&::before {
-						content: "\f333";
-					}
-
-					&:hover {
-						color: #0085ba;
-					}
-				}
-
-				.section-item-counts {
-					line-height: 2.5rem;
-				}
-
-				.actions {
-					height: 100%;
-					color: #444;
-
-					> * {
-						display: inline-block;
-						height: 100%;
-						text-align: center;
-						cursor: pointer;
-					}
-
-					.collapse {
-
-						&:hover {
-							color: #0085ba;
-						}
-					}
-				}
-
-				&:hover {
-					.lp-btn-delete-section {
-						display: inline-block;
-					}
-				}
-
-				.section-items-counts {
-					white-space: nowrap;
-
-					.one, .plural {
-						display: none;
-					}
-
-					&[data-count="1"] {
-						.one {
-							display: inline-block;
-						}
-					}
-
-					&:not([data-count="1"]) {
-						.plural {
-							display: inline-block;
-						}
-					}
-				}
-			}
-
-			.name {
-				width: 100%;
-				border: none;
-				color: #777;
-				font-size: 1.5rem;
-				font-weight: 600;
-				line-height: 3.125rem;
-
-				&:focus {
-					color: #444;
-				}
-			}
-
-			.section-collapse {
-				overflow: hidden;
-				padding: 20px;
-				border-top: 1px solid #e5e5e5;
-
-				.lp-add-item-type {
-					display: flex;
-					transition: all 200ms ease-out;
-					align-items: center;
-					border: 1px solid #2271B1;
-					padding: 8px 10px;
-					gap: 5px;
-					margin-bottom: 10px;
-
-					.new-item-actions {
-						width: 100%;
-						display: flex;
-						gap: 5px;
-
-						input {
-							width: 100%;
-							border: none;
-							background: transparent;
-							outline: none;
-							padding: 0;
-						}
-					}
-				}
-			}
-
-			.section-content {
-				margin-bottom: 10px;
-
-				.section-description {
-					margin-bottom: 10px;
-
-					button {
-						display: none;
-					}
-
-					.lp-btn-update-section-description {
-						margin-right: 5px;
-					}
-
-					&.editing {
-						button {
-							display: inline-block;
-						}
-					}
-				}
-			}
-
-			.section-actions {
-				display: flex;
-				gap: 5px;
-			}
-
-			.lp-input-title-section {
-				padding-left: 0;
-				border: none;
-				font-size: 1.2em;
-				line-height: 1.875rem;
-				flex: 1;
-			}
-
-			.lp-btn-update-section-title, .lp-btn-cancel-update-section-title {
-				display: none;
-			}
-
-			&.editing {
-				.lp-btn-update-section-title, .lp-btn-cancel-update-section-title {
-					display: inline-block;
-				}
-				.lp-btn-delete-section {
-					display: none !important;
-				}
-				.section-items-counts, .section-toggle {
-					display: none;
-				}
-			}
-
-			.description-input {
-				width: 100%;
-				margin: 0;
-				padding: 0;
-				border: none;
-				color: #999;
-
-				&:focus {
-					color: #444;
-				}
+				@include placeholder-color($color-active);
 			}
 		}
 	}
 
-	.add-new-section {
+	.section {
+		margin: 0;
+		border-bottom: 1px solid $border-color;
+		opacity: 1;
+		background: #fff;
+
+		&.lp-collapse {
+			.section-collapse {
+				display: none;
+			}
+
+			.section-toggle {
+				.lp-icon-angle-up {
+					display: none;
+				}
+			}
+		}
+
+		&:not(.lp-collapse) {
+			.section-toggle {
+				.lp-icon-angle-down {
+					display: none;
+				}
+			}
+		}
+
+		.dashicons-update {
+			animation: rotation 2s infinite linear;
+			font-size: 1.25rem;
+			color: $color-active;
+			display: none;
+		}
+
+		.drag {
+			cursor: grab;
+			//color: #999;
+			line-height: 1;
+
+			&:active {
+				cursor: grabbing;
+			}
+		}
+
+		&.loading {
+			pointer-events: none;
+			opacity: 0.5 !important;
+
+			.section-head {
+				.dashicons-update {
+					display: inline-block;
+				}
+			}
+		}
+
+		&:first-child {
+			border-top: 0;
+		}
+
+		&:hover {
+			.remove {
+				display: inline-block;
+			}
+		}
+
+		input {
+			background-color: transparent;
+			box-shadow: none;
+
+			&:focus {
+				box-shadow: none;
+			}
+		}
+
+		.section-items-counts {
+			white-space: nowrap;
+			@include  one_plural_number();
+		}
+
+		.lp-btn-delete-section {
+			color: #E74C3C;
+			border: 1px solid #eee;
+			background: white;
+			display: none;
+			opacity: 0.7;
+
+			&:hover {
+				opacity: 1;
+			}
+		}
+
+		.section-head {
+
+			//.movable,
+			//.creatable {
+			//	display: inline-block;
+			//	width: 40px;
+			//	margin: 0;
+			//	color: #999;
+			//	font-family: Dashicons;
+			//	font-size: 1.25rem;
+			//	text-align: center;
+			//	vertical-align: middle;
+			//}
+			//
+			//.movable {
+			//	margin-right: -1px;
+			//	cursor: url("../../images/openhand.cur") 7 5, default;
+			//
+			//	&::before {
+			//		content: "\f333";
+			//	}
+			//
+			//	&:hover {
+			//		color: $color-active;
+			//	}
+			//}
+
+			//.section-item-counts {
+			//	line-height: 2.5rem;
+			//}
+
+			//.actions {
+			//	height: 100%;
+			//	color: #444;
+			//
+			//	> * {
+			//		display: inline-block;
+			//		height: 100%;
+			//		text-align: center;
+			//		cursor: pointer;
+			//	}
+			//
+			//	.collapse {
+			//
+			//		&:hover {
+			//			color: $color-active;
+			//		}
+			//	}
+			//}
+
+			&:hover {
+				.lp-btn-delete-section {
+					display: inline-block;
+				}
+			}
+		}
+
+		//.name {
+		//	width: 100%;
+		//	border: none;
+		//	color: #777;
+		//	font-size: 1.5rem;
+		//	font-weight: 600;
+		//	line-height: 3.125rem;
+		//
+		//	&:focus {
+		//		color: #444;
+		//	}
+		//}
+
+		.section-collapse {
+			overflow: hidden;
+			padding: $spacing-section;
+			border-top: 1px solid $border-color;
+
+
+		}
+
+		.section-content {
+			margin-bottom: 10px;
+		}
+
+		.lp-input-title-section {
+			padding-left: 0;
+			border: none;
+			font-size: 1.2em;
+			line-height: 1.875rem;
+			flex: 1;
+		}
+
+		.lp-btn-update-section-title, .lp-btn-cancel-update-section-title {
+			display: none;
+		}
+
+		&.editing {
+			.lp-btn-update-section-title, .lp-btn-cancel-update-section-title {
+				display: inline-block;
+			}
+
+			.lp-btn-delete-section {
+				display: none !important;
+			}
+
+			.section-items-counts, .section-toggle {
+				display: none;
+			}
+		}
+
+		.description-input {
+			width: 100%;
+			margin: 0;
+			padding: 0;
+			border: none;
+			color: #999;
+
+			&:focus {
+				color: #444;
+			}
+		}
+	}
+
+	.add-new-section, .lp-add-item-type {
 		display: flex;
 		gap: 5px;
 		padding: 5px 10px;
 		align-items: center;
-		background-color: #f4fcff;
-		border: 1px solid #ddd;
-		border-top: none;
+
+		.lp-icon-plus {
+			font-size: 1.1rem;
+			min-width: 20px;
+			text-align: center;
+		}
 
 		input {
 			width: 100%;
@@ -379,6 +362,82 @@
 			background: transparent;
 			outline: none;
 			padding: 0;
+			@include placeholder-color(#8A8888);
+		}
+	}
+
+	.add-new-section {
+		border: 1px solid $border-color;
+		border-top: none;
+		background-color: $bg-section;
+
+		input {
+			font-size: 16px;
+		}
+
+		.lp-btn-add-section {
+			border: none;
+			background: rgba(19, 94, 150, 0.5);
+			color: #fff;
+
+			&:hover {
+				background: rgba(19, 94, 150, 1);
+			}
+		}
+	}
+
+	.lp-add-item-type {
+		border: 1px solid $color-active;
+		margin-bottom: 10px;
+
+		.new-item-actions {
+			width: 100%;
+			display: flex;
+			gap: 5px;
+		}
+	}
+
+	.item-actions {
+		display: flex;
+		bottom: 0;
+		align-items: center;
+		gap: 5px;
+
+		li {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+
+			a {
+				color: $color-gray;
+
+				&:hover {
+					color: $color-active
+				}
+			}
+
+			&:hover {
+				cursor: pointer;
+			}
+		}
+
+		.dashicons {
+			font-family: "lp-icon";
+			width: auto;
+			height: auto;
+			font-size: 1.15rem;
+		}
+
+		.dashicons-visibility:before {
+			content: "\f06e";
+		}
+
+		.dashicons-edit:before {
+			content: "\e923";
+		}
+
+		.dashicons-trash:before {
+			content: "\f014";
 		}
 	}
 
@@ -387,164 +446,186 @@
 		border-collapse: collapse;
 		display: flex;
 		flex-direction: column;
-		gap: 15px;
+		gap: $spacing-section;
 		margin: 0;
+	}
 
-		.section-item {
-			display: flex;
-			position: relative;
-			margin: 0;
-			border: 1px solid #EEEEEE;
-			padding: 8px 10px;
-			background: #fff;
-			transition: background 200ms ease-out;
-			justify-content: center;
-			align-items: center;
-			gap: 5px;
+	.section-item, .section-head {
+		display: flex;
+		position: relative;
+		margin: 0;
+		padding: 6px 10px;
+		background: #fff;
+		transition: background 200ms ease-out;
+		justify-content: center;
+		align-items: center;
+		gap: 5px;
+	}
 
-			&.loading {
-				pointer-events: none;
-				opacity: 0.5 !important;
-				.dashicons-update {
-					display: inline-block;
-				}
-			}
+	.section-head {
+		background-color: $bg-section;
 
-			&:hover {
-				border-color: #2271B1;
-			}
-
-			.lp-btn-update-item-title, .lp-btn-cancel-update-item-title {
-				display: none;
-			}
-
-			&.editing {
-				.lp-btn-update-item-title, .lp-btn-cancel-update-item-title {
-					display: inline-block;
-				}
-
-				.item-actions {
-					display: none;
-				}
-			}
-
-			/*&:nth-child(2n+1) {
-				background-color: #f7f7f7;
-			}*/
-
-			&.updating {
-
-				&::before {
-					position: absolute;
-					z-index: 2;
-					top: 0;
-					right: 0;
-					bottom: 0;
-					left: 0;
-					content: "";
-				}
-			}
-
-			&.removing {
-				background-color: #ffeded;
-			}
-
-			.drag {
-				cursor: grab;
-				fill: #999;
-
-				svg:hover {
-					color: #0085ba;
-				}
-			}
-
-			.item-actions {
-				display: flex;
-				bottom: 0;
-				align-items: center;
-
-				li {
-					list-style: none;
-					margin: 0;
-					padding: 0;
-
-					a {
-						color: #999;
-					}
-				}
-			}
-
-			.actions {
-				margin: 0;
-
-				> * {
-					visibility: hidden;
-					margin-right: 10px;
-				}
-
-				.edit {
-					text-decoration: none;
-				}
-
-				.remove {
-					color: #a00;
-				}
-			}
-
-			&:not(.lp_lesson) {
-				.item-actions {
-					.lp-btn-set-preview-item {
-						display: none;
-					}
-				}
-			}
-
-			.item-actions {
-				li {
-					&:hover {
-						cursor: pointer;
-					}
-				}
-			}
-
-			.item-ico-type {
-				padding: 0;
-				font-family: "lp-icon";
-				color: #2271B1;
-				font-size: 1rem;
-			}
-
-			&.lp_lesson {
-				.item-ico-type::before {
-					content: "\f15b";
-				}
-			}
-
-			&.lp_quiz {
-				.item-ico-type::before {
-					content: "\f12e";
-				}
-			}
-
-			&.lp_assignment {
-				.item-ico-type::before {
-					content: "\e929";
-				}
-			}
-
-			input {
-				width: 100%;
-				border: none;
-				color: inherit;
-				font-size: 0.875rem;
-				font-weight: 600;
+		&:hover {
+			.lp-btn-delete-section {
+				display: inline-block;
 			}
 		}
 	}
+
+	.section-item {
+		border: 1px solid #EEEEEE;
+
+		&.loading {
+			pointer-events: none;
+			opacity: 0.5 !important;
+
+			.dashicons-update {
+				display: inline-block;
+
+			}
+		}
+
+		&:hover {
+			border-color: $color-active;
+		}
+
+		.lp-btn-update-item-title, .lp-btn-cancel-update-item-title {
+			display: none;
+		}
+
+		&.editing {
+			.lp-btn-update-item-title, .lp-btn-cancel-update-item-title {
+				display: inline-block;
+			}
+
+			.item-actions {
+				display: none;
+			}
+		}
+
+
+		&.updating {
+			&::before {
+				position: absolute;
+				z-index: 2;
+				top: 0;
+				right: 0;
+				bottom: 0;
+				left: 0;
+				content: "";
+			}
+		}
+
+		&.removing {
+			background-color: #ffeded;
+		}
+
+		.drag {
+			cursor: grab;
+
+			&:hover span {
+				color: $color-active
+			}
+		}
+
+		.actions {
+			margin: 0;
+
+			> * {
+				visibility: hidden;
+				margin-right: 10px;
+			}
+
+			.edit {
+				text-decoration: none;
+			}
+
+			.remove {
+				color: #a00;
+			}
+		}
+
+		&:not(.lp_lesson) {
+			.item-actions {
+				.lp-btn-set-preview-item {
+					display: none;
+				}
+			}
+		}
+
+		input {
+			width: 100%;
+			border: none;
+			font-size: 0.875rem;
+		}
+	}
+
+	.lp-add-item-type, .section-item {
+		.item-ico-type {
+			padding: 0;
+			font-family: "lp-icon";
+			color: $color-active;
+			font-size: 1rem;
+
+			&.lp_lesson:before {
+				content: "\f15b";
+			}
+
+			&.lp_quiz:before {
+				content: "\f12e";
+			}
+
+			&.lp_assignment:before {
+				content: "\e929";
+			}
+
+			&.lp_h5p:before {
+				content: "\e92a";
+			}
+		}
+	}
+
+	.section-actions {
+		display: flex;
+		gap: 5px;
+		align-items: center;
+
+		button {
+			display: flex;
+			align-items: center;
+			gap: 4px;
+
+			&:before {
+				font-family: "lp-icon";
+				font-style: normal;
+				font-size: 16px;
+				line-height: 1;
+				content: "\f009";
+			}
+
+			&[data-item-type="lp_lesson"]:before {
+				content: "\f15b";
+			}
+
+			&[data-item-type="lp_quiz"]:before {
+				content: "\f12e";
+			}
+
+			&[data-item-type="lp_assignment"]:before {
+				content: "\e929";
+			}
+
+			&[data-item-type="lp_h5p"]:before {
+				content: "\e92a";
+			}
+		}
+	}
+
+	.lp-section-title-input {
+		font-size: 16px;
+	}
 }
 
-.lp-select-items-container {
-}
 
 .lp-select-items-popup {
 	padding: 0 !important;
@@ -557,7 +638,7 @@
 
 .lp-popup-items-to-select {
 	position: relative;
-	border: 1px solid #ddd;
+	border: 1px solid $border-color;
 	background-color: #fff;
 	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
 	transition: all 200ms ease-out;
@@ -565,7 +646,6 @@
 	font-size: 1rem;
 
 	&.show-preview {
-
 		.header {
 			.preview-title {
 				display: flex;
@@ -586,7 +666,7 @@
 			bottom: 0;
 			left: 0;
 			padding-left: 20px;
-			border-bottom: 1px solid #ddd;
+			border-bottom: 1px solid $border-color;
 			background-color: #fff;
 			font-weight: 600;
 
@@ -596,13 +676,13 @@
 		}
 
 		.header-count-items-selected {
-			border-bottom: 1px solid #ddd;
+			border-bottom: 1px solid $border-color;
 			padding: 20px;
 		}
 
 		.tabs {
 			margin: 0;
-			border-bottom: 1px solid #ddd;
+			border-bottom: 1px solid $border-color;
 
 			.tab {
 				display: inline-block;
@@ -615,7 +695,7 @@
 					right: 0;
 					height: 44px;
 					margin-top: -22px;
-					border-right: 1px solid #ddd;
+					border-right: 1px solid $border-color;
 					content: "";
 				}
 
@@ -629,7 +709,7 @@
 						width: 10px;
 						height: 10px;
 						margin-left: -6px;
-						border: 1px solid #ddd;
+						border: 1px solid $border-color;
 						border-right: 0;
 						border-bottom: 0;
 						background: #fff;
@@ -674,7 +754,7 @@
 		overflow: hidden;
 		position: relative;
 		padding: 20px;
-		border-bottom: 1px solid #ddd;
+		border-bottom: 1px solid $border-color;
 
 		input.modal-search-input {
 			width: 100%;
@@ -709,7 +789,7 @@
 				cursor: pointer;
 
 				&.selected {
-					background-color: #f4fcff;
+					background-color: $bg-section;
 				}
 			}
 		}
@@ -724,6 +804,7 @@
 				margin: 0;
 				cursor: pointer;
 				padding: 10px;
+
 				&:first-child {
 					padding-left: 0;
 				}
