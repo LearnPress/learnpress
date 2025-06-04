@@ -10,6 +10,7 @@ import Sortable from 'sortablejs';
 
 let className = {
 	elSectionListItems: '.section-list-items',
+	elItemClone: '.section-item.clone',
 	elSectionItem: '.section-item',
 	elBtnSelectItemType: '.lp-btn-select-item-type',
 	elAddItemTypeClone: '.lp-add-item-type.clone',
@@ -18,7 +19,6 @@ let className = {
 	elAddItemTypeTitleInput: '.lp-add-item-type-title-input',
 	elBtnAddItemCancel: '.lp-btn-add-item-cancel',
 	elBtnAddItem: '.lp-btn-add-item',
-	elItemClone: 'section-item-clone',
 	elItemTitleInput: '.lp-item-title-input',
 	elBtnUpdateItemTitle: '.lp-btn-update-item-title',
 	elBtnCancelUpdateTitle: '.lp-btn-cancel-update-item-title',
@@ -39,8 +39,14 @@ let className = {
 };
 let elCurriculumSections;
 let showToast;
+/**
+ * @member lpEditCurriculumShare.lpUtils
+ */
 let lpUtils;
 let dataSend;
+/**
+ * @member lpEditCurriculumShare.updateCountItems
+ */
 let updateCountItems;
 
 const init = () => {
@@ -109,12 +115,13 @@ const addItemToSection = ( e, target ) => {
 	}
 
 	// Clone new section item
-	const elItemClone = elSection.querySelector( `.${ className.elItemClone }` );
+	const elItemClone = elSection.querySelector( `${ className.elItemClone }` );
 	const elItemNew = elItemClone.cloneNode( true );
 	const elItemTitleInput = elItemNew.querySelector( `${ className.elItemTitleInput }` );
 
-	elItemNew.classList.remove( `${ className.elItemClone }` );
+	elItemNew.classList.remove( 'clone' );
 	elItemNew.classList.add( typeValue );
+	elItemNew.dataset.itemType = typeValue;
 	lpUtils.lpShowHideEl( elItemNew, 1 );
 	lpUtils.lpSetLoadingEl( elItemNew, 1 );
 	elItemTitleInput.value = titleValue;
@@ -124,15 +131,19 @@ const addItemToSection = ( e, target ) => {
 	// Call ajax to add item to section
 	const callBack = {
 		success: ( response ) => {
-			const { message, status } = response;
+			const { message, status, data } = response;
 
 			showToast( message, status );
 
 			if ( status === 'error' ) {
 				elItemNew.remove();
+			} else if ( status === 'success' ) {
+				const { section_item } = data || {};
+				elItemNew.dataset.itemId = section_item.item_id || 0;
 			}
 		},
 		error: ( error ) => {
+			showToast( error, 'error' );
 			elItemNew.remove();
 		},
 		completed: () => {
@@ -345,7 +356,7 @@ const chooseTabItemsType = ( e, target ) => {
 
 	window.lpAJAXG.fetchAJAX( dataSend, {
 		success: ( response ) => {
-			const { message, status, data } = response;
+			const { data } = response;
 			elLPTarget.innerHTML = data.content || '';
 		},
 		error: ( error ) => {
@@ -375,7 +386,7 @@ const addItemsSelectedToSection = ( e, target ) => {
 	dataSend.args.section_id = sectionIdSelected;
 
 	const elSection = document.querySelector( `.section[data-section-id="${ sectionIdSelected }"]` );
-	const elItemClone = elSection.querySelector( `.${ className.elItemClone }` );
+	const elItemClone = elSection.querySelector( `${ className.elItemClone }` );
 
 	itemsSelectedData.forEach( ( item ) => {
 		const elItemNew = elItemClone.cloneNode( true );
@@ -383,7 +394,7 @@ const addItemsSelectedToSection = ( e, target ) => {
 
 		elItemNew.dataset.itemId = item.item_id;
 		elItemNew.classList.add( item.item_type );
-		elItemNew.classList.remove( `${ className.elItemClone }` );
+		elItemNew.classList.remove( 'clone' );
 		elInputTitleNew.value = item.item_title || '';
 		lpUtils.lpSetLoadingEl( elItemNew, 1 );
 		lpUtils.lpShowHideEl( elItemNew, 1 );
@@ -394,12 +405,12 @@ const addItemsSelectedToSection = ( e, target ) => {
 
 	window.lpAJAXG.fetchAJAX( dataSend, {
 		success: ( response ) => {
-			const { message, status, data } = response;
+			const { message, status } = response;
 			showToast( message, status );
 
 			if ( status === 'error' ) {
 				itemsSelectedData.forEach( ( item ) => {
-					const elItemAdded = elSection.querySelector( `.section-item[data-item-id="${ item.item_id }"]` );
+					const elItemAdded = elSection.querySelector( `${ className.elSectionItem }[data-item-id="${ item.item_id }"]` );
 					if ( elItemAdded ) {
 						elItemAdded.remove();
 					}
@@ -452,16 +463,18 @@ const deleteItem = ( e, target ) => {
 			const callBack = {
 				success: ( response ) => {
 					const { message, status } = response;
-					const { content } = response.data;
 
 					showToast( message, status );
+
+					if ( status === 'success' ) {
+						elSectionItem.remove();
+					}
 				},
 				error: ( error ) => {
-					console.log( error );
+					showToast( error, 'error' );
 				},
 				completed: () => {
 					lpUtils.lpSetLoadingEl( elSectionItem, 0 );
-					elSectionItem.remove();
 					updateCountItems( elSection );
 				},
 			};
@@ -569,7 +582,7 @@ const watchItemsSelectedDataChange = () => {
 	const elBtnAddItemsSelected = elPopupSelectItems.querySelector( `${ className.elBtnAddItemsSelected }` );
 	const elBtnCountItemsSelected = elPopupSelectItems.querySelector( `${ className.elBtnCountItemsSelected }` );
 	const elSpanCount = elBtnCountItemsSelected.querySelector( 'span' );
-	const elHeaderCount = elPopupSelectItems.querySelector( '.header-count-items-selected' );
+	const elHeaderCount = elPopupSelectItems.querySelector( `${ className.elHeaderCountItemSelected }` );
 	if ( itemsSelectedData.length !== 0 ) {
 		elBtnCountItemsSelected.disabled = false;
 		elBtnAddItemsSelected.disabled = false;

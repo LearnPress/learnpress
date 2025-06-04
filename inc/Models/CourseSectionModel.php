@@ -28,7 +28,7 @@ class CourseSectionModel {
 	 *
 	 * @var int
 	 */
-	private $section_id = 0;
+	public $section_id = 0;
 	/**
 	 * Title of the section
 	 *
@@ -238,6 +238,8 @@ class CourseSectionModel {
 		$courseSectionItemModel->item_order        = $max_order + 1;
 		$courseSectionItemModel->section_course_id = $this->section_course_id;
 		$courseSectionItemModel->save();
+
+		return $courseSectionItemModel;
 	}
 
 	/**

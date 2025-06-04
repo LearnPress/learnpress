@@ -10,7 +10,7 @@ import Sortable from 'sortablejs';
 
 let className = {
 	elDivAddNewSection: '.add-new-section',
-	elSectionClone: 'section-clone',
+	elSectionClone: '.section.clone',
 	elSectionTitleNewInput: '.lp-section-title-new-input',
 	elSectionTitleInput: '.lp-section-title-input',
 	elSectionDesInput: '.lp-section-description-input',
@@ -26,6 +26,9 @@ let className = {
 let elEditCurriculum;
 let elCurriculumSections;
 let showToast;
+/**
+ * @member lpEditCurriculumShare.lpUtils
+ */
 let lpUtils;
 let dataSend;
 const init = () => {
@@ -68,8 +71,9 @@ const addSection = ( e, target ) => {
 	elSectionTitleNewInput.blur();
 
 	// Add and set data for new section
-	const elSectionClone = elCurriculumSections.querySelector( `.${ className.elSectionClone }` );
+	const elSectionClone = elCurriculumSections.querySelector( `${ className.elSectionClone }` );
 	const newSection = elSectionClone.cloneNode( true );
+	newSection.classList.remove( 'clone' );
 	lpUtils.lpShowHideEl( newSection, 1 );
 	lpUtils.lpSetLoadingEl( newSection, 1 );
 	const elSectionTitleInput = newSection.querySelector( `${ className.elSectionTitleInput }` );
@@ -80,10 +84,13 @@ const addSection = ( e, target ) => {
 	// Call ajax to add new section
 	const callBack = {
 		success: ( response ) => {
-			const { message, status } = response;
+			const { message, status, data } = response;
 
 			if ( status === 'error' ) {
 				newSection.remove();
+			} else if ( status === 'success' ) {
+				const { section } = data;
+				newSection.dataset.sectionId = section.section_id || '';
 			}
 
 			showToast( message, status );
@@ -93,7 +100,6 @@ const addSection = ( e, target ) => {
 			showToast( error, 'error' );
 		},
 		completed: () => {
-			newSection.classList.remove( `${ className.elSectionClone }` );
 			lpUtils.lpSetLoadingEl( newSection, 0 );
 			newSection.classList.remove( `${ className.elCollapse }` );
 			const elSectionDesInput = newSection.querySelector( `${ className.elSectionDesInput }` );
@@ -202,17 +208,19 @@ const updateSectionTitle = ( e, target ) => {
 	const callBack = {
 		success: ( response ) => {
 			const { message, status } = response;
-			const { content } = response.data;
 
 			showToast( message, status );
+
+			if ( status === 'success' ) {
+				elSectionTitleInput.dataset.old = titleValue;
+			}
 		},
 		error: ( error ) => {
-			console.log( error );
+			showToast( error, 'error' );
 		},
 		completed: () => {
 			lpUtils.lpSetLoadingEl( elSection, 0 );
 			elSection.classList.remove( 'editing' );
-			elSectionTitleInput.dataset.old = titleValue;
 		},
 	};
 
@@ -371,7 +379,7 @@ const toggleSection = ( e, target ) => {
 
 // Check if all sections are collapsed
 const checkAllSectionsCollapsed = () => {
-	const elSections = elEditCurriculum.querySelectorAll( `${ className.elSection }:not(.${ className.elSectionClone })` );
+	const elSections = elEditCurriculum.querySelectorAll( `${ className.elSection }:not(.clone)` );
 	const elToggleAllSections = elEditCurriculum.querySelector( `${ className.elToggleAllSections }` );
 
 	let isAllExpand = true;

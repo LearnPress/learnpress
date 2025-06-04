@@ -14,10 +14,8 @@ const className = {
 	idElEditCurriculum: '#lp-course-edit-curriculum',
 	elCurriculumSections: '.curriculum-sections',
 	elSection: '.section',
-	elSectionClone: 'section-clone',
 	elToggleAllSections: '.course-toggle-all-sections',
 	elSectionItem: '.section-item',
-	elItemClone: 'section-item-clone',
 	LPTarget: '.lp-target',
 	elCollapse: 'lp-collapse',
 };
@@ -42,4 +40,13 @@ const setVariables = ( variables ) => {
 	( { elEditCurriculum, elCurriculumSections, dataSend, updateCountItems } = variables );
 };
 
-export { setVariables, elEditCurriculum, elCurriculumSections, lpUtils, className, dataSend, showToast, updateCountItems };
+export {
+	setVariables,
+	elEditCurriculum,
+	elCurriculumSections,
+	lpUtils,
+	className,
+	dataSend,
+	showToast,
+	updateCountItems,
+};

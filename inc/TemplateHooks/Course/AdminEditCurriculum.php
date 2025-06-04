@@ -246,7 +246,9 @@ class AdminEditCurriculum {
 			throw new Exception( __( 'Section not found', 'learnpress' ) );
 		}
 
-		$courseSectionModel->create_item_and_add( $data );
+		$courseSectionItemModel = $courseSectionModel->create_item_and_add( $data );
+
+		$response->section_item = $courseSectionItemModel;
 
 		$response->message = __( 'Item added to section successfully', 'learnpress' );
 
@@ -535,7 +537,7 @@ class AdminEditCurriculum {
 			'wrap'                 => sprintf(
 				'<div data-section-id="%s" class="section lp-collapse %s">',
 				$section_id,
-				$is_clone ? 'section-clone lp-hidden' : ''
+				$is_clone ? 'clone lp-hidden' : ''
 			),
 			'head'                 => '<div class="section-head">',
 			'drag'                 => sprintf(
@@ -703,7 +705,7 @@ class AdminEditCurriculum {
 				$item_id,
 				$item_type,
 				$item_type,
-				$is_clone ? 'section-item-clone lp-hidden' : ''
+				$is_clone ? 'clone lp-hidden' : ''
 			),
 			'drag'         => sprintf(
 				'<div class="drag">%s</div>',

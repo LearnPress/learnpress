@@ -20,7 +20,7 @@ const toggleSectionAll = ( e, target ) => {
 	}
 
 	const elEditCurriculum = lpEditCurriculumShare.elEditCurriculum;
-	const elSections = elEditCurriculum.querySelectorAll( `${ className.elSection }:not(.${ className.elSectionClone })` );
+	const elSections = elEditCurriculum.querySelectorAll( `${ className.elSection }:not(.clone)` );
 
 	elToggleAllSections.classList.toggle( `${ className.elCollapse }` );
 
@@ -43,12 +43,12 @@ const toggleSectionAll = ( e, target ) => {
 const updateCountItems = ( elSection ) => {
 	const elEditCurriculum = lpEditCurriculumShare.elEditCurriculum;
 	const elCountItemsAll = elEditCurriculum.querySelector( '.total-items' );
-	const elItemsAll = elEditCurriculum.querySelectorAll( `${ className.elSectionItem }:not(.${ className.elItemClone })` );
+	const elItemsAll = elEditCurriculum.querySelectorAll( `${ className.elSectionItem }:not(.clone)` );
 	elCountItemsAll.innerHTML = elItemsAll.length;
 
 	// Count items in section
 	const elCountItems = elSection.querySelector( '.section-items-counts' );
-	const elItems = elSection.querySelectorAll( `${ className.elSectionItem }:not(.${ className.elItemClone })` );
+	const elItems = elSection.querySelectorAll( `${ className.elSectionItem }:not(.clone)` );
 	elCountItems.textContent = elItems.length;
 };
 
