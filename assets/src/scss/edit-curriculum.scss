@@ -311,31 +311,6 @@
 					color: #444;
 				}
 			}
-
-			.item-ico-type {
-				padding: 0;
-				font-family: "lp-icon";
-				color: #2271B1;
-				font-size: 1rem;
-
-				&.lp_quiz {
-					&::before {
-						content: "\f12e";
-					}
-				}
-
-				&.lp_lesson {
-					&::before {
-						content: "\f15b";
-					}
-				}
-
-				&.lp_assignment {
-					&::before {
-						content: "\e929";
-					}
-				}
-			}
 		}
 	}
 
@@ -433,12 +408,6 @@
 				}
 			}
 
-			.icon {
-				display: flex;
-				align-items: center;
-				justify-content: center;
-			}
-
 			.item-actions {
 				display: flex;
 				bottom: 0;
@@ -488,15 +457,28 @@
 				}
 			}
 
-			&.lp_quiz {
-				.icon::before {
-					content: "\f469";
-				}
+			.item-ico-type {
+				padding: 0;
+				font-family: "lp-icon";
+				color: #2271B1;
+				font-size: 1rem;
 			}
 
 			&.lp_lesson {
-				.icon::before {
-					content: "\f330";
+				.item-ico-type::before {
+					content: "\f15b";
+				}
+			}
+
+			&.lp_quiz {
+				.item-ico-type::before {
+					content: "\f12e";
+				}
+			}
+
+			&.lp_assignment {
+				.item-ico-type::before {
+					content: "\e929";
 				}
 			}
 
