@@ -562,10 +562,7 @@ class AdminEditCurriculum {
 				$is_clone ? 'clone lp-hidden' : ''
 			),
 			'head'                 => '<div class="section-head">',
-			'drag'                 => sprintf(
-				'<span class="drag">%s</span>',
-				LP_WP_Filesystem::instance()->file_get_contents( LP_PLUGIN_PATH . 'assets/images/icons/ico-drag.svg' )
-			),
+			'drag'                 => '<span class="drag lp-icon-drag"></span>',
 			'loading'              => '<span class="dashicons dashicons-update"></span>',
 			'title'                => $this->html_input_section_title( $section_name ),
 			'btn-delete'           => sprintf(
@@ -738,10 +735,7 @@ class AdminEditCurriculum {
 				$item_type,
 				$is_clone ? 'clone lp-hidden' : ''
 			),
-			'drag'         => sprintf(
-				'<div class="drag">%s</div>',
-				LP_WP_Filesystem::instance()->file_get_contents( LP_PLUGIN_PATH . 'assets/images/icons/ico-drag.svg' )
-			),
+			'drag'         => '<span class="drag lp-icon-drag"></span>',
 			'icon'         => sprintf(
 				'<div class="item-ico-type %s"></div>',
 				esc_attr( $item_type )
