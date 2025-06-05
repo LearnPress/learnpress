@@ -38,17 +38,14 @@ let className = {
 	elItemSelected: '.li-item-selected',
 	elBtnSetPreviewItem: '.lp-btn-set-preview-item',
 };
-let elCurriculumSections;
-let showToast;
-/**
- * @member lpEditCurriculumShare.lpUtils
- */
-let lpUtils;
-let dataSend;
-/**
- * @member lpEditCurriculumShare.updateCountItems
- */
-let updateCountItems;
+
+let {
+	elCurriculumSections,
+	showToast,
+	lpUtils,
+	dataSend,
+	updateCountItems,
+} = lpEditCurriculumShare;
 
 const init = () => {
 	( { elCurriculumSections, showToast, lpUtils, dataSend, updateCountItems } = lpEditCurriculumShare );
@@ -353,6 +350,7 @@ const chooseTabItemsType = ( e, target ) => {
 	dataSend.args.item_type = itemType;
 	dataSend.args.paged = 1;
 	dataSend.args.item_selecting = itemsSelectedData || [];
+	window.lpAJAXG.setDataSetCurrent( elLPTarget, dataSend );
 
 	// Show loading
 	window.lpAJAXG.showHideLoading( elLPTarget, 1 );
@@ -368,6 +366,8 @@ const chooseTabItemsType = ( e, target ) => {
 		},
 		completed: () => {
 			window.lpAJAXG.showHideLoading( elLPTarget, 0 );
+			// Show button add if there are items selected
+			watchItemsSelectedDataChange();
 		},
 	} );
 };
@@ -384,32 +384,28 @@ const searchTitleItemToSelect = ( e, target ) => {
 		return;
 	}
 
-	const tabActive = elPopupItemsToSelect.querySelector( '.tab.active' );
-	const itemType = tabActive.dataset.type;
-
-	const elTarget = elPopupItemsToSelect.querySelector( `${ className.LPTarget }` );
+	const elLPTarget = elPopupItemsToSelect.querySelector( `${ className.LPTarget }` );
 
 	clearTimeout( timeSearchTitleItem );
 
 	timeSearchTitleItem = setTimeout( () => {
-		const dataSet = window.lpAJAXG.getDataSetCurrent( elTarget );
+		const dataSet = window.lpAJAXG.getDataSetCurrent( elLPTarget );
 		dataSet.args.search_title = elInputSearch.value.trim();
-		dataSet.args.item_type = itemType;
 		dataSet.args.item_selecting = itemsSelectedData;
 
 		// Show loading
-		window.lpAJAXG.showHideLoading( elTarget, 1 );
+		window.lpAJAXG.showHideLoading( elLPTarget, 1 );
 
 		window.lpAJAXG.fetchAJAX( dataSet, {
 			success: ( response ) => {
 				const { data } = response;
-				elTarget.innerHTML = data.content || '';
+				elLPTarget.innerHTML = data.content || '';
 			},
 			error: ( error ) => {
 				console.log( error );
 			},
 			completed: () => {
-				window.lpAJAXG.showHideLoading( elTarget, 0 );
+				window.lpAJAXG.showHideLoading( elLPTarget, 0 );
 			},
 		} );
 	}, 1000 );
@@ -617,13 +613,6 @@ const watchItemsSelectedDataChange = () => {
 	if ( ! elPopupSelectItems ) {
 		return;
 	}
-
-	const elListItemsWrap = elPopupSelectItems.querySelector( `${ className.elListItemsWrap }` );
-	const elTarget = elListItemsWrap.querySelector( `${ className.LPTarget }` );
-
-	// Set data for call AJAX
-	const dataSet = window.lpAJAXG.getDataSetCurrent( elTarget );
-	dataSet.args.item_selecting = itemsSelectedData;
 
 	// Update count items selected, disable/enable buttons
 	const elBtnAddItemsSelected = elPopupSelectItems.querySelector( `${ className.elBtnAddItemsSelected }` );

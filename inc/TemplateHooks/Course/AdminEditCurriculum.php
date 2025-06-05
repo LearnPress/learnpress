@@ -909,7 +909,8 @@ class AdminEditCurriculum {
 			'wrap'                => '<div class="main">',
 			'wrap_items'          => '<div class="list-items-wrap">',
 			'search'              => sprintf(
-				'<input type="text" placeholder="%s" title="search" class="lp-search-title-item">',
+				'<input class="%1$s" name="%1$s" type="text" placeholder="%2$s">',
+				'lp-search-title-item',
 				__( 'Type here to search for an item', 'learnpress' )
 			),
 			'list-items'          => $html_items,
@@ -1044,8 +1045,8 @@ class AdminEditCurriculum {
 					'add_args'  => '',
 					'current'   => max( 1, $paged ),
 					'total'     => $total_pages,
-					'prev_text' => '<i class="dashicons dashicons-arrow-left-alt"></i>',
-					'next_text' => '<i class="dashicons dashicons-arrow-right-alt"></i>',
+					'prev_text' => '<i class="lp-icon-arrow-left"></i>',
+					'next_text' => '<i class="lp-icon-arrow-right"></i>',
 					'type'      => 'array',
 					'end_size'  => 3,
 					'mid_size'  => 3,
