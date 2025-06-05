@@ -433,9 +433,14 @@ class PostModel {
 	 *
 	 * @return string|null
 	 * @since 4.2.7.4
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function get_edit_link() {
-		return get_edit_post_link( $this->get_id() );
+		return admin_url( "post.php?post=$this->ID&action=edit" );
+		/**
+		 * Not using get_edit_post_link() because it may not return the correct link in some cases
+		 * get_post_type_object is null.
+		 */
+		//return get_edit_post_link( $this->get_id() );
 	}
 }

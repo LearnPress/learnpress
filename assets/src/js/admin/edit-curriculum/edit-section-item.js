@@ -316,6 +316,7 @@ const selectItemsFromList = ( e, target ) => {
 		item_id: elInput.value,
 		item_type: elInput.dataset.type || '',
 		item_title: elInput.dataset.title || '',
+		item_edit_link: elInput.dataset.editLink || '',
 	};
 	if ( elInput.checked ) {
 		const exists = itemsSelectedData.some( ( item ) => item.item_id === itemSelected.item_id );
@@ -328,6 +329,8 @@ const selectItemsFromList = ( e, target ) => {
 			itemsSelectedData.splice( index, 1 );
 		}
 	}
+
+	console.log('itemsSelectedData', itemsSelectedData );
 
 	watchItemsSelectedDataChange();
 };
@@ -455,6 +458,7 @@ const addItemsSelectedToSection = ( e, target ) => {
 		elItemNew.classList.add( item.item_type );
 		elItemNew.classList.remove( 'clone' );
 		elItemNew.dataset.itemType = item.item_type;
+		elItemNew.querySelector( '.edit-link' ).setAttribute( 'href', item.item_edit_link || '' );
 		elInputTitleNew.value = item.item_title || '';
 		lpUtils.lpSetLoadingEl( elItemNew, 1 );
 		lpUtils.lpShowHideEl( elItemNew, 1 );

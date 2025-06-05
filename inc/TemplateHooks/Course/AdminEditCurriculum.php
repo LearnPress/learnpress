@@ -10,6 +10,7 @@ use LearnPress\Models\CourseSectionModel;
 use LearnPress\Models\CourseModel;
 
 use LearnPress\Models\LessonPostModel;
+use LearnPress\Models\PostModel;
 use LearnPress\TemplateHooks\TemplateAJAX;
 use LP_Background_Single_Course;
 use LP_Database;
@@ -250,7 +251,12 @@ class AdminEditCurriculum {
 		$courseSectionItemModel = $courseSectionModel->create_item_and_add( $data );
 
 		$response->section_item = $courseSectionItemModel;
-		$response->item_link    = get_edit_post_link( $courseSectionItemModel->item_id, false );
+
+		/**
+		 * @var $itemModel PostModel
+		 */
+		$itemModel           = $courseModel->get_item_model( $courseSectionItemModel->item_id, $courseSectionItemModel->item_type );
+		$response->item_link = $itemModel ? $itemModel->get_edit_link() : '';
 
 		$response->message = __( 'Item added to section successfully', 'learnpress' );
 
@@ -557,7 +563,7 @@ class AdminEditCurriculum {
 			'heading_end'     => '</div>',
 			'sections'        => Template::combine_components( $sections ),
 			'add_new_section' => $this->html_add_new_section(),
-			'select_items'    => $this->html_popup_items_to_select_clone(),
+			'select_items'    => $this->html_popup_items_to_select_clone( $courseModel ),
 			'wrap_end'        => '</div>',
 		];
 
@@ -744,7 +750,11 @@ class AdminEditCurriculum {
 		$item_id    = $item->item_id ?? 0;
 		$item_title = $item->title ?? '';
 		$item_type  = $item->item_type ?? '';
-		$itemModel  = $courseModel->get_item_model( $item_id, $item_type );
+
+		/**
+		 * @var $itemModel PostModel
+		 */
+		$itemModel = $courseModel->get_item_model( $item_id, $item_type );
 
 		$section_action = [
 			'wrap'     => '<ul class="item-actions">',
@@ -754,9 +764,9 @@ class AdminEditCurriculum {
 				$itemModel && $itemModel->post_type === LP_LESSON_CPT && $itemModel->has_preview() ? 'lp-icon-eye' : 'lp-icon-eye-slash'
 			),
 			'edit'     => sprintf(
-				'<li title="%s"><a href="%s" target="_blank" class="lp-icon-edit-square"></a></li>',
+				'<li title="%s"><a href="%s" target="_blank" class="lp-icon-edit-square edit-link"></a></li>',
 				__( 'Edit item detail', 'learnpress' ),
-				$itemModel ? get_edit_post_link( $itemModel->ID ) : ''
+				$itemModel ? $itemModel->get_edit_link() : ''
 			),
 			'delete'   => sprintf(
 				'<li class="action lp-btn-delete-item"
@@ -862,7 +872,7 @@ class AdminEditCurriculum {
 		return Template::combine_components( $section );
 	}
 
-	public function html_popup_items_to_select_clone(): string {
+	public function html_popup_items_to_select_clone( CourseModel $course_model ): string {
 		$html_tabs         = '';
 		$course_item_types = CourseModel::item_types_support();
 		foreach ( $course_item_types as $type ) {
@@ -896,7 +906,7 @@ class AdminEditCurriculum {
 			[
 				'id_url'                  => 'list-items-not-assign',
 				'html_no_load_ajax_first' => $html_loading,
-				'course_id'               => 123,
+				'course_id'               => $course_model->ID,
 				'item_type'               => LP_LESSON_CPT,
 				'paged'                   => 1,
 			],
@@ -970,6 +980,11 @@ class AdminEditCurriculum {
 		$paged                  = intval( $data['paged'] ?? 1 );
 		$item_selecting_compare = new stdClass();
 
+		$courseModel = CourseModel::find( $course_id, true );
+		if ( ! $courseModel ) {
+			throw new Exception( __( 'Course not found', 'learnpress' ) );
+		}
+
 		$lp_db               = LP_Database::getInstance();
 		$filter              = new LP_Post_Type_Filter();
 		$filter->only_fields = [
@@ -1013,6 +1028,14 @@ class AdminEditCurriculum {
 			}
 
 			foreach ( $posts as $post ) {
+				/**
+				 * @var $itemModel PostModel
+				 */
+				$itemModel = $courseModel->get_item_model( $post->ID, $post->post_type );
+				if ( ! $itemModel ) {
+					continue;
+				}
+
 				$checked = '';
 
 				if ( isset( $item_selecting_compare->{$post->ID} ) ) {
@@ -1022,11 +1045,12 @@ class AdminEditCurriculum {
 				$html_lis .= sprintf(
 					'<li class="lp-select-item">%s%s</li>',
 					sprintf(
-						'<input type="checkbox" value="%d" data-type="%s" data-title="%s" %s />',
+						'<input name="lp-select-item" value="%d" data-type="%s" data-title="%s" %s data-edit-link="%s" type="checkbox" />',
 						esc_attr( $post->ID ?? 0 ),
 						esc_attr( $post->post_type ?? '' ),
 						esc_attr( $post->post_title ?? '' ),
-						esc_attr( $checked )
+						esc_attr( $checked ),
+						$itemModel->get_edit_link()
 					),
 					sprintf(
 						'<span class="title">%s<strong>(#%d)</strong></span>',
