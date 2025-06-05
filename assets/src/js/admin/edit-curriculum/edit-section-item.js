@@ -79,6 +79,7 @@ const addItemType = ( e, target ) => {
 	elBtnAddItem.textContent = itemBtnAddText;
 	elSectionActions.insertAdjacentElement( 'beforebegin', elNewItemByType );
 };
+
 // Cancel add item type
 const cancelAddItemType = ( e, target ) => {
 	const elBtnAddItemCancel = target.closest( `${ className.elBtnAddItemCancel }` );
@@ -91,6 +92,7 @@ const cancelAddItemType = ( e, target ) => {
 		elAddItemType.remove();
 	}
 };
+
 // Add item to section
 const addItemToSection = ( e, target ) => {
 	let canHandle = false;
@@ -145,8 +147,9 @@ const addItemToSection = ( e, target ) => {
 			if ( status === 'error' ) {
 				elItemNew.remove();
 			} else if ( status === 'success' ) {
-				const { section_item } = data || {};
+				const { section_item, item_link } = data || {};
 				elItemNew.dataset.itemId = section_item.item_id || 0;
+				elItemNew.querySelector( '.edit-link' ).setAttribute( 'href', item_link || '' );
 			}
 		},
 		error: ( error ) => {
@@ -166,6 +169,7 @@ const addItemToSection = ( e, target ) => {
 	dataSend.args.item_type = typeValue;
 	window.lpAJAXG.fetchAJAX( dataSend, callBack );
 };
+
 // Update item title
 const updateTitle = ( e, target ) => {
 	let canHandle = false;
@@ -237,6 +241,7 @@ const updateTitle = ( e, target ) => {
 	dataSend.args.item_title = itemTitleValue;
 	window.lpAJAXG.fetchAJAX( dataSend, callBack );
 };
+
 // Cancel update item title
 const cancelUpdateTitle = ( e, target ) => {
 	const elBtnCancelUpdateTitle = target.closest( `${ className.elBtnCancelUpdateTitle }` );

@@ -250,6 +250,7 @@ class AdminEditCurriculum {
 		$courseSectionItemModel = $courseSectionModel->create_item_and_add( $data );
 
 		$response->section_item = $courseSectionItemModel;
+		$response->item_link    = get_edit_post_link( $courseSectionItemModel->item_id, false );
 
 		$response->message = __( 'Item added to section successfully', 'learnpress' );
 
