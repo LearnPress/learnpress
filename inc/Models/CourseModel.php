@@ -1232,8 +1232,14 @@ class CourseModel {
 	 * @param bool $check_cache
 	 *
 	 * @return false|CourseModel|static
+	 * @since 4.2.6.9
+	 * @version 1.0.2
 	 */
 	public static function find( int $course_id, bool $check_cache = false ) {
+		if ( ! $course_id ) {
+			return false;
+		}
+
 		$filter_course     = new LP_Course_JSON_Filter();
 		$filter_course->ID = $course_id;
 		$key_cache         = "courseModel/find/id/{$course_id}";

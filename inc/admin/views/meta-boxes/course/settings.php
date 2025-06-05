@@ -699,7 +699,9 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 	 * @return void
 	 */
 	public function admin_editor() {
-		$course_id   = intval( $_REQUEST['post'] ?? 0 );
+		global $post;
+
+		$course_id   = $post->ID;
 		$courseModel = CourseModel::find( $course_id, true );
 		if ( ! $courseModel instanceof CourseModel ) {
 			return;
