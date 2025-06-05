@@ -93,15 +93,23 @@ const cancelAddItemType = ( e, target ) => {
 };
 // Add item to section
 const addItemToSection = ( e, target ) => {
-	const elBtnAddItem = target.closest( `${ className.elBtnAddItem }` );
-	if ( ! elBtnAddItem ) {
+	let canHandle = false;
+
+	if ( target.closest( `${ className.elBtnAddItem }` ) ) {
+		canHandle = true;
+	} else if ( target.closest( `${ className.elAddItemTypeTitleInput }` ) &&
+		e.key === 'Enter' ) {
+		canHandle = true;
+	}
+
+	if ( ! canHandle ) {
 		return;
 	}
 
 	e.preventDefault();
 
-	const elAddItemType = elBtnAddItem.closest( `${ className.elAddItemType }` );
-	const elSection = elBtnAddItem.closest( `${ className.elSection }` );
+	const elAddItemType = target.closest( `${ className.elAddItemType }` );
+	const elSection = elAddItemType.closest( `${ className.elSection }` );
 	const sectionId = elSection.dataset.sectionId;
 	const elAddItemTypeTitleInput = elAddItemType.querySelector( `${ className.elAddItemTypeTitleInput }` );
 	const titleValue = elAddItemTypeTitleInput.value.trim();
@@ -281,7 +289,7 @@ const showPopupItemsToSelect = ( e, target ) => {
 };
 
 let itemsSelectedData = [];
-// Select items from list
+// Choice items to add list items selected before adding to section
 const selectItemsFromList = ( e, target ) => {
 	const elItemAttend = target.closest( `${ className.elSelectItem }` );
 	if ( ! elItemAttend ) {
@@ -291,6 +299,7 @@ const selectItemsFromList = ( e, target ) => {
 	const elInput = elItemAttend.querySelector( 'input[type="checkbox"]' );
 	if ( target.tagName !== 'INPUT' ) {
 		elInput.click();
+		return;
 	}
 
 	const elUl = elItemAttend.closest( `${ className.elListItems }` );
@@ -317,6 +326,7 @@ const selectItemsFromList = ( e, target ) => {
 
 	watchItemsSelectedDataChange();
 };
+
 // Choose tab items type
 const chooseTabItemsType = ( e, target ) => {
 	const elTabType = target.closest( '.tab' );
@@ -371,6 +381,7 @@ const chooseTabItemsType = ( e, target ) => {
 		},
 	} );
 };
+
 // Search title item
 let timeSearchTitleItem;
 const searchTitleItemToSelect = ( e, target ) => {
@@ -410,6 +421,7 @@ const searchTitleItemToSelect = ( e, target ) => {
 		} );
 	}, 1000 );
 };
+
 // Add items selected to section
 const addItemsSelectedToSection = ( e, target ) => {
 	const elBtnAddItems = target.closest( `${ className.elBtnAddItemsSelected }` );
@@ -474,6 +486,8 @@ const addItemsSelectedToSection = ( e, target ) => {
 		},
 	} );
 };
+
+// Delete item from section
 const deleteItem = ( e, target ) => {
 	const elBtnDeleteItem = target.closest( `${ className.elBtnDeleteItem }` );
 	if ( ! elBtnDeleteItem ) {
@@ -530,6 +544,8 @@ const deleteItem = ( e, target ) => {
 		}
 	} );
 };
+
+// Show list of items, to choose items to add to section
 const showItemsSelected = ( e, target ) => {
 	const elBtnCountItemsSelected = target.closest( `${ className.elBtnCountItemsSelected }` );
 	if ( ! elBtnCountItemsSelected ) {
@@ -556,6 +572,9 @@ const showItemsSelected = ( e, target ) => {
 	lpUtils.lpShowHideEl( elHeaderItemsSelected, 1 );
 	lpUtils.lpShowHideEl( elListItemsSelected, 1 );
 
+	elListItemsSelected.querySelectorAll( `${ className.elItemSelected }:not(.clone)` ).forEach( ( elItem ) => {
+		elItem.remove();
+	} );
 	itemsSelectedData.forEach( ( item ) => {
 		const elItemSelected = elItemClone.cloneNode( true );
 		elItemSelected.classList.remove( 'clone' );
@@ -571,6 +590,8 @@ const showItemsSelected = ( e, target ) => {
 		elItemClone.insertAdjacentElement( 'beforebegin', elItemSelected );
 	} );
 };
+
+// Back to list of items
 const backToSelectItems = ( e, target ) => {
 	const elBtnBack = target.closest( `${ className.elBtnBackListItems }` );
 	if ( ! elBtnBack ) {
@@ -590,6 +611,8 @@ const backToSelectItems = ( e, target ) => {
 	lpUtils.lpShowHideEl( elHeaderCountItemSelected, 0 );
 	lpUtils.lpShowHideEl( elListItemsSelected, 0 );
 };
+
+// Remove item selected from list items selected
 const removeItemSelected = ( e, target ) => {
 	const elRemoveItemSelected = target.closest( `${ className.elItemSelected }` );
 	if ( ! elRemoveItemSelected ) {
@@ -609,6 +632,8 @@ const removeItemSelected = ( e, target ) => {
 
 	watchItemsSelectedDataChange();
 };
+
+// Watch items selected when data change
 const watchItemsSelectedDataChange = () => {
 	if ( ! elPopupSelectItems ) {
 		return;

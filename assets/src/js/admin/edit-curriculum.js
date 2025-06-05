@@ -5,7 +5,6 @@
  * @version 1.0.0
  */
 
-import * as lpUtils from '../utils.js';
 import * as lpEditCurriculumShare from './edit-curriculum/share.js';
 import * as sectionEdit from './edit-curriculum/edit-section.js';
 import * as sectionItemEdit from './edit-curriculum/edit-section-item.js';
@@ -19,8 +18,7 @@ const toggleSectionAll = ( e, target ) => {
 		return;
 	}
 
-	const elEditCurriculum = lpEditCurriculumShare.elEditCurriculum;
-	const elSections = elEditCurriculum.querySelectorAll( `${ className.elSection }:not(.clone)` );
+	const elSections = lpEditCurriculumShare.elEditCurriculum.querySelectorAll( `${ className.elSection }:not(.clone)` );
 
 	elToggleAllSections.classList.toggle( `${ className.elCollapse }` );
 
@@ -65,89 +63,86 @@ document.addEventListener( 'click', ( e ) => {
 	const target = e.target;
 
 	/*** Event of Section ***/
-	// Add new section
+	// Click button add new section
 	sectionEdit.addSection( e, target );
-
-	// Collapse/Expand section
+	// Click toggle section
 	sectionEdit.toggleSection( e, target );
-
 	// Click button to update section description
 	sectionEdit.updateSectionDescription( e, target );
-
-	// Cancel update section description
+	// Click button to cancel update section description
 	sectionEdit.cancelSectionDescription( e, target );
-
-	// Delete section
+	// Click button delete section
 	sectionEdit.deleteSection( e, target );
-
-	// Update section title
+	// Click button update section title
 	sectionEdit.updateSectionTitle( e, target );
-
-	// Cancel update section title
+	// Click button cancel update section title
 	sectionEdit.cancelSectionTitle( e, target );
 	/*** End Event of Section ***/
 
 	/*** Event of Section Item ***/
-	// Select item type to add
+	// Click button for item type to add a new item by type
 	sectionItemEdit.addItemType( e, target );
+	// Click button to cancel adding item type
 	sectionItemEdit.cancelAddItemType( e, target );
-	// Add item to section
+	// Click button add to add item to section
 	sectionItemEdit.addItemToSection( e, target );
-	// Show popup select items
+	// Click to show popup list of items to choose and add to section
 	sectionItemEdit.showPopupItemsToSelect( e, target );
-	// Show items selected
+	// Click to show list of items selected
 	sectionItemEdit.showItemsSelected( e, target );
 	// Load items by type
 	sectionItemEdit.chooseTabItemsType( e, target );
-	// Update item title
+	// Click button update to update item title
 	sectionItemEdit.updateTitle( e, target );
-	// Cancel update item title
+	// Click button cancel update item title
 	sectionItemEdit.cancelUpdateTitle( e, target );
-	// Delete item from section
+	// Click icon delete item from section
 	sectionItemEdit.deleteItem( e, target );
-	// Click to select items from list
+	// Choose item to add to the list of items selected before adding to section
 	sectionItemEdit.selectItemsFromList( e, target );
 	// Add items selected to section
 	sectionItemEdit.addItemsSelectedToSection( e, target );
-	// Back to select items
+	// CClick button to go back to the list of items
 	sectionItemEdit.backToSelectItems( e, target );
-	// Remove item selected
+	// Click li item to remove item from selected list
 	sectionItemEdit.removeItemSelected( e, target );
-	// Sortable items in section
+	// Click icon eye to toggle preview item
 	sectionItemEdit.updatePreviewItem( e, target );
 	/*** End Event of Section Item ***/
 
 	// Collapse/Expand all sections
 	toggleSectionAll( e, target );
 } );
-
 document.addEventListener( 'keydown', ( e ) => {
 	const target = e.target;
 	// Event enter
 	if ( e.key === 'Enter' ) {
-		// e.preventDefault();
+		// Add new section
 		sectionEdit.addSection( e, target );
+		// Update section title
 		sectionEdit.updateSectionTitle( e, target );
+		// Update section description
 		sectionEdit.updateSectionDescription( e, target );
-
+		// Add item to section
+		sectionItemEdit.addItemToSection( e, target );
+		// Update item title
 		sectionItemEdit.updateTitle( e, target );
 	}
 } );
-
 document.addEventListener( 'keyup', ( e ) => {
 	const target = e.target;
-	// Change section title
+	// Typing section title
 	sectionEdit.changeTitle( e, target );
-	// Change section description
+	// Typing section description
 	sectionEdit.changeDescription( e, target );
-	// Change item title
+	// Typing item title
 	sectionItemEdit.changeTitle( e, target );
-	// Search title item to select
+	// Typing search title item to select
 	sectionItemEdit.searchTitleItemToSelect( e, target );
 } );
 
 // Element root ready.
-lpUtils.lpOnElementReady( `${ className.idElEditCurriculum }`, ( elEditCurriculum ) => {
+lpEditCurriculumShare.lpUtils.lpOnElementReady( `${ className.idElEditCurriculum }`, ( elEditCurriculum ) => {
 	const elCurriculumSections = elEditCurriculum.querySelector( `${ className.elCurriculumSections }` );
 	const elLPTarget = elEditCurriculum.closest( `${ className.LPTarget }` );
 	const dataSend = window.lpAJAXG.getDataSetCurrent( elLPTarget );

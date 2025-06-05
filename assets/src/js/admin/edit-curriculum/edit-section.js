@@ -24,17 +24,25 @@ let className = {
 	elSectionToggle: '.section-toggle',
 	elCountSections: '.count-sections',
 };
-let elEditCurriculum;
-let elCurriculumSections;
-let showToast;
-/**
- * @member lpEditCurriculumShare.lpUtils
- */
-let lpUtils;
-let dataSend;
-let updateCountItems;
+
+let {
+	elEditCurriculum,
+	elCurriculumSections,
+	showToast,
+	lpUtils,
+	dataSend,
+	updateCountItems,
+} = lpEditCurriculumShare;
+
 const init = () => {
-	( { elEditCurriculum, elCurriculumSections, showToast, lpUtils, dataSend, updateCountItems } = lpEditCurriculumShare );
+	( {
+		elEditCurriculum,
+		elCurriculumSections,
+		showToast,
+		lpUtils,
+		dataSend,
+		updateCountItems,
+	} = lpEditCurriculumShare );
 	className = { ...lpEditCurriculumShare.className, ...className };
 };
 
@@ -402,6 +410,7 @@ const checkAllSectionsCollapsed = () => {
 	}
 };
 
+// Sortable sections, drag and drop to change section position
 const sortAbleSection = () => {
 	let isUpdateSectionPosition = 0;
 	let timeout;
@@ -461,6 +470,7 @@ const sortAbleSection = () => {
 	} );
 };
 
+// Update count sections, when add or delete section
 const updateCountSections = () => {
 	const elCountSections = elEditCurriculum.querySelector( `${ className.elCountSections }` );
 	const elSections = elCurriculumSections.querySelectorAll( `${ className.elSection }:not(.clone)` );

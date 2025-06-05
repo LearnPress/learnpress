@@ -1,5 +1,8 @@
 /**
- * Share
+ * Share variables and functions for the edit curriculum page.
+ *
+ * @since v4.2.8.6
+ * @version 1.0.0
  */
 import * as lpUtils from '../../utils.js';
 import Toastify from 'toastify-js';
@@ -7,7 +10,6 @@ import 'toastify-js/src/toastify.css';
 
 let elEditCurriculum;
 let elCurriculumSections;
-let elLPTarget;
 let dataSend;
 let updateCountItems;
 const className = {
