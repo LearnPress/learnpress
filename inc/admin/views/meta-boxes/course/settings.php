@@ -706,18 +706,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 			return;
 		}
 
-		wp_enqueue_style( 'lp-edit-curriculum' );
-
-		$args      = [
-			'id_url'    => 'edit-course-curriculum',
-			'course_id' => $course_id,
-		];
-		$call_back = array(
-			'class'  => AdminEditCurriculumTemplate::class,
-			'method' => 'render_edit_course_curriculum',
-		);
-
-		echo TemplateAJAX::load_content_via_ajax( $args, $call_back );
+		do_action( 'learn-press/admin/edit-curriculum/layout', $courseModel );
 	}
 
 	/*public function save( $post_id ) {

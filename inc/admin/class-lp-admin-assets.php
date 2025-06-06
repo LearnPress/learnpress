@@ -229,11 +229,11 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					0,
 					0
 				),*/
-				'lp-admin-edit-curriculum'          => new LP_Asset_Key(
+				'lp-edit-curriculum'          => new LP_Asset_Key(
 					$this->url( 'dist/js/admin/edit-curriculum' . self::$_min_assets . '.js' ),
 					[ 'lp-load-ajax' ],
-					[ LP_COURSE_CPT ],
-					0,
+					[],
+					1,
 					0,
 					'',
 					[ 'strategy' => 'async' ]

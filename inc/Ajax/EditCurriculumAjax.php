@@ -1,6 +1,6 @@
 <?php
 /**
- * class EditCurriculum
+ * class EditCurriculumAjax
  *
  * This class handles the AJAX request to edit the curriculum of a course.
  *
@@ -23,7 +23,7 @@ use LP_Section_Items_DB;
 use LP_Section_Items_Filter;
 use Throwable;
 
-class EditCurriculum extends AbstractAjax {
+class EditCurriculumAjax extends AbstractAjax {
 	/**
 	 * Check permissions and validate parameters.
 	 *

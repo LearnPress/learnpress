@@ -20,7 +20,7 @@ use LearnPress\ExternalPlugin\Elementor\LPElementor;
 use LearnPress\ExternalPlugin\RankMath\LPRankMath;
 use LearnPress\ExternalPlugin\YoastSeo\LPYoastSeo;
 use LearnPress\Gutenberg\GutenbergHandleMain;
-use LearnPress\Ajax\EditCurriculum;
+use LearnPress\Ajax\EditCurriculumAjax;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\UserModel;
 use LearnPress\Shortcodes\Course\FilterCourseShortcode;
@@ -150,7 +150,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 						// Handle lp ajax.
 						LoadContentViaAjax::catch_lp_ajax();
 						LessonAjax::catch_lp_ajax();
-						EditCurriculum::catch_lp_ajax();
+						EditCurriculumAjax::catch_lp_ajax();
 					}
 				);
 

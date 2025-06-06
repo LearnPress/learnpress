@@ -23,7 +23,30 @@ class AdminEditCurriculumTemplate {
 	use Singleton;
 
 	public function init() {
+		add_action( 'learn-press/admin/edit-curriculum/layout', [ $this, 'edit_course_curriculum_layout' ] );
 		add_filter( 'lp/rest/ajax/allow_callback', [ $this, 'allow_callback' ] );
+	}
+
+	/**
+	 * Layout for edit course curriculum.
+	 *
+	 * @since 4.2.8.6
+	 * @version 1.0.0
+	 */
+	public function edit_course_curriculum_layout( CourseModel $courseModel ) {
+		wp_enqueue_style( 'lp-edit-curriculum' );
+		wp_enqueue_script( 'lp-edit-curriculum' );
+
+		$args      = [
+			'id_url'    => 'edit-course-curriculum',
+			'course_id' => $courseModel->ID,
+		];
+		$call_back = array(
+			'class'  => self::class,
+			'method' => 'render_edit_course_curriculum',
+		);
+
+		echo TemplateAJAX::load_content_via_ajax( $args, $call_back );
 	}
 
 	/**
@@ -435,6 +458,13 @@ class AdminEditCurriculumTemplate {
 		return Template::combine_components( $section );
 	}
 
+	/**
+	 * HTML for popup items to select.
+	 *
+	 * @param CourseModel $course_model
+	 *
+	 * @return string
+	 */
 	public function html_popup_items_to_select_clone( CourseModel $course_model ): string {
 		$html_tabs         = '';
 		$course_item_types = CourseModel::item_types_support();
