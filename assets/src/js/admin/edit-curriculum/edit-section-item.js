@@ -45,7 +45,6 @@ let {
 	elCurriculumSections,
 	showToast,
 	lpUtils,
-	dataSend,
 	updateCountItems,
 } = lpEditCurriculumShare;
 
@@ -57,7 +56,6 @@ const init = () => {
 		elCurriculumSections,
 		showToast,
 		lpUtils,
-		dataSend,
 		updateCountItems,
 	} = lpEditCurriculumShare );
 };
@@ -89,6 +87,7 @@ const addItemType = ( e, target ) => {
 	elAddItemTypeInput.dataset.itemType = itemType;
 	elBtnAddItem.textContent = itemBtnAddText;
 	elSectionActions.insertAdjacentElement( 'beforebegin', elNewItemByType );
+	elAddItemTypeInput.focus();
 };
 
 // Cancel add item type

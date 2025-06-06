@@ -222,6 +222,11 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.2.8.6 (2025-06-09) =
+~ Refactor: edit curriculum.
+~ Update: UI/UX for edit curriculum.
+~ Allow: drag item to another section.
+
 = 4.2.8.5 (2025-05-21) =
 ~ Fixed: missing user email in order summary table.
 ~ Fixed: get related courses, set distinct, random list.

@@ -32,7 +32,6 @@ let {
 	elCurriculumSections,
 	showToast,
 	lpUtils,
-	dataSend,
 	updateCountItems,
 } = lpEditCurriculumShare;
 
@@ -45,7 +44,6 @@ const init = () => {
 		elCurriculumSections,
 		showToast,
 		lpUtils,
-		dataSend,
 		updateCountItems,
 	} = lpEditCurriculumShare );
 };

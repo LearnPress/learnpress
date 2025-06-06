@@ -147,14 +147,12 @@ lpEditCurriculumShare.lpUtils.lpOnElementReady( `${ className.idElEditCurriculum
 	const elLPTarget = elEditCurriculum.closest( `${ className.LPTarget }` );
 	const dataSend = window.lpAJAXG.getDataSetCurrent( elLPTarget );
 
-
 	lpEditCurriculumShare.setVariables(
 		{
 			courseId: dataSend.args.course_id,
 			elEditCurriculum,
 			elCurriculumSections,
 			elLPTarget,
-			dataSend,
 			updateCountItems,
 		}
 	);

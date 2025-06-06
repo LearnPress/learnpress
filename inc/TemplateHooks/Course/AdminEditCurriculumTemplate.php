@@ -201,7 +201,7 @@ class AdminEditCurriculumTemplate {
 			'btn-delete'           => sprintf(
 				'<button type="button" class="lp-btn-delete-section button" data-title="%s" data-content="%s">%s</button>',
 				__( 'Are you sure?', 'learnpress' ),
-				__( 'This section will be deleted. All items in this section will be kept.', 'learnpress' ),
+				__( 'This section will be deleted. The items in this section will no longer be assigned to this course, but will not be permanently deleted.', 'learnpress' ),
 				__( 'Delete Section', 'learnpress' )
 			),
 			'btn-update'           => sprintf(
@@ -358,7 +358,7 @@ class AdminEditCurriculumTemplate {
 				'<li class="action lp-btn-delete-item"
 					data-title="%s" data-content="%s">%s</li>',
 				__( 'Are you sure?', 'learnpress' ),
-				__( 'This item will be deleted from this section. It not delete penalty.', 'learnpress' ),
+				__( 'This item will be removed from this section. This item will no longer be assigned to this course. It will not be permanently deleted from the system.', 'learnpress' ),
 				'<a class="lp-icon-trash-o"></a>'
 			),
 			'wrap_end' => '</ul>',

@@ -11,7 +11,6 @@ import 'toastify-js/src/toastify.css';
 let courseId;
 let elEditCurriculum;
 let elCurriculumSections;
-let dataSend;
 let updateCountItems;
 const className = {
 	idElEditCurriculum: '#lp-course-edit-curriculum',
@@ -44,7 +43,6 @@ const setVariables = ( variables ) => {
 		courseId,
 		elEditCurriculum,
 		elCurriculumSections,
-		dataSend,
 		updateCountItems,
 	} = variables );
 };
@@ -57,6 +55,5 @@ export {
 	courseId,
 	elEditCurriculum,
 	elCurriculumSections,
-	dataSend,
 	updateCountItems,
 };
