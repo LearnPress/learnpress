@@ -1,13 +1,14 @@
 /**
  * Share variables and functions for the edit curriculum page.
  *
- * @since v4.2.8.6
+ * @since 4.2.8.6
  * @version 1.0.0
  */
 import * as lpUtils from '../../utils.js';
 import Toastify from 'toastify-js';
 import 'toastify-js/src/toastify.css';
 
+let courseId;
 let elEditCurriculum;
 let elCurriculumSections;
 let dataSend;
@@ -39,16 +40,23 @@ const showToast = ( message, status = 'success' ) => {
 	toastify.showToast();
 };
 const setVariables = ( variables ) => {
-	( { elEditCurriculum, elCurriculumSections, dataSend, updateCountItems } = variables );
+	( {
+		courseId,
+		elEditCurriculum,
+		elCurriculumSections,
+		dataSend,
+		updateCountItems,
+	} = variables );
 };
 
 export {
 	setVariables,
-	elEditCurriculum,
-	elCurriculumSections,
+	showToast,
 	lpUtils,
 	className,
+	courseId,
+	elEditCurriculum,
+	elCurriculumSections,
 	dataSend,
-	showToast,
 	updateCountItems,
 };

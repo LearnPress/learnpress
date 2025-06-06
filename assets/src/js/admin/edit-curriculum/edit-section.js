@@ -8,7 +8,8 @@ import * as lpEditCurriculumShare from './share.js';
 import SweetAlert from 'sweetalert2';
 import Sortable from 'sortablejs';
 
-let className = {
+const className = {
+	...lpEditCurriculumShare.className,
 	elDivAddNewSection: '.add-new-section',
 	elSectionClone: '.section.clone',
 	elSectionTitleNewInput: '.lp-section-title-new-input',
@@ -26,6 +27,7 @@ let className = {
 };
 
 let {
+	courseId,
 	elEditCurriculum,
 	elCurriculumSections,
 	showToast,
@@ -34,8 +36,11 @@ let {
 	updateCountItems,
 } = lpEditCurriculumShare;
 
+const idUrlHandle = 'edit-course-curriculum';
+
 const init = () => {
 	( {
+		courseId,
 		elEditCurriculum,
 		elCurriculumSections,
 		showToast,
@@ -43,7 +48,6 @@ const init = () => {
 		dataSend,
 		updateCountItems,
 	} = lpEditCurriculumShare );
-	className = { ...lpEditCurriculumShare.className, ...className };
 };
 
 // Add new section
@@ -118,9 +122,14 @@ const addSection = ( e, target ) => {
 		},
 	};
 
-	dataSend.callback.method = 'handle_edit_course_curriculum';
-	dataSend.args.action = 'add_section';
-	dataSend.args.title = titleValue;
+	const dataSend = {
+		action: 'add_section',
+		course_id: courseId,
+		section_name: titleValue,
+		args: {
+			id_url: idUrlHandle,
+		},
+	};
 	window.lpAJAXG.fetchAJAX( dataSend, callBack );
 };
 
@@ -166,12 +175,35 @@ const deleteSection = ( e, target ) => {
 				},
 			};
 
-			dataSend.callback.method = 'handle_edit_course_curriculum';
-			dataSend.args.action = 'delete_section';
-			dataSend.args.section_id = sectionId;
+			const dataSend = {
+				action: 'delete_section',
+				course_id: courseId,
+				section_id: sectionId,
+				args: {
+					id_url: idUrlHandle,
+				},
+			};
 			window.lpAJAXG.fetchAJAX( dataSend, callBack );
 		}
 	} );
+};
+
+// Typing in description input
+const changeTitle = ( e, target ) => {
+	const elSectionTitleInput = target.closest( `${ className.elSectionTitleInput }` );
+	if ( ! elSectionTitleInput ) {
+		return;
+	}
+
+	const elSection = elSectionTitleInput.closest( `${ className.elSection }` );
+	const titleValue = elSectionTitleInput.value.trim();
+	const titleValueOld = elSectionTitleInput.dataset.old || '';
+
+	if ( titleValue === titleValueOld ) {
+		elSection.classList.remove( 'editing' );
+	} else {
+		elSection.classList.add( 'editing' );
+	}
 };
 
 // Update section title to server
@@ -237,10 +269,15 @@ const updateSectionTitle = ( e, target ) => {
 		},
 	};
 
-	dataSend.callback.method = 'handle_edit_course_curriculum';
-	dataSend.args.section_id = sectionId;
-	dataSend.args.action = 'update_section';
-	dataSend.args.section_name = titleValue;
+	const dataSend = {
+		action: 'update_section',
+		course_id: courseId,
+		section_id: sectionId,
+		section_name: titleValue,
+		args: {
+			id_url: idUrlHandle,
+		},
+	};
 	window.lpAJAXG.fetchAJAX( dataSend, callBack );
 };
 
@@ -255,24 +292,6 @@ const cancelSectionTitle = ( e, target ) => {
 	const elSectionTitleInput = elSection.querySelector( `${ className.elSectionTitleInput }` );
 	elSectionTitleInput.value = elSectionTitleInput.dataset.old || ''; // Reset to old value
 	elSection.classList.remove( 'editing' ); // Remove editing class
-};
-
-// Typing in description input
-const changeTitle = ( e, target ) => {
-	const elSectionTitleInput = target.closest( `${ className.elSectionTitleInput }` );
-	if ( ! elSectionTitleInput ) {
-		return;
-	}
-
-	const elSection = elSectionTitleInput.closest( `${ className.elSection }` );
-	const titleValue = elSectionTitleInput.value.trim();
-	const titleValueOld = elSectionTitleInput.dataset.old || '';
-
-	if ( titleValue === titleValueOld ) {
-		elSection.classList.remove( 'editing' );
-	} else {
-		elSection.classList.add( 'editing' );
-	}
 };
 
 // Update section description to server
@@ -331,10 +350,15 @@ const updateSectionDescription = ( e, target ) => {
 		},
 	};
 
-	dataSend.callback.method = 'handle_edit_course_curriculum';
-	dataSend.args.section_id = sectionId;
-	dataSend.args.action = 'update_section';
-	dataSend.args.section_description = descValue;
+	const dataSend = {
+		action: 'update_section',
+		course_id: courseId,
+		section_id: sectionId,
+		section_description: descValue,
+		args: {
+			id_url: idUrlHandle,
+		},
+	};
 	window.lpAJAXG.fetchAJAX( dataSend, callBack );
 };
 
@@ -438,7 +462,6 @@ const sortAbleSection = () => {
 			const callBack = {
 				success: ( response ) => {
 					const { message, status } = response;
-					const { content } = response.data;
 
 					showToast( message, status );
 				},
@@ -451,9 +474,14 @@ const sortAbleSection = () => {
 				},
 			};
 
-			dataSend.callback.method = 'handle_edit_course_curriculum';
-			dataSend.args.action = 'update_section_position';
-			dataSend.args.new_position = sectionIds;
+			const dataSend = {
+				action: 'update_section_position',
+				course_id: courseId,
+				new_position: sectionIds,
+				args: {
+					id_url: idUrlHandle,
+				},
+			};
 
 			clearTimeout( timeout );
 			timeout = setTimeout( () => {
@@ -484,12 +512,12 @@ export {
 	init,
 	addSection,
 	deleteSection,
+	changeTitle,
 	updateSectionTitle,
 	cancelSectionTitle,
 	updateSectionDescription,
 	cancelSectionDescription,
 	changeDescription,
-	changeTitle,
 	toggleSection,
 	sortAbleSection,
 };

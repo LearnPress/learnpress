@@ -1,10 +1,9 @@
 <?php
 
 use LearnPress\Helpers\Config;
-use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\CoursePostModel;
-use LearnPress\TemplateHooks\Course\AdminEditCurriculum;
+use LearnPress\TemplateHooks\Course\AdminEditCurriculumTemplate;
 use LearnPress\TemplateHooks\TemplateAJAX;
 
 class LP_Meta_Box_Course extends LP_Meta_Box {
@@ -714,7 +713,7 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 			'course_id' => $course_id,
 		];
 		$call_back = array(
-			'class'  => AdminEditCurriculum::class,
+			'class'  => AdminEditCurriculumTemplate::class,
 			'method' => 'render_edit_course_curriculum',
 		);
 

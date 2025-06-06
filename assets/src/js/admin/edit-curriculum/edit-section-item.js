@@ -8,7 +8,8 @@ import * as lpEditCurriculumShare from './share.js';
 import SweetAlert from 'sweetalert2';
 import Sortable from 'sortablejs';
 
-let className = {
+const className = {
+	...lpEditCurriculumShare.className,
 	elSectionListItems: '.section-list-items',
 	elItemClone: '.section-item.clone',
 	elSectionItem: '.section-item',
@@ -40,6 +41,7 @@ let className = {
 };
 
 let {
+	courseId,
 	elCurriculumSections,
 	showToast,
 	lpUtils,
@@ -47,10 +49,19 @@ let {
 	updateCountItems,
 } = lpEditCurriculumShare;
 
+const idUrlHandle = 'edit-course-curriculum';
+
 const init = () => {
-	( { elCurriculumSections, showToast, lpUtils, dataSend, updateCountItems } = lpEditCurriculumShare );
-	className = { ...lpEditCurriculumShare.className, ...className };
+	( {
+		courseId,
+		elCurriculumSections,
+		showToast,
+		lpUtils,
+		dataSend,
+		updateCountItems,
+	} = lpEditCurriculumShare );
 };
+
 // Add item type
 const addItemType = ( e, target ) => {
 	const elBtnSelectItemType = target.closest( `${ className.elBtnSelectItemType }` );
@@ -162,12 +173,39 @@ const addItemToSection = ( e, target ) => {
 		},
 	};
 
-	dataSend.callback.method = 'handle_edit_course_curriculum';
-	dataSend.args.section_id = sectionId;
-	dataSend.args.action = 'add_item_to_section';
-	dataSend.args.item_title = titleValue;
-	dataSend.args.item_type = typeValue;
+	const dataSend = {
+		course_id: courseId,
+		action: 'create_item_add_to_section',
+		section_id: sectionId,
+		item_title: titleValue,
+		item_type: typeValue,
+		args: {
+			id_url: idUrlHandle,
+		},
+	};
 	window.lpAJAXG.fetchAJAX( dataSend, callBack );
+};
+
+// Typing in title input
+const changeTitle = ( e, target ) => {
+	const elItemTitleInput = target.closest( `${ className.elItemTitleInput }` );
+	if ( ! elItemTitleInput ) {
+		return;
+	}
+
+	const elSectionItem = elItemTitleInput.closest( `${ className.elSectionItem }` );
+	if ( ! elSectionItem ) {
+		return;
+	}
+
+	const titleValue = elItemTitleInput.value.trim();
+	const titleValueOld = elItemTitleInput.dataset.old || '';
+
+	if ( titleValue === titleValueOld ) {
+		elSectionItem.classList.remove( 'editing' );
+	} else {
+		elSectionItem.classList.add( 'editing' );
+	}
 };
 
 // Update item title
@@ -192,6 +230,11 @@ const updateTitle = ( e, target ) => {
 		return;
 	}
 
+	const elSection = elSectionItem.closest( `${ className.elSection }` );
+	if ( ! elSection ) {
+		return;
+	}
+
 	const elItemTitleInput = elSectionItem.querySelector( `${ className.elItemTitleInput }` );
 	if ( ! elItemTitleInput ) {
 		return;
@@ -211,8 +254,6 @@ const updateTitle = ( e, target ) => {
 		return;
 	}
 
-	console.log( itemTitleValue );
-
 	// Un-focus input item title
 	elItemTitleInput.blur();
 	// show loading
@@ -225,7 +266,7 @@ const updateTitle = ( e, target ) => {
 			showToast( message, status );
 		},
 		error: ( error ) => {
-			console.log( error );
+			showToast( error, 'error' );
 		},
 		completed: () => {
 			lpUtils.lpSetLoadingEl( elSectionItem, 0 );
@@ -234,11 +275,17 @@ const updateTitle = ( e, target ) => {
 		},
 	};
 
-	dataSend.callback.method = 'handle_edit_course_curriculum';
-	dataSend.args.action = 'update_item';
-	dataSend.args.item_id = itemId;
-	dataSend.args.item_type = itemType;
-	dataSend.args.item_title = itemTitleValue;
+	const dataSend = {
+		course_id: courseId,
+		action: 'update_item_of_section',
+		section_id: elSection.dataset.sectionId,
+		item_id: itemId,
+		item_type: itemType,
+		item_title: itemTitleValue,
+		args: {
+			id_url: idUrlHandle,
+		},
+	};
 	window.lpAJAXG.fetchAJAX( dataSend, callBack );
 };
 
@@ -253,247 +300,6 @@ const cancelUpdateTitle = ( e, target ) => {
 	const elItemTitleInput = elSectionItem.querySelector( `${ className.elItemTitleInput }` );
 	elItemTitleInput.value = elItemTitleInput.dataset.old || ''; // Reset to old value
 	elSectionItem.classList.remove( 'editing' ); // Remove editing class
-};
-
-let sectionIdSelected;
-let elPopupSelectItems;
-// Show popup items to select
-const showPopupItemsToSelect = ( e, target ) => {
-	const elBtnShowPopupItemsToSelect = target.closest( `${ className.elBtnShowPopupItemsToSelect }` );
-	if ( ! elBtnShowPopupItemsToSelect ) {
-		return;
-	}
-
-	const elSection = elBtnShowPopupItemsToSelect.closest( `${ className.elSection }` );
-	sectionIdSelected = elSection.dataset.sectionId;
-
-	const elPopupItemsToSelectClone = document.querySelector( `${ className.elPopupItemsToSelectClone }` );
-	elPopupSelectItems = elPopupItemsToSelectClone.cloneNode( true );
-	elPopupSelectItems.classList.remove( 'clone' );
-	lpUtils.lpShowHideEl( elPopupSelectItems, 1 );
-
-	SweetAlert.fire( {
-		html: elPopupSelectItems,
-		showConfirmButton: false,
-		showCloseButton: true,
-		width: '60%',
-		customClass: {
-			popup: 'lp-select-items-popup',
-			htmlContainer: 'lp-select-items-html-container',
-			container: 'lp-select-items-container',
-		},
-		willOpen: () => {
-			// Trigger tab lesson to be active and call AJAX load items
-			const tabLesson = elPopupSelectItems.querySelector( 'li[data-type="lp_lesson"]' );
-			tabLesson.click();
-		},
-	} ).then( ( result ) => {
-		if ( result.isDismissed ) {
-		}
-	} );
-};
-
-let itemsSelectedData = [];
-// Choice items to add list items selected before adding to section
-const selectItemsFromList = ( e, target ) => {
-	const elItemAttend = target.closest( `${ className.elSelectItem }` );
-	if ( ! elItemAttend ) {
-		return;
-	}
-
-	const elInput = elItemAttend.querySelector( 'input[type="checkbox"]' );
-	if ( target.tagName !== 'INPUT' ) {
-		elInput.click();
-		return;
-	}
-
-	const elUl = elItemAttend.closest( `${ className.elListItems }` );
-	if ( ! elUl ) {
-		return;
-	}
-
-	const itemSelected = {
-		item_id: elInput.value,
-		item_type: elInput.dataset.type || '',
-		item_title: elInput.dataset.title || '',
-		item_edit_link: elInput.dataset.editLink || '',
-	};
-	if ( elInput.checked ) {
-		const exists = itemsSelectedData.some( ( item ) => item.item_id === itemSelected.item_id );
-		if ( ! exists ) {
-			itemsSelectedData.push( itemSelected );
-		}
-	} else {
-		const index = itemsSelectedData.findIndex( ( item ) => item.item_id === itemSelected.item_id );
-		if ( index !== -1 ) {
-			itemsSelectedData.splice( index, 1 );
-		}
-	}
-
-	console.log('itemsSelectedData', itemsSelectedData );
-
-	watchItemsSelectedDataChange();
-};
-
-// Choose tab items type
-const chooseTabItemsType = ( e, target ) => {
-	const elTabType = target.closest( '.tab' );
-	if ( ! elTabType ) {
-		return;
-	}
-	e.preventDefault();
-
-	const elTabs = elTabType.closest( '.tabs' );
-	if ( ! elTabs ) {
-		return;
-	}
-
-	const elSelectItemsToAdd = elTabs.closest( `${ className.elPopupItemsToSelect }` );
-	const elInputSearch = elSelectItemsToAdd.querySelector( '.lp-search-title-item' );
-
-	const itemType = elTabType.dataset.type;
-	const elTabLis = elTabs.querySelectorAll( '.tab' );
-	elTabLis.forEach( ( elTabLi ) => {
-		if ( elTabLi.classList.contains( 'active' ) ) {
-			elTabLi.classList.remove( 'active' );
-		}
-	} );
-	elTabType.classList.add( 'active' );
-	// Reset search input
-	elInputSearch.value = '';
-
-	const elLPTarget = elSelectItemsToAdd.querySelector( `${ className.LPTarget }` );
-
-	const dataSend = window.lpAJAXG.getDataSetCurrent( elLPTarget );
-	dataSend.args.item_type = itemType;
-	dataSend.args.paged = 1;
-	dataSend.args.item_selecting = itemsSelectedData || [];
-	window.lpAJAXG.setDataSetCurrent( elLPTarget, dataSend );
-
-	// Show loading
-	window.lpAJAXG.showHideLoading( elLPTarget, 1 );
-	// End
-
-	window.lpAJAXG.fetchAJAX( dataSend, {
-		success: ( response ) => {
-			const { data } = response;
-			elLPTarget.innerHTML = data.content || '';
-		},
-		error: ( error ) => {
-			console.log( error );
-		},
-		completed: () => {
-			window.lpAJAXG.showHideLoading( elLPTarget, 0 );
-			// Show button add if there are items selected
-			watchItemsSelectedDataChange();
-		},
-	} );
-};
-
-// Search title item
-let timeSearchTitleItem;
-const searchTitleItemToSelect = ( e, target ) => {
-	const elInputSearch = target.closest( '.lp-search-title-item' );
-	if ( ! elInputSearch ) {
-		return;
-	}
-
-	const elPopupItemsToSelect = elInputSearch.closest( `${ className.elPopupItemsToSelect }` );
-	if ( ! elPopupItemsToSelect ) {
-		return;
-	}
-
-	const elLPTarget = elPopupItemsToSelect.querySelector( `${ className.LPTarget }` );
-
-	clearTimeout( timeSearchTitleItem );
-
-	timeSearchTitleItem = setTimeout( () => {
-		const dataSet = window.lpAJAXG.getDataSetCurrent( elLPTarget );
-		dataSet.args.search_title = elInputSearch.value.trim();
-		dataSet.args.item_selecting = itemsSelectedData;
-
-		// Show loading
-		window.lpAJAXG.showHideLoading( elLPTarget, 1 );
-
-		window.lpAJAXG.fetchAJAX( dataSet, {
-			success: ( response ) => {
-				const { data } = response;
-				elLPTarget.innerHTML = data.content || '';
-			},
-			error: ( error ) => {
-				console.log( error );
-			},
-			completed: () => {
-				window.lpAJAXG.showHideLoading( elLPTarget, 0 );
-			},
-		} );
-	}, 1000 );
-};
-
-// Add items selected to section
-const addItemsSelectedToSection = ( e, target ) => {
-	const elBtnAddItems = target.closest( `${ className.elBtnAddItemsSelected }` );
-	if ( ! elBtnAddItems ) {
-		return;
-	}
-
-	const elPopupItemsToSelect = elBtnAddItems.closest( `${ className.elPopupItemsToSelect }` );
-	if ( ! elPopupItemsToSelect ) {
-		return;
-	}
-
-	dataSend.callback.method = 'handle_edit_course_curriculum';
-	dataSend.args.action = 'add_items_to_section';
-	dataSend.args.items = itemsSelectedData;
-	dataSend.args.section_id = sectionIdSelected;
-
-	const elSection = document.querySelector( `.section[data-section-id="${ sectionIdSelected }"]` );
-	const elItemClone = elSection.querySelector( `${ className.elItemClone }` );
-
-	itemsSelectedData.forEach( ( item ) => {
-		const elItemNew = elItemClone.cloneNode( true );
-		const elInputTitleNew = elItemNew.querySelector( `${ className.elItemTitleInput }` );
-
-		elItemNew.dataset.itemId = item.item_id;
-		elItemNew.classList.add( item.item_type );
-		elItemNew.classList.remove( 'clone' );
-		elItemNew.dataset.itemType = item.item_type;
-		elItemNew.querySelector( '.edit-link' ).setAttribute( 'href', item.item_edit_link || '' );
-		elInputTitleNew.value = item.item_title || '';
-		lpUtils.lpSetLoadingEl( elItemNew, 1 );
-		lpUtils.lpShowHideEl( elItemNew, 1 );
-		elItemClone.insertAdjacentElement( 'beforebegin', elItemNew );
-	} );
-
-	SweetAlert.close();
-
-	window.lpAJAXG.fetchAJAX( dataSend, {
-		success: ( response ) => {
-			const { message, status } = response;
-			showToast( message, status );
-
-			if ( status === 'error' ) {
-				itemsSelectedData.forEach( ( item ) => {
-					const elItemAdded = elSection.querySelector( `${ className.elSectionItem }[data-item-id="${ item.item_id }"]` );
-					if ( elItemAdded ) {
-						elItemAdded.remove();
-					}
-				} );
-			}
-		},
-		error: ( error ) => {
-			console.log( error );
-		},
-		completed: () => {
-			itemsSelectedData.forEach( ( item ) => {
-				const elItemAdded = elSection.querySelector( `${ className.elSectionItem }[data-item-id="${ item.item_id }"]` );
-				lpUtils.lpSetLoadingEl( elItemAdded, 0 );
-			} );
-
-			itemsSelectedData = []; // Clear selected items data
-			updateCountItems( elSection );
-		},
-	} );
 };
 
 // Delete item from section
@@ -545,13 +351,285 @@ const deleteItem = ( e, target ) => {
 				},
 			};
 
-			dataSend.callback.method = 'handle_edit_course_curriculum';
-			dataSend.args.action = 'delete_item_from_section';
-			dataSend.args.item_id = itemId;
-			dataSend.args.section_id = sectionId;
+			const dataSend = {
+				course_id: courseId,
+				action: 'delete_item_from_section',
+				section_id: sectionId,
+				item_id: itemId,
+				args: {
+					id_url: idUrlHandle,
+				},
+			};
 			window.lpAJAXG.fetchAJAX( dataSend, callBack );
 		}
 	} );
+};
+
+// Sortable items, can drop on multiple sections
+const sortAbleItem = () => {
+	const elSectionListItems = elCurriculumSections.querySelectorAll( `${ className.elSectionListItems }` );
+	let itemIdChoose = 0;
+	let elSectionChoose;
+	let sectionIdChoose = 0;
+	let sectionIdEnd = 0;
+	let timeout;
+	elSectionListItems.forEach( ( elItem ) => {
+		new Sortable( elItem, {
+			handle: '.drag',
+			animation: 150,
+			group: {
+				name: 'shared',
+			},
+			onEnd: ( evt ) => {
+				const dataSectionsItems = [];
+
+				const elItemDragged = evt.item;
+				sectionIdEnd = elItemDragged.closest( `${ className.elSection }` ).dataset.sectionId;
+
+				const dataSend = {
+					course_id: courseId,
+					args: {
+						id_url: idUrlHandle,
+					},
+				};
+				if ( sectionIdChoose === sectionIdEnd ) {
+					// Update items position in the same section
+					dataSend.action = 'update_items_position';
+					dataSend.section_id = sectionIdEnd;
+				} else {
+					// Update section id of item changed
+					dataSend.action = 'update_item_section_and_position';
+					dataSend.item_id_change = itemIdChoose;
+					dataSend.section_id_new_of_item = sectionIdEnd;
+					dataSend.section_id_old_of_item = sectionIdChoose;
+				}
+
+				// Send list items position
+				const section = elCurriculumSections.querySelector( `.section[data-section-id="${ sectionIdEnd }"]` );
+				const items = section.querySelectorAll( `${ className.elSectionItem }` );
+				items.forEach( ( elItem ) => {
+					const itemId = parseInt( elItem.dataset.itemId || 0 );
+					if ( itemId === 0 ) {
+						return;
+					}
+
+					dataSectionsItems.push( itemId );
+				} );
+				dataSend.items_position = dataSectionsItems;
+
+				// Call ajax to update items position
+				const callBack = {
+					success: ( response ) => {
+						const { message, status } = response;
+
+						showToast( message, status );
+					},
+					error: ( error ) => {
+						showToast( error, 'error' );
+					},
+					completed: () => {
+						lpUtils.lpSetLoadingEl( elItemDragged, 0 );
+						updateCountItems( section );
+						if ( sectionIdChoose !== sectionIdEnd ) {
+							updateCountItems( elSectionChoose );
+						}
+					},
+				};
+
+				/*clearTimeout( timeout );
+				timeout = setTimeout( () => {
+					lpUtils.lpSetLoadingEl( elItemDragged, 1 );
+					window.lpAJAXG.fetchAJAX( dataSend, callBack );
+				}, 1000 );*/
+
+				lpUtils.lpSetLoadingEl( elItemDragged, 1 );
+				window.lpAJAXG.fetchAJAX( dataSend, callBack );
+			},
+			onMove: ( evt ) => {
+				//clearTimeout( timeout );
+			},
+			onChoose: ( evt ) => {
+				const elChooseItem = evt.item;
+				itemIdChoose = elChooseItem.dataset.itemId;
+				elSectionChoose = elChooseItem.closest( `${ className.elSection }` );
+				sectionIdChoose = elSectionChoose.dataset.sectionId;
+			},
+			onUpdate: ( evt ) => {},
+		} );
+	} );
+};
+
+let sectionIdSelected;
+let elPopupSelectItems;
+// Show popup items to select
+const showPopupItemsToSelect = ( e, target ) => {
+	const elBtnShowPopupItemsToSelect = target.closest( `${ className.elBtnShowPopupItemsToSelect }` );
+	if ( ! elBtnShowPopupItemsToSelect ) {
+		return;
+	}
+
+	const elSection = elBtnShowPopupItemsToSelect.closest( `${ className.elSection }` );
+	sectionIdSelected = elSection.dataset.sectionId;
+
+	const elPopupItemsToSelectClone = document.querySelector( `${ className.elPopupItemsToSelectClone }` );
+	elPopupSelectItems = elPopupItemsToSelectClone.cloneNode( true );
+	elPopupSelectItems.classList.remove( 'clone' );
+	lpUtils.lpShowHideEl( elPopupSelectItems, 1 );
+
+	SweetAlert.fire( {
+		html: elPopupSelectItems,
+		showConfirmButton: false,
+		showCloseButton: true,
+		width: '60%',
+		customClass: {
+			popup: 'lp-select-items-popup',
+			htmlContainer: 'lp-select-items-html-container',
+			container: 'lp-select-items-container',
+		},
+		willOpen: () => {
+			// Trigger tab lesson to be active and call AJAX load items
+			const tabLesson = elPopupSelectItems.querySelector( 'li[data-type="lp_lesson"]' );
+			tabLesson.click();
+		},
+	} ).then( ( result ) => {
+		if ( result.isDismissed ) {
+		}
+	} );
+};
+
+// Choose tab items type
+const chooseTabItemsType = ( e, target ) => {
+	const elTabType = target.closest( '.tab' );
+	if ( ! elTabType ) {
+		return;
+	}
+	e.preventDefault();
+
+	const elTabs = elTabType.closest( '.tabs' );
+	if ( ! elTabs ) {
+		return;
+	}
+
+	const elSelectItemsToAdd = elTabs.closest( `${ className.elPopupItemsToSelect }` );
+	const elInputSearch = elSelectItemsToAdd.querySelector( '.lp-search-title-item' );
+
+	const itemType = elTabType.dataset.type;
+	const elTabLis = elTabs.querySelectorAll( '.tab' );
+	elTabLis.forEach( ( elTabLi ) => {
+		if ( elTabLi.classList.contains( 'active' ) ) {
+			elTabLi.classList.remove( 'active' );
+		}
+	} );
+	elTabType.classList.add( 'active' );
+	// Reset search input
+	elInputSearch.value = '';
+
+	const elLPTarget = elSelectItemsToAdd.querySelector( `${ className.LPTarget }` );
+
+	const dataSend = window.lpAJAXG.getDataSetCurrent( elLPTarget );
+	dataSend.args.item_type = itemType;
+	dataSend.args.paged = 1;
+	dataSend.args.item_selecting = itemsSelectedData || [];
+	window.lpAJAXG.setDataSetCurrent( elLPTarget, dataSend );
+
+	// Show loading
+	window.lpAJAXG.showHideLoading( elLPTarget, 1 );
+	// End
+
+	window.lpAJAXG.fetchAJAX( dataSend, {
+		success: ( response ) => {
+			const { data } = response;
+			elLPTarget.innerHTML = data.content || '';
+		},
+		error: ( error ) => {
+			showToast( error, 'error' );
+		},
+		completed: () => {
+			window.lpAJAXG.showHideLoading( elLPTarget, 0 );
+			// Show button add if there are items selected
+			watchItemsSelectedDataChange();
+		},
+	} );
+};
+
+let itemsSelectedData = [];
+// Choice items to add list items selected before adding to section
+const selectItemsFromList = ( e, target ) => {
+	const elItemAttend = target.closest( `${ className.elSelectItem }` );
+	if ( ! elItemAttend ) {
+		return;
+	}
+
+	const elInput = elItemAttend.querySelector( 'input[type="checkbox"]' );
+	if ( target.tagName !== 'INPUT' ) {
+		elInput.click();
+		return;
+	}
+
+	const elUl = elItemAttend.closest( `${ className.elListItems }` );
+	if ( ! elUl ) {
+		return;
+	}
+
+	const itemSelected = {
+		item_id: elInput.value,
+		item_type: elInput.dataset.type || '',
+		item_title: elInput.dataset.title || '',
+		item_edit_link: elInput.dataset.editLink || '',
+	};
+	if ( elInput.checked ) {
+		const exists = itemsSelectedData.some( ( item ) => item.item_id === itemSelected.item_id );
+		if ( ! exists ) {
+			itemsSelectedData.push( itemSelected );
+		}
+	} else {
+		const index = itemsSelectedData.findIndex( ( item ) => item.item_id === itemSelected.item_id );
+		if ( index !== -1 ) {
+			itemsSelectedData.splice( index, 1 );
+		}
+	}
+
+	watchItemsSelectedDataChange();
+};
+
+// Search title item
+let timeSearchTitleItem;
+const searchTitleItemToSelect = ( e, target ) => {
+	const elInputSearch = target.closest( '.lp-search-title-item' );
+	if ( ! elInputSearch ) {
+		return;
+	}
+
+	const elPopupItemsToSelect = elInputSearch.closest( `${ className.elPopupItemsToSelect }` );
+	if ( ! elPopupItemsToSelect ) {
+		return;
+	}
+
+	const elLPTarget = elPopupItemsToSelect.querySelector( `${ className.LPTarget }` );
+
+	clearTimeout( timeSearchTitleItem );
+
+	timeSearchTitleItem = setTimeout( () => {
+		const dataSet = window.lpAJAXG.getDataSetCurrent( elLPTarget );
+		dataSet.args.search_title = elInputSearch.value.trim();
+		dataSet.args.item_selecting = itemsSelectedData;
+
+		// Show loading
+		window.lpAJAXG.showHideLoading( elLPTarget, 1 );
+
+		window.lpAJAXG.fetchAJAX( dataSet, {
+			success: ( response ) => {
+				const { data } = response;
+				elLPTarget.innerHTML = data.content || '';
+			},
+			error: ( error ) => {
+				showToast( error, 'error' );
+			},
+			completed: () => {
+				window.lpAJAXG.showHideLoading( elLPTarget, 0 );
+			},
+		} );
+	}, 1000 );
 };
 
 // Show list of items, to choose items to add to section
@@ -677,115 +755,77 @@ const watchItemsSelectedDataChange = () => {
 		elInputItem.checked = exists;
 	} );
 };
-// Sortable items, can drop on multiple sections
-const sortAbleItem = () => {
-	const elSectionListItems = elCurriculumSections.querySelectorAll( `${ className.elSectionListItems }` );
-	let itemIdChoose = 0;
-	let elSectionChoose;
-	let sectionIdChoose = 0;
-	let sectionIdEnd = 0;
-	let timeout;
-	elSectionListItems.forEach( ( elItem ) => {
-		new Sortable( elItem, {
-			handle: '.drag',
-			animation: 150,
-			group: {
-				name: 'shared',
-			},
-			onEnd: ( evt ) => {
-				const dataSectionsItems = [];
 
-				const elItemDragged = evt.item;
-				sectionIdEnd = elItemDragged.closest( `${ className.elSection }` ).dataset.sectionId;
+// Add items selected to section
+const addItemsSelectedToSection = ( e, target ) => {
+	const elBtnAddItems = target.closest( `${ className.elBtnAddItemsSelected }` );
+	if ( ! elBtnAddItems ) {
+		return;
+	}
 
-				dataSend.callback.method = 'handle_edit_course_curriculum';
-				if ( sectionIdChoose === sectionIdEnd ) {
-					// Update items position in the same section
-					dataSend.args.action = 'update_items_position';
-					dataSend.args.section_id = sectionIdEnd;
-				} else {
-					// Update section id of item changed
-					dataSend.args.action = 'update_item_section_and_position';
-					dataSend.args.item_id_change = itemIdChoose;
-					dataSend.args.section_id_new_of_item = sectionIdEnd;
-					dataSend.args.section_id_old_of_item = sectionIdChoose;
-				}
+	const elPopupItemsToSelect = elBtnAddItems.closest( `${ className.elPopupItemsToSelect }` );
+	if ( ! elPopupItemsToSelect ) {
+		return;
+	}
 
-				// Send list items position
-				const section = elCurriculumSections.querySelector( `.section[data-section-id="${ sectionIdEnd }"]` );
-				const items = section.querySelectorAll( `${ className.elSectionItem }` );
-				items.forEach( ( elItem ) => {
-					const itemId = parseInt( elItem.dataset.itemId || 0 );
-					if ( itemId === 0 ) {
-						return;
+	const elSection = document.querySelector( `.section[data-section-id="${ sectionIdSelected }"]` );
+	const elItemClone = elSection.querySelector( `${ className.elItemClone }` );
+
+	itemsSelectedData.forEach( ( item ) => {
+		const elItemNew = elItemClone.cloneNode( true );
+		const elInputTitleNew = elItemNew.querySelector( `${ className.elItemTitleInput }` );
+
+		elItemNew.dataset.itemId = item.item_id;
+		elItemNew.classList.add( item.item_type );
+		elItemNew.classList.remove( 'clone' );
+		elItemNew.dataset.itemType = item.item_type;
+		elItemNew.querySelector( '.edit-link' ).setAttribute( 'href', item.item_edit_link || '' );
+		elInputTitleNew.value = item.item_title || '';
+		lpUtils.lpSetLoadingEl( elItemNew, 1 );
+		lpUtils.lpShowHideEl( elItemNew, 1 );
+		elItemClone.insertAdjacentElement( 'beforebegin', elItemNew );
+	} );
+
+	SweetAlert.close();
+
+	const dataSend = {
+		course_id: courseId,
+		action: 'add_items_to_section',
+		section_id: sectionIdSelected,
+		items: itemsSelectedData,
+		args: {
+			id_url: idUrlHandle,
+		},
+	};
+	window.lpAJAXG.fetchAJAX( dataSend, {
+		success: ( response ) => {
+			const { message, status } = response;
+			showToast( message, status );
+
+			if ( status === 'error' ) {
+				itemsSelectedData.forEach( ( item ) => {
+					const elItemAdded = elSection.querySelector( `${ className.elSectionItem }[data-item-id="${ item.item_id }"]` );
+					if ( elItemAdded ) {
+						elItemAdded.remove();
 					}
-
-					dataSectionsItems.push( itemId );
 				} );
-				dataSend.args.items_position = dataSectionsItems;
+			}
+		},
+		error: ( error ) => {
+			showToast( error, 'error' );
+		},
+		completed: () => {
+			itemsSelectedData.forEach( ( item ) => {
+				const elItemAdded = elSection.querySelector( `${ className.elSectionItem }[data-item-id="${ item.item_id }"]` );
+				lpUtils.lpSetLoadingEl( elItemAdded, 0 );
+			} );
 
-				// Call ajax to update items position
-				const callBack = {
-					success: ( response ) => {
-						const { message, status } = response;
-
-						showToast( message, status );
-					},
-					error: ( error ) => {
-						showToast( error, 'error' );
-					},
-					completed: () => {
-						lpUtils.lpSetLoadingEl( elItemDragged, 0 );
-						updateCountItems( section );
-						if ( sectionIdChoose !== sectionIdEnd ) {
-							updateCountItems( elSectionChoose );
-						}
-					},
-				};
-
-				/*clearTimeout( timeout );
-				timeout = setTimeout( () => {
-					lpUtils.lpSetLoadingEl( elItemDragged, 1 );
-					window.lpAJAXG.fetchAJAX( dataSend, callBack );
-				}, 1000 );*/
-
-				lpUtils.lpSetLoadingEl( elItemDragged, 1 );
-				window.lpAJAXG.fetchAJAX( dataSend, callBack );
-			},
-			onMove: ( evt ) => {
-				//clearTimeout( timeout );
-			},
-			onChoose: ( evt ) => {
-				const elChooseItem = evt.item;
-				itemIdChoose = elChooseItem.dataset.itemId;
-				elSectionChoose = elChooseItem.closest( `${ className.elSection }` );
-				sectionIdChoose = elSectionChoose.dataset.sectionId;
-			},
-			onUpdate: ( evt ) => {},
-		} );
+			itemsSelectedData = []; // Clear selected items data
+			updateCountItems( elSection );
+		},
 	} );
 };
-// Typing in title input
-const changeTitle = ( e, target ) => {
-	const elItemTitleInput = target.closest( `${ className.elItemTitleInput }` );
-	if ( ! elItemTitleInput ) {
-		return;
-	}
 
-	const elSectionItem = elItemTitleInput.closest( `${ className.elSectionItem }` );
-	if ( ! elSectionItem ) {
-		return;
-	}
-
-	const titleValue = elItemTitleInput.value.trim();
-	const titleValueOld = elItemTitleInput.dataset.old || '';
-
-	if ( titleValue === titleValueOld ) {
-		elSectionItem.classList.remove( 'editing' );
-	} else {
-		elSectionItem.classList.add( 'editing' );
-	}
-};
 // Enable/disable preview item
 const updatePreviewItem = ( e, target ) => {
 	const elBtnSetPreviewItem = target.closest( `${ className.elBtnSetPreviewItem }` );
@@ -832,11 +872,16 @@ const updatePreviewItem = ( e, target ) => {
 		},
 	};
 
-	dataSend.callback.method = 'handle_edit_course_curriculum';
-	dataSend.args.action = 'update_item_preview';
-	dataSend.args.item_id = itemId;
-	dataSend.args.item_type = itemType;
-	dataSend.args.enable_preview = enablePreview ? 1 : 0;
+	const dataSend = {
+		course_id: courseId,
+		action: 'update_item_preview',
+		item_id: itemId,
+		item_type: itemType,
+		enable_preview: enablePreview ? 1 : 0,
+		args: {
+			id_url: idUrlHandle,
+		},
+	};
 	window.lpAJAXG.fetchAJAX( dataSend, callBack );
 };
 
@@ -845,13 +890,13 @@ export {
 	addItemType,
 	cancelAddItemType,
 	addItemToSection,
-	showPopupItemsToSelect,
-	chooseTabItemsType,
 	changeTitle,
-	sortAbleItem,
 	updateTitle,
 	cancelUpdateTitle,
 	deleteItem,
+	sortAbleItem,
+	showPopupItemsToSelect,
+	chooseTabItemsType,
 	selectItemsFromList,
 	showItemsSelected,
 	backToSelectItems,

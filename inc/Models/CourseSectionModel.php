@@ -246,6 +246,8 @@ class CourseSectionModel {
 	 * Add items created to section.
 	 *
 	 * @throws Exception
+	 * @since 4.2.8.6
+	 * @version 1.0.0
 	 */
 	public function add_items( array $data ) {
 		$courseModel = $this->get_course_model();

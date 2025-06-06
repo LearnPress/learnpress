@@ -2,7 +2,7 @@
  * Load all you need via AJAX
  *
  * @since 4.2.5.7
- * @version 1.0.7
+ * @version 1.0.8
  */
 
 import {
@@ -56,8 +56,8 @@ const lpAJAX = ( () => {
 
 			lpFetchAPI( url, option, callBack );
 		},
-		fetchAJAX: ( params, callBack, urlAjax = '' ) => {
-			urlAjax = urlAjax || lpSettings.lpAjaxUrl;
+		fetchAJAX: ( params, callBack ) => {
+			let urlAjax = lpSettings.lpAjaxUrl;
 
 			// Set param id_url for identify.
 			if ( params.hasOwnProperty( 'args' ) && params.args.hasOwnProperty( 'id_url' ) ) {
@@ -69,8 +69,9 @@ const lpAJAX = ( () => {
 			}
 
 			const formData = new FormData();
+			const action = params.hasOwnProperty( 'action' ) ? params.action : 'load_content_via_ajax';
 			formData.append( 'nonce', lpSettings.nonce );
-			formData.append( 'lp-load-ajax', 'load_content_via_ajax' );
+			formData.append( 'lp-load-ajax', action );
 			formData.append( 'data', JSON.stringify( params ) );
 			const dataSend = {
 				method: 'POST',
