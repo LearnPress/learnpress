@@ -1077,11 +1077,11 @@ function learn_press_update_user_profile_change_password() {
 	try {
 		$user = wp_get_current_user();
 		if ( ! $user ) {
-			return new WP_Error( 'error_lp_profile_update_pass', 'The user is invalid' );
+			throw new Exception( 'error_lp_profile_update_pass', 'The user is invalid' );
 		}
 
 		$old_pass = LP_Request::get_param( 'pass0', '', 'text', 'post' );
-		if ( ! empty( $old_pass ) ) {
+		if ( empty( $old_pass ) ) {
 			throw new Exception( __( 'Enter the old password!', 'learnpress' ) );
 		}
 
@@ -1097,7 +1097,17 @@ function learn_press_update_user_profile_change_password() {
 			throw new Exception( __( 'Incorrect confirmation password!', 'learnpress' ) );
 		}
 
-		wp_set_password( $new_pass, $user->ID );
+		// Update user password
+		// wp_set_password( $new_pass, $user->ID );
+		$update_data = array(
+			'user_pass' => $new_pass,
+			'ID'        => $user->ID,
+		);
+
+		$rs = wp_update_user( $update_data );
+		if ( is_wp_error( $rs ) ) {
+			throw new Exception( $rs->get_error_message() );
+		}
 	} catch ( Exception $ex ) {
 		return new WP_Error( 'error_lp_profile_update_pass', $ex->getMessage() );
 	}

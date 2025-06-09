@@ -225,7 +225,9 @@ https://www.transifex.com/projects/p/learnpress/
 = 4.2.8.6 (2025-06-09) =
 ~ Refactor: edit curriculum.
 ~ Update: UI/UX for edit curriculum.
-~ Allow: drag item to another section.
+~ Allow: drag/drop item to another section.
+~ Fixed error Deprecated crypt(), when update password on profile.
+~ Fixed: get_instructor_info method.
 
 = 4.2.8.5 (2025-05-21) =
 ~ Fixed: missing user email in order summary table.
