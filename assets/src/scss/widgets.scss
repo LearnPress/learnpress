@@ -33,6 +33,7 @@
 	position: relative;
 
 	.lp-widget-loading-change {
+		display: none;
 		@include loading-change;
 		z-index: 10;
 	}

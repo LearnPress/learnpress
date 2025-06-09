@@ -344,7 +344,7 @@ window.lpCourseFilter = {
 					console.log( error );
 				},
 				completed: () => {
-					//console.log( 'completed' );
+					elListCourseTarget.classList.remove( classProcessing );
 					window.lpAJAXG.showHideLoading( elListCourseTarget, 0 );
 				},
 			};
