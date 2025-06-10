@@ -276,7 +276,7 @@ class LP_Polylang {
 	 *
 	 * @return array
 	 * @since 4.2.3.3
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 * @uses LP_Query::add_rewrite_rules
 	 */
 	public function pll_rewrite_rules( array $rules ): array {
@@ -286,22 +286,25 @@ class LP_Polylang {
 
 		$rules_old = $rules;
 
-		$lang_default = pll_default_language();
-		$lang_current = pll_current_language();
-		$pll_options  = $this->get_pll_options();
-		$all_lang     = pll_languages_list();
-		$hide_default = $pll_options['hide_default'] ?? 1;
+		$lang_default  = pll_default_language();
+		$lang_current  = pll_current_language();
+		$pll_options   = $this->get_pll_options();
+		$all_lang      = pll_languages_list();
+		$hide_default  = $pll_options['hide_default'] ?? 1;
+		$force_lang    = $pll_options['force_lang'] ?? 1;
+		$force_rewrite = $pll_options['force_rewrite'] ?? 0;
 		foreach ( $all_lang as $lang ) {
 			$lang_slug = '';
-			if ( 0 == $pll_options['force_lang'] ) { // Pll not change link by language
-
-			} elseif ( 1 == $pll_options['force_lang'] ) { // Pll add slug language to link
-				if ( $pll_options['rewrite'] == 0 ) {
+			if ( 1 == $force_lang ) { // Pll add slug language to link
+				if ( $force_rewrite == 0 ) {
 					$lang_slug .= 'language/';
 				}
 
 				$lang_slug .= $lang . '/';
+			} else { // Pll add slug language to link
+				$lang_slug .= $lang . '/';
 			}
+
 			$lang_get_option = '';
 			if ( $lang != $lang_default ) {
 				$lang_get_option = '_' . $lang;

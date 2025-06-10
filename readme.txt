@@ -222,6 +222,9 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.2.8.7 (2025-06-14) =
+~ Fixed: error link profile with Polylang v3.7 and higher
+
 = 4.2.8.6.1 (2025-06-09) =
 ~ Fixed: error widget courses can't interact.
 
