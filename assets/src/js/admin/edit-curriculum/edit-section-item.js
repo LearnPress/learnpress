@@ -144,6 +144,7 @@ const addItemToSection = ( e, target ) => {
 	lpUtils.lpShowHideEl( elItemNew, 1 );
 	lpUtils.lpSetLoadingEl( elItemNew, 1 );
 	elItemTitleInput.value = titleValue;
+	elItemTitleInput.dataset.old = titleValue;
 	elItemClone.insertAdjacentElement( 'beforebegin', elItemNew );
 	elAddItemType.remove();
 
@@ -204,6 +205,49 @@ const changeTitle = ( e, target ) => {
 		elSectionItem.classList.remove( 'editing' );
 	} else {
 		elSectionItem.classList.add( 'editing' );
+	}
+};
+
+// Focus in item title input
+const focusTitleInput = ( e, target, isFocus = true ) => {
+	const elItemTitleInput = target.closest( `${ className.elItemTitleInput }` );
+	if ( ! elItemTitleInput ) {
+		return;
+	}
+
+	const elSectionItem = elItemTitleInput.closest( `${ className.elSectionItem }` );
+	if ( ! elSectionItem ) {
+		return;
+	}
+
+	if ( isFocus ) {
+		elSectionItem.classList.add( 'focus' );
+	} else {
+		elSectionItem.classList.remove( 'focus' );
+	}
+};
+
+const changeTitleAddNew = ( e, target ) => {
+	const elAddItemTypeTitleInput = target.closest( `${ className.elAddItemTypeTitleInput }` );
+	if ( ! elAddItemTypeTitleInput ) {
+		return;
+	}
+
+	const elAddItemType = elAddItemTypeTitleInput.closest( `${ className.elAddItemType }` );
+	if ( ! elAddItemType ) {
+		return;
+	}
+
+	const elBtnAddItem = elAddItemType.querySelector( `${ className.elBtnAddItem }` );
+	if ( ! elBtnAddItem ) {
+		return;
+	}
+
+	const titleValue = elAddItemTypeTitleInput.value.trim();
+	if ( titleValue.length === 0 ) {
+		elBtnAddItem.classList.remove( 'active' );
+	} else {
+		elBtnAddItem.classList.add( 'active' );
 	}
 };
 
@@ -890,6 +934,8 @@ export {
 	cancelAddItemType,
 	addItemToSection,
 	changeTitle,
+	focusTitleInput,
+	changeTitleAddNew,
 	updateTitle,
 	cancelUpdateTitle,
 	deleteItem,

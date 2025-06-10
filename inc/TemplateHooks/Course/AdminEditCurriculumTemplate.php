@@ -195,9 +195,16 @@ class AdminEditCurriculumTemplate {
 				$is_clone ? 'clone lp-hidden' : ''
 			),
 			'head'                 => '<div class="section-head">',
-			'drag'                 => '<span class="drag lp-icon-drag"></span>',
+			'drag'                 => sprintf(
+				'<span class="drag lp-icon-drag" title="%s"></span>',
+				__( 'Drag to reorder section', 'learnpress' )
+			),
 			'loading'              => '<span class="lp-icon-spinner"></span>',
 			'title'                => $this->html_input_section_title( $section_name ),
+			'btn-edit'             => sprintf(
+				'<span class="lp-btn-edit-section-title lp-icon-edit" title="%s"></span>',
+				__( 'Edit title section', 'learnpress' )
+			),
 			'btn-delete'           => sprintf(
 				'<button type="button" class="lp-btn-delete-section button" data-title="%s" data-content="%s">%s</button>',
 				__( 'Are you sure?', 'learnpress' ),
@@ -282,12 +289,12 @@ class AdminEditCurriculumTemplate {
 	 */
 	public function html_edit_section_description( string $section_description = '' ): string {
 		return sprintf(
-			'<input class="lp-section-description-input"
+			'<textarea class="lp-section-description-input"
 				name="lp-section-description-input"
 				type="text"
 				value="%1$s"
 				data-old="%1$s"
-				placeholder="%2$s">',
+				placeholder="%2$s"></textarea>',
 			esc_attr( $section_description ),
 			esc_attr__( '+ Add Description', 'learnpress' )
 		);
@@ -359,7 +366,7 @@ class AdminEditCurriculumTemplate {
 					data-title="%s" data-content="%s">%s</li>',
 				__( 'Are you sure?', 'learnpress' ),
 				__( 'This item will be removed from this section. This item will no longer be assigned to this course. It will not be permanently deleted from the system.', 'learnpress' ),
-				'<a class="lp-icon-trash-o"></a>'
+				sprintf( '<a class="lp-icon-trash-o" title="%s"></a>', __( 'Remove item', 'learnpress' ) )
 			),
 			'wrap_end' => '</ul>',
 		];
@@ -372,7 +379,10 @@ class AdminEditCurriculumTemplate {
 				$item_type,
 				$is_clone ? 'clone lp-hidden' : ''
 			),
-			'drag'         => '<span class="drag lp-icon-drag"></span>',
+			'drag'         => sprintf(
+				'<span class="drag lp-icon-drag" title="%s"></span>',
+				__( 'Drag to reorder item', 'learnpress' )
+			),
 			'icon'         => '<div class="item-ico-type"></div>',
 			'loading'      => '<span class="lp-icon-spinner"></span>',
 			'input-title'  => sprintf(

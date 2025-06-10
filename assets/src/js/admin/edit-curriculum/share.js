@@ -13,6 +13,7 @@ let elEditCurriculum;
 let elCurriculumSections;
 let updateCountItems;
 let sortAbleItem;
+let hasChange;
 const className = {
 	idElEditCurriculum: '#lp-course-edit-curriculum',
 	elCurriculumSections: '.curriculum-sections',
@@ -45,6 +46,7 @@ const setVariables = ( variables ) => {
 		elEditCurriculum,
 		elCurriculumSections,
 		updateCountItems,
+		hasChange,
 	} = variables );
 };
 const setVariable = ( variable, value ) => {
@@ -68,4 +70,5 @@ export {
 	elCurriculumSections,
 	updateCountItems,
 	sortAbleItem,
+	hasChange,
 };

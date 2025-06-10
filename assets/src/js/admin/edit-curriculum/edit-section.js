@@ -14,6 +14,7 @@ const className = {
 	elSectionClone: '.section.clone',
 	elSectionTitleNewInput: '.lp-section-title-new-input',
 	elSectionTitleInput: '.lp-section-title-input',
+	etBtnEditTitle: '.lp-btn-edit-section-title',
 	elSectionDesInput: '.lp-section-description-input',
 	elBtnAddSection: '.lp-btn-add-section',
 	elBtnUpdateTitle: '.lp-btn-update-section-title',
@@ -46,6 +47,49 @@ const init = () => {
 		lpUtils,
 		updateCountItems,
 	} = lpEditCurriculumShare );
+};
+
+// Typing in new section title input
+const changeTitleBeforeAdd = ( e, target ) => {
+	const elSectionTitleNewInput = target.closest( `${ className.elSectionTitleNewInput }` );
+	if ( ! elSectionTitleNewInput ) {
+		return;
+	}
+
+	const elAddNewSection = elSectionTitleNewInput.closest( `${ className.elDivAddNewSection }` );
+	if ( ! elAddNewSection ) {
+		return;
+	}
+
+	const elBtnAddSection = elAddNewSection.querySelector( `${ className.elBtnAddSection }` );
+
+	const titleValue = elSectionTitleNewInput.value.trim();
+	if ( titleValue.length === 0 ) {
+		elBtnAddSection.classList.remove( 'active' );
+		delete lpEditCurriculumShare.hasChange.titleNew;
+	} else {
+		elBtnAddSection.classList.add( 'active' );
+		lpEditCurriculumShare.hasChange.titleNew = 1;
+	}
+};
+
+// Focus on new section title input
+const focusTitleNewInput = ( e, target, focusIn = true ) => {
+	const elSectionTitleNewInput = target.closest( `${ className.elSectionTitleNewInput }` );
+	if ( ! elSectionTitleNewInput ) {
+		return;
+	}
+
+	const elAddNewSection = elSectionTitleNewInput.closest( `${ className.elDivAddNewSection }` );
+	if ( ! elAddNewSection ) {
+		return;
+	}
+
+	if ( focusIn ) {
+		elAddNewSection.classList.add( 'focus' );
+	} else {
+		elAddNewSection.classList.remove( 'focus' );
+	}
 };
 
 // Add new section
@@ -190,6 +234,42 @@ const deleteSection = ( e, target ) => {
 	} );
 };
 
+// Focus on new section title input
+const focusTitleInput = ( e, target, focusIn = true ) => {
+	const elSectionTitleInput = target.closest( `${ className.elSectionTitleInput }` );
+	if ( ! elSectionTitleInput ) {
+		return;
+	}
+
+	const elSection = elSectionTitleInput.closest( `${ className.elSection }` );
+	if ( ! elSection ) {
+		return;
+	}
+
+	if ( focusIn ) {
+		elSection.classList.add( 'focus' );
+	} else {
+		elSection.classList.remove( 'focus' );
+	}
+};
+
+// Set focus on section title input
+const setFocusTitleInput = ( e, target ) => {
+	const etBtnEditTitle = target.closest( `${ className.etBtnEditTitle }` );
+	if ( ! etBtnEditTitle ) {
+		return;
+	}
+
+	const elSection = etBtnEditTitle.closest( `${ className.elSection }` );
+	if ( ! elSection ) {
+		return;
+	}
+
+	const elSectionTitleInput = elSection.querySelector( `${ className.elSectionTitleInput }` );
+	elSectionTitleInput.setSelectionRange( elSectionTitleInput.value.length, elSectionTitleInput.value.length );
+	elSectionTitleInput.focus();
+};
+
 // Typing in description input
 const changeTitle = ( e, target ) => {
 	const elSectionTitleInput = target.closest( `${ className.elSectionTitleInput }` );
@@ -203,8 +283,10 @@ const changeTitle = ( e, target ) => {
 
 	if ( titleValue === titleValueOld ) {
 		elSection.classList.remove( 'editing' );
+		delete lpEditCurriculumShare.hasChange.title;
 	} else {
 		elSection.classList.add( 'editing' );
+		lpEditCurriculumShare.hasChange.title = 1;
 	}
 };
 
@@ -294,6 +376,7 @@ const cancelSectionTitle = ( e, target ) => {
 	const elSectionTitleInput = elSection.querySelector( `${ className.elSectionTitleInput }` );
 	elSectionTitleInput.value = elSectionTitleInput.dataset.old || ''; // Reset to old value
 	elSection.classList.remove( 'editing' ); // Remove editing class
+	delete lpEditCurriculumShare.hasChange.title;
 };
 
 // Update section description to server
@@ -512,9 +595,13 @@ const updateCountSections = () => {
 
 export {
 	init,
+	changeTitleBeforeAdd,
+	focusTitleNewInput,
 	addSection,
 	deleteSection,
 	changeTitle,
+	focusTitleInput,
+	setFocusTitleInput,
 	updateSectionTitle,
 	cancelSectionTitle,
 	updateSectionDescription,
