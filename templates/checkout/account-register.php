@@ -43,6 +43,7 @@ defined( 'ABSPATH' ) || exit();
 	<?php
 	// Add hook of WordPress
 	do_action( 'register_form' );
+	do_action( 'login_enqueue_scripts' );
 	?>
 
 	<?php //wp_nonce_field( 'learn-press-checkout-register', 'learn-press-checkout-nonce' ); ?>

@@ -54,6 +54,7 @@ if ( ! is_user_logged_in() && LearnPress::instance()->checkout()->is_enable_gues
 	<?php
 	// Add hook of WordPress
 	do_action( 'login_form' );
+	do_action( 'login_enqueue_scripts' );
 	?>
 
 	<p class="lp-checkout-sign-up-link">
