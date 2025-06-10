@@ -2,7 +2,7 @@
  * Share variables and functions for the edit curriculum page.
  *
  * @since 4.2.8.6
- * @version 1.0.0
+ * @version 1.0.1
  */
 import * as lpUtils from '../../utils.js';
 import Toastify from 'toastify-js';
@@ -12,6 +12,7 @@ let courseId;
 let elEditCurriculum;
 let elCurriculumSections;
 let updateCountItems;
+let sortAbleItem;
 const className = {
 	idElEditCurriculum: '#lp-course-edit-curriculum',
 	elCurriculumSections: '.curriculum-sections',
@@ -46,9 +47,19 @@ const setVariables = ( variables ) => {
 		updateCountItems,
 	} = variables );
 };
+const setVariable = ( variable, value ) => {
+	if ( variable && value !== undefined ) {
+		switch ( variable ) {
+		case 'sortAbleItem':
+			sortAbleItem = value;
+			break;
+		}
+	}
+};
 
 export {
 	setVariables,
+	setVariable,
 	showToast,
 	lpUtils,
 	className,
@@ -56,4 +67,5 @@ export {
 	elEditCurriculum,
 	elCurriculumSections,
 	updateCountItems,
+	sortAbleItem,
 };

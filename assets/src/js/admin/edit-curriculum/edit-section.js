@@ -1,8 +1,8 @@
 /**
  * Edit Section Script on Curriculum
  *
- * @version 1.0.0
  * @since 4.2.8.6
+ * @version 1.0.1
  */
 import * as lpEditCurriculumShare from './share.js';
 import SweetAlert from 'sweetalert2';
@@ -103,6 +103,10 @@ const addSection = ( e, target ) => {
 			} else if ( status === 'success' ) {
 				const { section } = data;
 				newSection.dataset.sectionId = section.section_id || '';
+
+				if ( lpEditCurriculumShare.sortAbleItem ) {
+					lpEditCurriculumShare.sortAbleItem();
+				}
 			}
 
 			showToast( message, status );

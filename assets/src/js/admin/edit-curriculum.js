@@ -2,7 +2,7 @@
  * Edit Curriculum JS handler.
  *
  * @since 4.2.8.6
- * @version 1.0.0
+ * @version 1.0.1
  */
 
 import * as lpEditCurriculumShare from './edit-curriculum/share.js';
@@ -164,4 +164,6 @@ lpEditCurriculumShare.lpUtils.lpOnElementReady( `${ className.idElEditCurriculum
 	// Set variables use for edit section item
 	sectionItemEdit.init();
 	sectionItemEdit.sortAbleItem();
+	// Share sortAbleItem function, for when create new section, will call this function to sort items in section.
+	lpEditCurriculumShare.setVariable( 'sortAbleItem', sectionItemEdit.sortAbleItem );
 } );
