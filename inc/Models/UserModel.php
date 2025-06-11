@@ -335,7 +335,7 @@ class UserModel {
 	 *
 	 * @move from LP_User
 	 * @return string
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 * @since 4.2.3
 	 */
 	public function get_url_instructor(): string {
@@ -344,7 +344,11 @@ class UserModel {
 		try {
 			$user_name                 = $this->user_nicename ?? '';
 			$single_instructor_page_id = learn_press_get_page_id( 'single_instructor' );
-			$single_instructor_link    = trailingslashit(
+			if ( ! $single_instructor_page_id ) {
+				return $single_instructor_link;
+			}
+
+			$single_instructor_link = trailingslashit(
 				trailingslashit( get_page_link( $single_instructor_page_id ) ) . $user_name
 			);
 		} catch ( Throwable $e ) {
