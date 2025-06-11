@@ -90,7 +90,7 @@ class CourseButtonBlockType extends AbstractCourseBlockType {
 			$html_button = sprintf(
 				'<div class="course-buttons__wrapper" %s>%s</div>',
 				'style="display: flex; ' . 'align-items: ' . $align_items . ';' . 'justify-content: ' . $justify_content . ';' . '"',
-				$html_button,
+				$html_button
 			);
 
 			$html_button = str_replace(
