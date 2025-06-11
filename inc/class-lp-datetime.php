@@ -144,7 +144,7 @@ class LP_Datetime {
 	 *
 	 * @return string
 	 * @since 4.0.3
-	 * @version 1.0.4
+	 * @version 1.0.5
 	 */
 	public static function format_human_time_diff( DateTime $date_start, DateTime $date_end ): string {
 		$diff = $date_end->diff( $date_start );
@@ -211,6 +211,7 @@ class LP_Datetime {
 						$format_date = $v;
 						break;
 				}
+				break;
 			} elseif ( 'w' === $k && $week > 0 ) {
 				$day_remain  = $diff->d - $week * 7;
 				$format_date = sprintf(
@@ -290,14 +291,14 @@ class LP_Datetime {
 	/**
 	 * Get string plural duration.
 	 *
-	 * @param float $duration_number
+	 * @param int $duration_number
 	 * @param string $duration_type
 	 *
 	 * @return string
-	 * @version 1.0.4
+	 * @version 1.0.5
 	 * @since 4.2.3.5
 	 */
-	public static function get_string_plural_duration( float $duration_number, string $duration_type = '' ): string {
+	public static function get_string_plural_duration( int $duration_number, string $duration_type = '' ): string {
 		switch ( strtolower( $duration_type ) ) {
 			case 'second':
 				$duration_str = sprintf(
