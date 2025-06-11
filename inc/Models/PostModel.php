@@ -215,7 +215,7 @@ class PostModel {
 	 *
 	 * @throws Exception
 	 * @since 4.2.5
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public function save() {
 		$data = [];
@@ -223,12 +223,8 @@ class PostModel {
 			$data[ $property ] = $value;
 		}
 
-		$filter              = new LP_Post_Type_Filter();
-		$filter->ID          = $this->ID;
-		$filter->only_fields = [ 'ID' ];
-		$post_rs             = self::get_item_model_from_db( $filter );
 		// Check if exists course id.
-		if ( empty( $post_rs ) ) { // Insert data.
+		if ( empty( $this->ID ) ) { // Insert data.
 			$post_id = wp_insert_post( $data, true );
 		} else { // Update data.
 			$post_id = wp_update_post( $data, true );
@@ -242,6 +238,10 @@ class PostModel {
 
 		$post = get_post( $this->ID );
 		foreach ( get_object_vars( $post ) as $property => $value ) {
+			// If property is not exists in PostModel, skip it.
+			if ( ! property_exists( $this, $property ) ) {
+				continue;
+			}
 			$this->{$property} = $value;
 		}
 

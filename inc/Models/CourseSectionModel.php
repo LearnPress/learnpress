@@ -193,9 +193,14 @@ class CourseSectionModel {
 	/**
 	 * Create item and add to section.
 	 *
+	 * @param array $data
+	 *
+	 * @return CourseSectionItemModel
 	 * @throws Exception
+	 * @since 4.2.8.6
+	 * @version 1.0.1
 	 */
-	public function create_item_and_add( array $data ) {
+	public function create_item_and_add( array $data ): CourseSectionItemModel {
 		$item_type   = trim( $data['item_type'] ?? '' );
 		$item_title  = $data['item_title'] ?? '';
 		$courseModel = $this->get_course_model();
@@ -216,7 +221,15 @@ class CourseSectionModel {
 		}
 
 		// Create item
-		$post_args = [
+		$itemModelNew              = new PostModel();
+		$itemModelNew->post_type   = $item_type;
+		$itemModelNew->post_title  = $item_title;
+		$itemModelNew->post_status = 'publish';
+		$itemModelNew->post_author = get_current_user_id();
+		$itemModelNew->save();
+		$item_id = $itemModelNew->get_id();
+
+		/*$post_args = [
 			'post_author' => get_current_user_id(),
 			'post_title'  => $item_title,
 			'post_type'   => $item_type,
@@ -225,7 +238,7 @@ class CourseSectionModel {
 		$item_id   = wp_insert_post( $post_args );
 		if ( is_wp_error( $item_id ) ) {
 			throw new Exception( $item_id->get_error_message() );
-		}
+		}*/
 
 		// Get max item order
 		$max_order = LP_Section_Items_DB::getInstance()->get_last_number_order( $section_id );
