@@ -1,20 +1,13 @@
-@font-face {
-	font-family: 'lp-icon';
-	src: url('../src/css/vendor/fonts/lp-icon/lp-icon.woff2?v=#{random(200)}') format('woff2');
-	font-weight: normal;
-	font-style: normal;
-	font-display: block;
-}
-
 [class^="lp-icon-"], [class*=" lp-icon-"] {
 	/* use !important to prevent issues with browser extensions that change fonts */
-	font-family: 'lp-icon' !important;
+	font-family: 'lp-icon';
 	speak: never;
 	font-style: normal;
 	font-weight: normal;
 	font-variant: normal;
 	text-transform: none;
 	line-height: 1;
+
 	/* Better Font Rendering =========== */
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
@@ -46,7 +39,6 @@
 
 .lp-icon-star:before {
 	content: "\f005";
-	color: #ffb606;
 }
 
 .lp-icon-star-o:before {
@@ -771,6 +763,14 @@
 
 .lp-icon-dropbox:before {
 	content: "\e905";
+}
+
+.lp-icon-edit-square:before {
+	content: "\e923";
+}
+
+.lp-icon-drag:before {
+	content: "\e922";
 }
 
 .lp-icon-map-pin:before {

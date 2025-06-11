@@ -303,10 +303,7 @@ window.lpCourseFilter = {
 			const dataSend = { ...dataObj };
 
 			// Show loading list courses
-			const elLoading = elListCourseTarget.closest( 'div:not(.lp-target)' ).querySelector( '.lp-loading-change' );
-			if ( elLoading ) {
-				elLoading.style.display = 'block';
-			}
+			window.lpAJAXG.showHideLoading( elListCourseTarget, 1 );
 			// End
 
 			// Get all fields in form.
@@ -347,11 +344,8 @@ window.lpCourseFilter = {
 					console.log( error );
 				},
 				completed: () => {
-					//console.log( 'completed' );
 					elListCourseTarget.classList.remove( classProcessing );
-					if ( elLoading ) {
-						elLoading.style.display = 'none';
-					}
+					window.lpAJAXG.showHideLoading( elListCourseTarget, 0 );
 				},
 			};
 

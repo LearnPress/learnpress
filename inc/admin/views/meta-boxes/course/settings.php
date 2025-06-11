@@ -3,6 +3,8 @@
 use LearnPress\Helpers\Config;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\CoursePostModel;
+use LearnPress\TemplateHooks\Course\AdminEditCurriculumTemplate;
+use LearnPress\TemplateHooks\TemplateAJAX;
 
 class LP_Meta_Box_Course extends LP_Meta_Box {
 	/**
@@ -696,7 +698,15 @@ class LP_Meta_Box_Course extends LP_Meta_Box {
 	 * @return void
 	 */
 	public function admin_editor() {
-		learn_press_admin_view( 'course/editor' );
+		global $post;
+
+		$course_id   = $post->ID;
+		$courseModel = CourseModel::find( $course_id, true );
+		if ( ! $courseModel instanceof CourseModel ) {
+			return;
+		}
+
+		do_action( 'learn-press/admin/edit-curriculum/layout', $courseModel );
 	}
 
 	/*public function save( $post_id ) {

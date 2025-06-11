@@ -2,10 +2,17 @@
  * Load all you need via AJAX
  *
  * @since 4.2.5.7
- * @version 1.0.6
+ * @version 1.0.8
  */
 
-import { lpAddQueryArgs, lpFetchAPI, listenElementCreated, lpOnElementReady, lpGetCurrentURLNoParam } from './utils.js';
+import {
+	lpAddQueryArgs,
+	lpFetchAPI,
+	listenElementCreated,
+	lpOnElementReady,
+	lpGetCurrentURLNoParam,
+	lpShowHideEl
+} from './utils.js';
 
 // Handle general parameter in the Frontend and Backend
 let lpSettings = {};
@@ -49,8 +56,8 @@ const lpAJAX = ( () => {
 
 			lpFetchAPI( url, option, callBack );
 		},
-		fetchAJAX: ( params, callBack, urlAjax = '' ) => {
-			urlAjax = urlAjax || lpSettings.lpAjaxUrl;
+		fetchAJAX: ( params, callBack ) => {
+			let urlAjax = lpSettings.lpAjaxUrl;
 
 			// Set param id_url for identify.
 			if ( params.hasOwnProperty( 'args' ) && params.args.hasOwnProperty( 'id_url' ) ) {
@@ -62,8 +69,9 @@ const lpAJAX = ( () => {
 			}
 
 			const formData = new FormData();
+			const action = params.hasOwnProperty( 'action' ) ? params.action : 'load_content_via_ajax';
 			formData.append( 'nonce', lpSettings.nonce );
-			formData.append( 'lp-load-ajax', 'load_content_via_ajax' );
+			formData.append( 'lp-load-ajax', action );
 			formData.append( 'data', JSON.stringify( params ) );
 			const dataSend = {
 				method: 'POST',
@@ -152,15 +160,12 @@ const lpAJAX = ( () => {
 
 			// Set url params to reload page.
 			// Todo: need check allow set url params.
-			lpData.urlParams.paged = dataSend.args.paged;
-			window.history.pushState( {}, '', lpAddQueryArgs( urlCurrent, lpData.urlParams ) );
+			lpSettings.urlParams.paged = dataSend.args.paged;
+			window.history.pushState( {}, '', lpAddQueryArgs( urlCurrent, lpSettings.urlParams ) );
 			// End.
 
 			// Show loading
-			const elLoading = elLPTarget.closest( `div:not(${ classLPTarget })` ).querySelector( '.lp-loading-change' );
-			if ( elLoading ) {
-				elLoading.style.display = 'block';
-			}
+			window.lpAJAXG.showHideLoading( elLPTarget, 1 );
 			// End
 
 			// Scroll to archive element
@@ -178,9 +183,7 @@ const lpAJAX = ( () => {
 				},
 				completed: () => {
 					//console.log( 'completed' );
-					if ( elLoading ) {
-						elLoading.style.display = 'none';
-					}
+					window.lpAJAXG.showHideLoading( elLPTarget, 0 );
 				},
 			};
 
@@ -191,6 +194,12 @@ const lpAJAX = ( () => {
 		},
 		setDataSetCurrent: ( elLPTarget, dataSend ) => {
 			return elLPTarget.dataset.send = JSON.stringify( dataSend );
+		},
+		showHideLoading: ( elLPTarget, status ) => {
+			const elLoading = elLPTarget.closest( `div:not(${ classLPTarget })` ).querySelector( '.lp-loading-change' );
+			if ( elLoading ) {
+				lpShowHideEl( elLoading, status );
+			}
 		},
 	};
 } );

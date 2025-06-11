@@ -1232,8 +1232,14 @@ class CourseModel {
 	 * @param bool $check_cache
 	 *
 	 * @return false|CourseModel|static
+	 * @since 4.2.6.9
+	 * @version 1.0.2
 	 */
 	public static function find( int $course_id, bool $check_cache = false ) {
+		if ( ! $course_id ) {
+			return false;
+		}
+
 		$filter_course     = new LP_Course_JSON_Filter();
 		$filter_course->ID = $course_id;
 		$key_cache         = "courseModel/find/id/{$course_id}";
@@ -1372,5 +1378,31 @@ class CourseModel {
 
 		// set types unique
 		return array_unique( $item_types );
+	}
+
+	/**
+	 * Get label of item type
+	 *
+	 * @param string $item_type
+	 *
+	 * @return string
+	 * @since 4.2.8.6
+	 * @version 1.0.0
+	 */
+	public static function item_types_label( string $item_type = '' ): string {
+		switch ( $item_type ) {
+			case LP_LESSON_CPT:
+				$label = __( 'Lesson', 'learnpress' );
+				break;
+			case LP_QUIZ_CPT:
+				$label = __( 'Quiz', 'learnpress' );
+				break;
+			default:
+				$label = ucfirst( strtolower( str_replace( [ 'lp_', '_' ], '', $item_type ) ) );
+				$label = apply_filters( 'learn-press/course/item-type-label', $label, $item_type );
+				break;
+		}
+
+		return $label;
 	}
 }

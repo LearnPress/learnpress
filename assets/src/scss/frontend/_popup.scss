@@ -242,8 +242,7 @@
 		margin: 0;
 		padding: 0;
 		font-size: $font-size-base;
-		//line-height: 4.375em;
-		letter-spacing: unset;
+ 		letter-spacing: unset;
 
 		a {
 			display: -webkit-box;
@@ -259,10 +258,6 @@
 				color: var(--lp-primary-color);
 			}
 		}
-
-		//@media (max-width: 768px) {
-		//	flex: 1;
-		//}
 	}
 
 	.items-progress {
@@ -271,16 +266,7 @@
 		align-items: center;
 		column-gap: 10px;
 		white-space: nowrap;
-		//@media (max-width: 768px) {
-		//	flex: 1;
-		//}
-
-		@media (max-width: 767px) {
-			//padding-bottom: 20px;
-			//justify-content: end;
-		}
-
-	}
+ 	}
 
 	.number {
 		padding-right: 10px;
@@ -332,8 +318,7 @@
 	position: relative;
 	box-shadow: 0 15px 30px 0 rgba(0, 0, 0, 0.1);
 	flex: 0 0 475px;
-
-	@include transition(0.25s);
+ 	@include transition(0.25s);
 
 	.search-course {
 		display: flex;
@@ -350,9 +335,9 @@
 			background: transparent;
 			box-shadow: none;
 			height: auto;
-			@include box-sizing(border-box);
+			font-size: 1rem;
+
 			@include placeholder-color($input-color-placeholder);
-			@include placeholder-fontStyle(italic);
 
 			&:focus {
 				outline: 0;
@@ -362,26 +347,24 @@
 		button {
 			position: absolute;
 			top: 0;
-			right: 10px;
+			right: 12px;
 			height: $popup_header_height;
 			padding: 0 16px;
 			border: 0;
 			background: transparent;
 			line-height: 1px;
 			box-shadow: none;
+			font-size: 1rem;
 			&:focus {
 				outline: none;
 			}
 
 			i {
 				color: $text-color-accent;
+				width: 24px;
+				display: flex ;
+				justify-content: center;
 			}
-
-			/*&::before {
-				color: $text-color-accent;
-				font-family: 'lp-icon';
-				content: "\f002";
-			}*/
 
 			&.clear {
 				display: none;

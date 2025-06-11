@@ -20,8 +20,8 @@
 			<div class="main-content">Main Content</div>
 		</div>
 		<div class="lp-modal-footer">
-			<button type="button" class="lp-button btn-no"><?php esc_html_e( 'No', 'learnpress' ); ?></button>
-			<button type="button" class="lp-button btn-yes"><?php esc_html_e( 'Yes', 'learnpress' ); ?></button>
+			<button type="button" class="lp-button btn-no"><?php esc_html_e( 'No' ); ?></button>
+			<button type="button" class="lp-button btn-yes"><?php esc_html_e( 'Yes' ); ?></button>
 		</div>
 	</div>
 </div>

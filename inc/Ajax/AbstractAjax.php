@@ -10,6 +10,9 @@ namespace LearnPress\Ajax;
 
 /**
  * @use LoadContentViaAjax::load_content_via_ajax
+ *
+ * $action must unique name on all Ajax classes.
+ * Because not specify a specific class.
  */
 abstract class AbstractAjax {
 	public static function catch_lp_ajax() {

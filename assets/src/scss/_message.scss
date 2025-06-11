@@ -64,6 +64,9 @@ $msg-info: #007AFF1A;
 		&.error{
 			background-color: $msg-error;
 			color: #FF3B30;
+			padding: 12px 20px; // Fixed by on Backend of WP has style div.error
+			border: none; // Fixed by on Backend of WP has style div.error
+			margin: 0 auto; // Fixed by on Backend of WP has style div.error
 		}
 	}
 }

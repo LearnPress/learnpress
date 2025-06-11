@@ -75,4 +75,16 @@ class LessonPostModel extends PostModel {
 	public function has_preview(): bool {
 		return $this->get_meta_value_by_key( self::META_KEY_PREVIEW, 'no' ) === 'yes';
 	}
+
+	/**
+	 * Set lesson is preview or not
+	 * @param bool $enable
+	 *
+	 * @return void
+	 * @since 4.2.8.6
+	 * @version 1.0.0
+	 */
+	public function set_preview( bool $enable = true ) {
+		$this->save_meta_value_by_key( LessonPostModel::META_KEY_PREVIEW, $enable ? 'yes' : 'no' );
+	}
 }

@@ -62,6 +62,8 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				'urlParams'                => lp_archive_skeleton_get_args(),
 				'i18n'                     => [
 					'select_page' => esc_html__( 'Select page', 'learnpress' ),
+					'yes'         => esc_html__( 'Yes' ),
+					'cancel'      => esc_html__( 'Cancel' ),
 				],
 				'current_screen'           => $screen ? $screen->id : '',
 				'show_search_author_field' => empty( $html_search_author_field ) ? 0 : $html_search_author_field,
@@ -142,6 +144,15 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 		$scripts = apply_filters(
 			'learn-press/admin-default-scripts',
 			array(
+				'lp-load-ajax'                      => new LP_Asset_Key(
+					self::url( 'js/dist/loadAJAX' . self::$_min_assets . '.js' ),
+					[],
+					[],
+					0,
+					0,
+					'',
+					[ 'strategy' => 'async' ]
+				),
 				// need build if change source vue
 				'vue-libs'                          => new LP_Asset_Key( $this->url( 'js/vendor/vue/vue_libs.js' ) ),
 				'select2'                           => new LP_Asset_Key( $this->url( 'src/js/vendor/select2.full.min.js' ) ),
@@ -211,12 +222,21 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					0,
 					1
 				),
-				'learn-press-admin-course-editor'   => new LP_Asset_Key(
+				/*'learn-press-admin-course-editor'   => new LP_Asset_Key(
 					$this->url( 'js/dist/admin/editor/course' . self::$_min_assets . '.js' ),
 					array( 'vue-libs', 'lp-utils' ),
 					array( LP_COURSE_CPT ),
 					0,
 					0
+				),*/
+				'lp-edit-curriculum'                => new LP_Asset_Key(
+					$this->url( 'dist/js/admin/edit-curriculum' . self::$_min_assets . '.js' ),
+					[ 'lp-load-ajax' ],
+					[],
+					1,
+					0,
+					'',
+					[ 'strategy' => 'async' ]
 				),
 				'learn-press-admin-quiz-editor'     => new LP_Asset_Key(
 					$this->url( 'js/dist/admin/editor/quiz' . self::$_min_assets . '.js' ),
@@ -367,15 +387,6 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'',
 					[ 'strategy' => 'defer' ]
 				),
-				'lp-load-ajax'                      => new LP_Asset_Key(
-					self::url( 'js/dist/loadAJAX' . self::$_min_assets . '.js' ),
-					[],
-					[],
-					0,
-					0,
-					'1.0.4',
-					[ 'strategy' => 'async' ]
-				),
 			)
 		);
 
@@ -438,6 +449,12 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					),
 					array(),
 					0
+				),
+				'lp-edit-curriculum'    => new LP_Asset_Key(
+					$this->url( 'css/edit-curriculum' . $is_rtl . self::$_min_assets . '.css' ),
+					[],
+					[],
+					1
 				),
 				'learn-press-statistic' => new LP_Asset_Key(
 					LP_CSS_URL . 'admin/statistic' . $is_rtl . self::$_min_assets . '.css',

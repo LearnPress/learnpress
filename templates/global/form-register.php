@@ -44,7 +44,10 @@ defined( 'ABSPATH' ) || exit();
 			<?php do_action( 'learn-press/after-form-register-fields' ); ?>
 		</ul>
 
-		<?php do_action( 'register_form' ); ?>
+		<?php
+		do_action( 'register_form' );
+		do_action( 'login_enqueue_scripts' );
+		?>
 
 		<p>
 			<?php wp_nonce_field( 'learn-press-register', 'learn-press-register-nonce' ); ?>

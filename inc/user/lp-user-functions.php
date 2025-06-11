@@ -1070,53 +1070,49 @@ function learn_press_update_user_profile_basic_information( $wp_error = false ) 
 
 /**
  * Update new password.
+ *
+ * @version 1.0.1
  */
-function learn_press_update_user_profile_change_password( $wp_error = false ) {
-	$user_id = get_current_user_id();
-
-	if ( ! $user_id ) {
-		return new WP_Error( 2, 'The user is invalid' );
-	}
-
-	$old_pass       = filter_input( INPUT_POST, 'pass0' );
-	$check_old_pass = false;
-
-	if ( $old_pass ) {
-		$user = wp_get_current_user();
-		require_once ABSPATH . 'wp-includes/class-phpass.php';
-		$wp_hasher = new PasswordHash( 8, true );
-
-		if ( $wp_hasher->CheckPassword( $old_pass, $user->data->user_pass ) ) {
-			$check_old_pass = true;
-		}
-	}
-
+function learn_press_update_user_profile_change_password() {
 	try {
+		$user = wp_get_current_user();
+		if ( ! $user ) {
+			throw new Exception( 'error_lp_profile_update_pass', 'The user is invalid' );
+		}
+
+		$old_pass = LP_Request::get_param( 'pass0', '', 'text', 'post' );
+		if ( empty( $old_pass ) ) {
+			throw new Exception( __( 'Enter the old password!', 'learnpress' ) );
+		}
+
+		$check_old_pass = wp_check_password( $old_pass, $user->data->user_pass, $user->ID );
 		if ( ! $check_old_pass ) {
 			throw new Exception( __( 'The old password is incorrect!', 'learnpress' ) );
-		} else {
-			$new_pass  = filter_input( INPUT_POST, 'pass1' );
-			$new_pass2 = filter_input( INPUT_POST, 'pass2' );
+		}
 
-			if ( ! $new_pass || ! $new_pass2 || ( $new_pass != $new_pass2 ) ) {
-				throw new Exception( __( 'Incorrect confirmation password!', 'learnpress' ) );
-			} else {
-				$update_data = array(
-					'user_pass' => $new_pass,
-					'ID'        => get_current_user_id(),
-				);
-				$return      = wp_update_user( $update_data );
+		$new_pass         = LP_Request::get_param( 'pass1', '', 'text', 'post' );
+		$new_pass_confirm = LP_Request::get_param( 'pass2', '', 'text', 'post' );
+		if ( empty( $new_pass ) || empty( $new_pass_confirm )
+			|| $new_pass != $new_pass_confirm ) {
+			throw new Exception( __( 'Incorrect confirmation password!', 'learnpress' ) );
+		}
 
-				if ( is_wp_error( $return ) ) {
-					return $wp_error ? $return : false;
-				}
+		// Update user password
+		// wp_set_password( $new_pass, $user->ID );
+		$update_data = array(
+			'user_pass' => $new_pass,
+			'ID'        => $user->ID,
+		);
 
-				return $return;
-			}
+		$rs = wp_update_user( $update_data );
+		if ( is_wp_error( $rs ) ) {
+			throw new Exception( $rs->get_error_message() );
 		}
 	} catch ( Exception $ex ) {
-		return $wp_error ? new WP_Error( 'UPDATE_PROFILE_ERROR', $ex->getMessage() ) : false;
+		return new WP_Error( 'error_lp_profile_update_pass', $ex->getMessage() );
 	}
+
+	return true;
 }
 
 function learn_press_get_avatar_thumb_size() {

@@ -984,7 +984,7 @@ class LP_Jwt_Courses_V1_Controller extends LP_REST_Jwt_Posts_Controller {
 
 		$output     = array();
 		$extra_info = learn_press_get_user_extra_profile_info( $courseModel->get_id() );
-		$author     = $course->get_author_model();
+		$author     = $courseModel->get_author_model();
 		if ( ! $author ) {
 			return [];
 		}
