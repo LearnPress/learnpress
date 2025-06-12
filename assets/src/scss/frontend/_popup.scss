@@ -824,7 +824,7 @@
 
 /***********/
 body.course-item-popup {
-
+	overflow-y: hidden;
 	#learn-press-course-curriculum {
 		@media (max-width: 1200px) {
 			width: 300px;
