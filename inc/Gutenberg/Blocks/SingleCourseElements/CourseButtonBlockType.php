@@ -61,6 +61,8 @@ class CourseButtonBlockType extends AbstractCourseBlockType {
 	 * @param array $attributes | Attributes of block tag.
 	 *
 	 * @return false|string
+	 * @since 4.2.8.3
+	 * @version 1.0.1
 	 */
 	public function render_content_block_template( array $attributes, $content, $block ): string {
 		$html = '';
@@ -119,7 +121,13 @@ class CourseButtonBlockType extends AbstractCourseBlockType {
 						$wrapper     = str_replace( $class_wrapper_find[1], $merge_class, $wrapper );
 						$html        = str_replace( "class=\"$lp_btn_class_find[1]\"", $wrapper, $html_button );
 					}
+				} else {
+					// If not find button lp
+					$html = $html_button;
 				}
+			} else {
+				// If not find class wrapper
+				$html = $html_button;
 			}
 		} catch ( Throwable $e ) {
 			LP_Debug::error_log( $e );
