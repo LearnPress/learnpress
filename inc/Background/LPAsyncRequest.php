@@ -1,17 +1,22 @@
 <?php
 
+namespace LearnPress\Background;
+
+use WP_Error;
+
 /**
  * Abstract LP_Async_Request class.
  *
  * This class is used to create asynchronous requests in LearnPress.
  * It is recommended to use this class for tasks that can be processed in the background
+ * It is non-blocking, therefore it does not return data when done.
  * Note: don't call too many times on a progress, it can cause server hang.
  * Should be considered when using
  *
- * @since 4.1.6.9.4
- * @version 1.0.2
+ * @since 4.2.8.7 instead of LP_Async_Request since 4.1.6.9.4, only change class name to autoload
+ * @version 1.0.0
  */
-abstract class LP_Async_Request {
+abstract class LPAsyncRequest {
 	/**
 	 * Prefix
 	 * @var string
@@ -79,7 +84,7 @@ abstract class LP_Async_Request {
 	 *
 	 * @return $this
 	 */
-	public function data( array $data ): LP_Async_Request {
+	public function data( array $data ): LPAsyncRequest {
 		$this->data = $data;
 
 		return $this;
