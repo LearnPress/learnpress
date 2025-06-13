@@ -75,6 +75,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'stopOnFocus' => 1,
 					'classPrefix' => 'lp-toast',
 				],
+				'single_instructor_id'     => get_option( 'learn_press_single_instructor_page_id', 0 ),
 			]
 		);
 	}

@@ -4,7 +4,7 @@
 	"name": "learnpress/instructor-name",
 	"title": "Instructor Name",
 	"category": "learnpress-course-elements",
-	"icon": "format-image",
+	"icon": "nametag",
 	"description": "Renders template Instructor Name PHP templates.",
 	"textdomain": "learnpress",
 	"keywords": [ "instructor name single", "learnpress" ],

@@ -121,7 +121,7 @@ return apply_filters(
 		new InstructorDescriptionBlockType(),
 		new BreadcrumbBlockType(),
 		//new SingleCourseBlockType(),
-		new SingleInstructorBlockType(),
+		// new SingleInstructorBlockType(),
 		new ListCoursesBlockType(),
 		new CourseItemTemplateBlock(),
 		new ItemCloseBlockType(),
