@@ -15,6 +15,7 @@ namespace LearnPress\Models;
 
 use Exception;
 use LearnPress\Models\UserItems\UserCourseModel;
+use LearnPress\Models\UserItems\UserItemModel;
 use LP_Admin_Editor_Course;
 use LP_Course_Cache;
 use LP_Course_DB;
@@ -1000,7 +1001,7 @@ class CourseModel {
 				}
 			} else {
 				if ( ! empty( $this->get_external_link() )
-					&& ( ! $userCourseModel || $userCourseModel->get_status() === LP_USER_COURSE_CANCEL )
+					&& ( ! $userCourseModel || $userCourseModel->get_status() === UserItemModel::STATUS_CANCEL )
 					&& ! $this->is_offline() ) {
 					$error_code = 'course_is_external';
 					throw new Exception( __( 'The course is external', 'learnpress' ) );

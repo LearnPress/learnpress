@@ -217,17 +217,21 @@ class UserItemModel {
 	 * @param LP_User_Items_Filter $filter
 	 *
 	 * @return UserItemModel|false|static
+	 * @since 4.2.5
+	 * @version 1.0.2
 	 */
 	public static function get_user_item_model_from_db( LP_User_Items_Filter $filter ) {
 		$lp_user_item_db = LP_User_Items_DB::getInstance();
 		$user_item_model = false;
 
 		try {
+			// Set order by user_item_id DESC to get the latest user item.
 			$filter->order    = $filter::ORDER_DESC;
 			$filter->order_by = $filter::COL_USER_ITEM_ID;
 			if ( empty( $filter->item_type ) ) {
 				$filter->item_type = ( new static() )->item_type;
 			}
+
 			$lp_user_item_db->get_query_single_row( $filter );
 			$query_single_row = $lp_user_item_db->get_user_items( $filter );
 			$user_item_rs     = $lp_user_item_db->wpdb->get_row( $query_single_row );
