@@ -294,7 +294,7 @@ class AdminEditCurriculumTemplate {
 				type="text"
 				value="%1$s"
 				data-old="%1$s"
-				placeholder="%2$s"></textarea>',
+				placeholder="%2$s">%1$s</textarea>',
 			esc_attr( $section_description ),
 			esc_attr__( '+ Add Description', 'learnpress' )
 		);
