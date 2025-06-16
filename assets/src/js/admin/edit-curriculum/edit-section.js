@@ -165,6 +165,7 @@ const addSection = ( e, target ) => {
 			const elSectionDesInput = newSection.querySelector( `${ className.elSectionDesInput }` );
 			elSectionDesInput.focus();
 			updateCountSections();
+			delete lpEditCurriculumShare.hasChange.titleNew;
 		},
 	};
 
@@ -350,6 +351,7 @@ const updateSectionTitle = ( e, target ) => {
 		completed: () => {
 			lpUtils.lpSetLoadingEl( elSection, 0 );
 			elSection.classList.remove( 'editing' );
+			delete lpEditCurriculumShare.hasChange.title;
 		},
 	};
 
