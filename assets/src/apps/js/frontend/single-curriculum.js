@@ -14,7 +14,7 @@ export default SingleCurriculums;
 };*/
 
 document.addEventListener( 'DOMContentLoaded', function( event ) {
-	LP.Hook.doAction( 'course-ready' );
+	//LP.Hook.doAction( 'course-ready' );
 	lpModalOverlayCompleteItem.init();
 
 	lpMaterialsLoad();
