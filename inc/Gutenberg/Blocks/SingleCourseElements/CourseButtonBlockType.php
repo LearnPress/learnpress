@@ -61,6 +61,8 @@ class CourseButtonBlockType extends AbstractCourseBlockType {
 	 * @param array $attributes | Attributes of block tag.
 	 *
 	 * @return false|string
+	 * @since 4.2.8.3
+	 * @version 1.0.1
 	 */
 	public function render_content_block_template( array $attributes, $content, $block ): string {
 		$html = '';
@@ -72,13 +74,32 @@ class CourseButtonBlockType extends AbstractCourseBlockType {
 				return $html;
 			}
 
+			$text_align      = $attributes['textAlign'] ?? 'center';
+			$align_items     = $attributes['alignItems'] ?? 'top';
+			$justify_content = $attributes['justifyContent'] ?? 'center';
+			$width           = $attributes['width'] ?? '100';
+
 			$html_button = SingleCourseModernLayout::instance()->html_buttons( $courseModel, $userModel );
 			if ( empty( $html_button ) ) {
 				return $html;
 			}
 
-			$wrapper = get_block_wrapper_attributes();
-			$html    = $html_button;
+			$extra_attributes = [
+				'style' => 'width: 100%; text-align: ' . $text_align . ';',
+			];
+			$wrapper          = get_block_wrapper_attributes( $extra_attributes );
+
+			$html_button = sprintf(
+				'<div class="course-buttons__wrapper" %s>%s</div>',
+				'style="display: flex; ' . 'align-items: ' . $align_items . ';' . 'justify-content: ' . $justify_content . ';' . '"',
+				$html_button
+			);
+
+			$html_button = str_replace(
+				'class="course-buttons"',
+				'class="course-buttons" ' . 'style=" width: ' . $width . '%;"',
+				$html_button
+			);
 
 			// Set align to course-buttons.
 			if ( isset( $attributes['align'] ) && $attributes['align'] ) {
@@ -88,7 +109,6 @@ class CourseButtonBlockType extends AbstractCourseBlockType {
 					$html_button
 				);
 			}
-
 			preg_match( '#class="(.*)"#i', $wrapper, $class_wrapper_find );
 			if ( isset( $class_wrapper_find['1'] ) ) {
 				// Find class button lp to replace.
@@ -101,7 +121,13 @@ class CourseButtonBlockType extends AbstractCourseBlockType {
 						$wrapper     = str_replace( $class_wrapper_find[1], $merge_class, $wrapper );
 						$html        = str_replace( "class=\"$lp_btn_class_find[1]\"", $wrapper, $html_button );
 					}
+				} else {
+					// If not find button lp
+					$html = $html_button;
 				}
+			} else {
+				// If not find class wrapper
+				$html = $html_button;
 			}
 		} catch ( Throwable $e ) {
 			LP_Debug::error_log( $e );

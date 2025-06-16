@@ -23,3 +23,15 @@ Css for Block of Gutenberg
 @import "wp-block/_block-single";
 @import "wp-block/_block-archive";
 @import "wp-block/_block-instructor";
+
+.lp-sidebar-toggle__close {
+	.js-block-sidebar {
+		display: none;
+	}
+}
+
+.lp-sidebar-toggle__open {
+	.js-block-sidebar {
+		display: block;
+	}
+}

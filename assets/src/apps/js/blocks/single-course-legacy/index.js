@@ -8,6 +8,7 @@ import { checkTemplatesCanLoadBlock } from '../utilBlock.js';
 import { registerBlockType } from '@wordpress/blocks';
 const templatesName = [
 	'learnpress/learnpress//single-lp_course',
+	'learnpress/learnpress//single-lp_course-offline',
 ];
 
 checkTemplatesCanLoadBlock( templatesName, metadata, ( metadataNew ) => {

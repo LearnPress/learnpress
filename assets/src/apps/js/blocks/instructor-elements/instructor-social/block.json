@@ -4,7 +4,7 @@
 	"name": "learnpress/instructor-social",
 	"title": "Instructor Social",
 	"category": "learnpress-course-elements",
-	"icon": "format-image",
+	"icon": "share",
 	"description": "Renders template Instructor Social PHP templates.",
 	"textdomain": "learnpress",
 	"keywords": [ "instructor social single", "learnpress" ],

@@ -1154,7 +1154,7 @@ class SingleCourseTemplate {
 	 *
 	 * @return string
 	 * @since 4.2.7.2
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 */
 	public function html_material( CourseModel $courseModel, $userModel = false ): string {
 		$html = '';
@@ -1164,7 +1164,7 @@ class SingleCourseTemplate {
 
 			if ( $userModel instanceof UserModel ) {
 				if ( $courseModel->check_user_is_author( $userModel )
-					|| user_can( $courseModel->get_id(), ADMIN_ROLE ) ) {
+					|| user_can( $userModel->get_id(), ADMIN_ROLE ) ) {
 					$can_show = true;
 				} else {
 					$userCourseModel = UserCourseModel::find( $userModel->get_id(), $courseModel->get_id(), true );
