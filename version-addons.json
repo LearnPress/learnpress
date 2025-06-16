@@ -408,6 +408,21 @@
     "is_org": 0,
     "order": 0
   },
+  "learnpress-sepay-payment": {
+    "name": "LearnPress – Sepay Payment",
+    "basename": "learnpress-sepay-payment/learnpress-sepay-payment.php",
+    "version": "4.0.0",
+    "require_lp": "4.2.8",
+    "description": "SePay Add-on cho LearnPress cung cấp cho người dùng LearnPress giải pháp thanh toán hiện đại, tự động và bảo mật cao, được xây dựng trên nền tảng công nghệ Open Banking.",
+    "image": "https://ps.w.org/learnpress-sepay-payment/assets/icon-128x128.jpg?rev=3233700",
+    "link": "https://wordpress.org/plugins/learnpress-sepay-payment/",
+    "link_dock": "https://docs.thimpress.com/sepay-addon-for-learnpress/setting-sepay-payment",
+    "setting": "",
+    "is_free": 1,
+    "author": "",
+    "is_org": 1,
+    "order": 0
+  },
   "learnpress-wishlist": {
     "name": "LearnPress – Course Wishlist",
     "basename": "learnpress-wishlist/learnpress-wishlist.php",
