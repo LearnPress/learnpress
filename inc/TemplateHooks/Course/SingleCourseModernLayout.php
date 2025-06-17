@@ -246,6 +246,7 @@ class SingleCourseModernLayout {
 			'learn-press/single-course/modern/section-right/info-meta',
 			[
 				'wrapper'     => '<div class="info-metas">',
+				'featured'    => $this->singleCourseTemplate->html_featured( $course ),
 				'meta'        => $html_info_meta,
 				'wrapper_end' => '</div>',
 			],

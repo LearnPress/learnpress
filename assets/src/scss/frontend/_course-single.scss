@@ -701,6 +701,19 @@
 	}
 }
 
+.course-featured {
+	padding: 4px 12px;
+	border-radius: $border-radius-global;
+	background-color: #FF3B30;
+	color: white;
+	text-transform: uppercase;
+}
+
+.course-item-price {
+	.price {
+		color: #FF3B30;
+	}
+}
 
 .course-summary {
 

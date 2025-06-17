@@ -278,6 +278,7 @@ class ListCoursesTemplate {
 						$course->get_permalink(),
 						$singleCourseTemplate->html_title( $course )
 					),
+					'featured'                    => $singleCourseTemplate->html_featured( $course ),
 					'wrapper_instructor_cate'     => '<div class="course-instructor-category">',
 					'instructor'                  => sprintf(
 						'<div>%s %s</div>',
