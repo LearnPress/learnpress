@@ -374,7 +374,7 @@
 		a {
 			font-weight: $link-font-weight;
 			text-decoration: none;
-
+			color: inherit;
 			&:hover {
 				color: $color-primary;
 			}
