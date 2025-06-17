@@ -57,7 +57,6 @@ $spacing-base-10x: (floor($spacing-base * 10));
 // fix for old variable
 :root {
 	--lp-cotainer-max-with: var(--lp-container-max-width);
-	--lp-font-size-base: 16px;
 }
 
 .wp-block-group {

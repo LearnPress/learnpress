@@ -2,6 +2,7 @@
  * CSS for overriding some style defaults of themes
  */
 body {
+	--lp-font-size-base: 16px;
 	div.entry-content > {
 		div.learnpress, div.learnpress:not(.alignwide):not(.alignfull):not(.alignleft):not(.alignright):not(.is-style-wide) {
 			--responsive--aligndefault-width: 100%;
@@ -237,6 +238,7 @@ body.twentyseventeen.learnpress-page {
 
 // Fix for theme EduPress
 .edu-press:not(.nofixcss), .theme-edu-press:not(.nofixcss) {
+	--lp-font-size-base: 1em;
 	.course-instructor-category {
 		> div:nth-child(2) {
 			label {
@@ -333,10 +335,12 @@ body.twentyseventeen.learnpress-page {
 		border-radius: 0;
 	}
 }
-
+.lp-4{
+	--lp-font-size-base: 1em;
+}
 // Fix for theme elearningwp
 .elearningwp {
-	&:not(.nofixcss) {
+ 	&:not(.nofixcss) {
 		.lp-courses-bar .switch-layout .switch-btn {
 			border: none !important;
 			background-color: unset ! important;
@@ -352,7 +356,7 @@ body.twentyseventeen.learnpress-page {
 
 // fix for themee course-builder
 .course-builder {
-	&:not(.nofixcss) {
+ 	&:not(.nofixcss) {
 		.lp-courses-bar .search-courses button {
 			padding: 0;
 		}
@@ -386,13 +390,13 @@ body.twentyseventeen.learnpress-page {
 			}
 		}
 	}
-
-}
+ }
 
 // fix for theme eduma
 
 
 .learnpress-v4, .learnpress-v3 {
+	--lp-font-size-base: 1em;
 	&:not(.nofixcss) {
 		--lp-border-radius-avatar: 0;
 
