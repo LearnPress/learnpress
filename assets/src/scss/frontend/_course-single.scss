@@ -1,6 +1,6 @@
 // layout classic
 .lp-archive-courses {
-
+	font-size: $font-size-base;
 	.course-detail-info {
 		padding: $spacing-base-7x 0 $spacing-base-6x 0;
 		color: $color-white;
@@ -276,7 +276,7 @@
 }
 // layout Modern
 .lp-single-course {
-	//font-size: $font-size-base;
+	font-size: $font-size-base;
 	&__header {
 		background-color: #F1F2F8;
 
