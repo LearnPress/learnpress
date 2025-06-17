@@ -2,7 +2,7 @@
  * CSS for overriding some style defaults of themes
  */
 body {
-	--lp-font-size-base: 16px;
+	//--lp-font-size-base: 16px;
 	div.entry-content > {
 		div.learnpress, div.learnpress:not(.alignwide):not(.alignfull):not(.alignleft):not(.alignright):not(.is-style-wide) {
 			--responsive--aligndefault-width: 100%;
@@ -17,7 +17,9 @@ body {
 		}
 	}
 }
-
+//.lp-content-area{
+//	font-size: $font-size-base;
+//}
 // Theme Divi
 .lp-archive-courses {
 	ul, ol {
@@ -396,7 +398,7 @@ body.twentyseventeen.learnpress-page {
 
 
 .learnpress-v4, .learnpress-v3 {
-	--lp-font-size-base: 1em;
+	//--lp-font-size-base: 1em;
 	&:not(.nofixcss) {
 		--lp-border-radius-avatar: 0;
 
