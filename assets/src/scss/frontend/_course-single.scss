@@ -553,26 +553,30 @@
 		.course-price {
 			display: block;
 			margin-bottom: 20px;
-			font-size: $font-size-large;
-			font-weight: $link-font-weight;
+			//font-size: $font-size-small;
 
 			.free {
 				color: #3AB500;
+				font-size: $font-size-large;
 			}
 
 			.origin-price {
 				text-decoration: line-through;
 				opacity: 0.6;
-				font-size: $font-size-small;
+				font-size: $font-size-base;
 				margin-right: 4px;
-				font-weight: normal;
+				//font-weight: normal;
 			}
 
 			.course-price-prefix,
 			.course-price-suffix {
-				font-size: $font-size-small;
-				opacity: 0.6;
-				font-weight: normal;
+				//font-size: $font-size-small;
+				//opacity: 0.6;
+				//font-weight: normal;
+			}
+			.price{
+				font-size: $font-size-large;
+				font-weight: $link-font-weight;
 			}
 		}
 
@@ -707,7 +711,17 @@
 	background-color: #FF3B30;
 	color: white;
 	text-transform: uppercase;
-}
+	font-size: $font-size-label;
+	font-weight: $link-font-weight;
+	margin-bottom: 12px;
+	display: inline-block;
+ }
+
+//.course-item-price {
+//	.price {
+//		color: #FF3B30;
+//	}
+//}
 
 .course-summary {
 
