@@ -49,6 +49,8 @@ class ItemCurriculumBlockType extends AbstractCourseItemBlockType {
 	 */
 	public function render_content_block_template( array $attributes, $content, $block ): string {
 		$html = '';
+		global $post;
+		setup_postdata( $post );
 
 		try {
 			$courseModel = $this->get_course( $attributes, $block );
