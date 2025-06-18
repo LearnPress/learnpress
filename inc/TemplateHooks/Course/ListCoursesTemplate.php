@@ -85,7 +85,7 @@ class ListCoursesTemplate {
 	 *
 	 * @return stdClass { content: string_html }
 	 * @since 4.2.5.7
-	 * @version 1.0.4
+	 * @version 1.0.5
 	 */
 	public static function render_courses( array $settings = [] ): stdClass {
 		$filter = new LP_Course_Filter();
@@ -113,11 +113,19 @@ class ListCoursesTemplate {
 			}
 		}
 
-		$section_courses = [
-			'wrapper'     => sprintf( '<ul class="learn-press-courses lp-list-courses-no-css %1$s" data-layout="%1$s">', $skin ),
-			'courses'     => $html_courses,
-			'wrapper_end' => '</ul>',
-		];
+		$section_courses = apply_filters(
+			'learn-press/layout/list-courses/section/courses',
+			[
+				'wrapper'     => sprintf(
+					'<ul class="courses-list courses-list-%s">',
+					esc_attr( $skin )
+				),
+				'courses'     => $html_courses,
+				'wrapper_end' => '</ul>',
+			],
+			$courses,
+			$settings
+		);
 
 		$section_top = apply_filters(
 			'learn-press/layout/list-courses/section/top',
@@ -194,7 +202,11 @@ class ListCoursesTemplate {
 				'learn-press/layout/list-courses/item/section-top',
 				[
 					'wrapper'     => '<div class="course-thumbnail">',
-					'img'         => sprintf( '<a href="%s">%s</a>', $course->get_permalink(), $singleCourseTemplate->html_image( $course ) ),
+					'img'         => sprintf(
+						'<a href="%s">%s</a>',
+						$course->get_permalink(),
+						$singleCourseTemplate->html_image( $course )
+					),
 					'wrapper_end' => '</div>',
 				],
 				$course,
