@@ -34,7 +34,7 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 		 * @see LP_Course_Post_Type::save_post()
 		 */
 		protected function handle() {
-			ini_set( 'max_execution_time', HOUR_IN_SECONDS );
+			ini_set( 'max_execution_time', 0 );
 			try {
 				$handle_name = LP_Request::get_param( 'handle_name', '', 'key', 'post' );
 				$course_id   = intval( $_POST['course_id'] ?? 0 );

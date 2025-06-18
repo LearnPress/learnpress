@@ -40,6 +40,8 @@ class LP_Quiz_Questions_DB extends LP_Database {
 			$filter->collection_alias = 'qq';
 		}
 
+
+
 		// Question ids
 		if ( ! empty( $filter->question_ids ) ) {
 			$question_ids_format = LP_Helper::db_format_array( $filter->question_ids, '%s' );

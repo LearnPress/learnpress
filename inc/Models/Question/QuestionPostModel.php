@@ -9,9 +9,10 @@
  * @since 4.2.8.8
  */
 
-namespace LearnPress\Models;
+namespace LearnPress\Models\Question;
 
 use Exception;
+use LearnPress\Models\PostModel;
 use LP_Cache;
 use LP_Question_Answers_DB;
 use LP_Question_Answers_Filter;
