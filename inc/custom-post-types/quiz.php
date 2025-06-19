@@ -213,13 +213,19 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 * Admin editor
 		 *
 		 * @since 3.3.0
-		 *
+		 * @version 1.0.1
 		 * @return void
 		 */
 		public function admin_editor() {
-			$quiz = LP_Quiz::get_quiz();
+			global $post;
 
-			echo learn_press_admin_view_content( 'quiz/editor' );
+			$course_id     = $post->ID;
+			$quizPostModel = QuizPostModel::find( $course_id, true );
+			if ( ! $quizPostModel instanceof QuizPostModel ) {
+				return;
+			}
+
+			do_action( 'learn-press/admin/edit-quiz/layout', $quizPostModel );
 		}
 
 		/**

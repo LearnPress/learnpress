@@ -27,7 +27,7 @@ class AdminEditQizTemplate {
 	/**
 	 * Layout for edit course curriculum.
 	 *
-	 * @since 4.2.8.6
+	 * @since 4.2.8.8
 	 * @version 1.0.0
 	 */
 	public function edit_quiz_layout( QuizPostModel $quizPostModel ) {
@@ -67,7 +67,7 @@ class AdminEditQizTemplate {
 	 *
 	 * @throws Exception
 	 */
-	public static function render_edi_quiz( array $data ): stdClass {
+	public static function render_edit_quiz( array $data ): stdClass {
 		$quiz_id       = $data['quiz_id'] ?? 0;
 		$quizPostModel = QuizPostModel::find( $quiz_id, true );
 		if ( ! $quizPostModel ) {
@@ -101,10 +101,10 @@ class AdminEditQizTemplate {
 		}
 
 		$section_questions = [
-			'wrap'          => '<div class="lp-list-questions">',
-			'list-sections' => $html_questions,
-			'section-clone' => $this->html_edit_question(),
-			'wrap_end'      => '</div>',
+			'wrap'           => '<div class="lp-list-questions">',
+			'list-sections'  => $html_questions,
+			'question-clone' => $this->html_edit_question(),
+			'wrap_end'       => '</div>',
 		];
 
 		$section = [
@@ -145,12 +145,143 @@ class AdminEditQizTemplate {
 	/**
 	 * HTML for edit question.
 	 *
+	 * @param $questionPostModel
+	 *
 	 * @return string
 	 */
-	public function html_edit_question(): string {
-		$html_question = '';
+	public function html_edit_question( $questionPostModel = null ): string {
+		$is_clone       = false;
+		$question_id    = 0;
+		$question_title = '';
 
-		return $html_question;
+		if ( $questionPostModel instanceof QuestionPostModel ) {
+			$question_id    = $questionPostModel->ID;
+			$question_title = $questionPostModel->post_title;
+		} else {
+			$is_clone = true;
+		}
+
+		$section_edit_main = [
+			'wrap'             => '<div class="question-edit-main">',
+			'description'      => $this->html_edit_question_description( $questionPostModel ),
+			'question-by-type' => $this->html_edit_question_by_type( $questionPostModel ),
+			'wrap_end'         => '</div>',
+		];
+
+		$section = [
+			'wrap'       => sprintf(
+				'<div data-question-id="%s" class="lp-question-item lp-collapse %s">',
+				$question_id,
+				$is_clone ? 'clone lp-hidden' : ''
+			),
+			'head'       => '<div class="section-head">',
+			'drag'       => sprintf(
+				'<span class="drag lp-icon-drag" title="%s"></span>',
+				__( 'Drag to reorder section', 'learnpress' )
+			),
+			'loading'    => '<span class="lp-icon-spinner"></span>',
+			'title'      => $this->html_input_question_title( $question_title ),
+			'btn-edit'   => sprintf(
+				'<span class="lp-btn-edit-question-title lp-icon-edit" title="%s"></span>',
+				__( 'Edit question title', 'learnpress' )
+			),
+			'btn-delete' => sprintf(
+				'<button type="button" class="lp-btn-delete-question button" data-title="%s" data-content="%s">%s</button>',
+				__( 'Are you sure?', 'learnpress' ),
+				__( 'This question will be deleted. The question will no longer be assigned to this quiz, but will not be permanently deleted.', 'learnpress' ),
+				__( 'Delete question', 'learnpress' )
+			),
+			'btn-update' => sprintf(
+				'<button type="button" class="lp-btn-update-question-title button">%s</button>',
+				__( 'Update' )
+			),
+			'btn-cancel' => sprintf(
+				'<button type="button" class="lp-btn-cancel-update-question-title button">%s</button>',
+				__( 'Cancel' )
+			),
+			'toggle'     => '<div class="question-toggle"><span class="lp-icon-angle-down"></span><span class="lp-icon-angle-up"></span></div>',
+			'head_end'   => '</div>',
+			'edit_main'  => Template::combine_components( $section_edit_main ),
+			'wrap_end'   => '</div>',
+		];
+
+		return Template::combine_components( $section );
+	}
+
+	/**
+	 * HTML for edit question description.
+	 *
+	 * @param QuestionPostModel|null $questionPostModel
+	 *
+	 * @return string
+	 */
+	public function html_edit_question_description( $questionPostModel = null ): string {
+		$question_description = '';
+		$question_id          = 0;
+
+		if ( $questionPostModel instanceof QuestionPostModel ) {
+			$question_id          = $questionPostModel->ID;
+			$question_description = $questionPostModel->post_content;
+		}
+
+		$editor_id = 'lp-question-description-' . $question_id;
+
+		ob_start();
+		wp_editor(
+			$question_description,
+			$editor_id,
+			[
+				'media_buttons' => true,
+				'dfw'           => false,
+				'editor_class'  => 'lp-editor-tinymce',
+				'editor_height' => 200,
+			]
+		);
+		$html_tinymce = ob_get_clean();
+
+		$section = [
+			'wrap'     => '<div class="lp-question-description">',
+			'label'    => sprintf(
+				'<label for="lp-question-description">%s</label>',
+				__( 'Description', 'learnpress' )
+			),
+			'textarea' => sprintf(
+				'<div name="lp-editor-wysiwyg" class="lp-editor-wysiwyg">%s</div>',
+				htmlspecialchars_decode( $question_description )
+			),
+			'tinymce'  => $html_tinymce,
+			'wrap_end' => '</div>',
+		];
+
+		return Template::combine_components( $section );
+	}
+
+	public function html_edit_question_by_type( $questionPostModel ): string {
+		$section = [];
+
+		return Template::combine_components( $section );
+	}
+
+	/**
+	 * HTML input question title.
+	 *
+	 * @param string $question_title
+	 *
+	 * @return string
+	 */
+	public function html_input_question_title( string $question_title = '' ): string {
+		return sprintf(
+			'<input class="lp-question-title-input"
+				name="lp-question-title-input"
+				type="text"
+				value="%1$s"
+				data-old="%1$s"
+				placeholder="%2$s"
+				data-mess-empty-title="%3$s">',
+			esc_attr( $question_title ),
+			esc_attr__( 'Update question title', 'learnpress' ),
+			esc_attr__( 'Question title is required', 'learnpress' )
+		);
 	}
 
 	/**

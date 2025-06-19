@@ -239,13 +239,22 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'',
 					[ 'strategy' => 'async' ]
 				),
-				'learn-press-admin-quiz-editor'     => new LP_Asset_Key(
+				'lp-edit-quiz'                      => new LP_Asset_Key(
+					$this->url( 'dist/js/admin/edit-quiz' . self::$_min_assets . '.js' ),
+					[ 'lp-load-ajax' ],
+					[],
+					1,
+					0,
+					'',
+					[ 'strategy' => 'async' ]
+				),
+				/*'learn-press-admin-quiz-editor'     => new LP_Asset_Key(
 					$this->url( 'js/dist/admin/editor/quiz' . self::$_min_assets . '.js' ),
 					array( 'vue-libs', 'lp-utils' ),
 					array( LP_QUIZ_CPT ),
 					0,
 					0
-				),
+				),*/
 				'learn-press-admin-question-editor' => new LP_Asset_Key(
 					$this->url( 'js/dist/admin/editor/question' . self::$_min_assets . '.js' ),
 					array( 'vue-libs', 'lodash', 'lp-utils' ),
@@ -453,6 +462,12 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				),
 				'lp-edit-curriculum'    => new LP_Asset_Key(
 					$this->url( 'css/edit-curriculum' . $is_rtl . self::$_min_assets . '.css' ),
+					[],
+					[],
+					1
+				),
+				'lp-edit-quiz'          => new LP_Asset_Key(
+					$this->url( 'css/edit-quiz' . $is_rtl . self::$_min_assets . '.css' ),
 					[],
 					[],
 					1
