@@ -2,7 +2,7 @@
 
 <a href="http://thimpress.com/learnpress" target="_blank">LearnPress</a> is a comprehensive WordPress LMS Plugin for WordPress. This is one of the best WordPress LMS Plugins which can be used to easily create & sell courses online. You can create a course curriculum with lessons & quizzes included which is managed with an easy-to-use interface for users. Having this WordPress LMS Plugin, now you have a chance to quickly and easily create education websites; online school websites; online-course websites for sale or free with no coding knowledge required.
 
-* [Documentation](https://docspress.thimpress.com/learnpress-4-0/?utm_source=GitHub&utm_medium=LP&utm_campaign=Content)
+* [Documentation](https://docs.thimpress.com/learnpress/?utm_source=GitHub&utm_medium=LP&utm_campaign=Content)
 * [Youtube](https://www.youtube.com/c/ThimPressDesign)
 * [Add-ons](https://thimpress.com/wordpress/plugins/learnpress/?utm_source=GitHub&utm_medium=Header&utm_campaign=MainMenu)
 * Premium Themes: [Eduma | Education WordPress Theme](https://1.envato.market/G5Ook) | [Coaching | Life & Fitness Coaching WordPress Theme ](https://1.envato.market/Xq2Ra) | [CorpTrain | Corporate Training WordPress Theme](https://1.envato.market/13Zkd)
@@ -120,7 +120,7 @@ Any suggestions for this WordPress LMS Plugin? Send us <a href="https://thimpres
 LearnPress is a plugin to create a LMS website, to spread out course, or sell course.
 
 **Where can I find LearnPress documentation and user guides?**
-If you want to use LearnPress to build a Learning Management Website, please refer to our user guides in <a href="https://docspress.thimpress.com/learnpress-4-0/?utm_source=WPORG&utm_medium=LP&utm_campaign=Content" target="_blank">LearnPress official site.</a>
+If you want to use LearnPress to build a Learning Management Website, please refer to our user guides in <a href="https://docs.thimpress.com/learnpress/?utm_source=WPORG&utm_medium=LP&utm_campaign=Content" target="_blank">LearnPress official site.</a>
 And if you want to extending or theming LearnPress, see our <a href="https://github.com/LearnPress/LearnPress/wiki">Wiki</a>.
 
 **Where can I get support or talk to other users?**
