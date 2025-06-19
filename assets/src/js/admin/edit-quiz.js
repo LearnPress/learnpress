@@ -92,6 +92,12 @@ const initTinyMCE = () => {
 		const idTextarea = elParent.dataset.questionId;
 		window.tinymce.execCommand( 'mceRemoveEditor', true, 'lp-question-description-' + idTextarea );
 		window.tinymce.execCommand( 'mceAddEditor', true, 'lp-question-description-' + idTextarea );
+
+		window.tinymce.execCommand( 'mceRemoveEditor', true, 'lp-question-hint-' + idTextarea );
+		window.tinymce.execCommand( 'mceAddEditor', true, 'lp-question-hint-' + idTextarea );
+
+		window.tinymce.execCommand( 'mceRemoveEditor', true, 'lp-question-explanation-' + idTextarea );
+		window.tinymce.execCommand( 'mceAddEditor', true, 'lp-question-explanation-' + idTextarea );
 	} );
 };
 

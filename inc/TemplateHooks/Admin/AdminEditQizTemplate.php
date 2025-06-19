@@ -161,10 +161,19 @@ class AdminEditQizTemplate {
 			$is_clone = true;
 		}
 
+		$section_edit_details = [
+			'wrap'        => '<div class="question-edit-details">',
+			'point'       => $this->html_edit_mark( $questionPostModel ),
+			'hint'        => $this->html_edit_hint( $questionPostModel ),
+			'explanation' => $this->html_edit_explanation_hint( $questionPostModel ),
+			'wrap_end'    => '</div>',
+		];
+
 		$section_edit_main = [
 			'wrap'             => '<div class="question-edit-main">',
 			'description'      => $this->html_edit_question_description( $questionPostModel ),
 			'question-by-type' => $this->html_edit_question_by_type( $questionPostModel ),
+			'details'          => Template::combine_components( $section_edit_details ),
 			'wrap_end'         => '</div>',
 		];
 
@@ -203,6 +212,82 @@ class AdminEditQizTemplate {
 			'head_end'   => '</div>',
 			'edit_main'  => Template::combine_components( $section_edit_main ),
 			'wrap_end'   => '</div>',
+		];
+
+		return Template::combine_components( $section );
+	}
+
+	public function html_edit_mark( $questionPostModel = null ): string {
+		$point = 0;
+		if ( $questionPostModel instanceof QuestionPostModel ) {
+			$point = $questionPostModel->get_mark();
+		}
+
+		$section = [
+			'wrap'     => '<div class="lp-question-point">',
+			'label'    => sprintf(
+				'<label for="lp-question-point">%s</label>',
+				__( 'Points', 'learnpress' )
+			),
+			'input'    => sprintf(
+				'<input type="number" name="lp-question-point-input" id="lp-question-point" value="%s" min="0" step="0.01">',
+				esc_attr( $point )
+			),
+			'wrap_end' => '</div>',
+		];
+
+		return Template::combine_components( $section );
+	}
+
+	public function html_edit_hint( $questionPostModel = null ): string {
+		$hint        = '';
+		$question_id = 0;
+		if ( $questionPostModel instanceof QuestionPostModel ) {
+			$question_id = $questionPostModel->ID;
+			$hint        = $questionPostModel->get_hint();
+		}
+
+		$editor_id = 'lp-question-hint-' . $question_id;
+
+		$section = [
+			'wrap'     => '<div class="lp-question-hint">',
+			'label'    => sprintf(
+				'<label for="lp-question-hint">%s</label>',
+				__( 'Hint', 'learnpress' )
+			),
+			'tinymce'  => Template::editor_tinymce(
+				$hint,
+				$editor_id,
+				'lp-editor-tinymce'
+			),
+			'wrap_end' => '</div>',
+		];
+
+		return Template::combine_components( $section );
+	}
+
+	public function html_edit_explanation_hint( $questionPostModel = null ): string {
+		$explanation = '';
+		$question_id = 0;
+		if ( $questionPostModel instanceof QuestionPostModel ) {
+			$question_id = $questionPostModel->ID;
+			$explanation = $questionPostModel->get_explanation();
+		}
+
+		$editor_id = 'lp-question-explanation-' . $question_id;
+
+		$section = [
+			'wrap'     => '<div class="lp-question-explanation">',
+			'label'    => sprintf(
+				'<label for="lp-question-explanation">%s</label>',
+				__( 'Explanation', 'learnpress' )
+			),
+			'tinymce'  => Template::editor_tinymce(
+				$explanation,
+				$editor_id,
+				'lp-editor-tinymce'
+			),
+			'wrap_end' => '</div>',
 		];
 
 		return Template::combine_components( $section );

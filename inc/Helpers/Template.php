@@ -336,4 +336,36 @@ class Template {
 			return Template::combine_components( $section );
 		}
 	}
+
+	/**
+	 * HTML TinyMCE editor
+	 *
+	 * @param string $value
+	 * @param string $id_name
+	 * @param string $class_name
+	 * @param array $setting
+	 *
+	 * @return string
+	 * @since 4.2.8.8
+	 * @version 1.0.0
+	 */
+	public static function editor_tinymce( string $value, string $id_name, string $class_name, array $setting = [] ): string {
+		$args = array_merge(
+			$setting,
+			[
+				'media_buttons' => true,
+				'dfw'           => false,
+				'editor_class'  => $class_name,
+				'editor_height' => 200,
+			]
+		);
+
+		ob_start();
+		wp_editor(
+			$value,
+			$id_name,
+			$args
+		);
+		return ob_get_clean();
+	}
 }
