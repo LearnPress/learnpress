@@ -88,16 +88,34 @@ const initTinyMCE = () => {
 	const elTextareas = elListQuestions.querySelectorAll( '.lp-editor-tinymce' );
 
 	elTextareas.forEach( ( elTextarea ) => {
-		const elParent = elTextarea.closest( '.lp-question-item' );
-		const idTextarea = elParent.dataset.questionId;
-		window.tinymce.execCommand( 'mceRemoveEditor', true, 'lp-question-description-' + idTextarea );
-		window.tinymce.execCommand( 'mceAddEditor', true, 'lp-question-description-' + idTextarea );
+		// const elParent = elTextarea.closest( '.lp-question-item' );
+		const idTextarea = elTextarea.id;
 
-		window.tinymce.execCommand( 'mceRemoveEditor', true, 'lp-question-hint-' + idTextarea );
-		window.tinymce.execCommand( 'mceAddEditor', true, 'lp-question-hint-' + idTextarea );
+		reInitTinymce( idTextarea );
+	} );
+};
 
-		window.tinymce.execCommand( 'mceRemoveEditor', true, 'lp-question-explanation-' + idTextarea );
-		window.tinymce.execCommand( 'mceAddEditor', true, 'lp-question-explanation-' + idTextarea );
+// Re-initialize TinyMCE editor
+const reInitTinymce = ( id ) => {
+	window.tinymce.execCommand( 'mceRemoveEditor', true, id );
+	window.tinymce.execCommand( 'mceAddEditor', true, id );
+	eventEditorTinymceChange( id );
+};
+
+// Events for TinyMCE editor
+const eventEditorTinymceChange = ( id, callBack ) => {
+	// Event change content in TinyMCE editor
+	window.tinymce.get( id ).on( 'change', ( e ) => {
+		// Get editor content
+		const content = e.target.getContent();
+		console.log( 'Editor content changed:', content );
+
+		// Save content automatically
+		//window.tinymce.triggerSave();
+	} );
+	// Event focus in TinyMCE editor
+	window.tinymce.get( id ).on( 'focusin', ( e ) => {
+		console.log( 'Editor focused:', e.target.id );
 	} );
 };
 
@@ -114,11 +132,16 @@ document.addEventListener( 'keydown', ( e ) => {
 	const target = e.target;
 } );
 document.addEventListener( 'keyup', ( e ) => {
-
+	const target = e.target;
+	console.log( 'keyup', target );
+	if ( target.classList.contains( 'lp-editor-tinymce' ) ) {
+		//window.tinymce.triggerSave();
+		console.log( 'keyup', target.value );
+	}
 } );
 // Event focus in
 document.addEventListener( 'focusin', ( e ) => {
-
+	console.log( 'focusin', e.target );
 } );
 // Event focus out
 document.addEventListener( 'focusout', ( e ) => {
