@@ -107,6 +107,56 @@ class QuestionPostModel extends PostModel {
 	}
 
 	/**
+	 * Get class name of question object by type
+	 *
+	 * @return string
+	 */
+	public function get_object_by_type() {
+		if ( empty( $type ) ) {
+			$type = $this->get_type();
+		}
+
+		switch ( $type ) {
+			case 'true_or_false':
+				return 'question-true-or-false';
+			case 'multi_choice':
+				return 'question-multi-choice';
+			case 'single_choice':
+				return 'question-single-choice';
+			case 'fill_in_blanks':
+				return 'question-fill-in-blanks';
+			default:
+				return '';
+		}
+	}
+
+	/**
+	 * Get class name of Template html
+	 *
+	 * @param string $type
+	 *
+	 * @return string
+	 */
+	public function get_template_by_type( string $type = '' ): string {
+		if ( empty( $type ) ) {
+			$type = $this->get_type();
+		}
+
+		switch ( $type ) {
+			case 'true_or_false':
+				return 'question-true-or-false';
+			case 'multi_choice':
+				return 'question-multi-choice';
+			case 'single_choice':
+				return 'question-single-choice';
+			case 'fill_in_blanks':
+				return 'question-fill-in-blanks';
+			default:
+				return '';
+		}
+	}
+
+	/**
 	 * @return mixed
 	 */
 	public function get_hint() {

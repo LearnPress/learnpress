@@ -216,9 +216,11 @@ document.addEventListener( 'click', ( e ) => {
 	toggleQuestion( e, target );
 	showPopupItemsToSelect( e, target );
 } );
+// Event keydown
 document.addEventListener( 'keydown', ( e ) => {
 	const target = e.target;
 } );
+// Event keyup
 document.addEventListener( 'keyup', ( e ) => {
 	const target = e.target;
 	console.log( 'keyup', target );

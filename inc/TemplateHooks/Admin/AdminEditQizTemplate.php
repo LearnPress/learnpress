@@ -167,6 +167,10 @@ class AdminEditQizTemplate {
 
 		$section_edit_details = [
 			'wrap'        => '<div class="question-edit-details">',
+			'label'       => sprintf(
+				'<label for="lp-question-details">%s</label>',
+				__( 'Details', 'learnpress' )
+			),
 			'point'       => $this->html_edit_mark( $questionPostModel ),
 			'hint'        => $this->html_edit_hint( $questionPostModel ),
 			'explanation' => $this->html_edit_explanation_hint( $questionPostModel ),
@@ -333,8 +337,34 @@ class AdminEditQizTemplate {
 		return Template::combine_components( $section );
 	}
 
+	/**
+	 * HTML for edit question by type.
+	 *
+	 * @param QuestionPostModel|null $questionPostModel
+	 *
+	 * @return string
+	 */
 	public function html_edit_question_by_type( $questionPostModel ): string {
-		$section = [];
+		$type = '';
+		if ( $questionPostModel instanceof QuestionPostModel ) {
+			$type = $questionPostModel->get_type();
+
+		}
+
+		$types = QuestionPostModel::get_types();
+		foreach ( $types as $key => $label ) {
+
+		}
+
+		$section = [
+			'wrap'     => '<div class="lp-question-by-type">',
+			'label'    => sprintf(
+				'<label for="lp-question-type">%s</label>',
+				__( 'Type', 'learnpress' )
+			),
+			'answers'  => '',
+			'wrap_end' => '</div>',
+		];
 
 		return Template::combine_components( $section );
 	}
