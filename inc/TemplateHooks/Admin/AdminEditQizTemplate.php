@@ -75,7 +75,7 @@ class AdminEditQizTemplate {
 		}
 
 		$content          = new stdClass();
-		$content->content = self::instance()->html_edit( $quizPostModel );
+		$content->content = self::instance()->html_edit_quiz( $quizPostModel );
 
 		return $content;
 	}
@@ -88,7 +88,7 @@ class AdminEditQizTemplate {
 	 * @return string
 	 * @throws Exception
 	 */
-	public function html_edit( QuizPostModel $quizPostModel ): string {
+	public function html_edit_quiz( QuizPostModel $quizPostModel ): string {
 		$html_questions = '';
 
 		// Get sections items
@@ -101,14 +101,14 @@ class AdminEditQizTemplate {
 		}
 
 		$section_questions = [
-			'wrap'           => '<div class="lp-list-questions">',
+			'wrap'           => '<div class="lp-edit-list-questions">',
 			'list-sections'  => $html_questions,
 			'question-clone' => $this->html_edit_question(),
 			'wrap_end'       => '</div>',
 		];
 
 		$section = [
-			'wrap'             => '<div id="admin-editor-lp_quiz">',
+			'wrap'             => '<div class="lp-edit-quiz-wrap">',
 			'heading'          => '<div class="heading">',
 			'h4'               => sprintf(
 				'<h4>%s</h4>',
@@ -128,7 +128,7 @@ class AdminEditQizTemplate {
 				)
 			),
 			'quiz-toggle'      =>
-				'<div class="qiz-toggle-all lp-collapse">
+				'<div class="lp-question-toggle-all lp-collapse">
 					<span class="lp-icon-angle-down"></span>
 					<span class="lp-icon-angle-up"></span>
 				</div>',
@@ -183,7 +183,7 @@ class AdminEditQizTemplate {
 				$question_id,
 				$is_clone ? 'clone lp-hidden' : ''
 			),
-			'head'       => '<div class="section-head">',
+			'head'       => '<div class="lp-question-head">',
 			'drag'       => sprintf(
 				'<span class="drag lp-icon-drag" title="%s"></span>',
 				__( 'Drag to reorder section', 'learnpress' )
@@ -208,7 +208,7 @@ class AdminEditQizTemplate {
 				'<button type="button" class="lp-btn-cancel-update-question-title button">%s</button>',
 				__( 'Cancel' )
 			),
-			'toggle'     => '<div class="question-toggle"><span class="lp-icon-angle-down"></span><span class="lp-icon-angle-up"></span></div>',
+			'toggle'     => '<div class="lp-question-toggle"><span class="lp-icon-angle-down"></span><span class="lp-icon-angle-up"></span></div>',
 			'head_end'   => '</div>',
 			'edit_main'  => Template::combine_components( $section_edit_main ),
 			'wrap_end'   => '</div>',
@@ -257,8 +257,7 @@ class AdminEditQizTemplate {
 			),
 			'tinymce'  => Template::editor_tinymce(
 				$hint,
-				$editor_id,
-				'lp-editor-tinymce'
+				$editor_id
 			),
 			'wrap_end' => '</div>',
 		];
@@ -284,8 +283,7 @@ class AdminEditQizTemplate {
 			),
 			'tinymce'  => Template::editor_tinymce(
 				$explanation,
-				$editor_id,
-				'lp-editor-tinymce'
+				$editor_id
 			),
 			'wrap_end' => '</div>',
 		];
@@ -311,19 +309,6 @@ class AdminEditQizTemplate {
 
 		$editor_id = 'lp-question-description-' . $question_id;
 
-		ob_start();
-		wp_editor(
-			$question_description,
-			$editor_id,
-			[
-				'media_buttons' => true,
-				'dfw'           => false,
-				'editor_class'  => 'lp-editor-tinymce',
-				'editor_height' => 200,
-			]
-		);
-		$html_tinymce = ob_get_clean();
-
 		$section = [
 			'wrap'     => '<div class="lp-question-description">',
 			'label'    => sprintf(
@@ -334,7 +319,10 @@ class AdminEditQizTemplate {
 				'<div name="lp-editor-wysiwyg" class="lp-editor-wysiwyg">%s</div>',
 				htmlspecialchars_decode( $question_description )
 			),
-			'tinymce'  => $html_tinymce,
+			'tinymce'  => Template::editor_tinymce(
+				$question_description,
+				$editor_id
+			),
 			'wrap_end' => '</div>',
 		];
 

@@ -349,14 +349,14 @@ class Template {
 	 * @since 4.2.8.8
 	 * @version 1.0.0
 	 */
-	public static function editor_tinymce( string $value, string $id_name, string $class_name, array $setting = [] ): string {
+	public static function editor_tinymce( string $value, string $id_name, array $setting = [] ): string {
 		$args = array_merge(
 			$setting,
 			[
 				'media_buttons' => true,
 				'dfw'           => false,
-				'editor_class'  => $class_name,
-				'editor_height' => 200,
+				'editor_class'  => 'lp-editor-tinymce',
+				'editor_height' => 300,
 			]
 		);
 

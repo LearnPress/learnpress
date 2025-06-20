@@ -6,15 +6,15 @@
  */
 import * as lpUtils from '../utils.js';
 
-let elEditQuiz;
-let elListQuestions;
+let elEditQuizWrap;
+let elEditListQuestions;
 
 const className = {
-	idEditQuiz: '#admin-editor-lp_quiz',
-	elCurriculumSections: '.curriculum-sections',
-	elSection: '.section',
-	elToggleAllSections: '.course-toggle-all-sections',
-	elSectionItem: '.section-item',
+	elEditQuizWrap: '.lp-edit-quiz-wrap',
+	elQuestionToggleAll: '.lp-question-toggle-all',
+	elEditListQuestions: '.lp-edit-list-questions',
+	elQuestionItem: '.lp-question-item',
+	elQuestionToggle: '.lp-question-toggle',
 	LPTarget: '.lp-target',
 	elCollapse: 'lp-collapse',
 };
@@ -37,28 +37,55 @@ const showToast = ( message, status = 'success' ) => {
 };
 
 // Toggle all sections
-const toggleSectionAll = ( e, target ) => {
-	const elToggleAllSections = target.closest( `${ className.elToggleAllSections }` );
-	if ( ! elToggleAllSections ) {
+const toggleQuestionAll = ( e, target ) => {
+	const elQuestionToggleAll = target.closest( `${ className.elQuestionToggleAll }` );
+	if ( ! elQuestionToggleAll ) {
 		return;
 	}
 
-	const elSections = lpEditCurriculumShare.elEditCurriculum.querySelectorAll( `${ className.elSection }:not(.clone)` );
+	const elQuestionItems = elEditQuizWrap.querySelectorAll( `${ className.elQuestionItem }:not(.clone)` );
 
-	elToggleAllSections.classList.toggle( `${ className.elCollapse }` );
+	elQuestionToggleAll.classList.toggle( `${ className.elCollapse }` );
 
-	if ( elToggleAllSections.classList.contains( `${ className.elCollapse }` ) ) {
-		elSections.forEach( ( el ) => {
-			if ( ! el.classList.contains( `${ className.elCollapse }` ) ) {
-				el.classList.add( `${ className.elCollapse }` );
-			}
-		} );
+	elQuestionItems.forEach( ( el ) => {
+		const shouldCollapse = elQuestionToggleAll.classList.contains( `${ className.elCollapse }` );
+		el.classList.toggle( `${ className.elCollapse }`, shouldCollapse );
+	} );
+};
+
+// Toggle section
+const toggleQuestion = ( e, target ) => {
+	const elSectionToggle = target.closest( `${ className.elQuestionToggle }` );
+	if ( ! elSectionToggle ) {
+		return;
+	}
+
+	const elQuestionItem = elSectionToggle.closest( `${ className.elQuestionItem }` );
+
+	// Toggle section
+	elQuestionItem.classList.toggle( `${ className.elCollapse }` );
+
+	// Check all sections collapsed
+	checkAllQuestionsCollapsed();
+};
+
+// Check if all sections are collapsed
+const checkAllQuestionsCollapsed = () => {
+	const elQuestionItems = elEditQuizWrap.querySelectorAll( `${ className.elQuestionItem }:not(.clone)` );
+	const elQuestionToggleAll = elEditQuizWrap.querySelector( `${ className.elQuestionToggleAll }` );
+
+	let isAllExpand = true;
+	elQuestionItems.forEach( ( el ) => {
+		if ( el.classList.contains( `${ className.elCollapse }` ) ) {
+			isAllExpand = false;
+			return false; // Break the loop
+		}
+	} );
+
+	if ( isAllExpand ) {
+		elQuestionToggleAll.classList.remove( `${ className.elCollapse }` );
 	} else {
-		elSections.forEach( ( el ) => {
-			if ( el.classList.contains( `${ className.elCollapse }` ) ) {
-				el.classList.remove( `${ className.elCollapse }` );
-			}
-		} );
+		elQuestionToggleAll.classList.add( `${ className.elCollapse }` );
 	}
 };
 
@@ -85,7 +112,7 @@ const updateCountItems = ( elSection ) => {
 
 // Get section by id
 const initTinyMCE = () => {
-	const elTextareas = elListQuestions.querySelectorAll( '.lp-editor-tinymce' );
+	const elTextareas = elEditListQuestions.querySelectorAll( '.lp-editor-tinymce' );
 
 	elTextareas.forEach( ( elTextarea ) => {
 		// const elParent = elTextarea.closest( '.lp-question-item' );
@@ -104,8 +131,9 @@ const reInitTinymce = ( id ) => {
 
 // Events for TinyMCE editor
 const eventEditorTinymceChange = ( id, callBack ) => {
+	const editor = window.tinymce.get( id );
 	// Event change content in TinyMCE editor
-	window.tinymce.get( id ).on( 'change', ( e ) => {
+	editor.on( 'change', ( e ) => {
 		// Get editor content
 		const content = e.target.getContent();
 		console.log( 'Editor content changed:', content );
@@ -114,7 +142,7 @@ const eventEditorTinymceChange = ( id, callBack ) => {
 		//window.tinymce.triggerSave();
 	} );
 	// Event focus in TinyMCE editor
-	window.tinymce.get( id ).on( 'focusin', ( e ) => {
+	editor.on( 'focusin', ( e ) => {
 		console.log( 'Editor focused:', e.target.id );
 	} );
 };
@@ -123,10 +151,8 @@ const eventEditorTinymceChange = ( id, callBack ) => {
 document.addEventListener( 'click', ( e ) => {
 	const target = e.target;
 
-	/*** Event of Section ***/
-
-	// Collapse/Expand all sections
-	//toggleSectionAll( e, target );
+	toggleQuestionAll( e, target );
+	toggleQuestion( e, target );
 } );
 document.addEventListener( 'keydown', ( e ) => {
 	const target = e.target;
@@ -149,8 +175,9 @@ document.addEventListener( 'focusout', ( e ) => {
 } );
 
 // Element root ready.
-lpUtils.lpOnElementReady( `${ className.idEditQuiz }`, ( elEditQuiz ) => {
-	elListQuestions = elEditQuiz.querySelector( '.lp-list-questions' );
+lpUtils.lpOnElementReady( `${ className.elEditQuizWrap }`, ( elEditQuizWrapFound ) => {
+	elEditQuizWrap = elEditQuizWrapFound;
+	elEditListQuestions = elEditQuizWrap.querySelector( `${ className.elEditListQuestions }` );
 	initTinyMCE();
 } );
 

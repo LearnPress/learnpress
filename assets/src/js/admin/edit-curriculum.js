@@ -22,19 +22,10 @@ const toggleSectionAll = ( e, target ) => {
 
 	elToggleAllSections.classList.toggle( `${ className.elCollapse }` );
 
-	if ( elToggleAllSections.classList.contains( `${ className.elCollapse }` ) ) {
-		elSections.forEach( ( el ) => {
-			if ( ! el.classList.contains( `${ className.elCollapse }` ) ) {
-				el.classList.add( `${ className.elCollapse }` );
-			}
-		} );
-	} else {
-		elSections.forEach( ( el ) => {
-			if ( el.classList.contains( `${ className.elCollapse }` ) ) {
-				el.classList.remove( `${ className.elCollapse }` );
-			}
-		} );
-	}
+	elSections.forEach( ( el ) => {
+		const shouldCollapse = elToggleAllSections.classList.contains( `${ className.elCollapse }` );
+		el.classList.toggle( `${ className.elCollapse }`, shouldCollapse );
+	} );
 };
 
 // Update count items in each section and all sections
