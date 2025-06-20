@@ -5,6 +5,8 @@
  * @version 1.0.1
  */
 import * as lpUtils from '../utils.js';
+import SweetAlert from 'sweetalert2';
+import Sortable from 'sortablejs';
 
 let elEditQuizWrap;
 let elEditListQuestions;
@@ -15,6 +17,8 @@ const className = {
 	elEditListQuestions: '.lp-edit-list-questions',
 	elQuestionItem: '.lp-question-item',
 	elQuestionToggle: '.lp-question-toggle',
+	elBtnShowPopupItemsToSelect: '.lp-btn-show-popup-items-to-select',
+	elPopupItemsToSelectClone: '.lp-popup-items-to-select.clone',
 	LPTarget: '.lp-target',
 	elCollapse: 'lp-collapse',
 };
@@ -89,6 +93,63 @@ const checkAllQuestionsCollapsed = () => {
 	}
 };
 
+let elPopupSelectItems;
+let itemsSelectedData = [];
+// Show popup items to select
+const showPopupItemsToSelect = ( e, target ) => {
+	const elBtnShowPopupItemsToSelect = target.closest( `${ className.elBtnShowPopupItemsToSelect }` );
+	if ( ! elBtnShowPopupItemsToSelect ) {
+		return;
+	}
+
+	const elPopupItemsToSelectClone = elEditQuizWrap.querySelector( `${ className.elPopupItemsToSelectClone }` );
+	elPopupSelectItems = elPopupItemsToSelectClone.cloneNode( true );
+	elPopupSelectItems.classList.remove( 'clone' );
+	lpUtils.lpShowHideEl( elPopupSelectItems, 1 );
+
+	SweetAlert.fire( {
+		html: elPopupSelectItems,
+		showConfirmButton: false,
+		showCloseButton: true,
+		width: '60%',
+		customClass: {
+			popup: 'lp-select-items-popup',
+			htmlContainer: 'lp-select-items-html-container',
+			container: 'lp-select-items-container',
+		},
+		willOpen: () => {
+			// Trigger tab lesson to be active and call AJAX load items
+			const elLPTarget = elPopupSelectItems.querySelector( `${ className.LPTarget }` );
+
+			const dataSend = window.lpAJAXG.getDataSetCurrent( elLPTarget );
+			dataSend.args.paged = 1;
+			dataSend.args.item_selecting = itemsSelectedData || [];
+			window.lpAJAXG.setDataSetCurrent( elLPTarget, dataSend );
+
+			// Show loading
+			window.lpAJAXG.showHideLoading( elLPTarget, 1 );
+			// End
+
+			window.lpAJAXG.fetchAJAX( dataSend, {
+				success: ( response ) => {
+					const { data } = response;
+					elLPTarget.innerHTML = data.content || '';
+				},
+				error: ( error ) => {
+					showToast( error, 'error' );
+				},
+				completed: () => {
+					window.lpAJAXG.showHideLoading( elLPTarget, 0 );
+					// Show button add if there are items selected
+					//watchItemsSelectedDataChange();
+				},
+			} );
+		},
+	} ).then( ( result ) => {
+		//if ( result.isDismissed ) {}
+	} );
+};
+
 // Update count items in each section and all sections
 const updateCountItems = ( elSection ) => {
 	const elEditCurriculum = lpEditCurriculumShare.elEditCurriculum;
@@ -153,6 +214,7 @@ document.addEventListener( 'click', ( e ) => {
 
 	toggleQuestionAll( e, target );
 	toggleQuestion( e, target );
+	showPopupItemsToSelect( e, target );
 } );
 document.addEventListener( 'keydown', ( e ) => {
 	const target = e.target;
@@ -167,7 +229,7 @@ document.addEventListener( 'keyup', ( e ) => {
 } );
 // Event focus in
 document.addEventListener( 'focusin', ( e ) => {
-	console.log( 'focusin', e.target );
+	//console.log( 'focusin', e.target );
 } );
 // Event focus out
 document.addEventListener( 'focusout', ( e ) => {

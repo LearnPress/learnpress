@@ -5,9 +5,13 @@ namespace LearnPress\TemplateHooks\Admin;
 use Exception;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
+use LearnPress\Models\PostModel;
 use LearnPress\Models\Question\QuestionPostModel;
 use LearnPress\Models\QuizPostModel;
 use LearnPress\TemplateHooks\TemplateAJAX;
+use LP_Database;
+use LP_Post_DB;
+use LP_Post_Type_Filter;
 use stdClass;
 
 /**
@@ -378,9 +382,9 @@ class AdminEditQizTemplate {
 		);
 
 		$section = [
-			'wrap'     => '<div class="add-new-question">',
-			'icon'     => '<span class="lp-icon-plus"></span>',
-			'input'    => sprintf(
+			'wrap'             => '<div class="add-new-question">',
+			'icon'             => '<span class="lp-icon-plus"></span>',
+			'input'            => sprintf(
 				'<input class="lp-question-title-new-input"
 					name="lp-question-title-new-input"
 					type="text"
@@ -390,12 +394,16 @@ class AdminEditQizTemplate {
 				esc_attr__( 'Create a new section', 'learnpress' ),
 				esc_attr__( 'Section title is required', 'learnpress' )
 			),
-			'types'    => $html_question_types,
-			'button'   => sprintf(
-				'<button type="button" class="lp-btn-add-section button">%s</button>',
+			'types'            => $html_question_types,
+			'button'           => sprintf(
+				'<button type="button" class="lp-btn-add-question button">%s</button>',
 				__( 'Add Question', 'learnpress' )
 			),
-			'wrap_end' => '</div>',
+			'btn-select-items' => sprintf(
+				'<button type="button" class="button lp-btn-show-popup-items-to-select">%s</button>',
+				__( 'Select items', 'learnpress' )
+			),
+			'wrap_end'         => '</div>',
 		];
 
 		return Template::combine_components( $section );
@@ -409,29 +417,167 @@ class AdminEditQizTemplate {
 	 * @return string
 	 */
 	public function html_popup_items_to_select_clone( QuizPostModel $quizPostModel ): string {
-		$items = $quizPostModel->get_question_ids();
-		if ( empty( $items ) ) {
-			return '';
-		}
+		$tabs = [
+			LP_QUESTION_CPT => __( 'Questions', 'learnpress' ),
+		];
 
-		$html_items = '';
-		foreach ( $items as $item_id ) {
-			$questionPostModel = QuestionPostModel::find( $item_id, true );
-			if ( ! $questionPostModel ) {
-				continue;
-			}
-			$html_items .= sprintf(
-				'<li class="lp-item lp-item-question" data-id="%s">%s</li>',
-				$item_id,
-				$questionPostModel->post_title
-			);
-		}
-
-		return sprintf(
-			'<div class="lp-popup-items-to-select-clone">
-				<ul class="lp-list-items">%s</ul>
-			</div>',
-			$html_items
+		/**
+		 * @uses self::render_list_items_not_assign
+		 */
+		ob_start();
+		lp_skeleton_animation_html( 10 );
+		$html_loading = ob_get_clean();
+		$html_items   = TemplateAJAX::load_content_via_ajax(
+			[
+				'id_url'                  => 'list-questions-not-assign',
+				'html_no_load_ajax_first' => $html_loading,
+				'quiz_id'                 => $quizPostModel->ID,
+				'paged'                   => 1,
+			],
+			[
+				'class'  => self::class,
+				'method' => 'render_list_items_not_assign',
+			]
 		);
+
+		return AdminTemplate::html_popup_items_to_select_clone( $tabs, $html_items );
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	public static function render_list_items_not_assign( $data ): stdClass {
+		$content                = new stdClass();
+		$quiz_id                = $data['quiz_id'] ?? 0;
+		$item_selecting         = $data['item_selecting'] ?? [];
+		$search_title           = $data['search_title'] ?? '';
+		$paged                  = intval( $data['paged'] ?? 1 );
+		$item_selecting_compare = new stdClass();
+
+		$quizPostModel = QuizPostModel::find( $quiz_id, true );
+		if ( ! $quizPostModel ) {
+			throw new Exception( __( 'Quiz not found', 'learnpress' ) );
+		}
+
+		$lp_db               = LP_Database::getInstance();
+		$filter              = new LP_Post_Type_Filter();
+		$filter->only_fields = [
+			'DISTINCT(p.ID)',
+			'p.post_title',
+			'p.post_type',
+		];
+		$filter->post_type   = LP_QUESTION_CPT;
+		$filter->post_status = 'publish';
+		$filter->order_by    = 'p.ID';
+		$filter->page        = $paged;
+
+		if ( ! empty( $search_title ) ) {
+			$filter->post_title = $search_title;
+		}
+
+		// Old logic: Get all questions not assigned to any quiz.
+		// New logic: Get all questions not assigned to the quiz.
+		$filter->where[] = $lp_db->wpdb->prepare(
+			"AND p.ID NOT IN ( SELECT question_id FROM {$lp_db->tb_lp_quiz_questions} WHERE quiz_id = %d )",
+			$quizPostModel->ID
+		);
+
+		$lp_posts_db = LP_Post_DB::getInstance();
+		$total_rows  = 0;
+		$posts       = $lp_posts_db->get_posts( $filter, $total_rows );
+		$total_pages = LP_Database::get_total_pages( $filter->limit, $total_rows );
+
+		$html_lis = '';
+		if ( empty( $posts ) ) {
+			$html_lis = sprintf( '<li>%s</li>', __( 'No items found', 'learnpress' ) );
+		} else {
+			if ( ! empty( $item_selecting ) ) {
+				foreach ( $item_selecting as $item ) {
+					if ( ! isset( $item['item_id'] ) || ! isset( $item['item_type'] ) ) {
+						continue;
+					}
+
+					$item_selecting_compare->{$item['item_id']}            = new stdClass();
+					$item_selecting_compare->{$item['item_id']}->item_type = $item['item_type'];
+				}
+			}
+
+			foreach ( $posts as $post ) {
+				/**
+				 * @var $itemModel PostModel
+				 */
+				$itemModel = QuestionPostModel::find( $post->ID, true );
+				if ( ! $itemModel ) {
+					continue;
+				}
+
+				$checked = '';
+
+				if ( isset( $item_selecting_compare->{$post->ID} ) ) {
+					$checked = ' checked="checked"';
+				}
+
+				$html_lis .= sprintf(
+					'<li class="lp-select-item">%s%s</li>',
+					sprintf(
+						'<input name="lp-select-item" value="%d" data-type="%s" data-title="%s" %s data-edit-link="%s" type="checkbox" />',
+						esc_attr( $post->ID ?? 0 ),
+						esc_attr( $post->post_type ?? '' ),
+						esc_attr( $post->post_title ?? '' ),
+						esc_attr( $checked ),
+						$itemModel->get_edit_link()
+					),
+					sprintf(
+						'<span class="title">%s<strong>(#%d)</strong></span>',
+						$post->post_title,
+						$post->ID
+					)
+				);
+			}
+		}
+
+		$page_numbers = paginate_links(
+			apply_filters(
+				'learn_press_pagination_args',
+				array(
+					'base'      => add_query_arg( 'paged', '%#%', \LP_Helper::getUrlCurrent() ),
+					'format'    => '',
+					'add_args'  => '',
+					'current'   => max( 1, $paged ),
+					'total'     => $total_pages,
+					'prev_text' => '<i class="lp-icon-arrow-left"></i>',
+					'next_text' => '<i class="lp-icon-arrow-right"></i>',
+					'type'      => 'array',
+					'end_size'  => 3,
+					'mid_size'  => 3,
+				)
+			)
+		);
+
+		$html_li_number = '';
+		if ( ! empty( $page_numbers ) ) {
+			foreach ( $page_numbers as $page_number ) {
+				$html_li_number .= sprintf(
+					'<li>%s</li>',
+					$page_number
+				);
+			}
+		}
+		$section_pagination = [
+			'wrap'     => '<ul class="pagination">',
+			'numbers'  => $html_li_number,
+			'wrap_end' => '</ul>',
+		];
+
+		$section = [
+			'ul'         => '<ul class="list-items">',
+			'items'      => $html_lis,
+			'ul_end'     => '</ul>',
+			'pagination' => Template::combine_components( $section_pagination ),
+		];
+
+		$content->content = Template::combine_components( $section );
+
+		return $content;
 	}
 }
