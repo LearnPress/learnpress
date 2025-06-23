@@ -217,7 +217,7 @@ class LP_User_Factory {
 	 *
 	 * @author  tungnx
 	 * @since   4.1.3
-	 * @version 1.0.8
+	 * @version 1.0.9
 	 */
 	protected static function handle_item_order_completed( LP_Order $order, $user, $item ) {
 		$lp_user_items_db   = LP_User_Items_DB::getInstance();
@@ -313,6 +313,14 @@ class LP_User_Factory {
 				return null;
 			}
 
+			$user_item_data = apply_filters(
+				'learn-press/order/user-course-data',
+				$user_item_data,
+				$order,
+				$item,
+				$courseModel
+			);
+
 			// Delete items old
 			if ( ! $keep_progress_items_course ) {
 				// Check if user is guest.
@@ -355,7 +363,7 @@ class LP_User_Factory {
 	 *
 	 * @author tungnx
 	 * @since 4.1.3
-	 * @version 1.0.3
+	 * @version 1.0.4
 	 */
 	protected static function handle_item_manual_order_completed( LP_Order $order, $user, $item ) {
 		$userCourseResponse = null;
@@ -366,7 +374,6 @@ class LP_User_Factory {
 				return $userCourseResponse;
 			}
 
-			$auto_enroll = LP_Settings::is_auto_start_course();
 			if ( $user instanceof LP_User_Guest ) {
 				return $userCourseResponse;
 			}
@@ -378,12 +385,21 @@ class LP_User_Factory {
 				'ref_id'  => $order->get_id(),
 			];
 
+			$auto_enroll = LP_Settings::is_auto_start_course();
 			if ( $auto_enroll ) {
 				$user_item_data['status']     = UserItemModel::STATUS_ENROLLED;
 				$user_item_data['graduation'] = UserItemModel::GRADUATION_IN_PROGRESS;
 			} else {
 				$user_item_data['status'] = UserItemModel::STATUS_PURCHASED;
 			}
+
+			$user_item_data = apply_filters(
+				'learn-press/order/manual/user-course-data',
+				$user_item_data,
+				$order,
+				$item,
+				$courseModel
+			);
 
 			// Delete lp_user_items old
 			LP_User_Items_DB::getInstance()->delete_user_items_old( $user->get_id(), $courseModel->get_id() );
