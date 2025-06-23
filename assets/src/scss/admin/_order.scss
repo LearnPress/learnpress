@@ -433,4 +433,30 @@
 			font-size: 1rem;
 		}
 	}
+	.lp-order-items-wrapper{
+		.pagination {
+			display: flex;
+			flex-wrap: wrap;
+			margin: 1em 0 1em 0;
+			align-items: center;
+			gap: 5px;
+			li {
+				margin: 0;
+				cursor: pointer;
+				border: 1px solid #2271b1;
+				.page-numbers {
+					width: 30px;
+					height: 30px;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+				}
+				a {
+					text-decoration: none;
+					display: flex;
+					align-items: center;
+				}
+			}
+		}
+	}
 }

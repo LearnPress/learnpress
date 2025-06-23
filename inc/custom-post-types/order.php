@@ -534,32 +534,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 
 					break;
 				case 'order_items':
-					$links = array();
-					$items = $lp_order->get_items();
-					$count = sizeof( $items );
-
-					foreach ( $items as $item ) {
-						if ( empty( $item['course_id'] ) || get_post_type( $item['course_id'] ) !== LP_COURSE_CPT ) {
-							$links[] = apply_filters( 'learn-press/order-item-not-course-id', esc_html__( 'The course does not exist', 'learnpress' ), $item, $lp_order );
-						} elseif ( get_post_status( $item['course_id'] ) !== 'publish' ) {
-							$links[] = get_the_title( $item['course_id'] ) . sprintf( ' (#%d - %s)', $item['course_id'], esc_html__( 'Deleted', 'learnpress' ) );
-						} else {
-							$link = '<a href="' . get_the_permalink( $item['course_id'] ) . '">' . get_the_title( $item['course_id'] ) . ' (#' . $item['course_id'] . ')' . '</a>';
-							if ( $count > 1 ) {
-								$link = sprintf( '<li>%s</li>', $link );
-							}
-							$links[] = apply_filters( 'learn-press/order-item-link', $link, $item, $lp_order );
-
-						}
-					}
-
-					if ( $count > 1 ) {
-						echo sprintf( '<ol>%s</ol>', join( '', $links ) );
-					} elseif ( 1 == $count ) {
-						echo join( '', $links );
-					} else {
-						echo esc_html__( '(No item)', 'learnpress' );
-					}
+					do_action( 'learn-press/admin/order/order-items/layout', $lp_order );
 					break;
 				case 'order_total':
 					echo wp_kses_post( $lp_order->get_formatted_order_total() );

@@ -46,6 +46,7 @@ use LearnPress\TemplateHooks\Profile\ProfileOrdersTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileOrderTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileStudentStatisticsTemplate;
 use LearnPress\TemplateHooks\Course\CourseMaterialTemplate;
+use LearnPress\TemplateHooks\Order\AdminOrderItemsTemplate;
 use LearnPress\Widgets\LPRegisterWidget;
 
 defined( 'ABSPATH' ) || exit();
@@ -333,6 +334,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			// Admin template hooks.
 			AdminEditCurriculumTemplate::instance();
 			CourseMaterialTemplate::instance();
+			AdminOrderItemsTemplate::instance();
 
 			// Models
 			include_once 'inc/Models/class-lp-rest-response.php';
