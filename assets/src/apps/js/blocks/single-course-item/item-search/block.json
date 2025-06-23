@@ -1,0 +1,15 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "learnpress/item-search",
+	"title": "Item Search",
+	"category": "learnpress-category",
+	"icon": "search",
+	"description": "Renders template Single Course Legacy PHP templates.",
+	"textdomain": "learnpress",
+	"keywords": [ "item search course", "learnpress" ],
+	"usesContext": [],
+	"supports": {
+		"align": true
+	}
+}

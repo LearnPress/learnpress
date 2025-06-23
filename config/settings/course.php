@@ -38,7 +38,7 @@ return apply_filters(
 				),
 				array(
 					'title'   => esc_html__( 'Layout single course', 'learnpress' ),
-					'desc'    => esc_html__( 'Layout default display for single course.', 'learnpress' ),
+					'desc'    => esc_html__( 'Layout default display for single course. (Not apply for theme Gutenberg)', 'learnpress' ),
 					'id'      => 'layout_single_course',
 					'default' => $layout_single_course_default,
 					'type'    => 'select',

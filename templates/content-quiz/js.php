@@ -145,12 +145,10 @@ if ( $total_question ) {
 	<script>
 		document.addEventListener( 'DOMContentLoaded', () => {
 			if ( typeof LP !== 'undefined' ) {
-				LP.Hook.addAction( 'course-ready', () => {
-					LP.quiz.init(
-						'#learn-press-quiz-app',
-						<?php echo json_encode( $js ); ?>
-					)
-				} );
+				LP.quiz.init(
+					'#learn-press-quiz-app',
+					<?php echo json_encode( $js ); ?>
+				)
 			}
 		} );
 	</script>

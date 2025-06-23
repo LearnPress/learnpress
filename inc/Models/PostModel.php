@@ -225,6 +225,7 @@ class PostModel {
 
 		// Check if exists course id.
 		if ( empty( $this->ID ) ) { // Insert data.
+			unset( $data['ID'] );
 			$post_id = wp_insert_post( $data, true );
 		} else { // Update data.
 			$post_id = wp_update_post( $data, true );

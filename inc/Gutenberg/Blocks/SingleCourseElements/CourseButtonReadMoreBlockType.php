@@ -71,14 +71,33 @@ class CourseButtonReadMoreBlockType extends AbstractCourseBlockType {
 				return $html;
 			}
 
-			$wrapper = get_block_wrapper_attributes();
-			$html    = sprintf(
-				'<a href="%s" %s>%s</a>',
+			$map_align_items = [
+				'top'    => 'flex-start',
+				'center' => 'center',
+				'bottom' => 'flex-end',
+			];
+
+			$text_align      = $attributes['textAlign'] ?? 'center';
+			$align_items     = isset( $attributes['alignItems'] ) ? $map_align_items[ $attributes['alignItems'] ] : 'flex-start';
+			$justify_content = $attributes['justifyContent'] ?? 'center';
+			$width           = $attributes['width'] ?? '100';
+
+			$extra_attributes = [
+				'style' => 'width: 100%; text-align: ' . $text_align . ';',
+			];
+
+			$style_wrapper = 'style="display: flex; ' . 'align-items: ' . $align_items . ';' . 'justify-content: ' . $justify_content . ';' . '"';
+			$wrapper       = get_block_wrapper_attributes( $extra_attributes );
+			$html          = sprintf(
+				'<div class="course-button-read-more" %s><a href="%s" %s aria-label="%s"><button %s aria-label="%s">%s</button></a>',
+				$style_wrapper,
 				$courseModel->get_permalink(),
+				'style=" width: ' . $width . '%;"',
+				__( 'Learn more about this course', 'learnpress' ),
 				$wrapper,
+				__( 'Read more', 'learnpress' ),
 				__( 'Read more', 'learnpress' )
 			);
-
 		} catch ( Throwable $e ) {
 			LP_Debug::error_log( $e );
 		}

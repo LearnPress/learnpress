@@ -10,6 +10,16 @@
 	"keywords": [ "image single course", "learnpress" ],
 	"ancestor": [ "learnpress/single-course", "learnpress/course-item-template" ],
 	"usesContext": [ "lpCourseData" ],
+	"attributes": {
+		"isLink": {
+			"type": "boolean",
+			"default": true
+		},
+		"target": {
+			"type": "boolean",
+			"default": false
+		}
+	},
 	"supports": {
 		"multiple": true,
 		"html": false,

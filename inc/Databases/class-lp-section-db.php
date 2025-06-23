@@ -432,7 +432,7 @@ class LP_Section_DB extends LP_Database {
 	 *
 	 * @return int
 	 * @throws Exception
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 * @since 4.2.8.6
 	 */
 	public function insert_data( array $data ): int {
@@ -443,6 +443,9 @@ class LP_Section_DB extends LP_Database {
 				unset( $data[ $col_name ] );
 			}
 		}
+
+		// section_id is auto increment.
+		unset( $data['section_id'] );
 
 		$this->wpdb->insert( $this->tb_lp_sections, $data );
 

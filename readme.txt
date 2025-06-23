@@ -3,7 +3,7 @@ Contributors: thimpress, tungnx89, nhamdv, nguyenlammanh, tunnhn, phonglq.foobla
 Donate link:
 Tags: e-learning, education, course, lms, learning management system
 Tested up to: 6.8
-Stable tag: 4.2.8.6.1
+Stable tag: 4.2.8.7
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -222,8 +222,11 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
-= 4.2.8.7 (2025-06-14) =
-~ Fixed: error link profile with Polylang v3.7 and higher
+= 4.2.8.7 (2025-06-17) =
+~ Fixed: error 404 with link profile tab, link lesson with Polylang v3.7 and higher.
+~ Fixed: error enroll many courses can make server hang by send mail on background.
+~ Fixed: translate on format_human_time_diff method.
+~ Update: UI/UX for edit curriculum course.
 
 = 4.2.8.6.1 (2025-06-09) =
 ~ Fixed: error widget courses can't interact.

@@ -3,8 +3,13 @@
 /**
  * Abstract LP_Async_Request class.
  *
+ * This class is used to create asynchronous requests in LearnPress.
+ * It is recommended to use this class for tasks that can be processed in the background
+ * Note: don't call too many times on a progress, it can cause server hang.
+ * Should be considered when using
+ *
  * @since 4.1.6.9.4
- * @version 1.0.1
+ * @version 1.0.2
  */
 abstract class LP_Async_Request {
 	/**

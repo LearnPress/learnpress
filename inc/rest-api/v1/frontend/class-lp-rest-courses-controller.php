@@ -166,7 +166,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 				$courseItem->quiz        = $singleCourseTemplate->html_count_item( $courseModel, LP_QUIZ_CPT );
 				$courseItem->level       = $singleCourseTemplate->html_level( $courseModel );
 				$courseItem->image       = $singleCourseTemplate->html_image( $courseModel );
-				$courseItem->instructor  = $singleCourseTemplate->html_instructor( $courseModel, false, [ 'is_link' => 'false' ] );
+				$courseItem->instructor  = $singleCourseTemplate->html_instructor( $courseModel, false, [ 'is_link' => false ] );
 				$courseItem->category    = $singleCourseTemplate->html_categories( $courseModel );
 				$courseItem->button      = __( 'Read more', 'learnpress' );
 

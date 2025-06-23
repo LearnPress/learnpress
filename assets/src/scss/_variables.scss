@@ -31,12 +31,12 @@ $font-size-small: calc(($font-size-base * 0.925)); // ~12px
 $font-size-label: calc(($font-size-base * 0.86)); // ~11px
 
 // Typography for H
-$font-size-h1: calc(($font-size-base * 2.6)); // ~36px
-$font-size-h2: calc(($font-size-base * 2.15)); // ~30px
-$font-size-h3: calc(($font-size-base * 1.7)); // ~24px
+$font-size-h1: calc(($font-size-base * 2.15)); // ~36px
+$font-size-h2: calc(($font-size-base * 1.8)); // ~30px
+$font-size-h3: calc(($font-size-base * 1.6)); // ~24px
 $font-size-h4: calc(($font-size-base * 1.25)); // ~18px
-$font-size-h5: $font-size-base;
-$font-size-h6: calc(($font-size-base * 0.85)); // ~12px
+$font-size-h5: calc(($font-size-base * 1.15));
+$font-size-h6: calc(($font-size-base * 0.925)); // ~12px
 $heading-font-weight: 700;
 $link-font-weight: var(--lp-font-weight-link, 600);
 

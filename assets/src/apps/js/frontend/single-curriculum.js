@@ -1,19 +1,20 @@
 import SingleCurriculums from './single-curriculum/index';
 import lpModalOverlayCompleteItem from './show-lp-overlay-complete-item';
-import courseCurriculumSkeleton from './single-curriculum/skeleton';
+//import courseCurriculumSkeleton from './single-curriculum/skeleton';
 import lpMaterialsLoad from './material';
 
 export default SingleCurriculums;
 
-export const init = () => {
+// Comment code use for old curriculum
+/*export const init = () => {
 	wp.element.render(
 		<SingleCurriculums />,
 		document.getElementById( 'learn-press-course-curriculum' )
 	);
-};
+};*/
 
 document.addEventListener( 'DOMContentLoaded', function( event ) {
-	LP.Hook.doAction( 'course-ready' );
+	//LP.Hook.doAction( 'course-ready' );
 	lpModalOverlayCompleteItem.init();
 
 	lpMaterialsLoad();
@@ -21,10 +22,11 @@ document.addEventListener( 'DOMContentLoaded', function( event ) {
 	//init();
 } );
 
-const detectedElCurriculum = setInterval( function() {
+// Comment code use for old curriculum
+/*const detectedElCurriculum = setInterval( function() {
 	const elementCurriculum = document.querySelector( '.learnpress-course-curriculum' );
 	if ( elementCurriculum ) {
 		courseCurriculumSkeleton();
 		clearInterval( detectedElCurriculum );
 	}
-}, 1 );
+}, 1 );*/

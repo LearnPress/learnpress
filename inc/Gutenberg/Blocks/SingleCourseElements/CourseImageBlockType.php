@@ -57,14 +57,17 @@ class CourseImageBlockType extends AbstractCourseBlockType {
 				return $html;
 			}
 
-			$is_list_course = $block->context['is_list_course'] ?? false;
-			$html_image     = '';
+			$is_link    = $attributes['isLink'] ?? true;
+			$new_tab    = $attributes['target'] ?? false;
+			$html_image = '';
 
-			if ( $is_list_course ) {
-				$html_image = sprintf( '<a href="%s">%s</a>', $courseModel->get_permalink(), SingleCourseTemplate::instance()->html_image( $courseModel ) );
+			if ( $is_link ) {
+				$attribute_target = ! empty( $new_tab ) ? 'target="_blank"' : '';
+				$html_image       = sprintf( '<a href="%s" %s>%s</a>', $courseModel->get_permalink(), $attribute_target, SingleCourseTemplate::instance()->html_image( $courseModel ) );
 			} else {
 				$html_image = SingleCourseTemplate::instance()->html_image( $courseModel );
 			}
+
 			if ( empty( $html_image ) ) {
 				return $html;
 			}

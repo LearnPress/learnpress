@@ -1,4 +1,7 @@
 <?php
+
+use LearnPress\Models\UserItems\UserCourseModel;
+
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Email_Hooks' ) ) {
@@ -79,11 +82,23 @@ if ( ! class_exists( 'LP_Email_Hooks' ) ) {
 			);
 
 			foreach ( $this->actions as $tag_hook => $action ) {
+				// Stop call many times background email when enroll course,
+				if ( $tag_hook === 'learnpress/user/course-enrolled' ) {
+					continue;
+				}
+
 				add_action( $tag_hook, array( $this, 'handle_send_email_on_background' ), 10, 10 );
 			}
 
 			/*** Override message change password */
 			add_filter( 'retrieve_password_notification_email', array( $this, 'retrieve_password_message' ), 11, 4 );
+			add_filter(
+				'lp/background/allow_callback',
+				function ( $callbacks ) {
+					$callbacks[] = LP_Email_Hooks::class . ':users_enrolled_courses';
+					return $callbacks;
+				}
+			);
 		}
 
 		protected function include() {
@@ -154,6 +169,47 @@ if ( ! class_exists( 'LP_Email_Hooks' ) ) {
 			}
 
 			return $data_mail;
+		}
+
+		/**
+		 * Send mail when users enrolled courses
+		 *
+		 * @throws Exception
+		 *
+		 * @since 4.2.8.7
+		 * @version 1.0.0
+		 */
+		public static function users_enrolled_courses( $data ) {
+			$user_course_ids = LP_Helper::sanitize_params_submitted( $data['user_course_ids'] ?? [] );
+
+			foreach ( $user_course_ids as $user_course_id ) {
+				$user_id         = $user_course_id['user_id'] ?? 0;
+				$course_id       = $user_course_id['course_id'] ?? 0;
+				$userCourseModel = UserCourseModel::find( $user_id, $course_id, true );
+				if ( ! $userCourseModel ) {
+					continue;
+				}
+
+				$data_send = [
+					$userCourseModel->ref_id,
+					$userCourseModel->item_id,
+					$userCourseModel->user_id,
+				];
+
+				// Send email to user enrolled course
+				$email_enrolled = new LP_Email_Enrolled_Course_User();
+				$email_enrolled->handle( $data_send );
+
+				// Send email to admin when user enrolled course
+				$email_enrolled_to_admin = new LP_Email_Enrolled_Course_Admin();
+				$email_enrolled_to_admin->handle( $data_send );
+
+				// Send email to instructor when user enrolled course's instructor
+				$email_enrolled_to_instructor = new LP_Email_Enrolled_Course_Instructor();
+				$email_enrolled_to_instructor->handle( $data_send );
+
+				do_action( 'lp/email/users-enrolled-courses/send-mail', $userCourseModel, $data_send );
+			}
 		}
 
 		/**

@@ -59,6 +59,7 @@ if ( ! class_exists( 'LP_Background_Single_Course' ) ) {
 				error_log( $e->getMessage() );
 			}
 			ini_set( 'max_execution_time', LearnPress::$time_limit_default_of_sever );
+			die;
 		}
 
 		/**

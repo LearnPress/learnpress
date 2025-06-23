@@ -205,7 +205,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 				// Get all answer of question
 				$filter_get_answer_options               = new LP_Question_Answers_Filter();
 				$filter_get_answer_options->question_ids = [ $question_id ];
-				$answer_options                          = $lp_question_answers_db->get_question_asnwers( $filter_get_answer_options );
+				$answer_options                          = $lp_question_answers_db->get_question_answers( $filter_get_answer_options );
 
 				if ( $answer_options ) {
 					foreach ( $answer_options as $answer_option ) {
@@ -233,7 +233,7 @@ if ( ! class_exists( 'LP_Question_CURD' ) ) {
 						$filter_question_answer_id->only_fields         = [ 'MAX(question_answer_id)' ];
 						$filter_question_answer_id->question_ids        = [ $question_id_clone ];
 						$filter_question_answer_id->return_string_query = true;
-						$question_answer_id_query                       = $lp_question_answers_db->get_question_asnwers( $filter_question_answer_id );
+						$question_answer_id_query                       = $lp_question_answers_db->get_question_answers( $filter_question_answer_id );
 						$question_answer_id_new                         = (int) $lp_question_answers_db->wpdb->get_var( $question_answer_id_query );
 
 						if ( ! $question_answer_id_new ) {

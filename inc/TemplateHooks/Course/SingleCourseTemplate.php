@@ -26,6 +26,7 @@ use LP_Checkout;
 use LP_Course;
 use LP_Course_Item;
 use LP_Datetime;
+use LP_Debug;
 use LP_Global;
 use LP_Material_Files_DB;
 use LP_Settings;
@@ -1154,7 +1155,7 @@ class SingleCourseTemplate {
 	 *
 	 * @return string
 	 * @since 4.2.7.2
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 */
 	public function html_material( CourseModel $courseModel, $userModel = false ): string {
 		$html = '';
@@ -1164,7 +1165,7 @@ class SingleCourseTemplate {
 
 			if ( $userModel instanceof UserModel ) {
 				if ( $courseModel->check_user_is_author( $userModel )
-					|| user_can( $courseModel->get_id(), ADMIN_ROLE ) ) {
+					|| user_can( $userModel->get_id(), ADMIN_ROLE ) ) {
 					$can_show = true;
 				} else {
 					$userCourseModel = UserCourseModel::find( $userModel->get_id(), $courseModel->get_id(), true );
@@ -1259,6 +1260,32 @@ class SingleCourseTemplate {
 			$html = sprintf( '<span class="course-price-suffix">%s</span>', $price_suffix_str );
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
+		}
+
+		return $html;
+	}
+
+	/**
+	 * Get html featured course.
+	 *
+	 * @param CourseModel $courseModel
+	 *
+	 * @return string
+	 * @since 4.2.8.8
+	 * @version 1.0.0
+	 */
+	public function html_featured( CourseModel $courseModel ): string {
+		$html = '';
+
+		try {
+			$is_featured = $courseModel->get_meta_value_by_key( CoursePostModel::META_KEY_FEATURED, 'no' );
+			if ( $is_featured !== 'yes' ) {
+				return $html;
+			}
+
+			$html = sprintf( '<span class="course-featured">%s</span>', __( 'Featured', 'learnpress' ) );
+		} catch ( Throwable $e ) {
+			LP_Debug::error_log( $e );
 		}
 
 		return $html;

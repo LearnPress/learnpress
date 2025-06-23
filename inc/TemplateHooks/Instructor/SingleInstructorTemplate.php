@@ -331,7 +331,7 @@ class SingleInstructorTemplate extends UserTemplate {
 			$filter->post_author = $instructor->get_id();
 			$filter->limit       = LP_Settings::get_option( 'archive_course_limit', 20 );
 			$filter->page        = $GLOBALS['wp_query']->get( 'paged', 1 ) ? $GLOBALS['wp_query']->get( 'paged', 1 ) : 1;
-			// $filter              = apply_filters( 'lp/single-instructor/courses/query/filter', $filter, [] );
+			$filter              = apply_filters( 'lp/single-instructor/courses/query/filter', $filter, [] );
 
 			$total_courses = 0;
 			$courses       = Courses::get_courses( $filter, $total_courses );

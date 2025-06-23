@@ -24,13 +24,17 @@ use LearnPress\Gutenberg\Blocks\Legacy\SingleCourseBlockLegacy;
 use LearnPress\Gutenberg\Blocks\Legacy\ArchiveCourseBlockLegacy;
 use LearnPress\Gutenberg\Blocks\Legacy\CourseItemLegacyBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourse\SingleCourseBlockType;
+use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseAddressBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseButtonBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseButtonReadMoreBlockType;
+use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseCapacityBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseCategoriesBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseCurriculumBlockType;
+use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseDeliveryBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseDescriptionBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseDurationBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseFaqsBlockType;
+use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseFeaturedBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseFeatureReviewBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseFeaturesBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseImageBlockType;
@@ -38,6 +42,8 @@ use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseInstructorBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseInstructorInfoBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseLessonBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseLevelBlockType;
+use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseOfflineLessonBlockType;
+use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseMaterialBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CoursePriceBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseProgressBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseQuizBlockType;
@@ -46,6 +52,14 @@ use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseShareBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseStudentBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseTargetAudiencesBlockType;
 use LearnPress\Gutenberg\Blocks\SingleCourseElements\CourseTitleBlockType;
+use LearnPress\Gutenberg\Blocks\SingleCourseItemElements\ItemCloseBlockType;
+use LearnPress\Gutenberg\Blocks\SingleCourseItemElements\ItemCommentBlockType;
+use LearnPress\Gutenberg\Blocks\SingleCourseItemElements\ItemContentBlockType;
+use LearnPress\Gutenberg\Blocks\SingleCourseItemElements\ItemCurriculumBlockType;
+use LearnPress\Gutenberg\Blocks\SingleCourseItemElements\ItemHiddenSidebarBlockType;
+use LearnPress\Gutenberg\Blocks\SingleCourseItemElements\ItemNavigationBlockType;
+use LearnPress\Gutenberg\Blocks\SingleCourseItemElements\ItemProgressBlockType;
+use LearnPress\Gutenberg\Blocks\SingleCourseItemElements\ItemSearchBlockType;
 use LearnPress\Gutenberg\Blocks\SingleInstructor\SingleInstructorBlockType;
 use LearnPress\Gutenberg\Blocks\SingleInstructorElements\InstructorAvatarBlockType;
 use LearnPress\Gutenberg\Blocks\SingleInstructorElements\InstructorBackgroundBlockType;
@@ -60,9 +74,13 @@ return apply_filters(
 	array(
 		new SingleCourseBlockLegacy(),
 		new ArchiveCourseBlockLegacy(),
+		new CourseAddressBlockType(),
 		new CourseTitleBlockType(),
+		new CourseFeaturedBlockType(),
 		new CourseInstructorBlockType(),
+		new CourseCapacityBlockType(),
 		new CourseCategoriesBlockType(),
+		new CourseDeliveryBlockType(),
 		new CourseDescriptionBlockType(),
 		new CourseFeaturesBlockType(),
 		new CourseTargetAudiencesBlockType(),
@@ -73,9 +91,11 @@ return apply_filters(
 		new CourseInstructorInfoBlockType(),
 		new CourseImageBlockType(),
 		new CoursePriceBlockType(),
+		new CourseMaterialBlockType(),
 		new CourseProgressBlockType(),
 		new CourseStudentBlockType(),
 		new CourseLessonBlockType(),
+		new CourseOfflineLessonBlockType(),
 		new CourseDurationBlockType(),
 		new CourseQuizBlockType(),
 		new CourseLevelBlockType(),
@@ -103,8 +123,16 @@ return apply_filters(
 		new InstructorDescriptionBlockType(),
 		new BreadcrumbBlockType(),
 		//new SingleCourseBlockType(),
-		new SingleInstructorBlockType(),
+		// new SingleInstructorBlockType(),
 		new ListCoursesBlockType(),
 		new CourseItemTemplateBlock(),
+		new ItemCloseBlockType(),
+		new ItemCommentBlockType(),
+		new ItemContentBlockType(),
+		new ItemCurriculumBlockType(),
+		new ItemHiddenSidebarBlockType(),
+		new ItemNavigationBlockType(),
+		new ItemProgressBlockType(),
+		new ItemSearchBlockType(),
 	)
 );

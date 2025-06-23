@@ -203,7 +203,7 @@ class AdminEditCurriculumTemplate {
 			'title'                => $this->html_input_section_title( $section_name ),
 			'btn-edit'             => sprintf(
 				'<span class="lp-btn-edit-section-title lp-icon-edit" title="%s"></span>',
-				__( 'Edit title section', 'learnpress' )
+				__( 'Edit section title', 'learnpress' )
 			),
 			'btn-delete'           => sprintf(
 				'<button type="button" class="lp-btn-delete-section button" data-title="%s" data-content="%s">%s</button>',
@@ -294,7 +294,7 @@ class AdminEditCurriculumTemplate {
 				type="text"
 				value="%1$s"
 				data-old="%1$s"
-				placeholder="%2$s"></textarea>',
+				placeholder="%2$s">%1$s</textarea>',
 			esc_attr( $section_description ),
 			esc_attr__( '+ Add Description', 'learnpress' )
 		);

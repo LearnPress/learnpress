@@ -26,25 +26,20 @@ export const Sidebar = () => {
 		} else {
 			elSidebarToggle.removeAttribute( 'checked' );
 		}
-
-		document.querySelector( '#popup-course' ).addEventListener( 'click', ( e ) => {
-			if ( e.target.id === 'sidebar-toggle' ) {
-				LP.Cookies.set( 'sidebar-toggle', e.target.checked ? true : false );
-				toggleSidebar( LP.Cookies.get( 'sidebar-toggle' ) );
-			}
-		} );
 	}
 	// End editor by tungnx
 
-	const $curriculum = $( '#learn-press-course-curriculum' );
+	// Code for old curriculum
+	/*const $curriculum = $( '#learn-press-course-curriculum' );
 	$curriculum.find( '.section-desc' ).each( ( i, el ) => {
 		const a = $( '<span class="show-desc"></span>' ).on( 'click', () => {
 			b.toggleClass( 'c' );
 		} );
 		const b = $( el ).siblings( '.section-title' ).append( a );
-	} );
+	} );*/
 
-	$( '.section' ).each( function() {
+	// Code for old curriculum
+	/*$( '.section' ).each( function() {
 		const $section = $( this ),
 			$toggle = $section.find( '.section-left' );
 
@@ -65,6 +60,13 @@ export const Sidebar = () => {
 			LP.Cookies.remove( 'closed-section-(.*)' );
 			LP.Cookies.set( 'closed-section-' + lpGlobalSettings.post_id, [ ...new Set( sections ) ] );
 		} );
+	} );*/
+
+	document.addEventListener( 'click', ( e ) => {
+		if ( e.target.id === 'sidebar-toggle' ) {
+			LP.Cookies.set( 'sidebar-toggle', e.target.checked ? true : false );
+			toggleSidebar( LP.Cookies.get( 'sidebar-toggle' ) );
+		}
 	} );
 };
 

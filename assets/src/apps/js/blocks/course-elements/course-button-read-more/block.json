@@ -10,6 +10,24 @@
 	"keywords": [ "button read more single course", "learnpress" ],
 	"ancestor": [ "learnpress/course-item-template" ],
 	"usesContext": [ "lpCourseData" ],
+	"attributes": {
+		"textAlign": {
+			"type": "string",
+			"default": "center"
+		},
+		"justifyContent": {
+			"type": "string",
+			"default": "center"
+		},
+		"alignItems": {
+			"type": "string",
+			"default": "top"
+		},
+		"width": {
+			"type": "string",
+			"default": "100"
+		}
+	},
 	"supports": {
 		"multiple": true,
 		"align": [ "wide", "full" ],

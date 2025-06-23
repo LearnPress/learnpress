@@ -1,0 +1,15 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "learnpress/item-hidden-sidebar",
+	"title": "Item Hidden Sidebar",
+	"category": "learnpress-category",
+	"icon": "hidden",
+	"description": "Renders template Single Course Legacy PHP templates.",
+	"textdomain": "learnpress",
+	"keywords": [ "item hidden sidebar course", "learnpress" ],
+	"usesContext": [],
+	"supports": {
+		"align": true
+	}
+}

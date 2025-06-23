@@ -1,0 +1,18 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "learnpress/item-close",
+	"title": "Item Close",
+	"category": "learnpress-category",
+	"icon": "no-alt",
+	"description": "Renders template Single Course Legacy PHP templates.",
+	"textdomain": "learnpress",
+	"keywords": [
+		"item close course",
+		"learnpress"
+	],
+	"usesContext": [],
+	"supports": {
+		"align": true
+	}
+}

@@ -2,7 +2,7 @@
  * Library run on Admin
  *
  * @since 4.2.6.9
- * @version 1.0.0
+ * @version 1.0.1
  */
 import * as Utils from '../utils.js';
 import TomSelect from 'tom-select';
@@ -51,7 +51,7 @@ const AdminUtilsFunctions = {
 
 		options = { ...optionDefault, ...options };
 		const items_selected = options.options;
-		if ( options?.options?.length > 20 ) {
+		/*if ( options?.options?.length > 20 ) {
 			const chunkSize = 20;
 			const length = options.options.length;
 			let i = 0;
@@ -73,7 +73,7 @@ const AdminUtilsFunctions = {
 			}, 200 );
 
 			return tomSelect;
-		}
+		}*/
 
 		return new TomSelect( elTomSelect, options );
 	},

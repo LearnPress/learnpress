@@ -4,7 +4,7 @@
  * Plugin URI: http://thimpress.com/learnpress
  * Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
  * Author: ThimPress
- * Version: 4.2.8.7-beta.1
+ * Version: 4.2.8.7
  * Author URI: http://thimpress.com
  * Requires at least: 6.0
  * Requires PHP: 7.0
@@ -16,6 +16,7 @@
 
 use LearnPress\Ajax\LessonAjax;
 use LearnPress\Ajax\LoadContentViaAjax;
+use LearnPress\Background\LPBackgroundTrigger;
 use LearnPress\ExternalPlugin\Elementor\LPElementor;
 use LearnPress\ExternalPlugin\RankMath\LPRankMath;
 use LearnPress\ExternalPlugin\YoastSeo\LPYoastSeo;
@@ -278,6 +279,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			include_once 'inc/Filters/class-lp-section-filter.php';
 			include_once 'inc/Filters/class-lp-section-items-filter.php';
 			include_once 'inc/Filters/class-lp-question-filter.php';
+			include_once 'inc/Filters/class-lp-quiz-filter.php';
 			include_once 'inc/Filters/class-lp-user-items-filter.php';
 			include_once 'inc/Filters/class-lp-user-item-meta-filter.php';
 			include_once 'inc/Filters/class-lp-quiz-filter.php';
@@ -357,12 +359,12 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			include_once 'inc/cache/class-lp-user-items-cache.php';
 
 			// Background processes.
+			LPBackgroundTrigger::instance();
 			include_once 'inc/libraries/wp-background-process/wp-background-processing.php';
 			include_once 'inc/background-process/abstract-lp-async-request.php';
 			//include_once 'inc/background-process/abstract-lp-async-task.php';
 			include_once 'inc/background-process/class-lp-background-single-course.php';
 			include_once 'inc/background-process/class-lp-background-single-email.php';
-			include_once 'inc/background-process/class-lp-background-thim-cache.php';
 
 			// Assets object
 			include_once 'inc/class-lp-asset-key.php';
@@ -750,7 +752,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 */
 		public function plugin_links( array $links ): array {
 			$links[] = sprintf( '<a href="%s">%s</a>', admin_url( 'admin.php?page=learn-press-settings' ), __( 'Settings', 'learnpress' ) );
-			$links[] = sprintf( '<a href="%s" target="_blank">%s</a>', 'https://docspress.thimpress.com/learnpress-4-0/', __( 'Documentation', 'learnpress' ) );
+			$links[] = sprintf( '<a href="%s" target="_blank">%s</a>', 'https://docs.thimpress.com/learnpress/', __( 'Documentation', 'learnpress' ) );
 			$links[] = sprintf( '<a href="%s" target="_blank">%s</a>', get_admin_url() . '/admin.php?page=learn-press-addons', __( 'Add-ons', 'learnpress' ) );
 
 			return $links;

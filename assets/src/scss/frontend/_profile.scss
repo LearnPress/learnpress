@@ -581,6 +581,9 @@
 		list-style: none !important;
 		padding: 0 !important;
 	}
+	ul.learn-press-courses{
+		margin: 0 calc(-1 * $spacing-base-4x);
+	}
 }
 
 .lp-user-avatar__buttons {

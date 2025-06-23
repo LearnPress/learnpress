@@ -55,8 +55,6 @@ class LP_Cache {
 			if ( $this->can_handle_with_thim_cache() ) {
 				$key = "{$this->key_group}/{$key}";
 				Thim_Cache_DB::instance()->set_value( $key, $data, $expire );
-				/*$lp_bg_thim_cache = new LP_Background_Thim_Cache();
-				$lp_bg_thim_cache->data( compact( 'key', 'data' ) )->dispatch();*/
 			}
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
