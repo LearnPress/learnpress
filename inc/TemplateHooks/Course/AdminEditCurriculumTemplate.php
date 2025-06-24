@@ -7,6 +7,7 @@ use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\PostModel;
+use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\TemplateAJAX;
 use LP_Database;
 use LP_Post_DB;
@@ -572,9 +573,17 @@ class AdminEditCurriculumTemplate {
 	}
 
 	/**
+	 * Render list items not assign to course.
+	 * Get all items not assigned to any course, use old logic.
+	 * If user current is Admin, get all items.
+	 * Else get all items created by user current.
+	 *
 	 * @throws Exception
+	 * @since 4.2.8.6
+	 * @version 1.0.1
 	 */
 	public static function render_list_items_not_assign( $data ): stdClass {
+		$user                   = wp_get_current_user();
 		$content                = new stdClass();
 		$course_id              = $data['course_id'] ?? 0;
 		$item_type              = $data['item_type'] ?? LP_LESSON_CPT;
@@ -599,6 +608,9 @@ class AdminEditCurriculumTemplate {
 		$filter->post_status = 'publish';
 		$filter->order_by    = 'p.ID';
 		$filter->page        = $paged;
+		if ( ! user_can( $user, UserModel::ROLE_ADMINISTRATOR ) ) {
+			$filter->post_author = $user->ID;
+		}
 
 		if ( ! empty( $search_title ) ) {
 			$filter->post_title = $search_title;
@@ -612,6 +624,12 @@ class AdminEditCurriculumTemplate {
 
 		$lp_posts_db = LP_Post_DB::getInstance();
 		$total_rows  = 0;
+		$filter      = apply_filters(
+			'learn-press/filter-list-items-not-assign-course',
+			$filter,
+			$data,
+			$courseModel
+		);
 		$posts       = $lp_posts_db->get_posts( $filter, $total_rows );
 		$total_pages = LP_Database::get_total_pages( $filter->limit, $total_rows );
 
