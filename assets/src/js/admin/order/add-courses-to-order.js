@@ -149,7 +149,7 @@ const addCoursesToOrder = () => {
 			return;
 		}
 
-		if ( ! target.closest( idOrderDetails ) ) {
+		if ( ! target.closest( '.remove-order-item' ) ) {
 			return;
 		}
 
