@@ -4,7 +4,7 @@ namespace LearnPress\Models;
 /**
  * Class UserModel
  *
- * @version 1.0.1
+ * @version 1.0.2
  * @since 4.2.6.9
  */
 
@@ -73,6 +73,10 @@ class UserModel {
 	// Meta keys
 	const META_KEY_IMAGE       = '_lp_profile_picture';
 	const META_KEY_COVER_IMAGE = '_lp_profile_cover_image';
+
+	// Roles
+	const ROLE_INSTRUCTOR    = LP_TEACHER_ROLE;
+	const ROLE_ADMINISTRATOR = 'administrator';
 
 	/**
 	 * If data get from database, map to object.
