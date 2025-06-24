@@ -225,7 +225,7 @@ window.lpCoursesList = ( () => {
 			// End.
 
 			// Show loading
-			window.lpAJAXG.showHideLoading( elLPTarget, 0 );
+			window.lpAJAXG.showHideLoading( elLPTarget, 1 );
 			// End
 
 			const callBack = {
@@ -238,8 +238,8 @@ window.lpCoursesList = ( () => {
 					console.log( error );
 				},
 				completed: () => {
-					//console.log( 'completed' );
-					window.lpAJAXG.showHideLoading( elLPTarget, 1 );
+					console.log( 'completed' );
+					window.lpAJAXG.showHideLoading( elLPTarget, 0 );
 				},
 			};
 

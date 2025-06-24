@@ -116,12 +116,12 @@ class ListCoursesTemplate {
 		$section_courses = apply_filters(
 			'learn-press/layout/list-courses/section/courses',
 			[
-				'wrapper'     => sprintf(
-					'<ul class="courses-list courses-list-%s">',
-					esc_attr( $skin )
+				'wrap'     => sprintf(
+					'<ul class="learn-press-courses lp-list-courses-no-css %1$s" data-layout="%1$s">',
+					$skin
 				),
-				'courses'     => $html_courses,
-				'wrapper_end' => '</ul>',
+				'courses'  => $html_courses,
+				'wrap_end' => '</ul>',
 			],
 			$courses,
 			$settings
