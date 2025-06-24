@@ -209,6 +209,29 @@ class PostModel {
 	}
 
 	/**
+	 * Check capabilities of item's course.
+	 * Check user current can edit it.
+	 *
+	 * @return void
+	 * @throws Exception
+	 * @version 1.0.0
+	 * @since 4.2.8.8
+	 */
+	public function check_capabilities_item_course() {
+		$course_item_types = CourseModel::item_types_support();
+		// Questions not type item of course, it is type item of quiz, but need check here.
+		$course_item_types[] = LP_QUESTION_CPT;
+		if ( ! in_array( $this->post_type, $course_item_types, true ) ) {
+			return;
+		}
+
+		$user = wp_get_current_user();
+		if ( ! user_can( $user, 'edit_' . LP_LESSON_CPT, $this->ID ) ) {
+			throw new Exception( __( 'You do not have permission to edit this item.', 'learnpress' ) );
+		}
+	}
+
+	/**
 	 * Update data to database.
 	 *
 	 * If user_item_id is empty, insert new data, else update data.
@@ -218,6 +241,8 @@ class PostModel {
 	 * @version 1.0.2
 	 */
 	public function save() {
+		$this->check_capabilities_item_course();
+
 		$data = [];
 		foreach ( get_object_vars( $this ) as $property => $value ) {
 			$data[ $property ] = $value;
