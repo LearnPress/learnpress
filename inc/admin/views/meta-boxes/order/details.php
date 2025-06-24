@@ -4,7 +4,7 @@
  *
  * @author  ThimPress (Nhamdv)
  * @package LearnPress/Admin/Views
- * @version 4.0.3
+ * @version 4.0.4
  */
 
 if ( isset( $order_items ) ) {
@@ -201,10 +201,7 @@ $user_ids     = $order->get_user_id();
 			<?php endif; ?>
 		</div>
 	</div>
-
-	<div class="order-items">
-		<?php do_action( 'learn-press/admin/order-details/order-items/layout', $order ); ?>
-	</div>
+	<?php do_action( 'learn-press/admin/order-details/items/layout', $order ); ?>
 </div>
 
 <?php

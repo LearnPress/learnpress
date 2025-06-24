@@ -15,15 +15,18 @@ use LP_Order;
 use Throwable;
 
 /**
+ * class AdminOrderItemsTemplate
  *
+ * @since 4.2.8.8
+ * @version 1.0.0
  */
-final class AdminOrderItemsTemplate {
+class AdminOrderItemsTemplate {
 	use Singleton;
 
 	public function init() {
 		add_filter( 'lp/rest/ajax/allow_callback', array( $this, 'allow_callback' ) );
 		add_action( 'learn-press/admin/order-items/layout', array( $this, 'view_order_items_layout' ) );
-		add_action( 'learn-press/admin/order-details/order-items/layout', array( $this, 'order_detail_view_items_layout' ), 10, 1 );
+		add_action( 'learn-press/admin/order-details/items/layout', array( $this, 'order_detail_view_items_layout' ) );
 	}
 	/**
 	 * Allow callback for AJAX.
@@ -179,53 +182,103 @@ final class AdminOrderItemsTemplate {
 	}
 
 	public function order_detail_view_items_layout( LP_Order $lp_order ) {
-		ob_start();
-		lp_skeleton_animation_html( 10 );
-		$html_loading = ob_get_clean();
-		$args         = array(
+		$args      = array(
 			'id_url'   => 'admin-view-order-detail-items',
 			'order_id' => $lp_order->get_id(),
 			'paged'    => 1,
 		);
-		$call_back    = array(
+		$call_back = array(
 			'class'  => self::class,
 			'method' => 'render_order_detail_items',
 		);
 		echo TemplateAJAX::load_content_via_ajax( $args, $call_back );
 	}
-	/*
-	 * Order item details html content
+
+	/**
+	 * Render html content for order detail items.
+	 *
+	 * @throws Exception
 	 */
-	public static function render_order_detail_items( $args ) {
-		$content       = new stdClass();
-		$limit         = 10;
-		$lp_order_db   = LP_Order_DB::getInstance();
-		$filter        = new LP_Filter();
-		$filter->limit = $limit;
-		$filter->page  = $args['paged'];
-		$total_row     = 0;
-		$items         = $lp_order_db->get_items( $filter, $args['order_id'], $total_row );
-		$html_items    = '';
-		$order         = learn_press_get_order( $args['order_id'] );
+	public static function render_order_detail_items( array $data ): stdClass {
+		$content  = new stdClass();
+		$order_id = $data['order_id'] ?? 0;
+		$paged    = $data['paged'] ?? 1;
+		if ( ! $order_id ) {
+			throw new Exception( __( 'Order ID is required', 'learnpress' ) );
+		}
+
+		$lp_order = learn_press_get_order( $order_id );
+		if ( ! $lp_order ) {
+			throw new Exception( __( 'Order not found', 'learnpress' ) );
+		}
+
+		$lpOrderDB        = LPOrderItemsDB::getInstance();
+		$filter           = new LPOrderItemsFilter();
+		$filter->order_id = $lp_order->get_id();
+		$filter->page     = $paged;
+		$total_row        = 0;
+		$items            = $lpOrderDB->get_items( $filter, $total_row );
+
+		$html_items = '';
 		if ( empty( $items ) ) {
-			if ( ! $order->is_manual() ) {
-				$html_items = sprintf( '<tr><td colspan="4">%s</td></tr>', __( 'No items found', 'learnpress' ) );
-			}
+			$html_items = sprintf( '<tr><td colspan="4">%s</td></tr>', __( 'No items found', 'learnpress' ) );
 		} else {
-			foreach ( $items as $item ) {
-				if ( ! get_post( $item->item_id ) || empty( get_post_type_object( $item->item_type ) ) ) {
-					$html_items .= sprintf( '<tr><td>%s</td></tr>', __( 'The item doesn\'t exist', 'learnpress' ) );
+			$order_currency = $lp_order->get_currency();
+			foreach ( $items as $itemObj ) {
+				$item_post        = get_post( $itemObj->item_id );
+				$cost             = learn_press_get_order_item_meta( $itemObj->order_item_id, '_subtotal' );
+				$item_cost        = learn_press_format_price( $cost, learn_press_get_currency_symbol( $order_currency ) );
+				$item_quantity    = (int) learn_press_get_order_item_meta( $itemObj->order_item_id, '_quantity' );
+				$price_total      = learn_press_get_order_item_meta( $itemObj->order_item_id, '_total' );
+				$item_price_total = learn_press_format_price( $price_total, learn_press_get_currency_symbol( $order_currency ) );
+				if ( ! $item_post || empty( get_post_type_object( $itemObj->item_type ) ) ) {
+					$item_name = sprintf(
+						'(#%d - %s) %s: %s',
+						$itemObj->item_id,
+						$itemObj->item_type,
+						$itemObj->order_item_name,
+						__( "doesn't exist", 'learnpress' )
+					);
 				} else {
-					$html_items .= self::order_item_detail_html( $order, $item );
+					$item_name = sprintf(
+						'<a href="%1$s">%2$s</a>',
+						get_edit_post_link( $itemObj->item_id ),
+						$itemObj->order_item_name
+					);
 				}
+
+				$section_item = [
+					'wrap'          => '<tr>',
+					'item_name'     => sprintf(
+						'<td class="column-name">%s</td>',
+						$item_name
+					),
+					'item_cost'     => sprintf(
+						'<td class="column-price align-right">%s</td>',
+						$item_cost
+					),
+					'item_quantity' => sprintf(
+						'<td class="column-quantity align-right">%s</td>',
+						$item_quantity
+					),
+					'item_total'    => sprintf(
+						'<td class="column-total align-right">%s</td>',
+						$item_price_total
+					),
+					'wrap-end'      => '</tr>',
+				];
+
+				$html_items .= Template::combine_components( $section_item );
 			}
 		}
-		$total_pages     = $lp_order_db::get_total_pages( $limit, $total_row );
-		$html_pagination = self::pagination_html( $args, $total_pages );
+
+		$total_pages     = $lpOrderDB::get_total_pages( $filter->limit, $total_row );
+		$html_pagination = self::pagination_html( $data, $total_pages );
 		if ( ! empty( $html_pagination ) ) {
 			$html_pagination = '<tr><td class="lp-order-items-wrapper" style="padding: 0 0 0 30px;" colspan="4">' . $html_pagination . '</td></tr>';
 		}
 		$section          = array(
+			'wrap-start'       => '<div class="order-items">',
 			'table-start'      => '<table class="list-order-items">',
 			'table-header'     => self::table_header(),
 			'table-body-start' => '<tbody>',
@@ -233,8 +286,9 @@ final class AdminOrderItemsTemplate {
 			'pagination'       => $html_pagination,
 			'no_item_row'      => self::no_item_row( $items ),
 			'table-body-end'   => '</tbody>',
-			'table-footer'     => self::table_footer( $order ),
+			'table-footer'     => self::table_footer( $lp_order ),
 			'table-end'        => '</table>',
+			'wrap-end'         => '</div>',
 		);
 		$content->content = Template::combine_components( $section );
 
