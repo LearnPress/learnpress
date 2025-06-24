@@ -2,7 +2,7 @@ import { AdminUtilsFunctions, Api, Utils } from '../utils-admin.js';
 
 const addCoursesToOrder = () => {
 	let elModalSearchCourses;
-	let elBtnAddOrderItem, elSearchCoursesResult;
+	let elSearchCoursesResult;
 	let elOrderDetails, modalSearchItemsTemplate, modalContainer;
 	let elOrderModalFooter, elOrderModalBtnAdd;
 	let elListOrderItems;
@@ -19,8 +19,6 @@ const addCoursesToOrder = () => {
 
 	const getAllElements = () => {
 		elOrderDetails = document.querySelector( '#learn-press-order' );
-		elListOrderItems = elOrderDetails.querySelector( '.list-order-items' );
-		elBtnAddOrderItem = elOrderDetails.querySelector( '#learn-press-add-order-item' );
 		modalSearchItemsTemplate = document.querySelector( '#learn-press-modal-search-items' );
 		modalContainer = document.querySelector( '#container-modal-search-items' );
 	};
@@ -99,6 +97,7 @@ const addCoursesToOrder = () => {
 		if ( ! target.closest( idModalSearchItems ) ) {
 			return;
 		}
+		elListOrderItems = elOrderDetails.querySelector( '.list-order-items' );
 
 		e.preventDefault();
 
@@ -359,7 +358,7 @@ const addCoursesToOrder = () => {
 	document.addEventListener( 'click', ( e ) => {
 		const target = e.target;
 		//console.dir( target );
-		if ( elBtnAddOrderItem && target.id === elBtnAddOrderItem.id ) {
+		if ( target.id === 'learn-press-add-order-item' ) {
 			e.preventDefault();
 			showPopupSearchCourses();
 		}
@@ -408,11 +407,9 @@ const addCoursesToOrder = () => {
 	// DOMContentLoaded.
 	document.addEventListener( 'DOMContentLoaded', () => {
 		getAllElements();
-
-		if ( ! elOrderDetails || ! elBtnAddOrderItem ) {
+		if ( ! elOrderDetails ) {
 			return;
 		}
-
 		getCoursesAdded();
 		modalContainer.innerHTML = modalSearchItemsTemplate.innerHTML;
 		elModalSearchCourses = modalContainer.querySelector( idModalSearchItems );
