@@ -2,7 +2,7 @@
  * Load all you need via AJAX
  *
  * @since 4.2.5.7
- * @version 1.0.8
+ * @version 1.0.9
  */
 
 import {
@@ -115,6 +115,7 @@ const lpAJAX = ( () => {
 							console.log( error );
 						},
 						completed: () => {
+							wp.hooks.doAction( 'lp-ajax-completed', element, dataSend );
 							window.lpAJAXG.getElements();
 							//console.log( 'completed' );
 							if ( elLoadingFirst ) {
@@ -140,20 +141,25 @@ const lpAJAX = ( () => {
 				return;
 			}
 
+			e.preventDefault();
+
 			const dataObj = JSON.parse( elLPTarget.dataset.send );
 			const dataSend = { ...dataObj };
 			if ( ! dataSend.args.hasOwnProperty( 'paged' ) ) {
 				dataSend.args.paged = 1;
 			}
 
-			e.preventDefault();
-
 			if ( btnNumber.classList.contains( 'prev' ) ) {
 				dataSend.args.paged--;
 			} else if ( btnNumber.classList.contains( 'next' ) ) {
 				dataSend.args.paged++;
 			} else {
-				dataSend.args.paged = btnNumber.textContent;
+				const pagedNumber = parseInt( btnNumber.textContent );
+				if ( isNaN( pagedNumber ) || pagedNumber < 1 ) {
+					return;
+				}
+
+				dataSend.args.paged = pagedNumber;
 			}
 
 			elLPTarget.dataset.send = JSON.stringify( dataSend );
