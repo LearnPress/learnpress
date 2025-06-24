@@ -2,6 +2,8 @@
 namespace LearnPress\TemplateHooks\Order;
 
 use Exception;
+use LearnPress\Databases\Order\LPOrderItemsDB;
+use LearnPress\Filters\Order\LPOrderItemsFilter;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
@@ -10,6 +12,8 @@ use LP_Order_DB;
 use LP_Filter;
 use stdClass;
 use LP_Order;
+use Throwable;
+
 /**
  *
  */
@@ -18,7 +22,7 @@ final class AdminOrderItemsTemplate {
 
 	public function init() {
 		add_filter( 'lp/rest/ajax/allow_callback', array( $this, 'allow_callback' ) );
-		add_action( 'learn-press/admin/order/order-items/layout', array( $this, 'view_order_items_layout' ), 10, 1 );
+		add_action( 'learn-press/admin/order-items/layout', array( $this, 'view_order_items_layout' ) );
 		add_action( 'learn-press/admin/order-details/order-items/layout', array( $this, 'order_detail_view_items_layout' ), 10, 1 );
 	}
 	/**
@@ -37,57 +41,89 @@ final class AdminOrderItemsTemplate {
 
 		return $callbacks;
 	}
-	public function view_order_items_layout( LP_Order $lp_order ) {
-		ob_start();
-		lp_skeleton_animation_html( 10 );
-		$html_loading = ob_get_clean();
-		$args         = array(
-			'id_url'   => 'admin-view-order-items',
-			'order_id' => $lp_order->get_id(),
-			'paged'    => 1,
-		);
-		$call_back    = array(
-			'class'  => self::class,
-			'method' => 'render_order_items',
-		);
-		echo TemplateAJAX::load_content_via_ajax( $args, $call_back );
-	}
+
 	/**
-	 * [render_order_items description]
+	 * HTML layout for order items on screen list orders.
 	 *
-	 * @param  array $args
-	 * @return object
+	 * @throws Exception
+	 * @since 4.2.8.8
+	 * @version 1.0.0
 	 */
-	public static function render_order_items( $args ) {
-		$content       = new stdClass();
-		$limit         = 10;
-		$lp_order_db   = LP_Order_DB::getInstance();
-		$filter        = new LP_Filter();
-		$filter->limit = $limit;
-		$filter->page  = $args['paged'];
-		$total_row     = 0;
-		$items         = $lp_order_db->get_items( $filter, $args['order_id'], $total_row );
-		$html_items    = '';
+	public function view_order_items_layout( LP_Order $lp_order ) {
+		try {
+			$args                            = array(
+				'id_url'   => 'admin-view-order-items',
+				'order_id' => $lp_order->get_id(),
+				'paged'    => 1,
+			);
+			$content_obj                     = self::render_order_items( $args );
+			$args['html_no_load_ajax_first'] = $content_obj->content;
+			$call_back                       = array(
+				'class'  => self::class,
+				'method' => 'render_order_items',
+			);
+			echo TemplateAJAX::load_content_via_ajax( $args, $call_back );
+		} catch ( Throwable $e ) {
+
+		}
+	}
+
+	/**
+	 * Render html content for order items.
+	 *
+	 * @param array $data
+	 *
+	 * @return stdClass
+	 * @throws Exception
+	 * @since 4.2.8.8
+	 * @version 1.0.0
+	 */
+	public static function render_order_items( array $data ): stdClass {
+		$content  = new stdClass();
+		$order_id = $data['order_id'] ?? 0;
+		if ( ! $order_id ) {
+			throw new Exception( __( 'Order ID is required', 'learnpress' ) );
+		}
+
+		$lpOrderItemsDB   = LPOrderItemsDB::getInstance();
+		$filter           = new LPOrderItemsFilter();
+		$filter->page     = $data['paged'] ?? 1;
+		$filter->order_id = $data['order_id'] ?? 0;
+		$total_row        = 0;
+		$items            = $lpOrderItemsDB->get_items( $filter, $total_row );
+
+		$html_items = '';
 		if ( empty( $items ) ) {
 			$html_items = sprintf( '<li>%s</li>', __( 'No items found', 'learnpress' ) );
 		} else {
-			foreach ( $items as $item ) {
-				if ( ! get_post( $item->item_id ) || empty( get_post_type_object( $item->item_type ) ) ) {
-					$html_items .= sprintf( '<li>%s</li>', __( 'The item doesn\'t exist', 'learnpress' ) );
+			foreach ( $items as $itemObj ) {
+				$item_post = get_post( $itemObj->item_id );
+				if ( ! $item_post || empty( get_post_type_object( $itemObj->item_type ) ) ) {
+					$html_items .= sprintf(
+						'<li>(#%d - %s) %s: %s</li>',
+						$itemObj->item_id,
+						$itemObj->item_type,
+						$itemObj->order_item_name,
+						__( "doesn't exist", 'learnpress' )
+					);
 				} else {
-					$item_title  = $item->order_item_name . '(' . get_post_type_object( $item->item_type )->labels->singular_name . ')';
-					$html_items .= sprintf( '<li class="lp-select-item"><a href="%1$s" >%2$s</a></li>', get_edit_post_link( $item->item_id ), $item_title );
+					$html_items .= sprintf(
+						'<li><a href="%1$s" >%2$s</a></li>',
+						get_edit_post_link( $itemObj->item_id ),
+						$itemObj->order_item_name
+					);
 				}
 			}
 		}
-		$total_pages     = $lp_order_db::get_total_pages( $limit, $total_row );
-		$html_pagination = self::pagination_html( $args, $total_pages );
+
+		$total_pages     = $lpOrderItemsDB::get_total_pages( $filter->limit, $total_row );
+		$html_pagination = self::pagination_html( $data, $total_pages );
 
 		$section          = array(
 			'wrap-start' => '<div class="lp-order-items-wrapper">',
-			'ul'         => '<ul class="list-items">',
+			'ul'         => '<ul class="order-list-items">',
 			'items'      => $html_items,
-			'ul_end'     => '</ul>',
+			'ul-end'     => '</ul>',
 			'pagination' => $html_pagination,
 			'wrap-end'   => '<div>',
 		);

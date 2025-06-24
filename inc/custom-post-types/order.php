@@ -534,7 +534,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 
 					break;
 				case 'order_items':
-					do_action( 'learn-press/admin/order/order-items/layout', $lp_order );
+					do_action( 'learn-press/admin/order-items/layout', $lp_order );
 					break;
 				case 'order_total':
 					echo wp_kses_post( $lp_order->get_formatted_order_total() );
