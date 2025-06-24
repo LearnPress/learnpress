@@ -2660,7 +2660,8 @@ function learn_press_course_evaluation_methods( $postid, $return = '', $final_qu
 				__( 'Evaluate via mark', 'learnpress' ),
 				learn_press_quick_tip( $evaluations_desc['evaluate_mark'], false )
 			),
-		)
+		),
+		$postid
 	);
 
 	return apply_filters(

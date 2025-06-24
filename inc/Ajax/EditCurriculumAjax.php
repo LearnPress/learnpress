@@ -30,21 +30,9 @@ class EditCurriculumAjax extends AbstractAjax {
 	 * @throws Exception
 	 *
 	 * @since 4.2.8.6
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public static function check_valid() {
-		$can_handle = false;
-
-		if ( current_user_can( 'manage_options' ) ) {
-			$can_handle = true;
-		}
-
-		$can_handle = apply_filters( 'learn-press/edit-curriculum/can-handle', $can_handle );
-
-		if ( ! $can_handle ) {
-			throw new Exception( __( 'You do not have permission to access this page.', 'learnpress' ) );
-		}
-
 		$params = wp_unslash( $_REQUEST['data'] ?? '' );
 		if ( empty( $params ) ) {
 			throw new Exception( 'Error: params invalid!' );
