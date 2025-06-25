@@ -64,7 +64,7 @@ class ItemSearchBlockType extends AbstractCourseItemBlockType {
 					<button type="button" class="clear"></button>
 				</form>',
 				esc_attr_x( 'Search for course content', 'search course input placeholder', 'learnpress' ),
-				esc_html_x( 'Search for course content', 'learnpress' )
+				esc_html_x( 'Search for course content', 'search course input placeholder', 'learnpress' )
 			);
 
 			$html = $this->get_output( $html_search );
