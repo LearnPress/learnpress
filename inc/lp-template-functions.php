@@ -101,7 +101,8 @@ if ( ! function_exists( 'learn_press_get_course_tabs' ) ) {
 		}
 		if ( $courseModel->has_no_enroll_requirement()
 			|| ( $userCourseModel && ( $userCourseModel->has_purchased() || $userCourseModel->has_enrolled_or_finished() ) )
-			|| $courseModel->check_user_is_author( $userModel ) ) {
+			|| $courseModel->check_user_is_author( $userModel )
+			|| user_can( $userModel->get_id(), UserModel::ROLE_ADMINISTRATOR ) ) {
 			$can_show_tab_material = true;
 		}
 
@@ -121,7 +122,7 @@ if ( ! function_exists( 'learn_press_get_course_tabs' ) ) {
 		$tabs = apply_filters( 'learn-press/course-tabs', $defaults, $courseModel );
 		unset( $tabs['overview']['active'] );
 
-		if ( $tabs ) {
+		if ( ! empty( $tabs ) ) {
 			// sort tabs by priority, from low to high
 			uasort(
 				$tabs,
