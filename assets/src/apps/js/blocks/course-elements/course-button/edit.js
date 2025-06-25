@@ -23,6 +23,12 @@ const Edit = ( props ) => {
 		},
 	} );
 
+	const mapAlignItems = {
+		top: 'flex-start',
+		center: 'center',
+		bottom: 'flex-end',
+	};
+
 	// classOfDiv to fix align.
 	let classOfDiv = blockProps.className;
 	classOfDiv = classOfDiv
@@ -70,7 +76,7 @@ const Edit = ( props ) => {
 				style={ {
 					display: 'flex',
 					textAlign: attributes.textAlign,
-					alignItems: attributes.alignItems,
+					alignItems: mapAlignItems[ attributes.alignItems ] || 'flex-start',
 					justifyContent: attributes.justifyContent,
 				} }
 			>
