@@ -166,9 +166,13 @@ class LP_REST_Lazy_Load_Controller extends LP_Abstract_REST_Controller {
 	 * @author nhamdv
 	 * @since 4.1.5
 	 * @version 1.0.2
+	 * @depreacted 4.2.8.7.1
+	 * use new curriculum from LP v4.2.8, so now deprecated this function
 	 */
 	public function course_curriculum( WP_REST_Request $request ): LP_REST_Response {
+		_deprecated_function( __METHOD__, '4.2.8.7.1' );
 		$response     = new LP_REST_Response();
+		return $response;
 		$params       = $request->get_params();
 		$total_rows   = 0;
 		$course_id    = absint( $params['courseId'] ?? 0 );

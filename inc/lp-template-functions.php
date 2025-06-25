@@ -8,7 +8,11 @@
  */
 
 use LearnPress\Helpers\Template;
+use LearnPress\Models\CourseModel;
+use LearnPress\Models\CoursePostModel;
+use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\Course\CourseMaterialTemplate;
+use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -50,6 +54,12 @@ if ( ! function_exists( 'learn_press_get_course_tabs' ) ) {
 	 * @throws Exception
 	 */
 	function learn_press_get_course_tabs() {
+		$courseModel = CourseModel::find( get_the_ID(), true );
+		if ( ! $courseModel ) {
+			return [];
+		}
+
+		$userModel = UserModel::find( get_current_user_id(), true );
 		$course = learn_press_get_course();
 		$user   = learn_press_get_current_user();
 
@@ -61,18 +71,19 @@ if ( ! function_exists( 'learn_press_get_course_tabs' ) ) {
 		 * OR
 		 * 2. Course's content not empty
 		 */
-		if ( isset( $_GET['preview'] ) || $course ) {
-			$defaults['overview'] = array(
-				'title'    => esc_html__( 'Overview', 'learnpress' ),
-				'priority' => 10,
-				'callback' => LearnPress::instance()->template( 'course' )->callback( 'single-course/tabs/overview.php' ),
-			);
-		}
+		$defaults['overview'] = array(
+			'title'    => esc_html__( 'Overview', 'learnpress' ),
+			'priority' => 10,
+			'callback' => LearnPress::instance()->template( 'course' )->callback( 'single-course/tabs/overview.php' ),
+		);
 
 		$defaults['curriculum'] = array(
 			'title'    => esc_html__( 'Curriculum', 'learnpress' ),
 			'priority' => 30,
-			'callback' => LearnPress::instance()->template( 'course' )->func( 'course_curriculum' ),
+			'callback' => function () use ( $courseModel, $userModel ) {
+				$singleCourseTemplate = SingleCourseTemplate::instance();
+				echo $singleCourseTemplate->html_curriculum( $courseModel, $userModel );
+			},
 		);
 
 		$defaults['instructor'] = array(
@@ -81,7 +92,8 @@ if ( ! function_exists( 'learn_press_get_course_tabs' ) ) {
 			'callback' => LearnPress::instance()->template( 'course' )->callback( 'single-course/tabs/instructor.php' ),
 		);
 
-		if ( $course->get_faqs() ) {
+		$faq = $courseModel->get_meta_value_by_key( CoursePostModel::META_KEY_FAQS, [] );
+		if ( ! empty( $faq ) ) {
 			$defaults['faqs'] = array(
 				'title'    => esc_html__( 'FAQs', 'learnpress' ),
 				'priority' => 50,
@@ -109,7 +121,8 @@ if ( ! function_exists( 'learn_press_get_course_tabs' ) ) {
 			);
 		}
 
-		$tabs = apply_filters( 'learn-press/course-tabs', $defaults );
+		// @since 4.2.8.7.1 update new parameter $courseModel
+		$tabs = apply_filters( 'learn-press/course-tabs', $defaults, $courseModel );
 
 		if ( $tabs ) {
 			uasort( $tabs, 'learn_press_sort_list_by_priority_callback' );
