@@ -3,7 +3,7 @@ Contributors: thimpress, tungnx89, nhamdv, nguyenlammanh, tunnhn, phonglq.foobla
 Donate link:
 Tags: e-learning, education, course, lms, learning management system
 Tested up to: 6.8
-Stable tag: 4.2.8.7
+Stable tag: 4.2.8.7.1
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -222,6 +222,14 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 4.2.8.7.1 (2025-06-25) =
+~ Fixed: get courses assign to co-instructor on the single instructor page.
+~ Fixed: unset value of some key auto increment when insert data to tables lp_section_items, lp_sections.
+~ Fixed: error sort by on list courses has a mask.
+~ Fixed: permission for instructor when edit curriculum's course.
+~ Update: show 'featured' label on Single Course, List Courses page.
+~ Tweak: image course block Gutenberg.
+
 = 4.2.8.7 (2025-06-17) =
 ~ Fixed: error 404 with link profile tab, link lesson with Polylang v3.7 and higher.
 ~ Fixed: error enroll many courses can make server hang by send mail on background.
@@ -319,66 +327,5 @@ https://www.transifex.com/projects/p/learnpress/
 = 4.2.7.5.1 (2025-01-22) =
 ~ Fixed: security.
 ~ Fixed: minor bugs.
-
-= 4.2.7.5 (2024-12-17) =
-~ Added: option Price prefix, Price suffix for course.
-~ Fixed: shortcode [learn_press_button_course].
-~ Fixed: error status item's course, case option course set "no require enroll" (user enrolled).
-~ Fixed: error lose tab on Profile when install SiteOrigin plugin.
-~ Updated: library TomSelect, ChartJS to the latest.
-
-= 4.2.7.4 (2024-12-03) =
-~ Fixed: image cover profile with theme Twenty Five.
-~ Fixed: error some sites not show notes(Waring) on the Admin Dashboard.
-~ Fixed: security.
-~ Tweak order show material on the item lesson.
-~ Tweak load text domain compatible with WP 6.7 and later.
-~ Tweak: format_human_time_diff method.
-~ Tweak: UserItemModel, UserCourseModel, UserModel, CourseModel  classes.
-~ Deprecated: get_info_extra_for_fast_query method.
-~ Deprecated: _learn_press_usort_terms_by_ID, learn_press_course_item_format_exclude, learn_press_get_course_curriculum, learn_press_is_enrolled_course, learn_press_get_user_course_statuslearn_press_is_free_course, learn_press_course_enroll_required, learn_press_search_post_excerpt, learn_press_course_add_support_item_type, learn_press_course_add_support_item_type, learn_press_get_user_question_answer, need_to_updating, learn_press_get_course_sections, lean_press_get_course_sections, learn_press_get_course_item_url, learn_press_edit_item_link, learn_press_get_course_results_tooltip.
-~ Set cache get instructors API for App.
-~ Added: get_i18n_string_plural method on the class LP_Helper.
-
-= 4.2.7.3 (2024-11-12) =
-~ Fixed: error course private admin/author can't see on the frontend.
-~ Fixed: only show label "Final" of Quiz when choose "Evaluate via results of the final quiz".
-~ Fixed: send mail enroll for user Guest not exists user.
-~ Tweak: enroll/purchase course buttons.
-~ Tweak: condition can enroll/purchase course.
-~ Tweak: API enroll/purchase course.
-~ Tweak: when order completed.
-~ Tweak: set upload Avatar to PNG, instead of JPG.
-~ Deprecated: hooks learn-press/user/can-enroll-course, learn-press/user/can-purchase-course. Replace to learn-press/user/can-enroll/course, learn-press/user/can-purchase/course.
-
-= 4.2.7.2 (2024-10-21) =
-~ Fixed: security.
-~ Fixed: set size for Gravatar user.
-~ Fixed: slug item's course use urldecode when edited.
-~ Fixed: display name courses has special character Mobile.
-~ Fixed: error save Enable/Disable all emails.
-~ Added: get_all_items method for LP_Order class, for fix case "Paid Memberships" assign more than 50 courses.
-~ Added: cover image feature on the Profile page.
-~ Tweak: handle tomSelect.
-~ Tweak: class LP_Datetime.
-~ Tweak: style page Archive Courses.
-~ Tweak: style page Profile.
-~ Tweak: layout Offline course.
-~ Update: lp icon fonts.
-
-= 4.2.7.1 (2024-09-11) =
-~ Fixed: security.
-~ Use TomSelect instead of Select2 on settings.
-~ Fixed: minor bugs.
-
-= 4.2.7 (2024-08-27) =
-~ Added: feature course offline.
-~ Added: duration info for App API list courses.
-~ Tweak: API get instructor info.
-~ Fixed: error empty email content reset password.
-~ Fixed: error empty image header.
-~ Fixed: error create new section not send section_order.
-~ Fixed: case search LP orders by user.
-~ Fixed: error sort by total on list orders.
 
 <a href="https://raw.githubusercontent.com/LearnPress/learnpress/develop/changelog.txt" target="_blank">See changelog for all versions.</a>
