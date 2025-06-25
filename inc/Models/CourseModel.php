@@ -1139,16 +1139,17 @@ class CourseModel {
 	/**
 	 * Check user is author or co-in of course.
 	 *
-	 * @param UserModel $userModel
+	 * @param UserModel|false $userModel
 	 *
 	 * @return bool
 	 * @since 4.2.7.6
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
-	public function check_user_is_author( UserModel $userModel ): bool {
+	public function check_user_is_author( $userModel ): bool {
 		$is_author = false;
 
-		if ( $userModel->get_id() === $this->post_author ) {
+		if ( $userModel instanceof UserModel
+			&& $userModel->get_id() === $this->post_author ) {
 			$is_author = true;
 		}
 

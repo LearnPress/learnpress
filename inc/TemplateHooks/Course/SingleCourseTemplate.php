@@ -910,14 +910,18 @@ class SingleCourseTemplate {
 	 * HTML meta faqs
 	 *
 	 * @param CourseModel $courseModel
+	 * @param array $data
 	 *
 	 * @return string
+	 * @since 4.2.7.2
+	 * @version 1.0.1
 	 */
-	public function html_faqs( CourseModel $courseModel ): string {
+	public function html_faqs( CourseModel $courseModel, array $data = [] ): string {
 		$html = '';
 
 		try {
-			$faqs = $courseModel->get_meta_value_by_key( CoursePostModel::META_KEY_FAQS, [] );
+			$show_heading = $data['show_heading'] ?? true;
+			$faqs         = $courseModel->get_meta_value_by_key( CoursePostModel::META_KEY_FAQS, [] );
 			if ( empty( $faqs ) ) {
 				return '';
 			}
@@ -955,7 +959,10 @@ class SingleCourseTemplate {
 				'learn-press/course/html-faqs',
 				[
 					'wrapper'     => '<div class="course-faqs course-tab-panel-faqs">',
-					'title'       => sprintf( '<h3 class="course-faqs__title">%s</h3>', __( 'FAQs', 'learnpress' ) ),
+					'title'       => $show_heading ? sprintf(
+						'<h3 class="course-faqs__title">%s</h3>',
+						__( 'FAQs', 'learnpress' )
+					) : '',
 					'content'     => $html,
 					'wrapper_end' => '</div>',
 				],
