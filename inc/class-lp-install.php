@@ -189,7 +189,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 					PRIMARY KEY (ID),
 					KEY post_title (post_title(191)),
 					KEY post_status (post_status),
-					KEY post_name (post_name),
+					KEY post_name (post_name(191)),
 					KEY id_status (ID, post_status)
 				) $collation";
 
