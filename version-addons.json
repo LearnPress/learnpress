@@ -30,8 +30,8 @@
   "learnpress-assignments": {
     "name": "Assignments Add-On for LearnPress",
     "basename": "learnpress-assignments/learnpress-assignments.php",
-    "version": "4.1.4",
-    "require_lp": "4.2.7.7",
+    "version": "4.1.5",
+    "require_lp": "4.2.8",
     "description": "Assignment Add-on for LearnPress is a great way to assign tasks, essays for your students so they can do at home and submit. Instructors can check students’ work after that and grade the assignment.",
     "image": "https://plugins.thimpress.com/downloads/images/lp-assigment.png",
     "link": "https://thimpress.com/product/assignments-add-on-for-learnpress/",
@@ -288,8 +288,8 @@
   "learnpress-paid-membership-pro": {
     "name": "Paid Memberships Pro Add-On for LearnPress",
     "basename": "learnpress-paid-membership-pro/learnpress-paid-memberships-pro.php",
-    "version": "4.0.8",
-    "require_lp": "4.2.7.4",
+    "version": "4.0.9",
+    "require_lp": "4.2.8",
     "description": "Creates subscriptions and manage subscription levels. Allow to buy courses via subscriptions.",
     "image": "https://plugins.thimpress.com/downloads/images/lp-paid-membership.png",
     "link": "https://thimpress.com/product/paid-memberships-pro-add-learnpress/",
