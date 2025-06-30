@@ -94,28 +94,16 @@ if ( ! function_exists( 'learn_press_get_course_tabs' ) ) {
 			];
 		}
 
-		$can_show_tab_material = false;
-		$userCourseModel       = false;
-		if ( $userModel instanceof UserModel ) {
-			UserCourseModel::find( $userModel->get_id(), $courseModel->get_id(), true );
-		}
-		if ( $courseModel->has_no_enroll_requirement()
-			|| ( $userCourseModel && ( $userCourseModel->has_purchased() || $userCourseModel->has_enrolled_or_finished() ) )
-			|| $courseModel->check_user_is_author( $userModel )
-			|| user_can( $userModel->get_id(), UserModel::ROLE_ADMINISTRATOR ) ) {
-			$can_show_tab_material = true;
-		}
-
-		$file_per_page = LP_Settings::get_option( 'material_file_per_page', - 1 );
-		$count_files   = LP_Material_Files_DB::getInstance()->get_total( $courseModel->get_id() );
-		if ( $can_show_tab_material && (int) $file_per_page != 0 && $count_files > 0 ) {
-			$defaults['materials'] = array(
+		$singleCourseTemplate = SingleCourseTemplate::instance();
+		$html_material        = $singleCourseTemplate->html_material( $courseModel, $userModel, [ 'show_heading' => false ] );
+		if ( ! empty( $html_material ) ) {
+			$defaults['materials'] = [
 				'title'    => esc_html__( 'Materials', 'learnpress' ),
 				'priority' => 45,
-				'callback' => function () {
-					do_action( 'learn-press/course-material/layout', [] );
+				'callback' => function () use ( $html_material ) {
+					echo $html_material;
 				},
-			);
+			];
 		}
 
 		// @since 4.2.8.7.1 update new parameter $courseModel

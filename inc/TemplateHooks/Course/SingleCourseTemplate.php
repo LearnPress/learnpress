@@ -1159,16 +1159,18 @@ class SingleCourseTemplate {
 	 *
 	 * @param CourseModel $courseModel
 	 * @param UserModel|false $userModel
+	 * @param array $data
 	 *
 	 * @return string
 	 * @since 4.2.7.2
-	 * @version 1.0.3
+	 * @version 1.0.4
 	 */
-	public function html_material( CourseModel $courseModel, $userModel = false ): string {
+	public function html_material( CourseModel $courseModel, $userModel = false, array $data = [] ): string {
 		$html = '';
 
 		try {
-			$can_show = false;
+			$show_heading = $data['show_heading'] ?? true;
+			$can_show     = false;
 
 			if ( $userModel instanceof UserModel ) {
 				if ( $courseModel->check_user_is_author( $userModel )
@@ -1200,7 +1202,10 @@ class SingleCourseTemplate {
 
 			$section = [
 				'wrapper'     => '<div class="course-material">',
-				'title'       => sprintf( '<h3 class="course-material__title">%s</h3>', __( 'Course Material', 'learnpress' ) ),
+				'title'       => $show_heading ? sprintf(
+					'<h3 class="course-material__title">%s</h3>',
+					__( 'Course Material', 'learnpress' )
+				) : '',
 				'content'     => $html_content,
 				'wrapper_end' => '</div>',
 			];
