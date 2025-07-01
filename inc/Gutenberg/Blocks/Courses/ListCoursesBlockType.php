@@ -12,7 +12,6 @@ use LearnPress\TemplateHooks\TemplateAJAX;
 use LP_Course_Filter;
 use LP_Database;
 use LP_Debug;
-use LP_Helper;
 use LP_Page_Controller;
 use stdClass;
 use Throwable;
@@ -132,10 +131,6 @@ class ListCoursesBlockType extends AbstractBlockType {
 		}
 
 		$courses = Courses::get_courses( $filter, $total_rows );
-		if ( empty( $courses ) ) {
-			$content->content = Template::print_message( __( 'No courses found', 'learnpress' ), 'info', false );
-			return $content;
-		}
 
 		$html_pagination = '';
 		if ( isset( $courseQuery['pagination'] ) && $courseQuery['pagination'] ) {

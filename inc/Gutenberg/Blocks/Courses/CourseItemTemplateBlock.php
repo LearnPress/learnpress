@@ -3,6 +3,7 @@
 namespace LearnPress\Gutenberg\Blocks\Courses;
 
 use LearnPress\Gutenberg\Blocks\AbstractBlockType;
+use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
 use LP_Debug;
 use Throwable;
@@ -50,7 +51,9 @@ class CourseItemTemplateBlock extends AbstractBlockType {
 			$courses         = $block->context['courses'] ?? [];
 			$html_pagination = $block->context['pagination'] ?? '';
 			$settings        = $block->context['settings'] ?? [];
+
 			if ( empty( $courses ) ) {
+				$html = Template::print_message( __( 'No courses found', 'learnpress' ), 'info', false );
 				return $html;
 			}
 
