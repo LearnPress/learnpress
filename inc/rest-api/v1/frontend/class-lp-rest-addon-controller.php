@@ -107,11 +107,7 @@ class LP_REST_Addon_Controller extends LP_Abstract_REST_Controller {
 
 			if ( isset( $params['return_obj'] ) ) {
 				$response->status = 'success';
-				$response->data   = apply_filters(
-					'lp-addons-list',
-					$addons,
-					$request
-				);
+				$response->data   = $addons;
 
 				return $response;
 			}
