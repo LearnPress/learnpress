@@ -271,7 +271,7 @@ class SingleCourseTemplate {
 	 * @since 4.2.3.2
 	 * @version 1.0.2
 	 */
-	public function html_image( $course ): string {
+	public function html_image( $course, array $data = [] ): string {
 		$content = '';
 
 		try {
@@ -289,7 +289,17 @@ class SingleCourseTemplate {
 				$size_img_setting['width'] ?? 500,
 				$size_img_setting['height'] ?? 300,
 			];
-			$content          = sprintf(
+
+			if ( ! empty( $data['size'] ) && is_string( $data['size'] ) ) {
+				$size_img_send = $data['size'];
+			} elseif ( ! empty( $data['size'] ) && is_array( $data['size'] ) && count( $data['size'] ) === 2 ) {
+				$size_img_send = [
+					$data['size']['width'] ?? $size_img_send[0],
+					$data['size']['height'] ?? $size_img_send[1],
+				];
+			}
+
+			$content = sprintf(
 				'<img src="%s" alt="%s">',
 				esc_url_raw( $courseModel->get_image_url( $size_img_send ) ),
 				_x( 'course thumbnail', 'no course thumbnail', 'learnpress' )

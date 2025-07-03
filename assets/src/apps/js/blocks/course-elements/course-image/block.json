@@ -18,6 +18,18 @@
 		"target": {
 			"type": "boolean",
 			"default": false
+		},
+		"size": {
+			"type": "string",
+			"default": "thumbnail"
+		},
+		"customWidth": {
+			"type": "number",
+			"default": 0
+		},
+		"customHeight": {
+			"type": "number",
+			"default": 0
 		}
 	},
 	"supports": {
