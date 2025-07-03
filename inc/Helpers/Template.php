@@ -336,4 +336,43 @@ class Template {
 			return Template::combine_components( $section );
 		}
 	}
+
+	/**
+	 * Generate HTML for pagination.
+	 *
+	 * @param array $data
+	 *
+	 * @return string HTML for pagination.
+	 * @since 4.2.8.7.4
+	 * @version 1.0.0
+	 */
+	public function html_pagination( array $data = [] ): string {
+		if ( empty( $data['total_pages'] ) || $data['total_pages'] <= 1 ) {
+			return '';
+		}
+
+		$html_wrapper = $data['wrapper'] ?? [
+			'<nav class="learn-press-pagination navigation pagination">' => '</nav>',
+		];
+
+		$pagination = paginate_links(
+			apply_filters(
+				'learn_press_pagination_args',
+				array(
+					'base'      => $data['base'] ?? '',
+					'format'    => '',
+					'add_args'  => '',
+					'current'   => max( 1, $data['paged'] ?? 1 ),
+					'total'     => $data[ 'total_pages' ?? 1 ],
+					'prev_text' => '<i class="lp-icon-arrow-left"></i>',
+					'next_text' => '<i class="lp-icon-arrow-right"></i>',
+					'type'      => 'list',
+					'end_size'  => 3,
+					'mid_size'  => 3,
+				)
+			)
+		);
+
+		return Template::instance()->nest_elements( $html_wrapper, $pagination );
+	}
 }
