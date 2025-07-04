@@ -137,6 +137,7 @@ module.exports = {
 		'./assets/js/dist/blocks/breadcrumb': './assets/src/apps/js/blocks/breadcrumb/index.js',
 		'./assets/js/dist/blocks/list-courses': './assets/src/apps/js/blocks/courses/list-courses/index.js',
 		'./assets/js/dist/blocks/course-item-template': './assets/src/apps/js/blocks/courses/course-item-template/index.js',
+		'./assets/js/dist/blocks/course-results': './assets/src/apps/js/blocks/courses/course-results/index.js',
 		'./assets/js/dist/blocks/item-close': './assets/src/apps/js/blocks/single-course-item/item-close/index.js',
 		'./assets/js/dist/blocks/item-comment': './assets/src/apps/js/blocks/single-course-item/item-comment/index.js',
 		'./assets/js/dist/blocks/item-content': './assets/src/apps/js/blocks/single-course-item/item-content/index.js',
