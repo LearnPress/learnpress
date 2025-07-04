@@ -747,17 +747,18 @@ class CourseModel {
 	 *
 	 * @param string $key
 	 * @param mixed|false $default_value
+	 * @param bool $single
 	 *
 	 * @return false|mixed
 	 * @since 4.2.6.9
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
-	public function get_meta_value_by_key( string $key, $default_value = false ) {
+	public function get_meta_value_by_key( string $key, $default_value = false, bool $single = true ) {
 		if ( $this->meta_data instanceof stdClass && isset( $this->meta_data->{$key} ) ) {
 			$value = maybe_unserialize( $this->meta_data->{$key} );
 		} else {
 			$coursePost = new CoursePostModel( $this );
-			$value      = $coursePost->get_meta_value_by_key( $key, $default_value );
+			$value      = $coursePost->get_meta_value_by_key( $key, $default_value, $single );
 		}
 
 		$this->meta_data->{$key} = $value;
