@@ -3,6 +3,8 @@
 namespace LearnPress\Gutenberg\Blocks\SingleCourseItemElements;
 
 use LearnPress;
+use LearnPress\Models\UserModel;
+use LearnPress\TemplateHooks\Course\SingleCourseTemplate;
 use LP_Debug;
 use Throwable;
 
@@ -46,6 +48,8 @@ class ItemCurriculumBlockType extends AbstractCourseItemBlockType {
 	 * @param array $attributes | Attributes of block tag.
 	 *
 	 * @return false|string
+	 * @since 4.2.8.3
+	 * @version 1.0.1
 	 */
 	public function render_content_block_template( array $attributes, $content, $block ): string {
 		$html = '';
@@ -58,9 +62,9 @@ class ItemCurriculumBlockType extends AbstractCourseItemBlockType {
 				return $html;
 			}
 
-			ob_start();
-			LearnPress::instance()->template( 'course' )->course_curriculum();
-			$html_curriculum = ob_get_clean();
+			$userModel            = UserModel::find( get_current_user_id(), true );
+			$singleCourseTemplate = SingleCourseTemplate::instance();
+			$html_curriculum      = $singleCourseTemplate->html_curriculum( $courseModel, $userModel );
 
 			$html = $this->get_output( $html_curriculum );
 		} catch ( Throwable $e ) {

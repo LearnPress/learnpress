@@ -283,7 +283,10 @@ class LP_Template_Profile extends LP_Abstract_Template {
 	}
 
 	public function login_form() {
-		if ( is_user_logged_in() ) {
+		if ( is_user_logged_in() && ! LP_Page_Controller::is_page_profile() ) {
+			Template::print_message(
+				esc_html__( 'You are already logged in.', 'learnpress' )
+			);
 			return;
 		}
 

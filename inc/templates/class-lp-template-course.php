@@ -580,6 +580,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 	 * @since 4.1.6
 	 * @since 4.2.5.5 remove code load old template user for course curriculum load page instead of via AJAX.
 	 * @version 1.0.2
+	 * @depreacted 4.2.8.7.1
 	 */
 	public function course_curriculum() {
 		/**

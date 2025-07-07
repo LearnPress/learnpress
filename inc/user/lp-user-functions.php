@@ -136,21 +136,13 @@ if ( ! function_exists( 'learn_press_get_user' ) ) {
  * Add more 2 user roles teacher and student
  */
 function learn_press_add_user_roles() {
-
-	$settings = LP_Settings::instance();
-
-	/* translators: user role */
-	_x( 'LP Instructor', 'User role' );
-
-	add_role(
-		LP_TEACHER_ROLE,
-		'LP Instructor',
-		array()
-	);
-
 	$course_cap = LP_COURSE_CPT . 's';
 	$lesson_cap = LP_LESSON_CPT . 's';
 	$order_cap  = LP_ORDER_CPT . 's';
+
+	if ( ! get_role( LP_TEACHER_ROLE ) ) {
+		add_role( LP_TEACHER_ROLE, 'LP Instructor' );
+	}
 
 	$teacher = get_role( LP_TEACHER_ROLE );
 	if ( $teacher ) {
@@ -164,9 +156,7 @@ function learn_press_add_user_roles() {
 			$teacher->remove_cap( 'unfiltered_html' );
 		}
 
-		$settings->get( 'required_review' );
-
-		if ( $settings->get( 'required_review' ) == 'yes' ) {
+		if ( LP_Settings::get_option( 'required_review', 'yes' ) == 'yes' ) {
 			$teacher->remove_cap( 'publish_' . $course_cap );
 		} else {
 			$teacher->add_cap( 'publish_' . $course_cap );
@@ -220,7 +210,7 @@ function learn_press_add_user_roles() {
 	}
 }
 
-add_action( 'init', 'learn_press_add_user_roles' );
+//add_action( 'init', 'learn_press_add_user_roles' );
 
 /**
  * @param null  $user_id

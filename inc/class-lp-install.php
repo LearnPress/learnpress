@@ -105,6 +105,9 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			/*if ( ! get_option( 'users_can_register' ) ) {
 				update_option( 'users_can_register', 1 );
 			}*/
+
+			// Set roles and capabilities.
+			learn_press_add_user_roles();
 		}
 
 		/**
@@ -186,7 +189,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 					PRIMARY KEY (ID),
 					KEY post_title (post_title(191)),
 					KEY post_status (post_status),
-					KEY post_name (post_name),
+					KEY post_name (post_name(191)),
 					KEY id_status (ID, post_status)
 				) $collation";
 

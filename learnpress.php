@@ -4,7 +4,7 @@
  * Plugin URI: http://thimpress.com/learnpress
  * Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
  * Author: ThimPress
- * Version: 4.2.8.7
+ * Version: 4.2.8.8-beta.1
  * Author URI: http://thimpress.com
  * Requires at least: 6.0
  * Requires PHP: 7.0
@@ -145,16 +145,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 				// Must handle in hook init of WordPress, when loaded plugins, theme, user.
 				add_action( 'init', [ $this, 'lp_main_handle' ], - 1000 );
-
-				add_action(
-					'init',
-					function () {
-						// Handle lp ajax.
-						LoadContentViaAjax::catch_lp_ajax();
-						LessonAjax::catch_lp_ajax();
-						EditCurriculumAjax::catch_lp_ajax();
-					}
-				);
 
 				// hooks .
 				$this->hooks();
@@ -656,6 +646,20 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * Initial common hooks
 		 */
 		public function hooks() {
+			/**
+			 * Handle lp ajax.
+			 * Set priority after register_post_type to register capabilities for post type of LP.
+			 */
+			add_action(
+				'init',
+				function () {
+					LoadContentViaAjax::catch_lp_ajax();
+					LessonAjax::catch_lp_ajax();
+					EditCurriculumAjax::catch_lp_ajax();
+				},
+				11
+			);
+
 			// Add links setting|document|addon on plugins page.
 			add_filter( 'plugin_action_links_' . LP_PLUGIN_BASENAME, array( $this, 'plugin_links' ) );
 

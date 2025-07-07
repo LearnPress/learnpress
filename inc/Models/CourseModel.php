@@ -747,17 +747,18 @@ class CourseModel {
 	 *
 	 * @param string $key
 	 * @param mixed|false $default_value
+	 * @param bool $single
 	 *
 	 * @return false|mixed
 	 * @since 4.2.6.9
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
-	public function get_meta_value_by_key( string $key, $default_value = false ) {
+	public function get_meta_value_by_key( string $key, $default_value = false, bool $single = true ) {
 		if ( $this->meta_data instanceof stdClass && isset( $this->meta_data->{$key} ) ) {
 			$value = maybe_unserialize( $this->meta_data->{$key} );
 		} else {
 			$coursePost = new CoursePostModel( $this );
-			$value      = $coursePost->get_meta_value_by_key( $key, $default_value );
+			$value      = $coursePost->get_meta_value_by_key( $key, $default_value, $single );
 		}
 
 		$this->meta_data->{$key} = $value;
@@ -1139,16 +1140,17 @@ class CourseModel {
 	/**
 	 * Check user is author or co-in of course.
 	 *
-	 * @param UserModel $userModel
+	 * @param UserModel|false $userModel
 	 *
 	 * @return bool
 	 * @since 4.2.7.6
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
-	public function check_user_is_author( UserModel $userModel ): bool {
+	public function check_user_is_author( $userModel ): bool {
 		$is_author = false;
 
-		if ( $userModel->get_id() === $this->post_author ) {
+		if ( $userModel instanceof UserModel
+			&& $userModel->get_id() === $this->post_author ) {
 			$is_author = true;
 		}
 

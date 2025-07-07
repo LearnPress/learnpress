@@ -268,7 +268,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 				 * Check if LP beta version is not dismissed or dismissed version lower than current version, will bet to show notice.
 				 */
 				if ( $lp_beta_version_info && ! isset( $_GET['tab'] ) &&
-				     ( ! isset( $_COOKIE['lp_beta_version'] ) || version_compare( $_COOKIE['lp_beta_version'], $lp_beta_version_info['version'], '<' ) ) ) {
+					( ! isset( $_COOKIE['lp_beta_version'] ) || version_compare( $_COOKIE['lp_beta_version'], $lp_beta_version_info['version'], '<' ) ) ) {
 					$show_notice_lp_beta_version = true;
 				}
 
@@ -306,7 +306,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 						'lp-setup-wizard'            => [
 							'template'      => 'admin-notices/setup-wizard.php',
 							'check'         => ! get_option( 'learn_press_setup_wizard_completed', false )
-							                   && ! isset( $admin_notices_dismiss['lp-setup-wizard'] ),
+												&& ! isset( $admin_notices_dismiss['lp-setup-wizard'] ),
 							'allow_dismiss' => 1,
 						],
 						// Show notification addons new version.
@@ -535,7 +535,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 	 *
 	 * @return LP_REST_Response
 	 * @since 4.2.5
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function assign_courses_to_users( WP_REST_Request $request ): LP_REST_Response {
 		$response = new LP_REST_Response();
@@ -576,6 +576,8 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 				$user_course_new->start_time = gmdate( LP_Datetime::$format, time() );
 				$user_course_new->save();
 				// End
+
+				do_action( 'learn-press/assigned-course-to-user', $user_course_new );
 			}
 
 			if ( $page == $total_page ) {

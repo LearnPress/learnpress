@@ -336,8 +336,18 @@ class CourseSectionModel {
 	 * Delete row
 	 *
 	 * @throws Exception
+	 * @since 4.2.8.6
+	 * @version 1.0.1
 	 */
 	public function delete() {
+		// Unassign items of section
+		$lp_section_items_db = LP_Section_Items_DB::getInstance();
+		$filter              = new LP_Section_Items_Filter();
+		$filter->where[]     = $lp_section_items_db->wpdb->prepare( 'AND section_id = %d', $this->section_id );
+		$filter->collection  = $lp_section_items_db->tb_lp_section_items;
+		$lp_section_items_db->delete_execute( $filter );
+
+		// Delete section
 		$lp_section_db      = LP_Section_DB::getInstance();
 		$filter             = new LP_Section_Filter();
 		$filter->where[]    = $lp_section_db->wpdb->prepare( 'AND section_id = %d', $this->section_id );

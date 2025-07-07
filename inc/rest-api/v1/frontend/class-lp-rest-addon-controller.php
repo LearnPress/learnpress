@@ -57,7 +57,7 @@ class LP_REST_Addon_Controller extends LP_Abstract_REST_Controller {
 	 * @param WP_REST_Request $request
 	 *
 	 * @return LP_REST_Response
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 * @since 4.2.1
 	 */
 	public function list_addons( WP_REST_Request $request ): LP_REST_Response {
