@@ -161,12 +161,12 @@ class CourseModel {
 	 *
 	 * @return string
 	 * @since 4.2.6.9
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public function get_image_url( $size = 'post-thumbnail' ): string {
-		if ( isset( $this->image_url ) ) {
+		/*if ( isset( $this->image_url ) ) {
 			return $this->image_url;
-		}
+		}*/
 
 		$post      = new CoursePostModel( $this );
 		$image_url = $post->get_image_url( $size );
