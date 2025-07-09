@@ -164,6 +164,11 @@ class CourseModel {
 	 * @version 1.0.2
 	 */
 	public function get_image_url( $size = 'post-thumbnail' ): string {
+		/**
+		 * Comment code isset( $this->image_url )
+		 * To apply for many size on a course
+		 * To apply cache need handle cache before, where set size for image.
+		 */
 		/*if ( isset( $this->image_url ) ) {
 			return $this->image_url;
 		}*/
