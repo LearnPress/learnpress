@@ -60,7 +60,7 @@ class CourseImageBlockType extends AbstractCourseBlockType {
 			$is_link = $attributes['isLink'] ?? true;
 			$new_tab = $attributes['target'] ?? false;
 
-			$size = $attributes['size'] ?? 'thumbnail';
+			$size = $attributes['size'] ?? 'custom';
 			if ( $size === 'custom' ) {
 				$size = [
 					'width'  => $attributes['customWidth'] ?? 500,

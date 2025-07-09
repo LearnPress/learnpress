@@ -21,7 +21,7 @@
 		},
 		"size": {
 			"type": "string",
-			"default": "thumbnail"
+			"default": "custom"
 		},
 		"customWidth": {
 			"type": "number",
