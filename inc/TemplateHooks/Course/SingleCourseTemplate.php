@@ -296,18 +296,20 @@ class SingleCourseTemplate {
 			}
 
 			// Check cache before get image url
-			$cache     = new \LP_Cache();
-			$key_cache = 'course/image_url/' . $courseModel->get_id();
+			$cache     = new \LP_Course_Cache();
+			$key_cache = 'image_url/' . $courseModel->get_id();
 			if ( is_array( $size_img_send ) && count( $size_img_send ) === 2 ) {
 				$key_cache .= '/' . implode( 'x', $size_img_send );
 			} elseif ( is_string( $size_img_send ) ) {
 				$key_cache .= '/' . $size_img_send;
 			}
 
+			// Set cache for image url
 			$course_img_url = $cache->get_cache( $key_cache );
 			if ( false === $course_img_url ) {
 				$course_img_url = $courseModel->get_image_url( $size_img_send );
 				$cache->set_cache( $key_cache, $course_img_url );
+				$cache->save_cache_keys( 'image_urls', $key_cache );
 			}
 
 			$content = sprintf(

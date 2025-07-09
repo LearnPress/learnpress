@@ -1360,6 +1360,10 @@ class CourseModel {
 		$key_cache       = "courseModel/find/id/{$this->ID}";
 		$lp_course_cache = new LP_Course_Cache();
 		$lp_course_cache->clear( $key_cache );
+
+		// Clear cache image urls, store with many sizes
+		$img_urls_key_cache = 'image_urls';
+		$lp_course_cache->clear_cache_on_group( $img_urls_key_cache );
 	}
 
 	/**
