@@ -1362,7 +1362,7 @@ class CourseModel {
 		$lp_course_cache->clear( $key_cache );
 
 		// Clear cache image urls, store with many sizes
-		$img_urls_key_cache = 'image_urls';
+		$img_urls_key_cache = "image_urls/{$this->ID}";
 		$lp_course_cache->clear_cache_on_group( $img_urls_key_cache );
 	}
 

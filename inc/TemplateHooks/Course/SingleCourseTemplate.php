@@ -309,7 +309,7 @@ class SingleCourseTemplate {
 			if ( false === $course_img_url ) {
 				$course_img_url = $courseModel->get_image_url( $size_img_send );
 				$cache->set_cache( $key_cache, $course_img_url );
-				$cache->save_cache_keys( 'image_urls', $key_cache );
+				$cache->save_cache_keys( sprintf( 'image_urls/%s', $courseModel->get_id() ), $key_cache );
 			}
 
 			$content = sprintf(
