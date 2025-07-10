@@ -325,12 +325,6 @@ class FilterCourseTemplate {
 					$parent_cat_id = $category_current_id;
 					$content      .= $this->html_field_category( $category_current->term_id, $category_current->name, $data );
 				}
-			} elseif ( is_tax( LP_COURSE_CATEGORY_TAX ) ) {
-				$current_term = get_queried_object();
-				if ( $current_term && isset( $current_term->term_id ) ) {
-					$parent_cat_id = $current_term->term_id;
-					$content      .= $this->html_field_category( $current_term->term_id, $current_term->name, $data );
-				}
 			}
 
 			// For subcategories.

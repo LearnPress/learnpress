@@ -62,17 +62,10 @@ class CourseFilterBlockType extends AbstractBlockType {
 				lp_skeleton_animation_html( 5 );
 				$widget_content = ob_get_clean();
 			} else {
-				$params = [];
-				if ( ! empty( $_GET ) ) {
-					foreach ( $_GET as $key => $value ) {
-						$params[ sanitize_text_field( $key ) ] = sanitize_text_field( $value );
-					}
-				}
-
 				$section_data               = $instance;
-				$section_data['params_url'] = $params;
+				$section_data['params_url'] = lp_archive_skeleton_get_args();
 				ob_start();
-				echo FilterCourseTemplate::instance()->sections( $section_data );
+				do_action( 'learn-press/filter-courses/layout', $section_data );
 				$widget_content = ob_get_clean();
 			}
 
