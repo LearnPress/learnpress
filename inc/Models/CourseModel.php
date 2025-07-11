@@ -161,12 +161,17 @@ class CourseModel {
 	 *
 	 * @return string
 	 * @since 4.2.6.9
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public function get_image_url( $size = 'post-thumbnail' ): string {
-		// if ( isset( $this->image_url ) ) {
-		// 	return $this->image_url;
-		// }
+		/**
+		 * Comment code isset( $this->image_url )
+		 * To apply for many size on a course
+		 * To apply cache need handle cache before, where set size for image.
+		 */
+		/*if ( isset( $this->image_url ) ) {
+			return $this->image_url;
+		}*/
 
 		$post      = new CoursePostModel( $this );
 		$image_url = $post->get_image_url( $size );
@@ -1355,6 +1360,10 @@ class CourseModel {
 		$key_cache       = "courseModel/find/id/{$this->ID}";
 		$lp_course_cache = new LP_Course_Cache();
 		$lp_course_cache->clear( $key_cache );
+
+		// Clear cache image urls, store with many sizes
+		$img_urls_key_cache = "image_urls/{$this->ID}";
+		$lp_course_cache->clear_cache_on_group( $img_urls_key_cache );
 	}
 
 	/**

@@ -266,10 +266,11 @@ class SingleCourseTemplate {
 	 * Get display image course.
 	 *
 	 * @param LP_Course|CourseModel $course
+	 * @param array $data
 	 *
 	 * @return string
 	 * @since 4.2.3.2
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 */
 	public function html_image( $course, array $data = [] ): string {
 		$content = '';
@@ -284,24 +285,36 @@ class SingleCourseTemplate {
 				return '';
 			}
 
-			$size_img_setting = LP_Settings::get_option( 'course_thumbnail_dimensions', [] );
-			$size_img_send    = [
-				$size_img_setting['width'] ?? 500,
-				$size_img_setting['height'] ?? 300,
-			];
-
-			if ( ! empty( $data['size'] ) && is_string( $data['size'] ) ) {
+			if ( ! empty( $data['size'] ) ) {
 				$size_img_send = $data['size'];
-			} elseif ( ! empty( $data['size'] ) && is_array( $data['size'] ) && count( $data['size'] ) === 2 ) {
-				$size_img_send = [
-					$data['size']['width'] ?? $size_img_send[0],
-					$data['size']['height'] ?? $size_img_send[1],
+			} else {
+				$size_img_setting = LP_Settings::get_option( 'course_thumbnail_dimensions', [] );
+				$size_img_send    = [
+					$size_img_setting['width'] ?? 500,
+					$size_img_setting['height'] ?? 300,
 				];
+			}
+
+			// Check cache before get image url
+			$cache     = new \LP_Course_Cache();
+			$key_cache = 'image_url/' . $courseModel->get_id();
+			if ( is_array( $size_img_send ) && count( $size_img_send ) === 2 ) {
+				$key_cache .= '/' . implode( 'x', $size_img_send );
+			} elseif ( is_string( $size_img_send ) ) {
+				$key_cache .= '/' . $size_img_send;
+			}
+
+			// Set cache for image url
+			$course_img_url = $cache->get_cache( $key_cache );
+			if ( false === $course_img_url ) {
+				$course_img_url = $courseModel->get_image_url( $size_img_send );
+				$cache->set_cache( $key_cache, $course_img_url );
+				$cache->save_cache_keys( sprintf( 'image_urls/%s', $courseModel->get_id() ), $key_cache );
 			}
 
 			$content = sprintf(
 				'<img src="%s" alt="%s">',
-				esc_url_raw( $courseModel->get_image_url( $size_img_send ) ),
+				esc_url_raw( $course_img_url ),
 				_x( 'course thumbnail', 'no course thumbnail', 'learnpress' )
 			);
 

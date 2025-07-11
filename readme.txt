@@ -1,7 +1,7 @@
 === LearnPress - WordPress LMS Plugin ===
 Contributors: thimpress, tungnx89, nhamdv, nguyenlammanh, tunnhn, phonglq.foobla, thongta, kendy73, leehld
 Donate link:
-Tags: e-learning, education, course, lms, learning management system
+Tags: elearning, education, course, lms, learning management system
 Tested up to: 6.8
 Stable tag: 4.2.8.7.3
 License: GPLv3

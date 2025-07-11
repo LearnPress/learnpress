@@ -30,7 +30,7 @@ class LP_Query {
 	 *
 	 * @return mixed
 	 */
-	public function parse_request( $q ) {
+	/*public function parse_request( $q ) {
 		if ( did_action( 'learn_press_parse_query' ) ) {
 			return $q;
 		}
@@ -38,7 +38,7 @@ class LP_Query {
 		do_action_ref_array( 'learn_press_parse_query', array( &$this ) );
 
 		return $q;
-	}
+	}*/
 
 	/**
 	 * Add custom rewrite tags

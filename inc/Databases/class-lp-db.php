@@ -230,7 +230,7 @@ class LP_Database {
 			return false;
 		}
 
-		$check_table = $this->check_col_table( $this->tb_lp_user_items, $name_col );
+		$check_table = $this->check_col_table( $name_table, $name_col );
 
 		if ( $check_table ) {
 			$execute = $this->wpdb->query( "ALTER TABLE $name_table DROP COLUMN $name_col" );
