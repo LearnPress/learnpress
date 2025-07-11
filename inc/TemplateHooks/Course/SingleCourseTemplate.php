@@ -266,7 +266,7 @@ class SingleCourseTemplate {
 	 * Get display image course.
 	 *
 	 * @param LP_Course|CourseModel $course
-	 * @param array $data
+	 * @param array $data ['size'] Size of image to get, Ex: [500, 300] or string 'thumbnail', 'medium', 'large', 'full' etc.
 	 *
 	 * @return string
 	 * @since 4.2.3.2
@@ -287,6 +287,15 @@ class SingleCourseTemplate {
 
 			if ( ! empty( $data['size'] ) ) {
 				$size_img_send = $data['size'];
+
+				// If custom size, data size is type int[], like [500, 300], not [ width => 500, height => 300 ]
+				// Convert if data is [ width => 500, height => 300 ]
+				if ( is_array( $size_img_send ) && array_key_exists( 'width', $size_img_send ) ) {
+					$size_img_send = [
+						$size_img_send['width'] ?? 500,
+						$size_img_send['height'] ?? 300,
+					];
+				}
 			} else {
 				$size_img_setting = LP_Settings::get_option( 'course_thumbnail_dimensions', [] );
 				$size_img_send    = [
