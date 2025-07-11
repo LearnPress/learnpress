@@ -63,8 +63,8 @@ class CourseImageBlockType extends AbstractCourseBlockType {
 			$size = $attributes['size'] ?? 'custom';
 			if ( $size === 'custom' ) {
 				$size = [
-					'width'  => $attributes['customWidth'] ?? 500,
-					'height' => $attributes['customHeight'] ?? 300,
+					$attributes['customWidth'] ?? 500,
+					$attributes['customHeight'] ?? 300,
 				];
 			}
 
