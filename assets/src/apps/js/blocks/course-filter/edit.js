@@ -8,14 +8,14 @@ export const edit = ( props ) => {
 		<>
 			<InspectorControls>
 				<PanelBody title={ __( 'Settings', 'learnpress' ) }>
-					<TextControl
-						label={ __( 'Title', 'learnpress' ) }
+					<ToggleControl
+						label={ __( 'Show title', 'learnpress' ) }
+						checked={ props.attributes.title ? true : false }
 						onChange={ ( value ) => {
 							props.setAttributes( {
-								title: value ?? '',
+								title: value ? true : false,
 							} );
 						} }
-						value={ props.attributes.title ?? 'Course Filter' }
 					/>
 
 					<TextControl
@@ -63,7 +63,7 @@ export const edit = ( props ) => {
 			</InspectorControls>
 			<div { ...blockProps }>
 				<div className="filter">
-					<h3>{ props.attributes.title }</h3>
+					<h3>{ props.attributes.title ? __( 'Course Filter', 'learnpress' ) : '' }</h3>
 				</div>
 				<div>
 					<InnerBlocks

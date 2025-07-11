@@ -33,7 +33,8 @@ class CourseFilterBlockType extends AbstractBlockType {
 
 			$class                     = 'learnpress-block-widget-wrapper learnpress-widget-wrapper';
 			$show_in_rest              = isset( $attributes['showInRest'] ) ? ( $attributes['showInRest'] === false ? 0 : 1 ) : 1;
-			$title                     = $attributes['title'] ?? 'Course Filter';
+			$show_title                = $attributes['title'] ?? true;
+			$title                     = $show_title ? __( 'Course Filter', 'learnpress' ) : '';
 			$widget_content            = '';
 			$number_level_category     = $attributes['numberLevelCategory'] ?? 1;
 			$search_suggestion         = isset( $attributes['searchSuggestion'] ) ? ( $attributes['searchSuggestion'] === false ? 0 : 1 ) : 1;
