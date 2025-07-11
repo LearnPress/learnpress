@@ -25,11 +25,11 @@
 		},
 		"customWidth": {
 			"type": "number",
-			"default": 0
+			"default": 500
 		},
 		"customHeight": {
 			"type": "number",
-			"default": 0
+			"default": 300
 		}
 	},
 	"supports": {

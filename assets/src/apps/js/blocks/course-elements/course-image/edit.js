@@ -27,14 +27,14 @@ export const edit = ( props ) => {
 		if (
 			lpCourseData?.image &&
 			attributes.size === 'custom' &&
-			attributes.customWidth === 0 &&
-			attributes.customHeight === 0
+			attributes.customWidth === 500 &&
+			attributes.customHeight === 300
 		) {
 			return lpCourseData?.image;
 		}
 
-		let width = 500;
-		let height = 300;
+		let width = 2560;
+		let height = 2560;
 
 		if ( attributes.size === 'thumbnail' ) {
 			width = 150;
@@ -63,6 +63,14 @@ export const edit = ( props ) => {
 			if ( attributes.customHeight && attributes.customHeight > 0 ) {
 				height = attributes.customHeight;
 			}
+
+			if ( attributes.customWidth == 0 ) {
+				width = 2560;
+			}
+
+			if ( attributes.customHeight == 0 ) {
+				width = 2560;
+			}
 		}
 
 		return `<div class="course-img"><img src="https://placehold.co/${ width }x${ height }?text=Course+Image" alt="course thumbnail placeholder"</div>`;
@@ -78,7 +86,7 @@ export const edit = ( props ) => {
 						options={ sizeOption }
 						onChange={ ( value ) => {
 							if ( value !== 'custom' ) {
-								setAttributes( { customWidth: 0, customHeight: 0 } );
+								setAttributes( { customWidth: 500, customHeight: 300 } );
 							}
 							setAttributes( { size: value } );
 						} }
@@ -96,10 +104,10 @@ export const edit = ( props ) => {
 								value={ props.attributes.customWidth }
 								onChange={ ( value ) => {
 									const numValue = parseInt( value, 10 );
-									if ( numValue && ! isNaN( Number( numValue ) ) && numValue >= 0 ) {
+									if ( ! isNaN( Number( numValue ) ) && numValue >= 0 ) {
 										setAttributes( { customWidth: Number( numValue ) } );
 									} else {
-										setAttributes( { customWidth: 0 } );
+										setAttributes( { customWidth: 500 } );
 									}
 								} }
 							/>
@@ -113,10 +121,10 @@ export const edit = ( props ) => {
 								value={ props.attributes.customHeight }
 								onChange={ ( value ) => {
 									const numValue = parseInt( value, 10 );
-									if ( numValue && ! isNaN( Number( numValue ) ) && numValue >= 0 ) {
+									if ( ! isNaN( Number( numValue ) ) && numValue >= 0 ) {
 										setAttributes( { customHeight: Number( numValue ) } );
 									} else {
-										setAttributes( { customHeight: 0 } );
+										setAttributes( { customHeight: 300 } );
 									}
 								} }
 							/>
