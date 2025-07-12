@@ -8,6 +8,7 @@ use LearnPress\Helpers\Template;
 use LearnPress\Models\PostModel;
 use LearnPress\Models\Question\QuestionPostModel;
 use LearnPress\Models\QuizPostModel;
+use LearnPress\TemplateHooks\Admin\Question\AdminEditQuestionAnswerTemplate;
 use LearnPress\TemplateHooks\TemplateAJAX;
 use LP_Database;
 use LP_Post_DB;
@@ -348,22 +349,36 @@ class AdminEditQizTemplate {
 		$type = '';
 		if ( $questionPostModel instanceof QuestionPostModel ) {
 			$type = $questionPostModel->get_type();
-
 		}
 
-		$types = QuestionPostModel::get_types();
-		foreach ( $types as $key => $label ) {
-
+		// If empty $type, get all types html to insert new by type
+		if ( ! empty( $type ) ) {
+			$html_answers_config = AdminEditQuestionTemplate::instance()->get_by_type(
+				$type,
+				$questionPostModel
+			);
+		} else {
+			$types               = QuestionPostModel::get_types();
+			$html_answers_config = '';
+			foreach ( $types as $type_setting => $label ) {
+				$html_answers_config .= AdminEditQuestionTemplate::instance()->get_by_type(
+					$type_setting,
+					$questionPostModel
+				);
+			}
 		}
 
 		$section = [
-			'wrap'     => '<div class="lp-question-by-type">',
-			'label'    => sprintf(
+			'wrap'           => '<div class="lp-question-by-type">',
+			'label'          => sprintf(
 				'<label for="lp-question-type">%s</label>',
 				__( 'Type', 'learnpress' )
 			),
-			'answers'  => '',
-			'wrap_end' => '</div>',
+			'answers-config' => sprintf(
+				'<div class="lp-answers-config">%s</div>',
+				$html_answers_config
+			),
+			'wrap_end'       => '</div>',
 		];
 
 		return Template::combine_components( $section );

@@ -5,7 +5,7 @@
  * @version 1.0.1
  */
 import * as lpUtils from '../utils.js';
-import SweetAlert from 'sweetalert2';
+import SweetAlert from 'sweetalert2-neutral';
 import Sortable from 'sortablejs';
 
 let elEditQuizWrap;
@@ -185,8 +185,8 @@ const initTinyMCE = () => {
 
 // Re-initialize TinyMCE editor
 const reInitTinymce = ( id ) => {
-	window.tinymce.execCommand( 'mceRemoveEditor', true, id );
-	window.tinymce.execCommand( 'mceAddEditor', true, id );
+	window.tinymce.execCommand( 'mceRemoveEditor', false, id );
+	window.tinymce.execCommand( 'mceAddEditor', false, id );
 	eventEditorTinymceChange( id );
 };
 

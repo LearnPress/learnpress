@@ -2,13 +2,10 @@
 
 namespace LearnPress\TemplateHooks\Admin;
 
-use Exception;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\Question\QuestionPostModel;
-use LearnPress\Models\QuizPostModel;
-use LearnPress\TemplateHooks\TemplateAJAX;
-use stdClass;
+use LP_Helper;
 
 /**
  * Template Admin Edit Quiz.
@@ -20,7 +17,6 @@ class AdminEditQuestionTemplate {
 	use Singleton;
 
 	public function init() {
-
 	}
 
 	public function html_edit_mark( $questionPostModel = null ): string {
@@ -200,6 +196,170 @@ class AdminEditQuestionTemplate {
 			'button'   => sprintf(
 				'<button type="button" class="lp-btn-add-section button">%s</button>',
 				__( 'Add Question', 'learnpress' )
+			),
+			'wrap_end' => '</div>',
+		];
+
+		return Template::combine_components( $section );
+	}
+
+	/**
+	 * Get html edit question type.
+	 *
+	 * @param $type
+	 * @param $questionPostModel
+	 *
+	 * @return string
+	 * @throws \Exception
+	 */
+	public function get_by_type( $type, $questionPostModel ): string {
+		switch ( $type ) {
+			case 'true_or_false':
+				return self::html_answer_type_true_or_false( $questionPostModel );
+			case 'single_choice':
+				return self::html_answer_type_single_choice( $questionPostModel );
+			case 'multi_choice':
+				return self::html_answer_type_multiple_choice( $questionPostModel );
+			case 'fill_in_blanks':
+				return self::html_answer_type_fill_in_blanks( $questionPostModel );
+			case $type:
+				return apply_filters( 'learn-press/edit-question/type/html', '', $type, $questionPostModel );
+			default:
+				return '';
+		}
+	}
+
+	/**
+	 * Get html edit question type true or false.
+	 *
+	 * @param null $questionPostModel
+	 *
+	 * @return string
+	 * @throws \Exception
+	 */
+	public function html_answer_type_true_or_false( $questionPostModel = null ): string {
+		$options_default = '
+			[
+				{ "title": "True", "value": "true", "is_true": "yes" },
+				{ "title": "False", "value": "false", "is_true": "no" }
+			]
+		';
+
+		$options = LP_Helper::json_decode( $options_default );
+
+		if ( $questionPostModel instanceof QuestionPostModel ) {
+			$name_radio = 'lp-question-answer-item-true-' . $questionPostModel->ID;
+			$options    = $questionPostModel->get_answer_option();
+		} else {
+			$name_radio = 'lp-question-answer-item-true-' . rand();
+		}
+
+		$html_answers = '';
+		foreach ( $options as $option ) {
+			$html_answers .= sprintf(
+				'<li class="lp-question-answer-item">
+					<span class="drag lp-icon-drag" title="Drag to reorder section"></span>
+					<input type="text" class="%1$s" name="%1$s" value="%2$s" />
+					<input type="radio" class="lp-question-answer-item-true" name="%4$s" %3$s value="%5$s" />
+				</li>',
+				'lp-question-answer-item-title-input',
+				esc_attr( $option->value ),
+				$option->is_true === 'yes' ? 'checked' : '',
+				$name_radio,
+				esc_attr( $option->is_true )
+			);
+		}
+
+		$section = [
+			'wrap'     => '<ul class="lp-question-answers-true-or-false">',
+			'header'   => '<li><div>Answers</div><div>Correct</div></li>',
+			'answers'  => $html_answers,
+			'wrap_end' => '</ul>',
+		];
+
+		return Template::combine_components( $section );
+	}
+
+	/**
+	 * Get html edit single choice.
+	 *
+	 * @param null $questionPostModel
+	 *
+	 * @return string
+	 */
+	public function html_answer_type_single_choice( $questionPostModel = null ): string {
+		$point = 0;
+		if ( $questionPostModel instanceof QuestionPostModel ) {
+			$point = $questionPostModel->get_answer_option();
+		}
+
+		$section = [
+			'wrap'     => '<div class="lp-question-point">',
+			'label'    => sprintf(
+				'<label for="lp-question-point">%s</label>',
+				__( 'Points', 'learnpress' )
+			),
+			'input'    => sprintf(
+				'<input type="number" name="lp-question-point-input" id="lp-question-point" value="%s" min="0" step="0.01">',
+				esc_attr( $point )
+			),
+			'wrap_end' => '</div>',
+		];
+
+		return Template::combine_components( $section );
+	}
+
+	/**
+	 * Get html edit question type multiple choice.
+	 *
+	 * @param null $questionPostModel
+	 *
+	 * @return string
+	 */
+	public function html_answer_type_multiple_choice( $questionPostModel = null ): string {
+		$point = 0;
+		if ( $questionPostModel instanceof QuestionPostModel ) {
+			$point = $questionPostModel->get_answer_option();
+		}
+
+		$section = [
+			'wrap'     => '<div class="lp-question-point">',
+			'label'    => sprintf(
+				'<label for="lp-question-point">%s</label>',
+				__( 'Points', 'learnpress' )
+			),
+			'input'    => sprintf(
+				'<input type="number" name="lp-question-point-input" id="lp-question-point" value="%s" min="0" step="0.01">',
+				esc_attr( $point )
+			),
+			'wrap_end' => '</div>',
+		];
+
+		return Template::combine_components( $section );
+	}
+
+	/**
+	 * Get html edit question type fill in blanks.
+	 *
+	 * @param null $questionPostModel
+	 *
+	 * @return string
+	 */
+	public function html_answer_type_fill_in_blanks( $questionPostModel = null ): string {
+		$point = 0;
+		if ( $questionPostModel instanceof QuestionPostModel ) {
+			$point = $questionPostModel->get_answer_option();
+		}
+
+		$section = [
+			'wrap'     => '<div class="lp-question-point">',
+			'label'    => sprintf(
+				'<label for="lp-question-point">%s</label>',
+				__( 'Points', 'learnpress' )
+			),
+			'input'    => sprintf(
+				'<input type="number" name="lp-question-point-input" id="lp-question-point" value="%s" min="0" step="0.01">',
+				esc_attr( $point )
 			),
 			'wrap_end' => '</div>',
 		];

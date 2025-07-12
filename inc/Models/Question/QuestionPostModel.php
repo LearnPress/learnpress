@@ -98,6 +98,34 @@ class QuestionPostModel extends PostModel {
 	}
 
 	/**
+	 * Get question object by type
+	 *
+	 * @param string $type
+	 *
+	 * @return string
+	 */
+	public static function get_question_obj_by_type( $type ): string {
+		$types = self::get_types();
+
+		if ( ! array_key_exists( $type, $types ) ) {
+			return '';
+		}
+
+		switch ( $type ) {
+			case 'true_or_false':
+				return QuestionPostTrueFalseModel::class;
+			case 'multi_choice':
+				return QuestionPostMultipleChoiceModel::class;
+			case 'single_choice':
+				return QuestionPostSingleChoiceModel::class;
+			case 'fill_in_blanks':
+				return QuestionPostFIBModel::class;
+			default:
+				return apply_filters( 'learn-press/question-object-by-type', '', $type );
+		}
+	}
+
+	/**
 	 * Get type question
 	 *
 	 * @return string|float
