@@ -4,6 +4,7 @@ namespace LearnPress\TemplateHooks\Admin;
 
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
+use LearnPress\Models\Question\QuestionPostFIBModel;
 use LearnPress\Models\Question\QuestionPostModel;
 use LP_Helper;
 
@@ -271,7 +272,7 @@ class AdminEditQuestionTemplate {
 		}
 
 		$section = [
-			'wrap'     => '<ul class="lp-question-answers-true-or-false">',
+			'wrap'     => '<ul class="lp-question-answers" data-question-type="true_or_false">',
 			'header'   => '<li><div>Answers</div><div>Correct</div></li>',
 			'answers'  => $html_answers,
 			'wrap_end' => '</ul>',
@@ -288,22 +289,44 @@ class AdminEditQuestionTemplate {
 	 * @return string
 	 */
 	public function html_answer_type_single_choice( $questionPostModel = null ): string {
-		$point = 0;
+		$options_default = '
+			[
+				{ "title": "One", "value": "one", "is_true": "yes" },
+				{ "title": "Two", "value": "two", "is_true": "no" },
+				{ "title": "Three", "value": "three", "is_true": "no" }
+			]
+		';
+
+		$options = LP_Helper::json_decode( $options_default );
+
 		if ( $questionPostModel instanceof QuestionPostModel ) {
-			$point = $questionPostModel->get_answer_option();
+			$name_radio = 'lp-question-answer-item-true-' . $questionPostModel->ID;
+			$options    = $questionPostModel->get_answer_option();
+		} else {
+			$name_radio = 'lp-question-answer-item-true-' . rand();
+		}
+
+		$html_answers = '';
+		foreach ( $options as $option ) {
+			$html_answers .= sprintf(
+				'<li class="lp-question-answer-item">
+					<span class="drag lp-icon-drag" title="Drag to reorder section"></span>
+					<input type="text" class="%1$s" name="%1$s" value="%2$s" />
+					<input type="radio" class="lp-question-answer-item-true" name="%4$s" %3$s value="%5$s" />
+				</li>',
+				'lp-question-answer-item-title-input',
+				esc_attr( $option->value ),
+				$option->is_true === 'yes' ? 'checked' : '',
+				$name_radio,
+				esc_attr( $option->is_true )
+			);
 		}
 
 		$section = [
-			'wrap'     => '<div class="lp-question-point">',
-			'label'    => sprintf(
-				'<label for="lp-question-point">%s</label>',
-				__( 'Points', 'learnpress' )
-			),
-			'input'    => sprintf(
-				'<input type="number" name="lp-question-point-input" id="lp-question-point" value="%s" min="0" step="0.01">',
-				esc_attr( $point )
-			),
-			'wrap_end' => '</div>',
+			'wrap'     => '<ul class="lp-question-answers" data-question-type="single_choice">',
+			'header'   => '<li><div>Answers</div><div>Correct</div></li>',
+			'answers'  => $html_answers,
+			'wrap_end' => '</ul>',
 		];
 
 		return Template::combine_components( $section );
@@ -317,22 +340,44 @@ class AdminEditQuestionTemplate {
 	 * @return string
 	 */
 	public function html_answer_type_multiple_choice( $questionPostModel = null ): string {
-		$point = 0;
+		$options_default = '
+			[
+				{ "title": "One", "value": "one", "is_true": "yes" },
+				{ "title": "Two", "value": "two", "is_true": "yes" },
+				{ "title": "Three", "value": "three", "is_true": "no" }
+			]
+		';
+
+		$options = LP_Helper::json_decode( $options_default );
+
 		if ( $questionPostModel instanceof QuestionPostModel ) {
-			$point = $questionPostModel->get_answer_option();
+			$name_radio = 'lp-question-answer-item-true-' . $questionPostModel->ID;
+			$options    = $questionPostModel->get_answer_option();
+		} else {
+			$name_radio = 'lp-question-answer-item-true-' . rand();
+		}
+
+		$html_answers = '';
+		foreach ( $options as $option ) {
+			$html_answers .= sprintf(
+				'<li class="lp-question-answer-item">
+					<span class="drag lp-icon-drag" title="Drag to reorder section"></span>
+					<input type="text" class="%1$s" name="%1$s" value="%2$s" />
+					<input type="checkbox" class="lp-question-answer-item-true" name="%4$s" %3$s value="%5$s" />
+				</li>',
+				'lp-question-answer-item-title-input',
+				esc_attr( $option->value ),
+				$option->is_true === 'yes' ? 'checked' : '',
+				$name_radio,
+				esc_attr( $option->is_true )
+			);
 		}
 
 		$section = [
-			'wrap'     => '<div class="lp-question-point">',
-			'label'    => sprintf(
-				'<label for="lp-question-point">%s</label>',
-				__( 'Points', 'learnpress' )
-			),
-			'input'    => sprintf(
-				'<input type="number" name="lp-question-point-input" id="lp-question-point" value="%s" min="0" step="0.01">',
-				esc_attr( $point )
-			),
-			'wrap_end' => '</div>',
+			'wrap'     => '<ul class="lp-question-answers" data-question-type="multi_choice">',
+			'header'   => '<li><div>Answers</div><div>Correct</div></li>',
+			'answers'  => $html_answers,
+			'wrap_end' => '</ul>',
 		];
 
 		return Template::combine_components( $section );
@@ -346,21 +391,18 @@ class AdminEditQuestionTemplate {
 	 * @return string
 	 */
 	public function html_answer_type_fill_in_blanks( $questionPostModel = null ): string {
-		$point = 0;
+		$name = 'lp-question-fib-input';
 		if ( $questionPostModel instanceof QuestionPostModel ) {
-			$point = $questionPostModel->get_answer_option();
+			$questionFibModel = new QuestionPostFIBModel( $questionPostModel );
+			$name .= '-' . $questionPostModel->ID;
+			$questionPostModel->get_answer_option();
+		} else {
+			$name .= '-' . rand();
 		}
 
 		$section = [
-			'wrap'     => '<div class="lp-question-point">',
-			'label'    => sprintf(
-				'<label for="lp-question-point">%s</label>',
-				__( 'Points', 'learnpress' )
-			),
-			'input'    => sprintf(
-				'<input type="number" name="lp-question-point-input" id="lp-question-point" value="%s" min="0" step="0.01">',
-				esc_attr( $point )
-			),
+			'wrap'     => '<div class="lp-question-answers" data-question-type="fill_in_blanks">',
+			'input'    => '<textarea rows="3"></textarea>',
 			'wrap_end' => '</div>',
 		];
 

@@ -7,6 +7,8 @@
 import * as lpUtils from '../utils.js';
 import SweetAlert from 'sweetalert2-neutral';
 import Sortable from 'sortablejs';
+import Toastify from 'toastify-js';
+import 'toastify-js/src/toastify.css';
 
 let elEditQuizWrap;
 let elEditListQuestions;
@@ -19,6 +21,11 @@ const className = {
 	elQuestionToggle: '.lp-question-toggle',
 	elBtnShowPopupItemsToSelect: '.lp-btn-show-popup-items-to-select',
 	elPopupItemsToSelectClone: '.lp-popup-items-to-select.clone',
+	elBtnAddQuestion: '.lp-btn-add-question',
+	elQuestionTitleNewInput: '.lp-question-title-new-input',
+	elQuestionTypeNew: '.lp-question-type-new',
+	elAddNewQuestion: 'add-new-question',
+	elQuestionClone: '.lp-question-item.clone',
 	LPTarget: '.lp-target',
 	elCollapse: 'lp-collapse',
 };
@@ -94,7 +101,7 @@ const checkAllQuestionsCollapsed = () => {
 };
 
 let elPopupSelectItems;
-let itemsSelectedData = [];
+const itemsSelectedData = [];
 // Show popup items to select
 const showPopupItemsToSelect = ( e, target ) => {
 	const elBtnShowPopupItemsToSelect = target.closest( `${ className.elBtnShowPopupItemsToSelect }` );
@@ -208,6 +215,47 @@ const eventEditorTinymceChange = ( id, callBack ) => {
 	} );
 };
 
+const addQuestion = ( e, target ) => {
+	const elBtnAddQuestion = target.closest( `${ className.elBtnAddQuestion }` );
+	if ( ! elBtnAddQuestion ) {
+		return;
+	}
+
+	const elAddNewQuestion = elBtnAddQuestion.closest( `.${ className.elAddNewQuestion }` );
+	if ( ! elAddNewQuestion ) {
+		return;
+	}
+
+	const elQuestionTitleNewInput = elAddNewQuestion.querySelector( `${ className.elQuestionTitleNewInput }` );
+	const questionType = elAddNewQuestion.querySelector( `${ className.elQuestionTypeNew }` ).value;
+	const questionTitle = elQuestionTitleNewInput.value.trim();
+	if ( ! questionTitle ) {
+		showToast( 'Please enter a question title.', 'error' );
+		return;
+	}
+
+	const elQuestionClone = elEditListQuestions.querySelector( `${ className.elQuestionItem }.clone` );
+	const newQuestionItem = elQuestionClone.cloneNode( true );
+	const newQuestionItemTypes = newQuestionItem.querySelectorAll( '.lp-question-answers' );
+	newQuestionItemTypes.forEach( ( el ) => {
+		const typeQuestion = el.dataset.questionType;
+		if ( typeQuestion !== questionType ) {
+			el.remove();
+		}
+	} );
+
+	newQuestionItem.classList.remove( 'clone' );
+	lpUtils.lpShowHideEl( newQuestionItem, 1 );
+	elQuestionClone.insertAdjacentElement( 'beforebegin', newQuestionItem );
+
+	// Re-initialize TinyMCE for the new question item
+	const idTextarea = newQuestionItem.querySelector( '.lp-editor-tinymce' ).id;
+	reInitTinymce( idTextarea );
+
+	showToast( 'New question added successfully!' );
+	//updateCountItems( newQuestionItem );
+};
+
 // Events
 document.addEventListener( 'click', ( e ) => {
 	const target = e.target;
@@ -215,6 +263,7 @@ document.addEventListener( 'click', ( e ) => {
 	toggleQuestionAll( e, target );
 	toggleQuestion( e, target );
 	showPopupItemsToSelect( e, target );
+	addQuestion( e, target );
 } );
 // Event keydown
 document.addEventListener( 'keydown', ( e ) => {

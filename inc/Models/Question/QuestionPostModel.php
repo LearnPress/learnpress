@@ -135,6 +135,22 @@ class QuestionPostModel extends PostModel {
 	}
 
 	/**
+	 * Get type label by type
+	 *
+	 * @return string
+	 */
+	public function get_type_label(): string {
+		$type  = $this->get_type();
+		$types = self::get_types();
+
+		if ( ! array_key_exists( $type, $types ) ) {
+			return '';
+		}
+
+		return $types[ $type ];
+	}
+
+	/**
 	 * Get class name of question object by type
 	 *
 	 * @return string

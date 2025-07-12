@@ -180,9 +180,9 @@ class AdminEditQizTemplate {
 
 		$section_edit_main = [
 			'wrap'             => '<div class="question-edit-main">',
-			'description'      => $this->html_edit_question_description( $questionPostModel ),
+			//'description'      => $this->html_edit_question_description( $questionPostModel ),
 			'question-by-type' => $this->html_edit_question_by_type( $questionPostModel ),
-			'details'          => Template::combine_components( $section_edit_details ),
+			//'details'          => Template::combine_components( $section_edit_details ),
 			'wrap_end'         => '</div>',
 		];
 
@@ -549,10 +549,10 @@ class AdminEditQizTemplate {
 
 			foreach ( $posts as $post ) {
 				/**
-				 * @var $itemModel PostModel
+				 * @var $questionPostModel QuestionPostModel
 				 */
-				$itemModel = QuestionPostModel::find( $post->ID, true );
-				if ( ! $itemModel ) {
+				$questionPostModel = QuestionPostModel::find( $post->ID, true );
+				if ( ! $questionPostModel ) {
 					continue;
 				}
 
@@ -570,12 +570,13 @@ class AdminEditQizTemplate {
 						esc_attr( $post->post_type ?? '' ),
 						esc_attr( $post->post_title ?? '' ),
 						esc_attr( $checked ),
-						$itemModel->get_edit_link()
+						$questionPostModel->get_edit_link()
 					),
 					sprintf(
-						'<span class="title">%s<strong>(#%d)</strong></span>',
+						'<span class="title">%s<strong>(#%d - %s)</strong></span>',
 						$post->post_title,
-						$post->ID
+						$post->ID,
+						$questionPostModel->get_type_label()
 					)
 				);
 			}
