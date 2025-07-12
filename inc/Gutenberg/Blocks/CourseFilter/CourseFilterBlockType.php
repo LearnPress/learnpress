@@ -33,7 +33,8 @@ class CourseFilterBlockType extends AbstractBlockType {
 
 			$class                     = 'learnpress-block-widget-wrapper learnpress-widget-wrapper';
 			$show_in_rest              = isset( $attributes['showInRest'] ) ? ( $attributes['showInRest'] === false ? 0 : 1 ) : 1;
-			$title                     = $attributes['title'] ?? 'Course Filter';
+			$show_title                = $attributes['title'] ?? true;
+			$title                     = $show_title ? __( 'Course Filter', 'learnpress' ) : '';
 			$widget_content            = '';
 			$number_level_category     = $attributes['numberLevelCategory'] ?? 1;
 			$search_suggestion         = isset( $attributes['searchSuggestion'] ) ? ( $attributes['searchSuggestion'] === false ? 0 : 1 ) : 1;
@@ -62,17 +63,10 @@ class CourseFilterBlockType extends AbstractBlockType {
 				lp_skeleton_animation_html( 5 );
 				$widget_content = ob_get_clean();
 			} else {
-				$params = [];
-				if ( ! empty( $_GET ) ) {
-					foreach ( $_GET as $key => $value ) {
-						$params[ sanitize_text_field( $key ) ] = sanitize_text_field( $value );
-					}
-				}
-
 				$section_data               = $instance;
-				$section_data['params_url'] = $params;
+				$section_data['params_url'] = lp_archive_skeleton_get_args();
 				ob_start();
-				echo FilterCourseTemplate::instance()->sections( $section_data );
+				do_action( 'learn-press/filter-courses/layout', $section_data );
 				$widget_content = ob_get_clean();
 			}
 

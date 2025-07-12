@@ -3,6 +3,7 @@
 namespace LearnPress\Gutenberg\Blocks\Courses;
 
 use LearnPress\Gutenberg\Blocks\AbstractBlockType;
+use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
 use LP_Debug;
 use Throwable;
@@ -20,7 +21,7 @@ class CourseItemTemplateBlock extends AbstractBlockType {
 		return [
 			'columns' => [
 				'type'    => 'number',
-				'default' => 2,
+				'default' => 3,
 			],
 		];
 	}
@@ -41,16 +42,20 @@ class CourseItemTemplateBlock extends AbstractBlockType {
 
 		try {
 			$layout             = $attributes['layout'] ?? 'list';
+			$columns             = $attributes['columns'] ?? 3;
+
 			$wrapper_attributes = 'learn-press-courses lp-list-courses-no-css wp-block-learn-press-courses';
 
 			if ( $layout == 'grid' ) {
-				$wrapper_attributes .= ' lp-columns-3';
+				$wrapper_attributes .= ' grid-template-columns';
 			}
 
 			$courses         = $block->context['courses'] ?? [];
 			$html_pagination = $block->context['pagination'] ?? '';
 			$settings        = $block->context['settings'] ?? [];
+
 			if ( empty( $courses ) ) {
+				$html = Template::print_message( __( 'No courses found', 'learnpress' ), 'info', false );
 				return $html;
 			}
 
@@ -73,9 +78,10 @@ class CourseItemTemplateBlock extends AbstractBlockType {
 			}
 
 			return sprintf(
-				'<ul class="%1$s" data-layout="%2$s">%3$s</ul>%4$s',
+				'<ul class="%1$s" data-layout="%2$s" style="--columns: %3$d;">%4$s</ul>%5$s',
 				$wrapper_attributes,
 				$layout,
+				$columns,
 				$html,
 				$html_pagination
 			);

@@ -12,7 +12,6 @@ use LearnPress\TemplateHooks\TemplateAJAX;
 use LP_Course_Filter;
 use LP_Database;
 use LP_Debug;
-use LP_Helper;
 use LP_Page_Controller;
 use stdClass;
 use Throwable;
@@ -132,10 +131,8 @@ class ListCoursesBlockType extends AbstractBlockType {
 		}
 
 		$courses = Courses::get_courses( $filter, $total_rows );
-		if ( empty( $courses ) ) {
-			$content->content = Template::print_message( __( 'No courses found', 'learnpress' ), 'info', false );
-			return $content;
-		}
+
+		$paged = isset( $settings['paged'] ) ? $settings['paged'] : 1;
 
 		$html_pagination = '';
 		if ( isset( $courseQuery['pagination'] ) && $courseQuery['pagination'] ) {
@@ -151,11 +148,23 @@ class ListCoursesBlockType extends AbstractBlockType {
 			$html_pagination      = ListCoursesTemplate::instance()->html_pagination( $data_pagination );
 		}
 
-		$filter_block_context = static function ( $context ) use ( $courses, $html_pagination, $filter, $settings ) {
+		$results_data = [];
+
+		if ( ! empty( $courses ) ) {
+			$results_data = [
+				'paged'            => $paged,
+				'courses_per_page' => $settings['limit'],
+				'total_rows'       => $total_rows,
+				'pagination_type'  => $courseQuery['pagination_type'] ?? 'number',
+			];
+		}
+
+		$filter_block_context = static function ( $context ) use ( $courses, $html_pagination, $filter, $results_data, $settings ) {
 			$context['is_list_course'] = true;
 			$context['courses']        = $courses ?? [];
 			$context['pagination']     = $html_pagination ?? '';
 			$context['settings']       = $settings;
+			$context['results_data']   = $results_data;
 			return $context;
 		};
 

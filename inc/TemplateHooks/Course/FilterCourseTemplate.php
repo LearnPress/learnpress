@@ -92,7 +92,7 @@ class FilterCourseTemplate {
 			$wrapper = apply_filters(
 				'lp/filter-courses/sections/wrapper',
 				[
-					'wrapper'     => sprintf( '<form class="%s">',  $class_wrapper_form ),
+					'wrapper'     => sprintf( '<form class="%s">', $class_wrapper_form ),
 					'sections'    => Template::combine_components( $sections ),
 					'close'       => sprintf(
 						'<div class="lp-form-course-filter__close">%s<i class="lp-icon-close"></i></div>',
@@ -317,7 +317,6 @@ class FilterCourseTemplate {
 			$data_selected         = explode( ',', $data_selected );
 			$data['data_selected'] = $data_selected;
 			$parent_cat_id         = 0;
-
 			if ( isset( $params_url['page_term_id_current'] ) ) {
 				$category_current_id = $params_url['page_term_id_current'];
 				$category_current    = get_term_by( 'id', $category_current_id, LP_COURSE_CATEGORY_TAX );
