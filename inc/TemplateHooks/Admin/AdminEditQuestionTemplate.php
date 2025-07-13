@@ -258,11 +258,11 @@ class AdminEditQuestionTemplate {
 		$html_answers = '';
 		foreach ( $options as $option ) {
 			$html_answers .= sprintf(
-				'<li class="lp-question-answer-item">
+				'<div class="lp-question-answer-item">
 					<span class="drag lp-icon-drag" title="Drag to reorder section"></span>
 					<input type="text" class="%1$s" name="%1$s" value="%2$s" />
 					<input type="radio" class="lp-question-answer-item-true" name="%4$s" %3$s value="%5$s" />
-				</li>',
+				</div>',
 				'lp-question-answer-item-title-input',
 				esc_attr( $option->value ),
 				$option->is_true === 'yes' ? 'checked' : '',
@@ -272,10 +272,10 @@ class AdminEditQuestionTemplate {
 		}
 
 		$section = [
-			'wrap'     => '<ul class="lp-question-answers" data-question-type="true_or_false">',
-			'header'   => '<li><div>Answers</div><div>Correct</div></li>',
+			'wrap'     => '<div class="lp-question-answers" data-question-type="true_or_false">',
+			'header'   => '<div class="lp-question-choice-header"><span>Answers</span><span>Correct</span></div>',
 			'answers'  => $html_answers,
-			'wrap_end' => '</ul>',
+			'wrap_end' => '</div>',
 		];
 
 		return Template::combine_components( $section );
@@ -309,11 +309,11 @@ class AdminEditQuestionTemplate {
 		$html_answers = '';
 		foreach ( $options as $option ) {
 			$html_answers .= sprintf(
-				'<li class="lp-question-answer-item">
+				'<div class="lp-question-answer-item">
 					<span class="drag lp-icon-drag" title="Drag to reorder section"></span>
 					<input type="text" class="%1$s" name="%1$s" value="%2$s" />
 					<input type="radio" class="lp-question-answer-item-true" name="%4$s" %3$s value="%5$s" />
-				</li>',
+				</div>',
 				'lp-question-answer-item-title-input',
 				esc_attr( $option->value ),
 				$option->is_true === 'yes' ? 'checked' : '',
@@ -323,10 +323,10 @@ class AdminEditQuestionTemplate {
 		}
 
 		$section = [
-			'wrap'     => '<ul class="lp-question-answers" data-question-type="single_choice">',
-			'header'   => '<li><div>Answers</div><div>Correct</div></li>',
+			'wrap'     => '<div class="lp-question-answers" data-question-type="single_choice">',
+			'header'   => '<div class="lp-question-choice-header"><span>Answers</span><span>Correct</span></div>',
 			'answers'  => $html_answers,
-			'wrap_end' => '</ul>',
+			'wrap_end' => '</div>',
 		];
 
 		return Template::combine_components( $section );
@@ -360,11 +360,11 @@ class AdminEditQuestionTemplate {
 		$html_answers = '';
 		foreach ( $options as $option ) {
 			$html_answers .= sprintf(
-				'<li class="lp-question-answer-item">
+				'<div class="lp-question-answer-item">
 					<span class="drag lp-icon-drag" title="Drag to reorder section"></span>
 					<input type="text" class="%1$s" name="%1$s" value="%2$s" />
 					<input type="checkbox" class="lp-question-answer-item-true" name="%4$s" %3$s value="%5$s" />
-				</li>',
+				</div>',
 				'lp-question-answer-item-title-input',
 				esc_attr( $option->value ),
 				$option->is_true === 'yes' ? 'checked' : '',
@@ -374,10 +374,10 @@ class AdminEditQuestionTemplate {
 		}
 
 		$section = [
-			'wrap'     => '<ul class="lp-question-answers" data-question-type="multi_choice">',
-			'header'   => '<li><div>Answers</div><div>Correct</div></li>',
+			'wrap'     => '<div class="lp-question-answers" data-question-type="multi_choice">',
+			'header'   => '<div class="lp-question-choice-header"><span>Answers</span><span>Correct</span></div>',
 			'answers'  => $html_answers,
-			'wrap_end' => '</ul>',
+			'wrap_end' => '</div>',
 		];
 
 		return Template::combine_components( $section );
@@ -393,7 +393,7 @@ class AdminEditQuestionTemplate {
 	public function html_answer_type_fill_in_blanks( $questionPostModel = null ): string {
 		$name = 'lp-question-fib-input';
 		if ( $questionPostModel instanceof QuestionPostModel ) {
-			$questionFibModel = new QuestionPostFIBModel( $questionPostModel );
+			//$questionFibModel = new QuestionPostFIBModel( $questionPostModel );
 			$name .= '-' . $questionPostModel->ID;
 			$questionPostModel->get_answer_option();
 		} else {
@@ -402,7 +402,7 @@ class AdminEditQuestionTemplate {
 
 		$section = [
 			'wrap'     => '<div class="lp-question-answers" data-question-type="fill_in_blanks">',
-			'input'    => '<textarea rows="3"></textarea>',
+			'input'    => '<textarea name="123" rows="3">1231</textarea>',
 			'wrap_end' => '</div>',
 		];
 

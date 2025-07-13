@@ -247,13 +247,6 @@ const addQuestion = ( e, target ) => {
 	newQuestionItem.classList.remove( 'clone' );
 	lpUtils.lpShowHideEl( newQuestionItem, 1 );
 	elQuestionClone.insertAdjacentElement( 'beforebegin', newQuestionItem );
-
-	// Re-initialize TinyMCE for the new question item
-	const idTextarea = newQuestionItem.querySelector( '.lp-editor-tinymce' ).id;
-	reInitTinymce( idTextarea );
-
-	showToast( 'New question added successfully!' );
-	//updateCountItems( newQuestionItem );
 };
 
 // Events
