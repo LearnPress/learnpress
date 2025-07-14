@@ -12,7 +12,7 @@ export const edit = ( props ) => {
 						<div className="instructor-avatar">
 							<img
 								src="/wp-content/plugins/learnpress/assets/images/no-image.png"
-								alt="course thumbnail placeholder"
+								alt="Instructor avatar placeholder"
 								height={ 160 }
 								width={ 160 }
 								style={ { aspectRatio: '1 / 1', objectFit: 'cover' } }
