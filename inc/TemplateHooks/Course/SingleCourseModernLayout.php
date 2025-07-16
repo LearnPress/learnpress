@@ -478,13 +478,15 @@ class SingleCourseModernLayout {
 	 *
 	 * @return string
 	 * @since 4.2.8.3
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function html_info_learning( CourseModel $course, $user = false ): string {
 		$html_info_learning = '';
 		$user_id            = 0;
 		if ( $user instanceof UserModel ) {
 			$user_id = $user->get_id();
+		} else {
+			return $html_info_learning;
 		}
 
 		$userCourseModel = UserCourseModel::find( $user_id, $course->get_id(), true );
