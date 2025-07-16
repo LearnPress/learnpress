@@ -45,6 +45,13 @@ $spacing-section: 12px;
 		background: transparent;
 	}
 
+	.lp-icon-spinner {
+		animation: rotation 2s infinite linear;
+		font-size: 1.25rem;
+		color: $color-active;
+		display: none;
+	}
+
 	// Collapse icon
 	.lp-icon-angle-down {
 		display: none;
@@ -103,6 +110,19 @@ $spacing-section: 12px;
 				.question-edit-main {
 					display: none;
 				}
+			}
+
+			&.loading {
+				pointer-events: none;
+				opacity: 0.5 !important;
+
+				.lp-icon-spinner {
+					display: inline-block;
+				}
+			}
+
+			.lp-question-type {
+				width: 20%;
 			}
 		}
 

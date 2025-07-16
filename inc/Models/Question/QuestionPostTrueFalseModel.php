@@ -11,5 +11,14 @@ namespace LearnPress\Models\Question;
  * @since 4.2.8.8
  */
 class QuestionPostTrueFalseModel extends QuestionPostModel {
+	public $question_type = 'true_or_false';
 
+	/**
+	 * Create default answers for question
+	 *
+	 * @return void
+	 */
+	public function create_default_answers() {
+		// Implement logic to create default answers for true/false question.
+	}
 }

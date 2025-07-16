@@ -11,5 +11,8 @@ namespace LearnPress\Models\Question;
  * @since 4.2.8.8
  */
 class QuestionPostMultipleChoiceModel extends QuestionPostModel {
+	public $question_type = 'multi_choice';
 
+	public function create_default_answers() {
+	}
 }

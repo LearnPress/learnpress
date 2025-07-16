@@ -9,6 +9,7 @@ import SweetAlert from 'sweetalert2-neutral';
 import Sortable from 'sortablejs';
 import Toastify from 'toastify-js';
 import 'toastify-js/src/toastify.css';
+import * as lpEditCurriculumShare from "./edit-quiz/share";
 
 let elEditQuizWrap;
 let elEditListQuestions;
@@ -22,13 +23,18 @@ const className = {
 	elBtnShowPopupItemsToSelect: '.lp-btn-show-popup-items-to-select',
 	elPopupItemsToSelectClone: '.lp-popup-items-to-select.clone',
 	elBtnAddQuestion: '.lp-btn-add-question',
+	elBtnRemoveQuestion: '.lp-btn-remove-question',
+	elBtnUpdateQuestionTitle: '.lp-btn-update-question-title',
 	elQuestionTitleNewInput: '.lp-question-title-new-input',
+	elQuestionTitleInput: '.lp-question-title-input',
 	elQuestionTypeNew: '.lp-question-type-new',
 	elAddNewQuestion: 'add-new-question',
 	elQuestionClone: '.lp-question-item.clone',
 	LPTarget: '.lp-target',
 	elCollapse: 'lp-collapse',
 };
+let quizID;
+const idUrlHandle = 'edit-quiz-questions';
 const argsToastify = {
 	text: '',
 	gravity: lpDataAdmin.toast.gravity, // `top` or `bottom`
@@ -237,16 +243,190 @@ const addQuestion = ( e, target ) => {
 	const elQuestionClone = elEditListQuestions.querySelector( `${ className.elQuestionItem }.clone` );
 	const newQuestionItem = elQuestionClone.cloneNode( true );
 	const newQuestionItemTypes = newQuestionItem.querySelectorAll( '.lp-question-answers' );
+	const elQuestionTitleInput = newQuestionItem.querySelector( `${ className.elQuestionTitleInput }` );
 	newQuestionItemTypes.forEach( ( el ) => {
 		const typeQuestion = el.dataset.questionType;
 		if ( typeQuestion !== questionType ) {
 			el.remove();
 		}
 	} );
+	elQuestionTitleInput.value = questionTitle;
 
 	newQuestionItem.classList.remove( 'clone' );
 	lpUtils.lpShowHideEl( newQuestionItem, 1 );
 	elQuestionClone.insertAdjacentElement( 'beforebegin', newQuestionItem );
+	lpUtils.lpSetLoadingEl( newQuestionItem, 1 );
+
+	// Call ajax to add new question
+	const callBack = {
+		success: ( response ) => {
+			const { message, status, data } = response;
+			const { question, quizQuestions } = data;
+
+			if ( status === 'error' ) {
+				newQuestionItem.remove();
+			} else if ( status === 'success' ) {
+				newQuestionItem.dataset.questionId = question.ID;
+			}
+
+			showToast( message, status );
+		},
+		error: ( error ) => {
+			newQuestionItem.remove();
+			showToast( error, 'error' );
+		},
+		completed: () => {
+			lpUtils.lpSetLoadingEl( newQuestionItem, 0 );
+			newQuestionItem.classList.remove( `${ className.elCollapse }` );
+		},
+	};
+
+	const dataSend = {
+		action: 'add_question_to_quiz',
+		quiz_id: quizID,
+		question_title: questionTitle,
+		question_type: questionType,
+		args: {
+			id_url: idUrlHandle,
+		},
+	};
+	window.lpAJAXG.fetchAJAX( dataSend, callBack );
+};
+
+const removeQuestion = ( e, target ) => {
+	const elBtnRemoveQuestion = target.closest( `${ className.elBtnRemoveQuestion }` );
+	if ( ! elBtnRemoveQuestion ) {
+		return;
+	}
+
+	const elQuestionItem = elBtnRemoveQuestion.closest( `${ className.elQuestionItem }` );
+	if ( ! elQuestionItem ) {
+		return;
+	}
+
+	const questionId = elQuestionItem.dataset.questionId;
+
+	SweetAlert.fire( {
+		title: elBtnRemoveQuestion.dataset.title,
+		text: elBtnRemoveQuestion.dataset.content,
+		icon: 'warning',
+		showCloseButton: true,
+		showCancelButton: true,
+		cancelButtonText: lpDataAdmin.i18n.cancel,
+		confirmButtonText: lpDataAdmin.i18n.yes,
+		reverseButtons: true,
+	} ).then( ( result ) => {
+		if ( result.isConfirmed ) {
+			lpUtils.lpSetLoadingEl( elQuestionItem, 1 );
+
+			// Call ajax to delete item from section
+			const callBack = {
+				success: ( response ) => {
+					const { message, status } = response;
+
+					showToast( message, status );
+
+					if ( status === 'success' ) {
+						elQuestionItem.remove();
+					}
+				},
+				error: ( error ) => {
+					showToast( error, 'error' );
+				},
+				completed: () => {
+					lpUtils.lpSetLoadingEl( elQuestionItem, 0 );
+				},
+			};
+
+			const dataSend = {
+				quiz_id: quizID,
+				action: 'remove_question_from_quiz',
+				question_id: questionId,
+				args: {
+					id_url: idUrlHandle,
+				},
+			};
+			window.lpAJAXG.fetchAJAX( dataSend, callBack );
+		}
+	} );
+};
+
+// Update item title
+const updateQuestionTitle = ( e, target ) => {
+	let canHandle = false;
+
+	if ( target.closest( `${ className.elBtnUpdateQuestionTitle }` ) ) {
+		canHandle = true;
+	} else if ( target.closest( `${ className.elQuestionTitleInput }` ) &&
+		e.key === 'Enter' ) {
+		canHandle = true;
+	}
+
+	if ( ! canHandle ) {
+		return;
+	}
+
+	e.preventDefault();
+
+	const elQuestionItem = target.closest( `${ className.elQuestionItem }` );
+	if ( ! elQuestionItem ) {
+		return;
+	}
+
+	const elQuestionTitleInput = elQuestionItem.querySelector( `${ className.elQuestionTitleInput }` );
+	if ( ! elQuestionTitleInput ) {
+		return;
+	}
+
+	const questionId = elQuestionItem.dataset.questionId;
+	const questionTitleValue = elQuestionTitleInput.value.trim();
+	const titleOld = elQuestionTitleInput.dataset.old;
+	const message = elQuestionTitleInput.dataset.messEmptyTitle;
+	if ( questionTitleValue.length === 0 ) {
+		showToast( message, 'error' );
+		return;
+	}
+
+	if ( questionTitleValue === titleOld ) {
+		return;
+	}
+
+	// Un-focus input item title
+	elQuestionTitleInput.blur();
+	// show loading
+	lpUtils.lpSetLoadingEl( elQuestionItem, 1 );
+	// Call ajax to update item title
+	const callBack = {
+		success: ( response ) => {
+			const { message, status } = response;
+
+			if ( status === 'success' ) {
+				elQuestionTitleInput.dataset.old = questionTitleValue; // Update value input
+			} else {
+				elQuestionTitleInput.value = titleOld;
+			}
+
+			showToast( message, status );
+		},
+		error: ( error ) => {
+			showToast( error, 'error' );
+		},
+		completed: () => {
+			lpUtils.lpSetLoadingEl( elQuestionItem, 0 );
+			elQuestionItem.classList.remove( 'editing' ); // Remove editing class
+		},
+	};
+
+	const dataSend = {
+		quiz_id: quizID,
+		action: 'update_question',
+		question_id: questionId,
+		question_title: questionTitleValue,
+		args: {
+			id_url: idUrlHandle,
+		},
+	};
+	window.lpAJAXG.fetchAJAX( dataSend, callBack );
 };
 
 // Events
@@ -257,6 +437,8 @@ document.addEventListener( 'click', ( e ) => {
 	toggleQuestion( e, target );
 	showPopupItemsToSelect( e, target );
 	addQuestion( e, target );
+	removeQuestion( e, target );
+	updateQuestionTitle( e, target );
 } );
 // Event keydown
 document.addEventListener( 'keydown', ( e ) => {
@@ -265,10 +447,10 @@ document.addEventListener( 'keydown', ( e ) => {
 // Event keyup
 document.addEventListener( 'keyup', ( e ) => {
 	const target = e.target;
-	console.log( 'keyup', target );
+	//console.log( 'keyup', target );
 	if ( target.classList.contains( 'lp-editor-tinymce' ) ) {
 		//window.tinymce.triggerSave();
-		console.log( 'keyup', target.value );
+		//console.log( 'keyup', target.value );
 	}
 } );
 // Event focus in
@@ -284,6 +466,10 @@ document.addEventListener( 'focusout', ( e ) => {
 lpUtils.lpOnElementReady( `${ className.elEditQuizWrap }`, ( elEditQuizWrapFound ) => {
 	elEditQuizWrap = elEditQuizWrapFound;
 	elEditListQuestions = elEditQuizWrap.querySelector( `${ className.elEditListQuestions }` );
+	const elLPTarget = elEditQuizWrap.closest( `${ className.LPTarget }` );
+	const dataSend = window.lpAJAXG.getDataSetCurrent( elLPTarget );
+	quizID = dataSend.args.quiz_id;
+
 	initTinyMCE();
 } );
 

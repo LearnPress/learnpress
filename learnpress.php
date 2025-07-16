@@ -14,6 +14,7 @@
  * @package LearnPress
  */
 
+use LearnPress\Ajax\EditQuizAjax;
 use LearnPress\Ajax\LessonAjax;
 use LearnPress\Ajax\LoadContentViaAjax;
 use LearnPress\Background\LPBackgroundTrigger;
@@ -25,8 +26,6 @@ use LearnPress\Ajax\EditCurriculumAjax;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\UserModel;
 use LearnPress\Shortcodes\Course\FilterCourseShortcode;
-
-//use LearnPress\Shortcodes\Course\ListCourseRecentShortcode;
 use LearnPress\Shortcodes\ListInstructorsShortcode;
 use LearnPress\Shortcodes\SingleInstructorShortcode;
 use LearnPress\Shortcodes\CourseMaterialShortcode;
@@ -656,6 +655,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 					LoadContentViaAjax::catch_lp_ajax();
 					LessonAjax::catch_lp_ajax();
 					EditCurriculumAjax::catch_lp_ajax();
+					EditQuizAjax::catch_lp_ajax();
 				},
 				11
 			);

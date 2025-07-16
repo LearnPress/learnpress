@@ -199,12 +199,16 @@ class AdminEditQizTemplate {
 			),
 			'loading'    => '<span class="lp-icon-spinner"></span>',
 			'title'      => $this->html_input_question_title( $question_title ),
+			'type'       => sprintf(
+				'<span class="lp-question-type">%s</span>',
+				$questionPostModel instanceof QuestionPostModel ? $questionPostModel->get_type_label() : ''
+			),
 			'btn-edit'   => sprintf(
 				'<span class="lp-btn-edit-question-title lp-icon-edit" title="%s"></span>',
 				__( 'Edit question title', 'learnpress' )
 			),
 			'btn-delete' => sprintf(
-				'<button type="button" class="lp-btn-delete-question button" data-title="%s" data-content="%s">%s</button>',
+				'<button type="button" class="lp-btn-remove-question button" data-title="%s" data-content="%s">%s</button>',
 				__( 'Are you sure?', 'learnpress' ),
 				__( 'This question will be deleted. The question will no longer be assigned to this quiz, but will not be permanently deleted.', 'learnpress' ),
 				__( 'Delete question', 'learnpress' )
@@ -371,8 +375,8 @@ class AdminEditQizTemplate {
 		$section = [
 			'wrap'           => '<div class="lp-question-by-type">',
 			'label'          => sprintf(
-				'<label for="lp-question-type">%s</label>',
-				__( 'Type', 'learnpress' )
+				'<label>%s</label>',
+				__( 'Config Your Answer', 'learnpress' )
 			),
 			'answers-config' => sprintf(
 				'<div class="lp-answers-config">%s</div>',

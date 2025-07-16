@@ -11,5 +11,14 @@ namespace LearnPress\Models\Question;
  * @since 4.2.8.8
  */
 class QuestionPostSingleChoiceModel extends QuestionPostModel {
+	public $question_type = 'single_choice';
 
+	/**
+	 * Create default answers for question
+	 *
+	 * @return void
+	 */
+	public function create_default_answers() {
+		// Implement logic to create default answers for single choice question.
+	}
 }

@@ -11,5 +11,8 @@ namespace LearnPress\Models\Question;
  * @since 4.2.8.8
  */
 class QuestionPostFIBModel extends QuestionPostModel {
+	public $question_type = 'fill_in_blanks';
 
+	public function create_default_answers() {
+	}
 }

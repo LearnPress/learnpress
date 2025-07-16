@@ -26,6 +26,8 @@ class QuestionPostModel extends PostModel {
 
 	protected $_answer_options = array();
 
+	public $question_type = '';
+
 	/**
 	 * Const meta key
 	 */
@@ -104,7 +106,7 @@ class QuestionPostModel extends PostModel {
 	 *
 	 * @return string
 	 */
-	public static function get_question_obj_by_type( $type ): string {
+	public static function get_question_obj_by_type( string $type = '' ): string {
 		$types = self::get_types();
 
 		if ( ! array_key_exists( $type, $types ) ) {
@@ -135,6 +137,23 @@ class QuestionPostModel extends PostModel {
 	}
 
 	/**
+	 * Check type question is valid
+	 *
+	 * @param string $type
+	 *
+	 * @return void
+	 */
+	public static function check_type_valid( string $type ): bool {
+		$types = self::get_types();
+
+		if ( ! array_key_exists( $type, $types ) ) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
 	 * Get type label by type
 	 *
 	 * @return string
@@ -148,30 +167,6 @@ class QuestionPostModel extends PostModel {
 		}
 
 		return $types[ $type ];
-	}
-
-	/**
-	 * Get class name of question object by type
-	 *
-	 * @return string
-	 */
-	public function get_object_by_type() {
-		if ( empty( $type ) ) {
-			$type = $this->get_type();
-		}
-
-		switch ( $type ) {
-			case 'true_or_false':
-				return 'question-true-or-false';
-			case 'multi_choice':
-				return 'question-multi-choice';
-			case 'single_choice':
-				return 'question-single-choice';
-			case 'fill_in_blanks':
-				return 'question-fill-in-blanks';
-			default:
-				return '';
-		}
 	}
 
 	/**
@@ -219,5 +214,74 @@ class QuestionPostModel extends PostModel {
 	 */
 	public function get_mark() {
 		return $this->get_meta_value_by_key( self::META_KEY_MARK, 1 );
+	}
+
+	/**
+	 * Create answers for question
+	 * For case question does not have answers yet.
+	 *
+	 * @return void
+	 * @throws Exception
+	 */
+	public function create_default_answers() {
+		global $wpdb;
+
+		$answers = $this->get_default_answers();
+
+		foreach ( $answers as $index => $answer ) {
+			$answer = array(
+				'question_id' => $this->get_id(),
+				'title'       => $answer['title'],
+				'value'       => $answer['value'] ?? '',
+				'is_true'     => ( $answer['is_true'] == 'yes' ) ? $answer['is_true'] : '',
+				'order'       => $index + 1,
+			);
+
+			$db = LP_Question_Answers_DB::getInstance();
+			$db->wpdb->insert(
+				$db->tb_lp_question_answers,
+				$answer,
+				array( '%d', '%s', '%s', '%s', '%d' )
+			);
+
+			$question_answer_id = $wpdb->insert_id;
+
+			if ( $question_answer_id ) {
+				$answer['question_answer_id'] = $question_answer_id;
+			}
+
+			$answers[ $index ] = $answer;
+		}
+	}
+
+	/**
+	 * Get default question list answers.
+	 *
+	 * @return array
+	 * @move from class LP_Question old
+	 */
+	public function get_default_answers(): array {
+		$answers = array(
+			array(
+				'question_answer_id' => - 1,
+				'is_true'            => 'yes',
+				'value'              => learn_press_random_value(),
+				'title'              => esc_html__( 'First option', 'learnpress' ),
+			),
+			array(
+				'question_answer_id' => - 2,
+				'is_true'            => 'no',
+				'value'              => learn_press_random_value(),
+				'title'              => esc_html__( 'Second option', 'learnpress' ),
+			),
+			array(
+				'question_answer_id' => - 3,
+				'is_true'            => 'no',
+				'value'              => learn_press_random_value(),
+				'title'              => esc_html__( 'Third option', 'learnpress' ),
+			),
+		);
+
+		return $answers;
 	}
 }

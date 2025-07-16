@@ -1,4 +1,6 @@
 <?php
+defined( 'ABSPATH' ) || exit();
+
 /**
  * Class LP_Quiz_Questions_Filter
  *
@@ -6,14 +8,8 @@
  * @package LearnPress/Classes/Filters
  * @since  4.1.6
  * @author tungnx
- * @version 1.0.1
+ * @version 1.0.2
  */
-
-/**
- * Prevent loading this file directly
- */
-defined( 'ABSPATH' ) || exit();
-
 class LP_Question_Answers_Filter extends LP_Filter {
 	const COL_QUESTION_ANSWER_ID = 'question_answer_id';
 	const COL_QUESTION_ID        = 'question_id';
@@ -37,13 +33,13 @@ class LP_Question_Answers_Filter extends LP_Filter {
 	 */
 	public $field_count = 'question_answer_id';
 	/**
-	 * @var array
+	 * @var int
 	 */
-	public $question_answer_ids = [];
+	public $question_answer_id;
 	/**
-	 * @var array
+	 * @var int
 	 */
-	public $question_ids = [];
+	public $question_id;
 	/**
 	 * @var string
 	 */
@@ -56,4 +52,16 @@ class LP_Question_Answers_Filter extends LP_Filter {
 	 * @var int
 	 */
 	public $order;
+	/**
+	 * @var string
+	 */
+	public $is_true;
+	/**
+	 * @var int[]
+	 */
+	public $question_answer_ids = [];
+	/**
+	 * @var int[]
+	 */
+	public $question_ids = [];
 }

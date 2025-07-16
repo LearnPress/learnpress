@@ -10,6 +10,10 @@
 
 namespace LearnPress\Models;
 
+use Exception;
+use LearnPress\Databases\QuizQuestionsDB;
+use LearnPress\Models\Question\QuestionPostModel;
+use LearnPress\Models\Quiz\QuizQuestionModel;
 use LP_Cache;
 use LP_Question;
 use LP_Question_DB;
@@ -215,5 +219,62 @@ class QuizPostModel extends PostModel {
 	 */
 	public function has_show_correct_review(): bool {
 		return $this->get_meta_value_by_key( self::META_KEY_SHOW_CORRECT_REVIEW, 'yes' ) === 'yes';
+	}
+
+	/**
+	 * Create question and add to quiz.
+	 *
+	 * @param array $data
+	 *
+	 * @return QuizQuestionModel
+	 * @throws Exception
+	 * @since 4.2.8.8
+	 * @version 1.0.0
+	 */
+	public function create_question_and_add( array $data ): QuizQuestionModel {
+		$question_title = $data['question_title'] ?? '';
+		$question_type  = $data['question_type'] ?? '';
+
+		if ( empty( $question_title ) ) {
+			throw new Exception( __( 'Question title is required', 'learnpress' ) );
+		}
+
+		if ( ! QuestionPostModel::check_type_valid( $question_type ) ) {
+			throw new Exception( __( 'Invalid question type', 'learnpress' ) );
+		}
+
+		// Create question
+		$questionPostModelNew              = new QuestionPostModel();
+		$questionPostModelNew->post_title  = $question_title;
+		$questionPostModelNew->post_status = 'publish';
+		$questionPostModelNew->post_author = get_current_user_id();
+		$questionPostModelNew->save();
+		$questionPostModelNew->save_meta_value_by_key(
+			QuestionPostModel::META_KEY_TYPE,
+			$question_type
+		);
+
+		// Get question object by type
+		$questionClassName = $questionPostModelNew::get_question_obj_by_type( $question_type );
+		if ( class_exists( $questionClassName ) ) {
+			$questionPostTyeModel = new $questionClassName();
+			if ( method_exists( $questionPostTyeModel, 'create_default_answers' ) ) {
+				$questionPostTyeModel->create_default_answers();
+			}
+		} else {
+			throw new Exception( __( 'Question type not found', 'learnpress' ) );
+		}
+
+		$quizQuestionsDB = QuizQuestionsDB::getInstance();
+		$max_order       = $quizQuestionsDB->get_last_number_order( $this->get_id() );
+
+		// Add question to quiz
+		$quizQuestionModel                 = new QuizQuestionModel();
+		$quizQuestionModel->quiz_id        = $this->get_id();
+		$quizQuestionModel->question_id    = $questionPostModelNew->get_id();
+		$quizQuestionModel->question_order = $max_order + 1;
+		$quizQuestionModel->save();
+
+		return $quizQuestionModel;
 	}
 }

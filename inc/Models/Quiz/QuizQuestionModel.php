@@ -1,16 +1,12 @@
 <?php
 
-namespace LearnPress\Models;
+namespace LearnPress\Models\Quiz;
 
 use Exception;
-use LP_Background_Single_Course;
+use LearnPress\Databases\QuizQuestionsDB;
+use LearnPress\Filters\QuizQuestionsFilter;
+use LearnPress\Models\Question\QuestionPostModel;
 use LP_Cache;
-use LP_Database;
-use LP_Quiz_Questions_DB;
-use LP_Section_DB;
-use LP_Section_Filter;
-use LP_Section_Items_DB;
-use LP_Section_Items_Filter;
 use stdClass;
 use Throwable;
 
@@ -84,241 +80,107 @@ class QuizQuestionModel {
 	 *
 	 * @return int
 	 */
-	public function get_section_id(): int {
-		return $this->section_id;
+	public function get_quiz_question_id(): int {
+		return $this->quiz_question_id;
 	}
 
 	/**
 	 * Get course model
 	 *
-	 * @return false|CourseModel
+	 * @return false|QuizPostModel
 	 */
-	public function get_course_model() {
-		return CourseModel::find( $this->section_course_id, true );
+	public function get_quiz_post_model() {
+		return QuizPostModel::find( $this->quiz_id, true );
 	}
 
 	/**
-	 * Get section by course id
+	 * Get course model
 	 *
-	 * @return false|CourseSectionModel
+	 * @return false|QuestionPostModel
 	 */
-	public static function find( int $section_id, int $course_id, $check_cache = true ) {
-		$filter                    = new LP_Section_Filter();
-		$filter->section_id        = $section_id;
-		$filter->section_course_id = $course_id;
-		$key_cache                 = "courseSection/find/{$section_id}/{$course_id}";
-		$lpSectionCache            = new LP_Cache();
-
-		// Check cache
-		if ( $check_cache ) {
-			$courseSectionModel = $lpSectionCache->get_cache( $key_cache );
-			if ( $courseSectionModel instanceof CourseSectionModel ) {
-				return $courseSectionModel;
-			}
-		}
-
-		$courseSectionModel = static::get_item_model_from_db( $filter );
-
-		// Set cache
-		if ( $courseSectionModel instanceof CourseSectionModel ) {
-			$lpSectionCache->set_cache( $key_cache, $courseSectionModel );
-		}
-
-		return $courseSectionModel;
+	public function get_question_post_model() {
+		return QuestionPostModel::find( $this->question_id, true );
 	}
 
 	/**
-	 * Get section by course id
+	 * Get quizQuestionsModel by quiz_id and question_id.
 	 *
-	 * @return false|CourseSectionModel
+	 * @return false|QuizQuestionModel
 	 */
-	public static function find_by_course( int $course_id, $check_cache = true ) {
-		$filter                    = new LP_Section_Filter();
-		$filter->section_course_id = $course_id;
-		$key_cache                 = "courseSection/find/course/{$course_id}";
-		$lpSectionCache            = new LP_Cache();
+	public static function find( int $quiz_id, int $question_id, $check_cache = true ) {
+		$filter              = new QuizQuestionsFilter();
+		$filter->quiz_id     = $quiz_id;
+		$filter->question_id = $question_id;
+		$key_cache           = "quizQuestion/find/{$quiz_id}/{$question_id}";
+		$cache               = new LP_Cache();
 
 		// Check cache
 		if ( $check_cache ) {
-			$courseSectionModel = $lpSectionCache->get_cache( $key_cache );
-			if ( $courseSectionModel instanceof CourseSectionModel ) {
-				return $courseSectionModel;
+			$model = $cache->get_cache( $key_cache );
+			if ( $model instanceof QuizQuestionModel ) {
+				return $model;
 			}
 		}
 
-		$courseSectionModel = static::get_item_model_from_db( $filter );
+		$model = static::get_item_model_from_db( $filter );
 
 		// Set cache
-		if ( $courseSectionModel instanceof CourseSectionModel ) {
-			$lpSectionCache->set_cache( $key_cache, $courseSectionModel );
+		if ( $model instanceof QuizQuestionModel ) {
+			$cache->set_cache( $key_cache, $model );
 		}
 
-		return $courseSectionModel;
+		return $model;
 	}
 
 	/**
 	 * Get post from database.
 	 * If not exists, return false.
-	 * If exists, return CourseSectionModel.
+	 * If exists, return QuizQuestionModel.
 	 *
-	 * @param LP_Section_Filter $filter
+	 * @param QuizQuestionsFilter $filter
 	 *
-	 * @return CourseSectionModel|false|static
+	 * @return QuizQuestionModel|false|static
 	 * @version 1.0.0
 	 */
-	public static function get_item_model_from_db( LP_Section_Filter $filter ) {
-		$lp_section_db = LP_Section_DB::getInstance();
-		$sectionModel  = false;
+	public static function get_item_model_from_db( QuizQuestionsFilter $filter ) {
+		$db    = QuizQuestionsDB::getInstance();
+		$model = false;
 
 		try {
-			$lp_section_db->get_query_single_row( $filter );
-			$query_single_row = $lp_section_db->get_sections( $filter );
-			$section_rs       = $lp_section_db->wpdb->get_row( $query_single_row );
+			$db->get_query_single_row( $filter );
+			$query_single_row = $db->get_quiz_questions( $filter );
+			$rs               = $db->wpdb->get_row( $query_single_row );
 
-			if ( $section_rs instanceof stdClass ) {
-				$sectionModel = new static( $section_rs );
+			if ( $rs instanceof stdClass ) {
+				$model = new static( $rs );
 			}
 		} catch ( Throwable $e ) {
 			error_log( __METHOD__ . ': ' . $e->getMessage() );
 		}
 
-		return $sectionModel;
+		return $model;
 	}
 
 	/**
-	 * Create item and add to section.
-	 *
-	 * @param array $data
-	 *
-	 * @return CourseSectionItemModel
-	 * @throws Exception
-	 * @since 4.2.8.6
-	 * @version 1.0.1
-	 */
-	public function create_item_and_add( array $data ): CourseSectionItemModel {
-		$item_type   = trim( $data['item_type'] ?? '' );
-		$item_title  = $data['item_title'] ?? '';
-		$courseModel = $this->get_course_model();
-		$section_id  = $this->get_section_id();
-
-		if ( ! $courseModel instanceof CourseModel ) {
-			throw new Exception( __( 'Course not found', 'learnpress' ) );
-		}
-
-		$item_types = CourseModel::item_types_support();
-		if ( ! in_array( $item_type, $item_types ) ) {
-			throw new Exception( __( 'Item type invalid', 'learnpress' ) );
-		}
-
-		// Create new item
-		if ( empty( $item_title ) ) {
-			throw new Exception( __( 'Item title is required', 'learnpress' ) );
-		}
-
-		// Create item
-		$itemModelNew              = new PostModel();
-		$itemModelNew->post_type   = $item_type;
-		$itemModelNew->post_title  = $item_title;
-		$itemModelNew->post_status = 'publish';
-		$itemModelNew->post_author = get_current_user_id();
-		$itemModelNew->save();
-		$item_id = $itemModelNew->get_id();
-
-		/*$post_args = [
-			'post_author' => get_current_user_id(),
-			'post_title'  => $item_title,
-			'post_type'   => $item_type,
-			'post_status' => 'publish',
-		];
-		$item_id   = wp_insert_post( $post_args );
-		if ( is_wp_error( $item_id ) ) {
-			throw new Exception( $item_id->get_error_message() );
-		}*/
-
-		// Get max item order
-		$max_order = LP_Section_Items_DB::getInstance()->get_last_number_order( $section_id );
-
-		// Add item to section
-		$courseSectionItemModel                    = new CourseSectionItemModel();
-		$courseSectionItemModel->item_id           = $item_id;
-		$courseSectionItemModel->item_type         = $item_type;
-		$courseSectionItemModel->section_id        = $section_id;
-		$courseSectionItemModel->item_order        = $max_order + 1;
-		$courseSectionItemModel->section_course_id = $this->section_course_id;
-		$courseSectionItemModel->save();
-
-		return $courseSectionItemModel;
-	}
-
-	/**
-	 * Add items created to section.
-	 *
-	 * @throws Exception
-	 * @since 4.2.8.6
-	 * @version 1.0.0
-	 */
-	public function add_items( array $data ) {
-		$courseModel = $this->get_course_model();
-		$section_id  = $this->get_section_id();
-
-		if ( ! $courseModel instanceof CourseModel ) {
-			throw new Exception( __( 'Course not found', 'learnpress' ) );
-		}
-
-		$items = $data['items'] ?? [];
-		foreach ( $items as $item ) {
-			$item_id   = intval( $item['item_id'] ?? 0 );
-			$item_type = $item['item_type'] ?? '';
-			if ( ! $item_id ) {
-				continue;
-			}
-
-			// Check if item already exists in course.
-			$lp_db                  = LP_Database::getInstance();
-			$filter                 = new LP_Section_Items_Filter();
-			$filter->item_id        = $item_id;
-			$filter->item_type      = $item_type;
-			$filter->join[]         = 'LEFT JOIN ' . $lp_db->tb_lp_sections . ' AS cs ON si.section_id = cs.section_id';
-			$filter->where[]        = $lp_db->wpdb->prepare( 'AND cs.section_course_id = %d', $this->section_course_id );
-			$courseSectionItemModel = CourseSectionItemModel::get_item_model_from_db( $filter );
-			if ( $courseSectionItemModel instanceof CourseSectionItemModel ) {
-				throw new Exception( __( 'Item already exists in this course', 'learnpress' ) );
-			}
-
-			// Get max item order
-			$max_order = LP_Section_Items_DB::getInstance()->get_last_number_order( $section_id );
-
-			// Add item to section
-			$courseSectionItemModel                    = new CourseSectionItemModel();
-			$courseSectionItemModel->item_id           = $item_id;
-			$courseSectionItemModel->item_type         = $item_type;
-			$courseSectionItemModel->item_order        = ++$max_order;
-			$courseSectionItemModel->section_id        = $section_id;
-			$courseSectionItemModel->section_course_id = $this->section_course_id;
-			$courseSectionItemModel->save();
-		}
-	}
-
-	/**
-	 * Save course data to table learnpress_sections.
+	 * Save data to table quiz_questions.
 	 *
 	 * @throws Exception
 	 * @since 4.2.8.6
 	 * @version 1.0.0
 	 */
 	public function save(): QuizQuestionModel {
-		$lp_section_db = LP_Quiz_Questions_DB::getInstance();
+		$db = QuizQuestionsDB::getInstance();
 
 		$data = [];
 		foreach ( get_object_vars( $this ) as $property => $value ) {
 			$data[ $property ] = $value;
 		}
 
-		if ( $data['section_id'] === 0 ) { // Insert data.
-			$section_id       = $lp_section_db->insert_data( $data );
-			$this->section_id = $section_id;
+		if ( $data['quiz_question_id'] === 0 ) { // Insert data.
+			$quiz_question_id       = $db->insert_data( $data );
+			$this->quiz_question_id = $quiz_question_id;
 		} else { // Update data.
-			$lp_section_db->update_data( $data );
+			$db->update_data( $data );
 		}
 
 		// Clear cache
@@ -333,11 +195,11 @@ class QuizQuestionModel {
 	 * @throws Exception
 	 */
 	public function delete() {
-		$lp_section_db      = LP_Section_DB::getInstance();
-		$filter             = new LP_Section_Filter();
-		$filter->where[]    = $lp_section_db->wpdb->prepare( 'AND section_id = %d', $this->section_id );
-		$filter->collection = $lp_section_db->tb_lp_sections;
-		$lp_section_db->delete_execute( $filter );
+		$db                 = QuizQuestionsDB::getInstance();
+		$filter             = new QuizQuestionsFilter();
+		$filter->where[]    = $db->wpdb->prepare( 'AND quiz_question_id = %d', $this->quiz_question_id );
+		$filter->collection = $db->tb_lp_quiz_questions;
+		$db->delete_execute( $filter );
 
 		// Clear cache
 		$this->clean_caches();
@@ -348,27 +210,12 @@ class QuizQuestionModel {
 	 *
 	 * @return void
 	 * @throws Exception
-	 * @since 4.2.8.6
+	 * @since 4.2.8.8
 	 * @version 1.0.0
 	 */
 	public function clean_caches() {
-		// Call background multiple times will not cause any problem.
-		/*$bg = LP_Background_Single_Course::instance();
-		$bg->data(
-			array(
-				'handle_name' => 'save_post',
-				'course_id'   => $this->section_course_id,
-				'data'        => [],
-			)
-		)->dispatch();*/
-		$courseModel                 = CourseModel::find( $this->section_course_id, true );
-		$courseModel->sections_items = null;
-		$courseModel->save();
-
-		$key_cache        = "courseSection/find/{$this->get_section_id()}/{$this->section_course_id}";
-		$key_cache_course = "courseSection/find/course/{$this->section_course_id}";
+		$key_cache = "quizQuestion/find/{$this->quiz_id}/{$this->question_id}";
 		$lp_course_cache  = new LP_Cache();
 		$lp_course_cache->clear( $key_cache );
-		$lp_course_cache->clear( $key_cache_course );
 	}
 }
