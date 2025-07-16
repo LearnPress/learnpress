@@ -1,11 +1,11 @@
 /**
  * Edit Section item Script on Curriculum
  *
- * @version 1.0.1
+ * @version 1.0.2
  * @since 4.2.8.6
  */
 import * as lpEditCurriculumShare from './share.js';
-import SweetAlert from 'sweetalert2';
+import SweetAlert from 'sweetalert2-neutral';
 import Sortable from 'sortablejs';
 
 const className = {

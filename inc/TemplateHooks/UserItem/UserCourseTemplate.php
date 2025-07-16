@@ -167,10 +167,16 @@ class UserCourseTemplate extends UserItemBaseTemplate {
 	 *
 	 * @return mixed|string|null
 	 * @since 4.2.7.6
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function html_count_items_completed( UserCourseModel $userCourseModel ): string {
 		$html = '';
+
+		// For case Guest user.
+		$userModel = $userCourseModel->get_user_model();
+		if ( ! $userModel ) {
+			return $html;
+		}
 
 		$courseModel           = $userCourseModel->get_course_model();
 		$item_types            = CourseModel::item_types_support();
@@ -206,6 +212,12 @@ class UserCourseTemplate extends UserItemBaseTemplate {
 	public function html_progress( UserCourseModel $userCourseModel ) {
 		$html = '';
 
+		// For case Guest user.
+		$userModel = $userCourseModel->get_user_model();
+		if ( ! $userModel ) {
+			return $html;
+		}
+
 		$courseModel       = $userCourseModel->get_course_model();
 		$calculate         = $userCourseModel->calculate_course_results();
 		$passing_condition = $courseModel->get_passing_condition();
@@ -217,8 +229,8 @@ class UserCourseTemplate extends UserItemBaseTemplate {
 				esc_html__( 'Course passing progress:', 'learnpress' ),
 				sprintf(
 					'<span class="course-progress__number">
-							<span class="number">%s<span class="percentage">%s</span></span>
-						</span>',
+						<span class="number">%s<span class="percentage">%s</span></span>
+					</span>',
 					$calculate['result'],
 					'%'
 				)
@@ -246,10 +258,16 @@ class UserCourseTemplate extends UserItemBaseTemplate {
 	 *
 	 * @return mixed|null
 	 * @since 4.2.7.6
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function html_message_lock( UserCourseModel $userCourseModel ): string {
 		$html = '';
+
+		// For case Guest user.
+		$userModel = $userCourseModel->get_user_model();
+		if ( ! $userModel ) {
+			return $html;
+		}
 
 		$courseModel = $userCourseModel->get_course_model();
 

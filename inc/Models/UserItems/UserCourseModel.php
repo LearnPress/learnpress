@@ -1006,10 +1006,16 @@ class UserCourseModel extends UserItemModel {
 	 *
 	 * @return bool|WP_Error
 	 * @since 4.2.7.6
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function can_impact_item() {
 		$can_impact_item = true;
+
+		// For case user Guest
+		$userModel = $this->get_user_model();
+		if ( ! $userModel ) {
+			$can_impact_item = new WP_Error( 'user_not_exists', __( 'User not exists!', 'learnpress' ) );
+		}
 
 		$status = $this->get_status();
 		if ( $this->has_canceled() || ! $this->has_enrolled() ) {
