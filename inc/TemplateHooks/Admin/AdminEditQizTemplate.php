@@ -8,6 +8,7 @@ use LearnPress\Helpers\Template;
 use LearnPress\Models\PostModel;
 use LearnPress\Models\Question\QuestionPostModel;
 use LearnPress\Models\QuizPostModel;
+use LearnPress\TemplateHooks\Admin\Question\AdminEditQuestionAnswerTemplate;
 use LearnPress\TemplateHooks\TemplateAJAX;
 use LP_Database;
 use LP_Post_DB;
@@ -179,9 +180,9 @@ class AdminEditQizTemplate {
 
 		$section_edit_main = [
 			'wrap'             => '<div class="question-edit-main">',
-			'description'      => $this->html_edit_question_description( $questionPostModel ),
+			//'description'      => $this->html_edit_question_description( $questionPostModel ),
 			'question-by-type' => $this->html_edit_question_by_type( $questionPostModel ),
-			'details'          => Template::combine_components( $section_edit_details ),
+			//'details'          => Template::combine_components( $section_edit_details ),
 			'wrap_end'         => '</div>',
 		];
 
@@ -348,22 +349,36 @@ class AdminEditQizTemplate {
 		$type = '';
 		if ( $questionPostModel instanceof QuestionPostModel ) {
 			$type = $questionPostModel->get_type();
-
 		}
 
-		$types = QuestionPostModel::get_types();
-		foreach ( $types as $key => $label ) {
-
+		// If empty $type, get all types html to insert new by type
+		if ( ! empty( $type ) ) {
+			$html_answers_config = AdminEditQuestionTemplate::instance()->get_by_type(
+				$type,
+				$questionPostModel
+			);
+		} else {
+			$types               = QuestionPostModel::get_types();
+			$html_answers_config = '';
+			foreach ( $types as $type_setting => $label ) {
+				$html_answers_config .= AdminEditQuestionTemplate::instance()->get_by_type(
+					$type_setting,
+					$questionPostModel
+				);
+			}
 		}
 
 		$section = [
-			'wrap'     => '<div class="lp-question-by-type">',
-			'label'    => sprintf(
+			'wrap'           => '<div class="lp-question-by-type">',
+			'label'          => sprintf(
 				'<label for="lp-question-type">%s</label>',
 				__( 'Type', 'learnpress' )
 			),
-			'answers'  => '',
-			'wrap_end' => '</div>',
+			'answers-config' => sprintf(
+				'<div class="lp-answers-config">%s</div>',
+				$html_answers_config
+			),
+			'wrap_end'       => '</div>',
 		];
 
 		return Template::combine_components( $section );
@@ -534,10 +549,10 @@ class AdminEditQizTemplate {
 
 			foreach ( $posts as $post ) {
 				/**
-				 * @var $itemModel PostModel
+				 * @var $questionPostModel QuestionPostModel
 				 */
-				$itemModel = QuestionPostModel::find( $post->ID, true );
-				if ( ! $itemModel ) {
+				$questionPostModel = QuestionPostModel::find( $post->ID, true );
+				if ( ! $questionPostModel ) {
 					continue;
 				}
 
@@ -555,12 +570,13 @@ class AdminEditQizTemplate {
 						esc_attr( $post->post_type ?? '' ),
 						esc_attr( $post->post_title ?? '' ),
 						esc_attr( $checked ),
-						$itemModel->get_edit_link()
+						$questionPostModel->get_edit_link()
 					),
 					sprintf(
-						'<span class="title">%s<strong>(#%d)</strong></span>',
+						'<span class="title">%s<strong>(#%d - %s)</strong></span>',
 						$post->post_title,
-						$post->ID
+						$post->ID,
+						$questionPostModel->get_type_label()
 					)
 				);
 			}

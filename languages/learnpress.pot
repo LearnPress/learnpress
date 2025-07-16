@@ -613,26 +613,20 @@ msgstr ""
 msgid "This is an editor placeholder for the Item Curriculum Course page. Content will render content of single item curriculum course. Should be not remove it"
 msgstr ""
 
-#: assets/src/apps/js/blocks/single-course/course-title/edit.js:7
-#: assets/src/apps/js/blocks/single-course-legacy/edit.js:11
-msgid "Single Course (Legacy)"
-msgstr ""
-
-#: assets/src/apps/js/blocks/single-course/course-title/edit.js:11
-#: assets/src/apps/js/blocks/single-course/edit.js:15
-msgid "This is an editor placeholder for the Single Course page. Content will render content of single course. Should be not remove it"
-msgstr ""
-
 #: assets/src/apps/js/blocks/single-course/edit.js:11
 msgid "Single Course"
 msgstr ""
 
-#: assets/src/apps/js/blocks/single-course-legacy/edit.js:15
-msgid "Display full content of Single Course, can not edit."
+#: assets/src/apps/js/blocks/single-course/edit.js:15
+msgid "This is an editor placeholder for the Single Course page. Content will render content of single course. Should be not remove it"
 msgstr ""
 
-#: assets/src/apps/js/blocks/single-course-types/course-title/index.js:47
-msgid "test"
+#: assets/src/apps/js/blocks/single-course-legacy/edit.js:11
+msgid "Single Course (Legacy)"
+msgstr ""
+
+#: assets/src/apps/js/blocks/single-course-legacy/edit.js:15
+msgid "Display full content of Single Course, can not edit."
 msgstr ""
 
 #: assets/js/dist/frontend/quiz.min.js:41
@@ -654,6 +648,21 @@ msgstr ""
 #: inc/TemplateHooks/Profile/ProfileTemplate.php:276
 #: templates/profile/tabs/settings/avatar.php:28
 msgid "Cancel"
+msgstr ""
+
+#: assets/js/dist/frontend/profile.min.js:131
+#: assets/js/dist/frontend/profile.min.js:131
+msgid "The file size is too large. You need to upload a file < 2MB."
+msgstr ""
+
+#: assets/js/dist/frontend/profile.min.js:133
+#: assets/js/dist/frontend/profile.min.js:133
+msgid "The image size must be greater than or equal to %1$sx%2$spx"
+msgstr ""
+
+#: assets/js/dist/frontend/profile.min.js:146
+#: assets/js/dist/frontend/profile.min.js:146
+msgid "Are you sure you want to remove your avatar?"
 msgstr ""
 
 #: assets/js/dist/frontend/quiz.min.js:98
@@ -871,16 +880,8 @@ msgstr ""
 msgid "Submitting…"
 msgstr ""
 
-#: assets/js/dist/frontend/profile.min.js:131
-msgid "The file size is too large. You need to upload a file < 2MB."
-msgstr ""
-
-#: assets/js/dist/frontend/profile.min.js:133
-msgid "The image size must be greater than or equal to %1$sx%2$spx"
-msgstr ""
-
-#: assets/js/dist/frontend/profile.min.js:146
-msgid "Are you sure you want to remove your avatar?"
+#: assets/src/js/admin/admin.js:107
+msgid "Search by user"
 msgstr ""
 
 #. Plugin Name of the plugin

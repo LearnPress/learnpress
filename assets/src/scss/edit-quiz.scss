@@ -34,6 +34,11 @@ $spacing-section: 12px;
 	}
 
 	input {
+		padding: 0;
+		margin: 0;
+	}
+
+	input[type="text"], {
 		width: 100%;
 		border: none;
 		font-size: 0.875rem;
@@ -115,6 +120,22 @@ $spacing-section: 12px;
 			overflow: hidden;
 			padding: $spacing-section;
 			border-top: 1px solid $border-color;
+		}
+
+		.lp-question-choice-header {
+			display: flex;
+			justify-content: space-between;
+			padding: 20px 10px;
+			background: #eee;
+		}
+
+		.lp-question-answer-item {
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			gap: 10px;
+			padding: 10px;
+			margin: 0;
 		}
 	}
 

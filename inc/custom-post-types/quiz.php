@@ -219,8 +219,8 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		public function admin_editor() {
 			global $post;
 
-			$course_id     = $post->ID;
-			$quizPostModel = QuizPostModel::find( $course_id, true );
+			$quiz_id       = $post->ID;
+			$quizPostModel = QuizPostModel::find( $quiz_id, true );
 			if ( ! $quizPostModel instanceof QuizPostModel ) {
 				return;
 			}

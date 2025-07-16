@@ -98,12 +98,56 @@ class QuestionPostModel extends PostModel {
 	}
 
 	/**
+	 * Get question object by type
+	 *
+	 * @param string $type
+	 *
+	 * @return string
+	 */
+	public static function get_question_obj_by_type( $type ): string {
+		$types = self::get_types();
+
+		if ( ! array_key_exists( $type, $types ) ) {
+			return '';
+		}
+
+		switch ( $type ) {
+			case 'true_or_false':
+				return QuestionPostTrueFalseModel::class;
+			case 'multi_choice':
+				return QuestionPostMultipleChoiceModel::class;
+			case 'single_choice':
+				return QuestionPostSingleChoiceModel::class;
+			case 'fill_in_blanks':
+				return QuestionPostFIBModel::class;
+			default:
+				return apply_filters( 'learn-press/question-object-by-type', '', $type );
+		}
+	}
+
+	/**
 	 * Get type question
 	 *
 	 * @return string|float
 	 */
 	public function get_type() {
 		return $this->get_meta_value_by_key( self::META_KEY_TYPE, '' );
+	}
+
+	/**
+	 * Get type label by type
+	 *
+	 * @return string
+	 */
+	public function get_type_label(): string {
+		$type  = $this->get_type();
+		$types = self::get_types();
+
+		if ( ! array_key_exists( $type, $types ) ) {
+			return '';
+		}
+
+		return $types[ $type ];
 	}
 
 	/**
