@@ -204,8 +204,9 @@ class AdminEditQizTemplate {
 				$questionPostModel instanceof QuestionPostModel ? $questionPostModel->get_type_label() : ''
 			),
 			'btn-edit'   => sprintf(
-				'<span class="lp-btn-edit-question-title lp-icon-edit" title="%s"></span>',
-				__( 'Edit question title', 'learnpress' )
+				'<a class="lp-btn-edit-question-title lp-icon-edit" title="%s" href="%s"></a>',
+				__( 'Edit question title', 'learnpress' ),
+				$questionPostModel instanceof QuestionPostModel ? $questionPostModel->get_edit_link() : '#'
 			),
 			'btn-delete' => sprintf(
 				'<button type="button" class="lp-btn-remove-question button" data-title="%s" data-content="%s">%s</button>',

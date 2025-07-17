@@ -75,10 +75,19 @@ class QuestionPostModel extends PostModel {
 	public function get_answer_option() {
 		try {
 			if ( empty( $this->answer_options ) ) {
-				$db                   = QuestionAnswersDB::getInstance();
-				$filter               = new QuestionAnswersFilter();
-				$filter->question_id  = $this->get_id();
-				$this->answer_options = $db->get_question_answers( $filter );
+				$db                  = QuestionAnswersDB::getInstance();
+				$filter              = new QuestionAnswersFilter();
+				$filter->question_id = $this->get_id();
+				$answers_rs          = $db->get_question_answers( $filter );
+				$answer_options      = [];
+
+				foreach ( $answers_rs as $answer ) {
+					$questionAnswerModel = new QuestionAnswerModel( $answer );
+					$questionAnswerModel->get_all_metadata();
+					$answer_options[] = $questionAnswerModel;
+				}
+
+				$this->answer_options = $answer_options;
 			}
 		} catch ( Exception $e ) {
 			Debug::error_log( $e );

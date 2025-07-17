@@ -62,6 +62,31 @@ class QuestionAnswerModel {
 	}
 
 	/**
+	 * Get question post model.
+	 *
+	 * @return QuestionPostModel|false
+	 */
+	public function get_question_post_model() {
+		return QuestionPostModel::find( $this->question_id, true );
+	}
+
+	/**
+	 * Get all meta_data
+	 *
+	 * @return stdClass|null
+	 * @throws Exception
+	 */
+	public function get_all_metadata() {
+		$questionPostModel = $this->get_question_post_model();
+		if ( $questionPostModel && $questionPostModel->get_type() === 'fill_in_blanks' ) {
+			$blanks          = learn_press_get_question_answer_meta( $this->question_answer_id, '_blanks' );
+			$this->meta_data = $blanks;
+		}
+
+		return $this->meta_data;
+	}
+
+	/**
 	 * Check capabilities of current user to create question answer.
 	 *
 	 * @throws Exception
