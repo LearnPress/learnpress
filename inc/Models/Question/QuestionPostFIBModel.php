@@ -13,6 +13,17 @@ namespace LearnPress\Models\Question;
 class QuestionPostFIBModel extends QuestionPostModel {
 	public $question_type = 'fill_in_blanks';
 
-	public function create_default_answers() {
+	/**
+	 * Create default answers for question
+	 *
+	 * @return array[]
+	 */
+	public function get_default_answers(): array {
+		return array(
+			array(
+				'value' => $this->random_value(),
+				'title' => esc_html__( 'FIB', 'learnpress' ),
+			),
+		);
 	}
 }

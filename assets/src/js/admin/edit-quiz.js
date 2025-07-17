@@ -9,6 +9,7 @@ import SweetAlert from 'sweetalert2-neutral';
 import Sortable from 'sortablejs';
 import Toastify from 'toastify-js';
 import 'toastify-js/src/toastify.css';
+import * as sectionEdit from './edit-curriculum/edit-section';
 
 let elEditQuizWrap;
 let elEditListQuestions;
@@ -31,6 +32,9 @@ const className = {
 	elAddNewQuestion: 'add-new-question',
 	elQuestionClone: '.lp-question-item.clone',
 	elAnswersConfig: '.lp-answers-config',
+	elQuestionByType: '.lp-question-by-type',
+	elInputAnswerSetTrue: '.lp-input-answer-set-true',
+	elQuestionAnswerItem: '.lp-question-answer-item',
 	LPTarget: '.lp-target',
 	elCollapse: 'lp-collapse',
 };
@@ -56,17 +60,23 @@ const showToast = ( message, status = 'success' ) => {
 
 // Toggle all sections
 const toggleQuestionAll = ( e, target ) => {
-	const elQuestionToggleAll = target.closest( `${ className.elQuestionToggleAll }` );
+	const elQuestionToggleAll = target.closest(
+		`${ className.elQuestionToggleAll }`
+	);
 	if ( ! elQuestionToggleAll ) {
 		return;
 	}
 
-	const elQuestionItems = elEditQuizWrap.querySelectorAll( `${ className.elQuestionItem }:not(.clone)` );
+	const elQuestionItems = elEditQuizWrap.querySelectorAll(
+		`${ className.elQuestionItem }:not(.clone)`
+	);
 
 	elQuestionToggleAll.classList.toggle( `${ className.elCollapse }` );
 
 	elQuestionItems.forEach( ( el ) => {
-		const shouldCollapse = elQuestionToggleAll.classList.contains( `${ className.elCollapse }` );
+		const shouldCollapse = elQuestionToggleAll.classList.contains(
+			`${ className.elCollapse }`
+		);
 		el.classList.toggle( `${ className.elCollapse }`, shouldCollapse );
 	} );
 };
@@ -78,7 +88,9 @@ const toggleQuestion = ( e, target ) => {
 		return;
 	}
 
-	const elQuestionItem = elSectionToggle.closest( `${ className.elQuestionItem }` );
+	const elQuestionItem = elSectionToggle.closest(
+		`${ className.elQuestionItem }`
+	);
 
 	// Toggle section
 	elQuestionItem.classList.toggle( `${ className.elCollapse }` );
@@ -89,8 +101,12 @@ const toggleQuestion = ( e, target ) => {
 
 // Check if all sections are collapsed
 const checkAllQuestionsCollapsed = () => {
-	const elQuestionItems = elEditQuizWrap.querySelectorAll( `${ className.elQuestionItem }:not(.clone)` );
-	const elQuestionToggleAll = elEditQuizWrap.querySelector( `${ className.elQuestionToggleAll }` );
+	const elQuestionItems = elEditQuizWrap.querySelectorAll(
+		`${ className.elQuestionItem }:not(.clone)`
+	);
+	const elQuestionToggleAll = elEditQuizWrap.querySelector(
+		`${ className.elQuestionToggleAll }`
+	);
 
 	let isAllExpand = true;
 	elQuestionItems.forEach( ( el ) => {
@@ -111,12 +127,16 @@ let elPopupSelectItems;
 const itemsSelectedData = [];
 // Show popup items to select
 const showPopupItemsToSelect = ( e, target ) => {
-	const elBtnShowPopupItemsToSelect = target.closest( `${ className.elBtnShowPopupItemsToSelect }` );
+	const elBtnShowPopupItemsToSelect = target.closest(
+		`${ className.elBtnShowPopupItemsToSelect }`
+	);
 	if ( ! elBtnShowPopupItemsToSelect ) {
 		return;
 	}
 
-	const elPopupItemsToSelectClone = elEditQuizWrap.querySelector( `${ className.elPopupItemsToSelectClone }` );
+	const elPopupItemsToSelectClone = elEditQuizWrap.querySelector(
+		`${ className.elPopupItemsToSelectClone }`
+	);
 	elPopupSelectItems = elPopupItemsToSelectClone.cloneNode( true );
 	elPopupSelectItems.classList.remove( 'clone' );
 	lpUtils.lpShowHideEl( elPopupSelectItems, 1 );
@@ -133,7 +153,9 @@ const showPopupItemsToSelect = ( e, target ) => {
 		},
 		willOpen: () => {
 			// Trigger tab lesson to be active and call AJAX load items
-			const elLPTarget = elPopupSelectItems.querySelector( `${ className.LPTarget }` );
+			const elLPTarget = elPopupSelectItems.querySelector(
+				`${ className.LPTarget }`
+			);
 
 			const dataSend = window.lpAJAXG.getDataSetCurrent( elLPTarget );
 			dataSend.args.paged = 1;
@@ -168,16 +190,22 @@ const showPopupItemsToSelect = ( e, target ) => {
 const updateCountItems = ( elSection ) => {
 	const elEditCurriculum = lpEditCurriculumShare.elEditCurriculum;
 	const elCountItemsAll = elEditCurriculum.querySelector( '.total-items' );
-	const elItemsAll = elEditCurriculum.querySelectorAll( `${ className.elSectionItem }:not(.clone)` );
+	const elItemsAll = elEditCurriculum.querySelectorAll(
+		`${ className.elSectionItem }:not(.clone)`
+	);
 	const itemsAllCount = elItemsAll.length;
 
 	elCountItemsAll.dataset.count = itemsAllCount;
 	elCountItemsAll.querySelector( '.count' ).textContent = itemsAllCount;
 
 	// Count items in section
-	const elSectionItemsCount = elSection.querySelector( '.section-items-counts' );
+	const elSectionItemsCount = elSection.querySelector(
+		'.section-items-counts'
+	);
 
-	const elItems = elSection.querySelectorAll( `${ className.elSectionItem }:not(.clone)` );
+	const elItems = elSection.querySelectorAll(
+		`${ className.elSectionItem }:not(.clone)`
+	);
 	const itemsCount = elItems.length;
 
 	elSectionItemsCount.dataset.count = itemsCount;
@@ -187,7 +215,8 @@ const updateCountItems = ( elSection ) => {
 
 // Get section by id
 const initTinyMCE = () => {
-	const elTextareas = elEditListQuestions.querySelectorAll( '.lp-editor-tinymce' );
+	const elTextareas =
+		elEditListQuestions.querySelectorAll( '.lp-editor-tinymce' );
 
 	elTextareas.forEach( ( elTextarea ) => {
 		// const elParent = elTextarea.closest( '.lp-question-item' );
@@ -223,36 +252,51 @@ const eventEditorTinymceChange = ( id, callBack ) => {
 };
 
 const addQuestion = ( e, target ) => {
-	const elBtnAddQuestion = target.closest( `${ className.elBtnAddQuestion }` );
-	if ( ! elBtnAddQuestion ) {
+	let canHandle = false;
+
+	if ( target.closest( `${ className.elBtnAddQuestion }` ) ) {
+		canHandle = true;
+	} else if (
+		target.closest( `${ className.elQuestionTitleNewInput }` ) &&
+		e.key === 'Enter'
+	) {
+		canHandle = true;
+	}
+
+	if ( ! canHandle ) {
 		return;
 	}
 
-	const elAddNewQuestion = elBtnAddQuestion.closest( `.${ className.elAddNewQuestion }` );
+	e.preventDefault();
+
+	const elAddNewQuestion = target.closest(
+		`.${ className.elAddNewQuestion }`
+	);
 	if ( ! elAddNewQuestion ) {
 		return;
 	}
 
-	const elQuestionTitleNewInput = elAddNewQuestion.querySelector( `${ className.elQuestionTitleNewInput }` );
-	const questionType = elAddNewQuestion.querySelector( `${ className.elQuestionTypeNew }` ).value;
+	const elQuestionTitleNewInput = elAddNewQuestion.querySelector(
+		`${ className.elQuestionTitleNewInput }`
+	);
+	const questionType = elAddNewQuestion.querySelector(
+		`${ className.elQuestionTypeNew }`
+	).value;
 	const questionTitle = elQuestionTitleNewInput.value.trim();
 	if ( ! questionTitle ) {
 		showToast( 'Please enter a question title.', 'error' );
 		return;
 	}
 
-	const elQuestionClone = elEditListQuestions.querySelector( `${ className.elQuestionItem }.clone` );
+	const elQuestionClone = elEditListQuestions.querySelector(
+		`${ className.elQuestionItem }.clone`
+	);
 	const newQuestionItem = elQuestionClone.cloneNode( true );
-	const newQuestionItemTypes = newQuestionItem.querySelectorAll( '.lp-question-answers' );
-	const elQuestionTitleInput = newQuestionItem.querySelector( `${ className.elQuestionTitleInput }` );
-	newQuestionItemTypes.forEach( ( el ) => {
-		const typeQuestion = el.dataset.questionType;
-		if ( typeQuestion !== questionType ) {
-			el.remove();
-		}
-	} );
-	elQuestionTitleInput.value = questionTitle;
+	const elQuestionTitleInput = newQuestionItem.querySelector(
+		`${ className.elQuestionTitleInput }`
+	);
 
+	elQuestionTitleInput.value = questionTitle;
 	newQuestionItem.classList.remove( 'clone' );
 	lpUtils.lpShowHideEl( newQuestionItem, 1 );
 	elQuestionClone.insertAdjacentElement( 'beforebegin', newQuestionItem );
@@ -262,15 +306,24 @@ const addQuestion = ( e, target ) => {
 	const callBack = {
 		success: ( response ) => {
 			const { message, status, data } = response;
-			const { question, quizQuestions, html_question_answers, question_type_label } = data;
+			const {
+				question,
+				quizQuestions,
+				html_question_answers,
+				question_type_label,
+			} = data;
 
 			if ( status === 'error' ) {
 				newQuestionItem.remove();
 			} else if ( status === 'success' ) {
 				newQuestionItem.dataset.questionId = question.ID;
-				const elAnswersConfig = newQuestionItem.querySelector( `${ className.elAnswersConfig }` );
-				elAnswersConfig.innerHTML = html_question_answers || '';
-				const elQuestionTypeLabel = newQuestionItem.querySelector( `${ className.elQuestionTypeLabel }` );
+				const elQuestionByType = newQuestionItem.querySelector(
+					`${ className.elQuestionByType }`
+				);
+				elQuestionByType.innerHTML = html_question_answers || '';
+				const elQuestionTypeLabel = newQuestionItem.querySelector(
+					`${ className.elQuestionTypeLabel }`
+				);
 				if ( elQuestionTypeLabel ) {
 					elQuestionTypeLabel.textContent = question_type_label;
 				}
@@ -301,12 +354,16 @@ const addQuestion = ( e, target ) => {
 };
 
 const removeQuestion = ( e, target ) => {
-	const elBtnRemoveQuestion = target.closest( `${ className.elBtnRemoveQuestion }` );
+	const elBtnRemoveQuestion = target.closest(
+		`${ className.elBtnRemoveQuestion }`
+	);
 	if ( ! elBtnRemoveQuestion ) {
 		return;
 	}
 
-	const elQuestionItem = elBtnRemoveQuestion.closest( `${ className.elQuestionItem }` );
+	const elQuestionItem = elBtnRemoveQuestion.closest(
+		`${ className.elQuestionItem }`
+	);
 	if ( ! elQuestionItem ) {
 		return;
 	}
@@ -364,8 +421,10 @@ const updateQuestionTitle = ( e, target ) => {
 
 	if ( target.closest( `${ className.elBtnUpdateQuestionTitle }` ) ) {
 		canHandle = true;
-	} else if ( target.closest( `${ className.elQuestionTitleInput }` ) &&
-		e.key === 'Enter' ) {
+	} else if (
+		target.closest( `${ className.elQuestionTitleInput }` ) &&
+		e.key === 'Enter'
+	) {
 		canHandle = true;
 	}
 
@@ -380,7 +439,9 @@ const updateQuestionTitle = ( e, target ) => {
 		return;
 	}
 
-	const elQuestionTitleInput = elQuestionItem.querySelector( `${ className.elQuestionTitleInput }` );
+	const elQuestionTitleInput = elQuestionItem.querySelector(
+		`${ className.elQuestionTitleInput }`
+	);
 	if ( ! elQuestionTitleInput ) {
 		return;
 	}
@@ -436,6 +497,114 @@ const updateQuestionTitle = ( e, target ) => {
 	window.lpAJAXG.fetchAJAX( dataSend, callBack );
 };
 
+// For answers config
+const updateAnswersConfig = ( e, target ) => {
+	const elInputAnswerSetTrue = target.closest(
+		`${ className.elInputAnswerSetTrue }`
+	);
+	if ( ! elInputAnswerSetTrue ) {
+		return;
+	}
+
+	const elQuestionAnswerItem = elInputAnswerSetTrue.closest(
+		`${ className.elQuestionAnswerItem }`
+	);
+	if ( ! elQuestionAnswerItem ) {
+		return;
+	}
+
+	const elQuestionItem = elInputAnswerSetTrue.closest(
+		`${ className.elQuestionItem }`
+	);
+	if ( ! elQuestionItem ) {
+		return;
+	}
+
+	const questionId = elQuestionItem.dataset.questionId;
+	const elAnswersConfig = elQuestionItem.querySelector(
+		`${ className.elAnswersConfig }`
+	);
+	if ( ! elAnswersConfig ) {
+		return;
+	}
+
+	const dataAnswers = JSON.parse( elAnswersConfig.dataset.answers || '[]' );
+	if ( ! dataAnswers ) {
+		return;
+	}
+
+	const answerId = elQuestionAnswerItem.dataset.answerId;
+	//console.log('Answer ID:', answerId);
+
+	// For both radio and checkbox.
+	const dataAnswersOld = structuredClone( dataAnswers );
+
+	dataAnswers.map( ( answer ) => {
+		const elQuestionAnswerItem = elQuestionItem.querySelector(
+			`${ className.elQuestionAnswerItem }[data-answer-id="${ answer.question_answer_id }"]`
+		);
+		const elInputAnswerSetTrue = elQuestionAnswerItem.querySelector( `${ className.elInputAnswerSetTrue }` );
+
+		if ( elInputAnswerSetTrue.checked ) {
+			answer.is_true = 'yes';
+		} else {
+			answer.is_true = '';
+		}
+
+		return answer;
+	} );
+
+	//console.log( dataAnswers );
+
+	lpUtils.lpSetLoadingEl( elQuestionItem, 1 );
+
+	// Call ajax to update answers config
+	const callBack = {
+		success: ( response ) => {
+			const { message, status } = response;
+
+			if ( status === 'success' ) {
+			} else {
+				throw `Error: ${ message }`;
+			}
+
+			showToast( message, status );
+		},
+		error: ( error ) => {
+			// rollback changes to old data
+			dataAnswersOld.forEach( ( answer ) => {
+				const elAnswerItem = elQuestionItem.querySelector(
+					`${ className.elQuestionAnswerItem }[data-answer-id="${ answer.question_answer_id }"]`
+				);
+				const inputAnswerSetTrue = elAnswerItem.querySelector(
+					`${ className.elInputAnswerSetTrue }`
+				);
+				if ( answer.is_true === 'yes' ) {
+					inputAnswerSetTrue.checked = true;
+				}
+
+				return answer;
+			} );
+			showToast( error, 'error' );
+		},
+		completed: () => {
+			lpUtils.lpSetLoadingEl( elQuestionItem, 0 );
+		},
+	};
+
+	const dataSend = {
+		quiz_id: quizID,
+		action: 'update_question_answers_config',
+		question_id: questionId,
+		answers: dataAnswers,
+		args: {
+			id_url: idUrlHandle,
+		},
+	};
+	window.lpAJAXG.fetchAJAX( dataSend, callBack );
+};
+// End for answers config
+
 // Events
 document.addEventListener( 'click', ( e ) => {
 	const target = e.target;
@@ -446,10 +615,17 @@ document.addEventListener( 'click', ( e ) => {
 	addQuestion( e, target );
 	removeQuestion( e, target );
 	updateQuestionTitle( e, target );
+	updateAnswersConfig( e, target );
 } );
 // Event keydown
 document.addEventListener( 'keydown', ( e ) => {
 	const target = e.target;
+	// Event enter
+	if ( e.key === 'Enter' ) {
+		// Add new section
+		updateQuestionTitle( e, target );
+		addQuestion( e, target );
+	}
 } );
 // Event keyup
 document.addEventListener( 'keyup', ( e ) => {
@@ -465,18 +641,20 @@ document.addEventListener( 'focusin', ( e ) => {
 	//console.log( 'focusin', e.target );
 } );
 // Event focus out
-document.addEventListener( 'focusout', ( e ) => {
-
-} );
+document.addEventListener( 'focusout', ( e ) => {} );
 
 // Element root ready.
-lpUtils.lpOnElementReady( `${ className.elEditQuizWrap }`, ( elEditQuizWrapFound ) => {
-	elEditQuizWrap = elEditQuizWrapFound;
-	elEditListQuestions = elEditQuizWrap.querySelector( `${ className.elEditListQuestions }` );
-	const elLPTarget = elEditQuizWrap.closest( `${ className.LPTarget }` );
-	const dataSend = window.lpAJAXG.getDataSetCurrent( elLPTarget );
-	quizID = dataSend.args.quiz_id;
+lpUtils.lpOnElementReady(
+	`${ className.elEditQuizWrap }`,
+	( elEditQuizWrapFound ) => {
+		elEditQuizWrap = elEditQuizWrapFound;
+		elEditListQuestions = elEditQuizWrap.querySelector(
+			`${ className.elEditListQuestions }`
+		);
+		const elLPTarget = elEditQuizWrap.closest( `${ className.LPTarget }` );
+		const dataSend = window.lpAJAXG.getDataSetCurrent( elLPTarget );
+		quizID = dataSend.args.quiz_id;
 
-	initTinyMCE();
-} );
-
+		initTinyMCE();
+	}
+);

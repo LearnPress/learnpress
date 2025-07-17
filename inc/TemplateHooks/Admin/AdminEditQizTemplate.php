@@ -348,7 +348,6 @@ class AdminEditQizTemplate {
 	 * @param QuestionPostModel|null $questionPostModel
 	 *
 	 * @return string
-	 * @throws Exception
 	 */
 	public function html_edit_question_by_type( $questionPostModel ): string {
 		// Get HTML config answers by type.
@@ -363,10 +362,7 @@ class AdminEditQizTemplate {
 				'<label>%s</label>',
 				__( 'Config Your Answer', 'learnpress' )
 			),
-			'answers-config' => sprintf(
-				'<div class="lp-answers-config">%s</div>',
-				$html_answers_config
-			),
+			'answers-config' => $html_answers_config,
 			'wrap_end'       => '</div>',
 		];
 

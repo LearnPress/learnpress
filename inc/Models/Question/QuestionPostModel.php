@@ -260,4 +260,15 @@ class QuestionPostModel extends PostModel {
 	public function get_default_answers(): array {
 		return [];
 	}
+
+	/**
+	 * Generate random value
+	 *
+	 * @param int $length
+	 *
+	 * @return string
+	 */
+	public function random_value( int $length = 10 ): string {
+		return substr( md5( uniqid( mt_rand(), true ) ), 0, $length );
+	}
 }

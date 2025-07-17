@@ -3,6 +3,7 @@
 namespace LearnPress\Ajax;
 
 use Exception;
+use LearnPress\Models\Question\QuestionAnswerModel;
 use LearnPress\Models\Question\QuestionPostModel;
 use LearnPress\Models\Quiz\QuizQuestionModel;
 use LearnPress\Models\QuizPostModel;
@@ -166,5 +167,40 @@ class EditQuizAjax extends AbstractAjax {
 	 * @version 1.0.0
 	 */
 	public function add_items( array $data ) {
+	}
+
+	/**
+	 * Update answer config of question
+	 *
+	 * JS file edit-quiz.js: function updateAnswersConfig call this method.
+	 *
+	 * @return void
+	 */
+	public function update_question_answers_config() {
+		$response = new LP_REST_Response();
+
+		try {
+			$data             = self::check_valid();
+			$question_id      = $data['question_id'] ?? 0;
+			$question_answers = $data['answers'] ?? [];
+			$question_answers = LP_Helper::sanitize_params_submitted( $question_answers, 'html' );
+
+			$questionPostModel = QuestionPostModel::find( $question_id, true );
+			if ( ! $questionPostModel ) {
+				throw new Exception( __( 'Question not found', 'learnpress' ) );
+			}
+
+			foreach ( $question_answers as $answer ) {
+				$questionAnswerModel = new QuestionAnswerModel( $answer );
+				$questionAnswerModel->save();
+			}
+
+			$response->status  = 'success';
+			$response->message = __( 'Answer of Question update successfully', 'learnpress' );
+		} catch ( Throwable $e ) {
+			$response->message = $e->getMessage();
+		}
+
+		wp_send_json( $response );
 	}
 }

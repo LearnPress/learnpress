@@ -407,4 +407,17 @@ class Template {
 
 		return Template::instance()->nest_elements( $html_wrapper, $pagination );
 	}
+
+	/**
+	 * Convert data to JSON string
+	 *
+	 * @param array|object|mixed $data
+	 *
+	 * @return string
+	 * @since 4.2.8.8
+	 * @version 1.0.0
+	 */
+	public static function convert_data_to_json( $data ): string {
+		return esc_attr( htmlentities2( json_encode( $data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) ) );
+	}
 }

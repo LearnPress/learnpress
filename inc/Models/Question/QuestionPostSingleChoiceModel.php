@@ -16,9 +16,25 @@ class QuestionPostSingleChoiceModel extends QuestionPostModel {
 	/**
 	 * Create default answers for question
 	 *
-	 * @return void
+	 * @return array[]
 	 */
-	public function create_default_answers() {
-		// Implement logic to create default answers for single choice question.
+	public function get_default_answers(): array {
+		return array(
+			array(
+				'is_true' => 'yes',
+				'value'   => $this->random_value(),
+				'title'   => esc_html__( 'First option', 'learnpress' ),
+			),
+			array(
+				'is_true' => '',
+				'value'   => $this->random_value(),
+				'title'   => esc_html__( 'Second option', 'learnpress' ),
+			),
+			array(
+				'is_true' => '',
+				'value'   => $this->random_value(),
+				'title'   => esc_html__( 'Third option', 'learnpress' ),
+			),
+		);
 	}
 }

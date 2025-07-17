@@ -13,6 +13,28 @@ namespace LearnPress\Models\Question;
 class QuestionPostMultipleChoiceModel extends QuestionPostModel {
 	public $question_type = 'multi_choice';
 
-	public function create_default_answers() {
+	public function get_default_answers(): array {
+		return array(
+			array(
+				'is_true' => 'yes',
+				'value'   => learn_press_random_value(),
+				'title'   => esc_html__( 'First option', 'learnpress' ),
+			),
+			array(
+				'is_true' => '',
+				'value'   => learn_press_random_value(),
+				'title'   => esc_html__( 'Second option', 'learnpress' ),
+			),
+			array(
+				'is_true' => '',
+				'value'   => learn_press_random_value(),
+				'title'   => esc_html__( 'Third option', 'learnpress' ),
+			),
+			array(
+				'is_true' => '',
+				'value'   => learn_press_random_value(),
+				'title'   => esc_html__( 'Four option', 'learnpress' ),
+			),
+		);
 	}
 }

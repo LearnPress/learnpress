@@ -5,6 +5,7 @@ namespace LearnPress\TemplateHooks\Admin;
 use Exception;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
+use LearnPress\Models\Question\QuestionAnswerModel;
 use LearnPress\Models\Question\QuestionPostFIBModel;
 use LearnPress\Models\Question\QuestionPostModel;
 use LP_Helper;
@@ -211,60 +212,79 @@ class AdminEditQuestionTemplate {
 	 * @param QuestionPostModel $questionPostModel
 	 *
 	 * @return string
-	 * @throws Exception
 	 */
 	public function html_answer_option( QuestionPostModel $questionPostModel ): string {
 		$type = $questionPostModel->get_type();
 
 		switch ( $type ) {
 			case 'true_or_false':
-				return self::html_answer_type_true_or_false( $questionPostModel );
+				$html = self::html_answer_type_true_or_false( $questionPostModel );
+				break;
 			case 'single_choice':
-				return self::html_answer_type_single_choice( $questionPostModel );
+				$html = self::html_answer_type_single_choice( $questionPostModel );
+				break;
 			case 'multi_choice':
-				return self::html_answer_type_multiple_choice( $questionPostModel );
+				$html = self::html_answer_type_multiple_choice( $questionPostModel );
+				break;
 			case 'fill_in_blanks':
-				return self::html_answer_type_fill_in_blanks( $questionPostModel );
+				$html = self::html_answer_type_fill_in_blanks( $questionPostModel );
+				break;
 			case $type:
-				return apply_filters( 'learn-press/edit-question/type/html', '', $type, $questionPostModel );
+				$html = apply_filters( 'learn-press/edit-question/type/html', '', $type, $questionPostModel );
+				break;
 			default:
-				return '';
+				$html = '';
+				break;
 		}
+
+		$answers = $questionPostModel->get_answer_option();
+
+		$section = [
+			'wrap'     => sprintf(
+				'<div class="lp-answers-config" data-question-type="%s" data-answers="%s">',
+				esc_attr( $type ),
+				Template::convert_data_to_json( $answers )
+			),
+			'answers'  => $html,
+			'wrap_end' => '</div>',
+		];
+
+		return Template::combine_components( $section );
 	}
 
 	/**
 	 * Get html edit question type true or false.
 	 *
-	 * @param null $questionPostModel
+	 * @param QuestionPostModel $questionPostModel
 	 *
 	 * @return string
-	 * @throws \Exception
 	 */
 	public function html_answer_type_true_or_false( QuestionPostModel $questionPostModel ): string {
-		$name_radio = 'lp-question-answer-item-true-' . $questionPostModel->ID;
-		$options    = $questionPostModel->get_answer_option();
+		$name_radio = 'lp-input-answer-set-true-' . $questionPostModel->ID;
+		$answers    = $questionPostModel->get_answer_option();
 
 		$html_answers = '';
-		foreach ( $options as $option ) {
+		foreach ( $answers as $answer ) {
+			$questionAnswerModel = new QuestionAnswerModel( $answer );
+
 			$html_answers .= sprintf(
-				'<div class="lp-question-answer-item">
+				'<div class="lp-question-answer-item" data-answer-id="%6$s">
 					<span class="drag lp-icon-drag" title="Drag to reorder section"></span>
 					<input type="text" class="%1$s" name="%1$s" value="%2$s" />
-					<input type="radio" class="lp-question-answer-item-true" name="%4$s" %3$s value="%5$s" />
+					<input type="radio" class="lp-input-answer-set-true" name="%4$s" %3$s value="%5$s" />
 				</div>',
 				'lp-question-answer-item-title-input',
-				esc_attr( $option->value ),
-				$option->is_true === 'yes' ? 'checked' : '',
+				esc_attr( $questionAnswerModel->title ),
+				$questionAnswerModel->is_true === 'yes' ? 'checked' : '',
 				$name_radio,
-				esc_attr( $option->is_true )
+				esc_attr( $questionAnswerModel->is_true ),
+				esc_attr( $questionAnswerModel->question_answer_id )
 			);
 		}
 
 		$section = [
-			'wrap'     => '<div class="lp-question-answers" data-question-type="true_or_false">',
-			'header'   => '<div class="lp-question-choice-header"><span>Answers</span><span>Correct</span></div>',
-			'answers'  => $html_answers,
-			'wrap_end' => '</div>',
+			'header'  => '<div class="lp-question-choice-header"><span>Answers</span><span>Correct</span></div>',
+			'answers' => $html_answers,
 		];
 
 		return Template::combine_components( $section );
@@ -273,49 +293,40 @@ class AdminEditQuestionTemplate {
 	/**
 	 * Get html edit single choice.
 	 *
-	 * @param null $questionPostModel
+	 * @param QuestionPostModel $questionPostModel
 	 *
 	 * @return string
 	 */
-	public function html_answer_type_single_choice( $questionPostModel = null ): string {
-		$options_default = '
-			[
-				{ "title": "One", "value": "one", "is_true": "yes" },
-				{ "title": "Two", "value": "two", "is_true": "no" },
-				{ "title": "Three", "value": "three", "is_true": "no" }
-			]
-		';
-
-		$options = LP_Helper::json_decode( $options_default );
-
-		if ( $questionPostModel instanceof QuestionPostModel ) {
-			$name_radio = 'lp-question-answer-item-true-' . $questionPostModel->ID;
-			$options    = $questionPostModel->get_answer_option();
-		} else {
-			$name_radio = 'lp-question-answer-item-true-' . rand();
-		}
+	public function html_answer_type_single_choice( QuestionPostModel $questionPostModel ): string {
+		$name_radio = 'lp-input-answer-set-true-' . $questionPostModel->ID;
+		$answers    = $questionPostModel->get_answer_option();
 
 		$html_answers = '';
-		foreach ( $options as $option ) {
+		foreach ( $answers as $answer ) {
+			$questionAnswerModel = new QuestionAnswerModel( $answer );
+
 			$html_answers .= sprintf(
-				'<div class="lp-question-answer-item">
+				'<div class="lp-question-answer-item" data-answer-id="%6$s">
 					<span class="drag lp-icon-drag" title="Drag to reorder section"></span>
 					<input type="text" class="%1$s" name="%1$s" value="%2$s" />
-					<input type="radio" class="lp-question-answer-item-true" name="%4$s" %3$s value="%5$s" />
+					<input type="radio" class="lp-input-answer-set-true" name="%4$s" %3$s value="%5$s" />
 				</div>',
 				'lp-question-answer-item-title-input',
-				esc_attr( $option->value ),
-				$option->is_true === 'yes' ? 'checked' : '',
+				esc_attr( $questionAnswerModel->title ),
+				$questionAnswerModel->is_true === 'yes' ? 'checked' : '',
 				$name_radio,
-				esc_attr( $option->is_true )
+				esc_attr( $questionAnswerModel->is_true ),
+				esc_attr( $questionAnswerModel->question_answer_id )
 			);
 		}
 
 		$section = [
-			'wrap'     => '<div class="lp-question-answers" data-question-type="single_choice">',
-			'header'   => '<div class="lp-question-choice-header"><span>Answers</span><span>Correct</span></div>',
-			'answers'  => $html_answers,
-			'wrap_end' => '</div>',
+			'header'    => '<div class="lp-question-choice-header"><span>Answers</span><span>Correct</span></div>',
+			'answers'   => $html_answers,
+			'data_json' => sprintf(
+				'<input type="hidden" class="lp-question-answer-json" name="lp-question-answer-json" value="%s">',
+				esc_attr( json_encode( $answers ) )
+			),
 		];
 
 		return Template::combine_components( $section );
@@ -324,49 +335,36 @@ class AdminEditQuestionTemplate {
 	/**
 	 * Get html edit question type multiple choice.
 	 *
-	 * @param null $questionPostModel
+	 * @param QuestionPostModel $questionPostModel
 	 *
 	 * @return string
 	 */
-	public function html_answer_type_multiple_choice( $questionPostModel = null ): string {
-		$options_default = '
-			[
-				{ "title": "One", "value": "one", "is_true": "yes" },
-				{ "title": "Two", "value": "two", "is_true": "yes" },
-				{ "title": "Three", "value": "three", "is_true": "no" }
-			]
-		';
-
-		$options = LP_Helper::json_decode( $options_default );
-
-		if ( $questionPostModel instanceof QuestionPostModel ) {
-			$name_radio = 'lp-question-answer-item-true-' . $questionPostModel->ID;
-			$options    = $questionPostModel->get_answer_option();
-		} else {
-			$name_radio = 'lp-question-answer-item-true-' . rand();
-		}
+	public function html_answer_type_multiple_choice( QuestionPostModel $questionPostModel ): string {
+		$name_checkbox = 'lp-input-answer-set-true-' . $questionPostModel->ID;
+		$answers       = $questionPostModel->get_answer_option();
 
 		$html_answers = '';
-		foreach ( $options as $option ) {
+		foreach ( $answers as $answer ) {
+			$questionAnswerModel = new QuestionAnswerModel( $answer );
+
 			$html_answers .= sprintf(
-				'<div class="lp-question-answer-item">
+				'<div class="lp-question-answer-item" data-answer-id="%6$s">
 					<span class="drag lp-icon-drag" title="Drag to reorder section"></span>
 					<input type="text" class="%1$s" name="%1$s" value="%2$s" />
-					<input type="checkbox" class="lp-question-answer-item-true" name="%4$s" %3$s value="%5$s" />
+					<input type="checkbox" class="lp-input-answer-set-true" name="%4$s" %3$s value="%5$s" />
 				</div>',
 				'lp-question-answer-item-title-input',
-				esc_attr( $option->value ),
-				$option->is_true === 'yes' ? 'checked' : '',
-				$name_radio,
-				esc_attr( $option->is_true )
+				esc_attr( $questionAnswerModel->title ),
+				$questionAnswerModel->is_true === 'yes' ? 'checked' : '',
+				$name_checkbox,
+				esc_attr( $questionAnswerModel->is_true ),
+				esc_attr( $questionAnswerModel->question_answer_id )
 			);
 		}
 
 		$section = [
-			'wrap'     => '<div class="lp-question-answers" data-question-type="multi_choice">',
-			'header'   => '<div class="lp-question-choice-header"><span>Answers</span><span>Correct</span></div>',
-			'answers'  => $html_answers,
-			'wrap_end' => '</div>',
+			'header'  => '<div class="lp-question-choice-header"><span>Answers</span><span>Correct</span></div>',
+			'answers' => $html_answers,
 		];
 
 		return Template::combine_components( $section );
@@ -375,24 +373,34 @@ class AdminEditQuestionTemplate {
 	/**
 	 * Get html edit question type fill in blanks.
 	 *
-	 * @param null $questionPostModel
+	 * @param QuestionPostModel $questionPostModel
 	 *
 	 * @return string
 	 */
-	public function html_answer_type_fill_in_blanks( $questionPostModel = null ): string {
-		$name = 'lp-question-fib-input';
-		if ( $questionPostModel instanceof QuestionPostModel ) {
-			//$questionFibModel = new QuestionPostFIBModel( $questionPostModel );
-			$name .= '-' . $questionPostModel->ID;
-			$questionPostModel->get_answer_option();
-		} else {
-			$name .= '-' . rand();
-		}
+	public function html_answer_type_fill_in_blanks( QuestionPostModel $questionPostModel ): string {
+		$name = 'lp-question-fib-input-' . $questionPostModel->ID;
+		$questionPostModel->get_answer_option();
 
 		$section = [
-			'wrap'     => '<div class="lp-question-answers" data-question-type="fill_in_blanks">',
-			'input'    => '<textarea name="123" rows="3">1231</textarea>',
-			'wrap_end' => '</div>',
+			'input'            => sprintf(
+				'<textarea name="%s" rows="5" %s>1231</textarea>',
+				esc_attr( $name ),
+				'style="width: 100%"'
+			),
+			'buttons'          => '<div class="lp-question-fib-buttons">',
+			'btn_insert_new'   => sprintf(
+				'<button type="button" class="lp-btn-fib-insert-blank button">%s</button>',
+				__( 'Insert new blank', 'learnpress' )
+			),
+			'btn_remove_blank' => sprintf(
+				'<button type="button" class="lp-btn-fib-remove-blank button">%s</button>',
+				__( 'Remove blank', 'learnpress' )
+			),
+			'btn_clear'        => sprintf(
+				'<button type="button" class="lp-btn-fib-clear-content button">%s</button>',
+				__( 'Clear content', 'learnpress' )
+			),
+			'buttons_end'      => '</div>',
 		];
 
 		return Template::combine_components( $section );
