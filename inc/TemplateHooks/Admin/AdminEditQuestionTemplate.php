@@ -2,6 +2,7 @@
 
 namespace LearnPress\TemplateHooks\Admin;
 
+use Exception;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\Question\QuestionPostFIBModel;
@@ -207,13 +208,14 @@ class AdminEditQuestionTemplate {
 	/**
 	 * Get html edit question type.
 	 *
-	 * @param $type
-	 * @param $questionPostModel
+	 * @param QuestionPostModel $questionPostModel
 	 *
 	 * @return string
-	 * @throws \Exception
+	 * @throws Exception
 	 */
-	public function get_by_type( $type, $questionPostModel ): string {
+	public function html_answer_option( QuestionPostModel $questionPostModel ): string {
+		$type = $questionPostModel->get_type();
+
 		switch ( $type ) {
 			case 'true_or_false':
 				return self::html_answer_type_true_or_false( $questionPostModel );
@@ -238,22 +240,9 @@ class AdminEditQuestionTemplate {
 	 * @return string
 	 * @throws \Exception
 	 */
-	public function html_answer_type_true_or_false( $questionPostModel = null ): string {
-		$options_default = '
-			[
-				{ "title": "True", "value": "true", "is_true": "yes" },
-				{ "title": "False", "value": "false", "is_true": "no" }
-			]
-		';
-
-		$options = LP_Helper::json_decode( $options_default );
-
-		if ( $questionPostModel instanceof QuestionPostModel ) {
-			$name_radio = 'lp-question-answer-item-true-' . $questionPostModel->ID;
-			$options    = $questionPostModel->get_answer_option();
-		} else {
-			$name_radio = 'lp-question-answer-item-true-' . rand();
-		}
+	public function html_answer_type_true_or_false( QuestionPostModel $questionPostModel ): string {
+		$name_radio = 'lp-question-answer-item-true-' . $questionPostModel->ID;
+		$options    = $questionPostModel->get_answer_option();
 
 		$html_answers = '';
 		foreach ( $options as $option ) {

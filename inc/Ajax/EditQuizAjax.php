@@ -6,6 +6,8 @@ use Exception;
 use LearnPress\Models\Question\QuestionPostModel;
 use LearnPress\Models\Quiz\QuizQuestionModel;
 use LearnPress\Models\QuizPostModel;
+use LearnPress\TemplateHooks\Admin\AdminEditQizTemplate;
+use LearnPress\TemplateHooks\Admin\AdminEditQuestionTemplate;
 use LP_Helper;
 use LP_REST_Response;
 use Throwable;
@@ -58,15 +60,21 @@ class EditQuizAjax extends AbstractAjax {
 		$response = new LP_REST_Response();
 
 		try {
-			$data          = self::check_valid();
+			$data = self::check_valid();
+			/**
+			 * @var QuizPostModel $quizPostModel
+			 */
 			$quizPostModel = $data['quizPostModel'];
 
-			$quizQuestionModel = $quizPostModel->create_question_and_add( $data );
+			$quizQuestionModel  = $quizPostModel->create_question_and_add( $data );
+			$questionPostModel  = $quizQuestionModel->get_question_post_model();
+			$html_answer_option = AdminEditQuestionTemplate::instance()->html_answer_option( $questionPostModel );
 
-			$response->data->question      = $quizQuestionModel->get_question_post_model();
-			$response->data->quizQuestions = $quizQuestionModel;
-			$response->status              = 'success';
-			$response->message             = __( 'Question added successfully', 'learnpress' );
+			$response->data->question              = $questionPostModel;
+			$response->data->quizQuestions         = $quizQuestionModel;
+			$response->data->html_question_answers = $html_answer_option;
+			$response->status                      = 'success';
+			$response->message                     = __( 'Question added successfully', 'learnpress' );
 		} catch ( Throwable $e ) {
 			$response->message = $e->getMessage();
 		}

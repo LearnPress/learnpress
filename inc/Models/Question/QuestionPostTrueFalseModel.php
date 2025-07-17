@@ -14,11 +14,22 @@ class QuestionPostTrueFalseModel extends QuestionPostModel {
 	public $question_type = 'true_or_false';
 
 	/**
-	 * Create default answers for question
+	 * Get true or false default answers.
 	 *
-	 * @return void
+	 * @return array
 	 */
-	public function create_default_answers() {
-		// Implement logic to create default answers for true/false question.
+	public function get_default_answers(): array {
+		return [
+			[
+				'is_true' => 'yes',
+				'value'   => 'true',
+				'title'   => esc_html__( 'True', 'learnpress' ),
+			],
+			[
+				'is_true' => '',
+				'value'   => 'false',
+				'title'   => esc_html__( 'False', 'learnpress' ),
+			],
+		];
 	}
 }

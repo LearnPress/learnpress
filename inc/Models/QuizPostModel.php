@@ -257,7 +257,7 @@ class QuizPostModel extends PostModel {
 		// Get question object by type
 		$questionClassName = $questionPostModelNew::get_question_obj_by_type( $question_type );
 		if ( class_exists( $questionClassName ) ) {
-			$questionPostTyeModel = new $questionClassName();
+			$questionPostTyeModel = new $questionClassName( $questionPostModelNew );
 			if ( method_exists( $questionPostTyeModel, 'create_default_answers' ) ) {
 				$questionPostTyeModel->create_default_answers();
 			}

@@ -348,28 +348,13 @@ class AdminEditQizTemplate {
 	 * @param QuestionPostModel|null $questionPostModel
 	 *
 	 * @return string
+	 * @throws Exception
 	 */
 	public function html_edit_question_by_type( $questionPostModel ): string {
-		$type = '';
+		// Get HTML config answers by type.
+		$html_answers_config = '';
 		if ( $questionPostModel instanceof QuestionPostModel ) {
-			$type = $questionPostModel->get_type();
-		}
-
-		// If empty $type, get all types html to insert new by type
-		if ( ! empty( $type ) ) {
-			$html_answers_config = AdminEditQuestionTemplate::instance()->get_by_type(
-				$type,
-				$questionPostModel
-			);
-		} else {
-			$types               = QuestionPostModel::get_types();
-			$html_answers_config = '';
-			foreach ( $types as $type_setting => $label ) {
-				$html_answers_config .= AdminEditQuestionTemplate::instance()->get_by_type(
-					$type_setting,
-					$questionPostModel
-				);
-			}
+			$html_answers_config = AdminEditQuestionTemplate::instance()->html_answer_option( $questionPostModel );
 		}
 
 		$section = [

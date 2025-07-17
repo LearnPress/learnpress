@@ -30,6 +30,7 @@ const className = {
 	elQuestionTypeNew: '.lp-question-type-new',
 	elAddNewQuestion: 'add-new-question',
 	elQuestionClone: '.lp-question-item.clone',
+	elAnswersConfig: '.lp-answers-config',
 	LPTarget: '.lp-target',
 	elCollapse: 'lp-collapse',
 };
@@ -261,12 +262,14 @@ const addQuestion = ( e, target ) => {
 	const callBack = {
 		success: ( response ) => {
 			const { message, status, data } = response;
-			const { question, quizQuestions } = data;
+			const { question, quizQuestions, html_question_answers } = data;
 
 			if ( status === 'error' ) {
 				newQuestionItem.remove();
 			} else if ( status === 'success' ) {
 				newQuestionItem.dataset.questionId = question.ID;
+				const elAnswersConfig = newQuestionItem.querySelector( `${ className.elAnswersConfig }` );
+				elAnswersConfig.innerHTML = html_question_answers || '';
 			}
 
 			showToast( message, status );

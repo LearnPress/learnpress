@@ -11,7 +11,10 @@
 
 namespace LearnPress\Models\Question;
 
+use ClassPress\Helpers\Debug;
 use Exception;
+use LearnPress\Databases\QuestionAnswersDB;
+use LearnPress\Filters\QuestionAnswersFilter;
 use LearnPress\Models\PostModel;
 use LP_Cache;
 use LP_Question_Answers_DB;
@@ -24,9 +27,9 @@ class QuestionPostModel extends PostModel {
 	 */
 	public $post_type = LP_QUESTION_CPT;
 
-	protected $_answer_options = array();
+	protected $answer_options = [];
 
-	public $question_type = '';
+	private $question_type = '';
 
 	/**
 	 * Const meta key
@@ -68,19 +71,22 @@ class QuestionPostModel extends PostModel {
 		return $questionPostModel;
 	}
 
+	/**
+	 * Get answer options for question
+	 */
 	public function get_answer_option() {
 		try {
-			if ( empty( $this->_answer_options ) ) {
-				$db                    = LP_Question_Answers_DB::getInstance();
-				$filter                = new LP_Question_Answers_Filter();
-				$filter->where[]       = "AND question_id = ({$this->ID})";
-				$this->_answer_options = $db->get_question_answers( $filter );
+			if ( empty( $this->answer_options ) ) {
+				$db                   = QuestionAnswersDB::getInstance();
+				$filter               = new QuestionAnswersFilter();
+				$filter->question_id  = $this->get_id();
+				$this->answer_options = $db->get_question_answers( $filter );
 			}
 		} catch ( Exception $e ) {
-			error_log( $e->getMessage() );
+			Debug::error_log( $e );
 		}
 
-		return $this->_answer_options;
+		return $this->answer_options;
 	}
 
 	/**
@@ -133,7 +139,11 @@ class QuestionPostModel extends PostModel {
 	 * @return string|float
 	 */
 	public function get_type() {
-		return $this->get_meta_value_by_key( self::META_KEY_TYPE, '' );
+		if ( empty( $this->question_type ) ) {
+			$this->question_type = $this->get_meta_value_by_key( self::META_KEY_TYPE, '' );
+		}
+
+		return $this->question_type;
 	}
 
 	/**
@@ -217,15 +227,13 @@ class QuestionPostModel extends PostModel {
 	}
 
 	/**
-	 * Create answers for question
+	 * Create default answers for question
 	 * For case question does not have answers yet.
 	 *
-	 * @return void
+	 * @return array
 	 * @throws Exception
 	 */
-	public function create_default_answers() {
-		global $wpdb;
-
+	public function create_default_answers(): array {
 		$answers = $this->get_default_answers();
 
 		foreach ( $answers as $index => $answer ) {
@@ -233,25 +241,16 @@ class QuestionPostModel extends PostModel {
 				'question_id' => $this->get_id(),
 				'title'       => $answer['title'],
 				'value'       => $answer['value'] ?? '',
-				'is_true'     => ( $answer['is_true'] == 'yes' ) ? $answer['is_true'] : '',
+				'is_true'     => $answer['is_true'] ?? '',
 				'order'       => $index + 1,
 			);
 
-			$db = LP_Question_Answers_DB::getInstance();
-			$db->wpdb->insert(
-				$db->tb_lp_question_answers,
-				$answer,
-				array( '%d', '%s', '%s', '%s', '%d' )
-			);
-
-			$question_answer_id = $wpdb->insert_id;
-
-			if ( $question_answer_id ) {
-				$answer['question_answer_id'] = $question_answer_id;
-			}
-
-			$answers[ $index ] = $answer;
+			$questionAnswerModel = new QuestionAnswerModel( $answer );
+			$questionAnswerModel->save();
+			$answers[ $index ]['question_answer_id'] = $questionAnswerModel->question_answer_id;
 		}
+
+		return $answers;
 	}
 
 	/**
@@ -261,27 +260,6 @@ class QuestionPostModel extends PostModel {
 	 * @move from class LP_Question old
 	 */
 	public function get_default_answers(): array {
-		$answers = array(
-			array(
-				'question_answer_id' => - 1,
-				'is_true'            => 'yes',
-				'value'              => learn_press_random_value(),
-				'title'              => esc_html__( 'First option', 'learnpress' ),
-			),
-			array(
-				'question_answer_id' => - 2,
-				'is_true'            => 'no',
-				'value'              => learn_press_random_value(),
-				'title'              => esc_html__( 'Second option', 'learnpress' ),
-			),
-			array(
-				'question_answer_id' => - 3,
-				'is_true'            => 'no',
-				'value'              => learn_press_random_value(),
-				'title'              => esc_html__( 'Third option', 'learnpress' ),
-			),
-		);
-
-		return $answers;
+		return [];
 	}
 }

@@ -214,8 +214,8 @@ class QuizQuestionModel {
 	 * @version 1.0.0
 	 */
 	public function clean_caches() {
-		$key_cache = "quizQuestion/find/{$this->quiz_id}/{$this->question_id}";
-		$lp_course_cache  = new LP_Cache();
+		$key_cache       = "quizQuestion/find/{$this->quiz_id}/{$this->question_id}";
+		$lp_course_cache = new LP_Cache();
 		$lp_course_cache->clear( $key_cache );
 	}
 }
