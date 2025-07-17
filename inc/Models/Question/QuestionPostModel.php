@@ -17,8 +17,6 @@ use LearnPress\Databases\QuestionAnswersDB;
 use LearnPress\Filters\QuestionAnswersFilter;
 use LearnPress\Models\PostModel;
 use LP_Cache;
-use LP_Question_Answers_DB;
-use LP_Question_Answers_Filter;
 use LP_Question_Filter;
 
 class QuestionPostModel extends PostModel {

@@ -71,6 +71,7 @@ class EditQuizAjax extends AbstractAjax {
 			$html_answer_option = AdminEditQuestionTemplate::instance()->html_answer_option( $questionPostModel );
 
 			$response->data->question              = $questionPostModel;
+			$response->data->question_type_label   = $questionPostModel->get_type_label();
 			$response->data->quizQuestions         = $quizQuestionModel;
 			$response->data->html_question_answers = $html_answer_option;
 			$response->status                      = 'success';

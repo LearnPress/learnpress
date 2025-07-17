@@ -200,7 +200,7 @@ class AdminEditQizTemplate {
 			'loading'    => '<span class="lp-icon-spinner"></span>',
 			'title'      => $this->html_input_question_title( $question_title ),
 			'type'       => sprintf(
-				'<span class="lp-question-type">%s</span>',
+				'<span class="lp-question-type-label">%s</span>',
 				$questionPostModel instanceof QuestionPostModel ? $questionPostModel->get_type_label() : ''
 			),
 			'btn-edit'   => sprintf(

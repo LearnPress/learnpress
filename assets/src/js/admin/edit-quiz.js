@@ -9,7 +9,6 @@ import SweetAlert from 'sweetalert2-neutral';
 import Sortable from 'sortablejs';
 import Toastify from 'toastify-js';
 import 'toastify-js/src/toastify.css';
-import * as lpEditCurriculumShare from "./edit-quiz/share";
 
 let elEditQuizWrap;
 let elEditListQuestions;
@@ -27,6 +26,7 @@ const className = {
 	elBtnUpdateQuestionTitle: '.lp-btn-update-question-title',
 	elQuestionTitleNewInput: '.lp-question-title-new-input',
 	elQuestionTitleInput: '.lp-question-title-input',
+	elQuestionTypeLabel: '.lp-question-type-label',
 	elQuestionTypeNew: '.lp-question-type-new',
 	elAddNewQuestion: 'add-new-question',
 	elQuestionClone: '.lp-question-item.clone',
@@ -262,7 +262,7 @@ const addQuestion = ( e, target ) => {
 	const callBack = {
 		success: ( response ) => {
 			const { message, status, data } = response;
-			const { question, quizQuestions, html_question_answers } = data;
+			const { question, quizQuestions, html_question_answers, question_type_label } = data;
 
 			if ( status === 'error' ) {
 				newQuestionItem.remove();
@@ -270,6 +270,10 @@ const addQuestion = ( e, target ) => {
 				newQuestionItem.dataset.questionId = question.ID;
 				const elAnswersConfig = newQuestionItem.querySelector( `${ className.elAnswersConfig }` );
 				elAnswersConfig.innerHTML = html_question_answers || '';
+				const elQuestionTypeLabel = newQuestionItem.querySelector( `${ className.elQuestionTypeLabel }` );
+				if ( elQuestionTypeLabel ) {
+					elQuestionTypeLabel.textContent = question_type_label;
+				}
 			}
 
 			showToast( message, status );
