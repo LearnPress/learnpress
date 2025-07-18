@@ -157,7 +157,7 @@ class LP_REST_Courses_Controller extends LP_Abstract_REST_Controller {
 
 				$courseItem              = new stdClass();
 				$courseItem->ID          = $course->ID;
-				$courseItem->description = $singleCourseTemplate->html_short_description( $courseModel, 15 );
+				$courseItem->description = $singleCourseTemplate->html_short_description( $courseModel );
 				$courseItem->price       = $singleCourseTemplate->html_price( $courseModel );
 				$courseItem->title       = $courseModel->get_title();
 				$courseItem->student     = $singleCourseTemplate->html_count_student( $courseModel );
