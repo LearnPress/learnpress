@@ -35,6 +35,11 @@ const className = {
 	elQuestionByType: '.lp-question-by-type',
 	elInputAnswerSetTrue: '.lp-input-answer-set-true',
 	elQuestionAnswerItem: '.lp-question-answer-item',
+	elBtnFibInsertBlank: '.lp-btn-fib-insert-blank',
+	elBtnFibRemoveBlank: '.lp-btn-fib-remove-blank',
+	elBtnFibSaveContent: '.lp-btn-fib-save-content',
+	elBtnFibClearAllContent: '.lp-btn-fib-clear-all-content',
+	elFibInput: '.lp-question-fib-input',
 	LPTarget: '.lp-target',
 	elCollapse: 'lp-collapse',
 };
@@ -228,26 +233,57 @@ const initTinyMCE = () => {
 
 // Re-initialize TinyMCE editor
 const reInitTinymce = ( id ) => {
-	window.tinymce.execCommand( 'mceRemoveEditor', false, id );
-	window.tinymce.execCommand( 'mceAddEditor', false, id );
+	window.tinymce.execCommand( 'mceRemoveEditor', true, id );
+	window.tinymce.execCommand( 'mceAddEditor', true, id );
 	eventEditorTinymceChange( id );
 };
 
+let uniquid;
+let fibTextSelection;
 // Events for TinyMCE editor
 const eventEditorTinymceChange = ( id, callBack ) => {
 	const editor = window.tinymce.get( id );
+	editor.settings.force_p_newlines = false;
+	editor.settings.forced_root_block = '';
+	editor.settings.force_br_newlines = true;
+	editor.settings.content_style = 'input {border: 1px dashed rebeccapurple;padding: 5px;margin: 0 3px;outline: none;} body{ line-height: 2.2;}';
 	// Event change content in TinyMCE editor
 	editor.on( 'change', ( e ) => {
-		// Get editor content
-		const content = e.target.getContent();
-		console.log( 'Editor content changed:', content );
-
-		// Save content automatically
-		//window.tinymce.triggerSave();
+		console.log( 'Content changed:' );
+	} );
+	editor.on( 'blur', ( e ) => {
+		console.log( 'Content blur:' );
 	} );
 	// Event focus in TinyMCE editor
 	editor.on( 'focusin', ( e ) => {
-		console.log( 'Editor focused:', e.target.id );
+		console.log( 'Content focusin:' );
+	} );
+	editor.on( 'init', () => {
+		console.log( 'Content init:' );
+	} );
+	editor.on( 'setcontent', ( e ) => {
+		const elementg = editor.dom.select( `.lp-question-fib-input[data-id=${ uniquid }]` );
+		if ( elementg[ 0 ] ) {
+			elementg[ 0 ].focus();
+		}
+
+		editor.dom.bind( elementg[ 0 ], 'input', function( e ) {
+			console.log( 'Input changed:', e.target.value );
+		} );
+	} );
+	editor.on( 'selectionchange', ( e ) => {
+		const selection = editor.selection;
+		const content = selection.getContent( { format: 'text' } );
+		const rng = selection.getRng();
+		if ( selection ) {
+			fibTextSelection = {
+				text: content,
+				startOffset: rng.startOffset,
+				endOffset: rng.endOffset,
+			};
+		}
+
+		console.log( 'Selection start:', fibTextSelection );
 	} );
 };
 
@@ -607,6 +643,57 @@ const updateAnswersConfig = ( e, target ) => {
 };
 // End for answers config
 
+// For FIB question type
+const fibInsertBlank = ( e, target ) => {
+	const elBtnFibInsertBlank = target.closest( `${ className.elBtnFibInsertBlank }` );
+	if ( ! elBtnFibInsertBlank ) {
+		return;
+	}
+
+	const elQuestionItem = elBtnFibInsertBlank.closest( `${ className.elQuestionItem }` );
+	if ( ! elQuestionItem ) {
+		return;
+	}
+
+	const questionId = elQuestionItem.dataset.questionId;
+
+	uniquid = randomString( 5 );
+
+	const idEditor = `lp-question-fib-input-${ questionId }`;
+	let valueInputNew = '';
+	if ( fibTextSelection ) {
+		valueInputNew = fibTextSelection.text;
+	}
+	const elInputNew = `<input type="text" class="lp-question-fib-input"
+						name="lp-question-fib-input" value="${ valueInputNew }" data-id="${ uniquid }" placeholder="Enter answer correct on here" />`;
+
+	const editor = window.tinymce.get( idEditor );
+
+	let content_new = editor.getContent() + ' ' + elInputNew + ' ';
+	if ( fibTextSelection ) {
+		const content_old = editor.getContent();
+		content_new = content_old.substring( 0, fibTextSelection.startOffset ) + elInputNew + content_old.substring( fibTextSelection.endOffset );
+	}
+
+	editor.setContent(
+		content_new,
+		{ format: 'raw' }
+	);
+
+	fibTextSelection = null;
+};
+
+const randomString = ( length = 5 ) => {
+	const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+	let result = '';
+	for ( let i = 0; i < length; i++ ) {
+		result += chars.charAt( Math.floor( Math.random() * chars.length ) );
+	}
+	return result;
+};
+
+// End FIB question type
+
 // Events
 document.addEventListener( 'click', ( e ) => {
 	const target = e.target;
@@ -618,6 +705,7 @@ document.addEventListener( 'click', ( e ) => {
 	removeQuestion( e, target );
 	updateQuestionTitle( e, target );
 	updateAnswersConfig( e, target );
+	fibInsertBlank( e, target );
 } );
 // Event keydown
 document.addEventListener( 'keydown', ( e ) => {

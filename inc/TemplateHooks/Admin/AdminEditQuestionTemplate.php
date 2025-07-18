@@ -571,7 +571,7 @@ class AdminEditQuestionTemplate {
 						name="lp-question-fib-input" value="%s" data-id="%s" style="%s" />',
 					$fill,
 					esc_attr( $id ),
-					'border: 1px dashed rebeccapurple;padding: 5px;'
+					'border: 1px dashed rebeccapurple;padding: 5px;margin: 0 3px;'
 				);
 
 				$content = str_replace( $shortcode[0], $new_str, $content );
