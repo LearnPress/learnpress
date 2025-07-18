@@ -327,6 +327,8 @@ const addQuestion = ( e, target ) => {
 				if ( elQuestionTypeLabel ) {
 					elQuestionTypeLabel.textContent = question_type_label;
 				}
+
+				initTinyMCE();
 			}
 
 			showToast( message, status );

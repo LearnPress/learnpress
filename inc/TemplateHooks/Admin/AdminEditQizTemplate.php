@@ -269,7 +269,7 @@ class AdminEditQizTemplate {
 				'<label for="lp-question-hint">%s</label>',
 				__( 'Hint', 'learnpress' )
 			),
-			'tinymce'  => Template::editor_tinymce(
+			'tinymce'  => AdminTemplate::editor_tinymce(
 				$hint,
 				$editor_id
 			),
@@ -295,7 +295,7 @@ class AdminEditQizTemplate {
 				'<label for="lp-question-explanation">%s</label>',
 				__( 'Explanation', 'learnpress' )
 			),
-			'tinymce'  => Template::editor_tinymce(
+			'tinymce'  => AdminTemplate::editor_tinymce(
 				$explanation,
 				$editor_id
 			),
@@ -333,7 +333,7 @@ class AdminEditQizTemplate {
 				'<div name="lp-editor-wysiwyg" class="lp-editor-wysiwyg">%s</div>',
 				htmlspecialchars_decode( $question_description )
 			),
-			'tinymce'  => Template::editor_tinymce(
+			'tinymce'  => AdminTemplate::editor_tinymce(
 				$question_description,
 				$editor_id
 			),

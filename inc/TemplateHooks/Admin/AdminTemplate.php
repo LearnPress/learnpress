@@ -11,6 +11,38 @@ use LearnPress\Helpers\Template;
  */
 class AdminTemplate {
 	/**
+	 * HTML TinyMCE editor
+	 *
+	 * @param string $value
+	 * @param string $id_name
+	 * @param array $setting
+	 *
+	 * @return string
+	 * @since 4.2.8.8
+	 * @version 1.0.0
+	 */
+	public static function editor_tinymce( string $value, string $id_name, array $setting = [] ): string {
+		$args = array_merge(
+			$setting,
+			[
+				'media_buttons' => true,
+				'dfw'           => false,
+				'editor_class'  => 'lp-editor-tinymce',
+				'editor_height' => 300,
+			]
+		);
+
+		ob_start();
+		wp_editor(
+			$value,
+			$id_name,
+			$args
+		);
+
+		return ob_get_clean();
+	}
+
+	/**
 	 * HTML for popup items to select.
 	 *
 	 * @param array $tabs [ [ key => label ] ].

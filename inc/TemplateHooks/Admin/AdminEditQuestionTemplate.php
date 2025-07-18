@@ -2,7 +2,6 @@
 
 namespace LearnPress\TemplateHooks\Admin;
 
-use Exception;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\Question\QuestionAnswerModel;
@@ -60,7 +59,7 @@ class AdminEditQuestionTemplate {
 				'<label for="lp-question-hint">%s</label>',
 				__( 'Hint', 'learnpress' )
 			),
-			'tinymce'  => Template::editor_tinymce(
+			'tinymce'  => AdminTemplate::editor_tinymce(
 				$hint,
 				$editor_id
 			),
@@ -86,7 +85,7 @@ class AdminEditQuestionTemplate {
 				'<label for="lp-question-explanation">%s</label>',
 				__( 'Explanation', 'learnpress' )
 			),
-			'tinymce'  => Template::editor_tinymce(
+			'tinymce'  => AdminTemplate::editor_tinymce(
 				$explanation,
 				$editor_id
 			),
@@ -124,7 +123,7 @@ class AdminEditQuestionTemplate {
 				'<div name="lp-editor-wysiwyg" class="lp-editor-wysiwyg">%s</div>',
 				htmlspecialchars_decode( $question_description )
 			),
-			'tinymce'  => Template::editor_tinymce(
+			'tinymce'  => AdminTemplate::editor_tinymce(
 				$question_description,
 				$editor_id
 			),
@@ -378,31 +377,96 @@ class AdminEditQuestionTemplate {
 	 * @return string
 	 */
 	public function html_answer_type_fill_in_blanks( QuestionPostModel $questionPostModel ): string {
-		$name = 'lp-question-fib-input-' . $questionPostModel->ID;
-		$questionPostModel->get_answer_option();
+		$questionPostFIBModel = new QuestionPostFIBModel( $questionPostModel );
+		$name                 = 'lp-question-fib-input-' . $questionPostFIBModel->ID;
+		$answers              = $questionPostFIBModel->get_answer_option();
+		$questionAnswerModel  = $answers[0] ?? null;
+		$content              = '';
+
+		if ( $questionAnswerModel instanceof QuestionAnswerModel ) {
+			$content = $this->convert_content_fib_to_input( $questionAnswerModel->title );
+		}
 
 		$section = [
-			'input'            => sprintf(
-				'<textarea name="%s" rows="5" %s>1231</textarea>',
-				esc_attr( $name ),
-				'style="width: 100%"'
+			'input'          => AdminTemplate::editor_tinymce(
+				$content,
+				$name,
+				[
+					'default_editor' => 'tinymce',
+					'tinymce'        => array(
+						'wp_autoresize_on' => true, // Enable auto-resize
+						'statusbar'        => true,        // Show status bar with resize handle
+						'resize'           => true,           // Enable manual resize
+						'min_height'       => 200,        // Minimum height
+						'max_height'       => 800,         // Maximum height
+					),
+				]
 			),
-			'buttons'          => '<div class="lp-question-fib-buttons">',
-			'btn_insert_new'   => sprintf(
+			'buttons'        => '<div class="lp-question-fib-buttons">',
+			'btn-insert-new' => sprintf(
 				'<button type="button" class="lp-btn-fib-insert-blank button">%s</button>',
 				__( 'Insert new blank', 'learnpress' )
 			),
-			'btn_remove_blank' => sprintf(
+			'btn-remove'     => sprintf(
 				'<button type="button" class="lp-btn-fib-remove-blank button">%s</button>',
 				__( 'Remove blank', 'learnpress' )
 			),
-			'btn_clear'        => sprintf(
+			'btn-clear'      => sprintf(
 				'<button type="button" class="lp-btn-fib-clear-content button">%s</button>',
 				__( 'Clear content', 'learnpress' )
 			),
-			'buttons_end'      => '</div>',
+			'btn-save'       => sprintf(
+				'<button type="button" class="lp-btn-fib-save-content button">%s</button>',
+				__( 'Save content', 'learnpress' )
+			),
+			'buttons_end'    => '</div>',
 		];
 
 		return Template::combine_components( $section );
+	}
+
+	/**
+	 * Convert content of FIB to input tag HTML
+	 *
+	 * @param string $content
+	 *
+	 * @return string
+	 * @since 4.2.8.8
+	 * @version 1.0.0
+	 */
+	public function convert_content_fib_to_input( string $content = '' ): string {
+		$regex_str = get_shortcode_regex( array( 'fib' ) );
+		$pattern   = "/{$regex_str}/";
+		preg_match_all(
+			$pattern,
+			$content,
+			$all_shortcode,
+			PREG_SET_ORDER
+		);
+
+		if ( ! empty( $all_shortcode ) ) {
+			foreach ( $all_shortcode as $shortcode ) {
+				$atts = shortcode_parse_atts( $shortcode[0] );
+
+				$fill = $atts['fill'] ?? '';
+				$id   = $atts['id'] ?? '';
+				if ( empty( $id ) ) {
+					$ida = explode( '=', str_replace( ']', '', $atts[1] ) );
+					$id  = isset( $ida[1] ) ? str_replace( '"', '', $ida[1] ) : '';
+				}
+
+				$new_str = sprintf(
+					'<input type="text" class="lp-question-fib-input"
+						name="lp-question-fib-input" value="%s" data-id="%s" style="%s" />',
+					$fill,
+					esc_attr( $id ),
+					'border: 1px dashed rebeccapurple;padding: 5px;'
+				);
+
+				$content = str_replace( $shortcode[0], $new_str, $content );
+			}
+		}
+
+		return $content;
 	}
 }

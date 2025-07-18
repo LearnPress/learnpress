@@ -6,7 +6,7 @@
 	"scripts": {
 		"start": "cross-env NODE_OPTIONS=--openssl-legacy-provider wp-scripts start",
 		"build": "cross-env NODE_OPTIONS=--openssl-legacy-provider wp-scripts build",
-		"format-js": "cross-env  wp-scripts format ./assets/src",
+		"format-js": "cross-env  wp-scripts format ./assets/src/js/admin/edit-quiz.js",
 		"dev-build": "cross-env  npm run build && gulp styles && npm run start",
 		"makepot:js": "wp-babel-makepot \"./assets/src/**/*.{js,jsx,ts,tsx}\" --ignore \"**/node_modules/**,**/test/**,**/*.d.ts\" --base \"./\" --dir \"./languages/strings\" --output \"./languages/learnpress-js.pot\"",
 		"makepot:cli": "wp i18n make-pot . languages/learnpress.pot --skip-audit --merge=languages/learnpress-js.pot --exclude=\"test,releases,build,dist,node_modules,vendor,wordpress\"",
