@@ -162,7 +162,7 @@ class CoursePostModel extends PostModel {
 	 * @return bool
 	 */
 	public function is_free(): bool {
-		return apply_filters( 'learnPress/course/is-free', $this->get_price() == 0, $this );
+		return $this->get_price() == 0;
 	}
 
 	/**
