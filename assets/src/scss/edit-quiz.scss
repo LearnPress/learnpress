@@ -170,6 +170,39 @@ $spacing-section: 12px;
 		border: 1px solid $border-color;
 		border-top: none;
 	}
+
+	.lp-answers-config {
+		display: flex;
+		gap: 10px;
+		flex-direction: column;
+	}
+
+	.lp-question-fib-option-item {
+		padding: 20px;
+		border: 1px solid $border-color;
+
+		.lp-question-fib-option-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			gap: 10px;
+
+			input[type="text"] {
+				width: 100%;
+			}
+		}
+
+		.lp-question-fib-option-detail {
+			display: flex;
+			flex-direction: column;
+			gap: 10px;
+
+			p {
+				margin: 0;
+				padding: 0;
+			}
+		}
+	}
 }
 
 .lp-select-items-popup {

@@ -26,6 +26,7 @@ class QuestionAnswerModel {
 
 	/********** Fields not on table **********/
 	public $meta_data;
+	public $is_get_all_metadata = false;
 
 	/**
 	 * If data get from database, map to object.
@@ -73,14 +74,18 @@ class QuestionAnswerModel {
 	/**
 	 * Get all meta_data
 	 *
-	 * @return stdClass|null
-	 * @throws Exception
+	 * @return mixed|null
 	 */
 	public function get_all_metadata() {
+		if ( $this->is_get_all_metadata ) {
+			return $this->meta_data;
+		}
+
 		$questionPostModel = $this->get_question_post_model();
 		if ( $questionPostModel && $questionPostModel->get_type() === 'fill_in_blanks' ) {
-			$blanks          = learn_press_get_question_answer_meta( $this->question_answer_id, '_blanks' );
-			$this->meta_data = $blanks;
+			$blanks                    = learn_press_get_question_answer_meta( $this->question_answer_id, '_blanks' );
+			$this->meta_data           = $blanks;
+			$this->is_get_all_metadata = true;
 		}
 
 		return $this->meta_data;

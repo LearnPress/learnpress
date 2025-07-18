@@ -381,6 +381,7 @@ class AdminEditQuestionTemplate {
 		$name                 = 'lp-question-fib-input-' . $questionPostFIBModel->ID;
 		$answers              = $questionPostFIBModel->get_answer_option();
 		$questionAnswerModel  = $answers[0] ?? null;
+		$options              = $questionAnswerModel->get_all_metadata();
 		$content              = '';
 
 		if ( $questionAnswerModel instanceof QuestionAnswerModel ) {
@@ -411,18 +412,128 @@ class AdminEditQuestionTemplate {
 				'<button type="button" class="lp-btn-fib-remove-blank button">%s</button>',
 				__( 'Remove blank', 'learnpress' )
 			),
-			'btn-clear'      => sprintf(
-				'<button type="button" class="lp-btn-fib-clear-content button">%s</button>',
-				__( 'Clear content', 'learnpress' )
-			),
 			'btn-save'       => sprintf(
 				'<button type="button" class="lp-btn-fib-save-content button">%s</button>',
 				__( 'Save content', 'learnpress' )
 			),
+			'btn-clear'      => sprintf(
+				'<button type="button" class="lp-btn-fib-clear-all-content button">%s</button>',
+				__( 'Clear content', 'learnpress' )
+			),
 			'buttons_end'    => '</div>',
+			'options'        => $this->html_fib_options( $options ),
 		];
 
 		return Template::combine_components( $section );
+	}
+
+	public function html_fib_options( $options ): string {
+		if ( empty( $options ) || ! is_array( $options ) ) {
+			return '';
+		}
+
+		$html = '';
+		$i    = 1;
+		foreach ( $options as $option ) {
+			$match_case = $option['match_case'] ?? 0;
+			$comparison = $option['comparison'] ?? '';
+			$id         = $option['id'] ?? '';
+
+			$section_header = [
+				'wrap'       => '<div class="lp-question-fib-option-header">',
+				'number'     => sprintf(
+					'<span class="lp-question-fib-option-index">%s</span>',
+					$i++
+				),
+				'title'      => sprintf(
+					'<input type="text"
+						name="lp-question-fib-option-title-%s"
+						value="%s"
+						class="lp-question-fib-option-title" />',
+					esc_attr( $id ),
+					esc_html( $option['fill'] ?? '' )
+				),
+				'btn-detail' => sprintf(
+					'<button type="button" class="lp-btn-fib-option-detail button">%s</button>',
+					__( 'Details', 'learnpress' )
+				),
+				'btn-delete' => sprintf(
+					'<button type="button" class="lp-btn-fib-option-delete button">%s</button>',
+					__( 'Remove', 'learnpress' )
+				),
+				'wrap_end'   => '</div>',
+			];
+
+			$section_detail = [
+				'wrap'            => '<div class="lp-question-fib-option-detail">',
+				'match-case'      => sprintf(
+					'<label>
+						<input type="checkbox" class="lp-question-fib-option-match-case" %s name="%s" /> %s
+					</label>',
+					$match_case ? 'checked' : '',
+					esc_attr( 'lp-question-fib-option-match-case-' . $id ),
+					__( 'Match case', 'learnpress' )
+				),
+				'separator-label' => sprintf(
+					'<div>%s</div>',
+					__( 'Comparison', 'learnpress' )
+				),
+				'equal'           => sprintf(
+					'<div>
+						<label>
+						<input type="radio"
+							name="lp-question-fib-option-comparison-%s"
+							class="lp-question-fib-option-comparison" value="equal" %s /> %s
+						</label>
+						<p>%s</p>
+					</div>',
+					esc_attr( $id ),
+					$comparison === 'equal' ? 'checked' : '',
+					__( 'Equal', 'learnpress' ),
+					__( 'Match two words are equality.', 'learnpress' )
+				),
+				'range'           => sprintf(
+					'<div>
+						<label>
+							<input type="radio"
+							name="lp-question-fib-option-comparison-%s"
+							class="lp-question-fib-option-comparison" value="range" %s /> %s
+						</label>
+						<p>%s</p>
+					</div>',
+					esc_attr( $id ),
+					$comparison === 'range' ? 'checked' : '',
+					__( 'Range', 'learnpress' ),
+					__( 'Match any number in a range. Use 100, 200 to match any value from 100 to 200.', 'learnpress' )
+				),
+				'any'             => sprintf(
+					'<div>
+						<label>
+							<input type="radio"
+							name="lp-question-fib-option-comparison-%s"
+							class="lp-question-fib-option-comparison" value="any" %s /> %s
+						</label>
+						<p>%s</p>
+					</div>',
+					esc_attr( $id ),
+					$comparison === 'any' ? 'checked' : '',
+					__( 'Any', 'learnpress' ),
+					__( 'Match any value in a set of words. Use fill, blank, or question to match any value in the set.', 'learnpress' )
+				),
+				'wrap_end'        => '</div>',
+			];
+
+			$section = [
+				'wrap'     => '<div class="lp-question-fib-option-item">',
+				'header'   => Template::combine_components( $section_header ),
+				'detail'   => Template::combine_components( $section_detail ),
+				'wrap_end' => '</div>',
+			];
+
+			$html .= Template::combine_components( $section );
+		}
+
+		return $html;
 	}
 
 	/**
