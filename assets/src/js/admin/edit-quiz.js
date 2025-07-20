@@ -240,13 +240,14 @@ const reInitTinymce = ( id ) => {
 
 let uniquid;
 let fibTextSelection;
+let fibSelection;
 // Events for TinyMCE editor
 const eventEditorTinymceChange = ( id, callBack ) => {
 	const editor = window.tinymce.get( id );
 	editor.settings.force_p_newlines = false;
 	editor.settings.forced_root_block = '';
 	editor.settings.force_br_newlines = true;
-	editor.settings.content_style = 'input {border: 1px dashed rebeccapurple;padding: 5px;margin: 0 3px;outline: none;} body{ line-height: 2.2;}';
+	editor.settings.content_style = 'input {border: 1px dashed rebeccapurple;padding: 5px;margin: 0 3px;outline: none;} body{ line-height: 2.2;}  .fib{border: 1px dashed rebeccapurple;padding: 5px;margin: 0 3px;outline: none;display: inline-block; }';
 	// Event change content in TinyMCE editor
 	editor.on( 'change', ( e ) => {
 		console.log( 'Content changed:' );
@@ -272,6 +273,7 @@ const eventEditorTinymceChange = ( id, callBack ) => {
 		} );
 	} );
 	editor.on( 'selectionchange', ( e ) => {
+		fibSelection = editor.selection;
 		const selection = editor.selection;
 		const content = selection.getContent( { format: 'text' } );
 		const rng = selection.getRng();
@@ -661,13 +663,21 @@ const fibInsertBlank = ( e, target ) => {
 
 	const idEditor = `lp-question-fib-input-${ questionId }`;
 	let valueInputNew = '';
+
 	if ( fibTextSelection ) {
 		valueInputNew = fibTextSelection.text;
 	}
-	const elInputNew = `<input type="text" class="lp-question-fib-input"
-						name="lp-question-fib-input" value="${ valueInputNew }" data-id="${ uniquid }" placeholder="Enter answer correct on here" />`;
+	// const elInputNew = `<input type="text" class="lp-question-fib-input"
+	// 					name="lp-question-fib-input" value="${ valueInputNew }" data-id="${ uniquid }" placeholder="Enter answer correct on here" />`;
+
+	let elInputNew = `<span class="fib" data-id="${ uniquid }">${ valueInputNew }</span>&nbsp;`;
+
+	fibSelection.setContent( elInputNew );
 
 	const editor = window.tinymce.get( idEditor );
+	console.log( 'Editor:', editor.getContent( {format: 'text'}) );
+
+	return;
 
 	let content_new = editor.getContent() + ' ' + elInputNew + ' ';
 	if ( fibTextSelection ) {
