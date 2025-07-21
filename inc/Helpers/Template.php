@@ -386,6 +386,18 @@ class Template {
 	 * @version 1.0.0
 	 */
 	public static function convert_data_to_json( $data ): string {
-		return esc_attr( htmlentities2( json_encode( $data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) ) );
+		return esc_attr(
+			htmlentities2(
+				wp_json_encode(
+					$data,
+					JSON_HEX_QUOT |
+					JSON_HEX_TAG |
+					JSON_HEX_AMP |
+					JSON_HEX_APOS |
+					JSON_UNESCAPED_UNICODE |
+					JSON_UNESCAPED_SLASHES
+				)
+			)
+		);
 	}
 }

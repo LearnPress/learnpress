@@ -28,6 +28,9 @@ class QuestionAnswerModel {
 	public $meta_data;
 	public $is_get_all_metadata = false;
 
+	/** Constant */
+	const META_KEY_BLANKS = '_blanks';
+
 	/**
 	 * If data get from database, map to object.
 	 * Else create new object to save data to database.
@@ -89,6 +92,25 @@ class QuestionAnswerModel {
 		}
 
 		return $this->meta_data;
+	}
+
+	/**
+	 * Get meta value by key.
+	 *
+	 * @param string $key
+	 * @param mixed $value
+	 *
+	 * @return void
+	 * @since 4.2.8.8
+	 * @version 1.0.0
+	 */
+	public function save_meta_value_by_key( string $key, $value ) {
+		if ( ! $this->meta_data instanceof stdClass ) {
+			$this->meta_data = new stdClass();
+		}
+
+		$this->meta_data->{$key} = $value;
+		update_metadata( 'learnpress_question_answer', $this->question_answer_id, $key, $value );
 	}
 
 	/**

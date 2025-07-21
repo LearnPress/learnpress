@@ -4,6 +4,7 @@ namespace LearnPress\Ajax;
 
 use Exception;
 use LearnPress\Models\Question\QuestionAnswerModel;
+use LearnPress\Models\Question\QuestionPostFIBModel;
 use LearnPress\Models\Question\QuestionPostModel;
 use LearnPress\Models\Quiz\QuizQuestionModel;
 use LearnPress\Models\QuizPostModel;
@@ -190,9 +191,21 @@ class EditQuizAjax extends AbstractAjax {
 				throw new Exception( __( 'Question not found', 'learnpress' ) );
 			}
 
-			foreach ( $question_answers as $answer ) {
-				$questionAnswerModel = new QuestionAnswerModel( $answer );
+			if ( $questionPostModel->get_type() === 'fill_in_blanks' ) {
+				$questionPostFIBModel = new QuestionPostFIBModel( $questionPostModel );
+				// Update title
+				$questionAnswerModel        = new QuestionAnswerModel( $question_answers );
+				$content                    = $question_answers['title'] ?? '';
+				$questionAnswerModel->title = $questionPostFIBModel->convert_content_from_editor_to_db( $content );
 				$questionAnswerModel->save();
+				// Update meta value for fill in blanks
+				$questionAnswerModel->save_meta_value_by_key( QuestionAnswerModel::META_KEY_BLANKS, $question_answers['meta_data'] ?? [] );
+			} else {
+				foreach ( $question_answers as $answer ) {
+					$questionAnswerModel = new QuestionAnswerModel( $answer );
+					$questionAnswerModel->save();
+
+				}
 			}
 
 			$response->status  = 'success';

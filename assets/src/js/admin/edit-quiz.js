@@ -655,7 +655,13 @@ const fibInsertBlank = ( e, target ) => {
 
 	const idEditor = `lp-question-fib-input-${ questionId }`;
 	const editor = window.tinymce.get( idEditor );
+	const elAnswersConfig = elQuestionItem.querySelector( `${ className.elAnswersConfig }` );
+	const dataAnswers = JSON.parse( elAnswersConfig.dataset.answers || '[]' );
+	if ( ! dataAnswers ) {
+		return;
+	}
 
+	let selectedText;
 	if ( fibSelection ) {
 		const elNode = fibSelection.getNode();
 		if ( elNode.classList.contains( 'lp-question-fib-input' ) ) {
@@ -663,9 +669,9 @@ const fibInsertBlank = ( e, target ) => {
 			return;
 		}
 
-		let selectedText = fibSelection.getContent( { format: 'text' } );
+		selectedText = fibSelection.getContent();
 		if ( selectedText.length === 0 ) {
-			selectedText = 'Enter answer correct on here';
+			selectedText = elBtnFibInsertBlank.dataset.defaultText;
 		}
 
 		const elInputNew = `<span class="lp-question-fib-input" data-id="${ uniquid }">${ selectedText }</span>&nbsp;`;
@@ -677,6 +683,75 @@ const fibInsertBlank = ( e, target ) => {
 		editor.selection.collapse( false );
 		editor.insertContent( elInputNew );
 	}
+
+	dataAnswers.meta_data = dataAnswers.meta_data || {};
+	dataAnswers.meta_data[ uniquid ] = {
+		id: uniquid,
+		comparison: '',
+		fill: selectedText,
+		index: 1,
+		match_case: 0,
+		open: false,
+	};
+
+	elAnswersConfig.dataset.answers = JSON.stringify( dataAnswers );
+};
+// Save content FIB question
+const fibSaveContent = ( e, target ) => {
+	const elBtnFibSaveContent = target.closest( `${ className.elBtnFibSaveContent }` );
+	if ( ! elBtnFibSaveContent ) {
+		return;
+	}
+
+	const elQuestionItem = elBtnFibSaveContent.closest( `${ className.elQuestionItem }` );
+	if ( ! elQuestionItem ) {
+		return;
+	}
+
+	const questionId = elQuestionItem.dataset.questionId;
+
+	const elAnswersConfig = elQuestionItem.querySelector( `${ className.elAnswersConfig }` );
+
+	const dataAnswers = JSON.parse( elAnswersConfig.dataset.answers || '[]' );
+	if ( ! dataAnswers ) {
+		return;
+	}
+
+	const editor = window.tinymce.get( `lp-question-fib-input-${ questionId }` );
+	dataAnswers.title = editor.getContent();
+
+	lpUtils.lpSetLoadingEl( elQuestionItem, 1 );
+
+	// Call ajax to update answers config
+	const callBack = {
+		success: ( response ) => {
+			const { message, status } = response;
+
+			if ( status === 'success' ) {
+			} else {
+				throw `Error: ${ message }`;
+			}
+
+			showToast( message, status );
+		},
+		error: ( error ) => {
+			showToast( error, 'error' );
+		},
+		completed: () => {
+			lpUtils.lpSetLoadingEl( elQuestionItem, 0 );
+		},
+	};
+
+	const dataSend = {
+		quiz_id: quizID,
+		action: 'update_question_answers_config',
+		question_id: questionId,
+		answers: dataAnswers,
+		args: {
+			id_url: idUrlHandle,
+		},
+	};
+	window.lpAJAXG.fetchAJAX( dataSend, callBack );
 };
 
 const randomString = ( length = 10 ) => {
@@ -702,6 +777,7 @@ document.addEventListener( 'click', ( e ) => {
 	updateQuestionTitle( e, target );
 	updateAnswersConfig( e, target );
 	fibInsertBlank( e, target );
+	fibSaveContent( e, target );
 } );
 // Event keydown
 document.addEventListener( 'keydown', ( e ) => {

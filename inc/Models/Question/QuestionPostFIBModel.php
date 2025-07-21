@@ -26,4 +26,25 @@ class QuestionPostFIBModel extends QuestionPostModel {
 			),
 		);
 	}
+
+	/**
+	 * Convert content to format [fib fill="" id="" ]
+	 *
+	 * @param string $content
+	 *
+	 * @return string
+	 */
+	public function convert_content_from_editor_to_db( string $content ): string {
+		$pattern = '#<span class="lp-question-fib-input" data-id="([^"]+)">([^<]+)<\/span>#';
+
+		return preg_replace_callback(
+			$pattern,
+			function ( $matches ) {
+				$id   = $matches[1];
+				$fill = $matches[2];
+				return '[fib fill="' . $fill . '" id="' . $id . '" ]';
+			},
+			$content
+		);
+	}
 }

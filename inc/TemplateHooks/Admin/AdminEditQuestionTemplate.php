@@ -237,6 +237,9 @@ class AdminEditQuestionTemplate {
 		}
 
 		$answers = $questionPostModel->get_answer_option();
+		if ( $questionPostModel->get_type() === 'fill_in_blanks' ) {
+			$answers = $answers[0] ?? [];
+		}
 
 		$section = [
 			'wrap'     => sprintf(
@@ -400,7 +403,8 @@ class AdminEditQuestionTemplate {
 			),
 			'buttons'        => '<div class="lp-question-fib-buttons">',
 			'btn-insert-new' => sprintf(
-				'<button type="button" class="lp-btn-fib-insert-blank button">%s</button>',
+				'<button type="button" class="lp-btn-fib-insert-blank button" data-default-text="%s">%s</button>',
+				esc_html__( 'Enter answer correct on here', 'learnpress' ),
 				__( 'Insert new blank', 'learnpress' )
 			),
 			'btn-remove'     => sprintf(
