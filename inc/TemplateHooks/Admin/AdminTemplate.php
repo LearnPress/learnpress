@@ -23,13 +23,12 @@ class AdminTemplate {
 	 */
 	public static function editor_tinymce( string $value, string $id_name, array $setting = [] ): string {
 		$args = array_merge(
-			$setting,
 			[
 				'media_buttons' => true,
-				'dfw'           => false,
 				'editor_class'  => 'lp-editor-tinymce',
 				'editor_height' => 300,
-			]
+			],
+			$setting
 		);
 
 		ob_start();

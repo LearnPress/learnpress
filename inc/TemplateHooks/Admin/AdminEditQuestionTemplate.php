@@ -385,7 +385,7 @@ class AdminEditQuestionTemplate {
 		$content              = '';
 
 		if ( $questionAnswerModel instanceof QuestionAnswerModel ) {
-			$content = $this->convert_content_fib_to_input( $questionAnswerModel->title );
+			$content = $this->convert_content_fib_to_span( $questionAnswerModel->title );
 		}
 
 		$section = [
@@ -393,14 +393,9 @@ class AdminEditQuestionTemplate {
 				$content,
 				$name,
 				[
-					'default_editor' => 'tinymce',
-					'tinymce'        => array(
-						'wp_autoresize_on' => true, // Enable auto-resize
-						'statusbar'        => true,        // Show status bar with resize handle
-						'resize'           => true,           // Enable manual resize
-						'min_height'       => 200,        // Minimum height
-						'max_height'       => 800,         // Maximum height
-					),
+					'default_editor' => 'html', // Use HTML editor by default tinymce
+					'tinymce'        => true,
+					'quicktags'      => true, // Set true to show tab "Code" in editor
 				]
 			),
 			'buttons'        => '<div class="lp-question-fib-buttons">',
@@ -572,6 +567,40 @@ class AdminEditQuestionTemplate {
 					$fill,
 					esc_attr( $id ),
 					'border: 1px dashed rebeccapurple;padding: 5px;margin: 0 3px;'
+				);
+
+				$content = str_replace( $shortcode[0], $new_str, $content );
+			}
+		}
+
+		return $content;
+	}
+
+	public function convert_content_fib_to_span( string $content = '' ): string {
+		$regex_str = get_shortcode_regex( array( 'fib' ) );
+		$pattern   = "/{$regex_str}/";
+		preg_match_all(
+			$pattern,
+			$content,
+			$all_shortcode,
+			PREG_SET_ORDER
+		);
+
+		if ( ! empty( $all_shortcode ) ) {
+			foreach ( $all_shortcode as $shortcode ) {
+				$atts = shortcode_parse_atts( $shortcode[0] );
+
+				$fill = $atts['fill'] ?? '';
+				$id   = $atts['id'] ?? '';
+				if ( empty( $id ) ) {
+					$ida = explode( '=', str_replace( ']', '', $atts[1] ) );
+					$id  = isset( $ida[1] ) ? str_replace( '"', '', $ida[1] ) : '';
+				}
+
+				$new_str = sprintf(
+					'<span class="lp-question-fib-input" data-id="%s">%s</span>',
+					esc_attr( $id ),
+					esc_html( $fill )
 				);
 
 				$content = str_replace( $shortcode[0], $new_str, $content );

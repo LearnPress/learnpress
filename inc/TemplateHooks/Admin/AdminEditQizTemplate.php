@@ -27,6 +27,22 @@ class AdminEditQizTemplate {
 	public function init() {
 		add_action( 'learn-press/admin/edit-quiz/layout', [ $this, 'edit_quiz_layout' ] );
 		add_filter( 'lp/rest/ajax/allow_callback', [ $this, 'allow_callback' ] );
+		add_filter(
+			'wp_default_editor',
+			function ( $r ) {
+				global $post;
+				if ( ! $post ) {
+					return $r;
+				}
+
+				if ( $post->post_type !== LP_QUIZ_CPT ) {
+					return $r;
+				}
+
+				return 'html';
+			},
+			1000
+		);
 	}
 
 	/**

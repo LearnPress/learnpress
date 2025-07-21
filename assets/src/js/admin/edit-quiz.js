@@ -247,7 +247,9 @@ const eventEditorTinymceChange = ( id, callBack ) => {
 	editor.settings.force_p_newlines = false;
 	editor.settings.forced_root_block = '';
 	editor.settings.force_br_newlines = true;
-	editor.settings.content_style = 'input {border: 1px dashed rebeccapurple;padding: 5px;margin: 0 3px;outline: none;} body{ line-height: 2.2;}  .fib{border: 1px dashed rebeccapurple;padding: 5px;margin: 0 3px;outline: none;display: inline-block; }';
+	editor.settings.content_style = '' +
+		'body{ line-height: 2.2;}  ' +
+		'.lp-question-fib-input{border: 1px dashed rebeccapurple;padding: 5px; } ';
 	// Event change content in TinyMCE editor
 	editor.on( 'change', ( e ) => {
 		console.log( 'Content changed:' );
@@ -274,18 +276,8 @@ const eventEditorTinymceChange = ( id, callBack ) => {
 	} );
 	editor.on( 'selectionchange', ( e ) => {
 		fibSelection = editor.selection;
-		const selection = editor.selection;
-		const content = selection.getContent( { format: 'text' } );
-		const rng = selection.getRng();
-		if ( selection ) {
-			fibTextSelection = {
-				text: content,
-				startOffset: rng.startOffset,
-				endOffset: rng.endOffset,
-			};
-		}
-
-		console.log( 'Selection start:', fibTextSelection );
+		//console.log( 'Selection changed:', fibSelection );
+		//console.log( 'Node:', fibSelection.getNode() );
 	} );
 };
 
@@ -659,41 +651,35 @@ const fibInsertBlank = ( e, target ) => {
 
 	const questionId = elQuestionItem.dataset.questionId;
 
-	uniquid = randomString( 5 );
+	uniquid = randomString();
 
 	const idEditor = `lp-question-fib-input-${ questionId }`;
-	let valueInputNew = '';
-
-	if ( fibTextSelection ) {
-		valueInputNew = fibTextSelection.text;
-	}
-	// const elInputNew = `<input type="text" class="lp-question-fib-input"
-	// 					name="lp-question-fib-input" value="${ valueInputNew }" data-id="${ uniquid }" placeholder="Enter answer correct on here" />`;
-
-	let elInputNew = `<span class="fib" data-id="${ uniquid }">${ valueInputNew }</span>&nbsp;`;
-
-	fibSelection.setContent( elInputNew );
-
 	const editor = window.tinymce.get( idEditor );
-	console.log( 'Editor:', editor.getContent( {format: 'text'}) );
 
-	return;
+	if ( fibSelection ) {
+		const elNode = fibSelection.getNode();
+		if ( elNode.classList.contains( 'lp-question-fib-input' ) ) {
+			showToast( 'this text inserted to blank', 'error' );
+			return;
+		}
 
-	let content_new = editor.getContent() + ' ' + elInputNew + ' ';
-	if ( fibTextSelection ) {
-		const content_old = editor.getContent();
-		content_new = content_old.substring( 0, fibTextSelection.startOffset ) + elInputNew + content_old.substring( fibTextSelection.endOffset );
+		let selectedText = fibSelection.getContent( { format: 'text' } );
+		if ( selectedText.length === 0 ) {
+			selectedText = 'Enter answer correct on here';
+		}
+
+		const elInputNew = `<span class="lp-question-fib-input" data-id="${ uniquid }">${ selectedText }</span>&nbsp;`;
+
+		fibSelection.setContent( elInputNew );
+	} else {
+		const elInputNew = `<span class="lp-question-fib-input" data-id="${ uniquid }">Enter answer correct on here</span>&nbsp;`;
+		editor.selection.select( editor.getBody(), true );
+		editor.selection.collapse( false );
+		editor.insertContent( elInputNew );
 	}
-
-	editor.setContent(
-		content_new,
-		{ format: 'raw' }
-	);
-
-	fibTextSelection = null;
 };
 
-const randomString = ( length = 5 ) => {
+const randomString = ( length = 10 ) => {
 	const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
 	let result = '';
 	for ( let i = 0; i < length; i++ ) {
