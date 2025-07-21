@@ -522,10 +522,10 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					$t_time    = get_the_time( 'Y/m/d g:i:s a' );
 					$m_time    = $post->post_date;
 					$time      = get_post_time( 'G', true, $post );
-					$time_diff = time() - $time;
+					$time_diff = current_time( 'U' ) - $time;
 
 					if ( $time_diff > 0 && $time_diff < DAY_IN_SECONDS ) {
-						$h_time = sprintf( __( '%s ago', 'learnpress' ), human_time_diff( $time ) );
+						$h_time = sprintf( __( '%s ago', 'learnpress' ), human_time_diff( $time, current_time( 'U' ) ) );
 					} else {
 						$h_time = mysql2date( 'Y/m/d', $m_time );
 					}
