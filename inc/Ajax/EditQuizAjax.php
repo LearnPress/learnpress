@@ -196,10 +196,43 @@ class EditQuizAjax extends AbstractAjax {
 				// Update title
 				$questionAnswerModel        = new QuestionAnswerModel( $question_answers );
 				$content                    = $question_answers['title'] ?? '';
+				$meta_data                  = $question_answers['meta_data'] ?? [];
 				$questionAnswerModel->title = $questionPostFIBModel->convert_content_from_editor_to_db( $content );
 				$questionAnswerModel->save();
 				// Update meta value for fill in blanks
-				$questionAnswerModel->save_meta_value_by_key( QuestionAnswerModel::META_KEY_BLANKS, $question_answers['meta_data'] ?? [] );
+				$pattern = '#<span class="lp-question-fib-input" data-id="([^"]+)">([^<]+)<\/span>#';
+				preg_match_all( $pattern, $content, $matches );
+				$ids = [];
+
+				$fib_blank_options = [];
+				if ( ! empty( $matches ) ) {
+					$ids   = $matches[1];
+					$fills = $matches[2];
+
+					foreach ( $ids as $index => $id ) {
+						$fib_blank_options[ $id ] = [
+							'id'         => $id,
+							'fill'       => html_entity_decode( $fills[ $index ] ?? '' ),
+							'comparison' => '',
+							'match_case' => 0,
+						];
+					}
+				}
+
+				if ( ! empty( $meta_data ) ) {
+					foreach ( $meta_data as $blank_id => $blank_options ) {
+						if ( ! in_array( $blank_id, $ids, true ) ) {
+							unset( $meta_data[ $blank_id ] );
+						}
+					}
+				}
+
+				// If not null ids, but meta_data is empty, we will set default options for blanks.
+				if ( ! empty( $ids ) && empty( $meta_data ) ) {
+					$meta_data = $fib_blank_options;
+				}
+
+				$questionAnswerModel->save_meta_value_by_key( QuestionAnswerModel::META_KEY_BLANKS, $meta_data );
 			} else {
 				foreach ( $question_answers as $answer ) {
 					$questionAnswerModel = new QuestionAnswerModel( $answer );
