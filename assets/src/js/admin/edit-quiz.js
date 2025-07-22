@@ -40,6 +40,10 @@ const className = {
 	elBtnFibSaveContent: '.lp-btn-fib-save-content',
 	elBtnFibClearAllContent: '.lp-btn-fib-clear-all-content',
 	elFibInput: '.lp-question-fib-input',
+	elFibBlankOptions: '.lp-question-fib-blank-options',
+	elFibBlankOptionItem: '.lp-question-fib-blank-option-item',
+	elFibBlankOptionItemClone: '.lp-question-fib-blank-option-item.clone',
+	elFibBlankOptionIndex: '.lp-question-fib-option-index',
 	LPTarget: '.lp-target',
 	elCollapse: 'lp-collapse',
 };
@@ -695,7 +699,56 @@ const fibInsertBlank = ( e, target ) => {
 	};
 
 	elAnswersConfig.dataset.answers = JSON.stringify( dataAnswers );
+
+	// Clone blank options
+	const elFibBlankOptions = elQuestionItem.querySelector( `${ className.elFibBlankOptions }` );
+	const elFibBlankOptionItemClone = elQuestionItem.querySelector( `${ className.elFibBlankOptionItemClone }` );
+	const elFibBlankOptionItemNew = elFibBlankOptionItemClone.cloneNode( true );
+	const countOptions = elFibBlankOptions.querySelectorAll( `${ className.elFibBlankOptionItem }:not(.clone)` ).length;
+	const elFibBlankOptionIndex = elFibBlankOptionItemNew.querySelector( `${ className.elFibBlankOptionIndex }` );
+	const elFibBlankOptionInput = elFibBlankOptionItemNew.querySelector( `${ className.elFibBlankOptionItem } input` );
+
+	elFibBlankOptionInput.value = decodeHtml( selectedText );
+	elFibBlankOptionItemNew.dataset.id = uniquid;
+	elFibBlankOptionIndex.textContent = countOptions + 1 + '.';
+	elFibBlankOptionItemNew.classList.remove( 'clone' );
+	elFibBlankOptions.insertAdjacentElement( 'beforeend', elFibBlankOptionItemNew );
+	lpUtils.lpShowHideEl( elFibBlankOptionItemNew, 1 );
+	// End clone blank options
 };
+
+// Change blank option
+const fibChangeBlankOption = ( e, target ) => {
+	const elFibBlankOptionItem = target.closest( `${ className.elFibBlankOptionItem }` );
+	if ( ! elFibBlankOptionItem ) {
+		return;
+	}
+
+	const elQuestionItem = elFibBlankOptionItem.closest( `${ className.elQuestionItem }` );
+	if ( ! elQuestionItem ) {
+		return;
+	}
+
+	const questionId = elQuestionItem.dataset.questionId;
+	const blankId = elFibBlankOptionItem.dataset.id;
+	const elAnswersConfig = elQuestionItem.querySelector( `${ className.elAnswersConfig }` );
+	const dataAnswers = JSON.parse( elAnswersConfig.dataset.answers || '[]' );
+
+	const elFibBlankOptionItemInputs = elFibBlankOptionItem.querySelectorAll( 'input' );
+	elFibBlankOptionItemInputs.forEach( ( elInput ) => {
+		const key = elInput.dataset.key;
+
+		if ( elInput.checked ) {
+			dataAnswers.meta_data[ blankId ][ key ] = elInput.value;
+		} else if ( key === 'match_case' ) {
+			dataAnswers.meta_data[ blankId ][ key ] = 0;
+		}
+	} );
+
+	// Save changes to answers config
+	elAnswersConfig.dataset.answers = JSON.stringify( dataAnswers );
+};
+
 // Save content FIB question
 const fibSaveContent = ( e, target ) => {
 	const elBtnFibSaveContent = target.closest( `${ className.elBtnFibSaveContent }` );
@@ -763,6 +816,12 @@ const randomString = ( length = 10 ) => {
 	return result;
 };
 
+function decodeHtml( html ) {
+	const txt = document.createElement( 'textarea' );
+	txt.innerHTML = html;
+	return txt.value;
+}
+
 // End FIB question type
 
 // Events
@@ -778,6 +837,7 @@ document.addEventListener( 'click', ( e ) => {
 	updateAnswersConfig( e, target );
 	fibInsertBlank( e, target );
 	fibSaveContent( e, target );
+	fibChangeBlankOption( e, target );
 } );
 // Event keydown
 document.addEventListener( 'keydown', ( e ) => {

@@ -213,8 +213,8 @@ class EditQuizAjax extends AbstractAjax {
 						$fib_blank_options[ $id ] = [
 							'id'         => $id,
 							'fill'       => html_entity_decode( $fills[ $index ] ?? '' ),
-							'comparison' => '',
 							'match_case' => 0,
+							'comparison' => 'equal',
 						];
 					}
 				}
@@ -223,6 +223,10 @@ class EditQuizAjax extends AbstractAjax {
 					foreach ( $meta_data as $blank_id => $blank_options ) {
 						if ( ! in_array( $blank_id, $ids, true ) ) {
 							unset( $meta_data[ $blank_id ] );
+						}
+
+						if ( $meta_data[ $blank_id ]['comparison'] === '' ) {
+							$meta_data[ $blank_id ]['comparison'] = 'equal';
 						}
 					}
 				}
