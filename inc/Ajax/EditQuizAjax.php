@@ -221,12 +221,12 @@ class EditQuizAjax extends AbstractAjax {
 
 				if ( ! empty( $meta_data ) ) {
 					foreach ( $meta_data as $blank_id => $blank_options ) {
-						if ( ! in_array( $blank_id, $ids, true ) ) {
-							unset( $meta_data[ $blank_id ] );
-						}
-
 						if ( $meta_data[ $blank_id ]['comparison'] === '' ) {
 							$meta_data[ $blank_id ]['comparison'] = 'equal';
+						}
+
+						if ( ! in_array( $blank_id, $ids, true ) ) {
+							unset( $meta_data[ $blank_id ] );
 						}
 					}
 				}

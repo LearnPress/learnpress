@@ -281,8 +281,39 @@ const eventEditorTinymceChange = ( id, callBack ) => {
 	} );
 	editor.on( 'selectionchange', ( e ) => {
 		fibSelection = editor.selection;
-		//console.log( 'Selection changed:', fibSelection );
-		//console.log( 'Node:', fibSelection.getNode() );
+
+		// Check selection is blank, check empty blank content
+		if ( fibSelection.getNode().classList.contains( 'lp-question-fib-input' ) ) {
+			const blankId = fibSelection.getNode().dataset.id;
+			const textBlank = fibSelection.getNode().textContent.trim();
+			if ( textBlank.length === 0 ) {
+				const editorId = editor.id;
+				const questionId = editorId.replace( 'lp-question-fib-input-', '' );
+				const elQuestionItem = document.querySelector( `${ className.elQuestionItem }[data-question-id="${ questionId }"]` );
+				const elQuestionBlankOptions = elQuestionItem.querySelector( `${ className.elFibBlankOptions }` );
+				const elFibBlankOptionItem = elQuestionBlankOptions.querySelector( `${ className.elFibBlankOptionItem }[data-id="${ blankId }"]` );
+				if ( elFibBlankOptionItem ) {
+					lpUtils.lpShowHideEl( elFibBlankOptionItem, 0 );
+				}
+			}
+		}
+	} );
+	editor.on( 'Undo', function( e ) {
+		const contentUndo = editor.getContent();
+		const selection = editor.selection;
+		const nodeUndo = selection.getNode();
+		const classNameFind = className.elFibInput.replace( '.', '' );
+		if ( nodeUndo.classList.contains( `${ classNameFind }` ) ) {
+			const blankId = nodeUndo.dataset.id;
+			const elFibBlankOptionItem = document.querySelector( `${ className.elFibBlankOptionItem }[data-id="${ blankId }"]` );
+
+			if ( elFibBlankOptionItem ) {
+				lpUtils.lpShowHideEl( elFibBlankOptionItem, 1 );
+			}
+		}
+	} );
+	editor.on( 'Redo', function( e ) {
+
 	} );
 };
 
