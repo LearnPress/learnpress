@@ -408,7 +408,7 @@ class AdminEditQuestionTemplate {
 		}
 
 		$section = [
-			'input'          => AdminTemplate::editor_tinymce(
+			'input'                 => AdminTemplate::editor_tinymce(
 				$content,
 				$name,
 				[
@@ -417,26 +417,42 @@ class AdminEditQuestionTemplate {
 					'quicktags'      => true, // Set true to show tab "Code" in editor
 				]
 			),
-			'buttons'        => '<div class="lp-question-fib-buttons">',
-			'btn-insert-new' => sprintf(
+			'buttons'               => '<div class="lp-question-fib-buttons">',
+			'btn-insert-new'        => sprintf(
 				'<button type="button" class="lp-btn-fib-insert-blank button" data-default-text="%s">%s</button>',
 				esc_html__( 'Enter answer correct on here', 'learnpress' ),
 				__( 'Insert new blank', 'learnpress' )
 			),
-			'btn-remove'     => sprintf(
-				'<button type="button" class="lp-btn-fib-remove-blank button">%s</button>',
-				__( 'Remove blank', 'learnpress' )
+			'btn-delete-all-blanks' => sprintf(
+				'<button type="button"
+							class="lp-btn-fib-delete-all-blanks button"
+							data-title="%s"
+							data-content="%s"
+							title="%s">%s
+						</button>',
+				esc_attr__( 'Are you sure?', 'learnpress' ),
+				esc_html__( 'This action will delete all blanks in the editor, only keep text content.', 'learnpress' ),
+				esc_attr__( 'Delete all blanks on this editor.', 'learnpress' ),
+				__( 'Delete all blanks', 'learnpress' )
 			),
-			'btn-save'       => sprintf(
+			'btn-save'              => sprintf(
 				'<button type="button" class="lp-btn-fib-save-content button">%s</button>',
 				__( 'Save content', 'learnpress' )
 			),
-			'btn-clear'      => sprintf(
-				'<button type="button" class="lp-btn-fib-clear-all-content button">%s</button>',
+			'btn-clear'             => sprintf(
+				'<button type="button"
+							class="lp-btn-fib-clear-all-content button"
+							data-title="%s"
+							data-content="%s"
+							title="%s">%s
+						</button>',
+				esc_attr__( 'Are you sure?', 'learnpress' ),
+				esc_html__( 'This action will delete all content in the editor.', 'learnpress' ),
+				esc_attr__( 'Clear all content on this editor.', 'learnpress' ),
 				__( 'Clear content', 'learnpress' )
 			),
-			'buttons_end'    => '</div>',
-			'options'        => $this->html_fib_options( $options ),
+			'buttons_end'           => '</div>',
+			'options'               => $this->html_fib_options( $options ),
 		];
 
 		return Template::combine_components( $section );
@@ -472,12 +488,21 @@ class AdminEditQuestionTemplate {
 					esc_attr( $id ),
 					esc_html( $option['fill'] ?? '' )
 				),
+				'btn-save'   => sprintf(
+					'<button type="button" class="lp-btn-fib-option-save button">%s</button>',
+					__( 'Save', 'learnpress' )
+				),
 				'btn-detail' => sprintf(
 					'<button type="button" class="lp-btn-fib-option-detail button">%s</button>',
 					__( 'Details', 'learnpress' )
 				),
 				'btn-delete' => sprintf(
-					'<button type="button" class="lp-btn-fib-option-delete button">%s</button>',
+					'<button type="button"
+								class="lp-btn-fib-option-delete button"
+								data-title="%s" data-content="%s">%s
+							</button>',
+					esc_attr__( 'Are you sure?', 'learnpress' ),
+					esc_html__( 'Delete this blank and keep text', 'learnpress' ),
 					__( 'Remove', 'learnpress' )
 				),
 				'wrap_end'   => '</div>',

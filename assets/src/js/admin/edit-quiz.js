@@ -36,7 +36,7 @@ const className = {
 	elInputAnswerSetTrue: '.lp-input-answer-set-true',
 	elQuestionAnswerItem: '.lp-question-answer-item',
 	elBtnFibInsertBlank: '.lp-btn-fib-insert-blank',
-	elBtnFibRemoveBlank: '.lp-btn-fib-remove-blank',
+	elBtnFibDeleteAllBlanks: '.lp-btn-fib-delete-all-blanks',
 	elBtnFibSaveContent: '.lp-btn-fib-save-content',
 	elBtnFibClearAllContent: '.lp-btn-fib-clear-all-content',
 	elFibInput: '.lp-question-fib-input',
@@ -44,6 +44,7 @@ const className = {
 	elFibBlankOptionItem: '.lp-question-fib-blank-option-item',
 	elFibBlankOptionItemClone: '.lp-question-fib-blank-option-item.clone',
 	elFibBlankOptionIndex: '.lp-question-fib-option-index',
+	elBtnFibOptionDelete: '.lp-btn-fib-option-delete',
 	LPTarget: '.lp-target',
 	elCollapse: 'lp-collapse',
 };
@@ -749,6 +750,135 @@ const fibChangeBlankOption = ( e, target ) => {
 	elAnswersConfig.dataset.answers = JSON.stringify( dataAnswers );
 };
 
+// Remove blank
+const fibDeleteBlank = ( e, target ) => {
+	const elBtnFibOptionDelete = target.closest( `${ className.elBtnFibOptionDelete }` );
+	if ( ! elBtnFibOptionDelete ) {
+		return;
+	}
+
+	const elQuestionItem = elBtnFibOptionDelete.closest( `${ className.elQuestionItem }` );
+	if ( ! elQuestionItem ) {
+		return;
+	}
+
+	const questionId = elQuestionItem.dataset.questionId;
+	const elAnswersConfig = elQuestionItem.querySelector( `${ className.elAnswersConfig }` );
+	const dataAnswers = JSON.parse( elAnswersConfig.dataset.answers || '[]' );
+	const blankItem = elBtnFibOptionDelete.closest( `${ className.elFibBlankOptionItem }` );
+	const blankId = blankItem.dataset.id;
+
+	SweetAlert.fire( {
+		title: elBtnFibOptionDelete.dataset.title,
+		text: elBtnFibOptionDelete.dataset.content,
+		icon: 'warning',
+		showCloseButton: true,
+		showCancelButton: true,
+		cancelButtonText: lpDataAdmin.i18n.cancel,
+		confirmButtonText: lpDataAdmin.i18n.yes,
+		reverseButtons: true,
+	} ).then( ( result ) => {
+		if ( result.isConfirmed ) {
+			// Find span with id on editor and remove it
+			const editor = window.tinymce.get( `lp-question-fib-input-${ questionId }` );
+			const elBlank = editor.dom.select( `.lp-question-fib-input[data-id="${ blankId }"]` );
+			if ( elBlank[ 0 ] ) {
+				// Remove tag html but keep content
+				editor.dom.remove( elBlank[ 0 ], true );
+			}
+
+			blankItem.remove();
+			dataAnswers.meta_data = dataAnswers.meta_data || {};
+			if ( dataAnswers.meta_data[ blankId ] ) {
+				delete dataAnswers.meta_data[ blankId ];
+			}
+
+			elAnswersConfig.dataset.answers = JSON.stringify( dataAnswers );
+		}
+	} );
+};
+
+// Delete all blanks
+const FibDeleteAllBlanks = ( e, target ) => {
+	const elBtnFibDeleteAllBlanks = target.closest( `${ className.elBtnFibDeleteAllBlanks }` );
+	if ( ! elBtnFibDeleteAllBlanks ) {
+		return;
+	}
+
+	const elQuestionItem = elBtnFibDeleteAllBlanks.closest( `${ className.elQuestionItem }` );
+	if ( ! elQuestionItem ) {
+		return;
+	}
+
+	const questionId = elQuestionItem.dataset.questionId;
+	const elAnswersConfig = elQuestionItem.querySelector( `${ className.elAnswersConfig }` );
+	const dataAnswers = JSON.parse( elAnswersConfig.dataset.answers || '[]' );
+
+	SweetAlert.fire( {
+		title: elBtnFibDeleteAllBlanks.dataset.title,
+		text: elBtnFibDeleteAllBlanks.dataset.content,
+		icon: 'warning',
+		showCloseButton: true,
+		showCancelButton: true,
+		cancelButtonText: lpDataAdmin.i18n.cancel,
+		confirmButtonText: lpDataAdmin.i18n.yes,
+		reverseButtons: true,
+	} ).then( ( result ) => {
+		if ( result.isConfirmed ) {
+			const editor = window.tinymce.get( `lp-question-fib-input-${ questionId }` );
+			const elBlanks = editor.dom.select( `.lp-question-fib-input` );
+			elBlanks.forEach( ( elBlank ) => {
+				editor.dom.remove( elBlank, true );
+			} );
+
+			dataAnswers.meta_data = {};
+			elAnswersConfig.dataset.answers = JSON.stringify( dataAnswers );
+
+			const elFibBlankOptions = elQuestionItem.querySelector( `${ className.elFibBlankOptions }` );
+			elFibBlankOptions.innerHTML = '';
+		}
+	} );
+};
+
+// Clear content FIB question
+const FibClearContent = ( e, target ) => {
+	const elBtnFibClearAllContent = target.closest( `${ className.elBtnFibClearAllContent }` );
+	if ( ! elBtnFibClearAllContent ) {
+		return;
+	}
+
+	const elQuestionItem = elBtnFibClearAllContent.closest( `${ className.elQuestionItem }` );
+	if ( ! elQuestionItem ) {
+		return;
+	}
+
+	const questionId = elQuestionItem.dataset.questionId;
+	const elAnswersConfig = elQuestionItem.querySelector( `${ className.elAnswersConfig }` );
+	const dataAnswers = JSON.parse( elAnswersConfig.dataset.answers || '[]' );
+
+	SweetAlert.fire( {
+		title: elBtnFibClearAllContent.dataset.title,
+		text: elBtnFibClearAllContent.dataset.content,
+		icon: 'warning',
+		showCloseButton: true,
+		showCancelButton: true,
+		cancelButtonText: lpDataAdmin.i18n.cancel,
+		confirmButtonText: lpDataAdmin.i18n.yes,
+		reverseButtons: true,
+	} ).then( ( result ) => {
+		if ( result.isConfirmed ) {
+			const editor = window.tinymce.get( `lp-question-fib-input-${ questionId }` );
+			editor.setContent( '' );
+
+			dataAnswers.meta_data = {};
+			elAnswersConfig.dataset.answers = JSON.stringify( dataAnswers );
+
+			const elFibBlankOptions = elQuestionItem.querySelector( `${ className.elFibBlankOptions }` );
+			elFibBlankOptions.innerHTML = '';
+		}
+	} );
+};
+
 // Save content FIB question
 const fibSaveContent = ( e, target ) => {
 	const elBtnFibSaveContent = target.closest( `${ className.elBtnFibSaveContent }` );
@@ -838,6 +968,9 @@ document.addEventListener( 'click', ( e ) => {
 	fibInsertBlank( e, target );
 	fibSaveContent( e, target );
 	fibChangeBlankOption( e, target );
+	fibDeleteBlank( e, target );
+	FibDeleteAllBlanks( e, target );
+	FibClearContent( e, target );
 } );
 // Event keydown
 document.addEventListener( 'keydown', ( e ) => {
