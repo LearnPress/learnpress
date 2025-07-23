@@ -456,7 +456,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			// Block Templates
 			//include_once 'inc/block-template/class-abstract-block-template.php';
 			//include_once 'inc/block-template/class-block-template-handle.php';
-			//GutenbergHandleMain::instance();
+			GutenbergHandleMain::instance();
 
 			// API
 			include_once 'inc/abstracts/abstract-rest-api.php';
