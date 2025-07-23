@@ -383,16 +383,32 @@ class AdminEditQuestionTemplate {
 		$questionPostFIBModel = new QuestionPostFIBModel( $questionPostModel );
 		$name                 = 'lp-question-fib-input-' . $questionPostFIBModel->ID;
 		$answers              = $questionPostFIBModel->get_answer_option();
-		$questionAnswerModel  = $answers[0] ?? null;
-		$options              = $questionAnswerModel->get_all_metadata();
-		$content              = '';
+		$options              = [
+			'clone' =>
+				[
+					'fill'       => '',
+					'match_case' => 0,
+					'comparison' => 'equal',
+					'id'         => 'clone',
+				],
+		];
+		/**
+		 * @var QuestionAnswerModel[] $answers
+		 */
+		$questionAnswerModel = $answers[0] ?? null;
+		$options             = array_merge(
+			$options,
+			$questionAnswerModel->get_all_metadata()
+		);
+
+		$content = '';
 
 		if ( $questionAnswerModel instanceof QuestionAnswerModel ) {
 			$content = $this->convert_content_fib_to_span( $questionAnswerModel->title );
 		}
 
 		$section = [
-			'input'          => AdminTemplate::editor_tinymce(
+			'input'                 => AdminTemplate::editor_tinymce(
 				$content,
 				$name,
 				[
@@ -401,26 +417,42 @@ class AdminEditQuestionTemplate {
 					'quicktags'      => true, // Set true to show tab "Code" in editor
 				]
 			),
-			'buttons'        => '<div class="lp-question-fib-buttons">',
-			'btn-insert-new' => sprintf(
+			'buttons'               => '<div class="lp-question-fib-buttons">',
+			'btn-insert-new'        => sprintf(
 				'<button type="button" class="lp-btn-fib-insert-blank button" data-default-text="%s">%s</button>',
 				esc_html__( 'Enter answer correct on here', 'learnpress' ),
 				__( 'Insert new blank', 'learnpress' )
 			),
-			'btn-remove'     => sprintf(
-				'<button type="button" class="lp-btn-fib-remove-blank button">%s</button>',
-				__( 'Remove blank', 'learnpress' )
+			'btn-delete-all-blanks' => sprintf(
+				'<button type="button"
+							class="lp-btn-fib-delete-all-blanks button"
+							data-title="%s"
+							data-content="%s"
+							title="%s">%s
+						</button>',
+				esc_attr__( 'Are you sure?', 'learnpress' ),
+				esc_html__( 'This action will delete all blanks in the editor, only keep text content.', 'learnpress' ),
+				esc_attr__( 'Delete all blanks on this editor.', 'learnpress' ),
+				__( 'Delete all blanks', 'learnpress' )
 			),
-			'btn-save'       => sprintf(
+			'btn-save'              => sprintf(
 				'<button type="button" class="lp-btn-fib-save-content button">%s</button>',
 				__( 'Save content', 'learnpress' )
 			),
-			'btn-clear'      => sprintf(
-				'<button type="button" class="lp-btn-fib-clear-all-content button">%s</button>',
+			'btn-clear'             => sprintf(
+				'<button type="button"
+							class="lp-btn-fib-clear-all-content button"
+							data-title="%s"
+							data-content="%s"
+							title="%s">%s
+						</button>',
+				esc_attr__( 'Are you sure?', 'learnpress' ),
+				esc_html__( 'This action will delete all content in the editor.', 'learnpress' ),
+				esc_attr__( 'Clear all content on this editor.', 'learnpress' ),
 				__( 'Clear content', 'learnpress' )
 			),
-			'buttons_end'    => '</div>',
-			'options'        => $this->html_fib_options( $options ),
+			'buttons_end'           => '</div>',
+			'options'               => $this->html_fib_options( $options ),
 		];
 
 		return Template::combine_components( $section );
@@ -438,10 +470,14 @@ class AdminEditQuestionTemplate {
 			$comparison = $option['comparison'] ?? '';
 			$id         = $option['id'] ?? '';
 
+			if ( $id === 'clone' ) {
+				$i = 0;
+			}
+
 			$section_header = [
 				'wrap'       => '<div class="lp-question-fib-option-header">',
 				'number'     => sprintf(
-					'<span class="lp-question-fib-option-index">%s</span>',
+					'<span class="lp-question-fib-option-index">%s.</span>',
 					$i++
 				),
 				'title'      => sprintf(
@@ -452,12 +488,21 @@ class AdminEditQuestionTemplate {
 					esc_attr( $id ),
 					esc_html( $option['fill'] ?? '' )
 				),
+				'btn-save'   => sprintf(
+					'<button type="button" class="lp-btn-fib-option-save button">%s</button>',
+					__( 'Save', 'learnpress' )
+				),
 				'btn-detail' => sprintf(
 					'<button type="button" class="lp-btn-fib-option-detail button">%s</button>',
 					__( 'Details', 'learnpress' )
 				),
 				'btn-delete' => sprintf(
-					'<button type="button" class="lp-btn-fib-option-delete button">%s</button>',
+					'<button type="button"
+								class="lp-btn-fib-option-delete button"
+								data-title="%s" data-content="%s">%s
+							</button>',
+					esc_attr__( 'Are you sure?', 'learnpress' ),
+					esc_html__( 'Delete this blank and keep text', 'learnpress' ),
 					__( 'Remove', 'learnpress' )
 				),
 				'wrap_end'   => '</div>',
@@ -467,10 +512,11 @@ class AdminEditQuestionTemplate {
 				'wrap'            => '<div class="lp-question-fib-option-detail">',
 				'match-case'      => sprintf(
 					'<label>
-						<input type="checkbox" class="lp-question-fib-option-match-case" %s name="%s" /> %s
+						<input type="checkbox" class="lp-question-fib-option-match-case" %s name="%s" data-key="%s" value="1" /> %s
 					</label>',
 					$match_case ? 'checked' : '',
 					esc_attr( 'lp-question-fib-option-match-case-' . $id ),
+					'match_case',
 					__( 'Match case', 'learnpress' )
 				),
 				'separator-label' => sprintf(
@@ -481,13 +527,14 @@ class AdminEditQuestionTemplate {
 					'<div>
 						<label>
 						<input type="radio"
+							data-key ="comparison"
 							name="lp-question-fib-option-comparison-%s"
 							class="lp-question-fib-option-comparison" value="equal" %s /> %s
 						</label>
 						<p>%s</p>
 					</div>',
 					esc_attr( $id ),
-					$comparison === 'equal' ? 'checked' : '',
+					$comparison === 'equal' || $id === 'clone' ? 'checked' : '',
 					__( 'Equal', 'learnpress' ),
 					__( 'Match two words are equality.', 'learnpress' )
 				),
@@ -495,6 +542,7 @@ class AdminEditQuestionTemplate {
 					'<div>
 						<label>
 							<input type="radio"
+							data-key ="comparison"
 							name="lp-question-fib-option-comparison-%s"
 							class="lp-question-fib-option-comparison" value="range" %s /> %s
 						</label>
@@ -509,6 +557,7 @@ class AdminEditQuestionTemplate {
 					'<div>
 						<label>
 							<input type="radio"
+							data-key ="comparison"
 							name="lp-question-fib-option-comparison-%s"
 							class="lp-question-fib-option-comparison" value="any" %s /> %s
 						</label>
@@ -523,7 +572,11 @@ class AdminEditQuestionTemplate {
 			];
 
 			$section = [
-				'wrap'     => '<div class="lp-question-fib-option-item">',
+				'wrap'     => sprintf(
+					'<div class="lp-question-fib-blank-option-item %s" data-id="%s">',
+					$id === 'clone' ? 'clone lp-hidden' : '',
+					esc_attr( $id )
+				),
 				'header'   => Template::combine_components( $section_header ),
 				'detail'   => Template::combine_components( $section_detail ),
 				'wrap_end' => '</div>',
@@ -531,6 +584,11 @@ class AdminEditQuestionTemplate {
 
 			$html .= Template::combine_components( $section );
 		}
+
+		$html = Template::instance()->nest_elements(
+			[ '<div class="lp-question-fib-blank-options">' => '</div>' ],
+			$html
+		);
 
 		return $html;
 	}

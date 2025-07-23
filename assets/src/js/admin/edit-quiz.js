@@ -36,10 +36,15 @@ const className = {
 	elInputAnswerSetTrue: '.lp-input-answer-set-true',
 	elQuestionAnswerItem: '.lp-question-answer-item',
 	elBtnFibInsertBlank: '.lp-btn-fib-insert-blank',
-	elBtnFibRemoveBlank: '.lp-btn-fib-remove-blank',
+	elBtnFibDeleteAllBlanks: '.lp-btn-fib-delete-all-blanks',
 	elBtnFibSaveContent: '.lp-btn-fib-save-content',
 	elBtnFibClearAllContent: '.lp-btn-fib-clear-all-content',
 	elFibInput: '.lp-question-fib-input',
+	elFibBlankOptions: '.lp-question-fib-blank-options',
+	elFibBlankOptionItem: '.lp-question-fib-blank-option-item',
+	elFibBlankOptionItemClone: '.lp-question-fib-blank-option-item.clone',
+	elFibBlankOptionIndex: '.lp-question-fib-option-index',
+	elBtnFibOptionDelete: '.lp-btn-fib-option-delete',
 	LPTarget: '.lp-target',
 	elCollapse: 'lp-collapse',
 };
@@ -276,8 +281,39 @@ const eventEditorTinymceChange = ( id, callBack ) => {
 	} );
 	editor.on( 'selectionchange', ( e ) => {
 		fibSelection = editor.selection;
-		//console.log( 'Selection changed:', fibSelection );
-		//console.log( 'Node:', fibSelection.getNode() );
+
+		// Check selection is blank, check empty blank content
+		if ( fibSelection.getNode().classList.contains( 'lp-question-fib-input' ) ) {
+			const blankId = fibSelection.getNode().dataset.id;
+			const textBlank = fibSelection.getNode().textContent.trim();
+			if ( textBlank.length === 0 ) {
+				const editorId = editor.id;
+				const questionId = editorId.replace( 'lp-question-fib-input-', '' );
+				const elQuestionItem = document.querySelector( `${ className.elQuestionItem }[data-question-id="${ questionId }"]` );
+				const elQuestionBlankOptions = elQuestionItem.querySelector( `${ className.elFibBlankOptions }` );
+				const elFibBlankOptionItem = elQuestionBlankOptions.querySelector( `${ className.elFibBlankOptionItem }[data-id="${ blankId }"]` );
+				if ( elFibBlankOptionItem ) {
+					lpUtils.lpShowHideEl( elFibBlankOptionItem, 0 );
+				}
+			}
+		}
+	} );
+	editor.on( 'Undo', function( e ) {
+		const contentUndo = editor.getContent();
+		const selection = editor.selection;
+		const nodeUndo = selection.getNode();
+		const classNameFind = className.elFibInput.replace( '.', '' );
+		if ( nodeUndo.classList.contains( `${ classNameFind }` ) ) {
+			const blankId = nodeUndo.dataset.id;
+			const elFibBlankOptionItem = document.querySelector( `${ className.elFibBlankOptionItem }[data-id="${ blankId }"]` );
+
+			if ( elFibBlankOptionItem ) {
+				lpUtils.lpShowHideEl( elFibBlankOptionItem, 1 );
+			}
+		}
+	} );
+	editor.on( 'Redo', function( e ) {
+
 	} );
 };
 
@@ -695,7 +731,185 @@ const fibInsertBlank = ( e, target ) => {
 	};
 
 	elAnswersConfig.dataset.answers = JSON.stringify( dataAnswers );
+
+	// Clone blank options
+	const elFibBlankOptions = elQuestionItem.querySelector( `${ className.elFibBlankOptions }` );
+	const elFibBlankOptionItemClone = elQuestionItem.querySelector( `${ className.elFibBlankOptionItemClone }` );
+	const elFibBlankOptionItemNew = elFibBlankOptionItemClone.cloneNode( true );
+	const countOptions = elFibBlankOptions.querySelectorAll( `${ className.elFibBlankOptionItem }:not(.clone)` ).length;
+	const elFibBlankOptionIndex = elFibBlankOptionItemNew.querySelector( `${ className.elFibBlankOptionIndex }` );
+	const elFibBlankOptionInput = elFibBlankOptionItemNew.querySelector( `${ className.elFibBlankOptionItem } input` );
+
+	elFibBlankOptionInput.value = decodeHtml( selectedText );
+	elFibBlankOptionItemNew.dataset.id = uniquid;
+	elFibBlankOptionIndex.textContent = countOptions + 1 + '.';
+	elFibBlankOptionItemNew.classList.remove( 'clone' );
+	elFibBlankOptions.insertAdjacentElement( 'beforeend', elFibBlankOptionItemNew );
+	lpUtils.lpShowHideEl( elFibBlankOptionItemNew, 1 );
+	// End clone blank options
 };
+
+// Change blank option
+const fibChangeBlankOption = ( e, target ) => {
+	const elFibBlankOptionItem = target.closest( `${ className.elFibBlankOptionItem }` );
+	if ( ! elFibBlankOptionItem ) {
+		return;
+	}
+
+	const elQuestionItem = elFibBlankOptionItem.closest( `${ className.elQuestionItem }` );
+	if ( ! elQuestionItem ) {
+		return;
+	}
+
+	const questionId = elQuestionItem.dataset.questionId;
+	const blankId = elFibBlankOptionItem.dataset.id;
+	const elAnswersConfig = elQuestionItem.querySelector( `${ className.elAnswersConfig }` );
+	const dataAnswers = JSON.parse( elAnswersConfig.dataset.answers || '[]' );
+
+	const elFibBlankOptionItemInputs = elFibBlankOptionItem.querySelectorAll( 'input' );
+	elFibBlankOptionItemInputs.forEach( ( elInput ) => {
+		const key = elInput.dataset.key;
+
+		if ( elInput.checked ) {
+			dataAnswers.meta_data[ blankId ][ key ] = elInput.value;
+		} else if ( key === 'match_case' ) {
+			dataAnswers.meta_data[ blankId ][ key ] = 0;
+		}
+	} );
+
+	// Save changes to answers config
+	elAnswersConfig.dataset.answers = JSON.stringify( dataAnswers );
+};
+
+// Remove blank
+const fibDeleteBlank = ( e, target ) => {
+	const elBtnFibOptionDelete = target.closest( `${ className.elBtnFibOptionDelete }` );
+	if ( ! elBtnFibOptionDelete ) {
+		return;
+	}
+
+	const elQuestionItem = elBtnFibOptionDelete.closest( `${ className.elQuestionItem }` );
+	if ( ! elQuestionItem ) {
+		return;
+	}
+
+	const questionId = elQuestionItem.dataset.questionId;
+	const elAnswersConfig = elQuestionItem.querySelector( `${ className.elAnswersConfig }` );
+	const dataAnswers = JSON.parse( elAnswersConfig.dataset.answers || '[]' );
+	const blankItem = elBtnFibOptionDelete.closest( `${ className.elFibBlankOptionItem }` );
+	const blankId = blankItem.dataset.id;
+
+	SweetAlert.fire( {
+		title: elBtnFibOptionDelete.dataset.title,
+		text: elBtnFibOptionDelete.dataset.content,
+		icon: 'warning',
+		showCloseButton: true,
+		showCancelButton: true,
+		cancelButtonText: lpDataAdmin.i18n.cancel,
+		confirmButtonText: lpDataAdmin.i18n.yes,
+		reverseButtons: true,
+	} ).then( ( result ) => {
+		if ( result.isConfirmed ) {
+			// Find span with id on editor and remove it
+			const editor = window.tinymce.get( `lp-question-fib-input-${ questionId }` );
+			const elBlank = editor.dom.select( `.lp-question-fib-input[data-id="${ blankId }"]` );
+			if ( elBlank[ 0 ] ) {
+				// Remove tag html but keep content
+				editor.dom.remove( elBlank[ 0 ], true );
+			}
+
+			blankItem.remove();
+			dataAnswers.meta_data = dataAnswers.meta_data || {};
+			if ( dataAnswers.meta_data[ blankId ] ) {
+				delete dataAnswers.meta_data[ blankId ];
+			}
+
+			elAnswersConfig.dataset.answers = JSON.stringify( dataAnswers );
+		}
+	} );
+};
+
+// Delete all blanks
+const FibDeleteAllBlanks = ( e, target ) => {
+	const elBtnFibDeleteAllBlanks = target.closest( `${ className.elBtnFibDeleteAllBlanks }` );
+	if ( ! elBtnFibDeleteAllBlanks ) {
+		return;
+	}
+
+	const elQuestionItem = elBtnFibDeleteAllBlanks.closest( `${ className.elQuestionItem }` );
+	if ( ! elQuestionItem ) {
+		return;
+	}
+
+	const questionId = elQuestionItem.dataset.questionId;
+	const elAnswersConfig = elQuestionItem.querySelector( `${ className.elAnswersConfig }` );
+	const dataAnswers = JSON.parse( elAnswersConfig.dataset.answers || '[]' );
+
+	SweetAlert.fire( {
+		title: elBtnFibDeleteAllBlanks.dataset.title,
+		text: elBtnFibDeleteAllBlanks.dataset.content,
+		icon: 'warning',
+		showCloseButton: true,
+		showCancelButton: true,
+		cancelButtonText: lpDataAdmin.i18n.cancel,
+		confirmButtonText: lpDataAdmin.i18n.yes,
+		reverseButtons: true,
+	} ).then( ( result ) => {
+		if ( result.isConfirmed ) {
+			const editor = window.tinymce.get( `lp-question-fib-input-${ questionId }` );
+			const elBlanks = editor.dom.select( `.lp-question-fib-input` );
+			elBlanks.forEach( ( elBlank ) => {
+				editor.dom.remove( elBlank, true );
+			} );
+
+			dataAnswers.meta_data = {};
+			elAnswersConfig.dataset.answers = JSON.stringify( dataAnswers );
+
+			const elFibBlankOptions = elQuestionItem.querySelector( `${ className.elFibBlankOptions }` );
+			elFibBlankOptions.innerHTML = '';
+		}
+	} );
+};
+
+// Clear content FIB question
+const FibClearContent = ( e, target ) => {
+	const elBtnFibClearAllContent = target.closest( `${ className.elBtnFibClearAllContent }` );
+	if ( ! elBtnFibClearAllContent ) {
+		return;
+	}
+
+	const elQuestionItem = elBtnFibClearAllContent.closest( `${ className.elQuestionItem }` );
+	if ( ! elQuestionItem ) {
+		return;
+	}
+
+	const questionId = elQuestionItem.dataset.questionId;
+	const elAnswersConfig = elQuestionItem.querySelector( `${ className.elAnswersConfig }` );
+	const dataAnswers = JSON.parse( elAnswersConfig.dataset.answers || '[]' );
+
+	SweetAlert.fire( {
+		title: elBtnFibClearAllContent.dataset.title,
+		text: elBtnFibClearAllContent.dataset.content,
+		icon: 'warning',
+		showCloseButton: true,
+		showCancelButton: true,
+		cancelButtonText: lpDataAdmin.i18n.cancel,
+		confirmButtonText: lpDataAdmin.i18n.yes,
+		reverseButtons: true,
+	} ).then( ( result ) => {
+		if ( result.isConfirmed ) {
+			const editor = window.tinymce.get( `lp-question-fib-input-${ questionId }` );
+			editor.setContent( '' );
+
+			dataAnswers.meta_data = {};
+			elAnswersConfig.dataset.answers = JSON.stringify( dataAnswers );
+
+			const elFibBlankOptions = elQuestionItem.querySelector( `${ className.elFibBlankOptions }` );
+			elFibBlankOptions.innerHTML = '';
+		}
+	} );
+};
+
 // Save content FIB question
 const fibSaveContent = ( e, target ) => {
 	const elBtnFibSaveContent = target.closest( `${ className.elBtnFibSaveContent }` );
@@ -763,6 +977,12 @@ const randomString = ( length = 10 ) => {
 	return result;
 };
 
+function decodeHtml( html ) {
+	const txt = document.createElement( 'textarea' );
+	txt.innerHTML = html;
+	return txt.value;
+}
+
 // End FIB question type
 
 // Events
@@ -778,6 +998,10 @@ document.addEventListener( 'click', ( e ) => {
 	updateAnswersConfig( e, target );
 	fibInsertBlank( e, target );
 	fibSaveContent( e, target );
+	fibChangeBlankOption( e, target );
+	fibDeleteBlank( e, target );
+	FibDeleteAllBlanks( e, target );
+	FibClearContent( e, target );
 } );
 // Event keydown
 document.addEventListener( 'keydown', ( e ) => {
