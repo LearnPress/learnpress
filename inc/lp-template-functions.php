@@ -108,9 +108,10 @@ if ( ! function_exists( 'learn_press_get_course_tabs' ) ) {
 
 		// @since 4.2.8.7.1 update new parameter $courseModel
 		$tabs = apply_filters( 'learn-press/course-tabs', $defaults, $courseModel );
-		unset( $tabs['overview']['active'] );
 
 		if ( ! empty( $tabs ) ) {
+			$has_tab_active = false;
+
 			// sort tabs by priority, from low to high
 			uasort(
 				$tabs,
@@ -121,15 +122,23 @@ if ( ! function_exists( 'learn_press_get_course_tabs' ) ) {
 					return ( $priority1 < $priority2 ) ? - 1 : 1;
 				}
 			);
-			$request_tab = LP_Request::get_param( 'tab', 'tab-overview' );
 
 			foreach ( $tabs as $k => $v ) {
 				$v['id'] = $v['id'] ?? 'tab-' . $k;
-				if ( $request_tab === $v['id'] ) {
-					$v['active'] = true;
+				if ( ! empty( $v['active'] ) ) {
+					$has_tab_active = true;
 				}
 
 				$tabs[ $k ] = $v;
+			}
+
+			// Check if there is no tab active, set first tab active
+			if ( ! $has_tab_active ) {
+				// set first tab active
+				$first_key = array_key_first( $tabs );
+				if ( $first_key ) {
+					$tabs[ $first_key ]['active'] = true;
+				}
 			}
 		}
 
