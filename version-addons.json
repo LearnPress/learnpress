@@ -288,7 +288,7 @@
   "learnpress-paid-membership-pro": {
     "name": "Paid Memberships Pro Add-On for LearnPress",
     "basename": "learnpress-paid-membership-pro/learnpress-paid-memberships-pro.php",
-    "version": "4.0.9",
+    "version": "4.1.0",
     "require_lp": "4.2.8",
     "description": "Creates subscriptions and manage subscription levels. Allow to buy courses via subscriptions.",
     "image": "https://plugins.thimpress.com/downloads/images/lp-paid-membership.png",
