@@ -333,6 +333,8 @@ class PostModel {
 				$attachment_id = get_post_thumbnail_id( $this );
 				$file_path     = get_attached_file( $attachment_id );
 				$file_url      = wp_get_attachment_url( $attachment_id );
+				$upload_dir    = wp_upload_dir();
+				$base_dir      = $upload_dir['basedir'];
 
 				// Get file path with size.
 				$file_path_arr    = explode( '.', $file_path );
@@ -354,15 +356,13 @@ class PostModel {
 
 					if ( ! is_wp_error( $resized_file ) ) {
 						$resized_file->resize( $size[0], $size[1], true );
-						$resized_image = $resized_file->save();
+						$resized_image = $resized_file->save( $file_path_with_size );
 
 						if ( ! is_wp_error( $resized_image ) ) {
 							// Build the URL for the resized image
-							$upload_dir = wp_upload_dir();
-							$base_dir   = $upload_dir['basedir'];
-							$imag_dir   = $resized_image['path'];
-							$imag_dir   = str_replace( $base_dir, '', $imag_dir );
-							$image_url  = $upload_dir['baseurl'] . $imag_dir;
+							$imag_dir  = $resized_image['path'];
+							$imag_dir  = str_replace( $base_dir, '', $imag_dir );
+							$image_url = $upload_dir['baseurl'] . $imag_dir;
 						}
 					}
 				}
