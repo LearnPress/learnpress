@@ -421,7 +421,6 @@ class PostModel {
 	 * @since 4.2.3
 	 */
 	public function get_categories(): array {
-		// Todo: set cache.
 		$wpPost     = new WP_Post( $this );
 		$categories = get_the_terms( $wpPost, LP_COURSE_CATEGORY_TAX );
 		if ( ! $categories || $categories instanceof WP_Error ) {
@@ -439,7 +438,6 @@ class PostModel {
 	 * @since 4.2.7.2
 	 */
 	public function get_tags(): array {
-		// Todo: set cache.
 		$wpPost = new WP_Post( $this );
 		$tags   = get_the_terms( $wpPost, LP_COURSE_TAXONOMY_TAG );
 		if ( ! $tags || $tags instanceof WP_Error ) {
