@@ -69,6 +69,7 @@ class CourseMaterialTemplate {
 		$total_pages = $per_page > 0 ? ceil( $total_rows / $per_page ) : 0;
 
 		$args     = array(
+			'id_url'      => 'course-material',
 			'item_id'     => $item_id,
 			'paged'       => 1,
 			'per_page'    => $per_page,
@@ -86,6 +87,7 @@ class CourseMaterialTemplate {
 		);
 		echo Template::combine_components( $section );
 	}
+
 	public static function render_material_items( $args ) {
 		$content = new stdClass();
 		try {
@@ -114,7 +116,7 @@ class CourseMaterialTemplate {
 						'material_html'  => $material_html,
 						'table_body_end' => '</tbody>',
 						'table_wrap_end' => '</table>',
-						'loadmore_btn'   => self::html_loadmore_btn( $args ),
+						'loadmore_btn'   => self::html_load_more_btn( $args ),
 					);
 					$content->content = Template::combine_components( $sections );
 				} else {
@@ -128,6 +130,7 @@ class CourseMaterialTemplate {
 		}
 		return $content;
 	}
+
 	public static function table_header() {
 		$sections = array(
 			'wrap'      => '<thead>',
@@ -139,6 +142,7 @@ class CourseMaterialTemplate {
 		);
 		return Template::combine_components( $sections );
 	}
+
 	public static function material_item( $material, $current_item_id ) {
 		$sections = array(
 			'wrap'      => '<tr class="lp-material-item">',
@@ -150,47 +154,153 @@ class CourseMaterialTemplate {
 		);
 		return Template::combine_components( $sections );
 	}
-	public static function html_file_name( $material, $current_item_id ) {
+
+	/**
+	 * Generate HTML for file name.
+	 *
+	 * @param object $material Material object.
+	 * @param int    $current_item_id Current item ID.
+	 *
+	 * @return string
+	 */
+	public static function html_file_name( $material, $current_item_id ): string {
 		if ( get_post_type( $current_item_id ) == LP_COURSE_CPT && $material->item_type == LP_LESSON_CPT ) {
 			$html_file_name = sprintf( esc_html( '%1$s ( %2$s )' ), $material->file_name, get_the_title( $material->item_id ) );
 		} else {
 			$html_file_name = sprintf( esc_html( '%s' ), $material->file_name );
 		}
-		$content = sprintf( '<td class="lp-material-file-name">%s</td>', $html_file_name );
-		return $content;
+
+		return sprintf( '<td class="lp-material-file-name">%s</td>', $html_file_name );
 	}
-	public static function html_file_type( $material ) {
+
+	/**
+	 * Generate HTML for file type.
+	 *
+	 * @param object $material Material object.
+	 *
+	 * @return string
+	 */
+	public static function html_file_type( $material ): string {
 		return sprintf( '<td class="lp-material-file-type">%s</td>', $material->file_type );
 	}
-	public static function html_file_size( $material ) {
+
+	/**
+	 * Get file size in human-readable format.
+	 *
+	 * @param object $material Material object.
+	 *
+	 * @return string
+	 */
+	public static function html_file_size( $material ): string {
 		if ( $material->method == 'upload' ) {
 			$file_size = filesize( wp_upload_dir()['basedir'] . $material->file_path );
 			$file_size = ( $file_size / 1024 < 1024 ) ? round( $file_size / 1024, 2 ) . 'KB' : round( $file_size / 1024 / 1024, 2 ) . 'MB';
 		} else {
-			$file_size = LP_WP_Filesystem::instance()->get_file_size_from_url( $material->file_path );
+			$args      = array(
+				'timeout' => 0.1,
+			);
+			$file_head = wp_remote_head( $material->file_path, $args );
+
+			if ( is_wp_error( $file_head )
+				|| ! isset( $file_head['headers']['content-length'] )
+				|| ! $file_head['headers']['content-length'] ) {
+				$file_size = '';
+			} else {
+				$file_size = $file_head['headers']['content-length'];
+				$file_size = self::convert_kb( intval( $file_size ) );
+			}
 		}
-		$content = sprintf( '<td class="lp-material-file-size">%s</td>', $file_size );
-		return $content;
+
+		return apply_filters(
+			'learn-press/course-material/file-size',
+			sprintf( '<td class="lp-material-file-size">%s</td>', $file_size ),
+			$material
+		);
 	}
-	public static function html_file_link( $material ) {
-		$file_url        = $material->method == 'upload' ? wp_upload_dir()['baseurl'] . $material->file_path : $material->file_path;
+
+	/**
+	 * Convert file size to human-readable format.
+	 *
+	 * @param int $file_size File size in bytes.
+	 *
+	 * @return string
+	 */
+	public static function convert_kb( int $file_size ): string {
+		// Convert bytes to kilobytes
+		$file_size = $file_size / 1024;
+
+		if ( $file_size < 1024 ) {
+			return round( $file_size, 2 ) . 'KB';
+		} elseif ( $file_size < 1048576 ) {
+			return round( $file_size / 1024, 2 ) . 'MB';
+		} else {
+			return round( $file_size / 1048576, 2 ) . 'GB';
+		}
+	}
+
+	/**
+	 * Generate HTML for file link.
+	 *
+	 * @param object $material Material object.
+	 *
+	 * @return string
+	 */
+	public static function html_file_link( $material ): string {
+		$file_path = $material->file_path ?? '';
+		if ( empty( $file_path ) ) {
+			return '';
+		}
+
+		$file_url = $file_path;
+		if ( $material->method === 'upload' ) {
+			$file_url = wp_upload_dir()['baseurl'] . $file_path;
+		}
+
 		$enable_nofollow = LP_Settings::instance()->get_option( 'material_url_nofollow', 'yes' );
 		$rel             = '';
 		if ( $enable_nofollow == 'yes' && $material->method == 'external' ) {
 			$rel = 'nofollow';
 		}
-		$content = sprintf(
-			'<td class="lp-material-file-link">
-				<a href="%s" target="_blank" rel="%s">
-                    <i class="lp-icon-file-download btn-download-material"></i>
-                </a>
-            </td>',
-			esc_url_raw( $file_url ),
-			$rel
+
+		return apply_filters(
+			'learn-press/course-material/file-link',
+			sprintf(
+				'<td class="lp-material-file-link">
+					<a href="%s" target="_blank" rel="%s">
+	                    <i class="lp-icon-file-download btn-download-material"></i>
+	                </a>
+	            </td>',
+				esc_url_raw( $file_url ),
+				$rel
+			)
 		);
-		return $content;
 	}
-	public static function html_loadmore_btn( $args ) {
-		return $args['paged'] < $args['total_pages'] ? sprintf( '<button class="button lp-button lp-loadmore-material">%s</button>', esc_html__( 'Load more', 'learnpress' ) ) : '';
+
+	/**
+	 * Generate HTML for load more button.
+	 *
+	 * @param array $args Arguments containing pagination info.
+	 *
+	 * @return string
+	 */
+	public static function html_load_more_btn( array $args = [] ): string {
+		$paged       = $args['paged'] ?? 1;
+		$total_pages = $args['total_pages'] ?? 1;
+
+		if ( $paged > $total_pages ) {
+			return '';
+		}
+
+		return apply_filters(
+			'learn-press/course-material/btn-load-more',
+			sprintf(
+				'<div class="lp-loadmore-material">
+					<button class="lp-btn lp-loadmore-material">
+						%s
+					</button>
+				</div>',
+				esc_html__( 'Load More', 'learnpress' )
+			)
+		);
 	}
 }

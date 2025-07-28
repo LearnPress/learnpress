@@ -196,7 +196,8 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 					$file_path = str_replace( wp_upload_dir()['baseurl'], '', $file_handle_upload['url'] );
 				} elseif ( $method == 'external' ) {
 					$file_path          = sanitize_url( $material['link'] );
-					$file_external_info = $this->check_external_file( $file_path );
+					$file_info          = pathinfo( $file_path );
+					$file_external_info = $file_info['extension'] ?? '';
 					$mime_type          = $file_external_info['type'] ?? '';
 					$file_ext           = array_search( $mime_type, $mime_types );
 					if ( $file_ext === false ) {
@@ -276,8 +277,8 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 		$response = new LP_REST_Response();
 
 		try {
-			$params   = $request->get_params();
-			$item_id  = $params['item_id'] ?? 0;
+			$params  = $request->get_params();
+			$item_id = $params['item_id'] ?? 0;
 			if ( ! $item_id ) {
 				throw new Exception( esc_html__( 'Invalid item id!', 'learnpress' ) );
 			}
@@ -311,6 +312,7 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 	 * @return array
 	 * @version 1.0.1
 	 * @since 4.2.2
+	 * @depreacted 4.2.7.8.5
 	 */
 	public function check_external_file( $file_url ): array {
 		$lp_file   = LP_WP_Filesystem::instance();
@@ -468,7 +470,7 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 		try {
 			$params    = $request->get_params();
 			$course_id = (int) $params['course_id'] ?? 0;
-			$item_id = (int) $params['item_id'] ?? 0;
+			$item_id   = (int) $params['item_id'] ?? 0;
 
 			$course = CourseModel::find( $course_id, true );
 			if ( ! $course ) {
