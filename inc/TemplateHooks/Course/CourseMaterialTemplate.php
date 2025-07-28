@@ -17,6 +17,7 @@ use LP_Settings;
 use Throwable;
 use Exception;
 class CourseMaterialTemplate {
+
 	public static function instance() {
 		static $instance = null;
 
@@ -31,6 +32,7 @@ class CourseMaterialTemplate {
 		add_action( 'learn-press/course-material/layout', array( $this, 'sections' ) );
 		add_filter( 'lp/rest/ajax/allow_callback', array( $this, 'allow_callback' ) );
 	}
+	
 	/**
 	 * Allow callback for AJAX.
 	 *
@@ -44,6 +46,10 @@ class CourseMaterialTemplate {
 		return $callbacks;
 	}
 
+	/**
+	 * Layout
+	 * @param  array  $data
+	 */
 	public function sections( array $data = array() ) {
 		$html_wrapper = apply_filters(
 			'learn-press/course-material/sections/wrapper',
@@ -86,7 +92,15 @@ class CourseMaterialTemplate {
 		);
 		echo Template::combine_components( $section );
 	}
-	public static function render_material_items( $args ) {
+
+	/**
+	 * Render html
+	 *
+	 * @param array $settings
+	 *
+	 * @return stdClass { content: string_html }
+	 */
+	public static function render_material_items( $args ): stdClass {
 		$content = new stdClass();
 		try {
 			$material_db = LP_Material_Files_DB::getInstance();
@@ -128,7 +142,12 @@ class CourseMaterialTemplate {
 		}
 		return $content;
 	}
-	public static function table_header() {
+
+	/**
+	 * material table header
+	 * @return string
+	 */
+	public static function table_header(): string {
 		$sections = array(
 			'wrap'      => '<thead>',
 			'file-name' => sprintf( '<th class="lp-material-th-file-name">%s</th>', esc_html__( 'Name', 'learnpress' ) ),
@@ -139,7 +158,14 @@ class CourseMaterialTemplate {
 		);
 		return Template::combine_components( $sections );
 	}
-	public static function material_item( $material, $current_item_id ) {
+
+	/**
+	 * row html
+	 * @param  object $material
+	 * @param  integer $current_item_id current item id ( course/lesson )
+	 * @return string
+	 */
+	public static function material_item( $material, $current_item_id ): string {
 		$sections = array(
 			'wrap'      => '<tr class="lp-material-item">',
 			'file-name' => self::html_file_name( $material, $current_item_id ),
@@ -150,7 +176,14 @@ class CourseMaterialTemplate {
 		);
 		return Template::combine_components( $sections );
 	}
-	public static function html_file_name( $material, $current_item_id ) {
+
+	/**
+	 * file name html
+	 * @param  object $material       
+	 * @param  integer $current_item_id
+	 * @return string
+	 */
+	public static function html_file_name( $material, $current_item_id ): string {
 		if ( get_post_type( $current_item_id ) == LP_COURSE_CPT && $material->item_type == LP_LESSON_CPT ) {
 			$html_file_name = sprintf( esc_html( '%1$s ( %2$s )' ), $material->file_name, get_the_title( $material->item_id ) );
 		} else {
@@ -159,10 +192,22 @@ class CourseMaterialTemplate {
 		$content = sprintf( '<td class="lp-material-file-name">%s</td>', $html_file_name );
 		return $content;
 	}
-	public static function html_file_type( $material ) {
+
+	/**
+	 * file type html
+	 * @param  object $material
+	 * @return string
+	 */
+	public static function html_file_type( $material ): string {
 		return sprintf( '<td class="lp-material-file-type">%s</td>', $material->file_type );
 	}
-	public static function html_file_size( $material ) {
+
+	/**
+	 * file size html
+	 * @param  object $material
+	 * @return string
+	 */
+	public static function html_file_size( $material ): string {
 		if ( $material->method == 'upload' ) {
 			$file_size = filesize( wp_upload_dir()['basedir'] . $material->file_path );
 			$file_size = ( $file_size / 1024 < 1024 ) ? round( $file_size / 1024, 2 ) . 'KB' : round( $file_size / 1024 / 1024, 2 ) . 'MB';
@@ -172,7 +217,13 @@ class CourseMaterialTemplate {
 		$content = sprintf( '<td class="lp-material-file-size">%s</td>', $file_size );
 		return $content;
 	}
-	public static function html_file_link( $material ) {
+
+	/**
+	 * file url html
+	 * @param  object $material
+	 * @return string
+	 */
+	public static function html_file_link( $material ): string {
 		$file_url        = $material->method == 'upload' ? wp_upload_dir()['baseurl'] . $material->file_path : $material->file_path;
 		$enable_nofollow = LP_Settings::instance()->get_option( 'material_url_nofollow', 'yes' );
 		$rel             = '';
@@ -190,7 +241,13 @@ class CourseMaterialTemplate {
 		);
 		return $content;
 	}
-	public static function html_loadmore_btn( $args ) {
+
+	/**
+	 * Load more button
+	 * @param  array $args params...
+	 * @return string
+	 */
+	public static function html_loadmore_btn( $args ): string {
 		return $args['paged'] < $args['total_pages'] ? sprintf( '<button class="button lp-button lp-loadmore-material">%s</button>', esc_html__( 'Load more', 'learnpress' ) ) : '';
 	}
 }
