@@ -142,7 +142,6 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 				}
 			}
 
-			$mime_types       = get_allowed_mime_types();
 			$file_methods     = array( 'upload', 'external' );
 			$error_messages   = '';
 			$success_messages = '';
@@ -195,21 +194,20 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 
 					$file_path = str_replace( wp_upload_dir()['baseurl'], '', $file_handle_upload['url'] );
 				} elseif ( $method == 'external' ) {
-					$file_path          = sanitize_url( $material['link'] );
-					$file_info          = pathinfo( $file_path );
-					$file_external_info = $file_info['extension'] ?? '';
-					$mime_type          = $file_external_info['type'] ?? '';
-					$file_ext           = array_search( $mime_type, $mime_types );
-					if ( $file_ext === false ) {
+					$file_path   = sanitize_url( $material['link'] );
+					$file_info   = pathinfo( $file_path );
+					$file_extend = $file_info['extension'] ?? '';
+					if ( ! $file_extend ) {
 						$file_type = __( 'Unknown', 'learnpress' );
 					} else {
-						$file_type = $file_ext;
+						$file_type = $file_extend;
 					}
-					if ( $file_external_info['error'] ) {
+					$check_allow_file = $this->check_wp_allowed_file_type( $file_extend );
+					if ( ! $check_allow_file ) {
 						$error_messages .= sprintf(
 							esc_html__( 'An error occurred while checking %1$s. %2$s', 'learnpress' ),
 							$label,
-							$file_external_info['error_message']
+							__( 'Oops! That file type isn’t allowed.', 'learnpress' )
 						);
 						continue;
 					}
@@ -533,5 +531,15 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 		}
 
 		return apply_filters( 'learnpress/rest-material/can-edit-material', $permission );
+	}
+
+	public function check_wp_allowed_file_type( string $file_ext = '' ): bool {
+		$allowed = get_allowed_mime_types();
+		foreach ( $allowed as $ext => $mime ) {
+	        if (strpos( $ext, $file_ext ) !== false) {
+	            return true; // Found the string in a key
+	        }
+	    }
+	    return false;
 	}
 }
