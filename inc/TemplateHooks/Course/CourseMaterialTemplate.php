@@ -152,7 +152,7 @@ class CourseMaterialTemplate {
 	}
 	public static function html_file_name( $material, $current_item_id ) {
 		if ( get_post_type( $current_item_id ) == LP_COURSE_CPT && $material->item_type == LP_LESSON_CPT ) {
-			$html_file_name = sprintf( esc_html__( '%1$s ( %2$s )' ), $material->file_name, get_the_title( $material->item_id ) );
+			$html_file_name = sprintf( esc_html( '%1$s ( %2$s )' ), $material->file_name, get_the_title( $material->item_id ) );
 		} else {
 			$html_file_name = sprintf( esc_html( '%s' ), $material->file_name );
 		}
