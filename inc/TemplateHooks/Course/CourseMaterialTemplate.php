@@ -91,7 +91,7 @@ class CourseMaterialTemplate {
 		try {
 			$material_db = LP_Material_Files_DB::getInstance();
 			$paged       = absint( $args['paged'] ?? 1 );
-			$per_page    = absint( $args['per_page'] ?? 1 );
+			$per_page    = intval( $args['per_page'] ?? 1 );
 			$offset      = ( $per_page > 0 && $paged > 1 ) ? $per_page * ( $paged - 1 ) : 0;
 			// $total_pages    = $per_page > 0 ? ceil( $total_rows / $per_page ) : 0;
 			$material_files = $material_db->get_material_by_item_id( $args['item_id'], $per_page, $offset, false );
