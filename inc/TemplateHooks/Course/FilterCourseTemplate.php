@@ -572,7 +572,7 @@ class FilterCourseTemplate {
 				}
 				$checked = in_array( $value, $data_selected ) && empty( $disabled ) ? 'checked' : '';
 				$input   = sprintf( '<input name="c_authors" type="checkbox" value="%s" %s %s>', esc_attr( $value ), esc_attr( $checked ), $disabled );
-				$label   = sprintf( '<label for="">%s</label>', esc_html( c ) );
+				$label   = sprintf( '<label for="">%s</label>', esc_html( $instructor->display_name ) );
 				$count   = sprintf( '<span class="count">%s</span>', esc_html( $total_course_of_instructor ) );
 
 				$sections = apply_filters(
