@@ -287,7 +287,7 @@ class CourseMaterialTemplate {
 		$paged       = $args['paged'] ?? 1;
 		$total_pages = $args['total_pages'] ?? 1;
 
-		if ( $paged > $total_pages ) {
+		if ( $paged >= $total_pages ) {
 			return '';
 		}
 
