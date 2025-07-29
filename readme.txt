@@ -222,10 +222,10 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
-= 4.2.8.7.4 (2025-07-29) =
+= 4.2.8.7.5 (2025-07-29) =
 ~ Fixed: error crop image course by size not check if image exists.
-~ Fixed: translate fields author onf Course Filter Widget.
-~ Fixed: error case show info learning with Guest.
+~ Fixed: translate fields author on Course Filter Widget.
+~ Fixed: error case show info learning with user Guest.
 ~ Fixed: error save post_author when enable edit course with Gutenberg.
 ~ Load Material files of course via AJAX.
 ~ Tweak learn_press_get_course_tabs: change how to set default tab.
