@@ -81,13 +81,13 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 					'permission_callback' => array( $this, 'check_user_can_edit_material' ),
 				),
 			),
-			'by-item'                           => array(
+			/*'by-item'                           => array(
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'get_materials_by_item' ),
 					'permission_callback' => '__return_true',
 				),
-			),
+			),*/
 		);
 
 		parent::register_routes();
@@ -460,8 +460,10 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 	 * @param  WP_REST_Request $request
 	 * @return WP_REST_Response  $response
 	 * @since 4.2.7.4
+	 * @deprecated 4.2.8.7.5
 	 * @version 1.0.0
 	 */
+	/*
 	public function get_materials_by_item( WP_REST_Request $request ) {
 		$response = new LP_REST_Response();
 
@@ -510,7 +512,7 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 		}
 
 		return rest_ensure_response( $response );
-	}
+	}*/
 
 	/**
 	 * Check user permission
