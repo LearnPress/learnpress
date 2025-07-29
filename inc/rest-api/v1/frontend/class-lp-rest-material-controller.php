@@ -533,13 +533,18 @@ class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {
 		return apply_filters( 'learnpress/rest-material/can-edit-material', $permission );
 	}
 
+	/**
+	 * [check_wp_allowed_file_type description]
+	 * @param  string $file_ext file extend(png, jpg.....)
+	 * @return boolean
+	 */
 	public function check_wp_allowed_file_type( string $file_ext = '' ): bool {
 		$allowed = get_allowed_mime_types();
 		foreach ( $allowed as $ext => $mime ) {
-	        if (strpos( $ext, $file_ext ) !== false) {
-	            return true; // Found the string in a key
-	        }
-	    }
-	    return false;
+			if ( strpos( $ext, $file_ext ) !== false ) {
+				return true; // Found the string in a key
+			}
+		}
+		return false;
 	}
 }
