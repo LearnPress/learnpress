@@ -183,15 +183,20 @@ class AdminEditQizTemplate {
 		}
 
 		$section_edit_details = [
-			'wrap'        => '<div class="question-edit-details">',
-			'label'       => sprintf(
-				'<label for="lp-question-details">%s</label>',
-				__( 'Details', 'learnpress' )
+			'wrap'         => '<div class="question-edit-details lp-section-toggle lp-collapse">',
+			'header'       => sprintf(
+				'<div class="lp-question-data-edit-header lp-trigger-toggle">
+					<label>%s</label>
+					<div class="lp-tinymce-toggle"><span class="lp-icon-angle-down"></span><span class="lp-icon-angle-up"></span></div>
+				</div>',
+				__( 'Option Details', 'learnpress' )
 			),
-			'point'       => $this->html_edit_mark( $questionPostModel ),
-			'hint'        => $this->html_edit_hint( $questionPostModel ),
-			'explanation' => $this->html_edit_explanation_hint( $questionPostModel ),
-			'wrap_end'    => '</div>',
+			'collapse'     => '<div class="lp-section-collapse">',
+			'point'        => $this->html_edit_mark( $questionPostModel ),
+			'hint'         => $this->html_edit_hint( $questionPostModel ),
+			'explanation'  => $this->html_edit_explanation_hint( $questionPostModel ),
+			'collapse_end' => '</div>',
+			'wrap_end'     => '</div>',
 		];
 
 		$section_edit_main = [
@@ -280,20 +285,25 @@ class AdminEditQizTemplate {
 		$editor_id = 'lp-question-hint-' . $question_id;
 
 		$section = [
-			'wrap'     => '<div class="lp-question-hint">',
-			'label'    => sprintf(
-				'<label>%s</label>',
+			'wrap'         => '<div class="lp-question-hint lp-section-toggle lp-collapse">',
+			'header'       => sprintf(
+				'<div class="lp-question-data-edit-header lp-trigger-toggle">
+					<label>%s</label>
+					<div class="lp-tinymce-toggle"><span class="lp-icon-angle-down"></span><span class="lp-icon-angle-up"></span></div>
+				</div>',
 				__( 'Hint', 'learnpress' )
 			),
-			'btn-save' => sprintf(
+			'collapse'     => '<div class="lp-section-collapse">',
+			'btn-save'     => sprintf(
 				'<button type="button" class="lp-btn-update-question-hint button">%s</button>',
 				__( 'Save', 'learnpress' )
 			),
-			'tinymce'  => AdminTemplate::editor_tinymce(
+			'tinymce'      => AdminTemplate::editor_tinymce(
 				$hint,
 				$editor_id
 			),
-			'wrap_end' => '</div>',
+			'collapse_end' => '</div>',
+			'wrap_end'     => '</div>',
 		];
 
 		return Template::combine_components( $section );
@@ -310,20 +320,25 @@ class AdminEditQizTemplate {
 		$editor_id = 'lp-question-explanation-' . $question_id;
 
 		$section = [
-			'wrap'     => '<div class="lp-question-explanation">',
-			'label'    => sprintf(
-				'<label>%s</label>',
-				__( 'Explanation', 'learnpress' )
+			'wrap'         => '<div class="lp-question-explanation lp-section-toggle lp-collapse">',
+			'header'       => sprintf(
+				'<div class="lp-question-data-edit-header lp-trigger-toggle">
+					<label>%s</label>
+					<div class="lp-tinymce-toggle"><span class="lp-icon-angle-down"></span><span class="lp-icon-angle-up"></span></div>
+				</div>',
+				__( 'Explaination', 'learnpress' )
 			),
-			'btn-save' => sprintf(
+			'collapse'     => '<div class="lp-section-collapse">',
+			'btn-save'     => sprintf(
 				'<button type="button" class="lp-btn-update-question-explanation button">%s</button>',
 				__( 'Save', 'learnpress' )
 			),
-			'tinymce'  => AdminTemplate::editor_tinymce(
+			'tinymce'      => AdminTemplate::editor_tinymce(
 				$explanation,
 				$editor_id
 			),
-			'wrap_end' => '</div>',
+			'collapse_end' => '</div>',
+			'wrap_end'     => '</div>',
 		];
 
 		return Template::combine_components( $section );
@@ -348,20 +363,27 @@ class AdminEditQizTemplate {
 		$editor_id = 'lp-question-description-' . $question_id;
 
 		$section = [
-			'wrap'     => '<div class="lp-question-description">',
-			'label'    => sprintf(
-				'<label>%s</label>',
+			'wrap'         => '<div class="lp-question-data-edit lp-section-toggle lp-collapse">',
+			'header'       => sprintf(
+				'<div class="lp-question-data-edit-header lp-trigger-toggle">
+					<label>%s</label>
+					<div class="lp-tinymce-toggle">
+						<span class="lp-icon-angle-down"></span><span class="lp-icon-angle-up"></span>
+					</div>
+				</div>',
 				__( 'Description', 'learnpress' )
 			),
-			'btn-save' => sprintf(
+			'collapse'     => '<div class="lp-section-collapse">',
+			'btn-save'     => sprintf(
 				'<button type="button" class="lp-btn-update-question-des button">%s</button>',
 				__( 'Save', 'learnpress' )
 			),
-			'tinymce'  => AdminTemplate::editor_tinymce(
+			'tinymce'      => AdminTemplate::editor_tinymce(
 				wpautop( $question_description ),
 				$editor_id
 			),
-			'wrap_end' => '</div>',
+			'collapse_end' => '</div>',
+			'wrap_end'     => '</div>',
 		];
 
 		return Template::combine_components( $section );
@@ -382,12 +404,17 @@ class AdminEditQizTemplate {
 		}
 
 		$section = [
-			'wrap'           => '<div class="lp-question-by-type">',
-			'label'          => sprintf(
-				'<label>%s</label>',
+			'wrap'           => '<div class="lp-question-data-edit lp-question-by-type lp-section-toggle lp-collapse">',
+			'header'         => sprintf(
+				'<div class="lp-question-data-edit-header lp-trigger-toggle">
+					<label>%s</label>
+					<div class="lp-tinymce-toggle"><span class="lp-icon-angle-down"></span><span class="lp-icon-angle-up"></span></div>
+				</div>',
 				__( 'Config Your Answer', 'learnpress' )
 			),
+			'collapse'       => '<div class="lp-section-collapse">',
 			'answers-config' => $html_answers_config,
+			'collapse_end'   => '</div>',
 			'wrap_end'       => '</div>',
 		];
 

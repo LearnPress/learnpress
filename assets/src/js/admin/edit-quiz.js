@@ -50,6 +50,8 @@ const className = {
 	elBtnFibOptionDelete: '.lp-btn-fib-option-delete',
 	LPTarget: '.lp-target',
 	elCollapse: 'lp-collapse',
+	elSectionToggle: '.lp-section-toggle',
+	elTriggerToggle: '.lp-trigger-toggle',
 };
 let quizID;
 const idUrlHandle = 'edit-quiz-questions';
@@ -110,6 +112,31 @@ const toggleQuestion = ( e, target ) => {
 
 	// Check all sections collapsed
 	checkAllQuestionsCollapsed();
+};
+
+/**
+ * Toggle section
+ *
+ * @param e
+ * @param target
+ * @param el_trigger is class name or id name, to find of element to trigger toggle
+ */
+const toggleSection = ( e, target, el_trigger = '' ) => {
+	if ( ! el_trigger ) {
+		el_trigger = className.elTriggerToggle;
+	}
+
+	const elTinymceHeader = target.closest( el_trigger );
+	if ( ! elTinymceHeader ) {
+		return;
+	}
+
+	const elSectionToggle = elTinymceHeader.closest( `${ className.elSectionToggle }` );
+	if ( ! elSectionToggle ) {
+		return;
+	}
+
+	elSectionToggle.classList.toggle( `${ className.elCollapse }` );
 };
 
 // Check if all sections are collapsed
@@ -1141,6 +1168,7 @@ document.addEventListener( 'click', ( e ) => {
 
 	toggleQuestionAll( e, target );
 	toggleQuestion( e, target );
+	toggleSection( e, target );
 	showPopupItemsToSelect( e, target );
 	addQuestion( e, target );
 	removeQuestion( e, target );

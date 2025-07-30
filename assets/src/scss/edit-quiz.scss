@@ -168,6 +168,36 @@ $spacing-section: 12px;
 			padding: 10px;
 			margin: 0;
 		}
+
+		.lp-question-data-edit {
+			margin-bottom: 5px;
+		}
+
+		.lp-section-collapse {
+			padding: 12px;
+			border: 1px solid $border-color;
+			border-top: none;
+		}
+
+		.lp-section-toggle {
+			&.lp-collapse {
+				.lp-section-collapse {
+					display: none;
+				}
+			}
+		}
+
+		.lp-question-data-edit-header {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 10px;
+			border: 1px solid lightgray;
+
+			&:hover {
+				cursor: pointer;
+			}
+		}
 	}
 
 	.add-new-question {
