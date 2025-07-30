@@ -196,9 +196,9 @@ class AdminEditQizTemplate {
 
 		$section_edit_main = [
 			'wrap'             => '<div class="question-edit-main">',
-			//'description'      => $this->html_edit_question_description( $questionPostModel ),
+			'description'      => $this->html_edit_question_description( $questionPostModel ),
 			'question-by-type' => $this->html_edit_question_by_type( $questionPostModel ),
-			//'details'          => Template::combine_components( $section_edit_details ),
+			'details'          => Template::combine_components( $section_edit_details ),
 			'wrap_end'         => '</div>',
 		];
 
@@ -282,8 +282,12 @@ class AdminEditQizTemplate {
 		$section = [
 			'wrap'     => '<div class="lp-question-hint">',
 			'label'    => sprintf(
-				'<label for="lp-question-hint">%s</label>',
+				'<label>%s</label>',
 				__( 'Hint', 'learnpress' )
+			),
+			'btn-save' => sprintf(
+				'<button type="button" class="lp-btn-update-question-hint button">%s</button>',
+				__( 'Save', 'learnpress' )
 			),
 			'tinymce'  => AdminTemplate::editor_tinymce(
 				$hint,
@@ -308,8 +312,12 @@ class AdminEditQizTemplate {
 		$section = [
 			'wrap'     => '<div class="lp-question-explanation">',
 			'label'    => sprintf(
-				'<label for="lp-question-explanation">%s</label>',
+				'<label>%s</label>',
 				__( 'Explanation', 'learnpress' )
+			),
+			'btn-save' => sprintf(
+				'<button type="button" class="lp-btn-update-question-explanation button">%s</button>',
+				__( 'Save', 'learnpress' )
 			),
 			'tinymce'  => AdminTemplate::editor_tinymce(
 				$explanation,
@@ -342,15 +350,15 @@ class AdminEditQizTemplate {
 		$section = [
 			'wrap'     => '<div class="lp-question-description">',
 			'label'    => sprintf(
-				'<label for="lp-question-description">%s</label>',
+				'<label>%s</label>',
 				__( 'Description', 'learnpress' )
 			),
-			'textarea' => sprintf(
-				'<div name="lp-editor-wysiwyg" class="lp-editor-wysiwyg">%s</div>',
-				htmlspecialchars_decode( $question_description )
+			'btn-save' => sprintf(
+				'<button type="button" class="lp-btn-update-question-des button">%s</button>',
+				__( 'Save', 'learnpress' )
 			),
 			'tinymce'  => AdminTemplate::editor_tinymce(
-				$question_description,
+				wpautop( $question_description ),
 				$editor_id
 			),
 			'wrap_end' => '</div>',

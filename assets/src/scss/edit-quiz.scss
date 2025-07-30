@@ -124,6 +124,17 @@ $spacing-section: 12px;
 			.lp-question-type-label {
 				width: 20%;
 			}
+
+			.lp-btn-remove-question, .lp-btn-edit-question-title,
+			.lp-btn-update-question-title, .lp-btn-cancel-update-question-title {
+				display: none;
+			}
+
+			&:hover {
+				.lp-btn-remove-question, .lp-btn-edit-question-title {
+					display: inline-block;
+				}
+			}
 		}
 
 		.lp-question-head {
@@ -202,6 +213,11 @@ $spacing-section: 12px;
 				padding: 0;
 			}
 		}
+	}
+
+	.lp-question-fib-buttons {
+		display: flex;
+		gap: 10px;
 	}
 }
 

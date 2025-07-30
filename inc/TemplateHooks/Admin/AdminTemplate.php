@@ -26,7 +26,7 @@ class AdminTemplate {
 			[
 				'media_buttons' => true,
 				'editor_class'  => 'lp-editor-tinymce',
-				'editor_height' => 300,
+				'editor_height' => 210,
 			],
 			$setting
 		);

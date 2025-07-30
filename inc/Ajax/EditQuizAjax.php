@@ -135,20 +135,38 @@ class EditQuizAjax extends AbstractAjax {
 		$response = new LP_REST_Response();
 
 		try {
-			$data           = self::check_valid();
-			$question_id    = $data['question_id'] ?? 0;
-			$question_title = $data['question_title'] ?? '';
+			$data                 = self::check_valid();
+			$question_id          = $data['question_id'] ?? 0;
+			$question_title       = $data['question_title'] ?? false;
+			$question_description = $data['question_des'] ?? false;
+			$question_hint        = $data['question_hint'] ?? false;
+			$question_explanation = $data['question_explanation'] ?? false;
 
 			$questionPostModel = QuestionPostModel::find( $question_id, true );
 			if ( ! $questionPostModel ) {
 				throw new Exception( __( 'Question not found', 'learnpress' ) );
 			}
 
-			if ( empty( $question_title ) ) {
-				throw new Exception( __( 'Question title is required', 'learnpress' ) );
+			if ( false !== $question_title ) {
+				if ( empty( $question_title ) ) {
+					throw new Exception( __( 'Question title is required', 'learnpress' ) );
+				}
+
+				$questionPostModel->post_title = $question_title;
 			}
 
-			$questionPostModel->post_title = $question_title;
+			if ( false !== $question_description ) {
+				$questionPostModel->post_content = $question_description;
+			}
+
+			if ( false !== $question_hint ) {
+				$questionPostModel->save_meta_value_by_key( QuestionPostModel::META_KEY_HINT, $question_hint );
+			}
+
+			if ( false !== $question_explanation ) {
+				$questionPostModel->save_meta_value_by_key( QuestionPostModel::META_KEY_EXPLANATION, $question_explanation );
+			}
+
 			$questionPostModel->save();
 
 			$response->status  = 'success';

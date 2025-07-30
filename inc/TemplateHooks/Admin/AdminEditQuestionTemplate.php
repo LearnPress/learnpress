@@ -396,10 +396,16 @@ class AdminEditQuestionTemplate {
 		 * @var QuestionAnswerModel[] $answers
 		 */
 		$questionAnswerModel = $answers[0] ?? null;
-		$options             = array_merge(
-			$options,
-			$questionAnswerModel->get_all_metadata()
-		);
+		if ( $questionAnswerModel instanceof QuestionAnswerModel ) {
+			$meta_data = $questionAnswerModel->get_all_metadata();
+
+			if ( is_array( $meta_data ) ) {
+				$options = array_merge(
+					$options,
+					$meta_data
+				);
+			}
+		}
 
 		$content = '';
 

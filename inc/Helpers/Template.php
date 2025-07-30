@@ -400,4 +400,31 @@ class Template {
 			)
 		);
 	}
+
+	/**
+	 * Sanitize HTML content by allowing specific tags and attributes.
+	 *
+	 * @param  string $content
+	 * @return string
+	 * @since 4.2.9
+	 * @version 1.0.0
+	 */
+	public static function sanitize_html_content( string $content = '' ): string {
+		$allowed_tags = wp_kses_allowed_html( 'post' );
+
+		$extra_tag = array(
+			'iframe' => [
+				'src'             => true,
+				'width'           => true,
+				'height'          => true,
+				'frameborder'     => true,
+				'allowfullscreen' => true,
+				'allow'           => true,
+			],
+		);
+
+		$allowed_tags = array_merge( $allowed_tags, $extra_tag );
+
+		return wp_kses( $content, $allowed_tags );
+	}
 }

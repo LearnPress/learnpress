@@ -25,6 +25,9 @@ const className = {
 	elBtnAddQuestion: '.lp-btn-add-question',
 	elBtnRemoveQuestion: '.lp-btn-remove-question',
 	elBtnUpdateQuestionTitle: '.lp-btn-update-question-title',
+	elBtnUpdateQuestionDes: '.lp-btn-update-question-des',
+	elBtnUpdateQuestionHint: '.lp-btn-update-question-hint',
+	elBtnUpdateQuestionExplain: '.lp-btn-update-question-explanation',
 	elQuestionTitleNewInput: '.lp-question-title-new-input',
 	elQuestionTitleInput: '.lp-question-title-input',
 	elQuestionTypeLabel: '.lp-question-type-label',
@@ -565,6 +568,153 @@ const updateQuestionTitle = ( e, target ) => {
 	window.lpAJAXG.fetchAJAX( dataSend, callBack );
 };
 
+// Update question description
+const updateQuestionDes = ( e, target ) => {
+	const elBtnUpdateQuestionDes = target.closest( `${ className.elBtnUpdateQuestionDes }` );
+	if ( ! elBtnUpdateQuestionDes ) {
+		return;
+	}
+
+	const elQuestionItem = elBtnUpdateQuestionDes.closest( `${ className.elQuestionItem }` );
+	if ( ! elQuestionItem ) {
+		return;
+	}
+
+	const questionId = elQuestionItem.dataset.questionId;
+	const editor = window.tinymce.get( `lp-question-description-${ questionId }` );
+	const content = editor.getContent();
+
+	lpUtils.lpSetLoadingEl( elQuestionItem, 1 );
+
+	// Call ajax to update question description
+	const callBack = {
+		success: ( response ) => {
+			const { message, status } = response;
+
+			if ( status === 'success' ) {
+				showToast( message, status );
+			} else {
+				throw `Error: ${ message }`;
+			}
+		},
+		error: ( error ) => {
+			showToast( error, 'error' );
+		},
+		completed: () => {
+			lpUtils.lpSetLoadingEl( elQuestionItem, 0 );
+		},
+	};
+
+	const dataSend = {
+		quiz_id: quizID,
+		action: 'update_question',
+		question_id: questionId,
+		question_des: content,
+		args: {
+			id_url: idUrlHandle,
+		},
+	};
+	window.lpAJAXG.fetchAJAX( dataSend, callBack );
+};
+
+// Update question description
+const updateQuestionHint = ( e, target ) => {
+	const elBtnUpdateQuestionHint = target.closest( `${ className.elBtnUpdateQuestionHint }` );
+	if ( ! elBtnUpdateQuestionHint ) {
+		return;
+	}
+
+	const elQuestionItem = elBtnUpdateQuestionHint.closest( `${ className.elQuestionItem }` );
+	if ( ! elQuestionItem ) {
+		return;
+	}
+
+	const questionId = elQuestionItem.dataset.questionId;
+	const editor = window.tinymce.get( `lp-question-hint-${ questionId }` );
+	const content = editor.getContent();
+
+	lpUtils.lpSetLoadingEl( elQuestionItem, 1 );
+
+	// Call ajax to update question description
+	const callBack = {
+		success: ( response ) => {
+			const { message, status } = response;
+
+			if ( status === 'success' ) {
+				showToast( message, status );
+			} else {
+				throw `Error: ${ message }`;
+			}
+		},
+		error: ( error ) => {
+			showToast( error, 'error' );
+		},
+		completed: () => {
+			lpUtils.lpSetLoadingEl( elQuestionItem, 0 );
+		},
+	};
+
+	const dataSend = {
+		quiz_id: quizID,
+		action: 'update_question',
+		question_id: questionId,
+		question_hint: content,
+		args: {
+			id_url: idUrlHandle,
+		},
+	};
+	window.lpAJAXG.fetchAJAX( dataSend, callBack );
+};
+
+// Update question description
+const updateQuestionExplain = ( e, target ) => {
+	const elBtnUpdateQuestionExplain = target.closest( `${ className.elBtnUpdateQuestionExplain }` );
+	if ( ! elBtnUpdateQuestionExplain ) {
+		return;
+	}
+
+	const elQuestionItem = elBtnUpdateQuestionExplain.closest( `${ className.elQuestionItem }` );
+	if ( ! elQuestionItem ) {
+		return;
+	}
+
+	const questionId = elQuestionItem.dataset.questionId;
+	const editor = window.tinymce.get( `lp-question-explanation-${ questionId }` );
+	const content = editor.getContent();
+
+	lpUtils.lpSetLoadingEl( elQuestionItem, 1 );
+
+	// Call ajax to update question description
+	const callBack = {
+		success: ( response ) => {
+			const { message, status } = response;
+
+			if ( status === 'success' ) {
+				showToast( message, status );
+			} else {
+				throw `Error: ${ message }`;
+			}
+		},
+		error: ( error ) => {
+			showToast( error, 'error' );
+		},
+		completed: () => {
+			lpUtils.lpSetLoadingEl( elQuestionItem, 0 );
+		},
+	};
+
+	const dataSend = {
+		quiz_id: quizID,
+		action: 'update_question',
+		question_id: questionId,
+		question_explanation: content,
+		args: {
+			id_url: idUrlHandle,
+		},
+	};
+	window.lpAJAXG.fetchAJAX( dataSend, callBack );
+};
+
 // For answers config
 const updateAnswersConfig = ( e, target ) => {
 	const elInputAnswerSetTrue = target.closest(
@@ -1002,6 +1152,10 @@ document.addEventListener( 'click', ( e ) => {
 	fibDeleteBlank( e, target );
 	FibDeleteAllBlanks( e, target );
 	FibClearContent( e, target );
+
+	updateQuestionDes( e, target );
+	updateQuestionHint( e, target );
+	updateQuestionExplain( e, target );
 } );
 // Event keydown
 document.addEventListener( 'keydown', ( e ) => {
