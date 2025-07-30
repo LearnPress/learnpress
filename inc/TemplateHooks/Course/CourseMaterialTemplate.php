@@ -8,10 +8,14 @@
 namespace LearnPress\TemplateHooks\Course;
 
 use LearnPress\Helpers\Template;
+use LearnPress\TemplateHooks\TemplateAJAX;
+use LP_Material_Files_DB;
+use stdClass;
 use LP_Global;
 use LP_WP_Filesystem;
 use LP_Settings;
 use Throwable;
+use Exception;
 class CourseMaterialTemplate {
 	public static function instance() {
 		static $instance = null;
@@ -24,182 +28,279 @@ class CourseMaterialTemplate {
 	}
 
 	protected function __construct() {
-		add_action( 'learn-press/course-material/layout', [ $this, 'sections' ] );
+		add_action( 'learn-press/course-material/layout', array( $this, 'sections' ) );
+		add_filter( 'lp/rest/ajax/allow_callback', array( $this, 'allow_callback' ) );
+	}
+	/**
+	 * Allow callback for AJAX.
+	 *
+	 * @param array $callbacks
+	 *
+	 * @return array
+	 */
+	public function allow_callback( array $callbacks ): array {
+		$callbacks[] = get_class( $this ) . ':render_material_items';
+
+		return $callbacks;
 	}
 
-	public function sections( array $data = [] ) {
-		// $content = '';
-		ob_start();
-		try {
-			$html_wrapper = apply_filters(
-				'learn-press/course-material/sections/wrapper',
-				[
-					'<div class="lp-list-material">' => '</div>',
-				],
-				$data
-			);
-
-			$item    = LP_Global::course_item();
-			$item_id = 0;
-			if ( $item ) {
-				$item_id = $item->get_id();
-			}
-			?>
-			<div class="lp-material-skeleton" data-course-id="<?php echo esc_attr( get_the_ID() ); ?>"
-				data-item-id="<?php echo esc_attr( $item_id ); ?>">
-				<?php do_action( 'learn-press/course-material/before' ); ?>
-				<?php lp_skeleton_animation_html( 5, 100 ); ?>
-				<table class="course-material-table" >
-					<?php echo $this->material_header(); ?>
-					<tbody id="material-file-list">
-					</tbody>
-				</table>
-				<button class="lp-button lp-loadmore-material" page="1"><?php esc_html_e( 'Load more.', 'learnpress' ); ?></button>
-				<?php do_action( 'learn-press/course-material/after' ); ?>
-			</div>
-			<?php
-			$html_content = ob_get_clean();
-			$content      = Template::instance()->nest_elements( $html_wrapper, $html_content );
-			echo $content;
-		} catch ( Throwable $e ) {
-			ob_end_clean();
-			error_log( __METHOD__ . ': ' . $e->getMessage() );
-		}
-	}
-	public function material_header() {
-		$content      = '';
+	public function sections( array $data = array() ) {
 		$html_wrapper = apply_filters(
-			'learn-press/course-material/header/wrapper',
-			[
-				'<thead>' => '</thead>',
-			]
+			'learn-press/course-material/sections/wrapper',
+			array(
+				'<div class="lp-list-material">' => '</div>',
+			),
+			$data
 		);
-		ob_start();
+
+		$item    = LP_Global::course_item();
+		$item_id = 0;
+		if ( ! $item && get_post_type( get_the_ID() ) === LP_COURSE_CPT ) {
+			$item_id = get_the_ID();
+		} elseif ( $item ) {
+			$item_id = $item->get_id();
+		} else {
+			throw new Exception( __( 'Item not found', 'learnpress' ) );
+		}
+		// $item_id     = $item->get_id();
+		$material_db = LP_Material_Files_DB::getInstance();
+		$per_page    = (int) LP_Settings::get_option( 'material_file_per_page', - 1 );
+		$total_rows  = $material_db->get_total( $item_id );
+		$total_pages = $per_page > 0 ? ceil( $total_rows / $per_page ) : 0;
+
+		$args     = array(
+			'id_url'      => 'course-material',
+			'item_id'     => $item_id,
+			'paged'       => 1,
+			'per_page'    => $per_page,
+			'total_pages' => $total_pages,
+		);
+		$callback = array(
+			'class'  => self::class,
+			'method' => 'render_material_items',
+		);
+		$content  = TemplateAJAX::load_content_via_ajax( $args, $callback );
+		$section  = array(
+			'wrap'     => '<div class="lp-list-material"><div class="lp-material-skeleton">',
+			'content'  => $content,
+			'wrap_end' => '</div></div>',
+		);
+		echo Template::combine_components( $section );
+	}
+
+	public static function render_material_items( $args ) {
+		$content = new stdClass();
 		try {
-			$sections = apply_filters(
-				'learn-press/course-material/header/fields',
-				[
-					'file-name' => [ 'text_html' => sprintf( '<th class="lp-material-th-file-name">%s</th>', esc_html__( 'Name', 'learnpress' ) ) ],
-					'file-type' => [ 'text_html' => sprintf( '<th class="lp-material-th-file-type">%s</th>', esc_html__( 'Type', 'learnpress' ) ) ],
-					'file-size' => [ 'text_html' => sprintf( '<th class="lp-material-th-file-size">%s</th>', esc_html__( 'Size', 'learnpress' ) ) ],
-					'file-link' => [ 'text_html' => sprintf( '<th class="lp-material-th-file-link">%s</th>', esc_html__( 'Download', 'learnpress' ) ) ],
-				]
-			);
-			Template::instance()->print_sections( $sections );
-			$content = ob_get_clean();
-			$content = Template::instance()->nest_elements( $html_wrapper, $content );
+			$material_db = LP_Material_Files_DB::getInstance();
+			$paged       = absint( $args['paged'] ?? 1 );
+			$per_page    = intval( $args['per_page'] ?? 1 );
+			$offset      = ( $per_page > 0 && $paged > 1 ) ? $per_page * ( $paged - 1 ) : 0;
+			// $total_pages    = $per_page > 0 ? ceil( $total_rows / $per_page ) : 0;
+			$material_files = $material_db->get_material_by_item_id( $args['item_id'], $per_page, $offset, false );
+			if ( empty( $material_files ) ) {
+				if ( $args['paged'] === 1 ) {
+					$content->content = esc_html__( 'Empty material!', 'learnpress' );
+				} else {
+					$content->content = '';
+				}
+			} else {
+				$material_html = '';
+				foreach ( $material_files as $m ) {
+					$material_html .= self::material_item( $m, $args['item_id'] );
+				}
+				if ( $args['paged'] === 1 ) {
+					$sections         = array(
+						'table_wrap'     => '<table class="course-material-table" >',
+						'table_header'   => self::table_header(),
+						'table_body'     => '<tbody>',
+						'material_html'  => $material_html,
+						'table_body_end' => '</tbody>',
+						'table_wrap_end' => '</table>',
+						'loadmore_btn'   => self::html_load_more_btn( $args ),
+					);
+					$content->content = Template::combine_components( $sections );
+				} else {
+					$content->content = $material_html;
+				}
+				$content->total_pages = $args['total_pages'];
+				$content->paged       = $args['paged'];
+			}
 		} catch ( Throwable $e ) {
-			ob_end_clean();
-			error_log( __METHOD__ . ': ' . $e->getMessage() );
+			$content->content = Template::print_message( $e->getMessage(), 'error', false );
 		}
 		return $content;
 	}
-	public function material_item( $material ) {
-		$content      = '';
-		$html_wrapper = apply_filters(
-			'learn-press/course-material/item/wrapper',
-			[
-				'<tr class="lp-material-item">' => '</tr>',
-			],
+
+	public static function table_header() {
+		$sections = array(
+			'wrap'      => '<thead>',
+			'file-name' => sprintf( '<th class="lp-material-th-file-name">%s</th>', esc_html__( 'Name', 'learnpress' ) ),
+			'file-type' => sprintf( '<th class="lp-material-th-file-type">%s</th>', esc_html__( 'Type', 'learnpress' ) ),
+			'file-size' => sprintf( '<th class="lp-material-th-file-size">%s</th>', esc_html__( 'Size', 'learnpress' ) ),
+			'file-link' => sprintf( '<th class="lp-material-th-file-link">%s</th>', esc_html__( 'Download', 'learnpress' ) ),
+			'wrap_end'  => '</thead>',
+		);
+		return Template::combine_components( $sections );
+	}
+
+	public static function material_item( $material, $current_item_id ) {
+		$sections = array(
+			'wrap'      => '<tr class="lp-material-item">',
+			'file-name' => self::html_file_name( $material, $current_item_id ),
+			'file-type' => self::html_file_type( $material ),
+			'file-size' => self::html_file_size( $material ),
+			'file-link' => self::html_file_link( $material ),
+			'wrap_end'  => '</tr>',
+		);
+		return Template::combine_components( $sections );
+	}
+
+	/**
+	 * Generate HTML for file name.
+	 *
+	 * @param object $material Material object.
+	 * @param int    $current_item_id Current item ID.
+	 *
+	 * @return string
+	 */
+	public static function html_file_name( $material, $current_item_id ): string {
+		if ( get_post_type( $current_item_id ) == LP_COURSE_CPT && $material->item_type == LP_LESSON_CPT ) {
+			$html_file_name = sprintf( esc_html( '%1$s ( %2$s )' ), $material->file_name, get_the_title( $material->item_id ) );
+		} else {
+			$html_file_name = sprintf( esc_html( '%s' ), $material->file_name );
+		}
+
+		return sprintf( '<td class="lp-material-file-name">%s</td>', $html_file_name );
+	}
+
+	/**
+	 * Generate HTML for file type.
+	 *
+	 * @param object $material Material object.
+	 *
+	 * @return string
+	 */
+	public static function html_file_type( $material ): string {
+		return sprintf( '<td class="lp-material-file-type">%s</td>', $material->file_type );
+	}
+
+	/**
+	 * Get file size in human-readable format.
+	 *
+	 * @param object $material Material object.
+	 *
+	 * @return string
+	 */
+	public static function html_file_size( $material ): string {
+		if ( $material->method == 'upload' ) {
+			$file_size = filesize( wp_upload_dir()['basedir'] . $material->file_path );
+			$file_size = ( $file_size / 1024 < 1024 ) ? round( $file_size / 1024, 2 ) . 'KB' : round( $file_size / 1024 / 1024, 2 ) . 'MB';
+		} else {
+			$args      = array(
+				'timeout' => 0.1,
+			);
+			$file_head = wp_remote_head( $material->file_path, $args );
+
+			if ( is_wp_error( $file_head )
+				|| ! isset( $file_head['headers']['content-length'] )
+				|| ! $file_head['headers']['content-length'] ) {
+				$file_size = '';
+			} else {
+				$file_size = $file_head['headers']['content-length'];
+				$file_size = self::convert_kb( intval( $file_size ) );
+			}
+		}
+
+		return apply_filters(
+			'learn-press/course-material/file-size',
+			sprintf( '<td class="lp-material-file-size">%s</td>', $file_size ),
 			$material
 		);
+	}
 
-		ob_start();
-		try {
-			$sections = apply_filters(
-				'learn-press/course-material/item/fields',
-				[
-					'file-name' => [ 'text_html' => $this->html_file_name( $material ) ],
-					'file-type' => [ 'text_html' => $this->html_file_type( $material ) ],
-					'file-size' => [ 'text_html' => $this->html_file_size( $material ) ],
-					'file-link' => [ 'text_html' => $this->html_file_link( $material ) ],
-				],
-				$material
-			);
-			Template::instance()->print_sections( $sections, compact( 'material' ) );
-			$content = ob_get_clean();
-			$content = Template::instance()->nest_elements( $html_wrapper, $content );
-		} catch ( Throwable $e ) {
-			ob_end_clean();
-			error_log( __METHOD__ . ': ' . $e->getMessage() );
+	/**
+	 * Convert file size to human-readable format.
+	 *
+	 * @param int $file_size File size in bytes.
+	 *
+	 * @return string
+	 */
+	public static function convert_kb( int $file_size ): string {
+		// Convert bytes to kilobytes
+		$file_size = $file_size / 1024;
+
+		if ( $file_size < 1024 ) {
+			return round( $file_size, 2 ) . 'KB';
+		} elseif ( $file_size < 1048576 ) {
+			return round( $file_size / 1024, 2 ) . 'MB';
+		} else {
+			return round( $file_size / 1048576, 2 ) . 'GB';
+		}
+	}
+
+	/**
+	 * Generate HTML for file link.
+	 *
+	 * @param object $material Material object.
+	 *
+	 * @return string
+	 */
+	public static function html_file_link( $material ): string {
+		$file_path = $material->file_path ?? '';
+		if ( empty( $file_path ) ) {
+			return '';
 		}
 
-		return $content;
-	}
-	public function html_file_name( $material ) {
-		$content = '';
-		try {
-			$html_wrapper = [
-				'<td class="lp-material-file-name">' => '</td>',
-			];
-			if ( get_post_type( $material->current_item_id ) == LP_COURSE_CPT && $material->item_type == LP_LESSON_CPT ) {
-				$html_file_name = sprintf( esc_html__( '%1$s ( %2$s )' ), $material->file_name, get_the_title( $material->item_id ) );
-			} else {
-				$html_file_name = sprintf( esc_html__( '%s' ), $material->file_name );
-			}
-			$content = Template::instance()->nest_elements( $html_wrapper, $html_file_name );
-		} catch ( Throwable $e ) {
-			error_log( __METHOD__ . ': ' . $e->getMessage() );
+		$file_url = $file_path;
+		if ( $material->method === 'upload' ) {
+			$file_url = wp_upload_dir()['baseurl'] . $file_path;
 		}
-		return $content;
-	}
-	public function html_file_type( $material ) {
-		$content = '';
-		try {
-			$html_wrapper   = [
-				'<td class="lp-material-file-type">' => '</td>',
-			];
-			$html_file_type = sprintf( '%s', $material->file_type );
-			$content        = Template::instance()->nest_elements( $html_wrapper, $html_file_type );
-		} catch ( Throwable $e ) {
-			error_log( __METHOD__ . ': ' . $e->getMessage() );
+
+		$enable_nofollow = LP_Settings::instance()->get_option( 'material_url_nofollow', 'yes' );
+		$rel             = '';
+		if ( $enable_nofollow == 'yes' && $material->method == 'external' ) {
+			$rel = 'nofollow';
 		}
-		return $content;
-	}
-	public function html_file_size( $material ) {
-		$content = '';
-		try {
-			$html_wrapper =
-				[
-					'<td class="lp-material-file-size">' => '</td>',
-				];
-			if ( $material->method == 'upload' ) {
-				$file_size = filesize( wp_upload_dir()['basedir'] . $material->file_path );
-				$file_size = ( $file_size / 1024 < 1024 ) ? round( $file_size / 1024, 2 ) . 'KB' : round( $file_size / 1024 / 1024, 2 ) . 'MB';
-			} else {
-				$file_size = LP_WP_Filesystem::instance()->get_file_size_from_url( $material->file_path );
-			}
-			$html_file_size = sprintf( '%s', $file_size );
-			$content        = Template::instance()->nest_elements( $html_wrapper, $html_file_size );
-		} catch ( Throwable $e ) {
-			error_log( __METHOD__ . ': ' . $e->getMessage() );
-		}
-		return $content;
-	}
-	public function html_file_link( $material ) {
-		$content = '';
-		try {
-			$html_wrapper    =
-				[
-					'<td class="lp-material-file-link">' => '</td>',
-				];
-			$file_url        = $material->method == 'upload' ? wp_upload_dir()['baseurl'] . $material->file_path : $material->file_path;
-			$enable_nofollow = LP_Settings::instance()->get_option( 'material_url_nofollow', 'yes' );
-			$rel             = '';
-			if ( $enable_nofollow == 'yes' && $material->method == 'external' ) {
-				$rel = 'nofollow';
-			}
-			$html_file_link = sprintf(
-				'<a href="%s" target="_blank" rel="%s">
-                    <i class="lp-icon-file-download btn-download-material"></i>
-                </a>',
+
+		return apply_filters(
+			'learn-press/course-material/file-link',
+			sprintf(
+				'<td class="lp-material-file-link">
+					<a href="%s" target="_blank" rel="%s">
+	                    <i class="lp-icon-file-download btn-download-material"></i>
+	                </a>
+	            </td>',
 				esc_url_raw( $file_url ),
 				$rel
-			);
-			$content        = Template::instance()->nest_elements( $html_wrapper, $html_file_link );
-		} catch ( Throwable $e ) {
-			error_log( __METHOD__ . ': ' . $e->getMessage() );
+			)
+		);
+	}
+
+	/**
+	 * Generate HTML for load more button.
+	 *
+	 * @param array $args Arguments containing pagination info.
+	 *
+	 * @return string
+	 */
+	public static function html_load_more_btn( array $args = [] ): string {
+		$paged       = $args['paged'] ?? 1;
+		$total_pages = $args['total_pages'] ?? 1;
+
+		if ( $paged >= $total_pages ) {
+			return '';
 		}
-		return $content;
+
+		return apply_filters(
+			'learn-press/course-material/btn-load-more',
+			sprintf(
+				'<div class="lp-loadmore-material">
+					<button class="lp-btn lp-loadmore-material">
+						%s
+					</button>
+				</div>',
+				esc_html__( 'Load More', 'learnpress' )
+			)
+		);
 	}
 }

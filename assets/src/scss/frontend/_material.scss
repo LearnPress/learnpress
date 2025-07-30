@@ -2,7 +2,7 @@
 	overflow: auto;
 	.course-material-table {
 		width: 100%;
-		display: none;
+		// display: none;
 		th {
 			text-align: center;
 			&:first-child {
@@ -24,7 +24,7 @@
 		}
 	}
 	.lp-loadmore-material.lp-button {
-		display: none;
+		// display: none;
 		margin-top: 20px;
 		padding: 12px 24px;
 	}
@@ -32,7 +32,7 @@
 #popup-content{
 	.lp-material-skeleton{
 		.lp-loadmore-material.lp-button {
-			display: none;
+			// display: none;
 			margin-top: 20px;
 			padding: 12px 24px;
 		}

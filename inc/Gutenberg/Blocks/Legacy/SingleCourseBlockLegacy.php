@@ -23,6 +23,7 @@ class SingleCourseBlockLegacy extends AbstractBlockType {
 	 * @return false|string
 	 */
 	public function render_content_block_template( array $attributes, $content, $block ): string {
+		wp_enqueue_style( 'learnpress' );
 		$html = '';
 		global $wp;
 		$object = get_queried_object();

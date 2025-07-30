@@ -3,7 +3,7 @@ Contributors: thimpress, tungnx89, nhamdv, nguyenlammanh, tunnhn, phonglq.foobla
 Donate link:
 Tags: elearning, education, course, lms, learning management system
 Tested up to: 6.8
-Stable tag: 4.2.8.7.4
+Stable tag: 4.2.8.7.5
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -221,6 +221,14 @@ https://www.transifex.com/projects/p/learnpress/
 13. Add-ons: Unlock endless possibilities with our add-ons from additional payment gateways to more managing course options. Tailor to your needs and easily scale as your site grow
 
 == Changelog ==
+
+= 4.2.8.7.5 (2025-07-29) =
+~ Fixed: error crop image course by size not check if image exists.
+~ Fixed: translate fields author on Course Filter Widget.
+~ Fixed: error case show info learning with user Guest.
+~ Fixed: error save post_author when enable edit course with Gutenberg.
+~ Load Material files of course via AJAX.
+~ Tweak learn_press_get_course_tabs: change how to set default tab.
 
 = 4.2.8.7.4 (2025-07-14) =
 ~ Use package sweetalert2-neutral instead of sweetalert2.

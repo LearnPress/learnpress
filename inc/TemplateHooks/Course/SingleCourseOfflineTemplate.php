@@ -155,7 +155,7 @@ class SingleCourseOfflineTemplate {
 				'breadcrumb'             => $html_breadcrumb,
 				'title'                  => $this->singleCourseTemplate->html_title( $course, 'h1' ),
 				'info_one'               => Template::combine_components( $section_info_one ),
-				'image'                  => $this->singleCourseTemplate->html_image( $course ),
+				'image'                  => $this->singleCourseTemplate->html_image( $course, [ 'size' => 'full' ] ),
 				'info_main_mobile'       => wp_is_mobile() ? $html_info_main : '',
 				'description'            => $this->singleCourseTemplate->html_description( $course ),
 				'features'               => $this->singleCourseTemplate->html_features( $course ),

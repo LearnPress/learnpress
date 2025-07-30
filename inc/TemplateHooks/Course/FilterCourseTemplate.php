@@ -13,6 +13,7 @@ use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\Courses;
 use LearnPress\Models\ListCourseCategories;
+use LearnPress\Models\UserModel;
 use LP_Course;
 use LP_Course_Filter;
 use LP_Request;
@@ -537,7 +538,7 @@ class FilterCourseTemplate {
 	 *
 	 * @return string
 	 * @since 4.2.3.2
-	 * @version 1.0.3
+	 * @version 1.0.4
 	 */
 	public function html_author( array $data = [] ): string {
 		$content = '';
@@ -551,28 +552,34 @@ class FilterCourseTemplate {
 			$instructors     = get_users(
 				array(
 					'role__in' => [ LP_TEACHER_ROLE, ADMIN_ROLE ],
-					'fields'   => array( 'ID', 'display_name' ),
+					'fields'   => array( 'ID' ),
 				)
 			);
 
-			foreach ( $instructors as $instructor ) {
+			foreach ( $instructors as $instructorObj ) {
+				$userModel = UserModel::find( $instructorObj->ID, true );
+				if ( ! $userModel instanceof UserModel ) {
+					continue;
+				}
+
+				$instructor_id              = $userModel->get_id();
 				$total_course_of_instructor = 0;
 
 				$filter              = new LP_Course_Filter();
 				$filter->query_count = true;
 				$filter->only_fields = [ 'DISTINCT(ID)' ];
 				$this->handle_filter_params_before_query( $filter, $params_url );
-				$filter->post_authors = [ $instructor->ID ];
+				$filter->post_authors = [ $instructor_id ];
 				Courses::get_courses( $filter, $total_course_of_instructor );
 
-				$value    = $instructor->ID;
+				$value    = $instructor_id;
 				$disabled = $total_course_of_instructor > 0 ? '' : 'disabled';
 				if ( ! empty( $disabled ) && $hide_count_zero ) {
 					continue;
 				}
 				$checked = in_array( $value, $data_selected ) && empty( $disabled ) ? 'checked' : '';
 				$input   = sprintf( '<input name="c_authors" type="checkbox" value="%s" %s %s>', esc_attr( $value ), esc_attr( $checked ), $disabled );
-				$label   = sprintf( '<label for="">%s</label>', esc_html( $instructor->display_name ) );
+				$label   = sprintf( '<label for="">%s</label>', esc_html( $userModel->get_display_name() ) );
 				$count   = sprintf( '<span class="count">%s</span>', esc_html( $total_course_of_instructor ) );
 
 				$sections = apply_filters(
@@ -582,7 +589,7 @@ class FilterCourseTemplate {
 						'label' => $label,
 						'count' => $count,
 					],
-					$instructor,
+					$userModel,
 					$total_course_of_instructor,
 					$data
 				);

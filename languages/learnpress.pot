@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the LearnPress plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: LearnPress 4.2.8.7.4\n"
+"Project-Id-Version: LearnPress 4.2.8.7.5\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/learnpress\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-07-14T04:39:11+03:00\n"
+"POT-Creation-Date: 2025-07-28T13:35:13+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: learnpress\n"
@@ -42,7 +42,7 @@ msgstr ""
 #: config/settings/profile.php:89
 #: inc/admin/views/quiz/editor.php:47
 #: inc/admin/views/tools/course/html-user.php:29
-#: inc/TemplateHooks/Course/CourseMaterialTemplate.php:82
+#: inc/TemplateHooks/Course/CourseMaterialTemplate.php:137
 #: templates/global/become-teacher-form.php:35
 #: templates/profile/tabs/courses/course-list.php:31
 msgid "Name"
@@ -229,7 +229,7 @@ msgid "Delivery type:"
 msgstr ""
 
 #: assets/src/apps/js/blocks/course-elements/course-faqs/edit.js:10
-#: inc/admin/views/meta-boxes/course/settings.php:616
+#: inc/admin/views/meta-boxes/course/settings.php:617
 #: inc/lp-template-functions.php:88
 #: inc/TemplateHooks/Course/SingleCourseClassicTemplate.php:271
 #: inc/TemplateHooks/Course/SingleCourseTemplate.php:996
@@ -258,7 +258,11 @@ msgstr ""
 #: assets/src/apps/js/blocks/course-elements/course-image/edit.js:84
 #: assets/src/apps/js/blocks/course-elements/course-material/edit.js:19
 #: config/elementor/course/materials.php:76
+<<<<<<< HEAD
 #: inc/TemplateHooks/Course/CourseMaterialTemplate.php:84
+=======
+#: inc/TemplateHooks/Course/CourseMaterialTemplate.php:139
+>>>>>>> origin/develop
 msgid "Size"
 msgstr ""
 
@@ -308,15 +312,20 @@ msgstr ""
 #: config/settings/profile.php:95
 #: inc/admin/views/quiz/editor.php:48
 #: inc/custom-post-types/question.php:314
+<<<<<<< HEAD
 #: inc/TemplateHooks/Course/CourseMaterialTemplate.php:83
 #: inc/TemplateHooks/Course/FilterCourseTemplate.php:739
+=======
+#: inc/TemplateHooks/Course/CourseMaterialTemplate.php:138
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:746
+>>>>>>> origin/develop
 #: inc/Widgets/course-extra.php:30
 msgid "Type"
 msgstr ""
 
 #: assets/src/apps/js/blocks/course-elements/course-material/edit.js:20
 #: config/elementor/course/materials.php:81
-#: inc/TemplateHooks/Course/CourseMaterialTemplate.php:85
+#: inc/TemplateHooks/Course/CourseMaterialTemplate.php:140
 msgid "Download"
 msgstr ""
 
@@ -332,7 +341,11 @@ msgid "Lesson:"
 msgstr ""
 
 #: assets/src/apps/js/blocks/course-elements/course-requirements/edit.js:10
+<<<<<<< HEAD
 #: inc/admin/views/meta-boxes/course/settings.php:601
+=======
+#: inc/admin/views/meta-boxes/course/settings.php:602
+>>>>>>> origin/develop
 #: inc/TemplateHooks/Course/SingleCourseTemplate.php:1078
 #: inc/templates/class-lp-template-course.php:328
 #: inc/templates/class-lp-template-course.php:909
@@ -370,13 +383,21 @@ msgstr ""
 #: assets/src/apps/js/blocks/course-filter/button-reset-filter/edit.js:8
 #: assets/src/apps/js/blocks/course-filter-elements/button-reset-filter/edit.js:8
 #: inc/admin/views/tools/course/html-user-item.php:26
+<<<<<<< HEAD
 #: inc/TemplateHooks/Course/FilterCourseTemplate.php:784
+=======
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:791
+>>>>>>> origin/develop
 msgid "Reset"
 msgstr ""
 
 #: assets/src/apps/js/blocks/course-filter/button-submit-filter/edit.js:8
 #: assets/src/apps/js/blocks/course-filter-elements/button-submit-filter/edit.js:8
+<<<<<<< HEAD
 #: inc/TemplateHooks/Course/FilterCourseTemplate.php:756
+=======
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:763
+>>>>>>> origin/develop
 msgid "Apply"
 msgstr ""
 
@@ -385,13 +406,17 @@ msgstr ""
 #: config/elementor/course/filter-course-el.php:43
 #: config/widgets/course/filter-course.php:65
 #: inc/admin/views/meta-boxes/course/settings.php:92
-#: inc/admin/views/meta-boxes/course/settings.php:502
+#: inc/admin/views/meta-boxes/course/settings.php:503
 #: inc/custom-post-types/course.php:352
 #: inc/custom-post-types/course.php:369
 #: inc/custom-post-types/lesson.php:238
 #: inc/custom-post-types/question.php:312
 #: inc/custom-post-types/quiz.php:239
+<<<<<<< HEAD
 #: inc/TemplateHooks/Course/FilterCourseTemplate.php:599
+=======
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:606
+>>>>>>> origin/develop
 msgid "Author"
 msgstr ""
 
@@ -466,7 +491,7 @@ msgstr ""
 #: config/widgets/course/filter-course.php:53
 #: inc/custom-post-types/course.php:355
 #: inc/custom-post-types/course.php:372
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:293
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:294
 #: inc/TemplateHooks/Course/SingleCourseOfflineTemplate.php:231
 #: templates/emails/order-items-table.php:89
 msgid "Price"
@@ -477,7 +502,7 @@ msgstr ""
 #: config/elementor/course/filter-course-el.php:488
 #: inc/admin/views/search-author-field.php:64
 #: inc/admin/views/tools/course/html-user.php:21
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:189
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:190
 msgid "Search"
 msgstr ""
 
@@ -514,6 +539,7 @@ msgstr ""
 
 #: assets/src/apps/js/blocks/courses/course-item-template/edit.js:188
 #: config/settings/course.php:121
+#: inc/TemplateHooks/Course/CourseMaterialTemplate.php:302
 msgid "Load More"
 msgstr ""
 
@@ -1338,13 +1364,13 @@ msgstr ""
 
 #: config/elementor/course/list-courses.php:43
 #: config/elementor/instructor/single-instructor.php:23
-#: inc/lp-template-functions.php:1345
+#: inc/lp-template-functions.php:1354
 msgid "List"
 msgstr ""
 
 #: config/elementor/course/list-courses.php:44
 #: config/elementor/instructor/single-instructor.php:24
-#: inc/lp-template-functions.php:1344
+#: inc/lp-template-functions.php:1353
 msgid "Grid"
 msgstr ""
 
@@ -1618,7 +1644,7 @@ msgstr ""
 #: inc/class-lp-page-controller.php:243
 #: inc/custom-post-types/course.php:53
 #: inc/custom-post-types/course.php:55
-#: inc/lp-template-functions.php:322
+#: inc/lp-template-functions.php:331
 #: inc/settings/class-lp-settings-courses.php:16
 #: inc/user/class-lp-profile.php:517
 msgid "Courses"
@@ -1752,7 +1778,11 @@ msgstr[1] ""
 #: inc/custom-post-types/lesson.php:176
 #: inc/Gutenberg/Blocks/SingleCourseElements/CourseLessonBlockType.php:79
 #: inc/Gutenberg/Blocks/SingleCourseElements/CourseOfflineLessonBlockType.php:80
+<<<<<<< HEAD
 #: inc/lp-template-functions.php:1103
+=======
+#: inc/lp-template-functions.php:1112
+>>>>>>> origin/develop
 #: inc/Models/CourseModel.php:1407
 #: inc/TemplateHooks/Course/SingleCourseModernLayout.php:210
 #: inc/TemplateHooks/Course/SingleCourseTemplate.php:559
@@ -1768,7 +1798,11 @@ msgstr[1] ""
 #: inc/custom-post-types/question.php:313
 #: inc/custom-post-types/quiz.php:89
 #: inc/Gutenberg/Blocks/SingleCourseElements/CourseQuizBlockType.php:79
+<<<<<<< HEAD
 #: inc/lp-template-functions.php:1093
+=======
+#: inc/lp-template-functions.php:1102
+>>>>>>> origin/develop
 #: inc/Models/CourseModel.php:1410
 #: inc/TemplateHooks/Course/SingleCourseModernLayout.php:218
 #: inc/TemplateHooks/Course/SingleCourseTemplate.php:562
@@ -3204,7 +3238,11 @@ msgid "Invoice"
 msgstr ""
 
 #: inc/admin/class-lp-admin.php:261
+<<<<<<< HEAD
 #: inc/TemplateHooks/Course/FilterCourseTemplate.php:680
+=======
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:687
+>>>>>>> origin/develop
 msgid "Levels"
 msgstr ""
 
@@ -3345,7 +3383,7 @@ msgstr ""
 #: inc/admin/views/course/modal-choose-items.php:66
 #: inc/admin/views/meta-boxes/order/details.php:306
 #: inc/admin/views/quiz/modal-choose-items.php:58
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:99
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:100
 msgid "Close"
 msgstr ""
 
@@ -3655,7 +3693,7 @@ msgstr ""
 #: inc/admin/views/addons.php:164
 #: inc/admin/views/addons.php:262
 #: inc/ExternalPlugin/Elementor/Widgets/Course/FilterCourseElementor.php:235
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:251
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:252
 msgid "Paid"
 msgstr ""
 
@@ -3666,7 +3704,11 @@ msgstr ""
 #: inc/course/abstract-course.php:713
 #: inc/ExternalPlugin/Elementor/Widgets/Course/FilterCourseElementor.php:233
 #: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:880
+<<<<<<< HEAD
 #: inc/TemplateHooks/Course/FilterCourseTemplate.php:247
+=======
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:248
+>>>>>>> origin/develop
 #: inc/TemplateHooks/Course/SingleCourseTemplate.php:444
 #: templates/order/order-details.php:46
 msgid "Free"
@@ -4479,41 +4521,41 @@ msgstr ""
 msgid "Students can see the content of all course items and take the quiz without logging in."
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:531
+#: inc/admin/views/meta-boxes/course/settings.php:532
 msgid "The method of evaluating a student's performance in a course."
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:534
+#: inc/admin/views/meta-boxes/course/settings.php:535
 msgid "Note: changing the evaluation type will affect the assessment results of student learning."
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:538
+#: inc/admin/views/meta-boxes/course/settings.php:539
 msgid "<br /><strong>Note! </strong>There is no final quiz in the course. Please add a final quiz."
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:560
+#: inc/admin/views/meta-boxes/course/settings.php:561
 #: inc/rest-api/v1/admin/class-lp-admin-rest-course-controller.php:81
 msgid "Edit: %s"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:571
+#: inc/admin/views/meta-boxes/course/settings.php:572
 msgid "Evaluation"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:579
+#: inc/admin/views/meta-boxes/course/settings.php:580
 #: inc/admin/views/meta-boxes/quiz/settings.php:35
 msgid "Passing Grade(%)"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:580
+#: inc/admin/views/meta-boxes/course/settings.php:581
 msgid "The conditions that must be achieved to finish the course."
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:606
+#: inc/admin/views/meta-boxes/course/settings.php:607
 msgid "Target Audience"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/course/settings.php:611
+#: inc/admin/views/meta-boxes/course/settings.php:612
 msgid "Key Features"
 msgstr ""
 
@@ -4608,7 +4650,7 @@ msgstr ""
 #: inc/custom-post-types/abstract.php:1047
 #: inc/custom-post-types/lesson.php:148
 #: inc/custom-post-types/lesson.php:247
-#: inc/lp-template-functions.php:1106
+#: inc/lp-template-functions.php:1115
 #: templates/loop/single-course/loop-section-item.php:37
 #: templates/single-course/section/item-meta.php:32
 msgid "Preview"
@@ -5593,7 +5635,7 @@ msgstr ""
 #: inc/Ajax/EditCurriculumAjax.php:553
 #: inc/Models/CourseSectionModel.php:210
 #: inc/Models/CourseSectionModel.php:270
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:475
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:477
 #: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:78
 #: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:597
 msgid "Course not found"
@@ -5665,6 +5707,7 @@ msgstr ""
 
 #: inc/Ajax/EditCurriculumAjax.php:515
 #: inc/Ajax/EditCurriculumAjax.php:565
+#: inc/TemplateHooks/Course/CourseMaterialTemplate.php:63
 msgid "Item not found"
 msgstr ""
 
@@ -6035,12 +6078,12 @@ msgid "Install failed!"
 msgstr ""
 
 #: inc/class-lp-manager-addons.php:161
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:385
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:387
 msgid "Update failed!"
 msgstr ""
 
 #: inc/class-lp-page-controller.php:233
-#: inc/lp-template-functions.php:320
+#: inc/lp-template-functions.php:329
 msgid "Course Search Results"
 msgstr ""
 
@@ -6237,7 +6280,7 @@ msgid "This question has already been assigned to the quiz. It will be removed f
 msgstr ""
 
 #: inc/custom-post-types/abstract.php:806
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:203
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:204
 msgid "Unknown"
 msgstr ""
 
@@ -7990,28 +8033,28 @@ msgid "Right with space"
 msgstr ""
 
 #: inc/lp-core-functions.php:1069
-#: inc/lp-template-functions.php:1497
+#: inc/lp-template-functions.php:1506
 msgid "%s week"
 msgid_plural "%s weeks"
 msgstr[0] ""
 msgstr[1] ""
 
 #: inc/lp-core-functions.php:1073
-#: inc/lp-template-functions.php:1493
+#: inc/lp-template-functions.php:1502
 msgid "%s day"
 msgid_plural "%s days"
 msgstr[0] ""
 msgstr[1] ""
 
 #: inc/lp-core-functions.php:1078
-#: inc/lp-template-functions.php:1488
+#: inc/lp-template-functions.php:1497
 msgid "%s hour"
 msgid_plural "%s hours"
 msgstr[0] ""
 msgstr[1] ""
 
 #: inc/lp-core-functions.php:1082
-#: inc/lp-template-functions.php:1482
+#: inc/lp-template-functions.php:1491
 msgid "%s minute"
 msgid_plural "%s minutes"
 msgstr[0] ""
@@ -8123,42 +8166,42 @@ msgctxt "breadcrumb"
 msgid "Home"
 msgstr ""
 
-#: inc/lp-template-functions.php:1097
-#: inc/lp-template-functions.php:1182
+#: inc/lp-template-functions.php:1106
+#: inc/lp-template-functions.php:1191
 #: inc/templates/class-lp-template-course.php:134
 msgid "Final"
 msgstr ""
 
-#: inc/lp-template-functions.php:1371
+#: inc/lp-template-functions.php:1380
 msgid "Course Sidebar"
 msgstr ""
 
-#: inc/lp-template-functions.php:1373
+#: inc/lp-template-functions.php:1382
 msgid "Widgets in this area will be shown in a single course"
 msgstr ""
 
-#: inc/lp-template-functions.php:1382
+#: inc/lp-template-functions.php:1391
 msgid "All Courses"
 msgstr ""
 
-#: inc/lp-template-functions.php:1384
+#: inc/lp-template-functions.php:1393
 msgid "Widgets in this area will be shown on all course pages"
 msgstr ""
 
-#: inc/lp-template-functions.php:1521
 #: inc/lp-template-functions.php:1530
+#: inc/lp-template-functions.php:1539
 msgid "All levels"
 msgstr ""
 
-#: inc/lp-template-functions.php:1531
+#: inc/lp-template-functions.php:1540
 msgid "Beginner"
 msgstr ""
 
-#: inc/lp-template-functions.php:1532
+#: inc/lp-template-functions.php:1541
 msgid "Intermediate"
 msgstr ""
 
-#: inc/lp-template-functions.php:1533
+#: inc/lp-template-functions.php:1542
 msgid "Expert"
 msgstr ""
 
@@ -8271,15 +8314,19 @@ msgstr ""
 msgid "You can not retake this course!"
 msgstr ""
 
-#: inc/Models/UserItems/UserCourseModel.php:1016
+#: inc/Models/UserItems/UserCourseModel.php:1017
+msgid "User not exists!"
+msgstr ""
+
+#: inc/Models/UserItems/UserCourseModel.php:1022
 msgid "You have not enroll this course!"
 msgstr ""
 
-#: inc/Models/UserItems/UserCourseModel.php:1020
+#: inc/Models/UserItems/UserCourseModel.php:1026
 msgid "You have finished this course!"
 msgstr ""
 
-#: inc/Models/UserItems/UserCourseModel.php:1024
+#: inc/Models/UserItems/UserCourseModel.php:1030
 msgid "Course was blocked by expire!"
 msgstr ""
 
@@ -8783,49 +8830,50 @@ msgstr ""
 msgid "File %s: "
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:209
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:210
 msgid "An error occurred while checking %1$s. %2$s"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:235
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:236
 msgid "Cannot save file %s"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:239
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:240
 msgid "Other files is upload successfully."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:255
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:256
 msgid "Files upload successfully."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:282
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:283
 msgid "Invalid item id!"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:293
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:502
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:294
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:504
 msgid "Successfully"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:295
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:504
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:296
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:506
+#: inc/TemplateHooks/Course/CourseMaterialTemplate.php:102
 msgid "Empty material!"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:382
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:384
 msgid "Updated."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:408
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:410
 msgid "Invalid file identifier"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:415
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:417
 msgid "File is deleted."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:418
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:420
 msgid "There is an error when delete this file."
 msgstr ""
 
@@ -9105,14 +9153,11 @@ msgstr ""
 msgid "No items found"
 msgstr ""
 
-#: inc/TemplateHooks/Course/CourseMaterialTemplate.php:57
-msgid "Load more."
-msgstr ""
-
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:173
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:174
 msgid "Search Course"
 msgstr ""
 
+<<<<<<< HEAD
 #: inc/TemplateHooks/Course/FilterCourseTemplate.php:707
 msgid "Online"
 msgstr ""
@@ -9122,6 +9167,17 @@ msgid "Offline"
 msgstr ""
 
 #: inc/TemplateHooks/Course/FilterCourseTemplate.php:770
+=======
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:714
+msgid "Online"
+msgstr ""
+
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:715
+msgid "Offline"
+msgstr ""
+
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:777
+>>>>>>> origin/develop
 msgid "Done"
 msgstr ""
 
@@ -9205,11 +9261,11 @@ msgstr ""
 msgid "Copy to Clipboard"
 msgstr ""
 
-#: inc/TemplateHooks/Course/SingleCourseModernLayout.php:501
+#: inc/TemplateHooks/Course/SingleCourseModernLayout.php:503
 msgid "End date"
 msgstr ""
 
-#: inc/TemplateHooks/Course/SingleCourseModernLayout.php:514
+#: inc/TemplateHooks/Course/SingleCourseModernLayout.php:516
 msgid "Start date"
 msgstr ""
 
@@ -9324,19 +9380,19 @@ msgstr ""
 msgid "Do you want to retake the course"
 msgstr ""
 
-#: inc/TemplateHooks/UserItem/UserCourseTemplate.php:190
+#: inc/TemplateHooks/UserItem/UserCourseTemplate.php:196
 msgid "completed"
 msgstr ""
 
-#: inc/TemplateHooks/UserItem/UserCourseTemplate.php:217
+#: inc/TemplateHooks/UserItem/UserCourseTemplate.php:229
 msgid "Course passing progress:"
 msgstr ""
 
-#: inc/TemplateHooks/UserItem/UserCourseTemplate.php:257
+#: inc/TemplateHooks/UserItem/UserCourseTemplate.php:275
 msgid "This course is finished."
 msgstr ""
 
-#: inc/TemplateHooks/UserItem/UserCourseTemplate.php:259
+#: inc/TemplateHooks/UserItem/UserCourseTemplate.php:277
 msgid "This course is expired."
 msgstr ""
 

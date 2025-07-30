@@ -5,7 +5,7 @@
  * To replace class LP_User_Item
  *
  * @package LearnPress/Classes
- * @version 1.0.0
+ * @version 1.0.7
  * @since 4.2.6.9
  */
 
@@ -320,7 +320,7 @@ class PostModel {
 	 *
 	 * @return string
 	 * @since 4.2.6.9
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 */
 	public function get_image_url( $size = 'post-thumbnail' ): string {
 		$image_url = '';
@@ -329,22 +329,41 @@ class PostModel {
 			if ( is_string( $size ) ) {
 				$image_url = get_the_post_thumbnail_url( $this, $size );
 			} elseif ( is_array( $size ) && count( $size ) === 2 ) {
-				// Custom crop size for image.
+				// Check file crop is existing.
 				$attachment_id = get_post_thumbnail_id( $this );
 				$file_path     = get_attached_file( $attachment_id );
-				$resized_file  = wp_get_image_editor( $file_path );
+				$file_url      = wp_get_attachment_url( $attachment_id );
+				$upload_dir    = wp_upload_dir();
+				$base_dir      = $upload_dir['basedir'];
 
-				if ( ! is_wp_error( $resized_file ) ) {
-					$resized_file->resize( $size[0], $size[1], true );
-					$resized_image = $resized_file->save();
+				// Get file path with size.
+				$file_path_arr    = explode( '.', $file_path );
+				$file_path_length = count( $file_path_arr );
+				$extension        = end( $file_path_arr );
+				unset( $file_path_arr[ $file_path_length - 1 ] );
+				$file_path_join      = implode( '.', $file_path_arr );
+				$file_path_with_size = $file_path_join . '-' . $size[0] . 'x' . $size[1] . '.' . $extension;
+				if ( file_exists( $file_path_with_size ) ) {
+					$file_url_arr    = explode( '.', $file_url );
+					$file_url_length = count( $file_url_arr );
+					$url_extension   = end( $file_url_arr );
+					unset( $file_url_arr[ $file_url_length - 1 ] );
+					$file_url_join = implode( '.', $file_url_arr );
+					$image_url     = $file_url_join . '-' . $size[0] . 'x' . $size[1] . '.' . $url_extension;
+				} else {
+					// Custom crop size for image.
+					$resized_file = wp_get_image_editor( $file_path );
 
-					if ( ! is_wp_error( $resized_image ) ) {
-						// Build the URL for the resized image
-						$upload_dir = wp_upload_dir();
-						$base_dir   = $upload_dir['basedir'];
-						$imag_dir   = $resized_image['path'];
-						$imag_dir   = str_replace( $base_dir, '', $imag_dir );
-						$image_url  = $upload_dir['baseurl'] . $imag_dir;
+					if ( ! is_wp_error( $resized_file ) ) {
+						$resized_file->resize( $size[0], $size[1], true );
+						$resized_image = $resized_file->save( $file_path_with_size );
+
+						if ( ! is_wp_error( $resized_image ) ) {
+							// Build the URL for the resized image
+							$imag_dir  = $resized_image['path'];
+							$imag_dir  = str_replace( $base_dir, '', $imag_dir );
+							$image_url = $upload_dir['baseurl'] . $imag_dir;
+						}
 					}
 				}
 			}
@@ -402,7 +421,6 @@ class PostModel {
 	 * @since 4.2.3
 	 */
 	public function get_categories(): array {
-		// Todo: set cache.
 		$wpPost     = new WP_Post( $this );
 		$categories = get_the_terms( $wpPost, LP_COURSE_CATEGORY_TAX );
 		if ( ! $categories || $categories instanceof WP_Error ) {
@@ -420,7 +438,6 @@ class PostModel {
 	 * @since 4.2.7.2
 	 */
 	public function get_tags(): array {
-		// Todo: set cache.
 		$wpPost = new WP_Post( $this );
 		$tags   = get_the_terms( $wpPost, LP_COURSE_TAXONOMY_TAG );
 		if ( ! $tags || $tags instanceof WP_Error ) {
