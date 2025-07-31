@@ -986,7 +986,7 @@ class LP_Page_Controller {
 
 		$page_profile_option = untrailingslashit( $link_page );
 		$page_profile_option = str_replace( '/', '\/', $page_profile_option );
-		$pattern             = '/' . $page_profile_option . '/';
+		$pattern             = "/^$page_profile_option/";
 		if ( preg_match( $pattern, LP_Helper::getUrlCurrent() ) ) {
 			return true;
 		}
