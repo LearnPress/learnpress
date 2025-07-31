@@ -126,6 +126,14 @@ const toggleSection = ( e, target, el_trigger = '' ) => {
 		el_trigger = className.elTriggerToggle;
 	}
 
+	if ( target.closest( `${ className.elBtnUpdateQuestionDes }` ) ) {
+		return;
+	} else if ( target.closest( `${ className.elBtnUpdateQuestionHint }` ) ) {
+		return;
+	} else if ( target.closest( `${ className.elBtnUpdateQuestionExplain }` ) ) {
+		return;
+	}
+
 	const elTinymceHeader = target.closest( el_trigger );
 	if ( ! elTinymceHeader ) {
 		return;
@@ -285,20 +293,19 @@ const eventEditorTinymceChange = ( id, callBack ) => {
 	editor.settings.content_style = '' +
 		'body{ line-height: 2.2;}  ' +
 		'.lp-question-fib-input{border: 1px dashed rebeccapurple;padding: 5px; } ';
-	// Event change content in TinyMCE editor
+	// Events focus in TinyMCE editor
 	editor.on( 'change', ( e ) => {
-		console.log( 'Content changed:' );
+		const elTextarea = document.getElementById( id );
+		const elDataEdit = elTextarea.closest( '.lp-question-data-edit' );
+		const elHeader = elDataEdit.querySelector( '.lp-question-data-edit-header' );
+		if ( elHeader ) {
+			const elButtonUpdate = elHeader.querySelector( 'button' );
+			lpUtils.lpShowHideEl( elButtonUpdate, 1 );
+		}
 	} );
-	editor.on( 'blur', ( e ) => {
-		console.log( 'Content blur:' );
-	} );
-	// Event focus in TinyMCE editor
-	editor.on( 'focusin', ( e ) => {
-		console.log( 'Content focusin:' );
-	} );
-	editor.on( 'init', () => {
-		console.log( 'Content init:' );
-	} );
+	editor.on( 'blur', ( e ) => {} );
+	editor.on( 'focusin', ( e ) => {} );
+	editor.on( 'init', () => {} );
 	editor.on( 'setcontent', ( e ) => {
 		const elementg = editor.dom.select( `.lp-question-fib-input[data-id=${ uniquid }]` );
 		if ( elementg[ 0 ] ) {
@@ -609,6 +616,7 @@ const updateQuestionDes = ( e, target ) => {
 
 			if ( status === 'success' ) {
 				showToast( message, status );
+				editor.undoManager.clear();
 			} else {
 				throw `Error: ${ message }`;
 			}
@@ -618,6 +626,7 @@ const updateQuestionDes = ( e, target ) => {
 		},
 		completed: () => {
 			lpUtils.lpSetLoadingEl( elQuestionItem, 0 );
+			lpUtils.lpShowHideEl( elBtnUpdateQuestionDes, 0 );
 		},
 	};
 
@@ -658,6 +667,7 @@ const updateQuestionHint = ( e, target ) => {
 
 			if ( status === 'success' ) {
 				showToast( message, status );
+				editor.undoManager.clear();
 			} else {
 				throw `Error: ${ message }`;
 			}
@@ -667,6 +677,7 @@ const updateQuestionHint = ( e, target ) => {
 		},
 		completed: () => {
 			lpUtils.lpSetLoadingEl( elQuestionItem, 0 );
+			lpUtils.lpShowHideEl( elBtnUpdateQuestionHint, 0 );
 		},
 	};
 
@@ -707,6 +718,7 @@ const updateQuestionExplain = ( e, target ) => {
 
 			if ( status === 'success' ) {
 				showToast( message, status );
+				editor.undoManager.clear();
 			} else {
 				throw `Error: ${ message }`;
 			}
@@ -716,6 +728,7 @@ const updateQuestionExplain = ( e, target ) => {
 		},
 		completed: () => {
 			lpUtils.lpSetLoadingEl( elQuestionItem, 0 );
+			lpUtils.lpSetLoadingEl( elBtnUpdateQuestionExplain, 0 );
 		},
 	};
 

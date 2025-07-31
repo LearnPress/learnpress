@@ -221,10 +221,6 @@ class AdminEditQizTemplate {
 			),
 			'loading'    => '<span class="lp-icon-spinner"></span>',
 			'title'      => $this->html_input_question_title( $question_title ),
-			'type'       => sprintf(
-				'<span class="lp-question-type-label">%s</span>',
-				$questionPostModel instanceof QuestionPostModel ? $questionPostModel->get_type_label() : ''
-			),
 			'btn-edit'   => sprintf(
 				'<a class="lp-btn-edit-question-title lp-icon-edit" title="%s" href="%s"></a>',
 				__( 'Edit question title', 'learnpress' ),
@@ -235,6 +231,10 @@ class AdminEditQizTemplate {
 				__( 'Are you sure?', 'learnpress' ),
 				__( 'This question will be deleted. The question will no longer be assigned to this quiz, but will not be permanently deleted.', 'learnpress' ),
 				__( 'Delete question', 'learnpress' )
+			),
+			'type'       => sprintf(
+				'<span class="lp-question-type-label">%s</span>',
+				$questionPostModel instanceof QuestionPostModel ? $questionPostModel->get_type_label() : ''
 			),
 			'btn-update' => sprintf(
 				'<button type="button" class="lp-btn-update-question-title button">%s</button>',
@@ -270,17 +270,17 @@ class AdminEditQizTemplate {
 			'header'       => sprintf(
 				'<div class="lp-question-data-edit-header lp-trigger-toggle">
 					<label>%s</label>
-					<div class="lp-tinymce-toggle">
-						<span class="lp-icon-angle-down"></span><span class="lp-icon-angle-up"></span>
+					<div style="display: flex;gap: 5px;align-items: center">
+					<button type="button" class="lp-btn-update-question-des button lp-hidden">%s</button>
+						<div class="lp-tinymce-toggle">
+							<span class="lp-icon-angle-down"></span><span class="lp-icon-angle-up"></span>
+						</div>
 					</div>
 				</div>',
-				__( 'Description', 'learnpress' )
-			),
-			'collapse'     => '<div class="lp-section-collapse">',
-			'btn-save'     => sprintf(
-				'<button type="button" class="lp-btn-update-question-des button">%s</button>',
+				__( 'Description', 'learnpress' ),
 				__( 'Save', 'learnpress' )
 			),
+			'collapse'     => '<div class="lp-section-collapse">',
 			'tinymce'      => AdminTemplate::editor_tinymce(
 				wpautop( $question_description ),
 				$editor_id
@@ -332,19 +332,19 @@ class AdminEditQizTemplate {
 		$editor_id = 'lp-question-hint-' . $question_id;
 
 		$section = [
-			'wrap'         => '<div class="lp-question-hint lp-section-toggle lp-collapse">',
+			'wrap'         => '<div class="lp-question-hint lp-question-data-edit lp-section-toggle lp-collapse">',
 			'header'       => sprintf(
 				'<div class="lp-question-data-edit-header lp-trigger-toggle">
 					<label>%s</label>
-					<div class="lp-tinymce-toggle"><span class="lp-icon-angle-down"></span><span class="lp-icon-angle-up"></span></div>
+					<div style="display: flex;gap: 5px;align-items: center">
+						<button type="button" class="lp-btn-update-question-hint button lp-hidden">%s</button>
+						<div class="lp-tinymce-toggle"><span class="lp-icon-angle-down"></span><span class="lp-icon-angle-up"></span></div>
+					</div>
 				</div>',
-				__( 'Hint', 'learnpress' )
-			),
-			'collapse'     => '<div class="lp-section-collapse">',
-			'btn-save'     => sprintf(
-				'<button type="button" class="lp-btn-update-question-hint button">%s</button>',
+				__( 'Hint', 'learnpress' ),
 				__( 'Save', 'learnpress' )
 			),
+			'collapse'     => '<div class="lp-section-collapse">',
 			'tinymce'      => AdminTemplate::editor_tinymce(
 				$hint,
 				$editor_id
@@ -369,19 +369,19 @@ class AdminEditQizTemplate {
 		$editor_id   = 'lp-question-explanation-' . $question_id;
 
 		$section = [
-			'wrap'         => '<div class="lp-question-explanation lp-section-toggle lp-collapse">',
+			'wrap'         => '<div class="lp-question-explanation lp-question-data-edit lp-section-toggle lp-collapse">',
 			'header'       => sprintf(
 				'<div class="lp-question-data-edit-header lp-trigger-toggle">
 					<label>%s</label>
-					<div class="lp-tinymce-toggle"><span class="lp-icon-angle-down"></span><span class="lp-icon-angle-up"></span></div>
+					<div style="display: flex;gap: 5px;align-items: center">
+						<button type="button" class="lp-btn-update-question-explanation button lp-hidden">%s</button>
+						<div class="lp-tinymce-toggle"><span class="lp-icon-angle-down"></span><span class="lp-icon-angle-up"></span></div>
+					</div>
 				</div>',
-				__( 'Explaination', 'learnpress' )
-			),
-			'collapse'     => '<div class="lp-section-collapse">',
-			'btn-save'     => sprintf(
-				'<button type="button" class="lp-btn-update-question-explanation button">%s</button>',
+				__( 'Explanation', 'learnpress' ),
 				__( 'Save', 'learnpress' )
 			),
+			'collapse'     => '<div class="lp-section-collapse">',
 			'tinymce'      => AdminTemplate::editor_tinymce(
 				$explanation,
 				$editor_id

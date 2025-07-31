@@ -122,7 +122,8 @@ $spacing-section: 12px;
 			}
 
 			.lp-question-type-label {
-				width: 20%;
+				white-space: nowrap;
+				text-overflow: ellipsis;
 			}
 
 			.lp-btn-remove-question, .lp-btn-edit-question-title,
@@ -158,7 +159,7 @@ $spacing-section: 12px;
 		.lp-question-choice-header {
 			display: flex;
 			justify-content: space-between;
-			padding: 20px 10px;
+			padding: 10px;
 			background: #eee;
 		}
 
@@ -172,10 +173,26 @@ $spacing-section: 12px;
 		}
 
 		.lp-question-data-edit {
-			margin-bottom: 5px;
+			&:not(.lp-collapse) {
+				.lp-question-data-edit-header {
+					background: #2d71af;
+					border-color: #2d71af;
+					color: #fff;
+				}
+
+				.lp-section-collapse {
+					border-color: #2d71af;
+				}
+
+				.lp-tinymce-toggle span {
+					color: #fff;
+				}
+			}
 		}
 
 		.lp-section-collapse {
+			display: grid;
+			gap: 10px;
 			padding: 12px;
 			border: 1px solid $border-color;
 			border-top: none;
@@ -195,6 +212,7 @@ $spacing-section: 12px;
 			justify-content: space-between;
 			padding: 10px;
 			border: 1px solid lightgray;
+			background: #eeeeee;
 
 			&:hover {
 				cursor: pointer;
@@ -220,25 +238,34 @@ $spacing-section: 12px;
 		flex-direction: column;
 	}
 
+	.lp-question-fib-blank-options {
+		display: grid;
+		gap: 5px;
+	}
+
 	.lp-question-fib-blank-option-item {
-		padding: 20px;
-		border: 1px solid $border-color;
 
 		.lp-question-fib-option-header {
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
 			gap: 10px;
+			padding: 10px;
+			background: #eee;
 
 			input[type="text"] {
 				width: 100%;
+				border: 1px solid #0000004f;
 			}
 		}
 
 		.lp-question-fib-option-detail {
+			padding: 10px;
 			display: flex;
 			flex-direction: column;
 			gap: 10px;
+			border: 1px solid #EEEEEE;
+			border-top: none;
 
 			p {
 				margin: 0;

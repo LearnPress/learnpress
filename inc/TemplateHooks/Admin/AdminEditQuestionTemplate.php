@@ -498,10 +498,6 @@ class AdminEditQuestionTemplate {
 					'<button type="button" class="lp-btn-fib-option-save button">%s</button>',
 					__( 'Save', 'learnpress' )
 				),
-				'btn-detail' => sprintf(
-					'<button type="button" class="lp-btn-fib-option-detail button">%s</button>',
-					__( 'Details', 'learnpress' )
-				),
 				'btn-delete' => sprintf(
 					'<button type="button"
 								class="lp-btn-fib-option-delete button"
@@ -511,11 +507,12 @@ class AdminEditQuestionTemplate {
 					esc_html__( 'Delete this blank and keep text', 'learnpress' ),
 					__( 'Remove', 'learnpress' )
 				),
+				'toggle'     => '<div class="lp-trigger-toggle"><span class="lp-icon-angle-down"></span><span class="lp-icon-angle-up"></span></div>',
 				'wrap_end'   => '</div>',
 			];
 
 			$section_detail = [
-				'wrap'            => '<div class="lp-question-fib-option-detail">',
+				'wrap'            => '<div class="lp-question-fib-option-detail lp-section-collapse">',
 				'match-case'      => sprintf(
 					'<label>
 						<input type="checkbox" class="lp-question-fib-option-match-case" %s name="%s" data-key="%s" value="1" /> %s
@@ -579,7 +576,7 @@ class AdminEditQuestionTemplate {
 
 			$section = [
 				'wrap'     => sprintf(
-					'<div class="lp-question-fib-blank-option-item %s" data-id="%s">',
+					'<div class="lp-question-fib-blank-option-item %s lp-section-toggle lp-collapse" data-id="%s">',
 					$id === 'clone' ? 'clone lp-hidden' : '',
 					esc_attr( $id )
 				),
