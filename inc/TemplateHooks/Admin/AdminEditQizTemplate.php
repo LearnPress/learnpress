@@ -303,9 +303,9 @@ class AdminEditQizTemplate {
 		$point = $questionPostModel->get_mark();
 
 		$section = [
-			'wrap'     => '<div class="lp-question-point">',
+			'wrap'     => '<div class="lp-question-point lp-question-option-row">',
 			'label'    => sprintf(
-				'<label for="lp-question-point">%s</label>',
+				'<label for="lp-question-point">%s:</label>',
 				__( 'Points', 'learnpress' )
 			),
 			'input'    => sprintf(

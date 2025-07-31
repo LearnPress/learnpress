@@ -35,6 +35,9 @@ const className = {
 	elAddNewQuestion: 'add-new-question',
 	elQuestionClone: '.lp-question-item.clone',
 	elAnswersConfig: '.lp-answers-config',
+	elBtnAddAnswer: '.lp-btn-add-question-answer',
+	elQuestionAnswerTitleInput: '.lp-question-answer-title-input',
+	elBtnDeleteAnswer: '.lp-btn-delete-question-answer',
 	elQuestionByType: '.lp-question-by-type',
 	elInputAnswerSetTrue: '.lp-input-answer-set-true',
 	elQuestionAnswerItem: '.lp-question-answer-item',
@@ -744,6 +747,71 @@ const updateQuestionExplain = ( e, target ) => {
 	window.lpAJAXG.fetchAJAX( dataSend, callBack );
 };
 
+const addQuestionAnswer = ( e, target ) => {
+	const elBtnAddAnswer = target.closest( `${ className.elBtnAddAnswer }` );
+	if ( ! elBtnAddAnswer ) {
+		return;
+	}
+
+	const elQuestionItem = elBtnAddAnswer.closest( `${ className.elQuestionItem }` );
+	if ( ! elQuestionItem ) {
+		return;
+	}
+
+	const elQuestionAnswerItem = elBtnAddAnswer.closest( `${ className.elQuestionAnswerItem }` );
+	if ( ! elQuestionAnswerItem ) {
+		return;
+	}
+
+	console.log('elQuestionAnswerItem', elQuestionAnswerItem );
+
+	const elQuestionAnswerTitleInput = elQuestionAnswerItem.querySelector( `${ className.elQuestionAnswerTitleInput }` );
+	if ( ! elQuestionAnswerTitleInput ) {
+		return;
+	}
+
+	const answerTitle = elQuestionAnswerTitleInput.value.trim();
+
+	const questionId = elQuestionItem.dataset.questionId;
+
+	// Call ajax to add new question answer
+	const callBack = {
+		success: ( response ) => {
+			const { message, status, data } = response;
+
+			if ( status === 'success' ) {
+
+			} else {
+				throw `Error: ${ message }`;
+			}
+
+			showToast( message, status );
+		},
+		error: ( error ) => {
+			showToast( error, 'error' );
+		},
+		completed: () => {},
+	};
+
+	const dataSend = {
+		quiz_id: quizID,
+		action: 'add_question_answer',
+		question_id: questionId,
+		answer_title: answerTitle,
+		args: {
+			id_url: idUrlHandle,
+		},
+	};
+	window.lpAJAXG.fetchAJAX( dataSend, callBack );
+};
+
+const deleteQuestionAnswer = ( e, target ) => {
+	const elBtnDeleteAnswer = target.closest( `${ className.elBtnDeleteAnswer }` );
+	if ( ! elBtnDeleteAnswer ) {
+
+	}
+};
+
 // For answers config
 const updateAnswersConfig = ( e, target ) => {
 	const elInputAnswerSetTrue = target.closest(
@@ -1186,6 +1254,9 @@ document.addEventListener( 'click', ( e ) => {
 	updateQuestionDes( e, target );
 	updateQuestionHint( e, target );
 	updateQuestionExplain( e, target );
+
+	addQuestionAnswer( e, target );
+	deleteQuestionAnswer( e, target );
 } );
 // Event keydown
 document.addEventListener( 'keydown', ( e ) => {

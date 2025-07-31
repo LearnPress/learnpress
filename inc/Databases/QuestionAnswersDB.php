@@ -75,7 +75,7 @@ class QuestionAnswersDB extends LP_Database {
 		$query = $this->wpdb->prepare(
 			"SELECT MAX(`order`)
 			FROM $this->tb_lp_question_answers
-			WHERE question = %d",
+			WHERE question_id = %d",
 			$question_id
 		);
 

@@ -14,6 +14,7 @@
  * @package LearnPress
  */
 
+use LearnPress\Ajax\EditQuestionAjax;
 use LearnPress\Ajax\EditQuizAjax;
 use LearnPress\Ajax\LessonAjax;
 use LearnPress\Ajax\LoadContentViaAjax;
@@ -656,6 +657,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 					LessonAjax::catch_lp_ajax();
 					EditCurriculumAjax::catch_lp_ajax();
 					EditQuizAjax::catch_lp_ajax();
+					EditQuestionAjax::catch_lp_ajax();
 				},
 				11
 			);

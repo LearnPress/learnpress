@@ -311,6 +311,7 @@ class AdminEditQuestionTemplate {
 				'<div class="lp-question-answer-item" data-answer-id="%6$s">
 					<span class="drag lp-icon-drag" title="Drag to reorder section"></span>
 					<input type="text" class="%1$s" name="%1$s" value="%2$s" />
+					<span class="lp-icon-trash-o lp-btn-delete-question-answer"></span>
 					<input type="radio" class="lp-input-answer-set-true" name="%4$s" %3$s value="%5$s" />
 				</div>',
 				'lp-question-answer-item-title-input',
@@ -321,6 +322,16 @@ class AdminEditQuestionTemplate {
 				esc_attr( $questionAnswerModel->question_answer_id )
 			);
 		}
+
+		$html_answers .= sprintf(
+			'<div class="lp-question-answer-item lp-question-answer-item-add-new">
+				<span class="lp-icon-plus" title="Add answer option"></span>
+				<input type="text" class="%1$s" name="%1$s" value="" />
+				<button type="button" class="button lp-btn-add-question-answer">%2$s</button>
+			</div>',
+			'lp-question-answer-title-input',
+			__( 'Add option', 'learnpress' )
+		);
 
 		$section = [
 			'header'    => '<div class="lp-question-choice-header"><span>Answers</span><span>Correct</span></div>',
@@ -353,6 +364,7 @@ class AdminEditQuestionTemplate {
 				'<div class="lp-question-answer-item" data-answer-id="%6$s">
 					<span class="drag lp-icon-drag" title="Drag to reorder section"></span>
 					<input type="text" class="%1$s" name="%1$s" value="%2$s" />
+					<span class="lp-icon-trash-o lp-btn-delete-question-answer"></span>
 					<input type="checkbox" class="lp-input-answer-set-true" name="%4$s" %3$s value="%5$s" />
 				</div>',
 				'lp-question-answer-item-title-input',
@@ -360,9 +372,19 @@ class AdminEditQuestionTemplate {
 				$questionAnswerModel->is_true === 'yes' ? 'checked' : '',
 				$name_checkbox,
 				esc_attr( $questionAnswerModel->is_true ),
-				esc_attr( $questionAnswerModel->question_answer_id )
+				esc_attr( $questionAnswerModel->question_answer_id ),
 			);
 		}
+
+		$html_answers .= sprintf(
+			'<div class="lp-question-answer-item lp-question-answer-item-add-new">
+				<span class="lp-icon-plus" title="Add answer option"></span>
+				<input type="text" class="%1$s" name="%1$s" value="" />
+				<button type="button" class="button lp-btn-add-question-answer">%2$s</button>
+			</div>',
+			'lp-question-answer-title-input',
+			__( 'Add option', 'learnpress' )
+		);
 
 		$section = [
 			'header'  => '<div class="lp-question-choice-header"><span>Answers</span><span>Correct</span></div>',
