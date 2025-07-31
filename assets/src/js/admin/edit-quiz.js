@@ -404,25 +404,14 @@ const addQuestion = ( e, target ) => {
 			const { message, status, data } = response;
 			const {
 				question,
-				quizQuestions,
-				html_question_answers,
-				question_type_label,
+				html_edit_question,
 			} = data;
 
 			if ( status === 'error' ) {
-				newQuestionItem.remove();
+				throw `Error: ${ message }`;
 			} else if ( status === 'success' ) {
 				newQuestionItem.dataset.questionId = question.ID;
-				const elQuestionByType = newQuestionItem.querySelector(
-					`${ className.elQuestionByType }`
-				);
-				elQuestionByType.innerHTML = html_question_answers || '';
-				const elQuestionTypeLabel = newQuestionItem.querySelector(
-					`${ className.elQuestionTypeLabel }`
-				);
-				if ( elQuestionTypeLabel ) {
-					elQuestionTypeLabel.textContent = question_type_label;
-				}
+				newQuestionItem.innerHTML = html_edit_question;
 
 				initTinyMCE();
 			}

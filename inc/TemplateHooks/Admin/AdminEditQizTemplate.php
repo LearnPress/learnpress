@@ -5,10 +5,8 @@ namespace LearnPress\TemplateHooks\Admin;
 use Exception;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
-use LearnPress\Models\PostModel;
 use LearnPress\Models\Question\QuestionPostModel;
 use LearnPress\Models\QuizPostModel;
-use LearnPress\TemplateHooks\Admin\Question\AdminEditQuestionAnswerTemplate;
 use LearnPress\TemplateHooks\TemplateAJAX;
 use LP_Database;
 use LP_Post_DB;
@@ -174,38 +172,41 @@ class AdminEditQizTemplate {
 		$is_clone       = false;
 		$question_id    = 0;
 		$question_title = '';
+		$html_edit_main = '';
 
 		if ( $questionPostModel instanceof QuestionPostModel ) {
 			$question_id    = $questionPostModel->ID;
 			$question_title = $questionPostModel->post_title;
-		} else {
-			$is_clone = true;
-		}
 
-		$section_edit_details = [
-			'wrap'         => '<div class="question-edit-details lp-section-toggle lp-collapse">',
-			'header'       => sprintf(
-				'<div class="lp-question-data-edit-header lp-trigger-toggle">
+			$section_edit_details = [
+				'wrap'         => '<div class="question-edit-details lp-section-toggle lp-collapse">',
+				'header'       => sprintf(
+					'<div class="lp-question-data-edit-header lp-trigger-toggle">
 					<label>%s</label>
 					<div class="lp-tinymce-toggle"><span class="lp-icon-angle-down"></span><span class="lp-icon-angle-up"></span></div>
 				</div>',
-				__( 'Option Details', 'learnpress' )
-			),
-			'collapse'     => '<div class="lp-section-collapse">',
-			'point'        => $this->html_edit_mark( $questionPostModel ),
-			'hint'         => $this->html_edit_hint( $questionPostModel ),
-			'explanation'  => $this->html_edit_explanation_hint( $questionPostModel ),
-			'collapse_end' => '</div>',
-			'wrap_end'     => '</div>',
-		];
+					__( 'Option Details', 'learnpress' )
+				),
+				'collapse'     => '<div class="lp-section-collapse">',
+				'point'        => $this->html_edit_mark( $questionPostModel ),
+				'hint'         => $this->html_edit_hint( $questionPostModel ),
+				'explanation'  => $this->html_edit_explanation( $questionPostModel ),
+				'collapse_end' => '</div>',
+				'wrap_end'     => '</div>',
+			];
 
-		$section_edit_main = [
-			'wrap'             => '<div class="question-edit-main">',
-			'description'      => $this->html_edit_question_description( $questionPostModel ),
-			'question-by-type' => $this->html_edit_question_by_type( $questionPostModel ),
-			'details'          => Template::combine_components( $section_edit_details ),
-			'wrap_end'         => '</div>',
-		];
+			$section_edit_main = [
+				'wrap'        => '<div class="question-edit-main">',
+				'description' => $this->html_edit_question_description( $questionPostModel ),
+				'answers'     => $this->html_edit_question_by_type( $questionPostModel ),
+				'details'     => Template::combine_components( $section_edit_details ),
+				'wrap_end'    => '</div>',
+			];
+
+			$html_edit_main = Template::combine_components( $section_edit_main );
+		} else {
+			$is_clone = true;
+		}
 
 		$section = [
 			'wrap'       => sprintf(
@@ -245,100 +246,8 @@ class AdminEditQizTemplate {
 			),
 			'toggle'     => '<div class="lp-question-toggle"><span class="lp-icon-angle-down"></span><span class="lp-icon-angle-up"></span></div>',
 			'head_end'   => '</div>',
-			'edit_main'  => Template::combine_components( $section_edit_main ),
+			'edit_main'  => $html_edit_main,
 			'wrap_end'   => '</div>',
-		];
-
-		return Template::combine_components( $section );
-	}
-
-	public function html_edit_mark( $questionPostModel = null ): string {
-		$point = 0;
-		if ( $questionPostModel instanceof QuestionPostModel ) {
-			$point = $questionPostModel->get_mark();
-		}
-
-		$section = [
-			'wrap'     => '<div class="lp-question-point">',
-			'label'    => sprintf(
-				'<label for="lp-question-point">%s</label>',
-				__( 'Points', 'learnpress' )
-			),
-			'input'    => sprintf(
-				'<input type="number" name="lp-question-point-input" id="lp-question-point" value="%s" min="0" step="0.01">',
-				esc_attr( $point )
-			),
-			'wrap_end' => '</div>',
-		];
-
-		return Template::combine_components( $section );
-	}
-
-	public function html_edit_hint( $questionPostModel = null ): string {
-		$hint        = '';
-		$question_id = 0;
-		if ( $questionPostModel instanceof QuestionPostModel ) {
-			$question_id = $questionPostModel->ID;
-			$hint        = $questionPostModel->get_hint();
-		}
-
-		$editor_id = 'lp-question-hint-' . $question_id;
-
-		$section = [
-			'wrap'         => '<div class="lp-question-hint lp-section-toggle lp-collapse">',
-			'header'       => sprintf(
-				'<div class="lp-question-data-edit-header lp-trigger-toggle">
-					<label>%s</label>
-					<div class="lp-tinymce-toggle"><span class="lp-icon-angle-down"></span><span class="lp-icon-angle-up"></span></div>
-				</div>',
-				__( 'Hint', 'learnpress' )
-			),
-			'collapse'     => '<div class="lp-section-collapse">',
-			'btn-save'     => sprintf(
-				'<button type="button" class="lp-btn-update-question-hint button">%s</button>',
-				__( 'Save', 'learnpress' )
-			),
-			'tinymce'      => AdminTemplate::editor_tinymce(
-				$hint,
-				$editor_id
-			),
-			'collapse_end' => '</div>',
-			'wrap_end'     => '</div>',
-		];
-
-		return Template::combine_components( $section );
-	}
-
-	public function html_edit_explanation_hint( $questionPostModel = null ): string {
-		$explanation = '';
-		$question_id = 0;
-		if ( $questionPostModel instanceof QuestionPostModel ) {
-			$question_id = $questionPostModel->ID;
-			$explanation = $questionPostModel->get_explanation();
-		}
-
-		$editor_id = 'lp-question-explanation-' . $question_id;
-
-		$section = [
-			'wrap'         => '<div class="lp-question-explanation lp-section-toggle lp-collapse">',
-			'header'       => sprintf(
-				'<div class="lp-question-data-edit-header lp-trigger-toggle">
-					<label>%s</label>
-					<div class="lp-tinymce-toggle"><span class="lp-icon-angle-down"></span><span class="lp-icon-angle-up"></span></div>
-				</div>',
-				__( 'Explaination', 'learnpress' )
-			),
-			'collapse'     => '<div class="lp-section-collapse">',
-			'btn-save'     => sprintf(
-				'<button type="button" class="lp-btn-update-question-explanation button">%s</button>',
-				__( 'Save', 'learnpress' )
-			),
-			'tinymce'      => AdminTemplate::editor_tinymce(
-				$explanation,
-				$editor_id
-			),
-			'collapse_end' => '</div>',
-			'wrap_end'     => '</div>',
 		];
 
 		return Template::combine_components( $section );
@@ -351,16 +260,10 @@ class AdminEditQizTemplate {
 	 *
 	 * @return string
 	 */
-	public function html_edit_question_description( $questionPostModel = null ): string {
-		$question_description = '';
-		$question_id          = 0;
-
-		if ( $questionPostModel instanceof QuestionPostModel ) {
-			$question_id          = $questionPostModel->ID;
-			$question_description = $questionPostModel->post_content;
-		}
-
-		$editor_id = 'lp-question-description-' . $question_id;
+	public function html_edit_question_description( QuestionPostModel $questionPostModel ): string {
+		$question_id          = $questionPostModel->ID;
+		$question_description = $questionPostModel->post_content;
+		$editor_id            = 'lp-question-description-' . $question_id;
 
 		$section = [
 			'wrap'         => '<div class="lp-question-data-edit lp-section-toggle lp-collapse">',
@@ -390,18 +293,115 @@ class AdminEditQizTemplate {
 	}
 
 	/**
+	 * HTML for edit question mark.
+	 *
+	 * @param QuestionPostModel $questionPostModel
+	 *
+	 * @return string
+	 */
+	public function html_edit_mark( QuestionPostModel $questionPostModel ): string {
+		$point = $questionPostModel->get_mark();
+
+		$section = [
+			'wrap'     => '<div class="lp-question-point">',
+			'label'    => sprintf(
+				'<label for="lp-question-point">%s</label>',
+				__( 'Points', 'learnpress' )
+			),
+			'input'    => sprintf(
+				'<input type="number" name="lp-question-point-input" id="lp-question-point" value="%s" min="0" step="0.01">',
+				esc_attr( $point )
+			),
+			'wrap_end' => '</div>',
+		];
+
+		return Template::combine_components( $section );
+	}
+
+	/**
+	 * HTML for edit question hint.
+	 *
+	 * @param QuestionPostModel $questionPostModel
+	 *
+	 * @return string
+	 */
+	public function html_edit_hint( QuestionPostModel $questionPostModel ): string {
+		$question_id = $questionPostModel->ID;
+		$hint        = $questionPostModel->get_hint();
+
+		$editor_id = 'lp-question-hint-' . $question_id;
+
+		$section = [
+			'wrap'         => '<div class="lp-question-hint lp-section-toggle lp-collapse">',
+			'header'       => sprintf(
+				'<div class="lp-question-data-edit-header lp-trigger-toggle">
+					<label>%s</label>
+					<div class="lp-tinymce-toggle"><span class="lp-icon-angle-down"></span><span class="lp-icon-angle-up"></span></div>
+				</div>',
+				__( 'Hint', 'learnpress' )
+			),
+			'collapse'     => '<div class="lp-section-collapse">',
+			'btn-save'     => sprintf(
+				'<button type="button" class="lp-btn-update-question-hint button">%s</button>',
+				__( 'Save', 'learnpress' )
+			),
+			'tinymce'      => AdminTemplate::editor_tinymce(
+				$hint,
+				$editor_id
+			),
+			'collapse_end' => '</div>',
+			'wrap_end'     => '</div>',
+		];
+
+		return Template::combine_components( $section );
+	}
+
+	/**
+	 * HTML for edit question explanation.
+	 *
+	 * @param QuestionPostModel|null $questionPostModel
+	 *
+	 * @return string
+	 */
+	public function html_edit_explanation( QuestionPostModel $questionPostModel ): string {
+		$question_id = $questionPostModel->ID;
+		$explanation = $questionPostModel->get_explanation();
+		$editor_id   = 'lp-question-explanation-' . $question_id;
+
+		$section = [
+			'wrap'         => '<div class="lp-question-explanation lp-section-toggle lp-collapse">',
+			'header'       => sprintf(
+				'<div class="lp-question-data-edit-header lp-trigger-toggle">
+					<label>%s</label>
+					<div class="lp-tinymce-toggle"><span class="lp-icon-angle-down"></span><span class="lp-icon-angle-up"></span></div>
+				</div>',
+				__( 'Explaination', 'learnpress' )
+			),
+			'collapse'     => '<div class="lp-section-collapse">',
+			'btn-save'     => sprintf(
+				'<button type="button" class="lp-btn-update-question-explanation button">%s</button>',
+				__( 'Save', 'learnpress' )
+			),
+			'tinymce'      => AdminTemplate::editor_tinymce(
+				$explanation,
+				$editor_id
+			),
+			'collapse_end' => '</div>',
+			'wrap_end'     => '</div>',
+		];
+
+		return Template::combine_components( $section );
+	}
+
+	/**
 	 * HTML for edit question by type.
 	 *
 	 * @param QuestionPostModel|null $questionPostModel
 	 *
 	 * @return string
 	 */
-	public function html_edit_question_by_type( $questionPostModel ): string {
-		// Get HTML config answers by type.
-		$html_answers_config = '';
-		if ( $questionPostModel instanceof QuestionPostModel ) {
-			$html_answers_config = AdminEditQuestionTemplate::instance()->html_answer_option( $questionPostModel );
-		}
+	public function html_edit_question_by_type( QuestionPostModel $questionPostModel ): string {
+		$html_answers_config = AdminEditQuestionTemplate::instance()->html_answer_option( $questionPostModel );
 
 		$section = [
 			'wrap'           => '<div class="lp-question-data-edit lp-question-by-type lp-section-toggle lp-collapse">',

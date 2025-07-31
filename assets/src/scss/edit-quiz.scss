@@ -148,6 +148,8 @@ $spacing-section: 12px;
 		}
 
 		.question-edit-main {
+			display: grid;
+			gap: 5px;
 			overflow: hidden;
 			padding: $spacing-section;
 			border-top: 1px solid $border-color;

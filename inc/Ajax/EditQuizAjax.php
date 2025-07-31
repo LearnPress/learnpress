@@ -70,14 +70,12 @@ class EditQuizAjax extends AbstractAjax {
 
 			$quizQuestionModel  = $quizPostModel->create_question_and_add( $data );
 			$questionPostModel  = $quizQuestionModel->get_question_post_model();
-			$html_answer_option = AdminEditQuestionTemplate::instance()->html_answer_option( $questionPostModel );
+			$html_edit_question = AdminEditQizTemplate::instance()->html_edit_question( $questionPostModel );
 
-			$response->data->question              = $questionPostModel;
-			$response->data->question_type_label   = $questionPostModel->get_type_label();
-			$response->data->quizQuestions         = $quizQuestionModel;
-			$response->data->html_question_answers = $html_answer_option;
-			$response->status                      = 'success';
-			$response->message                     = __( 'Question added successfully', 'learnpress' );
+			$response->data->question           = $questionPostModel;
+			$response->data->html_edit_question = $html_edit_question;
+			$response->status                   = 'success';
+			$response->message                  = __( 'Question added successfully', 'learnpress' );
 		} catch ( Throwable $e ) {
 			$response->message = $e->getMessage();
 		}
