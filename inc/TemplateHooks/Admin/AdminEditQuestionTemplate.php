@@ -275,7 +275,7 @@ class AdminEditQuestionTemplate {
 					<input type="text" class="%1$s" name="%1$s" value="%2$s" />
 					<input type="radio" class="lp-input-answer-set-true" name="%4$s" %3$s value="%5$s" />
 				</div>',
-				'lp-question-answer-item-title-input',
+				'lp-question-answer-title-input',
 				esc_attr( $questionAnswerModel->title ),
 				$questionAnswerModel->is_true === 'yes' ? 'checked' : '',
 				$name_radio,
@@ -302,24 +302,38 @@ class AdminEditQuestionTemplate {
 	public function html_answer_type_single_choice( QuestionPostModel $questionPostModel ): string {
 		$name_radio = 'lp-input-answer-set-true-' . $questionPostModel->ID;
 		$answers    = $questionPostModel->get_answer_option();
+		$answers[]  = null;
 
 		$html_answers = '';
 		foreach ( $answers as $answer ) {
-			$questionAnswerModel = new QuestionAnswerModel( $answer );
+			$is_clone           = true;
+			$title              = '';
+			$is_true            = 'no';
+			$question_answer_id = 0;
+
+			if ( ! is_null( $answer ) ) {
+				$is_clone            = false;
+				$questionAnswerModel = new QuestionAnswerModel( $answer );
+				$title               = $questionAnswerModel->title;
+				$is_true             = $questionAnswerModel->is_true;
+				$question_answer_id  = $questionAnswerModel->question_answer_id;
+			}
 
 			$html_answers .= sprintf(
-				'<div class="lp-question-answer-item" data-answer-id="%6$s">
+				'<div class="lp-question-answer-item %7$s" data-answer-id="%6$s">
 					<span class="drag lp-icon-drag" title="Drag to reorder section"></span>
+					<span class="lp-icon-spinner"></span>
 					<input type="text" class="%1$s" name="%1$s" value="%2$s" />
 					<span class="lp-icon-trash-o lp-btn-delete-question-answer"></span>
 					<input type="radio" class="lp-input-answer-set-true" name="%4$s" %3$s value="%5$s" />
 				</div>',
-				'lp-question-answer-item-title-input',
-				esc_attr( $questionAnswerModel->title ),
-				$questionAnswerModel->is_true === 'yes' ? 'checked' : '',
+				'lp-question-answer-title-input',
+				esc_attr( $title ),
+				$is_true === 'yes' ? 'checked' : '',
 				$name_radio,
-				esc_attr( $questionAnswerModel->is_true ),
-				esc_attr( $questionAnswerModel->question_answer_id )
+				esc_attr( $is_true ),
+				esc_attr( $question_answer_id ),
+				$is_clone ? 'clone lp-hidden' : ''
 			);
 		}
 
@@ -355,24 +369,37 @@ class AdminEditQuestionTemplate {
 	public function html_answer_type_multiple_choice( QuestionPostModel $questionPostModel ): string {
 		$name_checkbox = 'lp-input-answer-set-true-' . $questionPostModel->ID;
 		$answers       = $questionPostModel->get_answer_option();
+		$answers[]     = null;
 
 		$html_answers = '';
 		foreach ( $answers as $answer ) {
-			$questionAnswerModel = new QuestionAnswerModel( $answer );
+			$is_clone           = true;
+			$title              = '';
+			$is_true            = 'no';
+			$question_answer_id = 0;
+
+			if ( ! is_null( $answer ) ) {
+				$is_clone            = false;
+				$questionAnswerModel = new QuestionAnswerModel( $answer );
+				$title               = $questionAnswerModel->title;
+				$is_true             = $questionAnswerModel->is_true;
+				$question_answer_id  = $questionAnswerModel->question_answer_id;
+			}
 
 			$html_answers .= sprintf(
-				'<div class="lp-question-answer-item" data-answer-id="%6$s">
+				'<div class="lp-question-answer-item %7$s" data-answer-id="%6$s">
 					<span class="drag lp-icon-drag" title="Drag to reorder section"></span>
 					<input type="text" class="%1$s" name="%1$s" value="%2$s" />
 					<span class="lp-icon-trash-o lp-btn-delete-question-answer"></span>
 					<input type="checkbox" class="lp-input-answer-set-true" name="%4$s" %3$s value="%5$s" />
 				</div>',
-				'lp-question-answer-item-title-input',
-				esc_attr( $questionAnswerModel->title ),
-				$questionAnswerModel->is_true === 'yes' ? 'checked' : '',
+				'lp-question-answer-title-input',
+				esc_attr( $title ),
+				$is_true === 'yes' ? 'checked' : '',
 				$name_checkbox,
-				esc_attr( $questionAnswerModel->is_true ),
-				esc_attr( $questionAnswerModel->question_answer_id ),
+				esc_attr( $is_true ),
+				esc_attr( $question_answer_id ),
+				$is_clone ? 'clone lp-hidden' : ''
 			);
 		}
 

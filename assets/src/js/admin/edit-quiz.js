@@ -763,15 +763,27 @@ const addQuestionAnswer = ( e, target ) => {
 		return;
 	}
 
-	console.log('elQuestionAnswerItem', elQuestionAnswerItem );
-
 	const elQuestionAnswerTitleInput = elQuestionAnswerItem.querySelector( `${ className.elQuestionAnswerTitleInput }` );
 	if ( ! elQuestionAnswerTitleInput ) {
 		return;
 	}
 
-	const answerTitle = elQuestionAnswerTitleInput.value.trim();
+	const elQuestionAnswerClone = elQuestionItem.querySelector( `${ className.elQuestionAnswerItem }.clone` );
+	if ( ! elQuestionAnswerClone ) {
+		return;
+	}
 
+	const elQuestionAnswerNew = elQuestionAnswerClone.cloneNode( true );
+	const elQuestionAnswerTitleInputNew = elQuestionAnswerNew.querySelector( `${ className.elQuestionAnswerTitleInput }` );
+
+	elQuestionAnswerNew.classList.remove( 'clone' );
+	lpUtils.lpShowHideEl( elQuestionAnswerNew, 1 );
+	lpUtils.lpSetLoadingEl( elQuestionAnswerNew, 1 );
+	elQuestionAnswerClone.insertAdjacentElement( 'beforebegin', elQuestionAnswerNew );
+
+	const answerTitle = elQuestionAnswerTitleInput.value.trim();
+	elQuestionAnswerTitleInputNew.value = answerTitle;
+	elQuestionAnswerTitleInput.value = '';
 	const questionId = elQuestionItem.dataset.questionId;
 
 	// Call ajax to add new question answer
@@ -780,7 +792,17 @@ const addQuestionAnswer = ( e, target ) => {
 			const { message, status, data } = response;
 
 			if ( status === 'success' ) {
+				const { question_answer } = data;
+				elQuestionAnswerNew.dataset.answerId = question_answer.question_answer_id;
+				lpUtils.lpSetLoadingEl( elQuestionAnswerNew, 0 );
 
+				// Set data lp-answers-config
+				const elAnswersConfig = elQuestionItem.querySelector( `${ className.elAnswersConfig }` );
+				if ( elAnswersConfig ) {
+					const dataAnswers = JSON.parse( elAnswersConfig.dataset.answers || '[]' );
+					dataAnswers.push( question_answer );
+					elAnswersConfig.dataset.answers = JSON.stringify( dataAnswers );
+				}
 			} else {
 				throw `Error: ${ message }`;
 			}

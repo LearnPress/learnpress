@@ -172,6 +172,15 @@ $spacing-section: 12px;
 			margin: 0;
 			border: 1px solid #f5f5f5;
 			border-top: none;
+
+			&.loading {
+				pointer-events: none;
+				opacity: 0.5 !important;
+
+				.lp-icon-spinner {
+					display: inline-block;
+				}
+			}
 		}
 
 		.lp-question-data-edit {

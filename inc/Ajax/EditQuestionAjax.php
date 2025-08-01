@@ -51,60 +51,6 @@ class EditQuestionAjax extends AbstractAjax {
 	}
 
 	/**
-	 * Update answer config of question
-	 *
-	 * JS file edit-quiz.js: function addQuestionAnswer call this method.
-	 *
-	 * @return void
-	 */
-	public static function add_question_answer() {
-		$response = new LP_REST_Response();
-
-		try {
-			$data         = self::check_valid();
-			$answer_title = $data['answer_title'] ?? '';
-			if ( empty( $answer_title ) ) {
-				throw new Exception( __( 'Answer title is required', 'learnpress' ) );
-			}
-
-			/**
-			 * @var QuestionPostModel $questionPostModel
-			 */
-			$questionPostModel = $data['questionPostModel'];
-			$type              = $questionPostModel->get_type();
-
-			if ( $type === 'single_choice' ) {
-				$questionAnswerModel = new QuestionPostSingleChoiceModel( $questionPostModel );
-			} elseif ( $type === 'multiple_choice' ) {
-				$questionAnswerModel = new QuestionPostMultipleChoiceModel( $questionPostModel );
-			} else {
-
-			}
-
-			$db        = QuestionAnswersDB::getInstance();
-			$max_order = $db->get_last_number_order( $questionPostModel->get_id() );
-
-			$answer = array(
-				'question_id' => $questionPostModel->get_id(),
-				'title'       => $answer_title,
-				'value'       => learn_press_random_value(),
-				'is_true'     => $answer['is_true'] ?? '',
-				'order'       => $max_order + 1,
-			);
-
-			$questionAnswerModel = new QuestionAnswerModel( $answer );
-			$questionAnswerModel->save();
-
-			$response->status  = 'success';
-			$response->message = __( 'Question answer added successfully', 'learnpress' );
-		} catch ( Throwable $e ) {
-			$response->message = $e->getMessage();
-		}
-
-		wp_send_json( $response );
-	}
-
-	/**
 	 * Update question title.
 	 *
 	 * JS file edit-quiz.js: function updateQuestionTitle call this method.
@@ -150,6 +96,61 @@ class EditQuestionAjax extends AbstractAjax {
 
 			$response->status  = 'success';
 			$response->message = __( 'Question update successfully', 'learnpress' );
+		} catch ( Throwable $e ) {
+			$response->message = $e->getMessage();
+		}
+
+		wp_send_json( $response );
+	}
+
+	/**
+	 * Update answer config of question
+	 *
+	 * JS file edit-quiz.js: function addQuestionAnswer call this method.
+	 *
+	 * @return void
+	 */
+	public static function add_question_answer() {
+		$response = new LP_REST_Response();
+
+		try {
+			$data         = self::check_valid();
+			$answer_title = $data['answer_title'] ?? '';
+			if ( empty( $answer_title ) ) {
+				throw new Exception( __( 'Answer title is required', 'learnpress' ) );
+			}
+
+			/**
+			 * @var QuestionPostModel $questionPostModel
+			 */
+			$questionPostModel = $data['questionPostModel'];
+			$type              = $questionPostModel->get_type();
+
+			if ( $type === 'single_choice' ) {
+				$questionAnswerModel = new QuestionPostSingleChoiceModel( $questionPostModel );
+			} elseif ( $type === 'multiple_choice' ) {
+				$questionAnswerModel = new QuestionPostMultipleChoiceModel( $questionPostModel );
+			} else {
+
+			}
+
+			$db        = QuestionAnswersDB::getInstance();
+			$max_order = $db->get_last_number_order( $questionPostModel->get_id() );
+
+			$answer = array(
+				'question_id' => $questionPostModel->get_id(),
+				'title'       => $answer_title,
+				'value'       => learn_press_random_value(),
+				'is_true'     => $answer['is_true'] ?? '',
+				'order'       => $max_order + 1,
+			);
+
+			$questionAnswerModel = new QuestionAnswerModel( $answer );
+			$questionAnswerModel->save();
+
+			$response->status                = 'success';
+			$response->data->question_answer = $questionAnswerModel;
+			$response->message               = __( 'Question answer added successfully', 'learnpress' );
 		} catch ( Throwable $e ) {
 			$response->message = $e->getMessage();
 		}
