@@ -613,6 +613,15 @@ class LP_Database {
 					}
 				}
 			}
+
+			foreach ( $filter->fields as $key => $field ) {
+				if ( $field === 'order' ) {
+					// Replace order with `order` to avoid conflict with SQL reserved word.
+					$filter->fields[ $key ] = '`order`';
+					break;
+				}
+			}
+
 			$FIELDS = implode( ',', array_unique( $filter->fields ) );
 		}
 		$FIELDS = apply_filters( 'lp/query/fields', $FIELDS, $filter );
