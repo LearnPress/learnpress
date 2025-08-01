@@ -38,7 +38,11 @@ class QuestionAnswersDB extends LP_Database {
 	 * @throws Exception
 	 */
 	public function get_question_answers( QuestionAnswersFilter $filter, &$total_rows = 0 ) {
-		$filter->fields = array_merge( $filter->all_fields, $filter->fields );
+		// Unset key order from all_fields, replace with `order` to avoid conflict with SQL reserved word.
+		$index = array_search( $filter::COL_ORDER, $filter->all_fields );
+		unset( $filter->all_fields[ $index ] );
+		$filter->all_fields[] = '`order`';
+		$filter->fields       = array_merge( $filter->all_fields, $filter->fields );
 
 		if ( empty( $filter->collection ) ) {
 			$filter->collection = $this->tb_lp_question_answers;

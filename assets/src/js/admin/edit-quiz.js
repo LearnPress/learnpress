@@ -808,8 +808,69 @@ const addQuestionAnswer = ( e, target ) => {
 const deleteQuestionAnswer = ( e, target ) => {
 	const elBtnDeleteAnswer = target.closest( `${ className.elBtnDeleteAnswer }` );
 	if ( ! elBtnDeleteAnswer ) {
-
+		return;
 	}
+
+	const elQuestionAnswerItem = elBtnDeleteAnswer.closest( `${ className.elQuestionAnswerItem }` );
+	if ( ! elQuestionAnswerItem ) {
+		return;
+	}
+
+	const elQuestionItem = elBtnDeleteAnswer.closest( `${ className.elQuestionItem }` );
+	if ( ! elQuestionItem ) {
+		return;
+	}
+
+	const questionId = elQuestionItem.dataset.questionId;
+	const questionAnswerId = elQuestionAnswerItem.dataset.answerId;
+	if ( ! questionId || ! questionAnswerId ) {
+		return;
+	}
+
+	SweetAlert.fire( {
+		title: elBtnDeleteAnswer.dataset.title || 'Are you sure?',
+		text: elBtnDeleteAnswer.dataset.content || 'Do you want to delete this answer?',
+		icon: 'warning',
+		showCloseButton: true,
+		showCancelButton: true,
+		cancelButtonText: lpDataAdmin.i18n.cancel,
+		confirmButtonText: lpDataAdmin.i18n.yes,
+		reverseButtons: true,
+	} ).then( ( result ) => {
+		if ( result.isConfirmed ) {
+			lpUtils.lpSetLoadingEl( elQuestionItem, 1 );
+
+			// Call ajax to delete item from section
+			const callBack = {
+				success: ( response ) => {
+					const { message, status } = response;
+
+					showToast( message, status );
+
+					if ( status === 'success' ) {
+						elQuestionAnswerItem.remove();
+					}
+				},
+				error: ( error ) => {
+					showToast( error, 'error' );
+				},
+				completed: () => {
+					lpUtils.lpSetLoadingEl( elQuestionItem, 0 );
+				},
+			};
+
+			const dataSend = {
+				quiz_id: quizID,
+				action: 'delete_question_answer',
+				question_id: questionId,
+				question_answer_id: questionAnswerId,
+				args: {
+					id_url: idUrlHandle,
+				},
+			};
+			window.lpAJAXG.fetchAJAX( dataSend, callBack );
+		}
+	} );
 };
 
 // For answers config

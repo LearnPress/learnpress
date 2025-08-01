@@ -19,21 +19,25 @@ class QuestionPostMultipleChoiceModel extends QuestionPostModel {
 				'is_true' => 'yes',
 				'value'   => learn_press_random_value(),
 				'title'   => esc_html__( 'First option', 'learnpress' ),
+				'order'   => 1,
 			),
 			array(
 				'is_true' => '',
 				'value'   => learn_press_random_value(),
 				'title'   => esc_html__( 'Second option', 'learnpress' ),
+				'order'   => 2,
 			),
 			array(
 				'is_true' => '',
 				'value'   => learn_press_random_value(),
 				'title'   => esc_html__( 'Third option', 'learnpress' ),
+				'order'   => 3,
 			),
 			array(
 				'is_true' => '',
 				'value'   => learn_press_random_value(),
 				'title'   => esc_html__( 'Four option', 'learnpress' ),
+				'order'   => 4,
 			),
 		);
 	}

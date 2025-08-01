@@ -910,6 +910,11 @@ class LP_Database {
 				continue;
 			}
 
+			// Key `order` is reserved keyword in MySQL
+			if ( $col_name === 'order' ) {
+				$col_name = '`order`';
+			}
+
 			if ( is_null( $value ) ) {
 				$filter->set[] = $col_name . ' = null';
 			} else {

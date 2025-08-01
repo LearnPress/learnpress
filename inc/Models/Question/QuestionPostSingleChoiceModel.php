@@ -24,16 +24,19 @@ class QuestionPostSingleChoiceModel extends QuestionPostModel {
 				'is_true' => 'yes',
 				'value'   => $this->random_value(),
 				'title'   => esc_html__( 'First option', 'learnpress' ),
+				'order'   => 1,
 			),
 			array(
 				'is_true' => '',
 				'value'   => $this->random_value(),
 				'title'   => esc_html__( 'Second option', 'learnpress' ),
+				'order'   => 2,
 			),
 			array(
 				'is_true' => '',
 				'value'   => $this->random_value(),
 				'title'   => esc_html__( 'Third option', 'learnpress' ),
+				'order'   => 3,
 			),
 		);
 	}

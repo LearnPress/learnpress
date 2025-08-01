@@ -5,8 +5,7 @@ namespace LearnPress\Models\Question;
 use Exception;
 use LearnPress\Databases\QuestionAnswersDB;
 use LearnPress\Filters\QuestionAnswersFilter;
-use LearnPress\Models\UserItems\UserCourseModel;
-use LearnPress\Models\UserItems\UserItemModel;
+use LP_Cache;
 use stdClass;
 
 /**
@@ -72,6 +71,48 @@ class QuestionAnswerModel {
 	 */
 	public function get_question_post_model() {
 		return QuestionPostModel::find( $this->question_id, true );
+	}
+
+	/**
+	 * Find question answer by question_answer_id.
+	 *
+	 * @param int $question_answer_id
+	 * @param bool $check_cache
+	 *
+	 * @return QuestionAnswerModel|false
+	 * @throws Exception
+	 */
+	public static function find( int $question_answer_id, bool $check_cache = false ) {
+		$model                      = null;
+		$filter                     = new QuestionAnswersFilter();
+		$filter->question_answer_id = $question_answer_id;
+
+		$key_cache = "questionAnswerModel/find/{$question_answer_id}";
+		$cache     = new LP_Cache();
+
+		// Check cache
+		if ( $check_cache ) {
+			$model = $cache->get_cache( $key_cache );
+			if ( $model instanceof QuestionAnswerModel ) {
+				return $model;
+			}
+		}
+
+		$db = QuestionAnswersDB::getInstance();
+		$db->get_query_single_row( $filter );
+		$query_single_row = $db->get_question_answers( $filter );
+		$rs               = $db->wpdb->get_row( $query_single_row );
+
+		if ( $rs instanceof stdClass ) {
+			$model = new static( $rs );
+		}
+
+		// Set cache
+		if ( $model instanceof QuestionPostModel ) {
+			$cache->set_cache( $key_cache, $model );
+		}
+
+		return $model;
 	}
 
 	/**
@@ -174,8 +215,51 @@ class QuestionAnswerModel {
 	}
 
 	/**
+	 * @throws Exception
+	 */
+	public function check_valid_before_delete() {
+		$questionPostModel = $this->get_question_post_model();
+		if ( ! $questionPostModel ) {
+			throw new Exception( __( 'Question not found', 'learnpress' ) );
+		}
+
+		if ( $questionPostModel->get_type() === 'single_choice' || $questionPostModel->get_type() === 'multi_choice' ) {
+			// For single choice and multiple choice, at least two answer is required.
+			$filter              = new QuestionAnswersFilter();
+			$filter->question_id = $this->question_id;
+			$total_rows          = 0;
+			$filter->query_count = true;
+			$answers             = (int) QuestionAnswersDB::getInstance()->get_question_answers( $filter, $total_rows );
+			if ( $answers <= 2 ) {
+				throw new Exception( __( 'At least two answer is required.', 'learnpress' ) );
+			}
+		}
+	}
+
+	/**
+	 * Delete row
+	 *
+	 * @throws Exception
+	 */
+	public function delete() {
+		$this->check_valid_before_delete();
+
+		$db                 = QuestionAnswersDB::getInstance();
+		$filter             = new QuestionAnswersFilter();
+		$filter->where[]    = $db->wpdb->prepare( 'AND question_answer_id = %d', $this->question_answer_id );
+		$filter->collection = $db->tb_lp_question_answers;
+		$db->delete_execute( $filter );
+
+		// Clear cache
+		$this->clean_caches();
+	}
+
+	/**
 	 * Clean caches.
 	 */
 	public function clean_caches() {
+		$lpQuizCache = new LP_Cache();
+		$key_cache   = "questionAnswerModel/find/{$this->question_answer_id}";
+		$lpQuizCache->clear( $key_cache );
 	}
 }

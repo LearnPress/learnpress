@@ -21,7 +21,7 @@ class QuestionAnswersFilter extends LP_Filter {
 	const COL_QUESTION_ID        = 'question_id';
 	const COL_TITLE              = 'title';
 	const COL_VALUE              = 'value';
-	const COL_ORDER              = '`order`';
+	const COL_ORDER              = 'order';
 	const COL_IS_TRUE            = 'is_true';
 	/**
 	 * @var string[]

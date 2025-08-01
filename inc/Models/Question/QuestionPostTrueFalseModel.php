@@ -24,11 +24,13 @@ class QuestionPostTrueFalseModel extends QuestionPostModel {
 				'is_true' => 'yes',
 				'value'   => $this->random_value(),
 				'title'   => esc_html__( 'True', 'learnpress' ),
+				'order'   => 1,
 			],
 			[
 				'is_true' => '',
 				'value'   => $this->random_value(),
 				'title'   => esc_html__( 'False', 'learnpress' ),
+				'order'   => 2,
 			],
 		];
 	}
