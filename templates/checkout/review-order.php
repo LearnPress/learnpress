@@ -56,14 +56,12 @@ $singleCourseTemplate = SingleCourseTemplate::instance();
 						$itemModel = CourseModel::find( $itemModel->get_id(), true );
 					}
 
-					if ( $itemModel && ! has_action( 'learn-press/checkout/cart-item' ) ) {
+					if ( $itemModel instanceof CourseModel ) {
 						?>
 						<tr class="cart-item">
 							<td class="course-thumbnail">
 								<?php
-								echo $itemModel instanceof CourseModel ?
-									wp_kses_post( $singleCourseTemplate->html_image( $itemModel ) ) :
-									$itemModel->get_image()
+								echo $singleCourseTemplate->html_image( $itemModel )
 								?>
 							</td>
 							<td class="course-name">
@@ -73,14 +71,14 @@ $singleCourseTemplate = SingleCourseTemplate::instance();
 									esc_url_raw(
 										apply_filters(
 											'learn-press/review-order/cart-item-link',
-											get_the_permalink( $item_id ),
+											$itemModel->get_permalink(),
 											$cart_item
 										)
 									),
 									wp_kses_post(
 										apply_filters(
 											'learn-press/review-order/cart-item-name',
-											get_the_title( $itemModel->get_id() ),
+											$singleCourseTemplate->html_title( $itemModel ),
 											$cart_item,
 											$cart_item_key
 										)
