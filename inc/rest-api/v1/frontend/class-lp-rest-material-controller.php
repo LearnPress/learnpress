@@ -10,7 +10,7 @@ use LearnPress\Models\CourseModel;
  * in LearnPres > Downloadable Materials
  *
  * @since 4.2.2
- * @author khanhbd
+ * @author khanhbdf
  * @version 1.0.2
  */
 class LP_Rest_Material_Controller extends LP_Abstract_REST_Controller {

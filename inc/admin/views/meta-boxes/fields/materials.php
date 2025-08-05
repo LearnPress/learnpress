@@ -60,7 +60,7 @@ if ( ! class_exists( 'LP_Meta_Box_Material_Fields' ) ) {
 						<?php
 						echo '+ ';
 						echo sprintf(
-							__( 'Maximum amount of files you can upload more: %d files (maximum file size is %s MB)', 'learnpress' ),
+							__( 'Maximum amount of files you can upload more: <span id="available-to-upload">%d</span> files (maximum file size is %s MB)', 'learnpress' ),
 							$can_upload,
 							$max_file_size
 						);
