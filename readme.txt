@@ -216,16 +216,19 @@ If you get troubles when using LearnPress you can ask for help on the [LearnPres
 For help with premium add-ons, use our <a href="https://thimpress.com/forums/forum/learnpress-premium-add-ons/">helpdesk</a>.
 
 = Where can I ask for new features, suggest new ideas or new themes for LearnPress? =
-You can send us your thoughts through via email: support@thimpress.com or create post at [Feature Requests](https://learnpress.canny.io/feature-requests).
+You can send us your thoughts via email: support@thimpress.com or create post at [Feature Requests](https://learnpress.canny.io/feature-requests).
 
 = Where can I report bugs or contribute to the project? =
-You can also report bugs on LearnPress Support Forum or LearnPress <a href="https://github.com/LearnPress/LearnPress/" target="_blank">Github Repository</a>.
+You can also report bugs on LearnPress Support Forum or LearnPress <a href="https://github.com/LearnPress/learnpress/issues" target="_blank">Github Repository</a>.
 
 = Where can I find the REST API documentation? =
-You can find the REST API documentation <a href="https://docs.thimpress.com/learnpress/developer-guide/">here</a>.
+You can find the REST API documentation <a href="https://docs.thimpress.com/learnpress-developer-documentation/api-reference/">here</a>.
 
 = LearnPress is great, can I contribute to it? =
 Yes, you can and we appreciate it. Join in our <a href="https://github.com/LearnPress/LearnPress/" target="_blank">Github Repository</a>.
+
+**LearnPress Translation project**
+https://translate.wordpress.org/projects/wp-plugins/learnpress/
 
 == Screenshots ==
 
