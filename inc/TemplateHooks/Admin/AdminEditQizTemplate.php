@@ -271,7 +271,7 @@ class AdminEditQizTemplate {
 				'<div class="lp-question-data-edit-header lp-trigger-toggle">
 					<label>%s</label>
 					<div style="display: flex;gap: 5px;align-items: center">
-					<button type="button" class="lp-btn-update-question-des button lp-hidden">%s</button>
+						<button type="button" class="lp-btn-update-question-des button lp-hidden">%s</button>
 						<div class="lp-tinymce-toggle">
 							<span class="lp-icon-angle-down"></span><span class="lp-icon-angle-up"></span>
 						</div>
@@ -408,9 +408,15 @@ class AdminEditQizTemplate {
 			'header'         => sprintf(
 				'<div class="lp-question-data-edit-header lp-trigger-toggle">
 					<label>%s</label>
-					<div class="lp-tinymce-toggle"><span class="lp-icon-angle-down"></span><span class="lp-icon-angle-up"></span></div>
+					<div style="display: flex;gap: 5px;align-items: center">
+						<button type="button" class="lp-btn-update-question-answer button">%s</button>
+						<div class="lp-tinymce-toggle">
+							<span class="lp-icon-angle-down"></span><span class="lp-icon-angle-up"></span>
+						</div>
+					</div>
 				</div>',
-				__( 'Config Your Answer', 'learnpress' )
+				__( 'Config Your Answer', 'learnpress' ),
+				__( 'Save', 'learnpress' )
 			),
 			'collapse'       => '<div class="lp-section-collapse">',
 			'answers-config' => $html_answers_config,

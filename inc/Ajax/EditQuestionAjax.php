@@ -227,6 +227,10 @@ class EditQuestionAjax extends AbstractAjax {
 				$questionAnswerModel->save_meta_value_by_key( QuestionAnswerModel::META_KEY_BLANKS, $meta_data );
 			} else {
 				foreach ( $question_answers as $answer ) {
+					if ( empty( $answer ) ) {
+						continue;
+					}
+
 					$questionAnswerModel = new QuestionAnswerModel( $answer );
 					$questionAnswerModel->save();
 				}

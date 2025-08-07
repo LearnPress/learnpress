@@ -43,6 +43,7 @@ $spacing-section: 12px;
 		border: none;
 		font-size: 0.875rem;
 		background: transparent;
+		box-shadow: none;
 	}
 
 	.lp-icon-spinner {
@@ -173,6 +174,12 @@ $spacing-section: 12px;
 			border: 1px solid #f5f5f5;
 			border-top: none;
 
+			&:hover {
+				.lp-btn-delete-question-answer {
+					display: inline-block;
+				}
+			}
+
 			&.loading {
 				pointer-events: none;
 				opacity: 0.5 !important;
@@ -180,6 +187,11 @@ $spacing-section: 12px;
 				.lp-icon-spinner {
 					display: inline-block;
 				}
+			}
+
+			.lp-btn-delete-question-answer {
+				display: none;
+				cursor: pointer;
 			}
 		}
 
@@ -260,7 +272,6 @@ $spacing-section: 12px;
 
 			input[type="text"] {
 				width: 100%;
-				border: 1px solid #0000004f;
 			}
 		}
 

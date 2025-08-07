@@ -322,7 +322,7 @@ class AdminEditQuestionTemplate {
 			$html_answers .= sprintf(
 				'<div class="lp-question-answer-item %7$s" data-answer-id="%6$s">
 					<span class="drag lp-icon-drag" title="Drag to reorder section"></span>
-					<span class="lp-icon-spinner"></span>
+					%8$s
 					<input type="text" class="%1$s" name="%1$s" value="%2$s" />
 					<span class="lp-icon-trash-o lp-btn-delete-question-answer"></span>
 					<input type="radio" class="lp-input-answer-set-true" name="%4$s" %3$s value="%5$s" />
@@ -333,7 +333,8 @@ class AdminEditQuestionTemplate {
 				$name_radio,
 				esc_attr( $is_true ),
 				esc_attr( $question_answer_id ),
-				$is_clone ? 'clone lp-hidden' : ''
+				$is_clone ? 'clone lp-hidden' : '',
+				$is_clone ? '<span class="lp-icon-spinner"></span>' : ''
 			);
 		}
 
@@ -389,6 +390,7 @@ class AdminEditQuestionTemplate {
 			$html_answers .= sprintf(
 				'<div class="lp-question-answer-item %7$s" data-answer-id="%6$s">
 					<span class="drag lp-icon-drag" title="Drag to reorder section"></span>
+					%8$s
 					<input type="text" class="%1$s" name="%1$s" value="%2$s" />
 					<span class="lp-icon-trash-o lp-btn-delete-question-answer"></span>
 					<input type="checkbox" class="lp-input-answer-set-true" name="%4$s" %3$s value="%5$s" />
@@ -399,7 +401,8 @@ class AdminEditQuestionTemplate {
 				$name_checkbox,
 				esc_attr( $is_true ),
 				esc_attr( $question_answer_id ),
-				$is_clone ? 'clone lp-hidden' : ''
+				$is_clone ? 'clone lp-hidden' : '',
+				$is_clone ? '<span class="lp-icon-spinner"></span>' : ''
 			);
 		}
 

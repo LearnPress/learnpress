@@ -41,6 +41,7 @@ const className = {
 	elQuestionByType: '.lp-question-by-type',
 	elInputAnswerSetTrue: '.lp-input-answer-set-true',
 	elQuestionAnswerItem: '.lp-question-answer-item',
+	elBtnUpdateQuestionAnswer: '.lp-btn-update-question-answer',
 	elBtnFibInsertBlank: '.lp-btn-fib-insert-blank',
 	elBtnFibDeleteAllBlanks: '.lp-btn-fib-delete-all-blanks',
 	elBtnFibSaveContent: '.lp-btn-fib-save-content',
@@ -134,6 +135,8 @@ const toggleSection = ( e, target, el_trigger = '' ) => {
 	} else if ( target.closest( `${ className.elBtnUpdateQuestionHint }` ) ) {
 		return;
 	} else if ( target.closest( `${ className.elBtnUpdateQuestionExplain }` ) ) {
+		return;
+	} else if ( target.closest( `${ className.elBtnUpdateQuestionAnswer }` ) ) {
 		return;
 	}
 
@@ -768,6 +771,11 @@ const addQuestionAnswer = ( e, target ) => {
 		return;
 	}
 
+	if ( ! elQuestionAnswerTitleInput.value.trim() ) {
+		showToast( 'Please enter an answer title.', 'error' );
+		return;
+	}
+
 	const elQuestionAnswerClone = elQuestionItem.querySelector( `${ className.elQuestionAnswerItem }.clone` );
 	if ( ! elQuestionAnswerClone ) {
 		return;
@@ -795,14 +803,12 @@ const addQuestionAnswer = ( e, target ) => {
 				const { question_answer } = data;
 				elQuestionAnswerNew.dataset.answerId = question_answer.question_answer_id;
 				lpUtils.lpSetLoadingEl( elQuestionAnswerNew, 0 );
+				elQuestionAnswerNew.querySelector( `.lp-icon-spinner` ).remove();
 
 				// Set data lp-answers-config
-				const elAnswersConfig = elQuestionItem.querySelector( `${ className.elAnswersConfig }` );
-				if ( elAnswersConfig ) {
-					const dataAnswers = JSON.parse( elAnswersConfig.dataset.answers || '[]' );
-					dataAnswers.push( question_answer );
-					elAnswersConfig.dataset.answers = JSON.stringify( dataAnswers );
-				}
+				const dataAnswers = getDataAnswersConfig( elQuestionItem );
+				dataAnswers.push( question_answer );
+				setDataAnswersConfig( elQuestionItem, dataAnswers );
 			} else {
 				throw `Error: ${ message }`;
 			}
@@ -810,6 +816,7 @@ const addQuestionAnswer = ( e, target ) => {
 			showToast( message, status );
 		},
 		error: ( error ) => {
+			elQuestionAnswerNew.remove();
 			showToast( error, 'error' );
 		},
 		completed: () => {},
@@ -870,7 +877,14 @@ const deleteQuestionAnswer = ( e, target ) => {
 					showToast( message, status );
 
 					if ( status === 'success' ) {
+						const elQuestionAnswerId = parseInt( elQuestionAnswerItem.dataset.answerId );
 						elQuestionAnswerItem.remove();
+
+						const dataAnswers = getDataAnswersConfig( elQuestionItem );
+						if ( dataAnswers ) {
+							const updatedAnswers = dataAnswers.filter( ( answer ) => parseInt( answer.question_answer_id ) !== elQuestionAnswerId );
+							setDataAnswersConfig( elQuestionItem, updatedAnswers );
+						}
 					}
 				},
 				error: ( error ) => {
@@ -897,21 +911,18 @@ const deleteQuestionAnswer = ( e, target ) => {
 
 // For answers config
 const updateAnswersConfig = ( e, target ) => {
+	const elBtnUpdateQuestionAnswer = target.closest(
+		`${ className.elBtnUpdateQuestionAnswer }`
+	);
 	const elInputAnswerSetTrue = target.closest(
 		`${ className.elInputAnswerSetTrue }`
 	);
-	if ( ! elInputAnswerSetTrue ) {
+	if ( ! elInputAnswerSetTrue && ! elBtnUpdateQuestionAnswer ) {
 		return;
 	}
 
-	const elQuestionAnswerItem = elInputAnswerSetTrue.closest(
-		`${ className.elQuestionAnswerItem }`
-	);
-	if ( ! elQuestionAnswerItem ) {
-		return;
-	}
-
-	const elQuestionItem = elInputAnswerSetTrue.closest(
+	const elTarget = elBtnUpdateQuestionAnswer || elInputAnswerSetTrue;
+	const elQuestionItem = elTarget.closest(
 		`${ className.elQuestionItem }`
 	);
 	if ( ! elQuestionItem ) {
@@ -926,22 +937,27 @@ const updateAnswersConfig = ( e, target ) => {
 		return;
 	}
 
-	const dataAnswers = JSON.parse( elAnswersConfig.dataset.answers || '[]' );
+	const dataAnswers = getDataAnswersConfig( elQuestionItem );
 	if ( ! dataAnswers ) {
 		return;
 	}
 
-	const answerId = elQuestionAnswerItem.dataset.answerId;
-	//console.log('Answer ID:', answerId);
-
 	// For both radio and checkbox.
 	const dataAnswersOld = structuredClone( dataAnswers );
 
-	dataAnswers.map( ( answer ) => {
+	dataAnswers.map( ( answer, k ) => {
 		const elQuestionAnswerItem = elQuestionItem.querySelector(
 			`${ className.elQuestionAnswerItem }[data-answer-id="${ answer.question_answer_id }"]`
 		);
-		const elInputAnswerSetTrue = elQuestionAnswerItem.querySelector( `${ className.elInputAnswerSetTrue }` );
+		const elInputAnswerSetTrue = elQuestionAnswerItem.querySelector(
+			`${ className.elInputAnswerSetTrue }`
+		);
+		const elInputAnswerTitle = elQuestionAnswerItem.querySelector(
+			`${ className.elQuestionAnswerTitleInput }`
+		);
+		if ( elInputAnswerTitle ) {
+			answer.title = elInputAnswerTitle.value.trim();
+		}
 
 		if ( elInputAnswerSetTrue.checked ) {
 			answer.is_true = 'yes';
@@ -1021,8 +1037,7 @@ const fibInsertBlank = ( e, target ) => {
 
 	const idEditor = `lp-question-fib-input-${ questionId }`;
 	const editor = window.tinymce.get( idEditor );
-	const elAnswersConfig = elQuestionItem.querySelector( `${ className.elAnswersConfig }` );
-	const dataAnswers = JSON.parse( elAnswersConfig.dataset.answers || '[]' );
+	const dataAnswers = getDataAnswersConfig( elQuestionItem );
 	if ( ! dataAnswers ) {
 		return;
 	}
@@ -1060,7 +1075,7 @@ const fibInsertBlank = ( e, target ) => {
 		open: false,
 	};
 
-	elAnswersConfig.dataset.answers = JSON.stringify( dataAnswers );
+	setDataAnswersConfig( elQuestionItem, dataAnswers );
 
 	// Clone blank options
 	const elFibBlankOptions = elQuestionItem.querySelector( `${ className.elFibBlankOptions }` );
@@ -1091,10 +1106,8 @@ const fibChangeBlankOption = ( e, target ) => {
 		return;
 	}
 
-	const questionId = elQuestionItem.dataset.questionId;
 	const blankId = elFibBlankOptionItem.dataset.id;
-	const elAnswersConfig = elQuestionItem.querySelector( `${ className.elAnswersConfig }` );
-	const dataAnswers = JSON.parse( elAnswersConfig.dataset.answers || '[]' );
+	const dataAnswers = getDataAnswersConfig( elQuestionItem );
 
 	const elFibBlankOptionItemInputs = elFibBlankOptionItem.querySelectorAll( 'input' );
 	elFibBlankOptionItemInputs.forEach( ( elInput ) => {
@@ -1108,7 +1121,7 @@ const fibChangeBlankOption = ( e, target ) => {
 	} );
 
 	// Save changes to answers config
-	elAnswersConfig.dataset.answers = JSON.stringify( dataAnswers );
+	setDataAnswersConfig( elQuestionItem, dataAnswers );
 };
 
 // Remove blank
@@ -1125,7 +1138,7 @@ const fibDeleteBlank = ( e, target ) => {
 
 	const questionId = elQuestionItem.dataset.questionId;
 	const elAnswersConfig = elQuestionItem.querySelector( `${ className.elAnswersConfig }` );
-	const dataAnswers = JSON.parse( elAnswersConfig.dataset.answers || '[]' );
+	const dataAnswers = getDataAnswersConfig( elQuestionItem );
 	const blankItem = elBtnFibOptionDelete.closest( `${ className.elFibBlankOptionItem }` );
 	const blankId = blankItem.dataset.id;
 
@@ -1154,7 +1167,7 @@ const fibDeleteBlank = ( e, target ) => {
 				delete dataAnswers.meta_data[ blankId ];
 			}
 
-			elAnswersConfig.dataset.answers = JSON.stringify( dataAnswers );
+			setDataAnswersConfig( elQuestionItem, dataAnswers );
 		}
 	} );
 };
@@ -1172,8 +1185,7 @@ const FibDeleteAllBlanks = ( e, target ) => {
 	}
 
 	const questionId = elQuestionItem.dataset.questionId;
-	const elAnswersConfig = elQuestionItem.querySelector( `${ className.elAnswersConfig }` );
-	const dataAnswers = JSON.parse( elAnswersConfig.dataset.answers || '[]' );
+	const dataAnswers = getDataAnswersConfig( elQuestionItem );
 
 	SweetAlert.fire( {
 		title: elBtnFibDeleteAllBlanks.dataset.title,
@@ -1193,7 +1205,7 @@ const FibDeleteAllBlanks = ( e, target ) => {
 			} );
 
 			dataAnswers.meta_data = {};
-			elAnswersConfig.dataset.answers = JSON.stringify( dataAnswers );
+			setDataAnswersConfig( elQuestionItem, dataAnswers );
 
 			const elFibBlankOptions = elQuestionItem.querySelector( `${ className.elFibBlankOptions }` );
 			elFibBlankOptions.innerHTML = '';
@@ -1215,7 +1227,7 @@ const FibClearContent = ( e, target ) => {
 
 	const questionId = elQuestionItem.dataset.questionId;
 	const elAnswersConfig = elQuestionItem.querySelector( `${ className.elAnswersConfig }` );
-	const dataAnswers = JSON.parse( elAnswersConfig.dataset.answers || '[]' );
+	const dataAnswers = getDataAnswersConfig( elQuestionItem );
 
 	SweetAlert.fire( {
 		title: elBtnFibClearAllContent.dataset.title,
@@ -1232,7 +1244,7 @@ const FibClearContent = ( e, target ) => {
 			editor.setContent( '' );
 
 			dataAnswers.meta_data = {};
-			elAnswersConfig.dataset.answers = JSON.stringify( dataAnswers );
+			setDataAnswersConfig( elQuestionItem, dataAnswers );
 
 			const elFibBlankOptions = elQuestionItem.querySelector( `${ className.elFibBlankOptions }` );
 			elFibBlankOptions.innerHTML = '';
@@ -1254,9 +1266,7 @@ const fibSaveContent = ( e, target ) => {
 
 	const questionId = elQuestionItem.dataset.questionId;
 
-	const elAnswersConfig = elQuestionItem.querySelector( `${ className.elAnswersConfig }` );
-
-	const dataAnswers = JSON.parse( elAnswersConfig.dataset.answers || '[]' );
+	const dataAnswers = getDataAnswersConfig( elQuestionItem );
 	if ( ! dataAnswers ) {
 		return;
 	}
@@ -1272,6 +1282,7 @@ const fibSaveContent = ( e, target ) => {
 			const { message, status } = response;
 
 			if ( status === 'success' ) {
+				setDataAnswersConfig( elQuestionItem, dataAnswers );
 			} else {
 				throw `Error: ${ message }`;
 			}
@@ -1296,6 +1307,41 @@ const fibSaveContent = ( e, target ) => {
 		},
 	};
 	window.lpAJAXG.fetchAJAX( dataSend, callBack );
+};
+
+// Get data answers config
+const getDataAnswersConfig = ( elQuestionItem ) => {
+	const elAnswersConfig = elQuestionItem.querySelector( `${ className.elAnswersConfig }` );
+	if ( ! elAnswersConfig ) {
+		return null;
+	}
+
+	let dataAnswers = elAnswersConfig.dataset.answers || '[]';
+	try {
+		dataAnswers = JSON.parse( dataAnswers );
+	} catch ( e ) {
+		dataAnswers = [];
+	}
+
+	if ( ! dataAnswers.meta_data ) {
+		dataAnswers.meta_data = {};
+	}
+
+	return dataAnswers;
+};
+
+// Set data answers config
+const setDataAnswersConfig = ( elQuestionItem, dataAnswers ) => {
+	const elAnswersConfig = elQuestionItem.querySelector( `${ className.elAnswersConfig }` );
+	if ( ! elAnswersConfig ) {
+		return;
+	}
+
+	if ( ! dataAnswers || typeof dataAnswers !== 'object' ) {
+		dataAnswers = {};
+	}
+
+	elAnswersConfig.dataset.answers = JSON.stringify( dataAnswers );
 };
 
 const randomString = ( length = 10 ) => {
