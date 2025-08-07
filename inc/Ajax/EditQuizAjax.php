@@ -3,6 +3,9 @@
 namespace LearnPress\Ajax;
 
 use Exception;
+use LearnPress\Databases\QuizQuestionsDB;
+use LearnPress\Models\CourseModel;
+use LearnPress\Models\CourseSectionItemModel;
 use LearnPress\Models\Question\QuestionAnswerModel;
 use LearnPress\Models\Question\QuestionPostFIBModel;
 use LearnPress\Models\Question\QuestionPostModel;
@@ -116,6 +119,43 @@ class EditQuizAjax extends AbstractAjax {
 			$quizQuestionModel->delete();
 			$response->status  = 'success';
 			$response->message = __( 'Question removed successfully', 'learnpress' );
+		} catch ( Throwable $e ) {
+			$response->message = $e->getMessage();
+		}
+
+		wp_send_json( $response );
+	}
+
+	/**
+	 * Update item on new section and position
+	 *
+	 * $data['course_id']              => ID of course
+	 * $data['items_position']         => list of item id by order on section new
+	 * $data['item_id_change']         => ID of item to change section
+	 * $data['section_id_new_of_item'] => ID of new section of item
+	 * $data['section_id_old_of_item'] => ID of old section of item
+	 *
+	 * JS file edit-section-item.js: function sortAbleItem call this method.
+	 *
+	 * @since 4.2.9
+	 * @version 1.0.0
+	 */
+	public static function update_questions_position() {
+		$response = new LP_REST_Response();
+
+		try {
+			$data          = self::check_valid();
+			$quizPostModel = $data['quizPostModel'];
+			$question_ids  = $data['question_ids'] ?? [];
+
+			if ( empty( $question_ids ) ) {
+				throw new Exception( __( 'Question IDs are required', 'learnpress' ) );
+			}
+
+			QuizQuestionsDB::getInstance()->update_question_position( $question_ids, $quizPostModel->get_id() );
+
+			$response->status  = 'success';
+			$response->message = __( 'Question position updated successfully', 'learnpress' );
 		} catch ( Throwable $e ) {
 			$response->message = $e->getMessage();
 		}

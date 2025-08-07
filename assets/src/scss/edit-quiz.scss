@@ -53,6 +53,15 @@ $spacing-section: 12px;
 		display: none;
 	}
 
+	.lp-icon-drag {
+		cursor: grab;
+		line-height: 1;
+
+		&:active {
+			cursor: grabbing;
+		}
+	}
+
 	// Collapse icon
 	.lp-icon-angle-down {
 		display: none;
@@ -119,6 +128,12 @@ $spacing-section: 12px;
 
 				.lp-icon-spinner {
 					display: inline-block;
+				}
+			}
+
+			&[data-question-type=fill_in_blanks] {
+				.lp-btn-update-question-answer {
+					display: none;
 				}
 			}
 

@@ -210,9 +210,12 @@ class AdminEditQizTemplate {
 
 		$section = [
 			'wrap'       => sprintf(
-				'<div data-question-id="%s" class="lp-question-item lp-collapse %s">',
+				'<div data-question-id="%s"
+					class="lp-question-item lp-collapse %s"
+					data-question-type="%s">',
 				$question_id,
-				$is_clone ? 'clone lp-hidden' : ''
+				$is_clone ? 'clone lp-hidden' : '',
+				$is_clone ? '' : $questionPostModel->get_type()
 			),
 			'head'       => '<div class="lp-question-head">',
 			'drag'       => sprintf(

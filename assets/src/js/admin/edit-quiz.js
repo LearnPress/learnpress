@@ -424,6 +424,7 @@ const addQuestion = ( e, target ) => {
 				throw `Error: ${ message }`;
 			} else if ( status === 'success' ) {
 				newQuestionItem.dataset.questionId = question.ID;
+				newQuestionItem.dataset.questionType = question.meta_data._lp_type;
 				newQuestionItem.innerHTML = html_edit_question;
 
 				initTinyMCE();
@@ -1019,6 +1020,109 @@ const updateAnswersConfig = ( e, target ) => {
 };
 // End for answers config
 
+// Sortable questions
+const sortAbleQuestion = () => {
+	let isUpdateSectionPosition = 0;
+	let timeout;
+
+	new Sortable( elEditListQuestions, {
+		handle: '.drag',
+		animation: 150,
+		onEnd: ( evt ) => {
+			const elQuestionItem = evt.item;
+			if ( ! isUpdateSectionPosition ) {
+				// No change in section position, do nothing
+				return;
+			}
+
+			clearTimeout( timeout );
+			timeout = setTimeout( () => {
+				lpUtils.lpSetLoadingEl( elQuestionItem, 1 );
+
+				const questionIds = [];
+				const elQuestionItems = elEditListQuestions.querySelectorAll( `${ className.elQuestionItem }:not(.clone)` );
+				elQuestionItems.forEach( ( elItem ) => {
+					const questionId = elItem.dataset.questionId;
+					if ( questionId ) {
+						questionIds.push( questionId );
+					}
+				} );
+
+				const callBack = {
+					success: ( response ) => {
+						const { message, status } = response;
+
+						if ( status === 'success' ) {
+							showToast( message, status );
+						} else {
+							throw `Error: ${ message }`;
+						}
+					},
+					error: ( error ) => {
+						showToast( error, 'error' );
+					},
+					completed: () => {
+						lpUtils.lpSetLoadingEl( elQuestionItem, 0 );
+						isUpdateSectionPosition = 0; // Reset position update flag
+					},
+				};
+
+				const dataSend = {
+					quiz_id: quizID,
+					action: 'update_questions_position',
+					question_ids: questionIds,
+					args: {
+						id_url: idUrlHandle,
+					},
+				};
+				window.lpAJAXG.fetchAJAX( dataSend, callBack );
+			}, 1000 );
+		},
+		onMove: ( evt ) => {
+			clearTimeout( timeout );
+		},
+		onUpdate: ( evt ) => {
+			isUpdateSectionPosition = 1;
+		},
+	} );
+};
+
+// Sortable answers's question
+const sortAbleQuestionAnswer = () => {
+	let isUpdateSectionPosition = 0;
+	let timeout;
+
+	const elQuestionAnswers = elEditListQuestions.querySelectorAll( `${ className.elAnswersConfig }` );
+
+	elQuestionAnswers.forEach( ( elAnswersConfig ) => {
+		new Sortable( elAnswersConfig, {
+			handle: '.drag',
+			animation: 150,
+			onEnd: ( evt ) => {
+				const target = evt.item;
+				if ( ! isUpdateSectionPosition ) {
+					// No change in section position, do nothing
+					return;
+				}
+
+				console.log( target );
+
+				clearTimeout( timeout );
+				timeout = setTimeout( () => {
+					lpUtils.lpSetLoadingEl( elSection, 1 );
+					window.lpAJAXG.fetchAJAX( dataSend, callBack );
+				}, 1000 );
+			},
+			onMove: ( evt ) => {
+				clearTimeout( timeout );
+			},
+			onUpdate: ( evt ) => {
+				isUpdateSectionPosition = 1;
+			},
+		} );
+	} );
+};
+
 // For FIB question type
 const fibInsertBlank = ( e, target ) => {
 	const elBtnFibInsertBlank = target.closest( `${ className.elBtnFibInsertBlank }` );
@@ -1426,5 +1530,7 @@ lpUtils.lpOnElementReady(
 		quizID = dataSend.args.quiz_id;
 
 		initTinyMCE();
+		sortAbleQuestion();
+		sortAbleQuestionAnswer();
 	}
 );

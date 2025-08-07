@@ -155,4 +155,34 @@ class QuizQuestionsDB extends LP_Database {
 
 		return true;
 	}
+
+	/**
+	 * Update questions position
+	 * Update question_order of each item in quiz.
+	 *
+	 * @throws Exception
+	 * @since 4.2.9
+	 * @version 1.0.0
+	 */
+	public function update_question_position( array $question_ids, $quiz_id ) {
+		$filter             = new QuizQuestionsFilter();
+		$filter->collection = $this->tb_lp_quiz_questions;
+		$SET_SQL            = 'question_order = CASE';
+
+		foreach ( $question_ids as $position => $question_id ) {
+			++$position;
+			$question_id = absint( $question_id );
+			if ( empty( $question_id ) ) {
+				continue;
+			}
+
+			$SET_SQL .= $this->wpdb->prepare( ' WHEN question_id = %d THEN %d', $question_id, $position );
+		}
+
+		$SET_SQL        .= ' ELSE question_order END';
+		$filter->set[]   = $SET_SQL;
+		$filter->where[] = $this->wpdb->prepare( 'AND quiz_id = %d', $quiz_id );
+
+		$this->update_execute( $filter );
+	}
 }
