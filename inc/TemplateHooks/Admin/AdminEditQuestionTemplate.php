@@ -339,7 +339,7 @@ class AdminEditQuestionTemplate {
 		}
 
 		$html_answers .= sprintf(
-			'<div class="lp-question-answer-item lp-question-answer-item-add-new">
+			'<div class="lp-question-answer-item-add-new">
 				<span class="lp-icon-plus" title="Add answer option"></span>
 				<input type="text" class="%1$s" name="%1$s" value="" />
 				<button type="button" class="button lp-btn-add-question-answer">%2$s</button>
@@ -407,7 +407,7 @@ class AdminEditQuestionTemplate {
 		}
 
 		$html_answers .= sprintf(
-			'<div class="lp-question-answer-item lp-question-answer-item-add-new">
+			'<div class="lp-question-answer-item-add-new">
 				<span class="lp-icon-plus" title="Add answer option"></span>
 				<input type="text" class="%1$s" name="%1$s" value="" />
 				<button type="button" class="button lp-btn-add-question-answer">%2$s</button>

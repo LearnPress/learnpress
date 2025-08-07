@@ -210,6 +210,17 @@ $spacing-section: 12px;
 			}
 		}
 
+		.lp-question-answer-item-add-new {
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			gap: 5px;
+			padding: 5px;
+			margin: 0;
+			border: 1px solid #f5f5f5;
+			border-top: none;
+		}
+
 		.lp-question-data-edit {
 			&:not(.lp-collapse) {
 				.lp-question-data-edit-header {

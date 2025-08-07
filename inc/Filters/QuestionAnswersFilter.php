@@ -34,9 +34,7 @@ class QuestionAnswersFilter extends LP_Filter {
 		self::COL_ORDER,
 		self::COL_IS_TRUE,
 	];
-	/**
-	 * @var string
-	 */
+
 	public $field_count = 'question_answer_id';
 	/**
 	 * @var int
@@ -55,10 +53,6 @@ class QuestionAnswersFilter extends LP_Filter {
 	 */
 	public $value;
 	/**
-	 * @var int
-	 */
-	public $order;
-	/**
 	 * @var string
 	 */
 	public $is_true;
@@ -70,4 +64,6 @@ class QuestionAnswersFilter extends LP_Filter {
 	 * @var int[]
 	 */
 	public $question_ids = [];
+	public $order_by     = '`order`';
+	public $order        = 'ASC';
 }

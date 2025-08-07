@@ -946,6 +946,15 @@ const updateAnswersConfig = ( e, target ) => {
 	// For both radio and checkbox.
 	const dataAnswersOld = structuredClone( dataAnswers );
 
+	// Get position of answers
+	const elQuestionAnswerItems = elAnswersConfig.querySelectorAll( `${ className.elQuestionAnswerItem }:not(.clone)` );
+	const answersPosition = {};
+	elQuestionAnswerItems.forEach( ( elQuestionAnswerItem, index ) => {
+		answersPosition[ elQuestionAnswerItem.dataset.answerId ] = index + 1; // Start from 1
+	} );
+
+	//console.log( 'answersPosition', answersPosition );
+
 	dataAnswers.map( ( answer, k ) => {
 		const elQuestionAnswerItem = elQuestionItem.querySelector(
 			`${ className.elQuestionAnswerItem }[data-answer-id="${ answer.question_answer_id }"]`
@@ -956,14 +965,22 @@ const updateAnswersConfig = ( e, target ) => {
 		const elInputAnswerTitle = elQuestionAnswerItem.querySelector(
 			`${ className.elQuestionAnswerTitleInput }`
 		);
+
+		// Set title
 		if ( elInputAnswerTitle ) {
 			answer.title = elInputAnswerTitle.value.trim();
 		}
 
+		// Set true answer
 		if ( elInputAnswerSetTrue.checked ) {
 			answer.is_true = 'yes';
 		} else {
 			answer.is_true = '';
+		}
+
+		// Set position
+		if ( answersPosition[ answer.question_answer_id ] ) {
+			answer.order = answersPosition[ answer.question_answer_id ];
 		}
 
 		return answer;
@@ -1099,17 +1116,62 @@ const sortAbleQuestionAnswer = () => {
 			handle: '.drag',
 			animation: 150,
 			onEnd: ( evt ) => {
-				const target = evt.item;
+				const elQuestionAnswerItem = evt.item;
 				if ( ! isUpdateSectionPosition ) {
 					// No change in section position, do nothing
 					return;
 				}
 
-				console.log( target );
-
 				clearTimeout( timeout );
 				timeout = setTimeout( () => {
-					lpUtils.lpSetLoadingEl( elSection, 1 );
+					const elQuestionDataEdit = elQuestionAnswerItem.closest( '.lp-question-data-edit' );
+					if ( ! elQuestionDataEdit ) {
+						return;
+					}
+
+					const elBtnUpdateQuestionAnswer = elQuestionDataEdit.querySelector( `${ className.elBtnUpdateQuestionAnswer }` );
+					elBtnUpdateQuestionAnswer.click(); // Trigger update answers config
+
+					return;
+
+					const questionId = elQuestionItem.dataset.questionId;
+					const questionAnswerIds = [];
+					const elQuestionAnswerItems = elAnswersConfig.querySelectorAll( `${ className.elQuestionAnswerItem }:not(.clone)` );
+					elQuestionAnswerItems.forEach( ( elItem ) => {
+						const questionAnswerId = elItem.dataset.answerId;
+						if ( questionAnswerId ) {
+							questionAnswerIds.push( questionAnswerId );
+						}
+					} );
+
+					const callBack = {
+						success: ( response ) => {
+							const { message, status } = response;
+
+							if ( status === 'success' ) {
+								showToast( message, status );
+							} else {
+								throw `Error: ${ message }`;
+							}
+						},
+						error: ( error ) => {
+							showToast( error, 'error' );
+						},
+						completed: () => {
+							lpUtils.lpSetLoadingEl( elQuestionAnswerItem, 0 );
+							isUpdateSectionPosition = 0; // Reset position update flag
+						},
+					};
+
+					const dataSend = {
+						quiz_id: quizID,
+						action: 'updateAnswersConfig',
+						question_id: questionId,
+						question_answer_ids: questionAnswerIds,
+						args: {
+							id_url: idUrlHandle,
+						},
+					};
 					window.lpAJAXG.fetchAJAX( dataSend, callBack );
 				}, 1000 );
 			},

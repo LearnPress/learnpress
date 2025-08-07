@@ -78,6 +78,7 @@ class QuestionPostModel extends PostModel {
 				$db                  = QuestionAnswersDB::getInstance();
 				$filter              = new QuestionAnswersFilter();
 				$filter->question_id = $this->get_id();
+				$filter->limit       = -1; // Get all answers for question
 				$answers_rs          = $db->get_question_answers( $filter );
 				$answer_options      = [];
 
