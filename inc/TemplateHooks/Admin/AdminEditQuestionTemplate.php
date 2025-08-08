@@ -542,7 +542,7 @@ class AdminEditQuestionTemplate {
 					'<input type="text"
 						name="lp-question-fib-option-title-%s"
 						value="%s"
-						class="lp-question-fib-option-title" />',
+						class="lp-question-fib-option-title-input" />',
 					esc_attr( $id ),
 					esc_html( $option['fill'] ?? '' )
 				),

@@ -482,7 +482,7 @@ class AdminEditQizTemplate {
 					title="%1$s"
 					placeholder="%1$s"
 					data-mess-empty-title="%2$s">',
-				esc_attr__( 'Create a new section', 'learnpress' ),
+				esc_attr__( 'Create a new question', 'learnpress' ),
 				esc_attr__( 'Section title is required', 'learnpress' )
 			),
 			'types'            => $html_question_types,
