@@ -288,6 +288,20 @@ $spacing-section: 12px;
 
 	.lp-question-fib-blank-option-item {
 
+		&:not(.lp-collapse) {
+			.lp-question-fib-option-header {
+				background: #2d71af;
+				border-color: #2d71af;
+				color: #fff;
+
+				input[type="text"], .lp-trigger-toggle span {
+					color: #fff;
+					background: transparent;
+					border: none;
+				}
+			}
+		}
+
 		.lp-question-fib-option-header {
 			display: flex;
 			justify-content: space-between;
@@ -319,6 +333,8 @@ $spacing-section: 12px;
 	.lp-question-fib-buttons {
 		display: flex;
 		gap: 10px;
+		margin: 10px 0;
+		top: 1px;
 	}
 
 	.lp-question-option-row {

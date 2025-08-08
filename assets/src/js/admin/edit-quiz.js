@@ -52,6 +52,10 @@ const className = {
 	elFibBlankOptionItemClone: '.lp-question-fib-blank-option-item.clone',
 	elFibBlankOptionIndex: '.lp-question-fib-option-index',
 	elBtnFibOptionDelete: '.lp-btn-fib-option-delete',
+	elQuestionFibOptionMatchCaseInput: '.lp-question-fib-option-match-case-input',
+	elQuestionFibOptionMatchCaseWrap: '.lp-question-fib-option-match-case-wrap',
+	elQuestionFibOptionDetail: '.lp-question-fib-option-detail',
+	elQuestionFibOptionComparisonInput: '.lp-question-fib-option-comparison-input',
 	LPTarget: '.lp-target',
 	elCollapse: 'lp-collapse',
 	elSectionToggle: '.lp-section-toggle',
@@ -1440,6 +1444,20 @@ const fibSaveContent = ( e, target ) => {
 	const editor = window.tinymce.get( `lp-question-fib-input-${ questionId }` );
 	dataAnswers.title = editor.getContent();
 
+	const elFibBlankOptionItems = elQuestionItem.querySelectorAll( `${ className.elFibBlankOptionItem }:not(.clone)` );
+	if ( elFibBlankOptionItems ) {
+		elFibBlankOptionItems.forEach( ( elFibBlankOptionItem ) => {
+			const optionId = elFibBlankOptionItem.dataset.id;
+			const elQuestionFibOptionMatchCaseInput = elFibBlankOptionItem.querySelector( `${ className.elQuestionFibOptionMatchCaseInput }` );
+			const elQuestionFibOptionComparisonInput = elFibBlankOptionItem.querySelector( `${ className.elQuestionFibOptionComparisonInput }:checked` );
+
+			dataAnswers.meta_data[ optionId ].match_case = elQuestionFibOptionMatchCaseInput.checked ? 1 : 0;
+			dataAnswers.meta_data[ optionId ].comparison = elQuestionFibOptionComparisonInput.value;
+		} );
+	}
+
+	//console.log( 'dataAnswers', dataAnswers );
+
 	lpUtils.lpSetLoadingEl( elQuestionItem, 1 );
 
 	// Call ajax to update answers config
@@ -1473,6 +1491,25 @@ const fibSaveContent = ( e, target ) => {
 		},
 	};
 	window.lpAJAXG.fetchAJAX( dataSend, callBack );
+};
+
+const FibShowHideMatchCaseOption = ( e, target ) => {
+	const elQuestionFibOptionMatchCaseInput = target.closest( `${ className.elQuestionFibOptionMatchCaseInput }` );
+	if ( ! elQuestionFibOptionMatchCaseInput ) {
+		return;
+	}
+
+	const elQuestionFibOptionDetail = elQuestionFibOptionMatchCaseInput.closest( `${ className.elQuestionFibOptionDetail }` );
+	const elQuestionFibOptionMatchCaseWrap = elQuestionFibOptionDetail.querySelector( `${ className.elQuestionFibOptionMatchCaseWrap }` );
+	if ( ! elQuestionFibOptionDetail || ! elQuestionFibOptionMatchCaseWrap ) {
+		return;
+	}
+
+	if ( elQuestionFibOptionMatchCaseInput.checked ) {
+		lpUtils.lpShowHideEl( elQuestionFibOptionMatchCaseWrap, 1 );
+	} else {
+		lpUtils.lpShowHideEl( elQuestionFibOptionMatchCaseWrap, 0 );
+	}
 };
 
 // Get data answers config
@@ -1545,6 +1582,7 @@ document.addEventListener( 'click', ( e ) => {
 	fibDeleteBlank( e, target );
 	FibDeleteAllBlanks( e, target );
 	FibClearContent( e, target );
+	FibShowHideMatchCaseOption( e, target );
 
 	updateQuestionDes( e, target );
 	updateQuestionHint( e, target );

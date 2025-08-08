@@ -547,7 +547,7 @@ class AdminEditQuestionTemplate {
 					esc_html( $option['fill'] ?? '' )
 				),
 				'btn-save'   => sprintf(
-					'<button type="button" class="lp-btn-fib-option-save button">%s</button>',
+					'<button type="button" class="lp-btn-fib-save-content button">%s</button>',
 					__( 'Save', 'learnpress' )
 				),
 				'btn-delete' => sprintf(
@@ -564,27 +564,31 @@ class AdminEditQuestionTemplate {
 			];
 
 			$section_detail = [
-				'wrap'            => '<div class="lp-question-fib-option-detail lp-section-collapse">',
-				'match-case'      => sprintf(
+				'wrap'                => '<div class="lp-question-fib-option-detail lp-section-collapse">',
+				'match-case'          => sprintf(
 					'<label>
-						<input type="checkbox" class="lp-question-fib-option-match-case" %s name="%s" data-key="%s" value="1" /> %s
+						<input type="checkbox" class="lp-question-fib-option-match-case-input" %s name="%s" data-key="%s" value="1" /> %s
 					</label>',
 					$match_case ? 'checked' : '',
 					esc_attr( 'lp-question-fib-option-match-case-' . $id ),
 					'match_case',
 					__( 'Match case', 'learnpress' )
 				),
-				'separator-label' => sprintf(
+				'wrap_match_case'     => sprintf(
+					'<div class="lp-question-fib-option-match-case-wrap %s">',
+					$match_case ? '' : 'lp-hidden'
+				),
+				'separator-label'     => sprintf(
 					'<div>%s</div>',
 					__( 'Comparison', 'learnpress' )
 				),
-				'equal'           => sprintf(
+				'equal'               => sprintf(
 					'<div>
 						<label>
 						<input type="radio"
 							data-key ="comparison"
 							name="lp-question-fib-option-comparison-%s"
-							class="lp-question-fib-option-comparison" value="equal" %s /> %s
+							class="lp-question-fib-option-comparison-input" value="equal" %s /> %s
 						</label>
 						<p>%s</p>
 					</div>',
@@ -593,13 +597,13 @@ class AdminEditQuestionTemplate {
 					__( 'Equal', 'learnpress' ),
 					__( 'Match two words are equality.', 'learnpress' )
 				),
-				'range'           => sprintf(
+				'range'               => sprintf(
 					'<div>
 						<label>
 							<input type="radio"
 							data-key ="comparison"
 							name="lp-question-fib-option-comparison-%s"
-							class="lp-question-fib-option-comparison" value="range" %s /> %s
+							class="lp-question-fib-option-comparison-input" value="range" %s /> %s
 						</label>
 						<p>%s</p>
 					</div>',
@@ -608,13 +612,13 @@ class AdminEditQuestionTemplate {
 					__( 'Range', 'learnpress' ),
 					__( 'Match any number in a range. Use 100, 200 to match any value from 100 to 200.', 'learnpress' )
 				),
-				'any'             => sprintf(
+				'any'                 => sprintf(
 					'<div>
 						<label>
 							<input type="radio"
 							data-key ="comparison"
 							name="lp-question-fib-option-comparison-%s"
-							class="lp-question-fib-option-comparison" value="any" %s /> %s
+							class="lp-question-fib-option-comparison-input" value="any" %s /> %s
 						</label>
 						<p>%s</p>
 					</div>',
@@ -623,7 +627,8 @@ class AdminEditQuestionTemplate {
 					__( 'Any', 'learnpress' ),
 					__( 'Match any value in a set of words. Use fill, blank, or question to match any value in the set.', 'learnpress' )
 				),
-				'wrap_end'        => '</div>',
+				'wrap_match_case_end' => '</div>', // End match case wrap
+				'wrap_end'            => '</div>',
 			];
 
 			$section = [
