@@ -453,8 +453,8 @@ class AdminEditQuestionTemplate {
 
 			if ( is_array( $meta_data ) ) {
 				$options = array_merge(
-					$options,
-					$meta_data
+					$meta_data,
+					$options
 				);
 			}
 		}
@@ -528,9 +528,9 @@ class AdminEditQuestionTemplate {
 			$comparison = $option['comparison'] ?? '';
 			$id         = $option['id'] ?? '';
 
-			if ( $id === 'clone' ) {
+			/*if ( $id === 'clone' ) {
 				$i = 0;
-			}
+			}*/
 
 			$section_header = [
 				'wrap'       => '<div class="lp-question-fib-option-header">',
@@ -540,7 +540,7 @@ class AdminEditQuestionTemplate {
 				),
 				'title'      => sprintf(
 					'<input type="text"
-						name="lp-question-fib-option-title-%s"
+						name="lp-question-fib-option-title-input-%s"
 						value="%s"
 						class="lp-question-fib-option-title-input" />',
 					esc_attr( $id ),
@@ -570,7 +570,7 @@ class AdminEditQuestionTemplate {
 						<input type="checkbox" class="lp-question-fib-option-match-case-input" %s name="%s" data-key="%s" value="1" /> %s
 					</label>',
 					$match_case ? 'checked' : '',
-					esc_attr( 'lp-question-fib-option-match-case-' . $id ),
+					esc_attr( 'lp-question-fib-option-match-case-input' . $id ),
 					'match_case',
 					__( 'Match case', 'learnpress' )
 				),
@@ -587,13 +587,13 @@ class AdminEditQuestionTemplate {
 						<label>
 						<input type="radio"
 							data-key ="comparison"
-							name="lp-question-fib-option-comparison-%s"
+							name="lp-question-fib-option-comparison-input-%s"
 							class="lp-question-fib-option-comparison-input" value="equal" %s /> %s
 						</label>
 						<p>%s</p>
 					</div>',
 					esc_attr( $id ),
-					$comparison === 'equal' || $id === 'clone' ? 'checked' : '',
+					$comparison === 'equal' ? 'checked' : '',
 					__( 'Equal', 'learnpress' ),
 					__( 'Match two words are equality.', 'learnpress' )
 				),
@@ -602,7 +602,7 @@ class AdminEditQuestionTemplate {
 						<label>
 							<input type="radio"
 							data-key ="comparison"
-							name="lp-question-fib-option-comparison-%s"
+							name="lp-question-fib-option-comparison-input-%s"
 							class="lp-question-fib-option-comparison-input" value="range" %s /> %s
 						</label>
 						<p>%s</p>
@@ -617,7 +617,7 @@ class AdminEditQuestionTemplate {
 						<label>
 							<input type="radio"
 							data-key ="comparison"
-							name="lp-question-fib-option-comparison-%s"
+							name="lp-question-fib-option-comparison-input-%s"
 							class="lp-question-fib-option-comparison-input" value="any" %s /> %s
 						</label>
 						<p>%s</p>

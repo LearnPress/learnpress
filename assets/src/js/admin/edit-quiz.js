@@ -319,7 +319,7 @@ const eventEditorTinymceChange = ( id, callBack ) => {
 	editor.on( 'focusin', ( e ) => {} );
 	editor.on( 'init', () => {} );
 	editor.on( 'setcontent', ( e ) => {
-		const elementg = editor.dom.select( `.lp-question-fib-input[data-id=${ uniquid }]` );
+		const elementg = editor.dom.select( `.lp-question-fib-input[data-id="${ uniquid }"]` );
 		if ( elementg[ 0 ] ) {
 			elementg[ 0 ].focus();
 		}
@@ -347,7 +347,7 @@ const eventEditorTinymceChange = ( id, callBack ) => {
 			} else {
 				const elTextarea = document.getElementById( id );
 				const elAnswersConfig = elTextarea.closest( `${ className.elAnswersConfig }` );
-				const elFibBlankOptionItem = elAnswersConfig.querySelector( `${ className.elFibBlankOptionItem }[data-id=${ blankId }]` );
+				const elFibBlankOptionItem = elAnswersConfig.querySelector( `${ className.elFibBlankOptionItem }[data-id="${ blankId }"]` );
 				const elFibOptionTitleInput = elFibBlankOptionItem.querySelector( `${ className.elFibOptionTitleInput }` );
 				if ( elFibOptionTitleInput ) {
 					elFibOptionTitleInput.value = textBlank;
@@ -1174,7 +1174,6 @@ const fibInsertBlank = ( e, target ) => {
 	uniquid = randomString();
 
 	const idEditor = `lp-question-fib-input-${ questionId }`;
-	const editor = window.tinymce.get( idEditor );
 	const dataAnswers = getDataAnswersConfig( elQuestionItem );
 	if ( ! dataAnswers ) {
 		return;
@@ -1197,6 +1196,7 @@ const fibInsertBlank = ( e, target ) => {
 
 		fibSelection.setContent( elInputNew );
 	} else {
+		const editor = window.tinymce.get( idEditor );
 		const elInputNew = `<span class="lp-question-fib-input" data-id="${ uniquid }">Enter answer correct on here</span>&nbsp;`;
 		editor.selection.select( editor.getBody(), true );
 		editor.selection.collapse( false );
@@ -1206,10 +1206,10 @@ const fibInsertBlank = ( e, target ) => {
 	dataAnswers.meta_data = dataAnswers.meta_data || {};
 	dataAnswers.meta_data[ uniquid ] = {
 		id: uniquid,
-		comparison: '',
+		match_case: 0,
+		comparison: 'equal',
 		fill: selectedText,
 		index: 1,
-		match_case: 0,
 		open: false,
 	};
 
@@ -1221,15 +1221,30 @@ const fibInsertBlank = ( e, target ) => {
 	const elFibBlankOptionItemNew = elFibBlankOptionItemClone.cloneNode( true );
 	const countOptions = elFibBlankOptions.querySelectorAll( `${ className.elFibBlankOptionItem }:not(.clone)` ).length;
 	const elFibBlankOptionIndex = elFibBlankOptionItemNew.querySelector( `${ className.elFibBlankOptionIndex }` );
-	const elFibBlankOptionInput = elFibBlankOptionItemNew.querySelector( `${ className.elFibBlankOptionItem } input` );
+	const elFibOptionTitleInput = elFibBlankOptionItemNew.querySelector( `${ className.elFibOptionTitleInput }` );
+	const elQuestionFibOptionMatchCaseInput = elFibBlankOptionItemNew.querySelector( `${ className.elQuestionFibOptionMatchCaseInput }` );
+	const elQuestionFibOptionComparisonInputs = elFibBlankOptionItemNew.querySelectorAll( `${ className.elQuestionFibOptionComparisonInput }` );
 
-	elFibBlankOptionInput.value = decodeHtml( selectedText );
 	elFibBlankOptionItemNew.dataset.id = uniquid;
+	elFibOptionTitleInput.name = `${ className.elFibOptionTitleInput }-${ uniquid }`;
+	elFibOptionTitleInput.value = decodeHtml( selectedText );
 	elFibBlankOptionIndex.textContent = countOptions + 1 + '.';
+	elQuestionFibOptionMatchCaseInput.name = `${ className.elQuestionFibOptionMatchCaseInput }-${ uniquid }`.replace( /\./g, '' );
+	elQuestionFibOptionComparisonInputs.forEach( ( elInput ) => {
+		elInput.name = `${ className.elQuestionFibOptionComparisonInput }-${ uniquid }`.replace( /\./g, '' );
+		if ( elInput.value === 'equal' ) {
+			elInput.checked = true;
+		}
+	} );
+	elFibBlankOptionItemClone.insertAdjacentElement( 'beforebegin', elFibBlankOptionItemNew );
 	elFibBlankOptionItemNew.classList.remove( 'clone' );
-	elFibBlankOptions.insertAdjacentElement( 'beforeend', elFibBlankOptionItemNew );
 	lpUtils.lpShowHideEl( elFibBlankOptionItemNew, 1 );
 	// End clone blank options
+
+	const elBtnFibSaveContent = elQuestionItem.querySelector( `${ className.elBtnFibSaveContent }` );
+	if ( elBtnFibSaveContent ) {
+		elBtnFibSaveContent.click(); // Save changes
+	}
 };
 
 // Change blank option
@@ -1306,6 +1321,11 @@ const fibDeleteBlank = ( e, target ) => {
 			}
 
 			setDataAnswersConfig( elQuestionItem, dataAnswers );
+
+			const elBtnFibSaveContent = elQuestionItem.querySelector( `${ className.elBtnFibSaveContent }` );
+			if ( elBtnFibSaveContent ) {
+				elBtnFibSaveContent.click(); // Save changes
+			}
 		}
 	} );
 };
@@ -1415,12 +1435,12 @@ const fibSaveContent = ( e, target ) => {
 	const elFibBlankOptionItems = elQuestionItem.querySelectorAll( `${ className.elFibBlankOptionItem }:not(.clone)` );
 	if ( elFibBlankOptionItems ) {
 		elFibBlankOptionItems.forEach( ( elFibBlankOptionItem ) => {
-			const optionId = elFibBlankOptionItem.dataset.id;
+			const blankId = elFibBlankOptionItem.dataset.id;
 			const elQuestionFibOptionMatchCaseInput = elFibBlankOptionItem.querySelector( `${ className.elQuestionFibOptionMatchCaseInput }` );
 			const elQuestionFibOptionComparisonInput = elFibBlankOptionItem.querySelector( `${ className.elQuestionFibOptionComparisonInput }:checked` );
 
-			dataAnswers.meta_data[ optionId ].match_case = elQuestionFibOptionMatchCaseInput.checked ? 1 : 0;
-			dataAnswers.meta_data[ optionId ].comparison = elQuestionFibOptionComparisonInput.value;
+			dataAnswers.meta_data[ blankId ].match_case = elQuestionFibOptionMatchCaseInput.checked ? 1 : 0;
+			dataAnswers.meta_data[ blankId ].comparison = elQuestionFibOptionComparisonInput.value;
 		} );
 	}
 
