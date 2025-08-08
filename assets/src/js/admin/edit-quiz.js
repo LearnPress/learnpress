@@ -420,6 +420,7 @@ const addQuestion = ( e, target ) => {
 	);
 
 	elQuestionTitleInput.value = questionTitle;
+	elQuestionTitleNewInput.value = '';
 	newQuestionItem.classList.remove( 'clone' );
 	lpUtils.lpShowHideEl( newQuestionItem, 1 );
 	elQuestionClone.insertAdjacentElement( 'beforebegin', newQuestionItem );
@@ -439,7 +440,11 @@ const addQuestion = ( e, target ) => {
 			} else if ( status === 'success' ) {
 				newQuestionItem.dataset.questionId = question.ID;
 				newQuestionItem.dataset.questionType = question.meta_data._lp_type;
-				newQuestionItem.innerHTML = html_edit_question;
+				newQuestionItem.outerHTML = html_edit_question;
+				const elQuestionItemCreated = elEditListQuestions.querySelector(
+					`${ className.elQuestionItem }[data-question-id="${ question.ID }"]`
+				);
+				elQuestionItemCreated.classList.remove( className.elCollapse );
 
 				initTinyMCE();
 			}
@@ -452,7 +457,6 @@ const addQuestion = ( e, target ) => {
 		},
 		completed: () => {
 			lpUtils.lpSetLoadingEl( newQuestionItem, 0 );
-			newQuestionItem.classList.remove( `${ className.elCollapse }` );
 		},
 	};
 
@@ -1204,6 +1208,11 @@ const fibInsertBlank = ( e, target ) => {
 	}
 
 	dataAnswers.meta_data = dataAnswers.meta_data || {};
+	// Convert array to object
+	if ( Object.keys( dataAnswers.meta_data ).length === 0 ) {
+		dataAnswers.meta_data = {};
+	}
+
 	dataAnswers.meta_data[ uniquid ] = {
 		id: uniquid,
 		match_case: 0,

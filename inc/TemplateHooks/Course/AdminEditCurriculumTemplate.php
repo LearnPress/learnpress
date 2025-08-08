@@ -422,7 +422,7 @@ class AdminEditCurriculumTemplate {
 					type="button">%s</button>',
 				$type,
 				sprintf( __( 'Create a new %s', 'learnpress' ), $item_label ),
-				sprintf( __( 'Add %s', 'leanpress' ), $item_label ),
+				sprintf( __( 'Add %s', 'learnpress' ), $item_label ),
 				sprintf( __( 'New %s', 'learnpress' ), $item_label )
 			);
 		}
