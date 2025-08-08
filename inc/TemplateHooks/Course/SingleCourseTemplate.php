@@ -718,7 +718,7 @@ class SingleCourseTemplate {
 	 *
 	 * @return string
 	 * @since 4.2.7
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public function html_btn_external( CourseModel $courseModel, $userModel ): string {
 		$external_link = $courseModel->get_meta_value_by_key( CoursePostModel::META_KEY_EXTERNAL_LINK_BY_COURSE, '' );
@@ -735,7 +735,7 @@ class SingleCourseTemplate {
 		}
 
 		$content = sprintf(
-			'<a href="%s" class="lp-button course-btn-extra">%s</a>',
+			'<a href="%s" class="lp-button course-btn-extra" target="_blank">%s</a>',
 			esc_url_raw( $external_link ),
 			__( 'Contact To Request', 'learnpress' )
 		);
