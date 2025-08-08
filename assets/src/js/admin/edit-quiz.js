@@ -1135,48 +1135,6 @@ const sortAbleQuestionAnswer = () => {
 
 					const elBtnUpdateQuestionAnswer = elQuestionDataEdit.querySelector( `${ className.elBtnUpdateQuestionAnswer }` );
 					elBtnUpdateQuestionAnswer.click(); // Trigger update answers config
-
-					return;
-
-					const questionId = elQuestionItem.dataset.questionId;
-					const questionAnswerIds = [];
-					const elQuestionAnswerItems = elAnswersConfig.querySelectorAll( `${ className.elQuestionAnswerItem }:not(.clone)` );
-					elQuestionAnswerItems.forEach( ( elItem ) => {
-						const questionAnswerId = elItem.dataset.answerId;
-						if ( questionAnswerId ) {
-							questionAnswerIds.push( questionAnswerId );
-						}
-					} );
-
-					const callBack = {
-						success: ( response ) => {
-							const { message, status } = response;
-
-							if ( status === 'success' ) {
-								showToast( message, status );
-							} else {
-								throw `Error: ${ message }`;
-							}
-						},
-						error: ( error ) => {
-							showToast( error, 'error' );
-						},
-						completed: () => {
-							lpUtils.lpSetLoadingEl( elQuestionAnswerItem, 0 );
-							isUpdateSectionPosition = 0; // Reset position update flag
-						},
-					};
-
-					const dataSend = {
-						quiz_id: quizID,
-						action: 'updateAnswersConfig',
-						question_id: questionId,
-						question_answer_ids: questionAnswerIds,
-						args: {
-							id_url: idUrlHandle,
-						},
-					};
-					window.lpAJAXG.fetchAJAX( dataSend, callBack );
 				}, 1000 );
 			},
 			onMove: ( evt ) => {
