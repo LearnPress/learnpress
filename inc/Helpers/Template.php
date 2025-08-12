@@ -338,14 +338,14 @@ class Template {
 	}
 
 	/**
-	* Generate HTML for pagination.
-	*
-	* @param array $data
-	*
-	* @return string HTML for pagination.
-	* @since 4.2.8.7.4
-	* @version 1.0.0
-	*/
+	 * Generate HTML for pagination.
+	 *
+	 * @param array $data
+	 *
+	 * @return string HTML for pagination.
+	 * @since 4.2.8.7.4
+	 * @version 1.0.0
+	 */
 	public function html_pagination( array $data = [] ): string {
 		if ( empty( $data['total_pages'] ) || $data['total_pages'] <= 1 ) {
 			return '';
@@ -404,7 +404,8 @@ class Template {
 	/**
 	 * Sanitize HTML content by allowing specific tags and attributes.
 	 *
-	 * @param  string $content
+	 * @param string $content
+	 *
 	 * @return string
 	 * @since 4.2.9
 	 * @version 1.0.0
@@ -421,6 +422,41 @@ class Template {
 				'allowfullscreen' => true,
 				'allow'           => true,
 			],
+			'audio'  => array(
+				'autoplay'         => true,
+				'controls'         => true,
+				'loop'             => true,
+				'muted'            => true,
+				'preload'          => true,
+				'src'              => true,
+				'aria-controls'    => true,
+				'aria-current'     => true,
+				'aria-describedby' => true,
+				'aria-details'     => true,
+				'aria-expanded'    => true,
+				'aria-hidden'      => true,
+				'aria-label'       => true,
+				'aria-labelledby'  => true,
+				'aria-live'        => true,
+				'class'            => true,
+				'data-*'           => true,
+				'dir'              => true,
+				'hidden'           => true,
+				'id'               => true,
+				'lang'             => true,
+				'style'            => true,
+				'title'            => true,
+				'role'             => true,
+				'xml:lang'         => true,
+				'controlslist'     => true,
+				'crossorigin'      => true,
+				'poster'           => true,
+			),
+			'source' => array(
+				'src'   => true,
+				'type'  => true,
+				'media' => true,
+			),
 		);
 
 		$allowed_tags = array_merge( $allowed_tags, $extra_tag );
