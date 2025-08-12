@@ -822,7 +822,7 @@ class LP_Course_DB extends LP_Database {
 	 *
 	 * @return array
 	 * @throws Exception
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 * @since 4.2.6.5
 	 */
 	public function recursion_sub_categories( array $term_ids ): array {
@@ -834,6 +834,7 @@ class LP_Course_DB extends LP_Database {
 		$filter_sub_category->field_count      = 'tx.term_id';
 		$filter_sub_category->only_fields      = [ 'term_id' ];
 		$filter_sub_category->where[]          = "AND tx.parent IN ($term_ids_format)";
+		$filter_sub_category->limit            = -1;
 		$query_sub_category                    = $this->execute( $filter_sub_category, $total_found );
 		$term_sub_ids                          = [];
 
