@@ -7,6 +7,8 @@
  * @version 4.0.0
  */
 
+use LearnPress\Models\Question\QuestionPostModel;
+
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
@@ -285,18 +287,18 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		 *
 		 * @since 3.3.0
 		 *
-		 * @return bool|string
+		 * @return void
 		 */
 		public function admin_editor() {
-			$question = LP_Question::get_question();
+			global $post;
 
-			//if ( $question->is_support( 'answer-options' ) ) {
-			echo learn_press_admin_view_content( 'question/editor' );
-			//}
+			$question_id       = $post->ID;
+			$questionPostModel = QuestionPostModel::find( $question_id, true );
+			if ( ! $questionPostModel instanceof QuestionPostModel ) {
+				return;
+			}
 
-			ob_start();
-			do_action( 'learn-press/question-admin-editor', $question );
-			echo ob_get_clean();
+			do_action( 'learn-press/admin/edit-question/layout', $questionPostModel );
 		}
 
 		/**
@@ -488,7 +490,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 					'priority' => 'high',
 				),
 				'question-editor'   => array(
-					'title'    => esc_html__( 'Answer Options', 'learnpress' ),
+					'title'    => esc_html__( 'Questions Options', 'learnpress' ),
 					'callback' => array( $this, 'admin_editor' ),
 					'context'  => 'normal',
 					'priority' => 'high',

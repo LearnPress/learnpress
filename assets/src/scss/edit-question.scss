@@ -1,0 +1,152 @@
+/**
+* Style for the edit question page in LearnPress
+*/
+
+$border-color: #C3C4C7;
+
+// Collapse icon
+.lp-icon-angle-down {
+	display: none;
+	cursor: pointer;
+}
+
+.lp-icon-angle-up {
+	display: inline-block;
+	cursor: pointer;
+}
+
+.lp-collapse {
+	.lp-icon-angle-up {
+		display: none;
+	}
+
+	.lp-icon-angle-down {
+		display: inline-block;
+	}
+}
+
+.lp-section-collapse {
+	display: grid;
+	gap: 10px;
+	padding: 12px;
+	border: 1px solid $border-color;
+	border-top: none;
+}
+
+// End Collapse icon
+
+.lp-edit-question-wrap {
+	padding: 12px;
+	display: grid;
+	gap: 10px;
+
+	input[type="text"], {
+		width: 100%;
+		border: none;
+		background: transparent;
+		box-shadow: none;
+	}
+}
+
+.lp-question-data-edit {
+	&:not(.lp-collapse) {
+		.lp-question-data-edit-header {
+			/*background: #2d71af;
+			border-color: #2d71af;
+			color: #fff;*/
+		}
+
+		.lp-section-collapse {
+			//border-color: #2d71af;
+		}
+
+		.lp-tinymce-toggle span {
+			//color: #fff;
+		}
+	}
+}
+
+.lp-question-choice-header {
+	display: flex;
+	justify-content: space-between;
+	padding: 10px;
+	background: #f5f5f5;
+}
+
+.lp-question-data-edit-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 10px;
+	border: 1px solid lightgray;
+	background: #eeeeee;
+
+	&:hover {
+		cursor: pointer;
+	}
+}
+
+.lp-question-answer-item {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 5px;
+	padding: 5px;
+	margin: 0;
+	border: 1px solid #f5f5f5;
+	border-top: none;
+
+	&:hover {
+		.lp-btn-delete-question-answer {
+			display: inline-block;
+		}
+	}
+
+	&.loading {
+		pointer-events: none;
+		opacity: 0.5 !important;
+
+		.lp-icon-spinner {
+			display: inline-block;
+		}
+	}
+
+	.lp-btn-delete-question-answer {
+		display: none;
+		cursor: pointer;
+	}
+}
+
+.lp-question-answer-item-add-new {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 5px;
+	padding: 5px;
+	margin: 0;
+	border: 1px solid #f5f5f5;
+	border-top: none;
+}
+
+.question-edit-details {
+
+	.lp-section-collapse {
+		padding: 0;
+	}
+}
+
+.lp-question-field-settings {
+	padding: 20px;
+	display: grid;
+	gap: 5px;
+
+	&:nth-child(2n+1) {
+		background: #f4fcff;
+	}
+
+	input[type="text"] {
+		padding: 0 10px;
+	}
+}
+
+

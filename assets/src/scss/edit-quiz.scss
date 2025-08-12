@@ -247,6 +247,13 @@ $spacing-section: 12px;
 			border-top: none;
 		}
 
+		.question-edit-details {
+
+			.lp-section-collapse {
+				padding: 0;
+			}
+		}
+
 		.lp-section-toggle {
 			&.lp-collapse {
 				.lp-section-collapse {
@@ -347,6 +354,26 @@ $spacing-section: 12px;
 			border: 1px solid $border-color;
 			padding: 6px 10px;
 		}
+	}
+
+	.lp-question-field-settings {
+		padding: 20px;
+		display: grid;
+		gap: 5px;
+
+		&:nth-child(2n+1) {
+			background: #f4fcff;
+		}
+
+		input[type="text"], input[type="number"] {
+			padding: 0 10px;
+		}
+
+		&__label {
+
+		}
+
+
 	}
 }
 

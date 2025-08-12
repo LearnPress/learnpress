@@ -31,6 +31,7 @@ use LearnPress\Shortcodes\ListInstructorsShortcode;
 use LearnPress\Shortcodes\SingleInstructorShortcode;
 use LearnPress\Shortcodes\CourseMaterialShortcode;
 use LearnPress\TemplateHooks\Admin\AdminEditQizTemplate;
+use LearnPress\TemplateHooks\Admin\AdminEditQuestionTemplate;
 use LearnPress\TemplateHooks\Course\AdminEditCurriculumTemplate;
 use LearnPress\TemplateHooks\Course\FilterCourseTemplate;
 use LearnPress\TemplateHooks\Course\ListCoursesRelatedTemplate;
@@ -326,6 +327,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			// Admin template hooks.
 			AdminEditCurriculumTemplate::instance();
 			AdminEditQizTemplate::instance();
+			AdminEditQuestionTemplate::instance();
 			CourseMaterialTemplate::instance();
 
 			// Models
