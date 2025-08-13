@@ -140,17 +140,25 @@ $spacing-section: 12px;
 			.lp-question-type-label {
 				white-space: nowrap;
 				text-overflow: ellipsis;
+				background: #efefef;
+				padding: 5px;
+				border-radius: 4px;
 			}
 
-			.lp-btn-remove-question, .lp-btn-edit-question-title,
+			.lp-btn-remove-question, .lp-btn-edit-question-title {
+				font-size: 1.15rem;
+				cursor: pointer;
+				text-decoration: none;
+			}
+
 			.lp-btn-update-question-title, .lp-btn-cancel-update-question-title {
 				display: none;
 			}
 
 			&:hover {
-				.lp-btn-remove-question, .lp-btn-edit-question-title {
+				/*.lp-btn-remove-question, .lp-btn-edit-question-title {
 					display: inline-block;
-				}
+				}*/
 			}
 		}
 

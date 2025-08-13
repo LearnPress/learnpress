@@ -226,20 +226,20 @@ class AdminEditQizTemplate {
 			),
 			'loading'    => '<span class="lp-icon-spinner"></span>',
 			'title'      => AdminEditQuestionTemplate::instance()->html_input_question_title( $question_title ),
-			'btn-edit'   => sprintf(
-				'<a class="lp-btn-edit-question-title lp-icon-edit" title="%s" href="%s"></a>',
-				__( 'Edit question title', 'learnpress' ),
-				$questionPostModel instanceof QuestionPostModel ? $questionPostModel->get_edit_link() : '#'
-			),
-			'btn-delete' => sprintf(
-				'<button type="button" class="lp-btn-remove-question button" data-title="%s" data-content="%s">%s</button>',
-				__( 'Are you sure?', 'learnpress' ),
-				__( 'This question will be deleted. The question will no longer be assigned to this quiz, but will not be permanently deleted.', 'learnpress' ),
-				__( 'Delete question', 'learnpress' )
-			),
 			'type'       => sprintf(
 				'<span class="lp-question-type-label">%s</span>',
 				$questionPostModel instanceof QuestionPostModel ? $questionPostModel->get_type_label() : ''
+			),
+			'btn-edit'   => sprintf(
+				'<a class="lp-btn-edit-question-title lp-icon-edit-square" title="%s" href="%s" target="_blank"></a>',
+				__( 'Edit question detail', 'learnpress' ),
+				$questionPostModel instanceof QuestionPostModel ? $questionPostModel->get_edit_link() : '#'
+			),
+			'btn-delete' => sprintf(
+				'<span class="lp-btn-remove-question lp-icon-trash-o" title="%s" data-title="%s" data-content="%s"></span>',
+				__( 'Remove question', 'learnpress' ),
+				__( 'Are you sure?', 'learnpress' ),
+				__( 'This question will be deleted. The question will no longer be assigned to this quiz, but will not be permanently deleted.', 'learnpress' ),
 			),
 			'btn-update' => sprintf(
 				'<button type="button" class="lp-btn-update-question-title button">%s</button>',
@@ -264,7 +264,10 @@ class AdminEditQizTemplate {
 	 * @return string
 	 */
 	public function html_add_new_question(): string {
-		$html_question_types = '';
+		$html_question_types = sprintf(
+			'<option value="">%s</option>',
+			esc_html__( 'Select question type', 'learnpress' )
+		);
 		$question_types      = QuestionPostModel::get_types();
 		foreach ( $question_types as $type => $label ) {
 			$html_question_types .= sprintf(
@@ -274,7 +277,14 @@ class AdminEditQizTemplate {
 			);
 		}
 		$html_question_types = Template::instance()->nest_elements(
-			[ '<select class="lp-question-type-new" name="lp-question-type-new">' => '</select>' ],
+			[
+				sprintf(
+					'<select class="lp-question-type-new"
+						name="lp-question-type-new" data-mess-empty-type="%s">',
+					esc_attr__( 'Question type is required', 'learnpress' )
+				)
+				=> '</select>',
+			],
 			$html_question_types
 		);
 
@@ -298,7 +308,7 @@ class AdminEditQizTemplate {
 			),
 			'btn-select-items' => sprintf(
 				'<button type="button" class="button lp-btn-show-popup-items-to-select">%s</button>',
-				__( 'Select items', 'learnpress' )
+				__( 'Questions bank', 'learnpress' )
 			),
 			'wrap_end'         => '</div>',
 		];

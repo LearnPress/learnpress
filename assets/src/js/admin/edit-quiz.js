@@ -413,12 +413,18 @@ const addQuestion = ( e, target ) => {
 	const elQuestionTitleNewInput = elAddNewQuestion.querySelector(
 		`${ className.elQuestionTitleNewInput }`
 	);
-	const questionType = elAddNewQuestion.querySelector(
-		`${ className.elQuestionTypeNew }`
-	).value;
 	const questionTitle = elQuestionTitleNewInput.value.trim();
 	if ( ! questionTitle ) {
-		showToast( 'Please enter a question title.', 'error' );
+		showToast( elQuestionTitleNewInput.dataset.messEmptyTitle, 'error' );
+		return;
+	}
+
+	const elQuestionType = elAddNewQuestion.querySelector(
+		`${ className.elQuestionTypeNew }`
+	);
+	const questionType = elQuestionType.value;
+	if ( ! questionType ) {
+		showToast( elQuestionType.dataset.messEmptyType, 'error' );
 		return;
 	}
 
@@ -1567,6 +1573,10 @@ document.addEventListener( 'focusin', ( e ) => {
 } );
 // Event focus out
 document.addEventListener( 'focusout', ( e ) => {} );
+document.addEventListener( 'change', ( e ) => {
+	const target = e.target;
+	autoUpdateQuestion( e, target );
+} );
 
 // Element root ready.
 lpUtils.lpOnElementReady(
