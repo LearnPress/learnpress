@@ -100,7 +100,7 @@ class AdminEditQuestionTemplate {
 
 	public function html_edit_question( QuestionPostModel $questionPostModel ): string {
 		$section_edit_details = [
-			'wrap'         => '<div class="question-edit-details lp-section-toggle lp-collapse">',
+			'wrap'         => '<div class="question-edit-details lp-section-toggle">',
 			'header'       => sprintf(
 				'<div class="lp-question-data-edit-header lp-trigger-toggle">
 					<label>%s</label>
@@ -141,7 +141,7 @@ class AdminEditQuestionTemplate {
 		$section = [
 			'wrap'        => '<div class="lp-question-field-settings">',
 			'label'       => sprintf(
-				'<div class="lp-question-field-settings__label"><label>%s:</label></div>',
+				'<div class="lp-question-field-settings__label"><label>%s</label></div>',
 				$args['label'] ?? ''
 			),
 			'input'       => $args['input'] ?? '',
@@ -168,7 +168,10 @@ class AdminEditQuestionTemplate {
 		$args = [
 			'label'       => __( 'Points', 'learnpress' ),
 			'input'       => sprintf(
-				'<input type="number" name="lp-question-point-input" value="%s" min="0" step="0.01">',
+				'<input type="number" name="lp-question-point-input"
+					class="lp-auto-save"
+					data-key-auto-save="question_mark"
+					value="%s" min="0" step="0.01">',
 				esc_attr( $point )
 			),
 			'description' => __( 'Points for choosing the correct answer.', 'learnpress' ),
@@ -196,9 +199,8 @@ class AdminEditQuestionTemplate {
 				$hint,
 				$editor_id,
 				[
-					'default_editor' => 'html', // Use HTML editor by default tinymce
-					'tinymce'        => true,
-					'quicktags'      => true, // Set true to show tab "Code" in editor
+					'editor_height' => 50,
+					'editor_class'  => 'lp-editor-tinymce lp-auto-save',
 				]
 			),
 			'description' => __( 'The instructions for the user to select the right answer. The text will be shown when users click the "Hint" button.', 'learnpress' ),
@@ -220,14 +222,13 @@ class AdminEditQuestionTemplate {
 		$editor_id   = 'lp-question-explanation-' . $question_id;
 
 		$args = [
-			'label'       => __( 'Hint', 'learnpress' ),
+			'label'       => __( 'Explanation', 'learnpress' ),
 			'input'       => AdminTemplate::editor_tinymce(
 				$explanation,
 				$editor_id,
 				[
-					'default_editor' => 'html', // Use HTML editor by default tinymce
-					'tinymce'        => true,
-					'quicktags'      => true, // Set true to show tab "Code" in editor
+					'editor_height' => 50,
+					'editor_class'  => 'lp-editor-tinymce lp-auto-save',
 				]
 			),
 			'description' => __( 'The explanation will be displayed when students click the "Check Answer" button.', 'learnpress' ),
@@ -245,31 +246,26 @@ class AdminEditQuestionTemplate {
 	 */
 	public function html_edit_question_description( QuestionPostModel $questionPostModel ): string {
 		$question_id          = $questionPostModel->ID;
-		$question_description = $questionPostModel->post_content;
+		$question_description = $questionPostModel->get_the_content();
 		$editor_id            = 'lp-question-description-' . $question_id;
 
 		$section = [
-			'wrap'         => '<div class="lp-question-data-edit lp-section-toggle lp-collapse">',
-			'header'       => sprintf(
-				'<div class="lp-question-data-edit-header lp-trigger-toggle">
+			'wrap'     => '<div class="lp-question-data-edit">',
+			'header'   => sprintf(
+				'<div class="lp-question-data-edit-header">
 					<label>%s</label>
-					<div style="display: flex;gap: 5px;align-items: center">
-						<button type="button" class="lp-btn-update-question-des button lp-hidden">%s</button>
-						<div class="lp-tinymce-toggle">
-							<span class="lp-icon-angle-down"></span><span class="lp-icon-angle-up"></span>
-						</div>
-					</div>
 				</div>',
-				__( 'Description', 'learnpress' ),
-				__( 'Save', 'learnpress' )
+				__( 'Description', 'learnpress' )
 			),
-			'collapse'     => '<div class="lp-section-collapse">',
-			'tinymce'      => AdminTemplate::editor_tinymce(
-				wpautop( $question_description ),
-				$editor_id
+			'tinymce'  => AdminTemplate::editor_tinymce(
+				$question_description,
+				$editor_id,
+				[
+					'editor_class'  => 'lp-editor-tinymce lp-auto-save',
+					'editor_height' => 50,
+				]
 			),
-			'collapse_end' => '</div>',
-			'wrap_end'     => '</div>',
+			'wrap_end' => '</div>',
 		];
 
 		return Template::combine_components( $section );
@@ -286,23 +282,14 @@ class AdminEditQuestionTemplate {
 		$html_answers_config = AdminEditQuestionTemplate::instance()->html_answer_option( $questionPostModel );
 
 		$section = [
-			'wrap'           => '<div class="lp-question-data-edit lp-question-by-type lp-section-toggle lp-collapse">',
+			'wrap'           => '<div class="lp-question-data-edit lp-question-by-type">',
 			'header'         => sprintf(
-				'<div class="lp-question-data-edit-header lp-trigger-toggle">
+				'<div class="lp-question-data-edit-header">
 					<label>%s</label>
-					<div style="display: flex;gap: 5px;align-items: center">
-						<button type="button" class="lp-btn-update-question-answer button">%s</button>
-						<div class="lp-tinymce-toggle">
-							<span class="lp-icon-angle-down"></span><span class="lp-icon-angle-up"></span>
-						</div>
-					</div>
 				</div>',
-				__( 'Config Your Answer', 'learnpress' ),
-				__( 'Save', 'learnpress' )
+				__( 'Config Your Answer', 'learnpress' )
 			),
-			'collapse'       => '<div class="lp-section-collapse">',
 			'answers-config' => $html_answers_config,
-			'collapse_end'   => '</div>',
 			'wrap_end'       => '</div>',
 		];
 

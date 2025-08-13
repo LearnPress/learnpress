@@ -75,6 +75,12 @@ const reInitTinymce = ( id ) => {
 	window.tinymce.execCommand( 'mceRemoveEditor', true, id );
 	window.tinymce.execCommand( 'mceAddEditor', true, id );
 	//eventEditorTinymceChange( id );
+
+	const wrapEditor = document.querySelector( `#wp-${ id }-wrap` );
+	if ( wrapEditor ) {
+		wrapEditor.classList.add( 'tmce-active' );
+		wrapEditor.classList.remove( 'html-active' );
+	}
 };
 
 // Element root ready.

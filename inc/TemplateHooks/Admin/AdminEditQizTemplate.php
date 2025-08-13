@@ -179,7 +179,7 @@ class AdminEditQizTemplate {
 			$question_title = $questionPostModel->post_title;
 
 			$section_edit_details = [
-				'wrap'         => '<div class="question-edit-details lp-section-toggle lp-collapse">',
+				'wrap'         => '<div class="question-edit-details lp-section-toggle">',
 				'header'       => sprintf(
 					'<div class="lp-question-data-edit-header lp-trigger-toggle">
 					<label>%s</label>
@@ -197,8 +197,10 @@ class AdminEditQizTemplate {
 
 			$section_edit_main = [
 				'wrap'        => '<div class="question-edit-main">',
+				'left'        => '<div class="lp-question-edit-left">',
 				'description' => AdminEditQuestionTemplate::instance()->html_edit_question_description( $questionPostModel ),
 				'answers'     => AdminEditQuestionTemplate::instance()->html_edit_question_by_type( $questionPostModel ),
+				'left_end'    => '</div>',
 				'details'     => Template::combine_components( $section_edit_details ),
 				'wrap_end'    => '</div>',
 			];

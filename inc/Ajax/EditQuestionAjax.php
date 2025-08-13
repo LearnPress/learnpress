@@ -63,9 +63,10 @@ class EditQuestionAjax extends AbstractAjax {
 			$data                 = self::check_valid();
 			$question_id          = $data['question_id'] ?? 0;
 			$question_title       = $data['question_title'] ?? false;
-			$question_description = $data['question_des'] ?? false;
+			$question_description = $data['question_description'] ?? false;
 			$question_hint        = $data['question_hint'] ?? false;
 			$question_explanation = $data['question_explanation'] ?? false;
+			$question_mark        = $data['question_mark'] ?? false;
 
 			$questionPostModel = QuestionPostModel::find( $question_id, true );
 			if ( ! $questionPostModel ) {
@@ -90,6 +91,10 @@ class EditQuestionAjax extends AbstractAjax {
 
 			if ( false !== $question_explanation ) {
 				$questionPostModel->save_meta_value_by_key( QuestionPostModel::META_KEY_EXPLANATION, $question_explanation );
+			}
+
+			if ( false !== $question_mark ) {
+				$questionPostModel->save_meta_value_by_key( QuestionPostModel::META_KEY_MARK, $question_mark );
 			}
 
 			$questionPostModel->save();

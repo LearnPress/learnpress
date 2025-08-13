@@ -62,6 +62,7 @@ const className = {
 	elCollapse: 'lp-collapse',
 	elSectionToggle: '.lp-section-toggle',
 	elTriggerToggle: '.lp-trigger-toggle',
+	elAutoSave: '.lp-auto-save',
 };
 let quizID;
 const idUrlHandle = 'edit-quiz-questions';
@@ -291,6 +292,12 @@ const reInitTinymce = ( id ) => {
 	window.tinymce.execCommand( 'mceRemoveEditor', true, id );
 	window.tinymce.execCommand( 'mceAddEditor', true, id );
 	eventEditorTinymceChange( id );
+
+	const wrapEditor = document.querySelector( `#wp-${ id }-wrap` );
+	if ( wrapEditor ) {
+		wrapEditor.classList.add( 'tmce-active' );
+		wrapEditor.classList.remove( 'html-active' );
+	}
 };
 
 let uniquid;
@@ -299,6 +306,9 @@ let fibSelection;
 // Events for TinyMCE editor
 const eventEditorTinymceChange = ( id, callBack ) => {
 	const editor = window.tinymce.get( id );
+	const elTextarea = document.getElementById( id );
+	const elQuestionItem = elTextarea.closest( `${ className.elQuestionItem }` );
+	const questionId = elQuestionItem.dataset.questionId;
 	editor.settings.force_p_newlines = false;
 	editor.settings.forced_root_block = '';
 	editor.settings.force_br_newlines = true;
@@ -307,15 +317,16 @@ const eventEditorTinymceChange = ( id, callBack ) => {
 		'.lp-question-fib-input{border: 1px dashed rebeccapurple;padding: 5px; } ';
 	// Events focus in TinyMCE editor
 	editor.on( 'change', ( e ) => {
-		const elTextarea = document.getElementById( id );
-		const elDataEdit = elTextarea.closest( '.lp-question-data-edit' );
-		const elHeader = elDataEdit.querySelector( '.lp-question-data-edit-header' );
-		if ( elHeader ) {
-			const elButtonUpdate = elHeader.querySelector( 'button' );
-			lpUtils.lpShowHideEl( elButtonUpdate, 1 );
-		}
+
 	} );
-	editor.on( 'blur', ( e ) => {} );
+	editor.on( 'keyup', ( e ) => {
+		// Auto save if it has class lp-auto-save
+		elTextarea.value = editor.getContent();
+		autoUpdateQuestion( e, elTextarea );
+	} );
+	editor.on( 'blur', ( e ) => {
+		console.log( 'Editor blurred:', e.target.id );
+	} );
 	editor.on( 'focusin', ( e ) => {} );
 	editor.on( 'init', () => {} );
 	editor.on( 'setcontent', ( e ) => {
@@ -616,157 +627,73 @@ const updateQuestionTitle = ( e, target ) => {
 	window.lpAJAXG.fetchAJAX( dataSend, callBack );
 };
 
-// Update question description
-const updateQuestionDes = ( e, target ) => {
-	const elBtnUpdateQuestionDes = target.closest( `${ className.elBtnUpdateQuestionDes }` );
-	if ( ! elBtnUpdateQuestionDes ) {
+let timeoutAutoUpdate;
+const autoUpdateQuestion = ( e, target, key, value, callback ) => {
+	const elAutoSave = target.closest( `${ className.elAutoSave }` );
+	if 	( ! elAutoSave ) {
 		return;
 	}
 
-	const elQuestionItem = elBtnUpdateQuestionDes.closest( `${ className.elQuestionItem }` );
-	if ( ! elQuestionItem ) {
-		return;
-	}
-
+	const elQuestionItem = elAutoSave.closest( `${ className.elQuestionItem }` );
 	const questionId = elQuestionItem.dataset.questionId;
-	const editor = window.tinymce.get( `lp-question-description-${ questionId }` );
-	const content = editor.getContent();
 
-	lpUtils.lpSetLoadingEl( elQuestionItem, 1 );
+	clearTimeout( timeoutAutoUpdate );
+	timeoutAutoUpdate = setTimeout( () => {
+		//lpUtils.lpSetLoadingEl( elQuestionItem, 1 );
 
-	// Call ajax to update question description
-	const callBack = {
-		success: ( response ) => {
-			const { message, status } = response;
+		// Call ajax to update question description
+		const callBack = {
+			success: ( response ) => {
+				const { message, status } = response;
 
-			if ( status === 'success' ) {
-				showToast( message, status );
-				editor.undoManager.clear();
-			} else {
-				throw `Error: ${ message }`;
+				if ( status === 'success' ) {
+					showToast( message, status );
+				} else {
+					throw `Error: ${ message }`;
+				}
+			},
+			error: ( error ) => {
+				showToast( error, 'error' );
+			},
+			completed: () => {
+				//lpUtils.lpSetLoadingEl( elQuestionItem, 0 );
+				//lpUtils.lpShowHideEl( elBtnUpdateQuestionDes, 0 );
+			},
+		};
+
+		const dataSend = {
+			action: 'update_question',
+			question_id: questionId,
+			args: {
+				id_url: idUrlHandle,
+			},
+		};
+
+		if ( undefined === key ) {
+			key = elAutoSave.dataset.keyAutoSave;
+			if ( ! key ) {
+				if ( ! elAutoSave.classList.contains( 'lp-editor-tinymce' ) ) {
+					return;
+				}
+
+				const textAreaId = elAutoSave.id;
+				key = textAreaId.replace( /lp-/g, '' ).replace( `-${ questionId }`, '' ).replace( /-/g, '_' );
+				if ( ! key ) {
+					return;
+				}
 			}
-		},
-		error: ( error ) => {
-			showToast( error, 'error' );
-		},
-		completed: () => {
-			lpUtils.lpSetLoadingEl( elQuestionItem, 0 );
-			lpUtils.lpShowHideEl( elBtnUpdateQuestionDes, 0 );
-		},
-	};
 
-	const dataSend = {
-		quiz_id: quizID,
-		action: 'update_question',
-		question_id: questionId,
-		question_des: content,
-		args: {
-			id_url: idUrlHandle,
-		},
-	};
-	window.lpAJAXG.fetchAJAX( dataSend, callBack );
-};
+			value = elAutoSave.value;
+		}
 
-// Update question description
-const updateQuestionHint = ( e, target ) => {
-	const elBtnUpdateQuestionHint = target.closest( `${ className.elBtnUpdateQuestionHint }` );
-	if ( ! elBtnUpdateQuestionHint ) {
-		return;
-	}
+		console.log( key );
 
-	const elQuestionItem = elBtnUpdateQuestionHint.closest( `${ className.elQuestionItem }` );
-	if ( ! elQuestionItem ) {
-		return;
-	}
+		dataSend[ key ] = value;
 
-	const questionId = elQuestionItem.dataset.questionId;
-	const editor = window.tinymce.get( `lp-question-hint-${ questionId }` );
-	const content = editor.getContent();
+		window.lpAJAXG.fetchAJAX( dataSend, callBack );
+	}, 700 );
 
-	lpUtils.lpSetLoadingEl( elQuestionItem, 1 );
-
-	// Call ajax to update question description
-	const callBack = {
-		success: ( response ) => {
-			const { message, status } = response;
-
-			if ( status === 'success' ) {
-				showToast( message, status );
-				editor.undoManager.clear();
-			} else {
-				throw `Error: ${ message }`;
-			}
-		},
-		error: ( error ) => {
-			showToast( error, 'error' );
-		},
-		completed: () => {
-			lpUtils.lpSetLoadingEl( elQuestionItem, 0 );
-			lpUtils.lpShowHideEl( elBtnUpdateQuestionHint, 0 );
-		},
-	};
-
-	const dataSend = {
-		quiz_id: quizID,
-		action: 'update_question',
-		question_id: questionId,
-		question_hint: content,
-		args: {
-			id_url: idUrlHandle,
-		},
-	};
-	window.lpAJAXG.fetchAJAX( dataSend, callBack );
-};
-
-// Update question description
-const updateQuestionExplain = ( e, target ) => {
-	const elBtnUpdateQuestionExplain = target.closest( `${ className.elBtnUpdateQuestionExplain }` );
-	if ( ! elBtnUpdateQuestionExplain ) {
-		return;
-	}
-
-	const elQuestionItem = elBtnUpdateQuestionExplain.closest( `${ className.elQuestionItem }` );
-	if ( ! elQuestionItem ) {
-		return;
-	}
-
-	const questionId = elQuestionItem.dataset.questionId;
-	const editor = window.tinymce.get( `lp-question-explanation-${ questionId }` );
-	const content = editor.getContent();
-
-	lpUtils.lpSetLoadingEl( elQuestionItem, 1 );
-
-	// Call ajax to update question description
-	const callBack = {
-		success: ( response ) => {
-			const { message, status } = response;
-
-			if ( status === 'success' ) {
-				showToast( message, status );
-				editor.undoManager.clear();
-			} else {
-				throw `Error: ${ message }`;
-			}
-		},
-		error: ( error ) => {
-			showToast( error, 'error' );
-		},
-		completed: () => {
-			lpUtils.lpSetLoadingEl( elQuestionItem, 0 );
-			lpUtils.lpSetLoadingEl( elBtnUpdateQuestionExplain, 0 );
-		},
-	};
-
-	const dataSend = {
-		quiz_id: quizID,
-		action: 'update_question',
-		question_id: questionId,
-		question_explanation: content,
-		args: {
-			id_url: idUrlHandle,
-		},
-	};
-	window.lpAJAXG.fetchAJAX( dataSend, callBack );
+	console.log( 'Auto update question triggered' );
 };
 
 const addQuestionAnswer = ( e, target ) => {
@@ -1609,10 +1536,6 @@ document.addEventListener( 'click', ( e ) => {
 	FibClearContent( e, target );
 	FibShowHideMatchCaseOption( e, target );
 
-	updateQuestionDes( e, target );
-	updateQuestionHint( e, target );
-	updateQuestionExplain( e, target );
-
 	addQuestionAnswer( e, target );
 	deleteQuestionAnswer( e, target );
 } );
@@ -1636,6 +1559,7 @@ document.addEventListener( 'keyup', ( e ) => {
 	}
 
 	FibOptionTitleInputChange( e, target );
+	autoUpdateQuestion( e, target );
 } );
 // Event focus in
 document.addEventListener( 'focusin', ( e ) => {
