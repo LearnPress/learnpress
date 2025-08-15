@@ -289,6 +289,10 @@ class AdminEditQuestionTemplate {
 				</div>',
 				__( 'Config Your Answer', 'learnpress' )
 			),
+			'button-save'    => sprintf(
+				'<button type="button" class="lp-btn-update-question-answer button lp-hidden">%s</button>',
+				__( 'Save Answer', 'learnpress' )
+			),
 			'answers-config' => $html_answers_config,
 			'wrap_end'       => '</div>',
 		];

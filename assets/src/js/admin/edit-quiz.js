@@ -25,6 +25,7 @@ const className = {
 	elBtnAddQuestion: '.lp-btn-add-question',
 	elBtnRemoveQuestion: '.lp-btn-remove-question',
 	elBtnUpdateQuestionTitle: '.lp-btn-update-question-title',
+	elBtnCancelUpdateQuestionTitle: '.lp-btn-cancel-update-question-title',
 	elBtnUpdateQuestionDes: '.lp-btn-update-question-des',
 	elBtnUpdateQuestionHint: '.lp-btn-update-question-hint',
 	elBtnUpdateQuestionExplain: '.lp-btn-update-question-explanation',
@@ -631,6 +632,37 @@ const updateQuestionTitle = ( e, target ) => {
 		},
 	};
 	window.lpAJAXG.fetchAJAX( dataSend, callBack );
+};
+
+// Typing in description input
+const changeTitleQuestion = ( e, target ) => {
+	const elQuestionTitleInput = target.closest( `${ className.elQuestionTitleInput }` );
+	if ( ! elQuestionTitleInput ) {
+		return;
+	}
+
+	const elQuestionItem = elQuestionTitleInput.closest( `${ className.elQuestionItem }` );
+	const titleValue = elQuestionTitleInput.value.trim();
+	const titleValueOld = elQuestionTitleInput.dataset.old || '';
+
+	if ( titleValue === titleValueOld ) {
+		elQuestionItem.classList.remove( 'editing' );
+	} else {
+		elQuestionItem.classList.add( 'editing' );
+	}
+};
+
+// Cancel updating section description
+const cancelChangeTitleQuestion = ( e, target ) => {
+	const elBtnCancelUpdateQuestionTitle = target.closest( `${ className.elBtnCancelUpdateQuestionTitle }` );
+	if ( ! elBtnCancelUpdateQuestionTitle ) {
+		return;
+	}
+
+	const elQuestionItem = elBtnCancelUpdateQuestionTitle.closest( `${ className.elQuestionItem }` );
+	const elQuestionTitleInput = elQuestionItem.querySelector( `${ className.elQuestionTitleInput }` );
+	elQuestionTitleInput.value = elQuestionTitleInput.dataset.old || ''; // Reset to old value
+	elQuestionItem.classList.remove( 'editing' ); // Remove editing class
 };
 
 let timeoutAutoUpdate;
@@ -1544,6 +1576,7 @@ document.addEventListener( 'click', ( e ) => {
 
 	addQuestionAnswer( e, target );
 	deleteQuestionAnswer( e, target );
+	cancelChangeTitleQuestion( e, target );
 } );
 // Event keydown
 document.addEventListener( 'keydown', ( e ) => {
@@ -1566,6 +1599,7 @@ document.addEventListener( 'keyup', ( e ) => {
 
 	FibOptionTitleInputChange( e, target );
 	autoUpdateQuestion( e, target );
+	changeTitleQuestion( e, target );
 } );
 // Event focus in
 document.addEventListener( 'focusin', ( e ) => {

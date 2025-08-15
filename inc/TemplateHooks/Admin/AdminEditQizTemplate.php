@@ -226,6 +226,14 @@ class AdminEditQizTemplate {
 			),
 			'loading'    => '<span class="lp-icon-spinner"></span>',
 			'title'      => AdminEditQuestionTemplate::instance()->html_input_question_title( $question_title ),
+			'btn-update' => sprintf(
+				'<button type="button" class="lp-btn-update-question-title button">%s</button>',
+				__( 'Update' )
+			),
+			'btn-cancel' => sprintf(
+				'<button type="button" class="lp-btn-cancel-update-question-title button">%s</button>',
+				__( 'Cancel' )
+			),
 			'type'       => sprintf(
 				'<span class="lp-question-type-label">%s</span>',
 				$questionPostModel instanceof QuestionPostModel ? $questionPostModel->get_type_label() : ''
@@ -240,14 +248,6 @@ class AdminEditQizTemplate {
 				__( 'Remove question', 'learnpress' ),
 				__( 'Are you sure?', 'learnpress' ),
 				__( 'This question will be deleted. The question will no longer be assigned to this quiz, but will not be permanently deleted.', 'learnpress' ),
-			),
-			'btn-update' => sprintf(
-				'<button type="button" class="lp-btn-update-question-title button">%s</button>',
-				__( 'Update' )
-			),
-			'btn-cancel' => sprintf(
-				'<button type="button" class="lp-btn-cancel-update-question-title button">%s</button>',
-				__( 'Cancel' )
 			),
 			'toggle'     => '<div class="lp-question-toggle"><span class="lp-icon-angle-down"></span><span class="lp-icon-angle-up"></span></div>',
 			'head_end'   => '</div>',
