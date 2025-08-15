@@ -667,12 +667,13 @@ class SingleCourseTemplate {
 	 *
 	 * @param CourseModel $course
 	 * @param UserModel|false $userModel
+	 * @param array $data
 	 *
 	 * @return string
 	 * @since 4.2.7
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
-	public function html_feature_review( CourseModel $course, $userModel = false ): string {
+	public function html_feature_review( CourseModel $course, $userModel = false, array $data = [] ): string {
 		$feature_review = $course->get_meta_value_by_key( CoursePostModel::META_KEY_FEATURED_REVIEW, '' );
 		if ( empty( $feature_review ) ) {
 			return '';
@@ -691,7 +692,10 @@ class SingleCourseTemplate {
 		}
 
 		$section = [
-			'wrapper'     => '<div class="course-featured-review">',
+			'wrapper'     => sprintf(
+				'<div class="course-featured-review %s">',
+				esc_attr( $data['lp_display_on'] ?? '' )
+			),
 			'title'       => sprintf(
 				'<div class="featured-review__title">%s</div>',
 				esc_html__( 'Featured Review', 'learnpress' )
@@ -913,23 +917,35 @@ class SingleCourseTemplate {
 	 * Sidebar
 	 *
 	 * @param CourseModel $courseModel
+	 * @param array $data
 	 *
 	 * @return void
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 * @since 4.2.7
 	 */
-	public function html_sidebar( CourseModel $courseModel ): string {
+	public function html_sidebar( CourseModel $courseModel, array $data = [] ): string {
 		$html = '';
 
 		try {
 			if ( is_active_sidebar( 'course-sidebar' ) ) {
-				$html_wrapper = [
-					'<div class="lp-single-course-sidebar">' => '</div>',
-				];
-
 				ob_start();
 				dynamic_sidebar( 'course-sidebar' );
-				$html = Template::instance()->nest_elements( $html_wrapper, ob_get_clean() );
+				$sidebar_content = ob_get_clean();
+
+				$section = apply_filters(
+					'learn-press/course/html-sidebar',
+					[
+						'wrapper'     => sprintf(
+							'<div class="lp-single-course-sidebar %s">',
+							esc_attr( $data['lp_display_on'] ?? '' )
+						),
+						'content'     => $sidebar_content,
+						'wrapper_end' => '</div>',
+					],
+					$courseModel
+				);
+
+				$html = Template::combine_components( $section );
 			}
 		} catch ( Throwable $e ) {
 			error_log( $e->getMessage() );
