@@ -322,7 +322,7 @@ class AdminEditCurriculumTemplate {
 			),
 			'button'   => sprintf(
 				'<button type="button" class="lp-btn-add-section button">%s</button>',
-				__( 'Add Sections', 'learnpress' )
+				__( 'Add Section', 'learnpress' )
 			),
 			'wrap_end' => '</div>',
 		];
@@ -432,7 +432,7 @@ class AdminEditCurriculumTemplate {
 			'buttons'          => $html_buttons,
 			'btn-select-items' => sprintf(
 				'<button type="button" class="button lp-btn-show-popup-items-to-select">%s</button>',
-				__( 'Select items', 'learnpress' )
+				__( 'Content Bank', 'learnpress' )
 			),
 			'add-item-type'    => $this->html_add_item_type(),
 			'wrap_end'         => '</div>',

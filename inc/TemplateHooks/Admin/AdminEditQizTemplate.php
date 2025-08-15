@@ -308,7 +308,7 @@ class AdminEditQizTemplate {
 			),
 			'btn-select-items' => sprintf(
 				'<button type="button" class="button lp-btn-show-popup-items-to-select">%s</button>',
-				__( 'Questions bank', 'learnpress' )
+				__( 'Question Bank', 'learnpress' )
 			),
 			'wrap_end'         => '</div>',
 		];

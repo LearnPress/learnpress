@@ -502,7 +502,7 @@ class AdminEditQuestionTemplate {
 				<button type="button" class="button lp-btn-add-question-answer">%2$s</button>
 			</div>',
 			'lp-question-answer-title-input',
-			__( 'Add option', 'learnpress' )
+			__( 'Add Option', 'learnpress' )
 		);
 
 		$section = [
