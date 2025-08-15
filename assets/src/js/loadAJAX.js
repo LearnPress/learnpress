@@ -11,7 +11,7 @@ import {
 	listenElementCreated,
 	lpOnElementReady,
 	lpGetCurrentURLNoParam,
-	lpShowHideEl
+	lpShowHideEl,
 } from './utils.js';
 
 // Handle general parameter in the Frontend and Backend

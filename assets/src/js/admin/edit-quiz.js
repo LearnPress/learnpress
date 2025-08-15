@@ -9,7 +9,7 @@ import SweetAlert from 'sweetalert2-neutral';
 import Sortable from 'sortablejs';
 import Toastify from 'toastify-js';
 import 'toastify-js/src/toastify.css';
-import * as sectionEdit from './edit-curriculum/edit-section';
+import * as lpPopupSelectItemToAdd from '../lpPopupSelectItemToAdd.js';
 
 let elEditQuizWrap;
 let elEditListQuestions;
@@ -186,7 +186,7 @@ const checkAllQuestionsCollapsed = () => {
 };
 
 let elPopupSelectItems;
-const itemsSelectedData = [];
+let itemsSelectedData = [];
 // Show popup items to select
 const showPopupItemsToSelect = ( e, target ) => {
 	const elBtnShowPopupItemsToSelect = target.closest(
@@ -239,7 +239,7 @@ const showPopupItemsToSelect = ( e, target ) => {
 				completed: () => {
 					window.lpAJAXG.showHideLoading( elLPTarget, 0 );
 					// Show button add if there are items selected
-					//watchItemsSelectedDataChange();
+					lpPopupSelectItemToAdd.watchItemsSelectedDataChange( elPopupSelectItems );
 				},
 			} );
 		},
@@ -1561,7 +1561,7 @@ document.addEventListener( 'click', ( e ) => {
 	toggleQuestionAll( e, target );
 	toggleQuestion( e, target );
 	toggleSection( e, target );
-	showPopupItemsToSelect( e, target );
+	//showPopupItemsToSelect( e, target );
 	addQuestion( e, target );
 	removeQuestion( e, target );
 	updateQuestionTitle( e, target );
@@ -1577,6 +1577,43 @@ document.addEventListener( 'click', ( e ) => {
 	addQuestionAnswer( e, target );
 	deleteQuestionAnswer( e, target );
 	cancelChangeTitleQuestion( e, target );
+
+	const callBackPopupSelectItems = {
+		willOpen: () => {
+			// Trigger tab lesson to be active and call AJAX load items
+			const elLPTarget = elPopupSelectItems.querySelector(
+				`${ className.LPTarget }`
+			);
+
+			const dataSend = window.lpAJAXG.getDataSetCurrent( elLPTarget );
+			dataSend.args.paged = 1;
+			dataSend.args.item_selecting = itemsSelectedData || [];
+			window.lpAJAXG.setDataSetCurrent( elLPTarget, dataSend );
+
+			// Show loading
+			window.lpAJAXG.showHideLoading( elLPTarget, 1 );
+			// End
+
+			window.lpAJAXG.fetchAJAX( dataSend, {
+				success: ( response ) => {
+					const { data } = response;
+					elLPTarget.innerHTML = data.content || '';
+				},
+				error: ( error ) => {
+					showToast( error, 'error' );
+				},
+				completed: () => {
+					window.lpAJAXG.showHideLoading( elLPTarget, 0 );
+					// Show button add if there are items selected
+					lpPopupSelectItemToAdd.watchItemsSelectedDataChange( elPopupSelectItems );
+				},
+			} );
+		},
+	};
+	lpPopupSelectItemToAdd.showPopupItemsToSelect( e, target, elPopupSelectItems, callBackPopupSelectItems );
+	lpPopupSelectItemToAdd.selectItemsFromList( e, target, elPopupSelectItems, ( itemSelected ) => {
+		itemsSelectedData = itemSelected;
+	} );
 } );
 // Event keydown
 document.addEventListener( 'keydown', ( e ) => {
@@ -1623,6 +1660,12 @@ lpUtils.lpOnElementReady(
 		const elLPTarget = elEditQuizWrap.closest( `${ className.LPTarget }` );
 		const dataSend = window.lpAJAXG.getDataSetCurrent( elLPTarget );
 		quizID = dataSend.args.quiz_id;
+
+		const elPopupItemsToSelectClone = elEditQuizWrap.querySelector(
+			`${ className.elPopupItemsToSelectClone }`
+		);
+		elPopupSelectItems = elPopupItemsToSelectClone.cloneNode( true );
+		elPopupSelectItems.classList.remove( 'clone', 'lp-hidden' );
 
 		initTinyMCE();
 		sortAbleQuestion();
