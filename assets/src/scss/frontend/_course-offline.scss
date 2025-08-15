@@ -205,7 +205,8 @@
 		}
 	}
 
-	.info-metas {
+	.info-metas,
+	.course-featured-review {
 		@media (min-width: 992px) {
 			&.lp-is-mobile {
 				display: none;
