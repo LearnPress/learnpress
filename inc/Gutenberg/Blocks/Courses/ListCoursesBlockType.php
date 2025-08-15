@@ -114,13 +114,9 @@ class ListCoursesBlockType extends AbstractBlockType {
 		$content          = new stdClass();
 		$content->content = '';
 
-		$parsed_block = $settings['parsed_block'] ?? '';
-		$attributes   = $settings['attributes'] ?? [];
-		$courseQuery  = $attributes['courseQuery'] ?? [];
-		if ( empty( $courseQuery ) ) {
-			return $content;
-		}
-
+		$parsed_block         = $settings['parsed_block'] ?? '';
+		$attributes           = $settings['attributes'] ?? [];
+		$courseQuery          = $attributes['courseQuery'] ?? [];
 		$total_rows           = 0;
 		$filter               = new LP_Course_Filter();
 		$settings['order_by'] = $settings['order_by'] ?? $courseQuery['order_by'] ?? 'post_date';
