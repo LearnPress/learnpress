@@ -27,6 +27,8 @@ class ListCoursesBlockType extends AbstractBlockType {
 
 	public function __construct() {
 		add_filter( 'lp/rest/ajax/allow_callback', [ $this, 'allow_callback' ] );
+		add_filter( 'learn-press/block/list_courses/handle_agrs', [ $this, 'args_instructor' ], 10, 2 );
+
 		parent::__construct();
 	}
 
@@ -72,6 +74,7 @@ class ListCoursesBlockType extends AbstractBlockType {
 			$args                 = lp_archive_skeleton_get_args();
 			$args['attributes']   = $attributes;
 			$args['parsed_block'] = $block->parsed_block;
+			$args['post_id']      = get_the_ID();
 			$courseQuery          = $attributes['courseQuery'] ?? [];
 			$load_ajax            = $courseQuery['load_ajax'] ?? false;
 			$callback             = [
@@ -82,6 +85,7 @@ class ListCoursesBlockType extends AbstractBlockType {
 				'<div class="lp-list-courses-default">' => '</div>',
 			];
 
+			$args = apply_filters( 'learn-press/block/list_courses/handle_agrs', $args, $courseQuery );
 			if ( ! $load_ajax ) {
 				$content_obj                     = ListCoursesBlockType::render_courses( $args );
 				$args['html_no_load_ajax_first'] = sprintf( '<div class="lp-list-courses-default">%s</div>', $content_obj->content );
@@ -123,11 +127,11 @@ class ListCoursesBlockType extends AbstractBlockType {
 		$settings['limit']    = $courseQuery['limit'] ?? 10;
 		Courses::handle_params_for_query_courses( $filter, $settings );
 
-		self::get_courses_of_instructor( $filter );
+		$filter = apply_filters( 'learn-press/block/list_courses/handle_filter', $filter, $settings );
 
 		if ( isset( $courseQuery['related'] ) && $courseQuery['related'] ) {
 			$courseQuery['pagination'] = false;
-			self::get_courses_related( $filter );
+			self::get_courses_related( $filter, $settings );
 		}
 
 		$courses = Courses::get_courses( $filter, $total_rows );
@@ -181,25 +185,26 @@ class ListCoursesBlockType extends AbstractBlockType {
 	}
 
 	/**
-	 * Detect instructor by page and get courses of instructor.
+	 * Modify course query parameters for the single instructor page.
 	 *
-	 * @param LP_Course_Filter $filter
+	 * @param array $param
 	 *
 	 * @since 4.2.8.4
-	 * @return void
+	 * @return array
 	 */
-	public static function get_courses_of_instructor( LP_Course_Filter &$filter ) {
+	public function args_instructor( array $param, $setting ) {
 		if ( ! LP_Page_Controller::is_page_instructor() ) {
-			return;
+			return $param;
 		}
 
 		$instructor = SingleInstructorTemplate::instance()->detect_instructor_by_page();
 		if ( ! $instructor || ! $instructor->is_instructor() ) {
-			return;
+			return $param;
 		}
 
-		$author_id           = $instructor->get_id();
-		$filter->post_author = $author_id;
+		$author_id         = $instructor->get_id();
+		$param['c_author'] = $author_id;
+		return $param;
 	}
 
 	/**
@@ -210,8 +215,11 @@ class ListCoursesBlockType extends AbstractBlockType {
 	 * @since 4.2.8.4
 	 * @return void
 	 */
-	public static function get_courses_related( LP_Course_Filter &$filter ) {
-		$courseModelCurrent = CourseModel::find( get_the_ID(), true );
+	public static function get_courses_related( LP_Course_Filter &$filter, $setting ) {
+		if ( empty( $setting['post_id'] ) ) {
+			return;
+		}
+		$courseModelCurrent = CourseModel::find( $setting['post_id'], true );
 		if ( empty( $courseModelCurrent ) ) {
 			return;
 		}
