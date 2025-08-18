@@ -623,7 +623,7 @@ const cancelChangeTitleQuestion = ( e, target ) => {
 };
 
 let timeoutAutoUpdate;
-const autoUpdateQuestion = ( e, target, key, value, callback ) => {
+const autoUpdateQuestion = ( e, target, key, value ) => {
 	const elAutoSave = target.closest( `${ className.elAutoSave }` );
 	if 	( ! elAutoSave ) {
 		return;
@@ -681,14 +681,14 @@ const autoUpdateQuestion = ( e, target, key, value, callback ) => {
 			value = elAutoSave.value;
 		}
 
-		console.log( key );
+		//console.log( key );
 
 		dataSend[ key ] = value;
 
 		window.lpAJAXG.fetchAJAX( dataSend, callBack );
 	}, 700 );
 
-	console.log( 'Auto update question triggered' );
+	//console.log( 'Auto update question triggered' );
 };
 
 const addQuestionAnswer = ( e, target ) => {
@@ -976,6 +976,26 @@ const updateAnswersConfig = ( e, target ) => {
 	window.lpAJAXG.fetchAJAX( dataSend, callBack );
 };
 // End for answers config
+
+// Auto update question answer
+let timeoutAutoUpdateAnswer;
+const autoUpdateAnswer = ( e, target ) => {
+	const elAutoSave = target.closest( `${ className.elQuestionAnswerTitleInput }` );
+	if ( ! elAutoSave ) {
+		return;
+	}
+
+	const elQuestionDataEdit = elAutoSave.closest( '.lp-question-data-edit' );
+	const elBtnUpdateQuestionAnswer = elQuestionDataEdit.querySelector( `${ className.elBtnUpdateQuestionAnswer }` );
+	if ( ! elBtnUpdateQuestionAnswer ) {
+		return;
+	}
+
+	clearTimeout( timeoutAutoUpdateAnswer );
+	timeoutAutoUpdateAnswer = setTimeout( () => {
+		elBtnUpdateQuestionAnswer.click(); // Trigger update answers config
+	}, 700 );
+};
 
 // Sortable questions
 const sortAbleQuestion = () => {
@@ -1658,6 +1678,7 @@ document.addEventListener( 'keyup', ( e ) => {
 	autoUpdateQuestion( e, target );
 	changeTitleQuestion( e, target );
 	checkCanAddQuestion( e, target );
+	autoUpdateAnswer( e, target );
 	lpPopupSelectItemToAdd.searchTitleItemToSelect( e, target, elPopupSelectItems );
 } );
 // Event focus in
