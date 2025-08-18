@@ -186,67 +186,6 @@ const checkAllQuestionsCollapsed = () => {
 };
 
 let elPopupSelectItems;
-let itemsSelectedData = [];
-// Show popup items to select
-const showPopupItemsToSelect = ( e, target ) => {
-	const elBtnShowPopupItemsToSelect = target.closest(
-		`${ className.elBtnShowPopupItemsToSelect }`
-	);
-	if ( ! elBtnShowPopupItemsToSelect ) {
-		return;
-	}
-
-	const elPopupItemsToSelectClone = elEditQuizWrap.querySelector(
-		`${ className.elPopupItemsToSelectClone }`
-	);
-	elPopupSelectItems = elPopupItemsToSelectClone.cloneNode( true );
-	elPopupSelectItems.classList.remove( 'clone' );
-	lpUtils.lpShowHideEl( elPopupSelectItems, 1 );
-
-	SweetAlert.fire( {
-		html: elPopupSelectItems,
-		showConfirmButton: false,
-		showCloseButton: true,
-		width: '60%',
-		customClass: {
-			popup: 'lp-select-items-popup',
-			htmlContainer: 'lp-select-items-html-container',
-			container: 'lp-select-items-container',
-		},
-		willOpen: () => {
-			// Trigger tab lesson to be active and call AJAX load items
-			const elLPTarget = elPopupSelectItems.querySelector(
-				`${ className.LPTarget }`
-			);
-
-			const dataSend = window.lpAJAXG.getDataSetCurrent( elLPTarget );
-			dataSend.args.paged = 1;
-			dataSend.args.item_selecting = itemsSelectedData || [];
-			window.lpAJAXG.setDataSetCurrent( elLPTarget, dataSend );
-
-			// Show loading
-			window.lpAJAXG.showHideLoading( elLPTarget, 1 );
-			// End
-
-			window.lpAJAXG.fetchAJAX( dataSend, {
-				success: ( response ) => {
-					const { data } = response;
-					elLPTarget.innerHTML = data.content || '';
-				},
-				error: ( error ) => {
-					showToast( error, 'error' );
-				},
-				completed: () => {
-					window.lpAJAXG.showHideLoading( elLPTarget, 0 );
-					// Show button add if there are items selected
-					lpPopupSelectItemToAdd.watchItemsSelectedDataChange( elPopupSelectItems );
-				},
-			} );
-		},
-	} ).then( ( result ) => {
-		//if ( result.isDismissed ) {}
-	} );
-};
 
 // Update count items in each section and all sections
 const updateCountItems = ( elSection ) => {
@@ -1580,7 +1519,7 @@ document.addEventListener( 'click', ( e ) => {
 
 	// Events for Popup Select Items to add
 	const callBackPopupSelectItems = {
-		willOpen: () => {
+		willOpen: ( itemsSelectedData ) => {
 			// Trigger tab lesson to be active and call AJAX load items
 			const elLPTarget = elPopupSelectItems.querySelector(
 				`${ className.LPTarget }`
@@ -1612,9 +1551,7 @@ document.addEventListener( 'click', ( e ) => {
 		},
 	};
 	lpPopupSelectItemToAdd.showPopupItemsToSelect( e, target, elPopupSelectItems, callBackPopupSelectItems );
-	lpPopupSelectItemToAdd.selectItemsFromList( e, target, elPopupSelectItems, ( itemSelected ) => {
-		itemsSelectedData = itemSelected;
-	} );
+	lpPopupSelectItemToAdd.selectItemsFromList( e, target, elPopupSelectItems );
 	lpPopupSelectItemToAdd.addItemsSelectedToSection( e, target, elPopupSelectItems, ( itemsSelected ) => {
 		//console.log( 'Items selected to add:', itemsSelected );
 		const questionIds = [];
@@ -1624,13 +1561,13 @@ document.addEventListener( 'click', ( e ) => {
 				return;
 			}
 
-			questionIds.push( item.item_id );
+			questionIds.push( item.id );
 			const elQuestionItemNew = elQuestionItemClone.cloneNode( true );
 			const elQuestionItemTitleInput = elQuestionItemNew.querySelector( `${ className.elQuestionTitleInput }` );
 			const elQuestionTypeLabel = elQuestionItemNew.querySelector( `${ className.elQuestionTypeLabel }` );
 			elQuestionItemNew.classList.remove( 'clone' );
-			elQuestionItemNew.dataset.questionId = item.item_id;
-			elQuestionItemTitleInput.value = item.item_title;
+			elQuestionItemNew.dataset.questionId = item.id;
+			elQuestionItemTitleInput.value = item.titleSelected;
 
 			lpUtils.lpSetLoadingEl( elQuestionItemNew, 1 );
 			lpUtils.lpShowHideEl( elQuestionItemNew, 1 );
@@ -1663,7 +1600,6 @@ document.addEventListener( 'click', ( e ) => {
 			},
 			completed: () => {
 				// Reset items selected data
-				itemsSelectedData = [];
 				itemsSelected = [];
 			},
 		};

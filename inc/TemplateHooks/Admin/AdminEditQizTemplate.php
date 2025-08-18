@@ -400,12 +400,11 @@ class AdminEditQizTemplate {
 		} else {
 			if ( ! empty( $item_selecting ) ) {
 				foreach ( $item_selecting as $item ) {
-					if ( ! isset( $item['item_id'] ) || ! isset( $item['item_type'] ) ) {
+					if ( ! isset( $item['id'] ) || ! isset( $item['type'] ) ) {
 						continue;
 					}
 
-					$item_selecting_compare->{$item['item_id']}            = new stdClass();
-					$item_selecting_compare->{$item['item_id']}->item_type = $item['item_type'];
+					$item_selecting_compare->{$item['id']} = new stdClass();
 				}
 			}
 
@@ -419,27 +418,35 @@ class AdminEditQizTemplate {
 				}
 
 				$checked = '';
-
 				if ( isset( $item_selecting_compare->{$post->ID} ) ) {
 					$checked = ' checked="checked"';
 				}
 
+				$title_display = sprintf(
+					'<span class="title">%s<strong>(#%d - %s)</strong></span>',
+					$post->post_title,
+					$post->ID,
+					$questionPostModel->get_type_label()
+				);
+
 				$html_lis .= sprintf(
 					'<li class="lp-select-item">%s%s</li>',
 					sprintf(
-						'<input name="lp-select-item" value="%d" data-type="%s" data-title="%s" %s data-edit-link="%s" type="checkbox" />',
+						'<input name="lp-select-item"
+							data-id="%d" data-type-label="%s"
+							data-type="%s"
+							data-title="%s" %s data-edit-link="%s"
+							data-title-selected="%s"
+							type="checkbox" />',
 						esc_attr( $post->ID ?? 0 ),
-						esc_attr( $post->post_type ?? '' ),
-						esc_attr( $post->post_title ?? '' ),
+						esc_attr( $questionPostModel->get_type_label() ?? '' ),
+						esc_attr( $questionPostModel->get_type() ?? '' ),
+						esc_attr( $title_display ), // For JS display on list selected.
 						esc_attr( $checked ),
-						$questionPostModel->get_edit_link()
+						$questionPostModel->get_edit_link(),
+						esc_attr( $questionPostModel->get_the_title() ?? '' )
 					),
-					sprintf(
-						'<span class="title">%s<strong>(#%d - %s)</strong></span>',
-						$post->post_title,
-						$post->ID,
-						$questionPostModel->get_type_label()
-					)
+					$title_display
 				);
 			}
 		}

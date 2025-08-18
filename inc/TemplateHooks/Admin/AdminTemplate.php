@@ -91,10 +91,7 @@ class AdminTemplate {
 				<ul class="list-items-selected lp-hidden">
 					<li class="li-item-selected clone lp-hidden" data-id="" data-type="">
 						<i class="dashicons dashicons-remove"></i>
-						<div>
-							<span class="item-title">item_title</span>
-							(#<span class="item-id">item_id</span> - <span class="item-type">item_type</span>)
-						</div>
+						<div class="title-display"></div>
 					</li>
 				</ul>',
 			'wrap_end'            => '</div>',

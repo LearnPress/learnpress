@@ -62,7 +62,7 @@ const showPopupItemsToSelect = ( e, target, elMain, callBack ) => {
 		},
 		willOpen: () => {
 			if ( callBack && typeof callBack.willOpen === 'function' ) {
-				callBack.willOpen();
+				callBack.willOpen( itemsSelectedData );
 			}
 		},
 	} ).then( ( result ) => {
@@ -122,29 +122,24 @@ const selectItemsFromList = ( e, target, elPopupSelectItems, callBack ) => {
 		return;
 	}
 
-	const itemSelected = {
-		item_id: elInput.value,
-		item_type: elInput.dataset.type || '',
-		item_title: elInput.dataset.title || '',
-		item_edit_link: elInput.dataset.editLink || '',
-	};
+	const itemSelected = { ...elInput.dataset };
+	//console.log( 'itemSelected', itemSelected );
+
 	if ( elInput.checked ) {
-		const exists = itemsSelectedData.some( ( item ) => item.item_id === itemSelected.item_id );
+		const exists = itemsSelectedData.some( ( item ) => item.id === itemSelected.id );
 		if ( ! exists ) {
 			itemsSelectedData.push( itemSelected );
 		}
 	} else {
-		const index = itemsSelectedData.findIndex( ( item ) => item.item_id === itemSelected.item_id );
+		const index = itemsSelectedData.findIndex( ( item ) => item.id === itemSelected.id );
 		if ( index !== -1 ) {
 			itemsSelectedData.splice( index, 1 );
 		}
 	}
 
-	watchItemsSelectedDataChange( elPopupSelectItems );
+	//console.log( 'itemsSelectedData', itemsSelectedData );
 
-	if ( typeof callBack === 'function' ) {
-		callBack( itemSelected );
-	}
+	watchItemsSelectedDataChange( elPopupSelectItems );
 };
 
 // Search title item
@@ -163,6 +158,7 @@ const searchTitleItemToSelect = ( e, target, elPopupItemsToSelect ) => {
 		const dataSet = window.lpAJAXG.getDataSetCurrent( elLPTarget );
 		dataSet.args.search_title = elInputSearch.value.trim();
 		dataSet.args.item_selecting = itemsSelectedData;
+		dataSet.args.paged = 1;
 		window.lpAJAXG.setDataSetCurrent( elLPTarget, dataSet );
 
 		// Show loading
@@ -211,12 +207,11 @@ const showItemsSelected = ( e, target, elPopupItemsToSelect ) => {
 	itemsSelectedData.forEach( ( item ) => {
 		const elItemSelected = elItemClone.cloneNode( true );
 		elItemSelected.classList.remove( 'clone' );
-		elItemSelected.dataset.id = item.item_id;
-		elItemSelected.dataset.type = item.item_type || '';
-
-		elItemSelected.querySelector( '.item-title' ).textContent = item.item_title || '';
-		elItemSelected.querySelector( '.item-id' ).textContent = item.item_id || '';
-		elItemSelected.querySelector( '.item-type' ).textContent = item.item_type || '';
+		Object.entries( item ).forEach( ( [ key, value ] ) => {
+			elItemSelected.dataset[ key ] = value;
+		} );
+		const elTitleDisplay = elItemSelected.querySelector( '.title-display' );
+		elTitleDisplay.innerHTML = item.title;
 
 		lpUtils.lpShowHideEl( elItemSelected, 1 );
 
@@ -251,11 +246,8 @@ const removeItemSelected = ( e, target, elPopupSelectItems ) => {
 		return;
 	}
 
-	const itemRemove = {
-		item_id: elRemoveItemSelected.dataset.id,
-		item_type: elRemoveItemSelected.dataset.type,
-	};
-	const index = itemsSelectedData.findIndex( ( item ) => item.item_id === itemRemove.item_id );
+	const itemRemove = elRemoveItemSelected.dataset;
+	const index = itemsSelectedData.findIndex( ( item ) => item.id === itemRemove.id );
 	if ( index !== -1 ) {
 		itemsSelectedData.splice( index, 1 );
 	}
@@ -286,18 +278,16 @@ const watchItemsSelectedDataChange = ( elPopupSelectItems ) => {
 		elHeaderCount.textContent = '';
 	}
 
+	// Update list input checked, when items removed, or change tab type
 	const elListItems = elPopupSelectItems.querySelector( `${ className.elListItems }` );
 	const elInputs = elListItems.querySelectorAll( 'input[type="checkbox"]' );
 	elInputs.forEach( ( elInputItem ) => {
-		const itemSelected = {
-			item_id: elInputItem.value,
-			item_type: elInputItem.dataset.type || '',
-			item_title: elInputItem.dataset.title || '',
-		};
-		const exists = itemsSelectedData.some( ( item ) => item.item_id === itemSelected.item_id );
+		const itemSelected = elInputItem.dataset;
+		const exists = itemsSelectedData.some( ( item ) => item.id === itemSelected.id );
 		elInputItem.checked = exists;
 	} );
 
+	// Set item selecting data to dataset for query.
 	const dataSet = window.lpAJAXG.getDataSetCurrent( elTarget );
 	dataSet.args.item_selecting = itemsSelectedData;
 	window.lpAJAXG.setDataSetCurrent( elTarget, dataSet );
