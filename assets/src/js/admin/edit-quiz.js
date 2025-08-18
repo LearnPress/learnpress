@@ -189,29 +189,14 @@ let elPopupSelectItems;
 
 // Update count items in each section and all sections
 const updateCountItems = ( elSection ) => {
-	const elEditCurriculum = lpEditCurriculumShare.elEditCurriculum;
-	const elCountItemsAll = elEditCurriculum.querySelector( '.total-items' );
-	const elItemsAll = elEditCurriculum.querySelectorAll(
-		`${ className.elSectionItem }:not(.clone)`
+	const elCountItemsAll = elEditQuizWrap.querySelector( '.total-items' );
+	const elItemsAll = elEditQuizWrap.querySelectorAll(
+		`${ className.elQuestionItem }:not(.clone)`
 	);
 	const itemsAllCount = elItemsAll.length;
 
 	elCountItemsAll.dataset.count = itemsAllCount;
 	elCountItemsAll.querySelector( '.count' ).textContent = itemsAllCount;
-
-	// Count items in section
-	const elSectionItemsCount = elSection.querySelector(
-		'.section-items-counts'
-	);
-
-	const elItems = elSection.querySelectorAll(
-		`${ className.elSectionItem }:not(.clone)`
-	);
-	const itemsCount = elItems.length;
-
-	elSectionItemsCount.dataset.count = itemsCount;
-	elSectionItemsCount.querySelector( '.count' ).textContent = itemsCount;
-	// End count items in section
 };
 
 // Get section by id
@@ -402,7 +387,7 @@ const addQuestion = ( e, target ) => {
 					`${ className.elQuestionItem }[data-question-id="${ question.ID }"]`
 				);
 				elQuestionItemCreated.classList.remove( className.elCollapse );
-
+				updateCountItems();
 				initTinyMCE();
 			}
 
@@ -429,6 +414,38 @@ const addQuestion = ( e, target ) => {
 	window.lpAJAXG.fetchAJAX( dataSend, callBack );
 };
 
+// Check to enable or disable add new question button
+const checkCanAddQuestion = ( e, target ) => {
+	const elTrigger = target.closest( className.elQuestionTitleNewInput ) ||
+		target.closest( className.elQuestionTypeNew );
+	if ( ! elTrigger ) {
+		return;
+	}
+
+	const elAddNewQuestion = elTrigger.closest( `.${ className.elAddNewQuestion }` );
+	if ( ! elAddNewQuestion ) {
+		return;
+	}
+
+	const elBtnAddQuestion = elAddNewQuestion.querySelector( `${ className.elBtnAddQuestion }` );
+	if ( ! elBtnAddQuestion ) {
+		return;
+	}
+
+	const elQuestionTitleInput = elAddNewQuestion.querySelector( `${ className.elQuestionTitleNewInput }` );
+	const elQuestionTypeNew = elAddNewQuestion.querySelector( `${ className.elQuestionTypeNew }` );
+
+	const questionTitle = elQuestionTitleInput.value.trim();
+	const questionType = elQuestionTypeNew.value;
+
+	if ( questionTitle && questionType ) {
+		elBtnAddQuestion.classList.add( 'active' );
+	} else {
+		elBtnAddQuestion.classList.remove( 'active' );
+	}
+};
+
+// Remove question
 const removeQuestion = ( e, target ) => {
 	const elBtnRemoveQuestion = target.closest(
 		`${ className.elBtnRemoveQuestion }`
@@ -468,6 +485,7 @@ const removeQuestion = ( e, target ) => {
 
 					if ( status === 'success' ) {
 						elQuestionItem.remove();
+						updateCountItems();
 					}
 				},
 				error: ( error ) => {
@@ -1584,13 +1602,13 @@ document.addEventListener( 'click', ( e ) => {
 					showToast( message, status );
 
 					const { html_edit_question } = data;
-					//console.log( 'html_edit_question', html_edit_question );
 					if ( html_edit_question ) {
 						Object.entries( html_edit_question ).forEach( ( [ question_id, item_html ] ) => {
 							const elQuestionItemNew = elEditQuizWrap.querySelector( `${ className.elQuestionItem }[data-question-id="${ question_id }"]` );
 							elQuestionItemNew.outerHTML = item_html;
 						} );
 					}
+					updateCountItems();
 				} else {
 					throw `Error: ${ message }`;
 				}
@@ -1599,8 +1617,6 @@ document.addEventListener( 'click', ( e ) => {
 				showToast( error, 'error' );
 			},
 			completed: () => {
-				// Reset items selected data
-				itemsSelected = [];
 			},
 		};
 
@@ -1641,6 +1657,7 @@ document.addEventListener( 'keyup', ( e ) => {
 	FibOptionTitleInputChange( e, target );
 	autoUpdateQuestion( e, target );
 	changeTitleQuestion( e, target );
+	checkCanAddQuestion( e, target );
 	lpPopupSelectItemToAdd.searchTitleItemToSelect( e, target, elPopupSelectItems );
 } );
 // Event focus in
@@ -1652,6 +1669,7 @@ document.addEventListener( 'focusout', ( e ) => {} );
 document.addEventListener( 'change', ( e ) => {
 	const target = e.target;
 	autoUpdateQuestion( e, target );
+	checkCanAddQuestion( e, target );
 } );
 
 // Element root ready.

@@ -41,8 +41,6 @@ const argsToastify = {
 	duration: lpSettings.toast.duration,
 };
 
-let sectionIdSelected;
-let elPopupSelectItems;
 // Show popup items to select
 const showPopupItemsToSelect = ( e, target, elMain, callBack ) => {
 	const elBtnShowPopupItemsToSelect = target.closest( `${ className.elBtnShowPopupItemsToSelect }` );
@@ -62,7 +60,7 @@ const showPopupItemsToSelect = ( e, target, elMain, callBack ) => {
 		},
 		willOpen: () => {
 			if ( callBack && typeof callBack.willOpen === 'function' ) {
-				callBack.willOpen( itemsSelectedData );
+				callBack.willOpen( itemsSelectedData || [] );
 			}
 		},
 	} ).then( ( result ) => {

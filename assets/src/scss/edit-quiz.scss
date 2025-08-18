@@ -412,6 +412,17 @@ $spacing-section: 12px;
 		flex-direction: column;
 		gap: 20px;
 	}
+
+	.lp-btn-add-question {
+		border: none;
+		background: rgba(19, 94, 150, 0.5);
+		color: #fff;
+
+		&:hover, &.active {
+			background: rgba(19, 94, 150, 1) !important;
+			color: #fff !important;
+		}
+	}
 }
 
 .lp-select-items-popup {

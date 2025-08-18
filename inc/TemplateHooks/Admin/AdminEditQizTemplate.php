@@ -247,7 +247,7 @@ class AdminEditQizTemplate {
 				'<span class="lp-btn-remove-question lp-icon-trash-o" title="%s" data-title="%s" data-content="%s"></span>',
 				__( 'Remove question', 'learnpress' ),
 				__( 'Are you sure?', 'learnpress' ),
-				__( 'This question will be deleted. The question will no longer be assigned to this quiz, but will not be permanently deleted.', 'learnpress' ),
+				__( 'This question will be removed from this quiz. The question will no longer be assigned to this quiz, but will not be permanently deleted.', 'learnpress' )
 			),
 			'toggle'     => '<div class="lp-question-toggle"><span class="lp-icon-angle-down"></span><span class="lp-icon-angle-up"></span></div>',
 			'head_end'   => '</div>',
@@ -303,7 +303,8 @@ class AdminEditQizTemplate {
 			),
 			'types'            => $html_question_types,
 			'button'           => sprintf(
-				'<button type="button" class="lp-btn-add-question button">%s</button>',
+				'<button type="button" class="lp-btn-add-question button" title="%s">%s</button>',
+				esc_attr__( 'Enter title question and choice type', 'learnpress' ),
 				__( 'Add Question', 'learnpress' )
 			),
 			'btn-select-items' => sprintf(
