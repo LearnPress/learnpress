@@ -1680,6 +1680,7 @@ document.addEventListener( 'click', ( e ) => {
 	} );
 	lpPopupSelectItemToAdd.showItemsSelected( e, target, elPopupSelectItems );
 	lpPopupSelectItemToAdd.backToSelectItems( e, target, elPopupSelectItems );
+	lpPopupSelectItemToAdd.removeItemSelected( e, target, elPopupSelectItems );
 	// End events for Popup Select Items to add
 } );
 // Event keydown
@@ -1704,6 +1705,7 @@ document.addEventListener( 'keyup', ( e ) => {
 	FibOptionTitleInputChange( e, target );
 	autoUpdateQuestion( e, target );
 	changeTitleQuestion( e, target );
+	lpPopupSelectItemToAdd.searchTitleItemToSelect( e, target, elPopupSelectItems );
 } );
 // Event focus in
 document.addEventListener( 'focusin', ( e ) => {

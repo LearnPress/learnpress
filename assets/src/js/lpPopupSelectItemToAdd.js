@@ -149,14 +149,9 @@ const selectItemsFromList = ( e, target, elPopupSelectItems, callBack ) => {
 
 // Search title item
 let timeSearchTitleItem;
-const searchTitleItemToSelect = ( e, target ) => {
+const searchTitleItemToSelect = ( e, target, elPopupItemsToSelect ) => {
 	const elInputSearch = target.closest( '.lp-search-title-item' );
 	if ( ! elInputSearch ) {
-		return;
-	}
-
-	const elPopupItemsToSelect = elInputSearch.closest( `${ className.elPopupItemsToSelect }` );
-	if ( ! elPopupItemsToSelect ) {
 		return;
 	}
 
@@ -168,6 +163,7 @@ const searchTitleItemToSelect = ( e, target ) => {
 		const dataSet = window.lpAJAXG.getDataSetCurrent( elLPTarget );
 		dataSet.args.search_title = elInputSearch.value.trim();
 		dataSet.args.item_selecting = itemsSelectedData;
+		window.lpAJAXG.setDataSetCurrent( elLPTarget, dataSet );
 
 		// Show loading
 		window.lpAJAXG.showHideLoading( elLPTarget, 1 );
@@ -184,7 +180,7 @@ const searchTitleItemToSelect = ( e, target ) => {
 				window.lpAJAXG.showHideLoading( elLPTarget, 0 );
 			},
 		} );
-	}, 1000 );
+	}, 800 );
 };
 
 // Show list of items, to choose items to add to section
@@ -229,17 +225,17 @@ const showItemsSelected = ( e, target, elPopupItemsToSelect ) => {
 };
 
 // Back to list of items
-const backToSelectItems = ( e, target, elPopupItemsToSelect ) => {
+const backToSelectItems = ( e, target, elPopupSelectItems ) => {
 	const elBtnBack = target.closest( `${ className.elBtnBackListItems }` );
 	if ( ! elBtnBack ) {
 		return;
 	}
 
-	const elBtnCountItemsSelected = elPopupItemsToSelect.querySelector( `${ className.elBtnCountItemsSelected }` );
-	const elTabs = elPopupItemsToSelect.querySelector( '.tabs' );
-	const elListItemsWrap = elPopupItemsToSelect.querySelector( `${ className.elListItemsWrap }` );
-	const elHeaderCountItemSelected = elPopupItemsToSelect.querySelector( `${ className.elHeaderCountItemSelected }` );
-	const elListItemsSelected = elPopupItemsToSelect.querySelector( `${ className.elListItemsSelected }` );
+	const elBtnCountItemsSelected = elPopupSelectItems.querySelector( `${ className.elBtnCountItemsSelected }` );
+	const elTabs = elPopupSelectItems.querySelector( '.tabs' );
+	const elListItemsWrap = elPopupSelectItems.querySelector( `${ className.elListItemsWrap }` );
+	const elHeaderCountItemSelected = elPopupSelectItems.querySelector( `${ className.elHeaderCountItemSelected }` );
+	const elListItemsSelected = elPopupSelectItems.querySelector( `${ className.elListItemsSelected }` );
 	lpUtils.lpShowHideEl( elBtnCountItemsSelected, 1 );
 	lpUtils.lpShowHideEl( elListItemsWrap, 1 );
 	lpUtils.lpShowHideEl( elTabs, 1 );
@@ -249,7 +245,7 @@ const backToSelectItems = ( e, target, elPopupItemsToSelect ) => {
 };
 
 // Remove item selected from list items selected
-const removeItemSelected = ( e, target ) => {
+const removeItemSelected = ( e, target, elPopupSelectItems ) => {
 	const elRemoveItemSelected = target.closest( `${ className.elItemSelected }` );
 	if ( ! elRemoveItemSelected ) {
 		return;
@@ -266,7 +262,7 @@ const removeItemSelected = ( e, target ) => {
 
 	elRemoveItemSelected.remove();
 
-	watchItemsSelectedDataChange();
+	watchItemsSelectedDataChange( elPopupSelectItems );
 };
 
 // Watch items selected when data change
@@ -276,6 +272,8 @@ const watchItemsSelectedDataChange = ( elPopupSelectItems ) => {
 	const elBtnCountItemsSelected = elPopupSelectItems.querySelector( `${ className.elBtnCountItemsSelected }` );
 	const elSpanCount = elBtnCountItemsSelected.querySelector( 'span' );
 	const elHeaderCount = elPopupSelectItems.querySelector( `${ className.elHeaderCountItemSelected }` );
+	const elTarget = elPopupSelectItems.querySelector( `${ className.LPTarget }` );
+
 	if ( itemsSelectedData.length !== 0 ) {
 		elBtnCountItemsSelected.disabled = false;
 		elBtnAddItemsSelected.disabled = false;
@@ -300,7 +298,9 @@ const watchItemsSelectedDataChange = ( elPopupSelectItems ) => {
 		elInputItem.checked = exists;
 	} );
 
-
+	const dataSet = window.lpAJAXG.getDataSetCurrent( elTarget );
+	dataSet.args.item_selecting = itemsSelectedData;
+	window.lpAJAXG.setDataSetCurrent( elTarget, dataSet );
 };
 
 // Add items selected to section
