@@ -479,7 +479,7 @@ const addQuestion = ( e, target ) => {
 	};
 
 	const dataSend = {
-		action: 'add_question_to_quiz',
+		action: 'create_question_add_to_quiz',
 		quiz_id: quizID,
 		question_title: questionTitle,
 		question_type: questionType,
@@ -1578,6 +1578,7 @@ document.addEventListener( 'click', ( e ) => {
 	deleteQuestionAnswer( e, target );
 	cancelChangeTitleQuestion( e, target );
 
+	// Events for Popup Select Items to add
 	const callBackPopupSelectItems = {
 		willOpen: () => {
 			// Trigger tab lesson to be active and call AJAX load items
@@ -1614,6 +1615,72 @@ document.addEventListener( 'click', ( e ) => {
 	lpPopupSelectItemToAdd.selectItemsFromList( e, target, elPopupSelectItems, ( itemSelected ) => {
 		itemsSelectedData = itemSelected;
 	} );
+	lpPopupSelectItemToAdd.addItemsSelectedToSection( e, target, elPopupSelectItems, ( itemsSelected ) => {
+		//console.log( 'Items selected to add:', itemsSelected );
+		const questionIds = [];
+		itemsSelected.forEach( ( item ) => {
+			const elQuestionItemClone = elEditQuizWrap.querySelector( `${ className.elQuestionItem }.clone` );
+			if ( ! elQuestionItemClone ) {
+				return;
+			}
+
+			questionIds.push( item.item_id );
+			const elQuestionItemNew = elQuestionItemClone.cloneNode( true );
+			const elQuestionItemTitleInput = elQuestionItemNew.querySelector( `${ className.elQuestionTitleInput }` );
+			const elQuestionTypeLabel = elQuestionItemNew.querySelector( `${ className.elQuestionTypeLabel }` );
+			elQuestionItemNew.classList.remove( 'clone' );
+			elQuestionItemNew.dataset.questionId = item.item_id;
+			elQuestionItemTitleInput.value = item.item_title;
+
+			lpUtils.lpSetLoadingEl( elQuestionItemNew, 1 );
+			lpUtils.lpShowHideEl( elQuestionItemNew, 1 );
+			elQuestionItemClone.insertAdjacentElement( 'beforebegin', elQuestionItemNew );
+			lpUtils.lpSetLoadingEl( elQuestionItemNew, 1 );
+		} );
+
+		// Ajax to add items to quiz
+		const callBack = {
+			success: ( response ) => {
+				const { message, status, data } = response;
+
+				if ( status === 'success' ) {
+					showToast( message, status );
+
+					const { html_edit_question } = data;
+					//console.log( 'html_edit_question', html_edit_question );
+					if ( html_edit_question ) {
+						Object.entries( html_edit_question ).forEach( ( [ question_id, item_html ] ) => {
+							const elQuestionItemNew = elEditQuizWrap.querySelector( `${ className.elQuestionItem }[data-question-id="${ question_id }"]` );
+							elQuestionItemNew.outerHTML = item_html;
+						} );
+					}
+				} else {
+					throw `Error: ${ message }`;
+				}
+			},
+			error: ( error ) => {
+				showToast( error, 'error' );
+			},
+			completed: () => {
+				// Reset items selected data
+				itemsSelectedData = [];
+				itemsSelected = [];
+			},
+		};
+
+		const dataSend = {
+			quiz_id: quizID,
+			action: 'add_questions_to_quiz',
+			question_ids: questionIds,
+			args: {
+				id_url: idUrlHandle,
+			},
+		};
+		window.lpAJAXG.fetchAJAX( dataSend, callBack );
+	} );
+	lpPopupSelectItemToAdd.showItemsSelected( e, target, elPopupSelectItems );
+	lpPopupSelectItemToAdd.backToSelectItems( e, target, elPopupSelectItems );
+	// End events for Popup Select Items to add
 } );
 // Event keydown
 document.addEventListener( 'keydown', ( e ) => {

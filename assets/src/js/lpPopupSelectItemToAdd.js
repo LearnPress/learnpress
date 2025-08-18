@@ -23,6 +23,11 @@ const className = {
 	elSelectItem: '.lp-select-item',
 	elListItems: '.list-items',
 	elSearchTitleItem: '.lp-search-title-item',
+	elBtnBackListItems: '.lp-btn-back-to-select-items',
+	elListItemsWrap: '.list-items-wrap',
+	elListItemsSelected: '.list-items-selected',
+	elItemSelectedClone: '.li-item-selected.clone',
+	elItemSelected: '.li-item-selected',
 	LPTarget: '.lp-target',
 };
 
@@ -183,22 +188,17 @@ const searchTitleItemToSelect = ( e, target ) => {
 };
 
 // Show list of items, to choose items to add to section
-const showItemsSelected = ( e, target ) => {
+const showItemsSelected = ( e, target, elPopupItemsToSelect ) => {
 	const elBtnCountItemsSelected = target.closest( `${ className.elBtnCountItemsSelected }` );
 	if ( ! elBtnCountItemsSelected ) {
 		return;
 	}
 
-	const elParent = elBtnCountItemsSelected.closest( `${ className.elPopupItemsToSelect }` );
-	if ( ! elParent ) {
-		return;
-	}
-
-	const elBtnBack = elParent.querySelector( `${ className.elBtnBackListItems }` );
-	const elTabs = elParent.querySelector( '.tabs' );
-	const elListItemsWrap = elParent.querySelector( `${ className.elListItemsWrap }` );
-	const elHeaderItemsSelected = elParent.querySelector( `${ className.elHeaderCountItemSelected }` );
-	const elListItemsSelected = elParent.querySelector( `${ className.elListItemsSelected }` );
+	const elBtnBack = elPopupItemsToSelect.querySelector( `${ className.elBtnBackListItems }` );
+	const elTabs = elPopupItemsToSelect.querySelector( '.tabs' );
+	const elListItemsWrap = elPopupItemsToSelect.querySelector( `${ className.elListItemsWrap }` );
+	const elHeaderItemsSelected = elPopupItemsToSelect.querySelector( `${ className.elHeaderCountItemSelected }` );
+	const elListItemsSelected = elPopupItemsToSelect.querySelector( `${ className.elListItemsSelected }` );
 	const elItemClone = elListItemsSelected.querySelector( `${ className.elItemSelectedClone }` );
 	elHeaderItemsSelected.innerHTML = elBtnCountItemsSelected.innerHTML;
 
@@ -229,18 +229,17 @@ const showItemsSelected = ( e, target ) => {
 };
 
 // Back to list of items
-const backToSelectItems = ( e, target ) => {
+const backToSelectItems = ( e, target, elPopupItemsToSelect ) => {
 	const elBtnBack = target.closest( `${ className.elBtnBackListItems }` );
 	if ( ! elBtnBack ) {
 		return;
 	}
 
-	const elParent = elBtnBack.closest( `${ className.elPopupItemsToSelect }` );
-	const elBtnCountItemsSelected = elParent.querySelector( `${ className.elBtnCountItemsSelected }` );
-	const elTabs = elParent.querySelector( '.tabs' );
-	const elListItemsWrap = elParent.querySelector( `${ className.elListItemsWrap }` );
-	const elHeaderCountItemSelected = elParent.querySelector( `${ className.elHeaderCountItemSelected }` );
-	const elListItemsSelected = elParent.querySelector( `${ className.elListItemsSelected }` );
+	const elBtnCountItemsSelected = elPopupItemsToSelect.querySelector( `${ className.elBtnCountItemsSelected }` );
+	const elTabs = elPopupItemsToSelect.querySelector( '.tabs' );
+	const elListItemsWrap = elPopupItemsToSelect.querySelector( `${ className.elListItemsWrap }` );
+	const elHeaderCountItemSelected = elPopupItemsToSelect.querySelector( `${ className.elHeaderCountItemSelected }` );
+	const elListItemsSelected = elPopupItemsToSelect.querySelector( `${ className.elListItemsSelected }` );
 	lpUtils.lpShowHideEl( elBtnCountItemsSelected, 1 );
 	lpUtils.lpShowHideEl( elListItemsWrap, 1 );
 	lpUtils.lpShowHideEl( elTabs, 1 );
@@ -300,76 +299,27 @@ const watchItemsSelectedDataChange = ( elPopupSelectItems ) => {
 		const exists = itemsSelectedData.some( ( item ) => item.item_id === itemSelected.item_id );
 		elInputItem.checked = exists;
 	} );
+
+
 };
 
 // Add items selected to section
-const addItemsSelectedToSection = ( e, target ) => {
+const addItemsSelectedToSection = ( e, target, elPopupItemsToSelect, callBack ) => {
 	const elBtnAddItems = target.closest( `${ className.elBtnAddItemsSelected }` );
 	if ( ! elBtnAddItems ) {
 		return;
 	}
 
-	const elPopupItemsToSelect = elBtnAddItems.closest( `${ className.elPopupItemsToSelect }` );
 	if ( ! elPopupItemsToSelect ) {
 		return;
 	}
 
-	const elSection = document.querySelector( `.section[data-section-id="${ sectionIdSelected }"]` );
-	const elItemClone = elSection.querySelector( `${ className.elItemClone }` );
-
-	itemsSelectedData.forEach( ( item ) => {
-		const elItemNew = elItemClone.cloneNode( true );
-		const elInputTitleNew = elItemNew.querySelector( `${ className.elItemTitleInput }` );
-
-		elItemNew.dataset.itemId = item.item_id;
-		elItemNew.classList.add( item.item_type );
-		elItemNew.classList.remove( 'clone' );
-		elItemNew.dataset.itemType = item.item_type;
-		elItemNew.querySelector( '.edit-link' ).setAttribute( 'href', item.item_edit_link || '' );
-		elInputTitleNew.value = item.item_title || '';
-		lpUtils.lpSetLoadingEl( elItemNew, 1 );
-		lpUtils.lpShowHideEl( elItemNew, 1 );
-		elItemClone.insertAdjacentElement( 'beforebegin', elItemNew );
-	} );
-
 	SweetAlert.close();
 
-	const dataSend = {
-		course_id: courseId,
-		action: 'add_items_to_section',
-		section_id: sectionIdSelected,
-		items: itemsSelectedData,
-		args: {
-			id_url: idUrlHandle,
-		},
-	};
-	window.lpAJAXG.fetchAJAX( dataSend, {
-		success: ( response ) => {
-			const { message, status } = response;
-			showToast( message, status );
-
-			if ( status === 'error' ) {
-				itemsSelectedData.forEach( ( item ) => {
-					const elItemAdded = elSection.querySelector( `${ className.elSectionItem }[data-item-id="${ item.item_id }"]` );
-					if ( elItemAdded ) {
-						elItemAdded.remove();
-					}
-				} );
-			}
-		},
-		error: ( error ) => {
-			showToast( error, 'error' );
-		},
-		completed: () => {
-			itemsSelectedData.forEach( ( item ) => {
-				const elItemAdded = elSection.querySelector( `${ className.elSectionItem }[data-item-id="${ item.item_id }"]` );
-				lpUtils.lpSetLoadingEl( elItemAdded, 0 );
-			} );
-
-			itemsSelectedData = []; // Clear selected items data
-			updateCountItems( elSection );
-		},
-	} );
+	if ( typeof callBack === 'function' ) {
+		callBack( itemsSelectedData );
+		itemsSelectedData = [];
+	}
 };
 
 const showToast = ( message, status = 'success' ) => {
