@@ -639,8 +639,12 @@ class AdminEditQuestionTemplate {
 			),
 			'buttons'               => '<div class="lp-question-fib-buttons">',
 			'btn-insert-new'        => sprintf(
-				'<button type="button" class="lp-btn-fib-insert-blank button" data-default-text="%s">%s</button>',
+				'<button type="button" class="lp-btn-fib-insert-blank button"
+					data-default-text="%s"
+					data-mess-inserted="%s">%s %s</button>',
 				esc_html__( 'Enter answer correct on here', 'learnpress' ),
+				__( 'This text inserted to blank', 'learnpress' ),
+				'<span class="lp-icon-spinner"></span>',
 				__( 'Insert new blank', 'learnpress' )
 			),
 			'btn-delete-all-blanks' => sprintf(
@@ -648,15 +652,17 @@ class AdminEditQuestionTemplate {
 							class="lp-btn-fib-delete-all-blanks button"
 							data-title="%s"
 							data-content="%s"
-							title="%s">%s
+							title="%s">%s %s
 						</button>',
 				esc_attr__( 'Are you sure?', 'learnpress' ),
 				esc_html__( 'This action will delete all blanks in the editor, only keep text content.', 'learnpress' ),
 				esc_attr__( 'Delete all blanks on this editor.', 'learnpress' ),
+				'<span class="lp-icon-spinner"></span>',
 				__( 'Delete all blanks', 'learnpress' )
 			),
 			'btn-save'              => sprintf(
-				'<button type="button" class="lp-btn-fib-save-content button">%s</button>',
+				'<button type="button" class="lp-btn-fib-save-content button">%s %s</button>',
+				'<span class="lp-icon-spinner"></span> ',
 				__( 'Save content', 'learnpress' )
 			),
 			'btn-clear'             => sprintf(
@@ -664,11 +670,12 @@ class AdminEditQuestionTemplate {
 							class="lp-btn-fib-clear-all-content button"
 							data-title="%s"
 							data-content="%s"
-							title="%s">%s
+							title="%s">%s %s
 						</button>',
 				esc_attr__( 'Are you sure?', 'learnpress' ),
 				esc_html__( 'This action will delete all content in the editor.', 'learnpress' ),
 				esc_attr__( 'Clear all content on this editor.', 'learnpress' ),
+				'<span class="lp-icon-spinner"></span>',
 				__( 'Clear content', 'learnpress' )
 			),
 			'buttons_end'           => '</div>',
@@ -816,50 +823,12 @@ class AdminEditQuestionTemplate {
 	}
 
 	/**
-	 * Convert content of FIB to input tag HTML
+	 * Convert content of fill in blanks shortcode to span elements display on Editor.
 	 *
 	 * @param string $content
 	 *
 	 * @return string
-	 * @since 4.2.8.8
-	 * @version 1.0.0
 	 */
-	public function convert_content_fib_to_input( string $content = '' ): string {
-		$regex_str = get_shortcode_regex( array( 'fib' ) );
-		$pattern   = "/{$regex_str}/";
-		preg_match_all(
-			$pattern,
-			$content,
-			$all_shortcode,
-			PREG_SET_ORDER
-		);
-
-		if ( ! empty( $all_shortcode ) ) {
-			foreach ( $all_shortcode as $shortcode ) {
-				$atts = shortcode_parse_atts( $shortcode[0] );
-
-				$fill = $atts['fill'] ?? '';
-				$id   = $atts['id'] ?? '';
-				if ( empty( $id ) ) {
-					$ida = explode( '=', str_replace( ']', '', $atts[1] ) );
-					$id  = isset( $ida[1] ) ? str_replace( '"', '', $ida[1] ) : '';
-				}
-
-				$new_str = sprintf(
-					'<input type="text" class="lp-question-fib-input"
-						name="lp-question-fib-input" value="%s" data-id="%s" style="%s" />',
-					$fill,
-					esc_attr( $id ),
-					'border: 1px dashed rebeccapurple;padding: 5px;margin: 0 3px;'
-				);
-
-				$content = str_replace( $shortcode[0], $new_str, $content );
-			}
-		}
-
-		return $content;
-	}
-
 	public function convert_content_fib_to_span( string $content = '' ): string {
 		$regex_str = get_shortcode_regex( array( 'fib' ) );
 		$pattern   = "/{$regex_str}/";
@@ -882,9 +851,8 @@ class AdminEditQuestionTemplate {
 				}
 
 				$new_str = sprintf(
-					'<span class="lp-question-fib-input" data-id="%s" style="%s">%s</span>',
+					'<span class="lp-question-fib-input" data-id="%s">%s</span>',
 					esc_attr( $id ),
-					'border: 1px dashed rebeccapurple;padding: 5px;margin: 0 3px;',
 					esc_html( $fill )
 				);
 

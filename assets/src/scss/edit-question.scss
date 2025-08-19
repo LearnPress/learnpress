@@ -51,6 +51,21 @@ $border-color: #C3C4C7;
 	}
 }
 
+button {
+	display: flex !important;
+	align-items: center;
+	gap: 5px;
+
+	&.loading {
+		pointer-events: none;
+		opacity: 0.5 !important;
+
+		.lp-icon-spinner {
+			display: inline-block;
+		}
+	}
+}
+
 /***** Main Question Edit Styles *****/
 
 .question-edit-main {

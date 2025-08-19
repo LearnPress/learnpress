@@ -44,23 +44,23 @@ const className = {
 	elBtnFibDeleteAllBlanks: '.lp-btn-fib-delete-all-blanks',
 	elBtnFibSaveContent: '.lp-btn-fib-save-content',
 	elBtnFibClearAllContent: '.lp-btn-fib-clear-all-content',
-	elFibInput: '.lp-question-fib-input',
 	elFibOptionTitleInput: '.lp-question-fib-option-title-input',
 	elFibBlankOptions: '.lp-question-fib-blank-options',
 	elFibBlankOptionItem: '.lp-question-fib-blank-option-item',
 	elFibBlankOptionItemClone: '.lp-question-fib-blank-option-item.clone',
 	elFibBlankOptionIndex: '.lp-question-fib-option-index',
 	elBtnFibOptionDelete: '.lp-btn-fib-option-delete',
-	elQuestionFibOptionMatchCaseInput: '.lp-question-fib-option-match-case-input',
-	elQuestionFibOptionMatchCaseWrap: '.lp-question-fib-option-match-case-wrap',
+	elFibOptionMatchCaseWrap: '.lp-question-fib-option-match-case-wrap',
+	elFibOptionMatchCaseInput: '.lp-question-fib-option-match-case-input',
 	elQuestionFibOptionDetail: '.lp-question-fib-option-detail',
-	elQuestionFibOptionComparisonInput: '.lp-question-fib-option-comparison-input',
+	elFibOptionComparisonInput: '.lp-question-fib-option-comparison-input',
 	LPTarget: '.lp-target',
 	elCollapse: 'lp-collapse',
 	elSectionToggle: '.lp-section-toggle',
 	elTriggerToggle: '.lp-trigger-toggle',
 	elAutoSaveQuestion: '.lp-auto-save-question',
 	elAutoSaveAnswer: '.lp-auto-save-question-answer',
+	elQuestionFibInput: 'lp-question-fib-input',
 };
 
 const idUrlHandle = 'edit-question';
@@ -167,8 +167,8 @@ const eventEditorTinymce = ( id ) => {
 		const contentUndo = editor.getContent();
 		const selection = editor.selection;
 		const nodeUndo = selection.getNode();
-		const classNameFind = className.elFibInput.replace( '.', '' );
-		if ( nodeUndo.classList.contains( `${ classNameFind }` ) ) {
+
+		if ( nodeUndo.classList.contains( `${ className.elQuestionFibInput }` ) ) {
 			const blankId = nodeUndo.dataset.id;
 			const elFibBlankOptionItem = document.querySelector( `${ className.elFibBlankOptionItem }[data-id="${ blankId }"]` );
 
@@ -569,6 +569,231 @@ const setDataAnswersConfig = ( elQuestionEditMain, dataAnswers ) => {
 	elAnswersConfig.dataset.answers = JSON.stringify( dataAnswers );
 };
 
+/***** Fill in the blank question type *****/
+// For FIB question type
+const fibInsertBlank = ( e, target ) => {
+	const elBtnFibInsertBlank = target.closest( `${ className.elBtnFibInsertBlank }` );
+	if ( ! elBtnFibInsertBlank ) {
+		return;
+	}
+
+	const textPlaceholder = elBtnFibInsertBlank.dataset.defaultText;
+	const elQuestionEditMain = elBtnFibInsertBlank.closest( `${ className.elQuestionEditMain }` );
+	const questionId = elQuestionEditMain.dataset.questionId;
+
+	const idEditor = `${ className.elQuestionFibInput }-${ questionId }`;
+
+	const uniquid = randomString();
+	let selectedText;
+	if ( fibSelection ) {
+		const elNode = fibSelection.getNode();
+		if ( elNode.classList.contains( `${ className.elQuestionFibInput }` ) ) {
+			const messErr = elBtnFibInsertBlank.dataset.messInserted;
+			showToast( messErr, 'error' );
+			return;
+		}
+
+		selectedText = fibSelection.getContent();
+		if ( selectedText.length === 0 ) {
+			selectedText = textPlaceholder;
+		}
+
+		const elInputNew = `<span class="lp-question-fib-input" data-id="${ uniquid }">${ selectedText }</span>&nbsp;`;
+
+		fibSelection.setContent( elInputNew );
+	} else {
+		const editor = window.tinymce.get( idEditor );
+		const elInputNew = `<span class="lp-question-fib-input" data-id="${ uniquid }">${ textPlaceholder }</span>&nbsp;`;
+		editor.selection.select( editor.getBody(), true );
+		editor.selection.collapse( false );
+		editor.insertContent( elInputNew );
+	}
+
+	const dataAnswers = getDataAnswersConfig( elQuestionEditMain );
+	dataAnswers.meta_data = dataAnswers.meta_data || {};
+	// Convert array to object
+	if ( Object.keys( dataAnswers.meta_data ).length === 0 ) {
+		dataAnswers.meta_data = {};
+	}
+
+	dataAnswers.meta_data[ uniquid ] = {
+		id: uniquid,
+		match_case: 0,
+		comparison: 'equal',
+		fill: selectedText,
+		index: 1,
+		open: false,
+	};
+
+	setDataAnswersConfig( elQuestionEditMain, dataAnswers );
+
+	// Clone blank options
+	const elFibBlankOptions = elQuestionEditMain.querySelector( `${ className.elFibBlankOptions }` );
+	const elFibBlankOptionItemClone = elQuestionEditMain.querySelector( `${ className.elFibBlankOptionItemClone }` );
+	const elFibBlankOptionItemNew = elFibBlankOptionItemClone.cloneNode( true );
+	const countOptions = elFibBlankOptions.querySelectorAll( `${ className.elFibBlankOptionItem }:not(.clone)` ).length;
+	const elFibBlankOptionIndex = elFibBlankOptionItemNew.querySelector( `${ className.elFibBlankOptionIndex }` );
+	const elFibOptionTitleInput = elFibBlankOptionItemNew.querySelector( `${ className.elFibOptionTitleInput }` );
+	const elFibOptionMatchCaseInput = elFibBlankOptionItemNew.querySelector( `${ className.elFibOptionMatchCaseInput }` );
+	const elFibOptionComparisonInput = elFibBlankOptionItemNew.querySelectorAll( `${ className.elFibOptionComparisonInput }` );
+
+	elFibBlankOptionItemNew.dataset.id = uniquid;
+	elFibOptionTitleInput.name = `${ className.elFibOptionTitleInput }-${ uniquid }`;
+	elFibOptionTitleInput.value = decodeHtml( selectedText );
+	elFibBlankOptionIndex.textContent = countOptions + 1 + '.';
+	elFibOptionMatchCaseInput.name = `${ className.elFibOptionMatchCaseInput }-${ uniquid }`.replace( /\./g, '' );
+	elFibOptionComparisonInput.forEach( ( elInput ) => {
+		elInput.name = `${ className.elFibOptionComparisonInput }-${ uniquid }`.replace( /\./g, '' );
+		if ( elInput.value === 'equal' ) {
+			elInput.checked = true;
+		}
+	} );
+	elFibBlankOptionItemClone.insertAdjacentElement( 'beforebegin', elFibBlankOptionItemNew );
+	elFibBlankOptionItemNew.classList.remove( 'clone' );
+	lpUtils.lpShowHideEl( elFibBlankOptionItemNew, 1 );
+	// End clone blank options
+
+	const elBtnFibSaveContent = elQuestionEditMain.querySelector( `${ className.elBtnFibSaveContent }` );
+	lpUtils.lpSetLoadingEl( elBtnFibInsertBlank, 1 );
+	fibSaveContent( null, elBtnFibSaveContent, () => {
+		lpUtils.lpSetLoadingEl( elBtnFibInsertBlank, 0 );
+	} );
+};
+// Delete all blanks
+const fibDeleteAllBlanks = ( e, target ) => {
+	const elBtnFibDeleteAllBlanks = target.closest( `${ className.elBtnFibDeleteAllBlanks }` );
+	if ( ! elBtnFibDeleteAllBlanks ) {
+		return;
+	}
+
+	const elQuestionItem = elBtnFibDeleteAllBlanks.closest( `${ className.elQuestionItem }` );
+	if ( ! elQuestionItem ) {
+		return;
+	}
+
+	const questionId = elQuestionItem.dataset.questionId;
+	const dataAnswers = getDataAnswersConfig( elQuestionItem );
+
+	SweetAlert.fire( {
+		title: elBtnFibDeleteAllBlanks.dataset.title,
+		text: elBtnFibDeleteAllBlanks.dataset.content,
+		icon: 'warning',
+		showCloseButton: true,
+		showCancelButton: true,
+		cancelButtonText: lpDataAdmin.i18n.cancel,
+		confirmButtonText: lpDataAdmin.i18n.yes,
+		reverseButtons: true,
+	} ).then( ( result ) => {
+		if ( result.isConfirmed ) {
+			const editor = window.tinymce.get( `lp-question-fib-input-${ questionId }` );
+			const elBlanks = editor.dom.select( `.lp-question-fib-input` );
+			elBlanks.forEach( ( elBlank ) => {
+				editor.dom.remove( elBlank, true );
+			} );
+
+			dataAnswers.meta_data = {};
+			setDataAnswersConfig( elQuestionItem, dataAnswers );
+
+			const elFibBlankOptions = elQuestionItem.querySelector( `${ className.elFibBlankOptions }` );
+			elFibBlankOptions.innerHTML = '';
+		}
+	} );
+};
+// Save content FIB question
+const fibSaveContent = ( e, target, callBackCompleted ) => {
+	const elBtnFibSaveContent = target.closest( `${ className.elBtnFibSaveContent }` );
+	if ( ! elBtnFibSaveContent ) {
+		return;
+	}
+
+	const elQuestionEditMain = elBtnFibSaveContent.closest( `${ className.elQuestionEditMain }` );
+	const questionId = elQuestionEditMain.dataset.questionId;
+
+	const dataAnswers = getDataAnswersConfig( elQuestionEditMain );
+	if ( ! dataAnswers ) {
+		return;
+	}
+
+	const editor = window.tinymce.get( `${ className.elQuestionFibInput }-${ questionId }` );
+	dataAnswers.title = editor.getContent();
+
+	const elFibBlankOptionItems = elQuestionEditMain.querySelectorAll( `${ className.elFibBlankOptionItem }:not(.clone)` );
+	if ( elFibBlankOptionItems ) {
+		elFibBlankOptionItems.forEach( ( elFibBlankOptionItem ) => {
+			const blankId = elFibBlankOptionItem.dataset.id;
+			const elFibOptionMatchCaseInput = elFibBlankOptionItem.querySelector( `${ className.elFibOptionMatchCaseInput }` );
+			const elFibOptionComparisonInput = elFibBlankOptionItem.querySelector( `${ className.elFibOptionComparisonInput }:checked` );
+
+			dataAnswers.meta_data[ blankId ].match_case = elFibOptionMatchCaseInput.checked ? 1 : 0;
+			dataAnswers.meta_data[ blankId ].comparison = elFibOptionComparisonInput.value;
+		} );
+	}
+
+	//console.log( 'dataAnswers', dataAnswers );
+
+	if ( ! callBackCompleted ) {
+		lpUtils.lpSetLoadingEl( elBtnFibSaveContent, 1 );
+	}
+
+	// Call ajax to update answers config
+	const callBack = {
+		success: ( response ) => {
+			const { message, status } = response;
+
+			if ( status === 'success' ) {
+				setDataAnswersConfig( elQuestionEditMain, dataAnswers );
+			} else {
+				throw `Error: ${ message }`;
+			}
+
+			showToast( message, status );
+		},
+		error: ( error ) => {
+			showToast( error, 'error' );
+		},
+		completed: () => {
+			if ( callBackCompleted && typeof callBackCompleted === 'function' ) {
+				callBackCompleted();
+			} else {
+				lpUtils.lpSetLoadingEl( elBtnFibSaveContent, 0 );
+			}
+		},
+	};
+
+	console.log( 'dataAnswers', dataAnswers );
+
+	const dataSend = {
+		action: 'update_question_answers_config',
+		question_id: questionId,
+		answers: dataAnswers,
+		args: {
+			id_url: idUrlHandle,
+		},
+	};
+	window.lpAJAXG.fetchAJAX( dataSend, callBack );
+};
+// Show/hide match case option
+const fibShowHideMatchCaseOption = ( e, target ) => {
+	const elFibOptionMatchCaseInput = target.closest( `${ className.elFibOptionMatchCaseInput }` );
+	if ( ! elFibOptionMatchCaseInput ) {
+		return;
+	}
+
+	const elQuestionFibOptionDetail = elFibOptionMatchCaseInput.closest( `${ className.elQuestionFibOptionDetail }` );
+	const elFibOptionMatchCaseWrap = elQuestionFibOptionDetail.querySelector( `${ className.elFibOptionMatchCaseWrap }` );
+	if ( ! elQuestionFibOptionDetail || ! elFibOptionMatchCaseWrap ) {
+		return;
+	}
+
+	if ( elFibOptionMatchCaseInput.checked ) {
+		lpUtils.lpShowHideEl( elFibOptionMatchCaseWrap, 1 );
+	} else {
+		lpUtils.lpShowHideEl( elFibOptionMatchCaseWrap, 0 );
+	}
+};
+/***** End Fill in the blank question type *****/
+
+// Generate a random string of specified length, for set unique id
 const randomString = ( length = 10 ) => {
 	const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
 	let result = '';
@@ -576,6 +801,12 @@ const randomString = ( length = 10 ) => {
 		result += chars.charAt( Math.floor( Math.random() * chars.length ) );
 	}
 	return result;
+};
+// Decode HTML entities
+const decodeHtml = ( html ) => {
+	const txt = document.createElement( 'textarea' );
+	txt.innerHTML = html;
+	return txt.value;
 };
 
 const argsToastify = {
@@ -601,6 +832,10 @@ document.addEventListener( 'click', ( e ) => {
 	const target = e.target;
 	deleteQuestionAnswer( e, target );
 	addQuestionAnswer( e, target );
+	fibInsertBlank( e, target );
+	fibDeleteAllBlanks( e, target );
+	fibSaveContent( e, target );
+	fibShowHideMatchCaseOption( e, target );
 } );
 // Event change
 document.addEventListener( 'change', ( e ) => {

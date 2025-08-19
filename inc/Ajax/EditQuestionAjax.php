@@ -166,7 +166,7 @@ class EditQuestionAjax extends AbstractAjax {
 	/**
 	 * Update answer config of question
 	 *
-	 * JS file edit-quiz.js: function updateAnswersConfig call this method.
+	 * JS file edit-question.js: function fibSaveContent call this method.
 	 *
 	 * @return void
 	 */
