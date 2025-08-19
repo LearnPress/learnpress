@@ -109,25 +109,26 @@ class AdminEditQuestionTemplate {
 				__( 'Option Details', 'learnpress' )
 			),
 			'collapse'     => '<div class="lp-section-collapse">',
-			'point'        => $this->html_edit_mark( $questionPostModel ),
-			'hint'         => $this->html_edit_hint( $questionPostModel ),
-			'explanation'  => $this->html_edit_explanation( $questionPostModel ),
+			'point'        => AdminEditQuestionTemplate::instance()->html_edit_mark( $questionPostModel ),
+			'hint'         => AdminEditQuestionTemplate::instance()->html_edit_hint( $questionPostModel ),
+			'explanation'  => AdminEditQuestionTemplate::instance()->html_edit_explanation( $questionPostModel ),
 			'collapse_end' => '</div>',
 			'wrap_end'     => '</div>',
 		];
 
-		$section = [
+		$section_edit_main = [
 			'wrap'     => sprintf(
-				'<div class="lp-edit-question-wrap lp-question-item" data-question-id="%s" data-question-type="%s">',
-				esc_attr( $questionPostModel->ID ),
-				esc_attr( $questionPostModel->get_type() )
+				'<div class="question-edit-main" data-question-id="%s">',
+				esc_attr( $questionPostModel->ID )
 			),
-			'answers'  => $this->html_edit_question_by_type( $questionPostModel ),
+			'left'     => '<div class="lp-question-edit-left">',
+			'answers'  => AdminEditQuestionTemplate::instance()->html_edit_question_by_type( $questionPostModel ),
+			'left_end' => '</div>',
 			'details'  => Template::combine_components( $section_edit_details ),
 			'wrap_end' => '</div>',
 		];
 
-		return Template::combine_components( $section );
+		return Template::combine_components( $section_edit_main );
 	}
 
 	/**
@@ -169,7 +170,7 @@ class AdminEditQuestionTemplate {
 			'label'       => __( 'Points', 'learnpress' ),
 			'input'       => sprintf(
 				'<input type="number" name="lp-question-point-input"
-					class="lp-auto-save"
+					class="lp-auto-save-question"
 					data-key-auto-save="question_mark"
 					value="%s" min="0" step="0.01">',
 				esc_attr( $point )
@@ -200,7 +201,7 @@ class AdminEditQuestionTemplate {
 				$editor_id,
 				[
 					'editor_height' => 50,
-					'editor_class'  => 'lp-editor-tinymce lp-auto-save',
+					'editor_class'  => 'lp-editor-tinymce lp-auto-save-question',
 				]
 			),
 			'description' => __( 'The instructions for the user to select the right answer. The text will be shown when users click the "Hint" button.', 'learnpress' ),
@@ -228,7 +229,7 @@ class AdminEditQuestionTemplate {
 				$editor_id,
 				[
 					'editor_height' => 50,
-					'editor_class'  => 'lp-editor-tinymce lp-auto-save',
+					'editor_class'  => 'lp-editor-tinymce lp-auto-save-question',
 				]
 			),
 			'description' => __( 'The explanation will be displayed when students click the "Check Answer" button.', 'learnpress' ),
@@ -261,7 +262,7 @@ class AdminEditQuestionTemplate {
 				$question_description,
 				$editor_id,
 				[
-					'editor_class'  => 'lp-editor-tinymce lp-auto-save',
+					'editor_class'  => 'lp-editor-tinymce lp-auto-save-question',
 					'editor_height' => 50,
 				]
 			),
@@ -286,8 +287,10 @@ class AdminEditQuestionTemplate {
 			'header'         => sprintf(
 				'<div class="lp-question-data-edit-header">
 					<label>%s</label>
+					<span class="lp-question-type-label">%s</span>
 				</div>',
-				__( 'Config Your Answer', 'learnpress' )
+				__( 'Config Your Answer', 'learnpress' ),
+				esc_html( $questionPostModel->get_type_label() )
 			),
 			'button-save'    => sprintf(
 				'<button type="button" class="lp-btn-update-question-answer button lp-hidden">%s</button>',
@@ -433,10 +436,11 @@ class AdminEditQuestionTemplate {
 			$html_answers .= sprintf(
 				'<div class="lp-question-answer-item" data-answer-id="%6$s">
 					<span class="drag lp-icon-drag" title="Drag to reorder section"></span>
+					<span class="lp-icon-spinner"></span>
 					<input type="text" class="%1$s" name="%1$s" value="%2$s" />
-					<input type="radio" class="lp-input-answer-set-true" name="%4$s" %3$s value="%5$s" />
+					<input type="radio" class="lp-input-answer-set-true lp-auto-save-question-answer" name="%4$s" %3$s value="%5$s" />
 				</div>',
-				'lp-question-answer-title-input',
+				'lp-question-answer-title-input lp-auto-save-question-answer',
 				esc_attr( $questionAnswerModel->title ),
 				$questionAnswerModel->is_true === 'yes' ? 'checked' : '',
 				$name_radio,
@@ -486,16 +490,16 @@ class AdminEditQuestionTemplate {
 					%8$s
 					<input type="text" class="%1$s" name="%1$s" value="%2$s" />
 					<span class="lp-icon-trash-o lp-btn-delete-question-answer"></span>
-					<input type="radio" class="lp-input-answer-set-true" name="%4$s" %3$s value="%5$s" />
+					<input type="radio" class="lp-input-answer-set-true lp-auto-save-question-answer" name="%4$s" %3$s value="%5$s" />
 				</div>',
-				'lp-question-answer-title-input',
+				'lp-question-answer-title-input lp-auto-save-question-answer',
 				esc_attr( $title ),
 				$is_true === 'yes' ? 'checked' : '',
 				$name_radio,
 				esc_attr( $is_true ),
 				esc_attr( $question_answer_id ),
 				$is_clone ? 'clone lp-hidden' : '',
-				$is_clone ? '<span class="lp-icon-spinner"></span>' : ''
+				'<span class="lp-icon-spinner"></span>'
 			);
 		}
 
@@ -505,17 +509,13 @@ class AdminEditQuestionTemplate {
 				<input type="text" class="%1$s" name="%1$s" value="" />
 				<button type="button" class="button lp-btn-add-question-answer">%2$s</button>
 			</div>',
-			'lp-question-answer-title-input',
+			'lp-question-answer-title-new-input',
 			__( 'Add Option', 'learnpress' )
 		);
 
 		$section = [
-			'header'    => '<div class="lp-question-choice-header"><span>Answers</span><span>Correct</span></div>',
-			'answers'   => $html_answers,
-			'data_json' => sprintf(
-				'<input type="hidden" class="lp-question-answer-json" name="lp-question-answer-json" value="%s">',
-				esc_attr( json_encode( $answers ) )
-			),
+			'header'  => '<div class="lp-question-choice-header"><span>Answers</span><span>Correct</span></div>',
+			'answers' => $html_answers,
 		];
 
 		return Template::combine_components( $section );
@@ -554,16 +554,16 @@ class AdminEditQuestionTemplate {
 					%8$s
 					<input type="text" class="%1$s" name="%1$s" value="%2$s" />
 					<span class="lp-icon-trash-o lp-btn-delete-question-answer"></span>
-					<input type="checkbox" class="lp-input-answer-set-true" name="%4$s" %3$s value="%5$s" />
+					<input type="checkbox" class="lp-input-answer-set-true lp-auto-save-question-answer" name="%4$s" %3$s value="%5$s" />
 				</div>',
-				'lp-question-answer-title-input',
+				'lp-question-answer-title-input lp-auto-save-question-answer',
 				esc_attr( $title ),
 				$is_true === 'yes' ? 'checked' : '',
 				$name_checkbox,
 				esc_attr( $is_true ),
 				esc_attr( $question_answer_id ),
 				$is_clone ? 'clone lp-hidden' : '',
-				$is_clone ? '<span class="lp-icon-spinner"></span>' : ''
+				'<span class="lp-icon-spinner"></span>'
 			);
 		}
 
@@ -573,7 +573,7 @@ class AdminEditQuestionTemplate {
 				<input type="text" class="%1$s" name="%1$s" value="" />
 				<button type="button" class="button lp-btn-add-question-answer">%2$s</button>
 			</div>',
-			'lp-question-answer-title-input',
+			'lp-question-answer-title-new-input',
 			__( 'Add option', 'learnpress' )
 		);
 
@@ -881,8 +881,9 @@ class AdminEditQuestionTemplate {
 				}
 
 				$new_str = sprintf(
-					'<span class="lp-question-fib-input" data-id="%s">%s</span>',
+					'<span class="lp-question-fib-input" data-id="%s" style="%s">%s</span>',
 					esc_attr( $id ),
+					'border: 1px dashed rebeccapurple;padding: 5px;margin: 0 3px;',
 					esc_html( $fill )
 				);
 

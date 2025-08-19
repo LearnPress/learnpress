@@ -38,6 +38,7 @@ const className = {
 	elAnswersConfig: '.lp-answers-config',
 	elBtnAddAnswer: '.lp-btn-add-question-answer',
 	elQuestionAnswerItemAddNew: '.lp-question-answer-item-add-new',
+	elQuestionAnswerTitleNewInput: '.lp-question-answer-title-new-input',
 	elQuestionAnswerTitleInput: '.lp-question-answer-title-input',
 	elBtnDeleteAnswer: '.lp-btn-delete-question-answer',
 	elQuestionByType: '.lp-question-by-type',
@@ -216,8 +217,9 @@ const initTinyMCE = () => {
 const reInitTinymce = ( id ) => {
 	window.tinymce.execCommand( 'mceRemoveEditor', true, id );
 	window.tinymce.execCommand( 'mceAddEditor', true, id );
-	eventEditorTinymceChange( id );
+	eventEditorTinymce( id );
 
+	// Active tab visual
 	const wrapEditor = document.querySelector( `#wp-${ id }-wrap` );
 	if ( wrapEditor ) {
 		wrapEditor.classList.add( 'tmce-active' );
@@ -229,7 +231,7 @@ let uniquid;
 let fibTextSelection;
 let fibSelection;
 // Events for TinyMCE editor
-const eventEditorTinymceChange = ( id, callBack ) => {
+const eventEditorTinymce = ( id, callBack ) => {
 	const editor = window.tinymce.get( id );
 	const elTextarea = document.getElementById( id );
 	const elQuestionItem = elTextarea.closest( `${ className.elQuestionItem }` );
@@ -707,12 +709,12 @@ const addQuestionAnswer = ( e, target ) => {
 		return;
 	}
 
-	const elQuestionAnswerTitleInput = elQuestionAnswerItemAddNew.querySelector( `${ className.elQuestionAnswerTitleInput }` );
-	if ( ! elQuestionAnswerTitleInput ) {
+	const elQuestionAnswerTitleNewInput = elQuestionAnswerItemAddNew.querySelector( `${ className.elQuestionAnswerTitleNewInput }` );
+	if ( ! elQuestionAnswerTitleNewInput ) {
 		return;
 	}
 
-	if ( ! elQuestionAnswerTitleInput.value.trim() ) {
+	if ( ! elQuestionAnswerTitleNewInput.value.trim() ) {
 		showToast( 'Please enter an answer title.', 'error' );
 		return;
 	}
@@ -723,16 +725,16 @@ const addQuestionAnswer = ( e, target ) => {
 	}
 
 	const elQuestionAnswerNew = elQuestionAnswerClone.cloneNode( true );
-	const elQuestionAnswerTitleInputNew = elQuestionAnswerNew.querySelector( `${ className.elQuestionAnswerTitleInput }` );
+	const elQuestionAnswerTitleInputNew = elQuestionAnswerNew.querySelector( `${ className.elQuestionAnswerTitleNewInput }` );
 
 	elQuestionAnswerNew.classList.remove( 'clone' );
 	lpUtils.lpShowHideEl( elQuestionAnswerNew, 1 );
 	lpUtils.lpSetLoadingEl( elQuestionAnswerNew, 1 );
 	elQuestionAnswerClone.insertAdjacentElement( 'beforebegin', elQuestionAnswerNew );
 
-	const answerTitle = elQuestionAnswerTitleInput.value.trim();
+	const answerTitle = elQuestionAnswerTitleNewInput.value.trim();
 	elQuestionAnswerTitleInputNew.value = answerTitle;
-	elQuestionAnswerTitleInput.value = '';
+	elQuestionAnswerTitleNewInput.value = '';
 	const questionId = elQuestionItem.dataset.questionId;
 
 	// Call ajax to add new question answer
