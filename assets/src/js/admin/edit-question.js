@@ -251,15 +251,16 @@ const addQuestionAnswer = ( e, target ) => {
 		return;
 	}
 
-	const elQuestionEditMain = elBtnAddAnswer.closest( `${ className.elQuestionEditMain }` );
 	const elQuestionAnswerItemAddNew = elBtnAddAnswer.closest( `${ className.elQuestionAnswerItemAddNew }` );
 	const elQuestionAnswerTitleNewInput = elQuestionAnswerItemAddNew.querySelector( `${ className.elQuestionAnswerTitleNewInput }` );
 
 	if ( ! elQuestionAnswerTitleNewInput.value.trim() ) {
-		showToast( 'Please enter an answer title.', 'error' );
+		const message = elQuestionAnswerTitleNewInput.dataset.messEmptyTitle;
+		showToast( message, 'error' );
 		return;
 	}
 
+	const elQuestionEditMain = elBtnAddAnswer.closest( `${ className.elQuestionEditMain }` );
 	const elQuestionAnswerClone = elQuestionEditMain.querySelector( `${ className.elQuestionAnswerItem }.clone` );
 	const elQuestionAnswerNew = elQuestionAnswerClone.cloneNode( true );
 	const elQuestionAnswerTitleInputNew = elQuestionAnswerNew.querySelector( `${ className.elQuestionAnswerTitleInput }` );
