@@ -33,6 +33,19 @@ $border-color: #C3C4C7;
 	border-top: none;
 }
 
+.lp-section-toggle {
+	&.lp-collapse {
+		.lp-section-collapse {
+			display: none;
+		}
+	}
+}
+
+.lp-trigger-toggle {
+	display: flex;
+	align-items: center;
+}
+
 // End Collapse icon
 
 .lp-icon-spinner {
@@ -51,21 +64,6 @@ $border-color: #C3C4C7;
 	}
 }
 
-button {
-	display: flex !important;
-	align-items: center;
-	gap: 5px;
-
-	&.loading {
-		pointer-events: none;
-		opacity: 0.5 !important;
-
-		.lp-icon-spinner {
-			display: inline-block;
-		}
-	}
-}
-
 /***** Main Question Edit Styles *****/
 
 .question-edit-main {
@@ -74,6 +72,7 @@ button {
 	overflow: hidden;
 	padding: 20px;
 	grid-template-columns: 1fr 1fr;
+
 	[class*="lp-icon-"] {
 		font-size: 1.25rem;
 		color: #787c82;
@@ -84,6 +83,32 @@ button {
 		border: none;
 		background: transparent;
 		box-shadow: none;
+	}
+
+	.lp-question-fib-buttons {
+		button {
+			display: flex !important;
+			align-items: center;
+			gap: 5px;
+
+			&.loading {
+				pointer-events: none;
+				opacity: 0.5 !important;
+
+				.lp-icon-spinner {
+					display: inline-block;
+				}
+			}
+		}
+	}
+
+	.loading {
+		pointer-events: none;
+		opacity: 0.5 !important;
+
+		.lp-icon-spinner {
+			display: inline-block;
+		}
 	}
 }
 
@@ -169,6 +194,17 @@ button {
 .lp-question-fib-blank-options {
 	display: grid;
 	gap: 5px;
+
+	.lp-question-fib-option-match-case-wrap {
+		display: grid;
+		gap: 10px;
+
+		&.lp-hidden {
+			display: grid !important;
+			pointer-events: none;
+			opacity: 0.5 !important;
+		}
+	}
 }
 
 .lp-question-fib-blank-option-item {

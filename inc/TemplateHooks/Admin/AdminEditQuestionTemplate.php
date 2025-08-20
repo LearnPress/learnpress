@@ -104,7 +104,7 @@ class AdminEditQuestionTemplate {
 			'header'       => sprintf(
 				'<div class="lp-question-data-edit-header lp-trigger-toggle">
 					<label>%s</label>
-					<div class="lp-tinymce-toggle"><span class="lp-icon-angle-down"></span><span class="lp-icon-angle-up"></span></div>
+					<span class="lp-icon-angle-down"></span><span class="lp-icon-angle-up"></span>
 				</div>',
 				__( 'Option Details', 'learnpress' )
 			),
@@ -292,10 +292,10 @@ class AdminEditQuestionTemplate {
 				__( 'Config Your Answer', 'learnpress' ),
 				esc_html( $questionPostModel->get_type_label() )
 			),
-			'button-save'    => sprintf(
+			/*'button-save'    => sprintf(
 				'<button type="button" class="lp-btn-update-question-answer button lp-hidden">%s</button>',
 				__( 'Save Answer', 'learnpress' )
-			),
+			),*/
 			'answers-config' => $html_answers_config,
 			'wrap_end'       => '</div>',
 		];
@@ -637,13 +637,19 @@ class AdminEditQuestionTemplate {
 					'quicktags'      => true, // Set true to show tab "Code" in editor
 				]
 			),
+			'desc'                  => sprintf(
+				'<div class="lp-question-fib-desc">%s</div>',
+				__( 'Select a word in the passage above and click "Insert a new blank" to make that word a blank for filling.', 'learnpress' )
+			),
 			'buttons'               => '<div class="lp-question-fib-buttons">',
 			'btn-insert-new'        => sprintf(
 				'<button type="button" class="lp-btn-fib-insert-blank button"
 					data-default-text="%s"
-					data-mess-inserted="%s">%s %s</button>',
+					data-mess-inserted="%s"
+					data-mess-require-select-text="%s">%s %s</button>',
 				esc_html__( 'Enter answer correct on here', 'learnpress' ),
 				__( 'This text inserted to blank', 'learnpress' ),
+				__( 'You must select a text or position on Editor to insert new blank.', 'learnpress' ),
 				'<span class="lp-icon-spinner"></span>',
 				__( 'Insert new blank', 'learnpress' )
 			),
@@ -707,6 +713,7 @@ class AdminEditQuestionTemplate {
 					'<span class="lp-question-fib-option-index">%s.</span>',
 					$i++
 				),
+				'loading'    => '<span class="lp-icon-spinner"></span>',
 				'title'      => sprintf(
 					'<input type="text"
 						name="lp-question-fib-option-title-input-%s"
@@ -715,18 +722,13 @@ class AdminEditQuestionTemplate {
 					esc_attr( $id ),
 					esc_html( $option['fill'] ?? '' )
 				),
-				'btn-save'   => sprintf(
-					'<button type="button" class="lp-btn-fib-save-content button">%s</button>',
-					__( 'Save', 'learnpress' )
-				),
 				'btn-delete' => sprintf(
-					'<button type="button"
-								class="lp-btn-fib-option-delete button"
-								data-title="%s" data-content="%s">%s
-							</button>',
+					'<span
+						class="lp-btn-fib-option-delete lp-icon-trash-o"
+						data-title="%s" data-content="%s">
+					</span>',
 					esc_attr__( 'Are you sure?', 'learnpress' ),
 					esc_html__( 'Delete this blank and keep text', 'learnpress' ),
-					__( 'Remove', 'learnpress' )
 				),
 				'toggle'     => '<div class="lp-trigger-toggle"><span class="lp-icon-angle-down"></span><span class="lp-icon-angle-up"></span></div>',
 				'wrap_end'   => '</div>',
