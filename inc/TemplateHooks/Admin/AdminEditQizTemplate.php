@@ -196,7 +196,10 @@ class AdminEditQizTemplate {
 			];
 
 			$section_edit_main = [
-				'wrap'        => '<div class="question-edit-main">',
+				'wrap'        => sprintf(
+					'<div class="question-edit-main" data-question-id="%d">',
+					$question_id
+				),
 				'left'        => '<div class="lp-question-edit-left">',
 				'description' => AdminEditQuestionTemplate::instance()->html_edit_question_description( $questionPostModel ),
 				'answers'     => AdminEditQuestionTemplate::instance()->html_edit_question_by_type( $questionPostModel ),

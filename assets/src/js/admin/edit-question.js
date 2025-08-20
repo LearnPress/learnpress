@@ -75,8 +75,7 @@ let fibSelection;
 
 // Get section by id
 const initTinyMCE = () => {
-	const elTextareas =
-		document.querySelectorAll( '.lp-editor-tinymce' );
+	const elTextareas = document.querySelectorAll( '.lp-editor-tinymce' );
 
 	elTextareas.forEach( ( elTextarea ) => {
 		// const elParent = elTextarea.closest( '.lp-question-item' );
@@ -997,44 +996,78 @@ const showToast = ( message, status = 'success' ) => {
 	toastify.showToast();
 };
 
-// Event click
-document.addEventListener( 'click', ( e ) => {
-	const target = e.target;
-	deleteQuestionAnswer( e, target );
-	addQuestionAnswer( e, target );
-	fibInsertBlank( e, target );
-	fibDeleteAllBlanks( e, target );
-	fibClearContent( e, target );
-	fibDeleteBlank( e, target );
-	fibSaveContent( e, target );
-	fibShowHideMatchCaseOption( e, target );
-	if ( target.closest( `${ className.elFibOptionMatchCaseInput }` ) ||
-		target.closest( `${ className.elFibOptionComparisonInput }` ) ) {
-		const elQuestionEditMain = target.closest( `${ className.elQuestionEditMain }` );
-		const elSaveButton = elQuestionEditMain.querySelector( `${ className.elBtnFibSaveContent }` );
-		fibSaveContent( e, elSaveButton );
-		return;
-	}
-	toggleSection( e, target, className.elTriggerToggle );
-} );
-// Event change
-document.addEventListener( 'change', ( e ) => {
-	const target = e.target;
-	autoUpdateQuestion( e, target );
-	autoUpdateAnswer( e, target );
-} );
-// Event keyup
-document.addEventListener( 'keyup', ( e ) => {
-	const target = e.target;
-	autoUpdateAnswer( e, target );
-	fibOptionTitleInputChange( e, target );
-} );
+const events = () => {
+	// Event click
+	document.addEventListener( 'click', ( e ) => {
+		const target = e.target;
+		deleteQuestionAnswer( e, target );
+		addQuestionAnswer( e, target );
+		fibInsertBlank( e, target );
+		fibDeleteAllBlanks( e, target );
+		fibClearContent( e, target );
+		fibDeleteBlank( e, target );
+		fibSaveContent( e, target );
+		fibShowHideMatchCaseOption( e, target );
+		if ( target.closest( `${ className.elFibOptionMatchCaseInput }` ) ||
+			target.closest( `${ className.elFibOptionComparisonInput }` ) ) {
+			const elQuestionEditMain = target.closest( `${ className.elQuestionEditMain }` );
+			const elSaveButton = elQuestionEditMain.querySelector( `${ className.elBtnFibSaveContent }` );
+			fibSaveContent( e, elSaveButton );
+			return;
+		}
+		toggleSection( e, target, className.elTriggerToggle );
+	} );
+	// Event change
+	document.addEventListener( 'change', ( e ) => {
+		const target = e.target;
+		autoUpdateQuestion( e, target );
+		autoUpdateAnswer( e, target );
+	} );
+	// Event keyup
+	document.addEventListener( 'keyup', ( e ) => {
+		const target = e.target;
+		autoUpdateAnswer( e, target );
+		fibOptionTitleInputChange( e, target );
+	} );
+};
 
 // Element root ready.
 lpUtils.lpOnElementReady(
 	`${ className.elQuestionEditMain }`,
 	( elQuestionEditMain ) => {
+		events();
 		initTinyMCE( elQuestionEditMain );
 		sortAbleQuestionAnswer( elQuestionEditMain );
 	}
 );
+
+export {
+	events,
+	initTinyMCE,
+	toggleSection,
+	randomString,
+	decodeHtml,
+	showToast,
+	fibInsertBlank,
+	fibDeleteAllBlanks,
+	fibClearContent,
+	fibDeleteBlank,
+	fibOptionTitleInputChange,
+	fibSaveContent,
+	fibShowHideMatchCaseOption,
+	getDataAnswersConfig,
+	setDataAnswersConfig,
+	addQuestionAnswer,
+	autoUpdateQuestion,
+	autoUpdateAnswer,
+	deleteQuestionAnswer,
+	sortAbleQuestionAnswer,
+	fibDeleteBlank as deleteFibBlank,
+	fibInsertBlank as insertFibBlank,
+	fibSaveContent as saveFibContent,
+	fibOptionTitleInputChange as fibOptionTitleInputChangeHandler,
+	fibShowHideMatchCaseOption as fibShowHideMatchCaseOptionHandler,
+	randomString as generateRandomString,
+	decodeHtml as decodeHtmlEntities,
+	toggleSection as toggleSectionHandler,
+};

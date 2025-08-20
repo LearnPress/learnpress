@@ -10,6 +10,7 @@ import Sortable from 'sortablejs';
 import Toastify from 'toastify-js';
 import 'toastify-js/src/toastify.css';
 import * as lpPopupSelectItemToAdd from '../lpPopupSelectItemToAdd.js';
+import * as editQuestion from './edit-question.js';
 
 let elEditQuizWrap;
 let elEditListQuestions;
@@ -979,26 +980,6 @@ const updateAnswersConfig = ( e, target ) => {
 };
 // End for answers config
 
-// Auto update question answer
-let timeoutAutoUpdateAnswer;
-const autoUpdateAnswer = ( e, target ) => {
-	const elAutoSave = target.closest( `${ className.elQuestionAnswerTitleInput }` );
-	if ( ! elAutoSave ) {
-		return;
-	}
-
-	const elQuestionDataEdit = elAutoSave.closest( '.lp-question-data-edit' );
-	const elBtnUpdateQuestionAnswer = elQuestionDataEdit.querySelector( `${ className.elBtnUpdateQuestionAnswer }` );
-	if ( ! elBtnUpdateQuestionAnswer ) {
-		return;
-	}
-
-	clearTimeout( timeoutAutoUpdateAnswer );
-	timeoutAutoUpdateAnswer = setTimeout( () => {
-		elBtnUpdateQuestionAnswer.click(); // Trigger update answers config
-	}, 700 );
-};
-
 // Sortable questions
 const sortAbleQuestion = () => {
 	let isUpdateSectionPosition = 0;
@@ -1680,7 +1661,6 @@ document.addEventListener( 'keyup', ( e ) => {
 	autoUpdateQuestion( e, target );
 	changeTitleQuestion( e, target );
 	checkCanAddQuestion( e, target );
-	autoUpdateAnswer( e, target );
 	lpPopupSelectItemToAdd.searchTitleItemToSelect( e, target, elPopupSelectItems );
 } );
 // Event focus in
@@ -1713,7 +1693,9 @@ lpUtils.lpOnElementReady(
 		elPopupSelectItems = elPopupItemsToSelectClone.cloneNode( true );
 		elPopupSelectItems.classList.remove( 'clone', 'lp-hidden' );
 
-		initTinyMCE();
+		editQuestion.events();
+		editQuestion.initTinyMCE();
+		//initTinyMCE();
 		sortAbleQuestion();
 		sortAbleQuestionAnswer();
 	}
