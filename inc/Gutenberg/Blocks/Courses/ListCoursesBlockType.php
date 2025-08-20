@@ -74,14 +74,18 @@ class ListCoursesBlockType extends AbstractBlockType {
 			$args                 = lp_archive_skeleton_get_args();
 			$args['attributes']   = $attributes;
 			$args['parsed_block'] = $block->parsed_block;
-			$args['post_id']      = get_the_ID();
-			$courseQuery          = $attributes['courseQuery'] ?? [];
-			$load_ajax            = $courseQuery['load_ajax'] ?? false;
-			$callback             = [
+			$id                   = 0;
+			if ( ! is_archive() && ! is_home() && ! is_search() ) {
+				$id = get_the_ID();
+			}
+			$args['post_id'] = $id;
+			$courseQuery     = $attributes['courseQuery'] ?? [];
+			$load_ajax       = $courseQuery['load_ajax'] ?? false;
+			$callback        = [
 				'class'  => get_class( $this ),
 				'method' => 'render_courses',
 			];
-			$html_wrapper         = [
+			$html_wrapper    = [
 				'<div class="lp-list-courses-default">' => '</div>',
 			];
 
