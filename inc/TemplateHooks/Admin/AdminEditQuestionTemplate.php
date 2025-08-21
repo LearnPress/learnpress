@@ -400,6 +400,44 @@ class AdminEditQuestionTemplate {
 				break;
 		}
 
+		// For create new question, type is empty.
+		if ( empty( $type ) ) {
+			$html_question_types = sprintf(
+				'<option value="">%s</option>',
+				esc_html__( 'Select question type', 'learnpress' )
+			);
+			$question_types      = QuestionPostModel::get_types();
+			foreach ( $question_types as $type => $label ) {
+				$html_question_types .= sprintf(
+					'<option value="%s">%s</option>',
+					esc_attr( $type ),
+					esc_html( $label )
+				);
+			}
+			$html  = Template::instance()->nest_elements(
+				[
+					sprintf(
+						'<select class="lp-question-type-new"
+						name="lp-question-type-new" data-mess-empty-type="%s">',
+						esc_attr__( 'Question type is required', 'learnpress' )
+					)
+					=> '</select>',
+				],
+				$html_question_types
+			);
+			$html .= sprintf(
+				'<button class="lp-btn-question-create-type button"
+							type="button">%s %s
+						</button>',
+				'<span class="lp-icon-spinner"></span> ',
+				__( 'Create Question Type', 'learnpress' )
+			);
+			$html  = Template::instance()->nest_elements(
+				[ '<div class="lp-question-type-new-wrap">' => '</div>' ],
+				$html
+			);
+		}
+
 		$answers = $questionPostModel->get_answer_option();
 		if ( $questionPostModel->get_type() === 'fill_in_blanks' ) {
 			$answers = $answers[0] ?? [];

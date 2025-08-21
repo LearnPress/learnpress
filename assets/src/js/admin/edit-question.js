@@ -63,6 +63,7 @@ const className = {
 	elAutoSaveQuestion: '.lp-auto-save-question',
 	elAutoSaveAnswer: '.lp-auto-save-question-answer',
 	elQuestionFibInput: 'lp-question-fib-input',
+	elBtnQuestionCreateType: '.lp-btn-question-create-type',
 };
 
 const idUrlHandle = 'edit-question';
@@ -243,6 +244,64 @@ const autoUpdateQuestion = ( e, target, key, value ) => {
 
 		window.lpAJAXG.fetchAJAX( dataSend, callBack );
 	}, 700 );
+};
+// Create question type
+const createQuestionType = ( e, target ) => {
+	const elBtnQuestionCreateType = target.closest( `${ className.elBtnQuestionCreateType }` );
+	if ( ! elBtnQuestionCreateType ) {
+		return;
+	}
+
+	const elQuestionEditMain = elBtnQuestionCreateType.closest( `${ className.elQuestionEditMain }` );
+	if ( ! elQuestionEditMain ) {
+		return;
+	}
+
+	const questionId = elQuestionEditMain.dataset.questionId;
+	const elQuestionTypeNew = elQuestionEditMain.querySelector( `${ className.elQuestionTypeNew }` );
+	if ( ! elQuestionTypeNew ) {
+		return;
+	}
+
+	const questionType = elQuestionTypeNew.value.trim();
+	if ( ! questionType ) {
+		const message = elQuestionTypeNew.dataset.messEmptyType;
+		showToast( message, 'error' );
+		return;
+	}
+
+	// Call ajax to create new question type
+	const callBack = {
+		success: ( response ) => {
+			const { message, status, data } = response;
+
+			if ( status === 'success' ) {
+				const { html_option_answers } = data;
+				const elAnswersConfig = elQuestionEditMain.querySelector( `${ className.elAnswersConfig }` );
+				if ( elAnswersConfig ) {
+					elAnswersConfig.innerHTML = html_option_answers;
+				}
+
+				showToast( message, status );
+			} else {
+				throw `Error: ${ message }`;
+			}
+		},
+		error: ( error ) => {
+			showToast( error, 'error' );
+		},
+		completed: () => {},
+	};
+
+	const dataSend = {
+		action: 'update_question',
+		question_id: questionId,
+		question_type: questionType,
+		args: {
+			id_url: idUrlHandle,
+		},
+	};
+	window.lpAJAXG.fetchAJAX( dataSend, callBack );
 };
 
 const addQuestionAnswer = ( e, target ) => {
@@ -1011,6 +1070,7 @@ const events = () => {
 		const target = e.target;
 		deleteQuestionAnswer( e, target );
 		addQuestionAnswer( e, target );
+		createQuestionType( e, target );
 		fibInsertBlank( e, target );
 		fibDeleteAllBlanks( e, target );
 		fibClearContent( e, target );

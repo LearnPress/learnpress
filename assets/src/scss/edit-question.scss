@@ -27,7 +27,7 @@ $border-color: #C3C4C7;
 
 .lp-section-collapse {
 	display: grid;
-	gap: 10px;
+	//gap: 10px;
 	padding: 12px;
 	border: 1px solid $border-color;
 	border-top: none;
@@ -183,15 +183,15 @@ $border-color: #C3C4C7;
 }
 
 .lp-question-field-settings {
-	padding: 20px;
+	padding: 10px 20px;
 	display: grid;
 	gap: 5px;
 
 	&:nth-child(2n+1) {
-		background: #f4fcff;
+		//background: #f4fcff;
 	}
 
-	input[type="text"] {
+	input[type="text"], input[type="number"] {
 		padding: 0 10px;
 	}
 }
@@ -243,5 +243,21 @@ $border-color: #C3C4C7;
 	gap: 10px;
 	margin: 10px 0;
 	top: 1px;
+}
+
+.lp-question-type-new-wrap {
+	display: flex;
+	gap: 5px;
+
+	.lp-btn-question-create-type {
+		border: none;
+		background: rgba(19, 94, 150, 0.5);
+		color: #fff;
+
+		&:hover, &.active {
+			background: rgba(19, 94, 150, 1) !important;
+			color: #fff !important;
+		}
+	}
 }
 

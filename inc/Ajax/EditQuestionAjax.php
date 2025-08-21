@@ -19,6 +19,7 @@ use LearnPress\Models\Question\QuestionPostFIBModel;
 use LearnPress\Models\Question\QuestionPostModel;
 use LearnPress\Models\Question\QuestionPostMultipleChoiceModel;
 use LearnPress\Models\Question\QuestionPostSingleChoiceModel;
+use LearnPress\TemplateHooks\Admin\AdminEditQuestionTemplate;
 use LP_Helper;
 use LP_REST_Response;
 use Throwable;
@@ -67,6 +68,7 @@ class EditQuestionAjax extends AbstractAjax {
 			$question_hint        = $data['question_hint'] ?? false;
 			$question_explanation = $data['question_explanation'] ?? false;
 			$question_mark        = $data['question_mark'] ?? false;
+			$question_type        = $data['question_type'] ?? false;
 
 			$questionPostModel = QuestionPostModel::find( $question_id, true );
 			if ( ! $questionPostModel ) {
@@ -97,10 +99,32 @@ class EditQuestionAjax extends AbstractAjax {
 				$questionPostModel->save_meta_value_by_key( QuestionPostModel::META_KEY_MARK, $question_mark );
 			}
 
+			if ( false !== $question_type ) {
+				if ( ! in_array( $question_type, array_keys( QuestionPostModel::get_types() ), true ) ) {
+					throw new Exception( __( 'Invalid question type', 'learnpress' ) );
+				}
+
+				$questionPostModel->save_meta_value_by_key( QuestionPostModel::META_KEY_TYPE, $question_type );
+
+				// Create default answers for question
+				$questionClassName = $questionPostModel::get_question_obj_by_type( $question_type );
+				if ( class_exists( $questionClassName ) ) {
+					$questionPostTyeModel = new $questionClassName( $questionPostModel );
+					if ( method_exists( $questionPostTyeModel, 'create_default_answers' ) ) {
+						$questionPostTyeModel->create_default_answers();
+					}
+				} else {
+					throw new Exception( __( 'Question type not found', 'learnpress' ) );
+				}
+			}
+
 			$questionPostModel->save();
 
-			$response->status  = 'success';
-			$response->message = __( 'Question update successfully', 'learnpress' );
+			$response->data->html_option_answers = AdminEditQuestionTemplate::instance()->html_answer_option(
+				$questionPostModel
+			);
+			$response->status                    = 'success';
+			$response->message                   = __( 'Question update successfully', 'learnpress' );
 		} catch ( Throwable $e ) {
 			$response->message = $e->getMessage();
 		}
