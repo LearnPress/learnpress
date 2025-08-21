@@ -118,7 +118,7 @@ class AdminEditQuestionTemplate {
 
 		$section_edit_main = [
 			'wrap'     => sprintf(
-				'<div class="question-edit-main" data-question-id="%s">',
+				'<div class="lp-edit-question-wrap lp-question-edit-main" data-question-id="%s">',
 				esc_attr( $questionPostModel->ID )
 			),
 			'left'     => '<div class="lp-question-edit-left">',

@@ -1,5 +1,6 @@
 @import "mixin";
 @import "message";
+@import "edit-question";
 
 $bg-section: #F4FCFF;
 $border-color: #C3C4C7;
@@ -117,7 +118,7 @@ $spacing-section: 12px;
 			border-bottom: 1px solid $border-color;
 
 			&.lp-collapse {
-				.question-edit-main {
+				.lp-question-edit-main {
 					display: none;
 				}
 			}
@@ -189,15 +190,6 @@ $spacing-section: 12px;
 			transition: background 200ms ease-out;
 			align-items: center;
 			gap: 5px;
-		}
-
-		.question-edit-main {
-			display: grid;
-			gap: 20px;
-			overflow: hidden;
-			padding: 20px;
-			border-top: 1px solid $border-color;
-			grid-template-columns: 1fr 1fr;
 		}
 
 		.lp-question-choice-header {
@@ -620,7 +612,7 @@ $spacing-section: 12px;
 @media (max-width: 768px) {
 	.lp-edit-quiz-wrap {
 		.lp-edit-list-questions {
-			.question-edit-main {
+			.lp-question-edit-main {
 				display: grid;
 				grid-template-columns: 1fr;
 			}

@@ -66,7 +66,7 @@ $border-color: #C3C4C7;
 
 /***** Main Question Edit Styles *****/
 
-.question-edit-main {
+.lp-question-edit-main {
 	display: grid;
 	gap: 20px;
 	overflow: hidden;
@@ -76,6 +76,7 @@ $border-color: #C3C4C7;
 	[class*="lp-icon-"] {
 		font-size: 1.25rem;
 		color: #787c82;
+		cursor: pointer;
 	}
 
 	input {

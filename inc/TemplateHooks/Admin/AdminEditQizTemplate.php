@@ -197,7 +197,7 @@ class AdminEditQizTemplate {
 
 			$section_edit_main = [
 				'wrap'        => sprintf(
-					'<div class="question-edit-main" data-question-id="%d">',
+					'<div class="lp-question-edit-main" data-question-id="%d">',
 					$question_id
 				),
 				'left'        => '<div class="lp-question-edit-left">',
