@@ -424,7 +424,7 @@ class LP_Course_DB extends LP_Database {
 	/**
 	 * list id item are unassigned to any courses.
 	 *
-	 * @param LP_Post_Type_Filter $filter
+	 * @param LP_Post_Type_Filter|mixed $filter
 	 *
 	 * @return array|int|string|null
 	 * @throws Exception
@@ -432,9 +432,13 @@ class LP_Course_DB extends LP_Database {
 	 * @version 1.0.0
 	 * @since 4.1.6
 	 */
-	public function get_item_ids_unassigned( LP_Post_Type_Filter $filter = null ) {
+	public function get_item_ids_unassigned( $filter = null ) {
 		if ( is_null( $filter ) ) {
 			$filter = new LP_Post_Type_Filter();
+		}
+
+		if ( ! $filter instanceof LP_Post_Type_Filter ) {
+			throw new Exception( 'Filter must be instance of LP_Post_Type_Filter' );
 		}
 
 		$filter_section_items                      = new LP_Section_Items_Filter();
