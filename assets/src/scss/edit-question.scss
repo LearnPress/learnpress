@@ -4,49 +4,7 @@
 
 $border-color: #C3C4C7;
 
-// Collapse icon
-.lp-icon-angle-down {
-	display: none;
-	cursor: pointer;
-}
-
-.lp-icon-angle-up {
-	display: inline-block;
-	cursor: pointer;
-}
-
-.lp-collapse {
-	.lp-icon-angle-up {
-		display: none;
-	}
-
-	.lp-icon-angle-down {
-		display: inline-block;
-	}
-}
-
-.lp-section-collapse {
-	display: grid;
-	//gap: 10px;
-	padding: 12px;
-	border: 1px solid $border-color;
-	border-top: none;
-}
-
-.lp-section-toggle {
-	&.lp-collapse {
-		.lp-section-collapse {
-			display: none;
-		}
-	}
-}
-
-.lp-trigger-toggle {
-	display: flex;
-	align-items: center;
-}
-
-// End Collapse icon
+@import "toggleCollapse";
 
 .lp-icon-spinner {
 	animation: rotation 2s infinite linear;

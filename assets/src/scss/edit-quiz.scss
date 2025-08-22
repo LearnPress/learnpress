@@ -1,7 +1,11 @@
-@import "mixin";
-@import "message";
+/**
+ * Style for Edit Quiz.
+ *
+ * @version 4.2.9
+ */
 @import "edit-question";
 @import "popupSelectItemToAdd";
+@import "toggleCollapse";
 
 $bg-section: #F4FCFF;
 $border-color: #C3C4C7;
@@ -63,28 +67,6 @@ $spacing-section: 12px;
 			cursor: grabbing;
 		}
 	}
-
-	// Collapse icon
-	.lp-icon-angle-down {
-		display: none;
-		cursor: pointer;
-	}
-
-	.lp-icon-angle-up {
-		display: inline-block;
-		cursor: pointer;
-	}
-
-	.lp-collapse {
-		.lp-icon-angle-up {
-			display: none;
-		}
-
-		.lp-icon-angle-down {
-			display: inline-block;
-		}
-	}
-	// End Collapse icon
 
 	.heading {
 		display: flex;
@@ -193,83 +175,11 @@ $spacing-section: 12px;
 			gap: 5px;
 		}
 
-		.lp-question-choice-header {
-			display: flex;
-			justify-content: space-between;
-			padding: 10px;
-			background: #dcdcde;
-		}
-
-		.lp-question-answer-item {
-			display: flex;
-			flex-direction: row;
-			align-items: center;
-			gap: 5px;
-			padding: 5px;
-			margin: 0;
-			border: 1px solid #dcdcde;
-			border-top: none;
-
-			&:hover {
-				.lp-btn-delete-question-answer {
-					display: inline-block;
-				}
-			}
-
-			&.loading {
-				pointer-events: none;
-				opacity: 0.5 !important;
-
-				.lp-icon-spinner {
-					display: inline-block;
-				}
-			}
-
-			.lp-btn-delete-question-answer {
-				display: none;
-				cursor: pointer;
-			}
-		}
-
-		.lp-question-answer-item-add-new {
-			display: flex;
-			flex-direction: row;
-			align-items: center;
-			gap: 5px;
-			padding: 5px;
-			margin: 0;
-			border: 1px solid #dcdcde;
-			border-top: none;
-		}
-
-		.lp-section-collapse {
-			display: grid;
-			gap: 10px;
-			padding: 12px;
-			border: 1px solid $border-color;
-			border-top: none;
-		}
-
 		.lp-section-toggle {
 			&.lp-collapse {
 				.lp-section-collapse {
 					display: none;
 				}
-			}
-		}
-
-		.lp-question-data-edit-header {
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-			margin-bottom: 10px;
-			font-weight: bold;
-			//padding: 10px;
-			//border: 1px solid lightgray;
-			//background: #eeeeee;
-
-			&:hover {
-				//cursor: pointer;
 			}
 		}
 	}
@@ -284,18 +194,6 @@ $spacing-section: 12px;
 		gap: 5px;
 		border: 1px solid $border-color;
 		border-top: none;
-	}
-
-	.lp-question-option-row {
-		display: flex;
-		gap: 20px;
-		align-items: center;
-
-		input[type="text"], input[type="number"] {
-			width: 100%;
-			border: 1px solid $border-color;
-			padding: 6px 10px;
-		}
 	}
 
 	.lp-question-edit-left {
@@ -315,8 +213,6 @@ $spacing-section: 12px;
 		}
 	}
 }
-
-
 
 @media (max-width: 768px) {
 	.lp-edit-quiz-wrap {
