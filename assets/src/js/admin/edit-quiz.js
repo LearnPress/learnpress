@@ -109,59 +109,6 @@ const toggleQuestionAll = ( e, target ) => {
 	} );
 };
 
-// Toggle section
-const toggleQuestion = ( e, target ) => {
-	const elSectionToggle = target.closest( `${ className.elQuestionToggle }` );
-	if ( ! elSectionToggle ) {
-		return;
-	}
-
-	const elQuestionItem = elSectionToggle.closest(
-		`${ className.elQuestionItem }`
-	);
-
-	// Toggle section
-	elQuestionItem.classList.toggle( `${ className.elCollapse }` );
-
-	// Check all sections collapsed
-	checkAllQuestionsCollapsed();
-};
-
-/**
- * Toggle section
- *
- * @param e
- * @param target
- * @param el_trigger is class name or id name, to find of element to trigger toggle
- */
-const toggleSection = ( e, target, el_trigger = '' ) => {
-	if ( ! el_trigger ) {
-		el_trigger = className.elTriggerToggle;
-	}
-
-	if ( target.closest( `${ className.elBtnUpdateQuestionDes }` ) ) {
-		return;
-	} else if ( target.closest( `${ className.elBtnUpdateQuestionHint }` ) ) {
-		return;
-	} else if ( target.closest( `${ className.elBtnUpdateQuestionExplain }` ) ) {
-		return;
-	} else if ( target.closest( `${ className.elBtnUpdateQuestionAnswer }` ) ) {
-		return;
-	}
-
-	const elTinymceHeader = target.closest( el_trigger );
-	if ( ! elTinymceHeader ) {
-		return;
-	}
-
-	const elSectionToggle = elTinymceHeader.closest( `${ className.elSectionToggle }` );
-	if ( ! elSectionToggle ) {
-		return;
-	}
-
-	elSectionToggle.classList.toggle( `${ className.elCollapse }` );
-};
-
 // Check if all sections are collapsed
 const checkAllQuestionsCollapsed = () => {
 	const elQuestionItems = elEditQuizWrap.querySelectorAll(
@@ -589,8 +536,7 @@ document.addEventListener( 'click', ( e ) => {
 	const target = e.target;
 
 	toggleQuestionAll( e, target );
-	toggleQuestion( e, target );
-	//toggleSection( e, target );
+	lpUtils.toggleCollapse( e, target, className.elQuestionToggle, [], checkAllQuestionsCollapsed );
 	addQuestion( e, target );
 	removeQuestion( e, target );
 	updateQuestionTitle( e, target );

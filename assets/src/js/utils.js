@@ -10,6 +10,9 @@
 const lpClassName = {
 	hidden: 'lp-hidden',
 	loading: 'loading',
+	elCollapse: 'lp-collapse',
+	elSectionToggle: '.lp-section-toggle',
+	elTriggerToggle: '.lp-trigger-toggle',
 };
 const lpFetchAPI = ( url, data = {}, functions = {} ) => {
 	if ( 'function' === typeof functions.before ) {
@@ -176,8 +179,42 @@ const lpSetLoadingEl = ( el, status ) => {
 	}
 };
 
+// Toggle collapse section
+const toggleCollapse = ( e, target, elTriggerClassName = '', elsExclude = [], callback ) => {
+	if ( ! elTriggerClassName ) {
+		elTriggerClassName = lpClassName.elTriggerToggle;
+	}
+
+	// Exclude elements, which should not trigger the collapse toggle
+	if ( elsExclude && elsExclude.length > 0 ) {
+		for ( const elExclude of elsExclude ) {
+			if ( target.closest( elExclude ) ) {
+				return;
+			}
+		}
+	}
+
+	const elTrigger = target.closest( elTriggerClassName );
+	if ( ! elTrigger ) {
+		return;
+	}
+
+	//console.log( 'elTrigger', elTrigger );
+
+	const elSectionToggle = elTrigger.closest( `${ lpClassName.elSectionToggle }` );
+	if ( ! elSectionToggle ) {
+		return;
+	}
+
+	elSectionToggle.classList.toggle( `${ lpClassName.elCollapse }` );
+
+	if ( 'function' === typeof callback ) {
+		callback( elSectionToggle );
+	}
+};
+
 export {
 	lpFetchAPI, lpAddQueryArgs, lpGetCurrentURLNoParam,
 	listenElementViewed, listenElementCreated, lpOnElementReady, lpAjaxParseJsonOld,
-	lpShowHideEl, lpSetLoadingEl, lpClassName,
+	lpShowHideEl, lpSetLoadingEl, lpClassName, toggleCollapse,
 };

@@ -216,7 +216,7 @@ class AdminEditQizTemplate {
 		$section = [
 			'wrap'       => sprintf(
 				'<div data-question-id="%s"
-					class="lp-question-item lp-collapse %s"
+					class="lp-question-item lp-section-toggle lp-collapse %s"
 					data-question-type="%s">',
 				$question_id,
 				$is_clone ? 'clone lp-hidden' : '',

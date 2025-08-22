@@ -1088,9 +1088,8 @@ const events = () => {
 			const elQuestionEditMain = target.closest( `${ className.elQuestionEditMain }` );
 			const elSaveButton = elQuestionEditMain.querySelector( `${ className.elBtnFibSaveContent }` );
 			fibSaveContent( e, elSaveButton );
-			return;
 		}
-		toggleSection( e, target, className.elTriggerToggle );
+		lpUtils.toggleCollapse( e, target );
 	} );
 	// Event change
 	document.addEventListener( 'change', ( e ) => {
