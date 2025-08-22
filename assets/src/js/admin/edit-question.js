@@ -107,6 +107,9 @@ const eventEditorTinymce = ( id ) => {
 	const elTextarea = document.getElementById( id );
 	const elQuestionEditMain = elTextarea.closest( `${ className.elQuestionEditMain }` );
 	const questionId = elQuestionEditMain.dataset.questionId;
+	editor.settings.force_p_newlines = false;
+	editor.settings.forced_root_block = '';
+	editor.settings.force_br_newlines = true;
 	// Events focus in TinyMCE editor
 	editor.on( 'change', ( e ) => {
 		//console.log( 'Editor changed:', e.target.id );
@@ -125,9 +128,6 @@ const eventEditorTinymce = ( id ) => {
 	} );
 	editor.on( 'focusin', ( e ) => {} );
 	editor.on( 'init', () => {
-		editor.settings.force_p_newlines = false;
-		editor.settings.forced_root_block = '';
-		editor.settings.force_br_newlines = true;
 		// Add style
 		editor.dom.addStyle( `
 			body {

@@ -22,7 +22,7 @@ class QuestionPostFIBModel extends QuestionPostModel {
 		return array(
 			array(
 				'value' => $this->random_value(),
-				'title' => esc_html__( 'FIB', 'learnpress' ),
+				'title' => '',
 			),
 		);
 	}
