@@ -639,16 +639,23 @@ const fibInsertBlank = ( e, target ) => {
 	const textPlaceholder = elBtnFibInsertBlank.dataset.defaultText;
 	const elQuestionEditMain = elBtnFibInsertBlank.closest( `${ className.elQuestionEditMain }` );
 	const questionId = elQuestionEditMain.dataset.questionId;
-
+	const messErrInserted = elBtnFibInsertBlank.dataset.messInserted;
+	const messErrRequireSelectText = elBtnFibInsertBlank.dataset.messRequireSelectText;
 	const idEditor = `${ className.elQuestionFibInput }-${ questionId }`;
 
 	const uniquid = randomString();
 	let selectedText;
 	if ( fibSelection ) {
 		const elNode = fibSelection.getNode();
+		console.log( `#${ idEditor }_ifr` );
+		const findParent = elNode.closest( `body[data-id="${ idEditor }"]` );
+		if ( ! findParent ) {
+			showToast( messErrRequireSelectText, 'error' );
+			return;
+		}
+
 		if ( elNode.classList.contains( `${ className.elQuestionFibInput }` ) ) {
-			const messErr = elBtnFibInsertBlank.dataset.messInserted;
-			showToast( messErr, 'error' );
+			showToast( messErrInserted, 'error' );
 			return;
 		}
 
@@ -661,8 +668,7 @@ const fibInsertBlank = ( e, target ) => {
 
 		fibSelection.setContent( elInputNew );
 	} else {
-		const messErr = elBtnFibInsertBlank.dataset.messRequireSelectText;
-		showToast( messErr, 'error' );
+		showToast( messErrRequireSelectText, 'error' );
 		return;
 	}
 

@@ -47,7 +47,6 @@ const className = {
 	elInputAnswerSetTrue: '.lp-input-answer-set-true',
 	elQuestionAnswerItem: '.lp-question-answer-item',
 	elBtnUpdateQuestionAnswer: '.lp-btn-update-question-answer',
-	elBtnFibInsertBlank: '.lp-btn-fib-insert-blank',
 	elBtnFibDeleteAllBlanks: '.lp-btn-fib-delete-all-blanks',
 	elBtnFibSaveContent: '.lp-btn-fib-save-content',
 	elBtnFibClearAllContent: '.lp-btn-fib-clear-all-content',
