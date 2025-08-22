@@ -115,15 +115,18 @@ const eventEditorTinymce = ( id ) => {
 		'.lp-question-fib-input{border: 1px dashed rebeccapurple;padding: 5px; } ';
 	// Events focus in TinyMCE editor
 	editor.on( 'change', ( e ) => {
-
+		//console.log( 'Editor changed:', e.target.id );
+		elTextarea.value = editor.getContent();
+		autoUpdateQuestion( e, elTextarea );
 	} );
 	editor.on( 'keyup', ( e ) => {
+		//console.log( 'Editor keyup:', e.target.id );
 		// Auto save if it has class lp-auto-save
 		elTextarea.value = editor.getContent();
 		autoUpdateQuestion( e, elTextarea );
 	} );
 	editor.on( 'blur', ( e ) => {
-		console.log( 'Editor blurred:', e.target.id );
+		//console.log( 'Editor blurred:', e.target.id );
 	} );
 	editor.on( 'focusin', ( e ) => {} );
 	editor.on( 'init', () => {} );
@@ -1140,22 +1143,6 @@ lpUtils.lpOnElementReady(
 export {
 	events,
 	initTinyMCE,
-	toggleSection,
-	randomString,
-	decodeHtml,
 	showToast,
-	fibInsertBlank,
-	fibDeleteAllBlanks,
-	fibClearContent,
-	fibDeleteBlank,
-	fibOptionTitleInputChange,
-	fibSaveContent,
-	fibShowHideMatchCaseOption,
-	getDataAnswersConfig,
-	setDataAnswersConfig,
-	addQuestionAnswer,
-	autoUpdateQuestion,
-	autoUpdateAnswer,
-	deleteQuestionAnswer,
 	sortAbleQuestionAnswer,
 };
