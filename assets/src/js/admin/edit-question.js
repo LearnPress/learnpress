@@ -116,6 +116,7 @@ const eventEditorTinymce = ( id ) => {
 	// Events focus in TinyMCE editor
 	editor.on( 'change', ( e ) => {
 		//console.log( 'Editor changed:', e.target.id );
+		// Auto save if it has class lp-auto-save
 		elTextarea.value = editor.getContent();
 		autoUpdateQuestion( e, elTextarea );
 	} );
@@ -138,7 +139,7 @@ const eventEditorTinymce = ( id ) => {
 		}
 
 		editor.dom.bind( elementg[ 0 ], 'input', function( e ) {
-			console.log( 'Input changed:', e.target.value );
+			//console.log( 'Input changed:', e.target.value );
 		} );
 	} );
 	editor.on( 'selectionchange', ( e ) => {
@@ -650,7 +651,6 @@ const fibInsertBlank = ( e, target ) => {
 	let selectedText;
 	if ( fibSelection ) {
 		const elNode = fibSelection.getNode();
-		console.log( `#${ idEditor }_ifr` );
 		const findParent = elNode.closest( `body[data-id="${ idEditor }"]` );
 		if ( ! findParent ) {
 			showToast( messErrRequireSelectText, 'error' );
