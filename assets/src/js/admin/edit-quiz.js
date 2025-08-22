@@ -22,49 +22,19 @@ const className = {
 	elEditListQuestions: '.lp-edit-list-questions',
 	elQuestionItem: '.lp-question-item',
 	elQuestionToggle: '.lp-question-toggle',
-	elBtnShowPopupItemsToSelect: '.lp-btn-show-popup-items-to-select',
 	elPopupItemsToSelectClone: '.lp-popup-items-to-select.clone',
 	elBtnAddQuestion: '.lp-btn-add-question',
 	elBtnRemoveQuestion: '.lp-btn-remove-question',
 	elBtnUpdateQuestionTitle: '.lp-btn-update-question-title',
 	elBtnCancelUpdateQuestionTitle: '.lp-btn-cancel-update-question-title',
-	elBtnUpdateQuestionDes: '.lp-btn-update-question-des',
-	elBtnUpdateQuestionHint: '.lp-btn-update-question-hint',
-	elBtnUpdateQuestionExplain: '.lp-btn-update-question-explanation',
 	elQuestionTitleNewInput: '.lp-question-title-new-input',
 	elQuestionTitleInput: '.lp-question-title-input',
 	elQuestionTypeLabel: '.lp-question-type-label',
 	elQuestionTypeNew: '.lp-question-type-new',
 	elAddNewQuestion: 'add-new-question',
 	elQuestionClone: '.lp-question-item.clone',
-	elAnswersConfig: '.lp-answers-config',
-	elBtnAddAnswer: '.lp-btn-add-question-answer',
-	elQuestionAnswerItemAddNew: '.lp-question-answer-item-add-new',
-	elQuestionAnswerTitleNewInput: '.lp-question-answer-title-new-input',
-	elQuestionAnswerTitleInput: '.lp-question-answer-title-input',
-	elBtnDeleteAnswer: '.lp-btn-delete-question-answer',
-	elQuestionByType: '.lp-question-by-type',
-	elInputAnswerSetTrue: '.lp-input-answer-set-true',
-	elQuestionAnswerItem: '.lp-question-answer-item',
-	elBtnUpdateQuestionAnswer: '.lp-btn-update-question-answer',
-	elBtnFibDeleteAllBlanks: '.lp-btn-fib-delete-all-blanks',
-	elBtnFibSaveContent: '.lp-btn-fib-save-content',
-	elBtnFibClearAllContent: '.lp-btn-fib-clear-all-content',
-	elFibInput: '.lp-question-fib-input',
-	elFibOptionTitleInput: '.lp-question-fib-option-title-input',
-	elFibBlankOptions: '.lp-question-fib-blank-options',
-	elFibBlankOptionItem: '.lp-question-fib-blank-option-item',
-	elFibBlankOptionItemClone: '.lp-question-fib-blank-option-item.clone',
-	elFibBlankOptionIndex: '.lp-question-fib-option-index',
-	elBtnFibOptionDelete: '.lp-btn-fib-option-delete',
-	elQuestionFibOptionMatchCaseInput: '.lp-question-fib-option-match-case-input',
-	elQuestionFibOptionMatchCaseWrap: '.lp-question-fib-option-match-case-wrap',
-	elQuestionFibOptionDetail: '.lp-question-fib-option-detail',
-	elQuestionFibOptionComparisonInput: '.lp-question-fib-option-comparison-input',
 	LPTarget: '.lp-target',
 	elCollapse: 'lp-collapse',
-	elSectionToggle: '.lp-section-toggle',
-	elTriggerToggle: '.lp-trigger-toggle',
 };
 let quizID;
 const idUrlHandle = 'edit-quiz-questions';
@@ -528,8 +498,6 @@ const sortAbleQuestion = () => {
 		},
 	} );
 };
-
-// End FIB question type
 
 // Events
 document.addEventListener( 'click', ( e ) => {

@@ -42,14 +42,14 @@ const argsToastify = {
 };
 
 // Show popup items to select
-const showPopupItemsToSelect = ( e, target, elMain, callBack ) => {
+const showPopupItemsToSelect = ( e, target, elPopupSelectItems, callBack ) => {
 	const elBtnShowPopupItemsToSelect = target.closest( `${ className.elBtnShowPopupItemsToSelect }` );
 	if ( ! elBtnShowPopupItemsToSelect ) {
 		return;
 	}
 
 	SweetAlert.fire( {
-		html: elMain,
+		html: elPopupSelectItems,
 		showConfirmButton: false,
 		showCloseButton: true,
 		width: '60%',
