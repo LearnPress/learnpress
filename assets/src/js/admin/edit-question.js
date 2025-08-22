@@ -107,12 +107,6 @@ const eventEditorTinymce = ( id ) => {
 	const elTextarea = document.getElementById( id );
 	const elQuestionEditMain = elTextarea.closest( `${ className.elQuestionEditMain }` );
 	const questionId = elQuestionEditMain.dataset.questionId;
-	editor.settings.force_p_newlines = false;
-	editor.settings.forced_root_block = '';
-	editor.settings.force_br_newlines = true;
-	editor.settings.content_style = '' +
-		'body{ line-height: 2.2;}  ' +
-		'.lp-question-fib-input{border: 1px dashed rebeccapurple;padding: 5px; } ';
 	// Events focus in TinyMCE editor
 	editor.on( 'change', ( e ) => {
 		//console.log( 'Editor changed:', e.target.id );
@@ -130,7 +124,21 @@ const eventEditorTinymce = ( id ) => {
 		//console.log( 'Editor blurred:', e.target.id );
 	} );
 	editor.on( 'focusin', ( e ) => {} );
-	editor.on( 'init', () => {} );
+	editor.on( 'init', () => {
+		editor.settings.force_p_newlines = false;
+		editor.settings.forced_root_block = '';
+		editor.settings.force_br_newlines = true;
+		// Add style
+		editor.dom.addStyle( `
+			body {
+				line-height: 2.2;
+			}
+			.${ className.elQuestionFibInput } {
+				border: 1px dashed rebeccapurple;
+				padding: 5px;
+			}
+		` );
+	} );
 	editor.on( 'setcontent', ( e ) => {
 		const uniquid = randomString();
 		const elementg = editor.dom.select( `.${ className.elQuestionFibInput }[data-id="${ uniquid }"]` );
@@ -651,6 +659,11 @@ const fibInsertBlank = ( e, target ) => {
 	let selectedText;
 	if ( fibSelection ) {
 		const elNode = fibSelection.getNode();
+		if ( ! elNode ) {
+			showToast( 'Event insert blank has error, please try again', 'error' );
+			return;
+		}
+
 		const findParent = elNode.closest( `body[data-id="${ idEditor }"]` );
 		if ( ! findParent ) {
 			showToast( messErrRequireSelectText, 'error' );
