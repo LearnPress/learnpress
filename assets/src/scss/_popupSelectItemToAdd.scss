@@ -1,0 +1,185 @@
+/**
+* Style for the popup select item to add in LearnPress
+*/
+
+$border-color: #C3C4C7;
+
+.lp-select-items-popup {
+	padding: 0 !important;
+	grid-row: 1 !important;
+	--swal2-close-button-font-size: 32px;
+
+	.swal2-close {
+		padding-top: 8px;
+	}
+}
+
+.lp-select-items-html-container {
+	padding: 0 !important;
+}
+
+.lp-popup-items-to-select {
+	text-align: left;
+	font-size: 1rem;
+
+	.header {
+		position: relative;
+
+		.header-count-items-selected {
+			border-bottom: 1px solid $border-color;
+			padding: 16px 20px;
+		}
+
+		.tabs {
+			margin: 0;
+			border-bottom: 1px solid $border-color;
+
+			.tab {
+				display: inline-block;
+				position: relative;
+				margin: 0;
+
+				&:not(:last-child)::before {
+					position: absolute;
+					top: 50%;
+					right: 0;
+					height: 44px;
+					margin-top: -22px;
+					border-right: 1px solid $border-color;
+					content: "";
+				}
+
+				&.active {
+
+					&::after {
+						display: inline-block;
+						position: absolute;
+						bottom: -6px;
+						left: 50%;
+						width: 10px;
+						height: 10px;
+						margin-left: -6px;
+						border: 1px solid $border-color;
+						border-right: 0;
+						border-bottom: 0;
+						background: #fff;
+						content: "";
+						transform: rotate(45deg);
+					}
+
+					a {
+						color: #0073aa;
+					}
+				}
+
+				a {
+					display: inline-block;
+					height: 44px;
+					padding: 0 20px;
+					color: #333;
+					font-weight: 600;
+					line-height: 2.75rem;
+					text-decoration: none;
+
+					&:focus {
+						box-shadow: none;
+					}
+				}
+			}
+		}
+	}
+
+	.main {
+		overflow: hidden;
+		position: relative;
+		padding: 20px;
+		border-bottom: 1px solid $border-color;
+
+		input.lp-search-title-item {
+			width: 100%;
+			font-size: 1rem;
+			border: 1px solid $border-color;
+			margin-bottom: 10px;
+		}
+	}
+
+	.list-items, .list-items-selected {
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+		overflow-y: auto;
+		min-height: 260px;
+		max-height: 460px;
+		margin: 0;
+
+		li {
+			margin: 0;
+			cursor: pointer;
+		}
+	}
+
+	.list-items-selected {
+		li {
+			display: flex;
+			gap: 5px;
+			align-items: center;
+			color: #999;
+
+			.item-type {
+				padding: 0;
+				font-size: inherit;
+				color: inherit;
+				line-height: unset;
+			}
+
+			.item-title {
+				color: #333;
+			}
+
+			&.selected {
+				background-color: #F4FCFF;
+			}
+
+			&:hover .dashicons-remove {
+				opacity: 1;
+			}
+		}
+
+		.dashicons-remove {
+			color: #E74C3C;
+			opacity: 0.6;
+		}
+	}
+
+	.pagination {
+		display: flex;
+		flex-wrap: wrap;
+		margin: 10px 0 -10px -10px;
+		align-items: center;
+
+		li {
+			margin: 0;
+			cursor: pointer;
+
+			.page-numbers {
+				width: 30px;
+				height: 30px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			}
+
+			a {
+				text-decoration: none;
+				display: flex;
+				align-items: center;
+			}
+		}
+	}
+
+	.footer {
+		padding: 16px 20px;
+		display: flex;
+		gap: 5px;
+	}
+}
