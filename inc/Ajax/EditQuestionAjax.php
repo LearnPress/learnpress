@@ -116,15 +116,15 @@ class EditQuestionAjax extends AbstractAjax {
 				} else {
 					throw new Exception( __( 'Question type not found', 'learnpress' ) );
 				}
+
+				$response->data->html_option_answers = AdminEditQuestionTemplate::instance()->html_answer_option(
+					$questionPostModel
+				);
 			}
 
 			$questionPostModel->save();
-
-			$response->data->html_option_answers = AdminEditQuestionTemplate::instance()->html_answer_option(
-				$questionPostModel
-			);
-			$response->status                    = 'success';
-			$response->message                   = __( 'Question update successfully', 'learnpress' );
+			$response->status  = 'success';
+			$response->message = __( 'Question update successfully', 'learnpress' );
 		} catch ( Throwable $e ) {
 			$response->message = $e->getMessage();
 		}

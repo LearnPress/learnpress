@@ -278,9 +278,9 @@ const createQuestionType = ( e, target ) => {
 			if ( status === 'success' ) {
 				const { html_option_answers } = data;
 				const elAnswersConfig = elQuestionEditMain.querySelector( `${ className.elAnswersConfig }` );
-				if ( elAnswersConfig ) {
-					elAnswersConfig.innerHTML = html_option_answers;
-				}
+				elAnswersConfig.outerHTML = html_option_answers;
+				initTinyMCE();
+				sortAbleQuestionAnswer( elQuestionEditMain );
 
 				showToast( message, status );
 			} else {
