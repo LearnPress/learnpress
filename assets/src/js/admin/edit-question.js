@@ -664,7 +664,7 @@ const fibInsertBlank = ( e, target ) => {
 			selectedText = textPlaceholder;
 		}
 
-		const elInputNew = `<span class="${ className.elQuestionFibInput }" data-id="${ uniquid }">${ selectedText }</span>&nbsp;`;
+		const elInputNew = `<span class="${ className.elQuestionFibInput }" data-id="${ uniquid }">${ selectedText }</span>`;
 
 		fibSelection.setContent( elInputNew );
 	} else {
