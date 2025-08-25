@@ -129,6 +129,17 @@ $border-color: #C3C4C7;
 	}
 }
 
+.lp-btn-add-question-answer {
+	border: none !important;
+	background: rgba(19, 94, 150, 0.5) !important;
+	color: #fff !important;
+
+	&:hover, &.active {
+		background: rgba(19, 94, 150, 1) !important;
+		color: #fff !important;
+	}
+}
+
 .lp-question-answer-item-add-new {
 	display: flex;
 	flex-direction: row;
@@ -138,6 +149,11 @@ $border-color: #C3C4C7;
 	margin: 0;
 	border: 1px solid #dcdcde;
 	border-top: none;
+
+	.lp-icon-plus {
+		cursor: none;
+		margin-left: 5px;
+	}
 }
 
 .lp-question-field-settings {
@@ -182,6 +198,12 @@ $border-color: #C3C4C7;
 
 		.lp-icon-angle-down::before, .lp-icon-angle-up::before {
 			content: "\f142";
+			width: 15px;
+			text-align: center;
+			height: 30px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
 		}
 	}
 
@@ -205,6 +227,19 @@ $border-color: #C3C4C7;
 	gap: 10px;
 	margin: 10px 0;
 	top: 1px;
+
+	.lp-btn-fib-save-content {
+		background: rgb(19, 94, 150) !important;
+		color: white;
+
+		&:hover {
+			background: rgb(19, 94, 150) !important;
+			color: white !important;
+		}
+	}
+	.lp-btn-fib-clear-all-content {
+		border: none;
+	}
 }
 
 .lp-question-type-new-wrap {

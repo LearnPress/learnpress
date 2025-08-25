@@ -203,9 +203,9 @@ $spacing-section: 12px;
 	}
 
 	.lp-btn-add-question {
-		border: none;
-		background: rgba(19, 94, 150, 0.5);
-		color: #fff;
+		border: none !important;
+		background: rgba(19, 94, 150, 0.5) !important;
+		color: #fff !important;
 
 		&:hover, &.active {
 			background: rgba(19, 94, 150, 1) !important;

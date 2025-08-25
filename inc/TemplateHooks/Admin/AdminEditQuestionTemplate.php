@@ -379,6 +379,13 @@ class AdminEditQuestionTemplate {
 	public function html_answer_option( QuestionPostModel $questionPostModel ): string {
 		$type = $questionPostModel->get_type();
 
+		// For addon sorting choice old <= v4.0.1
+		if ( class_exists( 'LP_Addon_Sorting_Choice_Preload' ) && $type === 'sorting_choice' ) {
+			if ( version_compare( LP_ADDON_SORTING_CHOICE_VER, '4.0.1', '<=' ) ) {
+				$type = 'sorting_choice_old';
+			}
+		}
+
 		switch ( $type ) {
 			case 'true_or_false':
 				$html = self::html_answer_type_true_or_false( $questionPostModel );
@@ -391,6 +398,9 @@ class AdminEditQuestionTemplate {
 				break;
 			case 'fill_in_blanks':
 				$html = self::html_answer_type_fill_in_blanks( $questionPostModel );
+				break;
+			case 'sorting_choice_old':
+				$html = self::html_answer_type_sorting_choice_old( $questionPostModel );
 				break;
 			case $type:
 				$html = apply_filters( 'learn-press/edit-question/type/html', '', $type, $questionPostModel );
@@ -613,7 +623,65 @@ class AdminEditQuestionTemplate {
 			</div>',
 			'lp-question-answer-title-new-input',
 			esc_attr__( 'Answer title is required', 'learnpress' ),
-			__( 'Add Otion', 'learnpress' )
+			__( 'Add Option', 'learnpress' )
+		);
+
+		$section = [
+			'header'  => '<div class="lp-question-choice-header"><span>Answers</span><span>Correct</span></div>',
+			'answers' => $html_answers,
+		];
+
+		return Template::combine_components( $section );
+	}
+
+	/**
+	 * Get html edit question type multiple choice.
+	 *
+	 * @param QuestionPostModel $questionPostModel
+	 *
+	 * @return string
+	 */
+	public function html_answer_type_sorting_choice_old( QuestionPostModel $questionPostModel ): string {
+		$answers   = $questionPostModel->get_answer_option();
+		$answers[] = null;
+
+		$html_answers = '';
+		foreach ( $answers as $answer ) {
+			$is_clone           = true;
+			$title              = '';
+			$question_answer_id = 0;
+
+			if ( ! is_null( $answer ) ) {
+				$is_clone            = false;
+				$questionAnswerModel = new QuestionAnswerModel( $answer );
+				$title               = $questionAnswerModel->title;
+				$question_answer_id  = $questionAnswerModel->question_answer_id;
+			}
+
+			$html_answers .= sprintf(
+				'<div class="lp-question-answer-item %s" data-answer-id="%d">
+					<span class="drag lp-icon-drag" title="Drag to reorder section"></span>
+					<span class="lp-icon-spinner"></span>
+					<input type="text" class="%s" name="%s" value="%s" />
+					<span class="lp-icon-trash-o lp-btn-delete-question-answer"></span>
+				</div>',
+				$is_clone ? 'clone lp-hidden' : '',
+				esc_attr( $question_answer_id ),
+				'lp-question-answer-title-input lp-auto-save-question-answer',
+				'lp-question-answer-title-input',
+				esc_attr( $title )
+			);
+		}
+
+		$html_answers .= sprintf(
+			'<div class="lp-question-answer-item-add-new">
+				<span class="lp-icon-plus" title="Add answer option"></span>
+				<input type="text" class="%1$s" name="%1$s" value="" data-mess-empty-title="%2$s" />
+				<button type="button" class="button lp-btn-add-question-answer">%3$s</button>
+			</div>',
+			'lp-question-answer-title-new-input',
+			esc_attr__( 'Answer title is required', 'learnpress' ),
+			__( 'Add Option', 'learnpress' )
 		);
 
 		$section = [

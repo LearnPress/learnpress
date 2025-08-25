@@ -208,6 +208,7 @@ const addQuestion = ( e, target ) => {
 		},
 		completed: () => {
 			lpUtils.lpSetLoadingEl( newQuestionItem, 0 );
+			checkCanAddQuestion( e, elQuestionTitleNewInput );
 		},
 	};
 

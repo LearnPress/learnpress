@@ -183,3 +183,21 @@ $border-color: #C3C4C7;
 		gap: 5px;
 	}
 }
+
+.lp-btn-add-items-selected {
+	border: none !important;
+	background: rgb(19, 94, 150) !important;
+	color: #fff !important;
+
+	&:disabled {
+		color: #a7aaad !important;
+		border-color: #dcdcde !important;
+		background: #f6f7f7 !important;
+		box-shadow: none !important;
+		cursor: default;
+		transform: none !important;
+	}
+
+	// generate code not disabled
+
+}

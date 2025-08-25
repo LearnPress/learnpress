@@ -13,7 +13,9 @@ namespace LearnPress\Models;
 use Exception;
 use LearnPress\Databases\QuizQuestionsDB;
 use LearnPress\Models\Question\QuestionPostModel;
+use LearnPress\Models\Question\QuestionSortingChoiceModel;
 use LearnPress\Models\Quiz\QuizQuestionModel;
+use LP_Addon_Sorting_Choice;
 use LP_Cache;
 use LP_Question;
 use LP_Question_DB;
@@ -256,6 +258,14 @@ class QuizPostModel extends PostModel {
 
 		// Get question object by type
 		$questionClassName = $questionPostModelNew::get_question_obj_by_type( $question_type );
+
+		// For addon sorting choice old <= v4.0.1
+		if ( class_exists( 'LP_Addon_Sorting_Choice_Preload' ) ) {
+			if ( version_compare( LP_ADDON_SORTING_CHOICE_VER, '4.0.1', '<=' ) ) {
+				$questionClassName = QuestionSortingChoiceModel::class;
+			}
+		}
+
 		if ( class_exists( $questionClassName ) ) {
 			$questionPostTyeModel = new $questionClassName( $questionPostModelNew );
 			if ( method_exists( $questionPostTyeModel, 'create_default_answers' ) ) {

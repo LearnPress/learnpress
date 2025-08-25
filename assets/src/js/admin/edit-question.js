@@ -435,10 +435,12 @@ const autoUpdateAnswer = ( e, target ) => {
 			}
 
 			// Set true answer
-			if ( elInputAnswerSetTrue.checked ) {
-				answer.is_true = 'yes';
-			} else {
-				answer.is_true = '';
+			if ( elInputAnswerSetTrue ) {
+				if ( elInputAnswerSetTrue.checked ) {
+					answer.is_true = 'yes';
+				} else {
+					answer.is_true = '';
+				}
 			}
 
 			// Set position
