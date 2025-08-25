@@ -766,7 +766,7 @@ class AdminEditQuestionTemplate {
 						data-title="%s" data-content="%s">
 					</span>',
 					esc_attr__( 'Are you sure?', 'learnpress' ),
-					esc_html__( 'Delete this blank and keep text', 'learnpress' ),
+					esc_html__( 'Delete this blank and keep text', 'learnpress' )
 				),
 				'toggle'     => '<div class="lp-trigger-toggle"><span class="lp-icon-angle-down"></span><span class="lp-icon-angle-up"></span></div>',
 				'wrap_end'   => '</div>',
