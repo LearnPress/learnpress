@@ -135,7 +135,9 @@ const selectItemsFromList = ( e, target, elPopupSelectItems, callBack ) => {
 		}
 	}
 
-	//console.log( 'itemsSelectedData', itemsSelectedData );
+	if ( typeof callBack === 'function' ) {
+		callBack( itemsSelectedData );
+	}
 
 	watchItemsSelectedDataChange( elPopupSelectItems );
 };

@@ -585,6 +585,7 @@ document.addEventListener( 'click', ( e ) => {
 						} );
 					}
 					updateCountItems();
+					editQuestion.initTinyMCE();
 				} else {
 					throw `Error: ${ message }`;
 				}
