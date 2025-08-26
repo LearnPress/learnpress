@@ -1,0 +1,19 @@
+/**
+* Style for the buttons
+*/
+
+.lp-btn-edit-primary {
+	border: none;
+	background: #135E96FF;
+	color: #fff;
+
+	&:not(.active) {
+		opacity: 0.5;
+	}
+
+	&:hover, &.active {
+		background: #135E96;
+		color: #fff;
+		opacity: 1;
+	}
+}

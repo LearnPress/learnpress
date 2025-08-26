@@ -100,7 +100,7 @@ class AdminTemplate {
 		$section_footer = [
 			'wrap'                 => '<div class="footer">',
 			'btn-add'              => sprintf(
-				'<button type="button" disabled="disabled" class="button lp-btn-add-items-selected">%s</button>',
+				'<button type="button" disabled="disabled" class="button lp-btn-add-items-selected lp-btn-edit-primary">%s</button>',
 				__( 'Add', 'learnpress' )
 			),
 			'count-items-selected' => sprintf(

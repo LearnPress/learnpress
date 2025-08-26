@@ -1,10 +1,9 @@
 /**
 * Style for the edit question page in LearnPress
 */
+@import "toggleCollapse";
 
 $border-color: #C3C4C7;
-
-@import "toggleCollapse";
 
 .lp-icon-spinner {
 	animation: rotation 2s infinite linear;
@@ -74,6 +73,8 @@ $border-color: #C3C4C7;
 			display: inline-block;
 		}
 	}
+
+	@import "buttons";
 }
 
 .question-edit-details {
@@ -126,17 +127,6 @@ $border-color: #C3C4C7;
 	.lp-btn-delete-question-answer {
 		display: none;
 		cursor: pointer;
-	}
-}
-
-.lp-btn-add-question-answer {
-	border: none !important;
-	background: rgba(19, 94, 150, 0.5) !important;
-	color: #fff !important;
-
-	&:hover, &.active {
-		background: rgba(19, 94, 150, 1) !important;
-		color: #fff !important;
 	}
 }
 

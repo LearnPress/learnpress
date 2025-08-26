@@ -326,50 +326,6 @@ class AdminEditQuestionTemplate {
 	}
 
 	/**
-	 * HTML for add new question.
-	 *
-	 * @return string
-	 */
-	public function html_add_new_question(): string {
-		$html_question_types = '';
-		$question_types      = QuestionPostModel::get_types();
-		foreach ( $question_types as $type => $label ) {
-			$html_question_types .= sprintf(
-				'<option value="%s">%s</option>',
-				esc_attr( $type ),
-				esc_html( $label )
-			);
-		}
-		$html_question_types = Template::instance()->nest_elements(
-			[ '<select class="lp-question-type-new" name="lp-question-type-new">' => '</select>' ],
-			$html_question_types
-		);
-
-		$section = [
-			'wrap'     => '<div class="add-new-question">',
-			'icon'     => '<span class="lp-icon-plus"></span>',
-			'input'    => sprintf(
-				'<input class="lp-question-title-new-input"
-					name="lp-question-title-new-input"
-					type="text"
-					title="%1$s"
-					placeholder="%1$s"
-					data-mess-empty-title="%2$s">',
-				esc_attr__( 'Create a new section', 'learnpress' ),
-				esc_attr__( 'Section title is required', 'learnpress' )
-			),
-			'types'    => $html_question_types,
-			'button'   => sprintf(
-				'<button type="button" class="lp-btn-add-section button">%s</button>',
-				__( 'Add Question', 'learnpress' )
-			),
-			'wrap_end' => '</div>',
-		];
-
-		return Template::combine_components( $section );
-	}
-
-	/**
 	 * Get html edit question type.
 	 *
 	 * @param QuestionPostModel $questionPostModel
@@ -555,7 +511,7 @@ class AdminEditQuestionTemplate {
 			'<div class="lp-question-answer-item-add-new">
 				<span class="lp-icon-plus" title="Add answer option"></span>
 				<input type="text" class="%1$s" name="%1$s" value="" />
-				<button type="button" class="button lp-btn-add-question-answer">%2$s</button>
+				<button type="button" class="button lp-btn-add-question-answer lp-btn-edit-primary">%2$s</button>
 			</div>',
 			'lp-question-answer-title-new-input',
 			__( 'Add Option', 'learnpress' )
@@ -619,7 +575,7 @@ class AdminEditQuestionTemplate {
 			'<div class="lp-question-answer-item-add-new">
 				<span class="lp-icon-plus" title="Add answer option"></span>
 				<input type="text" class="%1$s" name="%1$s" value="" data-mess-empty-title="%2$s" />
-				<button type="button" class="button lp-btn-add-question-answer">%3$s</button>
+				<button type="button" class="button lp-btn-add-question-answer lp-btn-edit-primary">%3$s</button>
 			</div>',
 			'lp-question-answer-title-new-input',
 			esc_attr__( 'Answer title is required', 'learnpress' ),
@@ -677,7 +633,7 @@ class AdminEditQuestionTemplate {
 			'<div class="lp-question-answer-item-add-new">
 				<span class="lp-icon-plus" title="Add answer option"></span>
 				<input type="text" class="%1$s" name="%1$s" value="" data-mess-empty-title="%2$s" />
-				<button type="button" class="button lp-btn-add-question-answer">%3$s</button>
+				<button type="button" class="button lp-btn-add-question-answer lp-btn-edit-primary">%3$s</button>
 			</div>',
 			'lp-question-answer-title-new-input',
 			esc_attr__( 'Answer title is required', 'learnpress' ),

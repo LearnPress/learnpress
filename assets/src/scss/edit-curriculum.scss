@@ -411,7 +411,9 @@ $spacing-section: 12px;
 			font-size: 16px;
 		}
 
-		.lp-btn-add-section {
+		@import "buttons";
+
+		/*.lp-btn-add-section {
 			border: none;
 			background: rgba(19, 94, 150, 0.5);
 			color: #fff;
@@ -419,7 +421,7 @@ $spacing-section: 12px;
 			&:hover, &.active {
 				background: rgba(19, 94, 150, 1);
 			}
-		}
+		}*/
 	}
 
 	.lp-add-item-type {

@@ -370,7 +370,9 @@ const addQuestionAnswer = ( e, target ) => {
 			elQuestionAnswerNew.remove();
 			showToast( error, 'error' );
 		},
-		completed: () => {},
+		completed: () => {
+			checkCanAddAnswer( null, elQuestionAnswerTitleNewInput );
+		},
 	};
 
 	const dataSend = {
@@ -382,6 +384,31 @@ const addQuestionAnswer = ( e, target ) => {
 		},
 	};
 	window.lpAJAXG.fetchAJAX( dataSend, callBack );
+};
+
+// Check to enable or disable add new question button
+const checkCanAddAnswer = ( e, target ) => {
+	const elTrigger = target.closest( className.elQuestionAnswerTitleNewInput );
+	if ( ! elTrigger ) {
+		return;
+	}
+
+	const elQuestionAnswerItemAddNew = elTrigger.closest( `${ className.elQuestionAnswerItemAddNew }` );
+	if ( ! elQuestionAnswerItemAddNew ) {
+		return;
+	}
+
+	const elBtnAddAnswer = elQuestionAnswerItemAddNew.querySelector( `${ className.elBtnAddAnswer }` );
+	if ( ! elBtnAddAnswer ) {
+		return;
+	}
+
+	const titleValue = elTrigger.value.trim();
+	if ( titleValue ) {
+		elBtnAddAnswer.classList.add( 'active' );
+	} else {
+		elBtnAddAnswer.classList.remove( 'active' );
+	}
 };
 
 // Auto update question answer
@@ -1120,6 +1147,7 @@ const events = () => {
 		const target = e.target;
 		autoUpdateAnswer( e, target );
 		fibOptionTitleInputChange( e, target );
+		checkCanAddAnswer( e, target );
 	} );
 	// Event keydown
 	document.addEventListener( 'keydown', ( e ) => {

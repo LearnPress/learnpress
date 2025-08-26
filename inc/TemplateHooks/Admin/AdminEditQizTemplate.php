@@ -306,7 +306,7 @@ class AdminEditQizTemplate {
 			),
 			'types'            => $html_question_types,
 			'button'           => sprintf(
-				'<button type="button" class="lp-btn-add-question button" title="%s">%s</button>',
+				'<button type="button" class="lp-btn-add-question lp-btn-edit-primary button" title="%s">%s</button>',
 				esc_attr__( 'Enter title question and choice type', 'learnpress' ),
 				__( 'Add Question', 'learnpress' )
 			),

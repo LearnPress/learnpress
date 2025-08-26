@@ -267,11 +267,13 @@ const watchItemsSelectedDataChange = ( elPopupSelectItems ) => {
 	if ( itemsSelectedData.length !== 0 ) {
 		elBtnCountItemsSelected.disabled = false;
 		elBtnAddItemsSelected.disabled = false;
+		elBtnAddItemsSelected.classList.add( 'active' );
 		elSpanCount.textContent = `(${ itemsSelectedData.length })`;
 		elHeaderCount.innerHTML = elBtnCountItemsSelected.innerHTML;
 	} else {
 		elBtnCountItemsSelected.disabled = true;
 		elBtnAddItemsSelected.disabled = true;
+		elBtnAddItemsSelected.classList.remove( 'active' );
 		elSpanCount.textContent = '';
 		elHeaderCount.textContent = '';
 	}

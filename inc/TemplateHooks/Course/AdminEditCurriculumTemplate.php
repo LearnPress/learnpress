@@ -321,7 +321,7 @@ class AdminEditCurriculumTemplate {
 				esc_attr__( 'Section title is required', 'learnpress' )
 			),
 			'button'   => sprintf(
-				'<button type="button" class="lp-btn-add-section button">%s</button>',
+				'<button type="button" class="lp-btn-add-section button lp-btn-edit-primary">%s</button>',
 				__( 'Add Section', 'learnpress' )
 			),
 			'wrap_end' => '</div>',
