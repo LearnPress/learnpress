@@ -248,6 +248,14 @@ https://translate.wordpress.org/projects/wp-plugins/learnpress/
 
 == Changelog ==
 
+= 4.2.9 (2025-08-27) =
+~ Refactor UI/UX for edit quiz.
+~ Refactor UI/UX for edit question.
+~ Allow assign a question to many quizzes.
+~ Update: set image course offline is full size.
+~ Fixed: enqueue style for Archive, Single course block legacy.
+~ Fixed: conflict with Thrive Architect Editor
+
 = 4.2.8.7.5 (2025-07-29) =
 ~ Fixed: error crop image course by size not check if image exists.
 ~ Fixed: translate fields author on Course Filter Widget.

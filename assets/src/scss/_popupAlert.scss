@@ -2,4 +2,43 @@
 * Style for the popup alert, confirm
 */
 
+.swal2-popup {
+	.swal2-actions {
+		width: 100%;
+		padding: 0 30px;
 
+		button {
+			flex: 1;
+
+			&.swal2-confirm {
+				background-color: #E02200;
+			}
+
+			&.swal2-cancel {
+				background-color: transparent;
+				border: 1px solid #ccc;
+				color: inherit;
+			}
+		}
+	}
+	.swal2-warning {
+		color: #E02200;
+		border-color: transparent;
+		background-color: #DF00001A;
+	}
+	.swal2-icon {
+		width: 50px;
+		height: 50px;
+
+		.swal2-icon-content {
+			font-size: 0;
+
+			&::before {
+				content: "\f071";
+				font-family: "lp-icon";
+				font-size: 24px;
+				display: inline-block;
+			}
+		}
+	}
+}

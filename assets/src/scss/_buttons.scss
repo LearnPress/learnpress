@@ -11,7 +11,7 @@
 		opacity: 0.5;
 	}
 
-	&:hover, &.active {
+	&:hover, &.active, &.active:hover {
 		background: #135E96;
 		color: #fff;
 		opacity: 1;

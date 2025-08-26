@@ -1,7 +1,10 @@
 /**
 * Style for the edit question page in LearnPress
+* @since 4.2.9
+* @version 1.0.0
 */
 @import "toggleCollapse";
+@import "popupAlert";
 
 $border-color: #C3C4C7;
 
@@ -141,7 +144,7 @@ $border-color: #C3C4C7;
 	border-top: none;
 
 	.lp-icon-plus {
-		cursor: none;
+		cursor: auto;
 		margin-left: 5px;
 	}
 }
