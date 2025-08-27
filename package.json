@@ -70,7 +70,7 @@
 		"cropperjs": "1.6.2",
 		"style-loader": "3.3.4",
 		"file-loader": "6.2.0",
-		"mini-css-extract-plugin": "2.9.2",
+		"mini-css-extract-plugin": "2.9.3",
 		"toastify-js": "1.12.0",
 		"sweetalert2-neutral": "11.18.0-neutral"
 	}
