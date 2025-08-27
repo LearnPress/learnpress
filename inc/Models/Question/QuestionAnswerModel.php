@@ -13,7 +13,7 @@ use stdClass;
  * Answers for questions in LearnPress.
  *
  * @version 1.0.0
- * @since 4.2.8.8
+ * @since 4.2.9
  */
 class QuestionAnswerModel {
 	public $question_answer_id;
@@ -142,7 +142,7 @@ class QuestionAnswerModel {
 	 * @param mixed $value
 	 *
 	 * @return void
-	 * @since 4.2.8.8
+	 * @since 4.2.9
 	 * @version 1.0.0
 	 */
 	public function save_meta_value_by_key( string $key, $value ) {
@@ -184,7 +184,7 @@ class QuestionAnswerModel {
 	 * If question_answer_id is empty, insert new data, else update data.
 	 *
 	 * @throws Exception
-	 * @since 4.2.8.8
+	 * @since 4.2.9
 	 * @version 1.0.0
 	 */
 	public function save() {

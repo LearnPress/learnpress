@@ -215,7 +215,7 @@ class PostModel {
 	 * @return void
 	 * @throws Exception
 	 * @version 1.0.0
-	 * @since 4.2.8.8
+	 * @since 4.2.9
 	 */
 	public function check_capabilities_create_item_course() {
 		$course_item_types = CourseModel::item_types_support();
@@ -238,7 +238,7 @@ class PostModel {
 	 * @return void
 	 * @throws Exception
 	 * @version 1.0.0
-	 * @since 4.2.8.8
+	 * @since 4.2.9
 	 */
 	public function check_capabilities_update_item_course() {
 		$course_item_types = CourseModel::item_types_support();

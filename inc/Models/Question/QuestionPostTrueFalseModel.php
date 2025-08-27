@@ -8,7 +8,7 @@ namespace LearnPress\Models\Question;
  *
  * @package LearnPress/Classes
  * @version 1.0.0
- * @since 4.2.8.8
+ * @since 4.2.9
  */
 class QuestionPostTrueFalseModel extends QuestionPostModel {
 	public $question_type = 'true_or_false';

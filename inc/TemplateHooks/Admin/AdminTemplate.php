@@ -6,7 +6,7 @@ use LearnPress\Helpers\Template;
 /**
  * Template Show list items to select in popup.
  *
- * @since 4.2.8.8
+ * @since 4.2.9
  * @version 1.0.0
  */
 class AdminTemplate {
@@ -18,7 +18,7 @@ class AdminTemplate {
 	 * @param array $setting
 	 *
 	 * @return string
-	 * @since 4.2.8.8
+	 * @since 4.2.9
 	 * @version 1.0.0
 	 */
 	public static function editor_tinymce( string $value, string $id_name, array $setting = [] ): string {

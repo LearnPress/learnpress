@@ -6,7 +6,7 @@
  *
  * @package LearnPress/Classes
  * @version 1.0.0
- * @since 4.2.8.8
+ * @since 4.2.9
  */
 
 namespace LearnPress\Models\Question;
@@ -125,6 +125,13 @@ class QuestionPostModel extends PostModel {
 
 		if ( ! array_key_exists( $type, $types ) ) {
 			return '';
+		}
+
+		// For addon sorting choice old <= v4.0.1
+		if ( class_exists( 'LP_Addon_Sorting_Choice_Preload' ) ) {
+			if ( version_compare( LP_ADDON_SORTING_CHOICE_VER, '4.0.1', '<=' ) ) {
+				return QuestionSortingChoiceModel::class;
+			}
 		}
 
 		switch ( $type ) {

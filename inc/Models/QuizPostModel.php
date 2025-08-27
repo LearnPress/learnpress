@@ -230,7 +230,7 @@ class QuizPostModel extends PostModel {
 	 *
 	 * @return QuizQuestionModel
 	 * @throws Exception
-	 * @since 4.2.8.8
+	 * @since 4.2.9
 	 * @version 1.0.0
 	 */
 	public function create_question_and_add( array $data ): QuizQuestionModel {
@@ -258,14 +258,6 @@ class QuizPostModel extends PostModel {
 
 		// Get question object by type
 		$questionClassName = $questionPostModelNew::get_question_obj_by_type( $question_type );
-
-		// For addon sorting choice old <= v4.0.1
-		if ( class_exists( 'LP_Addon_Sorting_Choice_Preload' ) ) {
-			if ( version_compare( LP_ADDON_SORTING_CHOICE_VER, '4.0.1', '<=' ) ) {
-				$questionClassName = QuestionSortingChoiceModel::class;
-			}
-		}
-
 		if ( class_exists( $questionClassName ) ) {
 			$questionPostTyeModel = new $questionClassName( $questionPostModelNew );
 			if ( method_exists( $questionPostTyeModel, 'create_default_answers' ) ) {

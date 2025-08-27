@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Class QuestionAnswersDB
  *
  * @instead of LP_Question_Answers_DB
- * @since 4.2.8.8
+ * @since 4.2.9
  * @version 1.0.0
  */
 class QuestionAnswersDB extends LP_Database {

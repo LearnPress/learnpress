@@ -12,7 +12,7 @@ defined( 'ABSPATH' ) || exit();
  * @author  ThimPress
  * @package LearnPress/Classes/Filters
  * @instead of LP_Question_Answers_Filter
- * @since  4.2.8.8
+ * @since  4.2.9
  * @author tungnx
  * @version 1.0.0
  */

@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class QuizQuestionsDB
  *
- * @since 4.2.8.8
+ * @since 4.2.9
  * @version 1.0.0
  */
 class QuizQuestionsDB extends LP_Database {
@@ -99,7 +99,7 @@ class QuizQuestionsDB extends LP_Database {
 	 * @return int
 	 * @throws Exception
 	 * @version 1.0.0
-	 * @since 4.2.8.8
+	 * @since 4.2.9
 	 */
 	public function insert_data( array $data ): int {
 		$filter = new QuizQuestionsFilter();
@@ -128,7 +128,7 @@ class QuizQuestionsDB extends LP_Database {
 	 * @return bool
 	 *
 	 * @throws Exception
-	 * @since 4.2.8.8
+	 * @since 4.2.9
 	 * @version 1.0.0
 	 */
 	public function update_data( array $data ): bool {

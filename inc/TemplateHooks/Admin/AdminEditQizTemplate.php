@@ -16,7 +16,7 @@ use stdClass;
 /**
  * Template Admin Edit Quiz.
  *
- * @since 4.2.8.8
+ * @since 4.2.9
  * @version 1.0.0
  */
 class AdminEditQizTemplate {
@@ -46,7 +46,7 @@ class AdminEditQizTemplate {
 	/**
 	 * Layout for edit course curriculum.
 	 *
-	 * @since 4.2.8.8
+	 * @since 4.2.9
 	 * @version 1.0.0
 	 */
 	public function edit_quiz_layout( QuizPostModel $quizPostModel ) {

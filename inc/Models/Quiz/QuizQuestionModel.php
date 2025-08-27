@@ -17,7 +17,7 @@ use Throwable;
  *
  * @package LearnPress/Classes
  * @version 1.0.0
- * @since 4.2.8.8
+ * @since 4.2.9
  */
 class QuizQuestionModel {
 	/**
@@ -210,7 +210,7 @@ class QuizQuestionModel {
 	 *
 	 * @return void
 	 * @throws Exception
-	 * @since 4.2.8.8
+	 * @since 4.2.9
 	 * @version 1.0.0
 	 */
 	public function clean_caches() {

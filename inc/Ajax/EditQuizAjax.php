@@ -22,7 +22,7 @@ use Throwable;
  *
  * This class handles the AJAX request to edit the quiz.
  *
- * @since 4.2.8.8
+ * @since 4.2.9
  * @version 1.0.0
  */
 class EditQuizAjax extends AbstractAjax {
@@ -31,7 +31,7 @@ class EditQuizAjax extends AbstractAjax {
 	 *
 	 * @throws Exception
 	 *
-	 * @since 4.2.8.8
+	 * @since 4.2.9
 	 * @version 1.0.0
 	 */
 	public static function check_valid() {
@@ -147,7 +147,7 @@ class EditQuizAjax extends AbstractAjax {
 	 *
 	 * JS file edit-quiz.js: function removeQuestion call this method.
 	 *
-	 * @since 4.2.8.8
+	 * @since 4.2.9
 	 * @version 1.0.0
 	 */
 	public static function remove_question_from_quiz() {

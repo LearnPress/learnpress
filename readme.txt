@@ -3,7 +3,7 @@ Contributors: thimpress, tungnx89, nhamdv, nguyenlammanh, tunnhn, phonglq.foobla
 Donate link:
 Tags: elearning, education, course, lms, learning management system
 Tested up to: 6.8
-Stable tag: 4.2.8.7.5
+Stable tag: 4.2.9
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -254,7 +254,7 @@ https://translate.wordpress.org/projects/wp-plugins/learnpress/
 ~ Allow assign a question to many quizzes.
 ~ Update: set image course offline is full size.
 ~ Fixed: enqueue style for Archive, Single course block legacy.
-~ Fixed: conflict with Thrive Architect Editor
+~ Fixed: conflict with Thrive Architect Editor.
 
 = 4.2.8.7.5 (2025-07-29) =
 ~ Fixed: error crop image course by size not check if image exists.

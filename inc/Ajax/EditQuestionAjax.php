@@ -4,7 +4,7 @@
  *
  * This class handles the AJAX request to edit the curriculum of a course.
  *
- * @since 4.2.8.8
+ * @since 4.2.9
  * @version 1.0.0
  */
 
@@ -19,6 +19,7 @@ use LearnPress\Models\Question\QuestionPostFIBModel;
 use LearnPress\Models\Question\QuestionPostModel;
 use LearnPress\Models\Question\QuestionPostMultipleChoiceModel;
 use LearnPress\Models\Question\QuestionPostSingleChoiceModel;
+use LearnPress\Models\Question\QuestionSortingChoiceModel;
 use LearnPress\TemplateHooks\Admin\AdminEditQuestionTemplate;
 use LP_Helper;
 use LP_REST_Response;
@@ -30,7 +31,7 @@ class EditQuestionAjax extends AbstractAjax {
 	 *
 	 * @throws Exception
 	 *
-	 * @since 4.2.8.8
+	 * @since 4.2.9
 	 * @version 1.0.0
 	 */
 	public static function check_valid() {

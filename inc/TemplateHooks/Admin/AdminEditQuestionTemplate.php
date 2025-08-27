@@ -14,7 +14,7 @@ use stdClass;
 /**
  * Template Admin Edit Quiz.
  *
- * @since 4.2.8.8
+ * @since 4.2.9
  * @version 1.0.0
  */
 class AdminEditQuestionTemplate {
@@ -729,7 +729,7 @@ class AdminEditQuestionTemplate {
 				__( 'Delete all blanks', 'learnpress' )
 			),
 			'btn-save'              => sprintf(
-				'<button type="button" class="lp-btn-fib-save-content button">%s %s</button>',
+				'<button type="button" class="lp-btn-fib-save-content button lp-btn-edit-primary active">%s %s</button>',
 				'<span class="lp-icon-spinner"></span> ',
 				__( 'Save content', 'learnpress' )
 			),

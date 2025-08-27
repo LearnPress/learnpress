@@ -9,7 +9,7 @@ defined( 'ABSPATH' ) || exit();
  * Class QuizQuestionsFilter
  *
  * @author  ThimPress
- * @since  4.2.8.8
+ * @since  4.2.9
  * @version 1.0.0
  */
 class QuizQuestionsFilter extends LP_Filter {

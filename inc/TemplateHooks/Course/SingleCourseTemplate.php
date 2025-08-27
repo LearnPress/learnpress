@@ -1331,7 +1331,7 @@ class SingleCourseTemplate {
 	 * @param CourseModel $courseModel
 	 *
 	 * @return string
-	 * @since 4.2.8.8
+	 * @since 4.2.9
 	 * @version 1.0.0
 	 */
 	public function html_featured( CourseModel $courseModel ): string {

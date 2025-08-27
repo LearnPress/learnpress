@@ -382,7 +382,7 @@ class Template {
 	 * @param array|object|mixed $data
 	 *
 	 * @return string
-	 * @since 4.2.8.8
+	 * @since 4.2.9
 	 * @version 1.0.0
 	 */
 	public static function convert_data_to_json( $data ): string {

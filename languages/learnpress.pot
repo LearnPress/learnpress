@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the LearnPress plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: LearnPress 4.2.8.7.5\n"
+"Project-Id-Version: LearnPress 4.2.9\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/learnpress\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-07-28T13:35:13+03:00\n"
+"POT-Creation-Date: 2025-08-27T04:06:01+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: learnpress\n"
@@ -123,7 +123,7 @@ msgstr ""
 #: config/settings/permalink.php:141
 #: inc/admin/sub-menus/class-lp-submenu-settings.php:18
 #: inc/admin/views/addons.php:181
-#: learnpress.php:756
+#: learnpress.php:770
 msgid "Settings"
 msgstr ""
 
@@ -161,7 +161,7 @@ msgstr ""
 
 #: assets/src/apps/js/blocks/course-elements/course-button/edit.js:88
 #: inc/admin/helpers/class-lp-plugins-helper.php:271
-#: inc/TemplateHooks/Course/SingleCourseTemplate.php:771
+#: inc/TemplateHooks/Course/SingleCourseTemplate.php:775
 #: templates/single-course/buttons/purchase.php:33
 msgid "Buy Now"
 msgstr ""
@@ -220,7 +220,7 @@ msgstr ""
 #: inc/admin/views/meta-boxes/course/settings.php:43
 #: inc/lp-template-functions.php:72
 #: inc/TemplateHooks/Course/SingleCourseClassicTemplate.php:268
-#: inc/TemplateHooks/Course/SingleCourseTemplate.php:1485
+#: inc/TemplateHooks/Course/SingleCourseTemplate.php:1501
 msgid "Curriculum"
 msgstr ""
 
@@ -232,25 +232,25 @@ msgstr ""
 #: inc/admin/views/meta-boxes/course/settings.php:617
 #: inc/lp-template-functions.php:88
 #: inc/TemplateHooks/Course/SingleCourseClassicTemplate.php:271
-#: inc/TemplateHooks/Course/SingleCourseTemplate.php:996
+#: inc/TemplateHooks/Course/SingleCourseTemplate.php:1012
 msgid "FAQs"
 msgstr ""
 
 #: assets/src/apps/js/blocks/course-elements/course-feature-review/edit.js:9
-#: inc/TemplateHooks/Course/SingleCourseTemplate.php:697
+#: inc/TemplateHooks/Course/SingleCourseTemplate.php:701
 #: templates/single-course/featured-review.php:18
 msgid "Featured Review"
 msgstr ""
 
 #: assets/src/apps/js/blocks/course-elements/course-featured/edit.js:9
 #: config/elementor/course/list-courses.php:75
-#: inc/TemplateHooks/Course/SingleCourseTemplate.php:1330
+#: inc/TemplateHooks/Course/SingleCourseTemplate.php:1346
 #: templates/loop/course/badge-featured.php:23
 msgid "Featured"
 msgstr ""
 
 #: assets/src/apps/js/blocks/course-elements/course-features/edit.js:10
-#: inc/TemplateHooks/Course/SingleCourseTemplate.php:1126
+#: inc/TemplateHooks/Course/SingleCourseTemplate.php:1142
 #: inc/templates/class-lp-template-course.php:913
 msgid "Features"
 msgstr ""
@@ -258,11 +258,7 @@ msgstr ""
 #: assets/src/apps/js/blocks/course-elements/course-image/edit.js:84
 #: assets/src/apps/js/blocks/course-elements/course-material/edit.js:19
 #: config/elementor/course/materials.php:76
-<<<<<<< HEAD
-#: inc/TemplateHooks/Course/CourseMaterialTemplate.php:84
-=======
 #: inc/TemplateHooks/Course/CourseMaterialTemplate.php:139
->>>>>>> origin/develop
 msgid "Size"
 msgstr ""
 
@@ -303,7 +299,7 @@ msgid "Displays the course curriculum, including lessons, quizzes, and other lea
 msgstr ""
 
 #: assets/src/apps/js/blocks/course-elements/course-material/edit.js:11
-#: inc/TemplateHooks/Course/SingleCourseTemplate.php:1239
+#: inc/TemplateHooks/Course/SingleCourseTemplate.php:1255
 msgid "Course Material"
 msgstr ""
 
@@ -311,14 +307,9 @@ msgstr ""
 #: config/elementor/course/materials.php:71
 #: config/settings/profile.php:95
 #: inc/admin/views/quiz/editor.php:48
-#: inc/custom-post-types/question.php:314
-<<<<<<< HEAD
-#: inc/TemplateHooks/Course/CourseMaterialTemplate.php:83
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:739
-=======
+#: inc/custom-post-types/question.php:316
 #: inc/TemplateHooks/Course/CourseMaterialTemplate.php:138
 #: inc/TemplateHooks/Course/FilterCourseTemplate.php:746
->>>>>>> origin/develop
 #: inc/Widgets/course-extra.php:30
 msgid "Type"
 msgstr ""
@@ -341,12 +332,8 @@ msgid "Lesson:"
 msgstr ""
 
 #: assets/src/apps/js/blocks/course-elements/course-requirements/edit.js:10
-<<<<<<< HEAD
-#: inc/admin/views/meta-boxes/course/settings.php:601
-=======
 #: inc/admin/views/meta-boxes/course/settings.php:602
->>>>>>> origin/develop
-#: inc/TemplateHooks/Course/SingleCourseTemplate.php:1078
+#: inc/TemplateHooks/Course/SingleCourseTemplate.php:1094
 #: inc/templates/class-lp-template-course.php:328
 #: inc/templates/class-lp-template-course.php:909
 #: inc/Widgets/course-extra.php:35
@@ -359,7 +346,7 @@ msgid "Share"
 msgstr ""
 
 #: assets/src/apps/js/blocks/course-elements/course-target-audiences/edit.js:10
-#: inc/TemplateHooks/Course/SingleCourseTemplate.php:1174
+#: inc/TemplateHooks/Course/SingleCourseTemplate.php:1190
 #: inc/templates/class-lp-template-course.php:380
 #: inc/templates/class-lp-template-course.php:917
 msgid "Target audiences"
@@ -371,8 +358,8 @@ msgstr ""
 
 #: assets/src/apps/js/blocks/course-elements/course-title/edit.js:28
 #: inc/custom-post-types/course.php:141
-#: inc/custom-post-types/question.php:184
-#: inc/custom-post-types/question.php:185
+#: inc/custom-post-types/question.php:186
+#: inc/custom-post-types/question.php:187
 msgid "Tag"
 msgstr ""
 
@@ -383,21 +370,13 @@ msgstr ""
 #: assets/src/apps/js/blocks/course-filter/button-reset-filter/edit.js:8
 #: assets/src/apps/js/blocks/course-filter-elements/button-reset-filter/edit.js:8
 #: inc/admin/views/tools/course/html-user-item.php:26
-<<<<<<< HEAD
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:784
-=======
 #: inc/TemplateHooks/Course/FilterCourseTemplate.php:791
->>>>>>> origin/develop
 msgid "Reset"
 msgstr ""
 
 #: assets/src/apps/js/blocks/course-filter/button-submit-filter/edit.js:8
 #: assets/src/apps/js/blocks/course-filter-elements/button-submit-filter/edit.js:8
-<<<<<<< HEAD
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:756
-=======
 #: inc/TemplateHooks/Course/FilterCourseTemplate.php:763
->>>>>>> origin/develop
 msgid "Apply"
 msgstr ""
 
@@ -410,13 +389,9 @@ msgstr ""
 #: inc/custom-post-types/course.php:352
 #: inc/custom-post-types/course.php:369
 #: inc/custom-post-types/lesson.php:238
-#: inc/custom-post-types/question.php:312
-#: inc/custom-post-types/quiz.php:239
-<<<<<<< HEAD
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:599
-=======
+#: inc/custom-post-types/question.php:314
+#: inc/custom-post-types/quiz.php:245
 #: inc/TemplateHooks/Course/FilterCourseTemplate.php:606
->>>>>>> origin/develop
 msgid "Author"
 msgstr ""
 
@@ -480,7 +455,7 @@ msgstr ""
 #: inc/admin/views/meta-boxes/course/settings.php:200
 #: inc/Gutenberg/Blocks/SingleCourseElements/CourseLevelBlockType.php:79
 #: inc/TemplateHooks/Course/SingleCourseModernLayout.php:222
-#: inc/TemplateHooks/Course/SingleCourseOfflineTemplate.php:243
+#: inc/TemplateHooks/Course/SingleCourseOfflineTemplate.php:241
 msgid "Level"
 msgstr ""
 
@@ -492,7 +467,7 @@ msgstr ""
 #: inc/custom-post-types/course.php:355
 #: inc/custom-post-types/course.php:372
 #: inc/TemplateHooks/Course/FilterCourseTemplate.php:294
-#: inc/TemplateHooks/Course/SingleCourseOfflineTemplate.php:231
+#: inc/TemplateHooks/Course/SingleCourseOfflineTemplate.php:229
 #: templates/emails/order-items-table.php:89
 msgid "Price"
 msgstr ""
@@ -511,7 +486,7 @@ msgstr ""
 #: inc/admin/lp-admin-actions.php:224
 #: inc/admin/sub-menus/class-lp-submenu-tags.php:11
 #: inc/admin/sub-menus/class-lp-submenu-tags.php:12
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:525
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:526
 msgid "Tags"
 msgstr ""
 
@@ -702,13 +677,13 @@ msgstr ""
 #: assets/js/dist/frontend/quiz.min.js:207
 #: assets/js/dist/frontend/quiz.min.js:81
 #: assets/js/dist/frontend/quiz.min.js:204
-#: inc/custom-post-types/question.php:127
+#: inc/custom-post-types/question.php:129
 msgid "Correct"
 msgstr ""
 
 #: assets/js/dist/frontend/quiz.min.js:207
 #: assets/js/dist/frontend/quiz.min.js:82
-#: inc/custom-post-types/question.php:133
+#: inc/custom-post-types/question.php:135
 msgid "Incorrect"
 msgstr ""
 
@@ -718,8 +693,9 @@ msgstr ""
 
 #: assets/js/dist/frontend/quiz.min.js:79
 #: assets/js/dist/frontend/quiz.min.js:196
-#: inc/admin/views/meta-boxes/question/settings.php:17
+#: inc/admin/views/meta-boxes/question/settings.php:21
 #: inc/admin/views/quiz/question-meta.php:28
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:170
 msgid "Points"
 msgstr ""
 
@@ -738,10 +714,12 @@ msgstr ""
 #: assets/js/dist/frontend/quiz.min.js:21
 #: assets/js/dist/frontend/quiz.min.js:200
 #: inc/admin/views/quiz/modal-choose-items.php:55
-#: inc/custom-post-types/question.php:208
+#: inc/custom-post-types/question.php:210
 #: inc/custom-post-types/quiz.php:178
-#: inc/custom-post-types/quiz.php:241
-#: inc/custom-post-types/quiz.php:448
+#: inc/custom-post-types/quiz.php:247
+#: inc/custom-post-types/quiz.php:454
+#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:145
+#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:332
 msgid "Questions"
 msgstr ""
 
@@ -778,8 +756,9 @@ msgstr ""
 
 #: assets/js/dist/frontend/quiz.min.js:22
 #: assets/js/dist/frontend/quiz.min.js:177
-#: inc/admin/views/meta-boxes/question/settings.php:30
+#: inc/admin/views/meta-boxes/question/settings.php:34
 #: inc/admin/views/quiz/question-meta.php:39
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:198
 msgid "Hint"
 msgstr ""
 
@@ -835,14 +814,15 @@ msgstr ""
 #: assets/js/dist/frontend/quiz.min.js:87
 #: inc/admin/class-lp-install-sample-data.php:157
 #: inc/custom-post-types/abstract.php:905
-#: inc/custom-post-types/question.php:357
+#: inc/custom-post-types/question.php:359
 #: templates/content-lesson/content.php:27
 msgid "Edit"
 msgstr ""
 
 #: assets/js/dist/frontend/quiz.min.js:163
-#: inc/admin/views/meta-boxes/question/settings.php:35
+#: inc/admin/views/meta-boxes/question/settings.php:39
 #: inc/admin/views/quiz/question-meta.php:50
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:226
 msgid "Explanation"
 msgstr ""
 
@@ -1189,7 +1169,7 @@ msgid "Radius"
 msgstr ""
 
 #: config/elementor/course/filter-course-el.php:353
-#: inc/admin/class-lp-admin-assets.php:559
+#: inc/admin/class-lp-admin-assets.php:589
 #: inc/admin/views/meta-boxes/order/content-tab-preview-exports-invoice.php:66
 #: inc/admin/views/meta-boxes/order/details.php:209
 #: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:140
@@ -1458,6 +1438,7 @@ msgstr ""
 #: inc/admin/meta-box/fields/payment-order.php:9
 #: inc/admin/views/quiz/question-meta.php:18
 #: inc/admin/views/setup/setup-stripe.php:11
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:259
 msgid "Description"
 msgstr ""
 
@@ -1763,7 +1744,7 @@ msgstr ""
 #: inc/admin/meta-box/fields/course-permalink.php:22
 #: inc/class-lp-helper.php:551
 #: inc/custom-post-types/abstract.php:878
-#: inc/custom-post-types/quiz.php:240
+#: inc/custom-post-types/quiz.php:246
 #: inc/TemplateHooks/Instructor/SingleInstructorTemplate.php:64
 #: templates/emails/order-items-table.php:87
 msgid "Course"
@@ -1778,11 +1759,7 @@ msgstr[1] ""
 #: inc/custom-post-types/lesson.php:176
 #: inc/Gutenberg/Blocks/SingleCourseElements/CourseLessonBlockType.php:79
 #: inc/Gutenberg/Blocks/SingleCourseElements/CourseOfflineLessonBlockType.php:80
-<<<<<<< HEAD
-#: inc/lp-template-functions.php:1103
-=======
 #: inc/lp-template-functions.php:1112
->>>>>>> origin/develop
 #: inc/Models/CourseModel.php:1407
 #: inc/TemplateHooks/Course/SingleCourseModernLayout.php:210
 #: inc/TemplateHooks/Course/SingleCourseTemplate.php:559
@@ -1795,14 +1772,10 @@ msgstr[1] ""
 #: config/settings/permalink.php:50
 #: inc/class-lp-helper.php:563
 #: inc/course/lp-course-functions.php:412
-#: inc/custom-post-types/question.php:313
+#: inc/custom-post-types/question.php:315
 #: inc/custom-post-types/quiz.php:89
 #: inc/Gutenberg/Blocks/SingleCourseElements/CourseQuizBlockType.php:79
-<<<<<<< HEAD
-#: inc/lp-template-functions.php:1093
-=======
 #: inc/lp-template-functions.php:1102
->>>>>>> origin/develop
 #: inc/Models/CourseModel.php:1410
 #: inc/TemplateHooks/Course/SingleCourseModernLayout.php:218
 #: inc/TemplateHooks/Course/SingleCourseTemplate.php:562
@@ -1815,8 +1788,9 @@ msgstr[1] ""
 
 #: config/settings/advanced.php:78
 #: inc/class-lp-helper.php:569
-#: inc/custom-post-types/question.php:207
+#: inc/custom-post-types/question.php:209
 #: inc/custom-post-types/quiz.php:177
+#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:144
 msgid "Question"
 msgid_plural "Questions"
 msgstr[0] ""
@@ -1943,12 +1917,12 @@ msgid "Expand first section"
 msgstr ""
 
 #: config/settings/course.php:160
-#: inc/TemplateHooks/Course/SingleCourseTemplate.php:1511
+#: inc/TemplateHooks/Course/SingleCourseTemplate.php:1527
 msgid "Expand all sections"
 msgstr ""
 
 #: config/settings/course.php:161
-#: inc/TemplateHooks/Course/SingleCourseTemplate.php:1515
+#: inc/TemplateHooks/Course/SingleCourseTemplate.php:1531
 msgid "Collapse all sections"
 msgstr ""
 
@@ -3101,7 +3075,7 @@ msgstr ""
 msgid "Before taking this action, we strongly recommend you backup your site first before proceeding. If you encounter any problems, please do not hesitate to contact our support team. Are you sure to proceed with the update protocol?"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:552
+#: inc/admin/class-lp-admin-assets.php:582
 #: inc/class-lp-query-list-table.php:32
 #: inc/TemplateHooks/Table/TableListTemplate.php:138
 msgid "item"
@@ -3109,56 +3083,58 @@ msgid_plural "items"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/admin/class-lp-admin-assets.php:553
+#: inc/admin/class-lp-admin-assets.php:583
 msgid "Create a new"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:554
+#: inc/admin/class-lp-admin-assets.php:584
 #: inc/admin/views/setup/content.php:50
 #: inc/custom-post-types/quiz.php:172
+#: inc/TemplateHooks/Admin/AdminTemplate.php:113
 #: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:559
 msgid "Back"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:555
+#: inc/admin/class-lp-admin-assets.php:585
 #: inc/admin/views/course/modal-choose-items.php:54
 #: inc/admin/views/quiz/modal-choose-items.php:52
 #: inc/custom-post-types/quiz.php:173
+#: inc/TemplateHooks/Admin/AdminTemplate.php:108
 #: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:554
 msgid "Selected items"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:556
+#: inc/admin/class-lp-admin-assets.php:586
 msgid "Do you want to remove the \"{{ITEM_NAME}}\" item from the course?"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:557
+#: inc/admin/class-lp-admin-assets.php:587
 msgid "Do you want to move the \"{{ITEM_NAME}}\" item to the trash?"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:560
+#: inc/admin/class-lp-admin-assets.php:590
 #: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:141
 #: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:232
 msgid "Items"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:562
+#: inc/admin/class-lp-admin-assets.php:592
 msgid "The course sale price must be less than the regular price"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:563
+#: inc/admin/class-lp-admin-assets.php:593
 msgid "The course price must be greater than the sale price"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:564
+#: inc/admin/class-lp-admin-assets.php:594
 msgid "The sale start date must be before the sale end date"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:565
+#: inc/admin/class-lp-admin-assets.php:595
 msgid "The sale end date must be after the sale start date"
 msgstr ""
 
-#: inc/admin/class-lp-admin-assets.php:566
+#: inc/admin/class-lp-admin-assets.php:596
 msgid "Invalid date"
 msgstr ""
 
@@ -3238,11 +3214,7 @@ msgid "Invoice"
 msgstr ""
 
 #: inc/admin/class-lp-admin.php:261
-<<<<<<< HEAD
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:680
-=======
 #: inc/TemplateHooks/Course/FilterCourseTemplate.php:687
->>>>>>> origin/develop
 msgid "Levels"
 msgstr ""
 
@@ -3342,7 +3314,7 @@ msgstr ""
 #: inc/custom-post-types/abstract.php:907
 #: inc/custom-post-types/abstract.php:1025
 #: inc/custom-post-types/abstract.php:1035
-#: inc/custom-post-types/question.php:359
+#: inc/custom-post-types/question.php:361
 #: inc/order/class-lp-order.php:975
 msgid "View"
 msgstr ""
@@ -3374,6 +3346,7 @@ msgstr ""
 #: inc/admin/class-lp-modal-search-users.php:50
 #: inc/admin/views/course/modal-choose-items.php:92
 #: inc/admin/views/quiz/modal-choose-items.php:83
+#: inc/TemplateHooks/Admin/AdminTemplate.php:104
 #: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:550
 msgid "Add"
 msgstr ""
@@ -3576,7 +3549,7 @@ msgstr ""
 #: inc/admin/sub-menus/class-lp-submenu-categories.php:11
 #: inc/admin/sub-menus/class-lp-submenu-categories.php:12
 #: inc/custom-post-types/course.php:375
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:337
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:338
 msgid "Categories"
 msgstr ""
 
@@ -3704,11 +3677,7 @@ msgstr ""
 #: inc/course/abstract-course.php:713
 #: inc/ExternalPlugin/Elementor/Widgets/Course/FilterCourseElementor.php:233
 #: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:880
-<<<<<<< HEAD
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:247
-=======
 #: inc/TemplateHooks/Course/FilterCourseTemplate.php:248
->>>>>>> origin/develop
 #: inc/TemplateHooks/Course/SingleCourseTemplate.php:444
 #: templates/order/order-details.php:46
 msgid "Free"
@@ -3915,7 +3884,7 @@ msgid "Reset Password"
 msgstr ""
 
 #: inc/admin/sub-menus/class-lp-submenu-addons.php:18
-#: learnpress.php:758
+#: learnpress.php:772
 msgid "Add-ons"
 msgstr ""
 
@@ -4138,6 +4107,7 @@ msgstr ""
 #: inc/admin/views/question/actions.php:12
 #: inc/admin/views/quiz/editor.php:35
 #: inc/admin/views/quiz/question-meta.php:12
+#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:134
 #: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:117
 msgid "Details"
 msgstr ""
@@ -4147,6 +4117,7 @@ msgid "Something went wrong! Please reload to continue editing the curriculum."
 msgstr ""
 
 #: inc/admin/views/course/modal-choose-items.php:71
+#: inc/TemplateHooks/Admin/AdminTemplate.php:86
 #: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:529
 msgid "Type here to search for an item"
 msgstr ""
@@ -4204,11 +4175,14 @@ msgstr ""
 
 #: inc/admin/views/course/section.php:45
 #: inc/admin/views/quiz/editor.php:79
-#: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:435
 msgid "Select items"
 msgstr ""
 
 #: inc/admin/views/course/section.php:49
+#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:252
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:725
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:743
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:792
 #: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:211
 #: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:368
 msgid "Are you sure?"
@@ -4265,7 +4239,7 @@ msgstr ""
 #: inc/admin/views/meta-boxes/course/assigned.php:29
 #: inc/admin/views/meta-boxes/quiz/assigned.php:55
 #: inc/custom-post-types/abstract.php:920
-#: inc/custom-post-types/question.php:362
+#: inc/custom-post-types/question.php:364
 msgid "Not assigned yet"
 msgstr ""
 
@@ -4325,13 +4299,13 @@ msgstr ""
 #: inc/admin/views/meta-boxes/lesson/settings.php:17
 #: inc/admin/views/meta-boxes/quiz/settings.php:23
 #: inc/custom-post-types/lesson.php:244
-#: inc/custom-post-types/quiz.php:242
+#: inc/custom-post-types/quiz.php:248
 #: inc/Gutenberg/Blocks/SingleCourseElements/CourseDurationBlockType.php:79
 #: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:1370
 #: inc/jwt/rest-api/version1/class-lp-rest-lessons-v1-controller.php:530
 #: inc/jwt/rest-api/version1/class-lp-rest-quiz-v1-controller.php:636
 #: inc/TemplateHooks/Course/SingleCourseModernLayout.php:214
-#: inc/TemplateHooks/Course/SingleCourseOfflineTemplate.php:247
+#: inc/TemplateHooks/Course/SingleCourseOfflineTemplate.php:245
 msgid "Duration"
 msgstr ""
 
@@ -4442,7 +4416,7 @@ msgstr ""
 #: inc/custom-post-types/lesson.php:174
 #: inc/custom-post-types/lesson.php:175
 #: inc/custom-post-types/lesson.php:178
-#: inc/TemplateHooks/Course/SingleCourseOfflineTemplate.php:255
+#: inc/TemplateHooks/Course/SingleCourseOfflineTemplate.php:253
 #: templates/widgets/course-info.php:25
 msgid "Lessons"
 msgstr ""
@@ -4720,7 +4694,7 @@ msgstr ""
 #: inc/admin/views/meta-boxes/order/details.php:212
 #: inc/custom-post-types/order.php:458
 #: templates/checkout/order-received.php:117
-#: templates/checkout/review-order.php:156
+#: templates/checkout/review-order.php:154
 #: templates/emails/order-items-table.php:120
 #: templates/emails/plain/order-items-table.php:88
 #: templates/order/order-details.php:29
@@ -4831,22 +4805,24 @@ msgstr ""
 msgid "Payment Medthod"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/question/settings.php:9
+#: inc/admin/views/meta-boxes/question/settings.php:13
 msgid "Question Settings"
 msgstr ""
 
-#: inc/admin/views/meta-boxes/question/settings.php:18
+#: inc/admin/views/meta-boxes/question/settings.php:22
 #: inc/admin/views/quiz/question-meta.php:33
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:178
 msgid "Points for choosing the correct answer."
 msgstr ""
 
-#: inc/admin/views/meta-boxes/question/settings.php:31
+#: inc/admin/views/meta-boxes/question/settings.php:35
 #: inc/admin/views/quiz/question-meta.php:44
 msgid "The instructions for the user to select the right answer. The text will be shown when users click the 'Hint' button."
 msgstr ""
 
-#: inc/admin/views/meta-boxes/question/settings.php:36
+#: inc/admin/views/meta-boxes/question/settings.php:40
 #: inc/admin/views/quiz/question-meta.php:55
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:235
 msgid "The explanation will be displayed when students click the \"Check Answer\" button."
 msgstr ""
 
@@ -4929,6 +4905,7 @@ msgid "Remove all blanks"
 msgstr ""
 
 #: inc/admin/views/question/fib-answer-editor.php:10
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:747
 msgid "Clear content"
 msgstr ""
 
@@ -4938,6 +4915,7 @@ msgid "Options"
 msgstr ""
 
 #: inc/admin/views/question/fib-answer-editor.php:34
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:808
 msgid "Match case"
 msgstr ""
 
@@ -4946,18 +4924,22 @@ msgid "Match two words in case sensitive."
 msgstr ""
 
 #: inc/admin/views/question/fib-answer-editor.php:37
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:816
 msgid "Comparison"
 msgstr ""
 
 #: inc/admin/views/question/fib-answer-editor.php:41
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:830
 msgid "Equal"
 msgstr ""
 
 #: inc/admin/views/question/fib-answer-editor.php:42
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:831
 msgid "Match two words are equality."
 msgstr ""
 
 #: inc/admin/views/question/fib-answer-editor.php:47
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:845
 msgid "Range"
 msgstr ""
 
@@ -4966,6 +4948,7 @@ msgid "Match any number in a range. Use <code>100, 200</code> to match any value
 msgstr ""
 
 #: inc/admin/views/question/fib-answer-editor.php:53
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:860
 msgid "Any"
 msgstr ""
 
@@ -4980,6 +4963,7 @@ msgid "Actions"
 msgstr ""
 
 #: inc/admin/views/quiz/editor.php:64
+#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:304
 msgid "Create a new question"
 msgstr ""
 
@@ -5635,7 +5619,6 @@ msgstr ""
 #: inc/Ajax/EditCurriculumAjax.php:553
 #: inc/Models/CourseSectionModel.php:210
 #: inc/Models/CourseSectionModel.php:270
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:477
 #: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:78
 #: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:597
 msgid "Course not found"
@@ -5718,6 +5701,91 @@ msgstr ""
 
 #: inc/Ajax/EditCurriculumAjax.php:557
 msgid "Only lesson can be set preview"
+msgstr ""
+
+#: inc/Ajax/EditQuestionAjax.php:47
+#: inc/Ajax/EditQuestionAjax.php:76
+#: inc/Ajax/EditQuestionAjax.php:209
+#: inc/Ajax/EditQuizAjax.php:113
+#: inc/Ajax/EditQuizAjax.php:162
+#: inc/Models/Question/QuestionAnswerModel.php:223
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:92
+msgid "Question not found"
+msgstr ""
+
+#: inc/Ajax/EditQuestionAjax.php:81
+#: inc/Models/QuizPostModel.php:241
+#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:305
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:324
+msgid "Question title is required"
+msgstr ""
+
+#: inc/Ajax/EditQuestionAjax.php:105
+#: inc/Models/QuizPostModel.php:245
+msgid "Invalid question type"
+msgstr ""
+
+#: inc/Ajax/EditQuestionAjax.php:118
+#: inc/Models/QuizPostModel.php:267
+msgid "Question type not found"
+msgstr ""
+
+#: inc/Ajax/EditQuestionAjax.php:128
+msgid "Question update successfully"
+msgstr ""
+
+#: inc/Ajax/EditQuestionAjax.php:150
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:581
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:639
+msgid "Answer title is required"
+msgstr ""
+
+#: inc/Ajax/EditQuestionAjax.php:183
+msgid "Question answer added successfully"
+msgstr ""
+
+#: inc/Ajax/EditQuestionAjax.php:270
+msgid "Answer of Question update successfully"
+msgstr ""
+
+#: inc/Ajax/EditQuestionAjax.php:292
+msgid "Invalid request!"
+msgstr ""
+
+#: inc/Ajax/EditQuestionAjax.php:297
+msgid "Question answer not found"
+msgstr ""
+
+#: inc/Ajax/EditQuestionAjax.php:304
+msgid "Question answer deleted successfully"
+msgstr ""
+
+#: inc/Ajax/EditQuizAjax.php:47
+#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:93
+#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:370
+msgid "Quiz not found"
+msgstr ""
+
+#: inc/Ajax/EditQuizAjax.php:80
+#: inc/Ajax/EditQuizAjax.php:137
+msgid "Question added successfully"
+msgstr ""
+
+#: inc/Ajax/EditQuizAjax.php:106
+#: inc/Ajax/EditQuizAjax.php:208
+msgid "Question IDs are required"
+msgstr ""
+
+#: inc/Ajax/EditQuizAjax.php:171
+msgid "Question not found in quiz"
+msgstr ""
+
+#: inc/Ajax/EditQuizAjax.php:177
+msgid "Question removed successfully"
+msgstr ""
+
+#: inc/Ajax/EditQuizAjax.php:214
+msgid "Question position updated successfully"
 msgstr ""
 
 #: inc/Ajax/LessonAjax.php:39
@@ -6078,7 +6146,7 @@ msgid "Install failed!"
 msgstr ""
 
 #: inc/class-lp-manager-addons.php:161
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:387
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:385
 msgid "Update failed!"
 msgstr ""
 
@@ -6280,7 +6348,7 @@ msgid "This question has already been assigned to the quiz. It will be removed f
 msgstr ""
 
 #: inc/custom-post-types/abstract.php:806
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:204
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:201
 msgid "Unknown"
 msgstr ""
 
@@ -6362,7 +6430,7 @@ msgstr ""
 #: inc/custom-post-types/course.php:58
 #: inc/custom-post-types/lesson.php:180
 #: inc/custom-post-types/order.php:601
-#: inc/custom-post-types/question.php:211
+#: inc/custom-post-types/question.php:213
 msgid "Add New"
 msgstr ""
 
@@ -6460,7 +6528,7 @@ msgid "No content"
 msgstr ""
 
 #: inc/custom-post-types/lesson.php:137
-#: inc/custom-post-types/question.php:94
+#: inc/custom-post-types/question.php:96
 #: inc/custom-post-types/quiz.php:71
 msgid "Unassigned"
 msgstr ""
@@ -6506,8 +6574,8 @@ msgid "Standard"
 msgstr ""
 
 #: inc/custom-post-types/lesson.php:320
-#: inc/custom-post-types/question.php:483
-#: inc/custom-post-types/quiz.php:440
+#: inc/custom-post-types/question.php:485
+#: inc/custom-post-types/quiz.php:446
 msgid "Assigned"
 msgstr ""
 
@@ -6615,63 +6683,64 @@ msgstr ""
 msgid "Order Exports"
 msgstr ""
 
-#: inc/custom-post-types/question.php:165
+#: inc/custom-post-types/question.php:167
 #: inc/custom-post-types/quiz.php:174
 msgid "New Option"
 msgstr ""
 
-#: inc/custom-post-types/question.php:166
+#: inc/custom-post-types/question.php:168
 #: inc/custom-post-types/quiz.php:180
 msgid "Are you sure to remove all the blanks?"
 msgstr ""
 
-#: inc/custom-post-types/question.php:183
+#: inc/custom-post-types/question.php:185
 msgid "Question Tag"
 msgstr ""
 
-#: inc/custom-post-types/question.php:186
+#: inc/custom-post-types/question.php:188
 msgid "Add A New Tag"
 msgstr ""
 
-#: inc/custom-post-types/question.php:187
+#: inc/custom-post-types/question.php:189
 msgid "All Tags"
 msgstr ""
 
-#: inc/custom-post-types/question.php:205
-#: inc/custom-post-types/question.php:206
+#: inc/custom-post-types/question.php:207
+#: inc/custom-post-types/question.php:208
+#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:315
 msgid "Question Bank"
 msgstr ""
 
-#: inc/custom-post-types/question.php:209
+#: inc/custom-post-types/question.php:211
 msgid "View Question"
 msgstr ""
 
-#: inc/custom-post-types/question.php:210
+#: inc/custom-post-types/question.php:212
 msgid "Add A New Question"
 msgstr ""
 
-#: inc/custom-post-types/question.php:212
+#: inc/custom-post-types/question.php:214
 msgid "Edit Question"
 msgstr ""
 
-#: inc/custom-post-types/question.php:213
+#: inc/custom-post-types/question.php:215
 msgid "Update Question"
 msgstr ""
 
-#: inc/custom-post-types/question.php:214
+#: inc/custom-post-types/question.php:216
 msgid "Search Questions"
 msgstr ""
 
-#: inc/custom-post-types/question.php:215
+#: inc/custom-post-types/question.php:217
 msgid "No questions found"
 msgstr ""
 
-#: inc/custom-post-types/question.php:216
+#: inc/custom-post-types/question.php:218
 msgid "There was no questions found in the trash"
 msgstr ""
 
-#: inc/custom-post-types/question.php:491
-msgid "Answer Options"
+#: inc/custom-post-types/question.php:493
+msgid "Questions Options"
 msgstr ""
 
 #: inc/custom-post-types/quiz.php:90
@@ -6710,17 +6779,17 @@ msgstr ""
 msgid "Do you want to move the \"{{QUESTION_NAME}}\" question to the trash?"
 msgstr ""
 
-#: inc/custom-post-types/quiz.php:288
+#: inc/custom-post-types/quiz.php:294
 msgid "%d question"
 msgid_plural "%d questions"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/custom-post-types/quiz.php:289
+#: inc/custom-post-types/quiz.php:295
 msgid "This quiz has no questions"
 msgstr ""
 
-#: inc/custom-post-types/quiz.php:302
+#: inc/custom-post-types/quiz.php:308
 #: inc/quiz/class-lp-quiz.php:518
 #: inc/TemplateHooks/Course/SingleCourseTemplate.php:493
 msgid "Unlimited"
@@ -6728,6 +6797,34 @@ msgstr ""
 
 #: inc/Databases/class-lp-course-json-db.php:144
 msgid "Invalid ID!"
+msgstr ""
+
+#: inc/Databases/class-lp-db.php:843
+#: inc/Databases/class-lp-db.php:905
+msgid "Data must be an array!"
+msgstr ""
+
+#: inc/Databases/class-lp-db.php:847
+#: inc/Databases/class-lp-db.php:897
+msgid "Invalid filter!"
+msgstr ""
+
+#: inc/Databases/class-lp-db.php:851
+#: inc/Databases/class-lp-db.php:901
+msgid "Filter must have property all_fields!"
+msgstr ""
+
+#: inc/Databases/class-lp-db.php:855
+#: inc/Databases/class-lp-db.php:913
+msgid "Table name is required!"
+msgstr ""
+
+#: inc/Databases/class-lp-db.php:859
+msgid "Key auto increment must be a string!"
+msgstr ""
+
+#: inc/Databases/class-lp-db.php:909
+msgid "Invalid where key!"
 msgstr ""
 
 #: inc/Databases/class-lp-order-db.php:111
@@ -6759,6 +6856,10 @@ msgstr ""
 
 #: inc/Databases/class-lp-user-items-db.php:80
 msgid "Invalid user item id!"
+msgstr ""
+
+#: inc/Databases/QuizQuestionsDB.php:136
+msgid "Invalid quiz_question_id!"
 msgstr ""
 
 #: inc/emails/admin/class-lp-email-become-an-instructor.php:24
@@ -7182,7 +7283,7 @@ msgid "Learn more about this course"
 msgstr ""
 
 #: inc/Gutenberg/Blocks/SingleCourseElements/CourseCapacityBlockType.php:80
-#: inc/TemplateHooks/Course/SingleCourseOfflineTemplate.php:239
+#: inc/TemplateHooks/Course/SingleCourseOfflineTemplate.php:237
 msgid "Capacity"
 msgstr ""
 
@@ -7193,7 +7294,7 @@ msgid "in"
 msgstr ""
 
 #: inc/Gutenberg/Blocks/SingleCourseElements/CourseDeliveryBlockType.php:80
-#: inc/TemplateHooks/Course/SingleCourseOfflineTemplate.php:235
+#: inc/TemplateHooks/Course/SingleCourseOfflineTemplate.php:233
 msgid "Delivery type"
 msgstr ""
 
@@ -8275,27 +8376,71 @@ msgid "You do not have permission to create item."
 msgstr ""
 
 #: inc/Models/PostModel.php:253
+#: inc/Models/Question/QuestionAnswerModel.php:177
 msgid "You do not have permission to edit this item."
 msgstr ""
 
-#: inc/Models/QuestionPostModel.php:90
+#: inc/Models/Question/QuestionAnswerModel.php:165
+msgid "You do not have permission to create answer."
+msgstr ""
+
+#: inc/Models/Question/QuestionAnswerModel.php:234
+msgid "At least two answer is required."
+msgstr ""
+
+#: inc/Models/Question/QuestionPostModel.php:107
 #: inc/question/class-lp-question.php:356
 msgid "True Or False"
 msgstr ""
 
-#: inc/Models/QuestionPostModel.php:91
+#: inc/Models/Question/QuestionPostModel.php:108
 #: inc/question/class-lp-question.php:357
 msgid "Multi Choice"
 msgstr ""
 
-#: inc/Models/QuestionPostModel.php:92
+#: inc/Models/Question/QuestionPostModel.php:109
 #: inc/question/class-lp-question.php:358
 msgid "Single Choice"
 msgstr ""
 
-#: inc/Models/QuestionPostModel.php:93
+#: inc/Models/Question/QuestionPostModel.php:110
 #: inc/question/class-lp-question.php:359
 msgid "Fill In Blanks"
+msgstr ""
+
+#: inc/Models/Question/QuestionPostMultipleChoiceModel.php:21
+#: inc/Models/Question/QuestionPostSingleChoiceModel.php:26
+#: inc/Models/Question/QuestionSortingChoiceModel.php:26
+#: inc/question/class-lp-question.php:605
+msgid "First option"
+msgstr ""
+
+#: inc/Models/Question/QuestionPostMultipleChoiceModel.php:27
+#: inc/Models/Question/QuestionPostSingleChoiceModel.php:32
+#: inc/Models/Question/QuestionSortingChoiceModel.php:31
+#: inc/question/class-lp-question.php:611
+msgid "Second option"
+msgstr ""
+
+#: inc/Models/Question/QuestionPostMultipleChoiceModel.php:33
+#: inc/Models/Question/QuestionPostSingleChoiceModel.php:38
+#: inc/Models/Question/QuestionSortingChoiceModel.php:36
+#: inc/question/class-lp-question.php:617
+msgid "Third option"
+msgstr ""
+
+#: inc/Models/Question/QuestionPostMultipleChoiceModel.php:39
+msgid "Four option"
+msgstr ""
+
+#: inc/Models/Question/QuestionPostTrueFalseModel.php:26
+#: inc/question/class-lp-question-true-or-false.php:49
+msgid "True"
+msgstr ""
+
+#: inc/Models/Question/QuestionPostTrueFalseModel.php:32
+#: inc/question/class-lp-question-true-or-false.php:55
+msgid "False"
 msgstr ""
 
 #: inc/Models/UserItems/UserCourseModel.php:904
@@ -8525,26 +8670,6 @@ msgstr ""
 
 #: inc/order/lp-order-functions.php:407
 msgid "The order number <strong>%s</strong> can not be cancelled."
-msgstr ""
-
-#: inc/question/class-lp-question-true-or-false.php:49
-msgid "True"
-msgstr ""
-
-#: inc/question/class-lp-question-true-or-false.php:55
-msgid "False"
-msgstr ""
-
-#: inc/question/class-lp-question.php:605
-msgid "First option"
-msgstr ""
-
-#: inc/question/class-lp-question.php:611
-msgid "Second option"
-msgstr ""
-
-#: inc/question/class-lp-question.php:617
-msgid "Third option"
 msgstr ""
 
 #: inc/quiz/class-lp-quiz.php:586
@@ -8810,70 +8935,72 @@ msgstr ""
 msgid "Your uploaded files reach the maximum amount!"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:156
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:155
 msgid "File \"%s\" title is not empty!"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:161
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:160
 msgid "File %s method is invalid!"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:168
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:167
 msgid "File %s size is too large!"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:178
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:177
 msgid "File %s type is invalid!"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:192
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:191
 msgid "File %s: "
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:210
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:208
 msgid "An error occurred while checking %1$s. %2$s"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:236
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:210
+msgid "Oops! That file type isn’t allowed."
+msgstr ""
+
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:234
 msgid "Cannot save file %s"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:240
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:238
 msgid "Other files is upload successfully."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:256
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:254
 msgid "Files upload successfully."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:283
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:281
 msgid "Invalid item id!"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:294
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:504
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:292
 msgid "Successfully"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:296
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:506
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:294
 #: inc/TemplateHooks/Course/CourseMaterialTemplate.php:102
 msgid "Empty material!"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:384
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:382
 msgid "Updated."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:410
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:408
 msgid "Invalid file identifier"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:417
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:415
 msgid "File is deleted."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:420
+#: inc/rest-api/v1/frontend/class-lp-rest-material-controller.php:418
 msgid "There is an error when delete this file."
 msgstr ""
 
@@ -9087,18 +9214,138 @@ msgstr ""
 msgid "This shortcode LP Profile only use on the page <a href=\"%s\">%s</a>"
 msgstr ""
 
+#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:140
 #: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:123
 #: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:136
 #: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:227
 msgid "<span class=\"count\">%1$s</span> %2$s"
 msgstr ""
 
-#: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:128
-msgid "Sections"
+#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:188
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:109
+msgid "Option Details"
 msgstr ""
 
+#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:228
 #: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:201
 msgid "Drag to reorder section"
+msgstr ""
+
+#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:246
+msgid "Edit question detail"
+msgstr ""
+
+#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:251
+msgid "Remove question"
+msgstr ""
+
+#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:253
+msgid "This question will be removed from this quiz. The question will no longer be assigned to this quiz, but will not be permanently deleted."
+msgstr ""
+
+#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:272
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:373
+msgid "Select question type"
+msgstr ""
+
+#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:287
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:388
+msgid "Question type is required"
+msgstr ""
+
+#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:310
+msgid "Enter title question and choice type"
+msgstr ""
+
+#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:311
+msgid "Add Question"
+msgstr ""
+
+#: inc/TemplateHooks/Admin/AdminEditQizTemplate.php:403
+#: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:638
+msgid "No items found"
+msgstr ""
+
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:207
+msgid "The instructions for the user to select the right answer. The text will be shown when users click the \"Hint\" button."
+msgstr ""
+
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:292
+msgid "Config Your Answer"
+msgstr ""
+
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:323
+msgid "Update question title"
+msgstr ""
+
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:399
+msgid "Create Question Type"
+msgstr ""
+
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:517
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:582
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:640
+msgid "Add Option"
+msgstr ""
+
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:704
+msgid "Select a word in the passage above and click \"Insert a new blank\" to make that word a blank for filling."
+msgstr ""
+
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:712
+msgid "Enter answer correct on here"
+msgstr ""
+
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:713
+msgid "This text inserted to blank"
+msgstr ""
+
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:714
+msgid "You must select a text or position on Editor to insert new blank."
+msgstr ""
+
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:716
+msgid "Insert new blank"
+msgstr ""
+
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:726
+msgid "This action will delete all blanks in the editor, only keep text content."
+msgstr ""
+
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:727
+msgid "Delete all blanks on this editor."
+msgstr ""
+
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:729
+msgid "Delete all blanks"
+msgstr ""
+
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:734
+msgid "Save content"
+msgstr ""
+
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:744
+msgid "This action will delete all content in the editor."
+msgstr ""
+
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:745
+msgid "Clear all content on this editor."
+msgstr ""
+
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:793
+msgid "Delete this blank and keep text"
+msgstr ""
+
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:846
+msgid "Match any number in a range. Use 100, 200 to match any value from 100 to 200."
+msgstr ""
+
+#: inc/TemplateHooks/Admin/AdminEditQuestionTemplate.php:861
+msgid "Match any value in a set of words. Use fill, blank, or question to match any value in the set."
+msgstr ""
+
+#: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:128
+msgid "Sections"
 msgstr ""
 
 #: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:207
@@ -9122,7 +9369,7 @@ msgid "+ Add Description"
 msgstr ""
 
 #: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:325
-msgid "Add Sections"
+msgid "Add Section"
 msgstr ""
 
 #: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:362
@@ -9145,29 +9392,22 @@ msgstr ""
 msgid "Create a new %s"
 msgstr ""
 
+#: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:425
+msgid "Add %s"
+msgstr ""
+
 #: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:426
 msgid "New %s"
 msgstr ""
 
-#: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:638
-msgid "No items found"
+#: inc/TemplateHooks/Course/AdminEditCurriculumTemplate.php:435
+msgid "Content Bank"
 msgstr ""
 
 #: inc/TemplateHooks/Course/FilterCourseTemplate.php:174
 msgid "Search Course"
 msgstr ""
 
-<<<<<<< HEAD
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:707
-msgid "Online"
-msgstr ""
-
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:708
-msgid "Offline"
-msgstr ""
-
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:770
-=======
 #: inc/TemplateHooks/Course/FilterCourseTemplate.php:714
 msgid "Online"
 msgstr ""
@@ -9177,7 +9417,6 @@ msgid "Offline"
 msgstr ""
 
 #: inc/TemplateHooks/Course/FilterCourseTemplate.php:777
->>>>>>> origin/develop
 msgid "Done"
 msgstr ""
 
@@ -9273,7 +9512,7 @@ msgstr ""
 msgid "By"
 msgstr ""
 
-#: inc/TemplateHooks/Course/SingleCourseOfflineTemplate.php:329
+#: inc/TemplateHooks/Course/SingleCourseOfflineTemplate.php:330
 msgid "lessons"
 msgstr ""
 
@@ -9282,32 +9521,32 @@ msgctxt "no course thumbnail"
 msgid "course thumbnail"
 msgstr ""
 
-#: inc/TemplateHooks/Course/SingleCourseTemplate.php:740
+#: inc/TemplateHooks/Course/SingleCourseTemplate.php:744
 msgid "Contact To Request"
 msgstr ""
 
-#: inc/TemplateHooks/Course/SingleCourseTemplate.php:855
+#: inc/TemplateHooks/Course/SingleCourseTemplate.php:859
 #: templates/single-course/buttons/enroll.php:28
 msgid "Start Now"
 msgstr ""
 
-#: inc/TemplateHooks/Course/SingleCourseTemplate.php:1465
+#: inc/TemplateHooks/Course/SingleCourseTemplate.php:1481
 msgid "There are no items in the curriculum yet."
 msgstr ""
 
-#: inc/TemplateHooks/Course/SingleCourseTemplate.php:1492
+#: inc/TemplateHooks/Course/SingleCourseTemplate.php:1508
 msgid "%d Section"
 msgid_plural "%d Sections"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/TemplateHooks/Course/SingleCourseTemplate.php:1499
+#: inc/TemplateHooks/Course/SingleCourseTemplate.php:1515
 msgid "%d Lesson"
 msgid_plural "%d Lessons"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/TemplateHooks/Course/SingleCourseTemplate.php:1709
+#: inc/TemplateHooks/Course/SingleCourseTemplate.php:1725
 msgid "%d Question"
 msgid_plural "%d Questions"
 msgstr[0] ""
@@ -9823,7 +10062,7 @@ msgstr ""
 msgid "Recent Courses"
 msgstr ""
 
-#: learnpress.php:757
+#: learnpress.php:771
 msgid "Documentation"
 msgstr ""
 
@@ -9975,7 +10214,7 @@ msgstr ""
 msgid "Your order"
 msgstr ""
 
-#: templates/checkout/review-order.php:142
+#: templates/checkout/review-order.php:140
 #: templates/order/order-details.php:108
 msgid "Subtotal"
 msgstr ""
