@@ -454,7 +454,13 @@ class AdminEditQuestionTemplate {
 		}
 
 		$section = [
-			'header'  => '<div class="lp-question-choice-header"><span>Answers</span><span>Correct</span></div>',
+			'header'  => sprintf(
+				'<div class="lp-question-choice-header">
+				<span>%s</span><span>%s</span>
+			</div>',
+				__( 'Answers', 'learnpress' ),
+				__( 'Corrects', 'learnpress' )
+			),
 			'answers' => $html_answers,
 		];
 
@@ -518,7 +524,13 @@ class AdminEditQuestionTemplate {
 		);
 
 		$section = [
-			'header'  => '<div class="lp-question-choice-header"><span>Answers</span><span>Correct</span></div>',
+			'header'  => sprintf(
+				'<div class="lp-question-choice-header">
+				<span>%s</span><span>%s</span>
+			</div>',
+				__( 'Answers', 'learnpress' ),
+				__( 'Corrects', 'learnpress' )
+			),
 			'answers' => $html_answers,
 		];
 
@@ -583,7 +595,13 @@ class AdminEditQuestionTemplate {
 		);
 
 		$section = [
-			'header'  => '<div class="lp-question-choice-header"><span>Answers</span><span>Correct</span></div>',
+			'header'  => sprintf(
+				'<div class="lp-question-choice-header">
+				<span>%s</span><span>%s</span>
+			</div>',
+				__( 'Answers', 'learnpress' ),
+				__( 'Corrects', 'learnpress' )
+			),
 			'answers' => $html_answers,
 		];
 
@@ -641,7 +659,13 @@ class AdminEditQuestionTemplate {
 		);
 
 		$section = [
-			'header'  => '<div class="lp-question-choice-header"><span>Answers</span><span>Correct</span></div>',
+			'header'  => sprintf(
+				'<div class="lp-question-choice-header">
+				<span>%s</span><span>%s</span>
+			</div>',
+				__( 'Answers', 'learnpress' ),
+				__( 'Corrects', 'learnpress' )
+			),
 			'answers' => $html_answers,
 		];
 
