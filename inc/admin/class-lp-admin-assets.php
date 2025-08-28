@@ -264,13 +264,13 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					0,
 					0
 				),*/
-				'learn-press-admin-question-editor' => new LP_Asset_Key(
+				/*'learn-press-admin-question-editor' => new LP_Asset_Key(
 					$this->url( 'js/dist/admin/editor/question' . self::$_min_assets . '.js' ),
 					array( 'vue-libs', 'lodash', 'lp-utils' ),
 					array( LP_QUESTION_CPT ),
 					0,
 					0
-				),
+				),*/
 				/*'learn-press-meta-box-order'        => new LP_Asset_Key(
 					$this->url( self::$_folder_source . 'js/admin/partial/meta-box-order' . self::$_min_assets . '.js' ),
 					array(
