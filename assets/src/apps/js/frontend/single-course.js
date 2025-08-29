@@ -170,10 +170,20 @@ const purchaseCourse = () => {
 				const status = 'error';
 
 				try {
+					const formData = new FormData( form );
+					const dataSend = Object.fromEntries( Array.from( formData.keys(), ( key ) => {
+						const val = formData.getAll( key );
+
+						return [ key, val.length > 1 ? val : val.pop() ];
+					} ) );
+
+					dataSend.id = id;
+					dataSend.repurchaseType = repurchaseType;
+
 					const response = await wp.apiFetch( {
 						path: 'lp/v1/courses/purchase-course',
 						method: 'POST',
-						data: { id, repurchaseType },
+						data: dataSend,
 					} );
 
 					const { status, data: { redirect, type, html, titlePopup }, message } = response;
