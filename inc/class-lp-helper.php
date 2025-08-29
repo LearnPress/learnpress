@@ -235,10 +235,8 @@ class LP_Helper {
 				throw new Exception( __( 'Missing post title', 'learnpress' ) );
 			}
 
-			$single_instructor_template = file_get_contents( Template::instance( false )->get_frontend_template_type_block( 'patterns/single-instructor-pattern.html' ) );
-
 			if ( preg_match( '#^learn_press_single_instructor_page_id.*#', $key_option ) ) {
-				$args['post_content'] = $single_instructor_template;
+				$args['post_content'] = '<!-- wp:shortcode -->[learn_press_single_instructor]<!-- /wp:shortcode -->';
 			} elseif ( preg_match( '#^learn_press_instructors_page_id.*#', $key_option ) ) {
 				$args['post_content'] = '<!-- wp:shortcode -->[learn_press_instructors]<!-- /wp:shortcode -->';
 			} elseif ( preg_match( '#^learn_press_profile_page_id.*#', $key_option ) ) {
