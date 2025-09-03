@@ -951,7 +951,7 @@ class CourseModel {
 	 *
 	 * @return bool|WP_Error
 	 * @since 4.2.7.3
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public function can_enroll( $user ) {
 		$can_enroll = true;
@@ -1000,14 +1000,18 @@ class CourseModel {
 				if ( ! $user ) {
 					$error_code = 'course_is_no_required_enroll_not_login';
 					throw new Exception(
-						__( 'Enrollment in the course is not mandatory. You can access course for learning now.', 'learnpress' )
+						__(
+							'Enrollment in the course is not mandatory. You can access course for learning now.',
+							'learnpress'
+						)
 					);
 				} else {
 
 				}
 			} else {
 				if ( ! empty( $this->get_external_link() )
-					&& ( ! $userCourseModel || $userCourseModel->get_status() === UserItemModel::STATUS_CANCEL )
+					&& ( ! $user || ! $userCourseModel
+						|| $userCourseModel->get_status() === UserItemModel::STATUS_CANCEL )
 					&& ! $this->is_offline() ) {
 					$error_code = 'course_is_external';
 					throw new Exception( __( 'The course is external', 'learnpress' ) );
