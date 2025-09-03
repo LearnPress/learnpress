@@ -104,13 +104,11 @@ $singleCourseTemplate = SingleCourseTemplate::instance();
 							</td>
 							<td class="course-total col-number">
 								<?php
-								echo esc_html(
-									apply_filters(
-										'learn-press/review-order/cart-item-subtotal',
-										$cart->get_item_subtotal( $itemModel, $cart_item['quantity'] ),
-										$cart_item,
-										$cart_item_key
-									)
+								echo apply_filters(
+									'learn-press/review-order/cart-item-subtotal',
+									$cart->get_item_subtotal( $itemModel, $cart_item['quantity'] ),
+									$cart_item,
+									$cart_item_key
 								);
 								?>
 							</td>
