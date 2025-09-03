@@ -75,6 +75,7 @@ class ListCoursesBlockType extends AbstractBlockType {
 
 		try {
 			$args                 = lp_archive_skeleton_get_args();
+			$args['id_url']       = 'gutenberg-list-courses';
 			$args['attributes']   = $attributes;
 			$args['parsed_block'] = $block->parsed_block;
 			$courseQuery          = $attributes['courseQuery'] ?? [];
@@ -97,6 +98,7 @@ class ListCoursesBlockType extends AbstractBlockType {
 
 			// For list courses related of single course page
 			if ( isset( $courseQuery['related'] ) && $courseQuery['related'] ) {
+				$args['id_url']    = 'gutenberg-list-courses-related';
 				$args['course_id'] = get_the_ID();
 			}
 
@@ -140,13 +142,12 @@ class ListCoursesBlockType extends AbstractBlockType {
 		$settings['limit']    = $courseQuery['limit'] ?? 10;
 		Courses::handle_params_for_query_courses( $filter, $settings );
 
-		$filter = apply_filters( 'learn-press/block/list_courses/handle_filter', $filter, $settings );
-
 		if ( isset( $courseQuery['related'] ) && $courseQuery['related'] ) {
 			$courseQuery['pagination'] = false;
 			self::get_courses_related( $filter, $settings );
 		}
 
+		$filter  = apply_filters( 'learn-press/block/list_courses/handle_filter', $filter, $settings );
 		$courses = Courses::get_courses( $filter, $total_rows );
 
 		$paged = $settings['paged'] ?? 1;
