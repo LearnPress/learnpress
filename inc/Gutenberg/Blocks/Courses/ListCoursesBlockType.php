@@ -27,7 +27,6 @@ class ListCoursesBlockType extends AbstractBlockType {
 
 	public function __construct() {
 		add_filter( 'lp/rest/ajax/allow_callback', [ $this, 'allow_callback' ] );
-		add_filter( 'learn-press/block/list_courses/handle_agrs', [ $this, 'args_instructor' ], 10, 2 );
 
 		parent::__construct();
 	}
@@ -65,6 +64,8 @@ class ListCoursesBlockType extends AbstractBlockType {
 	 * @param array $attributes | Attributes of block tag.
 	 *
 	 * @return false|string
+	 * @since 4.2.8.2
+	 * @version 1.0.1
 	 */
 	public function render_content_block_template( array $attributes, $content, $block ): string {
 		wp_enqueue_script( 'lp-courses-v2' );
@@ -89,7 +90,14 @@ class ListCoursesBlockType extends AbstractBlockType {
 				'<div class="lp-list-courses-default">' => '</div>',
 			];
 
-			$args = apply_filters( 'learn-press/block/list_courses/handle_agrs', $args, $courseQuery );
+			// For case instructor page, show courses of instructor
+			if ( LP_Page_Controller::is_page_instructor() ) {
+				$instructor = SingleInstructorTemplate::instance()->detect_instructor_by_page();
+				if ( $instructor && $instructor->is_instructor() ) {
+					$args['c_author'] = $instructor->get_id();
+				}
+			}
+
 			if ( ! $load_ajax ) {
 				$content_obj                     = ListCoursesBlockType::render_courses( $args );
 				$args['html_no_load_ajax_first'] = sprintf( '<div class="lp-list-courses-default">%s</div>', $content_obj->content );
@@ -136,7 +144,7 @@ class ListCoursesBlockType extends AbstractBlockType {
 
 		$courses = Courses::get_courses( $filter, $total_rows );
 
-		$paged = isset( $settings['paged'] ) ? $settings['paged'] : 1;
+		$paged = $settings['paged'] ?? 1;
 
 		$html_pagination = '';
 		if ( isset( $courseQuery['pagination'] ) && $courseQuery['pagination'] ) {
@@ -182,29 +190,6 @@ class ListCoursesBlockType extends AbstractBlockType {
 		$content->paged   = $settings['paged'] ?? 1;
 
 		return $content;
-	}
-
-	/**
-	 * Modify course query parameters for the single instructor page.
-	 *
-	 * @param array $param
-	 *
-	 * @since 4.2.8.4
-	 * @return array
-	 */
-	public function args_instructor( array $param, $setting ) {
-		if ( ! LP_Page_Controller::is_page_instructor() ) {
-			return $param;
-		}
-
-		$instructor = SingleInstructorTemplate::instance()->detect_instructor_by_page();
-		if ( ! $instructor || ! $instructor->is_instructor() ) {
-			return $param;
-		}
-
-		$author_id         = $instructor->get_id();
-		$param['c_author'] = $author_id;
-		return $param;
 	}
 
 	/**
