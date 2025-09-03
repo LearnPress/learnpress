@@ -5,7 +5,7 @@
  * @version 1.0.1
  */
 import * as lpUtils from '../utils.js';
-import SweetAlert from 'sweetalert2-neutral';
+import SweetAlert from 'sweetalert2';
 import Sortable from 'sortablejs';
 import Toastify from 'toastify-js';
 import 'toastify-js/src/toastify.css';

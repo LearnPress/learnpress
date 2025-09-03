@@ -6,7 +6,7 @@
 
 import * as lpUtils from './utils.js';
 import Toastify from 'toastify-js';
-import SweetAlert from 'sweetalert2-neutral';
+import SweetAlert from 'sweetalert2';
 
 let lpSettings = {};
 if ( 'undefined' !== typeof lpDataAdmin ) {

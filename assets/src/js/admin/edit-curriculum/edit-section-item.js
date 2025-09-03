@@ -5,7 +5,7 @@
  * @since 4.2.8.6
  */
 import * as lpEditCurriculumShare from './share.js';
-import SweetAlert from 'sweetalert2-neutral';
+import SweetAlert from 'sweetalert2';
 import Sortable from 'sortablejs';
 
 const className = {

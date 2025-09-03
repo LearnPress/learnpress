@@ -8,7 +8,7 @@
 import * as lpUtils from '../utils.js';
 import Toastify from 'toastify-js';
 import 'toastify-js/src/toastify.css';
-import SweetAlert from 'sweetalert2-neutral';
+import SweetAlert from 'sweetalert2';
 import Sortable from 'sortablejs';
 
 const className = {
