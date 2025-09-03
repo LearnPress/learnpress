@@ -20,6 +20,8 @@ use WP_Block;
 /**
  * Class ListCoursesBlockType
  *
+ * @since 4.2.8.3
+ * @version 1.0.2
  */
 class ListCoursesBlockType extends AbstractBlockType {
 	public $block_name      = 'list-courses';
@@ -64,8 +66,8 @@ class ListCoursesBlockType extends AbstractBlockType {
 	 * @param array $attributes | Attributes of block tag.
 	 *
 	 * @return false|string
-	 * @since 4.2.8.2
-	 * @version 1.0.1
+	 * @since 4.2.8.3
+	 * @version 1.0.2
 	 */
 	public function render_content_block_template( array $attributes, $content, $block ): string {
 		wp_enqueue_script( 'lp-courses-v2' );
@@ -75,18 +77,13 @@ class ListCoursesBlockType extends AbstractBlockType {
 			$args                 = lp_archive_skeleton_get_args();
 			$args['attributes']   = $attributes;
 			$args['parsed_block'] = $block->parsed_block;
-			$id                   = 0;
-			if ( ! is_archive() && ! is_home() && ! is_search() ) {
-				$id = get_the_ID();
-			}
-			$args['post_id'] = $id;
-			$courseQuery     = $attributes['courseQuery'] ?? [];
-			$load_ajax       = $courseQuery['load_ajax'] ?? false;
-			$callback        = [
+			$courseQuery          = $attributes['courseQuery'] ?? [];
+			$load_ajax            = $courseQuery['load_ajax'] ?? false;
+			$callback             = [
 				'class'  => get_class( $this ),
 				'method' => 'render_courses',
 			];
-			$html_wrapper    = [
+			$html_wrapper         = [
 				'<div class="lp-list-courses-default">' => '</div>',
 			];
 
@@ -98,9 +95,17 @@ class ListCoursesBlockType extends AbstractBlockType {
 				}
 			}
 
+			// For list courses related of single course page
+			if ( isset( $courseQuery['related'] ) && $courseQuery['related'] ) {
+				$args['course_id'] = get_the_ID();
+			}
+
 			if ( ! $load_ajax ) {
 				$content_obj                     = ListCoursesBlockType::render_courses( $args );
-				$args['html_no_load_ajax_first'] = sprintf( '<div class="lp-list-courses-default">%s</div>', $content_obj->content );
+				$args['html_no_load_ajax_first'] = sprintf(
+					'<div class="lp-list-courses-default">%s</div>',
+					$content_obj->content
+				);
 			}
 
 			$html = TemplateAJAX::load_content_via_ajax( $args, $callback );
@@ -120,9 +125,9 @@ class ListCoursesBlockType extends AbstractBlockType {
 	 *
 	 * @return stdClass { content: string_html }
 	 * @since 4.2.8.4
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
-	public static function render_courses( array $settings = [] ) {
+	public static function render_courses( array $settings = [] ): stdClass {
 		$content          = new stdClass();
 		$content->content = '';
 
@@ -196,15 +201,14 @@ class ListCoursesBlockType extends AbstractBlockType {
 	 * Get courses related to current course.
 	 *
 	 * @param LP_Course_Filter $filter
+	 * @param $setting
 	 *
-	 * @since 4.2.8.4
 	 * @return void
+	 * @since 4.2.8.3
+	 * @version 1.0.1
 	 */
 	public static function get_courses_related( LP_Course_Filter &$filter, $setting ) {
-		if ( empty( $setting['post_id'] ) ) {
-			return;
-		}
-		$courseModelCurrent = CourseModel::find( $setting['post_id'], true );
+		$courseModelCurrent = CourseModel::find( $setting['course_id'] ?? 0, true );
 		if ( empty( $courseModelCurrent ) ) {
 			return;
 		}
@@ -214,11 +218,15 @@ class ListCoursesBlockType extends AbstractBlockType {
 
 		foreach ( $terms as $term ) {
 			$term_ids[] = $term->term_id ?? 0;
-			$term_ids[] = $term->parent ?? 0;
+
+			if ( $term->parent ) {
+				$term_ids[] = $term->parent;
+			}
 		}
 
 		$filter->term_ids    = $term_ids;
 		$filter->query_count = false;
+		$filter->order_by    = 'rand()';
 		$filter->where[]     = LP_Database::getInstance()->wpdb->prepare( 'AND p.ID != %d', $courseModelCurrent->get_id() );
 	}
 }
