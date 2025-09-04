@@ -7,7 +7,7 @@
  * Version: 4.2.9
  * Author URI: http://thimpress.com
  * Requires at least: 6.0
- * Requires PHP: 7.0
+ * Requires PHP: 7.1
  * Text Domain: learnpress
  * Domain Path: /languages/
  *

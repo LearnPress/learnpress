@@ -220,7 +220,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 					file_type varchar(100) NOT NULL DEFAULT '',
 					item_id bigint(20) unsigned NOT NULL DEFAULT '0',
 					item_type varchar(100) NOT NULL DEFAULT '',
-					method varchar(10) NOT NULL DEFAULT 'upload' CHECK ( method IN ( 'upload', 'external' ) ),
+					method varchar(10) NOT NULL DEFAULT 'upload',
 					file_path varchar(255) NOT NULL DEFAULT '',
 					orders int(4) NOT NULL DEFAULT '0',
 					created_at datetime NULL DEFAULT NULL,

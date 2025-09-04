@@ -130,9 +130,9 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		 * @param bool $is_update
 		 *
 		 * @editor tungnx
-		 * @version 1.0.5
+		 * @version 1.0.6
 		 */
-		public function save_post( int $post_id, WP_Post $post = null, bool $is_update = false ) {
+		public function save_post( int $post_id, ?WP_Post $post = null, bool $is_update = false ) {
 			try {
 				$backtrace = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS );
 				if ( isset( $backtrace[6]['class'] ) && $backtrace[6]['class'] === LP_Order_CURD::class ) {

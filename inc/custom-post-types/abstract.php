@@ -8,6 +8,7 @@
  * @version 1.0
  */
 
+use LearnPress\Models\CourseModel;
 use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\UserTemplate;
 
@@ -179,14 +180,14 @@ abstract class LP_Abstract_Post_Type {
 	 * In child-class use function save()
 	 *
 	 * @param int $post_id
-	 * @param WP_Post $post
+	 * @param WP_Post|null|mixed $post
 	 * @param bool $is_update
 	 *
 	 * @editor tungnx
 	 * @since modify 4.0.9
-	 * @version 4.0.2
+	 * @version 4.0.3
 	 */
-	final function _do_save_post( int $post_id = 0, WP_Post $post = null, bool $is_update = false ) {
+	final public function _do_save_post( int $post_id = 0, ?WP_Post $post = null, bool $is_update = false ) {
 		// Maybe remove
 		$this->maybe_remove_assigned( $post );
 
@@ -214,13 +215,13 @@ abstract class LP_Abstract_Post_Type {
 	 * Replace for function save only has two args
 	 *
 	 * @param int $post_id
-	 * @param WP_Post $post
+	 * @param WP_Post|null $post
 	 * @param bool $is_update
 	 *
 	 * @since 4.2.6.9
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
-	public function save_post( int $post_id, WP_Post $post = null, bool $is_update = false ) {
+	public function save_post( int $post_id, ?WP_Post $post = null, bool $is_update = false ) {
 		// Implement from child
 	}
 
@@ -233,9 +234,9 @@ abstract class LP_Abstract_Post_Type {
 	 *
 	 * @return void
 	 * @since 4.2.6.9
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
-	final function wp_after_insert_post( $post_id, $post, $update ) {
+	final public function wp_after_insert_post( $post_id, $post, $update ) {
 		if ( ! $this->check_post( $post_id ) ) {
 			return;
 		}
@@ -264,7 +265,7 @@ abstract class LP_Abstract_Post_Type {
 	 * @editor tungnx
 	 * @since modify 4.0.9
 	 */
-	final function _before_delete_post( int $post_id, WP_Post $post = null ) {
+	final public function _before_delete_post( int $post_id, WP_Post $post = null ) {
 		try {
 			// Todo: check is pages of LP
 			if ( 'page' === get_post_type( $post_id ) ) {
@@ -300,7 +301,7 @@ abstract class LP_Abstract_Post_Type {
 	 *
 	 * @param int $post_id
 	 */
-	final function _deleted_post( int $post_id ) {
+	final public function _deleted_post( int $post_id ) {
 		$this->deleted_post( $post_id );
 	}
 
@@ -323,9 +324,9 @@ abstract class LP_Abstract_Post_Type {
 	 *
 	 * @author tungnx
 	 * @since 4.1.6.9
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
-	final function _before_trash_post( int $post_id ) {
+	final public function _before_trash_post( int $post_id ) {
 		if ( ! $this->check_post( $post_id ) ) {
 			return;
 		}
@@ -341,17 +342,16 @@ abstract class LP_Abstract_Post_Type {
 	 * @return void
 	 * @author tungnx
 	 * @since 4.1.6.9
-	 * @version 1.0.0.0
+	 * @version 1.0.1
 	 */
 	public function before_trash_post( int $post_id ) {
-		// Implement from child
-		// Check is item type of course
-		$course_item_types = learn_press_get_course_item_types();
-		if ( ! in_array( get_post_type( $post_id ), $course_item_types ) ) {
-			return;
-		}
-
 		try {
+			// Case move item's course to trash
+			$course_item_types = CourseModel::item_types_support();
+			if ( ! in_array( get_post_type( $post_id ), $course_item_types ) ) {
+				return;
+			}
+
 			// Set course id of item when item assign on course is trashed
 			$course_of_item = LP_Course_DB::getInstance()->get_course_by_item_id( $post_id );
 			if ( $course_of_item ) {
@@ -370,9 +370,9 @@ abstract class LP_Abstract_Post_Type {
 	 * @return void
 	 * @author tungnx
 	 * @since 4.1.6.9
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
-	final function _trashed_post( int $post_id ) {
+	final public function _trashed_post( int $post_id ) {
 		if ( ! $this->check_post( $post_id ) ) {
 			return;
 		}
@@ -549,7 +549,7 @@ abstract class LP_Abstract_Post_Type {
 	 * @editor tungnx
 	 * @todo Review and move to place correct
 	 */
-	public function maybe_remove_assigned( WP_Post $post = null ) {
+	public function maybe_remove_assigned( $post = null ) {
 		global $wpdb;
 
 		if ( ! $post ) {
@@ -682,7 +682,7 @@ abstract class LP_Abstract_Post_Type {
 		return $join;
 	}
 
-	final function _posts_where_paged( $where ) {
+	final public function _posts_where_paged( $where ) {
 		if ( ! $this->_check_post() ) {
 			return $where;
 		}
@@ -781,7 +781,7 @@ abstract class LP_Abstract_Post_Type {
 	/**
 	 * New Metabox instance
 	 *
-	 * @return void
+	 * @return array
 	 * @author Nhamdv
 	 */
 	public function meta_boxes() {

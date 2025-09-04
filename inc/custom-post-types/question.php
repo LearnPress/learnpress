@@ -275,7 +275,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		 * @since 4.2.7.6
 		 * @version 1.0.0
 		 */
-		public function save_post( int $post_id, WP_Post $post = null, bool $is_update = false ) {
+		public function save_post( int $post_id, ?WP_Post $post = null, bool $is_update = false ) {
 			// Clear cache get question by id
 			$lpCache = new LP_Cache();
 			$lpCache->clear( "questionPostModel/find/{$post_id}" );

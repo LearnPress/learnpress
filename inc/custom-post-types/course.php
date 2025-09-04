@@ -465,7 +465,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 * @since 4.2.6.9
 		 * @version 1.0.2
 		 */
-		public function save_post( int $post_id, WP_Post $post = null, bool $is_update = false ) {
+		public function save_post( int $post_id, ?WP_Post $post = null, bool $is_update = false ) {
 			try {
 				$wp_screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
 				// Save to table learnpress_courses

@@ -61,7 +61,7 @@ abstract class LP_Meta_Box {
 	 * @return void
 	 * @since 4.2.7
 	 */
-	final function _do_add_meta_boxes( $post_type, $post ) {
+	final public function _do_add_meta_boxes( $post_type, $post ) {
 		if ( $post_type !== $this->post_type ) {
 			return;
 		}

@@ -316,7 +316,7 @@ class LP_Helper {
 		if ( is_string( $value ) ) {
 			switch ( $type_content ) {
 				case 'html':
-					$value = wp_kses_post( $value );
+					$value = Template::sanitize_html_content( $value );
 					break;
 				case 'textarea':
 					$value = sanitize_textarea_field( $value );

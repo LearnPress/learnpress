@@ -63,7 +63,7 @@ class LP_Email_Type_Enrolled_Course extends LP_Email {
 	 * @param array $params
 	 * @return bool
 	 */
-	final function check_and_set( array $params ): bool {
+	final public function check_and_set( array $params ): bool {
 		try {
 			if ( count( $params ) < 3 ) {
 				return false;
