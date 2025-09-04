@@ -128,7 +128,7 @@ class QuestionPostModel extends PostModel {
 		}
 
 		// For addon sorting choice old <= v4.0.1
-		if ( class_exists( 'LP_Addon_Sorting_Choice_Preload' ) ) {
+		if ( class_exists( 'LP_Addon_Sorting_Choice_Preload' ) && $type === 'sorting_choice' ) {
 			if ( version_compare( LP_ADDON_SORTING_CHOICE_VER, '4.0.1', '<=' ) ) {
 				return QuestionSortingChoiceModel::class;
 			}
