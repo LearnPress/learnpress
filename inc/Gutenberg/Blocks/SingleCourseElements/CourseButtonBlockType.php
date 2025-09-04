@@ -66,6 +66,7 @@ class CourseButtonBlockType extends AbstractCourseBlockType {
 	 */
 	public function render_content_block_template( array $attributes, $content, $block ): string {
 		$html = '';
+		wp_enqueue_script( 'lp-single-course' );
 
 		try {
 			$courseModel = $this->get_course( $attributes, $block );

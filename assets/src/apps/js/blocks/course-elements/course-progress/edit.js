@@ -7,8 +7,11 @@ export const edit = ( props ) => {
 		<>
 			<div { ...blockProps }>
 				<div className="course-progress">
-					<span>{ 'Course passing progress: 0%' }</span>
-					<div className="line"></div>
+					<span>{ 'Course passing progress: 90%' }</span>
+					<div className="course-progress__line">
+						<div className="course-progress__line__active" style={ { width: '90%' } }></div>
+						<div className="course-progress__line__point" style={ { left: '80%' } }></div>
+					</div>
 					<span>{ 'Start date: 2025' }</span>
 				</div>
 			</div>

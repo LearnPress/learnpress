@@ -8,7 +8,7 @@
 	"textdomain": "learnpress",
 	"keywords": [ "progress single course", "learnpress" ],
 	"icon": "chart-line",
-	"ancestor": [ "learnpress/single-course" ],
+	"ancestor": [ "learnpress/single-course", "learnpress/course-item-template" ],
 	"usesContext": [],
 	"supports": {
 		"multiple": false,

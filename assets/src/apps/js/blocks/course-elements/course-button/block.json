@@ -8,7 +8,7 @@
 	"description": "Renders template Button Course PHP templates.",
 	"textdomain": "learnpress",
 	"keywords": [ "button single course", "learnpress" ],
-	"ancestor": [ "learnpress/single-course" ],
+	"ancestor": [ "learnpress/single-course", "learnpress/course-item-template" ],
 	"usesContext": [ "lpCourseData" ],
 	"attributes": {
 		"textAlign": {

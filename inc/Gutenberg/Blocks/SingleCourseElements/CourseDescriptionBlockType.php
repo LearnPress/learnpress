@@ -18,7 +18,7 @@ class CourseDescriptionBlockType extends AbstractCourseBlockType {
 
 	public function get_supports(): array {
 		return [
-			'align'      => [ 'wide', 'full' ],
+			'align'                => [ 'wide', 'full' ],
 			'color'                => [
 				'gradients'  => true,
 				'background' => true,
@@ -58,16 +58,7 @@ class CourseDescriptionBlockType extends AbstractCourseBlockType {
 				return $html;
 			}
 
-			$is_list_course = false;
-			if ( $block instanceof WP_Block ) {
-				$is_list_course = $block->context['is_list_course'] ?? false;
-			}
-
-			if ( $is_list_course ) {
-				$description = SingleCourseTemplate::instance()->html_short_description( $courseModel );
-			} else {
-				$description = SingleCourseTemplate::instance()->html_description( $courseModel );
-			}
+			$description = SingleCourseTemplate::instance()->html_description( $courseModel );
 
 			if ( empty( $description ) ) {
 				return $html;
