@@ -95,6 +95,7 @@ module.exports = {
 		'./assets/js/dist/blocks/course-instructor': './assets/src/apps/js/blocks/course-elements/course-instructor/index.js',
 		'./assets/js/dist/blocks/course-categories': './assets/src/apps/js/blocks/course-elements/course-categories/index.js',
 		'./assets/js/dist/blocks/course-description': './assets/src/apps/js/blocks/course-elements/course-description/index.js',
+		'./assets/js/dist/blocks/course-excerpt': './assets/src/apps/js/blocks/course-elements/course-excerpt/index.js',
 		'./assets/js/dist/blocks/course-features': './assets/src/apps/js/blocks/course-elements/course-features/index.js',
 		'./assets/js/dist/blocks/course-target-audiences': './assets/src/apps/js/blocks/course-elements/course-target-audiences/index.js',
 		'./assets/js/dist/blocks/course-requirements': './assets/src/apps/js/blocks/course-elements/course-requirements/index.js',
