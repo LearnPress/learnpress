@@ -251,7 +251,7 @@ abstract class LP_Abstract_Post_Type {
 	 * @param WP_Post|null $post
 	 * @param bool $update
 	 */
-	public function after_insert_post( int $post_id, WP_Post $post = null, bool $update = false ) {
+	public function after_insert_post( int $post_id, ?WP_Post $post = null, bool $update = false ) {
 		// Implement from child
 	}
 
@@ -265,7 +265,7 @@ abstract class LP_Abstract_Post_Type {
 	 * @editor tungnx
 	 * @since modify 4.0.9
 	 */
-	final public function _before_delete_post( int $post_id, WP_Post $post = null ) {
+	final public function _before_delete_post( int $post_id, ?WP_Post $post = null ) {
 		try {
 			// Todo: check is pages of LP
 			if ( 'page' === get_post_type( $post_id ) ) {
