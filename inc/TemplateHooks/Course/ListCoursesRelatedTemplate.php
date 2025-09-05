@@ -82,7 +82,7 @@ class ListCoursesRelatedTemplate {
 	 *
 	 * @return stdClass { content: string_html }
 	 * @since 4.2.7
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 */
 	public static function render_courses( array $settings = [] ): stdClass {
 		$content          = new stdClass();
@@ -108,6 +108,7 @@ class ListCoursesRelatedTemplate {
 
 		$total_rows          = 0;
 		$filter->only_fields = [ 'DISTINCT(ID) AS ID' ];
+		$filter->post_status = [ 'publish' ];
 		$filter->limit       = $settings['limit'] ?? 4;
 		$filter->term_ids    = $term_ids;
 		$filter->query_count = false;
