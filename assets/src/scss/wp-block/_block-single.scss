@@ -440,3 +440,29 @@
 	}
 }
 
+.wp-block-learnpress-course-progress {
+	.course-progress__line {
+		width: 100%;
+		background: #ccc;
+		height: 5px;
+		border-radius: 5px;
+		position: relative;
+	}
+
+	.course-progress__line__active {
+		background: var( --lp-primary-color, #ffb606 );
+		height: 100%;
+		border-radius: 5px;
+		position: absolute;
+		top: 0;
+		left: 0;
+	}
+
+	.course-progress__line__point {
+		position: absolute;
+		top: 0;
+		width: 2px;
+		height: 100%;
+		background: var( --lp-secondary-color, #442e66 );
+	}
+}
