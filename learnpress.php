@@ -425,7 +425,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			include_once 'inc/course/class-lp-course.php';
 			include_once 'inc/quiz/lp-quiz-functions.php';
 			include_once 'inc/quiz/class-lp-quiz.php';
-			include_once 'inc/lesson/lp-lesson-functions.php';
+			//include_once 'inc/lesson/lp-lesson-functions.php';
 			include_once 'inc/order/lp-order-functions.php';
 			include_once 'inc/order/class-lp-order.php';
 

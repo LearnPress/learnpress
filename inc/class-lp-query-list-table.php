@@ -102,7 +102,7 @@ class LP_Query_List_Table {
 	 */
 	public function get_nav_numbers( $echo = true, $base_url = '' ) {
 		if ( ! $base_url ) {
-			$base_url = learn_press_get_current_url();
+			$base_url = LP_Helper::getUrlCurrent();
 		}
 		if ( ! empty( $this->_data['nav_base'] ) ) {
 			if ( is_callable( $this->_data['nav_base'] ) ) {
