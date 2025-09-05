@@ -253,17 +253,6 @@ function learn_press_current_user_can_view_profile_section( $section, $user ) {
 	return apply_filters( 'learn_press_current_user_can_view_profile_section', $view, $section, $user );
 }
 
-/*function learn_press_profile_tab_courses_content( $current, $tab, $user ) {
-	learn_press_get_template(
-		'profile/tabs/courses.php',
-		array(
-			'user'    => $user,
-			'current' => $current,
-			'tab'     => $tab,
-		)
-	);
-}*/
-
 function learn_press_profile_tab_quizzes_content( $current, $tab, $user ) {
 	learn_press_get_template(
 		'profile/tabs/quizzes.php',
@@ -1106,36 +1095,6 @@ function learn_press_user_profile_link( $user_id = 0, $tab = '' ) {
 
 	return apply_filters( 'learn_press_user_profile_link', $url, $user_id, $tab );
 }
-
-/**********************************************/
-/*       Functions are used for hooks         */
-/**********************************************/
-
-/*function learn_press_hk_before_start_quiz( $true, $quiz_id, $course_id, $user_id ) {
-	if ( 'yes' !== get_post_meta( $quiz_id, '_lp_archive_history', true ) ) {
-		learn_press_remove_user_items( $user_id, $quiz_id, $course_id );
-	}
-
-	return $true;
-}*/
-
-//add_filter( 'learn-press/before-start-quiz', 'learn_press_hk_before_start_quiz', 10, 4 );
-
-/*function learn_press_default_user_item_status( $item_id ) {
-	$status = '';
-	switch ( learn_press_get_post_type( $item_id ) ) {
-		case LP_LESSON_CPT:
-			$status = 'started';
-			break;
-		case LP_QUIZ_CPT:
-			$status = 'viewed';
-			break;
-		case LP_COURSE_CPT:
-			$status = 'enrolled';
-	}
-
-	return apply_filters( 'learn-press/default-user-item-status', $status, $item_id );
-}*/
 
 /**
  * @param array $args
