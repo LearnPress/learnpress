@@ -191,16 +191,7 @@ function learn_press_add_user_roles() {
 	}
 }
 
-//add_action( 'init', 'learn_press_add_user_roles' );
-
-/**
- * Get the type of current user
- *
- * @param null $check_type
- *
- * @return bool|string
- */
-function learn_press_current_user_is( $check_type = null ) {
+/*function learn_press_current_user_is( $check_type = null ) {
 	global $current_user;
 	$user_roles = $current_user->roles;
 	$user_type  = '';
@@ -214,9 +205,9 @@ function learn_press_current_user_is( $check_type = null ) {
 	}
 
 	return $check_type ? $check_type == $user_type : $user_type;
-}
+}*/
 
-function learn_press_user_has_roles( $roles, $user_id = null ) {
+/*function learn_press_user_has_roles( $roles, $user_id = null ) {
 	$has_role = false;
 	if ( ! $user_id ) {
 		$user = wp_get_current_user();
@@ -238,9 +229,9 @@ function learn_press_user_has_roles( $roles, $user_id = null ) {
 	}
 
 	return $has_role;
-}
+}*/
 
-function learn_press_current_user_can_view_profile_section( $section, $user ) {
+/*function learn_press_current_user_can_view_profile_section( $section, $user ) {
 	$current_user = wp_get_current_user();
 	$view         = true;
 	if ( $user->get_data( 'user_login' ) != $current_user->user_login && $section == LP_Settings::instance()->get(
@@ -251,9 +242,9 @@ function learn_press_current_user_can_view_profile_section( $section, $user ) {
 	}
 
 	return apply_filters( 'learn_press_current_user_can_view_profile_section', $view, $section, $user );
-}
+}*/
 
-function learn_press_profile_tab_quizzes_content( $current, $tab, $user ) {
+/*function learn_press_profile_tab_quizzes_content( $current, $tab, $user ) {
 	learn_press_get_template(
 		'profile/tabs/quizzes.php',
 		array(
@@ -262,9 +253,9 @@ function learn_press_profile_tab_quizzes_content( $current, $tab, $user ) {
 			'tab'     => $tab,
 		)
 	);
-}
+}*/
 
-function learn_press_profile_tab_orders_content( $current, $tab, $user ) {
+/*function learn_press_profile_tab_orders_content( $current, $tab, $user ) {
 	learn_press_get_template(
 		'profile/tabs/orders.php',
 		array(
@@ -273,15 +264,17 @@ function learn_press_profile_tab_orders_content( $current, $tab, $user ) {
 			'tab'     => $tab,
 		)
 	);
-}
+}*/
 
 /**
  * Get queried user in profile link
  *
  * @return false|WP_User
  * @since 3.0.0
+ * @deprecated 4.2.9.1
  */
 function learn_press_get_profile_user() {
+	return LP_Profile::instance()->get_user_current();
 	return LP_Profile::get_queried_user();
 }
 
@@ -1626,7 +1619,7 @@ function learn_press_user_profile_data( $user ) {
 }
 add_action( 'edit_user_profile', 'learn_press_user_profile_data', 1000 );
 
-function learnpress_get_count_by_user( $user_id = '', $post_type = 'lp_course' ) {
+/*function learnpress_get_count_by_user( $user_id = '', $post_type = 'lp_course' ) {
 	if ( empty( $user_id ) ) {
 		return false;
 	}
@@ -1668,4 +1661,4 @@ function learnpress_get_count_by_user( $user_id = '', $post_type = 'lp_course' )
 		'publish' => count( $public ),
 		'pending' => count( $pending ),
 	);
-}
+}*/
