@@ -248,6 +248,13 @@ https://translate.wordpress.org/projects/wp-plugins/learnpress/
 
 == Changelog ==
 
+= 4.2.9.1 (2025-09-05) =
+~ Fixed: some deprecated with PHP 8.4.
+~ Fixed: case has Addon Sorting choice.
+~ Fixed: message empty title when add answer for single choice question.
+~ Tweak: block "Course Listing" Gutenberg.
+~ Tweak: can_enroll case external link and use not login.
+
 = 4.2.9 (2025-08-27) =
 ~ Refactor UI/UX for edit quiz.
 ~ Refactor UI/UX for edit question.
