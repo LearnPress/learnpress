@@ -490,8 +490,12 @@ class LP_User extends LP_Abstract_User {
 	 *
 	 * @return LP_User_Item_Quiz|bool|WP_Error
 	 * @throws Exception
+	 * @deprecated 4.2.9.1
 	 */
 	public function start_quiz( int $quiz_id, int $course_id = 0, bool $wp_error = false ) {
+		_deprecated_function( __METHOD__, '4.2.9.1' );
+		return false;
+
 		try {
 			$item_is_preview = learn_press_get_request( 'lp-preview' );
 			if ( $item_is_preview ) {
@@ -558,7 +562,7 @@ class LP_User extends LP_Abstract_User {
 				return false;
 			}
 
-			$user_quiz = learn_press_user_start_quiz( $quiz_id, false, $course_id, $wp_error );
+			$user_quiz = false;
 
 			/**
 			 * Hook quiz started

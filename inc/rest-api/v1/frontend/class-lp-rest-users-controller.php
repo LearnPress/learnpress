@@ -199,10 +199,6 @@ class LP_REST_Users_Controller extends LP_Abstract_REST_Controller {
 				$retaken_count       = $user_quiz->get_retaken_count();
 				$attempts            = $user_quiz->get_attempts();
 			} else { // Create new user quiz and insert to database.
-				/**
-				 * @uses LP_User::start_quiz
-				 */
-				//$user_quiz                = $user->start_quiz( $item_id, $course_id, true );
 				$user_quiz_new          = new UserQuizModel();
 				$user_quiz_new->user_id = $user_id;
 				$user_quiz_new->item_id = $item_id;
