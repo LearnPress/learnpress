@@ -494,13 +494,13 @@ class LP_Template_Course extends LP_Abstract_Template {
 			//learn_press_get_template( 'single-course/buttons/external-link.php' );
 
 			$button_text = apply_filters( 'learn-press/external-course-button-text', $course->get_external_link_text() );
-			$nonce = wp_create_nonce( 'external-link-' . $link );
-			$html = sprintf(
+			$nonce       = wp_create_nonce( 'external-link-' . $link );
+			$html        = sprintf(
 				'<form name="course-external-link" class="course-external-link form-button lp-form">
-        					<a href="%s" target="_blank" data-id="%d" data-nonce="%s">
-            					<button type="button" class="lp-button button">%s</button>
-        					</a>
-    					</form>',
+					<a href="%s" target="_blank" data-id="%d" data-nonce="%s">
+						<button type="button" class="lp-button button">%s</button>
+					</a>
+				</form>',
 				esc_url( $link ),
 				esc_attr( $course->get_id() ),
 				esc_attr( $nonce ),
@@ -703,7 +703,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 
 		if ( ! empty( $shortcodes_custom_css ) ) {
 			$shortcodes_custom_css = strip_tags( $shortcodes_custom_css );
-			echo '<style type="text/css" data-type="vc_shortcodes-custom-css">';
+			echo '<style data-type="vc_shortcodes-custom-css">';
 			echo wp_kses_post( $shortcodes_custom_css );
 			echo '</style>';
 		}
@@ -750,24 +750,6 @@ class LP_Template_Course extends LP_Abstract_Template {
 		do_action( 'learn-press/lesson-start', $item );
 
 		Template::instance()->get_frontend_template( 'content-lesson/content.php', array( 'lesson' => $item ) );
-	}
-
-	/**
-	 * @deprecated 4.1.7.2
-	 */
-	/*public function item_quiz_content() {
-		$item = LP_Global::course_item();
-
-		learn_press_get_template( 'content-quiz/js.php' );
-	}*/
-
-	/**
-	 * @deprecated 4.1.7.2
-	 */
-	public function item_lesson_content_blocked() {
-		$item = LP_Global::course_item();
-
-		learn_press_get_template( 'global/block-content.php' );
 	}
 
 	/**
@@ -840,31 +822,6 @@ class LP_Template_Course extends LP_Abstract_Template {
 			error_log( $e->getMessage() );
 		}
 	}
-
-	/**
-	 * @deprecated 4.1.6.9
-	 */
-	/*public function lesson_comment_form() {
-		$course = learn_press_get_course();
-		if ( ! $course ) {
-			return;
-		}
-
-		$lesson = LP_Global::course_item();
-		if ( ! $lesson ) {
-			return;
-		}
-
-		if ( $lesson->setup_postdata() ) {
-
-			if ( comments_open() || get_comments_number() ) {
-				add_filter( 'deprecated_file_trigger_error', '__return_false' );
-				comments_template();
-				remove_filter( 'deprecated_file_trigger_error', '__return_false' );
-			}
-			$lesson->reset_postdata();
-		}
-	}*/
 
 	/**
 	 * Template show count items
@@ -998,18 +955,6 @@ class LP_Template_Course extends LP_Abstract_Template {
 		);
 	}
 
-	/**
-	 * @deprecated 4.1.7.2
-	 */
-	/*public function instructor_socials() {
-		$instructor = $this->course->get_instructor();
-		$socials    = $instructor->get_profile_socials( $instructor->get_id() );
-
-		foreach ( $socials as $social ) {
-			echo wp_kses_post( $social );
-		}
-	}*/
-
 	public function has_sidebar() {
 		$actions = array(
 			'learn-press/before-course-summary-sidebar',
@@ -1140,7 +1085,7 @@ class LP_Template_Course extends LP_Abstract_Template {
 
 		if ( LP_LAZY_LOAD_ANIMATION ) {
 			echo '<div class="lp-course-progress-wrapper">';
-			echo lp_skeleton_animation_html( 3 );
+			lp_skeleton_animation_html();
 			echo '</div>';
 		} else {
 			$course_data = $user->get_course_data( $course->get_id() );
