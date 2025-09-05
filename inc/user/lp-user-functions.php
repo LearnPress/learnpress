@@ -727,7 +727,7 @@ function learn_press_user_profile_picture_upload_dir( $width_user = true ) {
 	return $upload_dir;
 }
 
-add_action( 'learn_press_before_purchase_course_handler', '_learn_press_before_purchase_course_handler', 10, 2 );
+/*add_action( 'learn_press_before_purchase_course_handler', '_learn_press_before_purchase_course_handler', 10, 2 );
 function _learn_press_before_purchase_course_handler( $course_id, $cart ) {
 	// Redirect to login page if user is not logged in
 	if ( ! is_user_logged_in() ) {
@@ -767,9 +767,9 @@ function _learn_press_before_purchase_course_handler( $course_id, $cart ) {
 			exit();
 		}
 	}
-}
+}*/
 
-function learn_press_user_is( $role, $user_id = 0 ) {
+/*function learn_press_user_is( $role, $user_id = 0 ) {
 	if ( ! $user_id ) {
 		$user = learn_press_get_current_user();
 	} else {
@@ -783,9 +783,9 @@ function learn_press_user_is( $role, $user_id = 0 ) {
 	}
 
 	return $role;
-}
+}*/
 
-function learn_press_profile_tab_edit_content( $current, $tab, $user ) {
+/*function learn_press_profile_tab_edit_content( $current, $tab, $user ) {
 	learn_press_get_template(
 		'profile/tabs/edit.php',
 		array(
@@ -794,9 +794,9 @@ function learn_press_profile_tab_edit_content( $current, $tab, $user ) {
 			'tab'     => $tab,
 		)
 	);
-}
+}*/
 
-function learn_press_update_user_option( $name, $value, $id = 0 ) {
+/*function learn_press_update_user_option( $name, $value, $id = 0 ) {
 	if ( ! $id ) {
 		$id = get_current_user_id();
 	}
@@ -804,15 +804,9 @@ function learn_press_update_user_option( $name, $value, $id = 0 ) {
 	$options          = get_user_option( $key, $id );
 	$options[ $name ] = $value;
 	update_user_option( $id, $key, $options, true );
-}
+}*/
 
-/**
- * @param     $name
- * @param int  $id
- *
- * @return bool
- */
-function learn_press_delete_user_option( $name, $id = 0 ) {
+/*function learn_press_delete_user_option( $name, $id = 0 ) {
 	if ( ! $id ) {
 		$id = get_current_user_id();
 	}
@@ -826,15 +820,9 @@ function learn_press_delete_user_option( $name, $id = 0 ) {
 	}
 
 	return false;
-}
+}*/
 
-/**
- * @param     $name
- * @param int  $id
- *
- * @return bool
- */
-function learn_press_get_user_option( $name, $id = 0 ) {
+/*function learn_press_get_user_option( $name, $id = 0 ) {
 	if ( ! $id ) {
 		$id = get_current_user_id();
 	}
@@ -845,7 +833,7 @@ function learn_press_get_user_option( $name, $id = 0 ) {
 	}
 
 	return false;
-}
+}*/
 
 /**
  * Update user basic information.
@@ -980,11 +968,11 @@ function learn_press_get_course_thumbnail_dimensions() {
 	return $option;
 }
 
-function learn_press_get_user_avatar( $user_id = 0, $size = '' ) {
+/*function learn_press_get_user_avatar( $user_id = 0, $size = '' ) {
 	$user = learn_press_get_user( $user_id );
 
 	return $user->get_profile_picture( '', $size );
-}
+}*/
 
 /**
  * Get profile instance for an user to view.
@@ -997,15 +985,7 @@ function learn_press_get_profile( $for_user = 0 ) {
 	return LP_Profile::instance( $for_user );
 }
 
-/**
- * Remove items from learnpress_user_items.
- *
- * @param int  $user_id
- * @param int  $item_id
- * @param int  $course_id
- * @param bool $include_course - Optional. If TRUE then remove course and it's items
- */
-function learn_press_remove_user_items( $user_id, $item_id, $course_id, $include_course = false ) {
+/*function learn_press_remove_user_items( $user_id, $item_id, $course_id, $include_course = false ) {
 	global $wpdb;
 
 	settype( $item_id, 'array' );
@@ -1037,7 +1017,7 @@ function learn_press_remove_user_items( $user_id, $item_id, $course_id, $include
     ",
 		$args
 	);
-}
+}*/
 
 /**
  * Get user profile link
@@ -1089,13 +1069,7 @@ function learn_press_user_profile_link( $user_id = 0, $tab = '' ) {
 	return apply_filters( 'learn_press_user_profile_link', $url, $user_id, $tab );
 }
 
-/**
- * @param array $args
- * @param bool  $wp_error
- *
- * @return bool|int|LP_User_Item|mixed|WP_Error
- */
-function learn_press_create_user_item( $args = array(), $wp_error = false ) {
+/*function learn_press_create_user_item( $args = array(), $wp_error = false ) {
 	global $wpdb;
 
 	$defaults = array(
@@ -1192,16 +1166,9 @@ function learn_press_create_user_item( $args = array(), $wp_error = false ) {
 	do_action( 'learn-press/created-user-item-meta', $user_item, $create_meta );
 
 	return $user_item;
-}
+}*/
 
-/**
- * Get list user_item_id for Quiz in table learnpress_user_items
- *
- * @param int $quiz_id
- * @param int $course_id
- * @return array || false
- */
-function learn_press_isset_user_item_for_quiz( $quiz_id, $course_id ) {
+/*function learn_press_isset_user_item_for_quiz( $quiz_id, $course_id ) {
 	global $wpdb;
 
 	$query = $wpdb->prepare( "SELECT user_item_id FROM $wpdb->learnpress_user_items WHERE ref_id=%d AND item_id=%d", $course_id, $quiz_id );
@@ -1212,7 +1179,7 @@ function learn_press_isset_user_item_for_quiz( $quiz_id, $course_id ) {
 	} else {
 		return false;
 	}
-}
+}*/
 
 /**
  * Prepares list of questions for rest api.

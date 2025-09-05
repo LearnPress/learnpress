@@ -106,7 +106,7 @@ if ( ! function_exists( 'learn_press_add_row_action_link' ) ) {
 	add_filter( 'page_row_actions', 'learn_press_add_row_action_link' );
 }
 
-function learn_press_is_hidden_post_box( $id, $user_id = 0 ) {
+/*function learn_press_is_hidden_post_box( $id, $user_id = 0 ) {
 	if ( ! $user_id ) {
 		$user_id = get_current_user_id();
 	}
@@ -117,7 +117,7 @@ function learn_press_is_hidden_post_box( $id, $user_id = 0 ) {
 	}
 
 	return false !== array_search( $id, $data );
-}
+}*/
 
 /**
  * List all pages as a dropdown with "Add New Page" option
