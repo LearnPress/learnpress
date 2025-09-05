@@ -435,6 +435,8 @@ class LP_Page_Controller {
 	 * @deprecated v4.2.7.6
 	 */
 	protected function _is_archive() {
+		_deprecated_function( __METHOD__, '4.1.7.3' );
+		return false;
 		return learn_press_is_courses() || learn_press_is_course_tag() || learn_press_is_course_category() || learn_press_is_search() || learn_press_is_course_tax();
 	}
 
@@ -443,6 +445,8 @@ class LP_Page_Controller {
 	 * @deprecated v4.2.7.6
 	 */
 	protected function _is_single() {
+		_deprecated_function( __METHOD__, '4.1.7.3' );
+		return false;
 		return learn_press_is_course() && is_single();
 	}
 
@@ -591,36 +595,6 @@ class LP_Page_Controller {
 		$templates[] = learn_press_template_path() . '/' . $default_template;
 
 		return array_unique( $templates );
-	}
-
-	/**
-	 * Filter to allow search more templates in theme for wp page template hierarchy.
-	 * Theme twentytwenty used 'singular.php' instead of 'page.php'
-	 *
-	 * @param array $templates
-	 *
-	 * @return array
-	 * @since 3.x.x
-	 * @deprecated 4.1.6.9.2
-	 */
-	/*public function page_template_hierarchy( $templates ) {
-		$templates = array_merge( $templates, array( 'singular.php' ) );
-
-		return $templates;
-	}*/
-
-	/**
-	 * Archive course content.
-	 *
-	 * @return false|string
-	 * @deprecated 4.2.3.3.
-	 */
-	public function archive_content() {
-		_deprecated_function( __METHOD__, '4.2.3.3' );
-		ob_start();
-		learn_press_get_template( 'content-archive-course.php' );
-
-		return ob_get_clean();
 	}
 
 	/**
@@ -868,7 +842,7 @@ class LP_Page_Controller {
 		);
 
 		if ( ! isset( $q->query_vars['post_type'] ) || ! in_array( $q->query_vars['post_type'], $post_type_apply_404 ) ) {
-			return $q;
+			return;
 		}
 
 		try {
@@ -905,24 +879,6 @@ class LP_Page_Controller {
 			error_log( $e->getMessage() );
 		}
 	}
-
-	/**
-	 * @deprecated 4.1.6.9.2
-	 */
-	/*public function the_content_callback( $content ) {
-		if ( $this->_archive_contents ) {
-			preg_match( '/\[learn_press_archive_course\s?(.*)\]/', $content, $results );
-			$this->_shortcode_exists = ! empty( $results );
-			if ( $this->_shortcode_exists ) {
-				$this->_shortcode_tag = $results[0];
-				$content              = str_replace( $this->_shortcode_tag, $this->_archive_contents, $content );
-			} else {
-				$content .= $this->_archive_contents;
-			}
-		}
-
-		return $content;
-	}*/
 
 	/**
 	 * Get page current on frontend
@@ -1181,6 +1137,9 @@ class LP_Page_Controller {
 	 * @deprecated 4.1.7.3
 	 */
 	public function learn_press_edit_admin_bar() {
+		_deprecated_function( __METHOD__, '4.1.7.3' );
+		return;
+
 		global $wp_admin_bar;
 
 		$current_user = wp_get_current_user();

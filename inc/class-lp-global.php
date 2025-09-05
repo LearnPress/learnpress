@@ -81,24 +81,6 @@ class LP_Global {
 	}
 
 	/**
-	 * Check if current course item is viewing is a $type
-	 *
-	 * @param string $type
-	 *
-	 * @return bool
-	 * @deprecated 4.1.7.3
-	 */
-	/*public static function is_course_item_type( $type ) {
-		$item = self::course_item();
-
-		if ( $item ) {
-			return $type === get_post_type( $item->get_id() );
-		}
-
-		return false;
-	}*/
-
-	/**
 	 * @param bool $get_only_id
 	 * Todo: new call not use $get_only_id, only call LP_Global::courses()
 	 * Recommend use learn_press_get_course()
