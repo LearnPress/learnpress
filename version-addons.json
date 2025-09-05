@@ -351,8 +351,8 @@
   "learnpress-sorting-choice": {
     "name": "Sorting Choice Add-On for LearnPress",
     "basename": "learnpress-sorting-choice/learnpress-sorting-choice.php",
-    "version": "4.0.1",
-    "require_lp": "4.2.0",
+    "version": "4.0.2",
+    "require_lp": "4.2.9",
     "description": "Makes the question interesting and challenging. Students receive full credit if ALL the choices are correct.",
     "image": "https://plugins.thimpress.com/downloads/images/lp-sorting-choice.png",
     "link": "https://thimpress.com/product/sorting-choice-add-on-for-learnpress/",
