@@ -176,6 +176,23 @@ class LP_Jwt_Public {
 			);
 		}
 
+		$blog_id = get_current_blog_id();
+		if (!is_user_member_of_blog($user->data->ID, $blog_id)) {
+			$added = add_user_to_blog($blog_id, $user->data->ID, 'subscriber');
+			if (is_wp_error($added)) {
+				$error_code = $added->get_error_code();
+				return new WP_Error(
+					'[lp_jwt_auth] ' . $error_code,
+					$added->get_error_message( $error_code ),
+					array(
+						'status' => 403,
+					)
+				);
+			}
+			//need to refresh data, username ignored anyway...
+			$user = new WP_User( $user->data->ID, $username, $blog_id);
+		}
+
 		/** Valid credentials, the user exists create the according Token */
 		$issued_at  = time();
 		$not_before = apply_filters( 'lp_jwt_auth_not_before', $issued_at, $issued_at );
