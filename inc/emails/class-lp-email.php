@@ -12,6 +12,10 @@
 /**
  * Prevent loading this file directly
  */
+
+use Pelago\Emogrifier\CssInliner;
+use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
+
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Email' ) ) {
@@ -688,30 +692,22 @@ if ( ! class_exists( 'LP_Email' ) ) {
 		 * @return string
 		 */
 		public function apply_style_inline( $content ) {
-			if ( in_array(
-				$this->get_content_format(),
-				array(
-					'text/html',
-					'multipart/alternative',
-				)
-			) && class_exists( 'DOMDocument' ) ) {
+			try {
+				if ( ! in_array( $this->get_content_format(), array( 'text/html', 'multipart/alternative' ) ) ) {
+					return $content;
+				}
 
-				// get CSS styles
+				// Get CSS styles
 				ob_start();
 				learn_press_get_template( 'emails/email-styles.php' );
 				$css = apply_filters( 'learn_press_email_styles', ob_get_clean(), $this->id, $this );
 
-				try {
-					if ( ! class_exists( 'Emogrifier' ) ) {
-						include_once LP_PLUGIN_PATH . 'inc/libraries/class-emogrifier.php';
-					}
-					// apply CSS styles inline for picky email clients
-					$emogrifier = new Emogrifier( $content, $css );
-					$content    = $emogrifier->emogrify();
+				// Apply CSS styles inline for picky email clients
+				//$content = CssInliner::fromHtml( $content )->inlineCss( $css )->render();
+				$cssToInlineStyles = new CssToInlineStyles();
+				$content           = $cssToInlineStyles->convert( $content, $css );
+			} catch ( Exception $e ) {
 
-				} catch ( Exception $e ) {
-
-				}
 			}
 
 			return apply_filters( 'learn-press/email-content-inline-style', $content, $this->id );

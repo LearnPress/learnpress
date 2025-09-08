@@ -7,6 +7,7 @@
  * @author Cameron Brooks
  * @author Jaime Prado
  * @author Roman O�ana <ozana@omdesign.cz>
+ * @deprecated v4.2.9.1
  */
 if(!class_exists('Emogrifier')) {
 	class Emogrifier {
