@@ -6,7 +6,7 @@
  * @category Widgets
  * @package  Learnpress/Email
  * @since 3.0.0
- * @version  3.0.3
+ * @version  3.0.4
  */
 
 /**
@@ -354,7 +354,7 @@ if ( ! class_exists( 'LP_Email' ) ) {
 			}
 
 			// Set type variables can click add to content of email setting.
-			$this->support_variables = $this->general_variables = [
+			$this->support_variables = [
 				'{{site_url}}',
 				'{{site_title}}',
 				'{{login_url}}',
@@ -364,6 +364,7 @@ if ( ! class_exists( 'LP_Email' ) ) {
 				'{{footer}}',
 				'{{footer_text}}',
 			];
+			$this->general_variables = $this->support_variables;
 		}
 
 		/**
@@ -476,15 +477,14 @@ if ( ! class_exists( 'LP_Email' ) ) {
 		/**
 		 * Apply the value of variables for string
 		 *
-		 * @param string $string
+		 * @param string $value
 		 *
 		 * @return string
 		 * @editor tungnx
 		 */
-		public function format_string( string $string ): string {
-			//$this->_maybe_get_object();
-
-			$search = $replace = array();
+		public function format_string( string $value ): string {
+			$search  = [];
+			$replace = [];
 			if ( is_array( $this->variables ) ) {
 				$search  = array_keys( $this->variables );
 				$replace = array_values( $this->variables );
@@ -492,7 +492,7 @@ if ( ! class_exists( 'LP_Email' ) ) {
 			$search  = apply_filters( 'learn-press/email-format-string-find', $search, $this );
 			$replace = apply_filters( 'learn-press/email-format-string-replace', $replace, $this );
 
-			return str_replace( $search, $replace, $string );
+			return str_replace( $search, $replace, $value );
 		}
 
 		/**
@@ -691,7 +691,7 @@ if ( ! class_exists( 'LP_Email' ) ) {
 		 *
 		 * @return string
 		 */
-		public function apply_style_inline( $content ) {
+		public function apply_style_inline( $content ): string {
 			try {
 				if ( ! in_array( $this->get_content_format(), array( 'text/html', 'multipart/alternative' ) ) ) {
 					return $content;
@@ -819,8 +819,8 @@ if ( ! class_exists( 'LP_Email' ) ) {
 			$footer = $footer_text;
 
 			if ( $format != 'plain' ) {
-				$header = $this->email_header( $heading, false );
-				$footer = $this->email_footer( $footer_text, false );
+				$header = $this->email_header( $heading );
+				$footer = $this->email_footer( $footer_text );
 			}
 
 			$admin_user = get_user_by( 'email', get_option( 'admin_email' ) );
@@ -999,11 +999,10 @@ if ( ! class_exists( 'LP_Email' ) ) {
 		 * Email header.
 		 *
 		 * @param string $heading
-		 * @param bool $echo
 		 *
 		 * @return string
 		 */
-		public function email_header( string $heading, bool $echo = true ): string {
+		public function email_header( string $heading ): string {
 			ob_start();
 			learn_press_get_template(
 				'emails/email-header.php',
@@ -1012,33 +1011,22 @@ if ( ! class_exists( 'LP_Email' ) ) {
 					'image_header'  => $this->get_image_header(),
 				]
 			);
-			$header = ob_get_clean();
 
-			if ( $echo ) {
-				echo wp_kses_post( $header );
-			}
-
-			return $header;
+			return ob_get_clean();
 		}
 
 		/**
 		 * Email footer.
 		 *
 		 * @param string $footer_text
-		 * @param bool $echo
 		 *
 		 * @return string
 		 */
-		public function email_footer( string $footer_text, bool $echo = true ): string {
+		public function email_footer( string $footer_text ): string {
 			ob_start();
 			learn_press_get_template( 'emails/email-footer.php', array( 'footer_text' => $footer_text ) );
-			$footer = ob_get_clean();
 
-			if ( $echo ) {
-				echo wp_kses_post( $footer );
-			}
-
-			return $footer;
+			return ob_get_clean();
 		}
 
 		/**

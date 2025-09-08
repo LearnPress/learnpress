@@ -19,6 +19,10 @@
 		"wp-coding-standards/wpcs": "3.1.0",
 		"phpcompatibility/php-compatibility": "9.3.5"
 	},
+	"_comment": "If the tijsverkoyen Emogrifier library does not work properly, try pelago/emogrifier.",
+	"require": {
+		"tijsverkoyen/css-to-inline-styles": "v2.3.0"
+	},
 	"scripts": {
 		"format": "phpcbf --standard=phpcs.xml --report-summary --report-source",
 		"format-a-file": "phpcbf --standard=phpcs.xml learnpress.php --report-summary --report-source",
