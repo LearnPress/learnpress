@@ -530,11 +530,7 @@ if(!class_exists('Emogrifier')) {
 				$bodyWithoutUnprocessableTags = $this->html;
 			}
 
-			if ( function_exists( 'mb_convert_encoding' ) ) {
-				return mb_convert_encoding( $bodyWithoutUnprocessableTags, 'HTML-ENTITIES', self::ENCODING );
-			} else {
-				return htmlspecialchars_decode( utf8_decode( htmlentities( $bodyWithoutUnprocessableTags, ENT_COMPAT, self::ENCODING, false ) ) );
-			}
+			return htmlspecialchars_decode( utf8_decode( htmlentities( $bodyWithoutUnprocessableTags, ENT_COMPAT, self::ENCODING, false ) ) );
 		}
 
 		/**
