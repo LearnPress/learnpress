@@ -523,7 +523,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 				return;
 			}
 
-			$user_id = LP_Request::get_int( 'user_id' );
+			$user_id = LP_Request::get_param( 'user_id', 'int' );
 			if ( ! $user_id || ! get_user_by( 'id', $user_id ) ) {
 				return;
 			}
@@ -535,22 +535,21 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 
 			$user_data = get_userdata( $user_id );
 			if ( in_array( $action, array( 'accept-request', 'deny-request' ) ) ) {
-
 				delete_user_meta( $user_id, '_requested_become_teacher' );
+			}
 
-				switch ( $action ) {
-					case 'accept-request':
-						$be_teacher = new WP_User( $user_id );
-						$be_teacher->set_role( LP_TEACHER_ROLE );
+			switch ( $action ) {
+				case 'accept-request':
+					$be_teacher = new WP_User( $user_id );
+					$be_teacher->set_role( LP_TEACHER_ROLE );
 
-						do_action( 'learn-press/user-become-a-teacher-accept', $user_data->user_email );
-						wp_redirect( admin_url( 'users.php?lp-action=accepted-request&user_id=' . $user_id ) );
-						exit();
-					case 'deny-request':
-						do_action( 'learn-press/user-become-a-teacher-deny', $user_data->user_email );
-						wp_redirect( admin_url( 'users.php?lp-action=denied-request&user_id=' . $user_id ) );
-						exit();
-				}
+					do_action( 'learn-press/user-become-a-teacher-accept', $user_data->user_email );
+					wp_redirect( admin_url( 'users.php?lp-action=accepted-request&user_id=' . $user_id ) );
+					exit();
+				case 'deny-request':
+					do_action( 'learn-press/user-become-a-teacher-deny', $user_data->user_email );
+					wp_redirect( admin_url( 'users.php?lp-action=denied-request&user_id=' . $user_id ) );
+					exit();
 			}
 		}
 

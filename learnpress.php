@@ -24,6 +24,7 @@ use LearnPress\ExternalPlugin\RankMath\LPRankMath;
 use LearnPress\ExternalPlugin\YoastSeo\LPYoastSeo;
 use LearnPress\Gutenberg\GutenbergHandleMain;
 use LearnPress\Ajax\EditCurriculumAjax;
+use LearnPress\Ajax\SendEmailAjax;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\UserModel;
 use LearnPress\Shortcodes\Course\FilterCourseShortcode;
@@ -668,6 +669,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 					EditCurriculumAjax::catch_lp_ajax();
 					EditQuizAjax::catch_lp_ajax();
 					EditQuestionAjax::catch_lp_ajax();
+					SendEmailAjax::catch_lp_ajax();
 				},
 				11
 			);
