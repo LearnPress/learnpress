@@ -88,15 +88,59 @@ ul.wp-block-learn-press-courses {
 }
 
 .wp-block-learnpress-course-button-read-more button {
-	@include course_readmore();
+	padding: $spacing-base-2x $spacing-base-6x;
+	border-radius: $border-radius-global;
+	color: $text-color-base;
+	border: 1px solid $text-color-base;
+	transition: all 0.3s;
+	display: block;
+	background: transparent;
+	text-decoration: none;
+	text-align: center;
+	&:hover {
+		background: #ffb606;
+		color: $color-white;
+		border-color: #ffb606;
+	}
 }
 
 .wp-block-learnpress-course-button .course-readmore {
 	a {
-		@include course_readmore();
+		padding: $spacing-base-2x $spacing-base-6x;
+		border-radius: $border-radius-global;
+		color: $text-color-base;
+		border: 1px solid $text-color-base;
+		transition: all 0.3s;
+		display: block;
+		background: transparent;
+		text-decoration: none;
+		text-align: center;
+		&:hover {
+			background: #ffb606;
+			color: $color-white;
+			border-color: #ffb606;
+		}
 	}
 }
 
 .courses-order-by-wrapper .courses-order-by {
-	@include order_by_course();
+	@include input();
+	padding-right: 30px;
+	background-image: url( data:image/svg+xml;base64,Cjxzdmcgd2lkdGg9IjE4cHgiIGhlaWdodD0iMTBweCIgdmlld0JveD0iMCAwIDE4IDEwIiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPgogICAgPGcgaWQ9IlBhZ2UtMSIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj4KICAgICAgICA8ZyBpZD0iVmVjdG9yLSgxKSIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMS4wMDAwMDAsIDEuMDAwMDAwKSIgc3Ryb2tlPSIjMzMzMzMzIiBzdHJva2Utd2lkdGg9IjIiPgogICAgICAgICAgICA8cG9seWxpbmUgaWQ9IlBhdGgiIHBvaW50cz0iMCAwIDggOCAxNiAwIj48L3BvbHlsaW5lPgogICAgICAgIDwvZz4KICAgIDwvZz4KPC9zdmc+ );
+	background-size: 0.8em;
+	background-position: calc( 100% - 0.5em ) center;
+	background-repeat: no-repeat;
+	-moz-appearance: none;
+	-webkit-appearance: none;
+	appearance: none;
+	line-height: 1.1;
+
+	.woocommerce-js & {
+		background-position-x: calc( 100% - 10px );
+	}
+
+	&:focus {
+		border-color: #ffb606;
+		outline: 0;
+	}
 }

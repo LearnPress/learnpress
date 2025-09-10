@@ -36,7 +36,7 @@
         gap: 4px;
         flex-wrap: wrap;
         i {
-            color: $color-primary;
+            color: #ffb606;
         }
     }
     .info-meta-left {
@@ -78,7 +78,7 @@ Breadcrumb
         margin: 0;
         a {
             &:hover {
-                color: var( --lp-primary-color);
+                color:#ffb606;
             }
         }
     }
@@ -104,8 +104,8 @@ Breadcrumb
     cursor: pointer;
     margin: 20px auto;
     &:hover {
-        background: $color-primary;
+        background: #ffb606;
         color: $color-white;
-        border-color: $color-primary;
+        border-color: #ffb606;
     }
 }

@@ -25,18 +25,18 @@
 .wp-block-learnpress-course-button {
 	cursor: pointer;
 	padding: 12px 24px;
-	background-color: $color-primary;
+	background-color: #ffb606;
 	border-width: 0;
 	border-radius: $border-radius-global;
-	border-color: $color-primary;
+	border-color: #ffb606;
 	color: $color-white;
 	font-size: $font-size-base;
 	text-align: center;
 	text-decoration: none;
 	@include transition( all 0.25s );
 	&:hover {
-		background-color: var( --lp-secondary-color );
-		border-color: var( --lp-secondary-color );
+		background-color: #442e66;
+		border-color: #442e66;
 	}
 	&.loading {
 		pointer-events: none;
@@ -350,7 +350,7 @@
 			&:hover {
 				a,
 				&::before {
-					color: var( --lp-primary-color );
+					color: #ffb606;
 				}
 
 				.course-item-nav__name {
@@ -439,4 +439,3 @@
 		flex-direction: row;
 	}
 }
-
