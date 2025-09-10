@@ -1213,9 +1213,9 @@ if ( ! class_exists( 'LP_Order' ) ) {
 			$order_id = $this->get_id();
 
 			if ( $new_status !== $old_status ) {
+				do_action( 'learn-press/order/status-changed', $order_id, $old_status, $new_status );
 				do_action( 'learn-press/order/status-' . $new_status, $order_id, $old_status );
 				do_action( 'learn-press/order/status-' . $old_status . '-to-' . $new_status, $order_id );
-				do_action( 'learn-press/order/status-changed', $order_id, $old_status, $new_status );
 			}
 
 			//$this->_save_status();
