@@ -55,13 +55,23 @@ const Edit = ( props ) => {
 					) }
 				</PanelBody>
 			</InspectorControls>
-			<div { ...blockProps }>
+
+			{ props.attributes.isLink ? (
+				<TagName { ...blockProps }>
+					<a
+						dangerouslySetInnerHTML={ {
+							__html: courseTitle,
+						} }
+					></a>
+				</TagName>
+			) : (
 				<TagName
+					{ ...blockProps }
 					dangerouslySetInnerHTML={ {
 						__html: courseTitle,
 					} }
 				/>
-			</div>
+			) }
 		</>
 	);
 };
