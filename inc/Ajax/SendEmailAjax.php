@@ -193,7 +193,8 @@ class SendEmailAjax extends AbstractAjax {
 	}
 
 	/**
-	 * Send mail when users enrolled courses
+	 * Send mails for case multiple users finish courses
+	 * Order has many users, courses change status to completed
 	 *
 	 * @throws Exception
 	 * @version 1.0.0
@@ -230,6 +231,31 @@ class SendEmailAjax extends AbstractAjax {
 
 			do_action( 'lp/email/users-enrolled-courses/send-mail', $userCourseModel, $data_send );
 		}
+	}
+
+	/**
+	 * Send mail for case a user enrolled a course.
+	 *
+	 * @throws Exception
+	 * @version 1.0.0
+	 * @since 4.2.9.1
+	 */
+	public function send_mail_user_enrolled_course() {
+		$data_send = LP_Helper::sanitize_params_submitted( $_POST['params'] ?? [] );
+
+		// Send email to user enrolled course
+		$email_enrolled = new LP_Email_Enrolled_Course_User();
+		$email_enrolled->handle( $data_send );
+
+		// Send email to admin when user enrolled course
+		$email_enrolled_to_admin = new LP_Email_Enrolled_Course_Admin();
+		$email_enrolled_to_admin->handle( $data_send );
+
+		// Send email to instructor when user enrolled course's instructor
+		$email_enrolled_to_instructor = new LP_Email_Enrolled_Course_Instructor();
+		$email_enrolled_to_instructor->handle( $data_send );
+
+		do_action( 'lp/email/user-enrolled-course/send-mail', $data_send );
 	}
 
 	/**

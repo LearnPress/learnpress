@@ -250,7 +250,7 @@ class LP_User_Factory {
 				'item_id'    => $course_id,
 				'ref_id'     => $order->get_id(),
 				'start_time' => gmdate( LP_Datetime::$format, time() ),
-				'graduation' => LP_COURSE_GRADUATION_IN_PROGRESS,
+				'graduation' => UserItemModel::GRADUATION_IN_PROGRESS,
 			];
 
 			if ( $user_id && $userCourse ) {
@@ -297,7 +297,7 @@ class LP_User_Factory {
 				if ( $auto_enroll ) {
 					$user_item_data['status'] = UserItemModel::STATUS_ENROLLED;
 				} else {
-					$user_item_data['status']     = LP_COURSE_PURCHASED;
+					$user_item_data['status']     = UserItemModel::STATUS_PURCHASED;
 					$user_item_data['graduation'] = '';
 				}
 			} elseif ( $user_id && ( $is_in_stock || $is_no_required_enroll ) ) { // Enroll course free or No enroll requirement.
