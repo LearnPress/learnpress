@@ -207,7 +207,8 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		 *
 		 * @param string $where
 		 *
-		 * @return mixed
+		 * @return string
+		 * @throws Exception
 		 */
 		public function posts_where_paged( $where ) {
 			// Code temporary, when release about 1 week, will remove it.
@@ -279,22 +280,6 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 
 			return $where;
 		}
-
-		/*public function posts_fields( $fields ) {
-			global $wp_query;
-
-			if ( ! $this->_is_search() ) {
-				return $fields;
-			}
-
-			if ( empty( $wp_query->get( 'author' ) ) ) {
-				return $fields;
-			}
-
-			//$fields .= ', uu.ID, uu.display_name as user_display_name';
-
-			return $fields;
-		}*/
 
 		public function posts_orderby( $orderby ) {
 			global $wpdb;
@@ -581,10 +566,6 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			}
 		}
 
-		private function _is_search() {
-			return is_search();
-		}
-
 		/**
 		 * Register order post type
 		 */
@@ -624,15 +605,6 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				),
 				'exclude_from_search' => true,
 			);
-		}
-
-		/**
-		 * Remove some unwanted metaboxes
-		 */
-		public static function register_metabox() {
-			// Remove Publish metabox
-			remove_meta_box( 'submitdiv', LP_ORDER_CPT, 'side' );
-			remove_meta_box( 'commentstatusdiv', LP_ORDER_CPT, 'normal' );
 		}
 
 		/**

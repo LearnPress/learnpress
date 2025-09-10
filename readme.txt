@@ -3,7 +3,7 @@ Contributors: thimpress, tungnx89, nhamdv, nguyenlammanh, tunnhn, phonglq.foobla
 Donate link:
 Tags: elearning, education, course, lms, learning management system
 Tested up to: 6.8
-Stable tag: 4.2.9
+Stable tag: 4.2.9.1
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -248,12 +248,16 @@ https://translate.wordpress.org/projects/wp-plugins/learnpress/
 
 == Changelog ==
 
-= 4.2.9.1 (2025-09-05) =
-~ Fixed: some deprecated with PHP 8.4.
-~ Fixed: case has Addon Sorting choice.
-~ Fixed: message empty title when add answer for single choice question.
-~ Tweak: block "Course Listing" Gutenberg.
-~ Tweak: can_enroll case external link and use not login.
+= 4.2.9.1 (2025-09-10) =
+~ Fixed: various deprecated functions for compatibility with PHP 8.4.
+~ Fixed: Addon Sorting Choice case.
+~ Fixed: empty title message when adding an answer to a single-choice question.
+~ Tweak: Gutenberg 'Course Listing' block.
+~ Tweak: can_enroll handling for external links and unauthenticated users.
+~ Tweak: LP_Email_Hooks class updated to use new hook declaration method.
+~ Replace the old Emogrifier class with the CssToInlineStyles library from Composer.
+~ Added: SendEmailAjax class.
+~ Added: LPBackgroundAjax class for background processing.
 
 = 4.2.9 (2025-08-27) =
 ~ Refactor UI/UX for edit quiz.
