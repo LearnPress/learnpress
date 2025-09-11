@@ -93,7 +93,7 @@ const focusTitleNewInput = ( e, target, focusIn = true ) => {
 };
 
 // Add new section
-const addSection = ( e, target ) => {
+const addSection = ( e, target, callBackNest ) => {
 	let canHandle = false;
 
 	if ( target.closest( `${ className.elBtnAddSection }` ) ) {
@@ -144,12 +144,17 @@ const addSection = ( e, target ) => {
 
 			if ( status === 'error' ) {
 				newSection.remove();
+				throw message;
 			} else if ( status === 'success' ) {
 				const { section } = data;
 				newSection.dataset.sectionId = section.section_id || '';
 
 				if ( lpEditCurriculumShare.sortAbleItem ) {
 					lpEditCurriculumShare.sortAbleItem();
+				}
+
+				if ( callBackNest && typeof callBackNest.success === 'function' ) {
+					callBackNest.success( newSection, response );
 				}
 			}
 
@@ -158,6 +163,9 @@ const addSection = ( e, target ) => {
 		error: ( error ) => {
 			newSection.remove();
 			showToast( error, 'error' );
+			if ( callBackNest && typeof callBackNest.error === 'function' ) {
+				callBackNest.error( newSection, error );
+			}
 		},
 		completed: () => {
 			lpUtils.lpSetLoadingEl( newSection, 0 );
@@ -166,16 +174,23 @@ const addSection = ( e, target ) => {
 			elSectionDesInput.focus();
 			updateCountSections();
 			delete lpEditCurriculumShare.hasChange.titleNew;
+			if ( callBackNest && typeof callBackNest.completed === 'function' ) {
+				callBackNest.completed( newSection );
+			}
 		},
 	};
 
+	addSectionAPI( { section_name: titleValue }, callBack );
+};
+const addSectionAPI = ( data, callBack ) => {
 	const dataSend = {
 		action: 'add_section',
 		course_id: courseId,
-		section_name: titleValue,
+		section_name: data.section_name || '',
 		args: {
 			id_url: idUrlHandle,
 		},
+		...data,
 	};
 	window.lpAJAXG.fetchAJAX( dataSend, callBack );
 };
@@ -382,7 +397,7 @@ const cancelSectionTitle = ( e, target ) => {
 };
 
 // Update section description to server
-const updateSectionDescription = ( e, target ) => {
+const updateSectionDescription = ( e, target, callBackNest ) => {
 	let canHandle = false;
 
 	if ( target.closest( `${ className.elBtnUpdateDes }` ) ) {
@@ -424,16 +439,26 @@ const updateSectionDescription = ( e, target ) => {
 		success: ( response ) => {
 			const { message, status } = response;
 
+			if ( callBackNest && typeof callBackNest.success === 'function' ) {
+				callBackNest.success( elSection, response );
+			}
+
 			showToast( message, status );
 		},
 		error: ( error ) => {
 			showToast( error, 'error' );
+			if ( callBackNest && typeof callBackNest.error === 'function' ) {
+				callBackNest.error( elSection, error );
+			}
 		},
 		completed: () => {
 			lpUtils.lpSetLoadingEl( elSection, 0 );
 			const elSectionDesc = elSectionDesInput.closest( `${ className.elSectionDesc }` );
 			elSectionDesc.classList.remove( 'editing' );
 			elSectionDesInput.dataset.old = descValue; // Update old value
+			if ( callBackNest && typeof callBackNest.completed === 'function' ) {
+				callBackNest.completed( elSection );
+			}
 		},
 	};
 
@@ -611,5 +636,6 @@ export {
 	changeDescription,
 	toggleSection,
 	sortAbleSection,
+	className,
 };
 

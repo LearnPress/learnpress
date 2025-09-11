@@ -8,6 +8,7 @@
 import * as lpEditCurriculumShare from './edit-curriculum/share.js';
 import * as sectionEdit from './edit-curriculum/edit-section.js';
 import * as sectionItemEdit from './edit-curriculum/edit-section-item.js';
+import { CourseAI } from './edit-curriculum/edit-course-ai.js';
 
 const { className } = lpEditCurriculumShare;
 
@@ -186,3 +187,5 @@ lpEditCurriculumShare.lpUtils.lpOnElementReady( `${ className.idElEditCurriculum
 	// Share sortAbleItem function, for when create new section, will call this function to sort items in section.
 	lpEditCurriculumShare.setVariable( 'sortAbleItem', sectionItemEdit.sortAbleItem );
 } );
+const courseAI = new CourseAI();
+
