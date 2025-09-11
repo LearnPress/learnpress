@@ -6,7 +6,8 @@
  */
 
 import * as sectionEdit from './edit-section.js';
-import * as lpEditCurriculumShare from './share.js';
+import * as sectionItemEdit from './edit-section-item.js';
+import {addItemToSection, className} from "./edit-section-item.js";
 
 export class CourseAI {
 	constructor() {
@@ -40,7 +41,20 @@ export class CourseAI {
 
 		const callBackCreateItemForSection = {
 			success: ( elNewSection, response ) => {
-				console.log( 1111 );
+				const { message, status, data } = response;
+				const items = dataJSON.items;
+				if ( items && items.length ) {
+					items.forEach( ( item ) => {
+						const elBtnSelectItemType = elNewSection.querySelector( `${ sectionItemEdit.className.elBtnSelectItemType }[data-item-type="${ item.type }"]` );
+						elBtnSelectItemType.click();
+						const elAddItemTypeTitleInput = elNewSection.querySelector( `${ sectionItemEdit.className.elAddItemTypeTitleInput }` );
+						const elBtnAddItem = elNewSection.querySelector( `${ sectionItemEdit.className.elBtnAddItem }` );
+						elAddItemTypeTitleInput.value = item.title;
+						const e = new PointerEvent( 'click' );
+						sectionItemEdit.addItemToSection( e, elBtnAddItem );
+						//console.log( elBtnSelectItemType );
+					} );
+				}
 			},
 		};
 
@@ -67,12 +81,12 @@ export class CourseAI {
 
 			// Handle click show popup create title.
 			if ( target.classList.contains( '.lp-btn-edit-course-title-ai' ) ) {
-				showPopupCreateTitle();
+				this.showPopupCreateTitle();
 			}
 
 			// Handle click show popup create description.
 			if ( target.classList.contains( '.lp-btn-edit-course-des-ai' ) ) {
-				showPopupCreateDescription();
+				this.showPopupCreateDescription();
 			}
 
 			// Handle click generate title.
@@ -85,7 +99,7 @@ export class CourseAI {
 					language: '',
 					number: '',
 				};
-				generateTitleAI( paramSendAjaxToGenerate );
+				this.generateTitleAI( paramSendAjaxToGenerate );
 			}
 
 			// Handle click apply course title.

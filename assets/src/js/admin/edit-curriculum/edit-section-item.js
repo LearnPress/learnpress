@@ -954,5 +954,6 @@ export {
 	searchTitleItemToSelect,
 	addItemsSelectedToSection,
 	updatePreviewItem,
+	className,
 };
 
