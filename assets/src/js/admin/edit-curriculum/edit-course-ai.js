@@ -7,7 +7,7 @@
 
 import * as sectionEdit from './edit-section.js';
 import * as sectionItemEdit from './edit-section-item.js';
-import {addItemToSection, className} from "./edit-section-item.js";
+import { addItemToSection, className } from './edit-section-item.js';
 
 export class CourseAI {
 	constructor() {
@@ -112,6 +112,11 @@ export class CourseAI {
 			//console.log( target.id );
 			if ( target.classList.contains( 'plural' ) ) {
 				console.log( 'Test apply curriculum AI' );
+				// Scroll to el input create new section
+				const el = document.querySelector( `${ sectionEdit.className.elSectionTitleNewInput }` );
+				const elLPTargetY = el.getBoundingClientRect().top + window.scrollY - 100;
+				window.scrollTo( { top: elLPTargetY } );
+
 				//e.preventDefault();
 				const dataJSON = {
 					course_id: 72,
