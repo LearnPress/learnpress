@@ -271,7 +271,7 @@ class SendEmailAjax extends AbstractAjax {
 			$data_send = LP_Helper::sanitize_params_submitted( $_POST['params'] ?? [] );
 
 			$email_classes = apply_filters(
-				'lp/email/order-status-update-to-cancel/send-mail',
+				'lp/email/user-course-finished/send-mail',
 				[
 					LP_Email_Finished_Course_Admin::class,
 					LP_Email_Finished_Course_User::class,
