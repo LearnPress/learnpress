@@ -1,5 +1,6 @@
 <?php
 
+use LearnPress\Helpers\Config;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
 
@@ -76,6 +77,10 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'classPrefix' => 'lp-toast',
 				],
 				'single_instructor_id'     => learn_press_get_page_id( 'single_instructor' ),
+				'lpAi'                     => [
+					'config'     => Config::instance()->get( 'open-ai-modal', 'settings' ),
+					'modelImage' => LP_Settings::get_option( 'open_ai_image_model_type', 'dall-e-3' ),
+				],
 			]
 		);
 	}
@@ -145,7 +150,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 		$scripts = apply_filters(
 			'learn-press/admin-default-scripts',
 			array(
-				'lp-load-ajax'                      => new LP_Asset_Key(
+				'lp-load-ajax'        => new LP_Asset_Key(
 					self::url( 'js/dist/loadAJAX' . self::$_min_assets . '.js' ),
 					[],
 					[],
@@ -155,17 +160,17 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					[ 'strategy' => 'async' ]
 				),
 				// need build if change source vue
-				'vue-libs'                          => new LP_Asset_Key( $this->url( 'js/vendor/vue/vue_libs.js' ) ),
-				'select2'                           => new LP_Asset_Key( $this->url( 'src/js/vendor/select2.full.min.js' ) ),
-				'jquery-tipsy'                      => new LP_Asset_Key( $this->url( 'src/js/vendor/jquery/jquery-tipsy.js' ) ),
-				'html2pdf'                          => new LP_Asset_Key( $this->url( 'src/js/vendor/html2pdf.bundle.min.js' ) ),
-				'lp-utils'                          => new LP_Asset_Key(
+				'vue-libs'            => new LP_Asset_Key( $this->url( 'js/vendor/vue/vue_libs.js' ) ),
+				'select2'             => new LP_Asset_Key( $this->url( 'src/js/vendor/select2.full.min.js' ) ),
+				'jquery-tipsy'        => new LP_Asset_Key( $this->url( 'src/js/vendor/jquery/jquery-tipsy.js' ) ),
+				'html2pdf'            => new LP_Asset_Key( $this->url( 'src/js/vendor/html2pdf.bundle.min.js' ) ),
+				'lp-utils'            => new LP_Asset_Key(
 					$this->url( 'js/dist/utils' . self::$_min_assets . '.js' ),
 					array(),
 					array(),
 					1
 				),
-				'dropdown-pages'                    => new LP_Asset_Key(
+				'dropdown-pages'      => new LP_Asset_Key(
 					$this->url( self::$_folder_source . 'js/admin/share/dropdown-pages' . self::$_min_assets . '.js' ),
 					[ 'lp-utils', 'select2' ]
 				),
@@ -173,7 +178,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					$this->url( 'src/js/vendor/jquery/jquery-ui-timepicker-addon.js' ),
 					array( 'jquery-ui-datepicker' )
 				),*/
-				'lp-addons'                         => new LP_Asset_Key(
+				'lp-addons'           => new LP_Asset_Key(
 					$this->url( 'js/dist/admin/addons' . self::$_min_assets . '.js' ),
 					[],
 					[ 'learnpress_page_learn-press-addons' ],
@@ -183,12 +188,12 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					[ 'strategy' => 'async' ]
 				),
 				//'advanced-list'                     => new LP_Asset_Key( $this->url( self::$_folder_source . 'js/admin/share/advanced-list' . self::$_min_assets . '.js' ) ),
-				'learn-press-global'                => new LP_Asset_Key(
+				'learn-press-global'  => new LP_Asset_Key(
 					$this->url( self::$_folder_source . 'js/global' . self::$_min_assets . '.js' ),
 					array( 'jquery', 'underscore', 'utils', 'jquery-ui-sortable' )
 				),
-				'lp-admin'                          => $lp_admin_js,
-				'lp-admin-learnpress'               => new LP_Asset_Key(
+				'lp-admin'            => $lp_admin_js,
+				'lp-admin-learnpress' => new LP_Asset_Key(
 					$this->url( 'js/dist/admin/learnpress' . self::$_min_assets . '.js' ),
 					array(
 						'learn-press-global',
@@ -211,7 +216,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'',
 					[ 'strategy' => 'defer' ]
 				),
-				'lp-duplicate-post'                 => new LP_Asset_Key(
+				'lp-duplicate-post'   => new LP_Asset_Key(
 					$this->url( self::$_folder_source . 'js/admin/lp-duplicate-post' . self::$_min_assets . '.js' ),
 					array( 'jquery' ),
 					array(
@@ -230,7 +235,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					0,
 					0
 				),*/
-				'lp-edit-curriculum'                => new LP_Asset_Key(
+				'lp-edit-curriculum'  => new LP_Asset_Key(
 					$this->url( 'dist/js/admin/edit-curriculum' . self::$_min_assets . '.js' ),
 					[ 'lp-load-ajax' ],
 					[],
@@ -239,7 +244,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'',
 					[ 'strategy' => 'async' ]
 				),
-				'lp-edit-quiz'                      => new LP_Asset_Key(
+				'lp-edit-quiz'        => new LP_Asset_Key(
 					$this->url( 'dist/js/admin/edit-quiz' . self::$_min_assets . '.js' ),
 					[ 'lp-load-ajax' ],
 					[],
@@ -248,24 +253,15 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'',
 					[ 'strategy' => 'async' ]
 				),
-				'lp-edit-course'                      => new LP_Asset_Key(
-					$this->url( 'dist/js/admin/edit-curriculum/edit-course-ai' . self::$_min_assets . '.js' ),
+				'lp-edit-question'    => new LP_Asset_Key(
+					$this->url( 'dist/js/admin/edit-question' . self::$_min_assets . '.js' ),
 					[ 'lp-load-ajax' ],
 					[],
 					1,
-					1,
+					0,
 					'',
 					[ 'strategy' => 'async' ]
 				),
-//				'lp-edit-question'                  => new LP_Asset_Key(
-//					$this->url( 'dist/js/admin/edit-question' . self::$_min_assets . '.js' ),
-//					[ 'lp-load-ajax' ],
-//					[],
-//					1,
-//					0,
-//					'',
-//					[ 'strategy' => 'async' ]
-//				),
 				/*'learn-press-admin-quiz-editor'     => new LP_Asset_Key(
 					$this->url( 'js/dist/admin/editor/quiz' . self::$_min_assets . '.js' ),
 					array( 'vue-libs', 'lp-utils' ),
@@ -292,7 +288,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					0,
 					1
 				),*/
-				'lp-admin-order'                    => new LP_Asset_Key(
+				'lp-admin-order'      => new LP_Asset_Key(
 					$this->url( 'js/dist/admin/admin-order' . self::$_min_assets . '.js' ),
 					array( 'html2pdf' ),
 					array( LP_ORDER_CPT ),
@@ -339,7 +335,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					1,
 					1
 				),*/
-				'lp-tools-course-tab'               => new LP_Asset_Key(
+				'lp-tools-course-tab' => new LP_Asset_Key(
 					$this->url( 'js/dist/admin/pages/tools' . self::$_min_assets . '.js' ),
 					array(
 						'jquery',
@@ -359,14 +355,14 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'',
 					[ 'strategy' => 'defer' ]
 				),
-				'lp-dashboard'                      => new LP_Asset_Key(
+				'lp-dashboard'        => new LP_Asset_Key(
 					self::url( 'js/dist/admin/pages/dashboard' . self::$_min_assets . '.js' ),
 					[],
 					array( 'dashboard' ),
 					0,
 					1
 				),
-				'lp-widgets-admin'                  => new LP_Asset_Key(
+				'lp-widgets-admin'    => new LP_Asset_Key(
 					self::url( 'js/dist/admin/pages/widgets' . self::$_min_assets . '.js' ),
 					array(
 						'wp-url',
@@ -378,7 +374,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					0,
 					1
 				),
-				'lp-admin-notices'                  => new LP_Asset_Key(
+				'lp-admin-notices'    => new LP_Asset_Key(
 					self::url( 'js/dist/admin/admin-notices' . self::$_min_assets . '.js' ),
 					[],
 					[],
@@ -387,7 +383,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'',
 					[ 'strategy' => 'async' ]
 				),
-				'lp-material'                       => new LP_Asset_Key(
+				'lp-material'         => new LP_Asset_Key(
 					$this->url( 'js/dist/admin/course-material' . self::$_min_assets . '.js' ),
 					array(),
 					array(
@@ -397,7 +393,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					0,
 					1
 				),
-				'lp-admin-tools'                    => new LP_Asset_Key(
+				'lp-admin-tools'      => new LP_Asset_Key(
 					$this->url( 'js/dist/admin/admin-tools' . self::$_min_assets . '.js' ),
 					[],
 					array( 'learnpress_page_learn-press-tools' ),
@@ -406,7 +402,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'',
 					[ 'strategy' => 'defer' ]
 				),
-				'lp-admin-statistic'                => new LP_Asset_Key(
+				'lp-admin-statistic'  => new LP_Asset_Key(
 					$this->url( 'js/dist/admin/admin-statistic' . self::$_min_assets . '.js' ),
 					array( 'wp-api-fetch' ),
 					array( 'learnpress_page_learn-press-statistics' ),

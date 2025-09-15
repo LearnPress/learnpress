@@ -27,7 +27,7 @@ class AdminEditCourseAI
 	 */
 	public function init()
 	{
-		add_action('admin_enqueue_scripts', [$this, 'localize_script_data']);
+		//add_action('admin_enqueue_scripts', [$this, 'localize_script_data']);
 	}
 
 	/**
