@@ -248,15 +248,24 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'',
 					[ 'strategy' => 'async' ]
 				),
-				'lp-edit-question'                  => new LP_Asset_Key(
-					$this->url( 'dist/js/admin/edit-question' . self::$_min_assets . '.js' ),
+				'lp-edit-course'                      => new LP_Asset_Key(
+					$this->url( 'dist/js/admin/edit-curriculum/edit-course-ai' . self::$_min_assets . '.js' ),
 					[ 'lp-load-ajax' ],
 					[],
 					1,
-					0,
+					1,
 					'',
 					[ 'strategy' => 'async' ]
 				),
+//				'lp-edit-question'                  => new LP_Asset_Key(
+//					$this->url( 'dist/js/admin/edit-question' . self::$_min_assets . '.js' ),
+//					[ 'lp-load-ajax' ],
+//					[],
+//					1,
+//					0,
+//					'',
+//					[ 'strategy' => 'async' ]
+//				),
 				/*'learn-press-admin-quiz-editor'     => new LP_Asset_Key(
 					$this->url( 'js/dist/admin/editor/quiz' . self::$_min_assets . '.js' ),
 					array( 'vue-libs', 'lp-utils' ),

@@ -1,0 +1,307 @@
+// Biến màu sắc cho design mới
+$primary-purple: #6B46E9;
+$text-dark: #1A202C;
+$text-medium: #4A5568;
+$text-light: #A0AEC0;
+$border-color: #E2E8F0;
+$input-bg: #F7FAFC;
+$white: #FFFFFF;
+
+.swal2-popup.create-course-modal {
+	padding: 0;
+	display: flex !important;
+	flex-direction: column;
+	overflow: hidden;
+	border-radius: 12px;
+	background-color: $white;
+	height: 80vh;
+	z-index: 10000000!important;
+
+	// Style cho phần header của SweetAlert
+	.swal2-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 20px 24px;
+		border-bottom: 1px solid $border-color;
+		width: 100%;
+		margin: 0;
+	}
+
+	.swal2-title {
+		margin: 10px 20px !important;
+		padding: 0 !important;
+		font-size: 24px;
+		line-height: 36px;
+		font-weight: 700;
+		text-align: left;
+		color: $text-dark;
+	}
+
+	.swal2-html-container {
+		padding: 0;
+		margin: 0;
+		text-align: left;
+	}
+
+	.swal2-close {
+		position: absolute !important;
+		font-size: 24px;
+		color: $text-medium;
+		&:hover {
+			color: $text-dark;
+		}
+		right: 15px;
+		top: 24px;
+	}
+
+
+	.modal-content {
+		display: grid;
+		grid-template-columns: 1fr 2fr;
+		flex-grow: 1;
+		gap: 30px;
+		min-height: 500px;
+		padding: 0 24px;
+	}
+
+	.input-section {
+		display: flex;
+		flex-direction: column;
+
+		label {
+			font-weight: 700;
+			line-height: 22px;
+			font-size: 14px;
+			color: $text-medium;
+			margin-bottom: 4px;
+		}
+
+		h3 {
+			font-weight: 700;
+			line-height: 22px;
+			font-size: 14px;
+			color: $text-medium;
+			margin-bottom: 4px;
+		}
+
+		textarea,
+		.ts-wrapper .ts-control {
+			width: 100%;
+			padding: 10px 12px;
+			border: 1px solid $border-color;
+			border-radius: 6px;
+			font-size: 0.95em;
+			background-color: $input-bg;
+			color: $text-dark;
+			box-shadow: none;
+			transition: border-color 0.2s, box-shadow 0.2s;
+
+			&:focus, &:focus-within {
+				outline: none;
+				border-color: $primary-purple;
+				box-shadow: 0 0 0 1px $primary-purple;
+				background-color: $white;
+			}
+
+
+		}
+
+		textarea {
+			min-height: 90px;
+			resize: vertical;
+		}
+		.outputs-control{
+			.outputs-control-content{
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				flex-direction: row;
+				.output-number-selector{
+					width: 120px;
+				}
+			}
+		}
+	}
+
+	.output-section {
+		display: flex;
+		flex-direction: column;
+
+		.output-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 8px;
+
+			h3 {
+				font-weight: 700;
+				line-height: 22px;
+				font-size: 14px;
+				color: $text-dark;
+			}
+
+			.icon-button {
+				background: none;
+				border: none;
+				padding: 4px;
+				cursor: pointer;
+				color: $text-light;
+
+				&:hover {
+					color: $text-medium;
+				}
+			}
+		}
+
+		.output-item {
+			border-radius: 6px;
+			margin-bottom: 16px;
+			background-color: $white;
+			position: relative;
+
+			&.prompt-item {
+				textarea {
+					background-color: $input-bg;
+					min-height: 80px;
+				}
+			}
+
+			&.output-suggestion {
+				textarea {
+					border-color: lighten($primary-purple, 25%);
+					min-height: 80px;
+				}
+			}
+
+			p.prompt {
+				font-weight: 500;
+				color: $text-medium;
+				font-size: 0.875rem;
+				margin-bottom: 4px;
+			}
+
+			.generate-button {
+				background-color: $primary-purple;
+				color: #fff;
+				border: none;
+				padding: 12px 20px;
+				border-radius: 6px;
+				font-size: 1rem;
+				font-weight: 500;
+				cursor: pointer;
+				width: 25%;
+				margin-top: 10px;
+
+				&:hover {
+					opacity: 0.9;
+
+				}
+			}
+
+			textarea {
+				width: 100%;
+				box-sizing: border-box;
+				border: 1px solid $border-color;
+				border-radius: 6px;
+				padding: 10px 12px;
+				resize: vertical;
+				font-size: 0.95em;
+				color: $text-dark;
+				transition: border-color 0.2s, box-shadow 0.2s;
+
+				&:focus {
+					outline: none;
+					border-color: $primary-purple;
+					box-shadow: 0 0 0 1px $primary-purple;
+				}
+			}
+
+			.output-actions {
+				position: absolute;
+				top: 30%;
+				right: 2%;
+				display: flex;
+				gap: 8px;
+				visibility: hidden;
+
+				.action-button {
+					font-size: 0.875rem;
+					font-weight: 500;
+					padding: 6px 12px;
+					border-radius: 6px;
+					cursor: pointer;
+					border: 1px solid $border-color;
+					background-color: $white;
+					color: $text-medium;
+					transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+
+					&.copy-button:hover {
+						background-color: $input-bg;
+						border-color: darken($border-color, 10%);
+					}
+
+					&.apply-button {
+						background-color: $primary-purple;
+						border-color: $primary-purple;
+						color: #fff;
+
+						&:hover {
+							opacity: 0.9;
+						}
+					}
+				}
+			}
+
+			&:hover {
+				.output-actions {
+					visibility: visible;
+				}
+			}
+		}
+
+		#lp-ai-output-suggestion {
+			overflow-y: auto;
+			flex-grow: 1;
+			padding-right: 5px;
+		}
+	}
+
+	.ts-wrapper .ts-control {
+		.item {
+			background-color: $input-bg;
+			border: 1px solid $border-color;
+			color: $text-medium;
+			border-radius: 20px;
+			padding: 4px 10px;
+		}
+
+		.ts-input::placeholder {
+			color: $text-light;
+		}
+	}
+
+	.swal2-actions, {
+		padding: 0 24px 0 24px;
+		width: 55%;
+		align-self: flex-start;
+		border-top: none;
+
+		.generate-button {
+			background-color: $primary-purple;
+			color: #fff;
+			border: none;
+			padding: 12px 20px;
+			border-radius: 6px;
+			font-size: 1rem;
+			font-weight: 500;
+			cursor: pointer;
+			width: 100%;
+			margin-top: auto;
+
+			&:hover {
+				opacity: 0.9;
+			}
+		}
+	}
+}
