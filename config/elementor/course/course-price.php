@@ -24,15 +24,15 @@ $style_fields = array_merge(
 				[
 					'options'   => [
 						'left'   => [
-							'title' => esc_html__( 'Left', 'thim-elementor-kit' ),
+							'title' => esc_html__( 'Left', 'learnpress' ),
 							'icon'  => 'eicon-text-align-left',
 						],
 						'center' => [
-							'title' => esc_html__( 'Center', 'thim-elementor-kit' ),
+							'title' => esc_html__( 'Center', 'learnpress' ),
 							'icon'  => 'eicon-text-align-center',
 						],
 						'right'  => [
-							'title' => esc_html__( 'Right', 'thim-elementor-kit' ),
+							'title' => esc_html__( 'Right', 'learnpress' ),
 							'icon'  => 'eicon-text-align-right',
 						],
 					],
