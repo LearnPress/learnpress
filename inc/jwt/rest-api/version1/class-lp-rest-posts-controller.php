@@ -207,7 +207,7 @@ abstract class LP_REST_Jwt_Posts_Controller extends LP_REST_Jwt_Controller {
 			$existing_post = get_post( $id );
 
 			if ( empty( $existing_post ) || empty( $existing_post->ID ) || $this->post_type !== $existing_post->post_type ) {
-				return new WP_Error( 'rest_invalid_course', __( 'Invalid Course' ), array( 'status' => 404 ) );
+				return new WP_Error( 'rest_invalid_course', __( 'Invalid Course', 'learnpress' ), array( 'status' => 404 ) );
 			}
 
 			$prepared_post->ID = $existing_post->ID;
