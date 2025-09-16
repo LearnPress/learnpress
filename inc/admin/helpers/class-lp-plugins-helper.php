@@ -268,7 +268,7 @@ class LP_Plugins_Helper {
 				} else {
 					// buy now button for premium add-ons
 					if ( isset( $plugin['permarklink'] ) ) {
-						$action_links[] = '<a class="buy-now button" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url_raw( $plugin['permarklink'] ) . '" aria-label="' . esc_attr( sprintf( __( 'Buy %s now' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '">' . __( 'Buy Now', 'learnpress' ) . '</a>';
+						$action_links[] = '<a class="buy-now button" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url_raw( $plugin['permarklink'] ) . '" aria-label="' . esc_attr( sprintf( __( 'Buy %s now', 'learnpress' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '">' . __( 'Buy Now', 'learnpress' ) . '</a>';
 					}
 				}
 			}
