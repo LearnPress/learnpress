@@ -396,11 +396,11 @@ class LPElementorControls {
 				[
 					'options'   => [
 						'block'        => array(
-							'title' => esc_html__( 'Block', 'thim-elementor-kit' ),
+							'title' => esc_html__( 'Block', 'learnpress' ),
 							'icon'  => 'eicon-editor-list-ul',
 						),
 						'inline-block' => array(
-							'title' => esc_html__( 'Inline', 'thim-elementor-kit' ),
+							'title' => esc_html__( 'Inline', 'learnpress' ),
 							'icon'  => 'eicon-ellipsis-h',
 						),
 					],
