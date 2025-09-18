@@ -1,5 +1,5 @@
 <?php
-namespace LearnPress\WpGdpr;
+namespace LearnPress\WPGDPR;
 
 use LearnPress\Helpers\Singleton;
 use LP_Database;
@@ -7,7 +7,7 @@ use LP_Helper;
 /**
  *
  */
-final class ErasePersonalData {
+class ErasePersonalData {
 
 	use Singleton;
 

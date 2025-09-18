@@ -51,6 +51,7 @@ use LearnPress\TemplateHooks\Profile\ProfileOrderTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileStudentStatisticsTemplate;
 use LearnPress\TemplateHooks\Course\CourseMaterialTemplate;
 use LearnPress\Widgets\LPRegisterWidget;
+use LearnPress\WPGDPR\ErasePersonalData;
 
 defined( 'ABSPATH' ) || exit();
 
@@ -331,8 +332,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			AdminEditQuestionTemplate::instance();
 			CourseMaterialTemplate::instance();
 
-			// WpGdpr
-			LearnPress\WpGdpr\ErasePersonalData::instance();
+			// WP GDPR
+			ErasePersonalData::instance();
 
 			// Models
 			include_once 'inc/Models/class-lp-rest-response.php';
