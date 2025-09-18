@@ -15,7 +15,7 @@ $white: #FFFFFF;
 	border-radius: 12px;
 	background-color: $white;
 	height: 80vh;
-	z-index: 10000000!important;
+	z-index: 10000000 !important;
 
 	// Style cho phần header của SweetAlert
 	.swal2-header {
@@ -48,9 +48,11 @@ $white: #FFFFFF;
 		position: absolute !important;
 		font-size: 24px;
 		color: $text-medium;
+
 		&:hover {
 			color: $text-dark;
 		}
+
 		right: 15px;
 		top: 24px;
 	}
@@ -111,17 +113,47 @@ $white: #FFFFFF;
 			min-height: 90px;
 			resize: vertical;
 		}
-		.outputs-control{
-			.outputs-control-content{
+
+		.outputs-control {
+			.outputs-control-content {
 				display: flex;
 				align-items: center;
 				justify-content: center;
 				flex-direction: row;
-				.output-number-selector{
+
+				.output-number-selector {
 					width: 120px;
+					border-radius: 6px;
+					padding: 10px 12px;
+					border: 1px solid $border-color;
+					font-size: 0.95em;
+					background-color: $input-bg;
+					color: $text-dark;
+					margin: auto;
+					height: 40px;
 				}
 			}
 		}
+		.lp-tom-select{
+			width: 100%;
+		}
+
+		.swal2-input {
+			border-radius: 6px;
+			padding: 10px 12px;
+			border: 1px solid $border-color;
+			font-size: 0.95em;
+			background-color: $input-bg;
+			color: $text-dark;
+			margin: auto;
+			height: 40px;
+			width: 100%;
+		}
+
+		.swal2-textarea {
+			margin: auto;
+		}
+
 	}
 
 	.output-section {
@@ -264,6 +296,42 @@ $white: #FFFFFF;
 			overflow-y: auto;
 			flex-grow: 1;
 			padding-right: 5px;
+			.output-placeholder {
+				flex-grow: 1;
+				border: 2px dashed $border-color;
+				border-radius: 6px;
+				background-color: $border-color;
+				position: relative;
+				height: 150px;
+				width: 100%;
+				background-position: center;
+				background-repeat: no-repeat;
+				margin-bottom: 10px;
+
+				.output-actions {
+					position: absolute;
+					bottom: 5px;
+					left: 80%;
+					transform: translateX(-50%);
+					display: flex;
+					gap: 10px;
+					width: 30%;
+
+					.action-button {
+						padding: 5px 20px;
+						border-radius: 4px;
+						border: 1px solid $border-color;
+						background-color: rgba(255, 255, 255, 0.8);
+						cursor: pointer;
+					}
+
+					.apply-button {
+						background-color: $primary-purple;
+						color: #fff;
+						border-color: $primary-purple;
+					}
+				}
+			}
 		}
 	}
 
@@ -286,6 +354,7 @@ $white: #FFFFFF;
 		width: 55%;
 		align-self: flex-start;
 		border-top: none;
+		margin: 0 auto !important;
 
 		.generate-button {
 			background-color: $primary-purple;
@@ -297,7 +366,7 @@ $white: #FFFFFF;
 			font-weight: 500;
 			cursor: pointer;
 			width: 100%;
-			margin-top: auto;
+
 
 			&:hover {
 				opacity: 0.9;

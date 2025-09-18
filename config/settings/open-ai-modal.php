@@ -117,8 +117,8 @@ return apply_filters(
 		],
 		'image-dall-e-3-sizes' => [
 			'1024x1024' => esc_html__( '1024x1024', 'learnpress' ),
-			'1792x1024' => esc_html__( '1792x1024', 'learnpress' ),
 			'1024x1792' => esc_html__( '1024x1792', 'learnpress' ),
+			'1792x1024' => esc_html__( '1792x1024', 'learnpress' ),
 		],
 		'image-quality'        => [
 			'standard' => esc_html__( 'Standard', 'learnpress' ),

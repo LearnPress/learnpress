@@ -7,6 +7,7 @@ use LearnPress\Helpers\OpenAi;
 use LearnPress\Models\AiModel;
 use LP_Settings;
 use LP_Abstract_API;
+
 /**
  * class LPAIAjax
  * Handle request Open AI
@@ -15,6 +16,7 @@ use LP_Abstract_API;
  * @version 1.0.0
  */
 class LPAIAjax extends AbstractAjax {
+
 	protected $user                = null;
 	protected $text_model_type_url = 'https://api.openai.com/v1/chat/completions';
 	protected $create_image_url    = 'https://api.openai.com/v1/images/generations';
@@ -79,15 +81,16 @@ class LPAIAjax extends AbstractAjax {
 
 	public function generate_text() {
 		$this->_check_permission();
-		$params          = $_REQUEST;
-		$prompt = $params['prompt'] ?? AiModel::get_completions_prompt($params)['prompt'];
-		$data_response   = [ 'prompt' => $prompt ];
+		$params = $_REQUEST;
+		$prompt = $params['prompt'] ?? AiModel::get_completions_prompt( $params )['prompt'];
+
+		$data_response = [ 'prompt' => $prompt ];
 
 		$args = [
 			'model'             => $this->text_model_type,
 			'frequency_penalty' => floatval( $this->frequency_penalty ),
 			'presence_penalty'  => floatval( $this->presence_penalty ),
-			'n'                 => isset($params['outputs']) ? intval( $params['outputs'] ) : 1,
+			'n'                 => isset( $params['outputs'] ) ? intval( $params['outputs'] ) : 1,
 			'temperature'       => floatval( $this->creativity_level ),
 		];
 
@@ -95,7 +98,10 @@ class LPAIAjax extends AbstractAjax {
 			$args['max_tokens'] = intval( $this->max_token );
 		}
 
-		if ( in_array( $this->text_model_type, [ 'chatgpt-4o-latest', 'gpt-4o', 'gpt-4o-mini', 'gpt-4', 'gpt-3.5-turbo' ] ) ) {
+		if ( in_array(
+			$this->text_model_type,
+			[ 'chatgpt-4o-latest', 'gpt-4o', 'gpt-4o-mini', 'gpt-4', 'gpt-3.5-turbo' ]
+		) ) {
 			$this->text_model_type_url = 'https://api.openai.com/v1/chat/completions';
 			$args['messages']          = [
 				[
@@ -145,20 +151,26 @@ class LPAIAjax extends AbstractAjax {
 			}
 		}
 
-		if ( ($params['type'] ?? '') === 'course-curriculum' ) {
+		if ( ( $params['type'] ?? '' ) === 'course-curriculum' ) {
 			$aCurriculumCourse = [];
-			$sections_data = [];
+			$sections_data     = [];
 			foreach ( $content as $rawCurriculum ) {
 				$curriculum = json_decode( $rawCurriculum, true );
-				if ( json_last_error() === JSON_ERROR_NONE && is_array($curriculum) ) {
-					$sections_data[] = $rawCurriculum; // Store original JSON
+				if ( json_last_error() === JSON_ERROR_NONE && is_array( $curriculum ) ) {
+					$sections_data[]         = $curriculum;
 					$contentCurriculumCourse = '';
 					foreach ( $curriculum['sections'] as $idx => $section ) {
-						$sectionNumber             = $idx + 1;
+						$sectionNumber            = $idx + 1;
 						$contentCurriculumCourse .= "Section {$sectionNumber}: {$section['section_title']}\n";
 						foreach ( $section['lessons'] as $lessonIdx => $lesson ) {
-							$lessonNumber              = $lessonIdx + 1;
+							$lessonNumber             = $lessonIdx + 1;
 							$contentCurriculumCourse .= "Lesson {$sectionNumber}.{$lessonNumber}: {$lesson['lesson_title']}\n";
+						}
+						if ( isset( $section['quiz'] ) ) {
+							foreach ( $section['quiz'] as $quizIdx => $quiz ) {
+								$quizNumber               = $quizIdx + 1;
+								$contentCurriculumCourse .= "Quiz {$sectionNumber}.{$quizNumber}: {$quiz['quiz_title']}\n";
+							}
 						}
 					}
 					$aCurriculumCourse[] = $contentCurriculumCourse;
@@ -179,31 +191,103 @@ class LPAIAjax extends AbstractAjax {
 
 	public function create_course_feature_image() {
 		$this->_check_permission();
-		$params          = $_REQUEST;
-		$data_response   = [];
-		$generate_prompt = OpenAi::get_course_image_create_prompt( $params );
-		$prompt          = $params['prompt'] ?? $generate_prompt;
+		$params            = $_REQUEST;
+		$files             = $_FILES;
+		$data_response     = [];
+		$post_id           = $params['post_id'] ?? 0;
+		$thumbnail_id      = get_post_thumbnail_id( $post_id );
+		$source_image_path = $thumbnail_id ? get_attached_file( $thumbnail_id ) : null;
+		$mask_file_data    = $files['maskLogo'] ?? null;
 
-		if ( empty( $params['prompt'] ) ) {
-			$data_response['prompt'] = $generate_prompt;
+		if ( $mask_file_data && $mask_file_data['tmp_name'] ) {
+			// Check file size (< 4MB)
+			if ( $mask_file_data['size'] > 4 * 1024 * 1024 ) {
+				$this->error( __( 'Mask file too large. Must be < 4MB.', 'learnpress' ) );
+			}
+
+			$finfo = finfo_open( FILEINFO_MIME_TYPE );
+			$mime  = finfo_file( $finfo, $mask_file_data['tmp_name'] );
+			finfo_close( $finfo );
+
+			if ( $mime !== 'image/png' ) {
+				$this->error( __( 'Mask file must be PNG format.', 'learnpress' ) );
+			}
 		}
 
-		if ( empty( $prompt ) ) {
-			$this->error( __( 'Invalid prompt', 'learnpress' ), 400 );
+		if ( $source_image_path && file_exists( $source_image_path ) ) {
+			if ( filesize( $source_image_path ) > 4 * 1024 * 1024 ) {
+				$this->error( __( 'Source image too large. Must be < 4MB.', 'learnpress' ) );
+			}
+
+			$finfo = finfo_open( FILEINFO_MIME_TYPE );
+			$mime  = finfo_file( $finfo, $source_image_path );
+			finfo_close( $finfo );
+
+			if ( $mime !== 'image/png' ) {
+				$this->error( __( 'Source image must be PNG format.', 'learnpress' ) );
+			}
 		}
+
+		$prompt                  = $params['prompt'] ?? AiModel::get_completions_prompt( $params )['prompt'];
+		$data_response['prompt'] = $prompt;
 
 		$model   = LP_Settings::instance()->get( 'open_ai_image_model_type' );
 		$outputs = $params['outputs'] ? intval( $params['outputs'] ) : 1;
-		$size = $params['size'][0] ?? '1024x1024';
+		$size    = $params['size'] ?? '1024x1024';
 
-		$urls = $model == 'dall-e-3'
-			? $this->generateWithDalle3( $this->secret_key, $prompt, $outputs, $size )
-			: $this->generateWithDalle2( $this->secret_key, $prompt, $params['logoBase64'] ?? '', $params['maskBase64'] ?? '' );
+		//      $urls = $model == 'dall-e-3'
+		//          ? $this->generateWithDalle3($this->secret_key, $prompt, $outputs, $size)
+		//          : $this->generateWithDalle2($this->secret_key, $prompt, $outputs, $size, $source_image_path,
+		//              $mask_file_data);
+		$urls = [
+			'https://oaidalleapiprodscus.blob.core.windows.net/private/org-JsaMxJnUbr7erpNChr9wfVBO/user-E39OFB7WZMiXhkHYe7KHtXGk/img-lXMAwsepQPFvwIKsvGCqWaC1.png?st=2025-09-18T08%3A51%3A22Z&se=2025-09-18T10%3A51%3A22Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=c6569cb0-0faa-463d-9694-97df3dc1dfb1&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-09-18T04%3A21%3A21Z&ske=2025-09-19T04%3A21%3A21Z&sks=b&skv=2024-08-04&sig=VelXGxZmlwc1diPyfyADP7Qh7b2Ovt8DlK3RJynxyKs%3D',
+			'https://oaidalleapiprodscus.blob.core.windows.net/private/org-JsaMxJnUbr7erpNChr9wfVBO/user-E39OFB7WZMiXhkHYe7KHtXGk/img-709VOKjK1TgZVRxSerLcdYYa.png?st=2025-09-18T08%3A51%3A22Z&se=2025-09-18T10%3A51%3A22Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=c6569cb0-0faa-463d-9694-97df3dc1dfb1&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-09-18T04%3A21%3A21Z&ske=2025-09-19T04%3A21%3A21Z&sks=b&skv=2024-08-04&sig=0StQi9Aos9BSJW9A7ANfIVXzf68eZRAkAER4OzJ2f%2BQ%3D',
+		];
 
 		$data_response['urls'] = $urls;
 
 		$this->success( $data_response, __( 'Generate course feature image successfully!', 'learnpress' ) );
 	}
+
+	private function resizeMaskToMatchImage( $maskTmpPath, $imagePath ) {
+		[$imgWidth, $imgHeight]   = getimagesize( $imagePath );
+		[$maskWidth, $maskHeight] = getimagesize( $maskTmpPath );
+
+		if ( $imgWidth === $maskWidth && $imgHeight === $maskHeight ) {
+			// Đã khớp → trả lại path gốc
+			return $maskTmpPath;
+		}
+
+		$src = imagecreatefrompng( $maskTmpPath );
+		$dst = imagecreatetruecolor( $imgWidth, $imgHeight );
+
+		// Giữ transparency
+		imagealphablending( $dst, false );
+		imagesavealpha( $dst, true );
+
+		imagecopyresampled(
+			$dst,
+			$src,
+			0,
+			0,
+			0,
+			0,
+			$imgWidth,
+			$imgHeight,
+			$maskWidth,
+			$maskHeight
+		);
+
+		// Lưu mask mới
+		$resizedPath = sys_get_temp_dir() . '/mask_resized_' . uniqid() . '.png';
+		imagepng( $dst, $resizedPath );
+
+		imagedestroy( $src );
+		imagedestroy( $dst );
+
+		return $resizedPath;
+	}
+
 
 	public function save_feature_image() {
 		$this->_check_permission();
@@ -242,8 +326,15 @@ class LPAIAjax extends AbstractAjax {
 			return $tmp;
 		}
 
+		$post      = get_post( $post_id );
+		$post_slug = $post ? $post->post_name : 'image';
+
+		$fileExt  = pathinfo( parse_url( $image_url, PHP_URL_PATH ), PATHINFO_EXTENSION );
+		$ext      = $fileExt ?? 'png';
+		$filename = sanitize_file_name( $post_slug . '-' . date( 'Y-m-d' ) . '.' . $ext );
+
 		$file_array = [
-			'name'     => basename( $image_url ),
+			'name'     => $filename,
 			'tmp_name' => $tmp,
 		];
 
@@ -254,42 +345,63 @@ class LPAIAjax extends AbstractAjax {
 			return $attachment_id;
 		}
 
+		wp_update_post(
+			[
+				'ID'         => $attachment_id,
+				'post_title' => preg_replace( '/\.[^.]+$/', '', $filename ),
+			]
+		);
+
 		set_post_thumbnail( $post_id, $attachment_id );
 
 		return $attachment_id;
 	}
 
-	private function generateWithDalle3( $secret_key, $prompt, $n, $size = '1024x1024', $quality = 'standard', $style = 'vivid' ) {
+
+	private function generateWithDalle3(
+		$secret_key,
+		$prompt,
+		$n,
+		$size = '1024x1024',
+		$quality = 'standard',
+		$style = 'vivid'
+	) {
 		$args = [
 			'model'           => 'dall-e-3',
 			'prompt'          => $prompt,
-			'n'               => $n,
+			'n'               => 1,
 			'size'            => $size,
 			'quality'         => $quality,
 			'style'           => $style,
 			'response_format' => 'url',
 		];
 
-		$response = wp_remote_post('https://api.openai.com/v1/images/generations', [
-			'headers' => [
-				'Authorization' => 'Bearer ' . $secret_key,
-				'Content-Type'  => 'application/json',
-			],
-			'body'    => json_encode($args),
-			'timeout' => 3600,
-		]);
+		$response = wp_remote_post(
+			'https://api.openai.com/v1/images/generations',
+			[
+				'headers' => [
+					'Authorization' => 'Bearer ' . $secret_key,
+					'Content-Type'  => 'application/json',
+				],
+				'body'    => json_encode( $args ),
+				'timeout' => 3600,
+			]
+		);
 
-		if (is_wp_error($response)) {
-			// Handle error
-			return [];
+		if ( is_wp_error( $response ) ) {
+			$this->error( $response->get_error_message(), 500 );
 		}
 
-		$body   = wp_remote_retrieve_body($response);
-		$result = json_decode($body, true);
+		$body   = wp_remote_retrieve_body( $response );
+		$result = json_decode( $body, true );
+
+		if ( isset( $result['error'] ) ) {
+			$this->error( $result['error']['message'], 500 );
+		}
 
 		$urls = [];
-		if (isset($result['data'])) {
-			foreach ($result['data'] as $image_data) {
+		if ( isset( $result['data'] ) ) {
+			foreach ( $result['data'] as $image_data ) {
 				$urls[] = $image_data['url'];
 			}
 		}
@@ -297,7 +409,106 @@ class LPAIAjax extends AbstractAjax {
 		return $urls;
 	}
 
-	private function generateWithDalle2( $secret_key, $prompt, $logoBase64, $maskBase64 ) {
-		return []; // Placeholder
+	private function generateWithDalle2(
+		$secret_key,
+		$prompt,
+		$n,
+		$size = '1024x1024',
+		$source_image_path = null,
+		$mask_file_data = null
+	) {
+
+		$is_edit_mode = ! empty( $source_image_path ) && file_exists( $source_image_path ) && ! empty( $mask_file_data ) &&
+			$mask_file_data['error'] === UPLOAD_ERR_OK;
+
+		if ( $is_edit_mode ) {
+			$temp_mask_path = $this->resizeMaskToMatchImage(
+				$mask_file_data['tmp_name'],
+				$source_image_path
+			);
+			$ch             = curl_init();
+
+			$body = [
+				'prompt'          => $prompt,
+				'n'               => (int) $n,
+				'size'            => $size,
+				'image'           => new \CURLFile( $source_image_path, 'image/png', basename( $source_image_path ) ),
+				'mask'            => new \CURLFile( $temp_mask_path, 'image/png', $mask_file_data['name'] ),
+				'response_format' => 'url',
+			];
+
+			curl_setopt_array(
+				$ch,
+				[
+					CURLOPT_URL            => 'https://api.openai.com/v1/images/edits',
+					CURLOPT_HTTPHEADER     => [
+						"Authorization: Bearer $secret_key",
+					],
+					CURLOPT_POST           => true,
+					CURLOPT_POSTFIELDS     => $body,
+					CURLOPT_RETURNTRANSFER => true,
+					CURLOPT_TIMEOUT        => 3600,
+				]
+			);
+
+			$response = curl_exec( $ch );
+
+			if ( curl_errno( $ch ) ) {
+				echo 'Error: ' . curl_error( $ch );
+			}
+			curl_close( $ch );
+			$result = json_decode( $response, true );
+			if ( isset( $result['error'] ) ) {
+				$this->error( $result['error']['message'], 400 );
+			}
+			$urls = [];
+			if ( isset( $result['data'] ) ) {
+				foreach ( $result['data'] as $image_data ) {
+					$urls[] = $image_data['url'];
+				}
+			}
+
+			return $urls;
+
+		} else {
+			$args = [
+				'model'           => 'dall-e-2',
+				'prompt'          => $prompt,
+				'n'               => (int) $n,
+				'size'            => $size,
+				'response_format' => 'url',
+			];
+
+			$response = wp_remote_post(
+				'https://api.openai.com/v1/images/generations',
+				[
+					'headers' => [
+						'Authorization' => 'Bearer ' . $secret_key,
+						'Content-Type'  => 'application/json',
+					],
+					'body'    => json_encode( $args ),
+					'timeout' => 3600,
+				]
+			);
+		}
+
+		if ( is_wp_error( $response ) ) {
+			$this->error( $response->get_error_message(), 500 );
+		}
+
+		$body   = wp_remote_retrieve_body( $response );
+		$result = json_decode( $body, true );
+		if ( isset( $result['error'] ) ) {
+			$this->error( $result['error']['message'], 400 );
+		}
+
+		$urls = [];
+		if ( isset( $result['data'] ) ) {
+			foreach ( $result['data'] as $image_data ) {
+				$urls[] = $image_data['url'];
+			}
+		}
+
+		return $urls;
 	}
 }

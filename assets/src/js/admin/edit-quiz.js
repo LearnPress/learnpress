@@ -179,16 +179,14 @@ const addQuestion = ( e, target ) => {
 	const callBack = {
 		success: ( response ) => {
 			const { message, status, data } = response;
-			const {
-				question,
-				html_edit_question,
-			} = data;
+			const { question, html_edit_question } = data;
 
 			if ( status === 'error' ) {
 				throw `Error: ${ message }`;
 			} else if ( status === 'success' ) {
 				newQuestionItem.dataset.questionId = question.ID;
-				newQuestionItem.dataset.questionType = question.meta_data._lp_type;
+				newQuestionItem.dataset.questionType =
+					question.meta_data._lp_type;
 				newQuestionItem.outerHTML = html_edit_question;
 				const elQuestionItemCreated = elEditListQuestions.querySelector(
 					`${ className.elQuestionItem }[data-question-id="${ question.ID }"]`
@@ -196,7 +194,9 @@ const addQuestion = ( e, target ) => {
 				elQuestionItemCreated.classList.remove( className.elCollapse );
 				updateCountItems();
 				editQuestion.initTinyMCE();
-				const elQuestionEditMain = elQuestionItemCreated.querySelector( `${ className.elQuestionEditMain }` );
+				const elQuestionEditMain = elQuestionItemCreated.querySelector(
+					`${ className.elQuestionEditMain }`
+				);
 				editQuestion.sortAbleQuestionAnswer( elQuestionEditMain );
 			}
 
@@ -226,24 +226,33 @@ const addQuestion = ( e, target ) => {
 
 // Check to enable or disable add new question button
 const checkCanAddQuestion = ( e, target ) => {
-	const elTrigger = target.closest( className.elQuestionTitleNewInput ) ||
+	const elTrigger =
+		target.closest( className.elQuestionTitleNewInput ) ||
 		target.closest( className.elQuestionTypeNew );
 	if ( ! elTrigger ) {
 		return;
 	}
 
-	const elAddNewQuestion = elTrigger.closest( `.${ className.elAddNewQuestion }` );
+	const elAddNewQuestion = elTrigger.closest(
+		`.${ className.elAddNewQuestion }`
+	);
 	if ( ! elAddNewQuestion ) {
 		return;
 	}
 
-	const elBtnAddQuestion = elAddNewQuestion.querySelector( `${ className.elBtnAddQuestion }` );
+	const elBtnAddQuestion = elAddNewQuestion.querySelector(
+		`${ className.elBtnAddQuestion }`
+	);
 	if ( ! elBtnAddQuestion ) {
 		return;
 	}
 
-	const elQuestionTitleInput = elAddNewQuestion.querySelector( `${ className.elQuestionTitleNewInput }` );
-	const elQuestionTypeNew = elAddNewQuestion.querySelector( `${ className.elQuestionTypeNew }` );
+	const elQuestionTitleInput = elAddNewQuestion.querySelector(
+		`${ className.elQuestionTitleNewInput }`
+	);
+	const elQuestionTypeNew = elAddNewQuestion.querySelector(
+		`${ className.elQuestionTypeNew }`
+	);
 
 	const questionTitle = elQuestionTitleInput.value.trim();
 	const questionType = elQuestionTypeNew.value;
@@ -403,12 +412,16 @@ const updateQuestionTitle = ( e, target ) => {
 
 // Typing in description input
 const changeTitleQuestion = ( e, target ) => {
-	const elQuestionTitleInput = target.closest( `${ className.elQuestionTitleInput }` );
+	const elQuestionTitleInput = target.closest(
+		`${ className.elQuestionTitleInput }`
+	);
 	if ( ! elQuestionTitleInput ) {
 		return;
 	}
 
-	const elQuestionItem = elQuestionTitleInput.closest( `${ className.elQuestionItem }` );
+	const elQuestionItem = elQuestionTitleInput.closest(
+		`${ className.elQuestionItem }`
+	);
 	const titleValue = elQuestionTitleInput.value.trim();
 	const titleValueOld = elQuestionTitleInput.dataset.old || '';
 
@@ -421,13 +434,19 @@ const changeTitleQuestion = ( e, target ) => {
 
 // Cancel updating section description
 const cancelChangeTitleQuestion = ( e, target ) => {
-	const elBtnCancelUpdateQuestionTitle = target.closest( `${ className.elBtnCancelUpdateQuestionTitle }` );
+	const elBtnCancelUpdateQuestionTitle = target.closest(
+		`${ className.elBtnCancelUpdateQuestionTitle }`
+	);
 	if ( ! elBtnCancelUpdateQuestionTitle ) {
 		return;
 	}
 
-	const elQuestionItem = elBtnCancelUpdateQuestionTitle.closest( `${ className.elQuestionItem }` );
-	const elQuestionTitleInput = elQuestionItem.querySelector( `${ className.elQuestionTitleInput }` );
+	const elQuestionItem = elBtnCancelUpdateQuestionTitle.closest(
+		`${ className.elQuestionItem }`
+	);
+	const elQuestionTitleInput = elQuestionItem.querySelector(
+		`${ className.elQuestionTitleInput }`
+	);
 	elQuestionTitleInput.value = elQuestionTitleInput.dataset.old || ''; // Reset to old value
 	elQuestionItem.classList.remove( 'editing' ); // Remove editing class
 };
@@ -452,7 +471,9 @@ const sortAbleQuestion = () => {
 				lpUtils.lpSetLoadingEl( elQuestionItem, 1 );
 
 				const questionIds = [];
-				const elQuestionItems = elEditListQuestions.querySelectorAll( `${ className.elQuestionItem }:not(.clone)` );
+				const elQuestionItems = elEditListQuestions.querySelectorAll(
+					`${ className.elQuestionItem }:not(.clone)`
+				);
 				elQuestionItems.forEach( ( elItem ) => {
 					const questionId = elItem.dataset.questionId;
 					if ( questionId ) {
@@ -505,7 +526,13 @@ document.addEventListener( 'click', ( e ) => {
 	const target = e.target;
 
 	toggleQuestionAll( e, target );
-	lpUtils.toggleCollapse( e, target, className.elQuestionToggle, [], checkAllQuestionsCollapsed );
+	lpUtils.toggleCollapse(
+		e,
+		target,
+		className.elQuestionToggle,
+		[],
+		checkAllQuestionsCollapsed
+	);
 	addQuestion( e, target );
 	removeQuestion( e, target );
 	updateQuestionTitle( e, target );
@@ -539,74 +566,100 @@ document.addEventListener( 'click', ( e ) => {
 				completed: () => {
 					window.lpAJAXG.showHideLoading( elLPTarget, 0 );
 					// Show button add if there are items selected
-					lpPopupSelectItemToAdd.watchItemsSelectedDataChange( elPopupSelectItems );
+					lpPopupSelectItemToAdd.watchItemsSelectedDataChange(
+						elPopupSelectItems
+					);
 				},
 			} );
 		},
 	};
-	lpPopupSelectItemToAdd.showPopupItemsToSelect( e, target, elPopupSelectItems, callBackPopupSelectItems );
+	lpPopupSelectItemToAdd.showPopupItemsToSelect(
+		e,
+		target,
+		elPopupSelectItems,
+		callBackPopupSelectItems
+	);
 	lpPopupSelectItemToAdd.selectItemsFromList( e, target, elPopupSelectItems );
-	lpPopupSelectItemToAdd.addItemsSelectedToSection( e, target, elPopupSelectItems, ( itemsSelected ) => {
-		//console.log( 'Items selected to add:', itemsSelected );
-		const questionIds = [];
-		itemsSelected.forEach( ( item ) => {
-			const elQuestionItemClone = elEditQuizWrap.querySelector( `${ className.elQuestionItem }.clone` );
-			if ( ! elQuestionItemClone ) {
-				return;
-			}
-
-			questionIds.push( item.id );
-			const elQuestionItemNew = elQuestionItemClone.cloneNode( true );
-			const elQuestionItemTitleInput = elQuestionItemNew.querySelector( `${ className.elQuestionTitleInput }` );
-			const elQuestionTypeLabel = elQuestionItemNew.querySelector( `${ className.elQuestionTypeLabel }` );
-			elQuestionItemNew.classList.remove( 'clone' );
-			elQuestionItemNew.dataset.questionId = item.id;
-			elQuestionItemTitleInput.value = item.titleSelected;
-
-			lpUtils.lpSetLoadingEl( elQuestionItemNew, 1 );
-			lpUtils.lpShowHideEl( elQuestionItemNew, 1 );
-			elQuestionItemClone.insertAdjacentElement( 'beforebegin', elQuestionItemNew );
-			lpUtils.lpSetLoadingEl( elQuestionItemNew, 1 );
-		} );
-
-		// Ajax to add items to quiz
-		const callBack = {
-			success: ( response ) => {
-				const { message, status, data } = response;
-
-				if ( status === 'success' ) {
-					showToast( message, status );
-
-					const { html_edit_question } = data;
-					if ( html_edit_question ) {
-						Object.entries( html_edit_question ).forEach( ( [ question_id, item_html ] ) => {
-							const elQuestionItemNew = elEditQuizWrap.querySelector( `${ className.elQuestionItem }[data-question-id="${ question_id }"]` );
-							elQuestionItemNew.outerHTML = item_html;
-						} );
-					}
-					updateCountItems();
-					editQuestion.initTinyMCE();
-				} else {
-					throw `Error: ${ message }`;
+	lpPopupSelectItemToAdd.addItemsSelectedToSection(
+		e,
+		target,
+		elPopupSelectItems,
+		( itemsSelected ) => {
+			//console.log( 'Items selected to add:', itemsSelected );
+			const questionIds = [];
+			itemsSelected.forEach( ( item ) => {
+				const elQuestionItemClone = elEditQuizWrap.querySelector(
+					`${ className.elQuestionItem }.clone`
+				);
+				if ( ! elQuestionItemClone ) {
+					return;
 				}
-			},
-			error: ( error ) => {
-				showToast( error, 'error' );
-			},
-			completed: () => {
-			},
-		};
 
-		const dataSend = {
-			quiz_id: quizID,
-			action: 'add_questions_to_quiz',
-			question_ids: questionIds,
-			args: {
-				id_url: idUrlHandle,
-			},
-		};
-		window.lpAJAXG.fetchAJAX( dataSend, callBack );
-	} );
+				questionIds.push( item.id );
+				const elQuestionItemNew = elQuestionItemClone.cloneNode( true );
+				const elQuestionItemTitleInput =
+					elQuestionItemNew.querySelector(
+						`${ className.elQuestionTitleInput }`
+					);
+				const elQuestionTypeLabel = elQuestionItemNew.querySelector(
+					`${ className.elQuestionTypeLabel }`
+				);
+				elQuestionItemNew.classList.remove( 'clone' );
+				elQuestionItemNew.dataset.questionId = item.id;
+				elQuestionItemTitleInput.value = item.titleSelected;
+
+				lpUtils.lpSetLoadingEl( elQuestionItemNew, 1 );
+				lpUtils.lpShowHideEl( elQuestionItemNew, 1 );
+				elQuestionItemClone.insertAdjacentElement(
+					'beforebegin',
+					elQuestionItemNew
+				);
+				lpUtils.lpSetLoadingEl( elQuestionItemNew, 1 );
+			} );
+
+			// Ajax to add items to quiz
+			const callBack = {
+				success: ( response ) => {
+					const { message, status, data } = response;
+
+					if ( status === 'success' ) {
+						showToast( message, status );
+
+						const { html_edit_question } = data;
+						if ( html_edit_question ) {
+							Object.entries( html_edit_question ).forEach(
+								( [ question_id, item_html ] ) => {
+									const elQuestionItemNew =
+										elEditQuizWrap.querySelector(
+											`${ className.elQuestionItem }[data-question-id="${ question_id }"]`
+										);
+									elQuestionItemNew.outerHTML = item_html;
+								}
+							);
+						}
+						updateCountItems();
+						editQuestion.initTinyMCE();
+					} else {
+						throw `Error: ${ message }`;
+					}
+				},
+				error: ( error ) => {
+					showToast( error, 'error' );
+				},
+				completed: () => {},
+			};
+
+			const dataSend = {
+				quiz_id: quizID,
+				action: 'add_questions_to_quiz',
+				question_ids: questionIds,
+				args: {
+					id_url: idUrlHandle,
+				},
+			};
+			window.lpAJAXG.fetchAJAX( dataSend, callBack );
+		}
+	);
 	lpPopupSelectItemToAdd.showItemsSelected( e, target, elPopupSelectItems );
 	lpPopupSelectItemToAdd.backToSelectItems( e, target, elPopupSelectItems );
 	lpPopupSelectItemToAdd.removeItemSelected( e, target, elPopupSelectItems );
@@ -627,7 +680,11 @@ document.addEventListener( 'keyup', ( e ) => {
 	const target = e.target;
 	changeTitleQuestion( e, target );
 	checkCanAddQuestion( e, target );
-	lpPopupSelectItemToAdd.searchTitleItemToSelect( e, target, elPopupSelectItems );
+	lpPopupSelectItemToAdd.searchTitleItemToSelect(
+		e,
+		target,
+		elPopupSelectItems
+	);
 } );
 // Event change
 document.addEventListener( 'change', ( e ) => {
@@ -656,7 +713,9 @@ lpUtils.lpOnElementReady(
 		sortAbleQuestion();
 		editQuestion.events();
 		editQuestion.initTinyMCE();
-		const elQuestionEditMains = elEditQuizWrapFound.querySelectorAll( `${ className.elQuestionEditMain }` );
+		const elQuestionEditMains = elEditQuizWrapFound.querySelectorAll(
+			`${ className.elQuestionEditMain }`
+		);
 		elQuestionEditMains.forEach( ( elQuestionEditMain ) => {
 			editQuestion.sortAbleQuestionAnswer( elQuestionEditMain );
 		} );
