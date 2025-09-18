@@ -4,7 +4,6 @@ namespace LearnPress\WPGDPR;
 use LearnPress\Filters\PostFilter;
 
 use LearnPress\Helpers\Singleton;
-use LP_Database;
 use LP_Helper;
 use LP_Post_DB;
 use LP_Order_Filter;
@@ -20,7 +19,7 @@ use WP_User;
  * @since 4.2.9.3
  * @version 1.0.0
  */
-final class ErasePersonalData {
+class ErasePersonalData {
 	use Singleton;
 
 	public function init() {
@@ -75,6 +74,11 @@ final class ErasePersonalData {
 		return $response;
 	}
 
+	/**
+	 * delete related data via email(guest)
+	 *
+	 * @param  string $email
+	 */
 	public function eraser_data_via_email( $email ) {
 		$lp_postdb                   = LP_Post_DB::getInstance();
 		$filter                      = new LP_Order_Filter();
@@ -92,15 +96,15 @@ final class ErasePersonalData {
 		$lp_order_ids                = $lp_postdb->wpdb->get_col( $lp_order_ids_query );
 		if ( ! empty( $lp_order_ids ) ) {
 			$lp_order_ids_format = LP_Helper::db_format_array( $lp_order_ids, '%d' );
+			// delete order items and order itemmeta
 			$this->delete_order_items_and_meta( $lp_postdb, $lp_order_ids );
 
 			// 2. Delete data on learnpress_user_items table with order ids found.
-			$ui_delete = $lpdb->wpdb->query(
-				$lpdb->wpdb->prepare(
-					"DELETE FROM $lpdb->tb_lp_user_items AS ui
-					 WHERE ui.ref_id IN ($lp_order_ids_format)",
-					0,
-					...$lp_order_ids
+			$ui_delete = $lp_postdb->wpdb->query(
+				$lp_postdb->wpdb->prepare(
+					"DELETE FROM $lp_postdb->tb_lp_user_items AS ui
+					WHERE ui.ref_id IN ($lp_order_ids_format)",
+					$lp_order_ids
 				)
 			);
 
@@ -118,54 +122,54 @@ final class ErasePersonalData {
 	 */
 	public function eraser_user_data( WP_User $user ) {
 		$user_id  = $user->ID;
-		$lpdb     = LP_Database::getInstance();
-		$um_table = $lpdb->wpdb->usermeta;
+		$lpuidb   = LP_User_Items_DB::getInstance();
+		$um_table = $lpuidb->wpdb->usermeta;
 
 		// delete all lp user meta
-		$delete_usermeta = $lpdb->wpdb->query(
-			$lpdb->wpdb->prepare(
+		$delete_usermeta = $lpuidb->wpdb->query(
+			$lpuidb->wpdb->prepare(
 				"DELETE FROM $um_table AS um
 				 WHERE um.user_id = %d AND um.meta_key LIKE %s",
 				$user_id,
-				$lpdb->wpdb->esc_like( '_lp' ) . '%'
+				$lpuidb->wpdb->esc_like( '_lp' ) . '%'
 			)
 		);
 
 		// get all user item ids
-		$lpuidb                         = LP_User_Items_DB::getInstance();
 		$ui_filter                      = new LP_User_Items_Filter();
 		$ui_filter->user_id             = $user_id;
 		$ui_filter->only_fields[]       = 'ui.user_item_id as ui_id';
 		$ui_filter->return_string_query = 1;
 		$lp_ui_ids_query                = $lpuidb->get_user_items( $ui_filter );
-		$lp_ui_ids                      = $lpdb->wpdb->get_col( $lp_ui_ids_query );
+		$lp_ui_ids                      = $lpuidb->wpdb->get_col( $lp_ui_ids_query );
 		if ( ! empty( $lp_ui_ids ) ) {
 			$lp_ui_ids_format = LP_Helper::db_format_array( $lp_ui_ids, '%d' );
 			// delete user itemmeta
-			$uim_delete = $lpdb->wpdb->query(
-				$lpdb->wpdb->prepare(
-					"DELETE FROM $lpdb->tb_lp_user_itemmeta AS uim
+			$uim_delete = $lpuidb->wpdb->query(
+				$lpuidb->wpdb->prepare(
+					"DELETE FROM $lpuidb->tb_lp_user_itemmeta AS uim
 					 WHERE uim.learnpress_user_item_id IN ($lp_ui_ids_format)",
 					$lp_ui_ids
 				)
 			);
 			// delete user item result
-			$uir_delete = $lpdb->wpdb->query(
-				$lpdb->wpdb->prepare(
-					"DELETE FROM $lpdb->tb_lp_user_item_results AS uir
+			$uir_delete = $lpuidb->wpdb->query(
+				$lpuidb->wpdb->prepare(
+					"DELETE FROM $lpuidb->tb_lp_user_item_results AS uir
 					 WHERE uir.user_item_id IN ($lp_ui_ids_format)",
 					$lp_ui_ids
 				)
 			);
 			// delete all user itema
-			$ui_delete = $lpdb->wpdb->query(
-				$lpdb->wpdb->prepare(
-					"DELETE FROM $lpdb->tb_lp_user_items AS ui
+			$ui_delete = $lpuidb->wpdb->query(
+				$lpuidb->wpdb->prepare(
+					"DELETE FROM $lpuidb->tb_lp_user_items AS ui
 					 WHERE ui.user_id=%d",
 					$user_id
 				)
 			);
 		}
+
 		// delete order which cannot search by email
 		$lp_postdb                         = LP_Post_DB::getInstance();
 		$order_filter                      = new LP_Order_Filter();
@@ -182,6 +186,7 @@ final class ErasePersonalData {
 		$lp_order_ids_query                = $lp_postdb->get_posts( $order_filter );
 		$lp_order_ids                      = $lp_postdb->wpdb->get_col( $lp_order_ids_query );
 		if ( ! empty( $lp_order_ids ) ) {
+			// delete order items and order itemmeta
 			$this->delete_order_items_and_meta( $lp_postdb, $lp_order_ids );
 			foreach ( $lp_order_ids as $order_id ) {
 				wp_delete_post( $order_id, true );
@@ -218,11 +223,18 @@ final class ErasePersonalData {
 				}
 			}
 			if ( ! empty( $delete_order_ids ) ) {
+				// delete order items and order itemmeta
 				$this->delete_order_items_and_meta( $lp_postdb, $delete_order_ids );
 			}
 		}
 	}
 
+	/**
+	 * delete order item table records, order itemmeta table records
+	 *
+	 * @param  LP_Post_DB $lp_postdb
+	 * @param  array      $lp_order_ids
+	 */
 	public function delete_order_items_and_meta( $lp_postdb, array $lp_order_ids ) {
 		$lp_order_ids_format         = LP_Helper::db_format_array( $lp_order_ids, '%d' );
 		$filter                      = new LP_Filter();
