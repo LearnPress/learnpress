@@ -722,7 +722,7 @@ class SingleCourseTemplate {
 	 *
 	 * @return string
 	 * @since 4.2.7
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 */
 	public function html_btn_external( CourseModel $courseModel, $userModel ): string {
 		$external_link = $courseModel->get_meta_value_by_key( CoursePostModel::META_KEY_EXTERNAL_LINK_BY_COURSE, '' );
@@ -744,7 +744,7 @@ class SingleCourseTemplate {
 			__( 'Contact To Request', 'learnpress' )
 		);
 
-		return apply_filters( 'learn-press/course/html-address', $content, $courseModel, $userModel );
+		return apply_filters( 'learn-press/course/html-button-external', $content, $courseModel, $userModel );
 	}
 
 	/**
