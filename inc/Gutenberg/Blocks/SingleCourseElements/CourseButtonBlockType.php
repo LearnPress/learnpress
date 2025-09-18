@@ -97,7 +97,7 @@ class CourseButtonBlockType extends AbstractCourseBlockType {
 
 			$html_button = str_replace(
 				'class="course-buttons"',
-				'class="course-buttons" ' . 'style=" width: ' . $width . '%;"',
+				'class="course-buttons" ' . 'style="width: ' . $width . '%; display: flex; flex-direction: column; gap: 10px;"',
 				$html_button
 			);
 
