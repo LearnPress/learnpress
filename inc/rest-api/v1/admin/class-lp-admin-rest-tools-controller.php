@@ -86,6 +86,20 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 					'permission_callback' => array( $this, 'check_permission' ),
 				),
 			),
+			'get-courses-has-user' => array(
+				array(
+					'methods'             => WP_REST_Server::ALLMETHODS,
+					'callback'            => array( $this, 'get_courses_has_user' ),
+					'permission_callback' => array( $this, 'check_permission' ),
+				),
+			),
+			'reset-course-data'    => array(
+				array(
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => array( $this, 'reset_course_data_progress' ),
+					'permission_callback' => array( $this, 'check_permission' ),
+				),
+			),
 		);
 
 		parent::register_routes();
@@ -147,7 +161,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 
 			// Set next table key.
 			$index_key = array_search( $table, $table_keys );
-			++ $index_key;
+			++$index_key;
 
 			if ( ! array_key_exists( $index_key, $table_keys ) ) {
 				$response->status        = 'finished';
@@ -250,7 +264,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 
 		try {
 			$params                = $request->get_params();
-			$admin_notices_dismiss = get_option( 'lp_admin_notices_dismiss', [] );
+			$admin_notices_dismiss = get_option( 'lp_admin_notices_dismiss', array() );
 			$lp_beta_version_info  = LP_Admin_Notice::check_lp_beta_version();
 
 			if ( isset( $params['dismiss'] ) ) {
@@ -274,63 +288,63 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 
 				$rules = apply_filters(
 					'learn-press/admin-notices',
-					[
+					array(
 						// Check wp_remote call success.
-						'check_wp_remote'            => [
+						'check_wp_remote'            => array(
 							'template' => 'admin-notices/wp-remote.php',
 							'check'    => LP_Admin_Notice::check_wp_remote(),
-						],
+						),
 						// Check name plugin base.
-						'check_plugin_base'          => [
+						'check_plugin_base'          => array(
 							'template' => 'admin-notices/plugin-base.php',
 							'check'    => LP_Admin_Notice::check_plugin_base(),
-						],
+						),
 						// Show beta version of LP.
-						'lp-beta-version'            => [
+						'lp-beta-version'            => array(
 							'template'      => 'admin-notices/beta-version.php',
 							'check'         => $show_notice_lp_beta_version,
 							'info'          => $lp_beta_version_info,
 							'allow_dismiss' => 1,
-						],
+						),
 						// Show message needs upgrades database compatible with LP version current.
-						'lp-upgrade-db'              => [
+						'lp-upgrade-db'              => array(
 							'template' => 'admin-notices/upgrade-db.php',
 							'check'    => LP_Updater::instance()->check_lp_db_need_upgrade(),
-						],
+						),
 						// Show message wrong permalink structure.
-						'lp-permalink'               => [
+						'lp-permalink'               => array(
 							'template' => 'admin-notices/permalink-wrong.php',
 							'check'    => ! get_option( 'permalink_structure' ),
-						],
+						),
 						// Show notice setup wizard.
-						'lp-setup-wizard'            => [
+						'lp-setup-wizard'            => array(
 							'template'      => 'admin-notices/setup-wizard.php',
 							'check'         => ! get_option( 'learn_press_setup_wizard_completed', false )
 												&& ! isset( $admin_notices_dismiss['lp-setup-wizard'] ),
 							'allow_dismiss' => 1,
-						],
+						),
 						// Show notification addons new version.
-						'lp-addons-new-version'      => [
+						'lp-addons-new-version'      => array(
 							'template'      => 'admin-notices/addons-new-version.php',
 							'addons'        => LP_Manager_Addons::instance()->list_addon_new_version(),
 							'allow_dismiss' => 1,
 							'dismiss'       => isset( $admin_notices_dismiss['lp-addons-new-version'] ),
-						],
+						),
 						// Show notification addons purchased need extend.
-						'lp-addons-purchased-extend' => [
+						'lp-addons-purchased-extend' => array(
 							'template'      => 'admin-notices/addons-purchased-extend.php',
 							'need-extend'   => LP_Manager_Addons::instance()->check_addons_purchased_need_extend(),
 							'allow_dismiss' => 1,
 							'dismiss'       => isset( $admin_notices_dismiss['lp-addons-purchased-extend'] ),
-						],
-					]
+						),
+					)
 				);
 
 				ob_start();
 				foreach ( $rules as $template_data ) {
 					Template::instance()->get_admin_template(
 						$template_data['template'] ?? '',
-						[ 'data' => $template_data ]
+						array( 'data' => $template_data )
 					);
 				}
 			}
@@ -362,14 +376,14 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 		try {
 			$params  = $request->get_params();
 			$ids_str = LP_Helper::sanitize_params_submitted( $params['ids'] ?? '' );
-			//$not_ids_str         = LP_Helper::sanitize_params_submitted( $params['not_ids'] ?? '' );
+			// $not_ids_str         = LP_Helper::sanitize_params_submitted( $params['not_ids'] ?? '' );
 			$not_ids_str         = LP_Helper::sanitize_params_submitted( $params['id_not_in'] ?? '' );
-			$current_ids         = (array) LP_Helper::sanitize_params_submitted( $params['current_ids'] ?? [] );
+			$current_ids         = (array) LP_Helper::sanitize_params_submitted( $params['current_ids'] ?? array() );
 			$total_rows          = 0;
 			$filter              = new LP_Course_Filter();
 			$filter->limit       = 20;
-			$filter->only_fields = [ 'ID', 'post_title' ];
-			$filter->post_status = [ 'publish' ];
+			$filter->only_fields = array( 'ID', 'post_title' );
+			$filter->post_status = array( 'publish' );
 			$filter->post_title  = LP_Helper::sanitize_params_submitted( $params['search'] ?? '' );
 			$filter->page        = LP_Helper::sanitize_params_submitted( $params['paged'] ?? 1, 'int' );
 
@@ -388,19 +402,19 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 			$courses = Courses::get_courses( $filter, $total_rows );
 
 			// Get selected courses.
-			$courses_current = [];
+			$courses_current = array();
 			if ( ! empty( $current_ids ) ) {
 				$current_ids                     = array_map( 'absint', $current_ids );
 				$filter_current_ids              = new LP_Course_Filter();
 				$filter_current_ids->limit       = -1;
-				$filter_current_ids->only_fields = [ 'ID', 'post_title' ];
-				$filter->post_status             = [ 'publish' ];
+				$filter_current_ids->only_fields = array( 'ID', 'post_title' );
+				$filter->post_status             = array( 'publish' );
 				$filter_current_ids->post_ids    = $current_ids;
 				$courses_current                 = Courses::get_courses( $filter_current_ids );
 			}
 
-			$check_ids    = [];
-			$courses_rs   = [];
+			$check_ids    = array();
+			$courses_rs   = array();
 			$courses_data = array_merge( $courses_current, $courses );
 			foreach ( $courses_data as $course ) {
 				if ( ! in_array( $course->ID, $check_ids ) ) {
@@ -462,7 +476,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 			}
 
 			// Get only users selected.
-			$users_selected = [];
+			$users_selected = array();
 			$total_selected = 0;
 			if ( ! empty( $current_ids ) ) {
 				if ( ! is_array( $current_ids ) ) {
@@ -484,7 +498,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 			// Get list users for search.
 			$args_get_user['count_total'] = true;
 			$users_search_query           = new WP_User_Query( $args_get_user );
-			$users_search                 = $users_search_query->get_results() ?? [];
+			$users_search                 = $users_search_query->get_results() ?? array();
 			$total_search                 = $users_search_query->get_total() ?? 0;
 			$users                        = array_merge( $users_selected, $users_search );
 
@@ -511,7 +525,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 		$response = new LP_REST_Response();
 		try {
 			global $wp_roles;
-			$data  = [];
+			$data  = array();
 			$roles = $wp_roles->get_names();
 			foreach ( $roles as $key => $value ) {
 				$data[] = array(
@@ -542,7 +556,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 
 		try {
 			$params     = $request->get_params();
-			$data       = $params['data'] ?? [];
+			$data       = $params['data'] ?? array();
 			$page       = $params['page'] ?? 1;
 			$total_page = $params['totalPage'] ?? 1;
 
@@ -611,7 +625,7 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 
 		try {
 			$params     = $request->get_params();
-			$data       = $params['data'] ?? [];
+			$data       = $params['data'] ?? array();
 			$page       = $params['page'] ?? 1;
 			$total_page = $params['totalPage'] ?? 1;
 
@@ -645,6 +659,71 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 			}
 
 			$response->message = __( 'Unassigned users from courses successfully.', 'learnpress' );
+		} catch ( Throwable $e ) {
+			$response->message = $e->getMessage();
+		}
+
+		return $response;
+	}
+
+	// Search results only show if courses have user data.
+	public function get_courses_has_user( WP_REST_Request $request ): LP_REST_Response {
+		global $wpdb;
+
+		$response = new LP_REST_Response();
+		try {
+			$params     = $request->get_params();
+			$data       = $params['data'] ?? array();
+			$page       = $params['page'] ?? 1;
+			$total_page = $params['totalPage'] ?? 1;
+
+			// get course enrolled
+			$course_user_items = $wpdb->get_results( $wpdb->prepare( "SELECT DISTINCT item_id FROM {$wpdb->learnpress_user_items} WHERE item_type = %s AND status = %s", LP_COURSE_CPT, LP_COURSE_ENROLLED ) );
+			$course_ids        = wp_list_pluck( $course_user_items, 'item_id' );
+			// get cousers title....
+			$filter              = new LP_Course_Filter();
+			$filter->limit       = -1;
+			$filter->only_fields = array( 'ID', 'post_title' );
+			$filter->post_ids    = $course_ids;
+			$courses             = Courses::get_courses( $filter );
+
+			$response->data->courses       = $courses;
+			$response->data->total_courses = count( $courses );
+
+			$response->status = 'success';
+
+		} catch ( Throwable $e ) {
+			$response->message = $e->getMessage();
+		}
+
+		return $response;
+	}
+
+	public function reset_course_data_progress( WP_REST_Request $request ): LP_REST_Response {
+		global $wpdb;
+
+		$response = new LP_REST_Response();
+		try {
+			$params     = $request->get_params();
+			$course_ids = $params['course_ids'] ?? array();
+
+			foreach ( $course_ids as $course_id ) {
+				$wpdb->update(
+					$wpdb->learnpress_user_items,
+					array(
+						'status'     => LP_COURSE_ENROLLED,
+						'graduation' => 'in-progress',
+						'start_time' => current_time( 'mysql', 1 ),
+						'end_time'   => null,
+					),
+					array( 'item_id' => absint( $course_id ) ),
+					array( '%s', '%s', '%s', null ),
+					array( '%d' )
+				);
+			}
+
+			$response->status  = 'success';
+			$response->message = esc_html__( 'Reset course data progress successfully.', 'learnpress' );
 		} catch ( Throwable $e ) {
 			$response->message = $e->getMessage();
 		}
