@@ -331,6 +331,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			AdminEditQuestionTemplate::instance();
 			CourseMaterialTemplate::instance();
 
+			// WpGdpr
+			LearnPress\WpGdpr\ErasePersonalData::instance();
+
 			// Models
 			include_once 'inc/Models/class-lp-rest-response.php';
 			include_once 'inc/Models/steps/class-lp-group-step.php';
