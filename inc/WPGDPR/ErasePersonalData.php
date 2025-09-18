@@ -5,7 +5,10 @@ use LearnPress\Helpers\Singleton;
 use LP_Database;
 use LP_Helper;
 /**
+ * class ErasePersonalData
  *
+ * @since 4.2.9.3
+ * @version 1.0.0
  */
 class ErasePersonalData {
 
@@ -33,7 +36,12 @@ class ErasePersonalData {
 		return array(
 			'items_removed'  => true,
 			'items_retained' => false,
-			'messages'       => array( __( 'LP erasers done', 'learnpress ' ) ),
+			'messages'       => array(
+				__( 'LP erasers Personal Data done', 'learnpress' ),
+				__( 'Eraser Orders of User', 'learnpress' ),
+				__( 'Eraser attend course of User', 'learnpress' ),
+				__( 'Eraser attend lessons, quizzes... of User', 'learnpress' ),
+			),
 			'done'           => true,
 		);
 	}
