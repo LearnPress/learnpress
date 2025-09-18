@@ -45,7 +45,7 @@ class CoursePriceElementor extends LPElementorWidgetBase {
 		$singleCourseTemplate = SingleCourseTemplate::instance();
 
 		try {
-			$course = $this->get_course();
+			$course = $this->get_course_model();
 			if ( ! $course ) {
 				return;
 			}
