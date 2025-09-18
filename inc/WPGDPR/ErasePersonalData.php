@@ -1,9 +1,13 @@
 <?php
 namespace LearnPress\WPGDPR;
 
+use LearnPress\Filters\PostFilter;
 use LearnPress\Helpers\Singleton;
 use LP_Database;
 use LP_Helper;
+use Throwable;
+use WP_User;
+
 /**
  * class ErasePersonalData
  *
@@ -11,7 +15,6 @@ use LP_Helper;
  * @version 1.0.0
  */
 class ErasePersonalData {
-
 	use Singleton;
 
 	public function init() {
@@ -26,27 +29,47 @@ class ErasePersonalData {
 			}
 		);
 	}
+
+	/**
+	 * Erase personal data callback
+	 *
+	 * @param string $email
+	 * @param int    $page
+	 *
+	 * @return array
+	 */
 	public function eraser_callback( $email, $page ) {
-		$user = get_user_by( 'email', $email );
-		$this->clear_order_by_email( $email );
-		if ( $user ) {
-			$user_id = $user->ID;
-			$this->delete_user_items_and_meta( $user_id );
-		}
-		return array(
-			'items_removed'  => true,
+		$response = array(
+			'items_removed'  => false,
 			'items_retained' => false,
-			'messages'       => array(
-				__( 'LP erasers Personal Data done', 'learnpress' ),
-				__( 'Eraser Orders of User', 'learnpress' ),
-				__( 'Eraser attend course of User', 'learnpress' ),
-				__( 'Eraser attend lessons, quizzes... of User', 'learnpress' ),
-			),
-			'done'           => true,
+			'messages'       => [],
+			'done'           => false,
 		);
+
+		try {
+			$user = get_user_by( 'email', $email );
+			if ( $user ) {
+				$this->eraser_user_data( $user );
+			} else {
+				$this->eraser_data_via_email( $email );
+			}
+
+			$response['items_removed'] = true;
+			$response['messages']      = array(
+				__( 'LP erasers Personal Data done', 'learnpress' ),
+				__( '- Eraser Orders of User', 'learnpress' ),
+				__( '- Eraser attend course of User', 'learnpress' ),
+				__( '- Eraser attend lessons, quizzes... of User', 'learnpress' ),
+			);
+			$response['done']          = true;
+		} catch ( Throwable $e ) {
+			$response['messages'][] = $e->getMessage();
+		}
+
+		return $response;
 	}
 
-	public function clear_order_by_email( $email ) {
+	public function eraser_data_via_email( $email ) {
 		$lpdb               = LP_Database::getInstance();
 		$lp_order_ids_query = $lpdb->wpdb->prepare(
 			"SELECT p.ID FROM $lpdb->tb_posts AS p INNER JOIN $lpdb->tb_postmeta AS pm ON p.ID = pm.post_id WHERE p.post_type=%s AND pm.meta_key=%s AND pm.meta_value=%s",
@@ -54,7 +77,9 @@ class ErasePersonalData {
 			'_checkout_email',
 			$email
 		);
-		$lp_order_ids       = $lpdb->wpdb->get_col( $lp_order_ids_query );
+		// Su dung filter de xu ly query, ko viet cau lenh truc tiep.
+		$lp_order_ids = $lpdb->wpdb->get_col( $lp_order_ids_query );
+
 		if ( ! empty( $lp_order_ids ) ) {
 			$lp_order_ids_format = LP_Helper::db_format_array( $lp_order_ids, '%d' );
 			$oi_query            = $lpdb->wpdb->prepare(
@@ -63,11 +88,13 @@ class ErasePersonalData {
 				$lp_order_ids
 			);
 			$oi_ids              = $lpdb->wpdb->get_col( $oi_query );
-			// delete order
-			foreach ( $lp_order_ids as $order_id ) {
-				wp_delete_post( $order_id, true );
-			}
-			// delete guest purchased item
+
+			// 1. Find learnpress_user_itemmeta tabel and delete them.
+
+			//
+
+			// 2. Delete data on learnpress_user_items table with order ids found.
+			// Khong can check user guest, chi can tim xoa list order id la duoc.
 			$ui_delete = $lpdb->wpdb->query(
 				$lpdb->wpdb->prepare(
 					"DELETE FROM $lpdb->tb_lp_user_items AS ui
@@ -76,6 +103,7 @@ class ErasePersonalData {
 					...$lp_order_ids
 				)
 			);
+
 			if ( ! empty( $oi_ids ) ) {
 				$oi_ids_format = LP_Helper::db_format_array( $oi_ids, '%d' );
 				// delete order item
@@ -95,12 +123,24 @@ class ErasePersonalData {
 					)
 				);
 			}
+
+			// delete order - handle to lastest.
+			foreach ( $lp_order_ids as $order_id ) {
+				wp_delete_post( $order_id, true );
+			}
 		}
 	}
 
-	public function delete_user_items_and_meta( $user_id ) {
+	/**
+	 * Erase user data
+	 *
+	 * @param WP_User $user
+	 */
+	public function eraser_user_data( WP_User $user ) {
+		$user_id  = $user->ID;
 		$lpdb     = LP_Database::getInstance();
 		$um_table = $lpdb->wpdb->usermeta;
+
 		// delete all lp user meta
 		$delete_usermeta = $lpdb->wpdb->query(
 			$lpdb->wpdb->prepare(
@@ -110,7 +150,7 @@ class ErasePersonalData {
 				$lpdb->wpdb->esc_like( '_lp' ) . '%'
 			)
 		);
-		// return;
+
 		// get all user item ids
 		$lp_ui_ids_query = $lpdb->wpdb->prepare(
 			"SELECT ui.user_item_id FROM $lpdb->tb_lp_user_items AS ui WHERE ui.user_id=%d",
