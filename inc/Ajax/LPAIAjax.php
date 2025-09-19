@@ -17,6 +17,7 @@ use LP_Abstract_API;
  */
 class LPAIAjax extends AbstractAjax {
 
+
 	protected $user                = null;
 	protected $text_model_type_url = 'https://api.openai.com/v1/chat/completions';
 	protected $create_image_url    = 'https://api.openai.com/v1/images/generations';
@@ -140,7 +141,7 @@ class LPAIAjax extends AbstractAjax {
 		$result = json_decode( $body, true );
 
 		if ( isset( $result['error'] ) ) {
-			$this->error( $result['error']['message'], $result['error']['code'] ?? 400 );
+			$this->error( $result['error']['message'], 400 );
 		}
 
 		$content = [];
@@ -166,10 +167,13 @@ class LPAIAjax extends AbstractAjax {
 							$lessonNumber             = $lessonIdx + 1;
 							$contentCurriculumCourse .= "Lesson {$sectionNumber}.{$lessonNumber}: {$lesson['lesson_title']}\n";
 						}
-						if ( isset( $section['quiz'] ) ) {
-							foreach ( $section['quiz'] as $quizIdx => $quiz ) {
-								$quizNumber               = $quizIdx + 1;
-								$contentCurriculumCourse .= "Quiz {$sectionNumber}.{$quizNumber}: {$quiz['quiz_title']}\n";
+
+						if ( isset( $section['quizzes'] ) ) {
+							foreach ( $section['quizzes'] as $quizIdx => $quiz ) {
+								$quizNumber    = (int) $quizIdx + 1;
+								$sectionNumber = (int) $sectionNumber;
+
+								$contentCurriculumCourse .= "Quiz {$sectionNumber}.{$quizNumber}:: {$quiz['quiz_title']}\n";
 							}
 						}
 					}
@@ -235,14 +239,20 @@ class LPAIAjax extends AbstractAjax {
 		$outputs = $params['outputs'] ? intval( $params['outputs'] ) : 1;
 		$size    = $params['size'] ?? '1024x1024';
 
-		//      $urls = $model == 'dall-e-3'
-		//          ? $this->generateWithDalle3($this->secret_key, $prompt, $outputs, $size)
-		//          : $this->generateWithDalle2($this->secret_key, $prompt, $outputs, $size, $source_image_path,
-		//              $mask_file_data);
-		$urls = [
-			'https://oaidalleapiprodscus.blob.core.windows.net/private/org-JsaMxJnUbr7erpNChr9wfVBO/user-E39OFB7WZMiXhkHYe7KHtXGk/img-lXMAwsepQPFvwIKsvGCqWaC1.png?st=2025-09-18T08%3A51%3A22Z&se=2025-09-18T10%3A51%3A22Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=c6569cb0-0faa-463d-9694-97df3dc1dfb1&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-09-18T04%3A21%3A21Z&ske=2025-09-19T04%3A21%3A21Z&sks=b&skv=2024-08-04&sig=VelXGxZmlwc1diPyfyADP7Qh7b2Ovt8DlK3RJynxyKs%3D',
-			'https://oaidalleapiprodscus.blob.core.windows.net/private/org-JsaMxJnUbr7erpNChr9wfVBO/user-E39OFB7WZMiXhkHYe7KHtXGk/img-709VOKjK1TgZVRxSerLcdYYa.png?st=2025-09-18T08%3A51%3A22Z&se=2025-09-18T10%3A51%3A22Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=c6569cb0-0faa-463d-9694-97df3dc1dfb1&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-09-18T04%3A21%3A21Z&ske=2025-09-19T04%3A21%3A21Z&sks=b&skv=2024-08-04&sig=0StQi9Aos9BSJW9A7ANfIVXzf68eZRAkAER4OzJ2f%2BQ%3D',
-		];
+		$urls = $model == 'dall-e-3'
+			? $this->generateWithDalle3( $this->secret_key, $prompt, $outputs, $size )
+			: $this->generateWithDalle2(
+				$this->secret_key,
+				$prompt,
+				$outputs,
+				$size,
+				$source_image_path,
+				$mask_file_data
+			);
+		//      $urls = [
+		//          'https://oaidalleapiprodscus.blob.core.windows.net/private/org-JsaMxJnUbr7erpNChr9wfVBO/user-E39OFB7WZMiXhkHYe7KHtXGk/img-lXMAwsepQPFvwIKsvGCqWaC1.png?st=2025-09-18T08%3A51%3A22Z&se=2025-09-18T10%3A51%3A22Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=c6569cb0-0faa-463d-9694-97df3dc1dfb1&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-09-18T04%3A21%3A21Z&ske=2025-09-19T04%3A21%3A21Z&sks=b&skv=2024-08-04&sig=VelXGxZmlwc1diPyfyADP7Qh7b2Ovt8DlK3RJynxyKs%3D',
+		//          'https://oaidalleapiprodscus.blob.core.windows.net/private/org-JsaMxJnUbr7erpNChr9wfVBO/user-E39OFB7WZMiXhkHYe7KHtXGk/img-709VOKjK1TgZVRxSerLcdYYa.png?st=2025-09-18T08%3A51%3A22Z&se=2025-09-18T10%3A51%3A22Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=c6569cb0-0faa-463d-9694-97df3dc1dfb1&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-09-18T04%3A21%3A21Z&ske=2025-09-19T04%3A21%3A21Z&sks=b&skv=2024-08-04&sig=0StQi9Aos9BSJW9A7ANfIVXzf68eZRAkAER4OzJ2f%2BQ%3D',
+		//      ];
 
 		$data_response['urls'] = $urls;
 

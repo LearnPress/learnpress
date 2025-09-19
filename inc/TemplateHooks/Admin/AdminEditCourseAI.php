@@ -15,6 +15,7 @@ use LP_Settings;
  */
 class AdminEditCourseAI {
 
+
 	use Singleton;
 
 	/**
@@ -74,88 +75,6 @@ class AdminEditCourseAI {
 		return $this->config;
 	}
 
-	/**
-	 * Provides data to the frontend JavaScript using wp_localize_script.
-	 *
-	 * @param string $hook
-	 */
-	public function localize_script_data( string $hook ) {
-		// Only load on the course edit page.
-		$screen = get_current_screen();
-		wp_enqueue_script( 'lp-edit-course', plugins_url( '' ), [ 'jquery' ], '1.0.0', true );
-
-		if ( ! $screen || $screen->id !== 'lp_course' ) {
-			return;
-		}
-
-		$config     = $this->_get_config();
-		$modelImage = LP_Settings::instance()->get_option( 'open_ai_image_model_type', 'dall-e-3' );
-
-		$data = [
-			'nonce'      => wp_create_nonce( 'wp_rest' ),
-			'ajaxUrl'    => admin_url( 'index.php' ),
-			'options'    => [
-				'audience'     => $config['audience-options'] ?? [],
-				'tone'         => $config['tone-options'] ?? [],
-				'language'     => $config['language-options'] ?? [],
-				'levels'       => $config['levels'] ?? [],
-				'imageStyle'   => $config['image-style-options'] ?? [],
-				'imageSize'    => ( $modelImage === 'dall-e-3' )
-					? ( $config['image-dall-e-3-sizes-options'] ?? [] )
-					: ( $config['image-dall-e-2-sizes-options'] ?? [] ),
-				'imageQuality' => $config['image-quality-options'] ?? [],
-			],
-			'modelImage' => $modelImage,
-			'i18n'       => [
-				'createCourseTitle'       => esc_html__( 'Create Course Title', 'learnpress' ),
-				'describeCourseAbout'     => esc_html__(
-					'Describe what your course is about',
-					'learnpress'
-				),
-				'describeCourseGoals'     => esc_html__(
-					'Describe the main goals of your course',
-					'learnpress'
-				),
-				'createCourseDescription' => esc_html__( 'Create Course Description', 'learnpress' ),
-				'describeCourseStandOut'  => esc_html__(
-					'Describe what makes this course stand out?',
-					'learnpress'
-				),
-				'createFeaturedImage'     => esc_html__( 'Create Featured Image', 'learnpress' ),
-				'style'                   => esc_html__( 'Style', 'learnpress' ),
-				'imagesOrIcons'           => esc_html__(
-					'Images or icons should be included',
-					'learnpress'
-				),
-				'sizeImage'               => esc_html__( 'Size Image', 'learnpress' ),
-				'qualityImage'            => esc_html__( 'Quality Image', 'learnpress' ),
-				'createCourseCurriculum'  => esc_html__( 'Create Course Curriculum', 'learnpress' ),
-				'sections'                => esc_html__( 'Sections', 'learnpress' ),
-				'lessonsPerSection'       => esc_html__( 'Lessons per section', 'learnpress' ),
-				'levels'                  => esc_html__( 'Levels', 'learnpress' ),
-				'specificKeyTopics'       => esc_html__( 'Specific key topics', 'learnpress' ),
-				'audience'                => esc_html__( 'Audience', 'learnpress' ),
-				'tone'                    => esc_html__( 'Tone', 'learnpress' ),
-				'outputLanguage'          => esc_html__( 'Output Language', 'learnpress' ),
-				'outputs'                 => esc_html__( 'Outputs', 'learnpress' ),
-				'generate'                => esc_html__( 'Generate', 'learnpress' ),
-				'generating'              => esc_html__( 'Generating...', 'learnpress' ),
-				'pleaseWait'              => esc_html__(
-					'Please wait while we create the content.',
-					'learnpress'
-				),
-				'results'                 => esc_html__( 'Generated Results', 'learnpress' ),
-				'errorOccurred'           => esc_html__( 'An error occurred', 'learnpress' ),
-				'applied'                 => esc_html__( 'Applied!', 'learnpress' ),
-				'copied'                  => esc_html__( 'Copied!', 'learnpress' ),
-				'copy'                    => esc_html__( 'Copy', 'learnpress' ),
-				'apply'                   => esc_html__( 'Apply', 'learnpress' ),
-			],
-		];
-
-		wp_localize_script( 'lp-edit-course', 'lpCourseAiModalData', $data );
-	}
-
 	private function _get_html_course_curriculum_modal(): string {
 		$options = $this->_get_config();
 
@@ -199,16 +118,18 @@ class AdminEditCourseAI {
 				$build_select_options( $options['language'] ?? [] )
 			),
 			'outputs_control'      => sprintf(
-				'<div class="outputs-control"><h3>%s</h3><div class="outputs-control-content"><input type="number" id="lp-ai-output-count" class="output-number-selector" value="2"></div></div>',
-				esc_html__( 'Outputs', 'learnpress' )
+				'<div class="outputs-control"><h3>%s</h3><div class="outputs-control-content"><input type="number" id="lp-ai-output-count" class="output-number-selector" value="2">%s</div></div>',
+				esc_html__( 'Outputs', 'learnpress' ),
+				$this->getHtmlLoading()
 			),
 			'form_wrap_close'      => '</div>',
 			'input_section_close'  => '</div>',
 			'output_section_open'  => '<div class="output-section">',
 			'output_header'        => '<div class="output-header"><h3>Output</h3><div class="header-icons"><button class="icon-button"><img width="18" height="18" src="https://cdn-icons-png.flaticon.com/512/6808/6808309.png" alt="Maximize"/></button></div></div>',
 			'output_prompt'        => sprintf(
-				'<div class="output-item" id="lp-ai-output-prompt"><p class="prompt">%s</p><textarea class="prompt-text" rows="6" id="lp-ai-output-prompt-desc" placeholder=""></textarea></div>',
-				esc_html__( 'Prompt:', 'learnpress' )
+				'<div class="output-item" id="lp-ai-output-prompt"><p class="prompt">%s</p><textarea class="prompt-text" rows="6" id="lp-ai-output-prompt-desc" placeholder=""></textarea>%s</div>',
+				esc_html__( 'Prompt:', 'learnpress' ),
+				$this->getHtmlLoading()
 			),
 			'output_suggestion'    => '<div id="lp-ai-output-suggestion"></div>',
 			'output_section_close' => '</div>',
@@ -257,8 +178,9 @@ class AdminEditCourseAI {
 			'select_language_close' => '</select>',
 			// Outputs control
 			'outputs_control'       => sprintf(
-				'<div class="outputs-control"><h3>%s</h3><div class="outputs-control-content"><input type="number" id="lp-ai-output-count" class="output-number-selector" value="2"></div></div>',
-				esc_html__( 'Outputs', 'learnpress' )
+				'<div class="outputs-control"><h3>%s</h3><div class="outputs-control-content"><input type="number" id="lp-ai-output-count" class="output-number-selector" value="2">%s</div></div>',
+				esc_html__( 'Outputs', 'learnpress' ),
+				$this->getHtmlLoading()
 			),
 			'input_section_close'   => '</div>',
 			'output_section_open'   => '<div class="output-section">',
@@ -266,8 +188,9 @@ class AdminEditCourseAI {
 				'<div class="output-header"><h3>Output</h3><div class="header-icons"><button class="icon-button"><img width="18" height="18" src="https://cdn-icons-png.flaticon.com/512/6808/6808309.png" alt="Maximize"/></button></div></div>'
 			),
 			'output_prompt'         => sprintf(
-				'<div class="output-item" id="lp-ai-output-prompt"><p class="prompt">%s</p><textarea class="prompt-text" rows="6" id="lp-ai-output-prompt-desc" placeholder="e.g. A course to teach how to use LearnPress"></textarea></div>',
-				esc_html__( 'Prompt:', 'learnpress' )
+				'<div class="output-item" id="lp-ai-output-prompt"><p class="prompt">%s</p><textarea class="prompt-text" rows="6" id="lp-ai-output-prompt-desc" placeholder="e.g. A course to teach how to use LearnPress"></textarea>%s</div>',
+				esc_html__( 'Prompt:', 'learnpress' ),
+				$this->getHtmlLoading()
 			),
 			'output_suggestion'     => '<div id="lp-ai-output-suggestion"></div>',
 			'output_section_close'  => '</div>',
@@ -292,50 +215,42 @@ class AdminEditCourseAI {
 			'modal_content_open'    => '<div class="modal-content">',
 			'input_section_open'    => '<div class="input-section">',
 
-			// Course About
 			'heading_topic'         => sprintf(
 				'<h3>%s</h3>',
 				esc_html__( 'Describe what your course is about', 'learnpress' )
 			),
 			'textarea_topic'        => '<textarea id="swal-course-topic" placeholder="e.g. A course to teach how to use LearnPress"></textarea>',
 
-			// Course Goals
 			'heading_goals'         => sprintf(
 				'<h3>%s</h3>',
 				esc_html__( 'Describe the main goals of your course', 'learnpress' )
 			),
 			'textarea_goals'        => '<textarea id="swal-course-goals" placeholder="e.g. A course for beginners to learn WordPress"></textarea>',
-
-			// Audience
 			'heading_audience'      => sprintf( '<h3>%s</h3>', esc_html__( 'Audience', 'learnpress' ) ),
 			'select_audience_open'  => '<select id="swal-audience" multiple>',
 			'options_audience'      => $build_select_options( $config['audience'] ),
 			'select_audience_close' => '</select>',
-
-			// Tone
 			'heading_tone'          => sprintf( '<h3>%s</h3>', esc_html__( 'Tone', 'learnpress' ) ),
 			'select_tone_open'      => '<select id="swal-tone" multiple>',
 			'options_tone'          => $build_select_options( $config['tone'] ),
 			'select_tone_close'     => '</select>',
-
-			// Language
 			'heading_language'      => sprintf( '<h3>%s</h3>', esc_html__( 'Output Language', 'learnpress' ) ),
 			'select_language_open'  => '<select id="swal-language">',
 			'options_language'      => $build_select_options( $config['language'] ),
 			'select_language_close' => '</select>',
-
-			// Outputs control
 			'outputs_control'       => sprintf(
-				'<div class="outputs-control"><h3>%s</h3><div class="outputs-control-content"><input type="number" id="lp-ai-output-count" class="output-number-selector" value="2"></div></div>',
-				esc_html__( 'Outputs', 'learnpress' )
+				'<div class="outputs-control"><h3>%s</h3><div class="outputs-control-content"><input type="number" id="lp-ai-output-count" class="output-number-selector" value="2">%s</div></div>',
+				esc_html__( 'Outputs', 'learnpress' ),
+				$this->getHtmlLoading()
 			),
 			'input_section_close'   => '</div>',
 
 			'output_section_open'   => '<div class="output-section">',
 			'output_header'         => '<div class="output-header"><h3>Output</h3><div class="header-icons"><button class="icon-button"><img width="18" height="18" src="https://cdn-icons-png.flaticon.com/512/6808/6808309.png" alt="Maximize"/></button></div></div>',
 			'output_prompt'         => sprintf(
-				'<div class="output-item" id="lp-ai-output-prompt"><p class="prompt">%s</p><textarea class="prompt-text" rows="6" id="lp-ai-output-prompt-desc" placeholder="e.g. A course to teach how to use LearnPress"></textarea></div>',
-				esc_html__( 'Prompt:', 'learnpress' )
+				'<div class="output-item" id="lp-ai-output-prompt"><p class="prompt">%s</p><textarea class="prompt-text" rows="6" id="lp-ai-output-prompt-desc" placeholder="e.g. A course to teach how to use LearnPress"></textarea>%s</div>',
+				esc_html__( 'Prompt:', 'learnpress' ),
+				$this->getHtmlLoading()
 			),
 			'output_suggestion'     => '<div id="lp-ai-output-suggestion"></div>',
 			'output_section_close'  => '</div>',
@@ -344,6 +259,24 @@ class AdminEditCourseAI {
 
 		return Template::combine_components( $components );
 	}
+
+	public function getHtmlLoading() {
+		return '<div class="fui-loading-spinner-3">
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+</div>';
+	}
+
 	private function _get_html_course_feature_image_modal(): string {
 		$config     = $this->_get_config();
 		$modelImage = LP_Settings::instance()->get_option( 'open_ai_image_model_type', 'dall-e-3' );
@@ -374,8 +307,9 @@ class AdminEditCourseAI {
 					$build_select_options( $config['image-quality'] ?? [] )
 				),
 				'outputs_control' => sprintf(
-					'<div class="outputs-control"><h3>%s</h3><div class="outputs-control-content"><input type="number" id="lp-ai-output-count" class="output-number-selector" value="1" readonly></div></div>',
-					esc_html__( 'Outputs', 'learnpress' )
+					'<div class="outputs-control"><h3>%s</h3><div class="outputs-control-content"><input type="number" id="lp-ai-output-count" class="output-number-selector" value="1" readonly>%s</div></div>',
+					esc_html__( 'Outputs', 'learnpress' ),
+					$this->getHtmlLoading()
 				),
 			];
 			$dall_e_3_fields     = Template::combine_components( $components_dall_e_3 );
@@ -401,8 +335,9 @@ class AdminEditCourseAI {
 					$build_select_options( $config['image-dall-e-2-sizes'] ?? [] )
 				),
 				'outputs_control' => sprintf(
-					'<div class="outputs-control"><h3>%s</h3><div class="outputs-control-content"><input type="number" id="lp-ai-output-count" class="output-number-selector" value="2"></div></div>',
-					esc_html__( 'Outputs', 'learnpress' )
+					'<div class="outputs-control"><h3>%s</h3><div class="outputs-control-content"><input type="number" id="lp-ai-output-count" class="output-number-selector" value="2">%s</div></div>',
+					esc_html__( 'Outputs', 'learnpress' ),
+					$this->getHtmlLoading()
 				),
 			];
 			$dall_e_2_fields     = Template::combine_components( $components_dall_e_2 );
@@ -429,8 +364,9 @@ class AdminEditCourseAI {
 			'output_section_open'  => '<div class="output-section">',
 
 			'output_prompt'        => sprintf(
-				'<div class="output-item" id="lp-ai-output-prompt"><p class="prompt">%s</p><textarea class="prompt-text" id="lp-ai-output-prompt-desc" placeholder="e.g. A course to teach how to use LearnPress" rows="6"></textarea></div>',
-				esc_html__( 'Prompt:', 'learnpress' )
+				'<div class="output-item" id="lp-ai-output-prompt"><p class="prompt">%s</p><textarea class="prompt-text" id="lp-ai-output-prompt-desc" placeholder="e.g. A course to teach how to use LearnPress" rows="6"></textarea>%s</div>',
+				esc_html__( 'Prompt:', 'learnpress' ),
+				$this->getHtmlLoading()
 			),
 			'output_suggestion'    => '<div id="lp-ai-output-suggestion"></div>',
 

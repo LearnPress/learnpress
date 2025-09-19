@@ -90,12 +90,9 @@ export class CourseAI {
 				}
 			},
 			preConfirm: () => {
-				const confirmButton = Swal.getConfirmButton();
-				if ( confirmButton ) {
-					confirmButton.disabled = true;
-					Swal.showLoading();
-				}
 				const popup = Swal.getPopup();
+				this.toggleLoading( 'show', popup );
+				this.toggleBtnActionGenerate( 'hide', popup );
 				const formData = {
 					topic: popup.querySelector( '#swal-course-topic' ).value,
 					goal: popup.querySelector( '#swal-course-goals' ).value,
@@ -230,12 +227,11 @@ export class CourseAI {
 				}
 			},
 			preConfirm: () => {
-				const confirmButton = Swal.getConfirmButton();
-				if ( confirmButton ) {
-					confirmButton.disabled = true;
-					Swal.showLoading();
-				}
 				const popup = Swal.getPopup();
+				//show loading
+				this.toggleLoading( 'show', popup );
+				this.toggleBtnActionGenerate( 'hide', popup );
+
 				const titleCourse = document.querySelector(
 					'#post-body-content #title'
 				);
@@ -405,12 +401,11 @@ export class CourseAI {
 				}
 			},
 			preConfirm: () => {
-				const confirmButton = Swal.getConfirmButton();
-				if ( confirmButton ) {
-					confirmButton.disabled = true;
-					Swal.showLoading();
-				}
 				const popup = Swal.getPopup();
+				//show loading
+				this.toggleLoading( 'show', popup );
+				this.toggleBtnActionGenerate( 'hide', popup );
+
 				const titleCourse = document.querySelector(
 					'#post-body-content #title'
 				);
@@ -508,10 +503,12 @@ export class CourseAI {
 				reBtn.classList.add( 'generate-button' );
 				reBtn.addEventListener( 'click', () => {
 					const popup = Swal.getPopup();
+					//show loading
+					this.toggleLoading( 'show', popup );
+					this.toggleBtnActionGenerate( 'hide', popup );
 					const formData = {
 						outputs: parseInt(
-							popup.querySelector( '#lp-ai-output-count' )
-								.textContent,
+							popup.querySelector( '#lp-ai-output-count' ).value,
 							10
 						),
 						prompt: promptTextarea.value,
@@ -580,6 +577,10 @@ export class CourseAI {
 					} );
 				} );
 		}
+
+		//show loading
+		this.toggleLoading( 'hide', Swal.getPopup() );
+		this.toggleBtnActionGenerate( 'show', Swal.getPopup() );
 	}
 
 	applyFeatureImageAI( e, applyData ) {
@@ -682,6 +683,11 @@ export class CourseAI {
 			},
 			preConfirm: () => {
 				const popup = Swal.getPopup();
+
+				//show loading
+				this.toggleLoading( 'show', popup );
+				this.toggleBtnActionGenerate( 'hide', popup );
+
 				const titleCourse = document.querySelector(
 					'#post-body-content #title'
 				);
@@ -824,7 +830,7 @@ export class CourseAI {
 					}
 
 					const lessons = sectionData.lessons || [];
-					const quiz = sectionData.quiz;
+					const quizzes = sectionData.quizzes || [];
 
 					let itemPromiseChain = Promise.resolve();
 
@@ -861,37 +867,46 @@ export class CourseAI {
 						);
 					} );
 
-					if ( quiz && quiz.quiz_title ) {
-						itemPromiseChain = itemPromiseChain.then(
-							() =>
-								new Promise( ( resolve ) => {
-									const elTempAddItem =
-										elAddItemTypeClone.cloneNode( true );
-									elTempAddItem.classList.remove( 'clone' );
-									elTempAddItem.style.display = 'none';
-
-									const elTempInput =
-										elTempAddItem.querySelector(
-											`${ itemClassName.elAddItemTypeTitleInput }`
+					if ( quizzes ) {
+						quizzes.forEach( ( quiz ) => {
+							itemPromiseChain = itemPromiseChain.then(
+								() =>
+									new Promise( ( resolve ) => {
+										const elTempAddItem =
+											elAddItemTypeClone.cloneNode(
+												true
+											);
+										elTempAddItem.classList.remove(
+											'clone'
 										);
-									elTempInput.value = quiz.quiz_title;
-									elTempInput.dataset.itemType = 'lp_quiz';
+										elTempAddItem.style.display = 'none';
 
-									const elTempBtnAdd =
-										elTempAddItem.querySelector(
-											`${ itemClassName.elBtnAddItem }`
+										const elTempInput =
+											elTempAddItem.querySelector(
+												`${ itemClassName.elAddItemTypeTitleInput }`
+											);
+										elTempInput.value = quiz.quiz_title;
+										elTempInput.dataset.itemType =
+											'lp_quiz';
+
+										const elTempBtnAdd =
+											elTempAddItem.querySelector(
+												`${ itemClassName.elBtnAddItem }`
+											);
+
+										sectionActions.insertAdjacentElement(
+											'beforebegin',
+											elTempAddItem
 										);
 
-									sectionActions.insertAdjacentElement(
-										'beforebegin',
-										elTempAddItem
-									);
+										addItemToSection( e, elTempBtnAdd );
 
-									addItemToSection( e, elTempBtnAdd );
+										setTimeout( resolve, 500 );
 
-									setTimeout( resolve, 500 );
-								} )
-						);
+										//call ajax create question
+									} )
+							);
+						} );
 					}
 
 					itemPromiseChain.then( () => {
@@ -991,12 +1006,15 @@ export class CourseAI {
 					const popup = Swal.getPopup();
 					const formData = {
 						outputs: parseInt(
-							popup.querySelector( '#lp-ai-output-count' )
-								.textContent,
+							popup.querySelector( '#lp-ai-output-count' ).value,
 							10
 						),
 						prompt: promptTextarea.value,
 					};
+					//show loading
+					this.toggleLoading( 'show', Swal.getPopup() );
+					this.toggleBtnActionGenerate( 'hide', Swal.getPopup() );
+
 					this.generateContent(
 						type,
 						formData,
@@ -1064,6 +1082,40 @@ export class CourseAI {
 							} );
 					} );
 				} );
+		}
+		this.toggleLoading( 'hide', Swal.getPopup() );
+		this.toggleBtnActionGenerate( 'show', Swal.getPopup() );
+	}
+
+	toggleLoading( type, popup ) {
+		let loadingEl = popup.querySelectorAll( '.fui-loading-spinner-3' );
+		if ( loadingEl ) {
+			loadingEl.forEach( ( e ) => {
+				if ( type === 'show' ) {
+					e.style.display = 'inline-block';
+				} else {
+					e.style.display = 'none';
+				}
+			} );
+		}
+	}
+
+	toggleBtnActionGenerate( type, popup ) {
+		let btnGenerateEl = popup.querySelector( '.swal2-actions' );
+		if ( btnGenerateEl ) {
+			if ( type === 'show' ) {
+				btnGenerateEl.style.display = 'inline-block';
+			} else {
+				btnGenerateEl.style.display = 'none';
+			}
+		}
+		let btnReGenerateEl = popup.querySelector( '#reGenerateBtn' );
+		if ( btnReGenerateEl ) {
+			if ( type === 'show' ) {
+				btnReGenerateEl.style.display = 'inline-block';
+			} else {
+				btnReGenerateEl.style.display = 'none';
+			}
 		}
 	}
 
@@ -1191,7 +1243,7 @@ export class CourseAI {
 }
 
 document.addEventListener( 'DOMContentLoaded', () => {
-	if ( typeof lpCourseAiModalData !== 'undefined' ) {
+	if ( typeof lpDataAdmin.lpAi !== 'undefined' ) {
 		new CourseAI();
 	}
 } );
