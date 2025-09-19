@@ -21,6 +21,7 @@ if ( 'undefined' !== typeof lpDataAdmin ) {
 		apiAssignUserCourse: lp_rest_url + 'lp/v1/admin/tools/assign-user-course',
 		apiUnAssignUserCourse: lp_rest_url + 'lp/v1/admin/tools/unassign-user-course',
 		apiResetCourseData: lp_rest_url + 'lp/v1/admin/tools/reset-course-data',
+		apiResetUserProgress: lp_rest_url + 'lp/v1/admin/tools/reset-user-progress',
 	};
 }
 

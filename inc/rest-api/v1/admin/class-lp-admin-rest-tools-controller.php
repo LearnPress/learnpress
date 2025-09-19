@@ -100,6 +100,13 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 					'permission_callback' => array( $this, 'check_permission' ),
 				),
 			),
+			'reset-user-progress'  => array(
+				array(
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => array( $this, 'reset_user_progress' ),
+					'permission_callback' => array( $this, 'check_permission' ),
+				),
+			),
 		);
 
 		parent::register_routes();
@@ -708,22 +715,83 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 			$course_ids = $params['course_ids'] ?? array();
 
 			foreach ( $course_ids as $course_id ) {
-				$wpdb->update(
-					$wpdb->learnpress_user_items,
-					array(
-						'status'     => LP_COURSE_ENROLLED,
-						'graduation' => 'in-progress',
-						'start_time' => current_time( 'mysql', 1 ),
-						'end_time'   => null,
-					),
-					array( 'item_id' => absint( $course_id ) ),
-					array( '%s', '%s', '%s', null ),
-					array( '%d' )
-				);
+				// get user_id from learnpress_user_items by course_id
+				$results = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->learnpress_user_items} WHERE item_id = %d and status = %s", absint( $course_id ), LP_COURSE_ENROLLED ), ARRAY_A );
+
+				foreach ( $results as $result ) {
+					// delete learnpress_user_item by course_id
+					$wpdb->delete(
+						$wpdb->learnpress_user_items,
+						array( 'user_item_id' => absint( $result['user_item_id'] ) ),
+						array( '%d' )
+					);
+					$wpdb->insert(
+						$wpdb->learnpress_user_items,
+						array(
+							'user_id'      => absint( $result['user_id'] ),
+							'item_id'      => absint( $course_id ),
+							'item_type'    => $result['item_type'],
+							'status'       => LP_COURSE_ENROLLED,
+							'graduation'   => 'in-progress',
+							'start_time'   => current_time( 'mysql', 1 ),
+							'end_time'     => null,
+							'ref_type'     => $result['ref_type'],
+							'ref_id'       => $result['ref_id'],
+							'parent_id'    => $result['parent_id'],
+							'access_level' => $result['access_level'],
+						)
+					);
+				}
 			}
 
 			$response->status  = 'success';
 			$response->message = esc_html__( 'Reset course data progress successfully.', 'learnpress' );
+		} catch ( Throwable $e ) {
+			$response->message = $e->getMessage();
+		}
+
+		return $response;
+	}
+
+	public function reset_user_progress( WP_REST_Request $request ): LP_REST_Response {
+		global $wpdb;
+
+		$response = new LP_REST_Response();
+		try {
+			$params   = $request->get_params();
+			$user_ids = $params['user_ids'] ?? array();
+
+			foreach ( $user_ids as $user_id ) {
+				$results = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->learnpress_user_items} WHERE user_id = %d and status = %s", $user_id, LP_COURSE_ENROLLED ), ARRAY_A );
+
+				foreach ( $results as $result ) {
+					$wpdb->delete(
+						$wpdb->learnpress_user_items,
+						array( 'user_item_id' => absint( $result['user_item_id'] ) ),
+						array( '%d' )
+					);
+					$wpdb->insert(
+						$wpdb->learnpress_user_items,
+						array(
+							'user_id'      => absint( $user_id ),
+							'item_id'      => absint( $result['item_id'] ),
+							'item_type'    => LP_COURSE_CPT,
+							'status'       => LP_COURSE_ENROLLED,
+							'graduation'   => 'in-progress',
+							'start_time'   => current_time( 'mysql', 1 ),
+							'end_time'     => null,
+							'ref_type'     => $result['ref_type'],
+							'ref_id'       => $result['ref_id'],
+							'parent_id'    => $result['parent_id'],
+							'access_level' => $result['access_level'],
+						),
+						array( '%d' )
+					);
+				}
+			}
+
+			$response->status  = 'success';
+			$response->message = esc_html__( 'Reset user progress successfully.', 'learnpress' );
 		} catch ( Throwable $e ) {
 			$response->message = $e->getMessage();
 		}

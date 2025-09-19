@@ -2,186 +2,151 @@
 /**
  * @author  ThimPress
  * @package LearnPress/Admin/Views
- * @version 3.0.0
+ * @version 4.2.5.6
  */
 
 defined( 'ABSPATH' ) or die();
 
 ?>
-<div id="learn-press-reset-user-courses" class="card">
-	<h2><?php _e( 'Reset User Progress', 'learnpress' ); ?></h2>
+<div id="learn-press-reset-user-progress" class="card">
+	<h2><?php esc_html_e( 'Reset User Progress', 'learnpress' ); ?></h2>
 	<div class="description">
-		<p><?php _e( 'This action will reset all course progresses of users.', 'learnpress' ); ?></p>
-		<p><?php _e( 'Search results only show if users have course data.', 'learnpress' ); ?></p>
+		<p><?php esc_html_e( 'This action will reset all course progresses of selected users.', 'learnpress' ); ?></p>
+		<p><?php esc_html_e( 'Search and select multiple users whose progress you want to reset.', 'learnpress' ); ?></p>
 	</div>
-	<p>
-		<input class="wide-fat" type="text" name="s" @keyup="updateSearch($event)"
-			   placeholder="<?php esc_attr_e( 'Search user by login name or email', 'learnpress' ); ?>">
-		<button class="button" @click="search($event)"
-				:disabled="s.length < 3"><?php _e( 'Search', 'learnpress' ); ?></button>
-	</p>
+	<div class="content">
+		<form id="lp-reset-user-progress-form" method="post" action="">
+			<div class="lp-user-selection-section">
+				<div class="lp-autocomplete-container">
+					<input
+						type="text"
+						id="lp-user-autocomplete"
+						name="user_search"
+						class="widefat lp-autocomplete-input"
+						placeholder="<?php esc_attr_e( 'Type to search and select users...', 'learnpress' ); ?>"
+						autocomplete="off"
+					/>
+					<div id="lp-autocomplete-dropdown" class="lp-autocomplete-dropdown" style="display: none;">
+						<div class="lp-autocomplete-results"></div>
+					</div>
+				</div>
+				<p class="description"><?php esc_html_e( 'Type to search for users. Click on a user to select them.', 'learnpress' ); ?></p>
+				<div id="lp-selected-users-list" class="lp-selected-users-list">
+					<p class="no-users"><?php esc_html_e( 'No users selected yet.', 'learnpress' ); ?></p>
+				</div>
+			</div>
 
-	<template v-if="users.length > 0">
-		<table class="wp-list-table widefat fixed striped">
-			<thead>
-			<tr>
-				<th width="50"><?php _e( 'ID', 'learnpress' ); ?></th>
-				<th width="200"><?php _e( 'Name', 'learnpress' ); ?></th>
-				<th><?php _e( 'Courses', 'learnpress' ); ?></th>
-				<th width="80"><?php _e( 'Actions', 'learnpress' ); ?></th>
-			</tr>
-			</thead>
-			<tbody>
-			<tr v-for="user in users">
-				<td>#{{user.id}}</td>
-				<td>{{user.username}} ({{user.email}})</td>
-				<td>
-					<ul class="courses-list">
-						<li v-for="course in user.courses">
-							<a :href="course.url" target="_blank">{{course.title}} (#{{course.id}})</a>
-							<a href=""
-							   class="action-reset dashicons"
-							   data-reset="single"
-							   @click="reset($event, user, course.id);"
-							   :class="resetActionClass(user, course)"></a>
-						</li>
-					</ul>
-				</td>
-				<td>
-					<a href=""
-					   class="action-reset dashicons"
-					   data-reset="all"
-					   :class="resetActionClass(user)"
-					   @click="reset($event, user);"></a>
-					<span style="font-size: 12px"><?php echo esc_html__( 'Delete All', 'learnpress' ); ?></span>
-				</td>
-			</tr>
-			</tbody>
-		</table>
-	</template>
-	<template v-else>
-		<p v-if="s.length < 3"><?php _e( 'Please enter at least 3 characters.', 'learnpress' ); ?></p>
-		<p v-else-if="status=='result'"><?php _e( 'No user found.', 'learnpress' ); ?></p>
-		<p v-else-if="status=='searching'"><?php _e( 'Searching user...', 'learnpress' ); ?></p>
-	</template>
+			<div>
+				<button class="button button-primary lp-button-reset-user-progress" type="submit">
+					<?php esc_html_e( 'Reset Progress', 'learnpress' ); ?>
+				</button>
+				<span class="percent" style="margin-left: 10px"></span>
+				<span class="message" style="margin-left: 10px"></span>
+			</div>
+		</form>
+	</div>
 </div>
 
-<?php
+<style>
+.lp-autocomplete-container {
+	position: relative;
+}
 
-// Translation
-$localize = array(
-	'reset_course_users' => __( 'Are you sure to reset course progress of all users enrolled this course?', 'learnpress' ),
-);
-?>
-<script>
-	window.$Vue = window.$Vue || Vue;
+.lp-autocomplete-dropdown {
+	position: absolute;
+	top: 100%;
+	left: 0;
+	right: 0;
+	background: white;
+	border: 1px solid #ddd;
+	border-top: none;
+	border-radius: 0 0 4px 4px;
+	box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+	z-index: 1000;
+	max-height: 200px;
+	overflow-y: auto;
+}
 
-	jQuery(function ($) {
-		var js_localize = <?php echo wp_json_encode( $localize ); ?>
+.lp-autocomplete-results {
+	padding: 0;
+}
 
-			new $Vue({
-				el: '#learn-press-reset-user-courses',
-				data: {
-					s: '',
-					status: false,
-					users: []
-				},
-				methods: {
-					resetActionClass: function (user, course) {
-						var status = course ? course.status : user.status;
-						return {
-							'dashicons-trash': !status,
-							'dashicons-yes': status === 'done',
-							'dashicons-update': status === 'resetting'
-						}
-					},
-					updateSearch: function (e) {
-						this.s = e.target.value;
-						this.status = false;
-						e.preventDefault();
-					},
-					search: function (e) {
-						e.preventDefault();
+.lp-autocomplete-item {
+	padding: 8px 12px;
+	cursor: pointer;
+	border-bottom: 1px solid #eee;
+	transition: background-color 0.2s;
+}
 
-						var that = this;
-						this.s = $(this.$el).find('input[name="s"]').val();
+.lp-autocomplete-item:hover {
+	background-color: #f5f5f5;
+}
 
-						if (this.s.length < 3) {
-							return;
-						}
+.lp-autocomplete-item:last-child {
+	border-bottom: none;
+}
 
-						this.status = 'searching';
-						this.courses = [];
+.lp-autocomplete-item .user-name {
+	font-weight: bold;
+	color: #333;
+}
 
-						$.ajax({
-							url: '',
-							data: {
-								'lp-ajax': 'rs-search-users',
-								s: this.s,
-								nonce: lpGlobalSettings.nonce
-							},
-							success: function (response) {
-								var users = LP.parseJSON(response);
-								for(var i = 0; i < users.length; i++) {
-									for (var j in users[i].courses) {
-										users[i].courses[j].status = ''
-									}
-								}
-								that.users = users;
-								that.status = 'result';
-							}
-						})
-					},
+.lp-autocomplete-item .user-id {
+	font-size: 12px;
+	color: #999;
+	font-style: italic;
+}
 
-					reset: function (e, user, course_id) {
-						e.preventDefault();
+.lp-autocomplete-item .user-email {
+	font-size: 12px;
+	color: #666;
+	margin-left: 5px;
+}
 
-						if (!confirm(js_localize.reset_course_users)) {
-							return;
-						}
-						var that = this;
-						if(course_id){
-							user.courses[course_id].status = 'resetting'
-						}else{
-							for(var j in user.courses ){
-								user.courses[j].status = 'resetting'
-							}
-							user.status = 'resetting';
-						}
+.lp-autocomplete-item.selected {
+	background-color: #e3f2fd;
+	color: #1976d2;
+}
 
-						var object_reset = $(e.target).data('reset');
+.lp-autocomplete-item.selected .user-name {
+	color: #1976d2;
+}
 
-						$.ajax({
-							url: '',
-							data: {
-								'lp-ajax': 'rs-reset-user-courses',
-								user_id: user.id,
-								course_id: course_id,
-								object_reset: object_reset,
-								nonce: lpGlobalSettings.nonce
-							},
-							success: function (response) {
-								response = LP.parseJSON(response);
-								//if (response.id == user.id) {
-								for (var i = 0, n = that.users.length; i < n; i++) {
-									if (that.users[i].id === user.id) {
-										if(course_id){
-											that.users[i].courses[course_id].status = 'done'
-										}else{
-											for(var j in that.users[i].courses ){
-												that.users[i].courses[j].status = 'done'
-											}
-											user.status = 'done';
-										}
-										break;
-									}
-								}
-								// }
-							}
-						})
-					}
-				}
-			});
-	});
+.selected-indicator {
+	float: right;
+	color: #4caf50;
+	font-weight: bold;
+}
 
-</script>
+.lp-selected-users-list {
+	min-height: 50px;
+	margin-top: 10px;
+}
+
+.lp-selected-users-list .no-users {
+	color: #666;
+	font-style: italic;
+	margin: 0;
+}
+
+.lp-selected-user-item {
+	display: inline-block;
+	background: #0073aa;
+	color: white;
+	padding: 5px 10px;
+	margin: 5px 5px 0 0;
+	border-radius: 3px;
+	font-size: 12px;
+}
+
+.lp-selected-user-item .remove-user {
+	margin-left: 8px;
+	cursor: pointer;
+	color: #ff6b6b;
+	font-weight: bold;
+}
+
+.lp-selected-user-item .remove-user:hover {
+	color: #ff5252;
+}
+</style>

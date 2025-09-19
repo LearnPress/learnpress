@@ -3,8 +3,6 @@ import createIndexes from './tools/database/create_indexs';
 import reUpgradeDB from './tools/database/re-upgrade-db';
 import cleanDatabases from './tools/database/clean_database';
 
-import resetData from './tools/reset-data';
-
 ( function( $ ) {
 	const $doc = $( document );
 	let isRunning = false;
@@ -131,7 +129,6 @@ import resetData from './tools/reset-data';
 		getStepsUpgradeStatus();
 		createIndexes();
 		reUpgradeDB();
-		resetData();
 		cleanDatabases();
 		$doc.on( 'click', '.lp-install-sample__install', installSampleCourse )
 			.on( 'click', '.lp-install-sample__uninstall', uninstallSampleCourse )
