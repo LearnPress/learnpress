@@ -102,8 +102,12 @@ class LP_Database {
 	 *
 	 * @return int
 	 * @since 3.2.8
+	 * @deprecated 4.2.9.3
 	 */
 	public function get_count_post_of_user( LP_Post_Type_Filter $filter ): int {
+		_deprecated_function( __METHOD__, '4.2.9.3' );
+		return 0;
+
 		$query_append = '';
 
 		$cache_key = _count_posts_cache_key( $filter->post_type );
