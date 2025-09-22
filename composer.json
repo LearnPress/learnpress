@@ -15,8 +15,9 @@
 		"issues": "https://github.com/LearnPress/learnpress/issues"
 	},
 	"require-dev": {
-		"squizlabs/php_codesniffer": "3.11.2",
-		"wp-coding-standards/wpcs": "3.1.0"
+		"squizlabs/php_codesniffer" : "^3.13.0",
+		"phpcsstandards/phpcsutils" : "^1.1.0",
+		"wp-coding-standards/wpcs": "3.2.0"
 	},
 	"_comment": "If the tijsverkoyen Emogrifier library does not work properly, try pelago/emogrifier.",
 	"require": {
@@ -36,7 +37,7 @@
 	},
 	"config": {
 		"allow-plugins": {
-			"dealerdirect/phpcodesniffer-composer-installer": false
+			"dealerdirect/phpcodesniffer-composer-installer": true
 		},
 		"platform-check": false,
 		"_comment": "Set platform-check for library css-to-inline-styles require PHP 7.4+, but some environment require PHP 8.1+"

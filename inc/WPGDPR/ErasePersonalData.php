@@ -175,8 +175,8 @@ class ErasePersonalData {
 	 * @throws Exception
 	 */
 	public function eraser_user_data( WP_User $user ) {
-		$user_id  = $user->ID;
-		$db = DataBase::getInstance();
+		$user_id = $user->ID;
+		$db      = DataBase::getInstance();
 
 		// Delete data uer meta which meta_key start with _lp
 		$filter_usermeta             = new FilterBase();
@@ -190,10 +190,10 @@ class ErasePersonalData {
 		// End delete user meta
 
 		// Find all user item ids of user
-		$filter_user_items             = new LP_User_Items_Filter();
-		$filter_user_items->user_id    = $user_id;
-		$user_items_db 			   = LP_User_Items_DB::getInstance();
-		$user_items                    = $user_items_db->get_user_items( $filter_user_items );
+		$filter_user_items          = new LP_User_Items_Filter();
+		$filter_user_items->user_id = $user_id;
+		$user_items_db              = LP_User_Items_DB::getInstance();
+		$user_items                 = $user_items_db->get_user_items( $filter_user_items );
 		if ( $user_items ) {
 			foreach ( $user_items as $user_item ) {
 				// Delete user item and user itemmeta
@@ -213,18 +213,18 @@ class ErasePersonalData {
 
 		// Find all orders of user
 		$postDB                         = PostDB::getInstance();
-		$orderPostFilter                      = new OrderPostFilter();
-		$orderPostFilter->only_fields[]       = 'p.ID';
-		$orderPostFilter->join[]              = "INNER JOIN $postDB->tb_postmeta AS pm ON p.ID = pm.post_id";
-		$orderPostFilter->where[]               = $postDB->wpdb->prepare(
+		$orderPostFilter                = new OrderPostFilter();
+		$orderPostFilter->only_fields[] = 'p.ID';
+		$orderPostFilter->join[]        = "INNER JOIN $postDB->tb_postmeta AS pm ON p.ID = pm.post_id";
+		$orderPostFilter->where[]       = $postDB->wpdb->prepare(
 			'AND pm.meta_key=%s AND pm.meta_value=%s',
 			'_user_id',
 			$user_id
 		);
-		$order_ids                = $postDB->get_posts( $orderPostFilter );
+		$order_ids                      = $postDB->get_posts( $orderPostFilter );
 		if ( $order_ids ) {
-			$order_ids = PostDb::get_values_by_key( $order_ids );
-			$order_ids = array_map( 'absint', $order_ids );
+			$order_ids     = PostDb::get_values_by_key( $order_ids );
+			$order_ids     = array_map( 'absint', $order_ids );
 			$order_ids_str = implode( ',', $order_ids );
 			$this->delete_order_itemmeta( $order_ids_str );
 			$this->delete_order_items( $order_ids_str );
@@ -236,14 +236,14 @@ class ErasePersonalData {
 		// End delete orders of user
 
 		// Find user orders which have multiple user ids
-		$user_id_str = $postDB->wpdb->prepare( '%"%d"%', $user_id );
-		$orderPostFilter->where       = [
+		$user_id_str            = $postDB->wpdb->prepare( '%"%d"%', $user_id );
+		$orderPostFilter->where = array(
 			$postDB->wpdb->prepare(
 				'AND pm.meta_key=%s AND pm.meta_value LIKE %s',
 				'_user_id',
 				$user_id_str
 			),
-		];
+		);
 
 		$order_ids_multiple_users = $postDB->get_posts( $orderPostFilter );
 		if ( $order_ids_multiple_users ) {
@@ -253,10 +253,12 @@ class ErasePersonalData {
 				$user_ids = get_post_meta( $order_id, '_user_id', true );
 
 				if ( count( $user_ids ) <= 1 ) {
+					// If only 1 user id, delete order
 					$this->delete_order_itemmeta( $order_id );
 					$this->delete_order_items( $order_id );
 					wp_delete_post( $order_id, true );
 				} else {
+					// Search and unset user id of user on array user ids
 					$current_user_order_pos = array_search( $user_id, $user_ids );
 					if ( $current_user_order_pos !== false ) {
 						unset( $user_ids[ $current_user_order_pos ] );

@@ -40,5 +40,6 @@
 		<exclude name="WordPress.NamingConventions.ValidVariableName.NotSnakeCase"/>
 		<exclude name="WordPress.NamingConventions.ValidVariableName.MemberNotSnakeCase"/>
 		<exclude name="WordPress.NamingConventions.ValidVariableName.PropertyNotSnakeCase"/>
+		<exclude name="WordPress.NamingConventions.ValidVariableName.InterpolatedVariableNotSnakeCase"/>
     </rule>
 </ruleset>
