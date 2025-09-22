@@ -2,8 +2,6 @@
 
 namespace LearnPress\Filters;
 
-use LP_Filter;
-
 defined( 'ABSPATH' ) || exit();
 
 /**
@@ -11,12 +9,10 @@ defined( 'ABSPATH' ) || exit();
  *
  * Filter post type of LP
  *
- * @author  tungnx
- * @package LearnPress/Classes/Filters
- * @version 1.0.1
- * @since 4.0.0
+ * @version 1.0.0
+ * @since 4.2.9.3
  */
-class PostFilter extends LP_Filter {
+class PostFilter extends FilterBase {
 	const COL_ID                    = 'ID';
 	const COL_POST_AUTHOR           = 'post_author';
 	const COL_POST_DATE             = 'post_date';
@@ -79,11 +75,11 @@ class PostFilter extends LP_Filter {
 	/**
 	 * @var string
 	 */
-	public $post_title = '';
+	public $post_title;
 	/**
 	 * @var string
 	 */
-	public $post_name = '';
+	public $post_name;
 	/**
 	 * @var string[]
 	 */
@@ -95,24 +91,23 @@ class PostFilter extends LP_Filter {
 	/**
 	 * @var int[]
 	 */
-	public $post_authors = array();
+	public $post_authors = [];
 	/**
 	 * @var array
 	 */
-	public $term_ids = array();
+	public $term_ids = [];
 	/**
 	 * @var array
 	 */
-	public $tag_ids = array();
+	public $tag_ids = [];
 	/**
 	 * @var array
 	 */
-	public $post_ids = array();
+	public $post_ids = [];
 	/**
 	 * @var string
 	 */
-	public $taxonomy = 'category';
+	public $taxonomy;
 
-	public function __construct() {
-	}
+	public function __construct() {}
 }

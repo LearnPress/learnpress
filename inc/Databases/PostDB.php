@@ -4,7 +4,6 @@ namespace LearnPress\Databases;
 
 use Exception;
 use LearnPress\Filters\PostFilter;
-use LP_Database;
 use LP_Helper;
 
 /**
@@ -13,7 +12,7 @@ use LP_Helper;
  * @since 4.2.9.3
  * @version 1.0.0
  */
-class PostDB extends LP_Database {
+class PostDB extends DataBase {
 
 	private static $_instance;
 
@@ -34,7 +33,7 @@ class PostDB extends LP_Database {
 	 *
 	 * @return array|null|int|string
 	 * @throws Exception
-	 * @since 4.1.6
+	 * @since 4.2.9.3
 	 * @version 1.0.0
 	 */
 	public function get_posts( PostFilter $filter, int &$total_rows = 0 ) {
@@ -84,12 +83,12 @@ class PostDB extends LP_Database {
 		}
 
 		// Title
-		if ( $filter->post_title ) {
+		if ( isset( $filter->post_title ) ) {
 			$filter->where[] = $this->wpdb->prepare( "AND $ca.post_title LIKE %s", '%' . $filter->post_title . '%' );
 		}
 
 		// Name(slug)
-		if ( $filter->post_name ) {
+		if ( isset( $filter->post_name ) ) {
 			$filter->where[] = $this->wpdb->prepare( "AND $ca.post_name = %s", $filter->post_name );
 		}
 
