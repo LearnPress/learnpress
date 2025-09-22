@@ -99,8 +99,9 @@ class PostDB extends DataBase {
 
 		// Authors
 		if ( ! empty( $filter->post_authors ) ) {
-			$post_authors_format = LP_Helper::db_format_array( $filter->post_authors, '%d' );
-			$filter->where[]     = $this->wpdb->prepare( "AND $ca.ID IN (" . $post_authors_format . ')', $filter->post_authors );
+			$post_authors        = array_map( 'absint', $filter->post_authors );
+			$post_authors_format = join( ',', $post_authors );
+			$filter->where[]     = "AND $ca.post_author IN ($post_authors_format)";
 		}
 
 		$filter = apply_filters( 'lp/post/query/filter', $filter );
