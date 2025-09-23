@@ -3,7 +3,7 @@ Contributors: thimpress, tungnx89, nhamdv, nguyenlammanh, tunnhn, phonglq.foobla
 Donate link:
 Tags: elearning, education, course, lms, learning management system
 Tested up to: 6.8
-Stable tag: 4.2.9.2
+Stable tag: 4.2.9.3
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -260,6 +260,11 @@ https://translate.wordpress.org/projects/wp-plugins/learnpress/
 13. Add-ons: Unlock endless possibilities with our add-ons from additional payment gateways to more managing course options. Tailor to your needs and easily scale as your site grow
 
 == Changelog ==
+
+= 4.2.9.3 (2025-09-23) =
+~ Fixed: show price's course with case buy with Guest.
+~ Fixed: error don't show popup allow repurchase with theme Gutenberg.
+~ Added: feature eraser LP user data when use tool "Erase Personal Data".
 
 = 4.2.9.2 (2025-09-15) =
 ~ Fixed: error some hooks emails.

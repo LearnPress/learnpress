@@ -2,17 +2,65 @@
 # This file is distributed under the same license as the LearnPress plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: LearnPress 4.2.9.1\n"
+"Project-Id-Version: LearnPress 4.2.9.3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/learnpress\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-09-10T11:32:04+03:00\n"
+"POT-Creation-Date: 2025-09-23T05:11:47+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: learnpress\n"
+
+#: assets/src/apps/js/admin/pages/open-ai/course/course.js:67
+#: assets/src/apps/js/admin/pages/open-ai/course/course.js:74
+#: assets/src/apps/js/admin/pages/open-ai/course/course.js:81
+#: assets/src/apps/js/admin/pages/open-ai/course/course.js:99
+msgid "Edit with AI"
+msgstr ""
+
+#: assets/src/apps/js/admin/pages/open-ai/course/course.js:126
+msgid "Copied"
+msgstr ""
+
+#: assets/src/apps/js/admin/pages/open-ai/course/course.js:128
+#: inc/admin/lp-admin-functions.php:1646
+#: inc/TemplateHooks/Course/SingleCourseModernLayout.php:370
+msgid "Copy"
+msgstr ""
+
+#: assets/src/apps/js/admin/pages/open-ai/course/course.js:133
+msgid "Failed to copy text: "
+msgstr ""
+
+#: assets/src/apps/js/admin/pages/open-ai/course/course.js:179
+#: assets/src/apps/js/admin/pages/open-ai/course/course.js:202
+msgid "Applied"
+msgstr ""
+
+#: assets/src/apps/js/admin/pages/open-ai/course/course.js:183
+#: assets/src/apps/js/admin/pages/open-ai/course/course.js:206
+#: assets/src/apps/js/blocks/course-filter/button-submit-filter/edit.js:8
+#: assets/src/apps/js/blocks/course-filter-elements/button-submit-filter/edit.js:8
+#: inc/TemplateHooks/Course/FilterCourseTemplate.php:763
+msgid "Apply"
+msgstr ""
+
+#: assets/src/apps/js/admin/pages/open-ai/course/course.js:553
+#: assets/src/apps/js/admin/pages/open-ai/course/course.js:647
+#: assets/src/apps/js/admin/pages/open-ai/course/course.js:730
+#: assets/src/apps/js/admin/pages/open-ai/course/course.js:825
+msgid "Generate"
+msgstr ""
+
+#: assets/src/apps/js/admin/pages/open-ai/course/course.js:581
+#: assets/src/apps/js/admin/pages/open-ai/course/course.js:675
+#: assets/src/apps/js/admin/pages/open-ai/course/course.js:759
+#: assets/src/apps/js/admin/pages/open-ai/course/course.js:852
+msgid "An error occurred during generation."
+msgstr ""
 
 #: assets/js/dist/admin/pages/tools.min.js:118
 msgid "Reset Course Progress"
@@ -123,7 +171,7 @@ msgstr ""
 #: config/settings/permalink.php:141
 #: inc/admin/sub-menus/class-lp-submenu-settings.php:18
 #: inc/admin/views/addons.php:181
-#: learnpress.php:772
+#: learnpress.php:776
 msgid "Settings"
 msgstr ""
 
@@ -251,7 +299,7 @@ msgstr ""
 
 #: assets/src/apps/js/blocks/course-elements/course-features/edit.js:10
 #: inc/TemplateHooks/Course/SingleCourseTemplate.php:1142
-#: inc/templates/class-lp-template-course.php:887
+#: inc/templates/class-lp-template-course.php:871
 msgid "Features"
 msgstr ""
 
@@ -335,7 +383,7 @@ msgstr ""
 #: inc/admin/views/meta-boxes/course/settings.php:602
 #: inc/TemplateHooks/Course/SingleCourseTemplate.php:1094
 #: inc/templates/class-lp-template-course.php:328
-#: inc/templates/class-lp-template-course.php:883
+#: inc/templates/class-lp-template-course.php:867
 #: inc/Widgets/course-extra.php:35
 msgid "Requirements"
 msgstr ""
@@ -348,7 +396,7 @@ msgstr ""
 #: assets/src/apps/js/blocks/course-elements/course-target-audiences/edit.js:10
 #: inc/TemplateHooks/Course/SingleCourseTemplate.php:1190
 #: inc/templates/class-lp-template-course.php:380
-#: inc/templates/class-lp-template-course.php:891
+#: inc/templates/class-lp-template-course.php:875
 msgid "Target audiences"
 msgstr ""
 
@@ -372,12 +420,6 @@ msgstr ""
 #: inc/admin/views/tools/course/html-user-item.php:26
 #: inc/TemplateHooks/Course/FilterCourseTemplate.php:791
 msgid "Reset"
-msgstr ""
-
-#: assets/src/apps/js/blocks/course-filter/button-submit-filter/edit.js:8
-#: assets/src/apps/js/blocks/course-filter-elements/button-submit-filter/edit.js:8
-#: inc/TemplateHooks/Course/FilterCourseTemplate.php:763
-msgid "Apply"
 msgstr ""
 
 #: assets/src/apps/js/blocks/course-filter/course-author-filter/edit.js:9
@@ -3626,11 +3668,6 @@ msgstr ""
 msgid "HTML"
 msgstr ""
 
-#: inc/admin/lp-admin-functions.php:1646
-#: inc/TemplateHooks/Course/SingleCourseModernLayout.php:370
-msgid "Copy"
-msgstr ""
-
 #: inc/admin/lp-admin-functions.php:1754
 msgid "Question id %s does not exist."
 msgstr ""
@@ -3883,7 +3920,7 @@ msgid "Reset Password"
 msgstr ""
 
 #: inc/admin/sub-menus/class-lp-submenu-addons.php:18
-#: learnpress.php:774
+#: learnpress.php:778
 msgid "Add-ons"
 msgstr ""
 
@@ -4337,12 +4374,12 @@ msgid "Repurchase action"
 msgstr ""
 
 #: inc/admin/views/meta-boxes/course/settings.php:188
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:493
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:498
 msgid "Reset course progress"
 msgstr ""
 
 #: inc/admin/views/meta-boxes/course/settings.php:189
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:494
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:499
 msgid "Keep course progress"
 msgstr ""
 
@@ -6803,31 +6840,41 @@ msgstr ""
 msgid "Invalid ID!"
 msgstr ""
 
-#: inc/Databases/class-lp-db.php:843
-#: inc/Databases/class-lp-db.php:905
-msgid "Data must be an array!"
-msgstr ""
-
 #: inc/Databases/class-lp-db.php:847
-#: inc/Databases/class-lp-db.php:897
-msgid "Invalid filter!"
+#: inc/Databases/class-lp-db.php:909
+#: inc/Databases/DataBase.php:786
+#: inc/Databases/DataBase.php:848
+msgid "Data must be an array!"
 msgstr ""
 
 #: inc/Databases/class-lp-db.php:851
 #: inc/Databases/class-lp-db.php:901
-msgid "Filter must have property all_fields!"
+#: inc/Databases/DataBase.php:790
+#: inc/Databases/DataBase.php:840
+msgid "Invalid filter!"
 msgstr ""
 
 #: inc/Databases/class-lp-db.php:855
-#: inc/Databases/class-lp-db.php:913
-msgid "Table name is required!"
+#: inc/Databases/class-lp-db.php:905
+#: inc/Databases/DataBase.php:794
+#: inc/Databases/DataBase.php:844
+msgid "Filter must have property all_fields!"
 msgstr ""
 
 #: inc/Databases/class-lp-db.php:859
+#: inc/Databases/class-lp-db.php:917
+#: inc/Databases/DataBase.php:798
+#: inc/Databases/DataBase.php:856
+msgid "Table name is required!"
+msgstr ""
+
+#: inc/Databases/class-lp-db.php:863
+#: inc/Databases/DataBase.php:802
 msgid "Key auto increment must be a string!"
 msgstr ""
 
-#: inc/Databases/class-lp-db.php:909
+#: inc/Databases/class-lp-db.php:913
+#: inc/Databases/DataBase.php:852
 msgid "Invalid where key!"
 msgstr ""
 
@@ -7196,7 +7243,7 @@ msgid "Course Price"
 msgstr ""
 
 #: inc/ExternalPlugin/Elementor/Widgets/Course/Skins/SkinCoursesBase.php:222
-#: inc/templates/class-lp-template-course.php:978
+#: inc/templates/class-lp-template-course.php:962
 msgid "View More"
 msgstr ""
 
@@ -7481,8 +7528,8 @@ msgid "The course ID is invalid."
 msgstr ""
 
 #: inc/jwt/rest-api/version1/class-lp-rest-courses-v1-controller.php:366
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:412
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:539
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:417
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:544
 msgid "Error: The course cannot be added to the cart."
 msgstr ""
 
@@ -8828,55 +8875,55 @@ msgstr ""
 msgid "Invalid course!"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:425
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:430
 msgid "Congrats! You have enrolled in the course successfully. Redirecting..."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:441
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:555
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:446
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:560
 msgid "Error: Please set up a page for checkout."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:445
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:450
 msgid "Redirecting..."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:476
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:481
 msgid "Error: Invalid Course ID."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:481
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:486
 msgid "Error: No Course available."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:522
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:527
 msgid "Repurchase Options"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:561
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:566
 msgid "\"%s\" has been added to your cart. Redirecting..."
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:586
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:591
 msgid "Invalid params"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:591
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:704
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:596
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:709
 #: inc/user/abstract-lp-user.php:766
 msgid "Invalid course"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:596
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:601
 msgid "Invalid user"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:601
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:713
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:606
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:718
 msgid "Invalid user course"
 msgstr ""
 
-#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:613
+#: inc/rest-api/v1/frontend/class-lp-rest-courses-controller.php:618
 msgid "Now you can begin this course"
 msgstr ""
 
@@ -9685,19 +9732,19 @@ msgstr ""
 msgid "Key features"
 msgstr ""
 
-#: inc/templates/class-lp-template-course.php:847
+#: inc/templates/class-lp-template-course.php:831
 msgid "%d lesson"
 msgid_plural "%d lessons"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/templates/class-lp-template-course.php:851
+#: inc/templates/class-lp-template-course.php:835
 msgid "%d quiz"
 msgid_plural "%d quizzes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/templates/class-lp-template-course.php:855
+#: inc/templates/class-lp-template-course.php:839
 msgid "%d student"
 msgid_plural "%d students"
 msgstr[0] ""
@@ -10055,7 +10102,27 @@ msgstr ""
 msgid "Recent Courses"
 msgstr ""
 
-#: learnpress.php:773
+#: inc/WPGDPR/ErasePersonalData.php:37
+msgid "LP Data Eraser"
+msgstr ""
+
+#: inc/WPGDPR/ErasePersonalData.php:72
+msgid "LP erasers Personal Data done"
+msgstr ""
+
+#: inc/WPGDPR/ErasePersonalData.php:73
+msgid "- Eraser Orders of User"
+msgstr ""
+
+#: inc/WPGDPR/ErasePersonalData.php:74
+msgid "- Eraser attend course of User"
+msgstr ""
+
+#: inc/WPGDPR/ErasePersonalData.php:75
+msgid "- Eraser attend lessons, quizzes... of User"
+msgstr ""
+
+#: learnpress.php:777
 msgid "Documentation"
 msgstr ""
 
