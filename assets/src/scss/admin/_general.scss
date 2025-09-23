@@ -522,3 +522,10 @@
 .lp-hidden {
 	display: none !important;
 }
+
+.lp-tom-select[multiple] {
+	display: block;
+	min-width: 150px;
+	height: 35px !important;
+	border: 1px solid #d0d0d0;
+}
