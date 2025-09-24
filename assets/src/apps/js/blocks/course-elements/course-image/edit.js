@@ -13,7 +13,7 @@ export const edit = ( props ) => {
 	const { lpCourseData } = context;
 	const courseImage =
 		lpCourseData?.image ||
-		'<div className="course-img"><img src="https://placehold.co/500x300?text=Course+Image"/></div>';
+		'<div class="course-img"><img src="/wp-content/plugins/learnpress/assets/images/no-image.png" alt="course thumbnail placeholder"</div>';
 
 	const sizeOption = [
 		{ label: 'Thumbnail', value: 'thumbnail' },
@@ -73,7 +73,8 @@ export const edit = ( props ) => {
 			}
 		}
 
-		return `<div class="course-img"><img src="https://placehold.co/${ width }x${ height }?text=Course+Image" alt="course thumbnail placeholder"</div>`;
+		const ratio = width / height;
+		return `<div class="course-img"><img src="/wp-content/plugins/learnpress/assets/images/no-image.png" width="${ width }" height="${ height }" style="aspect-ratio: ${ ratio }; object-fit:cover;" alt="course thumbnail placeholder"</div>`;
 	};
 
 	return (
