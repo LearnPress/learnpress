@@ -9,19 +9,21 @@ class AiModel {
 	public static function get_course_title_prompt( $params ) {
 		$topic    = $params['topic'] ?? '';
 		$goal     = $params['goal'] ?? '';
-		$audience = is_array( $params['audience'] ) && ! empty( $params['audience'] ) ? implode( ', ', $params['audience'] ) :
-			'';
-		$tone     = is_array( $params['tone'] ) && ! empty( $params['tone'] ) ? implode( ', ', $params['tone'] ) : '';
-		$language = is_array( $params['lang'] ) && ! empty( $params['lang'] ) ? implode( ', ', $params['lang'] ) : '';
+		$audience = $params['audience'] ?? [];
+		$audience_str = implode( ', ', $audience );
+		$tone     = $params['tone'] ?? [];
+		$tone_str = implode( ', ', $tone );
+		$language = $params['lang'] ?? [];
+		$language_str = implode( ', ', $language );
 
 		$prompt = <<<PROMPT
 				You are an expert course title creator.
 				Create a concise, compelling course title with the following details:
 				- Topic: {$topic}
 				- Goal: {$goal}
-				- Audience: {$audience}
-				- Tone: {$tone}
-				- Language: {$language}
+				- Audience: {$audience_str}
+				- Tone: {$tone_str}
+				- Language: {$language_str}
 
 				Constraints:
 				- The title must be no longer than 10 words and 60 characters.

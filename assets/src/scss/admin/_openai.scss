@@ -47,13 +47,12 @@ $white: #FFFFFF;
 		position: absolute !important;
 		font-size: 24px;
 		color: $text-medium;
+		right: 15px;
+		top: 24px;
 
 		&:hover {
 			color: $text-dark;
 		}
-
-		right: 15px;
-		top: 24px;
 	}
 
 
