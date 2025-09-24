@@ -57,7 +57,6 @@ class CourseInstructorInfoBlockType extends AbstractCourseBlockType {
 			if ( ! $courseModel ) {
 				return $html;
 			}
-			remove_all_filters( 'learn-press/single-course/modern/section-instructor' );
 
 			$html_instructor_info = SingleCourseModernLayout::instance()->html_instructor_info( $courseModel, $userModel );
 			if ( empty( $html_instructor_info ) ) {
