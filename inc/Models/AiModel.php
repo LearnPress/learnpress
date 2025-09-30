@@ -7,13 +7,14 @@ use LP_Settings;
 class AiModel {
 
 	public static function get_course_title_prompt( $params ) {
-		$topic    = $params['topic'] ?? '';
-		$goal     = $params['goal'] ?? '';
-		$audience = $params['audience'] ?? [];
+		$topic        = $params['topic'] ?? '';
+		$characters   = $params['characters'] ?? 60;
+		$goal         = $params['goal'] ?? '';
+		$audience     = $params['audience'] ?? [];
 		$audience_str = implode( ', ', $audience );
-		$tone     = $params['tone'] ?? [];
-		$tone_str = implode( ', ', $tone );
-		$language = $params['lang'] ?? [];
+		$tone         = $params['tone'] ?? [];
+		$tone_str     = implode( ', ', $tone );
+		$language     = $params['lang'] ?? [];
 		$language_str = implode( ', ', $language );
 
 		$prompt = <<<PROMPT
@@ -26,7 +27,7 @@ class AiModel {
 				- Language: {$language_str}
 
 				Constraints:
-				- The title must be no longer than 10 words and 60 characters.
+				- The title must be {$characters} characters.
 				- Do not include quotation marks
 				- Do not add explanation or extra text
 
@@ -273,7 +274,7 @@ class AiModel {
 		$topic            = $params['topic'] ?? '';
 		$title            = $params['title'] ?? '';
 		$paragraph_number = $params['paragraph_number'] ?? 1;
-		$max_length       = $params['max_length'] ?? 300; // default 300 ký tự
+		$characters       = $params['characters'] ?? 1000;
 
 		// Helper inline
 		$implodeOrEmpty = fn( $key ) => ! empty( $params[ $key ] ) && is_array( $params[ $key ] )
@@ -294,7 +295,7 @@ class AiModel {
 			Language: {$language}
 
 			Constraints:
-			- The description must not exceed {$max_length} characters.
+			- The description must not exceed {$characters} characters.
 			- Provide only the course description without any additional explanation or details.
 			- Do not include quotation marks.
 			PROMPT;
@@ -511,7 +512,7 @@ EOT;
 		}
 
 		$prompt
-		= 'Create a lesson description with 2 paragraphs to copy to WordPress editor content tag directly based on the following:\n';
+  = 'Create a lesson description with 2 paragraphs to copy to WordPress editor content tag directly based on the following:\n';
 		$prompt .= 'Topic: ' . $topic . '\n';
 		$prompt .= 'Audience: ' . $audience . '\n';
 		$prompt .= 'Tone: ' . $tone . '\n';
@@ -556,7 +557,7 @@ EOT;
 		}
 
 		$prompt
-		= 'Create a quiz description with 2 paragraphs to copy to WordPress editor content tag directly based on the following:\n';
+  = 'Create a quiz description with 2 paragraphs to copy to WordPress editor content tag directly based on the following:\n';
 		$prompt .= 'Topic: ' . $topic . '\n';
 		$prompt .= 'Audience: ' . $audience . '\n';
 		$prompt .= 'Tone: ' . $tone . '\n';
@@ -683,7 +684,7 @@ EOT;
 		}
 
 		$prompt
-		= 'Create a question description with 2 paragraphs to copy to WordPress editor content tag directly based on the following:\n';
+  = 'Create a question description with 2 paragraphs to copy to WordPress editor content tag directly based on the following:\n';
 		$prompt .= 'Topic: ' . $topic . '\n';
 		$prompt .= 'Audience: ' . $audience . '\n';
 		$prompt .= 'Tone: ' . $tone . '\n';

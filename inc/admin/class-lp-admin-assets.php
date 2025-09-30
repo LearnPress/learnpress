@@ -66,6 +66,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'yes'                     => esc_html__( 'Yes' ),
 					'cancel'                  => esc_html__( 'Cancel' ),
 					'createCourseTitle'       => esc_html__( 'Create Course Title', 'learnpress' ),
+					'createFullCourse'        => esc_html__( 'AI Course Builder for LearnPress', 'learnpress' ),
 					'createCourseDescription' => esc_html__( 'Create Course Description', 'learnpress' ),
 					'createFeaturedImage'     => esc_html__( 'Create Featured Image', 'learnpress' ),
 					'createCourseCurriculum'  => esc_html__( 'Create Course Curriculum', 'learnpress' ),

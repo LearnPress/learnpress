@@ -26,30 +26,124 @@ export class CourseAI {
 		this.init();
 	}
 
-	showPopupCreateTitle() {
+	showPopupCreateFullCourse() {
 		const modalTemplate = document.querySelector(
-			'#lp-ai-title-modal-template'
+			'#lp-ai-course-modal-template'
 		);
 
 		if ( ! modalTemplate ) {
-			console.error( 'AI Title Modal Template not found!' );
+			console.error( 'AI Create Full Course Modal Template not found!' );
 			return;
 		}
 		const modalHtml = modalTemplate.innerHTML;
 
 		Swal.fire( {
-			title: lpDataAdmin.i18n.createCourseTitle,
+			title: lpDataAdmin.i18n.createFullCourse,
 			html: modalHtml,
-			showConfirmButton: true,
+			showConfirmButton: false,
 			confirmButtonText: lpDataAdmin.i18n.generate,
 			customClass: {
-				popup: 'create-course-modal',
+				popup: 'create-full-course-modal',
 				confirmButton: 'generate-button',
 				actions: 'input-section',
 			},
-			width: '1000px',
+			width: '80%',
 			showCloseButton: true,
 			didOpen: () => {
+				const popup = Swal.getPopup();
+				const steps = popup.querySelectorAll( '.step-content' );
+				const stepperItems = popup.querySelectorAll( '.stepper-item' );
+				const nextButtons = popup.querySelectorAll( '.next-btn' );
+				const prevButtons = popup.querySelectorAll( '.prev-btn' );
+				const generatePromptBtn = popup.querySelector(
+					'#generate-prompt-btn'
+				);
+				const generateCourseBtn = popup.querySelector(
+					'#generate-course-btn'
+				);
+				const promptPreview = popup.querySelector( '#prompt-preview' );
+
+				let currentStep = 1;
+
+				const updateSteps = () => {
+					steps.forEach( ( step ) => {
+						step.classList.remove( 'active' );
+					} );
+					const currentStepElement = popup.querySelector(
+						`#step-${ currentStep }`
+					);
+					if ( currentStepElement ) {
+						currentStepElement.classList.add( 'active' );
+					}
+
+					stepperItems.forEach( ( item, index ) => {
+						item.classList.toggle(
+							'active',
+							index + 1 === currentStep
+						);
+					} );
+				};
+
+				nextButtons.forEach( ( button ) => {
+					button.addEventListener( 'click', () => {
+						if ( currentStep < steps.length ) {
+							currentStep++;
+							updateSteps();
+						}
+					} );
+				} );
+
+				prevButtons.forEach( ( button ) => {
+					button.addEventListener( 'click', () => {
+						if ( currentStep > 1 ) {
+							currentStep--;
+							updateSteps();
+						}
+					} );
+				} );
+
+				if ( generatePromptBtn ) {
+					generatePromptBtn.addEventListener( 'click', () => {
+						const role =
+							popup.querySelector( '#role-persona' ).value;
+						const audience =
+							popup.querySelector( '#target-audience' ).value;
+						const objective =
+							popup.querySelector( '#course-objective' ).value;
+						const tone = popup.querySelector( '#tone' ).value;
+						const lessonLength =
+							popup.querySelector( '#lesson-length' ).value;
+						const sections =
+							popup.querySelector( '#sections' ).value;
+						const lessonsPerSection = popup.querySelector(
+							'#lessons-per-section'
+						).value;
+
+						const generatedPrompt = `As a ${ role }, create a course for ${ audience }. The course objective is: "${ objective }". The tone should be ${ tone } and each lesson around ${ lessonLength } words. Structure the course into ${ sections } section(s), with ${ lessonsPerSection } lesson(s) each.`;
+
+						promptPreview.value = generatedPrompt
+							.replace( /\s+/g, ' ' )
+							.trim();
+						promptPreview.style.color = 'var(--primary-text)';
+
+						generateCourseBtn.disabled = false;
+						generateCourseBtn.classList.replace(
+							'btn-secondary',
+							'btn-primary'
+						);
+					} );
+				}
+
+				if ( generateCourseBtn ) {
+					generateCourseBtn.addEventListener( 'click', () => {
+						if ( currentStep === 3 ) {
+							currentStep++;
+							updateSteps();
+						}
+					} );
+				}
+				updateSteps();
+
 				const audienceSelect = new TomSelect( '#swal-audience', {
 					plugins: [ 'remove_button' ],
 				} );
@@ -143,6 +237,129 @@ export class CourseAI {
 		} ).then( ( result ) => {} );
 	}
 
+	showPopupCreateTitle() {
+		const modalTemplate = document.querySelector(
+			'#lp-ai-title-modal-template'
+		);
+
+		if ( ! modalTemplate ) {
+			console.error( 'AI Title Modal Template not found!' );
+			return;
+		}
+		const modalHtml = modalTemplate.innerHTML;
+
+		Swal.fire( {
+			title: lpDataAdmin.i18n.createCourseTitle,
+			html: modalHtml,
+			showConfirmButton: true,
+			confirmButtonText: lpDataAdmin.i18n.generate,
+			customClass: {
+				popup: 'create-course-modal',
+				confirmButton: 'generate-button',
+				actions: 'input-section',
+			},
+			width: '80%',
+			showCloseButton: true,
+			didOpen: () => {
+				const audienceSelect = new TomSelect( '#swal-audience', {
+					plugins: [ 'remove_button' ],
+				} );
+				const toneSelect = new TomSelect( '#swal-tone', {
+					plugins: [ 'remove_button' ],
+				} );
+				const languageSelect = new TomSelect( '#swal-language', {} );
+
+				try {
+					const savedAudience =
+						localStorage.getItem( 'lp_ai_audience' );
+					if ( savedAudience ) {
+						audienceSelect.setValue( JSON.parse( savedAudience ) );
+					}
+
+					const savedTone = localStorage.getItem( 'lp_ai_tone' );
+					if ( savedTone ) {
+						toneSelect.setValue( JSON.parse( savedTone ) );
+					}
+
+					const savedLang = localStorage.getItem( 'lp_ai_lang' );
+					if ( savedLang ) {
+						languageSelect.setValue( savedLang );
+					}
+				} catch ( e ) {
+					console.error(
+						'Lỗi khi tải cài đặt AI từ localStorage:',
+						e
+					);
+				}
+
+				const actionsContainer = Swal.getActions();
+				const inputSection = Swal.getPopup().querySelector(
+					'.outputs-control-content'
+				);
+				if ( actionsContainer && inputSection ) {
+					inputSection.appendChild( actionsContainer );
+				}
+			},
+			preConfirm: () => {
+				const popup = Swal.getPopup();
+				this.toggleLoading( 'show', popup );
+				this.toggleBtnActionGenerate( 'hide', popup );
+				const formData = {
+					topic: popup.querySelector( '#swal-course-topic' ).value,
+					goal: popup.querySelector( '#swal-course-goals' ).value,
+					audience:
+						popup
+							.querySelector( '#swal-audience' )
+							?.tomselect?.getValue() ?? [],
+					tone: popup
+						.querySelector( '#swal-tone' )
+						?.tomselect?.getValue(),
+					lang: [
+						popup
+							.querySelector( '#swal-language' )
+							?.tomselect?.getValue(),
+					],
+					outputs: parseInt(
+						popup.querySelector( '#lp-ai-output-count' ).value,
+						10
+					),
+					characters: popup.querySelector(
+						'#lp-ai-course-title-characters'
+					).value,
+				};
+
+				try {
+					localStorage.setItem(
+						'lp_ai_audience',
+						JSON.stringify( formData.audience )
+					);
+					localStorage.setItem(
+						'lp_ai_tone',
+						JSON.stringify( formData.tone )
+					);
+					localStorage.setItem( 'lp_ai_lang', formData.lang );
+				} catch ( e ) {
+					console.error(
+						'Lỗi khi lưu cài đặt AI vào localStorage:',
+						e
+					);
+				}
+
+				this.generateContent(
+					'course-title',
+					formData,
+					this.showResultPopup,
+					this.applyTitleAI
+				).catch( ( err ) => {
+					Swal.showValidationMessage(
+						`Request failed: ${ err.message }`
+					);
+				} );
+				return false;
+			},
+		} ).then( ( result ) => {} );
+	}
+
 	applyTitleAI( e, { text } ) {
 		const titleNode = document.querySelector( '#post-body-content #title' );
 		const titleLabelNode = document.querySelector(
@@ -184,7 +401,7 @@ export class CourseAI {
 				confirmButton: 'generate-button',
 				actions: 'input-section',
 			},
-			width: '1000px',
+			width: '80%',
 			showCloseButton: true,
 			didOpen: () => {
 				const audienceSelect = new TomSelect( '#swal-audience', {
@@ -204,7 +421,7 @@ export class CourseAI {
 
 					const savedTone = localStorage.getItem( 'lp_ai_tone' );
 					if ( savedTone ) {
-						toneSelect.setValue( savedTone );
+						toneSelect.setValue( JSON.parse( savedTone ) );
 					}
 
 					const savedLang = localStorage.getItem( 'lp_ai_lang' );
@@ -254,6 +471,9 @@ export class CourseAI {
 						10
 					),
 					title: titleCourse.value ?? '',
+					characters: popup.querySelector(
+						'#lp-ai-course-desc-characters'
+					).value,
 				};
 
 				try {
@@ -261,7 +481,10 @@ export class CourseAI {
 						'lp_ai_audience',
 						JSON.stringify( formData.audience )
 					);
-					localStorage.setItem( 'lp_ai_tone', formData.tone );
+					localStorage.setItem(
+						'lp_ai_tone',
+						JSON.stringify( formData.tone )
+					);
 					localStorage.setItem( 'lp_ai_lang', formData.lang );
 				} catch ( e ) {
 					console.error(
@@ -1073,12 +1296,10 @@ export class CourseAI {
 						navigator.clipboard
 							.writeText( textToCopy )
 							.then( () => {
-								Swal.fire( {
-									title: lpDataAdmin.i18n.copy,
-									icon: 'success',
-									timer: 1000,
-									showConfirmButton: false,
-								} );
+								lpEditCurriculumShare.showToast(
+									'Copied',
+									'success'
+								);
 							} );
 					} );
 				} );
@@ -1222,6 +1443,17 @@ export class CourseAI {
 				}
 			}, 1500 );
 		}
+
+		const btnAddNewCourse = document.querySelector( '.page-title-action' );
+		if ( btnAddNewCourse && ! titleWrap ) {
+			btnAddNewCourse.insertAdjacentHTML(
+				'afterend',
+				`<button type="button" class="button" id="lp-course-ai">${ __(
+					'Edit with AI',
+					'learnpress'
+				) }</button>`
+			);
+		}
 	}
 
 	events() {
@@ -1233,6 +1465,7 @@ export class CourseAI {
 					this.showPopupCreateDescription,
 				'lp-edit-ai-course-feature-image': this.showPopupFeatureImage,
 				'lp-edit-ai-course-curriculum': this.showPopupCreateCurriculum,
+				'lp-course-ai': this.showPopupCreateFullCourse,
 			};
 			if ( actions[ target.id ] ) {
 				e.preventDefault();
@@ -1243,7 +1476,11 @@ export class CourseAI {
 }
 
 document.addEventListener( 'DOMContentLoaded', () => {
-	if ( typeof lpDataAdmin.lpAi !== 'undefined' ) {
+	if (
+		typeof lpDataAdmin.lpAi !== 'undefined' &&
+		( lpDataAdmin.current_screen === 'edit-lp_course' ||
+			lpDataAdmin.current_screen === 'lp_course' )
+	) {
 		new CourseAI();
 	}
 } );

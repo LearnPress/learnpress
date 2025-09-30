@@ -1,5 +1,6 @@
 import { initElsTomSelect, searchUserOnListPost } from './init-tom-select.js';
 import { AdminUtilsFunctions, Api, Utils } from './utils-admin.js';
+import {CourseAI} from './edit-curriculum/edit-course-ai'
 
 ( function( $ ) {
 	/**
@@ -239,7 +240,6 @@ document.addEventListener( 'click', ( e ) => {
 
 document.addEventListener( 'DOMContentLoaded', () => {
 	searchUserOnListPost();
-
 	// Sure that the TomSelect is loaded if listen can't find elements.
 	initElsTomSelect();
 } );
