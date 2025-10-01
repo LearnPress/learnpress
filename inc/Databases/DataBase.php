@@ -507,10 +507,7 @@ class DataBase {
 			return 0;
 		}
 
-		$total_pages = floor( $total_rows / $limit );
-		if ( $total_rows % $limit !== 0 ) {
-			++$total_pages;
-		}
+		$total_pages = (int) ceil( $total_rows / $limit );
 
 		return (int) $total_pages;
 	}
