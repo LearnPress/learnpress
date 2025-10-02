@@ -225,6 +225,7 @@ export const toggleCollapse = (
 	}
 };
 
+// Get data of form
 export const getDataOfForm = ( form ) => {
 	const dataSend = {};
 	const formData = new FormData( form );
@@ -239,6 +240,7 @@ export const getDataOfForm = ( form ) => {
 	return dataSend;
 };
 
+// Get field keys of form
 export const getFieldKeysOfForm = ( form ) => {
 	const keys = [];
 	const elements = form.elements;
@@ -249,4 +251,22 @@ export const getFieldKeysOfForm = ( form ) => {
 		}
 	}
 	return keys;
+};
+
+// Merge data handle with data form.
+export const mergeDataWithDatForm = ( elForm, dataHandle ) => {
+	const dataForm = getDataOfForm( elForm );
+	const keys = getFieldKeysOfForm( elForm );
+	keys.forEach( ( key ) => {
+		if ( ! dataForm.hasOwnProperty( key ) ) {
+			delete dataHandle[ key ];
+		} else if ( dataForm[ key ][ 0 ] === '' ) {
+			delete dataForm[ key ];
+			delete dataHandle[ key ];
+		}
+	} );
+
+	dataHandle = { ...dataHandle, ...dataForm };
+
+	return dataHandle;
 };
