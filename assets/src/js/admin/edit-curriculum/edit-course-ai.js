@@ -61,6 +61,13 @@ export class CourseAI {
 				const generateCourseBtn = popup.querySelector(
 					'#generate-course-btn'
 				);
+				const approveCourseBtn = popup.querySelector(
+					'#lp-ai-approve-course'
+				);
+				const regenerateCourseBtn = popup.querySelector(
+					'#lp-ai-regenerate-course'
+				);
+
 				const promptPreview = popup.querySelector( '#prompt-preview' );
 
 				let currentStep = 1;
@@ -104,33 +111,94 @@ export class CourseAI {
 
 				if ( generatePromptBtn ) {
 					generatePromptBtn.addEventListener( 'click', () => {
-						const role =
-							popup.querySelector( '#role-persona' ).value;
-						const audience =
-							popup.querySelector( '#target-audience' ).value;
-						const objective =
-							popup.querySelector( '#course-objective' ).value;
-						const tone = popup.querySelector( '#tone' ).value;
-						const lessonLength =
-							popup.querySelector( '#lesson-length' ).value;
-						const sections =
-							popup.querySelector( '#sections' ).value;
-						const lessonsPerSection = popup.querySelector(
-							'#lessons-per-section'
-						).value;
+						//show loading
+						document.querySelector(
+							'#generate-prompt-btn-loading'
+						).style.display = 'block';
 
-						const generatedPrompt = `As a ${ role }, create a course for ${ audience }. The course objective is: "${ objective }". The tone should be ${ tone } and each lesson around ${ lessonLength } words. Structure the course into ${ sections } section(s), with ${ lessonsPerSection } lesson(s) each.`;
+						const popup = Swal.getPopup();
+						const formData = {
+							role_persona:
+								popup.querySelector( '#role-persona' ).value,
+							target_audience:
+								popup
+									.querySelector( '#swal-audience' )
+									?.tomselect?.getValue() ?? [],
+							course_objective:
+								popup.querySelector( '#course-objective' )
+									.value,
+							tone: popup
+								.querySelector( '#swal-tone' )
+								?.tomselect?.getValue(),
+							language: popup
+								.querySelector( '#swal-language' )
+								?.tomselect?.getValue(),
+							lesson_length: parseInt(
+								popup.querySelector( '#lesson-length' ).value,
+								10
+							),
+							reading_level:
+								popup
+									.querySelector( '#swal-levels' )
+									?.tomselect?.getValue() ?? [],
+							seo_emphasis:
+								popup.querySelector( '#seo-emphasis' ).value,
+							target_keywords:
+								popup.querySelector( '#target-keywords' ).value,
+							sections: parseInt(
+								popup.querySelector( '#sections' ).value,
+								10
+							),
+							lessons_per_section: parseInt(
+								popup.querySelector( '#lessons-per-section' )
+									.value,
+								10
+							),
+							quizzes_per_section: parseInt(
+								popup.querySelector( '#quizzes-per-section' )
+									.value,
+								10
+							),
+							questions_per_quiz: parseInt(
+								popup.querySelector( '#questions-per-quiz' )
+									.value,
+								10
+							),
+						};
 
-						promptPreview.value = generatedPrompt
-							.replace( /\s+/g, ' ' )
-							.trim();
-						promptPreview.style.color = 'var(--primary-text)';
+						try {
+							localStorage.setItem(
+								'lp_ai_audience',
+								JSON.stringify( formData.target_audience )
+							);
+							localStorage.setItem(
+								'lp_ai_tone',
+								JSON.stringify( formData.tone )
+							);
+							localStorage.setItem(
+								'lp_ai_lang',
+								formData.language
+							);
+							localStorage.setItem(
+								'lp_ai_level',
+								formData.reading_level
+							);
+						} catch ( e ) {
+							console.error(
+								'Lỗi khi lưu cài đặt AI vào localStorage:',
+								e
+							);
+						}
 
-						generateCourseBtn.disabled = false;
-						generateCourseBtn.classList.replace(
-							'btn-secondary',
-							'btn-primary'
-						);
+						this.generatePromptFullCourse(
+							formData,
+							promptPreview,
+							generateCourseBtn
+						).catch( ( err ) => {
+							Swal.showValidationMessage(
+								`Request failed: ${ err.message }`
+							);
+						} );
 					} );
 				}
 
@@ -140,8 +208,228 @@ export class CourseAI {
 							currentStep++;
 							updateSteps();
 						}
+						const popup = Swal.getPopup();
+
+						this.toggleLoading( 'show', popup );
+						approveCourseBtn.disabled = true;
+						regenerateCourseBtn.disabled = true;
+
+						const formData = {
+							role_persona:
+								popup.querySelector( '#role-persona' ).value,
+							target_audience:
+								popup
+									.querySelector( '#swal-audience' )
+									?.tomselect?.getValue() ?? [],
+							course_objective:
+								popup.querySelector( '#course-objective' )
+									.value,
+							tone: popup
+								.querySelector( '#swal-tone' )
+								?.tomselect?.getValue(),
+							language: popup
+								.querySelector( '#swal-language' )
+								?.tomselect?.getValue(),
+							lesson_length: parseInt(
+								popup.querySelector( '#lesson-length' ).value,
+								10
+							),
+							reading_level:
+								popup
+									.querySelector( '#swal-levels' )
+									?.tomselect?.getValue() ?? [],
+							seo_emphasis:
+								popup.querySelector( '#seo-emphasis' ).value,
+							target_keywords:
+								popup.querySelector( '#target-keywords' ).value,
+							sections: parseInt(
+								popup.querySelector( '#sections' ).value,
+								10
+							),
+							lessons_per_section: parseInt(
+								popup.querySelector( '#lessons-per-section' )
+									.value,
+								10
+							),
+							quizzes_per_section: parseInt(
+								popup.querySelector( '#quizzes-per-section' )
+									.value,
+								10
+							),
+							questions_per_quiz: parseInt(
+								popup.querySelector( '#questions-per-quiz' )
+									.value,
+								10
+							),
+							prompt: popup.querySelector( '#prompt-preview' )
+								.value,
+						};
+
+						this.generateFullCourse( formData )
+							.then( ( res ) => {
+								//hide loading
+								this.toggleLoading( 'hide', Swal.getPopup() );
+								//enable btn
+								generateCourseBtn.disabled = false;
+								approveCourseBtn.disabled = false;
+								regenerateCourseBtn.disabled = false;
+								if ( res.success ) {
+									const responseData = res.data;
+									//show course-details
+									let elCourseDetails =
+										popup.querySelector(
+											'.course-details'
+										);
+									elCourseDetails.style.display = 'block';
+									//show summary-list
+									let elSummaryList =
+										popup.querySelector( '.summary-list' );
+									elSummaryList.style.display = 'block';
+									const courseData = responseData.course;
+									//add data course in input
+									const inputDataCourse = popup.querySelector(
+										'#lp-ai-full-course-data'
+									);
+									inputDataCourse.value =
+										JSON.stringify( courseData );
+									const number_section =
+										responseData.number_section ?? 0;
+									const number_lesson =
+										responseData.number_lesson ?? 0;
+									const number_quiz =
+										responseData.number_quiz ?? 0;
+									const number_question =
+										responseData.number_question ?? 0;
+
+									//
+									const courseTitleEl = popup.querySelector(
+										'#lp-ai-full-course-title'
+									);
+									const courseDescriptionEl =
+										popup.querySelector(
+											'#lp-ai-full-course-description'
+										);
+									const courseCurriculumEl =
+										popup.querySelector(
+											'#lp-ai-full-course-curriculum'
+										);
+									const courseNumberSectionEl =
+										popup.querySelector(
+											'#lp-ai-full-course-number-section'
+										);
+									const courseNumberLessonEl =
+										popup.querySelector(
+											'#lp-ai-full-course-number-lesson'
+										);
+									const courseNumberQuizEl =
+										popup.querySelector(
+											'#lp-ai-full-course-number-quiz'
+										);
+									const courseNumberQuestionEl =
+										popup.querySelector(
+											'#lp-ai-full-course-number-question'
+										);
+
+									if (
+										! courseData.sections ||
+										courseData.sections.length === 0
+									) {
+										return '';
+									}
+									let index = 0;
+
+									courseTitleEl.innerHTML =
+										courseData.course_title;
+									courseDescriptionEl.innerHTML =
+										courseData.course_description;
+									courseCurriculumEl.innerHTML =
+										courseData.sections
+											.map( ( section ) => {
+												const lessonsHtml =
+													section.lessons
+														?.map(
+															( lesson ) =>
+																`<li>${ lesson.lesson_title }</li>`
+														)
+														.join( '' ) || '';
+
+												const quizzesHtml =
+													section.quizzes
+														?.map( ( quiz ) => {
+															const questionCount =
+																quiz.questions
+																	?.length ||
+																0;
+															return `<li>${ quiz.quiz_title } (${ questionCount } questions)</li>`;
+														} )
+														.join( '' ) || '';
+												index++;
+												return `
+												<div class="course-section-block">
+													<h4>Section ${ index } —${ section.section_title }</h4>
+													<ul>
+														${ lessonsHtml }
+														${ quizzesHtml }
+													</ul>
+												</div>
+											`;
+											} )
+											.join( '' );
+									courseNumberSectionEl.innerHTML =
+										number_section;
+									courseNumberLessonEl.innerHTML =
+										number_lesson;
+									courseNumberQuizEl.innerHTML = number_quiz;
+									courseNumberQuestionEl.innerHTML =
+										number_question;
+								} else {
+									console.log(
+										res.message || 'Unknown error'
+									);
+								}
+							} )
+							.catch( ( err ) => {
+								console.log( err.message );
+							} );
 					} );
 				}
+
+				if ( approveCourseBtn ) {
+					approveCourseBtn.addEventListener( 'click', () => {
+						const popup = Swal.getPopup();
+						approveCourseBtn.disabled = true;
+						const formData = {
+							course: popup.querySelector(
+								'#lp-ai-full-course-data'
+							).value,
+						};
+						this.approveSaveCourse( formData ).then( ( res ) => {
+							if ( res.success ) {
+								approveCourseBtn.disabled = false;
+							}
+						} );
+					} );
+				}
+
+				if ( regenerateCourseBtn ) {
+					regenerateCourseBtn.addEventListener( 'click', () => {
+						this.toggleLoading( 'show', Swal.getPopup() );
+						//disable button
+						generateCourseBtn.disabled = true;
+						approveCourseBtn.disabled = true;
+						regenerateCourseBtn.disabled = true;
+						//hide course-details
+						let elCourseDetails =
+							popup.querySelector( '.course-details' );
+						elCourseDetails.style.display = 'none';
+						//hide summary-list
+						let elSummaryList =
+							popup.querySelector( '.summary-list' );
+						elSummaryList.style.display = 'none';
+						generateCourseBtn.click();
+					} );
+				}
+
 				updateSteps();
 
 				const audienceSelect = new TomSelect( '#swal-audience', {
@@ -150,7 +438,12 @@ export class CourseAI {
 				const toneSelect = new TomSelect( '#swal-tone', {
 					plugins: [ 'remove_button' ],
 				} );
-				const languageSelect = new TomSelect( '#swal-language', {} );
+				const languageSelect = new TomSelect( '#swal-language', {
+					plugins: [ 'remove_button' ],
+				} );
+				const levelSelect = new TomSelect( '#swal-levels', {
+					plugins: [ 'remove_button' ],
+				} );
 
 				try {
 					const savedAudience =
@@ -161,12 +454,17 @@ export class CourseAI {
 
 					const savedTone = localStorage.getItem( 'lp_ai_tone' );
 					if ( savedTone ) {
-						toneSelect.setValue( savedTone );
+						toneSelect.setValue( JSON.parse( savedTone ) );
 					}
 
 					const savedLang = localStorage.getItem( 'lp_ai_lang' );
 					if ( savedLang ) {
 						languageSelect.setValue( savedLang );
+					}
+
+					const savedLevel = localStorage.getItem( 'lp_ai_level' );
+					if ( savedLevel ) {
+						levelSelect.setValue( savedLevel );
 					}
 				} catch ( e ) {
 					console.error(
@@ -174,64 +472,8 @@ export class CourseAI {
 						e
 					);
 				}
-
-				const actionsContainer = Swal.getActions();
-				const inputSection = Swal.getPopup().querySelector(
-					'.outputs-control-content'
-				);
-				if ( actionsContainer && inputSection ) {
-					inputSection.appendChild( actionsContainer );
-				}
 			},
 			preConfirm: () => {
-				const popup = Swal.getPopup();
-				this.toggleLoading( 'show', popup );
-				this.toggleBtnActionGenerate( 'hide', popup );
-				const formData = {
-					topic: popup.querySelector( '#swal-course-topic' ).value,
-					goal: popup.querySelector( '#swal-course-goals' ).value,
-					audience:
-						popup
-							.querySelector( '#swal-audience' )
-							?.tomselect?.getValue() ?? [],
-					tone: popup
-						.querySelector( '#swal-tone' )
-						?.tomselect?.getValue(),
-					lang: [
-						popup
-							.querySelector( '#swal-language' )
-							?.tomselect?.getValue(),
-					],
-					outputs: parseInt(
-						popup.querySelector( '#lp-ai-output-count' ).value,
-						10
-					),
-				};
-
-				try {
-					localStorage.setItem(
-						'lp_ai_audience',
-						JSON.stringify( formData.audience )
-					);
-					localStorage.setItem( 'lp_ai_tone', formData.tone );
-					localStorage.setItem( 'lp_ai_lang', formData.lang );
-				} catch ( e ) {
-					console.error(
-						'Lỗi khi lưu cài đặt AI vào localStorage:',
-						e
-					);
-				}
-
-				this.generateContent(
-					'course-title',
-					formData,
-					this.showResultPopup,
-					this.applyTitleAI
-				).catch( ( err ) => {
-					Swal.showValidationMessage(
-						`Request failed: ${ err.message }`
-					);
-				} );
 				return false;
 			},
 		} ).then( ( result ) => {} );
@@ -534,6 +776,28 @@ export class CourseAI {
 				);
 			}
 		}
+	}
+
+	getWPEditorContent() {
+		if (
+			window.wp &&
+			window.wp.data &&
+			window.wp.data.select( 'core/editor' )
+		) {
+			return window.wp.data
+				.select( 'core/editor' )
+				.getEditedPostContent();
+		} else if ( window.tinymce && window.tinymce.get( 'content' ) ) {
+			const editor = window.tinymce.get( 'content' );
+			return editor.getContent();
+		} else {
+			const rawEditor = document.getElementById( 'content' );
+			if ( rawEditor ) {
+				return rawEditor.value;
+			}
+		}
+
+		return '';
 	}
 
 	applyDescriptionAI( e, { text } ) {
@@ -839,7 +1103,7 @@ export class CourseAI {
 				} else {
 					Swal.fire(
 						'Error',
-						res.data.message || 'Unknown error',
+						res.message || 'Unknown error',
 						'error'
 					);
 				}
@@ -865,14 +1129,26 @@ export class CourseAI {
 			html: modalHtml,
 			confirmButtonText: lpDataAdmin.i18n.generate,
 			showConfirmButton: true,
+			showCancelButton: true,
 			customClass: {
 				popup: 'create-course-modal',
 				confirmButton: 'generate-button',
 				actions: 'input-section',
 			},
-			width: '1000px',
+			width: '80%',
 			showCloseButton: true,
 			didOpen: () => {
+				const titleCourse = document.querySelector(
+					'#post-body-content #title'
+				).value;
+				const descriptionCourse = this.getWPEditorContent();
+				const titleInput = document.querySelector(
+					'#swal-curriculum-title'
+				);
+				const descriptionInput = document.querySelector(
+					'#swal-curriculum-description'
+				);
+
 				const levelSelect = new TomSelect( '#swal-levels', {
 					plugins: [ 'remove_button' ],
 				} );
@@ -895,13 +1171,17 @@ export class CourseAI {
 					);
 				}
 
-				const actionsContainer = Swal.getActions();
-				const inputSection = Swal.getPopup().querySelector(
-					'.outputs-control-content'
-				);
-
-				if ( actionsContainer && inputSection ) {
-					inputSection.appendChild( actionsContainer );
+				if ( ! titleCourse || ! descriptionCourse ) {
+					const notice = document.querySelector(
+						'#lp-ai-course-curriculum-notice'
+					);
+					if ( notice ) {
+						notice.style.display = 'block';
+					}
+				} else {
+					//add value title and description
+					titleInput.value = titleCourse;
+					descriptionInput.value = descriptionCourse;
 				}
 			},
 			preConfirm: () => {
@@ -914,12 +1194,19 @@ export class CourseAI {
 				const titleCourse = document.querySelector(
 					'#post-body-content #title'
 				);
-				const descriptionCourse = document.querySelector(
-					'#post-body-content #content'
-				);
+				const descriptionCourse = this.getWPEditorContent();
 				const prompt = popup.querySelector(
 					'#lp-ai-output-prompt-desc'
 				).value;
+
+				if ( ! titleCourse.value || ! descriptionCourse ) {
+					lpEditCurriculumShare.showToast(
+						'No title/description found. Please go back and generate them' +
+							' first. Back to Generate Title & Description',
+						'error'
+					);
+					return;
+				}
 				const formData = {
 					topic: popup.querySelector( '#swal-curriculum-topics' )
 						.value,
@@ -949,8 +1236,11 @@ export class CourseAI {
 					less_per_section:
 						popup.querySelector( '#swal-curriculum-lessons' )
 							.value ?? '',
+					question_per_quiz:
+						popup.querySelector( '#swal-curriculum-questions' )
+							.value ?? '',
 					title: titleCourse.value ?? '',
-					description: descriptionCourse.value ?? '',
+					description: descriptionCourse ?? '',
 				};
 				if ( prompt ) {
 					formData[ 'prompt' ] = prompt;
@@ -1042,6 +1332,24 @@ export class CourseAI {
 					const sectionActions = elNewSection.querySelector(
 						`${ itemClassName.elSectionActions }`
 					);
+
+					if (
+						sectionData.section_description &&
+						sectionData.section_description.trim() !== ''
+					) {
+						const elSectionDesInput = elNewSection.querySelector(
+							'.lp-section-description-input'
+						);
+						const elBtnUpdateDes = elNewSection.querySelector(
+							'.lp-btn-update-section-description'
+						);
+
+						if ( elSectionDesInput && elBtnUpdateDes ) {
+							elSectionDesInput.value =
+								sectionData.section_description;
+							elBtnUpdateDes.click();
+						}
+					}
 
 					if ( ! elAddItemTypeClone ) {
 						processSectionAtIndex( index + 1 );
@@ -1178,7 +1486,7 @@ export class CourseAI {
 			.then( ( response ) => response.json() )
 			.then( ( res ) => {
 				if ( res.success ) {
-					const responseData = res.data.data;
+					const responseData = res.data;
 					const callbackData = {
 						prompt: responseData.prompt,
 						content: isImage
@@ -1195,13 +1503,140 @@ export class CourseAI {
 				} else {
 					Swal.fire(
 						'Error',
-						res.data.message || 'Unknown error',
+						res.message || 'Unknown error',
 						'error'
 					);
 				}
 			} )
 			.catch( ( err ) => {
 				Swal.fire( 'Error', err.message, 'error' );
+			} );
+	}
+
+	generatePromptFullCourse( formData, promptPreview, generateCourseBtn ) {
+		const ajaxAction = 'generate_full_course';
+
+		const data = new FormData();
+		data.append( 'action', 'lp_ajax' );
+		data.append( 'lp-load-ajax', ajaxAction );
+		data.append( 'nonce', lpDataAdmin.nonce );
+		data.append( 'type', 'generate-full-course' );
+
+		for ( const key in formData ) {
+			if ( Array.isArray( formData[ key ] ) ) {
+				formData[ key ].forEach( ( value ) =>
+					data.append( `${ key }[]`, value )
+				);
+			} else {
+				data.append( key, formData[ key ] );
+			}
+		}
+
+		return fetch( lpDataAdmin.lpAjaxUrl, {
+			method: 'POST',
+			body: data,
+		} )
+			.then( ( response ) => response.json() )
+			.then( ( res ) => {
+				if ( res.success ) {
+					//hide loading
+					document.querySelector(
+						'#generate-prompt-btn-loading'
+					).style.display = 'none';
+					promptPreview.value = res.data.prompt;
+					generateCourseBtn.disabled = false;
+					generateCourseBtn.classList.replace(
+						'btn-secondary',
+						'btn-primary'
+					);
+				} else {
+					console.log( res.message || 'Unknown error' );
+				}
+			} )
+			.catch( ( err ) => {
+				Swal.fire( 'Error', err.message, 'error' );
+			} );
+	}
+
+	generateFullCourse( formData ) {
+		const data = new FormData();
+		data.append( 'action', 'lp_ajax' );
+		data.append( 'lp-load-ajax', 'generate_full_course' );
+		data.append( 'nonce', lpDataAdmin.nonce );
+		data.append( 'type', 'generate-full-course' );
+
+		for ( const key in formData ) {
+			if ( Array.isArray( formData[ key ] ) ) {
+				formData[ key ].forEach( ( value ) =>
+					data.append( `${ key }[]`, value )
+				);
+			} else {
+				data.append( key, formData[ key ] );
+			}
+		}
+
+		return fetch( lpDataAdmin.lpAjaxUrl, {
+			method: 'POST',
+			body: data,
+		} )
+			.then( ( response ) => response.json() )
+			.catch( ( err ) => {
+				console.log( err.message );
+			} );
+	}
+
+	approveSaveCourse( formData ) {
+		Swal.fire( {
+			title: 'Handle Approve Save Course!',
+			allowOutsideClick: false,
+			didOpen: () => {
+				Swal.showLoading();
+			},
+		} );
+
+		const data = new FormData();
+		data.append( 'action', 'lp_ajax' );
+		data.append( 'lp-load-ajax', 'save_course' );
+		data.append( 'nonce', lpDataAdmin.nonce );
+
+		for ( const key in formData ) {
+			if ( Array.isArray( formData[ key ] ) ) {
+				formData[ key ].forEach( ( value ) =>
+					data.append( `${ key }[]`, value )
+				);
+			} else {
+				data.append( key, formData[ key ] );
+			}
+		}
+
+		return fetch( lpDataAdmin.lpAjaxUrl, {
+			method: 'POST',
+			body: data,
+		} )
+			.then( ( response ) => response.json() )
+			.then( ( res ) => {
+				if ( res.success ) {
+					Swal.fire( {
+						title: 'Successfully!',
+						icon: 'success',
+						timer: 1500,
+						showConfirmButton: false,
+					} ).then( () => {
+						window.location.href = res.data.edit_link.replace(
+							/&amp;/g,
+							'&'
+						);
+					} );
+				}
+			} )
+			.catch( ( err ) => {
+				Swal.fire( {
+					title: err.message,
+					icon: 'error',
+					timer: 1500,
+					showConfirmButton: false,
+				} );
+				console.log( err.message );
 			} );
 	}
 
@@ -1220,7 +1655,10 @@ export class CourseAI {
 			const outputPromptElm = document.querySelector(
 				'#lp-ai-output-prompt'
 			);
-			if ( ! document.querySelector( '#reGenerateBtn' ) ) {
+			if (
+				! document.querySelector( '#reGenerateBtn' ) &&
+				type !== 'course-curriculum'
+			) {
 				const reBtn = document.createElement( 'button' );
 				reBtn.textContent = 'Re-generate';
 				reBtn.id = 'reGenerateBtn';
@@ -1251,6 +1689,13 @@ export class CourseAI {
 				} );
 				outputPromptElm.appendChild( reBtn );
 			}
+		}
+		if ( type === 'course-curriculum' ) {
+			//hide notify and show
+			document.querySelector( '#lp-ai-output-notify' ).style.display =
+				'none';
+			document.querySelector( '#lp-ai-output-suggestion' ).style.display =
+				'inline';
 		}
 
 		let resultsHtml = content
@@ -1325,7 +1770,7 @@ export class CourseAI {
 		let btnGenerateEl = popup.querySelector( '.swal2-actions' );
 		if ( btnGenerateEl ) {
 			if ( type === 'show' ) {
-				btnGenerateEl.style.display = 'inline-block';
+				btnGenerateEl.style.display = 'flex';
 			} else {
 				btnGenerateEl.style.display = 'none';
 			}

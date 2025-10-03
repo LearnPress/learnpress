@@ -3,8 +3,13 @@
 namespace LearnPress\Ajax;
 
 use Exception;
+use LearnPress\Databases\QuestionAnswersDB;
 use LearnPress\Helpers\OpenAi;
 use LearnPress\Models\AiModel;
+use LearnPress\Models\CourseSectionModel;
+use LearnPress\Models\PostModel;
+use LearnPress\Models\Question\QuestionAnswerModel;
+use LearnPress\Models\QuizPostModel;
 use LP_Settings;
 use LP_Abstract_API;
 
@@ -16,6 +21,7 @@ use LP_Abstract_API;
  * @version 1.0.0
  */
 class LPAIAjax extends AbstractAjax {
+
 
 
 	protected $user                = null;
@@ -56,11 +62,13 @@ class LPAIAjax extends AbstractAjax {
 	 * @param string $message
 	 */
 	private function success( $data = [], string $message = '' ) {
-		wp_send_json_success(
+		wp_send_json(
 			[
-				'data'    => $data,
+				'success' => true,
 				'message' => $message,
-			]
+				'data'    => $data,
+			],
+			200
 		);
 	}
 
@@ -71,10 +79,10 @@ class LPAIAjax extends AbstractAjax {
 	 * @param int $status_code
 	 */
 	private function error( string $message = '', int $status_code = 400 ) {
-		wp_send_json_error(
+		wp_send_json(
 			[
 				'message' => $message,
-				'status'  => $status_code,
+				'status'  => 'error',
 			],
 			$status_code
 		);
@@ -193,6 +201,282 @@ class LPAIAjax extends AbstractAjax {
 		$this->success( $data_response, $success_text );
 	}
 
+	public function generate_full_course() {
+		try {
+
+			$this->_check_permission();
+			$params = $_REQUEST;
+			$prompt = $params['prompt'] ?? AiModel::get_completions_prompt( $params )['prompt'];
+
+			$data_response = [ 'prompt' => $prompt ];
+
+			if ( empty( $params['prompt'] ) ) {
+				$this->success(
+					$data_response,
+					sprintf( __( 'Generate %s successfully!', 'learnpress' ), str_replace( '-', ' ', $params['type'] ) )
+				);
+			}
+
+			$args = [
+				'model'             => $this->text_model_type,
+				'frequency_penalty' => floatval( $this->frequency_penalty ),
+				'presence_penalty'  => floatval( $this->presence_penalty ),
+				'n'                 => isset( $params['outputs'] ) ? intval( $params['outputs'] ) : 1,
+				'temperature'       => floatval( $this->creativity_level ),
+				'response_format'   => [ 'type' => 'json_object' ],
+			];
+
+			//          if (!empty($this->max_token)) {
+			//              $args['max_tokens'] = intval($this->max_token);
+			//          }
+
+			if ( in_array(
+				$this->text_model_type,
+				[ 'chatgpt-4o-latest', 'gpt-4o', 'gpt-4o-mini', 'gpt-4', 'gpt-3.5-turbo' ]
+			) ) {
+				$this->text_model_type_url = 'https://api.openai.com/v1/chat/completions';
+				$args['messages']          = [
+					[
+						'role'    => 'system',
+						'content' => 'You are an AI assistant specialized in education and course design.',
+					],
+					[
+						'role'    => 'user',
+						'content' => $prompt,
+					],
+				];
+			} elseif ( in_array( $this->text_model_type, [ 'gpt-3.5-turbo-instruct' ] ) ) {
+				$this->text_model_type_url = 'https://api.openai.com/v1/completions';
+				unset( $args['response_format'] );
+				$args['prompt'] = $prompt;
+			} else {
+				throw new Exception( __( 'Invalid model', 'learnpress' ), 400 );
+			}
+
+			$response = wp_remote_post(
+				$this->text_model_type_url,
+				[
+					'headers' => [
+						'Authorization' => 'Bearer ' . $this->secret_key,
+						'Content-Type'  => 'application/json',
+					],
+					'body'    => json_encode( $args ),
+					'timeout' => 3600,
+				]
+			);
+
+			if ( is_wp_error( $response ) ) {
+				throw new Exception( $response->get_error_message(), 400 );
+			}
+
+			$body   = wp_remote_retrieve_body( $response );
+			$result = json_decode( $body, true );
+
+			if ( isset( $result['error'] ) ) {
+				throw new Exception( $result['error']['message'], 400 );
+			}
+
+			if ( isset( $result['choices'] ) ) {
+				$data_response['course'] = $this->_parse_openai_response( $result );
+				if ( ! empty( $data_response['course'] ) ) {
+					$total_lessons   = 0;
+					$total_quizzes   = 0;
+					$total_questions = 0;
+
+					$total_sections = count( $data_response['course']['sections'] );
+					foreach ( $data_response['course']['sections'] as $section ) {
+						if ( isset( $section['lessons'] ) && is_array( $section['lessons'] ) ) {
+							$total_lessons += count( $section['lessons'] );
+						}
+						if ( isset( $section['quizzes'] ) && is_array( $section['quizzes'] ) ) {
+							$total_quizzes += count( $section['quizzes'] );
+							foreach ( $section['quizzes'] as $quiz ) {
+								if ( isset( $quiz['questions'] ) && is_array( $quiz['questions'] ) ) {
+									$total_questions += count( $quiz['questions'] );
+								}
+							}
+						}
+					}
+
+					$data_response['number_section']  = $total_sections;
+					$data_response['number_lesson']   = $total_lessons;
+					$data_response['number_quiz']     = $total_quizzes;
+					$data_response['number_question'] = $total_questions;
+				}
+			}
+
+			$success_text = sprintf(
+				__( 'Generate %s successfully!', 'learnpress' ),
+				str_replace( '-', ' ', $params['type'] )
+			);
+			$this->success( $data_response, $success_text );
+		} catch ( Exception $e ) {
+			$this->error( 'Error generating course:' . $e->getMessage(), 400 );
+		}
+	}
+
+	public function save_course() {
+		try {
+			$this->_check_permission();
+			$params = $_REQUEST;
+
+			if ( empty( $params['course'] ) ) {
+				throw new Exception( 'Course data is missing.', 400 );
+			}
+
+			$course_data = json_decode( stripslashes( $params['course'] ), true );
+
+			if ( json_last_error() !== JSON_ERROR_NONE ) {
+				throw new Exception( 'Invalid JSON format received. Error: ' . json_last_error_msg(), 400 );
+			}
+
+			$course_post = new PostModel(
+				[
+					'post_title'   => $course_data['course_title'] ?? '',
+					'post_content' => $course_data['course_description'] ?? '',
+					'post_type'    => LP_COURSE_CPT,
+					'post_status'  => 'publish',
+				]
+			);
+			$course_post->save();
+
+			if ( empty( $course_post->ID ) ) {
+				throw new Exception( 'Failed to create the main course post.', 500 );
+			}
+			$course_id     = $course_post->ID;
+			$section_order = 0;
+
+			if ( ! empty( $course_data['sections'] ) && is_array( $course_data['sections'] ) ) {
+				foreach ( $course_data['sections'] as $section_data ) {
+					++$section_order;
+
+					// Tạo section mới bằng CourseSectionModel
+					$section                      = new CourseSectionModel();
+					$section->section_name        = $section_data['section_title'] ?? '';
+					$section->section_description = $section_data['section_description'] ?? '';
+					$section->section_course_id   = $course_id;
+					$section->section_order       = $section_order;
+					$section->save();
+
+					if ( empty( $section->section_id ) ) {
+						error_log( "LearnPress AI: Failed to create section '{$section->section_name}' for course {$course_id}" );
+						continue;
+					}
+
+					if ( ! empty( $section_data['lessons'] ) && is_array( $section_data['lessons'] ) ) {
+						foreach ( $section_data['lessons'] as $lesson ) {
+							// miss add lesson_content
+							$section->create_item_and_add(
+								[
+									'item_type'  => LP_LESSON_CPT,
+									'item_title' => $lesson['lesson_title'] ?? '',
+								]
+							);
+						}
+					}
+
+					if ( ! empty( $section_data['quizzes'] ) && is_array( $section_data['quizzes'] ) ) {
+						foreach ( $section_data['quizzes'] as $quiz ) {
+
+							$oQuiz = $section->create_item_and_add(
+								[
+									'item_type'  => LP_QUIZ_CPT,
+									'item_title' => $quiz['quiz_title'] ?? '',
+								]
+							);
+
+							if ( $oQuiz->item_id ) {
+								$quizPostModel = QuizPostModel::find( $oQuiz->item_id, true );
+								if ( count( $quiz['questions'] ) > 0 ) {
+									foreach ( $quiz['questions'] as $question ) {
+										// create question and add quiz
+										$oQuestionQuiz = $quizPostModel->create_question_and_add(
+											[
+												'question_title' => $question['question_text'] ?? '',
+												'question_type'  => 'single_choice',
+											]
+										);
+										//update answer
+										if ( $oQuestionQuiz->question_id ) {
+											$db = QuestionAnswersDB::getInstance();
+											if ( ! empty( $question['options'] ) ) {
+												foreach ( $question['options'] as $option ) {
+													$max_order
+														= $db->get_last_number_order( $oQuestionQuiz->question_id );
+													$answer    = [
+														'question_id' => $oQuestionQuiz->question_id,
+														'title'       => $option,
+														'value'       => learn_press_random_value(),
+														'is_true'     => $option == $question['correct_answer'] ? 'yes'
+															: '',
+														'order'       => $max_order + 1,
+													];
+
+													$questionAnswerModel = new QuestionAnswerModel( $answer );
+													$questionAnswerModel->save();
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+
+			$this->success(
+				[
+					'course_id' => $course_id,
+					'edit_link' => get_edit_post_link( $course_id ),
+				],
+				'Course and its curriculum created successfully!'
+			);
+
+		} catch ( Exception $e ) {
+			$this->error( 'Error saving course: ' . $e->getMessage(), $e->getCode() ?: 400 );
+		}
+	}
+
+	private function _parse_openai_response( array $result ): array {
+		if ( isset( $result['error'] ) ) {
+			throw new Exception( $result['error']['message'], 400 );
+		}
+
+		$content_string = '';
+		if ( isset( $result['choices'][0]['message']['content'] ) ) {
+			$content_string = $result['choices'][0]['message']['content'];
+		} elseif ( isset( $result['choices'][0]['text'] ) ) {
+			$content_string = $result['choices'][0]['text'];
+		}
+
+		if ( empty( $content_string ) ) {
+			throw new Exception( 'Could not find content in API response.', 500 );
+		}
+
+		$json_start = strpos( $content_string, '{' );
+		$json_end   = strrpos( $content_string, '}' );
+
+		if ( $json_start !== false && $json_end !== false ) {
+			$json_string = substr( $content_string, $json_start, $json_end - $json_start + 1 );
+		} else {
+
+			$json_string = $content_string;
+		}
+
+		$course_data = json_decode( $json_string, true );
+
+		if ( json_last_error() !== JSON_ERROR_NONE ) {
+			throw new Exception(
+				'Failed to decode the course data from the API response. Invalid JSON format. Raw response: ' .
+				htmlspecialchars( $content_string ),
+				500
+			);
+		}
+
+		return $course_data;
+	}
+
 	public function create_course_feature_image() {
 		$this->_check_permission();
 		$params            = $_REQUEST;
@@ -235,6 +519,11 @@ class LPAIAjax extends AbstractAjax {
 		$prompt                  = $params['prompt'] ?? AiModel::get_completions_prompt( $params )['prompt'];
 		$data_response['prompt'] = $prompt;
 
+		if ( empty( $params['prompt'] ) ) {
+			$data_response['urls'] = [];
+			$this->success( $data_response, __( 'Generate course feature image successfully!', 'learnpress' ) );
+		}
+
 		$model   = LP_Settings::instance()->get( 'open_ai_image_model_type' );
 		$outputs = $params['outputs'] ? intval( $params['outputs'] ) : 1;
 		$size    = $params['size'] ?? '1024x1024';
@@ -264,14 +553,12 @@ class LPAIAjax extends AbstractAjax {
 		[$maskWidth, $maskHeight] = getimagesize( $maskTmpPath );
 
 		if ( $imgWidth === $maskWidth && $imgHeight === $maskHeight ) {
-			// Đã khớp → trả lại path gốc
 			return $maskTmpPath;
 		}
 
 		$src = imagecreatefrompng( $maskTmpPath );
 		$dst = imagecreatetruecolor( $imgWidth, $imgHeight );
 
-		// Giữ transparency
 		imagealphablending( $dst, false );
 		imagesavealpha( $dst, true );
 
