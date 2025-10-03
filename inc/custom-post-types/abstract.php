@@ -76,7 +76,9 @@ abstract class LP_Abstract_Post_Type {
 		if ( ! empty( $post_type ) ) {
 			$this->_post_type = $post_type;
 		}
-		add_action( 'init', array( $this, '_do_register' ) );
+
+		$this->_do_register();
+
 		add_action( 'save_post', array( $this, '_do_save_post' ), - 1, 3 );
 		add_action( 'wp_after_insert_post', [ $this, 'wp_after_insert_post' ], - 1, 3 );
 		add_action( 'before_delete_post', array( $this, '_before_delete_post' ) );
@@ -117,26 +119,15 @@ abstract class LP_Abstract_Post_Type {
 		add_action( 'admin_footer', array( $this, 'admin_footer_scripts' ) );
 
 		//add_filter( 'post_updated_messages', array( $this, 'updated_messages' ) );
+		add_action( 'admin_print_scripts', array( $this, 'remove_auto_save_script' ) );
 
-		$args = wp_parse_args(
-			$args,
-			array(
-				'auto_save'    => 'no',
-				'default_meta' => false,
-			)
+		add_action(
+			'admin_enqueue_scripts',
+			function () {
+				wp_deregister_script( 'heartbeat' );
+			},
+			1
 		);
-
-		if ( $args['auto_save'] == 'no' ) {
-			add_action( 'admin_print_scripts', array( $this, 'remove_auto_save_script' ) );
-		}
-
-		/*
-		if ( $args['default_meta'] ) {
-			$this->_default_metas = $args['default_meta'];
-		}*/
-
-		// Comment by tungnx
-		// add_action( 'init', array( $this, 'maybe_remove_features' ), 1000 );
 	}
 
 	/**
@@ -535,8 +526,11 @@ abstract class LP_Abstract_Post_Type {
 
 	public function remove_auto_save_script() {
 		global $post;
+		if ( ! $post ) {
+			return;
+		}
 
-		if ( $post && in_array( get_post_type( $post->ID ), array( $this->_post_type ) ) ) {
+		if ( $this->check_post( $post->ID ) ) {
 			wp_dequeue_script( 'autosave' );
 		}
 	}
@@ -589,7 +583,13 @@ abstract class LP_Abstract_Post_Type {
 		}
 	}
 
+	/**
+	 * @deprecated v4.2.9.4
+	 */
 	protected function _get_quizzes_by_question( $question_id ) {
+		_deprecated_function( __METHOD__, '4.2.9.4' );
+		return [];
+
 		global $wpdb;
 		$query = $wpdb->prepare(
 			"
@@ -603,7 +603,13 @@ abstract class LP_Abstract_Post_Type {
 		return $wpdb->get_col( $query );
 	}
 
+	/**
+	 * @deprecated v4.2.9.4
+	 */
 	protected function _get_courses_by_item( $item_id ) {
+		_deprecated_function( __METHOD__, '4.2.9.4' );
+		return [];
+
 		global $wpdb;
 		$query = $wpdb->prepare(
 			"
@@ -960,14 +966,14 @@ abstract class LP_Abstract_Post_Type {
 	 * @return string
 	 */
 	protected function get_order_sort(): string {
-		return strtolower( LP_Request::get( 'order' ) ) === 'desc' ? 'DESC' : 'ASC';
+		return strtolower( LP_Request::get_param( 'order' ) ) === 'desc' ? 'DESC' : 'ASC';
 	}
 
 	/**
 	 * @return mixed
 	 */
 	protected function get_order_by(): string {
-		return LP_Request::get( 'orderby' );
+		return LP_Request::get_param( 'orderby' );
 	}
 
 	/**

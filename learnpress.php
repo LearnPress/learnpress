@@ -380,12 +380,12 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			include_once 'inc/class-lp-datetime.php';
 
 			// Register custom-post-type and taxonomies .
-			include_once 'inc/custom-post-types/abstract.php';
+			/*include_once 'inc/custom-post-types/abstract.php';
 			include_once 'inc/custom-post-types/course.php';
 			include_once 'inc/custom-post-types/lesson.php';
 			include_once 'inc/custom-post-types/quiz.php';
 			include_once 'inc/custom-post-types/question.php';
-			include_once 'inc/custom-post-types/order.php';
+			include_once 'inc/custom-post-types/order.php';*/
 
 			include_once 'inc/interfaces/interface-curd.php';
 			include_once 'inc/abstracts/abstract-array-access.php';
@@ -538,12 +538,20 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 *
 		 * @return void
 		 * @version 4.2.7.6
-		 * @version 1.0.1
+		 * @version 1.0.2
 		 */
 		public function lp_main_handle() {
 			try {
 				// Load text domain.
 				$this->load_plugin_text_domain();
+
+				// Register custom post type and taxonomies .
+				include_once 'inc/custom-post-types/abstract.php';
+				include_once 'inc/custom-post-types/course.php';
+				include_once 'inc/custom-post-types/lesson.php';
+				include_once 'inc/custom-post-types/quiz.php';
+				include_once 'inc/custom-post-types/question.php';
+				include_once 'inc/custom-post-types/order.php';
 
 				// Polylang
 				if ( defined( 'POLYLANG_VERSION' ) ) {
