@@ -381,8 +381,8 @@
   "learnpress-upsell": {
     "name": "Upsell Add-on for LearnPress",
     "basename": "learnpress-upsell/learnpress-upsell.php",
-    "version": "4.0.6",
-    "require_lp": "4.2.7.7",
+    "version": "4.0.7",
+    "require_lp": "4.2.9",
     "description": "Increase revenue by offering premium packages, bonus coupons, and exclusive features to elevate the learning experience for your students.",
     "image": "https://thimpress.com/wp-content/uploads/2023/03/Upsell-addon.jpg",
     "link": "https://thimpress.com/product/upsell-add-on-for-learnpress/",
