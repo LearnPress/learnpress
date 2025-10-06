@@ -305,14 +305,14 @@ class LP_Helper {
 	 *
 	 * @param array|string $value
 	 * @param string $type_content
-	 *
+	 * @param bool $unslash Used when you don’t want to remove slashes (unslash) from $value
+	 * for example, in cases involving LaTeX math syntax.
 	 * @return array|string
 	 * @since  3.2.7.1
 	 * @author tungnx
 	 */
-	public static function sanitize_params_submitted( $value, string $type_content = 'text', $add_slashes = false ) {
-		// Add wp_slash before wp_unslash to protect some content like Latex math syntax, keep backslashes in latex shortcode
-		$value = $add_slashes ? wp_unslash( wp_slash( $value ) ) : wp_unslash( $value );
+	public static function sanitize_params_submitted( $value, string $type_content = 'text', $unslash = true ) {
+		$value = $unslash ? wp_unslash( $value ) : $value;
 
 		if ( is_string( $value ) ) {
 			switch ( $type_content ) {
@@ -341,7 +341,7 @@ class LP_Helper {
 		} elseif ( is_array( $value ) ) {
 			foreach ( $value as $k => $v ) {
 				unset( $value[ $k ] );
-				$value[ sanitize_text_field( $k ) ] = self::sanitize_params_submitted( $v, $type_content, $add_slashes );
+				$value[ sanitize_text_field( $k ) ] = self::sanitize_params_submitted( $v, $type_content, $unslash );
 			}
 		}
 
