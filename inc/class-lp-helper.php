@@ -305,7 +305,7 @@ class LP_Helper {
 	 *
 	 * @param array|string $value
 	 * @param string $type_content
-	 * @param bool $unslash Used when you don’t want to remove slashes (unslash) from $value
+	 * @param bool $unslash Set it is false when you don’t want to remove slashes (unslash) from $value
 	 * for example, in cases involving LaTeX math syntax.
 	 * @return array|string
 	 * @since  3.2.7.1
