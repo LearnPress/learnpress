@@ -27,28 +27,28 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'create_indexes' ),
-					'permission_callback' => '__return_true',
+					'permission_callback' => array( $this, 'check_permission' ),
 				),
 			),
 			'list-tables-indexs'   => array(
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'get_list_tables_indexs' ),
-					'permission_callback' => '__return_true',
+					'permission_callback' => array( $this, 'check_permission' ),
 				),
 			),
 			'clean-tables'         => array(
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'clean_tables' ),
-					'permission_callback' => '__return_true',
+					'permission_callback' => array( $this, 'check_permission' ),
 				),
 			),
 			'admin-notices'        => array(
 				array(
 					'methods'             => WP_REST_Server::ALLMETHODS,
 					'callback'            => array( $this, 'admin_notices' ),
-					'permission_callback' => '__return_true',
+					'permission_callback' => array( $this, 'check_permission' ),
 				),
 			),
 			'search-course'        => array(
