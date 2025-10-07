@@ -103,9 +103,19 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 		$lp_db    = LP_Database::getInstance();
 
 		try {
-			$tables     = $request->get_param( 'tables' );
-			$table      = $request->get_param( 'table' );
-			$table_keys = array();
+			$tables_valid = [
+				$lp_db->tb_lp_user_items,
+				$lp_db->tb_lp_user_itemmeta,
+				$lp_db->tb_lp_quiz_questions,
+				$lp_db->tb_lp_question_answers,
+				$lp_db->tb_lp_question_answermeta,
+				$lp_db->tb_lp_order_items,
+				$lp_db->tb_lp_order_itemmeta,
+				$lp_db->tb_lp_sections,
+				$lp_db->tb_lp_section_items,
+			];
+			$table        = $request->get_param( 'table' );
+			$tables       = $request->get_param( 'tables' );
 
 			$lp_db->wpdb->query( 'SET autocommit = 0' );
 
@@ -115,9 +125,8 @@ class LP_REST_Admin_Tools_Controller extends LP_Abstract_REST_Controller {
 				$table_keys = array_keys( $tables );
 			}
 
-			if ( empty( $table ) ) {
-				$table = $lp_db->tb_lp_user_items;
-			} elseif ( array_key_exists( $table, $table_keys ) ) {
+			if ( ! array_key_exists( $table, $tables )
+				|| ! in_array( $table, $tables_valid ) ) {
 				throw new Exception( 'Table invalid!' );
 			}
 
