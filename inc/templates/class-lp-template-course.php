@@ -771,37 +771,8 @@ class LP_Template_Course extends LP_Abstract_Template {
 	}
 
 	public function item_lesson_material() {
-		$user   = learn_press_get_current_user();
-		$course = learn_press_get_course();
-
-		$file_per_page = LP_Settings::get_option( 'material_file_per_page', - 1 );
-		if ( ! $course || (int) $file_per_page === 0 ) {
-			return;
-		}
 		try {
-			$item                  = LP_Global::course_item();
-			$can_show_tab_material = false;
-			if ( $course->is_no_required_enroll()
-				|| $user->has_enrolled_or_finished( $course->get_id() )
-				|| $user->is_instructor() || $user->is_admin() ) {
-				$can_show_tab_material = true;
-			}
-			if ( ! $can_show_tab_material ) {
-				return;
-			}
-
-			// The complete button is not displayed when the course is locked --hungkv--
-			if ( $user->can_view_content_course( $course->get_id() )->key === LP_BLOCK_COURSE_DURATION_EXPIRE ) {
-				return;
-			}
-			$item_id   = $item->get_id();
-			$material  = LP_Material_Files_DB::getInstance();
-			$materials = $material->get_material_by_item_id( $item_id );
-			if ( ! $materials ) {
-				return;
-			}
-
-			echo wp_kses_post( do_shortcode( '[learn_press_course_materials]' ) );
+			do_action( 'learn-press/course-material/layout', [] );
 		} catch ( Throwable $e ) {
 			error_log( $e->getMessage() );
 		}
@@ -894,9 +865,9 @@ class LP_Template_Course extends LP_Abstract_Template {
 		}
 	}
 
-	public function metarials() {
+	/*public function metarials() {
 		echo wp_kses_post( do_shortcode( '[learn_press_course_materials]' ) );
-	}
+	}*/
 
 	public function faqs() {
 		$course = LP_Course::get_course( get_the_ID() );

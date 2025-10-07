@@ -179,4 +179,12 @@ class CoursePostModel extends PostModel {
 
 		return self::get_item_model_from_db( $filter_post );
 	}
+
+	public function check_capabilities_create(): bool {
+		return current_user_can( 'edit_' . $this->post_type . 's' );
+	}
+
+	public function check_capabilities_update(): bool {
+		return current_user_can( 'edit_' . $this->post_type, $this->ID );
+	}
 }

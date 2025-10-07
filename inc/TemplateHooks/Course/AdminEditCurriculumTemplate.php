@@ -6,6 +6,7 @@ use Exception;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
+use LearnPress\Models\CoursePostModel;
 use LearnPress\Models\PostModel;
 use LearnPress\Models\UserModel;
 use LearnPress\TemplateHooks\TemplateAJAX;
@@ -77,6 +78,9 @@ class AdminEditCurriculumTemplate {
 		if ( ! $courseModel ) {
 			throw new Exception( __( 'Course not found', 'learnpress' ) );
 		}
+
+		$coursePostModel = new CoursePostModel( $courseModel );
+		$coursePostModel->check_capabilities_create();
 
 		$content          = new stdClass();
 		$content->content = self::instance()->html_edit_curriculum( $courseModel );
@@ -596,6 +600,10 @@ class AdminEditCurriculumTemplate {
 		if ( ! $courseModel ) {
 			throw new Exception( __( 'Course not found', 'learnpress' ) );
 		}
+
+		// Check permission
+		$coursePostModel = new CoursePostModel( $courseModel );
+		$coursePostModel->check_capabilities_create();
 
 		$lp_db               = LP_Database::getInstance();
 		$filter              = new LP_Post_Type_Filter();

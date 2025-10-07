@@ -92,6 +92,9 @@ class AdminEditQuestionTemplate {
 			throw new Exception( __( 'Question not found', 'learnpress' ) );
 		}
 
+		// Check permission
+		$questionPostModel->check_capabilities_create_item_course();
+
 		$content          = new stdClass();
 		$content->content = self::instance()->html_edit_question( $questionPostModel );
 
