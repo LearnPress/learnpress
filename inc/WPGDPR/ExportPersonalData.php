@@ -1,9 +1,11 @@
 <?php
 namespace LearnPress\WPGDPR;
 
+use Exception;
 use LearnPress\Helpers\Singleton;
 use LearnPress\Models\UserItems\UserCourseModel;
 use LearnPress\Models\CourseModel;
+use LearnPress\Models\UserModel;
 use LP_Post_DB;
 use LP_Order_Filter;
 use LP_User_Items_Filter;
@@ -12,14 +14,18 @@ use LP_Datetime;
 use LP_Course_DB;
 use LP_Course_Filter;
 
+/**
+ * Class ExportPersonalData
+ *
+ * @since 4.2.9.4
+ * @version 1.0.0
+ */
 class ExportPersonalData {
 
 	use Singleton;
 
-	public $export_priority = 6;
-
 	public function init() {
-		add_filter( 'wp_privacy_personal_data_exporters', array( $this, 'register_exporters' ), $this->export_priority );
+		add_filter( 'wp_privacy_personal_data_exporters', array( $this, 'register_exporters' ), 6 );
 	}
 
 	public function register_exporters( $exporters ) {
@@ -44,18 +50,18 @@ class ExportPersonalData {
 
 	public function export_user_meta( $email, $page = 1 ) {
 		$export_items = array();
-		$done         = true;
-		$user         = get_user_by( 'email', $email );
+
+		$user = get_user_by( 'email', $email );
 		if ( $user ) {
-			$user_id = $user->ID;
-			$data    = array();
-			$lpuser  = learn_press_get_user( $user_id );
-			$profile = learn_press_get_profile( $user_id );
-			if ( user_can( $user->ID, LP_TEACHER_ROLE ) || user_can( $user->ID, 'administrator' ) ) {
-				$instructor_statistic = $lpuser->get_instructor_statistic();
+			$user_id   = $user->ID;
+			$data      = array();
+			$userModel = UserModel::find( $user_id, true );
+
+			if ( $userModel->is_instructor() ) {
+				$instructor_statistic = $userModel->get_instructor_statistic();
 				$data                 = $this->map_instructor_statistics( $instructor_statistic, $data );
 			}
-			$student_statistic = $lpuser->get_student_statistic();
+			$student_statistic = $userModel->get_student_statistic();
 			$data              = $this->map_student_statistics( $student_statistic, $data );
 
 			$social_fields = learn_press_get_user_extra_profile_fields();
@@ -76,13 +82,22 @@ class ExportPersonalData {
 				'data'              => $data,
 			);
 		}
+
 		return array(
 			'data' => $export_items,
-			'done' => $done,
+			'done' => true,
 		);
 	}
 
-	public function map_instructor_statistics( $statistic, array $data ) {
+	/**
+	 * Map instructor statistics to exportable data
+	 *
+	 * @param array $statistic
+	 * @param array $data
+	 *
+	 * @return array
+	 */
+	public function map_instructor_statistics( array $statistic, array $data ): array {
 		foreach ( $statistic as $key => $value ) {
 			switch ( $key ) {
 				case 'total_course':
@@ -126,7 +141,15 @@ class ExportPersonalData {
 		return $data;
 	}
 
-	public function map_student_statistics( $statistic, array $data ) {
+	/**
+	 * Map student statistics to exportable data
+	 *
+	 * @param array $statistic
+	 * @param array $data
+	 *
+	 * @return array
+	 */
+	public function map_student_statistics( array $statistic, array $data ): array {
 		foreach ( $statistic as $key => $value ) {
 			if ( $value ) {
 				switch ( $key ) {
@@ -163,9 +186,19 @@ class ExportPersonalData {
 				}
 			}
 		}
+
 		return $data;
 	}
 
+	/**
+	 * Export user attended courses data
+	 *
+	 * @param string $email
+	 * @param int $page
+	 *
+	 * @return array
+	 * @throws Exception
+	 */
 	public function export_user_attended_courses( $email, $page = 1 ) {
 		$export_items = array();
 		$done         = true;
@@ -195,12 +228,22 @@ class ExportPersonalData {
 			}
 			$done = 10 > count( $lp_ui_ids );
 		}
+
 		return array(
 			'data' => $export_items,
 			'done' => $done,
 		);
 	}
 
+	/**
+	 * Get user course personal data
+	 *
+	 * @param object $useritem
+	 * @param int $user_id
+	 *
+	 * @return array
+	 * @throws Exception
+	 */
 	protected function get_user_course_personal_data( $useritem, $user_id ) {
 		$data            = array();
 		$userCourseModel = UserCourseModel::find( $user_id, $useritem->item_id );
@@ -245,23 +288,34 @@ class ExportPersonalData {
 				);
 			}
 		}
+
 		return $data;
 	}
 
+	/**
+	 * Export user created courses data
+	 *
+	 * @param string $email
+	 * @param int $page
+	 *
+	 * @return array
+	 * @throws Exception
+	 */
 	public function export_user_created_courses( $email, $page = 1 ) {
 		$export_items = array();
 		$done         = true;
 		$user         = get_user_by( 'email', $email );
-		if ( $user && ( user_can( $user->ID, LP_TEACHER_ROLE ) || user_can( $user->ID, 'administrator' ) ) ) {
-			$user_id               = $user->ID;
-			$filter                = new LP_Course_Filter();
-			$course_db             = LP_Course_DB::getInstance();
-			$filter->post_author   = $user_id;
-			$filter->only_fields[] = 'p.ID as ID';
-			$filter->limit         = 10;
-			$filter->page          = (int) $page;
-			$filter->field_count   = 'ID';
-			$course_ids            = $course_db->get_courses( $filter );
+		$userModel    = $user ? UserModel::find( $user->ID, true ) : null;
+		if ( $userModel && $userModel->is_instructor() ) {
+			$user_id                 = $user->ID;
+			$filter                  = new LP_Course_Filter();
+			$course_db               = LP_Course_DB::getInstance();
+			$filter->post_author     = $user_id;
+			$filter->only_fields[]   = 'p.ID as ID';
+			$filter->limit           = 10;
+			$filter->page            = (int) $page;
+			$filter->run_query_count = false;
+			$course_ids              = $course_db->get_courses( $filter );
 			if ( ! empty( $course_ids ) ) {
 				foreach ( $course_ids as $c ) {
 					$export_items[] = array(
@@ -275,17 +329,27 @@ class ExportPersonalData {
 			}
 			$done = 10 > count( $course_ids );
 		}
+
 		return array(
 			'data' => $export_items,
 			'done' => $done,
 		);
 	}
 
-	protected function get_user_created_courses_personal_data( $course_id, $user_id ) {
+	/**
+	 * Get user created courses personal data
+	 *
+	 * @param int $course_id
+	 * @param int $user_id
+	 *
+	 * @return array
+	 * @throws Exception
+	 */
+	protected function get_user_created_courses_personal_data( $course_id, $user_id ): array {
 		$data        = array();
-		$courseModel = CourseModel::find( $course_id );
+		$courseModel = CourseModel::find( $course_id, true );
 		$props       = apply_filters(
-			'learnpress/export-user-created-courses-personal-data/props',
+			'learn-press/export-user-created-courses-personal-data/props',
 			array(
 				'title'         => __( 'Course name', 'learnpress' ),
 				'price'         => __( 'Price', 'learnpress' ),
@@ -345,9 +409,19 @@ class ExportPersonalData {
 				);
 			}
 		}
+
 		return $data;
 	}
 
+	/**
+	 * Export user orders data
+	 *
+	 * @param string $email
+	 * @param int $page
+	 *
+	 * @return array
+	 * @throws Exception
+	 */
 	public function export_user_orders( $email, $page = 1 ) {
 		$export_items = array();
 		$done         = true;
@@ -367,15 +441,24 @@ class ExportPersonalData {
 		);
 	}
 
+	/**
+	 * Export order via user ID
+	 *
+	 * @param \WP_User $user
+	 * @param int $page
+	 *
+	 * @return array
+	 * @throws Exception
+	 */
 	public function export_order_via_user( $user, $page = 1 ) {
-		$user_id               = $user->ID;
-		$data_to_export        = array();
-		$done                  = true;
-		$lp_postdb             = LP_Post_DB::getInstance();
-		$filter                = new LP_Order_Filter();
-		$filter->only_fields[] = 'p.ID as ID';
-		$filter->join[]        = "INNER JOIN $lp_postdb->tb_postmeta AS pm ON p.ID = pm.post_id";
-		$filter->where         = array(
+		$user_id                 = $user->ID;
+		$data_to_export          = array();
+		$done                    = true;
+		$lp_postdb               = LP_Post_DB::getInstance();
+		$filter                  = new LP_Order_Filter();
+		$filter->only_fields[]   = 'p.ID as ID';
+		$filter->join[]          = "INNER JOIN $lp_postdb->tb_postmeta AS pm ON p.ID = pm.post_id";
+		$filter->where           = array(
 			$lp_postdb->wpdb->prepare(
 				'AND pm.meta_key=%s AND ( pm.meta_value=%s OR pm.meta_value LIKE %s)',
 				'_user_id',
@@ -383,36 +466,48 @@ class ExportPersonalData {
 				'%' . $lp_postdb->wpdb->esc_like( '"' . $user_id . '"' ) . '%'
 			),
 		);
-		$filter->limit         = 10;
-		$filter->page          = $page ?? 1;
-		$lp_order_ids          = $lp_postdb->get_posts( $filter );
+		$filter->limit           = 10;
+		$filter->page            = $page ?? 1;
+		$filter->run_query_count = false;
+		$lp_order_ids            = $lp_postdb->get_posts( $filter );
 		if ( ! empty( $lp_order_ids ) ) {
 			$data_to_export = $this->process_order_data( $lp_order_ids );
 		}
 		$done = 10 > count( $lp_order_ids );
+
 		return array(
 			'data' => $data_to_export,
 			'done' => $done,
 		);
 	}
 
+	/**
+	 * Export order via email
+	 *
+	 * @param string $email
+	 * @param int $page
+	 *
+	 * @return array
+	 * @throws Exception
+	 */
 	public function export_order_via_email( $email, $page = 1 ) {
-		$data_to_export        = array();
-		$done                  = true;
-		$lp_postdb             = LP_Post_DB::getInstance();
-		$filter                = new LP_Order_Filter();
-		$filter->only_fields[] = 'p.ID as ID';
-		$filter->join[]        = "INNER JOIN $lp_postdb->tb_postmeta AS pm ON p.ID = pm.post_id";
-		$filter->where         = array(
+		$data_to_export          = array();
+		$done                    = true;
+		$lp_postdb               = LP_Post_DB::getInstance();
+		$filter                  = new LP_Order_Filter();
+		$filter->only_fields[]   = 'p.ID as ID';
+		$filter->join[]          = "INNER JOIN $lp_postdb->tb_postmeta AS pm ON p.ID = pm.post_id";
+		$filter->where           = array(
 			$lp_postdb->wpdb->prepare(
 				'AND pm.meta_key=%s AND pm.meta_value=%s',
 				'_checkout_email',
 				$email
 			),
 		);
-		$filter->limit         = 10;
-		$filter->page          = $page ?? 1;
-		$lp_order_ids          = $lp_postdb->get_posts( $filter );
+		$filter->limit           = 10;
+		$filter->page            = $page ?? 1;
+		$filter->run_query_count = false;
+		$lp_order_ids            = $lp_postdb->get_posts( $filter );
 		if ( ! empty( $lp_order_ids ) ) {
 			$data_to_export = $this->process_order_data( $lp_order_ids );
 		}
@@ -423,7 +518,15 @@ class ExportPersonalData {
 		);
 	}
 
-	protected function process_order_data( $lp_order_ids ) {
+	/**
+	 * Process order data to export
+	 *
+	 * @param array $lp_order_ids
+	 *
+	 * @return array
+	 * @throws Exception
+	 */
+	protected function process_order_data( $lp_order_ids ): array {
 		$data_to_export = array();
 		foreach ( $lp_order_ids as $order ) {
 			$data_to_export[] = array(
@@ -437,7 +540,15 @@ class ExportPersonalData {
 		return $data_to_export;
 	}
 
-	protected function get_order_personal_data( $order_id ) {
+	/**
+	 * Get order personal data
+	 *
+	 * @param int $order_id
+	 *
+	 * @return array
+	 * @throws Exception
+	 */
+	protected function get_order_personal_data( $order_id ): array {
 		$order = learn_press_get_order( $order_id );
 		$data  = array();
 		$props = apply_filters(
