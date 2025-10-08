@@ -76,7 +76,7 @@ class ExportPersonalData {
 			}
 			$export_items[] = array(
 				'group_id'          => 'learnpress-user-meta',
-				'group_label'       => __( 'LearnPress Prifile Info', 'learnpress' ),
+				'group_label'       => __( 'LearnPress Profile Info', 'learnpress' ),
 				'group_description' => __( 'User&#8217;s LearnPress User Profile Data.', 'learnpress' ),
 				'item_id'           => 'user_id-' . $user_id,
 				'data'              => $data,

@@ -140,7 +140,7 @@ class CourseMaterialTemplate {
 			$file_per_page = LP_Settings::get_option( 'material_file_per_page', - 1 );
 			$count_files   = LP_Material_Files_DB::getInstance()->get_total( $courseModel->get_id() );
 			if ( ! $can_show || $file_per_page == 0 || $count_files <= 0 ) {
-				throw new Exception( esc_html__( 'You do not have permission to view this material!', 'learnpress' ) );
+				throw new Exception( '' );
 			}
 
 			$material_db = LP_Material_Files_DB::getInstance();
@@ -178,7 +178,11 @@ class CourseMaterialTemplate {
 				$content->paged       = $args['paged'];
 			}
 		} catch ( Throwable $e ) {
-			$content->content = Template::print_message( $e->getMessage(), 'error', false );
+			if ( $e->getMessage() === '' ) {
+				$content->content = '';
+			} else {
+				$content->content = Template::print_message( $e->getMessage(), 'error', false );
+			}
 		}
 		return $content;
 	}
