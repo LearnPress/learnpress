@@ -466,10 +466,10 @@ class LP_Course_DB extends LP_Database {
 	 * @return array|object|null|int|string
 	 * @throws Exception
 	 * @author tungnx
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 * @since 4.1.5
 	 */
-	public function get_courses( LP_Course_Filter $filter, int &$total_rows = 0 ) {
+	public function get_courses( $filter, int &$total_rows = 0 ) {
 		$default_fields = $filter->all_fields;
 		$filter->fields = array_merge( $default_fields, $filter->fields );
 
