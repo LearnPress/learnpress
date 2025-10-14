@@ -6,6 +6,8 @@
  * @version 4.2.2.3
  */
 
+use LearnPress\CourseBuilder\CourseBuilder;
+
 defined( 'ABSPATH' ) || exit;
 
 class LP_Query {
@@ -50,10 +52,13 @@ class LP_Query {
 			'%question%'             => '([^&]+)',
 			'%user%'                 => '([^/]*)',
 			'%view%'                 => '([^/]*)',
+			'%tab%'                  => '([^/]*)',
 			'%view_id%'              => '(.*)',
 			'%section%'              => '(.*)',
 			'%content-item-only%'    => '(.*)',
 			'%is_single_instructor%' => '(.*)',
+			'%is_course_builder%'    => '(.*)',
+			'%post_id%'              => '(.*)',
 			'%is_course_builder%'    => '(.*)',
 			'%instructor_name%'      => '(.*)',
 		];
@@ -251,92 +256,36 @@ class LP_Query {
 		$course_builder_id = learn_press_get_page_id( 'course_builder' );
 
 		if ( $course_builder_id ) {
-			$tab_arr = [
-				'courses'   => array(
-					'title'    => esc_html__( 'Courses', 'learnpress' ),
-					'slug'     => 'courses',
-					'sections' => array(
-						'edit'       => array(
-							'title' => esc_html__( 'Edit', 'learnpress' ),
-							'slug'  => 'edit',
-
-						),
-						'curriculum' => array(
-							'title' => esc_html__( 'Curriculum', 'learnpress' ),
-							'slug'  => 'curriculum',
-						),
-						'settings'   => array(
-							'title' => esc_html__( 'Settings', 'learnpress' ),
-							'slug'  => 'settings',
-						),
-					),
-				),
-				'lessons'   => array(
-					'title'    => esc_html__( 'Lessons', 'learnpress' ),
-					'slug'     => 'lessons',
-					'sections' => array(
-						'edit'     => array(
-							'title' => esc_html__( 'Edit', 'learnpress' ),
-							'slug'  => 'edit',
-						),
-						'settings' => array(
-							'title' => esc_html__( 'Settings', 'learnpress' ),
-							'slug'  => 'settings',
-						),
-					),
-				),
-				'quizzes'   => array(
-					'title'    => esc_html__( 'Quizzes', 'learnpress' ),
-					'slug'     => 'quizzes',
-					'sections' => array(
-						'edit'     => array(
-							'title' => esc_html__( 'Edit', 'learnpress' ),
-							'slug'  => 'edit',
-						),
-						'question' => array(
-							'title' => esc_html__( 'Question', 'learnpress' ),
-							'slug'  => 'question',
-						),
-						'settings' => array(
-							'title' => esc_html__( 'Settings', 'learnpress' ),
-							'slug'  => 'settings',
-						),
-					),
-				),
-				'questions' => array(
-					'title'    => esc_html__( 'Questions', 'learnpress' ),
-					'slug'     => 'questions',
-					'sections' => array(
-						'edit'     => array(
-							'title' => esc_html__( 'Edit', 'learnpress' ),
-							'slug'  => 'edit',
-						),
-						'settings' => array(
-							'title' => esc_html__( 'Settings', 'learnpress' ),
-							'slug'  => 'settings',
-						),
-					),
-				),
-			];
-
+			$tabs                     = CourseBuilder::get_tabs_arr();
 			$page_course_builder_slug = urldecode( get_post_field( 'post_name', $course_builder_id ) );
-			if ( $tab_arr ) {
-				foreach ( $tab_arr as $tab_key => $args ) {
+			if ( $tabs ) {
+				foreach ( $tabs as $tab_key => $args ) {
 					$tab_slug = $args['slug'] ?? $tab_key;
 
 					if ( ! empty( $args['sections'] ) ) {
 						foreach ( $args['sections'] as $section_key => $section ) {
 							$section_slug = $section['slug'] ?? $section_key;
+
+							$rules['course-builder'][ $tab_key . '_' . $section_key . '_new' ] = [
+								"^{$page_course_builder_slug}/({$tab_slug})/(post-new)/({$section_slug})/?$" =>
+								'index.php?page_id=' . $course_builder_id . '&is_course_builder=1&tab=' . $tab_slug . '&post_id=post-new&section=' . $section_slug,
+							];
+
 							$rules['course-builder'][ $tab_key . '_' . $section_key ] = [
-								"^{$page_course_builder_slug}/({$tab_slug})/?([0-9]*)?$/({$section_slug})/?$" =>
-								'index.php?page_id=' . $course_builder_id . '&is_course_builder=1&tab=' . $tab_slug . '&post_id=$matches[1]&section=' . $section_slug,
+								"^{$page_course_builder_slug}/({$tab_slug})/?([0-9]*)/({$section_slug})/?$" =>
+								'index.php?page_id=' . $course_builder_id . '&is_course_builder=1&tab=' . $tab_slug . '&post_id=$matches[2]&section=' . $section_slug,
 							];
 						}
 					}
 
+					$rules['course-builder'][ $tab_key . '_new' ] = [
+						"^{$page_course_builder_slug}/({$tab_slug})/(post-new)/?$" =>
+							'index.php?page_id=' . $course_builder_id . '&is_course_builder=1&tab=' . $tab_slug . '&post_id=post-new',
+					];
+
 					$rules['course-builder'][ $tab_key ] = [
 						"^{$page_course_builder_slug}/({$tab_slug})/?([0-9]*)/?$" =>
-							'index.php?page_id=' . $course_builder_id . '&is_course_builder=1&tab=' . $tab_slug . '&post_id=$matches[1]',
+							'index.php?page_id=' . $course_builder_id . '&is_course_builder=1&tab=' . $tab_slug . '&post_id=$matches[2]',
 					];
 				}
 			}
