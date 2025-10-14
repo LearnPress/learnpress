@@ -32,6 +32,7 @@ if ( ! function_exists( 'LP_Install' ) ) {
 			'single_instructor',
 			'become_a_teacher',
 			'term_conditions',
+			'course_builder',
 		);
 
 		protected function __construct() {
@@ -270,6 +271,9 @@ if ( ! function_exists( 'LP_Install' ) ) {
 					} elseif ( 'term_conditions' === $page ) {
 						$page_title = 'Terms and Conditions';
 						$page_slug  = $page;
+					} elseif ( 'course_builder' === $page ) {
+						$page_title = 'Course Builder';
+						$page_slug  = 'course-builder';
 					} else {
 						$page_title = ucwords( str_replace( '_', ' ', $page ) );
 						$page_slug  = 'lp-' . str_replace( '_', '-', $page );

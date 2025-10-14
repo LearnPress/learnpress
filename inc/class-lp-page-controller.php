@@ -915,6 +915,8 @@ class LP_Page_Controller {
 			return LP_PAGE_INSTRUCTORS;
 		} elseif ( self::is_page_instructor() ) {
 			return LP_PAGE_INSTRUCTOR;
+		} elseif ( self::is_page_course_builder() ) {
+			return LP_PAGE_COURSE_BUILDER;
 		} else {
 			return apply_filters( 'learnpress/page/current', '' );
 		}
@@ -1093,6 +1095,10 @@ class LP_Page_Controller {
 		}
 
 		return false;
+	}
+
+	public static function is_page_course_builder(): bool {
+		return self::page_is( 'course_builder' );
 	}
 
 	/**

@@ -75,10 +75,13 @@ class LP_Setup_Wizard {
 			'term_conditions_page_id'   => _x( 'LP Terms and Conditions', 'static-page', 'learnpress' ),
 			'instructors_page_id'       => _x( 'Instructors', 'static-page', 'learnpress' ),
 			'single_instructor_page_id' => _x( 'Instructor', 'static-page', 'learnpress' ),
+			'course_builder_page_id'    => _x( 'Course Builder', 'static-page', 'learnpress' ),
 		);
 
 		if ( $page === 'profile_page_id' ) {
 			$page_content = '<!-- wp:shortcode -->[learn_press_profile]<!-- /wp:shortcode -->';
+		} elseif ( $page === 'course_builder_page_id' ) {
+			$page_content = '<!-- wp:shortcode -->[learn_press_course_builder]<!-- /wp:shortcode -->';
 		} else {
 			$page_content = '';
 		}
@@ -125,10 +128,14 @@ class LP_Setup_Wizard {
 		// tungnx: fix error with Woocommerce
 		remove_action( 'admin_enqueue_scripts', array( 'Automattic\WooCommerce\Admin\Loader', 'register_scripts' ) );
 		remove_action( 'admin_enqueue_scripts', array( 'Automattic\WooCommerce\Admin\Loader', 'load_scripts' ), 15 );
-		remove_action( 'admin_enqueue_scripts', array(
-			'Automattic\WooCommerce\Admin\Features\Features',
-			'load_scripts'
-		), 15 );
+		remove_action(
+			'admin_enqueue_scripts',
+			array(
+				'Automattic\WooCommerce\Admin\Features\Features',
+				'load_scripts',
+			),
+			15
+		);
 		// End fix
 		// @do_action( 'admin_enqueue_scripts' );
 
@@ -324,7 +331,7 @@ class LP_Setup_Wizard {
 		$steps   = $this->get_step_keys();
 		$at      = array_search( $current, $steps );
 		if ( $at < sizeof( $steps ) - 1 ) {
-			$at ++;
+			++$at;
 		}
 
 		return esc_url_raw( add_query_arg( 'step', $steps[ $at ], admin_url( $this->_base_url ) ) );
@@ -340,7 +347,7 @@ class LP_Setup_Wizard {
 		$steps   = $this->get_step_keys();
 		$at      = array_search( $current, $steps );
 		if ( $at > 0 ) {
-			$at --;
+			--$at;
 		}
 
 		return esc_url_raw( add_query_arg( 'step', $steps[ $at ], admin_url( $this->_base_url ) ) );

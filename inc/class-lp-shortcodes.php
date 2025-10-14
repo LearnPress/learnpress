@@ -33,6 +33,7 @@ if ( ! class_exists( 'LP_Shortcodes' ) ) {
 				'button_purchase'     => __CLASS__ . '::button_purchase',
 				'button_course'       => __CLASS__ . '::button_course',
 				'course_curriculum'   => __CLASS__ . '::course_curriculum',
+				'course_builder'      => __CLASS__ . '::course_builder',
 			);
 
 			foreach ( $shortcodes as $shortcode => $function ) {
@@ -82,6 +83,10 @@ if ( ! class_exists( 'LP_Shortcodes' ) ) {
 			} elseif ( LP_Page_Controller::is_page_instructors() ) {
 				if ( ! preg_match( '/\[learn_press_instructors\s?(.*)/', $post->post_content ) ) {
 					$post->post_content .= '[learn_press_instructors]';
+				}
+			} elseif ( LP_Page_Controller::is_page_course_builder() ) {
+				if ( ! preg_match( '/\[learn_press_course_builder\s?(.*)/', $post->post_content ) ) {
+					$post->post_content .= '[learn_press_course_builder]';
 				}
 			}
 
@@ -173,6 +178,17 @@ if ( ! class_exists( 'LP_Shortcodes' ) ) {
 		 */
 		public static function become_teacher_form( $atts ) {
 			return self::wrapper_shortcode( new LP_Shortcode_Become_A_Teacher( $atts ) );
+		}
+
+		/**
+		 * Display content of course builder.
+		 *
+		 * @param array|null
+		 *
+		 * @return string
+		 */
+		public static function course_builder( $atts ) {
+			return self::wrapper_shortcode( new LP_Shortcode_Course_Builder( $atts ) );
 		}
 
 		/**

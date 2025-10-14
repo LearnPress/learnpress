@@ -48,6 +48,13 @@ return apply_filters(
 			'value'   => learn_press_get_page_id( 'profile' ),
 		),
 		array(
+			'title'   => esc_html__( 'Course Builder page', 'learnpress' ),
+			'id'      => 'course_builder_page_id',
+			'default' => '',
+			'type'    => 'pages-dropdown',
+			'value'   => learn_press_get_page_id( 'course_builder' ),
+		),
+		array(
 			'title'   => esc_html__( 'Checkout page', 'learnpress' ),
 			'id'      => 'checkout_page_id',
 			'default' => '',

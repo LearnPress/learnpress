@@ -50,6 +50,7 @@ use LearnPress\TemplateHooks\Profile\ProfileOrdersTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileOrderTemplate;
 use LearnPress\TemplateHooks\Profile\ProfileStudentStatisticsTemplate;
 use LearnPress\TemplateHooks\Course\CourseMaterialTemplate;
+use LearnPress\TemplateHooks\CourseBuilder\CourseBuilderTemplate;
 use LearnPress\Widgets\LPRegisterWidget;
 use LearnPress\WPGDPR\ErasePersonalData;
 use LearnPress\WPGDPR\ExportPersonalData;
@@ -326,6 +327,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			ProfileGeneralInfoTemplate::instance();
 			FilterCourseTemplate::instance();
 			ProfileQuizzesTemplate::instance();
+			CourseBuilderTemplate::instance();
 
 			// Admin template hooks.
 			AdminEditCurriculumTemplate::instance();
