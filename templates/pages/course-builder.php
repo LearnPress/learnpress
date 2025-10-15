@@ -2,16 +2,16 @@
 /**
  * Template for displaying main course builder page.
  *
- * @author   ThimPress
+ * @author   VuxMinhThanh
  * @package  Learnpress/Templates
- * @version  4.2.3
+ * @version  4.3.0
  */
 
 defined( 'ABSPATH' ) || exit();
 
 ?>
-	<div id="learn-press-course-builder">
-		<div class="lp-content-area">
+	<div id="lp-course-builder">
+		<div class="lp-course-builder_layout">
 			<?php do_action( 'learn-press/course-builder/layout' ); ?>
 		</div>
 	</div>
