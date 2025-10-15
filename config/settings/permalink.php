@@ -71,6 +71,14 @@ return apply_filters(
 					'desc'        => sprintf( 'e.g. %s/course/%s/sample-tag/', home_url(), '<code>course-tag</code>' ),
 				],
 				[
+					'title'       => esc_html__( 'Course Builder', 'learnpress' ),
+					'id'          => 'course_builder',
+					'default'     => 'course-builder',
+					'type'        => 'text',
+					'placeholder' => 'course-builder',
+					'desc'        => sprintf( 'e.g. %s/%s/', home_url(), '<code>course-builder</code>' ),
+				],
+				[
 					'type' => 'sectionend',
 				],
 			]

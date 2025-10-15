@@ -2,6 +2,8 @@
 
 namespace LearnPress\CourseBuilder;
 
+use LP_Settings;
+
 /**
  * Course Builder class.
  *
@@ -29,16 +31,16 @@ class CourseBuilder {
 				'title'    => esc_html__( 'Courses', 'learnpress' ),
 				'slug'     => 'courses',
 				'sections' => array(
-					'edit'       => array(
-						'title' => esc_html__( 'Edit', 'learnpress' ),
-						'slug'  => 'edit',
+					'overview'   => array(
+						'title' => esc_html__( 'Course Overview', 'learnpress' ),
+						'slug'  => 'overview',
 					),
 					'curriculum' => array(
 						'title' => esc_html__( 'Curriculum', 'learnpress' ),
 						'slug'  => 'curriculum',
 					),
 					'settings'   => array(
-						'title' => esc_html__( 'Settings', 'learnpress' ),
+						'title' => esc_html__( 'Course Settings', 'learnpress' ),
 						'slug'  => 'settings',
 					),
 				),
@@ -47,9 +49,9 @@ class CourseBuilder {
 				'title'    => esc_html__( 'Lessons', 'learnpress' ),
 				'slug'     => 'lessons',
 				'sections' => array(
-					'edit'     => array(
-						'title' => esc_html__( 'Edit', 'learnpress' ),
-						'slug'  => 'edit',
+					'overview' => array(
+						'title' => esc_html__( 'Lesson Overview', 'learnpress' ),
+						'slug'  => 'overview',
 					),
 					'settings' => array(
 						'title' => esc_html__( 'Settings', 'learnpress' ),
@@ -61,16 +63,16 @@ class CourseBuilder {
 				'title'    => esc_html__( 'Quizzes', 'learnpress' ),
 				'slug'     => 'quizzes',
 				'sections' => array(
-					'edit'     => array(
-						'title' => esc_html__( 'Edit', 'learnpress' ),
-						'slug'  => 'edit',
+					'overview' => array(
+						'title' => esc_html__( 'Quizz Overview', 'learnpress' ),
+						'slug'  => 'overview',
 					),
 					'question' => array(
 						'title' => esc_html__( 'Question', 'learnpress' ),
 						'slug'  => 'question',
 					),
 					'settings' => array(
-						'title' => esc_html__( 'Settings', 'learnpress' ),
+						'title' => esc_html__( 'Quizz Settings', 'learnpress' ),
 						'slug'  => 'settings',
 					),
 				),
@@ -79,12 +81,12 @@ class CourseBuilder {
 				'title'    => esc_html__( 'Questions', 'learnpress' ),
 				'slug'     => 'questions',
 				'sections' => array(
-					'edit'     => array(
-						'title' => esc_html__( 'Edit', 'learnpress' ),
-						'slug'  => 'edit',
+					'overview' => array(
+						'title' => esc_html__( 'Question Overview', 'learnpress' ),
+						'slug'  => 'overview',
 					),
 					'settings' => array(
-						'title' => esc_html__( 'Settings', 'learnpress' ),
+						'title' => esc_html__( 'Question Settings', 'learnpress' ),
 						'slug'  => 'settings',
 					),
 				),
@@ -184,7 +186,9 @@ class CourseBuilder {
 			return $link;
 		}
 
-		$link = trailingslashit( learn_press_get_page_link( 'course_builder' ) );
+		$page = LP_Settings::get_option( 'course_builder', 'course-builder' );
+
+		$link = sprintf( '%s/%s/', home_url(), $page );
 
 		if ( ! empty( $tab ) ) {
 			$link .= $tab . '/';

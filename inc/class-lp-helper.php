@@ -241,8 +241,6 @@ class LP_Helper {
 				$args['post_content'] = '<!-- wp:shortcode -->[learn_press_instructors]<!-- /wp:shortcode -->';
 			} elseif ( preg_match( '#^learn_press_profile_page_id.*#', $key_option ) ) {
 				$args['post_content'] = '<!-- wp:shortcode -->[learn_press_profile]<!-- /wp:shortcode -->';
-			} elseif ( preg_match( '#^learn_press_course_builder_page_id.*#', $key_option ) ) {
-				$args['post_content'] = '<!-- wp:shortcode -->[learn_press_course_builder]<!-- /wp:shortcode -->';
 			}
 
 			$args = array_merge(

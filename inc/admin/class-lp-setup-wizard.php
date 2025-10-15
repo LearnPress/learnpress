@@ -75,13 +75,10 @@ class LP_Setup_Wizard {
 			'term_conditions_page_id'   => _x( 'LP Terms and Conditions', 'static-page', 'learnpress' ),
 			'instructors_page_id'       => _x( 'Instructors', 'static-page', 'learnpress' ),
 			'single_instructor_page_id' => _x( 'Instructor', 'static-page', 'learnpress' ),
-			'course_builder_page_id'    => _x( 'Course Builder', 'static-page', 'learnpress' ),
 		);
 
 		if ( $page === 'profile_page_id' ) {
 			$page_content = '<!-- wp:shortcode -->[learn_press_profile]<!-- /wp:shortcode -->';
-		} elseif ( $page === 'course_builder_page_id' ) {
-			$page_content = '<!-- wp:shortcode -->[learn_press_course_builder]<!-- /wp:shortcode -->';
 		} else {
 			$page_content = '';
 		}

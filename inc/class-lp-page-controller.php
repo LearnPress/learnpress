@@ -458,6 +458,12 @@ class LP_Page_Controller {
 	 * @return bool|string
 	 */
 	public function template_loader( $template ) {
+		global $wp_query;
+
+		if ( ! empty( $wp_query->get( 'is_course_builder' ) ) ) {
+			$template = LP_TEMPLATE_PATH . 'pages/course-builder.php';
+			return $template;
+		}
 
 		if ( wp_is_block_theme() ) {
 			return $template;
